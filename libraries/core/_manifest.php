@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df;
+namespace df\core;
 
 use df;
 use df\core;
@@ -14,7 +14,6 @@ class LogicException extends \LogicException implements IException {}
 class UnexpectedValueException extends \UnexpectedValueException implements IException {}
 class RuntimeException extends \RuntimeException implements IException {}
 class ApplicationNotFoundException extends RuntimeException {}
-
 
 // Generic interfaces
 interface IStringProvider {
@@ -207,9 +206,57 @@ interface ILoader {
     public function registerLocation($name, $path);
     public function unregisterLocation($name);
     public function getLocations();
+    
+    public function loadBasePackages();
+    public function loadPackages(array $packages);
+    public function getPackages();
+    public function hasPackage($package);
+    public function getPackage($package);
+    
+    public function shutdown();
 }
 
 interface IPackage {}
+
+class Package implements IPackage {
+    
+    const PRIORITY = 20;
+    
+    public $path;
+    public $name;
+    public $priority;
+    
+    public static function factory($name) {
+        $class = 'df\\apex\\packages\\'.$name.'\\Package';
+        
+        if(!class_exists($class)) {
+            throw new RuntimeException('Package '.$name.' could not be found');
+        }
+        
+        return new $class($name);
+    }
+    
+    public function __construct($name, $priority=null, $path=null) {
+        if($path === null) {
+            $ref = new \ReflectionObject($this);
+            $path = dirname($ref->getFileName());
+        }
+        
+        if(df\Launchpad::IN_PHAR) {
+            $this->path = df\Launchpad::ROOT_PATH.'/apex/packages/'.$name;
+        } else {
+            $this->path = $path;
+        }
+        
+        $this->name = $name;
+        
+        if($priority === null) {
+            $priority = static::PRIORITY;
+        }
+        
+        $this->priority = $priority;
+    }
+}
 
 
 // Applications
@@ -247,4 +294,11 @@ interface IConfig extends IApplicationAware, IRegistryObject {
     public function getConfigId();
     public function getConfigValues();
     public function isConfigDistributed();
+}
+
+
+include __DIR__.'/Loader.php';
+
+if(!df\Launchpad::IN_PHAR) {
+    include __DIR__.'/DevLoader.php';
 }
