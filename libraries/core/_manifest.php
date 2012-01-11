@@ -302,3 +302,21 @@ include __DIR__.'/Loader.php';
 if(!df\Launchpad::IN_PHAR) {
     include __DIR__.'/DevLoader.php';
 }
+
+
+
+// Debug
+function dump($arg1) {
+    while(ob_get_level()) {
+        ob_end_clean();
+    }
+    
+    if(func_num_args() > 1) {
+        $args = func_get_args();
+    } else {
+        $args = $arg1;
+    }
+    
+    echo '<pre>'.print_r($args, true).'</pre>';
+    df\Launchpad::benchmark();
+}
