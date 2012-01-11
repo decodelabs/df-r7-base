@@ -26,6 +26,24 @@ class StackCall implements IStackCall {
     protected $_originFile;
     protected $_originLine;
     
+    public static function factory($rewind=0) {
+        $data = debug_backtrace();
+        
+        while($rewind > 0) {
+            $rewind--;
+            array_shift($data);
+        }
+        
+        $last = array_shift($data);
+        $output = array_shift($data);
+        $output['fromFile'] = $output['file'];
+        $output['fromLine'] = $output['line']; 
+        $output['file'] = $last['file'];
+        $output['line'] = $last['line'];
+        
+        return new self($output);
+    }
+    
     public function __construct(array $callData) {
         if(isset($callData['fromFile']) && $callData['fromFile'] !== $callData['file']) {
             $this->_callingFile = $callData['fromFile'];
@@ -87,6 +105,32 @@ class StackCall implements IStackCall {
     
     public function countArgs() {
         return count($this->_args);
+    }
+    
+    public function getArgString() {
+        $output = array();
+        
+        foreach($this->_args as $arg) {
+            if(is_string($arg)) {
+                if(strlen($arg) > 16) {
+                    $arg = substr($arg, 0, 16).'...';
+                }
+                
+                $arg = '\''.$arg.'\'';
+            } else if(is_array($arg)) {
+                $arg = 'Array('.count($arg).')';
+            } else if(is_object($arg)) {
+                $arg = get_class($arg).' Object';
+            } else if(is_bool($arg)) {
+                $arg = $arg ? 'true' : 'false';
+            } else if(is_null($arg)) {
+                $arg = 'null';
+            }
+
+            $output[] = $arg;
+        }
+        
+        return '('.implode(', ', $output).')';
     }
     
 
@@ -152,7 +196,7 @@ class StackCall implements IStackCall {
         return $this->_function;
     }
     
-    public function getCallSignature() {
+    public function getCallSignature($argString=false) {
         $output = '';
         
         if($this->_namespace !== null) {
@@ -173,18 +217,35 @@ class StackCall implements IStackCall {
                 break;
         }
         
-        $output .= $this->_function.'(';
+        $output .= $this->_function;
         
-        if(!empty($this->_args)) {
-            $output .= count($this->_args);
+        if($argString) {
+            $output .= $this->getArgString();
+        } else {
+            $output .= '(';
+            
+            if(!empty($this->_args)) {
+                $output .= count($this->_args);
+            }
+            
+            $output .= ')';
         }
         
-        $output .= ')';
         return $output;
     }
+    
+    
 
     
 // Location
+    public function getFile() {
+        return $this->_originFile;
+    }
+    
+    public function getLine() {
+        return $this->_originLine;
+    }
+
     public function getCallingFile() {
         if($this->_callingFile !== null) {
             return $this->_callingFile;
@@ -198,14 +259,6 @@ class StackCall implements IStackCall {
             return $this->_callingLine;
         }
         
-        return $this->_originLine;
-    }
-    
-    public function getOriginFile() {
-        return $this->_originFile;
-    }
-    
-    public function getOriginLine() {
         return $this->_originLine;
     }
 }

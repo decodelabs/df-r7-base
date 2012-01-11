@@ -306,7 +306,7 @@ if(!df\Launchpad::IN_PHAR) {
 
 
 // Debug
-function dump($arg1) {
+function qDump($arg1) {
     while(ob_get_level()) {
         ob_end_clean();
     }
@@ -319,4 +319,34 @@ function dump($arg1) {
     
     echo '<pre>'.print_r($args, true).'</pre>';
     df\Launchpad::benchmark();
+}
+
+function stub() {
+    return df\Launchpad::getDebugContext()->addStub(
+            func_get_args(), 
+            core\debug\StackCall::factory(1)
+        )
+        ->flush();
+}
+
+function dump($arg1) {
+    return df\Launchpad::getDebugContext()->addDumpList(
+            func_get_args(), 
+            false, 
+            core\debug\StackCall::factory(1)
+        )
+        ->flush();
+}
+
+function dumpDeep($arg1) {
+    return df\Launchpad::getDebugContext()->addDumpList(
+            func_get_args(), 
+            true, 
+            core\debug\StackCall::factory(1)
+        )
+        ->flush();
+}
+
+function debug() {
+    return df\Launchpad::getDebugContext();
 }

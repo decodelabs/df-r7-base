@@ -88,12 +88,17 @@ class Builder {
                         continue;
                     }
                     
+                    if($entry == 'libraries') {
+                        core\io\Util::copyDirInto($package->path.'/'.$entry, $tempPath);
+                        continue;
+                    }
+                    
                     if(is_dir($package->path.'/'.$entry)) {
                         core\io\Util::copyDir($package->path.'/'.$entry, $tempPath.'/apex/'.$entry);
                     }
                 }
             } else {
-                core\io\Util::copyDirInto($package->path, $tempPath);
+                core\io\Util::copyDirInto($package->path.'/libraries', $tempPath);
                 
                 if(file_exists($tempPath.'/Package.php')) {
                     if(!is_dir($tempPath.'/apex/packages/'.$package->name)) {
