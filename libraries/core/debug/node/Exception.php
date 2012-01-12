@@ -53,14 +53,9 @@ class Exception implements core\debug\IExceptionNode {
         return $this->_exception->getMessage();
     }
     
-    public function getTrace() {
-        return $this->_exception->getTrace();
+    public function getStackTrace() {
+        return core\debug\StackTrace::factory(0, $this->_exception->getTrace());
     }
-    
-    public function getTraceAsString() {
-        return $this->_exception->getTraceAsString();
-    }
-    
     
     public function getStackCall() {
         if(!$this->_stackCall) {

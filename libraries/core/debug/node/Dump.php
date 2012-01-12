@@ -28,7 +28,7 @@ class Dump implements core\debug\IDumpNode {
     }
     
     public function getNodeTitle() {
-        return '#'.$this->_id.' - '.ucfirst(getType($this->_object));
+        return 'Dump #'.$this->_id.' '.ucfirst(getType($this->_object));
     }
     
     public function getNodeType() {

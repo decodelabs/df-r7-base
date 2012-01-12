@@ -63,6 +63,10 @@ class Group implements core\debug\IGroupNode {
         return $this->_children;
     }
     
+    public function hasChildren() {
+        return !empty($this->_children);
+    }
+    
     public function clearChildren() {
         $this->_children = array();
         return $this;
@@ -173,7 +177,7 @@ class Group implements core\debug\IGroupNode {
         $this->addChild($stub);
         
         foreach($dumpObjects as $dumpObject) {
-            $stub->addDump($dumpObject);
+            $stub->addDump($dumpObject, false, $stackCall);
         }
         
         return $this;

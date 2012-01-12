@@ -11,7 +11,7 @@ use df\core;
 require_once dirname(__DIR__).'/_manifest.php';
 require_once __DIR__.'/Group.php';
 
-class Context extends Group {
+class Context extends Group implements core\debug\IContext {
     
     public $runningTime;
     
@@ -46,7 +46,7 @@ class Context extends Group {
     
     
 // Transport
-    public function setTransport(ITransport $transport) {
+    public function setTransport(core\debug\ITransport $transport) {
         $this->_transport = $transport;
         return $this;
     }
@@ -57,7 +57,7 @@ class Context extends Group {
             && $transport = df\Launchpad::$application->getDebugTransport()) {
                 $this->setTransport($transport);
             } else {
-                require_once __DIR__.'/transport/Base.php';
+                require_once dirname(__DIR__).'/transport/Base.php';
                 $this->setTransport(new core\debug\transport\Base());
             }
         }
@@ -67,8 +67,38 @@ class Context extends Group {
     
     public function flush() {
         $this->runningTime = df\Launchpad::getRunningTime();
-        $this->stackTrace(1);
+        //$this->stackTrace(1);
         
         return $this->getTransport()->execute($this);
+    }
+    
+    
+// Nodes
+    public function getNodeCounts() {
+        $output = [
+            'info' => 0,
+            'todo' => 0,
+            'warning' => 0,
+            'error' => 0,
+            'deprecated' => 0,
+            'stub' => 0,
+            'dump' => 0,
+            'stackTrace' => 0,
+            'group' => 0,
+            'exception' => 0
+        ];
+        
+        $this->_countNodes($this, $output);
+        return $output;
+    }
+    
+    private function _countNodes(core\debug\IGroupNode $node, &$counts) {
+        foreach($node->getChildren() as $child) {
+            $counts[$child->getNodeType()]++;
+            
+            if($child instanceof core\debug\IGroupNode) {
+                $this->_countNodes($child, $counts);
+            }
+        }
     }
 }

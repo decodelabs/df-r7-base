@@ -8,7 +8,7 @@ namespace df\core\debug;
 use df;
 use df\core;
 
-class StackCall implements IStackCall {
+class StackCall implements IStackCall, core\IDumpable {
     
     const TYPE_STATIC = 1;
     const TYPE_OBJECT = 2;
@@ -260,5 +260,14 @@ class StackCall implements IStackCall {
         }
         
         return $this->_originLine;
+    }
+    
+    
+// Dump
+    public function getDumpProperties() {
+        return [
+            new core\debug\dumper\Property(null, $this->getCallSignature(true)),
+            new core\debug\dumper\Property(null, $this->getFile().' : '.$this->getLine())
+        ];
     }
 }

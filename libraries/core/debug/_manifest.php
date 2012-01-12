@@ -8,6 +8,11 @@ namespace df\core\debug;
 use df;
 use df\core;
 
+// Exceptions
+interface IException {}
+class RuntimeException extends \RuntimeException implements IException {}
+
+
 // Interfaces
 interface ILocationProvider {
     public function getFile();
@@ -55,6 +60,7 @@ interface IGroupNode extends INode, IEntryPoint, core\IArrayProvider {
     public function setNodeTitle($title);
     public function addChild(INode $node);
     public function getChildren();
+    public function hasChildren();
     public function clearChildren();
     
     public function newGroup($title=null, $file=null, $line=null);
@@ -79,9 +85,7 @@ interface IExceptionNode extends INode {
     public function getExceptionClass();
     public function getCode();
     public function getMessage();
-    public function getTrace();
-    public function getTraceAsString();
-    
+    public function getStackTrace();
     public function getStackCall();
 }
 
@@ -95,6 +99,8 @@ interface IContext extends IGroupNode {
     public function setTransport(ITransport $transport);
     public function getTransport();
     public function flush();
+    
+    public function getNodeCounts();
 }
 
 
@@ -127,4 +133,22 @@ interface IStackCall extends ILocationProvider {
     
     public function getCallingFile();
     public function getCallingLine();
+}
+
+interface ITransport {
+    public function execute(IContext $context);
+}
+
+
+interface IRenderer {
+    public function render();
+}
+
+
+interface IInspector {
+    
+}
+
+interface IDump extends core\IStringProvider {
+    
 }

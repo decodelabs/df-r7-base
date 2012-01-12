@@ -8,17 +8,17 @@ namespace df\core\debug;
 use df;
 use df\core;
 
-class StackTrace implements IStackTrace {
+class StackTrace implements IStackTrace, core\IDumpable {
     
     use TLocationProvider;
     
     protected $_calls = array();
     
-    public static function factory($rewind=0) {
-        return self::createFromTrace(debug_backtrace(), $rewind);
-    }
-    
-    public static function createFromTrace(array $data, $rewind=0) {
+    public static function factory($rewind=0, array $data=null) {
+        if($data === null) { 
+            $data = debug_backtrace();
+        }
+        
         $output = array();
         
         while($rewind > 0) {
@@ -43,7 +43,7 @@ class StackTrace implements IStackTrace {
         return new self($output);
     }
     
-    public function __construct(array $calls=null) {
+    protected function __construct(array $calls=null) {
         if(!empty($calls)) {
             foreach($calls as $call) {
                 if($call instanceof IStackCall) {
@@ -78,5 +78,17 @@ class StackTrace implements IStackTrace {
     
     public function isCritical() {
         return false;
+    }
+    
+    
+// Dumpable
+    public function getDumpProperties() {
+        $output = array();
+        
+        foreach($this->_calls as $call) {
+            $output[] = new core\debug\dumper\Property(null, $call);
+        }
+        
+        return $output;
     }
 }
