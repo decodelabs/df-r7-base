@@ -129,7 +129,7 @@ interface IStackCall extends ILocationProvider {
     public function getClassName();
     
     public function getFunctionName();
-    public function getCallSignature($argString=false);
+    public function getSignature($argString=false);
     
     public function getCallingFile();
     public function getCallingLine();

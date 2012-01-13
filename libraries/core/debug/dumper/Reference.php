@@ -13,11 +13,19 @@ class Reference implements core\debug\IDump {
     use core\TStringProvider;
     
     protected $_type;
-    protected $_id;
+    protected $_dumpId;
     
-    public function __construct($type, $id) {
+    public function __construct($type, $dumpId) {
         $this->_type = $type;
-        $this->_id = $id;
+        $this->_dumpId = $dumpId;
+    }
+    
+    public function getType() {
+        return $this->_type;
+    }
+    
+    public function getDumpId() {
+        return $this->_dumpId;
     }
     
     public function toString() {

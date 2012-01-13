@@ -10,7 +10,17 @@ use df\core;
 
 class Base implements core\debug\ITransport {
     
+    protected $_isExecuting = false;
+    
     public function execute(core\debug\IContext $context) {
+        if($this->_isExecuting) {
+            throw new \Exception(
+                'Debug transport is already executing'
+            );
+        }
+        
+        $this->_isExecuting = true;
+        
         if(isset($_SERVER['HTTP_HOST'])) {
             header('Content-Type: text/plain');
         }

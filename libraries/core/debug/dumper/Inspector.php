@@ -21,6 +21,10 @@ class Inspector {
         self::$_instanceCount++;
     }
     
+    public static function getInstanceCount() {
+        return self::$_instanceCount;
+    }
+    
     public function inspect(&$object, $deep=false) {
         if(is_null($object)) {
             require_once __DIR__.'/Immutable.php';
@@ -104,6 +108,14 @@ class Inspector {
         }
         
         return null;
+    }
+    
+    public function countArrayRefHits($dumpId) {
+        if(isset($this->_arrayRefHits[$dumpId])) {
+            return $this->_arrayRefHits[$dumpId];
+        }
+        
+        return 0;
     }
     
 // Object
@@ -295,5 +307,13 @@ class Inspector {
         }
         
         return null;
+    }
+    
+    public function countObjectHashHits($dumpId) {
+        if(isset($this->_objectHashHits[$dumpId])) {
+            return $this->_objectHashHits[$dumpId];
+        }
+        
+        return 0;
     }
 }

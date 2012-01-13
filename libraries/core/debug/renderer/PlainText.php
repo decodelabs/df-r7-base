@@ -88,7 +88,7 @@ class PlainText extends Base {
                 // Stack trace
                 foreach($node->toArray() as $stackCall) {
                     $location = $this->_normalizeLocation($stackCall->getFile(), $stackCall->getLine());
-                    $signature = $stackCall->getCallSignature();
+                    $signature = $stackCall->getSignature();
                     $line = $indent.'| > '.$location;
                     
                     $repLength = $lineLength - (strlen($line) + strlen($signature));

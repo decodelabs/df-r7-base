@@ -18,6 +18,14 @@ class Number implements core\debug\IDump {
         $this->_number = $number;
     }
     
+    public function getValue() {
+        return $this->_number;
+    }
+    
+    public function isFloat() {
+        return is_float($this->_number);
+    }
+    
     public function toString() {
         $output = (string)$this->_number;
         

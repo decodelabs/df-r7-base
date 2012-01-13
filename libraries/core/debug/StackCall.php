@@ -36,16 +36,16 @@ class StackCall implements IStackCall, core\IDumpable {
         
         $last = array_shift($data);
         $output = array_shift($data);
-        $output['fromFile'] = $output['file'];
-        $output['fromLine'] = $output['line']; 
-        $output['file'] = $last['file'];
-        $output['line'] = $last['line'];
+        $output['fromFile'] = @$output['file'];
+        $output['fromLine'] = @$output['line']; 
+        $output['file'] = @$last['file'];
+        $output['line'] = @$last['line'];
         
         return new self($output);
     }
     
     public function __construct(array $callData) {
-        if(isset($callData['fromFile']) && $callData['fromFile'] !== $callData['file']) {
+        if(isset($callData['fromFile']) && $callData['fromFile'] !== @$callData['file']) {
             $this->_callingFile = $callData['fromFile'];
         }
         
@@ -53,8 +53,8 @@ class StackCall implements IStackCall, core\IDumpable {
             $this->_callingLine = $callData['fromLine'];
         }
         
-        $this->_originFile = $callData['file'];
-        $this->_originLine = $callData['line'];
+        $this->_originFile = @$callData['file'];
+        $this->_originLine = @$callData['line'];
         
         if(isset($callData['function'])) {
             $this->_function = $callData['function'];
@@ -196,7 +196,7 @@ class StackCall implements IStackCall, core\IDumpable {
         return $this->_function;
     }
     
-    public function getCallSignature($argString=false) {
+    public function getSignature($argString=false) {
         $output = '';
         
         if($this->_namespace !== null) {
@@ -221,7 +221,7 @@ class StackCall implements IStackCall, core\IDumpable {
         
         if($argString) {
             $output .= $this->getArgString();
-        } else {
+        } else if($argString !== null) {
             $output .= '(';
             
             if(!empty($this->_args)) {
@@ -266,7 +266,7 @@ class StackCall implements IStackCall, core\IDumpable {
 // Dump
     public function getDumpProperties() {
         return [
-            new core\debug\dumper\Property(null, $this->getCallSignature(true)),
+            new core\debug\dumper\Property(null, $this->getSignature(true)),
             new core\debug\dumper\Property(null, $this->getFile().' : '.$this->getLine())
         ];
     }

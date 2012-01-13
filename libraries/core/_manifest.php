@@ -261,7 +261,17 @@ class Package implements IPackage {
 
 // Applications
 interface IApplication {
+    // Execute
+    public function dispatch();
+    public function capture();
+    public function isRunning();
+    public function launchPayload($payload);
+    public function shutdown();
     
+    // Environment
+    public function getRunMode();
+    public function isDistributed();
+    public function getDebugTransport();
 }
 
 interface IRegistryObject {

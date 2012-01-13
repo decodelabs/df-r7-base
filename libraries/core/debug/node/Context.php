@@ -17,6 +17,7 @@ class Context extends Group implements core\debug\IContext {
     
     protected $_isEnabled = true;
     protected $_transport;
+    protected $_stackTrace;
     
     public function __construct() {
         $this->setNodeTitle('Context');
@@ -67,9 +68,14 @@ class Context extends Group implements core\debug\IContext {
     
     public function flush() {
         $this->runningTime = df\Launchpad::getRunningTime();
-        //$this->stackTrace(1);
+        $this->_stackTrace = core\debug\StackTrace::factory(1);
+        $this->_stackTrace->stripDebugEntries();
         
         return $this->getTransport()->execute($this);
+    }
+    
+    public function getStackTrace() {
+        return $this->_stackTrace;
     }
     
     
@@ -83,9 +89,9 @@ class Context extends Group implements core\debug\IContext {
             'deprecated' => 0,
             'stub' => 0,
             'dump' => 0,
+            'exception' => 0,
             'stackTrace' => 0,
-            'group' => 0,
-            'exception' => 0
+            'group' => 0
         ];
         
         $this->_countNodes($this, $output);

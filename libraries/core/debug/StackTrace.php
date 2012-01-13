@@ -27,12 +27,12 @@ class StackTrace implements IStackTrace, core\IDumpable {
         }
         
         $last = array_shift($data);
-        $last['fromFile'] = $last['file'];
-        $last['fromLine'] = $last['line'];
+        $last['fromFile'] = @$last['file'];
+        $last['fromLine'] = @$last['line'];
         
         foreach($data as $callData) {
-            $callData['fromFile'] = $callData['file'];
-            $callData['fromLine'] = $callData['line'];
+            $callData['fromFile'] = @$callData['file'];
+            $callData['fromLine'] = @$callData['line'];
             $callData['file'] = $last['fromFile'];
             $callData['line'] = $last['fromLine'];
             
@@ -78,6 +78,24 @@ class StackTrace implements IStackTrace, core\IDumpable {
     
     public function isCritical() {
         return false;
+    }
+    
+    
+// Helpers
+    public function stripDebugEntries() {
+        foreach($this->_calls as $call) {
+            switch($call->getFunctionName()) {
+                case 'dump':
+                case 'dumpDeep':
+                case 'stub':
+                    array_shift($this->_calls);
+                    continue 2;
+            }
+            
+            break;
+        }
+        
+        return $this;
     }
     
     

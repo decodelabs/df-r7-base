@@ -17,6 +17,18 @@ class Loader implements ILoader {
     protected $_locations = array();
     protected $_packages = array();
     
+    
+// Stats
+    public static function getTotalIncludeAttempts() {
+        return self::$_includeAttempts;
+    }
+    
+    public static function getTotalIncludeMisses() {
+        return self::$_includeMisses;
+    }
+    
+    
+// Construct
     public function __construct(array $locations=array()) {
         $this->_locations = $locations;
     }

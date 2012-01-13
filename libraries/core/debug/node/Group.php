@@ -150,7 +150,7 @@ class Group implements core\debug\IGroupNode {
         $call = core\debug\StackCall::factory(1);
         
         return $this->addMessage(
-            $call->getCallSignature().' is deprecated',
+            $call->getSignature().' is deprecated',
             Message::DEPRECATED, 
             $call
         );
@@ -172,7 +172,7 @@ class Group implements core\debug\IGroupNode {
     public function addStub(array $dumpObjects, core\debug\IStackCall $stackCall) {
         require_once __DIR__.'/Stub.php';
         
-        $message = $stackCall->getCallSignature().' is not yet implemented';
+        $message = $stackCall->getSignature().' is not yet implemented';
         $stub = new core\debug\node\Stub($message, $stackCall->getFile(), $stackCall->getLine());
         $this->addChild($stub);
         

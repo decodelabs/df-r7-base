@@ -18,6 +18,18 @@ class Immutable implements core\debug\IDump {
         $this->_value = $value;
     }
     
+    public function isNull() {
+        return $this->_value === null;
+    }
+    
+    public function getType() {
+        return $this->_value === null ? 'null' : 'boolean';
+    }
+    
+    public function getValue() {
+        return $this->_value;
+    }
+    
     public function toString() {
         if($this->_value === null) {
             return 'null';

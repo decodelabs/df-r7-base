@@ -114,4 +114,27 @@ class Property {
                 return 'public';
         }
     }
+    
+    public function isPublic() {
+        return $this->_visibility === self::VIS_PUBLIC;
+    }
+    
+    public function isProtected() {
+        return $this->_visibility === self::VIS_PROTECTED;
+    }
+    
+    public function isPrivate() {
+        return $this->_visibility === self::VIS_PRIVATE;
+    }
+    
+// Deep
+    public function isDeep() {
+        return $this->_deep;
+    }
+    
+    public function canInline() {
+        return !$this->_deep 
+            && !$this->hasName() 
+            && (is_scalar($this->_value) || is_null($this->_value));
+    }
 }

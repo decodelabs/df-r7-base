@@ -18,6 +18,10 @@ class String implements core\debug\IDump {
         $this->_string = $string;
     }
     
+    public function getValue() {
+        return $this->_string;
+    }
+    
     public function toString() {
         return '"'.$this->_string.'"';
     }

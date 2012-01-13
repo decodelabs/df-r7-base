@@ -28,6 +28,18 @@ class Structure implements core\debug\IDump {
         return $this->_type === null;
     }
     
+    public function getType() {
+        return $this->_type;
+    }
+    
+    public function getDumpId() {
+        return $this->_dumpId;
+    }
+    
+    public function getProperties() {
+        return $this->_properties;
+    }
+    
     public function toString() {
         $output = $this->_type;
         

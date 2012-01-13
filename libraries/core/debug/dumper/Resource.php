@@ -12,11 +12,35 @@ class Resource implements core\debug\IDump {
     
     use core\TStringProvider;
     
+    protected $_type;
+    protected $_name;
+    
     public function __construct($resource) {
-        core\qDump($resource);
+        $type = get_resource_type($resource);
+        
+        if($type == 'stream') {
+            $meta = stream_get_meta_data($resource);
+            
+            if(isset($meta['stream_type'])) {
+                $type = $meta['stream_type'].' '.$type;
+            } else if(isset($meta['wrapper_type'])) {
+                $type = $meta['wrapper_type'].' '.$type;
+            }
+        }
+        
+        $this->_type = $type;
+        $this->_name = substr((string)$resource, strrpos((string)$resource, '#'));
+    }
+    
+    public function getType() {
+        return $this->_type;
+    }
+    
+    public function getName() {
+        return $this->_name;
     }
     
     public function toString() {
-        core\qDump($this);
+        return '* '.$this->_type.' '.$this->_name;
     }
 }
