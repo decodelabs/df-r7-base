@@ -211,7 +211,7 @@ class Inspector {
                             continue;
                         }
                         
-                        $nodeProperties[$name] = new Property($name, $value, $visibility);
+                        $nodeProperties[$name] = new Property($name, $value, $visibility, $deep);
                     }
 
                     $properties = array_merge($nodeProperties, $properties);

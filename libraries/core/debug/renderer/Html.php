@@ -81,7 +81,7 @@ class Html extends Base {
             case 'dump':
                 $object = &$node->getObject();
                 $inspector = new core\debug\dumper\Inspector();
-                $data = $inspector->inspect($object);
+                $data = $inspector->inspect($object, $node->isDeep());
                 return '<span class="dump-body">'.$this->_renderDumpData($inspector, $data).'</span>';
                 
             case 'exception':
@@ -176,70 +176,63 @@ class Html extends Base {
             
             $output .= '(';
             
-            //if($data->isArray()) {
-                // Array
-            //} else {
-                // Object
-                $properties = $data->getProperties();
-                $propString = '';
+            $properties = $data->getProperties();
+            $propString = '';
+            
+            if($propertyCount = count($properties)) {
+                $singleEntry = false;
+                $maxPropertyLength = 100;
                 
-                if($propertyCount = count($properties)) {
-                    $singleEntry = false;
-                    $maxPropertyLength = 100;
-                    
-                    foreach($properties as $property) {
-                        if($propertyCount == 1
-                        && $property->canInline()) {
-                            $singleEntry = true;
-                            $value = $property->getValue();
-                            
-                            if(mb_strlen($value) > $maxPropertyLength) {
-                                $singleEntry = false;
-                                $propString .= '    ';
-                            } else {
-                                $propString .= ' ';
-                            }
-                        } else {
+                foreach($properties as $property) {
+                    if($propertyCount == 1
+                    && $property->canInline()) {
+                        $singleEntry = true;
+                        $value = $property->getValue();
+                        
+                        if(mb_strlen($value) > $maxPropertyLength) {
+                            $singleEntry = false;
                             $propString .= '    ';
-                            
-                            if($hasName = $property->hasName()) {
-                                $propString .= '[';
-                            }
-                            
-                            if($property->isProtected()) {
-                                $propString .= '<span class="protected">±</span>';
-                            } else if($property->isPrivate()) {
-                                $propString .= '<span class="private">§</span>';
-                            }
-                            
-                            if($hasName) {
-                                $propString .= $this->_renderDumpData(
-                                    $inspector, new core\debug\dumper\String($property->getName())
-                                ).'] =&gt; ';
-                            } else {
-                                $propString .= ' ';
-                            }
-                        }
-                        
-                        $propString .= str_replace(
-                            "\n", "\n    ", 
-                            $this->_renderDumpData($inspector, $property->inspectValue($inspector))
-                        );
-                        
-                        if(!$singleEntry) {
-                            $propString .= "\n";
                         } else {
                             $propString .= ' ';
                         }
-                    }
-
-                    if(!$singleEntry) {
-                        $propString = "\n".$propString;
+                    } else {
+                        $propString .= '    ';
+                        
+                        if($hasName = $property->hasName()) {
+                            $propString .= '[';
+                        }
+                        
+                        if($property->isProtected()) {
+                            $propString .= '<span class="protected">±</span>';
+                        } else if($property->isPrivate()) {
+                            $propString .= '<span class="private">§</span>';
+                        }
+                        
+                        if($hasName) {
+                            $propString .= $this->_renderDumpData(
+                                $inspector, new core\debug\dumper\String($property->getName())
+                            ).'] =&gt; ';
+                        }
                     }
                     
-                    $output .= $propString;
+                    $propString .= str_replace(
+                        "\n", "\n    ", 
+                        $this->_renderDumpData($inspector, $property->inspectValue($inspector, $property->isDeep()))
+                    );
+                    
+                    if(!$singleEntry) {
+                        $propString .= "\n";
+                    } else {
+                        $propString .= ' ';
+                    }
                 }
-            //}
+
+                if(!$singleEntry) {
+                    $propString = "\n".$propString;
+                }
+                
+                $output .= $propString;
+            }
             
             $output .= ')';
             return $output;

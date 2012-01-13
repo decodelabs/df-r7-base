@@ -23,7 +23,7 @@ class Property {
         $this->setName($name);
         $this->_value = $value;
         $this->setVisibility($visibility);
-        $this->_deep = false;
+        $this->_deep = (bool)$deep;
     }
     
 // Name
