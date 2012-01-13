@@ -31,7 +31,7 @@ class Util {
                 continue;
             }
             
-            if(is_dir($entry)) {
+            if(is_dir($source.'/'.$entry)) {
                 self::copyDir($source.'/'.$entry, $destination.'/'.$entry);
             } else {
                 copy($source.'/'.$entry, $destination.'/'.$entry);

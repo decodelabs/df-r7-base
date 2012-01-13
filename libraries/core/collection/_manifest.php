@@ -1,0 +1,149 @@
+<?php
+/**
+ * This file is part of the Decode Framework
+ * @license http://opensource.org/licenses/MIT
+ */
+namespace df\core\collection;
+
+use df;
+use df\core;
+
+// Exceptions
+interface IException {}
+class OutOfBoundsException extends \OutOfBoundsException implements IException {}
+class RuntimeException extends \RuntimeException implements IException {}
+class InvalidArgumentException extends \InvalidArgumentException implements IException {}
+
+
+// Interfaces
+interface ISortable {
+    public function sortByValue();
+    public function reverseSortByValue();
+    public function sortByKey();
+    public function reverseSortByKey();
+    public function sortWith(core\collection\comparator\IComparator $comparator);
+    public function reverse();
+}
+
+interface ISeekable {
+    public function getCurrent();
+    public function getFirst();
+    public function getLast();
+    
+    public function seekFirst();
+    public function seekNext();
+    public function seekPrev();
+    public function seekLast();
+    public function hasSeekEnded();
+    public function getSeekPosition();
+}
+
+
+interface IPageable {
+    public function setPaginator(IPaginator $paginator);
+    public function getPaginator();
+}
+
+interface IPaginator {
+    public function getLimit();
+    public function getOffset();
+    public function countTotal();
+    public function getKeyMap();
+}
+
+interface IOrderablePaginator extends IPaginator {
+    public function getOrderDirectives();
+    public function getOrderableFieldNames();
+}
+
+interface ICollection extends \Countable, core\IArrayProvider {
+    public function import($input);
+    public function isEmpty();
+    public function clear();
+    public function extract();
+}
+
+// Access to values by iteration only
+interface IStreamCollection extends ICollection {
+    public function getCurrent();
+}
+
+interface ISiftingCollection extends IStreamCollection {
+    public function getComparator();
+}
+
+interface ISiftingCollectionAdapter {
+    public function getComparator();
+}
+
+
+interface IRandomAccessCollection extends ICollection, core\IValueMap, \ArrayAccess {
+    public function pop();
+    public function push($value);
+    public function shift();
+    public function unshift($value);
+}
+
+
+// Integer indexes only
+interface IIndexedCollection extends IRandomAccessCollection, ISeekable {
+    public function put($index, $value);
+}
+
+interface ISequentialCollection extends ICollection {
+    public function insert($value);
+}
+
+// Strict associative indexes
+interface IMappedCollection extends ICollection, core\IValueMap, \ArrayAccess {}
+
+// Object access returns container objects, otherwise, same behaviour as mapped
+interface IMappedContainerCollection extends IMappedCollection {
+    public function __set($key, $value);
+    public function __get($key);
+    public function __isset($key);
+    public function __unset($key);
+}
+
+
+
+
+
+interface IQueue extends ICollection {}
+interface IIndexedQueue extends IQueue, IIndexedCollection {}
+interface ISequentialQueue extends IQueue, ISequentialCollection {}
+
+interface IPriorityQueue extends IQueue, ISiftingCollection {
+    public function insert($value, $priority);
+    public function getCurrentPriority();
+    public function getPriorityList();
+}
+
+
+interface IStack extends IIndexedCollection {}
+
+
+interface IHeap extends ISiftingCollection {
+    public function insert($value);
+}
+
+
+interface ISet extends ICollection {
+    public function add($value);
+    public function has($value);
+    public function remove($value);
+    public function replace($current, $new);
+}
+
+
+
+interface ITree extends IRandomAccessCollection, IMappedContainerCollection, core\IUserValueContainer, core\IStringProvider {
+    public function importTree(ITree $child);
+    public function merge(ITree $child);
+    public function getNestedChild($parts, $separator='.');
+    public function contains($value, $includeChildren=false);
+    public function toArrayDelimitedString($setDelimiter='&', $valueDelimiter='=');
+    public function getKeys();
+}
+
+interface IInputTree extends ITree, core\IErrorContainer {}

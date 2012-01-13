@@ -51,12 +51,10 @@ interface IValueContainer {
     public function getValue($default=null);
 }
 
-/*
 interface IUserValueContainer extends IValueContainer {
     public function getStringValue($default='');
     public function hasValue();
 }
-*/
 
 interface IErrorContainer {
     public function isValid();
@@ -261,6 +259,11 @@ class Package implements IPackage {
 
 // Applications
 interface IApplication {
+    // Paths
+    public static function getApplicationPath();
+    public function getLocalStoragePath();
+    public function getSharedStoragePath();
+    
     // Execute
     public function dispatch();
     public function capture();
@@ -269,9 +272,28 @@ interface IApplication {
     public function shutdown();
     
     // Environment
+    public function getEnvironmentId();
+    public function getEnvironmentMode();
+    public function isDevelopment();
+    public function isTesting();
+    public function isProduction();
+    public function canDebug();
     public function getRunMode();
     public function isDistributed();
     public function getDebugTransport();
+    
+    // Members
+    public function setName($name);
+    public function getName();
+    public function getUniquePrefix();
+    public function getPassKey();
+    public function getActivePackages();
+    
+    // Cache
+    public function _setCacheObject(IRegistryObject $object);
+    public function _getCacheObject($key);
+    public function _hasCacheObject($key);
+    public function _removeCacheObject($key);
 }
 
 interface IRegistryObject {

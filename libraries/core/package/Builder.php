@@ -98,14 +98,16 @@ class Builder {
                     }
                 }
             } else {
-                core\io\Util::copyDirInto($package->path.'/libraries', $tempPath);
+                if(is_dir($package->path.'/libraries')) {
+                    core\io\Util::copyDirInto($package->path.'/libraries', $tempPath);
+                }
                 
-                if(file_exists($tempPath.'/Package.php')) {
+                if(file_exists($package->path.'/Package.php')) {
                     if(!is_dir($tempPath.'/apex/packages/'.$package->name)) {
                         mkdir($tempPath.'/apex/packages/'.$package->name, 0777, true);
                     }
                     
-                    rename($tempPath.'/Package.php', $tempPath.'/apex/packages/'.$package->name.'/Package.php');
+                    copy($package->path.'/Package.php', $tempPath.'/apex/packages/'.$package->name.'/Package.php');
                 }
             }
         }

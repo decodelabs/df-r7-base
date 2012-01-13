@@ -15,6 +15,21 @@ class Http extends Base {
     protected $_responseAugmentor;
     protected $_debugTransport;
     
+    
+// Execute
+    public function dispatch() {
+        $this->_beginDispatch();
+        
+        //core\dump($this);
+        
+        df\Launchpad::benchmark();
+    }
+
+
+    public function launchPayload($payload) {
+        core\stub();
+    }
+    
 // Environment
     public function getDebugTransport() {
         if(!$this->_debugTransport) {
