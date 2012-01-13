@@ -20,7 +20,15 @@ class Http extends Base {
     public function dispatch() {
         $this->_beginDispatch();
         
-        //core\dump($this);
+        
+        $collection = new core\collection\HeaderMap([
+            'content-type' => 'html',
+            'pragma' => 'no-cache'
+        ]);
+        
+        $collection->add('pragma', 'jam');
+        
+        core\dump($collection);
         
         df\Launchpad::benchmark();
     }

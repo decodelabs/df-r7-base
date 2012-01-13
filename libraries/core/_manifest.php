@@ -71,7 +71,7 @@ interface IErrorContainer {
 
 trait TErrorContainer {
     
-    private $_errors = array();
+    protected $_errors = array();
     
     public function isValid() {
         return $this->hasErrors();

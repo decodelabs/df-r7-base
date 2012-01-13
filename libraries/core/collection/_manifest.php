@@ -16,18 +16,38 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 
 
 // Interfaces
+interface ICollection extends \Countable, core\IArrayProvider {
+    public function import($input);
+    public function isEmpty();
+    public function clear();
+    public function extract();
+    public function extractList($count);
+}
+
+interface IAggregateIteratorCollection extends \IteratorAggregate {
+    public function getReductiveIterator();
+}
+
+
+
+
+// Sortable
 interface ISortable {
     public function sortByValue();
     public function reverseSortByValue();
     public function sortByKey();
     public function reverseSortByKey();
-    public function sortWith(core\collection\comparator\IComparator $comparator);
     public function reverse();
 }
 
+
+
+// Seekable
 interface ISeekable {
     public function getCurrent();
     public function getFirst();
+    public function getNext();
+    public function getPrev();
     public function getLast();
     
     public function seekFirst();
@@ -39,6 +59,7 @@ interface ISeekable {
 }
 
 
+// Paging
 interface IPageable {
     public function setPaginator(IPaginator $paginator);
     public function getPaginator();
@@ -56,33 +77,26 @@ interface IOrderablePaginator extends IPaginator {
     public function getOrderableFieldNames();
 }
 
-interface ICollection extends \Countable, core\IArrayProvider {
-    public function import($input);
-    public function isEmpty();
-    public function clear();
-    public function extract();
-}
+
+
 
 // Access to values by iteration only
 interface IStreamCollection extends ICollection {
     public function getCurrent();
 }
 
-interface ISiftingCollection extends IStreamCollection {
-    public function getComparator();
-}
+interface ISiftingCollection extends IStreamCollection {}
 
-interface ISiftingCollectionAdapter {
-    public function getComparator();
-}
-
-
-interface IRandomAccessCollection extends ICollection, core\IValueMap, \ArrayAccess {
+interface IShiftableCollection extends ICollection {
+    public function insert($value);
     public function pop();
     public function push($value);
     public function shift();
     public function unshift($value);
 }
+
+interface IRandomAccessCollection extends IShiftableCollection, core\IValueMap, \ArrayAccess {}
+
 
 
 // Integer indexes only
@@ -95,7 +109,9 @@ interface ISequentialCollection extends ICollection {
 }
 
 // Strict associative indexes
-interface IMappedCollection extends ICollection, core\IValueMap, \ArrayAccess {}
+interface IMappedCollection extends ICollection, core\IValueMap, \ArrayAccess {
+    public function clearKeys();
+}
 
 // Object access returns container objects, otherwise, same behaviour as mapped
 interface IMappedContainerCollection extends IMappedCollection {

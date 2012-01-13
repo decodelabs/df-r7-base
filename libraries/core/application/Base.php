@@ -45,8 +45,14 @@ abstract class Base implements core\IApplication, core\IDumpable {
         $this->_activePackages = $appConfig->getActivePackages();
         
         $envConfig = core\Environment::getInstance($this);
-        $this->_environmentMode = $envConfig->getEnvironmentMode();
         $this->_isDistributed = $envConfig->isDistributed();
+        $this->_environmentMode = $envConfig->getEnvironmentMode();
+        
+        if(!df\Launchpad::IN_PHAR) {
+            $this->_environmentMode = 'development';
+        } else if($this->_environmentMode == 'development') {
+            $this->_environmentMode = 'testing';
+        }
     }
     
     
