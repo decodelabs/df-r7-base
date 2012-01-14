@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Ijp',
+        'mon' => 'Ijt',
+        'tue' => 'Ijn',
+        'wed' => 'Ijt',
+        'thu' => 'Alh',
+        'fri' => 'Iju',
+        'sat' => 'Ijm',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Ijumapili',
+        'mon' => 'Ijumatatu',
+        'tue' => 'Ijumanne',
+        'wed' => 'Ijumatano',
+        'thu' => 'Alhamisi',
+        'fri' => 'Ijumaa',
+        'sat' => 'Ijumamosi',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'M1',
+        2 => 'M2',
+        3 => 'M3',
+        4 => 'M4',
+        5 => 'M5',
+        6 => 'M6',
+        7 => 'M7',
+        8 => 'M8',
+        9 => 'M9',
+        10 => 'M10',
+        11 => 'M11',
+        12 => 'M12',
+      ),
+      'full' => 
+      array (
+        1 => 'Mweri wa kwanza',
+        2 => 'Mweri wa kaili',
+        3 => 'Mweri wa katatu',
+        4 => 'Mweri wa kaana',
+        5 => 'Mweri wa tanu',
+        6 => 'Mweri wa sita',
+        7 => 'Mweri wa saba',
+        8 => 'Mweri wa nane',
+        9 => 'Mweri wa tisa',
+        10 => 'Mweri wa ikumi',
+        11 => 'Mweri wa ikumi na moja',
+        12 => 'Mweri wa ikumi na mbili',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'dd/MM/yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+);

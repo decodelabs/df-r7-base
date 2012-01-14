@@ -1,0 +1,292 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => ',',
+    'group' => ' ',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'percent' => '#,##0%',
+    'currency' => '#,##0.00 ¤',
+  ),
+  'currencies' => 
+  array (
+    'AED' => 
+    array (
+      'name' => 'Mɔn B ´Arabe',
+      'symbol' => 'AED',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'Mɔn Angola',
+      'symbol' => 'AOA',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'Dɔ́llɔ Ɔstralia',
+      'symbol' => 'AUD',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'Mɔn Bahrein',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'Fraŋ Burundi',
+      'symbol' => 'BIF',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'Mɔn Botswana',
+      'symbol' => 'BWP',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'Dɔ́llɔ Kanada',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'Fraŋ bó Kongolɛ̌',
+      'symbol' => 'CDF',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'Fraŋ Suisse',
+      'symbol' => 'CHF',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'Mɔn bó Chinois',
+      'symbol' => 'CNY',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'Mɔn Kapvɛrt',
+      'symbol' => 'CVE',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'Fraŋ Jibuti',
+      'symbol' => 'DJF',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'Mɔn Algeria',
+      'symbol' => 'DZD',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'Mɔn Ägyptɛn',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'Mɔn Erytré',
+      'symbol' => 'ERN',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'Mɔn Ethiopia',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'Euro',
+      'symbol' => 'EUR',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'Mɔn Ngɛ̄lɛ̄n',
+      'symbol' => 'GBP',
+    ),
+    'GHC' => 
+    array (
+      'name' => 'Mɔn Gana',
+      'symbol' => 'GHC',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'Mɔn Gambia',
+      'symbol' => 'GMD',
+    ),
+    'GNS' => 
+    array (
+      'name' => 'Fraŋ Guiné',
+      'symbol' => 'GNS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'Mɔn India',
+      'symbol' => 'INR',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'Mɔn Japɔn',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'Mɔn Kɛnya',
+      'symbol' => 'KES',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'Fraŋ bó Kɔmɔr',
+      'symbol' => 'KMF',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'Dɔ́llɔ Liberia',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'Mɔn Lesoto',
+      'symbol' => 'LSL',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'Mɔn Libya',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'Mɔn Marɔk',
+      'symbol' => 'MAD',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'Mɔn Madagaskar',
+      'symbol' => 'MGA',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'Mɔn Moritania',
+      'symbol' => 'MRO',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'Mɔn Moriss',
+      'symbol' => 'MUR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'Mɔn Malawi',
+      'symbol' => 'MWK',
+    ),
+    'MZM' => 
+    array (
+      'name' => 'Mɔn Mozambik',
+      'symbol' => 'MZM',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'Dɔ́llɔ Namibia',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'Naïra Nigeria',
+      'symbol' => 'NGN',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'Fraŋ Rwanda',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'Mɔn Saudi Arabia',
+      'symbol' => 'SAR',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'Mɔn Seychɛlle',
+      'symbol' => 'SCR',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'Mɔn Sudan',
+      'symbol' => 'SDG',
+    ),
+    'SDP' => 
+    array (
+      'name' => 'Mɔn Sudan (1957-1998)',
+      'symbol' => 'SDP',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'Mɔn má Saint Lina',
+      'symbol' => 'SHP',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'Mɔn Leɔne',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'Mɔn Somalía',
+      'symbol' => 'SOS',
+    ),
+    'STD' => 
+    array (
+      'name' => 'Mɔn Sao tomé na prinship',
+      'symbol' => 'STD',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'Mɔn Ligangeni',
+      'symbol' => 'SZL',
+    ),
+    'TND' => 
+    array (
+      'name' => 'Mɔn Tunisia',
+      'symbol' => 'TND',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'Mɔn Tanzania',
+      'symbol' => 'TZS',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'Mɔn Uganda',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'Dɔ́llɔ Amɛŕka',
+      'symbol' => 'USD',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'Fraŋ CFA BEAC',
+      'symbol' => 'XAF',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'Fraŋ CFA BCEAO',
+      'symbol' => 'XOF',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'Mɔn Afrik yí sí',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'Mɔn Zambia',
+      'symbol' => 'ZMK',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'Dɔ́llɔ Zimbabwǝ (1980-2008)',
+      'symbol' => 'ZWD',
+    ),
+  ),
+);

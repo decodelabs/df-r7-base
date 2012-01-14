@@ -1,0 +1,94 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => ',',
+    'group' => ' ',
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'AUD' => 
+    array (
+      'name' => 'aŭstrala dolaro',
+      'symbol' => 'AUD',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'brazila realo',
+      'symbol' => 'BRL',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'ĉina juano',
+      'symbol' => 'CNY',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'eŭro',
+      'symbol' => 'EUR',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'brita sterlinga funto',
+      'symbol' => 'GBP',
+    ),
+    'INR' => 
+    array (
+      'name' => 'hinda rupio',
+      'symbol' => 'INR',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'japana eno',
+      'symbol' => 'JPY',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'norvega krono',
+      'symbol' => 'NOK',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'rusa rublo',
+      'symbol' => 'RUB',
+    ),
+    'USD' => 
+    array (
+      'name' => 'usona dolaro',
+      'symbol' => 'USD',
+    ),
+    'XAG' => 
+    array (
+      'name' => 'arĝento',
+      'symbol' => 'XAG',
+    ),
+    'XAU' => 
+    array (
+      'name' => 'oro',
+      'symbol' => 'XAU',
+    ),
+    'XBB' => 
+    array (
+      'name' => 'eŭropa monunuo',
+      'symbol' => 'XBB',
+    ),
+    'XFO' => 
+    array (
+      'name' => 'franca ora franko',
+      'symbol' => 'XFO',
+    ),
+    'XPD' => 
+    array (
+      'name' => 'paladio',
+      'symbol' => 'XPD',
+    ),
+    'XPT' => 
+    array (
+      'name' => 'plateno',
+      'symbol' => 'XPT',
+    ),
+  ),
+);

@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Jpi',
+        'mon' => 'Jtt',
+        'tue' => 'Jmn',
+        'wed' => 'Jtn',
+        'thu' => 'Alh',
+        'fri' => 'Iju',
+        'sat' => 'Jmo',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Jumaapii',
+        'mon' => 'Jumaatatu',
+        'tue' => 'Jumaane',
+        'wed' => 'Jumaatano',
+        'thu' => 'Alhamisi',
+        'fri' => 'Ijumaa',
+        'sat' => 'Jumaamosi',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Jan',
+        2 => 'Feb',
+        3 => 'Mac',
+        4 => 'Apr',
+        5 => 'Mei',
+        6 => 'Jun',
+        7 => 'Jul',
+        8 => 'Ago',
+        9 => 'Sep',
+        10 => 'Okt',
+        11 => 'Nov',
+        12 => 'Des',
+      ),
+      'full' => 
+      array (
+        1 => 'Januali',
+        2 => 'Febluali',
+        3 => 'Machi',
+        4 => 'Aplili',
+        5 => 'Mei',
+        6 => 'Juni',
+        7 => 'Julai',
+        8 => 'Agosti',
+        9 => 'Septemba',
+        10 => 'Oktoba',
+        11 => 'Novemba',
+        12 => 'Desemba',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'dd/MM/yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+);

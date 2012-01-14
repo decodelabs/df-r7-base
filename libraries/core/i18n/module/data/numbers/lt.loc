@@ -1,0 +1,1486 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => '.',
+    'group' => ',',
+    'list' => ';',
+    'percentSign' => '%',
+    'plusSign' => '+',
+    'minusSign' => '−',
+    'exponential' => '×10^',
+    'perMille' => '‰',
+    'infinity' => '∞',
+    'nan' => '¤¤¤',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'scientific' => '#E0',
+    'percent' => '#,##0 %',
+    'currency' => '#,##0.00 ¤',
+  ),
+  'currencies' => 
+  array (
+    'ADP' => 
+    array (
+      'name' => 'Andoros peseta',
+      'symbol' => 'ADP',
+    ),
+    'AED' => 
+    array (
+      'name' => 'JAE dirhamas',
+      'symbol' => 'AED',
+    ),
+    'AFA' => 
+    array (
+      'name' => 'Afganis (1927-2002)',
+      'symbol' => 'AFA',
+    ),
+    'AFN' => 
+    array (
+      'name' => 'Afganis',
+      'symbol' => 'AFN',
+    ),
+    'ALK' => 
+    array (
+      'name' => 'Senasis albanų lekë',
+      'symbol' => 'ALK',
+    ),
+    'ALL' => 
+    array (
+      'name' => 'Albanijos lekas',
+      'symbol' => 'ALL',
+    ),
+    'AMD' => 
+    array (
+      'name' => 'Armėnijos dramas',
+      'symbol' => 'AMD',
+    ),
+    'ANG' => 
+    array (
+      'name' => 'Nyderlandų Antilų guldenas',
+      'symbol' => 'ANG',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'Angolos kvanza',
+      'symbol' => 'AOA',
+    ),
+    'AOK' => 
+    array (
+      'name' => 'Angolos kvanza (1977-1990)',
+      'symbol' => 'AOK',
+    ),
+    'AON' => 
+    array (
+      'name' => 'Angolos naujoji kvanza',
+      'symbol' => 'AON',
+    ),
+    'AOR' => 
+    array (
+      'name' => 'Angolan kwanzas reajustado (AOR)',
+      'symbol' => 'AOR',
+    ),
+    'ARA' => 
+    array (
+      'name' => 'Argentinos australs',
+      'symbol' => 'ARA',
+    ),
+    'ARL' => 
+    array (
+      'name' => 'Argentinos pesos ley',
+      'symbol' => 'ARL',
+    ),
+    'ARM' => 
+    array (
+      'name' => 'Argentinos pesai moneda nacional',
+      'symbol' => 'ARM',
+    ),
+    'ARP' => 
+    array (
+      'name' => 'Argentinos pesas (1983-1985)',
+      'symbol' => 'ARP',
+    ),
+    'ARS' => 
+    array (
+      'name' => 'Argentinos pesas',
+      'symbol' => 'ARS',
+    ),
+    'ATS' => 
+    array (
+      'name' => 'Austrijos šilingas',
+      'symbol' => 'ATS',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'Australijos doleris',
+      'symbol' => 'AUD',
+    ),
+    'AWG' => 
+    array (
+      'name' => 'Arubos guldenas',
+      'symbol' => 'AWG',
+    ),
+    'AZM' => 
+    array (
+      'name' => 'Azerbaidžano manatas (1993-2006)',
+      'symbol' => 'AZM',
+    ),
+    'AZN' => 
+    array (
+      'name' => 'Azerbaidžano manatas',
+      'symbol' => 'AZN',
+    ),
+    'BAD' => 
+    array (
+      'name' => 'Bosnijos ir Hercegovinos dinaras',
+      'symbol' => 'BAD',
+    ),
+    'BAM' => 
+    array (
+      'name' => 'Bosnijos ir Hercegovinos konvertuojamoji markė',
+      'symbol' => 'BAM',
+    ),
+    'BAN' => 
+    array (
+      'name' => 'Naujieji Borsnijos ir Hercogovinos dinarai',
+      'symbol' => 'BAN',
+    ),
+    'BBD' => 
+    array (
+      'name' => 'Barbadoso doleris',
+      'symbol' => 'BBD',
+    ),
+    'BDT' => 
+    array (
+      'name' => 'Bangladešo taka',
+      'symbol' => 'BDT',
+    ),
+    'BEC' => 
+    array (
+      'name' => 'Belgijos frankas (konvertuojamas)',
+      'symbol' => 'BEC',
+    ),
+    'BEF' => 
+    array (
+      'name' => 'Belgijos frankas',
+      'symbol' => 'BEF',
+    ),
+    'BEL' => 
+    array (
+      'name' => 'Belgijos frankas (finansinis)',
+      'symbol' => 'BEL',
+    ),
+    'BGL' => 
+    array (
+      'name' => 'Bulgarijos levas (1962-1999)',
+      'symbol' => 'BGL',
+    ),
+    'BGM' => 
+    array (
+      'name' => 'Bulgarų socialistų leva',
+      'symbol' => 'BGM',
+    ),
+    'BGN' => 
+    array (
+      'name' => 'Bulgarijos levas',
+      'symbol' => 'BGN',
+    ),
+    'BGO' => 
+    array (
+      'name' => 'Senasis bulgarų lev',
+      'symbol' => 'BGO',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'Bahreino dinaras',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'Burundžio frankas',
+      'symbol' => 'BIF',
+    ),
+    'BMD' => 
+    array (
+      'name' => 'Bermudos doleris',
+      'symbol' => 'BMD',
+    ),
+    'BND' => 
+    array (
+      'name' => 'Brunėjaus doleris',
+      'symbol' => 'BND',
+    ),
+    'BOB' => 
+    array (
+      'name' => 'Bolivijos bolivijanas',
+      'symbol' => 'BOB',
+    ),
+    'BOL' => 
+    array (
+      'name' => 'Senosios boliviečių bolivianos',
+      'symbol' => 'BOL',
+    ),
+    'BOP' => 
+    array (
+      'name' => 'Bolivijos pesas',
+      'symbol' => 'BOP',
+    ),
+    'BOV' => 
+    array (
+      'name' => 'Bolivijos mvdol',
+      'symbol' => 'BOV',
+    ),
+    'BRB' => 
+    array (
+      'name' => 'Brazilijos naujasis kruzeiras',
+      'symbol' => 'BRB',
+    ),
+    'BRC' => 
+    array (
+      'name' => 'Brazilijos kruzadas',
+      'symbol' => 'BRC',
+    ),
+    'BRE' => 
+    array (
+      'name' => 'Brazilijos kruzeiras (1990-1993)',
+      'symbol' => 'BRE',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'Brazilijos realas',
+      'symbol' => 'BRL',
+    ),
+    'BRN' => 
+    array (
+      'name' => 'Brazilijos naujasis kruzadas',
+      'symbol' => 'BRN',
+    ),
+    'BRR' => 
+    array (
+      'name' => 'Brazilijos kruzeiras',
+      'symbol' => 'BRR',
+    ),
+    'BRZ' => 
+    array (
+      'name' => 'Senasis brazilų cruzeiros',
+      'symbol' => 'BRZ',
+    ),
+    'BSD' => 
+    array (
+      'name' => 'Bahamų doleris',
+      'symbol' => 'BSD',
+    ),
+    'BTN' => 
+    array (
+      'name' => 'Butano ngultrumas',
+      'symbol' => 'BTN',
+    ),
+    'BUK' => 
+    array (
+      'name' => 'Birmos kyats',
+      'symbol' => 'BUK',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'Botsvanos pula',
+      'symbol' => 'BWP',
+    ),
+    'BYB' => 
+    array (
+      'name' => 'Baltarusijos naujasis rublis',
+      'symbol' => 'BYB',
+    ),
+    'BYR' => 
+    array (
+      'name' => 'Baltarusijos rublis',
+      'symbol' => 'BYR',
+    ),
+    'BZD' => 
+    array (
+      'name' => 'Belizo doleris',
+      'symbol' => 'BZD',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'Kanados doleris',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'Kongo frankas',
+      'symbol' => 'CDF',
+    ),
+    'CHE' => 
+    array (
+      'name' => 'WIR eurai',
+      'symbol' => 'CHE',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'Šveicarijos frankas',
+      'symbol' => 'CHF',
+    ),
+    'CHW' => 
+    array (
+      'name' => 'WIR frankai',
+      'symbol' => 'CHW',
+    ),
+    'CLE' => 
+    array (
+      'name' => 'Čilės eskudai',
+      'symbol' => 'CLE',
+    ),
+    'CLF' => 
+    array (
+      'name' => 'Čiliečių unidades de fomentos',
+      'symbol' => 'CLF',
+    ),
+    'CLP' => 
+    array (
+      'name' => 'Čilės pesas',
+      'symbol' => 'CLP',
+    ),
+    'CNX' => 
+    array (
+      'name' => 'Kinijos "People" banko doleriai',
+      'symbol' => 'CNX',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'Kinijos juanis',
+      'symbol' => 'CNY',
+    ),
+    'COP' => 
+    array (
+      'name' => 'Kolumbijos pesas',
+      'symbol' => 'COP',
+    ),
+    'COU' => 
+    array (
+      'name' => 'unidad de valor realai',
+      'symbol' => 'COU',
+    ),
+    'CRC' => 
+    array (
+      'name' => 'Kosta Rikos kolonas',
+      'symbol' => 'CRC',
+    ),
+    'CSD' => 
+    array (
+      'name' => 'Senasis Serbijos dinaras',
+      'symbol' => 'CSD',
+    ),
+    'CSK' => 
+    array (
+      'name' => 'Čekoslovakų sunkieji korunai',
+      'symbol' => 'CSK',
+    ),
+    'CUC' => 
+    array (
+      'name' => 'Kubos konvertuojamas pesas',
+      'symbol' => 'CUC',
+    ),
+    'CUP' => 
+    array (
+      'name' => 'Kubos pesas',
+      'symbol' => 'CUP',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'Verdean iškyšulio eskudas',
+      'symbol' => 'CVE',
+    ),
+    'CYP' => 
+    array (
+      'name' => 'Kipro svaras',
+      'symbol' => 'CYP',
+    ),
+    'CZK' => 
+    array (
+      'name' => 'Čekijos krona',
+      'symbol' => 'CZK',
+    ),
+    'DDM' => 
+    array (
+      'name' => 'Rytų Vokietijos ostmarkė',
+      'symbol' => 'DDM',
+    ),
+    'DEM' => 
+    array (
+      'name' => 'Vokietijos markė',
+      'symbol' => 'DEM',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'Džibučio frankas',
+      'symbol' => 'DJF',
+    ),
+    'DKK' => 
+    array (
+      'name' => 'Danijos krona',
+      'symbol' => 'DKK',
+    ),
+    'DOP' => 
+    array (
+      'name' => 'Dominikos pesas',
+      'symbol' => 'DOP',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'Alžyro dinaras',
+      'symbol' => 'DZD',
+    ),
+    'ECS' => 
+    array (
+      'name' => 'Ekvadoro sukrė',
+      'symbol' => 'ECS',
+    ),
+    'ECV' => 
+    array (
+      'name' => 'Ekvadoro constante (UVC)',
+      'symbol' => 'ECV',
+    ),
+    'EEK' => 
+    array (
+      'name' => 'Estijos krona',
+      'symbol' => 'EEK',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'Egipto svaras',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'Eritrėjos nakfa',
+      'symbol' => 'ERN',
+    ),
+    'ESA' => 
+    array (
+      'name' => 'Ispanų pesetai (A sąskaita)',
+      'symbol' => 'ESA',
+    ),
+    'ESB' => 
+    array (
+      'name' => 'Ispanų pesetai (konvertuojama sąskaita)',
+      'symbol' => 'ESB',
+    ),
+    'ESP' => 
+    array (
+      'name' => 'Ispanijos peseta',
+      'symbol' => 'ESP',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'Etiopijos biras',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'Euras',
+      'symbol' => 'EUR',
+    ),
+    'FIM' => 
+    array (
+      'name' => 'Suomijos markė',
+      'symbol' => 'FIM',
+    ),
+    'FJD' => 
+    array (
+      'name' => 'Fidžio doleris',
+      'symbol' => 'FJD',
+    ),
+    'FKP' => 
+    array (
+      'name' => 'Folklando salų svaras',
+      'symbol' => 'FKP',
+    ),
+    'FRF' => 
+    array (
+      'name' => 'Prancūzijos frankas',
+      'symbol' => 'FRF',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'Didžiosios Britanijos svaras sterlingų',
+      'symbol' => 'GBP',
+    ),
+    'GEK' => 
+    array (
+      'name' => 'Gruzinų kupon larits',
+      'symbol' => 'GEK',
+    ),
+    'GEL' => 
+    array (
+      'name' => 'Gruzijos laris',
+      'symbol' => 'GEL',
+    ),
+    'GHC' => 
+    array (
+      'name' => 'Ganos sedis (1979-2007)',
+      'symbol' => 'GHC',
+    ),
+    'GHS' => 
+    array (
+      'name' => 'Ganos sedis',
+      'symbol' => 'GHS',
+    ),
+    'GIP' => 
+    array (
+      'name' => 'Gibraltaro svaras',
+      'symbol' => 'GIP',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'Gambijos dalasis',
+      'symbol' => 'GMD',
+    ),
+    'GNF' => 
+    array (
+      'name' => 'Gvinėjos frankas',
+      'symbol' => 'GNF',
+    ),
+    'GNS' => 
+    array (
+      'name' => 'Guinean sylis',
+      'symbol' => 'GNS',
+    ),
+    'GQE' => 
+    array (
+      'name' => 'Pusiaujo Guinean ekwele',
+      'symbol' => 'GQE',
+    ),
+    'GRD' => 
+    array (
+      'name' => 'Graikijos drachma',
+      'symbol' => 'GRD',
+    ),
+    'GTQ' => 
+    array (
+      'name' => 'Gvatemalos kecalis',
+      'symbol' => 'GTQ',
+    ),
+    'GWE' => 
+    array (
+      'name' => 'Portugalų Gvinėjos eskudas',
+      'symbol' => 'GWE',
+    ),
+    'GWP' => 
+    array (
+      'name' => 'Gvinėjos-Bisau pesas',
+      'symbol' => 'GWP',
+    ),
+    'GYD' => 
+    array (
+      'name' => 'Gajanos doleris',
+      'symbol' => 'GYD',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'Honkongo doleris',
+      'symbol' => 'HKD',
+    ),
+    'HNL' => 
+    array (
+      'name' => 'Hondūro lempira',
+      'symbol' => 'HNL',
+    ),
+    'HRD' => 
+    array (
+      'name' => 'Kroatijos dinaras',
+      'symbol' => 'HRD',
+    ),
+    'HRK' => 
+    array (
+      'name' => 'Kroatijos kuna',
+      'symbol' => 'HRK',
+    ),
+    'HTG' => 
+    array (
+      'name' => 'Haičio gurdas',
+      'symbol' => 'HTG',
+    ),
+    'HUF' => 
+    array (
+      'name' => 'Vengrijos forintas',
+      'symbol' => 'HUF',
+    ),
+    'IDR' => 
+    array (
+      'name' => 'Indonezijos rupija',
+      'symbol' => 'IDR',
+    ),
+    'IEP' => 
+    array (
+      'name' => 'Airijos svaras',
+      'symbol' => 'IEP',
+    ),
+    'ILP' => 
+    array (
+      'name' => 'Izraelio svaras',
+      'symbol' => 'ILP',
+    ),
+    'ILR' => 
+    array (
+      'name' => 'Senieji izraeliečių sheqels',
+      'symbol' => 'ILR',
+    ),
+    'ILS' => 
+    array (
+      'name' => 'Izraelio šekelis',
+      'symbol' => 'ILS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'Indijos rupija',
+      'symbol' => 'INR',
+    ),
+    'IQD' => 
+    array (
+      'name' => 'Irako dinaras',
+      'symbol' => 'IQD',
+    ),
+    'IRR' => 
+    array (
+      'name' => 'Irano rialas',
+      'symbol' => 'IRR',
+    ),
+    'ISJ' => 
+    array (
+      'name' => 'Senosios islandų krónur',
+      'symbol' => 'ISJ',
+    ),
+    'ISK' => 
+    array (
+      'name' => 'Islandijos krona',
+      'symbol' => 'ISK',
+    ),
+    'ITL' => 
+    array (
+      'name' => 'Italijos lira',
+      'symbol' => 'ITL',
+    ),
+    'JMD' => 
+    array (
+      'name' => 'Jamaikos doleris',
+      'symbol' => 'JMD',
+    ),
+    'JOD' => 
+    array (
+      'name' => 'Jordanijos dinaras',
+      'symbol' => 'JOD',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'Japonijos jena',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'Kenijos šilingas',
+      'symbol' => 'KES',
+    ),
+    'KGS' => 
+    array (
+      'name' => 'Kirgizijos somas',
+      'symbol' => 'KGS',
+    ),
+    'KHR' => 
+    array (
+      'name' => 'Chmerų riel',
+      'symbol' => 'KHR',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'Komoro frankas',
+      'symbol' => 'KMF',
+    ),
+    'KPW' => 
+    array (
+      'name' => 'Šiaurės Korėjos vonas',
+      'symbol' => 'KPW',
+    ),
+    'KRH' => 
+    array (
+      'name' => 'Pietų Korėjos hwan',
+      'symbol' => 'KRH',
+    ),
+    'KRO' => 
+    array (
+      'name' => 'Senasis Pietų Korėjos vonas',
+      'symbol' => 'KRO',
+    ),
+    'KRW' => 
+    array (
+      'name' => 'Pietų Korėjos vonas',
+      'symbol' => 'KRW',
+    ),
+    'KWD' => 
+    array (
+      'name' => 'Kuveito dinaras',
+      'symbol' => 'KWD',
+    ),
+    'KYD' => 
+    array (
+      'name' => 'Kaimanų salų doleris',
+      'symbol' => 'KYD',
+    ),
+    'KZT' => 
+    array (
+      'name' => 'Kazachstano tengė',
+      'symbol' => 'KZT',
+    ),
+    'LAK' => 
+    array (
+      'name' => 'Laoso kipas',
+      'symbol' => 'LAK',
+    ),
+    'LBP' => 
+    array (
+      'name' => 'Libano svaras',
+      'symbol' => 'LBP',
+    ),
+    'LKR' => 
+    array (
+      'name' => 'Šri Lankos rupija',
+      'symbol' => 'LKR',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'Liberijos doleris',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'Lesoto lotis',
+      'symbol' => 'LSL',
+    ),
+    'LTL' => 
+    array (
+      'name' => 'Litas',
+      'symbol' => 'Lt',
+    ),
+    'LTT' => 
+    array (
+      'name' => 'Lietuvos talonas',
+      'symbol' => 'LTT',
+    ),
+    'LUC' => 
+    array (
+      'name' => 'Liuksemburgo konvertuojamas frankas',
+      'symbol' => 'LUC',
+    ),
+    'LUF' => 
+    array (
+      'name' => 'Liuksemburgo frankas',
+      'symbol' => 'LUF',
+    ),
+    'LUL' => 
+    array (
+      'name' => 'Liuksemburgo finansinis frankas',
+      'symbol' => 'LUL',
+    ),
+    'LVL' => 
+    array (
+      'name' => 'Latvijos latas',
+      'symbol' => 'LVL',
+    ),
+    'LVR' => 
+    array (
+      'name' => 'Latvijos rublis',
+      'symbol' => 'LVR',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'Libijos dinaras',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'Maroko dirhamas',
+      'symbol' => 'MAD',
+    ),
+    'MAF' => 
+    array (
+      'name' => 'Maroko frankas',
+      'symbol' => 'MAF',
+    ),
+    'MCF' => 
+    array (
+      'name' => 'Monegasque frankai',
+      'symbol' => 'MCF',
+    ),
+    'MDC' => 
+    array (
+      'name' => 'Moldovų cupon',
+      'symbol' => 'MDC',
+    ),
+    'MDL' => 
+    array (
+      'name' => 'Moldovos lėja',
+      'symbol' => 'MDL',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'Madagaskaro ariaris',
+      'symbol' => 'MGA',
+    ),
+    'MGF' => 
+    array (
+      'name' => 'Madagaskaro frankas',
+      'symbol' => 'MGF',
+    ),
+    'MKD' => 
+    array (
+      'name' => 'Makedonijos denaras',
+      'symbol' => 'MKD',
+    ),
+    'MKN' => 
+    array (
+      'name' => 'Senieji Makedonijos denarai',
+      'symbol' => 'MKN',
+    ),
+    'MLF' => 
+    array (
+      'name' => 'Malio frankas',
+      'symbol' => 'MLF',
+    ),
+    'MMK' => 
+    array (
+      'name' => 'Mianmaro kijatas',
+      'symbol' => 'MMK',
+    ),
+    'MNT' => 
+    array (
+      'name' => 'Mongolijos tugrikas',
+      'symbol' => 'MNT',
+    ),
+    'MOP' => 
+    array (
+      'name' => 'Makao pataka',
+      'symbol' => 'MOP',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'Mauritanijos ugija',
+      'symbol' => 'MRO',
+    ),
+    'MTL' => 
+    array (
+      'name' => 'Maltos lira',
+      'symbol' => 'MTL',
+    ),
+    'MTP' => 
+    array (
+      'name' => 'Maltos svaras',
+      'symbol' => 'MTP',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'Mauricijaus rupija',
+      'symbol' => 'MUR',
+    ),
+    'MVR' => 
+    array (
+      'name' => 'Maldyvų salų rufija',
+      'symbol' => 'MVR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'Malavio kvača',
+      'symbol' => 'MWK',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'Meksikos pesas',
+      'symbol' => 'MXN',
+    ),
+    'MXP' => 
+    array (
+      'name' => 'Meksikos sidabrinis pesas (1861-1992)',
+      'symbol' => 'MXP',
+    ),
+    'MXV' => 
+    array (
+      'name' => 'Meksikos United de Inversion (UDI)',
+      'symbol' => 'MXV',
+    ),
+    'MYR' => 
+    array (
+      'name' => 'Malaizijos ringitas',
+      'symbol' => 'MYR',
+    ),
+    'MZE' => 
+    array (
+      'name' => 'Mozambiko eskudas',
+      'symbol' => 'MZE',
+    ),
+    'MZM' => 
+    array (
+      'name' => 'Senasis Mozambiko metikalis',
+      'symbol' => 'MZM',
+    ),
+    'MZN' => 
+    array (
+      'name' => 'Mozambiko metikalis',
+      'symbol' => 'MZN',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'Namibijos doleris',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'Nigerijos naira',
+      'symbol' => 'NGN',
+    ),
+    'NIC' => 
+    array (
+      'name' => 'Nikaragvos kardoba',
+      'symbol' => 'NIC',
+    ),
+    'NIO' => 
+    array (
+      'name' => 'Nikaragvos kardoba oras',
+      'symbol' => 'NIO',
+    ),
+    'NLG' => 
+    array (
+      'name' => 'Nyderlandų guldenas',
+      'symbol' => 'NLG',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'Norvegijos krona',
+      'symbol' => 'NOK',
+    ),
+    'NPR' => 
+    array (
+      'name' => 'Nepalo rupija',
+      'symbol' => 'NPR',
+    ),
+    'NZD' => 
+    array (
+      'name' => 'Naujosios Zelandijos doleris',
+      'symbol' => 'NZD',
+    ),
+    'OMR' => 
+    array (
+      'name' => 'Omano rialas',
+      'symbol' => 'OMR',
+    ),
+    'PAB' => 
+    array (
+      'name' => 'Panamos balboja',
+      'symbol' => 'PAB',
+    ),
+    'PEI' => 
+    array (
+      'name' => 'Peru intis',
+      'symbol' => 'PEI',
+    ),
+    'PEN' => 
+    array (
+      'name' => 'Peru naujasis solis',
+      'symbol' => 'PEN',
+    ),
+    'PES' => 
+    array (
+      'name' => 'Peru solis',
+      'symbol' => 'PES',
+    ),
+    'PGK' => 
+    array (
+      'name' => 'Papua Naujosios Gvinėjos kina',
+      'symbol' => 'PGK',
+    ),
+    'PHP' => 
+    array (
+      'name' => 'Filipinų pesas',
+      'symbol' => 'PHP',
+    ),
+    'PKR' => 
+    array (
+      'name' => 'Pakistano rupija',
+      'symbol' => 'PKR',
+    ),
+    'PLN' => 
+    array (
+      'name' => 'Lenkijos zlotas',
+      'symbol' => 'PLN',
+    ),
+    'PLZ' => 
+    array (
+      'name' => 'Lenkijos zlotas (1950-1995)',
+      'symbol' => 'PLZ',
+    ),
+    'PTE' => 
+    array (
+      'name' => 'Portugalijos eskudas',
+      'symbol' => 'PTE',
+    ),
+    'PYG' => 
+    array (
+      'name' => 'Paragvajaus guaranis',
+      'symbol' => 'PYG',
+    ),
+    'QAR' => 
+    array (
+      'name' => 'Kataro rialas',
+      'symbol' => 'QAR',
+    ),
+    'RHD' => 
+    array (
+      'name' => 'Rodezijos doleris',
+      'symbol' => 'RHD',
+    ),
+    'ROL' => 
+    array (
+      'name' => 'Senoji Rumunijos lėja',
+      'symbol' => 'ROL',
+    ),
+    'RON' => 
+    array (
+      'name' => 'Naujoji Rumunijos lėja',
+      'symbol' => 'RON',
+    ),
+    'RSD' => 
+    array (
+      'name' => 'Serbijos dinaras',
+      'symbol' => 'RSD',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'Rusijos rublis',
+      'symbol' => 'RUB',
+    ),
+    'RUR' => 
+    array (
+      'name' => 'Rusijos rublis (1991-1998)',
+      'symbol' => 'RUR',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'Ruandos frankas',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'Saudo Arabijos rialas',
+      'symbol' => 'SAR',
+    ),
+    'SBD' => 
+    array (
+      'name' => 'Saliamono salų doleris',
+      'symbol' => 'SBD',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'Seišelių salų rupija',
+      'symbol' => 'SCR',
+    ),
+    'SDD' => 
+    array (
+      'name' => 'Senasis Sudano dinaras',
+      'symbol' => 'SDD',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'Sudano svaras',
+      'symbol' => 'SDG',
+    ),
+    'SDP' => 
+    array (
+      'name' => 'Senasis Sudano svaras',
+      'symbol' => 'SDP',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'Švedijos krona',
+      'symbol' => 'SEK',
+    ),
+    'SGD' => 
+    array (
+      'name' => 'Singapūro doleris',
+      'symbol' => 'SGD',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'Šv. Elenos salų svaras',
+      'symbol' => 'SHP',
+    ),
+    'SIT' => 
+    array (
+      'name' => 'Slovėnijos tolaras',
+      'symbol' => 'SIT',
+    ),
+    'SKK' => 
+    array (
+      'name' => 'Slovakijos krona',
+      'symbol' => 'SKK',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'Siera Leonės leonė',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'Somalio šilingas',
+      'symbol' => 'SOS',
+    ),
+    'SRD' => 
+    array (
+      'name' => 'Surimano doleris',
+      'symbol' => 'SRD',
+    ),
+    'SRG' => 
+    array (
+      'name' => 'Surimano guldenas',
+      'symbol' => 'SRG',
+    ),
+    'STD' => 
+    array (
+      'name' => 'Sao Tomės ir Principės dobra',
+      'symbol' => 'STD',
+    ),
+    'SUR' => 
+    array (
+      'name' => 'Sovietų Sąjungos rublis',
+      'symbol' => 'SUR',
+    ),
+    'SVC' => 
+    array (
+      'name' => 'Salvadoro kolonas',
+      'symbol' => 'SVC',
+    ),
+    'SYP' => 
+    array (
+      'name' => 'Sirijos svaras',
+      'symbol' => 'SYP',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'Svazilendo lilangenis',
+      'symbol' => 'SZL',
+    ),
+    'THB' => 
+    array (
+      'name' => 'Tailando batas',
+      'symbol' => 'THB',
+    ),
+    'TJR' => 
+    array (
+      'name' => 'Tadžikistano rublis',
+      'symbol' => 'TJR',
+    ),
+    'TJS' => 
+    array (
+      'name' => 'Tadžikistano somonis',
+      'symbol' => 'TJS',
+    ),
+    'TMM' => 
+    array (
+      'name' => 'Turkmėnistano manatas',
+      'symbol' => 'TMM',
+    ),
+    'TMT' => 
+    array (
+      'name' => 'Turkmėnistano Naujas Manat',
+      'symbol' => 'TMT',
+    ),
+    'TND' => 
+    array (
+      'name' => 'Tuniso dinaras',
+      'symbol' => 'TND',
+    ),
+    'TOP' => 
+    array (
+      'name' => 'Tongo paanga',
+      'symbol' => 'TOP',
+    ),
+    'TPE' => 
+    array (
+      'name' => 'Timoro eskudas',
+      'symbol' => 'TPE',
+    ),
+    'TRL' => 
+    array (
+      'name' => 'Senoji Turkijos lira',
+      'symbol' => 'TRL',
+    ),
+    'TRY' => 
+    array (
+      'name' => 'Naujoji Turkijos lira',
+      'symbol' => 'TRY',
+    ),
+    'TTD' => 
+    array (
+      'name' => 'Trinidado ir Tobago doleris',
+      'symbol' => 'TTD',
+    ),
+    'TWD' => 
+    array (
+      'name' => 'Naujasis Taivano doleris',
+      'symbol' => 'TWD',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'Tanzanijos šilingas',
+      'symbol' => 'TZS',
+    ),
+    'UAH' => 
+    array (
+      'name' => 'Ukrainos grivina',
+      'symbol' => 'UAH',
+    ),
+    'UAK' => 
+    array (
+      'name' => 'Ukrainos karbovanecas',
+      'symbol' => 'UAK',
+    ),
+    'UGS' => 
+    array (
+      'name' => 'Ugandos šilingas (1966-1987)',
+      'symbol' => 'UGS',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'Ugandos šilingas',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'JAV doleris',
+      'symbol' => 'USD',
+    ),
+    'USN' => 
+    array (
+      'name' => 'JAV doleris (kitos dienos)',
+      'symbol' => 'USN',
+    ),
+    'USS' => 
+    array (
+      'name' => 'JAV doleris (šios dienos)',
+      'symbol' => 'USS',
+    ),
+    'UYI' => 
+    array (
+      'name' => 'Urugvajaus pesai en unidades indexadas',
+      'symbol' => 'UYI',
+    ),
+    'UYP' => 
+    array (
+      'name' => 'Urugvajaus pesas (1975-1993)',
+      'symbol' => 'UYP',
+    ),
+    'UYU' => 
+    array (
+      'name' => 'Urugvajaus pesas',
+      'symbol' => 'UYU',
+    ),
+    'UZS' => 
+    array (
+      'name' => 'Uzbekistano sumas',
+      'symbol' => 'UZS',
+    ),
+    'VEB' => 
+    array (
+      'name' => 'Venesuelos bolivaras',
+      'symbol' => 'VEB',
+    ),
+    'VEF' => 
+    array (
+      'name' => 'Stiprusis Venesuelos bolivaras',
+      'symbol' => 'VEF',
+    ),
+    'VND' => 
+    array (
+      'name' => 'Vietnamo dongas',
+      'symbol' => 'VND',
+    ),
+    'VNN' => 
+    array (
+      'name' => 'Senasis Vietnamo dongas',
+      'symbol' => 'VNN',
+    ),
+    'VUV' => 
+    array (
+      'name' => 'Vanuatu Vatu',
+      'symbol' => 'VUV',
+    ),
+    'WST' => 
+    array (
+      'name' => 'Vakarų Samoa tala',
+      'symbol' => 'WST',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'CFA BEAC frankas',
+      'symbol' => 'XAF',
+    ),
+    'XAG' => 
+    array (
+      'name' => 'Sidabras',
+      'symbol' => 'XAG',
+    ),
+    'XAU' => 
+    array (
+      'name' => 'Auksas',
+      'symbol' => 'XAU',
+    ),
+    'XBA' => 
+    array (
+      'name' => 'Europos suvestinės vienetas',
+      'symbol' => 'XBA',
+    ),
+    'XBB' => 
+    array (
+      'name' => 'Europos piniginis vienetas',
+      'symbol' => 'XBB',
+    ),
+    'XBC' => 
+    array (
+      'name' => 'Europos valiutos / apskaitos vienetas (XBC)',
+      'symbol' => 'XBC',
+    ),
+    'XBD' => 
+    array (
+      'name' => 'Europos valiutos / apskaitos vienetas (XBD)',
+      'symbol' => 'XBD',
+    ),
+    'XCD' => 
+    array (
+      'name' => 'Rytų Karibų doleris',
+      'symbol' => 'XCD',
+    ),
+    'XDR' => 
+    array (
+      'name' => 'SDR tarptautinis valiutos fondas',
+      'symbol' => 'XDR',
+    ),
+    'XEU' => 
+    array (
+      'name' => 'Europos piniginis vienetas (1993-1999)',
+      'symbol' => 'XEU',
+    ),
+    'XFO' => 
+    array (
+      'name' => 'Aukso frankas',
+      'symbol' => 'XFO',
+    ),
+    'XFU' => 
+    array (
+      'name' => 'Uic - frankas',
+      'symbol' => 'XFU',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'CFA BCEAO frankas',
+      'symbol' => 'XOF',
+    ),
+    'XPD' => 
+    array (
+      'name' => 'Paladis',
+      'symbol' => 'XPD',
+    ),
+    'XPF' => 
+    array (
+      'name' => 'CFP frankas',
+      'symbol' => 'XPF',
+    ),
+    'XPT' => 
+    array (
+      'name' => 'Platina',
+      'symbol' => 'XPT',
+    ),
+    'XRE' => 
+    array (
+      'name' => 'RINET fondai',
+      'symbol' => 'XRE',
+    ),
+    'XTS' => 
+    array (
+      'name' => 'Tikrinamas valiutos kodas',
+      'symbol' => 'XTS',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'Nežinoma valiuta',
+      'symbol' => 'XXX',
+    ),
+    'YDD' => 
+    array (
+      'name' => 'Jemeno dinaras',
+      'symbol' => 'YDD',
+    ),
+    'YER' => 
+    array (
+      'name' => 'Jemeno rialas',
+      'symbol' => 'YER',
+    ),
+    'YUD' => 
+    array (
+      'name' => 'Jugoslavijos kietieji dinarai',
+      'symbol' => 'YUD',
+    ),
+    'YUM' => 
+    array (
+      'name' => 'Jugoslavijos naujasis dinaras',
+      'symbol' => 'YUM',
+    ),
+    'YUN' => 
+    array (
+      'name' => 'Jugoslavijos konvertuojamas dinaras',
+      'symbol' => 'YUN',
+    ),
+    'YUR' => 
+    array (
+      'name' => 'Jugoslavijos reformuoti dinarai',
+      'symbol' => 'YUR',
+    ),
+    'ZAL' => 
+    array (
+      'name' => 'Pietų Afrikos finansinis randas',
+      'symbol' => 'ZAL',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'Pietų Afrikos randas',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'Zambijos kvača',
+      'symbol' => 'ZMK',
+    ),
+    'ZRN' => 
+    array (
+      'name' => 'Zairo naujasis zairas',
+      'symbol' => 'ZRN',
+    ),
+    'ZRZ' => 
+    array (
+      'name' => 'Zairo zairas',
+      'symbol' => 'ZRZ',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'Zimbabvės doleris',
+      'symbol' => 'ZWD',
+    ),
+    'ZWL' => 
+    array (
+      'name' => 'Zimbabvės doleris (2009)',
+      'symbol' => 'ZWL',
+    ),
+    'ZWR' => 
+    array (
+      'name' => 'Zimbabvės doleris (2008)',
+      'symbol' => 'ZWR',
+    ),
+  ),
+);

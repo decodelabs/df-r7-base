@@ -1,0 +1,38 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => '.',
+    'group' => ',',
+    'nan' => 'NaN',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'percent' => '#,##0%',
+    'currency' => '¤ #,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'CNY' => 
+    array (
+      'name' => 'ཡུ་ཨན་',
+      'symbol' => 'CNY',
+    ),
+    'INR' => 
+    array (
+      'name' => 'རྒྱ་གར་སྒོར་མོ་',
+      'symbol' => 'INR',
+    ),
+    'USD' => 
+    array (
+      'name' => 'ཨ་རིའི་སྒོར་མོ།',
+      'symbol' => 'USD',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'མ་རྟོགས་པའི་ནུས་མེད་དངུལ་ལོར',
+      'symbol' => 'XXX',
+    ),
+  ),
+);

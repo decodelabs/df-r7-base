@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'P',
+        'mon' => 'E',
+        'tue' => 'T',
+        'wed' => 'K',
+        'thu' => 'N',
+        'fri' => 'R',
+        'sat' => 'L',
+      ),
+      'full' => 
+      array (
+        'sun' => 'pühapäev',
+        'mon' => 'esmaspäev',
+        'tue' => 'teisipäev',
+        'wed' => 'kolmapäev',
+        'thu' => 'neljapäev',
+        'fri' => 'reede',
+        'sat' => 'laupäev',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'jaan',
+        2 => 'veebr',
+        3 => 'märts',
+        4 => 'apr',
+        5 => 'mai',
+        6 => 'juuni',
+        7 => 'juuli',
+        8 => 'aug',
+        9 => 'sept',
+        10 => 'okt',
+        11 => 'nov',
+        12 => 'dets',
+      ),
+      'full' => 
+      array (
+        1 => 'jaanuar',
+        2 => 'veebruar',
+        3 => 'märts',
+        4 => 'aprill',
+        5 => 'mai',
+        6 => 'juuni',
+        7 => 'juuli',
+        8 => 'august',
+        9 => 'september',
+        10 => 'oktoober',
+        11 => 'november',
+        12 => 'detsember',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d. MMMM y',
+      'long' => 'd. MMMM y',
+      'medium' => 'dd.MM.yyyy',
+      'short' => 'dd.MM.yy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'H:mm.ss zzzz',
+      'long' => 'H:mm.ss z',
+      'medium' => 'H:mm.ss',
+      'short' => 'H:mm',
+    ),
+  ),
+);

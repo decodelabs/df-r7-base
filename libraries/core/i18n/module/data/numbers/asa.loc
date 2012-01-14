@@ -1,0 +1,288 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+    'currency' => '#,##0.00 ¤',
+  ),
+  'currencies' => 
+  array (
+    'AED' => 
+    array (
+      'name' => 'dirham ya Falme dha Kiarabu',
+      'symbol' => 'AED',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'kwandha ya Angola',
+      'symbol' => 'AOA',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'dola ya Authtralia',
+      'symbol' => 'AUD',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'dinari ya Bahareni',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'faranga ya Burundi',
+      'symbol' => 'BIF',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'pula ya Botthwana',
+      'symbol' => 'BWP',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'dola ya Kanada',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'faranga ya Kongo',
+      'symbol' => 'CDF',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'faranga ya Uthwithi',
+      'symbol' => 'CHF',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'yuan renminbi ya China',
+      'symbol' => 'CNY',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'ethkudo ya Kepuvede',
+      'symbol' => 'CVE',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'faranga ya Jibuti',
+      'symbol' => 'DJF',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'dinari ya Aljeria',
+      'symbol' => 'DZD',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'pauni ya Mithri',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'nakfa ya Eritrea',
+      'symbol' => 'ERN',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'bir ya Uhabeshi',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'yuro',
+      'symbol' => 'EUR',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'pauni ya Uingeredha',
+      'symbol' => 'GBP',
+    ),
+    'GHC' => 
+    array (
+      'name' => 'thedi ya Ghana',
+      'symbol' => 'GHC',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'dalathi ya Gambia',
+      'symbol' => 'GMD',
+    ),
+    'GNS' => 
+    array (
+      'name' => 'faranga ya Gine',
+      'symbol' => 'GNS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'rupia ya India',
+      'symbol' => 'INR',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'tharafu ya Kijapani',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'shilingi ya Kenya',
+      'symbol' => 'KES',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'faranga ya Komoro',
+      'symbol' => 'KMF',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'dola ya Liberia',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'loti ya Lethoto',
+      'symbol' => 'LSL',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'dinari ya Libya',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'dirham ya Moroko',
+      'symbol' => 'MAD',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'faranga ya Bukini',
+      'symbol' => 'MGA',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'ugwiya ya Moritania',
+      'symbol' => 'MRO',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'rupia ya Morithi',
+      'symbol' => 'MUR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'kwacha ya Malawi',
+      'symbol' => 'MWK',
+    ),
+    'MZM' => 
+    array (
+      'name' => 'metikali ya Mthumbiji',
+      'symbol' => 'MZM',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'dola ya Namibia',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'naira ya Nijeria',
+      'symbol' => 'NGN',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'faranga ya Rwanda',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'riyal ya Thaudia',
+      'symbol' => 'SAR',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'rupia ya Shelisheli',
+      'symbol' => 'SCR',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'dinari ya Thudani',
+      'symbol' => 'SDG',
+    ),
+    'SDP' => 
+    array (
+      'name' => 'pauni ya Thudani',
+      'symbol' => 'SDP',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'pauni ya Thantahelena',
+      'symbol' => 'SHP',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'leoni',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'shilingi ya Thomalia',
+      'symbol' => 'SOS',
+    ),
+    'STD' => 
+    array (
+      'name' => 'dobra ya Thao Tome na Principe',
+      'symbol' => 'STD',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'lilangeni',
+      'symbol' => 'SZL',
+    ),
+    'TND' => 
+    array (
+      'name' => 'dinari ya Tunithia',
+      'symbol' => 'TND',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'shilingi ya Tandhania',
+      'symbol' => 'TSh',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'shilingi ya Uganda',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'dola ya Marekani',
+      'symbol' => 'USD',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'faranga CFA BEAC',
+      'symbol' => 'XAF',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'faranga CFA BCEAO',
+      'symbol' => 'XOF',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'randi ya Afrika Kuthini',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'kwacha ya Dhambia',
+      'symbol' => 'ZMK',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'dola ya Dhimbabwe',
+      'symbol' => 'ZWD',
+    ),
+  ),
+);

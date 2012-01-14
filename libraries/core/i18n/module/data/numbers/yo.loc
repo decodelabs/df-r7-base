@@ -1,0 +1,288 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+    'currency' => '¤#,##0.00;(¤#,##0.00)',
+  ),
+  'currencies' => 
+  array (
+    'AED' => 
+    array (
+      'name' => 'Diami ti Awon Orílẹ́ède Arabu',
+      'symbol' => 'AED',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'Wansa ti Orílẹ́ède Àngólà',
+      'symbol' => 'AOA',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'Dọla ti Orílẹ́ède Ástràlìá',
+      'symbol' => 'AUD',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'Dina ti Orílẹ́ède Báránì',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'Faransi ti Orílẹ́ède Bùùrúndì',
+      'symbol' => 'BIF',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'Pula ti Orílẹ́ède Bọ̀tìsúwánà',
+      'symbol' => 'BWP',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'Dọla ti Orílẹ́ède Kánádà',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'Faransi ti Orílẹ́ède Kóngò',
+      'symbol' => 'CDF',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'Faransi ti Orílẹ́ède Siwisi',
+      'symbol' => 'CHF',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'Reminibi ti Orílẹ́ède ṣáínà',
+      'symbol' => 'CNY',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'Kabofediano ti Orílẹ́ède Esuodo',
+      'symbol' => 'CVE',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'Faransi ti Orílẹ́ède Dibouti',
+      'symbol' => 'DJF',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'Dina ti Orílẹ́ède Àlùgèríánì',
+      'symbol' => 'DZD',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'pọọn ti Orílẹ́ède Egipiti',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'Nakifa ti Orílẹ́ède Eriteriani',
+      'symbol' => 'ERN',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'Biri ti Orílẹ́ède Eutopia',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'Uro',
+      'symbol' => 'EUR',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'Pọọn ti Orílẹ́ède Bírítísì',
+      'symbol' => 'GBP',
+    ),
+    'GHC' => 
+    array (
+      'name' => 'ṣidi ti Orílẹ́ède Gana',
+      'symbol' => 'GHC',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'Dalasi ti Orílẹ́ède Gamibia',
+      'symbol' => 'GMD',
+    ),
+    'GNS' => 
+    array (
+      'name' => 'Faransi ti Orílẹ́ède Gini',
+      'symbol' => 'GNS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'Rupi ti Orílẹ́ède Indina',
+      'symbol' => 'INR',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'Yeni ti Orílẹ́ède Japani',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'ṣiili ti Orílẹ́ède Kenya',
+      'symbol' => 'KES',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'Faransi ti Orílẹ́ède ṣomoriani',
+      'symbol' => 'KMF',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'Dọla ti Orílẹ́ède Liberia',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'Loti ti Orílẹ́ède Lesoto',
+      'symbol' => 'LSL',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'Dina ti Orílẹ́ède Libiya',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'Dirami ti Orílẹ́ède Moroko',
+      'symbol' => 'MAD',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'Faransi ti Orílẹ́ède Malagasi',
+      'symbol' => 'MGA',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'Ouguiya ti Orílẹ́ède Maritania',
+      'symbol' => 'MRO',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'Rupi ti Orílẹ́ède Maritiusi',
+      'symbol' => 'MUR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'Kaṣa ti Orílẹ́ède Malawi',
+      'symbol' => 'MWK',
+    ),
+    'MZM' => 
+    array (
+      'name' => 'Metika ti Orílẹ́ède Mosamibiki',
+      'symbol' => 'MZM',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'Dọla ti Orílẹ́ède Namibia',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'Naira ti Orílẹ́ède Nàìjíríà',
+      'symbol' => '₦',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'Faransi ti Orílẹ́ède Ruwanda',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'Riya ti Orílẹ́ède Saudi',
+      'symbol' => 'SAR',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'Rupi ti Orílẹ́ède Sayiselesi',
+      'symbol' => 'SCR',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'Dina ti Orílẹ́ède Sudani',
+      'symbol' => 'SDG',
+    ),
+    'SDP' => 
+    array (
+      'name' => 'Pọọun ti Orílẹ́ède Sudani',
+      'symbol' => 'SDP',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'Pọọun ti Orílẹ́ède ̣Elena',
+      'symbol' => 'SHP',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'Lioni',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'Sile ti Orílẹ́ède Somali',
+      'symbol' => 'SOS',
+    ),
+    'STD' => 
+    array (
+      'name' => 'Dobira ti Orílẹ́ède Sao tome Ati Pirisipe',
+      'symbol' => 'STD',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'Lilangeni',
+      'symbol' => 'SZL',
+    ),
+    'TND' => 
+    array (
+      'name' => 'Dina ti Orílẹ́ède Tunisia',
+      'symbol' => 'TND',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'Sile ti Orílẹ́ède Tansania',
+      'symbol' => 'TZS',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'Siile ti Orílẹ́ède Uganda',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'Dọla ti Orílẹ́ède Amerika',
+      'symbol' => 'USD',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'Faransi ti Orílẹ́ède BEKA',
+      'symbol' => 'XAF',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'Faransi ti Orílẹ́ède BIKEAO',
+      'symbol' => 'XOF',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'Randi ti Orílẹ́ède Ariwa Afirika',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'Kawaṣa ti Orílẹ́ède Saabia',
+      'symbol' => 'ZMK',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'Dọla ti Orílẹ́ède Siibabuwe',
+      'symbol' => 'ZWD',
+    ),
+  ),
+);

@@ -1,0 +1,295 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => ',',
+    'group' => '.',
+  ),
+  'formats' => 
+  array (
+    'currency' => '#,##0.00¤',
+  ),
+  'currencies' => 
+  array (
+    'AED' => 
+    array (
+      'name' => 'Dirém dos Emirados Árabes Unidos',
+      'symbol' => 'AED',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'Cuanza angolano',
+      'symbol' => 'AOA',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'Dólar australiano',
+      'symbol' => 'AUD',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'Dinar bareinita',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'Franco do Burundi',
+      'symbol' => 'BIF',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'Pula botsuanesa',
+      'symbol' => 'BWP',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'Dólar canadense',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'Franco congolês',
+      'symbol' => 'CDF',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'Franco suíço',
+      'symbol' => 'CHF',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'Yuan Renminbi chinês',
+      'symbol' => 'CNY',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'Escudo cabo-verdiano',
+      'symbol' => 'CVE',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'Franco do Djibuti',
+      'symbol' => 'DJF',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'Dinar argelino',
+      'symbol' => 'DZD',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'Libra egípcia',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'Nakfa da Eritréia',
+      'symbol' => 'ERN',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'Birr etíope',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'Euro',
+      'symbol' => 'EUR',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'Libra esterlina britânica',
+      'symbol' => 'GBP',
+    ),
+    'GHC' => 
+    array (
+      'name' => 'Cedi de Gana (1979-2007)',
+      'symbol' => 'GHC',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'Dalasi de Gâmbia',
+      'symbol' => 'GMD',
+    ),
+    'GNS' => 
+    array (
+      'name' => 'Syli da Guiné',
+      'symbol' => 'GNS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'Rúpia indiana',
+      'symbol' => 'INR',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'Iene japonês',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'Xelim queniano',
+      'symbol' => 'KES',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'Franco de Comores',
+      'symbol' => 'KMF',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'Dólar liberiano',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'Loti do Lesoto',
+      'symbol' => 'LSL',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'Dinar líbio',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'Dirém marroquino',
+      'symbol' => 'MAD',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'Franco de Madagascar',
+      'symbol' => 'MGA',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'Ouguiya da Mauritânia',
+      'symbol' => 'MRO',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'Rupia de Maurício',
+      'symbol' => 'MUR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'Cuacha do Maláui',
+      'symbol' => 'MWK',
+    ),
+    'MZM' => 
+    array (
+      'name' => 'Metical antigo de Moçambique',
+      'symbol' => 'MZM',
+    ),
+    'MZN' => 
+    array (
+      'name' => 'Metical de Moçambique',
+      'symbol' => 'MTn',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'Dólar da Namíbia',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'Naira nigeriana',
+      'symbol' => 'NGN',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'Franco ruandês',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'Rial saudita',
+      'symbol' => 'SAR',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'Rupia das Seychelles',
+      'symbol' => 'SCR',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'Dinar sudanês',
+      'symbol' => 'SDG',
+    ),
+    'SDP' => 
+    array (
+      'name' => 'Libra sudanesa antiga',
+      'symbol' => 'SDP',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'Libra de Santa Helena',
+      'symbol' => 'SHP',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'Leone de Serra Leoa',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'Xelim somali',
+      'symbol' => 'SOS',
+    ),
+    'STD' => 
+    array (
+      'name' => 'Dobra de São Tomé e Príncipe',
+      'symbol' => 'STD',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'Lilangeni da Suazilândia',
+      'symbol' => 'SZL',
+    ),
+    'TND' => 
+    array (
+      'name' => 'Dinar tunisiano',
+      'symbol' => 'TND',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'Xelim da Tanzânia',
+      'symbol' => 'TZS',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'Xelim ugandense (1966-1987)',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'Dólar norte-americano',
+      'symbol' => 'USD',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'Franco CFA BEAC',
+      'symbol' => 'XAF',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'Franco CFA BCEAO',
+      'symbol' => 'XOF',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'Rand sul-africano',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'Cuacha zambiano',
+      'symbol' => 'ZMK',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'Dólar do Zimbábue',
+      'symbol' => 'ZWD',
+    ),
+  ),
+);

@@ -1,0 +1,281 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => '.',
+    'group' => ',',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'currency' => '¤#,##0.00;(¤#,##0.00)',
+  ),
+  'currencies' => 
+  array (
+    'AED' => 
+    array (
+      'name' => 'Yunaitɛ Arabhi Ɛmire Dihami',
+      'symbol' => 'AED',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'Angola Kuwaŋza',
+      'symbol' => 'AOA',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'Ɔ́situwa Dala',
+      'symbol' => 'AUD',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'Bharɛŋ Dina',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'Bhurundi Furaŋki',
+      'symbol' => 'BIF',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'Bhosuwana Pula',
+      'symbol' => 'BWP',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'Kanada Dala',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'Kóngo Furaŋki',
+      'symbol' => 'CDF',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'Suwesi Furaŋki',
+      'symbol' => 'CHF',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'Chaníĩ Yuwaŋ Rɛŋmimbi',
+      'symbol' => 'CNY',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'Ɛsikudo Cabovɛdiyano',
+      'symbol' => 'CVE',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'Jibhuti Furaŋki',
+      'symbol' => 'DJF',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'Agiriya Dina',
+      'symbol' => 'DZD',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'Míséla Pɔɔ̃',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'Ɛritera Nakifa',
+      'symbol' => 'ERN',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'Ítiyopiya Bhii',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'Yuro',
+      'symbol' => 'EUR',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'Jengési Pɔɔ̃ Sitɛ́liŋ',
+      'symbol' => 'GBP',
+    ),
+    'GHC' => 
+    array (
+      'name' => 'Gana Sidi',
+      'symbol' => 'GHC',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'Gambiya Dalasi',
+      'symbol' => 'GMD',
+    ),
+    'GNS' => 
+    array (
+      'name' => 'Gini Furaŋki',
+      'symbol' => 'GNS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'Índiya Rupi',
+      'symbol' => 'INR',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'Japaniĩ Yɛŋ',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'Kénya Siyeŋ',
+      'symbol' => 'KES',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'Komoro Furaŋki',
+      'symbol' => 'KMF',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'Laibhiya Dala',
+      'symbol' => '$',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'Lisóto Loti',
+      'symbol' => 'LSL',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'Libhiya Dina',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'Mɔroko Dihami',
+      'symbol' => 'MAD',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'Malagasi Ariyari',
+      'symbol' => 'MGA',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'Mɔretani Yugiya',
+      'symbol' => 'MRO',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'Mɔreshɔ Rupi',
+      'symbol' => 'MUR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'Malawi Kuwacha',
+      'symbol' => 'MWK',
+    ),
+    'MZM' => 
+    array (
+      'name' => 'Mozambiki Mɛtikali',
+      'symbol' => 'MZM',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'Namibiya Dala',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'Naĩjiriya Naĩra',
+      'symbol' => 'NGN',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'Rawunda Furaŋki',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'Lahabu Sawodi Riya',
+      'symbol' => 'SAR',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'Sudaniĩ Pɔɔ̃',
+      'symbol' => 'SDG',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'Siŋ Hɛlina Pɔɔ̃',
+      'symbol' => 'SHP',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'Liyɔɔ̀',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'Somaliya Siyeŋ',
+      'symbol' => 'SOS',
+    ),
+    'STD' => 
+    array (
+      'name' => 'Sawo Tombe ɓɛ a Gbawo Dobura',
+      'symbol' => 'STD',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'Lilangeni',
+      'symbol' => 'SZL',
+    ),
+    'TND' => 
+    array (
+      'name' => 'Tunisiya Dina',
+      'symbol' => 'TND',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'Taŋzaniya Siyeŋ',
+      'symbol' => 'TZS',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'Yuganda Siyeŋ',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'Poo Dala',
+      'symbol' => 'USD',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'Áfíríka Tɛ Sifa',
+      'symbol' => 'XAF',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'Áfíríka Tele Jíí Sifa',
+      'symbol' => 'XOF',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'Afirika Kɔi Leŋŋɛ lɔ Randi',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'Zambiya Kuwacha',
+      'symbol' => 'ZMK',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'Zimbhabhuwe Dala',
+      'symbol' => 'ZWD',
+    ),
+  ),
+);

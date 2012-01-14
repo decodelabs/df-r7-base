@@ -1,0 +1,68 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'ਐਤ.',
+        'mon' => 'ਸੋਮ.',
+        'tue' => 'ਮੰਗਲ.',
+        'wed' => 'ਬੁਧ.',
+        'thu' => 'ਵੀਰ.',
+        'fri' => 'ਸ਼ੁਕਰ.',
+        'sat' => 'ਸ਼ਨੀ.',
+      ),
+      'full' => 
+      array (
+        'sun' => 'ਐਤਵਾਰ',
+        'mon' => 'ਸੋਮਵਾਰ',
+        'tue' => 'ਮੰਗਲਵਾਰ',
+        'wed' => 'ਬੁਧਵਾਰ',
+        'thu' => 'ਵੀਰਵਾਰ',
+        'fri' => 'ਸ਼ੁੱਕਰਵਾਰ',
+        'sat' => 'ਸ਼ਨੀਚਰਵਾਰ',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        5 => 'ਮਈ',
+      ),
+      'full' => 
+      array (
+        1 => 'ਜਨਵਰੀ',
+        2 => 'ਫ਼ਰਵਰੀ',
+        3 => 'ਮਾਰਚ',
+        4 => 'ਅਪ੍ਰੈਲ',
+        5 => 'ਮਈ',
+        6 => 'ਜੂਨ',
+        7 => 'ਜੁਲਾਈ',
+        8 => 'ਅਗਸਤ',
+        9 => 'ਸਤੰਬਰ',
+        10 => 'ਅਕਤੂਬਰ',
+        11 => 'ਨਵੰਬਰ',
+        12 => 'ਦਸੰਬਰ',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, dd MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'dd/MM/yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+);

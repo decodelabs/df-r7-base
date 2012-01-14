@@ -1,0 +1,940 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => ',',
+    'group' => '.',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+  ),
+  'currencies' => 
+  array (
+    'ADP' => 
+    array (
+      'name' => 'Андорска Пезета',
+      'symbol' => 'ADP',
+    ),
+    'AED' => 
+    array (
+      'name' => 'Обединети Арапски Емирати Дирхам',
+      'symbol' => 'AED',
+    ),
+    'AFA' => 
+    array (
+      'name' => 'Авгани (1927-2002)',
+      'symbol' => 'AFA',
+    ),
+    'AFN' => 
+    array (
+      'name' => 'Авгани',
+      'symbol' => 'AFN',
+    ),
+    'ALL' => 
+    array (
+      'name' => 'Албански Лек',
+      'symbol' => 'ALL',
+    ),
+    'AMD' => 
+    array (
+      'name' => 'Ермениски Драм',
+      'symbol' => 'AMD',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'Анголска Кванза',
+      'symbol' => 'AOA',
+    ),
+    'AOK' => 
+    array (
+      'name' => 'Анголска Кванза (1977-1990)',
+      'symbol' => 'AOK',
+    ),
+    'AON' => 
+    array (
+      'name' => 'Анголска нова Кванза (1990-2000)',
+      'symbol' => 'AON',
+    ),
+    'ARP' => 
+    array (
+      'name' => 'Аргентински Пезос (1983-1985)',
+      'symbol' => 'ARP',
+    ),
+    'ARS' => 
+    array (
+      'name' => 'Аргентински Пезос',
+      'symbol' => 'ARS',
+    ),
+    'ATS' => 
+    array (
+      'name' => 'Австралиски Шилинг',
+      'symbol' => 'ATS',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'Австралиски Долар',
+      'symbol' => 'AUD',
+    ),
+    'BAD' => 
+    array (
+      'name' => 'Босанско-Херцеговски Динар',
+      'symbol' => 'BAD',
+    ),
+    'BAM' => 
+    array (
+      'name' => 'Босанско-Херцеговска конвертибилна марка',
+      'symbol' => 'BAM',
+    ),
+    'BBD' => 
+    array (
+      'name' => 'Барбадоски Долар',
+      'symbol' => 'BBD',
+    ),
+    'BEC' => 
+    array (
+      'name' => 'Белгиски Франк (конвертибилен)',
+      'symbol' => 'BEC',
+    ),
+    'BEF' => 
+    array (
+      'name' => 'Белгиски Франк',
+      'symbol' => 'BEF',
+    ),
+    'BEL' => 
+    array (
+      'name' => 'Белгиски Франк (финансиски)',
+      'symbol' => 'BEL',
+    ),
+    'BGL' => 
+    array (
+      'name' => 'Бугарски цврст лев',
+      'symbol' => 'BGL',
+    ),
+    'BGN' => 
+    array (
+      'name' => 'Бугарски нов лев',
+      'symbol' => 'BGN',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'Бахреински Динар',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'Бурундиски Франк',
+      'symbol' => 'BIF',
+    ),
+    'BMD' => 
+    array (
+      'name' => 'Бермудски Долар',
+      'symbol' => 'BMD',
+    ),
+    'BND' => 
+    array (
+      'name' => 'Брунејски долар',
+      'symbol' => 'BND',
+    ),
+    'BSD' => 
+    array (
+      'name' => 'Бахамски Долар',
+      'symbol' => 'BSD',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'Боцванска Пула',
+      'symbol' => 'BWP',
+    ),
+    'BYB' => 
+    array (
+      'name' => 'Белоруска нова рубља (1994-1999)',
+      'symbol' => 'BYB',
+    ),
+    'BYR' => 
+    array (
+      'name' => 'Белоруска Рубља',
+      'symbol' => 'BYR',
+    ),
+    'BZD' => 
+    array (
+      'name' => 'Белизиски Долар',
+      'symbol' => 'BZD',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'Канадски Долар',
+      'symbol' => 'CAD',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'Швајцарски Франк',
+      'symbol' => 'CHF',
+    ),
+    'CLP' => 
+    array (
+      'name' => 'Чилеански пезос',
+      'symbol' => 'CLP',
+    ),
+    'COP' => 
+    array (
+      'name' => 'Колумбиски Пезос',
+      'symbol' => 'COP',
+    ),
+    'CRC' => 
+    array (
+      'name' => 'Костарикански Колон',
+      'symbol' => 'CRC',
+    ),
+    'CSK' => 
+    array (
+      'name' => 'Чехословачка цврста корона',
+      'symbol' => 'CSK',
+    ),
+    'CUP' => 
+    array (
+      'name' => 'Кубански пезос',
+      'symbol' => 'CUP',
+    ),
+    'CYP' => 
+    array (
+      'name' => 'Кипарска фунта',
+      'symbol' => 'CYP',
+    ),
+    'CZK' => 
+    array (
+      'name' => 'Чешка корона',
+      'symbol' => 'CZK',
+    ),
+    'DEM' => 
+    array (
+      'name' => 'Германска Марка',
+      'symbol' => 'DEM',
+    ),
+    'DKK' => 
+    array (
+      'name' => 'Данска круна',
+      'symbol' => 'DKK',
+    ),
+    'DOP' => 
+    array (
+      'name' => 'Доминикански Пезос',
+      'symbol' => 'DOP',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'Алжирски Динар',
+      'symbol' => 'DZD',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'Египетска Фунта',
+      'symbol' => 'EGP',
+    ),
+    'ESP' => 
+    array (
+      'name' => 'Шпанска Пезета',
+      'symbol' => 'ESP',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'Етиописки Бир',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'Евро',
+      'symbol' => 'EUR',
+    ),
+    'FIM' => 
+    array (
+      'name' => 'Финска марка',
+      'symbol' => 'FIM',
+    ),
+    'FJD' => 
+    array (
+      'name' => 'Фиџи долар',
+      'symbol' => 'FJD',
+    ),
+    'FKP' => 
+    array (
+      'name' => 'Фолкландска фунта',
+      'symbol' => 'FKP',
+    ),
+    'FRF' => 
+    array (
+      'name' => 'Француски франк',
+      'symbol' => 'FRF',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'Британска Фунта',
+      'symbol' => 'GBP',
+    ),
+    'GEL' => 
+    array (
+      'name' => 'Грузиски лари',
+      'symbol' => 'GEL',
+    ),
+    'GHC' => 
+    array (
+      'name' => 'Ганајски Седи',
+      'symbol' => 'GHC',
+    ),
+    'GIP' => 
+    array (
+      'name' => 'Гибралтарска фунта',
+      'symbol' => 'GIP',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'Гамбиски Даласи',
+      'symbol' => 'GMD',
+    ),
+    'GNF' => 
+    array (
+      'name' => 'Гвинејски франк',
+      'symbol' => 'GNF',
+    ),
+    'GRD' => 
+    array (
+      'name' => 'Грчка драхма',
+      'symbol' => 'GRD',
+    ),
+    'GTQ' => 
+    array (
+      'name' => 'Гватемалски кветцал',
+      'symbol' => 'GTQ',
+    ),
+    'GWP' => 
+    array (
+      'name' => 'Гвинејски Бисау пезос',
+      'symbol' => 'GWP',
+    ),
+    'GYD' => 
+    array (
+      'name' => 'Гвијански Долар',
+      'symbol' => 'GYD',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'Хонгконшки долар',
+      'symbol' => 'HKD',
+    ),
+    'HNL' => 
+    array (
+      'name' => 'Хондурска лемпира',
+      'symbol' => 'HNL',
+    ),
+    'HRD' => 
+    array (
+      'name' => 'Хрватски динар',
+      'symbol' => 'HRD',
+    ),
+    'HRK' => 
+    array (
+      'name' => 'Хрватска Куна',
+      'symbol' => 'HRK',
+    ),
+    'HTG' => 
+    array (
+      'name' => 'Хаитски гурд',
+      'symbol' => 'HTG',
+    ),
+    'HUF' => 
+    array (
+      'name' => 'Унгарска форинта',
+      'symbol' => 'HUF',
+    ),
+    'IDR' => 
+    array (
+      'name' => 'Индонезиска рупија',
+      'symbol' => 'IDR',
+    ),
+    'IEP' => 
+    array (
+      'name' => 'Ирска фунта',
+      'symbol' => 'IEP',
+    ),
+    'ILP' => 
+    array (
+      'name' => 'Изрелска фунта',
+      'symbol' => 'ILP',
+    ),
+    'ILS' => 
+    array (
+      'name' => 'Израелски нов шекел',
+      'symbol' => 'ILS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'Индијска рупија',
+      'symbol' => 'INR',
+    ),
+    'IQD' => 
+    array (
+      'name' => 'Ирачки динар',
+      'symbol' => 'IQD',
+    ),
+    'IRR' => 
+    array (
+      'name' => 'Ирански риал',
+      'symbol' => 'IRR',
+    ),
+    'ISK' => 
+    array (
+      'name' => 'Исландска крона',
+      'symbol' => 'ISK',
+    ),
+    'ITL' => 
+    array (
+      'name' => 'Италијанска лира',
+      'symbol' => 'ITL',
+    ),
+    'JMD' => 
+    array (
+      'name' => 'Јамајкански долар',
+      'symbol' => 'JMD',
+    ),
+    'JOD' => 
+    array (
+      'name' => 'Јордански динар',
+      'symbol' => 'JOD',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'Јапонски јен',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'Кениски шилинг',
+      'symbol' => 'KES',
+    ),
+    'KGS' => 
+    array (
+      'name' => 'Киргистански сом',
+      'symbol' => 'KGS',
+    ),
+    'KHR' => 
+    array (
+      'name' => 'Камбоџиски рел',
+      'symbol' => 'KHR',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'Коморски долар',
+      'symbol' => 'KMF',
+    ),
+    'KPW' => 
+    array (
+      'name' => 'Северно корејски вон',
+      'symbol' => 'KPW',
+    ),
+    'KRW' => 
+    array (
+      'name' => 'Јужно корејски вон',
+      'symbol' => 'KRW',
+    ),
+    'KWD' => 
+    array (
+      'name' => 'Кувајтски динар',
+      'symbol' => 'KWD',
+    ),
+    'KZT' => 
+    array (
+      'name' => 'Казахстанска тенга',
+      'symbol' => 'KZT',
+    ),
+    'LAK' => 
+    array (
+      'name' => 'Лаоски кип',
+      'symbol' => 'LAK',
+    ),
+    'LBP' => 
+    array (
+      'name' => 'Либанска фунта',
+      'symbol' => 'LBP',
+    ),
+    'LKR' => 
+    array (
+      'name' => 'Шриланканска рупија',
+      'symbol' => 'LKR',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'Либериски долар',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'Лесотско лоти',
+      'symbol' => 'LSL',
+    ),
+    'LTL' => 
+    array (
+      'name' => 'Литваниска лита',
+      'symbol' => 'LTL',
+    ),
+    'LTT' => 
+    array (
+      'name' => 'Литваниски литаз',
+      'symbol' => 'LTT',
+    ),
+    'LUF' => 
+    array (
+      'name' => 'Луксембуршки франк',
+      'symbol' => 'LUF',
+    ),
+    'LVL' => 
+    array (
+      'name' => 'Латвијски лат',
+      'symbol' => 'LVL',
+    ),
+    'LVR' => 
+    array (
+      'name' => 'Латвијска рубља',
+      'symbol' => 'LVR',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'Либијски динар',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'Марокански Дирхам',
+      'symbol' => 'MAD',
+    ),
+    'MAF' => 
+    array (
+      'name' => 'Марокански франк',
+      'symbol' => 'MAF',
+    ),
+    'MDL' => 
+    array (
+      'name' => 'Молдавски леу',
+      'symbol' => 'MDL',
+    ),
+    'MKD' => 
+    array (
+      'name' => 'Македонски денар',
+      'symbol' => 'MKD',
+    ),
+    'MLF' => 
+    array (
+      'name' => 'Малски франк',
+      'symbol' => 'MLF',
+    ),
+    'MNT' => 
+    array (
+      'name' => 'Монголиски тугрик',
+      'symbol' => 'MNT',
+    ),
+    'MOP' => 
+    array (
+      'name' => 'Макао патака',
+      'symbol' => 'MOP',
+    ),
+    'MTL' => 
+    array (
+      'name' => 'Малтешка лира',
+      'symbol' => 'MTL',
+    ),
+    'MTP' => 
+    array (
+      'name' => 'Малтешка фунта',
+      'symbol' => 'MTP',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'Мексикански пезос',
+      'symbol' => 'MXN',
+    ),
+    'MXP' => 
+    array (
+      'name' => 'Мексикански сребрен пезос (1861-1992)',
+      'symbol' => 'MXP',
+    ),
+    'MYR' => 
+    array (
+      'name' => 'Малазиски рингит',
+      'symbol' => 'MYR',
+    ),
+    'MZE' => 
+    array (
+      'name' => 'Мозамбиско ескудо',
+      'symbol' => 'MZE',
+    ),
+    'MZM' => 
+    array (
+      'name' => 'Стар мозамбиски метикал',
+      'symbol' => 'MZM',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'Намибиски долар',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'Нигериска наира',
+      'symbol' => 'NGN',
+    ),
+    'NIC' => 
+    array (
+      'name' => 'Никарагванска кордоба',
+      'symbol' => 'NIC',
+    ),
+    'NLG' => 
+    array (
+      'name' => 'Холандски гилдер',
+      'symbol' => 'NLG',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'Норвешка круна',
+      'symbol' => 'NOK',
+    ),
+    'NPR' => 
+    array (
+      'name' => 'Непалска рупија',
+      'symbol' => 'NPR',
+    ),
+    'NZD' => 
+    array (
+      'name' => 'Новозеландски долар',
+      'symbol' => 'NZD',
+    ),
+    'OMR' => 
+    array (
+      'name' => 'Омански риал',
+      'symbol' => 'OMR',
+    ),
+    'PAB' => 
+    array (
+      'name' => 'Панамска балбоа',
+      'symbol' => 'PAB',
+    ),
+    'PEN' => 
+    array (
+      'name' => 'Перуански нов сол',
+      'symbol' => 'PEN',
+    ),
+    'PES' => 
+    array (
+      'name' => 'Перуански сол',
+      'symbol' => 'PES',
+    ),
+    'PGK' => 
+    array (
+      'name' => 'Папуа новогвинејска кина',
+      'symbol' => 'PGK',
+    ),
+    'PHP' => 
+    array (
+      'name' => 'Филипински пезос',
+      'symbol' => 'PHP',
+    ),
+    'PKR' => 
+    array (
+      'name' => 'Пакистанска рупија',
+      'symbol' => 'PKR',
+    ),
+    'PLN' => 
+    array (
+      'name' => 'Полска злота',
+      'symbol' => 'PLN',
+    ),
+    'PLZ' => 
+    array (
+      'name' => 'Полска злота (1950-1995)',
+      'symbol' => 'PLZ',
+    ),
+    'PTE' => 
+    array (
+      'name' => 'Португалско ескудо',
+      'symbol' => 'PTE',
+    ),
+    'PYG' => 
+    array (
+      'name' => 'Парагвајска гуарана',
+      'symbol' => 'PYG',
+    ),
+    'QAR' => 
+    array (
+      'name' => 'Катарски риал',
+      'symbol' => 'QAR',
+    ),
+    'ROL' => 
+    array (
+      'name' => 'Романска леа',
+      'symbol' => 'ROL',
+    ),
+    'RSD' => 
+    array (
+      'name' => 'Српски динар',
+      'symbol' => 'RSD',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'Руска рубља',
+      'symbol' => 'RUB',
+    ),
+    'RUR' => 
+    array (
+      'name' => 'Руска рубља (1991-1998)',
+      'symbol' => 'RUR',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'Руандски франк',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'Саудиски ријал',
+      'symbol' => 'SAR',
+    ),
+    'SBD' => 
+    array (
+      'name' => 'Соломонски долар',
+      'symbol' => 'SBD',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'Сејшелска рупија',
+      'symbol' => 'SCR',
+    ),
+    'SDD' => 
+    array (
+      'name' => 'Стар судански динар',
+      'symbol' => 'SDD',
+    ),
+    'SDP' => 
+    array (
+      'name' => 'Стара суданска фунта',
+      'symbol' => 'SDP',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'Шведска круна',
+      'symbol' => 'SEK',
+    ),
+    'SGD' => 
+    array (
+      'name' => 'Сингапурски долар',
+      'symbol' => 'SGD',
+    ),
+    'SIT' => 
+    array (
+      'name' => 'Словенечки толар',
+      'symbol' => 'SIT',
+    ),
+    'SKK' => 
+    array (
+      'name' => 'Словачка круна',
+      'symbol' => 'SKK',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'Сиералеонско леоне',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'Сомалијски шилинг',
+      'symbol' => 'SOS',
+    ),
+    'SRG' => 
+    array (
+      'name' => 'Суринамски гилдер',
+      'symbol' => 'SRG',
+    ),
+    'SUR' => 
+    array (
+      'name' => 'Советска рубља',
+      'symbol' => 'SUR',
+    ),
+    'SVC' => 
+    array (
+      'name' => 'Салвадорски колон',
+      'symbol' => 'SVC',
+    ),
+    'SYP' => 
+    array (
+      'name' => 'Сиријска фунта',
+      'symbol' => 'SYP',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'Свазилендски лиланген',
+      'symbol' => 'SZL',
+    ),
+    'THB' => 
+    array (
+      'name' => 'Таи бат',
+      'symbol' => 'THB',
+    ),
+    'TJR' => 
+    array (
+      'name' => 'Таџикистанска рубља',
+      'symbol' => 'TJR',
+    ),
+    'TJS' => 
+    array (
+      'name' => 'Таџикистански сомони',
+      'symbol' => 'TJS',
+    ),
+    'TMM' => 
+    array (
+      'name' => 'Туркменистански манат',
+      'symbol' => 'TMM',
+    ),
+    'TND' => 
+    array (
+      'name' => 'Тунезиски динар',
+      'symbol' => 'TND',
+    ),
+    'TPE' => 
+    array (
+      'name' => 'Тиморски ескудо',
+      'symbol' => 'TPE',
+    ),
+    'TRL' => 
+    array (
+      'name' => 'Турска лира',
+      'symbol' => 'TRL',
+    ),
+    'TWD' => 
+    array (
+      'name' => 'Тајвански нов долар',
+      'symbol' => 'TWD',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'Танзаниски шилинг',
+      'symbol' => 'TZS',
+    ),
+    'UAH' => 
+    array (
+      'name' => 'Украинска хривнија',
+      'symbol' => 'UAH',
+    ),
+    'UGS' => 
+    array (
+      'name' => 'Угандиски шилинг (1966-1987)',
+      'symbol' => 'UGS',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'Угандиски шилинг',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'Американски долар',
+      'symbol' => 'USD',
+    ),
+    'USN' => 
+    array (
+      'name' => 'САД долар (Next day)',
+      'symbol' => 'USN',
+    ),
+    'USS' => 
+    array (
+      'name' => 'САД долар (Same day)',
+      'symbol' => 'USS',
+    ),
+    'UYP' => 
+    array (
+      'name' => 'Уругвајски пезос (1975-1993)',
+      'symbol' => 'UYP',
+    ),
+    'UYU' => 
+    array (
+      'name' => 'Уругвајски пезос',
+      'symbol' => 'UYU',
+    ),
+    'UZS' => 
+    array (
+      'name' => 'Узбекистански сом',
+      'symbol' => 'UZS',
+    ),
+    'VEB' => 
+    array (
+      'name' => 'Венецуелски боливар',
+      'symbol' => 'VEB',
+    ),
+    'VND' => 
+    array (
+      'name' => 'Виетнамски донг',
+      'symbol' => 'VND',
+    ),
+    'VUV' => 
+    array (
+      'name' => 'Ванатски вату',
+      'symbol' => 'VUV',
+    ),
+    'WST' => 
+    array (
+      'name' => 'Самоанска тала',
+      'symbol' => 'WST',
+    ),
+    'XCD' => 
+    array (
+      'name' => 'Источно карибиски долар',
+      'symbol' => 'XCD',
+    ),
+    'YDD' => 
+    array (
+      'name' => 'Јеменски динар',
+      'symbol' => 'YDD',
+    ),
+    'YER' => 
+    array (
+      'name' => 'Јеменски риал',
+      'symbol' => 'YER',
+    ),
+    'YUD' => 
+    array (
+      'name' => 'Југословенски динар',
+      'symbol' => 'YUD',
+    ),
+    'YUN' => 
+    array (
+      'name' => 'Југословенски конвертибилен динар',
+      'symbol' => 'YUN',
+    ),
+    'ZAL' => 
+    array (
+      'name' => 'Јужно афрички ранд(финансиски)',
+      'symbol' => 'ZAL',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'Јужно афрички ранд',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'Замбијска квача',
+      'symbol' => 'ZMK',
+    ),
+    'ZRN' => 
+    array (
+      'name' => 'Заирско новозаире',
+      'symbol' => 'ZRN',
+    ),
+    'ZRZ' => 
+    array (
+      'name' => 'Заирско заире',
+      'symbol' => 'ZRZ',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'Зимбабвиски долар',
+      'symbol' => 'ZWD',
+    ),
+  ),
+);

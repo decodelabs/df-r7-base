@@ -1,0 +1,39 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'wed' => 'сри',
+      ),
+      'full' => 
+      array (
+        'wed' => 'сриједа',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'full' => 
+      array (
+        6 => 'јуни',
+        7 => 'јули',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'medium' => 'yyyy-MM-dd',
+      'short' => 'yy-MM-dd',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'HH \'часова\', mm \'минута\', ss \'секунди\' zzzz',
+      'medium' => 'HH:mm:ss',
+      'short' => 'HH:mm',
+    ),
+  ),
+);

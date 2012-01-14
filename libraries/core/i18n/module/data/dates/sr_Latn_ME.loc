@@ -1,0 +1,11 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'dateFormat' => 
+    array (
+      'long' => 'd.MM.yyyy.',
+    ),
+  ),
+);

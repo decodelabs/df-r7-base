@@ -1,0 +1,284 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'group' => ' ',
+  ),
+  'formats' => 
+  array (
+    'currency' => '¤#,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'AED' => 
+    array (
+      'name' => 'Ɛmirete Arab Nkabɔmu Deram',
+      'symbol' => 'AED',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'Angola Kwanza',
+      'symbol' => 'AOA',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'Ɔstrelia Dɔla',
+      'symbol' => 'AUD',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'Baren Dina',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'Burundi Frank',
+      'symbol' => 'BIF',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'Botswana Pula',
+      'symbol' => 'BWP',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'Kanada Dɔla',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'Kongo Frank',
+      'symbol' => 'CDF',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'Sweden Frank',
+      'symbol' => 'CHF',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'Yuan',
+      'symbol' => 'CNY',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'Ɛskudo',
+      'symbol' => 'CVE',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'Gyebuti Frank',
+      'symbol' => 'DJF',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'Ɔlgyeria Dina',
+      'symbol' => 'DZD',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'Egypt Pɔn',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'Ɛretereya Nakfa',
+      'symbol' => 'ERN',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'Itiopia Bir',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'Iro',
+      'symbol' => 'EUR',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'Breten Pɔn',
+      'symbol' => 'GBP',
+    ),
+    'GHC' => 
+    array (
+      'name' => 'Ghana Sidi',
+      'symbol' => 'GHC',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'Gambia Dalasi',
+      'symbol' => 'GMD',
+    ),
+    'GNS' => 
+    array (
+      'name' => 'Gini Frank',
+      'symbol' => 'GNS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'India Rupi',
+      'symbol' => 'INR',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'Gyapan Yɛn',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'Kenya Hyelen',
+      'symbol' => 'KES',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'Komoro Frank',
+      'symbol' => 'KMF',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'Laeberia Dɔla',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'Lesoto Loti',
+      'symbol' => 'LSL',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'Libya Dina',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'Moroko Diram',
+      'symbol' => 'MAD',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'Madagasi Frank',
+      'symbol' => 'MGA',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'Mɔretenia Ouguiya',
+      'symbol' => 'MRO',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'Mɔrehyeɔs Rupi',
+      'symbol' => 'MUR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'Malawi Kwacha',
+      'symbol' => 'MWK',
+    ),
+    'MZM' => 
+    array (
+      'name' => 'Mozambik Metical',
+      'symbol' => 'MZM',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'Namibia Dɔla',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'Naegyeria Naira',
+      'symbol' => 'NGN',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'Rewanda Frank',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'Saudi Riyal',
+      'symbol' => 'SAR',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'Seyhyɛls Rupi',
+      'symbol' => 'SCR',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'Sudan Dina',
+      'symbol' => 'SDG',
+    ),
+    'SDP' => 
+    array (
+      'name' => 'Sudan Pɔn',
+      'symbol' => 'SDP',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'St Helena Pɔn',
+      'symbol' => 'SHP',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'Leone',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'Somailia Hyelen',
+      'symbol' => 'SOS',
+    ),
+    'STD' => 
+    array (
+      'name' => 'Sao Tome ne Principe Dobra',
+      'symbol' => 'STD',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'Lilangeni',
+      'symbol' => 'SZL',
+    ),
+    'TND' => 
+    array (
+      'name' => 'Tunisia Dina',
+      'symbol' => 'TND',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'Tanzania Hyelen',
+      'symbol' => 'TZS',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'Uganda Hyelen',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'Amɛrika Dɔla',
+      'symbol' => 'USD',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'Sefa',
+      'symbol' => 'XAF',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'Afrika Anaafo Rand',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'Zambia Kwacha',
+      'symbol' => 'ZMK',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'Zimbabwe Dɔla',
+      'symbol' => 'ZWD',
+    ),
+  ),
+);

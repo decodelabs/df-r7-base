@@ -1,0 +1,22 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'CAD' => 
+    array (
+      'name' => 'CAD',
+      'symbol' => '$',
+    ),
+    'USD' => 
+    array (
+      'name' => 'USD',
+      'symbol' => 'US$',
+    ),
+  ),
+);

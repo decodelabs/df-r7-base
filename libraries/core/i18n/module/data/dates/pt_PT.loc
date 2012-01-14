@@ -1,0 +1,90 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'buddhist' => 
+  array (
+    'dateFormat' => 
+    array (
+      'short' => 'd/M/y G',
+    ),
+  ),
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'full' => 
+      array (
+        'sun' => 'Domingo',
+        'mon' => 'Segunda-feira',
+        'tue' => 'Terça-feira',
+        'wed' => 'Quarta-feira',
+        'thu' => 'Quinta-feira',
+        'fri' => 'Sexta-feira',
+        'sat' => 'Sábado',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Jan',
+        2 => 'Fev',
+        3 => 'Mar',
+        4 => 'Abr',
+        5 => 'Mai',
+        6 => 'Jun',
+        7 => 'Jul',
+        8 => 'Ago',
+        9 => 'Set',
+        10 => 'Out',
+        11 => 'Nov',
+        12 => 'Dez',
+      ),
+      'full' => 
+      array (
+        1 => 'Janeiro',
+        2 => 'Fevereiro',
+        3 => 'Março',
+        4 => 'Abril',
+        5 => 'Maio',
+        6 => 'Junho',
+        7 => 'Julho',
+        8 => 'Agosto',
+        9 => 'Setembro',
+        10 => 'Outubro',
+        11 => 'Novembro',
+        12 => 'Dezembro',
+      ),
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'H:mm:ss zzzz',
+      'long' => 'H:mm:ss z',
+    ),
+  ),
+  'islamic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'short' => 'd/M/y G',
+    ),
+  ),
+  'japanese' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d \'de\' MMMM \'de\' y G',
+      'medium' => 'dd/MM/yyyy G',
+      'short' => 'd/M/y G',
+    ),
+  ),
+  'roc' => 
+  array (
+    'dateFormat' => 
+    array (
+      'short' => 'd/M/y G',
+    ),
+  ),
+);

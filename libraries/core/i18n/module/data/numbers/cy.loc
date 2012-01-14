@@ -1,0 +1,98 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+    'currency' => '¤#,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'ARS' => 
+    array (
+      'name' => 'Peso yr Ariannin',
+      'symbol' => 'ARS',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'doler Awstralia',
+      'symbol' => 'AUD',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'Real Brasil',
+      'symbol' => 'BRL',
+    ),
+    'BSD' => 
+    array (
+      'name' => 'Doler y Bahamas',
+      'symbol' => 'BSD',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'Doler Canada',
+      'symbol' => 'CAD',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'Ffranc y Swistir',
+      'symbol' => 'CHF',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'Yuan Renminbi Tseina',
+      'symbol' => 'CNY',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'Ewro',
+      'symbol' => 'EUR',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'Punt Sterling Prydain',
+      'symbol' => 'GBP',
+    ),
+    'INR' => 
+    array (
+      'name' => 'Rwpî India',
+      'symbol' => 'INR',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'Yen Siapan',
+      'symbol' => 'JPY',
+    ),
+    'KRW' => 
+    array (
+      'name' => 'Won De Corea',
+      'symbol' => 'KRW',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'Peso Mecsico',
+      'symbol' => 'MXN',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'Rwbl Rwsia',
+      'symbol' => 'RUB',
+    ),
+    'TRY' => 
+    array (
+      'name' => 'Lira Twrci',
+      'symbol' => 'TRY',
+    ),
+    'USD' => 
+    array (
+      'name' => 'Doler yr UDA',
+      'symbol' => 'USD',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'Rand De Affrica',
+      'symbol' => 'ZAR',
+    ),
+  ),
+);

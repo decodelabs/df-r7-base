@@ -1,0 +1,17 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'USD' => 
+    array (
+      'name' => 'USD',
+      'symbol' => '$',
+    ),
+  ),
+);

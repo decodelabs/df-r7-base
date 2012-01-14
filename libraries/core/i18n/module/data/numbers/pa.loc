@@ -1,0 +1,35 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##,##0.###',
+    'percent' => '#,##,##0%',
+    'currency' => '¤ #,##,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'AFN' => 
+    array (
+      'name' => 'ਅਫ਼ਗਾਨੀ',
+      'symbol' => 'AFN',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'ਯੂਰੋ',
+      'symbol' => 'EUR',
+    ),
+    'INR' => 
+    array (
+      'name' => 'ਰੁਪਿਯ',
+      'symbol' => 'INR',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'ਅਣਜਾਣ',
+      'symbol' => 'XXX',
+    ),
+  ),
+);

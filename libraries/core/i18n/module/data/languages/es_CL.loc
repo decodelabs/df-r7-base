@@ -1,0 +1,5 @@
+<?php
+return array (
+  'ira' => 'iraníes',
+  'arn' => 'mapudungun',
+);

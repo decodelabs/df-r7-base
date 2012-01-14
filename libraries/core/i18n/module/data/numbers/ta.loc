@@ -1,0 +1,793 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => '.',
+    'group' => ',',
+    'nan' => 'எண் இல்லை',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##,##0.###',
+    'percent' => '#,##,##0%',
+    'currency' => '¤ #,##,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'AED' => 
+    array (
+      'name' => 'ஐக்கிய அரபு எமிரேட்டு டிர்ஹம்',
+      'symbol' => 'AED',
+    ),
+    'AFN' => 
+    array (
+      'name' => 'ஆஃப்கான் ஆப்கானி',
+      'symbol' => 'AFN',
+    ),
+    'ALL' => 
+    array (
+      'name' => 'அல்பேனியன் லெக்',
+      'symbol' => 'ALL',
+    ),
+    'AMD' => 
+    array (
+      'name' => 'அர்மேனியன் ட்ராம்',
+      'symbol' => 'AMD',
+    ),
+    'ANG' => 
+    array (
+      'name' => 'நெதர்லேண்ட்ஸ் அன்டிலியன் கில்டர்',
+      'symbol' => 'ANG',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'அங்கோலாவின் க்வான்ஸா',
+      'symbol' => 'AOA',
+    ),
+    'ARS' => 
+    array (
+      'name' => 'அர்ஜென்டினாவின் பேசோ',
+      'symbol' => 'ARS',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'ஆஸ்திரேலிய டாலர்',
+      'symbol' => 'AUD',
+    ),
+    'AWG' => 
+    array (
+      'name' => 'அருபன் ஃப்ளோரின்',
+      'symbol' => 'AWG',
+    ),
+    'AZN' => 
+    array (
+      'name' => 'அஜர்பைசானி மனத்',
+      'symbol' => 'AZN',
+    ),
+    'BAM' => 
+    array (
+      'name' => 'போஸ்னியா-ஹெர்ஸேகோவினா கன்வெர்டிபில் மார்க்',
+      'symbol' => 'BAM',
+    ),
+    'BBD' => 
+    array (
+      'name' => 'பெர்பேடியன் டாலர்',
+      'symbol' => 'BBD',
+    ),
+    'BDT' => 
+    array (
+      'name' => 'பங்கலாதேஷி டாகா',
+      'symbol' => 'BDT',
+    ),
+    'BGN' => 
+    array (
+      'name' => 'புல்கேரியன் லெவ்',
+      'symbol' => 'BGN',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'பஹ்ரைனி தினார்',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'புருண்டியன் ஃப்ரான்க்',
+      'symbol' => 'BIF',
+    ),
+    'BMD' => 
+    array (
+      'name' => 'பெர்முடன் டாலர்',
+      'symbol' => 'BMD',
+    ),
+    'BND' => 
+    array (
+      'name' => 'புரூனை டாலர்',
+      'symbol' => 'BND',
+    ),
+    'BOB' => 
+    array (
+      'name' => 'பொலீவியன் பொலிவியானோ',
+      'symbol' => 'BOB',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'பிரேசிலியன் ரியல்',
+      'symbol' => 'BRL',
+    ),
+    'BSD' => 
+    array (
+      'name' => 'பஹாமியன் டாலர்',
+      'symbol' => 'BSD',
+    ),
+    'BTN' => 
+    array (
+      'name' => 'புடனேஷ் நிகுல்ட்ரம்',
+      'symbol' => 'BTN',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'போட்ஸ்வானா புலா',
+      'symbol' => 'BWP',
+    ),
+    'BYR' => 
+    array (
+      'name' => 'பெலருஷியன் ரூபில்',
+      'symbol' => 'BYR',
+    ),
+    'BZD' => 
+    array (
+      'name' => 'பெலீஷ் டாலர்',
+      'symbol' => 'BZD',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'கனடியன் டாலர்',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'காங்கோல்ஸே ஃப்ராங்க்',
+      'symbol' => 'CDF',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'சுவிஸ் ஃப்ராங்க்',
+      'symbol' => 'CHF',
+    ),
+    'CLP' => 
+    array (
+      'name' => 'சிலியன் பெசோ',
+      'symbol' => 'CLP',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'சீன யுவான்',
+      'symbol' => 'CNY',
+    ),
+    'COP' => 
+    array (
+      'name' => 'கொலம்பியன் பெசோ',
+      'symbol' => 'COP',
+    ),
+    'CRC' => 
+    array (
+      'name' => 'கோஸ்டா ரிகன் கொலோன்',
+      'symbol' => 'CRC',
+    ),
+    'CUC' => 
+    array (
+      'name' => 'கியூபன் கான்வெர்டிபில் பேசோ',
+      'symbol' => 'CUC',
+    ),
+    'CUP' => 
+    array (
+      'name' => 'கியூபன் பெசோ',
+      'symbol' => 'CUP',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'கேப் வெர்டியன் எஸ்குடோ',
+      'symbol' => 'CVE',
+    ),
+    'CZK' => 
+    array (
+      'name' => 'செக் குடியரசு கொருனா',
+      'symbol' => 'CZK',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'ஜிபவ்டியென் ஃப்ராங்க்',
+      'symbol' => 'DJF',
+    ),
+    'DKK' => 
+    array (
+      'name' => 'டானிஷ் க்ரோன்',
+      'symbol' => 'DKK',
+    ),
+    'DOP' => 
+    array (
+      'name' => 'டாமினிகன் பேசோ',
+      'symbol' => 'DOP',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'அல்ஜேரியன் தினார்',
+      'symbol' => 'DZD',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'எகிப்திய பவுண்டு',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'இரிடிரியன் நக்ஃபா',
+      'symbol' => 'ERN',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'எத்தியோப்பியன் பிர்',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'யூரோ',
+      'symbol' => 'EUR',
+    ),
+    'FJD' => 
+    array (
+      'name' => 'ஃபிஜியன் டாலர்',
+      'symbol' => 'FJD',
+    ),
+    'FKP' => 
+    array (
+      'name' => 'ஃபாக்லாந்து தீவுகள் பவுண்டு',
+      'symbol' => 'FKP',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'பிரிட்டிஷ் பவுன்ட் ஸ்டெர்லிங்',
+      'symbol' => 'GBP',
+    ),
+    'GEL' => 
+    array (
+      'name' => 'ஜியார்ஜியன் லாரி',
+      'symbol' => 'GEL',
+    ),
+    'GHS' => 
+    array (
+      'name' => 'கானியன் செடி',
+      'symbol' => 'GHS',
+    ),
+    'GIP' => 
+    array (
+      'name' => 'கிப்ரால்டர் பவுண்ட்',
+      'symbol' => 'GIP',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'கேம்பியன் தலாசி',
+      'symbol' => 'GMD',
+    ),
+    'GNF' => 
+    array (
+      'name' => 'கினியன் ஃப்ராங்க்',
+      'symbol' => 'GNF',
+    ),
+    'GTQ' => 
+    array (
+      'name' => 'குவாடெமெலன் குயூட்ஸல்',
+      'symbol' => 'GTQ',
+    ),
+    'GYD' => 
+    array (
+      'name' => 'குவனீஸ் டாலர்',
+      'symbol' => 'GYD',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'ஹாங்காங் டாலர்',
+      'symbol' => 'HKD',
+    ),
+    'HNL' => 
+    array (
+      'name' => 'ஹோன்டூரன் லெம்பீரா',
+      'symbol' => 'HNL',
+    ),
+    'HRK' => 
+    array (
+      'name' => 'குரோஷியன் குனா',
+      'symbol' => 'HRK',
+    ),
+    'HTG' => 
+    array (
+      'name' => 'ஹயேத்தியன் கோர்டே',
+      'symbol' => 'HTG',
+    ),
+    'HUF' => 
+    array (
+      'name' => 'ஹங்கேரியன் ஃபோரின்ட்',
+      'symbol' => 'HUF',
+    ),
+    'IDR' => 
+    array (
+      'name' => 'இந்தோனேஷியன் ருபியா',
+      'symbol' => 'IDR',
+    ),
+    'ILS' => 
+    array (
+      'name' => 'இஸ்ரேலி நியூ ஷிகேல்',
+      'symbol' => 'ILS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'ரூபாய்',
+      'symbol' => 'INR',
+    ),
+    'IQD' => 
+    array (
+      'name' => 'ஈராக்கி தினார்',
+      'symbol' => 'IQD',
+    ),
+    'IRR' => 
+    array (
+      'name' => 'இரானியன் ரியால்',
+      'symbol' => 'IRR',
+    ),
+    'ISK' => 
+    array (
+      'name' => 'ஐஸ்லாண்டிக் க்ரோனா',
+      'symbol' => 'ISK',
+    ),
+    'JMD' => 
+    array (
+      'name' => 'ஜமைக்கான் டாலர்',
+      'symbol' => 'JMD',
+    ),
+    'JOD' => 
+    array (
+      'name' => 'ஜோர்டானியன் டைனர்',
+      'symbol' => 'JOD',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'ஜாப்பனிய யென்',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'கெனியன் ஷில்லிங்',
+      'symbol' => 'KES',
+    ),
+    'KGS' => 
+    array (
+      'name' => 'கிரிகிஸ்தானி சோம்',
+      'symbol' => 'KGS',
+    ),
+    'KHR' => 
+    array (
+      'name' => 'கம்போடியன் ரியெல்',
+      'symbol' => 'KHR',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'கமோரியன் ஃப்ராங்க்',
+      'symbol' => 'KMF',
+    ),
+    'KPW' => 
+    array (
+      'name' => 'வட கொரிய வான்',
+      'symbol' => 'KPW',
+    ),
+    'KRW' => 
+    array (
+      'name' => 'தென் கொரிய வான்',
+      'symbol' => 'KRW',
+    ),
+    'KWD' => 
+    array (
+      'name' => 'குவைத்தி தினார்',
+      'symbol' => 'KWD',
+    ),
+    'KYD' => 
+    array (
+      'name' => 'கேமன் தீவுகள் டாலர்',
+      'symbol' => 'KYD',
+    ),
+    'KZT' => 
+    array (
+      'name' => 'கஸகஸ்தானி டென்கே',
+      'symbol' => 'KZT',
+    ),
+    'LAK' => 
+    array (
+      'name' => 'லவுட்டியன் கிப்',
+      'symbol' => 'LAK',
+    ),
+    'LBP' => 
+    array (
+      'name' => 'லபனீஸ் பவுண்டு',
+      'symbol' => 'LBP',
+    ),
+    'LKR' => 
+    array (
+      'name' => 'இலங்கை ரூபாய்',
+      'symbol' => 'LKR',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'லிபரியன் டாலர்',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'லெசோதோ லோட்டி',
+      'symbol' => 'LSL',
+    ),
+    'LTL' => 
+    array (
+      'name' => 'லிதுவேனியன் லிடஸ்',
+      'symbol' => 'LTL',
+    ),
+    'LVL' => 
+    array (
+      'name' => 'லாத்வியன் லாட்ஸ்',
+      'symbol' => 'LVL',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'லிபியன் தினார்',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'மொரோக்கோ திர்ஹாம்',
+      'symbol' => 'MAD',
+    ),
+    'MDL' => 
+    array (
+      'name' => 'மால்டோவன் லியூ',
+      'symbol' => 'MDL',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'மலகாசி ஏரியரி',
+      'symbol' => 'MGA',
+    ),
+    'MKD' => 
+    array (
+      'name' => 'மெசிடோனியன் தினார்',
+      'symbol' => 'MKD',
+    ),
+    'MMK' => 
+    array (
+      'name' => 'மியான்மா கியாத்',
+      'symbol' => 'MMK',
+    ),
+    'MNT' => 
+    array (
+      'name' => 'மங்கோலியன் டுக்ரிக்',
+      'symbol' => 'MNT',
+    ),
+    'MOP' => 
+    array (
+      'name' => 'மெகனீஸ் படாகா',
+      'symbol' => 'MOP',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'மொரிஷியனியன் ஒகுய்யா',
+      'symbol' => 'MRO',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'மொரீஷியன் ருபீ',
+      'symbol' => 'MUR',
+    ),
+    'MVR' => 
+    array (
+      'name' => 'மால்தீவியன் ருஃபியா',
+      'symbol' => 'MVR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'மலாவின் குவாச்சா',
+      'symbol' => 'MWK',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'மெக்ஸிகன் பெசோ',
+      'symbol' => 'MXN',
+    ),
+    'MYR' => 
+    array (
+      'name' => 'மலேஷியன் ரிங்கித்',
+      'symbol' => 'MYR',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'நமீபியன் டாலர்',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'நைஜீரியன் நைரா',
+      'symbol' => 'NGN',
+    ),
+    'NIO' => 
+    array (
+      'name' => 'நிகாராகுவான் கோர்டோபா',
+      'symbol' => 'NIO',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'நார்வேஜியன் க்ரோன்',
+      'symbol' => 'NOK',
+    ),
+    'NPR' => 
+    array (
+      'name' => 'நேபாளீஸ் ருபீ',
+      'symbol' => 'NPR',
+    ),
+    'NZD' => 
+    array (
+      'name' => 'நியூசிலாந்து டாலர்',
+      'symbol' => 'NZD',
+    ),
+    'OMR' => 
+    array (
+      'name' => 'ஓமானி ரியால்',
+      'symbol' => 'OMR',
+    ),
+    'PAB' => 
+    array (
+      'name' => 'பானாமானியன் பால்போபா',
+      'symbol' => 'PAB',
+    ),
+    'PEN' => 
+    array (
+      'name' => 'பெரூவியன் நியூவோ சோல்',
+      'symbol' => 'PEN',
+    ),
+    'PGK' => 
+    array (
+      'name' => 'பபுவா நியூ கினியன் கினா',
+      'symbol' => 'PGK',
+    ),
+    'PHP' => 
+    array (
+      'name' => 'ஃபிலிபைன் பேசோ',
+      'symbol' => 'PHP',
+    ),
+    'PKR' => 
+    array (
+      'name' => 'பாக்கிஸ்தானி ருபீ',
+      'symbol' => 'PKR',
+    ),
+    'PLN' => 
+    array (
+      'name' => 'போலிஷ் ஸ்லாட்டி',
+      'symbol' => 'PLN',
+    ),
+    'PYG' => 
+    array (
+      'name' => 'பராகுயான் குவாரானி',
+      'symbol' => 'PYG',
+    ),
+    'QAR' => 
+    array (
+      'name' => 'கத்தாரி ரியால்',
+      'symbol' => 'QAR',
+    ),
+    'RSD' => 
+    array (
+      'name' => 'செர்பியன் தினார்',
+      'symbol' => 'RSD',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'ரஷ்யன் ரூபல்',
+      'symbol' => 'RUB',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'ருவாண்டா ஃப்ராங்க்',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'சவுதி ரியால்',
+      'symbol' => 'SAR',
+    ),
+    'SBD' => 
+    array (
+      'name' => 'சாலமன் தீவுகள் டாலர்',
+      'symbol' => 'SBD',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'சிஷிலோயிஸ் ருபீ',
+      'symbol' => 'SCR',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'சுதனீஸ் பவுண்டு',
+      'symbol' => 'SDG',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'ஸ்வீடிஷ் க்ரோனா',
+      'symbol' => 'SEK',
+    ),
+    'SGD' => 
+    array (
+      'name' => 'சிங்கப்பூர் டாலர்',
+      'symbol' => 'SGD',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'செயன்ட் ஹெலேனா பவுண்டு',
+      'symbol' => 'SHP',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'செய்ரா லியோனியன் லியோன்',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'சொமாலி ஷில்லிங்',
+      'symbol' => 'SOS',
+    ),
+    'SRD' => 
+    array (
+      'name' => 'சூரினாமீஸ் டாலர்',
+      'symbol' => 'SRD',
+    ),
+    'STD' => 
+    array (
+      'name' => 'சாவ் டோமி மற்றும் பிரின்ஸ்பி டோப்ரா',
+      'symbol' => 'STD',
+    ),
+    'SYP' => 
+    array (
+      'name' => 'சிரியன் பவுன்ட்',
+      'symbol' => 'SYP',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'சுவாஸி லிலாங்கனி',
+      'symbol' => 'SZL',
+    ),
+    'THB' => 
+    array (
+      'name' => 'தாய் பாட்',
+      'symbol' => 'THB',
+    ),
+    'TJS' => 
+    array (
+      'name' => 'தஜிகிஸ்தானி சோமோனி',
+      'symbol' => 'TJS',
+    ),
+    'TMT' => 
+    array (
+      'name' => 'துர்க்மேனிஸ்தானி மனத்',
+      'symbol' => 'TMT',
+    ),
+    'TND' => 
+    array (
+      'name' => 'துனிஷியன் தினார்',
+      'symbol' => 'TND',
+    ),
+    'TOP' => 
+    array (
+      'name' => 'தொங்கான் பங்கா',
+      'symbol' => 'TOP',
+    ),
+    'TRY' => 
+    array (
+      'name' => 'துர்க்கிஸ் லீரா',
+      'symbol' => 'TRY',
+    ),
+    'TTD' => 
+    array (
+      'name' => 'டிரினாட் மற்றும் டோபாகோ டாலர்',
+      'symbol' => 'TTD',
+    ),
+    'TWD' => 
+    array (
+      'name' => 'புதிய தைவான் டாலர்',
+      'symbol' => 'TWD',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'தன்ஸானியன் ஷில்லிங்',
+      'symbol' => 'TZS',
+    ),
+    'UAH' => 
+    array (
+      'name' => 'உக்ரைனியன் ஹிரைவ்னியா',
+      'symbol' => 'UAH',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'உகாண்டன் ஷில்லிங்',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'யூ.எஸ். டாலர்',
+      'symbol' => 'USD',
+    ),
+    'UYU' => 
+    array (
+      'name' => 'உருகுவேயன் பேசோ',
+      'symbol' => 'UYU',
+    ),
+    'UZS' => 
+    array (
+      'name' => 'உஜ்பெகிஸ்தான் சோம்',
+      'symbol' => 'UZS',
+    ),
+    'VEF' => 
+    array (
+      'name' => 'வெனிசுலியன் போலிவர்',
+      'symbol' => 'VEF',
+    ),
+    'VND' => 
+    array (
+      'name' => 'வியட்நாமீஸ் டாங்',
+      'symbol' => 'VND',
+    ),
+    'VUV' => 
+    array (
+      'name' => 'வனுவாட்டு வாட்டு',
+      'symbol' => 'VUV',
+    ),
+    'WST' => 
+    array (
+      'name' => 'சமோவான் தாலா',
+      'symbol' => 'WST',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'CFA ஃப்ரேங்க் BEAC',
+      'symbol' => 'XAF',
+    ),
+    'XCD' => 
+    array (
+      'name' => 'கிழக்கு கெரேபியன் டாலர்',
+      'symbol' => 'XCD',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'CFA ஃப்ரேங்க் BCEAO',
+      'symbol' => 'XOF',
+    ),
+    'XPF' => 
+    array (
+      'name' => 'CFP ஃப்ராங்க்',
+      'symbol' => 'XPF',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'தெரியாத நாணயம்',
+      'symbol' => 'XXX',
+    ),
+    'YER' => 
+    array (
+      'name' => 'யெமினி ரியால்',
+      'symbol' => 'YER',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'தென் ஆப்ரிக்க ராண்ட்',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'ஸாம்பியன் குவாசா',
+      'symbol' => 'ZMK',
+    ),
+  ),
+);

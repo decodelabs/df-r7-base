@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'So',
+        'mon' => 'Ma',
+        'tue' => 'Di',
+        'wed' => 'Wo',
+        'thu' => 'Do',
+        'fri' => 'Vr',
+        'sat' => 'Sa',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Sondag',
+        'mon' => 'Maandag',
+        'tue' => 'Dinsdag',
+        'wed' => 'Woensdag',
+        'thu' => 'Donderdag',
+        'fri' => 'Vrydag',
+        'sat' => 'Saterdag',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Jan',
+        2 => 'Feb',
+        3 => 'Mar',
+        4 => 'Apr',
+        5 => 'Mei',
+        6 => 'Jun',
+        7 => 'Jul',
+        8 => 'Aug',
+        9 => 'Sep',
+        10 => 'Okt',
+        11 => 'Nov',
+        12 => 'Des',
+      ),
+      'full' => 
+      array (
+        1 => 'Januarie',
+        2 => 'Februarie',
+        3 => 'Maart',
+        4 => 'April',
+        5 => 'Mei',
+        6 => 'Junie',
+        7 => 'Julie',
+        8 => 'Augustus',
+        9 => 'September',
+        10 => 'Oktober',
+        11 => 'November',
+        12 => 'Desember',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE dd MMMM y',
+      'long' => 'dd MMMM y',
+      'medium' => 'dd MMM y',
+      'short' => 'yyyy-MM-dd',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+);

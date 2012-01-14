@@ -1,0 +1,133 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'buddhist' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, dd MMMM y G',
+      'long' => 'd MMMM y G',
+      'medium' => 'd MMM y G',
+      'short' => 'dd/MM/y G',
+    ),
+  ),
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Min',
+        'mon' => 'Sen',
+        'tue' => 'Sel',
+        'wed' => 'Rab',
+        'thu' => 'Kam',
+        'fri' => 'Jum',
+        'sat' => 'Sab',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Minggu',
+        'mon' => 'Senin',
+        'tue' => 'Selasa',
+        'wed' => 'Rabu',
+        'thu' => 'Kamis',
+        'fri' => 'Jumat',
+        'sat' => 'Sabtu',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Jan',
+        2 => 'Feb',
+        3 => 'Mar',
+        4 => 'Apr',
+        5 => 'Mei',
+        6 => 'Jun',
+        7 => 'Jul',
+        8 => 'Agt',
+        9 => 'Sep',
+        10 => 'Okt',
+        11 => 'Nov',
+        12 => 'Des',
+      ),
+      'full' => 
+      array (
+        1 => 'Januari',
+        2 => 'Februari',
+        3 => 'Maret',
+        4 => 'April',
+        5 => 'Mei',
+        6 => 'Juni',
+        7 => 'Juli',
+        8 => 'Agustus',
+        9 => 'September',
+        10 => 'Oktober',
+        11 => 'November',
+        12 => 'Desember',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, dd MMMM yyyy',
+      'long' => 'd MMMM yyyy',
+      'medium' => 'd MMM yyyy',
+      'short' => 'dd/MM/yy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'H:mm:ss zzzz',
+      'long' => 'HH:mm:ss z',
+      'medium' => 'HH:mm:ss',
+      'short' => 'HH:mm',
+    ),
+  ),
+  'islamic' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        10 => 'Syaw.',
+      ),
+      'full' => 
+      array (
+        8 => 'Sya\'ban',
+        9 => 'Ramadhan',
+        10 => 'Syawal',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, dd MMMM y G',
+      'long' => 'd MMMM y G',
+      'medium' => 'd MMM y G',
+      'short' => 'dd/MM/y G',
+    ),
+  ),
+  'japanese' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, dd MMMM y G',
+      'long' => 'd MMMM y G',
+      'medium' => 'd MMM y G',
+      'short' => 'dd/MM/y G',
+    ),
+  ),
+  'roc' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, dd MMMM y G',
+      'long' => 'd MMMM y G',
+      'medium' => 'd MMM y G',
+      'short' => 'dd/MM/y G',
+    ),
+  ),
+);

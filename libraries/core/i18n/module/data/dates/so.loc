@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Axd',
+        'mon' => 'Isn',
+        'tue' => 'Tal',
+        'wed' => 'Arb',
+        'thu' => 'Kha',
+        'fri' => 'Jim',
+        'sat' => 'Sab',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Axad',
+        'mon' => 'Isniin',
+        'tue' => 'Talaado',
+        'wed' => 'Arbaco',
+        'thu' => 'Khamiis',
+        'fri' => 'Jimco',
+        'sat' => 'Sabti',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Kob',
+        2 => 'Lab',
+        3 => 'Sad',
+        4 => 'Afr',
+        5 => 'Sha',
+        6 => 'Lix',
+        7 => 'Tod',
+        8 => 'Sid',
+        9 => 'Sag',
+        10 => 'Tob',
+        11 => 'KIT',
+        12 => 'LIT',
+      ),
+      'full' => 
+      array (
+        1 => 'Bisha Koobaad',
+        2 => 'Bisha Labaad',
+        3 => 'Bisha Saddexaad',
+        4 => 'Bisha Afraad',
+        5 => 'Bisha Shanaad',
+        6 => 'Bisha Lixaad',
+        7 => 'Bisha Todobaad',
+        8 => 'Bisha Sideedaad',
+        9 => 'Bisha Sagaalaad',
+        10 => 'Bisha Tobnaad',
+        11 => 'Bisha Kow iyo Tobnaad',
+        12 => 'Bisha Laba iyo Tobnaad',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, MMMM dd, y',
+      'long' => 'dd MMMM y',
+      'medium' => 'dd-MMM-y',
+      'short' => 'dd/MM/yy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+);

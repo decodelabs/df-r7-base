@@ -1,0 +1,65 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'sul',
+        'mon' => 'lun',
+        'tue' => 'meu.',
+        'wed' => 'mer.',
+        'thu' => 'yaou',
+        'fri' => 'gwe.',
+        'sat' => 'sad.',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Sul',
+        'mon' => 'Lun',
+        'tue' => 'Meurzh',
+        'wed' => 'Mercʼher',
+        'thu' => 'Yaou',
+        'fri' => 'Gwener',
+        'sat' => 'Sadorn',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Gen',
+        2 => 'Cʼhwe',
+        3 => 'Meur',
+        4 => 'Ebr',
+        5 => 'Mae',
+        6 => 'Mezh',
+        7 => 'Goue',
+        8 => 'Eost',
+        9 => 'Gwen',
+        10 => 'Here',
+        11 => 'Du',
+        12 => 'Ker',
+      ),
+      'full' => 
+      array (
+        1 => 'Genver',
+        2 => 'Cʼhwevrer',
+        3 => 'Meurzh',
+        4 => 'Ebrel',
+        5 => 'Mae',
+        6 => 'Mezheven',
+        7 => 'Gouere',
+        8 => 'Eost',
+        9 => 'Gwengolo',
+        10 => 'Here',
+        11 => 'Du',
+        12 => 'Kerzu',
+      ),
+    ),
+  ),
+);

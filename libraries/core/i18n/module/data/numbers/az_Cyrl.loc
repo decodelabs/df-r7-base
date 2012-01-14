@@ -1,0 +1,28 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => ',',
+    'group' => '.',
+    'list' => ';',
+    'percentSign' => '%',
+    'plusSign' => '+',
+    'minusSign' => '-',
+    'exponential' => 'E',
+    'perMille' => '‰',
+    'infinity' => '∞',
+    'nan' => 'NaN',
+  ),
+  'formats' => 
+  array (
+    'currency' => '¤ #,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'AZN' => 
+    array (
+      'name' => 'манат',
+      'symbol' => 'ман.',
+    ),
+  ),
+);

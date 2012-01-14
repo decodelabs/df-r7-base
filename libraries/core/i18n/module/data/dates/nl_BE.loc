@@ -1,0 +1,12 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'dateFormat' => 
+    array (
+      'medium' => 'd-MMM-y',
+      'short' => 'd/MM/yy',
+    ),
+  ),
+);

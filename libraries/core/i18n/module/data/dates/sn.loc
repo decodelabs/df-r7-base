@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Svo',
+        'mon' => 'Muv',
+        'tue' => 'Chip',
+        'wed' => 'Chit',
+        'thu' => 'Chin',
+        'fri' => 'Chis',
+        'sat' => 'Mug',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Svondo',
+        'mon' => 'Muvhuro',
+        'tue' => 'Chipiri',
+        'wed' => 'Chitatu',
+        'thu' => 'China',
+        'fri' => 'Chishanu',
+        'sat' => 'Mugovera',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Ndi',
+        2 => 'Kuk',
+        3 => 'Kur',
+        4 => 'Kub',
+        5 => 'Chi',
+        6 => 'Chi',
+        7 => 'Chi',
+        8 => 'Nya',
+        9 => 'Gun',
+        10 => 'Gum',
+        11 => 'Mb',
+        12 => 'Zvi',
+      ),
+      'full' => 
+      array (
+        1 => 'Ndira',
+        2 => 'Kukadzi',
+        3 => 'Kurume',
+        4 => 'Kubvumbi',
+        5 => 'Chivabvu',
+        6 => 'Chikumi',
+        7 => 'Chikunguru',
+        8 => 'Nyamavhuvhu',
+        9 => 'Gunyana',
+        10 => 'Gumiguru',
+        11 => 'Mbudzi',
+        12 => 'Zvita',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'dd/MM/yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+);

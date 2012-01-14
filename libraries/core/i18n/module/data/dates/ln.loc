@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'eye',
+        'mon' => 'ybo',
+        'tue' => 'mbl',
+        'wed' => 'mst',
+        'thu' => 'min',
+        'fri' => 'mtn',
+        'sat' => 'mps',
+      ),
+      'full' => 
+      array (
+        'sun' => 'eyenga',
+        'mon' => 'mokɔlɔ mwa yambo',
+        'tue' => 'mokɔlɔ mwa míbalé',
+        'wed' => 'mokɔlɔ mwa mísáto',
+        'thu' => 'mokɔlɔ ya mínéi',
+        'fri' => 'mokɔlɔ ya mítáno',
+        'sat' => 'mpɔ́sɔ',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'yan',
+        2 => 'fbl',
+        3 => 'msi',
+        4 => 'apl',
+        5 => 'mai',
+        6 => 'yun',
+        7 => 'yul',
+        8 => 'agt',
+        9 => 'stb',
+        10 => 'ɔtb',
+        11 => 'nvb',
+        12 => 'dsb',
+      ),
+      'full' => 
+      array (
+        1 => 'sánzá ya yambo',
+        2 => 'sánzá ya míbalé',
+        3 => 'sánzá ya mísáto',
+        4 => 'sánzá ya mínei',
+        5 => 'sánzá ya mítáno',
+        6 => 'sánzá ya motóbá',
+        7 => 'sánzá ya nsambo',
+        8 => 'sánzá ya mwambe',
+        9 => 'sánzá ya libwa',
+        10 => 'sánzá ya zómi',
+        11 => 'sánzá ya zómi na mɔ̌kɔ́',
+        12 => 'sánzá ya zómi na míbalé',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'd/M/yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'HH:mm:ss zzzz',
+      'long' => 'HH:mm:ss z',
+      'medium' => 'HH:mm:ss',
+      'short' => 'HH:mm',
+    ),
+  ),
+);

@@ -1,0 +1,1263 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => ',',
+    'group' => ' ',
+    'list' => ',',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '0.0 k',
+    'percent' => '#,##0 %',
+    'currency' => '#,##0.00 ¤',
+  ),
+  'currencies' => 
+  array (
+    'ADP' => 
+    array (
+      'name' => 'Andorská peseta',
+      'symbol' => 'ADP',
+    ),
+    'AED' => 
+    array (
+      'name' => 'UAE dirham',
+      'symbol' => 'AED',
+    ),
+    'AFN' => 
+    array (
+      'name' => 'Afganský afgání',
+      'symbol' => 'AFN',
+    ),
+    'ALL' => 
+    array (
+      'name' => 'Albánsky lek',
+      'symbol' => 'ALL',
+    ),
+    'AMD' => 
+    array (
+      'name' => 'Armenský dram',
+      'symbol' => 'AMD',
+    ),
+    'ANG' => 
+    array (
+      'name' => 'Nizozemský Antilský guilder',
+      'symbol' => 'ANG',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'Angolská kwanza',
+      'symbol' => 'AOA',
+    ),
+    'AOK' => 
+    array (
+      'name' => 'Angolská kwanza (1977-1990)',
+      'symbol' => 'AOK',
+    ),
+    'AON' => 
+    array (
+      'name' => 'Angolská nová kwanza (1990-2000)',
+      'symbol' => 'AON',
+    ),
+    'AOR' => 
+    array (
+      'name' => 'Angolská kwanza Reajustado (1995-1999)',
+      'symbol' => 'AOR',
+    ),
+    'ARA' => 
+    array (
+      'name' => 'Argentinský austral',
+      'symbol' => 'ARA',
+    ),
+    'ARP' => 
+    array (
+      'name' => 'Argentinské peso (1983-1985)',
+      'symbol' => 'ARP',
+    ),
+    'ARS' => 
+    array (
+      'name' => 'Argentinské peso',
+      'symbol' => 'ARS',
+    ),
+    'ATS' => 
+    array (
+      'name' => 'Rakúsky šiling',
+      'symbol' => 'ATS',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'Austrálsky dolár',
+      'symbol' => 'AUD',
+    ),
+    'AWG' => 
+    array (
+      'name' => 'Arubský guilder',
+      'symbol' => 'AWG',
+    ),
+    'AZM' => 
+    array (
+      'name' => 'Azerbaidžanský manat',
+      'symbol' => 'AZM',
+    ),
+    'AZN' => 
+    array (
+      'name' => 'Azerbajdžanský manat',
+      'symbol' => 'AZN',
+    ),
+    'BAD' => 
+    array (
+      'name' => 'Bosnianský dinár',
+      'symbol' => 'BAD',
+    ),
+    'BAM' => 
+    array (
+      'name' => 'Bosnianský konvertibilná marka',
+      'symbol' => 'BAM',
+    ),
+    'BBD' => 
+    array (
+      'name' => 'Barbadoský dolár',
+      'symbol' => 'BBD',
+    ),
+    'BDT' => 
+    array (
+      'name' => 'Bangladéšska taka',
+      'symbol' => 'BDT',
+    ),
+    'BEC' => 
+    array (
+      'name' => 'Belgický frank (konvertibilný)',
+      'symbol' => 'BEC',
+    ),
+    'BEF' => 
+    array (
+      'name' => 'Belgický frank',
+      'symbol' => 'BEF',
+    ),
+    'BEL' => 
+    array (
+      'name' => 'Belgický frank (finančný)',
+      'symbol' => 'BEL',
+    ),
+    'BGL' => 
+    array (
+      'name' => 'Bulharský leva',
+      'symbol' => 'BGL',
+    ),
+    'BGN' => 
+    array (
+      'name' => 'Bulharský leva nový',
+      'symbol' => 'BGN',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'Bahraiský dinár',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'Burundský frank',
+      'symbol' => 'BIF',
+    ),
+    'BMD' => 
+    array (
+      'name' => 'Bermudský dolár',
+      'symbol' => 'BMD',
+    ),
+    'BND' => 
+    array (
+      'name' => 'Bruneiský dolár',
+      'symbol' => 'BND',
+    ),
+    'BOB' => 
+    array (
+      'name' => 'Bolívijské boliviano',
+      'symbol' => 'BOB',
+    ),
+    'BOP' => 
+    array (
+      'name' => 'Bolivíjske peso',
+      'symbol' => 'BOP',
+    ),
+    'BOV' => 
+    array (
+      'name' => 'Bolivíjske mvdol',
+      'symbol' => 'BOV',
+    ),
+    'BRB' => 
+    array (
+      'name' => 'Bolivíjske Cruzeiro Novo (1967-1986)',
+      'symbol' => 'BRB',
+    ),
+    'BRC' => 
+    array (
+      'name' => 'Bolivíjske cruzado',
+      'symbol' => 'BRC',
+    ),
+    'BRE' => 
+    array (
+      'name' => 'Bolivíjske cruzeiro (1990-1993)',
+      'symbol' => 'BRE',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'Brazílsky real',
+      'symbol' => 'BRL',
+    ),
+    'BRN' => 
+    array (
+      'name' => 'Brazílske Cruzado Novo',
+      'symbol' => 'BRN',
+    ),
+    'BRR' => 
+    array (
+      'name' => 'Brazílske cruzeiro',
+      'symbol' => 'BRR',
+    ),
+    'BSD' => 
+    array (
+      'name' => 'Bahamský dolár',
+      'symbol' => 'BSD',
+    ),
+    'BTN' => 
+    array (
+      'name' => 'Bhutansky ngultrum',
+      'symbol' => 'BTN',
+    ),
+    'BUK' => 
+    array (
+      'name' => 'Burmese Kyat',
+      'symbol' => 'BUK',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'Botswanan Pula',
+      'symbol' => 'BWP',
+    ),
+    'BYB' => 
+    array (
+      'name' => 'Belarussian nový rubeľ (1994-1999)',
+      'symbol' => 'BYB',
+    ),
+    'BYR' => 
+    array (
+      'name' => 'Belarussian rubeľ',
+      'symbol' => 'BYR',
+    ),
+    'BZD' => 
+    array (
+      'name' => 'Belize dolár',
+      'symbol' => 'BZD',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'Kanadský dolár',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'Konžský frank Congolais',
+      'symbol' => 'CDF',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'Švajčiarský frank',
+      'symbol' => 'CHF',
+    ),
+    'CLF' => 
+    array (
+      'name' => 'Čílske Unidades de Fomento',
+      'symbol' => 'CLF',
+    ),
+    'CLP' => 
+    array (
+      'name' => 'Čílske peso',
+      'symbol' => 'CLP',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'Čínsky jüan',
+      'symbol' => 'CNY',
+    ),
+    'COP' => 
+    array (
+      'name' => 'Colombijské peso',
+      'symbol' => 'COP',
+    ),
+    'CRC' => 
+    array (
+      'name' => 'Kostarikský colon',
+      'symbol' => 'CRC',
+    ),
+    'CSK' => 
+    array (
+      'name' => 'Československá koruna',
+      'symbol' => 'CSK',
+    ),
+    'CUC' => 
+    array (
+      'name' => 'Kubánske konvertibilné peso',
+      'symbol' => 'CUC',
+    ),
+    'CUP' => 
+    array (
+      'name' => 'Kubánske peso',
+      'symbol' => 'CUP',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'Cape Verde eskudo',
+      'symbol' => 'CVE',
+    ),
+    'CYP' => 
+    array (
+      'name' => 'Cypruská libra',
+      'symbol' => 'CYP',
+    ),
+    'CZK' => 
+    array (
+      'name' => 'Česká koruna',
+      'symbol' => 'CZK',
+    ),
+    'DDM' => 
+    array (
+      'name' => 'Východonemecká marka',
+      'symbol' => 'DDM',
+    ),
+    'DEM' => 
+    array (
+      'name' => 'Nemecká marka',
+      'symbol' => 'DEM',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'Džibutský frank',
+      'symbol' => 'DJF',
+    ),
+    'DKK' => 
+    array (
+      'name' => 'Dánska koruna',
+      'symbol' => 'DKK',
+    ),
+    'DOP' => 
+    array (
+      'name' => 'Dominikánske peso',
+      'symbol' => 'DOP',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'Alžírsky dinár',
+      'symbol' => 'DZD',
+    ),
+    'ECS' => 
+    array (
+      'name' => 'Ekuadorský sucre',
+      'symbol' => 'ECS',
+    ),
+    'ECV' => 
+    array (
+      'name' => 'Ekuadorský Unidad de Valor Constante (UVC)',
+      'symbol' => 'ECV',
+    ),
+    'EEK' => 
+    array (
+      'name' => 'Estónska kroon',
+      'symbol' => 'EEK',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'Egyptská libra',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'Eritrejská nakfa',
+      'symbol' => 'ERN',
+    ),
+    'ESP' => 
+    array (
+      'name' => 'Španielská peseta',
+      'symbol' => 'ESP',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'Ethiopský birr',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'Euro',
+      'symbol' => 'EUR',
+    ),
+    'FIM' => 
+    array (
+      'name' => 'Finská marka',
+      'symbol' => 'FIM',
+    ),
+    'FJD' => 
+    array (
+      'name' => 'Fiji dolár',
+      'symbol' => 'FJD',
+    ),
+    'FKP' => 
+    array (
+      'name' => 'Falklandská libra',
+      'symbol' => 'FKP',
+    ),
+    'FRF' => 
+    array (
+      'name' => 'Francúzsky frank',
+      'symbol' => 'FRF',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'Britská libra',
+      'symbol' => 'GBP',
+    ),
+    'GEK' => 
+    array (
+      'name' => 'Gruzínsky Kupon Larit',
+      'symbol' => 'GEK',
+    ),
+    'GEL' => 
+    array (
+      'name' => 'Gruzínsky lari',
+      'symbol' => 'GEL',
+    ),
+    'GHC' => 
+    array (
+      'name' => 'Ghanský cedi (1979-2007)',
+      'symbol' => 'GHC',
+    ),
+    'GHS' => 
+    array (
+      'name' => 'Ghanský cedi',
+      'symbol' => 'GHS',
+    ),
+    'GIP' => 
+    array (
+      'name' => 'Gibraltarská libra',
+      'symbol' => 'GIP',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'Gambský dalasi',
+      'symbol' => 'GMD',
+    ),
+    'GNF' => 
+    array (
+      'name' => 'Guinejský frank',
+      'symbol' => 'GNF',
+    ),
+    'GNS' => 
+    array (
+      'name' => 'Guinejský syli',
+      'symbol' => 'GNS',
+    ),
+    'GQE' => 
+    array (
+      'name' => 'Rovníková Guinea Ekwele Guineana',
+      'symbol' => 'GQE',
+    ),
+    'GRD' => 
+    array (
+      'name' => 'Grécka drachma',
+      'symbol' => 'GRD',
+    ),
+    'GTQ' => 
+    array (
+      'name' => 'Guatemalský quetzal',
+      'symbol' => 'GTQ',
+    ),
+    'GWE' => 
+    array (
+      'name' => 'Portugalská Guinea eskudo',
+      'symbol' => 'GWE',
+    ),
+    'GWP' => 
+    array (
+      'name' => 'Guinea-Bissau peso',
+      'symbol' => 'GWP',
+    ),
+    'GYD' => 
+    array (
+      'name' => 'Guyanský dolár',
+      'symbol' => 'GYD',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'Hongkongský dolár',
+      'symbol' => 'HKD',
+    ),
+    'HNL' => 
+    array (
+      'name' => 'Hoduraská lempira',
+      'symbol' => 'HNL',
+    ),
+    'HRD' => 
+    array (
+      'name' => 'Chorvátsky dinár',
+      'symbol' => 'HRD',
+    ),
+    'HRK' => 
+    array (
+      'name' => 'Chorvátska kuna',
+      'symbol' => 'HRK',
+    ),
+    'HTG' => 
+    array (
+      'name' => 'Haitské gourde',
+      'symbol' => 'HTG',
+    ),
+    'HUF' => 
+    array (
+      'name' => 'Maďarský forint',
+      'symbol' => 'HUF',
+    ),
+    'IDR' => 
+    array (
+      'name' => 'Indonézska rupia',
+      'symbol' => 'IDR',
+    ),
+    'IEP' => 
+    array (
+      'name' => 'Írska libra',
+      'symbol' => 'IEP',
+    ),
+    'ILP' => 
+    array (
+      'name' => 'Izraelská libra',
+      'symbol' => 'ILP',
+    ),
+    'ILS' => 
+    array (
+      'name' => 'Izraelský šekel',
+      'symbol' => 'ILS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'Indická rupia',
+      'symbol' => 'INR',
+    ),
+    'IQD' => 
+    array (
+      'name' => 'Iracký dinár',
+      'symbol' => 'IQD',
+    ),
+    'IRR' => 
+    array (
+      'name' => 'Iránsky rial',
+      'symbol' => 'IRR',
+    ),
+    'ISK' => 
+    array (
+      'name' => 'Islandská krona',
+      'symbol' => 'ISK',
+    ),
+    'ITL' => 
+    array (
+      'name' => 'Talianská lira',
+      'symbol' => 'ITL',
+    ),
+    'JMD' => 
+    array (
+      'name' => 'Jamajský dolár',
+      'symbol' => 'JMD',
+    ),
+    'JOD' => 
+    array (
+      'name' => 'Jordánsky dinár',
+      'symbol' => 'JOD',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'Japonský jen',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'Keňský šiling',
+      'symbol' => 'KES',
+    ),
+    'KGS' => 
+    array (
+      'name' => 'Kyrgyský som',
+      'symbol' => 'KGS',
+    ),
+    'KHR' => 
+    array (
+      'name' => 'Kambodžský riel',
+      'symbol' => 'KHR',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'Comoro frank',
+      'symbol' => 'KMF',
+    ),
+    'KPW' => 
+    array (
+      'name' => 'Severokórejský won',
+      'symbol' => 'KPW',
+    ),
+    'KRW' => 
+    array (
+      'name' => 'Juhokórejský won',
+      'symbol' => 'KRW',
+    ),
+    'KWD' => 
+    array (
+      'name' => 'Kuvaitský dinár',
+      'symbol' => 'KWD',
+    ),
+    'KYD' => 
+    array (
+      'name' => 'Kajmanský dolár',
+      'symbol' => 'KYD',
+    ),
+    'KZT' => 
+    array (
+      'name' => 'Kazažský tenge',
+      'symbol' => 'KZT',
+    ),
+    'LAK' => 
+    array (
+      'name' => 'Laoský kip',
+      'symbol' => 'LAK',
+    ),
+    'LBP' => 
+    array (
+      'name' => 'Libanonská libra',
+      'symbol' => 'LBP',
+    ),
+    'LKR' => 
+    array (
+      'name' => 'Šrilanská rupia',
+      'symbol' => 'LKR',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'Libérský dolár',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'Lesothský loti',
+      'symbol' => 'LSL',
+    ),
+    'LTL' => 
+    array (
+      'name' => 'Litovský litas',
+      'symbol' => 'LTL',
+    ),
+    'LTT' => 
+    array (
+      'name' => 'Litevský talonas',
+      'symbol' => 'LTT',
+    ),
+    'LUF' => 
+    array (
+      'name' => 'Luxemburský frank',
+      'symbol' => 'LUF',
+    ),
+    'LVL' => 
+    array (
+      'name' => 'Lotyšský lat',
+      'symbol' => 'LVL',
+    ),
+    'LVR' => 
+    array (
+      'name' => 'Lotyšský rubeľ',
+      'symbol' => 'LVR',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'Libyjský dinár',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'Marocký dirham',
+      'symbol' => 'MAD',
+    ),
+    'MAF' => 
+    array (
+      'name' => 'Marocký frank',
+      'symbol' => 'MAF',
+    ),
+    'MDL' => 
+    array (
+      'name' => 'Moldavský leu',
+      'symbol' => 'MDL',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'Madagaskarský ariary',
+      'symbol' => 'MGA',
+    ),
+    'MGF' => 
+    array (
+      'name' => 'Madagaskarský frank',
+      'symbol' => 'MGF',
+    ),
+    'MKD' => 
+    array (
+      'name' => 'Macedónsky denár',
+      'symbol' => 'MKD',
+    ),
+    'MLF' => 
+    array (
+      'name' => 'Malský frank',
+      'symbol' => 'MLF',
+    ),
+    'MMK' => 
+    array (
+      'name' => 'Myanmarský kyat',
+      'symbol' => 'MMK',
+    ),
+    'MNT' => 
+    array (
+      'name' => 'Mongolský tugrik',
+      'symbol' => 'MNT',
+    ),
+    'MOP' => 
+    array (
+      'name' => 'Macao Pataca',
+      'symbol' => 'MOP',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'Mauritania Ouguiya',
+      'symbol' => 'MRO',
+    ),
+    'MTL' => 
+    array (
+      'name' => 'Maltská lira',
+      'symbol' => 'MTL',
+    ),
+    'MTP' => 
+    array (
+      'name' => 'Maltská libra',
+      'symbol' => 'MTP',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'Mauritská rupia',
+      'symbol' => 'MUR',
+    ),
+    'MVR' => 
+    array (
+      'name' => 'Maldivská rufiyaa',
+      'symbol' => 'MVR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'Malavská kwacha',
+      'symbol' => 'MWK',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'Mexické peso',
+      'symbol' => 'Mex$',
+    ),
+    'MXP' => 
+    array (
+      'name' => 'Mexické striborné peso (1861-1992)',
+      'symbol' => 'MXP',
+    ),
+    'MXV' => 
+    array (
+      'name' => 'Mexické Unidad de Inversion (UDI)',
+      'symbol' => 'MXV',
+    ),
+    'MYR' => 
+    array (
+      'name' => 'Malajský ringgit',
+      'symbol' => 'MYR',
+    ),
+    'MZE' => 
+    array (
+      'name' => 'Mozambijské eskudo',
+      'symbol' => 'MZE',
+    ),
+    'MZM' => 
+    array (
+      'name' => 'Mozambijské metical',
+      'symbol' => 'MZM',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'Namibský dolár',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'Nigerská naira',
+      'symbol' => 'NGN',
+    ),
+    'NIC' => 
+    array (
+      'name' => 'Nikaragujská cordoba',
+      'symbol' => 'NIC',
+    ),
+    'NIO' => 
+    array (
+      'name' => 'Nikaragujská Cordoba Oro',
+      'symbol' => 'NIO',
+    ),
+    'NLG' => 
+    array (
+      'name' => 'Nizozemský guilder',
+      'symbol' => 'NLG',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'Nórska koruna',
+      'symbol' => 'NOK',
+    ),
+    'NPR' => 
+    array (
+      'name' => 'Nepálska rupia',
+      'symbol' => 'NPR',
+    ),
+    'NZD' => 
+    array (
+      'name' => 'Novozélandský dolár',
+      'symbol' => 'NZD',
+    ),
+    'OMR' => 
+    array (
+      'name' => 'Ománský rial',
+      'symbol' => 'OMR',
+    ),
+    'PAB' => 
+    array (
+      'name' => 'Panamská balboa',
+      'symbol' => 'PAB',
+    ),
+    'PEI' => 
+    array (
+      'name' => 'Peruvský inti',
+      'symbol' => 'PEI',
+    ),
+    'PEN' => 
+    array (
+      'name' => 'Peruvský sol Nuevo',
+      'symbol' => 'PEN',
+    ),
+    'PES' => 
+    array (
+      'name' => 'Peruvský sol',
+      'symbol' => 'PES',
+    ),
+    'PGK' => 
+    array (
+      'name' => 'Papua Nová Guinea kina',
+      'symbol' => 'PGK',
+    ),
+    'PHP' => 
+    array (
+      'name' => 'Filipínske peso',
+      'symbol' => 'PHP',
+    ),
+    'PKR' => 
+    array (
+      'name' => 'Pakistanská rupia',
+      'symbol' => 'PKR',
+    ),
+    'PLN' => 
+    array (
+      'name' => 'Poľský zlotý',
+      'symbol' => 'zl',
+    ),
+    'PLZ' => 
+    array (
+      'name' => 'Polský zloty (1950-1995)',
+      'symbol' => 'PLZ',
+    ),
+    'PTE' => 
+    array (
+      'name' => 'Portugalské eskudo',
+      'symbol' => 'PTE',
+    ),
+    'PYG' => 
+    array (
+      'name' => 'Paraguayské guarani',
+      'symbol' => 'PYG',
+    ),
+    'QAR' => 
+    array (
+      'name' => 'Qatarský rial',
+      'symbol' => 'QAR',
+    ),
+    'ROL' => 
+    array (
+      'name' => 'Rumunský leu',
+      'symbol' => 'ROL',
+    ),
+    'RON' => 
+    array (
+      'name' => 'Rumunský Lei',
+      'symbol' => 'RON',
+    ),
+    'RSD' => 
+    array (
+      'name' => 'Srbský dinár',
+      'symbol' => 'RSD',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'Ruský rubeľ',
+      'symbol' => 'RUB',
+    ),
+    'RUR' => 
+    array (
+      'name' => 'Ruský rubeľ (1991-1998)',
+      'symbol' => 'RUR',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'Rwandský frank',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'Saudskoarabský rial',
+      'symbol' => 'SAR',
+    ),
+    'SBD' => 
+    array (
+      'name' => 'Solomon Islands dolár',
+      'symbol' => 'SBD',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'Sejšelská rupia',
+      'symbol' => 'SCR',
+    ),
+    'SDD' => 
+    array (
+      'name' => 'Sudánsky dinár',
+      'symbol' => 'SDD',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'Sudánska libra',
+      'symbol' => 'SDG',
+    ),
+    'SDP' => 
+    array (
+      'name' => 'Sudánska libra (1957-1998)',
+      'symbol' => 'SDP',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'Švédska koruna',
+      'symbol' => 'SEK',
+    ),
+    'SGD' => 
+    array (
+      'name' => 'Singapúrsky dolár',
+      'symbol' => 'SGD',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'Libra',
+      'symbol' => 'SHP',
+    ),
+    'SIT' => 
+    array (
+      'name' => 'Slovinský Tolar',
+      'symbol' => 'SIT',
+    ),
+    'SKK' => 
+    array (
+      'name' => 'Slovenská koruna',
+      'symbol' => 'SKK',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'Sierra Leone Leone',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'Somálsky šiling',
+      'symbol' => 'SOS',
+    ),
+    'SRD' => 
+    array (
+      'name' => 'Surinamský dolár',
+      'symbol' => 'SRD',
+    ),
+    'SRG' => 
+    array (
+      'name' => 'Surinamský guilder',
+      'symbol' => 'SRG',
+    ),
+    'STD' => 
+    array (
+      'name' => 'Sao Tome a Principe dobra',
+      'symbol' => 'STD',
+    ),
+    'SUR' => 
+    array (
+      'name' => 'Sovietský rubeľ',
+      'symbol' => 'SUR',
+    ),
+    'SVC' => 
+    array (
+      'name' => 'El Salvadorský colon',
+      'symbol' => 'SVC',
+    ),
+    'SYP' => 
+    array (
+      'name' => 'Syrská libra',
+      'symbol' => 'SYP',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'Swaziland lilangeni',
+      'symbol' => 'SZL',
+    ),
+    'THB' => 
+    array (
+      'name' => 'Thajský baht',
+      'symbol' => 'THB',
+    ),
+    'TJR' => 
+    array (
+      'name' => 'Tadžikistanský rubeľ',
+      'symbol' => 'TJR',
+    ),
+    'TJS' => 
+    array (
+      'name' => 'Tadžikistanský somoni',
+      'symbol' => 'TJS',
+    ),
+    'TMM' => 
+    array (
+      'name' => 'Turkménsky manat (1993-2009)',
+      'symbol' => 'TMM',
+    ),
+    'TMT' => 
+    array (
+      'name' => 'Turkménsky manat',
+      'symbol' => 'TMT',
+    ),
+    'TND' => 
+    array (
+      'name' => 'Tuniský dinár',
+      'symbol' => 'TND',
+    ),
+    'TOP' => 
+    array (
+      'name' => 'Tonga Paʻanga',
+      'symbol' => 'TOP',
+    ),
+    'TPE' => 
+    array (
+      'name' => 'Timorské eskudo',
+      'symbol' => 'TPE',
+    ),
+    'TRL' => 
+    array (
+      'name' => 'Turecká lira',
+      'symbol' => 'TRL',
+    ),
+    'TRY' => 
+    array (
+      'name' => 'Turecká líra',
+      'symbol' => 'TRY',
+    ),
+    'TTD' => 
+    array (
+      'name' => 'Trinidad a Tobago dolár',
+      'symbol' => 'TTD',
+    ),
+    'TWD' => 
+    array (
+      'name' => 'Nový taiwanský dolár',
+      'symbol' => 'TWD',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'Tanzanský šiling',
+      'symbol' => 'TZS',
+    ),
+    'UAH' => 
+    array (
+      'name' => 'Ukrainská hrivna',
+      'symbol' => 'UAH',
+    ),
+    'UAK' => 
+    array (
+      'name' => 'Ukrainský karbovanetz',
+      'symbol' => 'UAK',
+    ),
+    'UGS' => 
+    array (
+      'name' => 'Ugandan šiling (1966-1987)',
+      'symbol' => 'UGS',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'Ugandský šiling',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'Americký dolár',
+      'symbol' => 'USD',
+    ),
+    'USN' => 
+    array (
+      'name' => 'US dolár (Next day)',
+      'symbol' => 'USN',
+    ),
+    'USS' => 
+    array (
+      'name' => 'US dolár (Same day)',
+      'symbol' => 'USS',
+    ),
+    'UYP' => 
+    array (
+      'name' => 'Uruguajské peso (1975-1993)',
+      'symbol' => 'UYP',
+    ),
+    'UYU' => 
+    array (
+      'name' => 'Uruguajské peso Uruguayo',
+      'symbol' => 'UYU',
+    ),
+    'UZS' => 
+    array (
+      'name' => 'Uzbekistanský sum',
+      'symbol' => 'UZS',
+    ),
+    'VEB' => 
+    array (
+      'name' => 'Venezuelský bolivar',
+      'symbol' => 'VEB',
+    ),
+    'VEF' => 
+    array (
+      'name' => 'Venezuelský bolívar',
+      'symbol' => 'VEF',
+    ),
+    'VND' => 
+    array (
+      'name' => 'Vietnamský dong',
+      'symbol' => 'VND',
+    ),
+    'VUV' => 
+    array (
+      'name' => 'Vanuatu vatu',
+      'symbol' => 'VUV',
+    ),
+    'WST' => 
+    array (
+      'name' => 'Západná Samoa tala',
+      'symbol' => 'WST',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'CFA frank BEAC',
+      'symbol' => 'XAF',
+    ),
+    'XAU' => 
+    array (
+      'name' => 'Zlato',
+      'symbol' => 'XAU',
+    ),
+    'XCD' => 
+    array (
+      'name' => 'East Caribbean dolár',
+      'symbol' => 'XCD',
+    ),
+    'XDR' => 
+    array (
+      'name' => 'Špeciálne práva čerpania',
+      'symbol' => 'XDR',
+    ),
+    'XFO' => 
+    array (
+      'name' => 'Francúzsky zlatý frank',
+      'symbol' => 'XFO',
+    ),
+    'XFU' => 
+    array (
+      'name' => 'Francúzsky UIC-frank',
+      'symbol' => 'XFU',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'CFA frank BCEAO',
+      'symbol' => 'XOF',
+    ),
+    'XPF' => 
+    array (
+      'name' => 'CFP frank',
+      'symbol' => 'XPF',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'Neznáma mena',
+      'symbol' => 'XXX',
+    ),
+    'YDD' => 
+    array (
+      'name' => 'Jemenský dinár',
+      'symbol' => 'YDD',
+    ),
+    'YER' => 
+    array (
+      'name' => 'Jemenský rial',
+      'symbol' => 'YER',
+    ),
+    'YUD' => 
+    array (
+      'name' => 'Juhoslávsky dinár [YUD]',
+      'symbol' => 'YUD',
+    ),
+    'YUM' => 
+    array (
+      'name' => 'Juhoslávsky Noviy dinár',
+      'symbol' => 'YUM',
+    ),
+    'YUN' => 
+    array (
+      'name' => 'Juhoslávsky dinár',
+      'symbol' => 'YUN',
+    ),
+    'ZAL' => 
+    array (
+      'name' => 'Juhoafrický rand (financial)',
+      'symbol' => 'ZAL',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'Juhoafrický rand',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'Zambská kwacha',
+      'symbol' => 'ZMK',
+    ),
+    'ZRN' => 
+    array (
+      'name' => 'Zairský nový zaire',
+      'symbol' => 'ZRN',
+    ),
+    'ZRZ' => 
+    array (
+      'name' => 'Zairský Zaire',
+      'symbol' => 'ZRZ',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'Zimbabský dolár',
+      'symbol' => 'ZWD',
+    ),
+  ),
+);

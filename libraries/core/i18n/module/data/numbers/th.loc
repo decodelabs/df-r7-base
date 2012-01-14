@@ -1,0 +1,1381 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => '.',
+    'group' => ',',
+    'list' => ';',
+    'percentSign' => '%',
+    'plusSign' => '+',
+    'minusSign' => '-',
+    'exponential' => 'E',
+    'perMille' => '‰',
+    'infinity' => '∞',
+    'nan' => 'NaN',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'scientific' => '#E0',
+    'percent' => '#,##0%',
+    'currency' => '¤#,##0.00;¤-#,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'ADP' => 
+    array (
+      'name' => 'เปเซตาอันดอร์รา',
+      'symbol' => 'ADP',
+    ),
+    'AED' => 
+    array (
+      'name' => 'เดอร์แฮมสหรัฐอาหรับเอมิเรตส์',
+      'symbol' => 'AED',
+    ),
+    'AFA' => 
+    array (
+      'name' => 'อัฟกานีอัฟกานิสถาน (1927-2002)',
+      'symbol' => 'AFA',
+    ),
+    'AFN' => 
+    array (
+      'name' => 'อัฟกานีอัฟกานิสถาน',
+      'symbol' => 'AFN',
+    ),
+    'ALL' => 
+    array (
+      'name' => 'เลกแอลเบเนีย',
+      'symbol' => 'ALL',
+    ),
+    'AMD' => 
+    array (
+      'name' => 'แดรมอาร์เมเนีย',
+      'symbol' => 'AMD',
+    ),
+    'ANG' => 
+    array (
+      'name' => 'กิลเดอร์เนเธอร์แลนด์แอนทิลลิส',
+      'symbol' => 'ANG',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'กวานซาแองโกลา',
+      'symbol' => 'AOA',
+    ),
+    'AOK' => 
+    array (
+      'name' => 'กวานซาแองโกลา (1977-1990)',
+      'symbol' => 'AOK',
+    ),
+    'AON' => 
+    array (
+      'name' => 'นิวกวานซาแองโกลา (1990-2000)',
+      'symbol' => 'AON',
+    ),
+    'AOR' => 
+    array (
+      'name' => 'กวานซารีจัสทาโดแองโกลา (1995-1999)',
+      'symbol' => 'AOR',
+    ),
+    'ARA' => 
+    array (
+      'name' => 'ออสตรัลอาร์เจนตินา',
+      'symbol' => 'ARA',
+    ),
+    'ARP' => 
+    array (
+      'name' => 'เปโซอาร์เจนตินา (1983-1985)',
+      'symbol' => 'ARP',
+    ),
+    'ARS' => 
+    array (
+      'name' => 'เปโซอาร์เจนตินา',
+      'symbol' => 'ARS',
+    ),
+    'ATS' => 
+    array (
+      'name' => 'ชิลลิงออสเตรีย',
+      'symbol' => 'ATS',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'ดอลลาร์ออสเตรเลีย',
+      'symbol' => 'AUD',
+    ),
+    'AWG' => 
+    array (
+      'name' => 'ฟลอรินอารูบา',
+      'symbol' => 'AWG',
+    ),
+    'AZM' => 
+    array (
+      'name' => 'มานัตอาเซอร์ไบจาน (1993-2006)',
+      'symbol' => 'AZM',
+    ),
+    'AZN' => 
+    array (
+      'name' => 'มานัตอาเซอร์ไบจาน',
+      'symbol' => 'AZN',
+    ),
+    'BAD' => 
+    array (
+      'name' => 'ดีนาร์บอสเนีย-เฮอร์เซโกวีนา',
+      'symbol' => 'BAD',
+    ),
+    'BAM' => 
+    array (
+      'name' => 'มาร​์กบอสเนีย-เฮอร์เซโกวีนา',
+      'symbol' => 'BAM',
+    ),
+    'BBD' => 
+    array (
+      'name' => 'ดอลลาร์บาร์เบโดส',
+      'symbol' => 'BBD',
+    ),
+    'BDT' => 
+    array (
+      'name' => 'ตากาบังกลาเทศ',
+      'symbol' => 'BDT',
+    ),
+    'BEC' => 
+    array (
+      'name' => 'ฟรังก์เบลเยียม (เปลี่ยนแปลงได้)',
+      'symbol' => 'BEC',
+    ),
+    'BEF' => 
+    array (
+      'name' => 'ฟรังก์เบลเยียม',
+      'symbol' => 'BEF',
+    ),
+    'BEL' => 
+    array (
+      'name' => 'ฟรังก์เบลเยียม (การเงิน)',
+      'symbol' => 'BEL',
+    ),
+    'BGL' => 
+    array (
+      'name' => 'ฮาร์ดเลฟบัลแกเรีย',
+      'symbol' => 'BGL',
+    ),
+    'BGN' => 
+    array (
+      'name' => 'เลฟบัลแกเรีย',
+      'symbol' => 'BGN',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'ดีนาร์บาห์เรน',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'ฟรังก์บุรุนดี',
+      'symbol' => 'BIF',
+    ),
+    'BMD' => 
+    array (
+      'name' => 'ดอลลาร์เบอร์มิวดา',
+      'symbol' => 'BMD',
+    ),
+    'BND' => 
+    array (
+      'name' => 'ดอลลาร์บรูไน',
+      'symbol' => 'BND',
+    ),
+    'BOB' => 
+    array (
+      'name' => 'โบลิเวียโนโบลิเวีย',
+      'symbol' => 'BOB',
+    ),
+    'BOP' => 
+    array (
+      'name' => 'เปโซโบลิเวีย',
+      'symbol' => 'BOP',
+    ),
+    'BOV' => 
+    array (
+      'name' => 'มฟดอลโบลิเวีย',
+      'symbol' => 'BOV',
+    ),
+    'BRB' => 
+    array (
+      'name' => 'ครูเซโรโนโวบราซิล (1967-1986)',
+      'symbol' => 'BRB',
+    ),
+    'BRC' => 
+    array (
+      'name' => 'ครูซาโดบราซิล',
+      'symbol' => 'BRC',
+    ),
+    'BRE' => 
+    array (
+      'name' => 'ครูเซโรบราซิล (1990-1993)',
+      'symbol' => 'BRE',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'เรียลบราซิล',
+      'symbol' => 'BRL',
+    ),
+    'BRN' => 
+    array (
+      'name' => 'ครูซาโดโนโวบราซิล',
+      'symbol' => 'BRN',
+    ),
+    'BRR' => 
+    array (
+      'name' => 'ครูเซโรบราซิล',
+      'symbol' => 'BRR',
+    ),
+    'BSD' => 
+    array (
+      'name' => 'ดอลลาร์บาฮามาส',
+      'symbol' => 'BSD',
+    ),
+    'BTN' => 
+    array (
+      'name' => 'เอ็งกุลตรัมภูฏาน',
+      'symbol' => 'BTN',
+    ),
+    'BUK' => 
+    array (
+      'name' => 'จ๊าดพม่า',
+      'symbol' => 'BUK',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'ปูลาบอตสวานา',
+      'symbol' => 'BWP',
+    ),
+    'BYB' => 
+    array (
+      'name' => 'นิวรูเบิลเบลารุส (1994-1999)',
+      'symbol' => 'BYB',
+    ),
+    'BYR' => 
+    array (
+      'name' => 'รูเบิลเบลารุส',
+      'symbol' => 'BYR',
+    ),
+    'BZD' => 
+    array (
+      'name' => 'ดอลลาร์เบลีซ',
+      'symbol' => 'BZD',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'ดอลลาร์แคนาดา',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'ฟรังก์คองโก',
+      'symbol' => 'CDF',
+    ),
+    'CHE' => 
+    array (
+      'name' => 'ยูโรดับเบิลยูไออาร์',
+      'symbol' => 'CHE',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'ฟรังก์สวิส',
+      'symbol' => 'CHF',
+    ),
+    'CHW' => 
+    array (
+      'name' => 'ฟรังก์ดับเบิลยูไออาร์',
+      'symbol' => 'CHW',
+    ),
+    'CLF' => 
+    array (
+      'name' => 'ฟูเมนโตชิลี',
+      'symbol' => 'CLF',
+    ),
+    'CLP' => 
+    array (
+      'name' => 'เปโซชิลี',
+      'symbol' => 'CLP',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'หยวนเหรินหมินปี้ (สาธารณรัฐประชาชนจีน)',
+      'symbol' => 'CNY',
+    ),
+    'COP' => 
+    array (
+      'name' => 'เปโซโคลอมเบีย',
+      'symbol' => 'COP',
+    ),
+    'COU' => 
+    array (
+      'name' => 'วาเลอร์เรียลโคลอมเบีย',
+      'symbol' => 'COU',
+    ),
+    'CRC' => 
+    array (
+      'name' => 'โกลองคอสตาริกา',
+      'symbol' => 'CRC',
+    ),
+    'CSD' => 
+    array (
+      'name' => 'ดีนาร์เซอร์เบียเก่า',
+      'symbol' => 'CSD',
+    ),
+    'CSK' => 
+    array (
+      'name' => 'ฮาร์ดโครูนาเช็กโกสโลวัก',
+      'symbol' => 'CSK',
+    ),
+    'CUC' => 
+    array (
+      'name' => 'เปโซคิวบา (แปลงสภาพ)',
+      'symbol' => 'CUC',
+    ),
+    'CUP' => 
+    array (
+      'name' => 'เปโซคิวบา',
+      'symbol' => 'CUP',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'เอสคูโดเคปเวิร์ด',
+      'symbol' => 'CVE',
+    ),
+    'CYP' => 
+    array (
+      'name' => 'ปอนด์ไซปรัส',
+      'symbol' => 'CYP',
+    ),
+    'CZK' => 
+    array (
+      'name' => 'โครูนาสาธารณรัฐเช็ก',
+      'symbol' => 'CZK',
+    ),
+    'DDM' => 
+    array (
+      'name' => 'มาร์กเยอรมันตะวันออก',
+      'symbol' => 'DDM',
+    ),
+    'DEM' => 
+    array (
+      'name' => 'มาร์กเยอรมัน',
+      'symbol' => 'DEM',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'ฟรังก์จิบูตี',
+      'symbol' => 'DJF',
+    ),
+    'DKK' => 
+    array (
+      'name' => 'โครนเดนมาร์ก',
+      'symbol' => 'DKK',
+    ),
+    'DOP' => 
+    array (
+      'name' => 'เปโซโดมินิกัน',
+      'symbol' => 'DOP',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'ดีนาร์แอลจีเรีย',
+      'symbol' => 'DZD',
+    ),
+    'ECS' => 
+    array (
+      'name' => 'ซูเกรเอกวาดอร์',
+      'symbol' => 'ECS',
+    ),
+    'ECV' => 
+    array (
+      'name' => 'วาเลอร์คอนสแตนต์เอกวาดอร์',
+      'symbol' => 'ECV',
+    ),
+    'EEK' => 
+    array (
+      'name' => 'ครูนเอสโตเนีย',
+      'symbol' => 'EEK',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'ปอนด์อียิปต์',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'แนกฟาเอริเทรีย',
+      'symbol' => 'ERN',
+    ),
+    'ESA' => 
+    array (
+      'name' => 'เปเซตาสเปน (บัญชีเอ)',
+      'symbol' => 'ESA',
+    ),
+    'ESB' => 
+    array (
+      'name' => 'เปเซตาสเปน (บัญชีที่เปลี่ยนแปลงได้)',
+      'symbol' => 'ESB',
+    ),
+    'ESP' => 
+    array (
+      'name' => 'เปเซตาสเปน',
+      'symbol' => 'ESP',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'เบอรร์เอธิโอเปีย',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'ยูโร',
+      'symbol' => 'EUR',
+    ),
+    'FIM' => 
+    array (
+      'name' => 'มาร์กกาฟินแลนด์',
+      'symbol' => 'FIM',
+    ),
+    'FJD' => 
+    array (
+      'name' => 'ดอลลาร์ฟิจิ',
+      'symbol' => 'FJD',
+    ),
+    'FKP' => 
+    array (
+      'name' => 'ปอนด์หมู่เกาะฟอล์กแลนด์',
+      'symbol' => 'FKP',
+    ),
+    'FRF' => 
+    array (
+      'name' => 'ฟรังก์ฝรั่งเศส',
+      'symbol' => 'FRF',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'ปอนด์สเตอร์ลิง (สหราชอาณาจักร)',
+      'symbol' => 'GBP',
+    ),
+    'GEK' => 
+    array (
+      'name' => 'คูปอนลาริตจอร์เจีย',
+      'symbol' => 'GEK',
+    ),
+    'GEL' => 
+    array (
+      'name' => 'ลารีจอร์เจีย',
+      'symbol' => 'GEL',
+    ),
+    'GHC' => 
+    array (
+      'name' => 'เซดีกานา (1979-2007)',
+      'symbol' => 'GHC',
+    ),
+    'GHS' => 
+    array (
+      'name' => 'เซดีกานา',
+      'symbol' => 'GHS',
+    ),
+    'GIP' => 
+    array (
+      'name' => 'ปอนด์ยิบรอลตาร์',
+      'symbol' => 'GIP',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'ดาลาซีแกมเบีย',
+      'symbol' => 'GMD',
+    ),
+    'GNF' => 
+    array (
+      'name' => 'ฟรังก์กินี',
+      'symbol' => 'GNF',
+    ),
+    'GNS' => 
+    array (
+      'name' => 'ไซลีกินี',
+      'symbol' => 'GNS',
+    ),
+    'GQE' => 
+    array (
+      'name' => 'เอ็กเวเลอิเควทอเรียลกินี',
+      'symbol' => 'GQE',
+    ),
+    'GRD' => 
+    array (
+      'name' => 'ดรัชมากรีก',
+      'symbol' => 'GRD',
+    ),
+    'GTQ' => 
+    array (
+      'name' => 'เควตซัลกัวเตมาลา',
+      'symbol' => 'GTQ',
+    ),
+    'GWE' => 
+    array (
+      'name' => 'เอสคูโดกินีโปรตุเกส',
+      'symbol' => 'GWE',
+    ),
+    'GWP' => 
+    array (
+      'name' => 'เปโซกินี-บิสเซา',
+      'symbol' => 'GWP',
+    ),
+    'GYD' => 
+    array (
+      'name' => 'ดอลลาร์กายอานา',
+      'symbol' => 'GYD',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'ดอลลาร์ฮ่องกง',
+      'symbol' => 'HKD',
+    ),
+    'HNL' => 
+    array (
+      'name' => 'เลมปิราฮอดูรัส',
+      'symbol' => 'HNL',
+    ),
+    'HRD' => 
+    array (
+      'name' => 'ดีนาร์โครเอเชีย',
+      'symbol' => 'HRD',
+    ),
+    'HRK' => 
+    array (
+      'name' => 'คูนาโครเอเชีย',
+      'symbol' => 'HRK',
+    ),
+    'HTG' => 
+    array (
+      'name' => 'กูร์ดเฮติ',
+      'symbol' => 'HTG',
+    ),
+    'HUF' => 
+    array (
+      'name' => 'ฟอรินต์ฮังการี',
+      'symbol' => 'HUF',
+    ),
+    'IDR' => 
+    array (
+      'name' => 'รูเปียห์อินโดนีเซีย',
+      'symbol' => 'IDR',
+    ),
+    'IEP' => 
+    array (
+      'name' => 'ปอนด์ไอริช',
+      'symbol' => 'IEP',
+    ),
+    'ILP' => 
+    array (
+      'name' => 'ปอนด์อิสราเอล',
+      'symbol' => 'ILP',
+    ),
+    'ILS' => 
+    array (
+      'name' => 'นิวเชเกลอิสราเอล',
+      'symbol' => 'ILS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'รูปีอินเดีย',
+      'symbol' => 'INR',
+    ),
+    'IQD' => 
+    array (
+      'name' => 'ดีนาร์อิรัก',
+      'symbol' => 'IQD',
+    ),
+    'IRR' => 
+    array (
+      'name' => 'เรียลอิหร่าน',
+      'symbol' => 'IRR',
+    ),
+    'ISK' => 
+    array (
+      'name' => 'โครนาไอซ์แลนด์',
+      'symbol' => 'ISK',
+    ),
+    'ITL' => 
+    array (
+      'name' => 'ลีราอิตาลี',
+      'symbol' => 'ITL',
+    ),
+    'JMD' => 
+    array (
+      'name' => 'ดอลลาร์จาเมกา',
+      'symbol' => 'JMD',
+    ),
+    'JOD' => 
+    array (
+      'name' => 'ดีนาร์จอร์แดน',
+      'symbol' => 'JOD',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'เยนญี่ปุ่น',
+      'symbol' => '¥',
+    ),
+    'KES' => 
+    array (
+      'name' => 'ชิลลิ่งเคนยา',
+      'symbol' => 'KES',
+    ),
+    'KGS' => 
+    array (
+      'name' => 'ซอมคีร์กีซสถาน',
+      'symbol' => 'KGS',
+    ),
+    'KHR' => 
+    array (
+      'name' => 'เรียลกัมพูชา',
+      'symbol' => 'KHR',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'ฟรังก์คอโมโรส',
+      'symbol' => 'KMF',
+    ),
+    'KPW' => 
+    array (
+      'name' => 'วอนเกาหลีเหนือ',
+      'symbol' => 'KPW',
+    ),
+    'KRW' => 
+    array (
+      'name' => 'วอนเกาหลีใต้',
+      'symbol' => 'KRW',
+    ),
+    'KWD' => 
+    array (
+      'name' => 'ดีนาร์คูเวต',
+      'symbol' => 'KWD',
+    ),
+    'KYD' => 
+    array (
+      'name' => 'ดอลลาร์หมู่เกาะเคย์แมน',
+      'symbol' => 'KYD',
+    ),
+    'KZT' => 
+    array (
+      'name' => 'เทงเจคาซัคสถาน',
+      'symbol' => 'KZT',
+    ),
+    'LAK' => 
+    array (
+      'name' => 'กีบลาว',
+      'symbol' => 'LAK',
+    ),
+    'LBP' => 
+    array (
+      'name' => 'ปอนด์เลบานอน',
+      'symbol' => 'LBP',
+    ),
+    'LKR' => 
+    array (
+      'name' => 'รูปีศรีลังกา',
+      'symbol' => 'LKR',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'ดอลลาร์ไลบีเรีย',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'โลตีเลโซโท',
+      'symbol' => 'LSL',
+    ),
+    'LTL' => 
+    array (
+      'name' => 'ลีตัสลิทัวเนีย',
+      'symbol' => 'LTL',
+    ),
+    'LTT' => 
+    array (
+      'name' => 'ทาโลนัสลิทัวเนีย',
+      'symbol' => 'LTT',
+    ),
+    'LUC' => 
+    array (
+      'name' => 'คอนเวอร์ทิเบิลฟรังก์ลักเซมเบิร์ก',
+      'symbol' => 'LUC',
+    ),
+    'LUF' => 
+    array (
+      'name' => 'ฟรังก์ลักเซมเบิร์ก',
+      'symbol' => 'LUF',
+    ),
+    'LUL' => 
+    array (
+      'name' => 'ไฟแนลเชียลฟรังก์ลักเซมเบิร์ก',
+      'symbol' => 'LUL',
+    ),
+    'LVL' => 
+    array (
+      'name' => 'ลัตส์ลัตเวีย',
+      'symbol' => 'LVL',
+    ),
+    'LVR' => 
+    array (
+      'name' => 'รูเบิลลัตเวีย',
+      'symbol' => 'LVR',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'ดีนาร์ลิเบีย',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'ดีแรห์มโมร็อกโก',
+      'symbol' => 'MAD',
+    ),
+    'MAF' => 
+    array (
+      'name' => 'ฟรังก์โมร็อกโก',
+      'symbol' => 'MAF',
+    ),
+    'MDL' => 
+    array (
+      'name' => 'ลิวมอลโดวา',
+      'symbol' => 'MDL',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'อาเรียรีมาดากัสการ์',
+      'symbol' => 'MGA',
+    ),
+    'MGF' => 
+    array (
+      'name' => 'ฟรังก์มาดากัสการ์',
+      'symbol' => 'MGF',
+    ),
+    'MKD' => 
+    array (
+      'name' => 'ดีนาร์มาซิโดเนีย',
+      'symbol' => 'MKD',
+    ),
+    'MLF' => 
+    array (
+      'name' => 'ฟรังก์มาลี',
+      'symbol' => 'MLF',
+    ),
+    'MMK' => 
+    array (
+      'name' => 'จัคพม่า',
+      'symbol' => 'MMK',
+    ),
+    'MNT' => 
+    array (
+      'name' => 'ทูกริกมองโกเลีย',
+      'symbol' => 'MNT',
+    ),
+    'MOP' => 
+    array (
+      'name' => 'ปาตากามาเก๊า',
+      'symbol' => 'MOP',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'ออกิวยามอริเตเนีย',
+      'symbol' => 'MRO',
+    ),
+    'MTL' => 
+    array (
+      'name' => 'ลีรามอลตา',
+      'symbol' => 'MTL',
+    ),
+    'MTP' => 
+    array (
+      'name' => 'ปอนด์มอลตา',
+      'symbol' => 'MTP',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'รูปีมอริเชียส',
+      'symbol' => 'MUR',
+    ),
+    'MVR' => 
+    array (
+      'name' => 'รูฟิยามัลดีฟส์',
+      'symbol' => 'MVR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'ควาชามาลาวี',
+      'symbol' => 'MWK',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'เปโซเม็กซิโก',
+      'symbol' => 'MXN',
+    ),
+    'MXP' => 
+    array (
+      'name' => 'เงินเปโซเม็กซิโก (1861-1992)',
+      'symbol' => 'MXP',
+    ),
+    'MXV' => 
+    array (
+      'name' => 'ยูนิแดด ดี อินเวอร์ชั่น เม็กซิโก',
+      'symbol' => 'MXV',
+    ),
+    'MYR' => 
+    array (
+      'name' => 'ริงกิตมาเลเซีย',
+      'symbol' => 'MYR',
+    ),
+    'MZE' => 
+    array (
+      'name' => 'เอสคูโดโมซัมบิก',
+      'symbol' => 'MZE',
+    ),
+    'MZM' => 
+    array (
+      'name' => 'เมติคัลโมซัมบิกเก่า',
+      'symbol' => 'MZM',
+    ),
+    'MZN' => 
+    array (
+      'name' => 'เมติคัลโมซัมบิก',
+      'symbol' => 'MZN',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'ดอลลาร์นามิเบีย',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'ไนราไนจีเรีย',
+      'symbol' => 'NGN',
+    ),
+    'NIC' => 
+    array (
+      'name' => 'คอร์โดบานิการากัว',
+      'symbol' => 'NIC',
+    ),
+    'NIO' => 
+    array (
+      'name' => 'คอร์โดบาโอโรนิการากัว',
+      'symbol' => 'NIO',
+    ),
+    'NLG' => 
+    array (
+      'name' => 'กิลเดอร์เนเธอร์แลนด์',
+      'symbol' => 'NLG',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'โครนนอร์เวย์',
+      'symbol' => 'NOK',
+    ),
+    'NPR' => 
+    array (
+      'name' => 'รูปีเนปาล',
+      'symbol' => 'NPR',
+    ),
+    'NZD' => 
+    array (
+      'name' => 'ดอลลาร์นิวซีแลนด์',
+      'symbol' => 'NZD',
+    ),
+    'OMR' => 
+    array (
+      'name' => 'เรียลโอมาน',
+      'symbol' => 'OMR',
+    ),
+    'PAB' => 
+    array (
+      'name' => 'บัลบัวปานามา',
+      'symbol' => 'PAB',
+    ),
+    'PEI' => 
+    array (
+      'name' => 'อินตีเปรู',
+      'symbol' => 'PEI',
+    ),
+    'PEN' => 
+    array (
+      'name' => 'นูโวซอลเปรู',
+      'symbol' => 'PEN',
+    ),
+    'PES' => 
+    array (
+      'name' => 'ซอลเปรู',
+      'symbol' => 'PES',
+    ),
+    'PGK' => 
+    array (
+      'name' => 'กีนาปาปัวนิวกีนี',
+      'symbol' => 'PGK',
+    ),
+    'PHP' => 
+    array (
+      'name' => 'เปโซฟิลิปปินส์',
+      'symbol' => 'PHP',
+    ),
+    'PKR' => 
+    array (
+      'name' => 'รูปีปากีสถาน',
+      'symbol' => 'PKR',
+    ),
+    'PLN' => 
+    array (
+      'name' => 'ซลอตีโปแลนด์',
+      'symbol' => 'PLN',
+    ),
+    'PLZ' => 
+    array (
+      'name' => 'ซลอตีโปแลนด์ (1950-1995)',
+      'symbol' => 'PLZ',
+    ),
+    'PTE' => 
+    array (
+      'name' => 'เอสคูโดโปรตุเกส',
+      'symbol' => 'PTE',
+    ),
+    'PYG' => 
+    array (
+      'name' => 'กวารานีปารากวัย',
+      'symbol' => 'PYG',
+    ),
+    'QAR' => 
+    array (
+      'name' => 'เรียลกาตาร์',
+      'symbol' => 'QAR',
+    ),
+    'RHD' => 
+    array (
+      'name' => 'ดอลลาร์โรดีเซีย',
+      'symbol' => 'RHD',
+    ),
+    'ROL' => 
+    array (
+      'name' => 'ลิวโรมาเนียเก่า',
+      'symbol' => 'ROL',
+    ),
+    'RON' => 
+    array (
+      'name' => 'ลิวโรมาเนีย',
+      'symbol' => 'RON',
+    ),
+    'RSD' => 
+    array (
+      'name' => 'ดีนาร์เซอร์เบีย',
+      'symbol' => 'RSD',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'รูเบิลรัสเซีย',
+      'symbol' => 'RUB',
+    ),
+    'RUR' => 
+    array (
+      'name' => 'รูเบิลรัสเซีย (1991-1998)',
+      'symbol' => 'RUR',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'ฟรังก์รวันดา',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'ริยัลซาอุดีอาระเบีย',
+      'symbol' => 'SAR',
+    ),
+    'SBD' => 
+    array (
+      'name' => 'ดอลลาร์หมู่เกาะโซโลมอน',
+      'symbol' => 'SBD',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'รูปีเซเชลส์',
+      'symbol' => 'SCR',
+    ),
+    'SDD' => 
+    array (
+      'name' => 'ดีนาร์ซูดานเก่า',
+      'symbol' => 'SDD',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'ปอนด์ซูดาน',
+      'symbol' => 'SDG',
+    ),
+    'SDP' => 
+    array (
+      'name' => 'ปอนด์ซูดานเก่า',
+      'symbol' => 'SDP',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'โครนาสวีเดน',
+      'symbol' => 'SEK',
+    ),
+    'SGD' => 
+    array (
+      'name' => 'ดอลลาร์สิงคโปร์',
+      'symbol' => 'SGD',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'ปอนด์เซนต์เฮเลนา',
+      'symbol' => 'SHP',
+    ),
+    'SIT' => 
+    array (
+      'name' => 'ทอลาร์สโลวีเนีย',
+      'symbol' => 'SIT',
+    ),
+    'SKK' => 
+    array (
+      'name' => 'โครูนาสโลวัก',
+      'symbol' => 'SKK',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'ลีโอนเซียร์ราลีโอน',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'ชิลลิงโซมาเลีย',
+      'symbol' => 'SOS',
+    ),
+    'SRD' => 
+    array (
+      'name' => 'ดอลลาร์ซูรินาเม',
+      'symbol' => 'SRD',
+    ),
+    'SRG' => 
+    array (
+      'name' => 'กิลเดอร์ซูรินาเม',
+      'symbol' => 'SRG',
+    ),
+    'STD' => 
+    array (
+      'name' => 'ดอบราเซาตูเมและปรินซิปี',
+      'symbol' => 'STD',
+    ),
+    'SUR' => 
+    array (
+      'name' => 'รูเบิลโซเวียต',
+      'symbol' => 'SUR',
+    ),
+    'SVC' => 
+    array (
+      'name' => 'โคลอนเอลซัลวาดอร์',
+      'symbol' => 'SVC',
+    ),
+    'SYP' => 
+    array (
+      'name' => 'ปอนด์ซีเรีย',
+      'symbol' => 'SYP',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'ลิลันกีนีสวาซิแลนด์',
+      'symbol' => 'SZL',
+    ),
+    'THB' => 
+    array (
+      'name' => 'บาทไทย',
+      'symbol' => 'THB',
+    ),
+    'TJR' => 
+    array (
+      'name' => 'รูเบิลทาจิกิสถาน',
+      'symbol' => 'TJR',
+    ),
+    'TJS' => 
+    array (
+      'name' => 'โซโมนีทาจิกิสถาน',
+      'symbol' => 'TJS',
+    ),
+    'TMM' => 
+    array (
+      'name' => 'มานัตเติร์กเมนิสถาน (1993-2009)',
+      'symbol' => 'TMM',
+    ),
+    'TMT' => 
+    array (
+      'name' => 'มานัตเติร์กเมนิสถาน',
+      'symbol' => 'TMT',
+    ),
+    'TND' => 
+    array (
+      'name' => 'ดีนาร์ตูนิเซีย',
+      'symbol' => 'TND',
+    ),
+    'TOP' => 
+    array (
+      'name' => 'พาแองกาตองกา',
+      'symbol' => 'TOP',
+    ),
+    'TPE' => 
+    array (
+      'name' => 'เอสคูโดติมอร์',
+      'symbol' => 'TPE',
+    ),
+    'TRL' => 
+    array (
+      'name' => 'ลีราตุรกีเก่า',
+      'symbol' => 'TRL',
+    ),
+    'TRY' => 
+    array (
+      'name' => 'ลีราตุรกี',
+      'symbol' => 'TRY',
+    ),
+    'TTD' => 
+    array (
+      'name' => 'ดอลลาร์ตรินิแดดและโตเบโก',
+      'symbol' => 'TTD',
+    ),
+    'TWD' => 
+    array (
+      'name' => 'ดอลลาร์ไต้หวันใหม่',
+      'symbol' => 'TWD',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'ชิลลิงแทนซาเนีย',
+      'symbol' => 'TZS',
+    ),
+    'UAH' => 
+    array (
+      'name' => 'ฮรีฟเนียยูเครน',
+      'symbol' => 'UAH',
+    ),
+    'UAK' => 
+    array (
+      'name' => 'คาร์โบวาเนตซ์ยูเครน',
+      'symbol' => 'UAK',
+    ),
+    'UGS' => 
+    array (
+      'name' => 'ชิลลิงยูกันดา (1966-1987)',
+      'symbol' => 'UGS',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'ชิลลิงยูกันดา',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'ดอลลาร์สหรัฐ',
+      'symbol' => 'USD',
+    ),
+    'USN' => 
+    array (
+      'name' => 'ดอลลาร์สหรัฐ (วันถัดไป)',
+      'symbol' => 'USN',
+    ),
+    'USS' => 
+    array (
+      'name' => 'ดอลลาร์สหรัฐ (วันเดียวกัน)',
+      'symbol' => 'USS',
+    ),
+    'UYI' => 
+    array (
+      'name' => 'เปโซเอนยูนิแดดเซสอินเด็กซาแดสอุรุกวัย',
+      'symbol' => 'UYI',
+    ),
+    'UYP' => 
+    array (
+      'name' => 'เปโซอุรุกวัย (1975-1993)',
+      'symbol' => 'UYP',
+    ),
+    'UYU' => 
+    array (
+      'name' => 'เปโซอุรุกวัย',
+      'symbol' => 'UYU',
+    ),
+    'UZS' => 
+    array (
+      'name' => 'ซอมอุซเบกิสถาน',
+      'symbol' => 'UZS',
+    ),
+    'VEB' => 
+    array (
+      'name' => 'โบลิวาร์เวเนซุเอลา',
+      'symbol' => 'VEB',
+    ),
+    'VEF' => 
+    array (
+      'name' => 'โบลิวาร์ฟูร์เตเวเนซุเอลา',
+      'symbol' => 'VEF',
+    ),
+    'VND' => 
+    array (
+      'name' => 'ดองเวียดนาม',
+      'symbol' => 'VND',
+    ),
+    'VUV' => 
+    array (
+      'name' => 'วาตูวานูอาตู',
+      'symbol' => 'VUV',
+    ),
+    'WST' => 
+    array (
+      'name' => 'ทาลาซามัว',
+      'symbol' => 'WST',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'ฟรังก์เซฟาธนาคารรัฐแอฟริกากลาง',
+      'symbol' => 'XAF',
+    ),
+    'XAG' => 
+    array (
+      'name' => 'เงิน',
+      'symbol' => 'XAG',
+    ),
+    'XAU' => 
+    array (
+      'name' => 'ทอง',
+      'symbol' => 'XAU',
+    ),
+    'XBA' => 
+    array (
+      'name' => 'หน่วยคอมโพสิตยุโรป',
+      'symbol' => 'XBA',
+    ),
+    'XBB' => 
+    array (
+      'name' => 'หน่วยโมเนทารียุโรป',
+      'symbol' => 'XBB',
+    ),
+    'XBC' => 
+    array (
+      'name' => 'หน่วยบัญชียุโรป [XBC]',
+      'symbol' => 'XBC',
+    ),
+    'XBD' => 
+    array (
+      'name' => 'หน่วยบัญชียุโรป [XBD]',
+      'symbol' => 'XBD',
+    ),
+    'XCD' => 
+    array (
+      'name' => 'ดอลลาร์แคริบเบียนตะวันออก',
+      'symbol' => 'XCD',
+    ),
+    'XDR' => 
+    array (
+      'name' => 'สิทธิถอนเงินพิเศษ',
+      'symbol' => 'XDR',
+    ),
+    'XEU' => 
+    array (
+      'name' => 'หน่วยสกุลเงินยุโรป',
+      'symbol' => 'XEU',
+    ),
+    'XFO' => 
+    array (
+      'name' => 'ฟรังก์ทองฝรั่งเศส',
+      'symbol' => 'XFO',
+    ),
+    'XFU' => 
+    array (
+      'name' => 'ฟรังก์ยูไอซีฝรั่งเศส',
+      'symbol' => 'XFU',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'ฟรังก์เซฟาธนาคารกลางรัฐแอฟริกาตะวันตก',
+      'symbol' => 'XOF',
+    ),
+    'XPD' => 
+    array (
+      'name' => 'พัลเลเดียม',
+      'symbol' => 'XPD',
+    ),
+    'XPF' => 
+    array (
+      'name' => 'ฟรังก์ซีเอฟพี',
+      'symbol' => 'XPF',
+    ),
+    'XPT' => 
+    array (
+      'name' => 'แพลตินัม',
+      'symbol' => 'XPT',
+    ),
+    'XRE' => 
+    array (
+      'name' => 'กองทุนไรเน็ต',
+      'symbol' => 'XRE',
+    ),
+    'XTS' => 
+    array (
+      'name' => 'รหัสทดสอบสกุลเงิน',
+      'symbol' => 'XTS',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'ไม่มีหน่วยสกุลเงิน',
+      'symbol' => 'XXX',
+    ),
+    'YDD' => 
+    array (
+      'name' => 'ดีนาร์เยเมน',
+      'symbol' => 'YDD',
+    ),
+    'YER' => 
+    array (
+      'name' => 'เรียลเยเมน',
+      'symbol' => 'YER',
+    ),
+    'YUD' => 
+    array (
+      'name' => 'ฮาร์ดดีนาร์ยูโกสลาเวีย',
+      'symbol' => 'YUD',
+    ),
+    'YUM' => 
+    array (
+      'name' => 'โนวิย์ดีนาร์ยูโกสลาเวีย',
+      'symbol' => 'YUM',
+    ),
+    'YUN' => 
+    array (
+      'name' => 'คอนเวอร์ทิเบิลดีนาร์ยูโกสลาเวีย',
+      'symbol' => 'YUN',
+    ),
+    'ZAL' => 
+    array (
+      'name' => 'แรนด์แอฟริกาใต้ (การเงิน)',
+      'symbol' => 'ZAL',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'แรนด์แอฟริกาใต้',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'ควาชาแซมเบีย',
+      'symbol' => 'ZMK',
+    ),
+    'ZRN' => 
+    array (
+      'name' => 'นิวแซร์คองโก',
+      'symbol' => 'ZRN',
+    ),
+    'ZRZ' => 
+    array (
+      'name' => 'แซร์คองโก',
+      'symbol' => 'ZRZ',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'ดอลลาร์ซิมบับเว',
+      'symbol' => 'ZWD',
+    ),
+  ),
+);

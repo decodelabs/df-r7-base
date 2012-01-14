@@ -1,0 +1,45 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Sam',
+        'mon' => 'San',
+        'tue' => 'Mak',
+        'wed' => 'Row',
+        'thu' => 'Ham',
+        'fri' => 'Arb',
+        'sat' => 'Qid',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Sambata',
+        'mon' => 'Sanyo',
+        'tue' => 'Maakisanyo',
+        'wed' => 'Roowe',
+        'thu' => 'Hamuse',
+        'fri' => 'Arbe',
+        'sat' => 'Qidaame',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, MMMM dd, y',
+      'long' => 'dd MMMM y',
+      'medium' => 'dd-MMM-y',
+      'short' => 'dd/MM/yy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+);

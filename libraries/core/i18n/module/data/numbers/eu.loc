@@ -1,0 +1,805 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => ',',
+    'group' => '.',
+    'list' => ';',
+    'percentSign' => '%',
+    'plusSign' => '+',
+    'minusSign' => '-',
+    'exponential' => 'E',
+    'perMille' => '‰',
+    'infinity' => '∞',
+    'nan' => 'NaN',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'scientific' => '#E0',
+    'currency' => '#,##0.00 ¤',
+  ),
+  'currencies' => 
+  array (
+    'AED' => 
+    array (
+      'name' => 'Arabiar Emirerri Batuetako dirhama',
+      'symbol' => 'AED',
+    ),
+    'AFN' => 
+    array (
+      'name' => 'Afganistango afghania',
+      'symbol' => 'AFN',
+    ),
+    'ALL' => 
+    array (
+      'name' => 'Albaniako leka',
+      'symbol' => 'ALL',
+    ),
+    'AMD' => 
+    array (
+      'name' => 'Armeniako drama',
+      'symbol' => 'AMD',
+    ),
+    'ANG' => 
+    array (
+      'name' => 'Holandarren Antilletako guilderra',
+      'symbol' => 'ANG',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'Angolako kwanza',
+      'symbol' => 'AOA',
+    ),
+    'ARS' => 
+    array (
+      'name' => 'Argentinako pesoa',
+      'symbol' => 'ARS',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'Australiako dolarra',
+      'symbol' => 'AUD',
+    ),
+    'AWG' => 
+    array (
+      'name' => 'Arubeko florina',
+      'symbol' => 'AWG',
+    ),
+    'AZN' => 
+    array (
+      'name' => 'Azerbaijango manata',
+      'symbol' => 'AZN',
+    ),
+    'BAM' => 
+    array (
+      'name' => 'Bosnia-Herzegovinako marko trukakorra',
+      'symbol' => 'BAM',
+    ),
+    'BBD' => 
+    array (
+      'name' => 'Barbadosetako dolarra',
+      'symbol' => 'BBD',
+    ),
+    'BDT' => 
+    array (
+      'name' => 'Bangladesheko taka',
+      'symbol' => 'BDT',
+    ),
+    'BGN' => 
+    array (
+      'name' => 'Bulgariako leva',
+      'symbol' => 'BGN',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'Bahraingo dinarra',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'Burundiko frankoa',
+      'symbol' => 'BIF',
+    ),
+    'BMD' => 
+    array (
+      'name' => 'Bermudetako dolarra',
+      'symbol' => 'BMD',
+    ),
+    'BND' => 
+    array (
+      'name' => 'Bruneiko dolarra',
+      'symbol' => 'BND',
+    ),
+    'BOB' => 
+    array (
+      'name' => 'Boliviako bolivianoa',
+      'symbol' => 'BOB',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'Brasiliako erreala',
+      'symbol' => 'BRL',
+    ),
+    'BSD' => 
+    array (
+      'name' => 'Bahametako dolarra',
+      'symbol' => 'BSD',
+    ),
+    'BTN' => 
+    array (
+      'name' => 'Bhutango ngultruma',
+      'symbol' => 'BTN',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'Bosniako pula',
+      'symbol' => 'BWP',
+    ),
+    'BYR' => 
+    array (
+      'name' => 'Bielorrusiako errubloa',
+      'symbol' => 'BYR',
+    ),
+    'BZD' => 
+    array (
+      'name' => 'Belizeko dolarra',
+      'symbol' => 'BZD',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'Kanadako dolarra',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'Kongoko frankoa',
+      'symbol' => 'CDF',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'Suitzako frankoa',
+      'symbol' => 'CHF',
+    ),
+    'CLP' => 
+    array (
+      'name' => 'Txileko pesoa',
+      'symbol' => 'CLP',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'Txinako yuana',
+      'symbol' => 'CNY',
+    ),
+    'COP' => 
+    array (
+      'name' => 'Kolonbiako pesoa',
+      'symbol' => 'COP',
+    ),
+    'CRC' => 
+    array (
+      'name' => 'Costa Ricako colona',
+      'symbol' => 'CRC',
+    ),
+    'CUC' => 
+    array (
+      'name' => 'Kubako peso trukakorra',
+      'symbol' => 'CUC',
+    ),
+    'CUP' => 
+    array (
+      'name' => 'Kubako pesoa',
+      'symbol' => 'CUP',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'Cabo Verdeko ezkutua',
+      'symbol' => 'CVE',
+    ),
+    'CZK' => 
+    array (
+      'name' => 'Txekiar Errepublikako koroa',
+      'symbol' => 'CZK',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'Djibouteko frankoa',
+      'symbol' => 'DJF',
+    ),
+    'DKK' => 
+    array (
+      'name' => 'Danimarkako koroa',
+      'symbol' => 'DKK',
+    ),
+    'DOP' => 
+    array (
+      'name' => 'Dominikar Errepublikako pesoa',
+      'symbol' => 'DOP',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'Algeriako dinarra',
+      'symbol' => 'DZD',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'Egiptoko libera',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'Eritreako nakfa',
+      'symbol' => 'ERN',
+    ),
+    'ESP' => 
+    array (
+      'name' => 'ESP',
+      'symbol' => '₧',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'Etiopiako birra',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'Euroa',
+      'symbol' => 'EUR',
+    ),
+    'FJD' => 
+    array (
+      'name' => 'Fijiko dolarra',
+      'symbol' => 'FJD',
+    ),
+    'FKP' => 
+    array (
+      'name' => 'Falkland uharteetako libera',
+      'symbol' => 'FKP',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'Britainia Handiko libera esterlina',
+      'symbol' => 'GBP',
+    ),
+    'GEL' => 
+    array (
+      'name' => 'Georgiako laria',
+      'symbol' => 'GEL',
+    ),
+    'GHS' => 
+    array (
+      'name' => 'Ghanako cedia',
+      'symbol' => 'GHS',
+    ),
+    'GIP' => 
+    array (
+      'name' => 'Gibraltarreko libera',
+      'symbol' => 'GIP',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'Ganbiako dalasia',
+      'symbol' => 'GMD',
+    ),
+    'GNF' => 
+    array (
+      'name' => 'Gineako frankoa',
+      'symbol' => 'GNF',
+    ),
+    'GTQ' => 
+    array (
+      'name' => 'Guatemalako quetzala',
+      'symbol' => 'GTQ',
+    ),
+    'GYD' => 
+    array (
+      'name' => 'Guyanako dolarra',
+      'symbol' => 'GYD',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'Hong Kongeko dolarra',
+      'symbol' => 'HKD',
+    ),
+    'HNL' => 
+    array (
+      'name' => 'Hondurasko lempira',
+      'symbol' => 'HNL',
+    ),
+    'HRK' => 
+    array (
+      'name' => 'Kroaziako kuna',
+      'symbol' => 'HRK',
+    ),
+    'HTG' => 
+    array (
+      'name' => 'Haitiko gourdea',
+      'symbol' => 'HTG',
+    ),
+    'HUF' => 
+    array (
+      'name' => 'Hungariako florina',
+      'symbol' => 'HUF',
+    ),
+    'IDR' => 
+    array (
+      'name' => 'Indonesiako rupiah',
+      'symbol' => 'IDR',
+    ),
+    'ILS' => 
+    array (
+      'name' => 'Israeleko sheqel berria',
+      'symbol' => 'ILS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'Indiako errupia',
+      'symbol' => 'INR',
+    ),
+    'IQD' => 
+    array (
+      'name' => 'Irakeko dinarra',
+      'symbol' => 'IQD',
+    ),
+    'IRR' => 
+    array (
+      'name' => 'Irango riala',
+      'symbol' => 'IRR',
+    ),
+    'ISK' => 
+    array (
+      'name' => 'Islandiako koroa',
+      'symbol' => 'ISK',
+    ),
+    'JMD' => 
+    array (
+      'name' => 'Jamaikako dolarra',
+      'symbol' => 'JMD',
+    ),
+    'JOD' => 
+    array (
+      'name' => 'Jordaniako dinarra',
+      'symbol' => 'JOD',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'Japoniako yena',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'Kenyako shillinga',
+      'symbol' => 'KES',
+    ),
+    'KGS' => 
+    array (
+      'name' => 'Kyrgystango soma',
+      'symbol' => 'KGS',
+    ),
+    'KHR' => 
+    array (
+      'name' => 'Kanbodiako riela',
+      'symbol' => 'KHR',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'Komoreetako frankoa',
+      'symbol' => 'KMF',
+    ),
+    'KPW' => 
+    array (
+      'name' => 'Ipar Koreako wona',
+      'symbol' => 'KPW',
+    ),
+    'KRW' => 
+    array (
+      'name' => 'Hego Koreako wona',
+      'symbol' => 'KRW',
+    ),
+    'KWD' => 
+    array (
+      'name' => 'Kuwaiteko dinarra',
+      'symbol' => 'KWD',
+    ),
+    'KYD' => 
+    array (
+      'name' => 'Kaiman uharteetako dolarra',
+      'symbol' => 'KYD',
+    ),
+    'KZT' => 
+    array (
+      'name' => 'Kazakhstango tengea',
+      'symbol' => 'KZT',
+    ),
+    'LAK' => 
+    array (
+      'name' => 'Laoteko kipa',
+      'symbol' => 'LAK',
+    ),
+    'LBP' => 
+    array (
+      'name' => 'Libanoko libera',
+      'symbol' => 'LBP',
+    ),
+    'LKR' => 
+    array (
+      'name' => 'Sri Lankako errupia',
+      'symbol' => 'LKR',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'Liberiako dolarra',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'Lesothoko lotia',
+      'symbol' => 'LSL',
+    ),
+    'LTL' => 
+    array (
+      'name' => 'Lituaniako litasa',
+      'symbol' => 'LTL',
+    ),
+    'LVL' => 
+    array (
+      'name' => 'Letoniako latsa',
+      'symbol' => 'LVL',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'Libiako dinarra',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'Marokoko dirhama',
+      'symbol' => 'MAD',
+    ),
+    'MDL' => 
+    array (
+      'name' => 'Moldaviako leua',
+      'symbol' => 'MDL',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'Madagaskarreko ariarya',
+      'symbol' => 'MGA',
+    ),
+    'MKD' => 
+    array (
+      'name' => 'Mazedoniako denara',
+      'symbol' => 'MKD',
+    ),
+    'MMK' => 
+    array (
+      'name' => 'Myanmako kyata',
+      'symbol' => 'MMK',
+    ),
+    'MNT' => 
+    array (
+      'name' => 'Mongoliako tugrika',
+      'symbol' => 'MNT',
+    ),
+    'MOP' => 
+    array (
+      'name' => 'Macanako pataca',
+      'symbol' => 'MOP',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'Mauritaniako ouguiya',
+      'symbol' => 'MRO',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'Mauriziar uharteetako errupia',
+      'symbol' => 'MUR',
+    ),
+    'MVR' => 
+    array (
+      'name' => 'Maldibiako rufiyaa',
+      'symbol' => 'MVR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'Malawiko kwacha',
+      'symbol' => 'MWK',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'Mexikoko pesoa',
+      'symbol' => 'MXN',
+    ),
+    'MYR' => 
+    array (
+      'name' => 'Malaysiako ringgita',
+      'symbol' => 'MYR',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'Namibiako dolarra',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'Nigeriako naira',
+      'symbol' => 'NGN',
+    ),
+    'NIO' => 
+    array (
+      'name' => 'Nikaraguako cordoba',
+      'symbol' => 'NIO',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'Norvegiako koroa',
+      'symbol' => 'NOK',
+    ),
+    'NPR' => 
+    array (
+      'name' => 'Nepalgo errupia',
+      'symbol' => 'NPR',
+    ),
+    'NZD' => 
+    array (
+      'name' => 'Zeelanda Berriko dolarra',
+      'symbol' => 'NZD',
+    ),
+    'OMR' => 
+    array (
+      'name' => 'Omango riala',
+      'symbol' => 'OMR',
+    ),
+    'PAB' => 
+    array (
+      'name' => 'Panamako balboa',
+      'symbol' => 'PAB',
+    ),
+    'PEN' => 
+    array (
+      'name' => 'Peruko sol berria',
+      'symbol' => 'PEN',
+    ),
+    'PGK' => 
+    array (
+      'name' => 'Papua Ginea Berriko kina',
+      'symbol' => 'PGK',
+    ),
+    'PHP' => 
+    array (
+      'name' => 'Filipinetako pesoa',
+      'symbol' => 'PHP',
+    ),
+    'PKR' => 
+    array (
+      'name' => 'Pakistango errupia',
+      'symbol' => 'PKR',
+    ),
+    'PLN' => 
+    array (
+      'name' => 'Poloniako zlotya',
+      'symbol' => 'PLN',
+    ),
+    'PYG' => 
+    array (
+      'name' => 'Paraguaiko guarania',
+      'symbol' => 'PYG',
+    ),
+    'QAR' => 
+    array (
+      'name' => 'Qatareko riala',
+      'symbol' => 'QAR',
+    ),
+    'RSD' => 
+    array (
+      'name' => 'Serbiako dinarra',
+      'symbol' => 'RSD',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'Errusiako errubloa',
+      'symbol' => 'RUB',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'Ruandako frankoa',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'Saudiko riala',
+      'symbol' => 'SAR',
+    ),
+    'SBD' => 
+    array (
+      'name' => 'Salomon uharteetako dolarra',
+      'symbol' => 'SBD',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'Seychelleetako errupia',
+      'symbol' => 'SCR',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'Sudango libera',
+      'symbol' => 'SDG',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'Suediako koroa',
+      'symbol' => 'SEK',
+    ),
+    'SGD' => 
+    array (
+      'name' => 'Singapurgo dolarra',
+      'symbol' => 'SGD',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'Santa Helenako libera',
+      'symbol' => 'SHP',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'Sierra Leonako leona',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'Somaliako shillinga',
+      'symbol' => 'SOS',
+    ),
+    'SRD' => 
+    array (
+      'name' => 'Surinameko dolarra',
+      'symbol' => 'SRD',
+    ),
+    'STD' => 
+    array (
+      'name' => 'Sao Tomeko eta Principeko dobra',
+      'symbol' => 'STD',
+    ),
+    'SYP' => 
+    array (
+      'name' => 'Siriako libera',
+      'symbol' => 'SYP',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'Swaziko lilangenia',
+      'symbol' => 'SZL',
+    ),
+    'THB' => 
+    array (
+      'name' => 'Thailandiako bahta',
+      'symbol' => 'THB',
+    ),
+    'TJS' => 
+    array (
+      'name' => 'Tajikistango somonia',
+      'symbol' => 'TJS',
+    ),
+    'TMT' => 
+    array (
+      'name' => 'Turkmenistango manata',
+      'symbol' => 'TMT',
+    ),
+    'TND' => 
+    array (
+      'name' => 'Tunisiako dinarra',
+      'symbol' => 'TND',
+    ),
+    'TOP' => 
+    array (
+      'name' => 'Tongako Paʻanga',
+      'symbol' => 'TOP',
+    ),
+    'TRY' => 
+    array (
+      'name' => 'Turkiako lira',
+      'symbol' => 'TRY',
+    ),
+    'TTD' => 
+    array (
+      'name' => 'Trinidadeko eta Tobagoko dolarra',
+      'symbol' => 'TTD',
+    ),
+    'TWD' => 
+    array (
+      'name' => 'Taiwango dolar berria',
+      'symbol' => 'TWD',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'Tanzaniako shillinga',
+      'symbol' => 'TZS',
+    ),
+    'UAH' => 
+    array (
+      'name' => 'Ukrainako hryvnia',
+      'symbol' => 'UAH',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'Ugandako shillinga',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'AEBetako dolarra',
+      'symbol' => 'USD',
+    ),
+    'UYU' => 
+    array (
+      'name' => 'Uruguaiko pesoa',
+      'symbol' => 'UYU',
+    ),
+    'UZS' => 
+    array (
+      'name' => 'Uzbekistango soma',
+      'symbol' => 'UZS',
+    ),
+    'VEF' => 
+    array (
+      'name' => 'Venezuelako bolivarra',
+      'symbol' => 'VEF',
+    ),
+    'VND' => 
+    array (
+      'name' => 'Vietnameko donga',
+      'symbol' => 'VND',
+    ),
+    'VUV' => 
+    array (
+      'name' => 'Vanuatuko vatua',
+      'symbol' => 'VUV',
+    ),
+    'WST' => 
+    array (
+      'name' => 'Samoko tala',
+      'symbol' => 'WST',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'Afrika erdialdeko frankoa BEAC',
+      'symbol' => 'XAF',
+    ),
+    'XCD' => 
+    array (
+      'name' => 'Karibe ekialdeko dolarra',
+      'symbol' => 'XCD',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'Afrika ekialdeko frankoa BCEAO',
+      'symbol' => 'XOF',
+    ),
+    'XPF' => 
+    array (
+      'name' => 'CFP frankoa',
+      'symbol' => 'XPF',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'Moneta ezezaguna',
+      'symbol' => 'XXX',
+    ),
+    'YER' => 
+    array (
+      'name' => 'Yemengo riala',
+      'symbol' => 'YER',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'Hego Afrikako randa',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'Zambiako kwacha',
+      'symbol' => 'ZMK',
+    ),
+  ),
+);

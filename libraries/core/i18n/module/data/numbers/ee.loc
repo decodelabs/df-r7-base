@@ -1,0 +1,1440 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'nan' => 'mnn',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '00K',
+    'currency' => '¤#,##0.00;(¤#,##0.00)',
+  ),
+  'currencies' => 
+  array (
+    'ADP' => 
+    array (
+      'name' => 'andorraga peseta',
+      'symbol' => 'ADP',
+    ),
+    'AED' => 
+    array (
+      'name' => 'united arab emiratesga dirham',
+      'symbol' => 'AED',
+    ),
+    'AFA' => 
+    array (
+      'name' => 'afghanistanga afghani (1927-2002)',
+      'symbol' => 'AFA',
+    ),
+    'AFN' => 
+    array (
+      'name' => 'afghanistanga afghani',
+      'symbol' => 'AFN',
+    ),
+    'ALK' => 
+    array (
+      'name' => 'albaniaga lek (1946-1965)',
+      'symbol' => 'ALK',
+    ),
+    'ALL' => 
+    array (
+      'name' => 'albaniaga lek',
+      'symbol' => 'ALL',
+    ),
+    'AMD' => 
+    array (
+      'name' => 'armeniaga dram',
+      'symbol' => 'AMD',
+    ),
+    'ANG' => 
+    array (
+      'name' => 'nedalands antilleaga guilder',
+      'symbol' => 'ANG',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'angolaga kwanza',
+      'symbol' => 'AOA',
+    ),
+    'AOK' => 
+    array (
+      'name' => 'angolaga kwanza (1977-1991)',
+      'symbol' => 'AOK',
+    ),
+    'AON' => 
+    array (
+      'name' => 'angolaga kwanza (1990-2000)',
+      'symbol' => 'AON',
+    ),
+    'AOR' => 
+    array (
+      'name' => 'angolaga kwanza xoxotɔ (1995-1999)',
+      'symbol' => 'AOR',
+    ),
+    'ARA' => 
+    array (
+      'name' => 'argentinaga austral',
+      'symbol' => 'ARA',
+    ),
+    'ARL' => 
+    array (
+      'name' => 'argentinaga peso ley (1970-1983)',
+      'symbol' => 'ARL',
+    ),
+    'ARM' => 
+    array (
+      'name' => 'argentinaga peso (1881-1970)',
+      'symbol' => 'ARM',
+    ),
+    'ARP' => 
+    array (
+      'name' => 'argentinaga peso (1983-1985)',
+      'symbol' => 'ARP',
+    ),
+    'ARS' => 
+    array (
+      'name' => 'argentinaga peso',
+      'symbol' => 'ARS',
+    ),
+    'ATS' => 
+    array (
+      'name' => 'ɔstriaga schilling',
+      'symbol' => 'ATS',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'australiaga dollar',
+      'symbol' => 'AUD',
+    ),
+    'AWG' => 
+    array (
+      'name' => 'arubaga lorin',
+      'symbol' => 'AWG',
+    ),
+    'AZM' => 
+    array (
+      'name' => 'azerbaidzanga manat (1993-2006)',
+      'symbol' => 'AZM',
+    ),
+    'AZN' => 
+    array (
+      'name' => 'azerbaidzanga manat',
+      'symbol' => 'AZN',
+    ),
+    'BAD' => 
+    array (
+      'name' => 'bosnia-herzegovinaga dinar (1992-1994)',
+      'symbol' => 'BAD',
+    ),
+    'BAM' => 
+    array (
+      'name' => 'bosnia-herzegovinaga convertible mark',
+      'symbol' => 'BAM',
+    ),
+    'BAN' => 
+    array (
+      'name' => 'bosnia kple herzegovinaga dinar yeyètɔ (1994-1997)',
+      'symbol' => 'BAN',
+    ),
+    'BBD' => 
+    array (
+      'name' => 'barbadiaga dollar',
+      'symbol' => 'BBD',
+    ),
+    'BDT' => 
+    array (
+      'name' => 'bangladeshga taka',
+      'symbol' => 'BDT',
+    ),
+    'BEC' => 
+    array (
+      'name' => 'beldziumga franc (convertible)',
+      'symbol' => 'BEC',
+    ),
+    'BEF' => 
+    array (
+      'name' => 'beldziumga franc',
+      'symbol' => 'BEF',
+    ),
+    'BEL' => 
+    array (
+      'name' => 'beldziumga franc (financial)',
+      'symbol' => 'BEL',
+    ),
+    'BGL' => 
+    array (
+      'name' => 'bɔlgariaga hard lev',
+      'symbol' => 'BGL',
+    ),
+    'BGM' => 
+    array (
+      'name' => 'bɔlgariaga socialist lev',
+      'symbol' => 'BGM',
+    ),
+    'BGN' => 
+    array (
+      'name' => 'bulgariaga lev',
+      'symbol' => 'BGN',
+    ),
+    'BGO' => 
+    array (
+      'name' => 'bulgariaga lev (1879-1952)',
+      'symbol' => 'BGO',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'bahrainga dinar',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'burundiga franc',
+      'symbol' => 'BIF',
+    ),
+    'BMD' => 
+    array (
+      'name' => 'bermudaga dollar',
+      'symbol' => 'BMD',
+    ),
+    'BND' => 
+    array (
+      'name' => 'bruneiga dollar',
+      'symbol' => 'BND',
+    ),
+    'BOB' => 
+    array (
+      'name' => 'boliviaga boliviano',
+      'symbol' => 'BOB',
+    ),
+    'BOL' => 
+    array (
+      'name' => 'boliviaga boliviano (1863-1963)',
+      'symbol' => 'BOL',
+    ),
+    'BOP' => 
+    array (
+      'name' => 'boliviaga peso',
+      'symbol' => 'BOP',
+    ),
+    'BOV' => 
+    array (
+      'name' => 'boliviaga mvdol',
+      'symbol' => 'BOV',
+    ),
+    'BRB' => 
+    array (
+      'name' => 'braziliaga cruzeiro xoxotɔ (1967-1986)',
+      'symbol' => 'BRB',
+    ),
+    'BRC' => 
+    array (
+      'name' => 'brazilia cruzado (1986-1989)',
+      'symbol' => 'BRC',
+    ),
+    'BRE' => 
+    array (
+      'name' => 'braziliaga cruzeiro xoxotɔ gbãtɔ (1990-1993)',
+      'symbol' => 'BRE',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'brazilga real',
+      'symbol' => 'BRL',
+    ),
+    'BRN' => 
+    array (
+      'name' => 'brazilia cruzado xoxotɔ (1989-1990)',
+      'symbol' => 'BRN',
+    ),
+    'BRR' => 
+    array (
+      'name' => 'braziliaga cruzeiro (1993-1994)',
+      'symbol' => 'BRR',
+    ),
+    'BRZ' => 
+    array (
+      'name' => 'braziliaga cruzeiro (1942-1967)',
+      'symbol' => 'BRZ',
+    ),
+    'BSD' => 
+    array (
+      'name' => 'bahamiaga dollar',
+      'symbol' => 'BSD',
+    ),
+    'BTN' => 
+    array (
+      'name' => 'bhutanga ngultrum',
+      'symbol' => 'BTN',
+    ),
+    'BUK' => 
+    array (
+      'name' => 'burmaga kyat',
+      'symbol' => 'BUK',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'botswanaga pula',
+      'symbol' => 'BWP',
+    ),
+    'BYB' => 
+    array (
+      'name' => 'belarusiaga ruble yeytɔ (1994-1999)',
+      'symbol' => 'BYB',
+    ),
+    'BYR' => 
+    array (
+      'name' => 'belarusiaga ruble',
+      'symbol' => 'BYR',
+    ),
+    'BZD' => 
+    array (
+      'name' => 'belizega dollar',
+      'symbol' => 'BZD',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'kanadaga dollar',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'kongoga franc',
+      'symbol' => 'CDF',
+    ),
+    'CHE' => 
+    array (
+      'name' => 'WIR euro CHE',
+      'symbol' => 'CHE',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'swissga franc',
+      'symbol' => 'CHF',
+    ),
+    'CHW' => 
+    array (
+      'name' => 'WIR euro CHW',
+      'symbol' => 'CHW',
+    ),
+    'CLE' => 
+    array (
+      'name' => 'tsilega escudo',
+      'symbol' => 'CLE',
+    ),
+    'CLF' => 
+    array (
+      'name' => 'tsilegakɔnta dzidzenu UF',
+      'symbol' => 'CLF',
+    ),
+    'CLP' => 
+    array (
+      'name' => 'tsilega peso',
+      'symbol' => 'CLP',
+    ),
+    'CNX' => 
+    array (
+      'name' => 'tsainatɔwo ƒe gadzraɖoƒe dollar',
+      'symbol' => 'CNX',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'tsainaga yuan',
+      'symbol' => 'CNY',
+    ),
+    'COP' => 
+    array (
+      'name' => 'kolombiaga peso',
+      'symbol' => 'COP',
+    ),
+    'COU' => 
+    array (
+      'name' => 'kolombiaga vavãtɔ',
+      'symbol' => 'COU',
+    ),
+    'CRC' => 
+    array (
+      'name' => 'kosta rikaga kolón',
+      'symbol' => 'CRC',
+    ),
+    'CSD' => 
+    array (
+      'name' => 'serbiaga dinar (2002-2006)',
+      'symbol' => 'CSD',
+    ),
+    'CSK' => 
+    array (
+      'name' => 'tsɛkoslovakiaga hard koruna',
+      'symbol' => 'CSK',
+    ),
+    'CUC' => 
+    array (
+      'name' => 'kubaga convertible peso',
+      'symbol' => 'CUC',
+    ),
+    'CUP' => 
+    array (
+      'name' => 'kubaga peso',
+      'symbol' => 'CUP',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'kape verdega escudo',
+      'symbol' => 'CVE',
+    ),
+    'CYP' => 
+    array (
+      'name' => 'saipriɔtga pound',
+      'symbol' => 'CYP',
+    ),
+    'CZK' => 
+    array (
+      'name' => 'tsɛk repɔblikga koruna',
+      'symbol' => 'CZK',
+    ),
+    'DDM' => 
+    array (
+      'name' => 'ɣedzeƒe germaniaga mark',
+      'symbol' => 'DDM',
+    ),
+    'DEM' => 
+    array (
+      'name' => 'germaniaga mark',
+      'symbol' => 'DEM',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'dziboutiga franc',
+      'symbol' => 'DJF',
+    ),
+    'DKK' => 
+    array (
+      'name' => 'danemarkga krone',
+      'symbol' => 'DKK',
+    ),
+    'DOP' => 
+    array (
+      'name' => 'dominicaga peso',
+      'symbol' => 'DOP',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'aldzeriaga dinar',
+      'symbol' => 'DZD',
+    ),
+    'ECS' => 
+    array (
+      'name' => 'ekuadɔga sucre',
+      'symbol' => 'ECS',
+    ),
+    'ECV' => 
+    array (
+      'name' => 'ekuadɔ dzidzenu matrɔmatrɔ',
+      'symbol' => 'ECV',
+    ),
+    'EEK' => 
+    array (
+      'name' => 'estoniaga kroon',
+      'symbol' => 'EEK',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'egyptega pound',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'eritreaga nakfa',
+      'symbol' => 'ERN',
+    ),
+    'ESA' => 
+    array (
+      'name' => 'spaniaga peseta (A)',
+      'symbol' => 'ESA',
+    ),
+    'ESB' => 
+    array (
+      'name' => 'spaniaga peseta (Convertible)',
+      'symbol' => 'ESB',
+    ),
+    'ESP' => 
+    array (
+      'name' => 'spaniaga peseta',
+      'symbol' => 'ESP',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'ethiopiaga birr',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'euro',
+      'symbol' => 'EUR',
+    ),
+    'FIM' => 
+    array (
+      'name' => 'finlandga markka',
+      'symbol' => 'FIM',
+    ),
+    'FJD' => 
+    array (
+      'name' => 'fidziga dollar',
+      'symbol' => 'FJD',
+    ),
+    'FKP' => 
+    array (
+      'name' => 'falklanɖ ƒudomekpo dukɔwo ƒe ga pound',
+      'symbol' => 'FKP',
+    ),
+    'FRF' => 
+    array (
+      'name' => 'frentsiga franc',
+      'symbol' => 'FRF',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'britainga pound sterling',
+      'symbol' => 'GBP',
+    ),
+    'GEK' => 
+    array (
+      'name' => 'dzɔdziaga kupon larit',
+      'symbol' => 'GEK',
+    ),
+    'GEL' => 
+    array (
+      'name' => 'dzɔdziaga lari',
+      'symbol' => 'GEL',
+    ),
+    'GHC' => 
+    array (
+      'name' => 'ghana siɖi (1979-2007)',
+      'symbol' => 'GHC',
+    ),
+    'GHS' => 
+    array (
+      'name' => 'ghana siɖi',
+      'symbol' => 'GH₵',
+    ),
+    'GIP' => 
+    array (
+      'name' => 'gilbrataga pound',
+      'symbol' => 'GIP',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'gambiaga dalasi',
+      'symbol' => 'GMD',
+    ),
+    'GNF' => 
+    array (
+      'name' => 'giniga franc',
+      'symbol' => 'GNF',
+    ),
+    'GNS' => 
+    array (
+      'name' => 'giniga syli',
+      'symbol' => 'GNS',
+    ),
+    'GQE' => 
+    array (
+      'name' => 'ekuatorial giniga ekwele',
+      'symbol' => 'GQE',
+    ),
+    'GRD' => 
+    array (
+      'name' => 'grisiga drachma',
+      'symbol' => 'GRD',
+    ),
+    'GTQ' => 
+    array (
+      'name' => 'guatemalaga quetzal',
+      'symbol' => 'GTQ',
+    ),
+    'GWE' => 
+    array (
+      'name' => 'pɔtugaltɔwo ƒe giniga escudo',
+      'symbol' => 'GWE',
+    ),
+    'GWP' => 
+    array (
+      'name' => 'gini-bisau peso',
+      'symbol' => 'GWP',
+    ),
+    'GYD' => 
+    array (
+      'name' => 'guyanaga dollar',
+      'symbol' => 'GYD',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'hong kongga dollar',
+      'symbol' => 'HKD',
+    ),
+    'HNL' => 
+    array (
+      'name' => 'honduraga lempira',
+      'symbol' => 'HNL',
+    ),
+    'HRD' => 
+    array (
+      'name' => 'kroatiaga dinar',
+      'symbol' => 'HRD',
+    ),
+    'HRK' => 
+    array (
+      'name' => 'kroatiaga kuna',
+      'symbol' => 'HRK',
+    ),
+    'HTG' => 
+    array (
+      'name' => 'haitiga gourde',
+      'symbol' => 'HTG',
+    ),
+    'HUF' => 
+    array (
+      'name' => 'hungariaga forint',
+      'symbol' => 'HUF',
+    ),
+    'IDR' => 
+    array (
+      'name' => 'indinesiaga rupiah',
+      'symbol' => 'IDR',
+    ),
+    'IEP' => 
+    array (
+      'name' => 'ireland pound',
+      'symbol' => 'IEP',
+    ),
+    'ILP' => 
+    array (
+      'name' => 'israelga pound',
+      'symbol' => 'ILP',
+    ),
+    'ILR' => 
+    array (
+      'name' => 'israelga sheqel (1980-1985)',
+      'symbol' => 'ILR',
+    ),
+    'ILS' => 
+    array (
+      'name' => 'israelga yeyetɔ sheqel',
+      'symbol' => 'ILS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'indiaga rupee',
+      'symbol' => 'INR',
+    ),
+    'IQD' => 
+    array (
+      'name' => 'irakga dinar',
+      'symbol' => 'IQD',
+    ),
+    'IRR' => 
+    array (
+      'name' => 'iranga rial',
+      'symbol' => 'IRR',
+    ),
+    'ISJ' => 
+    array (
+      'name' => 'aiselandga króna (1918-1981)',
+      'symbol' => 'ISJ',
+    ),
+    'ISK' => 
+    array (
+      'name' => 'aiselandga króna',
+      'symbol' => 'ISK',
+    ),
+    'ITL' => 
+    array (
+      'name' => 'italiaga lira',
+      'symbol' => 'ITL',
+    ),
+    'JMD' => 
+    array (
+      'name' => 'dzamaikaga dollar',
+      'symbol' => 'JMD',
+    ),
+    'JOD' => 
+    array (
+      'name' => 'yɔdanga dinar',
+      'symbol' => 'JOD',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'dzapanga yen',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'kenyaga shilling',
+      'symbol' => 'KES',
+    ),
+    'KGS' => 
+    array (
+      'name' => 'kirgistanga som',
+      'symbol' => 'KGS',
+    ),
+    'KHR' => 
+    array (
+      'name' => 'kambodiaga riel',
+      'symbol' => 'KHR',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'komoroga franc',
+      'symbol' => 'KMF',
+    ),
+    'KPW' => 
+    array (
+      'name' => 'dziehe koreaga won',
+      'symbol' => 'KPW',
+    ),
+    'KRH' => 
+    array (
+      'name' => 'anyiehe koreaga hwan (1953-1962)',
+      'symbol' => 'KRH',
+    ),
+    'KRO' => 
+    array (
+      'name' => 'anyiehe koreaga won (1945-1953)',
+      'symbol' => 'KRO',
+    ),
+    'KRW' => 
+    array (
+      'name' => 'anyiehe koreaga won',
+      'symbol' => 'KRW',
+    ),
+    'KWD' => 
+    array (
+      'name' => 'kuwaitga dinar',
+      'symbol' => 'KWD',
+    ),
+    'KYD' => 
+    array (
+      'name' => 'kayman ƒudomekpoga dollar',
+      'symbol' => 'KYD',
+    ),
+    'KZT' => 
+    array (
+      'name' => 'kazakhstanga tenge',
+      'symbol' => 'KZT',
+    ),
+    'LAK' => 
+    array (
+      'name' => 'laosga kip',
+      'symbol' => 'LAK',
+    ),
+    'LBP' => 
+    array (
+      'name' => 'lebanonga pound',
+      'symbol' => 'LBP',
+    ),
+    'LKR' => 
+    array (
+      'name' => 'sri lankaga rupee',
+      'symbol' => 'LKR',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'liberiaga dollar',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'lesotoga loti',
+      'symbol' => 'LSL',
+    ),
+    'LTL' => 
+    array (
+      'name' => 'lithuaniaga litas',
+      'symbol' => 'LTL',
+    ),
+    'LTT' => 
+    array (
+      'name' => 'lithuaniaga talonas',
+      'symbol' => 'LTT',
+    ),
+    'LUC' => 
+    array (
+      'name' => 'lazembɔgga convertible franc',
+      'symbol' => 'LUC',
+    ),
+    'LUF' => 
+    array (
+      'name' => 'lazembɔgga franc',
+      'symbol' => 'LUF',
+    ),
+    'LUL' => 
+    array (
+      'name' => 'lazembɔgga gadzikpɔ franc',
+      'symbol' => 'LUL',
+    ),
+    'LVL' => 
+    array (
+      'name' => 'latviaga lats',
+      'symbol' => 'LVL',
+    ),
+    'LVR' => 
+    array (
+      'name' => 'latviaga ruble',
+      'symbol' => 'LVR',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'libyaga dinar',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'morokoga dirham',
+      'symbol' => 'MAD',
+    ),
+    'MAF' => 
+    array (
+      'name' => 'morokoga franc',
+      'symbol' => 'MAF',
+    ),
+    'MCF' => 
+    array (
+      'name' => 'monegaskga franc',
+      'symbol' => 'MCF',
+    ),
+    'MDC' => 
+    array (
+      'name' => 'moldovaga cupon',
+      'symbol' => 'MDC',
+    ),
+    'MDL' => 
+    array (
+      'name' => 'moldovaga leu',
+      'symbol' => 'MDL',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'malagasega ariary',
+      'symbol' => 'MGA',
+    ),
+    'MGF' => 
+    array (
+      'name' => 'malagasega franc',
+      'symbol' => 'MGF',
+    ),
+    'MKD' => 
+    array (
+      'name' => 'makedoniaga denar',
+      'symbol' => 'MKD',
+    ),
+    'MKN' => 
+    array (
+      'name' => 'makedoniaga denar (1992-1993)',
+      'symbol' => 'MKN',
+    ),
+    'MLF' => 
+    array (
+      'name' => 'maliga franc',
+      'symbol' => 'MLF',
+    ),
+    'MMK' => 
+    array (
+      'name' => 'myanmaga kyat',
+      'symbol' => 'MMK',
+    ),
+    'MNT' => 
+    array (
+      'name' => 'mongoliaga tugrik',
+      'symbol' => 'MNT',
+    ),
+    'MOP' => 
+    array (
+      'name' => 'makanesega pataca',
+      'symbol' => 'MOP',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'mɔritaniaga ouguiya',
+      'symbol' => 'MRO',
+    ),
+    'MTL' => 
+    array (
+      'name' => 'maltaga lira',
+      'symbol' => 'MTL',
+    ),
+    'MTP' => 
+    array (
+      'name' => 'maltaga pound',
+      'symbol' => 'MTP',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'mɔritiusga rupee',
+      'symbol' => 'MUR',
+    ),
+    'MVR' => 
+    array (
+      'name' => 'maldiviaga rufiyaa',
+      'symbol' => 'MVR',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'meksikoga peso',
+      'symbol' => 'MXN',
+    ),
+    'MYR' => 
+    array (
+      'name' => 'malaysiaga ringit',
+      'symbol' => 'MYR',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'naidzeriaga naira',
+      'symbol' => 'NGN',
+    ),
+    'NIC' => 
+    array (
+      'name' => 'nikaraguaga córdoba (1988-1991)',
+      'symbol' => 'NIC',
+    ),
+    'NIO' => 
+    array (
+      'name' => 'nikaraguaga córdoba',
+      'symbol' => 'NIO',
+    ),
+    'NLG' => 
+    array (
+      'name' => 'hollandga guilder',
+      'symbol' => 'NLG',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'norwayga krone',
+      'symbol' => 'NOK',
+    ),
+    'NPR' => 
+    array (
+      'name' => 'nepalga rupee',
+      'symbol' => 'NPR',
+    ),
+    'NZD' => 
+    array (
+      'name' => 'new zealanɖga dollar',
+      'symbol' => 'NZD',
+    ),
+    'OMR' => 
+    array (
+      'name' => 'omanga rial',
+      'symbol' => 'OMR',
+    ),
+    'PAB' => 
+    array (
+      'name' => 'panamaga balboa',
+      'symbol' => 'PAB',
+    ),
+    'PEI' => 
+    array (
+      'name' => 'peruga inti',
+      'symbol' => 'PEI',
+    ),
+    'PEN' => 
+    array (
+      'name' => 'peruga nuevo sol',
+      'symbol' => 'PEN',
+    ),
+    'PES' => 
+    array (
+      'name' => 'peruga nuevo sol (1863-1965)',
+      'symbol' => 'PES',
+    ),
+    'PGK' => 
+    array (
+      'name' => 'papua new guineaga kina',
+      'symbol' => 'PGK',
+    ),
+    'PHP' => 
+    array (
+      'name' => 'filipiniga peso',
+      'symbol' => 'PHP',
+    ),
+    'PKR' => 
+    array (
+      'name' => 'pakistaniga rupee',
+      'symbol' => 'PKR',
+    ),
+    'PLN' => 
+    array (
+      'name' => 'polanɖga zloty',
+      'symbol' => 'PLN',
+    ),
+    'PLZ' => 
+    array (
+      'name' => 'polanɖga zloty (1950-1995)',
+      'symbol' => 'PLZ',
+    ),
+    'PTE' => 
+    array (
+      'name' => 'pɔtugalga escudo',
+      'symbol' => 'PTE',
+    ),
+    'PYG' => 
+    array (
+      'name' => 'paraguayga guarani',
+      'symbol' => 'PYG',
+    ),
+    'QAR' => 
+    array (
+      'name' => 'katarga rial',
+      'symbol' => 'QAR',
+    ),
+    'RHD' => 
+    array (
+      'name' => 'rhodesiaga dollar',
+      'symbol' => 'RHD',
+    ),
+    'ROL' => 
+    array (
+      'name' => 'romaniaga leu (1952-2006)',
+      'symbol' => 'ROL',
+    ),
+    'RON' => 
+    array (
+      'name' => 'romaniaga leu',
+      'symbol' => 'RON',
+    ),
+    'RSD' => 
+    array (
+      'name' => 'serbiaga dinar',
+      'symbol' => 'RSD',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'rɔtsiaga ruble',
+      'symbol' => 'RUB',
+    ),
+    'RUR' => 
+    array (
+      'name' => 'rɔtsiaga ruble (1991-1998)',
+      'symbol' => 'RUR',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'rwandaga franc',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'saudiga riyal',
+      'symbol' => 'SAR',
+    ),
+    'SBD' => 
+    array (
+      'name' => 'solomon ƒudomekpo dukɔwo ƒe ga dollar',
+      'symbol' => 'SBD',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'sɛtselsga rupee',
+      'symbol' => 'SCR',
+    ),
+    'SDD' => 
+    array (
+      'name' => 'sudanga dinar (1992-2007)',
+      'symbol' => 'SDD',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'sudanga pound',
+      'symbol' => 'SDG',
+    ),
+    'SDP' => 
+    array (
+      'name' => 'sudanga pound (1957-1998)',
+      'symbol' => 'SDP',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'swedenga krona',
+      'symbol' => 'SEK',
+    ),
+    'SGD' => 
+    array (
+      'name' => 'singapɔga dollar',
+      'symbol' => 'SGD',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'saint helenaga pound',
+      'symbol' => 'SHP',
+    ),
+    'SIT' => 
+    array (
+      'name' => 'slovaniaga tolar',
+      'symbol' => 'SIT',
+    ),
+    'SKK' => 
+    array (
+      'name' => 'slovakga koruna',
+      'symbol' => 'SKK',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'sierra leonega leone',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'somaliaga shilling',
+      'symbol' => 'SOS',
+    ),
+    'SRD' => 
+    array (
+      'name' => 'surinamga dollar',
+      'symbol' => 'SRD',
+    ),
+    'SRG' => 
+    array (
+      'name' => 'surinamega guilder',
+      'symbol' => 'SRG',
+    ),
+    'STD' => 
+    array (
+      'name' => 'são tomé kple príncipega dobra',
+      'symbol' => 'STD',
+    ),
+    'SUR' => 
+    array (
+      'name' => 'sovietga rouble',
+      'symbol' => 'SUR',
+    ),
+    'SVC' => 
+    array (
+      'name' => 'salvadɔga colón',
+      'symbol' => 'SVC',
+    ),
+    'SYP' => 
+    array (
+      'name' => 'syriaga pound',
+      'symbol' => 'SYP',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'swaziga lilangeni',
+      'symbol' => 'SZL',
+    ),
+    'THB' => 
+    array (
+      'name' => 'thaiga baht',
+      'symbol' => 'THB',
+    ),
+    'TJR' => 
+    array (
+      'name' => 'tajikistanga ruble',
+      'symbol' => 'TJR',
+    ),
+    'TJS' => 
+    array (
+      'name' => 'tajikistanga somoni',
+      'symbol' => 'TJS',
+    ),
+    'TMM' => 
+    array (
+      'name' => 'turkmenistanga manat (1993-2009)',
+      'symbol' => 'TMM',
+    ),
+    'TMT' => 
+    array (
+      'name' => 'turkmenistanga manat',
+      'symbol' => 'TMT',
+    ),
+    'TND' => 
+    array (
+      'name' => 'tunisiaga dinar',
+      'symbol' => 'TND',
+    ),
+    'TOP' => 
+    array (
+      'name' => 'tonagaga pa\'anga',
+      'symbol' => 'TOP',
+    ),
+    'TPE' => 
+    array (
+      'name' => 'timɔga escudo',
+      'symbol' => 'TPE',
+    ),
+    'TRL' => 
+    array (
+      'name' => 'tɛkiiga lira (1922-2005)',
+      'symbol' => 'TRL',
+    ),
+    'TRY' => 
+    array (
+      'name' => 'tɛkiiga lira',
+      'symbol' => 'TRY',
+    ),
+    'TTD' => 
+    array (
+      'name' => 'trinidad kple tobagoga dollar',
+      'symbol' => 'TTD',
+    ),
+    'TWD' => 
+    array (
+      'name' => 'taiwanga yeye dollar',
+      'symbol' => 'TWD',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'Tanzaniatɔwofɛgadudu',
+      'symbol' => 'TZS',
+    ),
+    'UAH' => 
+    array (
+      'name' => 'ukrainega hryvnia',
+      'symbol' => 'UAH',
+    ),
+    'UAK' => 
+    array (
+      'name' => 'ukrainega karbovanet',
+      'symbol' => 'UAK',
+    ),
+    'UGS' => 
+    array (
+      'name' => 'ugandaga shilling (1966-1987)',
+      'symbol' => 'UGS',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'ugandaga shilling',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'us ga dollar',
+      'symbol' => 'USD',
+    ),
+    'USN' => 
+    array (
+      'name' => 'us ga dollar (ŋkeke si gbɔna tɔ)',
+      'symbol' => 'USN',
+    ),
+    'USS' => 
+    array (
+      'name' => 'us ga dollar (ŋkeke ma ke tɔ)',
+      'symbol' => 'USS',
+    ),
+    'UYI' => 
+    array (
+      'name' => 'uruguayga peso UYI',
+      'symbol' => 'UYI',
+    ),
+    'UYP' => 
+    array (
+      'name' => 'uruguayga peso (1975-1993)',
+      'symbol' => 'UYP',
+    ),
+    'UYU' => 
+    array (
+      'name' => 'uruguayga peso',
+      'symbol' => 'UYU',
+    ),
+    'UZS' => 
+    array (
+      'name' => 'uzbekistanga som',
+      'symbol' => 'UZS',
+    ),
+    'VEB' => 
+    array (
+      'name' => 'venezuelaga bolívar (1871-2008)',
+      'symbol' => 'VEB',
+    ),
+    'VEF' => 
+    array (
+      'name' => 'venezuelaga bolívar',
+      'symbol' => 'VEF',
+    ),
+    'VND' => 
+    array (
+      'name' => 'vietnamga dong',
+      'symbol' => 'VND',
+    ),
+    'VNN' => 
+    array (
+      'name' => 'vietnamga dong (1978-1985)',
+      'symbol' => 'VNN',
+    ),
+    'VUV' => 
+    array (
+      'name' => 'vanuatuga vatu',
+      'symbol' => 'VUV',
+    ),
+    'WST' => 
+    array (
+      'name' => 'samaoga tala',
+      'symbol' => 'WST',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'ɣetoɖofe afrikaga CFA franc BEAC',
+      'symbol' => 'XAF',
+    ),
+    'XAG' => 
+    array (
+      'name' => 'klosalo',
+      'symbol' => 'XAG',
+    ),
+    'XAU' => 
+    array (
+      'name' => 'sika',
+      'symbol' => 'XAU',
+    ),
+    'XBA' => 
+    array (
+      'name' => 'europa dzidzenu xba',
+      'symbol' => 'XBA',
+    ),
+    'XBB' => 
+    array (
+      'name' => 'europa gadzidzenu xbb',
+      'symbol' => 'XBB',
+    ),
+    'XBC' => 
+    array (
+      'name' => 'europa kɔnta dzidzenu xbc',
+      'symbol' => 'XBC',
+    ),
+    'XBD' => 
+    array (
+      'name' => 'europa kɔnta dzidzenu xbd',
+      'symbol' => 'XBD',
+    ),
+    'XCD' => 
+    array (
+      'name' => 'ɣedzeƒe caribbeaga dollar',
+      'symbol' => 'XCD',
+    ),
+    'XDR' => 
+    array (
+      'name' => 'gaɖuɖu ɖoɖo tɔxɛ',
+      'symbol' => 'XDR',
+    ),
+    'XEU' => 
+    array (
+      'name' => 'europa gaɖuɖu',
+      'symbol' => 'XEU',
+    ),
+    'XFO' => 
+    array (
+      'name' => 'fransemega sika franc',
+      'symbol' => 'XFO',
+    ),
+    'XFU' => 
+    array (
+      'name' => 'frentsi UIC-franc',
+      'symbol' => 'XFU',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'ɣetoɖofe afrikaga CFA franc BCEAO',
+      'symbol' => 'XOF',
+    ),
+    'XPD' => 
+    array (
+      'name' => 'palladiumga',
+      'symbol' => 'XPD',
+    ),
+    'XPF' => 
+    array (
+      'name' => 'CFP ga franc',
+      'symbol' => 'XPF',
+    ),
+    'XPT' => 
+    array (
+      'name' => 'platinum',
+      'symbol' => 'XPT',
+    ),
+    'XRE' => 
+    array (
+      'name' => 'RINET gadodo XRE',
+      'symbol' => 'XRE',
+    ),
+    'XTS' => 
+    array (
+      'name' => 'gaɖuɖu dodokpɔ dzesi xts',
+      'symbol' => 'XTS',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'gaɖuɖu manya',
+      'symbol' => 'XXX',
+    ),
+    'YDD' => 
+    array (
+      'name' => 'yemeniga dinar',
+      'symbol' => 'YDD',
+    ),
+    'YER' => 
+    array (
+      'name' => 'yemeniga rial',
+      'symbol' => 'YER',
+    ),
+    'YUD' => 
+    array (
+      'name' => 'yugoslaviaga hard dinar (1966-1990)',
+      'symbol' => 'YUD',
+    ),
+    'YUM' => 
+    array (
+      'name' => 'yugoslaviaga yeyetɔ dinar (1994-2002)',
+      'symbol' => 'YUM',
+    ),
+    'YUN' => 
+    array (
+      'name' => 'yugoslaviaga convertible dinar (1990-1992)',
+      'symbol' => 'YUN',
+    ),
+    'YUR' => 
+    array (
+      'name' => 'yugoslaviaga dinar (1992-1993)',
+      'symbol' => 'YUR',
+    ),
+    'ZAL' => 
+    array (
+      'name' => 'anyiehe afrikaga rand (gadzikpɔtɔ)',
+      'symbol' => 'ZAL',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'anyiehe afrikaga rand',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'zambiaga kwacha',
+      'symbol' => 'ZMK',
+    ),
+    'ZRN' => 
+    array (
+      'name' => 'zairega yeyetɔ zaire',
+      'symbol' => 'ZRN',
+    ),
+    'ZRZ' => 
+    array (
+      'name' => 'zairega zaire (1971-1993)',
+      'symbol' => 'ZRZ',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'zimbabwega dollar (1980-2008)',
+      'symbol' => 'ZWD',
+    ),
+    'ZWL' => 
+    array (
+      'name' => 'zimbabwega dollar (2009)',
+      'symbol' => 'ZWL',
+    ),
+    'ZWR' => 
+    array (
+      'name' => 'zimbabwega dollar (2008)',
+      'symbol' => 'ZWR',
+    ),
+  ),
+);

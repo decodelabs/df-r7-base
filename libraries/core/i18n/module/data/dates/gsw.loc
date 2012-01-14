@@ -1,0 +1,89 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'buddhist' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d. MMMM y G',
+      'long' => 'd. MMMM y G',
+      'medium' => 'd. MMM y G',
+      'short' => 'd.M.yyyy',
+    ),
+  ),
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Su.',
+        'mon' => 'Mä.',
+        'tue' => 'Zi.',
+        'wed' => 'Mi.',
+        'thu' => 'Du.',
+        'fri' => 'Fr.',
+        'sat' => 'Sa.',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Sunntig',
+        'mon' => 'Määntig',
+        'tue' => 'Ziischtig',
+        'wed' => 'Mittwuch',
+        'thu' => 'Dunschtig',
+        'fri' => 'Friitig',
+        'sat' => 'Samschtig',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Jan',
+        2 => 'Feb',
+        3 => 'Mär',
+        4 => 'Apr',
+        5 => 'Mai',
+        6 => 'Jun',
+        7 => 'Jul',
+        8 => 'Aug',
+        9 => 'Sep',
+        10 => 'Okt',
+        11 => 'Nov',
+        12 => 'Dez',
+      ),
+      'full' => 
+      array (
+        1 => 'Januar',
+        2 => 'Februar',
+        3 => 'März',
+        4 => 'April',
+        5 => 'Mai',
+        6 => 'Juni',
+        7 => 'Juli',
+        8 => 'Auguscht',
+        9 => 'Septämber',
+        10 => 'Oktoober',
+        11 => 'Novämber',
+        12 => 'Dezämber',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d. MMMM y',
+      'long' => 'd. MMMM y',
+      'medium' => 'dd.MM.yyyy',
+      'short' => 'dd.MM.yy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'HH:mm:ss zzzz',
+      'long' => 'HH:mm:ss z',
+      'medium' => 'HH:mm:ss',
+      'short' => 'HH:mm',
+    ),
+  ),
+);

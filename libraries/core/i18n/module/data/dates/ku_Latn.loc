@@ -1,0 +1,76 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'yş',
+        'mon' => 'dş',
+        'tue' => 'sş',
+        'wed' => 'çş',
+        'thu' => 'pş',
+        'fri' => 'în',
+        'sat' => 'ş',
+      ),
+      'full' => 
+      array (
+        'sun' => 'yekşem',
+        'mon' => 'duşem',
+        'tue' => 'şê',
+        'wed' => 'çarşem',
+        'thu' => 'pêncşem',
+        'fri' => 'în',
+        'sat' => 'şemî',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'çil',
+        2 => 'sib',
+        3 => 'adr',
+        4 => 'nîs',
+        5 => 'gul',
+        6 => 'hez',
+        7 => 'tîr',
+      ),
+      'full' => 
+      array (
+        1 => 'çile',
+        2 => 'sibat',
+        3 => 'adar',
+        4 => 'nîsan',
+        5 => 'gulan',
+        6 => 'hezîran',
+      ),
+    ),
+  ),
+  'islamic' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'full' => 
+      array (
+        1 => 'muẖerem',
+        2 => 'sefer',
+        3 => 'rebîʿulewel',
+        4 => 'rebîʿulaxer',
+        5 => 'cemazîyelewel',
+        6 => 'cemazîyelaxer',
+        7 => 'receb',
+        8 => 'şeʿban',
+        9 => 'remezan',
+        10 => 'şewal',
+        11 => 'zîlqeʿde',
+        12 => 'zîlẖece',
+      ),
+    ),
+  ),
+);

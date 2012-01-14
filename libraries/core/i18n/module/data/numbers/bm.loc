@@ -1,0 +1,288 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+    'currency' => '¤#,##0.00;(¤#,##0.00)',
+  ),
+  'currencies' => 
+  array (
+    'AED' => 
+    array (
+      'name' => 'arabu mara kafoli Diram',
+      'symbol' => 'AED',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'angola Kwanza',
+      'symbol' => 'AOA',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'ositirali Dolar',
+      'symbol' => 'AUD',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'bareyini Dinar',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'burundi Fraŋ',
+      'symbol' => 'BIF',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'bɔtisiwana Pula',
+      'symbol' => 'BWP',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'kanada Dolar',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'kongole Fraŋ',
+      'symbol' => 'CDF',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'suwisi Fraŋ',
+      'symbol' => 'CHF',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'siniwa Yuwan',
+      'symbol' => 'CNY',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'capivɛrdi Esekudo',
+      'symbol' => 'CVE',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'jibuti Fraŋ',
+      'symbol' => 'DJF',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'alizeri Dinar',
+      'symbol' => 'DZD',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'eziputi Livri',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'eritere Nafika',
+      'symbol' => 'ERN',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'etiopi Bir',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'ero',
+      'symbol' => 'EUR',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'angilɛ Livri Siterlingi',
+      'symbol' => 'GBP',
+    ),
+    'GHC' => 
+    array (
+      'name' => 'gana Sedi',
+      'symbol' => 'GHC',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'gambi Dalasi',
+      'symbol' => 'GMD',
+    ),
+    'GNS' => 
+    array (
+      'name' => 'gine Fraŋ',
+      'symbol' => 'GNS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'Ɛndu Rupi',
+      'symbol' => 'INR',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'zapɔne Yɛn',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'keniya Siling',
+      'symbol' => 'KES',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'komɔri Fraŋ',
+      'symbol' => 'KMF',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'liberiya Dolar',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'lesoto Loti',
+      'symbol' => 'LSL',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'libi Dinar',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'marɔku Diram',
+      'symbol' => 'MAD',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'madagasikari Fraŋ',
+      'symbol' => 'MGA',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'mɔritani Uguwiya',
+      'symbol' => 'MRO',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'morisi Rupi',
+      'symbol' => 'MUR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'malawi Kwaca',
+      'symbol' => 'MWK',
+    ),
+    'MZM' => 
+    array (
+      'name' => 'mozanbiki Metikali',
+      'symbol' => 'MZM',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'namibi Dolar',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'nizeriya Nɛra',
+      'symbol' => 'NGN',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'ruwanda Fraŋ',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'sawudiya Riyal',
+      'symbol' => 'SAR',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'sesɛli Rupi',
+      'symbol' => 'SCR',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'sudani Dinar',
+      'symbol' => 'SDG',
+    ),
+    'SDP' => 
+    array (
+      'name' => 'sudani Livri',
+      'symbol' => 'SDP',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'Ɛlɛni-Senu Livri',
+      'symbol' => 'SHP',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'siyeralewɔni Lewɔni',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'somali Siling',
+      'symbol' => 'SOS',
+    ),
+    'STD' => 
+    array (
+      'name' => 'sawotome Dobra',
+      'symbol' => 'STD',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'swazilandi Lilangeni',
+      'symbol' => 'SZL',
+    ),
+    'TND' => 
+    array (
+      'name' => 'tunizi Dinar',
+      'symbol' => 'TND',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'tanzani Siling',
+      'symbol' => 'TZS',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'uganda Siling',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'ameriki Dolar',
+      'symbol' => 'USD',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'sefa Fraŋ (BEAC)',
+      'symbol' => 'XAF',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'sefa Fraŋ (BCEAO)',
+      'symbol' => 'XOF',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'sudafriki Randi',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'zambi Kwaca',
+      'symbol' => 'ZMK',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'zimbabuwe Dolar',
+      'symbol' => 'ZWD',
+    ),
+  ),
+);

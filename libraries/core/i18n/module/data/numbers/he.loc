@@ -1,0 +1,1136 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => '.',
+    'group' => ',',
+    'list' => ';',
+    'percentSign' => '%',
+    'plusSign' => '+',
+    'minusSign' => '-',
+    'exponential' => 'E',
+    'perMille' => '‰',
+    'infinity' => '∞',
+    'nan' => 'NaN',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'scientific' => '#E0',
+    'percent' => '#,##0%',
+    'currency' => '#,##0.00 ¤',
+  ),
+  'currencies' => 
+  array (
+    'ADP' => 
+    array (
+      'name' => 'פזטה אנדורית',
+      'symbol' => 'ADP',
+    ),
+    'AED' => 
+    array (
+      'name' => 'דירהם של איחוד הנסיכויות הערביות',
+      'symbol' => 'AED',
+    ),
+    'AFN' => 
+    array (
+      'name' => 'אפגני אפגני',
+      'symbol' => 'AFN',
+    ),
+    'ALL' => 
+    array (
+      'name' => 'לק אלבני',
+      'symbol' => 'ALL',
+    ),
+    'AMD' => 
+    array (
+      'name' => 'דראם ארמני',
+      'symbol' => 'AMD',
+    ),
+    'ANG' => 
+    array (
+      'name' => 'גילדן של האנטילים ההולנדיים',
+      'symbol' => 'ANG',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'קואנזה אנגולי',
+      'symbol' => 'AOA',
+    ),
+    'AON' => 
+    array (
+      'name' => 'קואנזה חדש אנגולי (1990-2000)',
+      'symbol' => 'AON',
+    ),
+    'AOR' => 
+    array (
+      'name' => 'קואנזה רג׳וסטדו אנגולי (1995-1999)',
+      'symbol' => 'AOR',
+    ),
+    'ARP' => 
+    array (
+      'name' => 'פזו ארגנטינאי (1983-1985)',
+      'symbol' => 'ARP',
+    ),
+    'ARS' => 
+    array (
+      'name' => 'פזו ארגנטינאי',
+      'symbol' => 'ARS',
+    ),
+    'ATS' => 
+    array (
+      'name' => 'שילינג אוסטרי',
+      'symbol' => 'ATS',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'דולר אוסטרלי',
+      'symbol' => 'AUD',
+    ),
+    'AWG' => 
+    array (
+      'name' => 'פלורין של ארובה',
+      'symbol' => 'AWG',
+    ),
+    'AZM' => 
+    array (
+      'name' => 'מנאט אזרביג׳אני (1993-2006)',
+      'symbol' => 'AZM',
+    ),
+    'AZN' => 
+    array (
+      'name' => 'מאנאט אזרביג׳ני',
+      'symbol' => 'AZN',
+    ),
+    'BAD' => 
+    array (
+      'name' => 'דינר של בוסניה־הרצגובינה',
+      'symbol' => 'BAD',
+    ),
+    'BAM' => 
+    array (
+      'name' => 'מארק בר המרה של בוסניה־הרצגובינה',
+      'symbol' => 'BAM',
+    ),
+    'BBD' => 
+    array (
+      'name' => 'דולר ברבדיאני',
+      'symbol' => 'BBD',
+    ),
+    'BDT' => 
+    array (
+      'name' => 'טאקה בנגלדשי',
+      'symbol' => 'BDT',
+    ),
+    'BEC' => 
+    array (
+      'name' => 'פרנק בלגי (בר המרה)',
+      'symbol' => 'BEC',
+    ),
+    'BEF' => 
+    array (
+      'name' => 'פרנק בלגי',
+      'symbol' => 'BEF',
+    ),
+    'BGL' => 
+    array (
+      'name' => 'לב בולגרי ישן',
+      'symbol' => 'BGL',
+    ),
+    'BGN' => 
+    array (
+      'name' => 'לב בולגרי',
+      'symbol' => 'BGN',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'דינר בחרייני',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'פרנק בורונדי',
+      'symbol' => 'BIF',
+    ),
+    'BMD' => 
+    array (
+      'name' => 'דולר ברמודה',
+      'symbol' => 'BMD',
+    ),
+    'BND' => 
+    array (
+      'name' => 'דולר ברוניי',
+      'symbol' => 'BND',
+    ),
+    'BOB' => 
+    array (
+      'name' => 'בוליביאנו',
+      'symbol' => 'BOB',
+    ),
+    'BOP' => 
+    array (
+      'name' => 'פזו בוליבי',
+      'symbol' => 'BOP',
+    ),
+    'BRB' => 
+    array (
+      'name' => 'קרוזיארו חדש ברזילאי (1967-1986)',
+      'symbol' => 'BRB',
+    ),
+    'BRC' => 
+    array (
+      'name' => 'קרוזדו ברזילאי',
+      'symbol' => 'BRC',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'ריאל ברזילאי',
+      'symbol' => 'BRL',
+    ),
+    'BSD' => 
+    array (
+      'name' => 'דולר בהאמי',
+      'symbol' => 'BSD',
+    ),
+    'BTN' => 
+    array (
+      'name' => 'נגולטרום בהוטני',
+      'symbol' => 'BTN',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'פולה בוצוואני',
+      'symbol' => 'BWP',
+    ),
+    'BYR' => 
+    array (
+      'name' => 'רובל בלרוסי',
+      'symbol' => 'BYR',
+    ),
+    'BZD' => 
+    array (
+      'name' => 'דולר בליזי',
+      'symbol' => 'BZD',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'דולר קנדי',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'פרנק קונגולזי',
+      'symbol' => 'CDF',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'פרנק שוויצרי',
+      'symbol' => 'CHF',
+    ),
+    'CLP' => 
+    array (
+      'name' => 'פזו צ׳ילאני',
+      'symbol' => 'CLP',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'יואן רנמינבי סיני',
+      'symbol' => 'CNY',
+    ),
+    'COP' => 
+    array (
+      'name' => 'פזו קולומביאני',
+      'symbol' => 'COP',
+    ),
+    'CRC' => 
+    array (
+      'name' => 'קולון קוסטה־ריקני',
+      'symbol' => 'CRC',
+    ),
+    'CSD' => 
+    array (
+      'name' => 'דינר סרבי ישן',
+      'symbol' => 'CSD',
+    ),
+    'CUC' => 
+    array (
+      'name' => 'פזו קובני להמרה',
+      'symbol' => 'CUC',
+    ),
+    'CUP' => 
+    array (
+      'name' => 'פזו קובני',
+      'symbol' => 'CUP',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'אסקודו כף ורדה',
+      'symbol' => 'CVE',
+    ),
+    'CYP' => 
+    array (
+      'name' => 'לירה קפריסאית',
+      'symbol' => 'CYP',
+    ),
+    'CZK' => 
+    array (
+      'name' => 'קורונה צ׳כית',
+      'symbol' => 'CZK',
+    ),
+    'DDM' => 
+    array (
+      'name' => 'מרק מזרח גרמני',
+      'symbol' => 'DDM',
+    ),
+    'DEM' => 
+    array (
+      'name' => 'מרק גרמני',
+      'symbol' => 'DEM',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'פרנק ג׳יבוטי',
+      'symbol' => 'DJF',
+    ),
+    'DKK' => 
+    array (
+      'name' => 'כתר דני',
+      'symbol' => 'DKK',
+    ),
+    'DOP' => 
+    array (
+      'name' => 'פזו דומיניקני',
+      'symbol' => 'DOP',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'דינר אלג׳ירי',
+      'symbol' => 'DZD',
+    ),
+    'ECS' => 
+    array (
+      'name' => 'סוקר אקואדורי',
+      'symbol' => 'ECS',
+    ),
+    'EEK' => 
+    array (
+      'name' => 'קרון אסטוני',
+      'symbol' => 'EEK',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'לירה מיצרית',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'נאקפה אריתראי',
+      'symbol' => 'ERN',
+    ),
+    'ESA' => 
+    array (
+      'name' => 'פזטה [ESA]',
+      'symbol' => 'ESA',
+    ),
+    'ESB' => 
+    array (
+      'name' => 'פזטה [ESB]',
+      'symbol' => 'ESB',
+    ),
+    'ESP' => 
+    array (
+      'name' => 'פסטה ספרדי',
+      'symbol' => 'ESP',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'ביר אתיופי',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'אירו',
+      'symbol' => 'EUR',
+    ),
+    'FIM' => 
+    array (
+      'name' => 'מרק פיני',
+      'symbol' => 'FIM',
+    ),
+    'FJD' => 
+    array (
+      'name' => 'דולר פיג׳י',
+      'symbol' => 'FJD',
+    ),
+    'FKP' => 
+    array (
+      'name' => 'לירה של איי פוקלנד',
+      'symbol' => 'FKP',
+    ),
+    'FRF' => 
+    array (
+      'name' => 'פרנק צרפתי',
+      'symbol' => 'FRF',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'לירה שטרלינג',
+      'symbol' => 'GBP',
+    ),
+    'GEL' => 
+    array (
+      'name' => 'לרי גאורגי',
+      'symbol' => 'GEL',
+    ),
+    'GHS' => 
+    array (
+      'name' => 'סדי גאני',
+      'symbol' => 'GHS',
+    ),
+    'GIP' => 
+    array (
+      'name' => 'פאונד גיברלטר',
+      'symbol' => 'GIP',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'דלאסי גמבי',
+      'symbol' => 'GMD',
+    ),
+    'GNF' => 
+    array (
+      'name' => 'פרנק גינאי',
+      'symbol' => 'GNF',
+    ),
+    'GRD' => 
+    array (
+      'name' => 'דרכמה',
+      'symbol' => 'GRD',
+    ),
+    'GTQ' => 
+    array (
+      'name' => 'קצל גואטמלי',
+      'symbol' => 'GTQ',
+    ),
+    'GWP' => 
+    array (
+      'name' => 'פזו גינאי',
+      'symbol' => 'GWP',
+    ),
+    'GYD' => 
+    array (
+      'name' => 'דולר גיאני',
+      'symbol' => 'GYD',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'דולר הונג קונגי',
+      'symbol' => 'HKD',
+    ),
+    'HNL' => 
+    array (
+      'name' => 'למפירה הונדורי',
+      'symbol' => 'HNL',
+    ),
+    'HRK' => 
+    array (
+      'name' => 'קונה קרואטי',
+      'symbol' => 'HRK',
+    ),
+    'HTG' => 
+    array (
+      'name' => 'גארד האיטי',
+      'symbol' => 'HTG',
+    ),
+    'HUF' => 
+    array (
+      'name' => 'פורינט הונגרי',
+      'symbol' => 'HUF',
+    ),
+    'IDR' => 
+    array (
+      'name' => 'רופיה אינדונזית',
+      'symbol' => 'IDR',
+    ),
+    'IEP' => 
+    array (
+      'name' => 'לירה אירית',
+      'symbol' => 'IEP',
+    ),
+    'ILP' => 
+    array (
+      'name' => 'לירה ישראלית',
+      'symbol' => 'ל״י',
+    ),
+    'ILS' => 
+    array (
+      'name' => 'ש״ח',
+      'symbol' => 'ILS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'רופי הודית',
+      'symbol' => 'INR',
+    ),
+    'IQD' => 
+    array (
+      'name' => 'דינר עירקי',
+      'symbol' => 'IQD',
+    ),
+    'IRR' => 
+    array (
+      'name' => 'ריאל איראני',
+      'symbol' => 'IRR',
+    ),
+    'ISK' => 
+    array (
+      'name' => 'קרונה איסלנדית',
+      'symbol' => 'ISK',
+    ),
+    'ITL' => 
+    array (
+      'name' => 'לירה איטלקית',
+      'symbol' => 'ITL',
+    ),
+    'JMD' => 
+    array (
+      'name' => 'דולר ג׳מאיקני',
+      'symbol' => 'JMD',
+    ),
+    'JOD' => 
+    array (
+      'name' => 'דינר ירדני',
+      'symbol' => 'JOD',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'ין יפני',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'שילינג קנייאתי',
+      'symbol' => 'KES',
+    ),
+    'KGS' => 
+    array (
+      'name' => 'סום קירגיזי',
+      'symbol' => 'KGS',
+    ),
+    'KHR' => 
+    array (
+      'name' => 'ריל קמבודי',
+      'symbol' => 'KHR',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'פרנק קומורואי',
+      'symbol' => 'KMF',
+    ),
+    'KPW' => 
+    array (
+      'name' => 'וון צפון קוראני',
+      'symbol' => 'KPW',
+    ),
+    'KRW' => 
+    array (
+      'name' => 'וון דרום קוראני',
+      'symbol' => 'KRW',
+    ),
+    'KWD' => 
+    array (
+      'name' => 'דינר כוויתי',
+      'symbol' => 'KWD',
+    ),
+    'KYD' => 
+    array (
+      'name' => 'דולר קיימאני',
+      'symbol' => 'KYD',
+    ),
+    'KZT' => 
+    array (
+      'name' => 'טנגה קזחסטני',
+      'symbol' => 'KZT',
+    ),
+    'LAK' => 
+    array (
+      'name' => 'קיפ לאי',
+      'symbol' => 'LAK',
+    ),
+    'LBP' => 
+    array (
+      'name' => 'לירה לבנונית',
+      'symbol' => 'LBP',
+    ),
+    'LKR' => 
+    array (
+      'name' => 'רופי סרי לנקי',
+      'symbol' => 'LKR',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'דולר ליברי',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'לוטי לסותי',
+      'symbol' => 'LSL',
+    ),
+    'LTL' => 
+    array (
+      'name' => 'ליטא ליטאי',
+      'symbol' => 'LTL',
+    ),
+    'LUF' => 
+    array (
+      'name' => 'פרנק לוקסמבורגי',
+      'symbol' => 'LUF',
+    ),
+    'LVL' => 
+    array (
+      'name' => 'לט לטבי',
+      'symbol' => 'LVL',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'דינר לובי',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'דירהם מרוקאי',
+      'symbol' => 'MAD',
+    ),
+    'MAF' => 
+    array (
+      'name' => 'פרנק מרוקאי',
+      'symbol' => 'MAF',
+    ),
+    'MDL' => 
+    array (
+      'name' => 'ליאו מולדובני',
+      'symbol' => 'MDL',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'אריארי מלגשי',
+      'symbol' => 'MGA',
+    ),
+    'MGF' => 
+    array (
+      'name' => 'פרנק מדגסקארי',
+      'symbol' => 'MGF',
+    ),
+    'MKD' => 
+    array (
+      'name' => 'דינר מקדוני',
+      'symbol' => 'MKD',
+    ),
+    'MMK' => 
+    array (
+      'name' => 'קיאט מיאנמרי',
+      'symbol' => 'MMK',
+    ),
+    'MNT' => 
+    array (
+      'name' => 'טוגריק מונגולי',
+      'symbol' => 'MNT',
+    ),
+    'MOP' => 
+    array (
+      'name' => 'פטקה של מקאו',
+      'symbol' => 'MOP',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'אוגוויה מאוריטני',
+      'symbol' => 'MRO',
+    ),
+    'MTL' => 
+    array (
+      'name' => 'לירה מלטית',
+      'symbol' => 'MTL',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'רופי מאוריציני',
+      'symbol' => 'MUR',
+    ),
+    'MVR' => 
+    array (
+      'name' => 'רופיה מלדיבית',
+      'symbol' => 'MVR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'קואצ׳ה מלאוי',
+      'symbol' => 'MWK',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'פזו מקסיקני',
+      'symbol' => 'MXN',
+    ),
+    'MXP' => 
+    array (
+      'name' => 'פזו מקסיקני (1861 - 1992)',
+      'symbol' => 'MXP',
+    ),
+    'MYR' => 
+    array (
+      'name' => 'רינגיט מלזי',
+      'symbol' => 'MYR',
+    ),
+    'MZM' => 
+    array (
+      'name' => 'מטיקל',
+      'symbol' => 'MZM',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'דולר נמיבי',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'נאירה ניגרי',
+      'symbol' => 'NGN',
+    ),
+    'NIO' => 
+    array (
+      'name' => 'קורדובה ניקראגי',
+      'symbol' => 'NIO',
+    ),
+    'NLG' => 
+    array (
+      'name' => 'גילדן הולנדי',
+      'symbol' => 'NLG',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'כתר נורבגי',
+      'symbol' => 'NOK',
+    ),
+    'NPR' => 
+    array (
+      'name' => 'רופי נפאלי',
+      'symbol' => 'NPR',
+    ),
+    'NZD' => 
+    array (
+      'name' => 'דולר ניו זילנדי',
+      'symbol' => 'NZD',
+    ),
+    'OMR' => 
+    array (
+      'name' => 'ריאל עומאני',
+      'symbol' => 'OMR',
+    ),
+    'PAB' => 
+    array (
+      'name' => 'בלבואה פנמי',
+      'symbol' => 'PAB',
+    ),
+    'PEN' => 
+    array (
+      'name' => 'סול פרואני חדש',
+      'symbol' => 'PEN',
+    ),
+    'PGK' => 
+    array (
+      'name' => 'קינה של פפואה גינאה החדשה',
+      'symbol' => 'PGK',
+    ),
+    'PHP' => 
+    array (
+      'name' => 'פזו פיליפיני',
+      'symbol' => 'PHP',
+    ),
+    'PKR' => 
+    array (
+      'name' => 'רופי פקיסטני',
+      'symbol' => 'PKR',
+    ),
+    'PLN' => 
+    array (
+      'name' => 'זלוטי פולני',
+      'symbol' => 'PLN',
+    ),
+    'PLZ' => 
+    array (
+      'name' => 'זלוטי (1950 - 1995)',
+      'symbol' => 'PLZ',
+    ),
+    'PTE' => 
+    array (
+      'name' => 'אסקודו פורטוגלי',
+      'symbol' => 'PTE',
+    ),
+    'PYG' => 
+    array (
+      'name' => 'גוורני פראגוואי',
+      'symbol' => 'PYG',
+    ),
+    'QAR' => 
+    array (
+      'name' => 'ריאל קטארי',
+      'symbol' => 'QAR',
+    ),
+    'ROL' => 
+    array (
+      'name' => 'לאו רומני ישן',
+      'symbol' => 'ROL',
+    ),
+    'RON' => 
+    array (
+      'name' => 'לאו רומני חדש',
+      'symbol' => 'RON',
+    ),
+    'RSD' => 
+    array (
+      'name' => 'דינר סרבי',
+      'symbol' => 'RSD',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'רובל',
+      'symbol' => 'RUB',
+    ),
+    'RUR' => 
+    array (
+      'name' => 'רובל רוסי (1991 - 1998)',
+      'symbol' => 'RUR',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'פרנק רואנדי',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'ריאל סעודי',
+      'symbol' => 'SAR',
+    ),
+    'SBD' => 
+    array (
+      'name' => 'דולר איי שלמה',
+      'symbol' => 'SBD',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'רופי סיישלי',
+      'symbol' => 'SCR',
+    ),
+    'SDD' => 
+    array (
+      'name' => 'דינר סודני',
+      'symbol' => 'SDD',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'לירה סודנית',
+      'symbol' => 'SDG',
+    ),
+    'SDP' => 
+    array (
+      'name' => 'לירה סודנית (1957-1998)',
+      'symbol' => 'SDP',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'כתר שוודי',
+      'symbol' => 'SEK',
+    ),
+    'SGD' => 
+    array (
+      'name' => 'דולר סינגפורי',
+      'symbol' => 'SGD',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'פאונד סנט הלני',
+      'symbol' => 'SHP',
+    ),
+    'SIT' => 
+    array (
+      'name' => 'טולאר סלובני',
+      'symbol' => 'SIT',
+    ),
+    'SKK' => 
+    array (
+      'name' => 'קורונה סלובקי',
+      'symbol' => 'SKK',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'ליאון סיירה לאוני',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'שילינג סומאלי',
+      'symbol' => 'SOS',
+    ),
+    'SRD' => 
+    array (
+      'name' => 'דולר סורינאמי',
+      'symbol' => 'SRD',
+    ),
+    'SRG' => 
+    array (
+      'name' => 'גילדר סורינאמי',
+      'symbol' => 'SRG',
+    ),
+    'STD' => 
+    array (
+      'name' => 'דוברה של סן טומה ופרינסיפה',
+      'symbol' => 'STD',
+    ),
+    'SUR' => 
+    array (
+      'name' => 'רובל סובייטי',
+      'symbol' => 'SUR',
+    ),
+    'SYP' => 
+    array (
+      'name' => 'לירה סורית',
+      'symbol' => 'SYP',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'לילנגני סווזי',
+      'symbol' => 'SZL',
+    ),
+    'THB' => 
+    array (
+      'name' => 'בהט תאילנדי',
+      'symbol' => 'THB',
+    ),
+    'TJS' => 
+    array (
+      'name' => 'סומוני טג׳קיסטני',
+      'symbol' => 'TJS',
+    ),
+    'TMM' => 
+    array (
+      'name' => 'מנאט טורקמאני',
+      'symbol' => 'TMM',
+    ),
+    'TMT' => 
+    array (
+      'name' => 'מנאט טורקמני',
+      'symbol' => 'TMT',
+    ),
+    'TND' => 
+    array (
+      'name' => 'דינר טוניסאי',
+      'symbol' => 'TND',
+    ),
+    'TOP' => 
+    array (
+      'name' => 'פאאמגה טונגי',
+      'symbol' => 'TOP',
+    ),
+    'TPE' => 
+    array (
+      'name' => 'אסקודו טימוראי',
+      'symbol' => 'TPE',
+    ),
+    'TRL' => 
+    array (
+      'name' => 'לירה טורקית',
+      'symbol' => 'TRL',
+    ),
+    'TRY' => 
+    array (
+      'name' => 'לירה טורקית חדשה',
+      'symbol' => 'TRY',
+    ),
+    'TTD' => 
+    array (
+      'name' => 'דולר טרינידדי',
+      'symbol' => 'TTD',
+    ),
+    'TWD' => 
+    array (
+      'name' => 'דולר טאייוני חדש',
+      'symbol' => 'TWD',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'שילינג טנזני',
+      'symbol' => 'TZS',
+    ),
+    'UAH' => 
+    array (
+      'name' => 'גריבנה אוקראיני',
+      'symbol' => 'UAH',
+    ),
+    'UGS' => 
+    array (
+      'name' => 'שילינג אוגנדי (1966 - 1987)',
+      'symbol' => 'UGS',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'שילינג אוגנדי',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'דולר אמריקאי',
+      'symbol' => 'USD',
+    ),
+    'USN' => 
+    array (
+      'name' => 'דולר אמריקאי (היום הבא)',
+      'symbol' => 'USN',
+    ),
+    'USS' => 
+    array (
+      'name' => 'דולר אמריקאי (היום הזה)',
+      'symbol' => 'USS',
+    ),
+    'UYU' => 
+    array (
+      'name' => 'פזו אורוגוואי',
+      'symbol' => 'UYU',
+    ),
+    'UZS' => 
+    array (
+      'name' => 'סום אוזבקי',
+      'symbol' => 'UZS',
+    ),
+    'VEB' => 
+    array (
+      'name' => 'בוליבר ונצואלי',
+      'symbol' => 'VEB',
+    ),
+    'VEF' => 
+    array (
+      'name' => 'בוליבר ונצואליאני',
+      'symbol' => 'VEF',
+    ),
+    'VND' => 
+    array (
+      'name' => 'דונג וייטנאמי',
+      'symbol' => 'VND',
+    ),
+    'VUV' => 
+    array (
+      'name' => 'ואטו של ונואטו',
+      'symbol' => 'VUV',
+    ),
+    'WST' => 
+    array (
+      'name' => 'טאלה סמואי',
+      'symbol' => 'WST',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'פרנק CFA',
+      'symbol' => 'XAF',
+    ),
+    'XAG' => 
+    array (
+      'name' => 'כסף',
+      'symbol' => 'XAG',
+    ),
+    'XAU' => 
+    array (
+      'name' => 'זהב',
+      'symbol' => 'XAU',
+    ),
+    'XCD' => 
+    array (
+      'name' => 'דולר מזרח קריבי',
+      'symbol' => 'XCD',
+    ),
+    'XDR' => 
+    array (
+      'name' => 'זכויות משיכה מיוחדות',
+      'symbol' => 'XDR',
+    ),
+    'XFO' => 
+    array (
+      'name' => 'פרנק זהב',
+      'symbol' => 'XFO',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'פרנק CFA BCEAO',
+      'symbol' => 'XOF',
+    ),
+    'XPD' => 
+    array (
+      'name' => 'פלדיום',
+      'symbol' => 'XPD',
+    ),
+    'XPF' => 
+    array (
+      'name' => 'פרנק CFP',
+      'symbol' => 'XPF',
+    ),
+    'XPT' => 
+    array (
+      'name' => 'פלטינה',
+      'symbol' => 'XPT',
+    ),
+    'XTS' => 
+    array (
+      'name' => 'סימון למטרות בדיקה',
+      'symbol' => 'XTS',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'מטבע שאינו ידוע',
+      'symbol' => 'XXX',
+    ),
+    'YDD' => 
+    array (
+      'name' => 'דינר תימני',
+      'symbol' => 'YDD',
+    ),
+    'YER' => 
+    array (
+      'name' => 'ריאל תימני',
+      'symbol' => 'YER',
+    ),
+    'YUD' => 
+    array (
+      'name' => 'דינר יגוסלבי חדש',
+      'symbol' => 'YUD',
+    ),
+    'YUM' => 
+    array (
+      'name' => 'דינר יגוסלבי',
+      'symbol' => 'YUM',
+    ),
+    'ZAL' => 
+    array (
+      'name' => 'ראנד דרום אפריקאי (כספי)',
+      'symbol' => 'ZAL',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'ראנד דרום אפריקאי',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'קוואצ׳ה זמבית',
+      'symbol' => 'ZMK',
+    ),
+    'ZRN' => 
+    array (
+      'name' => 'זאיר חדש',
+      'symbol' => 'ZRN',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'דולר זימבבואי',
+      'symbol' => 'ZWD',
+    ),
+  ),
+);

@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Bk1',
+        'mon' => 'Bk2',
+        'tue' => 'Bk3',
+        'wed' => 'Bk4',
+        'thu' => 'Bk5',
+        'fri' => 'Lâp',
+        'sat' => 'Lây',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Bikua-ôko',
+        'mon' => 'Bïkua-ûse',
+        'tue' => 'Bïkua-ptâ',
+        'wed' => 'Bïkua-usïö',
+        'thu' => 'Bïkua-okü',
+        'fri' => 'Lâpôsö',
+        'sat' => 'Lâyenga',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Nye',
+        2 => 'Ful',
+        3 => 'Mbä',
+        4 => 'Ngu',
+        5 => 'Bêl',
+        6 => 'Fön',
+        7 => 'Len',
+        8 => 'Kük',
+        9 => 'Mvu',
+        10 => 'Ngb',
+        11 => 'Nab',
+        12 => 'Kak',
+      ),
+      'full' => 
+      array (
+        1 => 'Nyenye',
+        2 => 'Fulundïgi',
+        3 => 'Mbängü',
+        4 => 'Ngubùe',
+        5 => 'Bêläwü',
+        6 => 'Föndo',
+        7 => 'Lengua',
+        8 => 'Kükürü',
+        9 => 'Mvuka',
+        10 => 'Ngberere',
+        11 => 'Nabändüru',
+        12 => 'Kakauka',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM, y',
+      'short' => 'd/M/yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'HH:mm:ss zzzz',
+      'long' => 'HH:mm:ss z',
+      'medium' => 'HH:mm:ss',
+      'short' => 'HH:mm',
+    ),
+  ),
+);

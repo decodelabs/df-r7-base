@@ -1,0 +1,54 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'full' => 
+      array (
+        'sun' => 'lahadi',
+        'mon' => 'tɛɛnɛɛ',
+        'tue' => 'talata',
+        'wed' => 'alaba',
+        'thu' => 'aimisa',
+        'fri' => 'aijima',
+        'sat' => 'siɓiti',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'full' => 
+      array (
+        1 => 'luukao kemã',
+        2 => 'ɓandaɓu',
+        3 => 'vɔɔ',
+        4 => 'fulu',
+        5 => 'goo',
+        6 => '6',
+        7 => '7',
+        8 => 'kɔnde',
+        9 => 'saah',
+        10 => 'galo',
+        11 => 'kenpkato ɓololɔ',
+        12 => 'luukao lɔma',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'dd/MM/yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+);

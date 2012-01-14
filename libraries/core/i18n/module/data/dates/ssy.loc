@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Nab',
+        'mon' => 'San',
+        'tue' => 'Sal',
+        'wed' => 'Rab',
+        'thu' => 'Cam',
+        'fri' => 'Jum',
+        'sat' => 'Qun',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Naba Sambat',
+        'mon' => 'Sani',
+        'tue' => 'Salus',
+        'wed' => 'Rabuq',
+        'thu' => 'Camus',
+        'fri' => 'Jumqata',
+        'sat' => 'Qunxa Sambat',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Qun',
+        2 => 'Nah',
+        3 => 'Cig',
+        4 => 'Agd',
+        5 => 'Cax',
+        6 => 'Qas',
+        7 => 'Qad',
+        8 => 'Leq',
+        9 => 'Way',
+        10 => 'Dit',
+        11 => 'Xim',
+        12 => 'Kax',
+      ),
+      'full' => 
+      array (
+        1 => 'Qunxa Garablu',
+        2 => 'Kudo',
+        3 => 'Ciggilta Kudo',
+        4 => 'Agda Baxis',
+        5 => 'Caxah Alsa',
+        6 => 'Qasa Dirri',
+        7 => 'Qado Dirri',
+        8 => 'Liiqen',
+        9 => 'Waysu',
+        10 => 'Diteli',
+        11 => 'Ximoli',
+        12 => 'Kaxxa Garablu',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, MMMM dd, y',
+      'long' => 'dd MMMM y',
+      'medium' => 'dd-MMM-y',
+      'short' => 'dd/MM/yy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+);

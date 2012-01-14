@@ -1,0 +1,12 @@
+<?php
+return array (
+  'Grek' => 'Grieg',
+  'Arab' => 'Għarbi',
+  'Hans' => 'Ħan Sempliċi',
+  'Hant' => 'Ħan Tradizzjonali',
+  'Zyyy' => 'Komuni',
+  'Latn' => 'Latin',
+  'Zxxx' => 'Mhux Miktub',
+  'Xpeo' => 'Persjan Antik',
+  'Zzzz' => 'Skritt Mhux Magħruf jew Mhux Validu',
+);

@@ -1,0 +1,356 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => ',',
+    'group' => '.',
+    'list' => ';',
+    'percentSign' => '%',
+    'plusSign' => '+',
+    'minusSign' => '-',
+    'exponential' => 'E',
+    'perMille' => '‰',
+    'infinity' => '∞',
+    'nan' => 'NaN',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'scientific' => '#E0',
+    'percent' => '#,##0%',
+    'currency' => '¤ #,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'AMD' => 
+    array (
+      'name' => 'Dram armen',
+      'symbol' => 'AMD',
+    ),
+    'ARS' => 
+    array (
+      'name' => 'Peso argjentin',
+      'symbol' => 'ARS',
+    ),
+    'ATS' => 
+    array (
+      'name' => 'Selin austriac',
+      'symbol' => 'ATS',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'dolar australian',
+      'symbol' => 'AUD',
+    ),
+    'BEF' => 
+    array (
+      'name' => 'Franc de Belgjiche',
+      'symbol' => 'BEF',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'Franc burundês',
+      'symbol' => 'BIF',
+    ),
+    'BND' => 
+    array (
+      'name' => 'Dolar dal Brunei',
+      'symbol' => 'BND',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'real brasilian',
+      'symbol' => 'BRL',
+    ),
+    'BYR' => 
+    array (
+      'name' => 'Rubli bielorùs',
+      'symbol' => 'BYR',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'dolar canadês',
+      'symbol' => 'CAD',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'franc svuizar',
+      'symbol' => 'CHF',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'yuan cinês',
+      'symbol' => 'CNY',
+    ),
+    'CSD' => 
+    array (
+      'name' => 'Vieri dinar serp',
+      'symbol' => 'CSD',
+    ),
+    'CUP' => 
+    array (
+      'name' => 'Peso cuban',
+      'symbol' => 'CUP',
+    ),
+    'CZK' => 
+    array (
+      'name' => 'Corone de Republiche Ceche',
+      'symbol' => 'CZK',
+    ),
+    'DEM' => 
+    array (
+      'name' => 'Marc todesc',
+      'symbol' => 'DEM',
+    ),
+    'DKK' => 
+    array (
+      'name' => 'corone danese',
+      'symbol' => 'DKK',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'Dinar algerin',
+      'symbol' => 'DZD',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'euro',
+      'symbol' => 'EUR',
+    ),
+    'FRF' => 
+    array (
+      'name' => 'Franc francês',
+      'symbol' => 'FRF',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'sterline britaniche',
+      'symbol' => 'GBP',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'dolar di Hong Kong',
+      'symbol' => 'HKD',
+    ),
+    'HRD' => 
+    array (
+      'name' => 'Dinar cravuat',
+      'symbol' => 'HRD',
+    ),
+    'HRK' => 
+    array (
+      'name' => 'Kuna cravuate',
+      'symbol' => 'HRK',
+    ),
+    'IDR' => 
+    array (
+      'name' => 'rupiah indonesiane',
+      'symbol' => 'IDR',
+    ),
+    'INR' => 
+    array (
+      'name' => 'rupie indiane',
+      'symbol' => 'INR',
+    ),
+    'IRR' => 
+    array (
+      'name' => 'Rial iranian',
+      'symbol' => 'IRR',
+    ),
+    'ITL' => 
+    array (
+      'name' => 'Lire taliane',
+      'symbol' => 'ITL',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'yen gjaponês',
+      'symbol' => 'JPY',
+    ),
+    'KRW' => 
+    array (
+      'name' => 'won de Coree dal Sud',
+      'symbol' => 'KRW',
+    ),
+    'LVL' => 
+    array (
+      'name' => 'Lats leton',
+      'symbol' => 'LVL',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'peso messican',
+      'symbol' => 'MXN',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'Dolar namibian',
+      'symbol' => 'NAD',
+    ),
+    'NIO' => 
+    array (
+      'name' => 'Córdoba oro nicaraguan',
+      'symbol' => 'NIO',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'corone norvegjese',
+      'symbol' => 'NOK',
+    ),
+    'NZD' => 
+    array (
+      'name' => 'Dollar neozelandês',
+      'symbol' => 'NZD',
+    ),
+    'PKR' => 
+    array (
+      'name' => 'Rupie pachistane',
+      'symbol' => 'PKR',
+    ),
+    'PLN' => 
+    array (
+      'name' => 'zloty polac',
+      'symbol' => 'PLN',
+    ),
+    'RSD' => 
+    array (
+      'name' => 'Dinar serp',
+      'symbol' => 'RSD',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'rubli rus',
+      'symbol' => 'RUB',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'riyal de Arabie Saudite',
+      'symbol' => 'SAR',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'corone svedese',
+      'symbol' => 'SEK',
+    ),
+    'SIT' => 
+    array (
+      'name' => 'Talar sloven',
+      'symbol' => 'SIT',
+    ),
+    'SKK' => 
+    array (
+      'name' => 'Corone slovache',
+      'symbol' => 'SKK',
+    ),
+    'THB' => 
+    array (
+      'name' => 'baht tailandês',
+      'symbol' => 'THB',
+    ),
+    'TRL' => 
+    array (
+      'name' => 'Viere Lire turche',
+      'symbol' => 'TRL',
+    ),
+    'TRY' => 
+    array (
+      'name' => 'lire turche',
+      'symbol' => 'TRY',
+    ),
+    'TWD' => 
+    array (
+      'name' => 'gnûf dolar taiwanês',
+      'symbol' => 'TWD',
+    ),
+    'USD' => 
+    array (
+      'name' => 'dolar american',
+      'symbol' => 'USD',
+    ),
+    'USN' => 
+    array (
+      'name' => 'Dolar american (prossime zornade)',
+      'symbol' => 'USN',
+    ),
+    'USS' => 
+    array (
+      'name' => 'Dolar american (stesse zornade)',
+      'symbol' => 'USS',
+    ),
+    'XAG' => 
+    array (
+      'name' => 'Arint',
+      'symbol' => 'XAG',
+    ),
+    'XAU' => 
+    array (
+      'name' => 'Aur',
+      'symbol' => 'XAU',
+    ),
+    'XBA' => 
+    array (
+      'name' => 'Unitât composite europeane',
+      'symbol' => 'XBA',
+    ),
+    'XBB' => 
+    array (
+      'name' => 'Unitât monetarie europeane',
+      'symbol' => 'XBB',
+    ),
+    'XBC' => 
+    array (
+      'name' => 'Unitât di acont europeane (XBC)',
+      'symbol' => 'XBC',
+    ),
+    'XBD' => 
+    array (
+      'name' => 'Unitât di acont europeane (XBD)',
+      'symbol' => 'XBD',
+    ),
+    'XDR' => 
+    array (
+      'name' => 'Dirits speciâi di incas',
+      'symbol' => 'XDR',
+    ),
+    'XFO' => 
+    array (
+      'name' => 'Franc aur francês',
+      'symbol' => 'XFO',
+    ),
+    'XFU' => 
+    array (
+      'name' => 'Franc UIC francês',
+      'symbol' => 'XFU',
+    ),
+    'XPD' => 
+    array (
+      'name' => 'Paladi',
+      'symbol' => 'XPD',
+    ),
+    'XPT' => 
+    array (
+      'name' => 'Platin',
+      'symbol' => 'XPT',
+    ),
+    'XRE' => 
+    array (
+      'name' => 'fonts RINET',
+      'symbol' => 'XRE',
+    ),
+    'XTS' => 
+    array (
+      'name' => 'codiç di verifiche de monede',
+      'symbol' => 'XTS',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'Monede no valide o no cognossude',
+      'symbol' => 'XXX',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'rand sudafrican',
+      'symbol' => 'ZAR',
+    ),
+  ),
+);

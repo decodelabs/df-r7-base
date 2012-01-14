@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Sāp',
+        'mon' => 'Mōn',
+        'tue' => 'Tūs',
+        'wed' => 'Pul',
+        'thu' => 'Tuʻa',
+        'fri' => 'Fal',
+        'sat' => 'Tok',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Sāpate',
+        'mon' => 'Mōnite',
+        'tue' => 'Tūsite',
+        'wed' => 'Pulelulu',
+        'thu' => 'Tuʻapulelulu',
+        'fri' => 'Falaite',
+        'sat' => 'Tokonaki',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Sān',
+        2 => 'Fēp',
+        3 => 'Maʻa',
+        4 => 'ʻEpe',
+        5 => 'Mē',
+        6 => 'Sun',
+        7 => 'Siu',
+        8 => 'ʻAok',
+        9 => 'Sep',
+        10 => 'ʻOka',
+        11 => 'Nōv',
+        12 => 'Tīs',
+      ),
+      'full' => 
+      array (
+        1 => 'Sānuali',
+        2 => 'Fēpueli',
+        3 => 'Maʻasi',
+        4 => 'ʻEpeleli',
+        5 => 'Mē',
+        6 => 'Sune',
+        7 => 'Siulai',
+        8 => 'ʻAokosi',
+        9 => 'Sepitema',
+        10 => 'ʻOkatopa',
+        11 => 'Nōvema',
+        12 => 'Tīsema',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'd/M/yy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'HH:mm:ss zzzz',
+      'long' => 'HH:mm:ss z',
+      'medium' => 'HH:mm:ss',
+      'short' => 'HH:mm',
+    ),
+  ),
+);

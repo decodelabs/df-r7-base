@@ -1,0 +1,74 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'full' => 
+      array (
+        'sun' => 'اتوار',
+        'mon' => 'پير',
+        'tue' => 'منگل',
+        'wed' => 'بده',
+        'thu' => 'جمعرات',
+        'fri' => 'جمعہ',
+        'sat' => 'ہفتہ',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'full' => 
+      array (
+        1 => 'جنوری',
+        2 => 'فروری',
+        3 => 'مار چ',
+        4 => 'اپريل',
+        5 => 'مئ',
+        6 => 'جون',
+        7 => 'جولائ',
+        8 => 'اگست',
+        9 => 'ستمبر',
+        10 => 'اکتوبر',
+        11 => 'نومبر',
+        12 => 'دسمبر',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE؍ d؍ MMMM y',
+      'long' => 'd؍ MMMM y',
+      'medium' => 'd؍ MMM y',
+      'short' => 'd/M/yy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+  'islamic' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'full' => 
+      array (
+        1 => 'محرم',
+        2 => 'صفر',
+        3 => 'ر بيع الاول',
+        4 => 'ر بيع الثانی',
+        5 => 'جمادی الاول',
+        6 => 'جمادی الثانی',
+        7 => 'رجب',
+        8 => 'شعبان',
+        9 => 'رمضان',
+        10 => 'شوال',
+      ),
+    ),
+  ),
+);

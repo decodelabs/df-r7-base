@@ -1,0 +1,22 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => '٫',
+    'group' => '٬',
+    'percentSign' => '٪',
+    'exponential' => '×۱۰^',
+  ),
+  'formats' => 
+  array (
+    'currency' => '#,##0.00 ¤',
+  ),
+  'currencies' => 
+  array (
+    'AFN' => 
+    array (
+      'name' => 'افغانۍ',
+      'symbol' => '؋',
+    ),
+  ),
+);

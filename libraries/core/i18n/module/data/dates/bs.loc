@@ -1,0 +1,123 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'ned',
+        'mon' => 'pon',
+        'tue' => 'uto',
+        'wed' => 'sri',
+        'thu' => 'čet',
+        'fri' => 'pet',
+        'sat' => 'sub',
+      ),
+      'full' => 
+      array (
+        'sun' => 'nedjelja',
+        'mon' => 'ponedjeljak',
+        'tue' => 'utorak',
+        'wed' => 'srijeda',
+        'thu' => 'četvrtak',
+        'fri' => 'petak',
+        'sat' => 'subota',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'jan',
+        2 => 'feb',
+        3 => 'mar',
+        4 => 'apr',
+        5 => 'maj',
+        6 => 'jun',
+        7 => 'jul',
+        8 => 'avg',
+        9 => 'sep',
+        10 => 'okt',
+        11 => 'nov',
+        12 => 'dec',
+      ),
+      'full' => 
+      array (
+        1 => 'januar',
+        2 => 'februar',
+        3 => 'mart',
+        4 => 'april',
+        5 => 'maj',
+        6 => 'juni',
+        7 => 'juli',
+        8 => 'avgust',
+        9 => 'septembar',
+        10 => 'oktobar',
+        11 => 'novembar',
+        12 => 'decembar',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, dd. MMMM y.',
+      'long' => 'dd. MMMM y.',
+      'medium' => 'dd.MM.y.',
+      'short' => 'dd.MM.yy.',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'HH:mm:ss zzzz',
+      'long' => 'HH:mm:ss z',
+      'medium' => 'HH:mm:ss',
+      'short' => 'HH:mm',
+    ),
+  ),
+  'islamic' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'muh.',
+        2 => 'saf.',
+        3 => 'rab. i',
+        4 => 'rab. ii',
+        5 => 'džum. i',
+        6 => 'džum. ii',
+        7 => 'redž.',
+        8 => 'ša.',
+        9 => 'ram.',
+        10 => 'še.',
+        11 => 'zul-k.',
+        12 => 'zul-h.',
+      ),
+      'full' => 
+      array (
+        1 => 'muharem',
+        2 => 'safer',
+        3 => 'rabiʻ i',
+        4 => 'rabiʻ ii',
+        5 => 'džumade i',
+        6 => 'džumade ii',
+        7 => 'redžeb',
+        8 => 'šaʻban',
+        9 => 'ramazan',
+        10 => 'ševal',
+        11 => 'zul-kade',
+        12 => 'zul-hidže',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, dd. MMMM y. G',
+      'long' => 'dd. MMMM y. G',
+      'medium' => 'dd.MM.y. G',
+      'short' => 'dd.MM.y. G',
+    ),
+  ),
+);

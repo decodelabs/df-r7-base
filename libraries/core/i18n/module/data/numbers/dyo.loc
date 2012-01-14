@@ -1,0 +1,162 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => ',',
+    'group' => ' ',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'percent' => '#,##0%',
+    'currency' => '#,##0.00 ¤',
+  ),
+  'currencies' => 
+  array (
+    'AOA' => 
+    array (
+      'name' => 'kwanza yati Angola',
+      'symbol' => 'AOA',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'dolaar yati Ostraalia',
+      'symbol' => 'AUD',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'dinaar yati Bahrayn',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'fraaŋ yati Burundi',
+      'symbol' => 'BIF',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'pula yati Boswana',
+      'symbol' => 'BWP',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'dolaar yati Kanada',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'fraaŋ yati Kongo',
+      'symbol' => 'CDF',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'yuan yati Siin',
+      'symbol' => 'CNY',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'eskuudo yati Kap Ver',
+      'symbol' => 'CVE',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'fraaŋ yati Jibuti',
+      'symbol' => 'DJF',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'dinaar yati Alseri',
+      'symbol' => 'DZD',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'liiverey yati Esípt',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'nafka yati Eritree',
+      'symbol' => 'ERN',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'birr yati Ecoopi',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'euro',
+      'symbol' => 'EUR',
+    ),
+    'GHC' => 
+    array (
+      'name' => 'cedi yati Gaana',
+      'symbol' => 'GHC',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'dalasi yati Gambi',
+      'symbol' => 'GMD',
+    ),
+    'GNS' => 
+    array (
+      'name' => 'sili yati Giné',
+      'symbol' => 'GNS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'rupii yati End',
+      'symbol' => 'INR',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'yen yati Sapoŋ',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'silliŋ yati Keniya',
+      'symbol' => 'KES',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'fraaŋ yati Komor',
+      'symbol' => 'KMF',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'dolaar yati Liberia',
+      'symbol' => 'LRD',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'dinaar yati Libia',
+      'symbol' => 'LYD',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'ariari yati Madagaskaar',
+      'symbol' => 'MGA',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'ugiiya yati Mooritanii',
+      'symbol' => 'MRO',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'kwacha yati Malawi',
+      'symbol' => 'MWK',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'seefa BEAC',
+      'symbol' => 'XAF',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'seefa yati BCEAO',
+      'symbol' => 'XOF',
+    ),
+  ),
+);

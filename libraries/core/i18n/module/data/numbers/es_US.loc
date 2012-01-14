@@ -1,0 +1,22 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'JPY' => 
+    array (
+      'name' => 'JPY',
+      'symbol' => '¥',
+    ),
+    'USD' => 
+    array (
+      'name' => 'USD',
+      'symbol' => '$',
+    ),
+  ),
+);

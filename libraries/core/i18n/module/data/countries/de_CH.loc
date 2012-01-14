@@ -1,0 +1,16 @@
+<?php
+return array (
+  'QO' => 'Äusseres Ozeanien',
+  'BD' => 'Bangladesh',
+  'BW' => 'Botswana',
+  'BN' => 'Brunei',
+  'DJ' => 'Djibouti',
+  'GB' => 'Grossbritannien',
+  'CV' => 'Kapverden',
+  'MH' => 'Marshall-Inseln',
+  'RW' => 'Rwanda',
+  'SB' => 'Salomon-Inseln',
+  'ST' => 'Sao Tomé und Principe',
+  'BY' => 'Weissrussland',
+  'ZW' => 'Zimbabwe',
+);

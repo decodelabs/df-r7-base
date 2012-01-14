@@ -1,0 +1,454 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => '.',
+    'group' => ',',
+    'list' => ';',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'scientific' => '#E0',
+    'percent' => '#,##0%',
+    'currency' => '¤ #,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'ANG' => 
+    array (
+      'name' => 'နယ်သာလန် အန်တီလန် ဂင်းဒါး',
+      'symbol' => 'ANG',
+    ),
+    'ARP' => 
+    array (
+      'name' => 'အာဂျင်တီးနား ပီဆို (၁၉၈၃-၁၉၈၅)',
+      'symbol' => 'ARP',
+    ),
+    'ARS' => 
+    array (
+      'name' => 'အာဂျင်တီးနား ပီဆို',
+      'symbol' => 'ARS',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'ဩစတြေးလျှား ဒေါ်လာ',
+      'symbol' => 'AUD',
+    ),
+    'AWG' => 
+    array (
+      'name' => 'အရူဘန် ဂင်းဒါး',
+      'symbol' => 'AWG',
+    ),
+    'BDT' => 
+    array (
+      'name' => 'ဘင်္ဂလားဒေ့ရှ် တာကာ',
+      'symbol' => 'BDT',
+    ),
+    'BEF' => 
+    array (
+      'name' => 'ဘယ်လ်ဂျီယမ် ဖရန့်',
+      'symbol' => 'BEF',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'ဘူရွန်ဒီ ဖရန့်',
+      'symbol' => 'BIF',
+    ),
+    'BMD' => 
+    array (
+      'name' => 'ဘာမူဒါ ဒေါ်လာ',
+      'symbol' => 'BMD',
+    ),
+    'BND' => 
+    array (
+      'name' => 'ဘရူနိုင်း ဒေါ်လာ',
+      'symbol' => 'BND',
+    ),
+    'BOP' => 
+    array (
+      'name' => 'ဘိုလီးဘီးယား ပီဆို',
+      'symbol' => 'BOP',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'ဘရာဇီး ရီးယဲ',
+      'symbol' => 'BRL',
+    ),
+    'BSD' => 
+    array (
+      'name' => 'ဘဟားမား ဒေါ်လာ',
+      'symbol' => 'BSD',
+    ),
+    'BUK' => 
+    array (
+      'name' => 'ဗမာ ကျပ်',
+      'symbol' => 'BUK',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'ဘော့စ်ဝါနာ ပုလ',
+      'symbol' => 'BWP',
+    ),
+    'BYB' => 
+    array (
+      'name' => 'ဘီလာရုစ် ရူဘယ်အသစ် (၁၉၉၄-၁၉၉၉)',
+      'symbol' => 'BYB',
+    ),
+    'BYR' => 
+    array (
+      'name' => 'ဘီလာရုစ် ရူဘယ်',
+      'symbol' => 'BYR',
+    ),
+    'BZD' => 
+    array (
+      'name' => 'ဘေလီဇ် ဒေါ်လာ',
+      'symbol' => 'BZD',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'ကနေဒါ ဒေါ်လာ',
+      'symbol' => 'CAD',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'ဆွစ် ဖရန့်',
+      'symbol' => 'CHF',
+    ),
+    'CLP' => 
+    array (
+      'name' => 'ချီလီ ပီဆို',
+      'symbol' => 'CLP',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'တရုတ် ယွမ်',
+      'symbol' => 'CNY',
+    ),
+    'COP' => 
+    array (
+      'name' => 'ကိုလံဘီယာ ပီဆို',
+      'symbol' => 'COP',
+    ),
+    'CUP' => 
+    array (
+      'name' => 'ကျူးဘား ပီဆို',
+      'symbol' => 'CUP',
+    ),
+    'CYP' => 
+    array (
+      'name' => 'ဆိုက်ပရက်စ် ပေါင်',
+      'symbol' => 'CYP',
+    ),
+    'DEM' => 
+    array (
+      'name' => 'ဂျာမဏီ မတ်',
+      'symbol' => 'DEM',
+    ),
+    'DKK' => 
+    array (
+      'name' => 'ဒိန်းမတ် ခရိုဏာ',
+      'symbol' => 'DKK',
+    ),
+    'DOP' => 
+    array (
+      'name' => 'ဒိုမီနီကန် ပီဆို',
+      'symbol' => 'DOP',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'အီဂျစ် ပေါင်',
+      'symbol' => 'EGP',
+    ),
+    'ESP' => 
+    array (
+      'name' => 'စပိန် ပယ်စေးတာ',
+      'symbol' => 'ESP',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'ယူရို',
+      'symbol' => 'EUR',
+    ),
+    'FJD' => 
+    array (
+      'name' => 'ဖီဂျီ ဒေါ်လာ',
+      'symbol' => 'FJD',
+    ),
+    'FKP' => 
+    array (
+      'name' => 'ဖောက်ကလန် ကျွန်းစု ပေါင်',
+      'symbol' => 'FKP',
+    ),
+    'FRF' => 
+    array (
+      'name' => 'ပြင်သစ် ဖရန့်',
+      'symbol' => 'FRF',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'ဗြိတိသျှ ပေါင်',
+      'symbol' => 'GBP',
+    ),
+    'GIP' => 
+    array (
+      'name' => 'ဂျီဘရော်လ်တာ ပေါင်',
+      'symbol' => 'GIP',
+    ),
+    'GNF' => 
+    array (
+      'name' => 'ဂီရာနာ ဖရန့်',
+      'symbol' => 'GNF',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'ဟောင်ကောင် ဒေါ်လာ',
+      'symbol' => 'HKD',
+    ),
+    'IDR' => 
+    array (
+      'name' => 'အင်ဒိုနီးရှား ရူပီးယား',
+      'symbol' => 'IDR',
+    ),
+    'ILP' => 
+    array (
+      'name' => 'အစ္စရေး ပေါင်',
+      'symbol' => 'ILP',
+    ),
+    'INR' => 
+    array (
+      'name' => 'အိန္ဒြိယ ရူပီး',
+      'symbol' => 'INR',
+    ),
+    'JMD' => 
+    array (
+      'name' => 'ဂျမေနီကာ ဒေါ်လာ',
+      'symbol' => 'JMD',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'ဂျပန်ယန်း',
+      'symbol' => 'JPY',
+    ),
+    'KHR' => 
+    array (
+      'name' => 'ကမ္ဘောဒီးယား ရီးယဲ',
+      'symbol' => 'KHR',
+    ),
+    'KPW' => 
+    array (
+      'name' => 'မြောက်ကိုးရီးယား ဝမ်',
+      'symbol' => 'KPW',
+    ),
+    'KRW' => 
+    array (
+      'name' => 'တောင်ကိုးရီးယား ဝမ်',
+      'symbol' => 'KRW',
+    ),
+    'KYD' => 
+    array (
+      'name' => 'ကေမန် ကျွန်းစု ဒေါ်လာ',
+      'symbol' => 'KYD',
+    ),
+    'LBP' => 
+    array (
+      'name' => 'လက်ဘနွန် ပေါင်',
+      'symbol' => 'LBP',
+    ),
+    'LKR' => 
+    array (
+      'name' => 'သီရိလင်္ကာ ရူပီး',
+      'symbol' => 'LKR',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'လိုင်ဘေးရီးယား ဒေါ်လာ',
+      'symbol' => 'LRD',
+    ),
+    'MMK' => 
+    array (
+      'name' => 'မြန်မာ ကျပ်',
+      'symbol' => 'K',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'မက္ကဆီကို ပီဆို',
+      'symbol' => 'MXN',
+    ),
+    'MYR' => 
+    array (
+      'name' => 'မလေးရှား ရင်းဂစ်',
+      'symbol' => 'MYR',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'နမ်မီးဘီးယား ဒေါ်လာ',
+      'symbol' => 'NAD',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'နော်ဝေ ခရိုဏာ',
+      'symbol' => 'NOK',
+    ),
+    'NPR' => 
+    array (
+      'name' => 'နီပေါ ရူပီး',
+      'symbol' => 'NPR',
+    ),
+    'NZD' => 
+    array (
+      'name' => 'နယူးဇီလန် ဒေါ်လာ',
+      'symbol' => 'NZD',
+    ),
+    'PHP' => 
+    array (
+      'name' => 'ဖိလစ်ပိုင် ပီဆို',
+      'symbol' => 'PHP',
+    ),
+    'PKR' => 
+    array (
+      'name' => 'ပါကစ္စတန် ရူပီး',
+      'symbol' => 'PKR',
+    ),
+    'PLN' => 
+    array (
+      'name' => 'ပိုလန် ဇ‌လော့တီ',
+      'symbol' => 'PLN',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'ရုရှ ရူဘယ်',
+      'symbol' => 'RUB',
+    ),
+    'RUR' => 
+    array (
+      'name' => 'ရုရှ ရူဘယ် (၁၉၉၁-၁၉၉၈)',
+      'symbol' => 'RUR',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'ရဝန်ဒါ ဖရန့်',
+      'symbol' => 'RWF',
+    ),
+    'SBD' => 
+    array (
+      'name' => 'ဆော်လမွန်ကျွန်းစု ဒေါ်လာ',
+      'symbol' => 'SBD',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'ဆူဒန် ပေါင်',
+      'symbol' => 'SDG',
+    ),
+    'SDP' => 
+    array (
+      'name' => 'ဆူဒန် ပေါင်အဟောင်း',
+      'symbol' => 'SDP',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'ဆွီဒင် ခရိုဏာ',
+      'symbol' => 'SEK',
+    ),
+    'SGD' => 
+    array (
+      'name' => 'စင်္ကာပူ ဒေါ်လာ',
+      'symbol' => 'SGD',
+    ),
+    'SRD' => 
+    array (
+      'name' => 'ဆူရိနမ် ဒေါ်လာ',
+      'symbol' => 'SRD',
+    ),
+    'SUR' => 
+    array (
+      'name' => 'ဆိုဗီယက် ရူဗယ်',
+      'symbol' => 'SUR',
+    ),
+    'THB' => 
+    array (
+      'name' => 'ထိုင်းဘတ်',
+      'symbol' => 'THB',
+    ),
+    'TRL' => 
+    array (
+      'name' => 'ရှေးဟောင်းတူရကီ လိုင်ရာ',
+      'symbol' => 'TRL',
+    ),
+    'TRY' => 
+    array (
+      'name' => 'တူရကီ လိုင်ရာ',
+      'symbol' => 'TRY',
+    ),
+    'TWD' => 
+    array (
+      'name' => 'ထိုင်ဝမ် ဒေါ်လာအသစ်',
+      'symbol' => 'TWD',
+    ),
+    'USD' => 
+    array (
+      'name' => 'အမေရိကန် ဒေါ်လာ',
+      'symbol' => 'USD',
+    ),
+    'USN' => 
+    array (
+      'name' => 'အမေရိကန် ဒေါ်လာ (နောက်နေ့)',
+      'symbol' => 'USN',
+    ),
+    'USS' => 
+    array (
+      'name' => 'အမေရိကန် ဒေါ်လာ (တနေ့တည်း)',
+      'symbol' => 'USS',
+    ),
+    'VND' => 
+    array (
+      'name' => 'ဗီယက်နမ် ဒေါင်',
+      'symbol' => 'VND',
+    ),
+    'XAG' => 
+    array (
+      'name' => 'ငွေ',
+      'symbol' => 'XAG',
+    ),
+    'XAU' => 
+    array (
+      'name' => 'ရွှေ',
+      'symbol' => 'XAU',
+    ),
+    'XBB' => 
+    array (
+      'name' => 'ဥရောပငွေကြေးစံနစ်',
+      'symbol' => 'XBB',
+    ),
+    'XDR' => 
+    array (
+      'name' => 'အထူးထုတ်ယူခွင့်',
+      'symbol' => 'XDR',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'CFA ဖရန့် BCEAO',
+      'symbol' => 'XOF',
+    ),
+    'XPT' => 
+    array (
+      'name' => 'ပလက်တီနမ်',
+      'symbol' => 'XPT',
+    ),
+    'XTS' => 
+    array (
+      'name' => 'စမ်းသပ် ငွေကြေး ကုဒ်',
+      'symbol' => 'XTS',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'မသိ သို့မဟုတ် မရှိသော ငွေကြေး',
+      'symbol' => 'XXX',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'ဇင်ဘာဘွေ ဒေါ်လာ',
+      'symbol' => 'ZWD',
+    ),
+  ),
+);

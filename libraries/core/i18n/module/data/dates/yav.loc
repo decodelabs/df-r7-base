@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'sd',
+        'mon' => 'md',
+        'tue' => 'mw',
+        'wed' => 'et',
+        'thu' => 'kl',
+        'fri' => 'fl',
+        'sat' => 'ss',
+      ),
+      'full' => 
+      array (
+        'sun' => 'sɔ́ndiɛ',
+        'mon' => 'móndie',
+        'tue' => 'muányáŋmóndie',
+        'wed' => 'metúkpíápɛ',
+        'thu' => 'kúpélimetúkpiapɛ',
+        'fri' => 'feléte',
+        'sat' => 'séselé',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'o.1',
+        2 => 'o.2',
+        3 => 'o.3',
+        4 => 'o.4',
+        5 => 'o.5',
+        6 => 'o.6',
+        7 => 'o.7',
+        8 => 'o.8',
+        9 => 'o.9',
+        10 => 'o.10',
+        11 => 'o.11',
+        12 => 'o.12',
+      ),
+      'full' => 
+      array (
+        1 => 'pikítíkítie, oólí ú kutúan',
+        2 => 'siɛyɛ́, oóli ú kándíɛ',
+        3 => 'ɔnsúmbɔl, oóli ú kátátúɛ',
+        4 => 'mesiŋ, oóli ú kénie',
+        5 => 'ensil, oóli ú kátánuɛ',
+        6 => 'ɔsɔn',
+        7 => 'efute',
+        8 => 'pisuyú',
+        9 => 'imɛŋ i puɔs',
+        10 => 'imɛŋ i putúk,oóli ú kátíɛ',
+        11 => 'makandikɛ',
+        12 => 'pilɔndɔ́',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'd/M/yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'HH:mm:ss zzzz',
+      'long' => 'HH:mm:ss z',
+      'medium' => 'HH:mm:ss',
+      'short' => 'HH:mm',
+    ),
+  ),
+);

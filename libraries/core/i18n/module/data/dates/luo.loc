@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'JMP',
+        'mon' => 'WUT',
+        'tue' => 'TAR',
+        'wed' => 'TAD',
+        'thu' => 'TAN',
+        'fri' => 'TAB',
+        'sat' => 'NGS',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Jumapil',
+        'mon' => 'Wuok Tich',
+        'tue' => 'Tich Ariyo',
+        'wed' => 'Tich Adek',
+        'thu' => 'Tich Ang\'wen',
+        'fri' => 'Tich Abich',
+        'sat' => 'Ngeso',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'DAC',
+        2 => 'DAR',
+        3 => 'DAD',
+        4 => 'DAN',
+        5 => 'DAH',
+        6 => 'DAU',
+        7 => 'DAO',
+        8 => 'DAB',
+        9 => 'DOC',
+        10 => 'DAP',
+        11 => 'DGI',
+        12 => 'DAG',
+      ),
+      'full' => 
+      array (
+        1 => 'Dwe mar Achiel',
+        2 => 'Dwe mar Ariyo',
+        3 => 'Dwe mar Adek',
+        4 => 'Dwe mar Ang\'wen',
+        5 => 'Dwe mar Abich',
+        6 => 'Dwe mar Auchiel',
+        7 => 'Dwe mar Abiriyo',
+        8 => 'Dwe mar Aboro',
+        9 => 'Dwe mar Ochiko',
+        10 => 'Dwe mar Apar',
+        11 => 'Dwe mar gi achiel',
+        12 => 'Dwe mar Apar gi ariyo',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'dd/MM/yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+);

@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Dil',
+        'mon' => 'Wix',
+        'tue' => 'Qib',
+        'wed' => 'Rob',
+        'thu' => 'Kam',
+        'fri' => 'Jim',
+        'sat' => 'San',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Dilbata',
+        'mon' => 'Wiixata',
+        'tue' => 'Qibxata',
+        'wed' => 'Roobii',
+        'thu' => 'Kamiisa',
+        'fri' => 'Jimaata',
+        'sat' => 'Sanbata',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Ama',
+        2 => 'Gur',
+        3 => 'Bit',
+        4 => 'Elb',
+        5 => 'Cam',
+        6 => 'Wax',
+        7 => 'Ado',
+        8 => 'Hag',
+        9 => 'Ful',
+        10 => 'Onk',
+        11 => 'Sad',
+        12 => 'Mud',
+      ),
+      'full' => 
+      array (
+        1 => 'Amajjii',
+        2 => 'Guraandhala',
+        3 => 'Bitooteessa',
+        4 => 'Elba',
+        5 => 'Caamsa',
+        6 => 'Waxabajjii',
+        7 => 'Adooleessa',
+        8 => 'Hagayya',
+        9 => 'Fuulbana',
+        10 => 'Onkololeessa',
+        11 => 'Sadaasa',
+        12 => 'Muddee',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, MMMM d, y',
+      'long' => 'dd MMMM y',
+      'medium' => 'dd-MMM-y',
+      'short' => 'dd/MM/yy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+);

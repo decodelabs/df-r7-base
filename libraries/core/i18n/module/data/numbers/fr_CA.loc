@@ -1,0 +1,19 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+    'decimal' => '0.0B',
+    'currency' => '#,##0.00 ¤;(#,##0.00 ¤)',
+  ),
+  'currencies' => 
+  array (
+    'CAD' => 
+    array (
+      'name' => 'CAD',
+      'symbol' => '$',
+    ),
+  ),
+);

@@ -1,0 +1,11 @@
+<?php
+return array (
+  'Arab' => 'arába',
+  'Grek' => 'greikkalaš',
+  'Hang' => 'hangul',
+  'Hira' => 'hiragana',
+  'Kana' => 'katakana',
+  'Hani' => 'kiinnaš',
+  'Cyrl' => 'kyrillalaš',
+  'Latn' => 'láhtenaš',
+);

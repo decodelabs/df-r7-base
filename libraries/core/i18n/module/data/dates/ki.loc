@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'KMA',
+        'mon' => 'NTT',
+        'tue' => 'NMN',
+        'wed' => 'NMT',
+        'thu' => 'ART',
+        'fri' => 'NMA',
+        'sat' => 'NMM',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Kiumia',
+        'mon' => 'Njumatatũ',
+        'tue' => 'Njumaine',
+        'wed' => 'Njumatana',
+        'thu' => 'Aramithi',
+        'fri' => 'Njumaa',
+        'sat' => 'Njumamothi',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'JEN',
+        2 => 'WKR',
+        3 => 'WGT',
+        4 => 'WKN',
+        5 => 'WTN',
+        6 => 'WTD',
+        7 => 'WMJ',
+        8 => 'WNN',
+        9 => 'WKD',
+        10 => 'WIK',
+        11 => 'WMW',
+        12 => 'DIT',
+      ),
+      'full' => 
+      array (
+        1 => 'Njenuarĩ',
+        2 => 'Mwere wa kerĩ',
+        3 => 'Mwere wa gatatũ',
+        4 => 'Mwere wa kana',
+        5 => 'Mwere wa gatano',
+        6 => 'Mwere wa gatandatũ',
+        7 => 'Mwere wa mũgwanja',
+        8 => 'Mwere wa kanana',
+        9 => 'Mwere wa kenda',
+        10 => 'Mwere wa ikũmi',
+        11 => 'Mwere wa ikũmi na ũmwe',
+        12 => 'Ndithemba',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'dd/MM/yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+);

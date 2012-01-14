@@ -1,0 +1,17 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'LSL' => 
+    array (
+      'name' => 'LSL',
+      'symbol' => 'M',
+    ),
+  ),
+);

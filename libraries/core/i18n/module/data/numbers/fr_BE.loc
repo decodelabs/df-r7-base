@@ -1,0 +1,13 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'group' => '.',
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+  ),
+);

@@ -1,0 +1,15 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'full' => 
+      array (
+        8 => 'Leqeeni',
+      ),
+    ),
+  ),
+);

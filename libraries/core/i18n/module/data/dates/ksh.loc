@@ -1,0 +1,86 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'buddhist' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d. MMMM y G',
+    ),
+  ),
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Su.',
+        'mon' => 'Mo.',
+        'tue' => 'Di.',
+        'wed' => 'Me.',
+        'thu' => 'Du.',
+        'fri' => 'Fr.',
+        'sat' => 'Sa.',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Sunndaach',
+        'mon' => 'Moondaach',
+        'tue' => 'Dinnsdaach',
+        'wed' => 'Metwoch',
+        'thu' => 'Dunnersdaach',
+        'fri' => 'Friidaach',
+        'sat' => 'Samsdaach',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Jan.',
+        2 => 'Fäb.',
+        3 => 'Mar.',
+        4 => 'Apr.',
+        5 => 'Mäi',
+        6 => 'Jun.',
+        7 => 'Jul.',
+        8 => 'Oug.',
+        9 => 'Säp.',
+        10 => 'Okt.',
+        11 => 'Nov.',
+        12 => 'Dez.',
+      ),
+      'full' => 
+      array (
+        1 => 'Jannewa',
+        2 => 'Fäbrowa',
+        3 => 'Määz',
+        4 => 'Aprell',
+        5 => 'Mäi',
+        6 => 'Juuni',
+        7 => 'Juuli',
+        8 => 'Oujoß',
+        9 => 'Septämber',
+        10 => 'Oktoober',
+        11 => 'Novämber',
+        12 => 'Dezämber',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, \'dä\' d. MMMM y',
+      'long' => 'd. MMMM y',
+      'medium' => 'd. MMM y',
+      'short' => 'd. M. yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'HH:mm:ss zzzz',
+      'long' => 'HH:mm:ss z',
+      'medium' => 'HH:mm:ss',
+      'short' => 'HH:mm',
+    ),
+  ),
+);

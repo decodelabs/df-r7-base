@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Lum',
+        'mon' => 'Nko',
+        'tue' => 'Ndy',
+        'wed' => 'Ndg',
+        'thu' => 'Njw',
+        'fri' => 'Ngv',
+        'sat' => 'Lub',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Lumingu',
+        'mon' => 'Nkodya',
+        'tue' => 'Ndàayà',
+        'wed' => 'Ndangù',
+        'thu' => 'Njòwa',
+        'fri' => 'Ngòvya',
+        'sat' => 'Lubingu',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Cio',
+        2 => 'Lui',
+        3 => 'Lus',
+        4 => 'Muu',
+        5 => 'Lum',
+        6 => 'Luf',
+        7 => 'Kab',
+        8 => 'Lus',
+        9 => 'Lut',
+        10 => 'Lun',
+        11 => 'Kas',
+        12 => 'Cis',
+      ),
+      'full' => 
+      array (
+        1 => 'Ciongo',
+        2 => 'Lùishi',
+        3 => 'Lusòlo',
+        4 => 'Mùuyà',
+        5 => 'Lumùngùlù',
+        6 => 'Lufuimi',
+        7 => 'Kabàlàshìpù',
+        8 => 'Lùshìkà',
+        9 => 'Lutongolo',
+        10 => 'Lungùdi',
+        11 => 'Kaswèkèsè',
+        12 => 'Ciswà',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'd/M/yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'HH:mm:ss zzzz',
+      'long' => 'HH:mm:ss z',
+      'medium' => 'HH:mm:ss',
+      'short' => 'HH:mm',
+    ),
+  ),
+);

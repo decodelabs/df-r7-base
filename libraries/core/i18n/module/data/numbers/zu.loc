@@ -1,0 +1,793 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => ',',
+    'group' => ' ',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'scientific' => '#E0',
+    'percent' => '#,##0%',
+    'currency' => '¤#,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'AED' => 
+    array (
+      'name' => 'i-Dirham yase-United Arab Emirates',
+      'symbol' => 'AED',
+    ),
+    'AFN' => 
+    array (
+      'name' => 'i-Afghan Afghani',
+      'symbol' => 'AFN',
+    ),
+    'ALL' => 
+    array (
+      'name' => 'i-Albanian Lek',
+      'symbol' => 'ALL',
+    ),
+    'AMD' => 
+    array (
+      'name' => 'i-Armenian Dram',
+      'symbol' => 'AMD',
+    ),
+    'ANG' => 
+    array (
+      'name' => 'i-Netherlands Antillean Guilder',
+      'symbol' => 'ANG',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'i-Angolan Kwanza',
+      'symbol' => 'AOA',
+    ),
+    'ARS' => 
+    array (
+      'name' => 'i-Argentina Peso',
+      'symbol' => 'ARS',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'i-Austrilian Dollar',
+      'symbol' => 'AUD',
+    ),
+    'AWG' => 
+    array (
+      'name' => 'i-Aruban Florin',
+      'symbol' => 'AWG',
+    ),
+    'AZN' => 
+    array (
+      'name' => 'i-Azerbaijani Manat',
+      'symbol' => 'AZN',
+    ),
+    'BAM' => 
+    array (
+      'name' => 'i-Bosnia-Herzegovina Convertible Mark',
+      'symbol' => 'BAM',
+    ),
+    'BBD' => 
+    array (
+      'name' => 'i-Barbadian Dollar',
+      'symbol' => 'BBD',
+    ),
+    'BDT' => 
+    array (
+      'name' => 'i-Bangladeshi Taka',
+      'symbol' => 'BDT',
+    ),
+    'BGN' => 
+    array (
+      'name' => 'i-Bulgarian Lev',
+      'symbol' => 'BGN',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'i-Bahraini Dinar',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'i-Burundian Franc',
+      'symbol' => 'BIF',
+    ),
+    'BMD' => 
+    array (
+      'name' => 'i-Bermudan Dollar',
+      'symbol' => 'BMD',
+    ),
+    'BND' => 
+    array (
+      'name' => 'i-Brunei Dollar',
+      'symbol' => 'BND',
+    ),
+    'BOB' => 
+    array (
+      'name' => 'i-Bolivian Boliviano',
+      'symbol' => 'BOB',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'i-Brazilian Real',
+      'symbol' => 'BRL',
+    ),
+    'BSD' => 
+    array (
+      'name' => 'i-Bahamian Dollar',
+      'symbol' => 'BSD',
+    ),
+    'BTN' => 
+    array (
+      'name' => 'i-Bhutanese Ngultrum',
+      'symbol' => 'BTN',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'i-Botswana Pula',
+      'symbol' => 'BWP',
+    ),
+    'BYR' => 
+    array (
+      'name' => 'i-Belarusian Ruble',
+      'symbol' => 'BYR',
+    ),
+    'BZD' => 
+    array (
+      'name' => 'i-Belize Dollar',
+      'symbol' => 'BZD',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'i-Candian Dollar',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'i-Congolese Franc',
+      'symbol' => 'CDF',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'i-Swiss Franc',
+      'symbol' => 'CHF',
+    ),
+    'CLP' => 
+    array (
+      'name' => 'i-Chilean Peso',
+      'symbol' => 'CLP',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'i-Chinese Yuan',
+      'symbol' => 'CNY',
+    ),
+    'COP' => 
+    array (
+      'name' => 'i-Colombian Peso',
+      'symbol' => 'COP',
+    ),
+    'CRC' => 
+    array (
+      'name' => 'i-Costa Rican Colón',
+      'symbol' => 'CRC',
+    ),
+    'CUC' => 
+    array (
+      'name' => 'i-Cuban Convertable Peso',
+      'symbol' => 'CUC',
+    ),
+    'CUP' => 
+    array (
+      'name' => 'I-Cuban Peso',
+      'symbol' => 'CUP',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'i-Cape Verdean Escudo',
+      'symbol' => 'CVE',
+    ),
+    'CZK' => 
+    array (
+      'name' => 'i-Czech Republic Koruna',
+      'symbol' => 'CZK',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'i-Djiboutian Franc',
+      'symbol' => 'DJF',
+    ),
+    'DKK' => 
+    array (
+      'name' => 'i-Danish Krone',
+      'symbol' => 'DKK',
+    ),
+    'DOP' => 
+    array (
+      'name' => 'i-Dominican Peso',
+      'symbol' => 'DOP',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'i-Algerian Dinar',
+      'symbol' => 'DZD',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'i-Egyptian Pound',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'i-Eritrean Nakfa',
+      'symbol' => 'ERN',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'i-Ethopian Birr',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'i-Euro',
+      'symbol' => 'EUR',
+    ),
+    'FJD' => 
+    array (
+      'name' => 'i-Fijian Dollar',
+      'symbol' => 'FJD',
+    ),
+    'FKP' => 
+    array (
+      'name' => 'i-Falkland Islands Pound',
+      'symbol' => 'FKP',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'i-British Pound Sterling',
+      'symbol' => 'GBP',
+    ),
+    'GEL' => 
+    array (
+      'name' => 'i-Georgian Lari',
+      'symbol' => 'GEL',
+    ),
+    'GHS' => 
+    array (
+      'name' => 'i-Ghanaian Cedi',
+      'symbol' => 'GHS',
+    ),
+    'GIP' => 
+    array (
+      'name' => 'i-Gibraltar Pound',
+      'symbol' => 'GIP',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'i-Gambian Dalasi',
+      'symbol' => 'GMD',
+    ),
+    'GNF' => 
+    array (
+      'name' => 'i-Gunean Franc',
+      'symbol' => 'GNF',
+    ),
+    'GTQ' => 
+    array (
+      'name' => 'i-Guatemalan Quetzal',
+      'symbol' => 'GTQ',
+    ),
+    'GYD' => 
+    array (
+      'name' => 'i-Guyanaese Dollar',
+      'symbol' => 'GYD',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'i-Hong Kong Dollar',
+      'symbol' => 'HKD',
+    ),
+    'HNL' => 
+    array (
+      'name' => 'i-Honduran Lempira',
+      'symbol' => 'HNL',
+    ),
+    'HRK' => 
+    array (
+      'name' => 'i-Croatian Kuna',
+      'symbol' => 'HRK',
+    ),
+    'HTG' => 
+    array (
+      'name' => 'i-Haitian Gourde',
+      'symbol' => 'HTG',
+    ),
+    'HUF' => 
+    array (
+      'name' => 'i-Hungarian Forint',
+      'symbol' => 'HUF',
+    ),
+    'IDR' => 
+    array (
+      'name' => 'i-Indonesian Rupiah',
+      'symbol' => 'IDR',
+    ),
+    'ILS' => 
+    array (
+      'name' => 'i-Israeli New Sheqel',
+      'symbol' => 'ILS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'i-Indian Rupee',
+      'symbol' => 'INR',
+    ),
+    'IQD' => 
+    array (
+      'name' => 'i-Iraqi Dinar',
+      'symbol' => 'IQD',
+    ),
+    'IRR' => 
+    array (
+      'name' => 'i-Iranian Rial',
+      'symbol' => 'IRR',
+    ),
+    'ISK' => 
+    array (
+      'name' => 'i-Icelandic Króna',
+      'symbol' => 'ISK',
+    ),
+    'JMD' => 
+    array (
+      'name' => 'i-Jamaican Dollar',
+      'symbol' => 'JMD',
+    ),
+    'JOD' => 
+    array (
+      'name' => 'i-Jordanian Dinar',
+      'symbol' => 'JOD',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'i-Japanese Yen',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'i-Kenyan Shilling',
+      'symbol' => 'KES',
+    ),
+    'KGS' => 
+    array (
+      'name' => 'i-Kyrgystani Som',
+      'symbol' => 'KGS',
+    ),
+    'KHR' => 
+    array (
+      'name' => 'i-Cambodian Riel',
+      'symbol' => 'KHR',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'i-Comorian Franc',
+      'symbol' => 'KMF',
+    ),
+    'KPW' => 
+    array (
+      'name' => 'i-North Korean Won',
+      'symbol' => 'KPW',
+    ),
+    'KRW' => 
+    array (
+      'name' => 'i-South Korean Won',
+      'symbol' => 'KRW',
+    ),
+    'KWD' => 
+    array (
+      'name' => 'i-Kuwaiti Dinar',
+      'symbol' => 'KWD',
+    ),
+    'KYD' => 
+    array (
+      'name' => 'i-Cayman Islands Dollar',
+      'symbol' => 'KYD',
+    ),
+    'KZT' => 
+    array (
+      'name' => 'i-Kazakhstani Tenge',
+      'symbol' => 'KZT',
+    ),
+    'LAK' => 
+    array (
+      'name' => 'i-Laotian Kip',
+      'symbol' => 'LAK',
+    ),
+    'LBP' => 
+    array (
+      'name' => 'i-Lebanese Pound',
+      'symbol' => 'LBP',
+    ),
+    'LKR' => 
+    array (
+      'name' => 'i-Sri Lankan Rupee',
+      'symbol' => 'LKR',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'i-Liberian Dollar',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'i-Lesotho Loti',
+      'symbol' => 'LSL',
+    ),
+    'LTL' => 
+    array (
+      'name' => 'i-Lithuanian Litas',
+      'symbol' => 'LTL',
+    ),
+    'LVL' => 
+    array (
+      'name' => 'i-Latvian Lats',
+      'symbol' => 'LVL',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'i-Libyan Dinar',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'i-Moroccan Dirham',
+      'symbol' => 'MAD',
+    ),
+    'MDL' => 
+    array (
+      'name' => 'i-Moldovan Leu',
+      'symbol' => 'MDL',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'i-Malagasy Ariary',
+      'symbol' => 'MGA',
+    ),
+    'MKD' => 
+    array (
+      'name' => 'i-Macedonian Denar',
+      'symbol' => 'MKD',
+    ),
+    'MMK' => 
+    array (
+      'name' => 'i-Myanma Kyat',
+      'symbol' => 'MMK',
+    ),
+    'MNT' => 
+    array (
+      'name' => 'i-Mongolian Tugrik',
+      'symbol' => 'MNT',
+    ),
+    'MOP' => 
+    array (
+      'name' => 'i-Macanese Pataca',
+      'symbol' => 'MOP',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'i-Mauritanian Ouguiya',
+      'symbol' => 'MRO',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'i-Mauritian Rupee',
+      'symbol' => 'MUR',
+    ),
+    'MVR' => 
+    array (
+      'name' => 'i-Maldivian Rufiyana',
+      'symbol' => 'MVR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'i-Malawian Kwacha',
+      'symbol' => 'MWK',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'i-Mexican Peso',
+      'symbol' => 'MXN',
+    ),
+    'MYR' => 
+    array (
+      'name' => 'i-Malaysian Ringgit',
+      'symbol' => 'MYR',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'i-Namibian Dollar',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'i-Nigerian Naira',
+      'symbol' => 'NGN',
+    ),
+    'NIO' => 
+    array (
+      'name' => 'i-Nicaraguan Córdoba',
+      'symbol' => 'NIO',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'i-Norwegian Krone',
+      'symbol' => 'NOK',
+    ),
+    'NPR' => 
+    array (
+      'name' => 'i-Nepalese Rupee',
+      'symbol' => 'NPR',
+    ),
+    'NZD' => 
+    array (
+      'name' => 'i-New Zealand Dollar',
+      'symbol' => 'NZD',
+    ),
+    'OMR' => 
+    array (
+      'name' => 'i-Omani Rial',
+      'symbol' => 'OMR',
+    ),
+    'PAB' => 
+    array (
+      'name' => 'i-Panamanian Balboa',
+      'symbol' => 'PAB',
+    ),
+    'PEN' => 
+    array (
+      'name' => 'i-Peruvian Nuevo Sol',
+      'symbol' => 'PEN',
+    ),
+    'PGK' => 
+    array (
+      'name' => 'i-Papua New Guinean Kina',
+      'symbol' => 'PGK',
+    ),
+    'PHP' => 
+    array (
+      'name' => 'i-Philippine Peso',
+      'symbol' => 'PHP',
+    ),
+    'PKR' => 
+    array (
+      'name' => 'i-Pakistani Rupee',
+      'symbol' => 'PKR',
+    ),
+    'PLN' => 
+    array (
+      'name' => 'i-Polish Zloty',
+      'symbol' => 'PLN',
+    ),
+    'PYG' => 
+    array (
+      'name' => 'i-Paraguayan Guarani',
+      'symbol' => 'PYG',
+    ),
+    'QAR' => 
+    array (
+      'name' => 'i-Qatari Rial',
+      'symbol' => 'QAR',
+    ),
+    'RSD' => 
+    array (
+      'name' => 'i-Serbian Dinar',
+      'symbol' => 'RSD',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'i-Russian Ruble',
+      'symbol' => 'RUB',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'i-Rwandan Franc',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'i-Saudi Riyal',
+      'symbol' => 'SAR',
+    ),
+    'SBD' => 
+    array (
+      'name' => 'i-Solomon Islands Dollar',
+      'symbol' => 'SBD',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'i-Seychellois Rupee',
+      'symbol' => 'SCR',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'i-Sudanese Pound',
+      'symbol' => 'SDG',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'i-Swedish Krona',
+      'symbol' => 'SEK',
+    ),
+    'SGD' => 
+    array (
+      'name' => 'i-Singapore Dollar',
+      'symbol' => 'SGD',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'i-Saint Helena Pound',
+      'symbol' => 'SHP',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'i-Sierra Leonean Leone',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'i-Somali Shilling',
+      'symbol' => 'SOS',
+    ),
+    'SRD' => 
+    array (
+      'name' => 'i-Surinamese Dollar',
+      'symbol' => 'SRD',
+    ),
+    'STD' => 
+    array (
+      'name' => 'i-São Tomé kanye ne-Príncipe Dobra',
+      'symbol' => 'STD',
+    ),
+    'SYP' => 
+    array (
+      'name' => 'i-Syrian Pound',
+      'symbol' => 'SYP',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'i-Swazi Lilangeni',
+      'symbol' => 'SZL',
+    ),
+    'THB' => 
+    array (
+      'name' => 'i-Thai Baht',
+      'symbol' => 'THB',
+    ),
+    'TJS' => 
+    array (
+      'name' => 'i-Tajikistani Somoni',
+      'symbol' => 'TJS',
+    ),
+    'TMT' => 
+    array (
+      'name' => 'i-Turkmenistani Manat',
+      'symbol' => 'TMT',
+    ),
+    'TND' => 
+    array (
+      'name' => 'i-Tunisian Dinar',
+      'symbol' => 'TND',
+    ),
+    'TOP' => 
+    array (
+      'name' => 'i-Tongan Paʻanga',
+      'symbol' => 'TOP',
+    ),
+    'TRY' => 
+    array (
+      'name' => 'i-Turkish Lira',
+      'symbol' => 'TRY',
+    ),
+    'TTD' => 
+    array (
+      'name' => 'Idola lase-Trinidad nase-Tobago',
+      'symbol' => 'TTD',
+    ),
+    'TWD' => 
+    array (
+      'name' => 'i-New Taiwan Dollar',
+      'symbol' => 'TWD',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'i-Tanzanian Shilling',
+      'symbol' => 'TZS',
+    ),
+    'UAH' => 
+    array (
+      'name' => 'i-Ukrainian Hryvnia',
+      'symbol' => 'UAH',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'i-Ugandan Shilling',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'i-US Dollar',
+      'symbol' => 'USD',
+    ),
+    'UYU' => 
+    array (
+      'name' => 'i-Uruguayan Peso',
+      'symbol' => 'UYU',
+    ),
+    'UZS' => 
+    array (
+      'name' => 'i-Uzbekistan Som',
+      'symbol' => 'UZS',
+    ),
+    'VEF' => 
+    array (
+      'name' => 'i-Venezuelan Bolívar',
+      'symbol' => 'VEF',
+    ),
+    'VND' => 
+    array (
+      'name' => 'i-Vietnamese Dong',
+      'symbol' => 'VND',
+    ),
+    'VUV' => 
+    array (
+      'name' => 'i-Vanuatu Vatu',
+      'symbol' => 'VUV',
+    ),
+    'WST' => 
+    array (
+      'name' => 'i-Samoan Tala',
+      'symbol' => 'WST',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'i-CFA Franc BCEA',
+      'symbol' => 'XAF',
+    ),
+    'XCD' => 
+    array (
+      'name' => 'i-East Caribbean Dollar',
+      'symbol' => 'XCD',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'i-CFA Franc BCEAO',
+      'symbol' => 'XOF',
+    ),
+    'XPF' => 
+    array (
+      'name' => 'i-CFP Franc',
+      'symbol' => 'XPF',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'Ikharensi engaziwa',
+      'symbol' => 'XXX',
+    ),
+    'YER' => 
+    array (
+      'name' => 'i-Yemeni Rial',
+      'symbol' => 'YER',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'i-South African Rand',
+      'symbol' => 'R',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'i-Zambian Kwacha',
+      'symbol' => 'ZMK',
+    ),
+  ),
+);

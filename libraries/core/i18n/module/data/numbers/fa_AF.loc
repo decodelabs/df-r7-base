@@ -1,0 +1,88 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+    'percent' => '\'‪\'#,##0%\'‬\'',
+  ),
+  'currencies' => 
+  array (
+    'AFN' => 
+    array (
+      'name' => 'AFN',
+      'symbol' => '؋',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'دالر آسترالیا',
+      'symbol' => 'AUD',
+    ),
+    'BND' => 
+    array (
+      'name' => 'دالر برونی',
+      'symbol' => 'BND',
+    ),
+    'BYR' => 
+    array (
+      'name' => 'روبل روسیهٔ سفید',
+      'symbol' => 'BYR',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'دالر کانادا',
+      'symbol' => 'CAD',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'فرانک سویس',
+      'symbol' => 'CHF',
+    ),
+    'DKK' => 
+    array (
+      'name' => 'کرون دنمارک',
+      'symbol' => 'DKK',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'ین جاپان',
+      'symbol' => 'JPY',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'پزوی مکسیکو',
+      'symbol' => 'MXN',
+    ),
+    'NLG' => 
+    array (
+      'name' => 'گیلدر هالند',
+      'symbol' => 'NLG',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'کرون ناروی',
+      'symbol' => 'NOK',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'کرون سویدن',
+      'symbol' => 'SEK',
+    ),
+    'SGD' => 
+    array (
+      'name' => 'دالر سینگاپور',
+      'symbol' => 'SGD',
+    ),
+    'TJS' => 
+    array (
+      'name' => 'سامانی تاجکستان',
+      'symbol' => 'TJS',
+    ),
+    'USD' => 
+    array (
+      'name' => 'دالر امریکا',
+      'symbol' => 'USD',
+    ),
+  ),
+);

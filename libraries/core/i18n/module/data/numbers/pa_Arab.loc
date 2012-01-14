@@ -1,0 +1,27 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'EUR' => 
+    array (
+      'name' => 'يورو',
+      'symbol' => 'EUR',
+    ),
+    'INR' => 
+    array (
+      'name' => 'روپئیہ [INR]',
+      'symbol' => 'ر [INR]',
+    ),
+    'PKR' => 
+    array (
+      'name' => 'روپئیہ',
+      'symbol' => 'ر',
+    ),
+  ),
+);

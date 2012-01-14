@@ -1,0 +1,28 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => ',',
+    'group' => ' ',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'scientific' => '#E0',
+    'percent' => '#,##0%',
+    'currency' => '¤#,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'SZL' => 
+    array (
+      'name' => 'SZL',
+      'symbol' => 'E',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'ZAR',
+      'symbol' => 'R',
+    ),
+  ),
+);

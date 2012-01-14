@@ -1,0 +1,71 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => ',',
+    'group' => '.',
+    'list' => ';',
+    'percentSign' => '%',
+    'plusSign' => '+',
+    'minusSign' => '−',
+    'exponential' => '×10^',
+    'perMille' => '‰',
+    'infinity' => '∞',
+    'nan' => '¤¤¤',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'scientific' => '#E0',
+    'percent' => '#,##0 %',
+    'currency' => '¤#,##0.00;¤-#,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'DKK' => 
+    array (
+      'name' => 'donsk króna',
+      'symbol' => 'kr',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'euro',
+      'symbol' => 'EUR',
+    ),
+    'ISK' => 
+    array (
+      'name' => 'íslendsk króna',
+      'symbol' => 'ISK',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'norsk króna',
+      'symbol' => 'NOK',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'svensk króna',
+      'symbol' => 'SEK',
+    ),
+    'XAG' => 
+    array (
+      'name' => 'unse sølv',
+      'symbol' => 'XAG',
+    ),
+    'XAU' => 
+    array (
+      'name' => 'unse guld',
+      'symbol' => 'XAU',
+    ),
+    'XPD' => 
+    array (
+      'name' => 'unse palladium',
+      'symbol' => 'XPD',
+    ),
+    'XPT' => 
+    array (
+      'name' => 'unse platin',
+      'symbol' => 'XPT',
+    ),
+  ),
+);

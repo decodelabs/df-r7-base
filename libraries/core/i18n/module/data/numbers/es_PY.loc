@@ -1,0 +1,20 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => ',',
+    'group' => '.',
+  ),
+  'formats' => 
+  array (
+    'currency' => '¤ #,##0.00;¤ -#,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'PYG' => 
+    array (
+      'name' => 'PYG',
+      'symbol' => '₲',
+    ),
+  ),
+);

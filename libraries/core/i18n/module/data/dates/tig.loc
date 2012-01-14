@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'ሰ/ዓ',
+        'mon' => 'ሰኖ',
+        'tue' => 'ታላሸ',
+        'wed' => 'ኣረር',
+        'thu' => 'ከሚሽ',
+        'fri' => 'ጅምዓ',
+        'sat' => 'ሰ/ን',
+      ),
+      'full' => 
+      array (
+        'sun' => 'ሰንበት ዓባይ',
+        'mon' => 'ሰኖ',
+        'tue' => 'ታላሸኖ',
+        'wed' => 'ኣረርባዓ',
+        'thu' => 'ከሚሽ',
+        'fri' => 'ጅምዓት',
+        'sat' => 'ሰንበት ንኢሽ',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'ጃንዩ',
+        2 => 'ፌብሩ',
+        3 => 'ማርች',
+        4 => 'ኤፕረ',
+        5 => 'ሜይ',
+        6 => 'ጁን',
+        7 => 'ጁላይ',
+        8 => 'ኦገስ',
+        9 => 'ሴፕቴ',
+        10 => 'ኦክተ',
+        11 => 'ኖቬም',
+        12 => 'ዲሴም',
+      ),
+      'full' => 
+      array (
+        1 => 'ጃንዩወሪ',
+        2 => 'ፌብሩወሪ',
+        3 => 'ማርች',
+        4 => 'ኤፕረል',
+        5 => 'ሜይ',
+        6 => 'ጁን',
+        7 => 'ጁላይ',
+        8 => 'ኦገስት',
+        9 => 'ሴፕቴምበር',
+        10 => 'ኦክተውበር',
+        11 => 'ኖቬምበር',
+        12 => 'ዲሴምበር',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE፡ dd MMMM ዮም y G',
+      'long' => 'dd MMMM y',
+      'medium' => 'dd-MMM-y',
+      'short' => 'dd/MM/yy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+);

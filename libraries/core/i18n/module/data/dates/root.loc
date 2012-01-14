@@ -1,0 +1,310 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'buddhist' => 
+  array (
+    'days' => 'gregorian',
+    'months' => 'gregorian',
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, G y MMMM dd',
+      'long' => 'G y MMMM d',
+      'medium' => 'G y MMM d',
+      'short' => 'GGGGG yyyy-MM-dd',
+    ),
+    'timeFormat' => 'gregorian',
+  ),
+  'chinese' => 
+  array (
+    'days' => 'gregorian',
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 'wide',
+      'full' => 
+      array (
+        1 => '1',
+        2 => '2',
+        3 => '3',
+        4 => '4',
+        5 => '5',
+        6 => '6',
+        7 => '7',
+        8 => '8',
+        9 => '9',
+        10 => '10',
+        11 => '11',
+        12 => '12',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE y\'x\'G-Ml-d',
+      'long' => 'y\'x\'G-Ml-d',
+      'medium' => 'y\'x\'G-Ml-d',
+      'short' => 'y\'x\'G-Ml-d',
+    ),
+    'timeFormat' => 'gregorian',
+  ),
+  'coptic' => 
+  array (
+    'days' => 'gregorian',
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 'wide',
+      'full' => 
+      array (
+        1 => 'Tout',
+        2 => 'Baba',
+        3 => 'Hator',
+        4 => 'Kiahk',
+        5 => 'Toba',
+        6 => 'Amshir',
+        7 => 'Baramhat',
+        8 => 'Baramouda',
+        9 => 'Bashans',
+        10 => 'Paona',
+        11 => 'Epep',
+        12 => 'Mesra',
+        13 => 'Nasie',
+      ),
+    ),
+    'dateFormat' => 'gregorian',
+    'timeFormat' => 'gregorian',
+  ),
+  'ethiopic' => 
+  array (
+    'days' => 'gregorian',
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 'wide',
+      'full' => 
+      array (
+        1 => 'Meskerem',
+        2 => 'Tekemt',
+        3 => 'Hedar',
+        4 => 'Tahsas',
+        5 => 'Ter',
+        6 => 'Yekatit',
+        7 => 'Megabit',
+        8 => 'Miazia',
+        9 => 'Genbot',
+        10 => 'Sene',
+        11 => 'Hamle',
+        12 => 'Nehasse',
+        13 => 'Pagumen',
+      ),
+    ),
+    'dateFormat' => 'gregorian',
+    'timeFormat' => 'gregorian',
+  ),
+  'ethiopic-amete-alem' => 
+  array (
+    'days' => 'gregorian',
+    'months' => 'ethiopic',
+    'dateFormat' => 'gregorian',
+    'timeFormat' => 'gregorian',
+  ),
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 'wide',
+      'full' => 
+      array (
+        'sun' => '1',
+        'mon' => '2',
+        'tue' => '3',
+        'wed' => '4',
+        'thu' => '5',
+        'fri' => '6',
+        'sat' => '7',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 'wide',
+      'full' => 
+      array (
+        1 => '1',
+        2 => '2',
+        3 => '3',
+        4 => '4',
+        5 => '5',
+        6 => '6',
+        7 => '7',
+        8 => '8',
+        9 => '9',
+        10 => '10',
+        11 => '11',
+        12 => '12',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, y MMMM dd',
+      'long' => 'y MMMM d',
+      'medium' => 'y MMM d',
+      'short' => 'yyyy-MM-dd',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'HH:mm:ss zzzz',
+      'long' => 'HH:mm:ss z',
+      'medium' => 'HH:mm:ss',
+      'short' => 'HH:mm',
+    ),
+  ),
+  'hebrew' => 
+  array (
+    'days' => 'gregorian',
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 'wide',
+      'full' => 
+      array (
+        1 => 'Tishri',
+        2 => 'Heshvan',
+        3 => 'Kislev',
+        4 => 'Tevet',
+        5 => 'Shevat',
+        6 => 'Adar I',
+        7 => 'Adar II',
+        8 => 'Nisan',
+        9 => 'Iyar',
+        10 => 'Sivan',
+        11 => 'Tamuz',
+        12 => 'Av',
+        13 => 'Elul',
+      ),
+    ),
+    'dateFormat' => 'gregorian',
+    'timeFormat' => 'gregorian',
+  ),
+  'indian' => 
+  array (
+    'days' => 'gregorian',
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 'wide',
+      'full' => 
+      array (
+        1 => 'Chaitra',
+        2 => 'Vaisakha',
+        3 => 'Jyaistha',
+        4 => 'Asadha',
+        5 => 'Sravana',
+        6 => 'Bhadra',
+        7 => 'Asvina',
+        8 => 'Kartika',
+        9 => 'Agrahayana',
+        10 => 'Pausa',
+        11 => 'Magha',
+        12 => 'Phalguna',
+      ),
+    ),
+    'dateFormat' => 'gregorian',
+    'timeFormat' => 'gregorian',
+  ),
+  'islamic' => 
+  array (
+    'days' => 'gregorian',
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Muh.',
+        2 => 'Saf.',
+        3 => 'Rab. I',
+        4 => 'Rab. II',
+        5 => 'Jum. I',
+        6 => 'Jum. II',
+        7 => 'Raj.',
+        8 => 'Sha.',
+        9 => 'Ram.',
+        10 => 'Shaw.',
+        11 => 'Dhuʻl-Q.',
+        12 => 'Dhuʻl-H.',
+      ),
+      'full' => 
+      array (
+        1 => 'Muharram',
+        2 => 'Safar',
+        3 => 'Rabiʻ I',
+        4 => 'Rabiʻ II',
+        5 => 'Jumada I',
+        6 => 'Jumada II',
+        7 => 'Rajab',
+        8 => 'Shaʻban',
+        9 => 'Ramadan',
+        10 => 'Shawwal',
+        11 => 'Dhuʻl-Qiʻdah',
+        12 => 'Dhuʻl-Hijjah',
+      ),
+    ),
+    'dateFormat' => 'gregorian',
+    'timeFormat' => 'gregorian',
+  ),
+  'islamic-civil' => 
+  array (
+  ),
+  'japanese' => 
+  array (
+    'days' => 'gregorian',
+    'months' => 'gregorian',
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, G y MMMM dd',
+      'long' => 'G y MMMM d',
+      'medium' => 'G y MMM d',
+      'short' => 'GGGGG yy-MM-dd',
+    ),
+    'timeFormat' => 'gregorian',
+  ),
+  'persian' => 
+  array (
+    'days' => 'gregorian',
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 'wide',
+      'full' => 
+      array (
+        1 => 'Farvardin',
+        2 => 'Ordibehesht',
+        3 => 'Khordad',
+        4 => 'Tir',
+        5 => 'Mordad',
+        6 => 'Shahrivar',
+        7 => 'Mehr',
+        8 => 'Aban',
+        9 => 'Azar',
+        10 => 'Dey',
+        11 => 'Bahman',
+        12 => 'Esfand',
+      ),
+    ),
+    'dateFormat' => 'gregorian',
+    'timeFormat' => 'gregorian',
+  ),
+  'roc' => 
+  array (
+    'days' => 'gregorian',
+    'months' => 'gregorian',
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, G y MMMM dd',
+      'long' => 'G y MMMM d',
+      'medium' => 'G y MMM d',
+      'short' => 'GGGGG yy-MM-dd',
+    ),
+    'timeFormat' => 'gregorian',
+  ),
+);

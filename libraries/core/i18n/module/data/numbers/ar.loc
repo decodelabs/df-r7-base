@@ -1,0 +1,1279 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => '٫',
+    'group' => '٬',
+    'list' => '؛',
+    'percentSign' => '٪',
+    'plusSign' => '+',
+    'minusSign' => '-',
+    'exponential' => 'اس',
+    'perMille' => '؉',
+    'infinity' => '∞',
+    'nan' => 'ليس رقم',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###;#,##0.###-',
+    'currency' => '¤ #,##0.00;¤ #,##0.00-',
+  ),
+  'currencies' => 
+  array (
+    'ADP' => 
+    array (
+      'name' => 'بيستا أندوري',
+      'symbol' => 'ADP',
+    ),
+    'AED' => 
+    array (
+      'name' => 'درهم إماراتي',
+      'symbol' => 'د.إ.‏',
+    ),
+    'AFA' => 
+    array (
+      'name' => 'أفغاني - 1927-2002',
+      'symbol' => 'AFA',
+    ),
+    'AFN' => 
+    array (
+      'name' => 'أفغاني',
+      'symbol' => 'AFN',
+    ),
+    'ALL' => 
+    array (
+      'name' => 'ليك ألباني',
+      'symbol' => 'ALL',
+    ),
+    'AMD' => 
+    array (
+      'name' => 'درام أرميني',
+      'symbol' => 'AMD',
+    ),
+    'ANG' => 
+    array (
+      'name' => 'غيلدر هولندي أنتيلي',
+      'symbol' => 'ANG',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'كوانزا أنجولي',
+      'symbol' => 'AOA',
+    ),
+    'AOK' => 
+    array (
+      'name' => 'كوانزا أنجولي - 1977-1990',
+      'symbol' => 'AOK',
+    ),
+    'AON' => 
+    array (
+      'name' => 'كوانزا أنجولي جديدة - 1990-2000',
+      'symbol' => 'AON',
+    ),
+    'AOR' => 
+    array (
+      'name' => 'كوانزا أنجولي معدلة - 1995 - 1999',
+      'symbol' => 'AOR',
+    ),
+    'ARA' => 
+    array (
+      'name' => 'استرال أرجنتيني',
+      'symbol' => 'ARA',
+    ),
+    'ARP' => 
+    array (
+      'name' => 'بيزو أرجنتيني - 1983-1985',
+      'symbol' => 'ARP',
+    ),
+    'ARS' => 
+    array (
+      'name' => 'بيزو أرجنتيني',
+      'symbol' => 'ARS',
+    ),
+    'ATS' => 
+    array (
+      'name' => 'شلن نمساوي',
+      'symbol' => 'ATS',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'دولار أسترالي',
+      'symbol' => 'AUD',
+    ),
+    'AWG' => 
+    array (
+      'name' => 'جلدر أروبي',
+      'symbol' => 'AWG',
+    ),
+    'AZM' => 
+    array (
+      'name' => 'مانات أذريبجاني',
+      'symbol' => 'AZM',
+    ),
+    'AZN' => 
+    array (
+      'name' => 'مانات أذربيجان',
+      'symbol' => 'AZN',
+    ),
+    'BAD' => 
+    array (
+      'name' => 'دينار البوسنة والهرسك',
+      'symbol' => 'BAD',
+    ),
+    'BAM' => 
+    array (
+      'name' => 'مارك البوسنة والهرسك قابل للتحويل',
+      'symbol' => 'BAM',
+    ),
+    'BBD' => 
+    array (
+      'name' => 'دولار بربادوسي',
+      'symbol' => 'BBD',
+    ),
+    'BDT' => 
+    array (
+      'name' => 'تاكا بنجلاديشي',
+      'symbol' => 'BDT',
+    ),
+    'BEC' => 
+    array (
+      'name' => 'فرنك بلجيكي قابل للتحويل',
+      'symbol' => 'BEC',
+    ),
+    'BEF' => 
+    array (
+      'name' => 'فرنك بلجيكي',
+      'symbol' => 'BEF',
+    ),
+    'BEL' => 
+    array (
+      'name' => 'فرنك بلجيكي مالي',
+      'symbol' => 'BEL',
+    ),
+    'BGL' => 
+    array (
+      'name' => 'ليف بلغاري',
+      'symbol' => 'BGL',
+    ),
+    'BGN' => 
+    array (
+      'name' => 'ليف بلغاري جديد',
+      'symbol' => 'BGN',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'دينار بحريني',
+      'symbol' => 'د.ب.‏',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'فرنك بروندي',
+      'symbol' => 'BIF',
+    ),
+    'BMD' => 
+    array (
+      'name' => 'دولار برمودي',
+      'symbol' => 'BMD',
+    ),
+    'BND' => 
+    array (
+      'name' => 'دولار بروناي',
+      'symbol' => 'BND',
+    ),
+    'BOB' => 
+    array (
+      'name' => 'بوليفيانو بوليفي',
+      'symbol' => 'BOB',
+    ),
+    'BOP' => 
+    array (
+      'name' => 'بيزو بوليفي',
+      'symbol' => 'BOP',
+    ),
+    'BOV' => 
+    array (
+      'name' => 'مفدول بوليفي',
+      'symbol' => 'BOV',
+    ),
+    'BRB' => 
+    array (
+      'name' => 'نوفو كروزايرو برازيلي - 1967-1986',
+      'symbol' => 'BRB',
+    ),
+    'BRC' => 
+    array (
+      'name' => 'كروزادو برازيلي',
+      'symbol' => 'BRC',
+    ),
+    'BRE' => 
+    array (
+      'name' => 'كروزايرو برازيلي - 1990-1993',
+      'symbol' => 'BRE',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'ريال برازيلي',
+      'symbol' => 'ر.ب.‏',
+    ),
+    'BSD' => 
+    array (
+      'name' => 'دولار باهامي',
+      'symbol' => 'BSD',
+    ),
+    'BTN' => 
+    array (
+      'name' => 'نولتوم بوتاني',
+      'symbol' => 'BTN',
+    ),
+    'BUK' => 
+    array (
+      'name' => 'كيات بورمي',
+      'symbol' => 'BUK',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'بولا بتسواني',
+      'symbol' => 'BWP',
+    ),
+    'BYB' => 
+    array (
+      'name' => 'روبل بيلاروسي جديد - 1994-1999',
+      'symbol' => 'BYB',
+    ),
+    'BYR' => 
+    array (
+      'name' => 'روبل بيلاروسي',
+      'symbol' => 'BYR',
+    ),
+    'BZD' => 
+    array (
+      'name' => 'دولار بليزي',
+      'symbol' => 'BZD',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'دولار كندي',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'فنك كونغولي',
+      'symbol' => 'CDF',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'فرنك سويسري',
+      'symbol' => 'CHF',
+    ),
+    'CLP' => 
+    array (
+      'name' => 'بيزو شيلي',
+      'symbol' => 'CLP',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'يوان صيني',
+      'symbol' => 'ي.ص',
+    ),
+    'COP' => 
+    array (
+      'name' => 'بيزو كولومبي',
+      'symbol' => 'COP',
+    ),
+    'CRC' => 
+    array (
+      'name' => 'كولن كوستا ريكي',
+      'symbol' => 'CRC',
+    ),
+    'CSD' => 
+    array (
+      'name' => 'دينار صربي قديم',
+      'symbol' => 'CSD',
+    ),
+    'CSK' => 
+    array (
+      'name' => 'كرونة تشيكوسلوفاكيا',
+      'symbol' => 'CSK',
+    ),
+    'CUC' => 
+    array (
+      'name' => 'بيزو كوبي قابل للتحويل',
+      'symbol' => 'CUC',
+    ),
+    'CUP' => 
+    array (
+      'name' => 'بيزو كوبي',
+      'symbol' => 'CUP',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'اسكودو الرأس الخضراء',
+      'symbol' => 'CVE',
+    ),
+    'CYP' => 
+    array (
+      'name' => 'جنيه قبرصي',
+      'symbol' => 'CYP',
+    ),
+    'CZK' => 
+    array (
+      'name' => 'كرونة تشيكية',
+      'symbol' => 'CZK',
+    ),
+    'DDM' => 
+    array (
+      'name' => 'أوستمارك ألماني شرقي',
+      'symbol' => 'DDM',
+    ),
+    'DEM' => 
+    array (
+      'name' => 'مارك ألماني',
+      'symbol' => 'DEM',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'فرنك جيبوتي',
+      'symbol' => 'DJF',
+    ),
+    'DKK' => 
+    array (
+      'name' => 'كرونة دانماركي',
+      'symbol' => 'DKK',
+    ),
+    'DOP' => 
+    array (
+      'name' => 'بيزو الدومنيكان',
+      'symbol' => 'DOP',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'دينار جزائري',
+      'symbol' => 'د.ج.‏',
+    ),
+    'EEK' => 
+    array (
+      'name' => 'كرونة استونية',
+      'symbol' => 'EEK',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'جنيه مصري',
+      'symbol' => 'ج.م.‏',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'ناكفا أريتري',
+      'symbol' => 'ERN',
+    ),
+    'ESP' => 
+    array (
+      'name' => 'بيزيتا إسباني',
+      'symbol' => 'ESP',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'بير أثيوبي',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'يورو',
+      'symbol' => 'EUR',
+    ),
+    'FIM' => 
+    array (
+      'name' => 'ماركا فنلندي',
+      'symbol' => 'FIM',
+    ),
+    'FJD' => 
+    array (
+      'name' => 'دولار فيجي',
+      'symbol' => 'FJD',
+    ),
+    'FKP' => 
+    array (
+      'name' => 'جنيه جزر فوكلاند',
+      'symbol' => 'FKP',
+    ),
+    'FRF' => 
+    array (
+      'name' => 'فرنك فرنسي',
+      'symbol' => 'FRF',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'جنيه إسترليني',
+      'symbol' => 'GBP',
+    ),
+    'GEL' => 
+    array (
+      'name' => 'لارى جورجي',
+      'symbol' => 'GEL',
+    ),
+    'GHC' => 
+    array (
+      'name' => 'سيدي غاني',
+      'symbol' => 'GHC',
+    ),
+    'GHS' => 
+    array (
+      'name' => 'سيدي غانا',
+      'symbol' => 'GHS',
+    ),
+    'GIP' => 
+    array (
+      'name' => 'جنيه جبل طارق',
+      'symbol' => 'GIP',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'دلاسي جامبي',
+      'symbol' => 'GMD',
+    ),
+    'GNF' => 
+    array (
+      'name' => 'فرنك غينيا',
+      'symbol' => 'GNF',
+    ),
+    'GNS' => 
+    array (
+      'name' => 'سيلي غينيا',
+      'symbol' => 'GNS',
+    ),
+    'GQE' => 
+    array (
+      'name' => 'اكويل جونينا غينيا الاستوائيّة',
+      'symbol' => 'GQE',
+    ),
+    'GRD' => 
+    array (
+      'name' => 'دراخما يوناني',
+      'symbol' => 'GRD',
+    ),
+    'GTQ' => 
+    array (
+      'name' => 'كوتزال جواتيمالا',
+      'symbol' => 'GTQ',
+    ),
+    'GWE' => 
+    array (
+      'name' => 'اسكود برتغالي غينيا',
+      'symbol' => 'GWE',
+    ),
+    'GWP' => 
+    array (
+      'name' => 'بيزو غينيا بيساو',
+      'symbol' => 'GWP',
+    ),
+    'GYD' => 
+    array (
+      'name' => 'دولار غيانا',
+      'symbol' => 'GYD',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'دولار هونج كونج',
+      'symbol' => 'HKD',
+    ),
+    'HNL' => 
+    array (
+      'name' => 'ليمبيرا هنداروس',
+      'symbol' => 'HNL',
+    ),
+    'HRD' => 
+    array (
+      'name' => 'دينار كرواتي',
+      'symbol' => 'HRD',
+    ),
+    'HRK' => 
+    array (
+      'name' => 'كونا كرواتي',
+      'symbol' => 'HRK',
+    ),
+    'HTG' => 
+    array (
+      'name' => 'جوردى هايتي',
+      'symbol' => 'HTG',
+    ),
+    'HUF' => 
+    array (
+      'name' => 'فورينت مجري',
+      'symbol' => 'HUF',
+    ),
+    'IDR' => 
+    array (
+      'name' => 'روبية إندونيسية',
+      'symbol' => 'IDR',
+    ),
+    'IEP' => 
+    array (
+      'name' => 'جنيه إيرلندي',
+      'symbol' => 'IEP',
+    ),
+    'ILP' => 
+    array (
+      'name' => 'جنيه إسرائيلي',
+      'symbol' => 'ILP',
+    ),
+    'ILS' => 
+    array (
+      'name' => 'شيكل إسرائيلي جديد',
+      'symbol' => 'ILS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'روبيه هندي',
+      'symbol' => 'ر.ه.‏',
+    ),
+    'IQD' => 
+    array (
+      'name' => 'دينار عراقي',
+      'symbol' => 'د.ع.‏',
+    ),
+    'IRR' => 
+    array (
+      'name' => 'ريال إيراني',
+      'symbol' => 'IRR',
+    ),
+    'ISK' => 
+    array (
+      'name' => 'كرونه أيسلندي',
+      'symbol' => 'ISK',
+    ),
+    'ITL' => 
+    array (
+      'name' => 'ليرة إيطالية',
+      'symbol' => 'ITL',
+    ),
+    'JMD' => 
+    array (
+      'name' => 'دولار جامايكي',
+      'symbol' => 'JMD',
+    ),
+    'JOD' => 
+    array (
+      'name' => 'دينار أردني',
+      'symbol' => 'د.أ.‏',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'ين ياباني',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'شلن كينيي',
+      'symbol' => 'KES',
+    ),
+    'KGS' => 
+    array (
+      'name' => 'سوم قيرغستاني',
+      'symbol' => 'KGS',
+    ),
+    'KHR' => 
+    array (
+      'name' => 'رييال كمبودي',
+      'symbol' => 'KHR',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'فرنك جزر القمر',
+      'symbol' => 'ف.ج.ق.‏',
+    ),
+    'KPW' => 
+    array (
+      'name' => 'وون كوريا الشمالية',
+      'symbol' => 'KPW',
+    ),
+    'KRW' => 
+    array (
+      'name' => 'وون كوريا الجنوبية',
+      'symbol' => 'KRW',
+    ),
+    'KWD' => 
+    array (
+      'name' => 'دينار كويتي',
+      'symbol' => 'د.ك.‏',
+    ),
+    'KYD' => 
+    array (
+      'name' => 'دولار جزر كيمن',
+      'symbol' => 'KYD',
+    ),
+    'KZT' => 
+    array (
+      'name' => 'تينغ كازاخستاني',
+      'symbol' => 'KZT',
+    ),
+    'LAK' => 
+    array (
+      'name' => 'كيب لاوسي',
+      'symbol' => 'LAK',
+    ),
+    'LBP' => 
+    array (
+      'name' => 'جنية لبناني',
+      'symbol' => 'ل.ل.‏',
+    ),
+    'LKR' => 
+    array (
+      'name' => 'روبية سريلانكية',
+      'symbol' => 'LKR',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'دولار ليبيري',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'لوتي ليسوتو',
+      'symbol' => 'LSL',
+    ),
+    'LTL' => 
+    array (
+      'name' => 'الليتا الليتوانية',
+      'symbol' => 'LTL',
+    ),
+    'LTT' => 
+    array (
+      'name' => 'تالوناس ليتواني',
+      'symbol' => 'LTT',
+    ),
+    'LUC' => 
+    array (
+      'name' => 'فرنك لوكسمبرج قابل للتحويل',
+      'symbol' => 'LUC',
+    ),
+    'LUF' => 
+    array (
+      'name' => 'فرنك لوكسمبرج',
+      'symbol' => 'LUF',
+    ),
+    'LUL' => 
+    array (
+      'name' => 'فرنك لوكسمبرج المالي',
+      'symbol' => 'LUL',
+    ),
+    'LVL' => 
+    array (
+      'name' => 'لاتس لاتفيا',
+      'symbol' => 'LVL',
+    ),
+    'LVR' => 
+    array (
+      'name' => 'روبل لاتفيا',
+      'symbol' => 'LVR',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'دينار ليبي',
+      'symbol' => 'د.ل.‏',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'درهم مغربي',
+      'symbol' => 'د.م.‏',
+    ),
+    'MAF' => 
+    array (
+      'name' => 'فرنك مغربي',
+      'symbol' => 'MAF',
+    ),
+    'MDL' => 
+    array (
+      'name' => 'لاو مولدوفي',
+      'symbol' => 'MDL',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'أرياري مدغشقر',
+      'symbol' => 'MGA',
+    ),
+    'MGF' => 
+    array (
+      'name' => 'فرنك مدغشقر',
+      'symbol' => 'MGF',
+    ),
+    'MKD' => 
+    array (
+      'name' => 'دينار مقدوني',
+      'symbol' => 'MKD',
+    ),
+    'MLF' => 
+    array (
+      'name' => 'فرنك مالي',
+      'symbol' => 'MLF',
+    ),
+    'MMK' => 
+    array (
+      'name' => 'كيات ميانمار',
+      'symbol' => 'MMK',
+    ),
+    'MNT' => 
+    array (
+      'name' => 'توغروغ منغولي',
+      'symbol' => 'MNT',
+    ),
+    'MOP' => 
+    array (
+      'name' => 'باتاكا ماكاوي',
+      'symbol' => 'MOP',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'أوقية موريتانية',
+      'symbol' => 'أ.م.‏',
+    ),
+    'MTL' => 
+    array (
+      'name' => 'ليرة مالطية',
+      'symbol' => 'MTL',
+    ),
+    'MTP' => 
+    array (
+      'name' => 'جنيه مالطي',
+      'symbol' => 'MTP',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'روبية موريشيوسية',
+      'symbol' => 'MUR',
+    ),
+    'MVR' => 
+    array (
+      'name' => 'روفيه جزر المالديف',
+      'symbol' => 'MVR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'كواشا مالاوي',
+      'symbol' => 'MWK',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'بيزو مكسيكي',
+      'symbol' => 'MXN',
+    ),
+    'MXP' => 
+    array (
+      'name' => 'بيزو فضي مكسيكي - 1861-1992',
+      'symbol' => 'MXP',
+    ),
+    'MYR' => 
+    array (
+      'name' => 'رينغيت ماليزي',
+      'symbol' => 'MYR',
+    ),
+    'MZE' => 
+    array (
+      'name' => 'اسكود موزمبيقي',
+      'symbol' => 'MZE',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'دولار ناميبي',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'نايرا نيجيري',
+      'symbol' => 'NGN',
+    ),
+    'NIC' => 
+    array (
+      'name' => 'كوردوبة نيكاراجوا',
+      'symbol' => 'NIC',
+    ),
+    'NIO' => 
+    array (
+      'name' => 'قرطبة نيكاراغوا',
+      'symbol' => 'NIO',
+    ),
+    'NLG' => 
+    array (
+      'name' => 'جلدر هولندي',
+      'symbol' => 'NLG',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'كرونة نرويجية',
+      'symbol' => 'NOK',
+    ),
+    'NPR' => 
+    array (
+      'name' => 'روبية نيبالي',
+      'symbol' => 'NPR',
+    ),
+    'NZD' => 
+    array (
+      'name' => 'دولار نيوزيلندي',
+      'symbol' => 'NZD',
+    ),
+    'OMR' => 
+    array (
+      'name' => 'ريال عماني',
+      'symbol' => 'ر.ع.‏',
+    ),
+    'PAB' => 
+    array (
+      'name' => 'بالبوا بنمي',
+      'symbol' => 'PAB',
+    ),
+    'PEN' => 
+    array (
+      'name' => 'سول جديد البيرو',
+      'symbol' => 'PEN',
+    ),
+    'PGK' => 
+    array (
+      'name' => 'كينا بابوا غينيا الجديدة',
+      'symbol' => 'PGK',
+    ),
+    'PHP' => 
+    array (
+      'name' => 'بيزو فلبيني',
+      'symbol' => 'PHP',
+    ),
+    'PKR' => 
+    array (
+      'name' => 'روبية باكستاني',
+      'symbol' => 'PKR',
+    ),
+    'PLN' => 
+    array (
+      'name' => 'زلوتي بولندي',
+      'symbol' => 'PLN',
+    ),
+    'PLZ' => 
+    array (
+      'name' => 'زلوتي بولندي - 1950-1995',
+      'symbol' => 'PLZ',
+    ),
+    'PTE' => 
+    array (
+      'name' => 'اسكود برتغالي',
+      'symbol' => 'PTE',
+    ),
+    'PYG' => 
+    array (
+      'name' => 'جواراني باراجواي',
+      'symbol' => 'PYG',
+    ),
+    'QAR' => 
+    array (
+      'name' => 'ريال قطري',
+      'symbol' => 'ر.ق.‏',
+    ),
+    'RHD' => 
+    array (
+      'name' => 'دولار روديسي',
+      'symbol' => 'RHD',
+    ),
+    'ROL' => 
+    array (
+      'name' => 'ليو روماني قديم',
+      'symbol' => 'ROL',
+    ),
+    'RSD' => 
+    array (
+      'name' => 'دينار صربي',
+      'symbol' => 'RSD',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'روبل روسي',
+      'symbol' => 'ر.ر.‏',
+    ),
+    'RUR' => 
+    array (
+      'name' => 'روبل روسي - 1991-1998',
+      'symbol' => 'RUR',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'فرنك رواندي',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'ريال سعودي',
+      'symbol' => 'ر.س.‏',
+    ),
+    'SBD' => 
+    array (
+      'name' => 'دولار جزر سليمان',
+      'symbol' => 'SBD',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'روبية سيشيلية',
+      'symbol' => 'SCR',
+    ),
+    'SDD' => 
+    array (
+      'name' => 'دينار سوداني',
+      'symbol' => 'د.س.‏',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'جنيه سوداني',
+      'symbol' => 'SDG',
+    ),
+    'SDP' => 
+    array (
+      'name' => 'جنيه سوداني قديم',
+      'symbol' => 'ج.س.‏',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'كرونة سويدية',
+      'symbol' => 'SEK',
+    ),
+    'SGD' => 
+    array (
+      'name' => 'دولار سنغافوري',
+      'symbol' => 'SGD',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'جنيه سانت هيلين',
+      'symbol' => 'SHP',
+    ),
+    'SIT' => 
+    array (
+      'name' => 'تولار سلوفيني',
+      'symbol' => 'SIT',
+    ),
+    'SKK' => 
+    array (
+      'name' => 'كرونة سلوفاكية',
+      'symbol' => 'SKK',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'ليون سيراليوني',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'شلن صومالي',
+      'symbol' => 'SOS',
+    ),
+    'SRD' => 
+    array (
+      'name' => 'دولار سورينامي',
+      'symbol' => 'SRD',
+    ),
+    'SRG' => 
+    array (
+      'name' => 'جلدر سورينامي',
+      'symbol' => 'SRG',
+    ),
+    'STD' => 
+    array (
+      'name' => 'دوبرا ساو تومي وبرينسيبي',
+      'symbol' => 'STD',
+    ),
+    'SUR' => 
+    array (
+      'name' => 'روبل سوفيتي',
+      'symbol' => 'SUR',
+    ),
+    'SVC' => 
+    array (
+      'name' => 'كولون سلفادوري',
+      'symbol' => 'SVC',
+    ),
+    'SYP' => 
+    array (
+      'name' => 'ليرة سورية',
+      'symbol' => 'ل.س.‏',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'ليلانجيني سوازيلندي',
+      'symbol' => 'SZL',
+    ),
+    'THB' => 
+    array (
+      'name' => 'باخت تايلاندي',
+      'symbol' => 'THB',
+    ),
+    'TJR' => 
+    array (
+      'name' => 'روبل طاجيكستاني',
+      'symbol' => 'TJR',
+    ),
+    'TJS' => 
+    array (
+      'name' => 'سوموني طاجيكستاني',
+      'symbol' => 'TJS',
+    ),
+    'TMM' => 
+    array (
+      'name' => 'مانات تركمنستاني',
+      'symbol' => 'TMM',
+    ),
+    'TMT' => 
+    array (
+      'name' => 'مانات تركمانستان',
+      'symbol' => 'TMT',
+    ),
+    'TND' => 
+    array (
+      'name' => 'دينارتونسي',
+      'symbol' => 'د.ت.‏',
+    ),
+    'TOP' => 
+    array (
+      'name' => 'بانغا تونغا',
+      'symbol' => 'TOP',
+    ),
+    'TPE' => 
+    array (
+      'name' => 'اسكود تيموري',
+      'symbol' => 'TPE',
+    ),
+    'TRL' => 
+    array (
+      'name' => 'ليرة تركي',
+      'symbol' => 'TRL',
+    ),
+    'TRY' => 
+    array (
+      'name' => 'ليرة تركية',
+      'symbol' => 'TRY',
+    ),
+    'TTD' => 
+    array (
+      'name' => 'دولار ترينداد وتوباجو',
+      'symbol' => 'TTD',
+    ),
+    'TWD' => 
+    array (
+      'name' => 'دولار تايواني',
+      'symbol' => 'TWD',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'شلن تنزاني',
+      'symbol' => 'TZS',
+    ),
+    'UAH' => 
+    array (
+      'name' => 'هريفنيا أوكراني',
+      'symbol' => 'UAH',
+    ),
+    'UGS' => 
+    array (
+      'name' => 'شلن أوغندي - 1966-1987',
+      'symbol' => 'UGS',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'شلن أوغندي',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'دولار أمريكي',
+      'symbol' => 'USD',
+    ),
+    'USN' => 
+    array (
+      'name' => 'دولار أمريكي (اليوم التالي)‏',
+      'symbol' => 'USN',
+    ),
+    'USS' => 
+    array (
+      'name' => 'دولار أمريكي (نفس اليوم)‏',
+      'symbol' => 'USS',
+    ),
+    'UYP' => 
+    array (
+      'name' => 'بيزو أوروجواي - 1975-1993',
+      'symbol' => 'UYP',
+    ),
+    'UYU' => 
+    array (
+      'name' => 'بيزو اوروغواي',
+      'symbol' => 'UYU',
+    ),
+    'UZS' => 
+    array (
+      'name' => 'سوم أوزبكستاني',
+      'symbol' => 'UZS',
+    ),
+    'VEB' => 
+    array (
+      'name' => 'بوليفار فنزويلي - 1871-2008 ',
+      'symbol' => 'VEB',
+    ),
+    'VEF' => 
+    array (
+      'name' => 'بوليفار فنزويلي',
+      'symbol' => 'VEF',
+    ),
+    'VND' => 
+    array (
+      'name' => 'دونج فيتنامي',
+      'symbol' => 'VND',
+    ),
+    'VUV' => 
+    array (
+      'name' => 'فاتو فانواتو',
+      'symbol' => 'VUV',
+    ),
+    'WST' => 
+    array (
+      'name' => 'تالا ساموا',
+      'symbol' => 'WST',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'فرنك أفريقي',
+      'symbol' => 'ف.ا.‏',
+    ),
+    'XAG' => 
+    array (
+      'name' => 'فضة',
+      'symbol' => 'XAG',
+    ),
+    'XAU' => 
+    array (
+      'name' => 'ذهب',
+      'symbol' => 'XAU',
+    ),
+    'XBA' => 
+    array (
+      'name' => 'الوحدة الأوروبية المركبة',
+      'symbol' => 'XBA',
+    ),
+    'XBB' => 
+    array (
+      'name' => 'الوحدة المالية الأوروبية',
+      'symbol' => 'XBB',
+    ),
+    'XBC' => 
+    array (
+      'name' => 'الوحدة الحسابية الأوروبية',
+      'symbol' => 'XBC',
+    ),
+    'XBD' => 
+    array (
+      'name' => '(XBD)وحدة الحساب الأوروبية',
+      'symbol' => 'XBD',
+    ),
+    'XCD' => 
+    array (
+      'name' => 'دولار شرق الكاريبي',
+      'symbol' => 'XCD',
+    ),
+    'XDR' => 
+    array (
+      'name' => 'حقوق السحب الخاصة',
+      'symbol' => 'XDR',
+    ),
+    'XEU' => 
+    array (
+      'name' => 'وحدة النقد الأوروبية',
+      'symbol' => 'XEU',
+    ),
+    'XFO' => 
+    array (
+      'name' => 'فرنك فرنسي ذهبي',
+      'symbol' => 'XFO',
+    ),
+    'XFU' => 
+    array (
+      'name' => '(UIC)فرنك فرنسي',
+      'symbol' => 'XFU',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'فرنك سي إف إيه غرب إفريقيا',
+      'symbol' => 'XOF',
+    ),
+    'XPD' => 
+    array (
+      'name' => 'بالاديوم',
+      'symbol' => 'XPD',
+    ),
+    'XPF' => 
+    array (
+      'name' => 'فرنك سي إف بي',
+      'symbol' => 'XPF',
+    ),
+    'XPT' => 
+    array (
+      'name' => 'البلاتين',
+      'symbol' => 'XPT',
+    ),
+    'XTS' => 
+    array (
+      'name' => 'كود اختبار العملة',
+      'symbol' => 'XTS',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'عملة غير معروفة',
+      'symbol' => '***',
+    ),
+    'YDD' => 
+    array (
+      'name' => 'دينار يمني',
+      'symbol' => 'YDD',
+    ),
+    'YER' => 
+    array (
+      'name' => 'ريال يمني',
+      'symbol' => 'ر.ي.‏',
+    ),
+    'YUD' => 
+    array (
+      'name' => 'دينار يوغسلافي',
+      'symbol' => 'YUD',
+    ),
+    'YUN' => 
+    array (
+      'name' => 'دينار يوغسلافي قابل للتحويل',
+      'symbol' => 'YUN',
+    ),
+    'ZAL' => 
+    array (
+      'name' => 'راند جنوب أفريقيا -مالي',
+      'symbol' => 'ZAL',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'راند جنوب أفريقيا',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'كواشا زامبي',
+      'symbol' => 'ZMK',
+    ),
+    'ZRN' => 
+    array (
+      'name' => 'زائير زائيري جديد',
+      'symbol' => 'ZRN',
+    ),
+    'ZRZ' => 
+    array (
+      'name' => 'زائير زائيري',
+      'symbol' => 'ZRZ',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'دولار زمبابوي',
+      'symbol' => 'ZWD',
+    ),
+    'ZWL' => 
+    array (
+      'name' => 'دولار زمبابوي 2009',
+      'symbol' => 'ZWL',
+    ),
+  ),
+);

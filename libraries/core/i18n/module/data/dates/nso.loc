@@ -1,0 +1,65 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Son',
+        'mon' => 'Mos',
+        'tue' => 'Bed',
+        'wed' => 'Rar',
+        'thu' => 'Ne',
+        'fri' => 'Hla',
+        'sat' => 'Mok',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Sontaga',
+        'mon' => 'Mosupalogo',
+        'tue' => 'Labobedi',
+        'wed' => 'Laboraro',
+        'thu' => 'Labone',
+        'fri' => 'Labohlano',
+        'sat' => 'Mokibelo',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Jan',
+        2 => 'Feb',
+        3 => 'Mat',
+        4 => 'Apo',
+        5 => 'Mei',
+        6 => 'Jun',
+        7 => 'Jul',
+        8 => 'Ago',
+        9 => 'Set',
+        10 => 'Okt',
+        11 => 'Nof',
+        12 => 'Dis',
+      ),
+      'full' => 
+      array (
+        1 => 'Janaware',
+        2 => 'Feberware',
+        3 => 'Matšhe',
+        4 => 'Aporele',
+        5 => 'Mei',
+        6 => 'June',
+        7 => 'Julae',
+        8 => 'Agostose',
+        9 => 'Setemere',
+        10 => 'Oktobore',
+        11 => 'Nofemere',
+        12 => 'Disemere',
+      ),
+    ),
+  ),
+);

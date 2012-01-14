@@ -1,0 +1,128 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'buddhist' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d. MMMM y G',
+      'long' => 'd. MMMM y G',
+      'medium' => 'd. M. y G',
+      'short' => 'dd.MM.yy GGGGG',
+    ),
+  ),
+  'chinese' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d. Ml. y\'x\'G',
+      'long' => 'd. Ml. y\'x\'G',
+      'medium' => 'd. Ml. y\'x\'G',
+      'short' => 'd. Ml. y\'x\'G',
+    ),
+  ),
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'ne',
+        'mon' => 'po',
+        'tue' => 'út',
+        'wed' => 'st',
+        'thu' => 'čt',
+        'fri' => 'pá',
+        'sat' => 'so',
+      ),
+      'full' => 
+      array (
+        'sun' => 'neděle',
+        'mon' => 'pondělí',
+        'tue' => 'úterý',
+        'wed' => 'středa',
+        'thu' => 'čtvrtek',
+        'fri' => 'pátek',
+        'sat' => 'sobota',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Led',
+        2 => 'Úno',
+        3 => 'Bře',
+        4 => 'Dub',
+        5 => 'Kvě',
+        6 => 'Čer',
+        7 => 'Čvc',
+        8 => 'Srp',
+        9 => 'Zář',
+        10 => 'Říj',
+        11 => 'Lis',
+        12 => 'Pro',
+      ),
+      'full' => 
+      array (
+        1 => 'ledna',
+        2 => 'února',
+        3 => 'března',
+        4 => 'dubna',
+        5 => 'května',
+        6 => 'června',
+        7 => 'července',
+        8 => 'srpna',
+        9 => 'září',
+        10 => 'října',
+        11 => 'listopadu',
+        12 => 'prosince',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d. MMMM y',
+      'long' => 'd. MMMM y',
+      'medium' => 'd.M.yyyy',
+      'short' => 'dd.MM.yy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'H:mm:ss zzzz',
+      'long' => 'H:mm:ss z',
+      'medium' => 'H:mm:ss',
+      'short' => 'H:mm',
+    ),
+  ),
+  'islamic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d. MMMM y G',
+      'medium' => 'd. MMM. y G',
+      'short' => 'dd.MM.yy. G',
+    ),
+  ),
+  'japanese' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d. MMMM y G',
+      'long' => 'd. MMMM y G',
+      'medium' => 'd. M. y G',
+      'short' => 'dd.MM.yy GGGGG',
+    ),
+  ),
+  'roc' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d. MMMM y G',
+      'long' => 'd. MMMM y G',
+      'medium' => 'd. M. y G',
+      'short' => 'dd.MM.yy GGGGG',
+    ),
+  ),
+);

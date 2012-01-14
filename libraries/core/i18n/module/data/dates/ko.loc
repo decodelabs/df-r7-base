@@ -1,0 +1,101 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'buddhist' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'G y년 M월 d일 EEEE',
+      'long' => 'G y년 M월 d일',
+      'medium' => 'G y. M. d',
+      'short' => 'G y. M. d',
+    ),
+  ),
+  'chinese' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'y\'x\'G-Ml-d EEEE',
+    ),
+  ),
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => '일',
+        'mon' => '월',
+        'tue' => '화',
+        'wed' => '수',
+        'thu' => '목',
+        'fri' => '금',
+        'sat' => '토',
+      ),
+      'full' => 
+      array (
+        'sun' => '일요일',
+        'mon' => '월요일',
+        'tue' => '화요일',
+        'wed' => '수요일',
+        'thu' => '목요일',
+        'fri' => '금요일',
+        'sat' => '토요일',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'full' => 
+      array (
+        1 => '1월',
+        2 => '2월',
+        3 => '3월',
+        4 => '4월',
+        5 => '5월',
+        6 => '6월',
+        7 => '7월',
+        8 => '8월',
+        9 => '9월',
+        10 => '10월',
+        11 => '11월',
+        12 => '12월',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'y년 M월 d일 EEEE',
+      'long' => 'y년 M월 d일',
+      'medium' => 'yyyy. M. d.',
+      'short' => 'yy. M. d.',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'a h시 m분 s초 zzzz',
+      'long' => 'a h시 m분 s초 z',
+      'medium' => 'a h:mm:ss',
+      'short' => 'a h:mm',
+    ),
+  ),
+  'japanese' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'G y년 M월 d일 EEEE',
+      'long' => 'G y년 M월 d일',
+      'medium' => 'G y. M. d',
+      'short' => 'G y. M. d',
+    ),
+  ),
+  'roc' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'G y년 M월 d일 EEEE',
+      'long' => 'G y년 M월 d일',
+      'medium' => 'G y. M. d',
+      'short' => 'G y. M. d',
+    ),
+  ),
+);

@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Tis',
+        'mon' => 'Tai',
+        'tue' => 'Aen',
+        'wed' => 'Som',
+        'thu' => 'Ang',
+        'fri' => 'Mut',
+        'sat' => 'Loh',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Betutab tisap',
+        'mon' => 'Betut netai',
+        'tue' => 'Betutab aeng\'',
+        'wed' => 'Betutab somok',
+        'thu' => 'Betutab ang\'wan',
+        'fri' => 'Betutab mut',
+        'sat' => 'Betutab lo',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Mul',
+        2 => 'Nga',
+        3 => 'Kip',
+        4 => 'Iwa',
+        5 => 'Nge',
+        6 => 'Wak',
+        7 => 'Rop',
+        8 => 'Kog',
+        9 => 'Bur',
+        10 => 'Epe',
+        11 => 'Tai',
+        12 => 'Aen',
+      ),
+      'full' => 
+      array (
+        1 => 'Mulgul',
+        2 => 'Ng\'atyato',
+        3 => 'Kiptamo',
+        4 => 'Iwat kut',
+        5 => 'Ng\'eiyet',
+        6 => 'Waki',
+        7 => 'Roptui',
+        8 => 'Kipkogaga',
+        9 => 'Buret',
+        10 => 'Epeso',
+        11 => 'Kipsunde netai',
+        12 => 'Kipsunde nebo aeng',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'dd/MM/yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+);

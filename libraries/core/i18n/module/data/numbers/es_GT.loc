@@ -1,0 +1,17 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'GTQ' => 
+    array (
+      'name' => 'GTQ',
+      'symbol' => 'Q',
+    ),
+  ),
+);

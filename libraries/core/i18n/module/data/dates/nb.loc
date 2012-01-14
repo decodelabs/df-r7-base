@@ -1,0 +1,119 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'buddhist' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d. MMMM y G',
+      'long' => 'd. MMMM y G',
+      'medium' => 'd. MMM y G',
+      'short' => 'd.M yyyy',
+    ),
+  ),
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'søn.',
+        'mon' => 'man.',
+        'tue' => 'tir.',
+        'wed' => 'ons.',
+        'thu' => 'tor.',
+        'fri' => 'fre.',
+        'sat' => 'lør.',
+      ),
+      'full' => 
+      array (
+        'sun' => 'søndag',
+        'mon' => 'mandag',
+        'tue' => 'tirsdag',
+        'wed' => 'onsdag',
+        'thu' => 'torsdag',
+        'fri' => 'fredag',
+        'sat' => 'lørdag',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'jan.',
+        2 => 'feb.',
+        3 => 'mars',
+        4 => 'apr.',
+        5 => 'mai',
+        6 => 'juni',
+        7 => 'juli',
+        8 => 'aug.',
+        9 => 'sep.',
+        10 => 'okt.',
+        11 => 'nov.',
+        12 => 'des.',
+      ),
+      'full' => 
+      array (
+        1 => 'januar',
+        2 => 'februar',
+        3 => 'mars',
+        4 => 'april',
+        5 => 'mai',
+        6 => 'juni',
+        7 => 'juli',
+        8 => 'august',
+        9 => 'september',
+        10 => 'oktober',
+        11 => 'november',
+        12 => 'desember',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d. MMMM y',
+      'long' => 'd. MMMM y',
+      'medium' => 'd. MMM y',
+      'short' => 'dd.MM.yy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => '\'kl\'. HH:mm:ss zzzz',
+      'long' => 'HH:mm:ss z',
+      'medium' => 'HH:mm:ss',
+      'short' => 'HH:mm',
+    ),
+  ),
+  'islamic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d. MMMM y G',
+      'long' => 'd. MMMM y G',
+      'medium' => 'd. MMM y G',
+      'short' => 'd.M y G',
+    ),
+  ),
+  'japanese' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d. MMMM y G',
+      'long' => 'd. MMMM y G',
+      'medium' => 'd. MMM y G',
+      'short' => 'd.M y G',
+    ),
+  ),
+  'roc' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d. MMMM y G',
+      'long' => 'd. MMMM y G',
+      'medium' => 'd. MMM y G',
+      'short' => 'd.M y G',
+    ),
+  ),
+);

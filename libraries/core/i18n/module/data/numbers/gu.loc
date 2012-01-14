@@ -1,0 +1,792 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'exponential' => 'પૂર્વ',
+    'nan' => 'સંખ્યા નથીં',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##,##0.###',
+    'percent' => '#,##,##0%',
+    'currency' => '¤ #,##,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'AED' => 
+    array (
+      'name' => 'યુનાઇટેડ અરબ એમિરેટ્સ',
+      'symbol' => 'AED',
+    ),
+    'AFN' => 
+    array (
+      'name' => 'અફ્ગાન અફ્ગાની',
+      'symbol' => 'AFN',
+    ),
+    'ALL' => 
+    array (
+      'name' => 'અલ્બેનિયન લેક',
+      'symbol' => 'ALL',
+    ),
+    'AMD' => 
+    array (
+      'name' => 'અર્મેનિયન ડ્રેમ',
+      'symbol' => 'AMD',
+    ),
+    'ANG' => 
+    array (
+      'name' => 'નેધરલેંડ એંટિલિન ગિલ્ડર',
+      'symbol' => 'ANG',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'અંગોલિયન ક્વાન્ઝા',
+      'symbol' => 'AOA',
+    ),
+    'ARS' => 
+    array (
+      'name' => 'અર્જેન્ટીના પેસો',
+      'symbol' => 'ARS',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'ઑસ્ટ્રેલિયન ડૉલર',
+      'symbol' => 'AUD',
+    ),
+    'AWG' => 
+    array (
+      'name' => 'અરુબન ફ્લોરિન',
+      'symbol' => 'AWG',
+    ),
+    'AZN' => 
+    array (
+      'name' => 'અઝરબૈજાની મનાત',
+      'symbol' => 'AZN',
+    ),
+    'BAM' => 
+    array (
+      'name' => 'બોસ્નિયા અને હર્ઝેગોવિના રૂપાંતર યોગ્ય માર્ક',
+      'symbol' => 'BAM',
+    ),
+    'BBD' => 
+    array (
+      'name' => 'બાર્બાડિયન ડોલર',
+      'symbol' => 'BBD',
+    ),
+    'BDT' => 
+    array (
+      'name' => 'બાંગલાદેશી ટાકા',
+      'symbol' => 'BDT',
+    ),
+    'BGN' => 
+    array (
+      'name' => 'બલ્ગેરીયન લેવ',
+      'symbol' => 'BGN',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'બેહરિની દિનાર',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'બુરુન્ડિયન ફ્રેંક',
+      'symbol' => 'BIF',
+    ),
+    'BMD' => 
+    array (
+      'name' => 'બર્મુડન ડોલર',
+      'symbol' => 'BMD',
+    ),
+    'BND' => 
+    array (
+      'name' => 'બ્રુનેઇ ડોલર',
+      'symbol' => 'BND',
+    ),
+    'BOB' => 
+    array (
+      'name' => 'બોલિવિયન બોલિવિયાનો',
+      'symbol' => 'BOB',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'બ્રાઝિલીયન રિઆલ',
+      'symbol' => 'BRL',
+    ),
+    'BSD' => 
+    array (
+      'name' => 'બહામિયન ડોલર',
+      'symbol' => 'BSD',
+    ),
+    'BTN' => 
+    array (
+      'name' => 'ભુતાનિઝ એંગુલ્ત્રમ',
+      'symbol' => 'BTN',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'બોત્સવાનન પુલા',
+      'symbol' => 'BWP',
+    ),
+    'BYR' => 
+    array (
+      'name' => 'બેલારુશિયન રબલ',
+      'symbol' => 'BYR',
+    ),
+    'BZD' => 
+    array (
+      'name' => 'બેલિઝ ડોલર',
+      'symbol' => 'BZD',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'કેનેડિયન ડૉલર',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'કોંગોલિઝ ફ્રેંક',
+      'symbol' => 'CDF',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'સ્વિસ ફ્રેંક',
+      'symbol' => 'CHF',
+    ),
+    'CLP' => 
+    array (
+      'name' => 'ચિલિઅન પેસો',
+      'symbol' => 'CLP',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'ચાઇનિઝ યુઆન',
+      'symbol' => 'CNY',
+    ),
+    'COP' => 
+    array (
+      'name' => 'કોલમ્બિયન પેસો',
+      'symbol' => 'COP',
+    ),
+    'CRC' => 
+    array (
+      'name' => 'કોસ્ટા રિકન કોલોન',
+      'symbol' => 'CRC',
+    ),
+    'CUC' => 
+    array (
+      'name' => 'ક્યુબન રૂપાંતર યોગ્ય પેસો',
+      'symbol' => 'CUC',
+    ),
+    'CUP' => 
+    array (
+      'name' => 'ક્યુબન પેસો',
+      'symbol' => 'CUP',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'કેપ વર્દિયન એસ્કુડો',
+      'symbol' => 'CVE',
+    ),
+    'CZK' => 
+    array (
+      'name' => 'ચેક રીપબ્લિક કોરુના',
+      'symbol' => 'CZK',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'જિબુટિયન ફ્રેંક',
+      'symbol' => 'DJF',
+    ),
+    'DKK' => 
+    array (
+      'name' => 'ડેનિશ ક્રોન',
+      'symbol' => 'DKK',
+    ),
+    'DOP' => 
+    array (
+      'name' => 'ડોમિનિકન પેસો',
+      'symbol' => 'DOP',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'અલ્જિરિયન દિનાર',
+      'symbol' => 'DZD',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'ઇજિપ્તિયન પાઉન્ડ',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'એરિટ્રેયન નક્ફા',
+      'symbol' => 'ERN',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'એથિયોપિયન બિર',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'યુરો',
+      'symbol' => 'EUR',
+    ),
+    'FJD' => 
+    array (
+      'name' => 'ફિજિઅન ડોલર',
+      'symbol' => 'FJD',
+    ),
+    'FKP' => 
+    array (
+      'name' => 'ફૉકલેન્ડ આઇલેંડ્સ પાઉન્ડ',
+      'symbol' => 'FKP',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'બ્રિટિશ પાઉન્ડ સ્ટરલિંગ',
+      'symbol' => 'GBP',
+    ),
+    'GEL' => 
+    array (
+      'name' => 'જ્યોર્જિઅન લારી',
+      'symbol' => 'GEL',
+    ),
+    'GHS' => 
+    array (
+      'name' => 'ઘાનાઇયન સેડી',
+      'symbol' => 'GHS',
+    ),
+    'GIP' => 
+    array (
+      'name' => 'જીબ્રાલ્ટર પાઉન્ડ',
+      'symbol' => 'GIP',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'ગેમ્બિયન દલાસી',
+      'symbol' => 'GMD',
+    ),
+    'GNF' => 
+    array (
+      'name' => 'ગિનીયન ફ્રેંક',
+      'symbol' => 'GNF',
+    ),
+    'GTQ' => 
+    array (
+      'name' => 'ગ્વાટેમાલા કુઇટ્સલ',
+      'symbol' => 'GTQ',
+    ),
+    'GYD' => 
+    array (
+      'name' => 'ગયાનિઝ ડોલર',
+      'symbol' => 'GYD',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'હોંગ કોંગ ડૉલર',
+      'symbol' => 'HKD',
+    ),
+    'HNL' => 
+    array (
+      'name' => 'હોન્ડ્યુરન લેમ્પિરા',
+      'symbol' => 'HNL',
+    ),
+    'HRK' => 
+    array (
+      'name' => 'ક્રોએશિયન ક્યુના',
+      'symbol' => 'HRK',
+    ),
+    'HTG' => 
+    array (
+      'name' => 'હાઇટિઇન ગોર્ડ',
+      'symbol' => 'HTG',
+    ),
+    'HUF' => 
+    array (
+      'name' => 'હંગેરીયન ફોરિન્ત',
+      'symbol' => 'HUF',
+    ),
+    'IDR' => 
+    array (
+      'name' => 'ઇન્ડોનેશિય રૂપીયા',
+      'symbol' => 'IDR',
+    ),
+    'ILS' => 
+    array (
+      'name' => 'ઇઝરેઇલ ન્યુ શેકેલ',
+      'symbol' => 'ILS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'ભારતીય રૂપીયા',
+      'symbol' => 'INR',
+    ),
+    'IQD' => 
+    array (
+      'name' => 'ઇરાકી દિનાર',
+      'symbol' => 'IQD',
+    ),
+    'IRR' => 
+    array (
+      'name' => 'ઇરાનિયન રિયાલ',
+      'symbol' => 'IRR',
+    ),
+    'ISK' => 
+    array (
+      'name' => 'આઇસ્લેંડિક ક્રોના',
+      'symbol' => 'ISK',
+    ),
+    'JMD' => 
+    array (
+      'name' => 'જમૈકિયન ડોલર',
+      'symbol' => 'JMD',
+    ),
+    'JOD' => 
+    array (
+      'name' => 'જોરડનનું દિનાર',
+      'symbol' => 'JOD',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'જાપાનીઝ યેન',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'કેન્યેન શિલિંગ',
+      'symbol' => 'KES',
+    ),
+    'KGS' => 
+    array (
+      'name' => 'કિર્ગિસ્તાની સોમ',
+      'symbol' => 'KGS',
+    ),
+    'KHR' => 
+    array (
+      'name' => 'કેમ્બોડિયન રીઅલ',
+      'symbol' => 'KHR',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'કોમોરિઅન ફ્રેંક',
+      'symbol' => 'KMF',
+    ),
+    'KPW' => 
+    array (
+      'name' => 'ઉત્તર કોરિયન વન',
+      'symbol' => 'KPW',
+    ),
+    'KRW' => 
+    array (
+      'name' => 'દક્ષિણ કોરિયન વન',
+      'symbol' => 'KRW',
+    ),
+    'KWD' => 
+    array (
+      'name' => 'કુવૈતી દીનાર',
+      'symbol' => 'KWD',
+    ),
+    'KYD' => 
+    array (
+      'name' => 'કેયમેન આઇલેંડ્સ ડોલર',
+      'symbol' => 'KYD',
+    ),
+    'KZT' => 
+    array (
+      'name' => 'કઝાકિસ્તાની ટેંગ',
+      'symbol' => 'KZT',
+    ),
+    'LAK' => 
+    array (
+      'name' => 'લાઓશિયન કિપ',
+      'symbol' => 'LAK',
+    ),
+    'LBP' => 
+    array (
+      'name' => 'લેબેનિઝ પાઉન્ડ',
+      'symbol' => 'LBP',
+    ),
+    'LKR' => 
+    array (
+      'name' => 'શ્રી લંકન રૂપી',
+      'symbol' => 'LKR',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'લિબેરિયન ડોલર',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'લેસોથો લોતી',
+      'symbol' => 'LSL',
+    ),
+    'LTL' => 
+    array (
+      'name' => 'લિથુએનિયન લિતાસ',
+      'symbol' => 'LTL',
+    ),
+    'LVL' => 
+    array (
+      'name' => 'લાતવિયન લેત્સ',
+      'symbol' => 'LVL',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'લિબ્યન દિનાર',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'મોરોકન દિરામ',
+      'symbol' => 'MAD',
+    ),
+    'MDL' => 
+    array (
+      'name' => 'મોલડોવેન લિયુ',
+      'symbol' => 'MDL',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'માલાગેસી અરીઆરી',
+      'symbol' => 'MGA',
+    ),
+    'MKD' => 
+    array (
+      'name' => 'મેસેડોનિયન દિનાર',
+      'symbol' => 'MKD',
+    ),
+    'MMK' => 
+    array (
+      'name' => 'મયાન્મા ક્યાત',
+      'symbol' => 'MMK',
+    ),
+    'MNT' => 
+    array (
+      'name' => 'મોંગોલિયન ટગરિક',
+      'symbol' => 'MNT',
+    ),
+    'MOP' => 
+    array (
+      'name' => 'માકાનિઝ પતાકા',
+      'symbol' => 'MOP',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'મોરીશેનિયન ઓગુયા',
+      'symbol' => 'MRO',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'મૌરીશીઅન રૂપી',
+      'symbol' => 'MUR',
+    ),
+    'MVR' => 
+    array (
+      'name' => 'માલ્દિવિયન રુફિયા',
+      'symbol' => 'MVR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'માલાવિયન ક્વાચા',
+      'symbol' => 'MWK',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'મેક્સિકન પેસો',
+      'symbol' => 'MXN',
+    ),
+    'MYR' => 
+    array (
+      'name' => 'મલેશિયન રિંગ્ગેટ',
+      'symbol' => 'MYR',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'નામિબિયા ડોલર',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'નાઇજીરિયન નૈરા',
+      'symbol' => 'NGN',
+    ),
+    'NIO' => 
+    array (
+      'name' => 'નિકારાગુઅન કોર્ડોબા',
+      'symbol' => 'NIO',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'નૉર્વેજિયન ક્રોન',
+      'symbol' => 'NOK',
+    ),
+    'NPR' => 
+    array (
+      'name' => 'નેપાલિઝ રૂપી',
+      'symbol' => 'NPR',
+    ),
+    'NZD' => 
+    array (
+      'name' => 'ન્યૂઝિલેંડ ડૉલર',
+      'symbol' => 'NZD',
+    ),
+    'OMR' => 
+    array (
+      'name' => 'ઓમાની રિયાલ',
+      'symbol' => 'OMR',
+    ),
+    'PAB' => 
+    array (
+      'name' => 'પનામેનિયન બાલ્બોઆ',
+      'symbol' => 'PAB',
+    ),
+    'PEN' => 
+    array (
+      'name' => 'પેરુવિયન ન્યુવો સોલ',
+      'symbol' => 'PEN',
+    ),
+    'PGK' => 
+    array (
+      'name' => 'પાપુઆ ન્યૂ ગિનીયન કિના',
+      'symbol' => 'PGK',
+    ),
+    'PHP' => 
+    array (
+      'name' => 'ફિલીપાઇન પેસો',
+      'symbol' => 'PHP',
+    ),
+    'PKR' => 
+    array (
+      'name' => 'પાકિસ્તાની રૂપી',
+      'symbol' => 'PKR',
+    ),
+    'PLN' => 
+    array (
+      'name' => 'પોલિસ ઝ્લોટી',
+      'symbol' => 'PLN',
+    ),
+    'PYG' => 
+    array (
+      'name' => 'પરાગ્વેયન ગૌરાની',
+      'symbol' => 'PYG',
+    ),
+    'QAR' => 
+    array (
+      'name' => 'કતારી રિયાલ',
+      'symbol' => 'QAR',
+    ),
+    'RSD' => 
+    array (
+      'name' => 'સર્બિયન દિનાર',
+      'symbol' => 'RSD',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'રશિયન રબલ',
+      'symbol' => 'RUB',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'રવાંડા ફ્રેંક',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'સાઉદી રિયાલ',
+      'symbol' => 'SAR',
+    ),
+    'SBD' => 
+    array (
+      'name' => 'સોલોમન આઇલેંડ્સ ડોલર',
+      'symbol' => 'SBD',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'સેશેલોઈ રૂપી',
+      'symbol' => 'SCR',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'સુદાનિઝ પાઉન્ડ',
+      'symbol' => 'SDG',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'સ્વીડિશ ક્રોના',
+      'symbol' => 'SEK',
+    ),
+    'SGD' => 
+    array (
+      'name' => 'સિંગાપુર ડૉલર',
+      'symbol' => 'SGD',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'સેંટ હેલેના પાઉન્ડ',
+      'symbol' => 'SHP',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'સિએરા લિઓનિઅન લિઓન',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'સોમાલી શિલિંગ',
+      'symbol' => 'SOS',
+    ),
+    'SRD' => 
+    array (
+      'name' => 'સૂરીનામિઝ ડોલર',
+      'symbol' => 'SRD',
+    ),
+    'STD' => 
+    array (
+      'name' => 'સાઓ ટૉમ એન્ડ પ્રિંસાઇપ ડોબ્રા',
+      'symbol' => 'STD',
+    ),
+    'SYP' => 
+    array (
+      'name' => 'સાઇરિયન પાઉન્ડ',
+      'symbol' => 'SYP',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'સ્વાઝી લિલાન્ગેની',
+      'symbol' => 'SZL',
+    ),
+    'THB' => 
+    array (
+      'name' => 'થાઇ બાહ્ત',
+      'symbol' => 'THB',
+    ),
+    'TJS' => 
+    array (
+      'name' => 'તાજિકિસ્તાન સોમોની',
+      'symbol' => 'TJS',
+    ),
+    'TMT' => 
+    array (
+      'name' => 'તુર્કમેનિસ્તાન મનત',
+      'symbol' => 'TMT',
+    ),
+    'TND' => 
+    array (
+      'name' => 'ટ્યુનિશિયા દિનાર',
+      'symbol' => 'TND',
+    ),
+    'TOP' => 
+    array (
+      'name' => 'ટોંગન પ\'અંગા',
+      'symbol' => 'TOP',
+    ),
+    'TRY' => 
+    array (
+      'name' => 'તુર્કિશ લિરા',
+      'symbol' => 'TRY',
+    ),
+    'TTD' => 
+    array (
+      'name' => 'ત્રિનિદાદ અને ટોબેગો',
+      'symbol' => 'TTD',
+    ),
+    'TWD' => 
+    array (
+      'name' => 'ન્યુ તાઇવાન ડૉલર',
+      'symbol' => 'TWD',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'તાન્ઝાનિયા શિલિંગ',
+      'symbol' => 'TZS',
+    ),
+    'UAH' => 
+    array (
+      'name' => 'યુક્રેનિયન હ્રિવિનિયા',
+      'symbol' => 'UAH',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'યુગાંડન શિલિંગ',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'યિએસ ડોલર',
+      'symbol' => 'USD',
+    ),
+    'UYU' => 
+    array (
+      'name' => 'ઉરુગ્વેયન પેસો',
+      'symbol' => 'UYU',
+    ),
+    'UZS' => 
+    array (
+      'name' => 'ઉઝ્બેકિસ્તાન સોમ',
+      'symbol' => 'UZS',
+    ),
+    'VEF' => 
+    array (
+      'name' => 'વેનેઝ્વીલિયન બોલિવર',
+      'symbol' => 'VEF',
+    ),
+    'VND' => 
+    array (
+      'name' => 'વિયેતનામીસ ડોંગ',
+      'symbol' => 'VND',
+    ),
+    'VUV' => 
+    array (
+      'name' => 'વનૌતુ વાતુ',
+      'symbol' => 'VUV',
+    ),
+    'WST' => 
+    array (
+      'name' => 'સમોઅન તાલા',
+      'symbol' => 'WST',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'CFA ફ્રેંકBEAC',
+      'symbol' => 'XAF',
+    ),
+    'XCD' => 
+    array (
+      'name' => 'ઇસ્ટ કેરિબિયન ડોલર',
+      'symbol' => 'XCD',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'CFA ફ્રેંક BCEAO',
+      'symbol' => 'XOF',
+    ),
+    'XPF' => 
+    array (
+      'name' => 'CFP ફ્રેંક',
+      'symbol' => 'XPF',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'અજ્ઞાત ચલણ',
+      'symbol' => 'XXX',
+    ),
+    'YER' => 
+    array (
+      'name' => 'યેમેની રિઆલ',
+      'symbol' => 'YER',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'દક્ષિણ આફ્રિકી રેંડ',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'ઝામ્બિયન ક્વાચા',
+      'symbol' => 'ZMK',
+    ),
+  ),
+);

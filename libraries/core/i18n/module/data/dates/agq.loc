@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'nts',
+        'mon' => 'kpa',
+        'tue' => 'ghɔ',
+        'wed' => 'tɔm',
+        'thu' => 'ume',
+        'fri' => 'ghɨ',
+        'sat' => 'dzk',
+      ),
+      'full' => 
+      array (
+        'sun' => 'tsuʔntsɨ',
+        'mon' => 'tsuʔukpà',
+        'tue' => 'tsuʔughɔe',
+        'wed' => 'tsuʔutɔ̀mlò',
+        'thu' => 'tsuʔumè',
+        'fri' => 'tsuʔughɨ̂m',
+        'sat' => 'tsuʔndzɨkɔʔɔ',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'nùm',
+        2 => 'kɨz',
+        3 => 'tɨd',
+        4 => 'taa',
+        5 => 'see',
+        6 => 'nzu',
+        7 => 'dum',
+        8 => 'fɔe',
+        9 => 'dzu',
+        10 => 'lɔm',
+        11 => 'kaa',
+        12 => 'fwo',
+      ),
+      'full' => 
+      array (
+        1 => 'ndzɔ̀ŋɔ̀nùm',
+        2 => 'ndzɔ̀ŋɔ̀kƗ̀zùʔ',
+        3 => 'ndzɔ̀ŋɔ̀tƗ̀dʉ̀ghà',
+        4 => 'ndzɔ̀ŋɔ̀tǎafʉ̄ghā',
+        5 => 'ndzɔ̀ŋèsèe',
+        6 => 'ndzɔ̀ŋɔ̀nzùghò',
+        7 => 'ndzɔ̀ŋɔ̀dùmlo',
+        8 => 'ndzɔ̀ŋɔ̀kwîfɔ̀e',
+        9 => 'ndzɔ̀ŋɔ̀tƗ̀fʉ̀ghàdzughù',
+        10 => 'ndzɔ̀ŋɔ̀ghǔuwelɔ̀m',
+        11 => 'ndzɔ̀ŋɔ̀chwaʔàkaa wo',
+        12 => 'ndzɔ̀ŋèfwòo',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM, y',
+      'short' => 'd/M/yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'HH:mm:ss zzzz',
+      'long' => 'HH:mm:ss z',
+      'medium' => 'HH:mm:ss',
+      'short' => 'HH:mm',
+    ),
+  ),
+);

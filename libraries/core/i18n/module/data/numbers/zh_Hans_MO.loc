@@ -1,0 +1,37 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'AWG' => 
+    array (
+      'name' => '阿鲁巴弗罗林',
+      'symbol' => 'AWG',
+    ),
+    'BAM' => 
+    array (
+      'name' => '波斯尼亚-黑塞哥维那可兑换马克',
+      'symbol' => 'BAM',
+    ),
+    'FKP' => 
+    array (
+      'name' => '福克兰群岛镑',
+      'symbol' => 'FKP',
+    ),
+    'KZT' => 
+    array (
+      'name' => '哈萨克斯坦腾格',
+      'symbol' => 'KZT',
+    ),
+    'NIO' => 
+    array (
+      'name' => '尼加拉瓜科多巴',
+      'symbol' => 'NIO',
+    ),
+  ),
+);

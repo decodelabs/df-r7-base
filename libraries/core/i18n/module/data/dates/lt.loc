@@ -1,0 +1,86 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'buddhist' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'y G, MMMM d, EEEE',
+    ),
+  ),
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Sk',
+        'mon' => 'Pr',
+        'tue' => 'An',
+        'wed' => 'Tr',
+        'thu' => 'Kt',
+        'fri' => 'Pn',
+        'sat' => 'Št',
+      ),
+      'full' => 
+      array (
+        'sun' => 'sekmadienis',
+        'mon' => 'pirmadienis',
+        'tue' => 'antradienis',
+        'wed' => 'trečiadienis',
+        'thu' => 'ketvirtadienis',
+        'fri' => 'penktadienis',
+        'sat' => 'šeštadienis',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Saus.',
+        2 => 'Vas',
+        3 => 'Kov.',
+        4 => 'Bal.',
+        5 => 'Geg.',
+        6 => 'Bir.',
+        7 => 'Liep.',
+        8 => 'Rugp.',
+        9 => 'Rugs.',
+        10 => 'Spal.',
+        11 => 'Lapkr.',
+        12 => 'Gruod.',
+      ),
+      'full' => 
+      array (
+        1 => 'sausio',
+        2 => 'vasaris',
+        3 => 'kovas',
+        4 => 'balandis',
+        5 => 'gegužė',
+        6 => 'birželis',
+        7 => 'liepa',
+        8 => 'rugpjūtis',
+        9 => 'rugsėjis',
+        10 => 'spalis',
+        11 => 'lapkritis',
+        12 => 'gruodis',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'y \'m\'. MMMM d \'d\'., EEEE',
+      'long' => 'y \'m\'. MMMM d \'d\'.',
+      'medium' => 'y MMM d',
+      'short' => 'yyyy-MM-dd',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'HH:mm:ss zzzz',
+      'long' => 'HH:mm:ss z',
+      'medium' => 'HH:mm:ss',
+      'short' => 'HH:mm',
+    ),
+  ),
+);

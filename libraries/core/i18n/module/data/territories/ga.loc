@@ -1,0 +1,18 @@
+<?php
+return array (
+  '002' => 'An Afraic',
+  '017' => 'An Afraic Láir',
+  '009' => 'An Aigéine',
+  142 => 'An Áise',
+  143 => 'An Áise Láir',
+  '053' => 'An Astráil agus an Nua-Shéalainn',
+  '001' => 'An Domhan',
+  150 => 'An Eoraip',
+  '054' => 'An Mheilinéis',
+  '061' => 'An Pholainéis',
+  '057' => 'An Réigiún Micrinéiseach',
+  172 => 'Comhlathas na Stát Neamhspleácha',
+  419 => 'Meiriceá Laidineach agus an Mhuir Chairib',
+  '013' => 'Meiriceá Láir',
+  '019' => 'Na Meiriceánna',
+);

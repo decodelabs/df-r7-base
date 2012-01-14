@@ -1,0 +1,288 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'group' => ' ',
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'AED' => 
+    array (
+      'name' => 'dirham Emira arab ini',
+      'symbol' => 'AED',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'kwanza angole',
+      'symbol' => 'AOA',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'dolar ostralien',
+      'symbol' => 'AUD',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'dinar bahreïn',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'fran burunde',
+      'symbol' => 'BIF',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'pula ya botswane',
+      'symbol' => 'BWP',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'dolar kanadien',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'fran kongole',
+      'symbol' => 'CDF',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'fran swis',
+      'symbol' => 'CHF',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'yuan renminbi sinwa',
+      'symbol' => 'CNY',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'eskudo kapverdien',
+      'symbol' => 'CVE',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'fran djiboutien',
+      'symbol' => 'DJF',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'dinar alzerien',
+      'symbol' => 'DZD',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'liv ezipsien',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'nafka erythreen',
+      'symbol' => 'ERN',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'birr etiopien',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'euro',
+      'symbol' => 'EUR',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'liv sterlin',
+      'symbol' => 'GBP',
+    ),
+    'GHC' => 
+    array (
+      'name' => 'sedi ganeen',
+      'symbol' => 'GHC',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'dalasi gambien',
+      'symbol' => 'GMD',
+    ),
+    'GNS' => 
+    array (
+      'name' => 'fran gineen',
+      'symbol' => 'GNS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'roupi',
+      'symbol' => 'INR',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'yen zapone',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'shiling kenyan',
+      'symbol' => 'KES',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'fran komorien',
+      'symbol' => 'KMF',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'dolar liberien',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'loti lezoto',
+      'symbol' => 'LSL',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'dinar libien',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'dirham marokin',
+      'symbol' => 'MAD',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'fran malgas',
+      'symbol' => 'MGA',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'ouguiya moritanien',
+      'symbol' => 'MRO',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'roupi morisien',
+      'symbol' => 'MUR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'kwacha malawit',
+      'symbol' => 'MWK',
+    ),
+    'MZM' => 
+    array (
+      'name' => 'metikal mozanbikin',
+      'symbol' => 'MZM',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'dolar namibien',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'naira nizerian',
+      'symbol' => 'NGN',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'fran rwande',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'rial saoudien',
+      'symbol' => 'SAR',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'roupi seselwa',
+      'symbol' => 'SCR',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'dinar soudane',
+      'symbol' => 'SDG',
+    ),
+    'SDP' => 
+    array (
+      'name' => 'liv soudane',
+      'symbol' => 'SDP',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'liv Sainte-Hélène',
+      'symbol' => 'SHP',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'leonn Sierra-Leone',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'shilingi somalien',
+      'symbol' => 'SOS',
+    ),
+    'STD' => 
+    array (
+      'name' => 'dobra santomeen',
+      'symbol' => 'STD',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'lilangeni swazi',
+      'symbol' => 'SZL',
+    ),
+    'TND' => 
+    array (
+      'name' => 'dinar tinizien',
+      'symbol' => 'TND',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'shiling tanzanien',
+      'symbol' => 'TZS',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'shiling ougande',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'dolar amerikin',
+      'symbol' => 'USD',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'fran CFA (BEAC)',
+      'symbol' => 'XAF',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'fran CFA (BCEAO)',
+      'symbol' => 'XOF',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'rand sid-afrikin',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'kwacha zanbien',
+      'symbol' => 'ZMK',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'dolar zimbawe',
+      'symbol' => 'ZWD',
+    ),
+  ),
+);

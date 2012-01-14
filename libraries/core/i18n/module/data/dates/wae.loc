@@ -1,0 +1,71 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Sun',
+        'mon' => 'Män',
+        'tue' => 'Ziš',
+        'wed' => 'Mit',
+        'thu' => 'Fró',
+        'fri' => 'Fri',
+        'sat' => 'Sam',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Sunntag',
+        'mon' => 'Mäntag',
+        'tue' => 'Zištag',
+        'wed' => 'Mittwuč',
+        'thu' => 'Fróntag',
+        'fri' => 'Fritag',
+        'sat' => 'Samštag',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Jen',
+        2 => 'Hor',
+        3 => 'Mär',
+        4 => 'Abr',
+        5 => 'Mei',
+        6 => 'Brá',
+        7 => 'Hei',
+        8 => 'Öig',
+        9 => 'Her',
+        10 => 'Wím',
+        11 => 'Win',
+        12 => 'Chr',
+      ),
+      'full' => 
+      array (
+        1 => 'Jenner',
+        2 => 'Hornig',
+        3 => 'Märze',
+        4 => 'Abrille',
+        5 => 'Meije',
+        6 => 'Bráčet',
+        7 => 'Heiwet',
+        8 => 'Öigšte',
+        9 => 'Herbštmánet',
+        10 => 'Wímánet',
+        11 => 'Wintermánet',
+        12 => 'Chrištmánet',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d. MMMM y',
+      'long' => 'd. MMMM y',
+      'medium' => 'd. MMM y',
+    ),
+  ),
+);

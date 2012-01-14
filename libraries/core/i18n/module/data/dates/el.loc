@@ -1,0 +1,112 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'buddhist' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM, y G',
+      'long' => 'd MMMM, y G',
+      'medium' => 'd MMM, y G',
+      'short' => 'd/M/yyyy',
+    ),
+  ),
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Κυρ',
+        'mon' => 'Δευ',
+        'tue' => 'Τρι',
+        'wed' => 'Τετ',
+        'thu' => 'Πεμ',
+        'fri' => 'Παρ',
+        'sat' => 'Σαβ',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Κυριακή',
+        'mon' => 'Δευτέρα',
+        'tue' => 'Τρίτη',
+        'wed' => 'Τετάρτη',
+        'thu' => 'Πέμπτη',
+        'fri' => 'Παρασκευή',
+        'sat' => 'Σάββατο',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Ιαν',
+        2 => 'Φεβ',
+        3 => 'Μαρ',
+        4 => 'Απρ',
+        5 => 'Μαϊ',
+        6 => 'Ιουν',
+        7 => 'Ιουλ',
+        8 => 'Αυγ',
+        9 => 'Σεπ',
+        10 => 'Οκτ',
+        11 => 'Νοε',
+        12 => 'Δεκ',
+      ),
+      'full' => 
+      array (
+        1 => 'Ιανουαρίου',
+        2 => 'Φεβρουαρίου',
+        3 => 'Μαρτίου',
+        4 => 'Απριλίου',
+        5 => 'Μαΐου',
+        6 => 'Ιουνίου',
+        7 => 'Ιουλίου',
+        8 => 'Αυγούστου',
+        9 => 'Σεπτεμβρίου',
+        10 => 'Οκτωβρίου',
+        11 => 'Νοεμβρίου',
+        12 => 'Δεκεμβρίου',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'd/M/yy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+  'hebrew' => 
+  array (
+  ),
+  'japanese' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM, y G',
+      'long' => 'd MMMM, y G',
+      'medium' => 'd MMM, y G',
+      'short' => 'd/M/yy',
+    ),
+  ),
+  'roc' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM, y G',
+      'long' => 'd MMMM, y G',
+      'medium' => 'd MMM, y G',
+      'short' => 'd/M/y G',
+    ),
+  ),
+);

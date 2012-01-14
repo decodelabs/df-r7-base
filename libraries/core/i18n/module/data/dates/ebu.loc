@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Kma',
+        'mon' => 'Tat',
+        'tue' => 'Ine',
+        'wed' => 'Tan',
+        'thu' => 'Arm',
+        'fri' => 'Maa',
+        'sat' => 'NMM',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Kiumia',
+        'mon' => 'Njumatatu',
+        'tue' => 'Njumaine',
+        'wed' => 'Njumatano',
+        'thu' => 'Aramithi',
+        'fri' => 'Njumaa',
+        'sat' => 'NJumamothii',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Mbe',
+        2 => 'Kai',
+        3 => 'Kat',
+        4 => 'Kan',
+        5 => 'Gat',
+        6 => 'Gan',
+        7 => 'Mug',
+        8 => 'Knn',
+        9 => 'Ken',
+        10 => 'Iku',
+        11 => 'Imw',
+        12 => 'Igi',
+      ),
+      'full' => 
+      array (
+        1 => 'Mweri wa mbere',
+        2 => 'Mweri wa kaĩri',
+        3 => 'Mweri wa kathatũ',
+        4 => 'Mweri wa kana',
+        5 => 'Mweri wa gatano',
+        6 => 'Mweri wa gatantatũ',
+        7 => 'Mweri wa mũgwanja',
+        8 => 'Mweri wa kanana',
+        9 => 'Mweri wa kenda',
+        10 => 'Mweri wa ikũmi',
+        11 => 'Mweri wa ikũmi na ũmwe',
+        12 => 'Mweri wa ikũmi na Kaĩrĩ',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'dd/MM/yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+);

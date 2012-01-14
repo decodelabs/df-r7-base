@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Dim',
+        'mon' => 'Ten',
+        'tue' => 'Tal',
+        'wed' => 'Ala',
+        'thu' => 'Ara',
+        'fri' => 'Arj',
+        'sat' => 'Sib',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Dimas',
+        'mon' => 'Teneŋ',
+        'tue' => 'Talata',
+        'wed' => 'Alarbay',
+        'thu' => 'Aramisay',
+        'fri' => 'Arjuma',
+        'sat' => 'Sibiti',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Sa',
+        2 => 'Fe',
+        3 => 'Ma',
+        4 => 'Ab',
+        5 => 'Me',
+        6 => 'Su',
+        7 => 'Sú',
+        8 => 'Ut',
+        9 => 'Se',
+        10 => 'Ok',
+        11 => 'No',
+        12 => 'De',
+      ),
+      'full' => 
+      array (
+        1 => 'Sanvie',
+        2 => 'Fébirie',
+        3 => 'Mars',
+        4 => 'Aburil',
+        5 => 'Mee',
+        6 => 'Sueŋ',
+        7 => 'Súuyee',
+        8 => 'Ut',
+        9 => 'Settembar',
+        10 => 'Oktobar',
+        11 => 'Novembar',
+        12 => 'Disambar',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'd/M/yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'HH:mm:ss zzzz',
+      'long' => 'HH:mm:ss z',
+      'medium' => 'HH:mm:ss',
+      'short' => 'HH:mm',
+    ),
+  ),
+);

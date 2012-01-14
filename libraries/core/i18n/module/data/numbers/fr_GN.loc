@@ -1,0 +1,17 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'GNF' => 
+    array (
+      'name' => 'GNF',
+      'symbol' => 'FG',
+    ),
+  ),
+);

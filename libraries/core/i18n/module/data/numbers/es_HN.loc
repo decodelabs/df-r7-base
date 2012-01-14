@@ -1,0 +1,17 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'HNL' => 
+    array (
+      'name' => 'HNL',
+      'symbol' => 'L',
+    ),
+  ),
+);

@@ -1,0 +1,18 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'perMille' => '0/00',
+    'infinity' => 'INF',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#0.######',
+    'scientific' => '0.000000E+000',
+    'percent' => '#0%',
+    'currency' => '¤ #0.00',
+  ),
+  'currencies' => 
+  array (
+  ),
+);

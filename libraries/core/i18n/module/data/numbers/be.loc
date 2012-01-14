@@ -1,0 +1,88 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => ',',
+    'group' => ' ',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'scientific' => '#E0',
+    'percent' => '#,##0%',
+    'currency' => '¤#,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'AUD' => 
+    array (
+      'name' => 'аўстралійскі даляр',
+      'symbol' => 'AUD',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'бразільскі рэал',
+      'symbol' => 'BRL',
+    ),
+    'BYB' => 
+    array (
+      'name' => 'BYB',
+      'symbol' => 'Руб',
+    ),
+    'BYR' => 
+    array (
+      'name' => 'беларускі рубель',
+      'symbol' => 'BYR',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'кітайскі юань',
+      'symbol' => 'CNY',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'эрытрэйская накфа',
+      'symbol' => 'ERN',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'еўра',
+      'symbol' => 'EUR',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'англійскі фунт',
+      'symbol' => 'GBP',
+    ),
+    'INR' => 
+    array (
+      'name' => 'індыйская рупія',
+      'symbol' => 'INR',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'японская іена',
+      'symbol' => '¥',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'нарвэская крона',
+      'symbol' => 'NOK',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'рускі рубель',
+      'symbol' => 'рас. руб.',
+    ),
+    'USD' => 
+    array (
+      'name' => 'долар ЗША',
+      'symbol' => '$',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'невядомая або недапушчальная валюта',
+      'symbol' => 'XXX',
+    ),
+  ),
+);

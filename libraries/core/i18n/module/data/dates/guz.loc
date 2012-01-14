@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Cpr',
+        'mon' => 'Ctt',
+        'tue' => 'Cmn',
+        'wed' => 'Cmt',
+        'thu' => 'Ars',
+        'fri' => 'Icm',
+        'sat' => 'Est',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Chumapiri',
+        'mon' => 'Chumatato',
+        'tue' => 'Chumaine',
+        'wed' => 'Chumatano',
+        'thu' => 'Aramisi',
+        'fri' => 'Ichuma',
+        'sat' => 'Esabato',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Can',
+        2 => 'Feb',
+        3 => 'Mac',
+        4 => 'Apr',
+        5 => 'Mei',
+        6 => 'Jun',
+        7 => 'Cul',
+        8 => 'Agt',
+        9 => 'Sep',
+        10 => 'Okt',
+        11 => 'Nob',
+        12 => 'Dis',
+      ),
+      'full' => 
+      array (
+        1 => 'Chanuari',
+        2 => 'Feburari',
+        3 => 'Machi',
+        4 => 'Apiriri',
+        5 => 'Mei',
+        6 => 'Juni',
+        7 => 'Chulai',
+        8 => 'Agosti',
+        9 => 'Septemba',
+        10 => 'Okitoba',
+        11 => 'Nobemba',
+        12 => 'Disemba',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'dd/MM/yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+);

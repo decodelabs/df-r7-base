@@ -20,15 +20,8 @@ class Http extends Base {
     public function dispatch() {
         $this->_beginDispatch();
         
-        
-        $collection = new core\collection\HeaderMap([
-            'content-type' => 'html',
-            'pragma' => 'no-cache'
-        ]);
-        
-        $collection->add('pragma', 'jam');
-        
-        core\dump($collection);
+        $duration = core\time\Date::factory('-3 days')->timeSince();
+        core\dump($duration);
         
         df\Launchpad::benchmark();
     }

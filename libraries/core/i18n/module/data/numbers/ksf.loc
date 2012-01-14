@@ -1,0 +1,286 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => ',',
+    'group' => ' ',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'currency' => '#,##0.00 ¤',
+  ),
+  'currencies' => 
+  array (
+    'AED' => 
+    array (
+      'name' => 'mɔni mǝ á bǝlɔŋ bǝ kaksa bɛ táatáaŋzǝn',
+      'symbol' => 'AED',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'mɔni mǝ á angóla',
+      'symbol' => 'AOA',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'mɔni mǝ á ɔstralí',
+      'symbol' => 'AUD',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'mɔni mǝ á barǝ́n',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'mɔni mǝ á burundí',
+      'symbol' => 'BIF',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'mɔni mǝ á botswana',
+      'symbol' => 'BWP',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'mɔni mǝ á kanada',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'mɔni mǝ á kɔngó',
+      'symbol' => 'CDF',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'mɔni mǝ á swís',
+      'symbol' => 'CHF',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'mɔni mǝ á cín',
+      'symbol' => 'CNY',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'mɔni mǝ á kapvɛr',
+      'symbol' => 'CVE',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'mɔni mǝ á dyibutí',
+      'symbol' => 'DJF',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'mɔni mǝ á aljɛrí',
+      'symbol' => 'DZD',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'mɔni mǝ á ɛjípt',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'mɔni mǝ á ɛritrɛ́',
+      'symbol' => 'ERN',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'mɔni mǝ á ɛtyɔpí',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'mɔni mǝ á pɛrɛsǝ́',
+      'symbol' => 'EUR',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'mɔni mǝ á ingɛrís',
+      'symbol' => 'GBP',
+    ),
+    'GHC' => 
+    array (
+      'name' => 'mɔni mǝ á gána',
+      'symbol' => 'GHC',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'mɔni mǝ á gambí',
+      'symbol' => 'GMD',
+    ),
+    'GNS' => 
+    array (
+      'name' => 'mɔni mǝ á ginɛ́',
+      'symbol' => 'GNS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'mɔni mǝ á indí',
+      'symbol' => 'INR',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'mɔni mǝ á japɔ́ŋ',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'mɔni mǝ á kɛnya',
+      'symbol' => 'KES',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'mɔni mǝ á komɔr',
+      'symbol' => 'KMF',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'mɔni mǝ á libɛrya',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'mɔni mǝ á lǝsóto',
+      'symbol' => 'LSL',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'mɔni mǝ á libí',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'mɔni mǝ á marɔk',
+      'symbol' => 'MAD',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'mɔni mǝ á madagaska',
+      'symbol' => 'MGA',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'mɔni mǝ á mwaritaní',
+      'symbol' => 'MRO',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'mɔni mǝ á mwarís',
+      'symbol' => 'MUR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'mɔni mǝ á malawi',
+      'symbol' => 'MWK',
+    ),
+    'MZM' => 
+    array (
+      'name' => 'mɔni mǝ á mosambík',
+      'symbol' => 'MZM',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'mɔni mǝ á namibí',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'mɔni mǝ á nijɛ́rya',
+      'symbol' => 'NGN',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'mɔni mǝ á rwanda',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'mɔni mǝ á arabí saodí',
+      'symbol' => 'SAR',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'mɔni mǝ á sɛcɛl',
+      'symbol' => 'SCR',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'mɔni mǝ á sudan',
+      'symbol' => 'SDG',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'mɔni mǝ á sɛntɛ́len',
+      'symbol' => 'SHP',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'mɔni mǝ á syɛraleon',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'mɔni mǝ á somalí',
+      'symbol' => 'SOS',
+    ),
+    'STD' => 
+    array (
+      'name' => 'mɔni mǝ á saotomɛ́ ri priŋsib',
+      'symbol' => 'STD',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'mɔni mǝ á swazilan',
+      'symbol' => 'SZL',
+    ),
+    'TND' => 
+    array (
+      'name' => 'mɔni mǝ á tunɛsí',
+      'symbol' => 'TND',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'mɔni mǝ á tanzaní',
+      'symbol' => 'TZS',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'mɔni mǝ á uganda',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'mɔni mǝ á amɛrika',
+      'symbol' => 'USD',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'fráŋ',
+      'symbol' => 'XAF',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'mɔni mǝ á afríka aná wɛs',
+      'symbol' => 'XOF',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'mɔni mǝ á afrik anǝ a sud',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'mɔni mǝ á zambí',
+      'symbol' => 'ZMK',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'mɔni mǝ á zimbabwɛ́',
+      'symbol' => 'ZWD',
+    ),
+  ),
+);

@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Son',
+        'mon' => 'Ma',
+        'tue' => 'De',
+        'wed' => 'Wu',
+        'thu' => 'Do',
+        'fri' => 'Fr',
+        'sat' => 'Sat',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Sontaxtsees',
+        'mon' => 'Mantaxtsees',
+        'tue' => 'Denstaxtsees',
+        'wed' => 'Wunstaxtsees',
+        'thu' => 'Dondertaxtsees',
+        'fri' => 'Fraitaxtsees',
+        'sat' => 'Satertaxtsees',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Jan',
+        2 => 'Feb',
+        3 => 'Mar',
+        4 => 'Apr',
+        5 => 'May',
+        6 => 'Jun',
+        7 => 'Jul',
+        8 => 'Aug',
+        9 => 'Sep',
+        10 => 'Oct',
+        11 => 'Nov',
+        12 => 'Dec',
+      ),
+      'full' => 
+      array (
+        1 => 'ǃKhanni',
+        2 => 'ǃKhanǀgôab',
+        3 => 'ǀKhuuǁkhâb',
+        4 => 'ǃHôaǂkhaib',
+        5 => 'ǃKhaitsâb',
+        6 => 'Gamaǀaeb',
+        7 => 'ǂKhoesaob',
+        8 => 'Aoǁkhuumûǁkhâb',
+        9 => 'Taraǀkhuumûǁkhâb',
+        10 => 'ǂNûǁnâiseb',
+        11 => 'ǀHooǂgaeb',
+        12 => 'Hôasoreǁkhâb',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'dd/MM/yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+);

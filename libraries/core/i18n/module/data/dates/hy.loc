@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Կիր',
+        'mon' => 'Երկ',
+        'tue' => 'Երք',
+        'wed' => 'Չոր',
+        'thu' => 'Հնգ',
+        'fri' => 'Ուր',
+        'sat' => 'Շաբ',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Կիրակի',
+        'mon' => 'Երկուշաբթի',
+        'tue' => 'Երեքշաբթի',
+        'wed' => 'Չորեքշաբթի',
+        'thu' => 'Հինգշաբթի',
+        'fri' => 'Ուրբաթ',
+        'sat' => 'Շաբաթ',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Հնվ',
+        2 => 'Փտվ',
+        3 => 'Մրտ',
+        4 => 'Ապր',
+        5 => 'Մյս',
+        6 => 'Հնս',
+        7 => 'Հլս',
+        8 => 'Օգս',
+        9 => 'Սեպ',
+        10 => 'Հոկ',
+        11 => 'Նոյ',
+        12 => 'Դեկ',
+      ),
+      'full' => 
+      array (
+        1 => 'Հունվար',
+        2 => 'Փետրվար',
+        3 => 'Մարտ',
+        4 => 'Ապրիլ',
+        5 => 'Մայիս',
+        6 => 'Հունիս',
+        7 => 'Հուլիս',
+        8 => 'Օգոստոս',
+        9 => 'Սեպտեմբեր',
+        10 => 'Հոկտեմբեր',
+        11 => 'Նոյեմբեր',
+        12 => 'Դեկտեմբեր',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, MMMM d, y',
+      'long' => 'MMMM dd, y',
+      'medium' => 'MMM d, y',
+      'short' => 'MM/dd/yy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'HH:mm:ss zzzz',
+      'long' => 'HH:mm:ss z',
+      'medium' => 'HH:mm:ss',
+      'short' => 'HH:mm',
+    ),
+  ),
+);

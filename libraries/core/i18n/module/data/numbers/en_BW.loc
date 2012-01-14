@@ -1,0 +1,18 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+    'currency' => '¤#,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'BWP' => 
+    array (
+      'name' => 'BWP',
+      'symbol' => 'P',
+    ),
+  ),
+);

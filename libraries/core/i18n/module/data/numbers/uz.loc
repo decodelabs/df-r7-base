@@ -1,0 +1,59 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => ',',
+    'group' => ' ',
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'BRL' => 
+    array (
+      'name' => 'Бразил реали',
+      'symbol' => 'BRL',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'Хитой юани',
+      'symbol' => 'CNY',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'Евро',
+      'symbol' => 'EUR',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'Инглиз фунт стерлинги',
+      'symbol' => 'GBP',
+    ),
+    'INR' => 
+    array (
+      'name' => 'Ҳинд рупияси',
+      'symbol' => 'INR',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'Япон йенаси',
+      'symbol' => 'JPY',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'Рус рубли',
+      'symbol' => 'RUB',
+    ),
+    'USD' => 
+    array (
+      'name' => 'АҚШ доллари',
+      'symbol' => 'USD',
+    ),
+    'UZS' => 
+    array (
+      'name' => 'Ўзбекистон сўм',
+      'symbol' => 'сўм',
+    ),
+  ),
+);

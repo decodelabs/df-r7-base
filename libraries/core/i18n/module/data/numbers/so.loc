@@ -1,0 +1,55 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => '.',
+    'group' => ',',
+  ),
+  'formats' => 
+  array (
+    'currency' => '¤#,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'DJF' => 
+    array (
+      'name' => 'Faran Jabbuuti',
+      'symbol' => 'DJF',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'Birta Itoobbiya',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'Yuuroo',
+      'symbol' => 'EUR',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'Riyaalka Sacuudiga',
+      'symbol' => 'SAR',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'Shilin soomaali',
+      'symbol' => 'SOS',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'Shilin Tansaani',
+      'symbol' => 'TZS',
+    ),
+    'USD' => 
+    array (
+      'name' => 'Doollar maraykan',
+      'symbol' => 'USD',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'Lacag aan la qoon ama aan saxnayn',
+      'symbol' => 'XXX',
+    ),
+  ),
+);

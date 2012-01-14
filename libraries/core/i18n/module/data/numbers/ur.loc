@@ -1,0 +1,836 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => '.',
+    'group' => ',',
+    'list' => ';',
+    'percentSign' => '%',
+    'plusSign' => '+',
+    'minusSign' => '-',
+    'exponential' => 'ق',
+    'perMille' => '‰',
+    'infinity' => '∞',
+    'nan' => 'یہ عدد نہیں',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'scientific' => '#E0',
+    'percent' => '#,##0%',
+    'currency' => '¤#,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'AED' => 
+    array (
+      'name' => 'متحدہ عرب اماراتی درہم',
+      'symbol' => 'AED',
+    ),
+    'AFN' => 
+    array (
+      'name' => 'افغان افغانی',
+      'symbol' => 'AFN',
+    ),
+    'ALL' => 
+    array (
+      'name' => 'البانیا کا لیک',
+      'symbol' => 'ALL',
+    ),
+    'AMD' => 
+    array (
+      'name' => 'آرمینیائی ڈرم',
+      'symbol' => 'AMD',
+    ),
+    'ANG' => 
+    array (
+      'name' => 'نیدر لینڈز انٹیلیئن گلڈر',
+      'symbol' => 'ANG',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'انگولا کا کوانزا',
+      'symbol' => 'AOA',
+    ),
+    'ARS' => 
+    array (
+      'name' => 'ارجنٹائن پیسہ',
+      'symbol' => 'ARS',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'آسٹریلین ڈالر',
+      'symbol' => 'AUD',
+    ),
+    'AWG' => 
+    array (
+      'name' => 'اروبن فلورِن',
+      'symbol' => 'AWG',
+    ),
+    'AZN' => 
+    array (
+      'name' => 'آذربائجانی منات',
+      'symbol' => 'AZN',
+    ),
+    'BAM' => 
+    array (
+      'name' => 'بوسنیا ہرزیگووینا کا قابل منتقلی نشان',
+      'symbol' => 'BAM',
+    ),
+    'BBD' => 
+    array (
+      'name' => 'باربیڈین ڈالر',
+      'symbol' => 'BBD',
+    ),
+    'BDT' => 
+    array (
+      'name' => 'بنگلہ دیشی ٹکا',
+      'symbol' => 'BDT',
+    ),
+    'BGN' => 
+    array (
+      'name' => 'بلغارین لیو',
+      'symbol' => 'BGN',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'بحرینی دینار',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'برونڈیئن فرینک',
+      'symbol' => 'BIF',
+    ),
+    'BMD' => 
+    array (
+      'name' => 'برمودا کا ڈالر',
+      'symbol' => 'BMD',
+    ),
+    'BND' => 
+    array (
+      'name' => 'برونئی ڈالر',
+      'symbol' => 'BND',
+    ),
+    'BOB' => 
+    array (
+      'name' => 'بولیوین بولیویانو',
+      'symbol' => 'BOB',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'برازیلی ریئل',
+      'symbol' => 'BRL',
+    ),
+    'BSD' => 
+    array (
+      'name' => 'بہامانی ڈالر',
+      'symbol' => 'BSD',
+    ),
+    'BTN' => 
+    array (
+      'name' => 'بھوٹانی گُلٹرم',
+      'symbol' => 'BTN',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'بوتسوانا کا پولا',
+      'symbol' => 'BWP',
+    ),
+    'BYR' => 
+    array (
+      'name' => 'بیلاروسی روبل',
+      'symbol' => 'BYR',
+    ),
+    'BZD' => 
+    array (
+      'name' => 'بیلائز ڈالر',
+      'symbol' => 'BZD',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'کنیڈین ڈالر',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'کانگولیز فرینک',
+      'symbol' => 'CDF',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'سوئس فرانکس',
+      'symbol' => 'CHF',
+    ),
+    'CLP' => 
+    array (
+      'name' => 'چلّین پیسہ',
+      'symbol' => 'CLP',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'یوآن رینمنبی',
+      'symbol' => 'CNY',
+    ),
+    'COP' => 
+    array (
+      'name' => 'کولمبین پیسہ',
+      'symbol' => 'COP',
+    ),
+    'CRC' => 
+    array (
+      'name' => 'کوسٹا ریکا کا کولن',
+      'symbol' => 'CRC',
+    ),
+    'CUC' => 
+    array (
+      'name' => 'کیوبا کا قابل منتقلی پیسو',
+      'symbol' => 'CUC',
+    ),
+    'CUP' => 
+    array (
+      'name' => 'کیوبا کا پیسو',
+      'symbol' => 'CUP',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'کیپ ورڈی کا اسکیوڈو',
+      'symbol' => 'CVE',
+    ),
+    'CZK' => 
+    array (
+      'name' => 'چیک کرونا',
+      'symbol' => 'CZK',
+    ),
+    'DEM' => 
+    array (
+      'name' => 'ڈچ مارکس',
+      'symbol' => 'DEM',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'جبوتی کا فرینک',
+      'symbol' => 'DJF',
+    ),
+    'DKK' => 
+    array (
+      'name' => 'ڈنمارک کرونر',
+      'symbol' => 'DKK',
+    ),
+    'DOP' => 
+    array (
+      'name' => 'ڈومنیکن پیسو',
+      'symbol' => 'DOP',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'الجیریائی دینار',
+      'symbol' => 'DZD',
+    ),
+    'EEK' => 
+    array (
+      'name' => 'ایسٹونین کرون',
+      'symbol' => 'EEK',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'مصری پائونڈ',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'اریٹیریا کا نافکا',
+      'symbol' => 'ERN',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'ایتھوپیائی بِرّ',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'یورو',
+      'symbol' => 'EUR',
+    ),
+    'FJD' => 
+    array (
+      'name' => 'فجی کا ڈالر',
+      'symbol' => 'FJD',
+    ),
+    'FKP' => 
+    array (
+      'name' => 'فاکلینڈ آئلینڈز پونڈ',
+      'symbol' => 'FKP',
+    ),
+    'FRF' => 
+    array (
+      'name' => 'فرانسیسی فرانک',
+      'symbol' => 'FRF',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'انگلستانی پاونڈ سٹرلنگ',
+      'symbol' => 'GBP',
+    ),
+    'GEL' => 
+    array (
+      'name' => 'جارجیائی لاری',
+      'symbol' => 'GEL',
+    ),
+    'GHS' => 
+    array (
+      'name' => 'گھانا کا سیڈی',
+      'symbol' => 'GHS',
+    ),
+    'GIP' => 
+    array (
+      'name' => 'جبل الطارق پونڈ',
+      'symbol' => 'GIP',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'گامبیا کا ڈلاسی',
+      'symbol' => 'GMD',
+    ),
+    'GNF' => 
+    array (
+      'name' => 'گنی کا فرینک',
+      'symbol' => 'GNF',
+    ),
+    'GTQ' => 
+    array (
+      'name' => 'گواٹے مالا کا کوئٹزل',
+      'symbol' => 'GTQ',
+    ),
+    'GYD' => 
+    array (
+      'name' => 'گویانیز ڈالر',
+      'symbol' => 'GYD',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'ھانگ کانگ ڈالر',
+      'symbol' => 'HKD',
+    ),
+    'HNL' => 
+    array (
+      'name' => 'ہونڈوران لیمپیرا',
+      'symbol' => 'HNL',
+    ),
+    'HRK' => 
+    array (
+      'name' => 'کروشین کونا',
+      'symbol' => 'HRK',
+    ),
+    'HTG' => 
+    array (
+      'name' => 'ہیتی کا گؤرڈی',
+      'symbol' => 'HTG',
+    ),
+    'HUF' => 
+    array (
+      'name' => 'ہنگرین فورنٹ',
+      'symbol' => 'HUF',
+    ),
+    'IDR' => 
+    array (
+      'name' => 'انڈونیشین روپیہ',
+      'symbol' => 'IDR',
+    ),
+    'ILS' => 
+    array (
+      'name' => 'اسرائیلی شیکل',
+      'symbol' => 'ILS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'انڈین روپیہ',
+      'symbol' => 'INR',
+    ),
+    'IQD' => 
+    array (
+      'name' => 'عراقی دینار',
+      'symbol' => 'IQD',
+    ),
+    'IRR' => 
+    array (
+      'name' => 'ایرانی ریال',
+      'symbol' => 'IRR',
+    ),
+    'ISK' => 
+    array (
+      'name' => 'آئس لینڈ کا کرونا',
+      'symbol' => 'ISK',
+    ),
+    'JMD' => 
+    array (
+      'name' => 'جمائیکن ڈالر',
+      'symbol' => 'JMD',
+    ),
+    'JOD' => 
+    array (
+      'name' => 'اردنی دینار',
+      'symbol' => 'JOD',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'جاپانی ین',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'کینیائی شلنگ',
+      'symbol' => 'KES',
+    ),
+    'KGS' => 
+    array (
+      'name' => 'کرغستانی سوم',
+      'symbol' => 'KGS',
+    ),
+    'KHR' => 
+    array (
+      'name' => 'کمبوڈیائی ریئل',
+      'symbol' => 'KHR',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'کوموریئن فرینک',
+      'symbol' => 'KMF',
+    ),
+    'KPW' => 
+    array (
+      'name' => 'شمالی کوریائی وون',
+      'symbol' => 'KPW',
+    ),
+    'KRW' => 
+    array (
+      'name' => 'جنوبی کوریائی وون',
+      'symbol' => 'KRW',
+    ),
+    'KWD' => 
+    array (
+      'name' => 'کویتی دینار',
+      'symbol' => 'KWD',
+    ),
+    'KYD' => 
+    array (
+      'name' => 'کیمین آئلینڈز ڈالر',
+      'symbol' => 'KYD',
+    ),
+    'KZT' => 
+    array (
+      'name' => 'قزاخستانی ٹینگ',
+      'symbol' => 'KZT',
+    ),
+    'LAK' => 
+    array (
+      'name' => 'لاؤشیائی کِپ',
+      'symbol' => 'LAK',
+    ),
+    'LBP' => 
+    array (
+      'name' => 'لبانی پونڈ',
+      'symbol' => 'LBP',
+    ),
+    'LKR' => 
+    array (
+      'name' => 'سری لنکائی روپیہ',
+      'symbol' => 'LKR',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'لائبریائی ڈالر',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'لیسوتھو لوٹی',
+      'symbol' => 'LSL',
+    ),
+    'LTL' => 
+    array (
+      'name' => 'لیتھوانی لیٹاس',
+      'symbol' => 'LTL',
+    ),
+    'LVL' => 
+    array (
+      'name' => 'لاتویائی لیٹس',
+      'symbol' => 'LVL',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'لیبیائی دینار',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'مراکشی درہم',
+      'symbol' => 'MAD',
+    ),
+    'MDL' => 
+    array (
+      'name' => 'مالدیپ کا لیو',
+      'symbol' => 'MDL',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'ملاگاسی اریاری',
+      'symbol' => 'MGA',
+    ),
+    'MKD' => 
+    array (
+      'name' => 'مقدونیائی دینار',
+      'symbol' => 'MKD',
+    ),
+    'MMK' => 
+    array (
+      'name' => 'میانما کیاٹ',
+      'symbol' => 'MMK',
+    ),
+    'MNT' => 
+    array (
+      'name' => 'منگولیائی ٹگرِ',
+      'symbol' => 'MNT',
+    ),
+    'MOP' => 
+    array (
+      'name' => 'میکانیز پٹاکا',
+      'symbol' => 'MOP',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'موریطانیائی اوگوئیا',
+      'symbol' => 'MRO',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'ماریشس کا روپیہ',
+      'symbol' => 'MUR',
+    ),
+    'MVR' => 
+    array (
+      'name' => 'مالدیپ کا روفیہ',
+      'symbol' => 'MVR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'ملاوی کواچا',
+      'symbol' => 'MWK',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'میکسیکی پیسہ',
+      'symbol' => 'MXN',
+    ),
+    'MYR' => 
+    array (
+      'name' => 'ملیشیائی رنگِٹ',
+      'symbol' => 'MYR',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'نامیبیائی ڈالر',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'نائیجیریائی نائرا',
+      'symbol' => 'NGN',
+    ),
+    'NIO' => 
+    array (
+      'name' => 'نکارا گوا کا کورڈوبا',
+      'symbol' => 'NIO',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'ناروے کرونر',
+      'symbol' => 'NOK',
+    ),
+    'NPR' => 
+    array (
+      'name' => 'نیپالی روپیہ',
+      'symbol' => 'NPR',
+    ),
+    'NZD' => 
+    array (
+      'name' => 'نیوزی لینڈ ڈالر',
+      'symbol' => 'NZD',
+    ),
+    'OMR' => 
+    array (
+      'name' => 'عمانی ریال',
+      'symbol' => 'OMR',
+    ),
+    'PAB' => 
+    array (
+      'name' => 'پنامہ کا بالبوآ',
+      'symbol' => 'PAB',
+    ),
+    'PEN' => 
+    array (
+      'name' => 'پیروین نیووسول',
+      'symbol' => 'PEN',
+    ),
+    'PGK' => 
+    array (
+      'name' => 'پاپوآ نیو گنی کا کینا',
+      'symbol' => 'PGK',
+    ),
+    'PHP' => 
+    array (
+      'name' => 'فلپائینی پیسہ',
+      'symbol' => 'PHP',
+    ),
+    'PKR' => 
+    array (
+      'name' => 'پاکستانی روپیہ',
+      'symbol' => 'PKRs',
+    ),
+    'PLN' => 
+    array (
+      'name' => 'پولش نیو زلوٹی',
+      'symbol' => 'PLN',
+    ),
+    'PYG' => 
+    array (
+      'name' => 'پیراگوئے کا گوآرنی',
+      'symbol' => 'PYG',
+    ),
+    'QAR' => 
+    array (
+      'name' => 'قطری ریال',
+      'symbol' => 'QAR',
+    ),
+    'RON' => 
+    array (
+      'name' => 'نیا رومانیائی لیو',
+      'symbol' => 'RON',
+    ),
+    'RSD' => 
+    array (
+      'name' => 'سربین دینار',
+      'symbol' => 'RSD',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'روسی روبل',
+      'symbol' => 'RUB',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'روانڈا کا فرینک',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'سعودی ریال',
+      'symbol' => 'SAR',
+    ),
+    'SBD' => 
+    array (
+      'name' => 'سولومن آئلینڈز ڈالر',
+      'symbol' => 'SBD',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'سشلی کا روپیہ',
+      'symbol' => 'SCR',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'سوڈانی پونڈ',
+      'symbol' => 'SDG',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'سویڈن کرونر',
+      'symbol' => 'SEK',
+    ),
+    'SGD' => 
+    array (
+      'name' => 'سنگا پور ڈالر',
+      'symbol' => 'SGD',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'سینٹ ہیلینا پونڈ',
+      'symbol' => 'SHP',
+    ),
+    'SIT' => 
+    array (
+      'name' => 'سلوانین ٹولر',
+      'symbol' => 'SIT',
+    ),
+    'SKK' => 
+    array (
+      'name' => 'سلووک کرونا',
+      'symbol' => 'SKK',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'سیئرا لیون لیون',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'صومالی شلنگ',
+      'symbol' => 'SOS',
+    ),
+    'SRD' => 
+    array (
+      'name' => 'سورینامی ڈالر',
+      'symbol' => 'SRD',
+    ),
+    'STD' => 
+    array (
+      'name' => 'ساؤ ٹوم اور پرنسپے ڈوبرا',
+      'symbol' => 'STD',
+    ),
+    'SYP' => 
+    array (
+      'name' => 'شامی پونڈ',
+      'symbol' => 'SYP',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'سوازی لیلانجینی',
+      'symbol' => 'SZL',
+    ),
+    'THB' => 
+    array (
+      'name' => 'تھائی باہت',
+      'symbol' => 'THB',
+    ),
+    'TJS' => 
+    array (
+      'name' => 'تاجکستانی سومونی',
+      'symbol' => 'TJS',
+    ),
+    'TMT' => 
+    array (
+      'name' => 'ترکمانستانی منات',
+      'symbol' => 'TMT',
+    ),
+    'TND' => 
+    array (
+      'name' => 'تیونیسیائی دینار',
+      'symbol' => 'TND',
+    ),
+    'TOP' => 
+    array (
+      'name' => 'ٹونگن پانگا',
+      'symbol' => 'TOP',
+    ),
+    'TRY' => 
+    array (
+      'name' => 'ترکی لیرا',
+      'symbol' => 'TRY',
+    ),
+    'TTD' => 
+    array (
+      'name' => 'ترینیداد اور ٹوباگو کا ڈالر',
+      'symbol' => 'TTD',
+    ),
+    'TWD' => 
+    array (
+      'name' => 'نیو تائیوان ڈالر',
+      'symbol' => 'TWD',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'تنزانیائی شلنگ',
+      'symbol' => 'TZS',
+    ),
+    'UAH' => 
+    array (
+      'name' => 'یوکرینیائی ہریونیا',
+      'symbol' => 'UAH',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'یوگانڈا شلنگ',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'امریکی ڈالر',
+      'symbol' => '$',
+    ),
+    'UYU' => 
+    array (
+      'name' => 'یوروگویان پیسو',
+      'symbol' => 'UYU',
+    ),
+    'UZS' => 
+    array (
+      'name' => 'ازبکستان سوم',
+      'symbol' => 'UZS',
+    ),
+    'VEB' => 
+    array (
+      'name' => 'وینزویلا بولیور',
+      'symbol' => 'VEB',
+    ),
+    'VEF' => 
+    array (
+      'name' => 'وینزوئیلا کا بولیور',
+      'symbol' => 'VEF',
+    ),
+    'VND' => 
+    array (
+      'name' => 'ویتنامی ڈانگ',
+      'symbol' => 'VND',
+    ),
+    'VUV' => 
+    array (
+      'name' => 'وینوواتو واتو',
+      'symbol' => 'VUV',
+    ),
+    'WST' => 
+    array (
+      'name' => 'ساموآ کا ٹالا',
+      'symbol' => 'WST',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'CFA فرینک BEAC',
+      'symbol' => 'XAF',
+    ),
+    'XCD' => 
+    array (
+      'name' => 'مشرقی کریبیا کا ڈالر',
+      'symbol' => 'XCD',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'CFA فرینک BCEAO',
+      'symbol' => 'XOF',
+    ),
+    'XPF' => 
+    array (
+      'name' => 'CFP فرینک',
+      'symbol' => 'XPF',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'نامعلوم کرنسی',
+      'symbol' => 'XXX',
+    ),
+    'YER' => 
+    array (
+      'name' => 'یمنی ریال',
+      'symbol' => 'YER',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'جنوبی افریقی رانڈ',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'زامبیائی کواچا',
+      'symbol' => 'ZMK',
+    ),
+  ),
+);

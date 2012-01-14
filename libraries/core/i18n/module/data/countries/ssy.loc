@@ -1,0 +1,6 @@
+<?php
+return array (
+  'ER' => 'Eretria',
+  'ET' => 'Otobbia',
+  'DJ' => 'Yabuuti',
+);

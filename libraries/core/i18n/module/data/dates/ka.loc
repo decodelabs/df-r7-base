@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'კვი',
+        'mon' => 'ორშ',
+        'tue' => 'სამ',
+        'wed' => 'ოთხ',
+        'thu' => 'ხუთ',
+        'fri' => 'პარ',
+        'sat' => 'შაბ',
+      ),
+      'full' => 
+      array (
+        'sun' => 'კვირა',
+        'mon' => 'ორშაბათი',
+        'tue' => 'სამშაბათი',
+        'wed' => 'ოთხშაბათი',
+        'thu' => 'ხუთშაბათი',
+        'fri' => 'პარასკევი',
+        'sat' => 'შაბათი',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'იან',
+        2 => 'თებ',
+        3 => 'მარ',
+        4 => 'აპრ',
+        5 => 'მაი',
+        6 => 'ივნ',
+        7 => 'ივლ',
+        8 => 'აგვ',
+        9 => 'სექ',
+        10 => 'ოქტ',
+        11 => 'ნოე',
+        12 => 'დეკ',
+      ),
+      'full' => 
+      array (
+        1 => 'იანვარი',
+        2 => 'თებერვალი',
+        3 => 'მარტი',
+        4 => 'აპრილი',
+        5 => 'მაისი',
+        6 => 'ივნისი',
+        7 => 'ივლის',
+        8 => 'აგვისტო',
+        9 => 'სექტემბერი',
+        10 => 'ოქტომბერი',
+        11 => 'ნოემბერი',
+        12 => 'დეკემბერი',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, y MMMM dd',
+      'long' => 'y MMMM d',
+      'medium' => 'y MMM d',
+      'short' => 'yy/MM/dd',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'HH:mm:ss zzzz',
+      'long' => 'HH:mm:ss z',
+      'medium' => 'HH:mm:ss',
+      'short' => 'HH:mm',
+    ),
+  ),
+);

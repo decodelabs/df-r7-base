@@ -1,0 +1,6 @@
+<?php
+return array (
+  '030' => 'Aasiyada Bari',
+  '014' => 'Afrikada Bari',
+  151 => 'Yurubta Bari',
+);

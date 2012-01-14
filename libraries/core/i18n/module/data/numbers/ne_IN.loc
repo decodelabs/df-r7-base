@@ -1,0 +1,17 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'INR' => 
+    array (
+      'name' => 'भारतीय रूपिँया',
+      'symbol' => 'INR',
+    ),
+  ),
+);

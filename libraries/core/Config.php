@@ -40,7 +40,7 @@ abstract class Config implements IConfig, core\IDumpable {
         
         if($handlerClass::STORE_IN_MEMORY) {
             if(!$application) {
-                $application = df\Launchpad::$application;
+                $application = df\Launchpad::getActiveApplication();
             }
             
             if(!$config = $application->_getCacheObject(self::REGISTRY_PREFIX.$id)) {

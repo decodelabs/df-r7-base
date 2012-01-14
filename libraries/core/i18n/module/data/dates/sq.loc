@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Die',
+        'mon' => 'Hën',
+        'tue' => 'Mar',
+        'wed' => 'Mër',
+        'thu' => 'Enj',
+        'fri' => 'Pre',
+        'sat' => 'Sht',
+      ),
+      'full' => 
+      array (
+        'sun' => 'e diel',
+        'mon' => 'e hënë',
+        'tue' => 'e martë',
+        'wed' => 'e mërkurë',
+        'thu' => 'e enjte',
+        'fri' => 'e premte',
+        'sat' => 'e shtunë',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Jan',
+        2 => 'Shk',
+        3 => 'Mar',
+        4 => 'Pri',
+        5 => 'Maj',
+        6 => 'Qer',
+        7 => 'Kor',
+        8 => 'Gsh',
+        9 => 'Sht',
+        10 => 'Tet',
+        11 => 'Nën',
+        12 => 'Dhj',
+      ),
+      'full' => 
+      array (
+        1 => 'janar',
+        2 => 'shkurt',
+        3 => 'mars',
+        4 => 'prill',
+        5 => 'maj',
+        6 => 'qershor',
+        7 => 'korrik',
+        8 => 'gusht',
+        9 => 'shtator',
+        10 => 'tetor',
+        11 => 'nëntor',
+        12 => 'dhjetor',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, dd MMMM y',
+      'long' => 'dd MMMM y',
+      'medium' => 'yyyy-MM-dd',
+      'short' => 'yy-MM-dd',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h.mm.ss.a zzzz',
+      'long' => 'h.mm.ss.a z',
+      'medium' => 'h.mm.ss.a',
+      'short' => 'h.mm.a',
+    ),
+  ),
+);

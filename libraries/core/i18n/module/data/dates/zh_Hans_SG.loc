@@ -1,0 +1,74 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'buddhist' => 
+  array (
+    'dateFormat' => 
+    array (
+      'medium' => 'Gy年M月d日',
+      'short' => 'Gd/M/yy',
+    ),
+  ),
+  'chinese' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'y\'x\'G-Ml-dEEEE',
+    ),
+  ),
+  'gregorian' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'full' => 
+      array (
+        1 => '一月',
+        2 => '二月',
+        3 => '三月',
+        4 => '四月',
+        5 => '五月',
+        6 => '六月',
+        7 => '七月',
+        8 => '八月',
+        9 => '九月',
+        10 => '十月',
+        11 => '十一月',
+        12 => '十二月',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'medium' => 'y年M月d日',
+      'short' => 'dd/MM/yy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'zzzzah:mm:ss',
+      'long' => 'ahh:mm:ssz',
+      'short' => 'ahh:mm',
+    ),
+  ),
+  'islamic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'short' => 'Gd/M/yy',
+    ),
+  ),
+  'japanese' => 
+  array (
+    'dateFormat' => 
+    array (
+      'short' => 'Gd/M/yy',
+    ),
+  ),
+  'roc' => 
+  array (
+    'dateFormat' => 
+    array (
+      'medium' => 'Gy年M月d日',
+      'short' => 'Gd/M/yy',
+    ),
+  ),
+);

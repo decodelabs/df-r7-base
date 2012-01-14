@@ -1,0 +1,7 @@
+<?php
+return array (
+  154 => 'Europa do Norte',
+  '015' => 'Norte de África',
+  '009' => 'Oceânia',
+  '035' => 'Sudeste Asiático',
+);

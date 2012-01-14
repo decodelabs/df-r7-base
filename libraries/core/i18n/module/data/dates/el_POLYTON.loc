@@ -1,0 +1,21 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        8 => 'Αὐγ',
+        10 => 'Ὀκτ',
+      ),
+      'full' => 
+      array (
+        8 => 'Αὐγούστου',
+        10 => 'Ὀκτωβρίου',
+      ),
+    ),
+  ),
+);

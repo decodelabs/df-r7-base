@@ -1,0 +1,23 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+    'currency' => '¤#,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'BZD' => 
+    array (
+      'name' => 'BZD',
+      'symbol' => '$',
+    ),
+    'USD' => 
+    array (
+      'name' => 'USD',
+      'symbol' => 'US$',
+    ),
+  ),
+);

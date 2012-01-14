@@ -1,0 +1,64 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'ରବି',
+        'mon' => 'ସୋମ',
+        'tue' => 'ମଙ୍ଗଳ',
+        'wed' => 'ବୁଧ',
+        'thu' => 'ଗୁରୁ',
+        'fri' => 'ଶୁକ୍ର',
+        'sat' => 'ଶନି',
+      ),
+      'full' => 
+      array (
+        'sun' => 'ରବିବାର',
+        'mon' => 'ସୋମବାର',
+        'tue' => 'ମଙ୍ଗଳବାର',
+        'wed' => 'ବୁଧବାର',
+        'thu' => 'ଗୁରୁବାର',
+        'fri' => 'ଶୁକ୍ରବାର',
+        'sat' => 'ଶନିବାର',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'full' => 
+      array (
+        1 => 'ଜାନୁଆରୀ',
+        2 => 'ଫେବ୍ରୁୟାରୀ',
+        3 => 'ମାର୍ଚ୍ଚ',
+        4 => 'ଅପ୍ରେଲ',
+        5 => 'ମେ',
+        6 => 'ଜୁନ',
+        7 => 'ଜୁଲାଇ',
+        8 => 'ଅଗଷ୍ଟ',
+        9 => 'ସେପ୍ଟେମ୍ବର',
+        10 => 'ଅକ୍ଟୋବର',
+        11 => 'ନଭେମ୍ବର',
+        12 => 'ଡିସେମ୍ବର',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'd-M-yy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+);

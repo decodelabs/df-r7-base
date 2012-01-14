@@ -1,0 +1,17 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'ETB' => 
+    array (
+      'name' => 'ETB',
+      'symbol' => 'Br',
+    ),
+  ),
+);

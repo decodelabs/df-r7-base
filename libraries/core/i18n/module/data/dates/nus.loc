@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Cäŋ',
+        'mon' => 'Jiec',
+        'tue' => 'Rɛw',
+        'wed' => 'Diɔ̱k',
+        'thu' => 'Ŋuaan',
+        'fri' => 'Dhieec',
+        'sat' => 'Bäkɛl',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Cäŋ kuɔth',
+        'mon' => 'Jiec la̱t',
+        'tue' => 'Rɛw lätni',
+        'wed' => 'Diɔ̱k lätni',
+        'thu' => 'Ŋuaan lätni',
+        'fri' => 'Dhieec lätni',
+        'sat' => 'Bäkɛl lätni',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Tiop',
+        2 => 'Pɛt',
+        3 => 'Duɔ̱ɔ̱',
+        4 => 'Dua',
+        5 => 'Duä',
+        6 => 'Kor',
+        7 => 'Pay',
+        8 => 'Thoo',
+        9 => 'Tɛɛ',
+        10 => 'Laa',
+        11 => 'Kur',
+        12 => 'Tiop',
+      ),
+      'full' => 
+      array (
+        1 => 'Tiop thar pɛt',
+        2 => 'Pɛt',
+        3 => 'Duɔ̱ɔ̱ŋ',
+        4 => 'Guak',
+        5 => 'Duät',
+        6 => 'Kornyoot',
+        7 => 'Pay yie̱tni',
+        8 => 'Tho̱o̱r',
+        9 => 'Tɛɛr',
+        10 => 'Laath',
+        11 => 'Kur',
+        12 => 'Tio̱p in di̱i̱t',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'd/MM/yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'zzzz h:mm:ss a',
+      'long' => 'z h:mm:ss a',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+);

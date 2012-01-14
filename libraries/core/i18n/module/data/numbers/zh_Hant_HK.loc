@@ -1,0 +1,83 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+    'currency' => '¤#,##0.00;(¤#,##0.00)',
+  ),
+  'currencies' => 
+  array (
+    'AUD' => 
+    array (
+      'name' => '澳元',
+      'symbol' => 'AUD',
+    ),
+    'BAD' => 
+    array (
+      'name' => '波斯尼亞-黑塞哥維那第納爾',
+      'symbol' => 'BAD',
+    ),
+    'BAM' => 
+    array (
+      'name' => '波斯尼亞-黑塞哥維那可轉換馬克',
+      'symbol' => 'BAM',
+    ),
+    'CAD' => 
+    array (
+      'name' => '加元',
+      'symbol' => 'CAD',
+    ),
+    'HKD' => 
+    array (
+      'name' => '港元',
+      'symbol' => '$',
+    ),
+    'ITL' => 
+    array (
+      'name' => '意大利里拉',
+      'symbol' => 'ITL',
+    ),
+    'NZD' => 
+    array (
+      'name' => '紐西蘭元',
+      'symbol' => 'NZD',
+    ),
+    'RSD' => 
+    array (
+      'name' => '塞爾維亞第納爾',
+      'symbol' => 'RSD',
+    ),
+    'SGD' => 
+    array (
+      'name' => '新加坡元',
+      'symbol' => 'SGD',
+    ),
+    'TWD' => 
+    array (
+      'name' => '新台幣',
+      'symbol' => 'TWD',
+    ),
+    'USD' => 
+    array (
+      'name' => '美元',
+      'symbol' => 'US$',
+    ),
+    'XAF' => 
+    array (
+      'name' => '中非法郎',
+      'symbol' => 'XAF',
+    ),
+    'XOF' => 
+    array (
+      'name' => '多哥非洲共同體法郎',
+      'symbol' => 'XOF',
+    ),
+    'XPF' => 
+    array (
+      'name' => '太平洋法郎',
+      'symbol' => 'XPF',
+    ),
+  ),
+);

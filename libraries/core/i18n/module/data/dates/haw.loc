@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'LP',
+        'mon' => 'P1',
+        'tue' => 'P2',
+        'wed' => 'P3',
+        'thu' => 'P4',
+        'fri' => 'P5',
+        'sat' => 'P6',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Lāpule',
+        'mon' => 'Poʻakahi',
+        'tue' => 'Poʻalua',
+        'wed' => 'Poʻakolu',
+        'thu' => 'Poʻahā',
+        'fri' => 'Poʻalima',
+        'sat' => 'Poʻaono',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Ian.',
+        2 => 'Pep.',
+        3 => 'Mal.',
+        4 => 'ʻAp.',
+        5 => 'Mei',
+        6 => 'Iun.',
+        7 => 'Iul.',
+        8 => 'ʻAu.',
+        9 => 'Kep.',
+        10 => 'ʻOk.',
+        11 => 'Now.',
+        12 => 'Kek.',
+      ),
+      'full' => 
+      array (
+        1 => 'Ianuali',
+        2 => 'Pepeluali',
+        3 => 'Malaki',
+        4 => 'ʻApelila',
+        5 => 'Mei',
+        6 => 'Iune',
+        7 => 'Iulai',
+        8 => 'ʻAukake',
+        9 => 'Kepakemapa',
+        10 => 'ʻOkakopa',
+        11 => 'Nowemapa',
+        12 => 'Kekemapa',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'd/M/yy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+);

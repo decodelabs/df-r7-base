@@ -1,0 +1,138 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'יום א׳',
+        'mon' => 'יום ב׳',
+        'tue' => 'יום ג׳',
+        'wed' => 'יום ד׳',
+        'thu' => 'יום ה׳',
+        'fri' => 'יום ו׳',
+        'sat' => 'שבת',
+      ),
+      'full' => 
+      array (
+        'sun' => 'יום ראשון',
+        'mon' => 'יום שני',
+        'tue' => 'יום שלישי',
+        'wed' => 'יום רביעי',
+        'thu' => 'יום חמישי',
+        'fri' => 'יום שישי',
+        'sat' => 'יום שבת',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'ינו',
+        2 => 'פבר',
+        3 => 'מרץ',
+        4 => 'אפר',
+        5 => 'מאי',
+        6 => 'יונ',
+        7 => 'יול',
+        8 => 'אוג',
+        9 => 'ספט',
+        10 => 'אוק',
+        11 => 'נוב',
+        12 => 'דצמ',
+      ),
+      'full' => 
+      array (
+        1 => 'ינואר',
+        2 => 'פברואר',
+        3 => 'מרץ',
+        4 => 'אפריל',
+        5 => 'מאי',
+        6 => 'יוני',
+        7 => 'יולי',
+        8 => 'אוגוסט',
+        9 => 'ספטמבר',
+        10 => 'אוקטובר',
+        11 => 'נובמבר',
+        12 => 'דצמבר',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d בMMMM y',
+      'long' => 'd בMMMM y',
+      'medium' => 'd בMMM yyyy',
+      'short' => 'dd/MM/yy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'HH:mm:ss zzzz',
+      'long' => 'HH:mm:ss z',
+      'medium' => 'HH:mm:ss',
+      'short' => 'HH:mm',
+    ),
+  ),
+  'hebrew' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'full' => 
+      array (
+        1 => 'תשרי',
+        2 => 'חשון',
+        3 => 'כסלו',
+        4 => 'טבת',
+        5 => 'שבט',
+        6 => 'אדר א׳',
+        7 => 'אדר ב׳',
+        8 => 'ניסן',
+        9 => 'אייר',
+        10 => 'סיון',
+        11 => 'תמוז',
+        12 => 'אב',
+        13 => 'אלול',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d בMMMM y',
+      'long' => 'd בMMMM y',
+      'medium' => 'dd/MM/yyyy',
+      'short' => 'dd/MM/yy',
+    ),
+  ),
+  'islamic' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'full' => 
+      array (
+        1 => 'מוחרם',
+        2 => 'ספר',
+        3 => 'רביע אל-אוואל',
+        4 => 'רביע אל-תני',
+        5 => 'ג׳ומדה אל-אוואל',
+        6 => 'ג׳ומדה אל-תני',
+        7 => 'רג׳אב',
+        8 => 'שעבאן',
+        9 => 'ראמדן',
+        10 => 'שוואל',
+        11 => 'זו אל-QI\'DAH',
+        12 => 'זו אל-חיג׳ה',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'medium' => 'd בMMM yyyy',
+    ),
+  ),
+  'japanese' => 
+  array (
+  ),
+);

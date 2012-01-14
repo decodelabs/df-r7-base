@@ -1,0 +1,25 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'list' => ';',
+    'percentSign' => '%',
+    'infinity' => '∞',
+    'nan' => 'NaN',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##,##0.###',
+    'scientific' => '#E+00',
+    'percent' => '#,##,##0 %',
+    'currency' => '¤#,##,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'BTN' => 
+    array (
+      'name' => 'དངུལ་ཀྲམ་',
+      'symbol' => 'Nu.',
+    ),
+  ),
+);

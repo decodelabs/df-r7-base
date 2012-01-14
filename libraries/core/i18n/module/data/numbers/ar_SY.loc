@@ -1,0 +1,14 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#0.###;#0.###-',
+    'currency' => '¤#0.00',
+  ),
+  'currencies' => 
+  array (
+  ),
+);

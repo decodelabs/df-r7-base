@@ -1,0 +1,23 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+    'currency' => '¤#,##0.00;(¤#,##0.00)',
+  ),
+  'currencies' => 
+  array (
+    'CVE' => 
+    array (
+      'name' => 'Escudo Caboverdiano',
+      'symbol' => 'CVE',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'Naịra',
+      'symbol' => '₦',
+    ),
+  ),
+);

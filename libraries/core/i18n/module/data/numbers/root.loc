@@ -1,0 +1,131 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => '٫',
+    'group' => '٬',
+    'list' => '؛',
+    'percentSign' => '٪',
+    'plusSign' => '+',
+    'minusSign' => '-',
+    'exponential' => 'اس',
+    'perMille' => '؉',
+    'infinity' => '∞',
+    'nan' => 'NaN',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'scientific' => '#E0',
+    'percent' => '#,##0%',
+    'currency' => '¤ #,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'AUD' => 
+    array (
+      'name' => 'AUD',
+      'symbol' => 'AU$',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'BRL',
+      'symbol' => 'BR$',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'CAD',
+      'symbol' => 'CA$',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'CNY',
+      'symbol' => 'CN¥',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'EUR',
+      'symbol' => '€',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'GBP',
+      'symbol' => '£',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'HKD',
+      'symbol' => 'HK$',
+    ),
+    'ILS' => 
+    array (
+      'name' => 'ILS',
+      'symbol' => '₪',
+    ),
+    'INR' => 
+    array (
+      'name' => 'INR',
+      'symbol' => '₹',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'JPY',
+      'symbol' => 'JP¥',
+    ),
+    'KRW' => 
+    array (
+      'name' => 'KRW',
+      'symbol' => '₩',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'MXN',
+      'symbol' => 'MX$',
+    ),
+    'NZD' => 
+    array (
+      'name' => 'NZD',
+      'symbol' => 'NZ$',
+    ),
+    'THB' => 
+    array (
+      'name' => 'THB',
+      'symbol' => '฿',
+    ),
+    'TWD' => 
+    array (
+      'name' => 'TWD',
+      'symbol' => 'NT$',
+    ),
+    'USD' => 
+    array (
+      'name' => 'USD',
+      'symbol' => 'US$',
+    ),
+    'VND' => 
+    array (
+      'name' => 'VND',
+      'symbol' => '₫',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'XAF',
+      'symbol' => 'FCFA',
+    ),
+    'XCD' => 
+    array (
+      'name' => 'XCD',
+      'symbol' => 'EC$',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'XOF',
+      'symbol' => 'CFA',
+    ),
+    'XPF' => 
+    array (
+      'name' => 'XPF',
+      'symbol' => 'CFPF',
+    ),
+  ),
+);

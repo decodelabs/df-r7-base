@@ -1,0 +1,74 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => ',',
+    'group' => '.',
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'AUD' => 
+    array (
+      'name' => 'Dollares australian',
+      'symbol' => 'AUD',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'Dollares canadian',
+      'symbol' => 'CAD',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'Francos suisse',
+      'symbol' => 'CHF',
+    ),
+    'DEM' => 
+    array (
+      'name' => 'Marcos german',
+      'symbol' => 'DEM',
+    ),
+    'DKK' => 
+    array (
+      'name' => 'Coronas danese',
+      'symbol' => 'DKK',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'Euros',
+      'symbol' => 'EUR',
+    ),
+    'FRF' => 
+    array (
+      'name' => 'francos francese',
+      'symbol' => 'FRF',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'Libras sterling britannic',
+      'symbol' => 'GBP',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'Yen japonese',
+      'symbol' => 'JPY',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'Coronas norvegian',
+      'symbol' => 'NOK',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'Coronas svedese',
+      'symbol' => 'SEK',
+    ),
+    'USD' => 
+    array (
+      'name' => 'Dollares statounitese',
+      'symbol' => 'USD',
+    ),
+  ),
+);

@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'dum',
+        'mon' => 'sig',
+        'tue' => 'ter',
+        'wed' => 'kua',
+        'thu' => 'kin',
+        'fri' => 'ses',
+        'sat' => 'sab',
+      ),
+      'full' => 
+      array (
+        'sun' => 'dumingu',
+        'mon' => 'sigunda-fera',
+        'tue' => 'tersa-fera',
+        'wed' => 'kuarta-fera',
+        'thu' => 'kinta-fera',
+        'fri' => 'sesta-fera',
+        'sat' => 'sabadu',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Jan',
+        2 => 'Fev',
+        3 => 'Mar',
+        4 => 'Abr',
+        5 => 'Mai',
+        6 => 'Jun',
+        7 => 'Jul',
+        8 => 'Ago',
+        9 => 'Set',
+        10 => 'Otu',
+        11 => 'Nuv',
+        12 => 'Diz',
+      ),
+      'full' => 
+      array (
+        1 => 'Janeru',
+        2 => 'Fevereru',
+        3 => 'Marsu',
+        4 => 'Abril',
+        5 => 'Maiu',
+        6 => 'Junhu',
+        7 => 'Julhu',
+        8 => 'Agostu',
+        9 => 'Setenbru',
+        10 => 'Otubru',
+        11 => 'Nuvenbru',
+        12 => 'Dizenbru',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d \'di\' MMMM \'di\' y',
+      'long' => 'd \'di\' MMMM \'di\' y',
+      'medium' => 'd \'di\' MMM \'di\' y',
+      'short' => 'd/M/yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'HH:mm:ss zzzz',
+      'long' => 'HH:mm:ss z',
+      'medium' => 'HH:mm:ss',
+      'short' => 'HH:mm',
+    ),
+  ),
+);

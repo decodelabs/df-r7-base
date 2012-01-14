@@ -1,0 +1,1067 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => '٫',
+    'group' => '٬',
+    'list' => '؛',
+    'percentSign' => '٪',
+    'exponential' => '×۱۰^',
+    'perMille' => '؉',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'scientific' => '#E0',
+    'percent' => '#,##0%',
+    'currency' => '#,##0.00 ¤;−#,##0.00 ¤',
+  ),
+  'currencies' => 
+  array (
+    'ADP' => 
+    array (
+      'name' => 'پزتای آندورا',
+      'symbol' => 'ADP',
+    ),
+    'AED' => 
+    array (
+      'name' => 'درهم امارات متحدهٔ عربی',
+      'symbol' => 'AED',
+    ),
+    'AFA' => 
+    array (
+      'name' => 'افغانی افغانستان (۱۹۲۷ تا ۲۰۰۲)',
+      'symbol' => 'AFA',
+    ),
+    'AFN' => 
+    array (
+      'name' => 'افغانی افغانستان',
+      'symbol' => 'AFN',
+    ),
+    'ALL' => 
+    array (
+      'name' => 'لک آلبانی',
+      'symbol' => 'ALL',
+    ),
+    'AMD' => 
+    array (
+      'name' => 'درم ارمنستان',
+      'symbol' => 'AMD',
+    ),
+    'ANG' => 
+    array (
+      'name' => 'گیلدر آنتیل هلند',
+      'symbol' => 'ANG',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'کوانزای آنگولا',
+      'symbol' => 'AOA',
+    ),
+    'ARP' => 
+    array (
+      'name' => 'پزوی آرژانتین (۱۹۸۳ تا ۱۹۸۵)‏',
+      'symbol' => 'ARP',
+    ),
+    'ARS' => 
+    array (
+      'name' => 'پزوی آرژانتین',
+      'symbol' => 'ARS',
+    ),
+    'ATS' => 
+    array (
+      'name' => 'شیلینگ اتریش',
+      'symbol' => 'ATS',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'دلار استرالیا',
+      'symbol' => 'AUD',
+    ),
+    'AWG' => 
+    array (
+      'name' => 'فلورین آروبا',
+      'symbol' => 'AWG',
+    ),
+    'AZM' => 
+    array (
+      'name' => 'منات جمهوری آذربایجان (۱۹۹۳ تا ۲۰۰۶)',
+      'symbol' => 'AZM',
+    ),
+    'AZN' => 
+    array (
+      'name' => 'منات جمهوری آذربایجان',
+      'symbol' => 'AZN',
+    ),
+    'BAD' => 
+    array (
+      'name' => 'دینار بوسنی و هرزگوین',
+      'symbol' => 'BAD',
+    ),
+    'BAM' => 
+    array (
+      'name' => 'مارک تبدیل‌پذیر بوسنی و هرزگوین',
+      'symbol' => 'BAM',
+    ),
+    'BBD' => 
+    array (
+      'name' => 'دلار باربادوس',
+      'symbol' => 'BBD',
+    ),
+    'BDT' => 
+    array (
+      'name' => 'تاکای بنگلادش',
+      'symbol' => 'BDT',
+    ),
+    'BEF' => 
+    array (
+      'name' => 'فرانک بلژیک',
+      'symbol' => 'BEF',
+    ),
+    'BEL' => 
+    array (
+      'name' => 'فرانک بلژیک (مالی)',
+      'symbol' => 'BEL',
+    ),
+    'BGN' => 
+    array (
+      'name' => 'لف بلغارستان',
+      'symbol' => 'BGN',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'دینار بحرین',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'فرانک بوروندی',
+      'symbol' => 'BIF',
+    ),
+    'BMD' => 
+    array (
+      'name' => 'دلار برمودا',
+      'symbol' => 'BMD',
+    ),
+    'BND' => 
+    array (
+      'name' => 'دلار برونئی',
+      'symbol' => 'BND',
+    ),
+    'BOB' => 
+    array (
+      'name' => 'بولیویانوی بولیوی',
+      'symbol' => 'BOB',
+    ),
+    'BOP' => 
+    array (
+      'name' => 'پزوی بولیوی',
+      'symbol' => 'BOP',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'رئال برزیل',
+      'symbol' => 'BRL',
+    ),
+    'BSD' => 
+    array (
+      'name' => 'دلار باهاما',
+      'symbol' => 'BSD',
+    ),
+    'BTN' => 
+    array (
+      'name' => 'انگولتروم بوتان',
+      'symbol' => 'BTN',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'پولای بوتسوانا',
+      'symbol' => 'BWP',
+    ),
+    'BYB' => 
+    array (
+      'name' => 'روبل جدید بیلوروسی (۱۹۹۴ تا ۱۹۹۹)',
+      'symbol' => 'BYB',
+    ),
+    'BYR' => 
+    array (
+      'name' => 'روبل بیلوروسی',
+      'symbol' => 'BYR',
+    ),
+    'BZD' => 
+    array (
+      'name' => 'دلار بلیز',
+      'symbol' => 'BZD',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'دلار کانادا',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'فرانک کنگو',
+      'symbol' => 'CDF',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'فرانک سوئیس',
+      'symbol' => 'CHF',
+    ),
+    'CLP' => 
+    array (
+      'name' => 'پزوی شیلی',
+      'symbol' => 'CLP',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'یوآن چین',
+      'symbol' => 'CNY',
+    ),
+    'COP' => 
+    array (
+      'name' => 'پزوی کلمبیا',
+      'symbol' => 'COP',
+    ),
+    'CRC' => 
+    array (
+      'name' => 'کولون کاستاریکا',
+      'symbol' => 'CRC',
+    ),
+    'CSD' => 
+    array (
+      'name' => 'دینار قدیم صربستان',
+      'symbol' => 'CSD',
+    ),
+    'CUC' => 
+    array (
+      'name' => 'پزوی تبدیل‌پذیر کوبا',
+      'symbol' => 'CUC',
+    ),
+    'CUP' => 
+    array (
+      'name' => 'پزوی کوبا',
+      'symbol' => 'CUP',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'اسکودوی کیپ‌ورد',
+      'symbol' => 'CVE',
+    ),
+    'CYP' => 
+    array (
+      'name' => 'پوند قبرس',
+      'symbol' => 'CYP',
+    ),
+    'CZK' => 
+    array (
+      'name' => 'کورونای جمهوری چک',
+      'symbol' => 'CZK',
+    ),
+    'DDM' => 
+    array (
+      'name' => 'مارک آلمان شرقی',
+      'symbol' => 'DDM',
+    ),
+    'DEM' => 
+    array (
+      'name' => 'مارک آلمان',
+      'symbol' => 'DEM',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'فرانک جیبوتی',
+      'symbol' => 'DJF',
+    ),
+    'DKK' => 
+    array (
+      'name' => 'کرون دانمارک',
+      'symbol' => 'DKK',
+    ),
+    'DOP' => 
+    array (
+      'name' => 'پزوی جمهوری دومینیکن',
+      'symbol' => 'DOP',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'دینار الجزایر',
+      'symbol' => 'DZD',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'لیرهٔ مصر',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'ناکفای اریتره',
+      'symbol' => 'ERN',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'بیر اتیوپی',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'یورو',
+      'symbol' => 'EUR',
+    ),
+    'FJD' => 
+    array (
+      'name' => 'دلار فیجی',
+      'symbol' => 'FJD',
+    ),
+    'FKP' => 
+    array (
+      'name' => 'پوند جزایر فالکلند',
+      'symbol' => 'FKP',
+    ),
+    'FRF' => 
+    array (
+      'name' => 'فرانک فرانسه',
+      'symbol' => 'FRF',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'پوند بریتانیا',
+      'symbol' => 'GBP',
+    ),
+    'GEL' => 
+    array (
+      'name' => 'لاری گرجستان',
+      'symbol' => 'GEL',
+    ),
+    'GHS' => 
+    array (
+      'name' => 'سدی غنا',
+      'symbol' => 'GHS',
+    ),
+    'GIP' => 
+    array (
+      'name' => 'پوند جبل‌الطارق',
+      'symbol' => 'GIP',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'دالاسی گامبیا',
+      'symbol' => 'GMD',
+    ),
+    'GNF' => 
+    array (
+      'name' => 'فرانک گینه',
+      'symbol' => 'GNF',
+    ),
+    'GRD' => 
+    array (
+      'name' => 'دراخمای یونان',
+      'symbol' => 'GRD',
+    ),
+    'GTQ' => 
+    array (
+      'name' => 'کتزال گواتمالا',
+      'symbol' => 'GTQ',
+    ),
+    'GWP' => 
+    array (
+      'name' => 'پزوی گینهٔ بیسائو',
+      'symbol' => 'GWP',
+    ),
+    'GYD' => 
+    array (
+      'name' => 'دلار گویان',
+      'symbol' => 'GYD',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'دلار هنگ‌کنگ',
+      'symbol' => 'HKD',
+    ),
+    'HNL' => 
+    array (
+      'name' => 'لمپیرای هندوراس',
+      'symbol' => 'HNL',
+    ),
+    'HRD' => 
+    array (
+      'name' => 'دینار کرواسی',
+      'symbol' => 'HRD',
+    ),
+    'HRK' => 
+    array (
+      'name' => 'کونای کرواسی',
+      'symbol' => 'HRK',
+    ),
+    'HTG' => 
+    array (
+      'name' => 'گورد هائیتی',
+      'symbol' => 'HTG',
+    ),
+    'HUF' => 
+    array (
+      'name' => 'فورینت مجارستان',
+      'symbol' => 'HUF',
+    ),
+    'IDR' => 
+    array (
+      'name' => 'روپیهٔ اندونزی',
+      'symbol' => 'IDR',
+    ),
+    'IEP' => 
+    array (
+      'name' => 'پوند ایرلند',
+      'symbol' => 'IEP',
+    ),
+    'ILS' => 
+    array (
+      'name' => 'شقل جدید اسرائیل',
+      'symbol' => 'ILS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'روپیهٔ هند',
+      'symbol' => 'INR',
+    ),
+    'IQD' => 
+    array (
+      'name' => 'دینار عراق',
+      'symbol' => 'IQD',
+    ),
+    'IRR' => 
+    array (
+      'name' => 'ریال ایران',
+      'symbol' => '﷼',
+    ),
+    'ISK' => 
+    array (
+      'name' => 'کرونای ایسلند',
+      'symbol' => 'ISK',
+    ),
+    'ITL' => 
+    array (
+      'name' => 'لیرهٔ ایتالیا',
+      'symbol' => 'ITL',
+    ),
+    'JMD' => 
+    array (
+      'name' => 'دلار جامائیکا',
+      'symbol' => 'JMD',
+    ),
+    'JOD' => 
+    array (
+      'name' => 'دینار اردن',
+      'symbol' => 'JOD',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'ین ژاپن',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'شیلینگ کنیا',
+      'symbol' => 'KES',
+    ),
+    'KGS' => 
+    array (
+      'name' => 'سوم قرقیزستان',
+      'symbol' => 'KGS',
+    ),
+    'KHR' => 
+    array (
+      'name' => 'ری‌یل کامبوج',
+      'symbol' => 'KHR',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'فرانک کومورو',
+      'symbol' => 'KMF',
+    ),
+    'KPW' => 
+    array (
+      'name' => 'وون کرهٔ شمالی',
+      'symbol' => 'KPW',
+    ),
+    'KRW' => 
+    array (
+      'name' => 'وون کرهٔ جنوبی',
+      'symbol' => 'KRW',
+    ),
+    'KWD' => 
+    array (
+      'name' => 'دینار کویت',
+      'symbol' => 'KWD',
+    ),
+    'KYD' => 
+    array (
+      'name' => 'دلار جزایر کِیمن',
+      'symbol' => 'KYD',
+    ),
+    'KZT' => 
+    array (
+      'name' => 'تنگهٔ قزاقستان',
+      'symbol' => 'KZT',
+    ),
+    'LAK' => 
+    array (
+      'name' => 'کیپ لائوس',
+      'symbol' => 'LAK',
+    ),
+    'LBP' => 
+    array (
+      'name' => 'لیرهٔ لبنان',
+      'symbol' => 'LBP',
+    ),
+    'LKR' => 
+    array (
+      'name' => 'روپیهٔ سری‌لانکا',
+      'symbol' => 'LKR',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'دلار لیبریا',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'لوتی لسوتو',
+      'symbol' => 'LSL',
+    ),
+    'LTL' => 
+    array (
+      'name' => 'لیتاس لیتوانی',
+      'symbol' => 'LTL',
+    ),
+    'LUF' => 
+    array (
+      'name' => 'فرانک لوکزامبورگ',
+      'symbol' => 'LUF',
+    ),
+    'LUL' => 
+    array (
+      'name' => 'فرانک مالی لوگزامبورگ',
+      'symbol' => 'LUL',
+    ),
+    'LVL' => 
+    array (
+      'name' => 'لاتس لتونی',
+      'symbol' => 'LVL',
+    ),
+    'LVR' => 
+    array (
+      'name' => 'روبل لتونی',
+      'symbol' => 'LVR',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'دینار لیبی',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'درهم مراکش',
+      'symbol' => 'MAD',
+    ),
+    'MAF' => 
+    array (
+      'name' => 'فرانک مراکش',
+      'symbol' => 'MAF',
+    ),
+    'MDL' => 
+    array (
+      'name' => 'لئوی مولداوی',
+      'symbol' => 'MDL',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'آریاری مالاگاسی',
+      'symbol' => 'MGA',
+    ),
+    'MGF' => 
+    array (
+      'name' => 'فرانک ماداگاسکار',
+      'symbol' => 'MGF',
+    ),
+    'MKD' => 
+    array (
+      'name' => 'دینار مقدونیه',
+      'symbol' => 'MKD',
+    ),
+    'MLF' => 
+    array (
+      'name' => 'فرانک مالی',
+      'symbol' => 'MLF',
+    ),
+    'MMK' => 
+    array (
+      'name' => 'کیات میانمار',
+      'symbol' => 'MMK',
+    ),
+    'MNT' => 
+    array (
+      'name' => 'توگریک مغولستان',
+      'symbol' => 'MNT',
+    ),
+    'MOP' => 
+    array (
+      'name' => 'پاتاکای ماکائو',
+      'symbol' => 'MOP',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'اوگوئیای موریتانی',
+      'symbol' => 'MRO',
+    ),
+    'MTL' => 
+    array (
+      'name' => 'لیرهٔ مالت',
+      'symbol' => 'MTL',
+    ),
+    'MTP' => 
+    array (
+      'name' => 'پوند مالت',
+      'symbol' => 'MTP',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'روپیهٔ موریس',
+      'symbol' => 'MUR',
+    ),
+    'MVR' => 
+    array (
+      'name' => 'روپیهٔ مالدیو',
+      'symbol' => 'MVR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'کواچای مالاوی',
+      'symbol' => 'MWK',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'پزوی مکزیک',
+      'symbol' => 'MXN',
+    ),
+    'MXP' => 
+    array (
+      'name' => 'پزوی نقرهٔ مکزیک (۱۸۶۱ تا ۱۹۹۲)',
+      'symbol' => 'MXP',
+    ),
+    'MYR' => 
+    array (
+      'name' => 'رینگیت مالزی',
+      'symbol' => 'MYR',
+    ),
+    'MZE' => 
+    array (
+      'name' => 'اسکودوی موزامبیک',
+      'symbol' => 'MZE',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'دلار نامیبیا',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'نایرای نیجریه',
+      'symbol' => 'NGN',
+    ),
+    'NIO' => 
+    array (
+      'name' => 'کوردوبای نیکاراگوئه',
+      'symbol' => 'NIO',
+    ),
+    'NLG' => 
+    array (
+      'name' => 'گیلدر هلند',
+      'symbol' => 'NLG',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'کرون نروژ',
+      'symbol' => 'NOK',
+    ),
+    'NPR' => 
+    array (
+      'name' => 'روپیهٔ نپال',
+      'symbol' => 'NPR',
+    ),
+    'NZD' => 
+    array (
+      'name' => 'دلار زلاند نو',
+      'symbol' => 'NZD',
+    ),
+    'OMR' => 
+    array (
+      'name' => 'ریال عمان',
+      'symbol' => 'OMR',
+    ),
+    'PAB' => 
+    array (
+      'name' => 'بالبوای پاناما',
+      'symbol' => 'PAB',
+    ),
+    'PEN' => 
+    array (
+      'name' => 'نوئووسول پرو',
+      'symbol' => 'PEN',
+    ),
+    'PGK' => 
+    array (
+      'name' => 'کینای پاپوا گینهٔ نو',
+      'symbol' => 'PGK',
+    ),
+    'PHP' => 
+    array (
+      'name' => 'پزوی فیلیپین',
+      'symbol' => 'PHP',
+    ),
+    'PKR' => 
+    array (
+      'name' => 'روپیهٔ پاکستان',
+      'symbol' => 'PKR',
+    ),
+    'PLN' => 
+    array (
+      'name' => 'زواتی لهستان',
+      'symbol' => 'PLN',
+    ),
+    'PTE' => 
+    array (
+      'name' => 'اسکودوی پرتغال',
+      'symbol' => 'PTE',
+    ),
+    'PYG' => 
+    array (
+      'name' => 'گوارانی پاراگوئه',
+      'symbol' => 'PYG',
+    ),
+    'QAR' => 
+    array (
+      'name' => 'ریال قطر',
+      'symbol' => 'QAR',
+    ),
+    'RHD' => 
+    array (
+      'name' => 'دلار رودزیا',
+      'symbol' => 'RHD',
+    ),
+    'RSD' => 
+    array (
+      'name' => 'دینار صربستان',
+      'symbol' => 'RSD',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'روبل روسیه',
+      'symbol' => 'RUB',
+    ),
+    'RUR' => 
+    array (
+      'name' => 'روبل روسیه (۱۹۹۱ تا ۱۹۹۸)',
+      'symbol' => 'RUR',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'فرانک رواندا',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'ریال سعودی',
+      'symbol' => 'SAR',
+    ),
+    'SBD' => 
+    array (
+      'name' => 'دلار جزایر سلیمان',
+      'symbol' => 'SBD',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'روپیهٔ سیشل',
+      'symbol' => 'SCR',
+    ),
+    'SDD' => 
+    array (
+      'name' => 'دینار قدیم سودان',
+      'symbol' => 'SDD',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'لیرهٔ سودان',
+      'symbol' => 'SDG',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'کرون سوئد',
+      'symbol' => 'SEK',
+    ),
+    'SGD' => 
+    array (
+      'name' => 'دلار سنگاپور',
+      'symbol' => 'SGD',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'پوند سنت هلن',
+      'symbol' => 'SHP',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'لئون سیرالئون',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'شیلینگ سومالی',
+      'symbol' => 'SOS',
+    ),
+    'SRD' => 
+    array (
+      'name' => 'دلار سورینام',
+      'symbol' => 'SRD',
+    ),
+    'SRG' => 
+    array (
+      'name' => 'گیلدر سورینام',
+      'symbol' => 'SRG',
+    ),
+    'STD' => 
+    array (
+      'name' => 'دوبرای سائوتومه و پرنسیپ',
+      'symbol' => 'STD',
+    ),
+    'SUR' => 
+    array (
+      'name' => 'روبل شوروی',
+      'symbol' => 'SUR',
+    ),
+    'SYP' => 
+    array (
+      'name' => 'لیرهٔ سوریه',
+      'symbol' => 'SYP',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'لیلانگنی سوازیلند',
+      'symbol' => 'SZL',
+    ),
+    'THB' => 
+    array (
+      'name' => 'بات تایلند',
+      'symbol' => 'THB',
+    ),
+    'TJR' => 
+    array (
+      'name' => 'روبل تاجیکستان',
+      'symbol' => 'TJR',
+    ),
+    'TJS' => 
+    array (
+      'name' => 'سامانی تاجیکستان',
+      'symbol' => 'TJS',
+    ),
+    'TMM' => 
+    array (
+      'name' => 'منات ترکمنستان (۱۹۹۳ تا ۲۰۰۹)',
+      'symbol' => 'TMM',
+    ),
+    'TMT' => 
+    array (
+      'name' => 'منات ترکمنستان',
+      'symbol' => 'TMT',
+    ),
+    'TND' => 
+    array (
+      'name' => 'دینار تونس',
+      'symbol' => 'TND',
+    ),
+    'TOP' => 
+    array (
+      'name' => 'پاآنگای تونگا',
+      'symbol' => 'TOP',
+    ),
+    'TPE' => 
+    array (
+      'name' => 'اسکودوی تیمور',
+      'symbol' => 'TPE',
+    ),
+    'TRL' => 
+    array (
+      'name' => 'لیرهٔ قدیم ترکیه',
+      'symbol' => 'TRL',
+    ),
+    'TRY' => 
+    array (
+      'name' => 'لیرهٔ ترکیه',
+      'symbol' => 'TRY',
+    ),
+    'TTD' => 
+    array (
+      'name' => 'دلار ترینیداد و توباگو',
+      'symbol' => 'TTD',
+    ),
+    'TWD' => 
+    array (
+      'name' => 'دلار جدید تایوان',
+      'symbol' => 'TWD',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'شیلینگ تانزانیا',
+      'symbol' => 'TZS',
+    ),
+    'UAH' => 
+    array (
+      'name' => 'هریونیای اوکراین',
+      'symbol' => 'UAH',
+    ),
+    'UGS' => 
+    array (
+      'name' => 'شیلینگ اوگاندا (۱۹۶۶ تا ۱۹۸۷)',
+      'symbol' => 'UGS',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'شیلینگ اوگاندا',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'دلار امریکا',
+      'symbol' => 'USD',
+    ),
+    'USN' => 
+    array (
+      'name' => 'دلار امریکا (روز بعد)',
+      'symbol' => 'USN',
+    ),
+    'USS' => 
+    array (
+      'name' => 'دلار امریکا (همان روز)',
+      'symbol' => 'USS',
+    ),
+    'UYP' => 
+    array (
+      'name' => 'پزوی اوروگوئه (۱۹۷۵ تا ۱۹۹۳)',
+      'symbol' => 'UYP',
+    ),
+    'UYU' => 
+    array (
+      'name' => 'پزوی اوروگوئه',
+      'symbol' => 'UYU',
+    ),
+    'UZS' => 
+    array (
+      'name' => 'سوم ازبکستان',
+      'symbol' => 'UZS',
+    ),
+    'VEF' => 
+    array (
+      'name' => 'بولیوار ونزوئلا',
+      'symbol' => 'VEF',
+    ),
+    'VND' => 
+    array (
+      'name' => 'دانگ ویتنام',
+      'symbol' => 'VND',
+    ),
+    'VUV' => 
+    array (
+      'name' => 'واتوی وانوواتو',
+      'symbol' => 'VUV',
+    ),
+    'WST' => 
+    array (
+      'name' => 'تالای ساموا',
+      'symbol' => 'WST',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'فرانک CFA مرکز آفریقا',
+      'symbol' => 'XAF',
+    ),
+    'XAG' => 
+    array (
+      'name' => 'نقره',
+      'symbol' => 'XAG',
+    ),
+    'XAU' => 
+    array (
+      'name' => 'طلا',
+      'symbol' => 'XAU',
+    ),
+    'XCD' => 
+    array (
+      'name' => 'دلار شرق کارائیب',
+      'symbol' => 'XCD',
+    ),
+    'XFO' => 
+    array (
+      'name' => 'فرانک طلای فرانسه',
+      'symbol' => 'XFO',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'فرانک CFA غرب آفریقا',
+      'symbol' => 'XOF',
+    ),
+    'XPD' => 
+    array (
+      'name' => 'پالادیم',
+      'symbol' => 'XPD',
+    ),
+    'XPF' => 
+    array (
+      'name' => 'فرانک CFP',
+      'symbol' => 'XPF',
+    ),
+    'XPT' => 
+    array (
+      'name' => 'پلاتین',
+      'symbol' => 'XPT',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'ارز نامشخص',
+      'symbol' => 'XXX',
+    ),
+    'YDD' => 
+    array (
+      'name' => 'دینار یمن',
+      'symbol' => 'YDD',
+    ),
+    'YER' => 
+    array (
+      'name' => 'ریال یمن',
+      'symbol' => 'YER',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'راند افریقای جنوبی',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'کواچای زامبیا',
+      'symbol' => 'ZMK',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'دلار زیمبابوه',
+      'symbol' => 'ZWD',
+    ),
+    'ZWL' => 
+    array (
+      'name' => 'دلار زیمبابوه (۲۰۰۹)',
+      'symbol' => 'ZWL',
+    ),
+    'ZWR' => 
+    array (
+      'name' => 'دلار زیمبابوه (۲۰۰۸)',
+      'symbol' => 'ZWR',
+    ),
+  ),
+);

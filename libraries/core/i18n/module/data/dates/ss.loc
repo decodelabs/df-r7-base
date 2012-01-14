@@ -1,0 +1,65 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Son',
+        'mon' => 'Mso',
+        'tue' => 'Bil',
+        'wed' => 'Tsa',
+        'thu' => 'Ne',
+        'fri' => 'Hla',
+        'sat' => 'Mgc',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Lisontfo',
+        'mon' => 'uMsombuluko',
+        'tue' => 'Lesibili',
+        'wed' => 'Lesitsatfu',
+        'thu' => 'Lesine',
+        'fri' => 'Lesihlanu',
+        'sat' => 'uMgcibelo',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Bhi',
+        2 => 'Van',
+        3 => 'Vol',
+        4 => 'Mab',
+        5 => 'Nkh',
+        6 => 'Nhl',
+        7 => 'Kho',
+        8 => 'Ngc',
+        9 => 'Nyo',
+        10 => 'Mph',
+        11 => 'Lwe',
+        12 => 'Ngo',
+      ),
+      'full' => 
+      array (
+        1 => 'Bhimbidvwane',
+        2 => 'iNdlovana',
+        3 => 'iNdlovu-lenkhulu',
+        4 => 'Mabasa',
+        5 => 'iNkhwekhweti',
+        6 => 'iNhlaba',
+        7 => 'Kholwane',
+        8 => 'iNgci',
+        9 => 'iNyoni',
+        10 => 'iMphala',
+        11 => 'Lweti',
+        12 => 'iNgongoni',
+      ),
+    ),
+  ),
+);

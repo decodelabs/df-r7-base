@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'ét',
+        'mon' => 'mɔ́s',
+        'tue' => 'kwa',
+        'wed' => 'muk',
+        'thu' => 'ŋgi',
+        'fri' => 'ɗón',
+        'sat' => 'esa',
+      ),
+      'full' => 
+      array (
+        'sun' => 'éti',
+        'mon' => 'mɔ́sú',
+        'tue' => 'kwasú',
+        'wed' => 'mukɔ́sú',
+        'thu' => 'ŋgisú',
+        'fri' => 'ɗónɛsú',
+        'sat' => 'esaɓasú',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'di',
+        2 => 'ŋgɔn',
+        3 => 'sɔŋ',
+        4 => 'diɓ',
+        5 => 'emi',
+        6 => 'esɔ',
+        7 => 'mad',
+        8 => 'diŋ',
+        9 => 'nyɛt',
+        10 => 'may',
+        11 => 'tin',
+        12 => 'elá',
+      ),
+      'full' => 
+      array (
+        1 => 'dimɔ́di',
+        2 => 'ŋgɔndɛ',
+        3 => 'sɔŋɛ',
+        4 => 'diɓáɓá',
+        5 => 'emiasele',
+        6 => 'esɔpɛsɔpɛ',
+        7 => 'madiɓɛ́díɓɛ́',
+        8 => 'diŋgindi',
+        9 => 'nyɛtɛki',
+        10 => 'mayésɛ́',
+        11 => 'tiníní',
+        12 => 'eláŋgɛ́',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'd/M/yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'HH:mm:ss zzzz',
+      'long' => 'HH:mm:ss z',
+      'medium' => 'HH:mm:ss',
+      'short' => 'HH:mm',
+    ),
+  ),
+);

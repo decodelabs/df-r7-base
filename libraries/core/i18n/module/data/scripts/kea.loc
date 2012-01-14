@@ -1,0 +1,10 @@
+<?php
+return array (
+  'Arab' => 'arabiku',
+  'Hans' => 'han simplifikadu',
+  'Hant' => 'han tradisional',
+  'Latn' => 'latinu',
+  'Zxxx' => 'nãu skritu',
+  'Cyrl' => 'siriliku',
+  'Zzzz' => 'skrita diskonxedu',
+);

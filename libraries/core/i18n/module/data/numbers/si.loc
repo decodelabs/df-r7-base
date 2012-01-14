@@ -1,0 +1,115 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##,##0.###',
+    'percent' => '#,##,##0%',
+    'currency' => '¤#,##,##0.00;(¤#,##,##0.00)',
+  ),
+  'currencies' => 
+  array (
+    'AED' => 
+    array (
+      'name' => 'එක්සත් අරාබි එමිරේට්ස් ඩිරාම්',
+      'symbol' => 'AED',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'ඔස්ට්‍රේලියානු ඩොලර්',
+      'symbol' => 'AUD',
+    ),
+    'BDT' => 
+    array (
+      'name' => 'බංග්ලාදේශ් ටකා',
+      'symbol' => 'BDT',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'බහරේන් ඩිනාර්',
+      'symbol' => 'BHD',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'චීන යුආන්',
+      'symbol' => 'CNY',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'යුරෝ',
+      'symbol' => 'EUR',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'බ්‍රිතාන්‍ය ස්ටර්ලින් පවුම්',
+      'symbol' => 'GBP',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'හොංකොං ඩොලර්',
+      'symbol' => 'HKD',
+    ),
+    'INR' => 
+    array (
+      'name' => 'ඉන්දියන් රුපියල්',
+      'symbol' => 'INR',
+    ),
+    'JOD' => 
+    array (
+      'name' => 'ජෝර්දාන් ඩිනාර්',
+      'symbol' => 'JOD',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'ජපන් යෙන්',
+      'symbol' => 'JPY',
+    ),
+    'LKR' => 
+    array (
+      'name' => 'ලංකා රුපියල්',
+      'symbol' => 'රු.',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'නොර්වීජියන් ක්‍රෝන්',
+      'symbol' => 'NOK',
+    ),
+    'NPR' => 
+    array (
+      'name' => 'නේපාල් රුපියල්',
+      'symbol' => 'NPR',
+    ),
+    'NZD' => 
+    array (
+      'name' => 'නවසීලන්ත ඩොලර්',
+      'symbol' => 'NZD',
+    ),
+    'OMR' => 
+    array (
+      'name' => 'ඕමාන් රියාල්',
+      'symbol' => 'OMR',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'රුසියන් රූබල්',
+      'symbol' => 'RUB',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'සවුදි රියාල්',
+      'symbol' => 'SAR',
+    ),
+    'THB' => 
+    array (
+      'name' => 'තායි බාත්',
+      'symbol' => 'THB',
+    ),
+    'USD' => 
+    array (
+      'name' => 'ඇමෙරිකන් ඩොලර්',
+      'symbol' => 'USD',
+    ),
+  ),
+);

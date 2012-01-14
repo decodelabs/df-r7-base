@@ -1,0 +1,179 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'buddhist' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM, y G',
+      'long' => 'd MMMM y G',
+      'medium' => 'd MMM y G',
+      'short' => 'd/M/yyyy',
+    ),
+  ),
+  'chinese' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => '1',
+        2 => '2',
+        3 => '3',
+        4 => '4',
+        5 => '5',
+        6 => '6',
+        7 => '7',
+        8 => '8',
+        9 => '9',
+        10 => '10',
+        11 => '11',
+        12 => '12',
+      ),
+    ),
+  ),
+  'coptic' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        2 => 'Baba',
+        6 => 'Amshir',
+        7 => 'Baramhat',
+      ),
+      'full' => 
+      array (
+        3 => 'Hathor',
+        12 => 'Mesori',
+        13 => 'El Nasii',
+      ),
+    ),
+  ),
+  'ethiopic' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'full' => 
+      array (
+        1 => 'meskerem',
+        2 => 'Taqemt',
+        3 => 'hamle',
+        4 => 'tahsas',
+        6 => 'yekatit',
+        7 => 'megabit',
+        10 => 'sene',
+        11 => 'hamle',
+        12 => 'nehase',
+      ),
+    ),
+  ),
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Du',
+        'mon' => 'Lu',
+        'tue' => 'Ma',
+        'wed' => 'Mi',
+        'thu' => 'Jo',
+        'fri' => 'Vi',
+        'sat' => 'Sâ',
+      ),
+      'full' => 
+      array (
+        'sun' => 'duminică',
+        'mon' => 'luni',
+        'tue' => 'marți',
+        'wed' => 'miercuri',
+        'thu' => 'joi',
+        'fri' => 'vineri',
+        'sat' => 'sâmbătă',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'ian.',
+        2 => 'feb.',
+        3 => 'mar.',
+        4 => 'apr.',
+        5 => 'mai',
+        6 => 'iun.',
+        7 => 'iul.',
+        8 => 'aug.',
+        9 => 'sept.',
+        10 => 'oct.',
+        11 => 'nov.',
+        12 => 'dec.',
+      ),
+      'full' => 
+      array (
+        1 => 'ianuarie',
+        2 => 'februarie',
+        3 => 'martie',
+        4 => 'aprilie',
+        5 => 'mai',
+        6 => 'iunie',
+        7 => 'iulie',
+        8 => 'august',
+        9 => 'septembrie',
+        10 => 'octombrie',
+        11 => 'noiembrie',
+        12 => 'decembrie',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'dd.MM.yyyy',
+      'short' => 'dd.MM.yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'HH:mm:ss zzzz',
+      'long' => 'HH:mm:ss z',
+      'medium' => 'HH:mm:ss',
+      'short' => 'HH:mm',
+    ),
+  ),
+  'hebrew' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Tișrei',
+        2 => 'Heșvan',
+        3 => 'Kislev',
+        4 => 'Tevet',
+        5 => 'Șevat',
+        7 => 'Adar',
+        8 => 'Nisan',
+        9 => 'Iyar',
+        10 => 'Sivan',
+        11 => 'Tammuz',
+        13 => 'Elul',
+      ),
+      'full' => 
+      array (
+        1 => 'Tișrei',
+        2 => 'Heșvan',
+        5 => 'Șevat',
+      ),
+    ),
+  ),
+  'islamic' => 
+  array (
+  ),
+);

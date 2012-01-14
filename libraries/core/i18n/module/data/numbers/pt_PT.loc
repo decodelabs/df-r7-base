@@ -1,0 +1,235 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'group' => ' ',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '0.0 mil',
+    'currency' => '#,##0.00 ¤',
+  ),
+  'currencies' => 
+  array (
+    'AED' => 
+    array (
+      'name' => 'Dirham dos Emirados Árabes Unidos',
+      'symbol' => 'AED',
+    ),
+    'AFA' => 
+    array (
+      'name' => 'Afeghani (1927-2002)',
+      'symbol' => 'AFA',
+    ),
+    'AFN' => 
+    array (
+      'name' => 'Afgani afegão',
+      'symbol' => 'AFN',
+    ),
+    'ANG' => 
+    array (
+      'name' => 'Florim das Antilhas Holandesas',
+      'symbol' => 'ANG',
+    ),
+    'AWG' => 
+    array (
+      'name' => 'Florim de Aruba',
+      'symbol' => 'AWG',
+    ),
+    'BAD' => 
+    array (
+      'name' => 'Dinar da Bósnia-Herzegóvina',
+      'symbol' => 'BAD',
+    ),
+    'BAM' => 
+    array (
+      'name' => 'Marco bósnio-herzegóvino conversível',
+      'symbol' => 'BAM',
+    ),
+    'BEC' => 
+    array (
+      'name' => 'Franco belga (convertível)',
+      'symbol' => 'BEC',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'BRL',
+      'symbol' => 'BR$',
+    ),
+    'BYB' => 
+    array (
+      'name' => 'Rublo novo bielorusso (1994-1999)',
+      'symbol' => 'BYB',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'Dólar canadiano',
+      'symbol' => 'CAD',
+    ),
+    'CYP' => 
+    array (
+      'name' => 'Libra de Chipre',
+      'symbol' => 'CYP',
+    ),
+    'CZK' => 
+    array (
+      'name' => 'Coroa da República Checa',
+      'symbol' => 'CZK',
+    ),
+    'ECV' => 
+    array (
+      'name' => 'Unidad de Valor Constante (UVC) do Equador',
+      'symbol' => 'ECV',
+    ),
+    'GHC' => 
+    array (
+      'name' => 'Cedi do Gana',
+      'symbol' => 'GHC',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'Dalasi da Gâmbia',
+      'symbol' => 'GMD',
+    ),
+    'GNF' => 
+    array (
+      'name' => 'Franco Guineense',
+      'symbol' => 'GNF',
+    ),
+    'GTQ' => 
+    array (
+      'name' => 'Quetzal da Guatemala',
+      'symbol' => 'GTQ',
+    ),
+    'HNL' => 
+    array (
+      'name' => 'Lempira das Honduras',
+      'symbol' => 'HNL',
+    ),
+    'KWD' => 
+    array (
+      'name' => 'Dinar do Koweit',
+      'symbol' => 'KWD',
+    ),
+    'KYD' => 
+    array (
+      'name' => 'Dólar das Ilhas Caimão',
+      'symbol' => 'KYD',
+    ),
+    'MKD' => 
+    array (
+      'name' => 'Dinar Macedónio',
+      'symbol' => 'MKD',
+    ),
+    'MLF' => 
+    array (
+      'name' => 'Franco do Mali',
+      'symbol' => 'MLF',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'Cuacha do Malawi',
+      'symbol' => 'MWK',
+    ),
+    'MXP' => 
+    array (
+      'name' => 'Peso Plata mexicano (1861-1992)',
+      'symbol' => 'MXP',
+    ),
+    'MXV' => 
+    array (
+      'name' => 'Unidad de Inversion (UDI) mexicana',
+      'symbol' => 'MXV',
+    ),
+    'NIC' => 
+    array (
+      'name' => 'Córdoba nicaraguano',
+      'symbol' => 'NIC',
+    ),
+    'NIO' => 
+    array (
+      'name' => 'Córdoba Ouro nicaraguano',
+      'symbol' => 'NIO',
+    ),
+    'PLN' => 
+    array (
+      'name' => 'Zloti polaco',
+      'symbol' => 'PLN',
+    ),
+    'PLZ' => 
+    array (
+      'name' => 'Zloti polaco (1950-1995)',
+      'symbol' => 'PLZ',
+    ),
+    'PTE' => 
+    array (
+      'name' => 'PTE',
+      'symbol' => 'PTE',
+    ),
+    'QAR' => 
+    array (
+      'name' => 'Rial do Catar',
+      'symbol' => 'QAR',
+    ),
+    'SGD' => 
+    array (
+      'name' => 'Dólar de Singapura',
+      'symbol' => 'SGD',
+    ),
+    'THB' => 
+    array (
+      'name' => 'Baht da Tailândia',
+      'symbol' => 'THB',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'Xelim de Tanzânia',
+      'symbol' => 'TZS',
+    ),
+    'USD' => 
+    array (
+      'name' => 'Dólar dos Estados Unidos',
+      'symbol' => 'USD',
+    ),
+    'WST' => 
+    array (
+      'name' => 'Tala de Samoa Ocidental',
+      'symbol' => 'WST',
+    ),
+    'XDR' => 
+    array (
+      'name' => 'direito especial de saque',
+      'symbol' => 'XDR',
+    ),
+    'XEU' => 
+    array (
+      'name' => 'Unidade da Moeda Europeia',
+      'symbol' => 'XEU',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'Moeda Desconhecida',
+      'symbol' => 'XXX',
+    ),
+    'YUD' => 
+    array (
+      'name' => 'Dinar forte jugoslavo',
+      'symbol' => 'YUD',
+    ),
+    'YUM' => 
+    array (
+      'name' => 'Super Dinar jugoslavo',
+      'symbol' => 'YUM',
+    ),
+    'YUN' => 
+    array (
+      'name' => 'Dinar conversível jugoslavo',
+      'symbol' => 'YUN',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'Dólar do Zimbabwe',
+      'symbol' => 'ZWD',
+    ),
+  ),
+);

@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Sabi',
+        'mon' => 'Bala',
+        'tue' => 'Kubi',
+        'wed' => 'Kusa',
+        'thu' => 'Kuna',
+        'fri' => 'Kuta',
+        'sat' => 'Muka',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Sabiiti',
+        'mon' => 'Balaza',
+        'tue' => 'Owokubili',
+        'wed' => 'Owokusatu',
+        'thu' => 'Olokuna',
+        'fri' => 'Olokutaanu',
+        'sat' => 'Olomukaaga',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Jan',
+        2 => 'Feb',
+        3 => 'Mar',
+        4 => 'Apu',
+        5 => 'Maa',
+        6 => 'Juu',
+        7 => 'Jul',
+        8 => 'Agu',
+        9 => 'Seb',
+        10 => 'Oki',
+        11 => 'Nov',
+        12 => 'Des',
+      ),
+      'full' => 
+      array (
+        1 => 'Janwaliyo',
+        2 => 'Febwaliyo',
+        3 => 'Marisi',
+        4 => 'Apuli',
+        5 => 'Maayi',
+        6 => 'Juuni',
+        7 => 'Julaayi',
+        8 => 'Agusito',
+        9 => 'Sebuttemba',
+        10 => 'Okitobba',
+        11 => 'Novemba',
+        12 => 'Desemba',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'dd/MM/yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+);

@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Mul',
+        'mon' => 'Vil',
+        'tue' => 'Hiv',
+        'wed' => 'Hid',
+        'thu' => 'Hit',
+        'fri' => 'Hih',
+        'sat' => 'Lem',
+      ),
+      'full' => 
+      array (
+        'sun' => 'pa mulungu',
+        'mon' => 'pa shahuviluha',
+        'tue' => 'pa hivili',
+        'wed' => 'pa hidatu',
+        'thu' => 'pa hitayi',
+        'fri' => 'pa hihanu',
+        'sat' => 'pa shahulembela',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Hut',
+        2 => 'Vil',
+        3 => 'Dat',
+        4 => 'Tai',
+        5 => 'Han',
+        6 => 'Sit',
+        7 => 'Sab',
+        8 => 'Nan',
+        9 => 'Tis',
+        10 => 'Kum',
+        11 => 'Kmj',
+        12 => 'Kmb',
+      ),
+      'full' => 
+      array (
+        1 => 'pa mwedzi gwa hutala',
+        2 => 'pa mwedzi gwa wuvili',
+        3 => 'pa mwedzi gwa wudatu',
+        4 => 'pa mwedzi gwa wutai',
+        5 => 'pa mwedzi gwa wuhanu',
+        6 => 'pa mwedzi gwa sita',
+        7 => 'pa mwedzi gwa saba',
+        8 => 'pa mwedzi gwa nane',
+        9 => 'pa mwedzi gwa tisa',
+        10 => 'pa mwedzi gwa kumi',
+        11 => 'pa mwedzi gwa kumi na moja',
+        12 => 'pa mwedzi gwa kumi na mbili',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'dd/MM/yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+);

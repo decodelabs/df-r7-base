@@ -1,0 +1,96 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => '.',
+    'group' => ',',
+    'list' => ';',
+    'minusSign' => '-',
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'AFA' => 
+    array (
+      'name' => 'अफ्गानी(१९२७-२००२)',
+      'symbol' => 'AFA',
+    ),
+    'AFN' => 
+    array (
+      'name' => 'अफ्गानी',
+      'symbol' => 'AFN',
+    ),
+    'ALL' => 
+    array (
+      'name' => 'अल्बानियन लेक',
+      'symbol' => 'ALL',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'अष्ट्रेलियन डलर',
+      'symbol' => 'AUD',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'ब्राजिलियन रियल',
+      'symbol' => 'BRL',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'चिनिँया युआन रेनिबी',
+      'symbol' => 'CNY',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'युरो',
+      'symbol' => 'EUR',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'बेलायती पाउण्ड स्टर्लिङ',
+      'symbol' => 'GBP',
+    ),
+    'INR' => 
+    array (
+      'name' => 'भारती रूपिँया',
+      'symbol' => 'INR',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'जापानी येन',
+      'symbol' => 'JPY',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'नर्वेजियाली क्रोन',
+      'symbol' => 'NOK',
+    ),
+    'NPR' => 
+    array (
+      'name' => 'NPR',
+      'symbol' => 'नेरू',
+    ),
+    'PHP' => 
+    array (
+      'name' => 'फिलिपिनी पेसो',
+      'symbol' => 'PHP',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'रूसी रूबल',
+      'symbol' => 'RUB',
+    ),
+    'USD' => 
+    array (
+      'name' => 'संयुक्त राज्य डलर',
+      'symbol' => 'USD',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'अपरिचित वा अवैध मुद्रा',
+      'symbol' => 'XXX',
+    ),
+  ),
+);

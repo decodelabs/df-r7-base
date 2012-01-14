@@ -1,0 +1,20 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => ',',
+    'group' => '.',
+  ),
+  'formats' => 
+  array (
+    'currency' => '#,##0.00 ¤',
+  ),
+  'currencies' => 
+  array (
+    'BEF' => 
+    array (
+      'name' => 'BEF',
+      'symbol' => 'BEF',
+    ),
+  ),
+);

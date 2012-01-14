@@ -1,0 +1,76 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => '.',
+    'group' => ',',
+    'list' => ';',
+    'percentSign' => '%',
+    'plusSign' => '+',
+    'minusSign' => '-',
+    'exponential' => 'E',
+    'perMille' => '‰',
+    'infinity' => '∞',
+    'nan' => 'NaN',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'scientific' => '#E0',
+    'percent' => '#,##0%',
+    'currency' => '¤#,##0.00;(¤#,##0.00)',
+  ),
+  'currencies' => 
+  array (
+    'BRL' => 
+    array (
+      'name' => 'ᏆᏏᎵᎢ ᎠᏕᎳ',
+      'symbol' => 'BRL',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'ᎧᎾᏓ ᎠᏕᎳ',
+      'symbol' => 'CAD',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'ᏓᎶᏂᎨ ᎠᏕᎳ',
+      'symbol' => 'CNY',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'ᏳᎳᏛ',
+      'symbol' => 'EUR',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'ᎩᎵᏏᏲ ᎠᏕᎳ',
+      'symbol' => 'GBP',
+    ),
+    'INR' => 
+    array (
+      'name' => 'ᎢᏅᏗᎾ ᎠᏕᎳ',
+      'symbol' => 'INR',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'ᏣᏩᏂᏏ ᎠᏕᎳ',
+      'symbol' => 'JPY',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'ᏍᏆᏂ ᎠᏕᎳ',
+      'symbol' => 'MXN',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'ᏲᏂᎢ ᎠᏕᎳ',
+      'symbol' => 'RUB',
+    ),
+    'USD' => 
+    array (
+      'name' => 'ᎤᏃᏍᏗ',
+      'symbol' => '$',
+    ),
+  ),
+);

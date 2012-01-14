@@ -1,0 +1,792 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'exponential' => 'ಪೂರ್ವ',
+    'nan' => 'ಸಂಖ್ಯೆಯಲ್ಲ',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##,##0.###',
+    'percent' => '#,##,##0%',
+    'currency' => '¤ #,##,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'AED' => 
+    array (
+      'name' => 'ಯುನೈಟೆಡ್ ಅರಬ್ ಎಮಿರೇಟ್ಸ್ ದಿರಾಮ್‌',
+      'symbol' => 'AED',
+    ),
+    'AFN' => 
+    array (
+      'name' => 'ಆಫ್ಘನ್‌ನ ಆಫ್ಘಾನೀ',
+      'symbol' => 'AFN',
+    ),
+    'ALL' => 
+    array (
+      'name' => 'ಅಲ್ಬೇನಿಯಾದ ಲೇಕ್‌‌',
+      'symbol' => 'ALL',
+    ),
+    'AMD' => 
+    array (
+      'name' => 'ಆರ್ಮೇನಿಯಾದ ಡ್ರಮ್‌',
+      'symbol' => 'AMD',
+    ),
+    'ANG' => 
+    array (
+      'name' => 'ನೆದರ್‌ಲ್ಯಾಂಡ್ಸ್‌‌ ಎಂಟಿಲಿಯಾದ ಗಿಲ್ಡರ್‌‌',
+      'symbol' => 'ANG',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'ಅಂಗೋಲಾದ ಕ್ವಾನ್ಝಾ',
+      'symbol' => 'AOA',
+    ),
+    'ARS' => 
+    array (
+      'name' => 'ಅರ್ಜೆಂಟಿನಾ ಪೆಸೊ',
+      'symbol' => 'ARS',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'ಆಸ್ಟ್ರೇಲಿಯಾದ ಡಾಲ‌‌ರ್‌',
+      'symbol' => 'AUD',
+    ),
+    'AWG' => 
+    array (
+      'name' => 'ಅರುಬ ಫ್ಲೊರೀನ್‌‌',
+      'symbol' => 'AWG',
+    ),
+    'AZN' => 
+    array (
+      'name' => 'ಅಜೆರ್‌ಬೇಜಾನಿ ಮನತ್‌',
+      'symbol' => 'AZN',
+    ),
+    'BAM' => 
+    array (
+      'name' => 'ಬೋಸ್ನಿಯಾ, ಹರ್ಝ್‌‌ಗೋವಿನ ಪರಿವರ್ತನೀಯ ಮಾರ್ಕ್‌',
+      'symbol' => 'BAM',
+    ),
+    'BBD' => 
+    array (
+      'name' => 'ಬರ್ಬಾದಿಯಾ ಡಾಲರ್‌',
+      'symbol' => 'BBD',
+    ),
+    'BDT' => 
+    array (
+      'name' => 'ಬಾಂಗ್ಲಾದೇಶದ ಟಾಕಾ',
+      'symbol' => 'BDT',
+    ),
+    'BGN' => 
+    array (
+      'name' => 'ಬಲ್ಗೇರಿಯಾದ ಲೇವ್‌',
+      'symbol' => 'BGN',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'ಬಹ್ರಾನ್‌‌ನ ದಿನಾರ್‌',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'ಬುರುಂಡಿಯ ಫ್ರಾಂಕ್‌',
+      'symbol' => 'BIF',
+    ),
+    'BMD' => 
+    array (
+      'name' => 'ಬರ್ಮುಡಾದ ಡಾಲರ್‌',
+      'symbol' => 'BMD',
+    ),
+    'BND' => 
+    array (
+      'name' => 'ಬ್ರೂನಿ ಡಾಲರ್‌',
+      'symbol' => 'BND',
+    ),
+    'BOB' => 
+    array (
+      'name' => 'ಬೊಲಿವಿಯಾದ ಬೊಲಿವಿಯಾನೊ',
+      'symbol' => 'BOB',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'ಬ್ರೆಜಿಲ್‌ನ ರಿಯಾಲ್‌',
+      'symbol' => 'BRL',
+    ),
+    'BSD' => 
+    array (
+      'name' => 'ಬಹಮಿಯಾನ್‌ ಡಾಲರ್‌',
+      'symbol' => 'BSD',
+    ),
+    'BTN' => 
+    array (
+      'name' => 'ಭೂತಾನ್‌‌ದ ಎಂಗುಲ್‌ತ್ರೆಮ್‌‌',
+      'symbol' => 'BTN',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'ಬೊತ್ಸವಾನನ್‌ ಪುಲಾ',
+      'symbol' => 'BWP',
+    ),
+    'BYR' => 
+    array (
+      'name' => 'ಬೆಲರಷ್ಯಾದ ರೂಬಲ್‌‌',
+      'symbol' => 'BYR',
+    ),
+    'BZD' => 
+    array (
+      'name' => 'ಬೆಲೀಜ್‌ ಡಾಲರ್‌',
+      'symbol' => 'BZD',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'ಕೆನಡಾದ ಡಾಲರ್',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'ಕಾಂಗೋಲಿಯಾದ ಫ್ರಾಂಕ್‌',
+      'symbol' => 'CDF',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'ಸ್ವಿಸ್ ಫ್ರಾಂಕ್‌',
+      'symbol' => 'CHF',
+    ),
+    'CLP' => 
+    array (
+      'name' => 'ಚಿಲಿಯ ಪೆಸೊ',
+      'symbol' => 'CLP',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'ಚೀನಾದ ಯಾನ್‌',
+      'symbol' => 'CNY',
+    ),
+    'COP' => 
+    array (
+      'name' => 'ಕೊಲೊಂಬಿಯೋದ ಪೆಸೊ',
+      'symbol' => 'COP',
+    ),
+    'CRC' => 
+    array (
+      'name' => 'ಕೋಸ್ಟಾ ರಿಕಾದ ಕೊಲೊನ್‌',
+      'symbol' => 'CRC',
+    ),
+    'CUC' => 
+    array (
+      'name' => 'ಕ್ಯುಬಾದ ಪರಿವರ್ತನೀಯ ಪೆಸೊ',
+      'symbol' => 'CUC',
+    ),
+    'CUP' => 
+    array (
+      'name' => 'ಕ್ಯೂಬಾದ ಪೆಸೊ',
+      'symbol' => 'CUP',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'ಕೇಪ್‌ ವರ್ದೀಯಾದ ಎಸ್ಕುಡೊ',
+      'symbol' => 'CVE',
+    ),
+    'CZK' => 
+    array (
+      'name' => 'ಝೆಕ್‌ ರಿಪಬ್ಲಿಕ್‌ ಕೊರುನಾ',
+      'symbol' => 'CZK',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'ಜೆಬ್ಯುಟಿಯ ಫ್ರಾಂಕ್‌',
+      'symbol' => 'DJF',
+    ),
+    'DKK' => 
+    array (
+      'name' => 'ಡ್ಯಾನಿಶ್ ಕ್ರೋನ್',
+      'symbol' => 'DKK',
+    ),
+    'DOP' => 
+    array (
+      'name' => 'ಡಾಮಿನಿಕ್‌ನ ಪೆಸೊ',
+      'symbol' => 'DOP',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'ಅಲ್ಜಿರಿಯಾದ ದಿನಾರ್‌',
+      'symbol' => 'DZD',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'ಈಜಿಪ್ಟಿಯನ್ ಪೌಂಡ್',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'ಎರಿತ್ರಿಯನ್ ನಕ್ಫಾ',
+      'symbol' => 'ERN',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'ಇಥಿಯೋಪಿಯನ್‌‌ ಬಿರ್‌',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'ಯೂರೊ',
+      'symbol' => 'EUR',
+    ),
+    'FJD' => 
+    array (
+      'name' => 'ಫಿಜಿಯ ಡಾಲರ್‌',
+      'symbol' => 'FJD',
+    ),
+    'FKP' => 
+    array (
+      'name' => 'ಫಾಕ್ಲ್ಯಾಂಡ್‌ ಐಲ್ಯಾಂಡ್ಸ್‌‌ ಪೌಂಡ್‌',
+      'symbol' => 'FKP',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'ಬ್ರಿಟಿಷ್‌‌ ಪೌಂಡ್‌ ಸ್ಟರ್ಲಿಂಗ್‌',
+      'symbol' => 'GBP',
+    ),
+    'GEL' => 
+    array (
+      'name' => 'ಜಾರ್ಜಿಯಾದ ಲಾರಿ',
+      'symbol' => 'GEL',
+    ),
+    'GHS' => 
+    array (
+      'name' => 'ಘಾನಾದ ಸೆದಿ',
+      'symbol' => 'GHS',
+    ),
+    'GIP' => 
+    array (
+      'name' => 'ಜಿಬ್ರಲ್ತಾರ್‌‌ನ ಪೌಂಡ್‌',
+      'symbol' => 'GIP',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'ಗ್ಯಾಂಬಿಯಾದ ದಲಾಸಿ',
+      'symbol' => 'GMD',
+    ),
+    'GNF' => 
+    array (
+      'name' => 'ಗಿನಿಯ ಫ್ರಾಂಕ್‌',
+      'symbol' => 'GNF',
+    ),
+    'GTQ' => 
+    array (
+      'name' => 'ಗ್ವಾಟೆಮಾಲಾದ ಕುಯಿಟ್ಸಲ್‌‌',
+      'symbol' => 'GTQ',
+    ),
+    'GYD' => 
+    array (
+      'name' => 'ಗುಯಾನೀಸ್‌ ಡಾಲರ್‌',
+      'symbol' => 'GYD',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'ಹಾಂಗ್ ಕಾಂಗ್ ಡಾಲರ್',
+      'symbol' => 'HKD',
+    ),
+    'HNL' => 
+    array (
+      'name' => 'ಹೊಂಡುರಾನ್‌ ಲೆಂಪಿರಾ',
+      'symbol' => 'HNL',
+    ),
+    'HRK' => 
+    array (
+      'name' => 'ಕ್ರೊಯೆಷ್ಯಾದ ಕೂನಾ',
+      'symbol' => 'HRK',
+    ),
+    'HTG' => 
+    array (
+      'name' => 'ಹೈಟಿಯ ಗೋರ್ದೆ',
+      'symbol' => 'HTG',
+    ),
+    'HUF' => 
+    array (
+      'name' => 'ಹಂಗೇರಿಯ ಫೋರಿಂತ್‌',
+      'symbol' => 'HUF',
+    ),
+    'IDR' => 
+    array (
+      'name' => 'ಇಂಡೊನೇಷ್ಯಾ ರುಪೈ',
+      'symbol' => 'IDR',
+    ),
+    'ILS' => 
+    array (
+      'name' => 'ಇಸ್ರೇಲಿ ಹೊಸ ಶೆಖೆಲ್‌',
+      'symbol' => 'ILS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'ಭಾರತೀಯ ರುಪಾಯಿ',
+      'symbol' => 'INR',
+    ),
+    'IQD' => 
+    array (
+      'name' => 'ಇರಾಕ್‌ನ ದಿನಾರ್‌',
+      'symbol' => 'IQD',
+    ),
+    'IRR' => 
+    array (
+      'name' => 'ಇರಾನ್‌ನ ರಿಯಾಲ್‌',
+      'symbol' => 'IRR',
+    ),
+    'ISK' => 
+    array (
+      'name' => 'ಐಸ್‌ಲ್ಯಾಂಡ್‌ನ ಕ್ರೋನಾ',
+      'symbol' => 'ISK',
+    ),
+    'JMD' => 
+    array (
+      'name' => 'ಜಮೈಕಾದ ಡಾಲರ್‌',
+      'symbol' => 'JMD',
+    ),
+    'JOD' => 
+    array (
+      'name' => 'ಜೋರ್ಡಾನ್‌‌ನ ದಿನಾರ್‌',
+      'symbol' => 'JOD',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'ಜಪಾನೀಸ್ ಯೆನ್',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'ಕೀನ್ಯಾದ ಶಿಲ್ಲಿಂಗ್‌',
+      'symbol' => 'KES',
+    ),
+    'KGS' => 
+    array (
+      'name' => 'ಕಿರ್ಝಿಸ್ಥಾನ್‌‌ನ ಸೋಮ್‌',
+      'symbol' => 'KGS',
+    ),
+    'KHR' => 
+    array (
+      'name' => 'ಕಾಂಬೋಡಿಯಾದ ರಿಯಲ್‌‌',
+      'symbol' => 'KHR',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'ಕಮರೋಸ್‌ನ ಫ್ರಾಂಕ್‌',
+      'symbol' => 'KMF',
+    ),
+    'KPW' => 
+    array (
+      'name' => 'ಉತ್ತರ ಕೋರಿಯಾದ ವಾನ್‌‌',
+      'symbol' => 'KPW',
+    ),
+    'KRW' => 
+    array (
+      'name' => 'ದಕ್ಷಿಣ ಕೋರಿಯಾದ ವನ್‌',
+      'symbol' => 'KRW',
+    ),
+    'KWD' => 
+    array (
+      'name' => 'ಕುವೈತ್‌ನ ದಿನಾರ್‌',
+      'symbol' => 'KWD',
+    ),
+    'KYD' => 
+    array (
+      'name' => 'ಕೆಮ್ಯಾನ್‌ ಐಲ್ಯಾಂಡ್‌ನ ಡಾಲರ್‌',
+      'symbol' => 'KYD',
+    ),
+    'KZT' => 
+    array (
+      'name' => 'ಕಝಕ್‌ಸ್ತಾನ್‌ ತೆಂಜ್‌‌',
+      'symbol' => 'KZT',
+    ),
+    'LAK' => 
+    array (
+      'name' => 'ಲಾವೋದ ಕೈಪ್‌',
+      'symbol' => 'LAK',
+    ),
+    'LBP' => 
+    array (
+      'name' => 'ಲೆಬನಾನ್‌ನ ಪೌಂಡ್‌',
+      'symbol' => 'LBP',
+    ),
+    'LKR' => 
+    array (
+      'name' => 'ಶ್ರೀಲಂಕಾದ ರುಪೀ',
+      'symbol' => 'LKR',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'ಲೈಬೀರಿಯಾದ ಡಾಲರ್‌',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'ಲೆಸೊತೊ ಲೊತಿ',
+      'symbol' => 'LSL',
+    ),
+    'LTL' => 
+    array (
+      'name' => 'ಲಿಥುಯೇನಿಯಾದ ಲಿತಾಸ್‌',
+      'symbol' => 'LTL',
+    ),
+    'LVL' => 
+    array (
+      'name' => 'ಲಾತ್ವಿಯನ್‌ ಲಾತ್ಸ್‌‌',
+      'symbol' => 'LVL',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'ಲಿಬಿಯಾದ ದಿನಾರ್‌',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'ಮೊರೊಕ್ಕನ್‌ ದಿರಾಮ್‌',
+      'symbol' => 'MAD',
+    ),
+    'MDL' => 
+    array (
+      'name' => 'ಮಲ್ದೋವಾದ ಲೆವೂ',
+      'symbol' => 'MDL',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'ಮಲಗಾಸಿ ಅರಿಯಾರಿ',
+      'symbol' => 'MGA',
+    ),
+    'MKD' => 
+    array (
+      'name' => 'ಮೆಸೆಡೋನಿಯಾದ ದಿನಾರ್‌‌',
+      'symbol' => 'MKD',
+    ),
+    'MMK' => 
+    array (
+      'name' => 'ಮ್ಯಾನ್ಮಾ ಕ್ಯಾತ್‌',
+      'symbol' => 'MMK',
+    ),
+    'MNT' => 
+    array (
+      'name' => 'ಮಂಗೋಲಿಯಾದ ತುಗ್ರಿಕ್‌‌',
+      'symbol' => 'MNT',
+    ),
+    'MOP' => 
+    array (
+      'name' => 'ಮಕ್ಯೂದ ಪಟಕಾ',
+      'symbol' => 'MOP',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'ಮಾರಿಷಸ್‌‌ನ ಊಗ್ವಿಯಾ',
+      'symbol' => 'MRO',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'ಮಾರಿಷಿಯಸ್‌‌ನ ರುಪೀ',
+      'symbol' => 'MUR',
+    ),
+    'MVR' => 
+    array (
+      'name' => 'ಮಾಲ್ಡೀವ್‌ನ ರುಫಿಯಾ',
+      'symbol' => 'MVR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'ಮಲಾವಿಯ ಕ್ವಾಚ',
+      'symbol' => 'MWK',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'ಮೆಕ್ಸಿಕೊದ ಪೆಸೊ',
+      'symbol' => 'MXN',
+    ),
+    'MYR' => 
+    array (
+      'name' => 'ಮಲೇಷ್ಯಾದ ರಿಂಗೆಟ್‌',
+      'symbol' => 'MYR',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'ನಮೀಬಿಯಾ ಡಾಲರ್‌',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'ನೈಜೀರಿಯಾದ ನೇರಾ',
+      'symbol' => 'NGN',
+    ),
+    'NIO' => 
+    array (
+      'name' => 'ನಿಕಾರಗ್ವಾದ ಕರ್ದೊಬಾ',
+      'symbol' => 'NIO',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'ನಾರ್ವೇಜಿಯದ ಕ್ರೋನ್‌',
+      'symbol' => 'NOK',
+    ),
+    'NPR' => 
+    array (
+      'name' => 'ನೇಪಾಳದ ರುಪೀ',
+      'symbol' => 'NPR',
+    ),
+    'NZD' => 
+    array (
+      'name' => 'ನ್ಯೂಜಿಲ್ಯಾಂಡ್ ಡಾಲರ್',
+      'symbol' => 'NZD',
+    ),
+    'OMR' => 
+    array (
+      'name' => 'ಓಮನಿ ರಿಯಾಲ್‌',
+      'symbol' => 'OMR',
+    ),
+    'PAB' => 
+    array (
+      'name' => 'ಪನಮಾನಿಯನ್‌ ಬಾಲ್ಬೊ',
+      'symbol' => 'PAB',
+    ),
+    'PEN' => 
+    array (
+      'name' => 'ಪೆರುವೆಯ ನ್ಯೂವೊ ಸೊಲ್‌',
+      'symbol' => 'PEN',
+    ),
+    'PGK' => 
+    array (
+      'name' => 'ಪ್ಯಾಪ್ಯುವ ನ್ಯೂ ಗಿನಿಯಾದ ಕೈನ್‌',
+      'symbol' => 'PGK',
+    ),
+    'PHP' => 
+    array (
+      'name' => 'ಫಿಲಿಫೈನ್‌ ಪೆಸೊ',
+      'symbol' => 'PHP',
+    ),
+    'PKR' => 
+    array (
+      'name' => 'ಪಾಕಿಸ್ತಾನದ ರುಪೀ',
+      'symbol' => 'PKR',
+    ),
+    'PLN' => 
+    array (
+      'name' => 'ಪೊಲಿಶ್‌‌ ಜ್ವಾತೀ',
+      'symbol' => 'PLN',
+    ),
+    'PYG' => 
+    array (
+      'name' => 'ಪೆರುಗ್ವೇಯ ಗ್ವಾರನೀ',
+      'symbol' => 'PYG',
+    ),
+    'QAR' => 
+    array (
+      'name' => 'ಕತಾರ್‌ನ ರಿಯಾಲ್‌',
+      'symbol' => 'QAR',
+    ),
+    'RSD' => 
+    array (
+      'name' => 'ಸರ್ಬಿಯಾದ ದಿನಾರ್‌',
+      'symbol' => 'RSD',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'ರಷ್ಯಾದ ರೂಬೆಲ್‌',
+      'symbol' => 'RUB',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'ರ‍್ವಾಂಡನ್‌ ಫ್ರಾಂಕ್‌',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'ಸೌದಿಯ ರಿಯಾಲ್‌‌‌‌',
+      'symbol' => 'SAR',
+    ),
+    'SBD' => 
+    array (
+      'name' => 'ಸೊಲೊಮನ್‌ ಐಲ್ಯಾಂಡ್ಸ್‌‌‌ನ ಡಾಲರ್‌',
+      'symbol' => 'SBD',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'ಸೆಶೆಲ್‌ನ ರುಪೀ',
+      'symbol' => 'SCR',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'ಸುಡಾನ್‌ನ ಪೌಂಡ್‌',
+      'symbol' => 'SDG',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'ಸ್ವೀಡಿಶ್ ಕ್ರೋನಾ',
+      'symbol' => 'SEK',
+    ),
+    'SGD' => 
+    array (
+      'name' => 'ಸಿಂಗಾಪೂರ್‌‌ ಡಾಲರ್',
+      'symbol' => 'SGD',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'ಸೇಂಟ್‌ ಹೆಲೆನಾ ಪೌಂಡ್‌',
+      'symbol' => 'SHP',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'ಸಿಯೆರಾ ಲಿಯೋನ್‌ನ ಲಿಯೋನ್‌',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'ಸೋಮಾಲಿ ಶಿಲ್ಲಿಂಗ್‌',
+      'symbol' => 'SOS',
+    ),
+    'SRD' => 
+    array (
+      'name' => 'ಸುರಿನಾಮ್‌ನ ಡಾಲರ್‌',
+      'symbol' => 'SRD',
+    ),
+    'STD' => 
+    array (
+      'name' => 'ಸಾವೊ ಟೋಮ್ ಮತ್ತು ಪ್ರಿನ್ಸಿಪ್ ದೊಬ್ರಾ',
+      'symbol' => 'STD',
+    ),
+    'SYP' => 
+    array (
+      'name' => 'ಸಿರಿಯಾದ ಪೌಂಡ್‌‌',
+      'symbol' => 'SYP',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'ಸ್ವಾಜಿ ಲಿಲಂಗೆನಿ',
+      'symbol' => 'SZL',
+    ),
+    'THB' => 
+    array (
+      'name' => 'ಥಾಯ್‌ ಭತ್‌‌',
+      'symbol' => 'THB',
+    ),
+    'TJS' => 
+    array (
+      'name' => 'ತಝಕಿಸ್ತಾನ್‌ನ ಸೊಮೊನಿ',
+      'symbol' => 'TJS',
+    ),
+    'TMT' => 
+    array (
+      'name' => 'ತುರ್ಕೆಮಿಸ್ತಾನಿ ಮಾನತ್‌',
+      'symbol' => 'TMT',
+    ),
+    'TND' => 
+    array (
+      'name' => 'ಟ್ಯುನಿಷಿಯಾದ ದಿನಾರ್‌',
+      'symbol' => 'TND',
+    ),
+    'TOP' => 
+    array (
+      'name' => 'ಟೊಂಗಾ ಪಾಂಗ',
+      'symbol' => 'TOP',
+    ),
+    'TRY' => 
+    array (
+      'name' => 'ಟರ್ಕಿಶ್‌ ಲಿರಾ',
+      'symbol' => 'TRY',
+    ),
+    'TTD' => 
+    array (
+      'name' => 'ಟ್ರಿನಿಡಾಡ್ ಮತ್ತು ಟೊಬಾಗೋ ಡಾಲರ್‌',
+      'symbol' => 'TTD',
+    ),
+    'TWD' => 
+    array (
+      'name' => 'ನ್ಯೂ ತೈವಾನ್ ಡಾಲರ್',
+      'symbol' => 'TWD',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'ತಾಂಝೇನಿಯಾದ ಶಿಲ್ಲಿಂಗ್‌',
+      'symbol' => 'TZS',
+    ),
+    'UAH' => 
+    array (
+      'name' => 'ಉಕ್ರೇನ್‌ನ ರೇವ್ನಿಯಾ',
+      'symbol' => 'UAH',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'ಉಗಾಂಡ ಶಿಲ್ಲಿಂಗ್‌',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'ಅಮೆರಿಕದ ಡಾಲರ್‌',
+      'symbol' => 'USD',
+    ),
+    'UYU' => 
+    array (
+      'name' => 'ಉರುಗ್ವೆಯ ಪೆಸೊ',
+      'symbol' => 'UYU',
+    ),
+    'UZS' => 
+    array (
+      'name' => 'ಉಜ್ಬೇಕಿಸ್ತಾನ್‌ ಸೊಮ್‌',
+      'symbol' => 'UZS',
+    ),
+    'VEF' => 
+    array (
+      'name' => 'ವೆನೆಜುವೆಲಾದ ಬೊಲಿವರ್‌',
+      'symbol' => 'VEF',
+    ),
+    'VND' => 
+    array (
+      'name' => 'ವಿಯೆಟ್ನಾಮ್‌‌ನ ಡಾಂಗ್‌',
+      'symbol' => 'VND',
+    ),
+    'VUV' => 
+    array (
+      'name' => 'ವ್ಯಾನ್‌ವಾತೂ ವಾಟು',
+      'symbol' => 'VUV',
+    ),
+    'WST' => 
+    array (
+      'name' => 'ಸಮೋವನ್‌ ತಾಲಾ',
+      'symbol' => 'WST',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'CFA ಫ್ರಾಂಕ್‌ BEAC',
+      'symbol' => 'XAF',
+    ),
+    'XCD' => 
+    array (
+      'name' => 'ಪೂರ್ವ ಕೆರಿಬಿಯನ್‌ ಡಾಲರ್‌',
+      'symbol' => 'XCD',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'CFA ಫ್ರಾಂಕ್‌ BCEAO',
+      'symbol' => 'XOF',
+    ),
+    'XPF' => 
+    array (
+      'name' => 'CFP ಫ್ರಾಂಕ್‌',
+      'symbol' => 'XPF',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'ಗೊತ್ತಿಲ್ಲದ ಕರೆನ್ಸಿ',
+      'symbol' => 'XXX',
+    ),
+    'YER' => 
+    array (
+      'name' => 'ಯೆಮೆನ್‌ನ ರಿಯಾಲ್‌',
+      'symbol' => 'YER',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'ದಕ್ಷಿಣ ಆಫ್ರಿಕಾದ ರ‍್ಯಾಂಡ್‌',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'ಜಾಂಬಿಯಾ ಕ್ವಾಚ',
+      'symbol' => 'ZMK',
+    ),
+  ),
+);

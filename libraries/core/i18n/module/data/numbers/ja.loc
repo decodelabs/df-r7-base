@@ -1,0 +1,1374 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => '.',
+    'group' => ',',
+    'nan' => 'NaN（非数）',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'scientific' => '#E0',
+    'percent' => '#,##0%',
+    'currency' => '¤#,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'ADP' => 
+    array (
+      'name' => 'アンドラ ペセタ',
+      'symbol' => 'ADP',
+    ),
+    'AED' => 
+    array (
+      'name' => 'アラブ首長国連邦ディルハム',
+      'symbol' => 'AED',
+    ),
+    'AFA' => 
+    array (
+      'name' => 'アフガニー (1927-2002)',
+      'symbol' => 'AFA',
+    ),
+    'AFN' => 
+    array (
+      'name' => 'アフガニー',
+      'symbol' => 'AFN',
+    ),
+    'ALL' => 
+    array (
+      'name' => 'アルバニア レク',
+      'symbol' => 'ALL',
+    ),
+    'AMD' => 
+    array (
+      'name' => 'アルメニア ドラム',
+      'symbol' => 'AMD',
+    ),
+    'ANG' => 
+    array (
+      'name' => 'オランダ領アンティル ギルダー',
+      'symbol' => 'ANG',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'クワンザ',
+      'symbol' => 'AOA',
+    ),
+    'AOK' => 
+    array (
+      'name' => 'クワンザ (1977-1990)',
+      'symbol' => 'AOK',
+    ),
+    'AON' => 
+    array (
+      'name' => 'アンゴラ 新クワンザ (1990-2000)',
+      'symbol' => 'AON',
+    ),
+    'AOR' => 
+    array (
+      'name' => 'アンゴラ 旧クワンザ (1995-1999)',
+      'symbol' => 'AOR',
+    ),
+    'ARA' => 
+    array (
+      'name' => 'アルゼンチン アゥストラール',
+      'symbol' => 'ARA',
+    ),
+    'ARP' => 
+    array (
+      'name' => 'アルゼンチン ペソ (1983-1985)',
+      'symbol' => 'ARP',
+    ),
+    'ARS' => 
+    array (
+      'name' => 'アルゼンチン ペソ',
+      'symbol' => 'ARS',
+    ),
+    'ATS' => 
+    array (
+      'name' => 'オーストリア シリング',
+      'symbol' => 'ATS',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'オーストラリア ドル',
+      'symbol' => 'AUD',
+    ),
+    'AWG' => 
+    array (
+      'name' => 'アルバ ギルダー',
+      'symbol' => 'AWG',
+    ),
+    'AZM' => 
+    array (
+      'name' => 'アゼルバイジャン マナト (1993-2006)',
+      'symbol' => 'AZM',
+    ),
+    'AZN' => 
+    array (
+      'name' => 'アゼルバイジャン マナト',
+      'symbol' => 'AZN',
+    ),
+    'BAD' => 
+    array (
+      'name' => 'ボスニア ディナール',
+      'symbol' => 'BAD',
+    ),
+    'BAM' => 
+    array (
+      'name' => 'ボスニア マルク (BAM)',
+      'symbol' => 'BAM',
+    ),
+    'BBD' => 
+    array (
+      'name' => 'バルバドス ドル',
+      'symbol' => 'BBD',
+    ),
+    'BDT' => 
+    array (
+      'name' => 'バングラデシュ タカ',
+      'symbol' => 'BDT',
+    ),
+    'BEC' => 
+    array (
+      'name' => 'ベルギー フラン (BEC)',
+      'symbol' => 'BEC',
+    ),
+    'BEF' => 
+    array (
+      'name' => 'ベルギー フラン',
+      'symbol' => 'BEF',
+    ),
+    'BEL' => 
+    array (
+      'name' => 'ベルギー フラン (BEL)',
+      'symbol' => 'BEL',
+    ),
+    'BGL' => 
+    array (
+      'name' => 'ブルガリア レフ',
+      'symbol' => 'BGL',
+    ),
+    'BGN' => 
+    array (
+      'name' => 'ブルガリア 新レフ',
+      'symbol' => 'BGN',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'バーレーン ディナール',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'ブルンジ フラン',
+      'symbol' => 'BIF',
+    ),
+    'BMD' => 
+    array (
+      'name' => 'バミューダ ドル',
+      'symbol' => 'BMD',
+    ),
+    'BND' => 
+    array (
+      'name' => 'ブルネイ ドル',
+      'symbol' => 'BND',
+    ),
+    'BOB' => 
+    array (
+      'name' => 'ボリビアーノ',
+      'symbol' => 'BOB',
+    ),
+    'BOP' => 
+    array (
+      'name' => 'ボリビア ペソ',
+      'symbol' => 'BOP',
+    ),
+    'BOV' => 
+    array (
+      'name' => 'ボリビア (Mvdol)',
+      'symbol' => 'BOV',
+    ),
+    'BRB' => 
+    array (
+      'name' => 'ブラジル 新クルゼイロ (1967-1986)',
+      'symbol' => 'BRB',
+    ),
+    'BRC' => 
+    array (
+      'name' => 'ブラジル クルゼイロ',
+      'symbol' => 'BRC',
+    ),
+    'BRE' => 
+    array (
+      'name' => 'ブラジル クルゼイロ (1990-1993)',
+      'symbol' => 'BRE',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'ブラジル レアル',
+      'symbol' => 'BRL',
+    ),
+    'BRN' => 
+    array (
+      'name' => 'ブラジル 新クルゼイロ',
+      'symbol' => 'BRN',
+    ),
+    'BRR' => 
+    array (
+      'name' => 'ブラジル クルゼイロ レアル',
+      'symbol' => 'BRR',
+    ),
+    'BSD' => 
+    array (
+      'name' => 'バハマ ドル',
+      'symbol' => 'BSD',
+    ),
+    'BTN' => 
+    array (
+      'name' => 'ブータン ニュルタム',
+      'symbol' => 'BTN',
+    ),
+    'BUK' => 
+    array (
+      'name' => 'ビルマ チャット',
+      'symbol' => 'BUK',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'ボツワナ プラ',
+      'symbol' => 'BWP',
+    ),
+    'BYB' => 
+    array (
+      'name' => 'ベラルーシ ルーブル (1994-1999)',
+      'symbol' => 'BYB',
+    ),
+    'BYR' => 
+    array (
+      'name' => 'ベラルーシ ルーブル',
+      'symbol' => 'BYR',
+    ),
+    'BZD' => 
+    array (
+      'name' => 'ベリーズ ドル',
+      'symbol' => 'BZD',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'カナダ ドル',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'コンゴ フラン',
+      'symbol' => 'CDF',
+    ),
+    'CHE' => 
+    array (
+      'name' => 'ユーロ (WIR)',
+      'symbol' => 'CHE',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'スイス フラン',
+      'symbol' => 'CHF',
+    ),
+    'CHW' => 
+    array (
+      'name' => 'フラン (WIR)',
+      'symbol' => 'CHW',
+    ),
+    'CLF' => 
+    array (
+      'name' => 'チリ ウニダ デ フォメント',
+      'symbol' => 'CLF',
+    ),
+    'CLP' => 
+    array (
+      'name' => 'チリ ペソ',
+      'symbol' => 'CLP',
+    ),
+    'CNY' => 
+    array (
+      'name' => '中国人民元',
+      'symbol' => '元',
+    ),
+    'COP' => 
+    array (
+      'name' => 'コロンビア ペソ',
+      'symbol' => 'COP',
+    ),
+    'COU' => 
+    array (
+      'name' => 'レアル (UVR)',
+      'symbol' => 'COU',
+    ),
+    'CRC' => 
+    array (
+      'name' => 'コスタリカ コロン',
+      'symbol' => 'CRC',
+    ),
+    'CSD' => 
+    array (
+      'name' => 'セルビアン ディナール',
+      'symbol' => 'CSD',
+    ),
+    'CSK' => 
+    array (
+      'name' => 'チェコスロバキア コルナ',
+      'symbol' => 'CSK',
+    ),
+    'CUC' => 
+    array (
+      'name' => 'キューバ 兌換ペソ',
+      'symbol' => 'CUC',
+    ),
+    'CUP' => 
+    array (
+      'name' => 'キューバ ペソ',
+      'symbol' => 'CUP',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'カーボベルデ エスクード',
+      'symbol' => 'CVE',
+    ),
+    'CYP' => 
+    array (
+      'name' => 'キプロス ポンド',
+      'symbol' => 'CYP',
+    ),
+    'CZK' => 
+    array (
+      'name' => 'チェコ コルナ',
+      'symbol' => 'CZK',
+    ),
+    'DDM' => 
+    array (
+      'name' => '東ドイツ マルク',
+      'symbol' => 'DDM',
+    ),
+    'DEM' => 
+    array (
+      'name' => 'ドイツ マルク',
+      'symbol' => 'DEM',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'ジブチ フラン',
+      'symbol' => 'DJF',
+    ),
+    'DKK' => 
+    array (
+      'name' => 'デンマーク クローネ',
+      'symbol' => 'DKK',
+    ),
+    'DOP' => 
+    array (
+      'name' => 'ドミニカ ペソ',
+      'symbol' => 'DOP',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'アルジェリア ディナール',
+      'symbol' => 'DZD',
+    ),
+    'ECS' => 
+    array (
+      'name' => 'エクアドル スクレ',
+      'symbol' => 'ECS',
+    ),
+    'ECV' => 
+    array (
+      'name' => 'エクアドル (UVC)',
+      'symbol' => 'ECV',
+    ),
+    'EEK' => 
+    array (
+      'name' => 'エストニア クルーン',
+      'symbol' => 'EEK',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'エジプト ポンド',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'エリトリア ナクファ',
+      'symbol' => 'ERN',
+    ),
+    'ESA' => 
+    array (
+      'name' => 'スペインペセタ',
+      'symbol' => 'ESA',
+    ),
+    'ESB' => 
+    array (
+      'name' => 'スペイン 兌換ペセタ',
+      'symbol' => 'ESB',
+    ),
+    'ESP' => 
+    array (
+      'name' => 'スペイン ペセタ',
+      'symbol' => 'ESP',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'エチオピア ブル',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'ユーロ',
+      'symbol' => 'EUR',
+    ),
+    'FIM' => 
+    array (
+      'name' => 'フィンランド マルカ',
+      'symbol' => 'FIM',
+    ),
+    'FJD' => 
+    array (
+      'name' => 'フィジー諸島 ドル',
+      'symbol' => 'FJD',
+    ),
+    'FKP' => 
+    array (
+      'name' => 'フォークランド（マルビナス）諸島 ポンド',
+      'symbol' => 'FKP',
+    ),
+    'FRF' => 
+    array (
+      'name' => 'フランス フラン',
+      'symbol' => 'FRF',
+    ),
+    'GBP' => 
+    array (
+      'name' => '英国ポンド',
+      'symbol' => 'GBP',
+    ),
+    'GEK' => 
+    array (
+      'name' => 'グルジア クーポン ラリ',
+      'symbol' => 'GEK',
+    ),
+    'GEL' => 
+    array (
+      'name' => 'グルジア ラリ',
+      'symbol' => 'GEL',
+    ),
+    'GHC' => 
+    array (
+      'name' => 'ガーナ セディ (1979-2007)',
+      'symbol' => 'GHC',
+    ),
+    'GHS' => 
+    array (
+      'name' => 'ガーナ セディ',
+      'symbol' => 'GHS',
+    ),
+    'GIP' => 
+    array (
+      'name' => 'ジブラルタル ポンド',
+      'symbol' => 'GIP',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'ガンビア ダラシ',
+      'symbol' => 'GMD',
+    ),
+    'GNF' => 
+    array (
+      'name' => 'ギニア フラン',
+      'symbol' => 'GNF',
+    ),
+    'GNS' => 
+    array (
+      'name' => 'ギニア シリー',
+      'symbol' => 'GNS',
+    ),
+    'GQE' => 
+    array (
+      'name' => '赤道ギニア ギニー',
+      'symbol' => 'GQE',
+    ),
+    'GRD' => 
+    array (
+      'name' => 'ギリシャ ドラクマ',
+      'symbol' => 'GRD',
+    ),
+    'GTQ' => 
+    array (
+      'name' => 'グアテマラ ケツァル',
+      'symbol' => 'GTQ',
+    ),
+    'GWE' => 
+    array (
+      'name' => 'ポルトガル領ギニア エスクード',
+      'symbol' => 'GWE',
+    ),
+    'GWP' => 
+    array (
+      'name' => 'ギニアビサウ ペソ',
+      'symbol' => 'GWP',
+    ),
+    'GYD' => 
+    array (
+      'name' => 'ガイアナ ドル',
+      'symbol' => 'GYD',
+    ),
+    'HKD' => 
+    array (
+      'name' => '香港ドル',
+      'symbol' => 'HKD',
+    ),
+    'HNL' => 
+    array (
+      'name' => 'ホンジュラス レンピラ',
+      'symbol' => 'HNL',
+    ),
+    'HRD' => 
+    array (
+      'name' => 'クロアチア ディナール',
+      'symbol' => 'HRD',
+    ),
+    'HRK' => 
+    array (
+      'name' => 'クロアチア クーナ',
+      'symbol' => 'HRK',
+    ),
+    'HTG' => 
+    array (
+      'name' => 'ハイチ グールド',
+      'symbol' => 'HTG',
+    ),
+    'HUF' => 
+    array (
+      'name' => 'ハンガリー フォリント',
+      'symbol' => 'HUF',
+    ),
+    'IDR' => 
+    array (
+      'name' => 'インドネシア ルピア',
+      'symbol' => 'IDR',
+    ),
+    'IEP' => 
+    array (
+      'name' => 'アイリッシュ ポンド',
+      'symbol' => 'IEP',
+    ),
+    'ILP' => 
+    array (
+      'name' => 'イスラエル ポンド',
+      'symbol' => 'ILP',
+    ),
+    'ILS' => 
+    array (
+      'name' => 'イスラエル新シェケル',
+      'symbol' => 'ILS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'インド ルピー',
+      'symbol' => 'INR',
+    ),
+    'IQD' => 
+    array (
+      'name' => 'イラク ディナール',
+      'symbol' => 'IQD',
+    ),
+    'IRR' => 
+    array (
+      'name' => 'イラン リアル',
+      'symbol' => 'IRR',
+    ),
+    'ISK' => 
+    array (
+      'name' => 'アイスランド クローナ',
+      'symbol' => 'ISK',
+    ),
+    'ITL' => 
+    array (
+      'name' => 'イタリア リラ',
+      'symbol' => 'ITL',
+    ),
+    'JMD' => 
+    array (
+      'name' => 'ジャマイカ ドル',
+      'symbol' => 'JMD',
+    ),
+    'JOD' => 
+    array (
+      'name' => 'ヨルダン ディナール',
+      'symbol' => 'JOD',
+    ),
+    'JPY' => 
+    array (
+      'name' => '日本円',
+      'symbol' => '￥',
+    ),
+    'KES' => 
+    array (
+      'name' => 'ケニア シリング',
+      'symbol' => 'KES',
+    ),
+    'KGS' => 
+    array (
+      'name' => 'キルギスタン ソム',
+      'symbol' => 'KGS',
+    ),
+    'KHR' => 
+    array (
+      'name' => 'カンボジア リエル',
+      'symbol' => 'KHR',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'コモロ フラン',
+      'symbol' => 'KMF',
+    ),
+    'KPW' => 
+    array (
+      'name' => '北朝鮮 ウォン',
+      'symbol' => 'KPW',
+    ),
+    'KRW' => 
+    array (
+      'name' => '韓国 ウォン',
+      'symbol' => '￦',
+    ),
+    'KWD' => 
+    array (
+      'name' => 'クウェート ディナール',
+      'symbol' => 'KWD',
+    ),
+    'KYD' => 
+    array (
+      'name' => 'ケイマン諸島 ドル',
+      'symbol' => 'KYD',
+    ),
+    'KZT' => 
+    array (
+      'name' => 'カザフスタン テンゲ',
+      'symbol' => 'KZT',
+    ),
+    'LAK' => 
+    array (
+      'name' => 'ラオス キープ',
+      'symbol' => 'LAK',
+    ),
+    'LBP' => 
+    array (
+      'name' => 'レバノン ポンド',
+      'symbol' => 'LBP',
+    ),
+    'LKR' => 
+    array (
+      'name' => 'スリランカ ルピー',
+      'symbol' => 'LKR',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'リベリア ドル',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'レソト ロティ',
+      'symbol' => 'LSL',
+    ),
+    'LTL' => 
+    array (
+      'name' => 'リトアニア リタス',
+      'symbol' => 'LTL',
+    ),
+    'LTT' => 
+    array (
+      'name' => 'リトアニア タロナ',
+      'symbol' => 'LTT',
+    ),
+    'LUC' => 
+    array (
+      'name' => 'ルクセンブルク 兌換フラン',
+      'symbol' => 'LUC',
+    ),
+    'LUF' => 
+    array (
+      'name' => 'ルクセンブルグ フラン',
+      'symbol' => 'LUF',
+    ),
+    'LUL' => 
+    array (
+      'name' => 'ルクセンブルク 金融フラン',
+      'symbol' => 'LUL',
+    ),
+    'LVL' => 
+    array (
+      'name' => 'ラトビア ラッツ',
+      'symbol' => 'LVL',
+    ),
+    'LVR' => 
+    array (
+      'name' => 'ラトビア ルーブル',
+      'symbol' => 'LVR',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'リビア ディナール',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'モロッコ ディルハム',
+      'symbol' => 'MAD',
+    ),
+    'MAF' => 
+    array (
+      'name' => 'モロッコ フラン',
+      'symbol' => 'MAF',
+    ),
+    'MDL' => 
+    array (
+      'name' => 'モルドバ レイ',
+      'symbol' => 'MDL',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'マダガスカル アリアリ',
+      'symbol' => 'MGA',
+    ),
+    'MGF' => 
+    array (
+      'name' => 'マダガスカル フラン',
+      'symbol' => 'MGF',
+    ),
+    'MKD' => 
+    array (
+      'name' => 'マケドニア デナル',
+      'symbol' => 'MKD',
+    ),
+    'MLF' => 
+    array (
+      'name' => 'マリ フラン',
+      'symbol' => 'MLF',
+    ),
+    'MMK' => 
+    array (
+      'name' => 'ミャンマー チャット',
+      'symbol' => 'MMK',
+    ),
+    'MNT' => 
+    array (
+      'name' => 'モンゴル トグログ',
+      'symbol' => 'MNT',
+    ),
+    'MOP' => 
+    array (
+      'name' => 'マカオ パタカ',
+      'symbol' => 'MOP',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'モーリタニア ウギア',
+      'symbol' => 'MRO',
+    ),
+    'MTL' => 
+    array (
+      'name' => 'マルタ リラ',
+      'symbol' => 'MTL',
+    ),
+    'MTP' => 
+    array (
+      'name' => 'マルタ ポンド',
+      'symbol' => 'MTP',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'モーリシャス ルピー',
+      'symbol' => 'MUR',
+    ),
+    'MVR' => 
+    array (
+      'name' => 'モルディブ諸島 ルフィア',
+      'symbol' => 'MVR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'マラウィ クワチャ',
+      'symbol' => 'MWK',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'メキシコ ペソ',
+      'symbol' => 'MXN',
+    ),
+    'MXP' => 
+    array (
+      'name' => 'メキシコ ペソ (1861-1992)',
+      'symbol' => 'MXP',
+    ),
+    'MXV' => 
+    array (
+      'name' => 'メキシコ (UDI)',
+      'symbol' => 'MXV',
+    ),
+    'MYR' => 
+    array (
+      'name' => 'マレーシア リンギット',
+      'symbol' => 'MYR',
+    ),
+    'MZE' => 
+    array (
+      'name' => 'モザンピーク エスクード',
+      'symbol' => 'MZE',
+    ),
+    'MZM' => 
+    array (
+      'name' => 'モザンピーク メティカル',
+      'symbol' => 'MZM',
+    ),
+    'MZN' => 
+    array (
+      'name' => 'モザンビーク メティカル',
+      'symbol' => 'MZN',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'ナミビア ドル',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'ナイジェリア ナイラ',
+      'symbol' => 'NGN',
+    ),
+    'NIC' => 
+    array (
+      'name' => 'ニカラグア コルドバ',
+      'symbol' => 'NIC',
+    ),
+    'NIO' => 
+    array (
+      'name' => 'ニカラグア コルドバ オロ',
+      'symbol' => 'NIO',
+    ),
+    'NLG' => 
+    array (
+      'name' => 'オランダ ギルダー',
+      'symbol' => 'NLG',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'ノルウェー クローネ',
+      'symbol' => 'NOK',
+    ),
+    'NPR' => 
+    array (
+      'name' => 'ネパール ルピー',
+      'symbol' => 'NPR',
+    ),
+    'NZD' => 
+    array (
+      'name' => 'ニュージーランド ドル',
+      'symbol' => 'NZD',
+    ),
+    'OMR' => 
+    array (
+      'name' => 'オマーン リアル',
+      'symbol' => 'OMR',
+    ),
+    'PAB' => 
+    array (
+      'name' => 'パナマ バルボア',
+      'symbol' => 'PAB',
+    ),
+    'PEI' => 
+    array (
+      'name' => 'ペルー インティ',
+      'symbol' => 'PEI',
+    ),
+    'PEN' => 
+    array (
+      'name' => 'ペルー 新ソル',
+      'symbol' => 'PEN',
+    ),
+    'PES' => 
+    array (
+      'name' => 'ペルー ソル',
+      'symbol' => 'PES',
+    ),
+    'PGK' => 
+    array (
+      'name' => 'パプアニューギニア キナ',
+      'symbol' => 'PGK',
+    ),
+    'PHP' => 
+    array (
+      'name' => 'フィリピン ペソ',
+      'symbol' => 'PHP',
+    ),
+    'PKR' => 
+    array (
+      'name' => 'パキスタン ルピー',
+      'symbol' => 'PKR',
+    ),
+    'PLN' => 
+    array (
+      'name' => 'ポーランド ズウォティ',
+      'symbol' => 'PLN',
+    ),
+    'PLZ' => 
+    array (
+      'name' => 'ポーランド ズウォティ (1950-1995)',
+      'symbol' => 'PLZ',
+    ),
+    'PTE' => 
+    array (
+      'name' => 'ポルトガル エスクード',
+      'symbol' => 'PTE',
+    ),
+    'PYG' => 
+    array (
+      'name' => 'パラグアイ グアラニ',
+      'symbol' => 'PYG',
+    ),
+    'QAR' => 
+    array (
+      'name' => 'カタール リアル',
+      'symbol' => 'QAR',
+    ),
+    'RHD' => 
+    array (
+      'name' => 'ローデシア ドル',
+      'symbol' => 'RHD',
+    ),
+    'ROL' => 
+    array (
+      'name' => 'ルーマニア 旧レイ',
+      'symbol' => 'ROL',
+    ),
+    'RON' => 
+    array (
+      'name' => 'ルーマニア レイ',
+      'symbol' => 'RON',
+    ),
+    'RSD' => 
+    array (
+      'name' => 'ディナール (セルビア)',
+      'symbol' => 'RSD',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'ロシア ルーブル',
+      'symbol' => 'RUB',
+    ),
+    'RUR' => 
+    array (
+      'name' => 'ロシア ルーブル (1991-1998)',
+      'symbol' => 'RUR',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'ルワンダ フラン',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'サウジ リヤル',
+      'symbol' => 'SAR',
+    ),
+    'SBD' => 
+    array (
+      'name' => 'ソロモン諸島 ドル',
+      'symbol' => 'SBD',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'セイシェル ルピー',
+      'symbol' => 'SCR',
+    ),
+    'SDD' => 
+    array (
+      'name' => 'スーダン ディナール',
+      'symbol' => 'SDD',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'スーダン ポンド',
+      'symbol' => 'SDG',
+    ),
+    'SDP' => 
+    array (
+      'name' => '旧スーダン ポンド',
+      'symbol' => 'SDP',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'スウェーデン クローナ',
+      'symbol' => 'SEK',
+    ),
+    'SGD' => 
+    array (
+      'name' => 'シンガポール ドル',
+      'symbol' => 'SGD',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'セントヘレナ島 ポンド',
+      'symbol' => 'SHP',
+    ),
+    'SIT' => 
+    array (
+      'name' => 'スロベニア トラール',
+      'symbol' => 'SIT',
+    ),
+    'SKK' => 
+    array (
+      'name' => 'スロバキア コルナ',
+      'symbol' => 'SKK',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'シエラレオネ レオン',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'ソマリア シリング',
+      'symbol' => 'SOS',
+    ),
+    'SRD' => 
+    array (
+      'name' => 'スリナム ドル',
+      'symbol' => 'SRD',
+    ),
+    'SRG' => 
+    array (
+      'name' => 'スリナム ギルダー',
+      'symbol' => 'SRG',
+    ),
+    'STD' => 
+    array (
+      'name' => 'サントメ・プリンシペ ドブラ',
+      'symbol' => 'STD',
+    ),
+    'SUR' => 
+    array (
+      'name' => 'ソ連 ルーブル',
+      'symbol' => 'SUR',
+    ),
+    'SVC' => 
+    array (
+      'name' => 'エルサルバドル コロン',
+      'symbol' => 'SVC',
+    ),
+    'SYP' => 
+    array (
+      'name' => 'シリア ポンド',
+      'symbol' => 'SYP',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'スワジランド リランゲニ',
+      'symbol' => 'SZL',
+    ),
+    'THB' => 
+    array (
+      'name' => 'タイ バーツ',
+      'symbol' => 'THB',
+    ),
+    'TJR' => 
+    array (
+      'name' => 'タジキスタン ルーブル',
+      'symbol' => 'TJR',
+    ),
+    'TJS' => 
+    array (
+      'name' => 'タジキスタン ソモニ',
+      'symbol' => 'TJS',
+    ),
+    'TMM' => 
+    array (
+      'name' => 'トルクメニスタン マナト',
+      'symbol' => 'TMM',
+    ),
+    'TMT' => 
+    array (
+      'name' => 'トルクメニスタン 新マナト',
+      'symbol' => 'TMT',
+    ),
+    'TND' => 
+    array (
+      'name' => 'チュニジア ディナール',
+      'symbol' => 'TND',
+    ),
+    'TOP' => 
+    array (
+      'name' => 'トンガ パ・アンガ',
+      'symbol' => 'TOP',
+    ),
+    'TPE' => 
+    array (
+      'name' => 'ティモール エスクード',
+      'symbol' => 'TPE',
+    ),
+    'TRL' => 
+    array (
+      'name' => 'トルコ リラ',
+      'symbol' => 'TRL',
+    ),
+    'TRY' => 
+    array (
+      'name' => '新トルコリラ',
+      'symbol' => 'TRY',
+    ),
+    'TTD' => 
+    array (
+      'name' => 'トリニダードトバゴ ドル',
+      'symbol' => 'TTD',
+    ),
+    'TWD' => 
+    array (
+      'name' => '新台湾ドル',
+      'symbol' => 'TWD',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'タンザニア シリング',
+      'symbol' => 'TZS',
+    ),
+    'UAH' => 
+    array (
+      'name' => 'ウクライナ グリブナ',
+      'symbol' => 'UAH',
+    ),
+    'UAK' => 
+    array (
+      'name' => 'ウクライナ カルボバネツ',
+      'symbol' => 'UAK',
+    ),
+    'UGS' => 
+    array (
+      'name' => 'ウガンダ シリング (1966-1987)',
+      'symbol' => 'UGS',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'ウガンダ シリング',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => '米ドル',
+      'symbol' => '$',
+    ),
+    'USN' => 
+    array (
+      'name' => '米ドル (翌日)',
+      'symbol' => 'USN',
+    ),
+    'USS' => 
+    array (
+      'name' => '米ドル (当日)',
+      'symbol' => 'USS',
+    ),
+    'UYP' => 
+    array (
+      'name' => 'ウルグアイ ペソ (1975-1993)',
+      'symbol' => 'UYP',
+    ),
+    'UYU' => 
+    array (
+      'name' => 'ウルグアイ ペソ',
+      'symbol' => 'UYU',
+    ),
+    'UZS' => 
+    array (
+      'name' => 'ウズベキスタン スム',
+      'symbol' => 'UZS',
+    ),
+    'VEB' => 
+    array (
+      'name' => 'ベネズエラ ボリバル',
+      'symbol' => 'VEB',
+    ),
+    'VEF' => 
+    array (
+      'name' => 'ベネズエラ ボリバルフエルテ',
+      'symbol' => 'VEF',
+    ),
+    'VND' => 
+    array (
+      'name' => 'ベトナム ドン',
+      'symbol' => 'VND',
+    ),
+    'VUV' => 
+    array (
+      'name' => 'バヌアツ バツ',
+      'symbol' => 'VUV',
+    ),
+    'WST' => 
+    array (
+      'name' => '西サモア タラ',
+      'symbol' => 'WST',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'フラン (CFA-BEAC)',
+      'symbol' => 'XAF',
+    ),
+    'XAG' => 
+    array (
+      'name' => '銀',
+      'symbol' => 'XAG',
+    ),
+    'XAU' => 
+    array (
+      'name' => '金',
+      'symbol' => 'XAU',
+    ),
+    'XBA' => 
+    array (
+      'name' => 'ヨーロッパ混合単位 (EURCO)',
+      'symbol' => 'XBA',
+    ),
+    'XBB' => 
+    array (
+      'name' => 'ヨーロッパ通貨単位 (EMU-6)',
+      'symbol' => 'XBB',
+    ),
+    'XBC' => 
+    array (
+      'name' => 'ヨーロッパ勘定単位 (EUA-9)',
+      'symbol' => 'XBC',
+    ),
+    'XBD' => 
+    array (
+      'name' => 'ヨーロッパ勘定単位 (EUA-17)',
+      'symbol' => 'XBD',
+    ),
+    'XCD' => 
+    array (
+      'name' => '東カリブ ドル',
+      'symbol' => 'XCD',
+    ),
+    'XDR' => 
+    array (
+      'name' => '特別引き出し権',
+      'symbol' => 'XDR',
+    ),
+    'XEU' => 
+    array (
+      'name' => 'ヨーロッパ通貨単位',
+      'symbol' => 'XEU',
+    ),
+    'XFO' => 
+    array (
+      'name' => 'フランス金フラン',
+      'symbol' => 'XFO',
+    ),
+    'XFU' => 
+    array (
+      'name' => 'フランス フラン (UIC)',
+      'symbol' => 'XFU',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'フラン (CFA-BCEAO)',
+      'symbol' => 'XOF',
+    ),
+    'XPD' => 
+    array (
+      'name' => 'パラジウム',
+      'symbol' => 'XPD',
+    ),
+    'XPF' => 
+    array (
+      'name' => 'CFP フラン',
+      'symbol' => 'XPF',
+    ),
+    'XPT' => 
+    array (
+      'name' => 'プラチナ',
+      'symbol' => 'XPT',
+    ),
+    'XRE' => 
+    array (
+      'name' => 'RINET基金',
+      'symbol' => 'XRE',
+    ),
+    'XTS' => 
+    array (
+      'name' => 'テスト用通貨コード',
+      'symbol' => 'XTS',
+    ),
+    'XXX' => 
+    array (
+      'name' => '不明または無効な通貨',
+      'symbol' => 'XXX',
+    ),
+    'YDD' => 
+    array (
+      'name' => 'イエメン ディナール',
+      'symbol' => 'YDD',
+    ),
+    'YER' => 
+    array (
+      'name' => 'イエメン リアル',
+      'symbol' => 'YER',
+    ),
+    'YUD' => 
+    array (
+      'name' => 'ユーゴスラビア ディナール',
+      'symbol' => 'YUD',
+    ),
+    'YUM' => 
+    array (
+      'name' => 'ユーゴスラビア スーパー ディナール',
+      'symbol' => 'YUM',
+    ),
+    'YUN' => 
+    array (
+      'name' => 'ユーゴスラビア 新ディナール (YUN)',
+      'symbol' => 'YUN',
+    ),
+    'ZAL' => 
+    array (
+      'name' => '南アフリカ ランド (ZAL)',
+      'symbol' => 'ZAL',
+    ),
+    'ZAR' => 
+    array (
+      'name' => '南アフリカ ランド',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'ザンビア クワチャ',
+      'symbol' => 'ZMK',
+    ),
+    'ZRN' => 
+    array (
+      'name' => 'ザイール 新ザイール',
+      'symbol' => 'ZRN',
+    ),
+    'ZRZ' => 
+    array (
+      'name' => 'ザイール ザイール',
+      'symbol' => 'ZRZ',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'ジンバブエ ドル',
+      'symbol' => 'ZWD',
+    ),
+    'ZWL' => 
+    array (
+      'name' => 'ジンバブエ ドル (2009)',
+      'symbol' => 'ZWL',
+    ),
+  ),
+);

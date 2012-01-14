@@ -1,0 +1,17 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'AWG' => 
+    array (
+      'name' => 'AWG',
+      'symbol' => 'Afl.',
+    ),
+  ),
+);

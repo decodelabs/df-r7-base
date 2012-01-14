@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Sul',
+        'mon' => 'Llun',
+        'tue' => 'Maw',
+        'wed' => 'Mer',
+        'thu' => 'Iau',
+        'fri' => 'Gwen',
+        'sat' => 'Sad',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Dydd Sul',
+        'mon' => 'Dydd Llun',
+        'tue' => 'Dydd Mawrth',
+        'wed' => 'Dydd Mercher',
+        'thu' => 'Dydd Iau',
+        'fri' => 'Dydd Gwener',
+        'sat' => 'Dydd Sadwrn',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Ion',
+        2 => 'Chwef',
+        3 => 'Mawrth',
+        4 => 'Ebrill',
+        5 => 'Mai',
+        6 => 'Meh',
+        7 => 'Gorff',
+        8 => 'Awst',
+        9 => 'Medi',
+        10 => 'Hyd',
+        11 => 'Tach',
+        12 => 'Rhag',
+      ),
+      'full' => 
+      array (
+        1 => 'Ionawr',
+        2 => 'Chwefror',
+        3 => 'Mawrth',
+        4 => 'Ebrill',
+        5 => 'Mai',
+        6 => 'Mehefin',
+        7 => 'Gorffenaf',
+        8 => 'Awst',
+        9 => 'Medi',
+        10 => 'Hydref',
+        11 => 'Tachwedd',
+        12 => 'Rhagfyr',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'dd/MM/yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'HH:mm:ss zzzz',
+      'long' => 'HH:mm:ss z',
+      'medium' => 'HH:mm:ss',
+      'short' => 'HH:mm',
+    ),
+  ),
+);

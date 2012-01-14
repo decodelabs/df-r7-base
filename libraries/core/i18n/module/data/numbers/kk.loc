@@ -1,0 +1,261 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => ',',
+    'group' => ' ',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '0.0 мың',
+    'currency' => '#,##0.00 ¤',
+  ),
+  'currencies' => 
+  array (
+    'AED' => 
+    array (
+      'name' => 'Дихрам (БАЭ)',
+      'symbol' => 'AED',
+    ),
+    'AFN' => 
+    array (
+      'name' => 'Афгани',
+      'symbol' => 'AFN',
+    ),
+    'ALL' => 
+    array (
+      'name' => 'Албания лекі',
+      'symbol' => 'ALL',
+    ),
+    'AMD' => 
+    array (
+      'name' => 'Армения драмы',
+      'symbol' => 'AMD',
+    ),
+    'ARS' => 
+    array (
+      'name' => 'Аргентина пессосы',
+      'symbol' => 'ARS',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'Австралия доллары',
+      'symbol' => 'AUD',
+    ),
+    'AZM' => 
+    array (
+      'name' => 'Азербайджан манаты (1993-2006)',
+      'symbol' => 'AZM',
+    ),
+    'AZN' => 
+    array (
+      'name' => 'Азербайджан манаты',
+      'symbol' => 'AZN',
+    ),
+    'BBD' => 
+    array (
+      'name' => 'Барбадиан доллары',
+      'symbol' => 'BBD',
+    ),
+    'BDT' => 
+    array (
+      'name' => 'Бангладеш Такасы',
+      'symbol' => 'BDT',
+    ),
+    'BGN' => 
+    array (
+      'name' => 'Болгар леві',
+      'symbol' => 'BGN',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'Бахрейн динары',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'Бурундиан франкі',
+      'symbol' => 'BIF',
+    ),
+    'BND' => 
+    array (
+      'name' => 'Бруней доллары',
+      'symbol' => 'BND',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'Бразилия реалы',
+      'symbol' => 'BRL',
+    ),
+    'BYR' => 
+    array (
+      'name' => 'Беларус рублі',
+      'symbol' => 'BYR',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'Канада доллары',
+      'symbol' => 'CAD',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'Швейцар франкі',
+      'symbol' => 'CHF',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'Қытай юаны',
+      'symbol' => 'CNY',
+    ),
+    'CZK' => 
+    array (
+      'name' => 'Чех кронасы',
+      'symbol' => 'CZK',
+    ),
+    'DKK' => 
+    array (
+      'name' => 'Дат кроны',
+      'symbol' => 'DKK',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'Еуро',
+      'symbol' => 'EUR',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'Британия фунты',
+      'symbol' => 'GBP',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'Гонконг доллары',
+      'symbol' => 'HKD',
+    ),
+    'IDR' => 
+    array (
+      'name' => 'Индонезия рупиі',
+      'symbol' => 'IDR',
+    ),
+    'INR' => 
+    array (
+      'name' => 'Үнді рупия',
+      'symbol' => 'INR',
+    ),
+    'JMD' => 
+    array (
+      'name' => 'Ямайка доллары',
+      'symbol' => 'JMD',
+    ),
+    'JOD' => 
+    array (
+      'name' => 'Йорданиан динары',
+      'symbol' => 'JOD',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'Жапон иені',
+      'symbol' => 'JPY',
+    ),
+    'KGS' => 
+    array (
+      'name' => 'Қырғызстан сомы',
+      'symbol' => 'KGS',
+    ),
+    'KRW' => 
+    array (
+      'name' => 'Оңтүстік Корея воны',
+      'symbol' => 'KRW',
+    ),
+    'KWD' => 
+    array (
+      'name' => 'Кувейт динары',
+      'symbol' => 'KWD',
+    ),
+    'KZT' => 
+    array (
+      'name' => 'Қазақстан теңгесі',
+      'symbol' => 'тңг.',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'Мексика пессосы',
+      'symbol' => 'MXN',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'Намибия доллары',
+      'symbol' => 'NAD',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'Норвегия кроны',
+      'symbol' => 'NOK',
+    ),
+    'NPR' => 
+    array (
+      'name' => 'Непал Рупиі',
+      'symbol' => 'NPR',
+    ),
+    'NZD' => 
+    array (
+      'name' => 'Жаңа Зеландия доллары',
+      'symbol' => 'NZD',
+    ),
+    'OMR' => 
+    array (
+      'name' => 'Оман риалы',
+      'symbol' => 'OMR',
+    ),
+    'PLN' => 
+    array (
+      'name' => 'Польша злотасы',
+      'symbol' => 'PLN',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'Ресей рубль',
+      'symbol' => 'руб.',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'Сауд риалы',
+      'symbol' => 'SAR',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'Швед кроны',
+      'symbol' => 'SEK',
+    ),
+    'THB' => 
+    array (
+      'name' => 'Тай баты',
+      'symbol' => 'THB',
+    ),
+    'TRY' => 
+    array (
+      'name' => 'Түрік лирасы',
+      'symbol' => 'TRY',
+    ),
+    'TWD' => 
+    array (
+      'name' => 'Жаңа Тайван доллары',
+      'symbol' => 'TWD',
+    ),
+    'USD' => 
+    array (
+      'name' => 'АҚШ доллары',
+      'symbol' => 'USD',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'Белгісіз валюта',
+      'symbol' => 'XXX',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'Оңтүстік Африка рэнді',
+      'symbol' => 'ZAR',
+    ),
+  ),
+);

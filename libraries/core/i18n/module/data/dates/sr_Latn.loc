@@ -1,0 +1,238 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'buddhist' => 
+  array (
+  ),
+  'coptic' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'full' => 
+      array (
+        1 => 'Taut',
+        2 => 'Baba',
+        3 => 'Hator',
+        4 => 'Kiahk',
+        5 => 'Toba',
+        6 => 'Amšir',
+        7 => 'Baramhat',
+        8 => 'Baramuda',
+        9 => 'Bašans',
+        10 => 'Paona',
+        11 => 'Epep',
+        12 => 'Mesra',
+        13 => 'Nasi',
+      ),
+    ),
+  ),
+  'ethiopic' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'full' => 
+      array (
+        1 => 'Meskerem',
+        2 => 'Tekemt',
+        3 => 'Hedar',
+        4 => 'Tahsas',
+        5 => 'Ter',
+        6 => 'Jekatit',
+        7 => 'Megabit',
+        8 => 'Miazia',
+        9 => 'Genbot',
+        10 => 'Sene',
+        11 => 'Hamle',
+        12 => 'Nehase',
+        13 => 'Pagumen',
+      ),
+    ),
+  ),
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'ned',
+        'mon' => 'pon',
+        'tue' => 'uto',
+        'wed' => 'sre',
+        'thu' => 'čet',
+        'fri' => 'pet',
+        'sat' => 'sub',
+      ),
+      'full' => 
+      array (
+        'sun' => 'nedelja',
+        'mon' => 'ponedeljak',
+        'tue' => 'utorak',
+        'wed' => 'sreda',
+        'thu' => 'četvrtak',
+        'fri' => 'petak',
+        'sat' => 'subota',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'jan',
+        2 => 'feb',
+        3 => 'mar',
+        4 => 'apr',
+        5 => 'maj',
+        6 => 'jun',
+        7 => 'jul',
+        8 => 'avg',
+        9 => 'sep',
+        10 => 'okt',
+        11 => 'nov',
+        12 => 'dec',
+      ),
+      'full' => 
+      array (
+        1 => 'januar',
+        2 => 'februar',
+        3 => 'mart',
+        4 => 'april',
+        5 => 'maj',
+        6 => 'jun',
+        7 => 'jul',
+        8 => 'avgust',
+        9 => 'septembar',
+        10 => 'oktobar',
+        11 => 'novembar',
+        12 => 'decembar',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, dd. MMMM y.',
+      'long' => 'dd. MMMM y.',
+      'medium' => 'dd.MM.y.',
+      'short' => 'd.M.yy.',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'HH.mm.ss zzzz',
+      'long' => 'HH.mm.ss z',
+      'medium' => 'HH.mm.ss',
+      'short' => 'HH.mm',
+    ),
+  ),
+  'hebrew' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'full' => 
+      array (
+        1 => 'Tišri',
+        2 => 'Hešvan',
+        3 => 'Kislev',
+        4 => 'Tevet',
+        5 => 'Ševat',
+        6 => 'Adar I',
+        7 => 'Adar II',
+        8 => 'Nisan',
+        9 => 'Ijar',
+        10 => 'Sivan',
+        11 => 'Tamuz',
+        12 => 'Av',
+        13 => 'Elul',
+      ),
+    ),
+  ),
+  'indian' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'full' => 
+      array (
+        1 => 'Čaitra',
+        2 => 'Vaisakha',
+        3 => 'Jiaista',
+        4 => 'Asada',
+        5 => 'Sravana',
+        6 => 'Badra',
+        7 => 'Asvina',
+        8 => 'Kartika',
+        9 => 'Argajana',
+        10 => 'Pauza',
+        11 => 'Maga',
+        12 => 'Falguna',
+      ),
+    ),
+  ),
+  'islamic' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Muh.',
+        2 => 'Saf.',
+        3 => 'Rab. I',
+        4 => 'Rab. II',
+        5 => 'Džum. I',
+        6 => 'Džum. II',
+        7 => 'Redž.',
+        8 => 'Ša.',
+        9 => 'Ram.',
+        10 => 'Še.',
+        11 => 'Zul-k.',
+        12 => 'Zul-h.',
+      ),
+      'full' => 
+      array (
+        1 => 'Muharem',
+        2 => 'Safer',
+        3 => 'Rabiʻ I',
+        4 => 'Rabiʻ II',
+        5 => 'Džumade I',
+        6 => 'Džumade II',
+        7 => 'Redžeb',
+        8 => 'Šaʻban',
+        9 => 'Ramazan',
+        10 => 'Ševal',
+        11 => 'Zul-kade',
+        12 => 'Zul-hidže',
+      ),
+    ),
+  ),
+  'japanese' => 
+  array (
+  ),
+  'persian' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'full' => 
+      array (
+        1 => 'Farvardin',
+        2 => 'Ordibehešt',
+        3 => 'Khordad',
+        4 => 'Tir',
+        5 => 'Mordad',
+        6 => 'Šahrivar',
+        7 => 'Mehr',
+        8 => 'Aban',
+        9 => 'Azar',
+        10 => 'Dej',
+        11 => 'Bahman',
+        12 => 'Esfand',
+      ),
+    ),
+  ),
+  'roc' => 
+  array (
+  ),
+);

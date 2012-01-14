@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'SAN',
+        'mon' => 'ORK',
+        'tue' => 'OKB',
+        'wed' => 'OKS',
+        'thu' => 'OKN',
+        'fri' => 'OKT',
+        'sat' => 'OMK',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Sande',
+        'mon' => 'Orwokubanza',
+        'tue' => 'Orwakabiri',
+        'wed' => 'Orwakashatu',
+        'thu' => 'Orwakana',
+        'fri' => 'Orwakataano',
+        'sat' => 'Orwamukaaga',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'KBZ',
+        2 => 'KBR',
+        3 => 'KST',
+        4 => 'KKN',
+        5 => 'KTN',
+        6 => 'KMK',
+        7 => 'KMS',
+        8 => 'KMN',
+        9 => 'KMN',
+        10 => 'KKM',
+        11 => 'KNK',
+        12 => 'KNB',
+      ),
+      'full' => 
+      array (
+        1 => 'Okwokubanza',
+        2 => 'Okwakabiri',
+        3 => 'Okwakashatu',
+        4 => 'Okwakana',
+        5 => 'Okwakataana',
+        6 => 'Okwamukaaga',
+        7 => 'Okwamushanju',
+        8 => 'Okwamunaana',
+        9 => 'Okwamwenda',
+        10 => 'Okwaikumi',
+        11 => 'Okwaikumi na kumwe',
+        12 => 'Okwaikumi na ibiri',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'dd/MM/yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+);

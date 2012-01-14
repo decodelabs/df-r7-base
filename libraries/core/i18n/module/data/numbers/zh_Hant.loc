@@ -1,0 +1,1350 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'nan' => '非數值',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '0.0B',
+    'currency' => '¤#,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'ADP' => 
+    array (
+      'name' => '安道爾陪士特',
+      'symbol' => 'ADP',
+    ),
+    'AED' => 
+    array (
+      'name' => '阿拉伯聯合大公國迪爾汗',
+      'symbol' => 'AED',
+    ),
+    'AFA' => 
+    array (
+      'name' => '阿富汗尼 (1927-2002)',
+      'symbol' => 'AFA',
+    ),
+    'AFN' => 
+    array (
+      'name' => '阿富汗尼',
+      'symbol' => 'AFN',
+    ),
+    'ALL' => 
+    array (
+      'name' => '阿爾巴尼亞列克',
+      'symbol' => 'ALL',
+    ),
+    'AMD' => 
+    array (
+      'name' => '亞美尼亞德拉姆',
+      'symbol' => 'AMD',
+    ),
+    'ANG' => 
+    array (
+      'name' => '荷屬安地列斯盾',
+      'symbol' => 'ANG',
+    ),
+    'AOA' => 
+    array (
+      'name' => '安哥拉寬扎',
+      'symbol' => 'AOA',
+    ),
+    'AOK' => 
+    array (
+      'name' => '安哥拉寬扎 (1977-1990)',
+      'symbol' => 'AOK',
+    ),
+    'AON' => 
+    array (
+      'name' => '安哥拉新寬扎 (1990-2000)',
+      'symbol' => 'AON',
+    ),
+    'AOR' => 
+    array (
+      'name' => '安哥拉新調寬扎 (1995-1999)',
+      'symbol' => 'AOR',
+    ),
+    'ARA' => 
+    array (
+      'name' => '阿根廷奧斯特納爾',
+      'symbol' => 'ARA',
+    ),
+    'ARP' => 
+    array (
+      'name' => '阿根廷披索 (1983-1985)',
+      'symbol' => 'ARP',
+    ),
+    'ARS' => 
+    array (
+      'name' => '阿根廷披索',
+      'symbol' => 'ARS',
+    ),
+    'ATS' => 
+    array (
+      'name' => '奧地利先令',
+      'symbol' => 'ATS',
+    ),
+    'AUD' => 
+    array (
+      'name' => '澳幣',
+      'symbol' => 'AUD',
+    ),
+    'AWG' => 
+    array (
+      'name' => '阿魯巴盾',
+      'symbol' => 'AWG',
+    ),
+    'AZM' => 
+    array (
+      'name' => '亞塞拜然馬納特 (1993-2006)',
+      'symbol' => 'AZM',
+    ),
+    'AZN' => 
+    array (
+      'name' => '亞塞拜然馬納特',
+      'symbol' => 'AZN',
+    ),
+    'BAD' => 
+    array (
+      'name' => '波士尼亞-黑塞哥維那第納爾',
+      'symbol' => 'BAD',
+    ),
+    'BAM' => 
+    array (
+      'name' => '波士尼亞-黑塞哥維那可轉換馬克',
+      'symbol' => 'BAM',
+    ),
+    'BBD' => 
+    array (
+      'name' => '巴貝多元',
+      'symbol' => 'BBD',
+    ),
+    'BDT' => 
+    array (
+      'name' => '孟加拉塔卡',
+      'symbol' => 'BDT',
+    ),
+    'BEC' => 
+    array (
+      'name' => '比利時法郎（可轉換）',
+      'symbol' => 'BEC',
+    ),
+    'BEF' => 
+    array (
+      'name' => '比利時法郎',
+      'symbol' => 'BEF',
+    ),
+    'BEL' => 
+    array (
+      'name' => '比利時法郎（金融）',
+      'symbol' => 'BEL',
+    ),
+    'BGL' => 
+    array (
+      'name' => '保加利亞硬列弗',
+      'symbol' => 'BGL',
+    ),
+    'BGN' => 
+    array (
+      'name' => '保加利亞新列弗',
+      'symbol' => 'BGN',
+    ),
+    'BHD' => 
+    array (
+      'name' => '巴林第納爾',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => '蒲隆地法郎',
+      'symbol' => 'BIF',
+    ),
+    'BMD' => 
+    array (
+      'name' => '百慕達幣',
+      'symbol' => 'BMD',
+    ),
+    'BND' => 
+    array (
+      'name' => '汶萊元',
+      'symbol' => 'BND',
+    ),
+    'BOB' => 
+    array (
+      'name' => '玻利維亞貨幣單位',
+      'symbol' => 'BOB',
+    ),
+    'BOP' => 
+    array (
+      'name' => '玻利維亞披索',
+      'symbol' => 'BOP',
+    ),
+    'BOV' => 
+    array (
+      'name' => '玻利維亞幕多',
+      'symbol' => 'BOV',
+    ),
+    'BRB' => 
+    array (
+      'name' => '巴西克魯薩多農瓦（1967-1986）',
+      'symbol' => 'BRB',
+    ),
+    'BRC' => 
+    array (
+      'name' => '巴西克魯賽羅 (1986-1989)',
+      'symbol' => 'BRC',
+    ),
+    'BRE' => 
+    array (
+      'name' => '巴西克魯賽羅 (1990-1993)',
+      'symbol' => 'BRE',
+    ),
+    'BRL' => 
+    array (
+      'name' => '巴西里拉',
+      'symbol' => 'BRL',
+    ),
+    'BRN' => 
+    array (
+      'name' => '巴西克如爾達農瓦',
+      'symbol' => 'BRN',
+    ),
+    'BRR' => 
+    array (
+      'name' => '巴西克魯賽羅',
+      'symbol' => 'BRR',
+    ),
+    'BSD' => 
+    array (
+      'name' => '巴哈馬元',
+      'symbol' => 'BSD',
+    ),
+    'BTN' => 
+    array (
+      'name' => '不丹那特倫',
+      'symbol' => 'BTN',
+    ),
+    'BUK' => 
+    array (
+      'name' => '緬甸基雅特',
+      'symbol' => 'BUK',
+    ),
+    'BWP' => 
+    array (
+      'name' => '波札那普拉',
+      'symbol' => 'BWP',
+    ),
+    'BYB' => 
+    array (
+      'name' => '白俄羅斯新盧布 (1994-1999)',
+      'symbol' => 'BYB',
+    ),
+    'BYR' => 
+    array (
+      'name' => '白俄羅斯盧布',
+      'symbol' => 'BYR',
+    ),
+    'BZD' => 
+    array (
+      'name' => '貝里斯元',
+      'symbol' => 'BZD',
+    ),
+    'CAD' => 
+    array (
+      'name' => '加幣',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => '剛果法郎',
+      'symbol' => 'CDF',
+    ),
+    'CHE' => 
+    array (
+      'name' => '歐元 (WIR)',
+      'symbol' => 'CHE',
+    ),
+    'CHF' => 
+    array (
+      'name' => '瑞士法郎',
+      'symbol' => 'CHF',
+    ),
+    'CHW' => 
+    array (
+      'name' => '法郎 (WIR)',
+      'symbol' => 'CHW',
+    ),
+    'CLF' => 
+    array (
+      'name' => '卡林油達佛曼跎',
+      'symbol' => 'CLF',
+    ),
+    'CLP' => 
+    array (
+      'name' => '智利披索',
+      'symbol' => 'CLP',
+    ),
+    'CNY' => 
+    array (
+      'name' => '人民幣',
+      'symbol' => '￥',
+    ),
+    'COP' => 
+    array (
+      'name' => '哥倫比亞披索',
+      'symbol' => 'COP',
+    ),
+    'CRC' => 
+    array (
+      'name' => '哥斯大黎加科郎',
+      'symbol' => 'CRC',
+    ),
+    'CSD' => 
+    array (
+      'name' => '舊塞爾維亞第納爾',
+      'symbol' => 'CSD',
+    ),
+    'CSK' => 
+    array (
+      'name' => '捷克斯洛伐克硬克朗',
+      'symbol' => 'CSK',
+    ),
+    'CUC' => 
+    array (
+      'name' => '古巴可轉換披索',
+      'symbol' => 'CUC',
+    ),
+    'CUP' => 
+    array (
+      'name' => '古巴披索',
+      'symbol' => 'CUP',
+    ),
+    'CVE' => 
+    array (
+      'name' => '維德角埃斯庫多',
+      'symbol' => 'CVE',
+    ),
+    'CYP' => 
+    array (
+      'name' => '賽普勒斯鎊',
+      'symbol' => 'CYP',
+    ),
+    'CZK' => 
+    array (
+      'name' => '捷克克朗',
+      'symbol' => 'CZK',
+    ),
+    'DDM' => 
+    array (
+      'name' => '東德奧斯特馬克',
+      'symbol' => 'DDM',
+    ),
+    'DEM' => 
+    array (
+      'name' => '德國馬克',
+      'symbol' => 'DEM',
+    ),
+    'DJF' => 
+    array (
+      'name' => '吉布地法郎',
+      'symbol' => 'DJF',
+    ),
+    'DKK' => 
+    array (
+      'name' => '丹麥克羅納',
+      'symbol' => 'DKK',
+    ),
+    'DOP' => 
+    array (
+      'name' => '多明尼加披索',
+      'symbol' => 'DOP',
+    ),
+    'DZD' => 
+    array (
+      'name' => '阿爾及利亞第納爾',
+      'symbol' => 'DZD',
+    ),
+    'ECS' => 
+    array (
+      'name' => '厄瓜多蘇克雷',
+      'symbol' => 'ECS',
+    ),
+    'ECV' => 
+    array (
+      'name' => '厄瓜多爾由里達瓦康斯坦 (UVC)',
+      'symbol' => 'ECV',
+    ),
+    'EEK' => 
+    array (
+      'name' => '愛沙尼亞克朗',
+      'symbol' => 'EEK',
+    ),
+    'EGP' => 
+    array (
+      'name' => '埃及鎊',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => '厄立特里亞納克法',
+      'symbol' => 'ERN',
+    ),
+    'ESA' => 
+    array (
+      'name' => '西班牙比塞塔（會計單位）',
+      'symbol' => 'ESA',
+    ),
+    'ESB' => 
+    array (
+      'name' => '西班牙比塞塔（可轉換會計單位）',
+      'symbol' => 'ESB',
+    ),
+    'ESP' => 
+    array (
+      'name' => '西班牙陪士特',
+      'symbol' => 'ESP',
+    ),
+    'ETB' => 
+    array (
+      'name' => '衣索比亞比爾',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => '歐元',
+      'symbol' => 'EUR',
+    ),
+    'FIM' => 
+    array (
+      'name' => '芬蘭馬克',
+      'symbol' => 'FIM',
+    ),
+    'FJD' => 
+    array (
+      'name' => '斐濟元',
+      'symbol' => 'FJD',
+    ),
+    'FKP' => 
+    array (
+      'name' => '福克蘭群島鎊',
+      'symbol' => 'FKP',
+    ),
+    'FRF' => 
+    array (
+      'name' => '法國法郎',
+      'symbol' => 'FRF',
+    ),
+    'GBP' => 
+    array (
+      'name' => '英鎊',
+      'symbol' => 'GBP',
+    ),
+    'GEK' => 
+    array (
+      'name' => '喬治庫旁拉里',
+      'symbol' => 'GEK',
+    ),
+    'GEL' => 
+    array (
+      'name' => '喬治拉里',
+      'symbol' => 'GEL',
+    ),
+    'GHC' => 
+    array (
+      'name' => '迦納仙蔕 (1979-2007)',
+      'symbol' => 'GHC',
+    ),
+    'GHS' => 
+    array (
+      'name' => '迦納仙蔕',
+      'symbol' => 'GHS',
+    ),
+    'GIP' => 
+    array (
+      'name' => '直布羅陀鎊',
+      'symbol' => 'GIP',
+    ),
+    'GMD' => 
+    array (
+      'name' => '甘比亞達拉西',
+      'symbol' => 'GMD',
+    ),
+    'GNF' => 
+    array (
+      'name' => '幾內亞法郎',
+      'symbol' => 'GNF',
+    ),
+    'GNS' => 
+    array (
+      'name' => '幾內亞西里',
+      'symbol' => 'GNS',
+    ),
+    'GQE' => 
+    array (
+      'name' => '赤道幾內亞埃奎勒',
+      'symbol' => 'GQE',
+    ),
+    'GRD' => 
+    array (
+      'name' => '希臘德拉克馬',
+      'symbol' => 'GRD',
+    ),
+    'GTQ' => 
+    array (
+      'name' => '瓜地馬拉格查爾',
+      'symbol' => 'GTQ',
+    ),
+    'GWE' => 
+    array (
+      'name' => '葡屬幾內亞埃斯庫多',
+      'symbol' => 'GWE',
+    ),
+    'GWP' => 
+    array (
+      'name' => '幾內亞比索披索',
+      'symbol' => 'GWP',
+    ),
+    'GYD' => 
+    array (
+      'name' => '圭亞那元',
+      'symbol' => 'GYD',
+    ),
+    'HKD' => 
+    array (
+      'name' => '港幣',
+      'symbol' => 'HKD',
+    ),
+    'HNL' => 
+    array (
+      'name' => '洪都拉斯倫皮拉',
+      'symbol' => 'HNL',
+    ),
+    'HRD' => 
+    array (
+      'name' => '克羅地亞第納爾',
+      'symbol' => 'HRD',
+    ),
+    'HRK' => 
+    array (
+      'name' => '克羅地亞庫納',
+      'symbol' => 'HRK',
+    ),
+    'HTG' => 
+    array (
+      'name' => '海地古德',
+      'symbol' => 'HTG',
+    ),
+    'HUF' => 
+    array (
+      'name' => '匈牙利福林',
+      'symbol' => 'HUF',
+    ),
+    'IDR' => 
+    array (
+      'name' => '印尼盾',
+      'symbol' => 'IDR',
+    ),
+    'IEP' => 
+    array (
+      'name' => '愛爾蘭鎊',
+      'symbol' => 'IEP',
+    ),
+    'ILP' => 
+    array (
+      'name' => '以色列鎊',
+      'symbol' => 'ILP',
+    ),
+    'ILS' => 
+    array (
+      'name' => '以色列新謝克爾',
+      'symbol' => 'ILS',
+    ),
+    'INR' => 
+    array (
+      'name' => '印度盧比',
+      'symbol' => 'INR',
+    ),
+    'IQD' => 
+    array (
+      'name' => '伊拉克第納爾',
+      'symbol' => 'IQD',
+    ),
+    'IRR' => 
+    array (
+      'name' => '伊朗里亞爾',
+      'symbol' => 'IRR',
+    ),
+    'ISK' => 
+    array (
+      'name' => '冰島克朗',
+      'symbol' => 'ISK',
+    ),
+    'ITL' => 
+    array (
+      'name' => '義大利里拉',
+      'symbol' => 'ITL',
+    ),
+    'JMD' => 
+    array (
+      'name' => '牙買加元',
+      'symbol' => 'JMD',
+    ),
+    'JOD' => 
+    array (
+      'name' => '約旦第納爾',
+      'symbol' => 'JOD',
+    ),
+    'JPY' => 
+    array (
+      'name' => '日圓',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => '肯尼亞先令',
+      'symbol' => 'KES',
+    ),
+    'KGS' => 
+    array (
+      'name' => '吉爾吉斯索馬',
+      'symbol' => 'KGS',
+    ),
+    'KHR' => 
+    array (
+      'name' => '柬埔寨瑞爾',
+      'symbol' => 'KHR',
+    ),
+    'KMF' => 
+    array (
+      'name' => '科摩羅法郎',
+      'symbol' => 'KMF',
+    ),
+    'KPW' => 
+    array (
+      'name' => '北韓圜',
+      'symbol' => 'KPW',
+    ),
+    'KRW' => 
+    array (
+      'name' => '韓圜',
+      'symbol' => '￦',
+    ),
+    'KWD' => 
+    array (
+      'name' => '科威特第納爾',
+      'symbol' => 'KWD',
+    ),
+    'KYD' => 
+    array (
+      'name' => '開曼群島美元',
+      'symbol' => 'KYD',
+    ),
+    'KZT' => 
+    array (
+      'name' => '卡扎克斯坦坦吉',
+      'symbol' => 'KZT',
+    ),
+    'LAK' => 
+    array (
+      'name' => '寮國基普',
+      'symbol' => 'LAK',
+    ),
+    'LBP' => 
+    array (
+      'name' => '黎巴嫩鎊',
+      'symbol' => 'LBP',
+    ),
+    'LKR' => 
+    array (
+      'name' => '斯里蘭卡盧布',
+      'symbol' => 'LKR',
+    ),
+    'LRD' => 
+    array (
+      'name' => '賴比瑞亞元',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => '賴索托羅蒂',
+      'symbol' => 'LSL',
+    ),
+    'LTL' => 
+    array (
+      'name' => '立陶宛里塔',
+      'symbol' => 'LTL',
+    ),
+    'LTT' => 
+    array (
+      'name' => '立陶宛特羅',
+      'symbol' => 'LTT',
+    ),
+    'LUC' => 
+    array (
+      'name' => '盧森堡可兌換法郎',
+      'symbol' => 'LUC',
+    ),
+    'LUF' => 
+    array (
+      'name' => '盧森堡法郎',
+      'symbol' => 'LUF',
+    ),
+    'LUL' => 
+    array (
+      'name' => '盧森堡金融法郎',
+      'symbol' => 'LUL',
+    ),
+    'LVL' => 
+    array (
+      'name' => '拉脫維亞拉特銀幣',
+      'symbol' => 'LVL',
+    ),
+    'LVR' => 
+    array (
+      'name' => '拉脫維亞盧布',
+      'symbol' => 'LVR',
+    ),
+    'LYD' => 
+    array (
+      'name' => '利比亞第納爾',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => '摩洛哥迪拉姆',
+      'symbol' => 'MAD',
+    ),
+    'MAF' => 
+    array (
+      'name' => '摩洛哥法郎',
+      'symbol' => 'MAF',
+    ),
+    'MDL' => 
+    array (
+      'name' => '摩杜雲列伊',
+      'symbol' => 'MDL',
+    ),
+    'MGA' => 
+    array (
+      'name' => '馬達加斯加艾瑞爾',
+      'symbol' => 'MGA',
+    ),
+    'MGF' => 
+    array (
+      'name' => '馬達加斯加法郎',
+      'symbol' => 'MGF',
+    ),
+    'MKD' => 
+    array (
+      'name' => '馬其頓第納爾',
+      'symbol' => 'MKD',
+    ),
+    'MLF' => 
+    array (
+      'name' => '馬里法郎',
+      'symbol' => 'MLF',
+    ),
+    'MMK' => 
+    array (
+      'name' => '緬甸元',
+      'symbol' => 'MMK',
+    ),
+    'MNT' => 
+    array (
+      'name' => '蒙古圖格里克',
+      'symbol' => 'MNT',
+    ),
+    'MOP' => 
+    array (
+      'name' => '澳門元',
+      'symbol' => 'MOP',
+    ),
+    'MRO' => 
+    array (
+      'name' => '茅利塔尼亞烏吉亞',
+      'symbol' => 'MRO',
+    ),
+    'MTL' => 
+    array (
+      'name' => '馬爾他里拉',
+      'symbol' => 'MTL',
+    ),
+    'MTP' => 
+    array (
+      'name' => '馬爾他鎊',
+      'symbol' => 'MTP',
+    ),
+    'MUR' => 
+    array (
+      'name' => '模里西斯盧布',
+      'symbol' => 'MUR',
+    ),
+    'MVR' => 
+    array (
+      'name' => '馬爾地夫海島盧非亞',
+      'symbol' => 'MVR',
+    ),
+    'MWK' => 
+    array (
+      'name' => '馬拉維克瓦查',
+      'symbol' => 'MWK',
+    ),
+    'MXN' => 
+    array (
+      'name' => '墨西哥披索',
+      'symbol' => 'MXN',
+    ),
+    'MXP' => 
+    array (
+      'name' => '墨西哥銀披索 (1861-1992)',
+      'symbol' => 'MXP',
+    ),
+    'MXV' => 
+    array (
+      'name' => '墨西哥轉換單位 (UDI)',
+      'symbol' => 'MXV',
+    ),
+    'MYR' => 
+    array (
+      'name' => '馬來西亞令吉',
+      'symbol' => 'MYR',
+    ),
+    'MZE' => 
+    array (
+      'name' => '莫三比克埃斯庫多',
+      'symbol' => 'MZE',
+    ),
+    'MZM' => 
+    array (
+      'name' => '莫三比克梅蒂卡爾',
+      'symbol' => 'MZM',
+    ),
+    'MZN' => 
+    array (
+      'name' => '莫三比克美提卡',
+      'symbol' => 'MZN',
+    ),
+    'NAD' => 
+    array (
+      'name' => '納米比亞元',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => '奈及利亞奈拉',
+      'symbol' => 'NGN',
+    ),
+    'NIC' => 
+    array (
+      'name' => '尼加拉瓜科多巴',
+      'symbol' => 'NIC',
+    ),
+    'NIO' => 
+    array (
+      'name' => '尼加拉瓜金科多巴',
+      'symbol' => 'NIO',
+    ),
+    'NLG' => 
+    array (
+      'name' => '荷蘭盾',
+      'symbol' => 'NLG',
+    ),
+    'NOK' => 
+    array (
+      'name' => '挪威克羅納',
+      'symbol' => 'NOK',
+    ),
+    'NPR' => 
+    array (
+      'name' => '尼泊爾盧布',
+      'symbol' => 'NPR',
+    ),
+    'NZD' => 
+    array (
+      'name' => '紐西蘭幣',
+      'symbol' => 'NZD',
+    ),
+    'OMR' => 
+    array (
+      'name' => '阿曼里奧',
+      'symbol' => 'OMR',
+    ),
+    'PAB' => 
+    array (
+      'name' => '巴拿馬巴波亞',
+      'symbol' => 'PAB',
+    ),
+    'PEI' => 
+    array (
+      'name' => '祕魯因蒂',
+      'symbol' => 'PEI',
+    ),
+    'PEN' => 
+    array (
+      'name' => '秘魯新太陽幣',
+      'symbol' => 'PEN',
+    ),
+    'PES' => 
+    array (
+      'name' => '秘魯太陽幣',
+      'symbol' => 'PES',
+    ),
+    'PGK' => 
+    array (
+      'name' => '巴布亞紐幾內亞基那',
+      'symbol' => 'PGK',
+    ),
+    'PHP' => 
+    array (
+      'name' => '菲律賓披索',
+      'symbol' => 'PHP',
+    ),
+    'PKR' => 
+    array (
+      'name' => '巴基斯坦盧布',
+      'symbol' => 'PKR',
+    ),
+    'PLN' => 
+    array (
+      'name' => '波蘭茲羅提',
+      'symbol' => 'PLN',
+    ),
+    'PLZ' => 
+    array (
+      'name' => '波蘭茲羅提 (1950-1995)',
+      'symbol' => 'PLZ',
+    ),
+    'PTE' => 
+    array (
+      'name' => '葡萄牙埃斯庫多',
+      'symbol' => 'PTE',
+    ),
+    'PYG' => 
+    array (
+      'name' => '巴拉圭瓜拉尼',
+      'symbol' => 'PYG',
+    ),
+    'QAR' => 
+    array (
+      'name' => '卡達爾里亞爾',
+      'symbol' => 'QAR',
+    ),
+    'RHD' => 
+    array (
+      'name' => '羅德西亞元',
+      'symbol' => 'RHD',
+    ),
+    'ROL' => 
+    array (
+      'name' => '舊羅馬尼亞列伊',
+      'symbol' => 'ROL',
+    ),
+    'RON' => 
+    array (
+      'name' => '羅馬尼亞列伊',
+      'symbol' => 'RON',
+    ),
+    'RSD' => 
+    array (
+      'name' => '塞爾維亞戴納',
+      'symbol' => 'RSD',
+    ),
+    'RUB' => 
+    array (
+      'name' => '俄羅斯盧布',
+      'symbol' => 'RUB',
+    ),
+    'RUR' => 
+    array (
+      'name' => '俄羅斯盧布 (1991-1998)',
+      'symbol' => 'RUR',
+    ),
+    'RWF' => 
+    array (
+      'name' => '盧安達法郎',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => '沙烏地里雅',
+      'symbol' => 'SAR',
+    ),
+    'SBD' => 
+    array (
+      'name' => '索羅門群島元',
+      'symbol' => 'SBD',
+    ),
+    'SCR' => 
+    array (
+      'name' => '塞席爾盧比',
+      'symbol' => 'SCR',
+    ),
+    'SDD' => 
+    array (
+      'name' => '蘇丹第納爾',
+      'symbol' => 'SDD',
+    ),
+    'SDG' => 
+    array (
+      'name' => '蘇丹鎊',
+      'symbol' => 'SDG',
+    ),
+    'SDP' => 
+    array (
+      'name' => '舊蘇丹鎊',
+      'symbol' => 'SDP',
+    ),
+    'SEK' => 
+    array (
+      'name' => '瑞典克羅納',
+      'symbol' => 'SEK',
+    ),
+    'SGD' => 
+    array (
+      'name' => '新加坡幣',
+      'symbol' => 'SGD',
+    ),
+    'SHP' => 
+    array (
+      'name' => '聖赫勒拿鎊',
+      'symbol' => 'SHP',
+    ),
+    'SIT' => 
+    array (
+      'name' => '斯洛維尼亞托勒',
+      'symbol' => 'SIT',
+    ),
+    'SKK' => 
+    array (
+      'name' => '斯洛伐克克朗',
+      'symbol' => 'SKK',
+    ),
+    'SLL' => 
+    array (
+      'name' => '獅子山利昂',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => '索馬利亞先令',
+      'symbol' => 'SOS',
+    ),
+    'SRD' => 
+    array (
+      'name' => '蘇利南元',
+      'symbol' => 'SRD',
+    ),
+    'SRG' => 
+    array (
+      'name' => '蘇利南基爾',
+      'symbol' => 'SRG',
+    ),
+    'STD' => 
+    array (
+      'name' => '聖多美島和普林西比島多布拉',
+      'symbol' => 'STD',
+    ),
+    'SUR' => 
+    array (
+      'name' => '蘇聯盧布',
+      'symbol' => 'SUR',
+    ),
+    'SVC' => 
+    array (
+      'name' => '薩爾瓦多科郎',
+      'symbol' => 'SVC',
+    ),
+    'SYP' => 
+    array (
+      'name' => '敘利亞鎊',
+      'symbol' => 'SYP',
+    ),
+    'SZL' => 
+    array (
+      'name' => '史瓦濟蘭里朗吉尼',
+      'symbol' => 'SZL',
+    ),
+    'THB' => 
+    array (
+      'name' => '泰銖',
+      'symbol' => 'THB',
+    ),
+    'TJR' => 
+    array (
+      'name' => '塔吉克盧布',
+      'symbol' => 'TJR',
+    ),
+    'TJS' => 
+    array (
+      'name' => '塔吉克索莫尼',
+      'symbol' => 'TJS',
+    ),
+    'TMM' => 
+    array (
+      'name' => '土庫曼馬納特',
+      'symbol' => 'TMM',
+    ),
+    'TMT' => 
+    array (
+      'name' => '土庫曼新馬納特',
+      'symbol' => 'TMT',
+    ),
+    'TND' => 
+    array (
+      'name' => '突尼西亞第納爾',
+      'symbol' => 'TND',
+    ),
+    'TOP' => 
+    array (
+      'name' => '東加潘加',
+      'symbol' => 'TOP',
+    ),
+    'TPE' => 
+    array (
+      'name' => '帝汶埃斯庫多',
+      'symbol' => 'TPE',
+    ),
+    'TRL' => 
+    array (
+      'name' => '土耳其里拉',
+      'symbol' => 'TRL',
+    ),
+    'TRY' => 
+    array (
+      'name' => '新土耳其里拉',
+      'symbol' => 'TRY',
+    ),
+    'TTD' => 
+    array (
+      'name' => '千里達及托巴哥元',
+      'symbol' => 'TTD',
+    ),
+    'TWD' => 
+    array (
+      'name' => '新臺幣',
+      'symbol' => 'TWD',
+    ),
+    'TZS' => 
+    array (
+      'name' => '坦尚尼亞先令',
+      'symbol' => 'TZS',
+    ),
+    'UAH' => 
+    array (
+      'name' => '烏克蘭格里夫那',
+      'symbol' => 'UAH',
+    ),
+    'UAK' => 
+    array (
+      'name' => '烏克蘭卡本瓦那茲',
+      'symbol' => 'UAK',
+    ),
+    'UGS' => 
+    array (
+      'name' => '烏干達先令 (1966-1987)',
+      'symbol' => 'UGS',
+    ),
+    'UGX' => 
+    array (
+      'name' => '烏干達先令',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => '美金',
+      'symbol' => '$',
+    ),
+    'USN' => 
+    array (
+      'name' => '美元（次日）',
+      'symbol' => 'USN',
+    ),
+    'USS' => 
+    array (
+      'name' => '美元（當日）',
+      'symbol' => 'USS',
+    ),
+    'UYP' => 
+    array (
+      'name' => '烏拉圭披索 (1975-1993)',
+      'symbol' => 'UYP',
+    ),
+    'UYU' => 
+    array (
+      'name' => '烏拉圭披索',
+      'symbol' => 'UYU',
+    ),
+    'UZS' => 
+    array (
+      'name' => '烏茲別克索姆',
+      'symbol' => 'UZS',
+    ),
+    'VEB' => 
+    array (
+      'name' => '委內瑞拉玻利瓦',
+      'symbol' => 'VEB',
+    ),
+    'VEF' => 
+    array (
+      'name' => '委內瑞拉強勢玻利瓦',
+      'symbol' => 'VEF',
+    ),
+    'VND' => 
+    array (
+      'name' => '越南盾',
+      'symbol' => 'VND',
+    ),
+    'VUV' => 
+    array (
+      'name' => '萬那杜萬杜',
+      'symbol' => 'VUV',
+    ),
+    'WST' => 
+    array (
+      'name' => '西薩摩亞塔拉',
+      'symbol' => 'WST',
+    ),
+    'XAF' => 
+    array (
+      'name' => '法郎 (CFA-BEAC)',
+      'symbol' => 'XAF',
+    ),
+    'XAU' => 
+    array (
+      'name' => '黃金',
+      'symbol' => 'XAU',
+    ),
+    'XBA' => 
+    array (
+      'name' => '歐洲綜合單位',
+      'symbol' => 'XBA',
+    ),
+    'XBB' => 
+    array (
+      'name' => '歐洲貨幣單位 (XBB)',
+      'symbol' => 'XBB',
+    ),
+    'XBC' => 
+    array (
+      'name' => '歐洲會計單位 (XBC)',
+      'symbol' => 'XBC',
+    ),
+    'XBD' => 
+    array (
+      'name' => '歐洲會計單位 (XBD)',
+      'symbol' => 'XBD',
+    ),
+    'XCD' => 
+    array (
+      'name' => '格瑞那達元',
+      'symbol' => 'XCD',
+    ),
+    'XDR' => 
+    array (
+      'name' => '特殊提款權',
+      'symbol' => 'XDR',
+    ),
+    'XEU' => 
+    array (
+      'name' => '歐洲貨幣單位 (XEU)',
+      'symbol' => 'XEU',
+    ),
+    'XFO' => 
+    array (
+      'name' => '法國金法郎',
+      'symbol' => 'XFO',
+    ),
+    'XFU' => 
+    array (
+      'name' => '法國法郎 (UIC)',
+      'symbol' => 'XFU',
+    ),
+    'XOF' => 
+    array (
+      'name' => '法郎 (CFA-BCEAO)',
+      'symbol' => 'XOF',
+    ),
+    'XPD' => 
+    array (
+      'name' => '帕拉狄昂',
+      'symbol' => 'XPD',
+    ),
+    'XPF' => 
+    array (
+      'name' => '法郎 (CFP)',
+      'symbol' => 'XPF',
+    ),
+    'XPT' => 
+    array (
+      'name' => '白金',
+      'symbol' => 'XPT',
+    ),
+    'XRE' => 
+    array (
+      'name' => 'RINET 基金',
+      'symbol' => 'XRE',
+    ),
+    'YDD' => 
+    array (
+      'name' => '葉門第納爾',
+      'symbol' => 'YDD',
+    ),
+    'YER' => 
+    array (
+      'name' => '葉門里雅',
+      'symbol' => 'YER',
+    ),
+    'YUD' => 
+    array (
+      'name' => '南斯拉夫第納爾硬幣',
+      'symbol' => 'YUD',
+    ),
+    'YUM' => 
+    array (
+      'name' => '南斯拉夫挪威亞第納爾',
+      'symbol' => 'YUM',
+    ),
+    'YUN' => 
+    array (
+      'name' => '南斯拉夫 可轉換第納爾',
+      'symbol' => 'YUN',
+    ),
+    'ZAL' => 
+    array (
+      'name' => '南非蘭特（金融）',
+      'symbol' => 'ZAL',
+    ),
+    'ZAR' => 
+    array (
+      'name' => '南非蘭特',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => '尚比亞克瓦查',
+      'symbol' => 'ZMK',
+    ),
+    'ZRN' => 
+    array (
+      'name' => '薩伊新扎伊爾',
+      'symbol' => 'ZRN',
+    ),
+    'ZRZ' => 
+    array (
+      'name' => '薩伊扎伊爾',
+      'symbol' => 'ZRZ',
+    ),
+    'ZWD' => 
+    array (
+      'name' => '辛巴威元',
+      'symbol' => 'ZWD',
+    ),
+    'ZWL' => 
+    array (
+      'name' => '辛巴威元 (2009)',
+      'symbol' => 'ZWL',
+    ),
+  ),
+);

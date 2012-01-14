@@ -1,0 +1,12 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'timeFormat' => 
+    array (
+      'full' => 'HH\'h\'\'\'mm:ss zzzz',
+      'long' => 'H:mm:ss z',
+    ),
+  ),
+);

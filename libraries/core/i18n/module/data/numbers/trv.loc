@@ -1,0 +1,88 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => '.',
+    'group' => ',',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'scientific' => '#E0',
+    'percent' => '#,##0%',
+    'currency' => '¤ #,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'AUD' => 
+    array (
+      'name' => 'pila Autaria',
+      'symbol' => 'AUD',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'pila Pajey',
+      'symbol' => 'BRL',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'pila Ipaw',
+      'symbol' => 'CNY',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'pila Irow',
+      'symbol' => 'EUR',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'pila Inglis',
+      'symbol' => 'GBP',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'pila Hong Kong',
+      'symbol' => 'HKD',
+    ),
+    'INR' => 
+    array (
+      'name' => 'pila Intia',
+      'symbol' => 'INR',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'pila Nihong',
+      'symbol' => 'JPY',
+    ),
+    'MOP' => 
+    array (
+      'name' => 'pila Macao',
+      'symbol' => 'MOP',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'pila Nowey',
+      'symbol' => 'NOK',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'pila Ruski',
+      'symbol' => 'RUB',
+    ),
+    'TWD' => 
+    array (
+      'name' => 'pila Taiwan',
+      'symbol' => 'TWD',
+    ),
+    'USD' => 
+    array (
+      'name' => 'pila America',
+      'symbol' => 'USD',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'ini klayi pila ni',
+      'symbol' => 'XXX',
+    ),
+  ),
+);

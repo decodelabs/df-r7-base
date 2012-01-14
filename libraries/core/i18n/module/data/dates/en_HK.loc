@@ -1,0 +1,51 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'buddhist' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM, y G',
+      'long' => 'd MMMM, y G',
+      'medium' => 'd MMM, y G',
+      'short' => 'd/M/yy GGGGG',
+    ),
+  ),
+  'gregorian' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM, y',
+      'long' => 'd MMMM, y',
+      'medium' => 'd MMM, y',
+      'short' => 'd/M/yy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+  'japanese' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM, y G',
+      'long' => 'd MMMM, y G',
+      'medium' => 'd MMM, y G',
+      'short' => 'd/M/yy GGGGG',
+    ),
+  ),
+  'roc' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM, y G',
+      'long' => 'd MMMM, y G',
+      'medium' => 'd MMM, y G',
+      'short' => 'd/M/yy GGGGG',
+    ),
+  ),
+);

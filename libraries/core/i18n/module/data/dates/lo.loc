@@ -1,0 +1,89 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'buddhist' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEEທີ່ d MMMM G y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'd/M/yyyy',
+    ),
+  ),
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'ອາ.',
+        'mon' => 'ຈ.',
+        'tue' => 'ອ.',
+        'wed' => 'ພ.',
+        'thu' => 'ພຫ.',
+        'fri' => 'ສກ.',
+        'sat' => 'ສ.',
+      ),
+      'full' => 
+      array (
+        'sun' => 'ວັນອາທິດ',
+        'mon' => 'ວັນຈັນ',
+        'tue' => 'ວັນອັງຄານ',
+        'wed' => 'ວັນພຸດ',
+        'thu' => 'ວັນພະຫັດ',
+        'fri' => 'ວັນສຸກ',
+        'sat' => 'ວັນເສົາ',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'ມ.ກ.',
+        2 => 'ກ.ພ.',
+        3 => 'ມີ.ນ.',
+        4 => 'ມ.ສ..',
+        5 => 'ພ.ພ.',
+        6 => 'ມິ.ຖ.',
+        7 => 'ກ.ລ.',
+        8 => 'ສ.ຫ.',
+        9 => 'ກ.ຍ.',
+        10 => 'ຕ.ລ.',
+        11 => 'ພ.ຈ.',
+        12 => 'ທ.ວ.',
+      ),
+      'full' => 
+      array (
+        1 => 'ມັງກອນ',
+        2 => 'ກຸມພາ',
+        3 => 'ມີນາ',
+        4 => 'ເມສາ',
+        5 => 'ພຶດສະພາ',
+        6 => 'ມິຖຸນາ',
+        7 => 'ກໍລະກົດ',
+        8 => 'ສິງຫາ',
+        9 => 'ກັນຍາ',
+        10 => 'ຕຸລາ',
+        11 => 'ພະຈິກ',
+        12 => 'ທັນວາ',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEEທີ d MMMM G y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'd/M/yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'Hໂມງ mນາທີ ss ວິນາທີzzzz',
+      'long' => 'H ໂມງ mນາທີss z',
+      'medium' => 'H:mm:ss',
+      'short' => 'H:mm',
+    ),
+  ),
+);

@@ -1,0 +1,132 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => ',',
+    'group' => ' ',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'percent' => '#,##0%',
+    'currency' => '#,##0.00 ¤;(#,##0.00 ¤)',
+  ),
+  'currencies' => 
+  array (
+    'AOA' => 
+    array (
+      'name' => 'kuansa wu angolá',
+      'symbol' => 'AOA',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'toláal wu ostalalí',
+      'symbol' => 'AUD',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'tináal wu paaléen',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'faláŋɛ u pulundí',
+      'symbol' => 'BIF',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'pula pu posuána',
+      'symbol' => 'BWP',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'toláal u kanáta',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => '́faláŋɛ u kongó',
+      'symbol' => 'CDF',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'yuan ɛlɛnmimbí',
+      'symbol' => 'CNY',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'ɛskúdo u kápfɛ́ɛl',
+      'symbol' => 'CVE',
+    ),
+    'DJF' => 
+    array (
+      'name' => '́faláŋɛ u síputí',
+      'symbol' => 'DJF',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'tináal wu alselí',
+      'symbol' => 'DZD',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'lífilɛ wu isípit',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'náfka wu elitilée',
+      'symbol' => 'ERN',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'píil wu etiopí',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'olóo',
+      'symbol' => 'EUR',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'lífilɛ sitelelíiŋ',
+      'symbol' => 'GBP',
+    ),
+    'GHC' => 
+    array (
+      'name' => 'setí',
+      'symbol' => 'GHC',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'talasí u kaambí',
+      'symbol' => 'GMD',
+    ),
+    'GNS' => 
+    array (
+      'name' => 'silí u kiiné',
+      'symbol' => 'GNS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'ulupí',
+      'symbol' => 'INR',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'yɛ́ɛn u sapɔ́ɔŋ',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'síliŋ u kénia',
+      'symbol' => 'KES',
+    ),
+    'KMF' => 
+    array (
+      'name' => '́faláŋɛ u kɔmɔ́ɔl',
+      'symbol' => 'KMF',
+    ),
+  ),
+);

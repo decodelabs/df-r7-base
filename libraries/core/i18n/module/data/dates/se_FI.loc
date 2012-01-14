@@ -1,0 +1,40 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'full' => 
+      array (
+        'sun' => 'aejlege',
+        'mon' => 'måanta',
+        'tue' => 'däjsta',
+        'wed' => 'gaskevahkoe',
+        'thu' => 'dåarsta',
+        'fri' => 'bearjadahke',
+        'sat' => 'laavadahke',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'ođđajage',
+        2 => 'guovva',
+        3 => 'njukča',
+        4 => 'cuoŋo',
+        5 => 'miesse',
+        6 => 'geasse',
+        7 => 'suoidne',
+        8 => 'borge',
+        9 => 'čakča',
+        10 => 'golggot',
+        11 => 'skábma',
+        12 => 'juovla',
+      ),
+    ),
+  ),
+);

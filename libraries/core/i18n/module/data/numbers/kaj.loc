@@ -1,0 +1,17 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'NGN' => 
+    array (
+      'name' => 'A̱naira',
+      'symbol' => '₦',
+    ),
+  ),
+);

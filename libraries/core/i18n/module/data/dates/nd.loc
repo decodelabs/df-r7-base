@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Son',
+        'mon' => 'Mvu',
+        'tue' => 'Sib',
+        'wed' => 'Sit',
+        'thu' => 'Sin',
+        'fri' => 'Sih',
+        'sat' => 'Mgq',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Sonto',
+        'mon' => 'Mvulo',
+        'tue' => 'Sibili',
+        'wed' => 'Sithathu',
+        'thu' => 'Sine',
+        'fri' => 'Sihlanu',
+        'sat' => 'Mgqibelo',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Zib',
+        2 => 'Nhl',
+        3 => 'Mbi',
+        4 => 'Mab',
+        5 => 'Nkw',
+        6 => 'Nhl',
+        7 => 'Ntu',
+        8 => 'Ncw',
+        9 => 'Mpa',
+        10 => 'Mfu',
+        11 => 'Lwe',
+        12 => 'Mpa',
+      ),
+      'full' => 
+      array (
+        1 => 'Zibandlela',
+        2 => 'Nhlolanja',
+        3 => 'Mbimbitho',
+        4 => 'Mabasa',
+        5 => 'Nkwenkwezi',
+        6 => 'Nhlangula',
+        7 => 'Ntulikazi',
+        8 => 'Ncwabakazi',
+        9 => 'Mpandula',
+        10 => 'Mfumfu',
+        11 => 'Lwezi',
+        12 => 'Mpalakazi',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'dd/MM/yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+);

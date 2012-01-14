@@ -1,0 +1,23 @@
+<?php
+return array (
+  'de' => 'Almaynek',
+  'ar' => 'Arabek',
+  'eu' => 'Baskek',
+  'zh' => 'Chinek',
+  'zh_Hant' => 'Chinek hengovek',
+  'zh_Hans' => 'Chinek sempel',
+  'da' => 'Danek',
+  'fr' => 'Frenkek',
+  'nl' => 'Iseldiryek',
+  'it' => 'Italek',
+  'ja' => 'Japanek',
+  'yue' => 'Kantonek',
+  'cy' => 'Kembrek',
+  'pt' => 'Portyngalek',
+  'pt_BR' => 'Portyngalek Brasil',
+  'ru' => 'Russek',
+  'en' => 'Sowsnek',
+  'es' => 'Spaynek',
+  'ga' => 'Wordhonek',
+  'kw' => 'kernewek',
+);

@@ -1,0 +1,119 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'buddhist' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d. MMMM y. G',
+      'long' => 'd. MMMM y. G',
+      'medium' => 'd. M. y. G',
+      'short' => 'd.M.y.',
+    ),
+  ),
+  'chinese' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEE, d.Ml.y. G',
+      'long' => 'd.Ml.y. G',
+      'medium' => 'd.Ml.y. G',
+      'short' => 'd.Ml.y. G',
+    ),
+  ),
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'ned',
+        'mon' => 'pon',
+        'tue' => 'uto',
+        'wed' => 'sri',
+        'thu' => 'čet',
+        'fri' => 'pet',
+        'sat' => 'sub',
+      ),
+      'full' => 
+      array (
+        'sun' => 'nedjelja',
+        'mon' => 'ponedjeljak',
+        'tue' => 'utorak',
+        'wed' => 'srijeda',
+        'thu' => 'četvrtak',
+        'fri' => 'petak',
+        'sat' => 'subota',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'sij',
+        2 => 'velj',
+        3 => 'ožu',
+        4 => 'tra',
+        5 => 'svi',
+        6 => 'lip',
+        7 => 'srp',
+        8 => 'kol',
+        9 => 'ruj',
+        10 => 'lis',
+        11 => 'stu',
+        12 => 'pro',
+      ),
+      'full' => 
+      array (
+        1 => 'siječnja',
+        2 => 'veljače',
+        3 => 'ožujka',
+        4 => 'travnja',
+        5 => 'svibnja',
+        6 => 'lipnja',
+        7 => 'srpnja',
+        8 => 'kolovoza',
+        9 => 'rujna',
+        10 => 'listopada',
+        11 => 'studenoga',
+        12 => 'prosinca',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d. MMMM y.',
+      'long' => 'd. MMMM y.',
+      'medium' => 'd. M. y.',
+      'short' => 'd.M.y.',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'HH:mm:ss zzzz',
+      'long' => 'HH:mm:ss z',
+      'medium' => 'HH:mm:ss',
+      'short' => 'HH:mm',
+    ),
+  ),
+  'japanese' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d. MMMM y. G',
+      'long' => 'd. MMMM y. G',
+      'medium' => 'd. M. y. G',
+      'short' => 'd.M.y. G',
+    ),
+  ),
+  'roc' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d. MMMM y. G',
+      'long' => 'd. MMMM y. G',
+      'medium' => 'd. M. y. G',
+      'short' => 'd.M.y. G',
+    ),
+  ),
+);

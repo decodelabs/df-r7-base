@@ -1,0 +1,23 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+    'currency' => '¤#,##0.00;(¤#,##0.00)',
+  ),
+  'currencies' => 
+  array (
+    'SGD' => 
+    array (
+      'name' => 'SGD',
+      'symbol' => '$',
+    ),
+    'USD' => 
+    array (
+      'name' => 'USD',
+      'symbol' => 'US$',
+    ),
+  ),
+);

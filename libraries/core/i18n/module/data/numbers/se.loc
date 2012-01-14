@@ -1,0 +1,56 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => ',',
+    'group' => ' ',
+    'list' => ';',
+    'percentSign' => '%',
+    'plusSign' => '+',
+    'minusSign' => '−',
+    'exponential' => '×10^',
+    'perMille' => '‰',
+    'infinity' => '∞',
+    'nan' => '¤¤¤',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'scientific' => '#E0',
+    'percent' => '#,##0 %',
+    'currency' => '#,##0.00 ¤',
+  ),
+  'currencies' => 
+  array (
+    'EUR' => 
+    array (
+      'name' => 'euro',
+      'symbol' => 'EUR',
+    ),
+    'FIM' => 
+    array (
+      'name' => 'suoma márkki',
+      'symbol' => 'FIM',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'norgga kruvdno',
+      'symbol' => 'NOK',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'ruoŧŧa kruvdno',
+      'symbol' => 'SEK',
+    ),
+    'XAG' => 
+    array (
+      'name' => 'uns silba',
+      'symbol' => 'XAG',
+    ),
+    'XAU' => 
+    array (
+      'name' => 'uns golli',
+      'symbol' => 'XAU',
+    ),
+  ),
+);

@@ -1,0 +1,809 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+    'decimal' => '000ኪባ',
+    'currency' => '¤#,##0.00;(¤#,##0.00)',
+  ),
+  'currencies' => 
+  array (
+    'AED' => 
+    array (
+      'name' => 'የተባበሩት የአረብ ኤምረትስ ዲርሀም',
+      'symbol' => 'AED',
+    ),
+    'AFN' => 
+    array (
+      'name' => 'የአፍጋን አፍጋኒ',
+      'symbol' => 'AFN',
+    ),
+    'ALL' => 
+    array (
+      'name' => 'የአልባንያ ሌክ',
+      'symbol' => 'ALL',
+    ),
+    'AMD' => 
+    array (
+      'name' => 'የአርመን ድራም',
+      'symbol' => 'AMD',
+    ),
+    'ANG' => 
+    array (
+      'name' => 'ኔዘርላንድስ አንቲሊአን ጊልደር',
+      'symbol' => 'ANG',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'የአንጎላ ኩዋንዛ',
+      'symbol' => 'AOA',
+    ),
+    'ARS' => 
+    array (
+      'name' => 'የአርጀንቲና ፔሶ',
+      'symbol' => 'ARS',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'የአውስትራሊያ ዶላር',
+      'symbol' => 'AUD',
+    ),
+    'AWG' => 
+    array (
+      'name' => 'አሩባን ፍሎሪን',
+      'symbol' => 'AWG',
+    ),
+    'AZN' => 
+    array (
+      'name' => 'የአዛርባጃን ማናት',
+      'symbol' => 'AZN',
+    ),
+    'BAM' => 
+    array (
+      'name' => 'የቦስኒያ ሄርዞጎቪና የሚመነዘር ማርክ',
+      'symbol' => 'BAM',
+    ),
+    'BBD' => 
+    array (
+      'name' => 'የባርቤዶስ ዶላር',
+      'symbol' => 'BBD',
+    ),
+    'BDT' => 
+    array (
+      'name' => 'የባንግላዲሽ ታካ',
+      'symbol' => 'BDT',
+    ),
+    'BGN' => 
+    array (
+      'name' => 'የቡልጋሪያ ሌቭ',
+      'symbol' => 'BGN',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'የባኽሬን ዲናር',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'የብሩንዲ ፍራንክ',
+      'symbol' => 'BIF',
+    ),
+    'BMD' => 
+    array (
+      'name' => 'የቤርሙዳ ዶላር',
+      'symbol' => 'BMD',
+    ),
+    'BND' => 
+    array (
+      'name' => 'የብሩኔ ዶላር',
+      'symbol' => 'BND',
+    ),
+    'BOB' => 
+    array (
+      'name' => 'የቦሊቪያ ቦሊቪያኖ',
+      'symbol' => 'BOB',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'የብራዚል ሪል',
+      'symbol' => 'BRL',
+    ),
+    'BSD' => 
+    array (
+      'name' => 'የባሃማስ ዶላር',
+      'symbol' => 'BSD',
+    ),
+    'BTN' => 
+    array (
+      'name' => 'ብሁታኒዝ ንጉልትረም',
+      'symbol' => 'BTN',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'የቦትስዋና ፑላ',
+      'symbol' => 'BWP',
+    ),
+    'BYR' => 
+    array (
+      'name' => 'የቤላሩስያ ሩብል',
+      'symbol' => 'BYR',
+    ),
+    'BZD' => 
+    array (
+      'name' => 'የቤሊዝ ዶላር',
+      'symbol' => 'BZD',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'የካናዳ ዶላር',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'የኮንጐ ፍራንክ ኮንጐሌዝ',
+      'symbol' => 'CDF',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'የስዊስ ፍራንክ',
+      'symbol' => 'CHF',
+    ),
+    'CLP' => 
+    array (
+      'name' => 'የቺሊ ፔሶ',
+      'symbol' => 'CLP',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'የቻይና ዩአን ረንሚንቢ',
+      'symbol' => 'CNY',
+    ),
+    'COP' => 
+    array (
+      'name' => 'የኮሎምቢያ ፔሶ',
+      'symbol' => 'COP',
+    ),
+    'CRC' => 
+    array (
+      'name' => 'የኮስታሪካ ኮሎን',
+      'symbol' => 'CRC',
+    ),
+    'CUC' => 
+    array (
+      'name' => 'የኩባ የሚመነዘር ፔሶ',
+      'symbol' => 'CUC',
+    ),
+    'CUP' => 
+    array (
+      'name' => 'የኩባ ፔሶ',
+      'symbol' => 'CUP',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'የኬፕ ቫርዲ ኤስኩዶ',
+      'symbol' => 'CVE',
+    ),
+    'CZK' => 
+    array (
+      'name' => 'ቼክ ሪፐፕሊክ ኮሩና',
+      'symbol' => 'CZK',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'የጅቡቲ ፍራንክ',
+      'symbol' => 'DJF',
+    ),
+    'DKK' => 
+    array (
+      'name' => 'የዴንማርክ ክሮን',
+      'symbol' => 'DKK',
+    ),
+    'DOP' => 
+    array (
+      'name' => 'የዶሚኒክ ፔሶ',
+      'symbol' => 'DOP',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'የአልጄሪያ ዲናር',
+      'symbol' => 'DZD',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'የግብጽ ፓውንድ',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'ዬኤርትራ ናቅፋ',
+      'symbol' => 'ERN',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'የኢትዮጵያ ብር',
+      'symbol' => 'ብር',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'ዩሮ',
+      'symbol' => 'EUR',
+    ),
+    'FJD' => 
+    array (
+      'name' => 'የፊጂ ዶላር',
+      'symbol' => 'FJD',
+    ),
+    'FKP' => 
+    array (
+      'name' => 'የፎክላንድ ደሴቶች ፓውንድ',
+      'symbol' => 'FKP',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'የእንግሊዝ ፓውንድ ስተርሊንግ',
+      'symbol' => 'GBP',
+    ),
+    'GEL' => 
+    array (
+      'name' => 'የጆርጅያ ላሪ',
+      'symbol' => 'GEL',
+    ),
+    'GHC' => 
+    array (
+      'name' => 'የጋና ሴዲ',
+      'symbol' => 'GHC',
+    ),
+    'GHS' => 
+    array (
+      'name' => 'የጋና ሲዲ',
+      'symbol' => 'GHS',
+    ),
+    'GIP' => 
+    array (
+      'name' => 'ጊብራልታር ፓውንድ',
+      'symbol' => 'GIP',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'የጋምቢያ ዳላሲ',
+      'symbol' => 'GMD',
+    ),
+    'GNF' => 
+    array (
+      'name' => 'የጊኒ ፍራንክ',
+      'symbol' => 'GNF',
+    ),
+    'GTQ' => 
+    array (
+      'name' => 'ጓቲማላን ኩቲዛል',
+      'symbol' => 'GTQ',
+    ),
+    'GYD' => 
+    array (
+      'name' => 'የጉየና ዶላር',
+      'symbol' => 'GYD',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'የሆንግኮንግ ዶላር',
+      'symbol' => 'HKD',
+    ),
+    'HNL' => 
+    array (
+      'name' => 'የሃንዱራ ሌምፓአይራ',
+      'symbol' => 'HNL',
+    ),
+    'HRK' => 
+    array (
+      'name' => 'የክሮሽያ ኩና',
+      'symbol' => 'HRK',
+    ),
+    'HTG' => 
+    array (
+      'name' => 'የሃያቲ ጓርዴ',
+      'symbol' => 'HTG',
+    ),
+    'HUF' => 
+    array (
+      'name' => 'የሁንጋሪ ፎሪንት',
+      'symbol' => 'HUF',
+    ),
+    'IDR' => 
+    array (
+      'name' => 'የኢንዶኔዥያ ሩፒሃ',
+      'symbol' => 'IDR',
+    ),
+    'ILS' => 
+    array (
+      'name' => 'የእስራኤል አዲስ ሽቅል',
+      'symbol' => 'ILS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'የሕንድ ሩፒ',
+      'symbol' => 'INR',
+    ),
+    'IQD' => 
+    array (
+      'name' => 'የኢራቅ ዲናር',
+      'symbol' => 'IQD',
+    ),
+    'IRR' => 
+    array (
+      'name' => 'የኢራን ሪአል',
+      'symbol' => 'IRR',
+    ),
+    'ISK' => 
+    array (
+      'name' => 'የአይስላንድ ክሮና',
+      'symbol' => 'ISK',
+    ),
+    'JMD' => 
+    array (
+      'name' => 'የጃማይካ ዶላር',
+      'symbol' => 'JMD',
+    ),
+    'JOD' => 
+    array (
+      'name' => 'የጆርዳን ዲናር',
+      'symbol' => 'JOD',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'የጃፓን የን',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'የኬኒያ ሺሊንግ',
+      'symbol' => 'KES',
+    ),
+    'KGS' => 
+    array (
+      'name' => 'የኪርጊስታን ሶም',
+      'symbol' => 'KGS',
+    ),
+    'KHR' => 
+    array (
+      'name' => 'የካምቦዲያ ሬል',
+      'symbol' => 'KHR',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'የኮሞሮ ፍራንክ',
+      'symbol' => 'KMF',
+    ),
+    'KPW' => 
+    array (
+      'name' => 'የሰሜን ኮሪያ ዎን',
+      'symbol' => 'KPW',
+    ),
+    'KRW' => 
+    array (
+      'name' => 'የደቡብ ኮሪያ ዎን',
+      'symbol' => 'KRW',
+    ),
+    'KWD' => 
+    array (
+      'name' => 'የኩዌት ዲናር',
+      'symbol' => 'KWD',
+    ),
+    'KYD' => 
+    array (
+      'name' => 'የካይማን ደሴቶች ዶላር',
+      'symbol' => 'KYD',
+    ),
+    'KZT' => 
+    array (
+      'name' => 'የካዛኪስታን ተንጌ',
+      'symbol' => 'KZT',
+    ),
+    'LAK' => 
+    array (
+      'name' => 'የላኦቲ ኪፕ',
+      'symbol' => 'LAK',
+    ),
+    'LBP' => 
+    array (
+      'name' => 'የሊባኖስ ፓውንድ',
+      'symbol' => 'LBP',
+    ),
+    'LKR' => 
+    array (
+      'name' => 'የሲሪላንካ ሩፒ',
+      'symbol' => 'LKR',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'የላይቤሪያ ዶላር',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'የሌሶቶ ሎቲ',
+      'symbol' => 'LSL',
+    ),
+    'LTL' => 
+    array (
+      'name' => 'ሊቱዌንያን ሊታስ',
+      'symbol' => 'LTL',
+    ),
+    'LVL' => 
+    array (
+      'name' => 'የላቲቫ ላትስ',
+      'symbol' => 'LVL',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'የሊቢያ ዲናር',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'የሞሮኮ ዲርሀም',
+      'symbol' => 'MAD',
+    ),
+    'MDL' => 
+    array (
+      'name' => 'ሞልዶቫን ሊኡ',
+      'symbol' => 'MDL',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'የማደጋስካር ፋርንክ',
+      'symbol' => 'MGA',
+    ),
+    'MKD' => 
+    array (
+      'name' => 'የሜቆድንያ ዲናር',
+      'symbol' => 'MKD',
+    ),
+    'MMK' => 
+    array (
+      'name' => 'ምያንማ ክያት',
+      'symbol' => 'MMK',
+    ),
+    'MNT' => 
+    array (
+      'name' => 'የሞንጎሊያን ቱግሪክ',
+      'symbol' => 'MNT',
+    ),
+    'MOP' => 
+    array (
+      'name' => 'የማካኔዝ ፓታካ',
+      'symbol' => 'MOP',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'የሞሪቴኒያ ኦውጉያ',
+      'symbol' => 'MRO',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'የሞሪሸስ ሩፒ',
+      'symbol' => 'MUR',
+    ),
+    'MVR' => 
+    array (
+      'name' => 'የማልዲቫ ሩፊያ',
+      'symbol' => 'MVR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'የማላዊ ኩዋቻ',
+      'symbol' => 'MWK',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'የሜክሲኮ ፔሶ',
+      'symbol' => 'MXN',
+    ),
+    'MYR' => 
+    array (
+      'name' => 'የማሌዥያ ሪንጊት',
+      'symbol' => 'MYR',
+    ),
+    'MZM' => 
+    array (
+      'name' => 'የሞዛምቢክ ሜቲካል',
+      'symbol' => 'MZM',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'የናሚቢያ ዶላር',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'የናይጄሪያ ናኢራ',
+      'symbol' => 'NGN',
+    ),
+    'NIO' => 
+    array (
+      'name' => 'የኒካራጓ ኮርዶባ',
+      'symbol' => 'NIO',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'የኖርዌይ ክሮን',
+      'symbol' => 'NOK',
+    ),
+    'NPR' => 
+    array (
+      'name' => 'የኔፓል ሩፒ',
+      'symbol' => 'NPR',
+    ),
+    'NZD' => 
+    array (
+      'name' => 'የኒውዚላንድ ዶላር',
+      'symbol' => 'NZD',
+    ),
+    'OMR' => 
+    array (
+      'name' => 'የኦማን ሪአል',
+      'symbol' => 'OMR',
+    ),
+    'PAB' => 
+    array (
+      'name' => 'ፓናማኒአን ባልቦአ',
+      'symbol' => 'PAB',
+    ),
+    'PEN' => 
+    array (
+      'name' => 'የፔሩቪያ ኑኤቮ ሶል',
+      'symbol' => 'PEN',
+    ),
+    'PGK' => 
+    array (
+      'name' => 'የፓፕዋ ኒው ጊኒ ኪና',
+      'symbol' => 'PGK',
+    ),
+    'PHP' => 
+    array (
+      'name' => 'የፊሊፒንስ ፔሶ',
+      'symbol' => 'PHP',
+    ),
+    'PKR' => 
+    array (
+      'name' => 'የፓኪስታን ሩፒ',
+      'symbol' => 'PKR',
+    ),
+    'PLN' => 
+    array (
+      'name' => 'የፖላንድ ዝሎቲ',
+      'symbol' => 'PLN',
+    ),
+    'PYG' => 
+    array (
+      'name' => 'የፓራጓይ ጉአራኒ',
+      'symbol' => 'PYG',
+    ),
+    'QAR' => 
+    array (
+      'name' => 'የኳታር ሪአል',
+      'symbol' => 'QAR',
+    ),
+    'RSD' => 
+    array (
+      'name' => 'የሰርቢያ ዲናር',
+      'symbol' => 'RSD',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'የሩስያ ሩብል',
+      'symbol' => 'RUB',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'የሩዋንዳ ፍራንክ',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'የሳውዲ ሪያል',
+      'symbol' => 'SAR',
+    ),
+    'SBD' => 
+    array (
+      'name' => 'የሰለሞን ደሴቶች ዶላር',
+      'symbol' => 'SBD',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'የሲሼል ሩፒ',
+      'symbol' => 'SCR',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'የሱዳን ዲናር',
+      'symbol' => 'SDG',
+    ),
+    'SDP' => 
+    array (
+      'name' => 'የሱዳን ፓውንድ',
+      'symbol' => 'SDP',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'የስዊድን ክሮና',
+      'symbol' => 'SEK',
+    ),
+    'SGD' => 
+    array (
+      'name' => 'የሲንጋፖር ዶላር',
+      'symbol' => 'SGD',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'የሴይንት ሔሌና ፓውንድ',
+      'symbol' => 'SHP',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'የሴራሊዎን ሊዎን',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'የሶማሌ ሺሊንግ',
+      'symbol' => 'SOS',
+    ),
+    'SRD' => 
+    array (
+      'name' => 'የሰርናሜዝ ዶላር',
+      'symbol' => 'SRD',
+    ),
+    'STD' => 
+    array (
+      'name' => 'የሳኦ ቶመ እና ፕሪንሲፐ ዶብራ',
+      'symbol' => 'STD',
+    ),
+    'SYP' => 
+    array (
+      'name' => 'የሲሪያ ፓውንድ',
+      'symbol' => 'SYP',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'የስዋዚላንድ ሊላንገኒ',
+      'symbol' => 'SZL',
+    ),
+    'THB' => 
+    array (
+      'name' => 'የታይላንድ ባህት',
+      'symbol' => 'THB',
+    ),
+    'TJS' => 
+    array (
+      'name' => 'የታጂክስታን ሶሞኒ',
+      'symbol' => 'TJS',
+    ),
+    'TMT' => 
+    array (
+      'name' => 'ቱርክሜኒስታኒ ማናት',
+      'symbol' => 'TMT',
+    ),
+    'TND' => 
+    array (
+      'name' => 'የቱኒዚያ ዲናር',
+      'symbol' => 'TND',
+    ),
+    'TOP' => 
+    array (
+      'name' => 'ቶንጋን ፓ\'አንጋ',
+      'symbol' => 'TOP',
+    ),
+    'TRY' => 
+    array (
+      'name' => 'የቱርክ ሊራ',
+      'symbol' => 'TRY',
+    ),
+    'TTD' => 
+    array (
+      'name' => 'የትሪንዳድ እና ቶቤጎዶላር',
+      'symbol' => 'TTD',
+    ),
+    'TWD' => 
+    array (
+      'name' => 'የአዲሷ ታይዋን ዶላር',
+      'symbol' => 'TWD',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'የታንዛኒያ ሺሊንግ',
+      'symbol' => 'TZS',
+    ),
+    'UAH' => 
+    array (
+      'name' => 'የዩክሬን ሀሪይቭኒአ',
+      'symbol' => 'UAH',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'የዩጋንዳ ሺሊንግ',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'የአሜሪካን ዶላር',
+      'symbol' => 'USD',
+    ),
+    'UYU' => 
+    array (
+      'name' => 'የኡራጓይ ፔሶ',
+      'symbol' => 'UYU',
+    ),
+    'UZS' => 
+    array (
+      'name' => 'የኡዝፔኪስታን ሶም',
+      'symbol' => 'UZS',
+    ),
+    'VEF' => 
+    array (
+      'name' => 'የቬንዝዌላ ቦሊቫር',
+      'symbol' => 'VEF',
+    ),
+    'VND' => 
+    array (
+      'name' => 'የቭየትናም ዶንግ',
+      'symbol' => 'VND',
+    ),
+    'VUV' => 
+    array (
+      'name' => 'የቫንዋንቱ ቫቱ',
+      'symbol' => 'VUV',
+    ),
+    'WST' => 
+    array (
+      'name' => 'ሳሞአን ታላ',
+      'symbol' => 'WST',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'ሴኤፍአ ፍራንክ ቤእአሴ',
+      'symbol' => 'XAF',
+    ),
+    'XCD' => 
+    array (
+      'name' => 'የምዕራብ ካሪብያን ዶላር',
+      'symbol' => 'XCD',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'ሴኤፍአ ፍራንክ ቤሴእአኦ',
+      'symbol' => 'XOF',
+    ),
+    'XPF' => 
+    array (
+      'name' => 'ሲ ኤፍ ፒ ፍራንክ',
+      'symbol' => 'XPF',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'ያልታወቀ ገንዘብ',
+      'symbol' => 'XXX',
+    ),
+    'YER' => 
+    array (
+      'name' => 'የየመን ሪአል',
+      'symbol' => 'YER',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'የደቡብ አፍሪካ ራንድ',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'የዛምቢያ ክዋቻ',
+      'symbol' => 'ZMK',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'የዚምቧቡዌ ዶላር',
+      'symbol' => 'ZWD',
+    ),
+  ),
+);

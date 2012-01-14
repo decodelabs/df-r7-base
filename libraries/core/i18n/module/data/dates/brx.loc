@@ -1,0 +1,86 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'रबि',
+        'mon' => 'सम',
+        'tue' => 'मंगल',
+        'wed' => 'बुद',
+        'thu' => 'बिसथि',
+        'fri' => 'सुखुर',
+        'sat' => 'सुनि',
+      ),
+      'full' => 
+      array (
+        'sun' => 'रबिबार',
+        'mon' => 'समबार',
+        'tue' => 'मंगलबार',
+        'wed' => 'बुदबार',
+        'thu' => 'बिसथिबार',
+        'fri' => 'सुखुरबार',
+        'sat' => 'सुनिबार',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'full' => 
+      array (
+        1 => 'जानुवारी',
+        2 => 'फेब्रुवारी',
+        3 => 'मार्स',
+        4 => 'एफ्रिल',
+        5 => 'मे',
+        6 => 'जुन',
+        7 => 'जुलाइ',
+        8 => 'आगस्थ',
+        9 => 'सेबथेज्ब़र',
+        10 => 'अखथबर',
+        11 => 'नबेज्ब़र',
+        12 => 'दिसेज्ब़र',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, MMMM d, y',
+      'long' => 'MMMM d, y',
+      'medium' => 'MMM d, y',
+      'short' => 'M/d/yy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+  'indian' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'full' => 
+      array (
+        1 => 'बैसागो/बैसाग',
+        2 => 'जेथो',
+        3 => 'आसार',
+        4 => 'सावुन',
+        5 => 'भाद्र',
+        6 => 'आसिन',
+        7 => 'खाथि',
+        8 => 'आगाह्न',
+        9 => 'फुस',
+        10 => 'मागो',
+        11 => 'फागुन',
+        12 => 'सैथो',
+      ),
+    ),
+  ),
+);

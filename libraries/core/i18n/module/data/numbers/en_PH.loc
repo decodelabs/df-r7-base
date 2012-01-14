@@ -1,0 +1,22 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'PHP' => 
+    array (
+      'name' => 'Peso',
+      'symbol' => '₱',
+    ),
+    'USD' => 
+    array (
+      'name' => 'USD',
+      'symbol' => 'US$',
+    ),
+  ),
+);

@@ -1,0 +1,285 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => ',',
+    'group' => '.',
+  ),
+  'formats' => 
+  array (
+    'currency' => '¤#,##0.00;¤-#,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'AED' => 
+    array (
+      'name' => 'dirâm tî âEmirâti tî Arâbo Ôko',
+      'symbol' => 'AED',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'kwânza tî Angoläa',
+      'symbol' => 'AOA',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'dolära tî Ostralïi',
+      'symbol' => 'AUD',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'dolùara tî Bahrâina',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'farânga tî Burundïi',
+      'symbol' => 'BIF',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'pûla tî Botswana',
+      'symbol' => 'BWP',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'dolära tî kanadäa',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'farânga tî Kongöo',
+      'symbol' => 'CDF',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'farânga tî Sûîsi',
+      'symbol' => 'CHF',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'yuan renminbi tî Shîni',
+      'symbol' => 'CNY',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'eskûêdo tî Kâpo-Vêre',
+      'symbol' => 'CVE',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'farânga tî Dibutïi',
+      'symbol' => 'DJF',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'dinäri tî Alzerïi',
+      'symbol' => 'DZD',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'pôndo tî Kâmitâ',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'nakafa tî Eritrëe',
+      'symbol' => 'ERN',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'bir tî Etiopïi',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'zoröo',
+      'symbol' => 'EUR',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'pôndo tî Anglëe',
+      'symbol' => 'GBP',
+    ),
+    'GHC' => 
+    array (
+      'name' => 'sêdi tî Ganäa',
+      'symbol' => 'GHC',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'dalasi tî gambïi',
+      'symbol' => 'GMD',
+    ),
+    'GNS' => 
+    array (
+      'name' => 'sili tî Ginëe',
+      'symbol' => 'GNS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'rupïi tî Ênnde',
+      'symbol' => 'INR',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'yêni tî Zapön',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'shilîngi tî Kenyäa',
+      'symbol' => 'KES',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'farânga tî Kömôro',
+      'symbol' => 'KMF',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'dolära tî Liberïa',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'loti tî Lesôtho',
+      'symbol' => 'LSL',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'dinäar tî Libïi',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'dirâm tî Marôko',
+      'symbol' => 'MAD',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'ariâri tî Madagasikära',
+      'symbol' => 'MGA',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'ugîya tî Moritanïi',
+      'symbol' => 'MRO',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'rupïi tî Mörîsi',
+      'symbol' => 'MUR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'kwâtia tî Malawïi',
+      'symbol' => 'MWK',
+    ),
+    'MZM' => 
+    array (
+      'name' => 'metikala tî Mozambîka',
+      'symbol' => 'MZM',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'dolära tî Namibïi',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'nâîra tî Nizerïa',
+      'symbol' => 'NGN',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'farânga tî Ruandäa',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'riâli tî Saûdi Arabïi',
+      'symbol' => 'SAR',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'rupïi tî Sëyshêle',
+      'symbol' => 'SCR',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'pôndo tî Sudäan',
+      'symbol' => 'SDG',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'pôndo tî Zûâ Sênt-Helêna',
+      'symbol' => 'SHP',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'leône tî Sierâ-Leône',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'shilîngi tî Somalïi',
+      'symbol' => 'SOS',
+    ),
+    'STD' => 
+    array (
+      'name' => 'dôbra tî Sâô Tomë na Prinsîpe',
+      'symbol' => 'STD',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'lilangùeni tî Swazïlânde',
+      'symbol' => 'SZL',
+    ),
+    'TND' => 
+    array (
+      'name' => 'dinära tî Tunizïi',
+      'symbol' => 'TND',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'shilîngi tî Tanzanïi',
+      'symbol' => 'TZS',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'shilîngi tî Ugandäa',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'dol$ara ttî äLetäa-Ôko tî Amerîka',
+      'symbol' => 'USD',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'farânga CFA (BEAC)',
+      'symbol' => 'XAF',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'farânga CFA (BCEAO)',
+      'symbol' => 'XOF',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'rânde tî Mbongo-Afrîka',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'kwâtia tî Zambïi',
+      'symbol' => 'ZMK',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'dolära tî Zimbäbwe',
+      'symbol' => 'ZWD',
+    ),
+  ),
+);

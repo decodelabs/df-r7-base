@@ -1,0 +1,17 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'BAM' => 
+    array (
+      'name' => 'Конвертибилна Марка',
+      'symbol' => 'КМ.',
+    ),
+  ),
+);

@@ -1,0 +1,276 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => '.',
+    'group' => ',',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'currency' => '¤#,##0.00;(¤#,##0.00)',
+  ),
+  'currencies' => 
+  array (
+    'AED' => 
+    array (
+      'name' => 'ꖳꕯꔤꗳ ꕉꕟꔬ ꗡꕆꔓꔻ ꔵꕌꕆ',
+      'symbol' => 'AED',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'ꕉꖐꕞ ꖴꕎꘋꕤ',
+      'symbol' => 'AOA',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'ꖺꔻꖤꔃꔷꕩ ꕜꕞꕌ',
+      'symbol' => 'AUD',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'ꕑꗸꘋ',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'ꖜꖩꔺ ꖢꕟꘋꕃ',
+      'symbol' => 'BIF',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'ꕷꖬꕎꕯ ꖛꕞ',
+      'symbol' => 'BWP',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'ꕪꕯꕜ ꕜꕞꕌ',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'ꖏꖐꕱ ꖢꕟꘋꕃ',
+      'symbol' => 'CDF',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'ꖬꔃꕤ ꖨꕮꕊ ꖢꕟꘋꕃ',
+      'symbol' => 'CHF',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'ꕦꕇꔧ ꖳꕎꘋ ꔓꕆꘋꔬ',
+      'symbol' => 'CNY',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'ꗡꔻꖴꖁ ꕪꕷꗲꗡꔵꕩꖆ',
+      'symbol' => 'CVE',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'ꕀꖜꔳ ꖢꕟꘋꕃ',
+      'symbol' => 'DJF',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'ꕉꔷꕀꔸꕩ ꔵꕯ',
+      'symbol' => 'DZD',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'ꕆꔻꕞ ꗁꖻꘋ',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'ꔀꔸꔳꕟ ꗁꖻꘋ',
+      'symbol' => 'ERN',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'ꔤꕿꖎꔪꕩ ꔫꔤ',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'ꖳꖄ',
+      'symbol' => 'EUR',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'ꔛꔟꔻ ꗁꖻꘋ ꔻꗳꔷꘋ',
+      'symbol' => 'GBP',
+    ),
+    'GHC' => 
+    array (
+      'name' => 'ꕭꕌꕯ ꔻꔵ',
+      'symbol' => 'GHC',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'ꕭꔭꕩ ꕜꕞꔻ',
+      'symbol' => 'GMD',
+    ),
+    'GNS' => 
+    array (
+      'name' => 'ꕅꔤꕇ ꖢꕟꘋꕃ',
+      'symbol' => 'GNS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'ꔤꔺꕩ ꖩꔪ',
+      'symbol' => 'INR',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'ꕧꕐꕇꔧ ꘂꘋ',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'ꔞꕰ ꔻꔝꘋ',
+      'symbol' => 'KES',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'ꖏꖒꖄ ꖢꕟꘋꕃ',
+      'symbol' => 'KMF',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'ꕞꔤꔫꕩ ꕜꕞꕌ',
+      'symbol' => '$',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'ꔷꖇꕿ ꖃꔳ',
+      'symbol' => 'LSL',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'ꔷꔫꕩ ꔵꕯ',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'ꗞꕟꖏ ꔵꕌꕆ',
+      'symbol' => 'MAD',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'ꕮꕞꕭꕌꔻ ꕉꔸꕩꔸ',
+      'symbol' => 'MGA',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'ꗞꔸꕚꕇꕰ ꖳꕅꕩ',
+      'symbol' => 'MRO',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'ꗞꔓꗔ ꖩꔪ',
+      'symbol' => 'MUR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'ꕮꕞꕌꔨ ꖴꕎꕦ',
+      'symbol' => 'MWK',
+    ),
+    'MZM' => 
+    array (
+      'name' => 'ꗞꕤꔭꕃ ꕆꔳꕪ',
+      'symbol' => 'MZM',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'ꕯꕆꔫꕩ ꕜꕞꕌ',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'ꕯꔤꕀꔸꕩ ꕯꔤꕟ',
+      'symbol' => 'NGN',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'ꕟꖙꕡ ꖢꕟꘋꕃ',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'ꕢꖙꔵ ꔸꕩꔷ',
+      'symbol' => 'SAR',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'ꔖꗼꔷ ꖩꔪ',
+      'symbol' => 'SCR',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'ꖬꗵꘋ ꗁꖻꘋ',
+      'symbol' => 'SDG',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'ꔻꘋ ꗥꔷꕯ ꗁꖻꘋ',
+      'symbol' => 'SHP',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'ꔷꗚꘋ',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'ꖇꕮꔷ ꔻꔝꘋ',
+      'symbol' => 'SOS',
+    ),
+    'STD' => 
+    array (
+      'name' => 'ꕢꕴ ꕿꔈ ꗪ ꕉ ꕗꕴ ꖁꖜꕟ',
+      'symbol' => 'STD',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'ꔷꕞꔟꕇ',
+      'symbol' => 'SZL',
+    ),
+    'TND' => 
+    array (
+      'name' => 'ꖤꕇꔻꕩ ꔵꕯ',
+      'symbol' => 'TND',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'ꕚꘋꕤꕇꕰ ꔻꔝꘋ',
+      'symbol' => 'TZS',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'ꖳꕭꕡ ꔻꔝꘋ',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'ꕶꕱ ꕜꕞ',
+      'symbol' => 'USD',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'ꕉꔱꔸꕪ ꗛꔤ ꔒꘋꗣ ꗏ ꕟꘋꔵ',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'ꕤꔭꕩ ꖴꕎꕦ',
+      'symbol' => 'ZMK',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'ꔽꕓꖜꔃ ꕜꕞ',
+      'symbol' => 'ZWD',
+    ),
+  ),
+);

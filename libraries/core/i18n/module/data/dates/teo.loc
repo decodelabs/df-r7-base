@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Jum',
+        'mon' => 'Bar',
+        'tue' => 'Aar',
+        'wed' => 'Uni',
+        'thu' => 'Ung',
+        'fri' => 'Kan',
+        'sat' => 'Sab',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Nakaejuma',
+        'mon' => 'Nakaebarasa',
+        'tue' => 'Nakaare',
+        'wed' => 'Nakauni',
+        'thu' => 'Nakaung\'on',
+        'fri' => 'Nakakany',
+        'sat' => 'Nakasabiti',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Rar',
+        2 => 'Muk',
+        3 => 'Kwa',
+        4 => 'Dun',
+        5 => 'Mar',
+        6 => 'Mod',
+        7 => 'Jol',
+        8 => 'Ped',
+        9 => 'Sok',
+        10 => 'Tib',
+        11 => 'Lab',
+        12 => 'Poo',
+      ),
+      'full' => 
+      array (
+        1 => 'Orara',
+        2 => 'Omuk',
+        3 => 'Okwamg\'',
+        4 => 'Odung\'el',
+        5 => 'Omaruk',
+        6 => 'Omodok\'king\'ol',
+        7 => 'Ojola',
+        8 => 'Opedel',
+        9 => 'Osokosokoma',
+        10 => 'Otibar',
+        11 => 'Olabor',
+        12 => 'Opoo',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'dd/MM/yyyy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+);

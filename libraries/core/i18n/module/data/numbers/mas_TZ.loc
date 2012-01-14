@@ -1,0 +1,17 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'TZS' => 
+    array (
+      'name' => 'TZS',
+      'symbol' => 'TSh',
+    ),
+  ),
+);

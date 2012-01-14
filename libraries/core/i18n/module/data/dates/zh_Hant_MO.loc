@@ -1,0 +1,29 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'buddhist' => 
+  array (
+  ),
+  'chinese' => 
+  array (
+  ),
+  'gregorian' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'y年MM月dd日EEEE',
+      'long' => 'y年MM月dd日',
+      'medium' => 'y年M月d日',
+      'short' => 'yy年M月d日',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'ah:mm:ss [zzzz]',
+      'long' => 'ah:mm:ss [z]',
+      'medium' => 'ahh:mm:ss',
+    ),
+  ),
+  'roc' => 
+  array (
+  ),
+);

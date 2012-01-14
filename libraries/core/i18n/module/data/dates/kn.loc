@@ -1,0 +1,64 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'ರ.',
+        'mon' => 'ಸೋ.',
+        'tue' => 'ಮಂ.',
+        'wed' => 'ಬು.',
+        'thu' => 'ಗು.',
+        'fri' => 'ಶು.',
+        'sat' => 'ಶನಿ.',
+      ),
+      'full' => 
+      array (
+        'sun' => 'ರವಿವಾರ',
+        'mon' => 'ಸೋಮವಾರ',
+        'tue' => 'ಮಂಗಳವಾರ',
+        'wed' => 'ಬುಧವಾರ',
+        'thu' => 'ಗುರುವಾರ',
+        'fri' => 'ಶುಕ್ರವಾರ',
+        'sat' => 'ಶನಿವಾರ',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'full' => 
+      array (
+        1 => 'ಜನವರೀ',
+        2 => 'ಫೆಬ್ರವರೀ',
+        3 => 'ಮಾರ್ಚ್',
+        4 => 'ಎಪ್ರಿಲ್',
+        5 => 'ಮೆ',
+        6 => 'ಜೂನ್',
+        7 => 'ಜುಲೈ',
+        8 => 'ಆಗಸ್ಟ್',
+        9 => 'ಸಪ್ಟೆಂಬರ್',
+        10 => 'ಅಕ್ಟೋಬರ್',
+        11 => 'ನವೆಂಬರ್',
+        12 => 'ಡಿಸೆಂಬರ್',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'd-M-yy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'hh:mm:ss a zzzz',
+      'long' => 'hh:mm:ss a z',
+      'medium' => 'hh:mm:ss a',
+      'short' => 'hh:mm a',
+    ),
+  ),
+);

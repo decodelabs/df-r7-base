@@ -1,0 +1,79 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'ஞா',
+        'mon' => 'தி',
+        'tue' => 'செ',
+        'wed' => 'பு',
+        'thu' => 'வி',
+        'fri' => 'வெ',
+        'sat' => 'ச',
+      ),
+      'full' => 
+      array (
+        'sun' => 'ஞாயிறு',
+        'mon' => 'திங்கள்',
+        'tue' => 'செவ்வாய்',
+        'wed' => 'புதன்',
+        'thu' => 'வியாழன்',
+        'fri' => 'வெள்ளி',
+        'sat' => 'சனி',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'ஜன.',
+        2 => 'பிப்.',
+        3 => 'மார்.',
+        4 => 'ஏப்.',
+        5 => 'மே',
+        6 => 'ஜூன்',
+        7 => 'ஜூலை',
+        8 => 'ஆக.',
+        9 => 'செப்.',
+        10 => 'அக்.',
+        11 => 'நவ.',
+        12 => 'டிச.',
+      ),
+      'full' => 
+      array (
+        1 => 'ஜனவரி',
+        2 => 'பிப்ரவரி',
+        3 => 'மார்ச்',
+        4 => 'ஏப்ரல்',
+        5 => 'மே',
+        6 => 'ஜூன்',
+        7 => 'ஜூலை',
+        8 => 'ஆகஸ்ட்',
+        9 => 'செப்டம்பர்',
+        10 => 'அக்டோபர்',
+        11 => 'நவம்பர்',
+        12 => 'டிசம்பர்',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM, y',
+      'long' => 'd MMMM, y',
+      'medium' => 'd MMM, y',
+      'short' => 'd-M-yy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+);

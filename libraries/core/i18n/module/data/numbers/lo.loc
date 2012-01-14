@@ -1,0 +1,18 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+    'currency' => '¤#,##0.00;¤-#,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'LAK' => 
+    array (
+      'name' => 'ກີບ',
+      'symbol' => '₭',
+    ),
+  ),
+);

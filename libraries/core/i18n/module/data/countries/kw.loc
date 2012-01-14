@@ -1,0 +1,13 @@
+<?php
+return array (
+  'DE' => 'Almayn',
+  'BR' => 'Brasil',
+  'CN' => 'China',
+  'IN' => 'Eynda',
+  'IT' => 'Itali',
+  'JP' => 'Japan',
+  'FR' => 'Pow Frenk',
+  'RU' => 'Russi',
+  'GB' => 'Rywvaneth Unys',
+  'US' => 'Statys Unys',
+);

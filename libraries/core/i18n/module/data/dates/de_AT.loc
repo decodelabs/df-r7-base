@@ -1,0 +1,24 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Jän',
+      ),
+      'full' => 
+      array (
+        1 => 'Jänner',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, dd. MMMM y',
+      'long' => 'dd. MMMM y',
+    ),
+  ),
+);

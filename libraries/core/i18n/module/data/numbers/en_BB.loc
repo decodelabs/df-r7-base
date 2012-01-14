@@ -1,0 +1,22 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'BBD' => 
+    array (
+      'name' => 'BBD',
+      'symbol' => '$',
+    ),
+    'USD' => 
+    array (
+      'name' => 'USD',
+      'symbol' => 'US$',
+    ),
+  ),
+);
