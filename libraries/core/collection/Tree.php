@@ -12,7 +12,7 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
     
     use TArrayCollection;
     use TSeekableArrayCollection;
-    use TValueMapArrayCollection;
+    use TValueMapArrayAccess;
     use TSortableValueContainerArrayCollection;
     
     protected $_value;

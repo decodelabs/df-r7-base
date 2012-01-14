@@ -118,28 +118,9 @@ trait TSortableValueContainerArrayCollection {
 
 
 // Value map
-trait TValueMapArrayCollection {
-        
-    public function offsetSet($index, $value) {
-        return $this->set($index, $value);
-    }
-    
-    public function offsetGet($index) {
-        return $this->get($index);
-    }
-    
-    public function offsetExists($index) {
-        return $this->has($index);
-    }
-    
-    public function offsetUnset($index) {
-        return $this->remove($index);
-    }
-}
-
 trait TAssociativeValueMapArrayCollection {
     
-    use TValueMapArrayCollection;
+    use TValueMapArrayAccess;
     
     public function set($key, $value) {
         $this->_collection[(string)$key] = $value;
@@ -164,18 +145,13 @@ trait TAssociativeValueMapArrayCollection {
         unset($this->_collection[(string)$key]);
         return $this;
     }
-    
-    public function clearKeys() {
-        $this->_collection = array_values($this->_collection);
-        return $this;
-    }
 }
 
 
 
 trait TIndexedValueMapArrayCollection {
     
-    use TValueMapArrayCollection;
+    use TValueMapArrayAccess;
     
     public function set($index, $value) {
         $count = count($this->_collection);

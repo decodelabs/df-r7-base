@@ -7,6 +7,7 @@ namespace df\core\application;
 
 use df;
 use df\core;
+use df\halo;
 
 class Http extends Base {
     
@@ -19,7 +20,10 @@ class Http extends Base {
 // Execute
     public function dispatch() {
         $this->_beginDispatch();
+
         
+        $url = new halo\protocol\http\request\Base(true);
+        //core\dump($url);
         
         df\Launchpad::benchmark();
     }

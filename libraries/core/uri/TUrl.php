@@ -80,6 +80,75 @@ trait TUsernameContainer {
     }
 }
 
+trait TPasswordContainer {
+    
+    protected $_password;
+    
+    public function setPassword($password) {
+        if(strlen($password)) {
+            $this->_password = (string)$password;
+        } else {
+            $this->_password = null;
+        }
+        
+        return $this;
+    }
+    
+    public function getPassword() {
+        return $this->_password;
+    }
+    
+    public function hasPassword($passwords=false) {
+        if($passwords === false) {
+            return $this->_password !== null;
+        }
+        
+        if(!is_array($passwords)) {
+            $passwords = func_get_args();
+        }
+        
+        return in_array($this->_password, $passwords, true);
+    }
+    
+    private function _resetPassword() {
+        $this->_password = null;
+    }
+}
+
+trait TCredentialContainer {
+    
+    use TUsernameContainer;
+    use TPasswordContainer;
+    
+    public function setCredentials($username, $password) {
+        return $this->setUsername($username)
+            ->setPassword($password);
+    }
+    
+    public function hasCredentials() {
+        return $this->_username !== null || $this->_password !== null;
+    }
+    
+    private function _resetCredentials() {
+        $this->_resetUsername();
+        $this->_resetPassword();
+    }
+    
+    protected function _getCredentialString() {
+        if($this->_username === null && $this->_password === null) {
+            return null;
+        }
+        
+        $output = $this->_username;
+
+        if($this->_password !== null) {
+            $output .= ':'.$this->_password;
+        }
+        
+        return $output.'@';
+    }
+}
+
 
 // Domain
 trait TDomainContainer {
@@ -95,8 +164,50 @@ trait TDomainContainer {
         return $this->_domain;
     }
     
+    public function isAbsolute() {
+        return (bool)strlen($this->_domain);
+    }
+    
     private function _resetDomain() {
         $this->_domain = null;
+    }
+}
+
+// Port
+trait TPortContainer {
+    
+    protected $_port;
+    
+    public function setPort($port) {
+        if(!empty($port)) {
+            $this->_port = (int)$port;
+        } else {
+            $this->_port = null;
+        }
+        
+        return $this;
+    }
+    
+    public function getPort() {
+        return $this->_port;
+    }
+    
+    public function hasPort($ports=false) {
+        if($ports === false) {
+            return $this->_port !== null;
+        }
+        
+        if(!is_array($ports)) {
+            $ports = func_get_args();
+        }
+        
+        return in_array($this->_port, $ports, true);
+    }
+    
+    protected function _getPortString($skip=null) {
+        if($this->_port !== null && $this->_port !== $skip) {
+            return ':'.$this->_port;
+        }
     }
 }
 
@@ -154,15 +265,31 @@ trait TPathContainer {
         $this->_path = null;
     }
     
-    protected function _getPathString() {
+    protected function _getPathString($absolute=false) {
         if($this->_path !== null) {
-            return $this->_path->toUrlEncodedString();
+            $output = $this->_path->toUrlEncodedString();
+            
+            if($absolute) {
+                $output = '/'.ltrim($output);
+            }
+            
+            return $output;
+        } else if($absolute) {
+            return '/';
         }
     }
     
-    protected function _getReadablePathString() {
+    protected function _getReadablePathString($absolute=false) {
         if($this->_path !== null) {
-            return $this->_path->toString();
+            $output = $this->_path->toString();
+            
+            if($absolute) {
+                $output = '/'.ltrim($output);
+            }
+            
+            return $output;
+        } else if($absolute) {
+            return '/';
         }
     }
 }

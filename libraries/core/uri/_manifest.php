@@ -54,7 +54,6 @@ interface ICredentialContainer extends IUsernameContainer {
     public function getPassword();
     public function hasPassword($passwords=false);
     public function setCredentials($username, $password);
-    public function getCredentialString();
     public function hasCredentials();
 }
 

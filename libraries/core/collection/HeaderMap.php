@@ -12,7 +12,7 @@ class HeaderMap implements IMappedCollection, core\IStringProvider, \Iterator, c
     
     use core\TStringProvider;
     use TArrayCollection;
-    use TValueMapArrayCollection;
+    use TValueMapArrayAccess;
     
     
     public function __construct($input=null) {
@@ -167,10 +167,6 @@ class HeaderMap implements IMappedCollection, core\IStringProvider, \Iterator, c
                 str_replace(array('-', '_'), ' ', $key)
             ))
         );
-    }
-    
-    public function clearKeys() {
-        return $this;
     }
     
     

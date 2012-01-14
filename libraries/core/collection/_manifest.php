@@ -28,7 +28,24 @@ interface IAggregateIteratorCollection extends \IteratorAggregate {
     public function getReductiveIterator();
 }
 
-
+trait TValueMapArrayAccess {
+        
+    public function offsetSet($index, $value) {
+        return $this->set($index, $value);
+    }
+    
+    public function offsetGet($index) {
+        return $this->get($index);
+    }
+    
+    public function offsetExists($index) {
+        return $this->has($index);
+    }
+    
+    public function offsetUnset($index) {
+        return $this->remove($index);
+    }
+}
 
 
 // Sortable
@@ -109,9 +126,7 @@ interface ISequentialCollection extends ICollection {
 }
 
 // Strict associative indexes
-interface IMappedCollection extends ICollection, core\IValueMap, \ArrayAccess {
-    public function clearKeys();
-}
+interface IMappedCollection extends ICollection, core\IValueMap, \ArrayAccess {}
 
 // Object access returns container objects, otherwise, same behaviour as mapped
 interface IMappedContainerCollection extends IMappedCollection {
@@ -160,6 +175,7 @@ interface ITree extends IRandomAccessCollection, IMappedContainerCollection, cor
     public function contains($value, $includeChildren=false);
     public function toArrayDelimitedString($setDelimiter='&', $valueDelimiter='=');
     public function getKeys();
+    public function clearKeys();
 }
 
 interface IInputTree extends ITree, core\IErrorContainer {}
