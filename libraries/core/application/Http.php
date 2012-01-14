@@ -20,8 +20,6 @@ class Http extends Base {
     public function dispatch() {
         $this->_beginDispatch();
         
-        $duration = core\time\Date::factory('-3 days')->timeSince();
-        core\dump($duration);
         
         df\Launchpad::benchmark();
     }
