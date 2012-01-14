@@ -304,6 +304,11 @@ trait TIndexedProcessedValueMapArrayCollection {
         }
         
         $count = count($this->_collection);
+        
+        if($index === null) {
+            $index = $count;
+        }
+        
         $index = (int)$index;
         
         if($index < 0) {
@@ -320,29 +325,14 @@ trait TIndexedProcessedValueMapArrayCollection {
             }
         }
         
-        if($index > $count + $valCount - 1) {
-            $index = $count + $valCount - 1;
+        if($index > $count) {
+            $index = $count;
         }
         
-        $boundCount = $index - $count;
-        
         while($valCount > 0) {
-            if($index >= $count) {
-                // Outside of upper bounds, pad out by valCount
-                $this->_collection[] = $values[$boundCount];
-                unset($values[$boundCount]);
-                $boundCount--;
-            } else if($index < 0) {
-                // Outside of lower bounds, unshift
-                array_unshift($this->_collection, array_shift($values));
-                $count++;
-            } else if($index < $count) {
-                // Within bounds, just set it
-                $this->_collection[$index] = array_shift($values);
-            }
-            
+            $this->_collection[$index] = array_shift($values);
             $valCount--;
-            $index--;
+            $index++;
         }
         
         $this->_onInsert();
@@ -381,7 +371,7 @@ trait TIndexedProcessedValueMapArrayCollection {
         }
         
         while($valCount > 0) {
-            $this->_collection[] = array_pop($values);
+            $this->_collection[] = array_shift($values);
             $valCount--;
         }
         
@@ -592,8 +582,8 @@ trait TProcessedShiftableArrayCollection {
     }
     
     public function push($value) {
-        foreach(array_reverse(func_get_args()) as $arg) {
-            foreach(array_reverse($this->_expandInput($arg)) as $value) {
+        foreach(func_get_args() as $arg) {
+            foreach($this->_expandInput($arg) as $value) {
                 array_push($this->_collection, $value);
             }
         }
@@ -607,8 +597,8 @@ trait TProcessedShiftableArrayCollection {
     }
     
     public function unshift($value) {
-        foreach(func_get_args() as $arg) {
-            foreach($this->_expandInput($arg) as $value) {
+        foreach(array_reverse(func_get_args()) as $arg) {
+            foreach(array_reverse($this->_expandInput($arg)) as $value) {
                 array_unshift($this->_collection, $value);
             }
         }
