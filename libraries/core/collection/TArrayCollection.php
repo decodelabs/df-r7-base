@@ -373,7 +373,7 @@ trait TUniqueSetArrayCollection {
         
         foreach($values as $part) {
             if(!in_array($part, $this->_collection, true)) {
-                $this->_collection[] = $entry;
+                $this->_collection[] = $part;
             }
         }
     }

@@ -91,7 +91,7 @@ class Group implements core\debug\IGroupNode {
         return $this->addDumpList(func_get_args(), true, core\debug\StackCall::factory(1));
     }
     
-    public function addDump(&$dumpObject, $deep=false, core\debug\IStackCall $stackCall) {
+    public function addDump($dumpObject, $deep=false, core\debug\IStackCall $stackCall) {
         require_once __DIR__.'/Dump.php';
         return $this->addChild(new Dump($dumpObject, $deep, $stackCall->getFile(), $stackCall->getLine()));
     }

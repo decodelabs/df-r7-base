@@ -22,8 +22,10 @@ class Http extends Base {
         $this->_beginDispatch();
 
         
-        $url = new halo\protocol\http\request\Base(true);
-        //core\dump($url);
+        require_once df\Launchpad::ROOT_PATH.'/base/tests/core/collection/SetBatch.php';
+        
+        $batch = new \df\test\core\collection\SetBatch();
+        $batch->run();
         
         df\Launchpad::benchmark();
     }

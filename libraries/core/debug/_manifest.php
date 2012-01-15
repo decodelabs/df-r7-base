@@ -64,7 +64,7 @@ interface IGroupNode extends INode, IEntryPoint, core\IArrayProvider {
     public function clearChildren();
     
     public function newGroup($title=null, $file=null, $line=null);
-    public function addDump(&$dumpObject, $deep=false, IStackCall $stackCall);
+    public function addDump($dumpObject, $deep=false, IStackCall $stackCall);
     public function addDumpList(array $dumpObjects, $deep=false, IStackCAll $stackCall);
     public function addException(\Exception $exception);
     public function addMessage($message, $type, IStackCall $stackCall);

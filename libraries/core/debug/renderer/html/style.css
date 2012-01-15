@@ -238,6 +238,7 @@ body {
     color: #9A1E1E; 
     font-size: 1.2em; 
     margin: 0 0 8px; 
+    white-space: pre;
 }
 
 .node-exception p.location { 

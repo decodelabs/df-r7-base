@@ -119,6 +119,11 @@ class Inspector {
     }
     
 // Object
+    public function inspectObjectProperties($object, $deep=false) {
+        return new Structure($this, get_class($object), 0, $this->_getObjectProperties($object, $deep));
+    }
+
+
     protected function _dumpObject($object, $deep=false) {
         if(null !== ($dumpId = $this->_getObjectDumpId($object))) {
             if(!isset($this->_objectHashHits[$dumpId])) {

@@ -104,12 +104,14 @@ class Html extends Base {
                     $i++;
                 }
                 
-                /*
                 if($exception instanceof core\IDumpable) {
-                    $dump = new core\debug\dumper\Html();
-                    $output .= '<div class="exception-data dump-body">'.$dump->dump($exception, false).'</div>';
+                    $inspector = new core\debug\dumper\Inspector();
+                    $data = $inspector->inspectObjectProperties($exception);
+                    
+                    $output .= '<div class="exception-data dump-body">'.
+                        $this->_renderDumpData($inspector, $data).
+                    '</div>';
                 }
-                */
                 
                 $output .= '<div class="stack">'.$this->_renderStackTrace($node->getStackTrace()).'</div>';
                 return $output;
