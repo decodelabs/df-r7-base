@@ -9,18 +9,38 @@ use df;
 use df\core;
 use df\acid;
 
-abstract class Base implements IBatch {
+abstract class Base implements acid\IBatch {
     
     use acid\TAssert;
     
-    public function run() {
-        $testList = $this->_getTestMethods();
+    public function run(acid\IResult $result=null) {
+        if($result === null) {
+            $result = new acid\Result();
+        }
         
-        $return = null;
+        if($result->hasBatch($this)) {
+            return $result;
+        }
+        
+        $result->addBatch($this);
+        
+        $testList = $this->_getTestMethods();
+        $return = array();
+        $lastName = null;
         
         foreach($testList as $name => $method) {
-            $return = $method->invokeArgs($this, [$return]);
+            try {
+                $args = isset($lastName) ? [$return[$lastName]] : [];
+                $lastName = $name;
+                
+                $return[$name] = $method->invokeArgs($this, $args);
+                $result->registerSuccess($this, $name);
+            } catch(\Exception $e) {
+                $result->registerFailure($this, $name, $e);
+            }
         }
+        
+        return $result;
     }
     
     public function evaluate($actual, acid\constraint\IConstraint $constraint, $message=null) {
@@ -31,7 +51,7 @@ abstract class Base implements IBatch {
                 $description = $description."\n".$message;
             }
             
-            throw new ExpectationFailedException(
+            throw new acid\ExpectationFailedException(
                 $description, $actual, $constraint->getExpectation()
             );
         }
