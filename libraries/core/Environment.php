@@ -7,6 +7,7 @@ namespace df\core;
 
 use df;
 use df\core;
+use df\halo;
 
 class Environment extends Config {
     
@@ -75,13 +76,10 @@ class Environment extends Config {
     }
     
     protected function _generateHttpBaseUrl() {
-        core\stub();
-        
         $baseUrl = null;
         $request = new halo\protocol\http\request\Base(true);
         $host = $request->getUrl()->getDomain();
         $path = $request->getUrl()->getPathString();
-        
         
         $baseUrl = $host.'/'.trim(dirname($_SERVER['SCRIPT_NAME']), '/').'/';
         $currentUrl = $host.'/'.$path;
