@@ -22,10 +22,7 @@ class Http extends Base {
         $this->_beginDispatch();
 
         
-        require_once df\Launchpad::ROOT_PATH.'/base/tests/core/collection/SetBatch.php';
         
-        $batch = new \df\test\core\collection\SetBatch();
-        core\dump($batch->run());
         
         df\Launchpad::benchmark();
     }

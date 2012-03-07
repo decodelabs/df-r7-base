@@ -103,7 +103,7 @@ abstract class Config implements IConfig, core\IDumpable {
     
     final public function isConfigDistributed() {
         return static::IS_DISTRIBUTED;
-    }     
+    }
     
     final public function save() {
         $this->_sanitizeValuesOnSave();
@@ -125,12 +125,7 @@ abstract class Config implements IConfig, core\IDumpable {
         $parts = explode('/', $this->_id);
         $name = array_pop($parts);
         $environmentId = $this->_application->getEnvironmentId();
-        
-        if(static::IS_DISTRIBUTED) {
-            $basePath = $this->_application->getSharedStoragePath().'/config';
-        } else {
-            $basePath = $this->_application->getLocalStoragePath().'/config';
-        }
+        $basePath = $this->_getBasePath();
         
         if(!empty($parts)) {
             $basePath .= '/'.implode('/', $parts);
@@ -158,12 +153,7 @@ abstract class Config implements IConfig, core\IDumpable {
         $environmentId = $this->_application->getEnvironmentId();
         $parts = explode('/', $this->_id);
         $name = array_pop($parts);
-        
-        if(static::IS_DISTRIBUTED) {
-            $basePath = $this->_application->getSharedStoragePath().'/config';
-        } else {
-            $basePath = $this->_application->getLocalStoragePath().'/config';
-        }
+        $basePath = $this->_getBasePath();
         
         if(!empty($parts)) {
             $basePath .= '/'.implode('/', $parts);
@@ -187,6 +177,14 @@ abstract class Config implements IConfig, core\IDumpable {
         
         // TODO: locking
         file_put_contents($savePath, $content);
+    }
+    
+    private function _getBasePath() {
+        if(static::IS_DISTRIBUTED) {
+            return $this->_application->getSharedStaticStoragePath().'/config';
+        } else {
+            return $this->_application->getLocalStaticStoragePath().'/config';
+        }
     }
     
     private function _exportArray(array $values, $level=1) {

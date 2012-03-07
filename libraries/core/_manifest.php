@@ -240,7 +240,7 @@ class Package implements IPackage {
             $path = dirname($ref->getFileName());
         }
         
-        if(df\Launchpad::IN_PHAR) {
+        if(df\Launchpad::IS_COMPILED) {
             $this->path = df\Launchpad::ROOT_PATH.'/apex/packages/'.$name;
         } else {
             $this->path = $path;
@@ -261,8 +261,10 @@ class Package implements IPackage {
 interface IApplication {
     // Paths
     public static function getApplicationPath();
-    public function getLocalStoragePath();
-    public function getSharedStoragePath();
+    public function getLocalDataStoragePath();
+    public function getSharedDataStoragePath();
+    public function getLocalStaticStoragePath();
+    public function getSharedStaticStoragePath();
     
     // Execute
     public function dispatch();
@@ -325,13 +327,12 @@ interface IConfig extends IApplicationAware, IRegistryObject {
     public function getDefaultValues();
     public function getConfigId();
     public function getConfigValues();
-    public function isConfigDistributed();
 }
 
 
 include __DIR__.'/Loader.php';
 
-if(!df\Launchpad::IN_PHAR) {
+if(!df\Launchpad::IS_COMPILED) {
     include __DIR__.'/DevLoader.php';
 }
 

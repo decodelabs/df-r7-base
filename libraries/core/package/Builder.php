@@ -11,7 +11,7 @@ use df\core;
 class Builder {
     
     private static $_appExport = [
-        'share', 'store'
+        'data', 'static'
     ];
     
     
@@ -24,9 +24,9 @@ class Builder {
     public function buildTestingInstallation($path=null) {
         ini_set('phar.readonly', 0);
         
-        if(df\Launchpad::IN_PHAR) {
+        if(df\Launchpad::IS_COMPILED) {
             throw new \Exception(
-                'Cannot build testing installation from a phar build'
+                'Cannot build testing installation from a compiled build'
             );
         }
         
@@ -75,8 +75,18 @@ class Builder {
         
         mkdir($tempPath.'/apex/', 0777, true);
         
-        copy(df\Launchpad::ROOT_PATH.'/Df.php', $tempPath.'/Df.php');
         
+        // Generate Df.php
+        $dfFile = file_get_contents(df\Launchpad::ROOT_PATH.'/Df.php');
+        
+        $dfFile = str_replace('BUILD_TESTING_INSTALLATION = true', 'BUILD_TESTING_INSTALLATION = false', $dfFile);
+        $dfFile = str_replace('IS_COMPILED = false', 'IS_COMPILED = true', $dfFile);
+        $dfFile = str_replace('IN_PHAR = false', 'IN_PHAR = true', $dfFile);
+        
+        file_put_contents($tempPath.'/Df.php', $dfFile);
+        
+        
+        // Copy packages
         foreach($this->_loader->getPackages() as $package) {
             if($package->name == 'app') {
                 foreach(scandir($package->path) as $entry) {

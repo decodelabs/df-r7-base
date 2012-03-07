@@ -48,7 +48,7 @@ abstract class Base implements core\IApplication, core\IDumpable {
         $this->_isDistributed = $envConfig->isDistributed();
         $this->_environmentMode = $envConfig->getEnvironmentMode();
         
-        if(!df\Launchpad::IN_PHAR) {
+        if(!df\Launchpad::IS_COMPILED) {
             $this->_environmentMode = 'development';
         } else if($this->_environmentMode == 'development') {
             $this->_environmentMode = 'testing';
@@ -61,12 +61,22 @@ abstract class Base implements core\IApplication, core\IDumpable {
         return df\Launchpad::$applicationPath;
     }
     
-    public function getLocalStoragePath() {
-        return df\Launchpad::$applicationPath.'/store';
+    
+    
+    public function getLocalDataStoragePath() {
+        return df\Launchpad::$applicationPath.'/data/local';
     }
     
-    public function getSharedStoragePath() {
-        return df\Launchpad::$applicationPath.'/share';
+    public function getSharedDataStoragePath() {
+        return df\Launchpad::$applicationPath.'/data/shared';
+    }
+    
+    public function getLocalStaticStoragePath() {
+        return df\Launchpad::$applicationPath.'/static/local';
+    }
+    
+    public function getSharedStaticStoragePath() {
+        return df\Launchpad::$applicationPath.'/static/shared';
     }
     
     
