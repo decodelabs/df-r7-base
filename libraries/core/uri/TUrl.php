@@ -306,7 +306,7 @@ trait TPathContainer {
             $output = $this->_path->toUrlEncodedString();
             
             if($absolute) {
-                $output = '/'.ltrim($output, '/');
+                $output = '/'.ltrim($output, '/.');
             }
             
             return $output;

@@ -10,7 +10,7 @@ use df\core;
 use df\halo;
 use df\arch;
 
-class Http extends Base {
+class Http extends Base implements arch\IRoutedDirectoryRequestApplication {
     
     const RUN_MODE = 'Http';
     
@@ -20,6 +20,8 @@ class Http extends Base {
     
     protected $_httpRequest;
     protected $_responseAugmentor;
+    
+    protected $_context;
     
     protected $_routeMatchCount = 0;
     protected $_routeCount = 0;
@@ -37,9 +39,59 @@ class Http extends Base {
     }
     
     
+// Base Url
     public function getBaseUrl() {
         return new halo\protocol\http\Url($this->_baseDomain.':'.$this->_basePort.'/'.implode('/', $this->_basePath).'/');
     }
+    
+    
+// Http request
+    public function setHttpRequest(halo\protocol\http\IRequest $request) {
+        $this->_httpRequest = $request;
+        return $this;
+    }
+    
+    public function getHttpRequest() {
+        if(!$this->_httpRequest) {
+            throw new core\RuntimeException(
+                'The http request is not available until the application has been dispatched'
+            );
+        }
+        
+        return $this->_httpRequest;    
+    }
+    
+    
+// Response augmentor
+    public function getResponseAugmentor() {
+        if(!$this->_responseAugmentor) {
+            $this->_responseAugmentor = new halo\protocol\http\response\Augmentor();
+            
+            if($this->_debugTransport) {
+                $this->_debugTransport->setResponseAugmentor($this->_responseAugmentor);
+            }
+        }
+        
+        return $this->_responseAugmentor;
+    }
+    
+    
+// Context
+    public function getContext() {
+        if(!$this->_context) {
+            throw new core\RuntimeException(
+                'A context is not available until the application has been dispatched'
+            );
+        }
+        
+        return $this->_context;
+    }
+    
+    public function getDispatchRequest() {
+        return $this->getContext()->getRequest();
+    }
+    
+    
     
 // Routing
     public function requestToUrl(arch\IRequest $request) {
@@ -194,7 +246,66 @@ class Http extends Base {
     
     
     protected function _dispatchRequest(arch\IRequest $request) {
-        core\stub($request);
+        if($this->_responseAugmentor) {
+            $this->_responseAugmentor->resetCurrent();
+        }
+            
+        $this->_context = arch\Context::factory($this, clone $request);
+        
+        $action = arch\Action::factory($this->_context);
+        $response = $action->dispatch();
+        
+        
+        // Forwarding
+        if($response instanceof arch\IRequest) {
+            return $response;
+        }
+        
+        
+        // Empty response
+        if($response === null && $this->isDevelopment()) {
+            $this->_context->throwError(
+                500,
+                'No response was returned by action: '.$this->_context->getRequest()
+            );
+        }
+        
+        
+        // Basic response
+        if(!$response instanceof halo\protocol\http\IResponse) {
+            $response = (string)$response;
+            
+            if($this->_responseAugmentor) {
+                $response = new halo\protocol\http\response\String($response, 'text/html');
+            } else {
+                return $response;
+            }
+        }
+        
+        
+        // Permissions
+        /*
+        if($response instanceof arch\response\IPermissionEnforcer) {
+            $user = $this->_context->getUserManager();
+         
+            foreach($response->getAccessLocks() as $lock) {
+                if(!$user->canAccess($lock)) {
+                    $this->_context->throwError(
+                        401, 'Insufficient permissions'
+                    );
+                }
+            }
+        }
+        */
+       
+        $response->dispatchComplete();
+           
+        // Apply globally defined cookies, headers, etc
+        if($this->_responseAugmentor) {
+            $this->_responseAugmentor->apply($response);
+        }
+        
+        return $response;
     }
     
     

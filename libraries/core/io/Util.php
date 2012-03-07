@@ -10,7 +10,7 @@ use df\core;
 
 class Util {
     
-    public static function copyDir($source, $destination) {
+    public static function copyDir($source, $destination, $merge=false) {
         if(!is_dir($source)) {
             throw new \Exception(
                 'Source directory does not exist'
@@ -18,13 +18,15 @@ class Util {
         }
         
         if(is_dir($destination)) {
-            throw new \Exception(
-                'Destination directory already exists'
-            );
+            if(!$merge) {
+                throw new \Exception(
+                    'Destination directory already exists'
+                );
+            }
+        } else {
+            // TODO: get permissions from source
+            mkdir($destination, 0777, false);
         }
-        
-        // TODO: get permissions from source
-        mkdir($destination, 0777, false);
         
         foreach(scandir($source) as $entry) {
             if($entry == '.' || $entry == '..') {
@@ -32,7 +34,7 @@ class Util {
             }
             
             if(is_dir($source.'/'.$entry)) {
-                self::copyDir($source.'/'.$entry, $destination.'/'.$entry);
+                self::copyDir($source.'/'.$entry, $destination.'/'.$entry, $merge);
             } else {
                 copy($source.'/'.$entry, $destination.'/'.$entry);
             }

@@ -350,6 +350,20 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         return $parts;
     }
     
+    public function toString() {
+        $output = 'directory://'.implode('/', $this->getLiteralPathArray());
+        
+        if($this->_query) {
+            $output .= '?'.$this->_query->toArrayDelimitedString();
+        }
+        
+        if($this->_fragment) {
+            $output .= '#'.$this->_fragment;
+        }
+        
+        return $output;
+    }
+    
     public function getDirectoryLocation() {
         $output = $this->getArea();
         
@@ -552,16 +566,6 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     
 // Dump
     public function getDumpProperties() {
-        $output = 'directory://'.implode('/', $this->getLiteralPathArray());
-        
-        if($this->_query) {
-            $output .= '?'.$this->_query->toArrayDelimitedString();
-        }
-        
-        if($this->_fragment) {
-            $output .= '#'.$this->_fragment;
-        }
-        
-        return $output;
+        return $this->toLiteralString();
     }
 }

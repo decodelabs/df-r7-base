@@ -70,7 +70,7 @@ class Environment extends Config {
     }
     
     public function getHttpBaseUrl() {
-        if(!isset($this->_values['httpBaseUrl'])) {
+        if(!isset($this->_values['httpBaseUrl']) && isset($_SERVER['HTTP_HOST'])) {
             if(null !== ($baseUrl = $this->_generateHttpBaseUrl())) {
                 $this->setHttpBaseUrl($baseUrl)->save();
             }

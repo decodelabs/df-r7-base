@@ -138,7 +138,7 @@ class Url implements IGenericUrl, core\IDumpable {
         
         $output = '';
         $output .= $this->_getSchemeString();
-        $output .= $this->_getPathString();
+        $output .= $this->_getPathString(true);
         $output .= $this->_getQueryString();
         $output .= $this->_getFragmentString();
         

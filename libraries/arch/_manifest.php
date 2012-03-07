@@ -19,7 +19,7 @@ class HelperNotFoundException extends RuntimeException {}
 
 
 // Interfaces
-interface IContext extends core\IApplicationAware {
+interface IContext extends core\IApplicationAware, core\i18n\translate\ITranslationProxy {
     public function spawnInstance($request);
     
     // Application
@@ -38,8 +38,14 @@ interface IContext extends core\IApplicationAware {
     
     // Helpers
     public function throwError($code=500, $message='');
+    public function findFile($path);
     public function getHelper($method);
     public function __get($key);
+    
+    public function getI18nManager();
+    public function getPolicyManager();
+    public function getSystemInfo();
+    public function getUserManager();
 }
 
 interface IContextAware {
@@ -47,6 +53,17 @@ interface IContextAware {
 }
 
 interface IContextHelper extends IContextAware {}
+
+
+
+interface IDirectoryRequestApplication extends core\IApplication, IContextAware {}
+
+interface IRoutedDirectoryRequestApplication extends IDirectoryRequestApplication {
+    public function requestToUrl(IRequest $request);
+    public function countRoutes();
+    public function countRouteMatches();
+}
+
 
 interface IRouter {
     public function routeIn(arch\IRequest $request);
