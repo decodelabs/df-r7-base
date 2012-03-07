@@ -149,10 +149,6 @@ class Unix extends Base implements IUnixAddress {
         return $this->getPath()->toString();
     }
     
-    public function getReadablePathString() {
-        return $this->getPathString();
-    }
-    
     
 // Strings
     public function toString() {

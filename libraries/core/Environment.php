@@ -57,10 +57,14 @@ class Environment extends Config {
     
 // Http base url
     public function setHttpBaseUrl($url) {
-        $url = halo\protocol\http\Url::factory($url);
-        $url->getPath()->shouldAddTrailingSlash(true)->isAbsolute(true);
-        
-        $this->_values['httpBaseUrl'] = $url->getDomain().$url->getPathString();
+        if($url === null) {
+            $this->_values['httpBaseUrl'] = null;
+        } else {
+            $url = halo\protocol\http\Url::factory($url);
+            $url->getPath()->shouldAddTrailingSlash(true)->isAbsolute(true);
+            
+            $this->_values['httpBaseUrl'] = $url->getDomain().$url->getPathString();
+        }
         
         return $this;
     }

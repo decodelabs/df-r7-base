@@ -82,7 +82,6 @@ interface IPathContainer {
     public function getPath();
     public function getPathString();
     public function hasPath();
-    public function getReadablePathString();
 }
 
 interface IFragmentContainer {
@@ -108,7 +107,6 @@ interface IUrl extends core\IStringProvider {
     public function reset();
     
     public function getScheme();
-    public function toReadableString();
 }
 
 interface ITransientSchemeUrl {

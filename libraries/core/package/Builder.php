@@ -30,6 +30,14 @@ class Builder {
             );
         }
         
+        
+        
+        // Set base http path
+        $envConfig = core\Environment::getInstance(df\Launchpad::$application);
+        $baseUrl = $envConfig->getHttpBaseUrl();
+        $envConfig->setHttpBaseUrl(null)->save();
+        
+        
         if($path === null) {
             $path = df\Launchpad::$applicationPath.'-testing';
         }
@@ -159,6 +167,9 @@ class Builder {
             }
         }
         
-        // TODO: clear baseHttpPath from config
+        
+        
+        
+        $envConfig->setHttpBaseUrl($baseUrl)->save();
     }
 }

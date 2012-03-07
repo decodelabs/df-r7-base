@@ -125,20 +125,4 @@ class Url extends core\uri\Url implements IUrl {
         
         return $output;
     }
-
-    public function toReadableString() {
-        if($this->isJustFragment()) {
-            return $this->_getFragmentString();
-        }
-        
-        $output = $this->getScheme().'://';
-        $output .= $this->_getCredentialString();
-        $output .= $this->_domain;
-        $output .= $this->_getPortString();
-        $output .= $this->_getReadablePathString(true);
-        $output .= $this->_getQueryString();
-        $output .= $this->_getFragmentString();
-        
-        return $output;
-    }
 }

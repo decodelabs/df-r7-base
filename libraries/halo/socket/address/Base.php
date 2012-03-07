@@ -47,14 +47,8 @@ abstract class Base implements IAddress {
     }
     
     
-// Strings
-    public function toReadableString() {
-        return $this->toString();
-    }
-    
-    
 // Dump
     public function getDumpProperties() {
-        return $this->toReadableString();
+        return $this->toString();
     }
 }

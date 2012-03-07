@@ -48,7 +48,7 @@ class Util extends Base {
         $builder = new df\core\package\Builder(df\Launchpad::$loader);
         $builder->buildTestingInstallation();
         
-        return 'Build complete';
+        return 'Build complete'."\n\n";
     }
 
 }

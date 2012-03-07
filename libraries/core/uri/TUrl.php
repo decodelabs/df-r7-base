@@ -287,14 +287,6 @@ trait TPathContainer {
         }
     }
     
-    public function getReadablePathString() {
-        if($this->_path) {
-            return $this->_path->toString();
-        } else {
-            return '/';
-        }
-    }
-    
     public function hasPath() {
         return $this->_path !== null;
     }
@@ -314,21 +306,7 @@ trait TPathContainer {
             $output = $this->_path->toUrlEncodedString();
             
             if($absolute) {
-                $output = '/'.ltrim($output);
-            }
-            
-            return $output;
-        } else if($absolute) {
-            return '/';
-        }
-    }
-    
-    protected function _getReadablePathString($absolute=false) {
-        if($this->_path !== null) {
-            $output = $this->_path->toString();
-            
-            if($absolute) {
-                $output = '/'.ltrim($output);
+                $output = '/'.ltrim($output, '/');
             }
             
             return $output;

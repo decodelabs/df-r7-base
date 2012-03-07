@@ -32,7 +32,7 @@ class Url extends core\uri\Url implements IUrl {
             }
             
             if(!empty($basePath)) {
-                $path->prepend($basePath);
+                $path->unshift($basePath);
             }
         } else if(!empty($basePath)) {
             $path = new core\uri\Path($basePath);
@@ -243,38 +243,12 @@ class Url extends core\uri\Url implements IUrl {
         return $output;
     }
     
-    public function toReadableString() {
-        if($this->isJustFragment()) {
-            return $this->_getFragmentString();
-        }
-        
-        $output = $this->getScheme().'://';
-        $output .= $this->_getCredentialString();
-        $output .= $this->_domain;
-        $output .= $this->_getPortString($this->_scheme == 'https' ? 443 : 80);
-        $output .= $this->getReadableLocalString();
-        
-        return $output;
-    }
-
     public function getLocalString() {
         if($this->isJustFragment()) {
             return $this->_getFragmentString();
         }
         
         $output = $this->_getPathString(true);
-        $output .= $this->_getQueryString();
-        $output .= $this->_getFragmentString();
-        
-        return $output;
-    }
-    
-    public function getReadableLocalString() {
-        if($this->isJustFragment()) {
-            return $this->_getFragmentString();
-        }
-        
-        $output = $this->_getReadablePathString(true);
         $output .= $this->_getQueryString();
         $output .= $this->_getFragmentString();
         

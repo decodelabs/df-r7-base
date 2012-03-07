@@ -30,7 +30,6 @@ class DebugPayload extends \Exception {
 // Interfaces
 interface IUrl extends core\uri\IGenericUrl, core\uri\ICredentialContainer, core\uri\ISecureSchemeContainer, core\uri\IDomainPortContainer {
     public function getLocalString();
-    public function getReadableLocalString();
 }
 
 

@@ -150,13 +150,6 @@ class MailtoUrl implements IMailtoUrl, core\IDumpable {
         return $output;
     }
     
-    public function toReadableString() {
-        $output = 'mailto:'.$this->getEmail();
-        $output .= $this->_getQueryString();
-        
-        return $output;
-    }
-    
     
 // Dump
     public function getDumpProperties() {

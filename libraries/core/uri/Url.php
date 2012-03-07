@@ -145,23 +145,9 @@ class Url implements IGenericUrl, core\IDumpable {
         return $output;
     }
     
-    public function toReadableString() {
-        if($this->isJustFragment()) {
-            return $this->_getFragmentString();
-        }
-        
-        $output = '';
-        $output .= $this->_getSchemeString();
-        $output .= $this->_getReadablePathString();        
-        $output .= $this->_getQueryString();
-        $output .= $this->_getFragmentString();
-        
-        return $output;
-    }
-    
     
 // Dump
     public function getDumpProperties() {
-        return $this->toReadableString();
+        return $this->toString();
     }
 }
