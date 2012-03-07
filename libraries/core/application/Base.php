@@ -19,6 +19,7 @@ abstract class Base implements core\IApplication, core\IDumpable {
     
     protected $_environmentMode = 'development';
     protected $_isDistributed = false;
+    protected $_debugTransport;
     
     protected $_isRunning = false;
     protected $_objectCache = array();
@@ -147,6 +148,18 @@ abstract class Base implements core\IApplication, core\IDumpable {
 
     public function isDistributed() {
         return $this->_isDistributed;
+    }
+    
+    public function getDebugTransport() {
+        if(!$this->_debugTransport) {
+            $this->_debugTransport = $this->_getNewDebugTransport();
+        }
+        
+        return $this->_debugTransport;
+    }
+    
+    protected function _getNewDebugTransport() {
+        return new core\debug\transport\Base();
     }
     
     

@@ -13,6 +13,7 @@ interface IException {}
 class LogicException extends \LogicException implements IException {}
 class UnexpectedValueException extends \UnexpectedValueException implements IException {}
 class RuntimeException extends \RuntimeException implements IException {}
+class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 class ApplicationNotFoundException extends RuntimeException {}
 
 // Generic interfaces

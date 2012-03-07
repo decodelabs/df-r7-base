@@ -14,15 +14,15 @@ class Http extends Base {
     const RUN_MODE = 'Http';
     
     protected $_responseAugmentor;
-    protected $_debugTransport;
     
     
 // Execute
     public function dispatch() {
         $this->_beginDispatch();
-
         
-        
+        $task = 'util build';
+        $r = shell_exec('/mnt/dev/php/php-5.4.0.rc8/bin/php '.$this->getApplicationPath().'/entry/btc-pc.php '.$task);
+        echo '<pre>'.$r.'</pre>';
         
         df\Launchpad::benchmark();
     }
@@ -34,14 +34,16 @@ class Http extends Base {
     
 // Environment
     public function getDebugTransport() {
-        if(!$this->_debugTransport) {
-            $this->_debugTransport = new core\debug\transport\Http();
-        }
+        $output = parent::getDebugTransport();
         
         if($this->_responseAugmentor) {
-            $this->_debugTransport->setResponseAugmentor($this->_responseAugmentor);
+            $output->setResponseAugmentor($this->_responseAugmentor);
         }
         
-        return $this->_debugTransport;
+        return $output;
+    }
+    
+    protected function _getNewDebugTransport() {
+        return new core\debug\transport\Http();
     }
 }

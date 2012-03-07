@@ -79,7 +79,6 @@ class Builder {
         // Generate Df.php
         $dfFile = file_get_contents(df\Launchpad::ROOT_PATH.'/Df.php');
         
-        $dfFile = str_replace('BUILD_TESTING_INSTALLATION = true', 'BUILD_TESTING_INSTALLATION = false', $dfFile);
         $dfFile = str_replace('IS_COMPILED = false', 'IS_COMPILED = true', $dfFile);
         $dfFile = str_replace('IN_PHAR = false', 'IN_PHAR = true', $dfFile);
         
