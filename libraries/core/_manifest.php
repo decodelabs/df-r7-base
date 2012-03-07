@@ -319,6 +319,38 @@ trait TApplicationAware {
 }
 
 
+
+// Manager
+interface IManager extends IApplicationAware, IRegistryObject {}
+
+trait TManager {
+    
+    use TApplicationAware;
+    
+    public static function getInstance(IApplication $application=null) {
+        if(!$application) {
+            $application = df\Launchpad::getActiveApplication();
+        }
+        
+        if(!$output = $application->_getCacheObject(static::REGISTRY_PREFIX)) {
+            $application->_setCacheObject(
+                $output = new self($application)
+            );
+        }
+        
+        return $output;
+    }
+    
+    protected function __construct(core\IApplication $application) {
+        $this->_application = $application;
+    }
+    
+    public function getRegistryObjectKey() {
+        return static::REGISTRY_PREFIX;
+    }
+}
+
+
 // Payload
 interface IPayload {}
 interface IDeferredPayload extends IPayload, IApplicationAware {}

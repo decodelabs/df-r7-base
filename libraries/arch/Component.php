@@ -12,7 +12,7 @@ use df\user;
 
 abstract class Component implements IComponent {
     
-    const DEFAULT_ACCESS = user\Client::ALL;
+    const DEFAULT_ACCESS = true;//user\Client::ALL;
     
     protected $_context;
     
