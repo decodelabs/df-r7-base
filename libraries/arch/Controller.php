@@ -10,13 +10,16 @@ use df\core;
 use df\arch;
 use df\user;
 
-class Controller implements IController {
+class Controller implements IController, core\IDumpable {
+    
+    use TContextProxy;
+    use TDirectoryAccessLock;
     
     const CHECK_ACCESS = true;
     const DEFAULT_ACCESS = false;//user\Client::NONE;
     
     protected $_type;
-    protected $_context;
+    protected $_activeAction;
     
     private $_isInline = false;
     
@@ -48,40 +51,30 @@ class Controller implements IController {
         $this->_isInline = get_class($this) == __CLASS__;
     }
     
-    public function getContext() {
-        return $this->_context;
-    }
-    
-    public function getType() {
-        return $this->_type;
-    }
-    
     
 // Dispatch
     public function isControllerInline() {
         return $this->_isInline;
     }
     
-// Context proxies
-    public function __call($method, $args) {
-        return call_user_func_array(array($this->_context, $method), $args);
+    
+// Action
+    public function setActiveAction(IAction $action=null) {
+        $this->_activeAction = $action;
+        return $this;
     }
     
-    public function __get($key) {
-        return $this->_context->__get($key);
+    public function getActiveAction() {
+        return $this->_activeAction;
     }
     
     
-// Access
-    public function getAccessLockDomain() {
-        return 'directory';
-    }
-    
-    public function lookupAccessKey(array $keys) {
-        return $this->_context->getRequest()->lookupAccessKey($keys);
-    }
-    
-    public function getDefaultAccess() {
-        return static::DEFAULT_ACCESS;
+// Dump
+    public function getDumpProperties() {
+        return [
+            'type' => $this->_context->getRunMode().($this->_isInline ? ' (inline)':''),
+            'activeAction' => $this->_activeAction,
+            'context' => $this->_context
+        ];
     }
 }

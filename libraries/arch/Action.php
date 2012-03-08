@@ -12,11 +12,11 @@ use df\user;
 
 class Action implements IAction, core\IDumpable {
     
+    use TContextProxy;
+    use TDirectoryAccessLock;
+    
     const CHECK_ACCESS = true;
     const DEFAULT_ACCESS = false;//user\Client::NONE;
-    
-    protected $_type;
-    protected $_context;
     
     private $_isInline = false;
     private $_controller;
@@ -50,12 +50,6 @@ class Action implements IAction, core\IDumpable {
         $this->_controller = $controller;
         $this->_context = $context;
         $this->_isInline = get_class($this) == __CLASS__;
-        
-        $this->_type = $context->getRunMode();
-    }
-    
-    public function getContext() {
-        return $this->_context;
     }
     
     public function getController() {
@@ -87,7 +81,15 @@ class Action implements IAction, core\IDumpable {
             }
             
             if($output === null && $func = $this->_getActionMethod()) {
+                if($this->_controller) {
+                    $this->_controller->setActiveAction($this);
+                }
+                
                 $output = $this->$func();
+                
+                if($this->_controller) {
+                    $this->_controller->setActiveAction(null);
+                }
             }
         }
         
@@ -103,7 +105,9 @@ class Action implements IAction, core\IDumpable {
                     }
                 }
                 
-                $output = $this->_controller->$func();
+                $controller->setActiveAction($this);
+                $output = $controller->$func();
+                $controller->setActiveAction(null);
             }
         }
         
@@ -172,26 +176,8 @@ class Action implements IAction, core\IDumpable {
     }
     
     
-// Context proxies
-    public function __call($method, $args) {
-        return call_user_func_array(array($this->_context, $method), $args);
-    }
-    
-    public function __get($key) {
-        return $this->_context->__get($key);
-    }
-    
-    
     
 // Access
-    public function getAccessLockDomain() {
-        return 'directory';
-    }
-    
-    public function lookupAccessKey(array $keys) {
-        return $this->_context->getRequest()->lookupAccessKey($keys);
-    }
-    
     public function getDefaultAccess() {
         if(!$this->_isInline) {
             return static::DEFAULT_ACCESS;
@@ -209,10 +195,10 @@ class Action implements IAction, core\IDumpable {
     
 // Dump
     public function getDumpProperties() {
-        return array(
-            'type' => $this->_type.($this->_isInline ? ' (inline)':''),
+        return [
+            'type' => $this->_context->getRunMode().($this->_isInline ? ' (inline)':''),
             'controller' => $this->_controller,
             'context' => $this->_context
-        );
+        ];
     }
 }

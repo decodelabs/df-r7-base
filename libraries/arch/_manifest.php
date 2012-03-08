@@ -61,7 +61,23 @@ trait TContextAware {
     }
 }
 
+
+trait TContextProxy {
+    
+    use TContextAware;
+    
+    public function __call($method, $args) {
+        return call_user_func_array(array($this->_context, $method), $args);
+    }
+    
+    public function __get($key) {
+        return $this->_context->__get($key);
+    }
+}
+
 interface IContextHelper extends IContextAware, core\IHelper {}
+
+
 
 
 
@@ -144,16 +160,36 @@ interface IErrorRequest extends IRequest {
 }
 
 interface IController extends IContextAware, user\IAccessLock {
-    public function getType();
     public function isControllerInline();
+    public function setActiveAction(IAction $action=null);
+    public function getActiveAction();
 }
 
 
 interface IAction extends IContextAware, user\IAccessLock {
     public function dispatch();
     public function isActionInline();
+    public function getController();
 }
 
 interface IComponent extends IContextAware, user\IAccessLock {
     public function getName();
 }
+
+
+
+trait TDirectoryAccessLock {
+    
+    public function getAccessLockDomain() {
+        return 'directory';
+    }
+    
+    public function lookupAccessKey(array $keys) {
+        return $this->_context->getRequest()->lookupAccessKey($keys);
+    }
+    
+    public function getDefaultAccess() {
+        return static::DEFAULT_ACCESS;
+    }
+}
+
