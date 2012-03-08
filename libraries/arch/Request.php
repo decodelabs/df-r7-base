@@ -566,6 +566,6 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     
 // Dump
     public function getDumpProperties() {
-        return $this->toLiteralString();
+        return $this->toString();
     }
 }
