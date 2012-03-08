@@ -13,6 +13,12 @@ trait TArrayCollection {
     
     protected $_collection = array();
     
+    public function __construct($input=null) {
+        if($input !== null) {
+            $this->import($input);
+        }
+    }
+    
     public function isEmpty() {
         return empty($this->_collection);
     }
@@ -46,6 +52,10 @@ trait TArrayCollection {
     
     public function getIterator() {
         return new \ArrayIterator($this->_collection);
+    }
+    
+    public function getDumpProperties() {
+        return $this->_collection;
     }
 }
 
@@ -122,6 +132,20 @@ trait TAssociativeValueMapArrayCollection {
     
     use TValueMapArrayAccess;
     
+    public function import($input) {
+        if($input instanceof core\IArrayProvider) {
+            $input = $input->toArray();
+        }
+        
+        if(is_array($input)) {
+            foreach($input as $key => $value) {
+                $this->set($key, $value);
+            }
+        }
+        
+        return $this;
+    }
+    
     public function set($key, $value) {
         $this->_collection[(string)$key] = $value;
         return $this; 
@@ -152,6 +176,30 @@ trait TAssociativeValueMapArrayCollection {
 trait TIndexedValueMapArrayCollection {
     
     use TValueMapArrayAccess;
+    
+    public function import($input) {
+        if($input instanceof core\IArrayProvider) {
+            $input = $input->toArray();
+        }
+        
+        if(!is_array($input)) {
+            $input = array($input);
+        }
+        
+        foreach($input as $value) {
+            $this->_collection[] = $value;
+        }
+        
+        return $this;
+    }
+    
+    public function insert($value) {
+        foreach(func_get_args() as $arg) {
+            $this->_collection[] = $arg;
+        }
+        
+        return $this;
+    }
     
     public function set($index, $value) {
         $count = count($this->_collection);
@@ -585,4 +633,48 @@ trait TProcessedShiftableArrayCollection {
     
     abstract protected function _expandInput($input);
     abstract protected function _onInsert();
+}
+
+
+
+// Full Implementations
+trait TQueue {
+    
+    use TIndexedValueMapArrayCollection;
+    use TSeekableArrayCollection;
+    use TShiftableArrayCollection;
+    
+    public function getReductiveIterator() {
+        return new ReductiveIndexIterator($this);
+    }
+}
+
+trait TStack {
+    
+    use TIndexedValueMapArrayCollection;
+    use TReverseSeekableArrayCollection;
+    use TShiftableArrayCollection;
+    
+    public function getIterator() {
+        return new \ArrayIterator(array_reverse($this->_collection, true));
+    }
+    
+    public function getReductiveIterator() {
+        return new ReductiveReverseIndexIterator($this);
+    }
+    
+    public function extract() {
+        return $this->pop();
+    }
+}
+
+trait TMap {
+    
+    use TSortableScalarArrayCollection;
+    use TAssociativeValueMapArrayCollection;
+    use TSeekableArrayCollection;
+    
+    public function getReductiveIterator() {
+        return new ReductiveMapIterator($this);
+    }
 }

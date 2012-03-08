@@ -153,6 +153,7 @@ interface IPriorityQueue extends IQueue, ISiftingCollection {
 
 interface IStack extends IIndexedCollection {}
 
+interface IMap extends IMappedCollection, ISeekable, ISortable {}
 
 interface IHeap extends ISiftingCollection {
     public function insert($value);

@@ -17,6 +17,22 @@ class RuntimeException extends \RuntimeException implements IException {}
 
 
 // Interfaces
+interface IStringEscapeHandler {
+    public function esc($value);
+}
+
+trait THtmlStringEscapeHandler {
+    
+    public function esc($value) {
+        try {
+            return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+        } catch(\Exception $e) {
+            return $value;
+        }
+    }
+}
+
+
 interface IGenerator {
     public static function random($minLength=6, $maxLength=14, $additionalChars=null);
     public static function passKey();

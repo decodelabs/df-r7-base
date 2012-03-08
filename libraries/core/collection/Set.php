@@ -13,12 +13,6 @@ class Set implements ISet, IAggregateIteratorCollection, core\IDumpable {
     use TArrayCollection;
     use TUniqueSetArrayCollection;
     
-    public function __construct($input=null) {
-        if($input !== null) {
-            $this->import($input);
-        }
-    }
-    
     public function import($input) {
         if($input instanceof core\IArrayProvider) {
             $input = $input->toArray();

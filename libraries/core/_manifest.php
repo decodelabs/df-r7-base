@@ -149,7 +149,7 @@ trait TAttributeContainer {
     }
     
     public function addAttributes(array $attributes) {
-        foreach($this->_attributes as $key => $value){
+        foreach($attributes as $key => $value){
             $this->setAttribute($key, $value);
         }
         
