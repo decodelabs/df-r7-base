@@ -227,7 +227,7 @@ class Base implements IView {
             $this->getTheme()->renderTo($this);
         }
         
-        $this->_onPreRender();
+        $this->_beforeRender();
         
         if($this instanceof ILayoutView && $this->shouldUseLayout()) {
             return aura\view\content\Template::loadLayout(
@@ -238,7 +238,7 @@ class Base implements IView {
         }
     }
     
-    protected function _onPreRender() {}
+    protected function _beforeRender() {}
     
     private function _checkContentProvider() {
         if(!$this->_contentProvider) {

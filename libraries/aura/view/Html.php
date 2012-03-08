@@ -467,7 +467,7 @@ class Html extends Base implements IHtmlView {
         return $this->_shouldRenderBase;
     }
     
-    protected function _onPreRender() {
+    protected function _beforeRender() {
         if(empty($this->_title) && empty($this->_titlePrefix) && empty($this->_titleSuffix)) {
             $this->setTitle(static::DEFAULT_TITLE);
         }
