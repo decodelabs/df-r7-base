@@ -31,4 +31,8 @@ class Reference implements core\debug\IDump {
     public function toString() {
         return $this->_type.'(&'.$this->_id.')';
     }
+    
+    public function isArray() {
+        return $this->_type == 'array';
+    }
 }
