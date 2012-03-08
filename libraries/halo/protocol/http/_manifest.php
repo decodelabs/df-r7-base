@@ -114,7 +114,7 @@ interface IResponse extends core\IPayload {
     // Content
     public function getContent();
     public function getEncodedContent();
-    public function dispatchComplete();
+    public function onDispatchComplete();
     
     // Info
     public function getContentType();

@@ -13,10 +13,11 @@ use df\halo;
 
 class Context implements IContext, core\IDumpable {
     
+    use core\THelperProvider;
+    
     protected $_request;
     protected $_locale;
     protected $_application;
-    protected $_helpers = array();
     
     public static function factory(core\IApplication $application, $request=null) {
         if(!empty($request)) {
@@ -169,26 +170,21 @@ class Context implements IContext, core\IDumpable {
         return df\Launchpad::$loader->findFile($path);
     }
     
-    public function getHelper($name) {
-        $name = ucfirst($name);
+    protected function _loadHelper($name) {
+        $class = 'df\\plug\\context\\'.$this->_application->getRunMode().$name;
         
-        if(!isset($this->_helpers[$name])) {
-            $class = 'df\\plug\\context\\'.$this->_application->getRunMode().$name;
-        
-            if(!class_exists($class)) {
-                $class = 'df\\plug\\context\\'.$name;
-                
-                if(!class_exists($class)) {
-                    throw new HelperNotFoundException(
-                        'Context helper '.$name.' could not be found'
-                    );
-                }
-            }
+        if(!class_exists($class)) {
+            $class = 'df\\plug\\context\\'.$name;
             
-            $this->_helpers[$name] = new $class($this);
+            if(!class_exists($class)) {
+                
+                throw new HelperNotFoundException(
+                    'Context helper '.$name.' could not be found'
+                );
+            }
         }
         
-        return $this->_helpers[$name];
+        return new $class($this);
     }
     
     
@@ -211,6 +207,9 @@ class Context implements IContext, core\IDumpable {
     
     public function __get($key) {
         switch($key) {
+            case 'context':
+                return $this;
+            
             case 'application':
                 return $this->_application;
                 

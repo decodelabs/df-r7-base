@@ -11,7 +11,7 @@ use df\aura;
 
 class Tag implements ITag, core\IDumpable {
     
-    use core\TAttributeContainer;
+    use core\TArrayAccessedAttributeContainer;
     use core\TStringProvider;
     use core\string\THtmlStringEscapeHandler;
     
@@ -148,22 +148,6 @@ class Tag implements ITag, core\IDumpable {
         } else {
             return array_key_exists($key, $this->_attributes);
         }
-    }
-    
-    public function offsetSet($key, $value) {
-        return $this->setAttribute($key, $value);
-    }
-    
-    public function offsetGet($key) {
-        return $this->getAttribute($key);
-    }
-    
-    public function offsetExists($key) {
-        return $this->hasAttribute($key);
-    }
-    
-    public function offsetUnset($key) {
-        return $this->removeAttribute($key);
     }
     
     
@@ -366,11 +350,13 @@ class Tag implements ITag, core\IDumpable {
             if(!$innerContent instanceof IElementContent) {
                 $innerContent = new ElementContent(array("\n", $innerContent, "\n"));
             }
+            
+            $innerContent = $innerContent->getElementContentString();
         } else {
             $innerContent = null;
         }
         
-        return new ElementString($this->open().$innerContent->getElementContentString().$this->close());
+        return new ElementString($this->open().$innerContent.$this->close());
     }
     
     public function render() {
@@ -385,6 +371,6 @@ class Tag implements ITag, core\IDumpable {
     
 // Dump
     public function getDumpProperties() {
-        return $this->render();
+        return (string)$this->render();
     }
 }

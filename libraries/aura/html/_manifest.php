@@ -155,7 +155,7 @@ class ElementContent implements IElementContentCollection {
 }
 
 
-class ElementString implements IElementRepresentation {
+class ElementString implements IElementRepresentation, core\IDumpable {
     
     protected $_content;
     
@@ -183,6 +183,10 @@ class ElementString implements IElementRepresentation {
     public function append($str) {
         $this->_content .= $str;
         return $this;
+    }
+    
+    public function getDumpProperties() {
+        return $this->_content;
     }
 }
 

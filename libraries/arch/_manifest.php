@@ -19,7 +19,7 @@ class HelperNotFoundException extends RuntimeException {}
 
 
 // Interfaces
-interface IContext extends core\IApplicationAware, core\i18n\translate\ITranslationProxy {
+interface IContext extends core\IApplicationAware, core\i18n\translate\ITranslationProxy, core\IHelperProvider {
     public function spawnInstance($request);
     
     // Application
@@ -52,7 +52,16 @@ interface IContextAware {
     public function getContext();
 }
 
-interface IContextHelper extends IContextAware {}
+trait TContextAware {
+    
+    protected $_context;
+    
+    public function getContext() {
+        return $this->_context;
+    }
+}
+
+interface IContextHelper extends IContextAware, core\IHelper {}
 
 
 

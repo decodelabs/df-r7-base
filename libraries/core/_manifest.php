@@ -183,6 +183,56 @@ trait TAttributeContainer {
     }
 }
 
+trait TArrayAccessedAttributeContainer {
+    
+    use TAttributeContainer;
+    
+    public function offsetSet($key, $value) {
+        return $this->setAttribute($key, $value);
+    }
+    
+    public function offsetGet($key) {
+        return $this->getAttribute($key);
+    }
+    
+    public function offsetExists($key) {
+        return $this->hasAttribute($key);
+    }
+    
+    public function offsetUnset($key) {
+        return $this->removeAttribute($key);
+    }
+}
+
+
+interface IHelperProvider {
+    public function getHelper($name);
+    public function __get($member);
+}
+
+trait THelperProvider {
+    
+    protected $_helpers = array();
+    
+    public function __get($key) {
+        return $this->getHelper($key);
+    }
+    
+    public function getHelper($name) {
+        $name = ucfirst($name);
+        
+        if(!isset($this->_helpers[$name])) {
+            $this->_helpers[$name] = $this->_loadHelper($name);
+        }
+        
+        return $this->_helpers[$name];
+    }
+    
+    abstract protected function _loadHelper($name);
+}
+
+interface IHelper {}
+
 
 interface IDumpable {
     public function getDumpProperties();

@@ -272,7 +272,7 @@ abstract class Base implements halo\protocol\http\IResponse {
         return $content;
     }
     
-    public function dispatchComplete() {}
+    public function onDispatchComplete() {}
     
 // Info
     public function setContentType($contentType) {

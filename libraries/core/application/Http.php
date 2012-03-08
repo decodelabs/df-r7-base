@@ -298,7 +298,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication {
         }
         */
        
-        $response->dispatchComplete();
+        $response->onDispatchComplete();
            
         // Apply globally defined cookies, headers, etc
         if($this->_responseAugmentor) {
