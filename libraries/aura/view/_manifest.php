@@ -30,6 +30,22 @@ interface IDeferredRenderable extends IRenderable, core\IStringProvider {
     public function getRenderTarget();
 }
 
+
+trait TDeferredRenderable {
+    
+    protected $_renderTarget;
+    
+    public function setRenderTarget(IRenderTarget $target=null) {
+        $this->_renderTarget = $target;
+        return $this;
+    }
+    
+    public function getRenderTarget() {
+        return $this->_renderTarget;
+    }
+}
+
+
 interface IRenderTarget extends arch\IContextAware {
     public function getView();
 }

@@ -23,6 +23,10 @@ class Element extends Tag implements IElement, core\IDumpable {
         return (string)$this->renderWith($this);
     }
     
+    public function render($expanded=false) {
+        return $this->renderWith($this, $expanded);
+    }
+    
     public function getDumpProperties() {
         return $this->toString();
     }

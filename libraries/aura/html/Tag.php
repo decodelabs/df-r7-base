@@ -91,16 +91,14 @@ class Tag implements ITag, core\IDumpable {
     public function setAttribute($key, $value) {
         $key = strtolower($key);
         
-        /*
-        if(preg_match('/[^a-z\:-]/', $key)) {
-            throw new InvalidArgumentException('Invalid attribute name '.$key.'!');
-        }
-        */
-        
         if($key == 'style' && !$value instanceof IStyleCollection) {
             $value = new StyleCollection($value);    
         } else if($key == 'class') {
             return $this->setClasses($value);
+        }
+        
+        if($value === null) {
+            return $this->removeAttribute($key);
         }
         
         $this->_attributes[$key] = $value;
@@ -345,18 +343,28 @@ class Tag implements ITag, core\IDumpable {
         return '</'.$this->_name.'>';
     }
     
-    public function renderWith($innerContent=null) {
+    public function renderWith($innerContent=null, $expanded=false) {
         if($this->_isClosable && (!empty($innerContent) || $innerContent == '0')) {
             if(!$innerContent instanceof IElementContent) {
-                $innerContent = new ElementContent(array("\n", $innerContent, "\n"));
+                $innerContent = new ElementContent($innerContent);
             }
             
             $innerContent = $innerContent->getElementContentString();
+            
+            if($expanded) {
+                $innerContent = "\n".$innerContent."\n";
+            }
         } else {
             $innerContent = null;
         }
         
-        return new ElementString($this->open().$innerContent.$this->close());
+        $string = $this->open().$innerContent.$this->close();
+        
+        if($expanded) {
+            $string .= "\n";
+        }
+        
+        return new ElementString($string);
     }
     
     public function render() {

@@ -22,14 +22,8 @@ interface IRenderable {
 
 interface IElementRepresentation extends core\IStringProvider, IRenderable {}
 
-interface ITag extends IElementRepresentation, \ArrayAccess, core\IAttributeContainer, core\string\IStringEscapeHandler {
-    // Name
-    public function setName($name);
-    public function getName();
-    
-    // Render count
-    public function getRenderCount();
-    
+
+interface ITagDataContainer extends core\IAttributeContainer {
     // Data attributes
     public function setDataAttribute($key, $value);
     public function getDataAttribute($key, $default=null);
@@ -58,11 +52,22 @@ interface ITag extends IElementRepresentation, \ArrayAccess, core\IAttributeCont
     public function getStyle($key, $default=null);
     public function removeStyle($key);
     public function hasStyle($key);
+}
+
+
+
+interface ITag extends IElementRepresentation, \ArrayAccess, ITagDataContainer, core\string\IStringEscapeHandler {
+    // Name
+    public function setName($name);
+    public function getName();
+    
+    // Render count
+    public function getRenderCount();
     
     // Strings
     public function open();
     public function close();
-    public function renderWith($innerContent=null);
+    public function renderWith($innerContent=null, $expanded=false);
 }
 
 
@@ -148,7 +153,7 @@ trait TElementContent {
 }
 
 
-class ElementContent implements IElementContentCollection {
+class ElementContent implements IElementContentCollection, core\IDumpable {
     
     use TElementContent;
     use core\string\THtmlStringEscapeHandler;
