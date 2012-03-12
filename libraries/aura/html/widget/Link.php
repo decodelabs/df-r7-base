@@ -13,9 +13,9 @@ use df\user;
 
 class Link extends Base implements ILinkWidget, core\IDumpable {
     
-    use TBodyContentAwareWidget;
-    use TDisableableWidget;
-    use TAccessControlledWidget;
+    use TWidget_BodyContentAware;
+    use TWidget_Disableable;
+    use TWidget_AccessControlled;
        
     const PRIMARY_TAG = 'a';
     

@@ -13,8 +13,8 @@ class DefinitionList extends Base implements IDataDrivenListWidget, IMappedListW
     
     const PRIMARY_TAG = 'dl';
     
-    use TDataDrivenListWidget;
-    use TMappedListWidget;
+    use TWidget_DataDrivenList;
+    use TWidget_MappedList;
     
     public function __construct($data) {
         $this->setData($data);

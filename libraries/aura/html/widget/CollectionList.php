@@ -13,8 +13,8 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
     
     const PRIMARY_TAG = 'div';
     
-    use TDataDrivenListWidget;
-    use TMappedListWidget;
+    use TWidget_DataDrivenList;
+    use TWidget_MappedList;
     
     public $paginator;
     

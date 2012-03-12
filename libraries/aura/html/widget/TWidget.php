@@ -49,7 +49,7 @@ trait TWidget {
 }
 
 
-trait TBodyContentAwareWidget {
+trait TWidget_BodyContentAware {
     
     protected $_body;
     
@@ -72,7 +72,7 @@ trait TBodyContentAwareWidget {
 }
 
 
-trait TDisableableWidget {
+trait TWidget_Disableable {
     
     protected $_isDisabled = false;
     
@@ -86,7 +86,7 @@ trait TDisableableWidget {
     }
 }
 
-trait TAccessControlledWidget {
+trait TWidget_AccessControlled {
     
     protected $_checkAccess = false;
     protected $_accessLocks = array();
@@ -117,7 +117,7 @@ trait TAccessControlledWidget {
 
 
 // Forms
-trait TFormDataWidget {
+trait TWidget_FormData {
     
     //const PRIMARY_TAG = 'input';
     //const ARRAY_INPUT = false;
@@ -217,7 +217,7 @@ trait TFormDataWidget {
 }
 
 
-trait TInputWidget {
+trait TWidget_Input {
     
     use TDisableableWidget;
     
@@ -289,7 +289,7 @@ trait TInputWidget {
 }
 
 
-trait TFocusableInputWidget {
+trait TWidget_FocusableInput {
     
     protected $_shouldAutoFocus = false;
     
@@ -310,9 +310,9 @@ trait TFocusableInputWidget {
 }
 
 
-trait TVisualInputWidget {
+trait TWidget_VisualInput {
     
-    use TFocusableInputWidget;
+    use TWidget_FocusableInput;
     
     protected $_shouldValidate = true;
     protected $_shouldAutoComplete = null;
@@ -350,7 +350,7 @@ trait TVisualInputWidget {
 }
 
 
-trait TOptionalMultipleValueInputWidget {
+trait TWidget_OptionalMultipleValueInput {
     
     protected $_allowMultiple = false;
     
@@ -371,7 +371,7 @@ trait TOptionalMultipleValueInputWidget {
 }
 
 
-trait TDataListEntryWidget {
+trait TWidget_DataListEntry {
     
     protected $_dataListId;
     
@@ -392,7 +392,7 @@ trait TDataListEntryWidget {
 }
 
 
-trait TTextEntryWidget {
+trait TWidget_TextEntry {
     
     protected $_maxLength;
     protected $_placeholder;
@@ -428,7 +428,7 @@ trait TTextEntryWidget {
 }
 
 
-trait TRangeEntryWidget {
+trait TWidget_RangeEntry {
 
     protected $_min;
     protected $_max;
@@ -483,7 +483,7 @@ trait TRangeEntryWidget {
 }
 
 
-trait TCheckInputWidget {
+trait TWidget_CheckInput {
     
     protected $_isChecked = false;
     
@@ -512,7 +512,7 @@ trait TCheckInputWidget {
 }
 
 
-trait TSelectionInputWidget {
+trait TWidget_SelectionInput {
     
     protected $_optionRenderer;
     
@@ -535,9 +535,9 @@ trait TSelectionInputWidget {
 }
 
 
-trait TUngroupedSelectionInputWidget {
+trait TWidget_UngroupedSelectionInput {
     
-    use TSelectionInputWidget;
+    use TWidget_SelectionInput;
     
     protected $_options = array();
     
@@ -580,9 +580,9 @@ trait TUngroupedSelectionInputWidget {
 }
 
 
-trait TGroupedSelectionInputWidget {
+trait TWidget_GroupedSelectionInput {
     
-    use TSelectionInputWidget;
+    use TWidget_SelectionInput;
     
     protected $_groupOptions = array();
     protected $_groupNames = array();
@@ -680,7 +680,7 @@ trait TGroupedSelectionInputWidget {
 
 
 // Lists
-trait TDataDrivenListWidget {
+trait TWidget_DataDrivenList {
     
     protected $_data;
     
@@ -701,7 +701,7 @@ trait TDataDrivenListWidget {
 }
 
 
-trait TLinearListWidget {
+trait TWidget_LinearList {
     
     protected $_renderer;
     
@@ -741,7 +741,7 @@ trait TLinearListWidget {
 }
 
 
-trait TMappedListWidget {
+trait TWidget_MappedList {
     
     protected $_fields = array();
     

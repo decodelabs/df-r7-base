@@ -11,8 +11,8 @@ use df\aura;
 
 class BulletList extends Base implements ILinearListWidget, IDataDrivenListWidget, core\IDumpable {
     
-    use TDataDrivenListWidget;
-    use TLinearListWidget;
+    use TWidget_DataDrivenList;
+    use TWidget_LinearList;
     
     const PRIMARY_TAG = 'ul';
     

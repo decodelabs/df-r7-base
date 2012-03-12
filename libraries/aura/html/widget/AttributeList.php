@@ -13,8 +13,8 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
     
     const PRIMARY_TAG = 'table';
     
-    use TDataDrivenListWidget;
-    use TMappedListWidget;
+    use TWidget_DataDrivenList;
+    use TWidget_MappedList;
     
     public function __construct($data) {
         $this->setData($data);
