@@ -13,7 +13,7 @@ use df\arch;
 class Template implements aura\view\ITemplate, core\IDumpable {
         
     use arch\TContextAware;
-    use core\TArrayAccessedAttributeContainer;
+    use aura\view\TArgContainer;
         
     private $_path;
     private $_args = array();
@@ -237,7 +237,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
     public function getDumpProperties() {
         return [
             'path' => $this->_path,
-            'attributes' => count($this->_attributes).' objects',
+            'args' => count($this->_args).' objects',
             'context' => $this->_context,
             'view' => $this->_view
         ];

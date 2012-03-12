@@ -35,7 +35,65 @@ interface IRenderTarget extends arch\IContextAware {
 }
 
 
-interface IContentProvider extends IDeferredRenderable, core\IAttributeContainer, \ArrayAccess {}
+interface IArgContainer {
+    public function setArgs(array $args);
+    public function addArgs(array $args);
+    public function getArgs(array $add=array());
+    public function setArg($name, $value);
+    public function getArg($name, $default=null);
+    public function hasArg($name);
+    public function removeArg($name);
+    
+}
+
+
+trait TArgContainer {
+    
+    protected $_args = array();
+    
+    public function setArgs(array $args) {
+        $this->_args = array();
+        return $this->addArgs($args);
+    }
+    
+    public function addArgs(array $args) {
+        foreach($args as $key => $value){
+            $this->setArg($key, $value);
+        }
+        
+        return $this;
+    }
+    
+    public function getArgs(array $add=array()) {
+        return array_merge($this->_args, $add);
+    }
+    
+    public function setArg($key, $value) {
+        $this->_args[$key] = $value;
+        return $this;
+    }
+    
+    public function getArg($key, $default=null) {
+        if(isset($this->_args[$key])) {
+            return $this->_args[$key];
+        }
+        
+        return $default;
+    }
+    
+    public function removeArg($key) {
+        unset($this->_args[$key]);
+        return $this;
+    }
+    
+    public function hasArg($key) {
+        return isset($this->_args[$key]);
+    }
+}
+
+
+
+interface IContentProvider extends IDeferredRenderable, IArgContainer {}
 
 interface IContentConsumer {
     public function setContentProvider(IContentProvider $provider);
@@ -202,7 +260,7 @@ interface IHtmlView extends ILayoutView {
 interface IHelper extends core\IHelper {}
 
 
-interface ITemplate extends IContentProvider, IRenderTarget, core\i18n\translate\ITranslationProxy {
+interface ITemplate extends IContentProvider, \ArrayAccess, IRenderTarget, core\i18n\translate\ITranslationProxy {
     // Escaping
     public function esc($value, $default=null);
     public function escAttribute($name, $default=null);

@@ -10,12 +10,11 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class WidgetContentProvider extends aura\html\ElementContent implements aura\view\IContentProvider/*, aura\html\widget\IWidgetShortcutProvider*/ {
+class WidgetContentProvider extends aura\html\ElementContent implements aura\view\IContentProvider, aura\html\widget\IWidgetShortcutProvider {
     
     use arch\TContextAware;
-    use core\TArrayAccessedAttributeContainer;
+    use aura\view\TArgContainer;
     
-    protected $_args = array();
     protected $_renderTarget;
     
     public function __construct(arch\IContext $context) {
