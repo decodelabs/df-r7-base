@@ -127,7 +127,7 @@ class Context implements IContext, core\IDumpable {
             return $uri;
         }
         
-        if($this->_application instanceof core\IRoutedDirectoryRequestApplication) {
+        if($this->_application instanceof arch\IRoutedDirectoryRequestApplication) {
             if(!$uri instanceof IRequest) {
                 $uri = new Request($uri);
             }
