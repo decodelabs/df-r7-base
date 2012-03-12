@@ -22,3 +22,16 @@ interface IAccessLock {
     public function lookupAccessKey(array $keys);
     public function getDefaultAccess();
 }
+
+
+
+interface IAddress {
+    public function getPostOfficeBox();
+    public function getStreetAddress();
+    public function getExtendedAddress();
+    public function getFullStreetAddress();
+    public function getLocality();
+    public function getRegion();
+    public function getPostalCode();
+    public function getCountryCode();
+}
