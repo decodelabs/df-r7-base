@@ -78,7 +78,7 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
     public static function formatName($name) {
         return self::factory($name)
             ->replace(array('-', '_'), ' ')
-            ->regexReplace('/([A-Z])/u', ' $1')
+            ->regexReplace('/[^ ]([A-Z])/u', ' $1')
             ->wordsToUpper()
             ->toString();
     }
@@ -628,12 +628,20 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
         return mb_substr($this->_value, $this->_pos, 1, $this->_encoding);
     }
     
+    public function getNext() {
+        return $this->seekNext()->getCurrent();
+    }
+    
+    public function getPrev() {
+        return $this->seekPrev()->getCurrent();
+    }
+    
     public function getFirst() {
-        return mb_substr($this->_value, 0, 1, $this->_encoding);
+        return $this->seekFirst()->getCurrent();
     }
     
     public function getLast() {
-        return mb_substr($this->_value, -1, 1, $this->_encoding);
+        return $this->seekLast()->getCurrent();
     }
     
     
@@ -665,8 +673,22 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
         return $this->_pos;
     }
     
+    public function insert($value) {
+        return $this->push($value);
+    }
+    
     public function extract() {
         return $this->shift();
+    }
+    
+    public function extractList($count) {
+        $output = array();
+        
+        for($i = 0; $i < (int)$count; $i++) {
+            $output[] = $this->extract();
+        }
+        
+        return $output;
     }
     
     public function pop() {
