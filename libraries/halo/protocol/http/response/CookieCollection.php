@@ -13,6 +13,7 @@ class CookieCollection implements halo\protocol\http\IResponseCookieCollection, 
     
     use core\TStringProvider;
     use core\collection\TValueMapArrayAccess;
+    use core\collection\TExtractList;
     
     protected $_set = array();
     protected $_remove = array();
@@ -77,16 +78,6 @@ class CookieCollection implements halo\protocol\http\IResponseCookieCollection, 
     
     public function extract() {
         return array_shift($this->_set);
-    }
-    
-    public function extractList($count) {
-        $output = array();
-        
-        for($i = 0; $i < (int)$count; $i++) {
-            $output[] = $this->extract();
-        }
-        
-        return $output;
     }
     
     public function count() {

@@ -24,6 +24,21 @@ interface ICollection extends \Countable, core\IArrayProvider {
     public function extractList($count);
 }
 
+
+trait TExtractList {
+    
+    public function extractList($count) {
+        $output = array();
+        
+        for($i = 0; $i < (int)$count; $i++) {
+            $output[] = $this->extract();
+        }
+        
+        return $output;
+    }
+}
+
+
 interface IAggregateIteratorCollection extends \IteratorAggregate {
     public function getReductiveIterator();
 }

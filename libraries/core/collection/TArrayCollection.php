@@ -11,6 +11,8 @@ use df\core;
 
 trait TArrayCollection {
     
+    use TExtractList;
+    
     protected $_collection = array();
     
     public function __construct($input=null) {
@@ -30,16 +32,6 @@ trait TArrayCollection {
     
     public function extract() {
         return array_shift($this->_collection);
-    }
-    
-    public function extractList($count) {
-        $output = array();
-        
-        for($i = 0; $i < (int)$count; $i++) {
-            $output[] = $this->extract();
-        }
-        
-        return $output;
     }
     
     public function toArray() {

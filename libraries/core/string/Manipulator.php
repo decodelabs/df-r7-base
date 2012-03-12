@@ -10,6 +10,8 @@ use df\core;
 
 class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
     
+    use core\collection\TExtractList;
+    
     const UCS_4 = 'UCS-4';
     const UCS_4BE = 'UCS-4BE';
     const UCS_4LE = 'UCS-4LE';
@@ -679,16 +681,6 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
     
     public function extract() {
         return $this->shift();
-    }
-    
-    public function extractList($count) {
-        $output = array();
-        
-        for($i = 0; $i < (int)$count; $i++) {
-            $output[] = $this->extract();
-        }
-        
-        return $output;
     }
     
     public function pop() {
