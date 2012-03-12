@@ -74,6 +74,14 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
         return $this;
     }
     
+    public function getNext() {
+        return $this->_children->getNext();
+    }
+    
+    public function getPrev() {
+        return $this->_children->getPrev();
+    }
+    
     public function getFirst() {
         return $this->_children->getFirst();
     }
@@ -112,6 +120,15 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
     
     public function extract() {
         return $this->_children->extract();
+    }
+    
+    public function extractList($count) {
+        return $this->_children->extractList($count);
+    }
+    
+    public function insert($value) {
+        $this->_children->insert($value);
+        return $this;
     }
     
     public function pop() {

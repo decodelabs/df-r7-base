@@ -191,9 +191,6 @@ interface IFormWidget extends IFormOrientedWidget {
     public function setName($name);
     public function getName();
     
-    public function setFormId($id);
-    public function getFormId();
-    
     public function setTarget($target);
     public function getTarget();
     

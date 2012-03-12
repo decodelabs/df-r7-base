@@ -10,9 +10,9 @@ use df\core;
 
 class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection, \Serializable, core\IDumpable {
     
+    use TValueMapArrayAccess;
     use TArrayCollection;
     use TArrayCollection_Seekable;
-    use TValueMapArrayAccess;
     use TArrayCollection_ValueContainerSortable;
     
     protected $_value;
@@ -322,7 +322,11 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
     }
     
     public function getStringValue($default='') {
-        return (string)($this->_value === null ? $default : $this->_value);
+        if($this->_value !== null) {
+            return (string)$this->_value;
+        }
+        
+        return (string)$default;
     }
     
     

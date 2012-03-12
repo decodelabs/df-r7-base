@@ -16,6 +16,7 @@ class Link extends Base implements ILinkWidget, core\IDumpable {
     use TWidget_BodyContentAware;
     use TWidget_Disableable;
     use TWidget_AccessControlled;
+    use TWidget_TargetAware;
        
     const PRIMARY_TAG = 'a';
     
@@ -23,6 +24,9 @@ class Link extends Base implements ILinkWidget, core\IDumpable {
     protected $_matchRequest;
     protected $_rel = array();
     protected $_isActive = false;
+    protected $_hrefLang;
+    protected $_media;
+    protected $_contentType;
     
     public function __construct($uri, $body=null, $matchRequest=null) {
         $checkUriMatch = false;
@@ -88,6 +92,23 @@ class Link extends Base implements ILinkWidget, core\IDumpable {
             $tag->addClass('state-active');
         }
         
+        
+        $this->_applyTargetAwareAttributes($tag);
+        
+        
+        if($this->_hrefLang !== null) {
+            $tag->setAttribute('hreflang', $this->_hrefLang);
+        }
+        
+        if($this->_media !== null) {
+            $tag->setAttribute('media', $this->_media);
+        }
+        
+        if($this->_contentType !== null) {
+            $tag->setAttribute('type', $this->_contentType);
+        }
+        
+        
         if($body->isEmpty()) {
             if($url !== null) {
                 $body = $url;
@@ -124,18 +145,6 @@ class Link extends Base implements ILinkWidget, core\IDumpable {
     
     public function getMatchRequest() {
         return $this->_matchRequest;
-    }
-    
-    
-    
-// Target
-    public function setTarget($target) {
-        $this->getTag()->setAttribute('target', $target);
-        return $this;
-    }
-    
-    public function getTarget() {
-        return $this->getTag()->getAttribute('target');
     }
     
     
@@ -215,34 +224,34 @@ class Link extends Base implements ILinkWidget, core\IDumpable {
     
 // Language
     public function setHrefLanguage($language) {
-        $this->getTag()->setAttribute('hreflang', $language);
+        $this->_hrefLang = $language;
         return $this;
     }
     
     public function getHrefLanguage() {
-        return $this->getTag()->getAttribute('hreflang');
+        return $this->_hrefLang;
     }
     
     
 // Media
     public function setMedia($media) {
-        $this->getTag()->setAttribute('media', $media);
+        $this->_media = $media;
         return $this;
     }
     
     public function getMedia() {
-        return $this->getTag()->getAttribute('media');
+        return $this->_media;
     }
     
     
 // Mime type
     public function setContentType($type) {
-        $this->getTag()->setAttribute('type', $type);
+        $this->_contentType = $type;
         return $this;
     } 
     
     public function getContentType() {
-        return $this->getTag()->getAttribute('type');
+        return $this->_contentType;
     }
     
     

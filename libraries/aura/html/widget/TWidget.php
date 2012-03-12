@@ -124,13 +124,7 @@ trait TWidget_FormData {
     
     protected $_name;
     protected $_value;
-    protected $_inputId;
     protected $_targetFormId;
-    
-    public function __construct($name, $value=null) {
-        $this->setName($name);
-        $this->setValue($value);
-    }
     
     protected function _applyFormDataAttributes(aura\html\ITag $tag) {
         // Name
@@ -200,7 +194,7 @@ trait TWidget_FormData {
     }
     
     public function getValueString() {
-        return (string)$this->getValue();
+        return $this->getValue()->getStringValue();
     }
     
     
@@ -214,12 +208,23 @@ trait TWidget_FormData {
     public function getTargetFormId() {
         return $this->_targetFormId;
     }
+    
+    
+// Dump
+    public function getDumpProperties() {
+        return [
+            'name' => $this->_name,
+            'value' => $this->_value,
+            'tag' => $this->getTag(),
+            'renderTarget' => $this->_getRenderTargetDisplayName()
+        ];
+    }
 }
 
 
 trait TWidget_Input {
     
-    use TDisableableWidget;
+    use TWidget_Disableable;
     
     protected $_isRequired = false;
     protected $_isReadOnly = false;
@@ -289,6 +294,27 @@ trait TWidget_Input {
 }
 
 
+trait TWidget_TargetAware {
+    
+    protected $_target;
+    
+    public function setTarget($target) {
+        $this->_target = $target;
+        return $this;
+    }
+    
+    public function getTarget() {
+        return $this->_target;
+    }
+    
+    protected function _applyTargetAwareAttributes(aura\html\ITag $tag) {
+        if($this->_target !== null) {
+            $tag->setAttribute('target', $this->_target);
+        }
+    }
+}
+
+
 trait TWidget_FocusableInput {
     
     protected $_shouldAutoFocus = false;
@@ -311,8 +337,6 @@ trait TWidget_FocusableInput {
 
 
 trait TWidget_VisualInput {
-    
-    use TWidget_FocusableInput;
     
     protected $_shouldValidate = true;
     protected $_shouldAutoComplete = null;
@@ -337,8 +361,6 @@ trait TWidget_VisualInput {
     
     
     protected function _applyVisualInputAttributes(aura\html\ITag $tag) {
-        $this->_applyFocusableInputAttributes($tag);
-        
         if(!$this->_shouldValidate) {
             $tag->setAttribute('novalidate', 'novalidate');
         }
