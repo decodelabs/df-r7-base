@@ -24,7 +24,7 @@ trait TWidget {
             }
             
             $this->_primaryTag = new aura\html\Tag(static::PRIMARY_TAG);
-            $this->_primaryTag->setClasses(array('widget', 'widget-'.lcfirst($this->getWidgetName())));
+            $this->_primaryTag->setClasses(array(/*'widget', */'widget-'.lcfirst($this->getWidgetName())));
         }
         
         return $this->_primaryTag;
@@ -714,7 +714,7 @@ trait TLinearListWidget {
         return $this->_renderer;
     }
     
-    protected function _renderListItem(IRenderContext $renderContext, $value) {
+    protected function _renderListItem(IRendererContext $renderContext, $value) {
         if($renderer = $this->_renderer) {
             try {
                 $value = $renderer($value, $this->getRenderTarget(), $renderContext);

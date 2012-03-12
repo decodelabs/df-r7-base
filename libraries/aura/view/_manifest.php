@@ -41,6 +41,12 @@ trait TDeferredRenderable {
     }
     
     public function getRenderTarget() {
+        if(!$this->_renderTarget) {
+            throw new RuntimeException(
+                'No render target has been set'
+            );
+        }
+        
         return $this->_renderTarget;
     }
 }
