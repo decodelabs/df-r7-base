@@ -11,11 +11,10 @@ use df\core;
 class Url implements IGenericUrl, core\IDumpable {
     
     use core\TStringProvider;
-    use TUrl;
-    use TTransientSchemeUrl;
-    use TPathContainer;
-    use TQueryContainer;
-    use TFragmentContainer;
+    use TUrl_TransientScheme;
+    use TUrl_PathContainer;
+    use TUrl_QueryContainer;
+    use TUrl_FragmentContainer;
     
     
     public static function factory($url) {

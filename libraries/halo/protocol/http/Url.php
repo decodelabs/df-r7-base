@@ -12,10 +12,9 @@ use df\arch;
 
 class Url extends core\uri\Url implements IUrl {
     
-    use core\uri\TUrl;
-    use core\uri\TCredentialContainer;
-    use core\uri\TDomainContainer;
-    use core\uri\TPortContainer;
+    use core\uri\TUrl_CredentialContainer;
+    use core\uri\TUrl_DomainContainer;
+    use core\uri\TUrl_PortContainer;
     
     public static function fromDirectoryRequest(arch\IRequest $request, $scheme, $domain, $port, array $basePath) {
         if($request->_isJustFragment) {

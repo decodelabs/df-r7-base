@@ -12,8 +12,7 @@ use df\halo;
 abstract class Base implements IAddress {
     
     use core\TStringProvider;
-    use core\uri\TUrl;
-    use core\uri\TTransientSchemeUrl;
+    use core\uri\TUrl_TransientScheme;
     
     public static function factory($address) {
         if($address instanceof IAddress) {

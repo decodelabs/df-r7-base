@@ -10,5 +10,5 @@ use df\core;
 
 class Queue implements IIndexedQueue, IAggregateIteratorCollection, core\IDumpable {
     
-    use TArrayCollection, TQueue;
+    use TArrayCollection_Queue;
 }

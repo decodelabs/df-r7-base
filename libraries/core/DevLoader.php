@@ -51,6 +51,10 @@ class DevLoader extends Loader {
             $basePath .= '/'.implode('/', $parts);
         }
         
+        if(false !== ($pos = strpos($filename, '_'))) {
+            $filename = substr($filename, 0, $pos);
+        }
+        
         $paths = [
             $basePath.'/'.$filename.'.php',
             $basePath.'/_manifest.php'

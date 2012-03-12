@@ -11,9 +11,9 @@ use df\core;
 class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection, \Serializable, core\IDumpable {
     
     use TArrayCollection;
-    use TSeekableArrayCollection;
+    use TArrayCollection_Seekable;
     use TValueMapArrayAccess;
-    use TSortableValueContainerArrayCollection;
+    use TArrayCollection_ValueContainerSortable;
     
     protected $_value;
     

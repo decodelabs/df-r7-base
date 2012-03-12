@@ -14,7 +14,7 @@ class StyleBlock implements IStyleBlock, core\collection\IMappedCollection, core
     
     use core\TStringProvider;
     use core\collection\TArrayCollection;
-    use core\collection\TAssociativeValueMapArrayCollection;
+    use core\collection\TArrayCollection_AssociativeValueMap;
     
     public function import($input) {
         if(is_string($input)) {

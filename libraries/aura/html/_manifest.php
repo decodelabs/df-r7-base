@@ -85,8 +85,7 @@ interface IElementContentCollection extends
 trait TElementContent {
     
     use core\TStringProvider;
-    use core\collection\TArrayCollection;
-    use core\collection\TQueue;
+    use core\collection\TArrayCollection_Queue;
     
     public function toString() {
         return $this->getElementContentString();

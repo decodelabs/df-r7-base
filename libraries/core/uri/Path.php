@@ -12,9 +12,9 @@ class Path implements IPath, \IteratorAggregate, \Serializable, core\IDumpable {
     
     use core\TStringProvider;
     use core\collection\TArrayCollection;
-    use core\collection\TIndexedProcessedValueMapArrayCollection;
-    use core\collection\TProcessedShiftableArrayCollection;
-    use core\collection\TSeekableArrayCollection;
+    use core\collection\TArrayCollection_ProcessedIndexedValueMap;
+    use core\collection\TArrayCollection_Seekable;
+    use core\collection\TArrayCollection_ProcessedShiftable;
         
     protected $_separator = '/';
     protected $_autoCanonicalize = true;

@@ -11,10 +11,9 @@ use df\core;
 class MailtoUrl implements IMailtoUrl, core\IDumpable {
     
     use core\TStringProvider;
-    use TUrl;
-    use TUsernameContainer;
-    use TDomainContainer;
-    use TQueryContainer;
+    use TUrl_UsernameContainer;
+    use TUrl_DomainContainer;
+    use TUrl_QueryContainer;
     
     public static function factory($url) {
         if($url instanceof IMailtoUrl) {

@@ -11,7 +11,7 @@ use df\halo;
 
 class Unix extends Base implements IUnixAddress {
     
-    use core\uri\TPathContainer;
+    use core\uri\TUrl_PathContainer;
     
     public static function factory($address) {
         if($address instanceof IUnixAddress) {

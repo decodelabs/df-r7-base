@@ -9,12 +9,8 @@ use df;
 use df\core;
 use df\halo;
 
-trait TUrl {
-    
-}
 
-
-trait TTransientSchemeUrl {
+trait TUrl_TransientScheme {
     
     protected $_scheme;
     
@@ -46,7 +42,7 @@ trait TTransientSchemeUrl {
 
 
 // Credentials
-trait TUsernameContainer {
+trait TUrl_UsernameContainer {
      
      protected $_username;
      
@@ -81,7 +77,7 @@ trait TUsernameContainer {
     }
 }
 
-trait TPasswordContainer {
+trait TUrl_PasswordContainer {
     
     protected $_password;
     
@@ -116,10 +112,10 @@ trait TPasswordContainer {
     }
 }
 
-trait TCredentialContainer {
+trait TUrl_CredentialContainer {
     
-    use TUsernameContainer;
-    use TPasswordContainer;
+    use TUrl_UsernameContainer;
+    use TUrl_PasswordContainer;
     
     public function setCredentials($username, $password) {
         return $this->setUsername($username)
@@ -152,7 +148,7 @@ trait TCredentialContainer {
 
 
 // Domain
-trait TDomainContainer {
+trait TUrl_DomainContainer {
     
     protected $_domain;
     
@@ -176,7 +172,7 @@ trait TDomainContainer {
 
 
 // Ip
-trait TIpContainer {
+trait TUrl_IpContainer {
     
     protected $_ip;
     
@@ -214,7 +210,7 @@ trait TIpContainer {
 
 
 // Port
-trait TPortContainer {
+trait TUrl_PortContainer {
     
     protected $_port;
     
@@ -257,7 +253,7 @@ trait TPortContainer {
 
 
 // Path
-trait TPathContainer {
+trait TUrl_PathContainer {
     
     protected $_path;
     
@@ -318,7 +314,7 @@ trait TPathContainer {
 
 
 // Query
-trait TQueryContainer {
+trait TUrl_QueryContainer {
     
     protected $_query;
     
@@ -382,7 +378,7 @@ trait TQueryContainer {
 
 
 // Fragment
-trait TFragmentContainer {
+trait TUrl_FragmentContainer {
     
     protected $_fragment;
     

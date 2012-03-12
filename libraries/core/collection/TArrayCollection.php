@@ -62,7 +62,7 @@ trait TArrayCollection {
 
 
 // Sortable
-trait TSortableArrayCollection {
+trait TArrayCollection_Sortable {
     
     public function sortByKey() {
         ksort($this->_collection);
@@ -80,9 +80,9 @@ trait TSortableArrayCollection {
     }
 }
 
-trait TSortableScalarArrayCollection {
+trait TArrayCollection_ScalarSortable {
     
-    use TSortableArrayCollection;
+    use TArrayCollection_Sortable;
     
     public function sortByValue() {
         asort($this->_collection);
@@ -95,9 +95,9 @@ trait TSortableScalarArrayCollection {
     }
 }
 
-trait TSortableValueContainerArrayCollection {
+trait TArrayCollection_ValueContainerSortable {
     
-    use TSortableArrayCollection;
+    use TArrayCollection_Sortable;
     
     public function sortByValue() {
         uasort($this->_collection, function(core\IValueContainer $a, core\IValueContainer $b) {
@@ -128,7 +128,7 @@ trait TSortableValueContainerArrayCollection {
 
 
 // Value map
-trait TAssociativeValueMapArrayCollection {
+trait TArrayCollection_AssociativeValueMap {
     
     use TValueMapArrayAccess;
     
@@ -173,7 +173,7 @@ trait TAssociativeValueMapArrayCollection {
 
 
 
-trait TIndexedValueMapArrayCollection {
+trait TArrayCollection_IndexedValueMap {
     
     use TValueMapArrayAccess;
     
@@ -316,9 +316,9 @@ trait TIndexedValueMapArrayCollection {
 }
 
 
-trait TIndexedProcessedValueMapArrayCollection {
+trait TArrayCollection_ProcessedIndexedValueMap {
     
-    use TIndexedValueMapArrayCollection;
+    use TArrayCollection_IndexedValueMap;
     
     public function set($index, $value) {
         $values = $this->_expandInput($value);
@@ -412,7 +412,7 @@ trait TIndexedProcessedValueMapArrayCollection {
 }
 
 
-trait TUniqueSetArrayCollection {
+trait TArrayCollection_UniqueSet {
     
     public function add($values) {
         if(!is_array($values)) {
@@ -459,7 +459,7 @@ trait TUniqueSetArrayCollection {
 
 
 // Seekable
-trait TSeekableArrayCollection {
+trait TArrayCollection_Seekable {
     
     public function getCurrent() {
         if(false === ($output = current($this->_collection))) {
@@ -515,7 +515,7 @@ trait TSeekableArrayCollection {
 }
 
 
-trait TReverseSeekableArrayCollection {
+trait TArrayCollection_ReverseSeekable {
     
     public function getCurrent() {
         if(false === ($output = current($this->_collection))) {
@@ -572,7 +572,7 @@ trait TReverseSeekableArrayCollection {
 
 
 // Shiftable
-trait TShiftableArrayCollection {
+trait TArrayCollection_Shiftable {
     
     public function pop() {
         return array_pop($this->_collection);
@@ -599,7 +599,7 @@ trait TShiftableArrayCollection {
     }
 }
 
-trait TProcessedShiftableArrayCollection {
+trait TArrayCollection_ProcessedShiftable {
     
     public function pop() {
         return array_pop($this->_collection);
@@ -638,22 +638,24 @@ trait TProcessedShiftableArrayCollection {
 
 
 // Full Implementations
-trait TQueue {
+trait TArrayCollection_Queue {
     
-    use TIndexedValueMapArrayCollection;
-    use TSeekableArrayCollection;
-    use TShiftableArrayCollection;
+    use TArrayCollection;
+    use TArrayCollection_IndexedValueMap;
+    use TArrayCollection_Seekable;
+    use TArrayCollection_Shiftable;
     
     public function getReductiveIterator() {
         return new ReductiveIndexIterator($this);
     }
 }
 
-trait TStack {
+trait TArrayCollection_Stack {
     
-    use TIndexedValueMapArrayCollection;
-    use TReverseSeekableArrayCollection;
-    use TShiftableArrayCollection;
+    use TArrayCollection;
+    use TArrayCollection_IndexedValueMap;
+    use TArrayCollection_ReverseSeekable;
+    use TArrayCollection_Shiftable;
     
     public function getIterator() {
         return new \ArrayIterator(array_reverse($this->_collection, true));
@@ -668,11 +670,12 @@ trait TStack {
     }
 }
 
-trait TMap {
+trait TArrayCollection_Map {
     
-    use TSortableScalarArrayCollection;
-    use TAssociativeValueMapArrayCollection;
-    use TSeekableArrayCollection;
+    use TArrayCollection;
+    use TArrayCollection_ScalarSortable;
+    use TArrayCollection_AssociativeValueMap;
+    use TArrayCollection_Seekable;
     
     public function getReductiveIterator() {
         return new ReductiveMapIterator($this);

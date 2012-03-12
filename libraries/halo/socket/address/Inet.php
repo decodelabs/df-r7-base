@@ -11,8 +11,8 @@ use df\halo;
 
 class Inet extends Base implements IInetAddress {
     
-    use core\uri\TIpContainer;
-    use core\uri\TPortContainer;
+    use core\uri\TUrl_IpContainer;
+    use core\uri\TUrl_PortContainer;
     
     
     public static function factory($address) {

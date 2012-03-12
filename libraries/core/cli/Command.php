@@ -12,8 +12,8 @@ class Command implements ICommand {
     
     use core\TStringProvider;
     use core\collection\TArrayCollection;
-    use core\collection\TIndexedProcessedValueMapArrayCollection;
-    use core\collection\TProcessedShiftableArrayCollection;
+    use core\collection\TArrayCollection_ProcessedIndexedValueMap;
+    use core\collection\TArrayCollection_ProcessedShiftable;
     
     protected $_executable;
     
