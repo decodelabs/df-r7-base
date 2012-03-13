@@ -126,7 +126,7 @@ trait TWidget_FormData {
     protected $_value;
     protected $_targetFormId;
     
-    protected function _applyFormDataAttributes(aura\html\ITag $tag) {
+    protected function _applyFormDataAttributes(aura\html\ITag $tag, $includeValue=true) {
         // Name
         if($this->_name == null) {
             return;
@@ -142,7 +142,9 @@ trait TWidget_FormData {
         
         
         // Value
-        $tag->setAttribute('value', $this->getValueString());
+        if($includeValue) {
+            $tag->setAttribute('value', $this->getValueString());
+        }
         
         if($this->_value->hasErrors()) {
             $this->getTag()->addClass('state-error');
@@ -231,7 +233,7 @@ trait TWidget_Input {
     protected $_tabIndex;
     
     protected function _applyInputAttributes(aura\html\ITag $tag) {
-        $tag->addClass('widget-formInput');
+        //$tag->addClass('widget-formInput');
         
         // Required
         if($this->_isRequired) {
