@@ -1,0 +1,127 @@
+<?php
+/**
+ * This file is part of the Decode Framework
+ * @license http://opensource.org/licenses/MIT
+ */
+namespace df\opal\rdbms\adapter\statement;
+
+use df;
+use df\core;
+use df\opal;
+
+class Mysqli extends Base {
+        
+    protected static $_timer;
+    protected $_result;
+        
+        
+// Execute
+    protected function _execute($forWrite=false) {
+        $connection = $this->_adapter->getConnection();
+        $stmt = $connection->stmt_init();
+        
+        $bindings = array();
+        $sql = '';
+        $length = strlen($this->_sql);
+        $mode = 0;
+        $var = '';
+        $quoteChar = null;
+        
+        for($i = 0; $i < $length + 1; $i++) {
+            if(isset($this->_sql{$i})) {
+                $char = $this->_sql{$i};
+            } else {
+                $char = '';
+            }
+            
+            switch($mode) {
+                case 0: // Root
+                    if($char == ':') {
+                        $mode = 1;
+                        break;
+                    } else if($char == '\'' || $char == '`' || $char == '"') {
+                        $quoteChar = $char;
+                        $mode = 2;
+                    }
+                    
+                    $sql .= $char;
+                    break;
+                    
+                case 1: // Var
+                    if(!ctype_alnum($char) && $char != '_') {
+                        if(array_key_exists($var, $this->_bindings)) {
+                            $sql .= '?';
+                            $bindings[] = $this->_bindings[$var];
+                        } else {
+                            $sql .= ':'.$var;
+                        }
+                        
+                        $sql .= $char;
+                        $var = '';
+                        $mode = 0;
+                    } else {
+                        $var .= $char;
+                    }
+                    
+                    break;
+                    
+                case 2: // Quote
+                    if($char == $quoteChar) {
+                        $mode = 0;
+                    }
+                    
+                    $sql .= $char;
+                    break;
+            }
+        }
+        
+        if(!$stmt->prepare($sql)) {
+            throw opal\rdbms\variant\mysql\Server::getQueryException(mysqli_errno($connection), mysqli_error($connection), $sql);
+        }
+        
+        if(!empty($bindings)) {
+            $args = $this->_refBindings($bindings);
+            $types = str_repeat('s', count($bindings));
+            
+            array_unshift($args, $types);
+            call_user_func_array(array($stmt, 'bind_param'), $args);
+        }
+        
+        $stmt->execute();
+        
+        if($num = mysqli_errno($connection)) {
+            throw opal\rdbms\variant\mysql\Server::getQueryException($num, mysqli_error($connection), $sql);
+        }
+        
+        return $this->_result = $stmt->get_result();
+    }
+
+    protected function _refBindings(array &$bindings) {
+        $refs = array();
+        
+        foreach($bindings as $key => $value) {
+            $refs[$key] = &$bindings[$key];
+        }
+        
+        return $refs;
+    }
+    
+    
+// Result
+    protected function _fetchRow() {
+        if($this->_result) {
+            return $this->_result->fetch_assoc();
+        }
+        
+        return null;
+    }
+    
+    public function free() {
+        if($this->_result) {
+            $this->_result->free();
+            $this->_result = null;
+        }
+        
+        return $this;
+    }
+}
