@@ -1,0 +1,33 @@
+<?php
+/**
+ * This file is part of the Decode Framework
+ * @license http://opensource.org/licenses/MIT
+ */
+namespace df\plug\view;
+
+use df;
+use df\core;
+use df\aura;
+use df\arch;
+
+class Import implements aura\view\IHelper {
+    
+    protected $_view;
+    
+    public function __construct(aura\view\IView $view) {
+        $this->_view = $view;
+    }
+    
+    public function template($path, $contextRequest=null) {
+        $context = $this->_view->getContext()->spawnInstance($contextRequest);
+        $template = aura\view\content\Template::loadDirectoryTemplate($context, $path);
+        $template->setRenderTarget($this->_view);
+        
+        return $template;
+    }
+    
+    public function component($name, $contextRequest=null) {
+        $context = $this->_view->getContext()->spawnInstance($contextRequest);
+        return arch\Component::factory($context, $name);
+    }
+}
