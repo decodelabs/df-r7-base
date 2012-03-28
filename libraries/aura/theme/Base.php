@@ -58,7 +58,7 @@ class Base implements ITheme {
         $this->_setDefaultViewTitle($view);
         $request = $view->getContext()->getRequest();
         
-        $view->getBody()
+        $view->getBodyTag()
             ->setDataAttribute('location', implode('/', $request->getLiteralPathArray()))
             ->setDataAttribute('layout', $view->getLayout());
     }
@@ -95,7 +95,7 @@ class Base implements ITheme {
         }
         
         if(!$view->hasTitleSuffix()) {
-            $suffix = $view->getApplication()->getName();
+            $suffix = $view->getContext()->getApplication()->getName();
             
             if($view->hasTitle()) {
                 $suffix = ' : '.$suffix;

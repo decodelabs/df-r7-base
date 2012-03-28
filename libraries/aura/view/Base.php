@@ -19,6 +19,7 @@ class Base implements IView {
     
     protected $_headers;
     protected $_cookies;
+    protected $_contentProvider;
     protected $_renderedContent = null;
     
     public static function factory($type, arch\IContext $context) {
@@ -287,5 +288,4 @@ class Base implements IView {
     public function _($phrase, array $data=null, $plural=null, $locale=null) {
         return $this->_context->_($phrase, $data, $plural, $locale);
     }
-    
 }

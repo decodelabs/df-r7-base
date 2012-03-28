@@ -16,7 +16,6 @@ class Template implements aura\view\ITemplate, core\IDumpable {
     use aura\view\TArgContainer;
         
     private $_path;
-    private $_args = array();
     private $_view;
     private $_renderTarget;
     private $_isRendering = false;
@@ -68,15 +67,15 @@ class Template implements aura\view\ITemplate, core\IDumpable {
             }
         }
         
-        foreach($lookupPaths as $path) {
-            if($layoutPath = $context->findFile($path)) {
+        foreach($lookupPaths as $testPath) {
+            if($layoutPath = $context->findFile($testPath)) {
                 break;
             }
         }
         
         if(!$layoutPath) {
             throw new aura\view\ContentNotFoundException(
-                'Layout '.$layout.' could not be found'
+                'Layout '.$path.' could not be found'
             );
         }
         
@@ -207,6 +206,23 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         return $this->_view->esc($this->getAttribute($name, $default));
     }
     
+
+    public function offsetSet($key, $value) {
+        return $this->setArg($key, $value);
+    }
+    
+    public function offsetGet($key) {
+        return $this->getArg($key);
+    }
+    
+    public function offsetExists($key) {
+        return $this->hasArg($key);
+    }
+    
+    public function offsetUnset($key) {
+        return $this->removeArg($key);
+    }
+
 
 // Helpers
     public function __get($member) {

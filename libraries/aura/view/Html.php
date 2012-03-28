@@ -15,6 +15,7 @@ class Html extends Base implements IHtmlView {
     use TLayoutView;
     
     const DEFAULT_TITLE = '*untitled';
+    const DEFAULT_LAYOUT = 'Default';
     
     private static $_priorityMeta = array('x-ua-compatible', 'content-type');
     private static $_httpMeta = array(
