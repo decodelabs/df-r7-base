@@ -11,6 +11,8 @@ use df\opal;
 
 abstract class Table implements ITable, core\IDumpable {
     
+    use opal\query\TQuery_ImplicitSourceEntryPoint;
+    
     protected $_adapter;
     protected $_name;
     protected $_querySourceId;
@@ -439,7 +441,7 @@ abstract class Table implements ITable, core\IDumpable {
                     foreach($attachment->getNonLocalFieldReferences() as $field) {
                         foreach($field->dereference() as $field) {
                             $qName = $field->getQualifiedName();
-                            $attachFields[$qName] = $this->_defineQueryField($field, true, $qName);
+                            $attachFields[/*$qName*/] = $this->_defineQueryField($field, true, $qName);
                         }
                     }
                 }
@@ -477,7 +479,7 @@ abstract class Table implements ITable, core\IDumpable {
                             $fieldAlias = $field->getAlias();
                         }
             
-                        $joinFields[$fieldAlias] = $this->_defineQueryField($field, true, $fieldAlias);
+                        $joinFields[/*$fieldAlias*/] = $this->_defineQueryField($field, true, $fieldAlias);
                     }
                 }
             }
@@ -493,7 +495,7 @@ abstract class Table implements ITable, core\IDumpable {
                 $fieldAlias = $field->getAlias();
             }
             
-            $outFields[$fieldAlias] = $this->_defineQueryField($field, true, $fieldAlias);
+            $outFields[/*$fieldAlias*/] = $this->_defineQueryField($field, true, $fieldAlias);
         }
         
         
@@ -1041,15 +1043,15 @@ abstract class Table implements ITable, core\IDumpable {
 // Query joins
     protected function _defineQueryJoin(opal\rdbms\IStatement $stmt, opal\query\IJoinQuery $join) {
         switch($join->getType()) {
-            case opal\query\Join::INNER:
+            case opal\query\IJoinQuery::INNER:
                 $output = 'INNER';
                 break;
                 
-            case opal\query\Join::LEFT:
+            case opal\query\IJoinQuery::LEFT:
                 $output = 'LEFT';
                 break;
                 
-            case opal\query\Join::RIGHT:
+            case opal\query\IJoinQuery::RIGHT:
                 $output = 'RIGHT';
                 break;
         }
@@ -1155,7 +1157,9 @@ abstract class Table implements ITable, core\IDumpable {
         $isDiscreetAggregate = $field instanceof opal\query\IAggregateField 
                             && $field->hasDiscreetAlias();
         
-        if($isDiscreetAggregate || $forUpdateOrDelete) {
+        if($isDiscreetAggregate) {
+            $fieldString = $this->_adapter->quoteFieldAliasReference($field->getAlias());
+        } else if($forUpdateOrDelete) {
             /*
              * If used on an aggregate field or for update or delete, the name must
              * be used on some sql servers
@@ -1164,7 +1168,6 @@ abstract class Table implements ITable, core\IDumpable {
         } else {
             $fieldString = $this->_defineQueryField($field);
         }
-        
         
         
         if($value instanceof opal\query\IField && $remoteJoinData !== null) {
@@ -1749,63 +1752,6 @@ abstract class Table implements ITable, core\IDumpable {
     public function newRecord(array $values=null) {
         return new opal\query\record\Base($this, $values);
     }
-    
-    
-    
-    
-// Entry point
-    public function select($field1=null) {
-        return opal\query\Initiator::factory()
-            ->beginSelect(func_get_args())
-            ->from($this);
-    }
-    
-    public function fetch() {
-        return opal\query\Initiator::factory()
-            ->beginFetch()
-            ->from($this);
-    }
-    
-    public function insert($row) {
-        return opal\query\Initiator::factory()
-            ->beginInsert($row)
-            ->into($this);
-    }
-    
-    public function batchInsert($rows=array()) {
-        return opal\query\Initiator::factory()
-            ->beginBatchInsert($rows)
-            ->into($this);
-    }
-    
-    public function replace($row) {
-        return opal\query\Initiator::factory()
-            ->beginReplace($row)
-            ->in($this);
-    }
-    
-    public function batchReplace($rows=array()) {
-        return opal\query\Initiator::factory()
-            ->beginBatchReplace($rows)
-            ->in($this);
-    }
-    
-    public function update(array $valueMap=null) {
-        return opal\query\Initiator::factory()
-            ->beginUpdate($valueMap)
-            ->in($this);
-    }
-    
-    public function delete() {
-        return opal\query\Initiator::factory()
-            ->beginDelete()
-            ->from($this);
-    }
-    
-    public function begin() {
-        return new opal\query\ImplicitSourceTransaction(df\Launchpad::getActiveApplication(), $this);
-    }
-
     
     
     

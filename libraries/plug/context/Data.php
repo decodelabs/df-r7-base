@@ -13,6 +13,8 @@ use df\opal;
 
 class Data implements arch\IContextHelper, opal\query\IEntryPoint {
     
+    use opal\query\TQuery_EntryPoint;
+    
     protected $_context;
     
     public function __construct(arch\IContext $context) {
@@ -31,40 +33,8 @@ class Data implements arch\IContextHelper, opal\query\IEntryPoint {
     
     
 // Query
-    public function select($field1=null) {
-        return opal\query\Initiator::factory($this->_context->getApplication())->beginSelect(func_get_args());
-    }
-    
-    public function fetch() {
-        return opal\query\Initiator::factory($this->_context->getApplication())->beginFetch();
-    }
-    
-    public function insert($row) {
-        return opal\query\Initiator::factory($this->_context->getApplication())->beginInsert($row);
-    }
-    
-    public function batchInsert($rows=array()) {
-        return opal\query\Initiator::factory($this->_context->getApplication())->beginBatchInsert($rows);
-    }
-    
-    public function replace($row) {
-        return opal\query\Initiator::factory($this->_context->getApplication())->beginReplace($row);
-    }
-    
-    public function batchReplace($rows=array()) {
-        return opal\query\Initiator::factory($this->_context->getApplication())->beginBatchReplace($rows);
-    }
-    
-    public function update(array $valueMap=null) {
-        return opal\query\Initiator::factory($this->_context->getApplication())->beginUpdate($valueMap);
-    }
-    
-    public function delete() {
-        return opal\query\Initiator::factory($this->_context->getApplication())->beginDelete();
-    }
-    
-    public function begin() {
-        return new opal\query\Transaction($this->_context->getApplication());
+    private function _getEntryPointApplication() {
+        return $this->_context->getApplication();
     }
     
     
