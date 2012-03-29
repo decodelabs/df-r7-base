@@ -273,7 +273,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
             $this->executeRead();
         }
         
-        return new core\collection\ReductiveIterator($this);
+        return new core\collection\ReductiveIndexIterator($this);
     }
     
     abstract protected function _fetchRow();

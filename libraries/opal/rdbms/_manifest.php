@@ -112,6 +112,12 @@ interface IDsn extends core\IStringProvider {
     public function getDisplayString();
 }
 
+
+interface IServer {
+    public static function getConnectionException($number, $message);
+    public static function getQueryException($number, $message, $sql=null);
+}
+
 interface IAdapter extends core\policy\IParentEntity {
 // Connection
     public function isConnected();
@@ -178,4 +184,19 @@ interface IStatement extends core\collection\IQueue, core\collection\IStreamColl
     public function executeWrite();
     
     public function free();
+}
+
+interface ITable extends core\policy\IEntity, /*opal\query\IAdapter, opal\query\IEntryPoint,*/ \Countable {
+    public function getName();
+    public function getAdapter();
+    public function getSchema($voidCache=false);
+    
+    public function exists();
+    public function create(opal\rdbms\schema\ISchema $schema, $dropIfExists=false);
+    public function alter(opal\rdbms\schema\ISchema $schema);
+    public function rename($newName);
+    public function drop();
+    public function truncate();
+    public function lock();
+    public function unlock();
 }

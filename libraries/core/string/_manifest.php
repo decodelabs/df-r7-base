@@ -33,6 +33,19 @@ trait THtmlStringEscapeHandler {
 }
 
 
+
+interface ICharacterSetAware {
+    public function setCharacterSet($charset);
+    public function getCharacterSet();
+}
+
+interface ICollationAware {
+    public function setCollation($collation);
+    public function getCollation();
+}
+
+
+
 interface IGenerator {
     public static function random($minLength=6, $maxLength=14, $additionalChars=null);
     public static function passKey();
