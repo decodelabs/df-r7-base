@@ -13,7 +13,7 @@ class Local extends Base implements IFileSystemPointer {
     protected $_mode;
     protected $_path;
 
-    public function __construct($path, $mode=namespace\READ_WRITE) {
+    public function __construct($path, $mode=IMode::READ_WRITE) {
         $this->_path = (string)core\uri\FilePath::factory($path);
         $this->open($mode);
     }
@@ -42,7 +42,7 @@ class Local extends Base implements IFileSystemPointer {
         return filemtime($this->_path);
     }
     
-    public function open($mode=namespace\READ_WRITE) {
+    public function open($mode=IMode::READ_WRITE) {
         if($this->_fp) {
             if($this->_mode == $mode) {
                 return $this;

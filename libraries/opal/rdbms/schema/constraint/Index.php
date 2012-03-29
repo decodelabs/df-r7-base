@@ -28,23 +28,23 @@ class Index implements opal\rdbms\schema\IIndex, core\IDumpable {
         if(is_string($clause)) {
             switch(strtoupper($clause)) {
                 case 'ROLLBACK':
-                    $clause = opal\schema\ROLLBACK;
+                    $clause = opal\schema\IConflictClause::ROLLBACK;
                     break;
                     
                 case 'ABORT':
-                    $clause = opal\schema\ABORT;
+                    $clause = opal\schema\IConflictClause::ABORT;
                     break;
                     
                 case 'FAIL':
-                    $clause = opal\schema\FAIL;
+                    $clause = opal\schema\IConflictClause::FAIL;
                     break;
                     
                 case 'IGNORE':
-                    $clause = opal\schema\IGNORE;
+                    $clause = opal\schema\IConflictClause::IGNORE;
                     break;
                     
                 case 'REPLACE':
-                    $clause = opal\schema\REPLACE;
+                    $clause = opal\schema\IConflictClause::REPLACE;
                     break;
                     
                 default:
@@ -53,11 +53,11 @@ class Index implements opal\rdbms\schema\IIndex, core\IDumpable {
         }
         
         switch($clause) {
-            case opal\schema\ROLLBACK:
-            case opal\schema\ABORT:
-            case opal\schema\FAIL:
-            case opal\schema\IGNORE:
-            case opal\schema\REPLACE:
+            case opal\schema\IConflictClause::ROLLBACK:
+            case opal\schema\IConflictClause::ABORT:
+            case opal\schema\IConflictClause::FAIL:
+            case opal\schema\IConflictClause::IGNORE:
+            case opal\schema\IConflictClause::REPLACE:
                 break;
                 
             default:
@@ -74,19 +74,19 @@ class Index implements opal\rdbms\schema\IIndex, core\IDumpable {
     
     public function getConflictClauseName() {
         switch($this->_conflictClause) {
-            case opal\schema\ROLLBACK:
+            case opal\schema\IConflictClause::ROLLBACK:
                 return 'ROLLBACK';
                 
-            case opal\schema\ABORT:
+            case opal\schema\IConflictClause::ABORT:
                 return 'ABORT';
                 
-            case opal\schema\FAIL:
+            case opal\schema\IConflictClause::FAIL:
                 return 'FAIL';
                 
-            case opal\schema\IGNORE:
+            case opal\schema\IConflictClause::IGNORE:
                 return 'IGNORE';
                 
-            case opal\schema\REPLACE:
+            case opal\schema\IConflictClause::REPLACE:
                 return 'REPLACE';
         }
     }

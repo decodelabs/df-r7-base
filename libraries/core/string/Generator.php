@@ -31,7 +31,7 @@ abstract class Generator implements IGenerator {
 
         mt_srand(microtime(true) * 1000000);
         
-        $output = new core\string\Manipulator('', core\string\Manipulator::UTF_8);
+        $output = new core\string\Manipulator('', IEncoding::UTF_8);
         $length = mt_rand($minLength, $maxLength);
         $count = count($characters);
         

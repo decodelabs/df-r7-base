@@ -61,6 +61,6 @@ class File extends Base implements halo\protocol\http\IFileResponse {
     }
     
     public function getContentFileStream() {
-        return $this->_file->open(core\io\file\READ_ONLY);
+        return $this->_file->open(core\io\file\IMode::READ_ONLY);
     }
 }

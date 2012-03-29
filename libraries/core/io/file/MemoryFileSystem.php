@@ -11,7 +11,7 @@ class MemoryFileSystem extends Memory implements IFileSystemPointer {
     
     private $_path;
     
-    public function __construct($data, $path, $contentType, $mode=namespace\READ_WRITE) {
+    public function __construct($data, $path, $contentType, $mode=IMode::READ_WRITE) {
         parent::__construct($data, $contentType, $mode);
         $this->setPath($path);
     }

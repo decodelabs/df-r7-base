@@ -12,7 +12,7 @@ class Memory extends Base {
     private $_data;
     private $_pos = 0;
 
-    public function __construct($data, $contentType=null, $mode=namespace\READ_WRITE) {
+    public function __construct($data, $contentType=null, $mode=IMode::READ_WRITE) {
         $this->putContents($data);
         $this->setContentType($contentType);
     }

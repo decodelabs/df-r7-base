@@ -13,19 +13,22 @@ class OverflowException extends \OverflowException implements IException {}
 class RuntimeException extends \RuntimeException implements IException {}
 
 // Constants
-const READ_ONLY = 'rb';
-const READ_WRITE = 'r+b';
-const WRITE_TRUNCATE = 'wb';
-const READ_WRITE_TRUNCATE = 'w+b';
-const WRITE_APPEND = 'ab';
-const READ_WRITE_APPEND = 'a+b';
-const WRITE_NEW = 'xb';
-const READ_WRITE_NEW = 'x+b';
+interface IMode {
+    const READ_ONLY = 'rb';
+    const READ_WRITE = 'r+b';
+    const WRITE_TRUNCATE = 'wb';
+    const READ_WRITE_TRUNCATE = 'w+b';
+    const WRITE_APPEND = 'ab';
+    const READ_WRITE_APPEND = 'a+b';
+    const WRITE_NEW = 'xb';
+    const READ_WRITE_NEW = 'x+b';
+}
+
 
 
 // Interfaces
 interface IPointer {
-    public function open($mode=namespace\READ_WRITE);
+    public function open($mode=IMode::READ_WRITE);
     public function exists();
     public function getSize();
     public function getContentType();

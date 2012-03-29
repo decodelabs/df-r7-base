@@ -419,7 +419,7 @@ trait TConstraint_Trigger {
     use TConstraint_Base;
     
     protected $_event;
-    protected $_timing = opal\schema\BEFORE;
+    protected $_timing = opal\schema\ITriggerTiming::BEFORE;
     protected $_statements = array();
     
     public function __construct($name, $event, $timing, $statements) {
@@ -433,15 +433,15 @@ trait TConstraint_Trigger {
         if(is_string($event)) {
             switch(strtoupper($event)) {
                 case 'INSERT':
-                    $event = opal\schema\INSERT;
+                    $event = opal\schema\ITriggerEvent::INSERT;
                     break;
                     
                 case 'UPDATE':
-                    $event = opal\schema\UPDATE;
+                    $event = opal\schema\ITriggerEvent::UPDATE;
                     break;
                     
                 case 'DELETE':
-                    $event = opal\schema\DELETE;
+                    $event = opal\schema\ITriggerEvent::DELETE;
                     break;
                     
                 default:
@@ -452,9 +452,9 @@ trait TConstraint_Trigger {
         }
         
         switch($event) {
-            case opal\schema\INSERT:
-            case opal\schema\UPDATE:
-            case opal\schema\DELETE:
+            case opal\schema\ITriggerEvent::INSERT:
+            case opal\schema\ITriggerEvent::UPDATE:
+            case opal\schema\ITriggerEvent::DELETE:
                 break;
                                 
             default:
@@ -477,24 +477,24 @@ trait TConstraint_Trigger {
     
     public function getEventName() {
         switch($this->_event) {
-            case opal\schema\INSERT:
+            case opal\schema\ITriggerEvent::INSERT:
                 return 'INSERT';
                 
-            case opal\schema\UPDATE:
+            case opal\schema\ITriggerEvent::UPDATE:
                 return 'UPDATE';
                 
-            case opal\schema\DELETE:
+            case opal\schema\ITriggerEvent::DELETE:
                 return 'DELETE';
         }
     }
     
     public function setTiming($timing) {
-        if($timing == opal\schema\INSTEAD_OF || strtoupper($timing) == 'INSTEAD OF') {
-            $timing = opal\schema\INSTEAD_OF;
-        } else if($timing == opal\schema\AFTER || strtoupper($timing) == 'AFTER') {
-            $timing = opal\schema\AFTER;
+        if($timing == opal\schema\ITriggerTiming::INSTEAD_OF || strtoupper($timing) == 'INSTEAD OF') {
+            $timing = opal\schema\ITriggerTiming::INSTEAD_OF;
+        } else if($timing == opal\schema\ITriggerTiming::AFTER || strtoupper($timing) == 'AFTER') {
+            $timing = opal\schema\ITriggerTiming::AFTER;
         } else {
-            $timing = opal\schema\BEFORE;
+            $timing = opal\schema\ITriggerTiming::BEFORE;
         }
         
         $this->_timing = $timing;
@@ -507,13 +507,13 @@ trait TConstraint_Trigger {
     
     public function getTimingName() {
         switch($this->_timing) {
-            case opal\schema\BEFORE:
+            case opal\schema\ITriggerTiming::BEFORE:
                 return 'BEFORE';
                 
-            case opal\schema\AFTER:
+            case opal\schema\ITriggerTiming::AFTER:
                 return 'AFTER';
                 
-            case opal\schema\INSTEAD_OF:
+            case opal\schema\ITriggerTiming::INSTEAD_OF:
                 return 'INSTEAD OF';        
         }
     }

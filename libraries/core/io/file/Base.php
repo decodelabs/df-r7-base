@@ -11,7 +11,7 @@ abstract class Base implements IPointer, IReader, IWriter {
     
     protected $_contentType = null;
     
-    public function open($mode=namespace\READ_WRITE) {
+    public function open($mode=IMode::READ_WRITE) {
         return $this;
     }
     

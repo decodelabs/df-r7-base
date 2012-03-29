@@ -9,27 +9,35 @@ use df;
 use df\core;
 use df\opal;
 
-const TINY = 'tiny';
-const SMALL = 'small';
-const MEDIUM = 'medium';
-const LARGE = 'large';
-const HUGE = 'huge';
+interface IFieldSize {
+    const TINY = 'tiny';
+    const SMALL = 'small';
+    const MEDIUM = 'medium';
+    const LARGE = 'large';
+    const HUGE = 'huge';
+}
 
 
-const ROLLBACK = 1;
-const ABORT = 2;
-const FAIL = 3;
-const IGNORE = 4;
-const REPLACE = 5;
+interface IConflictClause {
+    const ROLLBACK = 1;
+    const ABORT = 2;
+    const FAIL = 3;
+    const IGNORE = 4;
+    const REPLACE = 5;
+}
 
 
-const INSERT = 1;
-const UPDATE = 2;
-const DELETE = 3;
+interface ITriggerEvent {
+    const INSERT = 1;
+    const UPDATE = 2;
+    const DELETE = 3;
+}
 
-const BEFORE = 0;
-const AFTER = 1;
-const INSTEAD_OF = 2;
+interface ITriggerTiming {
+    const BEFORE = 0;
+    const AFTER = 1;
+    const INSTEAD_OF = 2;
+}
 
 
 // Exceptions

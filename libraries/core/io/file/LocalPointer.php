@@ -15,7 +15,7 @@ class LocalPointer implements IFileSystemPointer, core\IDumpable {
         $this->_path = (string)core\uri\FilePath::factory($path);
     }
     
-    public function open($mode=namespace\READ_WRITE) {
+    public function open($mode=IMode::READ_WRITE) {
         return new Local($this->_path, $mode);
     }
     
@@ -60,7 +60,7 @@ class LocalPointer implements IFileSystemPointer, core\IDumpable {
             throw new RuntimeException('Cannot read from file pointer');
         }
         
-        $this->open(namespace\WRITE_TRUNCATE)->putContents($data);
+        $this->open(IMode::WRITE_TRUNCATE)->putContents($data);
         
         return $this;
     }

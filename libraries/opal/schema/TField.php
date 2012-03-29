@@ -93,23 +93,23 @@ trait TField {
     protected function _normalizeBits($size) {
         if(is_string($size)) {
             switch(strtolower($size)) {
-                case self::TINY:
+                case opal\schema\IFieldSize::TINY:
                     $size = 1;
                     break;
                     
-                case self::SMALL:
+                case opal\schema\IFieldSize::SMALL:
                     $size = 8;
                     break;
                     
-                case self::MEDIUM:
+                case opal\schema\IFieldSize::MEDIUM:
                     $size = 16;
                     break;
                     
-                case self::LARGE:
+                case opal\schema\IFieldSize::LARGE:
                     $size = 32;
                     break;
                     
-                case self::HUGE:
+                case opal\schema\IFieldSize::HUGE:
                     $size = 64;
                     break;
                     
@@ -142,23 +142,23 @@ trait TField {
     protected function _normalizeBytes($size) {
         if(is_string($size)) {
             switch(strtolower($size)) {
-                case self::TINY:
+                case opal\schema\IFieldSize::TINY:
                     $size = 1;
                     break;
                     
-                case self::SMALL:
+                case opal\schema\IFieldSize::SMALL:
                     $size = 2;
                     break;
                     
-                case self::MEDIUM:
+                case opal\schema\IFieldSize::MEDIUM:
                     $size = 3;
                     break;
                     
-                case self::LARGE:
+                case opal\schema\IFieldSize::LARGE:
                     $size = 4;
                     break;
                     
-                case self::HUGE:
+                case opal\schema\IFieldSize::HUGE:
                     $size = 8;
                     break;
                     
@@ -199,20 +199,20 @@ trait TField {
     protected function _normalizeExponent($size) {
         if(is_string($size)) {
             switch(strtolower($size)) {
-                case self::TINY:
-                case self::SMALL:
+                case opal\schema\IFieldSize::TINY:
+                case opal\schema\IFieldSize::SMALL:
                     $size = 8;
                     break;
                     
-                case self::MEDIUM:
+                case opal\schema\IFieldSize::MEDIUM:
                     $size = 16;
                     break;
                     
-                case self::LARGE:
+                case opal\schema\IFieldSize::LARGE:
                     $size = 24;
                     break;
                     
-                case self::HUGE:
+                case opal\schema\IFieldSize::HUGE:
                     $size = 32;
                     break;
                     
