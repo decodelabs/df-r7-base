@@ -87,173 +87,6 @@ trait TField {
         $this->_hasChanged = false;
         return $this;
     }
-    
-    
-// Helpers
-    protected function _normalizeBits($size) {
-        if(is_string($size)) {
-            switch(strtolower($size)) {
-                case opal\schema\IFieldSize::TINY:
-                    $size = 1;
-                    break;
-                    
-                case opal\schema\IFieldSize::SMALL:
-                    $size = 8;
-                    break;
-                    
-                case opal\schema\IFieldSize::MEDIUM:
-                    $size = 16;
-                    break;
-                    
-                case opal\schema\IFieldSize::LARGE:
-                    $size = 32;
-                    break;
-                    
-                case opal\schema\IFieldSize::HUGE:
-                    $size = 64;
-                    break;
-                    
-                default:
-                    if(is_numeric($size)) {
-                        $size = (int)$size;
-                    } else{
-                        $size = 16;
-                    }
-                    
-                    break;
-            }
-        }
-        
-        $size = (int)$size;
-        
-        if($size > 64) {
-            throw new opal\schema\InvalidArgumentException(
-                'Maximum bit size is 64'
-            );
-        } else if($size < 1) {
-            throw new opal\schema\InvalidArgumentException(
-                'Minimum bit size is 1'
-            );
-        }
-        
-        return $size;
-    }
-
-    protected function _normalizeBytes($size) {
-        if(is_string($size)) {
-            switch(strtolower($size)) {
-                case opal\schema\IFieldSize::TINY:
-                    $size = 1;
-                    break;
-                    
-                case opal\schema\IFieldSize::SMALL:
-                    $size = 2;
-                    break;
-                    
-                case opal\schema\IFieldSize::MEDIUM:
-                    $size = 3;
-                    break;
-                    
-                case opal\schema\IFieldSize::LARGE:
-                    $size = 4;
-                    break;
-                    
-                case opal\schema\IFieldSize::HUGE:
-                    $size = 8;
-                    break;
-                    
-                default:
-                    if(is_numeric($size)) {
-                        $size = (int)$size;
-                    } else {
-                        $size = 4;
-                    }
-                    
-                    break;
-            }
-        }
-        
-        $size = (int)$size;
-        
-        switch($size) {
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 8:
-                break;
-                
-            default:
-                if($size < 8) {
-                    $size = 8;
-                } else {
-                    throw new opal\schema\InvalidArgumentException(
-                        'Maximum byte size is 8'
-                    );
-                }
-        }
-        
-        return $size;
-    }
-
-    protected function _normalizeExponent($size) {
-        if(is_string($size)) {
-            switch(strtolower($size)) {
-                case opal\schema\IFieldSize::TINY:
-                case opal\schema\IFieldSize::SMALL:
-                    $size = 8;
-                    break;
-                    
-                case opal\schema\IFieldSize::MEDIUM:
-                    $size = 16;
-                    break;
-                    
-                case opal\schema\IFieldSize::LARGE:
-                    $size = 24;
-                    break;
-                    
-                case opal\schema\IFieldSize::HUGE:
-                    $size = 32;
-                    break;
-                    
-                default:
-                    if(is_numeric($size)) {
-                        $size = (int)$size;
-                    } else {
-                        $size = 16;
-                    }
-                    
-                    break;
-            }
-        }
-        
-        $size = (int)$size;
-        
-        switch($size) {
-            case 8:
-            case 16:
-            case 24:
-            case 32:
-                break;
-                
-            default:
-                if($size < 8) {
-                    $size = 8;
-                } else if($size < 16) {
-                    $size = 16;
-                } else if($size < 24) {
-                    $size = 24;
-                } else if($size < 32) {
-                    $size = 32;
-                } else {
-                    throw new opal\schema\InvalidArgumentException(
-                        'Maximum exponent byte size is 2 ^ 32'
-                    );
-                }
-        }
-        
-        return $size;
-    }
 }
 
 
@@ -442,6 +275,14 @@ trait TField_AutoTimestamp {
         
         return $this->_shouldTimestampAsDefault;
     }
+    
+    public function setDefaultValue($value) {
+        if($value !== null) {
+            $this->_shouldTimestampAsDefault = false;
+        }
+        
+        return parent::setDefaultValue($value);
+    }
 }
 
 
@@ -460,5 +301,235 @@ trait TField_OptionProvider {
     
     public function getOptions() {
         return $this->_options;
+    }
+}
+
+
+
+
+trait TField_BitSizeRestricted {
+    
+    protected $_bitSize;
+    
+    public function setBitSize($size) {
+        $newSize = $this->_normalizeBits($size);
+        
+        if($newSize != $this->_bitSize) {
+            $this->_hasChanged = true;
+        }
+        
+        $this->_bitSize = $newSize;
+        return $this;
+    }
+    
+    public function getBitSize() {
+        return $this->_bitSize;
+    }
+    
+    protected function _normalizeBits($size) {
+        if(is_string($size)) {
+            switch(strtolower($size)) {
+                case opal\schema\IFieldSize::TINY:
+                    $size = 1;
+                    break;
+                    
+                case opal\schema\IFieldSize::SMALL:
+                    $size = 8;
+                    break;
+                    
+                case opal\schema\IFieldSize::MEDIUM:
+                    $size = 16;
+                    break;
+                    
+                case opal\schema\IFieldSize::LARGE:
+                    $size = 32;
+                    break;
+                    
+                case opal\schema\IFieldSize::HUGE:
+                    $size = 64;
+                    break;
+                    
+                default:
+                    if(is_numeric($size)) {
+                        $size = (int)$size;
+                    } else{
+                        $size = 16;
+                    }
+                    
+                    break;
+            }
+        }
+        
+        $size = (int)$size;
+        
+        if($size > 64) {
+            throw new opal\schema\InvalidArgumentException(
+                'Maximum bit size is 64'
+            );
+        } else if($size < 1) {
+            throw new opal\schema\InvalidArgumentException(
+                'Minimum bit size is 1'
+            );
+        }
+        
+        return $size;
+    }
+}
+
+trait TField_ByteSizeRestricted {
+    
+    protected $_byteSize;
+    
+    public function setByteSize($size) {
+        $newSize = $this->_normalizeBytes($size);
+        
+        if($newSize != $this->_byteSize) {
+            $this->_hasChanged = true;
+        }
+        
+        $this->_byteSize = $newSize;
+        return $this;
+    }
+    
+    public function getByteSize() {
+        return $this->_byteSize;
+    }
+    
+    private function _normalizeBytes($size) {
+        if(is_string($size)) {
+            switch(strtolower($size)) {
+                case opal\schema\IFieldSize::TINY:
+                    $size = 1;
+                    break;
+                    
+                case opal\schema\IFieldSize::SMALL:
+                    $size = 2;
+                    break;
+                    
+                case opal\schema\IFieldSize::MEDIUM:
+                    $size = 3;
+                    break;
+                    
+                case opal\schema\IFieldSize::LARGE:
+                    $size = 4;
+                    break;
+                    
+                case opal\schema\IFieldSize::HUGE:
+                    $size = 8;
+                    break;
+                    
+                default:
+                    if(is_numeric($size)) {
+                        $size = (int)$size;
+                    } else {
+                        $size = 4;
+                    }
+                    
+                    break;
+            }
+        }
+        
+        $size = (int)$size;
+        
+        switch($size) {
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 8:
+                break;
+                
+            default:
+                if($size < 8) {
+                    $size = 8;
+                } else {
+                    throw new opal\schema\InvalidArgumentException(
+                        'Maximum byte size is 8'
+                    );
+                }
+        }
+        
+        return $size;
+    }
+}
+
+
+trait TField_LargeByteSizeRestricted {
+    
+    protected $_exponentSize;
+    
+    public function setExponentSize($size) {
+        $newSize = $this->_normalizeExponent($size);
+        
+        if($newSize != $this->_exponentSize) {
+            $this->_hasChanged = true;
+        }
+        
+        $this->_exponentSize = $newSize;
+        
+        return $this;
+    }
+    
+    public function getExponentSize() {
+        return $this->_exponentSize;
+    }
+    
+    protected function _normalizeExponent($size) {
+        if(is_string($size)) {
+            switch(strtolower($size)) {
+                case opal\schema\IFieldSize::TINY:
+                case opal\schema\IFieldSize::SMALL:
+                    $size = 8;
+                    break;
+                    
+                case opal\schema\IFieldSize::MEDIUM:
+                    $size = 16;
+                    break;
+                    
+                case opal\schema\IFieldSize::LARGE:
+                    $size = 24;
+                    break;
+                    
+                case opal\schema\IFieldSize::HUGE:
+                    $size = 32;
+                    break;
+                    
+                default:
+                    if(is_numeric($size)) {
+                        $size = (int)$size;
+                    } else {
+                        $size = 16;
+                    }
+                    
+                    break;
+            }
+        }
+        
+        $size = (int)$size;
+        
+        switch($size) {
+            case 8:
+            case 16:
+            case 24:
+            case 32:
+                break;
+                
+            default:
+                if($size < 8) {
+                    $size = 8;
+                } else if($size < 16) {
+                    $size = 16;
+                } else if($size < 24) {
+                    $size = 24;
+                } else if($size < 32) {
+                    $size = 32;
+                } else {
+                    throw new opal\schema\InvalidArgumentException(
+                        'Maximum exponent byte size is 2 ^ 32'
+                    );
+                }
+        }
+        
+        return $size;
     }
 }

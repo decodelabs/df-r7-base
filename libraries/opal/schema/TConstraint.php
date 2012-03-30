@@ -126,6 +126,7 @@ trait TConstraint_Index {
             } else if($field instanceof IIndexFieldReference) {
                 $this->addFieldReference($field);
             } else {
+                core\dump($field, $this->getName());
                 throw new InvalidArgumentException(
                     'Invalid field ('.(@(string)$field).') passed to index '.$this->getName()
                 );

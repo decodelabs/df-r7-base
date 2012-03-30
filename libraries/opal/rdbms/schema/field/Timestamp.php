@@ -12,6 +12,7 @@ class Timestamp extends Base implements opal\schema\IAutoTimestampField {
     
     use opal\schema\TField_AutoTimestamp;
     
+    /*
     public function setDefaultValue($value) {
         if($value !== null) {
             $this->_shouldTimestampAsDefault = false;
@@ -19,6 +20,8 @@ class Timestamp extends Base implements opal\schema\IAutoTimestampField {
         
         return parent::setDefaultValue($value);
     }
+    */
+   
     
 // String
     public function toString() {

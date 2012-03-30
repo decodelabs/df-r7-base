@@ -711,11 +711,13 @@ trait TSchema_IndexProvider {
     }
     
     protected function _normalizeIndexFieldInput($fields, $name=null) {
-        /*
-        if($fields === null && $name !== null && $name !== 'PRIMARY') {
+        if($fields === false) {
+            return null;
+        }
+        
+        if($fields === null && $name !== null) {
             $fields = array($name);
         }
-        */
         
         if(is_string($fields) || $fields instanceof opal\schema\IField) {
             $fields = array($fields);

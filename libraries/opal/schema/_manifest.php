@@ -215,6 +215,15 @@ interface IOptionProviderField extends IField {
 
 
 
+interface IPrimitive extends IField {
+    public function getType();
+}
+
+interface IMultiFieldPrimitive extends IPrimitive {
+    public function getPrimitives();
+}
+
+
 
 
 

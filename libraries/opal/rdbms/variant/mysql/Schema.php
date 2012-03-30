@@ -259,11 +259,11 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, core\IDumpable {
         }
         
         
-        if($this->_engine !== null) {
-            $compEngine = strtolower($this->_engine);
+        if($this->_options['engine'] !== null) {
+            $compEngine = strtolower($this->_options['engine']);
             
             if(isset($availableEngines[$compEngine])) {
-                $this->_engine = $availableEngines[$compEngine]['Engine'];
+                $this->_options['engine'] = $availableEngines[$compEngine]['Engine'];
             } else {
                 switch($compEngine) {
                     case 'archive':
@@ -276,44 +276,44 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, core\IDumpable {
                     case 'memory':
                     case 'merge':
                     case 'ndbcluster':
-                        $this->_engine = strtoupper($engine);
+                        $this->_options['engine'] = strtoupper($engine);
                         break;
                         
                     case 'innodb':
-                        $this->_engine = 'InnoDB';
+                        $this->_options['engine'] = 'InnoDB';
                         break;
                         
                     case 'myisam':
-                        $this->_engine = 'MyISAM';
+                        $this->_options['engine'] = 'MyISAM';
                         break;
                 }
                 
-                $compEngine = strtolower($this->_engine);
+                $compEngine = strtolower($this->_options['engine']);
             }
             
             
             if(!isset($availableEngines[$compEngine])
-            || $availableEngines[$compEngine]['Engine'] != $this->_engine) {
+            || $availableEngines[$compEngine]['Engine'] != $this->_options['engine']) {
                 throw new opal\rdbms\EngineSupportException(
-                    'Mysql storage engine '.$this->_engine.' does not appear to be available'
+                    'Mysql storage engine '.$this->_options['engine'].' does not appear to be available'
                 );
             }
         } else {
-            $this->_engine = $defaultEngine;
-            $compEngine = strtolower($this->_engine);
+            $this->_options['engine'] = $defaultEngine;
+            $compEngine = strtolower($this->_options['engine']);
         }
         
         
-        if($this->_engine !== 'MERGE') {
-            if($this->_insertMethod) {
+        if($this->_options['engine'] !== 'MERGE') {
+            if($this->_options['insertMethod']) {
                 throw new opal\rdbms\FeatureSupportException(
-                    'Mysql engine '.$this->_engine.' does not support INSERT_METHOD table option'
+                    'Mysql engine '.$this->_options['engine'].' does not support INSERT_METHOD table option'
                 );
             }
             
-            if(!empty($this->_mergeTables)) {
+            if(!empty($this->_options['mergeTables'])) {
                 throw new opal\rdbms\FeatureSupportException(
-                    'Mysql engine '.$this->_engine.' does not support UNION table option'
+                    'Mysql engine '.$this->_options['engine'].' does not support UNION table option'
                 );
             }
         }
@@ -357,7 +357,7 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, core\IDumpable {
                 case 'ndbcluster':
                 case 'myisam':
                     throw new opal\rdbms\ForeignKeySupportException(
-                        'Foreign keys are not supported by Mysql for this storage engine: '.$this->_engine
+                        'Foreign keys are not supported by Mysql for this storage engine: '.$this->_options['engine']
                     );
             }
         }
@@ -374,10 +374,10 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, core\IDumpable {
         
         
         // Row format
-        if($this->_rowFormat != null) {
+        if($this->_options['rowFormat'] != null) {
             switch($compEngine) {
                 case 'innodb':
-                    switch($this->_rowFormat = strtoupper($this->_rowFormat)) {
+                    switch($this->_options['rowFormat'] = strtoupper($this->_options['rowFormat'])) {
                         case 'REDUNDANT':
                         case 'COMPACT':
                         case 'DEFAULT':
@@ -385,14 +385,14 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, core\IDumpable {
                             
                         
                         default:
-                            $this->_rowFormat = 'DEFAULT';
+                            $this->_options['rowFormat'] = 'DEFAULT';
                             break;
                     }
                     
                     break;
                     
                 case 'myisam':
-                    switch($this->_rowFormat = strtoupper($this->_rowFormat)) {
+                    switch($this->_options['rowFormat'] = strtoupper($this->_options['rowFormat'])) {
                         case 'FIXED':
                         case 'DYNAMIC':
                         case 'DEFAULT':
@@ -400,14 +400,14 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, core\IDumpable {
                             
                         
                         default:
-                            $this->_rowFormat = 'DEFAULT';
+                            $this->_options['rowFormat'] = 'DEFAULT';
                             break;
                     }
                     
                     break;
                     
                 default:
-                    $this->_rowFormat = strtoupper($this->_rowFormat);
+                    $this->_options['rowFormat'] = strtoupper($this->_options['rowFormat']);
                     break;
             }
         }

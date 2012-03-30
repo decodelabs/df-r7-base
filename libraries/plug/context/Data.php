@@ -40,6 +40,10 @@ class Data implements arch\IContextHelper, opal\query\IEntryPoint {
     
     
 // Model
+    public function __get($member) {
+        return $this->getModel($member);
+    }
+
     public function getModel($name) {
         return axis\Model::factory($name, $this->_context->getApplication());
     }

@@ -667,7 +667,7 @@ class Table extends opal\rdbms\Table {
         
         foreach($res as $row) {
             if(!$index = $schema->getIndex($row['Key_name'])) {
-                $index = $schema->addIndex($row['Key_name'])
+                $index = $schema->addIndex($row['Key_name'], false)
                     ->isUnique(!(bool)$row['Non_unique'])
                     ->setIndexType($row['Index_type'])
                     ->setComment(@$row['Index_comment']);

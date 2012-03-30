@@ -173,7 +173,7 @@ abstract class Table implements ITable, core\IDumpable {
         // Indexes
         foreach($schema->getIndexes() as $index) {
             if($index->isVoid()) {
-                throw new opal\rdbms\schema\IInvalidIndex(
+                throw new opal\schema\RuntimeException(
                     'Index '.$index->getName().' is invalid'
                 );
             }
