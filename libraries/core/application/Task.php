@@ -7,22 +7,133 @@ namespace df\core\application;
 
 use df;
 use df\core;
+use df\arch;
 
 class Task extends Base {
     
     const RUN_MODE = 'Task';
     
     
+// Request
+    public function setTaskRequest(arch\IRequest $request) {
+        $this->_request = $request;
+        return $this;
+    }
+    
+    public function getTaskRequest() {
+        if(!$this->_request) {
+            throw new core\RuntimeException(
+                'The task request is not available until the application has been dispatched'
+            );
+        }
+        
+        return $this->_request;
+    }
+    
+    
+// Context
+    public function getContext() {
+        if(!$this->_context) {
+            throw new core\RuntimeException(
+                'A context is not available until the application has been dispatched'
+            );
+        }
+        
+        return $this->_context;
+    }
+    
+    
+    
 // Execute
-    public function dispatch() {
+    public function dispatch(arch\IRequest $request=null) {
         $this->_beginDispatch();
         
-        core\stub();
+        if($request !== null) {
+            $this->_request = $request;
+        } else {
+            $command = core\cli\Command::fromArgv();
+            
+            if(!$arg = $command[2]) {
+                throw new core\InvalidArgumentException(
+                    'No task path has been specified'
+                );
+            }
+            
+            $this->_request = arch\Request::factory($arg);
+        }
         
-        df\Launchpad::benchmark();
+        $response = false;
+        $previousError = false;
+        $request = $this->_request;
+        
+        set_time_limit(0);
+        
+        while(true) {
+            try {
+                while(true) {
+                    $response = $this->_dispatchRequest($request);
+                    
+                    if($response instanceof arch\IRequest) {
+                        $request = $response;
+                        continue;
+                    }
+                    
+                    break;
+                }
+            } catch(\Exception $e) {
+                if($previousError) {
+                    throw $previousError;
+                }
+                
+                while(ob_get_level()) {
+                    ob_end_clean();
+                }
+                
+                $previousError = $e;
+                $response = null;
+                
+                try {
+                    $request = clone $this->_context->getRequest();
+                } catch(\Exception $e) {
+                    $request = null;
+                }
+                
+                $request = new arch\ErrorRequest($e->getCode(), $e, $request);
+                continue;
+            }
+            
+            break;
+        }
+
+        return $response;
     }
+    
+    
+    protected function _dispatchRequest(arch\IRequest $request) {
+        $this->_context = arch\Context::factory($this, clone $request);
+        $action = arch\Action::factory($this->_context);
+        $response = $action->dispatch();
+        
+        // Forwarding
+        if($response instanceof arch\IRequest) {
+            return $response;
+        }
+        
+        core\stub($response);
+    }
+    
     
     public function launchPayload($payload) {
         core\stub();
+    }
+    
+    
+// Environment
+    public function getDebugTransport() {
+        if(!$this->_debugTransport) {
+            $this->_debugTransport = new core\debug\transport\Base();
+        }
+        
+        return $this->_debugTransport;
     }
 }
