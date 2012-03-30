@@ -28,7 +28,7 @@ trait TUrl_TransientScheme {
         return $this->_scheme;
     }
     
-    private function _resetScheme() {
+    protected function _resetScheme() {
         $this->_scheme = null;
     }
     
@@ -72,7 +72,7 @@ trait TUrl_UsernameContainer {
         return in_array($this->_username, $usernames, true);
     }
     
-    private function _resetUsername() {
+    protected function _resetUsername() {
         $this->_username = null;
     }
 }
@@ -107,7 +107,7 @@ trait TUrl_PasswordContainer {
         return in_array($this->_password, $passwords, true);
     }
     
-    private function _resetPassword() {
+    protected function _resetPassword() {
         $this->_password = null;
     }
 }
@@ -126,7 +126,7 @@ trait TUrl_CredentialContainer {
         return $this->_username !== null || $this->_password !== null;
     }
     
-    private function _resetCredentials() {
+    protected function _resetCredentials() {
         $this->_resetUsername();
         $this->_resetPassword();
     }
@@ -165,7 +165,7 @@ trait TUrl_DomainContainer {
         return (bool)strlen($this->_domain);
     }
     
-    private function _resetDomain() {
+    protected function _resetDomain() {
         $this->_domain = null;
     }
 }
@@ -193,7 +193,7 @@ trait TUrl_IpContainer {
         return $this->_ip;
     }
     
-    private function _resetIp() {
+    protected function _resetIp() {
         $this->_ip = null;
     }
     
@@ -240,7 +240,7 @@ trait TUrl_PortContainer {
         return in_array($this->_port, $ports, true);
     }
     
-    private function _resetPort() {
+    protected function _resetPort() {
         $this->_port = null;
     }
     
@@ -287,13 +287,13 @@ trait TUrl_PathContainer {
         return $this->_path !== null;
     }
     
-    private function _clonePath() {
+    protected function _clonePath() {
         if($this->_path) {
             $this->_path = clone $this->_path;
         }
     }
     
-    private function _resetPath() {
+    protected function _resetPath() {
         $this->_path = null;
     }
     
@@ -354,13 +354,13 @@ trait TUrl_QueryContainer {
         return $this->_query !== null;
     }
     
-    private function _cloneQuery() {
+    protected function _cloneQuery() {
         if($this->_query) {
             $this->_query = clone $this->_query;
         }
     }
     
-    private function _resetQuery() {
+    protected function _resetQuery() {
         $this->_query = null;
     }
     
@@ -414,7 +414,7 @@ trait TUrl_FragmentContainer {
             && $this->_fragment !== null;
     }
     
-    private function _resetFragment() {
+    protected function _resetFragment() {
         $this->_fragment = null;
     }
     
