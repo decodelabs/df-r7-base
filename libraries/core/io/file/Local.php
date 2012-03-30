@@ -14,7 +14,8 @@ class Local extends Base implements IFileSystemPointer {
     protected $_path;
 
     public function __construct($path, $mode=IMode::READ_WRITE) {
-        $this->_path = (string)core\uri\FilePath::factory($path);
+        //$this->_path = (string)core\uri\FilePath::factory($path);
+        $this->_path = $path;
         $this->open($mode);
     }
     
