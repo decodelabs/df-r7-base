@@ -34,8 +34,12 @@ class Builder {
         
         // Set base http path
         $envConfig = core\Environment::getInstance(df\Launchpad::$application);
-        $baseUrl = $envConfig->getHttpBaseUrl();
-        $envConfig->setHttpBaseUrl(null)->save();
+        
+        // TODO: make this portable!
+        $newBaseUrl = $baseUrl = $envConfig->getHttpBaseUrl();
+        $newBaseUrl .= 'testing-';
+        
+        $envConfig->setHttpBaseUrl($newBaseUrl)->save();
         
         try {
             if($path === null) {
