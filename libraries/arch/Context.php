@@ -11,7 +11,7 @@ use df\arch;
 use df\user;
 use df\halo;
 
-class Context implements IContext, core\IDumpable {
+class Context implements IContext, core\i18n\translate\ITranslationProxy, core\IDumpable {
     
     use core\THelperProvider;
     
