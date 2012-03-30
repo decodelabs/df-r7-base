@@ -158,10 +158,14 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
         
         // Trim basePath from init request
         if(!empty($this->_basePath)) {
-            foreach($this->_basePath as $part) {
-                if($part != $path->shift()) {
-                    $valid = false;
-                    break;
+            if(!$path) {
+                $valid = false;
+            } else {
+                foreach($this->_basePath as $part) {
+                    if($part != $path->shift()) {
+                        $valid = false;
+                        break;
+                    }
                 }
             }
         }
