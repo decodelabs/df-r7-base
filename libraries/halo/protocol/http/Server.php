@@ -88,7 +88,7 @@ class Server extends halo\server\Base {
                 $session->setErrorCode(400);
             }
             
-            $debugContext = df\Launchpad::setDebugContext(new core\debug\Context());
+            $debugContext = df\Launchpad::setDebugContext(new core\debug\node\Context());
             
             if($session->hasErrorCode()) {
                 $response = $this->_createErrorResponse($session);
@@ -128,7 +128,8 @@ class Server extends halo\server\Base {
                 $currentApp->getEnvironmentId()
             );
             
-            return $app->run($session->getRequest());
+            
+            return df\Launchpad::runApplication($app, $session->getRequest());
         } catch(DebugPayload $e) {
             return $e->response;
         } catch(\Exception $e) {
