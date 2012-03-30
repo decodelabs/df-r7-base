@@ -164,6 +164,10 @@ interface IResponseAugmentor {
     public function getCookieCollectionForAnyRequest();
 }
 
+interface IResponseAugmentorProvider {
+    public function getResponseAugmentor();
+}
+
 
 
 // Headers

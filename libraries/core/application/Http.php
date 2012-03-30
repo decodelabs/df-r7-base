@@ -10,7 +10,7 @@ use df\core;
 use df\halo;
 use df\arch;
 
-class Http extends Base implements arch\IRoutedDirectoryRequestApplication {
+class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo\protocol\http\IResponseAugmentorProvider {
     
     const RUN_MODE = 'Http';
     

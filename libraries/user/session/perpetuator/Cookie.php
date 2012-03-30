@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\user;
 use df\arch;
+use df\halo;
 
 class Cookie implements user\ISessionPerpetuator {
     
@@ -49,7 +50,7 @@ class Cookie implements user\ISessionPerpetuator {
         if($outputId != $this->_inputId) {
             $application = $manager->getApplication();
         
-            if($application instanceof core\IHttpApplication) {
+            if($application instanceof halo\protocol\http\IResponseAugmentorProvider) {
                 $augmentor = $application->getResponseAugmentor();
                 
                 $cookie = $augmentor->newCookie($this->_cookieName, $outputId)
