@@ -74,7 +74,7 @@ class Base implements ISchema, core\IDumpable {
                 $field->sanitize($unit, $this);
             }
             
-            if($field instanceof axis\schema\IAutoIndexField) {
+            if($field instanceof axis\schema\IAutoIndexField && !$this->getIndex($field->getName())) {
                 $index = $this->addIndex($field->getName(), $field);
                 
                 if($field instanceof axis\schema\IAutoUniqueField) {

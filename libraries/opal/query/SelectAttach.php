@@ -15,9 +15,6 @@ class SelectAttach extends Select implements ISelectAttachQuery {
     use TQuery_AttachmentListExtension;
     use TQuery_ParentAwareJoinClauseFactory;
     
-    protected $_keyField;
-    protected $_valField;
-    
     public function __construct(IReadQuery $parent, ISourceManager $sourceManager, ISource $source) {
         $this->_parent = $parent;
         parent::__construct($sourceManager, $source);
