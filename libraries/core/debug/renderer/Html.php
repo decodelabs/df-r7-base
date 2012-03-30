@@ -147,7 +147,12 @@ class Html extends Base {
         // Reference
         if($data instanceof core\debug\dumper\Reference) {
             $isArray = $data->isArray();
-            $refType = ($isArray ? 'array' : 'object');
+            
+            if($isArray) {
+                $refType = 'array';
+            } else {
+                $refType = 'object';
+            }
             
             $output = '<span class="dump-'.$refType.'">'.$data->getType().'</span>(';
             $output .= '<a class="dump-'.$refType.' dump-ref" href="#dump-'.$refType.'-';

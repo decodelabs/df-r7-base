@@ -23,7 +23,11 @@ class Immutable implements core\debug\IDump {
     }
     
     public function getType() {
-        return $this->_value === null ? 'null' : 'boolean';
+        if($this->_value === null) {
+            return 'null';
+        } else {
+            return 'boolean';
+        }
     }
     
     public function getValue() {

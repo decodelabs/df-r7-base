@@ -205,7 +205,12 @@ class Url extends core\uri\Url implements IUrl {
     
     public function isSecure($flag=null) {
         if($flag !== null) {
-            $this->_scheme = (bool)$flag ? 'https' : 'http';
+            if($flag) {
+                $this->_scheme = 'https';
+            } else {
+                $this->_scheme = 'http';
+            }
+            
             return $this;    
         }
         
@@ -236,7 +241,14 @@ class Url extends core\uri\Url implements IUrl {
         $output = $this->getScheme().'://';
         $output .= $this->_getCredentialString();
         $output .= $this->_domain;
-        $output .= $this->_getPortString($this->_scheme == 'https' ? 443 : 80);
+        
+        $defaultPort = 80;
+        
+        if($this->_scheme == 'https') {
+            $defaultPort = 443;
+        }
+        
+        $output .= $this->_getPortString($defaultPort);
         $output .= $this->getLocalString();
         
         return $output;

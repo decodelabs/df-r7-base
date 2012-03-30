@@ -230,14 +230,19 @@ trait TConstraint_Index {
         $fields = array();
         
         foreach($this->_fieldReferences as $reference) {
-            $str = $reference->getField()->getName();
+            $fieldDef = $reference->getField()->getName();
             
             if(null !== ($size = $reference->getSize())) {
-                $str .= '('.$size.')';
+                $fieldDef .= '('.$size.')';
             }
             
-            $str .= ' '.($reference->isDescending() ? 'DESC' : 'ASC');
-            $fields[] = $str;
+            if($reference->isDescending()) {
+                $fieldRef .= ' DESC';
+            } else {
+                $fieldRef .= ' ASC';
+            }
+            
+            $fields[] = $fieldDef;
         }
         
         $output .= ' ('.implode(',', $fields).')';

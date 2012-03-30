@@ -97,7 +97,12 @@ class Url extends core\uri\Url implements IUrl {
     
     public function isSecure($flag=null) {
         if($flag !== null) {
-            $this->_scheme = (bool)$flag ? 'ftps' : 'ftp';
+            if($flag) {
+                $this->_scheme = 'ftps';
+            } else {
+                $this->_schemea = 'ftp';
+            }
+            
             return $this;    
         }
         

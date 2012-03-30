@@ -150,14 +150,19 @@ class Index implements opal\rdbms\schema\IIndex, core\IDumpable {
         $fields = array();
         
         foreach($this->_fieldReferences as $reference) {
-            $str = $reference->getField()->getName();
+            $fieldDef = $reference->getField()->getName();
             
             if(null !== ($size = $reference->getSize())) {
-                $str .= '('.$size.')';
+                $fieldDef .= '('.$size.')';
             }
             
-            $str .= ' '.($reference->isDescending() ? 'DESC' : 'ASC');
-            $fields[] = $str;
+            if($reference->isDescending()) {
+                $fieldDef .= ' DESC';
+            } else {
+                $fieldDef .= ' ASC';
+            }
+            
+            $fields[] = $fieldDef;
         }
         
         if($this->_indexType !== null) {

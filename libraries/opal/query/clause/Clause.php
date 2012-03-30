@@ -96,7 +96,12 @@ class Clause implements opal\query\IClause, core\IDumpable {
         
         foreach($targetFields as $targetField) {
             $targetFieldName = $targetField->getName();
-            $targetValue = isset($value[$targetFieldName]) ? $value[$targetFieldName] : null;
+            
+            if(isset($value[$targetFieldName])) {
+                $targetValue = $value[$targetFieldName];
+            } else {
+                $targetValue = null;
+            }
             
             $list->_addClause(new self($targetField, $operator, $targetValue));
         }
@@ -386,7 +391,12 @@ class Clause implements opal\query\IClause, core\IDumpable {
     
 // Dump
     public function getDumpProperties() {
-        $type = $this->_isOr ? 'OR' : 'AND';
+        if($this->_isOr) {
+            $type = 'OR';
+        } else {
+            $type = 'AND';
+        }
+        
         $field = $this->_field->getQualifiedName();
         
         if($this->_value instanceof opal\query\IField) {

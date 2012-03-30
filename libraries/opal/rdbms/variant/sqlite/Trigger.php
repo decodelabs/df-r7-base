@@ -57,7 +57,12 @@ class Trigger extends opal\rdbms\schema\constraint\Trigger {
     
 // Dump
     public function getDumpProperties() {
-        $output = $this->_isTemporary ? 'TEMP ' : '';
+        $output = '';
+        
+        if($this->_isTemporary) {
+            $output .= 'TEMP ';
+        }
+        
         $output .= $this->_name;
         $output .= ' '.$this->getTimingName();
         $output .= ' '.$this->getEventName();

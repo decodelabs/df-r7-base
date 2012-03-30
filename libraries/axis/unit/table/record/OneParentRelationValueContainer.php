@@ -209,12 +209,25 @@ class OneParentRelationValueContainer implements opal\query\record\ITaskAwareVal
             
             if($this->_insertPrimaryManifest->countFields() == 1) {
                 $value = $this->_insertPrimaryManifest->getFirstKeyValue();
-                $output .= $value === null ? 'null' : $value;
+                
+                if($value === null) {
+                    $output .= 'null';
+                } else {
+                    $output .= $value;
+                }
             } else {
                 $t = array();
                 
                 foreach($this->_insertPrimaryManifest->toArray() as $key => $value) {
-                    $t[] = $key.'='.($value === null ? 'null' : $value);
+                    $valString = $key.'=';
+                    
+                    if($value === null) {
+                        $valString .= 'null';
+                    } else {
+                        $valString .= $value;
+                    }
+                    
+                    $t[] = $valString;
                 }
                 
                 $output .= implode(', ', $t);

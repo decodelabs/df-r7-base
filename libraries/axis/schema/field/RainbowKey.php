@@ -24,9 +24,11 @@ class RainbowKey extends Base implements
     
 // Values
     public function inflateValueFromRow($key, array $row, $forRecord) {
-        return isset($row[$key]) ? 
-            core\string\RainbowKey::factory($row[$key]) : 
-            null;
+        if(isset($row[$key])) { 
+            return core\string\RainbowKey::factory($row[$key]);
+        } else {
+            return null;
+        } 
     }
     
     public function deflateValue($value) {

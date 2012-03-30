@@ -65,7 +65,12 @@ class Paginator extends Base implements core\IDumpable {
         // Prev
         if($currentPage != 1) {
             $query->__set($map['page'], $currentPage - 1);
-            $prevText = $this->_prevText === null ? '←' : $this->_prevText;
+            
+            if($this->_prevText === null) {
+                $prevText = '←';
+            } else {
+                $prevText = $this->_prevText;
+            }
             
             $element = new aura\html\Element('a', $prevText, array(
                 'href' => $context->normalizeOutputUrl($request),
@@ -114,7 +119,12 @@ class Paginator extends Base implements core\IDumpable {
         // Next
         if($currentPage != $totalPages) {
             $query->__set($map['page'], $currentPage + 1);
-            $nextText = $this->_nextText === null ? '→' : $this->_nextText;
+            
+            if($this->_nextText === null) {
+                $nextText = '→';
+            } else {
+                $nextText = $this->_nextText;
+            }
             
             $element = new aura\html\Element('a', $nextText, array(
                 'href' => $context->normalizeOutputUrl($request),

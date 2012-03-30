@@ -115,7 +115,7 @@ class Dsn implements IDsn, core\IDumpable {
 // Adapter
     public function setAdapter($adapter) {
         $this->_hash = null;
-        $this->_adapter = $adapter === null ? null : (string)$adapter;
+        $this->_adapter = $adapter;
         
         return $this;
     }
@@ -129,7 +129,7 @@ class Dsn implements IDsn, core\IDumpable {
 // Username
     public function setUsername($username) {
         $this->_hash = null;
-        $this->_username = $username === null ? null : (string)$username;
+        $this->_username = $username;
         
         return $this;
     }
@@ -142,7 +142,7 @@ class Dsn implements IDsn, core\IDumpable {
 // Password
     public function setPassword($password) {
         $this->_hash = null;
-        $this->_password = $password === null ? null : (string)$password;
+        $this->_password = $password;
         
         return $this;
     }
@@ -155,7 +155,7 @@ class Dsn implements IDsn, core\IDumpable {
 // Protocol
     public function setProtocol($protocol) {
         $this->_hash = null;
-        $this->_protocol = $protocol === null ? null : (string)$protocol;
+        $this->_protocol = $protocol;
         
         return $this;
     }
@@ -168,7 +168,7 @@ class Dsn implements IDsn, core\IDumpable {
 // Hostname
     public function setHostname($hostname) {
         $this->_hash = null;
-        $this->_hostname = $hostname === null ? null : (string)$hostname;
+        $this->_hostname = $hostname;
         
         return $this;
     }
@@ -184,8 +184,12 @@ class Dsn implements IDsn, core\IDumpable {
     
 // Port
     public function setPort($port) {
+        if($port !== null) {
+            $port = (int)$port;
+        }
+        
         $this->_hash = null;
-        $this->_port = $port === null ? null : (int)$port;
+        $this->_port = $port;
         
         return $this;
     }
@@ -198,7 +202,7 @@ class Dsn implements IDsn, core\IDumpable {
 // Socket
     public function setSocket($socket) {
         $this->_hash = null;
-        $this->_socket = $socket === null ? null : (string)$socket;
+        $this->_socket = $socket;
         
         return $this;
     }
@@ -211,7 +215,7 @@ class Dsn implements IDsn, core\IDumpable {
 // Database
     public function setDatabase($database) {
         $this->_hash = null;
-        $this->_database = $database === null ? null : $database;
+        $this->_database = $database;
         
         return $this;
     }

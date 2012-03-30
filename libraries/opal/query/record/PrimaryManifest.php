@@ -62,7 +62,11 @@ class PrimaryManifest implements IPrimaryManifest, core\IDumpable {
         }
         
         foreach($fields as $field) {
-            $this->_keys[$field] = isset($values[$field]) ? $values[$field] : null;
+            if(isset($values[$field])) {
+                $this->_keys[$field] = $values[$field];
+            } else {
+                $this->_keys[$field] = null;
+            }
         }
         
         return $this;

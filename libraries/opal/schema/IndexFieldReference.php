@@ -73,7 +73,11 @@ class IndexFieldReference implements IIndexFieldReference, core\IDumpable {
             $output .= '('.$this->_size.')';
         }
         
-        $output .= ' '.($this->_isDescending ? 'DESC' : 'ASC');
+        if($this->_isDescending) {
+            $output .= ' DESC';
+        } else {
+            $output .= ' ASC';
+        }
         
         return $output;
     }

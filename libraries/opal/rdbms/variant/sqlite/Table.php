@@ -197,7 +197,13 @@ class Table extends opal\rdbms\Table {
         
         foreach($index->getFieldReferences() as $reference) {
             $fieldDef = $this->_adapter->quoteIdentifier($reference->getField()->getName());
-            $fieldDef .= $reference->isDescending() ? ' DESC' : ' ASC';
+            
+            if($reference->isDescending()) {
+                $fieldDef .= ' DESC';
+            } else {
+                $fieldDef .= ' ASC';
+            }
+
             $indexFields[] = $fieldDef;
         }
         
@@ -222,7 +228,13 @@ class Table extends opal\rdbms\Table {
         
         foreach($index->getFieldReferences() as $reference) {
             $fieldDef = $this->_adapter->quoteIdentifier($reference->getField()->getName());
-            $fieldDef .= $reference->isDescending() ? ' DESC' : ' ASC';
+            
+            if($reference->isDescending()) {
+                $fieldDef .= ' DESC';
+            } else {
+                $fieldDef .= ' ASC';
+            }
+            
             $indexFields[] = $fieldDef;
         }
         
@@ -651,7 +663,10 @@ class Table extends opal\rdbms\Table {
     protected function _defineQueryLimit($limit, $offset=null) {
         $limit = (int)$limit;
         $offset = (int)$offset;
-        $offset = ($offset > 0) ? $offset : 0;
+        
+        if($offset < 0) {
+            $offset = 0;
+        }
         
         if($offset > 0 && $limit == 0) {
             $limit = '18446744073709551615';

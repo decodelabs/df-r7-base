@@ -47,7 +47,12 @@ class ManyToOne extends One implements IManyToOneField {
         
         foreach($this->_primaryFields as $field) {
             $fieldKey = $key.'_'.$field;
-            $values[$field] = isset($row[$fieldKey]) ? $row[$fieldKey] : null;
+            
+            if(isset($row[$fieldKey])) {
+                $values[$field] = $row[$fieldKey];
+            } else {
+                $values[$field] = null;
+            }
         }
         
         if($forRecord) {

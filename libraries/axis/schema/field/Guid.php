@@ -78,9 +78,11 @@ class Guid extends Base implements axis\schema\IAutoGeneratorField {
     
 // Values
     public function inflateValueFromRow($key, array $row, $forRecord) {
-        return isset($row[$key]) ? 
-            core\string\Uuid::factory($row[$key]) : 
-            null;
+        if(isset($row[$key])) { 
+            return core\string\Uuid::factory($row[$key]);
+        } else {
+            return null;
+        } 
     }
 
     public function deflateValue($value) {

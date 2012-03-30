@@ -217,7 +217,11 @@ abstract class Config implements IConfig, core\IDumpable {
             } else if(is_int($val) || is_float($val)) {
                 $output .= $val; 
             } else if(is_bool($val)) {
-                $output .= $val ? 'true' : 'false';
+                if($val) {
+                    $output .= 'true';
+                } else {
+                    $output .= 'false';
+                }
             } else {
                 $output .= '\''.addslashes($val).'\'';    
             }

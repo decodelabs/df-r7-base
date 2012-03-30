@@ -36,9 +36,11 @@ class Date extends Base {
     
 // Values
     public function inflateValueFromRow($key, array $row, $forRecord) {
-        return isset($row[$key]) ? 
-            core\time\Date::factory($row[$key]) : 
-            null;
+        if(isset($row[$key])) { 
+            return core\time\Date::factory($row[$key]);
+        } else {
+            return null;
+        } 
     }
     
     public function deflateValue($value) {

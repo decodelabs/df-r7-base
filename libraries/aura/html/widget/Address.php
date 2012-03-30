@@ -49,7 +49,13 @@ class Address extends Base implements core\IDumpable {
         
         $isFull = $this->_mode == self::FULL;
         $isShort = $this->_mode == self::SHORT;
-        $blockTag = $isFull ? 'div' : 'span';
+        
+        if($isFull) {
+            $blockTag = 'div';
+        } else {
+            $blockTag = 'span';
+        }
+        
         $tag->setName($blockTag);
         
         if(!empty($poBox)) {
@@ -61,7 +67,7 @@ class Address extends Base implements core\IDumpable {
                 $content->push(', ');
             }
             
-            $content->push(new aura\html\Element($blockTag, $streetAddress, array('class' => 'street-address')));
+            $content->push(new aura\html\Element($blockTag, $streetAddress, ['class' => 'street-address']));
         }
         
         if(!empty($extendedAddress)) {
@@ -69,7 +75,7 @@ class Address extends Base implements core\IDumpable {
                 $content->push(', ');
             }
             
-            $content->push(new aura\html\Element($blockTag, $extendedAddress, array('class' => 'extended-address')));
+            $content->push(new aura\html\Element($blockTag, $extendedAddress, ['class' => 'extended-address']));
         }
         
         if(!$isShort && !empty($locality)) {
@@ -77,7 +83,7 @@ class Address extends Base implements core\IDumpable {
                 $content->push(', ');
             }
             
-            $content->push(new aura\html\Element('span', $locality, array('class' => 'locality')));
+            $content->push(new aura\html\Element('span', $locality, ['class' => 'locality']));
         }
         
         if(!$isShort && !empty($region)) {
@@ -85,18 +91,18 @@ class Address extends Base implements core\IDumpable {
                 $content->push(', ');
             }
             
-            $content->push(new aura\html\Element('span', $region, array('class' => 'region')));
+            $content->push(new aura\html\Element('span', $region, ['class' => 'region']));
         }
         
         if(!empty($postcode)) {
             if(strlen($region) == 2) {
-                $content->push(' ', new aura\html\Element('span', $postcode, array('class' => 'postal-code')));
+                $content->push(' ', new aura\html\Element('span', $postcode, ['class' => 'postal-code']));
             } else {
                 if(!$isFull && !$content->isEmpty()) {
                     $content->push(', ');
                 }
                 
-                $content->push(new aura\html\Element($blockTag, $postcode, array('class' => 'postal-code')));
+                $content->push(new aura\html\Element($blockTag, $postcode, ['class' => 'postal-code']));
             }
         }
         
@@ -105,10 +111,14 @@ class Address extends Base implements core\IDumpable {
                 $content->push(', ');
             }
             
+            if($isShort) {
+                $country = $countryCode;
+            } else {
+                $country = $view->getContext()->i18n->countries->getName($countryCode);
+            }
+            
             $content->push(new aura\html\Element(
-                $blockTag,
-                $isShort ? $countryCode : $view->getContext()->i18n->countries->getName($countryCode),
-                array('class' => 'country-name')
+                $blockTag, $country, ['class' => 'country-name']
             ));
         }
         

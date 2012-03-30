@@ -143,7 +143,12 @@ trait TField_LengthRestricted {
         }
         
         $this->_hasChanged = true;
-        $this->_length = $length === null ? null : (int)$length;
+        
+        if($length !== null) {
+            $length = (int)$length;
+        }
+        
+        $this->_length = $length;
         return $this;
     }
     
@@ -200,7 +205,11 @@ trait TField_FloatingPointNumeric {
     protected $_scale;
     
     public function setPrecision($precision) {
-        $this->_precision = $precision === null ? null : (int)$precision;
+        if($precision !== null) {
+            $precision = (int)$precision;
+        }
+        
+        $this->_precision = $precision;
         $this->_hasChanged = true;
         return $this;
     }
@@ -210,7 +219,11 @@ trait TField_FloatingPointNumeric {
     }
     
     public function setScale($scale) {
-        $this->_scale = $scale === null ? null : (int)$scale;
+        if($scale !== null) {
+            $scale = (int)$scale;
+        }
+        
+        $this->_scale = $scale;
         $this->_hasChanged = true;
         return $this;
     }

@@ -64,7 +64,15 @@ class OrderDirective implements IOrderDirective, core\IDumpable {
     }
     
     public function toString() {
-        return $this->_field->getQualifiedName().' '.($this->_isDescending ? 'DESC' : 'ASC');
+        $output = $this->_field->getQualifiedName().' ';
+        
+        if($this->_isDescending) {
+            $output .= 'DESC';
+        } else {
+            $output .= 'ASC';
+        }
+        
+        return $output;
     }
     
     public function __toString() {

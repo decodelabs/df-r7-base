@@ -241,7 +241,12 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
             $url = null;
             
             if($this->_environmentMode) {
-                $url = (isset($_SERVER['HTTPS']) && !strcasecmp($_SERVER['HTTPS'], 'on')) ? 'https' : 'http';
+                if(isset($_SERVER['HTTPS']) && !strcasecmp($_SERVER['HTTPS'], 'on')) {
+                    $url = 'https';
+                } else {
+                    $url = 'http';
+                }
+                
                 $url .= '://'.$_SERVER['HTTP_HOST'].':'.$_SERVER['SERVER_PORT'];
             
                 $req = explode('?', ltrim($_SERVER['REQUEST_URI'], '/'), 2);
@@ -334,7 +339,13 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
     
     public function getPostData() {
         if(!$this->_postData && $this->_method == 'POST') {
-            $this->_postData = new core\collection\Tree($this->_environmentMode ? $_POST : null);
+            $postData = null;
+            
+            if($this->_environmentMode) {
+                $postData = &$_POST;
+            }
+            
+            $this->_postData = new core\collection\Tree($postData);
         }
         
         return $this->_postData;

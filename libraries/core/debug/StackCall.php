@@ -122,7 +122,11 @@ class StackCall implements IStackCall, core\IDumpable {
             } else if(is_object($arg)) {
                 $arg = get_class($arg).' Object';
             } else if(is_bool($arg)) {
-                $arg = $arg ? 'true' : 'false';
+                if($arg) {
+                    $arg = 'true';
+                } else {
+                    $arg = 'false';
+                }
             } else if(is_null($arg)) {
                 $arg = 'null';
             }

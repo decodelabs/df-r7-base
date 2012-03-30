@@ -76,7 +76,12 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
             
             if($orderData !== null && in_array($key, $orderFields)) {
                 if(isset($orderData[$key])) {
-                    $direction = $orderData[$key]->isAscending() ? 'DESC' : 'ASC';
+                    if($orderData[$key]->isAscending()) {
+                        $direction = 'DESC';
+                    } else {
+                        $direction = 'ASC';
+                    }
+                    
                     $isActive = true;
                 } else {
                     $direction = 'ASC';
@@ -85,11 +90,17 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                 
                 $query->__set($keyMap['order'], $key.' '.$direction);
                 
-                $tagContent = new aura\html\Element('a', $tagContent, array(
+                $class = 'link-order-'.strtolower($direction);
+                
+                if($isActive) {
+                    $class .= ' link-order-active';
+                }
+                
+                $tagContent = new aura\html\Element('a', $tagContent, [
                     'href' => $context->normalizeOutputUrl($request),
-                    'class' => 'link-order-'.strtolower($direction).($isActive ? ' link-order-active' : ''),
+                    'class' => $class,
                     'rel' => 'nofollow'
-                ));
+                ]);
             }
             
             $thTag = new aura\html\Element('th', $tagContent);

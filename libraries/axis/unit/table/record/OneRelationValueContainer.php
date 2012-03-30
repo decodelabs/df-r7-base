@@ -172,12 +172,25 @@ class OneRelationValueContainer implements opal\query\record\ITaskAwareValueCont
         
         if($this->_value->countFields() == 1) {
             $value = $this->_value->getFirstKeyValue();
-            $output .= $value === null ? 'null' : $value;
+            
+            if($value === null) {
+                $output .= 'null';
+            } else {
+                $output .= $value;
+            }
         } else {
             $t = array();
             
             foreach($this->_value->toArray() as $key => $value) {
-                $t[] = $key.'='.($value === null ? 'null' : $value);
+                $valString = $key.'=';
+                
+                if($value === null) {
+                    $valString .= 'null';
+                } else {
+                    $valString .= $value;
+                }
+                
+                $t[] = $valString;
             }
             
             $output .= implode(', ', $t);

@@ -185,7 +185,10 @@ class Mysqli extends opal\rdbms\adapter\Base {
             
             if($result) {
                 $row = mysqli_fetch_row($result);
-                $id = $row ? $row[0] : null;
+                
+                if(isset($row[0])) {
+                    $id = $row[0];
+                }
             }
         }
         

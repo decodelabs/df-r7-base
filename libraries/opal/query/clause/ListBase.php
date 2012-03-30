@@ -133,7 +133,13 @@ class ListBase implements opal\query\IClauseList, core\IDumpable {
         $output = array();
         
         if($this->_parent instanceof opal\query\IClauseList) {
-            $output['**type'] = $this->_isOr ? 'OR' : 'AND';
+            if($this->_isOr) {
+                $type = 'OR';
+            } else {
+                $type = 'AND';
+            }
+            
+            $output['type'] = new core\debug\dumper\Property('type', $type, 'private');
         }
         
         return array_merge($output, $this->_clauses);

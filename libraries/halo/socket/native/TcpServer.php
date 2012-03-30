@@ -89,10 +89,20 @@ class TcpServer extends halo\socket\Server implements halo\socket\ISequenceServe
     
 // Operation
     protected function _startListening() {
+        if($this->_address->getIp()->isV6()) {
+            $domain = AF_INET6;
+        } else {
+            $domain = AF_INET;
+        }
+        
+        if($this->_useSeqPackets) {
+            $type = SOCK_SEQPACKET;
+        } else {
+            $type = SOCK_STREAM;
+        }
+        
         $this->_socket = @socket_create(
-            $this->_address->getIp()->isV6() ? AF_INET6 : AF_INET,
-            $this->_useSeqPackets ? SOCK_SEQPACKET : SOCK_STREAM,
-            getprotobyname('tcp')
+            $domain, $type, getprotobyname('tcp')
         );
         
         if(!is_resource($this->_socket)) {

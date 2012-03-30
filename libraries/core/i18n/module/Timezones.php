@@ -19,7 +19,12 @@ class Timezones extends Base implements ITimezonesModule {
         }
         
         $country = strtoupper($country);
-        return isset(self::$_countries[$country]) ? self::$_countries[$country] : array();
+        
+        if(isset(self::$_countries[$country])) {
+            return self::$_countries[$country];
+        } else {
+            return array();
+        }
     }
     
     public function suggestForCountry($country=null) {
@@ -36,7 +41,11 @@ class Timezones extends Base implements ITimezonesModule {
         self::_createContinentList();
         $continent = ucfirst(strtolower($continent));
 
-        return isset(self::$_continents[$continent]) ? self::$_continents[$continent] : array();
+        if(isset(self::$_continents[$continent])) {
+            return self::$_continents[$continent];
+        } else {
+            return array();
+        }
     }
 
     private static function _createContinentList() {

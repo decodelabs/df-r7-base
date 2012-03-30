@@ -16,7 +16,7 @@ class Action implements IAction, core\IDumpable {
     use TDirectoryAccessLock;
     
     const CHECK_ACCESS = true;
-    const DEFAULT_ACCESS = false;//user\Client::NONE;
+    const DEFAULT_ACCESS = user\IState::NONE;
     
     private $_isInline = false;
     private $_controller;

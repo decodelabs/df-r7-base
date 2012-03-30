@@ -311,13 +311,15 @@ class Base implements IRecord, \Serializable, core\IDumpable {
 
     public function markAsChanged($field) {
         if(!array_key_exists($field, $this->_changes)) {
-            $oldVal = isset($this->_values[$field]) ? 
-                $this->_values[$field] : 
-                null;
+            $oldVal = null;
+            
+            if(isset($this->_values[$field])) { 
+                $oldVal = $this->_values[$field];
                 
-            if($oldVal instanceof IValueContainer) {
-                $oldVal = $oldVal->duplicateForChangeList();
-            }
+                if($oldVal instanceof IValueContainer) {
+                    $oldVal = $oldVal->duplicateForChangeList();
+                }
+            } 
             
             $this->_changes[$field] = $oldVal;
             //$this->_onValueChange($field, $oldVal, $oldVal);
@@ -412,7 +414,13 @@ class Base implements IRecord, \Serializable, core\IDumpable {
                 $row = array();
                 
                 foreach($fieldProcessors as $name => $field) {
-                    $row[$name] = $field->sanitizeValue(isset($temp[$name]) ? $temp[$name] : null, true);
+                    if(isset($temp[$name])) {
+                        $value = $temp[$name];
+                    } else {
+                        $value = null;
+                    }
+                    
+                    $row[$name] = $field->sanitizeValue($value, true);
                 }
             }
         }
@@ -591,9 +599,11 @@ class Base implements IRecord, \Serializable, core\IDumpable {
                 return $this;
             }
         } else {
-            $oldVal = isset($this->_values[$key]) ? 
-                $this->_values[$key] : 
-                null;
+            $oldVal = null;
+            
+            if(isset($this->_values[$key])) { 
+                $oldVal = $this->_values[$key];
+            } 
                 
             if($this->_areValuesEqual($oldVal, $value)) {
                 return $this;

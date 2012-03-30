@@ -51,7 +51,12 @@ class One extends axis\schema\field\Base implements IOneField {
         
         foreach($this->_primaryFields as $field) {
             $fieldKey = $key.'_'.$field;
-            $values[$field] = isset($row[$fieldKey]) ? $row[$fieldKey] : null;
+            
+            if(isset($row[$fieldKey])) {
+                $values[$field] = $row[$fieldKey];
+            } else {
+                $values[$field] = null;
+            }
         }
         
         if($forRecord) {

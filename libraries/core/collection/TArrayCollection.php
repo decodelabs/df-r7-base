@@ -96,11 +96,13 @@ trait TArrayCollection_ValueContainerSortable {
             $a = $a->getValue();
             $b = $b->getValue();
             
-            if($a === $b) {
+            if($a < $b) {
+                return -1;
+            } else if($a === $b) {
                 return 0;
+            } else {
+                return 1;
             }
-            
-            return $a < $b ? -1 : 1;
         });
     }
     
@@ -109,11 +111,13 @@ trait TArrayCollection_ValueContainerSortable {
             $a = $a->getValue();
             $b = $b->getValue();
             
-            if($a === $b) {
+            if($a < $b) {
+                return -1;
+            } else if($a === $b) {
                 return 0;
+            } else {
+                return 1;
             }
-            
-            return $a < $b ? -1 : 1;
         });
     }
 }

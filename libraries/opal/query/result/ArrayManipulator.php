@@ -73,8 +73,11 @@ class ArrayManipulator implements IArrayManipulator {
         }
         
         if($query instanceof opal\query\IReadQuery) {
-            $groups = $query instanceof opal\query\IGroupableQuery ? 
-                $query->getGroupFields() : array();
+            if($query instanceof opal\query\IGroupableQuery) {
+                $groups = $query->getGroupFields();
+            } else {
+                $groups = array();
+            }
                 
             $this->applyAggregatesAndGroups($groups);
             
@@ -160,9 +163,12 @@ class ArrayManipulator implements IArrayManipulator {
         
         
         if($query instanceof opal\query\IReadQuery) {
-            $groups = $query instanceof opal\query\IGroupableQuery ? 
-                $query->getGroupFields() : array();
-                
+            if($query instanceof opal\query\IGroupableQuery) {
+                $groups = $query->getGroupFields();
+            } else {
+                $groups = array();
+            }
+            
             $this->applyAggregatesAndGroups($groups);
             
             if($query instanceof opal\query\IHavingClauseQuery && $query->hasHavingClauses()) {
@@ -537,7 +543,11 @@ class ArrayManipulator implements IArrayManipulator {
                 continue;
             }
             
-            $sortFields[$sortFieldName] = $directive->isDescending() ? SORT_DESC : SORT_ASC;
+            if($directive->isDescending()) {
+                $sortFields[$sortFieldName] = SORT_DESC;
+            } else {
+                $sortFields[$sortFieldName] = SORT_ASC;
+            }
         }
         
         foreach($this->_rows as &$row) {
@@ -626,9 +636,12 @@ class ArrayManipulator implements IArrayManipulator {
             
             // Prepare groups & having clauses
             if($isReadQuery = $attachment instanceof opal\query\IReadQuery) {
-                $groups = $attachment instanceof opal\query\IGroupableQuery ? 
-                    $attachment->getGroupFields() : array();
-                    
+                if($attachment instanceof opal\query\IGroupableQuery) {
+                    $groups = $attachment->getGroupFields();
+                } else {
+                    $groups = array();
+                }
+                
                 $havingClauseList = null;
                 
                 if($attachment instanceof opal\query\IHavingClauseQuery && $attachment->hasHavingClauses()) {
@@ -1025,8 +1038,16 @@ class ArrayManipulator implements IArrayManipulator {
         $leftField = $clause->getField()->getQualifiedName();
         $rightField = $clause->getValue()->getQualifiedName();
         
-        $value = isset($joinRow[$leftField]) ? $joinRow[$leftField] : null;
-        $compare = isset($row[$rightField]) ? $row[$rightField] : null;
+        $value = null;
+        $compare = null;
+        
+        if(isset($joinRow[$leftField])) {
+            $value = $joinRow[$leftField];
+        }
+        
+        if(isset($row[$rightField])) {
+            $compare = $row[$rightField];
+        }
         
         return $this->_testClauseValues($clause, $value, $compare);
     }
