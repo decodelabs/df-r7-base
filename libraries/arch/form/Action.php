@@ -103,11 +103,17 @@ abstract class Action extends arch\Action implements IAction {
     }
     
     protected function _createSessionNamespace() {
-        return 'form://'.implode('/', $this->_context->getRequest()->getLiteralPathArray()).'#'.$this->_getDataId();
+        $output = 'form://'.implode('/', $this->_context->getRequest()->getLiteralPathArray());
+        
+        if(null !== ($dataId = $this->_getDataId())) {
+            $output .= '#'.$dataId;
+        }
+        
+        return $output;
     }
     
     protected function _getDataId() {
-        return '';
+        return null;
     }
     
     protected function _onSessionCreate() {}

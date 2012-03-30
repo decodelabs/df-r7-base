@@ -8,6 +8,7 @@ namespace df\arch\form;
 use df;
 use df\core;
 use df\arch;
+use df\aura;
 
 // Exceptions
 interface IException extends arch\IException {}

@@ -145,7 +145,8 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
 // Collection
     public function clear() {
         $this->_value = null;
-        return parent::clear();
+        $this->_collection = array();
+        return $this;
     }
     
     public function getReductiveIterator() {

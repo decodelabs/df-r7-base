@@ -37,7 +37,7 @@ class WidgetContentProvider extends aura\html\ElementContent implements aura\vie
         $this->_renderTarget = $target;
         $output = '';
         
-        foreach($this->_values as $value) {
+        foreach($this->_collection as $value) {
             if($value instanceof aura\html\widget\IWidget) {
                 $output .= $value->renderTo($target);
             } else {
