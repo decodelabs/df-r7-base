@@ -323,6 +323,10 @@ abstract class Base implements halo\protocol\http\IResponse {
     }
     
     public function getHeaderString() {
+        if($this->hasCookies()) {
+            $this->_cookies->applyTo($this->getHeaders());
+        }
+        
         return self::buildHeaderString($this->_headers);
     }
     

@@ -127,6 +127,10 @@ class Base implements IView {
     }
     
     public function getHeaderString() {
+        if($this->hasCookies()) {
+            $this->_cookies->applyTo($this->getHeaders());
+        }
+        
         return halo\protocol\http\response\Base::buildHeaderString($this->_headers);
     }
     

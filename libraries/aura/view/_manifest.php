@@ -176,6 +176,7 @@ trait TLayoutView {
     use TThemedView;
     
     protected $_layout;
+    protected $_useLayout = true;
     
     public function shouldUseLayout($flag=null) {
         if($flag !== null) {
