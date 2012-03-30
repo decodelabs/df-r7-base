@@ -71,8 +71,14 @@ class Controller implements IController, core\IDumpable {
     
 // Dump
     public function getDumpProperties() {
+        $runMode = $this->_context->getRunMode();
+        
+        if($this->_isInline) {
+            $runMode .= ' (inline)';
+        }
+        
         return [
-            'type' => $this->_context->getRunMode().($this->_isInline ? ' (inline)':''),
+            'type' => $runMode,
             'activeAction' => $this->_activeAction,
             'context' => $this->_context
         ];

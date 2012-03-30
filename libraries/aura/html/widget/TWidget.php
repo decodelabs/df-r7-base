@@ -368,7 +368,13 @@ trait TWidget_VisualInput {
         }
         
         if($this->_shouldAutoComplete !== null) {
-            $tag->setAttribute('autocomplete', $this->_shouldAutoComplete ? 'on' : 'off');
+            if($this->_shouldAutoComplete) {
+                $value = 'on';
+            } else {
+                $value = 'off';
+            }
+            
+            $tag->setAttribute('autocomplete', $value);
         }
     }
 }

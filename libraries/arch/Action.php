@@ -195,8 +195,14 @@ class Action implements IAction, core\IDumpable {
     
 // Dump
     public function getDumpProperties() {
+        $runMode = $this->_context->getRunMode();
+        
+        if($this->_isInline) {
+            $runMode .= ' (inline)';
+        }
+        
         return [
-            'type' => $this->_context->getRunMode().($this->_isInline ? ' (inline)':''),
+            'type' => $runMode,
             'controller' => $this->_controller,
             'context' => $this->_context
         ];

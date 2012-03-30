@@ -14,6 +14,7 @@ class Button extends Base implements IButtonWidget, core\IDumpable {
     
     use TWidget_FormData;
     use TWidget_Input;
+    use TWidget_FocusableInput;
     use TWidget_BodyContentAware;
     
     const PRIMARY_TAG = 'button';

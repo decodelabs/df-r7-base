@@ -26,10 +26,26 @@ class Boolean extends Base {
     }
     
     public function getFailureDescription($value) {
-        return gettype($value).' is not boolean '.($this->_expected ? 'true' : 'false');
+        $output = gettype($value).' is not boolean ';
+        
+        if($this->_expected) {
+            $output .= 'true';
+        } else {
+            $output .= 'false';
+        }
+        
+        return $output;
     }
     
     public function getNegatedFailureDescription($value) {
-        return gettype($value).' is boolean '.($this->_expected ? 'true' : 'false');
+        $output = gettype($value).' is boolean ';
+        
+        if($this->_expected) {
+            $output .= 'true';
+        } else {
+            $output .= 'false';
+        }
+        
+        return $output;
     }
 }

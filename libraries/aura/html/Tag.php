@@ -332,7 +332,14 @@ class Tag implements ITag, core\IDumpable {
         
         $this->_renderCount++;
         
-        return '<'.$this->_name.$attributes.(!$this->_isClosable ? ' /' : '').'>';
+        $output = '<'.$this->_name.$attributes;
+        
+        if(!$this->_isClosable) {
+            $output .= ' /';
+        }
+        
+        $output .= '>';
+        return $output;
     }
     
     public function close() {

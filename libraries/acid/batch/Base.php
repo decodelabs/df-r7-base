@@ -30,7 +30,12 @@ abstract class Base implements acid\IBatch {
         
         foreach($testList as $name => $method) {
             try {
-                $args = isset($lastName) ? [$return[$lastName]] : [];
+                if(isset($lastName)) {
+                    $args = array($return[$lastName]);
+                } else {
+                    $args = array();
+                }
+                
                 $lastName = $name;
                 
                 $return[$name] = $method->invokeArgs($this, $args);

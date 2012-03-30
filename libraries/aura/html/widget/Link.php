@@ -257,6 +257,14 @@ class Link extends Base implements ILinkWidget, core\IDumpable {
     
 // Dump
     public function getDumpProperties() {
+        $lockCount = count($this->_accessLocks).' (';
+        
+        if(!$this->_checkAccess) { 
+            $lockCount .= 'not ';
+        }
+        
+        $lockCount .= 'checked)';
+        
         return [
             'uri' => $this->_uri,
             'matchRequest' => $this->_matchRequest,
@@ -264,7 +272,7 @@ class Link extends Base implements ILinkWidget, core\IDumpable {
             'isActive' => $this->_isActive,
             'tag' => $this->getTag(),
             'body' => $this->_body,
-            'accessLocks' => count($this->_accessLocks).' ('.($this->_checkAccess ? '' : 'not ').'checked)',
+            'accessLocks' => $lockCount,
             'renderTarget' => $this->_getRenderTargetDisplayName()
         ];
     }
