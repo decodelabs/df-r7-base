@@ -111,6 +111,7 @@ interface IUrl extends core\IStringProvider {
 
 interface ITransientSchemeUrl {
     public function setScheme($scheme);
+    public function hasScheme();
 }
 
 
