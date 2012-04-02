@@ -142,6 +142,41 @@ class Loader implements ILoader {
         return [df\Launchpad::ROOT_PATH.'/'.$path];
     }
     
+    public function lookupFileList($path, array $extensions=null) {
+        $output = array();
+        $paths = $this->getFileSearchPaths(rtrim($path, '/').'/');
+        
+        foreach($paths as $path) {
+            if(!is_dir($path)) {
+                continue;
+            }
+            
+            $dir = new \DirectoryIterator($path);
+            
+            foreach($dir as $item) {
+                if(!$item->isFile()) {
+                    continue;
+                }
+                
+                $filePath = $item->getPathname();
+                $basename = basename($filePath);
+                
+                if($extensions !== null) {
+                    $parts = explode('.', $basename);
+                    $ext = array_pop($parts);
+                    
+                    if(!in_array($ext, $extensions)) {
+                        continue;
+                    }
+                }
+                
+                $output[$basename] = $filePath;
+            }
+        }
+        
+        return $output;
+    }
+    
     
 // Locations
     public function registerLocations(array $locations) {
