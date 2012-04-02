@@ -21,12 +21,12 @@ class Environment extends Config {
     const PRODUCTION = 'production';
     
     public function getDefaultValues() {
-        return array(
+        return [
             'environmentMode' => self::DEVELOPMENT,
             'httpBaseUrl' => $this->_generateHttpBaseUrl(),
             'phpBinaryPath' => 'php',
             'distributed' => false
-        );
+        ];
     }
     
 // Environment mode
