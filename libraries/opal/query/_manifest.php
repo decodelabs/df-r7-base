@@ -143,6 +143,7 @@ interface IQuery extends ISourceProvider {
 interface IReadQuery extends IQuery, \IteratorAggregate, core\IArrayProvider {
     //public function toArray($keyField=null);
     public function toRow();
+    public function getRawResult();
 }
 
 interface IWriteQuery extends IQuery {

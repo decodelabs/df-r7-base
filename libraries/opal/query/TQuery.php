@@ -909,6 +909,10 @@ trait TQuery_Read {
         return array_shift($data);
     }
     
+    public function getRawResult() {
+        return $this->_fetchSourceData();
+    }
+    
     abstract protected function _fetchSourceData($keyField=null);
 }
 
