@@ -58,18 +58,15 @@ body {
     -o-border-radius: 4px; 
     -webkit-border-radius: 4px; 
     opacity: 0.5; 
-    filter: alpha(opacity=50); 
 }
 
 #page-toggleButtons a.on { 
     border: 1px #CCC solid; 
     opacity: 1.0; 
-    filter: alpha(opacity=100); 
 }
 
 #page-toggleButtons a.empty {
     opacity: 0.2;
-    filter: alpha(opacity=20); 
     cursor: default;
 }
 
