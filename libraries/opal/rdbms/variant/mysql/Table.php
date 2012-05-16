@@ -552,7 +552,7 @@ class Table extends opal\rdbms\Table {
     
 // Introspect
     protected function _introspectSchema() {
-        $stmt = $this->_adapter->prepare('SHOW TABLE STATUS WHERE Name = :a');
+        $stmt = $this->_adapter->prepare($sql = 'SHOW TABLE STATUS WHERE Name = :a');
         $stmt->bind('a', $this->_name);
         $res = $stmt->executeRead();
         
