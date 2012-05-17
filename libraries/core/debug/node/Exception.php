@@ -67,8 +67,8 @@ class Exception implements core\debug\IExceptionNode {
             }
             
             $current = array_shift($trace);
-            $current['fromFile'] = $last['file'];
-            $current['fromLine'] = $last['line'];
+            $current['fromFile'] = @$last['file'];
+            $current['fromLine'] = @$last['line'];
             
             $this->_stackCall = new core\debug\StackCall($current);
         }
