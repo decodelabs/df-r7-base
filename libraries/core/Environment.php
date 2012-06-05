@@ -18,7 +18,7 @@ class Environment extends Config {
     
     public function getDefaultValues() {
         return [
-            'httpBaseUrl' => $this->_generateHttpBaseUrl(),
+            'httpBaseUrl' => $this->_generateHttpBaseUrlList(),
             'phpBinaryPath' => 'php',
             'distributed' => false
         ];
@@ -26,27 +26,60 @@ class Environment extends Config {
         
     
 // Http base url
-    public function setHttpBaseUrl($url) {
+    public function setHttpBaseUrl($url, $environmentMode=null) {
+        if($environmentMode === null) {
+            $environmentMode = df\Launchpad::$environmentMode;
+        }
+        
         if($url === null) {
-            $this->_values['httpBaseUrl'] = null;
+            $this->_values['httpBaseUrl'][$environmentMode] = null;
         } else {
             $url = halo\protocol\http\Url::factory($url);
             $url->getPath()->shouldAddTrailingSlash(true)->isAbsolute(true);
             
-            $this->_values['httpBaseUrl'] = $url->getDomain().$url->getPathString();
+            $this->_values['httpBaseUrl'][$environmentMode] = $url->getDomain().$url->getPathString();
         }
         
         return $this;
     }
     
-    public function getHttpBaseUrl() {
-        if(!isset($this->_values['httpBaseUrl']) && isset($_SERVER['HTTP_HOST'])) {
+    public function getHttpBaseUrl($environmentMode=null) {
+        if($environmentMode === null) {
+            $environmentMode = df\Launchpad::$environmentMode;
+        }
+        
+        if(!isset($this->_values['httpBaseUrl'][$environmentMode]) && isset($_SERVER['HTTP_HOST'])) {
             if(null !== ($baseUrl = $this->_generateHttpBaseUrl())) {
                 $this->setHttpBaseUrl($baseUrl)->save();
             }
         }
         
-        return trim($this->_values['httpBaseUrl'], '/');
+        return trim($this->_values['httpBaseUrl'][$environmentMode], '/');
+    }
+    
+    protected function _generateHttpBaseUrlList() {
+        $baseUrl = $this->_generateHttpBaseUrl();
+        $envMode = df\Launchpad::$environmentMode;
+        
+        $output = [
+            'development' => null,
+            'testing' => null,
+            'production' => null
+        ];
+        
+        $output[$envMode] = $baseUrl;
+        
+        if(substr($baseUrl, 0, strlen($envMode) + 1) == $envMode.'.') {
+            $baseUrl = substr($host, strlen($envMode) + 1);
+        }
+        
+        foreach($output as $key => $val) {
+            if($val === null) {
+                $output[$key] = $key.'.'.$baseUrl;
+            }
+        }
+            
+        return $output;
     }
     
     protected function _generateHttpBaseUrl() {

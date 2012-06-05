@@ -10,6 +10,9 @@ use df\core;
 
 class Builder {
     
+    const DELETE_PACKAGE_BUILD_DIR = true;
+    const PURGE_OLD_BUILDS = true;
+    
     protected static $_appExport = [
         'libraries', 'directory', 'models', 'themes', 'tests'
     ];
@@ -20,7 +23,7 @@ class Builder {
         $this->_loader = $loader;
     }
     
-    public function buildTestingInstallation($environmentMode='testing') {
+    public function buildTestingInstallation() {
         ini_set('phar.readonly', 0);
         
         if(df\Launchpad::IS_COMPILED) {
@@ -31,7 +34,7 @@ class Builder {
         
         
         try {
-            $timestamp = time();
+            $timestamp = date('Ymdhis');
             
             $appPath = df\Launchpad::$applicationPath;
             $environmentId = df\Launchpad::$environmentId;
@@ -118,23 +121,43 @@ class Builder {
             $phar->setDefaultStub('Df.php', 'Df.php');
             $phar->buildFromDirectory($tempPath);
             
-            //core\io\Util::deleteDir($tempPath);
+            if(static::DELETE_PACKAGE_BUILD_DIR) {
+                core\io\Util::deleteDir($tempPath);
+            }
             
             
             
             // Entry point
-            $entryPath = $appPath.'/entry/'.$environmentId.'.'.$environmentMode.'.php';
-            
-            if(is_file($entryPath)) {
-                throw new \Exception('Entry file already exists');
+            foreach(['testing', 'production'] as $environmentMode) {
+                $entryPath = $appPath.'/entry/'.$environmentId.'.'.$environmentMode.'.php';
+                
+                $data = '<?php'."\n".
+                        'require_once \'phar://\'.dirname(__DIR__).\'/data/run/Df-'.$timestamp.'.phar\';'."\n".
+                        'df\\Launchpad::runAs(\''.$environmentId.'\', \''.$environmentMode.'\', dirname(__DIR__));';
+                
+                file_put_contents($entryPath, $data);
             }
+
             
-            $data = '<?php'."\n".
-                    'require_once \'phar://\'.dirname(__DIR__).\'/data/run/Df-'.$timestamp.'.phar\';'."\n".
-                    'df\\Launchpad::runAs(\''.$environmentId.'\', \''.$environmentMode.'\', dirname(__DIR__));';
-            
-            
-            file_put_contents($entryPath, $data);
+            // Purge old builds
+            if(static::PURGE_OLD_BUILDS) {
+                $list = scandir(dirname($pharPath));
+                $currentName = basename($pharPath);
+                sort($list);
+                
+                // Take current and last one out
+                array_pop($list);
+                array_pop($list);
+                
+                foreach($list as $entry) {
+                    if($entry == '.'
+                    || $entry == '..') {
+                        continue;
+                    }
+                    
+                    unlink(dirname($pharPath).'/'.$entry);
+                }
+            }
         } catch(\Exception $e) {
             umask($umask);
             throw $e;
