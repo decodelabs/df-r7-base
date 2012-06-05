@@ -16,44 +16,14 @@ class Environment extends Config {
     const STORE_IN_MEMORY = true;
     const USE_ENVIRONMENT_ID_BY_DEFAULT = true;
     
-    const DEVELOPMENT = 'development';
-    const TESTING = 'testing';
-    const PRODUCTION = 'production';
-    
     public function getDefaultValues() {
         return [
-            'environmentMode' => self::DEVELOPMENT,
             'httpBaseUrl' => $this->_generateHttpBaseUrl(),
             'phpBinaryPath' => 'php',
             'distributed' => false
         ];
     }
-    
-// Environment mode
-    public function setEnvironmentMode($mode) {
-        switch($mode = strtolower($mode)) {
-            case self::DEVELOPMENT:
-            case self::TESTING:
-            case self::PRODUCTION:
-                break;
-                
-            default:
-                $mode = self::DEVELOPMENT;
-                break;
-        } 
         
-        $this->_values['environmentMode'] = $mode;
-        return $this;
-    }
-    
-    public function getEnvironmentMode() {
-        if(isset($this->_values['environmentMode'])) {
-            return $this->_values['environmentMode'];
-        }
-        
-        return self::DEVELOPMENT;
-    }
-    
     
 // Http base url
     public function setHttpBaseUrl($url) {

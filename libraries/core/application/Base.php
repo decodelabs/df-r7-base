@@ -17,7 +17,6 @@ abstract class Base implements core\IApplication, core\IDumpable {
     protected $_passKey;
     protected $_activePackages = array();
     
-    protected $_environmentMode = 'development';
     protected $_isDistributed = false;
     protected $_debugTransport;
     
@@ -47,13 +46,6 @@ abstract class Base implements core\IApplication, core\IDumpable {
         
         $envConfig = core\Environment::getInstance($this);
         $this->_isDistributed = $envConfig->isDistributed();
-        $this->_environmentMode = $envConfig->getEnvironmentMode();
-        
-        if(!df\Launchpad::IS_COMPILED) {
-            $this->_environmentMode = 'development';
-        } else if($this->_environmentMode == 'development') {
-            $this->_environmentMode = 'testing';
-        }
     }
     
     
@@ -118,7 +110,7 @@ abstract class Base implements core\IApplication, core\IDumpable {
     }
     
     public function getEnvironmentMode() {
-        return $this->_environmentMode;
+        return df\Launchpad::$environmentMode;
     }
     
     public function isDevelopment() {
