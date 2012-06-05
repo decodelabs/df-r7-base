@@ -23,7 +23,7 @@ class Builder {
         $this->_loader = $loader;
     }
     
-    public function buildTestingInstallation() {
+    public function build() {
         ini_set('phar.readonly', 0);
         
         if(df\Launchpad::IS_COMPILED) {
