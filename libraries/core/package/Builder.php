@@ -10,10 +10,9 @@ use df\core;
 
 class Builder {
     
-    private static $_appExport = [
-        'data', 'static'
+    protected static $_appExport = [
+        'libraries', 'directory', 'models', 'themes', 'tests'
     ];
-    
     
     protected $_loader;
     
@@ -21,69 +20,34 @@ class Builder {
         $this->_loader = $loader;
     }
     
-    public function buildTestingInstallation($path=null) {
+    public function buildTestingInstallation($environmentMode='testing') {
         ini_set('phar.readonly', 0);
         
         if(df\Launchpad::IS_COMPILED) {
             throw new \Exception(
-                'Cannot build testing installation from a compiled build'
+                'Compiled installations can only be built from source development instances'
             );
         }
         
         
-        
-        // Set base http path
-        $envConfig = core\Environment::getInstance(df\Launchpad::$application);
-        
-        // TODO: make this portable!
-        $newBaseUrl = $baseUrl = $envConfig->getHttpBaseUrl();
-        $newBaseUrl .= 'testing-';
-        
-        $envConfig->setHttpBaseUrl($newBaseUrl)->save();
-        
         try {
-            if($path === null) {
-                $path = df\Launchpad::$applicationPath.'-testing';
+            $timestamp = time();
+            
+            $appPath = df\Launchpad::$applicationPath;
+            $environmentId = df\Launchpad::$environmentId;
+            
+            $pharPath = $appPath.'/data/run/Df-'.$timestamp.'.phar';
+            $tempPath = $appPath.'/data/packageBuild';
+            
+            
+            
+            $umask = umask(0);
+            
+            if(!is_dir(dirname($pharPath))) {
+                mkdir(dirname($pharPath), 0777, true);
             }
-            
-            $pharPath = $path.'/Df.phar';
-            
-            if(is_dir($path)) {
-                $isEmpty = core\io\Util::isDirEmpty($path);
-                
-                if(!$isEmpty) {
-                    if(!is_file($pharPath)) {
-                        throw new \Exception(
-                            'The testing installation build path appears to contain something that shouldn\'t be deleted'
-                        );
-                    }
-                    
-                    if(!core\io\Util::emptyDir($path)) {
-                        throw new \Exception(
-                            'Unable to empty existing testing installation build path'
-                        );
-                    }
-                }
-            }
-            
-            umask(0);
-            
-            if(!is_dir($path)) {
-                mkdir($path, 0777, true);
-            }
-            
-            
-            $tempPath = df\Launchpad::$applicationPath.'/packageBuild';
             
             if(is_dir($tempPath)) {
-                /*
-                if(!core\io\Util::isDirEmpty($tempPath)) {
-                    throw new \Exception(
-                        'Testing installation temp path already exists'
-                    );
-                }
-                */
-                
                 if(!core\io\Util::emptyDir($tempPath)) {
                     throw new \Exception(
                         'Unable to empty existing temp build path'
@@ -109,11 +73,7 @@ class Builder {
             foreach(array_reverse($this->_loader->getPackages()) as $package) {
                 if($package->name == 'app') {
                     foreach(scandir($package->path) as $entry) {
-                        if($entry == '.' 
-                        || $entry == '..' 
-                        || $entry == 'entry' 
-                        || $entry == 'packageBuild'
-                        || in_array($entry, self::$_appExport)) {
+                        if(!in_array($entry, self::$_appExport)) {
                             continue;
                         }
                         
@@ -163,40 +123,23 @@ class Builder {
             
             
             // Entry point
-            mkdir($path.'/entry', 0777);
+            $entryPath = $appPath.'/entry/'.$environmentId.'.'.$environmentMode.'.php';
             
-            $entryDir = new \DirectoryIterator(df\Launchpad::$applicationPath.'/entry');
-            
-            foreach($entryDir as $entry) {
-                if($entry->isDot() || $entry->isDir()) {
-                    continue;
-                }
-                
-                $envId = substr($entry->getFilename(), 0, -4);
-                
-                $data = '<?php'."\n".
-                    'require_once \'phar://\'.dirname(__DIR__).\'/Df.phar\';'."\n".
-                    'df\\Launchpad::runAs(\''.$envId.'\', dirname(__DIR__));';
-                    
-                file_put_contents($path.'/entry/'.$envId.'.php', $data);
+            if(is_file($entryPath)) {
+                throw new \Exception('Entry file already exists');
             }
             
-            unset($entryDir);
+            $data = '<?php'."\n".
+                    'require_once \'phar://\'.dirname(__DIR__).\'/data/run/Df-'.$timestamp.'.phar\';'."\n".
+                    'df\\Launchpad::runAs(\''.$environmentId.'\', \''.$environmentMode.'\', dirname(__DIR__));';
             
             
-            // Storage
-            foreach(self::$_appExport as $name) {
-                if(is_dir(df\Launchpad::$applicationPath.'/'.$name)) {
-                    core\io\Util::copyDir(df\Launchpad::$applicationPath.'/'.$name, $path.'/'.$name);
-                }
-            }
+            file_put_contents($entryPath, $data);
         } catch(\Exception $e) {
-            $envConfig->setHttpBaseUrl($baseUrl)->save();
+            umask($umask);
             throw $e;
         }
         
-        
-        
-        $envConfig->setHttpBaseUrl($baseUrl)->save();
+        umask($umask);
     }
 }
