@@ -15,12 +15,27 @@ interface IException {}
 
 
 // Interfaces
-interface IIndex {
-    
+interface IClient {
+    public static function factory($settings);
+    public function getIndex($name);
+    public function getIndexList();
+}
+
+interface IIndex extends \Countable {
+    public function newDocument($id=null, array $values=null);
+    public function storeDocument(IDocument $document);
+    public function deleteDocument($id);
+    public function hasDocument($id);
 }
 
 interface IDocument {
-    
+    public function setId($id);
+    public function getId();
+    public function setValues(array $values);
+    public function setValue($key, $value, $boost=null);
+    public function getValue($key);
+    public function setBoost($key, $boost);
+    public function getBoost($key);
 }
 
 interface IResult extends opal\query\record\IRecord {

@@ -3,15 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\opal\search;
+namespace df\opal\search\elastic;
 
 use df;
 use df\core;
 use df\opal;
 
-abstract class Index implements IIndex {
+class Document implements opal\search\IDocument, core\IDumpable {
     
-    public static function factory() {
-        core\stub();
-    }
-} 
+    use opal\search\TDocument;
+}

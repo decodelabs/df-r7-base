@@ -11,17 +11,18 @@ use df\axis;
 
 class ConnectionConfig extends core\Config {
     
-    const ID = 'DBConnections';
+    const ID = 'DataConnections';
     const USE_ENVIRONMENT_ID_BY_DEFAULT = true;
     
     public function getDefaultValues() {
         return [
             'connections' => [
                 'master' => [
-                    'adapter' => null
+                    'adapter' => 'Rdbms',
+                    'dsn' => 'mysql://user:pass@localhost/database'
                 ],
                 'search' => [
-                    'adapter' => null
+                    'adapter' => 'Elastic'
                 ]
             ],
             'units' => [
