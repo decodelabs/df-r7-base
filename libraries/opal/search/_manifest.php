@@ -11,7 +11,7 @@ use df\opal;
 
 // Exceptions
 interface IException {}
-
+class RuntimeException extends \RuntimeException implements IException {}
 
 
 // Interfaces
@@ -22,6 +22,9 @@ interface IClient {
 }
 
 interface IIndex extends \Countable {
+    public function getName();
+    public function getClient();
+    
     public function newDocument($id=null, array $values=null);
     public function storeDocument(IDocument $document);
     public function deleteDocument($id);

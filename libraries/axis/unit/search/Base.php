@@ -56,6 +56,10 @@ abstract class Base extends axis\Unit implements
     public function getIndex() {
         return $this->_index;
     }
+    
+    public function getClient() {
+        return $this->_index->getClient();
+    }
 
 
     public function destroyStorage() {

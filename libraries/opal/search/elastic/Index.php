@@ -20,12 +20,25 @@ class Index implements opal\search\IIndex {
     }
     
     
+    public function getName() {
+        return $this->_name;
+    }
+    
+    public function getClient() {
+        return $this->_client;
+    }
+    
+    
     public function newDocument($id=null, array $values=null) {
         return new Document($id, $values);
     }
     
     public function storeDocument(opal\search\IDocument $document) {
-        core\stub($document);
+        $indexInfo = [
+            '_index' => $this->_name,
+            '_id' => $document->getId()
+        ];
+        core\stub($this, $document);
     }
     
     public function deleteDocument($id) {

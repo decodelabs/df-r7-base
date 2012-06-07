@@ -172,6 +172,16 @@ trait TUrl_DomainContainer {
     protected function _resetDomain() {
         $this->_domain = null;
     }
+    
+    public function lookupIp() {
+        if(($ip = gethostbyname($this->_domain)) == $this->_domain) {
+            throw new RuntimeException(
+                'Could not lookup IP for '.$this->_domain
+            );
+        }        
+        
+        return new halo\Ip($ip);
+    }
 }
 
 
@@ -252,6 +262,10 @@ trait TUrl_PortContainer {
         if($this->_port !== null && $this->_port !== $skip) {
             return ':'.$this->_port;
         }
+    }
+    
+    public function getHostString() {
+        return $this->getDomain().$this->_getPortString();
     }
 }
 

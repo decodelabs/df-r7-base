@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\halo;
 
-class Session extends halo\server\Session {
+class Session extends halo\peer\Session {
     
     protected $_contentLength = null;
     protected $_request;

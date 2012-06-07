@@ -75,7 +75,7 @@ class Loader implements ILoader {
                 self::$_includeAttempts++;
                 
                 if(file_exists($path) && !in_array($path, $included)) {
-                    include $path;
+                    include_once $path;
                     
                     if(class_exists($class, false) 
                     || interface_exists($class, false)

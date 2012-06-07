@@ -67,6 +67,14 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
         
         return $output;
     }
+
+    public static function factory($url) {
+        if($url instanceof halo\protocol\http\IRequest) {
+            return $url;
+        }
+        
+        return new self($url);
+    }
     
     public function __construct($url=null, $environmentMode=false) {
         if($url === true || $url === false) {
@@ -403,22 +411,26 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
     }
     
     public function getIp() {
-        if(!$this->_ip && $this->_environmentMode) {
-            $ip = '0.0.0.0';
-        
-            if(isset($_SERVER['HTTP_CLIENT_IP'])) {
-                $ip = $_SERVER['HTTP_CLIENT_IP'];
-            } else if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-            } else if(isset($_SERVER['REMOTE_ADDR'])) {
-                $ip = $_SERVER['REMOTE_ADDR'];
-            }
+        if($this->_ip === null) {
+            if($this->_environmentMode) {
+                $ip = '0.0.0.0';
             
-            if(($pos = strpos($ip, ',')) > 0) {
-                $ip = substr($ip, 0, $pos - 1);
+                if(isset($_SERVER['HTTP_CLIENT_IP'])) {
+                    $ip = $_SERVER['HTTP_CLIENT_IP'];
+                } else if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+                } else if(isset($_SERVER['REMOTE_ADDR'])) {
+                    $ip = $_SERVER['REMOTE_ADDR'];
+                }
+                
+                if(($pos = strpos($ip, ',')) > 0) {
+                    $ip = substr($ip, 0, $pos - 1);
+                }
+                
+                $this->_ip = new halo\Ip($ip);
+            } else {
+                $this->_ip = $this->_url->lookupIp();
             }
-            
-            $this->_ip = new halo\Ip($ip); 
         }
         
         return $this->_ip;
@@ -426,6 +438,10 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
     
     public function hasIp() {
         return $this->_ip !== null;
+    }
+    
+    public function getSocketAddress() {
+        return (string)$this->getIp().':'.$this->_url->getPort();
     }
     
     
@@ -459,15 +475,21 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
     }
     
     public function toString() {
-        $this->prepareToSend();
-        
-        $headers = $this->getHeaders();
-        $output = $this->getMethod().' '.$this->_url->getLocalString().' HTTP/'.$header->getHttpVersion()."\r\n";
-        $output .= $headers->toString()."\r\n";
+        $output = $this->getHeaderString();
         
         if($this->_postData) {
             core\stub('add post data');
         }
+        
+        return $output;
+    }
+    
+    public function getHeaderString() {
+        $this->prepareToSend();
+        
+        $headers = $this->getHeaders();
+        $output = $this->getMethod().' '.$this->_url->getLocalString().' HTTP/'.$headers->getHttpVersion()."\r\n";
+        $output .= $headers->toString()."\r\n";
         
         return $output;
     }

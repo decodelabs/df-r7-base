@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\halo;
 
-class Server extends halo\server\Base {
+class Server extends halo\peer\Server {
     
     const PROTOCOL_DISPOSITION = self::PEER_FIRST;
     
@@ -21,7 +21,7 @@ class Server extends halo\server\Base {
         );
     }
     
-    protected function _createSession(halo\socket\IServerPeerSocket $socket) {
+    protected function _createSession(halo\socket\ISocket $socket) {
         return new Session($socket);
     }
     
@@ -38,9 +38,9 @@ class Server extends halo\server\Base {
             } else if(strlen($session->readBuffer) > $this->_maxRequestLength) {
                 // Request too large
                 $session->setErrorCode(413);
-                return self::WRITE;
+                return halo\peer\IIoState::WRITE;
             } else {
-                return self::BUFFER;
+                return halo\peer\IIoState::BUFFER;
             }
             
             // TODO: put content into a temp file
@@ -51,14 +51,14 @@ class Server extends halo\server\Base {
             } catch(UnexpectedValueException $e) {
                 // Bad request
                 $session->setErrorCode(400);
-                return self::WRITE;
+                return halo\peer\IIoState::WRITE;
             }
             
             if($contentLength = $session->getContentLength()) {
                 if($contentLength > $this->_maxRequestLength) {
                     // Request too large
                     $session->setErrorCode(413);
-                    return self::WRITE;
+                    return halo\peer\IIoState::WRITE;
                 }
             }
             
@@ -67,7 +67,7 @@ class Server extends halo\server\Base {
         
         if($contentLength = $session->getContentLength()) {
             if(strlen($session->readBuffer) < $contentLength) {
-                return self::BUFFER;
+                return halo\peer\IIoState::BUFFER;
             } else {
                 // TODO: set post data
                 core\stub('set post data');
@@ -78,7 +78,7 @@ class Server extends halo\server\Base {
         echo $request->getMethod().' '.$request->getUrl()."\n";
         $session->readBuffer = '';
         
-        return self::WRITE;
+        return halo\peer\IIoState::WRITE;
     }
     
     protected function _handleWriteBuffer(halo\server\ISession $session) {
@@ -110,10 +110,10 @@ class Server extends halo\server\Base {
         
         if($fileStream = $session->getFileStream()) {
             $session->writeBuffer .= $fileStream->read(8192);
-            return $fileStream->eof() ? self::END : self::BUFFER;
+            return $fileStream->eof() ? halo\peer\IIoState::END : halo\peer\IIoState::BUFFER;
         } else {
             $session->writeBuffer .= $response->getContent();
-            return self::END;
+            return halo\peer\IIoState::END;
         }
     }
     

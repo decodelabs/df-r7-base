@@ -70,9 +70,11 @@ interface IRequest extends core\IStringProvider {
     // Ip
     public function setIp($ip);
     public function getIp();
+    public function getSocketAddress();
     
     // Strings
     public function prepareToSend();
+    public function getHeaderString();
 }
 
 

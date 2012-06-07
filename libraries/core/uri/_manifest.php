@@ -11,6 +11,7 @@ use df\core;
 // Exceptions
 interface IException {}
 class OutOfBoundsException extends \OutOfBoundsException implements IException {}
+class RuntimeException extends \RuntimeException implements IException {}
 
 // Interfaces
 interface IPath extends core\IStringProvider, core\collection\IIndexedQueue {
@@ -60,6 +61,7 @@ interface ICredentialContainer extends IUsernameContainer {
 interface IDomainContainer {
     public function setDomain($domain);
     public function getDomain();
+    public function lookupIp();
 }
 
 

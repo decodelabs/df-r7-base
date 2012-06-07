@@ -1,6 +1,6 @@
 <?php
 
-namespace df\halo\server;
+namespace df\halo\peer;
 
 use df\core;
 use df\halo;
@@ -10,10 +10,10 @@ class Session implements ISession {
     public $readBuffer = '';
     public $writeBuffer = '';
     
-    protected $_writeState = Base::BUFFER;
+    protected $_writeState = IIoState::BUFFER;
     protected $_socket;
     
-    public function __construct(halo\socket\IServerPeerSocket $socket) {
+    public function __construct(halo\socket\ISocket $socket) {
         $this->_socket = $socket;
     }
     
