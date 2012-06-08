@@ -26,6 +26,7 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
     protected $_headers;
     protected $_ip;
     protected $_postData;
+    protected $_bodyData;
     protected $_cookieData;
     protected $_environmentMode = false;
     
@@ -359,8 +360,33 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
         return $this->_postData;
     }
     
+    public function getPostDataString() {
+        core\stub($this->_postData);
+    }
+    
     public function hasPostData() {
         return $this->_postData !== null;
+    }
+    
+    
+// Put
+    public function setBodyData($body) {
+        if(is_array($body)) {
+            $body = implode("\r\n", $body);
+        } else if($body !== null) {
+            $body = (string)$body;
+        }
+        
+        $this->_bodyData = $body;
+        return $this;
+    }
+    
+    public function getBodyData() {
+        return $this->_bodyData;
+    }
+    
+    public function hasBodyData() {
+        return $this->_bodyData !== null;
     }
     
     
@@ -453,11 +479,19 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
         
         if(($url->isSecure() && $port !== 443)
         || (!$url->isSecure() && $port !== 80)) {
-            $host.':'.$port;
+            $host = $host.':'.$port;
         }
         
         $headers = $this->getHeaders();
         $headers->set('host', $host);
+        
+        if($this->_postData && !$this->_postData->isEmpty()) {
+            core\stub('Convert post data to raw body data');
+        }
+        
+        if($this->_bodyData !== null) {
+            $headers->set('Content-Length', strlen($this->_bodyData));
+        }
         
         if($this->_cookieData && !$this->_cookieData->isEmpty()) {
             $headers->set('cookie', $this->_cookieData->toString());
@@ -477,10 +511,10 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
     public function toString() {
         $output = $this->getHeaderString();
         
-        if($this->_postData) {
-            core\stub('add post data');
+        if($this->hasBodyData()) {
+            $output .= $this->_bodyData;
         }
-        
+
         return $output;
     }
     
@@ -489,7 +523,7 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
         
         $headers = $this->getHeaders();
         $output = $this->getMethod().' '.$this->_url->getLocalString().' HTTP/'.$headers->getHttpVersion()."\r\n";
-        $output .= $headers->toString()."\r\n";
+        $output .= $headers->toString()."\r\n\r\n";
         
         return $output;
     }
@@ -510,6 +544,10 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
         
         if($this->_method == 'POST') {
             $output['post'] = $this->getPostData();
+        }
+        
+        if($this->_bodyData !== null) {
+            $output['body'] = $this->getBodyData();
         }
         
         if($this->_cookieData && count($this->_cookieData)) {

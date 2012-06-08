@@ -34,7 +34,7 @@ interface IUrl extends core\uri\IGenericUrl, core\uri\ICredentialContainer, core
 
 
 
-interface IRequest extends core\IStringProvider {
+interface IRequest extends core\IStringProvider, halo\peer\ISessionRequest {
     // Method
     public function setMethod($method);
     public function getMethod();
@@ -60,7 +60,13 @@ interface IRequest extends core\IStringProvider {
     // Post
     public function setPostData($post);
     public function getPostData();
+    public function getPostDataString();
     public function hasPostData();
+    
+    // Body
+    public function setBodyData($data);
+    public function getBodyData();
+    public function hasBodyData();
     
     // Cookies
     public function setCookieData($cookies);
@@ -106,12 +112,13 @@ interface IRequestHeaderCollection {
 
 
 
-interface IResponse extends core\IPayload {
+interface IResponse extends core\IPayload, halo\peer\ISessionResponse {
     // Headers
     public function getHeaders();
     public function hasHeaders();
     public function getCookies();
     public function hasCookies();
+    public function isOk();
     
     // Content
     public function getContent();
@@ -244,4 +251,11 @@ interface IResponseCookie extends core\IStringProvider {
 interface IResponseCookieCollection extends core\IStringProvider {
     public function applyTo(IResponseHeaderCollection $headers);
     public function getRemoved();
+}
+
+
+
+// Peer
+interface IAsyncClient extends halo\peer\IClient {
+    public function addRequest($request, Callable $callback);
 }

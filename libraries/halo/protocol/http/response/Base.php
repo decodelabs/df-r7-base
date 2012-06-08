@@ -200,7 +200,33 @@ abstract class Base implements halo\protocol\http\IResponse {
         return $this->_cookies && !$this->_cookies->isEmpty();
     }
     
+    public function isOk() {
+        if(!$this->_headers) {
+            return true;
+        }
+        
+        return $this->_headers->hasSuccessStatusCode();
+    }
     
+    public function getJsonContent() {
+        $content = $this->getContent();
+        
+        if(!strlen($content)) {
+            throw new RuntimeException(
+                'Empty json response'
+            );
+        }
+        
+        $data = \json_decode($content, true);
+        
+        if($data === false || $data === null) {
+            throw new halo\protocol\http\RuntimeException(
+                'Invalid json response: '.$content
+            );
+        }
+        
+        return new core\collection\Tree($data);
+    }
     
     public function getEncodedContent() {
         $content = $this->getContent();

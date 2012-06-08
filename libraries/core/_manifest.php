@@ -39,6 +39,17 @@ interface IArrayProvider {
     public function toArray();
 }
 
+interface IExtendedArrayProvider {
+    public function getJsonString();
+}
+
+trait TExtendedArrayProvider {
+    
+    public function toJsonString() {
+        return json_encode($this->toArray());
+    }
+}
+
 interface IValueMap {
     public function set($key, $value);
     public function get($key, $default=null);

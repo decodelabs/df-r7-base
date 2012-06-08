@@ -56,8 +56,7 @@ class Client implements opal\search\IClient {
     }
     
     public function getIndexList() {
-        $this->_fetchStatus();
-        core\dump($this->_status);
+        return $this->getStatus()->indices->getKeys();
     }
     
     
@@ -83,18 +82,64 @@ class Client implements opal\search\IClient {
                 );
         }
         
-        $request = new halo\protocol\http\request\Base($this->_servers[0]['host'].':'.$this->_servers[0]['port'].'/'.$uri->getPath());
-        $client = new halo\protocol\http\Client($request);
-        $client->run();
+        $request = new halo\protocol\http\request\Base(
+            $this->_servers[0]['host'].':'.$this->_servers[0]['port'].'/'.$uri->getPath()
+        );
         
-        core\dump($method, $uri->getPath(), $data);
-    }
-    
-    protected function _fetchStatus() {
-        if($this->_status !== null) {
-            return;
+        $request->getUrl()->setQuery($uri->getQuery());
+        $request->setMethod($method);
+        $request->setBodyData($data);
+        
+        $response = null;
+        
+        new halo\protocol\http\AsyncClient($request, function($httpResponse) use (&$response) {
+            $message = null;
+            
+            try {
+                $response = $httpResponse->getJsonContent();
+            } catch(\Exception $e) {
+                $message = $httpResponse->getContent();
+            }
+            
+            if(!$httpResponse->isOk()) {
+                if($message === null) {
+                    $message = $response->get('error', $httpResponse->getHeaders()->getStatusMessage());
+                }
+                
+                throw new opal\search\RuntimeException(
+                    'Could not successfully contact elastic search server: '.$message
+                );
+            }
+        });
+        
+        if(isset($response->error)) {
+            throw new opal\search\RuntimeException(
+                'Elastic response error: '.$response['error']
+            );
         }
         
-        $this->_status = $this->sendRequest('get://_status')->getData();
+        return $response;
+    }
+
+    public function sendBulkRequest(array $data) {
+        if(empty($data)) {
+            return null;
+        }
+        
+        $dataString = '';
+        
+        foreach($data as $actionSet) {
+            $dataString .= json_encode($actionSet)."\n";
+        }
+        
+        return $this->sendRequest('put://_bulk', $dataString);
+    }
+    
+    public function getStatus() {
+        if($this->_status === null) {
+            $this->_status = $this->sendRequest('get://_status');
+        }
+        
+        return $this->_status;
     }
 }

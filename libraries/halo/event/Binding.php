@@ -107,13 +107,17 @@ class Binding implements IBinding {
     }
     
     public function trigger(IHandler $handler) {
-        if($this->_isAdaptive) {
-            $this->_listener->handleEvent($handler, $this);
-        } else {
-            $func = 'on'.ucfirst($handler->getScheme()).$this->_name;
-            $args = $this->_args;
-            array_unshift($args, $handler, $this);
-            call_user_func_array(array($this->_listener, $func), $args);
+        try {
+            if($this->_isAdaptive) {
+                $this->_listener->handleEvent($handler, $this);
+            } else {
+                $func = 'on'.ucfirst($handler->getScheme()).$this->_name;
+                $args = $this->_args;
+                array_unshift($args, $handler, $this);
+                call_user_func_array(array($this->_listener, $func), $args);
+            }
+        } catch(\Exception $e) {
+            core\debug()->exception($e)->flush();
         }
         
         return $this;

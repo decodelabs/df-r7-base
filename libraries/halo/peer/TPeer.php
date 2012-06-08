@@ -15,14 +15,13 @@ trait TPeer {
     protected $_writeChunkSize = 8192;
     
     protected $_dispatcher;
-    protected $_isStarted = false;
     protected $_sessions = array();
     protected $_sessionCount = 0;
     
     
 // Dispatcher
     public function setDispatcher(halo\event\IDispatcher $dispatcher) {
-        if($this->_isStarted) {
+        if($this->_dispatcher && $this->_dispatcher->isRunning()) {
             throw new RuntimeException(
                 'You cannot change the dispatcher once the server has started'
             );
@@ -40,6 +39,10 @@ trait TPeer {
         return $this->_dispatcher;
     }
     
+    public function isRunning() {
+        return $this->_dispatcher && $this->_dispatcher->isRunning();
+    }
+    
     
 // Protocol
     public function getProtocolDisposition() {
@@ -48,18 +51,12 @@ trait TPeer {
     
     
 // Registration
-    protected function _registerSession(halo\socket\ISocket $socket) {
-        $socket->setSessionId(++$this->_sessionCount);
-        
-        $session = $this->_createSession($socket);
+    protected function _registerSession(ISession $session) {
+        $session->getSocket()->setSessionId(++$this->_sessionCount);
         $this->_sessions[$session->getId()] = $session;
         $this->_onSessionStart($session);
         
         return $session;
-    }
-    
-    protected function _createSession(halo\socket\ISocket $socket) {
-        return new Session($socket);
     }
     
     protected function _unregisterSession(ISession $session) {
@@ -122,6 +119,7 @@ trait TPeer {
         switch($result) {
             case IIoState::END:
                 // Implementation has finished, end session
+                $session->readBuffer = false;
                 $this->_unregisterSessionBySocket($socket);
                 break;
                 
@@ -137,10 +135,11 @@ trait TPeer {
                     $socket->shutdownReading();
                 }
                 
+                $session->readBuffer = false;
+                
                 try {
                     $handler->unfreeze($handler->getBinding($this, 'connectionWaiting', halo\event\WRITE));
                 } catch(halo\event\BindException $e) {
-                    core\dump($e);
                     $this->_unregisterSessionBySocket($socket);
                 }
                 
@@ -179,7 +178,6 @@ trait TPeer {
                     try {
                         $handler->unfreeze($handler->getBinding($this, 'dataAvailable', halo\event\READ));
                     } catch(halo\event\BindException $e) {
-                        core\dump($e);
                         $this->_unregisterSessionBySocket($socket);
                     }
                     
@@ -227,4 +225,352 @@ trait TPeer {
     protected function _handleWriteBuffer(ISession $session) {}
     
     protected function _onPeerShutdownWriting(ISession $session) {}
+}
+
+
+
+
+
+// CLIENT
+trait TPeer_Client {
+    
+    use TPeer;
+    
+    public function run() {
+        if($this->_dispatcher && $this->_dispatcher->isRunning()) {
+            return $this;
+        }
+        
+        $this->_createInitialSessions();
+        
+        if(empty($this->_sessions)) {
+            throw new RuntimeException(
+                'No client sessions have been opened'
+            );
+        }
+        
+        $dispatcher = $this->getDispatcher();
+        
+        foreach($this->_sessions as $session) {
+            $this->_dispatchSession($session);
+        }
+        
+        $this->getDispatcher()->start();
+    }
+    
+    abstract protected function _createInitialSessions();
+    
+    protected function _dispatchSession(ISession $session) {
+        $socket = $session->getSocket();
+        $socket->connect();
+        
+        $eventHandler = $this->_dispatcher->newSocketHandler($socket);
+        
+        switch($this->getProtocolDisposition()) {
+            case IClient::PEER_FIRST:
+                $eventHandler->bind($this, 'dataAvailable', true, [$session]);
+                $eventHandler->freeze($eventHandler->bindWrite($this, 'connectionWaiting', true, [$session]));
+                break;
+                
+            case IClient::CLIENT_FIRST:
+                $eventHandler->bindWrite($this, 'connectionWaiting', true, [$session]);
+                $eventHandler->freeze($eventHandler->bind($this, 'dataAvailable', true, [$session]));
+                break;
+                
+            case IClient::PEER_STREAM:
+                core\stub('Unable to handle peer streams');
+                break;
+                
+            case IClient::CLIENT_STREAM:
+                core\stub('Unable to handle client streams');
+                break;
+                
+            case IClient::DUPLEX_STREAM:
+                core\stub('Unable to handle duplex streams');
+                break;
+                
+            default:
+                core\stub('Unknown protocol disposition');
+        }
+    }
+}
+
+
+
+
+
+
+// SERVER
+trait TPeer_Server {
+    
+    use TPeer;
+    
+    protected $_isStarted = false;
+    protected $_masterSockets = array();
+    protected $_requests = 0;
+    
+    public function start() {
+        if($this->_isStarted) {
+            return $this;
+        }
+        
+        $dispatcher = $this->getDispatcher();
+        
+        if($dispatcher->isRunning()) {
+            $dispatcher->stop();
+        }
+        
+        $this->_setup();
+        $this->_isStarted = true;
+        
+        $dispatcher->start();
+    }
+    
+    public function stop() {
+        if(!$this->_isStarted) {
+            return $this;
+        }
+        
+        $dispatcher = $this->getDispatcher();
+        
+        if($isRunning = $dispatcher->isRunning()) {
+            $dispatcher->stop();
+        }
+        
+        $this->_teardown();
+        $this->_isStarted = false;
+        
+        if($isRunning && $dispatcher->countHandlers()) {
+            $dispatcher->start();
+        }
+    }
+    
+    protected function _setup() {
+        $dispatcher = $this->getDispatcher();
+        
+        // Heartbeat
+        $dispatcher->newTimerHandler(core\time\Duration::factory(5))
+            ->bind($this, 'heartbeat', true);
+            
+        $this->_createMasterSockets();
+        
+        // Accept
+        foreach($this->_masterSockets as $socket) {
+            $socket->listen();
+            
+            $dispatcher->newSocketHandler($socket)
+                ->bind($this, 'acceptRequest', true);
+        }
+    }
+    
+    protected function _teardown() {
+        $dispatcher = $this->getDispatcher();
+        
+        foreach($this->_sessions as $session) {
+            $this->_unregisterSession($session);
+        }
+        
+        foreach($this->_masterSockets as $id => $socket) {
+            $dispatcher->removeSocket($socket);
+            $socket->close();
+            unset($this->_masterSockets[$id]);
+        }
+        
+        $heartbeat = $dispatcher->getTimerHandler(core\time\Duration::factory(5));
+        $heartbeat->unbindAll($this);
+        
+        if(!$heartbeat->countBindings()) {
+            $heartbeat->destroy();
+        }
+    }
+    
+    abstract protected function _createMasterSockets();
+    abstract protected function _createSessionFromSocket(halo\socket\IServerPeerSocket $socket);
+    
+    protected function _registerMasterSocket(halo\socket\IServerSocket $socket) {
+        $this->_masterSockets[$socket->getId()] = $socket;
+        return $this;
+    }
+    
+    
+    
+// Events
+    protected function _onTimerHeartbeat($handler, $binding) {
+        if(!empty($this->_sessions)) {
+            echo count($this->_sessions).' connections currently open'."\n";
+        }
+        
+        echo 'Served '.$this->_requests.' requests'."\n";
+        
+        /*
+        if($this->_requests > 100) {
+            $this->stop();
+        }
+        */
+    }
+    
+    
+    protected function _onSocketAcceptRequest($handler, $binding) {
+        $masterSocket = $handler->getSocket();
+        
+        if(!$this->_canAccept($masterSocket)) {
+            // TODO: Freeze event binding and reinstate on a timeout
+            return;
+        }
+        
+        $peerSocket = $masterSocket->accept();
+        $session = $this->_createSessionFromSocket($peerSocket);
+        $this->_registerSession($session);
+        
+        $eventHandler = $this->_dispatcher->newSocketHandler($peerSocket);
+        
+        switch($this->getProtocolDisposition()) {
+            case IServer::SERVER_FIRST:
+                $eventHandler->bindWrite($this, 'connectionWaiting', true, [$session]);
+                $eventHandler->freeze($eventHandler->bind($this, 'dataAvailable', true, [$session]));
+                break;
+                
+            case IServer::PEER_FIRST:
+                $eventHandler->bind($this, 'dataAvailable', true, [$session]);
+                $eventHandler->freeze($eventHandler->bindWrite($this, 'connectionWaiting', true, [$session]));
+                break;
+                
+            case IServer::SERVER_STREAM:
+                core\stub('Unable to handle server streams');
+                $eventHandler->bindWrite($this, 'streamConnectionWaiting', true);
+                break;
+                
+            case IServer::PEER_STREAM:
+                core\stub('Unable to handle peer streams');
+                $eventHandler->bind($this, 'streamDataAvailable', true);
+                break;
+                
+            case IServer::DUPLEX_STREAM:
+                core\stub('Unable to handle duplex streams');
+                break;
+            
+            default:
+                core\stub('Unknown protocol disposition');
+        }
+            
+        //echo 'Accept complete - '.$peerSocket->getSessionId()."\n";
+    }
+    
+    
+    
+// Event stubs
+    protected function _canAccept(halo\socket\IServerSocket $socket) { return true; }
+}
+
+
+
+
+// SESSION
+trait TPeer_Session {
+
+    public $readBuffer = '';
+    public $writeBuffer = '';
+    
+    protected $_writeState = IIoState::BUFFER;
+    protected $_socket;
+    
+    public function __construct(halo\socket\ISocket $socket) {
+        $this->_socket = $socket;
+    }
+    
+    public function getId() {
+        return $this->_socket->getId();
+    }
+    
+    public function getSocket() {
+        return $this->_socket;
+    }
+    
+    public function setWriteState($state) {
+        $this->_writeState = $state;
+        return $this;
+    }
+    
+    public function getWriteState() {
+        return $this->_writeState;
+    }
+}
+
+
+trait TPeer_RequestResponseSession {
+    
+    protected $_request;
+    protected $_response;
+    
+    public function setRequest(ISessionRequest $request) {
+        $this->_request = $request;
+        return $this;
+    }
+    
+    public function getRequest() {
+        return $this->_request;
+    }
+    
+    public function setResponse(ISessionResponse $response) {
+        $this->_response = $response;
+        return $this;
+    }
+    
+    public function getResponse() {
+        return $this->_response;
+    }
+    
+}
+    
+    
+trait TPeer_FileStreamSession {
+    
+    protected $_fileStream;
+    
+    public function setFileStream(core\io\file\IPointer $file) {
+        $this->_fileStream = $file;
+        return $this;
+    }
+    
+    public function getFileStream() {
+        return $this->_fileStream;
+    }
+    
+    public function hasFileStream() {
+        return $this->_fileStream !== null;
+    }
+}
+
+
+trait TPeer_ErrorCodeSession {
+    
+    protected $_errorCode;
+    
+    public function setErrorCode($code) {
+        $this->_errorCode = $code;
+        return $this;
+    }
+    
+    public function getErrorCode() {
+        return $this->_errorCode;
+    }
+    
+    public function hasErrorCode() {
+        return $this->_errorCode !== null;
+    }
+}
+
+
+trait TPeer_CallbackSession {
+    
+    protected $_callback;
+    
+    public function setCallback(Callable $callback) {
+        $this->_callback = $callback;
+        return $this;
+    }
+    
+    public function getCallback() {
+        return $this->_callback;
+    }
 }

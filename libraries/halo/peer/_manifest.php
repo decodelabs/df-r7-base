@@ -15,17 +15,32 @@ class RuntimeException extends \RuntimeException implements IException {}
 
 
 // Interfaces
-interface IClient extends halo\event\IAdaptiveListener {
+interface IPeer {
     public function getProtocolDisposition();
     public function setDispatcher(halo\event\IDispatcher $dispatcher);
     public function getDispatcher();
+    public function isRunning();
+}
+
+interface IClient extends halo\event\IAdaptiveListener, IPeer {
+    
+    const PEER_FIRST = 1;
+    const CLIENT_FIRST = 2;
+    const PEER_STREAM = 3;
+    const CLIENT_STREAM = 4;
+    const DUPLEX_STREAM = 5;
+    
     public function run();
 }
 
-interface IServer extends halo\event\IAdaptiveListener {
-    public function getProtocolDisposition();
-    public function setDispatcher(halo\event\IDispatcher $dispatcher);
-    public function getDispatcher();
+interface IServer extends halo\event\IAdaptiveListener, IPeer {
+    
+    const SERVER_FIRST = 1;
+    const PEER_FIRST = 2;
+    const SERVER_STREAM = 3;
+    const PEER_STREAM = 4;
+    const DUPLEX_STREAM = 5;
+    
     public function start();
     public function stop();
 }
@@ -34,7 +49,20 @@ interface IServer extends halo\event\IAdaptiveListener {
 interface ISession {
     public function getId();
     public function getSocket();
+    public function setWriteState($state);
+    public function getWriteState();
 }
+
+interface IRequestResponseSession {
+    public function setRequest(ISessionRequest $request);
+    public function getRequest();
+    
+    public function setResponse(ISessionResponse $response);
+    public function getResponse();
+}
+
+interface ISessionRequest {}
+interface ISessionResponse {}
 
 
 interface IIoState {

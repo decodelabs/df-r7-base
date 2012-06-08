@@ -12,6 +12,7 @@ use df\opal;
 // Exceptions
 interface IException {}
 class RuntimeException extends \RuntimeException implements IException {}
+class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 
 
 // Interfaces
@@ -27,14 +28,19 @@ interface IIndex extends \Countable {
     
     public function newDocument($id=null, array $values=null);
     public function storeDocument(IDocument $document);
+    public function storeDocumentList(array $documents);
     public function deleteDocument($id);
     public function hasDocument($id);
+    
+    public function find($query);
 }
 
 interface IDocument {
     public function setId($id);
     public function getId();
     public function setValues(array $values);
+    public function getValues();
+    public function getPreparedValues();
     public function setValue($key, $value, $boost=null);
     public function getValue($key);
     public function setBoost($key, $boost);

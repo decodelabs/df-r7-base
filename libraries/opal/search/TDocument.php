@@ -56,6 +56,24 @@ trait TDocument {
         return $this;
     }
     
+    public function getValues() {
+        return $this->_values;
+    }
+    
+    public function getPreparedValues() {
+        $output = array();
+        
+        foreach($this->_values as $key => $value) {
+            if(is_object($value)) {
+                $value = (string)$value;
+            }
+            
+            $output[$key] = $value;
+        }
+        
+        return $output;
+    }
+    
     public function setValue($key, $value, $boost=null) {
         $this->_values[$key] = $value;
         

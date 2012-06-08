@@ -75,6 +75,15 @@ abstract class Base extends axis\Unit implements
         $this->_index->storeDocument($document);
         return $this;
     }
+    
+    public function storeDocumentList(array $documents) {
+        $this->_index->storeDocumentList($documents);
+        return $this;
+    }
+    
+    public function find($query) {
+        return $this->_index->find($query);
+    }
 
     public function fetchByPrimary($keys) {
         core\stub($keys);

@@ -9,9 +9,11 @@ use df;
 use df\core;
 use df\halo;
 
-class Server extends halo\peer\Server {
+class Server implements halo\peer\IServer {
     
-    const PROTOCOL_DISPOSITION = self::PEER_FIRST;
+    use halo\peer\TPeer_Server;
+    
+    const PROTOCOL_DISPOSITION = halo\peer\IServer::PEER_FIRST;
     
     protected $_maxRequestLength = 1048576;
     
@@ -21,8 +23,8 @@ class Server extends halo\peer\Server {
         );
     }
     
-    protected function _createSession(halo\socket\ISocket $socket) {
-        return new Session($socket);
+    protected function _createSessionFromSocket(halo\socket\IServerPeerSocket $socket) {
+        return new PeerSession($socket);
     }
     
     protected function _handleReadBuffer(halo\server\ISession $session, $data) {
@@ -82,7 +84,7 @@ class Server extends halo\peer\Server {
     }
     
     protected function _handleWriteBuffer(halo\server\ISession $session) {
-        if(!$response = $session->getResponse()) {
+        if(!$fileStream = $session->getFileStream()) {
             if(!$request = $session->getRequest()) {
                 // Bad request
                 $session->setErrorCode(400);
@@ -101,20 +103,23 @@ class Server extends halo\peer\Server {
             
             $session->setResponse($response);
             
-            if($response instanceof IFileResponse) {
-                $session->setFileStream($response->getContentFileStream());
+            // Write headers
+            $session->writeBuffer = $response->getHeaderString();
+            
+            if(!$response instanceof IFileResponse) {
+                // File stream not required, write the whole thing to buffer and end
+                $session->writeBuffer .= $session->getResponse()->getContent();
+                return halo\peer\IIoState::END;
             }
             
-            $session->writeBuffer = $response->getHeaderString();
+            $session->setFileStream($fileStream = $response->getContentFileStream());
         }
         
-        if($fileStream = $session->getFileStream()) {
-            $session->writeBuffer .= $fileStream->read(8192);
-            return $fileStream->eof() ? halo\peer\IIoState::END : halo\peer\IIoState::BUFFER;
-        } else {
-            $session->writeBuffer .= $response->getContent();
-            return halo\peer\IIoState::END;
-        }
+        $session->writeBuffer .= $fileStream->read(8192);
+        
+        return $fileStream->eof() ? 
+            halo\peer\IIoState::END : 
+            halo\peer\IIoState::BUFFER;
     }
     
     protected function _createResponse(halo\server\ISession $session) {

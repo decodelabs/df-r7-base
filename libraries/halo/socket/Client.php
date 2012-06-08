@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\halo;
 
-abstract class Client extends Base implements IClientSocket {
+abstract class Client extends Base implements IClientSocket, core\IDumpable {
     
     protected static $_defaultOptions = array(
         'connectionTimeout' => null
@@ -168,4 +168,31 @@ abstract class Client extends Base implements IClientSocket {
     abstract protected function _peekChunk($length);
     abstract protected function _readChunk($length);
     abstract protected function _writeChunk($data);
+    
+    
+// Dump
+    public function getDumpProperties() {
+        $output = $this->getId().' (';
+        $args = array();
+        
+        if($this->_isConnected) {
+            if($this->_readingEnabled) {
+                $args[] = 'r';
+            }
+            
+            if($this->_writingEnabled) {
+                $args[] = 'w';
+            }
+        }
+
+        if(empty($args)) {
+            $args[] = 'x';
+        }
+        
+        if($this->_isSecure) {
+            array_unshift($args, 's');
+        }
+        
+        return $output.implode('/', $args).')';
+    }
 }
