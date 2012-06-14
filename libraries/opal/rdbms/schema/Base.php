@@ -88,21 +88,33 @@ abstract class Base implements ISchema, core\IDumpable {
     
     
 // Creators
-    protected function _createField($name, $type, array $args) {
+    public function _createField($name, $type, array $args) {
         return opal\rdbms\schema\field\Base::factory(
             $this, $type, $name, $args
         );
     }
     
-    protected function _createIndex($name, $fields=null) {
+    public function _createIndex($name, $fields=null) {
         return new opal\rdbms\schema\constraint\Index($this, $name, $fields);
     }
     
-    protected function _createForeignKey($name, $targetSchema) {
+    public function _createForeignKey($name, $targetSchema) {
         return new opal\rdbms\schema\constraint\ForeignKey($this, $name, $targetSchema);
     }
     
-    protected function _createTrigger($name, $event, $timing, $statement) {
+    public function _createTrigger($name, $event, $timing, $statement) {
         return new opal\rdbms\schema\constraint\Trigger($this, $name, $event, $timing, $statement);
+    }
+    
+    
+// Ext. serialize
+    public function toStorageArray() {
+        return array_merge(
+            $this->_getBaseStorageArray(),
+            $this->_getFieldStorageArray(),
+            $this->_getIndexStorageArray(),
+            $this->_getForeignKeyStorageArray(),
+            $this->_getTriggerStorageArray()
+        );
     }
 }

@@ -41,6 +41,7 @@ interface IVirtualUnit extends IUnit {
 interface IStorageUnit extends IUnit {
     public function fetchByPrimary($id);
     public function destroyStorage();
+    public function getStorageBackendName();
 }
 
 interface IAdapterBasedStorageUnit extends IStorageUnit {
@@ -56,7 +57,12 @@ interface ISchemaBasedStorageUnit extends IAdapterBasedStorageUnit {
     public function validateUnitSchema(axis\schema\ISchema $schema);
 }
 
-
+interface ISchemaDefinitionStorageUnit extends IStorageUnit {
+    public function fetchFor(ISchemaBasedStorageUnit $unit, $transient=false);
+    public function store(ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema);
+    public function remove(ISchemaBasedStorageUnit $unit);
+    public function clearCache(ISchemaBasedStorageUnit $unit=null);
+}
 
 
 
@@ -64,10 +70,18 @@ interface ISchemaBasedStorageUnit extends IAdapterBasedStorageUnit {
 interface IAdapter {}
 
 interface ISchemaProviderAdapter extends IAdapter {
-    public function fetchSchema();
-    public function storeSchema(axis\schema\ISchema $schema);
-    public function unstoreSchema();
-    
     public function createStorageFromSchema(axis\schema\ISchema $schema);
     public function destroyStorage();
+}
+
+
+interface ISchemaDefinitionStorageAdapter extends IAdapter {
+    public function fetchFor(ISchemaBasedStorageUnit $unit);
+    public function getTimestampFor(ISchemaBasedStorageUnit $unit);
+    
+    public function insert(ISchemaBasedStorageUnit $unit, $jsonData, $version);
+    public function update(ISchemaBasedStorageUnit $unit, $jsonData, $version);
+    public function remove(ISchemaBasedStorageUnit $unit);
+    
+    public function ensureStorage();
 }

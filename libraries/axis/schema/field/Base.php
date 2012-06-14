@@ -95,6 +95,16 @@ abstract class Base implements axis\schema\IField, core\IDumpable {
     }
     
     
+// Ext. serialize
+    public function toStorageArray() {
+        return $this->_getBaseStorageArray();
+    }
+
+    protected function _getBaseStorageArray() {
+        return $this->_getGenericStorageArray();
+    }
+    
+    
 // Dump
     public function getDumpProperties() {
         return $this->getFieldSchemaString();

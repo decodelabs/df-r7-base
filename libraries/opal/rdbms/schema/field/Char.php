@@ -63,5 +63,15 @@ class Char extends Base implements
         $output .= ' ['.$this->_sqlVariant.']';
         
         return $output;
+    }
+    
+// Ext. serialize
+    public function toStorageArray() {
+        return array_merge(
+            $this->_getBaseStorageArray(),
+            $this->_getCharacterSetStorageArray(),
+            $this->_getBinaryCollectionStorageArray(),
+            $this->_getLengthRestrictedStorageArray()
+        );
     }    
 }

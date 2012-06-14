@@ -43,5 +43,13 @@ class Bit extends Base implements opal\schema\ILengthRestrictedField {
         $output .= ' ['.$this->_sqlVariant.']';
         
         return $output;
+    }
+    
+// Ext. serialize
+    public function toStorageArray() {
+        return array_merge(
+            $this->_getBaseStorageArray(),
+            $this->_getLengthRestrictedStorageArray()
+        );
     }    
 }

@@ -91,4 +91,14 @@ class Int extends Base implements
         
         return $output;
     } 
+    
+// Ext. serialize
+    public function toStorageArray() {
+        return array_merge(
+            $this->_getBaseStorageArray(),
+            $this->_getLengthRestrictedStorageArray(),
+            $this->_getNumericStorageArray(),
+            $this->_getAutoIncrementStorageArray()
+        );
+    }
 }

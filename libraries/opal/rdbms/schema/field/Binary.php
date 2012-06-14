@@ -50,4 +50,13 @@ class Binary extends Base implements opal\schema\ILengthRestrictedField {
         
         return $output;
     }    
+    
+    
+// Ext. serialize
+    public function toStorageArray() {
+        return array_merge(
+            $this->_getBaseStorageArray(),
+            $this->_getLengthRestrictedStorageArray()
+        );
+    }
 }

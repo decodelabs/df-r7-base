@@ -12,17 +12,6 @@ class Timestamp extends Base implements opal\schema\IAutoTimestampField {
     
     use opal\schema\TField_AutoTimestamp;
     
-    /*
-    public function setDefaultValue($value) {
-        if($value !== null) {
-            $this->_shouldTimestampAsDefault = false;
-        }
-        
-        return parent::setDefaultValue($value);
-    }
-    */
-   
-    
 // String
     public function toString() {
         $output = $this->_name.' '.strtoupper($this->_type);
@@ -47,4 +36,12 @@ class Timestamp extends Base implements opal\schema\IAutoTimestampField {
         
         return $output;
     }    
+    
+// Ext. serialize
+    public function toStorageArray() {
+        return array_merge(
+            $this->_getBaseStorageArray(),
+            $this->_getAutoTimestampStorageArray()
+        );
+    }
 }

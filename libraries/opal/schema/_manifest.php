@@ -68,6 +68,10 @@ interface ISchema extends IChangeTracker {
     public function getOption($key);
     public function getOptions();
     public function getOptionChanges();
+    
+    public static function fromJson($json);
+    public function toJson();
+    public function toStorageArray();
 }
 
 
@@ -148,6 +152,7 @@ interface ITriggerProvider extends ISchema {
 
 
 interface IField extends IChangeTracker {
+    public function getFieldType();
     public function _setName($name);
     public function getName();
     public function setComment($comment);
@@ -155,6 +160,7 @@ interface IField extends IChangeTracker {
     public function isNullable($flag=null);
     public function setDefaultValue($default);
     public function getDefaultValue();
+    public function toStorageArray();
 }
 
 
@@ -253,6 +259,7 @@ interface IIndexFieldReference {
     public function setSize($size);
     public function getSize();
     public function isDescending($flag=null);
+    public function toStorageArray();
 }
 
 
@@ -282,6 +289,7 @@ interface IForeignKeyFieldReference {
     public function _setTargetFieldName($targetField);
     public function getTargetFieldName();
     public function eq(IForeignKeyFieldReference $reference);
+    public function toStorageArray();
 }
 
 

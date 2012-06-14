@@ -129,6 +129,14 @@ class Guid extends Base implements axis\schema\IAutoGeneratorField {
     }
     
     
+// Ext. serialize
+    public function toStorageArray() {
+        return array_merge(
+            $this->_getBaseStorageArray(),
+            ['gen' => $this->_generator]
+        );
+    }
+    
 // Dump
     public function getFieldTypeDisplayName() {
         return 'Guid ['.$this->getGeneratorName().']';

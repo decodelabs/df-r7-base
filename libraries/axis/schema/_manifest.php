@@ -20,16 +20,13 @@ class FieldTypeNotFoundException extends RuntimeException {}
 // Interfaces
 interface ISchema extends opal\schema\ISchema, opal\schema\IFieldProvider, opal\schema\IIndexProvider {
     public function getUnitType();
+    public function getUnitId();
     public function iterateVersion();
     public function getVersion();
     
     public function sanitize(axis\ISchemaBasedStorageUnit $unit);
     public function validate(axis\ISchemaBasedStorageUnit $unit);
 }
-
-
-
-
 
 
 
@@ -76,6 +73,14 @@ trait TLengthRestrictedField {
         }
         
         return $this->_isConstantLength;
+    }
+    
+// Ext. serialize
+    protected function _getLengthRestrictedStorageArray() {
+        return [
+            'lng' => $this->_length,
+            'ctl' => $this->_isConstantLength
+        ];
     }
 }
 
@@ -125,4 +130,15 @@ interface IInverseRelationField extends IRelationField {
 
 interface IQueryClauseRewriterField extends IField {
     public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false);
+}
+
+
+
+
+// Bridge
+interface IBridge {
+    public function getUnit();
+    public function getAxisSchema();
+    public function getTargetSchema();
+    public function updateTargetSchema();
 }

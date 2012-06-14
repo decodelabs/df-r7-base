@@ -22,6 +22,11 @@ trait TConstraint_CharacterSetAware {
     public function getCharacterSet() {
         return $this->_characterSet;
     }
+    
+// Ext. serialize
+    protected function _getCharacterSetStorageArray() {
+        return ['chr' => $this->_characterSet];
+    }
 }
 
 
@@ -37,6 +42,11 @@ trait TConstraint_CollationAware {
     
     public function getCollation() {
         return $this->_collation;
+    }
+    
+// Ext. serialize
+    protected function _getCollationStorageArray() {
+        return ['col' => $this->_collation];
     }
 }
 
@@ -219,6 +229,30 @@ trait TConstraint_Index {
     }
     
     
+// Ext. serialize
+    public function toStorageArray() {
+        return $this->_getGenericStorageArray();
+    }
+
+    protected function _getGenericStorageArray() {
+        $output = [
+            'nam' => $this->_name,
+            'uni' => $this->_isUnique,
+            'fld' => array()
+        ];
+        
+        if($this->_comment !== null) {
+            $output['com'] = $this->_comment;
+        }
+        
+        foreach($this->_fieldReferences as $ref) {
+            $output['fld'][] = $ref->toStorageArray();
+        }
+        
+        return $output;
+    }
+    
+    
 // Dump
     public function getDumpProperties() {
         $output = $this->_name;
@@ -237,9 +271,9 @@ trait TConstraint_Index {
             }
             
             if($reference->isDescending()) {
-                $fieldRef .= ' DESC';
+                $fieldDef .= ' DESC';
             } else {
-                $fieldRef .= ' ASC';
+                $fieldDef .= ' ASC';
             }
             
             $fields[] = $fieldDef;
@@ -385,6 +419,28 @@ trait TConstraint_ForeignKey {
     public function isVoid() {
         return empty($this->_fieldReferences);
     } 
+    
+    
+// Ext. serialize
+    public function toStorageArray() {
+        return $this->_getGenericStorageArray();
+    }
+
+    protected function _getGenericStorageArray() {
+        $output = [
+            'nam' => $this->_name,
+            'tsc' => $this->_targetSchema,
+            'fld' => array(),
+            'upd' => $this->_updateAction,
+            'del' => $this->_deleteAction
+        ];
+        
+        foreach($this->_fieldReferences as $ref) {
+            $output['fld'][] = $ref->toStorageArray();
+        }
+        
+        return $output;
+    }
     
     
 // Dump
@@ -570,6 +626,22 @@ trait TConstraint_Trigger {
     }
     
     abstract protected function _hasFieldReference(array $fields);
+    
+    
+// Ext. serialize
+    public function toStorageArray() {
+        return $this->_getGenericStorageArray();
+    }
+
+    protected function _getGenericStorageArray() {
+        return [
+            'nam' => $this->_name,
+            'evt' => $this->_event,
+            'tim' => $this->_timing,
+            'stm' => $this->_statements
+        ];
+    }
+
     
 // Dump
     public function getDumpProperties() {

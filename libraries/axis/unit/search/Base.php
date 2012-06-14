@@ -66,6 +66,10 @@ abstract class Base extends axis\Unit implements
         core\stub();
     }
     
+    public function getStorageBackendName() {
+        core\stub($this);
+    }
+    
     
     public function newDocument($id=null, array $values=null) {
         return $this->_index->newDocument($id, $values);

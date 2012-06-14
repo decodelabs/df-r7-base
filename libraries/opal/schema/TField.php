@@ -27,6 +27,11 @@ trait TField {
     }
     */
     
+    public function getFieldType() {
+        $parts = explode('\\', get_class($this));
+        return array_pop($parts);
+    }
+    
     public function _setName($name) {
         if($name != $this->_name) {
             $this->_hasChanged = true;
@@ -87,6 +92,30 @@ trait TField {
         $this->_hasChanged = false;
         return $this;
     }
+    
+    
+// Ext. serialize
+    public function toStorageArray() {
+        return $this->_getGenericStorageArray();
+    }
+
+    protected function _getGenericStorageArray() {
+        $output = [
+            'typ' => $this->getFieldType(),
+            'nam' => $this->_name,
+            'nul' => $this->_isNullable
+        ];
+        
+        if($this->_defaultValue !== null) {
+            $output['def'] = $this->_defaultValue;
+        }
+        
+        if($this->_comment !== null) {
+            $output['com'] = $this->_comment;
+        }
+        
+        return $output;
+    }
 }
 
 
@@ -110,6 +139,18 @@ trait TField_CharacterSetAware {
     public function getCharacterSet() {
         return $this->_characterSet;
     }
+    
+    
+// Ext serialize
+    protected function _getCharacterSetStorageArray() {
+        $output = array();
+        
+        if($this->_characterSet !== null) {
+            $output['chs'] = $this->_characterSet;
+        }
+        
+        return $output;
+    }
 }
 
 
@@ -129,6 +170,11 @@ trait TField_BinaryCollationProvider {
         }
         
         return $this->_binaryCollation;
+    }
+    
+// Ext. serialize
+    protected function _getBinaryCollationStorageArray() {
+        return ['bic' => $this->_binaryCollation];
     }
 }
 
@@ -158,6 +204,12 @@ trait TField_LengthRestricted {
     
     protected function _getDefaultLength() {
         return null;
+    }
+    
+    
+// Ext. serialize
+    protected function _getLengthRestrictedStorageArray() {
+        return ['lnt' => $this->_length];
     }
 }
 
@@ -192,6 +244,14 @@ trait TField_Numeric {
         }
         
         return $this->_zerofill;
+    }
+    
+// Ext. serialize
+    protected function _getNumericStorageArray() {
+        return [
+            'uns' => $this->_isUnsigned,
+            'zfl' => $this->_zerofill
+        ];
     }
 }
 
@@ -231,6 +291,18 @@ trait TField_FloatingPointNumeric {
     public function getScale() {
         return $this->_scale;
     }
+    
+    
+// Ext. serialize
+    protected function _getFloatingPointNumericStorageArray() {
+        return array_merge(
+            $this->_getNumericStorageArray(),
+            [
+                'scl' => $this->_scale,
+                'prs' => $this->_precision
+            ]
+        );
+    }
 }
 
 
@@ -250,6 +322,12 @@ trait TField_AutoIncrementable {
         }
         
         return $this->_autoIncrement;
+    }
+    
+    
+// Ext. serialize
+    protected function _getAutoIncrementStorageArray() {
+        return ['aui' => $this->_autoIncrement];
     }
 }
 
@@ -296,6 +374,15 @@ trait TField_AutoTimestamp {
         
         return parent::setDefaultValue($value);
     }
+    
+    
+// Ext. serialize
+    protected function _getAutoTimestampStorageArray() {
+        return [
+            'toa' => $this->_shouldTimestampOnUpdate,
+            'tad' => $this->_timestampAsDefault
+        ];
+    }
 }
 
 
@@ -314,6 +401,12 @@ trait TField_OptionProvider {
     
     public function getOptions() {
         return $this->_options;
+    }
+    
+    
+// Ext. serialize
+    protected function _getOptionStorageArray() {
+        return ['opt' => $this->_options];
     }
 }
 
@@ -386,6 +479,11 @@ trait TField_BitSizeRestricted {
         }
         
         return $size;
+    }
+
+// Ext serialize
+    protected function _getBitSizeRestrictedStorageArray() {
+        return ['bit' => $this->_bitSize];
     }
 }
 
@@ -463,6 +561,11 @@ trait TField_ByteSizeRestricted {
         }
         
         return $size;
+    }
+
+// Ext. serialize
+    protected function _getByteSizeRestrictedStorageArray() {
+        return ['byt' => $this->_byteSize];
     }
 }
 
@@ -544,5 +647,10 @@ trait TField_LargeByteSizeRestricted {
         }
         
         return $size;
+    }
+
+// Ext. serialize
+    protected function _getLargeByteSizeStorageArray() {
+        return ['lby' => $this->_exponentSize];
     }
 }

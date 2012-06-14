@@ -83,4 +83,13 @@ class RainbowKey extends Base implements
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
         return new opal\schema\Primitive_Binary($this, $this->_byteSize + 2);
     }
+    
+    
+// Ext. serialize
+    public function toStorageArray() {
+        return array_merge(
+            $this->_getBaseStorageArray(),
+            $this->_getByteSizeRestrictedStorageArray()
+        );
+    }
 }

@@ -32,16 +32,10 @@ class Client implements opal\search\IClient {
     protected function __construct(core\collection\ITree $settings) {
         if(isset($settings->servers)) {
             foreach($settings->servers as $server) {
-                $this->_servers[] = [
-                    'host' => $server->get('host', static::DEFAULT_HOST),
-                    'port' => $server->get('port', static::DEFAULT_PORT)
-                ];
+                $this->_servers[] = $this->_extractNodeSettings($server);
             }
         } else {
-            $this->_servers[] = [
-                'host' => $settings->get('host', static::DEFAULT_HOST),
-                'port' => $settings->get('port', static::DEFAULT_PORT)
-            ];
+            $this->_servers[] = $this->_extractNodeSettings($settings);
         }
         
         if(empty($this->_servers)) {
@@ -49,6 +43,13 @@ class Client implements opal\search\IClient {
                 'No valid elastic search servers have been specified'
             );
         }
+    }
+    
+    private function _extractNodeSettings(core\collection\ITree $node) {
+        return [
+            'host' => $node->get('host', static::DEFAULT_HOST),
+            'port' => $node->get('port', static::DEFAULT_PORT)
+        ];
     }
     
     public function getIndex($name) {

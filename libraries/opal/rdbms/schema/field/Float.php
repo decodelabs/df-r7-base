@@ -55,4 +55,12 @@ class Float extends Base implements opal\schema\IFloatingPointNumericField {
         
         return $output;
     }    
+    
+// Ext. serialize
+    public function toStorageArray() {
+        return array_merge(
+            $this->_getBaseStorageArray(),
+            $this->_getFloatingPointNumericStorageArray()
+        );
+    }
 }

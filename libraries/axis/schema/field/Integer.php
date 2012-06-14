@@ -42,4 +42,15 @@ class Integer extends Base implements
         
         return $output;
     }
+    
+    
+// Ext. serialize
+    public function toStorageArray() {
+        return array_merge(
+            $this->_getBaseStorageArray(),
+            $this->_getByteSizeRestrictedStorageArray(),
+            $this->_getNumericStorageArray(),
+            $this->_getAutoIncrementStorageArray()
+        );
+    }
 }

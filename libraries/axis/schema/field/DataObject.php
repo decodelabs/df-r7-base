@@ -67,4 +67,13 @@ class DataObject extends Base implements opal\schema\ILargeByteSizeRestrictedFie
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
         return new opal\schema\Primitive_Blob($this, $this->_exponentSize);
     }
+    
+    
+// Ext. serialize
+    public function toStorageArray() {
+        return array_merge(
+            $this->_getBaseStorageArray(),
+            $this->_getLargeByteSizeRestrictedStorageArray()
+        );
+    }
 }

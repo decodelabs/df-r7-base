@@ -65,6 +65,15 @@ class IndexFieldReference implements IIndexFieldReference, core\IDumpable {
     }
     
     
+    public function toStorageArray() {
+        return [
+            'fld' => $this->_field->getName(),
+            'siz' => $this->_size,
+            'des' => $this->_isDescending
+        ];
+    }
+    
+    
 // Dump
     public function getDumpProperties() {
         $output = $this->_field->getName();

@@ -1,0 +1,188 @@
+<?php
+/**
+ * This file is part of the Decode Framework
+ * @license http://opensource.org/licenses/MIT
+ */
+namespace df\axis\unit\schemaDefinition;
+
+use df;
+use df\core;
+use df\axis;
+use df\opal;
+
+final class Virtual extends axis\Unit implements axis\ISchemaDefinitionStorageUnit, axis\ISchemaBasedStorageUnit, axis\IVirtualUnit {
+
+    protected $_adapter;
+
+    public static function loadVirtual(axis\IModel $model, array $args) {
+        return new self($model);
+    }    
+    
+    public function __construct(axis\IModel $model, $unitName=null) {
+        parent::__construct($model);
+        $this->_adapter = self::loadAdapter($this);
+    }
+    
+    public function getUnitType() {
+        return 'schemaDefinition';
+    }
+    
+    public function getUnitAdapter() {
+        return $this->_adapter;
+    }
+    
+    public function getStorageBackendName() {
+        return $this->_model->getApplication()->getUniquePrefix().'_axis_schemas';
+    }
+    
+    public function fetchFor(axis\ISchemaBasedStorageUnit $unit, $transient=false) {
+        $cache = axis\schema\Cache::getInstance($this->_model->getApplication());
+        $cache->clear(); // delete me
+        
+        $schema = $cache->get($unit->getUnitId());
+        
+        if($schema !== null && !$schema instanceof axis\schema\ISchema) {
+            $schema = null;
+            $cache->clear();
+        }
+        
+        $setCache = false;
+        $schemaJson = null;
+        
+        try {
+            $schemaJson = $this->_adapter->fetchFor($unit);
+        } catch(\Exception $e) {
+            // TODO: try and hone in on just missing-table errors
+            
+            if(!$this->_adapter->ensureStorage()) {
+                throw $e;
+            }
+        }
+        
+        if(!$schema && $schemaJson) {
+            $schema = axis\schema\Base::fromJson($schemaJson);
+            $setCache = true;
+        }
+        
+        
+        if(!$schema) {
+            $schema = new axis\schema\Base($unit, $unit->getUnitName());
+            $unit->updateUnitSchema($schema);
+            
+            if(!$transient) {
+                $unit->validateUnitSchema($schema);
+                $unit->createStorageFromSchema($schema);
+                
+                $schema->acceptChanges();
+                $this->store($unit, $schema);
+                
+                $setCache = true;
+            }
+        }
+        
+        if($setCache && !$transient) {    
+            $cache->set($unit->getUnitId(), $schema);
+        }
+        
+        return $schema;
+    }
+
+    
+    public function store(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
+        $currentTimestamp = $this->_adapter->getTimestampFor($unit);
+        $jsonData = $schema->toJson();
+        
+        try {
+            if($currentTimestamp === null) {
+                $this->_adapter->insert($unit, $jsonData, $schema->getVersion());
+            } else {
+                $this->_adapter->update($unit, $jsonData, $schema->getVersion());
+            }
+        } catch(\Exception $e) {
+            // TODO: try and hone in on just missing-table errors
+            
+            if(!$this->_adapter->ensureStorage()) {
+                throw $e;
+            }
+            
+            if($currentTimestamp === null) {
+                $this->_adapter->insert($unit, $jsonData, $schema->getVersion());
+            } else {
+                $this->_adapter->update($unit, $jsonData, $schema->getVersion());
+            }
+        }
+        
+        $this->clearCache($unit);
+        
+        return $this;
+    }
+    
+    public function remove(axis\ISchemaBasedStorageUnit $unit) {
+        try {
+            $this->_adapter->remove($unit);
+        } catch(\Exception $e) {
+            // TODO: try and hone in on just missing-table errors
+            
+            if(!$this->_adapter->ensureStorage()) {
+                throw $e;
+            }
+            
+            $this->_adapter->remove($unit);
+        }
+        
+        $this->clearCache($unit);
+        
+        return $this;
+    }
+    
+    public function clearCache(axis\ISchemaBasedStorageUnit $unit=null) {
+        $cache = axis\schema\Cache::getInstance($this->_model->getApplication());
+        
+        if($unit) {
+            $cache->remove($unit->getUnitId());
+        } else {
+            $cache->clear();
+        }
+        
+        return $this;
+    }
+    
+    
+    
+    
+    public function fetchByPrimary($id) {
+        core\stub();
+    }
+    
+    public function destroyStorage() {
+        core\stub();
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    public function getUnitSchema() {
+        core\stub();
+    }
+    
+    public function getTransientUnitSchema() {
+        core\stub();
+    }
+    
+    public function clearUnitSchemaCache() {
+        core\stub();
+    }
+    
+    public function updateUnitSchema(axis\schema\ISchema $schema) {
+        core\stub();
+    }
+    
+    public function validateUnitSchema(axis\schema\ISchema $schema) {
+        core\stub();
+    }
+}

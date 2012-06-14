@@ -32,4 +32,12 @@ class Timestamp extends Base implements opal\schema\IAutoTimestampField {
         
         return $output;
     } 
+    
+// Ext. serialize
+    public function toStorageArray() {
+        return array_merge(
+            $this->_getBaseStorageArray(),
+            $this->_getAutoTimestampStorageArray()
+        );
+    }
 }

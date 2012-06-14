@@ -27,11 +27,17 @@ class Base implements ISchema, core\IDumpable {
     
     public function __construct(axis\ISchemaBasedStorageUnit $unit, $name) {
         $this->_unitType = $unit->getUnitType();
+        $this->_unitId = $unit->getUnitId();
+        
         $this->setName($name);
     }
     
     public function getUnitType() {
         return $this->_unitType;
+    }
+    
+    public function getUnitId() {
+        return $this->_unitId;
     }
     
     public function iterateVersion() {
@@ -57,11 +63,11 @@ class Base implements ISchema, core\IDumpable {
         return $this;
     }
     
-    protected function _createField($name, $type, array $args) {
+    public function _createField($name, $type, array $args) {
         return axis\schema\field\Base::factory($this, $name, $type, $args);
     }
     
-    protected function _createIndex($name, $fields=null) {
+    public function _createIndex($name, $fields=null) {
         return new axis\schema\constraint\Index($this, $name, $fields);
     }
     
@@ -123,5 +129,22 @@ class Base implements ISchema, core\IDumpable {
         }
         
         return $output;
+    }
+    
+    
+// Ext. Serialize
+    public function toStorageArray() {
+        $output = [
+            'vsn' => $this->_version,
+            'utp' => $this->_unitType,
+            'uid' => $this->_unitId
+        ];
+        
+        return array_merge(
+            $output, 
+            $this->_getBaseStorageArray(),
+            $this->_getFieldStorageArray(),
+            $this->_getIndexStorageArray()
+        );
     }
 }

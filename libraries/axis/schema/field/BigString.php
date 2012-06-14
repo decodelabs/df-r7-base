@@ -32,4 +32,13 @@ class BigString extends Base implements
         
         return $output;
     }
+    
+// Ext. serialize
+    public function toStorageArray() {
+        return array_merge(
+            $this->_getBaseStorageArray(),
+            $this->_getLargeByteSizeRestrictedStorageArray(),
+            $this->_getCharacterSetStorageArray()
+        );
+    }
 }

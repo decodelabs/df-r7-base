@@ -97,6 +97,34 @@ trait TSchema {
         $this->_optionChanges = array();
     }
     
+    
+// Ext. Serialize
+    public static function fromJson($json) {
+        if(!$data = json_decode($json, true)) {
+            throw new RuntimeException(
+                'Invalid json schema representation'
+            );
+        }
+        
+        core\dump($data);
+    }
+    
+    public function toJson() {
+        return json_encode($this->toStorageArray());
+    }
+    
+    protected function _getBaseStorageArray() {
+        $output = [
+            'opt' => $this->_options,
+            'fld' => array(),
+            'idx' => array(),
+            'pdx' => null
+        ];
+        
+        return $output;
+    }
+    
+    
 // Dump
     public function getDumpProperties() {
         $output = $this->_getOptionDumpList();
@@ -400,7 +428,7 @@ trait TSchema_FieldProvider {
         return $name;
     }
     
-    abstract protected function _createField($name, $type, array $args);
+    abstract public function _createField($name, $type, array $args);
     
     
     protected function _hasFieldChanges() {
@@ -423,6 +451,17 @@ trait TSchema_FieldProvider {
         $this->_removeFields = array();
     }
     
+    
+// Ext. serialize
+    protected function _getFieldStorageArray() {
+        $output = ['fld' => array()];
+        
+        foreach($this->_fields as $field) {
+            $output['fld'][] = $field->toStorageArray();
+        }
+        
+        return $output;
+    }
 
 // Dump
     protected function _getFieldDumpList() {
@@ -700,7 +739,7 @@ trait TSchema_IndexProvider {
         return $this->_removeIndexes;
     }
     
-    abstract protected function _createIndex($name, $fields=null);
+    abstract public function _createIndex($name, $fields=null);
     
     protected function _getOriginalIndexNameFor($name) {
         if(isset($this->_renameIndexes[$name])) {
@@ -800,6 +839,22 @@ trait TSchema_IndexProvider {
         $this->_removeIndexes = array();
         
         return $this;
+    }
+    
+    
+// Ext. serialize
+    protected function _getIndexStorageArray() {
+        $output = ['idx' => array()];
+        
+        foreach($this->_indexes as $index) {
+            $output['idx'][] = $index->toStorageArray();
+        }
+        
+        if($this->_primaryIndex) {
+            $output['pdx'] = $this->_primaryIndex->getName();
+        }
+        
+        return $output;
     }
     
     
@@ -972,7 +1027,7 @@ trait TSchema_ForeignKeyProvider {
         return $this->_removeForeignKeys;
     }
     
-    abstract protected function _createForeignKey($name, $targetSchema);
+    abstract public function _createForeignKey($name, $targetSchema);
     
     protected function _getOriginalForeignKeyNameFor($name) {
         if(isset($this->_renameForeignKeys[$name])) {
@@ -1023,6 +1078,17 @@ trait TSchema_ForeignKeyProvider {
         return $this;
     }
     
+    
+// Ext. serialize
+    protected function _getForeignKeyStorageArray() {
+        $output = ['fky' => array()];
+        
+        foreach($this->_foreignKeys as $key) {
+            $output['fky'][] = $key->toStorageArray();
+        }
+        
+        return $output;
+    }
     
 // Dump
     protected function _getForeignKeyDumpList() {
@@ -1242,7 +1308,19 @@ trait TSchema_TriggerProvider {
         return $this;
     }
     
-    abstract protected function _createTrigger($name, $event, $timing, $statement);
+    abstract public function _createTrigger($name, $event, $timing, $statement);
+    
+
+// Ext. serialize
+    protected function  _getTriggerStorageArray() {
+        $output = ['trg' => array()];
+        
+        foreach($this->_triggers as $trigger) {
+            $output['trg'][] = $trigger->toStorageArray();
+        }
+        
+        return $output;
+    }
     
     
 // Dump

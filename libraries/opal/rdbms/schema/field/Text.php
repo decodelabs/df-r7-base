@@ -43,4 +43,13 @@ class Text extends Base implements
         
         return $output;
     }    
+    
+// Ext. serialize
+    public function toStorageArray() {
+        return array_merge(
+            $this->_getBaseStorageArray(),
+            $this->_getCharacterSetStorageArray(),
+            $this->_getBinaryCollationStorageArray()
+        );
+    }
 }

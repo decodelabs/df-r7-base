@@ -206,6 +206,25 @@ abstract class Base implements opal\rdbms\schema\IField, core\IDumpable {
         }
     }
     
+// Ext. serialize
+    public function toStorageArray() {
+        return $this->_getBaseStorageArray();
+    }
+
+    protected function _getBaseStorageArray() {
+        return array_merge(
+            [
+                'typ' => $this->_type,
+                'var' => $this->_sqlVariant,
+                'ncc' => $this->_nullConflictClause,
+                'col' => $this->_collation
+            ],
+            $this->_getGenericStorageArray()
+        );
+    }
+    
+    
+// Dump
     public function getDumpProperties() {
         return $this->toString();
     }

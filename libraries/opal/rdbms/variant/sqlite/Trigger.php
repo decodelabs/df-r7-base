@@ -55,6 +55,19 @@ class Trigger extends opal\rdbms\schema\constraint\Trigger {
     }
     
     
+// Ext. serialize
+    public function toStorageArray() {
+        return array_merge(
+            $this->_getGenericStorageArray(),
+            [
+                'tmp' => $this->_isTemporary,
+                'udf' => $this->_updateFields,
+                'wex' => $this->_whenExpression
+            ]
+        );
+    }
+    
+    
 // Dump
     public function getDumpProperties() {
         $output = '';

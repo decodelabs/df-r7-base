@@ -83,4 +83,12 @@ class Date extends Base {
             return new opal\schema\Primitive_Date($this);
         } 
     }
+    
+// Ext. serialize
+    public function toStorageArray() {
+        return array_merge(
+            $this->_getBaseStorageArray(),
+            ['ict' => $this->_includeTime]
+        );
+    }
 }

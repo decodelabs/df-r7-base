@@ -28,4 +28,12 @@ class Binary extends Base implements
             return new opal\schema\Primitive_Varbinary($this, $this->_length);
         }
     }
+    
+// Ext. serialize
+    public function toStorageArray() {
+        return array_merge(
+            $this->_getBaseStorageArray(),
+            $this->_getLengthRestrictedStorageArray()
+        );
+    }
 }

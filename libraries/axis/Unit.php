@@ -50,7 +50,7 @@ abstract class Unit implements IUnit {
         $class = 'df\\apex\\models\\'.$model->getModelName().'\\'.$name.'\\Unit';
         
         if(!class_exists($class)) {
-            if(preg_match('/^([a-z0-9_]+)\.([a-z0-9_]+)\(([a-zA-Z0-9_., ]+)\)$/i', $name, $matches)) {
+            if(preg_match('/^([a-z0-9_]+)\.([a-z0-9_]+)\(([a-zA-Z0-9_., ]*)\)$/i', $name, $matches)) {
                 $class = 'df\\axis\\unit\\'.$matches[1].'\\'.$matches[2];
                 
                 if(!class_exists($class)) {

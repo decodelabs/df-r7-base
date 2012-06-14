@@ -235,7 +235,7 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, core\IDumpable {
     
     
 // Constraints
-    protected function _createTrigger($name, $event, $timing, $statement) {
+    public function _createTrigger($name, $event, $timing, $statement) {
         return new Trigger($this, $name, $event, $timing, $statement);
     }
     

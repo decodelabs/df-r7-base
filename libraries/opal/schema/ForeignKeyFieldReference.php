@@ -41,4 +41,11 @@ class ForeignKeyFieldReference implements IForeignKeyFieldReference {
         return $this->_field === $reference->getField()
             && $this->_targetFieldName == $reference->getTargetFieldName();
     }
+    
+    public function toStorageArray() {
+        return [
+            $this->_field->getName(),
+            $this->_targetFieldName
+        ];
+    }
 }

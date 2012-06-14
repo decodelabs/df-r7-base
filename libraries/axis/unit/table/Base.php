@@ -35,6 +35,9 @@ abstract class Base extends axis\Unit implements
         return $this->_adapter;
     }
     
+    public function getStorageBackendName() {
+        return $this->_model->getApplication()->getUniquePrefix().'_'.$this->_model->getModelName().'_'.$this->getCanonicalUnitName();
+    }
     
     public function getBridgeUnit($fieldName) {
         $schema = $this->getUnitSchema();
@@ -52,30 +55,7 @@ abstract class Base extends axis\Unit implements
 // Schema
     public function getUnitSchema() {
         if($this->_schema === null) {
-            $cache = axis\schema\Cache::getInstance($this->getModel()->getApplication());
-            //$cache->clear();
-            $this->_schema = $cache->get($this->getUnitId());
-            
-            if($this->_schema !== null && !$this->_schema instanceof axis\schema\ISchema) {
-                $this->_schema = null;
-                $cache->clear();
-            }
-            
-            if(!$this->_schema) {
-                if(!$this->_schema = $this->_adapter->fetchSchema()) {
-                    $schema = $this->_buildInitialSchema();
-                    
-                    $this->updateUnitSchema($schema);
-                    $this->validateUnitSchema($schema);
-                    $this->_adapter->createStorageFromSchema($schema);
-                    
-                    $schema->acceptChanges();
-                    $this->_adapter->storeSchema($schema);
-                    $this->_schema = $schema;
-                }
-                
-                $cache->set($this->getUnitId(), $this->_schema);
-            }
+            $this->_schema = $this->_model->getUnit('schemaDefinition.Virtual()')->fetchFor($this);
         }
         
         return $this->_schema;
@@ -86,12 +66,7 @@ abstract class Base extends axis\Unit implements
             return $this->_schema;
         }
         
-        if(!$schema = $this->_adapter->fetchSchema()) {
-            $schema = $this->_buildInitialSchema();
-            $this->updateUnitSchema($schema);
-        }
-        
-        return $schema;
+        return $this->_model->getUnit('schemaDefinition.Virtual()')->fetchFor($this, true);
     }
     
     protected function _buildInitialSchema() {
@@ -139,12 +114,15 @@ abstract class Base extends axis\Unit implements
         return $this;
     }
     
+    public function createStorageFromSchema(axis\schema\ISchema $schema) {
+        $this->_adapter->createStorageFromSchema($schema);
+        return $this;
+    }
+    
     
     public function destroyStorage() {
-        $this->clearUnitSchemaCache();
         $this->_adapter->destroyStorage();
-        $this->_adapter->unstoreSchema();
-        
+        $this->_model->getUnit('schemaDefinition.Virtual()')->remove($this);
         
         return $this;
     }
