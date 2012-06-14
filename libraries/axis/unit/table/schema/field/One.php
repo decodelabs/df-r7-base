@@ -205,6 +205,25 @@ class One extends axis\schema\field\Base implements IOneField {
     }
     
     
+// Ext. serialize
+    protected function _importStorageArray(array $data) {
+        $this->_setBaseStorageArray($data);
+        
+        $this->_primaryFields = (array)$data['pfl'];
+        $this->_targetUnitId = $data['tui'];
+    }
+    
+    public function toStorageArray() {
+        return array_merge(
+            $this->_getBaseStorageArray(),
+            [
+                'pfl' => $this->_primaryFields,
+                'tui' => $this->_targetUnitId
+            ]
+        );
+    }
+    
+    
 // Dump
     public function getDumpProperties() {
         return parent::getDumpProperties().' '.$this->_targetUnitId.' : '.implode(', ', $this->_primaryFields);

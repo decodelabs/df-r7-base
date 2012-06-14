@@ -130,6 +130,11 @@ class Guid extends Base implements axis\schema\IAutoGeneratorField {
     
     
 // Ext. serialize
+    protected function _importStorageArray(array $data) {
+        $this->_setBaseStorageArray($data);
+        $this->_generator = $data['gen'];
+    }
+
     public function toStorageArray() {
         return array_merge(
             $this->_getBaseStorageArray(),

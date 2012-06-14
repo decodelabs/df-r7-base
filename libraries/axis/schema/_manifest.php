@@ -76,9 +76,14 @@ trait TLengthRestrictedField {
     }
     
 // Ext. serialize
+    protected function _setLengthRestrictedStorageArray(array $data) {
+        $this->_length = $data['lnt'];
+        $this->_isConstantLength = $data['ctl'];
+    }
+
     protected function _getLengthRestrictedStorageArray() {
         return [
-            'lng' => $this->_length,
+            'lnt' => $this->_length,
             'ctl' => $this->_isConstantLength
         ];
     }

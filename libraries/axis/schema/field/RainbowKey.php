@@ -86,6 +86,11 @@ class RainbowKey extends Base implements
     
     
 // Ext. serialize
+    protected function _importStorageArray(array $data) {
+        $this->_setBaseStorageArray($data);
+        $this->_setByteSizeRestrictedStorageArray($data);
+    }
+
     public function toStorageArray() {
         return array_merge(
             $this->_getBaseStorageArray(),

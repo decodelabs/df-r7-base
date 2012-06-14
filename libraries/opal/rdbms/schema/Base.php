@@ -94,23 +94,50 @@ abstract class Base implements ISchema, core\IDumpable {
         );
     }
     
+    public function _createFieldFromStorageArray(array $data) {
+        core\stub($data);
+    }
+    
     public function _createIndex($name, $fields=null) {
         return new opal\rdbms\schema\constraint\Index($this, $name, $fields);
     }
     
+    public function _createIndexFromStorageArray(array $data) {
+        core\stub($data);
+    }
+        
     public function _createForeignKey($name, $targetSchema) {
         return new opal\rdbms\schema\constraint\ForeignKey($this, $name, $targetSchema);
+    }
+    
+    public function _createForeignKeyFromStorageArray(array $data) {
+        core\stub($data);
     }
     
     public function _createTrigger($name, $event, $timing, $statement) {
         return new opal\rdbms\schema\constraint\Trigger($this, $name, $event, $timing, $statement);
     }
     
+    public function _createTriggerFromStorageArray(array $data) {
+        core\stub($data);
+    }
+    
     
 // Ext. serialize
+    public static function fromJson(opal\schema\ISchemaContext $schemaContext, $json) {
+        if(!$data = json_decode($json, true)) {
+            throw new RuntimeException(
+                'Invalid json schema representation'
+            );
+        }
+        
+        core\dump($data);
+    }
+
+
     public function toStorageArray() {
         return array_merge(
-            $this->_getBaseStorageArray(),
+            $this->_getGenericStorageArray(),
             $this->_getFieldStorageArray(),
             $this->_getIndexStorageArray(),
             $this->_getForeignKeyStorageArray(),

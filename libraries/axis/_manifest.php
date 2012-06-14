@@ -8,6 +8,7 @@ namespace df\axis;
 use df;
 use df\core;
 use df\axis;
+use df\opal;
 
 
 // Exceptions
@@ -49,7 +50,7 @@ interface IAdapterBasedStorageUnit extends IStorageUnit {
     public function getUnitType();
 }
 
-interface ISchemaBasedStorageUnit extends IAdapterBasedStorageUnit {
+interface ISchemaBasedStorageUnit extends IAdapterBasedStorageUnit, opal\schema\ISchemaContext {
     public function getUnitSchema();
     public function getTransientUnitSchema();
     public function clearUnitSchemaCache();

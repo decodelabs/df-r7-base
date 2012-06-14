@@ -65,6 +65,10 @@ class IndexFieldReference implements IIndexFieldReference, core\IDumpable {
     }
     
     
+    public static function fromStorageArray(opal\schema\ISchema $schema, array $data) {
+        return new self($schema->getField($data['fld']), $data['siz'], $data['des']);
+    }
+    
     public function toStorageArray() {
         return [
             'fld' => $this->_field->getName(),

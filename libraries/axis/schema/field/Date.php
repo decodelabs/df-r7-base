@@ -85,6 +85,11 @@ class Date extends Base {
     }
     
 // Ext. serialize
+    protected function _importStorageArray(array $data) {
+        $this->_setBaseStorageArray($data);
+        $this->_includeTime = $data['ict'];
+    }
+
     public function toStorageArray() {
         return array_merge(
             $this->_getBaseStorageArray(),

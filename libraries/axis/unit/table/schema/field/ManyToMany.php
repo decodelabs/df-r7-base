@@ -168,4 +168,23 @@ class ManyToMany extends Many implements IManyToManyField {
         
         return $this;
     }
+
+
+// Ext. serialize
+    protected function _importStorageArray(array $data) {
+        parent::_importStorageArray($data);
+        
+        $this->_isDominant = $data['dom'];
+        $this->_targetField = $data['tfl'];
+    }
+    
+    public function toStorageArray() {
+        return array_merge(
+            parent::toStorageArray(),
+            [
+                'dom' => $this->_isDominant,
+                'tfl' => $this->_targetField
+            ]
+        );
+    }
 }

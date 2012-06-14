@@ -230,8 +230,27 @@ trait TConstraint_Index {
     
     
 // Ext. serialize
+    public static function fromStorageArray(opal\schema\ISchema $schema, array $data) {
+        $output = new self($data['nam']);
+        $output->_setGenericStorageArray($schema, $data);
+        return $output;
+    }
+
     public function toStorageArray() {
         return $this->_getGenericStorageArray();
+    }
+    
+    protected function _setGenericStorageArray(opal\schema\ISchema $schema, array $data) {
+        $this->_name = $data['nam'];
+        $this->_isUnique = $data['uni'];
+        
+        foreach($data['fld'] as $field) {
+            $this->_fieldReferences[] = IndexFieldReference::fromStorageArray($schema, $field);
+        }
+        
+        if(isset($data['com'])) {
+            $this->_comment = $data['com'];
+        }
     }
 
     protected function _getGenericStorageArray() {

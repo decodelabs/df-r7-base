@@ -42,6 +42,11 @@ class ForeignKeyFieldReference implements IForeignKeyFieldReference {
             && $this->_targetFieldName == $reference->getTargetFieldName();
     }
     
+    
+    public static function fromStorageArray(opal\schema\ISchema $schema, array $data) {
+        return new self($schema->getField($data[0]), $data[1]);
+    }
+    
     public function toStorageArray() {
         return [
             $this->_field->getName(),

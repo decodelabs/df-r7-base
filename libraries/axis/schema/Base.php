@@ -25,6 +25,7 @@ class Base implements ISchema, core\IDumpable {
         'comment' => null
     ];
     
+    
     public function __construct(axis\ISchemaBasedStorageUnit $unit, $name) {
         $this->_unitType = $unit->getUnitType();
         $this->_unitId = $unit->getUnitId();
@@ -67,8 +68,16 @@ class Base implements ISchema, core\IDumpable {
         return axis\schema\field\Base::factory($this, $name, $type, $args);
     }
     
+    public function _createFieldFromStorageArray(array $data) {
+        return axis\schema\field\Base::fromStorageArray($this, $data);
+    }
+    
     public function _createIndex($name, $fields=null) {
         return new axis\schema\constraint\Index($this, $name, $fields);
+    }
+    
+    public function _createIndexFromStorageArray(array $data) {
+        return axis\schema\constraint\Index::fromStorageArray($this, $data);
     }
     
     
@@ -133,6 +142,27 @@ class Base implements ISchema, core\IDumpable {
     
     
 // Ext. Serialize
+    public static function fromJson(opal\schema\ISchemaContext $unit, $json) {
+        if(!$data = json_decode($json, true)) {
+            throw new RuntimeException(
+                'Invalid json schema representation'
+            );
+        }
+        
+        $output = new self($unit, $unit->getUnitName());
+        $output->_version = $data['vsn'];
+        $output->_unitType = $data['utp'];
+        $output->_unitId = $data['uid'];
+        
+        $output->_setGenericStorageArray($data);
+        $output->_setFieldStorageArray($data);
+        $output->_setIndexStorageArray($data);
+        
+        $output->acceptChanges();
+        
+        return $output;
+    }
+
     public function toStorageArray() {
         $output = [
             'vsn' => $this->_version,
@@ -142,7 +172,7 @@ class Base implements ISchema, core\IDumpable {
         
         return array_merge(
             $output, 
-            $this->_getBaseStorageArray(),
+            $this->_getGenericStorageArray(),
             $this->_getFieldStorageArray(),
             $this->_getIndexStorageArray()
         );

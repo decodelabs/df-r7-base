@@ -14,7 +14,7 @@ abstract class Base implements axis\schema\IField, core\IDumpable {
     
     use opal\schema\TField;
     
-    public static function factory(axis\schema\ISchema $schema, $name, $type, $args) {
+    public static function factory(axis\schema\ISchema $schema, $name, $type, array $args=null) {
         $class = 'df\\axis\\unit\\'.$schema->getUnitType().'\\schema\\field\\'.ucfirst($type);
         
         if(!class_exists($class)) {
@@ -30,10 +30,10 @@ abstract class Base implements axis\schema\IField, core\IDumpable {
         return new $class($schema, $type, $name, $args);
     }
     
-    public function __construct(axis\schema\ISchema $schema, $type, $name, array $args) {
+    public function __construct(axis\schema\ISchema $schema, $type, $name, array $args=null) {
         $this->_setName($name);
         
-        if(method_exists($this, '_init')) {
+        if($args !== null && method_exists($this, '_init')) {
             call_user_func_array(array($this, '_init'), $args);    
         }
     }
@@ -96,12 +96,27 @@ abstract class Base implements axis\schema\IField, core\IDumpable {
     
     
 // Ext. serialize
+    public static function fromStorageArray(axis\schema\ISchema $schema, array $data) {
+        $output = self::factory($schema, $data['nam'], $data['typ'], null);
+        $output->_importStorageArray($data);
+        
+        return $output;
+    }
+
     public function toStorageArray() {
         return $this->_getBaseStorageArray();
     }
-
+    
+    protected function _setBaseStorageArray(array $data) {
+        $this->_setGenericStorageArray($data);
+    }
+    
     protected function _getBaseStorageArray() {
         return $this->_getGenericStorageArray();
+    }
+    
+    protected function _importStorageArray(array $data) {
+        $this->_setBaseStorageArray($data);
     }
     
     

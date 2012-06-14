@@ -163,4 +163,25 @@ class OneToMany extends axis\schema\field\Base implements IOneToManyField {
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
         return new opal\schema\Primitive_Null($this);
     }
+    
+    
+// Ext. serialize
+    protected function _importStorageArray(array $data) {
+        $this->_setBaseStorageArray($data);
+        
+        $this->_targetPrimaryFields = (array)$data['tpf'];
+        $this->_targetUnitId = $data['tui'];
+        $this->_targetField = $data['tfl'];
+    }
+    
+    public function toStorageArray() {
+        return array_merge(
+            $this->_getBaseStorageArray(),
+            [
+                'tpf' => $this->_targetPrimaryFields,
+                'tui' => $this->_targetUnitId,
+                'tfl' => $this->_targetField
+            ]
+        );
+    }
 }

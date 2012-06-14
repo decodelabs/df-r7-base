@@ -24,7 +24,7 @@ class Many extends axis\schema\field\Base implements IManyField {
     protected $_bridgeUnitId;
     protected $_targetUnitId;
     
-    public function __construct(axis\schema\ISchema $schema, $type, $name, array $args) {
+    public function __construct(axis\schema\ISchema $schema, $type, $name, array $args=null) {
         parent::__construct($schema, $type, $name, $args);
         $this->_bridgeUnitId = 'table.ManyBridge('.$schema->getName().'.'.$this->_name.')';
     }
@@ -269,5 +269,28 @@ class Many extends axis\schema\field\Base implements IManyField {
 // Primitive
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
         return new opal\schema\Primitive_Null($this);
+    }
+    
+    
+// Ext. serialize
+    protected function _importStorageArray(array $data) {
+        $this->_setBaseStorageArray($data);
+        
+        $this->_localPrimaryFields = (array)$data['lpf'];
+        $this->_targetPrimaryFields = (array)$data['tpf'];
+        $this->_bridgeUnitId = $data['bui'];
+        $this->_targetUnitId = $data['tui'];
+    }
+    
+    public function toStorageArray() {
+        return array_merge(
+            $this->_getBaseStorageArray(),
+            [
+                'lpf' => $this->_localPrimaryFields,
+                'tpf' => $this->_targetPrimaryFields,
+                'bui' => $this->_bridgeUnitId,
+                'tui' => $this->_targetUnitId
+            ]
+        );
     }
 }

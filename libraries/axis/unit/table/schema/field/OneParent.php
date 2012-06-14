@@ -130,4 +130,23 @@ class OneParent extends axis\schema\field\Base implements IOneParentField {
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
         return new opal\schema\Primitive_Null($this);
     }
+    
+    
+// Ext. serialize
+    protected function _importStorageArray(array $data) {
+        $this->_setBaseStorageArray($data);
+        
+        $this->_targetUnitId = $data['tui'];
+        $this->_targetField = $data['tfl'];
+    }
+    
+    public function toStorageArray() {
+        return array_merge(
+            $this->_getBaseStorageArray(),
+            [
+                'tui' => $this->_targetUnitId,
+                'tfl' => $this->_targetField
+            ]
+        );
+    }
 }

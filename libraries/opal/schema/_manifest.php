@@ -69,10 +69,12 @@ interface ISchema extends IChangeTracker {
     public function getOptions();
     public function getOptionChanges();
     
-    public static function fromJson($json);
+    public static function fromJson(ISchemaContext $schemaContext, $json);
     public function toJson();
     public function toStorageArray();
 }
+
+interface ISchemaContext {}
 
 
 interface IFieldProvider extends ISchema {
@@ -123,7 +125,9 @@ interface IIndexProvider extends ISchema {
 interface IForeignKeyProvider extends ISchema {
     public function getForeignKey($name);
     public function addForeignKey($name, $targetSchema);
+    public function addPreparedForeignKey(IForeignKey $key);
     public function replaceForeignKey($name, $targetSchema);
+    public function replacePreparedForeignKey(IForeignKey $key);
     public function removeForeignKey($name);
     public function renameForeignKey($oldName, $newName);
     public function getForeignKeys();
@@ -137,8 +141,10 @@ interface IForeignKeyProvider extends ISchema {
 interface ITriggerProvider extends ISchema {
     public function getTrigger($name);
     public function addTrigger($name, $event, $timing, $statement);
+    public function addPreparedTrigger(ITrigger $trigger);
     public function populateTrigger(ITrigger $trigger);
     public function replaceTrigger($name, $event, $timing, $statement);
+    public function replacePreparedTrigger(ITrigger $trigger);
     public function removeTrigger($name);
     public function renameTrigger($oldName, $newName);
     public function getTriggers();

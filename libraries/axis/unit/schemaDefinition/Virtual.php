@@ -60,7 +60,7 @@ final class Virtual extends axis\Unit implements axis\ISchemaDefinitionStorageUn
         }
         
         if(!$schema && $schemaJson) {
-            $schema = axis\schema\Base::fromJson($schemaJson);
+            $schema = axis\schema\Base::fromJson($unit, $schemaJson);
             $setCache = true;
         }
         

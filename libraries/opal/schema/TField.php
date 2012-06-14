@@ -98,7 +98,20 @@ trait TField {
     public function toStorageArray() {
         return $this->_getGenericStorageArray();
     }
-
+    
+    protected function _setGenericStorageArray(array $data) {
+        $this->_name = $data['nam'];
+        $this->_isNullable = $data['nul'];
+        
+        if(isset($data['def'])) {
+            $this->_defaultValue = $data['def'];
+        }
+        
+        if(isset($data['com'])) {
+            $this->_comment = $data['com'];
+        }
+    }
+    
     protected function _getGenericStorageArray() {
         $output = [
             'typ' => $this->getFieldType(),
@@ -142,6 +155,12 @@ trait TField_CharacterSetAware {
     
     
 // Ext serialize
+    protected function _setCharacterSetStorageArray(array $data) {
+        if(isset($data['chs'])) {
+            $this->_characterSet = $data['chs'];
+        }
+    }
+
     protected function _getCharacterSetStorageArray() {
         $output = array();
         
@@ -173,6 +192,10 @@ trait TField_BinaryCollationProvider {
     }
     
 // Ext. serialize
+    protected function _setBinaryCollationStorageArray(array $data) {
+        $this->_binaryCollation = $data['bic'];
+    }
+
     protected function _getBinaryCollationStorageArray() {
         return ['bic' => $this->_binaryCollation];
     }
@@ -208,6 +231,10 @@ trait TField_LengthRestricted {
     
     
 // Ext. serialize
+    protected function _setLengthRestrictedStorageArray(array $data) {
+        $this->_length = $data['lnt'];
+    }
+
     protected function _getLengthRestrictedStorageArray() {
         return ['lnt' => $this->_length];
     }
@@ -247,6 +274,11 @@ trait TField_Numeric {
     }
     
 // Ext. serialize
+    protected function _setNumericStorageArray(array $data) {
+        $this->_isUnsigned = $data['uns'];
+        $this->_zerofill = $data['zfl'];
+    }
+
     protected function _getNumericStorageArray() {
         return [
             'uns' => $this->_isUnsigned,
@@ -294,6 +326,12 @@ trait TField_FloatingPointNumeric {
     
     
 // Ext. serialize
+    protected function _setFloatingPointNumericStorageArray(array $data) {
+        $this->_setNumericStorageArray($data);
+        $this->_scale = $data['scl'];
+        $this->_precision = $data['prs'];
+    }
+
     protected function _getFloatingPointNumericStorageArray() {
         return array_merge(
             $this->_getNumericStorageArray(),
@@ -326,6 +364,10 @@ trait TField_AutoIncrementable {
     
     
 // Ext. serialize
+    protected function _setAutoIncrementStorageArray(array $data) {
+        $this->_autoIncrement = $data['aui'];
+    }
+
     protected function _getAutoIncrementStorageArray() {
         return ['aui' => $this->_autoIncrement];
     }
@@ -377,6 +419,11 @@ trait TField_AutoTimestamp {
     
     
 // Ext. serialize
+    protected function _setAutoTimestampStorageArray(array $data) {
+        $this->_shouldTimestampOnUpdate = $data['toa'];
+        $this->_timestampAsDefault = $data['tad'];
+    }
+
     protected function _getAutoTimestampStorageArray() {
         return [
             'toa' => $this->_shouldTimestampOnUpdate,
@@ -405,6 +452,10 @@ trait TField_OptionProvider {
     
     
 // Ext. serialize
+    protected function _setOptionStorageArray(array $data) {
+        $this->_options = (array)$data['opt'];
+    }
+
     protected function _getOptionStorageArray() {
         return ['opt' => $this->_options];
     }
@@ -482,6 +533,10 @@ trait TField_BitSizeRestricted {
     }
 
 // Ext serialize
+    protected function _setBitSizeRestrictedStorageArray(array $data) {
+        $this->_bitSize = $data['bit'];
+    }
+
     protected function _getBitSizeRestrictedStorageArray() {
         return ['bit' => $this->_bitSize];
     }
@@ -564,6 +619,10 @@ trait TField_ByteSizeRestricted {
     }
 
 // Ext. serialize
+    protected function _setByteSizeRestrictedStorageArray(array $data) {
+        $this->_byteSize = $data['byt'];
+    }
+
     protected function _getByteSizeRestrictedStorageArray() {
         return ['byt' => $this->_byteSize];
     }
@@ -650,6 +709,10 @@ trait TField_LargeByteSizeRestricted {
     }
 
 // Ext. serialize
+    protected function _setLargeByteSizeStorageArray(array $data) {
+        $this->_exponentSize = $data['lby'];
+    }
+
     protected function _getLargeByteSizeStorageArray() {
         return ['lby' => $this->_exponentSize];
     }

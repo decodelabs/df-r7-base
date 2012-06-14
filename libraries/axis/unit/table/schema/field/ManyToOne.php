@@ -124,4 +124,20 @@ class ManyToOne extends One implements IManyToOneField {
         
         return $this;
     }
+
+// Ext. serialize
+    protected function _importStorageArray(array $data) {
+        parent::_importStorageArray($data);
+        
+        $this->_targetField = $data['tfl'];
+    }
+    
+    public function toStorageArray() {
+        return array_merge(
+            parent::toStorageArray(),
+            [
+                'tfl' => $this->_targetField
+            ]
+        );
+    }
 }

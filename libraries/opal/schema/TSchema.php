@@ -99,29 +99,17 @@ trait TSchema {
     
     
 // Ext. Serialize
-    public static function fromJson($json) {
-        if(!$data = json_decode($json, true)) {
-            throw new RuntimeException(
-                'Invalid json schema representation'
-            );
-        }
-        
-        core\dump($data);
-    }
     
     public function toJson() {
         return json_encode($this->toStorageArray());
     }
     
-    protected function _getBaseStorageArray() {
-        $output = [
-            'opt' => $this->_options,
-            'fld' => array(),
-            'idx' => array(),
-            'pdx' => null
-        ];
-        
-        return $output;
+    protected function _setGenericStorageArray(array $data) {
+        $this->_options = (array)$data['opt'];
+    }
+    
+    protected function _getGenericStorageArray() {
+        return ['opt' => $this->_options];
     }
     
     
@@ -429,6 +417,7 @@ trait TSchema_FieldProvider {
     }
     
     abstract public function _createField($name, $type, array $args);
+    abstract public function _createFieldFromStorageArray(array $data);
     
     
     protected function _hasFieldChanges() {
@@ -453,6 +442,14 @@ trait TSchema_FieldProvider {
     
     
 // Ext. serialize
+    protected function _setFieldStorageArray(array $data) {
+        foreach($data['fld'] as $field) {
+            $this->addPreparedField(
+                $this->_createFieldFromStorageArray($field)
+            );
+        }
+    }
+
     protected function _getFieldStorageArray() {
         $output = ['fld' => array()];
         
@@ -740,6 +737,7 @@ trait TSchema_IndexProvider {
     }
     
     abstract public function _createIndex($name, $fields=null);
+    abstract public function _createIndexFromStorageArray(array $data);
     
     protected function _getOriginalIndexNameFor($name) {
         if(isset($this->_renameIndexes[$name])) {
@@ -843,6 +841,18 @@ trait TSchema_IndexProvider {
     
     
 // Ext. serialize
+    protected function _setIndexStorageArray(array $data) {
+        foreach($data['idx'] as $index) {
+            $this->addPreparedIndex(
+                $this->_createIndexFromStorageArray($index)
+            );
+        }
+        
+        if(isset($data['pdx'])) {
+            $this->_primaryIndex = $this->getIndex($data['pdx']);
+        }
+    }
+
     protected function _getIndexStorageArray() {
         $output = ['idx' => array()];
         
@@ -917,31 +927,43 @@ trait TSchema_ForeignKeyProvider {
     }
     
     public function addForeignKey($name, $targetSchema) {
-        $key = $this->_createForeignKey($name, $targetSchema);
+        return $this->addPreparedForeignKey(
+            $this->_createForeignKey($name, $targetSchema)
+        );
+    }
+    
+    public function addPreparedForeignKey(IForeignKey $key) {
+        $name = $key->getName();
         
-        if(isset($this->_foreignKeys[$key->getName()])) {
+        if(isset($this->_foreignKeys[$name])) {
             throw new RuntimeException(
                 'Foreign key '.$name.' has already been defined'
             );
         }
         
         if($this->_isAudited) {
-            $this->_addForeignKeys[$key->getName()] = $key;
+            $this->_addForeignKeys[$name] = $key;
         }
         
-        $this->_foreignKeys[$key->getName()] = $key;
+        $this->_foreignKeys[$name] = $key;
         return $key;
     }
     
     public function replaceForeignKey($name, $targetSchema) {
+        return $this->replacePreparedForeignKey(
+            $this->_createForeignKey($name, $targetSchema)
+        );
+    }
+    
+    public function replacePreparedForeignKey(IForeignKey $key) {
+        $name = $key->getName();
+        
         if(!isset($this->_foreignKeys[$name])) {
             throw new opal\schema\InvalidArgumentException(
                 'Foreign key '.$name.' could not be found'
             );
         }
         
-        $key = $this->_createForeignKey($name, $targetSchema);
-        $name = $key->getName();
         $this->_foreignKeys[$name] = $key;
         
         if(isset($this->_addForeignKeys[$name])) {
@@ -1028,6 +1050,7 @@ trait TSchema_ForeignKeyProvider {
     }
     
     abstract public function _createForeignKey($name, $targetSchema);
+    abstract public function _createForeignKeyFromStorageArray(array $data);
     
     protected function _getOriginalForeignKeyNameFor($name) {
         if(isset($this->_renameForeignKeys[$name])) {
@@ -1080,6 +1103,14 @@ trait TSchema_ForeignKeyProvider {
     
     
 // Ext. serialize
+    protected function _setForeignKeyStorageArray(array $data) {
+        foreach($data['fky'] as $key) {
+            $this->addPreparedForeignKey(
+                $this->_createForeignKeyFromStorageArray($key)
+            );
+        }
+    }
+
     protected function _getForeignKeyStorageArray() {
         $output = ['fky' => array()];
         
@@ -1144,19 +1175,25 @@ trait TSchema_TriggerProvider {
     }
     
     public function addTrigger($name, $event, $timing, $statement) {
-        $trigger = $this->_createTrigger($name, $event, $timing, $statement);
+        return $this->addPreparedTrigger(
+            $this->_createTrigger($name, $event, $timing, $statement)
+        );
+    }
+    
+    public function addPreparedTrigger(ITrigger $trigger) {
+        $name = $trigger->getName();
         
-        if(isset($this->_triggers[$trigger->getName()])) {
+        if(isset($this->_triggers[$name])) {
             throw new opal\rdbms\TriggerConflictException(
                 'Trigger '.$name.' has already been defined'
             );
         }
         
         if($this->_isAudited) {
-            $this->_addTriggers[$trigger->getName()] = $trigger;
+            $this->_addTriggers[$name] = $trigger;
         }
         
-        $this->_triggers[$trigger->getName()] = $trigger;
+        $this->_triggers[$name] = $trigger;
         return $trigger;
     }
     
@@ -1166,14 +1203,20 @@ trait TSchema_TriggerProvider {
     }
     
     public function replaceTrigger($name, $event, $timing, $statement) {
+        return $this->replacePreparedTrigger(
+            $this->_createTrigger($name, $event, $timing, $statement)
+        );
+    }
+    
+    public function replacePreparedTrigger(ITrigger $trigger) {
+        $name = $trigger->getName();
+        
         if(!isset($this->_triggers[$name])) {
             throw new opal\rdbms\UnexpectedValueException(
                 'Trigger '.$name.' could not be found'
             );
         }
         
-        $trigger = $this->_createTrigger($name, $event, $timing, $statement);
-        $name = $trigger->getName();
         $this->_triggers[$name] = $trigger;
         
         if(isset($this->_addTriggers[$name])) {
@@ -1309,10 +1352,19 @@ trait TSchema_TriggerProvider {
     }
     
     abstract public function _createTrigger($name, $event, $timing, $statement);
+    abstract public function _createTriggerFromStorageArray(array $data);
     
 
 // Ext. serialize
-    protected function  _getTriggerStorageArray() {
+    protected function _setTriggerStorageArray(array $data) {
+        foreach($data['trg'] as $trigger) {
+            $this->addPreparedTrigger(
+                $this->_createTriggerFromStorageArray($trigger)
+            );
+        }
+    }
+
+    protected function _getTriggerStorageArray() {
         $output = ['trg' => array()];
         
         foreach($this->_triggers as $trigger) {
