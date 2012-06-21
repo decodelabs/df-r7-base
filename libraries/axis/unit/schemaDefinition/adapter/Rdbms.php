@@ -10,50 +10,36 @@ use df\core;
 use df\axis;
 use df\opal;
 
-class Rdbms implements axis\IAdapter {
+class Rdbms implements axis\ISchemaDefinitionStorageAdapter {
     
-    protected $_rdbmsAdapter;
+    protected $_table;
     protected $_unit;
     
     public function __construct(axis\IAdapterBasedStorageUnit $unit) {
         $this->_unit = $unit;
-    }
-    
-    protected function _getRdbmsAdapter() {
-        if(!$this->_rdbmsAdapter) {
-            $config = axis\ConnectionConfig::getInstance($this->_unit->getModel()->getApplication());
-            $settings = $config->getSettingsFor($this->_unit);
-            $this->_rdbmsAdapter = opal\rdbms\adapter\Base::factory($settings['dsn']);
-        }
         
-        return $this->_rdbmsAdapter;
+        $config = axis\ConnectionConfig::getInstance($this->_unit->getModel()->getApplication());
+        $settings = $config->getSettingsFor($this->_unit);
+        $rdbmsAdapter = opal\rdbms\adapter\Base::factory($settings['dsn']);
+        $this->_table = $rdbmsAdapter->getTable($this->_unit->getStorageBackendName());
     }
     
     public function fetchFor(axis\ISchemaBasedStorageUnit $unit) {
-        $adapter = $this->_getRdbmsAdapter();
-        $table = $adapter->getTable($this->_unit->getStorageBackendName());
-        
-        return $table->select('schema')
+        return $this->_table->select('schema')
             ->Where('unitId', '=', $unit->getUnitId())
             ->toValue();
     }
     
     public function getTimestampFor(axis\ISchemaBasedStorageUnit $unit) {
-        $adapter = $this->_getRdbmsAdapter();
-        $table = $adapter->getTable($this->_unit->getStorageBackendName());
-        
-        return $table->select('timestamp')
+        return $this->_table->select('timestamp')
             ->where('unitId', '=', $unit->getUnitId())
             ->toValue('timestamp');
     }
     
     public function insert(axis\ISchemaBasedStorageUnit $unit, $jsonData, $version) {
-        $adapter = $this->_getRdbmsAdapter();
-        $table = $adapter->getTable($this->_unit->getStorageBackendName());
-        
-        $table->insert([
+        $this->_table->insert([
                 'unitId' => $unit->getUnitId(),
-                'tableName' => $unit->getStorageBackendName(),
+                'storeName' => $unit->getStorageBackendName(),
                 'version' => $version,
                 'schema' => $jsonData
             ])
@@ -63,10 +49,7 @@ class Rdbms implements axis\IAdapter {
     }
     
     public function update(axis\ISchemaBasedStorageUnit $unit, $jsonData, $version) {
-        $adapter = $this->_getRdbmsAdapter();
-        $table = $adapter->getTable($this->_unit->getStorageBackendName());
-        
-        $table->update([
+        $this->_table->update([
                 'schema' => $jsonData,
                 'version' => $version
             ])
@@ -77,10 +60,7 @@ class Rdbms implements axis\IAdapter {
     }
     
     public function remove(axis\ISchemaBasedStorageUnit $unit) {
-        $adapter = $this->_getRdbmsAdapter();
-        $table = $adapter->getTable($this->_unit->getStorageBackendName());
-        
-        $table->delete()
+        $this->_table->delete()
             ->where('unitId', '=', $unit->getUnitId())
             ->execute();
             
@@ -88,29 +68,29 @@ class Rdbms implements axis\IAdapter {
     }
     
     
+    
     public function ensureStorage() {
-        $adapter = $this->_getRdbmsAdapter();
-        $table = $adapter->getTable($this->_unit->getStorageBackendName());
-        
-        if($table->exists()) {
+        if($this->_table->exists()) {
             return false;
         }
         
-        $schema = new axis\schema\Base($this->_unit, $this->_unit->getStorageBackendName());
+        $schema = $this->_unit->getTransientUnitSchema();
+        $this->createStorageFromSchema($schema);
         
-        $schema->addField('unitId', 'String', 64);
-        $schema->addField('tableName', 'String', 128);
-        $schema->addField('version', 'Integer', 1);
-        $schema->addField('schema', 'BigBinary', 16);
-        $schema->addField('timestamp', 'Timestamp');
-        
-        $schema->addPrimaryIndex('unitId');
-        $schema->addIndex('timestamp');
-        
+        return true;        
+    }
+    
+    public function createStorageFromSchema(axis\schema\ISchema $axisSchema) {
         $bridge = new axis\schema\bridge\Rdbms($this->_unit, $adapter, $schema);
         $opalSchema = $bridge->updateTargetSchema();
+        $this->_table->create($opalSchema);
         
-        $adapter->createTable($opalSchema);
-        return true;        
+        return $this;
+    }
+    
+    public function destroyStorage() {
+        $this->_table->drop();
+        
+        return $this;
     }
 }

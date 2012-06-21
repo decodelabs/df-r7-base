@@ -76,7 +76,7 @@ interface ISchemaProviderAdapter extends IAdapter {
 }
 
 
-interface ISchemaDefinitionStorageAdapter extends IAdapter {
+interface ISchemaDefinitionStorageAdapter extends ISchemaProviderAdapter {
     public function fetchFor(ISchemaBasedStorageUnit $unit);
     public function getTimestampFor(ISchemaBasedStorageUnit $unit);
     

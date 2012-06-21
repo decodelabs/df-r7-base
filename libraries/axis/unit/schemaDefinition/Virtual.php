@@ -37,7 +37,7 @@ final class Virtual extends axis\Unit implements axis\ISchemaDefinitionStorageUn
     
     public function fetchFor(axis\ISchemaBasedStorageUnit $unit, $transient=false) {
         $cache = axis\schema\Cache::getInstance($this->_model->getApplication());
-        $cache->clear(); // delete me
+        //$cache->clear(); // delete me
         
         $schema = $cache->get($unit->getUnitId());
         
@@ -49,13 +49,13 @@ final class Virtual extends axis\Unit implements axis\ISchemaDefinitionStorageUn
         $setCache = false;
         $schemaJson = null;
         
-        try {
-            $schemaJson = $this->_adapter->fetchFor($unit);
-        } catch(\Exception $e) {
-            // TODO: try and hone in on just missing-table errors
-            
-            if(!$this->_adapter->ensureStorage()) {
-                throw $e;
+        if(!$schema) {
+            try {
+                $schemaJson = $this->_adapter->fetchFor($unit);
+            } catch(\Exception $e) {
+                if(!$this->_adapter->ensureStorage()) {
+                    throw $e;
+                }
             }
         }
         
@@ -99,8 +99,6 @@ final class Virtual extends axis\Unit implements axis\ISchemaDefinitionStorageUn
                 $this->_adapter->update($unit, $jsonData, $schema->getVersion());
             }
         } catch(\Exception $e) {
-            // TODO: try and hone in on just missing-table errors
-            
             if(!$this->_adapter->ensureStorage()) {
                 throw $e;
             }
@@ -121,8 +119,6 @@ final class Virtual extends axis\Unit implements axis\ISchemaDefinitionStorageUn
         try {
             $this->_adapter->remove($unit);
         } catch(\Exception $e) {
-            // TODO: try and hone in on just missing-table errors
-            
             if(!$this->_adapter->ensureStorage()) {
                 throw $e;
             }
@@ -133,6 +129,10 @@ final class Virtual extends axis\Unit implements axis\ISchemaDefinitionStorageUn
         $this->clearCache($unit);
         
         return $this;
+    }
+    
+    public function clearUnitSchemaCache() {
+        $this->clearCache($this->_unit);
     }
     
     public function clearCache(axis\ISchemaBasedStorageUnit $unit=null) {
@@ -148,41 +148,43 @@ final class Virtual extends axis\Unit implements axis\ISchemaDefinitionStorageUn
     }
     
     
-    
-    
-    public function fetchByPrimary($id) {
-        core\stub();
-    }
-    
-    public function destroyStorage() {
-        core\stub();
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
     public function getUnitSchema() {
-        core\stub();
+        $schema = $this->getTransientUnitSchema();
+        $schema->acceptChanges();
+
+        return $schema;
     }
     
     public function getTransientUnitSchema() {
-        core\stub();
+        $schema = new axis\schema\Base($this, $this->getStorageBackendName());
+        
+        $schema->addField('unitId', 'String', 64);
+        $schema->addField('storeName', 'String', 128);
+        $schema->addField('version', 'Integer', 1);
+        $schema->addField('schema', 'BigBinary', 16);
+        $schema->addField('timestamp', 'Timestamp');
+        
+        $schema->addPrimaryIndex('unitId');
+        $schema->addIndex('timestamp');
+        
+        return $schema;
     }
     
-    public function clearUnitSchemaCache() {
-        core\stub();
+    
+    
+    public function fetchByPrimary($id) {
+        return $this->fetchFor($this->_model->getUnit($id));
+    }
+    
+    public function destroyStorage() {
+        $this->_adapter->destroyStorage();
     }
     
     public function updateUnitSchema(axis\schema\ISchema $schema) {
-        core\stub();
+        return $schema;
     }
     
     public function validateUnitSchema(axis\schema\ISchema $schema) {
-        core\stub();
+        return $schema;
     }
 }
