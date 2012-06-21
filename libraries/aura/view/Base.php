@@ -40,6 +40,10 @@ class Base implements IView {
     
     
 // Response
+    public function isOk() {
+        return true;
+    }
+
     public function getHeaders() {
         if(!$this->_headers) {
             $this->_headers = new halo\protocol\http\response\HeaderCollection();
