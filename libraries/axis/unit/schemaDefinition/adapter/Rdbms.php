@@ -81,7 +81,7 @@ class Rdbms implements axis\ISchemaDefinitionStorageAdapter {
     }
     
     public function createStorageFromSchema(axis\schema\ISchema $axisSchema) {
-        $bridge = new axis\schema\bridge\Rdbms($this->_unit, $adapter, $schema);
+        $bridge = new axis\schema\bridge\Rdbms($this->_unit, $this->_table->getAdapter(), $axisSchema);
         $opalSchema = $bridge->updateTargetSchema();
         $this->_table->create($opalSchema);
         

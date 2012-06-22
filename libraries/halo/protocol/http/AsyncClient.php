@@ -96,8 +96,12 @@ class AsyncClient implements IAsyncClient {
     }
     
     protected function _onSessionEnd(halo\peer\ISession $session) {
+        if(!$response = $session->getResponse()) {
+            core\stub('Generate a default connection error response');
+        }
+        
         if($callback = $session->getCallback()) {
-            $callback($session->getResponse(), $this, $session);
+            $callback($response, $this, $session);
         }
     }
 }
