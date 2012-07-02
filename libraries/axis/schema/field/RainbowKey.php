@@ -75,7 +75,7 @@ class RainbowKey extends Base implements
     
 // Validation
     public function sanitize(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
-        //core\stub('Rainbow keys don\'t yet have ticket sources implemented');
+        core\stub('Rainbow keys don\'t yet have ticket sources implemented');
     }
     
     
