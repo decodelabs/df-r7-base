@@ -354,6 +354,7 @@ interface IApplication {
     public function getName();
     public function getUniquePrefix();
     public function getPassKey();
+    public function getActiveLocations();
     public function getActivePackages();
     
     // Cache

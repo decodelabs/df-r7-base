@@ -15,6 +15,7 @@ abstract class Base implements core\IApplication, core\IDumpable {
     protected $_name;
     protected $_uniquePrefix;
     protected $_passKey;
+    protected $_activeLocations = array();
     protected $_activePackages = array();
     
     protected $_isDistributed = false;
@@ -45,6 +46,7 @@ abstract class Base implements core\IApplication, core\IDumpable {
         $this->_activePackages = $appConfig->getActivePackages();
         
         $envConfig = core\Environment::getInstance($this);
+        $this->_activeLocations = $envConfig->getActiveLocations();
         $this->_isDistributed = $envConfig->isDistributed();
     }
     
@@ -173,6 +175,10 @@ abstract class Base implements core\IApplication, core\IDumpable {
         return $this->_passKey;
     }
     
+    public function getActiveLocations() {
+        return $this->_activeLocations;
+    }
+
     public function getActivePackages() {
         return $this->_activePackages;
     }

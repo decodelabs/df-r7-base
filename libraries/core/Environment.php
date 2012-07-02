@@ -20,7 +20,8 @@ class Environment extends Config {
         return [
             'httpBaseUrl' => $this->_generateHttpBaseUrlList(),
             'phpBinaryPath' => 'php',
-            'distributed' => false
+            'distributed' => false,
+            'activeLocations' => []
         ];
     }
         
@@ -128,5 +129,20 @@ class Environment extends Config {
         }
         
         return (bool)$this->_values['distributed'];
+    }
+
+// Locations
+    public function getActiveLocations() {
+        if(!isset($this->_values['activeLocations'])) {
+            return array();
+        }
+
+        $output = $this->_values['activeLocations'];
+
+        if(!is_array($output)) {
+            $output = ['default' => $output];
+        }
+
+        return $output;
     }
 }
