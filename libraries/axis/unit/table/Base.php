@@ -86,13 +86,13 @@ abstract class Base extends axis\Unit implements
         $version = $schema->getVersion();
         
         if($version === 0) {
-            $this->_updateSchemaOnCreate($schema);
+            $this->_onCreate($schema);
             $schema->iterateVersion();
         }
         
         while(true) {
             $version = $schema->getVersion();
-            $func = '_updateSchemaVersion'.$version;
+            $func = '_onUpdateVersion'.$version;
             
             if(!method_exists($this, $func)) {
                 break;
@@ -107,7 +107,7 @@ abstract class Base extends axis\Unit implements
         return $this;
     }
     
-    abstract protected function _updateSchemaOnCreate(axis\schema\ISchema $schema);
+    abstract protected function _onCreate(axis\schema\ISchema $schema);
     
     public function validateUnitSchema(axis\schema\ISchema $schema) {
         $schema->validate($this);

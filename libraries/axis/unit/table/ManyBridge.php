@@ -112,5 +112,5 @@ class ManyBridge extends Base implements axis\IVirtualUnit {
         }
     }
     
-    protected function _updateSchemaOnCreate(axis\schema\ISchema $schema) {}
+    protected function _onCreate(axis\schema\ISchema $schema) {}
 }
