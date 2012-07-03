@@ -69,6 +69,59 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
     }
     
     
+
+// Case flags
+    public static function normalizeCaseFlag($case) {
+        if(is_string($case)) {
+            switch(strtolower(core\string\Manipulator::formatId($case))) {
+                case 'upperwords':
+                    $case = core\string\ICase::UPPER_WORDS;
+                    break;
+
+                case 'upperfirst':
+                    $case = core\string\ICase::UPPER_FIRST;
+                    break;
+
+                case 'upper':
+                    $case = core\string\ICase::UPPER;
+                    break;
+
+                case 'lower':
+                    $case = core\string\ICase::LOWER;
+                    break;
+
+                case 'lowerfirst':
+                    $case = core\string\ICase::LOWER_FIRST;
+                    break;
+
+                default:
+                    $case = core\string\ICase::NONE;
+                    break;
+            }
+        }
+
+        switch($case) {
+            case core\string\ICase::UPPER_WORDS:
+            case core\string\ICase::UPPER_FIRST:
+            case core\string\ICase::UPPER:
+            case core\string\ICase::LOWER:
+            case core\string\ICase::LOWER_FIRST:
+                break;
+
+            default:
+                $case = core\string\ICase::NONE;
+                break;
+        }
+
+        return $case;
+    }
+
+    public static function applyCase($string, $case, $encoding=IEncoding::UTF_8) {
+        return self::factory($string, $encoding)
+            ->setCase($case)
+            ->toString();
+    }
+
     
 // Alnum convert
     public static function numericToAlpha($number) {
@@ -373,6 +426,30 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
     
     
 // Case
+    public function setCase($case) {
+        $case = self::normalizeCaseFlag($case);
+
+        switch($case) {
+            case core\string\ICase::UPPER_WORDS:
+                return $this->wordsToUpper();
+
+            case core\string\ICase::UPPER_FIRST:
+                return $this->firstToUpper();
+
+            case core\string\ICase::UPPER:
+                return $this->toUpper();
+
+            case core\string\ICase::LOWER:
+                return $this->toLower();
+
+            case core\string\ICase::LOWER_FIRST:
+                return $this->firstToLower();
+
+            default:
+                return $this;
+        }
+    }
+
     public function toUpper() {
         $this->_value = mb_strtoupper($this->_value, $this->_encoding);
         return $this;

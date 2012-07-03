@@ -79,6 +79,16 @@ interface IEncoding {
 }
 
 
+interface ICase {
+    const UPPER_WORDS = 3;
+    const UPPER_FIRST = 2;
+    const UPPER = 1;
+    const NONE = 0;
+    const LOWER = -1;
+    const LOWER_FIRST = -2;
+}
+
+
 // Interfaces
 interface IStringEscapeHandler {
     public function esc($value);
@@ -148,6 +158,9 @@ interface IManipulator extends core\collection\IIndexedCollection, core\IStringP
     public static function formatPathSlug($slug, $allowChars=null);
     public static function formatFilename($filename, $allowSpaces=false);
     
+    public static function normalizeCaseFlag($case);
+    public static function applyCase($string, $case);
+
     public static function numericToAlpha($number);
     public static function alphaToNumeric($alpha);
     
@@ -173,6 +186,13 @@ interface IManipulator extends core\collection\IIndexedCollection, core\IStringP
     public function fromIndexOf($needle, $offset=0);
     public function iToIndexOf($needle, $offset=0);
     public function iFromIndexOf($needle, $offset=0);
+
+// Case
+    public function wordsToUpper();
+    public function firstToUpper();
+    public function toUpper();
+    public function toLower();
+    public function firstToLower();
 
 // Splitting
     public function substring($start, $length=null);
