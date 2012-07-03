@@ -5,8 +5,9 @@
  */
 namespace df\axis\schema\field;
 
-use core;
-use axis;
+use df;
+use df\core;
+use df\axis;
     
 class Set extends Base implements 
 	opal\schema\IOptionProviderField,
