@@ -8,6 +8,7 @@ namespace df\core;
 use df;
 use df\core;
 use df\halo;
+use df\ctrl;
 
 class Environment extends Config {
     
@@ -23,6 +24,13 @@ class Environment extends Config {
             'distributed' => false,
             'activeLocations' => []
         ];
+    }
+
+    protected function _sanitizeValuesOnCreate() {
+        try {
+            $ctrlManager = new ctrl\Manager($this->getApplication());
+            $ctrl->initGitIgnore();
+        } catch(\Exception $e) {}
     }
         
     

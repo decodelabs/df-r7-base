@@ -7,15 +7,19 @@ namespace df\core\application;
 
 use df;
 use df\core;
+use df\ctrl;
 
 class Util extends Base {
     
     const RUN_MODE = 'Util';
     
+    protected $_ctrlManager;
+    
 // Execute
     public function dispatch() {
         $this->_beginDispatch();
         
+        $this->_ctrlManager = new ctrl\Manager($this);
         $command = core\cli\Command::fromArgv();
         
         if(!$arg = $command[2]) {
@@ -26,7 +30,8 @@ class Util extends Base {
         
         // TODO: parse command
         
-        $method = '_run'.ucfirst($arg->getValue());
+        $arg = core\string\Manipulator::formatId($arg->getValue());
+        $method = '_run'.$arg;
         
         if(!method_exists($this, $method)) {
             throw new core\InvalidArgumentException(
@@ -44,11 +49,22 @@ class Util extends Base {
     
     
 // Commands
-    private function _runBuild() {
-        $builder = new df\core\package\Builder(df\Launchpad::$loader);
-        $builder->build();
+    private function _runHelp() {
+        return 'Actions:'."\n".
+               '  build-app'."\n".
+               '  init-gitignore'."\n\n";
+    }
+
+
+    private function _runBuildApp() {
+        $this->_ctrlManager->buildApp();
         
         return 'Build complete'."\n\n";
     }
 
+    private function _runInitGitignore() {
+        $this->_ctrlManager->initGitIgnore();
+
+        return '.gitignore file successfully created'."\n\n";
+    }
 }

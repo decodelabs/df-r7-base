@@ -73,8 +73,11 @@ abstract class Config implements IConfig, core\IDumpable {
                     'Default values must be an array'
                 );
             }
-            
+
             $this->_values = $values;
+            $this->_sanitizeValuesOnCreate();
+            
+            
             $this->save();
         } else {
             $this->_values = $values;
@@ -110,6 +113,10 @@ abstract class Config implements IConfig, core\IDumpable {
         $this->_saveValues();
         
         return $this;
+    }
+
+    protected function _sanitizeValuesOnCreate() {
+        return null;
     }
     
     protected function _sanitizeValuesOnLoad() {
