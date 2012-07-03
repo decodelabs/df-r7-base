@@ -383,6 +383,8 @@ trait TQuery_Attachment {
 
 trait TQuery_AttachmentListExtension {
     
+    protected $_valField;
+
     public function asList($name, $field1, $field2=null) {
         if($this->_joinClauseList->isEmpty()) {
             throw new LogicException(
