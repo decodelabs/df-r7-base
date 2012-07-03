@@ -67,7 +67,7 @@ class Action implements IAction, core\IDumpable {
         $func = null;
         
         if(!$this->_isInline) {
-            if(0 && static::CHECK_ACCESS) {
+            if(static::CHECK_ACCESS) {
                 $client = $this->_context->getUserManager()->getClient();
                 
                 if(!$client->canAccess($this)) {
@@ -97,7 +97,7 @@ class Action implements IAction, core\IDumpable {
             $controller = $this->getController();
             
             if($func = $this->_getControllerMethod()) {
-                if(0 && $controller::CHECK_ACCESS) {
+                if($controller::CHECK_ACCESS) {
                     $client = $this->_context->getUserManager()->getClient();
                 
                     if(!$client->canAccess($this)) {
