@@ -127,7 +127,7 @@ interface IView extends
     IContentConsumer, 
     IRenderTarget, 
     halo\protocol\http\IStringResponse, 
-    core\IAttributeContainer, 
+    IArgContainer, 
     \ArrayAccess, 
     core\IHelperProvider, 
     core\string\IStringEscapeHandler,

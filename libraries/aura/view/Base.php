@@ -161,65 +161,65 @@ class Base implements IView {
     }
     
     
-// Attributes
-    public function setAttributes(array $attributes) {
+// Args
+    public function setArgs(array $args) {
         $this->_checkContentProvider();
-        $this->_contentProvider->setAttributes($attributes);
+        $this->_contentProvider->setArgs($args);
         return $this;
     }
     
-    public function addAttributes(array $attributes) {
+    public function addArgs(array $args) {
         $this->_checkContentProvider();
-        $this->_contentProvider->addAttributes($attributes);
+        $this->_contentProvider->addArgs($args);
         return $this;
     }
     
-    public function getAttributes() {
+    public function getArgs(array $add=array()) {
         $this->_checkContentProvider();
-        return $this->_contentProvider->getAttributes();
+        return $this->_contentProvider->getArgs($add);
     }
     
-    public function setAttribute($key, $value) {
+    public function setArg($key, $value) {
         $this->_checkContentProvider();
-        $this->_contentProvider->setAttribute($key, $value);
+        $this->_contentProvider->setArg($key, $value);
         return $this;
     }
     
-    public function getAttribute($key, $default=null) {
+    public function getArg($key, $default=null) {
         $this->_checkContentProvider();
-        return $this->_contentProvider->getAttribute($key, $default);
+        return $this->_contentProvider->getArg($key, $default);
     }
     
-    public function removeAttribute($key) {
+    public function removeArg($key) {
         $this->_checkContentProvider();
-        $this->_contentProvider->removeAttribute($key);
+        $this->_contentProvider->removeArg($key);
         return $this;
     }
     
-    public function hasAttribute($key) {
+    public function hasArg($key) {
         $this->_checkContentProvider();
-        return $this->_contentProvider->hasAttribute($key);
+        return $this->_contentProvider->hasArg($key);
     }
     
     public function offsetSet($name, $value) {
         $this->_checkContentProvider();
-        $this->_contentProvider->setAttribute($name, $value);
+        $this->_contentProvider->setArg($name, $value);
         return $this;
     }
     
     public function offsetGet($name) {
         $this->_checkContentProvider();
-        return $this->_contentProvider->getAttribute($name);
+        return $this->_contentProvider->getArg($name);
     }
     
     public function offsetExists($name) {
         $this->_checkContentProvider();
-        return $this->_contentProvider->hasAttribute($name);
+        return $this->_contentProvider->hasArg($name);
     }
     
     public function offsetUnset($name) {
         $this->_checkContentProvider();
-        $this->_contentProvider->removeAttribute($name);
+        $this->_contentProvider->removeArg($name);
         return $this;
     }
     
