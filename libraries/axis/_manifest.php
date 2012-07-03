@@ -55,6 +55,7 @@ interface ISchemaBasedStorageUnit extends IAdapterBasedStorageUnit, opal\schema\
     public function getUnitSchema();
     public function getTransientUnitSchema();
     public function clearUnitSchemaCache();
+    public function buildInitialSchema();
     public function updateUnitSchema(axis\schema\ISchema $schema);
     public function validateUnitSchema(axis\schema\ISchema $schema);
 }

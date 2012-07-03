@@ -33,7 +33,7 @@ class ManyBridge extends Base implements axis\IVirtualUnit {
         }
     }
     
-    protected function _buildInitialSchema() {
+    public function buildInitialSchema() {
         $dominantUnit = $this->_model->getUnit($this->_dominantUnitName);
         $dominantSchema = $dominantUnit->getTransientUnitSchema();
         $dominantField = $dominantSchema->getField($this->_dominantFieldName);

@@ -75,7 +75,7 @@ abstract class Base extends axis\Unit implements
         return $this->_model->getUnit('schemaDefinition.Virtual()')->fetchFor($this, true);
     }
     
-    protected function _buildInitialSchema() {
+    public function buildInitialSchema() {
         return new axis\schema\Base($this, $this->getUnitName());
     }
     

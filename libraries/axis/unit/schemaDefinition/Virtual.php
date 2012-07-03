@@ -72,7 +72,7 @@ final class Virtual extends axis\Unit implements axis\ISchemaDefinitionStorageUn
         
         
         if(!$schema) {
-            $schema = new axis\schema\Base($unit, $unit->getUnitName());
+            $schema = $unit->buildInitialSchema();
             $unit->updateUnitSchema($schema);
             
             if(!$transient) {
@@ -186,6 +186,10 @@ final class Virtual extends axis\Unit implements axis\ISchemaDefinitionStorageUn
         $this->_adapter->destroyStorage();
     }
     
+    public function buildInitialSchema() {
+        return new axis\schema\Base($this, $this->getUnitName());
+    }
+
     public function updateUnitSchema(axis\schema\ISchema $schema) {
         return $schema;
     }
