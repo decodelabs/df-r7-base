@@ -285,6 +285,8 @@ class Package implements IPackage {
     
     const PRIORITY = 20;
     
+    public static $dependencies = [];
+
     public $path;
     public $name;
     public $priority;
@@ -354,8 +356,6 @@ interface IApplication {
     public function getName();
     public function getUniquePrefix();
     public function getPassKey();
-    public function getActiveLocations();
-    public function getActivePackages();
     
     // Cache
     public function _setCacheObject(IRegistryObject $object);

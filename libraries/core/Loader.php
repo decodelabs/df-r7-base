@@ -209,16 +209,30 @@ class Loader implements ILoader {
     }
 
     public function loadPackages(array $packages) {
-        foreach($packages as $package) {
-            $package = core\Package::factory($package);
-            $this->_packages[$package->name] = $package;
-        }
-        
+        $this->_loadPackageList($packages);
+
         uasort($this->_packages, function($a, $b) {
             return $a->priority < $b->priority;
         });
-        
+
         return $this;
+    }
+
+    private function _loadPackageList(array $packages) {
+        foreach($packages as $package) {
+            if(isset($this->_packages[$package])) {
+                continue;
+            }
+
+            $package = core\Package::factory($package);
+            $this->_packages[$package->name] = $package;
+
+            $deps = $package::$dependencies;
+
+            if(is_array($deps) && !empty($deps)) {
+                $this->_loadPackageList($deps);
+            }
+        }
     }
     
     public function getPackages() {
