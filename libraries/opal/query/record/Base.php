@@ -16,8 +16,8 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     protected $_values = array();
     protected $_changes = array();
     protected $_isPopulated = false;
-    protected $_primaryField = false;
     protected $_adapter;
+
     private $_primaryFields = false;
     
     public function __construct(opal\query\IAdapter $adapter, $row=null, array $fields=null) {
@@ -82,6 +82,13 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     
     public function getPrimaryManifest() {
         $fields = $this->_getPrimaryFields();
+
+        if($fields === null) {
+            throw new LogicException(
+                'Record type '.$this->_adapter->getQuerySourceId().' has no primary fields'
+            );
+        }
+
         $values = array();
         
         foreach($fields as $field) {
