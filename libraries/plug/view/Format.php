@@ -19,35 +19,35 @@ class Format implements aura\view\IHelper {
     
 // Numbers
     public function number($number, $format=null, $locale=null) {
-        return core\i18n\Manager::getInstance($this->_view->getApplication())->getModule('numbers', $locale)->format($number, $format);
+        return core\i18n\Manager::getInstance($this->_view->getContext()->getApplication())->getModule('numbers', $locale)->format($number, $format);
     }
     
     public function percent($number, $locale=null) {
-        return core\i18n\Manager::getInstance($this->_view->getApplication())->getModule('numbers', $locale)->formatPercent($number);
+        return core\i18n\Manager::getInstance($this->_view->getContext()->getApplication())->getModule('numbers', $locale)->formatPercent($number);
     }
     
     public function currency($number, $code, $locale=null) {
-        return core\i18n\Manager::getInstance($this->_view->getApplication())->getModule('numbers', $locale)->formatCurrency($number, $code);
+        return core\i18n\Manager::getInstance($this->_view->getContext()->getApplication())->getModule('numbers', $locale)->formatCurrency($number, $code);
     }
     
     public function scientific($number, $locale=null) {
-        return core\i18n\Manager::getInstance($this->_view->getApplication())->getModule('numbers', $locale)->formatScientific($number);
+        return core\i18n\Manager::getInstance($this->_view->getContext()->getApplication())->getModule('numbers', $locale)->formatScientific($number);
     }
     
     public function spellout($number, $locale=null) {
-        return core\i18n\Manager::getInstance($this->_view->getApplication())->getModule('numbers', $locale)->formatSpellout($number);
+        return core\i18n\Manager::getInstance($this->_view->getContext()->getApplication())->getModule('numbers', $locale)->formatSpellout($number);
     }
     
     public function ordinal($number, $locale=null) {
-        return core\i18n\Manager::getInstance($this->_view->getApplication())->getModule('numbers', $locale)->formatOrdinal($number);
+        return core\i18n\Manager::getInstance($this->_view->getContext()->getApplication())->getModule('numbers', $locale)->formatOrdinal($number);
     }
     
     public function duration($number, $locale=null) {
-        return core\i18n\Manager::getInstance($this->_view->getApplication())->getModule('numbers', $locale)->formatDuration($number);
+        return core\i18n\Manager::getInstance($this->_view->getContext()->getApplication())->getModule('numbers', $locale)->formatDuration($number);
     }
 
     public function fileSize($bytes, $precision=2, $longNames=false, $locale=null) {
-        return core\i18n\Manager::getInstance($this->_view->getApplication())->getModule('numbers', $locale)->formatFileSize($bytes, $precision, $longNames);
+        return core\i18n\Manager::getInstance($this->_view->getContext()->getApplication())->getModule('numbers', $locale)->formatFileSize($bytes, $precision, $longNames);
     }
 
     

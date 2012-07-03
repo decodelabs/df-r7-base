@@ -12,8 +12,6 @@ abstract class Base implements core\IApplication, core\IDumpable {
     
     const RUN_MODE = null;
     
-    
-    
     protected $_debugTransport;
     
     protected $_isRunning = false;
@@ -101,19 +99,19 @@ abstract class Base implements core\IApplication, core\IDumpable {
     }
     
     public function isDevelopment() {
-        return $this->_environmentMode == 'development';
+        return df\Launchpad::$environmentMode == 'development';
     }
     
     public function isTesting() {
-        return $this->_environmentMode == 'testing';
+        return df\Launchpad::$environmentMode == 'testing';
     }
     
     public function isProduction() {
-        return $this->_environmentMode == 'production';
+        return df\Launchpad::$environmentMode == 'production';
     }
 
     public function canDebug() {
-        return $this->_environmentMode == 'development' || $this->_environmentMode == 'testing';
+        return $this->isDevelopment() || $this->isTesting();
     }
     
     public function getRunMode() {
