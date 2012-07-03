@@ -36,7 +36,13 @@ abstract class Base extends axis\Unit implements
     }
     
     public function getStorageBackendName() {
-        return $this->_model->getApplication()->getUniquePrefix().'_'.$this->_model->getModelName().'_'.$this->getCanonicalUnitName();
+        $output = $this->_model->getModelName().'_'.$this->getCanonicalUnitName();
+
+        if($this->_shouldPrefixNames()) {
+            $output = $this->_model->getApplication()->getUniquePrefix().'_'.$output;
+        }
+
+        return $output;
     }
     
     public function getBridgeUnit($fieldName) {

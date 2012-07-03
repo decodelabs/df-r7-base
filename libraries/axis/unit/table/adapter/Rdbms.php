@@ -47,8 +47,7 @@ class Rdbms implements
     
     protected function _getRdbmsAdapter() {
         if(!$this->_rdbmsAdapter) {
-            $config = axis\ConnectionConfig::getInstance($this->_unit->getModel()->getApplication());
-            $settings = $config->getSettingsFor($this->_unit);
+            $settings = $this->_unit->getUnitSettings();
             $this->_rdbmsAdapter = opal\rdbms\adapter\Base::factory($settings['dsn']);
         }
         

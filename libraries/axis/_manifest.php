@@ -33,6 +33,7 @@ interface IUnit extends core\IApplicationAware {
     public function getCanonicalUnitName();
     public function getUnitId();
     public function getModel();
+    public function getUnitSettings();
 }
 
 interface IVirtualUnit extends IUnit {

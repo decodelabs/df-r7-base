@@ -32,7 +32,13 @@ final class Virtual extends axis\Unit implements axis\ISchemaDefinitionStorageUn
     }
     
     public function getStorageBackendName() {
-        return $this->_model->getApplication()->getUniquePrefix().'_axis_schemas';
+        $output = 'axis_schemas';
+
+        if($this->_shouldPrefixNames()) {
+            $output = $this->_model->getApplication()->getUniquePrefix().'_'.$output;
+        }
+
+        return $output;
     }
     
     public function fetchFor(axis\ISchemaBasedStorageUnit $unit, $transient=false) {

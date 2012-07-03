@@ -14,6 +14,8 @@ abstract class Unit implements IUnit {
     const ID_SEPARATOR = '/';
     
     private $_unitName;
+    private $_unitSettings;
+
     protected $_model;
     
     public static function loadAdapter(axis\IAdapterBasedStorageUnit $unit) {
@@ -103,6 +105,20 @@ abstract class Unit implements IUnit {
     
     public function getUnitId() {
         return $this->_model->getModelName().self::ID_SEPARATOR.$this->getUnitName();
+    }
+
+    public function getUnitSettings() {
+        if($this->_unitSettings === null) {
+            $config = axis\ConnectionConfig::getInstance($this->_model->getApplication());
+            $this->_unitSettings = $config->getSettingsFor($this);
+        }
+
+        return $this->_unitSettings;
+    }
+
+    protected function _shouldPrefixNames() {
+        $settings = $this->getUnitSettings();
+        return (bool)$settings['prefixNames'];
     }
     
     public function getModel() {
