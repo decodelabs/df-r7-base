@@ -567,7 +567,7 @@ trait TQuery_PrerequisiteAwareWhereClauseFactory {
             $output->_addClause($clause);
         }
         
-        if(!empty($this->_whereClauseList) && !$this->_whereClauseList>isEmpty()) {
+        if(!empty($this->_whereClauseList) && !$this->_whereClauseList->isEmpty()) {
             $output->_addClause($this->_whereClauseList);
         }
         
