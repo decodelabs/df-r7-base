@@ -709,11 +709,11 @@ trait TField_LargeByteSizeRestricted {
     }
 
 // Ext. serialize
-    protected function _setLargeByteSizeStorageArray(array $data) {
+    protected function _setLargeByteSizeRestrictedStorageArray(array $data) {
         $this->_exponentSize = $data['lby'];
     }
 
-    protected function _getLargeByteSizeStorageArray() {
+    protected function _getLargeByteSizeRestrictedStorageArray() {
         return ['lby' => $this->_exponentSize];
     }
 }
