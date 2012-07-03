@@ -11,7 +11,7 @@ use df\core;
 class Config extends core\Config {
     
     const ID = 'application';
-    const STORE_IN_MEMORY = false;
+    const STORE_IN_MEMORY = true;
     
     public function getDefaultValues() {
         return [

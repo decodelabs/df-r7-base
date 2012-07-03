@@ -12,13 +12,8 @@ abstract class Base implements core\IApplication, core\IDumpable {
     
     const RUN_MODE = null;
     
-    protected $_name;
-    protected $_uniquePrefix;
-    protected $_passKey;
-    protected $_activeLocations = array();
-    protected $_activePackages = array();
     
-    protected $_isDistributed = false;
+    
     protected $_debugTransport;
     
     protected $_isRunning = false;
@@ -38,17 +33,7 @@ abstract class Base implements core\IApplication, core\IDumpable {
     
     
 // Construct
-    protected function __construct() {
-        $appConfig = Config::getInstance($this);
-        $this->_name = $appConfig->getApplicationName();
-        $this->_uniquePrefix = $appConfig->getUniquePrefix();
-        $this->_passKey = $appConfig->getPassKey();
-        $this->_activePackages = $appConfig->getActivePackages();
-        
-        $envConfig = core\Environment::getInstance($this);
-        $this->_activeLocations = $envConfig->getActiveLocations();
-        $this->_isDistributed = $envConfig->isDistributed();
-    }
+    protected function __construct() {}
     
     
 // Paths
@@ -141,7 +126,7 @@ abstract class Base implements core\IApplication, core\IDumpable {
     }
 
     public function isDistributed() {
-        return $this->_isDistributed;
+        return df\Launchpad::$isDistributed;
     }
     
     public function getDebugTransport() {
@@ -159,29 +144,22 @@ abstract class Base implements core\IApplication, core\IDumpable {
     
 // Members
     public function setName($name) {
-        $this->_name = $name;
+        df\Launchpad::$applicationName = $name;
         return $this;
     }
     
     public function getName() {
-        return $this->_name;
+        return df\Launchpad::$applicationName;
     }
     
     public function getUniquePrefix() {
-        return $this->_uniquePrefix;
+        return df\Launchpad::$uniquePrefix;
     }
     
     public function getPassKey() {
-        return $this->_passKey;
-    }
-    
-    public function getActiveLocations() {
-        return $this->_activeLocations;
+        return df\Launchpad::$passKey;
     }
 
-    public function getActivePackages() {
-        return $this->_activePackages;
-    }
     
 // Cache objects
     public function _setCacheObject(core\IRegistryObject $object) {
