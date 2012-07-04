@@ -197,6 +197,10 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
     
     
 // Introspection
+    public function getDatabase() {
+        return opal\rdbms\Database::factory($this);
+    }
+
     public function getTable($name) {
         return opal\rdbms\Table::factory($this, $name);
     }

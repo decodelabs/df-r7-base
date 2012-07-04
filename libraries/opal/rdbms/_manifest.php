@@ -113,11 +113,6 @@ interface IDsn extends core\IStringProvider {
 }
 
 
-interface IServer {
-    public static function getConnectionException($number, $message);
-    public static function getQueryException($number, $message, $sql=null);
-}
-
 interface IAdapter extends core\policy\IParentEntity {
 // Connection
     public function isConnected();
@@ -156,6 +151,7 @@ interface IAdapter extends core\policy\IParentEntity {
     
     
 // Introspection
+    public function getDatabase();
     public function getTable($name);
     public function createTable(opal\rdbms\schema\ISchema $schema, $dropIfExists=false);
     public function getSchema($name);
@@ -184,6 +180,26 @@ interface IStatement extends core\collection\IQueue, core\collection\IStreamColl
     public function executeWrite();
     
     public function free();
+}
+
+interface IServer {
+    public static function getConnectionException($number, $message);
+    public static function getQueryException($number, $message, $sql=null);
+}
+
+interface IDatabase {
+    public function getName();
+    public function getAdapter();
+
+    public function getTable($name);
+    public function getTableList();
+
+    //public function exists();
+    //public function create();
+    //public function rename();
+    
+    public function drop();
+    public function truncate();
 }
 
 interface ITable extends core\policy\IEntity, opal\query\IAdapter, opal\query\IEntryPoint, \Countable, opal\schema\ISchemaContext {
