@@ -22,7 +22,20 @@ class Action implements IAction, core\IDumpable {
     private $_controller;
     
     public static function factory(IContext $context, IController $controller=null) {
-        $request = $context->getRequest();
+        $class = self::getClassFor(
+            $context->getRequest(),
+            $context->getRunMode()
+        );
+        
+        if(!class_exists($class)) {
+            $class = __CLASS__;
+        }
+
+        return new $class($context, $controller);
+    }
+
+    public static function getClassFor(IRequest $request, $runMode='Http') {
+        $runMode = ucfirst($runMode);
         $path = $request->getController();
         
         if(!empty($path)) {
@@ -31,18 +44,10 @@ class Action implements IAction, core\IDumpable {
             $parts = array();
         }
         
-        $type = $context->getRunMode();
-        
         $parts[] = '_actions';
-        $parts[] = $type.ucfirst($request->getAction());
+        $parts[] = $runMode.ucfirst($request->getAction());
         
-        $class = 'df\\apex\\directory\\'.$request->getArea().'\\'.implode('\\', $parts);
-        
-        if(!class_exists($class)) {
-            $class = __CLASS__;
-        }
-
-        return new $class($context, $controller);
+        return 'df\\apex\\directory\\'.$request->getArea().'\\'.implode('\\', $parts);
     }
     
     
@@ -80,7 +85,7 @@ class Action implements IAction, core\IDumpable {
                 $func = false;
             }
             
-            if($output === null && $func = $this->_getActionMethod()) {
+            if($output === null && $func = $this->getActionMethodName($this, $this->_context)) {
                 if($this->_controller) {
                     $this->_controller->setActiveAction($this);
                 }
@@ -96,7 +101,7 @@ class Action implements IAction, core\IDumpable {
         if($func === null) {
             $controller = $this->getController();
             
-            if($func = $this->_getControllerMethod()) {
+            if($func = $this->getControllerMethodName($this->_controller, $this->_context)) {
                 if($controller::CHECK_ACCESS) {
                     $client = $this->_context->getUserManager()->getClient();
                 
@@ -126,14 +131,15 @@ class Action implements IAction, core\IDumpable {
         return $output;
     }
     
-    protected function _getActionMethod() {
-        $type = $this->_context->getRequest()->getType();
+    public static function getActionMethodName($actionClass, IContext $context) {
+        $request = $context->getRequest();
+        $type = $request->getType();
         $func = 'executeAs'.$type;
         
-        if(!method_exists($this, $func)) {
+        if(!method_exists($actionClass, $func)) {
             $func = 'execute';
             
-            if(!method_exists($this, $func)) {
+            if(!method_exists($actionClass, $func)) {
                 $func = null;
             }
         }
@@ -141,26 +147,27 @@ class Action implements IAction, core\IDumpable {
         return $func;
     }
     
-    protected function _getControllerMethod() {
-        $actionName = $this->_context->getRequest()->getAction();
+    public static function getControllerMethodName($controllerClass, IContext $context) {
+        $request = $context->getRequest();
+        $actionName = $request->getAction();
         
         if(is_numeric(substr($actionName, 0, 1))) {
             $actionName = '_'.$actionName;
         }
         
-        $type = $this->_context->getRequest()->getType();
+        $type = $request->getType();
         $func = $actionName.$type.'Action';
         
-        if(!method_exists($this->_controller, $func)) {
+        if(!method_exists($controllerClass, $func)) {
             $func = $actionName.'Action';  
             
-            if(!method_exists($this->_controller, $func)) {
+            if(!method_exists($controllerClass, $func)) {
                 $func = 'default'.$type.'Action';
                 
-                if(!method_exists($this->_controller, $func)) {
+                if(!method_exists($controllerClass, $func)) {
                     $func = 'defaultAction';
                     
-                    if(!method_exists($this->_controller, $func)) {
+                    if(!method_exists($controllerClass, $func)) {
                         $func = null;
                     }    
                 }

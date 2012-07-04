@@ -170,6 +170,9 @@ interface IAction extends IContextAware, user\IAccessLock {
     public function dispatch();
     public function isActionInline();
     public function getController();
+
+    public static function getActionMethodName($actionClass, IContext $context);
+    public static function getControllerMethodName($controllerClass, IContext $context);
 }
 
 interface IComponent extends IContextAware, user\IAccessLock {

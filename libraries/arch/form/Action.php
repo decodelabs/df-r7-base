@@ -238,14 +238,14 @@ abstract class Action extends arch\Action implements IAction {
     
     
 // Action dispatch
-    protected function _getActionMethod() {
-        $method = ucfirst(strtolower($this->_context->getApplication()->getHttpRequest()->getMethod()));
+    public static function getActionMethodName($actionClass, arch\IContext $context) {
+        $method = ucfirst(strtolower($context->getApplication()->getHttpRequest()->getMethod()));
         $func = 'on'.$method.'Request';
         
-        if(!method_exists($this, $func)) {
+        if(!method_exists($actionClass, $func)) {
             throw new RuntimeException(
-                'Form action '.$this->_context->getRequest().' does not support '.
-                $this->_context->getApplication()->getHttpRequest()->getMethod().' http method',
+                'Form action '.$context->getRequest().' does not support '.
+                $context->getApplication()->getHttpRequest()->getMethod().' http method',
                 405
             );
         }

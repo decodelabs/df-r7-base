@@ -24,7 +24,22 @@ class Controller implements IController, core\IDumpable {
     private $_isInline = false;
     
     public static function factory(IContext $context) {
-        $request = $context->getRequest();
+        $runMode = $context->getApplication()->getRunMode();
+
+        $class = self::getClassFor(
+            $context->getRequest(), 
+            $runMode
+        );
+        
+        if(!class_exists($class)) {
+            $class = __CLASS__;
+        }
+        
+        return new $class($context, $runMode);
+    }
+
+    public static function getClassFor(IRequest $request, $runMode='Http') {
+        $runMode = ucfirst($runMode);
         $path = $request->getController();
         
         if(!empty($path)) {
@@ -32,17 +47,10 @@ class Controller implements IController, core\IDumpable {
         } else {
             $parts = array();
         }
-            
-        $type = $context->getApplication()->getRunMode();
-        $parts[] = $type.'Controller';
         
-        $class = 'df\\apex\\directory\\'.$request->getArea().'\\'.implode('\\', $parts);
+        $parts[] = $runMode.'Controller';
         
-        if(!class_exists($class)) {
-            $class = __CLASS__;
-        }
-        
-        return new $class($context, $type);
+        return 'df\\apex\\directory\\'.$request->getArea().'\\'.implode('\\', $parts);
     }
     
     protected function __construct(arch\IContext $context, $type) {

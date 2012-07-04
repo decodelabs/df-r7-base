@@ -21,6 +21,31 @@ class Arch implements archLib\IContextHelper {
     public function getContext() {
         return $this->_context;
     }
+
+    public function actionExists($request, $runMode=null) {
+        $request = archLib\Request::factory($request);
+
+        if($runMode === null) {
+            $runMode = $this->_context->getRunMode();
+        }
+
+        $actionClass = archLib\Action::getClassFor($request, $runMode);
+
+        if(class_exists($actionClass)) {
+            return true;
+        }
+
+        $controllerClass = archLib\Controller::getClassFor($request, $runMode);
+
+        if(!class_exists($controllerClass)) {
+            return false;
+        }
+
+        return (bool)archLib\Action::getControllerMethodName(
+            $controllerClass, 
+            archLib\Context::factory($this->_context->getApplication(), $request)
+        );
+    }
     
     public function getAction($name, $context=true, archLib\IController $controller=null, $runMode=null) {
         if($context === true) {
@@ -43,6 +68,18 @@ class Arch implements archLib\IContextHelper {
         return archLib\Action::factory($context, $controller);
     }
     
+    public function controllerExists($request, $runMode=null) {
+        $request = archLib\Request::factory($request);
+
+        if($runMode === null) {
+            $runMode = $this->_context->getRunMode();
+        }
+
+        $class = archLib\Controller::getClassFor($request, $runMode);
+
+        return class_exists($class);
+    }
+
     public function getController($request) {
         return archLib\Controller::factory(
             archLib\Context::factory(
