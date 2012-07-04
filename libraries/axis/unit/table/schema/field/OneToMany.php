@@ -73,11 +73,19 @@ class OneToMany extends axis\schema\field\Base implements IOneToManyField {
     
     public function sanitizeValue($value, $forRecord) {
         if($forRecord) {
-            return new axis\unit\table\record\InlineManyRelationValueContainer(
+            $output = new axis\unit\table\record\InlineManyRelationValueContainer(
                 $this->_targetUnitId,
                 $this->_targetField,
                 $this->_targetPrimaryFields
             );
+
+            if(is_array($value)) {
+                foreach($value as $entry) {
+                    $output->add($entry);
+                }
+            }
+
+            return $output;
         } else {
             return $value;
         }

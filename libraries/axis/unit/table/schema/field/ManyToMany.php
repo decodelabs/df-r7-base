@@ -60,13 +60,21 @@ class ManyToMany extends Many implements IManyToManyField {
 // Values
     public function sanitizeValue($value, $forRecord) {
         if($forRecord) {
-            return new axis\unit\table\record\BridgedManyRelationValueContainer(
+            $output = new axis\unit\table\record\BridgedManyRelationValueContainer(
                 $this->_bridgeUnitId,
                 $this->_targetUnitId,
                 $this->_localPrimaryFields,
                 $this->_targetPrimaryFields,
                 $this->_isDominant
             );
+
+            if(is_array($value)) {
+                foreach($value as $entry) {
+                    $output->add($entry);
+                }
+            }
+
+            return $output;
         } else {
             return $value;
         }

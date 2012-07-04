@@ -426,7 +426,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
                     } else {
                         $value = null;
                     }
-                    
+
                     $row[$name] = $field->sanitizeValue($value, true);
                 }
             }
