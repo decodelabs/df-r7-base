@@ -138,7 +138,7 @@ final class Virtual extends axis\Unit implements axis\ISchemaDefinitionStorageUn
     }
     
     public function clearUnitSchemaCache() {
-        $this->clearCache($this->_unit);
+        return $this->clearCache($this);
     }
     
     public function clearCache(axis\ISchemaBasedStorageUnit $unit=null) {

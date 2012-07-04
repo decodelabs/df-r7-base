@@ -127,6 +127,7 @@ abstract class Base extends axis\Unit implements
     
     
     public function destroyStorage() {
+        $this->clearUnitSchemaCache();
         $this->_adapter->destroyStorage();
         $this->_model->getSchemaDefinitionUnit()->remove($this);
         

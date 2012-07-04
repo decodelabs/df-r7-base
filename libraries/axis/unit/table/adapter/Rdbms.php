@@ -170,7 +170,6 @@ class Rdbms implements
     public function handleQueryException(opal\query\IQuery $query, \Exception $e) {
         // Table not found
         if($e instanceof opal\rdbms\TableNotFoundException && $e->table == $this->_unit->getStorageBackendName()) {
-            core\dump($e);
             $this->_unit->destroyStorage();
             $this->_unit->getUnitSchema();
             
