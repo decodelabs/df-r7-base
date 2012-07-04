@@ -252,6 +252,10 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
     
     public function __construct($value, $encoding=IEncoding::UTF_8) {
         $this->import($value);
+
+        if($encoding === null) {
+            $encoding = IEncoding::UTF_8;
+        }
         
         if($this->_encoding === null) {
             if($encoding != IEncoding::UTF_8 // quick shortcut to avoid lots of lookups
@@ -539,7 +543,7 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
         }
         
         
-        $this->_value = $input;
+        $this->_value = (string)$input;
         $this->_encoding = mb_detect_encoding($input.'a');
         
         return $this;
