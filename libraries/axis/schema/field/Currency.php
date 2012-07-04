@@ -11,7 +11,17 @@ use df\axis;
     
 class Currency extends Base {
 
-    protected function _init() {
-    	core\stub('Currency field type is not fully functional!');
-    }
+// Primitive
+	public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
+		return opal\schema\Primitive_Currency($this);
+	}
+
+// Ext. serialize
+	protected function _importStorageArray(array $data) {
+		$this->_setBaseStorageArray($data);
+	}
+
+	public function toStorageArray() {
+		return $this->_getBaseStorageArray();
+	}
 }

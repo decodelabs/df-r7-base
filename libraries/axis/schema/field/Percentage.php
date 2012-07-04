@@ -9,10 +9,47 @@ use df;
 use df\core;
 use df\axis;
     
-class Percentage extends Base {
+class Percentage extends Base implements opal\schema\IFloatingNumericField {
 
-    protected function _init($scale=5) {
-    	core\stub('Percentage field type is not fully functional');
-    	$this->setScale($scale);
+    use opal\schema\TField_FloatingPointNumeric;
+
+    protected function _init($precision=4) {
+    	$this->setPrecision($precision);
     }
+
+    public function setScale($scale) {
+    	return $this->setPrecision($scale - 3);
+    }
+
+    public function getScale() {
+    	return $this->_precision + 3;
+    }
+
+// Primitive
+	public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
+		$output = new opal\schema\Primitive_Decimal($this, $this->_precision, $this->_precision + 3);
+
+		if($this->_isUnsigned) {
+            $output->isUnsigned(true);
+        }
+        
+        if($this->_zerofill) {
+            $output->shouldZerofill(true);
+        }
+
+        return $output;
+	}
+
+// Ext. serialize
+	protected function _importStorageArray(array $data) {
+		$this->_setBaseStorageArray($data);
+		$this->_setFloatingPointNumericStorageArray($data);
+	}
+
+	public function toStorageArray() {
+		return array_merge(
+			$this->_getBaseStorageArray(),
+			$this->_getFloatingPointNumericStorageArray()
+		);
+	}
 }

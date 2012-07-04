@@ -300,6 +300,10 @@ trait TField_FloatingPointNumeric {
         if($precision !== null) {
             $precision = (int)$precision;
         }
+
+        if($precision < 0) {
+            $precision = 0;
+        }
         
         $this->_precision = $precision;
         $this->_hasChanged = true;
