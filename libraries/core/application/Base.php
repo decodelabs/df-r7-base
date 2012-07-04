@@ -190,10 +190,10 @@ abstract class Base implements core\IApplication, core\IDumpable {
 // Dump
     public function getDumpProperties() {
         return [
-            'name' => $this->_name,
+            'name' => $this->getName(),
             'path' => $this->getApplicationPath(),
             'environmentId' => $this->getEnvironmentId(),
-            'environmentMode' => $this->_environmentMode,
+            'environmentMode' => $this->getEnvironmentMode(),
             'runMode' => $this->getRunMode(),
             'cacheObjects' => count($this->_objectCache)
         ];
