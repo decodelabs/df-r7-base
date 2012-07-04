@@ -77,6 +77,10 @@ abstract class Model implements IModel, core\IDumpable {
         
         return $unit;
     }
+
+    public function getSchemaDefinitionUnit() {
+        return $this->getUnit('schemaDefinition.Virtual()');
+    }
     
     public function unloadUnit(IUnit $unit) {
         unset($this->_units[$unit->getUnitName()]);

@@ -21,6 +21,7 @@ interface IModel extends core\IApplicationAware, core\policy\IParentEntity, core
     public function getModelName();
     
     public function getUnit($name);
+    public function getSchemaDefinitionUnit();
     public function unloadUnit(IUnit $unit);
 }
 

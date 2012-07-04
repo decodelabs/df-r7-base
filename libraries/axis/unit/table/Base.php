@@ -61,7 +61,7 @@ abstract class Base extends axis\Unit implements
 // Schema
     public function getUnitSchema() {
         if($this->_schema === null) {
-            $this->_schema = $this->_model->getUnit('schemaDefinition.Virtual()')->fetchFor($this);
+            $this->_schema = $this->_model->getSchemaDefinitionUnit()->fetchFor($this);
         }
         
         return $this->_schema;
@@ -72,7 +72,7 @@ abstract class Base extends axis\Unit implements
             return $this->_schema;
         }
         
-        return $this->_model->getUnit('schemaDefinition.Virtual()')->fetchFor($this, true);
+        return $this->_model->getSchemaDefinitionUnit()->fetchFor($this, true);
     }
     
     public function buildInitialSchema() {
@@ -128,7 +128,7 @@ abstract class Base extends axis\Unit implements
     
     public function destroyStorage() {
         $this->_adapter->destroyStorage();
-        $this->_model->getUnit('schemaDefinition.Virtual()')->remove($this);
+        $this->_model->getSchemaDefinitionUnit()->remove($this);
         
         return $this;
     }
