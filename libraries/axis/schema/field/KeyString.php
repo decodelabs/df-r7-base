@@ -36,7 +36,7 @@ class KeyString extends String {
 
 // Values
     public function sanitizeValue($value, $forRecord) {
-    	if($this->_case != core\string\ICase::NONE) {
+    	if($this->_case != core\string\ICase::NONE && $value !== null) {
     		$value = core\string\Manipulator::applyCase($value, $this->_case, $this->_characterSet);
     	}
 
