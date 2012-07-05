@@ -223,9 +223,14 @@ class Table extends opal\rdbms\Table {
                 $options[] = $length;
             }
             
-            if($field instanceof opal\schema\IFloatingPointNumericField
-            && null !== ($scale = $field->getScale())) {
-                $options[] = $scale;
+            if($field instanceof opal\schema\IFloatingPointNumericField) {
+                if(null !== ($precision = $field->getPrecision())) {
+                    $options[] = $precision;
+
+                    if(null !== ($scale = $field->getScale())) {
+                        $options[] = $scale;
+                    }
+                }
             }
             
             if(!empty($options)) {
@@ -288,7 +293,7 @@ class Table extends opal\rdbms\Table {
         if(null !== ($comment = $field->getComment())) {
             $fieldSql .= ' COMMENT '.$this->_adapter->prepareValue($comment);
         }
-        
+
         return $fieldSql;
     }
 
