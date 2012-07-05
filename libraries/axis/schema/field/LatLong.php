@@ -8,11 +8,13 @@ namespace df\axis\schema\field;
 use df;
 use df\core;
 use df\axis;
+use df\opal;
     
 class LatLong extends Base {
 
-    const SCALE = 10;
-    const PRECISION = 6;
+	const PRECISION = 10;
+    const SCALE = 6;
+    
 
 
 // Primitive
