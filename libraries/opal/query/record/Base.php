@@ -497,7 +497,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         $recordTask = null;
         
         if($taskSet->isRecordQueued($this)) {
-            return $this;
+            return $recordTask;
         }
         
         if($this->hasChanged()) {
