@@ -8,6 +8,7 @@ namespace df\axis\unit\table\schema\field;
 use df;
 use df\core;
 use df\axis;
+use df\opal;
 
 class ManyToMany extends Many implements IManyToManyField {
     
@@ -83,8 +84,8 @@ class ManyToMany extends Many implements IManyToManyField {
     
     
 // Validation
-    public function sanitize(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
-        $model = $unit->getModel();
+    public function sanitize(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $localSchema) {
+        $model = $localUnit->getModel();
         
         // Target unit id
         if(false === strpos($this->_targetUnitId, axis\Unit::ID_SEPARATOR)) {
@@ -93,20 +94,15 @@ class ManyToMany extends Many implements IManyToManyField {
         
         // Bridge unit id
         if($this->_isDominant && empty($this->_bridgeUnitId)) {
-            $this->_bridgeUnitId = $model->getModelName().axis\Unit::ID_SEPARATOR.'table.ManyBridge('.$unit->getUnitName().'.'.$this->_name.')';
+            $this->_bridgeUnitId = $model->getModelName().axis\Unit::ID_SEPARATOR.'table.ManyBridge('.$localUnit->getUnitName().'.'.$this->_name.')';
         }
         
         if(!empty($this->_bridgeUnitId) && false === strpos($this->_bridgeUnitId, axis\Unit::ID_SEPARATOR)) {
             $this->_bridgeUnitId = $model->getModelName().axis\Unit::ID_SEPARATOR.$this->_bridgeUnitId;
         }
-        
-        return $this;
-    }
-    
-    public function validate(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $schema) {
+
+
         // Local ids
-        $localSchema = $localUnit->getTransientUnitSchema();
-        
         if(!$localPrimaryIndex = $localSchema->getPrimaryIndex()) {
             throw new axis\schema\RuntimeException(
                 'Relation table '.$localUnit->getUnitId().' does not have a primary index'
@@ -115,7 +111,10 @@ class ManyToMany extends Many implements IManyToManyField {
         
         $this->_localPrimaryFields = array_keys($localPrimaryIndex->getFields());
         
-        
+        return $this;
+    }
+    
+    public function validate(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $localSchema) {
         // Target ids
         $targetUnit = axis\Unit::fromId($this->_targetUnitId, $localUnit->getApplication());
         

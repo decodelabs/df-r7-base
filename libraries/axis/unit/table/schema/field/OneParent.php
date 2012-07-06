@@ -8,6 +8,7 @@ namespace df\axis\unit\table\schema\field;
 use df;
 use df\core;
 use df\axis;
+use df\opal;
 
 class OneParent extends axis\schema\field\Base implements IOneParentField {
     
