@@ -10,7 +10,7 @@ use df\core;
 use df\axis;
 use df\opal;
     
-class Decimal extends Base implements opal\schema\IFloatingNumericField {
+class Decimal extends Base implements opal\schema\IFloatingPointNumericField {
 
     use opal\schema\TField_FloatingPointNumeric;
 
