@@ -737,6 +737,16 @@ abstract class Table implements ITable, core\IDumpable {
         foreach($query->getRow() as $field => $value) {
             $fields[] = $this->_adapter->quoteIdentifier($field);
             $values[] = ':'.$field;
+
+            if(is_array($value)) {
+                if(count($value) == 1) {
+                    // This is a total hack - you need to trace the real problem with multi-value keys
+                    $value = array_shift($value);
+                } else {
+                    core\dump($value, $field, 'You need to trace back multi key primary field retention');
+                }
+            }
+
             $stmt->bind($field, $value);
         }
         
