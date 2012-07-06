@@ -109,7 +109,17 @@ class ManyToMany extends Many implements IManyToManyField {
             );
         }
         
-        $this->_localPrimaryFields = array_keys($localPrimaryIndex->getFields());
+        $this->_localPrimaryFields = array();
+        
+        foreach($localPrimaryIndex->getFields() as $name => $field) {
+            if($field instanceof axis\schema\IMultiPrimitiveField) {
+                foreach($field->getPrimitiveFieldNames() as $name) {
+                    $this->_localPrimaryFields[] = $name;
+                }
+            } else {
+                $this->_localPrimaryFields[] = $name;
+            }
+        }
         
         return $this;
     }

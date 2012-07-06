@@ -71,10 +71,26 @@ class Base implements ISchema, core\IDumpable {
     public function _createFieldFromStorageArray(array $data) {
         return axis\schema\field\Base::fromStorageArray($this, $data);
     }
-    
+
+
     public function _createIndex($name, $fields=null) {
         return new axis\schema\constraint\Index($this, $name, $fields);
     }
+
+    protected function _validateIndex(opal\schema\IIndex $index) {
+        $fields = $index->getFields();
+
+        foreach($fields as $name => $field) {
+            if($field instanceof axis\schema\INullPrimitiveField) {
+                throw new opal\schema\RuntimeException(
+                    'Indexes cannot be defined for NullPrimitive fields ('.$this->getName().'.'.$name.')'
+                );
+            }
+        }
+
+        return true;
+    }
+
     
     public function _createIndexFromStorageArray(array $data) {
         return axis\schema\constraint\Index::fromStorageArray($this, $data);

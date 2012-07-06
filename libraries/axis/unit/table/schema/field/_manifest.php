@@ -31,8 +31,8 @@ interface IBridgedRelationField extends IField, axis\schema\IRelationField {
 
 
 interface IOneField extends IOneRelationField, axis\schema\IMultiPrimitiveField {}
-interface IOneChildField extends IOneRelationField, axis\schema\IMultiPrimitiveField {}
-interface IOneParentField extends IOneRelationField, axis\schema\INullPrimitiveField {}
+interface IOneParentField extends IOneRelationField, axis\schema\IMultiPrimitiveField {}
+interface IOneChildField extends IOneRelationField, axis\schema\INullPrimitiveField {}
 interface IManyToOneField extends IOneRelationField, axis\schema\IMultiPrimitiveField {}
 
 interface IManyField extends IManyRelationField, IBridgedRelationField, axis\schema\IQueryClauseRewriterField {}

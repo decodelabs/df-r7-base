@@ -10,7 +10,7 @@ use df\core;
 use df\axis;
 use df\opal;
 
-class OneParentRelationValueContainer implements opal\query\record\ITaskAwareValueContainer, opal\query\record\IPreparedValueContainer {
+class OneChildRelationValueContainer implements opal\query\record\ITaskAwareValueContainer, opal\query\record\IPreparedValueContainer {
     
     protected $_targetField;
     protected $_record = false;
@@ -84,7 +84,8 @@ class OneParentRelationValueContainer implements opal\query\record\ITaskAwareVal
             $record = $value;
             $value = $value->getPrimaryManifest();
         } else if(!$value instanceof opal\query\record\IPrimaryManifest) {
-            $value = new opal\query\record\PrimaryManifest(array('id'), array(null));
+            // TODO: swap array('id') for target primary fields
+            $value = new opal\query\record\PrimaryManifest(array('id'), array($value));
         }
         
         $this->_insertPrimaryManifest = $value;
@@ -127,33 +128,33 @@ class OneParentRelationValueContainer implements opal\query\record\ITaskAwareVal
                 $this->prepareValue($record, $fieldName);
             }
             
-            $application = $record->getRecordAdapter()->getApplication();
-            $targetUnit = axis\Unit::fromId($this->_targetUnitId, $application);
-            
-            $query = $targetUnit->fetch();
-                    
-            foreach($record->getPrimaryManifest()->toArray() as $field => $value) {
-                $query->where($this->_targetField.'_'.$field, '=', $value);
+            $originalRecord = null;
+
+            if(!$record->isNew()) {
+                $application = $record->getRecordAdapter()->getApplication();
+                $targetUnit = axis\Unit::fromId($this->_targetUnitId, $application);
+                
+                $query = $targetUnit->fetch();
+                        
+                foreach($record->getPrimaryManifest()->toArray() as $field => $value) {
+                    $query->where($this->_targetField.'_'.$field, '=', $value);
+                }
+                
+                $originalRecord = $query->toRow();
             }
-            
-            $originalRecord = $query->toRow();
             
             if(!$this->_record) {
                 $this->_insertPrimaryManifest->updateWith(null);
             } else {
-                if($this->_record->isNew()) {
-                    $task = $taskSet->insert($this->_record);
-                } else {
-                    $task = $taskSet->update($this->_record);
-                }
+                $task = $this->_record->deploySaveTasks($taskSet);
                 
-                if($recordTask && !$this->_insertPrimaryManifest->isNull()) {
+                if($recordTask) {
                     $task->addDependency(
                         new opal\query\record\task\dependency\UpdateManifestField(
                             $this->_targetField, $recordTask
                         )
                     );
-                } else {
+                } else if(!$this->_insertPrimaryManifest->isNull()) {
                     $this->_record->set($this->_targetField, $this->_insertPrimaryManifest);
                 }
             }

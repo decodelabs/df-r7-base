@@ -10,15 +10,35 @@ use df\core;
 use df\axis;
 use df\opal;
 
-class OneChild extends One implements IOneChildField {
+class OneChild extends axis\schema\field\Base implements IOneChildField {
     
-    protected $_primaryFields = array('id');
     protected $_targetUnitId;
     protected $_targetField;
     
     protected function _init($targetUnit, $targetField=null) {
         $this->setTargetUnitId($targetUnit);
         $this->setTargetField($targetField);
+    }
+    
+    
+// Target unit id
+    public function setTargetUnitId($targetUnit) {
+        if($targetUnit instanceof axis\IUnit) {
+            $targetUnit = $targetUnit->getUnitId();
+        }
+        
+        $targetUnit = (string)$targetUnit;
+        
+        if($targetUnit != $this->_targetUnitId) {
+            $this->_hasChanged = true;
+        }
+        
+        $this->_targetUnitId = $targetUnit;
+        return $this;
+    }
+    
+    public function getTargetUnitId() {
+        return $this->_targetUnitId;
     }
     
     
@@ -37,32 +57,48 @@ class OneChild extends One implements IOneChildField {
     }
     
     
-    
 // Values
     public function inflateValueFromRow($key, array $row, $forRecord) {
-        $values = array();
-        
-        foreach($this->_primaryFields as $field) {
-            $fieldKey = $key.'_'.$field;
-            
-            if(isset($row[$fieldKey])) {
-                $values[$field] = $row[$fieldKey];
-            } else {
-                $values[$field] = null;
-            }
-        }
-        
+        return $this->sanitizeValue(null, $forRecord);
+    }
+    
+    public function deflateValue($value) {
+        return null;
+    }
+    
+    public function sanitizeValue($value, $forRecord) {
         if($forRecord) {
-            return new axis\unit\table\record\OneRelationValueContainer(
-                $values, $this->_targetUnitId, $this->_primaryFields, $this->_targetField
+            $output = new axis\unit\table\record\OneChildRelationValueContainer(
+                $this->_targetUnitId, $this->_targetField
             );
+
+            if($value !== null) {
+                $output->setValue($value);
+            }
+
+            return $output;
         } else {
-            return new opal\query\record\PrimaryManifest($this->_primaryFields, $values);
+            return null;
         }
     }
     
+    public function generateInsertValue(array $row) {
+        return null;
+    }
     
-// Validate
+    
+// Validation
+    public function sanitize(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
+        $model = $unit->getModel();
+        
+        // Target unit id
+        if(false === strpos($this->_targetUnitId, axis\Unit::ID_SEPARATOR)) {
+            $this->_targetUnitId = $model->getModelName().axis\Unit::ID_SEPARATOR.$this->_targetUnitId;
+        }
+        
+        return $this;
+    }
+    
     public function validate(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
         // Target
         $targetUnit = axis\Unit::fromId($this->_targetUnitId, $unit->getApplication());
@@ -94,45 +130,28 @@ class OneChild extends One implements IOneChildField {
                 'Target field '.$this->_targetField.' is not a OneParent field'
             );
         }
-        
-        $this->_primaryFields = array_keys($primaryIndex->getFields());
-        
-        
-        // Default value
-        if($this->_defaultValue !== null) {
-            if(!is_array($this->_defaultValue)) {
-                if(count($this->_primaryFields) > 1) {
-                    throw new axis\schema\RuntimeException(
-                        'Default value for a multi key relation must be a keyed array'
-                    );
-                }
-                
-                $this->_defaultValue = array($this->_primaryFields[0] => $this->_defaultValue);
-            }
-            
-            foreach($this->_primaryFields as $field) {
-                if(!array_key_exists($field, $this->_defaultValue)) {
-                    throw new axis\schema\RuntimeException(
-                        'Default value for a multi key relation must contain values for all target primary keys'
-                    );
-                }
-            }
-        }
-        
-        return $this;
     }
 
+
+// Primitive
+    public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
+        return new opal\schema\Primitive_Null($this);
+    }
+    
+    
 // Ext. serialize
     protected function _importStorageArray(array $data) {
-        parent::_importStorageArray($data);
+        $this->_setBaseStorageArray($data);
         
+        $this->_targetUnitId = $data['tui'];
         $this->_targetField = $data['tfl'];
     }
     
     public function toStorageArray() {
         return array_merge(
-            parent::toStorageArray(),
+            $this->_getBaseStorageArray(),
             [
+                'tui' => $this->_targetUnitId,
                 'tfl' => $this->_targetField
             ]
         );

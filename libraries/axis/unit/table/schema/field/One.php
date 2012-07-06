@@ -133,8 +133,18 @@ class One extends axis\schema\field\Base implements IOneField {
             );
         }
         
-        $this->_primaryFields = array_keys($primaryIndex->getFields());
+        $this->_primaryFields = array();
         
+        foreach($primaryIndex->getFields() as $name => $field) {
+            if($field instanceof axis\schema\IMultiPrimitiveField) {
+                foreach($field->getPrimitiveFieldNames() as $name) {
+                    $this->_primaryFields[] = $name;
+                }
+            } else {
+                $this->_primaryFields[] = $name;
+            }
+        }
+
         
         // Default value
         if($this->_defaultValue !== null) {
@@ -159,6 +169,24 @@ class One extends axis\schema\field\Base implements IOneField {
         
         return $this;
     }
+
+
+    public function duplicateForRelation(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
+        $targetUnit = axis\Unit::fromId($this->_targetUnitId, $unit->getApplication());
+        $targetSchema = $targetUnit->getTransientUnitSchema();
+        $output = array();
+
+        foreach($this->_primaryFields as $fieldName) {
+            $field = $targetSchema->getField($fieldName);
+
+            $dupField = $field->duplicateForRelation($targetUnit, $targetSchema);
+            $dupField->_setName($this->_name.'_'.$dupField->getName());
+
+            $output[] = $dupField;
+        }
+
+        return $output;
+    }
     
     
 // Primitive
@@ -182,9 +210,14 @@ class One extends axis\schema\field\Base implements IOneField {
         
         foreach($primaryIndex->getFields() as $name => $field) {
             $primitive = $field->toPrimitive($targetUnit, $targetSchema)
-                ->_setName($this->_name.'_'.$name)
                 ->isNullable(true);
-                
+
+            if($field instanceof axis\schema\IMultiPrimitiveField) {
+                $name = $primitive->getName();
+            }
+
+            $primitive->_setName($this->_name.'_'.$name);
+
             if($this->_defaultValue !== null) {
                 $primitive->setDefaultValue($this->_defaultValue[$name]);
             }
@@ -195,8 +228,7 @@ class One extends axis\schema\field\Base implements IOneField {
             
             $primitives[$name] = $primitive;
         }
-        
-        
+
         if(count($primitives) == 1) {
             return array_shift($primitives);
         }

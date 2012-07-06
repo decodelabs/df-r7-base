@@ -69,6 +69,10 @@ abstract class Base implements ITask {
     public function countDependencies() {
         return count($this->_dependencies);
     }
+
+    public function hasDependencies() {
+        return !empty($this->_dependencies);
+    }
     
     public function resolveDependencies(ITaskSet $taskSet) {
         while(!empty($this->_dependencies)) {
@@ -98,12 +102,25 @@ abstract class Base implements ITask {
         $this->_dependants[$task->getId()] = $task;
         return $this;
     }
+
+    public function countDependants() {
+        return count($this->_dependants);
+    }
+
+    public function hasDependants() {
+        return !empty($this->_dependants);
+    }
     
     public function applyResolutionToDependants() {
+        $output = false;
+
         while(!empty($this->_dependants)) {
+            $output = true;
             $task = array_shift($this->_dependants);
             $task->applyDependencyResolution($this);
         }
+
+        return $output;
     }
     
     

@@ -204,8 +204,8 @@ class Many extends axis\schema\field\Base implements IManyField {
     
     
 // Validation
-    public function sanitize(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
-        $model = $unit->getModel();
+    public function sanitize(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $localSchema) {
+        $model = $localUnit->getModel();
         
         // Target unit id
         if(false === strpos($this->_targetUnitId, axis\Unit::ID_SEPARATOR)) {
@@ -214,17 +214,15 @@ class Many extends axis\schema\field\Base implements IManyField {
         
         // Bridge unit id
         if(empty($this->_bridgeUnitId)) {
-            $this->_bridgeUnitId = $model->getModelName().axis\Unit::ID_SEPARATOR.'table.ManyBridge('.$unit->getUnitName().'.'.$this->_name.')';
+            $this->_bridgeUnitId = $model->getModelName().axis\Unit::ID_SEPARATOR.'table.ManyBridge('.$localUnit->getUnitName().'.'.$this->_name.')';
         }
         
         if(false === strpos($this->_bridgeUnitId, axis\Unit::ID_SEPARATOR)) {
             $this->_bridgeUnitId = $model->getModelName().axis\Unit::ID_SEPARATOR.$this->_bridgeUnitId;
         }
         
-        return $this;
-    }
-    
-    public function validate(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $schema) {
+
+
         // Local ids
         $localSchema = $localUnit->getTransientUnitSchema();
         
@@ -233,10 +231,23 @@ class Many extends axis\schema\field\Base implements IManyField {
                 'Relation table '.$localUnit->getUnitId().' does not have a primary index'
             );
         }
+
+        $this->_localPrimaryFields = array();
         
-        $this->_localPrimaryFields = array_keys($localPrimaryIndex->getFields());
-        
-        
+        foreach($localPrimaryIndex->getFields() as $name => $field) {
+            if($field instanceof axis\schema\IMultiPrimitiveField) {
+                foreach($field->getPrimitiveFieldNames() as $name) {
+                    $this->_localPrimaryFields[] = $name;
+                }
+            } else {
+                $this->_localPrimaryFields[] = $name;
+            }
+        }
+
+        return $this;
+    }
+    
+    public function validate(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $localSchema) {
         // Target ids
         $targetUnit = axis\Unit::fromId($this->_targetUnitId, $localUnit->getApplication());
         

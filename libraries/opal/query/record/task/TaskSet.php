@@ -125,11 +125,17 @@ class TaskSet implements ITaskSet {
     }
     
     public function isRecordQueued(opal\query\record\IRecord $record) {
-        return isset($this->_tasks[Base::extractRecordId($record)]);
+        $id = $record->getRecordAdapter()->getQuerySourceId().'#'.Base::extractRecordId($record);
+        return isset($this->_tasks[$id]);
     }
     
     public function setRecordAsQueued(opal\query\record\IRecord $record) {
-        $this->_tasks[Base::extractRecordId($record)] = false;
+        $id = $record->getRecordAdapter()->getQuerySourceId().'#'.Base::extractRecordId($record);
+
+        if(!isset($this->_tasks[$id])) {
+            $this->_tasks[$id] = false;
+        }
+
         return $this;
     }
     
@@ -141,8 +147,8 @@ class TaskSet implements ITaskSet {
         uasort($this->_tasks, function($taskA, $taskB) {
             return $taskA->countDependencies() > $taskB->countDependencies();
         });
-        
-        
+
+
         try {
             while(!empty($this->_tasks)) {
                 $task = array_shift($this->_tasks);
@@ -153,7 +159,12 @@ class TaskSet implements ITaskSet {
                 
                 $task->resolveDependencies($this);
                 $task->execute($this->_transaction);
-                $task->applyResolutionToDependants();
+
+                if($task->applyResolutionToDependants()) {
+                    uasort($this->_tasks, function($taskA, $taskB) {
+                        return $taskA->countDependencies() > $taskB->countDependencies();
+                    });
+                }
             }
         } catch(\Exception $e) {
             $this->_transaction->rollback();

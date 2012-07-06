@@ -376,7 +376,7 @@ class BridgedManyRelationValueContainer implements
     public function deploySaveTasks(opal\query\record\task\ITaskSet $taskSet, opal\query\record\IRecord $parentRecord, $fieldName, opal\query\record\task\ITask $recordTask=null) {
         $localUnit = $parentRecord->getRecordAdapter();
         $this->_localPrimaryManifest->updateWith($parentRecord);
-        
+
         $application = $localUnit->getApplication();
         $targetUnit = axis\Unit::fromId($this->_targetUnitId, $application);
         $bridgeUnit = axis\Unit::fromId($this->_bridgeUnitId, $application);

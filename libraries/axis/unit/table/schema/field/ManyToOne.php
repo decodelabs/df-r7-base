@@ -98,8 +98,18 @@ class ManyToOne extends One implements IManyToOneField {
             );
         }
         
-        $this->_primaryFields = array_keys($primaryIndex->getFields());
+        $this->_primaryFields = array();
         
+        foreach($primaryIndex->getFields() as $name => $field) {
+            if($field instanceof axis\schema\IMultiPrimitiveField) {
+                foreach($field->getPrimitiveFieldNames() as $name) {
+                    $this->_primaryFields[] = $name;
+                }
+            } else {
+                $this->_primaryFields[] = $name;
+            }
+        }
+
         
         // Default value
         if($this->_defaultValue !== null) {

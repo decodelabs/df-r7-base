@@ -50,41 +50,43 @@ class ManyBridge extends Base implements axis\IVirtualUnit {
         $submissiveSchema = $submissiveUnit->getTransientUnitSchema();
         $submissiveFieldPrefix = $this->getSubmissiveFieldPrefix($submissiveUnit);
         
-        $dominantPrimaryFields = $dominantField->getLocalPrimaryFieldNames();
-        $submissivePrimaryFields = $dominantField->getTargetPrimaryFieldNames();
+        $dominantPrimaryFields = $dominantSchema->getPrimaryIndex()->getFields();
+        $submissivePrimaryFields = $submissiveSchema->getPrimaryIndex()->getFields();
         
         
         $schema = new axis\schema\Base($this, $this->getUnitName());
         $bridgePrimaryFields = array();
         
-        foreach($dominantPrimaryFields as $fieldName) {
-            if(!$field = $dominantSchema->getField($fieldName)) {
-                throw new axis\schema\FieldTypeNotFoundException(
-                    'Many bridge dominant primary field '.$fieldName.' could not be found in schema '.$dominantUnit->getUnitId()
-                );
+        foreach($dominantPrimaryFields as $fieldName => $field) {
+            $bridgeFields = $field->duplicateForRelation($dominantUnit, $dominantSchema);
+            
+            if(!is_array($bridgeFields)) {
+                $bridgeFields = [$bridgeFields];
             }
-            
-            $bridgePrimaryFields[] = $bridgeFieldName = $dominantFieldPrefix.$fieldName;
-            $bridgeField = $field->duplicateForRelation($dominantUnit, $dominantSchema)->_setName($bridgeFieldName);
-            
-            $schema->addPreparedField($bridgeField);
+
+            foreach($bridgeFields as $bridgeField) {
+                $bridgePrimaryFields[] = $bridgeFieldName = $dominantFieldPrefix.$bridgeField->getName();
+                $bridgeField->_setName($bridgeFieldName);
+                $schema->addPreparedField($bridgeField);
+            }
         }
         
-        foreach($submissivePrimaryFields as $fieldName) {
-            if(!$field = $submissiveSchema->getField($fieldName)) {
-                throw new axis\schema\FieldTypeNotFoundException(
-                    'Many bridge submissive primary field '.$fieldName.' could not be found in schema '.$submissiveUnit->getUnitId()
-                );
+        foreach($submissivePrimaryFields as $fieldName => $field) {
+            $bridgeFields = $field->duplicateForRelation($submissiveUnit, $submissiveSchema);
+            
+            if(!is_array($bridgeFields)) {
+                $bridgeFields = [$bridgeFields];
             }
-            
-            $bridgePrimaryFields[] = $bridgeFieldName = $submissiveFieldPrefix.$fieldName;
-            $bridgeField = $field->duplicateForRelation($submissiveUnit, $submissiveSchema)->_setName($bridgeFieldName);
-            
-            $schema->addPreparedField($bridgeField);
+
+            foreach($bridgeFields as $bridgeField) {
+                $bridgePrimaryFields[] = $bridgeFieldName = $submissiveFieldPrefix.$bridgeField->getName();
+                $bridgeField->_setName($bridgeFieldName);
+                $schema->addPreparedField($bridgeField);
+            }
         }
         
         $schema->addPrimaryIndex('primary', $bridgePrimaryFields);
-        
+
         return $schema;
     }
     

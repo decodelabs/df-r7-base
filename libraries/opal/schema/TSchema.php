@@ -545,6 +545,12 @@ trait TSchema_IndexProvider {
     }
     
     public function addPreparedIndex(opal\schema\IIndex $index) {
+        if(!$this->_validateIndex($index)) {
+            throw new RuntimeException(
+                'Index '.$index->getName().' is not valid for fields: '.implode(', ', array_keys($index->getFields()))
+            );
+        }
+
         if(isset($this->_indexes[$index->getName()])) {
             throw new RuntimeException(
                 'Index '.$index->getName().' has already been defined'
@@ -557,6 +563,10 @@ trait TSchema_IndexProvider {
         
         $this->_indexes[$index->getName()] = $index;
         return $index;
+    }
+
+    protected function _validateIndex(opal\schema\IIndex $index) {
+        return true;
     }
     
     public function replaceIndex($name, $fields=null) {

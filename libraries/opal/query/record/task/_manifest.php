@@ -32,8 +32,12 @@ interface ITask {
     
     public function addDependency(opal\query\record\task\dependency\IDependency $dependency);
     public function countDependencies();
+    public function hasDependencies();
     public function resolveDependencies(ITaskSet $taskSet);
     public function applyDependencyResolution(ITask $dependencyTask);
+
+    public function countDependants();
+    public function hasDependants();
     public function applyResolutionToDependants();
     
     public function execute(opal\query\ITransaction $transaction);
