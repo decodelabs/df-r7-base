@@ -184,7 +184,7 @@ abstract class Base implements axis\schema\IBridge {
         
         if(!method_exists($this, $func)) {
             throw new axis\schema\RuntimeException(
-                'Primitive '.$type.' is currently not supported by RDBMS based tables'
+                'Primitive '.$type.' is currently not supported by RDBMS based tables, for field '.$primitive->getName()
             );
         }
         
