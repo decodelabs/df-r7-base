@@ -14,7 +14,7 @@ class Currency extends Base {
 
 // Primitive
 	public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
-		return opal\schema\Primitive_Currency($this);
+		return new opal\schema\Primitive_Currency($this);
 	}
 
 // Ext. serialize
