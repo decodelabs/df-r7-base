@@ -95,7 +95,7 @@ class OneChild extends axis\schema\field\Base implements IOneChildField {
         if(false === strpos($this->_targetUnitId, axis\Unit::ID_SEPARATOR)) {
             $this->_targetUnitId = $model->getModelName().axis\Unit::ID_SEPARATOR.$this->_targetUnitId;
         }
-        
+
         return $this;
     }
     

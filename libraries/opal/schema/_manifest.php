@@ -93,6 +93,7 @@ interface IFieldProvider extends ISchema {
     public function getFieldsToUpdate();
     public function getFieldRenameMap();
     public function getFieldsToRemove();
+    public function hasField($name);
 }
 
 
@@ -119,6 +120,7 @@ interface IIndexProvider extends ISchema {
     public function getIndexesToUpdate();
     public function getIndexRenameMap();
     public function getIndexesToRemove();
+    public function hasIndex($name);
 }
 
 
@@ -135,6 +137,7 @@ interface IForeignKeyProvider extends ISchema {
     public function getForeignKeysToUpdate();
     public function getForeignKeyRenameMap();
     public function getForeignKeysToRemove();
+    public function hasForeignKey($name);
 }
 
 
@@ -152,6 +155,7 @@ interface ITriggerProvider extends ISchema {
     public function getTriggersToUpdate();
     public function getTriggerRenameMap();
     public function getTriggersToRemove();
+    public function hasTrigger($name);
 }
 
 

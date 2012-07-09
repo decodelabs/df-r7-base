@@ -62,7 +62,7 @@ class BridgedManyRelationValueContainer implements
         if(!is_array($value)) {
             $value = array($value);
         }
-        
+
         foreach($value as $id) {
             $this->add($id);
         }
@@ -406,8 +406,8 @@ class BridgedManyRelationValueContainer implements
                 $taskSet->addTask($removeAllTask = new opal\query\record\task\DeleteKey($bridgeUnit, $bridgeData));
             }
         }
-        
-        
+
+
         
         // Insert relation tasks
         foreach($this->_new as $id => $record) {

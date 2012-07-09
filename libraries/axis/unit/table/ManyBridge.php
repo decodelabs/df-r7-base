@@ -27,7 +27,7 @@ class ManyBridge extends Base implements axis\IVirtualUnit {
     
     public function getCanonicalUnitName() {
         if($this->_isVirtual) {
-            return 'tblMB_'.$this->_dominantUnitName.'_'.$this->_dominantFieldName;
+            return $this->_dominantUnitName.'_'.$this->_dominantFieldName;
         } else {
             return parent::getCanonicalUnitName();
         }

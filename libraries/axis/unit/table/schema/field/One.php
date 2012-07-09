@@ -111,6 +111,10 @@ class One extends axis\schema\field\Base implements IOneField {
         if(false === strpos($this->_targetUnitId, axis\Unit::ID_SEPARATOR)) {
             $this->_targetUnitId = $model->getModelName().axis\Unit::ID_SEPARATOR.$this->_targetUnitId;
         }
+
+        if(!$schema->hasIndex($this->_name)) {
+            $schema->addIndex($this->_name);
+        }
         
         return $this;
     }

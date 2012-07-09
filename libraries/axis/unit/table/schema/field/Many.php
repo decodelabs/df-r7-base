@@ -222,10 +222,7 @@ class Many extends axis\schema\field\Base implements IManyField {
         }
         
 
-
         // Local ids
-        $localSchema = $localUnit->getTransientUnitSchema();
-        
         if(!$localPrimaryIndex = $localSchema->getPrimaryIndex()) {
             throw new axis\schema\RuntimeException(
                 'Relation table '.$localUnit->getUnitId().' does not have a primary index'

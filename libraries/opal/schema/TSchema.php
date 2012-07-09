@@ -380,6 +380,10 @@ trait TSchema_FieldProvider {
     public function getFieldsToRemove() {
         return $this->_removeFields;
     }
+
+    public function hasField($name) {
+        return isset($this->_fields[$name]) || isset($this->_addFields[$name]);
+    }
     
     protected function _remapFields($insertKey=null, opal\schema\IField $insertField=null) {
         $fields = $this->_fields;
@@ -745,6 +749,10 @@ trait TSchema_IndexProvider {
     public function getIndexesToRemove() {
         return $this->_removeIndexes;
     }
+
+    public function hasIndex($name) {
+        return isset($this->_indexes[$name]) || isset($this->_addIndexes[$name]);
+    }
     
     abstract public function _createIndex($name, $fields=null);
     abstract public function _createIndexFromStorageArray(array $data);
@@ -1059,6 +1067,10 @@ trait TSchema_ForeignKeyProvider {
         return $this->_removeForeignKeys;
     }
     
+    public function hasForeignKey($name) {
+        return isset($this->_foreignKeys[$name]) || isset($this->_addForeignKeys[$name]);
+    }
+
     abstract public function _createForeignKey($name, $targetSchema);
     abstract public function _createForeignKeyFromStorageArray(array $data);
     
@@ -1310,6 +1322,10 @@ trait TSchema_TriggerProvider {
     
     public function getTriggersToRemove() {
         return $this->_removeTriggers;
+    }
+
+    public function hasTrigger($name) {
+        return isset($this->_triggers[$name]) || isset($this->_addTriggers[$name]);
     }
     
     protected function _getOriginalTriggerNameFor($name) {
