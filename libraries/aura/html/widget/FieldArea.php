@@ -8,15 +8,16 @@ namespace df\aura\html\widget;
 use df;
 use df\core;
 use df\aura;
+use df\arch;
 
 class FieldArea extends Container implements IFormOrientedWidget {
     
     protected $_label;
     
-    public function __construct($labelBody=null) {
-        parent::__construct();
+    public function __construct(arch\IContext $context, $labelBody=null) {
+        parent::__construct($context);
         
-        $this->_label = new Label($labelBody);
+        $this->_label = new Label($context, $labelBody);
     }
     
     public function setRenderTarget(aura\view\IRenderTarget $renderTarget=null) {

@@ -8,6 +8,7 @@ namespace df\aura\html\widget;
 use df;
 use df\core;
 use df\aura;
+use df\arch;
 
 class NumberTextbox extends Base implements IRangeEntryWidget, core\IDumpable {
     
@@ -22,7 +23,7 @@ class NumberTextbox extends Base implements IRangeEntryWidget, core\IDumpable {
     const ARRAY_INPUT = false;
     const INPUT_TYPE = 'number';
     
-    public function __construct($name, $value=null) {
+    public function __construct(arch\IContext $context, $name, $value=null) {
         $this->setName($name);
         $this->setValue($value);
     }

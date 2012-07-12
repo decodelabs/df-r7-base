@@ -8,6 +8,7 @@ namespace df\aura\html\widget;
 use df;
 use df\core;
 use df\aura;
+use df\arch;
 
 class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWidget, core\IDumpable {
     
@@ -16,7 +17,7 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
     use TWidget_DataDrivenList;
     use TWidget_MappedList;
     
-    public function __construct($data) {
+    public function __construct(arch\IContext $context, $data) {
         $this->setData($data);
     }
     

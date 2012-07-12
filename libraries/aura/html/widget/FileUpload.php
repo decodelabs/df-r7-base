@@ -8,6 +8,7 @@ namespace df\aura\html\widget;
 use df;
 use df\core;
 use df\aura;
+use df\arch;
 
 class FileUpload extends Base implements IFileUploadWidget, core\IDumpable {
     
@@ -21,7 +22,7 @@ class FileUpload extends Base implements IFileUploadWidget, core\IDumpable {
     
     protected $_acceptTypes = array();
     
-    public function __construct($name) {
+    public function __construct(arch\IContext $context, $name) {
         $this->setName($name);
     }
     

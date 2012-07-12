@@ -21,7 +21,7 @@ class RadioButtonGroup extends Base implements IUngroupedSelectionInputWidget, c
     
     protected $_inputIdCounter = 0;
     
-    public function __construct($name, $value=null, $options=null) {
+    public function __construct(arch\IContext $context, $name, $value=null, $options=null) {
         $this->setName($name);
         $this->setValue($value);
         

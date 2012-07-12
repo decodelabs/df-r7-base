@@ -8,6 +8,7 @@ namespace df\aura\html\widget;
 use df;
 use df\core;
 use df\aura;
+use df\arch;
 
 class BulletList extends Base implements ILinearListWidget, IDataDrivenListWidget, core\IDumpable {
     
@@ -16,7 +17,7 @@ class BulletList extends Base implements ILinearListWidget, IDataDrivenListWidge
     
     const PRIMARY_TAG = 'ul';
     
-    public function __construct($data, Callable $renderer=null) {
+    public function __construct(arch\IContext $context, $data, Callable $renderer=null) {
         $this->setData($data);
         $this->setRenderer($renderer);
     }

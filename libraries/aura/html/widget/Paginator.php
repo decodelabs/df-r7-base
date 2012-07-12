@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\aura;
 use df\opal;
+use df\arch;
 
 class Paginator extends Base implements core\IDumpable {
     
@@ -19,7 +20,7 @@ class Paginator extends Base implements core\IDumpable {
     protected $_renderDetails = true;
     protected $_pageData;
     
-    public function __construct($data) {
+    public function __construct(arch\IContext $context, $data) {
         if($data instanceof core\collection\IPageable) {
             $data = $data->getPaginator();
         }

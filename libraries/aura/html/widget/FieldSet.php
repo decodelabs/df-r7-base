@@ -8,6 +8,7 @@ namespace df\aura\html\widget;
 use df;
 use df\core;
 use df\aura;
+use df\arch;
 
 class FieldSet extends Container implements IFieldSetWidget, IWidgetShortcutProvider {
     
@@ -19,8 +20,8 @@ class FieldSet extends Container implements IFieldSetWidget, IWidgetShortcutProv
     protected $_name;
     protected $_targetFormId;
     
-    public function __construct($legend=null) {
-        parent::__construct();
+    public function __construct(arch\IContext $context, $legend=null) {
+        parent::__construct($context);
         
         if($legend instanceof aura\html\IElementContent) {
             $this->setLegendBody($legend);

@@ -8,6 +8,7 @@ namespace df\aura\html\widget;
 use df;
 use df\core;
 use df\aura;
+use df\arch;
 
 class SelectList extends Base implements IUngroupedSelectionInputWidget, IFocusableInputWidget, core\IDumpable {
     
@@ -20,7 +21,7 @@ class SelectList extends Base implements IUngroupedSelectionInputWidget, IFocusa
     const PRIMARY_TAG = 'select';
     const ARRAY_INPUT = false;
     
-    public function __construct($name, $value=null, $options=null) {
+    public function __construct(arch\IContext $context, $name, $value=null, $options=null) {
         $this->setName($name);
         $this->setValue($value);
         

@@ -8,13 +8,14 @@ namespace df\aura\html\widget;
 use df;
 use df\core;
 use df\aura;
+use df\arch;
 
 class EventButton extends Button {
     
     const BUTTON_TYPE = 'submit';
     
-    public function __construct($event, $body=null) {
-        parent::__construct('formEvent', $body, $event);
+    public function __construct(arch\IContext $context, $event, $body=null) {
+        parent::__construct($context, 'formEvent', $body, $event);
     }
     
     protected function _render() {

@@ -8,6 +8,7 @@ namespace df\aura\html\widget;
 use df;
 use df\core;
 use df\aura;
+use df\arch;
 
 class GroupedSelectList extends Base implements IGroupedSelectionInputWidget, IFocusableInputWidget, core\IDumpable {
     
@@ -22,7 +23,7 @@ class GroupedSelectList extends Base implements IGroupedSelectionInputWidget, IF
     
     protected $_selected;
     
-    public function __construct($name, $value=null) {
+    public function __construct(arch\IContext $context, $name, $value=null) {
         $this->setName($name);
         $this->setValue($value);
     }

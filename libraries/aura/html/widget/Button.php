@@ -24,7 +24,7 @@ class Button extends Base implements IButtonWidget, core\IDumpable {
     
     protected $_shouldValidate = true;
     
-    public function __construct($name, $body=null, $value=null) {
+    public function __construct(arch\IContext $context, $name, $body=null, $value=null) {
         $this->setName($name);
         $this->setValue($value);
         $this->setBody($body);

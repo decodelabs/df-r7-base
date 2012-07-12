@@ -8,6 +8,7 @@ namespace df\aura\html\widget;
 use df;
 use df\core;
 use df\aura;
+use df\arch;
 
 class Label extends Base implements ILabelWidget, core\IDumpable {
     
@@ -17,7 +18,7 @@ class Label extends Base implements ILabelWidget, core\IDumpable {
     
     protected $_inputId;
     
-    public function __construct($body, $inputId=null) {
+    public function __construct(arch\IContext $context, $body, $inputId=null) {
         $this->setInputId($inputId);
         $this->setBody($body);
     }

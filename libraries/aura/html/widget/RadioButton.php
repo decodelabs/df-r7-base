@@ -8,6 +8,7 @@ namespace df\aura\html\widget;
 use df;
 use df\core;
 use df\aura;
+use df\arch;
 
 class RadioButton extends Base implements ICheckInputWidget, core\IDumpable {
     
@@ -21,7 +22,7 @@ class RadioButton extends Base implements ICheckInputWidget, core\IDumpable {
     const ARRAY_INPUT = false;
     const INPUT_TYPE = 'radio';
     
-    public function __construct($name, $isChecked=false, $body=null, $value='1') {
+    public function __construct(arch\IContext $context, $name, $isChecked=false, $body=null, $value='1') {
         $this->setName($name);
         $this->setValue($value);
         $this->isChecked($isChecked);

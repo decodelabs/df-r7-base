@@ -70,7 +70,9 @@ interface IDisableableWidget {
 
 interface IAccessControlledWidget {
     public function shouldCheckAccess($flag=null);
-    public function addAccessLock(user\IAccessLock $lock);
+    public function setAccessLocks(array $locks);
+    public function addAccessLocks(array $locks);
+    public function addAccessLock(/*user\IAccessLock */$lock);
     public function getAccessLocks();
     public function clearAccessLocks();
 }

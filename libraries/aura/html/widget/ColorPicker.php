@@ -8,6 +8,7 @@ namespace df\aura\html\widget;
 use df;
 use df\core;
 use df\aura;
+use df\arch;
 
 class ColorPicker extends Base implements IDataEntryWidget, core\IDumpable {
     
@@ -20,7 +21,7 @@ class ColorPicker extends Base implements IDataEntryWidget, core\IDumpable {
     const PRIMARY_TAG = 'input';
     const ARRAY_INPUT = false;
     
-    public function __construct($name, $value=null) {
+    public function __construct(arch\IContext $context, $name, $value=null) {
         $this->setName($name);
         $this->setValue($value);
     }

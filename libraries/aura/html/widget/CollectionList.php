@@ -8,6 +8,7 @@ namespace df\aura\html\widget;
 use df;
 use df\core;
 use df\aura;
+use df\arch;
 
 class CollectionList extends Base implements IDataDrivenListWidget, IMappedListWidget, core\IDumpable {
     
@@ -20,7 +21,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
     
     protected $_errorMessage = 'No results to display';
     
-    public function __construct($data, core\collection\IPaginator $paginator=null) {
+    public function __construct(arch\IContext $context, $data, core\collection\IPaginator $paginator=null) {
         $this->setData($data);
         
         if($paginator === null && $data instanceof core\collection\IPageable) {
@@ -28,7 +29,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
         }
         
         if($paginator) {
-            $this->paginator = self::factory('Paginator', array($paginator));
+            $this->paginator = self::factory($context, 'Paginator', array($paginator));
         }
     }
     

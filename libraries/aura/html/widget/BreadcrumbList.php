@@ -15,13 +15,16 @@ class BreadcrumbList extends Base implements IListWidget, core\IDumpable {
     const PRIMARY_TAG = 'nav';
     
     protected $_links = array();
+    protected $_context;
     
-    public function __construct(array $trail=null) {
+    public function __construct(arch\IContext $context, array $trail=null) {
         if($trail !== null) {
             $this->setLinks($trail);
         } else {
             $this->_links = array();
         }
+
+        $this->_context = $context;
     }
     
     protected function _render() {
@@ -120,7 +123,7 @@ class BreadcrumbList extends Base implements IListWidget, core\IDumpable {
                 $linkRequest = $request::factory($path);
             }
             
-            $this->addLink(new Link($linkRequest, $title));
+            $this->addLink(new Link($this->_context, $linkRequest, $title));
         }
         
         return $this;

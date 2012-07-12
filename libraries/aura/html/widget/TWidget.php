@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\aura;
 use df\arch;
+use df\user;
 
 
 trait TWidget {
@@ -99,9 +100,27 @@ trait TWidget_AccessControlled {
         
         return $this->_checkAccess;
     }
+
+    public function setAccessLocks(array $locks) {
+        $this->_accessLocks = array();
+        return $this->addAccessLocks($locks);
+    }
+
+    public function addAccessLocks(array $locks) {
+        foreach($locks as $lock) {
+            $this->addAccessLock($lock);
+        }
+
+        return $this;
+    }
     
-    public function addAccessLock(user\IAccessLock $lock) {
+    public function addAccessLock(/*user\IAccessLock */$lock) {
+        if(!$lock instanceof user\IAccessLock) {
+            $lock = new user\access\lock\Boolean($lock);
+        }
+
         $this->_accessLocks[] = $lock;
+        $this->_checkAccess = true;
         return $this;
     }
     

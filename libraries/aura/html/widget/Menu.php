@@ -8,50 +8,79 @@ namespace df\aura\html\widget;
 use df;
 use df\core;
 use df\aura;
+use df\arch;
 
 class Menu extends Base implements core\IDumpable {
     
     const PRIMARY_TAG = 'nav';
     
-    protected $_items;
+    protected $_entries;
+    protected $_renderIfEmpty = false;
+    protected $_context;
     
-    public function __construct($input=null) {
-        $this->_items = new aura\html\ElementContent(); 
-        
+    public function __construct(arch\IContext $context, $input=null) {
+        $this->_entries = new aura\html\ElementContent(); 
+        $this->_context = $context;
+
+        if(is_string($input) || $input instanceof core\uri\IUrl) {
+            $menu = arch\menu\Base::factory($this->_context, $input);
+        }
+
         if($input !== null) {
-            core\stub($input);
+            $this->addEntries($input);
         }
     }
     
     
     protected function _render() {
-        $tag = $this->getTag();
-        $ul = new aura\html\Tag('ul');
+        $tag = $this->getTag()->shouldRenderIfEmpty($this->_renderIfEmpty);
+        
         $content = new aura\html\ElementContent();
         $renderTarget = $this->getRenderTarget();
         
-        
-        foreach($this->_items as $item) {
-            if($item instanceof aura\view\IDeferredRenderable) {
-                $item->setRenderTarget($renderTarget);
+        foreach($this->_entries as $entry) {
+            if($entry instanceof aura\view\IDeferredRenderable) {
+                $entry->setRenderTarget($renderTarget);
             }
             
-            $entry = new aura\html\Element('li', $item);
+            $entry = new aura\html\Element('li', $entry);
+            $entry->shouldRenderIfEmpty(false);
             $content->push($entry);
         }
-        
-        return $tag->renderWith($ul->renderWith($content), true);
+
+        return $tag->renderWith(
+            (new aura\html\Tag('ul'))->shouldRenderIfEmpty($this->_renderIfEmpty)->renderWith($content), 
+            true
+        );
     }
     
-    public function setItems(array $links) {
-        $this->_items->clear();
+    public function setEntries($entries) {
+        $this->_entries->clear();
+        return call_user_func_array([$this, 'addEntries'], func_get_args());
+    }
+
+    public function addLinks($entries) {
+        return call_user_func_array([$this, 'addEntries'], func_get_args());
+    }
+
+    public function addEntries($entries) {
+        if($entries instanceof arch\menu\IMenu) {
+            $entries = $entries->generateEntries()->toArray();
+        }
+
+        if(!is_array($entries)) {
+            $entries = func_get_args();
+        }
         
-        foreach($links as $link) {
-            if($link instanceof ILinkWidget) {
-                $this->addLink($link);
-            } else if($link instanceof self) {
-                $this->addMenu($link);
-            } else if($this->_items->getLast() instanceof ILinkWidget) {
+        foreach($entries as $entry) {
+            if($entry instanceof ILinkWidget
+            || $entry instanceof arch\menu\entry\Link) {
+                $this->addLink($entry);
+            } else if($entry instanceof self
+            || $entry instanceof arch\menu\entry\Submenu) {
+                $this->addMenu($entry);
+            } else if($entry instanceof arch\menu\entry\spacer
+            || $this->_entries->getLast() instanceof ILinkWidget) {
                 $this->addSpacer();
             }
         }
@@ -61,42 +90,51 @@ class Menu extends Base implements core\IDumpable {
     
     public function addLink($link) {
         if(!$link instanceof ILinkWidget) {
-            $link = Base::factory('Link', func_get_args())->setRenderTarget($this->_renderTarget);
+            $link = Base::factory($this->_context, 'Link', func_get_args())->setRenderTarget($this->_renderTarget);
         }
         
-        $this->_items->push($link);
+        $this->_entries->push($link);
         return $this;
     }
     
     public function addMenu(self $menu) {
-        $this->_items->push($menu);
+        $this->_entries->push($menu);
         return $this;
     }
     
     public function addSpacer() {
-        $this->_items->push(new aura\html\ElementString('<span class="widget spacer">|</span>'));
+        $this->_entries->push(new aura\html\ElementString('<span class="widget spacer">|</span>'));
         return $this;
     }
     
-    public function getItems() {
-        return $this->_items;
+    public function getEntries() {
+        return $this->_entries;
     }
     
-    public function removeItem($index) {
-        $this->_items->remove($index);
+    public function removeEntry($index) {
+        $this->_entries->remove($index);
         return $this;
     }
     
-    public function clearItems() {
-        $this->_items->clear();
+    public function clearEntries() {
+        $this->_entries->clear();
         return $this;
+    }
+
+    public function shouldRenderIfEmpty($flag=null) {
+        if($flag !== null) {
+            $this->_renderIfEmpty = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_renderIfEmpty;
     }
     
     
 // Dump
     public function getDumpProperties() {
         return [
-            'items' => $this->_items,
+            'entries' => $this->_entries,
             'tag' => $this->getTag(),
             'renderTarget' => $this->_getRenderTargetDisplayName()
         ];

@@ -1,4 +1,4 @@
-<?php
+<?php 
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -9,8 +9,5 @@ use df;
 use df\core;
 use df\aura;
 use df\arch;
-
-class TelephoneTextbox extends Textbox {
     
-    const INPUT_TYPE = 'tel';
-}
+class MenuBar extends Menu {}

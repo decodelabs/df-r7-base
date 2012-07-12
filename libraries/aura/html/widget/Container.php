@@ -8,12 +8,16 @@ namespace df\aura\html\widget;
 use df;
 use df\core;
 use df\aura;
+use df\arch;
 
 class Container extends Base implements IContainerWidget, IWidgetShortcutProvider, core\IDumpable {
     
     protected $_children;
+    protected $_context;
     
-    public function __construct($input=null) {
+    public function __construct(arch\IContext $context, $input=null) {
+        $this->_context = $context;
+        
         if($input !== null && !is_array($input) && !$input instanceof aura\html\IElementContent) {
             $input = func_get_args();
         }
@@ -187,7 +191,7 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
             $method = substr($method, 3);
         }
         
-        $widget = Base::factory($method, $args)->setRenderTarget($this->_renderTarget);
+        $widget = Base::factory($this->_context, $method, $args)->setRenderTarget($this->_renderTarget);
         
         if($add) {
             $this->push($widget);

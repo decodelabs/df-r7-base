@@ -8,6 +8,7 @@ namespace df\aura\html\widget;
 use df;
 use df\core;
 use df\aura;
+use df\arch;
 
 class Template extends Base implements ITemplateWidget, \ArrayAccess, core\IDumpable {
     
@@ -15,7 +16,7 @@ class Template extends Base implements ITemplateWidget, \ArrayAccess, core\IDump
     protected $_contextRequest;
     protected $_args = array();
     
-    public function __construct($path, $contextRequest=null) {
+    public function __construct(arch\IContext $context, $path, $contextRequest=null) {
         $this->setPath($path);
         $this->setContextRequest($contextRequest);
     }

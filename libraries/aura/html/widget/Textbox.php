@@ -8,6 +8,7 @@ namespace df\aura\html\widget;
 use df;
 use df\core;
 use df\aura;
+use df\arch;
 
 class Textbox extends Base implements ITextboxWidget, core\IDumpable {
     
@@ -27,7 +28,7 @@ class Textbox extends Base implements ITextboxWidget, core\IDumpable {
     protected $_pattern;
     protected $_formEvent;
     
-    public function __construct($name, $value=null) {
+    public function __construct(arch\IContext $context, $name, $value=null) {
         $this->setName($name);
         $this->setValue($value);
         

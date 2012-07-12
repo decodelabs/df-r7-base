@@ -21,7 +21,7 @@ abstract class Base implements IWidget {
     
     private $_widgetName;
     
-    public static function factory($name, array $args=array()) {
+    public static function factory(arch\IContext $context, $name, array $args=array()) {
         $name = ucfirst($name);
         $class = 'df\\aura\\html\\widget\\'.$name;
         
@@ -30,6 +30,8 @@ abstract class Base implements IWidget {
                 'Widget '.$name.' could not be found'
             );
         }
+
+        array_unshift($args, $context);
         
         $reflection = new \ReflectionClass($class);
         $output = $reflection->newInstanceArgs($args);
@@ -38,7 +40,7 @@ abstract class Base implements IWidget {
         return $output;
     }
     
-    public function __construct() {}
+    public function __construct(arch\IContext $context) {}
     
     public function getWidgetName() {
         if(empty($this->_widgetName)) {
@@ -67,24 +69,20 @@ abstract class Base implements IWidget {
         try {
             return (string)$this->render();
         } catch(\Exception $e) {
-            if(df\Launchpad::$application->isDevelopment()) {
-                core\dump($e);
-            }
-            
             core\debug()->exception($e);
             
             $renderTarget = $this->getRenderTarget();
-            $message = 'Error rendering widget '.$this->getWidgetName();
+            $message = $this->esc('Error rendering widget '.$this->getWidgetName());
             
             if($renderTarget) {
                 $application = $renderTarget->getView()->getContext()->getApplication();
             
                 if($application->isDevelopment()) {
-                    $message .= ' - '.$e->getMessage();
+                    $message .= $this->esc(' - '.$e->getMessage()).'<br /><code>'.$this->esc($e->getFile().' : '.$e->getLine()).'</code>';
                 }
             }
             
-            return '<p class="error">'.$this->esc($message).'</p>';
+            return '<p class="error">'.$message.'</p>';
         }
     }
     

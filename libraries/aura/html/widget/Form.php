@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\aura;
 use df\halo;
+use df\arch;
 
 class Form extends Container implements IFormWidget, IWidgetShortcutProvider {
     
@@ -27,8 +28,8 @@ class Form extends Container implements IFormWidget, IWidgetShortcutProvider {
     protected $_name;
     protected $_acceptCharset = 'utf-8';
     
-    public function __construct($action=null, $method=null, $encoding=null) {
-        parent::__construct();
+    public function __construct(arch\IContext $context, $action=null, $method=null, $encoding=null) {
+        parent::__construct($context);
         
         $this->setAction($action);
         $this->setMethod($method);

@@ -8,12 +8,13 @@ namespace df\aura\html\widget;
 use df;
 use df\core;
 use df\aura;
+use df\arch;
 
 class FieldError extends Base implements IFormOrientedWidget, core\IErrorContainer, core\IDumpable {
     
     protected $_errors = array();
     
-    public function __construct($errors=null) {
+    public function __construct(arch\IContext $context, $errors=null) {
         if($errors !== null) {
             if($errors instanceof core\IErrorContainer) {
                 $errors = $errors->getErrors();

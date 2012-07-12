@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\aura;
 use df\user;
+use df\arch;
 
 class Address extends Base implements core\IDumpable {
     
@@ -21,7 +22,7 @@ class Address extends Base implements core\IDumpable {
     protected $_address;
     protected $_mode = self::FULL;
     
-    public function __construct(user\IAddress $address) {
+    public function __construct(arch\IContext $context, user\IAddress $address) {
         $this->setAddress($address);
     }
     

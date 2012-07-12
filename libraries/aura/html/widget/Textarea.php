@@ -8,6 +8,7 @@ namespace df\aura\html\widget;
 use df;
 use df\core;
 use df\aura;
+use df\arch;
 
 class Textarea extends Base implements ITextareaWidget {
     
@@ -25,7 +26,7 @@ class Textarea extends Base implements ITextareaWidget {
     protected $_directionInputName;
     protected $_wrap;
     
-    public function __construct($name, $value=null) {
+    public function __construct(arch\IContext $context, $name, $value=null) {
         $this->setName($name);
         $this->setValue($value);
     }

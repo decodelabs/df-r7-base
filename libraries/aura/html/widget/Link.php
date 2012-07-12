@@ -24,16 +24,40 @@ class Link extends Base implements ILinkWidget, core\IDumpable {
     protected $_matchRequest;
     protected $_rel = array();
     protected $_isActive = false;
+    protected $_hideIfInaccessible = false;
     protected $_hrefLang;
     protected $_media;
     protected $_contentType;
     
-    public function __construct($uri, $body=null, $matchRequest=null) {
+    public function __construct(arch\IContext $context, $uri, $body=null, $matchRequest=null) {
         $checkUriMatch = false;
+        $this->_checkAccess = true;
         
         if($matchRequest === true) {
             $checkUriMatch = true;
             $matchRequest = null;
+        }
+
+        if($uri instanceof arch\menu\entry\Link) {
+            $link = $uri;
+            $uri = $link->getLocation();
+            $body = $link->getText();
+
+            // TODO: deal with icon
+
+            if($description = $link->getDescription()) {
+                $this->getTag()->setAttribute('title', $description);
+            }
+
+            $this->addAccessLocks($link->getAccessLocks());
+            $this->shouldHideIfInaccessible($link->shouldHideIfInaccessible());
+            $checkUriMatch = $link->shouldCheckMatch();
+
+            // TODO: deal with alt matches
+
+            if($link->shouldOpenInNewWindow()) {
+                $this->getTag()->setAttribute('target', '_blank');
+            }
         }
         
         $this->setUri($uri, $checkUriMatch);
@@ -73,6 +97,10 @@ class Link extends Base implements ILinkWidget, core\IDumpable {
                     }
                 }
             }
+        }
+
+        if($disabled && $this->_hideIfInaccessible) {
+            return null;
         }
         
         if(!$disabled) {
@@ -221,6 +249,16 @@ class Link extends Base implements ILinkWidget, core\IDumpable {
         return $this->_isActive;
     }
     
+
+// Hiding
+    public function shouldHideIfInaccessible($flag=null) {
+        if($flag !== null) {
+            $this->_hideIfInaccessible = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_hideIfInaccessible;
+    }
     
 // Language
     public function setHrefLanguage($language) {
