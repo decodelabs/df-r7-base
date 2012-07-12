@@ -10,12 +10,12 @@ use df\core;
 use df\axis;
 use df\opal;
 
-class Date extends Base implements axis\schema\IDateField {
+class TimeOfDay extends Base {
     
 // Values
     public function inflateValueFromRow($key, array $row, $forRecord) {
         if(isset($row[$key])) { 
-            return core\time\Date::factory($row[$key]);
+            return new core\time\TimeOfDay($row[$key]);
         } else {
             return null;
         } 
@@ -28,7 +28,7 @@ class Date extends Base implements axis\schema\IDateField {
             return null;
         }
         
-        return $value->format(core\time\Date::DBDATE);
+        return $value->toString();
     }
     
     public function sanitizeValue($value, $forRecord) {
@@ -38,20 +38,17 @@ class Date extends Base implements axis\schema\IDateField {
             } else if(!empty($this->_defaultValue)) {
                 $value = $this->_defaultValue;
             } else {
-                $value = 'now';
+                $value = '00:00:00';
             }
         }
         
-        $value = core\time\Date::factory($value);
-        $value->toUtc();
-        
-        return $value;
+        return core\time\TimeOfDay::factory($value);
     }
     
     
 // Primitive
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
-        return new opal\schema\Primitive_Date($this);
+        return new opal\schema\Primitive_Time($this);
     }
     
 // Ext. serialize

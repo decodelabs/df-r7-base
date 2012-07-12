@@ -10,7 +10,7 @@ use df\core;
 use df\axis;
 use df\opal;
 
-class DateTime extends Base {
+class DateTime extends Base implements axis\schema\IDateField {
     
     
 // Values

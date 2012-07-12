@@ -49,6 +49,8 @@ interface IAutoUniqueField extends IAutoIndexField {}
 interface IAutoPrimaryField extends IAutoUniqueField {}
 
 
+interface IDateField extends IField {}
+
 interface ILengthRestrictedField extends IField, opal\schema\ILengthRestrictedField {
     public function isConstantLength($flag=null);
 }
