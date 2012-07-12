@@ -16,6 +16,14 @@ class TimeOfDay implements ITimeOfDay, core\IDumpable {
     protected $_minutes = 0;
     protected $_seconds = 0;
 
+    public static function factory($input) {
+        if($input instanceof ITimeOfDay) {
+            return $input;
+        }
+
+        return new self($input);
+    }
+
     public function __construct($input) {
     	$this->_parseValue($input);
     }
