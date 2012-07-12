@@ -19,7 +19,7 @@ class Html implements aura\view\IHelper {
     }
     
     public function __call($member, $args) {
-        return aura\html\widget\Base::factory($member, $args)->setRenderTarget($this->_view);
+        return aura\html\widget\Base::factory($this->_view->getContext(), $member, $args)->setRenderTarget($this->_view);
     }
     
     public function string($value) {
