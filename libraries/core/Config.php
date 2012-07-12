@@ -38,11 +38,11 @@ abstract class Config implements IConfig, core\IDumpable {
             throw new LogicException('Invalid config id passed for '.$handlerClass);
         }
         
+        if(!$application) {
+            $application = df\Launchpad::getActiveApplication();
+        }
+        
         if($handlerClass::STORE_IN_MEMORY) {
-            if(!$application) {
-                $application = df\Launchpad::getActiveApplication();
-            }
-            
             if(!$config = $application->_getCacheObject(self::REGISTRY_PREFIX.$id)) {
                 $application->_setCacheObject(
                     $config = new $handlerClass($application, $id)
