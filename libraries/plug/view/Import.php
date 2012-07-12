@@ -19,15 +19,31 @@ class Import implements aura\view\IHelper {
     }
     
     public function template($path, $contextRequest=null) {
-        $context = $this->_view->getContext()->spawnInstance($contextRequest);
-        $template = aura\view\content\Template::loadDirectoryTemplate($context, $path);
-        $template->setRenderTarget($this->_view);
+        try {
+            $context = $this->_view->getContext()->spawnInstance($contextRequest);
+            $template = aura\view\content\Template::loadDirectoryTemplate($context, $path);
+            $template->setRenderTarget($this->_view);
         
-        return $template;
+            return $template;
+        } catch(\Exception $e) {
+            return $this->_view->newErrorContainer($e);
+        }
     }
     
     public function component($name, $contextRequest=null) {
-        $context = $this->_view->getContext()->spawnInstance($contextRequest);
-        return arch\Component::factory($context, $name);
+        try {
+            $context = $this->_view->getContext()->spawnInstance($contextRequest);
+            return arch\Component::factory($context, $name);
+        } catch(\Exception $e) {
+            return $this->_view->newErrorContainer($e);
+        }
+    }
+
+    public function menu($id) {
+        try {
+            return arch\menu\Base::factory($id);
+        } catch(\Exception $e) {
+            return $this->_view->newErrorContainer($e);
+        }
     }
 }
