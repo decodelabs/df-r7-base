@@ -30,12 +30,13 @@ class Util extends Base {
         
         // TODO: parse command
         
-        $arg = core\string\Manipulator::formatId($arg->getValue());
+        $value = $arg->getValue();
+        $arg = core\string\Manipulator::formatId($value);
         $method = '_run'.$arg;
         
         if(!method_exists($this, $method)) {
             throw new core\InvalidArgumentException(
-                'Util app does not support the '.$arg->getValue().' command'
+                'Util app does not support the '.$value.' command'
             );
         }
         
