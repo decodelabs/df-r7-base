@@ -10,7 +10,8 @@ use df\core;
 use df\axis;
 use df\opal;
 
-class Date extends Base {
+class DateTime extends Base {
+    
     
 // Values
     public function inflateValueFromRow($key, array $row, $forRecord) {
@@ -28,7 +29,7 @@ class Date extends Base {
             return null;
         }
         
-        return $value->format(core\time\Date::DBDATE);
+        return $value->format(core\time\Date::DB);
     }
     
     public function sanitizeValue($value, $forRecord) {
@@ -51,7 +52,7 @@ class Date extends Base {
     
 // Primitive
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
-        return new opal\schema\Primitive_Date($this);
+        return new opal\schema\Primitive_DateTime($this);
     }
     
 // Ext. serialize
