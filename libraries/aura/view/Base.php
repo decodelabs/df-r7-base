@@ -283,8 +283,8 @@ class Base implements IView {
             $class = 'df\\plug\\view\\'.$name;
             
             if(!class_exists($class)) {
-                return new aura\view\content\ErrorContainer(
-                    $this, new HelperNotFoundException('View helper '.$name.' could not be found')
+                return $this->newErrorContainer(
+                    new HelperNotFoundException('View helper '.$name.' could not be found')
                 );
             }
         }
@@ -295,5 +295,9 @@ class Base implements IView {
     
     public function _($phrase, array $data=null, $plural=null, $locale=null) {
         return $this->_context->_($phrase, $data, $plural, $locale);
+    }
+
+    public function newErrorContainer(\Exception $e) {
+        return new aura\view\content\ErrorContainer($this, $e);
     }
 }
