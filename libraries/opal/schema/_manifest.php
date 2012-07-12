@@ -200,10 +200,15 @@ interface ILargeByteSizeRestrictedField extends IField {
     public function getExponentSize();
 }
 
-interface INumericField extends IField {
+interface ISignedField extends IField {
     public function isUnsigned($flag=null);
+}
+
+interface IZerofillField extends IField {
     public function shouldZerofill($flag=null);
 }
+
+interface INumericField extends ISignedField, IZerofillField {}
 
 interface IFloatingPointNumericField extends INumericField {
     public function setPrecision($precision);

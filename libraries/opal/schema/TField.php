@@ -241,12 +241,10 @@ trait TField_LengthRestricted {
 }
 
 
+trait TField_Signed {
 
-trait TField_Numeric {
-    
     protected $_isUnsigned = false;
-    protected $_zerofill = false;
-    
+
     public function isUnsigned($flag=null) {
         if($flag !== null) {
             if((bool)$flag != $this->_isUnsigned) {
@@ -259,6 +257,22 @@ trait TField_Numeric {
         
         return $this->_isUnsigned;
     }
+
+
+// Ext. serialize
+    protected function _setSignedStorageArray(array $data) {
+        $this->_isUnsigned = $data['uns'];
+    }
+
+    protected function _getSignedStorageArray() {
+        return ['uns' => $this->_isUnsigned];
+    }
+}
+
+
+trait TField_Zerofill {
+
+    protected $_zerofill = false;
     
     public function shouldZerofill($flag=null) {
         if($flag !== null) {
@@ -272,18 +286,36 @@ trait TField_Numeric {
         
         return $this->_zerofill;
     }
-    
+
 // Ext. serialize
-    protected function _setNumericStorageArray(array $data) {
-        $this->_isUnsigned = $data['uns'];
+    protected function _setZerofillStorageArray(array $data) {
         $this->_zerofill = $data['zfl'];
     }
 
+    protected function _getZerofillStorageArray() {
+        return ['zfl' => $this->_zerofill];
+    }
+}
+
+
+trait TField_Numeric {
+    
+    use TField_Signed;
+    use TField_Zerofill;
+    
+    
+    
+// Ext. serialize
+    protected function _setNumericStorageArray(array $data) {
+        $this->_setSignedStorageArray($data);
+        $this->_setZerofillStorageArray($data);
+    }
+
     protected function _getNumericStorageArray() {
-        return [
-            'uns' => $this->_isUnsigned,
-            'zfl' => $this->_zerofill
-        ];
+        return array_merge(
+            $this->_getSignedStorageArray(),
+            $this->_getZerofillStorageArray()
+        );
     }
 }
 
