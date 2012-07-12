@@ -29,7 +29,7 @@ trait TUrl_TransientScheme {
     }
     
     public function hasScheme() {
-        return $this->_schema !== null;
+        return $this->_scheme !== null;
     }
     
     protected function _resetScheme() {
