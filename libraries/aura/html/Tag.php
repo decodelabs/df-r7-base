@@ -24,6 +24,7 @@ class Tag implements ITag, core\IDumpable {
     protected $_isClosable = true;
     protected $_classes = array();
     protected $_renderCount = 0;
+    protected $_renderIfEmpty = true;
     
     public function __construct($name, array $attributes=null) {
         $this->setName($name);
@@ -358,9 +359,15 @@ class Tag implements ITag, core\IDumpable {
             
             $innerContent = $innerContent->getElementContentString();
             
+            if(empty($innerContent) && !$this->_renderIfEmpty) {
+                return null;
+            }
+
             if($expanded) {
                 $innerContent = "\n".$innerContent."\n";
             }
+        } else if(!$this->_renderIfEmpty) {
+            return null;
         } else {
             $innerContent = null;
         }
@@ -380,6 +387,15 @@ class Tag implements ITag, core\IDumpable {
     
     public function toString() {
         return (string)$this->open();
+    }
+
+    public function shouldRenderIfEmpty($flag=null) {
+        if($flag !== null) {
+            $this->_renderIfEmpty = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_renderIfEmpty;
     }
     
     

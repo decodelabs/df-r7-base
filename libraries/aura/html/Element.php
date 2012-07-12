@@ -13,7 +13,7 @@ class Element extends Tag implements IElement, core\IDumpable {
     
     use TElementContent;
     use core\string\THtmlStringEscapeHandler;
-    
+
     public function __construct($name, $content=null, array $attributes=array()) {
         parent::__construct($name, $attributes);
         $this->import($content);
@@ -27,6 +27,8 @@ class Element extends Tag implements IElement, core\IDumpable {
         return $this->renderWith($this, $expanded);
     }
     
+
+// Dump
     public function getDumpProperties() {
         return $this->toString();
     }

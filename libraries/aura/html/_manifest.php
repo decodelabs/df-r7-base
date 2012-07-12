@@ -68,6 +68,7 @@ interface ITag extends IElementRepresentation, \ArrayAccess, ITagDataContainer, 
     public function open();
     public function close();
     public function renderWith($innerContent=null, $expanded=false);
+    public function shouldRenderIfEmpty($flag=null);
 }
 
 
