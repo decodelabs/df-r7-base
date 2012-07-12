@@ -9,8 +9,10 @@ use df;
 use df\core;
 use df\arch;
 
-abstract class Base implements arch\menu\ISource {
+abstract class Base implements arch\menu\ISource, arch\IContextAware {
     
+    use arch\TContextAware;
+
     public static function loadAll(arch\IContext $context) {
         $output = array();
         
@@ -46,7 +48,9 @@ abstract class Base implements arch\menu\ISource {
         return new $class($context);
     }
     
-    public function __construct(arch\IContext $context) {}
+    public function __construct(arch\IContext $context) {
+        $this->_context = $context;
+    }
     
     public function getName() {
         $parts = explode('\\', get_class($this));

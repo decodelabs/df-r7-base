@@ -23,7 +23,7 @@ class Menu extends Base implements core\IDumpable {
         $this->_context = $context;
 
         if(is_string($input) || $input instanceof core\uri\IUrl) {
-            $menu = arch\menu\Base::factory($this->_context, $input);
+            $input = arch\menu\Base::factory($this->_context, $input);
         }
 
         if($input !== null) {

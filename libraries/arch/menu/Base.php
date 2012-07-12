@@ -65,7 +65,9 @@ class Base implements IMenu, core\IDumpable {
         $source = arch\menu\source\Base::factory($context, $id->getScheme());
         $cache = Cache::getInstance($context->getApplication());
         $cacheId = md5($id);
-        
+
+        $cache->clear();
+
         if(!isset($cache->{$cacheId})
         || null === ($output = $cache->{$cacheId})) {
             $cache->{$cacheId} = $output = $source->loadMenu($id);
