@@ -11,6 +11,7 @@ use df\arch;
 
 abstract class Base implements arch\menu\IEntry {
     
+    protected $_id;
     protected $_weight = 0;
     
     public static function fromArray(array $entry) {
@@ -34,7 +35,7 @@ abstract class Base implements arch\menu\IEntry {
             $entry['weight'] = 0;
         }
         
-        return $class::_fromArray(array $entry);
+        return $class::_fromArray($entry);
     }
     
     protected static function _fromArray(array $entry) {

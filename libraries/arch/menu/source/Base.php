@@ -34,7 +34,7 @@ abstract class Base implements arch\menu\ISource {
         return $output;
     }
     
-    public static function factory($type) {
+    public static function factory(arch\IContext $context, $type) {
         $class = 'df\\arch\\menu\\source\\'.ucfirst($type);
         
         if(!class_exists($class)) {
@@ -43,10 +43,10 @@ abstract class Base implements arch\menu\ISource {
             );
         }
         
-        return new $class();
+        return new $class($context);
     }
     
-    public function __construct() {}
+    public function __construct(arch\IContext $context) {}
     
     public function getName() {
         $parts = explode('\\', get_class($this));

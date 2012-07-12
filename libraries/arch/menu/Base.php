@@ -92,11 +92,9 @@ class Base implements IMenu, core\IDumpable {
             return $id->getId();
         }
         
-        if($id instanceof core\uri\IUrl) {
-            return $id;
+        if(!$id instanceof core\uri\IUrl) {
+            $id = core\uri\Url::factory($id);
         }
-        
-        $id = core\uri\Url::factory($id);
         
         if(!$id->hasScheme()) {
             $id->setScheme(self::DEFAULT_SOURCE);

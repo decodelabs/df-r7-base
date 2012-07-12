@@ -55,6 +55,10 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             
             return $this;
         }
+
+        if(!is_string($url)) {
+            core\dump($url);
+        }
         
         
         // Fragment

@@ -51,7 +51,7 @@ interface ISource {
 }
 
 
-interface IEntryList {
+interface IEntryList extends core\IArrayProvider {
     public function addEntries($entries);
     public function addEntry($entry);
     public function getEntries();

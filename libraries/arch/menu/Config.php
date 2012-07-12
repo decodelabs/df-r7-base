@@ -41,7 +41,7 @@ class Config extends core\Config implements IConfig {
         if(isset($this->_values[$id]['entries'])) {
             foreach($this->_values[$id]['entries']  as $entry) {
                 $entryList->addEntry(
-                    arch\entry\Base::fromArray($entry);
+                    arch\entry\Base::fromArray($entry)
                 );
             }
         }

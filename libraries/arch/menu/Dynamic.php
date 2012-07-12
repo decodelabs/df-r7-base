@@ -72,4 +72,16 @@ class Dynamic extends Base {
     protected function _createEntries(IEntryList $entryList) {
         $entryList->addEntries($this->_entries);
     }
+    
+
+// Dump
+    public function getDumpProperties() {
+        return [
+            new core\debug\dumper\Property('id', $this->_id, 'protected'),
+            new core\debug\dumper\Property('recordId', $this->_recordId, 'protected'),
+            new core\debug\dumper\Property('displayName', $this->_displayName, 'protected'),
+            new core\debug\dumper\Property('entries', $this->_entries),
+            new core\debug\dumper\Property('delegates', $this->_delegates, 'protected')
+        ];
+    }
 }

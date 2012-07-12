@@ -13,6 +13,7 @@ class EntryList implements IEntryList {
     
     protected $_entries = array();
     protected $_menus = array();
+    protected $_isSorted = false;
     
     public static function fromArray(array $entries) {
         return (new self())->addEntries($entries);
@@ -42,6 +43,8 @@ class EntryList implements IEntryList {
         }
         
         $this->_entries[$entry->getId()] = $entry;
+        $this->_isSorted = false;
+
         return $this;
     }
     
@@ -54,16 +57,15 @@ class EntryList implements IEntryList {
     }
     
     public function getEntries() {
-        $output = array();
-        $weights = array();
-        
-        foreach($this->_entries as $entry) {
-            $output[] = $entry;
-            $weights[] = $entry->getWeight();
+        if(!$this->_isSorted) {
+            usort($this->_entries, function($a, $b) {
+                return $a->getWeight() > $b->getWeight();
+            });
+
+            $this->_isSorted = true;
         }
-        
-        array_multisort($weights, SORT_ASC, $output);
-        return $output;
+
+        return $this->_entries;
     }
     
     public function registerMenu(IMenu $menu) {
@@ -82,5 +84,9 @@ class EntryList implements IEntryList {
         }
         
         throw new \BadMethodCallException('Method '.$method.' does not exist');
+    }
+
+    public function toArray() {
+        return $this->getEntries();
     }
 }
