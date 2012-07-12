@@ -126,3 +126,27 @@ interface IDuration extends core\IStringProvider {
     public function addYears($years);
     public function subtractYears($years);
 }
+
+
+interface ITimeOfDay extends core\IStringProvider {
+    public function setSeconds($seconds);
+    public function setAsSeconds($seconds);
+    public function addSeconds($seconds);
+    public function subtractSeconds($seconds);
+    public function getSeconds();
+    public function getAsSeconds();
+
+    public function setMinutes($minutes);
+    public function setAsMinutes($minutes);
+    public function addMinutes($minutes);
+    public function subtractMinutes($minutes);
+    public function getMinutes();
+    public function getAsMinutes();
+
+    public function setHours($hours);
+    public function setAsHours($hours);
+    public function addHours($hours);
+    public function subtractHours($hours);
+    public function getHours();
+    public function getAsHours();
+}
