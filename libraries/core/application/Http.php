@@ -119,13 +119,55 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
     protected function _routeIn(arch\IRequest $request) {
         $this->_routeCount++;
 
+        if($router = $this->_getRouterFor($request)) {
+            $this->_routeMatchCount++;
+            return $router->routeIn($request);
+        }
+
         return $request;
     }
     
     protected function _routeOut(arch\IRequest $request) {
         $this->_routeCount++;
 
+        if($router = $this->_getRouterFor($request)) {
+            $this->_routeMatchCount++;
+            return $router->routeOut($request);
+        }
+
         return $request;
+    }
+
+    protected $_routerCache = array();
+
+    protected function _getRouterFor(arch\IRequest $request) {
+        $location = $request->getDirectoryLocation();
+
+        if(isset($routerCache[$location])) {
+            return $this->_routerCache[$location];
+        }
+
+        $keys[] = $location;
+        $parts = explode('/', $location);
+        $output = false;
+
+        while(!empty($parts)) {
+            $class = 'df\\apex\\directory\\'.implode('\\', $parts).'\\HttpRouter';
+            $keys[] = implode('/', $parts);
+
+            if(class_exists($class)) {
+                $output = new $class($this->_application);
+                break;
+            }
+
+            array_pop($parts);
+        }
+        
+        foreach($keys as $key) {
+            $this->_routerCache[$key] = $output;
+        }
+
+        return $output;
     }
     
     
