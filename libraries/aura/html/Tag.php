@@ -318,6 +318,8 @@ class Tag implements ITag, core\IDumpable {
         foreach($this->_attributes as $key => $value) {
             if($value === null) {
                 $attributes[] = $key;
+            } else if($value instanceof IElementRepresentation) {
+                $attributes[] = $key.'="'.(string)$value.'"';
             } else {
                 $attributes[] = $key.'="'.$this->esc($value).'"';
             }
