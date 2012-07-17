@@ -19,15 +19,19 @@ class Link extends Base implements ILinkWidget, core\IDumpable {
     use TWidget_TargetAware;
        
     const PRIMARY_TAG = 'a';
+    const WRAP_BODY = true;
     
     protected $_uri;
     protected $_matchRequest;
     protected $_rel = array();
     protected $_isActive = false;
+    protected $_isComputedActive = null;
     protected $_hideIfInaccessible = false;
     protected $_hrefLang;
     protected $_media;
     protected $_contentType;
+    protected $_description;
+    protected $_icon;
     
     public function __construct(arch\IContext $context, $uri, $body=null, $matchRequest=null) {
         $checkUriMatch = false;
@@ -43,10 +47,12 @@ class Link extends Base implements ILinkWidget, core\IDumpable {
             $uri = $link->getLocation();
             $body = $link->getText();
 
-            // TODO: deal with icon
+            if($icon = $link->getIcon()) {
+                $this->setIcon($icon);
+            }
 
             if($description = $link->getDescription()) {
-                $this->getTag()->setAttribute('title', $description);
+                $this->setDescription($description);
             }
 
             $this->addAccessLocks($link->getAccessLocks());
@@ -77,7 +83,7 @@ class Link extends Base implements ILinkWidget, core\IDumpable {
         $url = null;
         $body = $this->_body;
         
-        $active = $this->_isActive;
+        $active = $this->_isActive || $this->_isComputedActive;
         $disabled = $this->_isDisabled;
         
         if($this->_checkAccess && !$disabled) {
@@ -111,10 +117,12 @@ class Link extends Base implements ILinkWidget, core\IDumpable {
             $tag->setAttribute('rel', implode(' ', array_keys($this->_rel)));
         }
         
-        if(!$active && $this->_matchRequest) {
+        if(!$active && $this->_matchRequest && $this->_isComputedActive !== null) {
             $matchRequest = arch\Request::factory($this->_matchRequest);
             $active = $matchRequest->eq($context->request);
         }
+
+        $this->_isComputedActive = $active;
         
         if($active) {
             $tag->addClass('state-active');
@@ -123,6 +131,17 @@ class Link extends Base implements ILinkWidget, core\IDumpable {
         
         $this->_applyTargetAwareAttributes($tag);
         
+
+        if($this->_description) {
+            $tag->setAttribute('title', $this->_description);
+        }
+
+        $icon = null;
+
+        if($this->_icon) {
+            $icon = $this->_mapIcon($this->_icon);
+        }
+
         
         if($this->_hrefLang !== null) {
             $tag->setAttribute('hreflang', $this->_hrefLang);
@@ -145,7 +164,15 @@ class Link extends Base implements ILinkWidget, core\IDumpable {
             }
         }
         
-        return $tag->renderWith($body);
+        if(static::WRAP_BODY) {
+            $body = new aura\html\Element('span', $body, ['class' => 'body']);
+        }
+
+        if($icon) {
+            $tag->addClass('hasIcon');
+        }
+
+        return $tag->renderWith([$icon, $body]);
     }
     
     
@@ -243,6 +270,8 @@ class Link extends Base implements ILinkWidget, core\IDumpable {
     public function isActive($flag=null) {
         if($flag !== null) {
             $this->_isActive = (bool)$flag;
+            $this->_isComputedActive = null;
+
             return $this;
         }
         
@@ -291,6 +320,26 @@ class Link extends Base implements ILinkWidget, core\IDumpable {
     public function getContentType() {
         return $this->_contentType;
     }
+
+// Description
+    public function setDescription($description) {
+        $this->_description = $description;
+        return $this;
+    }
+
+    public function getDescription() {
+        return $this->_description;
+    }
+
+// Icon
+    public function setIcon($icon) {
+        $this->_icon = $icon;
+        return $this;
+    }
+
+    public function getIcon() {
+        return $this->_icon;
+    }
     
     
 // Dump
@@ -310,8 +359,22 @@ class Link extends Base implements ILinkWidget, core\IDumpable {
             'isActive' => $this->_isActive,
             'tag' => $this->getTag(),
             'body' => $this->_body,
+            'description' => $this->_description,
             'accessLocks' => $lockCount,
             'renderTarget' => $this->_getRenderTargetDisplayName()
         ];
+    }
+
+    protected function _mapIcon($name) {
+        $iconChar = $this->_renderTarget->getTheme()->mapIcon($name);
+
+        if($iconChar === null) {
+            return null;
+        }
+
+        return new aura\html\Element('span', '', [
+            'aria-hidden' => 'true',
+            'data-icon' => new aura\html\ElementString($iconChar)
+        ]);
     }
 }

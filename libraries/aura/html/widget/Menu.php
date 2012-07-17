@@ -13,6 +13,8 @@ use df\arch;
 class Menu extends Base implements core\IDumpable {
     
     const PRIMARY_TAG = 'nav';
+    const DEFAULT_LINK_WIDGET = 'Link';
+    const ENFORCE_DEFAULT_LINK_WIDGET = false;
     
     protected $_entries;
     protected $_renderIfEmpty = false;
@@ -90,7 +92,17 @@ class Menu extends Base implements core\IDumpable {
     
     public function addLink($link) {
         if(!$link instanceof ILinkWidget) {
-            $link = Base::factory($this->_context, 'Link', func_get_args())->setRenderTarget($this->_renderTarget);
+            $link = Base::factory($this->_context, static::DEFAULT_LINK_WIDGET, func_get_args())->setRenderTarget($this->_renderTarget);
+        }
+
+        if(static::ENFORCE_DEFAULT_LINK_WIDGET) {
+            $class = 'df\\aura\\html\\widget\\'.static::DEFAULT_LINK_WIDGET;
+
+            if(!$link instanceof $class) {
+                throw new InvalidArgumentException(
+                    'Links in '.$this->getWidgetName().' widgets must be of type '.static::DEFAULT_LINK_WIDGET
+                );
+            }
         }
         
         $this->_entries->push($link);
