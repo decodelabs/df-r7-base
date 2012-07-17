@@ -80,7 +80,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             $this->setPath($url);
         }
         
-        if($this->_path->get(0) == '~') {
+        if($this->_path && $this->_path->get(0) == '~') {
             $this->setArea(static::DEFAULT_AREA);
         }
         
