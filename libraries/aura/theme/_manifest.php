@@ -17,4 +17,5 @@ interface IException {}
 interface ITheme extends aura\view\IRenderable {
     public function getId();
     public function findAsset(core\IApplication $application, $path);
+    public function mapIcon($name);
 }

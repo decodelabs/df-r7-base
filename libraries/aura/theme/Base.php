@@ -13,6 +13,7 @@ use df\arch;
 class Base implements ITheme {
     
     protected $_id;
+    protected $_iconMap = null;
     
     public static function factory($id) {
         if($id instanceof ITheme) {
@@ -105,9 +106,31 @@ class Base implements ITheme {
         }
     }
 
+
+// Assets
     public function findAsset(core\IApplication $application, $path) {
         return df\Launchpad::$loader->findFile(
             $lookupPath = 'apex/themes/'.$this->getId().'/assets/'.$path
         );
+    }
+
+    public function mapIcon($name) {
+        if($this->_iconMap === null) {
+            if($path = df\Launchpad::$loader->findFile(
+                'apex/themes/'.$this->getId().'/IconMap.php'
+            )) {
+                $this->_iconMap = require $path;
+            }
+
+            if(!is_array($this->_iconMap)) {
+                $this->_iconMap = [];
+            }
+        }
+
+        if(isset($this->_iconMap[$name])) {
+            return $this->_iconMap[$name];
+        } else {
+            return null;
+        }
     }
 }
