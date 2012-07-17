@@ -21,7 +21,7 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
     public static function formatName($name) {
         return self::factory($name)
             ->replace(array('-', '_'), ' ')
-            ->regexReplace('/[^ ]([A-Z])/u', ' $1')
+            ->regexReplace('/([^ ])([A-Z])/u', '$1 $2')
             ->wordsToUpper()
             ->toString();
     }
