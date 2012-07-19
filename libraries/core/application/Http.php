@@ -301,6 +301,11 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
         $action = arch\Action::factory($this->_context);
         $response = $action->dispatch();
         
+        // Dereference proxy responses
+        while($response instanceof halo\protocol\http\IProxyResponse) {
+            $response = $response->toResponse();
+        }
+
         
         // Forwarding
         if($response instanceof arch\IRequest) {

@@ -56,6 +56,10 @@ class WidgetContentProvider extends aura\html\ElementContent implements aura\vie
     public function getRenderTarget() {
         return $this->_renderTarget;
     }
+
+    public function toResponse() {
+        return $this->getView();
+    }
     
     
 // Widget shortcuts

@@ -143,6 +143,10 @@ class Template implements aura\view\ITemplate, core\IDumpable {
     public function getRenderTarget() {
         return $this->_renderTarget;
     }
+
+    public function toResponse() {
+        return $this->_view;
+    }
     
     protected function renderInnerContent() {
         $provider = $this->getView()->getContentProvider();
