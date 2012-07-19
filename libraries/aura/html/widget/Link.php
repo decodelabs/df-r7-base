@@ -45,13 +45,13 @@ class Link extends Base implements ILinkWidget, core\IDumpable {
         if($uri instanceof arch\menu\entry\Link) {
             $link = $uri;
             $uri = $link->getLocation();
-            $body = $link->getText();
+            $body = $context->_($link->getText());
 
             if($icon = $link->getIcon()) {
                 $this->setIcon($icon);
             }
 
-            if($description = $link->getDescription()) {
+            if($description = $context->_($link->getDescription())) {
                 $this->setDescription($description);
             }
 
@@ -366,7 +366,7 @@ class Link extends Base implements ILinkWidget, core\IDumpable {
     }
 
     protected function _mapIcon($name) {
-        $iconChar = $this->_renderTarget->getTheme()->mapIcon($name);
+        $iconChar = $this->_renderTarget->getView()->getTheme()->mapIcon($name);
 
         if($iconChar === null) {
             return null;
