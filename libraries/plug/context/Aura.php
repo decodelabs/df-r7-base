@@ -40,4 +40,12 @@ class Aura implements arch\IContextHelper {
     public function getDirectoryTemplate($path, $request=null) {
         return auraLib\view\content\Template::loadDirectoryTemplate($this->_context->spawnInstance($request));
     }
+
+    public function getWidgetContainer($request=null) {
+        $view = $this->getBarebonesView($this->_context->getRequest()->getType(), $request);
+        $view->setContentProvider($output = new auraLib\view\content\WidgetContentProvider($view->getContext()));
+        $output->setRenderTarget($view);
+
+        return $output;
+    }
 }
