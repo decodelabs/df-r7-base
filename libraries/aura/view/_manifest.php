@@ -115,7 +115,11 @@ trait TArgContainer {
 
 
 
-interface IContentProvider extends IDeferredRenderable, IArgContainer {}
+interface IContentProvider extends 
+    IDeferredRenderable, 
+    IArgContainer,
+    halo\protocol\http\IProxyResponse 
+    {}
 
 interface IContentConsumer {
     public function setContentProvider(IContentProvider $provider);
