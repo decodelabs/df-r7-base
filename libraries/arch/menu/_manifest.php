@@ -21,6 +21,8 @@ class SourceNotFoundException extends RuntimeException {}
 // Interfaces
 interface IMenu extends arch\IContextAware {
     public function getId();
+    public function setSubId($id);
+    public function getSubId();
     public function getDisplayName();
     public function getSource();
     public function getSourceId();

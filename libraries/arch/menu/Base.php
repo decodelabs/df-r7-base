@@ -16,6 +16,7 @@ class Base implements IMenu, core\IDumpable {
     const DEFAULT_SOURCE = 'Directory';
     
     protected $_id;
+    protected $_subId;
     protected $_delegates = null;
     
     public static function loadAll(arch\IContext $context, array $whiteList=null) {
@@ -114,6 +115,15 @@ class Base implements IMenu, core\IDumpable {
     
     public function getId() {
         return $this->_id;
+    }
+
+    public function setSubId($id) {
+        $this->_subId = $id;
+        return $this;
+    }
+
+    public function getSubId() {
+        return $this->_subId;
     }
     
     public function getDisplayName() {
