@@ -236,7 +236,11 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
     }
     
     public function get($key, $default=null) {
-        return $this->__get($key)->getValue($default);
+        if(!array_key_exists($key, $this->_collection)) {
+            return $default;
+        }
+
+        return $this->_collection[$key]->getValue($default);
     }
     
     public function has($key) {
