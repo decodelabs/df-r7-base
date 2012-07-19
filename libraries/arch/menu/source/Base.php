@@ -24,7 +24,7 @@ abstract class Base implements arch\menu\ISource, arch\IContextAware {
             }
             
             try {
-                $source = self::factory($name);
+                $source = self::factory($context, $name);
             } catch(arch\menu\SourceNotFoundException $e) {
                 continue;
             }
