@@ -33,4 +33,28 @@ class Html implements aura\view\IHelper {
     public function element($name, $content=null, array $attributes=array()) {
         return new aura\html\Element($name, $content, $attributes);
     }
+
+
+
+// Compound widget shortcuts
+    public function icon($name, $body=null) {
+        $iconChar = $this->_view->getTheme()->mapIcon($name);
+
+        if($iconChar === null) {
+            return null;
+        }
+
+        return new aura\html\Element('span', $body, [
+            'aria-hidden' => 'true',
+            'data-icon' => new aura\html\ElementString($iconChar)
+        ]);
+    }
+
+    public function backLink($default=null, $success=true) {
+        return $this->link(
+                $this->_view->uri->back($default, $success),
+                $this->_view->_('Back')
+            )
+            ->setIcon('back');
+    }
 }

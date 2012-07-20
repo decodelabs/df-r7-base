@@ -18,21 +18,21 @@ class Debug implements aura\view\IHelper {
     }
     
     public function dump($arg1) {
-        core\debug()->dumpArgs(func_get_args());
+        core\debug()->addDumpList(func_get_args(), false, core\debug\StackCall::factory(1));
         return $this;
     }
     
     public function dumpDeep($arg1) {
-        core\debug()->dumpArgs(func_get_args(), true);
+        core\debug()->addDumpList(func_get_args(), true, core\debug\StackCall::factory(1));
         return $this;
     }
     
     public function dumpNow($arg1) {
-        core\debug()->dumpArgs(func_get_args())->flush();
+        core\debug()->addDumpList(func_get_args(), false, core\debug\StackCall::factory(1))->flush();
     }
     
     public function dumpDeepNow($arg1) {
-        core\debug()->dumpArgs(func_get_args(), true)->flush();
+        core\debug()->addDumpList(func_get_args(), true, core\debug\StackCall::factory(1))->flush();
     }
     
     public function log($log) {
