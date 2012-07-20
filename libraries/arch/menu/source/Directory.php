@@ -15,6 +15,10 @@ class Directory extends Base {
     	$parts = $id->path->toArray();
     	$name = ucfirst(array_pop($parts));
 
+        $nameParts = explode('_', $name, 2);
+        $parentName = array_shift($nameParts);
+        $subId = array_shift($nameParts);
+
     	if(isset($parts[0]{0}) && $parts[0]{0} == arch\Request::AREA_MARKER) {
     		$area = ltrim(array_shift($parts), arch\Request::AREA_MARKER);
     	} else {
@@ -23,7 +27,7 @@ class Directory extends Base {
     	
     	$classBase = 'df\\apex\\directory\\'.$area;
     	$sharedClassBase = 'df\\apex\\directory\\'.$area;
-    	$baseId = 'Directory://';
+    	$baseId = 'Directory://'.arch\Request::AREA_MARKER.$area;
 
     	if(!empty($parts)) {
     		$classBase .= '\\'.implode('\\', $parts);
@@ -39,7 +43,7 @@ class Directory extends Base {
     	$menus = array();
 
     	foreach(df\Launchpad::$loader->getPackages() as $package) {
-    		$packageName = core\string\Manipulator::formatId($package->name);
+    		$packageName = ucfirst($package->name);
 
     		if(class_exists($classBase.'_'.$packageName)) {
     			$class = $classBase.'_'.$packageName;
@@ -49,9 +53,10 @@ class Directory extends Base {
     			continue;
     		}
 
-
-    		$menus[$name.'_'.$packageName] = new $class($this->_context, $baseId.'_'.$packageName);
+    		$menus[$name.'_'.$packageName] = (new $class($this->_context, $baseId.'_'.$packageName))
+                ->setSubId($packageName);
     	}
+
 
     	if(class_exists($classBase)) {
     		$output = new $classBase($this->_context, $baseId);
@@ -65,6 +70,8 @@ class Directory extends Base {
     		$output = new arch\menu\Base($this->_context, $baseId);
     	}
 
+        $output->setSubId($subId);
+
     	foreach($menus as $menu) {
     		$output->addDelegate($menu);
     	}
@@ -73,6 +80,156 @@ class Directory extends Base {
     }
 
     public function loadAllMenus(array $whiteList=null) {
-    	core\stub($whiteList);
+    	return $this->loadIds($this->getMenuIds(), $whiteList);
+    }
+
+    public function loadIds(array $ids, array $whiteList=null) {
+        $output = array();
+
+        foreach($ids as $id) {
+            if($whiteList !== null
+            && !in_array($id, $whiteList)) {
+                continue;
+            }
+
+            $parts = explode('/', ltrim($id, arch\Request::AREA_MARKER));
+            $name = array_pop($parts);
+
+            $classBase = 'df\\apex\\directory\\'.implode('\\', $parts).'\\_menus';
+            $class = $classBase.'\\'.$name;
+
+            if(!class_exists($class)) {
+                continue;
+            }
+
+            $idObj = arch\menu\Base::normalizeId($id);
+            $idString = (string)$idObj;
+            $output[$idString] = $menu = new $class($this->_context, $idObj);
+
+
+            // Load in base menus
+            if(false !== strpos($name, '_')) {
+                $parts = explode('_', $idString);
+                $packageName = array_pop($parts);
+
+                $menu->setSubId($packageName);
+
+                $idString = implode('_', $parts);
+
+                if(!isset($output[$idString])) {
+                    $idObj = clone $idObj;
+                    $output[$idString] = $menu = new arch\menu\Base($this->_context, arch\menu\Base::normalizeId($idString));
+                }
+            }
+        }
+
+        ksort($output);
+
+        return $output;
+    }
+
+    public function loadListedMenus($areas=null) {
+        return $this->loadIds($this->getMenuIds($areas));
+    }
+
+    public function loadNestedMenus($areas=null) {
+        $flatList = $this->loadIds($this->getMenuIds($areas));
+        $index = $output = array();
+
+        foreach($flatList as $id => $menu) {
+            $packageName = $menu->getSubId();
+
+            if($packageName === null) {
+                $packageName = '__default';
+            } else {
+                $parts = explode('_', $id);
+                array_pop($parts);
+                $id = implode('_', $parts);
+            }
+
+            $index[$id][$packageName] = $menu;
+        }
+
+        foreach($index as $id => $set) {
+            if(isset($set['__default'])) {
+                $top = $set['__default'];
+                unset($set['__default']);
+            } else {
+                $top = new arch\menu\Base($this->_context, arch\menu\Base::normalizeId($id));
+            }
+
+            foreach($set as $delegate) {
+                $top->addDelegate($delegate);
+            }
+
+            $output[(string)$top->getId()] = $top;
+        }
+
+        return $output;
+    }
+
+    public function getMenuIds($areas=null) {
+        $cache = arch\menu\Cache::getInstance($this->_context->getApplication());
+        $cacheId = md5('directory://__ID_LIST__');
+
+        if(!$cache->has($cacheId)
+        || null === ($list = $cache->get($cacheId))) {
+            $list = array();
+            $paths = df\Launchpad::$loader->getFileSearchPaths('apex/directory');
+
+            foreach($paths as $path) {
+                if(!is_dir($path)) {
+                    continue;
+                }
+
+                $dir = new \RecursiveDirectoryIterator($path);
+                $it = new \RecursiveIteratorIterator($dir);
+                $regex = new \RegexIterator($it, '/^'.preg_quote($path, '/').'\/(.+)\/_menus\/(.+)\.php$/i', \RecursiveRegexIterator::GET_MATCH);
+
+                foreach($regex as $item) {
+                    $list[] = arch\Request::AREA_MARKER.$item[1].'/'.$item[2];
+                }
+            }
+            
+            $cache->set($cacheId, $list);
+        }
+
+        if($areas !== null) {
+            if(!is_array($areas)) {
+                $areas = [$areas];
+            }
+
+            $temp = $list;
+            $list = array();
+
+            foreach($temp as $id) {
+                $parts = explode('/', $id);
+                $area = trim($parts[0], arch\Request::AREA_MARKER);
+
+                if(!in_array($area, $areas)) {
+                    continue;
+                }
+
+                $list[] = $id;
+            }
+        }
+
+        return $list;
+    }
+
+    public function getAreaOptionList() {
+        $ids = $this->getMenuIds();
+        $output = array();
+
+        foreach($ids as $id) {
+            $parts = explode('/', $id);
+            $area = ltrim(array_shift($parts), arch\Request::AREA_MARKER);
+
+            if(!isset($output[$area])) {
+                $output[$area] = core\string\Manipulator::formatName($area);
+            }
+        }
+
+        return $output;
     }
 }
