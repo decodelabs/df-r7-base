@@ -17,7 +17,7 @@ class Config extends core\Config {
     
     public function getDefaultValues() {
         return [
-            'default' => 'shared'
+            'default' => 'whitewash'
         ];
     }
     

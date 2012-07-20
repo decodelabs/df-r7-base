@@ -14,8 +14,7 @@ class WidgetContentProvider extends aura\html\ElementContent implements aura\vie
     
     use arch\TContextAware;
     use aura\view\TArgContainer;
-    
-    protected $_renderTarget;
+    use aura\view\TDeferredRenderable;
     
     public function __construct(arch\IContext $context) {
         $this->_context = $context;
@@ -24,39 +23,9 @@ class WidgetContentProvider extends aura\html\ElementContent implements aura\vie
     
 // Renderable
     public function getView() {
-        if(!$this->_renderTarget) {
-            throw new aura\view\RuntimeException(
-                'This view is not currently rendering'
-            );
-        }
-        
-        return $this->_renderTarget->getView();
+        return $this->getRenderTarget()->getView();
     }
     
-    public function renderTo(aura\view\IRenderTarget $target) {
-        $this->_renderTarget = $target;
-        $output = '';
-        
-        foreach($this->_collection as $value) {
-            if($value instanceof aura\html\widget\IWidget) {
-                $output .= $value->renderTo($target);
-            } else {
-                $output .= $this->_renderChild($value);
-            } 
-        }
-        
-        return $output;
-    }
-    
-    public function setRenderTarget(aura\view\IRenderTarget $target=null) {
-        $this->_renderTarget = $target;
-        return $this;
-    }
-    
-    public function getRenderTarget() {
-        return $this->_renderTarget;
-    }
-
     public function toResponse() {
         return $this->getView();
     }

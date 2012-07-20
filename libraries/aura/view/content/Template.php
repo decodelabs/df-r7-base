@@ -14,10 +14,10 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         
     use arch\TContextAware;
     use aura\view\TArgContainer;
+    use aura\view\TDeferredRenderable;
         
     private $_path;
     private $_view;
-    private $_renderTarget;
     private $_isRendering = false;
     
     public static function loadDirectoryTemplate(arch\IContext $context, $path) {
@@ -105,12 +105,12 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         return $this->_view;
     }
     
-    public function renderTo(aura\view\IRenderTarget $target) {
+    public function render() {
         if($this->_isRendering) {
             throw new aura\view\RuntimeException('Rendering is already in progress');
         }
         
-        $this->_renderTarget = $target;
+        $target = $this->getRenderTarget();
         $this->_isRendering = true;
         $this->_view = $target->getView();
         
@@ -135,15 +135,6 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         return $output;
     }
     
-    public function setRenderTarget(aura\view\IRenderTarget $target=null) {
-        $this->_renderTarget = $target;
-        return $this;
-    }
-    
-    public function getRenderTarget() {
-        return $this->_renderTarget;
-    }
-
     public function toResponse() {
         return $this->_view;
     }

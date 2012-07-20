@@ -28,6 +28,7 @@ interface IRenderable {
 interface IDeferredRenderable extends IRenderable, core\IStringProvider {
     public function setRenderTarget(IRenderTarget $target=null);
     public function getRenderTarget();
+    public function render();
 }
 
 
@@ -48,6 +49,11 @@ trait TDeferredRenderable {
         }
         
         return $this->_renderTarget;
+    }
+
+    public function renderTo(IRenderTarget $target) {
+        $this->setRenderTarget($target);
+        return $this->render();
     }
 }
 
@@ -118,7 +124,7 @@ trait TArgContainer {
 interface IContentProvider extends 
     IDeferredRenderable, 
     IArgContainer,
-    halo\protocol\http\IProxyResponse 
+    arch\IProxyResponse 
     {}
 
 interface IContentConsumer {

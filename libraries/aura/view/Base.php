@@ -239,12 +239,14 @@ class Base implements IView {
         $this->_beforeRender();
         
         if($this instanceof ILayoutView && $this->shouldUseLayout()) {
-            return aura\view\content\Template::loadLayout(
-                $this, $this->getLayout().'.'.lcfirst($this->getType())
-            )->renderTo($this);
-        } else {
-            return $this->_contentProvider->renderTo($this);
+            try {
+                return aura\view\content\Template::loadLayout(
+                    $this, $this->getLayout().'.'.lcfirst($this->getType())
+                )->renderTo($this);
+            } catch(aura\view\ContentNotFoundException $e) {}
         }
+
+        return $this->_contentProvider->renderTo($this);
     }
     
     protected function _beforeRender() {}
