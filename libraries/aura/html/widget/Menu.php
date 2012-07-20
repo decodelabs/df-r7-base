@@ -115,7 +115,7 @@ class Menu extends Base implements core\IDumpable {
     }
     
     public function addSpacer() {
-        $this->_entries->push(new aura\html\ElementString('<span class="widget spacer">|</span>'));
+        $this->_entries->push(new aura\html\ElementString('<span class="widget-spacer"></span>'));
         return $this;
     }
     

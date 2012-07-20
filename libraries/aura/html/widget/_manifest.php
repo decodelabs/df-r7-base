@@ -174,14 +174,27 @@ interface IGroupedSelectionInputWidget extends ISelectionInputWidget {
 }
 
 
+interface IDisposition {
+    const POSITIVE = 'positive';
+    const NEGATIVE = 'negative';
+    const INFORMATIVE = 'informative';
+    const OPERATIVE = 'operative';
+    const TRANSITIVE = 'transitive';
+}
+
 interface IDispositionAwareWidget {
     public function setDisposition($diposition);
     public function getDisposition();
-    public function getDispositionString();
-
-    public function isPositive($flag=null);
-    public function isNegative($flag=null);
 }
+
+
+interface IIconProviderWidget {
+    public function setIcon($icon);
+    public function getIcon();
+}
+
+
+
 
 /*************
  * Actual
@@ -312,7 +325,7 @@ interface ITemplateWidget extends IWidget, aura\view\IContentProvider {
 
 
 // Links
-interface ILinkWidget extends IWidget, IBodyContentAwareWidget, IDisableableWidget {
+interface ILinkWidget extends IWidget, IBodyContentAwareWidget, IDisableableWidget, IDispositionAwareWidget {
     public function setUri($uri, $setAsMatchRequest=false);
     public function getUri();
     

@@ -133,6 +133,11 @@ trait TElementContent {
             return $output;
         }
         
+        if($value instanceof aura\view\IDeferredRenderable
+        && $this instanceof aura\view\IDeferredRenderable) {
+            $value->setRenderTarget($this->getRenderTarget());
+        }
+
         if($value instanceof IRenderable) {
             $output = $value->render();
         } else {

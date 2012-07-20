@@ -10,13 +10,14 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class Button extends Base implements IButtonWidget, core\IDumpable {
+class Button extends Base implements IButtonWidget, IIconProviderWidget, core\IDumpable {
     
     use TWidget_FormData;
     use TWidget_Input;
     use TWidget_FocusableInput;
     use TWidget_BodyContentAware;
     use TWidget_DispositionAware;
+    use TWidget_IconProvider;
     
     const PRIMARY_TAG = 'button';
     const ARRAY_INPUT = false;
@@ -24,7 +25,6 @@ class Button extends Base implements IButtonWidget, core\IDumpable {
     const HAS_VALUE = true;
     
     protected $_shouldValidate = true;
-    protected $_icon;
     
     public function __construct(arch\IContext $context, $name, $body=null, $value=null) {
         $this->setName($name);
@@ -44,14 +44,10 @@ class Button extends Base implements IButtonWidget, core\IDumpable {
         }
 
         if($this->_disposition !== null) {
-            $tag->addClass('disposition-'.$this->getDispositionString());
+            $tag->addClass('disposition-'.$this->getDisposition());
         }
 
-        $icon = null;
-
-        if($this->_icon) {
-            $icon = $this->_renderTarget->getView()->html->icon($this->_icon);
-        }
+        $icon = $this->_generateIcon();
         
         return $tag->renderWith(
             [$icon, $this->_body/*, '<span class="ievalue">'.$this->esc($this->getValueString()).'</span>'*/]
@@ -69,17 +65,6 @@ class Button extends Base implements IButtonWidget, core\IDumpable {
         return $this->_shouldValidate;
     }
 
-
-// Icon
-    public function setIcon($icon) {
-        $this->_icon = $icon;
-        return $this;
-    }
-
-    public function getIcon() {
-        return $this->_icon;
-    }
-    
     
 // Dump
     public function getDumpProperties() {
@@ -89,7 +74,7 @@ class Button extends Base implements IButtonWidget, core\IDumpable {
             'body' => $this->_body,
             'icon' => $this->_icon,
             'tag' => $this->getTag(),
-            'disposition' => $this->getDispositionString(),
+            'disposition' => $this->getDisposition(),
             'renderTarget' => $this->_getRenderTargetDisplayName()
         ];
     }

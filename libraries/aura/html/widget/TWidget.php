@@ -31,11 +31,6 @@ trait TWidget {
         return $this->_primaryTag;
     }
     
-    public function renderTo(aura\view\IRenderTarget $target) {
-        $this->setRenderTarget($target);
-        return $this->render();
-    }
-    
     public function toString() {
         return (string)$this->render();
     }
@@ -736,30 +731,33 @@ trait TWidget_DispositionAware {
     protected $_disposition = null;
 
     public function setDisposition($disposition) {
-        if(is_string($disposition)) {
-            $disposition = strtolower($disposition);
+        if($disposition === null) {
+            $this->_disposition = null;
+            return $this;
+        }
 
-            switch($disposition) {
-                case 'positive':
-                    $disposition = true;
-                    break;
-
-                case 'neutral':
-                    $disposition = null;
-                    break;
-
-                case 'negative':
-                    $disposition = false;
-                    break;
-
-                default:
-                    $disposition = core\string\Manipulator::stringToBoolean($disposition);
-                    break;
+        if(is_bool($disposition)) {
+            if($disposition) {
+                $disposition = 'positive';
+            } else {
+                $disposition = 'negative';
             }
         }
 
-        if($disposition !== null) {
-            $disposition = (bool)$disposition;
+        $disposition = strtolower($disposition);
+
+        switch($disposition) {
+            case 'positive':
+            case 'negative':
+            case 'informative':
+            case 'operative':
+            case 'transitive':
+                break;
+
+            case 'neutral':
+            default:
+                $disposition = null;
+                break;
         }
 
         $this->_disposition = $disposition;
@@ -770,34 +768,11 @@ trait TWidget_DispositionAware {
         return $this->_disposition;
     }
 
-    public function getDispositionString() {
-        if($this->_disposition === true) {
-            return 'positive';
-        } else if($this->_disposition === false) {
-            return 'negative';
-        } else {
-            return 'neutral';
-        }
-    }
-
-    public function isPositive($flag=null) {
-        if($flag !== null) {
-            if($flag) {
-                $this->_disposition = true;
-            } else {
-                $this->_disposition = null;
-            }
-
-            return $this;
-        }
-
-        return (bool)$this->_disposition;
-    }
 
     public function isNegative($flag=null) {
         if($flag !== null) {
             if($flag) {
-                $this->_disposition = false;
+                $this->_disposition = 'negative';
             } else {
                 $this->_disposition = null;
             }
@@ -805,7 +780,92 @@ trait TWidget_DispositionAware {
             return $this;
         }
 
-        return $this->_disposition === false;
+        return $this->_disposition == 'negative';
+    }
+
+    public function isInformative($flag=null) {
+        if($flag !== null) {
+            if($flag) {
+                $this->_disposition = 'informative';
+            } else {
+                $this->_disposition = null;
+            }
+
+            return $this;
+        }
+
+        return $this->_disposition == 'informative';
+    }
+
+    public function isOperative($flag=null) {
+        if($flag !== null) {
+            if($flag) {
+                $this->_disposition = 'operative';
+            } else {
+                $this->_disposition = null;
+            }
+
+            return $this;
+        }
+
+        return $this->_disposition == 'operative';
+    }
+}
+
+
+
+trait TWidget_IconProvider {
+
+    protected $_icon;
+
+    public function setIcon($icon) {
+        $this->_icon = $icon;
+
+        if($this instanceof IDispositionAwareWidget && !$this->_disposition) {
+            switch($icon) {
+                // positive
+                case 'add':
+                case 'save':
+                case 'accept':
+                    $this->setDisposition('positive');
+                    break;
+
+                // negative
+                case 'remove':
+                case 'delete':
+                case 'deny':
+                    $this->setDisposition('negative');
+                    break;
+
+                // informative
+                case 'info':
+                case 'refresh':
+                    $this->setDisposition('informative');
+                    break;
+
+                // operative
+                case 'edit':
+                    $this->setDisposition('operative');
+                    break;
+
+                // transitive
+                case 'back':
+                    $this->setDisposition('transitive');
+                    break;
+            }
+        }
+
+        return $this;
+    }
+
+    public function getIcon() {
+        return $this->_icon;
+    }
+
+    protected function _generateIcon() {
+        if($this->_icon) {
+            return $this->getRenderTarget()->getView()->html->icon($this->_icon);
+        }
     }
 }
 

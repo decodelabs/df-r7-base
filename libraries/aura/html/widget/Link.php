@@ -11,12 +11,14 @@ use df\arch;
 use df\aura;
 use df\user;
 
-class Link extends Base implements ILinkWidget, core\IDumpable {
+class Link extends Base implements ILinkWidget, IIconProviderWidget, core\IDumpable {
     
     use TWidget_BodyContentAware;
     use TWidget_Disableable;
     use TWidget_AccessControlled;
     use TWidget_TargetAware;
+    use TWidget_DispositionAware;
+    use TWidget_IconProvider;
        
     const PRIMARY_TAG = 'a';
     const WRAP_BODY = true;
@@ -31,7 +33,6 @@ class Link extends Base implements ILinkWidget, core\IDumpable {
     protected $_media;
     protected $_contentType;
     protected $_description;
-    protected $_icon;
     
     public function __construct(arch\IContext $context, $uri, $body=null, $matchRequest=null) {
         $checkUriMatch = false;
@@ -136,11 +137,8 @@ class Link extends Base implements ILinkWidget, core\IDumpable {
             $tag->setAttribute('title', $this->_description);
         }
 
-        $icon = null;
-
-        if($this->_icon) {
-            $icon = $this->_renderTarget->getView()->html->icon($this->_icon);
-        }
+        
+        $icon = $this->_generateIcon();
 
         
         if($this->_hrefLang !== null) {
@@ -153,6 +151,10 @@ class Link extends Base implements ILinkWidget, core\IDumpable {
         
         if($this->_contentType !== null) {
             $tag->setAttribute('type', $this->_contentType);
+        }
+
+        if($this->_disposition !== null) {
+            $tag->addClass('disposition-'.$this->getDisposition());
         }
         
         
@@ -331,15 +333,6 @@ class Link extends Base implements ILinkWidget, core\IDumpable {
         return $this->_description;
     }
 
-// Icon
-    public function setIcon($icon) {
-        $this->_icon = $icon;
-        return $this;
-    }
-
-    public function getIcon() {
-        return $this->_icon;
-    }
     
     
 // Dump
