@@ -159,6 +159,13 @@ interface IErrorRequest extends IRequest {
     public function getLastRequest();
 }
 
+
+interface IProxyResponse {
+    public function toResponse();
+}
+
+
+
 interface IController extends IContextAware, user\IAccessLock {
     public function isControllerInline();
     public function setActiveAction(IAction $action=null);
@@ -177,6 +184,20 @@ interface IAction extends IContextAware, user\IAccessLock {
 
 interface IComponent extends IContextAware, user\IAccessLock {
     public function getName();
+}
+
+
+interface IFacetController extends IContextAware, IProxyResponse, core\IAttributeContainer, \ArrayAccess {
+    public function setInitializer(Callable $initializer=null);
+    public function getInitializer();
+
+    public function setAction(Callable $action);
+    public function getAction();
+
+    public function addFacet($id, Callable $action);
+    public function hasFacet($id);
+    public function getFacet($id);
+    public function removeFacet($id);
 }
 
 
