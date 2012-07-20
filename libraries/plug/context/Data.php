@@ -7,17 +7,17 @@ namespace df\plug\context;
 
 use df;
 use df\core;
-use df\arch;
+use df\arch as archLib;
 use df\axis;
 use df\opal;
 
-class Data implements arch\IContextHelper, opal\query\IEntryPoint {
+class Data implements archLib\IContextHelper, opal\query\IEntryPoint {
     
     use opal\query\TQuery_EntryPoint;
     
     protected $_context;
     
-    public function __construct(arch\IContext $context) {
+    public function __construct(archLib\IContext $context) {
         $this->_context = $context;
     }
     

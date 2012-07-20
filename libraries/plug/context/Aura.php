@@ -7,14 +7,14 @@ namespace df\plug\context;
 
 use df;
 use df\core;
-use df\arch;
+use df\arch as archLib;
 use df\aura as auraLib;
 
-class Aura implements arch\IContextHelper {
+class Aura implements archLib\IContextHelper {
     
     protected $_context;
     
-    public function __construct(arch\IContext $context) {
+    public function __construct(archLib\IContext $context) {
         $this->_context = $context;
     }
     
@@ -38,7 +38,7 @@ class Aura implements arch\IContextHelper {
     }
     
     public function getDirectoryTemplate($path, $request=null) {
-        return auraLib\view\content\Template::loadDirectoryTemplate($this->_context->spawnInstance($request));
+        return auraLib\view\content\Template::loadDirectoryTemplate($this->_context->spawnInstance($request), $path);
     }
 
     public function getWidgetContainer($request=null) {

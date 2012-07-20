@@ -7,15 +7,15 @@ namespace df\plug\context;
 
 use df;
 use df\core;
-use df\arch;
+use df\arch as archLib;
 use df\halo;
 
-class HttpHttp implements arch\IContextHelper {
+class HttpHttp implements archLib\IContextHelper {
     
     protected $_httpRequest;
     protected $_context;
     
-    public function __construct(arch\IContext $context) {
+    public function __construct(archLib\IContext $context) {
         $this->_context = $context;
         $this->_httpRequest = $this->_context->getApplication()->getHttpRequest();
     }
@@ -50,7 +50,7 @@ class HttpHttp implements arch\IContextHelper {
     
     
     public function directoryRequestToUrl($request) {
-        return $this->_context->getApplication()->requestToUrl(arch\Request::factory($request));
+        return $this->_context->getApplication()->requestToUrl(archLib\Request::factory($request));
     }
     
     
@@ -94,10 +94,10 @@ class HttpHttp implements arch\IContextHelper {
         }
         
         if(is_string($request)) {
-            $request = arch\Request::factory($request);
+            $request = archLib\Request::factory($request);
         }
         
-        if($request instanceof arch\IRequest) {
+        if($request instanceof archLib\IRequest) {
             $url = $this->_context->getApplication()->requestToUrl($request);
         } else {
             $url = halo\protocol\http\Url::factory((string)$request);

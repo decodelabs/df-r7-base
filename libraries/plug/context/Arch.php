@@ -102,4 +102,8 @@ class Arch implements archLib\IContextHelper {
         $context = archLib\Context::factory($this->_context->getApplication(), $request);
         return archLib\Component::factory($context, $name);
     }
+
+    public function newFacetController(Callable $initializer=null) {
+        return new archLib\FacetController($this->_context, $initializer);
+    }
 }
