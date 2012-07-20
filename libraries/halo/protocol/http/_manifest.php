@@ -136,12 +136,6 @@ interface IResponse extends core\IPayload, halo\peer\ISessionResponse {
     public function getResponseString();
 }
 
-
-interface IProxyResponse {
-    public function toResponse();
-}
-
-
 interface IStringResponse extends IResponse {
     public function setLastModified(core\time\IDate $date);
 }

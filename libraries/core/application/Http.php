@@ -302,7 +302,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
         $response = $action->dispatch();
         
         // Dereference proxy responses
-        while($response instanceof halo\protocol\http\IProxyResponse) {
+        while($response instanceof arch\IProxyResponse) {
             $response = $response->toResponse();
         }
 
