@@ -61,7 +61,7 @@ class SelectList extends Base implements IUngroupedSelectionInputWidget, IFocusa
     }
     
     protected function _checkSelected($value, &$selectionFound) {
-        return $selectionFound = $value == $this->getValueString();
+        return $selectionFound = (string)$value === $this->getValueString();
     }
     
 // Dump

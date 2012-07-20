@@ -139,7 +139,7 @@ class Link extends Base implements ILinkWidget, core\IDumpable {
         $icon = null;
 
         if($this->_icon) {
-            $icon = $this->_mapIcon($this->_icon);
+            $icon = $this->_renderTarget->getView()->html->icon($this->_icon);
         }
 
         
@@ -363,18 +363,5 @@ class Link extends Base implements ILinkWidget, core\IDumpable {
             'accessLocks' => $lockCount,
             'renderTarget' => $this->_getRenderTargetDisplayName()
         ];
-    }
-
-    protected function _mapIcon($name) {
-        $iconChar = $this->_renderTarget->getView()->getTheme()->mapIcon($name);
-
-        if($iconChar === null) {
-            return null;
-        }
-
-        return new aura\html\Element('span', '', [
-            'aria-hidden' => 'true',
-            'data-icon' => new aura\html\ElementString($iconChar)
-        ]);
     }
 }

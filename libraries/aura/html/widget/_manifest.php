@@ -174,6 +174,15 @@ interface IGroupedSelectionInputWidget extends ISelectionInputWidget {
 }
 
 
+interface IDispositionAwareWidget {
+    public function setDisposition($diposition);
+    public function getDisposition();
+    public function getDispositionString();
+
+    public function isPositive($flag=null);
+    public function isNegative($flag=null);
+}
+
 /*************
  * Actual
  */
@@ -216,7 +225,7 @@ interface IFieldSetWidget extends IFormOrientedWidget {
 }
 
 
-interface IButtonWidget extends IInputWidget, IBodyContentAwareWidget {
+interface IButtonWidget extends IInputWidget, IBodyContentAwareWidget, IDispositionAwareWidget {
     public function shouldValidate($flag=null);
 }
 

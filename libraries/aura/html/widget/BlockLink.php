@@ -31,7 +31,7 @@ class BlockLink extends Link {
         $icon = null;
 
         if($this->_icon) {
-            $icon = $this->_mapIcon($this->_icon);
+            $icon = $this->_renderTarget->getView()->html->icon($this->_icon);
         }
 
         $this->setBody([

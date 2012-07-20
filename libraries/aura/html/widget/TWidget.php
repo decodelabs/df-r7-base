@@ -196,6 +196,9 @@ trait TWidget_FormData {
             }
             
             if($value !== null) {
+                if(is_array($value)) {
+                    core\dump($this);
+                }
                 $value = (string)$value;
             }
             
@@ -397,6 +400,7 @@ trait TWidget_VisualInput {
         }
     }
 }
+
 
 
 trait TWidget_OptionalMultipleValueInput {
@@ -726,6 +730,84 @@ trait TWidget_GroupedSelectionInput {
 }
 
 
+
+trait TWidget_DispositionAware {
+
+    protected $_disposition = null;
+
+    public function setDisposition($disposition) {
+        if(is_string($disposition)) {
+            $disposition = strtolower($disposition);
+
+            switch($disposition) {
+                case 'positive':
+                    $disposition = true;
+                    break;
+
+                case 'neutral':
+                    $disposition = null;
+                    break;
+
+                case 'negative':
+                    $disposition = false;
+                    break;
+
+                default:
+                    $disposition = core\string\Manipulator::stringToBoolean($disposition);
+                    break;
+            }
+        }
+
+        if($disposition !== null) {
+            $disposition = (bool)$disposition;
+        }
+
+        $this->_disposition = $disposition;
+        return $this;
+    }
+
+    public function getDisposition() {
+        return $this->_disposition;
+    }
+
+    public function getDispositionString() {
+        if($this->_disposition === true) {
+            return 'positive';
+        } else if($this->_disposition === false) {
+            return 'negative';
+        } else {
+            return 'neutral';
+        }
+    }
+
+    public function isPositive($flag=null) {
+        if($flag !== null) {
+            if($flag) {
+                $this->_disposition = true;
+            } else {
+                $this->_disposition = null;
+            }
+
+            return $this;
+        }
+
+        return (bool)$this->_disposition;
+    }
+
+    public function isNegative($flag=null) {
+        if($flag !== null) {
+            if($flag) {
+                $this->_disposition = false;
+            } else {
+                $this->_disposition = null;
+            }
+
+            return $this;
+        }
+
+        return $this->_disposition === false;
+    }
+}
 
 
 // Lists
