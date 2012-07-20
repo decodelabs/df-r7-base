@@ -98,7 +98,7 @@ class Base implements IMenu, core\IDumpable {
         if(!$id instanceof core\uri\IUrl) {
             $id = core\uri\Url::factory($id);
         }
-        
+
         if(!$id->hasScheme()) {
             $id->setScheme(self::DEFAULT_SOURCE);
         } else {
@@ -127,7 +127,14 @@ class Base implements IMenu, core\IDumpable {
     }
     
     public function getDisplayName() {
-        return core\string\Manipulator::formatName($this->_id->getPath()->getLast());
+        $parts = explode('_', $this->_id->getPath()->getLast());
+        $output = core\string\Manipulator::formatName(array_shift($parts));
+
+        if(!empty($parts)) {
+            $output .= ' ('.core\string\Manipulator::formatName(array_shift($parts)).')';
+        }
+
+        return $output;
     }
     
     public function getSource() {
