@@ -50,12 +50,14 @@ class Delete extends arch\form\Action {
             $this->html->eventButton(
                     $this->eventNAme('delete'),
                     $this->_('Delete')
-                ),
+                )
+                ->setIcon('delete'),
                 
             $this->html->eventButton(
                     $this->eventName('cancel'),
                     $this->_('Cancel')
                 )
+                ->setIcon('cancel')
         );
     }
     
