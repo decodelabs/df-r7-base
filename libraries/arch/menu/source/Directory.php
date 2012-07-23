@@ -32,7 +32,7 @@ class Directory extends Base {
     	if(!empty($parts)) {
     		$classBase .= '\\'.implode('\\', $parts);
     		$sharedClassBase .= '\\'.implode('\\', $parts);
-    		$baseId .= implode('/', $parts);
+    		$baseId .= '/'.implode('/', $parts);
     	}
 
     	$classBase .= '\\_menus\\'.$name;

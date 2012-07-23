@@ -15,6 +15,26 @@ class Dynamic extends Base {
     protected $_displayName;
     protected $_entries = array();
     
+
+    protected function _getStorageArray() {
+        return array_merge(
+            parent::_getStorageArray(),
+            [
+                'recordId' => $this->_recordId,
+                'displayName' => $this->_displayName,
+                'entries' => $this->_entries
+            ]
+        );
+    }
+
+    protected function _setStorageArray(array $data) {
+        parent::_setStorageArray($data);
+
+        $this->_recordId = $data['recordId'];
+        $this->_displayName = $data['displayName'];
+        $this->_entries = $data['entries'];
+    }
+
     public function setRecordId($id) {
         $this->_recordId = $id;
         return $this;

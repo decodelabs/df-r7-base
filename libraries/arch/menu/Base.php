@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\arch;
 
-class Base implements IMenu, core\IDumpable {
+class Base implements IMenu, \Serializable, core\IDumpable {
     
     use arch\TContextAware;
     
@@ -67,11 +67,12 @@ class Base implements IMenu, core\IDumpable {
         $cache = Cache::getInstance($context->getApplication());
         $cacheId = md5($id);
 
-        $cache->clear();
+        //$cache->clear();
 
-        if(!isset($cache->{$cacheId})
-        || null === ($output = $cache->{$cacheId})) {
-            $cache->{$cacheId} = $output = $source->loadMenu($id);
+        if(!$cache->has($cacheId)
+        || null === ($output = $cache->get($cacheId))) {
+            $output = $source->loadMenu($id);
+            $cache->set($cacheId, $output);
         }
         
         return $output;
@@ -82,7 +83,7 @@ class Base implements IMenu, core\IDumpable {
         $cache = Cache::getInstance($context->getApplication());
         $cacheId = md5($id);
         
-        unset($cache->{$cacheId});
+        $cache->remove($cacheId);
     }
     
     public static function clearCache(arch\IContext $context) {
@@ -111,6 +112,32 @@ class Base implements IMenu, core\IDumpable {
     public function __construct(arch\IContext $context, $id) {
         $this->_context = $context;
         $this->_id = self::normalizeId($id);
+    }
+
+    public function serialize() {
+        return serialize($this->_getStorageArray());
+    }
+
+    public function unserialize($data) {
+        if(is_array($data = unserialize($data))) {
+            $this->_setStorageArray($data);
+        }
+        
+        return $this;
+    }
+
+    protected function _getStorageArray() {
+        return [
+            'id' => $this->_id,
+            'subId' => $this->_subId,
+            'delegates' => $this->_delegates
+        ];
+    }
+
+    protected function _setStorageArray(array $data) {
+        $this->_id = $data['id'];
+        $this->_subId = $data['subId'];
+        $this->_delegates = $data['delegates'];
     }
     
     public function getId() {
