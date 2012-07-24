@@ -86,7 +86,11 @@ abstract class Base implements core\IApplication, core\IDumpable {
         return $this->_isRunning;
     }
     
-    public function shutdown() {}
+    public function shutdown() {
+        foreach($this->_objectCache as $object) {
+            $object->onApplicationShutdown();
+        }
+    }
     
     
 // Environment

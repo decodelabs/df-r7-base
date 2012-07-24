@@ -24,16 +24,15 @@ class Delete extends arch\form\Action {
     protected function _createUi() {
         $itemName = $this->_getItemName();
         $form = $this->content->addForm();
-        $fs = $form->addFieldSet($this->_('%n% information', array('%n%' => ucfirst($itemName))));
+        $fs = $form->addFieldSet($this->_('%n% information', ['%n%' => ucfirst($itemName)]));
         
         $fs->push($this->html->string(
             '<p>'.$this->_(
                 'Are you sure you want to delete this %n%?',
-                array('%n%' => $itemName)
+                ['%n%' => $itemName]
             ).'</p>'
         ));
         
-        /*
         if(static::IS_PERMANENT) {
             $fs->push(
                 $this->html->notification(
@@ -41,7 +40,6 @@ class Delete extends arch\form\Action {
                 )
             );
         }
-        */
         
         $this->_renderMessages($fs);
         $this->_renderItemDetails($fs);
@@ -71,8 +69,16 @@ class Delete extends arch\form\Action {
         
         if($this->values->isValid()) {
             $this->_deleteItem();
+            $itemName = $this->_getItemName();
             
-            // TODO: notification
+            $this->arch->notify(
+                $itemName.'.deleted', 
+                $this->_(
+                    'The %n% has been successfully deleted', 
+                    ['%n%' => $itemName]
+                ), 
+                'success'
+            );
             
             return $this->complete();
         }

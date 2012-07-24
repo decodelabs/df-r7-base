@@ -44,6 +44,8 @@ abstract class Base implements ICache {
         $this->_application = $application;
         $this->_backend = $this->_loadBackend();
     }
+
+    public function onApplicationShutdown() {}
     
     protected function _loadBackend() {
         $config = Config::getInstance($this->_application);

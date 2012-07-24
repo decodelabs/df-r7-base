@@ -85,6 +85,8 @@ abstract class Config implements IConfig, core\IDumpable {
         
         $this->_sanitizeValuesOnLoad();
     }
+
+    public function onApplicationShutdown() {}
     
 // Application aware
     public function getApplication() {

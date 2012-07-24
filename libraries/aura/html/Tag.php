@@ -359,7 +359,11 @@ class Tag implements ITag, core\IDumpable {
                 $innerContent = new ElementContent($innerContent);
             }
             
-            $innerContent = $innerContent->getElementContentString();
+            if($innerContent instanceof IElement && $innerContent !== $this) {
+                $innerContent = $innerContent->render();
+            } else {
+                $innerContent = $innerContent->getElementContentString();
+            }
             
             if(empty($innerContent) && !$this->_renderIfEmpty) {
                 return null;

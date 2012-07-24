@@ -19,7 +19,7 @@ class Config extends core\Config {
             'uniquePrefix' => strtolower(core\string\Generator::random(3, 3)),
             'passKey' => core\string\Generator::passKey(),
             'packages' => [
-                'coreWeb' => true
+                'webCore' => true
             ]
         ];
     }

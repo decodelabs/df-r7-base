@@ -366,6 +366,7 @@ interface IApplication {
 
 interface IRegistryObject {
     public function getRegistryObjectKey();
+    public function onApplicationShutdown();
 }
 
 interface IApplicationAware {
@@ -411,6 +412,8 @@ trait TManager {
     public function getRegistryObjectKey() {
         return static::REGISTRY_PREFIX;
     }
+
+    public function onApplicationShutdown() {}
 }
 
 

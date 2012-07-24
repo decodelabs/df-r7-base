@@ -106,4 +106,39 @@ class Arch implements archLib\IContextHelper {
     public function newFacetController(Callable $initializer=null) {
         return new archLib\FacetController($this->_context, $initializer);
     }
+
+    public function getNotificationManager() {
+        return archLib\notify\Manager::getInstance($this->_context->getApplication());
+    }
+
+    public function notify($id, $message=null, $type=null) {
+        $manager = $this->getNotificationManager();
+        $message = $manager->newMessage($id, $message, $type);
+        $manager->queueMessage($message);
+
+        return $message;
+    }
+
+    public function notifyNow($id, $message=null, $type=null) {
+        $manager = $this->getNotificationManager();
+        $message = $manager->newMessage($id, $message, $type);
+        $manager->setInstantMessage($message);
+
+        return $message;
+    }
+
+    public function notifyAlways($id, $message=null, $type=null) {
+        $manager = $this->getNotificationManager();
+        $message = $manager->newMessage($id, $message, $type);
+        $manager->setConstantMessage($message);
+
+        return $message;
+    }
+
+    public function removeConstantNotification($id) {
+        $manager = $this->getNotificationManager();
+        $manager->removeConstantMessage($id);
+
+        return $this;
+    }
 }

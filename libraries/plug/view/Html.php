@@ -57,4 +57,41 @@ class Html implements aura\view\IHelper {
             )
             ->setIcon('back');
     }
+
+    public function notificationList() {
+        try {
+            $manager = arch\notify\Manager::getInstance($this->_view->getContext()->getApplication());
+            $messageCount = 0;
+
+
+            if(!$manager->isFlushed()) {
+                $manager->flushQueue();
+            }
+
+
+            $output = '<section class="widget-notificationList">'."\n";
+
+            foreach($manager->getConstantMessages() as $message) {
+                $messageCount++;
+                $output .= $this->notification($message);
+                $message->isDisplayed(true);
+            }
+
+            foreach($manager->getInstantMessages() as $message) {
+                $messageCount++;
+                $output .= $this->notification($message);
+                $message->isDisplayed(true);
+            }
+
+            $output .= '</section>';
+
+            if(!$messageCount) {
+                return null;
+            }
+
+            return $output;
+        } catch(\Exception $e) {
+            return new aura\view\content\ErrorContainer($this->_view, $e);
+        }
+    }
 }

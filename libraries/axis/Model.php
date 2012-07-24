@@ -64,6 +64,8 @@ abstract class Model implements IModel, core\IDumpable {
     final public function getRegistryObjectKey() {
         return self::REGISTRY_PREFIX.$this->getModelName();
     }
+
+    public function onApplicationShutdown() {}
     
     public function getUnit($name) {
         $name = lcfirst($name);

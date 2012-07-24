@@ -10,37 +10,12 @@ use df\core;
 
 class Manager implements IManager {
     
+    use core\TManager;
+
     const REGISTRY_PREFIX = 'manager://i18n';
     
     protected $_locale;
-    protected $_application;
-    
-    public static function getInstance(core\IApplication $application=null) {
-        if(!$application) {
-            $application = df\Launchpad::getActiveApplication();
-        }
-        
-        if(!$output = $application->_getCacheObject(self::REGISTRY_PREFIX)) {
-            $application->_setCacheObject(
-                $output = new self($application)
-            );
-        }
-        
-        return $output;
-    }
-    
-    protected function __construct(core\IApplication $application) {
-        $this->_application = $application;
-    }
-    
-    public function getApplication() {
-        return $this->_application;
-    }
-    
-    public function getRegistryObjectKey() {
-        return self::REGISTRY_PREFIX;
-    }
-    
+
     
 // Locale
     public function setLocale($locale) {
