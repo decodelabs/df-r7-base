@@ -184,8 +184,7 @@ abstract class Config implements IConfig, core\IDumpable {
         
         $content = '<?php'."\n".'return '.$this->_exportArray($this->_values).';';
         
-        // TODO: locking
-        file_put_contents($savePath, $content);
+        file_put_contents($savePath, $content, LOCK_EX);
     }
     
     private function _getBasePath() {
