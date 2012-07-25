@@ -706,7 +706,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         }
         
         try {
-            return $value1 == $value2;
+            return $value1 === $value2;
         } catch(\Exception $e) {
             return false;
         }

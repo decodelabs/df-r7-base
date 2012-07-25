@@ -9,7 +9,7 @@ use df;
 use df\core;
 
 class Boolean extends Base {
-    
+
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
         
@@ -39,7 +39,7 @@ class Boolean extends Base {
                 $value = (bool)$value;
             }
         }
-        
+
         return $this->_finalize($node, $value);
     }
 }
