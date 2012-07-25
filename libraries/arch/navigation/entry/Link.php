@@ -170,6 +170,11 @@ class Link extends Base {
     public function getAltMatches() {
         return $this->_altMatches;
     }
+
+    public function clearAltMatches() {
+        $this->_altMatches = array();
+        return $this;
+    }
     
     public function shouldOpenInNewWindow($flag=null) {
         if($flag !== null) {
