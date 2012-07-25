@@ -14,7 +14,7 @@ class Boolean extends Base {
     
 	public function sanitizeValue($value, $forRecord) {
 		if($value === null && !$this->isNullable()) {
-			$value = false;
+			$value = (bool)$this->_defaultValue;
 		}
 
 		if($value !== null) {
