@@ -46,8 +46,8 @@ class Float extends Base {
             return null;
         }
         
-        if(!filter_var($value, FILTER_VALIDATE_INT)) {
-            $node->addError('invalid', $this->_(
+        if(!filter_var($value, FILTER_VALIDATE_FLOAT)) {
+            $node->addError('invalid', $this->_handler->_(
                 'This is not a valid number'
             ));
         } else {
