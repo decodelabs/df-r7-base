@@ -25,6 +25,7 @@ class Link extends Base implements ILinkWidget, IIconProviderWidget, core\IDumpa
     
     protected $_uri;
     protected $_matchRequest;
+    protected $_altMatches = array();
     protected $_rel = array();
     protected $_isActive = false;
     protected $_isComputedActive = null;
@@ -60,7 +61,7 @@ class Link extends Base implements ILinkWidget, IIconProviderWidget, core\IDumpa
             $this->shouldHideIfInaccessible($link->shouldHideIfInaccessible());
             $checkUriMatch = $link->shouldCheckMatch();
 
-            // TODO: deal with alt matches
+            $this->addAltMatches($link->getAltMatches());
 
             if($link->shouldOpenInNewWindow()) {
                 $this->getTag()->setAttribute('target', '_blank');
@@ -121,6 +122,17 @@ class Link extends Base implements ILinkWidget, IIconProviderWidget, core\IDumpa
         if(!$active && $this->_matchRequest && $this->_isComputedActive !== null) {
             $matchRequest = arch\Request::factory($this->_matchRequest);
             $active = $matchRequest->eq($context->request);
+        }
+
+        if(!$active && !empty($this->_altMatches)) {
+            foreach($this->_altMatches as $match) {
+                $matchRequest = arch\Request::factory($match);
+
+                if($matchRequest->eq($context->request)) {
+                    $active = true;
+                    break;
+                }
+            }
         }
 
         $this->_isComputedActive = $active;
@@ -202,6 +214,38 @@ class Link extends Base implements ILinkWidget, IIconProviderWidget, core\IDumpa
     
     public function getMatchRequest() {
         return $this->_matchRequest;
+    }
+
+
+    public function addAltMatches($matches) {
+        if(!is_array($matches)) {
+            $matches = func_get_args();
+        }
+        
+        foreach($matches as $match) {
+            $this->addAltMatch($match);
+        }
+        
+        return $this;
+    }
+    
+    public function addAltMatch($match) {
+        $match = trim($match);
+        
+        if(strlen($match)) {
+            $this->_altMatches[] = $match;
+        }
+        
+        return $this;
+    }
+    
+    public function getAltMatches() {
+        return $this->_altMatches;
+    }
+
+    public function clearAltMatches() {
+        $this->_altMatches = array();
+        return $this;
     }
     
     
