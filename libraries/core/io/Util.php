@@ -24,8 +24,13 @@ class Util {
                 );
             }
         } else {
-            // TODO: get permissions from source
-            mkdir($destination, 0777, false);
+            try {
+                $perms = octdec(substr(decoct(fileperms($source)), 1));
+            } catch(\Exception $e) {
+                $perms = 0777;
+            }
+
+            mkdir($destination, $perms, false);
         }
         
         foreach(scandir($source) as $entry) {
@@ -61,8 +66,13 @@ class Util {
             
             if(is_dir($source.'/'.$entry)) {
                 if(!is_dir($destination.'/'.$entry)) {
-                    // TODO: get permissions from source
-                    mkdir($destination.'/'.$entry, 0777, false);
+                    try {
+                        $perms = octdec(substr(decoct(fileperms($source.'/'.$entry)), 1));
+                    } catch(\Exception $e) {
+                        $perms = 0777;
+                    }
+
+                    mkdir($destination.'/'.$entry, $perms, false);
                 }
                 
                 self::copyDirInto($source.'/'.$entry, $destination.'/'.$entry);
