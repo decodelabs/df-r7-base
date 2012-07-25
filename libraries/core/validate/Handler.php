@@ -109,9 +109,11 @@ class Handler implements IHandler {
                 'Target record does not implement ArrayAccess'
             );
         }
-        
-        foreach($this->_values as $key => $value) {
-            $this->_fields[$key]->applyValueTo($record, $value);
+
+        if($this->_isValid) {
+            foreach($this->_values as $key => $value) {
+                $this->_fields[$key]->applyValueTo($record, $value);
+            }
         }
         
         return $this;
