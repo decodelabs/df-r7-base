@@ -260,8 +260,6 @@ abstract class Action extends arch\Action implements IAction {
     }
     
     protected function _afterDispatch($response) {
-        // TODO: check state has changed
-        
         if(!$this->_isComplete && $this->_sessionNamespace) {
             $session = $this->_context->getUserManager()->getSessionNamespace($this->_sessionNamespace);
             $session->set($this->_state->getSessionId(), $this->_state);

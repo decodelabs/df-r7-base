@@ -71,8 +71,6 @@ class BreadcrumbList extends Base implements IListWidget, core\IDumpable {
                 $entry->setAttribute('itemprop', 'url')
                     ->setRenderTarget($renderTarget);
                 
-                // TODO: add access locks
-                
                 $containerTag->push($entry->render());
                 
                 if($i < $count - 1) {
