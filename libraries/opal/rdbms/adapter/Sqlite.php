@@ -82,11 +82,11 @@ class Sqlite extends Base_Pdo {
     }
     
     public function _getConnectionException($number, $message) {
-        return opal\rdbms\variant\sqlite\Server::getConnectionException($number, $message);
+        return opal\rdbms\variant\sqlite\Server::getConnectionException($this, $number, $message);
     }
     
     public function _getQueryException($number, $message, $sql=null) {
-        return opal\rdbms\variant\sqlite\Server::getQueryException($number, $message, $sql);
+        return opal\rdbms\variant\sqlite\Server::getQueryException($this, $number, $message, $sql);
     }
     
 // Locks

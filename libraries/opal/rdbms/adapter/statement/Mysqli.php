@@ -76,7 +76,12 @@ class Mysqli extends Base {
         }
         
         if(!$stmt->prepare($sql)) {
-            throw opal\rdbms\variant\mysql\Server::getQueryException(mysqli_errno($connection), mysqli_error($connection), $sql);
+            throw opal\rdbms\variant\mysql\Server::getQueryException(
+                $this->_adapter,
+                mysqli_errno($connection), 
+                mysqli_error($connection), 
+                $sql
+            );
         }
         
         if(!empty($bindings)) {
@@ -90,7 +95,12 @@ class Mysqli extends Base {
         $stmt->execute();
         
         if($num = mysqli_errno($connection)) {
-            throw opal\rdbms\variant\mysql\Server::getQueryException($num, mysqli_error($connection), $sql);
+            throw opal\rdbms\variant\mysql\Server::getQueryException(
+                $this->_adapter, 
+                $num, 
+                mysqli_error($connection), 
+                $sql
+            );
         }
         
         return $this->_result = $stmt->get_result();

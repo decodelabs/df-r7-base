@@ -153,7 +153,7 @@ class Rdbms implements
             return $adapter->createTable($dbSchema);
         } catch(opal\rdbms\TableConflictException $e) {
             // TODO: check db schema matches
-            
+
             return $adapter->getTable($dbSchema->getName());
         }
     }
@@ -176,9 +176,9 @@ class Rdbms implements
             return true;
         }
         
-        switch($query->getQueryType()) {
-            // TODO: do something here :)
-        }
+        //switch($query->getQueryType()) {
+            // do something here :)
+        //}
         
         return false;
     }

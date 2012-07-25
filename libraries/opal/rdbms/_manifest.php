@@ -49,7 +49,7 @@ class TransactionException extends QueryException {}
 class DatabaseNotFoundException extends QueryException {}
 class DatabaseConflictException extends QueryException {}
 
-class TableNotFoundException extends QueryException {
+class TableQueryException extends QueryException {
     
     public $database;
     public $table;
@@ -70,7 +70,8 @@ class TableNotFoundException extends QueryException {
     }
 }
 
-class TableConflictException extends QueryException {}
+class TableNotFoundException extends TableQueryException {}
+class TableConflictException extends TableQueryException {}
 
 class FieldNotFoundException extends QueryException {}
 class FieldConflictException extends QueryException {}
@@ -183,8 +184,8 @@ interface IStatement extends core\collection\IQueue, core\collection\IStreamColl
 }
 
 interface IServer {
-    public static function getConnectionException($number, $message);
-    public static function getQueryException($number, $message, $sql=null);
+    public static function getConnectionException(IAdapter $adapter, $number, $message);
+    public static function getQueryException(IAdapter $adapter, $number, $message, $sql=null);
 }
 
 interface IDatabase {

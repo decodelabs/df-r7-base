@@ -11,23 +11,23 @@ use df\opal;
 
 class Server implements opal\rdbms\IServer {
     
-    public static function getConnectionException($number, $message) {
-        if($e = self::_getExceptionForError($number, $message)) {
+    public static function getConnectionException(opal\rdbms\IAdapter $adapter, $number, $message) {
+        if($e = self::_getExceptionForError($adapter, $number, $message)) {
             return $e;
         }
         
         return new opal\rdbms\ConnectionException($message, $number);
     }
 
-    public static function getQueryException($number, $message, $sql=null) {
-        if($e = self::_getExceptionForError($number, $message, $sql)) {
+    public static function getQueryException(opal\rdbms\IAdapter $adapter, $number, $message, $sql=null) {
+        if($e = self::_getExceptionForError($adapter, $number, $message, $sql)) {
             return $e;
         }
         
         return new opal\rdbms\QueryException($message, $number, $sql);
     }
     
-    private static function _getExceptionForError($number, $message, $sql=null) {
+    private static function _getExceptionForError(opal\rdbms\IAdapter $adapter, $number, $message, $sql=null) {
         switch($number) {
         // Query error
             case 1:

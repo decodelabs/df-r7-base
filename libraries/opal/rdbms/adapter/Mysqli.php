@@ -36,7 +36,7 @@ class Mysqli extends opal\rdbms\adapter\Base {
         
         if($num = mysqli_connect_errno()) {
             $this->_closeConnection();
-            throw opal\rdbms\variant\mysql\Server::getConnectionException($num, mysqli_connect_error());
+            throw opal\rdbms\variant\mysql\Server::getConnectionException($this, $num, mysqli_connect_error());
         }
         
         $this->_connection = $connection;
@@ -170,7 +170,7 @@ class Mysqli extends opal\rdbms\adapter\Base {
         $output = mysqli_query($this->_connection, $sql);
         
         if($num = mysqli_errno($this->_connection)) {
-            throw opal\rdbms\variant\mysql\Server::getQueryException($num, mysqli_error($this->_connection), $sql);
+            throw opal\rdbms\variant\mysql\Server::getQueryException($this, $num, mysqli_error($this->_connection), $sql);
         }
         
         return $output;

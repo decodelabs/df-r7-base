@@ -128,7 +128,8 @@ abstract class Table implements ITable, core\IDumpable {
     public function create(opal\rdbms\schema\ISchema $schema, $dropIfExists=false) {
         if($schema->getName() != $this->_name) {
             throw new opal\rdbms\TableNotFoundException(
-                'Schema name '.$schema->getName().' does not match table name '.$this->_name
+                'Schema name '.$schema->getName().' does not match table name '.$this->_name, 0, null,
+                $this->_adapter->getDsn()->getDatabase(), $this->_name
             );
         }
         
@@ -137,7 +138,8 @@ abstract class Table implements ITable, core\IDumpable {
                 $this->drop();
             } else {
                 throw new opal\rdbms\TableConflictException(
-                    'Table '.$schema->getName().' already exists'
+                    'Table '.$schema->getName().' already exists', 0, null,
+                    $this->_adapter->getDsn()->getDatabase(), $this->_name
                 );
             }
         }

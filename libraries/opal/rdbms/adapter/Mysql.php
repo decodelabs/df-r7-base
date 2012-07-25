@@ -87,11 +87,11 @@ class Mysql extends Base_Pdo {
     }
     
     public function _getConnectionException($number, $message) {
-        return opal\rdbms\variant\mysql\Server::getConnectionException($number, $message);
+        return opal\rdbms\variant\mysql\Server::getConnectionException($this, $number, $message);
     }
     
     public function _getQueryException($number, $message, $sql=null) {
-        return opal\rdbms\variant\mysql\Server::getQueryException($number, $message, $sql);
+        return opal\rdbms\variant\mysql\Server::getQueryException($this, $number, $message, $sql);
     }
     
     
