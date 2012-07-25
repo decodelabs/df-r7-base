@@ -15,6 +15,7 @@ class Manager implements IManager {
     const REGISTRY_PREFIX = 'manager://i18n';
     
     protected $_locale;
+    protected $_modules = array();
 
     
 // Locale
@@ -71,8 +72,17 @@ class Manager implements IManager {
     
 // Modules
     public function getModule($name, $locale=null) {
-        // TODO: cache output
-        return core\i18n\module\Base::factory($this, $name, $locale);
+        if($locale === null) {
+            $locale = $this->getLocale();
+        }
+
+        $id = $name.':'.$locale;
+
+        if(!isset($this->_modules[$id])) {
+            $this->_modules[$id] = core\i18n\module\Base::factory($this, $name, $locale);
+        }
+
+        return $this->_modules[$id];
     }
     
     public function __get($member) {
