@@ -75,7 +75,9 @@ class Menu extends Base implements core\IDumpable {
         }
         
         foreach($entries as $entry) {
-            if($entry instanceof ILinkWidget
+            if($entry instanceof arch\navigation\entry\Void) {
+                continue;
+            } else if($entry instanceof ILinkWidget
             || $entry instanceof arch\navigation\entry\Link) {
                 $this->addLink($entry);
             } else if($entry instanceof self
