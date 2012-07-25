@@ -50,6 +50,11 @@ class Html implements aura\view\IHelper {
         ]);
     }
 
+    public function booleanIcon($value, $body=null) {
+        return $this->icon((bool)$value ? 'tick' : 'cross', $body)
+            ->addClass((bool)$value ? 'disposition-positive' : 'disposition-negative');
+    }
+
     public function backLink($default=null, $success=true) {
         return $this->link(
                 $this->_view->uri->back($default, $success),
@@ -93,5 +98,53 @@ class Html implements aura\view\IHelper {
         } catch(\Exception $e) {
             return new aura\view\content\ErrorContainer($this->_view, $e);
         }
+    }
+
+    public function defaultButtonGroup($mainAction=null) {
+        if(!$mainAction) {
+            $mainAction = 'save';
+        }
+
+        return $this->buttonArea(
+            $this->saveEventButton($mainAction),
+            $this->resetEventButton(),
+            $this->cancelEventButton()
+        );
+    }
+
+    public function yesNoButtonGroup($mainAction=null) {
+        if(!$mainAction) {
+            $mainAction = 'submit';
+        }
+
+        return $this->buttonArea(
+            $this->eventButton($mainAction, $this->_view->_('Yes'))
+                ->setIcon('accept'),
+
+            $this->eventButton('cancel', $this->_view->_('No'))
+                ->setIcon('deny')
+                ->shouldValidate(false)
+        );
+    }
+
+    public function saveEventButton($mainAction=null) {
+        if(!$mainAction) {
+            $mainAction = 'save';
+        }
+
+        return $this->eventButton($mainAction, $this->_view->_('Save'))
+            ->setIcon('save');
+    }
+
+    public function resetEventButton() {
+        return $this->eventButton('reset', $this->_view->_('Reset'))
+            ->setIcon('refresh')
+            ->shouldValidate(false);
+    }
+
+    public function cancelEventButton() {
+        return $this->eventButton('cancel', $this->_view->_('Cancel'))
+            ->setIcon('cancel')
+            ->shouldValidate(false);
     }
 }
