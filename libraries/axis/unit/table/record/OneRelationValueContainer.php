@@ -106,7 +106,15 @@ class OneRelationValueContainer implements opal\query\record\ITaskAwareValueCont
     public function getPrimaryManifest() {
         return $this->_value;
     }
-    
+
+    public function getRawId() {
+        if($this->_value) {
+            return $this->_value->getFirstKeyValue();
+        }
+
+        return null;
+    }
+
     public function getTargetUnitId() {
         return $this->_targetUnitId;
     }
