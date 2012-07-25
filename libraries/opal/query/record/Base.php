@@ -273,7 +273,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         $this->_values = array_merge($this->_values, $this->_changes);
         $this->clearChanges();
         
-        $this->_populated = false;
+        $this->_isPopulated = false;
         
         if($insertId !== null && (null !== ($primaryFields = $this->_getPrimaryFields()))) {
             if(!$insertId instanceof IPrimaryManifest) {
