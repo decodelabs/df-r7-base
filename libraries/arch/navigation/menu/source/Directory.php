@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\menu\source;
+namespace df\arch\navigation\menu\source;
 
 use df;
 use df\core;
@@ -63,11 +63,11 @@ class Directory extends Base {
     	} else if(class_exists($sharedClassBase)) {
     		$output = new $sharedClassBase($this->_context, $baseId);
     	} else if(empty($menus)) {
-    		throw new arch\menu\SourceNotFoundException(
+    		throw new arch\navigation\SourceNotFoundException(
     			'Directory menu '.$baseId.' could not be found'
 			);
     	} else {
-    		$output = new arch\menu\Base($this->_context, $baseId);
+    		$output = new arch\navigation\menu\Base($this->_context, $baseId);
     	}
 
         $output->setSubId($subId);
@@ -102,7 +102,7 @@ class Directory extends Base {
                 continue;
             }
 
-            $idObj = arch\menu\Base::normalizeId($id);
+            $idObj = arch\navigation\menu\Base::normalizeId($id);
             $idString = (string)$idObj;
             $output[$idString] = $menu = new $class($this->_context, $idObj);
 
@@ -118,7 +118,11 @@ class Directory extends Base {
 
                 if(!isset($output[$idString])) {
                     $idObj = clone $idObj;
-                    $output[$idString] = $menu = new arch\menu\Base($this->_context, arch\menu\Base::normalizeId($idString));
+                    
+                    $output[$idString] = $menu = new arch\navigation\menu\Base(
+                        $this->_context, 
+                        arch\navigation\menu\Base::normalizeId($idString)
+                    );
                 }
             }
         }
@@ -155,7 +159,10 @@ class Directory extends Base {
                 $top = $set['__default'];
                 unset($set['__default']);
             } else {
-                $top = new arch\menu\Base($this->_context, arch\menu\Base::normalizeId($id));
+                $top = new arch\navigation\menu\Base(
+                    $this->_context, 
+                    arch\navigation\menu\Base::normalizeId($id)
+                );
             }
 
             foreach($set as $delegate) {
@@ -169,7 +176,7 @@ class Directory extends Base {
     }
 
     public function getMenuIds($areas=null) {
-        $cache = arch\menu\Cache::getInstance($this->_context->getApplication());
+        $cache = arch\navigation\menu\Cache::getInstance($this->_context->getApplication());
         $cacheId = md5('directory://__ID_LIST__');
 
         if(!$cache->has($cacheId)

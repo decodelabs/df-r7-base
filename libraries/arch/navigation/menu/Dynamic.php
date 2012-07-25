@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\menu;
+namespace df\arch\navigation\menu;
 
 use df;
 use df\core;
@@ -71,9 +71,9 @@ class Dynamic extends Base {
     }
     
     public function addEntry($entry) {
-        if(!$entry instanceof IEntry) {
+        if(!$entry instanceof arch\navigation\IEntry) {
             if(is_array($entry)) {
-                $entry = arch\menu\entry\Base::fromArray($entry);
+                $entry = arch\navigation\entry\Base::fromArray($entry);
             } else {
                 throw new RuntimeException(
                     'Invalid entry definition detected'

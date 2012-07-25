@@ -3,20 +3,20 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\menu\source;
+namespace df\arch\navigation\menu\source;
 
 use df;
 use df\core;
 use df\arch;
 
-abstract class Base implements arch\menu\ISource, arch\IContextAware {
+abstract class Base implements arch\navigation\menu\ISource, arch\IContextAware {
     
     use arch\TContextAware;
 
     public static function loadAll(arch\IContext $context) {
         $output = array();
         
-        foreach(df\Launchpad::$loader->lookupFileList('arch/menu/source', ['php']) as $basename => $path) {
+        foreach(df\Launchpad::$loader->lookupFileList('arch/navigation/menu/source', ['php']) as $basename => $path) {
             $name = substr($basename, 0, -4);
             
             if($name === 'Base' || $name === '_manifest') {
@@ -25,7 +25,7 @@ abstract class Base implements arch\menu\ISource, arch\IContextAware {
             
             try {
                 $source = self::factory($context, $name);
-            } catch(arch\menu\SourceNotFoundException $e) {
+            } catch(arch\navigation\SourceNotFoundException $e) {
                 continue;
             }
             
@@ -37,10 +37,10 @@ abstract class Base implements arch\menu\ISource, arch\IContextAware {
     }
     
     public static function factory(arch\IContext $context, $type) {
-        $class = 'df\\arch\\menu\\source\\'.ucfirst($type);
+        $class = 'df\\arch\\navigation\\menu\\source\\'.ucfirst($type);
         
         if(!class_exists($class)) {
-            throw new arch\menu\SourceNotFoundException(
+            throw new arch\navigation\SourceNotFoundException(
                 'Source type '.$type.' could not be found'
             );
         }

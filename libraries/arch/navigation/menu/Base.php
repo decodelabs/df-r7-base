@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\menu;
+namespace df\arch\navigation\menu;
 
 use df;
 use df\core;
@@ -21,7 +21,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
     
     public static function loadAll(arch\IContext $context, array $whiteList=null) {
         $output = array();
-        $sources = arch\menu\source\Base::loadAll($context);
+        $sources = arch\navigation\menu\source\Base::loadAll($context);
         
         if($whiteList !== null) {
             $temp = $whiteList;
@@ -63,7 +63,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
         }
         
         $id = self::normalizeId($id);
-        $source = arch\menu\source\Base::factory($context, $id->getScheme());
+        $source = arch\navigation\menu\source\Base::factory($context, $id->getScheme());
         $cache = Cache::getInstance($context->getApplication());
         $cacheId = md5($id);
 
@@ -165,7 +165,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
     }
     
     public function getSource() {
-        return arch\menu\source\Base::factory($this->_context, $this->getSourceId());
+        return arch\navigation\menu\source\Base::factory($this->_context, $this->getSourceId());
     }
     
     public function getSourceId() {
@@ -205,7 +205,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
         }
         
         if($entryList->hasMenu($this)) {
-            throw new RecursionException(
+            throw new arch\navigation\RecursionException(
                 'You cannot nest menus within themselves'
             );
         }
@@ -228,7 +228,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
         return $entryList;
     }
     
-    protected function _createEntries(IEntryList $entryList) {}
+    protected function _createEntries(arch\navigation\IEntryList $entryList) {}
     
     
 // Dump

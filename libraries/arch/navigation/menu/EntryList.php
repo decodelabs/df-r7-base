@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\menu;
+namespace df\arch\navigation\menu;
 
 use df;
 use df\core;
@@ -32,11 +32,11 @@ class EntryList implements IEntryList {
     }
     
     public function addEntry($entry) {
-        if(!$entry instanceof IEntry) {
+        if(!$entry instanceof arch\navigation\IEntry) {
             if(is_array($entry)) {
-                $entry = arch\menu\entry\Base::fromArray($entry);
+                $entry = arch\navigation\entry\Base::fromArray($entry);
             } else {
-                throw new RuntimeException(
+                throw new arch\navigation\RuntimeException(
                     'Invalid entry definition detected'
                 );
             }
@@ -80,7 +80,7 @@ class EntryList implements IEntryList {
     
     public function __call($method, $args) {
         if(substr($method, 0, 3) == 'new') {
-            return arch\menu\entry\Base::factoryArgs(substr($method, 3), $args);
+            return arch\navigation\entry\Base::factoryArgs(substr($method, 3), $args);
         }
         
         throw new \BadMethodCallException('Method '.$method.' does not exist');

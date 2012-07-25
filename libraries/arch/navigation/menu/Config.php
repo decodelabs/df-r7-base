@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\menu;
+namespace df\arch\navigation\menu;
 
 use df;
 use df\core;
@@ -41,7 +41,7 @@ class Config extends core\Config implements IConfig {
         if(isset($this->_values[$id]['entries'])) {
             foreach($this->_values[$id]['entries']  as $entry) {
                 $entryList->addEntry(
-                    arch\entry\Base::fromArray($entry)
+                    arch\navigation\entry\Base::fromArray($entry)
                 );
             }
         }
@@ -61,9 +61,9 @@ class Config extends core\Config implements IConfig {
         
         foreach($entries as $entry) {
             try {
-                if(!$entry instanceof IEntry) {
+                if(!$entry instanceof arch\navigation\IEntry) {
                     if(is_array($entry)) {
-                        $entry = arch\menu\entry\Base::fromArray($entry);
+                        $entry = arch\navigation\entry\Base::fromArray($entry);
                     } else {
                         continue;
                     }

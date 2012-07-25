@@ -3,13 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\menu\entry;
+namespace df\arch\navigation\entry;
 
 use df;
 use df\core;
 use df\arch;
 
-abstract class Base implements arch\menu\IEntry {
+abstract class Base implements arch\navigation\IEntry {
     
     protected $_id;
     protected $_weight = 0;
@@ -22,7 +22,7 @@ abstract class Base implements arch\menu\IEntry {
         }
         
         if(!$class = self::_getEntryClass($type)) {
-            throw new arch\menu\EntryTypeNotFoundException(
+            throw new arch\navigation\EntryTypeNotFoundException(
                 'Entry type '.$type.' could not be found'
             );
         }
@@ -50,7 +50,7 @@ abstract class Base implements arch\menu\IEntry {
     
     public static function factoryArgs($type, array $args) {
         if(!$class = self::_getEntryClass($type)) {
-            throw new arch\menu\EntryTypeNotFoundException(
+            throw new arch\navigation\EntryTypeNotFoundException(
                 'Entry type '.$type.' could not be found'
             );
         }
@@ -60,7 +60,7 @@ abstract class Base implements arch\menu\IEntry {
     
     
     protected static function _getEntryClass($type) {
-        $class = 'df\\arch\\menu\\entry\\'.ucfirst($type);
+        $class = 'df\\arch\\navigation\\entry\\'.ucfirst($type);
         
         if(!class_exists($class)) {
             return null;

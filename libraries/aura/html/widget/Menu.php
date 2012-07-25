@@ -25,7 +25,7 @@ class Menu extends Base implements core\IDumpable {
         $this->_context = $context;
 
         if(is_string($input) || $input instanceof core\uri\IUrl) {
-            $input = arch\menu\Base::factory($this->_context, $input);
+            $input = arch\navigation\menu\Base::factory($this->_context, $input);
         }
 
         if($input !== null) {
@@ -66,7 +66,7 @@ class Menu extends Base implements core\IDumpable {
     }
 
     public function addEntries($entries) {
-        if($entries instanceof arch\menu\IMenu) {
+        if($entries instanceof arch\navigation\menu\IMenu) {
             $entries = $entries->generateEntries()->toArray();
         }
 
@@ -76,12 +76,12 @@ class Menu extends Base implements core\IDumpable {
         
         foreach($entries as $entry) {
             if($entry instanceof ILinkWidget
-            || $entry instanceof arch\menu\entry\Link) {
+            || $entry instanceof arch\navigation\entry\Link) {
                 $this->addLink($entry);
             } else if($entry instanceof self
-            || $entry instanceof arch\menu\entry\Submenu) {
+            || $entry instanceof arch\navigation\entry\Menu) {
                 $this->addMenu($entry);
-            } else if($entry instanceof arch\menu\entry\spacer
+            } else if($entry instanceof arch\navigation\entry\Spacer
             || $this->_entries->getLast() instanceof ILinkWidget) {
                 $this->addSpacer();
             }

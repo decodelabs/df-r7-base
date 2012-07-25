@@ -3,19 +3,11 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\menu;
+namespace df\arch\navigation\menu;
 
 use df;
 use df\core;
 use df\arch;
-
-// Exceptions
-interface IException {}
-class RuntimeException extends \RuntimeException implements IException {}
-class RecursionException extends RuntimeException {}
-class EntryTypeNotFoundException extends RuntimeException {}
-class SourceNotFoundException extends RuntimeException {}
-
 
 
 // Interfaces
@@ -27,12 +19,10 @@ interface IMenu extends arch\IContextAware {
     public function getSource();
     public function getSourceId();
     
-// Delegates
     public function initDelegates();
     public function addDelegate(IMenu $menu);
     public function getDelegates();
     
-// Entries
     public function generateEntries(IEntryList $entryList);
 }
 
@@ -53,24 +43,9 @@ interface ISource {
 }
 
 
-interface IEntryList extends core\IArrayProvider {
-    public function addEntries($entries);
-    public function addEntry($entry);
-    public function getEntries();
+interface IEntryList extends arch\navigation\IEntryList {
     public function registerMenu(IMenu $menu);
     public function hasMenu($id);
 }
-
-interface IEntry extends core\IArrayProvider {
-    public function getType();
-    
-    public function setId($id);
-    public function getId();
-    
-    public function setWeight($weight);
-    public function getWeight();
-}
-
-
 
 class Cache extends core\cache\Base {}

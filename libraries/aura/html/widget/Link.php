@@ -43,7 +43,7 @@ class Link extends Base implements ILinkWidget, IIconProviderWidget, core\IDumpa
             $matchRequest = null;
         }
 
-        if($uri instanceof arch\menu\entry\Link) {
+        if($uri instanceof arch\navigation\entry\Link) {
             $link = $uri;
             $uri = $link->getLocation();
             $body = $context->_($link->getText());

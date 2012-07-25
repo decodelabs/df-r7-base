@@ -3,13 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\menu;
+namespace df\arch\navigation;
 
 use df;
 use df\core;
 use df\arch;
 
-class Submenu extends Base {
+class Menu extends Base {
     
     protected $_delegate;
     protected $_text;
@@ -35,7 +35,7 @@ class Submenu extends Base {
     
     public function toArray() {
         return array(
-            'type' => 'Submenu',
+            'type' => 'Menu',
             'id' => $this->getId(),
             'weight' => $this->getWeight(),
             'delegate' => $this->_delegate,
@@ -46,14 +46,14 @@ class Submenu extends Base {
     
     public function getId() {
         if($this->_id === null) {
-            return $this->_id = 'submenu-'.md5((string)$this->getDelegate());
+            return $this->_id = 'menu-'.md5((string)$this->getDelegate());
         }
         
         return parent::getId();
     }
     
     public function setDelegate($delegate) {
-        $this->_delegate = (string)arch\menu\Base::normalizeId($delegate);
+        $this->_delegate = (string)arch\navigation\menu\Base::normalizeId($delegate);
         return $this;
     }
     

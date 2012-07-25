@@ -41,7 +41,7 @@ class Import implements aura\view\IHelper {
 
     public function menu($id) {
         try {
-            return arch\menu\Base::factory($id);
+            return arch\navigation\menu\Base::factory($id);
         } catch(\Exception $e) {
             return $this->_view->newErrorContainer($e);
         }
