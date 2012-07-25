@@ -61,11 +61,14 @@ interface IMessage {
 	public function getId();
     public function setType($type);
     public function getType();
+    public function isDebug();
+
     public function isDisplayed($flag=null);
     public function setMessage($message);
     public function getMessage();
     public function setDescription($description);
     public function getDescription();
+    
     public function setLink($link, $text=null);
     public function getLink();
     public function setLinkText($text);

@@ -149,6 +149,10 @@ class Arch implements archLib\IContextHelper {
 
 
 // Navigation
+    public function getMenu($id) {
+        return archLib\navigation\menu\Base::factory($this->_context, $id);
+    }
+
     public function getBreadcrumbs() {
         $application = $this->_context->getApplication();
 

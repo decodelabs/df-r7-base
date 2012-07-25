@@ -75,6 +75,10 @@ class Message implements IMessage {
     	return $this->_type;
     }
 
+    public function isDebug() {
+        return $this->_type === IMessage::DEBUG;
+    }
+
 
     public function isDisplayed($flag=null) {
         if($flag !== null) {

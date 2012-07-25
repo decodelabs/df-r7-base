@@ -73,19 +73,31 @@ class Html implements aura\view\IHelper {
                 $manager->flushQueue();
             }
 
+            $isProduction = df\Launchpad::$environmentMode == 'production';
 
             $output = '<section class="widget-notificationList">'."\n";
 
             foreach($manager->getConstantMessages() as $message) {
+                $message->isDisplayed(true);
+
+                if($isProduction && $message->isDebug()) {
+                    continue;
+                }
+
                 $messageCount++;
                 $output .= $this->notification($message);
-                $message->isDisplayed(true);
             }
 
             foreach($manager->getInstantMessages() as $message) {
+                $message->isDisplayed(true);
+
+                if($isProduction && $message->isDebug()) {
+                    continue;
+                }
+
                 $messageCount++;
                 $output .= $this->notification($message);
-                $message->isDisplayed(true);
+                
             }
 
             $output .= '</section>';
