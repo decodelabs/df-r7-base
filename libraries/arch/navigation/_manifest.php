@@ -37,6 +37,9 @@ interface IEntryList extends core\IArrayProvider {
     public function getEntries();
 }
 
+interface IEntryListGenerator {
+	public function generateEntries(IEntryList $entryList);
+}
 
 trait TEntryList {
 

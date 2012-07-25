@@ -103,10 +103,15 @@ class Arch implements archLib\IContextHelper {
         return archLib\Component::factory($context, $name);
     }
 
+
+// Facets
     public function newFacetController(Callable $initializer=null) {
         return new archLib\FacetController($this->_context, $initializer);
     }
 
+
+
+// Notifications
     public function getNotificationManager() {
         return archLib\notify\Manager::getInstance($this->_context->getApplication());
     }
@@ -140,5 +145,18 @@ class Arch implements archLib\IContextHelper {
         $manager->removeConstantMessage($id);
 
         return $this;
+    }
+
+
+// Navigation
+    public function getBreadcrumbs() {
+        $application = $this->_context->getApplication();
+
+        if(!$output = $application->_getCacheObject('breadcrumbs')) {
+            $output = archLib\navigation\breadcrumbs\EntryList::generateFromRequest($this->_context->getRequest());
+            $application->_setCacheObject($output);
+        }
+
+        return $output;
     }
 }

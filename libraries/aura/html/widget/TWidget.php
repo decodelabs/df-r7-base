@@ -726,6 +726,111 @@ trait TWidget_GroupedSelectionInput {
 
 
 
+trait TWidget_NavigationEntryController {
+    
+    protected $_entries;
+    protected $_context;
+    protected $_renderIfEmpty = false;
+
+    public function setEntries($entries) {
+        $this->_entries->clear();
+        return call_user_func_array([$this, 'addEntries'], func_get_args());
+    }
+
+    public function addLinks($entries) {
+        return call_user_func_array([$this, 'addEntries'], func_get_args());
+    }
+
+    public function addEntries($entries) {
+        if(is_string($entries) || $entries instanceof core\uri\IUrl) {
+            $entries = arch\navigation\menu\Base::factory($this->_context, $entries);
+        }
+
+        if($entries instanceof arch\navigation\IEntryListGenerator) {
+            $entries = $entries->generateEntries();
+        }
+
+        if($entries instanceof arch\navigation\IEntryList) {
+            $entries = $entries->toArray();
+        }
+
+        if(!is_array($entries)) {
+            $entries = func_get_args();
+        }
+        
+        foreach($entries as $entry) {
+            if($entry instanceof arch\navigation\entry\Void) {
+                continue;
+            } else if($entry instanceof ILinkWidget
+            || $entry instanceof arch\navigation\entry\Link) {
+                $this->addLink($entry);
+            } else if($entry instanceof self
+            || $entry instanceof arch\navigation\entry\Menu) {
+                $this->addMenu($entry);
+            } else if($entry instanceof arch\navigation\entry\Spacer
+            || $this->_entries->getLast() instanceof ILinkWidget) {
+                $this->addSpacer();
+            }
+        }
+        
+        return $this;
+    }
+    
+    public function addLink($link) {
+        if(!$link instanceof ILinkWidget) {
+            $link = Base::factory($this->_context, static::DEFAULT_LINK_WIDGET, func_get_args())->setRenderTarget($this->_renderTarget);
+        }
+
+        if(static::ENFORCE_DEFAULT_LINK_WIDGET) {
+            $class = 'df\\aura\\html\\widget\\'.static::DEFAULT_LINK_WIDGET;
+
+            if(!$link instanceof $class) {
+                throw new InvalidArgumentException(
+                    'Links in '.$this->getWidgetName().' widgets must be of type '.static::DEFAULT_LINK_WIDGET
+                );
+            }
+        }
+        
+        $this->_entries->push($link);
+        return $this;
+    }
+    
+    public function addMenu(self $menu) {
+        $this->_entries->push($menu);
+        return $this;
+    }
+    
+    public function addSpacer() {
+        $this->_entries->push(new aura\html\ElementString('<span class="widget-spacer"></span>'));
+        return $this;
+    }
+    
+    public function getEntries() {
+        return $this->_entries;
+    }
+    
+    public function removeEntry($index) {
+        $this->_entries->remove($index);
+        return $this;
+    }
+    
+    public function clearEntries() {
+        $this->_entries->clear();
+        return $this;
+    }
+
+
+    public function shouldRenderIfEmpty($flag=null) {
+        if($flag !== null) {
+            $this->_renderIfEmpty = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_renderIfEmpty;
+    }
+}
+
+
 trait TWidget_DispositionAware {
 
     protected $_disposition = null;

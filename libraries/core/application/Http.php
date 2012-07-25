@@ -295,7 +295,8 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
         if($this->_responseAugmentor) {
             $this->_responseAugmentor->resetCurrent();
         }
-            
+        
+        $this->_removeCacheObject('breadcrumbs');
         $this->_context = arch\Context::factory($this, clone $request);
         
         $action = arch\Action::factory($this->_context);
@@ -426,9 +427,6 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
                 }
                 
                 $file->close();
-                
-                // DELETE ME
-                df\Launchpad::shutdown();
             } else {
                 echo $response->getContent();
             }

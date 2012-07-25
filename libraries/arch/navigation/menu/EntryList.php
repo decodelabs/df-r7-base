@@ -15,12 +15,6 @@ class EntryList implements IEntryList {
     
     protected $_menus = array();
     
-    protected function _sortEntries() {
-        usort($this->_entries, function($a, $b) {
-            return $a->getWeight() > $b->getWeight();
-        });
-    }
-    
     public function registerMenu(IMenu $menu) {
         $this->_menus[(string)$menu->getId()] = true;
         return $this;
@@ -29,17 +23,5 @@ class EntryList implements IEntryList {
     public function hasMenu($id) {
         $id = (string)Base::normalizeId($id);
         return isset($this->_menus[$id]);
-    }
-    
-    public function __call($method, $args) {
-        if(substr($method, 0, 3) == 'new') {
-            return arch\navigation\entry\Base::factoryArgs(substr($method, 3), $args);
-        }
-        
-        throw new \BadMethodCallException('Method '.$method.' does not exist');
-    }
-
-    public function toArray() {
-        return $this->getEntries();
     }
 }

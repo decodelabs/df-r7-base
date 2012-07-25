@@ -197,7 +197,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
     }
     
 // Entries
-    public function generateEntries(IEntryList $entryList=null) {
+    public function generateEntries(arch\navigation\IEntryList $entryList=null) {
         $this->initDelegates();
         
         if($isRoot = $entryList === null) {

@@ -11,7 +11,7 @@ use df\arch;
 
 
 // Interfaces
-interface IMenu extends arch\IContextAware {
+interface IMenu extends arch\IContextAware, arch\navigation\IEntryListGenerator {
     public function getId();
     public function setSubId($id);
     public function getSubId();
@@ -22,8 +22,6 @@ interface IMenu extends arch\IContextAware {
     public function initDelegates();
     public function addDelegate(IMenu $menu);
     public function getDelegates();
-    
-    public function generateEntries(IEntryList $entryList);
 }
 
 
