@@ -61,7 +61,7 @@ abstract class Base implements axis\schema\IField, core\IDumpable {
         if(isset($row[$key])) {
             return $row[$key];
         } else {
-            return null;
+            return $this->_defaultValue;
         }
     }
     
