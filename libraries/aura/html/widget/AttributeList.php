@@ -12,7 +12,7 @@ use df\arch;
 
 class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWidget, core\IDumpable {
     
-    const PRIMARY_TAG = 'table';
+    const PRIMARY_TAG = 'div';
     
     use TWidget_DataDrivenList;
     use TWidget_MappedList;
@@ -23,6 +23,7 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
     
     protected function _render() {
         $tag = $this->getTag();
+        $tableTag = new aura\html\Tag('table');
         $rows = new aura\html\ElementContent();
         
         $renderContext = new aura\html\widget\util\RendererContext($this);
@@ -51,7 +52,7 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
             $rows->push($trTag->renderWith($row, true));
         }
         
-        return $tag->renderWith($rows, true);
+        return $tag->renderWith($tableTag->renderWith($rows, true));
     }
 
 // Dump

@@ -767,49 +767,6 @@ trait TWidget_DispositionAware {
     public function getDisposition() {
         return $this->_disposition;
     }
-
-
-    public function isNegative($flag=null) {
-        if($flag !== null) {
-            if($flag) {
-                $this->_disposition = 'negative';
-            } else {
-                $this->_disposition = null;
-            }
-
-            return $this;
-        }
-
-        return $this->_disposition == 'negative';
-    }
-
-    public function isInformative($flag=null) {
-        if($flag !== null) {
-            if($flag) {
-                $this->_disposition = 'informative';
-            } else {
-                $this->_disposition = null;
-            }
-
-            return $this;
-        }
-
-        return $this->_disposition == 'informative';
-    }
-
-    public function isOperative($flag=null) {
-        if($flag !== null) {
-            if($flag) {
-                $this->_disposition = 'operative';
-            } else {
-                $this->_disposition = null;
-            }
-
-            return $this;
-        }
-
-        return $this->_disposition == 'operative';
-    }
 }
 
 
@@ -850,6 +807,7 @@ trait TWidget_IconProvider {
 
                 // transitive
                 case 'back':
+                case 'cancel':
                     $this->setDisposition('transitive');
                     break;
             }
@@ -950,6 +908,8 @@ trait TWidget_MappedList {
             $name = $b;
         } else if(is_callable($b)) {
             $renderer = $b;
+            $name = $a;
+        } else if(is_string($a) && $b === null) {
             $name = $a;
         }
         

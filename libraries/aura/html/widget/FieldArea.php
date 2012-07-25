@@ -13,6 +13,7 @@ use df\arch;
 class FieldArea extends Container implements IFormOrientedWidget {
     
     protected $_label;
+    protected $_description;
     
     public function __construct(arch\IContext $context, $labelBody=null) {
         parent::__construct($context);
@@ -27,6 +28,7 @@ class FieldArea extends Container implements IFormOrientedWidget {
     
     protected function _render() {
         $tag = $this->getTag();
+        $view = $this->getRenderTarget()->getView();
         
         $primaryWidget = null;
         $errors = array();
@@ -61,14 +63,27 @@ class FieldArea extends Container implements IFormOrientedWidget {
             $this->_label->setInputId($inputId);
         }
         
-        $output = $this->_label->render();
-        $output->append(' <div class="widget-inputArea">'.$this->_children.'</div>');
+        $output = [$this->_label->render()];
+        $inputAreaBody = $this->_children;
+
+        if($this->_description !== null) {
+            $inputAreaBody = [
+                new aura\html\Element(
+                    'p', 
+                    [$view->html->icon('info'), ' ', $this->_description], 
+                    ['class' => 'description state-info']
+                ),
+                $this->_children
+            ];
+        }
+
+        $output[] = new aura\html\Element('div', $inputAreaBody, ['class' => 'widget-inputArea']);
         
         if(!empty($errors)) {
             $tag->addClass('state-error');
             $fieldError = new FieldError($this->_context, $errors);
             $fieldError->setRenderTarget($this->getRenderTarget());
-            $output->append($fieldError->render());
+            $output[] = $fieldError->render();
         }
         
         if($isRequired) {
@@ -92,12 +107,29 @@ class FieldArea extends Container implements IFormOrientedWidget {
     public function getLabelBody() {
         return $this->_label->getBody();
     }
+
+
+// Description
+    public function setDescription($description) {
+        $this->_description = $description;
+
+        if(empty($this->_description)) {
+            $this->_description = null;
+        }
+
+        return $this;
+    }
+
+    public function getDescription() {
+        return $this->_description;
+    }
     
     
 // Dump
     public function getDumpProperties() {
         return [
             'label' => $this->_label,
+            'description' => $this->_description,
             'children' => $this->_children,
             'tag' => $this->getTag(),
             'renderTarget' => $this->_getRenderTargetDisplayName()
