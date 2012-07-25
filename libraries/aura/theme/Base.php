@@ -66,32 +66,15 @@ class Base implements ITheme {
     
     protected function _setDefaultViewTitle(aura\view\IHtmlView $view) {
         if(!$view->hasTitle()) {
-            // TODO: Replace title with breadcrumbs
-            
-            
-            $request = $view->getContext()->getRequest();
-            $parts = $request->getLiteralPathArray();
-            
-            if($request->isDefaultArea()) {
-                array_shift($parts);
-            }
-            
-            array_pop($parts);
-            
-            if(!$request->isDefaultAction()) {
-                $parts[] = $request->getAction();
-            }
-            
-            foreach($parts as $i => $part) {
-                $parts[$i] = ucwords(
-                    preg_replace('/([A-Z])/u', ' $1', str_replace(
-                        array('-', '_'), ' ', ltrim($part, '~')
-                    ))
-                );
+            $breadcrumbs = $view->getContext()->arch->getBreadcrumbs();
+            $parts = [];
+
+            foreach($breadcrumbs->getEntries() as $entry) {
+                array_unshift($parts, $entry->getText());
             }
             
             if(!empty($parts)) {
-                $view->setTitle(implode(' > ', $parts));
+                $view->setTitle(implode(' < ', $parts));
             }
         }
         
