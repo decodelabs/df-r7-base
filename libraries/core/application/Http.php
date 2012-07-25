@@ -26,6 +26,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
     protected $_routeMatchCount = 0;
     protected $_routeCount = 0;
     protected $_routers = array();
+    protected $_defaultRouteProtocol = null;
     
     
     protected function __construct() {
@@ -97,11 +98,13 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
     public function requestToUrl(arch\IRequest $request) {
         $request = $this->_routeOut($request);
         
-        // TODO: detect secure connection
-        
+        if($this->_defaultRouteProtocol === null) {
+            $this->_defaultRouteProtocol = (isset($_SERVER['HTTPS']) && !strcasecmp($_SERVER['HTTPS'], 'on')) ? 'https' : 'http';
+        }
+
         return halo\protocol\http\Url::fromDirectoryRequest(
             $request,
-            'http', 
+            $this->_defaultRouteProtocol,
             $this->_baseDomain, 
             $this->_basePort, 
             $this->_basePath
