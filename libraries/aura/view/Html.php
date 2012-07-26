@@ -401,7 +401,7 @@ class Html extends Base implements IHtmlView {
     
     
 // Js
-    public function linkJs($uri, $weight=50, array $attributes=null) {
+    public function linkJs($uri, $priority=50, array $attributes=null) {
         if(!$this->_js) {
             $this->_js = new \SplPriorityQueue();
         }
