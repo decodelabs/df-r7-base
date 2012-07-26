@@ -31,20 +31,33 @@ class Manager implements IManager, core\IDumpable {
     protected $_sessionCache;
     protected $_isSessionOpen = false;
     protected $_sessionNamespaces = array();
+
+    private $_accessLockCache = array();
     
     
 // Client
     public function getClient() {
         if(!$this->_client) {
             $session = $this->getSessionNamespace(self::CLIENT_SESSION_NAMESPACE);
-        
-            if(null === ($this->_client = $session->get(self::CLIENT_SESSION_KEY))) {
+            $this->_client = $session->get(self::CLIENT_SESSION_KEY);
+            $regenKeyring = false;
+
+            if($this->_client === null) {
                 $this->_client = Client::generateGuest($this);
-                
+                $regenKeyring = true;
+            } else {
+                $cache = user\session\Cache::getInstance($this->_application);
+                $regenKeyring = $cache->shouldRegenerateKeyring($this->_client->getKeyringTimestamp());
+            }
+
+            if($regenKeyring) {
+                $notify = \df\arch\notify\Manager::getInstance();
+                $notify->setInstantMessage($notify->newMessage('keyring.regen', 'Regenerating client keyring', 'debug'));
+
                 $this->_client->setKeyring(
                     $this->_getUserModel()->generateKeyring($this->_client)
                 );
-                
+
                 $session->set(self::CLIENT_SESSION_KEY, $this->_client);
             }
             
@@ -52,6 +65,49 @@ class Manager implements IManager, core\IDumpable {
         }
         
         return $this->_client;
+    }
+
+    public function canAccess($lock, $action=null) {
+        if(!$lock instanceof IAccessLock) {
+            $lock = $this->getAccessLock($lock);
+        }
+
+        return $this->getClient()->canAccess($lock, $action);
+    }
+
+    public function getAccessLock($lock) {
+        if($lock instanceof user\IAccessLock) {
+            return $lock;
+        }
+
+        if(is_bool($lock)) {
+            return new user\access\lock\Boolean($lock);
+        }
+
+        $lock = $lockId = (string)$lock;
+
+        if(isset($this->_accessLockCache[$lockId])) {
+            return $this->_accessLockCache[$lockId];
+        }
+
+        try {
+            $parts = explode('#', $lock);
+            $policyId = array_shift($parts);
+            $action = array_shift($parts);
+
+            $policy = core\policy\Manager::getInstance($this->_application);
+            $lock = $policy->fetchEntity($policyId);
+        } catch(\Exception $e) {
+            $lock = new user\access\lock\Boolean(true);
+        }
+        
+        if($action !== null) {
+            $lock = $lock->getActionLock($action);
+        }
+
+        $this->_accessLockCache[$lockId] = $lock;
+
+        return $lock;
     }
     
     
@@ -85,6 +141,8 @@ class Manager implements IManager, core\IDumpable {
         $adapter->authenticate($request, $result);
         
         if($result->isValid()) {
+            $this->_accessLockCache = array();
+
             $domainInfo->onAuthentication();
             $clientData = $domainInfo->getClientData();
             
@@ -123,6 +181,15 @@ class Manager implements IManager, core\IDumpable {
     
     public function logout() {
         $this->destroySession();
+        return $this;
+    }
+
+
+
+    public function instigateGlobalKeyringRegeneration() {
+        $cache = user\session\Cache::getInstance();
+        $cache->setGlobalKeyringTimestamp();
+
         return $this;
     }
     
@@ -308,6 +375,7 @@ class Manager implements IManager, core\IDumpable {
     }
     
     public function destroySession() {
+        $this->_accessLockCache = array();
         $this->_openSession();
         
         $this->_sessionCache->removeDescriptor($this->_sessionDescriptor);

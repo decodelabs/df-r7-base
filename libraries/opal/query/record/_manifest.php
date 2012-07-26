@@ -8,6 +8,7 @@ namespace df\opal\query\record;
 use df;
 use df\core;
 use df\opal;
+use df\user;
 
 // Exceptions
 interface IException {}
@@ -18,7 +19,7 @@ class ValuePreparationException extends RuntimeException {}
 
 
 // Interfaces
-interface IRecord extends core\collection\IMappedCollection {
+interface IRecord extends core\collection\IMappedCollection, user\IAccessLock {
     public function getRecordAdapter();
     
     public function isNew();

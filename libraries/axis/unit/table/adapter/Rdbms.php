@@ -9,11 +9,14 @@ use df;
 use df\core;
 use df\axis;
 use df\opal;
+use df\user;
 
 class Rdbms implements 
     axis\ISchemaProviderAdapter, 
     opal\query\IAdapter,
     core\IDumpable {
+    
+    use user\TAccessLock;
     
     protected $_rdbmsAdapter;
     protected $_querySourceAdapter;    
@@ -184,6 +187,23 @@ class Rdbms implements
     }
 
     
+// Access
+    public function getAccessLockDomain() {
+        return $this->_unit->getAccessLockDomain();
+    }
+
+    public function lookupAccessKey(array $keys, $action=null) {
+        return $this->_unit->lookupAccessKey($keys, $action);
+    }
+
+    public function getDefaultAccess($action=null) {
+        return $this->_unit->getDefaultAccess($action);
+    }
+
+    public function getAccessLockId() {
+        return $this->_unit->getAccessLockId();
+    }
+
     
 // Dump
     public function getDumpProperties() {

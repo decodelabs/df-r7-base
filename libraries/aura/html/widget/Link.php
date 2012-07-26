@@ -89,17 +89,17 @@ class Link extends Base implements ILinkWidget, IIconProviderWidget, core\IDumpa
         $disabled = $this->_isDisabled;
         
         if($this->_checkAccess && !$disabled) {
-            $user = $context->user->client;
+            $userManager = $context->user;
             
             if(($uri = $context->normalizeOutputUrl($this->_uri, true)) instanceof user\IAccessLock) {
-                if(!$user->canAccess($uri)) {
+                if(!$userManager->canAccess($uri)) {
                     $disabled = true;
                 }
             }
             
             if(!$disabled) {
                 foreach($this->_accessLocks as $lock) {
-                    if(!$user->canAccess($lock)) {
+                    if(!$userManager->canAccess($lock)) {
                         $disabled = true;
                         break;
                     }
@@ -136,6 +136,10 @@ class Link extends Base implements ILinkWidget, IIconProviderWidget, core\IDumpa
         }
 
         $this->_isComputedActive = $active;
+        
+        if($disabled) {
+            $tag->addClass('state-disabled');
+        }
         
         if($active) {
             $tag->addClass('state-active');

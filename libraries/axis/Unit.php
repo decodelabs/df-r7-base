@@ -8,10 +8,16 @@ namespace df\axis;
 use df;
 use df\core;
 use df\axis;
+use df\user;
 
 abstract class Unit implements IUnit {
     
+    use user\TAccessLock;
+    
     const ID_SEPARATOR = '/';
+
+    const DEFAULT_ACCESS = user\IState::GUEST;
+    public static $actionAccess = [];
     
     private $_unitName;
     private $_unitSettings;
@@ -127,5 +133,67 @@ abstract class Unit implements IUnit {
     
     public function getApplication() {
         return $this->_model->getApplication();
+    }
+
+
+// Access
+    public function getAccessLockDomain() {
+        return 'model';
+    }
+
+    public function lookupAccessKey(array $keys, $action=null) {
+        $id = $this->getUnitId();
+
+        $parts = explode(self::ID_SEPARATOR, $id);
+        $test = $parts[0].self::ID_SEPARATOR;
+
+        if($action !== null) {
+            if(isset($keys[$id.'#'.$action])) {
+                return $keys[$id.'#'.$action];
+            }
+
+            if(isset($keys[$test.'*#'.$action])) {
+                return $keys[$test.'*#'.$action];
+            }
+
+            if(isset($keys[$test.'%#'.$action])) {
+                return $keys[$test.'%#'.$action];
+            }
+
+            if(isset($keys['*#'.$action])) {
+                return $keys['*#'.$action];
+            }
+        }
+
+
+        if(isset($keys[$id])) {
+            return $keys[$id];
+        }
+
+        if(isset($keys[$test.'*'])) {
+            return $keys[$test.'*'];
+        }
+
+        if(isset($keys[$test.'%'])) {
+            return $keys[$test.'%'];
+        }
+
+        return null;
+    }
+
+    public function getDefaultAccess($action=null) {
+        if($action === null) {
+            return static::DEFAULT_ACCESS;
+        }
+
+        if(isset(static::$actionAccess[$action])) {
+            return static::$actionAccess[$action];
+        }
+
+        return static::DEFAULT_ACCESS;
+    }
+
+    public function getAccessLockId() {
+        return $this->getUnitId();
     }
 }

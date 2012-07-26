@@ -8,6 +8,7 @@ namespace df\opal\query;
 use df;
 use df\core;
 use df\opal;
+use df\user;
 
 // Exceptions
 interface IException {}
@@ -136,7 +137,7 @@ interface IHavingClauseFactory extends IClauseFactory {
 
 
 // Query
-interface IQuery extends ISourceProvider {
+interface IQuery extends ISourceProvider, user\IAccessLock {
     public function getQueryType();
 }
 
@@ -401,7 +402,7 @@ interface IAdapterAware {
 }
  
  
-interface IAdapter {
+interface IAdapter extends user\IAccessLock {
     public function getQuerySourceId();
     public function getQuerySourceAdapterHash();
     public function getQuerySourceDisplayName();

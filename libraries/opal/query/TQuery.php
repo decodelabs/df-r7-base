@@ -8,6 +8,7 @@ namespace df\opal\query;
 use df;
 use df\core;
 use df\opal;
+use df\user;
 
 
 trait TQuery_AdapterAware {
@@ -59,11 +60,36 @@ trait TQuery_ParentAware {
 
 
 
+trait TQuery_AccessLock {
+
+    use user\TAccessLock;
+
+    public function getAccessLockDomain() {
+        return $this->_source->getAdapter()->getAccessLockDomain();
+    }
+
+    public function lookupAccessKey(array $keys, $action=null) {
+        return $this->_source->getAdapter()->lookupAccessKey($keys, $action);
+    }
+
+    public function getDefaultAccess($action=null) {
+        return $this->_source->getAdapter()->getDefaultAccess($action);
+    }
+
+    public function getAccessLockId() {
+        return $this->_source->getAdapter()->getAccessLockId();
+    }
+}
+
+
 /*************************
  * Base
  */
 trait TQuery {
     
+    use TQuery_AccessLock;
+    
+
     protected $_sourceManager;
     protected $_source;
     
@@ -78,6 +104,9 @@ trait TQuery {
     public function getSourceAlias() {
         return $this->_source->getAlias();
     }
+
+
+    
 }
 
 

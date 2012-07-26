@@ -8,8 +8,11 @@ namespace df\arch;
 use df;
 use df\core;
 use df\arch;
+use df\user;
 
 class Request extends core\uri\Url implements IRequest, core\IDumpable {
+    
+    use user\TAccessLock;
     
     const AREA_MARKER = '~';
     const DEFAULT_AREA = 'front';
@@ -529,7 +532,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         return 'directory';
     }
     
-    public function lookupAccessKey(array $keys) {
+    public function lookupAccessKey(array $keys, $lockAction=null) {
         $parts = $this->getLiteralPathArray();
         $action = array_pop($parts);
         $basePath = implode('/', $parts);
@@ -553,7 +556,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         return null;
     }
     
-    public function getDefaultAccess() {
+    public function getDefaultAccess($lockAction=null) {
         try {
             $context = arch\Context::factory(
                 df\Launchpad::$application,
@@ -561,10 +564,14 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             );
             
             $action = arch\Action::factory($context);
-            return $action->getDefaultAccess();
+            return $action->getDefaultAccess($lockAction);
         } catch(\Exception $e) {
             return false;
         }
+    }
+
+    public function getAccessLockId() {
+        return implode('/', $this->getLiteralPathArray());
     }
     
     

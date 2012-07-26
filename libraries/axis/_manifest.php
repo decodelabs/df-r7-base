@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\axis;
 use df\opal;
+use df\user;
 
 
 // Exceptions
@@ -29,7 +30,7 @@ interface IModel extends core\IApplicationAware, core\policy\IParentEntity, core
 
 
 
-interface IUnit extends core\IApplicationAware {
+interface IUnit extends core\IApplicationAware, user\IAccessLock {
     public function getUnitName();
     public function getCanonicalUnitName();
     public function getUnitId();

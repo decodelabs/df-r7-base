@@ -23,12 +23,15 @@ class Client implements IClient {
     
     protected $_authState = IState::GUEST;
     protected $_keyring = array();
-    
+    protected $_keyringTimestamp;
+
+    private $_accessCache = array();
+
     public static function stateIdToName($state) {
         if($state === null) {
             return 'None';
         }
-        
+
         switch((int)$state) {
             case IState::DEACTIVATED:
                 return 'Deactivated';
@@ -119,6 +122,7 @@ class Client implements IClient {
     public function setAuthenticationState($state) {
         switch($state) {
             case IState::GUEST:
+            case IState::PENDING:
             case IState::BOUND:
             case IState::CONFIRMED:
                 $this->_authState = $state;
@@ -129,6 +133,8 @@ class Client implements IClient {
                 break;
         }
         
+        $this->_accessCache = array();
+
         return $this;
     }
     
@@ -163,6 +169,8 @@ class Client implements IClient {
     
     
     public function import(IClientDataObject $clientData) {
+        $this->_accessCache = array();
+
         $this->_id = $clientData->getId();
         $this->_email = $clientData->getEmail();
         $this->_fullName = $clientData->getFullName();
@@ -176,25 +184,47 @@ class Client implements IClient {
     }
     
     public function setKeyring(array $keyring) {
+        $this->_accessCache = array();
         $this->_keyring = $keyring;
+        $this->_keyringTimestamp = time();
+
         return $this;
     }
     
     public function getKeyring() {
         return $this->_keyring;
     }
+
+    public function getKeyringTimestamp() {
+        return $this->_keyringTimestamp;
+    }
     
     
-    public function canAccess(IAccessLock $lock) {
+    public function canAccess(IAccessLock $lock, $action=null) {
         $domain = $lock->getAccessLockDomain();
+
+        if($domain == 'dynamic') {
+            return $lock->getDefaultAccess();
+        }
+
+        $lockId = $domain.'://'.$lock->getAccessLockId();
+
+        if($action !== null) {
+            $lockId .= '#'.$action;
+        }
+
+        if(array_key_exists($lockId, $this->_accessCache)) {
+            return $this->_accessCache[$lockId];
+        }
+
         $output = null;
         
         if(isset($this->_keyring[$domain])) {
-            $output = $lock->lookupAccessKey($this->_keyring[$domain]);
+            $output = $lock->lookupAccessKey($this->_keyring[$domain], $action);
         }
         
         if($output === null) {
-            $default = $lock->getDefaultAccess();
+            $default = $lock->getDefaultAccess($action);
             
             if($default === true || $default === false) {
                 $output = $default;
@@ -232,6 +262,8 @@ class Client implements IClient {
                 }
             }
         }
+
+        $this->_accessCache[$lockId] = $output;
         
         return $output;
     }

@@ -73,4 +73,27 @@ class Cache extends core\cache\Base {
         
         $this->remove($key);
     }
+
+
+    public function setGlobalKeyringTimestamp() {
+        $this->set('m:globalKeyringTimestamp', time());
+    }
+
+    public function shouldRegenerateKeyring($keyringTimestamp) {
+        if(!$keyringTimestamp) {
+            return true;
+        }
+
+        $timestamp = $this->get('m:globalKeyringTimestamp');
+        $output = false;
+
+        if($timestamp === null) {
+            $this->setGlobalKeyringTimestamp();
+            $output = true;
+        } else {
+            $output = $timestamp > $keyringTimestamp;
+        }
+
+        return $output;
+    }
 }

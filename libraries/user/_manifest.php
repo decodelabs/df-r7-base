@@ -34,7 +34,11 @@ interface IState {
 
 // Interfaces
 interface IManager extends core\IApplicationAware, core\IRegistryObject {
+    // Client
     public function getClient();
+    public function canAccess($lock, $action=null);
+    public function getAccessLock($lock);
+
     public function analyzePassword($password);
     
     
@@ -93,17 +97,26 @@ interface IClient extends IClientDataObject {
     public function import(IClientDataObject $clientData);
     public function setKeyring(array $keyring);
     public function getKeyring();
+    public function getKeyringTimestamp();
     
-    public function canAccess(IAccessLock $lock);
+    public function canAccess(IAccessLock $lock, $action=null);
 }
 
 
 interface IAccessLock {
     public function getAccessLockDomain();
-    public function lookupAccessKey(array $keys);
-    public function getDefaultAccess();
+    public function lookupAccessKey(array $keys, $action=null);
+    public function getDefaultAccess($action=null);
+    public function getActionLock($action);
+    public function getAccessLockId();
 }
 
+trait TAccessLock {
+
+    public function getActionLock($action) {
+        return new user\access\lock\Action($this, $action);
+    }
+}
 
 
 

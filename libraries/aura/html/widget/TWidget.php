@@ -109,11 +109,7 @@ trait TWidget_AccessControlled {
         return $this;
     }
     
-    public function addAccessLock(/*user\IAccessLock */$lock) {
-        if(!$lock instanceof user\IAccessLock) {
-            $lock = new user\access\lock\Boolean($lock);
-        }
-
+    public function addAccessLock($lock) {
         $this->_accessLocks[] = $lock;
         $this->_checkAccess = true;
         return $this;

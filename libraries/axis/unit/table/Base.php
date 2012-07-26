@@ -569,7 +569,6 @@ abstract class Base extends axis\Unit implements
     }
     
     
-    
 // Dump
     public function getDumpProperties() {
         return array(

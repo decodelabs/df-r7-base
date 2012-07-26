@@ -185,7 +185,7 @@ class Action implements IAction, core\IDumpable {
     
     
 // Access
-    public function getDefaultAccess() {
+    public function getDefaultAccess($action=null) {
         if(!$this->_isInline) {
             return static::DEFAULT_ACCESS;
         }
@@ -195,10 +195,10 @@ class Action implements IAction, core\IDumpable {
         if($controller->isControllerInline()) {
             return static::DEFAULT_ACCESS;
         } else {
-            return $controller->getDefaultAccess();
+            return $controller->getDefaultAccess($action);
         }
     }
-    
+
     
 // Dump
     public function getDumpProperties() {

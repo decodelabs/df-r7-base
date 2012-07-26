@@ -11,6 +11,8 @@ use df\user;
     
 class Boolean implements user\IAccessLock {
 
+    use user\TAccessLock;
+
 	protected $_value = true;
 
 	public function __construct($value) {
@@ -21,11 +23,15 @@ class Boolean implements user\IAccessLock {
     	return 'dynamic';
     }
 
-    public function lookupAccessKey(array $keys) {
+    public function lookupAccessKey(array $keys, $action=null) {
     	return null;
     }
 
-    public function getDefaultAccess() {
+    public function getDefaultAccess($action=null) {
     	return !$this->_value;
+    }
+
+    public function getAccessLockId() {
+        return null;
     }
 }

@@ -8,10 +8,12 @@ namespace df\opal\rdbms;
 use df;
 use df\core;
 use df\opal;
+use df\user;
 
 abstract class Table implements ITable, core\IDumpable {
     
     use opal\query\TQuery_ImplicitSourceEntryPoint;
+    use user\TAccessLock;
     
     protected $_adapter;
     protected $_name;
@@ -1762,6 +1764,24 @@ abstract class Table implements ITable, core\IDumpable {
 // Record
     public function newRecord(array $values=null) {
         return new opal\query\record\Base($this, $values);
+    }
+
+
+// Access
+    public function getAccessLockDomain() {
+        return 'rdbms';
+    }
+
+    public function lookupAccessKey(array $keys, $action=null) {
+        core\stub($keys, $action);
+    }
+
+    public function getDefaultAccess($action=null) {
+        return true;
+    }
+
+    public function getAccessLockId() {
+        return $this->_querySourceId;
     }
     
     

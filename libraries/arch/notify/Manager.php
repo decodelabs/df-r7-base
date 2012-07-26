@@ -147,7 +147,7 @@ class Manager implements IManager {
         $id = $message->getId();
         unset($this->_queue->instant[$id], $this->_queue->queued[$id]);
         
-        if($instantIfSpace && count($this->_queue->instant) < self::$_limit) {
+        if($instantIfSpace && count($this->_queue->instant) < $this->_limit) {
             $this->_queue->instant[$id] = $message;
         } else {
             $this->_queue->queued[$id] = $message;

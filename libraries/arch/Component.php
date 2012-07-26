@@ -12,6 +12,8 @@ use df\user;
 
 abstract class Component implements IComponent {
     
+    use user\TAccessLock;
+
     const DEFAULT_ACCESS = user\IState::ALL;
     
     protected $_context;
@@ -71,11 +73,15 @@ abstract class Component implements IComponent {
         return 'directory';
     }
     
-    public function lookupAccessKey(array $keys) {
-        return $this->_context->getRequest()->lookupAccessKey($keys);
+    public function lookupAccessKey(array $keys, $action=null) {
+        return $this->_context->getRequest()->lookupAccessKey($keys, $action);
     }
     
-    public function getDefaultAccess() {
+    public function getDefaultAccess($action=null) {
         return static::DEFAULT_ACCESS;
+    }
+
+    public function getAccessLockId() {
+        return $this->_context->getRequest()->getAccessLockId();
     }
 }
