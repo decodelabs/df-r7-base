@@ -545,7 +545,7 @@ class Html extends Base implements IHtmlView {
         
         // Js
         foreach($this->getJs() as $js) {
-            $output .= '    '.$js->__toString()."\n";
+            $output .= '    '.$js->open().$js->close()."\n";
         }
         
         // Scripts
