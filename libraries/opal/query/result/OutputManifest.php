@@ -52,7 +52,6 @@ class OutputManifest implements IOutputManifest {
         }
         
         if(isset($this->_wildcards[$sourceAlias], $rows[0])) {
-            // TODO: need to see if this unset kills anything :)
             unset($this->_wildcards[$sourceAlias]);
             
             foreach($rows[0] as $key => $value) {

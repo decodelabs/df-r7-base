@@ -102,7 +102,6 @@ class TcpServer extends halo\socket\Server implements halo\socket\ISequenceServe
     
     
 // Secure
-    // TODO: allow switching once connected
     public function isSecure($flag=null) {
         if($flag !== null) {
             if($this->_socket) {

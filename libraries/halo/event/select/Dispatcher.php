@@ -42,12 +42,12 @@ class Dispatcher extends halo\event\DispatcherBase implements IDispatcher {
             
             // Timers
             if(isset($maps[self::TIMER])) {
-                
+                // TODO: handle timers
             }
             
             // Signals
             if(isset($maps[self::SIGNAL])) {
-                
+                // Handle signals
             }
             
             // Sockets
@@ -72,7 +72,7 @@ class Dispatcher extends halo\event\DispatcherBase implements IDispatcher {
                     }
                 }
                 
-                // TODO add timeout handler
+                // TODO: add timeout handler
             }
             
             // Streams
@@ -97,7 +97,7 @@ class Dispatcher extends halo\event\DispatcherBase implements IDispatcher {
                     }
                 }
                 
-                // TODO add timeout handler
+                // TODO: add timeout handler
             }
         }
         

@@ -206,7 +206,7 @@ interface IDatabase {
 interface ITable extends core\policy\IEntity, opal\query\IAdapter, opal\query\IEntryPoint, \Countable, opal\schema\ISchemaContext {
     public function getName();
     public function getAdapter();
-    public function getSchema($voidCache=false);
+    public function getSchema();
     
     public function exists();
     public function create(opal\rdbms\schema\ISchema $schema, $dropIfExists=false);

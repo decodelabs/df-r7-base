@@ -52,8 +52,7 @@ abstract class Table implements ITable, core\IDumpable {
         return $this->_name;
     }
     
-    public function getSchema($voidCache=false) {
-        // TODO: cache result
+    public function getSchema() {
         $schema = $this->_introspectSchema();
         $schema->acceptChanges()->isAudited(true);
         

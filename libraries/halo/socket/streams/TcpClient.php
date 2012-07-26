@@ -90,7 +90,6 @@ class TcpClient extends halo\socket\Client implements halo\socket\ISequenceClien
     
     
 // Secure
-    // TODO: allow switching once connected
     public function isSecure($flag=null) {
         if($flag !== null) {
             if($this->_socket) {
