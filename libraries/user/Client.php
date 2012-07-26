@@ -25,6 +25,10 @@ class Client implements IClient {
     protected $_keyring = array();
     
     public static function stateIdToName($state) {
+        if($state === null) {
+            return 'None';
+        }
+        
         switch((int)$state) {
             case IState::DEACTIVATED:
                 return 'Deactivated';

@@ -96,7 +96,8 @@ class Manager implements IManager, core\IDumpable {
             
             $client = $this->getClient();
             $client->import($clientData);
-            //$client->setAuthenticationState(IState::CONFIRMED);
+
+            $client->setAuthenticationState(IState::CONFIRMED);
             $client->setKeyring($model->generateKeyring($client));
             
             $clientData->onAuthentication();

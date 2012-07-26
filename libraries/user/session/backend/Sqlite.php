@@ -218,8 +218,6 @@ class Sqlite implements user\ISessionBackend {
         //core\debug()->info('updateNode: '.$node->key);
         
         if($transaction = $this->_getDataTransaction($descriptor)) {
-            // TODO: convert to replace() query
-            
             if(empty($node->creationTime)) {
                 $node->creationTime = time();
                 
