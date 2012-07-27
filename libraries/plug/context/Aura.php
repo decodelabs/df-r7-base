@@ -41,6 +41,10 @@ class Aura implements archLib\IContextHelper {
         return auraLib\view\content\Template::loadDirectoryTemplate($this->_context->spawnInstance($request), $path);
     }
 
+    public function getThemeTemplate(auraLib\view\IView $view, $path, $themeId=null) {
+        return auraLib\view\content\Template::loadThemeTemplate($view, $path, $themeId);
+    }
+
     public function getWidgetContainer($request=null) {
         $view = $this->getBarebonesView($this->_context->getRequest()->getType(), $request);
         $view->setContentProvider($output = new auraLib\view\content\WidgetContentProvider($view->getContext()));
