@@ -54,13 +54,13 @@ class Manager implements IManager, core\IDumpable {
                 $notify = \df\arch\notify\Manager::getInstance();
                 $notify->setInstantMessage($notify->newMessage('keyring.regen', 'Regenerating client keyring', 'debug'));
 
-                //try {
+                try {
                     $this->_client->setKeyring(
                         $this->_getUserModel()->generateKeyring($this->_client)
                     );
-                //} catch(\Exception $e) {
-                    //core\debug()->exception($e);
-                //}
+                } catch(\Exception $e) {
+                    core\debug()->exception($e);
+                }
 
                 $session->set(self::CLIENT_SESSION_KEY, $this->_client);
             }
