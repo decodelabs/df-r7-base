@@ -44,6 +44,46 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         
         return new self($context, $absolutePath);
     }
+
+    public static function loadThemeTemplate(aura\view\IView $view, $path, $themeId=null) {
+        if($themeId === null) {
+            $theme = $view->getTheme();
+            $themeId = $theme->getId();
+        }
+
+        $context = $view->getContext();
+        
+        $lookupPaths = array();
+        $area = $context->getRequest()->getArea();
+
+        $lookupPaths[] = 'apex/themes/'.$themeId.'/templates/'.$area.'/'.$path.'.php';
+        
+        if($area !== 'shared') {
+            $lookupPaths[] = 'apex/themes/'.$themeId.'/templates/shared/'.$path.'.php';
+        }
+        
+        if($themeId !== 'shared') {
+            $lookupPaths[] = 'apex/themes/shared/templates/'.$area.'/'.$path.'.php';
+            
+            if($area !== 'shared') {
+                $lookupPaths[] = 'apex/themes/shared/templates/shared/'.$path.'.php';
+            }
+        }
+        
+        foreach($lookupPaths as $testPath) {
+            if($templatePath = $context->findFile($testPath)) {
+                break;
+            }
+        }
+        
+        if(!$templatePath) {
+            throw new aura\view\ContentNotFoundException(
+                'Theme template '.$path.' could not be found'
+            );
+        }
+        
+        return new self($context, $templatePath);
+    }
     
     public static function loadLayout(aura\view\IView $view, $path) {
         $theme = $view->getTheme();

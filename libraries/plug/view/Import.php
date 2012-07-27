@@ -29,6 +29,17 @@ class Import implements aura\view\IHelper {
             return $this->_view->newErrorContainer($e);
         }
     }
+
+    public function themeTemplate($path, $themeId=null) {
+        try {
+            $template = aura\view\content\Template::loadThemeTemplate($this->_view, $path, $themeId);
+            $template->setRenderTarget($this->_view);
+
+            return $template;
+        } catch(\Exception $e) {
+            return $this->_view->newErrorContainer($e);
+        }
+    }
     
     public function component($name, $contextRequest=null) {
         try {
