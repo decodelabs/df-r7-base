@@ -40,7 +40,7 @@ class AutoId extends Base implements
     
 // Primitive
     public function duplicateForRelation(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
-        $output = new Integer($schema, 'Integer', $this->_name, array($this->_byteSize));
+        $output = new Integer($schema, 'Integer', $this->_name, [$this->_byteSize]);
         $output->isUnsigned(true);
         
         return $output;

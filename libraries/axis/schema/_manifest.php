@@ -36,7 +36,7 @@ interface IField extends opal\schema\IField, opal\query\IFieldValueProcessor {
     public function getFieldSchemaString();
     
     public function generateInsertValue(array $row);
-    public function duplicateForRelation(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema);
+    public function duplicateForRelation(axis\ISchemaBasedStorageUnit $unit, ISchema $schema);
     
     public function sanitize(axis\ISchemaBasedStorageUnit $unit, ISchema $schema);
     public function validate(axis\ISchemaBasedStorageUnit $unit, ISchema $schema);
@@ -124,10 +124,112 @@ interface IMultiPrimitiveField extends IField {
 
 interface INullPrimitiveField extends IField {}
 
+interface IQueryClauseRewriterField extends IField {
+    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false);
+}
+
 interface IRelationField extends IField {
     public function setTargetUnitId($targetUnitId);
     public function getTargetUnitId();
 }
+
+
+trait TRelationField {
+
+    protected $_targetUnitId;
+
+    public function setTargetUnitId($targetUnit) {
+        if($targetUnit instanceof axis\IUnit) {
+            $targetUnit = $targetUnit->getUnitId();
+        }
+        
+        $targetUnit = (string)$targetUnit;
+        
+        if($targetUnit != $this->_targetUnitId) {
+            $this->_hasChanged = true;
+        }
+        
+        $this->_targetUnitId = $targetUnit;
+        return $this;
+    }
+    
+    public function getTargetUnitId() {
+        return $this->_targetUnitId;
+    }
+
+    protected function _sanitizeTargetUnitId(axis\ISchemaBasedStorageUnit $unit) {
+        $model = $unit->getModel();
+        
+        if(false === strpos($this->_targetUnitId, axis\Unit::ID_SEPARATOR)) {
+            $this->_targetUnitId = $model->getModelName().axis\Unit::ID_SEPARATOR.$this->_targetUnitId;
+        }
+    }
+
+    protected function _validateTargetUnit(axis\ISchemaBasedStorageUnit $localUnit) {
+        $targetUnit = axis\Unit::fromId($this->_targetUnitId, $localUnit->getApplication());
+        
+        if($targetUnit->getUnitType() != $localUnit->getUnitType()) {
+            throw new RuntimeException(
+                'Relation target unit '.$targetUnit->getUnitId().' does not match local unit '.$localUnit->getUnitId().' type ('.$localUnit->getUnitType().')'
+            );
+        }
+
+        return $targetUnit;
+    }
+
+    protected function _validateLocalPrimaryIndex(axis\ISchemaBasedStorageUnit $localUnit, ISchema $localSchema) {
+        if(!$localPrimaryIndex = $localSchema->getPrimaryIndex()) {
+            throw new RuntimeException(
+                'Relation table '.$localUnit->getUnitId().' does not have a primary index'
+            );
+        }
+
+        return $localPrimaryIndex;
+    }
+
+    protected function _validateTargetPrimaryIndex(axis\ISchemaBasedStorageUnit $targetUnit, ISchema $targetSchema=null) {
+        if($targetSchema === null) {
+            $targetSchema = $targetUnit->getTransientUnitSchema();
+        }
+
+        if(!$targetPrimaryIndex = $targetSchema->getPrimaryIndex()) {
+            throw new RuntimeException(
+                'Relation unit '.$targetUnit->getUnitId().' does not have a primary index'
+            );
+        }
+
+        return $targetPrimaryIndex;
+    }
+
+    protected function _validateDefaultValue(axis\ISchemaBasedStorageUnit $localUnit, array $targetPrimaryFields) {
+        if($this->_defaultValue === null) {
+            return;
+        }
+
+        if($this instanceof IOneRelationField) {
+            if(!is_array($this->_defaultValue)) {
+                if(count($targetPrimaryFields) > 1) {
+                    throw new axis\schema\RuntimeException(
+                        'Default value for a multi key relation must be a keyed array'
+                    );
+                }
+                
+                $this->_defaultValue = array($targetPrimaryFields[0] => $this->_defaultValue);
+            }
+            
+            foreach($targetPrimaryFields as $field) {
+                if(!array_key_exists($field, $this->_defaultValue)) {
+                    throw new axis\schema\RuntimeException(
+                        'Default value for a multi key relation must contain values for all target primary keys'
+                    );
+                }
+            }
+        } else if($this instanceof IManyRelationField) {
+            // TODO: validate default value
+        }
+    }
+}
+
 
 interface IInverseRelationField extends IRelationField {
     public function setTargetField($field);
@@ -135,9 +237,167 @@ interface IInverseRelationField extends IRelationField {
 }
 
 
-interface IQueryClauseRewriterField extends IField {
-    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false);
+trait TInverseRelationField {
+
+    protected $_targetField;
+
+    public function setTargetField($field) {
+        if($field != $this->_targetField) {
+            $this->_hasChanged = true;
+        }
+        
+        $this->_targetField = $field;
+        return $this;
+    }
+    
+    public function getTargetField() {
+        return $this->_targetField;
+    }
+
+    protected function _validateInverseRelationField(axis\ISchemaBasedStorageUnit $targetUnit, ISchema $targetSchema=null) {
+        if($targetSchema === null) {
+            $targetSchema = $targetUnit->getTransientUnitSchema();
+        }
+
+        if(!$targetField = $targetSchema->getField($this->_targetField)) {
+            throw new RuntimeException(
+                'Target field '.$this->_targetField.' could not be found in '.$targetUnit->getUnitId()
+            );
+        }
+
+        if($this instanceof IOneChildField) {
+            if(!$targetField instanceof IOneParentField) {
+                throw new RuntimeException(
+                    'Target field '.$this->_targetField.' is not a OneParent field'
+                );
+            }
+        } else if($this instanceof IOneParentField) {
+            if(!$targetField instanceof IOneChildField) {
+                throw new RuntimeException(
+                    'Target field '.$this->_targetField.' is not a OneChild field'
+                );
+            }
+        } else if($this instanceof IOneToManyField) {
+            if(!$targetField instanceof IManyToOneField) {
+                throw new RuntimeException(
+                    'Target field '.$this->_targetField.' is not a ManyToOne field'
+                );
+            }
+        } else if($this instanceof IManyToOneField) {
+            if(!$targetField instanceof IOneToManyField) {
+                throw new RuntimeException(
+                    'Target field '.$this->_targetField.' is not a OneToMany field'
+                );
+            }
+        } else if($this instanceof IManyToManyField) {
+            if(!$targetField instanceof IManyToManyField) {
+                throw new RuntimeException(
+                    'Target field '.$this->_targetField.' is not a ManyToMany field'
+                );
+            }
+        }
+
+        return $targetField;
+    }
 }
+
+
+
+
+interface IOneRelationField extends IRelationField {}
+interface IManyRelationField extends IRelationField, INullPrimitiveField {}
+
+interface IBridgedRelationField extends IRelationField {
+    public function setBridgeUnitId($id);
+    public function getBridgeUnitId();
+    
+    public function getBridgeUnit(core\IApplication $application=null);
+    
+    public function getLocalPrimaryFieldNames();
+    public function getTargetPrimaryFieldNames();
+}
+
+
+trait TBridgedRelationField {
+
+    protected $_bridgeUnitId;
+
+    public function setBridgeUnitId($id) {
+        if($id instanceof axis\IUnit) {
+            $id = $id->getUnitId();
+        }
+        
+        if($id != $this->_bridgeUnitId) {
+            $this->_hasChanged = true;
+        }
+        
+        $this->_bridgeUnitId = $id;
+        return $this;
+    }
+    
+    public function getBridgeUnitId() {
+        return $this->_bridgeUnitId;
+    }
+    
+    public function getBridgeUnit(core\IApplication $application=null) {
+        return axis\Unit::fromId($this->_bridgeUnitId, $application);
+    }
+
+    protected function _sanitizeBridgeUnitId(axis\ISchemaBasedStorageUnit $localUnit) {
+        $modelName = $localUnit->getModel()->getModelName();
+
+        if($this instanceof IManyToManyField) {
+            if($this->isDominant() && empty($this->_bridgeUnitId)) {
+                $this->_bridgeUnitId = $modelName.axis\Unit::ID_SEPARATOR.$this->_getBridgeUnitType().'('.$localUnit->getUnitName().'.'.$this->_name.')';
+            }
+            
+            if(!empty($this->_bridgeUnitId) && false === strpos($this->_bridgeUnitId, axis\Unit::ID_SEPARATOR)) {
+                $this->_bridgeUnitId = $modelName.axis\Unit::ID_SEPARATOR.$this->_bridgeUnitId;
+            }
+        } else {
+            if(empty($this->_bridgeUnitId)) {
+                $this->_bridgeUnitId = $modelName.axis\Unit::ID_SEPARATOR.$this->_getBridgeUnitType().'('.$localUnit->getUnitName().'.'.$this->_name.')';
+            }
+            
+            if(false === strpos($this->_bridgeUnitId, axis\Unit::ID_SEPARATOR)) {
+                $this->_bridgeUnitId = $modelName.axis\Unit::ID_SEPARATOR.$this->_bridgeUnitId;
+            }
+        }
+    }
+
+    protected function _validateBridgeUnit(axis\ISchemaBasedStorageUnit $localUnit) {
+        $bridgeUnit = axis\Unit::fromId($this->_bridgeUnitId, $localUnit->getApplication());
+
+        if($bridgeUnit->getModel()->getModelName() != $localUnit->getModel()->getModelName()) {
+            throw new RuntimeException(
+                'Bridge units must be local to the dominant participant - '.
+                $this->_bridgeUnitId.' should be on model '.$localUnit->getModel()->getModelName()
+            );
+        }
+
+        return $bridgeUnit;
+    }
+
+    protected function _getBridgeUnitType() {
+        return 'table.ManyBridge';
+    }
+}
+
+
+interface IOneField extends IOneRelationField, IMultiPrimitiveField {}
+interface IOneParentField extends IOneRelationField, IMultiPrimitiveField {}
+interface IOneChildField extends IOneRelationField, INullPrimitiveField {}
+interface IManyToOneField extends IOneRelationField, IMultiPrimitiveField {}
+
+interface IManyField extends IManyRelationField, IBridgedRelationField, IQueryClauseRewriterField {}
+
+interface IManyToManyField extends IManyRelationField, IBridgedRelationField, IInverseRelationField, IQueryClauseRewriterField {
+    public function isDominant($flag=null);
+}
+
+interface IOneToManyField extends IManyRelationField, IInverseRelationField, IQueryClauseRewriterField {}
+
+
 
 
 

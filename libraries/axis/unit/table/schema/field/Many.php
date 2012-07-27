@@ -16,65 +16,21 @@ use df\opal;
  * A relation table is always required
  * Should return a null primitive as key will always be on relation table
  */
-class Many extends axis\schema\field\Base implements IManyField {
+class Many extends axis\schema\field\Base implements axis\schema\IManyField {
     
+    use axis\schema\TRelationField;
+    use axis\schema\TBridgedRelationField;
+
     protected $_localPrimaryFields = array('id');
     protected $_targetPrimaryFields = array('id');
     
-    protected $_bridgeUnitId;
-    protected $_targetUnitId;
-    
     public function __construct(axis\schema\ISchema $schema, $type, $name, array $args=null) {
         parent::__construct($schema, $type, $name, $args);
-        $this->_bridgeUnitId = 'table.ManyBridge('.$schema->getName().'.'.$this->_name.')';
+        $this->_bridgeUnitId = $this->_getBridgeUnitType().'('.$schema->getName().'.'.$this->_name.')';
     }
     
     protected function _init($targetTableUnit) {
         $this->setTargetUnitId($targetTableUnit);
-    }
-    
-    
-// Target unit id
-    public function setTargetUnitId($targetUnit) {
-        if($targetUnit instanceof axis\IUnit) {
-            $targetUnit = $targetUnit->getUnitId();
-        }
-        
-        $targetUnit = (string)$targetUnit;
-        
-        if($targetUnit != $this->_targetUnitId) {
-            $this->_hasChanged = true;
-        }
-        
-        $this->_targetUnitId = $targetUnit;
-        return $this;
-    }
-    
-    public function getTargetUnitId() {
-        return $this->_targetUnitId;
-    }
-    
-    
-// Bridge unit id
-    public function setBridgeUnitId($id) {
-        if($id instanceof axis\IUnit) {
-            $id = $id->getUnitId();
-        }
-        
-        if($id != $this->_bridgeUnitId) {
-            $this->_hasChanged = true;
-        }
-        
-        $this->_bridgeUnitId = $id;
-        return $this;
-    }
-    
-    public function getBridgeUnitId() {
-        return $this->_bridgeUnitId;
-    }
-    
-    public function getBridgeUnit(core\IApplication $application=null) {
-        return axis\Unit::fromId($this->_bridgeUnitId, $application);
     }
     
     
@@ -205,22 +161,9 @@ class Many extends axis\schema\field\Base implements IManyField {
     
 // Validation
     public function sanitize(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $localSchema) {
-        $model = $localUnit->getModel();
-        
-        // Target unit id
-        if(false === strpos($this->_targetUnitId, axis\Unit::ID_SEPARATOR)) {
-            $this->_targetUnitId = $model->getModelName().axis\Unit::ID_SEPARATOR.$this->_targetUnitId;
-        }
-        
-        // Bridge unit id
-        if(empty($this->_bridgeUnitId)) {
-            $this->_bridgeUnitId = $model->getModelName().axis\Unit::ID_SEPARATOR.'table.ManyBridge('.$localUnit->getUnitName().'.'.$this->_name.')';
-        }
-        
-        if(false === strpos($this->_bridgeUnitId, axis\Unit::ID_SEPARATOR)) {
-            $this->_bridgeUnitId = $model->getModelName().axis\Unit::ID_SEPARATOR.$this->_bridgeUnitId;
-        }
-        
+        $this->_sanitizeTargetUnitId($localUnit);
+        $this->_sanitizeBridgeUnitId($localUnit);
+
 
         // Local ids
         if(!$localPrimaryIndex = $localSchema->getPrimaryIndex()) {
@@ -245,38 +188,14 @@ class Many extends axis\schema\field\Base implements IManyField {
     }
     
     public function validate(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $localSchema) {
-        // Target ids
-        $targetUnit = axis\Unit::fromId($this->_targetUnitId, $localUnit->getApplication());
-        
-        if(!$targetUnit instanceof axis\unit\table\Base) {
-            throw new axis\schema\RuntimeException(
-                'Relation target unit '.$targetUnit->getUnitId().' is not a table'
-            );
-        }
-        
+        $targetUnit = $this->_validateTargetUnit($localUnit);
         $targetSchema = $targetUnit->getTransientUnitSchema();
-        
-        if(!$targetPrimaryIndex = $targetSchema->getPrimaryIndex()) {
-            throw new axis\schema\RuntimeException(
-                'Relation table '.$targetUnit->getUnitId().' does not have a primary index'
-            );
-        }
+        $targetPrimaryIndex = $this->_validateTargetPrimaryIndex($targetUnit, $targetSchema);
         
         $this->_targetPrimaryFields = array_keys($targetPrimaryIndex->getFields());
-        
-        
-        // Bridge table
-        $bridgeUnit = axis\Unit::fromId($this->_bridgeUnitId, $localUnit->getApplication());
-        $bridgeSchema = $bridgeUnit->getTransientUnitSchema();
-        
-        if($bridgeUnit->getModel()->getModelName() != $localUnit->getModel()->getModelName()) {
-            throw new axis\schema\RuntimeException(
-                'Bridge units must be local to the dominant participant - '.
-                $this->_bridgeUnitId.' should be on model '.$localUnit->getModel()->getModelName()
-            );
-        }
-        
-        // TODO: validate default value
+        $this->_validateDefaultValue($localUnit, $this->_targetPrimaryFields);
+
+        $bridgeUnit = $this->_validateBridgeUnit($localUnit);
         
         return $this;
     }

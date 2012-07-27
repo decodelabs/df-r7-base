@@ -49,7 +49,7 @@ abstract class Base extends axis\Unit implements
         $schema = $this->getUnitSchema();
         $field = $schema->getField($fieldName);
         
-        if(!$field instanceof axis\unit\table\schema\field\IBridgedRelationField) {
+        if(!$field instanceof axis\schema\IBridgedRelationField) {
             throw new axis\LogicException(
                 'Unit '.$this->getUnitId().' does not have a bridge field named '.$fieldName
             );

@@ -10,50 +10,14 @@ use df\core;
 use df\axis;
 use df\opal;
 
-class OneChild extends axis\schema\field\Base implements IOneChildField {
+class OneChild extends axis\schema\field\Base implements axis\schema\IOneChildField {
     
-    protected $_targetUnitId;
-    protected $_targetField;
-    
+    use axis\schema\TRelationField;
+    use axis\schema\TInverseRelationField;
+
     protected function _init($targetUnit, $targetField=null) {
         $this->setTargetUnitId($targetUnit);
         $this->setTargetField($targetField);
-    }
-    
-    
-// Target unit id
-    public function setTargetUnitId($targetUnit) {
-        if($targetUnit instanceof axis\IUnit) {
-            $targetUnit = $targetUnit->getUnitId();
-        }
-        
-        $targetUnit = (string)$targetUnit;
-        
-        if($targetUnit != $this->_targetUnitId) {
-            $this->_hasChanged = true;
-        }
-        
-        $this->_targetUnitId = $targetUnit;
-        return $this;
-    }
-    
-    public function getTargetUnitId() {
-        return $this->_targetUnitId;
-    }
-    
-    
-// Target field
-    public function setTargetField($field) {
-        if($field != $this->_targetField) {
-            $this->_hasChanged = true;
-        }
-        
-        $this->_targetField = $field;
-        return $this;
-    }
-    
-    public function getTargetField() {
-        return $this->_targetField;
     }
     
     
@@ -88,48 +52,17 @@ class OneChild extends axis\schema\field\Base implements IOneChildField {
     
     
 // Validation
-    public function sanitize(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
-        $model = $unit->getModel();
-        
-        // Target unit id
-        if(false === strpos($this->_targetUnitId, axis\Unit::ID_SEPARATOR)) {
-            $this->_targetUnitId = $model->getModelName().axis\Unit::ID_SEPARATOR.$this->_targetUnitId;
-        }
+    public function sanitize(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $schema) {
+        $this->_sanitizeTargetUnitId($localUnit);
 
         return $this;
     }
     
-    public function validate(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
-        // Target
-        $targetUnit = axis\Unit::fromId($this->_targetUnitId, $unit->getApplication());
-        
-        if(!$targetUnit instanceof axis\unit\table\Base) {
-            throw new axis\schema\RuntimeException(
-                'Relation target unit '.$targetUnit->getUnitId().' is not a table'
-            );
-        }
-        
+    public function validate(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $schema) {
+        $targetUnit = $this->_validateTargetUnit($localUnit);
         $targetSchema = $targetUnit->getTransientUnitSchema();
-        
-        if(!$primaryIndex = $targetSchema->getPrimaryIndex()) {
-            throw new axis\schema\RuntimeException(
-                'Relation table '.$targetUnit->getUnitId().' does not have a primary index'
-            );
-        }
-        
-        
-        // Target field
-        if(!$targetField = $targetSchema->getField($this->_targetField)) {
-            throw new axis\schema\RuntimeException(
-                'Target field '.$this->_targetField.' could not be found in '.$unit->getUnitId()
-            );
-        }
-        
-        if(!$targetField instanceof IOneParentField) {
-            throw new axis\schema\RuntimeException(
-                'Target field '.$this->_targetField.' is not a OneParent field'
-            );
-        }
+        $targetPrimaryIndex = $this->_validateTargetPrimaryIndex($targetUnit, $targetSchema);
+        $targetField = $this->_validateInverseRelationField($targetUnit, $targetSchema);
     }
 
 
