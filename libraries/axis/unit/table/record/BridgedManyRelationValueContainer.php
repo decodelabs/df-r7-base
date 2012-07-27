@@ -385,7 +385,7 @@ class BridgedManyRelationValueContainer implements
             $bridgeTask = $taskSet->replace($bridgeRecord);
 
             // Local ids
-            $bridgeRecord->__get($localFieldName)->setValue($this->_localPrimaryManifest);
+            $bridgeRecord->__set($localFieldName, $this->_localPrimaryManifest);
             
             if($recordTask) {
                 $bridgeTask->addDependency(
@@ -409,7 +409,7 @@ class BridgedManyRelationValueContainer implements
             }
             
             // Target ids
-            $bridgeRecord->__get($targetFieldName)->setValue($targetManifest);            
+            $bridgeRecord->__set($targetFieldName, $targetManifest);            
             
             if($targetRecordTask) {
                 $bridgeTask->addDependency(
