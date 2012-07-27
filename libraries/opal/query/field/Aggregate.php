@@ -80,13 +80,16 @@ class Aggregate implements opal\query\IAggregateField, core\IDumpable {
                 );
         }
             
-        $this->_type = $type;
-        $this->_targetField = $targetField;
+        if($targetField instanceof opal\query\IVirtualField) {
+            $targetField = $targetField->getTargetFields()[0];
+        }
         
         if($alias === null) {
             $alias = $this->getName();
         }
         
+        $this->_type = $type;
+        $this->_targetField = $targetField;
         $this->_alias = $alias;
     }
 

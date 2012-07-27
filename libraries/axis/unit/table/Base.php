@@ -238,12 +238,39 @@ abstract class Base extends axis\Unit implements
     }
     
     public function extrapolateQuerySourceField(opal\query\ISource $source, $name, $alias=null, opal\schema\IField $field=null) {
+        // Get primary
+        if($name == '@primary') {
+            $schema = $this->getUnitSchema();
+
+            if(!$primaryIndex = $schema->getPrimaryIndex()) {
+                throw new axis\schema\RuntimeException(
+                    'Unit '.$this->getUnitId().' does not had a primary index'
+                );
+            }
+
+            $fields = array();
+
+            foreach($primaryIndex->getFields() as $fieldName => $indexField) {
+                $fields[] = new opal\query\field\Intrinsic($source, $fieldName, $fieldName);
+            }
+
+            if(count($fields) == 1) {
+                return $fields[0];
+            } else {
+                return new opal\query\field\Virtual($source, $name, $alias, $fields);
+            }
+        }
+
+
+        // Dereference from source manager
         if($field === null) {
             if(!$field = $this->getUnitSchema()->getField($name)) {
                 return new opal\query\field\Intrinsic($source, $name, $alias);
             }
         }
         
+
+        // Generic
         if($field instanceof axis\schema\IMultiPrimitiveField) {
             $privateFields = array();
             

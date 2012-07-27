@@ -245,6 +245,10 @@ class Clause implements opal\query\IClause, core\IDumpable {
     }
     
     public function setValue($value) {
+        if($value instanceof opal\query\IField) {
+            //core\dump($value);
+        }
+
         if($value instanceof opal\query\ISelectQuery) {
             // TODO: validate operator
         } else {
@@ -403,12 +407,25 @@ class Clause implements opal\query\IClause, core\IDumpable {
             $value = $this->_value->getQualifiedName();
         } else if($this->_value instanceof opal\query\record\IRecord) {
             $value = $this->_value->getRecordAdapter()->getQuerySourceId().' : '.$this->_value->getPrimaryManifest();
+        } else if($this->_value instanceof opal\query\IQuery) {
+            $value = $this->_value;
+        } else if($this->_value === null) {
+            $value = 'NULL';
+        } else if(is_bool($this->_value)) {
+            $value = $this->_value ? 'TRUE' : 'FALSE';
         } else if(is_array($this->_value)) {
             $value = '(\''.implode('\', \'', $this->_value).'\'';
         } else {
             $value = '\''.(string)$this->_value.'\'';
         }
         
-        return $type.' '.$field.' '.$this->_operator.' '.$value;
+        if(is_string($value)) {
+            return $type.' '.$field.' '.$this->_operator.' '.$value;
+        } else {
+            return [
+                'clause' => $type.' '.$field.' '.$this->_operator, 
+                'value' => $value
+            ];
+        }
     }
 }

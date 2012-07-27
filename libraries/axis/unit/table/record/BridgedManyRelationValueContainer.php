@@ -247,33 +247,23 @@ class BridgedManyRelationValueContainer implements
         
         $targetUnit = axis\Unit::fromId($this->_targetUnitId, $application);
         $bridgeUnit = axis\Unit::fromId($this->_bridgeUnitId, $application);
+
+        $targetFieldName = $targetUnit->getUnitName();
+        $localFieldName = $localUnit->getUnitName();
         
         
-        // Init query
-        $query = opal\query\Initiator::factory($application)
+        return opal\query\Initiator::factory($application)
             ->beginSelect(func_get_args())
-            ->from($targetUnit, $this->_localField);
+            ->from($targetUnit, $this->_localField)
         
-        
-        // Join bridge table as constraint
-        $join = $query->join()->from($bridgeUnit, 'bridge');
-        $targetFieldPrefix = $bridgeUnit->getFieldPrefix($targetUnit, !$this->_isDominant);
-        
-        foreach($this->_targetPrimaryManifest->getFieldNames() as $field) {
-            $join->on('bridge.'.$targetFieldPrefix.$field, '=', $this->_localField.'.'.$field);
-        }
-            
-        $join->endJoin();
-        
-        
-        // Add local primary key(s) as prerequisite
-        $localFieldPrefix = $bridgeUnit->getFieldPrefix($localUnit, $this->_isDominant);
-        
-        foreach($this->_localPrimaryManifest->toArray() as $key => $value) {
-            $query->wherePrerequisite('bridge.'.$localFieldPrefix.$key, '=', $value);
-        }
-        
-        return $query;
+            // Join bridge table as constraint
+            ->join()
+                ->from($bridgeUnit, 'bridge')
+                ->on('bridge.'.$targetFieldName, '=', $this->_localField.'.@primary')
+                ->endJoin()
+
+            // Add local primary key(s) as prerequisite
+            ->wherePrerequisite('bridge.'.$localFieldName, '=', $this->_localPrimaryManifest);
     }
 
     public function selectFromBridge($field1=null) {
@@ -286,22 +276,14 @@ class BridgedManyRelationValueContainer implements
         $localUnit = $this->_record->getRecordAdapter();
         $application = $localUnit->getApplication();
         $bridgeUnit = axis\Unit::fromId($this->_bridgeUnitId, $application);
+        $localFieldName = $localUnit->getUnitName();
         
-        
-        // Init query
-        $query = opal\query\Initiator::factory($application)
+        return opal\query\Initiator::factory($application)
             ->beginSelect(func_get_args())
-            ->from($bridgeUnit, 'bridge');
-            
-        
-        // Add local primary key(s) as prerequisite
-        $localFieldPrefix = $bridgeUnit->getFieldPrefix($localUnit, $this->_isDominant);
-        
-        foreach($this->_localPrimaryManifest->toArray() as $key => $value) {
-            $query->wherePrerequisite('bridge.'.$localFieldPrefix.$key, '=', $value);
-        }
-        
-        return $query;
+            ->from($bridgeUnit, 'bridge')
+
+            // Add local primary key(s) as prerequisite
+            ->wherePrerequisite('bridge.'.$localFieldName, '=', $this->_localPrimaryManifest);
     }
     
     public function fetch() {
@@ -317,31 +299,21 @@ class BridgedManyRelationValueContainer implements
         $targetUnit = axis\Unit::fromId($this->_targetUnitId, $application);
         $bridgeUnit = axis\Unit::fromId($this->_bridgeUnitId, $application);
         
-        
-        // Init query
-        $query = opal\query\Initiator::factory($application)
+        $targetFieldName = $targetUnit->getUnitName();
+        $localFieldName = $localUnit->getUnitName();
+
+        return opal\query\Initiator::factory($application)
             ->beginFetch()
-            ->from($targetUnit, $this->_localField);
+            ->from($targetUnit, $this->_localField)
         
-        
-        // Join bridge table as constraint
-        $targetFieldPrefix = $bridgeUnit->getFieldPrefix($targetUnit, !$this->_isDominant);
-        $join = $query->joinConstraint()->from($bridgeUnit, 'bridge');
-        
-        foreach($this->_targetPrimaryManifest->getFieldNames() as $field) {
-            $join->on('bridge.'.$targetFieldPrefix.$field, '=', $this->_localField.'.'.$field);
-        }
-            
-        $join->endJoin();
-        
-        // Add local primary key(s) as prerequisite
-        $localFieldPrefix = $bridgeUnit->getFieldPrefix($localUnit, $this->_isDominant);
-        
-        foreach($this->_localPrimaryManifest->toArray() as $key => $value) {
-            $query->wherePrerequisite('bridge.'.$localFieldPrefix.$key, '=', $value);
-        }
-        
-        return $query;
+            // Join bridge table as constraint
+            ->joinConstraint()
+                ->from($bridgeUnit, 'bridge')
+                ->on('bridge.'.$targetFieldName, '=', $this->_localField.'.@primary')
+                ->endJoin()
+
+            // Add local primary key(s) as prerequisite
+            ->wherePrerequisite('bridge.'.$localFieldName, '=', $this->_localPrimaryManifest);
     }
 
     public function fetchFromBridge() {
@@ -354,20 +326,14 @@ class BridgedManyRelationValueContainer implements
         $localUnit = $this->_record->getRecordAdapter();
         $application = $localUnit->getApplication();
         $bridgeUnit = axis\Unit::fromId($this->_bridgeUnitId, $application);
+        $localFieldName = $localUnit->getUnitName();
         
-        // Init query
-        $query = opal\query\Initiator::factory($application)
+        return opal\query\Initiator::factory($application)
             ->beginFetch()
-            ->from($bridgeUnit, 'bridge');
-        
-        // Add local primary key(s) as prerequisite
-        $localFieldPrefix = $bridgeUnit->getFieldPrefix($localUnit, $this->_isDominant);
-        
-        foreach($this->_localPrimaryManifest->toArray() as $key => $value) {
-            $query->wherePrerequisite('bridge.'.$localFieldPrefix.$key, '=', $value);
-        }
-        
-        return $query;
+            ->from($bridgeUnit, 'bridge')
+
+            // Add local primary key(s) as prerequisite
+            ->wherePrerequisite('bridge.'.$localFieldName, '=', $this->_localPrimaryManifest);
     }
     
     
@@ -380,11 +346,13 @@ class BridgedManyRelationValueContainer implements
         $application = $localUnit->getApplication();
         $targetUnit = axis\Unit::fromId($this->_targetUnitId, $application);
         $bridgeUnit = axis\Unit::fromId($this->_bridgeUnitId, $application);
+
+        $localFieldName = $localUnit->getUnitName();
+        $targetFieldName = $targetUnit->getUnitName();
         
-        $localFieldPrefix = $bridgeUnit->getFieldPrefix($localUnit, $this->_isDominant);
-        $targetFieldPrefix = $bridgeUnit->getFieldPrefix($targetUnit, !$this->_isDominant);
         $removeAllTask = null;
         
+
         // Save any changed populated records
         foreach($this->_current as $id => $record) {
             if($record instanceof opal\query\record\IRecord) {
@@ -399,11 +367,12 @@ class BridgedManyRelationValueContainer implements
             $bridgeData = array();
             
             foreach($this->_localPrimaryManifest->toArray() as $key => $value) {
-                $bridgeData[$localFieldPrefix.$key] = $value;
+                $bridgeData[$localFieldName.'_'.$key] = $value;
             }
             
             if(!empty($bridgeData)) {
-                $taskSet->addTask($removeAllTask = new opal\query\record\task\DeleteKey($bridgeUnit, $bridgeData));
+                $removeAllTask = new opal\query\record\task\DeleteKey($bridgeUnit, $bridgeData);
+                $taskSet->addTask($removeAllTask);
             }
         }
 
@@ -411,47 +380,45 @@ class BridgedManyRelationValueContainer implements
         
         // Insert relation tasks
         foreach($this->_new as $id => $record) {
+            // Build bridge
             $bridgeRecord = $bridgeUnit->newRecord();
             $bridgeTask = $taskSet->replace($bridgeRecord);
-            
-            $localFieldNames = array();
-            
-            foreach($this->_localPrimaryManifest->toArray() as $key => $value) {
-                $localFieldNames[$key] = $fieldName = $localFieldPrefix.$key;
-                $bridgeRecord[$fieldName] = $value;
-            }
+
+            // Local ids
+            $bridgeRecord->__get($localFieldName)->setValue($this->_localPrimaryManifest);
             
             if($recordTask) {
                 $bridgeTask->addDependency(
-                    new opal\query\record\task\dependency\UpdateBridge($localFieldNames, $recordTask)
+                    new opal\query\record\task\dependency\UpdateBridge($localFieldName, $recordTask)
                 );
             }
             
+            // Target manifest
             if($record instanceof opal\query\record\IPrimaryManifest) {
                 $targetManifest = $record;
             } else {
                 $targetManifest = $this->_targetPrimaryManifest->duplicateWith($record);
             }
             
+
+            // Target task
             $targetRecordTask = null;
-            $targetFieldNames = array();
             
             if($record instanceof opal\query\record\IRecord) {
                 $targetRecordTask = $record->deploySaveTasks($taskSet);
             }
             
-            
-            foreach($targetManifest->toArray() as $key => $value) {
-                $targetFieldNames[$key] = $fieldName = $targetFieldPrefix.$key;
-                $bridgeRecord[$fieldName] = $value;
-            }
+            // Target ids
+            $bridgeRecord->__get($targetFieldName)->setValue($targetManifest);            
             
             if($targetRecordTask) {
                 $bridgeTask->addDependency(
-                    new opal\query\record\task\dependency\UpdateBridge($targetFieldNames, $targetRecordTask)
+                    new opal\query\record\task\dependency\UpdateBridge($targetFieldName, $targetRecordTask)
                 );
             }
             
+
+            // Remove-all dependency
             if($removeAllTask) {
                 $bridgeTask->addDependency(
                     new opal\query\record\task\dependency\Base('*removeAll*', $removeAllTask)
@@ -466,7 +433,7 @@ class BridgedManyRelationValueContainer implements
                 $bridgeData = array();
             
                 foreach($this->_localPrimaryManifest->toArray() as $key => $value) {
-                    $bridgeData[$localFieldPrefix.$key] = $value;
+                    $bridgeData[$localFieldName.'_'.$key] = $value;
                 }
                 
                 if($record instanceof opal\query\record\IPrimaryManifest) {
@@ -476,7 +443,7 @@ class BridgedManyRelationValueContainer implements
                 }
                 
                 foreach($targetManifest->toArray() as $key => $value) {
-                    $bridgeData[$targetFieldPrefix.$key] = $value;
+                    $bridgeData[$targetFieldName.'_'.$key] = $value;
                 }
                 
                 if(empty($bridgeData)) {
@@ -509,12 +476,12 @@ class BridgedManyRelationValueContainer implements
             
         $this->_localPrimaryManifest->updateWith($parentRecord);
         $bridgeUnit = axis\Unit::fromId($this->_bridgeUnitId, $application);
-        $localFieldPrefix = $bridgeUnit->getFieldPrefix($localUnit, $this->_isDominant);
+        $localFieldName = $localUnit->getUnitName();
         
         $bridgeData = array();
             
         foreach($this->_localPrimaryManifest->toArray() as $key => $value) {
-            $bridgeData[$localFieldPrefix.$key] = $value;
+            $bridgeData[$localFieldName.'_'.$key] = $value;
         }
         
         if(!empty($bridgeData)) {

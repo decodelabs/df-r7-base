@@ -1032,6 +1032,7 @@ abstract class Table implements ITable, core\IDumpable {
                       $this->_adapter->quoteIdentifier($field->getName());
             
         } else if($field instanceof opal\query\IVirtualField) {
+            core\dump($field);
             throw new InvalidArgumentException(
                 'Virtual fields can not be used directly'
             );

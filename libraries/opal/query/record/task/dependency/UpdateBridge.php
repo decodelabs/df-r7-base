@@ -15,10 +15,9 @@ class UpdateBridge extends Base {
         if($dependentTask instanceof opal\query\record\task\IRecordTask) {
             $record = $dependentTask->getRecord();
             $manifest = $this->_requiredTask->getRecord()->getPrimaryManifest()->toArray();
+            $field = current($this->_parentFields);
             
-            foreach($this->_parentFields as $key => $field) {
-                $record->set($field, $manifest[$key]);
-            }
+            $record->set($field, $manifest);
         }
         
         return $this;

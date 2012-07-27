@@ -99,7 +99,9 @@ class Source implements ISource, core\IDumpable {
     public function addOutputField(opal\query\IField $field) {
         $fields = array();
         
-        if($field instanceof opal\query\IWildcardField 
+        if($field instanceof opal\query\IVirtualField) {
+            $fields = $field->getTargetFields();
+        } else if($field instanceof opal\query\IWildcardField 
         && $this->_adapter instanceof IIntegralAdapter) {
             $queryFields = $this->_adapter->dereferenceQuerySourceWildcard($this);
             

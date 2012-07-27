@@ -201,11 +201,6 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
     }
     
     
-// Primitive
-    public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
-        return new opal\schema\Primitive_Null($this);
-    }
-    
     
 // Ext. serialize
     protected function _importStorageArray(array $data) {

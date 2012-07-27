@@ -31,11 +31,11 @@ abstract class Base implements ITask {
         }
         
         if($isRecord) {
-            return spl_object_hash($record);
+            return '(#'.spl_object_hash($record).')';
         }
         
         if(is_array($record)) {
-            return implode(opal\query\record\PrimaryManifest::COMBINE_SEPARATOR, $record);
+            return '{'.implode(opal\query\record\PrimaryManifest::COMBINE_SEPARATOR, $record).'}';
         }
         
         return (string)$record;
@@ -55,7 +55,7 @@ abstract class Base implements ITask {
 // Dependencies
     public function addDependency(opal\query\record\task\dependency\IDependency $dependency) {
         $id = $dependency->getId();
-        
+
         if(isset($this->_dependencies[$id])) {
             return $this;
         }

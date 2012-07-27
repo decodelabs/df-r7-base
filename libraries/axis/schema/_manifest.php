@@ -174,6 +174,12 @@ trait TRelationField {
             );
         }
 
+        if($targetUnit->getUnitId() == $localUnit->getUnitId()) {
+            throw new RuntimeException(
+                'Relation targets cannot currently reference the local unit ('.$localUnit->getUnitId().')'
+            );
+        }
+
         return $targetUnit;
     }
 
@@ -227,6 +233,51 @@ trait TRelationField {
         } else if($this instanceof IManyRelationField) {
             // TODO: validate default value
         }
+    }
+
+
+
+    public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
+        if($this instanceof INullPrimitiveField) {
+            return new opal\schema\Primitive_Null($this);
+        }
+
+        $targetUnit = axis\Unit::fromId($this->_targetUnitId, $unit->getApplication());
+        $targetSchema = $targetUnit->getTransientUnitSchema();
+        $targetPrimaryIndex = $targetSchema->getPrimaryIndex();
+
+        $primitives = array();
+
+        foreach($targetPrimaryIndex->getFields() as $name => $field) {
+            $primitive = $field->toPrimitive($targetUnit, $targetSchema)
+                ->isNullable(true);
+
+            if($field instanceof axis\schema\IMultiPrimitiveField) {
+                $name = $primitive->getName();
+            }
+
+            $primitive->_setName($this->_getSubPrimitiveName($name));
+
+            if($this->_defaultValue !== null) {
+                $primitive->setDefaultValue($this->_defaultValue[$name]);
+            }
+            
+            if($primitive instanceof opal\schema\IAutoIncrementableField) {
+                $primitive->shouldAutoIncrement(false);
+            }
+            
+            $primitives[$name] = $primitive;
+        }
+
+        if(count($primitives) == 1) {
+            return array_shift($primitives);
+        }
+
+        return new opal\schema\Primitive_MultiField($this, $primitives);
+    }
+
+    protected function _getSubPrimitiveName($name) {
+        return $this->_name.'_'.$name;
     }
 }
 

@@ -1,31 +1,26 @@
-<?php
+<?php 
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\axis\unit\table\schema\field;
+namespace df\axis\schema\field;
 
 use df;
 use df\core;
 use df\axis;
 use df\opal;
-
-
-/*
- * This type does not care about inverse at all.
- * Just return primary primitive
- */
-class One extends axis\schema\field\Base implements axis\schema\IOneField {
     
-    use axis\schema\TRelationField;
+class KeyGroup extends Base implements axis\schema\IMultiPrimitiveField, axis\schema\IQueryClauseRewriterField {
 
-    protected $_targetPrimaryFields = array('id');
-    
+	use axis\schema\TRelationField;
+
+	protected $_targetPrimaryFields = array('id');
+
     protected function _init($targetTableUnit) {
         $this->setTargetUnitId($targetTableUnit);
     }
 
-    
+
 // Values
     public function inflateValueFromRow($key, array $row, $forRecord) {
         $values = array();
@@ -39,7 +34,7 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
                 $values[$field] = null;
             }
         }
-        
+
         if($forRecord) {
             return new axis\unit\table\record\OneRelationValueContainer(
                 $values, $this->_targetUnitId, $this->_targetPrimaryFields
@@ -48,7 +43,7 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
             return new opal\query\record\PrimaryManifest($this->_targetPrimaryFields, $values);
         }
     }
-    
+
     public function deflateValue($value) {
         if(!$value instanceof opal\query\record\IPrimaryManifest) {
             $value = new opal\query\record\PrimaryManifest($this->_targetPrimaryFields, $value);
@@ -65,10 +60,10 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
             
             $output[$this->_name.'_'.$key] = $value;
         }
-        
+
         return $output;
     }
-    
+
     public function sanitizeValue($value, $forRecord) {
         if(!$forRecord) {
             return $value;
@@ -78,29 +73,93 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
             $value, $this->_targetUnitId, $this->_targetPrimaryFields
         );
     }
-    
+
+
     public function generateInsertValue(array $row) {
         return null;
     }
-    
-    
+
+
+// Clause
+	public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false) {
+        $fieldCount = count($this->_targetPrimaryFields);
+        $output = null;
+
+
+        if($fieldCount > 1) {
+        	$output = new opal\query\clause\WhereList($parent, $isOr);
+        	$clauseFactory = $output;
+        } else {
+        	$clauseFactory = $parent;
+        }
+
+        if($value instanceof opal\query\IVirtualField) {
+        	$valueFields = array();
+        	
+        	foreach($value->getTargetFields() as $field) {
+        		$valueFields[$field->getName()] = $field;
+        	}
+        } else if($value instanceof opal\query\record\IPrimaryManifest) {
+       		$value = $value->getIntrinsicFieldMap($this->_name);
+        } else if(is_scalar($value) && $fieldCount > 1) {
+        	throw new axis\schema\RuntimeException(
+				'KeyGroup fields do not match on '.
+				$parent->getSource()->getAdapter()->getName().':'.$this->_name
+			);
+        }
+
+        foreach($this->_targetPrimaryFields as $fieldName) {
+        	$subValue = null;
+        	$keyName = $this->_name.'_'.$fieldName;
+
+        	if($value instanceof opal\query\IVirtualField) {
+        		if(!isset($valueFields[$keyName])) {
+        			throw new axis\schema\RuntimeException(
+        				'KeyGroup join fields do not match between '.
+        				$parent->getSource()->getAdapter()->getName().':'.$this->_name.' and '.
+        				$value->getSource()->getAdapter()->getName().':'.$value->getName().
+        				' for keyName '.$keyName
+    				);
+        		}
+        		
+        		$subValue = $valueFields[$keyName];
+        	} else if(is_array($value)) {
+        		if(!isset($value[$keyName])) {
+        			throw new axis\schema\RuntimeException(
+        				'KeyGroup fields do not match on '.
+        				$parent->getSource()->getAdapter()->getUnitId().':'.$this->_name.
+        				' for keyName '.$keyName
+    				);
+        		}
+        		
+        		$subValue = $value[$keyName];
+        	} else {
+        		$subValue = $value;
+        	}
+
+        	$newField = new opal\query\field\Intrinsic($field->getSource(), $keyName);
+        	$clause = opal\query\clause\Clause::factory($clauseFactory, $newField, $operator, $subValue);
+
+        	if($output) {
+        		$output->_addClause($clause);
+        	} else {
+        		return $clause;
+        	}
+        }
+
+        return $output;
+	}
+
+
 // Validation
     public function sanitize(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $schema) {
-        $this->_sanitizeTargetUnitId($localUnit);
-
-        if(!$schema->hasIndex($this->_name)) {
-            $schema->addIndex($this->_name);
-        }
-        
-        return $this;
+    	$this->_sanitizeTargetUnitId($localUnit);
     }
-    
+
     public function validate(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $schema) {
-        // Target
-        $targetUnit = $this->_validateTargetUnit($localUnit);
+    	$targetUnit = $this->_validateTargetUnit($localUnit);
         $targetSchema = $targetUnit->getTransientUnitSchema();
         $targetPrimaryIndex = $this->_validateTargetPrimaryIndex($targetUnit, $targetSchema);
-        
 
         // Primary fields
         $this->_targetPrimaryFields = array();
@@ -114,44 +173,26 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
                 $this->_targetPrimaryFields[] = $name;
             }
         }
-
-
-        $this->_validateDefaultValue($localUnit, $this->_targetPrimaryFields);
-
-        return $this;
     }
 
     public function duplicateForRelation(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
-        $targetUnit = axis\Unit::fromId($this->_targetUnitId, $unit->getApplication());
-        $targetSchema = $targetUnit->getTransientUnitSchema();
-        $output = array();
-
-        foreach($this->_targetPrimaryFields as $fieldName) {
-            $field = $targetSchema->getField($fieldName);
-
-            $dupField = $field->duplicateForRelation($targetUnit, $targetSchema);
-            $dupField->_setName($this->_name.'_'.$dupField->getName());
-
-            $output[] = $dupField;
-        }
-
-        return $output;
+    	core\stub('Seriously.. why are you using this type of field in a 3rd party relation!?!?!?');
     }
-    
-    
+
+
 // Primitive
-    public function getPrimitiveFieldNames() {
-        $output = array();
+	public function getPrimitiveFieldNames() {
+		$output = array();
         
         foreach($this->_targetPrimaryFields as $field) {
             $output[] = $this->_name.'_'.$field;
         }
         
         return $output;
-    }
+	}
 
-    
-    
+
+
 // Ext. serialize
     protected function _importStorageArray(array $data) {
         $this->_setBaseStorageArray($data);
@@ -168,11 +209,5 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
                 'tui' => $this->_targetUnitId
             ]
         );
-    }
-    
-    
-// Dump
-    public function getDumpProperties() {
-        return parent::getDumpProperties().' '.$this->_targetUnitId.' : '.implode(', ', $this->_targetPrimaryFields);
     }
 }

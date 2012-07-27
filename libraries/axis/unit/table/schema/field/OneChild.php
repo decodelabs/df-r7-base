@@ -65,12 +65,6 @@ class OneChild extends axis\schema\field\Base implements axis\schema\IOneChildFi
         $targetField = $this->_validateInverseRelationField($targetUnit, $targetSchema);
     }
 
-
-// Primitive
-    public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
-        return new opal\schema\Primitive_Null($this);
-    }
-    
     
 // Ext. serialize
     protected function _importStorageArray(array $data) {

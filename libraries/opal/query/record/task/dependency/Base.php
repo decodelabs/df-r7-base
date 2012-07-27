@@ -11,6 +11,7 @@ use df\opal;
 
 class Base implements IDependency {
     
+    protected $_idSalt;
     protected $_parentFields = array();
     protected $_requiredTask;
     
@@ -21,10 +22,11 @@ class Base implements IDependency {
         
         $this->_parentFields = $parentFields;
         $this->_requiredTask = $requiredTask;
+        $this->_idSalt = uniqid('_');
     }
     
     public function getId() {
-        return implode(',', $this->_parentFields).':'.$this->_requiredTask->getId();
+        return implode(',', $this->_parentFields).'|'.$this->_requiredTask->getId().'|'.$this->_idSalt;
     }
     
     public function getParentFields() {

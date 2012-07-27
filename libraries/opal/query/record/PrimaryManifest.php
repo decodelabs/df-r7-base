@@ -47,9 +47,45 @@ class PrimaryManifest implements IPrimaryManifest, core\IDumpable {
         
         return $output;
     }
+
+    public function getKeyMap($fieldName) {
+        $output = array();
+
+        foreach($this->_keys as $key => $value) {
+            if($value instanceof self) {
+                foreach($value->toArray() as $subKey => $subValue) {
+                    $output[$key.'_'.$subKey] = $fieldName.'_'.$key.'_'.$subKey;
+                }
+            } else {
+                $output[$key] = $fieldName.'_'.$key;
+            }
+        }
+
+        return $output;
+    }
     
+    public function getIntrinsicFieldMap($fieldName) {
+        $output = array();
+
+        foreach($this->_keys as $key => $value) {
+            if($value instanceof self) {
+                foreach($value->toArray() as $subKey => $subValue) {
+                    $output[$fieldName.'_'.$key.'_'.$subKey] = $subValue;
+                }
+            } else {
+                $output[$fieldName.'_'.$key] = $value;
+            }
+        }
+
+        return $output;
+    }
+
     public function updateWith($values) {
         $fields = array_keys($this->_keys);
+
+        if($values instanceof self) {
+            $values = $values->toArray();
+        }
         
         if(!$values instanceof IRecord && !is_array($values)) {
             if($values === null || count($fields) == 1) {
@@ -83,6 +119,10 @@ class PrimaryManifest implements IPrimaryManifest, core\IDumpable {
     public function isNull() {
         foreach($this->_keys as $value) {
             if($value === null) {
+                return true;
+            }
+
+            if($value instanceof IPrimaryManifest && $value->isNull()) {
                 return true;
             }
         }

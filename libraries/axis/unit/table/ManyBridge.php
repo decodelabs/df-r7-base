@@ -33,63 +33,36 @@ class ManyBridge extends Base implements axis\IVirtualUnit {
         }
     }
     
+
     public function buildInitialSchema() {
         $dominantUnit = $this->_model->getUnit($this->_dominantUnitName);
         $dominantSchema = $dominantUnit->getTransientUnitSchema();
         $dominantField = $dominantSchema->getField($this->_dominantFieldName);
-        $dominantFieldPrefix = $this->getDominantFieldPrefix();
         
         if(!$dominantField) {
             throw new axis\schema\FieldTypeNotFoundException(
                 'Target Many relation field could not be found on unit '.$dominantUnit->getUnitId()
             );
         }
-        
-        
+
         $submissiveUnit = axis\Unit::fromId($dominantField->getTargetUnitId(), $this->getApplication());
         $submissiveSchema = $submissiveUnit->getTransientUnitSchema();
-        $submissiveFieldPrefix = $this->getSubmissiveFieldPrefix($submissiveUnit);
-        
-        $dominantPrimaryFields = $dominantSchema->getPrimaryIndex()->getFields();
-        $submissivePrimaryFields = $submissiveSchema->getPrimaryIndex()->getFields();
-        
-        
+
         $schema = new axis\schema\Base($this, $this->getUnitName());
-        $bridgePrimaryFields = array();
-        
-        foreach($dominantPrimaryFields as $fieldName => $field) {
-            $bridgeFields = $field->duplicateForRelation($dominantUnit, $dominantSchema);
-            
-            if(!is_array($bridgeFields)) {
-                $bridgeFields = [$bridgeFields];
-            }
 
-            foreach($bridgeFields as $bridgeField) {
-                $bridgePrimaryFields[] = $bridgeFieldName = $dominantFieldPrefix.$bridgeField->getName();
-                $bridgeField->_setName($bridgeFieldName);
-                $schema->addPreparedField($bridgeField);
-            }
-        }
-        
-        foreach($submissivePrimaryFields as $fieldName => $field) {
-            $bridgeFields = $field->duplicateForRelation($submissiveUnit, $submissiveSchema);
-            
-            if(!is_array($bridgeFields)) {
-                $bridgeFields = [$bridgeFields];
-            }
+        $bridgePrimaryFields = [
+            $dominantName = $dominantSchema->getName(), 
+            $submissiveName = $submissiveSchema->getName()
+        ];
 
-            foreach($bridgeFields as $bridgeField) {
-                $bridgePrimaryFields[] = $bridgeFieldName = $submissiveFieldPrefix.$bridgeField->getName();
-                $bridgeField->_setName($bridgeFieldName);
-                $schema->addPreparedField($bridgeField);
-            }
-        }
-        
+        $schema->addField($dominantName, 'KeyGroup', $dominantUnit->getUnitId());
+        $schema->addField($submissiveName, 'KeyGroup', $submissiveUnit->getUnitId());
+
         $schema->addPrimaryIndex('primary', $bridgePrimaryFields);
 
         return $schema;
     }
-    
+
     public function getDominantUnitName() {
         return $this->_dominantUnitName;
     }
@@ -99,7 +72,7 @@ class ManyBridge extends Base implements axis\IVirtualUnit {
     }
     
     public function getDominantFieldPrefix() {
-        return $this->_dominantUnitName.'_'.$this->_dominantFieldName.'_';
+        return $this->_dominantUnitName.'_';//.$this->_dominantFieldName.'_';
     }
     
     public function getSubmissiveFieldPrefix(axis\unit\table\Base $table) {
