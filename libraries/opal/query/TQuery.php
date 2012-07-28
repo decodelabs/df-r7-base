@@ -404,6 +404,7 @@ trait TQuery_Attachment {
     
     protected $_type;
     protected $_keyField;
+    protected $_valField;
     
     public static function typeIdToName($id) {
         switch($id) {
@@ -415,6 +416,9 @@ trait TQuery_Attachment {
                 
             case IAttachQuery::TYPE_LIST:
                 return 'LIST';
+
+            case IAttachQuery::TYPE_VALUE:
+                return 'VALUE';
         }
     }
     
@@ -453,13 +457,15 @@ trait TQuery_Attachment {
     public function getListKeyField() {
         return $this->_keyField;
     }
+
+    public function getListValueField() {
+        return $this->_valField;
+    }
 }
 
 
 trait TQuery_AttachmentListExtension {
     
-    protected $_valField;
-
     public function asList($name, $field1, $field2=null) {
         if($this->_joinClauseList->isEmpty()) {
             throw new LogicException(
@@ -479,11 +485,29 @@ trait TQuery_AttachmentListExtension {
         $this->_type = IAttachQuery::TYPE_LIST;
         return $this->_parent->addAttachment($name, $this);
     }
-    
-    public function getListValueField() {
-        return $this->_valField;
+}
+
+
+trait TQuery_AttachmentValueExtension {
+
+    public function asValue($name, $field=null) {
+        if($field === null) {
+            $field = $name;
+        }
+
+        if($this->_joinClauseList->isEmpty()) {
+            throw new LogicException(
+                'No join clauses have been defined for attachment '.$name
+            );
+        }
+
+        $manager = $this->getSourceManager();
+        $this->_valField = $manager->extrapolateDataField($this->_source, $field);
+        $this->_type = IAttachQuery::TYPE_VALUE;
+        return $this->_parent->addAttachment($name, $this);
     }
 }
+
 
 
 /***************************

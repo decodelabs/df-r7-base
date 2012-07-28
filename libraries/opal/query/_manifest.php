@@ -257,6 +257,7 @@ interface IAttachQuery extends IQuery, IParentSourceProvider, IJoinClauseFactory
     const TYPE_ONE = 0;
     const TYPE_MANY = 1;
     const TYPE_LIST = 2;
+    const TYPE_VALUE = 3;
     
     public function getType();
     public function asOne($name);
@@ -304,6 +305,7 @@ interface ISelectQuery extends
     
 interface ISelectAttachQuery extends ISelectQuery, IAttachQuery {
     public function asList($name, $field1, $field2=null);
+    public function asValue($name, $field=null);
     public function getListKeyField();
     public function getListValueField();
 }

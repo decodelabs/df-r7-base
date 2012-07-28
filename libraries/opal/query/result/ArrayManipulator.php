@@ -614,7 +614,7 @@ class ArrayManipulator implements IArrayManipulator {
             $clauseList = $attachment->getJoinClauseList()->toArray();
             $clauseIndex = $this->_createClauseIndex($clauseList);
             $isFetchQuery = $attachment instanceof opal\query\IFetchQuery;
-            $isTypeOneAttachment = $attachment->getType() === 0;
+            $isValueAttachment = $attachment->getType() === 0 || $attachment->getType() === 3;
             
             
             // Get key / val fields
@@ -665,7 +665,7 @@ class ArrayManipulator implements IArrayManipulator {
                     $offset = $attachment->getOffset();
                 }
                 
-                if($isTypeOneAttachment) {
+                if($isValueAttachment) {
                     $limit = 1;
                 }
                 
@@ -729,7 +729,7 @@ class ArrayManipulator implements IArrayManipulator {
                 // Format output
                 $attachData = $manipulator->applyOutputFields($keyField, $valField, $isFetchQuery)->getRows();
                     
-                if($isTypeOneAttachment) {
+                if($isValueAttachment) {
                     $attachData = array_shift($attachData);
                 }
                 

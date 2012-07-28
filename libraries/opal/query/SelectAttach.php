@@ -13,6 +13,7 @@ class SelectAttach extends Select implements ISelectAttachQuery {
     
     use TQuery_Attachment;
     use TQuery_AttachmentListExtension;
+    use TQuery_AttachmentValueExtension;
     use TQuery_ParentAwareJoinClauseFactory;
     
     public function __construct(IReadQuery $parent, ISourceManager $sourceManager, ISource $source) {

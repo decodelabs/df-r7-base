@@ -976,14 +976,15 @@ abstract class Table implements ITable, core\IDumpable {
             
             $outFields[] = $this->_defineQueryField($stmt, $field, true, $field->getQualifiedName());
         }
-        
-        
+
+
         $stmt->appendSql(
             'SELECT'."\n".'    '.implode(','."\n".'    ', $outFields)."\n".
             'FROM '.$this->_adapter->quoteIdentifier($this->_name).' '.
             'AS '.$this->_adapter->quoteTableAliasDefinition($source->getAlias())
         );
         
+
         $clauses = $attachment->getJoinClauseList();
         
         if(!$clauses->isEmpty()) {
