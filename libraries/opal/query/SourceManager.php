@@ -251,8 +251,10 @@ class SourceManager implements ISourceManager, core\IDumpable {
                 $this->_testField($field, $allowIntrinsic, $allowWildcard, $allowAggregate);
                 return $field;
             }
-           
-            if($name == '*') {
+
+            if($name == '@void') {
+                $field = null;
+            } else if($name == '*') {
                 if(!$allowWildcard) {
                     throw new InvalidArgumentException(
                         'Unexpected wildcard field reference "'.$qName.'"'
@@ -284,10 +286,12 @@ class SourceManager implements ISourceManager, core\IDumpable {
                 }
             }
             
-            if($isOutput) {
-                $source->addOutputField($field);
-            } else {
-                $source->addPrivateField($field);
+            if($field) {
+                if($isOutput) {
+                    $source->addOutputField($field);
+                } else {
+                    $source->addPrivateField($field);
+                }
             }
             
             return $field;
