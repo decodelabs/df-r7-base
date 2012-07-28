@@ -90,6 +90,8 @@ abstract class Table implements ITable, core\IDumpable {
             case opal\query\IQueryTypes::UPDATE:
             case opal\query\IQueryTypes::DELETE:
                 
+            case opal\query\IQueryTypes::CORRELATION:
+
             case opal\query\IQueryTypes::JOIN:
             case opal\query\IQueryTypes::JOIN_CONSTRAINT:
                 
@@ -444,7 +446,7 @@ abstract class Table implements ITable, core\IDumpable {
                     foreach($attachment->getNonLocalFieldReferences() as $field) {
                         foreach($field->dereference() as $field) {
                             $qName = $field->getQualifiedName();
-                            $attachFields[/*$qName*/] = $this->_defineQueryField($field, true, $qName);
+                            $attachFields[/*$qName*/] = $this->_defineQueryField($stmt, $field, true, $qName);
                         }
                     }
                 }
@@ -482,7 +484,7 @@ abstract class Table implements ITable, core\IDumpable {
                             $fieldAlias = $field->getAlias();
                         }
             
-                        $joinFields[/*$fieldAlias*/] = $this->_defineQueryField($field, true, $fieldAlias);
+                        $joinFields[/*$fieldAlias*/] = $this->_defineQueryField($stmt, $field, true, $fieldAlias);
                     }
                 }
             }
@@ -498,7 +500,7 @@ abstract class Table implements ITable, core\IDumpable {
                 $fieldAlias = $field->getAlias();
             }
             
-            $outFields[/*$fieldAlias*/] = $this->_defineQueryField($field, true, $fieldAlias);
+            $outFields[/*$fieldAlias*/] = $this->_defineQueryField($stmt, $field, true, $fieldAlias);
         }
         
         
@@ -568,7 +570,7 @@ abstract class Table implements ITable, core\IDumpable {
                  */
                 $aggregateFields[$qName] = $field;
             } else {
-                $outFields[$qName] = $this->_defineQueryField($field, true, $qName);
+                $outFields[$qName] = $this->_defineQueryField($stmt, $field, true, $qName);
             }
         }
         
@@ -601,7 +603,7 @@ abstract class Table implements ITable, core\IDumpable {
                      */
                     $aggregateFields[$qName] = $field;
                 } else {
-                    $outFields[$qName] = $this->_defineQueryField($field, true, $qName);
+                    $outFields[$qName] = $this->_defineQueryField($stmt, $field, true, $qName);
                 }
             }
             
@@ -679,7 +681,7 @@ abstract class Table implements ITable, core\IDumpable {
                         }
                         
                         foreach($field->dereference() as $field) {
-                            $orderString = $this->_defineQueryField($field);
+                            $orderString = $this->_defineQueryField($stmt, $field);
                             
                             if($directive->isDescending()) {
                                 $orderString .= ' DESC';
@@ -917,6 +919,8 @@ abstract class Table implements ITable, core\IDumpable {
          */
         $source = $join->getSource();
         $outFields = array();
+
+        $stmt = $this->_adapter->prepare('');
         
         foreach($join->getSource()->getAllDereferencedFields() as $field) {
             if($field instanceof opal\query\IAggregateField) {
@@ -927,11 +931,11 @@ abstract class Table implements ITable, core\IDumpable {
                 continue;
             }
             
-            $outFields[] = $this->_defineQueryField($field, true, $field->getQualifiedName());
+            $outFields[] = $this->_defineQueryField($stmt, $field, true, $field->getQualifiedName());
         }
         
         
-        $stmt = $this->_adapter->prepare(
+        $stmt->appendSql(
             'SELECT'."\n".'    '.implode(','."\n".'    ', $outFields)."\n".
             'FROM '.$this->_adapter->quoteIdentifier($this->_name).' '.
             'AS '.$this->_adapter->quoteTableAliasDefinition($source->getAlias())
@@ -958,6 +962,8 @@ abstract class Table implements ITable, core\IDumpable {
          */
         $source = $attachment->getSource();
         $outFields = array();
+
+        $stmt = $this->_adapter->prepare('');
         
         foreach($source->getAllDereferencedFields() as $field) {
             if($field instanceof opal\query\IAggregateField) {
@@ -968,11 +974,11 @@ abstract class Table implements ITable, core\IDumpable {
                 continue;
             }
             
-            $outFields[] = $this->_defineQueryField($field, true, $field->getQualifiedName());
+            $outFields[] = $this->_defineQueryField($stmt, $field, true, $field->getQualifiedName());
         }
         
         
-        $stmt = $this->_adapter->prepare(
+        $stmt->appendSql(
             'SELECT'."\n".'    '.implode(','."\n".'    ', $outFields)."\n".
             'FROM '.$this->_adapter->quoteIdentifier($this->_name).' '.
             'AS '.$this->_adapter->quoteTableAliasDefinition($source->getAlias())
@@ -1002,7 +1008,7 @@ abstract class Table implements ITable, core\IDumpable {
     
     
 // Query fields
-    protected function _defineQueryField(opal\query\IField $field, $defineAlias=false, $alias=null) {
+    protected function _defineQueryField(opal\rdbms\IStatement $stmt, opal\query\IField $field, $defineAlias=false, $alias=null) {
         /*
          * This method is used in many places to get a string representation of a 
          * query field. If $defineAlias is true, it is suffixed with AS <alias> and
@@ -1021,7 +1027,7 @@ abstract class Table implements ITable, core\IDumpable {
             if($targetField instanceof opal\query\IWildcardField) {
                 $targetFieldString = '*';
             } else {
-                $targetFieldString = $this->_defineQueryField($field->getTargetField());
+                $targetFieldString = $this->_defineQueryField($stmt, $field->getTargetField());
             }
             
             $output = $field->getTypeName().'('.$targetFieldString.')';
@@ -1036,6 +1042,8 @@ abstract class Table implements ITable, core\IDumpable {
             throw new InvalidArgumentException(
                 'Virtual fields can not be used directly'
             );
+        } else if($field instanceof opal\query\ICorrelationField) {
+            $output = '('.$this->_defineQueryCorrelation($stmt, $field->getCorrelationQuery()).')';
         } else {
             throw new opal\rdbms\UnexpectedValueException(
                 'Field type '.get_class($field).' is not currently supported'
@@ -1053,6 +1061,41 @@ abstract class Table implements ITable, core\IDumpable {
         return $output;
     }
 
+
+// Query correlations
+    protected function _defineQueryCorrelation(opal\rdbms\IStatement $stmt, opal\query\ICorrelationQuery $query) {
+        $stmt2 = $this->_adapter->prepare('');
+        $stmt2->setKeyIndex($stmt->getKeyIndex());
+
+        $source = $query->getSource();
+        $outFields = array();
+
+        $supportsProcessors = $source->getAdapter()->supportsQueryFeature(opal\query\IQueryFeatures::VALUE_PROCESSOR);
+        
+        
+        // Fields
+        foreach($source->getDereferencedOutputFields() as $field) {
+            $fieldAlias = $field->getAlias();
+            $outFields[/*$fieldAlias*/] = $this->_defineQueryField($stmt, $field, true, $fieldAlias);
+        }
+        
+        
+        $stmt2->appendSql(
+            'SELECT'."\n".'    '.implode(','."\n".'    ', $outFields)."\n".
+            'FROM '.$this->_adapter->quoteIdentifier($source->getAdapter()->getDelegateQueryAdapter()->getName()).' '.
+            'AS '.$this->_adapter->quoteTableAliasDefinition($source->getAlias())
+        );
+        
+        
+        $clauses = $query->getJoinClauseList();
+        
+        if(!$clauses->isEmpty()) {
+            $stmt2->appendSql("\n".'    WHERE '.$this->_defineQueryClauseList($stmt2, $clauses));
+        }
+
+        $stmt->importBindings($stmt2);
+        return $stmt2->getSql();
+    }
 
 // Query joins
     protected function _defineQueryJoin(opal\rdbms\IStatement $stmt, opal\query\IJoinQuery $join) {
@@ -1180,7 +1223,7 @@ abstract class Table implements ITable, core\IDumpable {
              */
             $fieldString = $this->_adapter->quoteFieldAliasReference($field->getName());
         } else {
-            $fieldString = $this->_defineQueryField($field);
+            $fieldString = $this->_defineQueryField($stmt, $field);
         }
         
         
@@ -1300,8 +1343,9 @@ abstract class Table implements ITable, core\IDumpable {
         
         $adapter = $source->getAdapter();
         
-        $stmt2 = $this->_adapter->prepare(
-            'SELECT '.$this->_defineQueryField($targetField, true)."\n".
+        $stmt2 = $this->_adapter->prepare('');
+        $stmt2->appendSql(
+            'SELECT '.$this->_defineQueryField($stmt2, $targetField, true)."\n".
             'FROM '.$this->_adapter->quoteIdentifier($adapter->getDelegateQueryAdapter()->getName()).' '.
             'AS '.$this->_adapter->quoteTableAliasDefinition($source->getAlias()).
             $joinSql
@@ -1617,7 +1661,7 @@ abstract class Table implements ITable, core\IDumpable {
             && $value->hasDiscreetAlias()) {
                 $valString = $this->_adapter->quoteFieldAliasReference($value->getAlias());
             } else {
-                $valString = $this->_defineQueryField($value);
+                $valString = $this->_defineQueryField($stmt, $value);
             }
         } else if(is_array($value)) {
             throw new opal\query\ValueException(
@@ -1665,7 +1709,7 @@ abstract class Table implements ITable, core\IDumpable {
                 $groupFields = array();
                 
                 foreach($groups as $field) {
-                    $groupFields[] = $this->_defineQueryField($field);
+                    $groupFields[] = $this->_defineQueryField($stmt, $field);
                 }
                 
                 $stmt->appendSql("\n".'GROUP BY '.implode(', ', $groupFields));
@@ -1689,7 +1733,7 @@ abstract class Table implements ITable, core\IDumpable {
                         if($forUpdateOrDelete) {
                             $directiveString = $this->_adapter->quoteIdentifier($field->getName());
                         } else {
-                            $directiveString = $this->_defineQueryField($field);
+                            $directiveString = $this->_defineQueryField($stmt, $field);
                         }
                         
                         if($directive->isDescending()) {

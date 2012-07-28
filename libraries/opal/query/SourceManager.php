@@ -239,7 +239,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
             
             if($checkAlias === true && $passedSourceAlias !== $source->getAlias()) {
                 throw new InvalidArgumentException(
-                    'Source alias "'.$sourceAlias.'" found when alias "'.$source->getAlias().'" is expected'
+                    'Source alias "'.$passedSourceAlias.'" found when alias "'.$source->getAlias().'" is expected'
                 );
             } else if(is_string($checkAlias) && $source->getAlias() == $checkAlias) {
                 throw new InvalidArgumentException(

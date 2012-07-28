@@ -15,7 +15,7 @@ use df\opal;
  * This type requires an inverse field and must lookup and match target table.
  * Key resides here - inverse primary primitive
  */
-class ManyToOne extends One implements axis\schema\IManyToOneField {
+class ManyToOne extends One implements axis\schema\IManyToOneField, axis\schema\IQueryClauseRewriterField {
     
     use axis\schema\TInverseRelationField;
 
@@ -46,6 +46,14 @@ class ManyToOne extends One implements axis\schema\IManyToOneField {
         } else {
             return new opal\query\record\PrimaryManifest($this->_targetPrimaryFields, $values);
         }
+    }
+
+
+// Clause
+    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false) {
+        return $field->getSource()->getAdapter()->mapVirtualClause(
+            $parent, $field, $operator, $value, $isOr, $this->_targetPrimaryFields, $this->_name
+        );
     }
     
     

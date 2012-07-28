@@ -72,6 +72,10 @@ class Fetch implements IFetchQuery, core\IDumpable {
             'sources' => $this->_sourceManager,
             'fields' => $this->_source
         );
+
+        if(!empty($this->_populates)) {
+            $output['populates'] = $this->_populates;
+        }
         
         if(!empty($this->_joinConstraints)) {
             $output['joinConstraints'] = $this->_joinConstraints;

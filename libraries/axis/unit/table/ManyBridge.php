@@ -71,21 +71,5 @@ class ManyBridge extends Base implements axis\IVirtualUnit {
         return $this->_dominantFieldName;
     }
     
-    public function getDominantFieldPrefix() {
-        return $this->_dominantUnitName.'_';//.$this->_dominantFieldName.'_';
-    }
-    
-    public function getSubmissiveFieldPrefix(axis\unit\table\Base $table) {
-        return $table->getUnitName().'_';
-    }
-    
-    public function getFieldPrefix(axis\unit\table\Base $table, $isDominant) {
-        if($isDominant) {
-            return $this->getDominantFieldPrefix();
-        } else {
-            return $this->getSubmissiveFieldPrefix($table);
-        }
-    }
-    
     protected function _onCreate(axis\schema\ISchema $schema) {}
 }

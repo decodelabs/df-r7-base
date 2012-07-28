@@ -12,8 +12,10 @@ use df\opal;
 class Select implements ISelectQuery, core\IDumpable {
             
     use TQuery;
+    use TQuery_Correlatable;
     use TQuery_Joinable;
     use TQuery_Attachable;
+    use TQuery_Populatable;
     use TQuery_PrerequisiteClauseFactory;
     use TQuery_PrerequisiteAwareWhereClauseFactory;
     use TQuery_Groupable;
@@ -140,11 +142,15 @@ class Select implements ISelectQuery, core\IDumpable {
     
 // Dump
     public function getDumpProperties() {
-        $output = array(
+        $output = [
             'sources' => $this->_sourceManager,
             'fields' => $this->_source
-        );
+        ];
         
+        if(!empty($this->_populates)) {
+            $output['populates'] = $this->_populates;
+        }
+
         if(!empty($this->_joins)) {
             $output['join'] = $this->_joins;
         }

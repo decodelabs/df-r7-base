@@ -99,13 +99,13 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
         
         $bridgeUnit = axis\Unit::fromId($this->_bridgeUnitId, $application);
         
-        $localFieldPrefix = $bridgeUnit->getFieldPrefix($localUnit, true);
-        $targetFieldPrefix = $bridgeUnit->getFieldPrefix($targetUnit, false);
-        
+        $localFieldName = $localUnit->getUnitName();
+        $targetFieldName = $targetUnit->getUnitName();
+
         $query = $bridgeUnit->select(
-            $localFieldPrefix.$this->_localPrimaryFields[0].' as id'
+            $localFieldName.' as id'
         );
-            
+
         $mainOperator = 'in';
         
         if(opal\query\clause\Clause::isNegatedOperator($operator)) {
@@ -118,20 +118,14 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
         switch($operator) {
             case opal\query\clause\Clause::OP_IN:
                 if($isSingleField = count($this->_targetPrimaryFields) == 1) {
-                    $query->where($targetFieldPrefix.$this->_targetPrimaryFields[0], $operator, $value);
+                    $query->where($targetFieldName, $operator, $value);
                 } else {
                     foreach($value as $inVal) {
                         $targetManifest = new opal\query\record\PrimaryManifest(
                             $this->_targetPrimaryFields, $inVal
                         );
                         
-                        $subClause = $query->beginOrWhereClause();
-                        
-                        foreach($targetManifest->toArray() as $key => $clauseVal) {
-                            $subClause->where($targetFieldPrefix.$key, '=', $clauseVal);
-                        }
-                        
-                        $subClause->endClause();
+                        $query->orWhere($targetFieldName, '=', $targetManifest);
                     }
                 }
                 
@@ -141,10 +135,8 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
                 $targetManifest = new opal\query\record\PrimaryManifest(
                     $this->_targetPrimaryFields, $value
                 );
-            
-                foreach($targetManifest->toArray() as $key => $clauseVal) {
-                    $query->where($targetFieldPrefix.$key, $operator, $clauseVal);
-                }
+
+                $query->where($targetFieldName, $operator, $targetManifest);
                 
                 break;
         }

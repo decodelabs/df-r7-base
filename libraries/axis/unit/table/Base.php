@@ -254,11 +254,8 @@ abstract class Base extends axis\Unit implements
                 $fields[] = new opal\query\field\Intrinsic($source, $fieldName, $fieldName);
             }
 
-            if(count($fields) == 1) {
-                return $fields[0];
-            } else {
-                return new opal\query\field\Virtual($source, $name, $alias, $fields);
-            }
+
+            return new opal\query\field\Virtual($source, $name, $alias, $fields);
         }
 
 
@@ -303,12 +300,118 @@ abstract class Base extends axis\Unit implements
     }
     
     public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false) {
+        $name = $field->getName();
+
+        if($name{0} == '@') {
+            switch(strtolower($name)) {
+                case '@primary':
+                    $fieldList = array_keys($this->getUnitSchema()->getPrimaryIndex()->getFields());
+                    return $this->mapVirtualClause($parent, $field, $operator, $value, $isOr, $fieldList);
+
+                default:
+                    throw new axis\schema\RuntimeException(
+                        'Query field '.$field->getName().' has no virtual field rewriter'
+                    );
+            }
+        }
+
         if((!$axisField = $this->getUnitSchema()->getField($field->getName()))
          || !$axisField instanceof axis\schema\IQueryClauseRewriterField) {
-            return null;
+            throw new axis\schema\RuntimeException(
+                'Query field '.$field->getName().' has no virtual field rewriter'
+            );
         }
         
         return $axisField->rewriteVirtualQueryClause($parent, $field, $operator, $value, $isOr);
+    }
+
+    public function mapVirtualClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr, array $fieldList, $localPrefix=null) {
+        $fieldCount = count($fieldList);
+        $targetPrefix = null;
+
+        $output = null;
+
+        if($fieldCount > 1) {
+            $output = new opal\query\clause\ListBase($parent, $isOr);
+            $clauseFactory = $output;
+        } else {
+            $clauseFactory = $parent;
+        }
+
+        if($value instanceof opal\query\IVirtualField) {
+            $targetPrefix = $value->getName();
+
+            if($targetPrefix{0} == '@') {
+                $targetPrefix = null;
+            }
+
+            $valueFields = array();
+
+            foreach($value->getTargetFields() as $targetField) {
+                $targetFieldName = $targetField->getName();
+
+                if($localPrefix === null && $targetPrefix !== null) {
+                    $targetFieldName = substr($targetFieldName, strlen($targetPrefix) + 1);
+                } else if($localPrefix !== null && $targetPrefix === null) {
+                    $targetFieldName = $localPrefix.'_'.$targetFieldName;
+                }
+
+                $valueFields[$targetFieldName] = $targetField;
+            }
+        } else if($value instanceof opal\query\record\IPrimaryManifest) {
+            $value = $value->getIntrinsicFieldMap($localPrefix);
+        } else if(is_scalar($value) && $fieldCount > 1) {
+            throw new axis\schema\RuntimeException(
+                'KeyGroup fields do not match on '.
+                $parent->getSource()->getAdapter()->getName().':'.$field->getName()
+            );
+        }
+
+        foreach($fieldList as $fieldName) {
+            $subValue = null;
+            $keyName = $fieldName;
+
+            if($localPrefix !== null) {
+                $keyName = $localPrefix.'_'.$keyName;
+            }
+
+
+            if($value instanceof opal\query\IVirtualField) {
+                if(!isset($valueFields[$keyName])) {
+                    throw new axis\schema\RuntimeException(
+                        'KeyGroup join fields do not match between '.
+                        $parent->getSource()->getAdapter()->getUnitId().':'.$field->getName().' and '.
+                        $value->getSource()->getAdapter()->getUnitId().':'.$value->getName().
+                        ' for keyName '.$keyName
+                    );
+                }
+                
+                $subValue = $valueFields[$keyName];
+            } else if(is_array($value)) {
+                if(!isset($value[$keyName])) {
+                    throw new axis\schema\RuntimeException(
+                        'KeyGroup fields do not match on '.
+                        $parent->getSource()->getAdapter()->getUnitId().':'.$field->getName().
+                        ' for keyName '.$keyName
+                    );
+                }
+                
+                $subValue = $value[$keyName];
+            } else {
+                $subValue = $value;
+            }
+
+            $newField = new opal\query\field\Intrinsic($field->getSource(), $keyName);
+            $clause = opal\query\clause\Clause::factory($clauseFactory, $newField, $operator, $subValue);
+
+            if($output) {
+                $output->_addClause($clause);
+            } else {
+                return $clause;
+            }
+        }
+        
+        return $output;
     }
     
     

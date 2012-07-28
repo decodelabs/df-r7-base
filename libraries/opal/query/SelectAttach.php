@@ -41,7 +41,7 @@ class SelectAttach extends Select implements ISelectAttachQuery {
             $output['attach'] = $this->_attachments;
         }
         
-        if(!$this->_whereClauseList->isEmpty()) {
+        if($this->_whereClauseList && !$this->_whereClauseList->isEmpty()) {
             $output['where'] = $this->_whereClauseList;
         }
         
@@ -49,7 +49,7 @@ class SelectAttach extends Select implements ISelectAttachQuery {
             $output['group'] = $this->_group;
         }
         
-        if(!$this->_havingClauseList->isEmpty()) {
+        if($this->_havingClauseList && !$this->_havingClauseList->isEmpty()) {
             $output['having'] = $this->_havingClauseList;
         }
         

@@ -59,6 +59,8 @@ class Clause implements opal\query\IClause, core\IDumpable {
             if($output instanceof opal\query\IClauseProvider) {
                 return $output;
             }
+
+            //core\dump($parent, $field, $operator, $value, $isOr);
         }
         
         
@@ -245,10 +247,6 @@ class Clause implements opal\query\IClause, core\IDumpable {
     }
     
     public function setValue($value) {
-        if($value instanceof opal\query\IField) {
-            //core\dump($value);
-        }
-
         if($value instanceof opal\query\ISelectQuery) {
             // TODO: validate operator
         } else {
@@ -326,42 +324,55 @@ class Clause implements opal\query\IClause, core\IDumpable {
         }
         
         if(!$this->_hasPreparedValue) {
-            $source = $this->_field->getSource();
-            $adapter = $source->getAdapter();
-            
-            if($this->_value instanceof opal\query\record\IRecord) {
-                $this->_value = $this->_value->getPrimaryManifest();
-            }
-            
-            if($this->_value instanceof opal\query\ISelectQuery
-            || $this->_value instanceof opal\query\IField
-            || !$adapter instanceof opal\query\IIntegralAdapter) {
-                $this->_hasPreparedValue = false;
-                return $this->_value;
-            }
-            
-            switch($this->_operator) {
-                case self::OP_IN:
-                case self::OP_NOT_IN:
-                case self::OP_BETWEEN:
-                case self::OP_NOT_BETWEEN:
-                    $output = array();
+            /*
+            if($this->_value instanceof opal\query\IVirtualField) {
+                $source = $this->_value->getSource();
+                $adapter = $source->getAdapter();
+
+                if(!$adapter instanceof opal\query\IIntegralAdapter) {
+                    $this->_hasPreparedValue = false;
+                    return $this->_value;
+                }
+
+                $this->_preparedValue = $adapter->extrapolateQuerySourceField($source, $this->_value->getName(), $this->_value->getAlias());
+                core\dump($this->_preparedValue->getTargetFields());
+            } else {*/
+                $source = $this->_field->getSource();
+                $adapter = $source->getAdapter();
                 
-                    foreach($this->_value as $part) {
-                        $output[] = $adapter->prepareQueryClauseValue($this->_field, $part);
-                    }
+                if($this->_value instanceof opal\query\record\IRecord) {
+                    $this->_value = $this->_value->getPrimaryManifest();
+                }
+                
+                if($this->_value instanceof opal\query\ISelectQuery
+                || $this->_value instanceof opal\query\IField
+                || !$adapter instanceof opal\query\IIntegralAdapter) {
+                    $this->_hasPreparedValue = false;
+                    return $this->_value;
+                }
+                
+                switch($this->_operator) {
+                    case self::OP_IN:
+                    case self::OP_NOT_IN:
+                    case self::OP_BETWEEN:
+                    case self::OP_NOT_BETWEEN:
+                        $output = array();
                     
-                    $this->_preparedValue = $output;
-                    break;
-                    
-                default:
-                    $this->_preparedValue = $adapter->prepareQueryClauseValue(
-                        $this->_field, $this->_value
-                    );
-                    
-                    break;
-                    
-            }
+                        foreach($this->_value as $part) {
+                            $output[] = $adapter->prepareQueryClauseValue($this->_field, $part);
+                        }
+                        
+                        $this->_preparedValue = $output;
+                        break;
+                        
+                    default:
+                        $this->_preparedValue = $adapter->prepareQueryClauseValue(
+                            $this->_field, $this->_value
+                        );
+                        
+                        break;
+                }
+            //}
             
             $this->_hasPreparedValue = true;
         }

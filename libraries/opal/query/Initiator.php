@@ -30,12 +30,17 @@ class Initiator implements IInitiator {
             case IQueryTypes::BATCH_REPLACE: return 'BATCH_REPLACE';
             case IQueryTypes::UPDATE: return 'UPDATE';
             case IQueryTypes::DELETE: return 'DELETE';
+
+            case IQueryTypes::CORRELATION: return 'CORRELATION';
+            case IQueryTypes::POPULATE: return 'POPULATE';
             
             case IQueryTypes::JOIN: return 'JOIN';
             case IQueryTypes::JOIN_CONSTRAINT: return 'JOIN_CONSTRAINT';
+            case IQueryTypes::REMOTE_JOIN: return 'REMOTE_JOIN';
             
             case IQueryTypes::SELECT_ATTACH: return 'SELECT_ATTACH';
             case IQueryTypes::FETCH_ATTACH: return 'FETCH_ATTACH';
+            case IQueryTypes::REMOTE_ATTACH: return 'REMOVE_ATTACH';
 
             default: return '*uninitialized*';
         }
@@ -56,13 +61,7 @@ class Initiator implements IInitiator {
     
 // Select
     public function beginSelect(array $fields=array()) {
-        if($this->_mode !== null) {
-            throw new LogicException(
-                'Query initiator mode has already been set'
-            );
-        }
-        
-        $this->_mode = IQueryTypes::SELECT;
+        $this->_setMode(IQueryTypes::SELECT);
         
         if(empty($fields)) {
             $fields = array('*');
@@ -80,13 +79,7 @@ class Initiator implements IInitiator {
     
 // Fetch
     public function beginFetch() {
-        if($this->_mode !== null) {
-            throw new LogicException(
-                'Query initiator mode has already been set'
-            );
-        }
-        
-        $this->_mode = IQueryTypes::FETCH;
+        $this->_setMode(IQueryTypes::FETCH);
         $this->_fieldMap = array('*' => null);
         
         return $this;
@@ -95,13 +88,7 @@ class Initiator implements IInitiator {
     
 // Insert
     public function beginInsert($row) {
-        if($this->_mode !== null) {
-            throw new LogicException(
-                'Query initiator mode has already been set'
-            );
-        }
-        
-        $this->_mode = IQueryTypes::INSERT;
+        $this->_setMode(IQueryTypes::INSERT);
         $this->_fieldMap = array('*' => null);
         $this->_data = $row;
         
@@ -111,13 +98,7 @@ class Initiator implements IInitiator {
     
 // Batch insert
     public function beginBatchInsert($rows=array()) {
-        if($this->_mode !== null) {
-            throw new LogicException(
-                'Query initiator mode has already been set'
-            );
-        }
-        
-        $this->_mode = IQueryTypes::BATCH_INSERT;
+        $this->_setMode(IQueryTypes::BATCH_INSERT);
         $this->_fieldMap = array('*' => null);
         $this->_data = $rows;
         
@@ -127,13 +108,7 @@ class Initiator implements IInitiator {
     
 // Replace
     public function beginReplace($row) {
-        if($this->_mode !== null) {
-            throw new LogicException(
-                'Query initiator mode has already been set'
-            );
-        }
-        
-        $this->_mode = IQueryTypes::REPLACE;
+        $this->_setMode(IQueryTypes::REPLACE);
         $this->_fieldMap = array('*' => null);
         $this->_data = $row;
         
@@ -142,13 +117,7 @@ class Initiator implements IInitiator {
     
 // Batch replace
     public function beginBatchReplace($rows=array()) {
-        if($this->_mode !== null) {
-            throw new LogicException(
-                'Query initiator mode has already been set'
-            );
-        }
-        
-        $this->_mode = IQueryTypes::BATCH_REPLACE;
+        $this->_setMode(IQueryTypes::BATCH_REPLACE);
         $this->_fieldMap = array('*' => null);
         $this->_data = $rows;
         
@@ -157,13 +126,7 @@ class Initiator implements IInitiator {
     
 // Update
     public function beginUpdate(array $valueMap=null) {
-        if($this->_mode !== null) {
-            throw new LogicException(
-                'Query initiator mode has already been set'
-            );
-        }
-        
-        $this->_mode = IQueryTypes::UPDATE;
+        $this->_setMode(IQueryTypes::UPDATE);
         $this->_data = $valueMap;
         
         if(is_array($valueMap)) {
@@ -175,29 +138,39 @@ class Initiator implements IInitiator {
     
 // Delete
     public function beginDelete() {
-        if($this->_mode !== null) {
-            throw new LogicException(
-                'Query initiator mode has already been set'
-            );
-        }
-        
-        $this->_mode = IQueryTypes::DELETE;
+        $this->_setMode(IQueryTypes::DELETE);
         $this->_fieldMap = array('*' => null);
         
         return $this;
     }
     
+
+
+
+// Correlation
+    public function beginCorrelation(IQuery $parent, $field, $alias=null) {
+        $this->_setMode(IQueryTypes::CORRELATION);
+        $this->_parentQuery = $parent;
+        $this->_fieldMap = [$field => $alias];
+
+        return $this;
+    }
+
+
+// Populate
+    public function beginPopulate(IQuery $parent, $field) {
+        $this->_setMode(IQueryTypes::POPULATE);
+        $this->_parentQuery = $parent;
+        $this->_fieldMap = [$field => null];
+
+        core\stub($this);
+    }
+
     
     
 // Join
     public function beginJoin(IQuery $parent, array $fields=array(), $type=IJoinQuery::INNER) {
-        if($this->_mode !== null) {
-            throw new LogicException(
-                'Query initiator mode has already been set'
-            );
-        }
-        
-        $this->_mode = IQueryTypes::JOIN;
+        $this->_setMode(IQueryTypes::JOIN);
         $this->_parentQuery = $parent;
         
         switch($type) {
@@ -225,13 +198,7 @@ class Initiator implements IInitiator {
     }
     
     public function beginJoinConstraint(IQuery $parent, $type=IJoinQuery::INNER) {
-        if($this->_mode !== null) {
-            throw new LogicException(
-                'Query initiator mode has already been set'
-            );
-        }
-        
-        $this->_mode = IQueryTypes::JOIN_CONSTRAINT;
+        $this->_setMode(IQueryTypes::JOIN_CONSTRAINT);
         $this->_parentQuery = $parent;
         
         switch($type) {
@@ -253,12 +220,6 @@ class Initiator implements IInitiator {
 
 // Attach
     public function beginAttach(IReadQuery $parent, array $fields=array()) {
-        if($this->_mode !== null) {
-            throw new LogicException(
-                'Query initiator mode has already been set'
-            );
-        }
-        
         $this->_parentQuery = $parent;
         
         if(isset($fields[0]) && is_array($fields[0])) {
@@ -266,9 +227,9 @@ class Initiator implements IInitiator {
         }
         
         if(empty($fields)) {
-            $this->_mode = IQueryTypes::FETCH_ATTACH;
+            $this->_setMode(IQueryTypes::FETCH_ATTACH);
         } else {
-            $this->_mode = IQueryTypes::SELECT_ATTACH;
+            $this->_setMode(IQueryTypes::SELECT_ATTACH);
             
             foreach($fields as $field) {
                 $this->_fieldMap[$field] = null;
@@ -298,6 +259,16 @@ class Initiator implements IInitiator {
     
     public function getJoinType() {
         return $this->_joinType;
+    }
+
+    protected function _setMode($mode) {
+        if($this->_mode !== null) {
+            throw new LogicException(
+                'Query initiator mode has already been set'
+            );
+        }
+
+        $this->_mode = $mode;
     }
     
     
@@ -343,6 +314,21 @@ class Initiator implements IInitiator {
                 
                 return new Delete($sourceManager, $source);    
                 
+            case IQueryTypes::CORRELATION:
+                $sourceManager = $this->_parentQuery->getSourceManager();
+                $source = $sourceManager->newSource($sourceAdapter, $alias, $this->getFields());
+
+                if(!$source->getAdapter()->supportsQueryType($this->_mode)) {
+                    throw new LogicException(
+                        'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().' '.
+                        'does not support CORRELATION queries'
+                    );
+                }
+
+                foreach($this->_fieldMap as $fieldAlias) { break; }
+
+                return new Correlation($this->_parentQuery, $source, $fieldAlias);
+
             case IQueryTypes::JOIN:
             case IQueryTypes::JOIN_CONSTRAINT:
                 $sourceManager = $this->_parentQuery->getSourceManager();

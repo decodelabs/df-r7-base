@@ -64,7 +64,11 @@ class PrimaryManifest implements IPrimaryManifest, core\IDumpable {
         return $output;
     }
     
-    public function getIntrinsicFieldMap($fieldName) {
+    public function getIntrinsicFieldMap($fieldName=null) {
+        if($fieldName === null) {
+            return $this->toArray();
+        }
+        
         $output = array();
 
         foreach($this->_keys as $key => $value) {

@@ -38,6 +38,10 @@ interface IInitiator extends core\IApplicationAware, ITransactionAware {
     public function beginBatchReplace($rows=array());
     public function beginUpdate(array $valueMap=null);
     public function beginDelete();
+
+    public function beginCorrelation(IQuery $parent, $field, $alias=null);
+    public function beginPopulate(IQuery $parent, $field);
+
     public function beginJoin(IQuery $parent, array $fields=array(), $type=IJoinQuery::INNER);
     public function beginJoinConstraint(IQuery $parent, $type=IJoinQuery::INNER);
     public function beginAttach(IReadQuery $parent, array $fields=array());
@@ -151,6 +155,10 @@ interface IWriteQuery extends IQuery {
     public function execute();
 }
 
+interface ICorrelatableQuery extends IQuery {
+    public function correlate($field, $alias=null);
+    public function addCorrelation(ICorrelationQuery $correlation);
+}
 
 interface IJoinProviderQuery extends IQuery {
     public function getJoins();
@@ -180,6 +188,9 @@ interface IAttachableQuery extends IReadQuery {
 
 interface IPopulatableQuery extends IReadQuery {
     public function populate($field);
+    public function addPopulate(IPopulateQuery $populate);
+    public function getPopulates();
+    public function clearPopulates();
 }
 
 
@@ -215,6 +226,12 @@ interface IOffsettableQuery extends IQuery {
 }
 
 
+interface ICorrelationQuery extends IQuery, IParentSourceProvider, IJoinClauseFactory {
+    public function getFieldAlias();
+    public function endCorrelation($fieldAlias=null);
+}
+
+
 interface IJoinQuery extends IQuery, IParentSourceProvider, IJoinClauseFactory {
     
     const INNER = 0;
@@ -228,6 +245,11 @@ interface IJoinQuery extends IQuery, IParentSourceProvider, IJoinClauseFactory {
 }
 
 interface IJoinConstraintQuery extends IJoinQuery {}
+
+
+interface IPopulateQuery extends IQuery, IParentSourceProvider {
+
+}
 
 
 interface IAttachQuery extends IQuery, IParentSourceProvider, IJoinClauseFactory {
@@ -264,8 +286,10 @@ interface IPageableQuery extends IReadQuery, core\collection\IPageable {
 interface ISelectQuery extends 
     IReadQuery, 
     \Countable,
+    ICorrelatableQuery,
     IJoinableQuery, 
     IAttachableQuery, 
+    IPopulatableQuery,
     IPrerequisiteClauseQuery,
     IGroupableQuery, 
     IHavingClauseQuery, 
@@ -374,13 +398,16 @@ interface IQueryTypes {
     const UPDATE = 7;
     const DELETE = 8;
     
-    const JOIN = 101;
-    const JOIN_CONSTRAINT = 102;
-    const REMOTE_JOIN = 111;
+    const CORRELATION = 101;
+    const POPULATE = 102;
+
+    const JOIN = 201;
+    const JOIN_CONSTRAINT = 202;
+    const REMOTE_JOIN = 211;
     
-    const SELECT_ATTACH = 201;
-    const FETCH_ATTACH = 202;
-    const REMOTE_ATTACH = 211;
+    const SELECT_ATTACH = 301;
+    const FETCH_ATTACH = 302;
+    const REMOTE_ATTACH = 311;
 }
 
 interface IQueryFeatures {
@@ -529,6 +556,10 @@ interface IField {
 
 interface IIntrinsicField extends IField {}
 interface IWildcardField extends IField {}
+
+interface ICorrelationField extends IField {
+    public function getCorrelationQuery();
+}
 
 interface IAggregateField extends IField {
     public function getType();

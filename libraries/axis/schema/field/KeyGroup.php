@@ -82,72 +82,9 @@ class KeyGroup extends Base implements axis\schema\IMultiPrimitiveField, axis\sc
 
 // Clause
 	public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false) {
-        $fieldCount = count($this->_targetPrimaryFields);
-        $output = null;
-
-
-        if($fieldCount > 1) {
-        	$output = new opal\query\clause\WhereList($parent, $isOr);
-        	$clauseFactory = $output;
-        } else {
-        	$clauseFactory = $parent;
-        }
-
-        if($value instanceof opal\query\IVirtualField) {
-        	$valueFields = array();
-        	
-        	foreach($value->getTargetFields() as $field) {
-        		$valueFields[$field->getName()] = $field;
-        	}
-        } else if($value instanceof opal\query\record\IPrimaryManifest) {
-       		$value = $value->getIntrinsicFieldMap($this->_name);
-        } else if(is_scalar($value) && $fieldCount > 1) {
-        	throw new axis\schema\RuntimeException(
-				'KeyGroup fields do not match on '.
-				$parent->getSource()->getAdapter()->getName().':'.$this->_name
-			);
-        }
-
-        foreach($this->_targetPrimaryFields as $fieldName) {
-        	$subValue = null;
-        	$keyName = $this->_name.'_'.$fieldName;
-
-        	if($value instanceof opal\query\IVirtualField) {
-        		if(!isset($valueFields[$keyName])) {
-        			throw new axis\schema\RuntimeException(
-        				'KeyGroup join fields do not match between '.
-        				$parent->getSource()->getAdapter()->getName().':'.$this->_name.' and '.
-        				$value->getSource()->getAdapter()->getName().':'.$value->getName().
-        				' for keyName '.$keyName
-    				);
-        		}
-        		
-        		$subValue = $valueFields[$keyName];
-        	} else if(is_array($value)) {
-        		if(!isset($value[$keyName])) {
-        			throw new axis\schema\RuntimeException(
-        				'KeyGroup fields do not match on '.
-        				$parent->getSource()->getAdapter()->getUnitId().':'.$this->_name.
-        				' for keyName '.$keyName
-    				);
-        		}
-        		
-        		$subValue = $value[$keyName];
-        	} else {
-        		$subValue = $value;
-        	}
-
-        	$newField = new opal\query\field\Intrinsic($field->getSource(), $keyName);
-        	$clause = opal\query\clause\Clause::factory($clauseFactory, $newField, $operator, $subValue);
-
-        	if($output) {
-        		$output->_addClause($clause);
-        	} else {
-        		return $clause;
-        	}
-        }
-
-        return $output;
+        return $field->getSource()->getAdapter()->mapVirtualClause(
+            $parent, $field, $operator, $value, $isOr, $this->_targetPrimaryFields, $this->_name
+        );
 	}
 
 

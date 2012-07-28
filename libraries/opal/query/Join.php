@@ -138,10 +138,10 @@ class Join implements IJoinQuery, core\IDumpable {
     
 // Dump
     public function getDumpProperties() {
-        return array(
+        return [
             'type' => self::typeIdToName($this->_type),
             'fields' => $this->_source,
             'on' => $this->_joinClauseList
-        );
+        ];
     }
 }
