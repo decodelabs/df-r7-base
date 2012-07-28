@@ -30,7 +30,8 @@ class Correlation implements opal\query\ICorrelationField, core\IDumpable {
     }
 
     public function getQualifiedName() {
-    	return 'CORRELATION('.$this->getSourceAlias().'.'.$this->getAlias().')';
+    	return $this->_query->getFieldAlias();
+    	//return 'CORRELATION('.$this->getSourceAlias().'.'.$this->getAlias().')';
     }
 
     public function getName() {

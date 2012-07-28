@@ -84,12 +84,13 @@ class Aggregate implements opal\query\IAggregateField, core\IDumpable {
             $targetField = $targetField->getTargetFields()[0];
         }
         
+        $this->_type = $type;
+        $this->_targetField = $targetField;
+
         if($alias === null) {
             $alias = $this->getName();
         }
-        
-        $this->_type = $type;
-        $this->_targetField = $targetField;
+
         $this->_alias = $alias;
     }
 
