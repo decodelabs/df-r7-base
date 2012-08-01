@@ -120,7 +120,7 @@ class OutputManifest implements IOutputManifest {
                 $adapter = $source->getAdapter();
                 
                 if($adapter instanceof opal\query\IIntegralAdapter) {
-                    $fieldProcessors = $adapter->getQueryResultValueProcessors();
+                    $fieldProcessors = $adapter->getQueryResultValueProcessors(array_keys($source->getOutputFields()));
                     
                     if(!empty($fieldProcessors)) {
                         foreach($fieldProcessors as $name => $fieldProcessor) {

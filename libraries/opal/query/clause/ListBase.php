@@ -20,6 +20,12 @@ class ListBase implements opal\query\IClauseList, core\IDumpable {
         $this->_isOr = (bool)$isOr;
     }
     
+    public function __clone() {
+        foreach($this->_clauses as $i => $clause) {
+            $this->_clauses[$i] = clone $clause;
+        }
+    }
+
     public function toArray() {
         return $this->_clauses;
     }
@@ -117,6 +123,67 @@ class ListBase implements opal\query\IClauseList, core\IDumpable {
         }
         
         return $output;
+    }
+
+    public function extractClausesFor(opal\query\ISource $source, $checkValues=true) {
+        $output = array();
+        $sourceAlias = $source->getAlias();
+
+        foreach($this->_clauses as $clause) {
+            if($clause instanceof opal\query\IClauseList) {
+                $output = array_merge($output, $clause->extractClausesFor($source));
+                continue;
+            }
+
+            if($clause->getField()->getSource()->getAlias() == $sourceAlias) {
+                $output[] = $clause;
+                continue;
+            } 
+
+            if($checkValues) {
+                $value = $clause->getValue();
+
+                if($value instanceof opal\query\IField
+                && $value->getSource()->getAlias() == $sourceAlias) {
+                    $output[] = $clause;
+                }
+            }
+        }
+
+        return $output;
+    }
+
+    public function isLocalTo(array $sources) {
+        $source = $this->getSource();
+
+        if(!isset($sources[$source->getUniqueId()])) {
+            return false;
+        }
+
+        foreach($this->_clauses as $clause) {
+            if($clause instanceof opal\query\IClauseList) {
+                if(!$clause->isLocalTo($sources)) {
+                    return false;
+                }
+            } else {
+                $source = $clause->getField()->getSource();
+
+                if(!isset($sources[$source->getUniqueId()])) {
+                    return false;
+                }
+                $value = $clause->getValue();
+
+                if($value instanceof opal\query\IField) {
+                    $source = $value->getSource();
+
+                    if(!isset($sources[$source->getUniqueId()])) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
     }
     
     public function clear() {

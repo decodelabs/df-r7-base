@@ -26,7 +26,7 @@ class Rdbms implements axis\ISchemaDefinitionStorageAdapter {
     
     public function fetchFor(axis\ISchemaBasedStorageUnit $unit) {
         return $this->_table->select('schema')
-            ->Where('unitId', '=', $unit->getUnitId())
+            ->where('unitId', '=', $unit->getUnitId())
             ->toValue();
     }
     

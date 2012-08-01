@@ -210,16 +210,16 @@ class ArrayManipulator implements IArrayManipulator {
         return $this->_rows;
     }
 
-    public function applyAttachmentDataQuery(opal\query\IAttachQuery $query) {
+    public function applyAttachmentDataQuery(opal\query\IAttachQuery $query, $joinsApplied=false, $clausesApplied=false) {
         if(empty($this->_rows)) {
             return $this->_rows;
         }
-        
-        if($query instanceof opal\query\IJoinProviderQuery) {
+
+        if(!$joinsApplied && $query instanceof opal\query\IJoinProviderQuery) {
             $this->applyJoins($query->getJoins());
         }
-        
-        if($query instanceof opal\query\IWhereClauseQuery && $query->hasWhereClauses()) {
+
+        if(!$clausesApplied && $query instanceof opal\query\IWhereClauseQuery && $query->hasWhereClauses()) {
             $this->applyWhereClauseList($query->getWhereClauseList());
             
             if(empty($this->_rows)) {
@@ -235,7 +235,7 @@ class ArrayManipulator implements IArrayManipulator {
     }
 
     public function applyBatchIteratorExpansion(IBatchIterator $batchIterator) {
-        // TODO: populates
+        $this->applyPopulates($batchIterator->getPopulates());
         
         $this->applyAttachments($batchIterator->getAttachments());
         
@@ -287,13 +287,13 @@ class ArrayManipulator implements IArrayManipulator {
             $rows = $this->_rows;
             $this->_rows = array();
             $clauseList = $join->getJoinClauseList()->toArray();
-            $clauseIndex = $this->_createClauseIndex($clauseList);
+            $clauseIndex = new opal\query\clause\Matcher($clauseList, true);
             
             switch($join->getType()) {
                 case opal\query\IJoinQuery::INNER:
                     foreach($rows as $row) {
                         foreach($sourceData as $joinRow) {
-                            if($this->_testRowMatchWithClauseIndex($clauseIndex, $row, $joinRow)) {
+                            if($clauseIndex->testRowMatch($row, $joinRow)) {
                                 $this->_rows[] = array_merge($row, $joinRow);
                             }
                         }
@@ -306,7 +306,7 @@ class ArrayManipulator implements IArrayManipulator {
                         $match = false;
                         
                         foreach($sourceData as $joinRow) {
-                            if($this->_testRowMatchWithClauseIndex($clauseIndex, $row, $joinRow)) {
+                            if($clauseIndex->testRowMatch($row, $joinRow)) {
                                 $this->_rows[] = array_merge($row, $joinRow);
                                 $match = true;
                             }
@@ -324,7 +324,7 @@ class ArrayManipulator implements IArrayManipulator {
                         $match = false;
                         
                         foreach($rows as $row) {
-                            if($this->_testRowMatchWithClauseIndex($clauseIndex, $row, $joinRow)) {
+                            if($clauseIndex->testRowMatch($row, $joinRow)) {
                                 $this->_rows[] = array_merge($row, $joinRow);
                                 $match = true;
                             }
@@ -380,10 +380,10 @@ class ArrayManipulator implements IArrayManipulator {
         $this->normalizeRows();
         
         if(!$clauseList->isEmpty()) {
-            $clauseIndex = $this->_createClauseIndex($clauseList->toArray());
+            $clauseIndex = new opal\query\clause\Matcher($clauseList->toArray());
             
             foreach($this->_rows as $i => $row) {
-                if(!$this->_testRowWithClauseIndex($clauseIndex, $row)) {
+                if(!$clauseIndex->testRow($row)) {
                     unset($this->_rows[$i]);
                 }
             }
@@ -505,10 +505,10 @@ class ArrayManipulator implements IArrayManipulator {
         $this->normalizeRows();
         
         if(!$clauseList->isEmpty()) {
-            $clauseIndex = $this->_createClauseIndex($clauseList->toArray());
+            $clauseIndex = new opal\query\clause\Matcher($clauseList->toArray());
             
             foreach($this->_rows as $i => $row) {
-                if(!$this->_testRowWithClauseIndex($clauseIndex, $row)) {
+                if(!$clauseIndex->testRow($row)) {
                     unset($this->_rows[$i]);
                 }
                 
@@ -586,20 +586,44 @@ class ArrayManipulator implements IArrayManipulator {
         return $this;
     }
     
+
+// Populates
+    public function applyPopulates(array $populates) {
+        if(empty($this->_rows) || empty($populates)) {
+            return $this;
+        }
+
+        $attachments = array();
+
+        foreach($populates as $populate) {
+            $localAdapter = $populate->getParentSource()->getAdapter();
+            $attachment = $localAdapter->rewritePopulateQueryToAttachment($populate);
+
+            if($attachment instanceof opal\query\IAttachQuery) {
+                $attachments[$populate->getFieldName()] = $attachment;
+            }
+        }
+
+        return $this->applyAttachments($attachments);
+    }
+
     
 // Attachments
     public function applyAttachments(array $attachments) {
         if(empty($this->_rows) || empty($attachments)) {
             return $this;
         }
-        
+
         $this->normalizeRows();
         
         foreach($attachments as $attachKey => $attachment) {
-            $this->_outputManifest->addOutputField(new opal\query\field\Attachment($attachKey, $attachment));
+            $this->_outputManifest->addOutputField(
+                $attachmentQueryField = new opal\query\field\Attachment($attachKey, $attachment)
+            );
+
             $source = $attachment->getSource();
             $adapter = $source->getAdapter();
-            
+
             try {
                 $sourceData = $adapter->fetchAttachmentData($attachment, $this->_rows);
             } catch(\Exception $e) {
@@ -612,7 +636,7 @@ class ArrayManipulator implements IArrayManipulator {
             
             $manipulator = new self($source, $sourceData, true);
             $clauseList = $attachment->getJoinClauseList()->toArray();
-            $clauseIndex = $this->_createClauseIndex($clauseList);
+            $clauseIndex = new opal\query\clause\Matcher($clauseList, true);
             $isFetchQuery = $attachment instanceof opal\query\IFetchQuery;
             $isValueAttachment = $attachment->getType() === 0 || $attachment->getType() === 3;
             
@@ -678,6 +702,7 @@ class ArrayManipulator implements IArrayManipulator {
                 $attachment->getAttachments() : null;
                 
                 
+            //core\dump($sourceData);
             
             
             // Iterate data
@@ -690,7 +715,7 @@ class ArrayManipulator implements IArrayManipulator {
                     $attachData = array();
                     
                     foreach($sourceData as $joinRow) {
-                        if($this->_testRowMatchWithClauseIndex($clauseIndex, $row, $joinRow)) {
+                        if($clauseIndex->testRowMatch($row, $joinRow)) {
                             $attachData[] = $joinRow;
                         }
                     }
@@ -732,8 +757,8 @@ class ArrayManipulator implements IArrayManipulator {
                 if($isValueAttachment) {
                     $attachData = array_shift($attachData);
                 }
-                
-                $row[$attachKey] = $attachData;
+
+                $row[$attachmentQueryField->getQualifiedName()] = $attachData;
             }
         }
 
@@ -760,8 +785,7 @@ class ArrayManipulator implements IArrayManipulator {
         $aggregateFields = $this->_outputManifest->getAggregateFieldAliases();
         $wildcards = $this->_outputManifest->getWildcardMap();
         $fieldProcessors = $this->_outputManifest->getOutputFieldProcessors();
-        
-        
+
         // Prepare qualified names
         $qNameMap = array();
         
@@ -791,10 +815,17 @@ class ArrayManipulator implements IArrayManipulator {
             $fetchObject = isset($temp[0][$objectKey]);
         }
         
-        
+
         // Iterate data
         foreach($temp as $row) {
-            
+            $record = null;
+
+            if($forFetch) {
+                $record = $primaryAdapter->newRecord();
+            }
+
+            //core\debug()->dump($fieldProcessors);
+
             // Pre-process row
             if(!empty($fieldProcessors)) {
                 $tempRow = $row;
@@ -803,7 +834,7 @@ class ArrayManipulator implements IArrayManipulator {
                 foreach($qNameMap as $alias => $qName) {
                     if(isset($fieldProcessors[$qName])) {
                         $row[$qName] = $fieldProcessors[$qName]->inflateValueFromRow(
-                            $qName, $tempRow, $forFetch
+                            $qName, $tempRow, $record
                         );
                     } else if(isset($tempRow[$qName])) {
                         $row[$qName] = $tempRow[$qName];
@@ -812,8 +843,8 @@ class ArrayManipulator implements IArrayManipulator {
                     }
                 }
             }
-            
-            
+
+
             // Single value output
             if($valQName) { 
                 if(array_key_exists($valQName, $row)) {
@@ -867,8 +898,7 @@ class ArrayManipulator implements IArrayManipulator {
                 
                 
                 // Convert to record object
-                if($forFetch) {
-                    $record = $primaryAdapter->newRecord();
+                if($record) {
                     $current = $record->populateWithPreparedData($current);
                 }
             }
@@ -889,260 +919,5 @@ class ArrayManipulator implements IArrayManipulator {
         }
         
         return $this;
-    }
-
-
-    
-// Clause tests
-    protected function _testRowWithClauseIndex(array $clauseIndex, array $row) {
-        if(empty($clauseIndex)) {
-            return true;
-        }
-        
-        foreach($clauseIndex as $set) {
-            $test = true;
-            
-            foreach($set as $clause) {
-                if(is_array($clause)) {
-                    $test &= $this->_testRowWithClauseIndex($clause, $row);
-                } else {
-                    $test &= $this->_testRowWithClause($clause, $row);
-                }
-            }
-            
-            if($test) {
-                return true;
-            }
-        }
-        
-        return false;
-    }
-    
-    protected function _testRowMatchWithClauseIndex(array $clauseIndex, array $row, array $joinRow) {
-        if(empty($clauseIndex)) {
-            return true;
-        }
-        
-        foreach($clauseIndex as $set) {
-            $test = true;
-            
-            foreach($set as $clause) {
-                if(is_array($clause)) {
-                    $test &= $this->_testRowMatchWithClauseIndex($clause, $row, $joinRow);
-                } else {
-                    $test &= $this->_testRowMatchWithClause($clause, $row, $joinRow);
-                }
-            }
-            
-            if($test) {
-                return true;
-            }
-        }
-        
-        return false;
-    }
-    
-    protected function _testRowWithClause(opal\query\IClause $clause, array $row) {
-        $field = $clause->getField();
-        $qName = $field->getQualifiedName();
-        
-        if(!isset($row[$qName])) {
-            $value = null;
-        } else {
-            $value = $row[$qName];
-        }
-        
-        $compare = $clause->getPreparedValue();
-        
-        if($compare instanceof opal\query\IField) {
-            core\stub('Field comparison');
-        }
-        
-        if($compare instanceof opal\query\ISelectQuery) {
-            $source = $compare->getSource();
-            
-            if(null === ($targetField = $source->getFirstOutputDataField())) {
-                throw new opal\query\ValueException(
-                    'Clause subquery does not have a distinct return field'
-                );
-            }
-            
-            
-            switch($clause->getOperator()) {
-                case opal\query\clause\Clause::OP_EQ:
-                case opal\query\clause\Clause::OP_NEQ:
-                case opal\query\clause\Clause::OP_LIKE:
-                case opal\query\clause\Clause::OP_NOT_LIKE:
-                case opal\query\clause\Clause::OP_CONTAINS:
-                case opal\query\clause\Clause::OP_NOT_CONTAINS:
-                case opal\query\clause\Clause::OP_BEGINS:
-                case opal\query\clause\Clause::OP_NOT_BEGINS:
-                case opal\query\clause\Clause::OP_ENDS:
-                case opal\query\clause\Clause::OP_NOT_ENDS:
-                    $limit = $compare->getLimit();
-                    $compare->limit(1);
-                    $clause->setValue($compare->toValue($targetField->getName()));
-                    $compare->limit($limit);
-                    break;
-                    
-                case opal\query\clause\Clause::OP_IN:
-                case opal\query\clause\Clause::OP_NOT_IN:
-                    $clause->setValue($compare->toList($targetField->getName()));
-                    break;
-                    
-                case opal\query\clause\Clause::OP_GT:
-                case opal\query\clause\Clause::OP_GTE:
-                    $source = $compare->getSource();
-                    $source->addOutputField(
-                        new opal\query\field\Aggregate(
-                            $source, 'MAX', $targetField, 'max'
-                        )
-                    );
-                    
-                    $clause->setValue($compare->toValue('max'));
-                    break;
-                    
-                case opal\query\clause\Clause::OP_LT: 
-                case opal\query\clause\Clause::OP_LTE:
-                    $source = $compare->getSource();
-                    $source->addOutputField(
-                        new opal\query\field\Aggregate(
-                            $source, 'MIN', $targetField, 'min'
-                        )
-                    );
-                    
-                    $clause->setValue($compare->toValue('min'));
-                    break;
-                    
-                    
-                case opal\query\clause\Clause::OP_BETWEEN:
-                case opal\query\clause\Clause::OP_NOT_BETWEEN:
-                    throw new OperatorException(
-                        'Operator '.$operator.' is not valid for clause subqueries'
-                    );
-                    
-                
-                default:
-                    throw new opal\query\OperatorException(
-                        'Operator '.$operator.' is not recognized'
-                    );
-            }
-
-            $compare = $clause->getPreparedValue();
-        }
-
-        return $this->_testClauseValues($clause, $value, $compare);
-    }
-
-    protected function _testRowMatchWithClause(opal\query\IClause $clause, array $row, array $joinRow) {
-        $leftField = $clause->getField()->getQualifiedName();
-        $rightField = $clause->getValue()->getQualifiedName();
-        
-        $value = null;
-        $compare = null;
-        
-        if(isset($joinRow[$leftField])) {
-            $value = $joinRow[$leftField];
-        }
-        
-        if(isset($row[$rightField])) {
-            $compare = $row[$rightField];
-        }
-        
-        return $this->_testClauseValues($clause, $value, $compare);
-    }
-
-    
-    protected function _testClauseValues(opal\query\IClause $clause, $value, $compare) {
-        switch($clause->getOperator()) {
-            case opal\query\clause\Clause::OP_EQ:
-                return $value == $compare;
-                
-            case opal\query\clause\Clause::OP_NEQ:
-                return $value != $compare;
-                
-            case opal\query\clause\Clause::OP_GT:
-                return $value > $compare;
-                
-            case opal\query\clause\Clause::OP_GTE:
-                return $value >= $compare;
-                
-            case opal\query\clause\Clause::OP_LT: 
-                return $value < $compare;
-                
-            case opal\query\clause\Clause::OP_LTE:
-                return $value <= $compare;
-            
-            case opal\query\clause\Clause::OP_IN:
-                return in_array($value, $compare);
-                
-            case opal\query\clause\Clause::OP_NOT_IN:
-                return !in_array($value, $compare);
-            
-            case opal\query\clause\Clause::OP_BETWEEN:
-                return $compare[0] <= $value && $value <= $compare[1];
-                
-            case opal\query\clause\Clause::OP_NOT_BETWEEN:
-                return !($compare[0] <= $value && $value <= $compare[1]);
-            
-            case opal\query\clause\Clause::OP_LIKE:
-                return core\string\Util::likeMatch($compare, $value);
-                
-            case opal\query\clause\Clause::OP_NOT_LIKE:
-                return !core\string\Util::likeMatch($compare, $value);
-            
-            case opal\query\clause\Clause::OP_CONTAINS:
-                return core\string\Util::contains($compare, $value);
-                
-            case opal\query\clause\Clause::OP_NOT_CONTAINS:
-                return !core\string\Util::contains($compare, $value);
-            
-            case opal\query\clause\Clause::OP_BEGINS:
-                return core\string\Util::begins($compare, $value);
-                
-            case opal\query\clause\Clause::OP_NOT_BEGINS:
-                return !core\string\Util::begins($compare, $value);
-            
-            case opal\query\clause\Clause::OP_ENDS:
-                return core\string\Util::ends($compare, $value);
-                
-            case opal\query\clause\Clause::OP_NOT_ENDS:
-                return !core\string\Util::ends($compare, $value);
-            
-            
-            default:
-                throw new opal\query\OperatorException(
-                    'Operator '.$operator.' is not recognized'
-                );
-        }
-    }
-
-
-    protected function _createClauseIndex(array $clauses) {
-        $clauseIndex = array();
-        $set = array();
-        
-        foreach($clauses as $clause) {
-            if($clause->isOr() && !empty($set)) {
-                $clauseIndex[] = $set;
-                $set = array();
-            }
-            
-            if($clause instanceof opal\query\IClauseList) {
-                $clause = $this->_createClauseIndex($clause->toArray());
-                
-                if(empty($clause)) {
-                    continue;
-                }
-            }
-            
-            $set[] = $clause;
-        }
-        
-        if(!empty($set)) {
-            $clauseIndex[] = $set;
-        }
-        
-        return $clauseIndex;
     }
 }

@@ -46,8 +46,14 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
     
     
 // Values
-    public function inflateValueFromRow($key, array $row, $forRecord) {
-        return $this->sanitizeValue(null, $forRecord);
+    public function inflateValueFromRow($key, array $row, opal\query\record\IRecord $forRecord=null) {
+        $output = $this->sanitizeValue(null, $forRecord);
+
+        if(isset($row[$key])) {
+            $output->populateInverse($row[$key]);
+        }
+
+        return $output;
     }
     
     public function deflateValue($value) {
@@ -150,6 +156,34 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
         );
     }
     
+
+// Populate
+    public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate) {
+        $application = $populate->getSourceManager()->getApplication();
+
+        $parentSource = $populate->getParentSource();
+        $parentUnit = $parentSource->getAdapter();
+        $parentSourceAlias = $parentSource->getAlias();
+
+        $targetSource = $populate->getSource();
+        $targetSourceAlias = $targetSource->getAlias();
+        $targetUnit = $targetSource->getAdapter();
+
+        $bridgeUnit = axis\Unit::fromId($this->_bridgeUnitId, $application);
+        $bridgeSourceAlias = $populate->getFieldName().'_bridge';
+
+        $output = opal\query\FetchAttach::fromPopulate($populate)
+            ->rightJoinConstraint()
+                ->from($bridgeUnit, $bridgeSourceAlias)
+                ->on($bridgeSourceAlias.'.'.$targetUnit->getUnitName(), '=', $targetSourceAlias.'.@primary')
+                ->endJoin()
+            ->on($bridgeSourceAlias.'.'.$parentUnit->getUnitName(), '=', $parentSourceAlias.'.@primary');
+            
+        $output->asMany($this->_name);
+
+        return $output;
+    }
+
     
 // Validation
     public function sanitize(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $localSchema) {

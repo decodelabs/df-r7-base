@@ -19,6 +19,7 @@ class Initiator implements IInitiator {
     protected $_data = null;
     protected $_joinType = null;
     protected $_parentQuery = null;
+    protected $_applicator;
     
     public static function modeIdToName($id) {
         switch($id) {
@@ -58,6 +59,16 @@ class Initiator implements IInitiator {
         $this->_application = $application;
     }
     
+
+    public function setApplicator(Callable $applicator=null) {
+        $this->_applicator = $applicator;
+        return $this;
+    }
+
+    public function getApplicator() {
+        return $this->_applicator;
+    }
+
     
 // Select
     public function beginSelect(array $fields=array()) {
@@ -158,12 +169,40 @@ class Initiator implements IInitiator {
 
 
 // Populate
-    public function beginPopulate(IQuery $parent, $field) {
+    public function beginPopulate(IQuery $parent, array $fields, $type=IPopulateQuery::TYPE_ALL) {
         $this->_setMode(IQueryTypes::POPULATE);
         $this->_parentQuery = $parent;
-        $this->_fieldMap = [$field => null];
 
-        core\stub($this);
+        switch($type) {
+            case IPopulateQuery::TYPE_ALL:
+            case IPopulateQuery::TYPE_SOME:
+                $this->_joinType = $type;
+                break;
+
+            default:
+                throw new InvalidArgumentException(
+                    $type.' is not a valid populate type'
+                );
+        }
+
+        if($this->_joinType == IPopulateQuery::TYPE_SOME
+        && count($fields) != 1) {
+            throw new InvalidArgumentException(
+                'populateSome() can only handle one field at a time'
+            );
+        }
+
+
+        if($this->_joinType == IPopulateQuery::TYPE_ALL) {
+            foreach($fields as $field) {
+                $populate = new Populate($parent, $field, $type);
+                $populate->endPopulate();
+            }
+
+            return $parent;
+        } else {
+            return new Populate($parent, array_shift($fields), $type);
+        }
     }
 
     
@@ -228,6 +267,7 @@ class Initiator implements IInitiator {
         
         if(empty($fields)) {
             $this->_setMode(IQueryTypes::FETCH_ATTACH);
+            $this->_fieldMap = ['*' => null];
         } else {
             $this->_setMode(IQueryTypes::SELECT_ATTACH);
             
@@ -327,7 +367,13 @@ class Initiator implements IInitiator {
 
                 foreach($this->_fieldMap as $fieldAlias) { break; }
 
-                return new Correlation($this->_parentQuery, $source, $fieldAlias);
+                $output = new Correlation($this->_parentQuery, $source, $fieldAlias);
+
+                if($this->_applicator) {
+                    $output->setApplicator($this->_applicator);
+                }
+
+                return $output;
 
             case IQueryTypes::JOIN:
             case IQueryTypes::JOIN_CONSTRAINT:
@@ -362,7 +408,6 @@ class Initiator implements IInitiator {
                     return new Join($this->_parentQuery, $source, $this->_joinType);
                 }
                 
-                
             case IQueryTypes::SELECT_ATTACH:
             case IQueryTypes::FETCH_ATTACH:
                 if($alias === null) {
@@ -372,7 +417,10 @@ class Initiator implements IInitiator {
                 }
                 
                 $fields = $this->getFields();
+
                 $sourceManager = new opal\query\SourceManager($this->_application, $this->_transaction);
+                $sourceManager->setParentSourceManager($this->_parentQuery->getSourceManager());
+
                 $source = $sourceManager->newSource($sourceAdapter, $alias, $fields);
                 
                 if($source->getAdapterHash() == $this->_parentQuery->getSource()->getAdapterHash()) {

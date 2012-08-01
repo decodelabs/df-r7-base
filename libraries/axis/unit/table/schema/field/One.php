@@ -27,26 +27,52 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
 
     
 // Values
-    public function inflateValueFromRow($key, array $row, $forRecord) {
-        $values = array();
-        
-        foreach($this->_targetPrimaryFields as $field) {
-            $fieldKey = $key.'_'.$field;
+    public function inflateValueFromRow($key, array $row, opal\query\record\IRecord $forRecord=null) {
+        $hasKey = isset($row[$key]);
+
+        if($hasKey) {
+            $value = $row[$key];
+        } else {
+            $value = array();
             
-            if(isset($row[$fieldKey])) {
-                $values[$field] = $row[$fieldKey];
-            } else {
-                $values[$field] = null;
+            foreach($this->_targetPrimaryFields as $field) {
+                $fieldKey = $key.'_'.$field;
+                
+                if(isset($row[$fieldKey])) {
+                    $value[$field] = $row[$fieldKey];
+                } else {
+                    $value[$field] = null;
+                }
             }
         }
-        
-        if($forRecord) {
-            return new axis\unit\table\record\OneRelationValueContainer(
-                $values, $this->_targetUnitId, $this->_targetPrimaryFields
-            );
-        } else {
-            return new opal\query\record\PrimaryManifest($this->_targetPrimaryFields, $values);
+
+
+        if(!$forRecord) {
+            // Only need a simple value
+            if($hasKey) {
+                return $row[$key];
+            } else {
+                return new opal\query\record\PrimaryManifest($this->_targetPrimaryFields, $value);
+            }
         }
+
+
+        // Need to build a value container
+        $targetField = null;
+
+        if($this instanceof axis\schema\IInverseRelationField) {
+            $targetField = $this->_targetField;
+
+            if($value instanceof opal\query\IRecord) {
+                $inverseValue = $value->getRaw($targetField);
+                $inverseValue->populateInverse($forRecord);
+            }
+        }
+
+
+        return new axis\unit\table\record\OneRelationValueContainer(
+            $value, $this->_targetUnitId, $this->_targetPrimaryFields, $targetField
+        );
     }
     
     public function deflateValue($value) {
@@ -81,6 +107,21 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
     
     public function generateInsertValue(array $row) {
         return null;
+    }
+
+
+
+// Populate
+    public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate) {
+        $output = opal\query\FetchAttach::fromPopulate($populate);
+
+        $parentSourceAlias = $populate->getParentSourceAlias();
+        $targetSourceAlias = $populate->getSourceAlias();
+        
+        $output->on($targetSourceAlias.'.@primary', '=', $parentSourceAlias.'.'.$this->_name);
+        $output->asOne($this->_name);
+
+        return $output;
     }
     
     

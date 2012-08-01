@@ -16,7 +16,7 @@ class BatchIterator implements IBatchIterator {
     const DEFAULT_BATCH_SIZE = 50;
     
     protected $_isForFetch = false;
-    protected $_populationFields = array();
+    protected $_populates = array();
     protected $_attachments = array();
     protected $_keyField;
     protected $_valField;
@@ -76,13 +76,13 @@ class BatchIterator implements IBatchIterator {
     }
     
     
-    public function setPopulationFields(array $fields) {
-        $this->_populationFields = $fields;
+    public function setPopulates(array $populates) {
+        $this->_populates = $populates;
         return $this;
     }
     
-    public function getPopulationFields() {
-        return $this->_populationFields;
+    public function getPopulates() {
+        return $this->_populates;
     }
     
     

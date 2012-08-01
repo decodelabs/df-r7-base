@@ -25,11 +25,11 @@ interface IBatchIterator extends core\collection\ICollection, \IteratorAggregate
     public function addSources(array $joinSources);
     public function getSources();
     
+    public function setPopulates(array $populates);
+    public function getPopulates();
+
     public function setAttachments(array $attachments);
     public function getAttachments();
-    
-    public function setPopulationFields(array $fields);
-    public function getPopulationFields();
     
     public function setListKeyField(opal\query\IField $field=null);
     public function getListKeyField();
@@ -79,6 +79,7 @@ interface IArrayManipulator {
     public function applyHavingClauseList(opal\query\IHavingClauseList $clauseList);
     public function applyOrderDirectives(array $orderDirectives);
     public function applyLimit($limit, $offset);
+    public function applyPopulates(array $populates);
     public function applyAttachments(array $attachments);
     public function applyOutputFields(opal\query\IField $keyField=null, opal\query\IField $valField=null, $forFetch=false);
 }

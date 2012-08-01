@@ -21,7 +21,7 @@ class OneParent extends One implements axis\schema\IOneParentField {
     
     
 // Values
-    public function inflateValueFromRow($key, array $row, $forRecord) {
+    public function inflateValueFromRow($key, array $row, opal\query\record\IRecord $forRecord=null) {
         $values = array();
         
         foreach($this->_targetPrimaryFields as $field) {

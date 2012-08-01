@@ -12,6 +12,7 @@ use df\opal;
 class Update implements IUpdateQuery, core\IDumpable {
     
     use TQuery;
+    use TQuery_LocalSource;
     use TQuery_DataUpdate;
     use TQuery_PrerequisiteClauseFactory;
     use TQuery_PrerequisiteAwareWhereClauseFactory;

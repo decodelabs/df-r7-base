@@ -12,6 +12,7 @@ use df\opal;
 class Fetch implements IFetchQuery, core\IDumpable {
     
     use TQuery;
+    use TQuery_LocalSource;
     use TQuery_JoinConstrainable;
     use TQuery_PrerequisiteClauseFactory;
     use TQuery_PrerequisiteAwareWhereClauseFactory;

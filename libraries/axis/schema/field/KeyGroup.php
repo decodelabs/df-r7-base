@@ -22,7 +22,7 @@ class KeyGroup extends Base implements axis\schema\IMultiPrimitiveField, axis\sc
 
 
 // Values
-    public function inflateValueFromRow($key, array $row, $forRecord) {
+    public function inflateValueFromRow($key, array $row, opal\query\record\IRecord $forRecord=null) {
         $values = array();
         
         foreach($this->_targetPrimaryFields as $field) {

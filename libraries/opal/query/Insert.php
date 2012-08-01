@@ -12,6 +12,7 @@ use df\opal;
 class Insert implements IInsertQuery, core\IDumpable {
     
     use TQuery;
+    use TQuery_LocalSource;
     use TQuery_DataInsert;
 
     public function __construct(ISourceManager $sourceManager, ISource $source, $row) {

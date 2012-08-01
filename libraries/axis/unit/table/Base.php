@@ -140,7 +140,7 @@ abstract class Base extends axis\Unit implements
     public function getQuerySourceId() {
         return $this->_adapter->getQuerySourceId();
     }
-    
+
     public function getQuerySourceAdapterHash() {
         return $this->_adapter->getQuerySourceAdapterHash();
     }
@@ -231,9 +231,13 @@ abstract class Base extends axis\Unit implements
         $output = array();
         
         foreach($this->getUnitSchema()->getFields() as $name => $field) {
+            if($field instanceof axis\schema\INullPrimitiveField) {
+                continue;
+            }
+         
             $output[] = $this->extrapolateQuerySourceField($source, $name, null, $field);
         }
-        
+
         return $output;
     }
     
@@ -285,6 +289,39 @@ abstract class Base extends axis\Unit implements
         return $output;
     }
 
+
+// Populates
+    public function getPopulateQuerySourceAdapter(opal\query\ISourceManager $sourceManager, $fieldName) {
+        $schema = $this->getUnitSchema();
+        $field = $schema->getField($fieldName);
+
+        if(!$field instanceof axis\schema\IRelationField) {
+            throw new RuntimeException(
+                'Unit '.$this->getUnitId().' does not had a populatable relation field named '.$field
+            );
+        }
+
+        //if($field instanceof axis\schema\IBridgedRelationField) {
+            //$id = $field->getBridgeUnitId();
+            //$alias = $fieldName.'_bridge';
+            //$fields = ['*'];
+        //} else {
+            $id = $field->getTargetUnitId();
+            $alias = 'populate_'.$fieldName;
+            $fields = ['*'];
+        //}
+
+        $adapter = axis\Unit::fromId($id, $this->_model->getApplication());
+        return $sourceManager->newSource($adapter, $alias, $fields);
+    }
+
+    public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate) {
+        $fieldName = $populate->getFieldName();
+        $schema = $this->getUnitSchema();
+        $field = $schema->getField($fieldName);
+
+        return $field->rewritePopulateQueryToAttachment($populate);
+    }
 
 
 
@@ -482,7 +519,7 @@ abstract class Base extends axis\Unit implements
               || $field instanceof axis\schema\IAutoGeneratorField)) {
                 $values[$name] = $originalId;
             } else {
-                $values[$name] = $field->inflateValueFromRow($name, $row, false);
+                $values[$name] = $field->inflateValueFromRow($name, $row, null);
             }
         }
         

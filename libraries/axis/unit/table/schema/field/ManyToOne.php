@@ -24,30 +24,6 @@ class ManyToOne extends One implements axis\schema\IManyToOneField, axis\schema\
         $this->setTargetField($targetField);
     }
     
-    
-// Values
-    public function inflateValueFromRow($key, array $row, $forRecord) {
-        $values = array();
-        
-        foreach($this->_targetPrimaryFields as $field) {
-            $fieldKey = $key.'_'.$field;
-            
-            if(isset($row[$fieldKey])) {
-                $values[$field] = $row[$fieldKey];
-            } else {
-                $values[$field] = null;
-            }
-        }
-        
-        if($forRecord) {
-            return new axis\unit\table\record\OneRelationValueContainer(
-                $values, $this->_targetUnitId, $this->_targetPrimaryFields, $this->_targetField
-            );
-        } else {
-            return new opal\query\record\PrimaryManifest($this->_targetPrimaryFields, $values);
-        }
-    }
-
 
 // Clause
     public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false) {

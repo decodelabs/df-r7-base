@@ -81,6 +81,8 @@ interface IManyRelationValueContainer extends IValueContainer {
         
     public function select($field1=null);
     public function fetch();
+
+    //public function populateInverse(array $inverse);
 }
 
 

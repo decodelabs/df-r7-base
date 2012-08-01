@@ -57,6 +57,34 @@ class WhereList extends ListBase implements opal\query\IWhereClauseList {
         return $this;
     }
 
+    public function whereCorrelation($field, $operator, $keyField) {
+        $sourceManager = $this->getSourceManager();
+
+        $initiator = Initiator::factory($sourceManager->getApplication())
+            ->setTransaction($sourceManager->getTransaction())
+            ->beginCorrelation($this, $keyField);
+
+        $initiator->setApplicator(function($correlation) use ($field, $operator) {
+            $this->where($field, $operator, $correlation);
+        });
+
+        return $initiator;
+    }
+
+    public function orWhereCorrelation($field, $operator, $keyField) {
+        $sourceManager = $this->getSourceManager();
+
+        $initiator = Initiator::factory($sourceManager->getApplication())
+            ->setTransaction($sourceManager->getTransaction())
+            ->beginCorrelation($this, $keyField);
+
+        $initiator->setApplicator(function($correlation) use ($field, $operator) {
+            $this->orWhere($field, $operator, $correlation);
+        });
+
+        return $initiator;
+    }
+
     public function beginWhereClause() {
         return new WhereList($this);
     }

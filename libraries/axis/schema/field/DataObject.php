@@ -20,7 +20,7 @@ class DataObject extends Base implements opal\schema\ILargeByteSizeRestrictedFie
     
     
 // Values
-    public function inflateValueFromRow($key, array $row, $forRecord) {
+    public function inflateValueFromRow($key, array $row, opal\query\record\IRecord $forRecord=null) {
         $value = null;
         
         if(isset($row[$key])) {

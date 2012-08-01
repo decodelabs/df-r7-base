@@ -16,7 +16,7 @@ class SelectAttach extends Select implements ISelectAttachQuery {
     use TQuery_AttachmentValueExtension;
     use TQuery_ParentAwareJoinClauseFactory;
     
-    public function __construct(IReadQuery $parent, ISourceManager $sourceManager, ISource $source) {
+    public function __construct(IQuery $parent, ISourceManager $sourceManager, ISource $source) {
         $this->_parent = $parent;
         parent::__construct($sourceManager, $source);
     }
@@ -29,10 +29,10 @@ class SelectAttach extends Select implements ISelectAttachQuery {
     
 // Dump
     public function getDumpProperties() {
-        $output = array(
+        $output = [
             'sources' => $this->_sourceManager,
             'fields' => $this->_source
-        );
+        ];
         
         if(!empty($this->_joins)) {
             $output['join'] = $this->_joins;
@@ -41,9 +41,9 @@ class SelectAttach extends Select implements ISelectAttachQuery {
         if(!empty($this->_attachments)) {
             $output['attach'] = $this->_attachments;
         }
-        
-        if($this->_whereClauseList && !$this->_whereClauseList->isEmpty()) {
-            $output['where'] = $this->_whereClauseList;
+
+        if($this->hasWhereClauses()) {
+            $output['where'] = $this->getWhereClauseList();
         }
         
         if(!empty($this->_group)) {

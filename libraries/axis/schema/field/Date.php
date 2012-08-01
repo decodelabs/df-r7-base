@@ -13,7 +13,7 @@ use df\opal;
 class Date extends Base implements axis\schema\IDateField {
     
 // Values
-    public function inflateValueFromRow($key, array $row, $forRecord) {
+    public function inflateValueFromRow($key, array $row, opal\query\record\IRecord $forRecord=null) {
         if(isset($row[$key])) { 
             return core\time\Date::factory($row[$key]);
         } else {

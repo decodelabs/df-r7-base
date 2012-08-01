@@ -113,6 +113,63 @@ class BridgedManyRelationValueContainer implements
     }
     
     public function addList(array $records) {
+        $index = $this->_normalizeInputRecordList($records);
+        
+        foreach($index as $id => $record) {
+            $this->_new[$id] = $record;
+        }
+        
+        if($this->_record) {
+            $this->_record->markAsChanged($this->_localField);
+        }
+        
+        return $this;
+    }
+    
+    public function remove($record) {
+        return $this->removeList(func_get_args());
+    }
+    
+    public function removeList(array $records) {
+        $index = array();
+        $lookupManifests = array();
+        
+        foreach($records as $record) {
+            if($record instanceof opal\query\record\IRecord) {
+                $id = opal\query\record\task\Base::extractRecordId($record);
+            } else if($record instanceof opal\query\record\IPrimaryManifest) {
+                $id = opal\query\record\task\Base::extractRecordId($record);
+            } else {
+                $record = $this->_targetPrimaryManifest->duplicateWith($record);
+                $id = opal\query\record\task\Base::extractRecordId($record);
+            }
+            
+            if(isset($this->_new[$id])) {
+                unset($this->_new[$id]);
+            } else if(isset($this->_current[$id])) {
+                $this->_remove[$id] = $this->_current[$id];
+                unset($this->_current[$id]);
+            } else {
+                $this->_remove[$id] = $record;
+            }
+        }
+        
+        if($this->_record) {
+            $this->_record->markAsChanged($this->_localField);
+        }
+        
+        return $this;
+    }
+    
+    public function removeAll() {
+        $this->_new = array();
+        $this->_current = array();
+        $this->_removeAll = true;
+        return $this;
+    }
+
+
+    protected function _normalizeInputRecordList(array $records) {
         $index = array();
         $lookupManifests = array();
         
@@ -179,58 +236,8 @@ class BridgedManyRelationValueContainer implements
                 }
             }
         }
-        
-        foreach($index as $id => $record) {
-            $this->_new[$id] = $record;
-        }
-        
-        if($this->_record) {
-            $this->_record->markAsChanged($this->_localField);
-        }
-        
-        return $this;
-    }
-    
-    public function remove($record) {
-        return $this->removeList(func_get_args());
-    }
-    
-    public function removeList(array $records) {
-        $index = array();
-        $lookupManifests = array();
-        
-        foreach($records as $record) {
-            if($record instanceof opal\query\record\IRecord) {
-                $id = opal\query\record\task\Base::extractRecordId($record);
-            } else if($record instanceof opal\query\record\IPrimaryManifest) {
-                $id = opal\query\record\task\Base::extractRecordId($record);
-            } else {
-                $record = $this->_targetPrimaryManifest->duplicateWith($record);
-                $id = opal\query\record\task\Base::extractRecordId($record);
-            }
-            
-            if(isset($this->_new[$id])) {
-                unset($this->_new[$id]);
-            } else if(isset($this->_current[$id])) {
-                $this->_remove[$id] = $this->_current[$id];
-                unset($this->_current[$id]);
-            } else {
-                $this->_remove[$id] = $record;
-            }
-        }
-        
-        if($this->_record) {
-            $this->_record->markAsChanged($this->_localField);
-        }
-        
-        return $this;
-    }
-    
-    public function removeAll() {
-        $this->_new = array();
-        $this->_current = array();
-        $this->_removeAll = true;
-        return $this;
+
+        return $index;
     }
     
     
@@ -499,6 +506,12 @@ class BridgedManyRelationValueContainer implements
         return $this;
     }
     
+
+    public function populateInverse(array $inverse) {
+        $this->_current = array_merge($this->_normalizeInputRecordList($inverse));
+        return $this;
+    }
+
     
 // Dump
     public function getDumpValue() {

@@ -56,39 +56,47 @@ trait TQuery_ParentAware {
     public function getParentSource() {
         return $this->_parent->getSource();
     }
-}
 
-
-
-trait TQuery_AccessLock {
-
-    use user\TAccessLock;
-
-    public function getAccessLockDomain() {
-        return $this->_source->getAdapter()->getAccessLockDomain();
-    }
-
-    public function lookupAccessKey(array $keys, $action=null) {
-        return $this->_source->getAdapter()->lookupAccessKey($keys, $action);
-    }
-
-    public function getDefaultAccess($action=null) {
-        return $this->_source->getAdapter()->getDefaultAccess($action);
-    }
-
-    public function getAccessLockId() {
-        return $this->_source->getAdapter()->getAccessLockId();
+    public function getParentSourceAlias() {
+        return $this->_parent->getSourceAlias();
     }
 }
+
 
 
 /*************************
  * Base
  */
 trait TQuery {
+
+    use user\TAccessLock;
     
-    use TQuery_AccessLock;
-    
+    public function getAccessLockDomain() {
+        return $this->getSource()->getAdapter()->getAccessLockDomain();
+    }
+
+    public function lookupAccessKey(array $keys, $action=null) {
+        return $this->getSource()->getAdapter()->lookupAccessKey($keys, $action);
+    }
+
+    public function getDefaultAccess($action=null) {
+        return $this->getSource()->getAdapter()->getDefaultAccess($action);
+    }
+
+    public function getAccessLockId() {
+        return $this->getSource()->getAdapter()->getAccessLockId();
+    }
+
+    protected function _newQuery() {
+        $sourceManager = $this->getSourceManager();
+
+        return Initiator::factory($sourceManager->getApplication())
+            ->setTransaction($sourceManager->getTransaction());
+    }
+}
+
+
+trait TQuery_LocalSource {
 
     protected $_sourceManager;
     protected $_source;
@@ -104,9 +112,6 @@ trait TQuery {
     public function getSourceAlias() {
         return $this->_source->getAlias();
     }
-
-
-    
 }
 
 
@@ -120,20 +125,21 @@ trait TQuery_Correlatable {
 
 
     public function correlate($field, $alias=null) {
-        return Initiator::factory($this->getSourceManager()->getApplication())
-            ->setTransaction($this->getSourceManager()->getTransaction())
-            ->beginCorrelation($this, $field, $alias);
+        return $this->_newQuery()->beginCorrelation($this, $field, $alias);
     }
 
     public function addCorrelation(ICorrelationQuery $correlation) {
-        if(!$this->_source->getAdapter()->supportsQueryType($correlation->getQueryType())) {
+        $source = $this->getSource();
+        $adapter = $source->getAdapter();
+
+        if(!$adapter->supportsQueryType($correlation->getQueryType())) {
             throw new LogicException(
-                'Query adapter '.$this->_source->getAdapter()->getQuerySourceDisplayName().' does not support correlations'
+                'Query adapter '.$adapter->getQuerySourceDisplayName().' does not support correlations'
             );
         }
         
         $field = new opal\query\field\Correlation($correlation);
-        $this->_source->addOutputField($field);
+        $source->addOutputField($field);
 
         return $this;
     }
@@ -149,33 +155,23 @@ trait TQuery_Joinable {
     protected $_joins = array();
     
     public function join($field1=null) {
-        $sourceManager = $this->getSourceManager();
-
-        return Initiator::factory($sourceManager->getApplication())
-            ->setTransaction($sourceManager->getTransaction())
-            ->beginJoin($this, func_get_args(), IJoinQuery::INNER);
+        return $this->_newQuery()->beginJoin($this, func_get_args(), IJoinQuery::INNER);
     }
     
     public function leftJoin($field1=null) {
-        $sourceManager = $this->getSourceManager();
-
-        return Initiator::factory($sourceManager->getApplication())
-            ->setTransaction($sourceManager->getTransaction())
-            ->beginJoin($this, func_get_args(), IJoinQuery::LEFT);
+        return $this->_newQuery()->beginJoin($this, func_get_args(), IJoinQuery::LEFT);
     }
     
     public function rightJoin($field1=null) {
-        $sourceManager = $this->getSourceManager();
-
-        return Initiator::factory($sourceManager->getApplication())
-            ->setTransaction($sourceManager->getTransaction())
-            ->beginJoin($this, func_get_args(), IJoinQuery::RIGHT);
+        return $this->_newQuery()->beginJoin($this, func_get_args(), IJoinQuery::RIGHT);
     }
     
     public function addJoin(IJoinQuery $join) {
-        if(!$this->_source->getAdapter()->supportsQueryType($join->getQueryType())) {
+        $source = $this->getSource();
+
+        if(!$source->getAdapter()->supportsQueryType($join->getQueryType())) {
             throw new LogicException(
-                'Query adapter '.$this->_source->getAdapter()->getQuerySourceDisplayName().' does not support joins'
+                'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().' does not support joins'
             );
         }
         
@@ -206,33 +202,23 @@ trait TQuery_JoinConstrainable {
     protected $_joinConstraints = array();
     
     public function joinConstraint() {
-        $sourceManager = $this->getSourceManager();
-
-        return Initiator::factory($sourceManager->getApplication())
-            ->setTransaction($sourceManager->getTransaction())
-            ->beginJoinConstraint($this, IJoinQuery::INNER);
+        return $this->_newQuery()->beginJoinConstraint($this, IJoinQuery::INNER);
     }
     
     public function leftJoinConstraint() {
-        $sourceManager = $this->getSourceManager();
-
-        return Initiator::factory($sourceManager->getApplication())
-            ->setTransaction($sourceManager->getTransaction())
-            ->beginJoinConstraint($this, IJoinQuery::LEFT);
+        return $this->_newQuery()->beginJoinConstraint($this, IJoinQuery::LEFT);
     }
     
     public function rightJoinConstraint() {
-        $sourceManager = $this->getSourceManager();
-
-        return Initiator::factory($sourceManager->getApplication())
-            ->setTransaction($sourceManager->getTransaction())
-            ->beginJoinConstraint($this, IJoinQuery::RIGHT);
+        return $this->_newQuery()->beginJoinConstraint($this, IJoinQuery::RIGHT);
     }
     
     public function addJoinConstraint(IJoinConstraintQuery $join) {
-        if(!$this->_source->getAdapter()->supportsQueryType($join->getQueryType())) {
+        $source = $this->getSource();
+
+        if(!$source->getAdapter()->supportsQueryType($join->getQueryType())) {
             throw new LogicException(
-                'Query adapter '.$this->_source->getAdapter()->getQuerySourceDisplayName().' does not support joins'
+                'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().' does not support joins'
             );
         }
         
@@ -315,15 +301,18 @@ trait TQuery_ParentAwareJoinClauseFactory {
     use TQuery_JoinClauseFactoryBase;
     
     public function on($localField, $operator, $foreignField) {
+        $source = $this->getSource();
+        $sourceManager = $this->getSourceManager();
+
         $this->getJoinClauseList()->addJoinClause(
             opal\query\clause\Clause::factory(
                 $this,
-                $this->getSourceManager()->extrapolateIntrinsicField($this->_source, $localField),
+                $sourceManager->extrapolateIntrinsicField($source, $localField),
                 $operator,
-                $this->_parent->getSourceManager()->extrapolateIntrinsicField(
+                $sourceManager->extrapolateIntrinsicField(
                     $this->_parent->getSource(), 
                     $foreignField, 
-                    $this->_source->getAlias()
+                    $source->getAlias()
                 ),
                 false
             )
@@ -333,21 +322,89 @@ trait TQuery_ParentAwareJoinClauseFactory {
     }
 
     public function orOn($localField, $operator, $foreignField) {
+        $source = $this->getSource();
+        $sourceManager = $this->getSourceManager();
+
         $this->getJoinClauseList()->addJoinClause(
             opal\query\clause\Clause::factory(
                 $this,
-                $this->getSourceManager()->extrapolateIntrinsicField($this->_source, $localField),
+                $sourceManager->extrapolateIntrinsicField($source, $localField),
                 $operator,
-                $this->_parent->getSourceManager()->extrapolateIntrinsicField(
+                $sourceManager->extrapolateIntrinsicField(
                     $this->_parent->getSource(), 
                     $foreignField, 
-                    $this->_source->getAlias()
+                    $source->getAlias()
                 ),
                 true
             )
         );
         
         return $this;
+    }
+}
+
+
+
+/*****************************
+ * Populate
+ */
+trait TQuery_Populatable {
+    
+    protected $_populates = array();
+
+    public function populate($field1) {
+        return $this->_newQuery()->beginPopulate($this, func_get_args(), IPopulateQuery::TYPE_ALL);
+    }
+
+    public function populateSome($field) {
+        return $this->_newQuery()->beginPopulate($this, [$field], IPopulateQuery::TYPE_SOME);
+    }
+
+    public function addPopulate(IPopulateQuery $populate) {
+        $this->_populates[$populate->getFieldName()] = $populate;
+        $this->getSource()->addOutputField($populate->getField());
+
+        return $this;
+    }
+
+    public function getPopulates() {
+        return $this->_populates;
+    }
+
+    public function clearPopulates() {
+        $this->_populates = array();
+        return $this;
+    }
+
+}
+
+
+trait TQuery_Populate {
+
+    use TQuery_ParentAware;
+
+    protected $_field;
+    protected $_type;
+
+    public function getQueryType() {
+        return IQueryTypes::POPULATE;
+    }
+
+    public function getField() {
+        return $this->_field;
+    }
+
+    public function getFieldName() {
+        return $this->_field->getName();
+    }
+
+    public function getPopulateType() {
+        return $this->_type;
+    }
+
+
+    public function endPopulate() {
+        return $this->_parent->addPopulate($this);
     }
 }
 
@@ -361,17 +418,15 @@ trait TQuery_Attachable {
     protected $_attachments = array();
     
     public function attach() {
-        $sourceManager = $this->getSourceManager();
-
-        return Initiator::factory($sourceManager->getApplication())
-            ->setTransaction($sourceManager->getTransaction())
-            ->beginAttach($this, func_get_args());
+        return $this->_newQuery()->beginAttach($this, func_get_args());
     }
     
     public function addAttachment($name, IAttachQuery $attachment) {
-        if(!$this->_source->getAdapter()->supportsQueryType($attachment->getQueryType())) {
+        $source = $this->getSource();
+
+        if(!$source->getAdapter()->supportsQueryType($attachment->getQueryType())) {
             throw new LogicException(
-                'Query adapter '.$this->_source->getAdapter()->getQuerySourceDisplayName().
+                'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().
                 ' does not support attachments'
             );
         }
@@ -402,6 +457,7 @@ trait TQuery_Attachment {
     
     use TQuery_ParentAware;
     
+    protected $_isPopulate = false;
     protected $_type;
     protected $_keyField;
     protected $_valField;
@@ -421,11 +477,35 @@ trait TQuery_Attachment {
                 return 'VALUE';
         }
     }
+
+    public static function fromPopulate(IPopulateQuery $populate) {
+        $output = new self( 
+            $populate->getParentQuery(),
+            $populate->getSourceManager(),
+            $populate->getSource()
+        );
+
+        $output->_isPopulate = true;
+        $output->addPrerequisite($populate->getWhereClauseList());
+        $output->_order = $populate->getOrderDirectives();
+        $output->_limit = $populate->getLimit();
+        $output->_offset = $populate->getOffset();
+
+        return $output;
+    }
     
+    public function isPopulate() {
+        return $this->_isPopulate;
+    }
+
     public function getType() {
         return $this->_type;
     }
-    
+
+    public function getParentQuery() {
+        return $this->_parent;
+    }
+
     
 // Output
     public function asOne($name) {
@@ -436,7 +516,12 @@ trait TQuery_Attachment {
         }
         
         $this->_type = IAttachQuery::TYPE_ONE;
-        return $this->_parent->addAttachment($name, $this);
+
+        if($this->_parent instanceof IAttachableQuery) {
+            $this->_parent->addAttachment($name, $this);
+        }
+
+        return $this->_parent;
     }
     
     public function asMany($name, $keyField=null) {
@@ -447,11 +532,16 @@ trait TQuery_Attachment {
         }
         
         if($keyField !== null) {
-            $this->_keyField = $this->getSourceManager()->extrapolateDataField($this->_source, $keyField);
+            $this->_keyField = $this->getSourceManager()->extrapolateDataField($this->getSource(), $keyField);
         }
         
         $this->_type = IAttachQuery::TYPE_MANY;
-        return $this->_parent->addAttachment($name, $this);
+
+        if($this->_parent instanceof IAttachableQuery) {
+            $this->_parent->addAttachment($name, $this);
+        }
+
+        return $this->_parent;
     }
     
     public function getListKeyField() {
@@ -474,16 +564,22 @@ trait TQuery_AttachmentListExtension {
         }
         
         $manager = $this->getSourceManager();
+        $source = $this->getSource();
         
         if($field2 !== null) {
-            $this->_keyField = $manager->extrapolateDataField($this->_source, $field1);
-            $this->_valField = $manager->extrapolateDataField($this->_source, $field2);
+            $this->_keyField = $manager->extrapolateDataField($source, $field1);
+            $this->_valField = $manager->extrapolateDataField($source, $field2);
         } else {
-            $this->_valField = $manager->extrapolateDataField($this->_source, $field1);
+            $this->_valField = $manager->extrapolateDataField($source, $field1);
         }
         
         $this->_type = IAttachQuery::TYPE_LIST;
-        return $this->_parent->addAttachment($name, $this);
+
+        if($this->_parent instanceof IAttachableQuery) {
+            $this->_parent->addAttachment($name, $this);
+        }
+
+        return $this->_parent;
     }
 }
 
@@ -502,9 +598,16 @@ trait TQuery_AttachmentValueExtension {
         }
 
         $manager = $this->getSourceManager();
-        $this->_valField = $manager->extrapolateDataField($this->_source, $field);
+        $source = $this->getSource();
+
+        $this->_valField = $manager->extrapolateDataField($source, $field);
         $this->_type = IAttachQuery::TYPE_VALUE;
-        return $this->_parent->addAttachment($name, $this);
+
+        if($this->_parent instanceof IAttachableQuery) {
+            $this->_parent->addAttachment($name, $this);
+        }
+
+        return $this->_parent;
     }
 }
 
@@ -518,12 +621,13 @@ trait TQuery_PrerequisiteClauseFactory {
     protected $_prerequisites = array();
     
     public function wherePrerequisite($field, $operator, $value) {
-        $this->_source->testWhereClauseSupport();
+        $source = $this->getSource();
+        $source->testWhereClauseSupport();
         
         $this->addPrerequisite(
             opal\query\clause\Clause::factory(
                 $this, 
-                $this->getSourceManager()->extrapolateIntrinsicField($this->_source, $field), 
+                $this->getSourceManager()->extrapolateIntrinsicField($source, $field), 
                 $operator, 
                 $value, 
                 false
@@ -534,7 +638,7 @@ trait TQuery_PrerequisiteClauseFactory {
     }
     
     public function whereBeginPrerequisite() {
-        $this->_source->testWhereClauseSupport();
+        $this->getSource()->testWhereClauseSupport();
         return new opal\query\clause\WhereList($this, false, true);
     }
     
@@ -573,12 +677,13 @@ trait TQuery_WhereClauseFactory {
     protected $_whereClauseList;
     
     public function where($field, $operator, $value) {
-        $this->_source->testWhereClauseSupport();
+        $source = $this->getSource();
+        $source->testWhereClauseSupport();
         
         $this->_getWhereClauseList()->addWhereClause(
             opal\query\clause\Clause::factory(
                 $this, 
-                $this->getSourceManager()->extrapolateIntrinsicField($this->_source, $field), 
+                $this->getSourceManager()->extrapolateIntrinsicField($source, $field), 
                 $operator, 
                 $value, 
                 false
@@ -589,12 +694,13 @@ trait TQuery_WhereClauseFactory {
     }
     
     public function orWhere($field, $operator, $value) {
-        $this->_source->testWhereClauseSupport();
+        $source = $this->getSource();
+        $source->testWhereClauseSupport();
         
         $this->_getWhereClauseList()->addWhereClause(
             opal\query\clause\Clause::factory(
                 $this,
-                $this->getSourceManager()->extrapolateIntrinsicField($this->_source, $field), 
+                $this->getSourceManager()->extrapolateIntrinsicField($source, $field), 
                 $operator, 
                 $value, 
                 true
@@ -604,20 +710,39 @@ trait TQuery_WhereClauseFactory {
         return $this;
     }
 
+    public function whereCorrelation($field, $operator, $keyField) {
+        $initiator = $this->_newQuery()->beginCorrelation($this, $keyField);
+
+        $initiator->setApplicator(function($correlation) use ($field, $operator) {
+            $this->where($field, $operator, $correlation);
+        });
+
+        return $initiator;
+    }
+
+    public function orWhereCorrelation($field, $operator, $keyField) {
+        $initiator = $this->_newQuery()->beginCorrelation($this, $keyField);
+
+        $initiator->setApplicator(function($correlation) use ($field, $operator) {
+            $this->orWhere($field, $operator, $correlation);
+        });
+
+        return $initiator;
+    }
 
     public function beginWhereClause() {
-        $this->_source->testWhereClauseSupport();
+        $this->getSource()->testWhereClauseSupport();
         return new opal\query\clause\WhereList($this);
     }
     
     public function beginOrWhereClause() {
-        $this->_source->testWhereClauseSupport();
+        $this->getSource()->testWhereClauseSupport();
         return new opal\query\clause\WhereList($this, true);
     }
     
     
     public function addWhereClause(opal\query\IWhereClauseProvider $clause=null) {
-        $this->_source->testWhereClauseSupport();
+        $this->getSource()->testWhereClauseSupport();
         $this->_getWhereClauseList()->addWhereClause($clause);
         return $this;
     }
@@ -692,10 +817,11 @@ trait TQuery_Groupable {
     protected $_groups = array();
     
     public function groupBy($field1) {
-        $this->_source->testGroupDirectiveSupport();
+        $source = $this->getSource();
+        $source->testGroupDirectiveSupport();
         
         foreach(func_get_args() as $field) {
-            $this->_groups[] = $this->getSourceManager()->extrapolateIntrinsicField($this->_source, $field);
+            $this->_groups[] = $this->getSourceManager()->extrapolateIntrinsicField($source, $field);
         }
         
         return $this;
@@ -723,12 +849,13 @@ trait TQuery_HavingClauseFactory {
     protected $_havingClauseList;
     
     public function having($field, $operator, $value) {
-        $this->_source->testAggregateClauseSupport();
+        $source = $this->getSource();
+        $source->testAggregateClauseSupport();
         
         $this->getHavingClauseList()->addHavingClause(
             opal\query\clause\Clause::factory(
                 $this,
-                $this->getSourceManager()->extrapolateAggregateField($this->_source, $field), 
+                $this->getSourceManager()->extrapolateAggregateField($source, $field), 
                 $operator, 
                 $value, 
                 false
@@ -739,12 +866,13 @@ trait TQuery_HavingClauseFactory {
     }
     
     public function orHaving($field, $operator, $value) {
-        $this->_source->testAggregateClauseSupport();
+        $source = $this->getSource();
+        $source->testAggregateClauseSupport();
         
         $this->getHavingClauseList()->addHavingClause(
             opal\query\clause\Clause::factory(
                 $this,
-                $this->getSourceManager()->extrapolateAggregateField($this->_source, $field), 
+                $this->getSourceManager()->extrapolateAggregateField($source, $field), 
                 $operator, 
                 $value, 
                 true
@@ -755,18 +883,18 @@ trait TQuery_HavingClauseFactory {
     }
     
     public function beginHavingClause() {
-        $this->_source->testAggregateClauseSupport();
+        $this->getSource()->testAggregateClauseSupport();
         return new opal\query\clause\HavingList($this);
     }
     
     public function beginOrHavingClause() {
-        $this->_source->testAggregateClauseSupport();
+        $this->getSource()->testAggregateClauseSupport();
         return new opal\query\clause\HavingList($this, true);
     }
     
     
     public function addHavingClause(opal\query\IHavingClauseProvider $clause=null) {
-        $this->_source->testAggregateClauseSupport();
+        $this->getSource()->testAggregateClauseSupport();
         $this->getHavingClauseList()->addHavingClause($clause);
         return $this;
     }
@@ -805,13 +933,14 @@ trait TQuery_Orderable {
     protected $_order = array();
     
     public function orderBy($field1) {
-        $this->_source->testOrderDirectiveSupport();
+        $source = $this->getSource();
+        $source->testOrderDirectiveSupport();
         
         foreach(func_get_args() as $field) {
             $parts = explode(' ', $field);
             
             $directive = new OrderDirective(
-                $this->getSourceManager()->extrapolateField($this->_source, array_shift($parts)), 
+                $this->getSourceManager()->extrapolateField($source, array_shift($parts)), 
                 array_shift($parts)
             );
             
@@ -849,7 +978,7 @@ trait TQuery_Limitable {
     protected $_maxLimit;
     
     public function limit($limit) {
-        $this->_source->testLimitDirectiveSupport();
+        $this->getSource()->testLimitDirectiveSupport();
         
         if($limit) {
             $limit = (int)$limit;
@@ -896,7 +1025,7 @@ trait TQuery_Offsettable {
     protected $_offset;
     
     public function offset($offset) {
-        $this->_source->testOffsetDirectiveSupport();
+        $this->getSource()->testOffsetDirectiveSupport();
         
         if(!$offset) {
             $offset = null;
@@ -919,37 +1048,6 @@ trait TQuery_Offsettable {
         return $this->_offset !== null;
     }
 }
-
-
-
-
-
-/*****************************
- * Populate
- */
-trait TQuery_Populatable {
-    
-    protected $_populates = array();
-
-    public function populate($field) {
-        core\stub($field);
-    }
-
-    public function addPopulate(IPopulateQuery $populate) {
-        core\stub($field);
-    }
-
-    public function getPopulates() {
-        core\stub($field);
-    }
-
-    public function clearPopulates() {
-        core\stub($field);
-    }
-
-}
-
-
 
 
 

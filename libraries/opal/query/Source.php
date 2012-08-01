@@ -26,6 +26,22 @@ class Source implements ISource, core\IDumpable {
     public function getAlias() {
         return $this->_alias;
     }
+
+    public function getId() {
+        return $this->_adapter->getQuerySourceId();
+    }
+
+    public function getUniqueId() {
+        return $this->getId().' as '.$this->getAlias();
+    }
+
+    public function getHash() {
+        return $this->_adapter->getQuerySourceAdapterHash();
+    }
+
+    public function getDisplayName() {
+        return $this->_adapter->getQuerySourceDisplayName();
+    }
     
     public function handleQueryException(IQuery $query, \Exception $e) {
         if($this->_adapter->handleQueryException($query, $e)) {
@@ -216,7 +232,11 @@ class Source implements ISource, core\IDumpable {
     
 // Dump
     public function getDumpProperties() {
-        $output = array();
+        $output = [
+            '__id' => new core\debug\dumper\Property(
+                'sourceId', $this->getId(), 'protected'
+            )
+        ];
         
         foreach($this->_outputFields as $alias => $field) {
             $output[$alias] = $field->getQualifiedName();

@@ -169,7 +169,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
             //$timer = new core\time\Timer();
             $this->_execute();
             
-            //core\debug()->dump($this->_sql);//, /*$timer);//,*/ $this->_bindings);
+            core\debug()->dump($this);//, /*$timer);//,*/ $this->_bindings);
         } catch(\Exception $e) {
             // void profiler
             throw $e;
@@ -280,13 +280,15 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
     
 // Dump
     public function getDumpProperties() {
-        if(!$this->_isExecuted) {
-            return $this->_sql;
-        }
-        
-        return array(
+        $output = [
             'sql' => $this->_sql,
-            'current' => $this->getCurrent()
-        );
+            'bindings' => $this->_bindings
+        ];
+
+        if($this->_isExecuted) {
+            $output['current'] = $this->getCurrent();
+        }
+
+        return $output;
     }
 } 

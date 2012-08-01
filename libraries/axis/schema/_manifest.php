@@ -131,6 +131,7 @@ interface IQueryClauseRewriterField extends IField {
 interface IRelationField extends IField {
     public function setTargetUnitId($targetUnitId);
     public function getTargetUnitId();
+    public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate);
 }
 
 
@@ -156,6 +157,12 @@ trait TRelationField {
     public function getTargetUnitId() {
         return $this->_targetUnitId;
     }
+
+
+    public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate) {
+        return null;
+    }
+
 
     protected function _sanitizeTargetUnitId(axis\ISchemaBasedStorageUnit $unit) {
         $model = $unit->getModel();

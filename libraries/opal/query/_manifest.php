@@ -40,7 +40,7 @@ interface IInitiator extends core\IApplicationAware, ITransactionAware {
     public function beginDelete();
 
     public function beginCorrelation(IQuery $parent, $field, $alias=null);
-    public function beginPopulate(IQuery $parent, $field);
+    public function beginPopulate(IQuery $parent, array $fields, $type=IPopulateQuery::TYPE_ALL);
 
     public function beginJoin(IQuery $parent, array $fields=array(), $type=IJoinQuery::INNER);
     public function beginJoinConstraint(IQuery $parent, $type=IJoinQuery::INNER);
@@ -51,6 +51,9 @@ interface IInitiator extends core\IApplicationAware, ITransactionAware {
     public function getData(); 
     public function getParentQuery();
     public function getJoinType();
+
+    public function setApplicator(Callable $applicator=null);
+    public function getApplicator();
     
     public function from($sourceAdapter, $alias=null);
     public function into($sourceAdapter, $alias=null);
@@ -70,6 +73,11 @@ interface ISourceProvider {
 interface IParentSourceProvider {
     public function getParentSourceManager();
     public function getParentSource();
+    public function getParentSourceAlias();
+}
+
+interface IParentQueryAware extends IParentSourceProvider {
+    public function getParentQuery();
 }
 
 
@@ -116,6 +124,8 @@ interface IPrerequisiteClauseFactory extends IClauseFactory {
 interface IWhereClauseFactory extends IClauseFactory {
     public function where($field, $operator, $value);
     public function orWhere($field, $operator, $value);
+    public function whereCorrelation($field, $operator, $keyField);
+    public function orWhereCorrelation($field, $operator, $keyField);
     public function beginWhereClause();
     public function beginOrWhereClause();
     
@@ -186,8 +196,9 @@ interface IAttachableQuery extends IReadQuery {
     public function clearAttachments();
 }
 
-interface IPopulatableQuery extends IReadQuery {
-    public function populate($field);
+interface IPopulatableQuery extends IQuery {
+    public function populate($field1);
+    public function populateSome($field);
     public function addPopulate(IPopulateQuery $populate);
     public function getPopulates();
     public function clearPopulates();
@@ -226,9 +237,21 @@ interface IOffsettableQuery extends IQuery {
 }
 
 
-interface ICorrelationQuery extends IQuery, IParentSourceProvider, IJoinClauseFactory {
-    public function getFieldAlias();
+interface ICorrelationQuery extends 
+    IQuery, 
+    IParentSourceProvider, 
+    IJoinConstrainableQuery,
+    IJoinClauseFactory,
+    IWhereClauseFactory,
+    ILimitableQuery,
+    IOffsettableQuery {
+    public function setApplicator(Callable $applicator=null);
+    public function getApplicator();
+    public function getFieldAlias();    
     public function endCorrelation($fieldAlias=null);
+
+    public function getCorrelationSource();
+    public function getCorrelatedClauses(ISource $correlationSource=null);
 }
 
 
@@ -247,18 +270,33 @@ interface IJoinQuery extends IQuery, IParentSourceProvider, IJoinClauseFactory {
 interface IJoinConstraintQuery extends IJoinQuery {}
 
 
-interface IPopulateQuery extends IQuery, IParentSourceProvider {
+interface IPopulateQuery extends 
+    IQuery, 
+    IParentQueryAware,
+    IPopulatableQuery,
+    IWhereClauseQuery,
+    IOrderableQuery,
+    ILimitableQuery,
+    IOffsettableQuery
+    {
 
+    const TYPE_ALL = 1;
+    const TYPE_SOME = 2;
+
+    public function getField();
+    public function getFieldName();
+    public function endPopulate();
 }
 
 
-interface IAttachQuery extends IQuery, IParentSourceProvider, IJoinClauseFactory {
+interface IAttachQuery extends IQuery, IParentQueryAware, IJoinClauseFactory {
         
     const TYPE_ONE = 0;
     const TYPE_MANY = 1;
     const TYPE_LIST = 2;
     const TYPE_VALUE = 3;
     
+    public function isPopulate();
     public function getType();
     public function asOne($name);
     public function asMany($name, $keyField=null);
@@ -467,6 +505,9 @@ interface IAdapter extends user\IAccessLock {
 interface IIntegralAdapter extends IAdapter {
     public function dereferenceQuerySourceWildcard(ISource $source);
     public function extrapolateQuerySourceField(ISource $source, $name, $alias=null, opal\schema\IField $field=null);
+
+    public function getPopulateQuerySourceAdapter(ISourceManager $sourceManager, $field);
+    public function rewritePopulateQueryToAttachment(IPopulateQuery $populate);
     
     public function prepareQueryClauseValue(IField $field, $value);
     public function rewriteVirtualQueryClause(IClauseFactory $parent, IVirtualField $field, $operator, $value, $isOr=false);
@@ -488,6 +529,10 @@ interface IIntegralAdapter extends IAdapter {
 // Source
 interface ISource extends IAdapterAware {
     public function getAlias();
+    public function getId();
+    public function getUniqueId();
+    public function getHash();
+    public function getDisplayName();
     
     public function handleQueryException(IQuery $query, \Exception $e);
     
@@ -509,9 +554,14 @@ interface ISource extends IAdapterAware {
 // Manager
 interface ISourceManager extends core\IApplicationAware, ITransactionAware {
     public function getPolicyManager();
+
+    public function setParentSourceManager(ISourceManager $parent);
+    public function getParentSourceManager();
+
     public function newSource($adapter, $alias, array $fields=null, $forWrite=false);
     public function removeSource($alias);
     public function getSources();
+    public function getSourceByAlias($alias);
     public function countSourceAdapters();
     
     public function handleQueryException(IQuery $query, \Exception $e);
@@ -577,7 +627,7 @@ interface IVirtualField extends IField {
 
 
 interface IFieldValueProcessor {
-    public function inflateValueFromRow($key, array $row, $forRecord);
+    public function inflateValueFromRow($key, array $row, opal\query\record\IRecord $forRecord=null);
     public function deflateValue($value);
     public function sanitizeValue($value, $forRecord);
 }
@@ -611,12 +661,24 @@ interface IClause extends IJoinClauseProvider, IWhereClauseProvider, IHavingClau
     public function getPreparedValue();
 }
 
+interface IClauseMatcher {
+    public function testRow(array $row);
+    public function testRowMatch(array $row, array $joinRow);
+
+    public static function compare($value, $operator, $compare);
+}
 
 
 interface IClauseList extends IJoinClauseProvider, IWhereClauseProvider, IHavingClauseProvider, \Countable, core\IArrayProvider, ISourceProvider {
     public function _addClause(IClauseProvider $clause=null);
     public function clear();
     public function endClause();
+
+    public function referencesSourceAliases(array $sourceAliases);
+    public function getNonLocalFieldReferences();
+    public function getClausesFor(opal\query\ISource $source, opal\query\IClauseFactory $parent=null);
+    public function extractClausesFor(opal\query\ISource $source, $checkValues=true);
+    public function isLocalTo(array $sources);
 }
 
 interface IJoinClauseList extends IClauseList, IJoinClauseFactory, IParentSourceProvider {}

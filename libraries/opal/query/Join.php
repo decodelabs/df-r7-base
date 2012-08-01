@@ -11,9 +11,9 @@ use df\opal;
 
 class Join implements IJoinQuery, core\IDumpable {
     
+    use TQuery;
     use TQuery_ParentAware;
-    use TQuery_JoinClauseFactoryBase;
-    use TQuery_AccessLock;
+    use TQuery_ParentAwareJoinClauseFactory;
     
     protected $_source;
     protected $_type;
@@ -83,49 +83,6 @@ class Join implements IJoinQuery, core\IDumpable {
         foreach($fields as $field) {
             $sourceManager->extrapolateOutputField($this->_source, $field);
         }
-        
-        return $this;
-    }
-    
-    
-    
-// Join clauses
-    public function on($localField, $operator, $foreignField) {
-        $manager = $this->getSourceManager();
-        
-        $this->getJoinClauseList()->addJoinClause(
-            opal\query\clause\Clause::factory(
-                $this,
-                $manager->extrapolateIntrinsicField($this->_source, $localField, true),
-                $operator,
-                $manager->extrapolateIntrinsicField(
-                    $this->_parent->getSource(), 
-                    $foreignField, 
-                    $this->_source->getAlias()
-                ),
-                false
-            )
-        );
-        
-        return $this;
-    }
-
-    public function orOn($localField, $operator, $foreignField) {
-        $manager = $this->getSourceManager();
-        
-        $this->getJoinClauseList()->addJoinClause(
-            opal\query\clause\Clause::factory(
-                $this,
-                $manager->extrapolateIntrinsicField($this->_source, $localField, true),
-                $operator,
-                $manager->extrapolateIntrinsicField(
-                    $this->_parent->getSource(), 
-                    $foreignField, 
-                    $this->_source->getAlias()
-                ),
-                true
-            )
-        );
         
         return $this;
     }

@@ -428,6 +428,25 @@ abstract class Table implements ITable, core\IDumpable {
                                   || $supportsProcessors;
         }
         
+
+
+        // Populates
+        $populates = array();
+        $populateFields = array();
+
+        if(!$forCount && $query instanceof opal\query\IPopulatableQuery) {
+            $populates = $query->getPopulates();
+
+            if(!empty($populates)) {
+                $requiresBatchIterator = true;
+
+                /*
+                foreach($populates as $populate) {
+
+                }
+                */
+            }
+        }
         
         
         
@@ -444,9 +463,9 @@ abstract class Table implements ITable, core\IDumpable {
                 // Get fields that need to be fetched from source for attachment clauses
                 foreach($attachments as $attachment) {
                     foreach($attachment->getNonLocalFieldReferences() as $field) {
-                        foreach($field->dereference() as $field) {
-                            $qName = $field->getQualifiedName();
-                            $attachFields[/*$qName*/] = $this->_defineQueryField($stmt, $field, true, $qName);
+                        foreach($field->dereference() as $derefField) {
+                            $qName = $derefField->getQualifiedName();
+                            $attachFields[/*$qName*/] = $this->_defineQueryField($stmt, $derefField, true, $qName);
                         }
                     }
                 }
@@ -510,7 +529,7 @@ abstract class Table implements ITable, core\IDumpable {
              * as we have to definitively know if a BatchIterator is required when getting
              * local fields. The only way to know this is to do attachments and joins first.
              */
-            $outFields = array_merge($outFields, $joinFields, $attachFields);
+            $outFields = array_unique(array_merge($outFields, $joinFields, $attachFields, $populateFields));
         }
         
         
@@ -541,6 +560,7 @@ abstract class Table implements ITable, core\IDumpable {
             $output = new opal\query\result\BatchIterator($source, $res);
             $output->addSources($joinSources)
                 ->isForFetch((bool)$forFetch)
+                ->setPopulates($populates)
                 ->setAttachments($attachments)
                 ->setListKeyField($keyField)
                 ->setListValueField($valField);
@@ -917,8 +937,13 @@ abstract class Table implements ITable, core\IDumpable {
          * table is considered a remote entity rather than the primary source.
          * We only need to grab rows that match the already defined values in $rows
          */
-        $source = $join->getSource();
+        $sources = array();
         $outFields = array();
+
+        $source = $join->getSource();
+        $sources[$source->getUniqueId()] = $source;
+        $parentSource = $join->getParentSource();
+        $sources[$parentSource->getUniqueId()] = $parentSource;
 
         $stmt = $this->_adapter->prepare('');
         
@@ -934,7 +959,6 @@ abstract class Table implements ITable, core\IDumpable {
             $outFields[] = $this->_defineQueryField($stmt, $field, true, $field->getQualifiedName());
         }
         
-        
         $stmt->appendSql(
             'SELECT'."\n".'    '.implode(','."\n".'    ', $outFields)."\n".
             'FROM '.$this->_adapter->quoteIdentifier($this->_name).' '.
@@ -943,7 +967,7 @@ abstract class Table implements ITable, core\IDumpable {
         
         $clauses = $join->getJoinClauseList();
         
-        if(!$clauses->isEmpty()) {
+        if(!$clauses->isEmpty() && $clauses->isLocalTo($sources)) {
             $whereSql = $this->_defineQueryClauseList($stmt, $clauses, $rows);
             
             if(!empty($whereSql)) {
@@ -960,8 +984,12 @@ abstract class Table implements ITable, core\IDumpable {
          * This is essentially identical to fetchRemoteJoinData, just responding to
          * rows defined by an attachment rather than join
          */
-        $source = $attachment->getSource();
+        
         $outFields = array();
+        $sources = array();
+
+        $source = $attachment->getSource();
+        $sources[$source->getUniqueId()] = $source;
 
         $stmt = $this->_adapter->prepare('');
         
@@ -978,32 +1006,75 @@ abstract class Table implements ITable, core\IDumpable {
         }
 
 
+
+
+        $joinSql = null;
+        $joinsApplied = false;
+        
+        if($attachment->getSourceManager()->countSourceAdapters() == 1) {
+            foreach($attachment->getJoins() as $joinSourceAlias => $join) {
+                $joinSource = $join->getSource();
+                $sources[$joinSource->getUniqueId()] = $joinSource;
+
+                $joinSql .= "\n".$this->_defineQueryJoin($stmt, $join);
+
+                foreach($joinSource->getAllDereferencedFields() as $field) {
+                    if(!$field instanceof opal\query\IAggregateField) {
+                        $outFields[] = $this->_defineQueryField($stmt, $field, true, $field->getQualifiedName());
+                    }
+                }
+            }
+
+            $joinsApplied = true;
+        }
+
+
         $stmt->appendSql(
-            'SELECT'."\n".'    '.implode(','."\n".'    ', $outFields)."\n".
+            'SELECT'."\n".'    '.implode(','."\n".'    ', array_unique($outFields))."\n".
             'FROM '.$this->_adapter->quoteIdentifier($this->_name).' '.
-            'AS '.$this->_adapter->quoteTableAliasDefinition($source->getAlias())
+            'AS '.$this->_adapter->quoteTableAliasDefinition($source->getAlias()).
+            $joinSql
         );
         
 
-        $clauses = $attachment->getJoinClauseList();
-        
-        if(!$clauses->isEmpty()) {
+        $joinClauses = $attachment->getJoinClauseList();
+        $whereClauses = $attachment->getWhereClauseList();
+
+        $canUseJoinClauses = !$joinClauses->isEmpty() && $joinClauses->isLocalTo($sources);
+        $canUseWhereClauses = $clausesApplied = !$whereClauses->isEmpty() && $whereClauses->isLocalTo($sources);
+
+        if($canUseJoinClauses) {
+            if($canUseWhereClauses) {
+                $clauses = new opal\query\clause\ListBase($attachment->getParentQuery());
+                $clauses->_addClause($joinClauses);
+                $clauses->_addClause($whereClauses);
+            } else {
+                $clauses = $joinClauses;
+            }
+        } else if($canUseWhereClauses) {
+            $clauses = $whereClauses;
+        } else {
+            $clauses = null;
+        }
+
+
+        if($clauses) {
             $whereSql = $this->_defineQueryClauseList($stmt, $clauses, $rows);
             
             if(!empty($whereSql)) {
                 $stmt->appendSql("\n".'WHERE '.$whereSql);
             }
         }
-        
+
         $res = $stmt->executeRead();
-        
+
         /*
          * Here an ArrayManipulator is used as attachments can themselves have joins
          * and attachments. No other processing is done however, as the rest is applied
          * when making completing the original attachment in the parent query executor
          */
         $manipulator = new opal\query\result\ArrayManipulator($source, $res->toArray(), true);
-        return $manipulator->applyAttachmentDataQuery($attachment);
+        return $manipulator->applyAttachmentDataQuery($attachment, $joinsApplied, $clausesApplied);
     }
     
     
@@ -1039,7 +1110,7 @@ abstract class Table implements ITable, core\IDumpable {
                       $this->_adapter->quoteIdentifier($field->getName());
             
         } else if($field instanceof opal\query\IVirtualField) {
-            core\dump($field);
+            //core\dump($field);
             throw new InvalidArgumentException(
                 'Virtual fields can not be used directly'
             );
@@ -1079,22 +1150,53 @@ abstract class Table implements ITable, core\IDumpable {
             $fieldAlias = $field->getAlias();
             $outFields[/*$fieldAlias*/] = $this->_defineQueryField($stmt, $field, true, $fieldAlias);
         }
+
+
+
+        $joinSql = null;
+        
+        foreach($query->getJoins() as $joinSourceAlias => $join) {
+            $joinSource = $join->getSource();
+            $hash = $joinSource->getAdapterHash();
+
+            // TODO: make sure it's not a remote join
+
+            $joinSql .= "\n".$this->_defineQueryJoin($stmt2, $join);
+        }
         
         
         $stmt2->appendSql(
             'SELECT'."\n".'    '.implode(','."\n".'    ', $outFields)."\n".
             'FROM '.$this->_adapter->quoteIdentifier($source->getAdapter()->getDelegateQueryAdapter()->getName()).' '.
-            'AS '.$this->_adapter->quoteTableAliasDefinition($source->getAlias())
+            'AS '.$this->_adapter->quoteTableAliasDefinition($source->getAlias()).
+            $joinSql
         );
         
+        $joinClauses = $query->getJoinClauseList();
+        $whereClauses = $query->getWhereClauseList();
+
+        if(!$joinClauses->isEmpty()) {
+            if(!$whereClauses->isEmpty()) {
+                $clauses = new opal\query\clause\ListBase($query);
+                $clauses->_addClause($joinClauses);
+                $clauses->_addClause($whereClauses);
+            } else {
+                $clauses = $joinClauses;
+            }
+        } else {
+            $clauses = $whereClauses;
+        }
         
-        $clauses = $query->getJoinClauseList();
         
         if(!$clauses->isEmpty()) {
             $stmt2->appendSql("\n".'    WHERE '.$this->_defineQueryClauseList($stmt2, $clauses));
         }
 
+        $this->_buildLimitSection($stmt2, $query);
+
         $stmt->importBindings($stmt2);
+        $stmt->setKeyIndex($stmt2->getKeyIndex());
+        
         return $stmt2->getSql();
     }
 
@@ -1227,62 +1329,43 @@ abstract class Table implements ITable, core\IDumpable {
             $fieldString = $this->_defineQueryField($stmt, $field);
         }
         
-        
-        if($value instanceof opal\query\IField && $remoteJoinData !== null) {
+        if($remoteJoinData !== null) {
             /*
              * If we're defining a clause for a remote join we will be comparing
              * a full dataset, but with an operator defined for a single value
              */
-            $qName = $value->getQualifiedName();
-            $listData = array();
-            
-            foreach($remoteJoinData as $row) {
-                if(isset($row[$qName])) {
-                    $listData[] = $row[$qName];
-                } else {
-                    $listData[] = null;
+
+            if($value instanceof opal\query\ICorrelationQuery) {
+                $value = clone $value;
+
+                $correlationSource = $value->getCorrelationSource();
+                $correlationSourceAlias = $correlationSource->getAlias();
+
+                foreach($value->getCorrelatedClauses($correlationSource) as $correlationClause) {
+                    $field = $correlationClause->getField();
+
+                    if($field->getSourceAlias() == $correlationSourceAlias) {
+                        core\stub($field, 'What exactly are we supposed to do with left hand side clause correlations???!?!?!?!?');
+                    }
+
+                    $correlationValue = $correlationClause->getValue();
+
+                    if($correlationValue instanceof opal\query\IField
+                    && $correlationValue->getSourceAlias() == $correlationSourceAlias) {
+                        $qName = $correlationValue->getQualifiedName();
+                        $valueData = $this->_getClauseValueForRemoteJoinData($correlationClause, $remoteJoinData, $qName, $operator);
+
+                        $correlationClause->setOperator($operator);
+                        $correlationClause->setValue($valueData);
+                    }
                 }
-            }
-            
-            switch($operator) {
-                case opal\query\clause\Clause::OP_EQ:
-                case opal\query\clause\Clause::OP_LIKE:
-                case opal\query\clause\Clause::OP_CONTAINS:
-                case opal\query\clause\Clause::OP_BEGINS:
-                case opal\query\clause\Clause::OP_ENDS:
-                    // Test using IN operator on data set
-                    $operator = opal\query\clause\Clause::OP_IN;
-                    $value = array_unique($listData);
-                    break;
-                    
-                case opal\query\clause\Clause::OP_NEQ:
-                case opal\query\clause\Clause::OP_NOT_LIKE:
-                case opal\query\clause\Clause::OP_NOT_CONTAINS:
-                case opal\query\clause\Clause::OP_NOT_BEGINS:
-                case opal\query\clause\Clause::OP_NOT_ENDS:
-                    // TODO: why is this null again???
-                    return null;
-                    
-                case opal\query\clause\Clause::OP_GT:
-                case opal\query\clause\Clause::OP_GTE:
-                    // We only need to test against the lowest value
-                    $value = min($listData);
-                    break;
-                    
-                case opal\query\clause\Clause::OP_LT:
-                case opal\query\clause\Clause::OP_LTE:
-                    // We only need to test against the highest value
-                    $value = max($listData);
-                    break;
-                    
-                default:
-                    throw new opal\query\OperatorException(
-                        'Operator '.$operator.' cannot be used for a remote join'
-                    );
+            } else if($value instanceof opal\query\IField) {
+                $qName = $value->getQualifiedName();
+                $value = $this->_getClauseValueForRemoteJoinData($clause, $remoteJoinData, $qName, $operator);
             }
         }
         
-        if($value instanceof opal\query\ISelectQuery) {
+        if($value instanceof opal\query\ICorrelationQuery) {
             // Subqueries need to be handled separately
             return $this->_defineQueryClauseSubQuery($stmt, $field, $fieldString, $operator, $value);
         } else {
@@ -1291,7 +1374,56 @@ abstract class Table implements ITable, core\IDumpable {
         }
     }
 
-    protected function _defineQueryClauseSubQuery(opal\rdbms\IStatement $stmt, opal\query\IField $field, $fieldString, $operator, opal\query\ISelectQuery $query) {
+    protected function _getClauseValueForRemoteJoinData(opal\query\IClause $clause, array $remoteJoinData, $qName, &$operator) {
+        $listData = array();
+                
+        foreach($remoteJoinData as $row) {
+            if(isset($row[$qName])) {
+                $listData[] = $row[$qName];
+            } else {
+                $listData[] = null;
+            }
+        }
+        
+        switch($operator) {
+            case opal\query\clause\Clause::OP_EQ:
+            case opal\query\clause\Clause::OP_IN:
+            case opal\query\clause\Clause::OP_LIKE:
+            case opal\query\clause\Clause::OP_CONTAINS:
+            case opal\query\clause\Clause::OP_BEGINS:
+            case opal\query\clause\Clause::OP_ENDS:
+                // Test using IN operator on data set
+                $operator = opal\query\clause\Clause::OP_IN;
+                return array_unique($listData);
+                
+            case opal\query\clause\Clause::OP_NEQ:
+            case opal\query\clause\Clause::OP_NOT_IN:
+            case opal\query\clause\Clause::OP_NOT_LIKE:
+            case opal\query\clause\Clause::OP_NOT_CONTAINS:
+            case opal\query\clause\Clause::OP_NOT_BEGINS:
+            case opal\query\clause\Clause::OP_NOT_ENDS:
+                // Test using NOT IN operator on data set
+                $operator = opal\query\clause\Clause::OP_NOT_IN;
+                return array_unique($listData);
+                
+            case opal\query\clause\Clause::OP_GT:
+            case opal\query\clause\Clause::OP_GTE:
+                // We only need to test against the lowest value
+                return min($listData);
+                
+            case opal\query\clause\Clause::OP_LT:
+            case opal\query\clause\Clause::OP_LTE:
+                // We only need to test against the highest value
+                return max($listData);
+                
+            default:
+                throw new opal\query\OperatorException(
+                    'Operator '.$operator.' cannot be used for a remote join'
+                );
+        }
+    }
+
+    protected function _defineQueryClauseSubQuery(opal\rdbms\IStatement $stmt, opal\query\IField $field, $fieldString, $operator, opal\query\ICorrelationQuery $query) {
         $source = $query->getSource();
         $isSourceLocal = $source->getAdapterHash() == $this->getQuerySourceAdapterHash();
         $hasRemoteSources = $query->getSourceManager()->countSourceAdapters() > 1;
@@ -1317,51 +1449,7 @@ abstract class Table implements ITable, core\IDumpable {
         }
     }
 
-    protected function _defineQueryClauseInlineSubQuery(opal\rdbms\IStatement $stmt, opal\query\IField $field, $fieldString, $operator, opal\query\ISelectQuery $query) {
-        /*
-         * Build a whole separate statement with the subquery and return it
-         * in string form as the expression for the clause
-         */
-        $source = $query->getSource();
-        
-        if(null === ($targetField = $source->getFirstOutputDataField())) {
-            throw new opal\query\ValueException(
-                'Clause subquery does not have a distinct return field'
-            );
-        }
-        
-        
-        $joinSql = null;
-        
-        foreach($query->getJoins() as $joinSourceAlias => $join) {
-            $joinSource = $join->getSource();
-            $hash = $joinSource->getAdapterHash();
-            $joinSql .= "\n".$this->_defineQueryJoin($stmt, $join);
-        }
-        
-        
-        
-        
-        $adapter = $source->getAdapter();
-        
-        $stmt2 = $this->_adapter->prepare('');
-        $stmt2->appendSql(
-            'SELECT '.$this->_defineQueryField($stmt2, $targetField, true)."\n".
-            'FROM '.$this->_adapter->quoteIdentifier($adapter->getDelegateQueryAdapter()->getName()).' '.
-            'AS '.$this->_adapter->quoteTableAliasDefinition($source->getAlias()).
-            $joinSql
-        );
-        
-        
-        
-        $stmt2->setKeyIndex($stmt->getKeyIndex());
-        
-        
-        $this->_buildWhereClauseSection($stmt2, $query);
-        $this->_buildGroupSection($stmt2, $query);
-        $this->_buildHavingClauseSection($stmt2, $query);
-        $this->_buildOrderSection($stmt2, $query);
-        
+    protected function _defineQueryClauseInlineSubQuery(opal\rdbms\IStatement $stmt, opal\query\IField $field, $fieldString, $operator, opal\query\ICorrelationQuery $query) {
         $limit = $query->getLimit();
         
         switch($operator) {
@@ -1381,24 +1469,12 @@ abstract class Table implements ITable, core\IDumpable {
                 $operator .= ' ALL';
                 break;
         }
-        
-        
-        $this->_buildLimitSection($stmt2, $query);
-        $query->limit($limit);
-        
-        
-        /*
-         * As the second statement is just a container and not being executed, 
-         * we need to pull the bindings out and pass them to the parent
-         */
-        $stmt->importBindings($stmt2);
-        $stmt->setKeyIndex($stmt2->getKeyIndex());
-        
+
         // `myField` = (SELECT FROM ...)
-        return $fieldString.' '.strtoupper($operator).' ('."\n    ".str_replace("\n", "\n    ", $stmt2->getSql())."\n".')';
+        return $fieldString.' '.strtoupper($operator).' ('."\n    ".str_replace("\n", "\n    ", $this->_defineQueryCorrelation($stmt, $query))."\n".')';
     }
 
-    protected function _defineQueryClauseRemoteSubQuery(opal\rdbms\IStatement $stmt, opal\query\IField $field, $fieldString, $operator, opal\query\ISelectQuery $query) {
+    protected function _defineQueryClauseRemoteSubQuery(opal\rdbms\IStatement $stmt, opal\query\IField $field, $fieldString, $operator, opal\query\ICorrelationQuery $query) {
         /*
          * Execute the subquery and get the result as a list.
          * Then depending on the operator, build the relevant clause

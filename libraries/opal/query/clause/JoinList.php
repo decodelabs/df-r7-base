@@ -96,6 +96,10 @@ class JoinList extends ListBase implements opal\query\IJoinClauseList {
             return $this->_parent->getParentSource();
         }
     }
+
+    public function getParentSourceAlias() {
+        return $this->getParentSource()->getAlias();
+    }
     
     public function endClause() {
         if(!empty($this->_clauses)) {

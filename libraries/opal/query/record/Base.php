@@ -40,7 +40,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
             
             if(!empty($fieldProcessors)) {
                 foreach($fieldProcessors as $name => $field) {
-                    $this->_values[$name] = $field->inflateValueFromRow($name, array(), true);
+                    $this->_values[$name] = $field->inflateValueFromRow($name, array(), $this);
                 }
             }
         }
@@ -382,7 +382,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
                 $row = array();
                 
                 foreach($fieldProcessors as $name => $field) {
-                    $row[$name] = $field->inflateValueFromRow($name, $temp, true);
+                    $row[$name] = $field->inflateValueFromRow($name, $temp, $this);
                 }
             }
         }

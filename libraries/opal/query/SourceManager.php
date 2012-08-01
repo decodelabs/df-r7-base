@@ -14,6 +14,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
     use core\TApplicationAware;
     use TQuery_TransactionAware;
     
+    protected $_parent;
     protected $_aliases = array();
     protected $_sources = array();
     protected $_adapterHashes = array();
@@ -26,6 +27,15 @@ class SourceManager implements ISourceManager, core\IDumpable {
     
     public function getPolicyManager() {
         return core\policy\Manager::getInstance($this->_application);
+    }
+
+    public function setParentSourceManager(ISourceManager $parent) {
+        $this->_parent = $parent;
+        return $this;
+    }
+
+    public function getParentSourceManager() {
+        return $this->_parent;
     }
     
     public function newSource($adapter, $alias, array $fields=null, $forWrite=false) {
@@ -88,6 +98,16 @@ class SourceManager implements ISourceManager, core\IDumpable {
     
     public function getSources() {
         return $this->_sources;
+    }
+
+    public function getSourceByAlias($alias) {
+        if(isset($this->_sources[$alias])) {
+            return $this->_sources[$alias];
+        }
+
+        if($this->_parent) {
+            return $this->_parent->getSourceByAlias($alias);
+        }
     }
     
     public function countSourceAdapters() {
@@ -166,6 +186,16 @@ class SourceManager implements ISourceManager, core\IDumpable {
     }
     
     protected function _extrapolateField(ISource $source, $name, $alias=null, $checkAlias=null, $allowIntrinsic=true, $allowWildcard=true, $allowAggregate=true, $isOutput=false) {
+        if($name instanceof opal\query\IQuery) {
+            if(!$allowIntrinsic) {
+                throw new InvalidArgumentException(
+                    'Unexpected intrinsic sub-select query field'
+                );
+            }
+
+            return $name;
+        }
+
         if(!$isOutput && ($field = $this->_findFieldByAlias($name))) {
             $this->_testField($field, $allowIntrinsic, $allowWildcard, $allowAggregate);
             return $field;
@@ -229,13 +259,20 @@ class SourceManager implements ISourceManager, core\IDumpable {
                 $qName = $sourceAlias.'.'.$name;
             }
             
-            if(!isset($this->_sources[$sourceAlias])) {
+            $source = null;
+
+            if(isset($this->_sources[$sourceAlias])) {
+                $source = $this->_sources[$sourceAlias];
+            } else if($this->_parent) {
+                $source = $this->_parent->getSourceByAlias($sourceAlias);
+            }
+            
+            if(!$source) {
                 throw new InvalidArgumentException(
                     'Source alias "'.$sourceAlias.'" has not been defined'
                 );
             }
             
-            $source = $this->_sources[$sourceAlias];
             
             if($checkAlias === true && $passedSourceAlias !== $source->getAlias()) {
                 throw new InvalidArgumentException(
@@ -339,7 +376,11 @@ class SourceManager implements ISourceManager, core\IDumpable {
         $output = array();
         
         foreach($this->_sources as $alias => $source) {
-            $output[$alias] = $source->getAdapter();
+            $output[] = new core\debug\dumper\Property($alias, $source->getAdapter());
+        }
+
+        if($this->_parent) {
+            $output[] = new core\debug\dumper\Property('parent', $this->_parent, 'private');
         }
         
         return $output;

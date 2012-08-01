@@ -28,7 +28,7 @@ class Duration extends Base implements opal\schema\ISignedField {
     }
 
 // Values
-    public function inflateValueFromRow($key, array $row, $forRecord) {
+    public function inflateValueFromRow($key, array $row, opal\query\record\IRecord $forRecord=null) {
         if(isset($row[$key])) { 
             $refDate = null;
 

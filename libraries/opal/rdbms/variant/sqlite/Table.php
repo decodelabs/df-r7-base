@@ -605,7 +605,8 @@ class Table extends opal\rdbms\Table {
     
     
 // Query clauses
-    protected function _defineQueryClauseInlineSubQuery(opal\rdbms\IStatement $stmt, opal\query\IField $field, $fieldString, $operator, opal\query\ISelectQuery $query) {
+    /*
+    protected function _defineQueryClauseInlineSubQuery(opal\rdbms\IStatement $stmt, opal\query\IField $field, $fieldString, $operator, opal\query\ICorrelationQuery $query) {
         $source = $query->getSource();
         $targetField = null;
         
@@ -657,7 +658,7 @@ class Table extends opal\rdbms\Table {
         $stmt->importBindings($stmt2);
         return $fieldString.' '.$operator.' ('."\n    ".str_replace("\n", "\n    ", $stmt2->getSql())."\n".')';
     }
-    
+    */
     
 // Query limit
     protected function _defineQueryLimit($limit, $offset=null) {
