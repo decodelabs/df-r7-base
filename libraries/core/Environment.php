@@ -29,7 +29,7 @@ class Environment extends Config {
     protected function _sanitizeValuesOnCreate() {
         try {
             $ctrlManager = new ctrl\Manager($this->getApplication());
-            $ctrl->initGitIgnore();
+            $ctrlManager->initGitIgnore();
         } catch(\Exception $e) {}
     }
         
