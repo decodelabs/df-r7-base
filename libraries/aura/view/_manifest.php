@@ -299,11 +299,11 @@ interface IHtmlView extends ILayoutView {
     public function clearScripts();
     public function clearHeadScripts();
     public function clearFootScripts();
-    public function useJsEnabledScript($flag=null);
     
     
     // Rendering
-    public function shouldRenderBase();
+    public function shouldRenderBase($flag=null);
+    public function shouldRenderIELegacyNotice($flag=null);
 }
 
 

@@ -43,7 +43,6 @@ class Html extends Base implements IHtmlView {
     protected $_footJs;
     protected $_headScripts = array();
     protected $_footScripts = array();
-    protected $_useJsEnabledScript = true;
     
     protected $_feeds = array();
     protected $_faviconHref;
@@ -51,6 +50,7 @@ class Html extends Base implements IHtmlView {
     public $bodyTag;
     
     protected $_shouldRenderBase = true;
+    protected $_shouldRenderIELegacyNotice = true;
     
     public function __construct($type, arch\IContext $context) {
         parent::__construct($type, $context);
@@ -58,9 +58,9 @@ class Html extends Base implements IHtmlView {
         $this->bodyTag = new aura\html\Tag('body');
         
         $this
-            //->setMeta('X-UA-Compatible', 'IE=edge,chrome=1')
+            ->setMeta('X-UA-Compatible', 'IE=edge,chrome=1')
             ->setMeta('content-type', $this->getContentType())
-            //->setMeta('viewport', 'width=device-width; initial-scale=1.0; maximum-scale=1.0;')
+            ->setMeta('viewport', 'width=device-width')//; initial-scale=1.0; maximum-scale=1.0;')
             ;
     }
 
@@ -565,15 +565,6 @@ class Html extends Base implements IHtmlView {
         return $this;
     }
     
-    public function useJsEnabledScript($flag=null) {
-        if($flag !== null) {
-            $this->_useJsEnabledScript = (bool)$flag;
-            return $this;
-        }
-        
-        return $this->_useJsEnabledScript;
-    }
-    
 // Content
     public function getContentType() {
         return 'text/html; charset=utf-8';
@@ -587,6 +578,15 @@ class Html extends Base implements IHtmlView {
         }
         
         return $this->_shouldRenderBase;
+    }
+
+    public function shouldRenderIELegacyNotice($flag=null) {
+        if($flag !== null) {
+            $this->_shouldRenderIELegacyNotice = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_shouldRenderIELegacyNotice;
     }
     
     protected function _beforeRender() {
@@ -605,9 +605,13 @@ class Html extends Base implements IHtmlView {
         if($this->_shouldRenderBase) {
             $output = 
                 '<!DOCTYPE html>'."\n".
-                '<html>'."\n".
+                '<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->'."\n".
+                '<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->'."\n".
+                '<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->'."\n".
+                '<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->'."\n".
                 $this->_renderHead()."\n".
                 $this->bodyTag->open()."\n".
+                $this->_renderIELegacyNotice().
                 $output."\n".
                 $this->_renderJsList($this->_footJs).
                 $this->_renderScriptList($this->_footScripts).
@@ -652,9 +656,7 @@ class Html extends Base implements IHtmlView {
         }
         
         // Js enabled
-        if($this->_useJsEnabledScript) {
-            $output .= '    <script type="text/javascript">document.documentElement.className = "jsEnabled";</script>'."\n";
-        }
+        $output .= '    <script type="text/javascript">document.documentElement.className = document.documentElement.className.replace(/(^|\s)no-js(\s|$)/, \'$1$2\');</script>'."\n";
         
         // Css
         foreach(clone $this->_css as $entry) {
@@ -712,8 +714,8 @@ class Html extends Base implements IHtmlView {
 
         foreach($scripts as $entry) {
             $line = '    <script type="text/javascript">'.
-                       "\n        ".str_replace("\n", "\n        ", $entry['script'])."\n".
-                       '    </script>'."\n";
+                    "\n        ".str_replace("\n", "\n        ", $entry['script'])."\n".
+                    '    </script>'."\n";
 
             if($entry['condition']) {
                 $line = $this->_addCondition($line, $entry['condition']);
@@ -727,6 +729,12 @@ class Html extends Base implements IHtmlView {
 
     protected function _addCondition($line, $condition) {
         return '    <!--[if '.$condition.' ]>'.trim($line).'<![endif]-->'."\n";
+    }
+
+    protected function _renderIELegacyNotice() {
+        if($this->_shouldRenderIELegacyNotice) {
+            return '<!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->'."\n";
+        }
     }
     
     protected function _metaToString($key, $value) {
