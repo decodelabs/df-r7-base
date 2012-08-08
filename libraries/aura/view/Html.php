@@ -550,6 +550,20 @@ class Html extends Base implements IHtmlView {
         unset($this->_footScripts[$id]);
         return $this;
     }
+
+    public function clearScripts() {
+        return $this->clearHeadScripts()->clearFootScripts();
+    }
+
+    public function clearHeadScripts() {
+        $this->_headScripts = array();
+        return $this;
+    }
+
+    public function clearFootScripts() {
+        $this->_footScripts = array();
+        return $this;
+    }
     
     public function useJsEnabledScript($flag=null) {
         if($flag !== null) {

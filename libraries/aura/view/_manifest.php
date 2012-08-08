@@ -296,6 +296,9 @@ interface IHtmlView extends ILayoutView {
     public function removeScript($id);
     public function removeHeadScript($id);
     public function removeFootScript($id);
+    public function clearScripts();
+    public function clearHeadScripts();
+    public function clearFootScripts();
     public function useJsEnabledScript($flag=null);
     
     
