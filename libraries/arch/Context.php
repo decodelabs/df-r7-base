@@ -116,6 +116,8 @@ class Context implements IContext, core\i18n\translate\ITranslationProxy, core\I
                         $uri = new Request($uri);
                         break;
                 }
+            } else if(substr($uri, 0, 7) == 'mailto:') {
+                return new core\uri\MailtoUrl($uri);
             }
         }
         
