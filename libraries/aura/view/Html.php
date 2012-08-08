@@ -39,8 +39,10 @@ class Html extends Base implements IHtmlView {
     protected $_css;
     protected $_styles;
     
-    protected $_js = array();
-    protected $_scripts = array();
+    protected $_headJs;
+    protected $_footJs;
+    protected $_headScripts = array();
+    protected $_footScripts = array();
     protected $_useJsEnabledScript = true;
     
     protected $_feeds = array();
@@ -308,19 +310,33 @@ class Html extends Base implements IHtmlView {
     
     
 // CSS
-    public function linkCss($uri, $media=null, $priority=50, array $attributes=array()) {
+    public function linkCss($uri, $media=null, $priority=50, array $attributes=null, $condition=null) {
         if(!$this->_css) {
             $this->_css = new \SplPriorityQueue();
+        }
+
+        if(!$attributes) {
+            $attributes = array();
         }
         
         $attributes['href'] = $this->_context->normalizeOutputUrl($uri);
         $attributes['rel'] = 'stylesheet';
         $attributes['type'] = 'text/css';
         
-        $tag = new aura\html\Tag('link', $attributes);
-        $this->_css->insert($tag, $priority);
+        if($media !== null) {
+            $attributes['media'] = $media;
+        }        
+        
+        $this->_css->insert([
+            'tag' => new aura\html\Tag('link', $attributes),
+            'condition' => $condition
+        ], $priority);
         
         return $this;
+    }
+
+    public function linkConditionalCss($condition, $uri, $media=null, $weight=50, array $attributes=null) {
+        return $this->linkCss($uri, $media, $weight, $attributes, $condition);
     }
 
     public function getCss() {
@@ -401,46 +417,137 @@ class Html extends Base implements IHtmlView {
     
     
 // Js
-    public function linkJs($uri, $priority=50, array $attributes=null) {
-        if(!$this->_js) {
-            $this->_js = new \SplPriorityQueue();
+    public function linkJs($uri, $priority=50, array $attributes=null, $condition=null) {
+        return $this->linkHeadJs($uri, $priority, $attributes, $condition);
+    }
+
+    public function linkConditionalJs($condition, $uri, $weight=50, array $attributes) {
+        return $this->linkHeadJs($uri, $weight, $attributes, $condition);
+    }
+
+    public function linkHeadJs($uri, $priority=50, array $attributes=null, $condition=null) {
+        if(!$this->_headJs) {
+            $this->_headJs = new \SplPriorityQueue();
         }
         
-        $attributes['href'] = $this->_context->normalizeOutputUrl($uri);
-        $attributes['type'] = 'text/javascript';
-        
-        $tag = new aura\html\Tag('script', $attributes);
-        $this->_js->insert($tag, $priority);
+        $this->_headJs->insert($this->_createJsEntry($uri, $attributes, $condition), $priority);
         
         return $this;
     }
+
+    public function linkConditionalHeadJs($condition, $uri, $weight=50, array $attributes) {
+        return $this->linkHeadJs($uri, $weight, $attributes, $condition);
+    }
+
+    public function linkFootJs($uri, $priority=50, array $attributes=null, $condition=null) {
+        if(!$this->_footJs) {
+            $this->_footJs = new \SplPriorityQueue();
+        }
+
+        $this->_footJs->insert($this->_createJsEntry($uri, $attributes, $condition), $priority);
+        
+        return $this;
+    }
+
+    public function linkConditionalFootJs($condition, $uri, $weight=50, array $attributes) {
+        return $this->linkFootJs($uri, $weight, $attributes, $condition);
+    }
+    
+    protected function _createJsEntry($uri, array $attributes, $condition) {
+        if(!$attributes) {
+            $attributes = array();
+        }
+
+        $attributes['href'] = $this->_context->normalizeOutputUrl($uri);
+        $attributes['type'] = 'text/javascript';
+
+        return [
+            'tag' => new aura\html\Tag('script', $attributes),
+            'condition' => $condition
+        ];
+    }
     
     public function getJs() {
+        return array_merge(
+            $this->getHeadJs(),
+            $this->getFootJs()
+        );
+    }
+    
+    public function getHeadJs() {
         $output = array();
         
-        if($this->_js) {
-            foreach(clone $this->_js as $tag) {
+        if($this->_headJs) {
+            foreach(clone $this->_headJs as $tag) {
                 $output[] = $tag;
             }
         }
         
         return $output;
     }
-    
+
+    public function getFootJs() {
+        $output = array();
+        
+        if($this->_footJs) {
+            foreach(clone $this->_footJs as $tag) {
+                $output[] = $tag;
+            }
+        }
+        
+        return $output;
+    }
+
+
     public function clearJs() {
-        $this->_js = null;
+        return $this->clearHeadJs()->clearFootJs();
+    }
+
+    public function clearHeadJs() {
+        $this->_headJs = null;
+        return $this;
+    }
+    
+    public function clearFootJs() {
+        $this->_footJs = null;
         return $this;
     }
     
     
 // Scripts
-    public function addScript($script) {
-        $this->_scripts[md5($script)] = $script;
+    public function addScript($id, $script, $condition=null) {
+        return $this->addHeadScript($id, $script, $condition);
+    }
+
+    public function addHeadScript($id, $script, $condition=null) {
+        $this->_headScripts[$id] = [
+            'script' => $script,
+            'condition' => $condition
+        ];
+
+        return $this;
+    }
+
+    public function addFootScript($id, $script, $condition=null) {
+        $this->_footScripts[$id] = [
+            'script' => $script,
+            'condition' => $condition
+        ];
+
         return $this;
     }
     
-    public function removeScript($script) {
-        unset($this->_scripts[md5($script)]);
+    public function removeScript($id) {
+        return $this->removeHeadScript($id)->removeFootScript($id);
+    }
+
+    public function removeHeadScript($id) {
+        unset($this->_headScripts[$id]);
+        return $this;
+    }
+
+    public function removeFootScript($id) {
+        unset($this->_footScripts[$id]);
         return $this;
     }
     
@@ -488,6 +595,8 @@ class Html extends Base implements IHtmlView {
                 $this->_renderHead()."\n".
                 $this->bodyTag->open()."\n".
                 $output."\n".
+                $this->_renderJsList($this->_footJs).
+                $this->_renderScriptList($this->_footScripts).
                 $this->bodyTag->close()."\n".
                 '</html>';
         }
@@ -534,8 +643,14 @@ class Html extends Base implements IHtmlView {
         }
         
         // Css
-        foreach($this->getCss() as $css) {
-            $output .= '    '.$css->__toString()."\n";
+        foreach(clone $this->_css as $entry) {
+            $line = '    '.$entry['tag']->__toString()."\n";
+
+            if($entry['condition']) {
+                $line = $this->_addCondition($line, $entry['condition']);
+            }
+
+            $output .= $line;
         }
         
         // Style
@@ -544,20 +659,60 @@ class Html extends Base implements IHtmlView {
         }
         
         // Js
-        foreach($this->getJs() as $js) {
-            $output .= '    '.$js->open().$js->close()."\n";
-        }
-        
+        $output .= $this->_renderJsList($this->_headJs);
+
         // Scripts
-        foreach($this->_scripts as $script) {
-            $output .= '    <script type="text/javascript">'.
-                       "\n        ".str_replace("\n", "\n        ", $script)."\n".
-                       '    </script>'."\n";
-        }
-        
+        $output .= $this->_renderScriptList($this->_headScripts);
         
         $output .= '</head>'."\n";
         return $output;
+    }
+
+
+    protected function _renderJsList($list) {
+        if(!$list) {
+            return null;
+        }
+
+        $output = '';
+
+        foreach(clone $list as $entry) {
+            $line = '    '.$entry['tag']->open().$entry['tag']->close()."\n";
+
+            if($entry['condition']) {
+                $line = $this->_addCondition($line, $entry['condition']);
+            }
+
+            $output .= $line;
+        }
+
+        return $output;
+    }
+
+    protected function _renderScriptList(array $scripts) {
+        if(empty($scripts)) {
+            return null;
+        }
+        
+        $output = '';
+
+        foreach($scripts as $entry) {
+            $line = '    <script type="text/javascript">'.
+                       "\n        ".str_replace("\n", "\n        ", $entry['script'])."\n".
+                       '    </script>'."\n";
+
+            if($entry['condition']) {
+                $line = $this->_addCondition($line, $entry['condition']);
+            }
+
+            $output .= $line;
+        }
+
+        return $output;
+    }
+
+    protected function _addCondition($line, $condition) {
+        return '    <!--[if '.$condition.' ]>'.trim($line).'<![endif]-->'."\n";
     }
     
     protected function _metaToString($key, $value) {

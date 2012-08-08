@@ -260,7 +260,8 @@ interface IHtmlView extends ILayoutView {
     public function linkFavicon($uri);
     
     // CSS
-    public function linkCss($uri, $media=null, $weight=50, array $attributes=array());
+    public function linkCss($uri, $media=null, $weight=50, array $attributes=null, $condition=null);
+    public function linkConditionalCss($condition, $uri, $media=null, $weight=50, array $attributes=null);
     public function getCss();
     public function clearCss();
     
@@ -276,13 +277,25 @@ interface IHtmlView extends ILayoutView {
     public function hasStyle($selector);
     
     // Js
-    public function linkJs($uri, $weight=50, array $attributes=null);
-    public function getJs();
+    public function linkJs($uri, $weight=50, array $attributes=null, $condition=null);
+    public function linkConditionalJs($condition, $uri, $weight=50, array $attributes);
+    public function linkHeadJs($uri, $weight=50, array $attributes=null, $condition=null);
+    public function linkConditionalHeadJs($condition, $uri, $weight=50, array $attributes);
+    public function linkFootJs($uri, $weight=50, array $attributes=null, $condition=null);
+    public function linkConditionalFootJs($condition, $uri, $weight=50, array $attributes);
+    public function getHeadJs();
+    public function getFootJs();
     public function clearJs();
+    public function clearHeadJs();
+    public function clearFootJs();
     
     // Scripts
-    public function addScript($script);
-    public function removeScript($script);
+    public function addScript($id, $script, $condition=null);
+    public function addHeadScript($id, $script, $condition=null);
+    public function addFootScript($id, $script, $condition=null);
+    public function removeScript($id);
+    public function removeHeadScript($id);
+    public function removeFootScript($id);
     public function useJsEnabledScript($flag=null);
     
     
