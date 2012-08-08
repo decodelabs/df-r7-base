@@ -36,6 +36,10 @@ class Base implements IView {
     public function __construct($type, arch\IContext $context) {
         $this->_type = $type;
         $this->_context = $context;
+
+        if(get_class() == __CLASS__) {
+            $this->getHeaders()->set('Content-Type', $this->getContentType());
+        }
     }
     
     
