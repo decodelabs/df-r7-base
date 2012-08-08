@@ -169,7 +169,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
             //$timer = new core\time\Timer();
             $this->_execute();
             
-            core\debug()->dump($this);//, /*$timer);//,*/ $this->_bindings);
+            //core\debug()->dump($this);//, /*$timer);//,*/ $this->_bindings);
         } catch(\Exception $e) {
             // void profiler
             throw $e;
