@@ -421,7 +421,7 @@ class Html extends Base implements IHtmlView {
         return $this->linkHeadJs($uri, $priority, $attributes, $condition);
     }
 
-    public function linkConditionalJs($condition, $uri, $weight=50, array $attributes) {
+    public function linkConditionalJs($condition, $uri, $weight=50, array $attributes=null) {
         return $this->linkHeadJs($uri, $weight, $attributes, $condition);
     }
 
@@ -435,7 +435,7 @@ class Html extends Base implements IHtmlView {
         return $this;
     }
 
-    public function linkConditionalHeadJs($condition, $uri, $weight=50, array $attributes) {
+    public function linkConditionalHeadJs($condition, $uri, $weight=50, array $attributes=null) {
         return $this->linkHeadJs($uri, $weight, $attributes, $condition);
     }
 
@@ -449,11 +449,11 @@ class Html extends Base implements IHtmlView {
         return $this;
     }
 
-    public function linkConditionalFootJs($condition, $uri, $weight=50, array $attributes) {
+    public function linkConditionalFootJs($condition, $uri, $weight=50, array $attributes=null) {
         return $this->linkFootJs($uri, $weight, $attributes, $condition);
     }
     
-    protected function _createJsEntry($uri, array $attributes, $condition) {
+    protected function _createJsEntry($uri, array $attributes=null, $condition) {
         if(!$attributes) {
             $attributes = array();
         }

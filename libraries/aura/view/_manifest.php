@@ -278,11 +278,11 @@ interface IHtmlView extends ILayoutView {
     
     // Js
     public function linkJs($uri, $weight=50, array $attributes=null, $condition=null);
-    public function linkConditionalJs($condition, $uri, $weight=50, array $attributes);
+    public function linkConditionalJs($condition, $uri, $weight=50, array $attributes=null);
     public function linkHeadJs($uri, $weight=50, array $attributes=null, $condition=null);
-    public function linkConditionalHeadJs($condition, $uri, $weight=50, array $attributes);
+    public function linkConditionalHeadJs($condition, $uri, $weight=50, array $attributes=null);
     public function linkFootJs($uri, $weight=50, array $attributes=null, $condition=null);
-    public function linkConditionalFootJs($condition, $uri, $weight=50, array $attributes);
+    public function linkConditionalFootJs($condition, $uri, $weight=50, array $attributes=null);
     public function getHeadJs();
     public function getFootJs();
     public function clearJs();
