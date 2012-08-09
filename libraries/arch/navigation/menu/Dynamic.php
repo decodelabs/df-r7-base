@@ -11,6 +11,8 @@ use df\arch;
 
 class Dynamic extends Base {
     
+    use arch\navigation\TEntryGenerator;
+
     protected $_recordId;
     protected $_displayName;
     protected $_entries = array();
@@ -88,8 +90,8 @@ class Dynamic extends Base {
     public function getEntries() {
         return $this->_entries;
     }
-    
-    protected function _createEntries(IEntryList $entryList) {
+
+    protected function _createEntries(arch\navigation\IEntryList $entryList) {
         $entryList->addEntries($this->_entries);
     }
     
