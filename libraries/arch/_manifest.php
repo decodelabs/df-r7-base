@@ -215,6 +215,10 @@ trait TDirectoryAccessLock {
     }
     
     public function getDefaultAccess($action=null) {
+        if(!static::CHECK_ACCESS) {
+            return user\IState::ALL;
+        }
+        
         return static::DEFAULT_ACCESS;
     }
 
