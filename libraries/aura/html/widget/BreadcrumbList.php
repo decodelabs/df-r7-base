@@ -22,7 +22,7 @@ class BreadcrumbList extends Base implements IListWidget, core\IDumpable {
         $this->_entries = new aura\html\ElementContent(); 
         $this->_context = $context;
 
-        if($input === true) {
+        if($input === true || $input === 'sitemap') {
             $input = null;
             $this->addSitemapEntries();
         } else if(is_string($input) || $input instanceof arch\IRequest) {
