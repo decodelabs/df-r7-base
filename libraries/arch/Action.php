@@ -187,12 +187,20 @@ class Action implements IAction, core\IDumpable {
 // Access
     public function getDefaultAccess($action=null) {
         if(!$this->_isInline) {
+            if(!static::CHECK_ACCESS) {
+                return user\IState::ALL;
+            }
+
             return static::DEFAULT_ACCESS;
         }
         
         $controller = $this->getController();
         
         if($controller->isControllerInline()) {
+            if(!static::CHECK_ACCESS) {
+                return user\IState::ALL;
+            }
+            
             return static::DEFAULT_ACCESS;
         } else {
             return $controller->getDefaultAccess($action);
