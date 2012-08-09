@@ -105,9 +105,14 @@ class Url extends core\uri\Url implements IUrl {
         $this->setQuery(array_shift($parts));
         
         // Scheme
-        $parts = explode('://', $url, 2);
-        $url = array_pop($parts);
-        $this->setScheme(array_shift($parts));
+        if(substr($url, 0, 2) == '//') {
+            $url = ltrim($url, '/');
+            $this->_scheme = null;
+        } else {
+            $parts = explode('://', $url, 2);
+            $url = array_pop($parts);
+            $this->setScheme(array_shift($parts));
+        }
         
         $path = explode('/', $url);
         
@@ -238,7 +243,12 @@ class Url extends core\uri\Url implements IUrl {
             return $this->_getFragmentString();
         }
         
-        $output = $this->getScheme().'://';
+        if($this->_scheme === null) {
+            $output = '//';
+        } else {
+            $output = $this->getScheme().'://';
+        }
+        
         $output .= $this->_getCredentialString();
         $output .= $this->_domain;
         

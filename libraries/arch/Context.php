@@ -97,27 +97,30 @@ class Context implements IContext, core\i18n\translate\ITranslationProxy, core\I
         }
         
         if(is_string($uri)) {
-            $parts = explode('://', $uri, 2);
-            array_pop($parts);
-            
-            if($scheme = array_shift($parts)) {
-                switch(strtolower($scheme)) {
-                    case 'http':
-                    case 'https':
-                        return new halo\protocol\http\Url($uri);
-                        
-                    case 'ftp':
-                        return new halo\protocol\ftp\Url($uri);
-                        
-                    case 'mailto':
-                        return new core\uri\MailtoUrl($uri);
-                        
-                    case 'directory':
-                        $uri = new Request($uri);
-                        break;
-                }
-            } else if(substr($uri, 0, 7) == 'mailto:') {
+            if(substr($uri, 0, 7) == 'mailto:') {
                 return new core\uri\MailtoUrl($uri);
+            } else if(substr($uri, 0, 2) == '//') {
+                return new halo\protocol\http\Url($uri);
+            } else {
+                $parts = explode('://', $uri, 2);
+                
+                if($scheme = array_shift($parts)) {
+                    switch(strtolower($scheme)) {
+                        case 'http':
+                        case 'https':
+                            return new halo\protocol\http\Url($uri);
+                            
+                        case 'ftp':
+                            return new halo\protocol\ftp\Url($uri);
+                            
+                        case 'mailto':
+                            return new core\uri\MailtoUrl($uri);
+                            
+                        case 'directory':
+                            $uri = new Request($uri);
+                            break;
+                    }
+                }
             }
         }
         
