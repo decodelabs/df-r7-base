@@ -161,7 +161,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, core\IDumpable {
         }
         
         // Strip leading slash
-        if(!strlen($input[0])) {
+        if(!isset($input[0]) || !strlen($input[0])) {
             array_shift($input);
             $this->_isAbsolute = true;
         }
