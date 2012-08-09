@@ -310,15 +310,19 @@ class Html extends Base implements IHtmlView {
     
     
 // CSS
-    public function linkCss($uri, $media=null, $priority=50, array $attributes=null, $condition=null) {
+    public function linkCss($uri, $media=null, $weight=null, array $attributes=null, $condition=null) {
         if(!$this->_css) {
             $this->_css = new \SplPriorityQueue();
+        }
+
+        if($weight === null) {
+            $weight = 50;
         }
 
         if(!$attributes) {
             $attributes = array();
         }
-        
+
         $attributes['href'] = $this->_context->normalizeOutputUrl($uri);
         $attributes['rel'] = 'stylesheet';
         $attributes['type'] = 'text/css';
@@ -330,12 +334,12 @@ class Html extends Base implements IHtmlView {
         $this->_css->insert([
             'tag' => new aura\html\Tag('link', $attributes),
             'condition' => $condition
-        ], $priority);
+        ], $weight);
         
         return $this;
     }
 
-    public function linkConditionalCss($condition, $uri, $media=null, $weight=50, array $attributes=null) {
+    public function linkConditionalCss($condition, $uri, $media=null, $weight=null, array $attributes=null) {
         return $this->linkCss($uri, $media, $weight, $attributes, $condition);
     }
 
@@ -417,43 +421,51 @@ class Html extends Base implements IHtmlView {
     
     
 // Js
-    public function linkJs($uri, $priority=50, array $attributes=null, $condition=null) {
-        return $this->linkHeadJs($uri, $priority, $attributes, $condition);
+    public function linkJs($uri, $weight=null, array $attributes=null, $fallbackScript=null, $condition=null) {
+        return $this->linkHeadJs($uri, $weight, $attributes, $fallbackScript, $condition);
     }
 
-    public function linkConditionalJs($condition, $uri, $weight=50, array $attributes=null) {
-        return $this->linkHeadJs($uri, $weight, $attributes, $condition);
+    public function linkConditionalJs($condition, $uri, $weight=null, array $attributes=null, $fallbackScript=null) {
+        return $this->linkHeadJs($uri, $weight, $attributes, $fallbackScript, $condition);
     }
 
-    public function linkHeadJs($uri, $priority=50, array $attributes=null, $condition=null) {
+    public function linkHeadJs($uri, $weight=null, array $attributes=null, $fallbackScript=null, $condition=null) {
         if(!$this->_headJs) {
             $this->_headJs = new \SplPriorityQueue();
         }
+
+        if($weight === null) {
+            $weight = 50;
+        }
         
-        $this->_headJs->insert($this->_createJsEntry($uri, $attributes, $condition), $priority);
+        $this->_headJs->insert($this->_createJsEntry($uri, $attributes, $fallbackScript, $condition), $weight);
         
         return $this;
     }
 
-    public function linkConditionalHeadJs($condition, $uri, $weight=50, array $attributes=null) {
-        return $this->linkHeadJs($uri, $weight, $attributes, $condition);
+    public function linkConditionalHeadJs($condition, $uri, $weight=null, array $attributes=null, $fallbackScript=null) {
+        return $this->linkHeadJs($uri, $weight, $attributes, $fallbackScript, $condition);
     }
 
-    public function linkFootJs($uri, $priority=50, array $attributes=null, $condition=null) {
+    public function linkFootJs($uri, $weight=null, array $attributes=null, $fallbackScript=null, $condition=null) {
         if(!$this->_footJs) {
             $this->_footJs = new \SplPriorityQueue();
         }
 
-        $this->_footJs->insert($this->_createJsEntry($uri, $attributes, $condition), $priority);
+        if($weight === null) {
+            $weight = 50;
+        }
+
+        $this->_footJs->insert($this->_createJsEntry($uri, $attributes, $fallbackScript, $condition), $weight);
         
         return $this;
     }
 
-    public function linkConditionalFootJs($condition, $uri, $weight=50, array $attributes=null) {
-        return $this->linkFootJs($uri, $weight, $attributes, $condition);
+    public function linkConditionalFootJs($condition, $uri, $weight=null, array $attributes=null, $fallbackScript=null) {
+        return $this->linkFootJs($uri, $weight, $attributes, $fallbackScript, $condition);
     }
     
-    protected function _createJsEntry($uri, array $attributes=null, $condition) {
+    protected function _createJsEntry($uri, array $attributes=null, $fallbackScript, $condition) {
         if(!$attributes) {
             $attributes = array();
         }
@@ -463,7 +475,8 @@ class Html extends Base implements IHtmlView {
 
         return [
             'tag' => new aura\html\Tag('script', $attributes),
-            'condition' => $condition
+            'condition' => $condition,
+            'fallback' => $fallbackScript
         ];
     }
     
@@ -695,7 +708,11 @@ class Html extends Base implements IHtmlView {
         foreach(clone $list as $entry) {
             $line = '    '.$entry['tag']->open().$entry['tag']->close()."\n";
 
-            if($entry['condition']) {
+            if(isset($entry['fallback'])) {
+                $line .= $this->_renderScriptList([['script' => $entry['fallback']]]);
+            }
+
+            if(isset($entry['condition'])) {
                 $line = $this->_addCondition($line, $entry['condition']);
             }
 
@@ -717,7 +734,7 @@ class Html extends Base implements IHtmlView {
                     "\n        ".str_replace("\n", "\n        ", $entry['script'])."\n".
                     '    </script>'."\n";
 
-            if($entry['condition']) {
+            if(isset($entry['condition'])) {
                 $line = $this->_addCondition($line, $entry['condition']);
             }
 

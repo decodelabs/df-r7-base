@@ -260,8 +260,8 @@ interface IHtmlView extends ILayoutView {
     public function linkFavicon($uri);
     
     // CSS
-    public function linkCss($uri, $media=null, $weight=50, array $attributes=null, $condition=null);
-    public function linkConditionalCss($condition, $uri, $media=null, $weight=50, array $attributes=null);
+    public function linkCss($uri, $media=null, $weight=null, array $attributes=null, $condition=null);
+    public function linkConditionalCss($condition, $uri, $media=null, $weight=null, array $attributes=null);
     public function getCss();
     public function clearCss();
     
@@ -277,12 +277,12 @@ interface IHtmlView extends ILayoutView {
     public function hasStyle($selector);
     
     // Js
-    public function linkJs($uri, $weight=50, array $attributes=null, $condition=null);
-    public function linkConditionalJs($condition, $uri, $weight=50, array $attributes=null);
-    public function linkHeadJs($uri, $weight=50, array $attributes=null, $condition=null);
-    public function linkConditionalHeadJs($condition, $uri, $weight=50, array $attributes=null);
-    public function linkFootJs($uri, $weight=50, array $attributes=null, $condition=null);
-    public function linkConditionalFootJs($condition, $uri, $weight=50, array $attributes=null);
+    public function linkJs($uri, $weight=null, array $attributes=null, $fallbackScript=null, $condition=null);
+    public function linkConditionalJs($condition, $uri, $weight=null, array $attributes=null, $fallbackScript=null);
+    public function linkHeadJs($uri, $weight=null, array $attributes=null, $fallbackScript=null, $condition=null);
+    public function linkConditionalHeadJs($condition, $uri, $weight=null, array $attributes=null, $fallbackScript=null);
+    public function linkFootJs($uri, $weight=null, array $attributes=null, $fallbackScript=null, $condition=null);
+    public function linkConditionalFootJs($condition, $uri, $weight=null, array $attributes=null, $fallbackScript=null);
     public function getHeadJs();
     public function getFootJs();
     public function clearJs();
