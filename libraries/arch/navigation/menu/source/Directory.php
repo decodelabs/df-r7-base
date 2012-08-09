@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\arch;
     
-class Directory extends Base {
+class Directory extends Base implements arch\navigation\menu\IListableSource {
 
     public function loadMenu(core\uri\Url $id) {
     	$parts = $id->path->toArray();

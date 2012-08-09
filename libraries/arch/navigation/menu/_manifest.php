@@ -37,7 +37,14 @@ interface ISource {
     public function getName();
     public function getDisplayName();
     public function loadMenu(core\uri\Url $id);
+}
+
+interface IListableSource extends ISource {
     public function loadAllMenus(array $whiteList=null);
+}
+
+interface ISourceAdapter {
+    public function loadMenu(ISource $source, core\uri\Url $id);
 }
 
 

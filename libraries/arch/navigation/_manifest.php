@@ -41,7 +41,28 @@ interface IEntryListGenerator {
 	public function generateEntries(IEntryList $entryList);
 }
 
+
+trait TEntryGenerator {
+
+    public function __call($method, $args) {
+        $prefix = substr($method, 0, 3);
+        if($prefix == 'new' || $prefix == 'add') {
+            $output = arch\navigation\entry\Base::factoryArgs(substr($method, 3), $args);
+
+            if($prefix == 'add') {
+                $this->addEntry($output);
+            }
+
+            return $output;
+        }
+        
+        throw new \BadMethodCallException('Method '.$method.' does not exist');
+    }
+}
+
 trait TEntryList {
+
+    use TEntryGenerator;
 
 	protected $_entries = array();
 	protected $_isSorted = false;
@@ -73,6 +94,10 @@ trait TEntryList {
             }
         }
         
+        if($entry->getWeight() == 0) {
+            $entry->setWeight(count($this->_entries) + 1);
+        }
+
         $this->_entries[$entry->getId()] = $entry;
         $this->_isSorted = false;
 
@@ -103,13 +128,7 @@ trait TEntryList {
     }
 
 
-    public function __call($method, $args) {
-        if(substr($method, 0, 3) == 'new') {
-            return arch\navigation\entry\Base::factoryArgs(substr($method, 3), $args);
-        }
-        
-        throw new \BadMethodCallException('Method '.$method.' does not exist');
-    }
+
 
     public function toArray() {
         return $this->getEntries();

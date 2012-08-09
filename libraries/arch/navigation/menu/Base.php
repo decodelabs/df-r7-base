@@ -40,6 +40,10 @@ class Base implements IMenu, \Serializable, core\IDumpable {
         }
         
         foreach($sources as $source) {
+            if(!$source instanceof IListableSource) {
+                continue;
+            }
+            
             $sourceWhiteList = null;
             $sourceName = $source->getName();
             
