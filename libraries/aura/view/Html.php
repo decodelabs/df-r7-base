@@ -672,16 +672,8 @@ class Html extends Base implements IHtmlView {
         $output .= '    <script type="text/javascript">document.documentElement.className = document.documentElement.className.replace(/(^|\s)no-js(\s|$)/, \'$1$2\');</script>'."\n";
         
         // Css
-        foreach(clone $this->_css as $entry) {
-            $line = '    '.$entry['tag']->__toString()."\n";
+        $output .= $this->_renderCssList($this->_css);
 
-            if($entry['condition']) {
-                $line = $this->_addCondition($line, $entry['condition']);
-            }
-
-            $output .= $line;
-        }
-        
         // Style
         if($this->_styles) {
             $output .= '    '.str_replace("\n", "\n    ", $this->_styles->toString())."\n";
@@ -694,6 +686,26 @@ class Html extends Base implements IHtmlView {
         $output .= $this->_renderScriptList($this->_headScripts);
         
         $output .= '</head>'."\n";
+        return $output;
+    }
+
+    protected function _renderCssList($list) {
+        if(!$list) {
+            return null;
+        }
+
+        $output = '';
+
+        foreach(clone $list as $entry) {
+            $line = '    '.$entry['tag']->__toString()."\n";
+
+            if($entry['condition']) {
+                $line = $this->_addCondition($line, $entry['condition']);
+            }
+
+            $output .= $line;
+        }
+
         return $output;
     }
 
