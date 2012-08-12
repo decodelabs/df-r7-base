@@ -75,6 +75,9 @@ interface IEncoding {
     const WINDOWS_1252= 'Windows-1252';
     const CP866 = 'CP866';
     const KOI8_R = 'KOI8-R';
+
+    const QP = 'quoted-printable';
+    const BINARY = 'binary';
     const AUTO = 'auto';
 }
 
