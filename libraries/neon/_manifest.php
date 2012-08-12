@@ -13,6 +13,7 @@ use df\neon;
 interface IException {}
 
 class RuntimeException extends \RuntimeException implements IException {}
+class LogicException extends \LogicException implements IException {}
 class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 
 
@@ -101,4 +102,80 @@ interface IColor {
     public function affectContrast($amount);
     public function toMidtone($amount=1);
     public function contrastAgainst($color, $amount=0.5);
+}
+
+
+interface IImageProcessor {
+
+    const PROPORTIONAL = 'p';
+    const STRETCH = 's';
+    const FIT = 'f';
+
+    const TILE = 'tile';
+    const TOP_LEFT = 'tl';
+    const TOP_CENTER = 'tc';
+    const TOP_RIGHT = 'tr';
+    const MIDDLE_LEFT = 'ml';
+    const MIDDLE_CENTER = 'mc';
+    const MIDDLE_RIGHT = 'mr';
+    const BOTTOM_LEFT = 'bl';
+    const BOTTOM_CENTER = 'bc';
+    const BOTTOM_RIGHT = 'br';
+
+    public function resize($width, $height, $mode=IImage::FIT);
+    public function cropZoom($width, $height);
+    public function frame($width, $height, $color=null);
+    public function watermark($image, $position=IImage::BOTTOM_RIGHT, $scaleFactor=1.0);
+    public function rotate($angle, $background=null);
+    public function crop($x, $y, $width, $height);
+    public function mirror();
+    public function flip();
+    public function brightness($brightness);
+    public function contrast($contrast);
+    public function greyscale();
+    public function colorize($color, $alpha=100);
+    public function invert();
+    public function detectEdges();
+    public function emboss();
+    public function blur();
+    public function gaussianBlur();
+    public function removeMean();
+    public function smooth($amount=50);
+}
+
+interface IImageDrawingProcessor extends IImageProcessor {
+    public function rectangleFill($x, $y, $width, $height, $color);
+    public function gradientFill($orientation, $x, $y, $width, $height, array $colors);
+}
+
+interface IImage extends IImageProcessor {
+
+    public static function isLoadable();
+    public static function canReadFile($path);
+    public static function newCanvas($width, $height, $color=null);
+
+    public function setSourcePath($sourcePath);
+    public function getSourcePath();
+    public function setTargetPath($targetPath);
+    public function getTargetPath();
+    public function isOpen();
+
+    public function canRead($type);
+    public function canWrite($type);
+    public function getContentType();
+    public function convertTo($type);
+
+    public function transform($str=null);
+    public function save($quality=100);
+    public function toString($quality=100);
+    public function copy(IImage $image, $destX, $destY);
+}
+
+
+interface IImageTransformation extends core\IStringProvider, IImageProcessor {
+
+    public function setImage(IImageProcessor $image);
+    public function getImage();
+
+    public function apply();
 }
