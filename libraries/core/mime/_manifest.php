@@ -101,8 +101,3 @@ interface IMultiPart extends IPart, \Countable, \RecursiveIterator {
     public function newMultiPart($type=IMultiPart::MIXED);
     public function newMessage($type=IMultiPart::MIXED);
 }
-
-
-interface IMessage extends IMultiPart {
-
-}
