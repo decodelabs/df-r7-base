@@ -67,6 +67,10 @@ class ElementContentWrapper implements aura\html\widget\IElementContentWrapper {
     public function renderTo(aura\view\IRenderTarget $target) {
         return $this->_widget->renderTo($target);
     }
+
+    public function render() {
+        return $this->_widget->render();
+    }
     
     public function __toString() {
         return $this->_widget->__toString();
