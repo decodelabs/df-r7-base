@@ -45,22 +45,26 @@ class Manager implements IManager, core\IDumpable {
             if($this->_client === null) {
                 $this->_client = Client::generateGuest($this);
                 $regenKeyring = true;
+                $rethrowException = false;
             } else {
                 $cache = user\session\Cache::getInstance($this->_application);
                 $regenKeyring = $cache->shouldRegenerateKeyring($this->_client->getKeyringTimestamp());
+                $rethrowException = false;
             }
 
             if($regenKeyring) {
                 $notify = \df\arch\notify\Manager::getInstance();
                 $notify->setInstantMessage($notify->newMessage('keyring.regen', 'Regenerating client keyring', 'debug'));
 
-                //try {
+                try {
                     $this->_client->setKeyring(
                         $this->_getUserModel()->generateKeyring($this->_client)
                     );
-                //} catch(\Exception $e) {
-                    //core\debug()->exception($e)->flush();
-                //}
+                } catch(\Exception $e) {
+                    if($rethrowException) {
+                        throw $e;
+                    }
+                }
 
                 $session->set(self::CLIENT_SESSION_KEY, $this->_client);
             }
