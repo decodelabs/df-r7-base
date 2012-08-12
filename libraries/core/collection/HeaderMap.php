@@ -124,7 +124,54 @@ class HeaderMap implements IMappedCollection, core\IStringProvider, \Iterator, c
         
         return $default;
     }
-    
+
+    public function setNamedValue($key, $name, $keyValue) {
+        $value = $this->get($key);
+
+        if($value === null) {
+            return $this;
+        }
+
+
+        $new = preg_replace('/'.preg_quote($name).'="(.*)"/i', $name.'="'.$keyValue.'"', $value);
+
+        if($new === $value) {
+            if(false === strpos($value, ';')) {
+                $value .= ';';
+            }
+
+            $value .= ' '.$name.'="'.$keyValue.'"';
+        } else {
+            $value = $new;
+        }
+
+        return $this->set($key, $value);
+    }
+
+    public function getNamedValue($key, $name, $default=null) {
+        $value = $this->get($key);
+
+        if($value === null) {
+            return $default;
+        }
+
+        if(!preg_match('/\W*'.preg_quote($name).'="(.*)"/i', $value, $matches)) {
+            return $default;
+        }
+
+        return $matches[1];
+    }
+
+    public function hasNamedValue($key, $name) {
+        $value = $this->get($key);
+
+        if($value === null) {
+            return false;
+        }
+
+        return (bool)preg_match('/\W*'.preg_quote($name).'="(.*)"/i', $value);
+    }
+
     public function has($key, $value=null) {
         $key = $this->normalizeKey($key);
         
