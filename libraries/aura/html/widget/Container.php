@@ -18,7 +18,7 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
     public function __construct(arch\IContext $context, $input=null) {
         $this->_context = $context;
         
-        if($input !== null && !is_array($input) && !$input instanceof aura\html\IElementContent) {
+        if(func_num_args() > 2) {
             $input = array_slice(func_get_args(), 1);
         }
         
