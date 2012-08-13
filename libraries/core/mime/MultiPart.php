@@ -11,10 +11,10 @@ use df\core;
 class MultiPart implements IMultiPart {
 
 	use core\TStringProvider;
+    use core\collection\THeaderMapProvider;
 
 	private static $_boundaryCounter = 0;
 
-	protected $_headers;
 	protected $_isMessage = true;
 	protected $_parts = array();
 
@@ -26,15 +26,6 @@ class MultiPart implements IMultiPart {
 		if(!$this->_headers->hasNamedValue('content-type', 'boundary')) {
 			$this->_headers->setNamedValue('content-type', 'boundary', '=_'.md5(microtime(true).self::$_boundaryCounter++));
 		}
-	}
-
-    public function getHeaders() {
-		return $this->_headers;
-	}
-
-	public function setHeaders(core\collection\HeaderCollection $headers) {
-		$this->_headers = $headers;
-		return $this;
 	}
 
 
@@ -145,19 +136,25 @@ class MultiPart implements IMultiPart {
 
 
     public function toString() {
-    	if($this->isMultiPart()) {
-    		$headers = $this->_headers;
-    	} else if(isset($this->_parts[0])) {
-    		$headers = new core\collection\HeaderMap(array_merge(
-    			$this->_headers->toArray(),
-    			$this->_parts[0]->getHeaders()->toArray()
-			));
-    	}
-
-    	$output = $headers->toString().IMessageLine::END.IMessageLine::END;
+        $output = $this->getHeaderString().IMessageLine::END.IMessageLine::END;
     	$output .= $this->getBodyString();
 
     	return $output;
+    }
+
+    public function getHeaderString() {
+        $this->prepareHeaders();
+
+        if($this->isMultiPart()) {
+            $headers = $this->_headers;
+        } else if(isset($this->_parts[0])) {
+            $headers = new core\collection\HeaderMap(array_merge(
+                $this->_headers->toArray(),
+                $this->_parts[0]->getHeaders()->toArray()
+            ));
+        }
+
+        return $headers->toString();
     }
 
     public function getBodyString() {

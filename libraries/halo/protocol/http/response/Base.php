@@ -11,7 +11,8 @@ use df\halo;
 
 abstract class Base implements halo\protocol\http\IResponse {
     
-    protected $_headers;
+    use core\collection\THeaderMapProvider;
+
     protected $_cookies;
     
     public static function fromString($string) {
@@ -173,8 +174,16 @@ abstract class Base implements halo\protocol\http\IResponse {
         core\stub();
     }
     
-    
-    
+    public function setHeaders(core\collection\IHeaderMap $headers) {
+        if(!$headers instanceof halo\protocol\http\IResponseHeaderCollection) {
+            throw new halo\protocol\http\InvalidArgumentException(
+                'Request headers must implement IResponseHeaderCollection'
+            );
+        }
+        
+        $this->_headers = $headers;
+        return $this;
+    }
     
     public function getHeaders() {
         if(!$this->_headers) {
@@ -182,10 +191,6 @@ abstract class Base implements halo\protocol\http\IResponse {
         }
         
         return $this->_headers;
-    }
-    
-    public function hasHeaders() {
-        return $this->_headers && !$this->_headers->isEmpty();
     }
     
     public function getCookies() {
@@ -342,22 +347,28 @@ abstract class Base implements halo\protocol\http\IResponse {
     
 // Strings
     public function getResponseString() {
-        $output = $this->getHeaderString();
+        $output = $this->getHeaderString()."\r\n\r\n";
         $output .= $this->getEncodedContent()."\r\n";
                   
         return $output;
     }
     
     public function getHeaderString() {
-        if($this->hasCookies()) {
-            $this->_cookies->applyTo($this->getHeaders());
-        }
+        $this->prepareHeaders();
         
         return self::buildHeaderString($this->_headers);
     }
+
+    public function prepareHeaders() {
+        if($this->hasCookies()) {
+            $this->_cookies->applyTo($this->getHeaders());
+        }
+
+        return $this;
+    }
     
     public static function buildHeaderString(halo\protocol\http\IResponseHeaderCollection $headers=null) {
-        $output = '';
+        $headerString = '';
             
         if($headers) {
             $version = $headers->getHttpVersion();
@@ -365,7 +376,7 @@ abstract class Base implements halo\protocol\http\IResponse {
             $message = $headers->getStatusMessage();
             
             if(!$headers->isEmpty()) {
-                $output = $headers->toString()."\r\n";
+                $headerString = "\r\n".$headers->toString();
             }
         } else {
             $version = '1.1';
@@ -373,6 +384,6 @@ abstract class Base implements halo\protocol\http\IResponse {
             $message = 'OK';
         }
         
-        return 'HTTP/'.$version.' '.$code.' '.$message."\r\n".$output."\r\n";
+        return 'HTTP/'.$version.' '.$code.' '.$message.$headerString;
     }
 }

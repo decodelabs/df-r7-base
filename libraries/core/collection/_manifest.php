@@ -195,3 +195,54 @@ interface ITree extends IRandomAccessCollection, IMappedContainerCollection, cor
 }
 
 interface IInputTree extends ITree, core\IErrorContainer {}
+
+
+
+interface IHeaderMap extends IMappedCollection, core\IStringProvider, \Iterator {
+
+}
+
+interface IHeaderMapProvider {
+    public function getHeaders();
+    public function setHeaders(IHeaderMap $headers);
+    public function hasHeaders();
+    public function prepareHeaders();
+    public function getHeaderString();
+}
+
+
+trait THeaderMapProvider {
+
+    protected $_headers;
+
+    public function getHeaders() {
+        if(!$this->_headers) {
+            $this->_headers = new core\collection\HeaderMap();
+        }
+
+        return $this->_headers;
+    }
+
+    public function setHeaders(core\collection\IHeaderMap $headers) {
+        $this->_headers = $headers;
+        return $this;
+    }
+
+    public function prepareHeaders() {
+        return $this;
+    }
+
+    public function hasHeaders() {
+        return $this->_headers && !$this->_headers->isEmpty();
+    }
+
+    public function getHeaderString() {
+        $this->prepareHeaders();
+
+        if($this->_headers) {
+            return $this->_headers->toString();
+        }
+
+        return '';
+    }
+}

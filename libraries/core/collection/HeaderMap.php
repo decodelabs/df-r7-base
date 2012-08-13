@@ -8,7 +8,7 @@ namespace df\core\collection;
 use df;
 use df\core;
 
-class HeaderMap implements IMappedCollection, core\IStringProvider, \Iterator, core\IDumpable {
+class HeaderMap implements IHeaderMap, core\IDumpable {
     
     use core\TStringProvider;
     use TArrayCollection;

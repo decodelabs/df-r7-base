@@ -12,6 +12,7 @@ use df\halo;
 // Exceptions
 interface IException {}
 class RuntimeException extends \RuntimeException implements IException {}
+class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 class UnexpectedValueException extends \UnexpectedValueException implements IException {}
 
 class DebugPayload extends \Exception {
@@ -34,7 +35,7 @@ interface IUrl extends core\uri\IGenericUrl, core\uri\ICredentialContainer, core
 
 
 
-interface IRequest extends core\IStringProvider, halo\peer\ISessionRequest {
+interface IRequest extends core\IStringProvider, core\collection\IHeaderMapProvider, halo\peer\ISessionRequest {
     // Method
     public function setMethod($method);
     public function getMethod();
@@ -53,8 +54,6 @@ interface IRequest extends core\IStringProvider, halo\peer\ISessionRequest {
     public function getUrl();
     
     // Headers
-    public function setHeaders(IRequestHeaderCollection $headers);
-    public function getHeaders();
     public function isCachedByClient();
     
     // Post
@@ -77,10 +76,6 @@ interface IRequest extends core\IStringProvider, halo\peer\ISessionRequest {
     public function setIp($ip);
     public function getIp();
     public function getSocketAddress();
-    
-    // Strings
-    public function prepareToSend();
-    public function getHeaderString();
 }
 
 
@@ -112,10 +107,8 @@ interface IRequestHeaderCollection {
 
 
 
-interface IResponse extends core\IPayload, halo\peer\ISessionResponse {
+interface IResponse extends core\IPayload, core\collection\IHeaderMapProvider, halo\peer\ISessionResponse {
     // Headers
-    public function getHeaders();
-    public function hasHeaders();
     public function getCookies();
     public function hasCookies();
     public function isOk();
@@ -132,7 +125,6 @@ interface IResponse extends core\IPayload, halo\peer\ISessionResponse {
     public function getLastModified();
     
     // Strings
-    public function getHeaderString();
     public function getResponseString();
 }
 

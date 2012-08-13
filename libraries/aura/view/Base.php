@@ -52,6 +52,19 @@ class Base implements IView {
         return $this->_headers;
     }
     
+    public function setHeaders(core\collection\IHeaderMap $headers) {
+        $this->_headers = $headers;
+        return $this;
+    }
+
+    public function prepareHeaders() {
+        if($this->hasCookies()) {
+            $this->_cookies->applyTo($this->getHeaders());
+        }
+
+        return $this;
+    }
+
     public function hasHeaders() {
         return $this->_headers && !$this->_headers->isEmpty();
     }
@@ -133,15 +146,13 @@ class Base implements IView {
     }
     
     public function getHeaderString() {
-        if($this->hasCookies()) {
-            $this->_cookies->applyTo($this->getHeaders());
-        }
+        $this->prepareHeaders();
         
         return halo\protocol\http\response\Base::buildHeaderString($this->_headers);
     }
     
     public function getResponseString() {
-        $output = $this->getHeaderString();
+        $output = $this->getHeaderString()."\r\n\r\n";
         $output .= $this->getEncodedContent()."\r\n";
                   
         return $output;

@@ -11,8 +11,8 @@ use df\core;
 class ContentPart implements IContentPart {
 
 	use core\TStringProvider;
+	use core\collection\THeaderMapProvider;
 
-	protected $_headers;
     protected $_content = null;
 
     public function __construct($content) {
@@ -22,16 +22,6 @@ class ContentPart implements IContentPart {
 
     	$this->setContent($content);
     }
-
-    public function getHeaders() {
-		return $this->_headers;
-	}
-
-	public function setHeaders(core\collection\HeaderCollection $headers) {
-		$this->_headers = $headers;
-		return $this;
-	}
-
 
 	public function isMultiPart() {
 		return false;
@@ -184,7 +174,7 @@ class ContentPart implements IContentPart {
 
 
 	public function toString() {
-		$output = $this->_headers->toString().IMessageLine::END.IMessageLine::END;
+		$output = $this->getHeaderString().IMessageLine::END.IMessageLine::END;
 		$output .= $this->getEncodedContent();
 
 		return $output;

@@ -11,6 +11,8 @@ use df\halo;
 
 class Base implements halo\protocol\http\IRequest, core\IDumpable {
     
+    use core\TStringProvider;
+
     const GET     = 'GET';
     const POST    = 'POST';
     const PUT     = 'PUT';
@@ -272,7 +274,13 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
     
     
 // Headers
-    public function setHeaders(halo\protocol\http\IRequestHeaderCollection $headers) {
+    public function setHeaders(core\collection\IHeaderMap $headers) {
+        if(!$headers instanceof halo\protocol\http\IRequestHeaderCollection) {
+            throw new halo\protocol\http\InvalidArgumentException(
+                'Request headers must implement IRequestHeaderCollection'
+            );
+        }
+
         $this->_headers = $headers;
         return $this;
     }
@@ -299,6 +307,10 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
         }
         
         return $this->_headers;
+    }
+
+    public function hasHeaders() {
+        return $this->_headers && !$this->_headers->isEmpty();
     }
     
     public function isCachedByClient() {
@@ -472,7 +484,7 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
     
     
 // Sending
-    public function prepareToSend() {
+    public function prepareHeaders() {
         $url = $this->getUrl();
         $host = $url->getDomain();
         $port = $url->getPort();
@@ -494,22 +506,14 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
         }
         
         if($this->_cookieData && !$this->_cookieData->isEmpty()) {
-            $headers->set('cookie', $this->_cookieData->toString());
+            $headers->set('cookie', $this->_cookieData->toArrayDelimitedString(';'));
         }
         
         return $this;
     }
     
-    public function __toString() {
-        try {
-            return (string)$this->toString();
-        } catch(\Exception $e) {
-            return '';
-        }
-    }
-    
     public function toString() {
-        $output = $this->getHeaderString();
+        $output = $this->getHeaderString()."\r\n\r\n";
         
         if($this->hasBodyData()) {
             $output .= $this->_bodyData;
@@ -519,11 +523,11 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
     }
     
     public function getHeaderString() {
-        $this->prepareToSend();
+        $this->prepareHeaders();
         
         $headers = $this->getHeaders();
         $output = $this->getMethod().' '.$this->_url->getLocalString().' HTTP/'.$headers->getHttpVersion()."\r\n";
-        $output .= $headers->toString()."\r\n\r\n";
+        $output .= $headers->toString();
         
         return $output;
     }

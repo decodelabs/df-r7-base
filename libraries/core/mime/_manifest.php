@@ -41,10 +41,7 @@ interface IMessageLine {
 }
 
 
-interface IPart extends core\IStringProvider {
-	public function getHeaders();
-	public function setHeaders(core\collection\HeaderCollection $headers);
-
+interface IPart extends core\IStringProvider, core\collection\IHeaderMapProvider {
 	public function isMultiPart();
 	public function isMessage();
 
