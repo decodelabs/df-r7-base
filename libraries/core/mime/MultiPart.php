@@ -8,7 +8,7 @@ namespace df\core\mime;
 use df;
 use df\core;
     
-class MultiPart implements IMultiPart {
+class MultiPart implements IMultiPart, core\IDumpable {
 
 	use core\TStringProvider;
     use core\collection\THeaderMapProvider;
@@ -214,5 +214,21 @@ class MultiPart implements IMultiPart {
 
     public function getChildren() {
     	return $this->_parts;
+    }
+
+
+// Dump
+    public function getDumpProperties() {
+        $output = array();
+
+        foreach($this->_headers as $key => $header) {
+            $output[] = new core\debug\dumper\Property($key, $header, 'protected');
+        }
+
+        foreach($this->_parts as $i => $part) {
+            $output[] = new core\debug\dumper\Property('part'.($i+1), $part);
+        }
+
+        return $output;
     }
 }

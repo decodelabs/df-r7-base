@@ -8,7 +8,7 @@ namespace df\core\mime;
 use df;
 use df\core;
     
-class ContentPart implements IContentPart {
+class ContentPart implements IContentPart, core\IDumpable {
 
 	use core\TStringProvider;
 	use core\collection\THeaderMapProvider;
@@ -182,5 +182,18 @@ class ContentPart implements IContentPart {
 
 	public function getBodyString() {
 		return $this->getEncodedContent();
+	}
+
+// Dump
+	public function getDumpProperties() {
+		$output = array();
+
+		foreach($this->_headers as $key => $header) {
+			$output[] = new core\debug\dumper\Property($key, $header, 'protected');
+		}
+
+		$output[] = new core\debug\dumper\Property('content', $this->_content);
+
+		return $output;
 	}
 }
