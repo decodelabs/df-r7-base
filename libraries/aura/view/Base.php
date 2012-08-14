@@ -145,7 +145,7 @@ class Base implements IView {
         return new core\time\Date();
     }
     
-    public function getHeaderString() {
+    public function getHeaderString(array $skipKeys=null) {
         $this->prepareHeaders();
         
         return halo\protocol\http\response\Base::buildHeaderString($this->_headers);

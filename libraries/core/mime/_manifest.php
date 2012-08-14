@@ -90,6 +90,7 @@ interface IMultiPart extends IPart, \Countable, \RecursiveIterator {
     public function setParts(array $parts);
     public function addParts(array $parts);
     public function addPart(IPart $part);
+    public function prependPart(IPart $part);
     public function getParts();
     public function clearParts();
     public function isEmpty();

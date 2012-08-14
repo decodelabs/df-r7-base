@@ -522,12 +522,12 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
         return $output;
     }
     
-    public function getHeaderString() {
+    public function getHeaderString(array $skipKeys=null) {
         $this->prepareHeaders();
         
         $headers = $this->getHeaders();
         $output = $this->getMethod().' '.$this->_url->getLocalString().' HTTP/'.$headers->getHttpVersion()."\r\n";
-        $output .= $headers->toString();
+        $output .= $headers->toString($skipKeys);
         
         return $output;
     }

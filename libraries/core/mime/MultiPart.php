@@ -103,6 +103,11 @@ class MultiPart implements IMultiPart, core\IDumpable {
     	return $this;
     }
 
+    public function prependPart(IPart $part) {
+        array_unshift($this->_parts, $part);
+        return $this;
+    }
+
     public function getParts() {
     	return $this->_parts;
     }
@@ -142,7 +147,7 @@ class MultiPart implements IMultiPart, core\IDumpable {
     	return $output;
     }
 
-    public function getHeaderString() {
+    public function getHeaderString(array $skipKeys=null) {
         $this->prepareHeaders();
 
         if($this->isMultiPart()) {
@@ -154,7 +159,7 @@ class MultiPart implements IMultiPart, core\IDumpable {
             ));
         }
 
-        return $headers->toString();
+        return $headers->toString($skipKeys);
     }
 
     public function getBodyString() {

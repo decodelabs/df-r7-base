@@ -218,14 +218,24 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
     
     
 // Strings
-    public function toString() {
-        return implode("\r\n", $this->getLines());
+    public function toString(array $skipKeys=null) {
+        return implode("\r\n", $this->getLines($skipKeys));
     }
     
-    public function getLines() {
+    public function getLines(array $skipKeys=null) {
         $output = array();
+
+        if($skipKeys) {
+            foreach($skipKeys as $i => $key) {
+                $skipKeys[$i] = self::normalizeKey($key);
+            }
+        }
         
         foreach($this->_collection as $key => $value) {
+            if($skipKeys && in_array($key, $skipKeys)) {
+                continue;
+            }
+
             if(is_array($value)) {
                 foreach($value as $v) {
                     $output[] = $key.': '.$this->_formatValue($key, $v); 

@@ -353,7 +353,7 @@ abstract class Base implements halo\protocol\http\IResponse {
         return $output;
     }
     
-    public function getHeaderString() {
+    public function getHeaderString(array $skipKeys=null) {
         $this->prepareHeaders();
         
         return self::buildHeaderString($this->_headers);

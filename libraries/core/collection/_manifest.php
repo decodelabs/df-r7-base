@@ -199,7 +199,12 @@ interface IInputTree extends ITree, core\IErrorContainer {}
 
 
 interface IHeaderMap extends IMappedCollection, core\IStringProvider, \Iterator {
-
+    public function append($key, $value);
+    public function setNamedValue($key, $name, $keyValue);
+    public function getNamedValue($key, $name, $default=null);
+    public function hasNamedValue($key, $name);
+    public static function normalizeKey($key);
+    public function getLines(array $skipKeys=null);
 }
 
 interface IHeaderMapProvider {
@@ -207,7 +212,7 @@ interface IHeaderMapProvider {
     public function setHeaders(IHeaderMap $headers);
     public function hasHeaders();
     public function prepareHeaders();
-    public function getHeaderString();
+    public function getHeaderString(array $skipKeys=null);
 }
 
 
@@ -236,11 +241,11 @@ trait THeaderMapProvider {
         return $this->_headers && !$this->_headers->isEmpty();
     }
 
-    public function getHeaderString() {
+    public function getHeaderString(array $skipKeys=null) {
         $this->prepareHeaders();
 
         if($this->_headers) {
-            return $this->_headers->toString();
+            return $this->_headers->toString($skipKeys);
         }
 
         return '';
