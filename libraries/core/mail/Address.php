@@ -74,7 +74,7 @@ class Address implements IAddress {
 
     public function isValid() {
     	if($this->_isValid === null) {
-    		$this->_isValid = filter_var($this->_address, \FILTER_VALIDATE_EMAIL);
+    		$this->_isValid = (bool)filter_var($this->_address, \FILTER_VALIDATE_EMAIL);
     	}
 
     	return (bool)$this->_isValid;

@@ -7,7 +7,6 @@ namespace df\core\mail;
 
 use df;
 use df\core;
-use df\core;
     
 class Config extends core\Config {
 
@@ -18,7 +17,7 @@ class Config extends core\Config {
     	return [
     		'defaultTransport' => 'Mail',
     		'defaultAddress' => 'webmaster@mydomain.com',
-    		'catchAllBcc' => []
+    		'catchAllBCC' => []
     	];
     }
 
@@ -62,7 +61,7 @@ class Config extends core\Config {
     	return 'webmaster@mydomain.com';
     }
 
-    public function setCatchAllBccAddresses(array $addresses) {
+    public function setCatchAllBCCAddresses(array $addresses) {
     	foreach($addresses as $i => $address) {
     		$address = Address::factory($address);
 
@@ -71,15 +70,15 @@ class Config extends core\Config {
     		}
     	}
 
-    	$this->_values['catchAllBcc'] = $addresses;
+    	$this->_values['catchAllBCC'] = $addresses;
     	return $this;
     }
 
-    public function getCatchAllBccAddresses() {
+    public function getCatchAllBCCAddresses() {
     	$output = array();
 
-    	if(isset($this->_values['catchAllBcc'])) {
-    		foreach($this->_values['catchAllBcc'] as $address) {
+    	if(isset($this->_values['catchAllBCC'])) {
+    		foreach($this->_values['catchAllBCC'] as $address) {
     			$output[] = Address::factory($address);
     		}
     	}
