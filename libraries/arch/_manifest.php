@@ -19,6 +19,8 @@ class HelperNotFoundException extends RuntimeException {}
 
 
 // Interfaces
+interface IAccess extends user\IState {}
+
 interface IContext extends core\IApplicationAware, core\IHelperProvider {
     public function spawnInstance($request);
     
@@ -216,7 +218,7 @@ trait TDirectoryAccessLock {
     
     public function getDefaultAccess($action=null) {
         if(!static::CHECK_ACCESS) {
-            return user\IState::ALL;
+            return IAccess::ALL;
         }
         
         return static::DEFAULT_ACCESS;
@@ -226,4 +228,3 @@ trait TDirectoryAccessLock {
         return $this->_context->getRequest()->getAccessLockId();
     }
 }
-

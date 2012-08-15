@@ -8,7 +8,6 @@ namespace df\arch;
 use df;
 use df\core;
 use df\arch;
-use df\user;
 
 class Controller implements IController, core\IDumpable {
     
@@ -16,7 +15,7 @@ class Controller implements IController, core\IDumpable {
     use TDirectoryAccessLock;
     
     const CHECK_ACCESS = true;
-    const DEFAULT_ACCESS = user\IState::NONE;
+    const DEFAULT_ACCESS = arch\IAccess::NONE;
     
     protected $_type;
     protected $_activeAction;

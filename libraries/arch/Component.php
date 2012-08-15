@@ -14,7 +14,7 @@ abstract class Component implements IComponent {
     
     use user\TAccessLock;
 
-    const DEFAULT_ACCESS = user\IState::ALL;
+    const DEFAULT_ACCESS = arch\IAccess::ALL;
     
     protected $_context;
     

@@ -8,7 +8,6 @@ namespace df\arch;
 use df;
 use df\core;
 use df\arch;
-use df\user;
 
 class Action implements IAction, core\IDumpable {
     
@@ -16,7 +15,7 @@ class Action implements IAction, core\IDumpable {
     use TDirectoryAccessLock;
     
     const CHECK_ACCESS = true;
-    const DEFAULT_ACCESS = user\IState::NONE;
+    const DEFAULT_ACCESS = arch\IAccess::NONE;
     
     private $_isInline = false;
     private $_controller;
@@ -188,7 +187,7 @@ class Action implements IAction, core\IDumpable {
     public function getDefaultAccess($action=null) {
         if(!$this->_isInline) {
             if(!static::CHECK_ACCESS) {
-                return user\IState::ALL;
+                return arch\IAccess::ALL;
             }
 
             return static::DEFAULT_ACCESS;
@@ -198,7 +197,7 @@ class Action implements IAction, core\IDumpable {
         
         if($controller->isControllerInline()) {
             if(!static::CHECK_ACCESS) {
-                return user\IState::ALL;
+                return arch\IAccess::ALL;
             }
             
             return static::DEFAULT_ACCESS;
