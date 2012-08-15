@@ -11,6 +11,9 @@ use df\aura;
 
 class RendererContext implements aura\html\widget\IRendererContext {
     
+    use core\collection\TArrayCollection;
+    use core\collection\TArrayCollection_AssociativeValueMap;
+
     protected $_key;
     protected $_counter = -1;
     protected $_cellTag;
@@ -45,6 +48,8 @@ class RendererContext implements aura\html\widget\IRendererContext {
     
     public function iterate($key, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null) {
         $this->_counter++;
+        $this->clear();
+
         return $this->iterateField($key, $cellTag, $rowTag);
     }
     
