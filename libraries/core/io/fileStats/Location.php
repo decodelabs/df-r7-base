@@ -84,6 +84,10 @@ class Location {
         return $this->_types;
     }
     
+    public function countTypes() {
+        return count($this->_types);
+    }
+
     public function getType($type) {
         if(isset($this->_types[$type])) {
             return $this->_types[$type];

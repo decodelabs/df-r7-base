@@ -20,6 +20,12 @@ class Counter {
         $this->_locations[$location->getId()] = $location;
         return $this;
     }
+
+    public function getLocation($id) {
+        if(isset($this->_locations[$id])) {
+            return $this->_locations[$id];
+        }
+    }
     
     public function getLocations() {
         return $this->_locations;
