@@ -11,7 +11,7 @@ use df\arch;
 use df\user;
 use df\halo;
 
-class Context implements IContext, core\i18n\translate\ITranslationProxy, core\IDumpable {
+class Context implements IContext, \Serializable, core\i18n\translate\ITranslationProxy, core\IDumpable {
     
     use core\THelperProvider;
     
@@ -48,6 +48,17 @@ class Context implements IContext, core\i18n\translate\ITranslationProxy, core\I
         }
         
         return new self($this->_application, $request);
+    }
+
+
+    public function serialize() {
+        return (string)$this->_request;
+    }
+
+    public function unserialize($data) {
+        $this->_request = Request::factory($data);
+        $this->_application = df\Launchpad::$application;
+        return $this;
     }
     
     
