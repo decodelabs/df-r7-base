@@ -17,7 +17,9 @@ class Address implements IAddress {
     protected $_isValid = null;
 
     public static function factory($address, $name=null) {
-    	if($address instanceof IAddress) {
+        if($address === null) {
+            return null;
+        } else if($address instanceof IAddress) {
     		return $address;
     	} else if($name !== null) {
     		return new self($address, $name);
