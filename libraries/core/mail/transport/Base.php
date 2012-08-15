@@ -18,7 +18,7 @@ abstract class Base implements core\mail\ITransport {
     	}
 
     	if($name === null) {
-    		if(0 && df\Launchpad::$application->isDevelopment()) {
+    		if(df\Launchpad::$application->isDevelopment()) {
     			$class = 'df\\core\\mail\\transport\\DevMail';
     		} else {
     			$config = core\mail\Config::getInstance();

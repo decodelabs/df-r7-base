@@ -12,7 +12,7 @@ class Mail extends Base {
 
     public function send(core\mail\IMessage $message) {
     	$this->_prepareMessage($message);
-    	$headers = $message->getHeaderString(['to']);
+    	$headers = $message->getHeaderString(['to', 'subject']);
     	$to = $message->getHeaders()->get('to');
     	$body = $message->getBodyString();
 

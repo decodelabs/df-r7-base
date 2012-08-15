@@ -69,3 +69,20 @@ interface IMessage extends core\mime\IMultiPart {
 interface ITransport {
 	public function send(IMessage $message);
 }
+
+
+
+interface IMailModel {
+	public function storeDevMail(IMessage $message);
+}
+
+interface IDevMailRecord {
+	public function getId();
+	public function getFromAddress();
+	public function getToAddresses();
+	public function getSubject();
+	public function getBodyString();
+	public function getDate();
+	public function isPrivate();
+	public function toMessage();
+}
