@@ -78,7 +78,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
             $output = $source->loadMenu($id);
             $cache->set($cacheId, $output);
         }
-        
+
         return $output;
     }
     
@@ -134,7 +134,8 @@ class Base implements IMenu, \Serializable, core\IDumpable {
         return [
             'id' => $this->_id,
             'subId' => $this->_subId,
-            'delegates' => $this->_delegates
+            'delegates' => $this->_delegates,
+            'context' => $this->_context
         ];
     }
 
@@ -142,6 +143,10 @@ class Base implements IMenu, \Serializable, core\IDumpable {
         $this->_id = $data['id'];
         $this->_subId = $data['subId'];
         $this->_delegates = $data['delegates'];
+
+        if(isset($data['context'])) {
+            $this->_context = $data['context'];
+        }
     }
     
     public function getId() {
