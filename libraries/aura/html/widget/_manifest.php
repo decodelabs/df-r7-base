@@ -21,7 +21,7 @@ class WidgetNotFoundException extends \RuntimeException implements IException {}
 // Interfaces
 interface IElementContentWrapper extends aura\view\IDeferredRenderable, \ArrayAccess, \Countable {}
 
-interface IRendererContext extends core\collection\IMappedCollection {
+interface IRendererContext extends core\collection\IMappedCollection, aura\view\IRenderTargetProvider {
     public function getWidget();
     public function getKey();
     public function getCounter();
@@ -36,6 +36,7 @@ interface IField {
     public function getName();
     public function setRenderer(Callable $renderer);
     public function getRenderer();
+    public function render($data, aura\html\widget\IRendererContext $renderContext);
 }
 
 

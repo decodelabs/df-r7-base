@@ -26,8 +26,6 @@ class DefinitionList extends Base implements IDataDrivenListWidget, IMappedListW
         $children = new aura\html\ElementContent();
         
         $renderContext = new aura\html\widget\util\RendererContext($this);
-        $renderTarget = $this->getRenderTarget();
-        
         $fields = $this->_fields;
         
         if(empty($fields)) {
@@ -43,7 +41,7 @@ class DefinitionList extends Base implements IDataDrivenListWidget, IMappedListW
             $dtTag = new aura\html\Tag('dt');
             
             $renderContext->iterate($key, $dtTag);
-            $value = $field->render($this->_data, $renderTarget, $renderContext);
+            $value = $field->render($this->_data, $renderContext);
             
             $children->push($ddTag->render(), $dtTag->renderWith($value));
         }

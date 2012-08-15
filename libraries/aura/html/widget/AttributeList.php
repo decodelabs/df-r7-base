@@ -27,7 +27,6 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
         $rows = new aura\html\ElementContent();
         
         $renderContext = new aura\html\widget\util\RendererContext($this);
-        $renderTarget = $this->getRenderTarget();
         
         $fields = $this->_fields;
         
@@ -46,7 +45,7 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
             $tdTag = new aura\html\Tag('td');
             
             $renderContext->iterate($key, $tdTag, $trTag);
-            $value = $field->render($this->_data, $renderTarget, $renderContext);
+            $value = $field->render($this->_data, $renderContext);
             
             $row->push($thTag->render(), $tdTag->renderWith($value));
             $rows->push($trTag->renderWith($row, true));

@@ -967,7 +967,7 @@ trait TWidget_LinearList {
     protected function _renderListItem(IRendererContext $renderContext, $value) {
         if($renderer = $this->_renderer) {
             try {
-                $value = $renderer($value, $this->getRenderTarget(), $renderContext);
+                $value = $renderer($value, $renderContext);
             } catch(\Exception $e) {
                 $value = '<span class="state-error">'.$e->getMessage().'</span>';
             }
@@ -1019,8 +1019,8 @@ trait TWidget_MappedList {
         }
         
         if($renderer === null) {
-            $renderer = function($data, $renderTarget, $context) {
-                $key = $context->getKey();
+            $renderer = function($data, $renderContext) {
+                $key = $renderContext->getKey();
                 $value = null;
                 
                 if(is_array($data)) {

@@ -60,4 +60,18 @@ class RendererContext implements aura\html\widget\IRendererContext {
         
         return $this;
     }
+
+
+    public function setRenderTarget(aura\view\IRenderTarget $renderTarget=null) {
+        $this->_widget->setRenderTarget($renderTarget);
+        return $this;
+    }
+
+    public function getRenderTarget() {
+        return $this->_widget->getRenderTarget();
+    }
+
+    public function getView() {
+        return $this->_widget->getView();
+    }
 }

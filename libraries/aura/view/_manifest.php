@@ -25,14 +25,14 @@ interface IRenderable {
     public function renderTo(IRenderTarget $target);
 }
 
-interface IDeferredRenderable extends IRenderable, core\IStringProvider {
+interface IRenderTargetProvider {
     public function setRenderTarget(IRenderTarget $target=null);
     public function getRenderTarget();
-    public function render();
+    public function getView();
 }
 
 
-trait TDeferredRenderable {
+trait TRenderTargetProvider {
     
     protected $_renderTarget;
     
@@ -50,6 +50,22 @@ trait TDeferredRenderable {
         
         return $this->_renderTarget;
     }
+
+    public function getView() {
+        return $this->getRenderTarget()->getView();
+    }
+}
+
+
+interface IDeferredRenderable extends IRenderable, IRenderTargetProvider, core\IStringProvider {
+    public function render();
+}
+
+
+
+trait TDeferredRenderable {
+    
+    use TRenderTargetProvider;
 
     public function renderTo(IRenderTarget $target) {
         $this->setRenderTarget($target);

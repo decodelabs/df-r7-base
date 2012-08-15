@@ -47,9 +47,9 @@ class Field implements aura\html\widget\IField, core\IDumpable {
         return $this->_renderer;
     }
     
-    public function render($data, aura\view\IRenderTarget $renderTarget, RendererContext $renderContext) {
+    public function render($data, aura\html\widget\IRendererContext $renderContext) {
         $renderer = $this->_renderer;
-        $value = $renderer($data, $renderTarget, $renderContext);
+        $value = $renderer($data, $renderContext);
         
         if(empty($value) && $value != '0') {
             $value = new aura\html\ElementString('<span class="prop-na">n/a</span>');

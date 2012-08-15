@@ -44,8 +44,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
         $rows = new aura\html\ElementContent();
         
         $renderContext = new aura\html\widget\util\RendererContext($this);
-        $renderTarget = $this->getRenderTarget();
-        $context = $renderTarget->getView()->getContext();
+        $context = $this->getView()->getContext();
         $empty = false;
         
         if(!$this->_isDataIterable()) {
@@ -122,7 +121,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                 foreach($this->_fields as $key => $field) {
                     $cellTag = new aura\html\Tag('td');
                     $renderContext->iterateField($key, $cellTag, $rowTag);
-                    $value = $field->render($row, $renderTarget, $renderContext);
+                    $value = $field->render($row, $renderContext);
                     
                     $rowTag->push($cellTag->renderWith($value));
                 }
@@ -141,7 +140,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
         $content = $tag->renderWith($content, true);
         
         if($this->paginator) {
-            $paginatorString = $this->paginator->setRenderTarget($renderTarget)->toString();
+            $paginatorString = $this->paginator->setRenderTarget($this->getRenderTarget())->toString();
             $content->prepend($paginatorString)->append($paginatorString);
         }
         
