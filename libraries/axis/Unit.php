@@ -16,7 +16,7 @@ abstract class Unit implements IUnit {
     
     const ID_SEPARATOR = '/';
 
-    const DEFAULT_ACCESS = user\IState::GUEST;
+    const DEFAULT_ACCESS = axis\IAccess::GUEST;
     public static $actionAccess = [];
     
     private $_unitName;

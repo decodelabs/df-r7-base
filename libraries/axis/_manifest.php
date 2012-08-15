@@ -18,6 +18,9 @@ class LogicException extends \LogicException implements IException {}
 class RuntimeException extends \RuntimeException implements IException {}
 
 // Interfaces
+interface IAccess extends user\IState {}
+
+
 interface IModel extends core\IApplicationAware, core\policy\IParentEntity, core\IRegistryObject {
     public function getModelName();
     
