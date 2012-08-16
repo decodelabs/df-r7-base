@@ -190,6 +190,10 @@ interface IManipulator extends core\collection\IIndexedCollection, core\IStringP
     public function iToIndexOf($needle, $offset=0);
     public function iFromIndexOf($needle, $offset=0);
 
+// Lenth
+    public function getLength();
+    public function append($string);
+
 // Case
     public function wordsToUpper();
     public function firstToUpper();

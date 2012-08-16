@@ -68,6 +68,24 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
         return $output->toString();
     }
     
+
+    public static function shorten($string, $length) {
+        $length = (int)$length;
+
+        if($length < 6) {
+            $length = 6;
+        }
+
+
+        $output = self::factory($string);
+
+        if($output->getLength() > ($length - 3)) {
+            $output->substring(0, $length - 3)
+                ->append('...');
+        }
+
+        return $output->toString();
+    }
     
 
 // Case flags
@@ -425,6 +443,17 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
     
     public function count() {
         return mb_strlen($this->_value, $this->_encoding);
+    }
+
+
+// Length
+    public function getLength() {
+        return mb_strlen($this->_value, $this->_encoding);
+    }
+    
+    public function append($string) {
+        $this->_value .= $string;
+        return $this;
     }
     
     
