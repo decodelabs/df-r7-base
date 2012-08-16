@@ -239,20 +239,20 @@ class Date implements IDate, core\IDumpable {
     protected function _normalizeFormatterSize($size) {
         if(is_string($size)) {
             $size = strtolower($size);
-        }
-        
-        switch($size) {
-            case 'full':
-                return self::FULL;
-            
-            case 'long':
-                return self::LONG;
+
+            switch($size) {
+                case 'full':
+                    return self::FULL;
                 
-            case 'medium':
-                return self::MEDIUM;
-                
-            case 'short':
-                return self::SHORT;
+                case 'long':
+                    return self::LONG;
+                    
+                case 'medium':
+                    return self::MEDIUM;
+                    
+                case 'short':
+                    return self::SHORT;
+            }
         }
         
         switch($size) {
