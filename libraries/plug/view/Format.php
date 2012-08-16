@@ -53,42 +53,48 @@ class Format implements aura\view\IHelper {
     
 // Date
     public function date($date, $size=core\time\Date::MEDIUM, $locale=true) {
-        return core\time\Date::factory($date)->localeDateFormat($size, $locale);
+        return core\time\Date::factory($date)
+            ->localeDateFormat($size, $locale);
     }
     
     public function userDate($date, $size=core\time\Date::MEDIUM) {
-        return core\time\Date::factory($date)->userLocaleDateFormat($size);
+        return core\time\Date::factory($date)
+            ->userLocaleDateFormat($size);
     }
     
     public function dateTime($date, $size=core\time\Date::MEDIUM, $locale=true) {
-        return core\time\Date::factory($date)->localeFormat($size, $locale);
+        return core\time\Date::factory($date)
+            ->localeFormat($size, $locale);
     }
     
     public function userDateTime($date, $size=core\time\Date::MEDIUM) {
-        return core\time\Date::factory($date)->userLocaleFormat($size);
+        return core\time\Date::factory($date)
+            ->userLocaleFormat($size);
     }
     
     public function time($date, $size=core\time\Date::MEDIUM, $locale=true) {
-        $date = core\time\Date::factory($date);
-        return $date->localeTimeFormat($size, $locale);
+        return core\time\Date::factory($date)
+            ->localeTimeFormat($size, $locale);
     }
     
     public function userTime($date, $size=core\time\Date::MEDIUM) {
-        $date = core\time\Date::factory($date);
-        return $date->userLocaleTimeFormat($size);
+        return core\time\Date::factory($date)
+            ->userLocaleTimeFormat($size);
     }
     
     
     public function timeSince($date, $locale=true) {
-        $date = core\time\Date::factory($date);
-        $duration = $date->timeSince()->setLocale($locale);
-        return $duration->toString();
+        return core\time\Date::factory($date)
+            ->timeSince()
+            ->setLocale($locale)
+            ->toString();
     }
     
     public function timeUntil($date, $locale=true) {
-        $date = core\time\Date::factory($date);
-        $duration = $date->timeUntil()->setLocale($locale);
-        return $duration->toString();
+        return core\time\Date::factory($date)
+            ->timeUntil()
+            ->setLocale($locale)
+            ->toString();
     }
     
     
@@ -119,5 +125,9 @@ class Format implements aura\view\IHelper {
     
     public function alphaToNumeric($alpha) {
         return core\string\Manipulator::alphaToNumeric($alpha);
+    }
+
+    public function shorten($string, $length=20) {
+        return core\string\Manipulator::shorten($string, $length);
     }
 }
