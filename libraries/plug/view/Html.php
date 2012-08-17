@@ -55,6 +55,11 @@ class Html implements aura\view\IHelper {
             ->addClass((bool)$value ? 'disposition-positive' : 'disposition-negative');
     }
 
+    public function lockIcon($value, $body=null) {
+        return $this->icon((bool)$value ? 'lock' : 'unlock', $body)
+            ->addClass((bool)$value ? 'state-locked' : 'state-unlocked');
+    }
+
     public function backLink($default=null, $success=true) {
         return $this->link(
                 $this->_view->uri->back($default, $success),
