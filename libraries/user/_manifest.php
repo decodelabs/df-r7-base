@@ -43,6 +43,7 @@ interface IManager extends core\IApplicationAware, core\IRegistryObject {
     
     
     // Authentication
+    public function isLoggedIn();
     public function authenticate(user\authentication\IRequest $request);
     public function logout();
     

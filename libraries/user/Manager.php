@@ -121,6 +121,10 @@ class Manager implements IManager, core\IDumpable {
     
     
 // Authentication
+    public function isLoggedIn() {
+        return $this->getClient()->isLoggedIn();
+    }
+
     public function authenticate(user\authentication\IRequest $request) {
         $timer = new core\time\Timer();
         
