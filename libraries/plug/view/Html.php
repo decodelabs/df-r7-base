@@ -117,13 +117,9 @@ class Html implements aura\view\IHelper {
         }
     }
 
-    public function defaultButtonGroup($mainAction=null) {
-        if(!$mainAction) {
-            $mainAction = 'save';
-        }
-
+    public function defaultButtonGroup($mainAction=null, $mainActionText=null) {
         return $this->buttonArea(
-            $this->saveEventButton($mainAction),
+            $this->saveEventButton($mainAction, $mainActionText),
             $this->resetEventButton(),
             $this->cancelEventButton()
         );
@@ -144,12 +140,16 @@ class Html implements aura\view\IHelper {
         );
     }
 
-    public function saveEventButton($mainAction=null) {
+    public function saveEventButton($mainAction=null, $mainActionText=null) {
         if(!$mainAction) {
             $mainAction = 'save';
         }
 
-        return $this->eventButton($mainAction, $this->_view->_('Save'))
+        if(!$mainActionText) {
+            $mainActionText = $this->_view->_('Save');
+        }
+
+        return $this->eventButton($mainAction, $mainActionText)
             ->setIcon('save');
     }
 
