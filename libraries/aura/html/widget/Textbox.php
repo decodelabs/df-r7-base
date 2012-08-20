@@ -40,6 +40,7 @@ class Textbox extends Base implements ITextboxWidget, core\IDumpable {
     protected function _render() {
         $tag = $this->getTag();
         $tag->setAttribute('type', static::INPUT_TYPE);
+        $tag->addClass('widget-textbox');
         
         $this->_applyFormDataAttributes($tag);
         $this->_applyInputAttributes($tag);
