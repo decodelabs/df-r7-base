@@ -15,7 +15,6 @@ class MultiPart implements IMultiPart, core\IDumpable {
 
 	private static $_boundaryCounter = 0;
 
-	protected $_isMessage = true;
 	protected $_parts = array();
 
 	public function __construct($type=IMultiPart::MIXED) {
@@ -32,16 +31,6 @@ class MultiPart implements IMultiPart, core\IDumpable {
 	public function isMultiPart() {
 		return ($this->count() > 1) || ($this->_parts[0]->isMultipart());
 	}
-
-	public function isMessage($flag=null) {
-		if($flag !== null) {
-			$this->_isMessage = (bool)$flag;
-			return $this;
-		}
-
-		return $this->_isMessage;
-	}
-
 
 	public function setContentType($type) {
 		$type = strtolower($type);
@@ -172,16 +161,16 @@ class MultiPart implements IMultiPart, core\IDumpable {
     		foreach($this->_parts as $part) {
     			$output .= '--'.$boundary.$lineEnd;
 
-    			if($part->isMessage()) {
-    				$output .= 'Content-Type: message/rfc822'.$lineEnd.$lineEnd;
-    			}
+    			//if($part->isMessage()) {
+    			//	$output .= 'Content-Type: message/rfc822'.$lineEnd.$lineEnd;
+    			//}
 
     			$output .= $part->toString().$lineEnd;
     		}
 
     		$output .= '--'.$boundary.'--'.$lineEnd;
     	} else if($this->_parts[0]) {
-    		$output .= $this->_parts[0]->getEncodedContent();
+    		$output .= $this->_parts[0]->getBodyString();
     	}
 
     	return $output;

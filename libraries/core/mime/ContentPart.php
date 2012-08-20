@@ -27,11 +27,6 @@ class ContentPart implements IContentPart, core\IDumpable {
 		return false;
 	}
 
-	public function isMessage() {
-		return false;
-	}
-
-
     public function setContentType($type) {
     	if(strtolower(substr($type, 0, 10)) == 'multipart/') {
     		throw new InvalidArgumentException(

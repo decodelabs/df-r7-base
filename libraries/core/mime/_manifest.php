@@ -43,7 +43,6 @@ interface IMessageLine {
 
 interface IPart extends core\IStringProvider, core\collection\IHeaderMapProvider {
 	public function isMultiPart();
-	public function isMessage();
 
 	public function setContentType($type);
 	public function getContentType();
