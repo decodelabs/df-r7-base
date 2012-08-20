@@ -83,7 +83,8 @@ class FieldArea extends Container implements IFormOrientedWidget {
             $tag->addClass('state-error');
             $fieldError = new FieldError($this->_context, $errors);
             $fieldError->setRenderTarget($this->getRenderTarget());
-            $output[] = $fieldError->render();
+            //$output[] = $fieldError->render();
+            array_unshift($output, $fieldError->render());
         }
         
         if($isRequired) {
