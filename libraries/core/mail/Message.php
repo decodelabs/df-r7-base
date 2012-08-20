@@ -76,7 +76,6 @@ class Message extends core\mime\MultiPart implements IMessage {
 		}
 
 		$this->_altPart = new core\mime\MultiPart(core\mime\IMultiPart::ALTERNATIVE);
-		$this->_altPart->isMessage(false);
 		$this->prependPart($this->_altPart);
 	}
 
