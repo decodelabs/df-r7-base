@@ -18,18 +18,25 @@ abstract class Base implements core\mail\ITransport {
     	}
 
     	if($name === null) {
-    		if(df\Launchpad::$application->isDevelopment()) {
-    			$class = 'df\\core\\mail\\transport\\DevMail';
-    		} else {
-    			$config = core\mail\Config::getInstance();
-
-    			if(!$class = self::getTransportClass($config->getDefaultTransport())) {
-    				$class = 'df\\core\\mail\\transport\\Mail';
-    			}
-    		}
+    		$class = self::getTransportClass(self::getDefaultTransportName());
     	}
 
     	return new $class();
+    }
+
+    public static function getDefaultTransportName() {
+        if(df\Launchpad::$application->isDevelopment()) {
+            return 'DevMail';
+        } else {
+            $config = core\mail\Config::getInstance();
+            $name = $config->getDefaultTransport();
+
+            if(!self::getTransportClass($name)) {
+                $name = 'Mail';
+            }
+
+            return $name;
+        }
     }
 
     public static function getTransportClass($name) {
