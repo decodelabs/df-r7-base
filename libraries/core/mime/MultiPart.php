@@ -17,8 +17,34 @@ class MultiPart implements IMultiPart, core\IDumpable {
 
 	protected $_parts = array();
 
-	public function __construct($type=IMultiPart::MIXED) {
-		$this->_headers = new core\collection\HeaderMap();
+    public static function fromString($string) {
+        $class = get_called_class();
+
+        $string = str_replace("\r", '', $string);
+        list($headers, $body) = explode("\n\n", $string, 2);
+
+        $headers = new core\collection\HeaderMap($headers);
+        $contentType = $headers->get('content-type');
+
+        if(substr($contentType, 0, 10) == 'multipart/') {
+            $output = new $class($contentType, $headers);
+            $boundary = $output->getBoundary();
+            $parts = explode("\n".'--'.$boundary, "\n".trim($body));
+            array_shift($parts);
+            array_pop($parts);
+
+            foreach($parts as $part) {
+                $output->addPart(self::fromString($part));
+            }
+        } else {
+            $output = new ContentPart($body, $headers);
+        }
+        
+        return $output;
+    }
+
+	public function __construct($type=IMultiPart::MIXED, $headers=null) {
+        $this->_headers = core\collection\HeaderMap::factory($headers);
 
 		$this->setContentType($type);
 
@@ -33,7 +59,9 @@ class MultiPart implements IMultiPart, core\IDumpable {
 	}
 
 	public function setContentType($type) {
-		$type = strtolower($type);
+        $parts = explode(';', $type, 2);
+		$type = strtolower(array_shift($parts));
+        $suffix = array_pop($parts);
 
 		switch($type) {
 			case IMultiPart::ALTERNATIVE:
@@ -41,6 +69,10 @@ class MultiPart implements IMultiPart, core\IDumpable {
 			case IMultiPart::RELATED:
 			case IMultiPart::PARALLEL:
 			case IMultiPart::DIGEST:
+                if($suffix) {
+                    $type .= ';'.$suffix;
+                }
+
 				$this->_headers->set('content-type', $type);
 				break;
 

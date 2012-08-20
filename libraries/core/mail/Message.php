@@ -20,6 +20,67 @@ class Message extends core\mime\MultiPart implements IMessage {
 	protected $_bodyHtml;
 	protected $_isPrivate = false;
 
+	public static function fromString($string) {
+		$output = parent::fromString($string);
+		$headers = $output->getHeaders();
+
+		if($headers->has('from')) {
+			$output->_from = Address::factory($headers->get('from'));
+		}
+
+		if($headers->has('to')) {
+			$parts = explode(',', $headers->get('to'));
+
+			foreach($parts as $part) {
+				$address = Address::factory(trim($part));
+				$output->_to[$address->getAddress()] = $address;
+			}
+		}
+
+		if($headers->has('cc')) {
+			$parts = explode(',', $headers->get('cc'));
+
+			foreach($parts as $part) {
+				$address = Address::factory(trim($part));
+				$output->_cc[$address->getAddress()] = $address;
+			}
+		}
+
+		if($headers->has('bcc')) {
+			$parts = explode(',', $headers->get('bcc'));
+
+			foreach($parts as $part) {
+				$address = Address::factory(trim($part));
+				$output->_bcc[$address->getAddress()] = $address;
+			}
+		}
+
+
+		if(isset($output->_parts[0]) && $output->_parts[0]->getContentType() == 'multipart/alternative') {
+			$part = $output->_parts[0];
+
+			foreach($part->getParts() as $subPart) {
+				$type = $subPart->getContentType();
+
+				if(!$output->_bodyText && $type == 'text/plain') {
+					$output->_bodyText = $subPart;
+
+					if($output->_bodyHtml) {
+						break;
+					}
+				} else if(!$output->_bodyHtml && $type == 'text/html') {
+					$output->_bodyHtml = $subPart;
+
+					if($output->_bodyText) {
+						break;
+					}
+				}
+			}
+		}
+		
+		return $output;
+	}
+
     public function setSubject($subject) {
     	$this->_headers->set('subject', (string)$subject);
     	return $this;

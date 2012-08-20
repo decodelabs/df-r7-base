@@ -14,6 +14,13 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
     use TArrayCollection;
     use TValueMapArrayAccess;
     
+    public static function factory($input) {
+        if($input instanceof IHeaderMap) {
+            return $input;
+        }
+
+        return new self($input);
+    }
     
     public function __construct($input=null) {
         if($input !== null) {
@@ -25,6 +32,31 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
     public function import($input) {
         if($input instanceof core\IArrayProvider) {
             $input = $input->toArray();
+        }
+
+        if(is_string($input)) {
+            $lines = explode("\n", str_replace("\r", '', $input));
+            $input = array();
+            $last = null;
+
+            foreach($lines as $line) {
+                if(isset($line{0}) && $line{0} == ' ') {
+                    $last .= "\r\n".$line;
+                    continue;
+                }
+
+                $parts = explode(':', $line, 2);
+                $key = trim(array_shift($parts));
+
+                if(empty($key)) {
+                    continue;
+                }
+
+                $value = trim(array_shift($parts));
+                $input[$key] = $value;
+                $last = &$input[$key];
+            }
+            unset($last);
         }
         
         if(is_array($input)) {

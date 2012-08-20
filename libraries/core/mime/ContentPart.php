@@ -15,10 +15,16 @@ class ContentPart implements IContentPart, core\IDumpable {
 
     protected $_content = null;
 
-    public function __construct($content) {
-    	$this->_headers = new core\collection\HeaderMap();
-    	$this->_headers->set('content-type', IMessageType::TEXT.'; charset="utf-8"');
-    	$this->_headers->set('content-transfer-encoding', IMessageEncoding::E_7BIT);
+    public function __construct($content, $headers=null) {
+    	$this->_headers = core\collection\HeaderMap::factory($headers);
+
+    	if($headers === null || !$this->_headers->has('content-type')) {
+    		$this->_headers->set('content-type', IMessageType::TEXT.'; charset="utf-8"');
+    	}
+
+    	if($headers === null || !$this->_headers->has('content-transfer-encoding')) {
+    		$this->_headers->set('content-transfer-encoding', IMessageEncoding::E_7BIT);
+    	}
 
     	$this->setContent($content);
     }
