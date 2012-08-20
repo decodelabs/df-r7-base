@@ -14,6 +14,7 @@ use df\opal;
 abstract class SelectorDelegateBase extends arch\form\Delegate {
 
     protected $_isRequired = false;
+    protected $_isForMany = true;
 
 	public function isRequired($flag=null) {
 		if($flag !== null) {
@@ -22,6 +23,24 @@ abstract class SelectorDelegateBase extends arch\form\Delegate {
 		}
 
 		return $this->_isRequired;
+	}
+
+	public function isForOne($flag=null) {
+		if($flag !== null) {
+			$this->_isForMany = !(bool)$flag;
+			return $this;
+		}
+
+		return !$this->_isForMany;
+	}
+
+	public function isForMany($flag=null) {
+		if($flag !== null) {
+			$this->_isForMany = (bool)$flag;
+			return $this;
+		}
+
+		return $this->_isForMany;
 	}
 
 
@@ -37,6 +56,14 @@ abstract class SelectorDelegateBase extends arch\form\Delegate {
 		}
 
 		return $result;
+	}
+
+	protected function _extractQueryResult($result) {
+		$result = $this->_normalizeQueryResult($result);
+
+		foreach($result as $entry) {
+			return $entry;
+		}
 	}
 
 	protected function _isQueryResultEmpty($result) {
