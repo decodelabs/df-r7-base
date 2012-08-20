@@ -1,0 +1,51 @@
+<?php 
+/**
+ * This file is part of the Decode Framework
+ * @license http://opensource.org/licenses/MIT
+ */
+namespace df\arch\form\template;
+
+use df;
+use df\core;
+use df\arch;
+use df\aura;
+use df\opal;
+    
+abstract class SelectorDelegateBase extends arch\form\Delegate {
+
+    protected $_isRequired = false;
+
+	public function isRequired($flag=null) {
+		if($flag !== null) {
+			$this->_isRequired = (bool)$flag;
+			return $this;
+		}
+
+		return $this->_isRequired;
+	}
+
+
+	protected function _normalizeQueryResult($result) {
+		if($result instanceof opal\query\IQuery) {
+    		$result = $result->toArray();
+    	}
+
+    	if(!$result instanceof \Iterator
+		&& !$result instanceof core\collection\ICollection
+		&& !is_array($result)) {
+    		$result = array();
+		}
+
+		return $result;
+	}
+
+	protected function _isQueryResultEmpty($result) {
+		if($result instanceof core\collection\ICollection) {
+    		return $result->isEmpty();
+    	} else if(is_array($result)) {
+    		return empty($result);
+    	} else {
+    		return true;
+    	}
+	}
+}
