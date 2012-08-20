@@ -148,7 +148,8 @@ class MultiPart implements IMultiPart, core\IDumpable {
             ));
         }
 
-        return $headers->toString($skipKeys);
+        $output = $headers->toString($skipKeys);
+        return preg_replace('/\; ([a-z]+)\=/i', ";\r\n    ".'$1=', $output);
     }
 
     public function getBodyString() {

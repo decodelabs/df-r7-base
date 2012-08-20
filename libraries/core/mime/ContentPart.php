@@ -175,6 +175,17 @@ class ContentPart implements IContentPart, core\IDumpable {
 		return $output;
 	}
 
+	public function getHeaderString(array $skipKeys=null) {
+        $this->prepareHeaders();
+
+        if(!$this->_headers) {
+        	return '';
+        }
+
+        $output = $this->_headers->toString($skipKeys);
+        return preg_replace('/\; ([a-z]+)\=/i', ";\r\n    ".'$1=', $output);
+    }
+
 	public function getBodyString() {
 		return $this->getEncodedContent();
 	}
