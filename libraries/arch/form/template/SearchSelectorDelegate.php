@@ -215,7 +215,7 @@ abstract class SearchSelectorDelegate extends SelectorDelegateBase {
     			$selected = (array)$selected;
     		}
 
-	    	foreach($ids as $id) {
+	    	foreach($selected as $id) {
 	    		$this->values->selected[$id] = $id;
 	    	}
 	    }
