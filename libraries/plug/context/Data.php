@@ -62,6 +62,20 @@ class Data implements archLib\IContextHelper, opal\query\IEntryPoint {
         return $output;
     }
 
+    public function newRecord($source, array $values=null) {
+        $sourceManager = new opal\query\SourceManager($this->_context->getApplication());
+        $source = $sourceManager->newSource($source, null);
+        $adapter = $source->getAdapter();
+
+        $output = $adapter->newRecord($values);
+
+        if(!$this->_context->user->canAccess($output, 'add')) {
+            $this->throwError(401, 'Cannot add '.$source->getDisplayName().' items');
+        }
+
+        return $output;
+    }
+
     
     
 // Model
