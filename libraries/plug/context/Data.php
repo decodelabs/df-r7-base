@@ -52,11 +52,11 @@ class Data implements archLib\IContextHelper, opal\query\IEntryPoint {
         $name = $query->getSource()->getDisplayName();
 
         if(!$output = $query->toRow()) {
-            $this->throwError(404, 'Item not found - '.$name.'#'.$primary);
+            $this->_context->throwError(404, 'Item not found - '.$name.'#'.$primary);
         }
 
         if(!$this->_context->user->canAccess($output, $action)) {
-            $this->throwError(401, 'Cannot '.$actionName.' '.$name.' items');
+            $this->_context->throwError(401, 'Cannot '.$actionName.' '.$name.' items');
         }
 
         return $output;
