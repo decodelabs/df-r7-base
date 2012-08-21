@@ -38,7 +38,13 @@ class Data implements archLib\IContextHelper, opal\query\IEntryPoint {
     }
     
 
-    public function fetchForAction($source, $action, $primary) {
+    public function fetchForAction($source, $primary, $action=null) {
+        $actionName = $action;
+
+        if($actionName === null) {
+            $actionName = 'access';
+        }
+
         $query = $this->fetch()
             ->from($source)
             ->where('@primary', '=', $primary);
@@ -50,7 +56,7 @@ class Data implements archLib\IContextHelper, opal\query\IEntryPoint {
         }
 
         if(!$this->_context->user->canAccess($output, $action)) {
-            $this->throwError(401, 'Cannot '.$action.' '.$name.' items');
+            $this->throwError(401, 'Cannot '.$actionName.' '.$name.' items');
         }
 
         return $output;
