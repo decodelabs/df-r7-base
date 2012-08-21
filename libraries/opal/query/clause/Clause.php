@@ -368,7 +368,8 @@ class Clause implements opal\query\IClause, core\IDumpable {
                 case self::OP_IN:
                 case self::OP_NOT_IN:
                     if(count($this->_value) > self::BETWEEN_CONVERSION_THRESHOLD) {
-                        core\dump($this->_value);
+                        // TODO: convert to between set
+                        //core\dump($this->_value);
                     }
 
                 case self::OP_BETWEEN:
