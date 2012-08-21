@@ -49,6 +49,12 @@ class OneChild extends axis\schema\field\Base implements axis\schema\IOneChildFi
     public function generateInsertValue(array $row) {
         return null;
     }
+
+
+// Clause
+    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false) {
+        core\stub($parent, $field, $operator, $value, $isOr);
+    }
     
     
 // Validation

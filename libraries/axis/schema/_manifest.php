@@ -128,7 +128,7 @@ interface IQueryClauseRewriterField extends IField {
     public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false);
 }
 
-interface IRelationField extends IField {
+interface IRelationField extends IField, IQueryClauseRewriterField {
     public function setTargetUnitId($targetUnitId);
     public function getTargetUnitId();
     public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate);
@@ -447,13 +447,13 @@ interface IOneParentField extends IOneRelationField, IMultiPrimitiveField {}
 interface IOneChildField extends IOneRelationField, INullPrimitiveField {}
 interface IManyToOneField extends IOneRelationField, IMultiPrimitiveField {}
 
-interface IManyField extends IManyRelationField, IBridgedRelationField, IQueryClauseRewriterField {}
+interface IManyField extends IManyRelationField, IBridgedRelationField {}
 
-interface IManyToManyField extends IManyRelationField, IBridgedRelationField, IInverseRelationField, IQueryClauseRewriterField {
+interface IManyToManyField extends IManyRelationField, IBridgedRelationField, IInverseRelationField {
     public function isDominant($flag=null);
 }
 
-interface IOneToManyField extends IManyRelationField, IInverseRelationField, IQueryClauseRewriterField {}
+interface IOneToManyField extends IManyRelationField, IInverseRelationField {}
 
 
 
