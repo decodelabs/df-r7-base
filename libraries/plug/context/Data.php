@@ -37,6 +37,25 @@ class Data implements archLib\IContextHelper, opal\query\IEntryPoint {
         return $this->_context->getApplication();
     }
     
+
+    public function fetchForAction($source, $action, $primary) {
+        $query = $this->fetch()
+            ->from($source)
+            ->where('@primary', '=', $primary);
+
+        $name = $query->getSource()->getDisplayName();
+
+        if(!$output = $query->toRow()) {
+            $this->throwError(404, 'Item not found - '.$name.'#'.$primary);
+        }
+
+        if(!$this->_context->user->canAccess($output, $action)) {
+            $this->throwError(401, 'Cannot '.$action.' '.$name.' items');
+        }
+
+        return $output;
+    }
+
     
     
 // Model
@@ -51,8 +70,8 @@ class Data implements archLib\IContextHelper, opal\query\IEntryPoint {
     public function getModelUnit($unitId) {
         return axis\Unit::fromId($unitId, $this->_context->getApplication());
     }
-    
-    
+
+
 // Crypt
     public function hash($message, $salt=null) {
         if($salt === null) {
