@@ -255,9 +255,8 @@ abstract class Base extends axis\Unit implements
             $fields = array();
 
             foreach($primaryIndex->getFields() as $fieldName => $indexField) {
-                $fields[] = new opal\query\field\Intrinsic($source, $fieldName, $fieldName);
+                $fields[] = $this->extrapolateQuerySourceFieldFromSchemaField($source, $fieldName, $fieldName, $indexField);
             }
-
 
             return new opal\query\field\Virtual($source, $name, $alias, $fields);
         }
@@ -270,22 +269,25 @@ abstract class Base extends axis\Unit implements
             }
         }
         
-
         // Generic
+        return $this->extrapolateQuerySourceFieldFromSchemaField($source, $name, $alias, $field);
+    }
+
+    public function extrapolateQuerySourceFieldFromSchemaField(opal\query\ISource $source, $name, $alias, axis\schema\IField $field) {
         if($field instanceof axis\schema\IMultiPrimitiveField) {
             $privateFields = array();
             
             foreach($field->getPrimitiveFieldNames() as $fieldName) {
                 $privateFields[] = new opal\query\field\Intrinsic($source, $fieldName, $alias);
             }
-            
+
             $output = new opal\query\field\Virtual($source, $name, $alias, $privateFields);
         } else if($field instanceof axis\schema\INullPrimitiveField) {
             $output = new opal\query\field\Virtual($source, $name, $alias);
         } else {
             $output = new opal\query\field\Intrinsic($source, $name, $alias);
         }
-        
+
         return $output;
     }
 
@@ -384,7 +386,7 @@ abstract class Base extends axis\Unit implements
 
             $valueFields = array();
 
-            foreach($value->getTargetFields() as $targetField) {
+            foreach($value->dereference() as $targetField) {
                 $targetFieldName = $targetField->getName();
 
                 if($localPrefix === null && $targetPrefix !== null) {
@@ -403,6 +405,7 @@ abstract class Base extends axis\Unit implements
                 $parent->getSource()->getAdapter()->getName().':'.$field->getName()
             );
         }
+
 
         foreach($fieldList as $fieldName) {
             $subValue = null;

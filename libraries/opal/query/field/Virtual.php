@@ -58,7 +58,17 @@ class Virtual implements opal\query\IVirtualField, core\IDumpable {
     }
     
     public function dereference() {
-        return $this->_targetFields;
+        $output = array();
+
+        foreach($this->_targetFields as $key => $field) {
+            if($field instanceof opal\query\IVirtualField) {
+                $output = array_merge($output, $field->dereference());
+            } else {
+                $output[$key] = $field;
+            }
+        }
+
+        return $output;
     }
     
 // Dump
