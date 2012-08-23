@@ -75,4 +75,12 @@ abstract class SelectorDelegateBase extends arch\form\Delegate {
     		return true;
     	}
 	}
+
+	protected function _getResultId($result) {
+        return $result['id'];
+    }
+
+    protected function _getResultDisplayName($result) {
+        return $result['name'];
+    }
 }

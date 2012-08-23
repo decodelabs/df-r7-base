@@ -156,12 +156,6 @@ abstract class SearchSelectorDelegate extends SelectorDelegateBase {
 
 	abstract protected function _fetchResultList(array $ids);
 
-	protected function _getResultId($result) {
-        return $result['id'];
-    }
-
-    abstract protected function _getResultDisplayName($result);
-
     protected function _onSearchEvent() {
     	unset($this->values->searchResults);
 
