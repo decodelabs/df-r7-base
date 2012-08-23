@@ -76,6 +76,24 @@ class Data implements archLib\IContextHelper, opal\query\IEntryPoint {
         return $output;
     }
 
+    public function checkAccess($source, $action=null) {
+        $actionName = $action;
+
+        if($actionName === null) {
+            $actionName = 'access';
+        }
+        
+        $sourceManager = new opal\query\SourceManager($this->_context->getApplication());
+        $source = $sourceManager->newSource($source, null);
+        $adapter = $source->getAdapter();
+
+        if(!$this->_context->user->canAccess($adapter, $action)) {
+            $this->throwError(401, 'Cannot '.$actionName.' '.$source->getDisplayName().' items');
+        }
+
+        return $this;
+    }
+
     
     
 // Model
