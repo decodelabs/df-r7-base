@@ -396,15 +396,17 @@ class InlineManyRelationValueContainer implements
         $targetRecordTask = new opal\query\record\task\UpdateRaw(
             $targetUnit, $inverseManifest, $inverseManifest->duplicateWith(null)->toArray()
         );
+
+        if(!$taskSet->hasTask($targetRecordTask)) {  
+            $taskSet->addTask($targetRecordTask);
         
-        $taskSet->addTask($targetRecordTask);
-        
-        if($recordTask) {
-            $recordTask->addDependency(
-                new opal\query\record\task\dependency\Base(
-                    $this->_targetField, $targetRecordTask
-                )
-            );
+            if($recordTask) {
+                $recordTask->addDependency(
+                    new opal\query\record\task\dependency\Base(
+                        $this->_targetField, $targetRecordTask
+                    )
+                );
+            }
         }
         
         return $this;

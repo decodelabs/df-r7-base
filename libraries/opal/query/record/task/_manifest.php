@@ -22,6 +22,11 @@ interface ITaskSet {
     public function replace(opal\query\record\IRecord $record);
     public function update(opal\query\record\IRecord $record);
     public function delete(opal\query\record\IRecord $record);
+
+    public function addTask(ITask $task);
+    public function hasTask($id);
+    public function isRecordQueued(opal\query\record\IRecord $record);
+    public function setRecordAsQueued(opal\query\record\IRecord $record);
     public function execute();
 }
 

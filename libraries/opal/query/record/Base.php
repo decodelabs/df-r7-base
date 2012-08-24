@@ -289,10 +289,6 @@ class Base implements IRecord, \Serializable, core\IDumpable {
             foreach($insertId->getKeys() as $field => $value) {
                 $value = $this->_inflateValue($field, $value);
                 
-                if(!array_key_exists($field, $this->_values)) {
-                    core\dump($field, $value, $this->_values, $insertId);
-                }
-                
                 if($this->_values[$field] instanceof IValueContainer) {
                     $this->_values[$field]->setValue($value);
                 } else {
@@ -344,7 +340,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
                 'Record has already been populated'
             );
         }
-        
+
         foreach($row as $key => $value) {
             $this->_values[$key] = $this->_inflateValue($key, $value);
         }
@@ -518,13 +514,15 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     }
     
     public function deployDeleteTasks(opal\query\record\task\ITaskSet $taskSet) {
+        $recordTask = null;
+
         if(!$this->isNew()) {
             if($taskSet->isRecordQueued($this)) {
-                return $this;
+                return $recordTask;
             }
             
             $recordTask = $taskSet->delete($this);
-            
+
             foreach(array_merge($this->_values, $this->_changes) as $key => $value) {
                 if($value instanceof ITaskAwareValueContainer) {
                     $value->deployDeleteTasks($taskSet, $this, $key, $recordTask);
