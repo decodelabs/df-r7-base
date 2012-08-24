@@ -23,7 +23,7 @@ class Integer extends Base {
     }
     
     public function getMin() {
-        return $this->_min;
+        return $this->_minRange;
     }
     
     public function setMax($max) {
