@@ -55,7 +55,7 @@ class Field implements aura\html\widget\IField, core\IDumpable {
             $value = $value->render();
         }
         
-        if(empty($value) && $value !== '0') {
+        if(empty($value) && $value != '0') {
             $value = new aura\html\ElementString('<span class="prop-na">n/a</span>');
         }
 
