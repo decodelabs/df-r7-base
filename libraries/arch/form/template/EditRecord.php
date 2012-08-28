@@ -25,10 +25,7 @@ abstract class EditRecord extends arch\form\Action {
     protected function _init() {
     	$this->_checkItemName();
     	$this->_checkEntityLocator();
-
-    	if(!$this->_record = $this->_loadRecord()) {
-    		$this->throwError(404, 'The selected '.$this->_getItemName().' could not be loaded');
-    	}
+    	$this->_initRecord();
     }
 
     protected function _onSaveEvent() {

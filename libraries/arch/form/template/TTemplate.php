@@ -48,6 +48,23 @@ trait TTemplate_RecordAware {
 
 	protected $_record;
 
+	protected function _initRecord() {
+		if(!$this->_record = $this->_loadRecord()) {
+    		$this->throwError(404, 'The selected '.$this->_getItemName().' could not be loaded');
+    	}
+	}
+
+	protected function _fetchRecordForAction($id, $action=null) {
+		return $this->data->fetchForAction(
+			$this->_getEntityLocator(),
+			$id, $action
+		);
+	}
+
+	protected function _getDataId() {
+        return $this->_record['id'];
+    }
+
 	protected function _checkEntityLocator() {
 		if(static::ENTITY_LOCATOR === null) {
     		throw new arch\form\LogicException(
