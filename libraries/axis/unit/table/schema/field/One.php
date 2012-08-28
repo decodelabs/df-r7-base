@@ -28,7 +28,7 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
     
 // Values
     public function inflateValueFromRow($key, array $row, opal\query\record\IRecord $forRecord=null) {
-        $hasKey = isset($row[$key]);
+        $hasKey = array_key_exists($key, $row);
 
         if($hasKey) {
             $value = $row[$key];
