@@ -12,6 +12,7 @@ use df\aura;
 
 // Exceptions
 interface IException extends arch\IException {}
+class LogicException extends \LogicException implements IException {}
 class RuntimeException extends \RuntimeException implements IException {}
 class DelegateException extends RuntimeException {}
 class EventException extends RuntimeException {}
