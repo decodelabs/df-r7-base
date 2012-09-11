@@ -17,6 +17,16 @@ class RuntimeException extends \RuntimeException implements IException {}
 
 
 // Interfaces
+interface IConfig extends core\IConfig {
+	public function getLayoutList($area=null);
+	public function getLayoutDefinition($id);
+	public function isStaticLayout($id);
+	public function getStaticLayoutDefinition($id);
+    public function getAllLayoutDefinitions();
+    public function setLayoutDefinition(ILayoutDefinition $definition);
+    public function clearLayoutDefinition($id);
+}
+
 interface IDataContainer extends core\IAttributeContainer {
 
 }
