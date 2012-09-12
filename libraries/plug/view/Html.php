@@ -41,7 +41,7 @@ class Html implements aura\view\IHelper {
         $iconChar = $this->_view->getTheme()->mapIcon($name);
 
         if($iconChar === null) {
-            return null;
+            return $body;
         }
 
         return new aura\html\Element('span', $body, [
