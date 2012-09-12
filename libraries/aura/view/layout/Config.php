@@ -19,7 +19,7 @@ class Config extends core\Config implements IConfig {
             'name' => 'Standard layout',
             'areas' => null,
             'slots' => [
-                'content' => [
+                'primary' => [
                     'name' => 'Main content',
                     'minBlocks' => 0,
                     'maxBlocks' => null,
@@ -122,9 +122,9 @@ class Config extends core\Config implements IConfig {
 		}
 
 		$data = new core\collection\Tree(self::$_staticLayouts[$id]);
-		$output = new LayoutDefinition($id, $data->get('name', $id));
+		$output = new LayoutDefinition($id, $data->get('name', $id), true);
 
-		foreach($data['slots'] as $slotId => $slotData) {
+		foreach($data->slots as $slotId => $slotData) {
 			$output->addSlot(
 				(new SlotDefinition($slotId, $slotData->get('name', $slotId)))
 					->setMinBlocks($slotData->get('minBlocks', 0))
@@ -165,7 +165,7 @@ class Config extends core\Config implements IConfig {
 			return $this->_setStaticLayoutDefinition($definition);
 		}
 
-		$this->clearLayoutDefinition($id);
+		$this->removeLayoutDefinition($id);
 		$slots = array();
 
 		foreach($definition->getSlots() as $slotId => $slot) {
@@ -188,7 +188,7 @@ class Config extends core\Config implements IConfig {
 
 	protected function _setStaticLayoutDefinition(ILayoutDefinition $definition) {
 		$id = $definition->getId();
-		$this->clearLayoutDefinition($id);
+		$this->removeLayoutDefinition($id);
 		$slots = array();
 
 		foreach($definition->getSlots() as $slotId => $slot) {
@@ -212,7 +212,7 @@ class Config extends core\Config implements IConfig {
 		return $this;
 	}
 
-	public function clearLayoutDefinition($id) {
+	public function removeLayoutDefinition($id) {
 		if($id instanceof ILayoutDefinition) {
 			$id = $id->getId();
 		}

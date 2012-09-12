@@ -10,7 +10,7 @@ use df\core;
 use df\aura;
 use df\arch;
     
-class LayoutDefinition implements ILayoutDefinition {
+class LayoutDefinition implements ILayoutDefinition, core\IDumpable {
 
 	protected $_id;
 	protected $_name;
@@ -129,6 +129,10 @@ class LayoutDefinition implements ILayoutDefinition {
 	}
 
 	public function removeSlot($id) {
+		if($id instanceof  ISlotDefinition) {
+			$id = $id->getId();
+		}
+
 		unset($this->_slots[$id]);
 		return $this;
 	}
@@ -153,5 +157,25 @@ class LayoutDefinition implements ILayoutDefinition {
 
 		$this->_slots = $list;
 		return $this;
+	}
+
+
+// Dump
+	public function getDumpProperties() {
+		$output = [
+			'id' => $this->_id,
+			'name' => $this->_name
+		];
+
+		if($this->_isStatic) {
+			$output['isStatic'] = true;
+		}
+
+		if(!empty($this->_areas)) {
+			$output['areas'] = $this->_areas;
+		}
+
+		$output['slots'] = $this->_slots;
+		return $output;
 	}
 }

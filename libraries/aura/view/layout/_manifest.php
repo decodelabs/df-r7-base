@@ -24,7 +24,7 @@ interface IConfig extends core\IConfig {
 	public function getStaticLayoutDefinition($id);
     public function getAllLayoutDefinitions();
     public function setLayoutDefinition(ILayoutDefinition $definition);
-    public function clearLayoutDefinition($id);
+    public function removeLayoutDefinition($id);
 }
 
 interface IDataContainer extends core\IAttributeContainer {
