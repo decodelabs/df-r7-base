@@ -151,7 +151,6 @@ interface IImageDrawingProcessor extends IImageProcessor {
 interface IImage extends IImageProcessor {
 
     public static function isLoadable();
-    public static function canReadFile($path);
     public static function newCanvas($width, $height, $color=null);
 
     public function setSourcePath($sourcePath);
@@ -160,8 +159,8 @@ interface IImage extends IImageProcessor {
     public function getTargetPath();
     public function isOpen();
 
-    public function canRead($type);
-    public function canWrite($type);
+    public function canRead($type, $extension);
+    public function canWrite($type, $extension);
     public function getContentType();
     public function convertTo($type);
 

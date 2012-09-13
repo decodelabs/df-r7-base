@@ -16,10 +16,10 @@ class Gd extends Base implements neon\IImageDrawingProcessor {
 		'image/gif',
 		
 		// JPEG
-		'application/jpg',
-		'application/x-jpg',
 		'image/jpg',
 		'image/jpeg',
+        'application/jpg',
+        'application/x-jpg',
 		
 		// WBMP
 		'image/wbmp',
@@ -33,10 +33,10 @@ class Gd extends Base implements neon\IImageDrawingProcessor {
 		'image/x-xbm',
 		
 		// PNG
-		'application/png',
-		'application/x-png',
-		'image/x-png',
-		'image/png'
+		'image/png',
+        'image/x-png',
+        'application/png',
+        'application/x-png'
     ];
     
     protected static $_writeTypes = [
@@ -44,40 +44,42 @@ class Gd extends Base implements neon\IImageDrawingProcessor {
 		'image/gif',
 		
 		// JPEG
-		'application/jpg',
-		'application/x-jpg',
 		'image/jpg',
 		'image/jpeg',
+        'application/jpg',
+        'application/x-jpg',
 		
 		// WBMP
 		'image/wbmp',
 		
 		// PNG
-		'application/png',
-		'application/x-png',
 		'image/x-png',
-		'image/png'
+		'image/png',
+        'application/png',
+        'application/x-png'
     ];
 
 
     public static function isLoadable() {
-        if(!extension_loaded('gd')) {
-            return false;    
-        }    
-        
-        return true;     
+        return extension_loaded('gd');
     }
 
-    protected function _open() {
+    public function canRead($type, $extension) {
+        return in_array(strtolower($type), static::$_readTypes);
+    }
+
+    public function canWrite($type, $extension) {
+        return in_array(strtolower($type), static::$_writeTypes);
+    }
+
+    protected function _openFile() {
     	if(!$this->_sourcePath) {
     		return false;
     	}
 
 		@ini_set('memory_limit', -1);
 
-		$output = false;
-
-		if($i = getImageSize($this->_sourcePath)) {
+		if($i = \getImageSize($this->_sourcePath)) {
             $this->_width = $i[0];
             $this->_height = $i[1];    
         }
@@ -110,6 +112,17 @@ class Gd extends Base implements neon\IImageDrawingProcessor {
         return (bool)$this->_pointer;
     }
 
+    protected function _openString($imageString) {
+        if($i = \getImageSizeFromString($imageString)) {
+            $this->_width = $i[0];
+            $this->_height = $i[1];    
+        }
+
+        $this->_pointer = \imageCreateFromString($imageString);
+
+        return (bool)$this->_pointer;
+    }
+
     public function save($quality=100) {
         return $this->_save($quality, false);
     }
@@ -119,14 +132,7 @@ class Gd extends Base implements neon\IImageDrawingProcessor {
     }
     
     protected function _save($quality, $toString=false) {
-        if(!$this->_saveType) {
-            if($this->_targetPath) {
-                $p = pathinfo($this->_targetPath);
-            } else {
-                $p = pathinfo($this->_sourcePath);    
-            }
-            $this->_saveType = core\mime\Type::extToMime($p['extension'], 'image/png');    
-        }  
+        $this->_normalizeSaveType(); 
         
         $output = false;
         ob_start();
@@ -220,6 +226,9 @@ class Gd extends Base implements neon\IImageDrawingProcessor {
     }
 
     public function copy(neon\IImage $image, $destX, $destY) {
+        $destX = self::_normalizePixelSize($destX);
+        $destY = self::_normalizePixelSize($destY);
+
         imageAlphaBlending($this->_pointer, true);
         imageAlphaBlending($image->_pointer, true);
         
@@ -258,6 +267,8 @@ class Gd extends Base implements neon\IImageDrawingProcessor {
     }
     
     public function rotate($angle, $background=null) {
+        $angle = (int)$angle;
+
         if($angle % 360 == 0) {
             return $this;
         }    
@@ -269,9 +280,9 @@ class Gd extends Base implements neon\IImageDrawingProcessor {
             
             $rColor = imageColorAllocate(
                 $this->_pointer,
-                $background->red, 
-                $background->green, 
-                $background->blue
+                $background->red * 255, 
+                $background->green * 255, 
+                $background->blue * 255
             );    
         }
         
@@ -289,6 +300,11 @@ class Gd extends Base implements neon\IImageDrawingProcessor {
     }
     
     public function crop($x, $y, $width, $height) {
+        $x = self::_normalizePixelSize($x);
+        $y = self::_normalizePixelSize($y);
+        $width = self::_normalizePixelSize($width);
+        $height = self::_normalizePixelSize($height);
+
         $img = imageCreateTrueColor($width, $height);
         
         $background = imageColorAllocateAlpha($img, 255, 255, 255, 127);
@@ -365,6 +381,8 @@ class Gd extends Base implements neon\IImageDrawingProcessor {
     public function contrast($contrast) {
         imageAlphaBlending($this->_pointer, false);
         imageSaveAlpha($this->_pointer, true);
+
+        $contrast *= -1;
         
         if(function_exists('imagefilter')) {
             imagefilter($this->_pointer, \IMG_FILTER_CONTRAST, $contrast);
@@ -396,7 +414,14 @@ class Gd extends Base implements neon\IImageDrawingProcessor {
         
         if(function_exists('imagefilter')) {
             $color = neon\Color::factory($color);
-            imagefilter($this->_pointer, \IMG_FILTER_COLORIZE, $color->red, $color->green, $color->blue, $alpha);
+            imagefilter(
+                $this->_pointer, 
+                \IMG_FILTER_COLORIZE, 
+                $color->red * 255, 
+                $color->green * 255, 
+                $color->blue * 255, 
+                $alpha / 100 * -127
+            );
         }    
         
         return $this;

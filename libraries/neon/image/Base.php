@@ -12,10 +12,7 @@ use df\neon;
 abstract class Base implements neon\IImage, core\io\file\IPointer {
 
     private static $_driverClass;
-    private static $_drivers = ['Gd'];
-
-    protected static $_readTypes = array();
-    protected static $_writeTypes = array();
+    private static $_drivers = ['ImageMagick', 'Gd'];
 
     protected $_sourcePath;
     protected $_targetPath;
@@ -32,16 +29,43 @@ abstract class Base implements neon\IImage, core\io\file\IPointer {
     	return new $class($sourcePath, $targetPath);
     }
 
+    public static function fromString($string, $targetPath=null) {
+        $class = self::_getDriverClass();
+        return new $class(null, $targetPath, $string);
+    }
+
     public static function isLoadable() {
     	return false;
     }
 
-    public static function canReadFile($path) {
-    	if(!is_file($path)) {
-    		return false;
-    	}
+    public static function getDriverList() {
+        return self::$_drivers;
+    }
+    
 
-    	return self::factory()->canRead(core\mime\Type::fileToMime($path));
+    protected static function _getDriverClass() {
+        if(self::$_driverClass === null) {
+            foreach(self::$_drivers as $name) {
+                $class = 'df\\neon\\image\\'.$name;
+
+                if(!class_exists($class) || !is_subclass_of($class, __CLASS__)) {
+                    continue;
+                }
+
+                if($class::isLoadable()) {
+                    self::$_driverClass = $class;
+                    break;
+                }
+            }
+
+            if(self::$_driverClass === null) {
+                throw new neon\RuntimeException(
+                    'No loadable driver was found to handle images'
+                );
+            }
+        }
+
+        return self::$_driverClass;
     }
 
     public static function newCanvas($width, $height, $color=null) {
@@ -49,37 +73,24 @@ abstract class Base implements neon\IImage, core\io\file\IPointer {
     	return $class::_createCanvas($width, $height, $color)->convert('image/png');
     }
 
-    protected static function _getDriverClass() {
-    	if(self::$_driverClass === null) {
-    		foreach(self::$_drivers as $name) {
-    			$class = 'df\\neon\\image\\'.$name;
-
-    			if(!class_exists($class) || !is_subclass_of($class, __CLASS__)) {
-    				continue;
-    			}
-
-    			if($class::isLoadable()) {
-    				self::$_driverClass = $class;
-    				break;
-    			}
-    		}
-
-    		if(self::$_driverClass === null) {
-    			throw new neon\RuntimeException(
-    				'No loadable driver was found to handle images'
-				);
-    		}
-    	}
-
-    	return self::$_driverClass;
-    }
-
 
 // Constructor
-	public function __construct($sourcePath=null, $targetPath=null) {
+	public function __construct($sourcePath=null, $targetPath=null, $imageString=null) {
 		$this->setSourcePath($sourcePath);
 		$this->setTargetPath($targetPath);
-		$this->_open();
+
+        if($imageString !== null) {
+            $this->_openString($imageString);
+        } else {
+		    $this->_openFile();
+        }
+
+        if(($sourcePath !== null || $imageString !== null)
+        && (!$this->_width || !$this->_height)) {
+            throw new neon\RuntimeException(
+                'Unable to detect image size'
+            );
+        }
 	}
 
 
@@ -99,7 +110,7 @@ abstract class Base implements neon\IImage, core\io\file\IPointer {
 		$p = pathinfo($path);
 		$type = core\mime\Type::extToMime($p['extension']);
 
-		if(!$this->canRead($type)) {
+		if(!$this->canRead($type, $p['extension'])) {
 			throw new neon\RuntimeException(
 				'This driver cannot read '.$type.' files'
 			);
@@ -128,7 +139,7 @@ abstract class Base implements neon\IImage, core\io\file\IPointer {
 		$p = pathinfo($path);
 		$type = core\mime\Type::extToMime($p['extension']);
 
-		if(!$this->canWrite($type)) {
+		if(!$this->canWrite($type, $p['extension'])) {
 			throw new neon\RuntimeException(
 				'This driver cannot write '.$type.' files'
 			);
@@ -147,16 +158,20 @@ abstract class Base implements neon\IImage, core\io\file\IPointer {
 		return (bool)$this->_pointer;
 	}
 
+    protected function _normalizeSaveType() {
+        if(!$this->_saveType) {
+            if($this->_targetPath) {
+                $p = pathinfo($this->_targetPath);
+            } else {
+                $p = pathinfo($this->_sourcePath);    
+            }
+
+            $this->_saveType = core\mime\Type::extToMime(@$p['extension'], 'image/png');    
+        } 
+    }
+
 
 // Types
-	public function canRead($type) {
-		return in_array(strtolower($type), static::$_readTypes);
-	}
-
-	public function canWrite($type) {
-		return in_array(strtolower($type), static::$_writeTypes);
-	}
-
 	public function getContentType() {
 		if($this->_saveType) {
 			return $this->_saveType;
@@ -531,7 +546,7 @@ abstract class Base implements neon\IImage, core\io\file\IPointer {
 
 
 // IPointer
-    public function openFile($mode=core\io\file\IMode::READ_WRITE) {
+    public function open($mode=core\io\file\IMode::READ_WRITE) {
     	return new core\io\file\MemoryFileSystem(
     		$this->toString(),
     		$this->_sourcePath,
@@ -573,8 +588,13 @@ abstract class Base implements neon\IImage, core\io\file\IPointer {
 
 
 // Stubs
-    abstract protected function _open();
-    abstract protected static function _createCanvas($width, $height, $color=null);
+    abstract protected function _openFile();
+    abstract protected function _openString($imageString);
+    
+    protected static function _createCanvas($width, $height, $color=null) {
+        core\stub();
+    }
+
     abstract protected function _resize($width, $height);
     abstract protected function _destroy();
 
