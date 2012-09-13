@@ -143,6 +143,8 @@ class Type {
         'xyz' => 'chemical/x-xyz',
     
     // Image
+        'art' => 'image/x-jg',
+        'arw' => 'image/sonyrawfile',
         'bmp' => 'image/bmp',
         'cgm' => 'image/cgm',
         'gif' => 'image/gif',
