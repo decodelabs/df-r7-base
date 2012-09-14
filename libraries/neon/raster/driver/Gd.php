@@ -3,310 +3,163 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\neon\image;
+namespace df\neon\raster\driver;
 
 use df;
 use df\core;
 use df\neon;
     
-class Gd extends Base implements neon\IImageDrawingProcessor {
+class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\raster\IImageFilterDriver {
 
-    protected static $_readTypes = [
-        // GIF
-		'image/gif',
-		
-		// JPEG
-		'image/jpg',
-		'image/jpeg',
-        'application/jpg',
-        'application/x-jpg',
-		
-		// WBMP
-		'image/wbmp',
-		
-		// XPM
-		'image/x-xpixmap',
-		'image/x-xpm',
-		
-		// XBM
-		'image/x-xbitmap',
-		'image/x-xbm',
-		
-		// PNG
-		'image/png',
-        'image/x-png',
-        'application/png',
-        'application/x-png'
-    ];
-    
-    protected static $_writeTypes = [
-        // GIF
-		'image/gif',
-		
-		// JPEG
-		'image/jpg',
-		'image/jpeg',
-        'application/jpg',
-        'application/x-jpg',
-		
-		// WBMP
-		'image/wbmp',
-		
-		// PNG
-		'image/x-png',
-		'image/png',
-        'application/png',
-        'application/x-png'
-    ];
+	protected static $_readFormats = [
+		'GIF', 'JPEG', 'PNG', 'PNG8', 'PNG24', 'PNG32', 'WBMP', 'XBM', 'XPM'
+	];
 
+	protected static $_writeFormats = [
+		'GIF', 'JPEG', 'PNG', 'PNG8', 'PNG24', 'PNG32', 'WBMP'
+	];
+
+	public function __destruct() {
+		if($this->_pointer) {
+			imageDestroy($this->_pointer);
+		}
+	}
 
     public static function isLoadable() {
-        return extension_loaded('gd');
+    	return extension_loaded('gd');
     }
 
-    public function canRead($type, $extension) {
-        return in_array(strtolower($type), static::$_readTypes);
-    }
 
-    public function canWrite($type, $extension) {
-        return in_array(strtolower($type), static::$_writeTypes);
-    }
+    public function loadFile($file) {
+    	@ini_set('memory_limit', -1);
 
-    protected function _openFile() {
-    	if(!$this->_sourcePath) {
-    		return false;
+    	if($i = getimagesize($file)) {
+    		$this->_width = $i[0];
+    		$this->_height = $i[1];
     	}
 
-		@ini_set('memory_limit', -1);
-
-		if($i = \getImageSize($this->_sourcePath)) {
-            $this->_width = $i[0];
-            $this->_height = $i[1];    
-        }
-        
-        switch(@$i[2]) {
+    	switch(@$i[2]) {
             case 1: // gif
-                $this->_pointer = \imageCreateFromGif($this->_sourcePath);
+                $this->_pointer = imageCreateFromGif($file);
                 break;
                 
             case 2: // jpg
-                $this->_pointer = \imageCreateFromJpeg($this->_sourcePath);
+                $this->_pointer = imageCreateFromJpeg($file);
                 break;
                 
             case 3: // png
-                $this->_pointer = \imageCreateFromPng($this->_sourcePath);
+                $this->_pointer = imageCreateFromPng($file);
                 break;
                 
             case 15: // wbmp
-                $this->_pointer = \imageCreateFromWbmp($this->_sourcePath);
+                $this->_pointer = imageCreateFromWbmp($file);
                 break;
                 
             case 16: // xbm
-                $this->_pointer = \imageCreateFromXbm($this->_sourcePath);
+                $this->_pointer = imageCreateFromXbm($file);
                 break;
                 
             default:
-                $this->_pointer = \imageCreateFromString(file_get_contents($this->_sourcePath));
-        }
-        
-        return (bool)$this->_pointer;
-    }
-
-    protected function _openString($imageString) {
-        if($i = \getImageSizeFromString($imageString)) {
-            $this->_width = $i[0];
-            $this->_height = $i[1];    
-        }
-
-        $this->_pointer = \imageCreateFromString($imageString);
-
-        return (bool)$this->_pointer;
-    }
-
-    public function save($quality=100) {
-        return $this->_save($quality, false);
-    }
-    
-    public function toString($quality=100) {
-        return $this->_save($quality, true);
-    }
-    
-    protected function _save($quality, $toString=false) {
-        $this->_normalizeSaveType(); 
-        
-        $output = false;
-        ob_start();
-        
-        switch($this->_saveType) {
-            case 'image/gif':
-                imageTrueColorToPalette($this->_pointer, true, 256);
-                $output = imageGif($this->_pointer);
+                $this->_pointer = imageCreateFromString(file_get_contents($file));
                 break;
-                
-            case 'image/jpeg':
-                $output = imageJpeg($this->_pointer, null, $quality);
-                break;
-                
-            case 'image/wbmp':
-                $output = imageWbmp($this->_pointer);
-                break;
-                
-            default:
-            case 'image/png':
-                //imageAlphaBlending($this->_pointer, false);
-                imageSaveAlpha($this->_pointer, true);
-                $output = imagePng($this->_pointer);
-                break;    
         }
-        
-        if($toString) {
-            return ob_get_clean();
-        }
-        
-        $output = file_put_contents($this->_targetPath, ob_get_clean());
-        
-        $this->_destroy();
-        
-        return $output;
-    }
 
-     protected function _destroy() {
-        if($this->_pointer) {
-            return imageDestroy($this->_pointer);    
+        if(!$this->_pointer) {
+        	throw new neon\raster\RuntimeException(
+        		'Unable to load raster image '.$file
+    		);
         }
-        
-        return true;
-    }
-    
-    protected function _createTempImage($fileName=null) {
-        if($fileName === null) {
-            $fileName = $this->_createTempFileName();    
-        }
-        
-        imageAlphaBlending($this->_pointer, false);
-        imageSaveAlpha($this->_pointer, true);
-        imagePng($this->_pointer, $fileName);
-        
-        return new self($fileName);
-    }
-    
-    protected static function _createCanvas($width, $height, $color=null) {
-        $width = self::_normalizePixelSize($width);
-        $height = self::_normalizePixelSize($height);
-        
-        $output = new self();
-        $output->_pointer = imageCreateTrueColor($width, $height);
-        $output->_width = $width;
-        $output->_height = $height;
-        
-        imageAlphaBlending($output->_pointer, false);
-        imageSaveAlpha($output->_pointer, true);
-        
-        if($color === null) {
-            $color = 'black';
-        }
-        
-        $color = neon\Color::factory($color);
-        $color->setMode('rgb');
-        
-        $alpha = $color->getAlpha();
-        
-        imageFill(
-            $output->_pointer, 1, 1,
-            imageColorAllocateAlpha(
-                $output->_pointer,
-                $color->red * 255,
-                $color->green * 255,
-                $color->blue * 255,
-                127 - ($alpha * 127)
-            ) 
-        ); 
-        
-        return $output;
-    }
 
-    public function copy(neon\IImage $image, $destX, $destY) {
-        $destX = self::_normalizePixelSize($destX);
-        $destY = self::_normalizePixelSize($destY);
-
-        imageAlphaBlending($this->_pointer, true);
-        imageAlphaBlending($image->_pointer, true);
-        
-        $output = imageCopy(
-            $this->_pointer, $image->_pointer,
-            $destX, $destY, 0, 0,
-            $image->_width, $image->_height
-        );    
-        
-        imageAlphaBlending($this->_pointer, false);
-        imageAlphaBlending($image->_pointer, false);
-        
-        return $output;
-    }
-
-
-// Processors
-    protected function _resize($width, $height) {
-        $img = imageCreateTrueColor($width, $height);
-        
-        $background = imageColorAllocateAlpha($img, 255, 255, 255, 127);
-        imageColorTransparent($img, $background);
-        
-        imageAlphaBlending($img, false);
-        imageSaveAlpha($img, true);
-        imageFilledRectangle($img, 0, 0, $width, $height, $background);
-        
-        $output = imageCopyResampled(
-            $img, $this->_pointer, 0, 0, 0, 0, $width, $height, $this->_width, $this->_height
-        );
-        
-        $this->_destroy();
-        $this->_pointer = $img;
-        
-        return $this;     
-    }
-    
-    public function rotate($angle, $background=null) {
-        $angle = (int)$angle;
-
-        if($angle % 360 == 0) {
-            return $this;
-        }    
-        
-        if($background === null) {
-            $rColor = -1;    
-        } else {
-            $background = neon\Color::factory($background);
-            
-            $rColor = imageColorAllocate(
-                $this->_pointer,
-                $background->red * 255, 
-                $background->green * 255, 
-                $background->blue * 255
-            );    
-        }
-        
-        if(!($tmp = imageRotate($this->_pointer, $angle * -1, $rColor))) {
-            return $this;    
-        }
-        
-        $this->_destroy();
-        
-        $this->_pointer = $tmp;
-        $this->_width = imageSX($tmp);
-        $this->_height = imageSX($tmp);
-        
         return $this;
     }
-    
-    public function crop($x, $y, $width, $height) {
-        $x = self::_normalizePixelSize($x);
-        $y = self::_normalizePixelSize($y);
-        $width = self::_normalizePixelSize($width);
-        $height = self::_normalizePixelSize($height);
 
-        $img = imageCreateTrueColor($width, $height);
-        
+    public function loadString($string) {
+    	if($i = getImageSizeFromString($string)) {
+    		$this->_width = $i[0];
+    		$this->_height = $i[1];
+    	}
+
+    	$this->_pointer = imageCreateFromString($string);
+
+    	if(!$this->_pointer) {
+    		throw new neon\raster\RuntimeException(
+    			'Unable to load raster image from string'
+			);
+    	}
+
+    	return $this;
+    }
+
+    public function loadCanvas($width, $height, neon\IColor $color) {
+    	$this->_pointer = imageCreateTrueColor($width, $height);
+    	$this->_width = $width;
+    	$this->_height = $height;
+
+    	imageAlphaBlending($this->_pointer, false);
+    	imageSaveAlpha($this->_pointer, true);
+
+    	$color->setMode('rgb');
+
+    	imageFill(
+    		$this->_pointer, 1, 1,
+    		imageColorAllocateAlpha(
+    			$this->_pointer,
+    			$color->red * 255,
+    			$color->green * 255,
+    			$color->blue * 255,
+    			127 - ($color->alpha * 127)
+			)
+		);
+
+		return $this;
+    }
+
+
+    public function saveTo($savePath, $quality) {
+    	$string = $this->toString($quality);
+    	file_put_contents($savePath, $string);
+
+    	return $this;
+    }
+
+    public function toString($quality) {
+    	ob_start();
+
+    	try {
+			switch($this->_outputFormat) {
+	            case 'GIF':
+	                imageTrueColorToPalette($this->_pointer, true, 256);
+	                imageGif($this->_pointer);
+	                break;
+	                
+	            case 'JPEG':
+	                imageJpeg($this->_pointer, null, $quality);
+	                break;
+	                
+	            case 'WBMP':
+	                imageWbmp($this->_pointer);
+	                break;
+	                
+	            default:
+	            case 'PNG':
+	                //imageAlphaBlending($this->_pointer, false);
+	                imageSaveAlpha($this->_pointer, true);
+	                imagePng($this->_pointer);
+	                break;    
+	        }
+    	} catch(\Exception $e) {
+    		ob_clean();
+    		throw $e;
+    	}
+
+    	return ob_get_clean();
+    }
+
+
+
+// Manipulations
+    public function resize($width, $height) {
+    	$img = imageCreateTrueColor($width, $height);
         $background = imageColorAllocateAlpha($img, 255, 255, 255, 127);
         imageColorTransparent($img, $background);
         
@@ -314,24 +167,80 @@ class Gd extends Base implements neon\IImageDrawingProcessor {
         imageSaveAlpha($img, true);
         imageFilledRectangle($img, 0, 0, $width, $height, $background);
         
-        
-        $output = imageCopy($img, $this->_pointer, 0, 0, $x, $y, $width, $height);
-        imageAlphaBlending($img, false);
-        
-        $this->_destroy();
-        
+        imageCopyResampled($img, $this->_pointer, 0, 0, 0, 0, $width, $height, $this->_width, $this->_height);
+        imageDestroy($this->_pointer);
+
         $this->_pointer = $img;
         $this->_width = $width;
         $this->_height = $height;
-        
-        return $this;    
+
+        return $this;
     }
-    
-    public function mirror() {
-        $tmp = imageCreateTrueColor($this->_width, $this->_height);
-        imageAlphaBlending($tmp, true);
+
+    public function crop($x, $y, $width, $height) {
+    	$img = imageCreateTrueColor($width, $height);
+        $background = imageColorAllocateAlpha($img, 255, 255, 255, 127);
+        imageColorTransparent($img, $background);
         
-        for($x = 0; $x < $this->_width; $x++) {
+        imageAlphaBlending($img, false);
+        imageSaveAlpha($img, true);
+        imageFilledRectangle($img, 0, 0, $width, $height, $background);
+        
+        imageCopy($img, $this->_pointer, 0, 0, $x, $y, $width, $height);
+        imageDestroy($this->_pointer);
+
+        $this->_pointer = $img;
+        $this->_width = $width;
+        $this->_height = $height;
+
+        return $this;
+    }
+
+    public function composite(neon\raster\IDriver $image, $x, $y) {
+    	imageAlphaBlending($this->_pointer, true);
+    	imageAlphaBlending($image->_pointer, true);
+
+    	imageCopy(
+    		$this->_pointer, $image->_pointer,
+    		$x, $y, 0, 0,
+    		$image->_width, $image->_height
+		);
+
+    	imageAlphaBlending($this->_pointer, false);
+    	imageAlphaBlending($image->_pointer, false);
+
+    	return $this;
+    }
+
+    public function rotate($angle, neon\IColor $background=null) {
+    	if($background === null) {
+    		$background = -1;
+    	} else {
+    		$background = imageColorAllocate(
+    			$this->_pointer,
+    			$background->red * 255,
+    			$background->green * 255,
+    			$background->blue * 255
+			);
+    	}
+
+    	if(!($pointer = imageRotate($this->_pointer, $angle * -1, $background))) {
+    		return $this;
+    	}
+
+    	imageDestroy($this->_pointer);
+    	$this->_pointer = $pointer;
+    	$this->_width = imageSX($this->_pointer);
+    	$this->_height = imageSY($this->_pointer);
+
+    	return $this;
+    }
+
+    public function mirror() {
+    	$tmp = imageCreateTrueColor($this->_width, $this->_height);
+    	imageAlphaBlending($tmp, true);
+
+    	for($x = 0; $x < $this->_width; $x++) {
             imageCopy(
                 $tmp, $this->_pointer, $x, 0,
                 $this->_width - $x - 1, 0,
@@ -340,13 +249,12 @@ class Gd extends Base implements neon\IImageDrawingProcessor {
         }    
         
         imageAlphaBlending($tmp, false);
-        
-        $this->_destroy();
+        imageDestroy($this->_pointer);
+
         $this->_pointer = $tmp;
-        
         return $this;
     }
-    
+
     public function flip() {
         $tmp = imageCreateTrueColor($this->_width, $this->_height);
         imageAlphaBlending($tmp, true);
@@ -360,14 +268,15 @@ class Gd extends Base implements neon\IImageDrawingProcessor {
         }    
         
         imageAlphaBlending($tmp, false);
-        
-        $this->_destroy();
+        imageDestroy($this->_pointer);
+
         $this->_pointer = $tmp;
-        
         return $this;
     }
-    
-    public function brightness($brightness) {
+
+
+// Filters
+	public function brightness($brightness) {
         imageAlphaBlending($this->_pointer, false);
         imageSaveAlpha($this->_pointer, true);
         
@@ -382,10 +291,8 @@ class Gd extends Base implements neon\IImageDrawingProcessor {
         imageAlphaBlending($this->_pointer, false);
         imageSaveAlpha($this->_pointer, true);
 
-        $contrast *= -1;
-        
         if(function_exists('imagefilter')) {
-            imagefilter($this->_pointer, \IMG_FILTER_CONTRAST, $contrast);
+            imagefilter($this->_pointer, \IMG_FILTER_CONTRAST, $contrast * -1);
         }    
         
         return $this;
@@ -408,12 +315,11 @@ class Gd extends Base implements neon\IImageDrawingProcessor {
         return $this;
     }
     
-    public function colorize($color, $alpha=100) {
+    public function colorize(neon\IColor $color, $alpha) {
         imageAlphaBlending($this->_pointer, false);
         imageSaveAlpha($this->_pointer, true);
         
         if(function_exists('imagefilter')) {
-            $color = neon\Color::factory($color);
             imagefilter(
                 $this->_pointer, 
                 \IMG_FILTER_COLORIZE, 
@@ -493,7 +399,7 @@ class Gd extends Base implements neon\IImageDrawingProcessor {
         return $this;   
     }
     
-    public function smooth($amount=50) {
+    public function smooth($amount) {
         imageAlphaBlending($this->_pointer, false);
         imageSaveAlpha($this->_pointer, true);
         
@@ -505,8 +411,11 @@ class Gd extends Base implements neon\IImageDrawingProcessor {
     }
 
 
+
+
 // Drawing
-	public function rectangleFill($x, $y, $width, $height, $color, $alpha=1) {
+    /*
+    public function rectangleFill($x, $y, $width, $height, $color, $alpha=1) {
         $color = neon\Color::factory($color);
         
         imageFilledRectangle(
@@ -634,4 +543,5 @@ class Gd extends Base implements neon\IImageDrawingProcessor {
         
         return $this;
     }
+    */
 }
