@@ -163,6 +163,7 @@ class Color implements IColor {
             case 'red': return $this->getRed();
             case 'green': return $this->getGreen();
             case 'blue': return $this->getBlue();
+            case 'alpha': return $this->getAlpha();
             
             case 'hue': 
             case 'hslhue': return $this->getHslHue();
