@@ -27,20 +27,20 @@ class Size implements ISize, core\IDumpable {
     }
 
     public function __construct($value, $unit=null) {
-    	$this->setValue($value, $unit);
+    	$this->parse($value, $unit);
     }
 
     public function toString() {
     	return $this->_value.$this->_unit;
     }
 
-    public function setValue($value, $unit=null) {
+    public function parse($value, $unit=null) {
 		if(preg_match('/^([0-9.\-+e]+)('.implode('|', self::$_units).')$/i', $value, $matches)) {
 			$value = $matches[1];
 			$unit = $matches[2];
     	}
 
-    	$this->_value = (float)$value;
+        $this->setValue($value);    	
 
     	if($unit !== null) {
     		$this->setUnit($unit);
@@ -49,12 +49,13 @@ class Size implements ISize, core\IDumpable {
     	return $this;
     }
 
-    public function getValue($default=null) {
-    	if($this->_value !== null) {
-    		return $this->_value;
-    	}
+    public function setValue($value) {
+        $this->_value = (float)$value;
+        return $this;
+    }
 
-    	return $default;
+    public function getValue() {
+    	return $this->_value;
     }
 
     public function setUnit($unit) {

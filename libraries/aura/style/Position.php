@@ -9,7 +9,9 @@ use df;
 use df\core;
 use df\aura;
     
-class Position implements IPosition {
+class Position implements IPosition, core\IDumpable {
+
+	use core\TStringProvider;
 
     protected $_xAnchor = null;
     protected $_xOffset;
@@ -25,10 +27,15 @@ class Position implements IPosition {
     }
 
     public function __construct($position, $position2=null) {
+    	$this->parse($position, $position2);
+    }
+
+    public function parse($position, $position2=null) {
     	if($position2 !== null) {
     		$this->setX($position);
 			$this->setY($position2);
-			return;
+
+			return $this;
 		}
 
 
@@ -93,6 +100,8 @@ class Position implements IPosition {
     	if($this->_yAnchor === null) {
     		$this->setYAnchor('center');
     	}
+
+    	return $this;
     }
 
     public function setX($value) {
@@ -112,7 +121,13 @@ class Position implements IPosition {
     }
 
 	public function getX() {
-		return $this->_xAnchor.' '.$this->_xOffset;
+		$output = $this->_xAnchor;
+
+		if($this->_xOffset !== null) {
+			$output .= ' '.$this->_xOffset;
+		}
+
+		return $output;
 	}
 
 	public function setXAnchor($anchor) {
@@ -167,7 +182,13 @@ class Position implements IPosition {
 	}
 
 	public function getY() {
-		return $this->_yAnchor.' '.$this->_yOffset;
+		$output = $this->_yAnchor;
+
+		if($this->_yOffset !== null) {
+			$output .= ' '.$this->_yOffset;
+		}
+
+		return $output;
 	}
 
 	public function setYAnchor($anchor) {
@@ -203,5 +224,15 @@ class Position implements IPosition {
 
 	public function getYOffset() {
 		return $this->_yOffset;
+	}
+
+	public function toString() {
+		return $this->getX().' '.$this->getY();
+	}
+
+
+// Dump
+	public function getDumpProperties() {
+		return $this->toString();
 	}
 }

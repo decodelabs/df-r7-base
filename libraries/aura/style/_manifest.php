@@ -16,12 +16,16 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 
 
 // Interfaces
-interface ISize extends core\IStringProvider, core\IValueContainer {
+interface ISize extends core\IStringProvider {
+	public function parse($value, $unit=null);
+	public function setValue($value);
+	public function getValue();
 	public function setUnit($unit);
 	public function getUnit();
 }
 
-interface IPosition {
+interface IPosition extends core\IStringProvider {
+	public function parse($position, $position2=null);
 	public function setX($value);
 	public function getX();
 	public function setXAnchor($anchor);
@@ -34,4 +38,21 @@ interface IPosition {
 	public function getYAnchor();
 	public function setYOffset($offset);
 	public function getYOffset();
+}
+
+interface IAngle extends core\IStringProvider {
+	public function parse($angle, $unit=null);
+	public function setValue($value);
+	public function getValue();
+	public function setUnit($unit, $convertValue=true);
+	public function getUnit();
+
+	public function setDegrees($degrees);
+	public function getDegrees();
+	public function setRadians($radians);
+	public function getRadians();
+	public function setGradians($gradians);
+	public function getGradians();
+	public function setTurns($turns);
+	public function getTurns();
 }
