@@ -136,7 +136,7 @@ interface IImageFilterDriver extends IDriver {
 
 
 
-interface ITransformation extends IImageManipulationController, IImageFilterController {
+interface ITransformation extends IImageManipulationController, IImageFilterController, core\IStringProvider {
 	public function setImage(IImage $image);
 	public function getImage();
 
