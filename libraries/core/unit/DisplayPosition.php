@@ -3,13 +3,12 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\aura\style;
+namespace df\core\unit;
 
 use df;
 use df\core;
-use df\aura;
     
-class Position implements IPosition, core\IDumpable {
+class DisplayPosition implements IDisplayPosition, core\IDumpable {
 
 	use core\TStringProvider;
 
@@ -19,7 +18,7 @@ class Position implements IPosition, core\IDumpable {
     protected $_yOffset;
 
     public function factory($position, $position2=null) {
-    	if($position instanceof IPosition) {
+    	if($position instanceof IDisplayPosition) {
     		return $position;
     	}
 
@@ -154,7 +153,7 @@ class Position implements IPosition, core\IDumpable {
 
 	public function setXOffset($offset) {
 		if($offset !== null) {
-			$offset = Size::factory($offset);
+			$offset = DisplaySize::factory($offset);
 		}
 
 		$this->_xOffset = $offset;
@@ -215,7 +214,7 @@ class Position implements IPosition, core\IDumpable {
 
 	public function setYOffset($offset) {
 		if($offset !== null) {
-			$offset = Size::factory($offset);
+			$offset = DisplaySize::factory($offset);
 		}
 
 		$this->_yOffset = $offset;

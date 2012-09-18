@@ -3,11 +3,10 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\aura\style;
+namespace df\core\unit;
 
 use df;
 use df\core;
-use df\aura;
     
 class Angle implements IAngle, core\IDumpable {
 

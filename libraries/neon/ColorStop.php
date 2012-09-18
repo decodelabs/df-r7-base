@@ -26,7 +26,7 @@ class ColorStop implements IColorStop, core\IDumpable {
     	$size = array_pop($parts);
 
     	try {
-    		$size = aura\style\Size::factory($size);
+    		$size = core\unit\DisplaySize::factory($size);
     		$color = implode(' ', $parts);
     	} catch(aura\style\InvalidArgumentException $e) {
     		$color = $colorStop;
@@ -52,7 +52,7 @@ class ColorStop implements IColorStop, core\IDumpable {
 
     public function setSize($size) {
     	if($size !== null) {
-    		$size = aura\style\Size::factory($size);
+    		$size = core\unit\DisplaySize::factory($size);
     	}
 
     	$this->_size = $size;
