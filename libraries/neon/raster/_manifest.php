@@ -142,11 +142,3 @@ interface ITransformation extends IImageManipulationController, IImageFilterCont
 
 	public function apply();
 }
-
-interface IFormat {
-	public static function fromPath($path);
-	public static function fromExtension($extension);
-	public static function fromMime($mime);
-	public static function isValid($format);
-	public static function getDescriptionFor($format);
-}
