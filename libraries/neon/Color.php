@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\neon;
     
-class Color implements IColor {
+class Color implements IColor, core\IDumpable {
 
     protected $_a;
     protected $_b;
@@ -965,4 +965,10 @@ class Color implements IColor {
         'yellow'                => [255, 255, 0],
         'yellowgreen'           => [154, 205, 50]
     ];
+
+
+// Dump
+    public function getDumpProperties() {
+        return $this->toCssString();
+    }
 }
