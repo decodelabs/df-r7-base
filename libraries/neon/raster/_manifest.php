@@ -51,17 +51,17 @@ interface IImageCompositeController {
 }
 
 interface IImageFilterController {
-    //public function brightness($brightness);
-    //public function contrast($contrast);
-    //public function greyscale();
-    //public function colorize($color, $alpha=100);
-    //public function invert();
-    //public function detectEdges();
-    //public function emboss();
-    //public function blur();
-    //public function gaussianBlur();
-    //public function removeMean();
-    //public function smooth($amount=50);
+    public function brightness($brightness);
+    public function contrast($contrast);
+    public function greyscale();
+    public function colorize($color, $alpha=100);
+    public function invert();
+    public function detectEdges();
+    public function emboss();
+    public function blur();
+    public function gaussianBlur();
+    public function removeMean();
+    public function smooth($amount=50);
 }
 
 interface IImageDrawingController {

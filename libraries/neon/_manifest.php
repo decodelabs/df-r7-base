@@ -107,9 +107,11 @@ interface IColor {
 
 interface IColorStop extends core\IStringProvider {
 
+// Color
     public function setColor($color);
     public function getColor();
 
+// Size
     public function setSize($size);
     public function getSize();
 }
