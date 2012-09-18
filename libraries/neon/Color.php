@@ -102,7 +102,9 @@ class Color implements IColor, core\IDumpable {
             return new self(
                 self::$_colorNames[$name][0] / 255,
                 self::$_colorNames[$name][1] / 255,
-                self::$_colorNames[$name][2] / 255
+                self::$_colorNames[$name][2] / 255,
+                isset(self::$_colorNames[$name][3]) ?
+                    self::$_colorNames[$name][3] : 1
             );
         }
         
@@ -963,7 +965,8 @@ class Color implements IColor, core\IDumpable {
         'white'                 => [255, 255, 255],
         'whitesmoke'            => [245, 245, 245],
         'yellow'                => [255, 255, 0],
-        'yellowgreen'           => [154, 205, 50]
+        'yellowgreen'           => [154, 205, 50],
+        'transparent'           => [0,   0,   0,   0]
     ];
 
 
