@@ -17,7 +17,21 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 
 // Interfaces
 interface ISize extends core\IStringProvider, core\IValueContainer {
-
 	public function setUnit($unit);
 	public function getUnit();
+}
+
+interface IPosition {
+	public function setX($value);
+	public function getX();
+	public function setXAnchor($anchor);
+	public function getXAnchor();
+	public function setXOffset($offset);
+	public function getXOffset();
+	public function setY($value);
+	public function getY();
+	public function setYAnchor($anchor);
+	public function getYAnchor();
+	public function setYOffset($offset);
+	public function getYOffset();
 }
