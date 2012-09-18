@@ -22,7 +22,7 @@ class Angle implements IAngle, core\IDumpable {
     		return $value;
     	}
 
-    	return new self($value, $uint);
+    	return new self($value, $unit);
     }
 
     public function __construct($value, $unit=null) {
@@ -82,6 +82,47 @@ class Angle implements IAngle, core\IDumpable {
 
 	public function getUnit() {
 		return $this->_unit;
+	}
+
+	public function normalize() {
+		$useMargin = false;
+
+		switch($this->_unit) {
+			case 'deg':
+				$limit = 360;
+				break;
+
+			case 'rad':
+				$limit = 360 / (180 / pi());
+				$useDelta = true;
+				break;
+
+			case 'grad':
+				$limit = 400;
+				break;
+
+			case 'turn':
+				$limit = 1;
+				break;
+		}
+
+		$upper = $limit;
+		$lower = -$limit;
+
+		if($useMargin) {
+			$upper = $limit + 0.000005;
+			$lower = -$limit - 0.000005;
+		}
+
+		while($this->_value > $upper) {
+			$this->_value -= $limit;
+		}
+
+		while($this->_value < $lower) {
+			$this->_value += $limit;
+		}
+
+		return $this;
 	}
 
 	public function setDegrees($degrees) {

@@ -22,6 +22,7 @@ interface IAngle extends core\IStringProvider {
 	public function getValue();
 	public function setUnit($unit, $convertValue=true);
 	public function getUnit();
+	public function normalize();
 
 	public function setDegrees($degrees);
 	public function getDegrees();
