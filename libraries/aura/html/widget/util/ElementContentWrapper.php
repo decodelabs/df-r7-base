@@ -19,6 +19,10 @@ class ElementContentWrapper implements aura\html\widget\IElementContentWrapper {
         $this->_tagContent = $tagContent;
     }
     
+    public function getView() {
+        return $this->_width->getView();
+    }
+
     public function __call($method, $args) {
         $output = call_user_func_array(array($this->_tagContent, $method), $args);
         

@@ -20,22 +20,29 @@ class Template extends Base implements ITemplateWidget, \ArrayAccess, core\IDump
         $this->setPath($path);
         $this->setContextRequest($contextRequest);
     }
+
+    public function toResponse() {
+        return $this->_loadTemplate();
+    }
     
-    protected function _render() {
-        $tag = $this->getTag();
+    protected function _loadTemplate() {
         $renderTarget = $this->getRenderTarget();
         $view = $renderTarget->getView();
-        
         $context = $view->getContext()->spawnInstance($this->_contextRequest);
-        $template = aura\view\content\Template::loadDirectoryTemplate($context, $this->_path);
-        
+        return aura\view\content\Template::loadDirectoryTemplate($context, $this->_path);
+    }
+
+    protected function _render() {
+        $tag = $this->getTag();
+        $template = $this->_loadTemplate();
+
         if(!empty($this->_args)) {
             $template->setArgs($this->_args);
         }
         
         return $tag->renderWith(
             new aura\html\ElementString(
-                $template->renderTo($renderTarget)
+                $template->renderTo($this->getRenderTarget())
             )
         );
     }
