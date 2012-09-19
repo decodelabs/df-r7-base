@@ -41,8 +41,12 @@ class Angle implements IAngle, core\IDumpable {
 
     	$this->setValue($value);
 
+    	if($this->_unit === null && $unit === null) {
+    		$unit = 'deg';
+    	}
+
     	if($unit !== null) {
-    		$this->setUnit($unit);
+    		$this->setUnit($unit, false);
     	}
 
     	return $this;

@@ -246,8 +246,7 @@ class Image implements IImage {
 	public function crop($x, $y, $width, $height) {
 		$this->_checkDriverForManipulations();
 
-		$x = $this->_normalizePixelSize($x, IDimension::WIDTH);
-		$y = $this->_normalizePixelSize($y, IDimension::HEIGHT);
+		list($x, $y) = $this->_normalizePosition($x, $y);
 		$width = $this->_normalizePixelSize($width, IDimension::WIDTH);
 		$height = $this->_normalizePixelSize($height, IDimension::HEIGHT);
 
@@ -439,107 +438,42 @@ class Image implements IImage {
 
 
 // Normalizers
-	protected function _normalizePixelSize($size, $dimension=null, $compositeSize=null) {
-		if(is_string($size) && strlen($size) == 1) {
-			$dimension = $this->_normalizeDimension($dimension);
+	protected function _normalizePixelSize($size, $dimension=null) {
+		$size = core\unit\DisplaySize::factory($size);
 
-			if($compositeSize !== null) {
-				$compositeSize = $this->_normalizePixelSize($compositeSize);
-			}
-
-			switch($dimension) {
-				case IDimension::WIDTH:
-					switch($size) {
-						case IPosition::LEFT:
-							$size = 0;
-							break; 
-
-						case IPosition::CENTER:
-							$size = $this->_driver->getWidth() / 2;
-
-							if($compositeSize !== null) {
-								$size -= $compositeSize / 2;
-							}
-
-							$size = floor($size);
-							break;
-
-						case IPosition::RIGHT:
-							$size = $this->_driver->getWidth();
-
-							if($compositeSize !== null) {
-								$size -= $compositeSize;
-							}
-
-							break;
-					}
-
-					break;
-
-				case IDimension::HEIGHT:
-					switch($size) {
-						case IPosition::TOP:
-							$size = 0;
-							break; 
-
-						case IPosition::CENTER:
-							$size = $this->_driver->getHeight() / 2;
-
-							if($compositeSize !== null) {
-								$size -= $compositeSize / 2;
-							}
-
-							$size = floor($size);
-							break;
-
-						case IPosition::BOTTOM:
-							$size = $this->_driver->getHeight();
-
-							if($compositeSize !== null) {
-								$size -= $compositeSize;
-							}
-
-							break;
-					}
-
-					break;
-			}
-		}
-
-
-		if(substr($size, -1) == '%') {
-			$dimension = $this->_normalizeDimension($dimension);
+		if(!$size->isAbsolute()) {
+			$vpWidth = $this->getWidth();
+			$vpHeight = $this->getHeight();
+			$length = null;
 
 			switch($dimension) {
 				case IDimension::WIDTH:
-					$base = $this->_driver->getWidth();
+					$length = $vpWidth;
 					break;
 
 				case IDimension::HEIGHT:
-					$base = $this->_driver->getHeight();
+					$length = $vpHeight;
+					break;
+
+				default:
+					$length = max($vpWidth, $vpHeight);
 					break;
 			}
 
-			$percent = $this->_normalizePercentage($size);
-			$size = ($base / 100) * $percent;
+			$size = $size->extractAbsolute($length, null, $vpWidth, $vpHeight);
 		}
+		
+		return $size->getPixels();
+	}
 
-        if(substr($size, -2) == 'px') {
-            $size = substr($size, 0, -2);
-        }
-        
-        if(!is_numeric($size)) {
-            $size = preg_replace('[^0-9]', '', $size);
-        }
+	protected function _normalizePosition($x, $y, $compositeWidth=null, $compositeHeight=null) {
+		$position = core\unit\DisplayPosition::factory($x, $y)->extractAbsolute(
+			$this->getWidth(), $this->getHeight(),
+			$compositeWidth, $compositeHeight
+		);
 
-        $size = (float)$size;
-
-        if($size <= 0) {
-        	$size = null;
-        }
-        
-        return $size;
-    }
+		return [$position->getXOffset()->getPixels(), $position->getYOffset()->getPixels()];
+	}
 
 	protected function _normalizePercentage($percent, $ignoreLowBound=false, $ignoreHighBound=false) {
 		if(empty($percent)) {
@@ -560,17 +494,7 @@ class Image implements IImage {
 	}
 
 	protected function _normalizeAngle($angle) {
-		$angle = (int)$angle;
-
-		while($angle > 360) {
-			$angle -= 360;
-		}
-
-		while($angle < -360) {
-			$angle += 360;
-		}
-
-		return $angle;
+		return core\unit\Angle::factory($angle)->normalize();
 	}
 
 	protected function _normalizeDimension($dimension) {

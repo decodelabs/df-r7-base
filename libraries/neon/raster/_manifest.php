@@ -117,7 +117,7 @@ interface IImageManipulationDriver extends IDriver {
 	public function resize($width, $height);
 	public function crop($x, $y, $width, $height);
 	public function composite(IDriver $image, $x, $y);
-	public function rotate($angle, neon\IColor $background=null);
+	public function rotate(core\unit\IAngle $angle, neon\IColor $background=null);
 }
 
 interface IImageFilterDriver extends IDriver {

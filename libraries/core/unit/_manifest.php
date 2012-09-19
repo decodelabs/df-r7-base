@@ -67,6 +67,11 @@ interface IDisplaySize extends core\IStringProvider {
 	public function setViewportHeight($vh);
 	public function setViewportMin($vmin);
 	public function setViewportMax($vmax);
+
+	public function extractAbsolute($length, $fontSize=null, $viewportWidth=null, $viewportHeight=null);
+	public function extractAbsoluteFromLength($length);
+	public function extractAbsoluteFromFontSize($size);
+	public function extractAbsoluteFromViewport($width, $height);
 }
 
 interface IDisplayPosition extends core\IStringProvider {
@@ -83,6 +88,9 @@ interface IDisplayPosition extends core\IStringProvider {
 	public function getYAnchor();
 	public function setYOffset($offset);
 	public function getYOffset();
+	public function isRelative();
+	public function isAbsolute();
+	public function extractAbsolute($width, $height, $compositeWidth=null, $compositeHeight=null);
 }
 
 interface IFrequency extends core\IStringProvider {

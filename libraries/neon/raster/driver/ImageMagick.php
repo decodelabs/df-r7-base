@@ -124,14 +124,14 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
 		return $this;
 	}
 
-	public function rotate($angle, neon\IColor $background=null) {
+	public function rotate(core\unit\IAngle $angle, neon\IColor $background=null) {
 		if($background === null) {
 			$background = new \ImagickPixel('none');
 		} else {
 			$background = new \ImagickPixel($background->toCssString());
 		}
 
-		$this->_pointer->rotateImage($background, $angle);
+		$this->_pointer->rotateImage($background, $angle->getDegrees());
 		return $this;
 	}
 

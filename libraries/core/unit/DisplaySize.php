@@ -11,6 +11,8 @@ use df\aura;
     
 class DisplaySize implements IDisplaySize, core\IDumpable {
 
+    const DEFAULT_FONT_SIZE = '16px';
+
 	use core\TStringProvider;
 
 	private static $_units = ['%', 'in', 'cm', 'mm', 'em', 'ex', 'pt', 'pc', 'px', 'ch', 'rem', 'vh', 'vw', 'vmin', 'vmax'];
@@ -41,10 +43,14 @@ class DisplaySize implements IDisplaySize, core\IDumpable {
 			$unit = $matches[2];
     	}
 
-        $this->setValue($value);    	
+        $this->setValue($value);  
+
+        if($this->_unit === null && $unit === null) {
+            $unit = 'px';
+        }  	
 
     	if($unit !== null) {
-    		$this->setUnit($unit);
+    		$this->setUnit($unit, false);
     	}
 
     	return $this;
@@ -214,8 +220,125 @@ class DisplaySize implements IDisplaySize, core\IDumpable {
 
     public function setViewportMax($vmax) {
         $this->setValue($vmax);
-        $this->_unit = $vmax;
+        $this->_unit = 'vmax';
         return $this;
+    }
+
+
+    public function extractAbsolute($length, $fontSize=null, $viewportWidth=null, $viewportHeight=null) {
+        if($this->isAbsolute()) {
+            return clone $this;
+        }
+
+        switch($this->_unit) {
+            case '%':
+                if($length === null) {
+                    throw new RuntimeException(
+                        'No absolute length data has been given to convert to an absolute value from percentage'
+                    );
+                }
+
+                return $this->extractAbsoluteFromLength($length);
+
+            case 'em':
+            case 'ex':
+            case 'ch':
+            case 'rem':
+                if($fontSize === null) {
+                    $fontSize = self::DEFAULT_FONT_SIZE;
+                }
+
+                return $this->extractAbsoluteFromFontSize($fontSize);
+
+            case 'vw':
+            case 'vh':
+            case 'vmin':
+            case 'vmax':
+                if($viewportWidth === null && $viewportHeight === null) {
+                    throw new RuntimeException(
+                        'No absolute viewport size data has been given to convert to an absolute value'
+                    );
+                }
+
+                return $this->extractAbsoluteFromViewport($viewportWidth, $viewportHeight);
+        }
+    }
+
+    public function extractAbsoluteFromLength($length) {
+        $length = clone self::factory($length);
+
+        if(!$length->isAbsolute()) {
+            throw new InvalidArgumentException(
+                'Extraction length must be absolute'
+            );
+        }
+
+        $length->_value = ($length->_value / 100) * $this->_value;
+        return $length;
+    }
+
+    public function extractAbsoluteFromFontSize($size) {
+        $size = clone self::factory($size);
+
+        if(!$size->isAbsolute()) {
+            throw new InvalidArgumentException(
+                'Extraction font size must be absolute'
+            );
+        }
+
+        $factor = $this->_value;
+
+        switch($this->_unit) {
+            case 'em':
+            case 'ex':
+            case 'ch':
+                $factor /= 2;
+
+            case 'rem':
+                $size->_value *= $factor;
+                break;
+        }
+
+        return $size;
+    }
+
+    public function extractAbsoluteFromViewport($width, $height) {
+        if($width === null) {
+            $width = $height;
+        }
+
+        if($height === null) {
+            $height = $width;
+        }
+
+        $width = clone self::factory($width);
+        $height = clone self::factory($height);
+
+        if(!$width->isAbsolute() || !$height->isAbsolute()) {
+            throw new InvalidArgumentException(
+                'Extraction viewport size must be absolute'
+            );
+        }
+
+        switch($this->_unit) {
+            case 'vw':
+                $width->_value = ($width->_value / 100) * $this->_value;
+                return $width;
+
+            case 'vh':
+                $height->_value = ($height->_value / 100) * $this->_value;
+                return $height;
+
+            case 'vmin':
+                $output = $width->_value < $height->_value ? $width : $height;
+                $output->_value = ($output->_value / 100) * $this->_value;
+                return $output;
+
+            case 'vmax':
+                $output = $width->_value > $height->_value ? $width : $height;
+                $output->_value = ($output->_value / 100) * $this->_value;
+                return $output;
+        }
     }
 
 

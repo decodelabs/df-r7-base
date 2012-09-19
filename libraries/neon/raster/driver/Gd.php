@@ -212,7 +212,7 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
     	return $this;
     }
 
-    public function rotate($angle, neon\IColor $background=null) {
+    public function rotate(core\unit\IAngle $angle, neon\IColor $background=null) {
     	if($background === null) {
     		$background = -1;
     	} else {
@@ -224,7 +224,7 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
 			);
     	}
 
-    	if(!($pointer = imageRotate($this->_pointer, $angle * -1, $background))) {
+    	if(!($pointer = imageRotate($this->_pointer, $angle->getDegrees() * -1, $background))) {
     		return $this;
     	}
 
