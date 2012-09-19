@@ -16,12 +16,101 @@ class LogicException extends \LogicException implements IException {}
 
 
 // Interfaces
-interface IAngle extends core\IStringProvider {
+interface ICssCompatibleUnit {
+	public function toCssString();
+}
+
+
+interface ISingleValueUnit {
 	public function parse($angle, $unit=null);
 	public function setValue($value);
 	public function getValue();
 	public function setUnit($unit, $convertValue=true);
 	public function getUnit();
+}
+
+trait TSingleValueUnit {
+
+	use core\TStringProvider;
+
+	//private static $_units = array();
+
+	public function __construct($value, $unit=null) {
+    	$this->parse($value, $unit);
+    }
+
+    public function parse($value, $unit=null) {
+    	if(preg_match('/^([0-9.\-+e]+)('.implode('|', self::$_units).')$/i', $value, $matches)) {
+			$value = $matches[1];
+			$unit = $matches[2];
+    	}
+
+    	$this->setValue($value);
+
+    	if($this->_unit === null && $unit === null) {
+    		$unit = static::DEFAULT_UNIT;
+    	}
+
+    	if($unit !== null) {
+    		$this->setUnit($unit, false);
+    	}
+
+    	return $this;
+    }
+
+    public function setValue($value) {
+    	$this->_value = (float)$value;
+    	return $this;
+    }
+
+	public function getValue() {
+		return $this->_value;
+	}
+
+	public function setUnit($unit, $convertValue=true) {
+		$unit = strtolower($unit);
+
+		if(empty($unit)) {
+			$unit = static::DEFAULT_UNIT;
+		}
+
+		if(!in_array($unit, self::$_units)) {
+			throw new InvalidArgumentException(
+				$unit.' is not a valid unit option'
+			);
+		}
+
+		if($convertValue && $this->_unit !== null) {
+			$this->_value = $this->_convert($this->_value, $this->_unit, $unit);
+		}
+
+		$this->_unit = $unit;
+		return $this;
+	}
+
+	public function getUnit() {
+		return $this->_unit;
+	}
+
+	public function toString() {
+		return $this->_value.$this->_unit;
+	}
+
+	public function toCssString() {
+		return $this->toString();
+	}
+
+	abstract protected function _convert($value, $inUnit, $outUnit);
+
+	protected function _parseUnit($value, $unit) {
+		$this->setValue($value);
+		$this->setUnit($unit, false);
+		return $this;
+	}
+}
+
+
+interface IAngle extends ICssCompatibleUnit, ISingleValueUnit, core\IStringProvider {
 	public function normalize();
 
 	public function setDegrees($degrees);
@@ -34,12 +123,7 @@ interface IAngle extends core\IStringProvider {
 	public function getTurns();
 }
 
-interface IDisplaySize extends core\IStringProvider {
-	public function parse($value, $unit=null);
-	public function setValue($value);
-	public function getValue();
-	public function setUnit($unit, $convertValue=true);
-	public function getUnit();
+interface IDisplaySize extends ICssCompatibleUnit, ISingleValueUnit, core\IStringProvider {
 	public function isRelative();
 	public function isAbsolute();
 	public function setDPI($dpi);
@@ -74,7 +158,7 @@ interface IDisplaySize extends core\IStringProvider {
 	public function extractAbsoluteFromViewport($width, $height);
 }
 
-interface IDisplayPosition extends core\IStringProvider {
+interface IDisplayPosition extends ICssCompatibleUnit, core\IStringProvider {
 	public function parse($position, $position2=null);
 	public function setX($value);
 	public function getX();
@@ -93,19 +177,33 @@ interface IDisplayPosition extends core\IStringProvider {
 	public function extractAbsolute($width, $height, $compositeWidth=null, $compositeHeight=null);
 }
 
-interface IFrequency extends core\IStringProvider {
-	public function parse($value, $unit=null);
-	public function setValue($value);
-	public function getValue();
-	public function setUnit($unit, $convertValue=true);
-	public function getUnit();
+interface IFrequency extends ICssCompatibleUnit, ISingleValueUnit, core\IStringProvider {
+	public function setHz($hz);
+	public function getHz();
+	public function setKhz($khz);
+	public function getKhz();
+	public function setMhz($khz);
+	public function getMhz();
+	public function setGhz($khz);
+	public function getGhz();
+	public function setBpm($bpm);
+	public function getBpm();
+}
 
-	public function setHertz($hertz);
-	public function getHertz();
-	public function setKilohertz($kilohertz);
-	public function getKilohertz();
-	public function setMegahertz($megahertz);
-	public function getMegahertz();
-	public function setGigahertz($gigahertz);
-	public function getGigahertz();
+interface IRatio extends ICssCompatibleUnit, core\IStringProvider {
+	public function parse($value, $denominator=null);
+	public function setFraction($numerator, $denominator);
+	public function getNumerator();
+	public function getDenominator();
+	public function setFactor($factor);
+	public function getFactor();
+}
+
+interface IResolution extends ICssCompatibleUnit, ISingleValueUnit, core\IStringProvider {
+	public function setDpi($dpi);
+	public function getDpi();
+	public function setDpcm($dpcm);
+	public function getDpcm();
+	public function setDppx($dppx);
+	public function getDppx();
 }

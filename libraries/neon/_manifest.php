@@ -18,7 +18,7 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 
 
 // Interfaces
-interface IColor {
+interface IColor extends core\unit\ICssCompatibleUnit {
 
 	const RGB = 'rgb';
     const HSL = 'hsl';
@@ -27,7 +27,7 @@ interface IColor {
     public function toHexString($allowShort=false);
     public function setHexPrefix($prefix);
     public function getHexPrefix();
-    public function toCssString($allowRGBA=true);
+    //public function toCssString($allowRGBA=true);
 
 // RGB
     public function setRgba($r, $g, $b, $a);

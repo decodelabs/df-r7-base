@@ -11,14 +11,15 @@ use df\aura;
     
 class DisplaySize implements IDisplaySize, core\IDumpable {
 
+    use TSingleValueUnit;
+
     const DEFAULT_FONT_SIZE = '16px';
-
-	use core\TStringProvider;
-
-	private static $_units = ['%', 'in', 'cm', 'mm', 'em', 'ex', 'pt', 'pc', 'px', 'ch', 'rem', 'vh', 'vw', 'vmin', 'vmax'];
+    const DEFAULT_UNIT = 'px';
+	
+    private static $_units = ['%', 'in', 'cm', 'mm', 'em', 'ex', 'pt', 'pc', 'px', 'ch', 'rem', 'vh', 'vw', 'vmin', 'vmax'];
 
     protected $_value;
-    protected $_unit = 'px';
+    protected $_unit;
     protected $_dpi = 96;
 
     public static function factory($value, $unit=null) {
@@ -27,63 +28,6 @@ class DisplaySize implements IDisplaySize, core\IDumpable {
     	}
 
     	return new self($value, $unit);
-    }
-
-    public function __construct($value, $unit=null) {
-    	$this->parse($value, $unit);
-    }
-
-    public function toString() {
-    	return $this->_value.$this->_unit;
-    }
-
-    public function parse($value, $unit=null) {
-		if(preg_match('/^([0-9.\-+e]+)('.implode('|', self::$_units).')$/i', $value, $matches)) {
-			$value = $matches[1];
-			$unit = $matches[2];
-    	}
-
-        $this->setValue($value);  
-
-        if($this->_unit === null && $unit === null) {
-            $unit = 'px';
-        }  	
-
-    	if($unit !== null) {
-    		$this->setUnit($unit, false);
-    	}
-
-    	return $this;
-    }
-
-    public function setValue($value) {
-        $this->_value = (float)$value;
-        return $this;
-    }
-
-    public function getValue() {
-    	return $this->_value;
-    }
-
-    public function setUnit($unit, $convertValue=true) {
-    	$unit = strtolower($unit);
-
-    	if(!in_array($unit, self::$_units)) {
-    		throw new InvalidArgumentException(
-    			$unit.' is not a valid style size unit'
-			);
-    	}
-
-        if($convertValue && $this->_unit !== null) {
-            $this->_value = $this->_convert($this->_value, $this->_unit, $unit);
-        }
-
-    	$this->_unit = $unit;
-    	return $this;
-    }
-
-    public function getUnit() {
-    	return $this->_unit;
     }
 
     public function isRelative() {
@@ -110,9 +54,7 @@ class DisplaySize implements IDisplaySize, core\IDumpable {
 
 
     public function setPixels($px) {
-        $this->setValue($px);
-        $this->_unit = 'px';
-        return $this;
+        return $this->_parseUnit($px, 'px');
     }
 
     public function getPixels() {
@@ -120,9 +62,7 @@ class DisplaySize implements IDisplaySize, core\IDumpable {
     }
 
     public function setInches($in) {
-        $this->setValue($in);
-        $this->_unit = 'in';
-        return $this;
+        return $this->_parseUnit($in, 'in');
     }
 
     public function getInches() {
@@ -130,9 +70,7 @@ class DisplaySize implements IDisplaySize, core\IDumpable {
     }
 
     public function setMillimeters($mm) {
-        $this->setValue($mm);
-        $this->_unit = 'mm';
-        return $this;
+        return $this->_parseUnit($mm, 'mm');
     }
 
     public function getMillimeters() {
@@ -140,9 +78,7 @@ class DisplaySize implements IDisplaySize, core\IDumpable {
     }
 
     public function setCentimeters($cm) {
-        $this->setValue($cm);
-        $this->_unit = 'cm';
-        return $this;
+        return $this->_parseUnit($cm, 'cm');
     }
 
     public function getCentimeters() {
@@ -150,9 +86,7 @@ class DisplaySize implements IDisplaySize, core\IDumpable {
     }
 
     public function setPoints($pt) {
-        $this->setValue($pt);
-        $this->_unit = 'pt';
-        return $this;
+        return $this->_parseUnit($pt, 'pt');
     }
 
     public function getPoints() {
@@ -160,9 +94,7 @@ class DisplaySize implements IDisplaySize, core\IDumpable {
     }
 
     public function setPica($pc) {
-        $this->setValue($pc);
-        $this->_unit = 'pc';
-        return $this;
+        return $this->_parseUnit($pc, 'pc');
     }
 
     public function getPica() {
@@ -171,57 +103,39 @@ class DisplaySize implements IDisplaySize, core\IDumpable {
 
 
     public function setPercentage($percent) {
-        $this->setValue($percent);
-        $this->_unit = '%';
-        return $this;
+        return $this->_parseUnit($percent, '%');
     }
 
     public function setEms($ems) {
-        $this->setValue($ems);
-        $this->_unit = 'em';
-        return $this;
+        return $this->_parseUnit($ems, 'em');
     }
 
     public function setExes($exes) {
-        $this->setValue($exes);
-        $this->_unit = 'ex';
-        return $this;
+        return $this->_parseUnit($exes, 'ex');
     }
 
     public function setZeros($zeros) {
-        $this->setValue($zeros);
-        $this->_unit = 'ch';
-        return $this;
+        return $this->_parseUnit($zeros, 'ch');
     }
 
     public function setRootElementFontSize($rem) {
-        $this->setValue($rem);
-        $this->_unit = 'rem';
-        return $this;
+        return $this->_parseUnit($rem, 'rem');
     }
 
     public function setViewportWidth($vw) {
-        $this->setValue($vw);
-        $this->_unit = 'vw';
-        return $this;
+        return $this->_parseUnit($vw, 'vw');
     }
 
     public function setViewportHeight($vh) {
-        $this->setValue($vh);
-        $this->_unit = 'vh';
-        return $this;
+        return $this->_parseUnit($vh, 'vh');
     }
 
     public function setViewportMin($vmin) {
-        $this->setValue($vmin);
-        $this->_unit = 'vmin';
-        return $this;
+        return $this->_parseUnit($vmin, 'vmin');
     }
 
     public function setViewportMax($vmax) {
-        $this->setValue($vmax);
-        $this->_unit = 'vmax';
-        return $this;
+        return $this->_parseUnit($vmax, 'vmax');
     }
 
 

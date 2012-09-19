@@ -229,6 +229,10 @@ class DisplayPosition implements IDisplayPosition, core\IDumpable {
 		return $this->getX().' '.$this->getY();
 	}
 
+	public function toCssString() {
+		return $this->getX().' '.$this->getY();
+	}
+
 	public function isRelative() {
 		return !$this->isAbsolute();
 	}

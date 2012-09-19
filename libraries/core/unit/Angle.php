@@ -10,7 +10,9 @@ use df\core;
     
 class Angle implements IAngle, core\IDumpable {
 
-	use core\TStringProvider;
+	use TSingleValueUnit;
+
+	const DEFAULT_UNIT = 'deg';
 
 	private static $_units = ['deg', 'rad', 'grad', 'turn'];
 
@@ -25,68 +27,9 @@ class Angle implements IAngle, core\IDumpable {
     	return new self($value, $unit);
     }
 
-    public function __construct($value, $unit=null) {
-    	$this->parse($value, $unit);
+    public function toCssString() {
+    	return $this->getDegrees().'deg';
     }
-
-    public function toString() {
-    	return $this->_value.$this->_unit;
-    }
-
-    public function parse($value, $unit=null) {
-    	if(preg_match('/^([0-9.\-+e]+)('.implode('|', self::$_units).')$/i', $value, $matches)) {
-			$value = $matches[1];
-			$unit = $matches[2];
-    	}
-
-    	$this->setValue($value);
-
-    	if($this->_unit === null && $unit === null) {
-    		$unit = 'deg';
-    	}
-
-    	if($unit !== null) {
-    		$this->setUnit($unit, false);
-    	}
-
-    	return $this;
-    }
-
-    public function setValue($value) {
-    	$this->_value = (float)$value;
-    	return $this;
-    }
-
-	public function getValue() {
-		return $this->_value;
-	}
-
-	public function setUnit($unit, $convertValue=true) {
-		$unit = strtolower($unit);
-
-		switch($unit) {
-			case 'deg':
-			case 'rad':
-			case 'grad':
-			case 'turn':
-				break;
-
-			default:
-				$unit = 'deg';
-				break;
-		}
-
-		if($convertValue && $this->_unit !== null) {
-			$this->_value = $this->_convert($this->_value, $this->_unit, $unit);
-		}
-
-		$this->_unit = $unit;
-		return $this;
-	}
-
-	public function getUnit() {
-		return $this->_unit;
-	}
 
 	public function normalize() {
 		$useMargin = false;
@@ -130,9 +73,7 @@ class Angle implements IAngle, core\IDumpable {
 	}
 
 	public function setDegrees($degrees) {
-		$this->setValue($degrees);
-		$this->_unit = 'deg';
-		return $this;
+		return $this->_parseUnit($degrees, 'deg');
 	}
 
 	public function getDegrees() {
@@ -140,9 +81,7 @@ class Angle implements IAngle, core\IDumpable {
 	}
 
 	public function setRadians($radians) {
-		$this->setValue($radians);
-		$this->_unit = 'rad';
-		return $this;
+		return $this->_parseUnit($radians, 'rad');
 	}
 
 	public function getRadians() {
@@ -150,9 +89,7 @@ class Angle implements IAngle, core\IDumpable {
 	}
 
 	public function setGradians($gradians) {
-		$this->setValue($gradians);
-		$this->_unit = 'grad';
-		return $this;
+		return $this->_parseUnit($gradians, 'grad');
 	}
 
 	public function getGradians() {
@@ -160,9 +97,7 @@ class Angle implements IAngle, core\IDumpable {
 	}
 
 	public function setTurns($turns) {
-		$this->setValue($turns);
-		$this->_unit = 'turn';
-		return $this;
+		return $this->_parseUnit($turns, 'turn');
 	}
 
 	public function getTurns() {
