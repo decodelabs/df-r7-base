@@ -32,6 +32,11 @@ interface IAnimationEventAttributeModule {
 	public function getOnLoadScript();
 }
 
+interface IAspectRatioAttributeModule {
+	public function setPreserveAspectRatio($preserve);
+	public function getPreserveAspectRatio();
+}
+
 interface IBaseProfileAttributeModule {
 	public function setBaseProfile($profile);
 	public function getBaseProfile();
@@ -316,6 +321,11 @@ interface ITransformAttributeModule {
 	public function getTransform();
 }
 
+interface IViewBoxAttributeModule {
+	public function setViewBox($viewBox);
+	public function getViewBox();
+}
+
 interface IViewportAttributeModule {
 	public function setClip($clip);
 	public function getClip();
@@ -340,13 +350,53 @@ interface IXLinkAttributeModule {
 	public function getLinkActuate();
 }
 
+interface IZoomAndPanAttributeModule {
+	public function setZoomAndPan($zoomAndPan);
+	public function getZoomAndPan();
+}
+
 
 // Document
 interface IDocument extends 
 	IElement,
+	IAspectRatioAttributeModule,
 	IBaseProfileAttributeModule,
-	ITextContentAttributeModule
-	{}
+	IClipAttributeModule,
+	ICoreAttributeModule,
+	IConditionalAttributeModule,
+	IContainerAttributeModule,
+	ICursorAttributeModule,
+	IDocumentEventsAttributeModule,
+	IDimensionAttributeModule,
+	IExternalResourcesAttributeModule,
+	IFilterAttributeModule,
+	IFilterColorAttributeModule,
+	IFloodAttributeModule,
+	IFontAttributeModule,
+	IGradientAttributeModule,
+	IGraphicsAttributeModule,
+	IGraphicalElementEventsAttributeModule,
+	IMarkerAttributeModule,
+	IMaskAttributeModule,
+	IPaintAttributeModule,
+	IPaintOpacityAttributeModule,
+	IPositionAttributeModule,
+	IStyleAttributeModule,
+	ITextAttributeModule,
+	ITextContentAttributeModule,
+	IViewBoxAttributeModule,
+	IViewportAttributeModule,
+	IZoomAndPanAttributeModule
+	{
+
+	public function setContentScriptType($type);
+	public function getContentScriptType();
+	public function setContentStyleType($type);
+	public function getContentStyleType();	
+
+	public function setVersion($version);
+	public function getVersion();	
+}
 
 
 // Shapes
@@ -380,7 +430,7 @@ interface IShape extends
 
 interface ICircle extends IShape, IPositionAttributeModule, IRadiusAttributeModule {}
 interface IEllipse extends IShape, IPositionAttributeModule, I2DRadiusAttributeModule {}
-interface IImage extends IShape, IPositionAttributeModule, IDimensionAttributeModule, IXLinkAttributeModule {}
+interface IImage extends IShape, IAspectRatioAttributeModule, IPositionAttributeModule, IDimensionAttributeModule, IXLinkAttributeModule {}
 interface ILine extends IShape, IPointDataAttributeModule {}
 interface IPath extends IShape, IPathDataAttributeModule {}
 interface IPolygon extends IShape, IPointDataAttributeModule {}

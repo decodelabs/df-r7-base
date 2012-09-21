@@ -12,6 +12,7 @@ use df\neon;
 class Image implements neon\svg\IImage, core\IDumpable {
 
     use neon\svg\TAttributeModule;
+    use neon\svg\TAttributeModule_AspectRatio;
     use neon\svg\TAttributeModule_Shape;
     use neon\svg\TAttributeModule_Dimension;
     use neon\svg\TAttributeModule_Position;

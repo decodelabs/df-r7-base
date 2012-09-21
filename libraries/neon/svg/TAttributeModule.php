@@ -263,6 +263,23 @@ trait TAttributeModule_AnimationEvents {
 
 
 
+// Aspect ratio
+trait TAttributeModule_AspectRatio {
+
+	public function setPreserveAspectRatio($preserve) {
+		return $this->_setAttribute(
+			'preserveAspectRatio',
+			$this->_normalizeBoolean($preserve)
+		);
+	}
+
+	public function getPreserveAspectRatio() {
+		return $this->_getAttribute('preserveAspectRatio');
+	}
+}
+
+
+
 // Base profile
 trait TAttributeModule_BaseProfile {
 
@@ -676,9 +693,6 @@ trait TAttributeModule_Cursor {
 // Dimensions
 trait TAttributeModule_Dimension {
 
-	protected $_width;
-	protected $_height;
-
 	public function setDimensions($width, $height) {
 		return $this->setWidth($width)->setHeight($height);
 	}
@@ -702,7 +716,7 @@ trait TAttributeModule_Dimension {
 	}
 
 	public function getHeight() {
-		return $this->_height;
+		return $this->_getAttribute('height');
 	}
 }
 
@@ -1838,6 +1852,24 @@ trait TAttributeModule_Viewport {
 }
 
 
+
+// ViewBox
+trait TAttributeModule_ViewBox {
+
+	public function setViewBox($viewBox) {
+		return $this->_setAttribute(
+			'viewBox',
+			$this->_normalizeIdentifier($viewBox)
+		);
+	}	
+
+	public function getViewBox() {
+		return $this->_getAttribute('viewBox');
+	}
+}
+
+
+
 // XLink
 trait TAttributeModule_XLink {
 
@@ -1928,5 +1960,26 @@ trait TAttributeModule_XLink {
 
 	public function getLinkActuate() {
 		return $this->_getAttribute('xlink:actuate');
+	}
+}
+
+
+
+// Zoom and pan
+trait TAttributeModule_ZoomAndPan {
+
+	public function setZoomAndPan($zoomAndPan) {
+		return $this->_setAttribute(
+			'zoomAndPan',
+			$this->_normalizeKeyword(
+				$zoomAndPan,
+				['magnify', 'disable'],
+				'zoomAndPan'
+			)
+		);
+	}
+
+	public function getZoomAndPan() {
+		return $this->_getAttribute('zoomAndPan');
 	}
 }
