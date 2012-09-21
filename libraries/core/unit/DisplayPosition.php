@@ -120,10 +120,14 @@ class DisplayPosition implements IDisplayPosition, core\IDumpable {
     }
 
 	public function getX() {
-		$output = $this->_xAnchor;
-
 		if($this->_xOffset !== null) {
-			$output .= ' '.$this->_xOffset;
+			$output = $this->_xOffset;
+
+			if($this->_xAnchor !== 'left') {
+				$output = $this->_xAnchor.' '.$output;
+			}
+		} else {
+			$output = $this->_xAnchor;
 		}
 
 		return $output;
@@ -134,8 +138,11 @@ class DisplayPosition implements IDisplayPosition, core\IDumpable {
 
 		switch($anchor) {
 			case 'left':
-			case 'center':
 			case 'right':
+				break;
+
+			case 'center':
+				$this->_xOffset = null;
 				break;
 
 			default:
@@ -181,10 +188,14 @@ class DisplayPosition implements IDisplayPosition, core\IDumpable {
 	}
 
 	public function getY() {
-		$output = $this->_yAnchor;
-
 		if($this->_yOffset !== null) {
-			$output .= ' '.$this->_yOffset;
+			$output = $this->_yOffset;
+
+			if($this->_yAnchor !== 'top') {
+				$output = $this->_yAnchor.' '.$output;
+			}
+		} else {
+			$output = $this->_yAnchor;
 		}
 
 		return $output;
@@ -196,7 +207,10 @@ class DisplayPosition implements IDisplayPosition, core\IDumpable {
 		switch($anchor) {
 			case 'top':
 			case 'bottom':
+				break;
+
 			case 'center':
+				$this->_yOffset = null;
 				break;
 
 			default:
@@ -226,11 +240,17 @@ class DisplayPosition implements IDisplayPosition, core\IDumpable {
 	}
 
 	public function toString() {
-		return $this->getX().' '.$this->getY();
+		$output = $this->getX().' '.$this->getY();
+
+		if($output == 'center center') {
+			$output = 'center';
+		}
+
+		return $output;
 	}
 
 	public function toCssString() {
-		return $this->getX().' '.$this->getY();
+		return $this->toString();
 	}
 
 	public function isRelative() {
