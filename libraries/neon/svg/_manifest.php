@@ -19,34 +19,6 @@ interface IElement {
 	public function getName();
 }
 
-trait TElement {
-
-	protected $_attributes = array();
-
-	public function getName() {
-		$parts = explode('\\', get_class($this));
-		return array_pop($parts);
-	}
-
-	protected function _setAttribute($name, $value) {
-		if($value === null) {
-			unset($this->_attributes[$name]);
-		} else {
-			$this->_attributes[$name] = $value;
-		}
-
-		return $this;
-	}
-
-	protected function _getAttribute($name, $default=null) {
-		if(isset($this->_attributes[$name])) {
-			return $this->_attributes[$name];
-		}
-
-		return $default;
-	}
-}
-
 
 // Attribute modules
 interface IAnimationEventAttributeModule {
@@ -58,6 +30,11 @@ interface IAnimationEventAttributeModule {
 	public function getOnRepeatScript();
 	public function setOnLoadScript($script);
 	public function getOnLoadScript();
+}
+
+interface IBaseProfileAttributeModule {
+	public function setBaseProfile($profile);
+	public function getBaseProfile();
 }
 
 interface IBasicGraphicsAttributeModule {
@@ -127,6 +104,14 @@ interface ICoreAttributeModule {
 interface ICursorAttributeModule {
 	public function setCursor($cursor);
 	public function getCursor();
+}
+
+interface IDimensionAttributeModule {
+	public function setDimensions($width, $height);
+	public function setWidth($width);
+	public function getWidth();
+	public function setHeight($height);
+	public function getHeight();
 }
 
 interface IDocumentEventsAttributeModule {
@@ -256,6 +241,37 @@ interface IPaintOpacityAttributeModule {
 	public function getFillOpacity();
 }
 
+interface IPathDataAttributeModule {
+	public function setCommands($commands);
+	public function getCommands();
+}
+
+interface IPointDataAttributeModule {
+	public function setPoints($points);
+	public function getPoints();
+}
+
+interface IPositionAttributeModule {
+	public function setPosition($x, $y=null);
+	public function setXPosition($x);
+	public function getXPosition();
+	public function setYPosition($y);
+	public function getYPosition();
+}
+
+interface IRadiusAttributeModule {
+	public function setRadius($radius);
+	public function getRadius();
+}
+
+interface I2DRadiusAttributeModule {
+	public function setRadius($radius);
+	public function setXRadius($radius);
+	public function getXRadius();
+	public function setYRadius($radius);
+	public function getYRadius();
+}
+
 interface IStyleAttributeModule {
 	public function setClass($class);
 	public function getClass();
@@ -326,9 +342,11 @@ interface IXLinkAttributeModule {
 
 
 // Document
-interface IDocument extends IElement {
-
-}
+interface IDocument extends 
+	IElement,
+	IBaseProfileAttributeModule,
+	ITextContentAttributeModule
+	{}
 
 
 // Shapes
@@ -357,53 +375,17 @@ interface IShape extends
 	IViewportAttributeModule
 	{}
 
-interface IPrimitiveShape extends IShape {
-	public function setPosition($position, $yPosition=null);
-	public function getPosition();
-}
-
-interface IPointDataShape extends IShape {
-	public function setPoints($points);
-	public function getPoints();
-}
-
-interface IRadiusAwareShape extends IShape {
-	public function setRadius($radius);
-	public function getRadius();
-}
-
-interface I2DRadiusAwareShape {
-	public function setRadius($radius);
-	public function setXRadius($radius);
-	public function getXRadius();
-	public function setYRadius($radius);
-	public function getYRadius();
-}
-
-
-interface IDimensionAwareShape extends IShape {
-	public function setDimensions($width, $height);
-	public function setWidth($width);
-	public function getWidth();
-	public function setHeight($height);
-	public function getHeight();
-}
-
-interface IUrlAwareShape extends IShape {
-	public function setUrl($url);
-	public function getUrl();
-}
 
 
 
-
-interface ICircle extends IPrimitiveShape, IRadiusAwareShape {}
-interface IEllipse extends IPrimitiveShape, I2DRadiusAwareShape {}
-interface IImage extends IPrimitiveShape, IDimensionAwareShape, IUrlAwareShape {}
-interface ILine extends IPointDataShape {}
-interface IPolygon extends IPointDataShape {}
-interface IPolyline extends IPointDataShape {}
-interface IRectangle extends IPrimitiveShape, IDimensionAwareShape {}
+interface ICircle extends IShape, IPositionAttributeModule, IRadiusAttributeModule {}
+interface IEllipse extends IShape, IPositionAttributeModule, I2DRadiusAttributeModule {}
+interface IImage extends IShape, IPositionAttributeModule, IDimensionAttributeModule, IXLinkAttributeModule {}
+interface ILine extends IShape, IPointDataAttributeModule {}
+interface IPath extends IShape, IPathDataAttributeModule {}
+interface IPolygon extends IShape, IPointDataAttributeModule {}
+interface IPolyline extends IShape, IPointDataAttributeModule {}
+interface IRectangle extends IShape, IPositionAttributeModule, IDimensionAttributeModule {}
 
 
 
@@ -414,6 +396,72 @@ interface IFilter extends IElement {
 
 
 // Commands
-interface ICommand {
-
+interface ICommand extends core\IStringProvider {
+	public function isRelative($flag=null);
+	public function isAbsolute($flag=null);
 }
+
+interface IXPositionAwareCommand extends ICommand {
+	public function setX($x);
+	public function getX();
+}
+
+interface IYPositionAwareCommand extends ICommand {
+	public function setY($y);
+	public function getY();
+}
+
+interface IPositionAwareCommand extends IXPositionAwareCommand, IYPositionAwareCommand {
+	public function setPosition($x, $y);
+}
+
+interface IRadiusAwareCommand extends ICommand {
+	public function setRadius($xRadius, $yRadius=null);
+	public function setXRadius($radius);
+	public function getXRadius();
+	public function setYRadius($radius);
+	public function getYRadius();
+}
+
+interface IControlPointCommand extends ICommand {
+	public function setControl($x, $y);
+	public function setControlX($x);
+	public function getControlX();
+	public function setControlY($y);
+	public function getControlY();
+}
+
+interface I2ControlPointCommand extends ICommand {
+	public function setControl1($x, $y);
+    public function setControl1X($x);
+	public function getControl1X();
+	public function setControl1Y($y);
+	public function getControl1Y();
+	public function setControl2($x, $y);
+	public function setControl2X($x);
+	public function getControl2X();
+	public function setControl2Y($y);
+	public function getControl2Y();
+}
+
+interface IRotationAwareCommand extends ICommand {
+	public function setAngle($angle);
+	public function getAngle();
+}
+
+
+
+interface IArcCommand extends ICommand, IRadiusAwareCommand, IRotationAwareCommand, IPositionAwareCommand {
+	public function isLargeArc($flag=null);
+	public function isSweep($flag=null);
+}
+
+interface IClosePathCommand extends ICommand {}
+interface ICubicCurveCommand extends ICommand, IPositionAwareCommand {}
+interface IHorizontalLineCommand extends ICommand, IXPositionAwareCommand {}
+interface ILineCommand extends ICommand, IPositionAwareCommand {}
+interface IMoveCommand extends ICommand, IPositionAwareCommand {}
+interface IQuadraticCurveCommand extends ICommand {}
+interface ISmoothCubicCurveCommand extends ICommand {}
+interface ISmoothQuadraticCurveCommand extends ICommand {}
+interface IVerticalLineCommand extends ICommand, IYPositionAwareCommand {}

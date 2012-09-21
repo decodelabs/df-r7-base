@@ -11,9 +11,10 @@ use df\neon;
     
 class Ellipse implements neon\svg\IEllipse, core\IDumpable {
 
-	use TShape;
-    use TShape_Primitive;
-    use TShape_2DRadiusAware;
+    use neon\svg\TAttributeModule;
+    use neon\svg\TAttributeModule_Shape;
+    use neon\svg\TAttributeModule_Position;
+    use neon\svg\TAttributeModule_2DRadius;
 
     public function __construct($xRadius, $yRadius, $position=null, $yPosition=null) {
     	$this->setXRadius($xRadius);
@@ -23,12 +24,6 @@ class Ellipse implements neon\svg\IEllipse, core\IDumpable {
 
 // Dump
 	public function getDumpProperties() {
-		return array_merge(
-            [
-    			'radius' => $this->_xRadius->toString().' x '.$this->_yRadius->toString(),
-				'position' => $this->_position->toString()
-		    ],
-            $this->_attributes
-        );
+		return $this->_attributes;
 	}
 }

@@ -12,6 +12,31 @@ use df\neon;
 
 trait TAttributeModule {
 
+	protected $_attributes = array();
+
+	public function getName() {
+		$parts = explode('\\', get_class($this));
+		return array_pop($parts);
+	}
+
+	protected function _setAttribute($name, $value) {
+		if($value === null) {
+			unset($this->_attributes[$name]);
+		} else {
+			$this->_attributes[$name] = $value;
+		}
+
+		return $this;
+	}
+
+	protected function _getAttribute($name, $default=null) {
+		if(isset($this->_attributes[$name])) {
+			return $this->_attributes[$name];
+		}
+
+		return $default;
+	}
+
 	protected function _normalizeKeyword($value, array $keywords, $attributeName) {
 		if(empty($value)) {
 			return null;
@@ -47,7 +72,7 @@ trait TAttributeModule {
 			}
 		}
 
-		return core\unit\DisplaySize::factory($value);
+		return core\unit\DisplaySize::factory($value, null, true);
 	}
 
 	protected function _normalizeKeywordOrAngle($value, array $keywords) {
@@ -238,6 +263,24 @@ trait TAttributeModule_AnimationEvents {
 
 
 
+// Base profile
+trait TAttributeModule_BaseProfile {
+
+	public function setBaseProfile($profile) {
+		return $this->_setAttribute(
+			'baseProfile', 
+			$this->_normalizeIdentifier($profile)
+		);
+	}
+
+	public function getBaseProfile() {
+		return $this->_getAttribute('baseProfile');
+	}
+}
+
+
+
+
 // Basic graphics
 trait TAttributeModule_BasicGraphics {
 
@@ -347,7 +390,7 @@ trait TAttributeModule_BasicPaint {
 		}
 
 		foreach($dash as $i => $part) {
-			$dash[$i] = core\unit\DisplaySize::factory(trim($part));
+			$dash[$i] = core\unit\DisplaySize::factory(trim($part), null, true);
 		}
 
 		return $this->_setAttribute('strokeDashArray', $dash);
@@ -625,6 +668,41 @@ trait TAttributeModule_Cursor {
 
 	public function getCursor() {
 		return $this->_getAttribute('cursor');
+	}
+}
+
+
+
+// Dimensions
+trait TAttributeModule_Dimension {
+
+	protected $_width;
+	protected $_height;
+
+	public function setDimensions($width, $height) {
+		return $this->setWidth($width)->setHeight($height);
+	}
+
+	public function setWidth($width) {
+		return $this->_setAttribute(
+			'width',
+			core\unit\DisplaySize::factory($width, null, true)
+		);
+	}
+
+	public function getWidth() {
+		return $this->_getAttribute('width');
+	}
+
+	public function setHeight($height) {
+		return $this->_setAttribute(
+			'height',
+			core\unit\DisplaySize::factory($height, null, true)
+		);
+	}
+
+	public function getHeight() {
+		return $this->_height;
 	}
 }
 
@@ -1263,6 +1341,215 @@ trait TAttributeModule_PaintOpacity {
 		return $this->_getAttribute('fill-opacity');
 	}
 }
+
+
+
+
+// Path data
+trait TAttributeModule_PathData {
+
+	protected $_commands = array();
+
+	public function setCommands($commands) {
+		$this->_commands = neon\svg\command\Base::listFactory($commands);
+
+		$this->_onSetCommands();
+		return $this;
+	}
+
+	public function getCommands() {
+		return $this->_commands;
+	}
+
+	protected function _onSetCommands() {
+		$output = '';
+
+		foreach($this->_commands as $command) {
+			$output .= $command->toString();
+		}
+
+		$this->_setAttribute('d', $output);
+	}
+}
+
+
+
+// Point data
+trait TAttributeModule_PointData {
+
+	protected $_points = array();
+
+	public function setPoints($points) {
+		if(is_string($points)) {
+			$points = explode(' ', $points);
+		}
+
+		if(!is_array($points)) {
+			$points = array($points);
+		}
+
+		if(count($points) < self::MIN_POINTS) {
+			throw new InvalidArgumentException(
+				$this->getName().' shape elements require at least '.self::MIN_POINTS.' points'
+			);
+		}
+
+		if(self::MAX_POINTS !== null && count($points) > self::MAX_POINTS) {
+			throw new InvalidArgumentException(
+				$this->getName().' shape elements require no more than '.self::MAX_POINTS.' points'
+			);
+		}
+
+		foreach($points as $i => $point) {
+			if(is_string($point)) {
+				if(false !== strpos($point, ',')) {
+					$point = explode(',', trim($point));
+				} else {
+					$point = core\unit\DisplayPosition::factory($point, null, true);
+				}
+			}
+
+			if(is_array($point)) {
+				$point = core\unit\DisplayPosition::factory(array_shift($point), array_shift($point), true);
+			}
+
+			if(!$point instanceof core\unit\IDisplayPosition) {
+				throw new InvalidArgumentException(
+					'Invalid point detected in '.$this->getName()
+				);
+			}
+
+			$points[$i] = $point;
+		}
+
+		$this->_points = $points;
+		$this->_onSetPoints();
+
+		return $this;
+	}
+
+	public function getPoints() {
+		return $this->_points;
+	}
+
+	protected function _onSetPoints() {
+		$output = array();
+
+		foreach($this->_points as $point) {
+			$output[] = $point->getX().','.$point->getY();
+		}
+
+		$this->_setAttribute('points', implode(' ', $output));
+	}
+}
+
+
+
+// Position
+trait TAttributeModule_Position {
+
+	protected $_position;
+
+	public function setPosition($xPosition, $yPosition=null) {
+		$this->_position = core\unit\DisplayPosition::factory($xPosition, $yPosition, true);
+		$this->_setAttribute('x', $this->_position->getX());
+		$this->_setAttribute('y', $this->_position->getY());
+
+		return $this;
+	}
+
+	public function setXPosition($x) {
+		$this->_position->setX($x);
+		return $this->_setAttribute('x', $this->_position->getX());
+	}
+
+	public function getXPosition() {
+		return $this->_getAttribute('x');
+	}
+
+	public function setYPosition($y) {
+		return $this->_setAttribute('y', $this->_position->getY());
+	}
+
+	public function getYPosition() {
+		return $this->_getAttribute('y');
+	}
+}
+
+
+
+// Radius
+trait TAttributeModule_Radius {
+
+	public function setRadius($radius) {
+		return $this->_setAttribute(
+			'r',
+			core\unit\DisplaySize::factory($radius, null, true)
+		);
+	}
+
+	public function getRadius() {
+		return $this->_getAttribute('r');
+	}
+}
+
+trait TAttributeModule_2DRadius {
+
+	public function setRadius($radius) {
+		return $this->setXRadius($radius)->setYRadius($radius);
+	}
+
+	public function setXRadius($radius) {
+		return $this->_setAttribute(
+			'rx',
+			core\unit\DisplaySize::factory($radius, null, true)
+		);
+	}
+
+	public function getXRadius() {
+		return $this->_getAttribute('rx');
+	}
+
+	public function setYRadius($radius) {
+		return $this->_setAttribute(
+			'ry',
+			core\unit\DisplaySize::factory($radius, null, true)
+		);
+	}
+
+	public function getYRadius() {
+		return $this->_getAttribute('ry');
+	}
+}
+
+
+
+// Shape
+trait TAttributeModule_Shape {
+	use neon\svg\TAttributeModule_Clip;
+	use neon\svg\TAttributeModule_Conditional;
+	use neon\svg\TAttributeModule_Container;
+	use neon\svg\TAttributeModule_Core;
+	use neon\svg\TAttributeModule_Cursor;
+	use neon\svg\TAttributeModule_ExternalResources;
+	use neon\svg\TAttributeModule_Filter;
+	use neon\svg\TAttributeModule_FilterColor;
+	use neon\svg\TAttributeModule_Flood;
+	use neon\svg\TAttributeModule_Font;
+	use neon\svg\TAttributeModule_Graphics;
+	use neon\svg\TAttributeModule_GraphicalElementEvents;
+	use neon\svg\TAttributeModule_Gradient;
+	use neon\svg\TAttributeModule_Marker;
+	use neon\svg\TAttributeModule_Mask;
+	use neon\svg\TAttributeModule_Paint;
+	use neon\svg\TAttributeModule_PaintOpacity;
+    use neon\svg\TAttributeModule_Style;
+    use neon\svg\TAttributeModule_Text;
+    use neon\svg\TAttributeModule_TextContent;
+    use neon\svg\TAttributeModule_Transform;
+    use neon\svg\TAttributeModule_Viewport;
+}
+
 
 
 // Style

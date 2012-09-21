@@ -11,9 +11,10 @@ use df\neon;
     
 class Rectangle implements neon\svg\IRectangle, core\IDumpable {
 
-    use TShape;
-    use TShape_Primitive;
-    use TShape_DimensionAware;
+    use neon\svg\TAttributeModule;
+    use neon\svg\TAttributeModule_Shape;
+    use neon\svg\TAttributeModule_Dimension;
+    use neon\svg\TAttributeModule_Position;
 
     public function __construct($width, $height, $position=null, $yPosition=null) {
     	$this->setDimensions($width, $height);
@@ -22,12 +23,6 @@ class Rectangle implements neon\svg\IRectangle, core\IDumpable {
 
 // Dump
 	public function getDumpProperties() {
-        return array_merge(
-            [
-                'dimensions' => $this->_width->toString().' x '.$this->_height->toString(),
-                'position' => $this->_position->toString()
-            ],
-            $this->_attributes
-        );
+        return $this->_attributes;
 	}
 }

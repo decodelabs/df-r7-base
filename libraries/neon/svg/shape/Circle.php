@@ -11,23 +11,18 @@ use df\neon;
     
 class Circle implements neon\svg\ICircle, core\IDumpable {
 
-    use TShape;    
-    use TShape_Primitive;
-    use TShape_RadiusAware;
+    use neon\svg\TAttributeModule;
+    use neon\svg\TAttributeModule_Shape;
+    use neon\svg\TAttributeModule_Position;
+    use neon\svg\TAttributeModule_Radius;
 
-    public function __construct($radius, $position=null, $yPosition=null) {
+    public function __construct($radius, $x, $y=null) {
     	$this->setRadius($radius);
-    	$this->setPosition($position, $yPosition);
+    	$this->setPosition($x, $y);
     }
 
 // Dump
 	public function getDumpProperties() {
-		return array_merge(
-            [
-    			'radius' => $this->_radius->toString(),
-    			'position' => $this->_position->toString()
-		    ],
-            $this->_attributes
-        );
+		return $this->_attributes;
 	}
 }

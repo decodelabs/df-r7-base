@@ -11,8 +11,9 @@ use df\neon;
     
 class Line implements neon\svg\ILine, core\IDumpable {
 
-    use TShape;
-    use TShape_PointData;
+    use neon\svg\TAttributeModule;
+    use neon\svg\TAttributeModule_Shape;
+    use neon\svg\TAttributeModule_PointData;
 
     const MIN_POINTS = 2;
     const MAX_POINTS = 2;
@@ -25,14 +26,15 @@ class Line implements neon\svg\ILine, core\IDumpable {
     	$this->setPoints($points);
     }
 
+    protected function _onSetPoints() {
+        $this->_setAttribute('x1', $this->_points[0]->getX());
+        $this->_setAttribute('y1', $this->_points[0]->getY());
+        $this->_setAttribute('x2', $this->_points[1]->getX());
+        $this->_setAttribute('y2', $this->_points[1]->getY());
+    }
+
 // Dump
     public function getDumpProperties() {
-        return array_merge(
-            [
-                'from' => $this->_points[0]->toString(),
-                'to' => $this->_points[1]->toString()
-            ],
-            $this->_attributes
-        );
+        return $this->_attributes;
     }
 }

@@ -9,10 +9,11 @@ use df;
 use df\core;
 use df\neon;
     
-class Polyline implements neon\svg\IPolyline {
+class Polyline implements neon\svg\IPolyline, core\IDumpable {
 
-    use TShape;
-    use TShape_PointData;
+    use neon\svg\TAttributeModule;
+    use neon\svg\TAttributeModule_Shape;
+    use neon\svg\TAttributeModule_PointData;
 
     const MIN_POINTS = 3;
     const MAX_POINTS = null;

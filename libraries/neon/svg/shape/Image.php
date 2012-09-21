@@ -11,26 +11,20 @@ use df\neon;
     
 class Image implements neon\svg\IImage, core\IDumpable {
 
-	use TShape;
-    use TShape_Primitive;
-    use TShape_UrlAware;
-    use TShape_DimensionAware;
+    use neon\svg\TAttributeModule;
+    use neon\svg\TAttributeModule_Shape;
+    use neon\svg\TAttributeModule_Dimension;
+    use neon\svg\TAttributeModule_Position;
+    use neon\svg\TAttributeModule_XLink;
 
-    public function __construct($url, $width, $height, $position=null, $yPosition=null) {
-    	$this->setUrl($url);
+    public function __construct($href, $width, $height, $position=null, $yPosition=null) {
+    	$this->setLinkHref($href);
     	$this->setDimensions($width, $height);
     	$this->setPosition($position, $yPosition);
     }
 
 // Dump
 	public function getDumpProperties() {
-		return array_merge(
-            [
-    			'url' => $this->_url,
-				'dimensions' => $this->_width->toString().' x '.$this->_height->toString(),
-				'position' => $this->_position->toString()
-		    ],
-            $this->_attributes
-        );
+		return $this->_attributes;
 	}
 }

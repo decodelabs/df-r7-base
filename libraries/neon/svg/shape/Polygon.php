@@ -11,8 +11,9 @@ use df\neon;
     
 class Polygon implements neon\svg\IPolygon, core\IDumpable {
 
-    use TShape;
-    use TShape_PointData;
+    use neon\svg\TAttributeModule;
+    use neon\svg\TAttributeModule_Shape;
+    use neon\svg\TAttributeModule_PointData;
 
     const MIN_POINTS = 3;
     const MAX_POINTS = null;
@@ -23,17 +24,6 @@ class Polygon implements neon\svg\IPolygon, core\IDumpable {
 
 // Dump
     public function getDumpProperties() {
-    	$points = array();
-
-    	foreach($this->_points as $point) {
-    		$points[] = $point->toString();
-    	}
-
-        return array_merge(
-            [
-                'points' => $points
-            ],
-            $this->_attributes
-        );
+    	return $this->_attributes;
     }
 }
