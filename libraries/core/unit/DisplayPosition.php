@@ -16,17 +16,23 @@ class DisplayPosition implements IDisplayPosition, core\IDumpable {
     protected $_xOffset;
     protected $_yAnchor = null;
     protected $_yOffset;
+    protected $_allowPlainNumbers = false;
 
-    public static function factory($position, $position2=null) {
+    public static function factory($position, $position2=null, $allowPlainNumbers=false) {
     	if($position instanceof IDisplayPosition) {
     		return $position;
     	}
 
-    	return new self($position, $position2);
+    	return new self($position, $position2, $allowPlainNumbers);
     }
 
-    public function __construct($position, $position2=null) {
+    public function __construct($position, $position2=null, $allowPlainNumbers=false) {
+    	$this->_allowPlainNumbers = (bool)$allowPlainNumbers;
     	$this->parse($position, $position2);
+    }
+
+    public function isEmpty() {
+    	return false;
     }
 
     public function parse($position, $position2=null) {
@@ -160,7 +166,7 @@ class DisplayPosition implements IDisplayPosition, core\IDumpable {
 
 	public function setXOffset($offset) {
 		if($offset !== null) {
-			$offset = DisplaySize::factory($offset);
+			$offset = DisplaySize::factory($offset, null, $this->_allowPlainNumbers);
 		}
 
 		$this->_xOffset = $offset;
@@ -228,7 +234,7 @@ class DisplayPosition implements IDisplayPosition, core\IDumpable {
 
 	public function setYOffset($offset) {
 		if($offset !== null) {
-			$offset = DisplaySize::factory($offset);
+			$offset = DisplaySize::factory($offset, null, $this->_allowPlainNumbers);
 		}
 
 		$this->_yOffset = $offset;
@@ -259,36 +265,100 @@ class DisplayPosition implements IDisplayPosition, core\IDumpable {
 
 	public function isAbsolute() {
 		return 
-		     $this->_xAnchor != 'left'
-		 ||  $this->_yAnchor != 'top'
-		 ||	($this->_xOffset && !$this->_xOffset->isAbsolute()) 
-		 || ($this->_yOffset && !$this->_yOffset->isAbsolute())
+	        $this->hasRelativeAnchor()
+		|| ($this->_xOffset && !$this->_xOffset->isAbsolute()) 
+	    || ($this->_yOffset && !$this->_yOffset->isAbsolute())
 		 ;
+	}
+
+	public function hasRelativeAnchor() {
+		return $this->hasRelativeXAnchor() || $this->hasRelativeYAnchor();
+	}
+
+	public function hasRelativeXAnchor() {
+		return $this->_xAnchor != 'left';
+	}
+
+	public function hasRelativeYAnchor() {
+		return $this->_yAnchor != 'top';
+	}
+
+	public function convertRelativeAnchors($width=null, $height=null) {
+		switch($this->_xAnchor) {
+			case 'center':
+				$this->setXOffset('50%');
+				break;
+
+			case 'right':
+				if(!$this->_xOffset || $this->_xOffset->isEmpty()) {
+					$this->setXOffset('100%');
+				} else {
+					$this->_xOffset = $this->_convertOppositeAnchorOffset($this->_xOffset);
+				}
+
+				break;
+		}
+
+		$this->_xAnchor = 'left';
+
+		switch($this->_yAnchor) {
+			case 'center':
+				$this->setYOffset('50%');
+				break;
+
+			case 'bottom':
+				if(!$this->_yOffset || $this->_yOffset->isEmpty()) {
+					$this->setYOffset('100%');
+				} else {
+					$this->_yOffset = $this->_convertOppositeAnchorOffset($this->_yOffset);
+				}
+
+				break;
+		}
+
+		$this->_yAnchor = 'top';
+
+		return $this;
+	}
+
+	protected function _convertOppositeAnchorOffset($offset, $parentDimension=null) {
+		if($offset->getUnit() == '%') {
+			$offset->setValue(100 + $offset->getValue());
+		} else if($offset->getUnit() == 'px' || $offset->getUnit() === null && $parentDimension !== null) {
+			$parentDimension = DisplaySize::factory($parentDimension, null, $this->_allowPlainNumbers);
+			$offset->setValue($offset->getValue() + $parentDimension->getValue());
+		} else {
+			throw new RuntimeException(
+				'Unable to convert relative anchor with current data'
+			);
+		}
+
+		return $offset;
 	}
 
 	public function extractAbsolute($width, $height, $compositeWidth=null, $compositeHeight=null) {
 		$output = clone $this;
 
-		$width = DisplaySize::factory($width);
-		$height = DisplaySize::factory($height);
+		$width = DisplaySize::factory($width, null, $this->_allowPlainNumbers);
+		$height = DisplaySize::factory($height, null, $this->_allowPlainNumbers);
 
 		if(!$output->_xOffset) {
-			$output->_xOffset = new DisplaySize('0px');
+			$output->_xOffset = new DisplaySize('0px', null, $this->_allowPlainNumbers);
 		}
 
 		if(!$output->_yOffset) {
-			$output->_yOffset = new DisplaySize('0px');
+			$output->_yOffset = new DisplaySize('0px', null, $this->_allowPlainNumbers);
 		}
 
 		$compositeXOffset = 0;
 		$compositeYOffset = 0;
 
 		if($compositeWidth !== null) {
-			$compositeWidth = DisplaySize::factory($compositeWidth);
+			$compositeWidth = DisplaySize::factory($compositeWidth, null, $this->_allowPlainNumbers);
 		}
 
 		if($compositeHeight !== null) {
-			$compositeHeight = DisplaySize::factory($compositeHeight);
+			$compositeHeight = DisplaySize::factory($compositeHeight, null, $this->_allowPlainNumbers);
 		}
 
 

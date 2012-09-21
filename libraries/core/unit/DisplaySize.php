@@ -22,12 +22,12 @@ class DisplaySize implements IDisplaySize, core\IDumpable {
     protected $_unit;
     protected $_dpi = 96;
 
-    public static function factory($value, $unit=null) {
+    public static function factory($value, $unit=null, $allowPlainNumbers=false) {
     	if($value instanceof IDisplaySize) {
     		return $value;
     	}
 
-    	return new self($value, $unit);
+    	return new self($value, $unit, $allowPlainNumbers);
     }
 
     public function isRelative() {
@@ -39,7 +39,7 @@ class DisplaySize implements IDisplaySize, core\IDumpable {
     }
 
     protected function _isAbsolute($unit) {
-        return in_array($unit, ['px', 'in', 'mm', 'cm', 'pt', 'pc']);
+        return in_array($unit, [null, 'px', 'in', 'mm', 'cm', 'pt', 'pc'], true);
     }
 
     public function setDPI($dpi) {
@@ -267,6 +267,14 @@ class DisplaySize implements IDisplaySize, core\IDumpable {
             throw new LogicException(
                 'Size values cannot be converted to relative units'
             );
+        }
+
+        if($inUnit === null) {
+            $inUnit = self::DEFAULT_UNIT;
+        }
+
+        if($outUnit === null) {
+            $outUnit = self::DEFAULT_UNIT;
         }
 
         if($inUnit == $outUnit) {

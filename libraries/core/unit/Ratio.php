@@ -29,6 +29,10 @@ class Ratio implements IRatio, core\IDumpable {
 		$this->parse($value, $denominator);
 	}
 
+	public function isEmpty() {
+		return false;
+	}
+
     public function parse($value, $denominator=null) {
     	if(false !== strpos($value, '/')) {
     		$parts = explode('/', $value, 2);

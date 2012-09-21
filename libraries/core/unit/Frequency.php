@@ -19,12 +19,12 @@ class Frequency implements IFrequency, core\IDumpable {
 	protected $_value;
 	protected $_unit;
 
-	public static function factory($value, $unit=null) {
+	public static function factory($value, $unit=null, $allowPlainNumbers=false) {
 		if($value instanceof IFrequency) {
 			return $value;
 		}
 
-		return new self($value, $unit);
+		return new self($value, $unit, $allowPlainNumbers);
 	}
 
     public function toCssString() {
@@ -72,6 +72,14 @@ class Frequency implements IFrequency, core\IDumpable {
 	}
 
 	protected function _convert($value, $inUnit, $outUnit) {
+		if($inUnit === null) {
+			$inUnit = self::DEFAULT_UNIT;
+		}
+
+		if($outUnit === null) {
+			$outUnit = self::DEFAULT_UNIT;
+		}
+		
 		if($inUnit == $outUnit) {
 			return $value;
 		}

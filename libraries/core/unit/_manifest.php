@@ -16,13 +16,17 @@ class LogicException extends \LogicException implements IException {}
 
 
 // Interfaces
+interface IUnit {
+
+}
+
 interface ICssCompatibleUnit {
 	public function toCssString();
 }
 
 
 interface ISingleValueUnit {
-	public function parse($angle, $unit=null);
+	public function parse($angle, $unit=null, $allowPlainNumbers=false);
 	public function setValue($value);
 	public function getValue();
 	public function setUnit($unit, $convertValue=true);
@@ -35,11 +39,11 @@ trait TSingleValueUnit {
 
 	//private static $_units = array();
 
-	public function __construct($value, $unit=null) {
-    	$this->parse($value, $unit);
+	public function __construct($value, $unit=null, $allowPlainNumbers=false) {
+    	$this->parse($value, $unit, $allowPlainNumbers);
     }
 
-    public function parse($value, $unit=null) {
+    public function parse($value, $unit=null, $allowPlainNumbers=false) {
     	if(preg_match('/^([0-9.\-+e]+)('.implode('|', self::$_units).')$/i', $value, $matches)) {
 			$value = $matches[1];
 			$unit = $matches[2];
@@ -47,7 +51,7 @@ trait TSingleValueUnit {
 
     	$this->setValue($value);
 
-    	if($this->_unit === null && $unit === null) {
+    	if($this->_unit === null && $unit === null && !$allowPlainNumbers) {
     		$unit = static::DEFAULT_UNIT;
     	}
 
@@ -56,6 +60,10 @@ trait TSingleValueUnit {
     	}
 
     	return $this;
+    }
+
+    public function isEmpty() {
+    	return $this->_value == 0;
     }
 
     public function setValue($value) {
@@ -110,7 +118,7 @@ trait TSingleValueUnit {
 }
 
 
-interface IAngle extends ICssCompatibleUnit, ISingleValueUnit, core\IStringProvider {
+interface IAngle extends IUnit, ICssCompatibleUnit, ISingleValueUnit, core\IStringProvider {
 	public function normalize();
 
 	public function setDegrees($degrees);
@@ -123,7 +131,7 @@ interface IAngle extends ICssCompatibleUnit, ISingleValueUnit, core\IStringProvi
 	public function getTurns();
 }
 
-interface IDisplaySize extends ICssCompatibleUnit, ISingleValueUnit, core\IStringProvider {
+interface IDisplaySize extends IUnit, ICssCompatibleUnit, ISingleValueUnit, core\IStringProvider {
 	public function isRelative();
 	public function isAbsolute();
 	public function setDPI($dpi);
@@ -158,7 +166,7 @@ interface IDisplaySize extends ICssCompatibleUnit, ISingleValueUnit, core\IStrin
 	public function extractAbsoluteFromViewport($width, $height);
 }
 
-interface IDisplayPosition extends ICssCompatibleUnit, core\IStringProvider {
+interface IDisplayPosition extends IUnit, ICssCompatibleUnit, core\IStringProvider {
 	public function parse($position, $position2=null);
 	public function setX($value);
 	public function getX();
@@ -174,10 +182,14 @@ interface IDisplayPosition extends ICssCompatibleUnit, core\IStringProvider {
 	public function getYOffset();
 	public function isRelative();
 	public function isAbsolute();
+	public function hasRelativeAnchor();
+	public function hasRelativeXAnchor();
+	public function hasRelativeYAnchor();
+	public function convertRelativeAnchors($width=null, $height=null);
 	public function extractAbsolute($width, $height, $compositeWidth=null, $compositeHeight=null);
 }
 
-interface IFrequency extends ICssCompatibleUnit, ISingleValueUnit, core\IStringProvider {
+interface IFrequency extends IUnit, ICssCompatibleUnit, ISingleValueUnit, core\IStringProvider {
 	public function setHz($hz);
 	public function getHz();
 	public function setKhz($khz);
@@ -190,7 +202,7 @@ interface IFrequency extends ICssCompatibleUnit, ISingleValueUnit, core\IStringP
 	public function getBpm();
 }
 
-interface IRatio extends ICssCompatibleUnit, core\IStringProvider {
+interface IRatio extends IUnit, ICssCompatibleUnit, core\IStringProvider {
 	public function parse($value, $denominator=null);
 	public function setFraction($numerator, $denominator);
 	public function getNumerator();
@@ -199,7 +211,7 @@ interface IRatio extends ICssCompatibleUnit, core\IStringProvider {
 	public function getFactor();
 }
 
-interface IResolution extends ICssCompatibleUnit, ISingleValueUnit, core\IStringProvider {
+interface IResolution extends IUnit, ICssCompatibleUnit, ISingleValueUnit, core\IStringProvider {
 	public function setDpi($dpi);
 	public function getDpi();
 	public function setDpcm($dpcm);
