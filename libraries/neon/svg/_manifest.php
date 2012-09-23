@@ -356,6 +356,84 @@ interface IZoomAndPanAttributeModule {
 }
 
 
+
+// Container
+interface IContainer {
+	public function setChildren(array $children);
+	public function addChildren(array $children);
+	public function addChild(IElement $element);
+	public function getChildren();
+	public function removeChild(IElement $element);
+	public function clearChildren();
+}
+
+
+trait TContainer {
+
+	protected $_children = array();
+
+	public function setChildren(array $children) {
+		$this->_chilren = array();
+		return $this->addChildren($children);
+	}
+
+	public function addChildren(array $children) {
+		foreach($children as $child) {
+			if(!$child instanceof IElement) {
+				throw new InvalidArgumentException(
+					'Invalid child element detected'
+				);
+			}
+
+			$this->addChild($child);
+		}
+
+		return $this;
+	}
+
+	public function addChild(IElement $element) {
+		if(!in_array($element, $this->_children, true)) {
+			$this->_children[] = $element;
+		}
+
+		return $this;
+	}
+
+	public function getChildren() {
+		return $this->_children;
+	}
+
+	public function removeChild(IElement $element) {
+		foreach($this->_children as $i => $child) {
+			if($element === $child) {
+				unset($this->_children[$i]);
+				break;
+			}
+		}
+
+		return $this;
+	}
+
+	public function clearChildren() {
+		$this->_children = array();
+		return $this;
+	}
+
+	public function getDumpProperties() {
+		if(empty($this->_children)) {
+			$output = $this->_attributes;
+		} else {
+			$output = [
+				'attributes' => $this->_attributes,
+				'children' => $this->_children
+			];
+		}
+
+		return $output;
+	}
+}
+
+
 // Document
 interface IDocument extends 
 	IElement,
@@ -364,6 +442,7 @@ interface IDocument extends
 	IClipAttributeModule,
 	ICoreAttributeModule,
 	IConditionalAttributeModule,
+	IContainer,
 	IContainerAttributeModule,
 	ICursorAttributeModule,
 	IDocumentEventsAttributeModule,
@@ -436,6 +515,7 @@ interface IPath extends IShape, IPathDataAttributeModule {}
 interface IPolygon extends IShape, IPointDataAttributeModule {}
 interface IPolyline extends IShape, IPointDataAttributeModule {}
 interface IRectangle extends IShape, IPositionAttributeModule, IDimensionAttributeModule {}
+interface IText extends IShape {}
 
 
 

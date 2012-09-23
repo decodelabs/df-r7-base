@@ -9,38 +9,18 @@ use df;
 use df\core;
 use df\neon;
     
-class Document implements IDocument {
+class Document implements IDocument, core\IDumpable {
 
+	use neon\svg\TContainer;
 	use neon\svg\TAttributeModule;
+	use neon\svg\TAttributeModule_Structure;
 	use neon\svg\TAttributeModule_AspectRatio;
 	use neon\svg\TAttributeModule_BaseProfile;
-	use neon\svg\TAttributeModule_Clip;
-	use neon\svg\TAttributeModule_Conditional;
-	use neon\svg\TAttributeModule_Container;
-	use neon\svg\TAttributeModule_Core;
-	use neon\svg\TAttributeModule_Cursor;
 	use neon\svg\TAttributeModule_Dimension;
 	use neon\svg\TAttributeModule_DocumentEvents;
-	use neon\svg\TAttributeModule_ExternalResources;
-	use neon\svg\TAttributeModule_Filter;
-	use neon\svg\TAttributeModule_FilterColor;
-	use neon\svg\TAttributeModule_Flood;
-	use neon\svg\TAttributeModule_Font;
-	use neon\svg\TAttributeModule_Gradient;
-	use neon\svg\TAttributeModule_Graphics;
-	use neon\svg\TAttributeModule_GraphicalElementEvents;
-	use neon\svg\TAttributeModule_Marker;
-	use neon\svg\TAttributeModule_Mask;
-	use neon\svg\TAttributeModule_Paint;
-	use neon\svg\TAttributeModule_PaintOpacity;
 	use neon\svg\TAttributeModule_Position;
-	use neon\svg\TAttributeModule_Style;
-	use neon\svg\TAttributeModule_Text;
-	use neon\svg\TAttributeModule_TextContent;
 	use neon\svg\TAttributeModule_ViewBox;
-	use neon\svg\TAttributeModule_Viewport;
 	use neon\svg\TAttributeModule_ZoomAndPan;
-
 
 	public function setContentScriptType($type) {
 		return $this->_setAttribute(

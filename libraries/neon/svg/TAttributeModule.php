@@ -1538,8 +1538,10 @@ trait TAttributeModule_2DRadius {
 
 
 
-// Shape
-trait TAttributeModule_Shape {
+
+
+// Structure
+trait TAttributeModule_Structure {
 	use neon\svg\TAttributeModule_Clip;
 	use neon\svg\TAttributeModule_Conditional;
 	use neon\svg\TAttributeModule_Container;
@@ -1550,20 +1552,26 @@ trait TAttributeModule_Shape {
 	use neon\svg\TAttributeModule_FilterColor;
 	use neon\svg\TAttributeModule_Flood;
 	use neon\svg\TAttributeModule_Font;
+	use neon\svg\TAttributeModule_Gradient;
 	use neon\svg\TAttributeModule_Graphics;
 	use neon\svg\TAttributeModule_GraphicalElementEvents;
-	use neon\svg\TAttributeModule_Gradient;
 	use neon\svg\TAttributeModule_Marker;
 	use neon\svg\TAttributeModule_Mask;
 	use neon\svg\TAttributeModule_Paint;
 	use neon\svg\TAttributeModule_PaintOpacity;
-    use neon\svg\TAttributeModule_Style;
-    use neon\svg\TAttributeModule_Text;
-    use neon\svg\TAttributeModule_TextContent;
-    use neon\svg\TAttributeModule_Transform;
-    use neon\svg\TAttributeModule_Viewport;
+	use neon\svg\TAttributeModule_Style;
+	use neon\svg\TAttributeModule_Text;
+	use neon\svg\TAttributeModule_TextContent;
+	use neon\svg\TAttributeModule_Viewport;
 }
 
+
+
+// Shape
+trait TAttributeModule_Shape {
+	use neon\svg\TAttributeModule_Structure;
+    use neon\svg\TAttributeModule_Transform;
+}
 
 
 // Style
