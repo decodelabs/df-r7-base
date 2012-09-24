@@ -48,7 +48,40 @@ trait TCustomContainerElement {
 	}
 
 	public function writeXml(IDocument $document, \XMLWriter $writer) {
-		core\stub($document, $writer);
+		$writer->startElement($this->getElementName());
+		$this->_writeAttributes($document, $writer);
+
+
+		// Description
+		if($this instanceof IDescriptionProvider) {
+			if($this->_title) {
+				$writer->writeElement('title', $this->_title);
+			}
+
+			if($this->_description) {
+				$writer->writeElement('desc', $this->_description);
+			}
+		}
+
+		// Metadata
+		if($this instanceof IMetadataProvider) {
+			if($this->_metadata) {
+				$writer->startElement('metadata');
+				$writer->writeRaw(rtrim($this->_metadata)."\n    ");
+				$writer->endElement();
+			}
+		}
+
+		foreach($this->_getCustomContainerChildren() as $child) {
+			$child->writeXml($document, $writer);
+		}
+
+		$writer->endElement();
+		return $this;
+	}
+
+	protected function _getCustomContainerChildren() {
+		return [];
 	}
 }
 
@@ -519,6 +552,8 @@ interface IDocument extends
 
 	public static function fromXmlString($xml);
 	public function toXml($embedded=false);
+
+	public function rasterize();
 }
 
 
@@ -743,6 +778,7 @@ interface IFontGlyph extends
 	public function getOrientation();
 	public function setUnicode($unicode);
 	public function getUnicode();
+	public function isMissing($flag=null);
 }
 
 

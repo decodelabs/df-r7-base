@@ -14,6 +14,7 @@ use df\neon;
 // Base
 class Shape implements core\IDumpable {
 
+    use TCustomContainerElement;
     use TStructure_Description;
     use TAttributeModule;
     use TAttributeModule_Shape;
@@ -114,6 +115,7 @@ class Shape implements core\IDumpable {
         return $output;
     }
 
+/*
     public function readXml(\XMLReader $reader) {
         if(!$reader->isEmptyElement) {
             while($reader->read()) {
@@ -133,10 +135,7 @@ class Shape implements core\IDumpable {
 
     public function writeXml(IDocument $document, \XMLWriter $writer) {
         $writer->startElement($this->getElementName());
-
-        foreach($this->prepareAttributes($document) as $key => $value) {
-            $writer->writeAttribute($key, $value);
-        }
+        $this->_writeAttributes($document, $writer);
 
         if($this->_title) {
             $writer->writeElement('title', $this->_title);
@@ -149,6 +148,7 @@ class Shape implements core\IDumpable {
         $writer->endElement();
         return $this;
     }
+    */
 
     public function getElementName() {
         return substr(strtolower($this->getName()), 6);

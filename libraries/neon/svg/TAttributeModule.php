@@ -338,6 +338,17 @@ trait TAttributeModule {
 		return $output;
 	}
 
+	protected function _writeAttributes(IDocument $document, \XMLWriter $writer) {
+		foreach($this->prepareAttributes($document) as $key => $value) {
+			if($key == 'unicode' || $key == 'unicode-range') {
+				$writer->startAttribute($key);
+				$writer->writeRaw($value);
+				$writer->endAttribute();
+			} else {
+				$writer->writeAttribute($key, $value);
+			}
+		}
+	}
 
 	protected function _setAttribute($name, $value) {
 		if($value === null) {
@@ -355,6 +366,14 @@ trait TAttributeModule {
 		}
 
 		return $default;
+	}
+
+	protected function _normalizeUnicode($value) {
+		if(empty($value)) {
+			return null;
+		}
+
+		return str_replace('&amp;#', '&#', $value);
 	}
 
 	protected function _normalizeKeyword($value, array $keywords, $attributeName) {

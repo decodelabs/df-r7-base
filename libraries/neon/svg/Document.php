@@ -74,7 +74,9 @@ class Document implements IDocument, core\IDumpable {
 
 	public static function fromXmlString($xml) {
 		$reader = new \XMLReader();
+		$xml = str_replace('&#', '&amp;#', $xml);
 		$reader->xml($xml);
+		$reader->setParserProperty(\XMLReader::SUBST_ENTITIES, false);
 
 		while($reader->nodeType !== 1) {
 			$reader->read();
@@ -104,5 +106,18 @@ class Document implements IDocument, core\IDumpable {
 	 	}
 	 	
 	 	return $writer->outputMemory();
+	}
+
+	public function rasterize() {
+		$xml = $this->toXml();
+		$class = neon\raster\Image::getDefaultDriverClass();
+
+		if(!$class::canRead('SVG')) {
+			throw new RuntimeException(
+				'Current raster driver cannot read SVG format images - you should probably install ImageMagick'
+			);
+		}
+
+		return neon\raster\Image::loadString($xml);
 	}
 }

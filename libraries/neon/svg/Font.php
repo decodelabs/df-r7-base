@@ -25,6 +25,10 @@ class Font implements IFont, core\IDumpable {
 	protected $_glyphs = array();
 
 	public function setMissingGlyph(IFontGlyph $glyph=null) {
+		if($glyph) {
+			$glyph->isMissing(true);
+		}
+
 		$this->_missingGlyph = $glyph;
 		return $this;
 	}
@@ -77,6 +81,20 @@ class Font implements IFont, core\IDumpable {
 		return $this;
 	}
 
+	protected function _getCustomContainerChildren() {
+		$output = array();
+
+		if($this->_fontFace) {
+			$output[] = $this->_fontFace;
+		}
+
+		if($this->_missingGlyph) {
+			$output[] = $this->_missingGlyph;
+		}
+
+		return array_merge($output, $this->_glyphs);
+	}
+
 // Dump
 	public function getDumpProperties() {
 		$output = $this->_attributes;
@@ -109,6 +127,10 @@ class Font_Face implements IFontFace, core\IDumpable {
 	use TAttributeModule_Font;
 
 	protected $_sources = array();
+
+	public function getElementName() {
+		return 'font-face';
+	}
 
 	public function setAccentHeight($height) {
 		return $this->_setAttribute(
@@ -451,6 +473,10 @@ class Font_Face implements IFontFace, core\IDumpable {
 		return $this;
 	}
 
+	protected function _getCustomContainerChildren() {
+		return $this->_sources;
+	}
+
 // Dump
 	public function getDumpProperties() {
 		$output = $this->_attributes;
@@ -488,6 +514,10 @@ class Font_FaceSource implements IFontFaceSource, core\IDumpable {
 		}
 	}
 
+	public function getElementName() {
+		return 'font-face-src';
+	}
+
 	public function setUri($uri) {
 		if($uri !== null) {
 			$uri = (new Font_FaceUri())->setLinkHref($uri);
@@ -520,6 +550,20 @@ class Font_FaceSource implements IFontFaceSource, core\IDumpable {
 
 	public function getName() {
 		return $this->_name;
+	}
+
+	protected function _getCustomContainerChildren() {
+		$output = array();
+
+		if($this->_uri) {
+			$output[] = $this->_uri;
+		}
+
+		if($this->_name) {
+			$output[] = $this->_name;
+		}
+
+		return $output;
 	}
 
 // Dump
@@ -558,6 +602,10 @@ class Font_FaceUri implements IFontFaceUri, core\IDumpable {
 		}
 	}
 
+	public function getElementName() {
+		return 'font-face-uri';
+	}
+
 	public function setFormat($string) {
 		if($string !== null) {
 			$string = (new Font_FaceFormat())->setString($string);
@@ -573,6 +621,16 @@ class Font_FaceUri implements IFontFaceUri, core\IDumpable {
 
 	public function getFormat() {
 		return $this->_format;
+	}
+
+	protected function _getCustomContainerChildren() {
+		$output = array();
+
+		if($this->_format) {
+			$output[] = $this->_format;
+		}
+
+		return $output;
 	}
 
 // Dump
@@ -603,6 +661,10 @@ class Font_FaceFormat implements IFontFaceFormat, core\IDumpable {
 		}
 	}
 
+	public function getElementName() {
+		return 'font-face-format';
+	}
+
 	public function setString($string) {
 		return $this->_setAttribute(
 			'string',
@@ -631,6 +693,10 @@ class Font_FaceName implements IFontFaceName, core\IDumpable {
 
 	public function __construct($name=null) {
 		$this->setName($name);
+	}
+
+	public function getElementName() {
+		return 'font-face-name';
 	}
 
 	public function setName($name) {
@@ -679,6 +745,12 @@ class Font_Glyph implements IFontGlyph, core\IDumpable {
 	use TAttributeModule_Text;
 	use TAttributeModule_TextContent;
 	use TAttributeModule_Viewport;
+
+	protected $_isMissing = false;
+
+	public function getElementName() {
+		return $this->_isMissing ? 'missing-glyph' : 'glyph';
+	}
 
 	public function setArabicForm($form) {
 		return $this->_setAttribute(
@@ -735,12 +807,21 @@ class Font_Glyph implements IFontGlyph, core\IDumpable {
 	public function setUnicode($unicode) {
 		return $this->_setAttribute(
 			'unicode',
-			$this->_normalizeIdentifier($unicode)
+			$this->_normalizeUnicode($unicode)
 		);
 	}
 
 	public function getUnicode() {
 		return $this->_getAttribute('unicode');
+	}
+
+	public function isMissing($flag=null) {
+		if($flag !== null) {
+			$this->_isMissing = (bool)$flag;
+			return $this;
+		}
+
+		return $this->_isMissing;
 	}
 
 // Dump
