@@ -19,6 +19,252 @@ trait TAttributeModule {
 		return array_pop($parts);
 	}
 
+	public function getElementName() {
+		return strtolower($this->getName());
+	}
+
+	public function prepareAttributes(IDocument $document) {
+		if(isset($this->_position)) {
+			$this->_position->convertRelativeAnchors($document->getWidth(), $document->getHeight());
+		}
+
+		if(isset($this->_points)) {
+			foreach($this->_points as $point) {
+				$point->convertRelativeAnchors($document->getWidth(), $document->getHeight());
+			}
+
+			$this->_onSetPoints();
+		}
+
+		$output = $this->_attributes;
+
+		if(null !== ($extra = $this->_getExtraAttributes())) {
+			$output = array_merge($output, $extra);
+		}
+
+		foreach($this->_attributes as $key => $value) {
+			$output[$key] = (string)$value;
+		}
+
+		return $output;
+	}
+
+	protected function _getExtraAttributes() {
+		return null;
+	}
+
+	protected static function _extractInputAttribute(array $attributes, $name, $default=null) {
+        if(isset($attributes[$name])) {
+            $output = $attributes[$name];
+            unset($attributes[$name]);
+            return $output;
+        } else {
+            return $default;
+        }
+    }
+
+    public function applyInputAttributes(array $attributes) {
+    	foreach($attributes as $key => $value) {
+    		$func = 'set'.str_replace(' ', '', ucwords(str_replace('-', ' ', $key)));
+
+    		if(method_exists($this, $func)) {
+    			$this->{$func}($value);
+    		} else {
+    			$this->_attributes[$key] = $value;
+    		}
+    	}
+    }
+
+	protected static function _xmlToObject(\XMLReader $reader, IElement $parent=null) {
+		$isOpen = !$reader->isEmptyElement;
+		$attributes = array();
+		$output = null;
+
+		if($reader->hasAttributes) {
+			while($reader->moveToNextAttribute()) {
+				$attributes[$reader->name] = $reader->value;
+			}
+
+			$reader->moveToElement();
+		}
+
+		$tagName = $reader->name;
+
+		switch($tagName) {
+
+			// Structure
+			case 'svg':
+				$output = new Document();
+				break;
+
+			case 'g':
+				$output = new Group();
+				break;
+
+			// Shape
+			case 'circle':
+			case 'ellipse':
+			case 'image':
+			case 'line':
+			case 'path':
+			case 'polygon':
+			case 'polyline':
+			case 'rect':
+				$output = Shape::fromAttributes($reader->name, $attributes);
+				break;
+
+
+			// Description
+			case 'title':
+				if($parent instanceof IDescriptionProvider) {
+					$parent->setTitle($reader->readString());
+				}
+
+				break;
+
+			case 'desc':
+				if($parent instanceof IDescriptionProvider) {
+					$parent->setDescription($reader->readString());
+				}
+
+				break;
+
+
+			// Metadata
+			case 'metadata':
+				if($parent instanceof IMetadataProvider) {
+					$parent->setMetadata($reader->readInnerXML());
+				}
+
+				break;
+
+
+			// Definitions
+			case 'defs':
+				$output = new Definitions();
+				break;
+
+
+			// Filter
+			case 'feBlend':
+			case 'feColorMatrix':
+			case 'feComponentTransfer':
+			case 'feComposite':
+			case 'feConvolveMatrix':
+			case 'feDiffuseLighting':
+			case 'feDisplacementMap':
+			case 'feDistantLight':
+			case 'feFlood':
+			case 'feFuncA':
+			case 'feFuncB':
+			case 'feFuncG':
+			case 'feFuncR':
+			case 'feGaussianBlur':
+			case 'feImage':
+			case 'feMerge':
+			case 'feMergeNode':
+			case 'feMorphology':
+			case 'feOffset':
+			case 'fePointLight':
+			case 'feSpecularLighting':
+			case 'feSpotLight':
+			case 'feTile':
+			case 'feTurbulence':
+
+
+			case 'a':
+			case 'altGlyph':
+			case 'altGlyphDef':
+			case 'altGlyphItem':
+			case 'animate':
+			case 'animateColor':
+			case 'animateMotion':
+			case 'animateTransform':
+			case 'clipPath':
+			case 'color-profile':
+			case 'cursor':
+			case 'filter':
+			case 'font':
+			case 'font-face':
+			case 'font-face-format':
+			case 'font-face-name':
+			case 'font-face-src':
+			case 'font-face-uri':
+			case 'foreignObject':
+			case 'glyph':
+			case 'glyphRef':
+			case 'hkern':
+			case 'linearGradient':
+			case 'marker':
+			case 'mask':
+			case 'missing-glyph':
+			case 'mpath':
+			case 'pattern':
+			case 'radialGradient':
+			case 'script':
+			case 'set':
+			case 'stop':
+			case 'style':
+			case 'switch':
+			case 'symbol':
+			case 'text':
+			case 'textPath':
+			case 'tref':
+			case 'tspan':
+			case 'use':
+			case 'view':
+			case 'vkern':
+			default:
+				throw new RuntimeException(
+					'Cannot parse SVG XML - don\'t know what to do with a '.$reader->name.' element yet!'
+				);
+		}
+
+		if($output) {
+			$output->applyInputAttributes($attributes);
+			$output->readXml($reader);
+		}
+
+		if($isOpen) {
+			$reader->next();
+		}
+
+		return $output;
+	}
+
+
+	public function getGraphicalAttributes() {
+		$attr = [
+			'alignment-baseline', 'baseline-shift', 'clip', 'clip-path', 'clip-rule', 'color', 'color-interpolation', 
+			'color-interpolation-filters', 'color-profile', 'color-rendering', 'cursor', 'direction', 'display', 
+			'dominant-baseline', 'enable-background', 'externalResourcesRequired', 'fill', 'fill-opacity', 'fill-rule', 
+			'filter', 'flood-color', 'flood-opacity', 'font-family', 'font-size', 'font-size-adjust', 'font-stretch', 
+			'font-style', 'font-variant', 'font-weight', 'glyph-orientation-horizontal', 'glyph-orientation-vertical', 
+			'image-rendering', 'kerning', 'letter-spacing', 'lighting-color', 'marker-end', 'marker-mid', 'marker-start', 
+			'mask', 'onactivate', 'onclick', 'onfocusin', 'onfocusout', 'onload', 'onmousedown', 'onmousemove', 
+			'onmouseout', 'onmouseover', 'onmouseup', 'opacity', 'overflow', 'pointer-events', 'requiredExtensions', 
+			'requiredFeatures', 'shape-rendering', 'stop-color', 'stop-opacity', 'stroke', 'stroke-dasharray', 
+			'stroke-dashoffset', 'stroke-linecap', 'stroke-linejoin', 'stroke-miterlimit', 'stroke-opacity', 'stroke-width', 
+			'style', 'systemLanguage', 'text-anchor', 'text-decoration', 'text-rendering', 'unicode-bidi', 'visibility', 
+			'word-spacing', 'writing-mode'
+		];
+
+		$output = array();
+
+		foreach($this->_attributes as $key => $value) {
+			if(in_array($key, $attr)) {
+				if(is_object($value)) {
+					$value = clone $value;
+				}
+
+				$output[$key] = $value;
+			}
+		}
+
+		return $output;
+	}
+
+
 	protected function _setAttribute($name, $value) {
 		if($value === null) {
 			unset($this->_attributes[$name]);
@@ -146,12 +392,12 @@ trait TAttributeModule {
 			return $color;
 		}
 
-		if($fill == 'currentcolor') {
+		if($color == 'currentcolor') {
 			return 'currentColor';
 		}
 
 		try {
-			return neon\Color::factory($fill);
+			return neon\Color::factory($color);
 		} catch(neon\InvalidArgumentException $e) {}
 
 		return (string)$orig;
@@ -1395,6 +1641,7 @@ trait TAttributeModule_PointData {
 
 	public function setPoints($points) {
 		if(is_string($points)) {
+			$points = str_replace(',', ' ', $points);
 			$points = explode(' ', $points);
 		}
 
@@ -1402,24 +1649,20 @@ trait TAttributeModule_PointData {
 			$points = array($points);
 		}
 
-		if(count($points) < self::MIN_POINTS) {
-			throw new InvalidArgumentException(
-				$this->getName().' shape elements require at least '.self::MIN_POINTS.' points'
-			);
-		}
+		$this->_points = array();
 
-		if(self::MAX_POINTS !== null && count($points) > self::MAX_POINTS) {
-			throw new InvalidArgumentException(
-				$this->getName().' shape elements require no more than '.self::MAX_POINTS.' points'
-			);
-		}
+		while(!empty($points)) {
+			$point = array_shift($points);
 
-		foreach($points as $i => $point) {
-			if(is_string($point)) {
+			if(is_scalar($point)) {
 				if(false !== strpos($point, ',')) {
 					$point = explode(',', trim($point));
 				} else {
-					$point = core\unit\DisplayPosition::factory($point, null, true);
+					if(isset($points[0]) && false === strpos($points[0], ',')) {
+						$point = [$point, array_shift($points)];
+					} else {
+						$point = [$point, null];
+					}
 				}
 			}
 
@@ -1433,10 +1676,21 @@ trait TAttributeModule_PointData {
 				);
 			}
 
-			$points[$i] = $point;
+			$this->_points[] = $point;
 		}
 
-		$this->_points = $points;
+		if(count($this->_points) < self::MIN_POINTS) {
+			throw new InvalidArgumentException(
+				$this->getName().' shape elements require at least '.self::MIN_POINTS.' points'
+			);
+		}
+
+		if(self::MAX_POINTS !== null && count($this->_points) > self::MAX_POINTS) {
+			throw new InvalidArgumentException(
+				$this->getName().' shape elements require no more than '.self::MAX_POINTS.' points'
+			);
+		}
+
 		$this->_onSetPoints();
 
 		return $this;
@@ -1466,27 +1720,35 @@ trait TAttributeModule_Position {
 
 	public function setPosition($xPosition, $yPosition=null) {
 		$this->_position = core\unit\DisplayPosition::factory($xPosition, $yPosition, true);
-		$this->_setAttribute('x', $this->_position->getX());
-		$this->_setAttribute('y', $this->_position->getY());
+		$this->_setAttribute($this->_getXPositionAttributeName(), $this->_position->getX());
+		$this->_setAttribute($this->_getYPositionAttributeName(), $this->_position->getY());
 
 		return $this;
 	}
 
 	public function setXPosition($x) {
 		$this->_position->setX($x);
-		return $this->_setAttribute('x', $this->_position->getX());
+		return $this->_setAttribute($this->_getXPositionAttributeName(), $this->_position->getX());
 	}
 
 	public function getXPosition() {
-		return $this->_getAttribute('x');
+		return $this->_getAttribute($this->_getXPositionAttributeName());
 	}
 
 	public function setYPosition($y) {
-		return $this->_setAttribute('y', $this->_position->getY());
+		return $this->_setAttribute($this->_getYPositionAttributeName(), $this->_position->getY());
 	}
 
 	public function getYPosition() {
-		return $this->_getAttribute('y');
+		return $this->_getAttribute($this->_getYPositionAttributeName());
+	}
+
+	protected function _getXPositionAttributeName() {
+		return 'x';
+	}
+
+	protected function _getYPositionAttributeName() {
+		return 'y';
 	}
 }
 

@@ -17,6 +17,11 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 // Interfaces
 interface IElement {
 	public function getName();
+	public function getElementName();
+	public function prepareAttributes(IDocument $document);
+
+	public function readXml(\XMLReader $reader);
+	public function writeXml(IDocument $document, \XMLWriter $writer);
 }
 
 
@@ -357,8 +362,24 @@ interface IZoomAndPanAttributeModule {
 
 
 
+// Description
+interface IDescriptionProvider {
+	public function setTitle($title);
+	public function getTitle();
+	public function setDescription($description);
+	public function getDescription();
+}
+
+
+// Metadata
+interface IMetadataProvider {
+	public function setMetadata($metadata);
+	public function getMetadata();		
+}
+
+
 // Container
-interface IContainer {
+interface IContainer extends IDescriptionProvider {
 	public function setChildren(array $children);
 	public function addChildren(array $children);
 	public function addChild(IElement $element);
@@ -368,118 +389,9 @@ interface IContainer {
 }
 
 
-trait TContainer {
 
-	protected $_children = array();
-
-	public function setChildren(array $children) {
-		$this->_chilren = array();
-		return $this->addChildren($children);
-	}
-
-	public function addChildren(array $children) {
-		foreach($children as $child) {
-			if(!$child instanceof IElement) {
-				throw new InvalidArgumentException(
-					'Invalid child element detected'
-				);
-			}
-
-			$this->addChild($child);
-		}
-
-		return $this;
-	}
-
-	public function addChild(IElement $element) {
-		if(!in_array($element, $this->_children, true)) {
-			$this->_children[] = $element;
-		}
-
-		return $this;
-	}
-
-	public function getChildren() {
-		return $this->_children;
-	}
-
-	public function removeChild(IElement $element) {
-		foreach($this->_children as $i => $child) {
-			if($element === $child) {
-				unset($this->_children[$i]);
-				break;
-			}
-		}
-
-		return $this;
-	}
-
-	public function clearChildren() {
-		$this->_children = array();
-		return $this;
-	}
-
-	public function getDumpProperties() {
-		if(empty($this->_children)) {
-			$output = $this->_attributes;
-		} else {
-			$output = [
-				'attributes' => $this->_attributes,
-				'children' => $this->_children
-			];
-		}
-
-		return $output;
-	}
-}
-
-
-// Document
-interface IDocument extends 
-	IElement,
-	IAspectRatioAttributeModule,
-	IBaseProfileAttributeModule,
-	IClipAttributeModule,
-	ICoreAttributeModule,
-	IConditionalAttributeModule,
-	IContainer,
-	IContainerAttributeModule,
-	ICursorAttributeModule,
-	IDocumentEventsAttributeModule,
-	IDimensionAttributeModule,
-	IExternalResourcesAttributeModule,
-	IFilterAttributeModule,
-	IFilterColorAttributeModule,
-	IFloodAttributeModule,
-	IFontAttributeModule,
-	IGradientAttributeModule,
-	IGraphicsAttributeModule,
-	IGraphicalElementEventsAttributeModule,
-	IMarkerAttributeModule,
-	IMaskAttributeModule,
-	IPaintAttributeModule,
-	IPaintOpacityAttributeModule,
-	IPositionAttributeModule,
-	IStyleAttributeModule,
-	ITextAttributeModule,
-	ITextContentAttributeModule,
-	IViewBoxAttributeModule,
-	IViewportAttributeModule,
-	IZoomAndPanAttributeModule
-	{
-
-	public function setContentScriptType($type);
-	public function getContentScriptType();
-	public function setContentStyleType($type);
-	public function getContentStyleType();	
-
-	public function setVersion($version);
-	public function getVersion();	
-}
-
-
-// Shapes
-interface IShape extends 
+// Structure
+interface IStructure extends
 	IElement, 
 	IClipAttributeModule,
 	IConditionalAttributeModule,
@@ -500,8 +412,73 @@ interface IShape extends
 	IStyleAttributeModule,
 	ITextAttributeModule,
 	ITextContentAttributeModule,
-	ITransformAttributeModule,
 	IViewportAttributeModule
+	{}
+
+
+// Definitions
+interface IDefinitionProvider {
+	public function getDefinitionsElement();
+	public function setDefinitions(array $defs);
+	public function addDefinitions(array $defs);
+	public function addDefinition(IElement $element);
+	public function getDefinitions();
+	public function removeDefinition(IElement $element);
+	public function clearDefinitions();
+}
+
+interface IDefinitionsContainer extends 
+	IDefinitionProvider,
+	IContainer,
+	IStructure,
+	IMetadataProvider 
+	{}
+
+
+// Document
+interface IDocument extends 
+	IContainer,
+	IStructure,
+	IMetadataProvider,
+	IDefinitionProvider,
+	IAspectRatioAttributeModule,
+	IBaseProfileAttributeModule,
+	IDocumentEventsAttributeModule,
+	IDimensionAttributeModule,
+	IPositionAttributeModule,
+	IViewBoxAttributeModule,
+	IZoomAndPanAttributeModule,
+	IPathProvider
+	{
+
+	public function setContentScriptType($type);
+	public function getContentScriptType();
+	public function setContentStyleType($type);
+	public function getContentStyleType();	
+
+	public function setVersion($version);
+	public function getVersion();	
+
+
+	public static function fromXmlString($xml);
+	public function toXml($embedded=false);
+}
+
+
+interface IGroup extends 
+	IContainer, 
+	IStructure,
+	IDefinitionProvider,
+	IMetadataProvider,
+	IPathProvider 
+	{}
+
+
+// Shapes
+interface IShape extends 
+	IStructure,
+	IDescriptionProvider,
+	ITransformAttributeModule
 	{}
 
 
@@ -511,11 +488,18 @@ interface ICircle extends IShape, IPositionAttributeModule, IRadiusAttributeModu
 interface IEllipse extends IShape, IPositionAttributeModule, I2DRadiusAttributeModule {}
 interface IImage extends IShape, IAspectRatioAttributeModule, IPositionAttributeModule, IDimensionAttributeModule, IXLinkAttributeModule {}
 interface ILine extends IShape, IPointDataAttributeModule {}
-interface IPath extends IShape, IPathDataAttributeModule {}
 interface IPolygon extends IShape, IPointDataAttributeModule {}
 interface IPolyline extends IShape, IPointDataAttributeModule {}
 interface IRectangle extends IShape, IPositionAttributeModule, IDimensionAttributeModule {}
-interface IText extends IShape {}
+
+interface IPath extends IShape, IPathDataAttributeModule {
+	public function import(IPath $path);
+}
+
+interface IPathProvider {
+	public function toPath();
+}
+
 
 
 

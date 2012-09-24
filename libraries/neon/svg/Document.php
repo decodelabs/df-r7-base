@@ -11,16 +11,22 @@ use df\neon;
     
 class Document implements IDocument, core\IDumpable {
 
-	use neon\svg\TContainer;
-	use neon\svg\TAttributeModule;
-	use neon\svg\TAttributeModule_Structure;
-	use neon\svg\TAttributeModule_AspectRatio;
-	use neon\svg\TAttributeModule_BaseProfile;
-	use neon\svg\TAttributeModule_Dimension;
-	use neon\svg\TAttributeModule_DocumentEvents;
-	use neon\svg\TAttributeModule_Position;
-	use neon\svg\TAttributeModule_ViewBox;
-	use neon\svg\TAttributeModule_ZoomAndPan;
+	use TStructure_Container;
+	use TStructure_Metadata;
+	use TStructure_Definitions;
+	use TAttributeModule;
+	use TAttributeModule_Structure;
+	use TAttributeModule_AspectRatio;
+	use TAttributeModule_BaseProfile;
+	use TAttributeModule_Dimension;
+	use TAttributeModule_DocumentEvents;
+	use TAttributeModule_Position;
+	use TAttributeModule_ViewBox;
+	use TAttributeModule_ZoomAndPan;
+
+	public function getElementName() {
+		return 'svg';
+	}
 
 	public function setContentScriptType($type) {
 		return $this->_setAttribute(
@@ -57,5 +63,46 @@ class Document implements IDocument, core\IDumpable {
 
 	public function getVersion() {
 		return $this->_getAttribute('version');
+	}
+
+	protected function _getExtraAttributes() {
+		return [
+			'xmlns' => 'http://www.w3.org/2000/svg',
+			'xmlns:xlink' => 'http://www.w3.org/1999/xlink'
+		];
+	}
+
+	public static function fromXmlString($xml) {
+		$reader = new \XMLReader();
+		$reader->xml($xml);
+
+		while($reader->nodeType !== 1) {
+			$reader->read();
+		}
+
+		$output = self::_xmlToObject($reader);
+		$output->readXml($reader);
+
+		return $output;
+	}
+
+	public function toXml($embedded=false) {
+		$writer = new \XMLWriter();
+		$writer->openMemory();
+		$writer->setIndent(true);
+		$writer->setIndentString('    ');
+
+		if(!$embedded) {
+			$writer->startDocument('1.0', 'UTF-8');
+			$writer->writeDTD('svg', '-//W3C//DTD SVG 1.1//EN', 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd');
+		}
+
+	 	$this->writeXml($this, $writer);
+
+	 	if(!$embedded) {
+	 		$writer->endDocument();
+	 	}
+	 	
+	 	return $writer->outputMemory();
 	}
 }

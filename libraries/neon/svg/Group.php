@@ -9,9 +9,15 @@ use df;
 use df\core;
 use df\neon;
     
-class Group implements IGroup {
+class Group implements IGroup, core\IDumpable {
 
-	use neon\svg\TContainer;
-    use neon\svg\TAttributeModule;
-	use neon\svg\TAttributeModule_Structure;
+	use TStructure_Container;
+	use TStructure_Metadata;
+	use TStructure_Definitions;
+    use TAttributeModule;
+	use TAttributeModule_Structure;
+
+	public function getElementName() {
+		return 'g';
+	}
 }
