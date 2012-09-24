@@ -21,11 +21,11 @@ abstract class Base implements neon\raster\IDriver {
     protected $_pointer;
 
     public static function canRead($format) {
-    	return in_array($format, self::$_readFormats);
+    	return in_array($format, static::$_readFormats);
     }
 
 	public static function canWrite($format) {
-		return in_array($format, self::$_writeFormats);
+		return in_array($format, static::$_writeFormats);
 	}
 
 
