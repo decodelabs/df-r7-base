@@ -195,7 +195,7 @@ trait TStructure_Container {
 			if($output === null) {
 				$output = $path;
 			} else {
-				$output->import($path);
+				$output->importPathData($path);
 			}
 		}
 
@@ -215,8 +215,8 @@ trait TStructure_Container {
 
 
 	public function getDumpProperties() {
-		$output = array();
-
+		$output = $this->_attributes;
+		
 		if($this->_title) {
 			$output['title'] = $this->_title;
 		}
@@ -229,12 +229,12 @@ trait TStructure_Container {
 			$output['metadata'] = $this->_metadata;
 		}
 
-		if(!empty($this->_attributes)) {
-			$output['attributes'] = $this->_attributes;
-		}
-
 		if(!empty($this->_children)) {
 			$output['children'] = $this->_children;
+
+			if(count($output) == 1) {
+				$output = $this->_children;
+			}
 		}
 
 		return $output;

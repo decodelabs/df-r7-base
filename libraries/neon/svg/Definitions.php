@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\neon;
     
-class Definitions implements IDefinitionsContainer {
+class Definitions implements IDefinitionsContainer, core\IDumpable {
 
 	use TStructure_Container;
 	use TStructure_Metadata;

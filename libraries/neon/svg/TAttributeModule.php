@@ -89,6 +89,7 @@ trait TAttributeModule {
 		}
 
 		$tagName = $reader->name;
+		$return = true;
 
 		switch($tagName) {
 
@@ -145,6 +146,82 @@ trait TAttributeModule {
 				break;
 
 
+			// Font
+			case 'font':
+				$output = new Font();
+				break;
+
+			case 'font-face':
+				$output = new Font_Face();
+
+				if($parent instanceof IFontFaceContainer) {
+					$parent->setFontFace($output);
+					$return = false;
+				}
+
+				break;
+
+			case 'font-face-format':
+				$output = new Font_FaceFormat();
+
+				if($parent instanceof IFontFaceUri) {
+					$parent->setFormatElement($output);
+					$return = false;
+				}
+
+				break;
+
+			case 'font-face-name':
+				$output = new Font_FaceName();
+
+				if($parent instanceof IFontFaceSource) {
+					$parent->setNameElement($output);
+					$return = false;
+				}
+
+				break;
+
+			case 'font-face-src':
+				$output = new Font_FaceSource();
+
+				if($parent instanceof IFontFace) {
+					$parent->addSource($output);
+					$return = false;
+				}
+
+				break;
+
+			case 'font-face-uri':
+				$output = new Font_FaceUri();
+
+				if($parent instanceof IFontFaceSource) {
+					$parent->setUriElement($output);
+					$return = false;
+				}
+
+				break;
+
+			case 'glyph':
+				$output = new Font_Glyph();
+
+				if($parent instanceof IFont) {
+					$parent->addGlyph($output);
+					$return = false;
+				}
+
+				break;
+
+			case 'missing-glyph':
+				$output = new Font_Glyph();
+
+				if($parent instanceof IFont) {
+					$parent->setMissingGlyph($output);
+					$return = false;
+				}
+
+				break;
+
+
 			// Filter
 			case 'feBlend':
 			case 'feColorMatrix':
@@ -184,20 +261,12 @@ trait TAttributeModule {
 			case 'color-profile':
 			case 'cursor':
 			case 'filter':
-			case 'font':
-			case 'font-face':
-			case 'font-face-format':
-			case 'font-face-name':
-			case 'font-face-src':
-			case 'font-face-uri':
 			case 'foreignObject':
-			case 'glyph':
 			case 'glyphRef':
 			case 'hkern':
 			case 'linearGradient':
 			case 'marker':
 			case 'mask':
-			case 'missing-glyph':
 			case 'mpath':
 			case 'pattern':
 			case 'radialGradient':
@@ -222,14 +291,19 @@ trait TAttributeModule {
 
 		if($output) {
 			$output->applyInputAttributes($attributes);
-			$output->readXml($reader);
+
+			if($isOpen) {
+				$output->readXml($reader);
+			}
 		}
 
 		if($isOpen) {
 			$reader->next();
 		}
 
-		return $output;
+		if($return) {
+			return $output;
+		}
 	}
 
 
@@ -321,6 +395,14 @@ trait TAttributeModule {
 		return core\unit\DisplaySize::factory($value, null, true);
 	}
 
+	protected function _normalizeLength($value) {
+		if(empty($value)) {
+			return null;
+		}
+
+		return core\unit\DisplaySize::factory($value, null, true);
+	}
+
 	protected function _normalizeKeywordOrAngle($value, array $keywords) {
 		if(empty($value)) {
 			return null;
@@ -339,6 +421,14 @@ trait TAttributeModule {
 		}
 
 		return core\unit\Angle::factory($value);
+	}
+
+	protected function _normalizeAngle($value) {
+		if(empty($value)) {
+			return null;
+		}
+
+		return core\unit\Angle::factory($value, null, true);
 	}
 
 	protected function _normalizeKeywordOrIdentifier($value, array $keywords) {
@@ -1248,6 +1338,90 @@ trait TAttributeModule_Font {
 
 
 
+trait TAttributeModule_FontAdvance {
+
+	public function setHorizontalAdvance($advance) {
+		return $this->_setAttribute(
+			'horiz-adv-x',
+			$this->_normalizeLength($advance)
+		);
+	}
+
+	public function getHorizontalAdvance() {
+		return $this->_getAttribute('horiz-adv-x');
+	}
+
+	public function getVerticalAdvance() {
+		return $this->_getAttribute('vert-adv-y');
+	}
+
+	public function setVerticalOriginX($x) {
+		return $this->_setAttribute(
+			'vert-origin-x',
+			$this->_normalizeLength($advance)
+		);
+	}
+}
+
+trait TAttributeModule_FontHorizontalOrigin {
+
+	public function setHorizontalOriginX($x) {
+		return $this->_setAttribute(
+			'horiz-origin-x',
+			$this->_normalizeLength($x)
+		);
+	}
+
+	public function getHorizontalOriginX() {
+		return $this->_getAttribute('horiz-origin-x');
+	}
+
+	public function setHorizontalOriginY($y) {
+		return $this->_setAttribute(
+			'horiz-origin-y',
+			$this->_normalizeLength($y)
+		);
+	}
+
+	public function getHorizontalOriginY() {
+		return $this->_getAttribute('horiz-origin-y');
+	}
+}
+
+trait TAttributeModule_FontVerticalOrigin {
+
+	public function setVerticalAdvance($advance) {
+		return $this->_setAttribute(
+			'vert-adv-y',
+			$this->_normalizeLength($advance)
+		);
+	}
+
+	public function getVerticalOriginX() {
+		return $this->_getAttribute('vert-origin-x');
+	}
+
+	public function setVerticalOriginY($y) {
+		return $this->_setAttribute(
+			'vert-origin-y',
+			$this->_normalizeLength($advance)
+		);
+	}
+
+	public function getVerticalOriginY() {
+		return $this->_getAttribute('vert-origin-y');
+	}
+}
+
+
+trait TAttributeModule_FontDefinition {
+	use TAttributeModule_FontAdvance;
+	use TAttributeModule_FontHorizontalOrigin;
+	use TAttributeModule_FontVerticalOrigin;
+}
+
+
+
 // Graphical element events
 trait TAttributeModule_GraphicalElementEvents {
 
@@ -1608,27 +1782,30 @@ trait TAttributeModule_PaintOpacity {
 // Path data
 trait TAttributeModule_PathData {
 
-	protected $_commands = array();
-
 	public function setCommands($commands) {
-		$this->_commands = neon\svg\command\Base::listFactory($commands);
+		$commands = neon\svg\command\Base::listFactory($commands);
+		$string = '';
 
-		$this->_onSetCommands();
+		foreach($commands as $command) {
+			$string .= $command->toString();
+		}
+
+		$this->_setAttribute('d', $string);
 		return $this;
 	}
 
 	public function getCommands() {
-		return $this->_commands;
+		return neon\svg\command\Base::listFactory($this->_getAttribute('d'));
 	}
 
-	protected function _onSetCommands() {
-		$output = '';
+	public function importPathData(IPathDataAttributeModule $path) {
+		$string = $this->_getAttribute('d');
 
-		foreach($this->_commands as $command) {
-			$output .= $command->toString();
+		foreach($path->getCommands() as $command) {
+			$string .= $command->toString();
 		}
 
-		$this->_setAttribute('d', $output);
+		$this->_setAttribute('d', $string);
 	}
 }
 

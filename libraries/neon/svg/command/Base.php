@@ -30,17 +30,25 @@ abstract class Base implements neon\svg\ICommand {
 
     public static function listFactory($commands) {
     	if(is_string($commands)) {
+            $commands = str_replace('  ', ' ', $commands);
 			$matches = preg_split('/([a-zA-Z])/', $commands, null, \PREG_SPLIT_DELIM_CAPTURE | \PREG_SPLIT_NO_EMPTY);
 			$commands = array();
 
 			while(!empty($matches)) {
-				$command = array_shift($matches);
+
+                do {
+				    $command = trim(array_shift($matches));
+                } while(empty($command) && !empty($matches));
 
 				if(strtolower($command) != 'z') {
 					$command .= array_shift($matches);
-				}
+                }
 
-				$commands[] = $command;
+                $command = trim($command);
+
+                if(!empty($command)) {
+				    $commands[] = $command;
+                }
 			}
 		}
 
@@ -60,7 +68,7 @@ abstract class Base implements neon\svg\ICommand {
     		return $command;
     	}
 
-    	$command = str_replace(['-', ',', '  '], [' -', ' ', ' '], $command);
+    	$command = trim(str_replace(['-', ',', '  '], [' -', ' ', ' '], $command));
 
     	if(in_array(
     		strtolower($command), 

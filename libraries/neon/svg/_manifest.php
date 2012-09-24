@@ -25,6 +25,34 @@ interface IElement {
 }
 
 
+trait TCustomContainerElement {
+
+	public function readXml(\XMLReader $reader) {
+		while($reader->read()) {
+			switch($reader->nodeType) {
+				case \XMLReader::ELEMENT:
+					if($child = $this->_xmlToObject($reader, $this)) {
+						throw new RuntimeException(
+							'Unexpected child element ('.$child->getElementName().') found in '.$this->getElementName().' element'
+						);
+					}
+
+					break;
+
+				case \XMLReader::END_ELEMENT:
+					break 2;
+			}
+		}
+
+		return $this;
+	}
+
+	public function writeXml(IDocument $document, \XMLWriter $writer) {
+		core\stub($document, $writer);
+	}
+}
+
+
 // Attribute modules
 interface IAnimationEventAttributeModule {
 	public function setOnBeginScript($script);
@@ -180,6 +208,33 @@ interface IFontAttributeModule {
 	public function getFontWeight();
 }
 
+interface IFontAdvanceAttributeModule {
+	public function setHorizontalAdvance($advance);
+	public function getHorizontalAdvance();
+	public function setVerticalAdvance($advance);
+	public function getVerticalAdvance();
+}
+
+interface IFontHorizontalOriginAttributeModule {
+	public function setHorizontalOriginX($x);
+	public function getHorizontalOriginX();
+	public function setHorizontalOriginY($y);
+	public function getHorizontalOriginY();
+}
+
+interface IFontVerticalOriginAttributeModule {
+	public function setVerticalOriginX($x);
+	public function getVerticalOriginX();
+	public function setVerticalOriginY($y);
+	public function getVerticalOriginY();
+}
+
+interface IFontDefinitionAttributeModule extends
+	IFontAdvanceAttributeModule,
+	IFontHorizontalOriginAttributeModule,
+	IFontVerticalOriginAttributeModule
+	{}
+
 interface IGradientAttributeModule {
 	public function setStopColor($color);
 	public function getStopColor();
@@ -254,6 +309,7 @@ interface IPaintOpacityAttributeModule {
 interface IPathDataAttributeModule {
 	public function setCommands($commands);
 	public function getCommands();
+	public function importPathData(IPathDataAttributeModule $path);
 }
 
 interface IPointDataAttributeModule {
@@ -437,6 +493,7 @@ interface IDefinitionsContainer extends
 
 // Document
 interface IDocument extends 
+	IElement,
 	IContainer,
 	IStructure,
 	IMetadataProvider,
@@ -466,6 +523,7 @@ interface IDocument extends
 
 
 interface IGroup extends 
+	IElement,
 	IContainer, 
 	IStructure,
 	IDefinitionProvider,
@@ -476,6 +534,7 @@ interface IGroup extends
 
 // Shapes
 interface IShape extends 
+	IElement,
 	IStructure,
 	IDescriptionProvider,
 	ITransformAttributeModule
@@ -488,18 +547,203 @@ interface ICircle extends IShape, IPositionAttributeModule, IRadiusAttributeModu
 interface IEllipse extends IShape, IPositionAttributeModule, I2DRadiusAttributeModule {}
 interface IImage extends IShape, IAspectRatioAttributeModule, IPositionAttributeModule, IDimensionAttributeModule, IXLinkAttributeModule {}
 interface ILine extends IShape, IPointDataAttributeModule {}
+interface IPath extends IShape, IPathDataAttributeModule {}
 interface IPolygon extends IShape, IPointDataAttributeModule {}
 interface IPolyline extends IShape, IPointDataAttributeModule {}
 interface IRectangle extends IShape, IPositionAttributeModule, IDimensionAttributeModule {}
 
-interface IPath extends IShape, IPathDataAttributeModule {
-	public function import(IPath $path);
-}
 
 interface IPathProvider {
 	public function toPath();
 }
 
+
+
+
+// Font
+interface IFontFaceContainer {
+	public function setFontFace(IFontFace $fontFace=null);
+	public function getFontFace();
+}
+
+
+trait TFontFaceContainer {
+
+	protected $_fontFace;
+
+	public function setFontFace(IFontFace $fontFace=null) {
+		$this->_fontFace = $fontFace;
+		return $this;
+	}
+
+	public function getFontFace() {
+		return $this->_fontFace;
+	}
+}
+
+
+interface IFont extends
+	IElement,
+	IStructure,
+	IDescriptionProvider, 
+	IMetadataProvider,
+	IFontDefinitionAttributeModule,
+	IFontFaceContainer
+	{
+	public function setMissingGlyph(IFontGlyph $glyph=null);
+	public function getMissingGlyph();	
+	public function setGlyphs(array $glyphs);
+	public function addGlyphs(array $glyphs);
+	public function addGlyph(IFontGlyph $glyph);
+	public function getGlyphs();
+	public function removeGlyph(IFontGlyph $glyph);
+	public function clearGlyphs();	
+}
+
+
+interface IFontFace extends
+	IElement,
+	ICoreAttributeModule,
+	IFontAttributeModule
+	{
+
+	public function setAccentHeight($height);
+	public function getAccentHeight();
+	public function setAlphabetic($abc);
+	public function getAlphabetic();
+	public function setAscent($ascent);
+	public function getAscent();
+	public function setBBox($bbox);
+	public function getBBox();
+	public function setCapHeight($height);
+	public function getCapHeight();
+	public function setDescent($descent);
+	public function getDescent();
+	public function setHanging($hanging);
+	public function getHanging();
+	public function setIdeographic($ideographic);
+	public function getIdeographic();
+	public function setMathematical($math);
+	public function getMathematical();
+	public function setOverlinePosition($position);
+	public function getOverlinePosition();
+	public function setOverlineThickness($thickness);
+	public function getOverlineThickness();
+	public function setPanose1($panose);
+	public function getPanose1();
+	public function setSlope($slope);
+	public function getSlope();
+	public function setHorizontalStem($stem);
+	public function getHorizontalStem();
+	public function setVerticalStem($stem);
+	public function getVerticalStem();
+	public function setStrikethroughPosition($position);
+	public function getStrikethroughPosition();
+	public function setStrikethroughThickness($thickness);
+	public function getStrikethroughThickness();
+	public function setUnderlinePosition($position);
+	public function getUnderlinePosition();
+	public function setUnderlineThickness($thickness);
+	public function getUnderlineThickness();
+	public function setUnicodeRange($range);
+	public function getUnicodeRange();
+	public function setUnitsPerEm($units);
+	public function getUnitsPerEm();
+	public function setVerticalAlphabetic($abc);
+	public function getVerticalAlphabetic();
+	public function setVerticalHanging($hanging);
+	public function getVerticalHanging();
+	public function setVerticalIdeographic($ideographic);
+	public function getVerticalIdeographic();
+	public function setVerticalMathematical($math);
+	public function getVerticalMathematical();
+	public function setWidths($widths);
+	public function getWidths();
+	public function setXHeight($height);
+	public function getXHeight();
+
+	public function setSources(array $sources);
+	public function addSources(array $sources);
+	public function addSource(IFontFaceSource $source);
+	public function getSources();
+	public function removeSource(IFontFaceSource $source);
+	public function clearSources();
+}
+
+interface IFontFaceSource extends
+	IElement,
+	ICoreAttributeModule
+	{
+	public function setUri($string);
+	public function setUriElement(IFontFaceUri $uri);
+	public function getUri();	
+	public function setName($name);
+	public function setNameElement(IFontFaceName $name);
+	public function getName();	
+}
+
+interface IFontFaceUri extends
+	IElement,
+	ICoreAttributeModule,
+	IXLinkAttributeModule
+	{
+	public function setFormat($string);
+	public function setFormatElement(IFontFaceFormat $format=null);
+	public function getFormat();		
+}
+
+interface IFontFaceFormat extends
+	IElement,
+	ICoreAttributeModule
+	{
+	public function setString($string);
+	public function getString();		
+}
+
+
+interface IFontFaceName extends
+	IElement,
+	ICoreAttributeModule
+	{
+	public function setName($name);
+	public function getName();		
+}
+
+interface IFontGlyph extends
+	IElement,
+	IClipAttributeModule,
+	IContainerAttributeModule,
+	ICoreAttributeModule,
+	ICursorAttributeModule,
+	IFilterColorAttributeModule,
+	IFilterAttributeModule,
+	IFloodAttributeModule,
+	IFontAttributeModule,
+	IFontAdvanceAttributeModule,
+	IFontVerticalOriginAttributeModule,
+	IGradientAttributeModule,
+	IGraphicsAttributeModule,
+	IMarkerAttributeModule,
+	IMaskAttributeModule,
+	IPathDataAttributeModule,
+	IPaintAttributeModule,
+	IPaintOpacityAttributeModule,
+	IStyleAttributeModule,
+	ITextAttributeModule,
+	ITextContentAttributeModule,
+	IViewportAttributeModule
+	{
+	public function setArabicForm($form);
+	public function getArabicForm();	
+	public function setGlyphName($name);
+	public function getGlyphName();
+	public function setLanguage($language);
+	public function getLanguage();
+	public function setOrientation($orientation);
+	public function getOrientation();
+	public function setUnicode($unicode);
+	public function getUnicode();
+}
 
 
 

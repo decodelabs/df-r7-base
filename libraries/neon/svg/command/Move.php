@@ -14,7 +14,7 @@ class Move extends Base implements neon\svg\IMoveCommand {
 	protected $_x;
 	protected $_y;
 
-    public function __construct($x, $y) {
+    public function __construct($x=0, $y=0) {
     	$this->setPosition($x, $y);
     }
 

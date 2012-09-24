@@ -77,9 +77,7 @@ class Shape implements core\IDumpable {
                 break;
 
             case 'path':
-                $output = new Shape_Path(
-                    self::_extractInputAttribute($attributes, 'd', 0)
-                );
+                $output = new Shape_Path();
 
                 break;
 
@@ -324,19 +322,14 @@ class Shape_Path extends Shape implements IPath, IPathProvider {
 
     use TAttributeModule_PathData;
 
-    public function __construct($commands) {
-        $this->setCommands($commands);
+    public function __construct($commands=null) {
+        if($commands !== null) {
+            $this->setCommands($commands);
+        }
     }
 
     public function toPath() {
         return clone $this;
-    }
-
-    public function import(IPath $path) {
-        $this->_commands = array_merge($this->_commands, $path->getCommands());
-        $this->_onSetCommands();
-
-        return $this;
     }
 }
 
