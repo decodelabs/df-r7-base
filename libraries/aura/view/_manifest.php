@@ -221,11 +221,26 @@ trait TLayoutView {
     
     public function getLayout() {
         if($this->_layout === null) {
-            return static::DEFAULT_LAYOUT;
+            if($this instanceof IThemedView) {
+                $theme = $this->getTheme();
+
+                if($theme instanceof ILayoutMap) {
+                    $theme->mapLayout($this);
+                }
+            }
+
+            if($this->_layout === null) {
+                $this->_layout = static::DEFAULT_LAYOUT;
+            }
         }
         
         return $this->_layout;
     }
+}
+
+
+interface ILayoutMap {
+    public function mapLayout(ILayoutView $view);
 }
 
 

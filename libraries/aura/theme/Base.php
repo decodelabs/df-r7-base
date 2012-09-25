@@ -116,4 +116,8 @@ class Base implements ITheme {
             return null;
         }
     }
+
+    public function mapLayout(aura\view\ILayoutView $view) {
+        return null;
+    }
 }

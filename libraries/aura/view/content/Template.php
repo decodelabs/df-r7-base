@@ -85,10 +85,19 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         return new self($context, $templatePath);
     }
     
-    public static function loadLayout(aura\view\IView $view, $path) {
+    public static function loadLayout(aura\view\ILayoutView $view, $pathName=null, $type=null) {
+        if($pathName === null) {
+            $pathName = $view->getLayout();
+        }
+
+        if($type === null) {
+            $type = lcfirst($view->getType());
+        }
+
+        $path = $pathName.'.'.$type;
         $theme = $view->getTheme();
         $context = $view->getContext();
-        
+
         $lookupPaths = array();
         $area = $context->getRequest()->getArea();
         $themeId = $theme->getId();
