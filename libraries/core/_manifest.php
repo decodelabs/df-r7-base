@@ -194,10 +194,8 @@ trait TAttributeContainer {
     }
 }
 
-trait TArrayAccessedAttributeContainer {
-    
-    use TAttributeContainer;
-    
+trait TAttributeContainerArrayAccessProxy {
+
     public function offsetSet($key, $value) {
         return $this->setAttribute($key, $value);
     }
@@ -213,6 +211,12 @@ trait TArrayAccessedAttributeContainer {
     public function offsetUnset($key) {
         return $this->removeAttribute($key);
     }
+}
+
+trait TArrayAccessedAttributeContainer {
+    
+    use TAttributeContainer;
+    use TAttributeContainerArrayAccessProxy;
 }
 
 
