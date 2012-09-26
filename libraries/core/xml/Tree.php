@@ -11,6 +11,7 @@ use df\core;
 class Tree implements ITree, core\IDumpable {
 
 	use core\TStringProvider;
+	use core\TAttributeContainerArrayAccessProxy;
 
 	protected $_element;
 	protected $_rootInterchange;
@@ -56,7 +57,7 @@ class Tree implements ITree, core\IDumpable {
 	private static function _newDOMDocument() {
 		$output = new \DOMDocument();
 		$output->formatOutput = true;
-		$output->preserveWhiteSpace = false;
+		//$output->preserveWhiteSpace = false;
 		return $output;
 	}
 
@@ -156,6 +157,54 @@ class Tree implements ITree, core\IDumpable {
     public function countAttributes() {
     	return $this->_element->attributes->length;
     }
+
+
+// Content
+	public function getTextContent() {
+		return $this->_element->textContent;
+	}
+
+	public function getComposedTextContent() {
+		$isRoot = $this->_element === $this->_element->ownerDocument->documentElement;
+		$output = '';
+
+		foreach($this->_element->childNodes as $node) {
+			$value = null;
+
+			switch($node->nodeType) {
+				case \XML_ELEMENT_NODE:
+					$value = (new self($node))->getComposedTextContent();
+
+					if($isRoot) {
+						$value .= "\n";
+					}
+
+					break;
+
+				case \XML_TEXT_NODE:
+					$value = ltrim($node->nodeValue);
+
+					if($value != $node->nodeValue) {
+						$value = ' '.$value;
+					}
+
+					$t = rtrim($value);
+
+					if($t != $value) {
+						$value = $t.' ';
+					}
+
+					break;
+			}
+
+			if(!empty($value)) {
+				$output .= $value;
+			}
+		}
+
+		return trim(str_replace(['  ', "\n "], [' ', "\n"], $output));
+	}
+
 
 // Child access
 	public function count() {
@@ -355,48 +404,137 @@ class Tree implements ITree, core\IDumpable {
 	}
 
 
-	public function getById($id) {
-		return $this->xPathFirst('//*[@id=\''.$id.'\']');
+
+// Child construction
+	public function prependChild($child, $value=null) {
+		$node = $this->_normalizeInputChild($child, $value);
+		$node = $this->_element->insertBefore($node, $this->_element->firstChild);
+
+		return new self($node);
 	}
 
-	public function getByType($type) {
-		$output = array();
+	public function appendChild($child, $value=null) {
+		$node = $this->_normalizeInputChild($child, $value);
+		$this->_element->appendChild($node);
 
-		foreach($this->_element->ownerDocument->getElementsByTagName($type) as $node) {
-			$output[] = new self($node);
+		return new self($node);
+	}
+
+	public function replaceChild($origChild, $child, $value=null) {
+		if($origChild instanceof ITree) {
+			$origChild = $origChild->getDOMElement();
 		}
 
-		return $output;
+		if(!$origChild instanceof \DOMElement) {
+			throw new InvalidArgumentException(
+				'Original child is not a valid element'
+			);
+		}
+
+		$node = $this->_normalizeInputChild($child, $value);
+		$this->_element->replaceChild($node, $origChild);
+
+		return new self($node);
 	}
 
-	public function getByAttribute($name, $value=null) {
-		if(empty($value) && $value !== '0') {
-			$path = '//*[@'.$name.']';
+	public function putChild($index, $child, $value=null) {
+		$newNode = $this->_normalizeInputChild($child, $value);
+		$index = $origIndex = (int)$index;
+		$count = $this->count();
+		$i = 0;
+
+		if($index < 0) {
+			$index += $count;
+		}
+
+		if($index < 0) {
+			throw new OutOfBoundsException(
+				'Index '.$origIndex.' is out of bounds'
+			);
+		}
+
+		if($index == 0) {
+			$newNode = $this->_element->insertBefore($newNode, $this->_element->firstChild);
+		} else if($index >= $count) {
+			$newNode = $this->_element->appendChild($newNode);			
 		} else {
-			$path = '//*[@'.$name.'=\''.$value.'\']';
+			foreach($this->_element->childNodes as $node) {
+				if(!$node->nodeType == \XML_ELEMENT_NODE) {
+					continue;
+				}
+
+				if($i >= $index + 1) {
+					$newNode = $this->_element->insertBefore($newNode, $node);
+					break;
+				}
+
+				$i++;
+			}
 		}
 
-		return $this->xPath($path);
+		return new self($newNode);
 	}
 
-	public function xPath($path) {
-		$xpath = new \DOMXPath($this->_element->ownerDocument);
-		$output = array();
-
-		foreach($xpath->query($path) as $node) {
-			$output[] = new self($node);
+	public function insertChildBefore($origChild, $child, $value=null) {
+		if($origChild instanceof ITree) {
+			$origChild = $origChild->getDOMElement();
 		}
 
-		return $output;
+		if(!$origChild instanceof \DOMElement) {
+			throw new InvalidArgumentException(
+				'Original child is not a valid element'
+			);
+		}
+
+		$node = $this->_normalizeInputChild($child, $value);
+		$this->_element->insertBefore($node, $origChild);
+
+		return new self($node);
 	}
 
-	public function xPathFirst($path) {
-		$xpath = new \DOMXPath($this->_element->ownerDocument);
-    	$output = $xpath->query($path)->item(0);
-
-		if($output) {
-			return new self($output);
+	public function insertChildAfter($origChild, $child, $value=null) {
+		if($origChild instanceof ITree) {
+			$origChild = $origChild->getDOMElement();
 		}
+
+		if(!$origChild instanceof \DOMElement) {
+			throw new InvalidArgumentException(
+				'Original child is not a valid element'
+			);
+		}
+
+		do {
+			$origChild = $origChild->nextSibling;
+		} while($origChild && $origChild->nodeType != \XML_ELEMENT_NODE);
+
+		$node = $this->_normalizeInputChild($child, $value);
+
+		if(!$origChild) {
+			$this->_element->appendChild($node);
+		} else {
+			$this->_element->insertBefore($node, $origChild);
+		}
+
+		return new self($node);
+	}
+
+	public function removeChild($child) {
+		if(is_numeric($child)) {
+			$child = $this->getNthChild($child);
+		}
+
+		if($child instanceof ITree) {
+			$child = $child->getDOMElement();
+		}
+
+		if(!$child instanceof \DOMElement) {
+			throw new InvalidArgumentException(
+				'Original child is not a valid element'
+			);
+		}
+
+		$this->_element->removeChild($child);
+		return $this;
 	}
 
 
@@ -479,6 +617,41 @@ class Tree implements ITree, core\IDumpable {
 	}
 
 
+// Sibling construction
+	public function insertBefore($sibling, $value=null) {
+		$node = $this->_normalizeInputChild($sibling, $value);
+		$node = $this->_element->parentNode->insertBefore($node, $this->_element);
+
+		return new self($node);
+	}
+
+	public function insertAfter($sibling, $value=null) {
+		$node = $this->_normalizeInputChild($sibling, $value);
+
+		$target = $this->_element;
+
+		do {
+			$target = $target->nextSibling;
+		} while($target && $target->nodeType != \XML_ELEMENT_NODE);
+
+		if(!$target) {
+			$node = $this->_element->parentNode->appendChild($node);
+		} else {
+			$node = $this->_element->parentNode->insertBefore($node, $target);
+		}
+
+		return new self($node);
+	}
+
+	public function replaceWith($sibling, $value=null) {
+		$node = $this->_normalizeInputChild($sibling, $value);
+		$this->_element->parentNode->replaceChild($node, $this->_element);
+		$this->_element = $node;
+
+		return $this;
+	}
+
+
 // Comments
 	public function getPrecedingComment() {
 		if($this->_element->previousSibling 
@@ -498,6 +671,55 @@ class Tree implements ITree, core\IDumpable {
 
 		return $output;
 	}
+
+
+
+// Global access
+	public function getById($id) {
+		return $this->xPathFirst('//*[@id=\''.$id.'\']');
+	}
+
+	public function getByType($type) {
+		$output = array();
+
+		foreach($this->_element->ownerDocument->getElementsByTagName($type) as $node) {
+			$output[] = new self($node);
+		}
+
+		return $output;
+	}
+
+	public function getByAttribute($name, $value=null) {
+		if(empty($value) && $value !== '0') {
+			$path = '//*[@'.$name.']';
+		} else {
+			$path = '//*[@'.$name.'=\''.$value.'\']';
+		}
+
+		return $this->xPath($path);
+	}
+
+	public function xPath($path) {
+		$xpath = new \DOMXPath($this->_element->ownerDocument);
+		$output = array();
+
+		foreach($xpath->query($path) as $node) {
+			$output[] = new self($node);
+		}
+
+		return $output;
+	}
+
+	public function xPathFirst($path) {
+		$xpath = new \DOMXPath($this->_element->ownerDocument);
+    	$output = $xpath->query($path)->item(0);
+
+		if($output) {
+			return new self($output);
+		}
+	}
+
+
 
 // Xml options
 	public function setXmlVersion($version) {
@@ -532,12 +754,38 @@ class Tree implements ITree, core\IDumpable {
 		return $this;
 	}
 
+
+// Conversion
 	public function getDOMDocument() {
 		return $this->_element->ownerDocument;
 	}
 
+	public function getDOMElement() {
+		return $this->_element;
+	}
+
+	protected function _normalizeInputChild($child, $value=null) {
+		$node = null;
+
+		if($child instanceof ITree) {
+			$node = $child->getDOMElement();
+		}
+
+		if($node instanceof \DOMElement) {
+			$node = $this->_element->ownerDocument->importNode($node, true);
+		} else {
+			$node = $this->_element->ownerDocument->createElement((string)$child, $value);
+		}
+
+		return $node;
+	}
+
 // Output
 	public function toString() {
+		return $this->getComposedTextContent();
+	}
+
+	public function toNodeXmlString() {
 		return $this->_element->ownerDocument->saveXML($this->_element);
 	}
 
@@ -547,6 +795,6 @@ class Tree implements ITree, core\IDumpable {
 
 // Dump
 	public function getDumpProperties() {
-		return $this->toString();
+		return $this->toNodeXmlString();
 	}
 }
