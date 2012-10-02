@@ -15,41 +15,33 @@ class RuntimeException extends \RuntimeException implements IException {}
 class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 
 // Interfaces
-interface IElement {
+interface IElement extends core\xml\IInterchange {
 	public function getName();
 	public function getElementName();
 	public function prepareAttributes(IDocument $document);
-
-	public function readXml(\XMLReader $reader);
-	public function writeXml(IDocument $document, \XMLWriter $writer);
 }
 
 
 trait TCustomContainerElement {
 
-	public function readXml(\XMLReader $reader) {
-		while($reader->read()) {
-			switch($reader->nodeType) {
-				case \XMLReader::ELEMENT:
-					if($child = $this->_xmlToObject($reader, $this)) {
-						throw new RuntimeException(
-							'Unexpected child element ('.$child->getElementName().') found in '.$this->getElementName().' element'
-						);
-					}
-
-					break;
-
-				case \XMLReader::END_ELEMENT:
-					break 2;
+	public function readXml(core\xml\IReadable $reader) {
+		foreach($reader->getChildren() as $child) {
+			if($childObject = $this->_xmlToObject($child, $this)) {
+				throw new RuntimeException(
+					'Unexpected child element ('.$childObject->getElementName().') found in '.$this->getElementName().' element'
+				);
 			}
 		}
 
 		return $this;
 	}
 
-	public function writeXml(IDocument $document, \XMLWriter $writer) {
+	public function writeXml(core\xml\IWritable $writer) {
+		$document = $writer->getRootInterchange();
 		$writer->startElement($this->getElementName());
-		$this->_writeAttributes($document, $writer);
+
+		$writer->setRawAttributeNames('unicode', 'unicode-range');
+		$writer->setAttributes($this->prepareAttributes($document));
 
 
 		// Description
@@ -73,7 +65,7 @@ trait TCustomContainerElement {
 		}
 
 		foreach($this->_getCustomContainerChildren() as $child) {
-			$child->writeXml($document, $writer);
+			$child->writeXml($writer);
 		}
 
 		$writer->endElement();
@@ -526,6 +518,7 @@ interface IDefinitionsContainer extends
 
 // Document
 interface IDocument extends 
+	core\xml\IRootInterchange,
 	IElement,
 	IContainer,
 	IStructure,
@@ -548,10 +541,6 @@ interface IDocument extends
 
 	public function setVersion($version);
 	public function getVersion();	
-
-
-	public static function fromXmlString($xml);
-	public function toXml($embedded=false);
 
 	public function rasterize();
 }

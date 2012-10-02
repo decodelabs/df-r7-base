@@ -65,6 +65,14 @@ trait TAttributeModule {
 
     public function applyInputAttributes(array $attributes) {
     	foreach($attributes as $key => $value) {
+    		switch($key) {
+    			case 'r' : $key = 'radius'; break;
+				case 'rx': $key = 'xRadius'; break;
+				case 'ry': $key = 'yRadius'; break;
+				case 'cx': $key = 'xPosition'; break;
+				case 'cy': $key = 'yPosition'; break;
+    		}
+
     		$func = 'set'.str_replace(' ', '', ucwords(str_replace('-', ' ', $key)));
 
     		if(method_exists($this, $func)) {
@@ -73,23 +81,15 @@ trait TAttributeModule {
     			$this->_attributes[$key] = $value;
     		}
     	}
+
+    	return $this;
     }
 
-	protected static function _xmlToObject(\XMLReader $reader, IElement $parent=null) {
-		$isOpen = !$reader->isEmptyElement;
-		$attributes = array();
+	protected static function _xmlToObject(core\xml\IReadable $reader, IElement $parent=null) {
 		$output = null;
-
-		if($reader->hasAttributes) {
-			while($reader->moveToNextAttribute()) {
-				$attributes[$reader->name] = $reader->value;
-			}
-
-			$reader->moveToElement();
-		}
-
-		$tagName = $reader->name;
 		$return = true;
+		$attributes = $reader->getAttributes();
+		$tagName = $reader->getTagName();
 
 		switch($tagName) {
 
@@ -111,21 +111,21 @@ trait TAttributeModule {
 			case 'polygon':
 			case 'polyline':
 			case 'rect':
-				$output = Shape::fromAttributes($reader->name, $attributes);
+				$output = Shape::fromAttributes($tagName, $attributes);
 				break;
 
 
 			// Description
 			case 'title':
 				if($parent instanceof IDescriptionProvider) {
-					$parent->setTitle($reader->readString());
+					$parent->setTitle($reader->getComposedTextContent());
 				}
 
 				break;
 
 			case 'desc':
 				if($parent instanceof IDescriptionProvider) {
-					$parent->setDescription($reader->readString());
+					$parent->setDescription($reader->getComposedTextContent());
 				}
 
 				break;
@@ -134,7 +134,7 @@ trait TAttributeModule {
 			// Metadata
 			case 'metadata':
 				if($parent instanceof IMetadataProvider) {
-					$parent->setMetadata($reader->readInnerXML());
+					$parent->setMetadata($reader->getInnerXml());
 				}
 
 				break;
@@ -285,20 +285,13 @@ trait TAttributeModule {
 			case 'vkern':
 			default:
 				throw new RuntimeException(
-					'Cannot parse SVG XML - don\'t know what to do with a '.$reader->name.' element yet!'
+					'Cannot parse SVG XML - don\'t know what to do with a '.$tagName.' element yet!'
 				);
 		}
 
 		if($output) {
 			$output->applyInputAttributes($attributes);
-
-			if($isOpen) {
-				$output->readXml($reader);
-			}
-		}
-
-		if($isOpen) {
-			$reader->next();
+			$output->readXml($reader);
 		}
 
 		if($return) {
@@ -336,18 +329,6 @@ trait TAttributeModule {
 		}
 
 		return $output;
-	}
-
-	protected function _writeAttributes(IDocument $document, \XMLWriter $writer) {
-		foreach($this->prepareAttributes($document) as $key => $value) {
-			if($key == 'unicode' || $key == 'unicode-range') {
-				$writer->startAttribute($key);
-				$writer->writeRaw($value);
-				$writer->endAttribute();
-			} else {
-				$writer->writeAttribute($key, $value);
-			}
-		}
 	}
 
 	protected function _setAttribute($name, $value) {
@@ -1932,6 +1913,7 @@ trait TAttributeModule_Position {
 	}
 
 	public function setYPosition($y) {
+		$this->_position->setY($y);
 		return $this->_setAttribute($this->_getYPositionAttributeName(), $this->_position->getY());
 	}
 

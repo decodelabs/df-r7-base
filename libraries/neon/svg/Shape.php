@@ -21,6 +21,11 @@ class Shape implements core\IDumpable {
 
     public static function factory($name, $arg1) {
         $name = ucfirst($name);
+
+        if($name == 'Rect') {
+            $name = 'Rectangle';
+        }
+
         $class = 'df\\neon\\svg\\Shape_'.$name;
 
         if(!class_exists($class)) {
@@ -114,41 +119,6 @@ class Shape implements core\IDumpable {
 
         return $output;
     }
-
-/*
-    public function readXml(\XMLReader $reader) {
-        if(!$reader->isEmptyElement) {
-            while($reader->read()) {
-                switch($reader->nodeType) {
-                    case \XMLReader::ELEMENT:
-                        $this->_xmlToObject($reader, $this);
-                        break;
-
-                    case \XMLReader::END_ELEMENT:
-                        break 2;
-                }
-            }
-        }
-
-        return $this;
-    }
-
-    public function writeXml(IDocument $document, \XMLWriter $writer) {
-        $writer->startElement($this->getElementName());
-        $this->_writeAttributes($document, $writer);
-
-        if($this->_title) {
-            $writer->writeElement('title', $this->_title);
-        }
-
-        if($this->_description) {
-            $writer->writeElement('desc', $this->_description);
-        }
-
-        $writer->endElement();
-        return $this;
-    }
-    */
 
     public function getElementName() {
         return substr(strtolower($this->getName()), 6);

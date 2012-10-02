@@ -72,44 +72,31 @@ class Document implements IDocument, core\IDumpable {
 		];
 	}
 
-	public static function fromXmlString($xml) {
-		$reader = new \XMLReader();
-		$xml = str_replace('&#', '&amp;#', $xml);
-		$reader->xml($xml);
-		$reader->setParserProperty(\XMLReader::SUBST_ENTITIES, false);
-
-		while($reader->nodeType !== 1) {
-			$reader->read();
-		}
-
-		$output = self::_xmlToObject($reader);
-		$output->readXml($reader);
-
-		return $output;
+	public static function fromXmlFile($xmlFile) {
+		return self::_xmlToObject(core\xml\Tree::fromXmlFile($xmlFile));
 	}
 
-	public function toXml($embedded=false) {
-		$writer = new \XMLWriter();
-		$writer->openMemory();
-		$writer->setIndent(true);
-		$writer->setIndentString('    ');
+	public static function fromXmlString($xmlString) {
+		return self::_xmlToObject(core\xml\Tree::fromXmlString($xmlString));
+	}
+
+
+	public function toXmlString($embedded=false) {
+		$writer = core\xml\Writer::factory($this);
 
 		if(!$embedded) {
-			$writer->startDocument('1.0', 'UTF-8');
-			$writer->writeDTD('svg', '-//W3C//DTD SVG 1.1//EN', 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd');
+			$writer->writeHeader();
+			$writer->writeDtd('svg', '-//W3C//DTD SVG 1.1//EN', 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd');
 		}
 
-	 	$this->writeXml($this, $writer);
+		$this->writeXml($writer);
 
-	 	if(!$embedded) {
-	 		$writer->endDocument();
-	 	}
-	 	
-	 	return $writer->outputMemory();
+		$writer->finalize();
+		return $writer->toXmlString();
 	}
 
 	public function rasterize() {
-		$xml = $this->toXml();
+		$xml = $this->toXmlString();
 		$class = neon\raster\Image::getDefaultDriverClass();
 
 		if(!$class::canRead('SVG')) {

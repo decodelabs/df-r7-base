@@ -67,31 +67,21 @@ trait TStructure_Container {
 
 	protected $_children = array();
 
-	public function readXml(\XMLReader $reader) {
-		while($reader->read()) {
-			switch($reader->nodeType) {
-				case \XMLReader::ELEMENT:
-					if($child = $this->_xmlToObject($reader, $this)) {
-						$this->addChild($child);
-					}
-
-					break;
-
-				case \XMLReader::END_ELEMENT:
-					break 2;
+	public function readXml(core\xml\IReadable $reader) {
+		foreach($reader->getChildren() as $child) {
+			if($childObject = $this->_xmlToObject($child, $this)) {
+				$this->addChild($childObject);
 			}
 		}
 
 		return $this;
 	}
 
-	public function writeXml(IDocument $document, \XMLWriter $writer) {
+	public function writeXml(core\xml\IWritable $writer) {
+		$document = $writer->getRootInterchange();
+
 		$writer->startElement($this->getElementName());
-
-		foreach($this->prepareAttributes($document) as $key => $value) {
-			$writer->writeAttribute($key, $value);
-		}
-
+		$writer->setAttributes($this->prepareAttributes($document));
 
 		// Description
 		if($this instanceof IDescriptionProvider) {
@@ -114,7 +104,7 @@ trait TStructure_Container {
 		}
 
 		foreach($this->_children as $child) {
-			$child->writeXml($document, $writer);
+			$child->writeXml($writer);
 		}
 
 		$writer->endElement();
