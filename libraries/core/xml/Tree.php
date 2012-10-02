@@ -12,9 +12,9 @@ class Tree implements ITree, core\IDumpable {
 
 	use core\TStringProvider;
 	use core\TAttributeContainerArrayAccessProxy;
+	use TRootInterchangeProvider;
 
 	protected $_element;
-	protected $_rootInterchange;
 
     public static function fromXmlFile($xmlFile) {
     	try {
@@ -65,15 +65,6 @@ class Tree implements ITree, core\IDumpable {
 		$this->_element = $element;
 	}
 
-// Root interchange
-	public function setRootInterchange(IRootInterchange $root=null) {
-		$this->_rootInterchange = $root;
-		return $this;
-	}
-
-	public function getRootInterchange() {
-		return $this->_rootInterchange;
-	}
 
 // Node info
 	public function setTagName($name) {
@@ -160,6 +151,42 @@ class Tree implements ITree, core\IDumpable {
 
 
 // Content
+    public function setInnerXml($string) {
+    	$this->removeAllChildren();
+
+    	$fragment = $this->_element->ownerDocument->createDocumentFragment();
+    	$fragment->appendXml($string);
+    	$this->_element->appendChild($fragment);
+
+    	return $this;
+    }
+
+    public function getInnerXml() {
+    	$output = ''; 
+
+	    foreach($this->_element->childNodes as $child) { 
+	    	$output .= $this->_element->ownerDocument->saveXML($child);
+	    } 
+
+	    return $output; 
+    }
+
+    public function getComposedInnerXml() {
+    	$output = $this->getInnerXml();
+    	$output = preg_replace('/  +/', ' ', $output);
+    	$output = str_replace(["\r", "\n\n", "\n "], ["\n", "\n", "\n"], $output);
+    	return trim($output);
+    }
+
+    public function setTextContent($text) {
+    	$this->removeAllChildren();
+
+    	$text = $this->_element->ownerDocument->createTextNode($text);
+    	$this->_element->appendChild($text);
+
+    	return $this;
+    }
+
 	public function getTextContent() {
 		return $this->_element->textContent;
 	}
@@ -195,6 +222,14 @@ class Tree implements ITree, core\IDumpable {
 					}
 
 					break;
+
+				case \XML_CDATA_SECTION_NODE:
+					if($value) {
+						$value .= "\n";
+					}
+
+					$value .= trim($node->nodeValue)."\n";
+					break;
 			}
 
 			if(!empty($value)) {
@@ -203,6 +238,42 @@ class Tree implements ITree, core\IDumpable {
 		}
 
 		return trim(str_replace(['  ', "\n "], [' ', "\n"], $output));
+	}
+
+
+	public function setCDataContent($content) {
+		$this->removeAllChildren();
+
+    	$content = $this->_element->ownerDocument->createCDataSection($content);
+    	$this->_element->appendChild($content);
+
+    	return $this;
+	}
+
+	public function prependCDataContent($content) {
+		$content = $this->_element->ownerDocument->createCDataSection($content);
+		$this->_element->insertBefore($content, $this->_element->firstChild);
+
+		return $this;
+	}
+
+	public function appendCDataContent($content) {
+		$content = $this->_element->ownerDocument->createCDataSection($content);
+		$this->_element->appendChild($content);
+
+		return $this;
+	}
+
+	public function getAllCDataSections() {
+		$output = array();
+
+		foreach($this->_element->childNodes as $node) {
+			if($node->nodeType == \XML_CDATA_SECTION_NODE) {
+				$output[] = $node->nodeValue;
+			}
+		}
+
+		return $output;
 	}
 
 
@@ -244,6 +315,10 @@ class Tree implements ITree, core\IDumpable {
 		}
 
 		return false;
+	}
+
+	public function __get($name) {
+		return $this->_getChildren($name);
 	}
 
 	public function getChildren() {
@@ -537,6 +612,20 @@ class Tree implements ITree, core\IDumpable {
 		return $this;
 	}
 
+	public function removeAllChildren() {
+		$queue = array();
+
+    	foreach($this->_element->childNodes as $node) {
+    		$queue[] = $node;
+    	}
+
+    	foreach($queue as $node) {
+    		$this->_element->removeChild($node);
+    	}
+
+    	return $this;
+	}
+
 
 // Sibling access
 	public function getParent() {
@@ -785,13 +874,13 @@ class Tree implements ITree, core\IDumpable {
 		return $this->getComposedTextContent();
 	}
 
-	public function toNodeXmlString() {
-		return $this->_element->ownerDocument->saveXML($this->_element);
-	}
-
 	public function toXmlString() {
 		return $this->_element->ownerDocument->saveXML();
 	}
+
+	public function toNodeXmlString() {
+    	return $this->_element->ownerDocument->saveXML($this->_element);
+    }
 
 // Dump
 	public function getDumpProperties() {
