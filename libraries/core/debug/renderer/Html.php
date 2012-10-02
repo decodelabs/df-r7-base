@@ -94,7 +94,7 @@ class Html extends Base {
                     $output .= '<div class="chainedException">'."\n";
                     
                     $output .= $this->_renderExceptionMessage(
-                        new core\debug\Exception($chainedException), 
+                        new core\debug\node\Exception($chainedException), 
                         '<strong>Chained exception #'.($i+1).'</strong>: '
                     );
                     
