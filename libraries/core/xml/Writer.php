@@ -395,7 +395,11 @@ class Writer implements IWriter {
     	return $this->toXmlString();
     }
 
-    public function toXmlString() {
+    public function toXmlString($embedded=false) {
+    	if($embedded) {
+    		// TODO: ensure embedded xml
+    	}
+
     	if($this->_isMemory) {
     		return $this->_document->outputMemory();
     	}

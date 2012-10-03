@@ -27,8 +27,47 @@ interface IReaderInterchange {
 	public static function fromXmlString($xmlString);
 }
 
+trait TReaderInterchange {
+
+	public static function fromXmlFile($xmlFile) {
+		$reader = core\xml\Tree::fromXmlFile($xmlFile);
+		$output = new self();
+		$output->readXml($reader);
+
+		return $output;
+	}
+
+	public static function fromXmlString($xmlString) {
+		$reader = core\xml\Tree::fromXmlString($xmlString);
+		$output = new self();
+		$output->readXml($reader);
+
+		return $output;
+	}
+}
+
+
 interface IWriterInterchange {
-	public function toXmlString();
+	public function toXmlString($embedded=false);
+}
+
+trait TWriterInterchange {
+
+	public function toXmlString($embedded=false) {
+		$writer = core\xml\Writer::factory($this);
+
+		if(!$embedded) {
+			$writer->writeHeader();
+			$this->_writeXmlDtd();
+		}
+
+		$this->writeXml($writer);
+
+		$writer->finalize();
+		return $writer->toXmlString();
+	}
+
+	protected function _writeXmlDtd(core\xml\IWritable $writer) {}
 }
 
 interface IRootInterchange extends IInterchange, IReaderInterchange, IWriterInterchange {

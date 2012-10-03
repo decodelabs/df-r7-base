@@ -11,6 +11,7 @@ use df\neon;
     
 class Document implements IDocument, core\IDumpable {
 
+	use core\xml\TWriterInterchange;
 	use TStructure_Container;
 	use TStructure_Metadata;
 	use TStructure_Definitions;
@@ -81,18 +82,8 @@ class Document implements IDocument, core\IDumpable {
 	}
 
 
-	public function toXmlString($embedded=false) {
-		$writer = core\xml\Writer::factory($this);
-
-		if(!$embedded) {
-			$writer->writeHeader();
-			$writer->writeDtd('svg', '-//W3C//DTD SVG 1.1//EN', 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd');
-		}
-
-		$this->writeXml($writer);
-
-		$writer->finalize();
-		return $writer->toXmlString();
+	protected function _writeXmlDtd(core\xml\IWritable $writer) {
+		$writer->writeDtd('svg', '-//W3C//DTD SVG 1.1//EN', 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd');
 	}
 
 	public function rasterize() {

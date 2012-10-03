@@ -874,7 +874,12 @@ class Tree implements ITree, core\IDumpable {
 		return $this->getComposedTextContent();
 	}
 
-	public function toXmlString() {
+	public function toXmlString($embedded=false) {
+		if($embedded) {
+			// TODO: return embedded xml
+			core\stub('Strip header from output xml');
+		}
+
 		return $this->_element->ownerDocument->saveXML();
 	}
 
