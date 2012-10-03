@@ -25,6 +25,7 @@ interface IInterchange {
 interface IReaderInterchange {
 	public static function fromXmlFile($xmlFile);	
 	public static function fromXmlString($xmlString);
+	public static function fromXmlElement(ITree $element);
 }
 
 trait TReaderInterchange {
@@ -39,6 +40,13 @@ trait TReaderInterchange {
 
 	public static function fromXmlString($xmlString) {
 		$reader = core\xml\Tree::fromXmlString($xmlString);
+		$output = new self();
+		$output->readXml($reader);
+
+		return $output;
+	}
+
+	public static function fromXmlElement(ITree $element) {
 		$output = new self();
 		$output->readXml($reader);
 

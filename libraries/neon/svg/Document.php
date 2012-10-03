@@ -81,6 +81,10 @@ class Document implements IDocument, core\IDumpable {
 		return self::_xmlToObject(core\xml\Tree::fromXmlString($xmlString));
 	}
 
+	public static function fromXmlElement(core\xml\ITree $element) {
+		return self::_xmlToObject($element);
+	}
+
 
 	protected function _writeXmlDtd(core\xml\IWritable $writer) {
 		$writer->writeDtd('svg', '-//W3C//DTD SVG 1.1//EN', 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd');

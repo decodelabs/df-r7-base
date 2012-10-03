@@ -42,6 +42,10 @@ class Tree implements ITree, core\IDumpable {
     	return self::fromDOMDocument($document);
 	}
 
+	public static function fromXmlElement(ITree $element) {
+		return $element;
+	}
+
 	public static function fromDOMDocument($document) {
 		if(!$document instanceof \DOMDocument) {
 			throw new InvalidArgumentException(
