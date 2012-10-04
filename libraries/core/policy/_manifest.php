@@ -13,6 +13,7 @@ interface IException {}
 class RuntimeException extends \RuntimeException implements IException {}
 class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 class EntityNotFoundException extends RuntimeException {}
+class UnexpectedValueException extends \UnexpectedValueException implements IException {}
 
 
 // Interfaces
@@ -22,6 +23,10 @@ interface IManager extends core\IManager {
     public function getHandler($scheme);
     public function getHandlers();
     public function fetchEntity($url);
+}
+
+interface IPolicyModel {
+
 }
 
 

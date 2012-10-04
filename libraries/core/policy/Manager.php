@@ -112,6 +112,19 @@ class Manager implements IManager, core\IDumpable {
     }
 
 
+    protected function _getPolicyModel() {
+        $model = axis\Model::factory('policy', $this->_application);
+        
+        if(!$model instanceof IPolicyModel) {
+            throw new UnexpectedValueException(
+                'Policy model does not implement core\\policy\\IPolicyModel'
+            );
+        }
+        
+        return $model;
+    }
+
+
 // Dump
     public function getDumpProperties() {
         return array(
