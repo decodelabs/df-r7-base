@@ -11,7 +11,7 @@ use df\opal;
     
 class Populate implements IPopulateQuery, core\IDumpable {
 
-	use TQuery;
+    use TQuery;
     use TQuery_LocalSource;
     use TQuery_Populate;
     use TQuery_Populatable;
@@ -33,8 +33,8 @@ class Populate implements IPopulateQuery, core\IDumpable {
     }
 
     public function __construct(IPopulatableQuery $parent, $fieldName, $type) {
-    	$this->_parent = $parent;
-    	$this->_type = $type;
+        $this->_parent = $parent;
+        $this->_type = $type;
 
         $parentSourceManager = $parent->getSourceManager();
 
@@ -46,10 +46,10 @@ class Populate implements IPopulateQuery, core\IDumpable {
         );
 
         $this->_sourceManager->setParentSourceManager($parentSourceManager);
-    	$this->_source = $parent->getSource()->getAdapter()->getPopulateQuerySourceAdapter($this->_sourceManager, $fieldName);
+        $this->_source = $parent->getSource()->getAdapter()->getPopulateQuerySourceAdapter($this->_sourceManager, $fieldName);
     }
 
-	
+    
 
     public function getParentQuery() {
         return $this->_parent;

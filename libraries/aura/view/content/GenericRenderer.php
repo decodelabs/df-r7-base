@@ -12,34 +12,34 @@ use df\arch;
     
 class GenericRenderer implements aura\view\IDeferredRenderable {
 
-	use aura\view\TDeferredRenderable;
+    use aura\view\TDeferredRenderable;
 
-	protected $_value;
+    protected $_value;
 
-	public function __construct($value) {
-		$this->_value = $value;
-	}
+    public function __construct($value) {
+        $this->_value = $value;
+    }
 
-	public function getValue() {
-		return $this->_value;
-	}
+    public function getValue() {
+        return $this->_value;
+    }
 
-	public function render() {
-		if($this->_value instanceof aura\view\IDeferredRenderable) {
-			return $this->_value->renderTo($this->getRenderTarget());
-		} else if($this->_value instanceof aura\view\IRenderable
-		|| $this->_value instanceof aura\html\IRenderable) {
-			return $this->_value->render();
-		}
+    public function render() {
+        if($this->_value instanceof aura\view\IDeferredRenderable) {
+            return $this->_value->renderTo($this->getRenderTarget());
+        } else if($this->_value instanceof aura\view\IRenderable
+        || $this->_value instanceof aura\html\IRenderable) {
+            return $this->_value->render();
+        }
 
-		return (string)$this->_value;
-	}
+        return (string)$this->_value;
+    }
 
-	public function toString() {
-		return (string)$this->render();
-	}
+    public function toString() {
+        return (string)$this->render();
+    }
 
-	public function __toString() {
+    public function __toString() {
         try {
             return (string)$this->render();
         } catch(\Exception $e) {

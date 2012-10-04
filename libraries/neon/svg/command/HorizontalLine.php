@@ -14,22 +14,22 @@ class HorizontalLine extends Base implements neon\svg\IHorizontalLineCommand {
     protected $_x;
 
     public function __construct($x) {
-    	$this->setX($x);
+        $this->setX($x);
     }
 
     public function setX($x) {
-    	$this->_x = core\unit\DisplaySize::factory($x, null, true);
-    	return $this;
+        $this->_x = core\unit\DisplaySize::factory($x, null, true);
+        return $this;
     }
 
-	public function getX() {
-		return $this->_x;
-	}
+    public function getX() {
+        return $this->_x;
+    }
 
-	public function toString() {
-		$output = $this->_isRelative ? 'h' : 'H';
-		$output .= $this->_x->toString();
+    public function toString() {
+        $output = $this->_isRelative ? 'h' : 'H';
+        $output .= $this->_x->toString();
 
-		return $output;
-	}
+        return $output;
+    }
 }

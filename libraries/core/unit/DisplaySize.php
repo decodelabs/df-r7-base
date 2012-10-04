@@ -15,7 +15,7 @@ class DisplaySize implements IDisplaySize, core\IDumpable {
 
     const DEFAULT_FONT_SIZE = '16px';
     const DEFAULT_UNIT = 'px';
-	
+    
     private static $_units = ['%', 'in', 'cm', 'mm', 'em', 'ex', 'pt', 'pc', 'px', 'ch', 'rem', 'vh', 'vw', 'vmin', 'vmax'];
 
     protected $_value;
@@ -23,11 +23,11 @@ class DisplaySize implements IDisplaySize, core\IDumpable {
     protected $_dpi = 96;
 
     public static function factory($value, $unit=null, $allowPlainNumbers=false) {
-    	if($value instanceof IDisplaySize) {
-    		return $value;
-    	}
+        if($value instanceof IDisplaySize) {
+            return $value;
+        }
 
-    	return new self($value, $unit, $allowPlainNumbers);
+        return new self($value, $unit, $allowPlainNumbers);
     }
 
     public function isRelative() {
@@ -338,6 +338,6 @@ class DisplaySize implements IDisplaySize, core\IDumpable {
 
 // Dump
     public function getDumpProperties() {
-    	return $this->toString();
+        return $this->toString();
     }
 }

@@ -7,130 +7,130 @@ namespace df\core\unit;
 
 use df;
 use df\core;
-	    
+        
 class Frequency implements IFrequency, core\IDumpable {
 
-	use TSingleValueUnit;
+    use TSingleValueUnit;
 
-	const DEFAULT_UNIT = 'khz';
+    const DEFAULT_UNIT = 'khz';
 
-	private static $_units = ['hz', 'khz', 'mhz', 'ghz', 'bpm'];
+    private static $_units = ['hz', 'khz', 'mhz', 'ghz', 'bpm'];
 
-	protected $_value;
-	protected $_unit;
+    protected $_value;
+    protected $_unit;
 
-	public static function factory($value, $unit=null, $allowPlainNumbers=false) {
-		if($value instanceof IFrequency) {
-			return $value;
-		}
+    public static function factory($value, $unit=null, $allowPlainNumbers=false) {
+        if($value instanceof IFrequency) {
+            return $value;
+        }
 
-		return new self($value, $unit, $allowPlainNumbers);
-	}
-
-    public function toCssString() {
-    	return $this->getKhz().'kHz';
+        return new self($value, $unit, $allowPlainNumbers);
     }
 
-	public function setHz($hz) {
-		return $this->_parseUnit($hz, 'hz');
-	}
+    public function toCssString() {
+        return $this->getKhz().'kHz';
+    }
 
-	public function getHz() {
-		return $this->_convert($this->_value, $this->_unit, 'hz');
-	}
+    public function setHz($hz) {
+        return $this->_parseUnit($hz, 'hz');
+    }
 
-	public function setKhz($khz) {
-		return $this->_parseUnit($khz, 'khz');
-	}
+    public function getHz() {
+        return $this->_convert($this->_value, $this->_unit, 'hz');
+    }
 
-	public function getKhz() {
-		return $this->_convert($this->_value, $this->_unit, 'khz');
-	}
+    public function setKhz($khz) {
+        return $this->_parseUnit($khz, 'khz');
+    }
 
-	public function setMhz($mhz) {
-		return $this->_parseUnit($mhz, 'mhz');
-	}
+    public function getKhz() {
+        return $this->_convert($this->_value, $this->_unit, 'khz');
+    }
 
-	public function getMhz() {
-		return $this->_convert($this->_value, $this->_unit, 'mhz');
-	}
+    public function setMhz($mhz) {
+        return $this->_parseUnit($mhz, 'mhz');
+    }
 
-	public function setGhz($ghz) {
-		return $this->_parseUnit($ghz, 'ghz');
-	}
+    public function getMhz() {
+        return $this->_convert($this->_value, $this->_unit, 'mhz');
+    }
 
-	public function getGhz() {
-		return $this->_convert($this->_value, $this->_unit, 'ghz');
-	}
+    public function setGhz($ghz) {
+        return $this->_parseUnit($ghz, 'ghz');
+    }
 
-	public function setBpm($bpm) {
-		return $this->_parseUnit($bpm, 'bpm');
-	}
+    public function getGhz() {
+        return $this->_convert($this->_value, $this->_unit, 'ghz');
+    }
 
-	public function getBpm() {
-		return $this->_convert($this->_value, $this->_unit, 'bpm');
-	}
+    public function setBpm($bpm) {
+        return $this->_parseUnit($bpm, 'bpm');
+    }
 
-	protected function _convert($value, $inUnit, $outUnit) {
-		if($inUnit === null) {
-			$inUnit = self::DEFAULT_UNIT;
-		}
+    public function getBpm() {
+        return $this->_convert($this->_value, $this->_unit, 'bpm');
+    }
 
-		if($outUnit === null) {
-			$outUnit = self::DEFAULT_UNIT;
-		}
-		
-		if($inUnit == $outUnit) {
-			return $value;
-		}
+    protected function _convert($value, $inUnit, $outUnit) {
+        if($inUnit === null) {
+            $inUnit = self::DEFAULT_UNIT;
+        }
 
-		if($inUnit == 'bpm') {
-			$value /= 60;
-			$inUnit = 'hz';
-		}
+        if($outUnit === null) {
+            $outUnit = self::DEFAULT_UNIT;
+        }
+        
+        if($inUnit == $outUnit) {
+            return $value;
+        }
+
+        if($inUnit == 'bpm') {
+            $value /= 60;
+            $inUnit = 'hz';
+        }
 
 
-		switch($inUnit) {
-			case 'hz':
-				$factor = 0;
-				break;
+        switch($inUnit) {
+            case 'hz':
+                $factor = 0;
+                break;
 
-			case 'khz':
-				$factor = 1;
-				break;
+            case 'khz':
+                $factor = 1;
+                break;
 
-			case 'mhz':
-				$factor = 2;
-				break;
+            case 'mhz':
+                $factor = 2;
+                break;
 
-			case 'ghz':
-				$factor = 3;
-				break;
-		}
+            case 'ghz':
+                $factor = 3;
+                break;
+        }
 
-		switch($outUnit) {
-			case 'hz':
-				$factor -= 0;
-				break;
+        switch($outUnit) {
+            case 'hz':
+                $factor -= 0;
+                break;
 
-			case 'khz':
-				$factor -= 1;
-				break;
+            case 'khz':
+                $factor -= 1;
+                break;
 
-			case 'mhz':
-				$factor -= 2;
-				break;
+            case 'mhz':
+                $factor -= 2;
+                break;
 
-			case 'ghz':
-				$factor -= 3;
-				break;
-		}
+            case 'ghz':
+                $factor -= 3;
+                break;
+        }
 
-		return $value *= pow(1000, $factor);
-	}
+        return $value *= pow(1000, $factor);
+    }
 
 // Dump
-	public function getDumpProperties() {
-		return $this->toString();
-	}
+    public function getDumpProperties() {
+        return $this->toString();
+    }
 }

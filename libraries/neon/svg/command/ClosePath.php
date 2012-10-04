@@ -14,6 +14,6 @@ class ClosePath extends Base implements neon\svg\IClosePathCommand {
     public function __construct() {}
 
     public function toString() {
-    	return $this->_isRelative ? 'z' : 'Z';
+        return $this->_isRelative ? 'z' : 'Z';
     }
 }

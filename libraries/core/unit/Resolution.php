@@ -10,88 +10,88 @@ use df\core;
     
 class Resolution implements IResolution {
 
-	use TSingleValueUnit;
+    use TSingleValueUnit;
 
-	const DEFAULT_UNIT = 'dpi';
+    const DEFAULT_UNIT = 'dpi';
 
-	private static $_units = ['dpi', 'dpcm', 'dppx'];
+    private static $_units = ['dpi', 'dpcm', 'dppx'];
 
     protected $_value;
     protected $_unit;
 
     public static function factory($value, $unit=null, $allowPlainNumbers=false) {
-    	if($value instanceof IResolution) {
-    		return $value;
-    	}
+        if($value instanceof IResolution) {
+            return $value;
+        }
 
-    	return new self($value, $unit, $allowPlainNumbers);
+        return new self($value, $unit, $allowPlainNumbers);
     }
 
-	public function setDpi($dpi) {
-		return $this->_parseUnit($dpi, 'dpi');
-	}
+    public function setDpi($dpi) {
+        return $this->_parseUnit($dpi, 'dpi');
+    }
 
-	public function getDpi() {
-		return $this->_convert($this->_value, $this->_unit, 'dpi');
-	}
+    public function getDpi() {
+        return $this->_convert($this->_value, $this->_unit, 'dpi');
+    }
 
-	public function setDpcm($dpcm) {
-		return $this->_parseUnit($dpcm, 'dpcm');
-	}
+    public function setDpcm($dpcm) {
+        return $this->_parseUnit($dpcm, 'dpcm');
+    }
 
-	public function getDpcm() {
-		return $this->_convert($this->_value, $this->_unit, 'dpcm');
-	}
+    public function getDpcm() {
+        return $this->_convert($this->_value, $this->_unit, 'dpcm');
+    }
 
-	public function setDppx($dppx) {
-		return $this->_parseUnit($dppx, 'dppx');
-	}
+    public function setDppx($dppx) {
+        return $this->_parseUnit($dppx, 'dppx');
+    }
 
-	public function getDppx() {
-		return $this->_convert($this->_value, $this->_unit, 'dppx');
-	}
+    public function getDppx() {
+        return $this->_convert($this->_value, $this->_unit, 'dppx');
+    }
 
-	protected function _convert($value, $inUnit, $outUnit) {
-		if($inUnit === null) {
-			$inUnit = self::DEFAULT_UNIT;
-		}
+    protected function _convert($value, $inUnit, $outUnit) {
+        if($inUnit === null) {
+            $inUnit = self::DEFAULT_UNIT;
+        }
 
-		if($outUnit === null) {
-			$outUnit = self::DEFAULT_UNIT;
-		}
+        if($outUnit === null) {
+            $outUnit = self::DEFAULT_UNIT;
+        }
 
-		if($inUnit == $outUnit) {
-			return $value;
-		}
+        if($inUnit == $outUnit) {
+            return $value;
+        }
 
-		switch($inUnit) {
-			case 'dpi':
-				$dpi = $value;
-				break;
+        switch($inUnit) {
+            case 'dpi':
+                $dpi = $value;
+                break;
 
-			case 'dpcm':
-				$dpi = $value * 2.54;
-				break;
+            case 'dpcm':
+                $dpi = $value * 2.54;
+                break;
 
-			case 'dppx':
-				$dpi = $value * 96;
-				break;
-		}
+            case 'dppx':
+                $dpi = $value * 96;
+                break;
+        }
 
-		switch($outUnit) {
-			case 'dpi':
-				$value = $dpi;
-				break;
+        switch($outUnit) {
+            case 'dpi':
+                $value = $dpi;
+                break;
 
-			case 'dpcm':
-				$value = $dpi / 2.54;
-				break;
+            case 'dpcm':
+                $value = $dpi / 2.54;
+                break;
 
-			case 'dppx':
-				$value = $dpi / 96;
-				break;
-		}
+            case 'dppx':
+                $value = $dpi / 96;
+                break;
+        }
 
-		return $value;
-	}
+        return $value;
+    }
 }

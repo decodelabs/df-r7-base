@@ -12,17 +12,17 @@ use df\opal;
 
 class Boolean extends Base {
     
-	public function sanitizeValue($value, $forRecord) {
-		if($value === null && !$this->isNullable()) {
-			$value = (bool)$this->_defaultValue;
-		}
+    public function sanitizeValue($value, $forRecord) {
+        if($value === null && !$this->isNullable()) {
+            $value = (bool)$this->_defaultValue;
+        }
 
-		if($value !== null) {
-			$value = (bool)$value;
-		}
+        if($value !== null) {
+            $value = (bool)$value;
+        }
 
-		return $value;
-	}
+        return $value;
+    }
 
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
         //return new opal\schema\Primitive_Bit($this, 1);

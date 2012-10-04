@@ -11,20 +11,20 @@ use df\aura;
 use df\arch;
     
 class BlockLink extends Link {
-	
-	const PRIMARY_TAG = 'a';
-	const WRAP_BODY = false;
+    
+    const PRIMARY_TAG = 'a';
+    const WRAP_BODY = false;
 
-	public function __construct(arch\IContext $context, $uri, $body=null, $description=null, $matchRequest=null) {
-		parent::__construct($context, $uri, $body, $matchRequest);
+    public function __construct(arch\IContext $context, $uri, $body=null, $description=null, $matchRequest=null) {
+        parent::__construct($context, $uri, $body, $matchRequest);
 
-		if($description !== null) {
-			$this->setDescription($description);
-		}
-	}
+        if($description !== null) {
+            $this->setDescription($description);
+        }
+    }
 
     protected function _render() {
-    	$body = $this->_body;
+        $body = $this->_body;
         $description = $this->_description;
         $iconName = $this->_icon;
         
@@ -35,11 +35,11 @@ class BlockLink extends Link {
         }
 
         $this->setBody([
-        	new aura\html\Element('h1', [$icon, new aura\html\Element('span', $body, ['class' => 'body'])]), 
-        	new aura\html\Element('p', $description, ['class' => 'description'])
-    	]);
+            new aura\html\Element('h1', [$icon, new aura\html\Element('span', $body, ['class' => 'body'])]), 
+            new aura\html\Element('p', $description, ['class' => 'description'])
+        ]);
 
-    	$this->_icon = null;
+        $this->_icon = null;
         $this->_description = null;
 
         $output = parent::_render();

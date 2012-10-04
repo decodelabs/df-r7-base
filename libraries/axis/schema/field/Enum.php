@@ -11,31 +11,31 @@ use df\axis;
 use df\opal;
     
 class Enum extends Base implements 
-	opal\schema\IOptionProviderField,
-	opal\schema\ICharacterSetAwareField {
+    opal\schema\IOptionProviderField,
+    opal\schema\ICharacterSetAwareField {
 
     use opal\schema\TField_OptionProvider;
     use opal\schema\TField_CharacterSetAware;
 
     protected function _init(array $options=array()) {
-    	$this->setOptions($options);
+        $this->setOptions($options);
     }
 
 // Primitive
-	public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
-		return new opal\schema\Primitive_Enum($this, $this->_options);
-	}
+    public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
+        return new opal\schema\Primitive_Enum($this, $this->_options);
+    }
 
 // Ext. serialize
-	protected function _importStorageArray(array $data) {
-		$this->_setBaseStorageArray($data);
-		$this->_setOptionStorageArray($data);
-	}
+    protected function _importStorageArray(array $data) {
+        $this->_setBaseStorageArray($data);
+        $this->_setOptionStorageArray($data);
+    }
 
-	public function toStorageArray() {
-		return array_merge(
-			$this->_getBaseStorageArray(),
-			$this->_getOptionStorageArray()
-		);
-	}
+    public function toStorageArray() {
+        return array_merge(
+            $this->_getBaseStorageArray(),
+            $this->_getOptionStorageArray()
+        );
+    }
 }

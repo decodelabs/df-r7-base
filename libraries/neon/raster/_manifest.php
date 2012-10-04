@@ -17,22 +17,22 @@ class InvalidAgumentException extends \InvalidArgumentException implements IExce
 
 // Interfaces
 interface IDimension {
-	const WIDTH = 'w';
-	const HEIGHT = 'h';
+    const WIDTH = 'w';
+    const HEIGHT = 'h';
 
-	const PROPORTIONAL = 'p';
+    const PROPORTIONAL = 'p';
     const STRETCH = 's';
     const FIT = 'f';
 }
 
 interface IPosition {
-	const TILE = 'tile';
+    const TILE = 'tile';
 
-	const TOP = 't';
-	const BOTTOM = 'b';
-	const LEFT = 'l';
-	const RIGHT = 'r';
-	const CENTER = 'c';
+    const TOP = 't';
+    const BOTTOM = 'b';
+    const LEFT = 'l';
+    const RIGHT = 'r';
+    const CENTER = 'c';
 }
 
 interface IImageManipulationController {
@@ -46,7 +46,7 @@ interface IImageManipulationController {
 }
 
 interface IImageCompositeController {
-	public function composite(IImage $image, $x=IPosition::CENTER, $y=IPosition::CENTER);
+    public function composite(IImage $image, $x=IPosition::CENTER, $y=IPosition::CENTER);
     public function watermark(IImage $image, $x=IPosition::RIGHT, $y=IPosition::BOTTOM, $scaleFactor=1.0);
 }
 
@@ -65,63 +65,63 @@ interface IImageFilterController {
 }
 
 interface IImageDrawingController {
-	public function rectangleFill($x, $y, $width, $height, $color);
+    public function rectangleFill($x, $y, $width, $height, $color);
     public function gradientFill($orientation, $x, $y, $width, $height, array $colors);
 }
 
 interface IImage extends IImageManipulationController, IImageFilterController {
 
-	public function getDriver();
+    public function getDriver();
 
-	public function getWidth();
-	public function getHeight();
+    public function getWidth();
+    public function getHeight();
 
-	public function transform($string=null);
+    public function transform($string=null);
 
-	public function setOutputFormat($format);
-	public function getOutputFormat();
+    public function setOutputFormat($format);
+    public function getOutputFormat();
 
-	public function setSavePath($savePath);
-	public function getSavePath();
+    public function setSavePath($savePath);
+    public function getSavePath();
 
-	public function saveTo($savePath, $quality=100);
-	public function save($quality=100);
-	public function toString($quality=100);
+    public function saveTo($savePath, $quality=100);
+    public function save($quality=100);
+    public function toString($quality=100);
 }
 
 
 interface IDriver {
 
-	public static function isLoadable();
-	public static function canRead($format);
-	public static function canWrite($format);
+    public static function isLoadable();
+    public static function canRead($format);
+    public static function canWrite($format);
 
-	public function spawnInstance();
-	public function getName();
+    public function spawnInstance();
+    public function getName();
 
-	public function loadFile($file);
-	public function loadString($string);
-	public function loadCanvas($width, $height, neon\IColor $color);
+    public function loadFile($file);
+    public function loadString($string);
+    public function loadCanvas($width, $height, neon\IColor $color);
 
-	public function getWidth();
-	public function getHeight();
+    public function getWidth();
+    public function getHeight();
 
-	public function setOutputFormat($format);
-	public function getOutputFormat();
+    public function setOutputFormat($format);
+    public function getOutputFormat();
 
-	public function saveTo($savePath, $quality);
-	public function toString($quality);
+    public function saveTo($savePath, $quality);
+    public function toString($quality);
 }
 
 interface IImageManipulationDriver extends IDriver {
-	public function resize($width, $height);
-	public function crop($x, $y, $width, $height);
-	public function composite(IDriver $image, $x, $y);
-	public function rotate(core\unit\IAngle $angle, neon\IColor $background=null);
+    public function resize($width, $height);
+    public function crop($x, $y, $width, $height);
+    public function composite(IDriver $image, $x, $y);
+    public function rotate(core\unit\IAngle $angle, neon\IColor $background=null);
 }
 
 interface IImageFilterDriver extends IDriver {
-	public function brightness($brightness);
+    public function brightness($brightness);
     public function contrast($contrast);
     public function greyscale();
     public function colorize(neon\IColor $color, $alpha);
@@ -137,8 +137,8 @@ interface IImageFilterDriver extends IDriver {
 
 
 interface ITransformation extends IImageManipulationController, IImageFilterController, core\IStringProvider {
-	public function setImage(IImage $image);
-	public function getImage();
+    public function setImage(IImage $image);
+    public function getImage();
 
-	public function apply();
+    public function apply();
 }

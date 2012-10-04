@@ -12,15 +12,15 @@ use df\opal;
 class Database extends opal\rdbms\Database {
 
     public function getTableList() {
-    	$stmt = $this->_adapter->prepare('SHOW TABLES');
-    	$res = $stmt->executeRead();
-    	$key = 'Tables_in_'.$this->getName();
-    	$output = array();
+        $stmt = $this->_adapter->prepare('SHOW TABLES');
+        $res = $stmt->executeRead();
+        $key = 'Tables_in_'.$this->getName();
+        $output = array();
 
-    	foreach($res as $row) {
-    		$output[] = $row[$key];
-    	}
-    	
-    	return $output;
+        foreach($res as $row) {
+            $output[] = $row[$key];
+        }
+        
+        return $output;
     }
 }

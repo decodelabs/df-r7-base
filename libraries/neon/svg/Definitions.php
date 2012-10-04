@@ -11,66 +11,66 @@ use df\neon;
     
 class Definitions implements IDefinitionsContainer, core\IDumpable {
 
-	use TStructure_Container;
-	use TStructure_Metadata;
+    use TStructure_Container;
+    use TStructure_Metadata;
     use TAttributeModule;
-	use TAttributeModule_Structure;
+    use TAttributeModule_Structure;
 
     public function __construct(array $defs=null) {
-    	if($defs) {
-    		$this->setDefinitions($defs);
-    	}
+        if($defs) {
+            $this->setDefinitions($defs);
+        }
     }
 
     public function getElementName() {
-    	return 'defs';
+        return 'defs';
     }
 
     public function getDefinitionsElement() {
-    	return $this;
+        return $this;
     }
 
     public function setDefinitions(array $defs) {
-		$this->_children = array();
-		return $this->addDefinitions($defs);
-	}
+        $this->_children = array();
+        return $this->addDefinitions($defs);
+    }
 
-	public function addDefinitions(array $defs) {
-		foreach($defs as $def) {
-			if(!$def instanceof IElement) {
-				throw new InvalidArgumentException(
-					'Invalid definition element detected'
-				);
-			}
+    public function addDefinitions(array $defs) {
+        foreach($defs as $def) {
+            if(!$def instanceof IElement) {
+                throw new InvalidArgumentException(
+                    'Invalid definition element detected'
+                );
+            }
 
-			$this->addDefinition($def);
-		}
+            $this->addDefinition($def);
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function addDefinition(IElement $element) {
-		$this->_children[] = $element;
-		return $this;
-	}
+    public function addDefinition(IElement $element) {
+        $this->_children[] = $element;
+        return $this;
+    }
 
-	public function getDefinitions() {
-		return $this->_children;
-	}
+    public function getDefinitions() {
+        return $this->_children;
+    }
 
-	public function removeDefinition(IElement $element) {
-		foreach($this->_children as $i => $def) {
-			if($def === $element) {
-				unset($this->_children[$id]);
-				break;
-			}
-		}
+    public function removeDefinition(IElement $element) {
+        foreach($this->_children as $i => $def) {
+            if($def === $element) {
+                unset($this->_children[$id]);
+                break;
+            }
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function clearDefinitions() {
-		$this->_children = array();
-		return $this;
-	}
+    public function clearDefinitions() {
+        $this->_children = array();
+        return $this;
+    }
 }

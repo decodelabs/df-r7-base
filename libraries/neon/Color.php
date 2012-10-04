@@ -19,7 +19,7 @@ class Color implements IColor, core\IDumpable {
     protected $_hexPrefix = '#';
 
     public static function factory($color) {
-    	if($color instanceof self) {
+        if($color instanceof self) {
             return $color;
         }
         

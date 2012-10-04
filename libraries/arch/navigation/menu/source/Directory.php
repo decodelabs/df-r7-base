@@ -12,75 +12,75 @@ use df\arch;
 class Directory extends Base implements arch\navigation\menu\IListableSource {
 
     public function loadMenu(core\uri\Url $id) {
-    	$parts = $id->path->toArray();
-    	$name = ucfirst(array_pop($parts));
+        $parts = $id->path->toArray();
+        $name = ucfirst(array_pop($parts));
 
         $nameParts = explode('_', $name, 2);
         $parentName = array_shift($nameParts);
         $subId = array_shift($nameParts);
 
-    	if(isset($parts[0]{0}) && $parts[0]{0} == arch\Request::AREA_MARKER) {
-    		$area = ltrim(array_shift($parts), arch\Request::AREA_MARKER);
-    	} else {
-    		$area = arch\Request::DEFAULT_AREA;
-    	}
-    	
-    	$classBase = 'df\\apex\\directory\\'.$area;
-    	$sharedClassBase = 'df\\apex\\directory\\'.$area;
-    	$baseId = 'Directory://'.arch\Request::AREA_MARKER.$area;
+        if(isset($parts[0]{0}) && $parts[0]{0} == arch\Request::AREA_MARKER) {
+            $area = ltrim(array_shift($parts), arch\Request::AREA_MARKER);
+        } else {
+            $area = arch\Request::DEFAULT_AREA;
+        }
+        
+        $classBase = 'df\\apex\\directory\\'.$area;
+        $sharedClassBase = 'df\\apex\\directory\\'.$area;
+        $baseId = 'Directory://'.arch\Request::AREA_MARKER.$area;
 
-    	if(!empty($parts)) {
-    		$classBase .= '\\'.implode('\\', $parts);
-    		$sharedClassBase .= '\\'.implode('\\', $parts);
-    		$baseId .= '/'.implode('/', $parts);
-    	}
+        if(!empty($parts)) {
+            $classBase .= '\\'.implode('\\', $parts);
+            $sharedClassBase .= '\\'.implode('\\', $parts);
+            $baseId .= '/'.implode('/', $parts);
+        }
 
-    	$classBase .= '\\_menus\\'.$name;
-    	$sharedClassBase .= '\\_menus\\'.$name;
-    	$baseId .= '/'.$name;
+        $classBase .= '\\_menus\\'.$name;
+        $sharedClassBase .= '\\_menus\\'.$name;
+        $baseId .= '/'.$name;
 
 
-    	$menus = array();
+        $menus = array();
 
-    	foreach(df\Launchpad::$loader->getPackages() as $package) {
-    		$packageName = ucfirst($package->name);
+        foreach(df\Launchpad::$loader->getPackages() as $package) {
+            $packageName = ucfirst($package->name);
 
-    		if(class_exists($classBase.'_'.$packageName)) {
-    			$class = $classBase.'_'.$packageName;
-    		} else if(class_exists($sharedClassBase.'_'.$packageName)) {
-    			$class = $sharedClassBase.'_'.$packageName;
-    		} else {
-    			continue;
-    		}
+            if(class_exists($classBase.'_'.$packageName)) {
+                $class = $classBase.'_'.$packageName;
+            } else if(class_exists($sharedClassBase.'_'.$packageName)) {
+                $class = $sharedClassBase.'_'.$packageName;
+            } else {
+                continue;
+            }
 
-    		$menus[$name.'_'.$packageName] = (new $class($this->_context, $baseId.'_'.$packageName))
+            $menus[$name.'_'.$packageName] = (new $class($this->_context, $baseId.'_'.$packageName))
                 ->setSubId($packageName);
-    	}
+        }
 
 
-    	if(class_exists($classBase)) {
-    		$output = new $classBase($this->_context, $baseId);
-    	} else if(class_exists($sharedClassBase)) {
-    		$output = new $sharedClassBase($this->_context, $baseId);
-    	} else if(empty($menus)) {
-    		throw new arch\navigation\SourceNotFoundException(
-    			'Directory menu '.$baseId.' could not be found'
-			);
-    	} else {
-    		$output = new arch\navigation\menu\Base($this->_context, $baseId);
-    	}
+        if(class_exists($classBase)) {
+            $output = new $classBase($this->_context, $baseId);
+        } else if(class_exists($sharedClassBase)) {
+            $output = new $sharedClassBase($this->_context, $baseId);
+        } else if(empty($menus)) {
+            throw new arch\navigation\SourceNotFoundException(
+                'Directory menu '.$baseId.' could not be found'
+            );
+        } else {
+            $output = new arch\navigation\menu\Base($this->_context, $baseId);
+        }
 
         $output->setSubId($subId);
 
-    	foreach($menus as $menu) {
-    		$output->addDelegate($menu);
-    	}
+        foreach($menus as $menu) {
+            $output->addDelegate($menu);
+        }
 
-    	return $output;
+        return $output;
     }
 
     public function loadAllMenus(array $whiteList=null) {
-    	return $this->loadIds($this->getMenuIds(), $whiteList);
+        return $this->loadIds($this->getMenuIds(), $whiteList);
     }
 
     public function loadIds(array $ids, array $whiteList=null) {

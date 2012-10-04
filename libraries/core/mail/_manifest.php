@@ -16,73 +16,73 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 
 // Interfaces
 interface IAddress extends core\IStringProvider {
-	public function setAddress($address);
-	public function getAddress();
-	public function setName($name);
-	public function getName();
-	public function isValid();
+    public function setAddress($address);
+    public function getAddress();
+    public function setName($name);
+    public function getName();
+    public function isValid();
 }
 
 interface IMessage extends core\mime\IMultiPart {
-	public function setSubject($subject);
-	public function getSubject();
+    public function setSubject($subject);
+    public function getSubject();
 
-	public function setBodyHtml($content);
-	public function getBodyHtml();
-	public function setBodyText($content);
-	public function getBodyText();
+    public function setBodyHtml($content);
+    public function getBodyHtml();
+    public function setBodyText($content);
+    public function getBodyText();
 
-	public function isPrivate($flag=null);
+    public function isPrivate($flag=null);
 
-	public function setFromAddress($address, $name=null);
-	public function getFromAddress();
-	public function isFromAddressSet();
-	public function isFromAddressValid();
+    public function setFromAddress($address, $name=null);
+    public function getFromAddress();
+    public function isFromAddressSet();
+    public function isFromAddressValid();
 
-	public function addToAddress($address, $name=null);
-	public function getToAddresses();
-	public function countToAddresses();
-	public function hasToAddress($address);
-	public function hasToAddresses();
-	public function clearToAddresses();
+    public function addToAddress($address, $name=null);
+    public function getToAddresses();
+    public function countToAddresses();
+    public function hasToAddress($address);
+    public function hasToAddresses();
+    public function clearToAddresses();
 
-	public function addCCAddress($address, $name=null);
-	public function getCCAddresses();
-	public function countCCAddresses();
-	public function hasCCAddress($address);
-	public function hasCCAddresses();
-	public function clearCCAddresses();
+    public function addCCAddress($address, $name=null);
+    public function getCCAddresses();
+    public function countCCAddresses();
+    public function hasCCAddress($address);
+    public function hasCCAddresses();
+    public function clearCCAddresses();
 
-	public function addBCCAddress($address, $name=null);
-	public function getBCCAddresses();
-	public function countBCCAddresses();
-	public function hasBCCAddress($address);
-	public function hasBCCAddresses();
-	public function clearBCCAddresses();
+    public function addBCCAddress($address, $name=null);
+    public function getBCCAddresses();
+    public function countBCCAddresses();
+    public function hasBCCAddress($address);
+    public function hasBCCAddresses();
+    public function clearBCCAddresses();
 
-	public function setReplyToAddress($address=null);
-	public function getReplyToAddress();
+    public function setReplyToAddress($address=null);
+    public function getReplyToAddress();
 
-	public function send(ITransport $transport=null);
+    public function send(ITransport $transport=null);
 }
 
 interface ITransport {
-	public function send(IMessage $message);
+    public function send(IMessage $message);
 }
 
 
 
 interface IMailModel {
-	public function storeDevMail(IMessage $message);
+    public function storeDevMail(IMessage $message);
 }
 
 interface IDevMailRecord {
-	public function getId();
-	public function getFromAddress();
-	public function getToAddresses();
-	public function getSubject();
-	public function getBodyString();
-	public function getDate();
-	public function isPrivate();
-	public function toMessage();
+    public function getId();
+    public function getFromAddress();
+    public function getToAddresses();
+    public function getSubject();
+    public function getBodyString();
+    public function getDate();
+    public function isPrivate();
+    public function toMessage();
 }

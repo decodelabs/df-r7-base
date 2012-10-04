@@ -14,44 +14,44 @@ class Correlation implements opal\query\ICorrelationField, core\IDumpable {
     protected $_query;
 
     public function __construct(opal\query\ICorrelationQuery $query) {
-    	$this->_query = $query;
+        $this->_query = $query;
     }
 
     public function getSource() {
-    	return $this->_query->getSource();
+        return $this->_query->getSource();
     }
 
     public function getSourceAlias() {
-    	return $this->_query->getSourceAlias();
+        return $this->_query->getSourceAlias();
     }
 
     public function getCorrelationQuery() {
-    	return $this->_query;
+        return $this->_query;
     }
 
     public function getQualifiedName() {
-    	return $this->_query->getFieldAlias();
-    	//return 'CORRELATION('.$this->getSourceAlias().'.'.$this->getAlias().')';
+        return $this->_query->getFieldAlias();
+        //return 'CORRELATION('.$this->getSourceAlias().'.'.$this->getAlias().')';
     }
 
     public function getName() {
-    	return $this->getAlias();
+        return $this->getAlias();
     }
 
     public function getAlias() {
-    	return $this->_query->getFieldAlias();
+        return $this->_query->getFieldAlias();
     }
 
     public function hasDiscreetAlias() {
-    	return false;
+        return false;
     }
 
     public function dereference() {
-    	return [$this];
+        return [$this];
     }
 
 // Dump
     public function getDumpProperties() {
-    	return [$this->getAlias() => $this->_query];
+        return [$this->getAlias() => $this->_query];
     }
 }

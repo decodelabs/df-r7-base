@@ -24,14 +24,14 @@ class Correlation implements ICorrelationQuery, core\IDumpable {
     protected $_applicator;
 
     public function __construct(ISourceProvider $parent, ISource $source, $fieldAlias=null) {
-    	$this->_parent = $parent;
-    	$this->_source = $source;
-    	$this->_fieldAlias = $fieldAlias;
+        $this->_parent = $parent;
+        $this->_source = $source;
+        $this->_fieldAlias = $fieldAlias;
 
-    	if($this->_fieldAlias === null) {
-    		$field = $this->_source->getFirstOutputDataField();
-    		$this->_fieldAlias = $field->getAlias();
-    	}
+        if($this->_fieldAlias === null) {
+            $field = $this->_source->getFirstOutputDataField();
+            $this->_fieldAlias = $field->getAlias();
+        }
     }
 
     public function getQueryType() {
@@ -64,7 +64,7 @@ class Correlation implements ICorrelationQuery, core\IDumpable {
 
 // Correlation
     public function getFieldAlias() {
-    	return $this->_fieldAlias;
+        return $this->_fieldAlias;
     }
 
 
@@ -120,11 +120,11 @@ class Correlation implements ICorrelationQuery, core\IDumpable {
 
 // Dump
     public function getDumpProperties() {
-    	$output = [
-    		'fieldAlias' => $this->_fieldAlias,
-    		'fields' => $this->_source,
-    		'on' => $this->_joinClauseList
-    	];
+        $output = [
+            'fieldAlias' => $this->_fieldAlias,
+            'fields' => $this->_source,
+            'on' => $this->_joinClauseList
+        ];
 
         if(!empty($this->_joinConstraints)) {
             $output['joinConstraints'] = $this->_joinConstraints;

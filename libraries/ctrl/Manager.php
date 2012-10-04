@@ -14,16 +14,16 @@ class Manager implements core\IApplicationAware {
     use core\TApplicationAware;
 
     public function __construct(core\IApplication $application) {
-    	$this->_application = $application;
+        $this->_application = $application;
     }
 
     public function buildApp() {
-    	$builder = new AppBuilder(df\Launchpad::$loader);
+        $builder = new AppBuilder(df\Launchpad::$loader);
         $builder->build();
     }
 
     public function initGitignore() {
-    	$path = df\Launchpad::$applicationPath;
+        $path = df\Launchpad::$applicationPath;
         copy(__DIR__.'/default.gitignore', $path.'/.gitignore');
     }
 }

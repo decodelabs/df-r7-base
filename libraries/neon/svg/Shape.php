@@ -160,8 +160,8 @@ class Shape_Circle extends Shape implements ICircle, IPathProvider {
     use TAttributeModule_Radius;
 
     public function __construct($radius, $x, $y=null) {
-    	$this->setRadius($radius);
-    	$this->setPosition($x, $y);
+        $this->setRadius($radius);
+        $this->setPosition($x, $y);
     }
 
     protected function _getXPositionAttributeName() {

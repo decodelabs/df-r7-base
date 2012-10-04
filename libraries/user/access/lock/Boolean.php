@@ -13,22 +13,22 @@ class Boolean implements user\IAccessLock {
 
     use user\TAccessLock;
 
-	protected $_value = true;
+    protected $_value = true;
 
-	public function __construct($value) {
-		$this->_value = (bool)$value;
-	}
+    public function __construct($value) {
+        $this->_value = (bool)$value;
+    }
 
     public function getAccessLockDomain() {
-    	return 'dynamic';
+        return 'dynamic';
     }
 
     public function lookupAccessKey(array $keys, $action=null) {
-    	return null;
+        return null;
     }
 
     public function getDefaultAccess($action=null) {
-    	return !$this->_value;
+        return !$this->_value;
     }
 
     public function getAccessLockId() {

@@ -10,12 +10,12 @@ use df\core;
     
 class MultiPart implements IMultiPart, core\IDumpable {
 
-	use core\TStringProvider;
+    use core\TStringProvider;
     use core\collection\THeaderMapProvider;
 
-	private static $_boundaryCounter = 0;
+    private static $_boundaryCounter = 0;
 
-	protected $_parts = array();
+    protected $_parts = array();
 
     public static function fromString($string) {
         $class = get_called_class();
@@ -43,85 +43,85 @@ class MultiPart implements IMultiPart, core\IDumpable {
         return $output;
     }
 
-	public function __construct($type=IMultiPart::MIXED, $headers=null) {
+    public function __construct($type=IMultiPart::MIXED, $headers=null) {
         $this->_headers = core\collection\HeaderMap::factory($headers);
 
-		$this->setContentType($type);
+        $this->setContentType($type);
 
-		if(!$this->_headers->hasNamedValue('content-type', 'boundary')) {
-			$this->_headers->setNamedValue('content-type', 'boundary', '=_'.md5(microtime(true).self::$_boundaryCounter++));
-		}
-	}
+        if(!$this->_headers->hasNamedValue('content-type', 'boundary')) {
+            $this->_headers->setNamedValue('content-type', 'boundary', '=_'.md5(microtime(true).self::$_boundaryCounter++));
+        }
+    }
 
 
-	public function isMultiPart() {
-		return ($this->count() > 1) || ($this->_parts[0]->isMultipart());
-	}
+    public function isMultiPart() {
+        return ($this->count() > 1) || ($this->_parts[0]->isMultipart());
+    }
 
-	public function setContentType($type) {
+    public function setContentType($type) {
         $parts = explode(';', $type, 2);
-		$type = strtolower(array_shift($parts));
+        $type = strtolower(array_shift($parts));
         $suffix = array_pop($parts);
 
-		switch($type) {
-			case IMultiPart::ALTERNATIVE:
-			case IMultiPart::MIXED:
-			case IMultiPart::RELATED:
-			case IMultiPart::PARALLEL:
-			case IMultiPart::DIGEST:
+        switch($type) {
+            case IMultiPart::ALTERNATIVE:
+            case IMultiPart::MIXED:
+            case IMultiPart::RELATED:
+            case IMultiPart::PARALLEL:
+            case IMultiPart::DIGEST:
                 if($suffix) {
                     $type .= ';'.$suffix;
                 }
 
-				$this->_headers->set('content-type', $type);
-				break;
+                $this->_headers->set('content-type', $type);
+                break;
 
-			default:
-				throw new InvalidArgumentException(
-					'Invalid multi part type '.$type
-				);
-		}
+            default:
+                throw new InvalidArgumentException(
+                    'Invalid multi part type '.$type
+                );
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getContentType() {
-		return trim(explode(';', $this->_headers->get('content-type'))[0]);
-	}
+    public function getContentType() {
+        return trim(explode(';', $this->_headers->get('content-type'))[0]);
+    }
 
-	public function getFullContentType() {
-		return $this->_headers->get('content-type');
-	}
+    public function getFullContentType() {
+        return $this->_headers->get('content-type');
+    }
 
-	public function setBoundary($boundary) {
-		$this->_headers->setNamedValue('content-type', 'boundary', $boundary);
-		return $this;
-	}
+    public function setBoundary($boundary) {
+        $this->_headers->setNamedValue('content-type', 'boundary', $boundary);
+        return $this;
+    }
 
     public function getBoundary() {
-    	return $this->_headers->getNamedValue('content-type', 'boundary');
+        return $this->_headers->getNamedValue('content-type', 'boundary');
     }
 
     public function setParts(array $parts) {
-    	$this->clearParts();
-    	return $this->addParts($parts);
+        $this->clearParts();
+        return $this->addParts($parts);
     }
 
     public function addParts(array $parts) {
-    	foreach($parts as $part) {
-    		if(!$part instanceof IPart) {
-    			$part = $this->newContentPart($part);
-    		}
+        foreach($parts as $part) {
+            if(!$part instanceof IPart) {
+                $part = $this->newContentPart($part);
+            }
 
-    		$this->addPart($part);
-    	}
+            $this->addPart($part);
+        }
 
-    	return $this;
+        return $this;
     }
     
     public function addPart(IPart $part) {
-    	$this->_parts[] = $part;
-    	return $this;
+        $this->_parts[] = $part;
+        return $this;
     }
 
     public function prependPart(IPart $part) {
@@ -130,42 +130,42 @@ class MultiPart implements IMultiPart, core\IDumpable {
     }
 
     public function getParts() {
-    	return $this->_parts;
+        return $this->_parts;
     }
 
     public function clearParts() {
-    	$this->_parts = array();
-    	return $this;
+        $this->_parts = array();
+        return $this;
     }
 
     public function isEmpty() {
-    	return !empty($this->_parts);
+        return !empty($this->_parts);
     }
 
     public function newContentPart($content) {
-    	$output = new ContentPart($content);
-    	$this->addPart($output);
-    	return $output;
+        $output = new ContentPart($content);
+        $this->addPart($output);
+        return $output;
     }
 
     public function newMultiPart($type=IMultiPart::MIXED) {
-    	$output = new MultiPart($type);
-    	$this->addPart($output);
-    	return $output;
+        $output = new MultiPart($type);
+        $this->addPart($output);
+        return $output;
     }
 
     public function newMessage($type=IMultiPart::MIXED) {
-    	$output = new Message($type);
-    	$this->addPart($output);
-    	return $output;
+        $output = new Message($type);
+        $this->addPart($output);
+        return $output;
     }
 
 
     public function toString() {
         $output = $this->getHeaderString().IMessageLine::END.IMessageLine::END;
-    	$output .= $this->getBodyString();
+        $output .= $this->getBodyString();
 
-    	return $output;
+        return $output;
     }
 
     public function getHeaderString(array $skipKeys=null) {
@@ -186,32 +186,32 @@ class MultiPart implements IMultiPart, core\IDumpable {
     }
 
     public function getBodyString() {
-    	$lineEnd = IMessageLine::END;
-    	$output = '';
+        $lineEnd = IMessageLine::END;
+        $output = '';
 
-    	if($this->isMultiPart()) {
-    		$boundary = $this->getBoundary();
+        if($this->isMultiPart()) {
+            $boundary = $this->getBoundary();
 
-    		foreach($this->_parts as $part) {
-    			$output .= '--'.$boundary.$lineEnd;
+            foreach($this->_parts as $part) {
+                $output .= '--'.$boundary.$lineEnd;
 
-    			//if($part->isMessage()) {
-    			//	$output .= 'Content-Type: message/rfc822'.$lineEnd.$lineEnd;
-    			//}
+                //if($part->isMessage()) {
+                //    $output .= 'Content-Type: message/rfc822'.$lineEnd.$lineEnd;
+                //}
 
-    			$output .= $part->toString().$lineEnd;
-    		}
+                $output .= $part->toString().$lineEnd;
+            }
 
-    		$output .= '--'.$boundary.'--'.$lineEnd;
-    	} else if($this->_parts[0]) {
-    		$output .= $this->_parts[0]->getBodyString();
-    	}
+            $output .= '--'.$boundary.'--'.$lineEnd;
+        } else if($this->_parts[0]) {
+            $output .= $this->_parts[0]->getBodyString();
+        }
 
-    	return $output;
+        return $output;
     }
 
     public function count() {
-    	return count($this->_parts);
+        return count($this->_parts);
     }
 
 
@@ -237,11 +237,11 @@ class MultiPart implements IMultiPart, core\IDumpable {
     }
 
     public function hasChildren() {
-    	return !empty($this->_parts);
+        return !empty($this->_parts);
     }
 
     public function getChildren() {
-    	return $this->_parts;
+        return $this->_parts;
     }
 
 

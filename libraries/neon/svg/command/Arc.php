@@ -20,100 +20,100 @@ class Arc extends Base implements neon\svg\IArcCommand {
     protected $_y;
 
     public function __construct($xRadius, $yRadius, $angle, $largeArc, $sweep, $x, $y) {
-    	$this->setRadius($xRadius, $yRadius);
-    	$this->setAngle($angle);
-    	$this->isLargeArc((bool)$largeArc);
-    	$this->isSweep((bool)$sweep);
-    	$this->setPosition($x, $y);
+        $this->setRadius($xRadius, $yRadius);
+        $this->setAngle($angle);
+        $this->isLargeArc((bool)$largeArc);
+        $this->isSweep((bool)$sweep);
+        $this->setPosition($x, $y);
     }
 
     public function setRadius($xRadius, $yRadius=null) {
-    	if($yRadius === null) {
-    		$yRadius = $xRadius;
-    	}
+        if($yRadius === null) {
+            $yRadius = $xRadius;
+        }
 
-    	return $this->setXRadius($xRadius)->setYRadius($yRadius);
+        return $this->setXRadius($xRadius)->setYRadius($yRadius);
     }
 
-	public function setXRadius($radius) {
-		$this->_xRadius = core\unit\DisplaySize::factory($radius, null, true);
-		return $this;
-	}
+    public function setXRadius($radius) {
+        $this->_xRadius = core\unit\DisplaySize::factory($radius, null, true);
+        return $this;
+    }
 
-	public function getXRadius() {
-		return $this->_xRadius;
-	}
+    public function getXRadius() {
+        return $this->_xRadius;
+    }
 
-	public function setYRadius($radius) {
-		$this->_yRadius = core\unit\DisplaySize::factory($radius, null, true);
-		return $this;
-	}
+    public function setYRadius($radius) {
+        $this->_yRadius = core\unit\DisplaySize::factory($radius, null, true);
+        return $this;
+    }
 
-	public function getYRadius() {
-		return $this->_yRadius;
-	}
+    public function getYRadius() {
+        return $this->_yRadius;
+    }
 
 
-	public function setAngle($angle) {
-		$this->_angle = core\unit\Angle::factory($angle);
-		return $this;
-	}
+    public function setAngle($angle) {
+        $this->_angle = core\unit\Angle::factory($angle);
+        return $this;
+    }
 
-	public function getAngle() {
-		return $this->_angle;
-	}
+    public function getAngle() {
+        return $this->_angle;
+    }
 
 
     public function isLargeArc($flag=null) {
-    	if($flag !== null) {
-    		$this->_largeArc = (bool)$flag;
-    		return $this;
-    	}
+        if($flag !== null) {
+            $this->_largeArc = (bool)$flag;
+            return $this;
+        }
 
-    	return $this->_largeArc;
+        return $this->_largeArc;
     }
 
-	public function isSweep($flag=null) {
-		if($flag !== null) {
-			$this->_sweep = (bool)$flag;
-			return $this;
-		}
+    public function isSweep($flag=null) {
+        if($flag !== null) {
+            $this->_sweep = (bool)$flag;
+            return $this;
+        }
 
-		return $this->_sweep;
-	}
-
-	public function setPosition($x, $y) {
-    	return $this->setX($x)->setY($y);
+        return $this->_sweep;
     }
 
-	public function setX($x) {
-    	$this->_x = core\unit\DisplaySize::factory($x, null, true);
-    	return $this;
+    public function setPosition($x, $y) {
+        return $this->setX($x)->setY($y);
     }
 
-	public function getX() {
-		return $this->_x;
-	}
+    public function setX($x) {
+        $this->_x = core\unit\DisplaySize::factory($x, null, true);
+        return $this;
+    }
 
-	public function setY($y) {
-		$this->_y = core\unit\DisplaySize::factory($y, null, true);
-		return $this;
-	}
+    public function getX() {
+        return $this->_x;
+    }
 
-	public function getY() {
-		return $this->_y;
-	}
+    public function setY($y) {
+        $this->_y = core\unit\DisplaySize::factory($y, null, true);
+        return $this;
+    }
 
-	public function toString() {
-		$output = $this->_isRelative ? 'a' : 'A';
-		$output .= $this->_xRadius->toString().' ';
-		$output .= $this->_yRadius->toString().' ';
-		$output .= $this->_angle->getDegrees().' ';
-		$output .= $this->_largeArc ? '1 ' : '0 ';
-		$output .= $this->_sweep ? '1 ' : '0 ';
-		$output .= $this->_x->toString().' ';
-		$output .= $this->_y->toString();
+    public function getY() {
+        return $this->_y;
+    }
 
-		return $output;
-	}
+    public function toString() {
+        $output = $this->_isRelative ? 'a' : 'A';
+        $output .= $this->_xRadius->toString().' ';
+        $output .= $this->_yRadius->toString().' ';
+        $output .= $this->_angle->getDegrees().' ';
+        $output .= $this->_largeArc ? '1 ' : '0 ';
+        $output .= $this->_sweep ? '1 ' : '0 ';
+        $output .= $this->_x->toString().' ';
+        $output .= $this->_y->toString();
+
+        return $output;
+    }
 }

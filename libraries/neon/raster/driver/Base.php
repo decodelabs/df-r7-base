@@ -11,8 +11,8 @@ use df\neon;
     
 abstract class Base implements neon\raster\IDriver {
 
-	protected static $_readFormats = [];
-	protected static $_writeFormats = [];
+    protected static $_readFormats = [];
+    protected static $_writeFormats = [];
 
     protected $_width;
     protected $_height;
@@ -21,45 +21,45 @@ abstract class Base implements neon\raster\IDriver {
     protected $_pointer;
 
     public static function canRead($format) {
-    	return in_array($format, static::$_readFormats);
+        return in_array($format, static::$_readFormats);
     }
 
-	public static function canWrite($format) {
-		return in_array($format, static::$_writeFormats);
-	}
+    public static function canWrite($format) {
+        return in_array($format, static::$_writeFormats);
+    }
 
 
     public function __construct($outputFormat=null) {
-    	if($outputFormat !== null) {
-    		$this->setOutputFormat($outputFormat);
-    	}
+        if($outputFormat !== null) {
+            $this->setOutputFormat($outputFormat);
+        }
     }
 
     public function spawnInstance() {
-    	$class = get_class($this);
-    	return new $class($this->_outputFormat);
+        $class = get_class($this);
+        return new $class($this->_outputFormat);
     }
 
     public function getName() {
-    	$parts = explode('\\', get_class($this));
-    	return array_pop($parts);
+        $parts = explode('\\', get_class($this));
+        return array_pop($parts);
     }
 
     public function getWidth() {
-    	return $this->_width;
+        return $this->_width;
     }
 
-	public function getHeight() {
-		return $this->_height;
-	}
+    public function getHeight() {
+        return $this->_height;
+    }
 
 
-	public function setOutputFormat($format) {
-		$this->_outputFormat = $format;
-		return $this;
-	}
+    public function setOutputFormat($format) {
+        $this->_outputFormat = $format;
+        return $this;
+    }
 
-	public function getOutputFormat() {
-		return $this->_outputFormat;
-	}
+    public function getOutputFormat() {
+        return $this->_outputFormat;
+    }
 }

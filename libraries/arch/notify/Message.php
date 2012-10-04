@@ -22,57 +22,57 @@ class Message implements IMessage {
     protected $_linkText;
 
     public static function factory($id, $message=null, $type=null) {
-    	if($id instanceof IMessage) {
-    		return $id;
-    	} else if($message instanceof IMessage) {
-    		return $message;
-    	}
+        if($id instanceof IMessage) {
+            return $id;
+        } else if($message instanceof IMessage) {
+            return $message;
+        }
 
-    	return new self($id, $message, $type);
+        return new self($id, $message, $type);
     }
 
     public function __construct($id, $message=null, $type=null) {
-    	if($message === null) {
-    		$message = $id;
-    		$id = null;
-    	}
+        if($message === null) {
+            $message = $id;
+            $id = null;
+        }
 
-    	if($id === null) {
-    		$id = md5($message);
-    	}
+        if($id === null) {
+            $id = md5($message);
+        }
 
-    	$this->_id = $id;
-    	$this->setMessage($message);
+        $this->_id = $id;
+        $this->setMessage($message);
 
-    	if($type !== null) {
-    		$this->setType($type);
-    	}
+        if($type !== null) {
+            $this->setType($type);
+        }
     }
 
     public function getId() {
-    	return $this->_id;
+        return $this->_id;
     }
 
     public function setType($type) {
-    	switch($type) {
-    		case IMessage::INFO:
-    		case IMessage::SUCCESS:
-    		case IMessage::ERROR:
-    		case IMessage::WARNING:
-    		case IMessage::DEBUG:
-    			break;
+        switch($type) {
+            case IMessage::INFO:
+            case IMessage::SUCCESS:
+            case IMessage::ERROR:
+            case IMessage::WARNING:
+            case IMessage::DEBUG:
+                break;
 
-			default: 
-				$type = IMessage::INFO;
-				break;
-    	}
+            default: 
+                $type = IMessage::INFO;
+                break;
+        }
 
-    	$this->_type = $type;
-    	return $this;
+        $this->_type = $type;
+        return $this;
     }
 
     public function getType() {
-    	return $this->_type;
+        return $this->_type;
     }
 
     public function isDebug() {

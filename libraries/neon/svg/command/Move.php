@@ -11,40 +11,40 @@ use df\neon;
     
 class Move extends Base implements neon\svg\IMoveCommand {
 
-	protected $_x;
-	protected $_y;
+    protected $_x;
+    protected $_y;
 
     public function __construct($x=0, $y=0) {
-    	$this->setPosition($x, $y);
+        $this->setPosition($x, $y);
     }
 
     public function setPosition($x, $y) {
-    	return $this->setX($x)->setY($y);
+        return $this->setX($x)->setY($y);
     }
 
     public function setX($x) {
-    	$this->_x = core\unit\DisplaySize::factory($x, null, true);
-    	return $this;
+        $this->_x = core\unit\DisplaySize::factory($x, null, true);
+        return $this;
     }
 
-	public function getX() {
-		return $this->_x;
-	}
+    public function getX() {
+        return $this->_x;
+    }
 
-	public function setY($y) {
-		$this->_y = core\unit\DisplaySize::factory($y, null, true);
-		return $this;
-	}
+    public function setY($y) {
+        $this->_y = core\unit\DisplaySize::factory($y, null, true);
+        return $this;
+    }
 
-	public function getY() {
-		return $this->_y;
-	}
+    public function getY() {
+        return $this->_y;
+    }
 
-	public function toString() {
-		$output = $this->_isRelative ? 'm' : 'M';
-		$output .= $this->_x->toString().' ';
-		$output .= $this->_y->toString();
+    public function toString() {
+        $output = $this->_isRelative ? 'm' : 'M';
+        $output .= $this->_x->toString().' ';
+        $output .= $this->_y->toString();
 
-		return $output;
-	}
+        return $output;
+    }
 }

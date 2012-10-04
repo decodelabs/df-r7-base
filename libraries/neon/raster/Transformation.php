@@ -39,13 +39,13 @@ class Transformation implements ITransformation {
     protected $_transformations = array();
 
     public function __construct() {
-    	foreach(func_get_args() as $arg) {
-    		if($arg instanceof IImage) {
-    			$this->setImage($arg);
-    		} else if(is_string($arg)) {
-    			$this->_parseString($arg);
-    		}
-    	}
+        foreach(func_get_args() as $arg) {
+            if($arg instanceof IImage) {
+                $this->setImage($arg);
+            } else if(is_string($arg)) {
+                $this->_parseString($arg);
+            }
+        }
     }
 
     protected function _parseString($string) {
@@ -94,58 +94,58 @@ class Transformation implements ITransformation {
     }
 
     public function setImage(IImage $image) {
-    	$this->_image = $image;
-    	return $this;
+        $this->_image = $image;
+        return $this;
     }
 
     public function getImage() {
-    	return $this->_image;
+        return $this->_image;
     }
 
     public function apply() {
-    	if(!$this->_image) {
-    		throw new RuntimeException(
-				'No image has been set for transformation'
-			);
-    	}
+        if(!$this->_image) {
+            throw new RuntimeException(
+                'No image has been set for transformation'
+            );
+        }
 
-    	foreach($this->_transformations as $callback) {
-    		if(method_exists($this->_image, $callback[0])) {
-    			call_user_func_array([$this->_image, $callback[0]], $callback[1]);
-    		}
-    	}
+        foreach($this->_transformations as $callback) {
+            if(method_exists($this->_image, $callback[0])) {
+                call_user_func_array([$this->_image, $callback[0]], $callback[1]);
+            }
+        }
 
-    	return $this->_image;
+        return $this->_image;
     }
 
 
 // Manipulations
     public function resize($width, $height, $mode=IDimension::FIT) {
-    	return $this->_addTransformation('resize', func_get_args());
+        return $this->_addTransformation('resize', func_get_args());
     }
 
     public function crop($x, $y, $width, $height) {
-    	return $this->_addTransformation('crop', func_get_args());
+        return $this->_addTransformation('crop', func_get_args());
     }
 
     public function cropZoom($width, $height) {
-    	return $this->_addTransformation('cropZoom', func_get_args());
+        return $this->_addTransformation('cropZoom', func_get_args());
     }
 
     public function frame($width, $height, $color=null) {
-    	return $this->_addTransformation('frame', func_get_args());
+        return $this->_addTransformation('frame', func_get_args());
     }
 
     public function rotate($angle, $background=null) {
-    	return $this->_addTransformation('rotate', func_get_args());
+        return $this->_addTransformation('rotate', func_get_args());
     }
 
     public function mirror() {
-    	return $this->_addTransformation('mirror', func_get_args());
+        return $this->_addTransformation('mirror', func_get_args());
     }
 
     public function flip() {
-    	return $this->_addTransformation('flip', func_get_args());
+        return $this->_addTransformation('flip', func_get_args());
     }
 
 

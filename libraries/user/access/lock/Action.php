@@ -16,16 +16,16 @@ class Action implements user\IAccessLock {
     protected $_action;
 
     public function __construct(user\IAccessLock $parentLock, $action) {
-    	$this->_parentLock = $parentLock;
-    	$this->_action = $action;
+        $this->_parentLock = $parentLock;
+        $this->_action = $action;
     }
 
     public function getParentLock() {
-    	return $this->_parentLock;
+        return $this->_parentLock;
     }
 
     public function getAction() {
-    	return $this->_action;
+        return $this->_action;
     }
 
     public function getAccessLockDomain() {
@@ -34,25 +34,25 @@ class Action implements user\IAccessLock {
 
     public function lookupAccessKey(array $keys, $action=null) {
         if($action === null) {
-        	$action = $this->_action;
+            $action = $this->_action;
         }
 
         return $this->_parentLock->lookupAccessKey($keys, $action);
     }
 
     public function getDefaultAccess($action=null) {
-    	if($action === null) {
-        	$action = $this->_action;
+        if($action === null) {
+            $action = $this->_action;
         }
 
-    	return $this->_parentLock->getDefaultAccess($action);
+        return $this->_parentLock->getDefaultAccess($action);
     }
 
     public function getActionLock($action) {
-    	$output = clone $this;
-    	$output->_action = $action;
+        $output = clone $this;
+        $output->_action = $action;
 
-    	return $output;
+        return $output;
     }
 
     public function getAccessLockId() {

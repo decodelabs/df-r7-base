@@ -20,77 +20,77 @@ class FacetController implements IFacetController {
     protected $_facets = array();
 
     public function __construct(IContext $context, Callable $initializer=null) {
-    	$this->_context = $context;
-		$this->setInitializer($initializer);
+        $this->_context = $context;
+        $this->setInitializer($initializer);
     }
 
     public function setInitializer(Callable $initializer=null) {
-    	$this->_initializer = $initializer;
-    	return $this;
+        $this->_initializer = $initializer;
+        return $this;
     }
 
     public function getInitializer() {
-    	return $this->_initializer;
+        return $this->_initializer;
     }
 
 
     public function setAction(Callable $action) {
-    	$this->_action = $action;
-    	return $this;
+        $this->_action = $action;
+        return $this;
     }
 
     public function getAction() {
-    	return $this->_action;
+        return $this->_action;
     }
 
 
     public function addFacet($id, Callable $action) {
-    	$this->_facets[$id] = $action;
-    	return $this;
+        $this->_facets[$id] = $action;
+        return $this;
     }
 
     public function hasFacet($id) {
-    	return isset($this->_facets[$id]);
+        return isset($this->_facets[$id]);
     }
 
     public function getFacet($id) {
-    	if($this->hasFacet($id)) {
-    		return $this->_facets[$id];
-    	}
+        if($this->hasFacet($id)) {
+            return $this->_facets[$id];
+        }
     }
 
     public function removeFacet($id) {
-    	unset($this->_facets[$id]);
-    	return $this;
+        unset($this->_facets[$id]);
+        return $this;
     }
 
 
 
     public function __get($id) {
-    	$value = null;
+        $value = null;
 
-    	if($facet = $this->getFacet($id)) {
-    		$value = $facet->__invoke($this);
-    	}
+        if($facet = $this->getFacet($id)) {
+            $value = $facet->__invoke($this);
+        }
 
-    	return new aura\view\content\GenericRenderer($value);
+        return new aura\view\content\GenericRenderer($value);
     }
 
 
 // Response
-	public function toResponse() {
-		if($this->_initializer) {
-			$this->_initializer->__invoke($this);
-		}
+    public function toResponse() {
+        if($this->_initializer) {
+            $this->_initializer->__invoke($this);
+        }
 
-		if(!$this->_action) {
-			throw new RuntimeException(
-				'No main action has been defined for facet controller at '.$this->_context->getRequest()
-			);
-		}
+        if(!$this->_action) {
+            throw new RuntimeException(
+                'No main action has been defined for facet controller at '.$this->_context->getRequest()
+            );
+        }
 
-		$output = $this->_action->__invoke($this);
-		
-		return $output;
-	}
+        $output = $this->_action->__invoke($this);
+        
+        return $output;
+    }
 }

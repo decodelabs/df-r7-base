@@ -10,155 +10,155 @@ use df\core;
     
 class Angle implements IAngle, core\IDumpable {
 
-	use TSingleValueUnit;
+    use TSingleValueUnit;
 
-	const DEFAULT_UNIT = 'deg';
+    const DEFAULT_UNIT = 'deg';
 
-	private static $_units = ['deg', 'rad', 'grad', 'turn'];
+    private static $_units = ['deg', 'rad', 'grad', 'turn'];
 
-	protected $_value;
-	protected $_unit;
+    protected $_value;
+    protected $_unit;
 
     public static function factory($value, $unit=null, $allowPlainNumbers=false) {
-    	if($value instanceof IAngle) {
-    		return $value;
-    	}
+        if($value instanceof IAngle) {
+            return $value;
+        }
 
-    	return new self($value, $unit, $allowPlainNumbers);
+        return new self($value, $unit, $allowPlainNumbers);
     }
 
     public function toCssString() {
-    	return $this->getDegrees().'deg';
+        return $this->getDegrees().'deg';
     }
 
-	public function normalize() {
-		$useMargin = false;
+    public function normalize() {
+        $useMargin = false;
 
-		switch($this->_unit) {
-			case null:
-			case 'deg':
-				$limit = 360;
-				break;
+        switch($this->_unit) {
+            case null:
+            case 'deg':
+                $limit = 360;
+                break;
 
-			case 'rad':
-				$limit = 360 / (180 / pi());
-				$useDelta = true;
-				break;
+            case 'rad':
+                $limit = 360 / (180 / pi());
+                $useDelta = true;
+                break;
 
-			case 'grad':
-				$limit = 400;
-				break;
+            case 'grad':
+                $limit = 400;
+                break;
 
-			case 'turn':
-				$limit = 1;
-				break;
-		}
+            case 'turn':
+                $limit = 1;
+                break;
+        }
 
-		$upper = $limit;
-		$lower = -$limit;
+        $upper = $limit;
+        $lower = -$limit;
 
-		if($useMargin) {
-			$upper = $limit + 0.000005;
-			$lower = -$limit - 0.000005;
-		}
+        if($useMargin) {
+            $upper = $limit + 0.000005;
+            $lower = -$limit - 0.000005;
+        }
 
-		while($this->_value > $upper) {
-			$this->_value -= $limit;
-		}
+        while($this->_value > $upper) {
+            $this->_value -= $limit;
+        }
 
-		while($this->_value < $lower) {
-			$this->_value += $limit;
-		}
+        while($this->_value < $lower) {
+            $this->_value += $limit;
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function setDegrees($degrees) {
-		return $this->_parseUnit($degrees, 'deg');
-	}
+    public function setDegrees($degrees) {
+        return $this->_parseUnit($degrees, 'deg');
+    }
 
-	public function getDegrees() {
-		return $this->_convert($this->_value, $this->_unit, 'deg');
-	}
+    public function getDegrees() {
+        return $this->_convert($this->_value, $this->_unit, 'deg');
+    }
 
-	public function setRadians($radians) {
-		return $this->_parseUnit($radians, 'rad');
-	}
+    public function setRadians($radians) {
+        return $this->_parseUnit($radians, 'rad');
+    }
 
-	public function getRadians() {
-		return $this->_convert($this->_value, $this->_unit, 'rad');
-	}
+    public function getRadians() {
+        return $this->_convert($this->_value, $this->_unit, 'rad');
+    }
 
-	public function setGradians($gradians) {
-		return $this->_parseUnit($gradians, 'grad');
-	}
+    public function setGradians($gradians) {
+        return $this->_parseUnit($gradians, 'grad');
+    }
 
-	public function getGradians() {
-		return $this->_convert($this->_value, $this->_unit, 'grad');
-	}
+    public function getGradians() {
+        return $this->_convert($this->_value, $this->_unit, 'grad');
+    }
 
-	public function setTurns($turns) {
-		return $this->_parseUnit($turns, 'turn');
-	}
+    public function setTurns($turns) {
+        return $this->_parseUnit($turns, 'turn');
+    }
 
-	public function getTurns() {
-		return $this->_convert($this->_value, $this->_unit, 'turn');
-	}
+    public function getTurns() {
+        return $this->_convert($this->_value, $this->_unit, 'turn');
+    }
 
-	protected function _convert($value, $inUnit, $outUnit) {
-		if($inUnit === null) {
-			$inUnit = self::DEFAULT_UNIT;
-		}
+    protected function _convert($value, $inUnit, $outUnit) {
+        if($inUnit === null) {
+            $inUnit = self::DEFAULT_UNIT;
+        }
 
-		if($outUnit === null) {
-			$outUnit = self::DEFAULT_UNIT;
-		}
+        if($outUnit === null) {
+            $outUnit = self::DEFAULT_UNIT;
+        }
 
-		if($inUnit == $outUnit) {
-			return $value;
-		}
+        if($inUnit == $outUnit) {
+            return $value;
+        }
 
-		switch($inUnit) {
-			case 'deg':
-				$degrees = $value;
-				break;
+        switch($inUnit) {
+            case 'deg':
+                $degrees = $value;
+                break;
 
-			case 'rad':
-				$degrees = $value * (180 / pi());
-				break;
+            case 'rad':
+                $degrees = $value * (180 / pi());
+                break;
 
-			case 'grad':
-				$degrees = ($value / 400) * 360;
-				break;
+            case 'grad':
+                $degrees = ($value / 400) * 360;
+                break;
 
-			case 'turn':
-				$degrees = $value * 360;
-				break;
-		}
+            case 'turn':
+                $degrees = $value * 360;
+                break;
+        }
 
-		switch($outUnit) {
-			case 'deg':
-				$value = $degrees;
-				break;
+        switch($outUnit) {
+            case 'deg':
+                $value = $degrees;
+                break;
 
-			case 'rad':
-				$value = $degrees / (180 / pi());
-				break;
+            case 'rad':
+                $value = $degrees / (180 / pi());
+                break;
 
-			case 'grad':
-				$value = ($degrees / 360) * 400;
-				break;
+            case 'grad':
+                $value = ($degrees / 360) * 400;
+                break;
 
-			case 'turn':
-				$value = $degrees / 360;
-				break;
-		}
+            case 'turn':
+                $value = $degrees / 360;
+                break;
+        }
 
-		return $value;
-	}
+        return $value;
+    }
 
 // Dump
-	public function getDumpProperties() {
-		return $this->toString();
-	}
+    public function getDumpProperties() {
+        return $this->toString();
+    }
 }

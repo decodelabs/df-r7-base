@@ -17,15 +17,15 @@ class EntryList implements arch\navigation\IEntryList, core\IRegistryObject {
     const REGISTRY_KEY = 'breadcrumbs';
 
     public function getRegistryObjectKey() {
-    	return self::REGISTRY_KEY;
+        return self::REGISTRY_KEY;
     }
 
     public function onApplicationShutdown() {}
 
 
     public static function generateFromRequest(arch\IRequest $request) {
-    	$output = new self();
-    	$parts = $request->getLiteralPathArray();
+        $output = new self();
+        $parts = $request->getLiteralPathArray();
         $path = '';
         
         if($request->isDefaultArea()) {
@@ -67,9 +67,9 @@ class EntryList implements arch\navigation\IEntryList, core\IRegistryObject {
             }
             
             $output->addEntry(
-            	(new arch\navigation\entry\Link($linkRequest, $title))
-            		->setWeight(($i + 1) * 10)
-    		);
+                (new arch\navigation\entry\Link($linkRequest, $title))
+                    ->setWeight(($i + 1) * 10)
+            );
         }
 
         return $output;

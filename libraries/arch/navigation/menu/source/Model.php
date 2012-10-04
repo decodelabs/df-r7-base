@@ -13,18 +13,18 @@ use df\axis;
 class Model extends Base {
 
     public function loadMenu(core\uri\Url $id) {
-    	$modelName = $id->path->getFirst();
-    	$model = axis\Model::factory($modelName, $this->_context->getApplication());
-    	$menuId = $id->path->getLast();
+        $modelName = $id->path->getFirst();
+        $model = axis\Model::factory($modelName, $this->_context->getApplication());
+        $menuId = $id->path->getLast();
 
-    	if(!$model instanceof arch\navigation\menu\ISourceAdapter) {
-    		throw new arch\navigation\SourceNotFoundException(
-    			'Model '.$modelName.' is not a menu source adapter'
-			);
-    	}
+        if(!$model instanceof arch\navigation\menu\ISourceAdapter) {
+            throw new arch\navigation\SourceNotFoundException(
+                'Model '.$modelName.' is not a menu source adapter'
+            );
+        }
 
-    	$output = $model->loadMenu($this, $id);
-    	
-    	return $output;
+        $output = $model->loadMenu($this, $id);
+        
+        return $output;
     }
 }

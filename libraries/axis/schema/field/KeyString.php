@@ -12,48 +12,48 @@ use df\opal;
     
 class KeyString extends String {
 
-	protected $_case = core\string\ICase::NONE;
+    protected $_case = core\string\ICase::NONE;
 
     protected function _init($length=16, $case=core\string\ICase::NONE) {
-    	$this->setLength($length);
-    	$this->setCase($case);
+        $this->setLength($length);
+        $this->setCase($case);
     }
 
     public function setCase($case) {
-    	$case = core\string\Manipulator::normalizeCaseFlag($case);
+        $case = core\string\Manipulator::normalizeCaseFlag($case);
 
-    	if($case != $this->_case) {
-    		$this->_hasChanged = true;
-    	}
+        if($case != $this->_case) {
+            $this->_hasChanged = true;
+        }
 
-    	$this->_case = $case;
-    	return $this;
+        $this->_case = $case;
+        return $this;
     }
 
     public function getCase() {
-    	return $this->_case;
+        return $this->_case;
     }
 
 
 // Values
     public function sanitizeValue($value, $forRecord) {
-    	if($this->_case != core\string\ICase::NONE && $value !== null) {
-    		$value = core\string\Manipulator::applyCase($value, $this->_case, $this->_characterSet);
-    	}
+        if($this->_case != core\string\ICase::NONE && $value !== null) {
+            $value = core\string\Manipulator::applyCase($value, $this->_case, $this->_characterSet);
+        }
 
-    	return $value;
+        return $value;
     }
 
 // Ext. serialize
-	protected function _importStorageArray(array $data) {
-		parent::_importStorageArray($data);
-		$this->_case = $data['cas'];
-	}
+    protected function _importStorageArray(array $data) {
+        parent::_importStorageArray($data);
+        $this->_case = $data['cas'];
+    }
 
-	public function toStorageArray() {
-		$output = parent::toStorageArray();
-		$output['cas'] = $this->_case;
+    public function toStorageArray() {
+        $output = parent::toStorageArray();
+        $output['cas'] = $this->_case;
 
-		return $output;
-	}
+        return $output;
+    }
 }

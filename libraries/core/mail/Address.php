@@ -10,7 +10,7 @@ use df\core;
     
 class Address implements IAddress {
 
-	use core\TStringProvider;
+    use core\TStringProvider;
 
     protected $_name;
     protected $_address;
@@ -20,39 +20,39 @@ class Address implements IAddress {
         if($address === null) {
             return null;
         } else if($address instanceof IAddress) {
-    		return $address;
-    	} else if($name !== null) {
-    		return new self($address, $name);
-    	} else if(is_string($address)) {
-    		return self::fromString($address);
-    	} else {
-    		throw new InvalidArgumentException(
-    			'Invalid email address'
-			);
-    	}
+            return $address;
+        } else if($name !== null) {
+            return new self($address, $name);
+        } else if(is_string($address)) {
+            return self::fromString($address);
+        } else {
+            throw new InvalidArgumentException(
+                'Invalid email address'
+            );
+        }
     }
 
     public static function fromString($string) {
-    	$parts = explode('<', $string, 2);
+        $parts = explode('<', $string, 2);
 
-    	$address = rtrim(trim(array_pop($parts)), '>');
-		$name = trim(array_shift($parts));
+        $address = rtrim(trim(array_pop($parts)), '>');
+        $name = trim(array_shift($parts));
 
-		if(empty($name)) {
-			$name = null;
-		}
+        if(empty($name)) {
+            $name = null;
+        }
 
-		return new self($address, $name);
+        return new self($address, $name);
     }
 
     public function __construct($address, $name=null) {
-    	$this->setAddress($address);
-    	$this->setName($name);
+        $this->setAddress($address);
+        $this->setName($name);
     }
 
 
     public function setAddress($address) {
-    	$address = strtolower($address);
+        $address = strtolower($address);
         $address = str_replace(array(' at ', ' dot '), array('@', '.'), $address);
         $address = filter_var($address, \FILTER_SANITIZE_EMAIL);
 
@@ -61,34 +61,34 @@ class Address implements IAddress {
     }
 
     public function getAddress() {
-    	return $this->_address;
+        return $this->_address;
     }
 
     public function setName($name) {
-    	$this->_name = $name;
-    	return $this;
+        $this->_name = $name;
+        return $this;
     }
 
     public function getName() {
-    	return $this->_name;
+        return $this->_name;
     }
 
 
     public function isValid() {
-    	if($this->_isValid === null) {
-    		$this->_isValid = (bool)filter_var($this->_address, \FILTER_VALIDATE_EMAIL);
-    	}
+        if($this->_isValid === null) {
+            $this->_isValid = (bool)filter_var($this->_address, \FILTER_VALIDATE_EMAIL);
+        }
 
-    	return (bool)$this->_isValid;
+        return (bool)$this->_isValid;
     }
     
     public function toString() {
-    	$output = $this->_address;
+        $output = $this->_address;
 
-    	if(!empty($this->_name)) {
-    		$output = $this->_name.' <'.$output.'>';
-    	}
+        if(!empty($this->_name)) {
+            $output = $this->_name.' <'.$output.'>';
+        }
 
-    	return $output;
+        return $output;
     }
 }

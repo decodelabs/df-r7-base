@@ -15,15 +15,15 @@ class Decimal extends Base implements opal\schema\IFloatingPointNumericField {
     use opal\schema\TField_FloatingPointNumeric;
 
     protected function _init($precision=4, $scale=8) {
-    	$this->setPrecision($precision);
-    	$this->setScale($scale);
+        $this->setPrecision($precision);
+        $this->setScale($scale);
     }
 
 // Primitive
-	public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
-		$output = new opal\schema\Primitive_Decimal($this, $this->_precision, $this->_scale);
+    public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
+        $output = new opal\schema\Primitive_Decimal($this, $this->_precision, $this->_scale);
 
-		if($this->_isUnsigned) {
+        if($this->_isUnsigned) {
             $output->isUnsigned(true);
         }
         
@@ -32,18 +32,18 @@ class Decimal extends Base implements opal\schema\IFloatingPointNumericField {
         }
 
         return $output;
-	}
+    }
 
 // Ext. serialize
-	protected function _importStorageArray(array $data) {
-		$this->_setBaseStorageArray($data);
-		$this->_setFloatingPointNumericStorageArray($data);
-	}
+    protected function _importStorageArray(array $data) {
+        $this->_setBaseStorageArray($data);
+        $this->_setFloatingPointNumericStorageArray($data);
+    }
 
-	public function toStorageArray() {
-		return array_merge(
-			$this->_getBaseStorageArray(),
-			$this->_getFloatingPointNumericStorageArray()
-		);
-	}
+    public function toStorageArray() {
+        return array_merge(
+            $this->_getBaseStorageArray(),
+            $this->_getFloatingPointNumericStorageArray()
+        );
+    }
 }

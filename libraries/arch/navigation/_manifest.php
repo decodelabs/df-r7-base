@@ -38,7 +38,7 @@ interface IEntryList extends core\IArrayProvider {
 }
 
 interface IEntryListGenerator {
-	public function generateEntries(IEntryList $entryList);
+    public function generateEntries(IEntryList $entryList);
 }
 
 
@@ -64,10 +64,10 @@ trait TEntryList {
 
     use TEntryGenerator;
 
-	protected $_entries = array();
-	protected $_isSorted = false;
+    protected $_entries = array();
+    protected $_isSorted = false;
 
-	public static function fromArray(array $entries) {
+    public static function fromArray(array $entries) {
         return (new self())->addEntries($entries);
     }
     
@@ -113,8 +113,8 @@ trait TEntryList {
     }
     
     public function getEntries() {
-    	if(!$this->_isSorted) {
-    		$this->_sortEntries();
+        if(!$this->_isSorted) {
+            $this->_sortEntries();
             $this->_isSorted = true;
         }
 

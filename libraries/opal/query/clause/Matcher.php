@@ -11,12 +11,12 @@ use df\opal;
     
 class Matcher implements opal\query\IClauseMatcher {
 
-	protected $_index = array();
-	protected $_isFieldComparison = false;
+    protected $_index = array();
+    protected $_isFieldComparison = false;
 
 
     public function __construct(array $clauses, $isFieldComparison=false) {
-    	$this->_isFieldComparison = (bool)$isFieldComparison;
+        $this->_isFieldComparison = (bool)$isFieldComparison;
 
         $set = array();
         
@@ -33,7 +33,7 @@ class Matcher implements opal\query\IClauseMatcher {
                     continue;
                 }
             } else {
-            	$clause = $this->_prepareClauseBundle($clause);
+                $clause = $this->_prepareClauseBundle($clause);
             }
             
             $set[] = $clause;
@@ -45,105 +45,105 @@ class Matcher implements opal\query\IClauseMatcher {
     }
 
     protected function _prepareClauseBundle(opal\query\IClause $clause) {
-    	$output = new \stdClass();
-    	$output->clause = clone $clause;
-    	$output->operator = $clause->getOperator();
+        $output = new \stdClass();
+        $output->clause = clone $clause;
+        $output->operator = $clause->getOperator();
 
-    	$output->fieldQualifiedName = $clause->getField()->getQualifiedName();
-    	$value = $clause->getValue();
+        $output->fieldQualifiedName = $clause->getField()->getQualifiedName();
+        $value = $clause->getValue();
 
-    	if($value instanceof opal\query\IField) {
-    		$output->valueQualifiedName = $value->getQualifiedName();
-    	} else {
-    		$output->valueQualifiedName = null;
-    	}
+        if($value instanceof opal\query\IField) {
+            $output->valueQualifiedName = $value->getQualifiedName();
+        } else {
+            $output->valueQualifiedName = null;
+        }
 
-    	if(!$this->_isFieldComparison) {
-    		$output->compare = $clause->getPreparedValue();
+        if(!$this->_isFieldComparison) {
+            $output->compare = $clause->getPreparedValue();
 
-	        if($output->compare instanceof opal\query\IField) {
-	            core\stub('Field comparison', $output);
-	        }
-	        
-	        if($output->compare instanceof opal\query\ISelectQuery) {
-	            $source = $output->compare->getSource();
-	            
-	            if(null === ($targetField = $source->getFirstOutputDataField())) {
-	                throw new opal\query\ValueException(
-	                    'Clause subquery does not have a distinct return field'
-	                );
-	            }
-	            
-	            
-	            switch($clause->getOperator()) {
-	                case opal\query\clause\Clause::OP_EQ:
-	                case opal\query\clause\Clause::OP_NEQ:
-	                case opal\query\clause\Clause::OP_LIKE:
-	                case opal\query\clause\Clause::OP_NOT_LIKE:
-	                case opal\query\clause\Clause::OP_CONTAINS:
-	                case opal\query\clause\Clause::OP_NOT_CONTAINS:
-	                case opal\query\clause\Clause::OP_BEGINS:
-	                case opal\query\clause\Clause::OP_NOT_BEGINS:
-	                case opal\query\clause\Clause::OP_ENDS:
-	                case opal\query\clause\Clause::OP_NOT_ENDS:
-	                    $limit = $output->compare->getLimit();
-	                    $output->compare->limit(1);
-	                    $clause->setValue($output->compare->toValue($targetField->getName()));
-	                    $output->compare->limit($limit);
-	                    break;
-	                    
-	                case opal\query\clause\Clause::OP_IN:
-	                case opal\query\clause\Clause::OP_NOT_IN:
-	                    $clause->setValue($output->compare->toList($targetField->getName()));
-	                    break;
-	                    
-	                case opal\query\clause\Clause::OP_GT:
-	                case opal\query\clause\Clause::OP_GTE:
-	                    $source = $output->compare->getSource();
+            if($output->compare instanceof opal\query\IField) {
+                core\stub('Field comparison', $output);
+            }
+            
+            if($output->compare instanceof opal\query\ISelectQuery) {
+                $source = $output->compare->getSource();
+                
+                if(null === ($targetField = $source->getFirstOutputDataField())) {
+                    throw new opal\query\ValueException(
+                        'Clause subquery does not have a distinct return field'
+                    );
+                }
+                
+                
+                switch($clause->getOperator()) {
+                    case opal\query\clause\Clause::OP_EQ:
+                    case opal\query\clause\Clause::OP_NEQ:
+                    case opal\query\clause\Clause::OP_LIKE:
+                    case opal\query\clause\Clause::OP_NOT_LIKE:
+                    case opal\query\clause\Clause::OP_CONTAINS:
+                    case opal\query\clause\Clause::OP_NOT_CONTAINS:
+                    case opal\query\clause\Clause::OP_BEGINS:
+                    case opal\query\clause\Clause::OP_NOT_BEGINS:
+                    case opal\query\clause\Clause::OP_ENDS:
+                    case opal\query\clause\Clause::OP_NOT_ENDS:
+                        $limit = $output->compare->getLimit();
+                        $output->compare->limit(1);
+                        $clause->setValue($output->compare->toValue($targetField->getName()));
+                        $output->compare->limit($limit);
+                        break;
+                        
+                    case opal\query\clause\Clause::OP_IN:
+                    case opal\query\clause\Clause::OP_NOT_IN:
+                        $clause->setValue($output->compare->toList($targetField->getName()));
+                        break;
+                        
+                    case opal\query\clause\Clause::OP_GT:
+                    case opal\query\clause\Clause::OP_GTE:
+                        $source = $output->compare->getSource();
 
-	                    $source->addOutputField(
-	                        new opal\query\field\Aggregate(
-	                            $source, 'MAX', $targetField, 'max'
-	                        )
-	                    );
-	                    
-	                    $clause->setValue($output->compare->toValue('max'));
-	                    break;
-	                    
-	                case opal\query\clause\Clause::OP_LT: 
-	                case opal\query\clause\Clause::OP_LTE:
-	                    $source = $output->compare->getSource();
+                        $source->addOutputField(
+                            new opal\query\field\Aggregate(
+                                $source, 'MAX', $targetField, 'max'
+                            )
+                        );
+                        
+                        $clause->setValue($output->compare->toValue('max'));
+                        break;
+                        
+                    case opal\query\clause\Clause::OP_LT: 
+                    case opal\query\clause\Clause::OP_LTE:
+                        $source = $output->compare->getSource();
 
-	                    $source->addOutputField(
-	                        new opal\query\field\Aggregate(
-	                            $source, 'MIN', $targetField, 'min'
-	                        )
-	                    );
-	                    
-	                    $clause->setValue($output->compare->toValue('min'));
-	                    break;
-	                    
-	                    
-	                case opal\query\clause\Clause::OP_BETWEEN:
-	                case opal\query\clause\Clause::OP_NOT_BETWEEN:
-	                    throw new OperatorException(
-	                        'Operator '.$operator.' is not valid for clause subqueries'
-	                    );
-	                    
-	                
-	                default:
-	                    throw new opal\query\OperatorException(
-	                        'Operator '.$operator.' is not recognized'
-	                    );
-	            }
+                        $source->addOutputField(
+                            new opal\query\field\Aggregate(
+                                $source, 'MIN', $targetField, 'min'
+                            )
+                        );
+                        
+                        $clause->setValue($output->compare->toValue('min'));
+                        break;
+                        
+                        
+                    case opal\query\clause\Clause::OP_BETWEEN:
+                    case opal\query\clause\Clause::OP_NOT_BETWEEN:
+                        throw new OperatorException(
+                            'Operator '.$operator.' is not valid for clause subqueries'
+                        );
+                        
+                    
+                    default:
+                        throw new opal\query\OperatorException(
+                            'Operator '.$operator.' is not recognized'
+                        );
+                }
 
-	            $output->compare = $clause->getPreparedValue();
-	        }
-    	} else {
-    		$output->compare = null;
-    	}
+                $output->compare = $clause->getPreparedValue();
+            }
+        } else {
+            $output->compare = null;
+        }
 
-    	return $output;
+        return $output;
     }
 
 
@@ -214,7 +214,7 @@ class Matcher implements opal\query\IClauseMatcher {
 
 
     public static function compare($value, $operator, $compare) {
-    	switch($operator) {
+        switch($operator) {
             case opal\query\clause\Clause::OP_EQ:
                 return $value === $compare;
                 

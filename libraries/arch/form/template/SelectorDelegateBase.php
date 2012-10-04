@@ -16,67 +16,67 @@ abstract class SelectorDelegateBase extends arch\form\Delegate {
     protected $_isRequired = false;
     protected $_isForMany = true;
 
-	public function isRequired($flag=null) {
-		if($flag !== null) {
-			$this->_isRequired = (bool)$flag;
-			return $this;
-		}
+    public function isRequired($flag=null) {
+        if($flag !== null) {
+            $this->_isRequired = (bool)$flag;
+            return $this;
+        }
 
-		return $this->_isRequired;
-	}
+        return $this->_isRequired;
+    }
 
-	public function isForOne($flag=null) {
-		if($flag !== null) {
-			$this->_isForMany = !(bool)$flag;
-			return $this;
-		}
+    public function isForOne($flag=null) {
+        if($flag !== null) {
+            $this->_isForMany = !(bool)$flag;
+            return $this;
+        }
 
-		return !$this->_isForMany;
-	}
+        return !$this->_isForMany;
+    }
 
-	public function isForMany($flag=null) {
-		if($flag !== null) {
-			$this->_isForMany = (bool)$flag;
-			return $this;
-		}
+    public function isForMany($flag=null) {
+        if($flag !== null) {
+            $this->_isForMany = (bool)$flag;
+            return $this;
+        }
 
-		return $this->_isForMany;
-	}
+        return $this->_isForMany;
+    }
 
 
-	protected function _normalizeQueryResult($result) {
-		if($result instanceof opal\query\IQuery) {
-    		$result = $result->toArray();
-    	}
+    protected function _normalizeQueryResult($result) {
+        if($result instanceof opal\query\IQuery) {
+            $result = $result->toArray();
+        }
 
-    	if(!$result instanceof \Iterator
-		&& !$result instanceof core\collection\ICollection
-		&& !is_array($result)) {
-    		$result = array();
-		}
+        if(!$result instanceof \Iterator
+        && !$result instanceof core\collection\ICollection
+        && !is_array($result)) {
+            $result = array();
+        }
 
-		return $result;
-	}
+        return $result;
+    }
 
-	protected function _extractQueryResult($result) {
-		$result = $this->_normalizeQueryResult($result);
+    protected function _extractQueryResult($result) {
+        $result = $this->_normalizeQueryResult($result);
 
-		foreach($result as $entry) {
-			return $entry;
-		}
-	}
+        foreach($result as $entry) {
+            return $entry;
+        }
+    }
 
-	protected function _isQueryResultEmpty($result) {
-		if($result instanceof core\collection\ICollection) {
-    		return $result->isEmpty();
-    	} else if(is_array($result)) {
-    		return empty($result);
-    	} else {
-    		return true;
-    	}
-	}
+    protected function _isQueryResultEmpty($result) {
+        if($result instanceof core\collection\ICollection) {
+            return $result->isEmpty();
+        } else if(is_array($result)) {
+            return empty($result);
+        } else {
+            return true;
+        }
+    }
 
-	protected function _getResultId($result) {
+    protected function _getResultId($result) {
         return $result['id'];
     }
 

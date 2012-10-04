@@ -20,7 +20,7 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 // Interfaces
 interface IColor extends core\unit\ICssCompatibleUnit {
 
-	const RGB = 'rgb';
+    const RGB = 'rgb';
     const HSL = 'hsl';
     const HSV = 'hsv';
 

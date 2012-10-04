@@ -12,79 +12,79 @@ use df\opal;
     
 class CurrencyRange extends Base implements axis\schema\IMultiPrimitiveField {
 
-	protected $_requireHighPoint = true;
+    protected $_requireHighPoint = true;
 
     protected function _init($requireHighPoint=true) {
-    	$this->requireHighPoint($requireHighPoint);
+        $this->requireHighPoint($requireHighPoint);
     }
 
     public function requireHighPoint($flag=null) {
-    	if($flag !== null) {
-    		$flag = (bool)$flag;
+        if($flag !== null) {
+            $flag = (bool)$flag;
 
-    		if($flag != $this->_requireHighPoint) {
-    			$this->_hasChanged;
-    		}
+            if($flag != $this->_requireHighPoint) {
+                $this->_hasChanged;
+            }
 
-    		$this->_requireHighPoint = $flag;
-    		return $this;
-    	}
+            $this->_requireHighPoint = $flag;
+            return $this;
+        }
 
-    	return $this->_requireHighPoint;
+        return $this->_requireHighPoint;
     }
 
 
 // Values
     public function inflateValueFromRow($key, array $row, opal\query\record\IRecord $forRecord=null) {
         if(isset($row[$key.'_lo'])) {
-    	    return [$row[$key.'_lo'], $row[$key.'_hi']];
+            return [$row[$key.'_lo'], $row[$key.'_hi']];
         } else {
             return null;
         }
     }
 
     public function deflateValue($value) {
-    	return [
-    		$this->_name.'_lo' => array_shift($value),
-    		$this->_name.'_hi' => array_shift($value)
-    	];
+        return [
+            $this->_name.'_lo' => array_shift($value),
+            $this->_name.'_hi' => array_shift($value)
+        ];
     }
 
     public function sanitizeValue($value, $forRecord) {
-    	if(!is_array($value)) {
-    		$value = [(string)$value, null];
-    	}
+        if(!is_array($value)) {
+            $value = [(string)$value, null];
+        }
 
-    	return $value;
+        return $value;
     }
 
 
 // Primitive
     public function getPrimitiveFieldNames() {
-    	return [
-    		$this->_name.'_lo',
-    		$this->_name.'_hi'
-    	];
+        return [
+            $this->_name.'_lo',
+            $this->_name.'_hi'
+        ];
     }
 
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
-    	return new opal\schema\Primitive_MultiField($this, [
-    		$this->_name.'_lo' => (new opal\schema\Primitive_Currency($this))->_setName($this->_name.'_lo'),
-    		$this->_name.'_hi' => (new opal\schema\Primitive_Currency($this))->_setName($this->_name.'_hi')
-    			->isNullable($this->_isNullable || !$this->_requireHighPoint)
-    	]);
+        return new opal\schema\Primitive_MultiField($this, [
+            $this->_name.'_lo' => (new opal\schema\Primitive_Currency($this))->_setName($this->_name.'_lo'),
+            $this->_name.'_hi' => (new opal\schema\Primitive_Currency($this))->_setName($this->_name.'_hi')
+                ->isNullable($this->_isNullable || !$this->_requireHighPoint)
+        ]);
     }
 
 // Ext. serialize
-	protected function _importStorageArray(array $data) {
-		$this->_setBaseStorageArray($data);
-		$this->_requireHighPoint = $data['rhp'];
-	}
+    protected function _importStorageArray(array $data) {
+        $this->_setBaseStorageArray($data);
+        $this->_requireHighPoint = $data['rhp'];
+    }
 
-	public function toStorageArray() {
-		return array_merge(
-			$this->_getBaseStorageArray(),
-			['rhp' => $this->_requireHighPoint]
-		);
-	}
+    public function toStorageArray() {
+        return array_merge(
+            $this->_getBaseStorageArray(),
+            ['rhp' => $this->_requireHighPoint]
+        );
+    }
 }

@@ -19,12 +19,12 @@ class RuntimeException extends \RuntimeException implements IException {}
 // Interfaces
 interface IManager extends core\IApplicationAware, core\IRegistryObject {
 
-	public function setMessageLimit($limit);
-	public function getMessageLimit();
+    public function setMessageLimit($limit);
+    public function getMessageLimit();
 
-	public function newMessage($id, $message=null, $type=null);
-	public function flushQueue();
-	public function isFlushed();
+    public function newMessage($id, $message=null, $type=null);
+    public function flushQueue();
+    public function isFlushed();
 
 // Constant
     public function setConstantMessage(IMessage $message);
@@ -52,13 +52,13 @@ class Queue implements IQueue {
 
 
 interface IMessage {
-	const INFO = 'info';
-	const SUCCESS = 'success';
-	const ERROR = 'error';
-	const WARNING = 'warning';
-	const DEBUG = 'debug';
+    const INFO = 'info';
+    const SUCCESS = 'success';
+    const ERROR = 'error';
+    const WARNING = 'warning';
+    const DEBUG = 'debug';
 
-	public function getId();
+    public function getId();
     public function setType($type);
     public function getType();
     public function isDebug();

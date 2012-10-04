@@ -10,153 +10,153 @@ use df\core;
     
 class Ratio implements IRatio, core\IDumpable {
 
-	use core\TStringProvider;
+    use core\TStringProvider;
 
-	const FAREY_LIMIT = 100;
+    const FAREY_LIMIT = 100;
 
-	protected $_numerator;
-	protected $_denominator;
+    protected $_numerator;
+    protected $_denominator;
 
-	public static function factory($value, $denominator=null) {
-		if($value instanceof IRatio) {
-			return $value;
-		}
+    public static function factory($value, $denominator=null) {
+        if($value instanceof IRatio) {
+            return $value;
+        }
 
-		return new self($value, $denominator);
-	}
+        return new self($value, $denominator);
+    }
 
-	public function __construct($value, $denominator=null) {
-		$this->parse($value, $denominator);
-	}
+    public function __construct($value, $denominator=null) {
+        $this->parse($value, $denominator);
+    }
 
-	public function isEmpty() {
-		return false;
-	}
+    public function isEmpty() {
+        return false;
+    }
 
     public function parse($value, $denominator=null) {
-    	if(false !== strpos($value, '/')) {
-    		$parts = explode('/', $value, 2);
-    		$value = trim(array_shift($parts));
-    		$denominator = trim(array_shift($parts));
-    	}
+        if(false !== strpos($value, '/')) {
+            $parts = explode('/', $value, 2);
+            $value = trim(array_shift($parts));
+            $denominator = trim(array_shift($parts));
+        }
 
-    	if($denominator !== null) {
-    		return $this->setFraction($value, $denominator);
-    	}
+        if($denominator !== null) {
+            return $this->setFraction($value, $denominator);
+        }
 
-    	return $this->setFactor($value);
+        return $this->setFactor($value);
     }
 
     public function toString() {
-    	return $this->_numerator.'/'.$this->_denominator;
+        return $this->_numerator.'/'.$this->_denominator;
     }
 
     public function toCssString() {
-    	return $this->toString();
+        return $this->toString();
     }
 
-	public function setFraction($numerator, $denominator) {
-		while(floor($numerator) != $numerator) {
-			$numerator *= 10;
-			$denominator *= 10;
-		}
+    public function setFraction($numerator, $denominator) {
+        while(floor($numerator) != $numerator) {
+            $numerator *= 10;
+            $denominator *= 10;
+        }
 
-		while(floor($denominator) != $denominator) {
-			$numerator *= 10;
-			$denominator *= 10;
-		}
+        while(floor($denominator) != $denominator) {
+            $numerator *= 10;
+            $denominator *= 10;
+        }
 
-		list($this->_numerator, $this->_denominator) = self::reduce((int)$numerator, (int)$denominator);
-		return $this;
-	}
+        list($this->_numerator, $this->_denominator) = self::reduce((int)$numerator, (int)$denominator);
+        return $this;
+    }
 
-	public function getNumerator() {
-		return $this->_numerator;
-	}
+    public function getNumerator() {
+        return $this->_numerator;
+    }
 
-	public function getDenominator() {
-		return $this->_denominator;
-	}
+    public function getDenominator() {
+        return $this->_denominator;
+    }
 
-	public function setFactor($factor) {
-		list($this->_numerator, $this->_denominator) = self::farey($factor, self::FAREY_LIMIT);
+    public function setFactor($factor) {
+        list($this->_numerator, $this->_denominator) = self::farey($factor, self::FAREY_LIMIT);
 
-		$this->_numerator = (int)$this->_numerator;
-		$this->_denominator = (int)$this->_denominator;
+        $this->_numerator = (int)$this->_numerator;
+        $this->_denominator = (int)$this->_denominator;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getFactor() {
-		return $this->_numerator / $this->_denominator;
-	}
+    public function getFactor() {
+        return $this->_numerator / $this->_denominator;
+    }
 
-	public static function reduce($numerator, $denominator) {
-		if((!($numerator % 1) && $numerator) && (!($denominator % 1) && $denominator)) {
-			$high = max($numerator, $denominator);
-			$low = min($numerator, $denominator);
+    public static function reduce($numerator, $denominator) {
+        if((!($numerator % 1) && $numerator) && (!($denominator % 1) && $denominator)) {
+            $high = max($numerator, $denominator);
+            $low = min($numerator, $denominator);
 
-			for($i = $low; $i <= $high; ++$i) {
-				if(!($numerator % $i) && !($denominator % $i) && $i) {
-					$numerator /= $i;
-					$denominator /= $i;
-				}
-			}
+            for($i = $low; $i <= $high; ++$i) {
+                if(!($numerator % $i) && !($denominator % $i) && $i) {
+                    $numerator /= $i;
+                    $denominator /= $i;
+                }
+            }
 
-			if(abs($numerator) !== $numerator && abs($denominator) !== $denominator) {
-				$numerator = abs($numerator);
-				$denominator = abs($denominator);
-			}
-		}
+            if(abs($numerator) !== $numerator && abs($denominator) !== $denominator) {
+                $numerator = abs($numerator);
+                $denominator = abs($denominator);
+            }
+        }
 
-		return [$numerator, $denominator];
-	}
+        return [$numerator, $denominator];
+    }
 
-	public static function farey($factor, $limit) {
-		$factor = (double)$factor;
-		$limit = (int)$limit;
+    public static function farey($factor, $limit) {
+        $factor = (double)$factor;
+        $limit = (int)$limit;
 
-		if($factor < 0) {
-			$output = self::farey(-$factor, $limit);
-			return [-$output[0], $output[1]];
-		}
+        if($factor < 0) {
+            $output = self::farey(-$factor, $limit);
+            return [-$output[0], $output[1]];
+        }
 
-		$z = $limit - $limit;
-		$lower = [$z, $z + 1];
-		$upper = [$z + 1, $z];
+        $z = $limit - $limit;
+        $lower = [$z, $z + 1];
+        $upper = [$z + 1, $z];
 
-		while(true) {
-			$mediant = [$lower[0] + $upper[0], $lower[1] + $upper[1]];
-			$crossFactor = $factor * $mediant[1];
+        while(true) {
+            $mediant = [$lower[0] + $upper[0], $lower[1] + $upper[1]];
+            $crossFactor = $factor * $mediant[1];
 
-			if($crossFactor > $mediant[0]) {
-				if($limit < $mediant[1]) {
-					return $upper;
-				}
+            if($crossFactor > $mediant[0]) {
+                if($limit < $mediant[1]) {
+                    return $upper;
+                }
 
-				$lower = $mediant;
-			} else if($crossFactor == $mediant) {
-				if($limit >= $mediant[1]) {
-					return $mediant;
-				}
+                $lower = $mediant;
+            } else if($crossFactor == $mediant) {
+                if($limit >= $mediant[1]) {
+                    return $mediant;
+                }
 
-				if($lower[1] < $upper[1]) {
-					return $lower;
-				}
+                if($lower[1] < $upper[1]) {
+                    return $lower;
+                }
 
-				return $upper;
-			} else {
-				if($limit < $mediant[1]) {
-					return $lower;
-				}
+                return $upper;
+            } else {
+                if($limit < $mediant[1]) {
+                    return $lower;
+                }
 
-				$upper = $mediant;
-			}
-		}
-	}
+                $upper = $mediant;
+            }
+        }
+    }
 
 // Dump
-	public function getDumpProperties() {
-		return $this->toString();
-	}
+    public function getDumpProperties() {
+        return $this->toString();
+    }
 }

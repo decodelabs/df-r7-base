@@ -11,25 +11,25 @@ use df\neon;
     
 class VerticalLine extends Base implements neon\svg\IVerticalLineCommand {
 
-	protected $_y;
+    protected $_y;
 
     public function __construct($y) {
-    	$this->setY($y);
+        $this->setY($y);
     }
 
-	public function setY($y) {
-		$this->_y = core\unit\DisplaySize::factory($y, null, true);
-		return $this;
-	}
+    public function setY($y) {
+        $this->_y = core\unit\DisplaySize::factory($y, null, true);
+        return $this;
+    }
 
-	public function getY() {
-		return $this->_y;
-	}
+    public function getY() {
+        return $this->_y;
+    }
 
-	public function toString() {
-		$output = $this->_isRelative ? 'v' : 'V';
-		$output .= $this->_y->toString();
+    public function toString() {
+        $output = $this->_isRelative ? 'v' : 'V';
+        $output .= $this->_y->toString();
 
-		return $output;
-	}
+        return $output;
+    }
 }

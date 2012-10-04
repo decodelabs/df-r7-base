@@ -19,26 +19,26 @@ trait TStructure {
 // Description
 trait TStructure_Description {
 
-	protected $_title;
-	protected $_description;
+    protected $_title;
+    protected $_description;
 
-	public function setTitle($title) {
-		$this->_title = $this->_normalizeText($title);
-		return $this;
-	}
+    public function setTitle($title) {
+        $this->_title = $this->_normalizeText($title);
+        return $this;
+    }
 
-	public function getTitle() {
-		return $this->_title;
-	}
+    public function getTitle() {
+        return $this->_title;
+    }
 
-	public function setDescription($description) {
-		$this->_description = $this->_normalizeText($description);
-		return $this;
-	}
+    public function setDescription($description) {
+        $this->_description = $this->_normalizeText($description);
+        return $this;
+    }
 
-	public function getDescription() {
-		return $this->_description;
-	}
+    public function getDescription() {
+        return $this->_description;
+    }
 }
 
 
@@ -46,16 +46,16 @@ trait TStructure_Description {
 // Metadata
 trait TStructure_Metadata {
 
-	protected $_metadata;
+    protected $_metadata;
 
-	public function setMetadata($metadata) {
-		$this->_metadata = $this->_normalizeText($metadata);
-		return $this;
-	}
+    public function setMetadata($metadata) {
+        $this->_metadata = $this->_normalizeText($metadata);
+        return $this;
+    }
 
-	public function getMetadata() {
-		return $this->_metadata;
-	}
+    public function getMetadata() {
+        return $this->_metadata;
+    }
 }
 
 
@@ -63,172 +63,172 @@ trait TStructure_Metadata {
 // Container
 trait TStructure_Container {
 
-	use TStructure_Description;
+    use TStructure_Description;
 
-	protected $_children = array();
+    protected $_children = array();
 
-	public function readXml(core\xml\IReadable $reader) {
-		foreach($reader->getChildren() as $child) {
-			if($childObject = $this->_xmlToObject($child, $this)) {
-				$this->addChild($childObject);
-			}
-		}
+    public function readXml(core\xml\IReadable $reader) {
+        foreach($reader->getChildren() as $child) {
+            if($childObject = $this->_xmlToObject($child, $this)) {
+                $this->addChild($childObject);
+            }
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function writeXml(core\xml\IWritable $writer) {
-		$document = $writer->getRootInterchange();
+    public function writeXml(core\xml\IWritable $writer) {
+        $document = $writer->getRootInterchange();
 
-		$writer->startElement($this->getElementName());
-		$writer->setAttributes($this->prepareAttributes($document));
+        $writer->startElement($this->getElementName());
+        $writer->setAttributes($this->prepareAttributes($document));
 
-		// Description
-		if($this instanceof IDescriptionProvider) {
-			if($this->_title) {
-				$writer->writeElement('title', $this->_title);
-			}
+        // Description
+        if($this instanceof IDescriptionProvider) {
+            if($this->_title) {
+                $writer->writeElement('title', $this->_title);
+            }
 
-			if($this->_description) {
-				$writer->writeElement('desc', $this->_description);
-			}
-		}
+            if($this->_description) {
+                $writer->writeElement('desc', $this->_description);
+            }
+        }
 
-		// Metadata
-		if($this instanceof IMetadataProvider) {
-			if($this->_metadata) {
-				$writer->startElement('metadata');
-				$writer->writeRaw(rtrim($this->_metadata)."\n    ");
-				$writer->endElement();
-			}
-		}
+        // Metadata
+        if($this instanceof IMetadataProvider) {
+            if($this->_metadata) {
+                $writer->startElement('metadata');
+                $writer->writeRaw(rtrim($this->_metadata)."\n    ");
+                $writer->endElement();
+            }
+        }
 
-		foreach($this->_children as $child) {
-			$child->writeXml($writer);
-		}
+        foreach($this->_children as $child) {
+            $child->writeXml($writer);
+        }
 
-		$writer->endElement();
-		return $this;
-	}
+        $writer->endElement();
+        return $this;
+    }
 
-	public function setChildren(array $children) {
-		$this->_chilren = array();
-		return $this->addChildren($children);
-	}
+    public function setChildren(array $children) {
+        $this->_chilren = array();
+        return $this->addChildren($children);
+    }
 
-	public function addChildren(array $children) {
-		foreach($children as $child) {
-			if(!$child instanceof IElement) {
-				throw new InvalidArgumentException(
-					'Invalid child element detected'
-				);
-			}
+    public function addChildren(array $children) {
+        foreach($children as $child) {
+            if(!$child instanceof IElement) {
+                throw new InvalidArgumentException(
+                    'Invalid child element detected'
+                );
+            }
 
-			$this->addChild($child);
-		}
+            $this->addChild($child);
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function addChild(IElement $element) {
-		if(!in_array($element, $this->_children, true)) {
-			$this->_children[] = $element;
-		}
+    public function addChild(IElement $element) {
+        if(!in_array($element, $this->_children, true)) {
+            $this->_children[] = $element;
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getChildren() {
-		return $this->_children;
-	}
+    public function getChildren() {
+        return $this->_children;
+    }
 
-	public function removeChild(IElement $element) {
-		foreach($this->_children as $i => $child) {
-			if($element === $child) {
-				unset($this->_children[$i]);
-				break;
-			}
-		}
+    public function removeChild(IElement $element) {
+        foreach($this->_children as $i => $child) {
+            if($element === $child) {
+                unset($this->_children[$i]);
+                break;
+            }
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function clearChildren() {
-		$this->_children = array();
-		return $this;
-	}
-
-
-	public function toPath() {
-		$output = null;
-		$attributes = $this->getGraphicalAttributes();
-
-		foreach($this->_children as $child) {
-			if(!$child instanceof IPathProvider) {
-				throw new RuntimeException(
-					'Cannot create compound path from '.$child->getName().' elements'
-				);
-			}
-
-			$path = $child->toPath();
-			$attributes = array_merge($attributes, $child->getGraphicalAttributes());
-
-			if($child instanceof ITransformAttributeModule 
-		    && null !== ($transform = $child->getTransform())) {
-				// TODO: apply transforms
-
-				throw new RuntimeException(
-					'Child path provider has transformation - I\'m afraid I don\'t know how to convert transformations yet!'
-				);
-			}
-
-			if($output === null) {
-				$output = $path;
-			} else {
-				$output->importPathData($path);
-			}
-		}
-
-		$output->applyInputAttributes($attributes);
-
-		if($this instanceof ITransformAttributeModule 
-	    && null !== ($transform = $this->getTransform())) {
-			// TODO: apply parent transforms
-
-			throw new RuntimeException(
-				'Path provider has transformation - I\'m afraid I don\'t know how to convert transformations yet!'
-			);
-		}
-
-		return $output;
-	}
+    public function clearChildren() {
+        $this->_children = array();
+        return $this;
+    }
 
 
-	public function getDumpProperties() {
-		$output = $this->_attributes;
-		
-		if($this->_title) {
-			$output['title'] = $this->_title;
-		}
+    public function toPath() {
+        $output = null;
+        $attributes = $this->getGraphicalAttributes();
 
-		if($this->_description) {
-			$output['description'] = $this->_description;
-		}
+        foreach($this->_children as $child) {
+            if(!$child instanceof IPathProvider) {
+                throw new RuntimeException(
+                    'Cannot create compound path from '.$child->getName().' elements'
+                );
+            }
 
-		if($this instanceof IMetadataProvider && $this->_metadata) {
-			$output['metadata'] = $this->_metadata;
-		}
+            $path = $child->toPath();
+            $attributes = array_merge($attributes, $child->getGraphicalAttributes());
 
-		if(!empty($this->_children)) {
-			$output['children'] = $this->_children;
+            if($child instanceof ITransformAttributeModule 
+            && null !== ($transform = $child->getTransform())) {
+                // TODO: apply transforms
 
-			if(count($output) == 1) {
-				$output = $this->_children;
-			}
-		}
+                throw new RuntimeException(
+                    'Child path provider has transformation - I\'m afraid I don\'t know how to convert transformations yet!'
+                );
+            }
 
-		return $output;
-	}
+            if($output === null) {
+                $output = $path;
+            } else {
+                $output->importPathData($path);
+            }
+        }
+
+        $output->applyInputAttributes($attributes);
+
+        if($this instanceof ITransformAttributeModule 
+        && null !== ($transform = $this->getTransform())) {
+            // TODO: apply parent transforms
+
+            throw new RuntimeException(
+                'Path provider has transformation - I\'m afraid I don\'t know how to convert transformations yet!'
+            );
+        }
+
+        return $output;
+    }
+
+
+    public function getDumpProperties() {
+        $output = $this->_attributes;
+        
+        if($this->_title) {
+            $output['title'] = $this->_title;
+        }
+
+        if($this->_description) {
+            $output['description'] = $this->_description;
+        }
+
+        if($this instanceof IMetadataProvider && $this->_metadata) {
+            $output['metadata'] = $this->_metadata;
+        }
+
+        if(!empty($this->_children)) {
+            $output['children'] = $this->_children;
+
+            if(count($output) == 1) {
+                $output = $this->_children;
+            }
+        }
+
+        return $output;
+    }
 }
 
 
@@ -237,60 +237,60 @@ trait TStructure_Container {
 // Definitions
 trait TStructure_Definitions {
 
-	protected $_definitionsElement;
+    protected $_definitionsElement;
 
-	public function getDefinitionsElement() {
-		$output = null;
+    public function getDefinitionsElement() {
+        $output = null;
 
-		if($this instanceof IContainer) {
-			foreach($this->_children as $child) {
-				if($child instanceof IDefinitionContainer) {
-					$output = $child;
-					break;
-				}
-			}
+        if($this instanceof IContainer) {
+            foreach($this->_children as $child) {
+                if($child instanceof IDefinitionContainer) {
+                    $output = $child;
+                    break;
+                }
+            }
 
-			if($output === null) {
-				$output = new Definitions();
-				array_unshift($this->_children, $output);
-			}
-		}
+            if($output === null) {
+                $output = new Definitions();
+                array_unshift($this->_children, $output);
+            }
+        }
 
 
-		if($output === null) {
-			$output = new Definitions();
-		}
+        if($output === null) {
+            $output = new Definitions();
+        }
 
-		$this->_definitionsElement = $output;
-		return $output;
-	}
+        $this->_definitionsElement = $output;
+        return $output;
+    }
 
-	public function setDefinitions(array $defs) {
-		$this->getDefinitionsElement()->setDefinitions($defs);
-		return $this;
-	}
+    public function setDefinitions(array $defs) {
+        $this->getDefinitionsElement()->setDefinitions($defs);
+        return $this;
+    }
 
-	public function addDefinitions(array $defs) {
-		$this->getDefinitionsElement()->addDefinitions($defs);
-		return $this;
-	}
+    public function addDefinitions(array $defs) {
+        $this->getDefinitionsElement()->addDefinitions($defs);
+        return $this;
+    }
 
-	public function addDefinition(IElement $element) {
-		$this->getDefinitionsElement()->addDefinition($element);
-		return $this;
-	}
+    public function addDefinition(IElement $element) {
+        $this->getDefinitionsElement()->addDefinition($element);
+        return $this;
+    }
 
-	public function getDefinitions() {
-		return $this->getDefinitionsElement()->getDefinitions();
-	}
+    public function getDefinitions() {
+        return $this->getDefinitionsElement()->getDefinitions();
+    }
 
-	public function removeDefinition(IElement $element) {
-		$this->getDefinitionsElement()->removeDefinition($element);
-		return $this;
-	}
+    public function removeDefinition(IElement $element) {
+        $this->getDefinitionsElement()->removeDefinition($element);
+        return $this;
+    }
 
-	public function clearDefinitions() {
-		$this->getDefinitionsElement()->clearDefinitions();
-		return $this;
-	}
+    public function clearDefinitions() {
+        $this->getDefinitionsElement()->clearDefinitions();
+        return $this;
+    }
 }
