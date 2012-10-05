@@ -19,13 +19,18 @@ class Binding implements IBinding {
     protected $_isAttached = false;
     protected $_eventResource = null;
     protected $_listener;
-    protected $_isAdaptive = false;
-    
-    public static function createId(IListener $listener, $type, $name) {
-        return get_class($listener).':'.$type.':'.$name;
+
+    public static function createId($listener, $type, $name) {
+        if($listener instanceof IListener) {
+            $listenerId = get_class($listener);
+        } else if(is_callable($listener)) {
+            $listenerId = core\string\Util::getCallableId($listener);
+        }
+
+        return $listenerId.':'.$type.':'.$name;
     }
     
-    public function __construct(IHandler $handler, IListener $listener, $type, $name, $persistent=false, array $args=null) {
+    public function __construct(IHandler $handler, $listener, $type, $name, $persistent=false, array $args=null) {
         $this->_listener = $listener;
         $this->_name = ucfirst($name);
         $this->_type = $type;
@@ -42,16 +47,21 @@ class Binding implements IBinding {
         $this->_type = $type;
         $this->_isPersistent = (bool)$persistent;
         $this->_id = self::createId($this->_listener, $this->_type, $this->_name);
-        $this->_isAdaptive = $this->_listener instanceof IAdaptiveListener;
-        
-        if(!$this->_isAdaptive) {
-            $func = 'on'.ucfirst($handler->getScheme()).$this->_name;
+
+        if($this->_listener instanceof IListener) {
+            if(!$this->_listener instanceof IAdaptiveListener) {
+                $func = 'on'.ucfirst($handler->getScheme()).$this->_name;
             
-            if(!method_exists($this->_listener, $func)) {
-                throw new BindException(
-                    'Listener method '.$func.' could not be found on listener '.get_class($this->_listener)
-                );
+                if(!method_exists($this->_listener, $func)) {
+                    throw new BindException(
+                        'Listener method '.$func.' could not be found on listener '.get_class($this->_listener)
+                    );
+                }
             }
+        } else if(!is_callable($this->_listener)) {
+            throw new BindException(
+                'Listener is not Callable or IListener'
+            );
         }
     }
     
@@ -88,7 +98,7 @@ class Binding implements IBinding {
         return $this->_listener;
     }
     
-    public function hasListener(IListener $listener) {
+    public function hasListener($listener) {
         return $this->_listener === $listener;
     }
     
@@ -108,13 +118,20 @@ class Binding implements IBinding {
     
     public function trigger(IHandler $handler) {
         try {
-            if($this->_isAdaptive) {
+            if($this->_listener instanceof IAdaptiveListener) {
                 $this->_listener->handleEvent($handler, $this);
             } else {
-                $func = 'on'.ucfirst($handler->getScheme()).$this->_name;
                 $args = $this->_args;
                 array_unshift($args, $handler, $this);
-                call_user_func_array(array($this->_listener, $func), $args);
+
+                if($this->_listener instanceof IListener) {
+                    $func = 'on'.ucfirst($handler->getScheme()).$this->_name;
+                    $callback = [$this->_listener, $func];
+                } else {
+                    $callback = $this->_listener;
+                }
+
+                call_user_func_array($callback, $args);
             }
         } catch(\Exception $e) {
             core\debug()->exception($e)->flush();

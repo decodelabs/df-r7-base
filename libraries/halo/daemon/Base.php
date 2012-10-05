@@ -109,7 +109,7 @@ abstract class Base implements IDaemon {
         $index = null;
 
         foreach($signals as $signal) {
-            if($signal = $this->_normalizeSignalName($signal)) {
+            if($signal = halo\process\Signal::normalizeSignalName($signal)) {
                 $this->_signalHandlers[$signal] = $handler;
 
                 if($this->_isStarted) {
@@ -123,50 +123,10 @@ abstract class Base implements IDaemon {
 
     public function hasSignalHandler($signal) {
         try {
-            return isset($this->_signalHandlers[$this->_normalizeSignalName($signal)]);
+            return isset($this->_signalHandlers[halo\process\Signal::normalizeSignalName($signal)]);
         } catch(\Exception $e) {
             return false;
         }
-    }
-
-    protected function _normalizeSignalName($signal) {
-        if(is_string($signal)) {
-            $signal = strtoupper($signal);
-
-            if(!array_key_exists($signal, $this->_signalHandlers)) {
-                throw new InvalidArgumentException(
-                    $signal.' is not a valid signal identifier'
-                );
-            }
-
-            if(!defined($signal)) {
-                return null;
-            }
-        } else if(is_numeric($signal)) {
-            if(self::$_signalIndex === null) {
-                self::$_signalIndex = array();
-
-                foreach($this->_signalHandlers as $signalName => $h) {
-                    if(defined($signalName)) {
-                        self::$_signalIndex[constant($signalName)] = $signalName;
-                    }
-                }
-            }
-
-            if(isset(self::$_signalIndex[$signal])) {
-                $signal = self::$_signalIndex[$signal];
-            } else {
-                throw new InvalidArgumentException(
-                    $signal.' is not a valid signal identifier'
-                );
-            }
-        } else {
-            throw new InvalidArgumentException(
-                $signal.' is not a valid signal identifier'
-            );
-        }
-
-        return $signal;
     }
 
     public function _defaultSignalHandler($signalNo) {

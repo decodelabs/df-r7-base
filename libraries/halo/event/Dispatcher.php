@@ -9,27 +9,10 @@ use df;
 use df\core;
 use df\halo;
 
-abstract class DispatcherBase implements IDispatcher {
+abstract class Dispatcher implements IDispatcher {
     
     protected $_isRunning = false;
     protected $_handlers = array();
-    
-    public static function getSocketHandlerId(halo\socket\ISocket $socket) {
-        return 'socket:'.$socket->getId();
-    }
-    
-    public static function getStreamHandlerId(core\io\stream\IStream $stream) {
-        return 'stream:'.$stream->getId();
-    }
-    
-    public static function getSignalHandlerId($signal) {
-        return 'signal:'.$signal;
-    }
-    
-    public static function getTimerHandlerId(core\time\IDuration $time) {
-        return 'time:'.$time->getSeconds();
-    }
-    
     
     public static function factory() {
         if(extension_loaded('libevent')) {
@@ -41,10 +24,11 @@ abstract class DispatcherBase implements IDispatcher {
     
     
     public function getSocketHandler(halo\socket\ISocket $socket) {
-        $id = self::getSocketHandlerId($socket);
-        
-        if(isset($this->_handlers[$id])) {
-            return $this->_handlers[$id];
+        foreach($this->_handlers as $id => $handler) {
+            if($handler instanceof ISocketHandler 
+            && $handler->getSocket() === $socket) {
+                return $handler;
+            }
         }
         
         throw new RuntimeException(
@@ -53,10 +37,11 @@ abstract class DispatcherBase implements IDispatcher {
     }
     
     public function getStreamHandler(core\io\stream\IStream $stream) {
-        $id = self::getStreamHandlerId($stream);
-        
-        if(isset($this->_handlers[$id])) {
-            return $this->_handlers[$id];
+        foreach($this->_handlers as $id => $handler) {
+            if($handler instanceof IStreamHandler 
+            && $handler->getStream() === $stream) {
+                return $handler;
+            }
         }
         
         throw new RuntimeException(
@@ -64,11 +49,12 @@ abstract class DispatcherBase implements IDispatcher {
         );
     }
     
-    public function getSignalHandler($signal) {
-        $id = self::getSignalHandlerId($signal);
-        
-        if(isset($this->_handlers[$id])) {
-            return $this->_handlers[$id];
+    public function getSignalHandler(halo\process\ISignal $signal) {
+        foreach($this->_handlers as $id => $handler) {
+            if($handler instanceof ISignalHandler 
+            && $handler->getSignal() === $signal) {
+                return $handler;
+            }
         }
         
         throw new RuntimeException(
@@ -77,10 +63,11 @@ abstract class DispatcherBase implements IDispatcher {
     }
     
     public function getTimerHandler(core\time\IDuration $time) {
-        $id = self::getTimerHandlerId($time);
-        
-        if(isset($this->_handlers[$id])) {
-            return $this->_handlers[$id];
+        foreach($this->_handlers as $id => $handler) {
+            if($handler instanceof ITimerHandler 
+            && $handler->getTimer() === $time) {
+                return $handler;
+            }
         }
         
         throw new RuntimeException(
@@ -120,40 +107,44 @@ abstract class DispatcherBase implements IDispatcher {
     }
     
     public function removeSocket(halo\socket\ISocket $socket) {
-        $id = self::getSocketHandlerId($socket);
-        
-        if(isset($this->_handlers[$id])) {
-            $this->remove($this->_handlers[$id]);
+        foreach($this->_handlers as $id => $handler) {
+            if($handler instanceof ISocketHandler 
+            && $handler->getSocket() === $socket) {
+                return $this->remove($handler);
+            }
         }
         
         return $this;
     }
     
     public function removeStream(core\io\stream\IStream $stream) {
-        $id = self::getStreamHandlerId($stream);
-        
-        if(isset($this->_handlers[$id])) {
-            $this->remove($this->_handlers[$id]);
+        foreach($this->_handlers as $id => $handler) {
+            if($handler instanceof IStreamHandler 
+            && $handler->getStream() === $stream) {
+                return $this->remove($handler);
+            }
         }
         
         return $this;
     }
     
-    public function removeSignal($signal) {
-        $id = self::getSignalHandlerId($signal);
-        
-        if(isset($this->_handlers[$id])) {
-            $this->remove($this->_handlers[$id]);
+    public function removeSignal(halo\process\ISignal $signal) {
+        foreach($this->_handlers as $id => $handler) {
+            if($handler instanceof ISignalHandler 
+            && $handler->getSignal() === $signal) {
+                return $this->remove($handler);
+            }
         }
         
         return $this;
     }
     
     public function removeTimer(core\time\IDuration $time) {
-        $id = self::getTimerHandlerId($time);
-        
-        if(isset($this->_handlers[$id])) {
-            $this->remove($this->_handlers[$id]);
+        foreach($this->_handlers as $id => $handler) {
+            if($handler instanceof ITimerHandler 
+            && $handler->getTimer() === $time) {
+                return $this->remove($handler);
+            }
         }
         
         return $this;

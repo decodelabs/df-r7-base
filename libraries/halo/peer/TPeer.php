@@ -33,7 +33,7 @@ trait TPeer {
     
     public function getDispatcher() {
         if(!$this->_dispatcher) {
-            $this->_dispatcher = halo\event\DispatcherBase::factory();
+            $this->_dispatcher = halo\event\Dispatcher::factory();
         }
         
         return $this->_dispatcher;
@@ -138,7 +138,7 @@ trait TPeer {
                 $session->readBuffer = false;
                 
                 try {
-                    $handler->unfreeze($handler->getBinding($this, 'connectionWaiting', halo\event\WRITE));
+                    $handler->unfreeze($handler->getBinding($this, 'connectionWaiting', halo\event\IIoState::WRITE));
                 } catch(halo\event\BindException $e) {
                     $this->_unregisterSessionBySocket($socket);
                 }
@@ -176,7 +176,7 @@ trait TPeer {
                     }
                     
                     try {
-                        $handler->unfreeze($handler->getBinding($this, 'dataAvailable', halo\event\READ));
+                        $handler->unfreeze($handler->getBinding($this, 'dataAvailable', halo\event\IIoState::READ));
                     } catch(halo\event\BindException $e) {
                         $this->_unregisterSessionBySocket($socket);
                     }
@@ -204,7 +204,7 @@ trait TPeer {
             $socket->shutdownWriting();
             
             try {
-                $handler->unfreeze($handler->getBinding($this, 'dataAvailable', halo\event\READ));
+                $handler->unfreeze($handler->getBinding($this, 'dataAvailable', halo\event\IIoState::READ));
             } catch(halo\event\BindException $e) {
                 $this->_unregisterSessionBySocket($socket);
             }
@@ -268,13 +268,13 @@ trait TPeer_Client {
         
         switch($this->getProtocolDisposition()) {
             case IClient::PEER_FIRST:
-                $eventHandler->bind($this, 'dataAvailable', true, [$session]);
-                $eventHandler->freeze($eventHandler->bindWrite($this, 'connectionWaiting', true, [$session]));
+                $eventHandler->bindPersistent($this, 'dataAvailable', [$session]);
+                $eventHandler->freeze($eventHandler->bindWritePersistent($this, 'connectionWaiting', [$session]));
                 break;
                 
             case IClient::CLIENT_FIRST:
-                $eventHandler->bindWrite($this, 'connectionWaiting', true, [$session]);
-                $eventHandler->freeze($eventHandler->bind($this, 'dataAvailable', true, [$session]));
+                $eventHandler->bindWritePersistent($this, 'connectionWaiting', [$session]);
+                $eventHandler->freeze($eventHandler->bindPersistent($this, 'dataAvailable', [$session]));
                 break;
                 
             case IClient::PEER_STREAM:
@@ -350,7 +350,7 @@ trait TPeer_Server {
         // Heartbeat
         /*
         $dispatcher->newTimerHandler(core\time\Duration::factory(5))
-            ->bind($this, 'heartbeat', true);
+            ->bindPersistent($this, 'heartbeat');
         */
 
         $this->_createMasterSockets();
@@ -360,7 +360,7 @@ trait TPeer_Server {
             $socket->listen();
             
             $dispatcher->newSocketHandler($socket)
-                ->bind($this, 'acceptRequest', true);
+                ->bindPersistent($this, 'acceptRequest');
         }
     }
     
@@ -423,23 +423,23 @@ trait TPeer_Server {
         
         switch($this->getProtocolDisposition()) {
             case IServer::SERVER_FIRST:
-                $eventHandler->bindWrite($this, 'connectionWaiting', true, [$session]);
-                $eventHandler->freeze($eventHandler->bind($this, 'dataAvailable', true, [$session]));
+                $eventHandler->bindWritePersistent($this, 'connectionWaiting', [$session]);
+                $eventHandler->freeze($eventHandler->bindPersistent($this, 'dataAvailable', [$session]));
                 break;
                 
             case IServer::PEER_FIRST:
-                $eventHandler->bind($this, 'dataAvailable', true, [$session]);
-                $eventHandler->freeze($eventHandler->bindWrite($this, 'connectionWaiting', true, [$session]));
+                $eventHandler->bindPersistent($this, 'dataAvailable', [$session]);
+                $eventHandler->freeze($eventHandler->bindWritePersistent($this, 'connectionWaiting', [$session]));
                 break;
                 
             case IServer::SERVER_STREAM:
                 core\stub('Unable to handle server streams');
-                $eventHandler->bindWrite($this, 'streamConnectionWaiting', true);
+                $eventHandler->bindWritePersistent($this, 'streamConnectionWaiting');
                 break;
                 
             case IServer::PEER_STREAM:
                 core\stub('Unable to handle peer streams');
-                $eventHandler->bind($this, 'streamDataAvailable', true);
+                $eventHandler->bindPersistent($this, 'streamDataAvailable');
                 break;
                 
             case IServer::DUPLEX_STREAM:

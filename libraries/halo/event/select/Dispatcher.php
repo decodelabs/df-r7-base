@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\halo;
 
-class Dispatcher extends halo\event\DispatcherBase implements IDispatcher {
+class Dispatcher extends halo\event\Dispatcher {
     
     const SIGNAL = 0;
     const SOCKET = 1;
@@ -25,6 +25,7 @@ class Dispatcher extends halo\event\DispatcherBase implements IDispatcher {
     
     protected $_breakLoop = false;
     protected $_generateMaps = true;
+    protected $_cycleHandler;
     
     public function start() {
         echo  "Starting select event loop\n\n";
@@ -33,6 +34,8 @@ class Dispatcher extends halo\event\DispatcherBase implements IDispatcher {
         $this->_isRunning = true;
         
         $maps = array();
+        $baseTime = microtime(true);
+        $times = array();
         
         while(!$this->_breakLoop) {
             if($this->_generateMaps) {
@@ -42,12 +45,25 @@ class Dispatcher extends halo\event\DispatcherBase implements IDispatcher {
             
             // Timers
             if(isset($maps[self::TIMER])) {
-                // TODO: handle timers
+                $time = microtime(true);
+
+                foreach($maps[self::TIMER][self::HANDLER] as $id => $timerHandler) {
+                    $dTime = isset($times[$id]) ? $times[$id] : $baseTime;
+                    $diff = $time - $dTime;
+                    $duration = $maps[self::TIMER][self::RESOURCE][$id];
+
+                    if($diff > $duration) {
+                        $times[$id] = $time;
+                        $timerHandler->_handleEvent();
+                    }
+                }
             }
             
             // Signals
             if(isset($maps[self::SIGNAL])) {
-                // Handle signals
+                if(extension_loaded('pcntl')) {
+                    pcntl_signal_dispatch();
+                }
             }
             
             // Sockets
@@ -56,19 +72,23 @@ class Dispatcher extends halo\event\DispatcherBase implements IDispatcher {
                 $write = $maps[self::SOCKET][self::RESOURCE][self::WRITE];
                 $e = null;
                 
-                $res = socket_select($read, $write, $e, 0, 50000);
+                try {
+                    $res = socket_select($read, $write, $e, 0, 50000);
+                } catch(\Exception $e) {
+                    $res = false;
+                }
                 
                 if($res === false) {
                     // TODO: deal with error
                 } else if($res > 0) {
                     foreach($read as $resource) {
                         $handler = $maps[self::SOCKET][self::HANDLER][(int)$resource];
-                        $handler->_handleEvent(halo\event\READ);
+                        $handler->_handleEvent(halo\event\IIoState::READ);
                     }
                     
                     foreach($write as $resource) {
                         $handler = $maps[self::SOCKET][self::HANDLER][(int)$resource];
-                        $handler->_handleEvent(halo\event\WRITE);
+                        $handler->_handleEvent(halo\event\IIoState::WRITE);
                     }
                 }
                 
@@ -81,24 +101,36 @@ class Dispatcher extends halo\event\DispatcherBase implements IDispatcher {
                 $write = $maps[self::STREAM][self::RESOURCE][self::WRITE];
                 $e = null;
                 
-                $res = stream_select($read, $write, $e, 0, 50000);
+                try {
+                    $res = stream_select($read, $write, $e, 0, 50000);
+                } catch(\Exception $e) {
+                    $res = false;
+                }
                 
                 if($res === false) {
                     // TODO: deal with error
                 } else if($res > 0) {
                     foreach($read as $resource) {
                         $handler = $maps[self::STREAM][self::HANDLER][(int)$resource];
-                        $handler->_handleEvent(halo\event\READ);
+                        $handler->_handleEvent(halo\event\IIoState::READ);
                     }
                     
                     foreach($write as $resource) {
                         $handler = $maps[self::STREAM][self::HANDLER][(int)$resource];
-                        $handler->_handleEvent(halo\event\WRITE);
+                        $handler->_handleEvent(halo\event\IIoState::WRITE);
                     }
                 }
                 
                 // TODO: add timeout handler
             }
+
+            if($this->_cycleHandler) {
+                if(false === $this->_cycleHandler->__invoke($this)) {
+                    $this->stop();
+                }
+            }
+
+            usleep(10000);
         }
         
         $this->_breakLoop = false;
@@ -115,30 +147,30 @@ class Dispatcher extends halo\event\DispatcherBase implements IDispatcher {
     }
     
     private function _generateMaps() {
-        $map = array(
-            self::SIGNAL => array(),
-            self::SOCKET => array(
-                self::RESOURCE => array(
-                    self::READ => array(),
-                    self::WRITE => array()
-                ),
-                self::HANDLER => array()
-            ),
-            self::STREAM => array(
-                self::RESOURCE => array(
-                    self::READ => array(),
-                    self::WRITE => array()
-                ),
-                self::HANDLER => array()
-            ),
-            self::TIMER => array(),
-            self::COUNTER => array(
+        $map = [
+            self::SIGNAL => [],
+            self::SOCKET => [
+                self::RESOURCE => [
+                    self::READ => [],
+                    self::WRITE => []
+                ],
+                self::HANDLER => []
+            ],
+            self::STREAM => [
+                self::RESOURCE => [
+                    self::READ => [],
+                    self::WRITE => []
+                ],
+                self::HANDLER => []
+            ],
+            self::TIMER => [],
+            self::COUNTER => [
                 self::SIGNAL => 0,
                 self::SOCKET => 0,
                 self::STREAM => 0,
                 self::TIMER => 0
-            )
-        );
+            ]
+        ];
         
         
         foreach($this->_handlers as $handler) {
@@ -166,18 +198,28 @@ class Dispatcher extends halo\event\DispatcherBase implements IDispatcher {
     }
     
     public function newSocketHandler(halo\socket\ISocket $socket) {
-        return $this->_registerHandler(new SocketHandler($this, $socket));
+        return $this->_registerHandler(new Handler_Socket($this, $socket));
     }
     
     public function newStreamHandler(core\io\stream\IStream $stream) {
-        return $this->_registerHandler(new StreamHandler($this, $stream));
+        return $this->_registerHandler(new Handler_Stream($this, $stream));
     }
     
-    public function newSignalHandler($signal) {
-        return $this->_registerHandler(new SignalHandler($this, $signal));
+    public function newSignalHandler(halo\process\ISignal $signal) {
+        return $this->_registerHandler(new Handler_Signal($this, $signal));
     }
     
     public function newTimerHandler(core\time\IDuration $time) {
-        return $this->_registerHandler(new TimerHandler($this, $time));
+        return $this->_registerHandler(new Handler_Timer($this, $time));
+    }
+
+
+    public function setCycleHandler(Callable $callback=null) {
+        $this->_cycleHandler = $callback;
+        return $this;
+    }
+
+    public function getCycleHandler() {
+        return $this->_cycleHandler;
     }
 }

@@ -9,40 +9,11 @@ use df;
 use df\core;
 use df\halo;
 
-class Dispatcher extends halo\event\DispatcherBase implements IDispatcher {
+class Dispatcher extends halo\event\Dispatcher {
     
     protected $_base;
-    
-    public static function getEventTypeFlags($type, $isPersistent=false) {
-        switch($type) {
-            case halo\event\READ:
-                $flags = EV_READ;
-                break;
-                
-            case halo\event\WRITE:
-                $flags = EV_WRITE;
-                break;
-                
-            case halo\event\READ_WRITE:
-                $flags = EV_READ | EV_WRITE;
-                break;
-                
-            case halo\event\TIMEOUT:
-                $flags = EV_TIMEOUT;
-                break;
-                
-            default:
-                throw new halo\event\InvalidArgumentException(
-                    'Unknown event type: '.$type
-                );
-        }
-        
-        if($isPersistent) {
-            $flags |= EV_PERSIST;
-        }
-        
-        return $flags;
-    }
+    protected $_cycleHandler;
+    protected $_cycleHandlerEvent;
     
     public function __construct() {
         $this->_base = event_base_new();
@@ -75,18 +46,70 @@ class Dispatcher extends halo\event\DispatcherBase implements IDispatcher {
     
     
     public function newSocketHandler(halo\socket\ISocket $socket) {
-        return $this->_registerHandler(new SocketHandler($this, $socket));
+        return $this->_registerHandler(new Handler_Socket($this, $socket));
     }
     
     public function newStreamHandler(core\io\stream\IStream $stream) {
-        return $this->_registerHandler(new StreamHandler($this, $stream));
+        return $this->_registerHandler(new Handler_Stream($this, $stream));
     }
     
-    public function newSignalHandler($signal) {
-        return $this->_registerHandler(new SignalHandler($this, $signal));
+    public function newSignalHandler(halo\process\ISignal $signal) {
+        return $this->_registerHandler(new Handler_Signal($this, $signal));
     }
     
     public function newTimerHandler(core\time\IDuration $time) {
-        return $this->_registerHandler(new TimerHandler($this, $time));
+        return $this->_registerHandler(new Handler_Timer($this, $time));
+    }
+
+    public function setCycleHandler(Callable $callback=null) {
+        if($this->_cycleHandlerEvent) {
+            event_del($this->_cycleHandlerEvent);
+            event_free($this->_cycleHandlerEvent);
+        }
+
+        $this->_cycleHandler = $callback;
+
+        if($callback) {
+            $this->_cycleHandlerEvent = event_new();
+
+            if(!event_set(
+                $this->_cycleHandlerEvent,
+                STDIN,
+                EV_TIMEOUT | EV_PERSIST,
+                function() use ($callback) {
+                    if(false === $callback->__invoke($this)) {
+                        $this->stop();
+                    }
+                }
+            )) {
+                event_free($this->_cycleHandlerEvent);
+
+                throw new halo\event\BindException(
+                    'Could not set cycle event'
+                );
+            }
+
+            if(!event_base_set($this->_cycleHandlerEvent, $this->_base)) {
+                event_free($this->_cycleHandlerEvent);
+
+                throw new halo\event\BindException(
+                    'Could not set cycle event base'
+                );
+            }
+
+            if(!event_add($this->_cycleHandlerEvent, 1000000)) {
+                event_free($this->_cycleHandlerEvent);
+
+                throw new halo\event\BindException(
+                    'Could not add cycle event'
+                );
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCycleHandler() {
+        return $this->_cycleHandler;
     }
 }
