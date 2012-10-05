@@ -23,9 +23,13 @@ class Util extends Base {
         $command = core\cli\Command::fromArgv();
         
         if(!$arg = $command[2]) {
+            /*
             throw new core\InvalidArgumentException(
                 'No util command has been specified'
             );
+            */
+
+            $arg = new core\cli\Argument('help');
         }
         
         // TODO: parse command
