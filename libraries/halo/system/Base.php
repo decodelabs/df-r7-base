@@ -27,11 +27,13 @@ abstract class Base implements ISystem {
         return self::$_instance;
     }
     
-    public static function factory() {
-        $osName = php_uname('s');
-        
-        if(substr(strtolower($osName), 0, 3) == 'win') {
-            $osName = 'Windows';
+    public static function factory($osName=null) {
+        if($osName === null) {
+            $osName = php_uname('s');
+            
+            if(substr(strtolower($osName), 0, 3) == 'win') {
+                $osName = 'Windows';
+            }
         }
         
         $class = 'df\\halo\\system\\'.ucfirst($osName);

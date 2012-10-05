@@ -44,4 +44,22 @@ class Windows extends Base {
         
         return 'Windows NT';
     }
+
+
+// Users
+    public function userIdToUserName($id) {
+        return $id;
+    }
+
+    public function userNameToUserId($name) {
+        return $name;
+    }
+
+    public function groupIdToGroupName($id) {
+        return $id;
+    }
+
+    public function groupNameToGroupId($name) {
+        return $name;
+    }
 }

@@ -24,6 +24,10 @@ interface ISystem {
     public function getOSRelease();
     public function getHostName();
     
-    
     public function getProcess();
+
+    public function userIdToUserName($id);
+    public function userNameToUserId($name);
+    public function groupIdToGroupName($id);
+    public function groupNameToGroupId($name);
 }
