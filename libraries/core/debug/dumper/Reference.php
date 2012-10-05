@@ -29,7 +29,7 @@ class Reference implements core\debug\IDump {
     }
     
     public function toString() {
-        return $this->_type.'(&'.$this->_id.')';
+        return $this->_type.'(&'.$this->_dumpId.')';
     }
     
     public function isArray() {
