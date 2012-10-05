@@ -15,7 +15,7 @@ class AppBuilder {
     const PURGE_OLD_BUILDS = true;
     
     protected static $_appExport = [
-        'libraries', 'directory', 'models', 'themes', 'tests'
+        'libraries', 'daemons', 'directory', 'models', 'themes', 'tests'
     ];
     
     protected $_loader;
