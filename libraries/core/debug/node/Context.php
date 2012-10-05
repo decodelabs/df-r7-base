@@ -73,6 +73,11 @@ class Context extends Group implements core\debug\IContext {
         
         return $this->getTransport()->execute($this);
     }
+
+    public function toString() {
+        $renderer = new core\debug\renderer\PlainText($this);
+        return $renderer->render();
+    }
     
     public function getStackTrace() {
         return $this->_stackTrace;

@@ -80,6 +80,10 @@ abstract class Base implements core\debug\IRenderer {
     }
     
     protected function _normalizeFilePath($file) {
+        if(!df\Launchpad::$loader) {
+            return $file;
+        }
+        
         $locations = df\Launchpad::$loader->getLocations();
         $locations['app'] = df\Launchpad::$applicationPath;
         
