@@ -56,3 +56,9 @@ interface IManagedProcess extends IProcess {
     public function fork();
     public function delegate();
 }
+
+
+interface ISignal {
+    public function getName();
+    public function getNumber();
+}
