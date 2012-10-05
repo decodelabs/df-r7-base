@@ -22,7 +22,9 @@ class Environment extends Config {
             'httpBaseUrl' => $this->_generateHttpBaseUrlList(),
             'phpBinaryPath' => 'php',
             'distributed' => false,
-            'activeLocations' => []
+            'activeLocations' => [],
+            'daemonUser' => $this->_extrapolateDaemonUser(),
+            'daemonGroup' => $this->_extrapolateDaemonGroup()
         ];
     }
 
@@ -152,5 +154,97 @@ class Environment extends Config {
         }
 
         return $output;
+    }
+
+
+// Daemons
+    public function setDaemonUser($user) {
+        if(is_numeric($user)) {
+            $system = halo\system\Base::getInstance();
+            $user = $system->userIdToUserName($user);
+        }
+
+        if(empty($user)) {
+            throw new InvalidArgumentException(
+                'Invalid username detected'
+            );
+        }
+
+        $this->_values['daemonUser'] = $user;
+        return $this;
+    }
+
+    public function getDaemonUser() {
+        $output = null;
+        $save = false;
+
+        if(!isset($this->_values['daemonUser'])) {
+            $output = $this->_extrapolateDaemonUser();
+            $save = true;
+        } else {
+            $output = $this->_values['daemonUser'];
+        }
+
+        if(empty($output)) {
+            $output = $this->_extrapolateDaemonUser();
+            $save = true;
+        }
+
+        if($save && !empty($output)) {
+            $this->setDaemonUser($output);
+            $this->save();
+        }
+
+        return $output;
+    }
+
+    protected function _extrapolateDaemonUser() {
+        $process = halo\process\Base::getCurrent();
+        return $process->getOwnerName();
+    }
+
+    public function setDaemonGroup($group) {
+        if(is_numeric($group)) {
+            $system = halo\system\Base::getInstance();
+            $group = $system->groupIdToGroupName($group);
+        }
+
+        if(empty($group)) {
+            throw new InvalidArgumentException(
+                'Invalid group name detected'
+            );
+        }
+
+        $this->_values['daemonGroup'] = $group;
+        return $this;
+    }
+
+    public function getDaemonGroup() {
+        $output = null;
+        $save = false;
+
+        if(!isset($this->_values['daemonGroup'])) {
+            $output = $this->_extrapolateDaemonGroup();
+            $save = true;
+        } else {
+            $output = $this->_values['daemonGroup'];
+        }
+
+        if(empty($output)) {
+            $output = $this->_extrapolateDaemonGroup();
+            $save = true;
+        }
+
+        if($save && !empty($output)) {
+            $this->setDaemonGroup($output);
+            $this->save();
+        }
+
+        return $output;
+    }
+
+    protected function _extrapolateDaemonGroup() {
+        $process = halo\process\Base::getCurrent();
+        return $process->getGroupName();
     }
 }
