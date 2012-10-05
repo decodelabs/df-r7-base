@@ -66,7 +66,7 @@ trait TWriterInterchange {
 
         if(!$embedded) {
             $writer->writeHeader();
-            $this->_writeXmlDtd();
+            $this->_writeXmlDtd($writer);
         }
 
         $this->writeXml($writer);
