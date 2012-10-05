@@ -140,6 +140,8 @@ interface IUtil {
     public static function parseDelimited($input, $delimiter=',', $quoteMap='"\'', $terminator=null);
     public static function implodeDelimited(array $data, $delimiter=',', $quote='\'', $terminator=null);
     
+    public static function getCallableId(Callable $callable);
+
     public static function likeMatch($pattern, $string, $char='_', $wildcard='%');
     public static function generateLikeMatchRegex($pattern, $char='_', $wildcard='%', $delimiter='/');
     public static function contains($pattern, $string);

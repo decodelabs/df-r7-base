@@ -154,6 +154,28 @@ abstract class Util implements IUtil {
             return implode($delimiter, $output);
         }
     }
+
+
+// Callable
+    public static function getCallableId(Callable $callable) {
+        $output = '';
+
+        if(is_array($callable)) {
+            @list($target, $name) = $callable;
+
+            if(is_object($target)) {
+                $target = get_class($target);
+            }
+
+            $output = $target.'::'.$name;
+        } else if($callable instanceof \Closure) {
+            $output = 'closure-'.spl_object_hash($callable);
+        } else if(is_object($callable)) {
+            $output = get_class($callable);
+        }
+
+        return $output;
+    }
     
     
 // Match
