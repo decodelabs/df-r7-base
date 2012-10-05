@@ -27,7 +27,7 @@ class Server implements halo\peer\IServer {
         return new PeerSession($socket);
     }
     
-    protected function _handleReadBuffer(halo\server\ISession $session, $data) {
+    protected function _handleReadBuffer(halo\peer\ISession $session, $data) {
         if(!$request = $session->getRequest()) {
             if(false !== ($pos = strpos($session->readBuffer, "\n\n"))) {
                 $headers = substr($session->readBuffer, 0, $pos);
@@ -83,7 +83,7 @@ class Server implements halo\peer\IServer {
         return halo\peer\IIoState::WRITE;
     }
     
-    protected function _handleWriteBuffer(halo\server\ISession $session) {
+    protected function _handleWriteBuffer(halo\peer\ISession $session) {
         if(!$fileStream = $session->getFileStream()) {
             if(!$request = $session->getRequest()) {
                 // Bad request
@@ -99,12 +99,10 @@ class Server implements halo\peer\IServer {
             }
             
             df\Launchpad::setDebugContext($debugContext);
-            gc_collect_cycles();
-            
             $session->setResponse($response);
             
             // Write headers
-            $session->writeBuffer = $response->getHeaderString();
+            $session->writeBuffer = $response->getHeaderString()."\r\n\r\n";
             
             if(!$response instanceof IFileResponse) {
                 // File stream not required, write the whole thing to buffer and end
@@ -122,7 +120,7 @@ class Server implements halo\peer\IServer {
             halo\peer\IIoState::BUFFER;
     }
     
-    protected function _createResponse(halo\server\ISession $session) {
+    protected function _createResponse(halo\peer\ISession $session) {
         try {
             core\debug()->setTransport(new core\debug\transport\HttpCapture());
             $currentApp = df\Launchpad::getActiveApplication();
@@ -142,7 +140,7 @@ class Server implements halo\peer\IServer {
         }
     }
     
-    protected function _createErrorResponse(halo\server\ISession $session) {
+    protected function _createErrorResponse(halo\peer\ISession $session) {
         $code = $session->getErrorCode();
         
         $response = new halo\protocol\http\response\String(
