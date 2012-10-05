@@ -34,11 +34,13 @@ class Manager implements IManager {
         }
     }
 
+    /*
     public function __destruct() {
         if(!$this->_isSaved) {
             $this->_saveQueue();
         }
     }
+    */
 
     public function onApplicationShutdown() {
         if(!$this->_isSaved) {
