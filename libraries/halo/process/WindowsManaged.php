@@ -27,6 +27,14 @@ class WindowsManaged extends Windows implements IManagedProcess {
         return $this->_parentProcessId;
     }
     
+
+// Title
+    public function setTitle($title) {
+        $this->_title = $title;
+        return $this;
+    }
+
+// Priority
     public function setPriority($priority) {
         core\stub();
     }
@@ -35,6 +43,16 @@ class WindowsManaged extends Windows implements IManagedProcess {
         core\stub();
     }
     
+
+// Identity
+    public function setIdentity($uid, $gid) {
+        return $this->setOwnerId($uid)->setGroupId($gid);
+    }
+
+// Owner
+    public function setOwnerId($id) {
+        core\stub($id);
+    }
     
     public function getOwnerId() {
         $wmi = $this->_getWmi();
@@ -49,10 +67,53 @@ class WindowsManaged extends Windows implements IManagedProcess {
         return null;
     }
     
+    public function setOwnerName($name) {
+        core\stub($name);
+    }
+
     public function getOwnerName() {
         return $this->getOwnerId();
     }
+
+
+// Group
+    public function setGroupId($id) {
+        core\stub($id);
+    }
+
+    public function getGroupId() {
+        core\stub();
+    }
+
+    public function setGroupName($name) {
+        core\stub($name);
+    }
+
+    public function getGroupName() {
+        core\stub();
+    }
     
+
+// Pid
+    public function hasPidFile() {
+        return false;
+    }
+
+    public function setPidFile($path) {
+        /*
+        throw new LogicException(
+            'Windows OS\'s do not support PID files'
+        );
+        */
+
+        return $this; 
+    }
+
+    public function getPidFile() {
+        return null;
+    }
+
+// Fork
     public function canFork() {
         return false;
     }

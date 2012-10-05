@@ -11,6 +11,15 @@ use df\halo;
 
 class Unix extends Base {
     
+    public static function isProcessIdLive($pid) {
+        if(extension_loaded('posix')) {
+            return posix_kill($pid, 0);
+        } else {
+            exec('ps -o pid --no-heading --pid '.escapeshellarg($pid), $output);
+            return isset($output[0]);
+        }
+    }
+
     public static function getCurrentProcessId() {
         if(extension_loaded('posix')) {
             return posix_getpid();
@@ -20,12 +29,7 @@ class Unix extends Base {
     }
     
     public function isAlive() {
-        if(extension_loaded('posix')) {
-            return posix_kill($this->_processId, 0);
-        } else {
-            exec('ps -o pid --no-heading --pid '.escapeshellarg($this->_processId), $output);
-            return isset($output[0]);
-        }
+        return self::isProcessIdLive($this->_processId);
     }
     
     public function kill() {
@@ -38,6 +42,14 @@ class Unix extends Base {
     }
     
     public function isPrivileged() {
-        return $this->getUserId() == 0;
+        if($this instanceof IManagedProcess) {
+            $uid = $this->getOwnerId();
+        } else if(extension_loaded('posix')) {
+            $uid = posix_geteuid();
+        } else {
+            $uid = getmyuid();
+        }
+
+        return $uid == 0;
     }
 }

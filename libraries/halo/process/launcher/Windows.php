@@ -9,6 +9,6 @@ use df;
 use df\core;
 use df\halo;
 
-class Windows extends Launcher {
+class Windows extends Base {
     
 }

@@ -44,18 +44,44 @@ abstract class Base implements IProcess {
     
     
     public static function launchBlocking($process, $args=null, $path=null) {
-        $launcher = halo\process\launcher\Base::factory($process, $args, $path);
-        return $launcher->launchBlocking();
+        return self::newLauncher($process, $args, $path)->launchBlocking();
+    }
+
+    public static function launchBlockingScript($path, $args=null) {
+        return self::newScriptLauncher($path, $args)->launchBlocking();
     }
     
     public static function launchBackground($process, $args=null, $path=null) {
-        $launcher = halo\process\launcher\Base::factory($process, $args, $path);
-        return $launcher->launchBackground();
+        return self::newLauncher($process, $args, $path)->launchBackground();
+    }
+
+    public static function launchBackgroundScript($path, $args=null) {
+        return self::newScriptLauncher($path, $args)->launchBackground();
     }
     
     public static function launchManaged($process, $args=null, $path=null) {
-        $launcher = halo\process\launcher\Base::factory($process, $args, $path);
-        return $launcher->launchManaged();
+        return self::newLauncher($process, $args, $path)->launchManaged();
+    }
+
+    public static function launchManagedScript($path, $args=null) {
+        return self::newScriptLauncher($path, $args)->launchManaged();
+    }
+
+    public static function newLauncher($process, $args=null, $path=null) {
+        return halo\process\launcher\Base::factory($process, $args, $path);
+    }
+
+    public static function newScriptLauncher($path, $args=null) {
+        $envConfig = core\Environment::getInstance(df\Launchpad::getActiveApplication());
+        $binaryPath = $envConfig->getPhpBinaryPath();
+        $phpName = basename($binaryPath);
+        $phpPath = null;
+
+        if($phpName != $binaryPath) {
+            $phpPath = dirname($binaryPath);
+        }
+
+        return halo\process\launcher\Base::factory($phpName, trim($path.' '.$args), $phpPath);
     }
     
     

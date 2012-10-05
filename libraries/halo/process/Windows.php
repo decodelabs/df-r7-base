@@ -45,7 +45,7 @@ class Windows extends Base {
         
         return $output == 0;
     }
-    
+
     public function isPrivileged() {
         return true;
     }

@@ -12,6 +12,15 @@ use df\halo;
 class UnixManaged extends Unix implements IManagedProcess {
     
     protected $_parentProcessId;
+    protected $_pidFile;
+
+    public function kill() {
+        if(($output = parent::kill()) && $this->_pidFile) {
+            @unlink($this->_pidFile);
+        }
+
+        return $output;
+    }
     
     public function getParentProcessId() {
         if($this->_parentProcessId === null) {
@@ -32,16 +41,108 @@ class UnixManaged extends Unix implements IManagedProcess {
         
         return $this->_parentProcessId;
     }
+
+// Title
+    public function setTitle($title) {
+        $this->_title = $title;
+
+        if(extension_loaded('proctitle')) {
+            setproctitle($title);
+        }
+
+        return $this;
+    }
     
-    
+// Priority
     public function setPriority($priority) {
-        core\stub();
+        if(extension_loaded('pcntl')) {
+            @pcntl_setpriority($priority, $this->_processId);
+        }
     }
     
     public function getPriority() {
-        core\stub();
+        if(extension_loaded('pcntl')) {
+            return (int)@pcntl_getpriority($this->_processId);
+        }
+
+        return 0;
     }
     
+
+// Identity
+    public function setIdentity($uid, $gid) {
+        if(!is_numeric($uid)) {
+            $uid = halo\system\Base::getInstance()->userNameToUserId($uid);
+        }
+
+        if(!is_numeric($gid)) {
+            $gid = halo\system\Base::getInstance()->groupNameToGroupId($gid);
+        }
+
+        if(!extension_loaded('posix')) {
+            throw new RuntimeException(
+                'Unable to set process identity - posix not available'
+            );
+        }
+
+        $doUid = $uid != $this->getOwnerId();
+        $doGid = $gid != $this->getGroupId();
+        $doPidFile = $this->_pidFile && is_file($this->_pidFile);
+
+        if($doUid && $doPidFile) {
+            chown($this->_pidFile, $uid);
+        }
+
+        if($doGid && $doPidFile) {
+            chgrp($this->_pidFile, $gid);
+        }
+
+        if($doUid) {
+            try {
+                posix_setuid($uid);
+            } catch(\Exception $e) {
+                throw new RuntimeException('Set owner failed', 0, $e);
+            }
+        }
+
+        if($doGid) {
+            try {
+                posix_setgid($gid);
+            } catch(\Exception $e) {
+                throw new RuntimeException('Set group failed', 0, $e);
+            }
+        }
+
+        return $this;
+    }
+
+// Owner
+    public function setOwnerId($id) {
+        if(!is_numeric($id)) {
+            return $this->setOwnerName($id);
+        }
+
+        if(extension_loaded('posix')) {
+            if($id != $this->getOwnerId()) {
+                if($this->_pidFile && is_file($this->_pidFile)) {
+                    chown($this->_pidFile, $id);
+                }
+
+                try {
+                    posix_setuid($id);
+                } catch(\Exception $e) {
+                    throw new RuntimeException('Set owner failed', 0, $e);
+                }
+            }
+        } else {
+            throw new RuntimeException(
+                'Unable to set owner id - posix not available'
+            );
+        }
+
+        return $this;            
+    }
+
     public function getOwnerId() {
         if(extension_loaded('posix')) {
             return posix_geteuid();
@@ -56,6 +157,10 @@ class UnixManaged extends Unix implements IManagedProcess {
                 );
             }
         }
+    }
+
+    public function setOwnerName($name) {
+        return $this->setOwnerId(halo\system\Base::getInstance()->userNameToUserId($name));
     }
     
     public function getOwnerName() {
@@ -75,7 +180,34 @@ class UnixManaged extends Unix implements IManagedProcess {
             }
         }
     }
-    
+
+
+// Group
+    public function setGroupId($id) {
+        if(!is_numeric($id)) {
+            return $this->setGroupName($id);
+        }
+
+        if(extension_loaded('posix')) {
+            if($id != $this->getGroupId()) {
+                if($this->_pidFile && is_file($this->_pidFile)) {
+                    chgrp($this->_pidFile, $id);
+                }
+
+                try {
+                    posix_setgid($id);
+                } catch(\Exception $e) {
+                    throw new RuntimeException('Set group failed', 0, $e);
+                }
+            }
+        } else {
+            throw new RuntimeException(
+                'Unable to set group id - posix not available'
+            );
+        }
+
+        return $this;
+    }
     
     public function getGroupId() {
         if(extension_loaded('posix')) {
@@ -91,6 +223,10 @@ class UnixManaged extends Unix implements IManagedProcess {
                 );
             }
         }
+    }
+
+    public function setGroupName($name) {
+        return $this->setGroupId(halo\system\Base::getInstance()->groupNameToGroupId($name));
     }
     
     public function getGroupName() {
@@ -112,12 +248,87 @@ class UnixManaged extends Unix implements IManagedProcess {
     }
     
     
+// PID
+    public function hasPidFile() {
+        return $this->_pidFile !== null;
+    }
+
+    public function setPidFilePath($path) {
+        $dirname = dirname($path);
+
+        if(!is_dir($dirname)) {
+            try {
+                mkdir($dirname, 0755, true);
+            } catch(\Exception $e) {
+                throw new RuntimeException(
+                    'Unable to create PID file directory', 0, $e
+                );
+            }
+        }
+
+        $write = true;
+        $pid = $this->getProcessId();
+
+        if(is_file($path)) {
+            $oldPid = file_get_contents($path);
+
+            if($oldPid == $pid) {
+                $write = false;
+            } else if(self::isProcessIdLive($oldPid)) {
+                throw new RuntimeException(
+                    'PID file already exists and is live'
+                );
+            }   
+        }
+
+
+        if($write) {
+            try {
+                file_put_contents($path, $pid);
+            } catch(\Exception $e) {
+                throw new RuntimeException(
+                    'Unable to write PID file', 0, $e
+                );
+            }
+        }
+
+        $this->_pidFile = $path;
+        return $this;
+    }
+
+    public function getPidFilePath() {
+        return $this->_pidFile;
+    }
+
+// Fork
     public function canFork() {
         return extension_loaded('pcntl');
     }
     
     public function fork() {
-        core\stub();
+        if(!$this->canFork()) {
+            throw new RuntimeException(
+                'This process is not capable of forking'
+            );
+        }
+
+        $pid = pcntl_fork();
+
+        if($pid === -1) {
+            throw new RuntimeException(
+                'The process did not fork successfully'
+            );
+        } else if($pid) {
+            // Parent
+            $output = clone $this;
+            $output->_processId = $pid;
+
+            return $output;
+        } else {
+            // Child
+            $this->_processId = self::getCurrentProcessId();
+            return null;
+        }
     }
     
     public function delegate() {
