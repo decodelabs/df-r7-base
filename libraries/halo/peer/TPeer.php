@@ -285,10 +285,9 @@ trait TPeer_Server {
         $dispatcher = $this->getDispatcher();
         
         // Heartbeat
-        /*
-        $dispatcher->newTimerHandler(core\time\Duration::factory(5))
-            ->bindPersistent($this, 'heartbeat');
-        */
+        $dispatcher->setTimeout('heartbeat', 1, function() {
+            echo 'Heartbeat'."\n";
+        });
 
         $this->_createMasterSockets();
         
@@ -314,14 +313,7 @@ trait TPeer_Server {
             unset($this->_masterSockets[$id]);
         }
         
-        /*
-        $heartbeat = $dispatcher->getTimerHandler(core\time\Duration::factory(5));
-        $heartbeat->unbindAll($this);
-        
-        if(!$heartbeat->countBindings()) {
-            $heartbeat->destroy();
-        }
-        */
+        //$this->removeTimer('heartbeat');
     }
     
     abstract protected function _createMasterSockets();
@@ -335,15 +327,6 @@ trait TPeer_Server {
     
     
 // Events
-    /*
-    protected function _onTimerHeartbeat($handler, $binding) {
-        if(!empty($this->_sessions)) {
-            echo count($this->_sessions).' connections currently open'."\n";
-        }
-    }
-    */
-    
-    
     protected function _onSocketAcceptRequest($handler, $binding) {
         $masterSocket = $handler->getSocket();
         

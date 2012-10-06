@@ -12,8 +12,9 @@ use df\halo;
 class Dispatcher extends halo\event\Dispatcher {
     
     protected $_base;
-    protected $_cycleHandler;
     protected $_cycleHandlerEvent;
+    protected $_signalEvents = array();
+    protected $_timerEvents = array();
     
     public function __construct() {
         $this->_base = event_base_new();
@@ -53,10 +54,6 @@ class Dispatcher extends halo\event\Dispatcher {
         return $this->_registerHandler(new Handler_Stream($this, $stream));
     }
     
-    public function newSignalHandler(halo\process\ISignal $signal) {
-        return $this->_registerHandler(new Handler_Signal($this, $signal));
-    }
-    
     public function newTimerHandler(core\time\IDuration $time) {
         return $this->_registerHandler(new Handler_Timer($this, $time));
     }
@@ -70,46 +67,113 @@ class Dispatcher extends halo\event\Dispatcher {
         $this->_cycleHandler = $callback;
 
         if($callback) {
-            $this->_cycleHandlerEvent = event_new();
-
-            if(!event_set(
-                $this->_cycleHandlerEvent,
+            $this->_cycleHandlerEvent = $this->_registerEvent(
                 STDIN,
                 EV_TIMEOUT | EV_PERSIST,
+                1000000,
                 function() use ($callback) {
                     if(false === call_user_func_array($callback, [$this])) {
                         $this->stop();
                     }
                 }
-            )) {
-                event_free($this->_cycleHandlerEvent);
-
-                throw new halo\event\BindException(
-                    'Could not set cycle event'
-                );
-            }
-
-            if(!event_base_set($this->_cycleHandlerEvent, $this->_base)) {
-                event_free($this->_cycleHandlerEvent);
-
-                throw new halo\event\BindException(
-                    'Could not set cycle event base'
-                );
-            }
-
-            if(!event_add($this->_cycleHandlerEvent, 1000000)) {
-                event_free($this->_cycleHandlerEvent);
-
-                throw new halo\event\BindException(
-                    'Could not add cycle event'
-                );
-            }
+            );
         }
 
         return $this;
     }
 
-    public function getCycleHandler() {
-        return $this->_cycleHandler;
+
+// Signals
+    protected function _registerSignalHandler(halo\process\ISignal $signal, Callable $callback) {
+        $this->_unregisterSignalHandler($signal);
+
+        $this->_signalEvents[$signal->getName()] = $this->_registerEvent(
+            $signal->getNumber(),
+            EV_SIGNAL | EV_PERSIST,
+            -1,
+            $callback,
+            $signal
+        );
+    }
+
+    protected function _unregisterSignalHandler(halo\process\ISignal $signal) {
+        $name = $signal->getName();
+
+        if(isset($this->_signalEvents[$name])) {
+            event_del($this->_signalEvents[$name]);
+            event_free($this->_signalEvents[$name]);
+
+            unset($this->_signalEvents[$name]);
+        }
+    }
+
+
+// Timers
+    protected function _registerTimer(halo\event\Timer $timer) {
+        $this->_unregisterTimer($timer);
+
+        $flags = EV_TIMEOUT;
+
+        if($timer->isPersistent) {
+            $flags |= EV_PERSIST;
+        }
+
+        $this->_timerEvents[$timer->id] = $this->_registerEvent(
+            STDIN,
+            $flags,
+            $timer->duration->getMicroseconds(),
+            function() use ($timer) {
+                call_user_func_array($timer->callback, [$timer->id]);
+
+                if(!$timer->isPersistent) {
+                    unset($this->_timerHandlers[$id], $this->_timerEvents[$id]);
+                }
+            }
+        );
+    }
+
+    protected function _unregisterTimer(halo\event\Timer $timer) {
+        if(isset($this->_timerEvents[$timer->id])) {
+            event_del($this->_timerEvents[$timer->id]);
+            event_free($this->_timerEvents[$timer->id]);
+
+            unset($this->_timerEvents[$timer->id]);
+        }
+    }
+
+
+// Helpers
+    protected function _registerEvent($target, $flags, $timeout, Callable $callback, $arg=null) {
+        if(!is_int($timeout) || $timeout < 0) {
+            $timeout = -1;
+        }
+
+        $event = event_new();
+
+        if(!event_set($event, $target, $flags, $callback, $arg)) {
+            event_free($event);
+
+            throw new halo\event\BindException(
+                'Could not set event'
+            );
+        }
+
+        if(!event_base_set($event, $this->_base)) {
+            event_free($event);
+
+            throw new halo\event\BindException(
+                'Could not set event base'
+            );
+        }
+
+        if(!event_add($event, $timeout)) {
+            event_free($event);
+
+            throw new halo\event\BindException(
+                'Could not add event'
+            );
+        }
+
+        return $event;
     }
 }

@@ -38,37 +38,6 @@ abstract class Handler implements halo\event\IHandler {
 
 
 
-// Signal
-class Handler_Signal extends Handler implements halo\event\ISignalHandler {
-    
-    use halo\event\TSignalHandler;
-
-    protected function _registerBinding(halo\event\IBinding $binding) {
-        if(extension_loaded('pcntl')) {
-            pcntl_signal($this->_signal->getNumber(), function() use ($binding) { $binding->trigger($this); });
-        }
-
-        parent::_registerBinding($binding);
-    }
-    
-    protected function _unregisterBinding(halo\event\IBinding $binding) {
-        if(extension_loaded('pcntl')) {
-            pcntl_signal($this->_signal->getNumber(), function() {});
-        }
-
-        parent::_unregisterBinding($binding);
-    }
-
-    public function _exportToMap(&$map) {
-        $id = $this->getId();
-        
-        $map[Dispatcher::SIGNAL][$this->_signal->getName()][] = $this;
-        $map[Dispatcher::COUNTER][Dispatcher::SIGNAL]++;
-    }
-}
-
-
-
 // Socket
 class Handler_Socket extends Handler implements halo\event\ISocketHandler {
     
@@ -224,38 +193,5 @@ class Handler_Stream extends Handler implements halo\event\IStreamHandler {
         
         $map[Dispatcher::STREAM][Dispatcher::HANDLER][$id] = $this;
         $map[Dispatcher::COUNTER][$key]++;
-    }
-}
-
-
-// Timer
-class Handler_Timer extends Handler implements halo\event\ITimerHandler {
-    
-    use halo\event\TTimerHandler;
-    
-    public function getBinding($listener, $bindingName, $type=halo\event\IIoState::TIMEOUT) {
-        return parent::getBinding($listener, $bindingName, halo\event\IIoState::TIMEOUT);
-    }
-    
-    protected function _getEventTimeout() {
-        return $this->_time->getMicroseconds();
-    }
-
-    public function _handleEvent() {
-        foreach($this->_bindings as $binding) {
-            if(!$binding->isAttached()) {
-                continue;
-            }
-            
-            $binding->trigger($this);
-        }
-    }
-    
-    public function _exportToMap(&$map) {
-        $id = $this->getId();
-
-        $map[Dispatcher::TIMER][Dispatcher::HANDLER][$id] = $this;
-        $map[Dispatcher::TIMER][Dispatcher::RESOURCE][$id] = $this->_time->getSeconds();
-        $map[Dispatcher::COUNTER][Dispatcher::TIMER]++;
     }
 }

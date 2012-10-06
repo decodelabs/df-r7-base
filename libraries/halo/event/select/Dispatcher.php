@@ -25,7 +25,6 @@ class Dispatcher extends halo\event\Dispatcher {
     
     protected $_breakLoop = false;
     protected $_generateMaps = true;
-    protected $_cycleHandler;
     
     public function start() {
         echo  "Starting select event loop\n\n";
@@ -44,26 +43,27 @@ class Dispatcher extends halo\event\Dispatcher {
             
             
             // Timers
-            if(isset($maps[self::TIMER])) {
+            if(!empty($this->_timerHandlers)) {
                 $time = microtime(true);
 
-                foreach($maps[self::TIMER][self::HANDLER] as $id => $timerHandler) {
+                foreach($this->_timerHandlers as $id => $timer) {
                     $dTime = isset($times[$id]) ? $times[$id] : $baseTime;
                     $diff = $time - $dTime;
-                    $duration = $maps[self::TIMER][self::RESOURCE][$id];
 
-                    if($diff > $duration) {
+                    if($diff > $timer->duration->getSeconds()) {
                         $times[$id] = $time;
-                        $timerHandler->_handleEvent();
+                        call_user_func_array($timer->callback, [$id]);
+
+                        if(!$timer->isPersistent) {
+                            $this->removeTimer($id);
+                        }
                     }
                 }
             }
             
             // Signals
-            if(isset($maps[self::SIGNAL])) {
-                if(extension_loaded('pcntl')) {
-                    pcntl_signal_dispatch();
-                }
+            if(!empty($this->_signalHandlers) && extension_loaded('pcntl')) {
+                pcntl_signal_dispatch();
             }
             
             // Sockets
@@ -148,7 +148,6 @@ class Dispatcher extends halo\event\Dispatcher {
     
     private function _generateMaps() {
         $map = [
-            self::SIGNAL => [],
             self::SOCKET => [
                 self::RESOURCE => [
                     self::READ => [],
@@ -163,12 +162,9 @@ class Dispatcher extends halo\event\Dispatcher {
                 ],
                 self::HANDLER => []
             ],
-            self::TIMER => [],
             self::COUNTER => [
-                self::SIGNAL => 0,
                 self::SOCKET => 0,
-                self::STREAM => 0,
-                self::TIMER => 0
+                self::STREAM => 0
             ]
         ];
         
@@ -205,21 +201,29 @@ class Dispatcher extends halo\event\Dispatcher {
         return $this->_registerHandler(new Handler_Stream($this, $stream));
     }
     
-    public function newSignalHandler(halo\process\ISignal $signal) {
-        return $this->_registerHandler(new Handler_Signal($this, $signal));
-    }
-    
     public function newTimerHandler(core\time\IDuration $time) {
         return $this->_registerHandler(new Handler_Timer($this, $time));
     }
 
 
-    public function setCycleHandler(Callable $callback=null) {
-        $this->_cycleHandler = $callback;
-        return $this;
+
+// Signals
+    protected function _registerSignalHandler(halo\process\ISignal $signal, Callable $handler) {
+        if(extension_loaded('pcntl')) {
+            pcntl_signal($signal->getNumber(), function() use($signal, $handler) { 
+                call_user_func_array($handler, [$signal]);
+            });
+        }
     }
 
-    public function getCycleHandler() {
-        return $this->_cycleHandler;
+    protected function _unregisterSignalHandler(halo\process\ISignal $signal) {
+        if(extension_loaded('pcntl')) {
+            pcntl_signal($signal->getNumber(), function() use($signal) {});
+        }
     }
+
+
+// Timers
+    protected function _registerTimer(halo\event\Timer $timer) {}
+    protected function _unregisterTimer(halo\event\Timer $timer) {}
 }

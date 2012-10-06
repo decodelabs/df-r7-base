@@ -16,43 +16,6 @@ abstract class Base implements IDaemon {
     const PAUSED_SLEEP_TIME = 4;
     const REQUIRES_PRIVILEGED_PROCESS = true;
 
-    private static $_signalIndex = null;
-
-    protected $_signalHandlers = [
-        'SIGHUP' => null,
-        'SIGINT' => null,
-        'SIGQUIT' => null,
-        'SIGILL' => null,
-        'SIGTRAP' => null,
-        'SIGABRT' => null,
-        'SIGIOT' => null,
-        'SIGBUS' => null,
-        'SIGFPE' => null,
-        'SIGUSR1' => null,
-        'SIGSEGV' => null,
-        'SIGUSR2' => null,
-        'SIGALRM' => null,
-        'SIGTERM' => null,
-        'SIGSTKFLT' => null,
-        'SIGCLD' => null,
-        'SIGCHLD' => null,
-        'SIGCONT' => null,
-        'SIGTSTP' => null,
-        'SIGTTIN' => null,
-        'SIGTTOU' => null,
-        'SIGURG' => null,
-        'SIGXCPU' => null,
-        'SIGXFSZ' => null,
-        'SIGVTALRM' => null,
-        'SIGPROF' => null,
-        'SIGWINCH' => null,
-        'SIGPOLL' => null,
-        'SIGIO' => null,
-        'SIGPWR' => null,
-        'SIGSYS' => null,
-        'SIGBABY' => null
-    ];
-
     protected $_process;
 
     protected $_isStarted = false;
@@ -76,75 +39,11 @@ abstract class Base implements IDaemon {
         return new $class();
     }
 
-    protected function __construct() {
-
-    }
+    protected function __construct() {}
 
     public function getName() {
         $parts = array_slice(explode('\\', get_class($this)), 3);
         return implode('/', $parts);
-    }
-
-
-// Signals
-    public function registerSignalHandler($signals, Callable $handler) {
-        if(!extension_loaded('pcntl')) {
-            return $this;
-        }
-
-        if(!is_array($signal)) {
-            $signals = (array)$signals;
-        }
-
-        $index = null;
-
-        foreach($signals as $signal) {
-            if($signal = halo\process\Signal::normalizeSignalName($signal)) {
-                $this->_signalHandlers[$signal] = $handler;
-
-                if($this->_isStarted) {
-                    pcntl_signal(constant($signal), $handler);
-                }
-            }
-        }
-
-        return $this;
-    }
-
-    public function hasSignalHandler($signal) {
-        try {
-            return isset($this->_signalHandlers[halo\process\Signal::normalizeSignalName($signal)]);
-        } catch(\Exception $e) {
-            return false;
-        }
-    }
-
-    public function _defaultSignalHandler($signalNo) {
-        switch($signalNo) {
-            case SIGKILL:
-                exit;
-
-            case SIGTERM:
-            case SIGINT:
-                // Shutdown
-                $this->stop();
-                break;
-
-            case SIGTSTP:
-            case SIGSTOP:
-                // Pause
-                $this->pause();
-                break;
-
-            case SIGCONT:
-                // Continue
-                $this->resume();
-                break;
-
-            default:
-                // Handle all other signals
-                break;
-        }
     }
 
 
@@ -201,22 +100,13 @@ abstract class Base implements IDaemon {
 
         $this->_setup();
 
-        if(extension_loaded('pcntl')) {
-            foreach($this->_signalHandlers as $signal => $handler) {
-                if(!defined($signal)) {
-                    continue;
-                }
+        $this->_dispatcher
+            ->setCycleHandler([$this, 'cycle'])
+            ->setSignalHandler(['SIGHUP'], function() {})
+            ->setSignalHandler(['SIGTERM', 'SIGINT'], [$this, 'stop'])
+            ->setSignalHandler(['SIGTSTP'], [$this, 'pause'])
+            ->setSignalHandler(['SIGCONT'], [$this, 'resume']);
 
-                if($handler === null) {
-                    $handler = [$this, '_defaultSignalHandler'];
-                }
-
-                pcntl_signal(constant($signal), $handler);
-            }
-        }
-
-
-        $this->_dispatcher->setCycleHandler([$this, 'cycle']);
 
         while(true) {
             if($this->_isPaused) {
@@ -242,17 +132,6 @@ abstract class Base implements IDaemon {
 
         $this->_isStopped = true;
         $this->_teardown();
-
-        // Remove signal handlers
-        if(extension_loaded('pcntl')) {
-            foreach($this->_signalHandlers as $signal => $handler) {
-                if(!defined($signal)) {
-                    continue;
-                }
-
-                pcntl_signal(constant($signal), function(){});
-            }
-        }
 
         return $this;
     }

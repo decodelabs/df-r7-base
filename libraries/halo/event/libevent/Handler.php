@@ -140,27 +140,6 @@ abstract class Handler implements halo\event\IHandler {
 
 
 
-// Signal
-class Handler_Signal extends Handler implements halo\event\ISignalHandler {
-        
-    use halo\event\TSignalHandler;
-
-    protected function _getEventTarget() {
-        return $this->_signal->getNumber();
-    }
-
-    protected function _getEventTypeFlags(halo\event\IBinding $binding) {
-        $output = EV_SIGNAL;
-
-        if($binding->isPersistent()) {
-            $output |= EV_PERSIST;
-        }
-
-        return $output;
-    }
-}
-
-
 // Socket
 class Handler_Socket extends Handler implements halo\event\ISocketHandler {
     
@@ -179,28 +158,5 @@ class Handler_Stream extends Handler implements halo\event\IStreamHandler {
 
     protected function _getEventTarget() {
         return $this->_stream->getStreamDescriptor();
-    }
-}
-
-
-// Timer
-class Handler_Timer extends Handler implements halo\event\ITimerHandler {
-    
-    use halo\event\TTimerHandler;
-    
-    public function getBinding($listener, $bindingName, $type=halo\event\IIoState::TIMEOUT) {
-        return parent::getBinding($listener, $bindingName, halo\event\IIoState::TIMEOUT);
-    }
-    
-    protected function _getEventTarget() {
-        if(defined('STDIN')) {
-            return STDIN;
-        }
-        
-        return fopen('php://stdin', 'r');
-    }
-    
-    protected function _getEventTimeout() {
-        return $this->_time->getMicroseconds();
     }
 }

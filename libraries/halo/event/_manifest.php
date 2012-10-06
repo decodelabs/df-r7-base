@@ -37,27 +37,33 @@ interface IDispatcher {
     public function stop();
     public function isRunning();
     
-    public function newSocketHandler(halo\socket\ISocket $socket);
-    public function getSocketHandler(halo\socket\ISocket $socket);
-    public function newStreamHandler(core\io\stream\IStream $stream); 
-    public function getStreamHandler(core\io\stream\IStream $stream);
-    public function newSignalHandler(halo\process\ISignal $signal);
-    public function getSignalHandler(halo\process\ISignal $signal);
-    public function newTimerHandler(core\time\IDuration $time);
-    public function getTimerHandler(core\time\IDuration $time);
-
     public function setCycleHandler(Callable $callback=null);
     public function getCycleHandler();
-    
-    public function remove(IHandler $handler);
+
+    public function newSocketHandler(halo\socket\ISocket $socket);
+    public function getSocketHandler(halo\socket\ISocket $socket);
     public function removeSocket(halo\socket\ISocket $socket);
-    public function removeStream(core\io\stream\IStream $stream);
-    public function removeSignal(halo\process\ISignal $signal);
-    public function removeTimer(core\time\IDuration $time);
-    public function removeAll();
     
+    public function newStreamHandler(core\io\stream\IStream $stream); 
+    public function getStreamHandler(core\io\stream\IStream $stream);
+    public function removeStream(core\io\stream\IStream $stream);
+
     public function getHandlers();
     public function countHandlers();
+    public function removeHandler(IHandler $handler);
+    public function removeAllHandlers();
+
+    public function setSignalHandler($signals, Callable $callback);
+    public function hasSignalHandler($signal);
+    public function getSignalHandler($signal);
+    public function removeSignalHandler($signals);
+    
+    public function setTimer($id, $duration, Callable $callback);
+    public function setTimeout($id, $duration, Callable $callback);
+    public function hasTimer($id);
+    public function getTimer($id);
+    public function getTimerDuration($id);
+    public function removeTimer($id);
 }
 
 
@@ -102,6 +108,22 @@ interface IListener {}
 interface IAdaptiveListener extends IListener {
     
     public function handleEvent(IHandler $handler, IBinding $binding);
+}
+
+
+class Timer {
+
+    public $id;
+    public $duration;
+    public $callback;
+    public $isPersistent = true;
+
+    public function __construct($id, $duration, Callable $callback, $isPersistent=false) {
+        $this->id = $id;
+        $this->duration = core\time\Duration::factory($duration);
+        $this->callback = $callback;
+        $this->isPersistent = (bool)$isPersistent;
+    }
 }
 
 

@@ -20,9 +20,6 @@ class LogicException extends \LogicException implements IException {}
 interface IDaemon extends halo\event\IDispatcherProvider {
     public function getName();
 
-    public function registerSignalHandler($signal, Callable $handler);
-    public function hasSignalHandler($signal);
-
     public function start();
     public function cycle();
     public function isStarted();

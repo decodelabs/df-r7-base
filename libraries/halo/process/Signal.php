@@ -12,7 +12,6 @@ use df\halo;
 class Signal implements ISignal {
 
     protected static $_signalMap = [
-        'init' => false,
         'SIGHUP' => null,
         'SIGINT' => null,
         'SIGQUIT' => null,
@@ -47,6 +46,8 @@ class Signal implements ISignal {
         'SIGBABY' => null
     ];
 
+    protected static $_isInit = false;
+
     protected $_name;
     protected $_number;
 
@@ -56,11 +57,40 @@ class Signal implements ISignal {
         }
 
         $signal = self::normalizeSignalName($signal);
+
+        if(!$signal) {
+            throw new InvalidArgumentException(
+                'Signal is not defined'
+            );
+        }
+
         return new self($signal);
     }
 
 
     public static function normalizeSignalName($signal) {
+        if(!self::$_isInit) {
+            self::$_isInit = true;
+
+            if(extension_loaded('pcntl')) {
+                foreach(self::$_signalMap as $signalName => $number) {
+                    if(defined($signalName)) {
+                        self::$_signalMap[$signalName] = constant($signalName);
+                    }
+                }
+            } else {
+                $list = explode(' ', trim(shell_exec("kill -l")));
+
+                foreach($list as $i => $name) {
+                    $name = 'SIG'.$name;
+
+                    if(array_key_exists($name, self::$_signalMap)) {
+                        self::$_signalMap[$name] = $i + 1;
+                    }
+                }
+            }
+        }
+
         if(is_string($signal)) {
             $signal = strtoupper($signal);
 
@@ -69,21 +99,7 @@ class Signal implements ISignal {
                     $signal.' is not a valid signal identifier'
                 );
             }
-
-            if(!defined($signal)) {
-                return null;
-            }
         } else if(is_numeric($signal)) {
-            if(isset(self::$_signalMap['init'])) {
-                unset(self::$_signalMap['init']);
-
-                foreach(self::$_signalMap as $signalName => $number) {
-                    if(defined($signalName)) {
-                        self::$_signalMap[$signalName] = constant($signalName);
-                    }
-                }
-            }
-
             if(false !== ($t = array_search($signal, self::$_signalMap))) {
                 $signal = $t;
             } else {
@@ -102,7 +118,7 @@ class Signal implements ISignal {
 
     protected function __construct($name) {
         $this->_name = $name;
-        $this->_number = constant($name);
+        $this->_number = self::$_signalMap[$name];
     }
 
     public function getName() {
