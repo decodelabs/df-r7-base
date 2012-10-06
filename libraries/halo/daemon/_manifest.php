@@ -17,10 +17,8 @@ class LogicException extends \LogicException implements IException {}
 
 
 // Interfaces
-interface IDaemon {
+interface IDaemon extends halo\event\IDispatcherProvider {
     public function getName();
-    public function setSleepTime($time);
-    public function getSleepTime();
 
     public function registerSignalHandler($signal, Callable $handler);
     public function hasSignalHandler($signal);

@@ -14,34 +14,8 @@ trait TPeer {
     protected $_readChunkSize = 16384;
     protected $_writeChunkSize = 8192;
     
-    protected $_dispatcher;
     protected $_sessions = array();
     protected $_sessionCount = 0;
-    
-    
-// Dispatcher
-    public function setDispatcher(halo\event\IDispatcher $dispatcher) {
-        if($this->_dispatcher && $this->_dispatcher->isRunning()) {
-            throw new RuntimeException(
-                'You cannot change the dispatcher once the server has started'
-            );
-        }
-        
-        $this->_dispatcher = $dispatcher;
-        return $this;
-    }
-    
-    public function getDispatcher() {
-        if(!$this->_dispatcher) {
-            $this->_dispatcher = halo\event\Dispatcher::factory();
-        }
-        
-        return $this->_dispatcher;
-    }
-    
-    public function isRunning() {
-        return $this->_dispatcher && $this->_dispatcher->isRunning();
-    }
     
     
 // Protocol
@@ -73,7 +47,7 @@ trait TPeer {
         $socket->close();
         
         unset($this->_sessions[$id]);
-        $this->_dispatcher->removeSocket($socket);
+        $this->getDispatcher()->removeSocket($socket);
     }
     
     
@@ -237,7 +211,7 @@ trait TPeer_Client {
     use TPeer;
     
     public function run() {
-        if($this->_dispatcher && $this->_dispatcher->isRunning()) {
+        if($this->isRunning()) {
             return $this;
         }
         
@@ -255,7 +229,7 @@ trait TPeer_Client {
             $this->_dispatchSession($session);
         }
         
-        $this->getDispatcher()->start();
+        $dispatcher->start();
     }
     
     abstract protected function _createInitialSessions();
@@ -264,7 +238,7 @@ trait TPeer_Client {
         $socket = $session->getSocket();
         $socket->connect();
         
-        $eventHandler = $this->_dispatcher->newSocketHandler($socket);
+        $eventHandler = $this->getDispatcher()->newSocketHandler($socket);
         
         switch($this->getProtocolDisposition()) {
             case IClient::PEER_FIRST:
@@ -305,44 +279,7 @@ trait TPeer_Server {
     
     use TPeer;
     
-    protected $_isStarted = false;
     protected $_masterSockets = array();
-    
-    public function start() {
-        if($this->_isStarted) {
-            return $this;
-        }
-        
-        $dispatcher = $this->getDispatcher();
-        
-        if($dispatcher->isRunning()) {
-            $dispatcher->stop();
-        }
-        
-        $this->_setup();
-        $this->_isStarted = true;
-        
-        $dispatcher->start();
-    }
-    
-    public function stop() {
-        if(!$this->_isStarted) {
-            return $this;
-        }
-        
-        $dispatcher = $this->getDispatcher();
-        
-        if($isRunning = $dispatcher->isRunning()) {
-            $dispatcher->stop();
-        }
-        
-        $this->_teardown();
-        $this->_isStarted = false;
-        
-        if($isRunning && $dispatcher->countHandlers()) {
-            $dispatcher->start();
-        }
-    }
     
     protected function _setup() {
         $dispatcher = $this->getDispatcher();
@@ -419,7 +356,7 @@ trait TPeer_Server {
         $session = $this->_createSessionFromSocket($peerSocket);
         $this->_registerSession($session);
         
-        $eventHandler = $this->_dispatcher->newSocketHandler($peerSocket);
+        $eventHandler = $this->getDispatcher()->newSocketHandler($peerSocket);
         
         switch($this->getProtocolDisposition()) {
             case IServer::SERVER_FIRST:

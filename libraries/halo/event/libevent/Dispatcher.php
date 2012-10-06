@@ -77,7 +77,7 @@ class Dispatcher extends halo\event\Dispatcher {
                 STDIN,
                 EV_TIMEOUT | EV_PERSIST,
                 function() use ($callback) {
-                    if(false === $callback->__invoke($this)) {
+                    if(false === call_user_func_array($callback, [$this])) {
                         $this->stop();
                     }
                 }

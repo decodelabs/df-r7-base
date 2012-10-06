@@ -11,7 +11,8 @@ use df\halo;
     
 abstract class Base implements IDaemon {
 
-    const DEFAULT_SLEEP_TIME = 2;
+    use halo\event\TDispatcherProvider;
+
     const PAUSED_SLEEP_TIME = 4;
     const REQUIRES_PRIVILEGED_PROCESS = true;
 
@@ -53,12 +54,12 @@ abstract class Base implements IDaemon {
     ];
 
     protected $_process;
+
     protected $_isStarted = false;
     protected $_isStopping = false;
     protected $_isStopped = false;
     protected $_isPaused = false;
     protected $_isForked = false;
-    protected $_sleepTime = self::DEFAULT_SLEEP_TIME;
 
     public static function factory($name) {
         $parts = explode('/', $name);
@@ -75,26 +76,15 @@ abstract class Base implements IDaemon {
         return new $class();
     }
 
-    protected function __construct() {}
+    protected function __construct() {
+
+    }
 
     public function getName() {
         $parts = array_slice(explode('\\', get_class($this)), 3);
         return implode('/', $parts);
     }
 
-// Sleep
-    public function setSleepTime($time) {
-        if($time === null) {
-            $time = self::DEFAULT_SLEEP_TIME;
-        }
-
-        $this->_sleepTime = (float)$time;
-        return $this;
-    }
-
-    public function getSleepTime() {
-        return $this->_sleepTime;
-    }
 
 // Signals
     public function registerSignalHandler($signals, Callable $handler) {
@@ -167,10 +157,11 @@ abstract class Base implements IDaemon {
         }
 
         gc_enable();
-        
-        $process = halo\process\Base::getCurrent();
+
+        $this->getDispatcher();
+        $this->_process = halo\process\Base::getCurrent();
         $system = halo\system\Base::getInstance();
-        $isPrivileged = $process->isPrivileged();
+        $isPrivileged = $this->_process->isPrivileged();
 
         if(!$isPrivileged && static::REQUIRES_PRIVILEGED_PROCESS) {
             throw new RuntimeException(
@@ -178,22 +169,22 @@ abstract class Base implements IDaemon {
             );
         }
 
-        if($process->canFork()) {
-            if($process->fork()) {
+        if($this->_process->canFork()) {
+            if($this->_process->fork()) {
                 exit;
             } else {
                 $this->_isForked = true;
             }
         }
 
-        $process->setTitle(df\Launchpad::$application->getName().' - '.$this->getName());
+        $this->_process->setTitle(df\Launchpad::$application->getName().' - '.$this->getName());
 
         if($isPrivileged) {
             if($system->getPlatformType() == 'Unix') {
                 $pidPath = $this->_getPidFilePath();
 
                 if($pidPath) {
-                    $process->setPidFilePath($pidPath);
+                    $this->_process->setPidFilePath($pidPath);
                 }
             }
 
@@ -202,7 +193,7 @@ abstract class Base implements IDaemon {
             $user = $this->_getDaemonUser();
             $group = $this->_getDaemonGroup();
 
-            $process->setIdentity($user, $group);
+            $this->_process->setIdentity($user, $group);
         }
 
         declare(ticks = 1);
@@ -224,11 +215,24 @@ abstract class Base implements IDaemon {
             }
         }
 
+
+        $this->_dispatcher->setCycleHandler([$this, 'cycle']);
+
         while(true) {
             if($this->_isPaused) {
                 $this->_iterateWhilePaused();
+
+                $sleepTime = static::PAUSED_SLEEP_TIME;
+
+                if(!$this->_isStopping && $sleepTime > 0) {
+                    if(is_int($sleepTime) || $sleepTime > 10) {
+                        sleep((int)$sleepTime);
+                    } else {
+                        usleep($sleepTime * 1000000);
+                    }
+                }
             } else {
-                $this->_iterate();
+                $this->_dispatcher->start();
             }
 
             if(!$this->cycle()) {
@@ -266,20 +270,6 @@ abstract class Base implements IDaemon {
         clearstatcache();
         //gc_collect_cycles();
 
-        if($this->_isPaused) {
-            $sleepTime = static::PAUSED_SLEEP_TIME;
-        } else {
-            $sleepTime = $this->_sleepTime;
-        }
-
-        if(!$this->_isStopping && $sleepTime > 0) {
-            if(is_int($sleepTime) || $sleepTime > 10) {
-                sleep((int)$sleepTime);
-            } else {
-                usleep($sleepTime * 1000000);
-            }
-        }
-
         if($this->_isPaused || $this->_isStopping) {
             return false;
         }
@@ -288,7 +278,6 @@ abstract class Base implements IDaemon {
     }
 
     protected function _setup() {}
-    abstract protected function _iterate();
     protected function _iterateWhilePaused() {}
     protected function _teardown() {}
 

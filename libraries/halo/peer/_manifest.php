@@ -15,11 +15,8 @@ class RuntimeException extends \RuntimeException implements IException {}
 
 
 // Interfaces
-interface IPeer {
+interface IPeer extends halo\event\IDispatcherProvider {
     public function getProtocolDisposition();
-    public function setDispatcher(halo\event\IDispatcher $dispatcher);
-    public function getDispatcher();
-    public function isRunning();
 }
 
 interface IClient extends halo\event\IAdaptiveListener, IPeer {

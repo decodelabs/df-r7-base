@@ -61,11 +61,44 @@ interface IDispatcher {
 }
 
 
-// Listener
-interface IListener {
-    
+interface IDispatcherProvider {
+    public function setDispatcher(halo\event\IDispatcher $dispatcher);
+    public function getDispatcher();
+    public function isRunning();
 }
 
+
+trait TDispatcherProvider {
+
+    protected $_dispatcher;
+
+    public function setDispatcher(halo\event\IDispatcher $dispatcher) {
+        if($this->isRunning()) {
+            throw new RuntimeException(
+                'You cannot change the dispatcher once the peer has started'
+            );
+        }
+
+        $this->_dispatcher = $dispatcher;
+        return $this;
+    }
+
+    public function getDispatcher() {
+        if(!$this->_dispatcher) {
+            $this->_dispatcher = halo\event\Dispatcher::factory();
+        }
+
+        return $this->_dispatcher;
+    }
+
+    public function isRunning() {
+        return $this->_dispatcher && $this->_dispatcher->isRunning();
+    }
+}
+
+
+// Listener
+interface IListener {}
 interface IAdaptiveListener extends IListener {
     
     public function handleEvent(IHandler $handler, IBinding $binding);

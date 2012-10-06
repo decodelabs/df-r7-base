@@ -11,6 +11,7 @@ use df\halo;
 
 class AsyncClient implements IAsyncClient {
     
+    use halo\event\TDispatcherProvider;
     use halo\peer\TPeer_Client;
     
     const PROTOCOL_DISPOSITION = halo\peer\IClient::CLIENT_FIRST;

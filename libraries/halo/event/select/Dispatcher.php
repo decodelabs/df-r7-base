@@ -125,7 +125,7 @@ class Dispatcher extends halo\event\Dispatcher {
             }
 
             if($this->_cycleHandler) {
-                if(false === $this->_cycleHandler->__invoke($this)) {
+                if(false === call_user_func_array($this->_cycleHandler, [$this])) {
                     $this->stop();
                 }
             }
