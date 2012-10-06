@@ -43,7 +43,7 @@ interface IDispatcher {
     public function newSocketHandler(halo\socket\ISocket $socket);
     public function getSocketHandler(halo\socket\ISocket $socket);
     public function removeSocket(halo\socket\ISocket $socket);
-    
+
     public function newStreamHandler(core\io\stream\IStream $stream); 
     public function getStreamHandler(core\io\stream\IStream $stream);
     public function removeStream(core\io\stream\IStream $stream);
@@ -391,58 +391,6 @@ trait TStreamHandler {
         return $this->_stream;
     }
 }
-
-interface ISignalHandler extends ITimeoutHandler {
-    public function getSignal();
-}
-
-trait TSignalHandler {
-
-    use THandler;
-    use TTimeoutHandler;
-
-    protected $_signal;
-    
-    public function __construct(IDispatcher $dispatcher, halo\process\ISignal $signal) {
-        $this->_dispatcher = $dispatcher;
-        $this->_signal = $signal;
-    }
-    
-    public function getId() {
-        return 'signal:'.$this->_signal->getName();
-    }
-    
-    public function getSignal() {
-        return $this->_signal;
-    }
-}
-
-interface ITimerHandler extends IHandler {
-    public function getTime();
-}
-
-trait TTimerHandler {
-
-    use THandler;
-
-    protected $_time;
-    protected $_uniqId;
-    
-    public function __construct(IDispatcher $dispatcher, core\time\IDuration $time) {
-        $this->_dispatcher = $dispatcher;
-        $this->_time = $time;
-        $this->_uniqId = uniqid();
-    }
-    
-    public function getId() {
-        return 'time:'.$this->_uniqId.'-'.$this->_time->getSeconds();
-    }
-    
-    public function getTime() {
-        return $this->_time;
-    }
-}
-
 
 
 // Binding
