@@ -36,7 +36,7 @@ interface IField {
     public function getName();
     public function isRequired($flag=null);
     public function shouldSanitize($flag=null);
-    public function setCustomValidator(\Closure $validator);
+    public function setCustomValidator(Callable $validator);
     public function getCustomValidator();
     
     public function end();
@@ -46,7 +46,7 @@ interface IField {
 
 
 interface ITextField extends IField {
-    public function setSanitizer(\Closure $sanitizer);
+    public function setSanitizer(Callable $sanitizer);
     public function getSanitizer();
     
     public function setPattern($pattern);

@@ -62,7 +62,7 @@ abstract class Base implements core\validate\IField {
     }
     
     
-    public function setCustomValidator(\Closure $validator) {
+    public function setCustomValidator(Callable $validator) {
         $this->_customValidator = $validator;
         return $this;
     }
@@ -115,7 +115,7 @@ abstract class Base implements core\validate\IField {
     
     protected function _applyCustomValidator(core\collection\IInputTree $node, $value) {
         if(!$node->hasErrors() && $this->_customValidator) {
-            $this->_customValidator->__invoke($node, $value, $this);
+            call_user_func_array($this->_customValidator, [$node, $value, $this]);
         }
         
         return $value;

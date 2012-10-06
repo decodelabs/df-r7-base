@@ -16,7 +16,7 @@ class Text extends Base implements core\validate\ITextField {
     protected $_sanitizer;
     
     
-    public function setSanitizer(\Closure $sanitizer) {
+    public function setSanitizer(Callable $sanitizer) {
         $this->_sanitizer = $sanitizer;
         return $this;
     }
@@ -71,7 +71,7 @@ class Text extends Base implements core\validate\ITextField {
         $value = $node->getValue();
         
         if($this->_sanitizer) {
-            $value = $this->_sanitizer->__invoke($value);
+            $value = call_user_func_array($this->_sanitizer, [$value]);
         }
         
         if(!$length = $this->_checkRequired($node, $value)) {

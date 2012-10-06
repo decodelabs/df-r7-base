@@ -70,7 +70,7 @@ class FacetController implements IFacetController {
         $value = null;
 
         if($facet = $this->getFacet($id)) {
-            $value = $facet->__invoke($this);
+            $value = call_user_func_array($facet, [$this]);
         }
 
         return new aura\view\content\GenericRenderer($value);
@@ -80,7 +80,7 @@ class FacetController implements IFacetController {
 // Response
     public function toResponse() {
         if($this->_initializer) {
-            $this->_initializer->__invoke($this);
+            call_user_func_array($this->_initializer, [$this]);
         }
 
         if(!$this->_action) {
@@ -89,7 +89,7 @@ class FacetController implements IFacetController {
             );
         }
 
-        $output = $this->_action->__invoke($this);
+        $output = call_user_func_array($this->_action, [$this]);
         
         return $output;
     }

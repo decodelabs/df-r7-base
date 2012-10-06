@@ -84,7 +84,7 @@ class Correlation implements ICorrelationQuery, core\IDumpable {
         }
 
         if($this->_applicator) {
-            $this->_applicator->__invoke($this);
+            call_user_func_array($this->_applicator, [$this]);
         } else if($this->_parent instanceof ICorrelatableQuery) {
            $this->_parent->addCorrelation($this);
         }

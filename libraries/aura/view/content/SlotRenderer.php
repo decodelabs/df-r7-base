@@ -82,7 +82,7 @@ class SlotRenderer implements aura\view\IDeferredRenderable {
                 return $this->_value;
 
             case self::TYPE_CALLBACK:
-                return $this->_value->__invoke($this->getView());
+                return call_user_func_array($this->_value, [$this->getView()]);
 
             case self::TYPE_TEMPLATE:
                 try {
