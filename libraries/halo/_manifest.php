@@ -24,6 +24,7 @@ interface IIp extends core\IStringProvider {
     public function isV6();
     public function isStandardV6();
     public function isHybrid();
+    public function convertToV6();
     
     // Strings
     public function getV6String();

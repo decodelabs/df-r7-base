@@ -95,6 +95,11 @@ class Ip implements IIp, core\IDumpable {
     public function isHybrid() {
         return $this->_isV4 && $this->_isV6;
     }
+
+    public function convertToV6() {
+        $this->_isV6 = true;
+        return $this;
+    }
     
     
 // Strings
