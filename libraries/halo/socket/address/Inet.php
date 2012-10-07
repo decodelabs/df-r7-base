@@ -42,8 +42,24 @@ class Inet extends Base implements IInetAddress {
         
         
         $parts = explode('://', $address, 2);
-        $address = array_pop($parts);
-        $this->setScheme(array_shift($parts));
+
+        $scheme = null;
+        $address = null;
+
+        if(false !== strpos($address, '.')
+        || false !== strpos($address, ':')) {
+            $address = array_pop($parts);
+            $scheme = array_shift($parts);
+        } else {
+            $scheme = array_shift($parts);
+            $address = array_pop($parts);
+        }
+
+        if($convertToV6 = (substr($scheme, -1) == '6')) {
+            $scheme = substr($scheme, 0, -1);
+        }
+
+        $this->setScheme($scheme);
         
         if(isset($address{0}) && $address{0} == '[') {
             // V6
@@ -55,10 +71,20 @@ class Inet extends Base implements IInetAddress {
             }
         } else {
             $parts = explode(':', $address, 2);
-            $this->setIp(array_shift($parts));
+            $ip = array_shift($parts);
+
+            if(empty($ip)) {
+                $ip = '0.0.0.0';
+            }
+
+            $this->setIp($ip);
             
             if(isset($parts[0])) {
                 $this->setPort(array_shift($parts));
+            }
+
+            if($convertToV6) {
+                $this->_ip->convertToV6();
             }
         }
         

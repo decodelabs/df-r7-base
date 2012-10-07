@@ -150,7 +150,7 @@ abstract class Base implements ISocket {
     }
     
     public function isReadingEnabled() {
-        return $this->_isReadingEnabled;
+        return $this->_readingEnabled;
     }
     
     public function isWritingEnabled() {

@@ -38,7 +38,7 @@ abstract class Base implements IAddress {
             return new Inet($address);
         }
     }
-    
+
     public function __construct($url=null) {
         if($url !== null) {
             $this->import($url);

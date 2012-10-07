@@ -9,82 +9,21 @@ use df;
 use df\core;
 use df\halo;
 
-class TcpServer extends halo\socket\Server implements halo\socket\ISequenceServerSocket {
+
+// Server
+class Tcp_Server extends halo\socket\Server implements halo\socket\ISequenceServerSocket {
     
+    use halo\socket\TSequenceServerSocket;
+    use TNative;
+
     protected static $_defaultOptions = array(
         'oobInline' => false
     );
-    
-    protected $_useSeqPackets = false;
     
     protected static function _populateOptions() {
         return array_merge(parent::_populateOptions(), self::$_defaultOptions);
     }
     
-    public function getImplementationName() {
-        return 'native';
-    }
-    
-// Options
-    public function shouldUseSequencePackets($flag=null) {
-        if($flag === null) {
-            return $this->_useSeqPackets;
-        }
-        
-        if($this->_socket) {
-            throw new halo\socket\RuntimeException(
-                'You cannot set the socket type after it has been created'
-            );
-        }
-        
-        $this->_useSeqPackets = (bool)$flag;
-        return $this;
-    }
-    
-    public function setConnectionQueueSize($size) {
-        if($this->_isListening) {
-            throw new halo\socket\RuntimeException(
-                'Can\'t set connection queue size once the server is listening'
-            );
-        }
-        
-        return $this->_setOption('connectionQueueSize', (int)$size);
-    }
-    
-    public function getConnectionQueueSize() {
-        return $this->_getOption('connectionQueueSize');
-    }
-    
-    public function shouldLingerOnClose($flag=null, $timeout=null) {
-        if($flag === null) {
-            return $this->_getOption('lingerOnClose');
-        }
-        
-        $this->_setOption('lingerOnClose', (bool)$flag);
-        
-        if($timeout !== null) {
-            $this->setLingerTimeout($timeout);
-        }
-        
-        return $this;
-    }
-    
-    public function setLingerTimeout($timeout) {
-        return $this->_setOption('lingerTimeout', $timeout);
-    }
-    
-    public function getLingerTimeout() {
-        return $this->_getOption('lingerTimeout');
-    }
-     
-    
-    public function shouldSendOutOfBandDataInline($flag=null) {
-        if($flag === null) {
-            return $this->_getOption('oobInline');
-        }
-        
-        return $this->_setOption('oobInline', (bool)$flag);
-    }
     
     
 // Operation
@@ -211,21 +150,92 @@ class TcpServer extends halo\socket\Server implements halo\socket\ISequenceServe
         return is_resource($this->_socket)
             && (@socket_getsockname($this->_socket, $address) !== false);
     }
+}
+
+
+
+// Server peer
+class Tcp_ServerPeer extends halo\socket\ServerPeer implements halo\socket\ISequenceServerPeerSocket {
     
-    
-    protected function _shutdownReading() {
-        return @socket_shutdown($this->_socket, 0);
+    use halo\socket\TSequenceServerPeerSocket;
+    use TNative;
+    use TNative_IoSocket;
+
+    protected static function _populateOptions() {
+        return array();
     }
     
-    protected function _shutdownWriting() {
-        return @socket_shutdown($this->_socket, 1);
+    public function __construct(halo\socket\IServerSocket $parent, $socket, $address) {
+        parent::__construct($parent, $socket, $address);
+        
+        @socket_set_nonblock($this->_socket);
+        $this->_applyOptions();
     }
     
-    protected function _closeSocket() {
-        return @socket_close($this->_socket);
+    
+    protected function _applyOptions() {
+        foreach($this->_options as $key => $value) {
+            if($value === null) {
+                continue;
+            }
+            
+            switch($key) {
+                case 'sendBufferSize':
+                    $key = SO_SNDBUF;
+                    $value = (int)$value;
+                    break;
+                    
+                case 'receiveBufferSize':
+                    $key = SO_RCVBUF;
+                    $value = (int)$value;
+                    break;
+                    
+                case 'sendLowWaterMark':
+                    $key = SO_SNDLOWAT;
+                    $value = (int)$value;
+                    break;
+                    
+                case 'receiveLowWaterMark':
+                    $key = SO_RCVLOWAT;
+                    $value = (int)$value;
+                    break;
+                    
+                case 'sendTimeout':
+                    $key = SO_SNDTIMEO;
+                    $value = array('sec' => 0, 'usec' => $value * 1000);
+                    break;
+                    
+                case 'receiveTimeout':
+                    $key = SO_RCVTIMEO;
+                    $value = array('sec' => 0, 'usec' => $value * 1000);
+                    break;
+                    
+                case 'reuseAddress':
+                    $key = SO_REUSEADDR;
+                    $value = (bool)$value;
+                    break;
+                    
+                case 'oobInline':
+                    $key = SO_OOBINLINE;
+                    $value = (bool)$value;
+                    break;
+                    
+                default:
+                    continue 2;
+            }
+            
+            @socket_set_option($this->_socket, SOL_SOCKET, $key, $value);
+        }
     }
     
-    protected function _getLastErrorMessage() {
-        return socket_strerror(socket_last_error());
+    
+    
+// Operation
+    public function checkConnection() {
+        if(!is_resource($this->_socket)) {
+            return false;
+        }
+        
+        return socket_recv($this->_socket, $data, 1, MSG_PEEK) !== 0;
     }
 }

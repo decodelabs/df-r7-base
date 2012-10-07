@@ -33,8 +33,8 @@ abstract class Server extends Base implements IServerSocket {
         
         $class = null;
         $protocol = ucfirst($address->getScheme());
-        $nativeClass = 'df\\halo\\socket\\native\\'.$protocol.'Server';
-        $streamsClass = 'df\\halo\\socket\\streams\\'.$protocol.'Server';
+        $nativeClass = 'df\\halo\\socket\\native\\'.$protocol.'_Server';
+        $streamsClass = 'df\\halo\\socket\\streams\\'.$protocol.'_Server';
         
         if(!$useStreams) {
             if(class_exists($nativeClass)) {
@@ -123,6 +123,10 @@ abstract class Server extends Base implements IServerSocket {
     
     abstract protected function _startListening();
     
+    public function isConnected() {
+        return $this->_isListening;
+    }
+
     public function isListening() {
         return $this->_isListening;
     }
