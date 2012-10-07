@@ -54,10 +54,6 @@ class Dispatcher extends halo\event\Dispatcher {
         return $this->_registerHandler(new Handler_Stream($this, $stream));
     }
     
-    public function newTimerHandler(core\time\IDuration $time) {
-        return $this->_registerHandler(new Handler_Timer($this, $time));
-    }
-
     public function setCycleHandler(Callable $callback=null) {
         if($this->_cycleHandlerEvent) {
             event_del($this->_cycleHandlerEvent);
@@ -122,13 +118,8 @@ class Dispatcher extends halo\event\Dispatcher {
             STDIN,
             $flags,
             $timer->duration->getMicroseconds(),
-            function() use ($timer) {
-                call_user_func_array($timer->callback, [$timer->id]);
-
-                if(!$timer->isPersistent) {
-                    unset($this->_timerHandlers[$id], $this->_timerEvents[$id]);
-                }
-            }
+            [$this, '_handleTimerEvent'],
+            $timer
         );
     }
 
@@ -141,9 +132,17 @@ class Dispatcher extends halo\event\Dispatcher {
         }
     }
 
+    public function _handleTimerEvent($target, $flags, halo\event\Timer $timer) {
+        call_user_func_array($timer->callback, [$timer->id]);
+
+        if(!$timer->isPersistent) {
+            $this->removeTimer($timer);
+        }
+    }
+
 
 // Helpers
-    protected function _registerEvent($target, $flags, $timeout, Callable $callback, $arg=null) {
+    public function _registerEvent($target, $flags, $timeout, Callable $callback, $arg=null) {
         if(!is_int($timeout) || $timeout < 0) {
             $timeout = -1;
         }

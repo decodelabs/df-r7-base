@@ -12,42 +12,15 @@ use df\halo;
 abstract class Handler implements halo\event\IHandler {
     
     protected function _registerBinding(halo\event\IBinding $binding) {
-        $base = $this->_dispatcher->getEventBase();
-        $event = event_new();
-        
-        if(!event_set(
-            $event,
-            $this->_getEventTarget(),
-            $this->_getEventTypeFlags($binding),
-            array($this, '_handleEvent'),
-            $binding
-        )) {
-            event_free($event);
-            
-            throw new halo\event\BindException(
-                'Could not set event: '.$this->getId()
-            );
-        }
-        
-        if(!event_base_set($event, $base)) {
-            event_free($event);
-            
-            throw new halo\event\BindException(
-                'Could not set event base: '.$this->getId()
-            );
-        }
-        
-        if(!event_add($event, $this->_getEventTimeout())) {
-            event_free($event);
-            
-            throw new halo\event\BindException(
-                'Could not add event: '. $this->getId()
-            );
-        }
-        
-        $binding->setEventResource($event);
-            
-        //echo 'Event attached: '.$this->getId().', binding: '.$binding->getId()."\n";
+        $binding->setEventResource(
+            $this->_dispatcher->_registerEvent(
+                $this->_getEventTarget(),
+                $this->_getEventTypeFlags($binding),
+                $this->_getEventTimeout(),
+                [$this, '_handleEvent'],
+                $binding
+            )
+        );
     }
     
     protected function _unregisterBinding(halo\event\IBinding $binding) {

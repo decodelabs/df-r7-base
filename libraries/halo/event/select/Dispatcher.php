@@ -201,11 +201,6 @@ class Dispatcher extends halo\event\Dispatcher {
         return $this->_registerHandler(new Handler_Stream($this, $stream));
     }
     
-    public function newTimerHandler(core\time\IDuration $time) {
-        return $this->_registerHandler(new Handler_Timer($this, $time));
-    }
-
-
 
 // Signals
     protected function _registerSignalHandler(halo\process\ISignal $signal, Callable $handler) {
