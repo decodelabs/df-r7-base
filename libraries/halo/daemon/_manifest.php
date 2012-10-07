@@ -30,3 +30,6 @@ interface IDaemon extends halo\event\IDispatcherProvider {
     public function isPaused();
 }
     
+interface IAngel extends IDaemon {
+
+}
