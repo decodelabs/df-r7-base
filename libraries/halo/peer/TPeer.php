@@ -285,9 +285,11 @@ trait TPeer_Server {
         $dispatcher = $this->getDispatcher();
         
         // Heartbeat
-        $dispatcher->setTimeout('heartbeat', 1, function() {
+        /*
+        $dispatcher->setTimer('heartbeat', 1, function() {
             echo 'Heartbeat'."\n";
         });
+        */
 
         $this->_createMasterSockets();
         
