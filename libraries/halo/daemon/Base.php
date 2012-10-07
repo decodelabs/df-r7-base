@@ -15,6 +15,7 @@ abstract class Base implements IDaemon {
 
     const PAUSED_SLEEP_TIME = 4;
     const REQUIRES_PRIVILEGED_PROCESS = true;
+    const FORK_ON_LOAD = true;
 
     protected $_process;
 
@@ -68,7 +69,7 @@ abstract class Base implements IDaemon {
             );
         }
 
-        if($this->_process->canFork()) {
+        if(static::FORK_ON_LOAD && $this->_process->canFork()) {
             if($this->_process->fork()) {
                 exit;
             } else {
