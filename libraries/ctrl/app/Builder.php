@@ -3,13 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\ctrl;
+namespace df\ctrl\app;
 
 use df;
 use df\core;
 use df\ctrl;
 
-class AppBuilder {
+class Builder {
     
     const DELETE_PACKAGE_BUILD_DIR = true;
     const PURGE_OLD_BUILDS = true;

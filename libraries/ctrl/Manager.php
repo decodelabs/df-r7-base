@@ -18,7 +18,7 @@ class Manager implements core\IApplicationAware {
     }
 
     public function buildApp() {
-        $builder = new AppBuilder(df\Launchpad::$loader);
+        $builder = new ctrl\app\Builder(df\Launchpad::$loader);
         $builder->build();
     }
 
