@@ -73,16 +73,6 @@ abstract class Server extends Base implements IServerSocket {
     
     
 // Options
-    /*
-    public function setConnectionTimeout($timeout) {
-        return $this->_setOption('connectionTimeout', $timeout);
-    }
-    
-    public function getConnectionTimeout() {
-        return $this->_getOption('connectionTimeout');
-    }
-    */
-    
     public function shouldReuseAddress($flag=null) {
         if($flag === null) {
             return $this->_getOption('reuseAddress', (bool)$flag);
