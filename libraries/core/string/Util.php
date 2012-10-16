@@ -177,6 +177,22 @@ abstract class Util implements IUtil {
         return $output;
     }
     
+// Checks
+    public static function isAlpha($string) {
+        return (bool)preg_match('/^[a-zA-Z]+$/', $string);
+    }
+
+    public static function isAlphaNumeric($string) {
+        return (bool)preg_match('/^[a-zA-Z0-9]+$/', $string);
+    }
+
+    public static function isDigit($string) {
+        return (bool)preg_match('/^[0-9]+$/', $string);
+    }
+
+    public static function isWhitespace($string) {
+        return (bool)preg_match('/^\s+$/', $string);
+    }
     
 // Match
     public static function likeMatch($pattern, $string, $char='_', $wildcard='%') {

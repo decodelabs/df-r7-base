@@ -81,6 +81,34 @@ interface IEncoding {
     const AUTO = 'auto';
 }
 
+interface IEncodingAware {
+    public function getEncoding();
+}
+
+interface IEncodingProvider extends IEncodingAware {
+    public function setEncoding($encoding);
+}
+
+trait TEncodingProvider {
+
+    protected $_encoding = 'utf-8';
+
+    public function setEncoding($encoding) {
+        if(!core\string\Manipulator::isValidEncoding($encoding)) {
+            throw new iris\lexer\InvalidArgumentException(
+                $encoding.' is not a valid encoding'
+            );
+        }
+
+        $this->_encoding = $encoding;
+        return $this;
+    }
+
+    public function getEncoding() {
+        return $this->_encoding;
+    }
+}
+
 
 interface ICase {
     const UPPER_WORDS = 3;
@@ -141,6 +169,11 @@ interface IUtil {
     public static function implodeDelimited(array $data, $delimiter=',', $quote='\'', $terminator=null);
     
     public static function getCallableId(Callable $callable);
+
+    public static function isAlpha($string);
+    public static function isAlphaNumeric($string);
+    public static function isDigit($string);
+    public static function isWhitespace($string);
 
     public static function likeMatch($pattern, $string, $char='_', $wildcard='%');
     public static function generateLikeMatchRegex($pattern, $char='_', $wildcard='%', $delimiter='/');
