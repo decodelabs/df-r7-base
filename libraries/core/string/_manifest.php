@@ -175,6 +175,8 @@ interface IUtil {
     public static function isDigit($string);
     public static function isWhitespace($string);
 
+    public static function mbOrd($chr);
+
     public static function likeMatch($pattern, $string, $char='_', $wildcard='%');
     public static function generateLikeMatchRegex($pattern, $char='_', $wildcard='%', $delimiter='/');
     public static function contains($pattern, $string);
@@ -238,6 +240,7 @@ interface IManipulator extends core\collection\IIndexedCollection, core\IStringP
 
 // Splitting
     public function substring($start, $length=null);
+    public function getSubstring($start, $length=null);
     public function substringCount($needle);
     
     public function truncate($length, $marker=null);

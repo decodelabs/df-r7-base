@@ -521,6 +521,14 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
         $this->_value = mb_substr($this->_value, $start, $length, $this->_encoding);
         return $this;
     }
+
+    public function getSubstring($start, $length=null) {
+        if($length === null) {
+            $length = mb_strlen($this->_value, $this->_encoding);
+        }
+        
+        return mb_substr($this->_value, $start, $length, $this->_encoding);
+    }
     
     public function substringCount($needle) {
         return mb_substr_count($this->_value, $needle, $this->_encoding);

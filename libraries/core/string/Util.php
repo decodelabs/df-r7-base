@@ -193,6 +193,30 @@ abstract class Util implements IUtil {
     public static function isWhitespace($string) {
         return (bool)preg_match('/^\s+$/', $string);
     }
+
+
+// Ord
+    public static function mbOrd($chr) {
+        $h = ord($chr{0});
+
+        if($h <= 0x7F) {
+            return $h;
+        } else if($h < 0xC2) {
+            return false;
+        } else if($h <= 0xDF) {
+            return ($h & 0x1F) << 6 | (ord($chr{1}) & 0x3F);
+        } else if($h <= 0xEF) {
+            return ($h & 0x0F) << 12 | (ord($chr{1}) & 0x3F) << 6
+                                     | (ord($chr{2}) & 0x3F);
+        } else if($h <= 0xF4) {
+            return ($h & 0x0F) << 18 | (ord($chr{1}) & 0x3F) << 12
+                                     | (ord($chr{2}) & 0x3F) << 6
+                                     | (ord($chr{3}) & 0x3F);
+        } else {
+            return false;
+        }
+    }
+
     
 // Match
     public static function likeMatch($pattern, $string, $char='_', $wildcard='%') {
