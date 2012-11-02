@@ -50,13 +50,17 @@ class Tcp_Client extends halo\socket\Client implements halo\socket\ISequenceClie
         $options = array();
         
         if($this->_isSecure) {
-            $address = $this->_address->toString($this->getSecureTransport());
+            if($this->_secureOnConnect) {
+                $address = $this->_address->toString($this->getSecureTransport());
+            } else {
+                $address = $this->_address->toString('tcp');
+            }
+
             $options['ssl'] = $this->_secureOptions;
         } else {
             $address = $this->_address->toString();
         }
-        
-        
+
         try {
             $context = stream_context_create($options);
             $socket = stream_socket_client(
@@ -73,7 +77,6 @@ class Tcp_Client extends halo\socket\Client implements halo\socket\ISequenceClie
             );
         }
         
-        @stream_set_blocking($socket, false);
         return $socket;
     }
 
@@ -139,7 +142,11 @@ class Tcp_Server extends halo\socket\Server implements halo\socket\ISequenceServ
         );
         
         if($this->_isSecure) {
-            $address = $this->_address->toString($this->getSecureTransport());
+            if($this->_secureOnConnect) {
+                $address = $this->_address->toString($this->getSecureTransport());
+            } else {
+                $address = $this->_address->toString('tcp');
+            }
             
             $options['ssl'] = $this->_secureOptions;
         } else {
@@ -171,7 +178,6 @@ class Tcp_Server extends halo\socket\Server implements halo\socket\ISequenceServ
             return false;
         }
         
-        @stream_set_blocking($this->_socket, false);
         return $output;
     }
     
@@ -202,8 +208,6 @@ class Tcp_ServerPeer extends halo\socket\ServerPeer implements halo\socket\ISequ
     
     public function __construct(halo\socket\IServerSocket $parent, $socket, $address) {
         parent::__construct($parent, $socket, $address);
-        
-        stream_set_blocking($this->_socket, false);
         
         $this->_isSecure = $parent->isSecure();
         $this->_secureTransport = $parent->getSecureTransport();

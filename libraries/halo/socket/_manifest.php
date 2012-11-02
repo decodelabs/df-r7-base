@@ -51,6 +51,7 @@ interface ISocket {
     public function isActive();
     public function isReadingEnabled();
     public function isWritingEnabled();
+    public function shouldBlock($flag=null);
     
     // Shutdown
     public function shutdownReading();
@@ -65,8 +66,10 @@ interface IConnectionOrientedSocket extends ISocket {
 interface IIoSocket extends ISocket {
     public function peek($length);
     public function read($length);
+    public function readLine();
     public function readAll();
     public function write($data);
+    public function writeLine($line);
     public function writeAll($data);
 }
 
@@ -92,6 +95,16 @@ trait TIoSocket {
         return $this->_readChunk($length);
     }
     
+    public function readLine() {
+        if(!$this->isReadingEnabled()) {
+            throw new IOException(
+                'Reading has already been shut down'
+            );
+        }
+
+        return $this->_readLine();
+    }
+
     public function readAll() {
         if(!$this->isReadingEnabled()) {
             throw new IOException(
@@ -116,6 +129,10 @@ trait TIoSocket {
         }
         
         return $this->_writeChunk($data);
+    }
+
+    public function writeLine($line) {
+        return $this->write($line."\r\n");
     }
     
     public function writeAll($data) {
@@ -144,6 +161,7 @@ trait TIoSocket {
     
     abstract protected function _peekChunk($length);
     abstract protected function _readChunk($length);
+    abstract protected function _readLine();
     abstract protected function _writeChunk($data);
 }
 
@@ -151,7 +169,7 @@ trait TIoSocket {
 
 // Secure
 interface ISecureSocket extends ISocket {
-    public function isSecure($flag=null);
+    public function isSecure();
     public function canSecure();
     public function getSecureTransport();
 }
@@ -161,23 +179,7 @@ trait TSecureSocket {
     protected $_isSecure = false;
     protected $_secureTransport = 'ssl';
 
-    public function isSecure($flag=null) {
-        if($flag !== null) {
-            if($this->isConnected()) {
-                throw new halo\socket\RuntimeException(
-                    'Socket security cannot be changed once the socket is created'
-                );
-            }
-            
-            if($flag && !$this->canSecure()) {
-                throw new halo\socket\RuntimeException(
-                    'Open SSL does not appear to be available'
-                );
-            }
-            
-            $this->_isSecure = (bool)$flag;
-        }
-        
+    public function isSecure() {
         return $this->_isSecure;
     }
 
@@ -194,6 +196,9 @@ trait TSecureSocket {
 interface ISecureConnectingSocket extends ISecureSocket {
     public function setSecureTransport($transport);
     public function getSecureOptions();
+    public function shouldSecureOnConnect($flag=null);
+    public function enableSecureTransport();
+    public function disableSecureTransport();
     public function allowSelfSigned($flag=null);
     public function setCommonName($name);
     public function getCommonName();
@@ -212,6 +217,9 @@ trait TSecureConnectingSocket {
         'ciphers' => 'DEFAULT'
     );
     */
+
+    protected $_secureOnConnect = true;
+    protected $_secureTransportEnabled = false;
 
     public function setSecureTransport($transport) {
         $transport = strtolower($transport);
@@ -244,6 +252,39 @@ trait TSecureConnectingSocket {
         return $this->_secureOptions;
     }
     
+    public function shouldSecureOnConnect($flag=null) {
+        if($flag !== null) {
+            $this->_secureOnConnect = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_secureOnConnect;
+    }
+
+    public function enableSecureTransport() {
+        if($this->_secureTransportEnabled) {
+            return $this;
+        }
+
+        $this->_enableSecureTransport();
+        $this->_secureTransportEnabled = true;
+
+        return $this;
+    }
+
+    public function disableSecureTransport() {
+        if(!$this->_secureTransportEnabled) {
+            return $this;
+        }
+
+        $this->_disableSecureTransport();
+        $this->_secureTransportEnabled = false;
+
+        return $this;
+    }
+
+    abstract protected function _enableSecureTransport();
+    abstract protected function _disableSecureTransport();
     
     public function allowSelfSigned($flag=null) {
         if($flag !== null) {

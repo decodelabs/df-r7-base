@@ -27,6 +27,7 @@ abstract class Base implements ISocket {
     protected $_socket;
     protected $_readingEnabled = false;
     protected $_writingEnabled = false;
+    protected $_shouldBlock = false;
     protected $_options = array();
     
     public function __construct($address) {
@@ -37,6 +38,11 @@ abstract class Base implements ISocket {
         }
         
         $this->_options = self::$_populatedOptions;
+
+        if(($security = $this->_address->getSecureTransport())
+        && $this instanceof ISecureConnectingSocket) {
+            $this->setSecureTransport($security);
+        }
     }
     
     protected static function _populateOptions() {
@@ -157,6 +163,21 @@ abstract class Base implements ISocket {
         return $this->_writingEnabled;
     }
     
+    public function shouldBlock($flag=null) {
+        if($flag !== null) {
+            $this->_shouldBlock = (bool)$flag;
+
+            if($this->_socket) {
+                $this->_setBlocking($this->_shouldBlock);
+            }
+
+            return $this;
+        }
+
+        return $this->_shouldBlock;
+    }
+
+    abstract protected function _setBlocking($flag);
     
 // Operation
     public function shutdownReading() {

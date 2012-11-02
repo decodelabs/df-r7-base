@@ -45,6 +45,49 @@ trait TStreams {
     protected function _getLastErrorMessage() {
         return $this->_lastError;
     }
+
+    protected function _setBlocking($flag) {
+        @stream_set_blocking($this->_socket, $flag);
+    }
+
+    protected function _enableSecureTransport() {
+        if(null === ($id = $this->_getSecureTransportId($this->_secureTransport))) {
+            return;
+        }
+
+        stream_set_blocking($this->_socket, true);
+        stream_socket_enable_crypto($this->_socket, true, $id);
+        stream_set_blocking($this->_socket, $this->_shouldBlock);
+    }
+
+    protected function _disableSecureTransport() {
+        if(null === ($id = $this->_getSecureTransportId($this->_secureTransport))) {
+            return;
+        }
+
+        stream_set_blocking($this->_socket, true);
+        stream_socket_enable_crypto($this->_socket, false, $id);
+        stream_set_blocking($this->_socket, $this->_shouldBlock);
+    }
+
+    protected function _getSecureTransportId($name) {
+        switch($name) {
+            case 'ssl':
+                return STREAM_CRYPTO_METHOD_SSLv23_CLIENT;
+
+            case 'sslv2':
+                return STREAM_CRYPTO_METHOD_SSLv2_CLIENT;
+
+            case 'sslv3':
+                return STREAM_CRYPTO_METHOD_SSLv3_CLIENT;
+
+            case 'tls':
+                return STREAM_CRYPTO_METHOD_TLS_CLIENT;
+
+            default:
+                return null;
+        }
+    }
 }
 
 trait TStreams_IoSocket {
@@ -74,6 +117,23 @@ trait TStreams_IoSocket {
             return false;
         }
         
+        if($output === ''
+        || $output === null
+        || $output === false) {
+            return false;
+        }
+        
+        return $output;
+    }
+
+    protected function _readLine() {
+        try {
+            $output = fgets($this->_socket);
+        } catch(\Exception $e) {
+            $this->_lastError = $e->getMessage();
+            return false;
+        }
+
         if($output === ''
         || $output === null
         || $output === false) {

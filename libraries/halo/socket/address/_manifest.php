@@ -14,6 +14,9 @@ use df\halo;
 interface IAddress extends core\uri\IUrl, core\uri\ITransientSchemeUrl {
     public function getSocketDomain();
     public function getDefaultSocketType();
+
+    public function setSecureTransport($transport);
+    public function getSecureTransport();
 }
 
 interface IInetAddress extends IAddress, core\uri\IIpPortContainer {

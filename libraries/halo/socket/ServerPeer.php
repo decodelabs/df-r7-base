@@ -40,6 +40,7 @@ abstract class ServerPeer extends Base implements IServerPeerSocket, core\IDumpa
         $this->_options = $parent->getOptions();
         $this->_readingEnabled = true;
         $this->_writingEnabled = true;
+        $this->shouldBlock($parent->shouldBlock());
     }
     
     

@@ -26,7 +26,8 @@ abstract class Client extends Base implements IClientSocket, core\IDumpable {
             return $address;
         }
         
-        if(!$useStreams && !extension_loaded('sockets')) {
+        if(!$useStreams 
+        && (!extension_loaded('sockets') || $address->getSecureTransport())) {
             $useStreams = true;
         }
         
@@ -95,6 +96,8 @@ abstract class Client extends Base implements IClientSocket, core\IDumpable {
         
         $this->_socket = $this->_connectPeer();
         $this->_isConnected = true;
+
+        $this->_setBlocking($this->_shouldBlock);
         
         $this->_readingEnabled = true;
         $this->_writingEnabled = true;

@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\halo;
 
-class Inet extends Base implements IInetAddress {
+class Inet extends Base implements IInetAddress, core\IDumpable {
     
     use core\uri\TUrl_IpContainer;
     use core\uri\TUrl_PortContainer;
@@ -43,9 +43,6 @@ class Inet extends Base implements IInetAddress {
         
         $parts = explode('://', $address, 2);
 
-        $scheme = null;
-        $address = null;
-
         if(false !== strpos($address, '.')
         || false !== strpos($address, ':')) {
             $address = array_pop($parts);
@@ -75,6 +72,10 @@ class Inet extends Base implements IInetAddress {
 
             if(empty($ip)) {
                 $ip = '0.0.0.0';
+            }
+
+            if(preg_match('/[^0-9.]/', $ip)) {
+                $ip = gethostbyname($ip);
             }
 
             $this->setIp($ip);
@@ -141,6 +142,14 @@ class Inet extends Base implements IInetAddress {
             case 'icmp':
                 $this->_scheme = $scheme;
                 break;
+
+            case 'ssl':
+            case 'sslv2':
+            case 'sslv3':
+            case 'tls':
+                $this->_scheme = 'tcp';
+                $this->setSecureTransport($scheme);
+                break;
                 
             default:
                 if(false == getprotobyname($scheme)) {
@@ -154,14 +163,6 @@ class Inet extends Base implements IInetAddress {
         }
         
         return $this;
-    }
-    
-    public function getScheme() {
-        if(!$this->_scheme) {
-            return 'tcp';
-        }
-        
-        return $this->_scheme;
     }
     
     
@@ -189,7 +190,15 @@ class Inet extends Base implements IInetAddress {
 // Strings
     public function toString($scheme=null) {
         if($scheme === null) {
-            $scheme = $this->getScheme();
+            $scheme = $this->_scheme;
+
+            if(!$scheme) {
+                $scheme = 'tcp';
+            }
+
+            if($scheme == 'tcp' && $this->_secureTransport) {
+                $scheme = $this->_secureTransport;
+            }
         }
         
         $output = $scheme.'://';
@@ -197,5 +206,11 @@ class Inet extends Base implements IInetAddress {
         $output .= $this->_getPortString();
         
         return $output;
+    }
+
+
+// Dump
+    public function getDumpProperties() {
+        return $this->toString();
     }
 }

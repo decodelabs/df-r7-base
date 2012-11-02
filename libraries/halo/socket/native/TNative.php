@@ -31,6 +31,12 @@ trait TNative {
     protected function _getLastErrorMessage() {
         return socket_strerror(socket_last_error());
     }
+
+    protected function _setBlocking($flag) {
+        $flag ?
+            @socket_set_block($output) :
+            @socket_set_nonblock($output);
+    }
 }
 
 trait TNative_IoSocket {
@@ -49,6 +55,29 @@ trait TNative_IoSocket {
         }
         
         return $output;
+    }
+
+    protected function _readLine() {
+        $string = '';
+
+        while(true) {
+            $char = socket_read($this->_socket, 1);
+
+            if($char == "\n"
+            || $char === null
+            || $char === false
+            || $char === '') {
+                return $string;
+            }
+
+            $string .= $char;
+        }
+
+        if(empty($string)) {
+            return false;
+        }
+
+        return $string;
     }
     
     protected function _writeChunk($data) {

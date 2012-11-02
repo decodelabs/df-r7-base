@@ -25,11 +25,12 @@ abstract class Server extends Base implements IServerSocket {
             return $address;
         }
         
-        if(!$useStreams && !extension_loaded('sockets')) {
+        if(!$useStreams 
+        && (!extension_loaded('sockets') || $address->getSecureTransport())) {
             $useStreams = true;
         }
         
-        $useStreams = true;
+        //$useStreams = true;
         
         $class = null;
         $protocol = ucfirst($address->getScheme());
@@ -102,7 +103,7 @@ abstract class Server extends Base implements IServerSocket {
         
         $this->_startListening();
         $this->_isListening = true;
-        
+
         if(!$this instanceof IConnectionOrientedSocket) {
             $this->_readingEnabled = true;
             $this->_writingEnabled = true;
@@ -120,6 +121,15 @@ abstract class Server extends Base implements IServerSocket {
     public function isListening() {
         return $this->_isListening;
     }
+
+    public function shouldBlock($flag=null) {
+        if($flag !== null) {
+            $this->_shouldBlock = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_shouldBlock;
+    }
     
     public function accept() {
         if(!$this->_isListening) {
@@ -135,7 +145,8 @@ abstract class Server extends Base implements IServerSocket {
                 );
             }
             
-            return ServerPeer::factory($this, $socket, $this->_getPeerAddress($socket));
+            return ServerPeer::factory($this, $socket, $this->_getPeerAddress($socket))
+                ->shouldBlock($this->_shouldBlock);
         } else {
             core\stub('datagram / raw server accept');
         }

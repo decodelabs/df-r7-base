@@ -123,13 +123,7 @@ class Tcp_Server extends halo\socket\Server implements halo\socket\ISequenceServ
     }
     
     protected function _acceptSequencePeer() {
-        $output = @socket_accept($this->_socket);
-        
-        if($output) {
-            @socket_set_nonblock($output);
-        }
-        
-        return $output;
+        return @socket_accept($this->_socket);
     }
     
     protected function _getPeerAddress($socket) {
@@ -167,8 +161,6 @@ class Tcp_ServerPeer extends halo\socket\ServerPeer implements halo\socket\ISequ
     
     public function __construct(halo\socket\IServerSocket $parent, $socket, $address) {
         parent::__construct($parent, $socket, $address);
-        
-        @socket_set_nonblock($this->_socket);
         $this->_applyOptions();
     }
     

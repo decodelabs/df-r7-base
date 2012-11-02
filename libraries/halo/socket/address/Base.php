@@ -13,6 +13,8 @@ abstract class Base implements IAddress {
     
     use core\TStringProvider;
     use core\uri\TUrl_TransientScheme;
+
+    protected $_secureTransport = null;
     
     public static function factory($address) {
         if($address instanceof IAddress) {
@@ -43,6 +45,15 @@ abstract class Base implements IAddress {
         if($url !== null) {
             $this->import($url);
         }
+    }
+
+    public function setSecureTransport($transport) {
+        $this->_secureTransport = strtolower($transport);
+        return $this;
+    }
+
+    public function getSecureTransport() {
+        return $this->_secureTransport;
     }
     
     
