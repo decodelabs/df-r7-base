@@ -193,6 +193,10 @@ class ContentPart implements IContentPart, core\IDumpable {
         return $output;
     }
 
+    public function mergeSinglePartHeaders() {
+        return $this->_headers->toArray();
+    }
+
     public function getBodyString() {
         return $this->getEncodedContent();
     }

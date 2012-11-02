@@ -174,14 +174,21 @@ class MultiPart implements IMultiPart, core\IDumpable {
         if($this->isMultiPart()) {
             $headers = $this->_headers;
         } else if(isset($this->_parts[0])) {
-            $headers = new core\collection\HeaderMap(array_merge(
-                $this->_headers->toArray(),
-                $this->_parts[0]->getHeaders()->toArray()
-            ));
+            $headers = new core\collection\HeaderMap($this->mergeSinglePartHeaders());
         }
 
         $output = $headers->toString($skipKeys);
         $output = preg_replace('/\; ([a-z]+)\=/i', ";\r\n    ".'$1=', $output);
+        return $output;
+    }
+
+    public function mergeSinglePartHeaders() {
+        $output = $this->_headers->toArray();
+
+        if(isset($this->_parts[0])) {
+            $output = array_merge($output, $this->_parts[0]->mergeSinglePartHeaders());
+        }
+
         return $output;
     }
 
