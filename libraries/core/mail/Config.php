@@ -33,11 +33,36 @@ class Config extends core\Config {
     }
 
     public function getDefaultTransport() {
-        if(isset($this->_values['defaultTransport'])) {
+        if(!isset($this->_values['defaultTransport'])) {
+            $output = 'Mail';
+        } else {
+            $output = $this->_values['defaultTransport'];
+        }
+
+        if(is_array($output)) {
+            if(isset($output['name'])) {
+                return $output['name'];
+            }
+
+            $output = 'Mail';
+        }
+
+        return $output;
+    }
+
+    public function getDefaultTransportSettings($checkName=null) {
+        if(isset($this->_values['defaultTransport'])
+        && is_array($this->_values['defaultTransport'])) {
+            if($checkName !== null
+            && isset($this->_values['defaultTransport']['name'])
+            && $checkName != $this->_values['defaultTransport']['name']) {
+                return array();
+            }
+            
             return $this->_values['defaultTransport'];
         }
 
-        return 'Mail';
+        return array();
     }
 
     public function setDefaultAddress($address, $name=null) {

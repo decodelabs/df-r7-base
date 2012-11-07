@@ -67,6 +67,15 @@ class Mediator implements IMediator {
         return $this;
     }
 
+    public function getConnectionId() {
+        if(!$this->_socket) {
+            return null;
+        }
+
+        $address = $this->_socket->getAddress();
+        return md5($address);
+    }
+
     public function sendRequest($request, $multiLine=false) {
         if(!$this->_socket) {
             throw new LogicException(

@@ -39,6 +39,7 @@ interface IMediator {
     const PLAIN = 'plain';
 
     public function connect($dsn);
+    public function getConnectionId();
     public function sendRequest($request, $responseCode);
 
     public function login($user, $password, $authType=IMediator::LOGIN);

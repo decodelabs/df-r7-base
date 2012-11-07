@@ -11,6 +11,8 @@ use df\core;
 abstract class Base implements core\mail\ITransport {
 
     public static function factory($name=null) {
+        $settings = null;
+
         if($name !== null) {
             if(!$class = self::getTransportClass($name)) {
                 $name = null;
@@ -18,10 +20,13 @@ abstract class Base implements core\mail\ITransport {
         }
 
         if($name === null) {
-            $class = self::getTransportClass(self::getDefaultTransportName());
+            $name = self::getDefaultTransportName();
+            $class = self::getTransportClass($name);
+            $config = core\mail\Config::getInstance();
+            $settings = $config->getDefaultTransportSettings($name);
         }
 
-        return new $class();
+        return new $class($settings);
     }
 
     public static function getDefaultTransportName() {
@@ -56,6 +61,7 @@ abstract class Base implements core\mail\ITransport {
     public static function getAvailableTransports() {
         return [
             'Mail' => 'PHP native mail()',
+            'Smtp' => 'External SMTP connection',
             'DevMail' => 'Dummy transport stored in local database for testing purposes'
         ];
     }
@@ -100,4 +106,6 @@ abstract class Base implements core\mail\ITransport {
 
         $message->prepareHeaders();
     }
+
+    public function __construct(array $settings=null) {}
 }

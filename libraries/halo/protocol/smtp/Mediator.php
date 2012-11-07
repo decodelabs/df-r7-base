@@ -31,6 +31,15 @@ class Mediator implements IMediator {
         }
     }
 
+    public function getConnectionId() {
+        if(!$this->_socket) {
+            return null;
+        }
+
+        $address = $this->_socket->getAddress();
+        return md5($address);
+    }
+
     public function connect($dsn, $heloHost=null) {
         if($this->_socket) {
             $this->quit();
@@ -218,6 +227,10 @@ class Mediator implements IMediator {
             );
         }
 
+        if($address instanceof core\mail\IAddress) {
+            $address = $address->getAddress();
+        }
+
         $this->sendRequest('MAIL FROM:<'.$address.'>', 250);
         $this->_mailSent = true;
         $this->_rcptSent = false;
@@ -237,6 +250,10 @@ class Mediator implements IMediator {
             throw new LogicException(
                 'From address must be sent before recipient addresses'
             );
+        }
+
+        if($address instanceof core\mail\IAddress) {
+            $address = $address->getAddress();
         }
 
         $this->sendRequest('RCPT TO:<'.$address.'>', [250, 251]);

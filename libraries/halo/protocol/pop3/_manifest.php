@@ -21,6 +21,7 @@ class UnexpectedValueException extends \UnexpectedValueException implements IExc
 interface IMediator {
 
     public function connect($dsn);
+    public function getConnectionId();
     public function sendRequest($request, $multiLine=false);
 
     public function getCapabilities();
