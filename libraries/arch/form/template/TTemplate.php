@@ -50,7 +50,13 @@ trait TTemplate_RecordAware {
 
     protected function _initRecord() {
         if(!$this->_record = $this->_loadRecord()) {
-            $this->throwError(404, 'The selected '.$this->_getItemName().' could not be loaded');
+            if(method_exists($this, '_getItemName')) {
+                $name = $this->_getItemName();
+            } else {
+                $name = 'item';
+            }
+
+            $this->throwError(404, 'The selected '.$name.' could not be loaded');
         }
     }
 
