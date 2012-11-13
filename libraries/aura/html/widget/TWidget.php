@@ -1004,10 +1004,10 @@ trait TWidget_MappedList {
         $name = null;
         $renderer = null;
         
-        if(is_callable($a)) {
+        if(is_callable($a) && !is_string($a)) {
             $renderer = $a;
             $name = $b;
-        } else if(is_callable($b)) {
+        } else if(is_callable($b) && !is_string($b)) {
             $renderer = $b;
             $name = $a;
         } else if(is_string($a) && $b === null) {
