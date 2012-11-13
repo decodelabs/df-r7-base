@@ -124,6 +124,11 @@ class Paginator implements IPaginator {
         return $this->_keyMap;
     }
     
+    public function end() {
+        $this->_query->setPaginator($this);
+        return $this->_query;
+    }
+
     public function applyWith($data) {
         $source = $this->_query->getSource();
         $sourceManager = $this->_query->getSourceManager();

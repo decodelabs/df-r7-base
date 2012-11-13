@@ -1059,6 +1059,10 @@ trait TQuery_Pageable {
     protected $_paginator;
     
     public function paginate() {
+        if($this->_paginator) {
+            return $this->_paginator;
+        }
+        
         return new Paginator($this);
     }
     
