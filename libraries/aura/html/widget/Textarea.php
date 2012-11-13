@@ -56,7 +56,7 @@ class Textarea extends Base implements ITextareaWidget {
             $tag->setAttribute('wrap', $this->_wrap);
         }
         
-        return $tag->renderWith($this->esc($this->getValueString()));
+        return $tag->renderWith($this->getValueString());
     }    
     
     
