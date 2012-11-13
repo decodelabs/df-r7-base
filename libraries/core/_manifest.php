@@ -401,12 +401,19 @@ trait TManager {
         }
         
         if(!$output = $application->_getCacheObject(static::REGISTRY_PREFIX)) {
-            $application->_setCacheObject(
-                $output = new self($application)
-            );
+            $output = static::_getDefaultInstance($application);
+            static::setInstance($output);
         }
         
         return $output;
+    }
+
+    public static function setInstance(IManager $manager) {
+        return $manager->getApplication()->_setCacheObject($manager);
+    }
+
+    protected static function _getDefaultInstance(IApplication $application) {
+        return new self($application);
     }
     
     protected function __construct(core\IApplication $application) {

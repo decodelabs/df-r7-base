@@ -28,7 +28,7 @@ interface ILocale extends core\IStringProvider {
 }
 
 
-interface IManager extends core\IApplicationAware, core\IRegistryObject {
+interface IManager extends core\IManager {
     public function getModule($name);
     public function setLocale($locale);
     public function getLocale();

@@ -18,7 +18,7 @@ class RuntimeException extends \RuntimeException implements IException {}
 
 
 // Interfaces
-interface IManager extends core\IApplicationAware, core\IRegistryObject {
+interface IManager extends core\IManager {
     
 }
 

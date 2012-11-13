@@ -33,7 +33,7 @@ interface IState {
 
 
 // Interfaces
-interface IManager extends core\IApplicationAware, core\IRegistryObject {
+interface IManager extends core\IManager {
     // Client
     public function getClient();
     public function canAccess($lock, $action=null);
