@@ -22,6 +22,17 @@ class Html implements aura\view\IHelper {
         return aura\html\widget\Base::factory($this->_view->getContext(), $member, $args)->setRenderTarget($this->_view);
     }
     
+    public function plainText($text) {
+        if($text === null) {
+            return null;
+        }
+
+        $text = $this->_view->esc($text);
+        $text = str_replace("\n", "\n".'<br />', $text);
+
+        return $this->string($text);
+    }
+
     public function string($value) {
         return new aura\html\ElementString($value);
     }
