@@ -344,6 +344,16 @@ abstract class Base implements halo\protocol\http\IResponse {
         
         return core\time\Date::factory($this->_headers->get('last-modified'));
     }
+
+// Attachment
+    public function setAttachmentFilename($filename) {
+        $this->getHeaders()->setAttachmentFilename($filename);
+        return $this;
+    }
+
+    public function getAttachmentFilename() {
+        return $this->getHeaders()->getAttachmentFilename();
+    }
     
 // Strings
     public function getResponseString() {

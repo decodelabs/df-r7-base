@@ -172,6 +172,16 @@ class Base implements IView {
     public function getContentProvider() {
         return $this->_contentProvider;
     }
+
+// Attachment
+    public function setAttachmentFilename($filename) {
+        $this->getHeaders()->setAttachmentFilename($filename);
+        return $this;
+    }
+
+    public function getAttachmentFilename() {
+        return $this->getHeaders()->getAttachmentFilename();
+    }
     
     
 // Args

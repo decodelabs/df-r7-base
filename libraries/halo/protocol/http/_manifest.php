@@ -124,6 +124,10 @@ interface IResponse extends core\IPayload, core\collection\IHeaderMapProvider, h
     public function getContentLength();
     public function getLastModified();
     
+    // Attachment
+    public function setAttachmentFilename($filename);
+    public function getAttachmentFilename();
+
     // Strings
     public function getResponseString();
 }

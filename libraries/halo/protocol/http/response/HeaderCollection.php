@@ -328,7 +328,12 @@ class HeaderCollection extends core\collection\HeaderMap implements halo\protoco
     }
     
     public function setAttachmentFilename($filename) {
-        $this->set('content-disposition', 'attachment; filename="'.$filename.'"');
+        if($filename === null) {
+            $this->remove('content-disposition');
+        } else {
+            $this->set('content-disposition', 'attachment; filename="'.$filename.'"');
+        }
+        
         return $this;
     }
     
