@@ -157,7 +157,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             $start++;
         }
         
-        // Strip filename
+        // Strip fileName
         if(!$this->_path->shouldAddTrailingSlash()) {
             $end--;
         }
@@ -185,7 +185,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             array_shift($parts);
         }
         
-        // Strip filename
+        // Strip fileName
         if(!$this->_path->shouldAddTrailingSlash()) {
             array_pop($parts);
         }
@@ -239,16 +239,16 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             $action = static::DEFAULT_ACTION;
         }
         
-        $this->getPath()->setFilename(trim($action, '/'));
+        $this->getPath()->setFileName(trim($action, '/'));
         return $this;
     }
     
     public function getAction() {
-        if(!$this->_path || $this->_path->shouldAddTrailingSlash() || !strlen($filename = $this->_path->getFilename())) {
+        if(!$this->_path || $this->_path->shouldAddTrailingSlash() || !strlen($fileName = $this->_path->getFileName())) {
             return static::DEFAULT_ACTION;
         }
         
-        return $this->formatAction($filename);
+        return $this->formatAction($fileName);
     }
     
     public function isAction($action) {
@@ -289,7 +289,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         
         if($path->shouldAddTrailingSlash()) {
             if($type !== null) {
-                $path->setFilename(static::DEFAULT_ACTION.'.'.$type);
+                $path->setFileName(static::DEFAULT_ACTION.'.'.$type);
                 return $this;
             }
         } else {

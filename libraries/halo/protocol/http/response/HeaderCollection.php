@@ -327,17 +327,17 @@ class HeaderCollection extends core\collection\HeaderMap implements halo\protoco
         return $this;
     }
     
-    public function setAttachmentFilename($filename) {
-        if($filename === null) {
+    public function setAttachmentFileName($fileName) {
+        if($fileName === null) {
             $this->remove('content-disposition');
         } else {
-            $this->set('content-disposition', 'attachment; filename="'.$filename.'"');
+            $this->set('content-disposition', 'attachment; filename="'.$fileName.'"');
         }
         
         return $this;
     }
     
-    public function getAttachmentFilename() {
+    public function getAttachmentFileName() {
         if(!$this->has('content-disposition')) {
             return null;
         }

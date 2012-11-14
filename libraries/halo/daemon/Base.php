@@ -198,8 +198,8 @@ abstract class Base implements IDaemon {
         $appPath = df\Launchpad::$applicationPath;
         $appId = basename($appPath);
         $appId = basename(dirname($appPath)).'-'.$appId;
-        $appId = core\string\Manipulator::formatFilename($appId).'-'.df\Launchpad::getActiveApplication()->getUniquePrefix();
-        $daemonId = core\string\Manipulator::formatFilename($this->getName());
+        $appId = core\string\Manipulator::formatFileName($appId).'-'.df\Launchpad::getActiveApplication()->getUniquePrefix();
+        $daemonId = core\string\Manipulator::formatFileName($this->getName());
 
         return '/var/run/df/'.$appId.'/'.$daemonId.'.pid';
     }

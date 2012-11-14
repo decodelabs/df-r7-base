@@ -346,13 +346,13 @@ abstract class Base implements halo\protocol\http\IResponse {
     }
 
 // Attachment
-    public function setAttachmentFilename($filename) {
-        $this->getHeaders()->setAttachmentFilename($filename);
+    public function setAttachmentFileName($fileName) {
+        $this->getHeaders()->setAttachmentFileName($fileName);
         return $this;
     }
 
-    public function getAttachmentFilename() {
-        return $this->getHeaders()->getAttachmentFilename();
+    public function getAttachmentFileName() {
+        return $this->getHeaders()->getAttachmentFileName();
     }
     
 // Strings

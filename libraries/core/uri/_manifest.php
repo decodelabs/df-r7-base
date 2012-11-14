@@ -23,10 +23,10 @@ interface IPath extends core\IStringProvider, core\collection\IIndexedQueue {
     public function canonicalize();
     
     public function getDirname();
-    public function setBasename($basename);
-    public function getBasename();
-    public function setFilename($filename);
-    public function getFilename();
+    public function setBaseName($baseName);
+    public function getBaseName();
+    public function setFileName($fileName);
+    public function getFileName();
     public function hasExtension($extensions=false);
     public function setExtension($extension);
     public function getExtension();

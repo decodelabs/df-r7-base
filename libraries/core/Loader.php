@@ -103,19 +103,19 @@ class Loader implements ILoader {
             return false;
         }
         
-        $filename = array_pop($parts);
+        $fileName = array_pop($parts);
         $basePath = df\Launchpad::ROOT_PATH.'/'.$library;
         
         if(!empty($parts)) {
             $basePath .= '/'.implode('/', $parts);
         }
         
-        if(false !== ($pos = strpos($filename, '_'))) {
-            $filename = substr($filename, 0, $pos);
+        if(false !== ($pos = strpos($fileName, '_'))) {
+            $fileName = substr($fileName, 0, $pos);
         }
         
         $output = [
-            $basePath.'/'.$filename.'.php',
+            $basePath.'/'.$fileName.'.php',
             $basePath.'/_manifest.php'
         ];
         
@@ -159,10 +159,10 @@ class Loader implements ILoader {
                 }
                 
                 $filePath = $item->getPathname();
-                $basename = basename($filePath);
+                $baseName = basename($filePath);
                 
                 if($extensions !== null) {
-                    $parts = explode('.', $basename);
+                    $parts = explode('.', $baseName);
                     $ext = array_pop($parts);
                     
                     if(!in_array($ext, $extensions)) {
@@ -170,7 +170,7 @@ class Loader implements ILoader {
                     }
                 }
                 
-                $output[$basename] = $filePath;
+                $output[$baseName] = $filePath;
             }
         }
         

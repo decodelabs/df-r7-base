@@ -16,8 +16,8 @@ abstract class Base implements arch\navigation\menu\ISource, arch\IContextAware 
     public static function loadAll(arch\IContext $context) {
         $output = array();
         
-        foreach(df\Launchpad::$loader->lookupFileList('arch/navigation/menu/source', ['php']) as $basename => $path) {
-            $name = substr($basename, 0, -4);
+        foreach(df\Launchpad::$loader->lookupFileList('arch/navigation/menu/source', ['php']) as $baseName => $path) {
+            $name = substr($baseName, 0, -4);
             
             if($name === 'Base' || $name === '_manifest') {
                 continue;

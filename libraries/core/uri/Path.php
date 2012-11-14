@@ -235,47 +235,47 @@ class Path implements IPath, \IteratorAggregate, \Serializable, core\IDumpable {
         return dirname($this->toString());
     }
     
-    public function setBasename($basename) {
+    public function setBaseName($baseName) {
         $t = $this->_autoCanonicalize;
         $this->_autoCanonicalize = false;
         
-        $this->set(-1, $basename);
+        $this->set(-1, $baseName);
         $this->_autoCanonicalize = $t;
         
         return $this;
     }
     
-    public function getBasename() {
+    public function getBaseName() {
         return $this->getLast();
     }
     
-    public function setFilename($filename) {
+    public function setFileName($fileName) {
         if($this->_addTrailingSlash) {
-            $this->_collection[] = $filename;
+            $this->_collection[] = $fileName;
             $this->_addTrailingSlash = false;
             return $this;
         }
         
         if(strlen($extension = $this->getExtension())
         || substr($this->getLast(), -1) == '.') {
-            $filename .= '.'.$extension;
+            $fileName .= '.'.$extension;
         }
         
-        return $this->setBasename($filename);
+        return $this->setBaseName($fileName);
     }
     
-    public function getFilename() {
+    public function getFileName() {
         if($this->_addTrailingSlash) {
             return null;
         }
         
-        $basename = $this->getBasename();
+        $baseName = $this->getBaseName();
         
-        if(false === ($pos = strrpos($basename, '.'))) {
-            return $basename;
+        if(false === ($pos = strrpos($baseName, '.'))) {
+            return $baseName;
         }
         
-        return substr($basename, 0, $pos);
+        return substr($baseName, 0, $pos);
     }
     
     public function hasExtension($extensions=false) {
@@ -283,12 +283,12 @@ class Path implements IPath, \IteratorAggregate, \Serializable, core\IDumpable {
             return false;
         }
         
-        if(($basename = $this->getBasename()) == '..') {
+        if(($baseName = $this->getBaseName()) == '..') {
             return false;
         }
         
         if($extensions === false) {
-            return false !== strrpos($basename, '.');
+            return false !== strrpos($baseName, '.');
         }
         
         if(!is_array($extensions)) {
@@ -309,19 +309,19 @@ class Path implements IPath, \IteratorAggregate, \Serializable, core\IDumpable {
     }
     
     public function setExtension($extension) {
-        $filename = $this->getFilename();
+        $fileName = $this->getFileName();
         
         if($extension !== null) {
-            $filename .= '.'.$extension;
+            $fileName .= '.'.$extension;
         }
         
-        if(strlen($filename)) {
+        if(strlen($fileName)) {
             if($this->_addTrailingSlash) {
-                $this->_collection[] = $filename;
+                $this->_collection[] = $fileName;
                 $this->_addTrailingSlash = false;
                 return $this;
             } else {
-                return $this->setBasename($filename);
+                return $this->setBaseName($fileName);
             }
         }
         
@@ -333,13 +333,13 @@ class Path implements IPath, \IteratorAggregate, \Serializable, core\IDumpable {
             return null;
         }
         
-        $basename = $this->getBasename();
+        $baseName = $this->getBaseName();
         
-        if(false === ($pos = strrpos($basename, '.'))) {
+        if(false === ($pos = strrpos($baseName, '.'))) {
             return null;
         }
         
-        if(false === ($output = substr($basename, $pos + 1))) {
+        if(false === ($output = substr($baseName, $pos + 1))) {
             return null;
         }
         

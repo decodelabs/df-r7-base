@@ -125,8 +125,8 @@ interface IResponse extends core\IPayload, core\collection\IHeaderMapProvider, h
     public function getLastModified();
     
     // Attachment
-    public function setAttachmentFilename($filename);
-    public function getAttachmentFilename();
+    public function setAttachmentFileName($fileName);
+    public function getAttachmentFileName();
 
     // Strings
     public function getResponseString();
@@ -204,8 +204,8 @@ interface IResponseHeaderCollection {
     
     // Send
     public function send();
-    public function setAttachmentFilename($filename);
-    public function getAttachmentFilename();
+    public function setAttachmentFileName($fileName);
+    public function getAttachmentFileName();
 }
 
 
@@ -252,4 +252,36 @@ interface IResponseCookieCollection extends core\IStringProvider {
 // Peer
 interface IAsyncClient extends halo\peer\IClient {
     public function addRequest($request, Callable $callback);
+}
+
+
+
+// Upload
+interface IUploadHandler extends \Countable, \IteratorAggregate {
+    public function setAllowedExtensions(array $extensions);
+    public function getAllowedExtensions();
+    public function isExtensionAllowed($extension);
+
+    public function setMaxFileSize($size);
+    public function getMaxFileSize();
+
+    public function uploadAll($destination, core\collection\IInputTree $inputCollection, $conflictAction=IUploadFile::RENAME);
+}
+
+interface IUploadFile {
+
+    const RENAME = 'rename';
+    const OVERWRITE = 'overwrite';
+    const HALT = 'halt';
+
+    public function setFileName($fileName);
+    public function getFileName();
+    public function setExtension($extension);
+    public function getExtension();
+    public function setBase
+
+    public function isValid();
+    public function isSuccess();
+
+    public function upload($destination, core\collection\IInputTree $inputNode, $conflictAction=IUploadFile::RENAME);
 }

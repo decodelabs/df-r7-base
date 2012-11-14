@@ -44,19 +44,19 @@ class DevLoader extends Loader {
             }
         }
         
-        $filename = array_pop($parts);
+        $fileName = array_pop($parts);
         $basePath = $library;
         
         if(!empty($parts)) {
             $basePath .= '/'.implode('/', $parts);
         }
         
-        if(false !== ($pos = strpos($filename, '_'))) {
-            $filename = substr($filename, 0, $pos);
+        if(false !== ($pos = strpos($fileName, '_'))) {
+            $fileName = substr($fileName, 0, $pos);
         }
         
         $paths = [
-            $basePath.'/'.$filename.'.php',
+            $basePath.'/'.$fileName.'.php',
             $basePath.'/_manifest.php'
         ];
         

@@ -55,8 +55,8 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
         return implode('/', $parts);
     }
     
-    public static function formatFilename($filename, $allowSpaces=false) {
-        $output = self::factory($filename)
+    public static function formatFileName($fileName, $allowSpaces=false) {
+        $output = self::factory($fileName)
             ->translitToAscii()
             ->replace('/', '_')
             ->regexReplace('/[\/\\?%*:|"<>]/', '');

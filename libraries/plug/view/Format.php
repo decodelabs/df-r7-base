@@ -115,8 +115,8 @@ class Format implements aura\view\IHelper {
         return core\string\Manipulator::formatPathSlug($slug);
     }
     
-    public function filename($filename) {
-        return core\string\Manipulator::formatFilename($filename);
+    public function fileName($fileName) {
+        return core\string\Manipulator::formatFileName($fileName);
     }
     
     public function numericToAlpha($number) {
