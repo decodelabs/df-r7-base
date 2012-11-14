@@ -10,6 +10,22 @@ use df\core;
 
 class Util {
     
+    public static function copyFile($source, $destination) {
+        if(!is_file($source)) {
+            throw new \Exception(
+                'Source file does not exist'
+            );
+        }
+
+        $dir = dirname($destination);
+
+        if(!is_dir($dir)) {
+            mkdir($dir, 0777, true);
+        }
+
+        copy($source, $destination);
+    }
+
     public static function copyDir($source, $destination, $merge=false) {
         if(!is_dir($source)) {
             throw new \Exception(
