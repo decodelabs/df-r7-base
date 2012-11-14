@@ -44,7 +44,7 @@ trait TSingleValueUnit {
     }
 
     public function parse($value, $unit=null, $allowPlainNumbers=false) {
-        if(preg_match('/^([0-9.\-+e]+)('.implode('|', self::$_units).')$/i', $value, $matches)) {
+        if(preg_match('/^([0-9.\-+e]+) *([a-zA-Z]+)$/i', $value, $matches)) {
             $value = $matches[1];
             $unit = $matches[2];
         }
@@ -83,9 +83,23 @@ trait TSingleValueUnit {
         }
 
         if(!in_array($unit, self::$_units)) {
-            throw new InvalidArgumentException(
-                $unit.' is not a valid unit option'
-            );
+            $found = false;
+
+            if(strlen($unit) == 1) {
+                foreach(self::$_units as $test) {
+                    if($test{0} == $unit) {
+                        $unit = $test;
+                        $found = true;
+                        break;
+                    }
+                }
+            }
+
+            if(!$found) {
+                throw new InvalidArgumentException(
+                    $unit.' is not a valid unit option'
+                );
+            }
         }
 
         if($convertValue && $this->_unit !== null) {
@@ -187,6 +201,23 @@ interface IDisplayPosition extends IUnit, ICssCompatibleUnit, core\IStringProvid
     public function hasRelativeYAnchor();
     public function convertRelativeAnchors($width=null, $height=null);
     public function extractAbsolute($width, $height, $compositeWidth=null, $compositeHeight=null);
+}
+
+interface IFileSize extends IUnit, ISingleValueUnit, core\IStringProvider {
+    public function setBits($bits);
+    public function getBits();
+    public function setBytes($bytes);
+    public function getBytes();
+    public function setKilobytes($kb);
+    public function getKilobytes();
+    public function setMegabytes($mb);
+    public function getMegabytes();
+    public function setGigabytes($gb);
+    public function getGigabytes();
+    public function setTerabytes($tb);
+    public function getTerabytes();
+    public function setPetabytes($pb);
+    public function getPetabytes();
 }
 
 interface IFrequency extends IUnit, ICssCompatibleUnit, ISingleValueUnit, core\IStringProvider {
