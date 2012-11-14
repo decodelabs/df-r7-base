@@ -68,6 +68,12 @@ trait TTemplate_RecordAware {
     }
 
     protected function _getDataId() {
+        if(!$this->_record) {
+            throw new arch\form\LogicException(
+                'No record has been fetched for manipulation'
+            );
+        }
+
         return $this->_record['id'];
     }
 
@@ -81,29 +87,5 @@ trait TTemplate_RecordAware {
 
     protected function _getEntityLocator() {
         return static::ENTITY_LOCATOR;
-    }
-}
-
-
-trait TTemplate_RecordManipulator {
-
-    use TTemplate_RecordAware;
-
-    protected function _loadRecord() {
-        return $this->data->newRecord($this->_getEntityLocator());
-    }
-
-    protected function _validateRecord() {
-        $validator = $this->data->newValidator()->shouldSanitize(true);
-        $this->_addValidatorFields($validator);
-        $validator->validate($this->values)->applyTo($this->_record);
-    }
-
-    abstract protected function _addValidatorFields(core\validate\IHandler $validator);
-
-    protected function _prepareRecord() {}
-
-    protected function _saveRecord() {
-        $this->_record->save();
     }
 }
