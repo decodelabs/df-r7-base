@@ -92,6 +92,10 @@ class ArrayManipulator implements IArrayManipulator {
                     return $this->_rows;
                 }
             }
+
+            if($query instanceof opal\query\IDistinctQuery && $query->isDistinct()) {
+                $this->applyDistinct();
+            }
         }
         
         if($forCount) {
@@ -519,6 +523,18 @@ class ArrayManipulator implements IArrayManipulator {
         return $this;
     }
     
+
+// Distinct
+    public function applyDistinct() {
+        if(empty($this->_rows) || empty($orderDirectives)) {
+            return $this;
+        }
+        
+        $this->normalizeRows();
+
+        core\stub();
+    }
+
     
 // Order
     public function applyOrderDirectives(array $orderDirectives) {
@@ -731,7 +747,13 @@ class ArrayManipulator implements IArrayManipulator {
                         $manipulator->applyHavingClauseList($havingClauseList);
                     }
                 }
-                
+
+
+                // Distinct
+                if($attachment->isDistinct()) {
+                    $manipulator->applyDistinct();
+                }
+
                 
                 // Order directives
                 if(!empty($orderDirectives)) {

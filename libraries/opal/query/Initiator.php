@@ -19,6 +19,7 @@ class Initiator implements IInitiator {
     protected $_data = null;
     protected $_joinType = null;
     protected $_parentQuery = null;
+    protected $_distinct = false;
     protected $_applicator;
     
     public static function modeIdToName($id) {
@@ -71,7 +72,7 @@ class Initiator implements IInitiator {
 
     
 // Select
-    public function beginSelect(array $fields=array()) {
+    public function beginSelect(array $fields=array(), $distinct=false) {
         $this->_setMode(IQueryTypes::SELECT);
         
         if(empty($fields)) {
@@ -83,6 +84,8 @@ class Initiator implements IInitiator {
         foreach($fields as $field) {
             $this->_fieldMap[$field] = null;
         }
+
+        $this->_distinct = (bool)$distinct;
         
         return $this;
     }
@@ -326,7 +329,7 @@ class Initiator implements IInitiator {
                     );
                 }
                 
-                return new Select($sourceManager, $source);
+                return (new Select($sourceManager, $source))->isDistinct((bool)$this->_distinct);
                 
             case IQueryTypes::FETCH:
                 $sourceManager = new opal\query\SourceManager($this->_application, $this->_transaction);
@@ -442,7 +445,8 @@ class Initiator implements IInitiator {
                 if($this->_mode == IQueryTypes::FETCH_ATTACH) {
                     return new FetchAttach($this->_parentQuery, $sourceManager, $source);
                 } else {
-                    return new SelectAttach($this->_parentQuery, $sourceManager, $source);
+                    return (new SelectAttach($this->_parentQuery, $sourceManager, $source))
+                        ->isDistinct((bool)$this->_distinct);
                 }
                 
                 

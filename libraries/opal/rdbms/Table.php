@@ -532,9 +532,10 @@ abstract class Table implements ITable, core\IDumpable {
             $outFields = array_unique(array_merge($outFields, $joinFields, $attachFields, $populateFields));
         }
         
+        $distinct = $query instanceof opal\query\IDistinctQuery && $query->isDistinct() ? ' DISTINCT' : null;
         
         $stmt->appendSql(
-            'SELECT'."\n".'    '.implode(','."\n".'    ', $outFields)."\n".
+            'SELECT'.$distinct."\n".'    '.implode(','."\n".'    ', $outFields)."\n".
             'FROM '.$this->_adapter->quoteIdentifier($this->_name).' '.
             'AS '.$this->_adapter->quoteTableAliasDefinition($source->getAlias()).
             $joinSql

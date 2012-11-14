@@ -663,6 +663,12 @@ abstract class Base extends axis\Unit implements
             ->from($this, $this->getCanonicalUnitName()); 
     }
     
+    public function selectDistinct($field1=null) {
+        return opal\query\Initiator::factory($this->getApplication())
+            ->beginSelect(func_get_args(), true)
+            ->from($this, $this->getCanonicalUnitName()); 
+    }
+
     public function fetch() {
         return opal\query\Initiator::factory($this->getApplication())
             ->beginFetch()

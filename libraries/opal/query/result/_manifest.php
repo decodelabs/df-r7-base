@@ -77,6 +77,7 @@ interface IArrayManipulator {
     public function applyWhereClauseList(opal\query\IWhereClauseList $clauseList);
     public function applyAggregatesAndGroups(array $groupFields=array());
     public function applyHavingClauseList(opal\query\IHavingClauseList $clauseList);
+    public function applyDistinct();
     public function applyOrderDirectives(array $orderDirectives);
     public function applyLimit($limit, $offset);
     public function applyPopulates(array $populates);

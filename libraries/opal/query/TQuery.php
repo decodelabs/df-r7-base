@@ -118,6 +118,25 @@ trait TQuery_LocalSource {
 
 
 /****************************
+ * Distinct
+ */
+trait TQuery_Distinct {
+
+    protected $_isDistinct = false;
+
+    public function isDistinct($flag=null) {
+        if($flag !== null) {
+            $this->_isDistinct = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_isDistinct;
+    }
+}
+
+
+
+ /****************************
  * Correlations
  */
 
@@ -1322,6 +1341,11 @@ trait TQuery_EntryPoint {
         return Initiator::factory($this->_getEntryPointApplication())
             ->beginSelect(func_get_args());
     }
+
+    public function selectDistinct($field1=null) {
+        return Initiator::factory($this->_getEntryPointApplication())
+            ->beginSelect(func_get_args(), true);
+    }
     
     public function fetch() {
         return Initiator::factory($this->_getEntryPointApplication())
@@ -1385,6 +1409,12 @@ trait TQuery_ImplicitSourceEntryPoint {
             ->from($this);
     }
     
+    public function selectDistinct($field1=null) {
+        return Initiator::factory($this->_getEntryPointApplication())
+            ->beginSelect(func_get_args(), true)
+            ->from($this);
+    }
+
     public function fetch() {
         return Initiator::factory($this->_getEntryPointApplication())
             ->beginFetch()

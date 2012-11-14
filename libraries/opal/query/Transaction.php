@@ -24,6 +24,12 @@ class Transaction implements ITransaction, core\IDumpable {
             ->setTransaction($this)
             ->beginSelect(func_get_args());
     }
+
+    public function selectDistinct($field1=null) {
+        return Initiator::factory($this->_application)
+            ->setTransaction($this)
+            ->beginSelect(func_get_args(), true);
+    }
     
     public function fetch() {
         return Initiator::factory($this->_application)

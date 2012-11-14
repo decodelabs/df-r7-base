@@ -84,6 +84,7 @@ interface IParentQueryAware extends IParentSourceProvider {
 // Entry point
 interface IEntryPoint {
     public function select($field1=null);
+    public function selectDistinct($field1=null);
     public function fetch();
     public function insert($values);
     public function batchInsert($rows=array());
@@ -163,6 +164,10 @@ interface IReadQuery extends IQuery, \IteratorAggregate, core\IArrayProvider {
 
 interface IWriteQuery extends IQuery {
     public function execute();
+}
+
+interface IDistinctQuery extends IQuery {
+    public function isDistinct($flag=null);
 }
 
 interface ICorrelatableQuery extends IQuery {
@@ -325,6 +330,7 @@ interface IPageableQuery extends IReadQuery, core\collection\IPageable {
 interface ISelectQuery extends 
     IReadQuery, 
     \Countable,
+    IDistinctQuery,
     ICorrelatableQuery,
     IJoinableQuery, 
     IAttachableQuery, 
