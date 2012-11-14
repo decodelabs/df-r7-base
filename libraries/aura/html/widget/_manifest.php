@@ -153,12 +153,14 @@ interface ISelectionInputWidget extends IInputWidget {
 
 interface IMultipleSelectionInputWidget extends ISelectionInputWidget {}
 
-interface IUngroupedSelectionInputWidget extends ISelectionInputWidget {
+interface IUngroupedOptionWidget extends IFormOrientedWidget {
     public function setOptions($options, $labelsAsValues=false);
     public function addOptions($options, $labelsAsValues=false);
     public function getOptions();
     public function sortOptions($byLabel=false);
 }
+
+interface IUngroupedSelectionInputWidget extends IUngroupedOptionWidget, ISelectionInputWidget {}
 
 interface IGroupedSelectionInputWidget extends ISelectionInputWidget {
     public function setOptions($groupId, $options, $labelsAsValues=false);
