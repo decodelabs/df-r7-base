@@ -43,13 +43,17 @@ class TaskSet implements ITaskSet {
         $id = $task->getId();
         
         if(isset($this->_tasks[$id])) {
-            if(!$this->_tasks[$id] instanceof IInsertRecordTask) {
-                throw new RuntimeException(
-                    'Record '.$id.' has already been queued for a conflicting operation'
-                );
+            if($this->_tasks[$id] === false) {
+                unset($this->_tasks[$id]);
+            } else {
+                if(!$this->_tasks[$id] instanceof IInsertRecordTask) {
+                    throw new RuntimeException(
+                        'Record '.$id.' has already been queued for a conflicting operation'
+                    );
+                }
+                
+                return $this->_tasks[$id];
             }
-            
-            return $this->_tasks[$id];
         }
         
         $this->addTask($task);
@@ -61,13 +65,17 @@ class TaskSet implements ITaskSet {
         $id = $task->getId();
         
         if(isset($this->_tasks[$id])) {
-            if(!$this->_tasks[$id] instanceof IReplaceRecordTask) {
-                throw new RuntimeException(
-                    'Record '.$id.' has already been queued for a conflicting operation'
-                );
+            if($this->_tasks[$id] === false) {
+                unset($this->_tasks[$id]);
+            } else {
+                if(!$this->_tasks[$id] instanceof IReplaceRecordTask) {
+                    throw new RuntimeException(
+                        'Record '.$id.' has already been queued for a conflicting operation'
+                    );
+                }
+                
+                return $this->_tasks[$id];
             }
-            
-            return $this->_tasks[$id];
         }
         
         $this->addTask($task);
@@ -79,13 +87,17 @@ class TaskSet implements ITaskSet {
         $id = $task->getId();
         
         if(isset($this->_tasks[$id])) {
-            if(!$this->_tasks[$id] instanceof IUpdateRecordTask) {
-                throw new RuntimeException(
-                    'Record '.$id.' has already been queued for a conflicting operation'
-                );
+            if($this->_tasks[$id] === false) {
+                unset($this->_tasks[$id]);
+            } else {
+                if(!$this->_tasks[$id] instanceof IUpdateRecordTask) {
+                    throw new RuntimeException(
+                        'Record '.$id.' has already been queued for a conflicting operation'
+                    );
+                }
+                
+                return $this->_tasks[$id];
             }
-            
-            return $this->_tasks[$id];
         }
         
         $this->addTask($task);
@@ -97,13 +109,17 @@ class TaskSet implements ITaskSet {
         $id = $task->getId();
         
         if(isset($this->_tasks[$id])) {
-            if(!$this->_tasks[$id] instanceof IDeleteRecordTask) {
-                throw new RuntimeException(
-                    'Record '.$id.' has already been queued for a conflicting operation'
-                );
+            if($this->_tasks[$id] === false) {
+                unset($this->_tasks[$id]);
+            } else {
+                if(!$this->_tasks[$id] instanceof IDeleteRecordTask) {
+                    throw new RuntimeException(
+                        'Record '.$id.' has already been queued for a conflicting operation'
+                    );
+                }
+                
+                return $this->_tasks[$id];
             }
-            
-            return $this->_tasks[$id];
         }
         
         $this->addTask($task);
