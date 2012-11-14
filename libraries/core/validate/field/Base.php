@@ -12,7 +12,7 @@ abstract class Base implements core\validate\IField {
     
     protected $_name;
     protected $_isRequired = false;
-    protected $_shouldSanitize = false;
+    protected $_shouldSanitize = true;
     protected $_customValidator = null;
     protected $_handler;
     
