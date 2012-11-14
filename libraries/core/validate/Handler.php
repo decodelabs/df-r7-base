@@ -13,7 +13,7 @@ class Handler implements IHandler {
     protected $_values = array();
     protected $_fields = array();
     protected $_isValid = null;
-    protected $_shouldSanitize = false;
+    protected $_shouldSanitize = true;
     protected $_currentData = null;
     
     public function addField($name, $type, array $options=null) {
