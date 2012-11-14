@@ -108,7 +108,14 @@ class Frequency implements IFrequency, core\IDumpable {
                 break;
         }
 
+        $bpm = false;
+
         switch($outUnit) {
+            case 'bpm':
+                $factor -= 0;
+                $bpm = true;
+                break;
+
             case 'hz':
                 $factor -= 0;
                 break;
@@ -126,7 +133,13 @@ class Frequency implements IFrequency, core\IDumpable {
                 break;
         }
 
-        return $value *= pow(1000, $factor);
+        $output = $value *= pow(1000, $factor);
+
+        if($bpm) {
+            $output *= 60;
+        }
+
+        return $output;
     }
 
 // Dump
