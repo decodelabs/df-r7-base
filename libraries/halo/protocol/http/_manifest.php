@@ -257,8 +257,10 @@ interface IAsyncClient extends halo\peer\IClient {
 
 
 // Upload
-interface IUploadHandler extends \Countable, \IteratorAggregate {
+interface IUploadHandler extends \Countable, \IteratorAggregate, \ArrayAccess {
+
     public function setAllowedExtensions(array $extensions);
+    public function addAllowedExtensions(array $extensions);
     public function getAllowedExtensions();
     public function isExtensionAllowed($extension);
 
@@ -278,10 +280,18 @@ interface IUploadFile {
     public function getFileName();
     public function setExtension($extension);
     public function getExtension();
-    public function setBase
+    public function setBaseName($baseName);
+    public function getBaseName();
+
+    public function getFieldName();
+    public function getTempPath();
+    public function getDestinationPath();
+    public function getSize();
 
     public function isValid();
     public function isSuccess();
+    public function getErrorCode();
+    public function getErrorString();
 
     public function upload($destination, core\collection\IInputTree $inputNode, $conflictAction=IUploadFile::RENAME);
 }
