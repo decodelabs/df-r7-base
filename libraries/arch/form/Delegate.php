@@ -27,13 +27,12 @@ class Delegate implements IDelegate {
     
     final public function initialize() {
         $this->_init();
-        
+        $this->_setupDelegates();
+
         if($this->_state->isNew()) {
             $this->_setDefaultValues();
         }
         
-        $this->_setupDelegates();
-            
         foreach($this->_delegates as $delegate) {
             $delegate->initialize();
         }
