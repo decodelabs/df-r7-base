@@ -47,7 +47,7 @@ trait TBase {
         $topName = array_pop($nameParts);
 
         if(!empty($nameParts)) {
-            $parts[] += $nameParts;
+            $parts = array_merge($parts, $nameParts);
         }
 
         $parts[] = ucfirst($topName);
