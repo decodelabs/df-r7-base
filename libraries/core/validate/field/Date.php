@@ -60,4 +60,8 @@ class Date extends Base {
         $this->_max = $date;
         return $this;
     }
+
+    public function getMax() {
+        return $this->_max;
+    }
 }
