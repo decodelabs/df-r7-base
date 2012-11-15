@@ -47,6 +47,23 @@ interface ISourceAdapter {
     public function loadMenu(ISource $source, core\uri\Url $id);
 }
 
+trait TResponsiveSourceAdapter {
+
+    public function loadMenu(ISource $source, core\uri\Url $id) {
+        $func = '_load'.$id->path->getBaseName().'Menu';
+
+        if(!method_exists($this, $func)) {
+            throw new arch\navigation\SourceNotFoundException(
+                'Menu '.$id->path->getBaseName().' could not be loaded'
+            );
+        }
+
+        $output = new arch\navigation\menu\Dynamic($source->getContext(), (string)$id);
+        call_user_func_array([$this, $func], [$output, $source, $id]);
+        return $output;
+    }
+}
+
 
 interface IEntryList extends arch\navigation\IEntryList {
     public function registerMenu(IMenu $menu);

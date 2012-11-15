@@ -14,6 +14,7 @@ class Link extends Base {
     protected $_location;
     protected $_text;
     protected $_icon;
+    protected $_tooltip;
     protected $_description;
     protected $_accessLocks = array();
     protected $_hideIfInaccessible = false;
@@ -30,6 +31,7 @@ class Link extends Base {
                 $tree['icon']
             ))
             ->setId($tree['id'])
+            ->setTooltip($tree['tooltip'])
             ->setDescription($tree['id'])
             ->addAccessLocks($tree->accessLocks->toArray())
             ->shouldHideIfInaccessible((bool)$tree['hideIfInaccessible'])
@@ -53,6 +55,7 @@ class Link extends Base {
             'location' => $this->_location,
             'text' => $this->_text,
             'icon' => $this->_icon,
+            'tooltip' => $this->_tooltip,
             'description' => $this->_description,
             'accessLocks' => $this->_accessLocks,
             'hideIfInaccessible' => $this->_hideIfInaccessible,
@@ -95,6 +98,15 @@ class Link extends Base {
     
     public function getIcon() {
         return $this->_icon;
+    }
+
+    public function setTooltip($tooltip) {
+        $this->_tooltip = $tooltip;
+        return $this;
+    }
+
+    public function getTooltip() {
+        return $this->_tooltip;
     }
     
     public function setDescription($description) {
