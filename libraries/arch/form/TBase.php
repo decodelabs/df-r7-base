@@ -48,9 +48,13 @@ trait TBase {
         $class = 'df\\apex\\directory\\'.$request->getArea().'\\'.implode('\\', $parts);
         
         if(!class_exists($class)) {
-            throw new DelegateException(
-                'Delegate '.$name.' could not be found at ~'.$request->getArea().'/'.$request->getController()
-            );
+            $class = 'df\\apex\\directory\\shared\\'.implode('\\', $parts);
+
+            if(!class_exists($class)) {
+                throw new DelegateException(
+                    'Delegate '.$name.' could not be found at ~'.$request->getArea().'/'.$request->getController()
+                );
+            }
         }
         
         return $this->_delegates[$id] = new $class(
