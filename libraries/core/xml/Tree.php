@@ -268,6 +268,16 @@ class Tree implements ITree, core\IDumpable {
         return $this;
     }
 
+    public function getFirstCDataSection() {
+        foreach($this->_element->childNodes as $node) {
+            if($node->nodeType == \XML_CDATA_SECTION_NODE) {
+                return $node->nodeValue;
+            }
+        }
+
+        return null;
+    }
+
     public function getAllCDataSections() {
         $output = array();
 

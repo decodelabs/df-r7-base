@@ -127,6 +127,7 @@ interface ITree extends IReadable, IWritable, core\IAttributeContainer, \Countab
     public function setCDataContent($content);
     public function prependCDataContent($content);
     public function appendCDataContent($content);
+    public function getFirstCDataSection();
     public function getAllCDataSections();
 
     // Child access
