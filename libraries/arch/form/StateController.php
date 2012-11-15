@@ -15,6 +15,7 @@ class StateController implements IStateController, \Serializable {
     protected $_values;
     protected $_isNew = false;
     protected $_delegates = array();
+    protected $_store = array();
     
     public function __construct($sessionId) {
         $this->_sessionId = $sessionId;
@@ -50,6 +51,10 @@ class StateController implements IStateController, \Serializable {
             
             $output['dl'] = $delegates;
         }
+
+        if(!empty($this->_store)) {
+            $output['st'] = $this->_store;
+        }
         
         return $output;
     }
@@ -83,6 +88,10 @@ class StateController implements IStateController, \Serializable {
                 
                 $this->_delegates[$key] = $delegate;
             }
+        }
+
+        if(isset($values['st']) && is_array($values['st'])) {
+            $this->_store = $values['st'];
         }
     }
     
@@ -126,6 +135,33 @@ class StateController implements IStateController, \Serializable {
             $delegate->reset();
         }
         
+        $this->clearStore();
+
+        return $this;
+    }
+
+
+// Store
+    public function setStore($key, $value) {
+        $this->_store[$key] = $value;
+        return $this;
+    }
+
+    public function getStore($key, $default=null) {
+        if(isset($this->_store[$key])) {
+            return $this->_store[$key];
+        }
+
+        return $default;
+    }
+
+    public function removeStore($key) {
+        unset($this->_store[$key]);
+        return $this;
+    }
+
+    public function clearStore() {
+        $this->_store = array();
         return $this;
     }
 }

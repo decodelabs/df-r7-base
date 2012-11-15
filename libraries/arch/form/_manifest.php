@@ -44,6 +44,11 @@ interface IStateController {
     
     public function isNew($flag=null);
     public function reset();
+
+    public function setStore($key, $value);
+    public function getStore($key, $default=null);
+    public function removeStore($key);
+    public function clearStore();
 }
 
 
