@@ -32,18 +32,12 @@ trait TReaderInterchange {
 
     public static function fromXmlFile($xmlFile) {
         $reader = core\xml\Tree::fromXmlFile($xmlFile);
-        $output = new self();
-        $output->readXml($reader);
-
-        return $output;
+        return self::fromXmlElement($reader);
     }
 
     public static function fromXmlString($xmlString) {
         $reader = core\xml\Tree::fromXmlString($xmlString);
-        $output = new self();
-        $output->readXml($reader);
-
-        return $output;
+        return self::fromXmlElement($reader);
     }
 
     public static function fromXmlElement(ITree $element) {
