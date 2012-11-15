@@ -136,6 +136,14 @@ trait TWidget_FormData {
     protected $_value;
     protected $_targetFormId;
     
+    protected function _hasArrayInput() {
+        if($this instanceof IOptionalMultipleValueInputWidget) { 
+            return $this->_allowMultiple;
+        }
+
+        return static::ARRAY_INPUT;
+    }
+
     protected function _applyFormDataAttributes(aura\html\ITag $tag, $includeValue=true) {
         // Name
         if($this->_name == null) {
@@ -144,7 +152,7 @@ trait TWidget_FormData {
         
         $name = $this->_name;
         
-        if(static::ARRAY_INPUT && substr($name, -2) != '[]') {
+        if($this->_hasArrayInput() && substr($name, -2) != '[]') {
             $name .= '[]';
         }
         
