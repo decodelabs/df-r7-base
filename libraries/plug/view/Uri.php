@@ -13,11 +13,7 @@ use df\halo;
 
 class Uri implements aura\view\IHelper {
     
-    protected $_view;
-    
-    public function __construct(aura\view\IView $view) {
-        $this->_view = $view;
-    }
+    use aura\view\THelper;
     
     public function to($uri, $from=null, $to=null) {
         if($uri === null) {

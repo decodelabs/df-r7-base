@@ -12,11 +12,7 @@ use df\arch;
 
 class Html implements aura\view\IHelper {
     
-    protected $_view;
-    
-    public function __construct(aura\view\IView $view) {
-        $this->_view = $view;
-    }
+    use aura\view\THelper;
     
     public function __call($member, $args) {
         return aura\html\widget\Base::factory($this->_view->getContext(), $member, $args)->setRenderTarget($this->_view);

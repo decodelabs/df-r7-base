@@ -12,11 +12,7 @@ use df\arch;
 
 class Import implements aura\view\IHelper {
     
-    protected $_view;
-    
-    public function __construct(aura\view\IView $view) {
-        $this->_view = $view;
-    }
+    use aura\view\THelper;
     
     public function template($path, $contextRequest=null) {
         try {

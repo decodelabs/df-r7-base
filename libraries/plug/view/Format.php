@@ -11,11 +11,7 @@ use df\aura;
 
 class Format implements aura\view\IHelper {
     
-    protected $_view;
-    
-    public function __construct(aura\view\IView $view) {
-        $this->_view = $view;
-    }
+    use aura\view\THelper;
     
 // Numbers
     public function number($number, $format=null, $locale=null) {

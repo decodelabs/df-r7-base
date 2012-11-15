@@ -11,11 +11,7 @@ use df\aura;
 
 class Debug implements aura\view\IHelper {
     
-    protected $_view;
-    
-    public function __construct(aura\view\IView $view) {
-        $this->_view = $view;
-    }
+    use aura\view\THelper;
     
     public function dump($arg1) {
         core\debug()->addDumpList(func_get_args(), false, core\debug\StackCall::factory(1));

@@ -340,6 +340,15 @@ interface IHtmlView extends ILayoutView {
 
 interface IHelper extends core\IHelper {}
 
+trait THelper {
+
+    protected $_view;
+
+    public function __construct(aura\view\IView $view) {
+        $this->_view = $view;
+    }
+}
+
 
 interface ITemplate extends IContentProvider, \ArrayAccess, IRenderTarget, core\i18n\translate\ITranslationProxy {
     // Escaping
