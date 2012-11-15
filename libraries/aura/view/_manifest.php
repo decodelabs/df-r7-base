@@ -346,7 +346,10 @@ trait THelper {
 
     public function __construct(aura\view\IView $view) {
         $this->_view = $view;
+        $this->_init();
     }
+
+    protected function _init() {}
 }
 
 
