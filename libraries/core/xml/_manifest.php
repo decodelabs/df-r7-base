@@ -30,19 +30,27 @@ interface IReaderInterchange {
 
 trait TReaderInterchange {
 
+    public static function fromXml($xml) {
+        if($xml instanceof ITree) {
+            return static::fromXmlElement($xml);
+        } else {
+            return static::fromXmlString($xml);
+        }
+    }
+
     public static function fromXmlFile($xmlFile) {
         $reader = core\xml\Tree::fromXmlFile($xmlFile);
-        return self::fromXmlElement($reader);
+        return static::fromXmlElement($reader);
     }
 
     public static function fromXmlString($xmlString) {
         $reader = core\xml\Tree::fromXmlString($xmlString);
-        return self::fromXmlElement($reader);
+        return static::fromXmlElement($reader);
     }
 
     public static function fromXmlElement(ITree $element) {
         $output = new self();
-        $output->readXml($reader);
+        $output->readXml($element);
 
         return $output;
     }

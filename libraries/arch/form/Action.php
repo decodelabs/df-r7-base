@@ -181,7 +181,7 @@ abstract class Action extends arch\Action implements IAction {
                     $this->getDelegate($id)->values->clear()->import($delegateValues);
                 } catch(DelegateException $e) {
                     if($this->_context->getApplication()->isDevelopment()) {
-                        core\dump($e);
+                        throw $e;
                     }
                 }
             }
