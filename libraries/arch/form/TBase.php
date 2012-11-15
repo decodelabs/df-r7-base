@@ -41,9 +41,16 @@ trait TBase {
         }
         
         $type = $context->getRunMode();
-        
+
         $parts[] = '_formDelegates';
-        $parts[] = ucfirst($name);
+        $nameParts = explode('/', $name);
+        $topName = array_pop($nameParts);
+
+        if(!empty($nameParts)) {
+            $parts[] += $nameParts;
+        }
+
+        $parts[] = ucfirst($topName);
         
         $class = 'df\\apex\\directory\\'.$request->getArea().'\\'.implode('\\', $parts);
         
