@@ -257,12 +257,14 @@ interface IAsyncClient extends halo\peer\IClient {
 
 
 // Upload
-interface IUploadHandler extends \Countable, \IteratorAggregate, \ArrayAccess {
+interface IUploadHandler extends core\mime\IAcceptTypeProcessor, \Countable, \IteratorAggregate, \ArrayAccess {
 
     public function setAllowedExtensions(array $extensions);
     public function addAllowedExtensions(array $extensions);
     public function getAllowedExtensions();
     public function isExtensionAllowed($extension);
+
+
 
     public function setMaxFileSize($size);
     public function getMaxFileSize();
@@ -287,6 +289,7 @@ interface IUploadFile {
     public function getTempPath();
     public function getDestinationPath();
     public function getSize();
+    public function getContentType();
 
     public function isValid();
     public function isSuccess();

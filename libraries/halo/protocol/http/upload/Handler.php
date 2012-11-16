@@ -11,6 +11,8 @@ use df\halo;
     
 class Handler implements halo\protocol\http\IUploadHandler {
 
+    use core\mime\TAcceptTypeProcessor;
+
     protected $_files = array();
     protected $_extensions = array();
     protected $_maxSize;
@@ -94,6 +96,8 @@ class Handler implements halo\protocol\http\IUploadHandler {
     protected function _normalizeExtension($ext) {
         return ltrim(trim(strtolower($ext)), '.');
     }
+
+
 
     public function setMaxFileSize($size) {
         $size = core\unit\FileSize::factory($size);

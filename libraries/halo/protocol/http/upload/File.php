@@ -104,6 +104,10 @@ class File implements halo\protocol\http\IUploadFile {
         return $this->_size;
     }
 
+    public function getContentType() {
+        return $this->_type;
+    }
+    
 
     public function isValid() {
         return $this->_isValid;
@@ -159,6 +163,13 @@ class File implements halo\protocol\http\IUploadFile {
             $inputNode->addError('extensionNotAllowed', $this->_(
                 'Files with the extension %e% are not allowed to be uploaded here',
                 ['%e%' => $this->_extension]
+            ));
+        }
+
+        if(!$this->_handler->isTypeAccepted($this->_type)) {
+            $inputNode->addError('tpyeNotAccepted', $this->_(
+                'File of type %t% are not allowed to be uploaded here',
+                ['%t%' => $this->_type]
             ));
         }
 
