@@ -60,8 +60,8 @@ class Delete extends arch\form\Action {
     }
     
     
-    protected function _renderMessages(aura\html\widget\IContainerWidget $container) {}
-    protected function _renderItemDetails(aura\html\widget\IContainerWidget $container) {}
+    protected function _renderMessages(/*aura\html\widget\IContainerWidget*/ $container) {}
+    protected function _renderItemDetails(/*aura\html\widget\IContainerWidget*/ $container) {}
     
     
     protected function _onDeleteEvent() {
