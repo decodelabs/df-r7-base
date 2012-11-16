@@ -72,6 +72,15 @@ interface ITag extends IElementRepresentation, \ArrayAccess, ITagDataContainer, 
 }
 
 
+interface IWidgetFinder {
+    public function getFirstWidgetOfType($type);
+    public function getAllWidgetsOfType($type);
+    public function findFirstWidgetOfType($type);
+    public function findAllWidgetsOfType($type);
+}
+
+
+
 
 interface IElementContent extends IElementRepresentation {
     public function getElementContentString();
@@ -80,6 +89,7 @@ interface IElementContent extends IElementRepresentation {
 
 interface IElementContentCollection extends 
     IElementContent,
+    IWidgetFinder,
     core\collection\IIndexedQueue, 
     core\collection\IAggregateIteratorCollection {}
 
@@ -154,6 +164,70 @@ trait TElementContent {
     
     public function render() {
         return new ElementString($this->toString());
+    }
+
+
+
+    public function getFirstWidgetOfType($type) {
+        foreach($this->_collection as $child) {
+            if($child instanceof aura\html\widget\IWidget && $child->getWidgetName() == $type) {
+                return $child;
+            }
+        }
+
+        return null;
+    }
+
+    public function getAllWidgetsOfType($type) {
+        $output = array();
+
+        foreach($this->_collection as $child) {
+            if($child instanceof aura\html\widget\IWidget && $child->getWidgetName() == $type) {
+                $output[] = $child;
+            }
+        }
+        
+        return $output;
+    }
+
+    public function findFirstWidgetOfType($type) {
+        foreach($this->_collection as $child) {
+            if(!$child instanceof aura\html\widget\IWidget) {
+                continue;
+            }
+            
+            if($child->getWidgetName() == $type) {
+                return $child;
+            }
+
+            if($child instanceof IContainerWidget) {
+                if($ret = $child->firstFirstWidgetOfType($type)) {
+                    return $ret;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public function findAllWidgetsOfType($type) {
+        $output = array();
+
+        foreach($this->_collection as $child) {
+            if(!$child instanceof aura\html\widget\IWidget) {
+                continue;
+            }
+
+            if($child->getWidgetName() == $type) {
+                $output[] = $child;
+            }
+
+            if($child instanceof aura\html\widget\IContainerWidget) {
+                $output = array_merge($output, $child->findAllWidgetsOfType($type));
+            }
+        }
+        
+        return $output;
     }
 }
 

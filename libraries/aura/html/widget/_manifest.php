@@ -80,7 +80,9 @@ interface IAccessControlledWidget {
 
 
 
-interface IContainerWidget extends IWidget, core\collection\IIndexedQueue {}
+interface IContainerWidget extends IWidget, core\collection\IIndexedQueue, aura\html\IWidgetFinder {}
+
+
 interface IFormOrientedWidget extends IWidget {}
 
 interface IFormDataWidget extends IFormOrientedWidget {

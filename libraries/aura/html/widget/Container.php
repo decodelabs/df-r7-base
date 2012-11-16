@@ -152,6 +152,23 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
         call_user_func_array(array($this->_children, 'unshift'), func_get_args());
         return $this;
     }
+
+
+    public function getFirstWidgetOfType($type) {
+        return $this->_children->getFirstWidgetOfType($type);
+    }
+
+    public function getAllWidgetsOfType($type) {
+        return $this->_children->getAllWidgetsOfType($type);
+    }
+
+    public function findFirstWidgetOfType($type) {
+        return $this->_children->findFirstWidgetOfType($type);
+    }
+
+    public function findAllWidgetsOfType($type) {
+        return $this->_children->findAllWidgetsOfType($type);
+    }
     
     
     public function count() {
