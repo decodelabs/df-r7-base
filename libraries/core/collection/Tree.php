@@ -32,6 +32,14 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
         
         return $output;
     }
+
+    public static function factory($input) {
+        if($input instanceof ITree) {
+            return $input;
+        }
+
+        return new self($input);
+    }
     
     public function __construct($input=null, $value=null) {
         $this->setValue($value);
