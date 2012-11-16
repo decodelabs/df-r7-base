@@ -33,10 +33,14 @@ class Handler implements halo\protocol\http\IUploadHandler {
                 }
 
                 foreach($sets as $key => $set) {
-                    $this->_files[$key] = $set;
+                    if(!empty($set['name'])) {
+                        $this->_files[$key] = $set;
+                    }
                 }
             } else {
-                $this->_files[$key] = $set;
+                if(!empty($set['name'])) {
+                    $this->_files[$key] = $set;
+                }
             }
         }
 
