@@ -19,6 +19,18 @@ class Context implements IContext, \Serializable, core\i18n\translate\ITranslati
     protected $_locale;
     protected $_application;
     
+    public static function getCurrent(core\IApplication $application=null) {
+        if(!$application) {
+            $application = df\Launchpad::getActiveApplication();
+        }
+
+        if($application instanceof arch\IContextAware) {
+            return $application->getContext();
+        }
+
+        return null;
+    }
+
     public static function factory(core\IApplication $application, $request=null) {
         if(!empty($request)) {
             $request = arch\Request::factory($request);
