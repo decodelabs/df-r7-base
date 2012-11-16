@@ -11,7 +11,10 @@ use df\arch;
 use df\aura;
 use df\opal;
     
-abstract class SearchSelectorDelegate extends SelectorDelegateBase {
+abstract class SearchSelectorDelegate extends arch\form\Delegate implements ISelectorDelegate {
+
+    use TSelectorDelegate;
+    use TSelectorDelegateQueryTools;
 
     public function renderFieldSet($fieldSetName) {
         $fs = $this->html->fieldSet($fieldSetName);

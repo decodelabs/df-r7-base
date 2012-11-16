@@ -11,7 +11,14 @@ use df\arch;
 use df\aura;
 use df\opal;
     
-abstract class SelectorDelegateBase extends arch\form\Delegate {
+
+interface ISelectorDelegate {
+    public function isRequired($flag=null);
+    public function isForOne($flag=null);
+    public function isForMany($flag=null);
+}
+
+trait TSelectorDelegate {
 
     protected $_isRequired = false;
     protected $_isForMany = true;
@@ -42,7 +49,9 @@ abstract class SelectorDelegateBase extends arch\form\Delegate {
 
         return $this->_isForMany;
     }
+}
 
+trait TSelectorDelegateQueryTools {
 
     protected function _normalizeQueryResult($result) {
         if($result instanceof opal\query\IQuery) {
