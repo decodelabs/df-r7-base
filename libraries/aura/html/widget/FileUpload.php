@@ -65,6 +65,10 @@ class FileUpload extends Base implements IFileUploadWidget, core\IDumpable {
             if(!strlen($type)) {
                 continue;
             }
+
+            if(false === strpos($type, '/')) {
+                $type .= '/*';
+            }
             
             $this->_acceptTypes[] = $type;
         }
