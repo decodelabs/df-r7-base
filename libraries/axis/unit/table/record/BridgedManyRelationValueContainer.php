@@ -260,13 +260,12 @@ class BridgedManyRelationValueContainer implements
 
         $bridgeAlias = $localFieldName.'Bridge';
         
-        
         return opal\query\Initiator::factory($application)
             ->beginSelect(func_get_args())
             ->from($targetUnit, $this->_localField)
         
             // Join bridge table as constraint
-            ->join()
+            ->join($bridgeUnit->getBridgeFieldNames($this->_localField))
                 ->from($bridgeUnit, $bridgeAlias)
                 ->on($bridgeAlias.'.'.$targetFieldName, '=', $this->_localField.'.@primary')
                 ->endJoin()

@@ -72,4 +72,26 @@ class ManyBridge extends Base implements axis\IVirtualUnit {
     }
     
     protected function _onCreate(axis\schema\ISchema $schema) {}
+
+
+    public function getBridgeFieldNames($aliasPrefix=null) {
+        $output = array();
+        $i = 0;
+
+        foreach($this->getUnitSchema()->getFields() as $name => $field) {
+            $i++;
+
+            if($i <= 2) {
+                continue;
+            }
+
+            if($aliasPrefix !== null) {
+                $name .= ' as '.$aliasPrefix.'.'.$name;
+            }
+            
+            $output[] = $name;
+        }
+
+        return $output;
+    }
 }
