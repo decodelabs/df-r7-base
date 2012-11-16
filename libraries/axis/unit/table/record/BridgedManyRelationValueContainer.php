@@ -240,6 +240,31 @@ class BridgedManyRelationValueContainer implements
         return $index;
     }
     
+
+    public function getBridgeUnit() {
+        $application = null;
+
+        if($this->_record) {
+            $application = $this->_record->getRecordAdapter()->getApplication();
+        }
+        
+        return axis\Unit::fromId($this->_bridgeUnitId, $application);
+    }
+
+    public function getTargetUnit() {
+        $application = null;
+
+        if($this->_record) {
+            $application = $this->_record->getRecordAdapter()->getApplication();
+        }
+        
+        return axis\Unit::fromId($this->_targetUnitId, $application);
+    }
+
+    public function newBridgeRecord(array $values=null) {
+        return $this->getBridgeUnit()->newRecord($values);
+    }
+
     
 // Query
     public function select($field1=null) {
