@@ -15,6 +15,7 @@ class FieldArea extends Container implements IFormOrientedWidget {
     protected $_label;
     protected $_description;
     protected $_errorContainer;
+    protected $_isRequired = false;
     
     public function __construct(arch\IContext $context, $labelBody=null) {
         parent::__construct($context);
@@ -33,7 +34,7 @@ class FieldArea extends Container implements IFormOrientedWidget {
         
         $primaryWidget = null;
         $errors = array();
-        $isRequired = false;
+        $isRequired = $this->_isRequired;
 
         if($this->_errorContainer) {
             $errors = $this->_errorContainer->getErrors();
@@ -122,6 +123,16 @@ class FieldArea extends Container implements IFormOrientedWidget {
 
     public function getErrorContainer() {
         return $this->_errorContainer;
+    }
+
+// Required
+    public function isRequired($flag=null) {
+        if($flag !== null) {
+            $this->_isRequired = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_isRequired;
     }
 
 // Description
