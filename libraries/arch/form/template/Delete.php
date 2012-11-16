@@ -12,15 +12,15 @@ use df\aura;
 
 class Delete extends arch\form\Action {
     
-    use TTemplate;
-    use TTemplate_Action;
-    use TTemplate_ItemNameAware;
-
     const ITEM_NAME = 'item';
     const IS_PERMANENT = true;
     
     const DEFAULT_EVENT = 'delete';
     
+    protected function _getItemName() {
+        return static::ITEM_NAME;
+    }
+
     protected function _createUi() {
         $itemName = $this->_getItemName();
         $form = $this->content->addForm();
@@ -86,4 +86,8 @@ class Delete extends arch\form\Action {
     
     protected function _validateItem() {}
     protected function _deleteItem() {}
+
+    protected function _completeForm() {
+        return $this->complete();
+    }
 }
