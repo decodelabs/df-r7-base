@@ -7,6 +7,7 @@ namespace df\core\validate;
 
 use df;
 use df\core;
+use df\opal;
 
 
 // Exceptions
@@ -44,6 +45,9 @@ interface IField {
     public function applyValueTo(&$record, $value);
 }
 
+
+
+// Range
 interface IRangeField extends IField {
     public function setMin($min);
     public function getMin();
@@ -100,6 +104,8 @@ trait TRangeField {
 }
 
 
+
+// Min length
 interface IMinLengthField extends IField {
     public function setMinLength($length);
     public function getMinLength();
@@ -155,6 +161,8 @@ trait TMinLengthField {
 }
 
 
+
+// Max length
 interface IMaxLengthField extends IField {
     public function setMaxLength($length);
     public function getMaxLength();
@@ -211,6 +219,7 @@ trait TMaxLengthField {
 
 
 
+// Sanitizer
 interface ISanitizingField extends IField {
     public function setSanitizer(Callable $sanitizer);
     public function getSanitizer();
@@ -238,6 +247,84 @@ trait TSanitizingField {
     }
 }
 
+
+
+// Storage unit
+interface IStorageAwareField extends IField {
+    public function setStorageAdapter(opal\query\IAdapter $adapter);
+    public function getStorageAdapter();
+}
+
+trait TStorageAwareField {
+
+    protected $_storageAdapter;
+
+    public function setStorageAdapter(opal\query\IAdapter $adapter) {
+        $this->_storageAdapter = $adapter;
+        return $this;
+    }
+
+    public function getStorageAdapter() {
+        return $this->_storageAdapter;
+    }
+}
+
+
+interface IUniqueCheckerField extends IStorageAwareField {
+    public function setStorageField($field);
+    public function getStorageField();
+    public function setUniqueFilterId($id);
+    public function getUniqueFilterId();
+}
+
+trait TUniqueCheckerField {
+
+    protected $_storageField;
+    protected $_filterId;
+
+    public function setStorageField($field) {
+        $this->_storageField = $field;
+        return $this;
+    }
+
+    public function getStorageField() {
+        return $this->_storageField;
+    }
+
+    public function setUniqueFilterId($id) {
+        $this->_filterId = $id;
+        return $this;
+    }
+
+    public function getUniqueFilterId() {
+        return $this->_filterId;
+    }
+
+    protected function _validateUnique(core\collection\IInputTree $node, $value) {
+        if($this->_storageAdapter) {
+            if(null === ($fieldName = $this->_storageField)) {
+                $fieldName = $this->_name;
+            }
+
+            $query = (new opal\query\EntryPoint())
+                ->select()
+                ->from($this->_storageAdapter, 'slugUnit')
+                ->where($fieldName, '=', $value);
+
+            if($this->_filterId !== null) {
+                $query->where('@primary', '!=', $this->_filterId);
+            }
+
+            if($query->count()) {
+                $node->addError('unique', $this->_handler->_('Another record is already using that slug'));
+            }
+        }
+    }
+}
+
+
+
+// Actual
 interface IBooleanField extends IField {}
 interface IDateField extends IField, IRangeField {}
 interface IEmailField extends IField {}
@@ -245,6 +332,13 @@ interface IFloatField extends IField, IRangeField {}
 interface IIdListField extends IField, ISanitizingField {}
 interface IIntegerField extends IField, IRangeField {}
 interface IPasswordField extends IField, IMinLengthField {}
+
+interface ISlugField extends IField, IUniqueCheckerField {
+    public function allowPathFormat($flag=null);
+    public function setDefaultValueField($field);
+    public function getDefaultValueField();
+    public function shouldGenerateIfEmpty($flag=null);
+}
 
 interface ITextField extends IField, ISanitizingField, IMinLengthField, IMaxLengthField {
     public function setPattern($pattern);
