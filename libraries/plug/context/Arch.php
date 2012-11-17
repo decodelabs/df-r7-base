@@ -163,4 +163,14 @@ class Arch implements archLib\IContextHelper {
 
         return $output;
     }
+
+    public function clearMenuCache($id=null) {
+        if($id !== null) {
+            archLib\navigation\menu\Base::clearCacheFor($this->_context, $id);
+        } else {
+            archLib\navigation\menu\Base::clearCache($this->_context);
+        }
+
+        return $this;
+    }
 }
