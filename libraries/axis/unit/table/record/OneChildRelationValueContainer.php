@@ -112,7 +112,7 @@ class OneChildRelationValueContainer implements opal\query\record\ITaskAwareValu
         return $output;
     }
     
-    public function populateInverse(opal\query\record\IRecord $record) {
+    public function populateInverse(opal\query\record\IRecord $record=null) {
         if(!$this->_insertPrimaryManifest) {
             $this->_record = $record;
         }

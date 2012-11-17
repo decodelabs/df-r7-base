@@ -298,8 +298,8 @@ abstract class Base extends axis\Unit implements
         $field = $schema->getField($fieldName);
 
         if(!$field instanceof axis\schema\IRelationField) {
-            throw new RuntimeException(
-                'Unit '.$this->getUnitId().' does not had a populatable relation field named '.$field
+            throw new axis\RuntimeException(
+                'Unit '.$this->getUnitId().' does not had a populatable relation field named '.$fieldName
             );
         }
 
@@ -428,7 +428,7 @@ abstract class Base extends axis\Unit implements
                 
                 $subValue = $valueFields[$keyName];
             } else if(is_array($value)) {
-                if(!isset($value[$keyName])) {
+                if(!array_key_exists($keyName, $value)) {
                     throw new axis\schema\RuntimeException(
                         'KeyGroup fields do not match on '.
                         $parent->getSource()->getAdapter()->getUnitId().':'.$field->getName().

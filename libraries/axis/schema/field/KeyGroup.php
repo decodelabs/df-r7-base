@@ -10,7 +10,7 @@ use df\core;
 use df\axis;
 use df\opal;
     
-class KeyGroup extends Base implements axis\schema\IMultiPrimitiveField, axis\schema\IQueryClauseRewriterField {
+class KeyGroup extends Base implements axis\schema\IRelationField, axis\schema\IMultiPrimitiveField {
 
     use axis\schema\TRelationField;
 
@@ -36,10 +36,20 @@ class KeyGroup extends Base implements axis\schema\IMultiPrimitiveField, axis\sc
         }
 
         if($forRecord) {
-            return new axis\unit\table\record\OneRelationValueContainer(
+            $output = new axis\unit\table\record\OneRelationValueContainer(
                 $values, $this->_targetUnitId, $this->_targetPrimaryFields
             );
+
+            if(isset($row[$key])) {
+                $output->populateInverse($row[$key]);
+            }
+
+            return $output;
         } else {
+            if(isset($row[$key])) {
+                return $row[$key];
+            }
+            
             return new opal\query\record\PrimaryManifest($this->_targetPrimaryFields, $values);
         }
     }
@@ -85,6 +95,20 @@ class KeyGroup extends Base implements axis\schema\IMultiPrimitiveField, axis\sc
         return $field->getSource()->getAdapter()->mapVirtualClause(
             $parent, $field, $operator, $value, $isOr, $this->_targetPrimaryFields, $this->_name
         );
+    }
+
+
+// Populate
+    public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate) {
+        $output = opal\query\FetchAttach::fromPopulate($populate);
+
+        $parentSourceAlias = $populate->getParentSourceAlias();
+        $targetSourceAlias = $populate->getSourceAlias();
+        
+        $output->on($targetSourceAlias.'.@primary', '=', $parentSourceAlias.'.'.$this->_name);
+        $output->asOne($this->_name);
+
+        return $output;
     }
 
 

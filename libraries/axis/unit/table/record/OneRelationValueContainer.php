@@ -82,6 +82,10 @@ class OneRelationValueContainer implements opal\query\record\ITaskAwareValueCont
             $record = $value;
             $value = $value->getPrimaryManifest();
         } else if(!$value instanceof opal\query\record\IPrimaryManifest) {
+            if($value === null) {
+                $record = null;
+            }
+
             $value = $this->_value->duplicateWith($value);
         }
         
@@ -123,7 +127,7 @@ class OneRelationValueContainer implements opal\query\record\ITaskAwareValueCont
         return new self(null, $this->_targetUnitId, $this->_value->getFieldNames());
     }
     
-    public function populateInverse(opal\query\record\IRecord $record) {
+    public function populateInverse(opal\query\record\IRecord $record=null) {
         $this->_record = $record;
         return $this;
     }

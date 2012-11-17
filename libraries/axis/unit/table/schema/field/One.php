@@ -30,19 +30,15 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
     public function inflateValueFromRow($key, array $row, opal\query\record\IRecord $forRecord=null) {
         $hasKey = array_key_exists($key, $row);
 
-        if($hasKey) {
-            $value = $row[$key];
-        } else {
-            $value = array();
+        $value = array();
+        
+        foreach($this->_targetPrimaryFields as $field) {
+            $fieldKey = $key.'_'.$field;
             
-            foreach($this->_targetPrimaryFields as $field) {
-                $fieldKey = $key.'_'.$field;
-                
-                if(isset($row[$fieldKey])) {
-                    $value[$field] = $row[$fieldKey];
-                } else {
-                    $value[$field] = null;
-                }
+            if(isset($row[$fieldKey])) {
+                $value[$field] = $row[$fieldKey];
+            } else {
+                $value[$field] = null;
             }
         }
 
@@ -63,16 +59,22 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
         if($this instanceof axis\schema\IInverseRelationField) {
             $targetField = $this->_targetField;
 
-            if($value instanceof opal\query\IRecord) {
-                $inverseValue = $value->getRaw($targetField);
+            if($hasKey && $row[$key] instanceof opal\query\IRecord) {
+                $inverseValue = $row[$key]->getRaw($targetField);
                 $inverseValue->populateInverse($forRecord);
             }
         }
 
 
-        return new axis\unit\table\record\OneRelationValueContainer(
+        $output = new axis\unit\table\record\OneRelationValueContainer(
             $value, $this->_targetUnitId, $this->_targetPrimaryFields, $targetField
         );
+
+        if($hasKey) {
+            $output->populateInverse($row[$key]);
+        }
+
+        return $output;
     }
     
     public function deflateValue($value) {

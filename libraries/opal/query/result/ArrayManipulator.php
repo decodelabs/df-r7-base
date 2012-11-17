@@ -750,7 +750,7 @@ class ArrayManipulator implements IArrayManipulator {
 
 
                 // Distinct
-                if($attachment->isDistinct()) {
+                if($attachment instanceof opal\query\IDistinctQuery && $attachment->isDistinct()) {
                     $manipulator->applyDistinct();
                 }
 
