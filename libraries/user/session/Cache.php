@@ -11,7 +11,7 @@ use df\user;
 
 class Cache extends core\cache\Base {
     
-    protected static $_cacheId = 'session';
+    const CACHE_ID = 'session';
     
     public function insertDescriptor(user\ISessionDescriptor $descriptor) {
         $key = 'd:'.$descriptor->externalId;

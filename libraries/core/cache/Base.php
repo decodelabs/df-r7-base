@@ -13,11 +13,12 @@ abstract class Base implements ICache {
     use core\TApplicationAware;
     
     const REGISTRY_PREFIX = 'cache://';
+    const CACHE_ID = null;
     
     const IS_DISTRIBUTED = true;
     const DEFAULT_LIFETIME = 1800;
     
-    protected static $_cacheId;
+    private static $_cacheIds = array();
     
     private $_backend;
     
@@ -75,13 +76,19 @@ abstract class Base implements ICache {
     
 // Properties
     public static function getCacheId() {
-        if(!static::$_cacheId) {
-            $parts = explode('\\', get_called_class());
-            array_shift($parts);
-            static::$_cacheId = implode('/', $parts);
+        $class = get_called_class();
+
+        if(!isset(self::$_cacheIds[$class])) {
+            if($class::CACHE_ID !== null) {
+                self::$_cacheIds[$class] = $class::CACHE_ID;
+            } else {
+                $parts = explode('\\', $class);
+                array_shift($parts);
+                self::$_cacheIds[$class] = implode('/', $parts);
+            }
         }
         
-        return static::$_cacheId; 
+        return self::$_cacheIds[$class]; 
     }
     
     final public function getRegistryObjectKey() {
