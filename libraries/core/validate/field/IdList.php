@@ -8,8 +8,10 @@ namespace df\core\validate\field;
 use df;
 use df\core;
 
-class IdList extends Base {
+class IdList extends Base implements core\validate\IIdListField {
     
+    use core\validate\TSanitizingField;
+
     public function validate(core\collection\IInputTree $node) {
         if((!$count = count($node)) && $this->_isRequired) {
             $node->addError('required', $this->_(
@@ -18,6 +20,7 @@ class IdList extends Base {
         }
         
         $value = $node->toArray();
+        $value = (array)$this->_sanitizeValue($value);
         $value = $this->_applyCustomValidator($node, $value);
         
         return $value;

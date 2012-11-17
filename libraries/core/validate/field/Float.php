@@ -8,36 +8,9 @@ namespace df\core\validate\field;
 use df;
 use df\core;
 
-class Float extends Base {
+class Float extends Base implements core\validate\IFloatField {
     
-    protected $_minRange = null;
-    protected $_maxRange = null;
-    
-    public function setMin($min) {
-        if($min !== null) {
-            $min = (float)$min;
-        }
-        
-        $this->_minRange = $min;
-        return $this;
-    }
-    
-    public function getMin() {
-        return $this->_min;
-    }
-    
-    public function setMax($max) {
-        if($max !== null) {
-            $max = (float)$max;
-        }
-        
-        $this->_maxRange = $max;
-        return $this;
-    }
-    
-    public function getMax() {
-        return $this->_maxRange;
-    }
+    use core\validate\TRangeField;    
     
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
@@ -54,20 +27,7 @@ class Float extends Base {
             $value = (float)$value;
         }
         
-        if($this->_minRange !== null && $value < $this->_minRange) {
-            $node->addError('min', $this->_handler->_(
-                'This field must be at least %min%',
-                array('%min%' => $this->_minRange)
-            ));
-        }
-        
-        if($this->_maxRange !== null && $value > $this->_maxRange) {
-            $node->addError('max', $this->_handler->_(
-                'This field must not be more than %max%',
-                array('%max%' => $this->_maxRange)
-            ));
-        }
-        
+        $this->_validateRange($node, $value);
         return $this->_finalize($node, $value);
     }
 }

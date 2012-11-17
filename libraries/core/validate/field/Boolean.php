@@ -8,7 +8,7 @@ namespace df\core\validate\field;
 use df;
 use df\core;
 
-class Boolean extends Base {
+class Boolean extends Base implements core\validate\IBooleanField {
 
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();

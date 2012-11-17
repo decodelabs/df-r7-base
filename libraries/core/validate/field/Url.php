@@ -8,7 +8,7 @@ namespace df\core\validate\field;
 use df;
 use df\core;
 
-class Url extends Base {
+class Url extends Base implements core\validate\IUrlField {
     
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();

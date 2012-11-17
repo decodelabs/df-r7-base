@@ -88,7 +88,7 @@ abstract class Base implements core\validate\IField {
     }
     
     protected function _checkRequired(core\collection\IInputTree $node, $value) {
-        if(!$length = strlen($value)) {
+        if(!$length = mb_strlen($value)) {
             $value = null;
             
             if($this->_shouldSanitize) {

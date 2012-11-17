@@ -8,24 +8,11 @@ namespace df\core\validate\field;
 use df;
 use df\core;
 
-class Password extends Base {
+class Password extends Base implements core\validate\IPasswordField {
     
-    protected $_minLength = 6;
+    use core\validate\TMinLengthField;
+    
     protected $_matchField = null;
-    
-    public function setMinLength($length) {
-        if(empty($length)) {
-            $length = null;
-        }
-        
-        $this->_minLength = $length;
-        return $this;
-    }
-    
-    public function getMinLength() {
-        return $this->_minLength;
-    }
-    
     
     public function setMatchField($field) {
         $this->_matchField = $field;
@@ -37,25 +24,19 @@ class Password extends Base {
     }
     
     public function validate(core\collection\IInputTree $node) {
+        $this->_setDefaultMinLength(6);
         $value = $node->getValue();
         
         if(!$length = $this->_checkRequired($node, $value)) {
             return null;
         }
         
-        if($this->_minLength !== null && $length < $this->_minLength) {
-            $node->addError('minLength', $this->_handler->_(
-                array(
-                    'n = 1 || n = -1' => 'This field must be at least %min% character',
-                    '*' => 'This field must be at least %min% characters'
-                ),
-                array('%min%' => $this->_minLength),
-                $this->_minLength
-            ));
-            
+        $this->_validateMinLength($node, $value, $length);
+
+        if($node->hasErrors()) {
             return $value;
         }
-        
+
         $value = $this->_applyCustomValidator($node, $value);
         $analyzer = new core\string\PasswordAnalyzer($value, df\Launchpad::$application->getPassKey());
         

@@ -8,11 +8,28 @@ namespace df\core\validate\field;
 use df;
 use df\core;
 
-class Date extends Base {
+class Date extends Base implements core\validate\IDateField {
     
-    protected $_min = null;
-    protected $_max = null;
+    use core\validate\TRangeField;
     
+    public function setMin($date) {
+        if($date !== null) {
+            $date = core\time\Date::factory($date);
+        }
+        
+        $this->_min = $date;
+        return $this;
+    }
+    
+    public function setMax($date) {
+        if($date !== null) {
+            $date = core\time\Date::factory($date);
+        }
+        
+        $this->_max = $date;
+        return $this;
+    }
+
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
         
@@ -22,6 +39,11 @@ class Date extends Base {
         
         $date = core\time\Date::factory($value);
         
+        $this->_validateRange($node, $value);
+        return $this->_finalize($node, $value);
+    }
+
+    protected function _validateRange(core\collection\IInputTree $node, $value) {
         if($this->_min !== null && $date->lt($this->_min)) {
             $node->addError('min', $this->_(
                 'This field must be after %min%',
@@ -35,33 +57,5 @@ class Date extends Base {
                 array('%max%' => $this->_max->format('Y-m-d'))
             ));
         }
-        
-        return $this->_finalize($node, $value);
-    }
-    
-    public function setMin($date) {
-        if($date !== null) {
-            $date = core\time\Date::factory($date);
-        }
-        
-        $this->_min = $date;
-        return $this;
-    }
-    
-    public function getMin() {
-        return $this->_min;
-    }
-    
-    public function setMax($date) {
-        if($date !== null) {
-            $date = core\time\Date::factory($date);
-        }
-        
-        $this->_max = $date;
-        return $this;
-    }
-
-    public function getMax() {
-        return $this->_max;
     }
 }

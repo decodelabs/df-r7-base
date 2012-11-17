@@ -8,7 +8,7 @@ namespace df\core\validate\field;
 use df;
 use df\core;
 
-class Email extends Base {
+class Email extends Base implements core\validate\IEmailField {
     
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
