@@ -53,8 +53,8 @@ class Manager implements IManager, core\IDumpable {
             }
 
             if($regenKeyring) {
-                $notify = \df\arch\notify\Manager::getInstance();
-                $notify->setInstantMessage($notify->newMessage('keyring.regen', 'Regenerating client keyring', 'debug'));
+                //$notify = \df\arch\notify\Manager::getInstance();
+                //$notify->setInstantMessage($notify->newMessage('keyring.regen', 'Regenerating client keyring', 'debug'));
 
                 try {
                     $this->_client->setKeyring(
