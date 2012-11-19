@@ -17,8 +17,8 @@ class Url extends core\uri\Url implements IUrl {
     use core\uri\TUrl_PortContainer;
     
     public static function fromDirectoryRequest(arch\IRequest $request, $scheme, $domain, $port, array $basePath) {
-        if($request->_isJustFragment) {
-            return new self('#'.$request->_fragment);
+        if($request->isJustFragment()) {
+            return new self('#'.$request->getFragment());
         }
         
         $path = null;

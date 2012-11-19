@@ -405,12 +405,11 @@ trait TUrl_FragmentContainer {
     }
 
     public function setFragment($fragment) {
-        $this->_fragment = (string)$fragment;
-        
-        if(!strlen($this->_fragment)) {
-            $this->_fragment = null;
+        if($fragment !== null) {
+            $fragment = (string)$fragment;
         }
-        
+
+        $this->_fragment = $fragment;
         return $this;
     }
     
@@ -427,8 +426,8 @@ trait TUrl_FragmentContainer {
     }
     
     public function isJustFragment() {
-        return $this->_path === null
-            && $this->_query === null
+        return ($this->_path === null || $this->_path->isEmpty())
+            && ($this->_query === null || $this->_query->isEmpty())
             && $this->_fragment !== null;
     }
     
