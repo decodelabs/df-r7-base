@@ -51,6 +51,10 @@ class Date implements IDate, core\IDumpable {
     }
     
     public static function factory($date, $timezone=null) {
+        if($date instanceof IDuration) {
+            $date = '+'.$date->getSeconds().' seconds';
+        }
+
         if($date instanceof IDate) {
             return $date;
         }

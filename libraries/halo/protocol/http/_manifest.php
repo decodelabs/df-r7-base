@@ -216,9 +216,9 @@ interface IResponseCacheControl extends core\IStringProvider {
     public function canTransform($flag=null);
     public function shouldRevalidate($flag=null);
     public function shouldRevalidateProxy($flag=null);
-    public function setExpiration(core\time\IDuration $duration=null);
+    public function setExpiration($duration=null);
     public function getExpiration();
-    public function setSharedExpiration(core\time\IDuration $duration=null);
+    public function setSharedExpiration($duration=null);
     public function getSharedExpiration();
     public function clear();
 }

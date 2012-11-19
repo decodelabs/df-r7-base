@@ -265,11 +265,26 @@ class HeaderCollection extends core\collection\HeaderMap implements halo\protoco
         return $cacheControl->shouldRevalidateProxy();
     }
     
-    public function setCacheExpiration(core\time\IDuration $duration=null) {
+    public function setCacheExpiration($duration=null) {
+        $now = new core\time\Date();
+
+        if(is_int($duration)) {
+            $then = $now->modify('+'.$duration.' seconds');
+        } else if($duration !== null) {
+            $then = core\time\Date::factory($duration);
+            $duration = $then->getTimestamp() - $now->getTimestamp();
+        } else {
+            $then = $now;
+        }
+
+        if($duration < 1) {
+            $duration = null;
+        }
+
         $this->getCacheControl()->setExpiration($duration);
         
         if($duration !== null) {
-            $this->set('expires', new core\time\Date(time() + $duration->getSeconds())); 
+            $this->set('expires', $then); 
         } else {
             $this->remove('expires');
         }
@@ -281,7 +296,17 @@ class HeaderCollection extends core\collection\HeaderMap implements halo\protoco
         return $this->getCacheControl()->getExpiration();
     }
     
-    public function setSharedCacheExpiration(core\time\IDuration $duration=null) {
+    public function setSharedCacheExpiration($duration=null) {
+        if(!is_int($duration) && $duration !== null) {
+            $now = new core\time\Date();
+            $then = core\time\Date::factory($duration);
+            $duration = $then->getTimestamp() - $now->getTimestamp();
+        }
+
+        if($duration < 1) {
+            $duration = null;
+        }
+
         $this->getCacheControl()->setSharedExpiration($duration);
         return $this;
     }
