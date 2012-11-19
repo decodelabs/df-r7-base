@@ -91,6 +91,16 @@ interface ISeekable {
 }
 
 
+
+// Sliceable
+interface ISliceable {
+    public function slice($offset, $length=null);
+    public function getSlice($offset, $length=null);
+    public function removeSlice($offset, $length=null);
+    public function keepSlice($offset, $length=null);
+}
+
+
 // Paging
 interface IPageable {
     public function setPaginator(IPaginator $paginator);
@@ -132,7 +142,7 @@ interface IRandomAccessCollection extends IShiftableCollection, core\IValueMap, 
 
 
 // Integer indexes only
-interface IIndexedCollection extends IRandomAccessCollection, ISeekable {
+interface IIndexedCollection extends IRandomAccessCollection, ISeekable, ISliceable {
     public function put($index, $value);
 }
 

@@ -568,6 +568,34 @@ trait TArrayCollection_ReverseSeekable {
 }
 
 
+
+// Sliceable
+trait TArrayCollection_Sliceable {
+
+    public function slice($offset, $length=null) {
+        if($length === null) {
+            return array_splice($this->_collection, $offset);
+        } else {
+            return array_splice($this->_collection, $offset, $length);
+        }
+    }
+
+    public function getSlice($offset, $length=null) {
+        return array_slice($this->_collection, $offset, $length);
+    }
+
+    public function removeSlice($offset, $length=null) {
+        $this->slice($offset, $length);
+        return $this;
+    }
+
+    public function keepSlice($offset, $length=null) {
+        $this->_collection = $this->getSlice($offset, $length);
+        return $this;
+    }
+}
+
+
 // Shiftable
 trait TArrayCollection_Shiftable {
     
@@ -640,6 +668,7 @@ trait TArrayCollection_Queue {
     use TArrayCollection;
     use TArrayCollection_IndexedValueMap;
     use TArrayCollection_Seekable;
+    use TArrayCollection_Sliceable;
     use TArrayCollection_Shiftable;
     
     public function getReductiveIterator() {
@@ -652,6 +681,7 @@ trait TArrayCollection_Stack {
     use TArrayCollection;
     use TArrayCollection_IndexedValueMap;
     use TArrayCollection_ReverseSeekable;
+    use TArrayCollection_Sliceable;
     use TArrayCollection_Shiftable;
     
     public function getIterator() {

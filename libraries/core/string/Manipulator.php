@@ -544,8 +544,8 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
         return $this; 
     }
     
-    
-    
+
+
 // Replace
     public function replace($in, $out) {
         $this->_value = str_replace($in, $out, $this->_value);
@@ -770,6 +770,29 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
         return $this;
     }
     
+
+    public function slice($offset, $length=null) {
+        $output = mb_substr($this->_value, $offset, $length, $this->_encoding);
+        $this->_value = mb_substr($this->_value, 0, $offset, $this->_encoding).
+            ($length !== null ? mb_substr($this->_value, $length) : null);
+
+        return $output;
+    }
+
+    public function getSlice($offset, $length=null) {
+        return mb_substr($this->_value, $offset, $length, $this->_encoding);
+    }
+
+    public function removeSlice($offset, $length=null) {
+        $this->slice($offset, $length);
+        return $this;
+    }
+
+    public function keepSlice($offset, $length=null) {
+        $this->_value = $this->getSlice($offset, $length);
+        return $this;
+    }
+
     
     public function offsetSet($index, $value) {
         return $this->set($index, $value);
