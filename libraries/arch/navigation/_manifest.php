@@ -35,6 +35,7 @@ interface IEntryList extends core\IArrayProvider {
     public function addEntry($entry);
     public function getEntry($id);
     public function getEntries();
+    public function clearEntries();
 }
 
 interface IEntryListGenerator {
@@ -128,6 +129,10 @@ trait TEntryList {
     }
 
 
+    public function clearEntries() {
+        $this->_entries = array();
+        return $this;
+    }
 
 
     public function toArray() {

@@ -153,11 +153,16 @@ class Arch implements archLib\IContextHelper {
         return archLib\navigation\menu\Base::factory($this->_context, $id);
     }
 
-    public function getBreadcrumbs() {
+    public function getBreadcrumbs($empty=false) {
         $application = $this->_context->getApplication();
 
         if(!$output = $application->_getCacheObject('breadcrumbs')) {
-            $output = archLib\navigation\breadcrumbs\EntryList::generateFromRequest($this->_context->getRequest());
+            if($empty) {
+                $output = new archLib\navigation\breadcrumbs\EntryList();
+            } else {
+                $output = archLib\navigation\breadcrumbs\EntryList::generateFromRequest($this->_context->getRequest());
+            }
+            
             $application->_setCacheObject($output);
         }
 

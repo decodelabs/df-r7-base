@@ -124,7 +124,11 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
 
         if($router = $this->_getRouterFor($request)) {
             $this->_routeMatchCount++;
-            return $router->routeIn($request);
+            $output = $router->routeIn($request);
+
+            if($output instanceof arch\IRequest) {
+                $request = $output;
+            }
         }
 
         return $request;
@@ -135,7 +139,11 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
 
         if($router = $this->_getRouterFor($request)) {
             $this->_routeMatchCount++;
-            return $router->routeOut($request);
+            $output = $router->routeOut($request);
+
+            if($output instanceof arch\IRequest) {
+                $request = $output;
+            }
         }
 
         return $request;
