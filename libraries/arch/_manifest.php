@@ -153,6 +153,11 @@ interface IRequest extends core\uri\IUrl, user\IAccessLock {
     
     // Parent
     public function getParent();
+
+
+    // Rewrite
+    public function rewriteQueryToPath($keys);
+    public function rewritePathToQuery($rootCount, $keys);
 }
 
 interface IErrorRequest extends IRequest {

@@ -529,6 +529,74 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         return $output;
     }
     
+
+// Rewrite
+    public function rewriteQueryToPath($keys) {
+        $optional = array();
+        $keys = $this->_normalizeKeys(func_get_args(), $optional);
+        $path = $this->getPath();
+        $query = $this->getQuery();
+
+        foreach($keys as $key) {
+            if(null === ($value = $query->get($key))) {
+                if(!in_array($key, $optional)) {
+                    return $this;
+                } else {
+                    continue;
+                }
+            }
+
+            $path->push($value);
+            $query->remove($key);
+        }
+
+        return $this;
+    }
+
+    public function rewritePathToQuery($rootCount, $keys) {
+        $optional = array();
+        $keys = $this->_normalizeKeys(array_slice(func_get_args(), 1), $optional);
+        $path = $this->getPath();
+        $query = $this->getQuery();
+        $parts = $path->slice((int)$rootCount);
+        
+        foreach($keys as $key) {
+            if(empty($parts) && in_array($key, $optional)) {
+                break;
+            }
+
+            $query->{$key} = array_shift($parts);
+        }
+
+        return $this;
+    }
+
+    protected function _normalizeKeys($keys, array &$optional) {
+        $output = array();
+        $optional = array();
+
+        foreach($keys as $i => $key) {
+            if(is_array($key)) {
+                foreach($key as $innerKey) {
+                    $output[] = $innerKey;
+                }
+            } else {
+                $output[] = $key;
+            }
+        }
+
+        $output = array_unique($output);
+
+        foreach($output as $i => $key) {
+            if(substr($key, -1) == '?') {
+                $optional[] = $output[$i] = $key = substr($key, 0, -1);
+            } else if(!empty($optional)) {
+                $optional[] = $key;
+            }
+        }
+
+        return $output;
+    }
     
     
 // Access
