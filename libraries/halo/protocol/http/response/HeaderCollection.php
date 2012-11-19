@@ -272,7 +272,7 @@ class HeaderCollection extends core\collection\HeaderMap implements halo\protoco
             $then = $now->modify('+'.$duration.' seconds');
         } else if($duration !== null) {
             $then = core\time\Date::factory($duration);
-            $duration = $then->getTimestamp() - $now->getTimestamp();
+            $duration = $then->toTimestamp() - $now->toTimestamp();
         } else {
             $then = $now;
         }
@@ -300,7 +300,7 @@ class HeaderCollection extends core\collection\HeaderMap implements halo\protoco
         if(!is_int($duration) && $duration !== null) {
             $now = new core\time\Date();
             $then = core\time\Date::factory($duration);
-            $duration = $then->getTimestamp() - $now->getTimestamp();
+            $duration = $then->toTimestamp() - $now->toTimestamp();
         }
 
         if($duration < 1) {

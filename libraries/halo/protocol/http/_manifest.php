@@ -197,7 +197,7 @@ interface IResponseHeaderCollection {
     public function canTransformCache($flag=null);
     public function shouldRevalidateCache($flag=null);
     public function shouldRevalidateProxyCache($flag=null);
-    public function setCacheExpiration(core\time\IDuration $duration=null);
+    public function setCacheExpiration($duration=null);
     public function getCacheExpiration();
     public function getCacheStartDate(halo\protocol\http\IRequest $request);
     public function isCached(halo\protocol\http\IRequest $request);

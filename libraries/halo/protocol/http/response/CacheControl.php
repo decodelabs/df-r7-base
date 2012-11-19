@@ -131,7 +131,11 @@ class CacheControl implements halo\protocol\http\IResponseCacheControl {
         return $this->_proxyRevalidate;
     }
     
-    public function setExpiration(core\time\IDuration $duration=null) {
+    public function setExpiration($duration=null) {
+        if($duration !== null) {
+            $duration = core\time\Duration::factory($duration);
+        }
+
         $this->_expiration = $duration;
         return $this;
     }
@@ -140,7 +144,11 @@ class CacheControl implements halo\protocol\http\IResponseCacheControl {
         return $this->_expiration;
     }
     
-    public function setSharedExpiration(core\time\IDuration $duration=null) {
+    public function setSharedExpiration($duration=null) {
+        if($duration !== null) {
+            $duration = core\time\Duration::factory($duration);
+        }
+        
         $this->_sharedExpiration = $duration;
         return $this;
     }
