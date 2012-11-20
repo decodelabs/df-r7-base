@@ -13,6 +13,7 @@ use df\arch;
 class SlotRenderer implements aura\view\IDeferredRenderable {
 
     use aura\view\TDeferredRenderable;
+    use core\TStringProvider;
 
     const TYPE_STRING = 'string';
     const TYPE_CALLBACK = 'callback';
@@ -34,7 +35,7 @@ class SlotRenderer implements aura\view\IDeferredRenderable {
                 $type = self::TYPE_CALLBACK;
             } else {
                 $value = (string)$value;
-                $type = self::STRING;
+                $type = self::TYPE_STRING;
             }
 
             $contextRequest = null;
@@ -96,5 +97,9 @@ class SlotRenderer implements aura\view\IDeferredRenderable {
                     return $view->newErrorContainer($e);
                 }
         }
+    }
+
+    public function toString() {
+        return $this->render();
     }
 }

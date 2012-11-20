@@ -37,6 +37,14 @@ class Slot implements aura\view\IHelper {
         return $this->_slots[$id];
     }
 
+    public function getValue($id, $default=null) {
+        if($slot = $this->get($id, $default)) {
+            return $slot->getValue();
+        }
+
+        return $default;
+    }
+
     public function render($id, $default=null) {
         if(!$renderer = $this->get($id, $default)) {
             return '';
