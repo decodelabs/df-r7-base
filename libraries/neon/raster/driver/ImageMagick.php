@@ -67,7 +67,11 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
         return $this;
     }
 
-    public function loadCanvas($width, $height, neon\IColor $color) {
+    public function loadCanvas($width, $height, neon\IColor $color=null) {
+        if($color === null) {
+            $color = new neon\Color(0, 0, 0, 0);
+        }
+
         $color->setMode('rgb');
 
         $this->_pointer = new \Imagick();

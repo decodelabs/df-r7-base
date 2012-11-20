@@ -191,28 +191,13 @@ class Image implements IImage {
     public function resize($width, $height=null, $mode=IDimension::PROPORTIONAL) {
         $this->_checkDriverForManipulations();
 
-        $width = $this->_normalizePixelSize($width, IDimension::WIDTH);
-        $height = $this->_normalizePixelSize($height, IDimension::HEIGHT);
+        $this->_normalizeRelativeDimensions($width, $height, $currentWidth, $currentHeight);
 
         if(!$width && !$height) {
             throw new neon\raster\InvalidArgumentException(
                 'Invalid proportions specified for resize'
             );
         }
-
-        $currentWidth = $this->getWidth();
-        $currentHeight = $this->getHeight();
-
-        if(!$width || !$height) {
-            if(!$width) {
-                $width = floor($currentWidth * $height / $currentHeight);
-            }
-
-            if(!$height) {
-                $height = floor($currentHeight * $width / $currentWidth);
-            }
-        }
-
 
         $mode = $this->_normalizeResizeMode($mode);
 
@@ -247,8 +232,7 @@ class Image implements IImage {
         $this->_checkDriverForManipulations();
 
         list($x, $y) = $this->_normalizePosition($x, $y);
-        $width = $this->_normalizePixelSize($width, IDimension::WIDTH);
-        $height = $this->_normalizePixelSize($height, IDimension::HEIGHT);
+        $this->_normalizeRelativeDimensions($width, $height);
 
         $this->_driver->crop($x, $y, $width, $height);
         return $this;
@@ -257,11 +241,7 @@ class Image implements IImage {
     public function cropZoom($width, $height) {
         $this->_checkDriverForManipulations();
 
-        $width = $this->_normalizePixelSize($width, IDimension::WIDTH);
-        $height = $this->_normalizePixelSize($height, IDimension::HEIGHT);
-
-        $currentWidth = $this->_driver->getWidth();
-        $currentHeight = $this->_driver->getHeight();
+        $this->_normalizeRelativeDimensions($width, $height, $currentWidth, $currentHeight);
 
         $widthFactor = $width / $currentWidth;
         $heightFactor = $height / $currentHeight;
@@ -281,11 +261,10 @@ class Image implements IImage {
         return $this->crop($x, $y, $width, $height);
     }
 
-    public function frame($width, $height, $color=null) {
+    public function frame($width, $height=null, $color=null) {
         $this->_checkDriverForManipulations();
 
-        $width = $this->_normalizePixelSize($width, IDimension::WIDTH);
-        $height = $this->_normalizePixelSize($height, IDimension::HEIGHT);
+        $this->_normalizeRelativeDimensions($width, $height, $currentWidth, $currentHeight);
         $color = $this->_normalizeColor($color);
 
         $this->resize($width, $height, IDimension::FIT);
@@ -464,6 +443,29 @@ class Image implements IImage {
         }
         
         return $size->getPixels();
+    }
+
+    protected function _normalizeRelativeDimensions(&$width, &$height, &$currentWidth=null, &$currentHeight=null) {
+        $width = $this->_normalizePixelSize($width, IDimension::WIDTH);
+        $height = $this->_normalizePixelSize($height, IDimension::HEIGHT);
+
+        if($currentWidth === null) {
+            $currentWidth = $this->getWidth();
+        }
+
+        if($currentHeight === null) {
+            $currentHeight = $this->getHeight();
+        }
+
+        if(!$width || !$height) {
+            if(!$width) {
+                $width = floor($currentWidth * $height / $currentHeight);
+            }
+
+            if(!$height) {
+                $height = floor($currentHeight * $width / $currentWidth);
+            }
+        }
     }
 
     protected function _normalizePosition($x, $y, $compositeWidth=null, $compositeHeight=null) {

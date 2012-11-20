@@ -39,7 +39,7 @@ interface IImageManipulationController {
     public function resize($width, $height=null, $mode=IDimension::PROPORTIONAL);
     public function crop($x, $y, $width, $height);
     public function cropZoom($width, $height);
-    public function frame($width, $height, $color=null);
+    public function frame($width, $height=null, $color=null);
     public function rotate($angle, $background=null);
     public function mirror();
     public function flip();
@@ -101,7 +101,7 @@ interface IDriver {
 
     public function loadFile($file);
     public function loadString($string);
-    public function loadCanvas($width, $height, neon\IColor $color);
+    public function loadCanvas($width, $height, neon\IColor $color=null);
 
     public function getWidth();
     public function getHeight();

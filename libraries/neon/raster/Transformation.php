@@ -132,7 +132,7 @@ class Transformation implements ITransformation {
         return $this->_addTransformation('cropZoom', func_get_args());
     }
 
-    public function frame($width, $height, $color=null) {
+    public function frame($width, $height=null, $color=null) {
         return $this->_addTransformation('frame', func_get_args());
     }
 

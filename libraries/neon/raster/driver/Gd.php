@@ -90,7 +90,11 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
         return $this;
     }
 
-    public function loadCanvas($width, $height, neon\IColor $color) {
+    public function loadCanvas($width, $height, neon\IColor $color=null) {
+        if($color === null) {
+            $color = new neon\Color(0, 0, 0, 0);
+        }
+
         $this->_pointer = imageCreateTrueColor($width, $height);
         $this->_width = $width;
         $this->_height = $height;
