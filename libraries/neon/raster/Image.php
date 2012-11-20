@@ -188,7 +188,7 @@ class Image implements IImage {
 
 
 // Manipulations
-    public function resize($width, $height, $mode=IDimension::PROPORTIONAL) {
+    public function resize($width, $height=null, $mode=IDimension::PROPORTIONAL) {
         $this->_checkDriverForManipulations();
 
         $width = $this->_normalizePixelSize($width, IDimension::WIDTH);

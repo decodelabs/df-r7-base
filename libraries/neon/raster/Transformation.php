@@ -120,7 +120,7 @@ class Transformation implements ITransformation {
 
 
 // Manipulations
-    public function resize($width, $height, $mode=IDimension::FIT) {
+    public function resize($width, $height=null, $mode=IDimension::FIT) {
         return $this->_addTransformation('resize', func_get_args());
     }
 

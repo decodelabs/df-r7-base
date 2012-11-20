@@ -36,7 +36,7 @@ interface IPosition {
 }
 
 interface IImageManipulationController {
-    public function resize($width, $height, $mode=IDimension::PROPORTIONAL);
+    public function resize($width, $height=null, $mode=IDimension::PROPORTIONAL);
     public function crop($x, $y, $width, $height);
     public function cropZoom($width, $height);
     public function frame($width, $height, $color=null);
