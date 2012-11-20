@@ -34,6 +34,7 @@ class Link extends Base implements ILinkWidget, IIconProviderWidget, core\IDumpa
     protected $_media;
     protected $_contentType;
     protected $_description;
+    protected $_bodyWrapper;
     
     public function __construct(arch\IContext $context, $uri, $body=null, $matchRequest=null) {
         $checkUriMatch = false;
@@ -75,6 +76,10 @@ class Link extends Base implements ILinkWidget, IIconProviderWidget, core\IDumpa
         }
         
         $this->setBody($body);
+
+        if(static::WRAP_BODY) {
+            $this->_bodyWrapper = new aura\html\Tag('span', ['class' => 'body']);
+        }
     }
     
     protected function _render() {
@@ -183,7 +188,7 @@ class Link extends Base implements ILinkWidget, IIconProviderWidget, core\IDumpa
         }
         
         if(static::WRAP_BODY) {
-            $body = new aura\html\Element('span', $body, ['class' => 'body']);
+            $body = $this->_bodyWrapper->renderWith($body);
         }
 
         if($icon) {
@@ -381,6 +386,17 @@ class Link extends Base implements ILinkWidget, IIconProviderWidget, core\IDumpa
         return $this->_description;
     }
 
+
+// Body wrapper
+    public function getBodyWrapperTag() {
+        if(!static::WRAP_BODY) {
+            throw new LogicException(
+                'This type of link widget does not support body wrappers'
+            );
+        }
+
+        return $this->_bodyWrapper;
+    }
     
     
 // Dump

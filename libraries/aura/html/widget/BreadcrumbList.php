@@ -62,11 +62,7 @@ class BreadcrumbList extends Base implements IListWidget, core\IDumpable {
             }
             
             if($entry instanceof ILinkWidget) {
-                $entry->setBody(
-                    new aura\html\Element('span', $entry->getBody(), array(
-                        'itemprop' => 'title'
-                    ))
-                );
+                $entry->getBodyWrapperTag()->setAttribute('itemprop', 'title');
                 
                 $entry->setAttribute('itemprop', 'url')
                     ->setRenderTarget($renderTarget);
