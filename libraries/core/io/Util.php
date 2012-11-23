@@ -20,7 +20,7 @@ class Util {
         $dir = dirname($destination);
         self::ensureDirExists(dirname($destination));
 
-        copy($source, $destination);
+        return copy($source, $destination);
     }
 
     public static function copyDir($source, $destination, $merge=false) {
@@ -57,6 +57,8 @@ class Util {
                 copy($source.'/'.$entry, $destination.'/'.$entry);
             }
         }
+
+        return true;
     }
     
     public static function copyDirInto($source, $destination) {
