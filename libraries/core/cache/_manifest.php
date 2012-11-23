@@ -22,11 +22,21 @@ interface ICache extends core\IValueMap, \ArrayAccess, core\IApplicationAware, c
     public function isCacheDistributed();
     public function clear();
     public function getCreationTime($key);
+
+    public function hasDirectFileBackend();
+    public function getDirectFilePath($key);
 }
+
+
 
 interface IBackend extends core\IValueMap {
     public static function isLoadable();
     public function getLifeTime();
     public function clear();
     public function getCreationTime($key);
+}
+
+interface IDirectFileBackend extends IBackend {
+    public function shouldSerialize($flag=null);
+    public function getDirectFilePath($id);
 }

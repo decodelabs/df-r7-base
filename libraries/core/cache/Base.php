@@ -17,6 +17,8 @@ abstract class Base implements ICache {
     
     const IS_DISTRIBUTED = true;
     const DEFAULT_LIFETIME = 1800;
+
+    const USE_DIRECT_FILE_BACKEND = false;
     
     private static $_cacheIds = array();
     
@@ -50,30 +52,51 @@ abstract class Base implements ICache {
     
     protected function _loadBackend() {
         $config = Config::getInstance($this->_application);
-        $options = $config->getOptionsFor($this);
-        
-        if(!$options->has('backend')) {
-            throw new RuntimeException(
-                'There are no available backends for cache '.$this->getCacheId()
-            );
+        $options = $config->getOptionsFor($this, !static::USE_DIRECT_FILE_BACKEND);
+        $backendName = null;
+
+        if($options->has('backend')) {
+            $backendName = $options->get('backend');
+        }
+
+        if(!$backendName) {
+            if(static::USE_DIRECT_FILE_BACKEND) {
+                $backendName = 'LocalFile';
+            } else {
+                throw new RuntimeException(
+                    'There are no available backends for cache '.$this->getCacheId()
+                );
+            }
+        }
+
+        if(static::USE_DIRECT_FILE_BACKEND) {
+            $options->import($config->getBackendOptions($backendName));
+            $output = self::backendFactory($this, $backendName, $options);
+
+            if($output instanceof IDirectFileBackend) {
+                $output->shouldSerialize(false);
+            }
+        } else {
+            $output = self::backendFactory($this, $backendName, $options);
         }
         
-        $class = 'df\\core\\cache\\backend\\'.$options['backend'];
-        
-        $lifeTime = 0;
+        return $output;
+    }
+
+    public static function backendFactory(ICache $cache, $name, core\collection\ITree $options, $lifeTime=0) {
+        $class = 'df\\core\\cache\\backend\\'.$name;
         
         if(isset($options->lifeTime)) {
             $lifeTime = (int)$options['lifeTime'];
         }
         
         if($lifeTime < 1) {
-            $lifeTime = $this->getDefaultLifeTime();
+            $lifeTime = $cache->getDefaultLifeTime();
         }
         
-        return new $class($this, $lifeTime, $options);
+        return new $class($cache, $lifeTime, $options);
     }
-    
-    
+
 // Properties
     public static function getCacheId() {
         $class = get_called_class();
@@ -151,5 +174,17 @@ abstract class Base implements ICache {
     
     public function getCreationTime($key) {
         return $this->_backend->getCreationTime($key);
+    }
+
+    public function hasDirectFileBackend() {
+        return $this->_backend instanceof IDirectFileBackend;
+    }
+
+    public function getDirectFilePath($key) {
+        if(!$this->hasDirectFileBackend()) {
+            return null;
+        }
+
+        return $this->_backend->getDirectFilePath($key);
     }
 }
