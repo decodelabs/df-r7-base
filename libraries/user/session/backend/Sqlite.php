@@ -24,9 +24,7 @@ class Sqlite implements user\ISessionBackend {
         $application = $manager->getApplication();
         $this->_storePath = $application->getSharedDataStoragePath().'/session/sqlite';
         
-        if(!is_dir($this->_storePath)) {
-            mkdir($this->_storePath, 0777, true);
-        }
+        core\io\Util::ensureDirExists($this->_storePath);
         
         // TODO: get life time from config
     }

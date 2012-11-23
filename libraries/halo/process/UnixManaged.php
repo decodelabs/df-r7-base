@@ -255,16 +255,7 @@ class UnixManaged extends Unix implements IManagedProcess {
 
     public function setPidFilePath($path) {
         $dirname = dirname($path);
-
-        if(!is_dir($dirname)) {
-            try {
-                mkdir($dirname, 0755, true);
-            } catch(\Exception $e) {
-                throw new RuntimeException(
-                    'Unable to create PID file directory', 0, $e
-                );
-            }
-        }
+        core\io\Util::ensureDirExists($dirname, 0755);
 
         $write = true;
         $pid = $this->getProcessId();

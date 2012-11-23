@@ -112,9 +112,7 @@ class Base implements IGenerator {
     
     
     public function generate() {
-        if(!is_dir($this->_savePath)) {
-            mkdir($this->_savePath, 0777);
-        }
+        core\io\Util::ensureDirExists($this->_savePath);
         
         $modules = array();
         
@@ -129,9 +127,7 @@ class Base implements IGenerator {
             
             $modules[$name] = $module;
             
-            if(!is_dir($this->_savePath.'/'.$name)) {
-                mkdir($this->_savePath.'/'.$name, 0777);
-            }
+            core\io\Util::ensureDirExists($this->_savePath.'/'.$name);
         }
         
         

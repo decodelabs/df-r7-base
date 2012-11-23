@@ -177,13 +177,10 @@ abstract class Config implements IConfig, core\IDumpable {
         } else {
             $savePath = $corePath;
         }
-        
-        if(!is_dir(dirname($savePath))) {
-            mkdir(dirname($savePath), 0777, true);
-        }
+
+        core\io\Util::ensureDirExists(dirname($savePath));
         
         $content = '<?php'."\n".'return '.$this->_exportArray($this->_values).';';
-        
         file_put_contents($savePath, $content, LOCK_EX);
     }
     

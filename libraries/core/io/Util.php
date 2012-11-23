@@ -18,10 +18,7 @@ class Util {
         }
 
         $dir = dirname($destination);
-
-        if(!is_dir($dir)) {
-            mkdir($dir, 0777, true);
-        }
+        self::ensureDirExists(dirname($destination));
 
         copy($source, $destination);
     }
@@ -96,6 +93,22 @@ class Util {
                 copy($source.'/'.$entry, $destination.'/'.$entry);
             }
         }
+    }
+
+    public static function ensureDirExists($path, $perms=0777) {
+        if(!is_dir($path)) {
+            $mask = umask(0);
+            $result = !mkdir($path, $perms, true);
+            umask($umask);
+            
+            if($result) {
+                throw new \Exception(
+                    'Directory is not writable'
+                );
+            }
+        }
+
+        return true;
     }
     
     public static function isDirEmpty($path) {

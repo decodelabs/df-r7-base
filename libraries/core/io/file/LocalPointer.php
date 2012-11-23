@@ -73,13 +73,9 @@ class LocalPointer implements IFileSystemPointer, core\IDumpable {
         
         $path = (string)$path;
         
-        if(!is_dir(dirname($path))) {
-            $mask = umask(0);
-            mkdir(dirname($path), 0777, true);
-            umask($mask);
-        }
-        
+        core\io\Util::ensureDirExists(dirname($path));
         file_put_contents($path, $this->getContents());
+        
         return $this;
     }
     

@@ -46,10 +46,7 @@ class Builder {
             
             
             $umask = umask(0);
-            
-            if(!is_dir(dirname($pharPath))) {
-                mkdir(dirname($pharPath), 0777, true);
-            }
+            core\io\Util::ensureDirExists(dirname($pharPath));
             
             if(is_dir($tempPath)) {
                 if(!core\io\Util::emptyDir($tempPath)) {
@@ -58,10 +55,10 @@ class Builder {
                     );
                 }
             } else {
-                mkdir($tempPath, 0777);
+                core\io\Util::ensureDirExists($tempPath);
             }
             
-            mkdir($tempPath.'/apex/', 0777, true);
+            core\io\Util::ensureDirExists($tempPath.'/apex/');
             
             
             // Generate Df.php
@@ -96,11 +93,7 @@ class Builder {
                     }
                     
                     if(file_exists($package->path.'/Package.php')) {
-                        if(!is_dir($tempPath.'/apex/packages/'.$package->name)) {
-                            mkdir($tempPath.'/apex/packages/'.$package->name, 0777, true);
-                        }
-                        
-                        copy($package->path.'/Package.php', $tempPath.'/apex/packages/'.$package->name.'/Package.php');
+                        core\io\Util::copyFile($package->path.'/Package.php', $tempPath.'/apex/packages/'.$package->name.'/Package.php');
                     }
                     
                     foreach(scandir($package->path) as $entry) {

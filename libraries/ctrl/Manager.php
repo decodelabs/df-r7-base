@@ -24,6 +24,6 @@ class Manager implements core\IApplicationAware {
 
     public function initGitignore() {
         $path = df\Launchpad::$applicationPath;
-        copy(__DIR__.'/default.gitignore', $path.'/.gitignore');
+        core\io\Util::copyFile(__DIR__.'/default.gitignore', $path.'/.gitignore');
     }
 }

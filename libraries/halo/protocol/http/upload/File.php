@@ -177,10 +177,7 @@ class File implements halo\protocol\http\IUploadFile {
             return $this;
         }
 
-        if(!is_dir($destination)) {
-            mkdir($destination, 0777, true);
-        }
-
+        core\io\Util::ensureDirExists($destination);
         $fullPath = rtrim($destination, '/').'/'.$this->getBaseName();
 
         if(file_exists($fullPath)) {
