@@ -22,7 +22,14 @@ class LocalFile implements core\cache\IDirectFileBackend {
     public function __construct(core\cache\ICache $cache, $lifeTime, core\collection\ITree $options) {
         $this->_cache = $cache;
         $this->_lifeTime = $lifeTime;
-        $this->_path = $cache->getApplication()->getLocalDataStoragePath().'/cache/'.core\string\Manipulator::formatFileName($cache->getCacheId());
+        
+        if($cache->isCacheDistributed()) {
+            $this->_path = $cache->getApplication()->getSharedDataStoragePath();
+        } else {
+            $this->_path = $cache->getApplication()->getLocalDataStoragePath();
+        }
+
+        $this->_path .= '/cache/'.core\string\Manipulator::formatFileName($cache->getCacheId());
 
         core\io\Util::ensureDirExists($this->_path);
     }

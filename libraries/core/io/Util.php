@@ -201,4 +201,22 @@ class Util {
         
         return true;
     }
+
+    public static function stripLocationFromFilePath($path) {
+        if(!df\Launchpad::$loader) {
+            return $path;
+        }
+        
+        $locations = df\Launchpad::$loader->getLocations();
+        $locations['app'] = df\Launchpad::$applicationPath;
+        
+        foreach($locations as $key => $match) {
+            if(substr($path, 0, $len = strlen($match)) == $match) {
+                $path = $key.'://'.substr(str_replace('\\', '/', $path), $len + 1);
+                break;
+            }
+        }
+        
+        return $path;
+    }
 }

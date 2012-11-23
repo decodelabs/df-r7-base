@@ -16,12 +16,20 @@ class Cache extends core\cache\Base {
     const DEFAULT_LIFETIME = 86400;
 
     public function getTransformationFilePath($sourceFilePath, $transformation) {
-        if(!$output = $this->getDirectFilePath($sourceFilePath)) {
+        $key = basename(dirname($sourceFilePath)).'_'.basename($sourceFilePath).'-'.md5($sourceFilePath.':'.$transformation);
+        $mTime = filemtime($sourceFilePath);
+
+        if($mTime > $this->getCreationTime($key)) {
+            $this->remove($key);
+        }
+
+
+        if(!$output = $this->getDirectFilePath($key)) {
             $image = Image::loadFile($sourceFilePath)->setOutputFormat('PNG24');
             $image->transform($transformation)->apply();
 
-            $this->set($sourceFilePath, $image->toString());
-            $output = $this->getDirectFilePath($sourceFilePath);
+            $this->set($key, $image->toString());
+            $output = $this->getDirectFilePath($key);
         }
 
         return $output;
