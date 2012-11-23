@@ -10,6 +10,44 @@ use df\core;
 
 class Util {
     
+    public static function readFileExclusive($path) {
+        if(!$fp = fopen($path, 'rb')) {
+            throw new \Exception(
+                'File could not be opened for reading'
+            );
+        }
+
+        flock($fp, LOCK_SH);
+
+        $output = '';
+
+        while(!feof($fp)) {
+            $output .= fread($fp, 8192);
+        }
+
+        flock($fp, LOCK_UN);
+        fclose($fp);
+
+        return $output;
+    }
+
+    public static function writeFileExclusive($path, $data) {
+        self::ensureDirExists(dirname($path));
+
+        if(!$fp = fopen($path, 'wb')) {
+            throw new \Exception(
+                'File could not be opened for writing'
+            );
+        }
+
+        flock($fp, LOCK_EX);
+        fwrite($fp, $data);
+        flock($fp, LOCK_UN);
+        fclose($fp);
+
+        return true;
+    }
+
     public static function copyFile($source, $destination) {
         if(!is_file($source)) {
             throw new \Exception(
@@ -21,6 +59,14 @@ class Util {
         self::ensureDirExists(dirname($destination));
 
         return copy($source, $destination);
+    }
+
+    public static function deleteFile($path) {
+        if(file_exists($path)) {
+            return unlink($path);
+        }
+
+        return true;
     }
 
     public static function copyDir($source, $destination, $merge=false) {
@@ -99,7 +145,7 @@ class Util {
 
     public static function ensureDirExists($path, $perms=0777) {
         if(!is_dir($path)) {
-            $mask = umask(0);
+            $umask = umask(0);
             $result = !mkdir($path, $perms, true);
             umask($umask);
             
