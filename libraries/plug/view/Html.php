@@ -173,7 +173,7 @@ class Html implements aura\view\IHelper {
     }
 
 
-
+// Date
     public function date($date=null, $length=core\time\Date::MEDIUM) {
         $date = core\time\Date::factory($date);
 
@@ -191,6 +191,17 @@ class Html implements aura\view\IHelper {
             'time',
             $this->_view->format->userDateTime($date, $length),
             ['datetime' => $date->format(core\time\Date::W3C)]
+        );
+    }
+
+
+// Image
+    public function image($url, $alt=null) {
+        return $this->element(
+            'img', null, [
+                'src' => $this->_view->uri->to($url),
+                'alt' => $alt
+            ]
         );
     }
 }
