@@ -334,7 +334,6 @@ interface IHtmlView extends ILayoutView {
     
     // Rendering
     public function shouldRenderBase($flag=null);
-    public function shouldRenderIELegacyNotice($flag=null);
 }
 
 
