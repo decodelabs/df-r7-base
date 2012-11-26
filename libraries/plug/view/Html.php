@@ -171,4 +171,26 @@ class Html implements aura\view\IHelper {
             ->setIcon('cancel')
             ->shouldValidate(false);
     }
+
+
+
+    public function date($date=null, $length=core\time\Date::MEDIUM) {
+        $date = core\time\Date::factory($date);
+
+        return $this->element(
+            'time',
+            $this->_view->format->userDate($date, $length),
+            ['datetime' => $date->format('Y-m-d')]
+        );
+    }
+
+    public function dateTime($date=null, $length=core\time\Date::MEDIUM) {
+        $date = core\time\Date::factory($date);
+
+        return $this->element(
+            'time',
+            $this->_view->format->userDateTime($date, $length),
+            ['datetime' => $date->format(core\time\Date::W3C)]
+        );
+    }
 }
