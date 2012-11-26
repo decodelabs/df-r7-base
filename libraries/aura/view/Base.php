@@ -263,7 +263,9 @@ class Base implements IView {
         
         if($this instanceof ILayoutView && $this->shouldUseLayout()) {
             try {
-                return aura\view\content\Template::loadLayout($this)->renderTo($this);
+                return aura\view\content\Template::loadLayout($this)
+                    ->setArgs($this->getArgs())
+                    ->renderTo($this);
             } catch(aura\view\ContentNotFoundException $e) {}
         }
 
