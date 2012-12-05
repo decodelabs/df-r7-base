@@ -187,7 +187,7 @@ class DisplaySize implements IDisplaySize, core\IDumpable {
             );
         }
 
-        $length->_value = ($length->_value / 100) * $this->_value;
+        $length->_value = ($this->_value / 100) * $length->_value;
         return $length;
     }
 
