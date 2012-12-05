@@ -608,7 +608,7 @@ class Html extends Base implements IHtmlView {
         if($this->_shouldRenderBase) {
             $output = 
                 '<!DOCTYPE html>'."\n".
-                '<html lang="en">'."\n".
+                '<html lang="en" class="no-js">'."\n".
                 $this->_renderHead()."\n".
                 $this->bodyTag->open()."\n".
                 $output."\n".
