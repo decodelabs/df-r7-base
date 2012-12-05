@@ -124,7 +124,7 @@ class Link extends Base implements ILinkWidget, IIconProviderWidget, core\IDumpa
             $tag->setAttribute('rel', implode(' ', array_keys($this->_rel)));
         }
         
-        if(!$active && $this->_matchRequest && $this->_isComputedActive !== null) {
+        if(!$active && $this->_matchRequest && $this->_isComputedActive !== false) {
             $matchRequest = arch\Request::factory($this->_matchRequest);
             $active = $matchRequest->eq($context->request);
         }
@@ -331,6 +331,48 @@ class Link extends Base implements ILinkWidget, IIconProviderWidget, core\IDumpa
         }
         
         return $this->_isActive;
+    }
+
+    public function setActiveIf($active) {
+        if($active !== null) {
+            $this->_isActive = (bool)$active;
+        }
+
+        return $this;
+    }
+
+    public function isComputedActive() {
+        if($this->_isComputedActive !== null) {
+            return $this->_isComputedActive;
+        }
+
+        try {
+            $view = $this->getRenderTarget()->getView();
+            $context = $view->getContext();
+        } catch(\Exception $e) {
+            return false;
+        }
+
+        $active = $this->_isActive;
+        
+        if(!$active && $this->_matchRequest && $this->_isComputedActive !== false) {
+            $matchRequest = arch\Request::factory($this->_matchRequest);
+            $active = $matchRequest->eq($context->request);
+        }
+
+        if(!$active && !empty($this->_altMatches)) {
+            foreach($this->_altMatches as $match) {
+                $matchRequest = arch\Request::factory($match);
+
+                if($matchRequest->eq($context->request)) {
+                    $active = true;
+                    break;
+                }
+            }
+        }
+
+        $this->_isComputedActive = $active;
+        return $active;
     }
     
 
