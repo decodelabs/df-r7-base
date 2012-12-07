@@ -185,6 +185,21 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
 // Execute
     public function dispatch(halo\protocol\http\IRequest $httpRequest=null) {
         $this->_beginDispatch();
+
+        if($this->isDevelopment()) {
+            $envConfig = core\Environment::getInstance($this);
+
+            if($credentials = $envConfig->getDeveloperCredentials()) {
+                if(!isset($_SERVER['PHP_AUTH_USER'])
+                || $_SERVER['PHP_AUTH_USER'] != $credentials['user']
+                || $_SERVER['PHP_AUTH_PW'] != $credentials['password']) {
+                    header('WWW-Authenticate: Basic realm="Developer Site"');
+                    header('HTTP/1.0 401 Unauthorized');
+                    echo 'You need to authenticate to view this development site';
+                    exit;
+                }
+            }
+        }
         
         if($httpRequest !== null) {
             $this->_httpRequest = $httpRequest;
