@@ -16,7 +16,8 @@ class Cache extends core\cache\Base {
     const DEFAULT_LIFETIME = 86400;
 
     public function getTransformationFilePath($sourceFilePath, $transformation) {
-        $key = basename(dirname($sourceFilePath)).'_'.basename($sourceFilePath).'-'.md5($sourceFilePath.':'.$transformation);
+        $keyPath = core\io\Util::stripLocationFromFilePath($sourceFilePath);
+        $key = basename(dirname($keyPath)).'_'.basename($keyPath).'-'.md5($keyPath.':'.$transformation);
         $mTime = filemtime($sourceFilePath);
 
         if($mTime > $this->getCreationTime($key)) {
