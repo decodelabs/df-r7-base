@@ -41,7 +41,7 @@ class Builder {
             $environmentId = df\Launchpad::$environmentId;
             $prefix = df\Launchpad::$uniquePrefix;
             
-            $pharPath = $appPath.'/data/local/run/Df-'.$timestamp.'.phar';
+            $pharPath = $appPath.'/static/local/run/Df-'.$timestamp.'.phar';
             $tempPath = $appPath.'/data/packageBuild';
             
             
