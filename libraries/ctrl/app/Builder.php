@@ -131,6 +131,7 @@ class Builder {
             
             // Entry point
             $envIds = array($environmentId);
+            /*
             $dir = new \DirectoryIterator($appPath.'/entry/');
 
             foreach($dir as $file) {
@@ -144,6 +145,7 @@ class Builder {
             }
 
             $envIds = array_unique($envIds);
+            */
 
             foreach($envIds as $entryEnvId) {
                 foreach(['testing', 'production'] as $environmentMode) {
