@@ -110,14 +110,14 @@ class Loader implements ILoader {
             $basePath .= '/'.implode('/', $parts);
         }
         
+        $output = [$basePath.'/'.$fileName.'.php'];
+
         if(false !== ($pos = strpos($fileName, '_'))) {
             $fileName = substr($fileName, 0, $pos);
+            $output[] = $basePath.'/'.$fileName.'.php';
         }
-        
-        $output = [
-            $basePath.'/'.$fileName.'.php',
-            $basePath.'/_manifest.php'
-        ];
+
+        $output[] = $basePath.'/_manifest.php';
         
         return $output;
     }

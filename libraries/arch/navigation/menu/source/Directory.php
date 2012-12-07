@@ -57,7 +57,6 @@ class Directory extends Base implements arch\navigation\menu\IListableSource {
                 ->setSubId($packageName);
         }
 
-
         if(class_exists($classBase)) {
             $output = new $classBase($this->_context, $baseId);
         } else if(class_exists($sharedClassBase)) {
