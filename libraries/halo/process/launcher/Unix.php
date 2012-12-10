@@ -20,11 +20,11 @@ class Unix extends Base {
     public function launchBlocking() {
         $command = $this->_prepareCommand();
         
-        $descriptors = array(
-            0 => array("pipe", "r"), 
-            1 => array("pipe", "w"), 
-            2 => array("pipe", "a")
-        );
+        $descriptors = [
+            0 => ['pipe', 'r'], 
+            1 => ['pipe', 'w'], 
+            2 => ['pipe', 'a']
+        ];
         
         $result = new halo\process\result\Blocking();
         $processHandle = proc_open($command, $descriptors, $pipes);
