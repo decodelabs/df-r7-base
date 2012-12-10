@@ -160,7 +160,7 @@ class Arch implements archLib\IContextHelper {
             if($empty) {
                 $output = new archLib\navigation\breadcrumbs\EntryList();
             } else {
-                $output = archLib\navigation\breadcrumbs\EntryList::generateFromRequest($this->_context->getRequest());
+                $output = archLib\navigation\breadcrumbs\EntryList::generateFromRequest($this->_context->getDispatchRequest());
             }
             
             $application->_setCacheObject($output);
