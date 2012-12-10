@@ -24,9 +24,11 @@ class Cache extends core\cache\Base {
             $this->remove($key);
         }
 
+        $this->clear();
+
 
         if(!$output = $this->getDirectFilePath($key)) {
-            $image = Image::loadFile($sourceFilePath)->setOutputFormat('PNG24');
+            $image = Image::loadFile($sourceFilePath)->setOutputFormat('PNG32');
             $image->transform($transformation)->apply();
 
             $this->set($key, $image->toString());
