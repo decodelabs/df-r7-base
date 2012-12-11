@@ -1,0 +1,90 @@
+<?php 
+/**
+ * This file is part of the Decode Framework
+ * @license http://opensource.org/licenses/MIT
+ */
+namespace df\spur\vcs\git;
+
+use df;
+use df\core;
+use df\spur;
+use df\halo;
+    
+
+// Exceptions
+interface IException {}
+class RuntimeException extends \RuntimeException implements IException {}
+class UnexpectedValueException extends \UnexpectedValueException implements IException {}
+
+
+
+// Interfaces
+interface IRepository {
+    public static function createNew($path, $isBare=false);
+    public static function createClone($repoUrl, $path, $isBare=false);
+    public static function getGitVersion();
+
+    public function getRepositoryPath();
+    public function isBare();
+
+    public function getBranchNames();
+    public function getBranches();
+    public function getBranch($name);
+    public function getActiveBranchName();
+    public function getActiveBranch();
+    public function deleteBranch($branch);
+
+    public function getTags();
+
+    public function getCommitIds($target, $limit=null, $offset=null);
+    public function getCommits($target, $limit=null, $offset=null);
+    public function getHeadCommitIds();
+    public function getHeadCommits();
+    public function getCommit($id);
+
+    public function getTree($id);
+    public function getBlob($id);
+}
+
+interface IBranch {
+    public function getName();
+    public function exists();
+    public function isActive();
+    public function delete();
+
+    public function setDescription($description);
+    public function getDescription();
+
+    public function getTree();
+
+    public function getRepository();
+}
+
+
+interface IBlob {
+    public function getId();
+    public function getContent();
+    public function getType();
+    public function getSize();
+    public function getRepository();
+}
+
+interface ICommit {
+    public function getId();
+    public function getTreeId();
+    public function getTree();
+    public function getParentIds();
+    public function getParents();
+    public function getAuthor();
+    public function getCreationTimestamp();
+    public function getCreationDate();
+    public function getCommitter();
+    public function getCommitTimestamp();
+    public function getCommitDate();
+    public function getMessage();
+    public function getRepository();
+}
+
+interface ITree {
+
+}
