@@ -9,14 +9,14 @@ use df;
 use df\core;
 use df\halo;
 
-abstract class Base implements ILauncher {
+abstract class Base implements halo\process\ILauncher {
     
     protected $_processName;
     protected $_args;
     protected $_path;
     protected $_title;
     protected $_priority;
-    
+    protected $_workingDirectory;
     
     public static function factory($processName, $args=null, $path=null) {
         $system = halo\system\Base::getInstance();
@@ -93,5 +93,14 @@ abstract class Base implements ILauncher {
     
     public function getPriority() {
         return $this->_priority;
+    }
+
+    public function setWorkingDirectory($path) {
+        $this->_workingDirectory = $path;
+        return $this;
+    }
+
+    public function getWorkingDirectory() {
+        return $this->_workingDirectory;
     }
 }

@@ -26,8 +26,11 @@ class Unix extends Base {
             2 => ['pipe', 'a']
         ];
         
+        $workingDirectory = $this->_workingDirectory !== null ? 
+            realpath($this->_workingDirectory) : null;
+            
         $result = new halo\process\result\Blocking();
-        $processHandle = proc_open($command, $descriptors, $pipes);
+        $processHandle = proc_open($command, $descriptors, $pipes, $workingDirectory);
         
         if(!is_resource($processHandle)) {
             return $result->registerFailure();

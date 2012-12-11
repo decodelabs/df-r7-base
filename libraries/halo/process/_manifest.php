@@ -62,3 +62,61 @@ interface ISignal {
     public function getName();
     public function getNumber();
 }
+
+
+
+interface ILauncher {
+    public function setProcessName($name);
+    public function getProcessName();
+    public function setArgs($args);
+    public function getArgs();
+    public function setPath($path);
+    public function getPath();
+    public function isPrivileged();
+    public function setTitle($title);
+    public function getTitle();
+    public function setPriority($priority);
+    public function getPriority();
+    public function setWorkingDirectory($path);
+    public function getWorkingDirectory();
+    
+    public function launchBlocking();
+    public function launchBackground();
+    public function launchManaged();
+}
+
+
+// Result
+interface IResult {}
+
+
+interface IBlockingResult extends IResult {
+    public function registerFailure();
+    public function hasLaunched();
+    
+    public function registerCompletion();
+    public function hasCompleted();
+    
+    public function getTimer();
+    
+    public function setOutput($output);
+    public function appendOutput($output);
+    public function hasOutput();
+    public function getOutput();
+    
+    
+    public function setError($error);
+    public function appendError($error);
+    public function hasError();
+    public function getError();
+}
+
+
+interface IBackgroundResult extends IResult {
+    
+}
+
+
+interface IManagedResult extends IResult {
+    
+}

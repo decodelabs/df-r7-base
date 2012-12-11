@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\halo;
 
-class Blocking extends Base implements IBlockingResult {
+class Blocking implements halo\process\IBlockingResult {
     
     protected $_hasLaunched = true;
     protected $_hasCompleted = false;
