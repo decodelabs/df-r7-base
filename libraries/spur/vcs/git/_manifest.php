@@ -61,14 +61,6 @@ interface IBranch {
 }
 
 
-interface IBlob {
-    public function getId();
-    public function getContent();
-    public function getType();
-    public function getSize();
-    public function getRepository();
-}
-
 interface ICommit {
     public function getId();
     public function getTreeId();
@@ -85,6 +77,28 @@ interface ICommit {
     public function getRepository();
 }
 
-interface ITree {
+interface IFile {
+    public function getId();
+    public function _setName($name);
+    public function getName();
+    public function _setMode($mode);
+    public function getMode();
+    public function getContent();
+    public function _setSize($size);
+    public function getSize();
+    public function getRepository();
+}
 
+interface ITree {
+    public function getId();
+    public function _setName($name);
+    public function getName();
+    public function _setMode($mode);
+    public function getMode();
+
+    public function getObjects();
+    public function getFiles();
+    public function getTrees();
+
+    public function getRepository();
 }

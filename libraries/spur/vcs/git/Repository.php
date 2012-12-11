@@ -270,7 +270,7 @@ class Repository implements IRepository {
 
 // Tree / blob
     public function getTree($id) {
-
+        return new Tree($this, $id);
     }
 
     public function getBlob($id) {
