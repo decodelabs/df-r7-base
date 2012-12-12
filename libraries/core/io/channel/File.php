@@ -9,7 +9,11 @@ use df\core;
 
 class File implements core\io\IFile, core\io\ILocalFilePointer {
 
+    use core\io\TReader;
+    use core\io\TWriter;
+
     protected $_fp;
+    protected $_error = '';
     protected $_mode;
     protected $_path;
     protected $_contentType = null;
@@ -186,5 +190,15 @@ class File implements core\io\IFile, core\io\ILocalFilePointer {
 // Write
     protected function _writeChunk($data, $length) {
         return fwrite($this->_fp, $data, $length);
+    }
+
+// Error
+    public function writeError($error) {
+        $this->_error .= $error;
+        return $this;
+    }
+
+    public function writeErrorLine($line) {
+        return $this->writeError($line."\r\n");
     }
 }

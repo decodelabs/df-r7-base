@@ -10,14 +10,15 @@ use df\core;
 class LocalFilePointer implements ILocalFilePointer, core\IDumpable {
     
     protected $_path;
-    
+    protected $_contentType;
+
     public function __construct($path) {
         $this->_path = $path;
         //$this->_path = (string)core\uri\FilePath::factory($path);
     }
     
     public function open($mode=IMode::READ_WRITE) {
-        return new Local($this->_path, $mode);
+        return new core\io\channel\File($this->_path, $mode);
     }
     
     public function getPath() {
@@ -40,8 +41,17 @@ class LocalFilePointer implements ILocalFilePointer, core\IDumpable {
         return filesize($this->_path);
     }
     
+    public function setContentType($type) {
+        $this->_contentType = $type;
+        return $this;
+    }
+
     public function getContentType() {
-        return core\mime\Type::fileToMime($this->_path);
+        if($this->_contentType === null) {
+            $this->_contentType = core\mime\Type::fileToMime($this->_path);
+        }
+
+        return $this->_contentType;
     }
     
     public function getLastModified() {
