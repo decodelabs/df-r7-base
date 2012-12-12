@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\arch;
 
-class Task extends Base {
+class Task extends Base implements arch\IDirectoryRequestApplication {
     
     const RUN_MODE = 'Task';
     
@@ -28,6 +28,10 @@ class Task extends Base {
         }
         
         return $this->_request;
+    }
+
+    public function getDefaultDirectoryAccess() {
+        return arch\IAccess::ALL;
     }
     
     
@@ -58,7 +62,7 @@ class Task extends Base {
                     'No task path has been specified'
                 );
             }
-            
+
             $this->_request = arch\Request::factory($arg);
         }
         
@@ -119,12 +123,12 @@ class Task extends Base {
             return $response;
         }
         
-        core\stub($response);
+        return $response;
     }
     
     
     public function launchPayload($payload) {
-        core\stub();
+        core\stub($payload);
     }
     
     
