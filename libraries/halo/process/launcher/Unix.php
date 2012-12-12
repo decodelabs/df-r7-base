@@ -29,7 +29,7 @@ class Unix extends Base {
         $workingDirectory = $this->_workingDirectory !== null ? 
             realpath($this->_workingDirectory) : null;
             
-        $result = new halo\process\result\Blocking();
+        $result = new halo\process\Result();
         $processHandle = proc_open($command, $descriptors, $pipes, $workingDirectory);
         
         if(!is_resource($processHandle)) {

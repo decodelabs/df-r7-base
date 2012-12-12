@@ -3,13 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\halo\process\result;
+namespace df\halo\process;
 
 use df;
 use df\core;
 use df\halo;
 
-class Blocking implements halo\process\IResult {
+class Result implements halo\process\IResult {
     
     protected $_hasLaunched = true;
     protected $_hasCompleted = false;

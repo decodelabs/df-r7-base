@@ -87,10 +87,7 @@ interface ILauncher {
 
 
 // Result
-interface IResult {}
-
-
-interface IResult extends IResult {
+interface IResult {
     public function registerFailure();
     public function hasLaunched();
     
@@ -109,14 +106,4 @@ interface IResult extends IResult {
     public function appendError($error);
     public function hasError();
     public function getError();
-}
-
-
-interface IBackgroundResult extends IResult {
-    
-}
-
-
-interface IManagedResult extends IResult {
-    
 }
