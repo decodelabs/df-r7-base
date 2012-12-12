@@ -180,6 +180,10 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
 
         return $output;
     }
+
+    public function getDefaultDirectoryAccess() {
+        return arch\IAccess::NONE;
+    }
     
     
 // Execute
@@ -449,7 +453,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
                 $file = $response->getContentFileStream();
             
                 while(!$file->eof()) {
-                    echo $file->read(8192);
+                    echo $file->readChunk(8192);
                 }
                 
                 $file->close();

@@ -15,7 +15,7 @@ class Controller implements IController, core\IDumpable {
     use TDirectoryAccessLock;
     
     const CHECK_ACCESS = true;
-    const DEFAULT_ACCESS = arch\IAccess::NONE;
+    const DEFAULT_ACCESS = null;
     
     protected $_type;
     protected $_activeAction;

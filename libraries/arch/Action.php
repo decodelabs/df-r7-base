@@ -15,7 +15,7 @@ class Action implements IAction, core\IDumpable {
     use TDirectoryAccessLock;
     
     const CHECK_ACCESS = true;
-    const DEFAULT_ACCESS = arch\IAccess::NONE;
+    const DEFAULT_ACCESS = null;
     
     private $_isInline = false;
     private $_controller;
@@ -186,21 +186,13 @@ class Action implements IAction, core\IDumpable {
 // Access
     public function getDefaultAccess($action=null) {
         if(!$this->_isInline) {
-            if(!static::CHECK_ACCESS) {
-                return arch\IAccess::ALL;
-            }
-
-            return static::DEFAULT_ACCESS;
+            return $this->_getClassDefaultAccess();
         }
         
         $controller = $this->getController();
         
         if($controller->isControllerInline()) {
-            if(!static::CHECK_ACCESS) {
-                return arch\IAccess::ALL;
-            }
-            
-            return static::DEFAULT_ACCESS;
+            return $this->_getClassDefaultAccess();
         } else {
             return $controller->getDefaultAccess($action);
         }

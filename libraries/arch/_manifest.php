@@ -83,7 +83,9 @@ interface IContextHelper extends IContextAware, core\IHelper {}
 
 
 
-interface IDirectoryRequestApplication extends core\IApplication, IContextAware {}
+interface IDirectoryRequestApplication extends core\IApplication, IContextAware {
+    public function getDefaultDirectoryAccess();
+}
 
 interface IRoutedDirectoryRequestApplication extends IDirectoryRequestApplication {
     public function requestToUrl(IRequest $request);
@@ -222,11 +224,25 @@ trait TDirectoryAccessLock {
     }
     
     public function getDefaultAccess($action=null) {
+        return $this->_getClassDefaultAccess();
+    }
+
+    protected function _getClassDefaultAccess() {
         if(!static::CHECK_ACCESS) {
-            return IAccess::ALL;
+            return arch\IAccess::ALL;
         }
-        
-        return static::DEFAULT_ACCESS;
+
+        if(static::DEFAULT_ACCESS !== null) {
+            return static::DEFAULT_ACCESS;
+        }
+
+        $application = $this->_context->getApplication();
+
+        if($application instanceof IDirectoryRequestApplication) {
+            return $application->getDefaultDirectoryAccess();
+        }
+
+        return arch\IAccess::NONE;
     }
 
     public function getAccessLockId() {
