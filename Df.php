@@ -7,15 +7,11 @@ namespace df;
 
 use df;
 
-define('_DF_ROOT_PATH', dirname(__DIR__));
-
 class Launchpad {
     
     const CODENAME = 'hydrogen';
     const REV = 'r7';
-    
-    const ROOT_PATH = _DF_ROOT_PATH;
-    const BASE_PACKAGE = 'base';
+    const DF_PATH = __DIR__;
     
     const IN_PHAR = false;
     const IS_COMPILED = false;
@@ -197,9 +193,9 @@ class Launchpad {
         
         // Register loader
         if(self::IS_COMPILED) {
-            self::$loader = new core\Loader(['root' => self::ROOT_PATH]);
+            self::$loader = new core\Loader(['root' => dirname(self::DF_PATH)]);
         } else {
-            self::$loader = new core\DevLoader(['root' => self::ROOT_PATH]);
+            self::$loader = new core\DevLoader(['root' => dirname(self::DF_PATH)]);
         }
         
         self::$loader->activate();
@@ -289,9 +285,9 @@ class Launchpad {
     
     public static function getBasePackagePath() {
         if(self::IS_COMPILED) {
-            return self::ROOT_PATH;
+            return self::DF_PATH;
         } else {
-            return self::ROOT_PATH.'/'.self::BASE_PACKAGE.'/libraries';
+            return self::DF_PATH.'/libraries';
         }
     }
     

@@ -71,7 +71,7 @@ class Builder {
             
             
             // Generate Df.php
-            $dfFile = file_get_contents(df\Launchpad::ROOT_PATH.'/Df.php');
+            $dfFile = file_get_contents(df\Launchpad::DF_PATH.'/Df.php');
             $dfFile = str_replace('IS_COMPILED = false', 'IS_COMPILED = true', $dfFile);
             $dfFile = str_replace('COMPILE_TIMESTAMP = null', 'COMPILE_TIMESTAMP = '.time(), $dfFile);
 
@@ -87,7 +87,10 @@ class Builder {
             foreach(array_reverse($this->_loader->getPackages()) as $package) {
                 if($package->name == 'app') {
                     foreach(scandir($package->path) as $entry) {
-                        if($entry == '.' || $entry == '..') {
+                        if($entry == '.' 
+                        || $entry == '..'
+                        || $entry == '.git'
+                        || $entry == '.gitignore') {
                             continue;
                         }
 
@@ -115,7 +118,9 @@ class Builder {
                     
                     foreach(scandir($package->path) as $entry) {
                         if($entry == '.' 
-                        || $entry == '..' 
+                        || $entry == '..'
+                        || $entry == '.git'
+                        || $entry == '.gitignore'
                         || $entry == 'libraries') {
                             continue;
                         }

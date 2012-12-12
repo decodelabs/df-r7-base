@@ -104,7 +104,7 @@ class Loader implements ILoader {
         }
         
         $fileName = array_pop($parts);
-        $basePath = df\Launchpad::ROOT_PATH.'/'.$library;
+        $basePath = df\Launchpad::DF_PATH.'/'.$library;
         
         if(!empty($parts)) {
             $basePath .= '/'.implode('/', $parts);
@@ -139,7 +139,7 @@ class Loader implements ILoader {
     }
     
     public function getFileSearchPaths($path) {
-        return [df\Launchpad::ROOT_PATH.'/'.$path];
+        return [df\Launchpad::DF_PATH.'/'.$path];
     }
     
     public function lookupFileList($path, array $extensions=null) {
@@ -201,8 +201,7 @@ class Loader implements ILoader {
     
 // Packages
     public function loadBasePackages() {
-        $name = df\Launchpad::BASE_PACKAGE;
-        $this->_packages[$name] = new core\Package($name, 0, df\Launchpad::ROOT_PATH.'/'.$name);
+        $this->_packages['base'] = new core\Package('base', 0, df\Launchpad::DF_PATH);
         $this->_packages['app'] = new core\Package('app', PHP_INT_MAX, df\Launchpad::$applicationPath);
         
         return $this;

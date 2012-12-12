@@ -312,7 +312,7 @@ class Package implements IPackage {
         }
         
         if(df\Launchpad::IS_COMPILED) {
-            $this->path = df\Launchpad::ROOT_PATH.'/apex/packages/'.$name;
+            $this->path = df\Launchpad::DF_PATH.'/apex/packages/'.$name;
         } else {
             $this->path = $path;
         }
