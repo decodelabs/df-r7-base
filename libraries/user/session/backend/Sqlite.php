@@ -305,6 +305,7 @@ class Sqlite implements user\ISessionBackend {
         $adapter->executeSql('PRAGMA count_changes=OFF');
         
         if(!$fileExists) {
+            @chmod($path, 0777);
             $schema = $adapter->newSchema('sessions');
             
             // Fields
@@ -345,6 +346,7 @@ class Sqlite implements user\ISessionBackend {
         $adapter->executeSql('PRAGMA count_changes=OFF');
         
         if(!$fileExists) {
+            @chmod($path, 0777);
             $schema = $adapter->newSchema('sessionData');
             
             // Fields
