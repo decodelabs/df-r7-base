@@ -17,7 +17,7 @@ class Unix extends Base {
     }
     */
     
-    public function launchBlocking() {
+    public function launch() {
         $command = $this->_prepareCommand();
         
         $descriptors = [

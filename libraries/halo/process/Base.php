@@ -43,12 +43,12 @@ abstract class Base implements IProcess {
     }
     
     
-    public static function launchBlocking($process, $args=null, $path=null) {
-        return self::newLauncher($process, $args, $path)->launchBlocking();
+    public static function launch($process, $args=null, $path=null) {
+        return self::newLauncher($process, $args, $path)->launch();
     }
 
-    public static function launchBlockingScript($path, $args=null) {
-        return self::newScriptLauncher($path, $args)->launchBlocking();
+    public static function launchScript($path, $args=null) {
+        return self::newScriptLauncher($path, $args)->launch();
     }
     
     public static function launchBackground($process, $args=null, $path=null) {

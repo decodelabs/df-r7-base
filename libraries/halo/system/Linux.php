@@ -42,7 +42,7 @@ class Linux extends Unix {
     }
     
     private function _lookupOSDistribution() {
-        $result = halo\process\Base::launchBlocking('lsb_release', '-a');
+        $result = halo\process\Base::launch('lsb_release', '-a');
         
         if($result->hasOutput()) {
             $lines = explode("\n", $result->getOutput());

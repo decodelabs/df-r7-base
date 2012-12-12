@@ -320,7 +320,7 @@ class Repository implements IRepository {
 
         $result = halo\process\launcher\Base::factory('git', $argString)
             ->setWorkingDirectory($path)
-            ->launchBlocking();
+            ->launch();
 
         if($result->hasError()) {
             throw new RuntimeException(

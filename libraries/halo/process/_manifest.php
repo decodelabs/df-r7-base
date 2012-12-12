@@ -80,7 +80,7 @@ interface ILauncher {
     public function setWorkingDirectory($path);
     public function getWorkingDirectory();
     
-    public function launchBlocking();
+    public function launch();
     public function launchBackground();
     public function launchManaged();
 }
@@ -90,7 +90,7 @@ interface ILauncher {
 interface IResult {}
 
 
-interface IBlockingResult extends IResult {
+interface IResult extends IResult {
     public function registerFailure();
     public function hasLaunched();
     

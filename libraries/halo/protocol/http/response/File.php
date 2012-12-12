@@ -27,7 +27,7 @@ class File extends Base implements halo\protocol\http\IFileResponse {
     
     public function setFile($file, $checkPath=true) {
         if(!$file instanceof core\io\IFilePointer) {
-            $file = new core\io\file\LocalPointer($file);
+            $file = new core\io\LocalFilePointer($file);
         }
         
         if($checkPath && !$file->exists()) {
