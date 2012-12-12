@@ -24,6 +24,9 @@ class File implements core\io\IFile, core\io\ILocalFilePointer {
         $this->open($mode);
     }
     
+    public function getChannelId() {
+        return $this->_path;
+    }
 
 // Loading
     public function open($mode=core\io\IMode::READ_WRITE) {

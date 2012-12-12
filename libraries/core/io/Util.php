@@ -89,7 +89,7 @@ class Util implements IUtil {
                 $perms = 0777;
             }
 
-            mkdir($destination, $perms, false);
+            mkdir($destination, $perms, true);
         }
         
         foreach(scandir($source) as $entry) {

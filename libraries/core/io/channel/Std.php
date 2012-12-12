@@ -13,6 +13,10 @@ class Std implements core\io\IChannel {
     use core\io\TReader;
     use core\io\TWriter;
 
+    public function getChannelId() {
+        return 'STD';
+    }
+
     public function writeError($error) {
         fwrite(STDERR, $error);
         return $this;

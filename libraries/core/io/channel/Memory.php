@@ -20,6 +20,10 @@ class Memory implements core\io\IFile {
         $this->setContentType($contentType);
     }
 
+    public function getChannelId() {
+        return 'Memory';
+    }
+
 
 // Loading
     public function open($mode=core\io\IMode::READ_WRITE) {

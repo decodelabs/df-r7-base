@@ -409,6 +409,7 @@ trait TWriter {
 
 // Channel
 interface IChannel extends IReader, IWriter {
+    public function getChannelId();
     public function writeError($error);
     public function writeErrorLine($line);
 }
