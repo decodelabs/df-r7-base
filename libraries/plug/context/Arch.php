@@ -22,6 +22,14 @@ class Arch implements archLib\IContextHelper {
         return $this->_context;
     }
 
+
+// Request
+    public function newRequest($request) {
+        return archLib\Request::factory($request);
+    }
+
+
+// Actions
     public function actionExists($request, $runMode=null) {
         $request = archLib\Request::factory($request);
 
