@@ -55,29 +55,62 @@ interface ITraversable {
     public function eof();
 }
 
-interface IReader extends ITraversable {
+interface IReader extends ITraversable, core\io\IReader {
     //public function getContents();
-    public function read($length=1);
-    public function readByte();
-    public function readBytes($num);
-    public function readInt();
-    public function readLong();
-    public function readVInt();
-    public function readString();
-    public function readUtf8String();
-    public function readBinary();
-    
 }
 
-interface IWriter extends ITraversable {
+interface IWriter extends ITraversable, core\io\IWriter {
     //public function putContents($data);
     public function truncate($size=0);
-    public function write($data, $length=null);
-    public function writeByte($byte);
-    public function writeBytes($bytes, $num=null);
-    public function writeInt($int);
-    public function writeLong($long);
-    public function writeVInt($val);
-    public function writeString($val);
-    public function writeUtf8String($val);
+}
+
+
+interface IFile extends IPointer, IReader, IWriter {}
+
+
+trait TFile {
+
+    use core\io\TReader;
+    use core\io\TWriter;
+
+    protected $_contentType = null;
+    
+    public function open($mode=IMode::READ_WRITE) {
+        return $this;
+    }
+    
+    public function exists() {
+        return true;
+    }
+    
+    public function setContentType($type) {
+        $this->_contentType = $type;
+        return $this;
+    }
+    
+    public function getContentType() {
+        if(!$this->_contentType) {
+            $this->_contentType = 'application\octet-stream';
+        }
+        
+        return $this->_contentType;
+    }
+    
+    public function saveTo(core\uri\FilePath $path) {
+        $path = (string)$path;
+        
+        core\io\Util::ensureDirExists(dirname($path));
+        file_put_contents($path, $this->getContents());
+
+        return $this;
+    }
+    
+    public function putContents($data) {
+        $this->truncate();
+        return $this->write($data);
+    }
+    
+    public function getContents() {
+        return $this->read();
+    }
 }

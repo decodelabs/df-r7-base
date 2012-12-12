@@ -7,7 +7,9 @@ namespace df\core\io\file;
 
 use df\core;
 
-class Local extends Base implements IFileSystemPointer {
+class Local implements IFile, IFileSystemPointer {
+
+    use TFile;
 
     protected $_fp;
     protected $_mode;
@@ -36,7 +38,7 @@ class Local extends Base implements IFileSystemPointer {
             $this->_contentType = core\mime\Type::fileToMime($this->_path);
         }
         
-        return parent::getContentType();
+        return $this->_contentType;
     }
     
     public function getLastModified() {
@@ -100,29 +102,34 @@ class Local extends Base implements IFileSystemPointer {
         return $size;
     }
 
-    public function read($length=1024) {
-        if($length == 0) {
-            return '';
-        }
-        
-        if($this->eof()) {
-            return false;    
-        }
 
+// Read
+    protected function _readChunk($length) {
         return fread($this->_fp, $length);
-
     }
 
-    public function write($data, $length=null) {
-        if(is_null($length)) {
-            fwrite($this->_fp, $data);
-        } else {
-            fwrite($this->_fp, $data, $length);
+    protected function _readLine() {
+        try {
+            $output = fgets($this->_fp);
+        } catch(\Exception $e) {
+            return false;
+        }
+
+        if($output === ''
+        || $output === null
+        || $output === false) {
+            return false;
         }
         
-        return $this;
+        return $output;
     }
 
+// Write
+    protected function _writeChunk($data, $length) {
+        return fwrite($this->_fp, $data, $length);
+    }
+
+// Lock
     public function lock($type, $nonBlocking=false) {
         if($nonBlocking) {
             return flock($this->_fp, $type | LOCK_NB);

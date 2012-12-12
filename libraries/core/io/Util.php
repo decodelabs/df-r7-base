@@ -8,7 +8,7 @@ namespace df\core\io;
 use df;
 use df\core;
 
-class Util {
+class Util implements IUtil {
     
     public static function readFileExclusive($path) {
         if(!$fp = fopen($path, 'rb')) {

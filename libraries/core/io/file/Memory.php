@@ -7,7 +7,9 @@ namespace df\core\io\file;
 
 use df\core;
 
-class Memory extends Base {
+class Memory implements IFile {
+
+    use TFile;
 
     private $_data;
     private $_pos = 0;
@@ -34,13 +36,6 @@ class Memory extends Base {
         return $this->_data;
     }
     
-    public function read($length=1024) {
-        $output = substr($this->_data, $this->_pos, $length);
-        $this->_pos += $length;
-        
-        return $output;
-    }
-
     public function seek($offset, $whence=SEEK_SET) {
         switch($whence) {
             case SEEK_SET:
@@ -71,13 +66,35 @@ class Memory extends Base {
         return true;
     }
 
-    public function write($data, $length=null) {
-        if(!is_null($length)) {
-            $this->_data .= substr($data, 0, $length);
-        } else {
-            $this->_data .= $data;
-        }
+
+// Read
+    protected function _readChunk($length) {
+        $output = substr($this->_data, $this->_pos, $length);
+        $this->_pos += $length;
         
+        return $output;
+    }
+
+    protected function _readLine() {
+        $output = '';
+        $length = strlen($this->_data);
+
+        while($this->_pos < $length) {
+            if($this->_data{$this->_pos} == "\n") {
+                $this->_pos++;
+                return $output;
+            }
+
+            $output .= $this->_data{$this->_pos};
+            $this->_pos++;
+        }
+
+        return $output;
+    }
+
+// Write
+    protected function _writeChunk($data, $length) {
+        $this->_data .= substr($data, 0, $length);
         $this->_pos = strlen($this->_data);
         
         return $this;
@@ -88,6 +105,8 @@ class Memory extends Base {
         return $this;
     }
     
+
+// Lock
     public function lock($type, $nonBlocking=false) {
         return true;
     }
