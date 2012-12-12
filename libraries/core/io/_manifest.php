@@ -17,6 +17,10 @@ class OverflowException extends \OverflowException implements IException {}
 
 
 // Interfaces
+
+
+
+// Reader
 interface IReader {
     public function read();
     public function readChunk($length);
@@ -184,6 +188,8 @@ trait TReader {
 
 
 
+
+// Peek reader
 interface IPeekReader extends IReader {
     public function peek($length);
 }
@@ -206,7 +212,7 @@ trait TPeekReader {
 
 
 
-
+// Writer
 interface IWriter {
     public function write($data);
     public function writeLine($line);
@@ -220,6 +226,8 @@ interface IWriter {
     public function writeVInt($val);
     public function writeString($val);
     public function writeUtf8String($val);
+
+    public function isWritingEnabled();
 }
 
 
@@ -377,12 +385,19 @@ trait TWriter {
         }
     }
 
+
+    public function isWritingEnabled() {
+        return true;
+    }
+
     
     abstract protected function _writeChunk($data, $length);
 }
 
 
 
+
+// Channel
 interface IChannel {
     
 }
@@ -391,7 +406,7 @@ interface IChannel {
 
 
 
-
+// Util
 interface IUtil {
     public static function readFileExclusive($path);
     public static function writeFileExclusive($path, $data);
