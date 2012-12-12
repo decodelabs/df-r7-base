@@ -276,7 +276,8 @@ class Manager implements IManager, core\IDumpable {
                     break;
                     
                 default:
-                    core\stub($this->_application);
+                    $this->_sessionPerpetuator = new user\session\perpetuator\Shell($this);
+                    break;
             }
         }
         
