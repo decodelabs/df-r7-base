@@ -132,8 +132,16 @@ abstract class Base implements ICache {
     
     
 // Access
-    public function set($key, $value) {
-        $this->_backend->set($key, $value);
+    public function set($key, $value, $lifeTime=null) {
+        if($lifeTime !== null) {
+            $lifeTime = (int)$lifeTime;
+
+            if($lifeTime <= 0) {
+                $lifeTime = null;
+            }
+        }
+
+        $this->_backend->set($key, $value, $lifeTime);
         return $this;
     }
     

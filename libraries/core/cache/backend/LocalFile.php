@@ -34,6 +34,11 @@ class LocalFile implements core\cache\IDirectFileBackend {
         core\io\Util::ensureDirExists($this->_path);
     }
 
+    public function setLifeTime($lifeTime) {
+        $this->_lifeTime = $lifeTime;
+        return $this;
+    }
+
     public function getLifeTime() {
         return $this->_lifeTime;
     }

@@ -31,6 +31,7 @@ interface ICache extends core\IValueMap, \ArrayAccess, core\IApplicationAware, c
 
 interface IBackend extends core\IValueMap {
     public static function isLoadable();
+    public function setLifeTime($lifeTime);
     public function getLifeTime();
     public function clear();
     public function getCreationTime($key);

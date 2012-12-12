@@ -23,17 +23,26 @@ class Apc implements core\cache\IBackend {
         $this->_lifeTime = $lifeTime;
         $this->_prefix = $cache->getApplication()->getUniquePrefix().'-'.$cache->getCacheId().':';
     }
+
+    public function setLifeTime($lifeTime) {
+        $this->_lifeTime = $lifeTime;
+        return $this;
+    }
     
     public function getLifeTime() {
         return $this->_lifeTime;
     }
     
     
-    public function set($key, $value) {
+    public function set($key, $value, $lifeTime=null) {
+        if($lifeTime === null) {
+            $lifeTime = $this->_lifeTime;
+        }
+
         return apc_store(
             $this->_prefix.$key, 
             array(serialize($value), time()), 
-            $this->_lifeTime
+            $lifeTime
         );
     }
     

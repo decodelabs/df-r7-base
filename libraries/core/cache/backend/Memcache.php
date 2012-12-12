@@ -41,17 +41,26 @@ class Memcache implements core\cache\IBackend {
         }
     }
     
+    public function setLifeTime($lifeTime) {
+        $this->_lifeTime = $lifeTime;
+        return $this;
+    }
+    
     public function getLifeTime() {
         return $this->_lifeTime;
     }
     
     
-    public function set($key, $value) {
+    public function set($key, $value, $lifeTime=null) {
+        if($lifeTime === null) {
+            $lifeTime = $this->_lifeTime;
+        }
+
         return $this->_connection->set(
             $this->_prefix.$key, 
             array(serialize($value), time()), 
             0,
-            $this->_lifeTime
+            $lifeTime
         );
     }
     
