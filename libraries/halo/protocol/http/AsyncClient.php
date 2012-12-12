@@ -82,7 +82,7 @@ class AsyncClient implements IAsyncClient {
             $session->setFileStream($fileStream = $request->getFileStream());
         }
         
-        $session->writeBuffer .= $fileStream->read(8192);
+        $session->writeBuffer .= $fileStream->readChunk(8192);
         
         return $fileStream->eof() ? 
             halo\peer\IIoState::OPEN_READ : 

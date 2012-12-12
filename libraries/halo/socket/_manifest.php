@@ -63,106 +63,12 @@ interface IConnectionOrientedSocket extends ISocket {
     public function checkConnection();
 }
 
-interface IIoSocket extends ISocket {
-    public function peek($length);
-    public function read($length);
-    public function readLine();
-    public function readAll();
-    public function write($data);
-    public function writeLine($line);
-    public function writeAll($data);
-}
+interface IIoSocket extends ISocket, core\io\IReader, core\io\IPeekReader, core\io\IWriter {}
 
 trait TIoSocket {
-
-    public function peek($length) {
-        if(!$this->isReadingEnabled()) {
-            throw new IOException(
-                'Reading has already been shut down'
-            );
-        }
-        
-        return $this->_peekChunk($length);
-    }
-    
-    public function read($length) {
-        if(!$this->isReadingEnabled()) {
-            throw new IOException(
-                'Reading has already been shut down'
-            );
-        }
-        
-        return $this->_readChunk($length);
-    }
-    
-    public function readLine() {
-        if(!$this->isReadingEnabled()) {
-            throw new IOException(
-                'Reading has already been shut down'
-            );
-        }
-
-        return $this->_readLine();
-    }
-
-    public function readAll() {
-        if(!$this->isReadingEnabled()) {
-            throw new IOException(
-                'Reading has already been shut down'
-            );
-        }
-        
-        $data = false;
-        
-        while(false !== ($read = $this->_readChunk(1024))) {
-            $data .= $read;
-        }
-        
-        return $data;
-    }
-    
-    public function write($data) {
-        if(!$this->isWritingEnabled()) {
-            throw new IOException(
-                'Writing has already been shut down'
-            );
-        }
-        
-        return $this->_writeChunk($data);
-    }
-
-    public function writeLine($line) {
-        return $this->write($line."\r\n");
-    }
-    
-    public function writeAll($data) {
-        if(!$this->isWritingEnabled()) {
-            throw new IOException(
-                'Writing has already been shut down'
-            );
-        }
-        
-        if(!$length = strlen($data)) {
-            return $this;
-        }
-        
-        for($written = 0; $written < $length; $written += $result) {
-            $result = $this->_writeChunk(substr($data, $written));
-            
-            if($result === false) {
-                throw new IOException(
-                    'Unable to write to '.$this->_address.' - '.$this->_getLastErrorMessage()
-                );
-            }
-        }
-        
-        return $this;
-    }
-    
-    abstract protected function _peekChunk($length);
-    abstract protected function _readChunk($length);
-    abstract protected function _readLine();
-    abstract protected function _writeChunk($data);
+    use core\io\TReader;
+    use core\io\TPeekReader;
+    use core\io\TWriter;
 }
 
 

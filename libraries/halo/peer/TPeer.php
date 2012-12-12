@@ -68,7 +68,7 @@ trait TPeer {
         $socket = $handler->getSocket();
         
         // Read from socket
-        $data = $socket->read($this->_readChunkSize);
+        $data = $socket->readChunk($this->_readChunkSize);
         
         if($data === false) { // Peer has shutdown writing
             // Remove binding

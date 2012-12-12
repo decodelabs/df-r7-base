@@ -143,9 +143,9 @@ trait TStreams_IoSocket {
         return $output;
     }
     
-    protected function _writeChunk($data) {
+    protected function _writeChunk($data, $length) {
         try {
-            $output = fwrite($this->_socket, $data);
+            $output = fwrite($this->_socket, $data, $length);
         } catch(\Exception $e) {
             $this->_lastError = $e->getMessage();
             return false;

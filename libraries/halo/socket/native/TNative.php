@@ -80,8 +80,8 @@ trait TNative_IoSocket {
         return $string;
     }
     
-    protected function _writeChunk($data) {
-        $output = socket_send($this->_socket, $data, strlen($data), 0);
+    protected function _writeChunk($data, $length) {
+        $output = socket_send($this->_socket, $data, $length, 0);
         
         if($output === false
         || $output === 0) {
