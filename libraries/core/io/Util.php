@@ -63,7 +63,7 @@ class Util {
 
     public static function deleteFile($path) {
         if(file_exists($path)) {
-            return unlink($path);
+            return @unlink($path);
         }
 
         return true;
@@ -193,7 +193,7 @@ class Util {
                     return false;
                 }
             } else {
-                if(!unlink($item->getPathname())) {
+                if(!@unlink($item->getPathname())) {
                     return false;
                 }
             }
