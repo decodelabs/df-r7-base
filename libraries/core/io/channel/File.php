@@ -3,11 +3,11 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\io\file;
+namespace df\core\io\channel;
 
 use df\core;
 
-class Local implements core\io\IFile, core\io\ILocalFilePointer {
+class File implements core\io\IFile, core\io\ILocalFilePointer {
 
     protected $_fp;
     protected $_mode;

@@ -407,6 +407,13 @@ trait TWriter {
 
 
 
+// Channel
+interface IChannel extends IReader, IWriter {
+    public function writeError($error);
+    public function writeErrorLine($line);
+}
+
+
 // File
 interface IFilePointer {
     public function open($mode=IMode::READ_WRITE);
@@ -429,7 +436,8 @@ interface ILocalFilePointer extends IFilePointer {
     public function isOnDisk();
 }
 
-interface IFile extends IFilePointer, IReader, IWriter {
+
+interface IFile extends IFilePointer, IChannel {
     //public function getContents();
     //public function putContents($data);
 
@@ -447,10 +455,6 @@ interface IFile extends IFilePointer, IReader, IWriter {
 
 
 
-// Channel
-interface IChannel {
-    
-}
 
 
 

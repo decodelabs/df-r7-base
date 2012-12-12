@@ -3,11 +3,11 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\io\file;
+namespace df\core\io;
 
 use df\core;
 
-class LocalPointer implements core\io\ILocalFilePointer, core\IDumpable {
+class LocalFilePointer implements ILocalFilePointer, core\IDumpable {
     
     protected $_path;
     
@@ -16,7 +16,7 @@ class LocalPointer implements core\io\ILocalFilePointer, core\IDumpable {
         //$this->_path = (string)core\uri\FilePath::factory($path);
     }
     
-    public function open($mode=core\io\IMode::READ_WRITE) {
+    public function open($mode=IMode::READ_WRITE) {
         return new Local($this->_path, $mode);
     }
     
@@ -73,7 +73,7 @@ class LocalPointer implements core\io\ILocalFilePointer, core\IDumpable {
         
         $path = (string)$path;
         
-        core\io\Util::ensureDirExists(dirname($path));
+        Util::ensureDirExists(dirname($path));
         file_put_contents($path, $this->getContents());
         
         return $this;
