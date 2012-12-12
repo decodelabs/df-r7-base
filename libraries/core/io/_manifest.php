@@ -17,6 +17,16 @@ class OverflowException extends \OverflowException implements IException {}
 
 
 // Interfaces
+interface IMode {
+    const READ_ONLY = 'rb';
+    const READ_WRITE = 'r+b';
+    const WRITE_TRUNCATE = 'wb';
+    const READ_WRITE_TRUNCATE = 'w+b';
+    const WRITE_APPEND = 'ab';
+    const READ_WRITE_APPEND = 'a+b';
+    const WRITE_NEW = 'xb';
+    const READ_WRITE_NEW = 'x+b';
+}
 
 
 
@@ -394,6 +404,46 @@ trait TWriter {
     abstract protected function _writeChunk($data, $length);
 }
 
+
+
+
+// File
+interface IFilePointer {
+    public function open($mode=IMode::READ_WRITE);
+    public function exists();
+
+    public function setContentType($type);
+    public function getContentType();
+    
+    public function getLastModified();
+    public function getSize();
+    
+    public function putContents($data);
+    public function getContents();
+    
+    public function saveTo(core\uri\FilePath $path);
+}
+
+interface ILocalFilePointer extends IFilePointer {
+    public function getPath();
+    public function isOnDisk();
+}
+
+interface IFile extends IFilePointer, IReader, IWriter {
+    //public function getContents();
+    //public function putContents($data);
+
+    public function lock($type, $nonBlocking=false);
+    public function unlock();
+
+    public function seek($offset, $whence=\SEEK_SET);
+    public function tell();
+    
+    public function flush();
+    public function truncate($size=0);
+    public function eof();
+    public function close();
+}
 
 
 

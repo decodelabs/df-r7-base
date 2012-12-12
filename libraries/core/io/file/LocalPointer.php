@@ -7,7 +7,7 @@ namespace df\core\io\file;
 
 use df\core;
 
-class LocalPointer implements IFileSystemPointer, core\IDumpable {
+class LocalPointer implements core\io\ILocalFilePointer, core\IDumpable {
     
     protected $_path;
     
@@ -16,7 +16,7 @@ class LocalPointer implements IFileSystemPointer, core\IDumpable {
         //$this->_path = (string)core\uri\FilePath::factory($path);
     }
     
-    public function open($mode=IMode::READ_WRITE) {
+    public function open($mode=core\io\IMode::READ_WRITE) {
         return new Local($this->_path, $mode);
     }
     
@@ -61,7 +61,7 @@ class LocalPointer implements IFileSystemPointer, core\IDumpable {
             throw new RuntimeException('Cannot read from file pointer');
         }
         
-        $this->open(IMode::WRITE_TRUNCATE)->putContents($data);
+        $this->open(core\io\IMode::WRITE_TRUNCATE)->putContents($data);
         
         return $this;
     }

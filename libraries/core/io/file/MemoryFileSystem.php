@@ -7,11 +7,11 @@ namespace df\core\storage\file;
 
 use df\core;
 
-class MemoryFileSystem extends Memory implements IFileSystemPointer {
+class MemoryFileSystem extends Memory implements core\io\ILocalFilePointer {
     
     private $_path;
     
-    public function __construct($data, $path, $contentType, $mode=IMode::READ_WRITE) {
+    public function __construct($data, $path, $contentType, $mode=core\io\IMode::READ_WRITE) {
         parent::__construct($data, $contentType, $mode);
         $this->setPath($path);
     }

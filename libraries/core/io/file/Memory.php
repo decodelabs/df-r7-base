@@ -7,26 +7,66 @@ namespace df\core\io\file;
 
 use df\core;
 
-class Memory implements IFile {
+class Memory implements core\io\IFile {
 
-    use TFile;
+    protected $_contentType = null;
 
     private $_data;
     private $_pos = 0;
 
-    public function __construct($data, $contentType=null, $mode=IMode::READ_WRITE) {
+
+    public function __construct($data, $contentType=null, $mode=core\io\IMode::READ_WRITE) {
         $this->putContents($data);
         $this->setContentType($contentType);
+    }
+
+
+// Loading
+    public function open($mode=core\io\IMode::READ_WRITE) {
+        return $this;
+    }
+
+    public function exists() {
+        return true;
+    }
+
+    public function saveTo(core\uri\FilePath $path) {
+        $path = (string)$path;
+        
+        core\io\Util::ensureDirExists(dirname($path));
+        file_put_contents($path, $this->_data);
+
+        return $this;
+    }
+
+
+// Content type
+    public function setContentType($type) {
+        $this->_contentType = $type;
+        return $this;
+    }
+
+    public function getContentType() {
+        if(!$this->_contentType) {
+            $this->_contentType = 'application\octet-stream';
+        }
+        
+        return $this->_contentType;
+    }
+
+
+// Meta
+    public function getLastModified() {
+        return time();
     }
     
     public function getSize() {
         return strlen($this->_data);
     }
     
-    public function getLastModified() {
-        return time();
-    }
     
+
+// Contents
     public function putContents($data) {
         $this->_data = $data;
         return $this;
@@ -36,17 +76,31 @@ class Memory implements IFile {
         return $this->_data;
     }
     
-    public function seek($offset, $whence=SEEK_SET) {
+
+
+// Lock
+    public function lock($type, $nonBlocking=false) {
+        return true;
+    }
+
+    public function unlock() {
+        return true;
+    }
+
+
+
+// Traversal
+    public function seek($offset, $whence=\SEEK_SET) {
         switch($whence) {
-            case SEEK_SET:
+            case \SEEK_SET:
                 $this->_pos = $offset;
                 break;
                 
-            case SEEK_CUR:
+            case \SEEK_CUR:
                 $this->_pos += $offset;
                 break;
                 
-            case SEEK_END:
+            case \SEEK_END:
                 $this->_pos = strlen($this->_data);
                 $this->_pos += $offset;
                 break;
@@ -62,9 +116,27 @@ class Memory implements IFile {
         return $this->_pos;
     }
 
+
+
+// Housekeeping
     public function flush() {
         return true;
     }
+
+    public function truncate($size=0) {
+        $this->_data = substr($this->_data, 0, $size);
+        return $this;
+    }
+    
+    public function eof() {
+        return $this->_pos >= strlen($this->_data);    
+    }
+    
+    public function close() {
+        return true;    
+    }
+    
+    
 
 
 // Read
@@ -98,28 +170,5 @@ class Memory implements IFile {
         $this->_pos = strlen($this->_data);
         
         return $this;
-    }
-    
-    public function truncate($size=0) {
-        $this->_data = substr($this->_data, 0, $size);
-        return $this;
-    }
-    
-
-// Lock
-    public function lock($type, $nonBlocking=false) {
-        return true;
-    }
-
-    public function unlock() {
-        return true;
-    }
-    
-    public function close() {
-        return true;    
-    }
-    
-    public function eof() {
-        return $this->_pos >= strlen($this->_data);    
     }
 }

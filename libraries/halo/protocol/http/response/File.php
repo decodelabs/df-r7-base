@@ -26,7 +26,7 @@ class File extends Base implements halo\protocol\http\IFileResponse {
     }
     
     public function setFile($file, $checkPath=true) {
-        if(!$file instanceof core\io\file\IPointer) {
+        if(!$file instanceof core\io\IFilePointer) {
             $file = new core\io\file\LocalPointer($file);
         }
         
@@ -44,7 +44,7 @@ class File extends Base implements halo\protocol\http\IFileResponse {
     }
     
     public function isStaticFile() {
-        return $this->_file instanceof core\io\file\IFileSystemPointer
+        return $this->_file instanceof core\io\ILocalFilePointer
             && $this->_file->isOnDisk();
     }
     
@@ -61,6 +61,6 @@ class File extends Base implements halo\protocol\http\IFileResponse {
     }
     
     public function getContentFileStream() {
-        return $this->_file->open(core\io\file\IMode::READ_ONLY);
+        return $this->_file->open(core\io\IMode::READ_ONLY);
     }
 }

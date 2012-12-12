@@ -446,7 +446,7 @@ trait TPeer_FileStreamSession {
     
     protected $_fileStream;
     
-    public function setFileStream(core\io\file\IPointer $file) {
+    public function setFileStream(core\io\IFilePointer $file) {
         $this->_fileStream = $file;
         return $this;
     }

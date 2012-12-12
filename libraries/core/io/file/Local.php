@@ -7,45 +7,22 @@ namespace df\core\io\file;
 
 use df\core;
 
-class Local implements IFile, IFileSystemPointer {
-
-    use TFile;
+class Local implements core\io\IFile, core\io\ILocalFilePointer {
 
     protected $_fp;
     protected $_mode;
     protected $_path;
+    protected $_contentType = null;
 
-    public function __construct($path, $mode=IMode::READ_WRITE) {
+    public function __construct($path, $mode=core\io\IMode::READ_WRITE) {
         //$this->_path = (string)core\uri\FilePath::factory($path);
         $this->_path = $path;
         $this->open($mode);
     }
     
-    public function getPath() {
-        return $this->_path;
-    }
-    
-    public function isOnDisk() {
-        return true;
-    }
-    
-    public function getSize() {
-        return filesize($this->_path);
-    }
-    
-    public function getContentType() {
-        if(!$this->_contentType) {
-            $this->_contentType = core\mime\Type::fileToMime($this->_path);
-        }
-        
-        return $this->_contentType;
-    }
-    
-    public function getLastModified() {
-        return filemtime($this->_path);
-    }
-    
-    public function open($mode=IMode::READ_WRITE) {
+
+// Loading
+    public function open($mode=core\io\IMode::READ_WRITE) {
         if($this->_fp) {
             if($this->_mode == $mode) {
                 return $this;
@@ -65,11 +42,91 @@ class Local implements IFile, IFileSystemPointer {
         return $this;
     }
 
-    public function truncate($size=0) {
-        ftruncate($this->_fp, $size);
-        return $this;
+    public function exists() {
+        return true;
+    }
+
+    public function getPath() {
+        return $this->_path;
     }
     
+    public function isOnDisk() {
+        return true;
+    }
+
+    public function saveTo(core\uri\FilePath $path) {
+        $path = (string)$path;
+        
+        core\io\Util::ensureDirExists(dirname($path));
+        file_put_contents($path, $this->getContents());
+
+        return $this;
+    }
+
+
+// Content type
+    public function setContentType($type) {
+        $this->_contentType = $type;
+        return $this;
+    }
+
+    public function getContentType() {
+        if(!$this->_contentType) {
+            $this->_contentType = core\mime\Type::fileToMime($this->_path);
+        }
+        
+        return $this->_contentType;
+    }
+
+
+
+// Meta
+    public function getLastModified() {
+        return filemtime($this->_path);
+    }
+
+    public function getSize() {
+        return filesize($this->_path);
+    }
+
+
+
+// Contents
+    public function putContents($data) {
+        $this->truncate();
+        return $this->write($data);
+    }
+    
+    public function getContents() {
+        return $this->read();
+    }
+
+
+
+// Lock
+    public function lock($type, $nonBlocking=false) {
+        if($nonBlocking) {
+            return flock($this->_fp, $type | LOCK_NB);
+        } else {
+            return flock($this->_fp, $type);
+        }
+        
+        return $this;
+    }
+
+    public function unlock() {
+        if($this->_fp !== null) {
+            return flock($this->_fp, LOCK_UN);
+        } else {
+            return true;
+        }
+    }
+
+    
+    
+    
+
+// Traversal
     public function seek($offset, $whence=SEEK_SET) {
         fseek($this->_fp, $offset, $whence);
         return $this;
@@ -79,8 +136,20 @@ class Local implements IFile, IFileSystemPointer {
         return ftell($this->_fp);
     }
 
+
+
+// Housekeeping
     public function flush() {
         return fflush($this->_fp);
+    }
+
+    public function truncate($size=0) {
+        ftruncate($this->_fp, $size);
+        return $this;
+    }
+    
+    public function eof() {
+        return feof($this->_fp);
     }
 
     public function close() {
@@ -90,16 +159,6 @@ class Local implements IFile, IFileSystemPointer {
         }
         
         return $this;
-    }
-
-    public function size() {
-        $pos = ftell($this->_fp);
-        fseek($this->_fp, 0, SEEK_END);
-        
-        $size = ftell($this->_fp);
-        fseek($this->_fp, $pos);
-        
-        return $size;
     }
 
 
@@ -127,28 +186,5 @@ class Local implements IFile, IFileSystemPointer {
 // Write
     protected function _writeChunk($data, $length) {
         return fwrite($this->_fp, $data, $length);
-    }
-
-// Lock
-    public function lock($type, $nonBlocking=false) {
-        if($nonBlocking) {
-            return flock($this->_fp, $type | LOCK_NB);
-        } else {
-            return flock($this->_fp, $type);
-        }
-        
-        return $this;
-    }
-
-    public function unlock() {
-        if($this->_fp !== null) {
-            return flock($this->_fp, LOCK_UN);
-        } else {
-            return true;
-        }
-    }
-    
-    public function eof() {
-        return feof($this->_fp);
     }
 }
