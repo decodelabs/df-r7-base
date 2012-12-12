@@ -60,7 +60,8 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         }
 
         if(!is_string($url)) {
-            core\dump($url);
+            $url = (string)$url;
+            //core\dump($url);
         }
         
         
