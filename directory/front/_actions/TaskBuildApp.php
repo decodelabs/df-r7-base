@@ -111,12 +111,12 @@ class TaskBuildApp extends arch\Action {
             }
 
             if($entry == 'libraries') {
-                core\io\Util::copyDirInto($package->path.'/'.$entry, $destinationPath);
+                core\io\Util::copyDirInto($appPackage->path.'/'.$entry, $destinationPath);
                 continue;
             }
 
-            if(is_dir($package->path.'/'.$entry)) {
-                core\io\Util::copyDir($package->path.'/'.$entry, $destinationPath.'/apex/'.$entry, true);
+            if(is_dir($appPackage->path.'/'.$entry)) {
+                core\io\Util::copyDir($appPackage->path.'/'.$entry, $destinationPath.'/apex/'.$entry, true);
             }
         }
 
