@@ -476,5 +476,7 @@ interface IUtil {
     public static function deleteDir($path);
     public static function emptyDir($path);
 
+    public static function chmod($path, $mode, $recursive=false);
+
     public static function stripLocationFromFilePath($path);
 }

@@ -202,6 +202,30 @@ class Util implements IUtil {
         return true;
     }
 
+
+
+    public static function chmod($path, $mode, $recursive=false) {
+        if(!file_exists($path)) {
+            return false;
+        }
+
+        chmod($path, $mode);
+
+        if($recursive && is_dir($path)) {
+            foreach(new \DirectoryIterator($path) as $item) {
+                if($item->isDot()) {
+                    continue;
+                }
+
+                self::chmod($item->getPathname(), $mode, $recursive);
+            }
+        }
+
+        return true;
+    }
+
+
+
     public static function stripLocationFromFilePath($path) {
         if(!df\Launchpad::$loader) {
             return $path;
