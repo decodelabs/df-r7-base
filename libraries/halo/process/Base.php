@@ -8,6 +8,7 @@ namespace df\halo\process;
 use df;
 use df\core;
 use df\halo;
+use df\arch;
 
 abstract class Base implements IProcess {
     
@@ -50,6 +51,15 @@ abstract class Base implements IProcess {
     public static function launchScript($path, $args=null) {
         return self::newScriptLauncher($path, $args)->launch();
     }
+
+    public static function launchTask($request) {
+        $request = arch\Request::factory($request);
+
+        $path = df\Launchpad::$applicationPath.'/entry/';
+        $path .= df\Launchpad::$environmentId.'.'.df\Launchpad::$environmentMode.'.php';
+
+        return self::launchScript($path, 'task '.$request);
+    }
     
     public static function launchBackground($process, $args=null, $path=null) {
         return self::newLauncher($process, $args, $path)->launchBackground();
@@ -59,6 +69,15 @@ abstract class Base implements IProcess {
         return self::newScriptLauncher($path, $args)->launchBackground();
     }
     
+    public static function launchBackgroundTask($request) {
+        $request = arch\Request::factory($request);
+
+        $path = df\Launchpad::$applicationPath.'/entry/';
+        $path .= df\Launchpad::$environmentId.'.'.df\Launchpad::$environmentMode.'.php';
+
+        return self::launchBackgroundScript($path, 'task '.$request);
+    }
+
     public static function launchManaged($process, $args=null, $path=null) {
         return self::newLauncher($process, $args, $path)->launchManaged();
     }
