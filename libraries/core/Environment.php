@@ -8,7 +8,6 @@ namespace df\core;
 use df;
 use df\core;
 use df\halo;
-use df\ctrl;
 
 class Environment extends Config {
     
@@ -32,8 +31,7 @@ class Environment extends Config {
 
     protected function _sanitizeValuesOnCreate() {
         try {
-            $ctrlManager = new ctrl\Manager($this->getApplication());
-            $ctrlManager->initGitIgnore();
+            halo\process\Base::launchTask('init-gitignore');
         } catch(\Exception $e) {}
     }
         
