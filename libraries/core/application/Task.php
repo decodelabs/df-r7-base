@@ -128,7 +128,11 @@ class Task extends Base implements arch\IDirectoryRequestApplication {
     
     
     public function launchPayload($payload) {
-        core\stub($payload);
+        if(is_string($payload)) {
+            echo $payload."\r\n";
+        } else if(!empty($payload)) {
+            core\stub($payload);
+        }
     }
     
     
