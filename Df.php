@@ -269,7 +269,13 @@ class Launchpad {
 // Application
     public static function getActiveApplication() {
         if(!self::$application) {
-            throw new core\application\LogicException(
+            $class = 'df\\core\\application\\LogicException';
+
+            if(!class_exists($class)) {
+                $class = '\\LogicException';
+            }
+            
+            throw new $class(
                 'No active application is available'
             );
         }
