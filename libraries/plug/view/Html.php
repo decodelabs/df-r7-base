@@ -51,10 +51,13 @@ class Html implements aura\view\IHelper {
             return $body;
         }
 
-        return new aura\html\Element('span', $body, [
-            'aria-hidden' => 'true',
-            'data-icon' => new aura\html\ElementString($iconChar)
-        ]);
+        $attrs = ['data-icon' => new aura\html\ElementString($iconChar)];
+
+        if(empty($body)) {
+            $attrs['aria-hidden'] = 'true';
+        }
+
+        return new aura\html\Element('span', $body, $attrs);
     }
 
     public function booleanIcon($value, $body=null) {
