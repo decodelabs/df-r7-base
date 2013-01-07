@@ -36,6 +36,7 @@ interface IRepository {
 
     public function getTags();
 
+    public function getCommitStatus();
     public function getCommitIds($target, $limit=null, $offset=null);
     public function getCommits($target, $limit=null, $offset=null);
     public function getHeadCommitIds();
@@ -101,4 +102,21 @@ interface ITree {
     public function getTrees();
 
     public function getRepository();
+}
+
+interface IStatus extends \Countable {
+    public function refresh();
+
+    public function getTracked();
+    public function hasTracked();
+    public function countTracked();
+
+    public function getUntracked();
+    public function hasUntracked();
+    public function countUntracked();
+
+    public function hasFile($path);
+    public function getFileState($path);
+    public function isTracked($path);
+    public function isUntracked($path);
 }

@@ -201,6 +201,10 @@ class Repository implements IRepository {
 
 
 // Commits
+    public function getCommitStatus() {
+        return new Status($this);
+    }
+
     public function getCommitIds($target, $limit=null, $offset=null) {
         $result = $this->_runCommand('rev-list', [
             '--max-count' => $limit,
@@ -328,6 +332,9 @@ class Repository implements IRepository {
             );
         }
 
-        return trim($result->getOutput());
+        $result = ltrim($result->getOutput(), "\r\n");
+        $result = rtrim($result);
+
+        return $result;
     }
 }
