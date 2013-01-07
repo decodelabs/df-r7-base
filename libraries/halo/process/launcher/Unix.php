@@ -23,7 +23,7 @@ class Unix extends Base {
         $descriptors = [
             0 => ['pipe', 'r'], 
             1 => ['pipe', 'w'], 
-            2 => ['pipe', 'a']
+            2 => ['pipe', 'w']
         ];
         
         $workingDirectory = $this->_workingDirectory !== null ? 
@@ -45,7 +45,7 @@ class Unix extends Base {
         
         proc_close($processHandle);
         $result->registerCompletion();
-        
+
         return $result;
     }
     
@@ -80,6 +80,10 @@ class Unix extends Base {
         
         if($this->_args) {
             $command .= ' '.$this->_args;
+        }
+
+        if($this->_user) {
+            $command = 'sudo -u '.$this->_user.' '.$command;
         }
         
         return $command;

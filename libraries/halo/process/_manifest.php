@@ -72,6 +72,8 @@ interface ILauncher {
     public function getArgs();
     public function setPath($path);
     public function getPath();
+    public function setUser($user);
+    public function getUser();
     public function isPrivileged();
     public function setTitle($title);
     public function getTitle();

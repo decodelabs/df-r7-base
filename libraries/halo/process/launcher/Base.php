@@ -14,6 +14,7 @@ abstract class Base implements halo\process\ILauncher {
     protected $_processName;
     protected $_args;
     protected $_path;
+    protected $_user;
     protected $_title;
     protected $_priority;
     protected $_workingDirectory;
@@ -71,6 +72,14 @@ abstract class Base implements halo\process\ILauncher {
         return $this->_path;
     }
     
+    public function setUser($user) {
+        $this->_user = $user;
+        return $this;
+    }
+
+    public function getUser() {
+        return $this->_user;
+    }
     
     
     public function isPrivileged() {
