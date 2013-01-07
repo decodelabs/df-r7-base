@@ -3,6 +3,6 @@ This project is distributed under the MIT license - http://opensource.org/licens
 
 PHP 5.4 is required
 
-This repo contains the base package for the framework - you can combine it with other packages to create bigger things.
+This repo contains the primary base package containing the main libraries of the framework - you can combine it with other packages to create bigger things.
 
 See http://decodelabs.com for more info
