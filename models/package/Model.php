@@ -62,4 +62,25 @@ class Model extends axis\Model {
 
         return $installed;
     }
+
+    public function updateRemote($name) {
+        foreach($this->getInstalledPackageList() as $package) {
+            if($package['name'] == $name && $package['repo']) {
+                $package['repo']->updateRemote();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function updateRemotes() {
+        foreach($this->getInstalledPackageList() as $package) {
+            if(!$package['repo']) {
+                continue;
+            }
+
+            $package['repo']->updateRemote();
+        }
+    }
 }

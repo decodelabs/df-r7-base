@@ -18,6 +18,9 @@ class Repository implements IRepository {
     protected $_branches = null;
     protected $_activeBranch = null;
 
+    protected static $_gitPath = '/usr/bin/git';
+    protected $_gitUser;
+
     public static function createNew($path, $isBare=false) {
         if(!is_dir($path)) {
             throw new RuntimeException(
@@ -384,12 +387,18 @@ class Repository implements IRepository {
     }
 
 
-// Commands
-    public function _runCommand($command, array $arguments=null) {
-        return self::_runCommandIn($this->_path, $command, $arguments);
+// Updating
+    public function updateRemote() {
+        return $this->_runCommand('remote update');
     }
 
-    protected static function _runCommandIn($path, $command, array $arguments=null) {
+
+// Commands
+    public function _runCommand($command, array $arguments=null) {
+        return self::_runCommandIn($this->_path, $command, $arguments, $this->_gitUser);
+    }
+
+    protected static function _runCommandIn($path, $command, array $arguments=null, $user=null) {
         $argString = $command;
 
         if(!empty($arguments)) {
@@ -424,7 +433,8 @@ class Repository implements IRepository {
             }
         }
 
-        $result = halo\process\launcher\Base::factory('git', $argString)
+        $result = halo\process\launcher\Base::factory(basename(self::$_gitPath), $argString, dirname(self::$_gitPath))
+            ->setUser($user)
             ->setWorkingDirectory($path)
             ->launch();
 

@@ -53,6 +53,8 @@ interface IRepository {
 
     public function getTree($id);
     public function getBlob($id);
+
+    public function updateRemote();
 }
 
 interface IBranch {
