@@ -272,6 +272,7 @@ class Launchpad {
             $class = 'df\\core\\application\\LogicException';
 
             if(!class_exists($class)) {
+                // TODO: debug the first-launch case where this happens.. it shouldn't!!
                 $class = '\\LogicException';
             }
             
