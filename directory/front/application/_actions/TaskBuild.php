@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\apex\directory\front\_actions;
+namespace df\apex\directory\front\application\_actions;
 
 use df;
 use df\core;
@@ -11,7 +11,7 @@ use df\apex;
 use df\arch;
 use df\halo;
     
-class TaskBuildApp extends arch\Action {
+class TaskBuild extends arch\Action {
 
     const PURGE_OLD_BUILDS = true;
 
@@ -142,7 +142,7 @@ class TaskBuildApp extends arch\Action {
         $response->writeLine('App build complete');
 
         if($purgeOldBuilds) {
-            return $this->arch->newRequest('task://purge-builds');
+            return $this->arch->newRequest('task://application/purge-builds');
         }
     }
 }
