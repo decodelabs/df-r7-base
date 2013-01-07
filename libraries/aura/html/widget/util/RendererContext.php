@@ -15,6 +15,7 @@ class RendererContext implements aura\html\widget\IRendererContext {
     use core\collection\TArrayCollection_AssociativeValueMap;
 
     protected $_key;
+    protected $_field;
     protected $_counter = -1;
     protected $_cellTag;
     protected $_rowTag;
@@ -30,6 +31,10 @@ class RendererContext implements aura\html\widget\IRendererContext {
     
     public function getKey() {
         return $this->_key;
+    }
+
+    public function getField() {
+        return $this->_field;
     }
     
     public function getCounter() {
@@ -50,11 +55,15 @@ class RendererContext implements aura\html\widget\IRendererContext {
         $this->_counter++;
         $this->clear();
 
-        return $this->iterateField($key, $cellTag, $rowTag);
+        $this->_key = $key;
+        $this->_cellTag = $cellTag;
+        $this->_rowTag = $rowTag;
+
+        return $this;
     }
     
-    public function iterateField($key, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null) {
-        $this->_key = $key;
+    public function iterateField($field, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null) {
+        $this->_field = $field;
         $this->_cellTag = $cellTag;
         $this->_rowTag = $rowTag;
         
