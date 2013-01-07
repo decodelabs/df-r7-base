@@ -272,6 +272,108 @@ class Repository implements IRepository {
     }
 
 
+    public function countUnpushedCommits() {
+        return count($this->getUnpushedCommitIds());
+    }
+
+    public function getUnpushedCommitIds() {
+        $output = array();
+        $result = $this->_runCommand('log', [
+            '--format' => '%H',
+            'origin/master..HEAD'
+        ]);
+
+        if(!empty($result)) {
+            foreach(explode("\n", $result) as $line) {
+                $line = trim($line);
+
+                if(empty($line)) {
+                    continue;
+                }
+
+                $output[] = $line;
+            }
+        }
+
+        return $output;
+    }
+
+    public function getUnpushedCommits() {
+        $output = array();
+        $result = $this->_runCommand('log', [
+            '--format' => 'raw',
+            'origin/master..HEAD'
+        ]);
+
+        if(!empty($result)) {
+            $output = array();
+            $lines = explode("\n", $result);
+
+            while(!empty($lines)) {
+                if(!$commit = Commit::extractFromRevList($this, $lines)) {
+                    continue;
+                }
+
+                $output[] = $commit;
+            }
+        }
+            
+        return $output;
+    }
+
+
+
+    public function countUnpulledCommits() {
+        return count($this->getUnpulledCommitIds());
+    }
+
+    public function getUnpulledCommitIds() {
+        $output = array();
+        $result = $this->_runCommand('log', [
+            '--format' => '%H',
+            'HEAD..origin/master'
+        ]);
+
+        if(!empty($result)) {
+            foreach(explode("\n", $result) as $line) {
+                $line = trim($line);
+
+                if(empty($line)) {
+                    continue;
+                }
+
+                $output[] = $line;
+            }
+        }
+
+        return $output;
+    }
+
+    public function getUnpulledCommits() {
+        $output = array();
+        $result = $this->_runCommand('log', [
+            '--format' => 'raw',
+            'HEAD..origin/master'
+        ]);
+
+        if(!empty($result)) {
+            $output = array();
+            $lines = explode("\n", $result);
+
+            while(!empty($lines)) {
+                if(!$commit = Commit::extractFromRevList($this, $lines)) {
+                    continue;
+                }
+
+                $output[] = $commit;
+            }
+        }
+            
+        return $output;
+    }
+
+
+
 // Tree / blob
     public function getTree($id) {
         return new Tree($this, $id);

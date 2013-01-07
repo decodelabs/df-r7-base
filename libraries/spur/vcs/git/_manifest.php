@@ -43,6 +43,14 @@ interface IRepository {
     public function getHeadCommits();
     public function getCommit($id);
 
+    public function countUnpushedCommits();
+    public function getUnpushedCommitIds();
+    public function getUnpushedCommits();
+
+    public function countUnpulledCommits();
+    public function getUnpulledCommitIds();
+    public function getUnpulledCommits();
+
     public function getTree($id);
     public function getBlob($id);
 }
@@ -104,13 +112,12 @@ interface ITree {
     public function getRepository();
 }
 
+
 interface IStatus extends \Countable {
     public function refresh();
-
     public function getTracked();
     public function hasTracked();
     public function countTracked();
-
     public function getUntracked();
     public function hasUntracked();
     public function countUntracked();
@@ -119,4 +126,12 @@ interface IStatus extends \Countable {
     public function getFileState($path);
     public function isTracked($path);
     public function isUntracked($path);
+
+    public function countUnpushedCommits();
+    public function getUnpushedCommitIds();
+    public function getUnpushedCommits();
+
+    public function countUnpulledCommits();
+    public function getUnpulledCommitIds();
+    public function getUnpulledCommits();
 }

@@ -91,6 +91,33 @@ class Status implements IStatus, core\IDumpable {
         return isset($this->_untracked[$path]);
     }
 
+
+    public function countUnpushedCommits() {
+        return $this->_repository->countUnpushedCommits();
+    }
+
+    public function getUnpushedCommitIds() {
+        return $this->_repository->getUnpushedCommitIds();
+    }
+
+    public function getUnpushedCommits() {
+        return $this->_repository->getUnpushedCommits();
+    }
+
+
+    public function countUnpulledCommits() {
+        return $this->_repository->countUnpulledCommits();
+    }
+
+    public function getUnpulledCommitIds() {
+        return $this->_repository->getUnpulledCommitIds();
+    }
+
+    public function getUnpulledCommits() {
+        return $this->_repository->getUnpulledCommits();
+    }
+    
+
 // Dump
     public function getDumpProperties() {
         return array_merge($this->_tracked, $this->_untracked);
