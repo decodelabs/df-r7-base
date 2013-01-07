@@ -31,7 +31,7 @@ class Environment extends Config {
 
     protected function _sanitizeValuesOnCreate() {
         try {
-            halo\process\Base::launchTask('init-gitignore');
+            halo\process\Base::launchTask('application/init-gitignore');
         } catch(\Exception $e) {}
     }
         
