@@ -26,6 +26,10 @@ interface IRepository {
 
     public function getRepositoryPath();
     public function isBare();
+    public function setGitUser($user);
+    public function getGitUser();
+    public static function setGitPath($path);
+    public static function getGitPath();
 
     public function getBranchNames();
     public function getBranches();
@@ -43,18 +47,19 @@ interface IRepository {
     public function getHeadCommits();
     public function getCommit($id);
 
-    public function countUnpushedCommits();
-    public function getUnpushedCommitIds();
-    public function getUnpushedCommits();
+    public function countUnpushedCommits($remoteBranch=null);
+    public function getUnpushedCommitIds($remoteBranch=null);
+    public function getUnpushedCommits($remoteBranch=null);
 
-    public function countUnpulledCommits();
-    public function getUnpulledCommitIds();
-    public function getUnpulledCommits();
+    public function countUnpulledCommits($remoteBranch=null);
+    public function getUnpulledCommitIds($remoteBranch=null);
+    public function getUnpulledCommits($remoteBranch=null);
 
     public function getTree($id);
     public function getBlob($id);
 
-    public function updateRemote();
+    public function updateRemote($remote=null);
+    public function pull($remoteBranch=null);
 }
 
 interface IBranch {
@@ -129,11 +134,11 @@ interface IStatus extends \Countable {
     public function isTracked($path);
     public function isUntracked($path);
 
-    public function countUnpushedCommits();
-    public function getUnpushedCommitIds();
-    public function getUnpushedCommits();
+    public function countUnpushedCommits($remoteBranch=null);
+    public function getUnpushedCommitIds($remoteBranch=null);
+    public function getUnpushedCommits($remoteBranch=null);
 
-    public function countUnpulledCommits();
-    public function getUnpulledCommitIds();
-    public function getUnpulledCommits();
+    public function countUnpulledCommits($remoteBranch=null);
+    public function getUnpulledCommitIds($remoteBranch=null);
+    public function getUnpulledCommits($remoteBranch=null);
 }

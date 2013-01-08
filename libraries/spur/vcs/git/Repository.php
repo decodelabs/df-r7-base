@@ -100,6 +100,27 @@ class Repository implements IRepository {
         return $this->_isBare;
     }
 
+    public function setGitUser($user) {
+        if(empty($user)) {
+            $user = null;
+        }
+
+        $this->_gitUser = $user;
+        return $this;
+    }
+
+    public function getGitUser() {
+        return $this->_user;
+    }
+
+    public static function setGitPath($path) {
+        self::$_gitPath = $path;
+    }
+
+    public static function getGitPath() {
+        return self::$_gitPath;
+    }
+
 
 
 // Branches
@@ -275,15 +296,19 @@ class Repository implements IRepository {
     }
 
 
-    public function countUnpushedCommits() {
-        return count($this->getUnpushedCommitIds());
+    public function countUnpushedCommits($remoteBranch=null) {
+        return count($this->getUnpushedCommitIds($remoteBranch));
     }
 
-    public function getUnpushedCommitIds() {
+    public function getUnpushedCommitIds($remoteBranch=null) {
+        if($remoteBranch === null) {
+            $remoteBranch = 'origin/master';
+        }
+
         $output = array();
         $result = $this->_runCommand('log', [
             '--format' => '%H',
-            'origin/master..HEAD'
+            $remoteBranch.'..HEAD'
         ]);
 
         if(!empty($result)) {
@@ -301,11 +326,15 @@ class Repository implements IRepository {
         return $output;
     }
 
-    public function getUnpushedCommits() {
+    public function getUnpushedCommits($remoteBranch=null) {
+        if($remoteBranch === null) {
+            $remoteBranch = 'origin/master';
+        }
+
         $output = array();
         $result = $this->_runCommand('log', [
             '--format' => 'raw',
-            'origin/master..HEAD'
+            $remoteBranch.'..HEAD'
         ]);
 
         if(!empty($result)) {
@@ -326,15 +355,19 @@ class Repository implements IRepository {
 
 
 
-    public function countUnpulledCommits() {
+    public function countUnpulledCommits($remoteBranch=null) {
         return count($this->getUnpulledCommitIds());
     }
 
-    public function getUnpulledCommitIds() {
+    public function getUnpulledCommitIds($remoteBranch=null) {
+        if($remoteBranch === null) {
+            $remoteBranch = 'origin/master';
+        }
+
         $output = array();
         $result = $this->_runCommand('log', [
             '--format' => '%H',
-            'HEAD..origin/master'
+            'HEAD..'.$remoteBranch
         ]);
 
         if(!empty($result)) {
@@ -352,11 +385,15 @@ class Repository implements IRepository {
         return $output;
     }
 
-    public function getUnpulledCommits() {
+    public function getUnpulledCommits($remoteBranch=null) {
+        if($remoteBranch === null) {
+            $remoteBranch = 'origin/master';
+        }
+
         $output = array();
         $result = $this->_runCommand('log', [
             '--format' => 'raw',
-            'HEAD..origin/master'
+            'HEAD..'.$remoteBranch
         ]);
 
         if(!empty($result)) {
@@ -374,7 +411,6 @@ class Repository implements IRepository {
             
         return $output;
     }
-
 
 
 // Tree / blob
@@ -388,8 +424,29 @@ class Repository implements IRepository {
 
 
 // Updating
-    public function updateRemote() {
-        return $this->_runCommand('remote update');
+    public function updateRemote($remote=null) {
+        $result = $this->_runCommand('remote', [
+            'update',
+            $remote
+        ]);
+
+        if(empty($result)) {
+            $result = true;
+        }
+
+        return $result;
+    }
+
+    public function pull($remoteBranch=null) {
+        $result = $this->_runCommand('pull', [
+            $remoteBranch
+        ]);
+
+        if(empty($result)) {
+            $result = true;
+        }
+
+        return $result;
     }
 
 

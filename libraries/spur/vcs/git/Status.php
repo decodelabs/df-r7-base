@@ -25,7 +25,8 @@ class Status implements IStatus, core\IDumpable {
         $this->_untracked = array();
 
         $result = $this->_repository->_runCommand('status', [
-            '--porcelain'
+            '--porcelain',
+            '-uall'
         ]);
 
         if(!empty($result)) {
@@ -92,29 +93,29 @@ class Status implements IStatus, core\IDumpable {
     }
 
 
-    public function countUnpushedCommits() {
-        return $this->_repository->countUnpushedCommits();
+    public function countUnpushedCommits($remoteBranch=null) {
+        return $this->_repository->countUnpushedCommits($remoteBranch);
     }
 
-    public function getUnpushedCommitIds() {
-        return $this->_repository->getUnpushedCommitIds();
+    public function getUnpushedCommitIds($remoteBranch=null) {
+        return $this->_repository->getUnpushedCommitIds($remoteBranch);
     }
 
-    public function getUnpushedCommits() {
-        return $this->_repository->getUnpushedCommits();
+    public function getUnpushedCommits($remoteBranch=null) {
+        return $this->_repository->getUnpushedCommits($remoteBranch);
     }
 
 
-    public function countUnpulledCommits() {
-        return $this->_repository->countUnpulledCommits();
+    public function countUnpulledCommits($remoteBranch=null) {
+        return $this->_repository->countUnpulledCommits($remoteBranch);
     }
 
-    public function getUnpulledCommitIds() {
-        return $this->_repository->getUnpulledCommitIds();
+    public function getUnpulledCommitIds($remoteBranch=null) {
+        return $this->_repository->getUnpulledCommitIds($remoteBranch);
     }
 
-    public function getUnpulledCommits() {
-        return $this->_repository->getUnpulledCommits();
+    public function getUnpulledCommits($remoteBranch=null) {
+        return $this->_repository->getUnpulledCommits($remoteBranch);
     }
     
 
