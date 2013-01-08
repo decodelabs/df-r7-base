@@ -13,6 +13,9 @@ use df\spur;
     
 class Model extends axis\Model {
 
+    protected $_gitPath = null;
+    protected $_gitUser = null;
+
     public function getInstalledPackageList() {
         $repos = array();
         $packages = $remainingPackages = df\Launchpad::$loader->getPackages();
@@ -36,8 +39,18 @@ class Model extends axis\Model {
                     'name' => $name,
                     'path' => $path,
                     'instance' => $package,
-                    'repo' => is_dir($path.'/.git') ? new spur\vcs\git\Repository($path) : null
+                    'repo' => $repo = is_dir($path.'/.git') ? new spur\vcs\git\Repository($path) : null
                 ];
+
+                if($repo) {
+                    if($this->_gitPath) {
+                        $repo->setGitPath($this->_gitPath);
+                    }
+
+                    if($this->_gitUser) {
+                        $repo->setGitUser($this->_gitUser);
+                    }
+                }
 
                 unset($remainingPackages[$name]);
             }
@@ -48,8 +61,18 @@ class Model extends axis\Model {
                 'name' => $package->name,
                 'path' => $package->path,
                 'instance' => $package,
-                'repo' => is_dir($package->path.'/.git') ? new spur\vcs\git\Repository($package->path) : null
+                'repo' => $repo = is_dir($package->path.'/.git') ? new spur\vcs\git\Repository($package->path) : null
             ];
+
+            if($repo) {
+                if($this->_gitPath) {
+                    $repo->setGitPath($this->_gitPath);
+                }
+
+                if($this->_gitUser) {
+                    $repo->setGitUser($this->_gitUser);
+                }
+            }
         }
 
         uasort($installed, function($a, $b) {
@@ -63,11 +86,11 @@ class Model extends axis\Model {
         return $installed;
     }
 
+// Update remote
     public function updateRemote($name) {
         foreach($this->getInstalledPackageList() as $package) {
             if($package['name'] == $name && $package['repo']) {
-                $package['repo']->updateRemote();
-                return true;
+                return $package['repo']->updateRemote();
             }
         }
 
@@ -75,12 +98,42 @@ class Model extends axis\Model {
     }
 
     public function updateRemotes() {
+        $output = array();
+
         foreach($this->getInstalledPackageList() as $package) {
             if(!$package['repo']) {
                 continue;
             }
 
-            $package['repo']->updateRemote();
+            $output[$package['name']] = $package['repo']->updateRemote();
         }
+
+        return $output;
+    }
+
+
+// Pull
+    public function pull($name) {
+        foreach($this->getInstalledPackageList() as $package) {
+            if($package['name'] == $name && $package['repo']) {
+                return $package['repo']->pull();
+            }
+        }
+
+        return false;
+    }
+
+    public function pullAll() {
+        $output = array();
+
+        foreach($this->getInstalledPackageList() as $package) {
+            if(!$package['repo']) {
+                continue;
+            }
+
+            $output[$package['name']] = $package['repo']->pull();
+        }
+
+        return $output;
     }
 }
