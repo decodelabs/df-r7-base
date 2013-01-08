@@ -495,15 +495,19 @@ class Repository implements IRepository {
             ->setWorkingDirectory($path)
             ->launch();
 
+        $output = ltrim($result->getOutput(), "\r\n");
+        $output = rtrim($output);
+
         if($result->hasError()) {
-            throw new RuntimeException(
-                trim($result->getError())
-            );
+            if(!empty($output)) {
+                $output .= $result->getError();
+            } else {
+                throw new RuntimeException(
+                    trim($result->getError())
+                );
+            }
         }
 
-        $result = ltrim($result->getOutput(), "\r\n");
-        $result = rtrim($result);
-
-        return $result;
+        return $output;
     }
 }
