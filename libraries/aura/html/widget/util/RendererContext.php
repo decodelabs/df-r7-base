@@ -19,6 +19,7 @@ class RendererContext implements aura\html\widget\IRendererContext {
     protected $_counter = -1;
     protected $_cellTag;
     protected $_rowTag;
+    protected $_store = array();
     protected $_widget;
     
     public function __construct(aura\html\widget\IWidget $widget) {
@@ -55,6 +56,7 @@ class RendererContext implements aura\html\widget\IRendererContext {
         $this->_counter++;
         $this->clear();
 
+        $this->_store = array();
         $this->_key = $key;
         $this->_cellTag = $cellTag;
         $this->_rowTag = $rowTag;
@@ -82,5 +84,29 @@ class RendererContext implements aura\html\widget\IRendererContext {
 
     public function getView() {
         return $this->_widget->getView();
+    }
+
+
+// Store
+    public function setStore($key, $value) {
+        $this->_store[$key] = $value;
+        return $this;
+    }
+
+    public function hasStore($key) {
+        return isset($this->_store[$key]);
+    }
+
+    public function getStore($key, $default=null) {
+        if(isset($this->_store[$key])) {
+            return $this->_store[$key];
+        }
+
+        return $default;
+    }
+
+    public function removeStore($key) {
+        unset($this->_store[$key]);
+        return $this;
     }
 }
