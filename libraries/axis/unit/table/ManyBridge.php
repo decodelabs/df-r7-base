@@ -35,6 +35,12 @@ class ManyBridge extends Base implements axis\IVirtualUnit {
     
 
     public function buildInitialSchema() {
+        if(!$this->_dominantUnitName) {
+            throw new axis\schema\LogicException(
+                'ManyBridge "'.$this->getUnitName().'" does not have a dominant unit defined - are you sure ManyBridge is the unit type you want to use?'
+            );
+        }
+
         $dominantUnit = $this->_model->getUnit($this->_dominantUnitName);
         $dominantSchema = $dominantUnit->getTransientUnitSchema();
         $dominantField = $dominantSchema->getField($this->_dominantFieldName);
