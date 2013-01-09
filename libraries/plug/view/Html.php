@@ -41,6 +41,10 @@ class Html implements aura\view\IHelper {
         return new aura\html\Element($name, $content, $attributes);
     }
 
+    public function elementContentContainer($content=null) {
+        return new aura\html\ElementContent($content);
+    }
+
 
 
 // Compound widget shortcuts
