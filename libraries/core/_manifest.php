@@ -266,7 +266,7 @@ interface ILoader {
     
     public function findFile($path);
     public function getFileSearchPaths($path);
-    public function lookupFileList($path, array $extensions=null);
+    public function lookupFileList($path, $extensions=null);
     
     public function registerLocation($name, $path);
     public function unregisterLocation($name);

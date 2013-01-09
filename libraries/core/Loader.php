@@ -142,7 +142,15 @@ class Loader implements ILoader {
         return [df\Launchpad::DF_PATH.'/'.$path];
     }
     
-    public function lookupFileList($path, array $extensions=null) {
+    public function lookupFileList($path, $extensions=null) {
+        if($extensions !== null && !is_array($extensions)) {
+            $extensions = [$extensions];
+        }
+
+        if(empty($extensions)) {
+            $extensions = null;
+        }
+
         $output = array();
         $paths = $this->getFileSearchPaths(rtrim($path, '/').'/');
         
@@ -150,7 +158,7 @@ class Loader implements ILoader {
             if(!is_dir($path)) {
                 continue;
             }
-            
+
             $dir = new \DirectoryIterator($path);
             
             foreach($dir as $item) {
