@@ -15,6 +15,7 @@ interface IException extends axis\IException, opal\schema\IException {}
 class RuntimeException extends \RuntimeException implements IException {}
 class FieldTypeNotFoundException extends RuntimeException {}
 class UnexpectedValueException extends \UnexpectedValueException implements IException {}
+class LogicException extends \LogicException implements IException {}
 
 
 
