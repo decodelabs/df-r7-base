@@ -747,7 +747,11 @@ trait TWidget_NavigationEntryController {
 
     public function addEntries($entries) {
         if(is_string($entries) || $entries instanceof core\uri\IUrl) {
-            $entries = arch\navigation\menu\Base::factory($this->_context, $entries);
+            try {
+                $entries = arch\navigation\menu\Base::factory($this->_context, $entries);
+            } catch(arch\navigation\SourceNotFoundException $e) {
+                $entries = array();
+            }
         }
 
         if($entries instanceof arch\navigation\IEntryListGenerator) {
