@@ -147,6 +147,10 @@ class StateController implements IStateController, \Serializable {
         return $this;
     }
 
+    public function hasStore($key) {
+        return isset($this->_store[$key]);
+    }
+
     public function getStore($key, $default=null) {
         if(isset($this->_store[$key])) {
             return $this->_store[$key];
