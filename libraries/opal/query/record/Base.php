@@ -77,9 +77,32 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return !$this->_isPopulated;
     }
     
-    public function makeNew() {
+    public function makeNew(array $newValues=null) {
         $this->_isPopulated = false;
+
+        // Clear primary values
+        if(null !== ($fields = $this->_getPrimaryFields())) {
+            foreach($fields as $field) {
+                unset($this->_changes[$field]);
+
+                if($this->_values[$field] instanceof IValueContainer) {
+                    $this->_values[$field]->setValue(null);
+                } else {
+                    $this->_values[$field] = null;
+                }
+            }
+        }
+
+        if($newValues !== null) {
+            $this->import($newValues);
+        }
+
         return $this;
+    }
+
+    public function spawnNew(array $newValues=null) {
+        $output = clone $this;
+        return $output->makeNew($newValues);
     }
     
     public function getPrimaryManifest() {
@@ -136,7 +159,11 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         $this->_changes = array();
         return $this;
     }
-    
+
+    public function countChanges() {
+        return count($this->_changes);
+    }
+
     public function getChanges() {
         return $this->_changes;
     }
@@ -567,6 +594,16 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $output;
     }
 
+    public function getOriginal($key) {
+        $output = null;
+
+        if(array_key_exists($key, $this->_values)) {
+            $output = $this->_values[$key];
+        }
+
+        return $this->_prepareOutputValue($key, $output);
+    }
+
 
     public function set($key, $value) {
         return $this->offsetSet($key, $value);
@@ -644,21 +681,25 @@ class Base implements IRecord, \Serializable, core\IDumpable {
             $output = $this->_values[$key];
         }
         
-        if($output instanceof IValueContainer) {
-            if($output instanceof IPreparedValueContainer && !$output->isPrepared()) {
-                $output->prepareValue($this, $key);
+        return $this->_prepareOutputValue($key, $output, $default);
+    }
+
+    protected function _prepareOutputValue($key, $value, $default=null) {
+        if($value instanceof IValueContainer) {
+            if($value instanceof IPreparedValueContainer && !$value->isPrepared()) {
+                $value->prepareValue($this, $key);
             }
             
-            $output = $output->getValue($default);
+            $value = $value->getValue($default);
         }
         
-        $output = $this->_prepareValueForUser($key, $output);
+        $value = $this->_prepareValueForUser($key, $value);
         
-        if($output === null) {
-            $output = $default;
+        if($value === null) {
+            $value = $default;
         }
         
-        return $output;
+        return $value;
     }
     
     public function offsetExists($key) {

@@ -23,12 +23,14 @@ interface IRecord extends core\collection\IMappedCollection, user\IAccessLock {
     public function getRecordAdapter();
     
     public function isNew();
-    public function makeNew();
+    public function makeNew(array $newValues=null);
+    public function spawnNew(array $newValues=null);
     
     public function getPrimaryManifest();
     
     public function hasChanged($field=null);
     public function clearChanges();
+    public function countChanges();
     public function getChanges();
     public function getChangesForStorage();
     public function getValuesForStorage();
@@ -36,6 +38,8 @@ interface IRecord extends core\collection\IMappedCollection, user\IAccessLock {
     public function getUpdatedValuesForStorage();
     public function getAddedValues();
     public function getAddedValuesForStorage();
+    public function getRaw($key);
+    public function getOriginal($key);
     public function getOriginalValues();
     public function getOriginalValuesForStorage();
     public function acceptChanges($insertId=null, array $insertData=null);
