@@ -202,7 +202,7 @@ interface ITree extends IRandomAccessCollection, IMappedContainerCollection, cor
     public function toArrayDelimitedString($setDelimiter='&', $valueDelimiter='=');
     public function getKeys();
     public function clearKeys();
-    public function hasAnyValue();
+    public function hasAnyValue(array $checkKeys=null);
 }
 
 interface IInputTree extends ITree, core\IErrorContainer {}
