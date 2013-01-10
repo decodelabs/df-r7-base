@@ -439,7 +439,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         
         // Sanitize values from adapter
         if($this->_adapter instanceof opal\query\IIntegralAdapter) {        
-            $fieldProcessors = $this->_adapter->getQueryResultValueProcessors();
+            $fieldProcessors = $this->_adapter->getQueryResultValueProcessors(array_keys($row));
             
             if(!empty($fieldProcessors)) {
                 $temp = $row;
