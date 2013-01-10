@@ -337,6 +337,20 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
     public function hasValue() {
         return $this->_value !== null;
     }
+
+    public function hasAnyValue() {
+        if($this->hasValue()) {
+            return true;
+        }
+
+        foreach($this->_collection as $key => $child) {
+            if($child->hasAnyValue()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
     
     public function getStringValue($default='') {
         if($this->_value !== null) {
