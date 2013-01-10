@@ -1032,7 +1032,7 @@ trait TWidget_MappedList {
         
         if($renderer === null) {
             $renderer = function($data, $renderContext) {
-                $key = $renderContext->getKey();
+                $key = $renderContext->getField();
                 $value = null;
                 
                 if(is_array($data)) {
@@ -1050,7 +1050,7 @@ trait TWidget_MappedList {
                         $value = $data->{'get'.ucfirst($key)}();
                     }
                 }
-                
+
                 return $value;
             };
         }
