@@ -37,6 +37,8 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
             
             $fields = $this->_generateDefaultFields();
         }
+
+        $renderContext->iterate(null);
         
         foreach($fields as $key => $field) {
             $row = new aura\html\ElementContent();
@@ -44,7 +46,7 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
             $thTag = new aura\html\Element('th', $field->getName());
             $tdTag = new aura\html\Tag('td');
             
-            $renderContext->iterate($key, $tdTag, $trTag);
+            $renderContext->iterateField($key, $tdTag, $trTag);
             $value = $field->render($this->_data, $renderContext);
             
             $row->push($thTag->render(), $tdTag->renderWith($value));
