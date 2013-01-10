@@ -167,15 +167,15 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
 
     public function prepareValue($value, opal\rdbms\schema\IField $field=null) {
         if($field !== null) {
-            if(false !== ($value = $this->_prepareKnownValue($value, $field))) {
-                return $value;
+            if(false !== ($preppedValue = $this->_prepareKnownValue($value, $field))) {
+                return $preppedValue;
             }
             
             if($field instanceof opal\rdbms\schema\field\Int) {
                 return (int)$value;
             }
         }
-        
+
         if($value instanceof core\time\IDate) {
             $value = $this->_prepareDateValue($value);
         } else if(is_numeric($value)) {
