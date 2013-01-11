@@ -18,7 +18,11 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements ISel
 
     public function renderFieldSet($fieldSetName) {
         $fs = $this->html->fieldSet($fieldSetName);
+        return $this->renderFieldContent($fs);
+    }
 
+
+    public function renderFieldContent(aura\html\widget\FieldSet $fs) {
         // Search
         $fs->addFieldArea($this->_('Search'))->push(
             $this->html->textbox(
@@ -206,6 +210,10 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements ISel
 
     public function setSelected($selected) {
         if(!$this->_isForMany) {
+            if($selected instanceof opal\query\record\IRecord) {
+                $selected = $selected->getPrimaryManifest();
+            }
+
             $this->values->selected = $selected;
         } else {
             if(!is_array($selected)) {
@@ -240,7 +248,7 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements ISel
         if($this->_isRequired) {
             if(!$this->hasSelection()) {
                 $this->values->search->addError('required', $this->_(
-                    'You must selected at least one entry'
+                    'You must select at least one entry'
                 ));
             }
         }
