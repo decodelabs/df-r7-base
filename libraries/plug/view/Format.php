@@ -49,31 +49,64 @@ class Format implements aura\view\IHelper {
     
 // Date
     public function date($date, $size=core\time\Date::MEDIUM, $locale=true) {
+        if($date === null) {
+            return null;
+        }
+
         return core\time\Date::factory($date)
             ->localeDateFormat($size, $locale);
     }
     
     public function userDate($date, $size=core\time\Date::MEDIUM) {
+        if($date === null) {
+            return null;
+        }
+        
         return core\time\Date::factory($date)
             ->userLocaleDateFormat($size);
     }
     
     public function dateTime($date, $size=core\time\Date::MEDIUM, $locale=true) {
+        if($date === null) {
+            return null;
+        }
+        
         return core\time\Date::factory($date)
             ->localeFormat($size, $locale);
     }
     
     public function userDateTime($date, $size=core\time\Date::MEDIUM) {
+        if($date === null) {
+            return null;
+        }
+        
         return core\time\Date::factory($date)
             ->userLocaleFormat($size);
     }
+
+    public function customDate($date, $format) {
+        if($date === null) {
+            return null;
+        }
+
+        return core\time\Date::factory($date)
+            ->format($format);
+    }
     
     public function time($date, $size=core\time\Date::MEDIUM, $locale=true) {
+        if($date === null) {
+            return null;
+        }
+        
         return core\time\Date::factory($date)
             ->localeTimeFormat($size, $locale);
     }
     
     public function userTime($date, $size=core\time\Date::MEDIUM) {
+        if($date === null) {
+            return null;
+        }
+        
         return core\time\Date::factory($date)
             ->userLocaleTimeFormat($size);
     }
