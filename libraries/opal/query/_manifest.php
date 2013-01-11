@@ -260,7 +260,7 @@ interface ICorrelationQuery extends
 }
 
 
-interface IJoinQuery extends IQuery, IParentSourceProvider, IJoinClauseFactory {
+interface IJoinQuery extends IQuery, IParentSourceProvider, IJoinClauseFactory, IWhereClauseFactory {
     
     const INNER = 0;
     const LEFT = 1;

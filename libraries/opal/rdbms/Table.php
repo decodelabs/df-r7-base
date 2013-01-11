@@ -1220,12 +1220,26 @@ abstract class Table implements ITable, core\IDumpable {
         $output .= ' JOIN '.$this->_adapter->quoteIdentifier($join->getSource()->getAdapter()->getDelegateQueryAdapter()->getName()).
                    ' AS '.$this->_adapter->quoteTableAliasDefinition($join->getSourceAlias());
                    
-        $clauses = $join->getJoinClauseList();
-        
-        if(!$clauses->isEmpty()) {
+        $onClauses = $join->getJoinClauseList();
+        $whereClauses = $join->getWhereClauseList();
+        $onClausesEmpty = $onClauses->isEmpty();
+        $whereClausesEmpty = $whereClauses->isEmpty();
+        $clauses = null;
+
+        if(!$onClausesEmpty && !$whereClausesEmpty) {
+            $clauses = new opal\query\clause\ListBase($join);
+            $clauses->_addClause($onClauses);
+            $clauses->_addClause($whereClauses);
+        } else if(!$onClausesEmpty) {
+            $clauses = $onClauses;
+        } else if(!$whereClausesEmpty) {
+            $clauses = $whereClauses;
+        }
+
+        if($clauses) {
             $output .= "\n".'    ON '.$this->_defineQueryClauseList($stmt, $clauses);
         }
-        
+
         return $output;
     }
     

@@ -14,6 +14,8 @@ class Join implements IJoinQuery, core\IDumpable {
     use TQuery;
     use TQuery_ParentAware;
     use TQuery_ParentAwareJoinClauseFactory;
+    use TQuery_PrerequisiteClauseFactory;
+    use TQuery_PrerequisiteAwareWhereClauseFactory;
     
     protected $_source;
     protected $_type;
