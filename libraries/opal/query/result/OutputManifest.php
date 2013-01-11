@@ -61,7 +61,8 @@ class OutputManifest implements IOutputManifest {
                 
                 if($s == $sourceAlias 
                 && substr($fieldName, 0, 1) != '@'
-                && !isset($this->_outputFields[$alias])) {
+                //&& !isset($this->_outputFields[$alias])
+                ) {
                     $this->addOutputField(new opal\query\field\Intrinsic($source, $fieldName, $alias));
                 }
             }
@@ -78,10 +79,11 @@ class OutputManifest implements IOutputManifest {
         }
         
         $alias = $field->getAlias();
-        $this->_outputFields[$alias] = $field;
+        $qName = $field->getQualifiedName();
+        $this->_outputFields[$qName] = $field;
         
         if($field instanceof opal\query\IAggregateField) {
-            $this->_aggregateFields[$alias] = $field->getQualifiedName();
+            $this->_aggregateFields[$alias] = $qName;
         }
         
         return $this;

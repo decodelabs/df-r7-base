@@ -290,8 +290,25 @@ class ArrayManipulator implements IArrayManipulator {
             
             $rows = $this->_rows;
             $this->_rows = array();
-            $clauseList = $join->getJoinClauseList()->toArray();
-            $clauseIndex = new opal\query\clause\Matcher($clauseList, true);
+
+
+            $onClauses = $join->getJoinClauseList();
+            $whereClauses = $join->getWhereClauseList();
+            $onClausesEmpty = $onClauses->isEmpty();
+            $whereClausesEmpty = $whereClauses->isEmpty();
+            $clauses = null;
+
+            if(!$onClausesEmpty && !$whereClausesEmpty) {
+                $clauses = new opal\query\clause\ListBase($join);
+                $clauses->_addClause($onClauses);
+                $clauses->_addClause($whereClauses);
+            } else if(!$onClausesEmpty) {
+                $clauses = $onClauses;
+            } else if(!$whereClausesEmpty) {
+                $clauses = $whereClauses;
+            }
+
+            $clauseIndex = new opal\query\clause\Matcher($clauses->toArray(), true);
             
             switch($join->getType()) {
                 case opal\query\IJoinQuery::INNER:
@@ -811,11 +828,10 @@ class ArrayManipulator implements IArrayManipulator {
         // Prepare qualified names
         $qNameMap = array();
         
-        foreach($outputFields as $alias => $field) {
-            $qNameMap[$alias] = $field->getQualifiedName();
+        foreach($outputFields as $qName => $field) {
+            $qNameMap[$qName] = $field->getAlias();
         }
-        
-        
+
         // Prepare key / val field
         $keyName = $valQName = null;
         
@@ -853,7 +869,7 @@ class ArrayManipulator implements IArrayManipulator {
                 $tempRow = $row;
                 $row = array();
                 
-                foreach($qNameMap as $alias => $qName) {
+                foreach($qNameMap as $qName => $alias) {
                     if(isset($fieldProcessors[$qName])) {
                         $row[$qName] = $fieldProcessors[$qName]->inflateValueFromRow(
                             $qName, $tempRow, $record
@@ -910,11 +926,15 @@ class ArrayManipulator implements IArrayManipulator {
                 
                 
                 // Add known fields
-                foreach($qNameMap as $alias => $qName) {
+                foreach($qNameMap as $qName => $alias) {
+                    $qValue = null;
+
                     if(isset($row[$qName])) {
-                        $current[$alias] = $row[$qName];
-                    } else if(!isset($current[$alias])) {
-                        $current[$alias] = null;
+                        $qValue = $row[$qName];
+                    }
+
+                    if($qValue !== null || !isset($current[$alias])) {
+                        $current[$alias] = $qValue;
                     }
                 }
                 
