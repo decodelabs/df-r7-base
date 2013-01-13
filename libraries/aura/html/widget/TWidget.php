@@ -803,7 +803,11 @@ trait TWidget_NavigationEntryController {
         return $this;
     }
     
-    public function addMenu(self $menu) {
+    public function addMenu($menu) {
+        if(!$menu instanceof self) {
+            $menu = Base::factory($this->_context, 'Menu', func_get_args())->setRenderTarget($this->_renderTarget);
+        }
+        
         $this->_entries->push($menu);
         return $this;
     }

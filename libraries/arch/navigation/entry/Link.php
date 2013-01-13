@@ -21,6 +21,7 @@ class Link extends Base {
     protected $_altMatches = array(); 
     protected $_checkMatch = false;
     protected $_newWindow = false;
+    protected $_class;
     
     protected static function _fromArray(array $entry) {
         $tree = new core\collection\Tree($entry);
@@ -38,7 +39,8 @@ class Link extends Base {
             ->shouldCheckMatch((bool)$tree['checkMatch'])
             ->addAltMatches($tree->altMatches->toArray())
             ->shouldOpenInNewWindow((bool)$tree['newWindow'])
-            ->setWeight($tree['weight']);
+            ->setWeight($tree['weight'])
+            ->setClass($tree['class']);
     }
     
     public function __construct($location, $text, $icon=null) {
@@ -61,7 +63,8 @@ class Link extends Base {
             'hideIfInaccessible' => $this->_hideIfInaccessible,
             'checkMatch' => $this->_checkMatch,
             'altMatches' => $this->_altMatches,
-            'newWindow' => $this->_newWindow
+            'newWindow' => $this->_newWindow,
+            'class' => $this->_class
         ];
     }
     
@@ -195,5 +198,14 @@ class Link extends Base {
         }
         
         return $this->_newWindow;
+    }
+
+    public function setClass($class) {
+        $this->_class = $class;
+        return $this;
+    }
+
+    public function getClass() {
+        return $this->_class;
     }
 }

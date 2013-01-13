@@ -67,6 +67,9 @@ class Link extends Base implements ILinkWidget, IIconProviderWidget, core\IDumpa
             if($link->shouldOpenInNewWindow()) {
                 $this->getTag()->setAttribute('target', '_blank');
             }
+
+            $this->addClass($link->getClass());
+            $this->setDataAttribute('menuid', $link->getId());
         }
         
         $this->setUri($uri, $checkUriMatch);

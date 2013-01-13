@@ -37,8 +37,14 @@ class Menu extends Base implements core\IDumpable {
             if($entry instanceof aura\view\IDeferredRenderable) {
                 $entry->setRenderTarget($renderTarget);
             }
-            
-            $entry = new aura\html\Element('li', $entry);
+
+            $args = [];
+
+            if($id = $entry->getDataAttribute('menuid')) {
+                $args['class'] = 'item-'.$id;
+            }
+
+            $entry = new aura\html\Element('li', $entry, $args);
             $entry->shouldRenderIfEmpty(false);
             $content->push($entry);
         }
