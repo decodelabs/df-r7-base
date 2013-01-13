@@ -40,7 +40,7 @@ class Menu extends Base implements core\IDumpable {
 
             $args = [];
 
-            if($id = $entry->getDataAttribute('menuid')) {
+            if(($entry instanceof aura\html\ITagDataContainer) && ($id = $entry->getDataAttribute('menuid'))) {
                 $args['class'] = 'item-'.$id;
             }
 
