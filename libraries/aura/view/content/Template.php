@@ -19,6 +19,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
     private $_path;
     private $_view;
     private $_isRendering = false;
+    private $_innerContent = null;
     
     public static function loadDirectoryTemplate(arch\IContext $context, $path) {
         $request = $context->getRequest();
@@ -163,6 +164,8 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         $this->_isRendering = true;
         $this->_view = $target->getView();
         
+        $this->renderInnerContent();
+
         try {
             ob_start();
             require $this->_path;
@@ -189,10 +192,14 @@ class Template implements aura\view\ITemplate, core\IDumpable {
     }
     
     protected function renderInnerContent() {
+        if($this->_innerContent !== null) {
+            return $this->_innerContent;
+        }
+
         $provider = $this->getView()->getContentProvider();
         
         if($provider !== $this) {
-            return $provider->renderTo($this);
+            return $this->_innerContent = $provider->renderTo($this);
         }
     }
     
