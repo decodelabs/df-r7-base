@@ -44,6 +44,14 @@ class Menu extends Base implements core\IDumpable {
                 $args['class'] = 'item-'.$id;
             }
 
+            if($entry instanceof aura\html\widget\Link) {
+                $entry->ensureMatchRequest();
+
+                if($entry->isComputedActive()) {
+                    $args['class'] .= ' state-active';
+                }
+            }
+
             $entry = new aura\html\Element('li', $entry, $args);
             $entry->shouldRenderIfEmpty(false);
             $content->push($entry);

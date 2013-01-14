@@ -229,6 +229,23 @@ class Link extends Base implements ILinkWidget, IIconProviderWidget, core\IDumpa
     }
 
 
+    public function ensureMatchRequest() {
+        if($this->_matchRequest) {
+            return $this;
+        }
+
+        if($this->_uri instanceof arch\IRequest) {
+            $this->_matchRequest = $this->_uri;
+        }
+
+        if(is_string($this->_uri) && substr($this->_uri, 0, 4) != 'http') {
+            $this->_matchRequest = $this->_uri;
+        }
+
+        return $this;
+    }
+
+
     public function addAltMatches($matches) {
         if(!is_array($matches)) {
             $matches = func_get_args();
