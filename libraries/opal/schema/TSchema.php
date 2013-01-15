@@ -924,7 +924,7 @@ trait TSchema_IndexProvider {
 /*********************
  * Indexed fields
  */
-trait TSchema_IndexedFieldProvder {
+trait TSchema_IndexedFieldProvider {
 
     public function addPrimaryField($name, $type) {
         $field = call_user_func_array([$this, 'addField'], func_get_args());
