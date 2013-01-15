@@ -20,7 +20,7 @@ class LogicException extends \LogicException implements IException {}
 
 
 // Interfaces
-interface ISchema extends opal\schema\ISchema, opal\schema\IFieldProvider, opal\schema\IIndexProvider {
+interface ISchema extends opal\schema\ISchema, opal\schema\IFieldProvider, opal\schema\IIndexProvider, opal\schema\IIndexedFieldProvider {
     public function getUnitType();
     public function getUnitId();
     public function iterateVersion();

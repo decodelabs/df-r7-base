@@ -124,6 +124,16 @@ interface IIndexProvider extends ISchema {
 }
 
 
+interface IIndexedFieldProvider extends IFieldProvider, IIndexProvider {
+    public function addPrimaryField($name, $type);
+    public function addPrimaryFieldAfter($key, $name, $type);
+    public function addIndexedField($name, $type);
+    public function addIndexedFieldAfter($key, $name, $type);
+    public function addUniqueField($name, $type);
+    public function addUniqueFieldAfter($key, $name, $type);
+}
+
+
 interface IForeignKeyProvider extends ISchema {
     public function getForeignKey($name);
     public function addForeignKey($name, $targetSchema);

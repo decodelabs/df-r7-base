@@ -921,6 +921,48 @@ trait TSchema_IndexProvider {
 
 
 
+/*********************
+ * Indexed fields
+ */
+trait TSchema_IndexedFieldProvder {
+
+    public function addPrimaryField($name, $type) {
+        $field = call_user_func_array([$this, 'addField'], func_get_args());
+        $this->addPrimaryIndex($field->getName(), $field);
+        return $field;
+    }
+
+    public function addPrimaryFieldAfter($key, $name, $type) {
+        $field = call_user_func_array([$this, 'addFieldAfter'], func_get_args());
+        $this->addPrimaryIndex($field->getName(), $field);
+        return $field;
+    }
+
+    public function addIndexedField($name, $type) {
+        $field = call_user_func_array([$this, 'addField'], func_get_args());
+        $this->addIndex($field->getName(), $field);
+        return $field;
+    }
+
+    public function addIndexedFieldAfter($key, $name, $type) {
+        $field = call_user_func_array([$this, 'addFieldAfter'], func_get_args());
+        $this->addIndex($field->getName(), $field);
+        return $field;
+    }
+
+    public function addUniqueField($name, $type) {
+        $field = call_user_func_array([$this, 'addField'], func_get_args());
+        $this->addUniqueIndex($field->getName(), $field);
+        return $field;
+    }
+
+    public function addUniqueFieldAfter($key, $name, $type) {
+        $field = call_user_func_array([$this, 'addFieldAfter'], func_get_args());
+        $this->addUniqueIndex($field->getName(), $field);
+        return $field;
+    }
+}
+
 
 
 

@@ -14,6 +14,7 @@ abstract class Base implements ISchema, core\IDumpable {
     use opal\schema\TSchema;
     use opal\schema\TSchema_FieldProvider;
     use opal\schema\TSchema_IndexProvider;
+    use opal\schema\TSchema_IndexedFieldProvider;
     use opal\schema\TSchema_ForeignKeyProvider;
     use opal\schema\TSchema_TriggerProvider;
     

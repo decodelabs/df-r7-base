@@ -15,6 +15,7 @@ class Base implements ISchema, core\IDumpable {
     use opal\schema\TSchema;
     use opal\schema\TSchema_FieldProvider;
     use opal\schema\TSchema_IndexProvider;
+    use opal\schema\TSchema_IndexedFieldProvider;
     
     protected $_version = 0;
     protected $_unitId;

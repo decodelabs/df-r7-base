@@ -29,6 +29,7 @@ interface ISchema extends
     opal\schema\ISchema, 
     opal\schema\IFieldProvider, 
     opal\schema\IIndexProvider, 
+    opal\schema\IIndexedFieldProvider,
     opal\schema\IForeignKeyProvider, 
     opal\schema\ITriggerProvider, 
     ISqlVariantAware,
