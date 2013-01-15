@@ -353,6 +353,9 @@ trait THelper {
 
 
 interface ITemplate extends IContentProvider, \ArrayAccess, IRenderTarget, core\i18n\translate\ITranslationProxy {
+    public function isRendering();
+    public function isLayout();
+
     // Escaping
     public function esc($value, $default=null);
     public function escAttribute($name, $default=null);

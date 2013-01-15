@@ -19,6 +19,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
     private $_path;
     private $_view;
     private $_isRendering = false;
+    private $_isLayout = false;
     private $_innerContent = null;
     
     public static function loadDirectoryTemplate(arch\IContext $context, $path) {
@@ -129,10 +130,10 @@ class Template implements aura\view\ITemplate, core\IDumpable {
             );
         }
         
-        return new self($context, $layoutPath);
+        return new self($context, $layoutPath, true);
     }
     
-    public function __construct(arch\IContext $context, $absolutePath) {
+    public function __construct(arch\IContext $context, $absolutePath, $isLayout=false) {
         if(!is_file($absolutePath)) {
             throw new ContentNotFoundException(
                 'Template '.$absolutePath.' could not be found'
@@ -141,6 +142,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         
         $this->_path = $absolutePath;
         $this->_context = $context;
+        $this->_isLayout = $isLayout;
     }
     
     
@@ -164,7 +166,11 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         $this->_isRendering = true;
         $this->_view = $target->getView();
         
-        $this->renderInnerContent();
+        if($this->_isLayout) {
+            // Prepare inner template content before rendering to ensure 
+            // sub templates can affect layout properties
+            $this->renderInnerContent();
+        }
 
         try {
             ob_start();
@@ -192,10 +198,15 @@ class Template implements aura\view\ITemplate, core\IDumpable {
     }
     
     protected function renderInnerContent() {
+        if(!$this->_isLayout) {
+            return null;
+        }
+
         if($this->_innerContent !== null) {
             return $this->_innerContent;
         }
 
+        $this->_innerContent = false;
         $provider = $this->getView()->getContentProvider();
         
         if($provider !== $this) {
@@ -203,6 +214,14 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         }
     }
     
+    public function isRendering() {
+        return $this->_isRendering;
+    }
+
+    public function isLayout() {
+        return $this->_isLayout;
+    }
+
     public function __toString() {
         try {
             return (string)$this->toString();
