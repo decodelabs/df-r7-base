@@ -176,7 +176,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource {
 
     public function getMenuIds($areas=null) {
         $cache = arch\navigation\menu\Cache::getInstance($this->_context->getApplication());
-        $cacheId = md5('directory://__ID_LIST__');
+        $cacheId = 'Directory://__ID_LIST__';
 
         if(!$cache->has($cacheId)
         || null === ($list = $cache->get($cacheId))) {

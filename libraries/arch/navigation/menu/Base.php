@@ -61,6 +61,18 @@ class Base implements IMenu, \Serializable, core\IDumpable {
         return $output;
     }
 
+    public static function loadList(arch\IContext $context, array $ids) {
+        $output = array();
+
+        foreach($ids as $id) {
+            try {
+                $output[$id] = self::factory($context, $id);
+            } catch(\Exception $e) {}
+        }
+
+        return $output;
+    }
+
     public static function factory(arch\IContext $context, $id) {
         if($id instanceof IMenu) {
             return $id;
@@ -69,7 +81,9 @@ class Base implements IMenu, \Serializable, core\IDumpable {
         $id = self::normalizeId($id);
         $source = arch\navigation\menu\source\Base::factory($context, $id->getScheme());
         $cache = Cache::getInstance($context->getApplication());
-        $cacheId = md5($id);
+        
+        //$cacheId = md5($id);
+        $cacheId = (string)$id;
 
         //$cache->clear();
 
@@ -81,11 +95,13 @@ class Base implements IMenu, \Serializable, core\IDumpable {
 
         return $output;
     }
-    
+
     public static function clearCacheFor(arch\IContext $context, $id) {
         $id = self::normalizeId($id);
         $cache = Cache::getInstance($context->getApplication());
-        $cacheId = md5($id);
+        
+        //$cacheId = md5($id);
+        $cacheId = (string)$id;
         
         $cache->remove($cacheId);
     }
