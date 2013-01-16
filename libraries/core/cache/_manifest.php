@@ -26,6 +26,9 @@ interface ICache extends core\IValueMap, \ArrayAccess, core\IApplicationAware, c
 
     public function hasDirectFileBackend();
     public function getDirectFilePath($key);
+    public function getDirectFileSize($key);
+    public function getDirectFile($key);
+    public function getDirectFileList();
 }
 
 
@@ -42,4 +45,7 @@ interface IBackend extends core\IValueMap, \Countable {
 interface IDirectFileBackend extends IBackend {
     public function shouldSerialize($flag=null);
     public function getDirectFilePath($id);
+    public function getDirectFileSize($id);
+    public function getDirectFile($id);
+    public function getDirectFileList();
 }

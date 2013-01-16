@@ -203,4 +203,28 @@ abstract class Base implements ICache {
 
         return $this->_backend->getDirectFilePath($key);
     }
+
+    public function getDirectFileSize($key) {
+        if(!$this->hasDirectFileBackend()) {
+            return null;
+        }
+
+        return $this->_backend->getDirectFileSize($key);
+    }
+
+    public function getDirectFile($key) {
+        if(!$this->hasDirectFileBackend()) {
+            return null;
+        }
+
+        return $this->_backend->getDirectFile($key);
+    }
+
+    public function getDirectFileList() {
+        if(!$this->hasDirectFileBackend()) {
+            return null;
+        }
+
+        return $this->_backend->getDirectFileList();
+    }
 }

@@ -172,6 +172,33 @@ class LocalFile implements core\cache\IDirectFileBackend {
         return $filePath;
     }
 
+    public function getDirectFileSize($key) {
+        if($path = $this->getDirectFilePath($key)) {
+            return filesize($path);
+        }
+
+        return null;
+    }
+
+    public function getDirectFile($key) {
+        if(null === ($path = $this->getDirectFilePath($key))) {
+            return null;
+        }
+
+        return new core\io\LocalFilePointer($path);
+    }
+
+    public function getDirectFileList() {
+        $output = array();
+
+        foreach(core\io\Util::listFilesIn($this->_path) as $fileName) {
+            $key = substr($fileName, 6);
+            $output[$key] = new core\io\LocalFilePointer($this->_path.'/'.$fileName);
+        }
+
+        return $output;
+    }
+
     protected function _normalizeKey($key) {
         return core\string\Manipulator::formatFileName($key);
     }
