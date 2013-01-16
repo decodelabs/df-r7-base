@@ -198,7 +198,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
     }
     
     protected function renderInnerContent() {
-        if(!$this->_isLayout) {
+        if(!$this->_isLayout || $this->_innerContent === false) {
             return null;
         }
 
