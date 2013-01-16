@@ -162,6 +162,14 @@ abstract class Base implements ICache {
         $this->_backend->clear();
         return $this;
     }
+
+    public function count() {
+        return $this->_backend->count();
+    }
+
+    public function getKeys() {
+        return $this->_backend->getKeys();
+    }
     
     public function offsetSet($key, $value) {
         return $this->set($key, $value);

@@ -124,6 +124,15 @@ class LocalFile implements core\cache\IDirectFileBackend {
     
     public function clear() {
         core\io\Util::emptyDir($this->_path);
+        return true;
+    }
+
+    public function count() {
+        return core\io\Util::countFilesIn($this->_path);
+    }
+
+    public function getKeys() {
+        return core\io\Util::listFilesIn($this->_path);
     }
 
     public function getCreationTime($key) {

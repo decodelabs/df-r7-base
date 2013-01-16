@@ -75,6 +75,32 @@ class Apc implements core\cache\IBackend {
         
         return $this;
     }
+
+    public function count() {
+        $output = 0;
+        $info = apc_cache_info('user');
+
+        foreach($info['cache_list'] as $key) {
+            if(0 === strpos($key['info'], $this->_prefix)) {
+                $output++;
+            }
+        }
+
+        return $output;
+    }
+
+    public function getKeys() {
+        $output = array();
+        $info = apc_cache_info('user');
+
+        foreach($info['cache_list'] as $key) {
+            if(0 === strpos($key['info'], $this->_prefix)) {
+                $output[] = $key;
+            }
+        }
+
+        return $output;
+    }
     
     public function getCreationTime($key) {
         $val = apc_fetch($this->_prefix.$key);

@@ -15,13 +15,14 @@ class RuntimeException extends \RuntimeException implements IException {}
 
 
 // Interfaces
-interface ICache extends core\IValueMap, \ArrayAccess, core\IApplicationAware, core\IRegistryObject {
+interface ICache extends core\IValueMap, \ArrayAccess, core\IApplicationAware, core\IRegistryObject, \Countable {
     public static function getCacheId();
     public function getLifeTime();
     public function getDefaultLifeTime();
     public function isCacheDistributed();
     public function clear();
     public function getCreationTime($key);
+    public function getKeys();
 
     public function hasDirectFileBackend();
     public function getDirectFilePath($key);
@@ -29,12 +30,13 @@ interface ICache extends core\IValueMap, \ArrayAccess, core\IApplicationAware, c
 
 
 
-interface IBackend extends core\IValueMap {
+interface IBackend extends core\IValueMap, \Countable {
     public static function isLoadable();
     public function setLifeTime($lifeTime);
     public function getLifeTime();
     public function clear();
     public function getCreationTime($key);
+    public function getKeys();
 }
 
 interface IDirectFileBackend extends IBackend {

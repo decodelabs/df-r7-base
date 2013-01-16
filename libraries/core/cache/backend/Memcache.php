@@ -83,8 +83,61 @@ class Memcache implements core\cache\IBackend {
     }
     
     public function clear() {
-        $this->_connection->flush();
+        foreach($this->getKeys() as $key) {
+            $this->remove($key);
+        }
+
         return $this;
+    }
+
+    public function count() {
+        $output = 0;
+        $allSlabs = $memcache->getExtendedStats('slabs');
+
+        foreach($allSlabs as $server => $slabs) {
+            foreach($slabs as $slabId => $slabMeta) {
+               $cdump = $memcache->getExtendedStats('cachedump', $slabId);
+
+                foreach($cdump as $keys => $arrVal) {
+                    if(!is_array($arrVal)) {
+                        continue;
+                    }
+
+                    foreach($arrVal as $key => $value) {
+                        if(0 === strpos($key, $this->_prefix)) {
+                            $output++;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $output;
+    }
+
+    public function getKeys() {
+        $output = array();
+        $allSlabs = $memcache->getExtendedStats('slabs');
+
+        foreach($allSlabs as $server => $slabs) {
+            foreach($slabs as $slabId => $slabMeta) {
+               $cdump = $memcache->getExtendedStats('cachedump', $slabId);
+
+                foreach($cdump as $keys => $arrVal) {
+                    if(!is_array($arrVal)) {
+                        continue;
+                    }
+
+                    foreach($arrVal as $key => $value) {
+                        if(0 === strpos($key, $this->_prefix)) {
+                            $output[] = $key;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $output;
     }
     
     public function getCreationTime($key) {
