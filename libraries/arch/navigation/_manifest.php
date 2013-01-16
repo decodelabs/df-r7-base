@@ -30,7 +30,7 @@ interface IEntry extends core\IArrayProvider {
 }
 
 
-interface IEntryList extends core\IArrayProvider {
+interface IEntryList extends core\IArrayProvider, \Countable {
     public function addEntries($entries);
     public function addEntry($entry);
     public function getEntry($id);
@@ -137,5 +137,9 @@ trait TEntryList {
 
     public function toArray() {
         return $this->getEntries();
+    }
+
+    public function count() {
+        return count($this->_entries);
     }
 }
