@@ -131,10 +131,10 @@ trait TAttributeModule {
                 break;
 
 
-            // Metadata
+            // MetaData
             case 'metadata':
-                if($parent instanceof IMetadataProvider) {
-                    $parent->setMetadata($reader->getInnerXml());
+                if($parent instanceof IMetaDataProvider) {
+                    $parent->setMetaData($reader->getInnerXml());
                 }
 
                 break;

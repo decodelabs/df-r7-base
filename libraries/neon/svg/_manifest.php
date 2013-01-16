@@ -55,11 +55,11 @@ trait TCustomContainerElement {
             }
         }
 
-        // Metadata
-        if($this instanceof IMetadataProvider) {
-            if($this->_metadata) {
+        // MetaData
+        if($this instanceof IMetaDataProvider) {
+            if($this->_metaData) {
                 $writer->startElement('metadata');
-                $writer->writeRaw(rtrim($this->_metadata)."\n    ");
+                $writer->writeRaw(rtrim($this->_metaData)."\n    ");
                 $writer->endElement();
             }
         }
@@ -452,10 +452,10 @@ interface IDescriptionProvider {
 }
 
 
-// Metadata
-interface IMetadataProvider {
-    public function setMetadata($metadata);
-    public function getMetadata();        
+// MetaData
+interface IMetaDataProvider {
+    public function setMetaData($metaData);
+    public function getMetaData();        
 }
 
 
@@ -512,7 +512,7 @@ interface IDefinitionsContainer extends
     IDefinitionProvider,
     IContainer,
     IStructure,
-    IMetadataProvider 
+    IMetaDataProvider 
     {}
 
 
@@ -522,7 +522,7 @@ interface IDocument extends
     IElement,
     IContainer,
     IStructure,
-    IMetadataProvider,
+    IMetaDataProvider,
     IDefinitionProvider,
     IAspectRatioAttributeModule,
     IBaseProfileAttributeModule,
@@ -551,7 +551,7 @@ interface IGroup extends
     IContainer, 
     IStructure,
     IDefinitionProvider,
-    IMetadataProvider,
+    IMetaDataProvider,
     IPathProvider 
     {}
 
@@ -610,7 +610,7 @@ interface IFont extends
     IElement,
     IStructure,
     IDescriptionProvider, 
-    IMetadataProvider,
+    IMetaDataProvider,
     IFontDefinitionAttributeModule,
     IFontFaceContainer
     {

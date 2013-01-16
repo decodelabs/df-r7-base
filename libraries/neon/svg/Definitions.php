@@ -12,7 +12,7 @@ use df\neon;
 class Definitions implements IDefinitionsContainer, core\IDumpable {
 
     use TStructure_Container;
-    use TStructure_Metadata;
+    use TStructure_MetaData;
     use TAttributeModule;
     use TAttributeModule_Structure;
 

@@ -13,7 +13,7 @@ class Document implements IDocument, core\IDumpable {
 
     use core\xml\TWriterInterchange;
     use TStructure_Container;
-    use TStructure_Metadata;
+    use TStructure_MetaData;
     use TStructure_Definitions;
     use TAttributeModule;
     use TAttributeModule_Structure;

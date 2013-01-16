@@ -43,18 +43,18 @@ trait TStructure_Description {
 
 
 
-// Metadata
-trait TStructure_Metadata {
+// MetaData
+trait TStructure_MetaData {
 
-    protected $_metadata;
+    protected $_metaData;
 
-    public function setMetadata($metadata) {
-        $this->_metadata = $this->_normalizeText($metadata);
+    public function setMetaData($metaData) {
+        $this->_metaData = $this->_normalizeText($metaData);
         return $this;
     }
 
-    public function getMetadata() {
-        return $this->_metadata;
+    public function getMetaData() {
+        return $this->_metaData;
     }
 }
 
@@ -94,11 +94,11 @@ trait TStructure_Container {
             }
         }
 
-        // Metadata
-        if($this instanceof IMetadataProvider) {
-            if($this->_metadata) {
+        // MetaData
+        if($this instanceof IMetaDataProvider) {
+            if($this->_metaData) {
                 $writer->startElement('metadata');
-                $writer->writeRaw(rtrim($this->_metadata)."\n    ");
+                $writer->writeRaw(rtrim($this->_metaData)."\n    ");
                 $writer->endElement();
             }
         }
@@ -215,8 +215,8 @@ trait TStructure_Container {
             $output['description'] = $this->_description;
         }
 
-        if($this instanceof IMetadataProvider && $this->_metadata) {
-            $output['metadata'] = $this->_metadata;
+        if($this instanceof IMetaDataProvider && $this->_metaData) {
+            $output['metadata'] = $this->_metaData;
         }
 
         if(!empty($this->_children)) {

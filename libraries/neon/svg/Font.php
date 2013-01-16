@@ -16,7 +16,7 @@ class Font implements IFont, core\IDumpable {
     use TCustomContainerElement;
     use TFontFaceContainer;
     use TStructure_Description;
-    use TStructure_Metadata;
+    use TStructure_MetaData;
     use TAttributeModule;
     use TAttributeModule_FontDefinition;
     use TAttributeModule_Structure;

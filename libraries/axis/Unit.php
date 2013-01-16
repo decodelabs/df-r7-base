@@ -91,7 +91,7 @@ abstract class Unit implements IUnit {
         return new $class($model);
     }
 
-    public static function getUnitMetadata(array $unitIds) {
+    public static function getUnitMetaData(array $unitIds) {
         $output = array();
 
         foreach($unitIds as $unitId) {
