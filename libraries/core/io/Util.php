@@ -69,6 +69,42 @@ class Util implements IUtil {
         return true;
     }
 
+    public static function countFilesIn($path) {
+        if(!is_dir($source)) {
+            throw new \Exception(
+                'Source directory does not exist'
+            );
+        }
+
+        $output = 0;
+
+        foreach(new \DirectoryIterator($path) as $item) {
+            if($item->isFile()) {
+                $output++;
+            }
+        }
+
+        return $output;
+    }
+
+    public static function listFilesIn($path) {
+        if(!is_dir($source)) {
+            throw new \Exception(
+                'Source directory does not exist'
+            );
+        }
+
+        $output = array();
+
+        foreach(new \DirectoryIterator($path) as $item) {
+            if($item->isFile()) {
+                $output[] = $item->getFilename();
+            }
+        }
+
+        return $output;
+    }
+
     public static function copyDir($source, $destination, $merge=false) {
         if(!is_dir($source)) {
             throw new \Exception(
