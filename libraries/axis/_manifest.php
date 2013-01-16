@@ -37,6 +37,7 @@ interface IUnit extends core\IApplicationAware, user\IAccessLock {
     public function getUnitName();
     public function getCanonicalUnitName();
     public function getUnitId();
+    public function getUnitType();
     public function getModel();
     public function getUnitSettings();
 }
@@ -53,7 +54,6 @@ interface IStorageUnit extends IUnit {
 
 interface IAdapterBasedStorageUnit extends IStorageUnit {
     public function getUnitAdapter();
-    public function getUnitType();
 }
 
 interface ISchemaBasedStorageUnit extends IAdapterBasedStorageUnit, opal\schema\ISchemaContext {

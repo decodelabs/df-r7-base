@@ -39,6 +39,10 @@ abstract class Base extends core\Config implements axis\IUnit {
         return $this->_model->getModelName().axis\Unit::ID_SEPARATOR.$this->getUnitName();
     }
     
+    public function getUnitType() {
+        return 'config';
+    }
+
     public function getModel() {
         return $this->_model;
     }

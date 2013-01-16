@@ -90,6 +90,39 @@ abstract class Unit implements IUnit {
         
         return new $class($model);
     }
+
+    public static function getUnitMetadata(array $unitIds) {
+        $output = array();
+
+        foreach($unitIds as $unitId) {
+            if(isset($output[$unitId])) {
+                continue;
+            }
+
+            @list($model, $name) = explode('/', $unitId, 2);
+
+            $data = [
+                'unitId' => $unitId,
+                'model' => $model,
+                'name' => $name,
+                'canonicalName' => $name,
+                'type' => null
+            ];
+
+            try {
+                $unit = self::fromId($unitId);
+                $data['name'] = $unit->getUnitName();
+                $data['canonicalName'] = $unit->getCanonicalUnitName();
+                $data['type'] = $unit->getUnitType();
+            } catch(axis\RuntimeException $e) {}
+
+            $output[$unitId] = $data;
+        }
+
+        ksort($output);
+
+        return $output;
+    }
     
     public function __construct(axis\IModel $model) {
         $this->_model = $model;
