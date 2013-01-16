@@ -92,10 +92,11 @@ class Apc implements core\cache\IBackend {
     public function getKeys() {
         $output = array();
         $info = apc_cache_info('user');
+        $length = strlen($this->_prefix);
 
         foreach($info['cache_list'] as $key) {
             if(0 === strpos($key['info'], $this->_prefix)) {
-                $output[] = $key;
+                $output[] = substr($key['info'], $length);
             }
         }
 

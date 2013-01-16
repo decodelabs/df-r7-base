@@ -132,7 +132,13 @@ class LocalFile implements core\cache\IDirectFileBackend {
     }
 
     public function getKeys() {
-        return core\io\Util::listFilesIn($this->_path);
+        $output = array();
+
+        foreach(core\io\Util::listFilesIn($this->_path) as $key) {
+            $output[] = substr($key, 6);
+        }
+
+        return $output;
     }
 
     public function getCreationTime($key) {

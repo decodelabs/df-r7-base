@@ -118,6 +118,7 @@ class Memcache implements core\cache\IBackend {
     public function getKeys() {
         $output = array();
         $allSlabs = $memcache->getExtendedStats('slabs');
+        $length = strlen($this->_prefix);
 
         foreach($allSlabs as $server => $slabs) {
             foreach($slabs as $slabId => $slabMeta) {
@@ -130,7 +131,7 @@ class Memcache implements core\cache\IBackend {
 
                     foreach($arrVal as $key => $value) {
                         if(0 === strpos($key, $this->_prefix)) {
-                            $output[] = $key;
+                            $output[] = substr($key, $length);
                         }
                     }
                 }
