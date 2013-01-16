@@ -34,10 +34,13 @@ class BlockLink extends Link {
             $icon = $this->_renderTarget->getView()->html->icon($this->_icon);
         }
 
-        $this->setBody([
-            new aura\html\Element('h1', [$icon, new aura\html\Element('span', $body, ['class' => 'body'])]), 
-            new aura\html\Element('p', $description, ['class' => 'description'])
-        ]);
+        $body = [new aura\html\Element('h1', [$icon, new aura\html\Element('span', $body, ['class' => 'body'])])];
+
+        if($this->_showDescription) {
+            $body[] = new aura\html\Element('p', $description, ['class' => 'description']);
+        }
+
+        $this->setBody($body);
 
         $this->_icon = null;
         $this->_description = null;

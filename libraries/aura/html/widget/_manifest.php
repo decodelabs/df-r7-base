@@ -357,3 +357,9 @@ interface ILinkWidget extends IWidget, IBodyContentAwareWidget, IDisableableWidg
     public function setContentType($type);
     public function getContentType();
 }
+
+interface IDescriptionAwareLinkWidget extends ILinkWidget {
+    public function setDescription($description);
+    public function getDescription();
+    public function shouldShowDescription($flag=null);    
+}

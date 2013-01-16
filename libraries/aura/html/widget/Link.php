@@ -11,7 +11,7 @@ use df\arch;
 use df\aura;
 use df\user;
 
-class Link extends Base implements ILinkWidget, IIconProviderWidget, core\IDumpable {
+class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIconProviderWidget, core\IDumpable {
     
     use TWidget_BodyContentAware;
     use TWidget_Disableable;
@@ -34,6 +34,7 @@ class Link extends Base implements ILinkWidget, IIconProviderWidget, core\IDumpa
     protected $_media;
     protected $_contentType;
     protected $_description;
+    protected $_showDescription = true;
     protected $_bodyWrapper;
     
     public function __construct(arch\IContext $context, $uri, $body=null, $matchRequest=null) {
@@ -446,6 +447,15 @@ class Link extends Base implements ILinkWidget, IIconProviderWidget, core\IDumpa
 
     public function getDescription() {
         return $this->_description;
+    }
+
+    public function shouldShowDescription($flag=null) {
+        if($flag !== null) {
+            $this->_showDescription = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_showDescription;
     }
 
 

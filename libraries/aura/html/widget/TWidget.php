@@ -735,6 +735,16 @@ trait TWidget_NavigationEntryController {
     protected $_entries;
     protected $_context;
     protected $_renderIfEmpty = false;
+    protected $_showDescriptions = true;
+
+    public function shouldShowDescriptions($flag=null) {
+        if($flag !== null) {
+            $this->_showDescriptions = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_showDescriptions;
+    }
 
     public function setEntries($entries) {
         $this->_entries->clear();
@@ -798,7 +808,7 @@ trait TWidget_NavigationEntryController {
                 );
             }
         }
-        
+
         $this->_entries->push($link);
         return $this;
     }

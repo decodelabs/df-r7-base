@@ -38,6 +38,10 @@ class Menu extends Base implements core\IDumpable {
                 $entry->setRenderTarget($renderTarget);
             }
 
+            if($entry instanceof IDescriptionAwareLinkWidget) {
+                $entry->shouldShowDescription($this->_showDescriptions);
+            }
+
             $args = [];
 
             if(($entry instanceof aura\html\ITagDataContainer) && ($id = $entry->getDataAttribute('menuid'))) {
