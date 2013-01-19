@@ -42,6 +42,11 @@ interface IDate extends \Serializable, core\IStringProvider {
     public function gte($date);
     public function lt($date);
     public function lte($date);
+
+    public function isPast();
+    public function isNearPast($hours=null);
+    public function isFuture();
+    public function isNearFuture($hours=null);
     
     // Modification
     public function modify($string);

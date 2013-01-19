@@ -326,6 +326,30 @@ class Date implements IDate, core\IDumpable {
         
         return $this->toTimestamp() <= self::factory($date)->toTimestamp();
     }
+
+    public function isPast() {
+        return $this->lt('now');
+    }
+
+    public function isNearPast($hours=null) {
+        if(empty($hours)) {
+            $hours = 24;
+        }
+
+        return $this->lt('now') && $this->gte('-'.(int)$hours.' hours');
+    }
+
+    public function isFuture() {
+        return $this->gt('now');
+    }
+
+    public function isNearFuture($hours=null) {
+        if(empty($hours)) {
+            $hours = 24;
+        }
+
+        return $this->gt('now') && $this->lte('+'.(int)$hours.' hours');
+    }
     
     
 // Modification
