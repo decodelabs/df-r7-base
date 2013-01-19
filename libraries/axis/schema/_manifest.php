@@ -133,6 +133,7 @@ interface IQueryClauseRewriterField extends IField {
 interface IRelationField extends IField, IQueryClauseRewriterField {
     public function setTargetUnitId($targetUnitId);
     public function getTargetUnitId();
+    public function getTargetUnit(core\IApplication $application=null);
     public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate);
 }
 
@@ -158,6 +159,10 @@ trait TRelationField {
     
     public function getTargetUnitId() {
         return $this->_targetUnitId;
+    }
+
+    public function getTargetUnit(core\IApplication $application=null) {
+        return axis\Unit::fromId($this->_targetUnitId, $application);
     }
 
 
