@@ -19,6 +19,7 @@ class Import implements aura\view\IHelper {
             $context = $this->_view->getContext()->spawnInstance($contextRequest);
             $template = aura\view\content\Template::loadDirectoryTemplate($context, $path);
             $template->setRenderTarget($this->_view);
+            $template->setArgs($this->_view->getArgs());
         
             return $template;
         } catch(\Exception $e) {
