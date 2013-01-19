@@ -326,6 +326,47 @@ abstract class Base extends axis\Unit implements
     }
 
 
+    public function rewriteCountRelationCorrelation(opal\query\ICorrelatableQuery $query, $field, $alias) {
+        $schema = $this->getTransientUnitSchema();
+        $field = $schema->getField($field);
+
+        if(!$field instanceof axis\schema\IManyRelationField) {
+            throw new axis\schema\FieldTypeNotFoundException(
+                $field.' is not a many relation field'
+            );
+        }
+
+        $application = $query->getSourceManager()->getApplication();
+        $targetUnit = $field->getTargetUnit($application);
+        $fieldName = $field->getName();
+        $localName = $this->getUnitName();
+
+        if($field instanceof axis\schema\IBridgedRelationField) {
+            // Field is bridged
+            
+            $bridgeAlias = $fieldName.'Bridge';
+            $localAlias = $query->getSource()->getAlias();
+            $targetName = $targetUnit->getUnitName();
+
+            $query->correlate('COUNT('.$bridgeAlias.'.'.$targetName.')', $alias)
+                ->from($this->getBridgeUnit($fieldName), $bridgeAlias)
+                ->on($bridgeAlias.'.'.$localName, '=', $localAlias.'.@primary')
+                ->endCorrelation();
+        } else {
+            // Field is OneToMany
+            $targetAlias = $fieldName.'Count';
+            $targetFieldName = $field->getTargetField();
+
+            $query->correlate('COUNT('.$targetAlias.'.id)', $alias)
+                ->from($targetUnit, $targetAlias)
+                ->on($targetAlias.'.'.$targetFieldName, '=', $localName.'.@primary')
+                ->endCorrelation();
+        }
+
+        return $this;
+    }
+
+
 
 // Clause helpers
     public function prepareQueryClauseValue(opal\query\IField $field, $value) {

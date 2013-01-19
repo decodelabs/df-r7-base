@@ -147,6 +147,24 @@ trait TQuery_Correlatable {
         return $this->_newQuery()->beginCorrelation($this, $field, $alias);
     }
 
+    public function countRelation($field, $alias=null) {
+        if($alias === null) {
+            $alias = $field;
+        }
+
+        $sourceAdapter = $this->getSource()->getAdapter();
+
+        if(!$sourceAdapter instanceof IIntegralAdapter) {
+            throw new LogicException(
+                'Source adapter is not integral and does not have relation meta data'
+            );
+        }
+
+        $sourceAdapter->rewriteCountRelationCorrelation($this, $field, $alias);
+
+        return $this;
+    }
+
     public function addCorrelation(ICorrelationQuery $correlation) {
         $source = $this->getSource();
         $adapter = $source->getAdapter();
