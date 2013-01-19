@@ -46,10 +46,10 @@ class Paginator implements IPaginator {
             if(!is_string($key)) {
                 $key = $field->getAlias();
             }
-            
+
             $this->_orderableFields[$key] = $field;
         }
-        
+
         return $this;
     }
     
@@ -130,6 +130,15 @@ class Paginator implements IPaginator {
     }
 
     public function applyWith($data) {
+        if(empty($this->_order) && !empty($this->_orderableFields)) {
+            // Set first orderable field as default
+            
+            foreach($this->_orderableFields as $key => $field) {
+                $this->setDefaultOrder($key.' ASC');
+                break;
+            }
+        }
+
         $source = $this->_query->getSource();
         $sourceManager = $this->_query->getSourceManager();
         
