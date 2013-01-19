@@ -357,7 +357,7 @@ abstract class Base extends axis\Unit implements
             $targetAlias = $fieldName.'Count';
             $targetFieldName = $field->getTargetField();
 
-            $query->correlate('COUNT('.$targetAlias.'.id)', $alias)
+            $query->correlate('COUNT('.$targetAlias.'.@primary)', $alias)
                 ->from($targetUnit, $targetAlias)
                 ->on($targetAlias.'.'.$targetFieldName, '=', $localName.'.@primary')
                 ->endCorrelation();
