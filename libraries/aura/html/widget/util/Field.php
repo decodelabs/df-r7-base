@@ -59,6 +59,10 @@ class Field implements aura\html\widget\IField, core\IDumpable {
             $value = new aura\html\ElementString('<span class="prop-na">n/a</span>');
         }
 
+        if($value instanceof core\time\IDate) {
+            $value = $renderContext->getView()->format->userDate($value);
+        }
+
         return $value;
     }
     
