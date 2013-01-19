@@ -229,7 +229,11 @@ class Repository implements IRepository {
         return new Status($this);
     }
 
-    public function getCommitIds($target, $limit=null, $offset=null) {
+    public function getCommitIds($target=null, $limit=null, $offset=null) {
+        if($target === null) {
+            $target = 'HEAD';
+        }
+
         $result = $this->_runCommand('rev-list', [
             '--max-count' => $limit,
             '--skip' => $offset,
@@ -240,7 +244,11 @@ class Repository implements IRepository {
         return explode("\n", $result);
     }
 
-    public function getCommits($target, $limit=null, $offset=null) {
+    public function getCommits($target=null, $limit=null, $offset=null) {
+        if($target === null) {
+            $target = 'HEAD';
+        }
+
         $result = $this->_runCommand('rev-list', [
             '--max-count' => $limit,
             '--skip' => $offset,
@@ -261,6 +269,19 @@ class Repository implements IRepository {
         }
         
         return $output;
+    }
+
+    public function countCommits($target=null) {
+        if($target === null) {
+            $target = 'HEAD';
+        }
+
+        $result = $this->_runCommand('rev-list', [
+            '--count',
+            $target
+        ]);
+
+        return (int)$result;
     }
 
     public function getHeadCommitIds() {

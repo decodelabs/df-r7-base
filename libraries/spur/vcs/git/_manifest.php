@@ -41,8 +41,9 @@ interface IRepository {
     public function getTags();
 
     public function getCommitStatus();
-    public function getCommitIds($target, $limit=null, $offset=null);
-    public function getCommits($target, $limit=null, $offset=null);
+    public function getCommitIds($target=null, $limit=null, $offset=null);
+    public function getCommits($target=null, $limit=null, $offset=null);
+    public function countCommits($target=null);
     public function getHeadCommitIds();
     public function getHeadCommits();
     public function getCommit($id);
