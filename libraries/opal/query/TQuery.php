@@ -1121,7 +1121,11 @@ trait TQuery_Read {
         return $data;
     }
     
-    public function toArray($keyField=null) {
+    public function toArray() {
+        return $this->toKeyArray(null);
+    }
+
+    public function toKeyArray($keyField) {
         $data = $this->_fetchSourceData($keyField);
         
         if($data instanceof core\IArrayProvider) {

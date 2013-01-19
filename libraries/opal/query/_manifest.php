@@ -157,7 +157,7 @@ interface IQuery extends ISourceProvider, user\IAccessLock {
 }
 
 interface IReadQuery extends IQuery, \IteratorAggregate, core\IArrayProvider {
-    //public function toArray($keyField=null);
+    public function toKeyArray($keyField);
     public function toRow();
     public function getRawResult();
 }
