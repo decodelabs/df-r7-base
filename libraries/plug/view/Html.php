@@ -45,6 +45,9 @@ class Html implements aura\view\IHelper {
         return new aura\html\ElementContent($content);
     }
 
+    public function span($content, array $attributes=array()) {
+        return $this->element('span', $content, $attributes);
+    }
 
 
 // Compound widget shortcuts
