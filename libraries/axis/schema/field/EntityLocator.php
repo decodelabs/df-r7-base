@@ -8,6 +8,7 @@ namespace df\axis\schema\field;
 use df;
 use df\core;
 use df\axis;
+use df\opal;
     
 class EntityLocator extends Base {
 
