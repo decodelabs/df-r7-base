@@ -12,6 +12,13 @@ use df\opal;
 
 class Boolean extends Base {
     
+    public function inflateValueFromRow($key, array $row, opal\query\record\IRecord $forRecord=null) {
+        return $this->sanitizeValue(
+            isset($row[$key]) ? $row[$key] : null, 
+            (bool)$forRecord
+        );
+    }
+
     public function sanitizeValue($value, $forRecord) {
         if($value === null && !$this->isNullable()) {
             $value = (bool)$this->_defaultValue;
