@@ -457,13 +457,13 @@ trait TField_AutoTimestamp {
 // Ext. serialize
     protected function _setAutoTimestampStorageArray(array $data) {
         $this->_shouldTimestampOnUpdate = $data['toa'];
-        $this->_timestampAsDefault = $data['tad'];
+        $this->_shouldTimestampAsDefault = $data['tad'];
     }
 
     protected function _getAutoTimestampStorageArray() {
         return [
             'toa' => $this->_shouldTimestampOnUpdate,
-            'tad' => $this->_timestampAsDefault
+            'tad' => $this->_shouldTimestampAsDefault
         ];
     }
 }
