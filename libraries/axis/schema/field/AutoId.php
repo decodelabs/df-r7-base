@@ -37,6 +37,15 @@ class AutoId extends Base implements
         return true;
     }
     
+
+// Values
+    public function deflateValue($value) {
+        if(empty($value)) {
+            $value = null;
+        }
+
+        return $value;
+    }
     
 // Primitive
     public function duplicateForRelation(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {

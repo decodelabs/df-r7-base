@@ -23,6 +23,14 @@ class Timestamp extends Base implements opal\schema\IAutoTimestampField {
         return parent::setDefaultValue($value);
     }
     */
+
+    public function deflateValue($value) {
+        if(empty($value)) {
+            $value = null;
+        }
+
+        return $value;
+    }
     
 // Primitive
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
