@@ -271,6 +271,16 @@ class InlineManyRelationValueContainer implements
         
         return $query;
     }
+
+    public function getRelatedPrimaryKeys() {
+        if(!$this->_record) {
+            throw new opal\query\record\ValuePreparationException(
+                'Cannot lookup relations, value container has not been prepared'
+            );
+        }
+
+        return $this->select('@primary')->toList('@primary');
+    }
     
     
 // Tasks

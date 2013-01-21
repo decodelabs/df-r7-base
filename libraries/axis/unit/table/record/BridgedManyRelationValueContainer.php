@@ -373,6 +373,20 @@ class BridgedManyRelationValueContainer implements
             // Add local primary key(s) as prerequisite
             ->wherePrerequisite($bridgeAlias.'.'.$localFieldName, '=', $this->_localPrimaryManifest);
     }
+
+    public function getRelatedPrimaryKeys() {
+        if(!$this->_record) {
+            throw new opal\query\record\ValuePreparationException(
+                'Cannot lookup relations, value container has not been prepared'
+            );
+        }
+        
+        $localUnit = $this->_record->getRecordAdapter();
+        $application = $localUnit->getApplication();
+        $targetUnit = axis\Unit::fromId($this->_targetUnitId, $application);
+
+        return $this->selectFromBridge($targetUnit->getUnitName())->toList($targetUnit->getUnitName());
+    }
     
     
     
