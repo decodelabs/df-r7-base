@@ -833,17 +833,39 @@ class ArrayManipulator implements IArrayManipulator {
         }
 
         // Prepare key / val field
-        $keyName = $valQName = null;
+        $oldValField = $keyName = $valQName = null;
+        $outputPrimaryManifest = false;
         
         if($keyField) {
+            if($keyField instanceof opal\query\IVirtualField) {
+                $keyField = $keyField->dereference()[0];
+            }
+
             $keyName = $keyField->getQualifiedName();
         }
         
         if($valField) {
-            $valQName = $valField->getQualifiedName();
-            $valName = $valField->getName();
+            if($valField instanceof opal\query\IVirtualField) {
+                $derefFields = $valField->dereference();
+
+                if(count($derefFields) > 1) {
+                    if($valField->getName() == '@primary') {
+                        $outputPrimaryManifest = true;
+                    }
+
+                    core\stub('multi primary deref', $outputFields);
+                } else {
+                    $oldValField = $valField;
+                    $valField = array_shift($derefFields);
+                    $valQName = $valField->getQualifiedName();
+                    $valName = $valField->getName();
+                }
+            } else {
+                $valQName = $valField->getQualifiedName();
+                $valName = $valField->getName();
+            }
         }
-        
+
         
         // Prepare object field
         $objectKey = $primarySource->getAlias().'.@object';
@@ -861,8 +883,6 @@ class ArrayManipulator implements IArrayManipulator {
             if($forFetch) {
                 $record = $primaryAdapter->newRecord();
             }
-
-            //core\debug()->dump($fieldProcessors);
 
             // Pre-process row
             if(!empty($fieldProcessors)) {
@@ -959,7 +979,7 @@ class ArrayManipulator implements IArrayManipulator {
                 $this->_rows[] = $current;
             }
         }
-        
+
         return $this;
     }
 }
