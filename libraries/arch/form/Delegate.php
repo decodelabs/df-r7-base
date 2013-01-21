@@ -23,7 +23,10 @@ class Delegate implements IDelegate {
         $this->_delegateId = $id;
         
         $this->values = $state->getValues();
+        $this->_onConstruct();
     }
+
+    protected function _onConstruct() {}
     
     final public function initialize() {
         $this->_init();
