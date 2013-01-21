@@ -24,20 +24,22 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements ISel
 
     public function renderFieldContent(aura\html\widget\FieldSet $fs) {
         // Search
-        $fs->addFieldArea($this->_('Search'))->push(
-            $this->html->textbox(
-                    $this->fieldName('search'), 
-                    $this->values->search
-                )
-                ->isRequired($this->_isRequired && !$this->hasSelection()),
+        if($this->_isForMany || !$this->values->selected->hasValue()) {
+            $fs->addFieldArea($this->_('Search'))->push(
+                $this->html->textbox(
+                        $this->fieldName('search'), 
+                        $this->values->search
+                    )
+                    ->isRequired($this->_isRequired && !$this->hasSelection()),
 
-            $this->html->eventButton(
-                    $this->eventName('search'), 
-                    $this->_('Search')
-                )
-                ->shouldValidate(false)
-                ->setIcon('search')
-        );
+                $this->html->eventButton(
+                        $this->eventName('search'), 
+                        $this->_('Search')
+                    )
+                    ->shouldValidate(false)
+                    ->setIcon('search')
+            );
+        }
 
 
         // Show selected
