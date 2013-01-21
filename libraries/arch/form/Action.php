@@ -35,10 +35,13 @@ abstract class Action extends arch\Action implements IAction {
                 'Form actions can only be used in Http run mode'
             );
         }
+
+        $this->_onConstruct();
     }
+
+    protected function _onConstruct() {}
     
     final protected function _beforeDispatch() {
-        $this->_preInit();
         $response = $this->_init();
         $request = $this->_context->getRequest();
         $id = null;
@@ -105,8 +108,6 @@ abstract class Action extends arch\Action implements IAction {
         $this->_state->isNew(false);
     }
 
-    protected function _preInit() {}
-    
     protected function _createSessionId() {
         return core\string\Generator::sessionId();
     }
