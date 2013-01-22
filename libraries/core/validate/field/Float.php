@@ -19,7 +19,7 @@ class Float extends Base implements core\validate\IFloatField {
             return null;
         }
         
-        if(!filter_var($value, FILTER_VALIDATE_FLOAT)) {
+        if(!filter_var($value, FILTER_VALIDATE_FLOAT) && $value !== '0') {
             $node->addError('invalid', $this->_handler->_(
                 'This is not a valid number'
             ));
