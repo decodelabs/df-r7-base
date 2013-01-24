@@ -97,6 +97,10 @@ class Guid extends Base implements axis\schema\IAutoGeneratorField {
         return core\string\Uuid::factory($value);
     }
 
+    public function compareValues($value1, $value2) {
+        return (string)$value1 === (string)$value2;
+    }
+
     public function generateInsertValue(array $row) {
         if(!$this->_autoGenerate) {
             return null;

@@ -20,6 +20,11 @@ class String extends Base implements
     protected function _init($length=null) {
         $this->setLength($length);
     }
+
+
+    public function compareValues($value1, $value2) {
+        return (string)$value1 === (string)$value2;
+    }
     
     
     

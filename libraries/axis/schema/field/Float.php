@@ -19,6 +19,11 @@ class Float extends Base implements opal\schema\IFloatingPointNumericField {
         $this->setScale($scale);
     }
 
+    public function compareValues($value1, $value2) {
+        // Use precision setting to define comparison value
+        return abs($value1 - $value2) < 0.00001;
+    }
+
 // Primitive
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
         $output = new opal\schema\Primitive_Float($this, $this->_precision, $this->_scale);

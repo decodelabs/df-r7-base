@@ -28,12 +28,6 @@ class Slug extends Base implements axis\schema\IAutoUniqueField {
     }
 
 
-// Primitive
-    public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
-        return new opal\schema\Primitive_Varchar($this, 255);
-    }
-
-
 // Values
     public function sanitizeValue($value, $forRecord) {
         if($value === null && $this->isNullable()) {
@@ -47,7 +41,15 @@ class Slug extends Base implements axis\schema\IAutoUniqueField {
         }
     }
 
+    public function compareValues($value1, $value2) {
+        return (string)$value1 === (string)$value2;
+    }
 
+
+// Primitive
+    public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
+        return new opal\schema\Primitive_Varchar($this, 255);
+    }
 
 // Ext. serialize
     protected function _importStorageArray(array $data) {

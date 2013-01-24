@@ -47,6 +47,10 @@ class EntityLocator extends Base {
         return core\policy\EntityLocator::factory($value);
     }
 
+    public function compareValues($value1, $value2) {
+        return (string)$value1 === (string)$value2;
+    }
+
 
 // Primitive
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {

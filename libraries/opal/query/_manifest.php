@@ -639,6 +639,7 @@ interface IFieldValueProcessor {
     public function inflateValueFromRow($key, array $row, opal\query\record\IRecord $forRecord=null);
     public function deflateValue($value);
     public function sanitizeValue($value, $forRecord);
+    public function compareValues($value1, $value2);
 }
 
 

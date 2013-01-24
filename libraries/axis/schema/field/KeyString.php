@@ -44,6 +44,10 @@ class KeyString extends String {
         return $value;
     }
 
+    public function compareValues($value1, $value2) {
+        return (string)$value1 === (string)$value2;
+    }
+
 // Ext. serialize
     protected function _importStorageArray(array $data) {
         parent::_importStorageArray($data);

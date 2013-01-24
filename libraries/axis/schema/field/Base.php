@@ -83,6 +83,9 @@ abstract class Base implements axis\schema\IField, core\IDumpable {
         }
     }
     
+    public function compareValues($value1, $value2) {
+        return $value1 == $value2;
+    }
     
     
 // Validation

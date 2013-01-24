@@ -44,6 +44,10 @@ class TimeOfDay extends Base {
         
         return core\time\TimeOfDay::factory($value);
     }
+
+    public function compareValues($value1, $value2) {
+        return (string)$value1 === (string)$value2;
+    }
     
     
 // Primitive

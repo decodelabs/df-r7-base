@@ -59,9 +59,14 @@ class LazyLoadValueContainer implements IPreparedValueContainer {
     }
     
     public function eq($value) {
+        return null;
+
+
+        core\dump($this->_value, $value);
         if(!$this->_isLoaded) {
             return false;
         }
+
 
         return $this->_value == $value;
     }

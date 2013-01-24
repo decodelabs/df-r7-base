@@ -19,6 +19,10 @@ class Decimal extends Base implements opal\schema\IFloatingPointNumericField {
         $this->setScale($scale);
     }
 
+    public function compareValues($value1, $value2) {
+        return (string)$value1 === (string)$value2;
+    }
+
 // Primitive
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
         $output = new opal\schema\Primitive_Decimal($this, $this->_precision, $this->_scale);

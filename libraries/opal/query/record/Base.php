@@ -626,10 +626,13 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         $value = $this->_sanitizeValue($key, $value);
         
         // Sanitize value from extension
+        $fieldProcessor = null;
+
         if($this->_adapter instanceof opal\query\IIntegralAdapter) {
             $fieldProcessors = $this->_adapter->getQueryResultValueProcessors(array($key));
-            
+
             if(isset($fieldProcessors[$key])) {
+                $fieldProcessor = $fieldProcessors[$key];
                 $value = $fieldProcessors[$key]->sanitizeValue($value, false);
             }
         }
@@ -644,12 +647,26 @@ class Base implements IRecord, \Serializable, core\IDumpable {
             }
         } else {
             $oldVal = null;
+            $isEqual = null;
             
             if(isset($this->_values[$key])) { 
                 $oldVal = $this->_values[$key];
             } 
-                
-            if($this->_areValuesEqual($oldVal, $value)) {
+
+            if($oldVal instanceof IValueContainer) {
+                if($isEqual = $oldVal->eq($value)) {
+                    return $this;
+                }
+            }
+
+
+            if($isEqual === null && $fieldProcessor) {
+                if($isEqual = $fieldProcessor->compareValues($oldVal, $value)) {
+                    return $this;
+                }
+            }
+
+            if($isEqual === null && $value1 === $value2) {
                 return $this;
             }
             
@@ -739,18 +756,6 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     
     protected function _prepareValueForUser($key, $value) {
         return $value;
-    }
-    
-    protected function _areValuesEqual($value1, $value2) {
-        if($value1 instanceof IValueContainer) {
-            return $value1->eq($value2);
-        }
-        
-        try {
-            return $value1 === $value2;
-        } catch(\Exception $e) {
-            return false;
-        }
     }
     
     

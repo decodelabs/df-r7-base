@@ -46,6 +46,10 @@ class RainbowKey extends Base implements
     public function sanitizeValue($value, $forRecord) {
         return core\string\RainbowKey::factory($value, $this->_byteSize);
     }
+
+    public function compareValues($value1, $value2) {
+        return (string)$value1 === (string)$value2;
+    }
     
     public function generateInsertValue(array $row) {
         if(!$this->_autoGenerate) {

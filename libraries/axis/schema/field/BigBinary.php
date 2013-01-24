@@ -17,6 +17,10 @@ class BigBinary extends Base implements opal\schema\ILargeByteSizeRestrictedFiel
     protected function _init($size=null) {
         $this->setExponentSize($size);
     }
+
+    public function compareValues($value1, $value2) {
+        return (string)$value1 === (string)$value2;
+    }
     
     
 // Primitive

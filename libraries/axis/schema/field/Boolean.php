@@ -31,6 +31,10 @@ class Boolean extends Base {
         return $value;
     }
 
+    public function compareValues($value1, $value2) {
+        return (bool)$value1 === (bool)$value2;
+    }
+
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
         //return new opal\schema\Primitive_Bit($this, 1);
         return new opal\schema\Primitive_Boolean($this);

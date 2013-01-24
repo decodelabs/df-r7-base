@@ -48,6 +48,10 @@ class DateTime extends Base implements axis\schema\IDateField {
         
         return $value;
     }
+
+    public function compareValues($value1, $value2) {
+        return core\time\Date::factory($value1)->eq($value2);
+    }
     
     
 // Primitive

@@ -12,6 +12,10 @@ use df\opal;
     
 class Currency extends Base {
 
+    public function compareValues($value1, $value2) {
+        return abs($value1 - $value2) < 0.00001;
+    }
+
 // Primitive
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
         return new opal\schema\Primitive_Currency($this);
