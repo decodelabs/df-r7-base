@@ -112,18 +112,18 @@ class Format implements aura\view\IHelper {
     }
     
     
-    public function timeSince($date, $locale=true) {
+    public function timeSince($date, $locale=true, $maxUnits=2, $shortUnits=false, $maxUnit=core\time\Duration::YEARS) {
         return core\time\Date::factory($date)
             ->timeSince()
             ->setLocale($locale)
-            ->toString();
+            ->toString($maxUnits, $shortUnits, $maxUnit);
     }
     
-    public function timeUntil($date, $locale=true) {
+    public function timeUntil($date, $locale=true, $maxUnits=2, $shortUnits=false, $maxUnit=core\time\Duration::YEARS) {
         return core\time\Date::factory($date)
             ->timeUntil()
             ->setLocale($locale)
-            ->toString();
+            ->toString($maxUnits, $shortUnits, $maxUnit);
     }
     
     
