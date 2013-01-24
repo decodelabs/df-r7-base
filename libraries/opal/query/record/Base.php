@@ -641,10 +641,6 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         
         if(array_key_exists($key, $this->_changes)) {
             $oldVal = $this->_changes[$key];
-            
-            if($this->_areValuesEqual($oldVal, $value)) {
-                return $this;
-            }
         } else {
             $oldVal = null;
             $isEqual = null;
