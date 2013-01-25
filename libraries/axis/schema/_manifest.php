@@ -188,9 +188,10 @@ trait TRelationField {
             );
         }
 
-        if($targetUnit->getUnitId() == $localUnit->getUnitId()) {
+        if($this instanceof IBridgedRelationField
+        && $targetUnit->getUnitId() == $localUnit->getUnitId()) {
             throw new RuntimeException(
-                'Relation targets cannot currently reference the local unit ('.$localUnit->getUnitId().')'
+                'Bridged relation targets cannot currently reference the local unit ('.$localUnit->getUnitId().')'
             );
         }
 
