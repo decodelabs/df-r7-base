@@ -52,7 +52,13 @@ class Menu extends Base implements core\IDumpable {
                 $entry->ensureMatchRequest();
 
                 if($entry->isComputedActive()) {
-                    $args['class'] .= ' state-active';
+                    if(!isset($args['class'])) {
+                        $args['class'] = '';
+                    } else {
+                        $args['class'] .= ' ';
+                    }
+
+                    $args['class'] .= 'state-active';
                 }
             }
 
