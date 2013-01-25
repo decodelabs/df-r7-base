@@ -785,7 +785,9 @@ trait TWidget_NavigationEntryController {
     }
 
     public function addEntry($entry) {
-        if($entry instanceof arch\navigation\entry\Void) {
+        if(is_array($entry)) {
+            return $this->addEntries($entry);
+        } else if($entry instanceof arch\navigation\entry\Void) {
             return $this;
         } else if($entry instanceof ILinkWidget
         || $entry instanceof arch\navigation\entry\Link) {
