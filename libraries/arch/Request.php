@@ -335,7 +335,25 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     
 // Match
     public function eq(IRequest $request) {
-        return (string)$this == (string)$request;
+        if($this->_scheme != $request->_scheme) {
+            return false;
+        }
+
+        if((string)$this->getPath() != (string)$request->getPath()) {
+            return false;
+        }
+
+        if($this->_query) {
+            $rQuery = $request->getQuery();
+
+            foreach($this->_query as $key => $value) {
+                if(!isset($rQuery->{$key}) || $rQuery[$key] != $value) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
     
     public function getLiteralPath() {
