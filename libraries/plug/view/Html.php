@@ -19,7 +19,7 @@ class Html implements aura\view\IHelper {
     }
     
     public function plainText($text) {
-        if($text === null) {
+        if(empty($text) && $text !== '0') {
             return null;
         }
 
