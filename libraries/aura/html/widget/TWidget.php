@@ -756,11 +756,12 @@ trait TWidget_NavigationEntryController {
     }
 
     public function addEntries($entries) {
-        if(is_string($entries) || $entries instanceof core\uri\IUrl) {
+        if((is_string($entries) && strlen($entries) > 1) 
+        || $entries instanceof core\uri\IUrl) {
             try {
                 $entries = arch\navigation\menu\Base::factory($this->_context, $entries);
             } catch(arch\navigation\SourceNotFoundException $e) {
-                $entries = array();
+                $entries = null;
             }
         }
 
@@ -777,20 +778,26 @@ trait TWidget_NavigationEntryController {
         }
         
         foreach($entries as $entry) {
-            if($entry instanceof arch\navigation\entry\Void) {
-                continue;
-            } else if($entry instanceof ILinkWidget
-            || $entry instanceof arch\navigation\entry\Link) {
-                $this->addLink($entry);
-            } else if($entry instanceof self
-            || $entry instanceof arch\navigation\entry\Menu) {
-                $this->addMenu($entry);
-            } else if($entry instanceof arch\navigation\entry\Spacer
-            || $this->_entries->getLast() instanceof ILinkWidget) {
-                $this->addSpacer();
-            }
+            $this->addEntry($entry);
         }
         
+        return $this;
+    }
+
+    public function addEntry($entry) {
+        if($entry instanceof arch\navigation\entry\Void) {
+            return $this;
+        } else if($entry instanceof ILinkWidget
+        || $entry instanceof arch\navigation\entry\Link) {
+            $this->addLink($entry);
+        } else if($entry instanceof self
+        || $entry instanceof arch\navigation\entry\Menu) {
+            $this->addMenu($entry);
+        } else if($entry instanceof arch\navigation\entry\Spacer
+        || (is_string($entry) && $this->_entries->getLast() instanceof ILinkWidget)) {
+            $this->addSpacer();
+        }
+
         return $this;
     }
     
