@@ -34,6 +34,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
     protected $_media;
     protected $_contentType;
     protected $_description;
+    protected $_note;
     protected $_showDescription = true;
     protected $_bodyWrapper;
     
@@ -189,6 +190,13 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
             } else {
                 $body = $context->normalizeOutputUrl($this->_uri);
             }
+        }
+
+        if($this->_note) {
+            $body = [
+                $body,
+                new aura\html\Element('sup', $this->_note)
+            ];
         }
         
         if(static::WRAP_BODY) {
@@ -456,6 +464,17 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         }
 
         return $this->_showDescription;
+    }
+
+
+// Note
+    public function setNote($note) {
+        $this->_note = $note;
+        return $this;
+    }
+
+    public function getNote() {
+        return $this->_note;
     }
 
 
