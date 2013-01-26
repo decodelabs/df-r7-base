@@ -34,6 +34,9 @@ class EntityLocator implements IEntityLocator, core\IDumpable {
         $this->_splitEntityPath($path);
     }
     
+
+    // Format:
+    // handler://[path/to/]Entity[:id][[path/to/]SubEntity[:id]]]
     private function _splitEntityPath($path) {
         $path = trim($path, '/').'/';
         $length = strlen($path);
@@ -159,10 +162,104 @@ class EntityLocator implements IEntityLocator, core\IDumpable {
         }
     }
 
+
+// Scheme
+    public function setScheme($scheme) {
+        $this->_scheme = $scheme;
+        return $this;
+    }
+    
     public function getScheme() {
         return $this->_scheme;
     }
     
+
+
+// Nodes
+    public function setNodes(array $nodes) {
+        $this->_nodes = array();
+        return $this->addNodes($nodes);
+    }
+
+    public function addNodes(array $nodes) {
+        foreach($nodes as $node) {
+            if(!$node instanceof IEntityLocatorNode) {
+                throw new InvalidArgumentException(
+                    'Nodes much implement IEntityLocatorNode'
+                );
+            }
+
+            $this->addNode($node);
+        }
+
+        return $this;
+    }
+
+    public function addNode(IEntityLocatorNode $node) {
+        $this->_nodes[] = $node;
+        return $this;
+    }
+
+    public function getNode($index) {
+        $index = (int)$index;
+        
+        if($index < 0) {
+            $index += count($this->_nodes);
+            
+            if($index < 0) {
+                return null;
+            }
+        }
+        
+        if(isset($this->_nodes[$index])) {
+            return $this->_nodes[$index];
+        }
+        
+        return null;
+    }
+
+    public function getNodeType($index) {
+        if($node = $this->getNode($index)) {
+            return $node->getType();
+        }
+    }
+
+    public function getNodeId($index) {
+        if($node = $this->getNode($index)) {
+            return $node->getId();
+        }
+    }
+
+    public function hasNode($index) {
+        $index = (int)$index;
+        
+        if($index < 0) {
+            $index += count($this->_nodes);
+            
+            if($index < 0) {
+                return false;
+            }
+        }
+        
+        return isset($this->_nodes[$index]);
+    }
+
+    public function removeNode($index) {
+        $index = (int)$index;
+        
+        if($index < 0) {
+            $index += count($this->_nodes);
+            
+            if($index < 0) {
+                return $this;
+            }
+        }
+        
+        unset($this->_nodes[$index]);
+        $this->_nodes = array_values($this->_nodes);
+        return $this;
+    }
+
     public function getNodes() {
         return $this->_nodes;
     }

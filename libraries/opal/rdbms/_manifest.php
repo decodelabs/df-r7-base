@@ -115,6 +115,8 @@ interface IDsn extends core\IStringProvider {
 
 
 interface IAdapter extends core\policy\IParentEntity {
+    public function getAdapterName();
+
 // Connection
     public function isConnected();
     public function closeConnection();

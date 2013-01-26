@@ -229,4 +229,10 @@ abstract class Unit implements IUnit {
     public function getAccessLockId() {
         return $this->getUnitId();
     }
+
+
+// Policy
+    public function getEntityLocator() {
+        return new core\policy\EntityLocator('axis://Unit:"'.$this->getUnitId().'"');
+    }
 }

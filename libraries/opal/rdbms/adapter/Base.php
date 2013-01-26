@@ -72,6 +72,11 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
     public function __destruct() {
         $this->closeConnection();
     }
+
+    public function getAdapterName() {
+        $parts = explode('\\', get_class($this));
+        return array_pop($parts);
+    }
     
     
 // Connection
@@ -218,6 +223,10 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
     
     
 // Policy
+    public function getEntityLocator() {
+        return new core\policy\EntityLocator('opal://rdbms/'.$this->getAdapterName().':"'.$this->getDsn()->getConnectionString().'"');
+    }
+
     public function fetchSubEntity(core\policy\IManager $manager, core\policy\IEntityLocatorNode $node) {
         $id = $node->getId();
         

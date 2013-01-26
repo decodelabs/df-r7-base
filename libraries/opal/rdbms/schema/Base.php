@@ -145,4 +145,11 @@ abstract class Base implements ISchema, core\IDumpable {
             $this->_getTriggerStorageArray()
         );
     }
+
+// Policy
+    public function getEntityLocator() {
+        $output = $this->_adapter->getEntityLocator();
+        $output->addNode(new core\policy\EntityLocatorNode(null, 'Schema', $this->getName()));
+        return $output;
+    }
 }

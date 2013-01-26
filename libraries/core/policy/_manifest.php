@@ -38,7 +38,9 @@ interface IEntityHandler extends IHandler {
 }
 
 
-interface IEntity {}
+interface IEntity {
+    public function getEntityLocator();
+}
 
 interface IParentEntity extends IEntity {
     public function fetchSubEntity(IManager $manager, IEntityLocatorNode $node);
@@ -46,11 +48,22 @@ interface IParentEntity extends IEntity {
 
 
 interface IEntityLocator extends core\IStringProvider  {
+    public function setScheme($scheme);
     public function getScheme();
+
+    public function setNodes(array $nodes);
+    public function addNodes(array $nodes);
+    public function addNode(IEntityLocatorNode $node);
+    public function getNode($index);
+    public function getNodeType($index);
+    public function getNodeId($index);
+    public function hasNode($index);
+    public function removeNode($index);
     public function getNodes();
     public function getFirstNode();
     public function getFirstNodeType();
     public function getFirstNodeId();
+
     public function toStringUpTo($type);
 }
 

@@ -95,6 +95,10 @@ abstract class Model implements IModel, core\IDumpable {
     
     
 // Policy
+    public function getEntityLocator() {
+        return new core\policy\EntityLocator('axis://Model:'.$this->getModelName());
+    }
+
     public function fetchSubEntity(core\policy\IManager $manager, core\policy\IEntityLocatorNode $node) {
         $id = $node->getId();
         

@@ -717,19 +717,32 @@ abstract class Base extends axis\Unit implements
     }
     
     public function fetchByPrimary($keys) {
-        if(!is_array($keys)) {
-            $keys = func_get_args();
-        }
-        
-        if(!$index = $this->getUnitSchema()->getPrimaryIndex()) {
-            return null;
-        }
-        
         $query = $this->fetch();
-        
-        foreach(array_keys($index->getFields()) as $i => $primaryField) {
-            $value = array_shift($keys);
-            $query->where($primaryField, '=', $value);
+        $primaryManifest = null;
+
+        if(is_string($keys) && substr($keys, 0, 9) == 'manifest?') {
+            $primaryManifest = opal\query\record\PrimaryManifest::fromEntityId($keys);
+        } else if($keys instanceof opal\query\record\IPrimaryManifest) {
+            $primaryManifest = $keys;
+        }
+
+        if($primaryManifest) {
+            foreach($primaryManifest->toArray() as $key => $value) {
+                $query->where($key, '=', $value);
+            }
+        } else {
+            if(!is_array($keys)) {
+                $keys = func_get_args();
+            }
+            
+            if(!$index = $this->getUnitSchema()->getPrimaryIndex()) {
+                return null;
+            }
+            
+            foreach(array_keys($index->getFields()) as $i => $primaryField) {
+                $value = array_shift($keys);
+                $query->where($primaryField, '=', $value);
+            }
         }
         
         return $query->toRow();
@@ -780,6 +793,9 @@ abstract class Base extends axis\Unit implements
 // Policy
     public function fetchSubEntity(core\policy\IManager $manager, core\policy\IEntityLocatorNode $node) {
         switch($node->getType()) {
+            case 'Record':
+                return $this->fetchByPrimary($node->getId());
+
             case 'Schema':
                 return $this->getUnitSchema();
         }

@@ -777,6 +777,24 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $this->_adapter->getAccessLockId();
     }
 
+
+// Policy
+    public function getEntityLocator() {
+        if(!$this->_adapter instanceof core\policy\IParentEntity) {
+            throw new core\policy\EntityNotFoundException(
+                'Record adapter is not a policy entity handler'
+            );
+        }
+
+        $manifest = $this->getPrimaryManifest();
+        $id = $manifest->getEntityId();
+
+        $output = $this->_adapter->getEntityLocator();
+        $output->addNode(new core\policy\EntityLocatorNode(null, 'Record', $id));
+        
+        return $output;
+    }
+
     
 // Dump
     public function getDumpProperties() {

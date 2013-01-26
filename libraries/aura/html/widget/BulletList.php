@@ -37,7 +37,7 @@ class BulletList extends Base implements ILinearListWidget, IDataDrivenListWidge
         }
         
         $renderContext = new aura\html\widget\util\RendererContext($this);
-        
+
         foreach($data as $key => $value) {
             $liTag = new aura\html\Tag('li');
             $renderContext->iterate($key, $liTag);

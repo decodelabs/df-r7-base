@@ -110,6 +110,13 @@ class Data implements archLib\IContextHelper, opal\query\IEntryPoint {
     }
 
 
+
+// Policy
+    public function fetchEntity($locator) {
+        return $this->_context->policy->fetchEntity($locator);
+    }
+
+
 // Crypt
     public function hash($message, $salt=null) {
         if($salt === null) {

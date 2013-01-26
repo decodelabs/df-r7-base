@@ -19,7 +19,7 @@ class ValuePreparationException extends RuntimeException {}
 
 
 // Interfaces
-interface IRecord extends core\collection\IMappedCollection, user\IAccessLock {
+interface IRecord extends core\collection\IMappedCollection, user\IAccessLock, core\policy\IEntity {
     public function getRecordAdapter();
     
     public function isNew();
@@ -97,6 +97,7 @@ interface IPrimaryManifest {
     public function getFieldNames();
     public function isNull();
     public function getCombinedId();
+    public function getEntityId();
     public function getFirstKeyValue();
     public function duplicateWith($values);
     public function eq(IPrimaryManifest $manifest);
