@@ -38,10 +38,18 @@ class Import implements aura\view\IHelper {
         }
     }
     
-    public function component($name, $contextRequest=null) {
+    public function component($name, $contextRequest=null, array $args=null) {
+        if(is_array($contextRequest)) {
+            $args = $contextRequest;
+            $contextRequest = null;
+        }
+
         try {
             $context = $this->_view->getContext()->spawnInstance($contextRequest);
-            return arch\Component::factory($context, $name);
+            $output = arch\Component::factory($context, $name, $args);
+            $output->setRenderTarget($this->_view);
+
+            return $output;
         } catch(\Exception $e) {
             return $this->_view->newErrorContainer($e);
         }
