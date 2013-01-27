@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\arch;
 use df\user;
+use df\aura;
 
 
 // Exceptions
@@ -191,7 +192,7 @@ interface IAction extends IContextAware, user\IAccessLock {
     public static function getControllerMethodName($controllerClass, IContext $context);
 }
 
-interface IComponent extends IContextAware, user\IAccessLock {
+interface IComponent extends IContextAware, aura\view\IDeferredRenderable, user\IAccessLock {
     public function getName();
 }
 

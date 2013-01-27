@@ -9,16 +9,21 @@ use df;
 use df\core;
 use df\arch;
 use df\user;
+use df\aura;
 
 abstract class Component implements IComponent {
     
+    use TContextProxy;
     use user\TAccessLock;
+    use core\TStringProvider;
+    use aura\view\TDeferredRenderable;
 
     const DEFAULT_ACCESS = arch\IAccess::ALL;
+
+    public $view;
+    public $html;
     
-    protected $_context;
-    
-    public static function factory(IContext $context, $name) {
+    public static function factory(IContext $context, $name, array $args=null) {
         $request = $context->getRequest();
         $path = $request->getController();
         
@@ -36,38 +41,68 @@ abstract class Component implements IComponent {
         $class = 'df\\apex\\directory\\'.$request->getArea().'\\'.implode('\\', $parts);
         
         if(!class_exists($class)) {
-            throw new RuntimeException(
-                'Component ~'.$request->getArea().'/'.$path.'/'.ucfirst($name).' could not be found'
-            );
+            $class = 'df\\apex\\directory\\shared\\'.implode('\\', $parts);
+
+            if(!class_exists($class)) {
+                throw new RuntimeException(
+                    'Component ~'.$request->getArea().'/'.$path.'/'.ucfirst($name).' could not be found'
+                );
+            }
         }
         
-        return new $class($context);
+        return new $class($context, $args);
     }
     
-    public function __construct(arch\IContext $context) {
+    public function __construct(arch\IContext $context, array $args=null) {
         $this->_context = $context;
+
+        if(empty($args)) {
+            $args = array();
+        }
+
+        if(method_exists($this, '_init')) {
+            call_user_func_array([$this, '_init'], $args);
+        }
     }
-    
-    public function getContext() {
-        return $this->_context;
-    }
-    
+
     public function getName() {
         $parts = explode('\\', get_class($this));
         return array_pop($parts);
     }
     
     
-// Context proxies
-    public function __call($method, $args) {
-        return call_user_func_array(array($this->_context, $method), $args);
+// Renderable
+    public function toString() {
+        try {
+            return (string)$this->render();
+        } catch(\Exception $e) {
+            if($this->_renderTarget) {
+                return $this->_renderTarget->getView()->newErrorContainer($e);
+            } else {
+                return 'ERROR: '.$e->getMessage();
+            }
+        }
     }
-    
-    public function __get($key) {
-        return $this->_context->__get($key);
+
+    public function render() {
+        $this->view = $this->getRenderTarget()->getView();
+        $this->html = $this->view->html;
+        
+        $output = $this->_execute();
+
+        if($output instanceof aura\view\IDeferredRenderable) {
+            $output->setRenderTarget($this->_renderTarget);
+        }
+
+        $this->view = null;
+        $this->html = null;
+
+        return $output;
     }
-    
-    
+
+    abstract protected function _execute();
+
+
 // Access
     public function getAccessLockDomain() {
         return 'directory';
