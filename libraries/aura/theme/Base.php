@@ -99,9 +99,11 @@ class Base implements ITheme {
 
     public function mapIcon($name) {
         if($this->_iconMap === null) {
-            if($path = df\Launchpad::$loader->findFile(
-                'apex/themes/'.$this->getId().'/IconMap.php'
-            )) {
+            if(!$path = df\Launchpad::$loader->findFile('apex/themes/'.$this->getId().'/IconMap.php')) {
+                $path = df\Launchpad::$loader->findFile('apex/themes/shared/IconMap.php');
+            }
+
+            if($path) {
                 $this->_iconMap = require $path;
             }
 
