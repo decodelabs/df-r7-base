@@ -38,9 +38,11 @@ interface IEntityHandler extends IHandler {
 }
 
 
-interface IEntity {
+interface IEntityLocatorProvider {
     public function getEntityLocator();
 }
+
+interface IEntity extends IEntityLocatorProvider {}
 
 interface IParentEntity extends IEntity {
     public function fetchSubEntity(IManager $manager, IEntityLocatorNode $node);
