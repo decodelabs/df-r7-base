@@ -92,9 +92,17 @@ class Base implements ITheme {
 
 // Assets
     public function findAsset(core\IApplication $application, $path) {
-        return df\Launchpad::$loader->findFile(
+        $output = df\Launchpad::$loader->findFile(
             $lookupPath = 'apex/themes/'.$this->getId().'/assets/'.$path
         );
+
+        if(!$output) {
+            $output = df\Launchpad::$loader->findFile(
+                $lookupPath = 'apex/themes/shared/assets/'.$path
+            );
+        }
+
+        return $output;
     }
 
     public function mapIcon($name) {
