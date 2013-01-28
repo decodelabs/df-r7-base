@@ -10,7 +10,7 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class Html implements aura\view\IHelper {
+class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
     
     use aura\view\THelper;
     
@@ -27,6 +27,10 @@ class Html implements aura\view\IHelper {
         $text = str_replace("\n", "\n".'<br />', $text);
 
         return $this->string($text);
+    }
+
+    public function _($phrase, array $data=null, $plural=null, $locale=null) {
+        return $this->string($this->_view->_($phrase, $data, $plural, $locale));
     }
 
     public function string($value) {
@@ -48,6 +52,7 @@ class Html implements aura\view\IHelper {
     public function span($content, array $attributes=array()) {
         return $this->element('span', $content, $attributes);
     }
+
 
 
 // Compound widget shortcuts
@@ -184,23 +189,129 @@ class Html implements aura\view\IHelper {
 
 
 // Date
-    public function date($date=null, $length=core\time\Date::MEDIUM) {
+    public function date($date, $size=core\time\Date::MEDIUM, $locale=true) {
+        if($date === null) {
+            return null;
+        }
+
         $date = core\time\Date::factory($date);
 
-        return $this->element(
-            'time',
-            $this->_view->format->userDate($date, $length),
-            ['datetime' => $date->format('Y-m-d')]
+        return $this->_timeTag(
+            $date->format('Y-m-d'), 
+            $this->_view->format->date($date, $size, $locale)
+        );
+    }
+    
+    public function userDate($date, $size=core\time\Date::MEDIUM) {
+        if($date === null) {
+            return null;
+        }
+
+        $date = core\time\Date::factory($date);
+
+        return $this->_timeTag(
+            $date->format('Y-m-d'), 
+            $this->_view->format->userDate($date, $size)
+        );
+    }
+    
+    public function dateTime($date, $size=core\time\Date::MEDIUM, $locale=true) {
+        if($date === null) {
+            return null;
+        }
+
+        $date = core\time\Date::factory($date);
+
+        return $this->_timeTag(
+            $date->format(core\time\Date::W3C), 
+            $this->_view->format->dateTime($date, $size, $locale)
+        );
+    }
+    
+    public function userDateTime($date, $size=core\time\Date::MEDIUM) {
+        if($date === null) {
+            return null;
+        }
+
+        $date = core\time\Date::factory($date);
+
+        return $this->_timeTag(
+            $date->format(core\time\Date::W3C), 
+            $this->_view->format->userDateTime($date, $size)
         );
     }
 
-    public function dateTime($date=null, $length=core\time\Date::MEDIUM) {
+    public function customDate($date, $format) {
+        if($date === null) {
+            return null;
+        }
+
         $date = core\time\Date::factory($date);
 
+        return $this->_timeTag(
+            $date->format(core\time\Date::W3C), 
+            $this->_view->format->customDate($date, $format)
+        );
+    }
+    
+    public function time($date, $size=core\time\Date::MEDIUM, $locale=true) {
+        if($date === null) {
+            return null;
+        }
+
+        $date = core\time\Date::factory($date);
+
+        return $this->_timeTag(
+            $date->format('H:m:s'), 
+            $this->_view->format->time($date, $size, $locale)
+        );
+    }
+    
+    public function userTime($date, $size=core\time\Date::MEDIUM) {
+        if($date === null) {
+            return null;
+        }
+
+        $date = core\time\Date::factory($date);
+
+        return $this->_timeTag(
+            $date->format('H:m:s'), 
+            $this->_view->format->userTime($date, $size)
+        );
+    }
+    
+    
+    public function timeSince($date, $locale=true, $maxUnits=2, $shortUnits=false, $maxUnit=core\time\Duration::YEARS) {
+        if($date === null) {
+            return null;
+        }
+
+        $date = core\time\Date::factory($date);
+
+        return $this->_timeTag(
+            $date->format(core\time\Date::W3C), 
+            $this->_view->format->timeSince($date, $locale, $maxUnits, $shortUnits, $maxUnit)
+        );
+    }
+    
+    public function timeUntil($date, $locale=true, $maxUnits=2, $shortUnits=false, $maxUnit=core\time\Duration::YEARS) {
+        if($date === null) {
+            return null;
+        }
+        
+        $date = core\time\Date::factory($date);
+
+        return $this->_timeTag(
+            $date->format(core\time\Date::W3C), 
+            $this->_view->format->timeUntil($date, $locale, $maxUnits, $shortUnits, $maxUnit)
+        );
+    }
+
+    protected function _timeTag($w3cString, $formattedString) {
         return $this->element(
-            'time',
-            $this->_view->format->userDateTime($date, $length),
-            ['datetime' => $date->format(core\time\Date::W3C)]
+            'time', 
+            $formattedString,
+            ['datetime' => $w3cString]
         );
     }
 

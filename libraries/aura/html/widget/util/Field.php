@@ -60,7 +60,7 @@ class Field implements aura\html\widget\IField, core\IDumpable {
         }
 
         if($value instanceof core\time\IDate) {
-            $value = $renderContext->getView()->format->userDate($value);
+            $value = $renderContext->getView()->html->userDate($value);
         }
 
         return $value;
