@@ -134,4 +134,8 @@ class Mysqli extends Base {
         
         return $this;
     }
+
+    public function count() {
+        return $this->_result->num_rows;
+    }
 }

@@ -12,6 +12,7 @@ use df\opal;
 class Pdo extends Base {
     
     protected $_stmt;
+    protected $_cache;
     
 // Execute
     protected function _execute($forWrite=false) {
@@ -36,11 +37,31 @@ class Pdo extends Base {
     
 // Result
     protected function _fetchRow() {
+        if($this->_cache !== null) {
+            return array_shift($this->_cache);
+        }
+
         return $this->_stmt->fetch(\PDO::FETCH_ASSOC);
     }
     
     public function free() {
         $this->_stmt = null;
         return $this;
+    }
+
+    public function count() {
+        if($this->_cache === null) {
+            while($row = $this->_stmt->fetch(\PDO::FETCH_ASSOC)) {
+                $this->_cache[] = $row;
+            }
+        }
+
+        $output = count($this->_cache);
+
+        if($this->_row) {
+            $output++;
+        }
+
+        return $output;
     }
 }
