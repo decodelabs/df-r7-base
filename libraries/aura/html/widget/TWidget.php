@@ -986,6 +986,47 @@ trait TWidget_DataDrivenList {
 }
 
 
+trait TWidget_OrderedDataDrivenList {
+
+    protected $_start;
+    protected $_isReversed = false;
+
+    public function setStartIndex($start) {
+        if(empty($start) && $start != 0) {
+            $start = null;
+        } else {
+            $start = (int)$start;
+        }
+
+        $this->_start = $start;
+        return $this;
+    }
+
+    public function getStartIndex() {
+        return $this->_startIndex;
+    }
+
+    public function isReversed($flag=null) {
+        if($flag !== null) {
+            $this->_isReversed = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_isReversed;
+    }
+
+    public function setData($data) {
+        if($data instanceof core\collection\IPageable) {
+            $paginator = $data->getPaginator();
+            $this->setStartIndex($paginator->getOffset());
+        }
+
+        $this->_data = $data;
+        return $this;
+    }
+}
+
+
 trait TWidget_LinearList {
     
     protected $_renderer;

@@ -306,6 +306,12 @@ interface IDataDrivenListWidget extends IListWidget {
     public function getData();
 }
 
+interface IOrderedDataDrivenListWidget extends IDataDrivenListWidget {
+    public function setStartIndex($start);
+    public function getStartIndex();
+    public function isReversed($flag=null);
+}
+
 interface ILinearListWidget extends IListWidget {
     public function setRenderer(Callable $renderer=null);
     public function getRenderer();
