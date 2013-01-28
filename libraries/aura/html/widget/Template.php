@@ -39,12 +39,16 @@ class Template extends Base implements ITemplateWidget, \ArrayAccess, core\IDump
         if(!empty($this->_args)) {
             $template->setArgs($this->_args);
         }
-        
-        return $tag->renderWith(
-            new aura\html\ElementString(
-                $template->renderTo($this->getRenderTarget())
-            )
+
+        $output = new aura\html\ElementString(
+            $template->renderTo($this->getRenderTarget())
         );
+
+        if($tag->countAttributes() <= 1 && $tag->countClasses() == 1) {
+            return $output;
+        }
+        
+        return $tag->renderWith($output);
     }
     
     
