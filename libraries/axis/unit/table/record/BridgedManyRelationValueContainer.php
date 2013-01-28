@@ -130,6 +130,18 @@ class BridgedManyRelationValueContainer implements
         return $this;
     }
     
+    public function populate($record) {
+        return $this->populateList(func_get_args());
+    }
+
+    public function populateList(array $records) {
+        foreach($this->_normalizeInputRecordList($records) as $id => $record) {
+            $this->_current[$id] = $record;
+        }
+
+        return $this;
+    }
+    
     public function remove($record) {
         return $this->removeList(func_get_args());
     }

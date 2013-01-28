@@ -105,6 +105,32 @@ class InlineManyRelationValueContainer implements
     }
     
     public function addList(array $records) {
+        $index = $this->_normalizeInputRecordList($records);
+        
+        foreach($index as $id => $record) {
+            $this->_new[$id] = $record;
+        }
+        
+        if($this->_record) {
+            $this->_record->markAsChanged($this->_localField);
+        }
+        
+        return $this;
+    }
+
+    public function populate($record) {
+        return $this->populateList(func_get_args());
+    }
+
+    public function populateList(array $records) {
+        foreach($this->_normalizeInputRecordList($records) as $id => $record) {
+            $this->_current[$id] = $record;
+        }
+
+        return $this;
+    }
+
+    protected function _normalizeInputRecordList(array $records) {
         $index = array();
         $lookupManifests = array();
         
@@ -170,16 +196,8 @@ class InlineManyRelationValueContainer implements
                 }
             }
         }
-        
-        foreach($index as $id => $record) {
-            $this->_new[$id] = $record;
-        }
-        
-        if($this->_record) {
-            $this->_record->markAsChanged($this->_localField);
-        }
-        
-        return $this;
+
+        return $index;
     }
     
     public function remove($record) {

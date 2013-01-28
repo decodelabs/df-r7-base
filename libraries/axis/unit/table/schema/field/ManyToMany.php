@@ -55,9 +55,7 @@ class ManyToMany extends Many implements axis\schema\IManyToManyField {
             );
 
             if(is_array($value)) {
-                foreach($value as $entry) {
-                    $output->add($entry);
-                }
+                $output->addList($value);
             }
 
             return $output;

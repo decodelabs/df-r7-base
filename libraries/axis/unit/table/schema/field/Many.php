@@ -50,7 +50,7 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
         $output = $this->sanitizeValue(null, $forRecord);
 
         if(isset($row[$key])) {
-            $output->populateInverse($row[$key]);
+            $output->populateList($row[$key]);
         }
 
         return $output;
@@ -73,9 +73,7 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
             );
 
             if(is_array($value)) {
-                foreach($value as $entry) {
-                    $output->add($entry);
-                }
+                $output->addList($value);
             }
 
             return $output;

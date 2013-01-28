@@ -30,7 +30,13 @@ class OneToMany extends axis\schema\field\Base implements axis\schema\IOneToMany
     
 // Values
     public function inflateValueFromRow($key, array $row, opal\query\record\IRecord $forRecord=null) {
-        return $this->sanitizeValue(null, $forRecord);
+        $output = $this->sanitizeValue(null, $forRecord);
+
+        if(isset($row[$key])) {
+            $output->populateList($row[$key]);
+        }
+
+        return $output;
     }
     
     public function deflateValue($value) {
@@ -46,9 +52,7 @@ class OneToMany extends axis\schema\field\Base implements axis\schema\IOneToMany
             );
 
             if(is_array($value)) {
-                foreach($value as $entry) {
-                    $output->add($entry);
-                }
+                $output->addList($value);
             }
 
             return $output;
