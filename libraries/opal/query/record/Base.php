@@ -662,7 +662,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
                 }
             }
 
-            if($isEqual === null && $value1 === $value2) {
+            if($isEqual === null && $oldVal === $value) {
                 return $this;
             }
             
