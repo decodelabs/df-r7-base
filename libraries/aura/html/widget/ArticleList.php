@@ -42,8 +42,9 @@ class ArticleList extends BulletList implements IOrderedDataDrivenListWidget {
 
         foreach($data as $key => $value) {
             $liTag = new aura\html\Tag('li');
+            $articleTag = new aura\html\Tag('article');
 
-            $renderContext->iterate($key, $liTag);
+            $renderContext->iterate($key, $articleTag, $liTag);
             $value = $this->_renderListItem($renderContext, $value);
             
             if($value === null) {
@@ -51,7 +52,7 @@ class ArticleList extends BulletList implements IOrderedDataDrivenListWidget {
             }
             
             $children->push($liTag->renderWith(
-                new aura\html\Element('article', $value)
+                $articleTag->renderWith($value)
             ));
         }
         
