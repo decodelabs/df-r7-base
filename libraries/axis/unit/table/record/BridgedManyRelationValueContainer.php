@@ -15,7 +15,8 @@ class BridgedManyRelationValueContainer implements
     opal\query\record\IPreparedValueContainer,
     opal\query\record\IManyRelationValueContainer,
     core\IArrayProvider,
-    \Countable {
+    \Countable,
+    \IteratorAggregate {
     
     protected $_current = array();
     protected $_new = array();
@@ -98,6 +99,10 @@ class BridgedManyRelationValueContainer implements
     
     public function count() {
         return count($this->toArray());
+    }
+
+    public function getIterator() {
+        return new \ArrayIterator($this->toArray());
     }
     
     
