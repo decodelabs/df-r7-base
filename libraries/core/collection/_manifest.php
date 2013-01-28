@@ -110,6 +110,7 @@ interface IPageable {
 interface IPaginator {
     public function getLimit();
     public function getOffset();
+    public function setTotal($total);
     public function countTotal();
     public function getKeyMap();
 }

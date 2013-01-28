@@ -57,14 +57,24 @@ class Fetch implements IFetchQuery, core\IDumpable {
         $adapter = $this->_source->getAdapter();
         
         try {
-            return $adapter->executeFetchQuery($this, $keyField);
+            $output = $adapter->executeFetchQuery($this, $keyField);
         } catch(\Exception $e) {
             if($this->_sourceManager->handleQueryException($this, $e)) {
-                return $adapter->executeFetchQuery($this, $keyField);
+                $output = $adapter->executeFetchQuery($this, $keyField);
             } else {
                 throw $e;
             }
         }
+
+        if($this->_paginator && $this->_offset == 0 && $this->_limit) {
+            $count = count($output);
+
+            if($count < $this->_limit) {
+                $this->_paginator->setTotal($count);
+            }
+        }
+
+        return $output;
     }
     
 // Dump

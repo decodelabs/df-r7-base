@@ -132,14 +132,24 @@ class Select implements ISelectQuery, core\IDumpable {
         $adapter = $this->_source->getAdapter();
         
         try {
-            return $adapter->executeSelectQuery($this, $keyField, $valField);
+            $output = $adapter->executeSelectQuery($this, $keyField, $valField);
         } catch(\Exception $e) {
             if($this->_sourceManager->handleQueryException($this, $e)) {
-                return $adapter->executeSelectQuery($this, $keyField, $valField);
+                $output = $adapter->executeSelectQuery($this, $keyField, $valField);
             } else {
                 throw $e;
             }
         }
+
+        if($this->_paginator && $this->_offset == 0 && $this->_limit) {
+            $count = count($output);
+
+            if($count < $this->_limit) {
+                $this->_paginator->setTotal($count);
+            }
+        }
+
+        return $output;
     }
     
 // Dump

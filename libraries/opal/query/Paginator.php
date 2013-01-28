@@ -202,6 +202,15 @@ class Paginator implements IPaginator {
             ->setOrderDirectives($this->_order);
     }
 
+    public function setTotal($total) {
+        if($total !== null) {
+            $total = (int)$total;
+        }
+
+        $this->_total = $total;
+        return $this;
+    }
+
     public function countTotal() {
         if($this->_total === null) {
             $this->_total = $this->_query->count();
