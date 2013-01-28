@@ -206,17 +206,19 @@ trait TSchema_FieldProvider {
     }
     
     public function addPreparedField(opal\schema\IField $field) {
-        if(isset($this->_fields[$field->getName()])) {
+        $name = $field->getName();
+        
+        if(isset($this->_fields[$name])) {
             throw new RuntimeException(
                 'Field '.$name.' has already been defined, use replaceField() instead'
             );
         }
         
         if($this->_isAudited) {
-            $this->_addFields[$field->getName()] = $field;
+            $this->_addFields[$name] = $field;
         }
         
-        $this->_fields[$field->getName()] = $field;
+        $this->_fields[$name] = $field;
         return $field;
     }
     
