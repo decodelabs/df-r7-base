@@ -75,18 +75,15 @@ class OneChild extends axis\schema\field\Base implements axis\schema\IOneChildFi
 // Ext. serialize
     protected function _importStorageArray(array $data) {
         $this->_setBaseStorageArray($data);
-        
-        $this->_targetUnitId = $data['tui'];
-        $this->_targetField = $data['tfl'];
+        $this->_setRelationStorageArray($data);
+        $this->_setInverseRelationStorageArray($data);
     }
     
     public function toStorageArray() {
         return array_merge(
             $this->_getBaseStorageArray(),
-            [
-                'tui' => $this->_targetUnitId,
-                'tfl' => $this->_targetField
-            ]
+            $this->_getRelationStorageArray(),
+            $this->_getInverseRelationStorageArray()
         );
     }
 }

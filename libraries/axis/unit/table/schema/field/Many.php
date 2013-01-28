@@ -65,6 +65,8 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
             $output = new axis\unit\table\record\BridgedManyRelationValueContainer(
                 $this->_bridgeUnitId, 
                 $this->_targetUnitId,
+                $this->_bridgeLocalFieldName, 
+                $this->_bridgeTargetFieldName,
                 $this->_localPrimaryFields, 
                 $this->_targetPrimaryFields,
                 true
@@ -105,8 +107,8 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
         
         $bridgeUnit = axis\Unit::fromId($this->_bridgeUnitId, $application);
         
-        $localFieldName = $localUnit->getUnitName();
-        $targetFieldName = $targetUnit->getUnitName();
+        $localFieldName = $this->getBridgeLocalFieldName();
+        $targetFieldName = $this->getBridgeTargetFieldName();
 
         $query = $bridgeUnit->select(
             $localFieldName.' as id'
@@ -162,12 +164,13 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
         $application = $populate->getSourceManager()->getApplication();
 
         $parentSource = $populate->getParentSource();
-        $parentUnit = $parentSource->getAdapter();
         $parentSourceAlias = $parentSource->getAlias();
 
         $targetSource = $populate->getSource();
         $targetSourceAlias = $targetSource->getAlias();
-        $targetUnit = $targetSource->getAdapter();
+
+        $bridgeLocalFieldName = $this->getBridgeLocalFieldName();
+        $bridgeTargetFieldName = $this->getBridgeTargetFieldName();
 
         $bridgeUnit = axis\Unit::fromId($this->_bridgeUnitId, $application);
         $bridgeSourceAlias = $populate->getFieldName().'_bridge';
@@ -175,9 +178,9 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
         $output = opal\query\FetchAttach::fromPopulate($populate)
             ->rightJoinConstraint()
                 ->from($bridgeUnit, $bridgeSourceAlias)
-                ->on($bridgeSourceAlias.'.'.$targetUnit->getUnitName(), '=', $targetSourceAlias.'.@primary')
+                ->on($bridgeSourceAlias.'.'.$bridgeTargetFieldName, '=', $targetSourceAlias.'.@primary')
                 ->endJoin()
-            ->on($bridgeSourceAlias.'.'.$parentUnit->getUnitName(), '=', $parentSourceAlias.'.@primary');
+            ->on($bridgeSourceAlias.'.'.$bridgeLocalFieldName, '=', $parentSourceAlias.'.@primary');
             
         $output->asMany($this->_name);
 
@@ -231,21 +234,21 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
 // Ext. serialize
     protected function _importStorageArray(array $data) {
         $this->_setBaseStorageArray($data);
-        
+        $this->_setRelationStorageArray($data);
+        $this->_setBridgeRelationStorageArray($data);
+
         $this->_localPrimaryFields = (array)$data['lpf'];
         $this->_targetPrimaryFields = (array)$data['tpf'];
-        $this->_bridgeUnitId = $data['bui'];
-        $this->_targetUnitId = $data['tui'];
     }
     
     public function toStorageArray() {
         return array_merge(
             $this->_getBaseStorageArray(),
+            $this->_getRelationStorageArray(),
+            $this->_getBridgeRelationStorageArray(),
             [
                 'lpf' => $this->_localPrimaryFields,
                 'tpf' => $this->_targetPrimaryFields,
-                'bui' => $this->_bridgeUnitId,
-                'tui' => $this->_targetUnitId
             ]
         );
     }

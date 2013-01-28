@@ -205,17 +205,17 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
 // Ext. serialize
     protected function _importStorageArray(array $data) {
         $this->_setBaseStorageArray($data);
+        $this->_setRelationStorageArray($data);
         
         $this->_targetPrimaryFields = (array)$data['tpf'];
-        $this->_targetUnitId = $data['tui'];
     }
     
     public function toStorageArray() {
         return array_merge(
             $this->_getBaseStorageArray(),
+            $this->_getRelationStorageArray(),
             [
-                'tpf' => $this->_targetPrimaryFields,
-                'tui' => $this->_targetUnitId
+                'tpf' => $this->_targetPrimaryFields
             ]
         );
     }

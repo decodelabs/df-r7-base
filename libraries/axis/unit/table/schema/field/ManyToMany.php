@@ -47,6 +47,8 @@ class ManyToMany extends Many implements axis\schema\IManyToManyField {
             $output = new axis\unit\table\record\BridgedManyRelationValueContainer(
                 $this->_bridgeUnitId,
                 $this->_targetUnitId,
+                $this->_bridgeLocalFieldName, 
+                $this->_bridgeTargetFieldName,
                 $this->_localPrimaryFields,
                 $this->_targetPrimaryFields,
                 $this->_isDominant
@@ -127,16 +129,16 @@ class ManyToMany extends Many implements axis\schema\IManyToManyField {
     protected function _importStorageArray(array $data) {
         parent::_importStorageArray($data);
         
+        $this->_setInverseRelationStorageArray($data);
         $this->_isDominant = $data['dom'];
-        $this->_targetField = $data['tfl'];
     }
     
     public function toStorageArray() {
         return array_merge(
             parent::toStorageArray(),
+            $this->_getInverseRelationStorageArray(),
             [
-                'dom' => $this->_isDominant,
-                'tfl' => $this->_targetField
+                'dom' => $this->_isDominant
             ]
         );
     }

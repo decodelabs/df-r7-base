@@ -98,19 +98,19 @@ class OneToMany extends axis\schema\field\Base implements axis\schema\IOneToMany
 // Ext. serialize
     protected function _importStorageArray(array $data) {
         $this->_setBaseStorageArray($data);
-        
+        $this->_setRelationStorageArray($data);
+        $this->_setInverseRelationStorageArray($data);
+
         $this->_targetPrimaryFields = (array)$data['tpf'];
-        $this->_targetUnitId = $data['tui'];
-        $this->_targetField = $data['tfl'];
     }
     
     public function toStorageArray() {
         return array_merge(
             $this->_getBaseStorageArray(),
+            $this->_getRelationStorageArray(),
+            $this->_getInverseRelationStorageArray(),
             [
-                'tpf' => $this->_targetPrimaryFields,
-                'tui' => $this->_targetUnitId,
-                'tfl' => $this->_targetField
+                'tpf' => $this->_targetPrimaryFields
             ]
         );
     }

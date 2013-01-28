@@ -326,27 +326,26 @@ abstract class Base extends axis\Unit implements
     }
 
 
-    public function rewriteCountRelationCorrelation(opal\query\ICorrelatableQuery $query, $field, $alias) {
+    public function rewriteCountRelationCorrelation(opal\query\ICorrelatableQuery $query, $fieldName, $alias) {
         $schema = $this->getTransientUnitSchema();
-        $field = $schema->getField($field);
+        $field = $schema->getField($fieldName);
 
         if(!$field instanceof axis\schema\IManyRelationField) {
             throw new axis\schema\FieldTypeNotFoundException(
-                $field.' is not a many relation field'
+                $fieldName.' is not a many relation field'
             );
         }
 
         $application = $query->getSourceManager()->getApplication();
-        $targetUnit = $field->getTargetUnit($application);
         $fieldName = $field->getName();
-        $localName = $this->getUnitName();
 
         if($field instanceof axis\schema\IBridgedRelationField) {
             // Field is bridged
             
             $bridgeAlias = $fieldName.'Bridge';
             $localAlias = $query->getSource()->getAlias();
-            $targetName = $targetUnit->getUnitName();
+            $localName = $field->getBridgeLocalFieldName();
+            $targetName = $field->getBridgeTargetFieldName();
 
             $query->correlate('COUNT('.$bridgeAlias.'.'.$targetName.')', $alias)
                 ->from($this->getBridgeUnit($fieldName), $bridgeAlias)
@@ -354,8 +353,10 @@ abstract class Base extends axis\Unit implements
                 ->endCorrelation();
         } else {
             // Field is OneToMany
+            $targetUnit = $field->getTargetUnit($application);
             $targetAlias = $fieldName.'Count';
             $targetFieldName = $field->getTargetField();
+            $localName = $this->getUnitName();
 
             $query->correlate('COUNT('.$targetAlias.'.@primary)', $alias)
                 ->from($targetUnit, $targetAlias)

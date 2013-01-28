@@ -188,12 +188,14 @@ trait TRelationField {
             );
         }
 
+        /*
         if($this instanceof IBridgedRelationField
         && $targetUnit->getUnitId() == $localUnit->getUnitId()) {
             throw new RuntimeException(
                 'Bridged relation targets cannot currently reference the local unit ('.$localUnit->getUnitId().')'
             );
         }
+        */
 
         return $targetUnit;
     }
@@ -294,6 +296,16 @@ trait TRelationField {
     protected function _getSubPrimitiveName($name) {
         return $this->_name.'_'.$name;
     }
+
+    protected function _setRelationStorageArray(array $data) {
+        $this->_targetUnitId = $data['tui'];
+    }
+
+    protected function _getRelationStorageArray() {
+        return [
+            'tui' => $this->_targetUnitId
+        ];
+    }
 }
 
 
@@ -365,6 +377,16 @@ trait TInverseRelationField {
 
         return $targetField;
     }
+
+    protected function _setInverseRelationStorageArray(array $data) {
+        $this->_targetField = $data['tfl'];
+    }
+
+    protected function _getInverseRelationStorageArray() {
+        return [
+            'tfl' => $this->_targetField
+        ];
+    }
 }
 
 
@@ -378,6 +400,8 @@ interface IBridgedRelationField extends IRelationField {
     public function getBridgeUnitId();
     
     public function getBridgeUnit(core\IApplication $application=null);
+    public function getBridgeTargetFieldName();
+    public function isSelfReference();
     
     public function getLocalPrimaryFieldNames();
     public function getTargetPrimaryFieldNames();
@@ -387,6 +411,8 @@ interface IBridgedRelationField extends IRelationField {
 trait TBridgedRelationField {
 
     protected $_bridgeUnitId;
+    protected $_bridgeLocalFieldName;
+    protected $_bridgeTargetFieldName;
 
     public function setBridgeUnitId($id) {
         if($id instanceof axis\IUnit) {
@@ -409,8 +435,25 @@ trait TBridgedRelationField {
         return axis\Unit::fromId($this->_bridgeUnitId, $application);
     }
 
+    public function getBridgeLocalFieldName() {
+        return $this->_bridgeLocalFieldName;
+    }
+
+    public function getBridgeTargetFieldName() {
+        return $this->_bridgeTargetFieldName;
+    }
+
+    public function isSelfReference() {
+        return $this->_bridgeLocalFieldName == substr($this->_bridgeTargetFieldName, 0, -3)
+            || $this->_bridgeTargetFieldName == substr($this->_bridgeLocalFieldName, 0, -3);
+    }
+
     protected function _sanitizeBridgeUnitId(axis\ISchemaBasedStorageUnit $localUnit) {
+        $targetUnit = $this->getTargetUnit($localUnit->getApplication());
         $modelName = $localUnit->getModel()->getModelName();
+
+        $this->_bridgeLocalFieldName = $localUnit->getUnitName();
+        $this->_bridgeTargetFieldName = $targetUnit->getUnitName();
 
         if($this instanceof IManyToManyField) {
             if($this->isDominant() && empty($this->_bridgeUnitId)) {
@@ -420,6 +463,14 @@ trait TBridgedRelationField {
             if(!empty($this->_bridgeUnitId) && false === strpos($this->_bridgeUnitId, axis\Unit::ID_SEPARATOR)) {
                 $this->_bridgeUnitId = $modelName.axis\Unit::ID_SEPARATOR.$this->_bridgeUnitId;
             }
+
+            if($this->_bridgeTargetFieldName == $localUnit->getUnitName()) {
+                if($this->isDominant()) {
+                    $this->_bridgeTargetFieldName .= 'Ref';
+                } else {
+                    $this->_bridgeLocalFieldName .= 'Ref';
+                }
+            }
         } else {
             if(empty($this->_bridgeUnitId)) {
                 $this->_bridgeUnitId = $modelName.axis\Unit::ID_SEPARATOR.$this->_getBridgeUnitType().'('.$localUnit->getUnitName().'.'.$this->_name.')';
@@ -427,6 +478,10 @@ trait TBridgedRelationField {
             
             if(false === strpos($this->_bridgeUnitId, axis\Unit::ID_SEPARATOR)) {
                 $this->_bridgeUnitId = $modelName.axis\Unit::ID_SEPARATOR.$this->_bridgeUnitId;
+            }
+
+            if($this->_bridgeTargetFieldName == $localUnit->getUnitName()) {
+                $this->_bridgeTargetFieldName .= 'Ref';
             }
         }
     }
@@ -446,6 +501,20 @@ trait TBridgedRelationField {
 
     protected function _getBridgeUnitType() {
         return 'table.ManyBridge';
+    }
+
+    protected function _setBridgeRelationStorageArray(array $data) {
+        $this->_bridgeUnitId = $data['bui'];
+        $this->_bridgeLocalFieldName = $data['blf'];
+        $this->_bridgeTargetFieldName = $data['btf'];
+    }
+
+    protected function _getBridgeRelationStorageArray() {
+        return [
+            'bui' => $this->_bridgeUnitId,
+            'blf' => $this->_bridgeLocalFieldName,
+            'btf' => $this->_bridgeTargetFieldName
+        ];
     }
 }
 

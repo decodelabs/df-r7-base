@@ -58,7 +58,7 @@ class ManyBridge extends Base implements axis\IVirtualUnit {
 
         $bridgePrimaryFields = [
             $dominantName = $dominantSchema->getName(), 
-            $submissiveName = $submissiveSchema->getName()
+            $submissiveName = $dominantField->getBridgeTargetFieldName()
         ];
 
         $schema->addField($dominantName, 'KeyGroup', $dominantUnit->getUnitId());

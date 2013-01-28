@@ -61,16 +61,13 @@ class OneParent extends One implements axis\schema\IOneParentField {
 // Ext. serialize
     protected function _importStorageArray(array $data) {
         parent::_importStorageArray($data);
-        
-        $this->_targetField = $data['tfl'];
+        $this->_setInverseRelationStorageArray($data);
     }
     
     public function toStorageArray() {
         return array_merge(
             parent::toStorageArray(),
-            [
-                'tfl' => $this->_targetField
-            ]
+            $this->_getInverseRelationStorageArray()
         );
     }
 }
