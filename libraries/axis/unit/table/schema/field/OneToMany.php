@@ -67,6 +67,19 @@ class OneToMany extends axis\schema\field\Base implements axis\schema\IOneToMany
         // TODO: rewrite virtual clause
         core\stub($parent, $field, $operator, $value);
     }
+
+// Populate
+    public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate) {
+        $output = opal\query\FetchAttach::fromPopulate($populate);
+
+        $parentSourceAlias = $populate->getParentSourceAlias();
+        $targetSourceAlias = $populate->getSourceAlias();
+        
+        $output->on($targetSourceAlias.'.'.$this->_targetField, '=', $parentSourceAlias.'.@primary');
+        $output->asMany($this->_name);
+
+        return $output;
+    }
     
 
 // Validate
