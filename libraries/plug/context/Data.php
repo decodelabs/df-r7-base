@@ -116,6 +116,24 @@ class Data implements archLib\IContextHelper, opal\query\IEntryPoint {
         return $this->_context->policy->fetchEntity($locator);
     }
 
+    public function fetchEntityForAction($id, $action=null) {
+        $actionName = $action;
+
+        if($actionName === null) {
+            $actionName = 'access';
+        }
+
+        if(!$output = $this->fetchEntity($id)) {
+            $this->_context->throwError(404, 'Entity not found - '.$id);
+        }
+
+        if(!$this->_context->user->canAccess($output, $action)) {
+            $this->_context->throwError(401, 'Cannot '.$actionName.' entity '.$id);
+        }
+
+        return $output;
+    }
+
 
 // Crypt
     public function hash($message, $salt=null) {
