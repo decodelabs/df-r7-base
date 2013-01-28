@@ -147,6 +147,7 @@ interface IAttributeContainer {
     public function getAttribute($key, $default=null);
     public function removeAttribute($key);
     public function hasAttribute($key);
+    public function countAttributes();
 }
 
 
@@ -191,6 +192,10 @@ trait TAttributeContainer {
     
     public function hasAttribute($key) {
         return isset($this->_attributes[$key]);
+    }
+
+    public function countAttributes() {
+        return count($this->_attributes);
     }
 }
 

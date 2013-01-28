@@ -148,6 +148,16 @@ class Tag implements ITag, core\IDumpable {
             return array_key_exists($key, $this->_attributes);
         }
     }
+
+    public function countAttributes() {
+        $output = count($this->_attributes);
+
+        if(!empty($this->_classes)) {
+            $output++;
+        }
+
+        return $output;
+    }
     
     
 // Data attributes
@@ -239,6 +249,10 @@ class Tag implements ITag, core\IDumpable {
         return in_array($class, $this->_classes);
     }
     
+    public function countClasses() {
+        return count($this->_classes);
+    }
+
     protected function _normalizeClassList($classes) {
         if($classes === null) {
             return array();

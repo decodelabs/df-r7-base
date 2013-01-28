@@ -146,6 +146,10 @@ abstract class Base implements IWidget {
     public function hasAttribute($attr) {
         return $this->getTag()->hasAttribute($attr);
     }
+
+    public function countAttributes() {
+        return $this->getTag()->countAttributes();
+    }
     
     
     
@@ -206,6 +210,10 @@ abstract class Base implements IWidget {
 
     public function hasClass($class) {
         return $this->getTag()->hasClass($class);
+    }
+
+    public function countClasses() {
+        return $this->getTag()->countClasses();
     }
     
     
