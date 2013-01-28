@@ -17,6 +17,10 @@ class EntityLocator implements IEntityLocator, core\IDumpable {
         if($locator instanceof IEntityLocator) {
             return $locator;
         }
+
+        if($locator instanceof IEntityLocatorProvider) {
+            return $locator->getEntityLocator();
+        }
         
         return new self($locator);
     }
