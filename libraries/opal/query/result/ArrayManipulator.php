@@ -632,6 +632,10 @@ class ArrayManipulator implements IArrayManipulator {
             $localAdapter = $populate->getParentSource()->getAdapter();
             $attachment = $localAdapter->rewritePopulateQueryToAttachment($populate);
 
+            foreach($populate->getPopulates() as $childPopulate) {
+                $attachment->addPopulate($childPopulate);
+            }
+
             if($attachment instanceof opal\query\IAttachQuery) {
                 $attachments[$populate->getFieldName()] = $attachment;
             }
@@ -729,7 +733,12 @@ class ArrayManipulator implements IArrayManipulator {
                 $canLimit = $limit !== null || $offset !== null;
             }
               
-                
+
+            // Prepare child populates
+            $childPopulates = $attachment instanceof opal\query\IPopulatableQuery ?
+                $attachment->getPopulates() : null;
+
+
             // Prepare child attachments
             $childAttachments = $attachment instanceof opal\query\IAttachableQuery ?
                 $attachment->getAttachments() : null;
@@ -781,6 +790,12 @@ class ArrayManipulator implements IArrayManipulator {
                 // Limit & offset
                 if($canLimit) {
                     $manipulator->applyLimit($limit, $offset);
+                }
+
+
+                // Child populates
+                if(!empty($childPopulates)) {
+                    $manipulator->applyPopulates($childPopulates);
                 }
                 
                 
