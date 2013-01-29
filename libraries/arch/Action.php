@@ -188,11 +188,12 @@ class Action implements IAction, core\IDumpable {
         if(!$this->_isInline) {
             return $this->_getClassDefaultAccess();
         }
-        
+
         $controller = $this->getController();
         
         if($controller->isControllerInline()) {
-            return $this->_getClassDefaultAccess();
+            //return $this->_getClassDefaultAccess();
+            return true;
         } else {
             return $controller->getDefaultAccess($action);
         }
