@@ -136,7 +136,8 @@ interface IRequest extends core\uri\IUrl, user\IAccessLock {
     public static function formatType($type);
     
     // Match
-    public function eq(IRequest $request);
+    public function eq($request);
+    public function contains($request);
     
     public function getLiteralPath();
     public function getLiteralPathArray();

@@ -334,7 +334,9 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     
     
 // Match
-    public function eq(IRequest $request) {
+    public function eq($request) {
+        $request = self::factory($request);
+
         if($this->_scheme != $request->_scheme) {
             return false;
         }
@@ -356,6 +358,33 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         return true;
     }
     
+    public function contains($request) {
+        $request = self::factory($request);
+
+        if($this->_scheme != $request->_scheme) {
+            return false;
+        }
+    
+        $rpString = (string)$request->getPath();
+        $tpString = (string)$this->getPath();
+
+        if(0 !== stripos($tpString, $rpString)) {
+            return false;
+        }
+
+        if($rpString == $tpString && $this->_query) {
+            $rQuery = $request->getQuery();
+
+            foreach($this->_query as $key => $value) {
+                if(!isset($rQuery->{$key}) || $rQuery[$key] != $value) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     public function getLiteralPath() {
         return new core\uri\Path($this->getLiteralPathArray(), false);
     }
