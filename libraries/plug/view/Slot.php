@@ -17,6 +17,15 @@ class Slot implements aura\view\IHelper {
 
     protected $_slots = array();
 
+    public function startCapture() {
+        ob_start();
+        return $this;
+    }
+
+    public function endCapture($id) {
+        return $this->set($id, ob_get_clean());
+    }
+
     public function set($id, $value) {
         $this->_slots[$id] = aura\view\content\SlotRenderer::factoryArgs(array_slice(func_get_args(), 1));
         return $this;
