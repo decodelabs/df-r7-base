@@ -325,4 +325,13 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
             ]
         );
     }
+
+    public function themeImage($path, $alt=null) {
+        return $this->element(
+            'img', null, [
+                'src' => $this->_view->uri->themeAsset($path),
+                'alt' => $alt
+            ]
+        );
+    }
 }
