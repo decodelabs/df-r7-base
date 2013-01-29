@@ -129,16 +129,18 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
             $tag->setAttribute('rel', implode(' ', array_keys($this->_rel)));
         }
         
+        $dispatchRequest = $context->getDispatchRequest();
+
         if(!$active && $this->_matchRequest && $this->_isComputedActive !== false) {
             $matchRequest = arch\Request::factory($this->_matchRequest);
-            $active = $matchRequest->eq($context->request);
+            $active = $matchRequest->eq($dispatchRequest);
         }
 
         if(!$active && !empty($this->_altMatches)) {
             foreach($this->_altMatches as $match) {
                 $matchRequest = arch\Request::factory($match);
 
-                if($matchRequest->eq($context->request)) {
+                if($matchRequest->contains($dispatchRequest)) {
                     $active = true;
                     break;
                 }
@@ -383,17 +385,18 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         }
 
         $active = $this->_isActive;
+        $dispatchRequest = $context->getDispatchRequest();
         
         if(!$active && $this->_matchRequest && $this->_isComputedActive !== false) {
             $matchRequest = arch\Request::factory($this->_matchRequest);
-            $active = $matchRequest->eq($context->request);
+            $active = $matchRequest->eq($dispatchRequest);
         }
 
         if(!$active && !empty($this->_altMatches)) {
             foreach($this->_altMatches as $match) {
                 $matchRequest = arch\Request::factory($match);
 
-                if($matchRequest->eq($context->request)) {
+                if($matchRequest->contains($dispatchRequest)) {
                     $active = true;
                     break;
                 }
