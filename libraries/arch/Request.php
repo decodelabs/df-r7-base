@@ -368,7 +368,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         $rpString = (string)$request->getPath();
         $tpString = (string)$this->getPath();
 
-        if(0 !== stripos($tpString, $rpString)) {
+        if(0 !== stripos($rpString, $tpString)) {
             return false;
         }
 
@@ -383,6 +383,10 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         }
 
         return true;
+    }
+
+    public function isWithin($request) {
+        return self::factory($request)->contains($this);
     }
 
     public function getLiteralPath() {
