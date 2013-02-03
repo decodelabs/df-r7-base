@@ -12,15 +12,7 @@ use df\aura as auraLib;
 
 class Aura implements archLib\IContextHelper {
     
-    protected $_context;
-    
-    public function __construct(archLib\IContext $context) {
-        $this->_context = $context;
-    }
-    
-    public function getContext() {
-        return $this->_context;
-    }
+    use archLib\TContextHelper;
     
     public function getView($path, $request=null) {
         $parts = explode('.', $path);

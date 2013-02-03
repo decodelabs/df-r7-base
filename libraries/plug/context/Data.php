@@ -13,17 +13,8 @@ use df\opal;
 
 class Data implements archLib\IContextHelper, opal\query\IEntryPoint {
     
+    use archLib\TContextHelper;
     use opal\query\TQuery_EntryPoint;
-    
-    protected $_context;
-    
-    public function __construct(archLib\IContext $context) {
-        $this->_context = $context;
-    }
-    
-    public function getContext() {
-        return $this->_context;
-    }
     
     
 // Validate

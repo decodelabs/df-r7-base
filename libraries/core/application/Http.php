@@ -87,6 +87,10 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
         
         return $this->_context;
     }
+
+    public function hasContext() {
+        return $this->_context !== null;
+    }
     
     public function getDispatchRequest() {
         return $this->getContext()->getRequest();

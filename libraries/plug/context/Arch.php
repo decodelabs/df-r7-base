@@ -12,16 +12,7 @@ use df\halo;
 
 class Arch implements archLib\IContextHelper {
     
-    protected $_context;
-    
-    public function __construct(archLib\IContext $context) {
-        $this->_context = $context;
-    }
-    
-    public function getContext() {
-        return $this->_context;
-    }
-
+    use archLib\TContextHelper;
 
 // Request
     public function newRequest($request) {

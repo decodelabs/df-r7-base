@@ -45,6 +45,10 @@ class Task extends Base implements arch\IDirectoryRequestApplication {
         
         return $this->_context;
     }
+
+    public function hasContext() {
+        return $this->_context !== null;
+    }
     
     
     

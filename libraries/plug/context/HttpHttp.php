@@ -12,16 +12,13 @@ use df\halo;
 
 class HttpHttp implements archLib\IContextHelper {
     
+    use archLib\TContextAware;
+
     protected $_httpRequest;
-    protected $_context;
     
     public function __construct(archLib\IContext $context) {
         $this->_context = $context;
         $this->_httpRequest = $this->_context->getApplication()->getHttpRequest();
-    }
-    
-    public function getContext() {
-        return $this->_context;
     }
     
     public function __get($member) {

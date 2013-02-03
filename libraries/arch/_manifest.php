@@ -53,6 +53,7 @@ interface IContext extends core\IApplicationAware, core\IHelperProvider {
 
 interface IContextAware {
     public function getContext();
+    public function hasContext();
 }
 
 trait TContextAware {
@@ -61,6 +62,10 @@ trait TContextAware {
     
     public function getContext() {
         return $this->_context;
+    }
+
+    public function hasContext() {
+        return $this->_context !== null;
     }
 }
 
@@ -80,7 +85,14 @@ trait TContextProxy {
 
 interface IContextHelper extends IContextAware, core\IHelper {}
 
+trait TContextHelper {
 
+    use TContextAware;
+
+    public function __construct(archLib\IContext $context) {
+        $this->_context = $context;
+    }
+}
 
 
 
