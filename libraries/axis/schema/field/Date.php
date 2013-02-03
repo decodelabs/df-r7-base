@@ -49,6 +49,10 @@ class Date extends Base implements axis\schema\IDateField {
     }
 
     public function compareValues($value1, $value2) {
+        if($value1 === null || $value2 === null) {
+            return $value1 === $value2;
+        }
+
         return core\time\Date::factory($value1)->eq($value2);
     }
     
