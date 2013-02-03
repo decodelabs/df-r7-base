@@ -220,7 +220,7 @@ class PrimaryManifest implements IPrimaryManifest, core\IDumpable {
     
     public function eq(IPrimaryManifest $manifest) {
         foreach($this->_keys as $key => $value) {
-            if(!isset($manifest->_keys[$key])
+            if(!array_key_exists($key, $manifest->_keys)
             || $manifest->_keys[$key] !== $value) {
                 return false;
             }
