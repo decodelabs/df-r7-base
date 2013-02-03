@@ -89,7 +89,7 @@ trait TContextHelper {
 
     use TContextAware;
 
-    public function __construct(archLib\IContext $context) {
+    public function __construct(IContext $context) {
         $this->_context = $context;
     }
 }
