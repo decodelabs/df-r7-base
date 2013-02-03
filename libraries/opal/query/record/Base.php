@@ -624,6 +624,18 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $output;
     }
 
+    public function getRawId($key) {
+        $output = $this->getRaw($key);
+
+        if($output instanceof IIdProviderValueContainer) {
+            $output = $output->getRawId();
+        } else if($output instanceof IValueContainer) {
+            $output = $output->getValue();
+        }
+
+        return $output;
+    }
+
     public function getOriginal($key) {
         $output = null;
 

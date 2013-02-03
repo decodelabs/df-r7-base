@@ -40,6 +40,7 @@ interface IRecord extends core\collection\IMappedCollection, user\IAccessLock, c
     public function getAddedValues();
     public function getAddedValuesForStorage();
     public function getRaw($key);
+    public function getRawId($key);
     public function getOriginal($key);
     public function getOriginalValues();
     public function getOriginalValuesForStorage();
@@ -67,6 +68,10 @@ interface IPreparedValueContainer extends IValueContainer {
     public function isPrepared();
     public function prepareValue(opal\query\record\IRecord $record, $fieldName);
     public function prepareToSetValue(opal\query\record\IRecord $record, $fieldName);
+}
+
+interface IIdProviderValueContainer extends IValueContainer {
+    public function getRawId();
 }
 
 interface ITaskAwareValueContainer extends IValueContainer {

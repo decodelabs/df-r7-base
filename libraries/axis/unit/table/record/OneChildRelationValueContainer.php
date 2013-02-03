@@ -10,7 +10,10 @@ use df\core;
 use df\axis;
 use df\opal;
 
-class OneChildRelationValueContainer implements opal\query\record\ITaskAwareValueContainer, opal\query\record\IPreparedValueContainer {
+class OneChildRelationValueContainer implements 
+    opal\query\record\ITaskAwareValueContainer, 
+    opal\query\record\IPreparedValueContainer,
+    opal\query\record\IIdProviderValueContainer {
     
     protected $_targetField;
     protected $_record = false;
@@ -103,6 +106,14 @@ class OneChildRelationValueContainer implements opal\query\record\ITaskAwareValu
     }
     
     public function getValueForStorage() {
+        return null;
+    }
+
+    public function getRawId() {
+        if($this->_record) {
+            return $this->_record->getFirstKeyValue();
+        }
+
         return null;
     }
     

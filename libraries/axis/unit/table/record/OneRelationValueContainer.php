@@ -10,7 +10,10 @@ use df\core;
 use df\axis;
 use df\opal;
 
-class OneRelationValueContainer implements opal\query\record\ITaskAwareValueContainer, opal\query\record\IPreparedValueContainer {
+class OneRelationValueContainer implements 
+    opal\query\record\ITaskAwareValueContainer, 
+    opal\query\record\IPreparedValueContainer, 
+    opal\query\record\IIdProviderValueContainer {
         
     protected $_value;
     protected $_record = false;
