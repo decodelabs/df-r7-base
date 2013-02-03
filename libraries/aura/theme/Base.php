@@ -21,7 +21,7 @@ class Base implements ITheme {
         } else if($id instanceof arch\IContext) {
             $context = $id;
             $config = Config::getInstance($context->getApplication());
-            $id = $config->getThemeIdFor($context->getRequest()->getArea());
+            $id = $config->getThemeIdFor($context->request->getArea());
         }
         
         $id = lcfirst($id);
@@ -57,7 +57,7 @@ class Base implements ITheme {
     
     public function renderToHtml(aura\view\IHtmlView $view) {
         $this->_setDefaultViewTitle($view);
-        $request = $view->getContext()->getRequest();
+        $request = $view->getContext()->request;
         
         $view->getBodyTag()
             ->setDataAttribute('location', implode('/', $request->getLiteralPathArray()))

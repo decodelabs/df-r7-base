@@ -56,7 +56,7 @@ class Paginator extends Base implements core\IDumpable {
             $currentPage = $totalPages;
         }
         
-        $request = clone $context->getRequest();
+        $request = clone $context->request;
         $query = $request->getQuery();
         
         $map = $this->_pageData->getKeyMap();

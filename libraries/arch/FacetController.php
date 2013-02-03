@@ -85,7 +85,7 @@ class FacetController implements IFacetController {
 
         if(!$this->_action) {
             throw new RuntimeException(
-                'No main action has been defined for facet controller at '.$this->_context->getRequest()
+                'No main action has been defined for facet controller at '.$this->_context->location
             );
         }
 

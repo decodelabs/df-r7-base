@@ -32,7 +32,7 @@ interface IContext extends core\IApplicationAware, core\IHelperProvider {
     
     // Requests
     public function getRequest();
-    public function getDispatchRequest();
+    public function getLocation();
     public function normalizeOutputUrl($uri);
     
     // Locale
@@ -235,7 +235,7 @@ trait TDirectoryAccessLock {
     }
     
     public function lookupAccessKey(array $keys, $action=null) {
-        return $this->_context->getRequest()->lookupAccessKey($keys, $action);
+        return $this->_context->location->lookupAccessKey($keys, $action);
     }
     
     public function getDefaultAccess($action=null) {
@@ -261,6 +261,6 @@ trait TDirectoryAccessLock {
     }
 
     public function getAccessLockId() {
-        return $this->_context->getRequest()->getAccessLockId();
+        return $this->_context->location->getAccessLockId();
     }
 }

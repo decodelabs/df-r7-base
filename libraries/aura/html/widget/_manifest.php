@@ -330,8 +330,8 @@ interface ITemplateWidget extends IWidget, aura\view\IContentProvider {
     public function setPath($path);
     public function getPath();
     
-    public function setContextRequest($contextRequest);
-    public function getContextRequest();
+    public function setLocation($location);
+    public function getLocation();
 }
 
 

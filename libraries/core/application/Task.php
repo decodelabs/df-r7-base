@@ -101,7 +101,7 @@ class Task extends Base implements arch\IDirectoryRequestApplication {
                 $response = null;
                 
                 try {
-                    $request = clone $this->_context->getRequest();
+                    $request = clone $this->_context->request;
                 } catch(\Exception $e) {
                     $request = null;
                 }

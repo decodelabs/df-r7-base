@@ -87,7 +87,7 @@ class HttpHttp implements archLib\IContextHelper {
     
     public function redirect($request=null) {
         if($request === null) {
-            $request = $this->_context->getRequest();
+            $request = $this->_context->request;
         }
         
         if(is_string($request)) {
@@ -108,7 +108,7 @@ class HttpHttp implements archLib\IContextHelper {
     }
     
     public function defaultRedirect($default=null, $success=true) {
-        $request = $this->_context->getRequest();
+        $request = $this->_context->request;
         
         if($success && ($redirect = $request->getRedirectTo())) {
             return $this->redirect($redirect);

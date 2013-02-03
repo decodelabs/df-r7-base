@@ -56,7 +56,7 @@ class Uri implements aura\view\IHelper {
     }
     
     public function current($from=null, $to=null) {
-        return $this->request($this->_view->getContext()->getRequest(), $from, $to);
+        return $this->request($this->_view->getContext()->request, $from, $to);
     }
     
     public function request($request, $from=null, $to=null) {
@@ -69,7 +69,7 @@ class Uri implements aura\view\IHelper {
         
         if($from !== null) {
             if($from === true) {
-                $from = $this->_view->getContext()->getRequest();
+                $from = $this->_view->getContext()->request;
             }
             
             $request->setRedirectFrom($from);
@@ -77,7 +77,7 @@ class Uri implements aura\view\IHelper {
         
         if($to !== null) {
             if($to === true) {
-                $to = $this->_view->getContext()->getRequest();
+                $to = $this->_view->getContext()->request;
             }
             
             $request->setRedirectTo($to);
@@ -98,7 +98,7 @@ class Uri implements aura\view\IHelper {
     }
 
     public function back($default=null, $success=true) {
-        $request = $this->_view->getContext()->getRequest();
+        $request = $this->_view->getContext()->request;
         
         if($success && ($redirect = $request->getRedirectTo())) {
             return $this->request($redirect);

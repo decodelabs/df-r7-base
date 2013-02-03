@@ -65,7 +65,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                     $orderData = null;
                 } else {
                     $keyMap = $pageData->getKeyMap();
-                    $request = clone $context->getRequest();
+                    $request = clone $context->request;
                     $query = $request->getQuery();
                 }
             }

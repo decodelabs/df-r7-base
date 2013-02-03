@@ -93,7 +93,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
     }
     
     public function getDispatchRequest() {
-        return $this->getContext()->getRequest();
+        return $this->getContext()->request;
     }
     
     
@@ -308,7 +308,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
                 
                 try {
                     if($this->_context) {
-                        $request = clone $this->_context->getRequest();
+                        $request = clone $this->_context->request;
                     }
                 } catch(\Exception $e) {
                     $request = null;
@@ -352,7 +352,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
         if($response === null && $this->isDevelopment()) {
             $this->_context->throwError(
                 500,
-                'No response was returned by action: '.$this->_context->getRequest()
+                'No response was returned by action: '.$this->_context->request
             );
         }
         

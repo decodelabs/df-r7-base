@@ -23,12 +23,8 @@ class Controller implements IController, core\IDumpable {
     private $_isInline = false;
     
     public static function factory(IContext $context) {
-        $runMode = $context->getApplication()->getRunMode();
-
-        $class = self::getClassFor(
-            $context->getRequest(), 
-            $runMode
-        );
+        $runMode = $context->getRunMode();
+        $class = self::getClassFor($context->location, $runMode);
         
         if(!class_exists($class)) {
             $class = __CLASS__;

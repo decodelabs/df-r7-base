@@ -52,7 +52,7 @@ class Arch implements archLib\IContextHelper {
         }
         
         if($context instanceof archLib\IContext) {
-            $request = clone $context->getRequest();
+            $request = clone $context->location;
         } else {
             $request = archLib\Request::factory($context);
         }
@@ -93,7 +93,7 @@ class Arch implements archLib\IContextHelper {
         }
         
         if($context instanceof archLib\IContext) {
-            $request = clone $context->getRequest();
+            $request = clone $context->location;
         } else {
             $request = archLib\Request::factory($context);
         }
@@ -159,7 +159,9 @@ class Arch implements archLib\IContextHelper {
             if($empty) {
                 $output = new archLib\navigation\breadcrumbs\EntryList();
             } else {
-                $output = archLib\navigation\breadcrumbs\EntryList::generateFromRequest($this->_context->getDispatchRequest());
+                $output = archLib\navigation\breadcrumbs\EntryList::generateFromRequest(
+                    $this->_context->request
+                );
             }
             
             $application->_setCacheObject($output);

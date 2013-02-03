@@ -31,8 +31,8 @@ trait TBase {
 // Delegates
     public function loadDelegate($id, $name, $request=null) {
         $context = $this->_context->spawnInstance($request);
-        $request = $context->getRequest();
-        $path = $request->getController();
+        $path = $context->location->getController();
+        $area = $context->location->getArea();
         
         if(!empty($path)) {
             $parts = explode('/', $path);
@@ -52,14 +52,14 @@ trait TBase {
 
         $parts[] = ucfirst($topName);
         
-        $class = 'df\\apex\\directory\\'.$request->getArea().'\\'.implode('\\', $parts);
+        $class = 'df\\apex\\directory\\'.$area.'\\'.implode('\\', $parts);
         
         if(!class_exists($class)) {
             $class = 'df\\apex\\directory\\shared\\'.implode('\\', $parts);
 
             if(!class_exists($class)) {
                 throw new DelegateException(
-                    'Delegate '.$name.' could not be found at ~'.$request->getArea().'/'.$request->getController()
+                    'Delegate '.$name.' could not be found at ~'.$area.'/'.$path
                 );
             }
         }

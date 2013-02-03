@@ -93,7 +93,7 @@ class BreadcrumbList extends Base implements IListWidget, core\IDumpable {
     
     public function generateFromRequest(arch\IRequest $request=null) {
         if($request === null) {
-            $request = $this->_context->getRequest();
+            $request = $this->_context->request;
         }
         
         $entryList = arch\navigation\breadcrumbs\EntryList::generateFromRequest($request);

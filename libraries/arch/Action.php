@@ -22,7 +22,7 @@ class Action implements IAction, core\IDumpable {
     
     public static function factory(IContext $context, IController $controller=null) {
         $class = self::getClassFor(
-            $context->getRequest(),
+            $context->location,
             $context->getRunMode()
         );
         
@@ -118,7 +118,7 @@ class Action implements IAction, core\IDumpable {
         if($func === null) {
             throw new RuntimeException(
                 'No handler could be found for action: '.
-                $this->_context->getRequest()->toString(),
+                $this->_context->location->toString(),
                 404
             );
         }
@@ -131,8 +131,7 @@ class Action implements IAction, core\IDumpable {
     }
     
     public static function getActionMethodName($actionClass, IContext $context) {
-        $request = $context->getRequest();
-        $type = $request->getType();
+        $type = $context->location->getType();
         $func = 'executeAs'.$type;
         
         if(!method_exists($actionClass, $func)) {
@@ -147,14 +146,13 @@ class Action implements IAction, core\IDumpable {
     }
     
     public static function getControllerMethodName($controllerClass, IContext $context) {
-        $request = $context->getRequest();
-        $actionName = $request->getAction();
+        $actionName = $context->location->getAction();
         
         if(is_numeric(substr($actionName, 0, 1))) {
             $actionName = '_'.$actionName;
         }
         
-        $type = $request->getType();
+        $type = $context->location->getType();
         $func = $actionName.$type.'Action';
         
         if(!method_exists($controllerClass, $func)) {

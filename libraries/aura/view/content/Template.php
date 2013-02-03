@@ -23,7 +23,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
     private $_innerContent = null;
     
     public static function loadDirectoryTemplate(arch\IContext $context, $path) {
-        $request = $context->getRequest();
+        $request = $context->location;
         $contextPath = $request->getDirectoryLocation();
         $lookupPath = 'apex/directory/'.$contextPath.'/_templates/'.ltrim($path, '/').'.php';
         
@@ -56,7 +56,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         $context = $view->getContext();
         
         $lookupPaths = array();
-        $area = $context->getRequest()->getArea();
+        $area = $context->location->getArea();
 
         $lookupPaths[] = 'apex/themes/'.$themeId.'/templates/'.$area.'/'.$path.'.php';
         
@@ -101,7 +101,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         $context = $view->getContext();
 
         $lookupPaths = array();
-        $area = $context->getRequest()->getArea();
+        $area = $context->location->getArea();
         $themeId = $theme->getId();
         
         $lookupPaths[] = 'apex/themes/'.$themeId.'/layouts/'.$area.'/'.$path.'.php';

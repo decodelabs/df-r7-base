@@ -43,7 +43,7 @@ abstract class Action extends arch\Action implements IAction {
     
     final protected function _beforeDispatch() {
         $response = $this->_init();
-        $request = $this->_context->getRequest();
+        $request = $this->_context->request;
         $id = null;
         
         if(!empty($response)) {
@@ -65,7 +65,7 @@ abstract class Action extends arch\Action implements IAction {
             } else {
                 $id = $this->_createSessionId();
                 
-                $this->_context->getRequest()->getQuery()->set(
+                $request->getQuery()->set(
                     static::SESSION_ID_KEY, $id
                 );
             }
@@ -113,7 +113,7 @@ abstract class Action extends arch\Action implements IAction {
     }
     
     protected function _createSessionNamespace() {
-        $output = 'form://'.implode('/', $this->_context->getRequest()->getLiteralPathArray());
+        $output = 'form://'.implode('/', $this->_context->request->getLiteralPathArray());
         
         if(null !== ($dataId = $this->_getDataId())) {
             $output .= '#'.$dataId;
@@ -254,7 +254,7 @@ abstract class Action extends arch\Action implements IAction {
         
         if(!method_exists($actionClass, $func)) {
             throw new RuntimeException(
-                'Form action '.$context->getRequest().' does not support '.
+                'Form action '.$context->request.' does not support '.
                 $context->getApplication()->getHttpRequest()->getMethod().' http method',
                 405
             );

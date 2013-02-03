@@ -597,7 +597,7 @@ class Html extends Base implements IHtmlView {
             $this->setTitle(static::DEFAULT_TITLE);
         }
         
-        if(!$this->_context->getRequest()->isArea('front')) {
+        if(!$this->_context->request->isArea('front')) {
             $this->canIndex(false)->canFollow(false);
         }
     }

@@ -13,12 +13,12 @@ use df\arch;
 class Template extends Base implements ITemplateWidget, \ArrayAccess, core\IDumpable {
     
     protected $_path;
-    protected $_contextRequest;
+    protected $_location;
     protected $_args = array();
     
-    public function __construct(arch\IContext $context, $path, $contextRequest=null) {
+    public function __construct(arch\IContext $context, $path, $location=null) {
         $this->setPath($path);
-        $this->setContextRequest($contextRequest);
+        $this->setLocation($location);
     }
 
     public function toResponse() {
@@ -28,7 +28,7 @@ class Template extends Base implements ITemplateWidget, \ArrayAccess, core\IDump
     protected function _loadTemplate() {
         $renderTarget = $this->getRenderTarget();
         $view = $renderTarget->getView();
-        $context = $view->getContext()->spawnInstance($this->_contextRequest);
+        $context = $view->getContext()->spawnInstance($this->_location);
         return aura\view\content\Template::loadDirectoryTemplate($context, $this->_path);
     }
 
@@ -63,13 +63,13 @@ class Template extends Base implements ITemplateWidget, \ArrayAccess, core\IDump
     }
     
 // Context request
-    public function setContextRequest($contextRequest) {
-        $this->_contextRequest = $contextRequest;
+    public function setLocation($location) {
+        $this->_location = $location;
         return $this;
     }
     
-    public function getContextRequest() {
-        return $this->_contextRequest;
+    public function getLocation() {
+        return $this->_location;
     }    
     
     
@@ -137,7 +137,7 @@ class Template extends Base implements ITemplateWidget, \ArrayAccess, core\IDump
     public function getDumpProperties() {
         return [
             'path' => $this->_path,
-            'contextRequest' => $this->_contextRequest,
+            'location' => $this->_location,
             'args' => count($this->_args),
             'tag' => $this->getTag(),
             'renderTarget' => $this->_getRenderTargetDisplayName()

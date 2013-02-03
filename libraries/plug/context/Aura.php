@@ -38,7 +38,7 @@ class Aura implements archLib\IContextHelper {
     }
 
     public function getWidgetContainer($request=null) {
-        $view = $this->getBarebonesView($this->_context->getRequest()->getType(), $request);
+        $view = $this->getBarebonesView($this->_context->location->getType(), $request);
         $view->setContentProvider($output = new auraLib\view\content\WidgetContentProvider($view->getContext()));
         $output->setRenderTarget($view);
 

@@ -20,7 +20,7 @@ class SlotRenderer implements aura\view\IDeferredRenderable {
     const TYPE_TEMPLATE = 'template';
 
     protected $_value;
-    protected $_contextRequest;
+    protected $_location;
     protected $_args;
 
     public static function factory($value) {
@@ -38,12 +38,12 @@ class SlotRenderer implements aura\view\IDeferredRenderable {
                 $type = self::TYPE_STRING;
             }
 
-            $contextRequest = null;
+            $location = null;
             $args = null;
         } else {
             $type = self::TYPE_TEMPLATE;
             $value = array_shift($args);
-            $contextRequest = array_shift($args);
+            $location = array_shift($args);
             $args = array_shift($args);
 
             if($args !== null && !is_array($args)) {
@@ -51,13 +51,13 @@ class SlotRenderer implements aura\view\IDeferredRenderable {
             }
         }
 
-        return new self($type, $value, $contextRequest, $args);
+        return new self($type, $value, $location, $args);
     }
 
-    protected function __construct($type, $value, $contextRequest=null, array $args=null) {
+    protected function __construct($type, $value, $location=null, array $args=null) {
         $this->_type = $type;
         $this->_value = $value;
-        $this->_contextRequest = $contextRequest ? arch\Request::factory($contextRequest) : null;
+        $this->_location = $location ? arch\Request::factory($location) : null;
         $this->_args = $args ? $args : array();
     }
 
@@ -69,8 +69,8 @@ class SlotRenderer implements aura\view\IDeferredRenderable {
         return $this->_value;
     }
 
-    public function getContextRequest() {
-        return $this->_contextRequest;
+    public function getLocation() {
+        return $this->_location;
     }
 
     public function getArgs() {
@@ -88,7 +88,7 @@ class SlotRenderer implements aura\view\IDeferredRenderable {
             case self::TYPE_TEMPLATE:
                 try {
                     $view = $this->getView();
-                    $context = $view->getContext()->spawnInstance($this->_contextRequest);
+                    $context = $view->getContext()->spawnInstance($this->_location);
                     $template = aura\view\content\Template::loadDirectoryTemplate($context, $this->_value);
                     $template->setRenderTarget($view);
                 

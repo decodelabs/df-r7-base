@@ -14,9 +14,9 @@ class Import implements aura\view\IHelper {
     
     use aura\view\THelper;
     
-    public function template($path, $contextRequest=null) {
+    public function template($path, $location=null) {
         try {
-            $context = $this->_view->getContext()->spawnInstance($contextRequest);
+            $context = $this->_view->getContext()->spawnInstance($location);
             $template = aura\view\content\Template::loadDirectoryTemplate($context, $path);
             $template->setRenderTarget($this->_view);
             $template->setArgs($this->_view->getArgs());
@@ -38,14 +38,14 @@ class Import implements aura\view\IHelper {
         }
     }
     
-    public function component($name, $contextRequest=null, array $args=null) {
-        if(is_array($contextRequest)) {
-            $args = $contextRequest;
-            $contextRequest = null;
+    public function component($name, $location=null, array $args=null) {
+        if(is_array($location)) {
+            $args = $location;
+            $location = null;
         }
 
         try {
-            $context = $this->_view->getContext()->spawnInstance($contextRequest);
+            $context = $this->_view->getContext()->spawnInstance($location);
             $output = arch\Component::factory($context, $name, $args);
             $output->setRenderTarget($this->_view);
 

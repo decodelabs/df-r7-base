@@ -24,9 +24,9 @@ abstract class Component implements IComponent {
     public $html;
     
     public static function factory(IContext $context, $name, array $args=null) {
-        $request = $context->getRequest();
-        $path = $request->getController();
-        
+        $path = $context->location->getController();
+        $area = $context->location->getArea();
+
         if(!empty($path)) {
             $parts = explode('/', $path);
         } else {
@@ -38,14 +38,14 @@ abstract class Component implements IComponent {
         $parts[] = '_components';
         $parts[] = ucfirst($name);
         
-        $class = 'df\\apex\\directory\\'.$request->getArea().'\\'.implode('\\', $parts);
+        $class = 'df\\apex\\directory\\'.$area.'\\'.implode('\\', $parts);
         
         if(!class_exists($class)) {
             $class = 'df\\apex\\directory\\shared\\'.implode('\\', $parts);
 
             if(!class_exists($class)) {
                 throw new RuntimeException(
-                    'Component ~'.$request->getArea().'/'.$path.'/'.ucfirst($name).' could not be found'
+                    'Component ~'.$area.'/'.$path.'/'.ucfirst($name).' could not be found'
                 );
             }
         }
@@ -109,7 +109,7 @@ abstract class Component implements IComponent {
     }
     
     public function lookupAccessKey(array $keys, $action=null) {
-        return $this->_context->getRequest()->lookupAccessKey($keys, $action);
+        return $this->_context->location->lookupAccessKey($keys, $action);
     }
     
     public function getDefaultAccess($action=null) {
@@ -117,6 +117,6 @@ abstract class Component implements IComponent {
     }
 
     public function getAccessLockId() {
-        return $this->_context->getRequest()->getAccessLockId();
+        return $this->_context->location->getAccessLockId();
     }
 }

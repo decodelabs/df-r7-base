@@ -15,10 +15,12 @@ class Context implements IContext, \Serializable, core\i18n\translate\ITranslati
     
     use core\THelperProvider;
     
-    protected $_request;
-    protected $_locale;
-    protected $_application;
+    public $request;
+    public $location;
+    public $application;
     
+    protected $_locale;
+
     public static function getCurrent(core\IApplication $application=null) {
         if(!$application) {
             $application = df\Launchpad::getActiveApplication();
@@ -34,8 +36,9 @@ class Context implements IContext, \Serializable, core\i18n\translate\ITranslati
     public static function factory(core\IApplication $application, $request=null) {
         if(!empty($request)) {
             $request = arch\Request::factory($request);
-        } else if($application instanceof arch\IContextAware) {
-            $request = $application->getContext()->getRequest();
+        } else if($application instanceof arch\IContextAware
+        && $application->hasContext()) {
+            $request = $application->getContext()->location;
         } else {
             $request = new arch\Request('/');
         }
@@ -44,8 +47,15 @@ class Context implements IContext, \Serializable, core\i18n\translate\ITranslati
     }
     
     public function __construct(core\IApplication $application, arch\IRequest $request) {
-        $this->_application = $application;
-        $this->_request = $request;
+        $this->application = $application;
+        $this->location = $request;
+
+        if($this->application instanceof IContextAware 
+        && $this->application->hasContext()) {
+            $this->request = $this->application->getContext()->location;
+        } else {
+            $this->request = $request;
+        }
     } 
     
     public function spawnInstance($request=null) {
@@ -55,21 +65,29 @@ class Context implements IContext, \Serializable, core\i18n\translate\ITranslati
         
         $request = arch\Request::factory($request);
         
-        if($request->eq($this->_request)) {
+        if($request->eq($this->request)) {
             return $this;
         }
         
-        return new self($this->_application, $request);
+        return new self($this->application, $request);
     }
 
 
     public function serialize() {
-        return (string)$this->_request;
+        return (string)$this->location;
     }
 
     public function unserialize($data) {
-        $this->_request = Request::factory($data);
-        $this->_application = df\Launchpad::$application;
+        $this->location = Request::factory($data);
+        $this->application = df\Launchpad::$application;
+
+        if($this->application instanceof IContextAware 
+        && $this->application->hasContext()) {
+            $this->request = $this->application->getContext()->location;
+        } else {
+            $this->request = $this->location;
+        }
+
         return $this;
     }
     
@@ -77,21 +95,21 @@ class Context implements IContext, \Serializable, core\i18n\translate\ITranslati
     
 // Application
     public function getApplication() {
-        return $this->_application;
+        return $this->application;
     }
     
     public function getRunMode() {
-        return $this->_application->getRunMode();
+        return $this->application->getRunMode();
     }
     
     public function getDispatchContext() {
-        if(!$this->_application instanceof IContextAware) {
+        if(!$this->application instanceof IContextAware) {
             throw new RuntimeException(
                 'Current application is not context aware'
             );
         }
         
-        return $this->_application->getContext();
+        return $this->application->getContext();
     }
     
     public function isDispatchContext() {
@@ -101,11 +119,11 @@ class Context implements IContext, \Serializable, core\i18n\translate\ITranslati
     
 // Requests
     public function getRequest() {
-        return $this->_request;
+        return $this->request;
     }
     
-    public function getDispatchRequest() {
-        return $this->getDispatchContext()->getRequest();
+    public function getLocation() {
+        return $this->location;
     }
     
     public function normalizeOutputUrl($uri, $toRequest=false) {
@@ -116,7 +134,7 @@ class Context implements IContext, \Serializable, core\i18n\translate\ITranslati
         }
         
         if($uri === null) {
-            $uri = $this->_request;
+            $uri = $this->request;
         }
         
         if(is_string($uri)) {
@@ -155,12 +173,12 @@ class Context implements IContext, \Serializable, core\i18n\translate\ITranslati
             return $uri;
         }
         
-        if($this->_application instanceof arch\IRoutedDirectoryRequestApplication) {
+        if($this->application instanceof arch\IRoutedDirectoryRequestApplication) {
             if(!$uri instanceof IRequest) {
                 $uri = new Request($uri);
             }
             
-            $uri = $this->_application->requestToUrl($uri);
+            $uri = $this->application->requestToUrl($uri);
         } else {
             $uri = new core\uri\Url($uri);
         }
@@ -184,7 +202,7 @@ class Context implements IContext, \Serializable, core\i18n\translate\ITranslati
         if($this->_locale) {
             return $this->_locale;
         } else {
-            return core\i18n\Manager::getInstance($this->_application)->getLocale(); 
+            return core\i18n\Manager::getInstance($this->application)->getLocale(); 
         }
     }
     
@@ -199,7 +217,7 @@ class Context implements IContext, \Serializable, core\i18n\translate\ITranslati
     }
     
     protected function _loadHelper($name) {
-        $class = 'df\\plug\\context\\'.$this->_application->getRunMode().$name;
+        $class = 'df\\plug\\context\\'.$this->application->getRunMode().$name;
         
         if(!class_exists($class)) {
             $class = 'df\\plug\\context\\'.$name;
@@ -217,11 +235,11 @@ class Context implements IContext, \Serializable, core\i18n\translate\ITranslati
     
     
     public function getI18nManager() {
-        return core\i18n\Manager::getInstance($this->_application);
+        return core\i18n\Manager::getInstance($this->application);
     }
     
     public function getPolicyManager() {
-        return core\policy\Manager::getInstance($this->_application);
+        return core\policy\Manager::getInstance($this->application);
     }
     
     public function getSystemInfo() {
@@ -229,7 +247,7 @@ class Context implements IContext, \Serializable, core\i18n\translate\ITranslati
     }
     
     public function getUserManager() {
-        return user\Manager::getInstance($this->_application);
+        return user\Manager::getInstance($this->application);
     }
     
     
@@ -239,35 +257,35 @@ class Context implements IContext, \Serializable, core\i18n\translate\ITranslati
                 return $this;
             
             case 'application':
-                return $this->_application;
+                return $this->application;
                 
             case 'runMode':
-                return $this->_application->getRunMode();
+                return $this->application->getRunMode();
                 
             case 'dispatchContext':
                 return $this->getDispatchContext();
 
             case 'request': 
-                return $this->_request;
+                return $this->request;
                 
-            case 'dispatchRequest':
-                return $this->getDispatchRequest();
+            case 'location':
+                return $this->location;
                 
             case 'locale':
                 return $this->getLocale();
                 
                 
             case 'i18n':
-                return core\i18n\Manager::getInstance($this->_application);
+                return core\i18n\Manager::getInstance($this->application);
                 
             case 'policy':
-                return core\policy\Manager::getInstance($this->_application);
+                return core\policy\Manager::getInstance($this->application);
                 
             case 'system':
                 return halo\system\Base::getInstance();
                 
             case 'user':
-                return user\Manager::getInstance($this->_application);
+                return user\Manager::getInstance($this->application);
                 
             default:
                 return $this->getHelper($key);
@@ -285,8 +303,8 @@ class Context implements IContext, \Serializable, core\i18n\translate\ITranslati
 // Dump
     public function getDumpProperties() {
         return array(
-            'request' => $this->_request,
-            'application' => $this->_application
+            'request' => $this->request,
+            'application' => $this->application
         );
     }
 }
