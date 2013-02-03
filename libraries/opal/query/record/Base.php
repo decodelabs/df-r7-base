@@ -183,8 +183,6 @@ class Base implements IRecord, \Serializable, core\IDumpable {
             $output[$key] = $value;
         }
 
-        core\dump($output, $this->getOriginalValues(), $this);
-
         return $output;
     }
     
