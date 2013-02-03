@@ -167,6 +167,26 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     public function getChanges() {
         return $this->_changes;
     }
+
+    public function getChangedValues() {
+        $output = array();
+
+        foreach($this->_changes as $key => $value) {
+            if($value instanceof IPreparedValueContainer && !$value->isPrepared()) {
+                $value->prepareValue($this, $key);
+            }
+
+            if($value instanceof IValueContainer) {
+                $value = $value->getValue();
+            }
+
+            $output[$key] = $value;
+        }
+
+        core\dump($output, $this->getOriginalValues(), $this);
+
+        return $output;
+    }
     
     public function getChangesForStorage() {
         $output = array();
@@ -205,6 +225,10 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         
         foreach($this->_changes as $key => $value) {
             if(array_key_exists($key, $this->_values) && $value !== null) {
+                if($value instanceof IPreparedValueContainer && !$value->isPrepared()) {
+                    $value->prepareValue($this, $key);
+                }
+
                 if($value instanceof IValueContainer) {
                     $value = $value->getValue();
                 }
@@ -239,6 +263,10 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         
         foreach($this->_changes as $key => $value) {
             if(!array_key_exists($key, $this->_values) && $this->_changes[$key] !== null) {
+                if($value instanceof IPreparedValueContainer && !$value->isPrepared()) {
+                    $value->prepareValue($this, $key);
+                }
+
                 if($value instanceof IValueContainer) {
                     $value = $value->getValue();
                 }
@@ -272,6 +300,10 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         $output = array();
         
         foreach($this->_values as $key => $value) {
+            if($value instanceof IPreparedValueContainer && !$value->isPrepared()) {
+                $value->prepareValue($this, $key);
+            }
+
             if($value instanceof IValueContainer) {
                 $value = $value->getValue();
             }
@@ -622,7 +654,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     }
     
     public function offsetSet($key, $value) {
-        // Sanitize value from extension
+        // Sanitize value from record
         $value = $this->_sanitizeValue($key, $value);
         
         // Sanitize value from extension

@@ -32,6 +32,7 @@ interface IRecord extends core\collection\IMappedCollection, user\IAccessLock, c
     public function clearChanges();
     public function countChanges();
     public function getChanges();
+    public function getChangedValues();
     public function getChangesForStorage();
     public function getValuesForStorage();
     public function getUpdatedValues();
