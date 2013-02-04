@@ -13,6 +13,8 @@ class Task extends Base implements arch\IDirectoryRequestApplication {
     
     const RUN_MODE = 'Task';
     
+    protected $_context;
+
     
 // Request
     public function setTaskRequest(arch\IRequest $request) {
