@@ -11,161 +11,13 @@ use df\arch;
 use df\aura;
 use df\opal;
     
-abstract class SearchSelectorDelegate extends arch\form\Delegate implements 
-    ISelectorDelegate,
-    IInlineFieldRenderableDelegate {
+abstract class SearchSelectorDelegate extends arch\form\Delegate implements IInlineFieldRenderableSelectorDelegate {
 
-    use TSelectorDelegate;
-    use TSelectorDelegateQueryTools;
-    use TInlineFieldRenderableDelegate;
+    use TInlineFieldRenderableSelectorDelegate;
+    use TValueListSelectorDelegate;
 
-    public function renderFieldAreaContent(aura\html\widget\FieldArea $fa) {
-        switch($this->_state->getStore('mode', 'details')) {
-            case 'select':
-                return $this->_renderOverlaySelector($fa);
-
-            case 'details':
-            default:
-                return $this->_renderInlineDetails($fa);
-        }
-    }
-
-    protected function _renderInlineDetails(aura\html\widget\FieldArea $fa) {
-        $selectList = $this->_fetchSelectionList();
-        $ba = $this->html->buttonArea();
-
-        if($this->_isForMany) {
-            // Multiple entry
-
-            $selected = $this->_normalizeQueryResult($selectList);
-
-            if(empty($selected)) {
-                $fa->push(
-                    $this->html->element('em', $this->_('nothing selected')),
-                    $this->html->string('<br />')
-                );
-
-                $ba->push(
-                    $this->html->eventButton(
-                            $this->eventName('beginSelect'),
-                            $this->_('Select')
-                        )
-                        ->setIcon('tick')
-                        ->setDisposition('positive')
-                        ->shouldValidate(false)
-                );
-            } else {
-                $count = count($selected);
-                $displayList = array();
-
-                for($i = 0; $i < 3 && !empty($selected); $i++) {
-                    $count--;
-
-                    $displayList[] = $this->html->element(
-                        'strong', 
-                        $this->_getResultDisplayName(array_shift($selected))
-                    );
-                }
-
-                $fa->push($this->html->_(
-                    [
-                        '0' => '%l%',
-                        'n > 0' => '%l% and %c% more selected'
-                    ],
-                    [
-                        '%l%' => implode('/', $displayList),
-                        '%c%' => $count
-                    ],
-                    $count
-                ));
-
-                $ba->push(
-                    $this->html->eventButton(
-                            $this->eventName('beginSelect'),
-                            $this->_('Change selection')
-                        )
-                        ->setIcon('edit')
-                        ->setDisposition('operative')
-                        ->shouldValidate(false),
-
-                    $this->html->eventButton(
-                            $this->eventName('clear'),
-                            $this->_('Clear')
-                        )
-                        ->setIcon('remove')
-                        ->shouldValidate(false)
-                );
-            }
-        } else {
-            // Single entry
-
-            $selected = $this->_extractQueryResult($selectList);
-
-            if($selected) {
-                // Selection made
-
-                $resultId = $this->_getResultId($selected);
-                $resultName = $this->_getResultDisplayName($selected);
-
-                $fa->push(
-                    $this->html->element('strong', $resultName),
-
-                    $this->html->hidden(
-                            $this->fieldName('selected'),
-                            $resultId
-                        ),
-
-                    $this->html->string('<br />')
-                );
-
-                $ba->push(
-                    $this->html->eventButton(
-                            $this->eventName('beginSelect'),
-                            $this->_('Select another')
-                        )
-                        ->setIcon('edit')
-                        ->setDisposition('operative')
-                        ->shouldValidate(false),
-
-                    $this->html->eventButton(
-                            $this->eventName('clear'),
-                            $this->_('Clear')
-                        )
-                        ->setIcon('remove')
-                        ->shouldValidate(false)
-                );
-            } else {
-                // No selection
-
-                $fa->push(
-                    $this->html->element('em', $this->_('nothing selected')),
-                    $this->html->string('<br />')
-                );
-
-                $ba->push(
-                    $this->html->eventButton(
-                            $this->eventName('beginSelect'),
-                            $this->_('Select')
-                        )
-                        ->setIcon('tick')
-                        ->setDisposition('positive')
-                        ->shouldValidate(false)
-                );
-            }
-        }
-
-        $fa->push($ba);
-    }
-
-
-    protected function _renderOverlaySelector(aura\html\widget\FieldArea $fa) {
-        $this->_renderInlineDetails($fa);
-        $label = $fa->getLabelBody();
-
-        $ol = $fa->addOverlay($label);
+    protected function _renderOverlaySelectorContent(aura\html\widget\Overlay $ol) {
         $fs = $ol->addFieldSet($this->_('Select'));
-
-
 
         // Search
         $fs->addFieldArea($this->_('Search'))->push(
@@ -341,45 +193,11 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
 
 
 // Fetching
-    protected function _fetchSelectionList() {
-        if($this->_isForMany) {
-            return $this->_fetchResultList($this->values->selected->getKeys());
-        } else {
-            return $this->_fetchResultList([$this->values['selected']]);
-        }
-    }
-
-    abstract protected function _fetchResultList(array $ids);
     abstract protected function _getSearchResultIdList($search, array $selected);
 
 
 
 // Events
-    protected function _onBeginSelectEvent() {
-        if($this->_state->getStore('mode', 'details') == 'details') {
-            $this->_state->setStore('originalSelection', $this->getSelected());
-            $this->_state->setStore('mode', 'select');
-        }
-    }
-
-    protected function _onCancelSelectEvent() {
-        if($this->_state->getStore('mode') == 'select') {
-            if($this->_state->hasStore('originalSelection')) {
-                $this->setSelected($this->_state->getStore('originalSelection'));
-            }
-
-            $this->_state->setStore('mode', 'details');
-        }
-    }
-
-    protected function _onEndSelectEvent() {
-        if($this->_state->getStore('mode') == 'select') {
-            $this->_state->removeStore('originalSelection');
-            $this->_state->setStore('mode', 'details');
-        }
-    }
-
-
     protected function _onSearchEvent() {
         unset($this->values->searchResults);
 
@@ -402,81 +220,7 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
         }
     }
 
-
-    protected function _onResetEvent() {
-        if($this->_state->hasStore('originalSelection')) {
-            $this->setSelected($this->_state->getStore('originalSelection'));
-        }
-    }
-
     protected function _onSelectEvent() {
         unset($this->values->search, $this->values->searchResults);
-    }
-
-    protected function _onClearEvent() {
-        unset($this->values->selected);
-    }
-
-    protected function _onRemoveEvent($id) {
-        unset($this->values->selected->{$id});
-    }
-
-
-
-// Selection
-    public function isSelected($id) {
-        if(!$this->_isForMany) {
-            return $this->values['selected'] == $id;
-        } else {
-            return $this->values->selected->has($id);
-        }
-    }
-
-    public function setSelected($selected) {
-        if(!$this->_isForMany) {
-            if($selected instanceof opal\query\record\IRecord) {
-                $selected = $selected->getPrimaryManifest();
-            }
-
-            $this->values->selected = $selected;
-        } else {
-            if(!is_array($selected)) {
-                $selected = (array)$selected;
-            }
-
-            foreach($selected as $id) {
-                $this->values->selected[$id] = $id;
-            }
-        }
-
-        return $this;
-    }
-
-    public function getSelected() {
-        if(!$this->_isForMany) {
-            return $this->values['selected'];
-        } else {
-            return $this->values->selected->toArray();
-        }
-    }
-
-    public function hasSelection() {
-        if(!$this->_isForMany) {
-            return $this->values->selected->hasValue();
-        } else {
-            return !$this->values->selected->isEmpty();
-        }
-    }
-
-    public function apply() {
-        if($this->_isRequired) {
-            if(!$this->hasSelection()) {
-                $this->values->search->addError('required', $this->_(
-                    'You must select at least one entry'
-                ));
-            }
-        }
-
-        return $this->getSelected();
     }
 }
