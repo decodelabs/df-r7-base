@@ -16,6 +16,7 @@ class LogicException extends \LogicException implements IException {}
 class RuntimeException extends \RuntimeException implements IException {}
 class DelegateException extends RuntimeException {}
 class EventException extends RuntimeException {}
+class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 
 
 // Interfaces
@@ -28,12 +29,13 @@ interface IForm {
 }
 
 interface IAction extends arch\IAction, IForm {
-    
+    public function complete($defaultRedirect=null, $success=true);
 }
 
 interface IDelegate extends IForm, arch\IContextAware {
     public function initialize();
     public function setRenderContext(aura\view\IView $view, aura\view\IContentProvider $content);
+    public function complete();
 }
 
 interface IStateController {

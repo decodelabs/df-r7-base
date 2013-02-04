@@ -55,7 +55,11 @@ class Delegate implements IDelegate {
         return $this;
     }
     
-    
+    public function complete() {
+        $this->_state->reset();
+    }
+
+
 // Names
     public function fieldName($name) {
         $parts = explode('[', $name, 2);
