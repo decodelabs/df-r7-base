@@ -11,43 +11,187 @@ use df\arch;
 use df\aura;
 use df\opal;
     
-abstract class SearchSelectorDelegate extends arch\form\Delegate implements ISelectorDelegate {
+abstract class SearchSelectorDelegate extends arch\form\Delegate implements 
+    ISelectorDelegate,
+    IInlineFieldRenderableDelegate {
 
     use TSelectorDelegate;
     use TSelectorDelegateQueryTools;
+    use TInlineFieldRenderableDelegate;
 
-    public function renderFieldSet($fieldSetName) {
-        $fs = $this->html->fieldSet($fieldSetName);
-        return $this->renderFieldContent($fs);
+    public function renderFieldAreaContent(aura\html\widget\FieldArea $fa) {
+        switch($this->_state->getStore('mode', 'details')) {
+            case 'select':
+                return $this->_renderOverlaySelector($fa);
+
+            case 'details':
+            default:
+                return $this->_renderInlineDetails($fa);
+        }
+    }
+
+    protected function _renderInlineDetails(aura\html\widget\FieldArea $fa) {
+        $selectList = $this->_fetchSelectionList();
+        $ba = $this->html->buttonArea();
+
+        if($this->_isForMany) {
+            // Multiple entry
+
+            $selected = $this->_normalizeQueryResult($selectList);
+
+            if(empty($selected)) {
+                $fa->push(
+                    $this->html->element('em', $this->_('nothing selected')),
+                    $this->html->string('<br />')
+                );
+
+                $ba->push(
+                    $this->html->eventButton(
+                            $this->eventName('beginSelect'),
+                            $this->_('Select')
+                        )
+                        ->setIcon('tick')
+                        ->setDisposition('positive')
+                        ->shouldValidate(false)
+                );
+            } else {
+                $count = count($selected);
+                $displayList = array();
+
+                for($i = 0; $i < 3 && !empty($selected); $i++) {
+                    $count--;
+
+                    $displayList[] = $this->html->element(
+                        'strong', 
+                        $this->_getResultDisplayName(array_shift($selected))
+                    );
+                }
+
+                $fa->push($this->html->_(
+                    [
+                        '0' => '%l%',
+                        'n > 0' => '%l% and %c% more selected'
+                    ],
+                    [
+                        '%l%' => implode('/', $displayList),
+                        '%c%' => $count
+                    ],
+                    $count
+                ));
+
+                $ba->push(
+                    $this->html->eventButton(
+                            $this->eventName('beginSelect'),
+                            $this->_('Change selection')
+                        )
+                        ->setIcon('edit')
+                        ->setDisposition('operative')
+                        ->shouldValidate(false),
+
+                    $this->html->eventButton(
+                            $this->eventName('clear'),
+                            $this->_('Clear')
+                        )
+                        ->setIcon('remove')
+                        ->shouldValidate(false)
+                );
+            }
+        } else {
+            // Single entry
+
+            $selected = $this->_extractQueryResult($selectList);
+
+            if($selected) {
+                // Selection made
+
+                $resultId = $this->_getResultId($selected);
+                $resultName = $this->_getResultDisplayName($selected);
+
+                $fa->push(
+                    $this->html->element('strong', $resultName),
+
+                    $this->html->hidden(
+                            $this->fieldName('selected'),
+                            $resultId
+                        ),
+
+                    $this->html->string('<br />')
+                );
+
+                $ba->push(
+                    $this->html->eventButton(
+                            $this->eventName('beginSelect'),
+                            $this->_('Select another')
+                        )
+                        ->setIcon('edit')
+                        ->setDisposition('operative')
+                        ->shouldValidate(false),
+
+                    $this->html->eventButton(
+                            $this->eventName('clear'),
+                            $this->_('Clear')
+                        )
+                        ->setIcon('remove')
+                        ->shouldValidate(false)
+                );
+            } else {
+                // No selection
+
+                $fa->push(
+                    $this->html->element('em', $this->_('nothing selected')),
+                    $this->html->string('<br />')
+                );
+
+                $ba->push(
+                    $this->html->eventButton(
+                            $this->eventName('beginSelect'),
+                            $this->_('Select')
+                        )
+                        ->setIcon('tick')
+                        ->setDisposition('positive')
+                        ->shouldValidate(false)
+                );
+            }
+        }
+
+        $fa->push($ba);
     }
 
 
-    public function renderFieldContent(aura\html\widget\FieldSet $fs) {
+    protected function _renderOverlaySelector(aura\html\widget\FieldArea $fa) {
+        $this->_renderInlineDetails($fa);
+        $label = $fa->getLabelBody();
+
+        $ol = $fa->addOverlay($label);
+        $fs = $ol->addFieldSet($this->_('Select'));
+
+
+
         // Search
-        if($this->_isForMany || !$this->values->selected->hasValue()) {
-            $fs->addFieldArea($this->_('Search'))->push(
-                $this->html->textbox(
-                        $this->fieldName('search'), 
-                        $this->values->search
-                    )
-                    ->isRequired($this->_isRequired && !$this->hasSelection()),
+        $fs->addFieldArea($this->_('Search'))->push(
+            $this->html->textbox(
+                    $this->fieldName('search'), 
+                    $this->values->search
+                )
+                ->isRequired($this->_isRequired && !$this->hasSelection()),
 
-                $this->html->eventButton(
-                        $this->eventName('search'), 
-                        $this->_('Search')
-                    )
-                    ->shouldValidate(false)
-                    ->setIcon('search')
-            );
-        }
+            $this->html->eventButton(
+                    $this->eventName('search'), 
+                    $this->_('Search')
+                )
+                ->shouldValidate(false)
+                ->setIcon('search')
+        );
 
 
+        
         // Show selected
         if(!$this->_isForMany) {
             $this->_renderOneSelected($fs);
         } else {
             $this->_renderManySelected($fs);
         }
+
 
 
         // Show search results
@@ -96,8 +240,39 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements ISel
             }
         }
 
-        return $fs;
-    }    
+
+        // Overlay buttons
+        $ba = $fs->addButtonArea()->push(
+            $this->html->eventButton(
+                    $this->eventName('endSelect'),
+                    $this->_('Done')
+                )
+                ->setIcon('tick')
+                ->setDisposition('positive')
+                ->shouldValidate(false)
+        );
+
+        if($this->_state->hasStore('originalSelection')) {
+            $ba->push(
+                $this->html->eventButton(
+                        $this->eventName('reset'),
+                        $this->_('Reset')
+                    )
+                    ->setIcon('refresh')
+                    ->setDisposition('informative')
+                    ->shouldValidate(false)
+            );
+        }
+
+        $ba->push(
+            $this->html->eventButton(
+                    $this->eventName('cancelSelect'),
+                    $this->_('Cancel')
+                )
+                ->setIcon('cancel')
+                ->shouldValidate(false)
+        );
+    }
 
     protected function _renderOneSelected($fs) {
         if($this->values->selected->hasValue()) {
@@ -163,7 +338,47 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements ISel
         }
     }
 
+
+
+// Fetching
+    protected function _fetchSelectionList() {
+        if($this->_isForMany) {
+            return $this->_fetchResultList($this->values->selected->getKeys());
+        } else {
+            return $this->_fetchResultList([$this->values['selected']]);
+        }
+    }
+
     abstract protected function _fetchResultList(array $ids);
+    abstract protected function _getSearchResultIdList($search, array $selected);
+
+
+
+// Events
+    protected function _onBeginSelectEvent() {
+        if($this->_state->getStore('mode', 'details') == 'details') {
+            $this->_state->setStore('originalSelection', $this->getSelected());
+            $this->_state->setStore('mode', 'select');
+        }
+    }
+
+    protected function _onCancelSelectEvent() {
+        if($this->_state->getStore('mode') == 'select') {
+            if($this->_state->hasStore('originalSelection')) {
+                $this->setSelected($this->_state->getStore('originalSelection'));
+            }
+
+            $this->_state->setStore('mode', 'details');
+        }
+    }
+
+    protected function _onEndSelectEvent() {
+        if($this->_state->getStore('mode') == 'select') {
+            $this->_state->removeStore('originalSelection');
+            $this->_state->setStore('mode', 'details');
+        }
+    }
+
 
     protected function _onSearchEvent() {
         unset($this->values->searchResults);
@@ -187,7 +402,12 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements ISel
         }
     }
 
-    abstract protected function _getSearchResultIdList($search, array $selected);
+
+    protected function _onResetEvent() {
+        if($this->_state->hasStore('originalSelection')) {
+            $this->setSelected($this->_state->getStore('originalSelection'));
+        }
+    }
 
     protected function _onSelectEvent() {
         unset($this->values->search, $this->values->searchResults);
@@ -202,6 +422,8 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements ISel
     }
 
 
+
+// Selection
     public function isSelected($id) {
         if(!$this->_isForMany) {
             return $this->values['selected'] == $id;

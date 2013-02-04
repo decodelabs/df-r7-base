@@ -12,10 +12,50 @@ use df\aura;
 use df\opal;
     
 
+interface IInlineFieldRenderableDelegate {
+    public function renderFieldArea($label=null);
+    public function renderFieldAreaContent(aura\html\widget\FieldArea $fieldArea);
+}
+
+trait TInlineFieldRenderableDelegate {
+
+    public function renderFieldArea($label=null) {
+        $this->renderFieldAreaContent(
+            $output = $this->html->fieldArea($label)
+        );
+
+        return $output;
+    }
+}
+
+interface ISelfContainedRenderableDelegate {
+    public function renderFieldSet($legend=null);
+    public function renderFieldSetContent(aura\html\widget\FieldSet $fieldSet);
+}
+
+trait TSelfContainedRenderableDelegate {
+
+    public function renderFieldSet($legend=null) {
+        $this->renderFieldSet(
+            $output = $this->html->fieldSet($legend)
+        );
+
+        return $output;
+    }
+}
+
+
 interface ISelectorDelegate {
     public function isRequired($flag=null);
     public function isForOne($flag=null);
     public function isForMany($flag=null);
+
+    public function isSelected($id);
+    public function setSelected($selected);
+    public function getSelected();
+    public function hasSelection();
+
+    public function apply();
 }
 
 trait TSelectorDelegate {
