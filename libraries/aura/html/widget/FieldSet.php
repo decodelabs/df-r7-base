@@ -48,11 +48,11 @@ class FieldSet extends Container implements IFieldSetWidget, IWidgetShortcutProv
         $legend = null;
         
         if(!$this->_legendBody->isEmpty()) {
-            $legend = new aura\html\Element('legend', $this->_legendBody);
+            $legend = (new aura\html\Element('legend', $this->_legendBody))->render();
         }
         
         return $tag->renderWith([
-                $legend->render(), 
+                $legend, 
                 (new aura\html\Tag('div', ['class' => 'body']))->renderWith($this->_children)
             ], 
             true
