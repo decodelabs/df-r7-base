@@ -221,6 +221,17 @@ class Primitive_MultiField extends Primitive implements IMultiFieldPrimitive {
     
     public function __construct(IField $field, array $primitives) {
         parent::__construct($field);
+        
+        foreach($primitives as $name => $primitive) {
+            if(!$primitive instanceof IPrimitive) {
+                throw new InvalidArgumentException(
+                    'Invalid primitive'
+                );  
+            }
+
+            $primitive->_setName($name);
+        }
+
         $this->_primitives = $primitives;
     }
     
