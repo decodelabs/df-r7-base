@@ -24,6 +24,13 @@ class ImplicitSourceTransaction extends Transaction {
             ->beginSelect(func_get_args())
             ->from($this->_source);
     }
+
+    public function selectDistinct($field1=null) {
+        return Initiator::factory($this->_application)
+            ->setTransaction($this)
+            ->beginSelect(func_get_args(), true)
+            ->from($this->_source);
+    }
     
     public function fetch() {
         return Initiator::factory($this->_application)
