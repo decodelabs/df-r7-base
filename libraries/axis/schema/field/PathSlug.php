@@ -23,9 +23,10 @@ class PathSlug extends Base implements
         }
 
         $output = $row[$key.'_name'];
+        $location = trim($row[$key.'_location'], '/');
 
-        if(isset($row[$key.'_location']) && !empty($row[$key.'_location'])) {
-            $output = $row[$key.'_location'].'/'.$output;
+        if(!empty($location)) {
+            $output = $location.'/'.$output;
         }
 
         return $output;
@@ -35,10 +36,6 @@ class PathSlug extends Base implements
         $parts = explode('/', $value);
         $name = array_pop($parts);
         $location = implode('/', $parts);
-
-        if(empty($location)) {
-            $location = null;
-        }
 
         return [
             $this->_name.'_name' => $name,
@@ -61,39 +58,74 @@ class PathSlug extends Base implements
 
 // Rewriters
     public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false) {
-            core\dump($operator);
+        switch($operator) {
+            case 'between':
+            case 'not between':
+                throw new axis\LogicException(
+                    'PathSlug fields cannot be filtered with "'.$operator.'" operators'
+                );
+
+            case 'in':
+                $subOperator = '=';
+                break;
+
+            case 'not in':
+                $subOperator = '!=';
+                break;
+
+            default:
+                $subOperator = $operator;
+                break;
+        }
+
         if(is_array($value)) {
             $output = new opal\query\clause\WhereList($parent, $isOr);
 
-
-            switch($operator) {
-            }
-
             foreach($value as $sub) {
-
+                $output->_addClause($this->_createSubClause($output, $sub, $subOperator));
             }
+
+            return $output;
+        } else {
+            return $this->_createSubClause($parent, $value, $subOperator);
         }
     }
 
-    protected function _createSubClause(opal\query\IClauseFactory $parent, $slug, $operator) {
+    protected function _createSubClause(opal\query\IClauseFactory $parent, $value, $operator) {
         $output = new opal\query\clause\WhereList($parent, true);
-        $slug = $this->sanitizeValue($slug, false);
-        $name = null;
-        $location = null;
+        $slug = $this->sanitizeValue($value, false);
 
-        if($slug !== null) {
-            $parts = explode('/', $slug);
-            $name = array_pop($parts);
-
-            if(!empty($parts)) {
-                $location = implode('/', $parts);
-            }
+        if($slug === null) {
+            return $output
+                ->where($this->_name.'_name', '=', $slug)
+                ->where($this->_name.'_location', '=', $slug);
         }
 
-        $output->where($this->_name.'_name', $operator, $name)
-            ->where($this->_name.'_location', $operator, $location);
+        switch($operator) {
+            case 'begins':
+            case 'not begins':
+                return $output->where($this->_name.'_location', $operator, $slug);
 
-        return $output;
+
+            default:
+                $parts = explode('/', $slug);
+                $name = array_pop($parts);
+                $location = '';
+
+                if(opal\query\clause\Clause::isNegatedOperator($operator)) {
+                    $nameOperator = '!=';
+                } else {
+                    $nameOperator = '=';
+                }
+
+                if(!empty($parts)) {
+                    $location = implode('/', $parts);
+                }
+
+                return $output
+                    ->where($this->_name.'_name', $nameOperator, $name)
+                    ->where($this->_name.'_location', $operator, $location);
+        }
     }
 
 
@@ -109,7 +141,6 @@ class PathSlug extends Base implements
         return new opal\schema\Primitive_MultiField($this, [
             $this->_name.'_name' => (new opal\schema\Primitive_Varchar($this, 255)),
             $this->_name.'_location' => (new opal\schema\Primitive_Varchar($this, 255))
-                ->isNullable(true)
         ]);
     }
 
