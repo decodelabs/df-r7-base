@@ -77,7 +77,8 @@ abstract class SlugTree extends Base {
         } while(!empty($parts));
 
         $query = $this->fetch()
-            ->where('slug', 'in', $slugs);
+            ->where('slug', 'in', $slugs)
+            ->orderBy('slug DESC');
 
         $clause = $query->beginWhereClause()
                 ->where('context', '=', $context);
@@ -85,10 +86,9 @@ abstract class SlugTree extends Base {
         if($shared) {
             $clause->orWhere('isShared', '=', true);
         }
-        
-        return $clause->endClause()
-            ->orderBy('slug DESC')
-            ->toRow();
+
+        $clause->endClause();
+        return $query->toRow();
     }
 
 
@@ -100,14 +100,13 @@ abstract class SlugTree extends Base {
 
         foreach($list as $label) {
             $transaction->update([
-                    'parent' => $this->fetchParentFor($label['slug_location'])
+                    'parent' => $this->fetchParentFor($label['slug_location'].'/x')
                 ])
                 ->where('slug_location', '=', $label['slug_location'])
                 ->execute();
         }
 
         $transaction->commit();
-
         return $this;
     }
 }

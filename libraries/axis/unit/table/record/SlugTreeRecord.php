@@ -154,14 +154,19 @@ class SlugTreeRecord extends opal\query\record\Base {
             $labelLocation = $label->getSlugLocation();
 
             if($labelLocation != $slug) {
-                $labelLocation = substr($labelLocation, $length);
-                $labelLocation = substr($labelLocation, 0, strpos($labelLocation, '/'));
+                if($length) {
+                    $labelLocation = substr($labelLocation, $length + 1);
+                }
+
+                if(false !== ($pos = strpos($labelLocation, '/'))) {
+                    $labelLocation = substr($labelLocation, 0, $pos);
+                }
 
                 if(isset($output[$labelLocation])) {
                     continue;
                 }
 
-                $label = $adapter->createVirtualNode($labelLocation);
+                $label = $adapter->createVirtualNode($slug.'/'.$labelLocation);
                 $label->forceSet('hasChildren', true);
             } else {
                 $label->forceSet('hasChildren', (bool)$label->get('hasChildren'));
