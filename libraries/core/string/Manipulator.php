@@ -48,8 +48,15 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
     public static function formatPathSlug($slug, $allowedChars=null) {
         $parts = explode('/', $slug);
         
-        foreach($parts as &$part) {
-            $part = self::formatSlug($part, $allowedChars);
+        foreach($parts as $i => $part) {
+            $part = trim($part);
+
+            if(empty($part)) {
+                unset($parts[$i]);
+                continue;
+            }
+
+            $parts[$i] = self::formatSlug($part, $allowedChars);
         }
         
         return implode('/', $parts);
