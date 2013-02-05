@@ -12,13 +12,13 @@ use df\opal;
 class SourceManager implements ISourceManager, core\IDumpable {
     
     use core\TApplicationAware;
-    use TQuery_TransactionAware;
     
     protected $_parent;
     protected $_aliases = array();
     protected $_sources = array();
     protected $_adapterHashes = array();
     protected $_genCounter = 0;
+    protected $_transaction;
     
     public function __construct(core\IApplication $application, ITransaction $transaction=null) {
         $this->_application = $application;
@@ -36,6 +36,26 @@ class SourceManager implements ISourceManager, core\IDumpable {
 
     public function getParentSourceManager() {
         return $this->_parent;
+    }
+
+    public function setTransaction(ITransaction $transaction=null) {
+        $this->_transaction = $transaction;
+
+        if($this->_parent) {
+            $this->_parent->setTransaction($transaction);
+        }
+
+        return $this;
+    }
+
+    public function getTransaction() {
+        if($this->_parent) {
+            if($output = $this->_parent->getTransaction()) {
+                return $output;
+            }
+        }
+
+        return $this->_transaction;
     }
     
     public function newSource($adapter, $alias, array $fields=null, $forWrite=false) {

@@ -93,6 +93,16 @@ trait TQuery {
         return Initiator::factory($sourceManager->getApplication())
             ->setTransaction($sourceManager->getTransaction());
     }
+
+
+    public function setTransaction(ITransaction $transaction=null) {
+        $this->getSourceManager()->setTransaction($transaction);
+        return $this;
+    }
+
+    public function getTransaction() {
+        return $this->getSourceManager()->getTransaction();
+    }
 }
 
 
