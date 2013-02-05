@@ -850,13 +850,22 @@ class ArrayManipulator implements IArrayManipulator {
         // Prepare key / val field
         $oldValField = $keyName = $valQName = null;
         $outputPrimaryManifest = false;
+        $keyNameList = null;
         
         if($keyField) {
-            if($keyField instanceof opal\query\IVirtualField) {
-                $keyField = $keyField->dereference()[0];
-            }
-
             $keyName = $keyField->getQualifiedName();
+
+            if($keyField instanceof opal\query\IVirtualField) {
+                $keyNameList = array();
+
+                foreach($keyField->dereference() as $derefKeyField) {
+                    $keyNameList[] = $keyField->getQualifiedName();
+                }
+
+                if(count($keyNameList) == 1) {
+                    $keyName = array_shift($keyNameList);
+                }
+            }
         }
         
         if($valField) {
@@ -982,13 +991,27 @@ class ArrayManipulator implements IArrayManipulator {
 
             
             // Add row to output
+            $key = null;
+
             if($keyName) {
                 if(isset($row[$keyName])) {
                     $key = $row[$keyName];
                 } else if(isset($row[$keyName = $keyField->getAlias()])) {
                     $key = $row[$keyName];
+                } else if($keyNameList !== null) {
+                    $key = array();
+
+                    foreach($keyNameList as $derefKeyName) {
+                        if(isset($row[$derefKeyName])) {
+                            $key[] = $row[$derefKeyName];
+                        }
+                    }
+
+                    $key = implode('/', $key);
                 }
-                
+            }
+
+            if($key) {
                 $this->_rows[$key] = $current;
             } else {
                 $this->_rows[] = $current;
