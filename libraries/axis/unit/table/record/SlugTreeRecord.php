@@ -8,6 +8,7 @@ namespace df\axis\unit\table\record;
 use df;
 use df\core;
 use df\axis;
+use df\arch;
 use df\opal;
     
 class SlugTreeRecord extends opal\query\record\Base {
@@ -62,6 +63,14 @@ class SlugTreeRecord extends opal\query\record\Base {
         }
     }
 
+    public function getSlugName() {
+        return basename($this['slug']);
+    }
+
+    public function getSlugLocation() {
+        return $this->_getSlugLocation($this['slug']);
+    }
+
     protected function _getSlugLocation($slug) {
         $output = dirname($slug);
 
@@ -86,7 +95,7 @@ class SlugTreeRecord extends opal\query\record\Base {
 
         $transaction->update([
                 'slug' => $slug,
-                'parent' => $adapter->fetchParentFor($slug)
+                'parent' => $parent = $adapter->fetchParentFor($slug)
             ])
             ->where('id', '=', $this['id'])
             ->execute();
@@ -98,8 +107,107 @@ class SlugTreeRecord extends opal\query\record\Base {
             ->execute();
 
         $this->forceSet('slug', $slug);
+        $this->forceSet('parent', $parent);
+
         $transaction->commit();
 
         return $this;
+    }
+
+    public function fetchNodeList($context=null) {
+        $adapter = $this->getRecordAdapter();
+        $slug = $this['slug'];
+
+        if(empty($slug)) {
+            // Root
+            $query = $adapter->fetch()
+                ->where('parent', '=', null);
+        } else if($this->isNew()) {
+            // Virtual
+            $query = $adapter->fetch()
+                ->where('slug_location', 'begins', $slug);
+        } else {
+            // Actual
+            $query = $adapter->fetch()
+                ->beginWhereClause()
+                    ->where('parent', '=', $this['id'])
+                    ->orWhere('slug_location', '=', $slug)
+                    ->endClause();
+        }
+
+        $query->correlate('COUNT(child.id) as hasChildren')
+            ->from($adapter, 'child')
+            ->on('child.parent', '=', 'label.id')
+            ->endCorrelation();
+
+        if($context !== null) {
+            $query->beginWhereClause()
+                ->where('context', '=', $context)
+                ->orWhere('isShared', '=', true)
+                ->endClause();
+        }
+
+        $output = array();
+        $length = strlen($slug);
+
+        foreach($query as $label) {
+            $labelLocation = $label->getSlugLocation();
+
+            if($labelLocation != $slug) {
+                $labelLocation = substr($labelLocation, $length);
+                $labelLocation = substr($labelLocation, 0, strpos($labelLocation, '/'));
+
+                if(isset($output[$labelLocation])) {
+                    continue;
+                }
+
+                $label = $adapter->createVirtualNode($labelLocation);
+                $label->forceSet('hasChildren', true);
+            } else {
+                $label->forceSet('hasChildren', (bool)$label->get('hasChildren'));
+            }
+
+            $output[$label->getSlugName()] = $label;
+        }
+
+        return $output;
+    }
+
+    public function fetchParentPath() {
+        $slug = $this['slug'];
+        $adapter = $this->getRecordAdapter();
+
+        if(empty($slug)) {
+            return array();
+        }
+
+        $output = [$adapter->createVirtualNode('')];
+        $parts = explode('/', $slug);
+        array_pop($parts);
+
+        if(empty($parts)) {
+            return $output;
+        }
+
+        $slugs = array();
+
+        do {
+            $slugs[] = implode('/', $parts);
+            array_pop($parts);
+        } while(!empty($parts));
+
+        $list = $adapter->fetch()
+            ->where('slug', 'in', $slugs)
+            ->toKeyArray('slug');
+
+        while($slug = array_pop($slugs)) {
+            if(isset($list[$slug])) {
+                $output[] = $list[$slug];
+            } else {
+                $output[] = $adapter->createVirtualNode($slug);
+            }
+        }
+
+        return $output;
     }
 }

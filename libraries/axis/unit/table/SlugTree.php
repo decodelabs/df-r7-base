@@ -33,6 +33,26 @@ abstract class SlugTree extends Base {
             ->toRow();
     }
 
+    public function fetchNodeBySlug($slug) {
+        if(!$node = $this->fetchBySlug($slug)) {
+            $node = $this->createVirtualNode($slug);
+        }
+
+        return $node;
+    }
+
+    public function createVirtualNode($slug) {
+        $slug = core\string\Manipulator::formatPathSlug($slug);
+
+        return $this->newRecord([
+            'slug' => $slug,
+            'name' => empty($slug) ? 'Root' : core\string\Manipulator::formatName(basename($slug)),
+            'context' => 'shared',
+            'isShared' => true,
+            'description' => null
+        ]);
+    }
+
     public function fetchParentFor($slug, $context=null, $shared=true) {
         if($slug instanceof axis\unit\table\record\SlugTreeRecord) {
             $slug = $slug['slug'];
@@ -69,5 +89,25 @@ abstract class SlugTree extends Base {
         return $clause->endClause()
             ->orderBy('slug DESC')
             ->toRow();
+    }
+
+
+
+    public function normalizeParents() {
+        $transaction = $this->begin();
+        $list = $transaction->selectDistinct('slug_location')
+            ->orderBy('slug_location ASC');
+
+        foreach($list as $label) {
+            $transaction->update([
+                    'parent' => $this->fetchParentFor($label['slug_location'])
+                ])
+                ->where('slug_location', '=', $label['slug_location'])
+                ->execute();
+        }
+
+        $transaction->commit();
+
+        return $this;
     }
 }
