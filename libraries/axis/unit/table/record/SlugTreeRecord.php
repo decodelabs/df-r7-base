@@ -34,6 +34,25 @@ class SlugTreeRecord extends opal\query\record\Base {
         );
     }
 
+    protected function _onPreDelete($taskSet) {
+        // Set alternative parent for descendants
+        $adapter = $this->getRecordAdapter();
+        $id = $this['id'];
+        $slug = $this['slug'];
+
+        $taskSet->addGenericTask(
+            $adapter,
+            'resetParents:'.$id,
+            function($adapter, $transaction) use ($id, $slug) {
+                $transaction->update([
+                        'parent' => $adapter->fetchParentFor($slug.'/x')
+                    ])
+                    ->in($adapter)
+                    ->where('parent', '=', $id);
+            }
+        );
+    }
+
     protected function _onPreUpdate($taskSet) {
         if($this->hasChanged('slug')) {
             $adapter = $this->getRecordAdapter();
