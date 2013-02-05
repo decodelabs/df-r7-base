@@ -17,6 +17,8 @@ abstract class Base extends axis\Unit implements
     opal\query\IIntegralAdapter,
     core\IDumpable {
     
+    protected static $_defaultRecordClass = 'df\\opal\\query\\record\\Base';
+    
     protected $_adapter;
     
     private $_recordClass;
@@ -675,7 +677,11 @@ abstract class Base extends axis\Unit implements
             $this->_recordClass = 'df\\apex\\models\\'.$this->_model->getModelName().'\\'.$this->getUnitName().'\\Record';
             
             if(!class_exists($this->_recordClass)) {
-                $this->_recordClass = 'df\\opal\\query\\record\\Base';
+                $this->_recordClass = static::$_defaultRecordClass;
+            } else if(!is_subclass_of($this->_recordClass, static::$_defaultRecordClass)) {
+                throw new axis\LogicException(
+                    $this->_recordClass.' is not a valid record class for unit '.$this->getUnitId()
+                );            
             }
         }
         
