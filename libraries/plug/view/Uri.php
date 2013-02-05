@@ -58,6 +58,13 @@ class Uri implements aura\view\IHelper {
     public function current($from=null, $to=null) {
         return $this->request($this->_view->getContext()->request, $from, $to);
     }
+
+    public function query(array $queryValues) {
+        $request = clone $this->_view->getContext()->request;
+        $request->getQuery()->import($queryValues);
+
+        return $this->_view->getContext()->getApplication()->requestToUrl($request);
+    }
     
     public function request($request, $from=null, $to=null) {
         if(!$request instanceof arch\IRequest) {
