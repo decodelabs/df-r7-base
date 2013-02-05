@@ -38,8 +38,8 @@ class PathSlug extends Base implements
         $location = implode('/', $parts);
 
         return [
-            $this->_name.'_name' => $name,
-            $this->_name.'_location' => $location
+            $this->_name.'_location' => $location,
+            $this->_name.'_name' => $name
         ];
     }
 
@@ -123,8 +123,8 @@ class PathSlug extends Base implements
                 }
 
                 return $output
-                    ->where($this->_name.'_name', $nameOperator, $name)
-                    ->where($this->_name.'_location', $operator, $location);
+                    ->where($this->_name.'_location', $operator, $location)
+                    ->where($this->_name.'_name', $nameOperator, $name);
         }
     }
 
@@ -132,15 +132,15 @@ class PathSlug extends Base implements
 // Primitive
     public function getPrimitiveFieldNames() {
         return [
-            $this->_name.'_name',
-            $this->_name.'_location'
+            $this->_name.'_location',
+            $this->_name.'_name'
         ];
     }
 
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
         return new opal\schema\Primitive_MultiField($this, [
-            $this->_name.'_name' => (new opal\schema\Primitive_Varchar($this, 255)),
-            $this->_name.'_location' => (new opal\schema\Primitive_Varchar($this, 255))
+            $this->_name.'_location' => (new opal\schema\Primitive_Varchar($this, 255)),
+            $this->_name.'_name' => (new opal\schema\Primitive_Varchar($this, 255))
         ]);
     }
 
