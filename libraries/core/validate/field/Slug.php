@@ -15,7 +15,7 @@ class Slug extends Base implements core\validate\ISlugField {
 
     protected $_allowPathFormat = false;
     protected $_defaultValueField = null;
-    protected $_generateIfEmpty = true;
+    protected $_generateIfEmpty = false;
 
     public function allowPathFormat($flag=null) {
         if($flag !== null) {
