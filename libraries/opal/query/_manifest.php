@@ -362,6 +362,7 @@ interface ISelectAttachQuery extends ISelectQuery, IAttachQuery {
 interface IFetchQuery extends 
     IReadQuery, 
     \Countable,
+    ICorrelatableQuery,
     IJoinConstrainableQuery,
     IPopulatableQuery, 
     IPrerequisiteClauseQuery, 
