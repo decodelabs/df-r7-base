@@ -54,6 +54,7 @@ interface IRecord extends core\collection\IMappedCollection, user\IAccessLock, c
     public function delete();
     public function deploySaveTasks(opal\query\record\task\ITaskSet $taskSet);
     public function deployDeleteTasks(opal\query\record\task\ITaskSet $taskSet);
+    public function triggerTaskEvent(opal\query\record\task\IRecordTask $task, $when);
 }
 
 

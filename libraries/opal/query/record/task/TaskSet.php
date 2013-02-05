@@ -182,6 +182,8 @@ class TaskSet implements ITaskSet {
                 }
                 
                 $task->resolveDependencies($this);
+
+                $task->reportPreEvent();
                 $task->execute($this->_transaction);
 
                 if($task->applyResolutionToDependants()) {
@@ -189,6 +191,8 @@ class TaskSet implements ITaskSet {
                         return $taskA->countDependencies() > $taskB->countDependencies();
                     });
                 }
+
+                $task->reportPostEvent();
             }
         } catch(\Exception $e) {
             $this->_transaction->rollback();

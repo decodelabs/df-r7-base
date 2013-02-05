@@ -11,21 +11,17 @@ use df\opal;
 
 class DeleteRecord extends Base implements IDeleteRecordTask {
     
-    protected $_record;
+    use TRecordTask;
     
     public function __construct(opal\query\record\IRecord $record) {
         $this->_record = $record;
         parent::__construct(self::extractRecordId($record));
     }
     
-    public function getRecord() {
-        return $this->_record;
+    public function getRecordTaskName() {
+        return 'Delete';
     }
-    
-    public function getAdapter() {
-        return $this->_record->getRecordAdapter();
-    }
-    
+
     public function execute(opal\query\ITransaction $transaction) {
         if($this->_record->isNew()) {
             return $this;

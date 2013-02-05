@@ -122,6 +122,11 @@ abstract class Base implements ITask {
 
         return $output;
     }
+
+
+// Events
+    public function reportPreEvent() { return $this; }
+    public function reportPostEvent() { return $this; }
     
     
 // Execute

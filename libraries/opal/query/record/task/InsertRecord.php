@@ -11,19 +11,15 @@ use df\opal;
 
 class InsertRecord extends Base implements IInsertRecordTask {
     
-    protected $_record;
-    
+    use TRecordTask;
+
     public function __construct(opal\query\record\IRecord $record) {
         $this->_record = $record;
         parent::__construct(self::extractRecordId($record));
     }
     
-    public function getRecord() {
-        return $this->_record;
-    }
-    
-    public function getAdapter() {
-        return $this->_record->getRecordAdapter();
+    public function getRecordTaskName() {
+        return 'Insert';
     }
     
     public function execute(opal\query\ITransaction $transaction) {

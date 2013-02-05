@@ -589,6 +589,28 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         
         return $recordTask;
     }
+
+    public function triggerTaskEvent(opal\query\record\task\IRecordTask $task, $when) {
+        $taskName = $task->getRecordTaskName();
+        $funcPrefix = '_on';
+
+        if($when == opal\query\record\task\IRecordTask::EVENT_PRE) {
+            $funcPrefix .= 'Pre';
+        }
+
+        $func = $funcPrefix.$taskName;
+
+        if(!method_exists($this, $func) && in_array($taskName, ['Insert', 'Update', 'Replace'])) {
+            $func = $funcPrefix.'Save';
+        }
+
+
+        if(method_exists($this, $func)) {
+            call_user_func_array([$this, $func], []);
+        }
+
+        return $this;
+    }
     
     
 // Access
