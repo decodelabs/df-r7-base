@@ -227,7 +227,7 @@ abstract class Base implements axis\schema\IBridge {
             if($primitive instanceof opal\schema\IMultiFieldPrimitive) {
                 foreach($primitive->getPrimitives() as $name => $child) {
                     $targetIndex->addField(
-                        $schema->getField($child->getName()), 
+                        $this->_targetSchema->getField($child->getName()), 
                         $ref->getSize(), 
                         $ref->isDescending()
                     );
