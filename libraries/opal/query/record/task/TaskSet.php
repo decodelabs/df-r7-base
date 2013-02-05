@@ -125,6 +125,22 @@ class TaskSet implements ITaskSet {
         $this->addTask($task);
         return $task;
     }
+
+    public function addRawQuery($id, opal\query\IWriteQuery $query) {
+        $task = new RawQuery($id, $query);
+        $this->addTask($task);
+
+        return $task;
+    }
+
+    public function addGenericTask(opal\query\IAdapter $adapter, $id, Callable $callback) {
+        $task = new Generic($adapter, $id, $callback);
+        $this->addTask($task);
+
+        return $task;
+    }
+
+
     
     public function addTask(ITask $task) {
         $id = $task->getId();
@@ -183,7 +199,7 @@ class TaskSet implements ITaskSet {
                 
                 $task->resolveDependencies($this);
 
-                $task->reportPreEvent();
+                $task->reportPreEvent($this);
                 $task->execute($this->_transaction);
 
                 if($task->applyResolutionToDependants()) {
@@ -192,7 +208,7 @@ class TaskSet implements ITaskSet {
                     });
                 }
 
-                $task->reportPostEvent();
+                $task->reportPostEvent($this);
             }
         } catch(\Exception $e) {
             $this->_transaction->rollback();

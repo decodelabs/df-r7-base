@@ -392,11 +392,13 @@ class Base implements IRecord, \Serializable, core\IDumpable {
 
 
     public function populateWithPreparedData(array $row) {
+        /*
         if($this->_isPopulated) {
             throw new RuntimeException(
                 'Record has already been populated'
             );
         }
+        */
 
         foreach($row as $key => $value) {
             $this->_values[$key] = $this->_inflateValue($key, $value);
@@ -590,7 +592,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $recordTask;
     }
 
-    public function triggerTaskEvent(opal\query\record\task\IRecordTask $task, $when) {
+    public function triggerTaskEvent(opal\query\record\task\ITaskSet $taskSet, opal\query\record\task\IRecordTask $task, $when) {
         $taskName = $task->getRecordTaskName();
         $funcPrefix = '_on';
 
@@ -606,7 +608,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
 
 
         if(method_exists($this, $func)) {
-            call_user_func_array([$this, $func], []);
+            call_user_func_array([$this, $func], [$taskSet]);
         }
 
         return $this;
@@ -671,6 +673,31 @@ class Base implements IRecord, \Serializable, core\IDumpable {
 
     public function set($key, $value) {
         return $this->offsetSet($key, $value);
+    }
+
+    public function forceSet($key, $value) {
+        // Sanitize value from record
+        $value = $this->_sanitizeValue($key, $value);
+        
+        // Sanitize value from extension
+        $fieldProcessor = null;
+
+        if($this->_adapter instanceof opal\query\IIntegralAdapter) {
+            $fieldProcessors = $this->_adapter->getQueryResultValueProcessors(array($key));
+
+            if(isset($fieldProcessors[$key])) {
+                $fieldProcessor = $fieldProcessors[$key];
+                $value = $fieldProcessors[$key]->sanitizeValue($value, false);
+            }
+        }
+
+        if(array_key_exists($key, $this->_changes)) {
+            $this->_changes[$key] = $value;
+        } else {
+            $this->_values[$key] =  $value;
+        }
+
+        return $this;
     }
     
     public function get($key, $default=null) {

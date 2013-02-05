@@ -44,9 +44,10 @@ interface IRecord extends core\collection\IMappedCollection, user\IAccessLock, c
     public function getOriginal($key);
     public function getOriginalValues();
     public function getOriginalValuesForStorage();
+    public function forceSet($key, $value);
     public function acceptChanges($insertId=null, array $insertData=null);
     public function markAsChanged($field);
-    
+
     public function populateWithPreparedData(array $row);
     public function populateWithRawData($row);
     
@@ -54,7 +55,7 @@ interface IRecord extends core\collection\IMappedCollection, user\IAccessLock, c
     public function delete();
     public function deploySaveTasks(opal\query\record\task\ITaskSet $taskSet);
     public function deployDeleteTasks(opal\query\record\task\ITaskSet $taskSet);
-    public function triggerTaskEvent(opal\query\record\task\IRecordTask $task, $when);
+    public function triggerTaskEvent(opal\query\record\task\ITaskSet $taskSet, opal\query\record\task\IRecordTask $task, $when);
 }
 
 

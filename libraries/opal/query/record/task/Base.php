@@ -125,8 +125,8 @@ abstract class Base implements ITask {
 
 
 // Events
-    public function reportPreEvent() { return $this; }
-    public function reportPostEvent() { return $this; }
+    public function reportPreEvent(ITaskSet $taskSet) { return $this; }
+    public function reportPostEvent(ITaskSet $taskSet) { return $this; }
     
     
 // Execute

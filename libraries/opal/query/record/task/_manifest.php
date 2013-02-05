@@ -23,6 +23,9 @@ interface ITaskSet {
     public function update(opal\query\record\IRecord $record);
     public function delete(opal\query\record\IRecord $record);
 
+    public function addRawQuery($id, opal\query\IWriteQuery $query);
+    public function addGenericTask(opal\query\IAdapter $adapter, $id, Callable $callback);
+
     public function addTask(ITask $task);
     public function hasTask($id);
     public function isRecordQueued(opal\query\record\IRecord $record);
@@ -45,8 +48,8 @@ interface ITask {
     public function hasDependants();
     public function applyResolutionToDependants();
     
-    public function reportPreEvent();
-    public function reportPostEvent();
+    public function reportPreEvent(ITaskSet $taskSet);
+    public function reportPostEvent(ITaskSet $taskSet);
 
     public function execute(opal\query\ITransaction $transaction);
 }
@@ -87,13 +90,13 @@ trait TRecordTask {
         return $this->_record->getRecordAdapter();
     }
 
-    public function reportPreEvent() {
-        $this->_record->triggerTaskEvent($this, IRecordTask::EVENT_PRE);
+    public function reportPreEvent(ITaskSet $taskSet) {
+        $this->_record->triggerTaskEvent($taskSet, $this, IRecordTask::EVENT_PRE);
         return $this;
     }
 
-    public function reportPostEvent() {
-        $this->_record->triggerTaskEvent($this, IRecordTask::EVENT_POST);
+    public function reportPostEvent(ITaskSet $taskSet) {
+        $this->_record->triggerTaskEvent($taskSet, $this, IRecordTask::EVENT_POST);
         return $this;
     }
 }
