@@ -61,6 +61,8 @@ class Clause implements opal\query\IClause, core\IDumpable {
         $adapter = $source->getAdapter();
         
         if($adapter instanceof opal\query\IIntegralAdapter) {
+            $operator = self::normalizeOperator($operator);
+
             $output = $adapter->rewriteVirtualQueryClause(
                 $parent, $field, $operator, $value, $isOr
             );
