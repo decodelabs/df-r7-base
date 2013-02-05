@@ -17,6 +17,8 @@ class BreadcrumbList extends Base implements IListWidget, core\IDumpable {
     const PRIMARY_TAG = 'nav';
     const DEFAULT_LINK_WIDGET = 'Link';
     const ENFORCE_DEFAULT_LINK_WIDGET = false;
+
+    protected $_separator = '>';
     
     public function __construct(arch\IContext $context, $input=null) {
         $this->_entries = new aura\html\ElementContent(); 
@@ -72,7 +74,7 @@ class BreadcrumbList extends Base implements IListWidget, core\IDumpable {
                 if($i < $count - 1) {
                     $oldContainerTag = $containerTag;
                     $oldContainerTag->push(
-                        ' > ',
+                        ' ', $this->_separator, ' ',
                     
                         $containerTag = new aura\html\Element('span', null, array(
                             'itemscope' => null,
@@ -83,13 +85,22 @@ class BreadcrumbList extends Base implements IListWidget, core\IDumpable {
                 }
             } else {
                 continue;
-                core\dump($entry);
             }
         }
 
         return $this->getTag()->renderWith($content, true);
     }
     
+
+    public function setSeparator($separator) {
+        $this->_separator = $separator;
+        return $this;
+    }
+
+    public function getSeparator() {
+        return $this->_separator;
+    }
+
     
     public function generateFromRequest(arch\IRequest $request=null) {
         if($request === null) {
