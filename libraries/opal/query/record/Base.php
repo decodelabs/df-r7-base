@@ -692,9 +692,18 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         }
 
         if(array_key_exists($key, $this->_changes)) {
-            $this->_changes[$key] = $value;
+            if($this->_changes[$key] instanceof IValueContainer) {
+                $this->_changes[$key]->setValue($value);
+            } else {
+                $this->_changes[$key] = $value;
+            }
         } else {
-            $this->_values[$key] =  $value;
+            if(isset($this->_values[$key])
+            && $this->_values[$key] instanceof IValueContainer) {
+                $this->_values[$key]->setValue($value);
+            } else {
+                $this->_values[$key] =  $value;
+            }
         }
 
         return $this;
