@@ -19,7 +19,7 @@ class SourceNotFoundException extends RuntimeException {}
 
 
 // Interfaces
-interface IEntry extends core\IArrayProvider {
+interface IEntry extends core\IArrayInterchange {
     public function getType();
     
     public function setId($id);
@@ -30,7 +30,7 @@ interface IEntry extends core\IArrayProvider {
 }
 
 
-interface IEntryList extends core\IArrayProvider, \Countable {
+interface IEntryList extends core\IArrayInterchange, \Countable {
     public function addEntries($entries);
     public function addEntry($entry);
     public function getEntry($id);

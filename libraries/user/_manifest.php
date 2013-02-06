@@ -173,7 +173,7 @@ interface ISessionBackend {
 }
 
 
-interface ISessionDescriptor extends core\IArrayProvider, opal\query\IDataRowProvider {
+interface ISessionDescriptor extends core\IArrayInterchange, opal\query\IDataRowProvider {
     public function isNew();
     public function hasJustStarted($flag=null);
     

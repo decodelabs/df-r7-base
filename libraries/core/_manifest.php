@@ -39,7 +39,11 @@ interface IArrayProvider {
     public function toArray();
 }
 
-interface IExtendedArrayProvider {
+interface IArrayInterchange extends IArrayProvider {
+    public static function fromArray(array $array);
+}
+
+interface IExtendedArrayProvider extends IArrayProvider {
     public function getJsonString();
 }
 
@@ -47,6 +51,20 @@ trait TExtendedArrayProvider {
     
     public function toJsonString() {
         return json_encode($this->toArray());
+    }
+}
+
+interface IExtendedArrayInterchange extends IExtendedArrayProvider, IArrayInterchange {
+
+    public static function fromJsonString($json);
+}
+
+trait TExtendedArrayInterchange {
+
+    use TExtendedArrayProvider;
+
+    public static function fromJsonString($json) {
+        return self::fromArray((array)json_decode($json, true));
     }
 }
 
