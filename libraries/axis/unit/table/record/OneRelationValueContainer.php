@@ -61,8 +61,13 @@ class OneRelationValueContainer implements
     }
     
     public function eq($value) {
-        if($value instanceof self
-        || $value instanceof opal\query\record\IRecord) {
+        if($value instanceof self) {
+            $value = $value->getPrimaryManifest();
+        } else if($value instanceof opal\query\record\IRecord) {
+            if($value->isNew()) {
+                return false;
+            }
+
             $value = $value->getPrimaryManifest();
         } else if(!$value instanceof opal\query\record\IPrimaryManifest) {
             try {
@@ -71,7 +76,7 @@ class OneRelationValueContainer implements
                 return false;
             }
         }
-        
+
         return $this->_value->eq($value);
     }
     
