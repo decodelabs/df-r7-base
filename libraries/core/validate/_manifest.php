@@ -334,6 +334,12 @@ interface IDurationField extends IField, IRangeField {
 }
 
 interface IEmailField extends IField {}
+
+interface IEnumField extends IField {
+    public function setOptions(array $options);
+    public function getOptions();    
+}
+
 interface IFloatField extends IField, IRangeField {}
 interface IIdListField extends IField, ISanitizingField {}
 interface IIntegerField extends IField, IRangeField {}
