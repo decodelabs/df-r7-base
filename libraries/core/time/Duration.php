@@ -449,7 +449,7 @@ class Duration implements IDuration, core\IDumpable {
     }
     
 // Format
-    public function toString($maxUnits=2, $shortUnits=false, $maxUnit=self::YEARS) {
+    public function toString($maxUnits=1, $shortUnits=false, $maxUnit=self::YEARS) {
         $translator = core\i18n\translate\Handler::factory('core/time/Duration', $this->_locale);
         $seconds = $this->_seconds;
         $isNegative = false;
