@@ -16,6 +16,10 @@ class Duration extends Base implements opal\schema\ISignedField {
 
     protected $_referenceDateField;
 
+    protected function _init() {
+        $this->_isUnsigned = true;
+    }
+
     public function compareValues($value1, $value2) {
         return (string)$value1 === (string)$value2;
     }
