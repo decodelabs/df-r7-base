@@ -70,6 +70,9 @@ interface IDuration extends core\IStringProvider {
     public function getReferenceDate();
     public function toDate();
     public function invert();
+
+// Util
+    public function isEmpty();
     
 // Microseconds
     public function setMicroseconds($us);

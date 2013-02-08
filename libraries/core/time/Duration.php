@@ -77,7 +77,7 @@ class Duration implements IDuration, core\IDumpable {
         if((int)$time == $time) {
             return (int)$time;
         }
-        
+
         core\stub($time);
     }
     
@@ -104,6 +104,10 @@ class Duration implements IDuration, core\IDumpable {
     public function invert() {
         $this->_seconds *= -1;
         return $this;
+    }
+
+    public function isEmpty() {
+        return $this->_seconds == 0;
     }
     
 // Microseconds
