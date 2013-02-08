@@ -38,7 +38,25 @@ class Format implements aura\view\IHelper {
         return core\i18n\Manager::getInstance($this->_view->getContext()->getApplication())->getModule('numbers', $locale)->formatOrdinal($number);
     }
     
-    public function duration($number, $locale=null) {
+    public function duration($duration, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $locale=null) {
+        if($duration === null) {
+            return null;
+        }
+
+        $duration = core\time\Duration::factory($duration);
+
+        if($duration->isEmpty()) {
+            return null;
+        }
+
+        if($locale !== null) {
+            $duration->setLocale($locale);
+        }
+
+        return $duration->toString($maxUnits, $shortUnits, $maxUnit);
+    }
+
+    public function genericDuration($number, $locale=null) {
         return core\i18n\Manager::getInstance($this->_view->getContext()->getApplication())->getModule('numbers', $locale)->formatDuration($number);
     }
 
