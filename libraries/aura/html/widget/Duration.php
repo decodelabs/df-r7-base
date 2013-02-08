@@ -14,6 +14,14 @@ class Duration extends NumberTextbox {
 
     protected $_inputUnit = core\time\Duration::SECONDS;
 
+    public function __construct(arch\IContext $context, $name, $value=null, $inputUnit=null) {
+        if($inputUnit !== null) {
+            $this->_inputUnit = core\time\Duration::normalizeUnitId($inputUnit);
+        }
+
+        parent::__construct($context, $name, $value);
+    }
+
     protected function _render() {
         $output = parent::_render();
 
@@ -30,7 +38,17 @@ class Duration extends NumberTextbox {
             $unit = core\time\Duration::normalizeUnitId($unit);
         }
 
+        $duration = core\time\Duration::fromUnit($this->getValueString(), $this->_inputUnit);
         $this->_inputUnit = $unit;
+
+        if($duration->isEmpty()) {
+            $value = null;
+        } else {
+            $value = $duration->toUnit($this->_inputUnit);
+        }
+
+        $this->replaceValue($value);
+
         return $this;
     }
 
@@ -52,7 +70,11 @@ class Duration extends NumberTextbox {
         if($innerValue !== null) {
             $innerValue = $this->_normalizeDurationString($innerValue);
         }
-        
+
+        if($innerValue == 0 && !$this->isRequired()) {
+            $innerValue = null;
+        }
+
         if($value instanceof core\IValueContainer) {
             $value->setValue($innerValue);
         } else {
@@ -73,9 +95,19 @@ class Duration extends NumberTextbox {
     protected function _normalizeDurationString($duration) {
         if($this->_inputUnit) {
             $duration = core\time\Duration::fromUnit($duration, $this->_inputUnit);
+
+            if($duration->isEmpty()) {
+                return null;
+            }
+
             return $duration->toUnit($this->_inputUnit);
         } else {
             $duration = core\time\Duration::factory($duration);
+
+            if($duration->isEmpty()) {
+                return null;
+            }
+
             return $duration->toString();
         }
     }
