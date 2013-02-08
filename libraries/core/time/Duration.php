@@ -31,6 +31,10 @@ class Duration implements IDuration, core\IDumpable {
     }
 
     public static function fromUnit($value, $unit, IDate $referenceDate=null) {
+        if($value instanceof IDuration) {
+            return $value;
+        }
+
         $unit = self::normalizeUnitId($unit);
 
         switch($unit) {
@@ -92,6 +96,10 @@ class Duration implements IDuration, core\IDumpable {
     }
     
     public function __construct($time=0, IDate $referenceDate=null) {
+        if($time instanceof IDuration) {
+            $time = $time->getSeconds();
+        }
+
         if(is_string($time)) {
             $time = $this->_parseTime($time);
         }
