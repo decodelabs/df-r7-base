@@ -93,6 +93,7 @@ interface IFormDataWidget extends IFormOrientedWidget {
     public function setValue($value);
     public function getValue();
     public function getValueString();
+    public function replaceValue($value);
     
     public function setTargetFormId($id);
     public function getTargetFormId();

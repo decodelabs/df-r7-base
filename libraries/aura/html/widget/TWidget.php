@@ -220,6 +220,10 @@ trait TWidget_FormData {
         return $this->getValue()->getStringValue();
     }
     
+    public function replaceValue($value) {
+        $this->getValue()->setValue($value);
+        return $this;
+    }
     
     
 // Target form
