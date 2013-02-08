@@ -58,12 +58,11 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
 // Compound widget shortcuts
     public function icon($name, $body=null) {
         $iconChar = $this->_view->getTheme()->mapIcon($name);
+        $attrs = array();
 
-        if($iconChar === null) {
-            return $body;
+        if($iconChar !== null) {
+            $attrs = ['data-icon' => new aura\html\ElementString($iconChar)];
         }
-
-        $attrs = ['data-icon' => new aura\html\ElementString($iconChar)];
 
         if(empty($body)) {
             $attrs['aria-hidden'] = 'true';
