@@ -78,6 +78,12 @@ interface IDuration extends core\IStringProvider {
     public function gte($duration);
     public function lt($duration);
     public function lte($duration);
+
+// Unit
+    public static function fromUnit($value, $unit, IDate $referenceDate=null);
+    public function toUnit($unit);
+    public static function normalizeUnitId($id);
+    public static function getUnitString($unit, $plural=true, $locale=null);
     
 // Microseconds
     public function setMicroseconds($us);

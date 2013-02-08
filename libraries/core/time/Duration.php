@@ -552,6 +552,34 @@ class Duration implements IDuration, core\IDumpable {
         return $id;
     }
 
+    public static function getUnitString($unit, $plural=true, $locale=null) {
+        $unit = self::normalizeUnitId($unit);
+        $translator = core\i18n\translate\Handler::factory('core/time/Duration', $locale);
+
+        switch($unit) {
+            case self::SECONDS:
+                return $translator->_([0 => 'second', 1 => 'seconds'], null, (int)$plural);
+
+            case self::MINUTES:
+                return $translator->_([0 => 'minute', 1 => 'minutes'], null, (int)$plural);
+
+            case self::HOURS:
+                return $translator->_([0 => 'hour', 1 => 'hours'], null, (int)$plural);
+
+            case self::DAYS:
+                return $translator->_([0 => 'day', 1 => 'days'], null, (int)$plural);
+
+            case self::WEEKS:
+                return $translator->_([0 => 'week', 1 => 'weeks'], null, (int)$plural);
+
+            case self::MONTHS:
+                return $translator->_([0 => 'month', 1 => 'months'], null, (int)$plural);
+
+            case self::YEARS:
+                return $translator->_([0 => 'year', 1 => 'years'], null, (int)$plural);
+        }
+    }
+
     public function toString($maxUnits=1, $shortUnits=false, $maxUnit=self::YEARS) {
         $translator = core\i18n\translate\Handler::factory('core/time/Duration', $this->_locale);
         $seconds = $this->_seconds;
@@ -587,6 +615,33 @@ class Duration implements IDuration, core\IDumpable {
             return (string)$this->toString();
         } catch(\Exception $e) {
             return '';
+        }
+    }
+
+    public function toUnit($unit) {
+        $unit = self::normalizeUnitId($unit);
+
+        switch($unit) {
+            case self::SECONDS:
+                return $this->getSeconds();
+
+            case self::MINUTES:
+                return $this->getMinutes();
+
+            case self::HOURS:
+                return $this->getHours();
+
+            case self::DAYS:
+                return $this->getDays();
+
+            case self::WEEKS:
+                return $this->getWeeks();
+
+            case self::MONTHS:
+                return $this->getMonths();
+
+            case self::YEARS:
+                return $this->getYears();
         }
     }
     
