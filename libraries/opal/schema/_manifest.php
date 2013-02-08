@@ -211,6 +211,7 @@ interface ILargeByteSizeRestrictedField extends IField {
 }
 
 interface ISignedField extends IField {
+    public function isSigned($flag=null);
     public function isUnsigned($flag=null);
 }
 

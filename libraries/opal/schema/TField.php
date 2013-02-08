@@ -245,6 +245,14 @@ trait TField_Signed {
 
     protected $_isUnsigned = false;
 
+    public function isSigned($flag=null) {
+        if($flag !== null) {
+            return $this->isUnsigned(!$flag);
+        }
+
+        return !$this->_isUnsigned;
+    }
+
     public function isUnsigned($flag=null) {
         if($flag !== null) {
             if((bool)$flag != $this->_isUnsigned) {
