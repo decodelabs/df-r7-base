@@ -16,18 +16,13 @@ class Handler implements IHandler {
     protected $_shouldSanitize = true;
     protected $_currentData = null;
     
-    public function addField($name, $type, array $options=null) {
+    public function addField($name, $type) {
         $field = core\validate\field\Base::factory($this, $type, $name);
         $field->shouldSanitize($this->_shouldSanitize);
         
         $this->_fields[$field->getName()] = $field;
-        
-        if($options !== null) {
-            $field->applyOptions($options);
-            return $this;
-        } else {
-            return $field;
-        }
+
+        return $field;
     }
     
     public function getField($name) {
