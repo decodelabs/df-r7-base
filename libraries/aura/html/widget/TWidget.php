@@ -1091,7 +1091,7 @@ trait TWidget_MappedList {
         }
         
         if($name === null) {
-            $name = core\string\Manipulator::formatName($key);
+            $name = core\string\Manipulator::formatLabel($key);
         }
         
         if($renderer === null) {
