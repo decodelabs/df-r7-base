@@ -19,6 +19,8 @@ class Duration extends NumberTextbox {
             $this->_inputUnit = core\time\Duration::normalizeUnitId($inputUnit);
         }
 
+        $this->setStep(0.01);
+
         parent::__construct($context, $name, $value);
     }
 
