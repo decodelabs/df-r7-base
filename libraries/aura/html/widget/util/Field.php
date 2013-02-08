@@ -53,6 +53,8 @@ class Field implements aura\html\widget\IField, core\IDumpable {
 
         if($value instanceof aura\html\IRenderable) {
             $value = $value->render();
+        } else if($value instanceof aura\view\IRenderable) {
+            $value = $value->renderTo($renderContext->getView());
         }
         
         if(empty($value) && $value != '0') {

@@ -151,6 +151,10 @@ trait TElementContent {
 
         if($value instanceof IRenderable) {
             $output = $value->render();
+        } else if($value instanceof aura\view\IDeferredRenderable) {
+            $output = $this->_renderChild($value = $value->render());
+        } else if($value instanceof aura\view\IRenderable) {
+            $output = $this->_renderChild($value = $value->renderTo($this->getRenderTarget()));
         } else {
             $output = (string)$value;
         }

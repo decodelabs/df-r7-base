@@ -74,7 +74,7 @@ abstract class Component implements IComponent {
 // Renderable
     public function toString() {
         try {
-            return (string)$this->render();
+            return $this->render();
         } catch(\Exception $e) {
             if($this->_renderTarget) {
                 return $this->_renderTarget->getView()->newErrorContainer($e);
