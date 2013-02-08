@@ -452,41 +452,42 @@ class Duration implements IDuration, core\IDumpable {
         }
         
         if(is_string($maxUnit)) {
-        switch(strtolower($maxUnit)) {
-            case 'second':
-            case 'seconds':
-                $maxUnit = 1;
-                break;
+            switch(strtolower($maxUnit)) {
+                case 'second':
+                case 'seconds':
+                    $maxUnit = 1;
+                    break;
 
-            case 'minute':
-            case 'minutes':
-                $maxUnit = 2;
-                break;
+                case 'minute':
+                case 'minutes':
+                    $maxUnit = 2;
+                    break;
 
-            case 'hour':
-            case 'hours':
-                $maxUnit = 3;
-                break;
+                case 'hour':
+                case 'hours':
+                    $maxUnit = 3;
+                    break;
 
-            case 'day':
-            case 'days':
-                $maxUnit = 4;
-                break;
+                case 'day':
+                case 'days':
+                    $maxUnit = 4;
+                    break;
 
-            case 'week':
-            case 'weeks':
-                $maxUnit = 5;
-                break;
+                case 'week':
+                case 'weeks':
+                    $maxUnit = 5;
+                    break;
 
-            case 'month':
-            case 'months':
-                $maxUnit = 6;
-                break;
+                case 'month':
+                case 'months':
+                    $maxUnit = 6;
+                    break;
 
-            case 'year':
-            case 'years':
-                $maxUnit = 7;
-                break;
+                case 'year':
+                case 'years':
+                    $maxUnit = 7;
+                    break;
+            }
         }
 
         $output = $this->_createOutputArray($seconds, $maxUnits, $maxUnit);
