@@ -15,6 +15,10 @@ class Uri implements aura\view\IHelper {
     
     use aura\view\THelper;
     
+    public function requestToUrl(arch\IRequest $request) {
+        return $this->_view->getContext()->getApplication()->requestToUrl($request);
+    }
+
     public function to($uri, $from=null, $to=null) {
         if($uri === null) {
             return $this->current($from, $to);
@@ -63,7 +67,25 @@ class Uri implements aura\view\IHelper {
         $request = clone $this->_view->getContext()->request;
         $request->getQuery()->import($queryValues);
 
-        return $this->_view->getContext()->getApplication()->requestToUrl($request);
+        return $this->requestToUrl($request);
+    }
+
+    public function queryToggle($request, $key, &$result=null) {
+        if($request === null) {
+            $request = clone $this->_view->getContext()->request;
+        } else {
+            $request = arch\Request::factory($request);
+        }
+
+        $result = isset($request->query->{$key});
+
+        if($result) {
+            unset($request->query->{$key});
+        } else {
+            $request->query->{$key} = true;
+        }
+
+        return $this->requestToUrl($request);
     }
     
     public function request($request, $from=null, $to=null) {
@@ -90,7 +112,7 @@ class Uri implements aura\view\IHelper {
             $request->setRedirectTo($to);
         }
         
-        return $this->_view->getContext()->getApplication()->requestToUrl($request);
+        return $this->requestToUrl($request);
     }
 
     public function themeAsset($path, $theme=null) {

@@ -90,6 +90,14 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
             ->setIcon('back');
     }
 
+    public function queryToggleLink($request, $queryVar, $onString, $offString, $onIcon=null, $offIcon=null) {
+        return $this->link(
+                $this->_view->uri->queryToggle($request, $queryVar, $result),
+                $result ? $onString : $offString
+            )
+            ->setIcon($result ? $onIcon : $offIcon);
+    }
+
     public function notificationList() {
         try {
             $manager = arch\notify\Manager::getInstance($this->_view->getContext()->getApplication());
