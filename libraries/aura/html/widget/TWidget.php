@@ -760,7 +760,9 @@ trait TWidget_NavigationEntryController {
     }
 
     public function addEntries($entries) {
-        if((is_string($entries) && strlen($entries) > 1) 
+        if(func_num_args() > 1) {
+            $entries = func_get_args();
+        } else if((is_string($entries) && strlen($entries) > 1) 
         || $entries instanceof core\uri\IUrl) {
             try {
                 $entries = arch\navigation\menu\Base::factory($this->_context, $entries);
