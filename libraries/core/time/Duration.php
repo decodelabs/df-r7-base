@@ -31,7 +31,7 @@ class Duration implements IDuration, core\IDumpable {
     }
 
     public static function fromUnit($value, $unit, IDate $referenceDate=null) {
-        $unit = self::normalizeUnitIdentifier($unit);
+        $unit = self::normalizeUnitId($unit);
 
         switch($unit) {
             case self::SECONDS:
@@ -499,7 +499,7 @@ class Duration implements IDuration, core\IDumpable {
     }
     
 // Format
-    public static function normalizeUnitIdentifier($id) {
+    public static function normalizeUnitId($id) {
         if(is_string($id)) {
             switch(strtolower($id)) {
                 case 'second':
@@ -562,7 +562,7 @@ class Duration implements IDuration, core\IDumpable {
             $isNegative = true;
         }
         
-        $maxUnit = self::normalizeUnitIdentifier($maxUnit);
+        $maxUnit = self::normalizeUnitId($maxUnit);
         $output = $this->_createOutputArray($seconds, $maxUnits, $maxUnit);
         
         foreach($output as $unit => $value) {

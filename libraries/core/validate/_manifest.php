@@ -18,7 +18,7 @@ class RuntimeException extends \RuntimeException implements IException {}
 
 // Interfaces
 interface IHandler {
-    public function addField($name, $type, array $options=null);
+    public function addField($name, $type);
     public function getField($name);
     public function getFields();
     public function getValues();
@@ -327,6 +327,12 @@ trait TUniqueCheckerField {
 // Actual
 interface IBooleanField extends IField {}
 interface IDateField extends IField, IRangeField {}
+
+interface IDurationField extends IField, IRangeField {
+    public function setInputUnit($unit);
+    public function getInputUnit();
+}
+
 interface IEmailField extends IField {}
 interface IFloatField extends IField, IRangeField {}
 interface IIdListField extends IField, ISanitizingField {}
