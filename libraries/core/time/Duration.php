@@ -650,7 +650,7 @@ class Duration implements IDuration, core\IDumpable {
             case self::SECONDS: 
                 if($shortUnits) {
                     return $translator->_(
-                        '%n%sc',
+                        '%n% sc',
                         array('%n%' => $number)
                     );
                 } else {
@@ -667,7 +667,7 @@ class Duration implements IDuration, core\IDumpable {
             case self::MINUTES: 
                 if($shortUnits) {
                     return $translator->_(
-                        '%n%mn',
+                        '%n% mn',
                         array('%n%' => $number)
                     );
                 } else {
@@ -684,7 +684,7 @@ class Duration implements IDuration, core\IDumpable {
             case self::HOURS: 
                 if($shortUnits) {
                     return $translator->_(
-                        '%n%hr',
+                        '%n% hr',
                         array('%n%' => $number)
                     );
                 } else {
@@ -701,7 +701,7 @@ class Duration implements IDuration, core\IDumpable {
             case self::DAYS:  
                 if($shortUnits) {
                     return $translator->_(
-                        '%n%dy',
+                        '%n% dy',
                         array('%n%' => $number)
                     );
                 } else {
@@ -718,7 +718,7 @@ class Duration implements IDuration, core\IDumpable {
             case self::WEEKS:   
                 if($shortUnits) {
                     return $translator->_(
-                        '%n%wk',
+                        '%n% wk',
                         array('%n%' => $number)
                     );
                 } else {
@@ -735,7 +735,7 @@ class Duration implements IDuration, core\IDumpable {
             case self::MONTHS:   
                 if($shortUnits) {
                     return $translator->_(
-                        '%n%mo',
+                        '%n% mo',
                         array('%n%' => $number)
                     );
                 } else {
@@ -752,7 +752,7 @@ class Duration implements IDuration, core\IDumpable {
             case self::YEARS:   
                 if($shortUnits) {
                     return $translator->_(
-                        '%n%yr',
+                        '%n% yr',
                         array('%n%' => $number)
                     );
                 } else {
