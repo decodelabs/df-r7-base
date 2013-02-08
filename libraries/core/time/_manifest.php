@@ -73,6 +73,11 @@ interface IDuration extends core\IStringProvider {
 
 // Util
     public function isEmpty();
+    public function eq($duration);
+    public function gt($duration);
+    public function gte($duration);
+    public function lt($duration);
+    public function lte($duration);
     
 // Microseconds
     public function setMicroseconds($us);

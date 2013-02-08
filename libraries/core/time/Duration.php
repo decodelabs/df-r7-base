@@ -29,6 +29,33 @@ class Duration implements IDuration, core\IDumpable {
         
         return new self($time, $referenceDate);
     }
+
+    public static function fromUnit($value, $unit, IDate $referenceDate=null) {
+        $unit = self::normalizeUnitIdentifier($unit);
+
+        switch($unit) {
+            case self::SECONDS:
+                return self::fromSeconds($value, $referenceDate);
+
+            case self::MINUTES:
+                return self::fromMinutes($value, $referenceDate);
+
+            case self::HOURS:
+                return self::fromHours($value, $referenceDate);
+
+            case self::DAYS:
+                return self::fromDays($value, $referenceDate);
+
+            case self::WEEKS:
+                return self::fromWeeks($value, $referenceDate);
+
+            case self::MONTHS:
+                return self::fromMonths($value, $referenceDate);
+
+            case self::YEARS:
+                return self::fromYears($value, $referenceDate);
+        }
+    }
     
     public static function fromSeconds($seconds, IDate $referenceDate=null) {
         return new self($seconds, $referenceDate);
@@ -106,9 +133,32 @@ class Duration implements IDuration, core\IDumpable {
         return $this;
     }
 
+
+// Util
     public function isEmpty() {
         return $this->_seconds == 0;
     }
+
+    public function eq($duration) {
+        return $this->_seconds == self::factory($duration)->getSeconds();
+    }
+
+    public function gt($duration) {
+        return $this->_seconds > self::factory($duration)->getSeconds();
+    }
+    
+    public function gte($duration) {
+        return $this->_seconds >= self::factory($duration)->getSeconds();
+    }
+    
+    public function lt($duration) {
+        return $this->_seconds < self::factory($duration)->getSeconds();
+    }
+    
+    public function lte($duration) {
+        return $this->_seconds <= self::factory($duration)->getSeconds();
+    }
+    
     
 // Microseconds
     public function setMicroseconds($us) {
@@ -449,6 +499,59 @@ class Duration implements IDuration, core\IDumpable {
     }
     
 // Format
+    public static function normalizeUnitIdentifier($id) {
+        if(is_string($id)) {
+            switch(strtolower($id)) {
+                case 'second':
+                case 'seconds':
+                    $id = 1;
+                    break;
+
+                case 'minute':
+                case 'minutes':
+                    $id = 2;
+                    break;
+
+                case 'hour':
+                case 'hours':
+                    $id = 3;
+                    break;
+
+                case 'day':
+                case 'days':
+                    $id = 4;
+                    break;
+
+                case 'week':
+                case 'weeks':
+                    $id = 5;
+                    break;
+
+                case 'month':
+                case 'months':
+                    $id = 6;
+                    break;
+
+                case 'year':
+                case 'years':
+                    $id = 7;
+                    break;
+            }
+        }
+
+        $id = (int)$id;
+
+        if($id < 1) {
+            $id = 1;
+        }
+
+        if($id > 7) {
+            $id = 7;
+        }
+
+        return $id;
+    }
+
     public function toString($maxUnits=1, $shortUnits=false, $maxUnit=self::YEARS) {
         $translator = core\i18n\translate\Handler::factory('core/time/Duration', $this->_locale);
         $seconds = $this->_seconds;
@@ -459,45 +562,7 @@ class Duration implements IDuration, core\IDumpable {
             $isNegative = true;
         }
         
-        if(is_string($maxUnit)) {
-            switch(strtolower($maxUnit)) {
-                case 'second':
-                case 'seconds':
-                    $maxUnit = 1;
-                    break;
-
-                case 'minute':
-                case 'minutes':
-                    $maxUnit = 2;
-                    break;
-
-                case 'hour':
-                case 'hours':
-                    $maxUnit = 3;
-                    break;
-
-                case 'day':
-                case 'days':
-                    $maxUnit = 4;
-                    break;
-
-                case 'week':
-                case 'weeks':
-                    $maxUnit = 5;
-                    break;
-
-                case 'month':
-                case 'months':
-                    $maxUnit = 6;
-                    break;
-
-                case 'year':
-                case 'years':
-                    $maxUnit = 7;
-                    break;
-            }
-        }
-
+        $maxUnit = self::normalizeUnitIdentifier($maxUnit);
         $output = $this->_createOutputArray($seconds, $maxUnits, $maxUnit);
         
         foreach($output as $unit => $value) {
