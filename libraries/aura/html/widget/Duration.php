@@ -35,25 +35,6 @@ class Duration extends NumberTextbox {
         return $output;
     }
 
-    public function setInputUnit($unit) {
-        if($unit !== null) {
-            $unit = core\time\Duration::normalizeUnitId($unit);
-        }
-
-        $duration = core\time\Duration::fromUnit($this->getValueString(), $this->_inputUnit);
-        $this->_inputUnit = $unit;
-
-        if($duration->isEmpty()) {
-            $value = null;
-        } else {
-            $value = $duration->toUnit($this->_inputUnit);
-        }
-
-        $this->replaceValue($value);
-
-        return $this;
-    }
-
     public function getInputUnit() {
         return $this->_inputUnit;
     }

@@ -109,6 +109,10 @@ class Duration implements IDuration, core\IDumpable {
     }
     
     protected function _parseTime($time) {
+        if((float)$time == $time) {
+            return (float)$time;
+        }
+
         if((int)$time == $time) {
             return (int)$time;
         }
