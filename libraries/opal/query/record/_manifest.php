@@ -98,7 +98,7 @@ interface IManyRelationValueContainer extends IValueContainer {
 }
 
 
-interface IPrimaryManifest {
+interface IPrimaryManifest extends \ArrayAccess {
     public function toArray();
     public function updateWith($record);
     public function countFields();

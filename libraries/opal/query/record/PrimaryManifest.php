@@ -228,6 +228,28 @@ class PrimaryManifest implements IPrimaryManifest, core\IDumpable {
         
         return true;
     }
+
+
+// Array access
+    public function offsetSet($key, $value) {
+        $this->_keys[$key] = $value;
+        return $this;
+    }
+
+    public function offsetGet($key) {
+        if(isset($this->_keys[$key])) {
+            return $this->_keys[$key];
+        }
+    }
+
+    public function offsetExists($key) {
+        return isset($this->_keys[$key]);
+    }
+
+    public function offsetUnset($key) {
+        unset($this->_keys[$key]);
+        return $this;
+    }
     
     
 // Dump
