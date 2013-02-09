@@ -11,6 +11,8 @@ use df\core;
 class Date extends Base implements core\validate\IDateField {
     
     use core\validate\TRangeField;
+
+    protected $_defaultToNow = false;
     
     public function setMin($date) {
         if($date !== null) {
@@ -30,14 +32,31 @@ class Date extends Base implements core\validate\IDateField {
         return $this;
     }
 
+    public function shouldDefaultToNow($flag=null) {
+        if($flag !== null) {
+            $this->_defaultToNow = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_defaultToNow;
+    }
+
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
         
         if(!$length = $this->_checkRequired($node, $value)) {
-            return null;
+            if($this->_defaultToNow) {
+                $value = 'now';
+            } else {
+                return null;
+            }
         }
         
         $date = core\time\Date::factory($value);
+
+        if($this->_shouldSanitize) {
+            $value = $date->toString(core\time\Date::W3C);
+        }
         
         $this->_validateRange($node, $value);
         return $this->_finalize($node, $value);
