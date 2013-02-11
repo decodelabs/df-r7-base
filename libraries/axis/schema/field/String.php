@@ -23,7 +23,7 @@ class String extends Base implements
 
 
     public function compareValues($value1, $value2) {
-        return (string)$value1 === (string)$value2;
+        return core\string\Manipulator::compare($value1, $value2);
     }
     
     
