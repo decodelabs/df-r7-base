@@ -199,6 +199,8 @@ interface IManipulator extends core\collection\IIndexedCollection, core\IStringP
     public static function formatPathSlug($slug, $allowChars=null);
     public static function formatFileName($fileName, $allowSpaces=false);
     
+    public static function compare($string1, $string2);
+
     public static function normalizeCaseFlag($case);
     public static function applyCase($string, $case);
 

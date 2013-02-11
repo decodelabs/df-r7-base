@@ -102,6 +102,19 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
 
         return $output->toString();
     }
+
+
+    public static function compare($string1, $string2) {
+        $string1 = self::factory($string1);
+        $string2 = self::factory($string2);
+
+        $string1->replace("\r\n", "\n");
+        $string2->replace("\r\n", "\n");
+
+        $string2->convertEncoding($string1->getEncoding());
+
+        return $string1->_value == $string2->_value;
+    }
     
 
 // Case flags
