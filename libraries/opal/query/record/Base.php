@@ -534,18 +534,36 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     
     
 // Storage
-    public function save() {
-        $taskSet = new opal\query\record\task\TaskSet();
+    public function save(opal\query\record\task\ITaskSet $taskSet=null) {
+        $execute = false;
+
+        if($taskSet === null) {
+            $execute = true;
+            $taskSet = new opal\query\record\task\TaskSet();
+        }
+
         $this->deploySaveTasks($taskSet);
-        $taskSet->execute();
+
+        if($execute) {
+            $taskSet->execute();
+        }
         
         return $this;
     }
     
-    public function delete() {
-        $taskSet = new opal\query\record\task\TaskSet();
+    public function delete(opal\query\record\task\ITaskSet $taskSet=null) {
+        $execute = false;
+
+        if($taskSet === null) {
+            $execute = true;
+            $taskSet = new opal\query\record\task\TaskSet();
+        }
+
         $this->deployDeleteTasks($taskSet);
-        $taskSet->execute();
+
+        if($execute) {
+            $taskSet->execute();
+        }
         
         return $this;
     }

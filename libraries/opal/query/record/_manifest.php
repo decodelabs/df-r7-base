@@ -51,8 +51,8 @@ interface IRecord extends core\collection\IMappedCollection, user\IAccessLock, c
     public function populateWithPreparedData(array $row);
     public function populateWithRawData($row);
     
-    public function save();
-    public function delete();
+    public function save(opal\query\record\task\ITaskSet $taskSet=null);
+    public function delete(opal\query\record\task\ITaskSet $taskSet=null);
     public function deploySaveTasks(opal\query\record\task\ITaskSet $taskSet);
     public function deployDeleteTasks(opal\query\record\task\ITaskSet $taskSet);
     public function triggerTaskEvent(opal\query\record\task\ITaskSet $taskSet, opal\query\record\task\IRecordTask $task, $when);
