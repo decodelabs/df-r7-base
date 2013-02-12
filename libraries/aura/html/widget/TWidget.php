@@ -1129,7 +1129,7 @@ trait TWidget_MappedList {
         
         return $this;
     }
-    
+
     public function removeField($key) {
         if($key instanceof IField) {
             $key = $key->getKey();
@@ -1153,5 +1153,24 @@ trait TWidget_MappedList {
         $this->_fields = array();
         
         return $fields;
+    }
+
+    public function addLabel($fieldKey, $labelKey, $label=null) {
+        if(!isset($this->_fields[$fieldKey])) {
+            throw new InvalidArgumentException(
+                'Field '.$fieldKey.' not found'
+            );
+        }
+
+        $this->_fields[$fieldKey]->addLabel($labelKey, $label);
+        return $this;
+    }
+
+    public function removeLabel($fieldKey, $labelKey) {
+        if(isset($this->_fields[$fieldKey])) {
+            $this->_fields[$fieldKey]->removeLabel($labelKey);
+        }
+
+        return $this;
     }
 }

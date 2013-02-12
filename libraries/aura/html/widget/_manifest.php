@@ -35,6 +35,12 @@ interface IField {
     public function getKey();
     public function setName($name);
     public function getName();
+
+    public function addLabel($key, $label=null);
+    public function removeLabel($key);
+    public function getLabels();
+    public function getHeaderList();
+
     public function setRenderer(Callable $renderer);
     public function getRenderer();
     public function render($data, aura\html\widget\IRendererContext $renderContext);
@@ -322,6 +328,8 @@ interface IMappedListWidget extends IListWidget {
     public function setField(IField $field);
     public function addField($key, $a=null, $b=null);
     public function removeField($key);
+    public function addLabel($fieldKey, $labelKey, $label=null);
+    public function removeLabel($fieldKey, $labelKey);
     public function getFields();
 }
 

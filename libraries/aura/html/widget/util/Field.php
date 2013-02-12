@@ -13,6 +13,7 @@ class Field implements aura\html\widget\IField, core\IDumpable {
     
     protected $_key;
     protected $_name;
+    protected $_labels = array();
     protected $_renderer;
     
     public function __construct($key, $name, Callable $renderer) {
@@ -35,6 +36,30 @@ class Field implements aura\html\widget\IField, core\IDumpable {
     
     public function getName() {
         return $this->_name;
+    }
+
+
+// Labels
+    public function addLabel($key, $label=null) {
+        if(empty($label)) {
+            $label = core\string\Manipulator::formatLabel($key);
+        }
+
+        $this->_labels[$key] = $label;
+        return $this;
+    }
+
+    public function removeLabel($key) {
+        unset($this->_labels[$key]);
+        return $this;
+    }
+
+    public function getLabels() {
+        return $this->_labels;
+    }
+
+    public function getHeaderList() {
+        return array_merge([$this->_key => $this->_name], $this->_labels);
     }
     
 // Renderer

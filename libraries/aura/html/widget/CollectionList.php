@@ -71,38 +71,47 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
             }
         }
         
-        foreach($this->_fields as $key => $field) {
-            $tagContent = $field->getName();
-            
-            if($orderData !== null && in_array($key, $orderFields)) {
-                if(isset($orderData[$key])) {
-                    if($orderData[$key]->isAscending()) {
-                        $direction = 'DESC';
+        foreach($this->_fields as $fieldKey => $field) {
+            $tagContent = array();
+
+            foreach($field->getHeaderList() as $key => $label) {
+                if($orderData !== null && in_array($key, $orderFields)) {
+                    if(isset($orderData[$key])) {
+                        if($orderData[$key]->isAscending()) {
+                            $direction = 'DESC';
+                        } else {
+                            $direction = 'ASC';
+                        }
+                        
+                        $isActive = true;
                     } else {
                         $direction = 'ASC';
+                        $isActive = false;
                     }
                     
-                    $isActive = true;
+                    $query->__set($keyMap['order'], $key.' '.$direction);
+                    
+                    $class = 'link-order-'.strtolower($direction);
+                    
+                    if($isActive) {
+                        $class .= ' link-order-active';
+                    }
+
+                    if(!empty($tagContent)) {
+                        $tagContent[] = ' / ';
+                    }
+                    
+                    $tagContent[] = (new aura\html\Element('a', $label, [
+                            'href' => $context->normalizeOutputUrl($request),
+                            'class' => $class,
+                            'rel' => 'nofollow'
+                        ]))
+                        ->render();
                 } else {
-                    $direction = 'ASC';
-                    $isActive = false;
+                    $tagContent[] = $label;
                 }
-                
-                $query->__set($keyMap['order'], $key.' '.$direction);
-                
-                $class = 'link-order-'.strtolower($direction);
-                
-                if($isActive) {
-                    $class .= ' link-order-active';
-                }
-                
-                $tagContent = new aura\html\Element('a', $tagContent, [
-                    'href' => $context->normalizeOutputUrl($request),
-                    'class' => $class,
-                    'rel' => 'nofollow'
-                ]);
             }
-            
+
             $thTag = new aura\html\Element('th', $tagContent);
             $headRow->push($thTag->render());
         }
