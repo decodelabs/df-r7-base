@@ -97,6 +97,7 @@ interface IQueryContainer {
     public function setQuery($query);
     public function getQuery();
     public function getQueryString();
+    public function getQueryTerm($key, $default=null);
     public function hasQuery();
     
 }

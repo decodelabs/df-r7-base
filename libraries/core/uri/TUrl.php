@@ -367,6 +367,24 @@ trait TUrl_QueryContainer {
             return '';
         }
     }
+
+    public function getQueryTerm($key, $default=null) {
+        if(!$this->_query) {
+            return $default;
+        }
+
+        if(!$this->_query->has($key)) {
+            return $default;
+        }
+
+        $output = trim($this->_query[$key]);
+
+        if(empty($output)) {
+            return $default;
+        }
+
+        return $output;
+    }
     
     public function hasQuery() {
         return $this->_query !== null;
