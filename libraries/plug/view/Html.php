@@ -288,7 +288,7 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
     }
     
     
-    public function timeSince($date, $locale=true, $maxUnits=2, $shortUnits=false, $maxUnit=core\time\Duration::YEARS) {
+    public function timeSince($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $locale=true) {
         if($date === null) {
             return null;
         }
@@ -301,7 +301,7 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
         );
     }
     
-    public function timeUntil($date, $locale=true, $maxUnits=2, $shortUnits=false, $maxUnit=core\time\Duration::YEARS) {
+    public function timeUntil($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $locale=true) {
         if($date === null) {
             return null;
         }
