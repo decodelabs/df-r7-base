@@ -355,10 +355,6 @@ class Clause implements opal\query\IClause, core\IDumpable {
             $source = $this->_field->getSource();
             $adapter = $source->getAdapter();
             
-            if($this->_value instanceof opal\query\record\IRecord) {
-                $this->_value = $this->_value->getPrimaryManifest();
-            }
-            
             if($this->_value instanceof opal\query\ICorrelationQuery
             || $this->_value instanceof opal\query\IField
             || !$adapter instanceof opal\query\IIntegralAdapter) {
@@ -393,6 +389,10 @@ class Clause implements opal\query\IClause, core\IDumpable {
                     break;
             }
             
+            if($this->_value instanceof opal\query\record\IRecord) {
+                $this->_value = $this->_value->getPrimaryManifest();
+            }
+
             $this->_hasPreparedValue = true;
         }
 
