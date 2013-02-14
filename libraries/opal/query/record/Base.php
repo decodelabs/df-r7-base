@@ -626,7 +626,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
 
 
         if(method_exists($this, $func)) {
-            call_user_func_array([$this, $func], [$taskSet]);
+            call_user_func_array([$this, $func], [$taskSet, $task]);
         }
 
         return $this;
