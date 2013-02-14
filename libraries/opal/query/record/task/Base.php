@@ -53,7 +53,14 @@ abstract class Base implements ITask {
 
     
 // Dependencies
-    public function addDependency(opal\query\record\task\dependency\IDependency $dependency) {
+    public function addDependency($dependency) {
+        if($dependency instanceof opal\query\record\task\ITask) {
+            $dependency = new opal\query\record\task\dependency\Base($dependency->getId(), $dependency);
+        } else if(!$dependency instanceof opal\query\record\task\dependency\IDependency) {
+            throw new InvalidArgumentException('Invalid dependency');
+        }
+
+            
         $id = $dependency->getId();
 
         if(isset($this->_dependencies[$id])) {
@@ -65,7 +72,7 @@ abstract class Base implements ITask {
         
         return $this;
     }
-    
+
     public function countDependencies() {
         return count($this->_dependencies);
     }

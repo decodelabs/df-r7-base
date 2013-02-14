@@ -12,6 +12,7 @@ use df\opal;
 // Exceptions
 interface IException extends opal\query\record\IException {}
 class RuntimeException extends \RuntimeException implements IException {}
+class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 
 
 // Interfaces
@@ -38,7 +39,7 @@ interface ITask {
     public function getId();
     public function getAdapter();
     
-    public function addDependency(opal\query\record\task\dependency\IDependency $dependency);
+    public function addDependency($dependency);
     public function countDependencies();
     public function hasDependencies();
     public function resolveDependencies(ITaskSet $taskSet);
