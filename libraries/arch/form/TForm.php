@@ -1,26 +1,190 @@
-<?php 
+<?php
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\form\template;
+namespace df\arch\form;
 
 use df;
 use df\core;
 use df\arch;
 use df\aura;
 use df\opal;
+
+
+
+// BASE
+trait TForm {
     
+    public $view;
+    public $html;
+    public $content;
+    public $values;
+    
+    protected $_state;
+    protected $_delegates = array();
+    
+    protected function _init() {}
+    protected function _setDefaultValues() {}
+    protected function _setupDelegates() {}
+    protected function _onInitComplete() {}
+    
+    
+    public function getStateController() {
+        return $this->_state;
+    }
+    
+// Delegates
+    public function loadDelegate($id, $name, $request=null) {
+        if(false !== strpos($id, '.')) {
+            throw new InvalidArgumentException(
+                'Delegate IDs must not contain . character'
+            );
+        }
 
+        $context = $this->_context->spawnInstance($request);
+        $path = $context->location->getController();
+        $area = $context->location->getArea();
+        
+        if(!empty($path)) {
+            $parts = explode('/', $path);
+        } else {
+            $parts = array();
+        }
+        
+        $type = $context->getRunMode();
 
-interface IModalDelegate {
+        $parts[] = '_formDelegates';
+        $nameParts = explode('/', $name);
+        $topName = array_pop($nameParts);
 
-    public function getAvailableModes();
-    public function setDefaultMode($mode);
-    public function getDefaultMode();
+        if(!empty($nameParts)) {
+            $parts = array_merge($parts, $nameParts);
+        }
+
+        $parts[] = ucfirst($topName);
+        
+        $class = 'df\\apex\\directory\\'.$area.'\\'.implode('\\', $parts);
+        
+        if(!class_exists($class)) {
+            $class = 'df\\apex\\directory\\shared\\'.implode('\\', $parts);
+
+            if(!class_exists($class)) {
+                throw new DelegateException(
+                    'Delegate '.$name.' could not be found at ~'.$area.'/'.$path
+                );
+            }
+        }
+        
+        return $this->_delegates[$id] = new $class(
+            $context,
+            $this->_state->getDelegateState($id),
+            $this->_getDelegateIdPrefix().$id
+        );
+    }
+    
+    public function getDelegate($id) {
+        if(!is_array($id)) {
+            $id = explode('.', trim($id, ' .'));
+        }
+        
+        if(empty($id)) {
+            throw new DelegateException(
+                'Empty delegate id detected'
+            );
+        }
+        
+        $top = array_shift($id);
+        
+        if(!isset($this->_delegates[$top])) {
+            throw new DelegateException(
+                'Delegate '.$top.' could not be found'
+            );
+        }
+        
+        $output = $this->_delegates[$top];
+        
+        if(!empty($id)) {
+            $output = $output->getDelegate($id);
+        }
+        
+        return $output;
+    }
+    
+    
+    protected function _getDelegateIdPrefix() {
+        if($this instanceof IDelegate) {
+            return $this->_delegateId.'.';
+        }
+        
+        return '';
+    }
+    
+    
+    
+// Values
+    public function isValid() {
+        if($this->_state && !$this->_state->getValues()->isValid()) {
+            return false;
+        }
+        
+        foreach($this->_delegates as $delegate) {
+            if(!$delegate->isValid()) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    
+// Names
+    public function eventName($name) {
+        $args = array_slice(func_get_args(), 1);
+        $output = $this->_getDelegateIdPrefix().$name;
+        
+        if(!empty($args)) {
+            foreach($args as $i => $arg) {
+                $args[$i] = '\''.addslashes($arg).'\'';
+            }
+            
+            $output .= '('.implode(',', $args).')';
+        }
+        
+        return $output;
+    }
+    
+    
+    
+// Events
+    public function handleEvent($name, array $args=array()) {
+        $func = '_on'.ucfirst($name).'Event';
+        
+        if(!method_exists($this, $func)) {
+            $func = '_onDefaultEvent';
+            
+            if(!method_exists($this, $func)) {
+                throw new EventException(
+                    'Event '.$name.' does not have a handler'
+                );
+            }
+        }
+        
+        return call_user_func_array(array($this, $func), $args);
+    }
+
+    protected function _onResetEvent() {
+        $this->_state->reset();
+    }
 }
 
-trait TModalDelegate {
+
+
+
+
+
+// Modal
+trait TForm_ModalDelegate {
 
     protected $_defaultMode = null;
 
@@ -46,7 +210,7 @@ trait TModalDelegate {
         $modes = $this->getAvailableModes();
 
         if(!in_array($mode, $modes)) {
-            throw new arch\form\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Mode '.$mode.' is not recognised in this form'
             );
         }
@@ -108,7 +272,7 @@ trait TModalDelegate {
         }
 
         if(!method_exists($this, $func)) {
-            throw new arch\form\DelegateException(
+            throw new DelegateException(
                 'Selector delegate has no render handler for '.$mode.' mode'
             );
         }
@@ -119,12 +283,8 @@ trait TModalDelegate {
 
 
 
-interface IInlineFieldRenderableDelegate {
-    public function renderFieldArea($label=null);
-    public function renderFieldAreaContent(aura\html\widget\FieldArea $fieldArea);
-}
-
-trait TInlineFieldRenderableDelegate {
+// Inline field renderable
+trait TForm_InlineFieldRenderableDelegate {
 
     public function renderFieldArea($label=null) {
         $this->renderFieldAreaContent(
@@ -135,12 +295,10 @@ trait TInlineFieldRenderableDelegate {
     }
 }
 
-interface ISelfContainedRenderableDelegate {
-    public function renderFieldSet($legend=null);
-    public function renderFieldSetContent(aura\html\widget\FieldSet $fieldSet);
-}
 
-trait TSelfContainedRenderableDelegate {
+
+// Self contained renderable
+trait TForm_SelfContainedRenderableDelegate {
 
     public function renderFieldSet($legend=null) {
         $this->renderFieldSet(
@@ -152,12 +310,8 @@ trait TSelfContainedRenderableDelegate {
 }
 
 
-interface IResultProviderDelegate {
-    public function isRequired($flag=null);
-    public function apply();
-}
-
-trait TResultProviderDelegate {
+// Result provider
+trait TForm_ResultProviderDelegate {
 
     protected $_isRequired = false;
 
@@ -172,19 +326,11 @@ trait TResultProviderDelegate {
 }
 
 
-interface ISelectorDelegate extends IResultProviderDelegate {
-    public function isForOne($flag=null);
-    public function isForMany($flag=null);
 
-    public function isSelected($id);
-    public function setSelected($selected);
-    public function getSelected();
-    public function hasSelection();
-}
+// Selector
+trait TForm_SelectorDelegate {
 
-trait TSelectorDelegate {
-
-    use TResultProviderDelegate;
+    use TForm_ResultProviderDelegate;
     
     protected $_isForMany = true;
 
@@ -207,7 +353,7 @@ trait TSelectorDelegate {
     }
 }
 
-trait TSelectorDelegateQueryTools {
+trait TForm_SelectorDelegateQueryTools {
 
     protected function _fetchSelectionList() {
         $selected = $this->getSelected();
@@ -267,7 +413,7 @@ trait TSelectorDelegateQueryTools {
 }
 
 
-trait TValueListSelectorDelegate {
+trait TForm_ValueListSelectorDelegate {
 
 // Selected
     public function isSelected($id) {
@@ -338,15 +484,13 @@ trait TValueListSelectorDelegate {
 
 
 
+// Inline field renderable selector
+trait TForm_InlineFieldRenderableSelectorDelegate {
 
-interface IInlineFieldRenderableSelectorDelegate extends IInlineFieldRenderableDelegate, ISelectorDelegate {}
-
-trait TInlineFieldRenderableSelectorDelegate {
-
-    use TModalDelegate;
-    use TInlineFieldRenderableDelegate;
-    use TSelectorDelegate;
-    use TSelectorDelegateQueryTools;
+    use TForm_ModalDelegate;
+    use TForm_InlineFieldRenderableDelegate;
+    use TForm_SelectorDelegate;
+    use TForm_SelectorDelegateQueryTools;
 
     protected static $_defaultModes = [
         'select' => '_renderOverlaySelector',
@@ -365,6 +509,17 @@ trait TInlineFieldRenderableSelectorDelegate {
     }
 
     protected function _renderInlineDetails(aura\html\widget\FieldArea $fa) {
+        if($this instanceof arch\form\IDependentDelegate) {
+            $messages = $this->getUnresolvedDependencyMessages();
+
+            if(!empty($messages)) {
+                $fa->push($this->html->fieldError($messages));
+                return;
+            }
+        }
+
+
+
         $selectList = $this->_fetchSelectionList();
 
         if($this->_isForMany) {
@@ -504,5 +659,94 @@ trait TInlineFieldRenderableSelectorDelegate {
         if($this->_state->hasStore('originalSelection')) {
             $this->setSelected($this->_state->getStore('originalSelection'));
         }
+    }
+}
+
+
+
+
+// Dependant
+trait TForm_DependentDelegate {
+
+    protected $_dependencies = array();
+
+    public function addSelectorDependency(ISelectorDelegate $delegate, $error=null, $context=null) {
+        return $this->addDependency(new arch\form\dependency\Selector($delegate, $error, $context));
+    }
+
+    public function addValueDependency($name, core\collection\IInputTree $value, $error=null, $context=null) {
+        return $this->addDependency(new arch\form\dependency\Value($name, $value, $error, $context));
+    }
+    
+    public function addValueListDependency($name, core\collection\IInputTree $value, $error=null, $context=null) {
+        return $this->addDependency(new arch\form\dependency\ValueList($name, $value, $error, $context));
+    }
+    
+    public function addDependency(IDependency $dependency) {
+        $this->_dependencies[$dependency->getName()] = $dependency;
+        return $this;
+    }
+
+
+    public function getDependency($name) {
+        if(isset($this->_dependencies[$name])) {
+            return $this->_dependencies[$name];
+        }
+    }
+
+    public function getDependencies() {
+        return $this->_dependencies;
+    }
+
+    public function getDependenciesByContext($context) {
+        $output = array();
+
+        foreach($this->_dependencies as $name => $dep) {
+            if($dep->getContext() == $context) {
+                $output[$name] = $dep;
+            }
+        }
+
+        return $output;
+    }
+
+    public function getDependencyValuesByContext($context) {
+        $output = array();
+
+        foreach($this->_dependencies as $name => $dep) {
+            if($dep->getContext() == $context && $dep->hasValue()) {
+                $output[$name] = $dep->getValue();
+            }
+        }
+
+        return $output;
+    }
+
+    public function getUnresolvedDependencies() {
+        $output = array();
+
+        foreach($this->_dependencies as $name => $dependency) {
+            if(!$dependency->hasValue()) {
+                $output[$name] = $dependency;
+            }
+        }
+
+        return $output;
+    }
+
+    public function getUnresolvedDependencyMessages() {
+        $output = array();
+
+        foreach($this->getUnresolvedDependencies() as $name => $dep) {
+            $message = $dep->getErrorMessage();
+
+            if(empty($message)) {
+                $message = $this->_('Unresolved dependency: %n%', ['%n%' => $dep->getName()]);
+            }
+
+            $output[$name] = $message;
+        }
+
+        return $output;
     }
 }

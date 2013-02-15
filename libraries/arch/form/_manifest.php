@@ -20,24 +20,6 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 
 
 // Interfaces
-interface IForm {
-    public function getStateController();
-    public function loadDelegate($id, $name, $request=null);
-    public function getDelegate($id);
-    public function handleEvent($name, array $args=array());
-    public function isValid();
-}
-
-interface IAction extends arch\IAction, IForm {
-    public function complete($defaultRedirect=null, $success=true);
-}
-
-interface IDelegate extends IForm, arch\IContextAware {
-    public function initialize();
-    public function setRenderContext(aura\view\IView $view, aura\view\IContentProvider $content);
-    public function complete();
-}
-
 interface IStateController {
     public function getSessionId();
     public function getValues();
@@ -53,5 +35,113 @@ interface IStateController {
     public function clearStore();
 }
 
+interface IForm {
+    public function getStateController();
+    public function loadDelegate($id, $name, $request=null);
+    public function getDelegate($id);
+    public function handleEvent($name, array $args=array());
+    public function isValid();
+}
+
+interface IAction extends arch\IAction, IForm {
+    public function complete($defaultRedirect=null, $success=true);
+}
 
 
+interface IDelegate extends IForm, arch\IContextAware {
+    public function getDelegateId();
+    public function getDelegateKey();
+    public function initialize();
+    public function setRenderContext(aura\view\IView $view, aura\view\IContentProvider $content);
+    public function complete();
+}
+
+
+interface IModalDelegate {
+    public function getAvailableModes();
+    public function setDefaultMode($mode);
+    public function getDefaultMode();
+}
+
+interface IInlineFieldRenderableDelegate {
+    public function renderFieldArea($label=null);
+    public function renderFieldAreaContent(aura\html\widget\FieldArea $fieldArea);
+}
+
+interface ISelfContainedRenderableDelegate {
+    public function renderFieldSet($legend=null);
+    public function renderFieldSetContent(aura\html\widget\FieldSet $fieldSet);
+}
+
+interface IResultProviderDelegate {
+    public function isRequired($flag=null);
+    public function apply();
+}
+
+interface ISelectorDelegate extends IResultProviderDelegate {
+    public function isForOne($flag=null);
+    public function isForMany($flag=null);
+
+    public function isSelected($id);
+    public function setSelected($selected);
+    public function getSelected();
+    public function hasSelection();
+}
+
+interface IInlineFieldRenderableSelectorDelegate extends IModalDelegate, IInlineFieldRenderableDelegate, ISelectorDelegate {}
+
+
+interface IDependency {
+    public function getName();
+
+    public function setContext($context);
+    public function getContext();
+
+    public function hasValue();
+    public function getValue();
+
+    public function setErrorMessage($message);
+    public function getErrorMessage();
+}
+
+trait TDependency {
+
+    protected $_name;
+    protected $_context;
+    protected $_error;
+
+    public function getName() {
+        return $this->_name;
+    }
+
+    public function setContext($context) {
+        $this->_context = $context;
+    }
+
+    public function getContext() {
+        return $this->_context;
+    }
+
+    public function setErrorMessage($error) {
+        $this->_error = $error;
+        return $this;
+    }
+
+    public function getErrorMessage() {
+        return $this->_error;
+    }
+}
+
+interface IDependentDelegate {
+    public function addSelectorDependency(ISelectorDelegate $delegate, $error=null, $context=null);
+    public function addValueDependency($name, core\collection\IInputTree $value, $error=null, $context=null);
+    public function addValueListDependency($name, core\collection\IInputTree $value, $error=null, $context=null);
+    public function addDependency(IDependency $dependency);
+
+    public function getDependency($name);
+    public function getDependencies();
+    public function getDependenciesByContext($context);
+    public function getDependencyValuesByContext($context);
+    public function getUnresolvedDependencies();
+    public function getUnresolvedDependencyMessages();
+}

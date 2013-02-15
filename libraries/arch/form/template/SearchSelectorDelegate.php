@@ -11,10 +11,13 @@ use df\arch;
 use df\aura;
 use df\opal;
     
-abstract class SearchSelectorDelegate extends arch\form\Delegate implements IInlineFieldRenderableSelectorDelegate {
+abstract class SearchSelectorDelegate extends arch\form\Delegate implements 
+    arch\form\IInlineFieldRenderableSelectorDelegate,
+    arch\form\IDependentDelegate {
 
-    use TInlineFieldRenderableSelectorDelegate;
-    use TValueListSelectorDelegate;
+    use arch\form\TForm_InlineFieldRenderableSelectorDelegate;
+    use arch\form\TForm_ValueListSelectorDelegate;
+    use arch\form\TForm_DependentDelegate;
 
     protected function _renderOverlaySelectorContent(aura\html\widget\Overlay $ol) {
         $fs = $ol->addFieldSet($this->_('Select'));

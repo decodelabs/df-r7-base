@@ -12,7 +12,7 @@ use df\aura;
 
 class Delegate implements IDelegate {
     
-    use TBase;
+    use TForm;
     use arch\TContextProxy;
     
     protected $_delegateId;
@@ -28,6 +28,15 @@ class Delegate implements IDelegate {
 
     protected function _onConstruct() {}
     
+    public function getDelegateId() {
+        return $this->_delegateId;
+    }
+
+    public function getDelegateKey() {
+        $parts = explode('.', $this->_delegateId);
+        return array_pop($parts);
+    }
+
     final public function initialize() {
         $this->_init();
         $this->_setupDelegates();
@@ -40,6 +49,7 @@ class Delegate implements IDelegate {
             $delegate->initialize();
         }
         
+        $this->_onInitComplete();
         return $this;
     }
     

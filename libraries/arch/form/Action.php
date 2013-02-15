@@ -13,7 +13,7 @@ use df\halo;
 
 abstract class Action extends arch\Action implements IAction {
     
-    use TBase;
+    use TForm;
     
     const SESSION_ID_KEY = 'fsid';
     const MAX_SESSIONS = 15;
@@ -106,6 +106,7 @@ abstract class Action extends arch\Action implements IAction {
         }
         
         $this->_state->isNew(false);
+        $this->_onInitComplete();
     }
 
     protected function _createSessionId() {
@@ -127,7 +128,7 @@ abstract class Action extends arch\Action implements IAction {
     }
     
     protected function _onSessionCreate() {}
-    
+
     public function getStateController() {
         if(!$this->_state) {
             throw new RuntimeException(
