@@ -39,6 +39,6 @@ class Enum extends Base implements core\validate\IEnumField {
             ));
         }
 
-        return $this->_finalize($node, $eValue);
+        return $this->_finalize($node, $value);
     }
 }
