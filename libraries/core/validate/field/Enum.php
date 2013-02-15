@@ -30,6 +30,7 @@ class Enum extends Base implements core\validate\IEnumField {
 
         if(isset($this->_options[$value])) {
             $eValue = $this->_options[$value];
+            $this->_shouldSanitize = false;
         }
 
         if(!in_array($eValue, $this->_options)) {
@@ -39,6 +40,6 @@ class Enum extends Base implements core\validate\IEnumField {
             ));
         }
 
-        return $this->_finalize($node, $value);
+        return $this->_finalize($node, $eValue);
     }
 }
