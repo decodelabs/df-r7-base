@@ -127,20 +127,7 @@ class Uri implements aura\view\IHelper {
     }
 
     public function back($default=null, $success=true) {
-        $request = $this->_view->getContext()->request;
-        
-        if($success && ($redirect = $request->getRedirectTo())) {
-            return $this->request($redirect);
-        } else if((!$success || ($success && !$request->getRedirectTo()))
-            && ($redirect = $request->getRedirectFrom())) {
-            return $this->request($redirect);
-        }
-            
-        if($default === null) {
-            $default = $request->getParent();
-        }
-        
-        return $this->request($default);
+        return $this->request($this->_view->getContext()->arch->backRequest($default, $success));
     }
     
     public function mailto($url) {

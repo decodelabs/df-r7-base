@@ -19,6 +19,27 @@ class Arch implements archLib\IContextHelper {
         return archLib\Request::factory($request);
     }
 
+    public function backRequest($default=null, $success=true) {
+        $request = $this->_context->request;
+        
+        if($success && ($redirect = $request->getRedirectTo())) {
+            return $redirect;
+        } else if((!$success || ($success && !$request->getRedirectTo()))
+            && ($redirect = $request->getRedirectFrom())) {
+            return $redirect;
+        }
+            
+        if($default === null) {
+            $default = $request->getParent();
+        } else if(!$default instanceof archLib\IRequest) {
+            $default = $this->newRequest($default);
+        } else {
+            $default = clone $default;
+        }
+
+        return $default;
+    }
+
 
 // Actions
     public function actionExists($request, $runMode=null) {
