@@ -407,6 +407,11 @@ class Clause implements opal\query\IClause, core\IDumpable {
                     
                     $this->_preparedValue = $output;
                     break;
+
+                case self::OP_LIKE:
+                case self::OP_NOT_LIKE:
+                    $this->_preparedValue = (string)$this->_value;
+                    break;
                     
                 default:
                     $this->_preparedValue = $adapter->prepareQueryClauseValue(
