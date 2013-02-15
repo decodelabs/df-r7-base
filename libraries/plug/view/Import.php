@@ -62,4 +62,18 @@ class Import implements aura\view\IHelper {
             return $this->_view->newErrorContainer($e);
         }
     }
+
+    public function form($request) {
+        $request = arch\Request::factory($request);
+        $context = $this->_view->getContext()->spawnInstance($request);
+        $action = arch\form\Action::factory($context);
+
+        if(!$action instanceof arch\form\IAction) {
+            throw new arch\InvalidArgumentException(
+                'Action '.$request.' is not a form action!'
+            );
+        }
+
+        return $action->dispatchToRenderInline($this->_view);
+    }
 }
