@@ -314,6 +314,20 @@ class EntityLocator implements IEntityLocator, core\IDumpable {
         }
     }
 
+    public function getDomain() {
+        $nodes = $this->_nodes;
+        $last = clone array_pop($nodes);
+
+        foreach($nodes as $i => $node) {
+            $nodes[$i] = $node->toString();
+        }
+
+        $last->setId(null);
+        $nodes[] = $last->toString();
+
+        return $this->_scheme.'://'.implode('/', $nodes);
+    }
+
     public function setId($id) {
         if($node = $this->getLastNode()) {
             $node->setId($id);
@@ -329,15 +343,13 @@ class EntityLocator implements IEntityLocator, core\IDumpable {
     }
     
     public function toString() {
-        $output = $this->_scheme.'://';
         $nodes = array();
         
         foreach($this->_nodes as $node) {
             $nodes[] = $node->toString();
         }
         
-        $output .= implode('/', $nodes);
-        return $output;
+        return $this->_scheme.'://'.implode('/', $nodes);
     }
     
     public function __toString() {

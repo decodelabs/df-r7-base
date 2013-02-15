@@ -75,6 +75,7 @@ interface IEntityLocator extends core\IStringProvider  {
     public function getLastNodeType();
     public function getLastNodeId();
 
+    public function getDomain();
     public function setId($id);
     public function getId();
 
