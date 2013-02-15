@@ -12,7 +12,7 @@ use df\opal;
 
 abstract class Base extends axis\Unit implements 
     axis\ISchemaBasedStorageUnit, 
-    core\policy\IParentEntity, 
+    core\policy\IActiveParentEntity, 
     opal\query\IEntryPoint,
     opal\query\IIntegralAdapter,
     core\IDumpable {
@@ -810,6 +810,20 @@ abstract class Base extends axis\Unit implements
             case 'Schema':
                 return $this->getUnitSchema();
         }
+    }
+
+    public function getSubEntityLocator(core\policy\IEntity $entity) {
+        if($entity instanceof opal\query\record\IRecord) {
+            $output = new core\policy\EntityLocator('axis://'.$this->getModel()->getModelName().'/'.ucfirst($this->getUnitName()));
+            $id = $entity->getPrimaryManifest()->getEntityId();
+            $output->setId($id);
+
+            return $output;
+        }
+
+        throw new core\policy\UnexpectedValueException(
+            'Unknown entity type'
+        );
     }
     
     

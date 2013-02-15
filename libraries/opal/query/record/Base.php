@@ -904,6 +904,10 @@ class Base implements IRecord, \Serializable, core\IDumpable {
             );
         }
 
+        if($this->_adapter instanceof core\policy\IActiveParentEntity) {
+            return $this->_adapter->getSubEntityLocator($this);
+        }
+
         $manifest = $this->getPrimaryManifest();
         $id = $manifest->getEntityId();
 
