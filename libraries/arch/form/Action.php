@@ -22,10 +22,11 @@ abstract class Action extends arch\Action implements IAction {
     
     const DEFAULT_EVENT = 'default';
     const DEFAULT_REDIRECT = null;
-    
+
     private $_isNew = false;
     private $_isComplete = false;
     private $_sessionNamespace;
+
     
     public function __construct(arch\IContext $context, arch\IController $controller=null) {
         parent::__construct($context, $controller);
@@ -138,16 +139,37 @@ abstract class Action extends arch\Action implements IAction {
         
         return $this->_state;
     }
-    
+
+    public function dispatchToRenderInline(aura\view\IView $view) {
+        $this->_beforeDispatch();
+        $this->view = $view;
+        
+        $this->_isRenderingInline = true;
+        $this->onGetRequest();
+        $this->_isRenderingInline = false;
+
+        return $this->content;
+    }
+
     public function onGetRequest() {
-        $this->view = aura\view\Base::factory('Html', $this->_context);
+        $setContentProvider = false;
+
+        if(!$this->view) {
+            $this->view = aura\view\Base::factory('Html', $this->_context);
+            $setContentProvider = true;
+        }
+
         $this->content = new aura\view\content\WidgetContentProvider($this->view->getContext());
+
+        if($setContentProvider) {
+            $this->view->setContentProvider($this->content);
+        }
+
         $this->html = $this->view->getHelper('html');
-        $this->view->setContentProvider($this->content);
         $this->content->setRenderTarget($this->view);
         
         foreach($this->_delegates as $delegate) {
-            $delegate->setRenderContext($this->view, $this->content);
+            $delegate->setRenderContext($this->view, $this->content, $this->_isRenderingInline);
         }
         
         if(method_exists($this, '_createUi')) {

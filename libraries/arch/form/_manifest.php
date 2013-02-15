@@ -36,6 +36,7 @@ interface IStateController {
 }
 
 interface IForm {
+    public function isRenderingInline();
     public function getStateController();
     public function loadDelegate($id, $name, $request=null);
     public function getDelegate($id);
@@ -52,7 +53,7 @@ interface IDelegate extends IForm, arch\IContextAware {
     public function getDelegateId();
     public function getDelegateKey();
     public function initialize();
-    public function setRenderContext(aura\view\IView $view, aura\view\IContentProvider $content);
+    public function setRenderContext(aura\view\IView $view, aura\view\IContentProvider $content, $isRenderingInline=false);
     public function complete();
 }
 
@@ -65,6 +66,7 @@ interface IModalDelegate {
 
 interface IInlineFieldRenderableDelegate {
     public function renderFieldArea($label=null);
+    public function renderInlineFieldAreaContent();
     public function renderFieldAreaContent(aura\html\widget\FieldArea $fieldArea);
 }
 

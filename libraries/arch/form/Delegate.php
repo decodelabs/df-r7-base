@@ -16,7 +16,7 @@ class Delegate implements IDelegate {
     use arch\TContextProxy;
     
     protected $_delegateId;
-    
+
     public function __construct(arch\IContext $context, IStateController $state, $id) {
         $this->_context = $context;
         $this->_state = $state;
@@ -53,10 +53,11 @@ class Delegate implements IDelegate {
         return $this;
     }
     
-    public function setRenderContext(aura\view\IView $view, aura\view\IContentProvider $content) {
+    public function setRenderContext(aura\view\IView $view, aura\view\IContentProvider $content, $isRenderingInline=false) {
         $this->view = $view;
         $this->content = $content;
         $this->html = $view->getHelper('html');
+        $this->_isRenderingInline = $isRenderingInline;
         
         foreach($this->_delegates as $delegate) {
             $delegate->setRenderContext($view, $content);

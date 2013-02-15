@@ -21,6 +21,7 @@ trait TForm {
     public $content;
     public $values;
     
+    protected $_isRenderingInline = false;
     protected $_state;
     protected $_delegates = array();
     
@@ -120,6 +121,10 @@ trait TForm {
         return '';
     }
     
+
+    public function isRenderingInline() {
+        return $this->_isRenderingInline;
+    }
     
     
 // Values
@@ -292,6 +297,10 @@ trait TForm_InlineFieldRenderableDelegate {
         );
 
         return $output;
+    }
+
+    public function renderInlineFieldAreaContent() {
+        return $this->renderFieldArea()->renderInputArea();
     }
 }
 
