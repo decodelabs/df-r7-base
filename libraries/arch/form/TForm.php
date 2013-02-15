@@ -463,13 +463,23 @@ trait TForm_ValueListSelectorDelegate {
     public function apply() {
         if($this->_isRequired) {
             if(!$this->hasSelection()) {
-                $this->values->selected->addError('required', $this->_(
-                    'You must select at least one entry'
-                ));
+                if($this->_isForMany) {
+                    $this->values->selected->addError('required', $this->_(
+                        'You must select at least one entry'
+                    ));
+                } else {
+                    $this->values->selected->addError('required', $this->_(
+                        'You must make a selection'
+                    ));
+                }
             }
         }
 
         return $this->getSelected();
+    }
+
+    protected function _getSelectionErrors() {
+        return $this->values->selected;
     }
 
 // Events
@@ -518,6 +528,10 @@ trait TForm_InlineFieldRenderableSelectorDelegate {
             }
         }
 
+
+        if($messages = $this->_getSelectionErrors()) {
+            $fa->push($this->html->fieldError($messages));
+        }
 
 
         $selectList = $this->_fetchSelectionList();
@@ -632,6 +646,7 @@ trait TForm_InlineFieldRenderableSelectorDelegate {
     }
 
     abstract protected function _renderOverlaySelectorContent(aura\html\widget\Overlay $ol);
+    abstract protected function _getSelectionErrors();
 
 
 // Events
