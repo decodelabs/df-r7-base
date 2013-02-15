@@ -475,7 +475,14 @@ abstract class Base extends axis\Unit implements
                 }
                 
                 $subValue = $valueFields[$keyName];
-            } else if(is_array($value)) {
+            } else if($operator != opal\query\clause\Clause::OP_IN
+                   && $operator != opal\query\clause\Clause::OP_NOT_IN
+                   && is_array($value)) {
+
+                // this does not cover all eventualities
+                // in [[id_a, id_b], [id_a, id_b]]
+                // need to check operator further up
+
                 if(!array_key_exists($keyName, $value)) {
                     throw new axis\schema\RuntimeException(
                         'KeyGroup fields do not match on '.
