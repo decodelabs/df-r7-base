@@ -13,6 +13,7 @@ class TaskSet implements ITaskSet {
     
     protected $_tasks = array();
     protected $_transaction;
+    protected $_isExecuting = false;
     
     public function __construct(core\IApplication $application=null) {
         if($application === null) {
@@ -153,6 +154,11 @@ class TaskSet implements ITaskSet {
         
         $this->_transaction->registerAdapter($task->getAdapter());
         $this->_tasks[$id] = $task;
+
+        if($this->_isExecuting) {
+            $task->reportPreEvent($this);
+        }
+
         return $this;
     }
     
@@ -182,12 +188,20 @@ class TaskSet implements ITaskSet {
     
     
     public function execute() {
+        if($this->_isExecuting) {
+            return $this;
+        }
+
+        $this->_isExecuting = true;
         $this->_tasks = array_filter($this->_tasks);
+        
+        foreach($this->_tasks as $task) {
+            $task->reportPreEvent($this);
+        }
         
         uasort($this->_tasks, function($taskA, $taskB) {
             return $taskA->countDependencies() > $taskB->countDependencies();
         });
-
 
         try {
             while(!empty($this->_tasks)) {
@@ -198,8 +212,6 @@ class TaskSet implements ITaskSet {
                 }
                 
                 $task->resolveDependencies($this);
-
-                $task->reportPreEvent($this);
                 $task->execute($this->_transaction);
 
                 if($task->applyResolutionToDependants()) {
@@ -216,6 +228,8 @@ class TaskSet implements ITaskSet {
         }
         
         $this->_transaction->commit();
+        $this->_isExecuting = false;
+
         return $this;
     }
 }
