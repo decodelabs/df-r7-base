@@ -291,6 +291,42 @@ class EntityLocator implements IEntityLocator, core\IDumpable {
         
         return null;
     }
+
+    public function getLastNode() {
+        $i = count($this->_nodes) - 1;
+
+        if(isset($this->_nodes[$i])) {
+            return $this->_nodes[$i];
+        }
+
+        return null;
+    }
+
+    public function getLastNodeType() {
+        if($node = $this->getLastNode()) {
+            return $node->getType();
+        }
+    }
+
+    public function getLastNodeId() {
+        if($node = $this->getLastNode()) {
+            return $node->getId();
+        }
+    }
+
+    public function setId($id) {
+        if($node = $this->getLastNode()) {
+            $node->setId($id);
+        }
+
+        return $this;
+    }
+
+    public function getId() {
+        if($node = $this->getLastNode()) {
+            return $node->getId();
+        }
+    }
     
     public function toString() {
         $output = $this->_scheme.'://';

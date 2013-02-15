@@ -48,6 +48,10 @@ interface IParentEntity extends IEntity {
     public function fetchSubEntity(IManager $manager, IEntityLocatorNode $node);
 }
 
+interface IActiveParentEntity extends IParentEntity {
+    public function getSubEntityLocator(IEntity $entity);
+}
+
 
 interface IEntityLocator extends core\IStringProvider  {
     public function setScheme($scheme);
@@ -62,9 +66,17 @@ interface IEntityLocator extends core\IStringProvider  {
     public function hasNode($index);
     public function removeNode($index);
     public function getNodes();
+
     public function getFirstNode();
     public function getFirstNodeType();
     public function getFirstNodeId();
+
+    public function getLastNode();
+    public function getLastNodeType();
+    public function getLastNodeId();
+
+    public function setId($id);
+    public function getId();
 
     public function toStringUpTo($type);
 }
