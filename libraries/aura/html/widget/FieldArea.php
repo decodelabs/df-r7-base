@@ -99,6 +99,41 @@ class FieldArea extends Container implements IFormOrientedWidget {
         
         return $tag->renderWith($output, true);
     }
+
+    public function renderInputArea() {
+        $primaryWidget = null;
+        $errors = array();
+        $isRequired = $this->_isRequired;
+
+        if($this->_errorContainer) {
+            $errors = $this->_errorContainer->getErrors();
+        }
+        
+        foreach($this->_children as $child) {
+            if($child instanceof IInputWidget) {
+                $value = $child->getValue();
+                
+                if($value->hasErrors()) {
+                    $errors = array_merge($errors, $value->getErrors());
+                }
+            }
+        }
+        
+        $inputAreaBody = $this->_children;
+
+        if($this->_description !== null) {
+            $inputAreaBody = [
+                new aura\html\Element(
+                    'p', 
+                    [$view->html->icon('info'), ' ', $this->_description], 
+                    ['class' => 'description state-info']
+                ),
+                $this->_children
+            ];
+        }
+
+        return (new aura\html\Element('div', $inputAreaBody, ['class' => 'widget-inputArea']))->render();
+    }
     
     
 // Label body
