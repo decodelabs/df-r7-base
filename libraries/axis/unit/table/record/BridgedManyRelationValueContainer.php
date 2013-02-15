@@ -544,7 +544,7 @@ class BridgedManyRelationValueContainer implements
         foreach($this->_localPrimaryManifest->toArray() as $key => $value) {
             $bridgeData[$this->_bridgeLocalFieldName.'_'.$key] = $value;
         }
-        
+
         if(!empty($bridgeData)) {
             $taskSet->addTask(new opal\query\record\task\DeleteKey($bridgeUnit, $bridgeData));
         }

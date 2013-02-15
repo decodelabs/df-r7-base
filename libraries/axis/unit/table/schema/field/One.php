@@ -78,6 +78,10 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
     }
     
     public function deflateValue($value) {
+        if($value instanceof opal\query\record\IRecord) {
+            $value = $value->getPrimaryManifest();
+        }
+
         if(!$value instanceof opal\query\record\IPrimaryManifest) {
             $value = new opal\query\record\PrimaryManifest($this->_targetPrimaryFields, $value);
         }
@@ -93,7 +97,7 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
             
             $output[$this->_name.'_'.$key] = $value;
         }
-        
+
         return $output;
     }
     

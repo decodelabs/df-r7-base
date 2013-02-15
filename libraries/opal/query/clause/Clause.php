@@ -70,8 +70,6 @@ class Clause implements opal\query\IClause, core\IDumpable {
             if($output instanceof opal\query\IClauseProvider) {
                 return $output;
             }
-
-            //core\dump($parent, $field, $operator, $value, $isOr);
         }
         
         
@@ -388,7 +386,9 @@ class Clause implements opal\query\IClause, core\IDumpable {
                 $this->_hasPreparedValue = false;
                 return $this->_value;
             }
-            
+
+            $this->_preparedValue = $this->_value;
+
             switch($this->_operator) {
                 case self::OP_IN:
                 case self::OP_NOT_IN:
@@ -401,7 +401,7 @@ class Clause implements opal\query\IClause, core\IDumpable {
                 case self::OP_NOT_BETWEEN:
                     $output = array();
                 
-                    foreach($this->_value as $part) {
+                    foreach($this->_preparedValue as $part) {
                         $output[] = $adapter->prepareQueryClauseValue($this->_field, $part);
                     }
                     
@@ -410,7 +410,7 @@ class Clause implements opal\query\IClause, core\IDumpable {
                     
                 default:
                     $this->_preparedValue = $adapter->prepareQueryClauseValue(
-                        $this->_field, $this->_value
+                        $this->_field, $this->_preparedValue
                     );
                     
                     break;

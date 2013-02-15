@@ -374,7 +374,7 @@ abstract class Base extends axis\Unit implements
 // Clause helpers
     public function prepareQueryClauseValue(opal\query\IField $field, $value) {
         $schema = $this->getUnitSchema();
-        
+
         if(!$axisField = $schema->getField($field->getName())) {
             return $value;
         }
@@ -421,6 +421,10 @@ abstract class Base extends axis\Unit implements
             $clauseFactory = $parent;
         }
 
+        if($value instanceof opal\query\record\IRecord) {
+            $value = $value->getPrimaryManifest();
+        }
+        
         if($value instanceof opal\query\IVirtualField) {
             $targetPrefix = $value->getName();
 
@@ -486,7 +490,7 @@ abstract class Base extends axis\Unit implements
             }
 
             $newField = new opal\query\field\Intrinsic($field->getSource(), $keyName);
-            $clause = opal\query\clause\Clause::factory($clauseFactory, $newField, $operator, $subValue);
+            $clause = opal\query\clause\Clause::factory($clauseFactory, $newField, $operator, $subValue, $output ? false : $isOr);
 
             if($output) {
                 $output->_addClause($clause);
