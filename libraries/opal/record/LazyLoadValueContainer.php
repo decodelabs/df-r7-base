@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\opal\query\record;
+namespace df\opal\record;
 
 use df;
 use df\core;
@@ -24,13 +24,13 @@ class LazyLoadValueContainer implements IPreparedValueContainer {
         return $this->_isLoaded;
     }
     
-    public function prepareValue(opal\query\record\IRecord $record, $fieldName) {
+    public function prepareValue(opal\record\IRecord $record, $fieldName) {
         $this->_value = call_user_func_array($this->_loader, [$this->_value, $record, $fieldName]);
         $this->_isLoaded = true;
         return $this;
     }
     
-    public function prepareToSetValue(opal\query\record\IRecord $record, $fieldName) {
+    public function prepareToSetValue(opal\record\IRecord $record, $fieldName) {
         return $this;
     }
     

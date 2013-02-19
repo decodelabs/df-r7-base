@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\opal\query\record\task;
+namespace df\opal\record\task;
 
 use df;
 use df\core;
@@ -15,7 +15,7 @@ class UpdateRaw extends Base implements IUpdateTask {
     protected $_values;
     protected $_adapter;
     
-    public function __construct(opal\query\IAdapter $adapter, opal\query\record\IPrimaryManifest $primaryManifest, array $values) {
+    public function __construct(opal\query\IAdapter $adapter, opal\record\IPrimaryManifest $primaryManifest, array $values) {
         $this->_primaryManifest = $primaryManifest;
         $this->_values = $values;
         $this->_adapter = $adapter;

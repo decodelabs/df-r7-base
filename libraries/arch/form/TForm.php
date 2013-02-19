@@ -435,7 +435,7 @@ trait TForm_ValueListSelectorDelegate {
 
     public function setSelected($selected) {
         if(!$this->_isForMany) {
-            if($selected instanceof opal\query\record\IRecord) {
+            if($selected instanceof opal\record\IRecord) {
                 $selected = $selected->getPrimaryManifest();
             }
 

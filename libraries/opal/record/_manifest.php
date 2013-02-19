@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\opal\query\record;
+namespace df\opal\record;
 
 use df;
 use df\core;
@@ -51,11 +51,11 @@ interface IRecord extends core\collection\IMappedCollection, user\IAccessLock, c
     public function populateWithPreparedData(array $row);
     public function populateWithRawData($row);
     
-    public function save(opal\query\record\task\ITaskSet $taskSet=null);
-    public function delete(opal\query\record\task\ITaskSet $taskSet=null);
-    public function deploySaveTasks(opal\query\record\task\ITaskSet $taskSet);
-    public function deployDeleteTasks(opal\query\record\task\ITaskSet $taskSet);
-    public function triggerTaskEvent(opal\query\record\task\ITaskSet $taskSet, opal\query\record\task\IRecordTask $task, $when);
+    public function save(opal\record\task\ITaskSet $taskSet=null);
+    public function delete(opal\record\task\ITaskSet $taskSet=null);
+    public function deploySaveTasks(opal\record\task\ITaskSet $taskSet);
+    public function deployDeleteTasks(opal\record\task\ITaskSet $taskSet);
+    public function triggerTaskEvent(opal\record\task\ITaskSet $taskSet, opal\record\task\IRecordTask $task, $when);
 }
 
 
@@ -68,8 +68,8 @@ interface IValueContainer extends core\IValueContainer {
 
 interface IPreparedValueContainer extends IValueContainer {
     public function isPrepared();
-    public function prepareValue(opal\query\record\IRecord $record, $fieldName);
-    public function prepareToSetValue(opal\query\record\IRecord $record, $fieldName);
+    public function prepareValue(opal\record\IRecord $record, $fieldName);
+    public function prepareToSetValue(opal\record\IRecord $record, $fieldName);
 }
 
 interface IIdProviderValueContainer extends IValueContainer {
@@ -77,10 +77,10 @@ interface IIdProviderValueContainer extends IValueContainer {
 }
 
 interface ITaskAwareValueContainer extends IValueContainer {
-    public function deploySaveTasks(opal\query\record\task\ITaskSet $taskSet, IRecord $record, $fieldName, opal\query\record\task\ITask $task=null);
-    public function acceptSaveTaskChanges(opal\query\record\IRecord $record);
-    public function deployDeleteTasks(opal\query\record\task\ITaskSet $taskSet, IRecord $record, $fieldName, opal\query\record\task\ITask $task=null);
-    public function acceptDeleteTaskChanges(opal\query\record\IRecord $record);
+    public function deploySaveTasks(opal\record\task\ITaskSet $taskSet, IRecord $record, $fieldName, opal\record\task\ITask $task=null);
+    public function acceptSaveTaskChanges(opal\record\IRecord $record);
+    public function deployDeleteTasks(opal\record\task\ITaskSet $taskSet, IRecord $record, $fieldName, opal\record\task\ITask $task=null);
+    public function acceptDeleteTaskChanges(opal\record\IRecord $record);
 }
 
 

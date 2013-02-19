@@ -421,7 +421,7 @@ abstract class Base extends axis\Unit implements
             $clauseFactory = $parent;
         }
 
-        if($value instanceof opal\query\record\IRecord) {
+        if($value instanceof opal\record\IRecord) {
             $value = $value->getPrimaryManifest();
         }
         
@@ -445,7 +445,7 @@ abstract class Base extends axis\Unit implements
 
                 $valueFields[$targetFieldName] = $targetField;
             }
-        } else if($value instanceof opal\query\record\IPrimaryManifest) {
+        } else if($value instanceof opal\record\IPrimaryManifest) {
             $value = $value->getIntrinsicFieldMap($localPrefix);
         } else if(is_scalar($value) && $fieldCount > 1) {
             throw new axis\schema\RuntimeException(
@@ -581,7 +581,7 @@ abstract class Base extends axis\Unit implements
             }
         }
         
-        return new opal\query\record\PrimaryManifest($fields, $values);
+        return new opal\record\PrimaryManifest($fields, $values);
     }
     
     public function deflateBatchInsertValues(array $rows, array &$queryFields) {
@@ -739,8 +739,8 @@ abstract class Base extends axis\Unit implements
         $primaryManifest = null;
 
         if(is_string($keys) && substr($keys, 0, 9) == 'manifest?') {
-            $primaryManifest = opal\query\record\PrimaryManifest::fromEntityId($keys);
-        } else if($keys instanceof opal\query\record\IPrimaryManifest) {
+            $primaryManifest = opal\record\PrimaryManifest::fromEntityId($keys);
+        } else if($keys instanceof opal\record\IPrimaryManifest) {
             $primaryManifest = $keys;
         }
 
@@ -820,7 +820,7 @@ abstract class Base extends axis\Unit implements
     }
 
     public function getSubEntityLocator(core\policy\IEntity $entity) {
-        if($entity instanceof opal\query\record\IRecord) {
+        if($entity instanceof opal\record\IRecord) {
             $output = new core\policy\EntityLocator('axis://'.$this->getModel()->getModelName().'/'.ucfirst($this->getUnitName()));
             $id = $entity->getPrimaryManifest()->getEntityId();
             $output->setId($id);

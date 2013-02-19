@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\opal\query\record\task;
+namespace df\opal\record\task;
 
 use df;
 use df\core;

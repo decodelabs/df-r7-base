@@ -47,6 +47,6 @@ interface IDocument {
     public function getBoost($key);
 }
 
-interface IResult extends opal\query\record\IRecord {
+interface IResult extends opal\record\IRecord {
     
 }

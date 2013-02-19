@@ -52,7 +52,7 @@ class CurrencyRange extends Base implements axis\schema\IMultiPrimitiveField {
 
 
 // Values
-    public function inflateValueFromRow($key, array $row, opal\query\record\IRecord $forRecord=null) {
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
         if(isset($row[$key.'_lo'])) {
             return [$row[$key.'_lo'], $row[$key.'_hi']];
         } else {

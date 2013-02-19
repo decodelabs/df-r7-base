@@ -13,7 +13,7 @@ use df\opal;
 class TimeOfDay extends Base {
     
 // Values
-    public function inflateValueFromRow($key, array $row, opal\query\record\IRecord $forRecord=null) {
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
         if(isset($row[$key])) { 
             return new core\time\TimeOfDay($row[$key]);
         } else {

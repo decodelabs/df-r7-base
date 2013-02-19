@@ -11,7 +11,7 @@ use df\axis;
 use df\arch;
 use df\opal;
     
-class SlugTreeRecord extends opal\query\record\Base {
+class SlugTreeRecord extends opal\record\Base {
 
     protected function _onPreSave() {
         if(!$this->getRawId('parent')) {

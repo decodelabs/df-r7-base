@@ -11,9 +11,9 @@ use df\axis;
 use df\opal;
 
 class OneRelationValueContainer implements 
-    opal\query\record\ITaskAwareValueContainer, 
-    opal\query\record\IPreparedValueContainer, 
-    opal\query\record\IIdProviderValueContainer {
+    opal\record\ITaskAwareValueContainer, 
+    opal\record\IPreparedValueContainer, 
+    opal\record\IIdProviderValueContainer {
         
     protected $_value;
     protected $_record = false;
@@ -21,7 +21,7 @@ class OneRelationValueContainer implements
     protected $_populateInverseField = null;
     
     public function __construct($value, $targetUnitId, array $primaryFields, $populateInverseField=null) {
-        $this->_value = new opal\query\record\PrimaryManifest($primaryFields);
+        $this->_value = new opal\record\PrimaryManifest($primaryFields);
         $this->_targetUnitId = $targetUnitId;
         $this->_populateInverseField = $populateInverseField;
         
@@ -32,7 +32,7 @@ class OneRelationValueContainer implements
         return $this->_record !== false;
     }
     
-    public function prepareValue(opal\query\record\IRecord $record, $fieldName) {
+    public function prepareValue(opal\record\IRecord $record, $fieldName) {
         if($this->_value->isNull()) {
             return $this;
         }
@@ -56,23 +56,23 @@ class OneRelationValueContainer implements
         return $this;
     }
     
-    public function prepareToSetValue(opal\query\record\IRecord $record, $fieldName) {
+    public function prepareToSetValue(opal\record\IRecord $record, $fieldName) {
         return $this;
     }
     
     public function eq($value) {
         if($value instanceof self) {
             $value = $value->getPrimaryManifest();
-        } else if($value instanceof opal\query\record\IRecord) {
+        } else if($value instanceof opal\record\IRecord) {
             if($value->isNew()) {
                 return false;
             }
 
             $value = $value->getPrimaryManifest();
-        } else if(!$value instanceof opal\query\record\IPrimaryManifest) {
+        } else if(!$value instanceof opal\record\IPrimaryManifest) {
             try {
                 $value = $this->_value->duplicateWith($value);
-            } catch(opal\query\record\IException $e) {
+            } catch(opal\record\IException $e) {
                 return false;
             }
         }
@@ -86,10 +86,10 @@ class OneRelationValueContainer implements
         if($value instanceof self) {
             $record = $value->_record;
             $value = $value->getPrimaryManifest();
-        } else if($value instanceof opal\query\record\IRecord) {
+        } else if($value instanceof opal\record\IRecord) {
             $record = $value;
             $value = $value->getPrimaryManifest();
-        } else if(!$value instanceof opal\query\record\IPrimaryManifest) {
+        } else if(!$value instanceof opal\record\IPrimaryManifest) {
             if($value === null) {
                 $record = null;
             }
@@ -135,7 +135,7 @@ class OneRelationValueContainer implements
         return new self(null, $this->_targetUnitId, $this->_value->getFieldNames());
     }
     
-    public function populateInverse(opal\query\record\IRecord $record=null) {
+    public function populateInverse(opal\record\IRecord $record=null) {
         $this->_record = $record;
         return $this;
     }
@@ -143,13 +143,13 @@ class OneRelationValueContainer implements
     
     
 // Tasks
-    public function deploySaveTasks(opal\query\record\task\ITaskSet $taskSet, opal\query\record\IRecord $record, $fieldName, opal\query\record\task\ITask $recordTask=null) {
-        if($this->_record instanceof opal\query\record\IRecord) {
+    public function deploySaveTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $record, $fieldName, opal\record\task\ITask $recordTask=null) {
+        if($this->_record instanceof opal\record\IRecord) {
             $task = $this->_record->deploySaveTasks($taskSet);
             
             if($task && $recordTask && $this->_record->isNew()) {
                 $recordTask->addDependency(
-                    new opal\query\record\task\dependency\UpdateManifestField($fieldName, $task)
+                    new opal\record\task\dependency\UpdateManifestField($fieldName, $task)
                 );
             }
         }
@@ -157,15 +157,15 @@ class OneRelationValueContainer implements
         return $this;
     }
     
-    public function acceptSaveTaskChanges(opal\query\record\IRecord $record) {
+    public function acceptSaveTaskChanges(opal\record\IRecord $record) {
         return $this;
     }
     
-    public function deployDeleteTasks(opal\query\record\task\ITaskSet $taskSet, opal\query\record\IRecord $record, $fieldName, opal\query\record\task\ITask $recordTask=null) {
+    public function deployDeleteTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $record, $fieldName, opal\record\task\ITask $recordTask=null) {
         //core\stub($taskSet, $record, $recordTask);
     }
     
-    public function acceptDeleteTaskChanges(opal\query\record\IRecord $record) {
+    public function acceptDeleteTaskChanges(opal\record\IRecord $record) {
         return $this;
     }
     

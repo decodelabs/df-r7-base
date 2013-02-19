@@ -3,31 +3,28 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\opal\query\record\task;
+namespace df\opal\record\task;
 
 use df;
 use df\core;
 use df\opal;
 
-class DeleteRecord extends Base implements IDeleteRecordTask {
+class UpdateRecord extends Base implements IUpdateRecordTask {
     
     use TRecordTask;
-    
-    public function __construct(opal\query\record\IRecord $record) {
+
+    public function __construct(opal\record\IRecord $record) {
         $this->_record = $record;
         parent::__construct(self::extractRecordId($record));
     }
-    
-    public function getRecordTaskName() {
-        return 'Delete';
-    }
 
+    public function getRecordTaskName() {
+        return 'Update';
+    }
+    
     public function execute(opal\query\ITransaction $transaction) {
-        if($this->_record->isNew()) {
-            return $this;
-        }
-        
-        $query = $transaction->delete()->from($this->getAdapter());
+        $data = $this->_record->getChangesForStorage();
+        $query = $transaction->update($data)->in($this->getAdapter());
         $manifest = $this->_record->getPrimaryManifest();
         
         if(!$manifest->isNull()) {
@@ -48,7 +45,7 @@ class DeleteRecord extends Base implements IDeleteRecordTask {
         }
         
         $query->execute();
-        $this->_record->makeNew();
+        $this->_record->acceptChanges();
         
         return $this;
     }

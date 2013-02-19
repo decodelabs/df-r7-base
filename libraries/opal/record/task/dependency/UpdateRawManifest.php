@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\opal\query\record\task\dependency;
+namespace df\opal\record\task\dependency;
 
 use df;
 use df\core;
@@ -11,8 +11,8 @@ use df\opal;
 
 class UpdateRawManifest extends Base {
     
-    public function applyResolution(opal\query\record\task\ITask $dependentTask) {
-        if($dependentTask instanceof opal\query\record\task\UpdateRaw) {
+    public function applyResolution(opal\record\task\ITask $dependentTask) {
+        if($dependentTask instanceof opal\record\task\UpdateRaw) {
             $manifest = $this->_requiredTask->getRecord()->getPrimaryManifest();
             
             foreach($this->_parentFields as $key => $field) {
@@ -31,7 +31,7 @@ class UpdateRawManifest extends Base {
         return $this;
     }
     
-    public function resolve(opal\query\record\task\ITaskSet $taskSet, opal\query\record\task\ITask $dependentTask) {
+    public function resolve(opal\record\task\ITaskSet $taskSet, opal\record\task\ITask $dependentTask) {
         core\stub($taskSet);
     }
 }

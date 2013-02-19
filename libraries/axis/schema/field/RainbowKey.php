@@ -23,7 +23,7 @@ class RainbowKey extends Base implements
     
     
 // Values
-    public function inflateValueFromRow($key, array $row, opal\query\record\IRecord $forRecord=null) {
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
         if(isset($row[$key])) { 
             return core\string\RainbowKey::factory($row[$key]);
         } else {

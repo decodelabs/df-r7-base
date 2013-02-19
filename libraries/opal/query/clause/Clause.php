@@ -421,7 +421,7 @@ class Clause implements opal\query\IClause, core\IDumpable {
                     break;
             }
             
-            if($this->_preparedValue instanceof opal\query\record\IRecord) {
+            if($this->_preparedValue instanceof opal\record\IRecord) {
                 $this->_preparedValue = $this->_preparedValue->getPrimaryManifest();
             }
 
@@ -467,7 +467,7 @@ class Clause implements opal\query\IClause, core\IDumpable {
         
         if($this->_value instanceof opal\query\IField) {
             $value = $this->_value->getQualifiedName();
-        } else if($this->_value instanceof opal\query\record\IRecord) {
+        } else if($this->_value instanceof opal\record\IRecord) {
             $value = $this->_value->getRecordAdapter()->getQuerySourceId().' : '.$this->_value->getPrimaryManifest();
         } else if($this->_value instanceof opal\query\IQuery) {
             $value = $this->_value;

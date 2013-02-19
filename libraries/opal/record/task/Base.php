@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\opal\query\record\task;
+namespace df\opal\record\task;
 
 use df;
 use df\core;
@@ -19,10 +19,10 @@ abstract class Base implements ITask {
         $manifest = null;
         $isRecord = false;
         
-        if($record instanceof opal\query\record\IRecord) {
+        if($record instanceof opal\record\IRecord) {
             $isRecord = true;
             $manifest = $record->getPrimaryManifest();
-        } else if($record instanceof opal\query\record\IPrimaryManifest) {
+        } else if($record instanceof opal\record\IPrimaryManifest) {
             $manifest = $record;
         }
         
@@ -35,7 +35,7 @@ abstract class Base implements ITask {
         }
         
         if(is_array($record)) {
-            return '{'.implode(opal\query\record\PrimaryManifest::COMBINE_SEPARATOR, $record).'}';
+            return '{'.implode(opal\record\PrimaryManifest::COMBINE_SEPARATOR, $record).'}';
         }
         
         return (string)$record;
@@ -54,9 +54,9 @@ abstract class Base implements ITask {
     
 // Dependencies
     public function addDependency($dependency) {
-        if($dependency instanceof opal\query\record\task\ITask) {
-            $dependency = new opal\query\record\task\dependency\Base($dependency->getId(), $dependency);
-        } else if(!$dependency instanceof opal\query\record\task\dependency\IDependency) {
+        if($dependency instanceof opal\record\task\ITask) {
+            $dependency = new opal\record\task\dependency\Base($dependency->getId(), $dependency);
+        } else if(!$dependency instanceof opal\record\task\dependency\IDependency) {
             throw new InvalidArgumentException('Invalid dependency');
         }
 

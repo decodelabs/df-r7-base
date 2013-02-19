@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\opal\query\record;
+namespace df\opal\record;
 
 use df;
 use df\core;
@@ -534,12 +534,12 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     
     
 // Storage
-    public function save(opal\query\record\task\ITaskSet $taskSet=null) {
+    public function save(opal\record\task\ITaskSet $taskSet=null) {
         $execute = false;
 
         if($taskSet === null) {
             $execute = true;
-            $taskSet = new opal\query\record\task\TaskSet();
+            $taskSet = new opal\record\task\TaskSet();
         }
 
         $this->deploySaveTasks($taskSet);
@@ -551,12 +551,12 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $this;
     }
     
-    public function delete(opal\query\record\task\ITaskSet $taskSet=null) {
+    public function delete(opal\record\task\ITaskSet $taskSet=null) {
         $execute = false;
 
         if($taskSet === null) {
             $execute = true;
-            $taskSet = new opal\query\record\task\TaskSet();
+            $taskSet = new opal\record\task\TaskSet();
         }
 
         $this->deployDeleteTasks($taskSet);
@@ -568,7 +568,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $this;
     }
     
-    public function deploySaveTasks(opal\query\record\task\ITaskSet $taskSet) {
+    public function deploySaveTasks(opal\record\task\ITaskSet $taskSet) {
         $recordTask = null;
         
         if($taskSet->isRecordQueued($this)) {
@@ -590,7 +590,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $recordTask;
     }
     
-    public function deployDeleteTasks(opal\query\record\task\ITaskSet $taskSet) {
+    public function deployDeleteTasks(opal\record\task\ITaskSet $taskSet) {
         $recordTask = null;
 
         if(!$this->isNew()) {
@@ -610,11 +610,11 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $recordTask;
     }
 
-    public function triggerTaskEvent(opal\query\record\task\ITaskSet $taskSet, opal\query\record\task\IRecordTask $task, $when) {
+    public function triggerTaskEvent(opal\record\task\ITaskSet $taskSet, opal\record\task\IRecordTask $task, $when) {
         $taskName = $task->getRecordTaskName();
         $funcPrefix = '_on';
 
-        if($when == opal\query\record\task\IRecordTask::EVENT_PRE) {
+        if($when == opal\record\task\IRecordTask::EVENT_PRE) {
             $funcPrefix .= 'Pre';
         }
 

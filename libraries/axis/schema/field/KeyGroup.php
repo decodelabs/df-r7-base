@@ -22,7 +22,7 @@ class KeyGroup extends Base implements axis\schema\IRelationField, axis\schema\I
 
 
 // Values
-    public function inflateValueFromRow($key, array $row, opal\query\record\IRecord $forRecord=null) {
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
         $values = array();
         
         foreach($this->_targetPrimaryFields as $field) {
@@ -50,13 +50,13 @@ class KeyGroup extends Base implements axis\schema\IRelationField, axis\schema\I
                 return $row[$key];
             }
             
-            return new opal\query\record\PrimaryManifest($this->_targetPrimaryFields, $values);
+            return new opal\record\PrimaryManifest($this->_targetPrimaryFields, $values);
         }
     }
 
     public function deflateValue($value) {
-        if(!$value instanceof opal\query\record\IPrimaryManifest) {
-            $value = new opal\query\record\PrimaryManifest($this->_targetPrimaryFields, $value);
+        if(!$value instanceof opal\record\IPrimaryManifest) {
+            $value = new opal\record\PrimaryManifest($this->_targetPrimaryFields, $value);
         }
         
         $output = array();

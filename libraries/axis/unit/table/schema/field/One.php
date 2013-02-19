@@ -27,7 +27,7 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
 
     
 // Values
-    public function inflateValueFromRow($key, array $row, opal\query\record\IRecord $forRecord=null) {
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
         $hasKey = array_key_exists($key, $row);
 
         $value = array();
@@ -48,7 +48,7 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
             if($hasKey) {
                 return $row[$key];
             } else {
-                return new opal\query\record\PrimaryManifest($this->_targetPrimaryFields, $value);
+                return new opal\record\PrimaryManifest($this->_targetPrimaryFields, $value);
             }
         }
 
@@ -59,7 +59,7 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
         if($this instanceof axis\schema\IInverseRelationField) {
             $targetField = $this->_targetField;
 
-            if($hasKey && $row[$key] instanceof opal\query\IRecord) {
+            if($hasKey && $row[$key] instanceof opal\record\IRecord) {
                 $inverseValue = $row[$key]->getRaw($targetField);
                 $inverseValue->populateInverse($forRecord);
             }
@@ -78,12 +78,12 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
     }
     
     public function deflateValue($value) {
-        if($value instanceof opal\query\record\IRecord) {
+        if($value instanceof opal\record\IRecord) {
             $value = $value->getPrimaryManifest();
         }
 
-        if(!$value instanceof opal\query\record\IPrimaryManifest) {
-            $value = new opal\query\record\PrimaryManifest($this->_targetPrimaryFields, $value);
+        if(!$value instanceof opal\record\IPrimaryManifest) {
+            $value = new opal\record\PrimaryManifest($this->_targetPrimaryFields, $value);
         }
         
         $output = array();

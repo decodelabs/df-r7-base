@@ -3,14 +3,14 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\opal\query\record\task;
+namespace df\opal\record\task;
 
 use df;
 use df\core;
 use df\opal;
 
 // Exceptions
-interface IException extends opal\query\record\IException {}
+interface IException extends opal\record\IException {}
 class RuntimeException extends \RuntimeException implements IException {}
 class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 
@@ -18,19 +18,19 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 // Interfaces
 interface ITaskSet {
     public function getTransaction();
-    public function save(opal\query\record\IRecord $record);
-    public function insert(opal\query\record\IRecord $record);
-    public function replace(opal\query\record\IRecord $record);
-    public function update(opal\query\record\IRecord $record);
-    public function delete(opal\query\record\IRecord $record);
+    public function save(opal\record\IRecord $record);
+    public function insert(opal\record\IRecord $record);
+    public function replace(opal\record\IRecord $record);
+    public function update(opal\record\IRecord $record);
+    public function delete(opal\record\IRecord $record);
 
     public function addRawQuery($id, opal\query\IWriteQuery $query);
     public function addGenericTask(opal\query\IAdapter $adapter, $id, Callable $callback);
 
     public function addTask(ITask $task);
     public function hasTask($id);
-    public function isRecordQueued(opal\query\record\IRecord $record);
-    public function setRecordAsQueued(opal\query\record\IRecord $record);
+    public function isRecordQueued(opal\record\IRecord $record);
+    public function setRecordAsQueued(opal\record\IRecord $record);
     public function execute();
 }
 

@@ -11,9 +11,9 @@ use df\axis;
 use df\opal;
 
 class InlineManyRelationValueContainer implements 
-    opal\query\record\ITaskAwareValueContainer,
-    opal\query\record\IPreparedValueContainer,
-    opal\query\record\IManyRelationValueContainer,
+    opal\record\ITaskAwareValueContainer,
+    opal\record\IPreparedValueContainer,
+    opal\record\IManyRelationValueContainer,
     core\IArrayProvider,
     \Countable,
     \IteratorAggregate {
@@ -32,21 +32,21 @@ class InlineManyRelationValueContainer implements
     public function __construct($targetUnitId, $targetField, array $targetPrimaryFields) {
         $this->_targetUnitId = $targetUnitId;
         $this->_targetField = $targetField;
-        $this->_targetPrimaryManifest = new opal\query\record\PrimaryManifest($targetPrimaryFields);
+        $this->_targetPrimaryManifest = new opal\record\PrimaryManifest($targetPrimaryFields);
     }
     
     public function isPrepared() {
         return $this->_record !== null;
     }
     
-    public function prepareValue(opal\query\record\IRecord $record, $fieldName) {
+    public function prepareValue(opal\record\IRecord $record, $fieldName) {
         $this->_record = $record;
         $this->_localField = $fieldName;
         
         return $this;
     }
     
-    public function prepareToSetValue(opal\query\record\IRecord $record, $fieldName) {
+    public function prepareToSetValue(opal\record\IRecord $record, $fieldName) {
         return $this->prepareValue($record, $fieldName);
     }
     
@@ -80,9 +80,9 @@ class InlineManyRelationValueContainer implements
         return $this;
     }
     
-    public function populateInverse(opal\query\record\IRecord $record=null) {
+    public function populateInverse(opal\record\IRecord $record=null) {
         if($record) {
-            $id = opal\query\record\task\Base::extractRecordId($record);
+            $id = opal\record\task\Base::extractRecordId($record);
             $this->_current[$id] = $record;
         }
         
@@ -140,14 +140,14 @@ class InlineManyRelationValueContainer implements
         $lookupManifests = array();
         
         foreach($records as $record) {
-            if($record instanceof opal\query\record\IRecord) {
-                $id = opal\query\record\task\Base::extractRecordId($record);
-            } else if($record instanceof opal\query\record\IPrimaryManifest) {
-                $id = opal\query\record\task\Base::extractRecordId($record);
+            if($record instanceof opal\record\IRecord) {
+                $id = opal\record\task\Base::extractRecordId($record);
+            } else if($record instanceof opal\record\IPrimaryManifest) {
+                $id = opal\record\task\Base::extractRecordId($record);
                 $lookupManifests[$id] = $record;
             } else {
                 $record = $this->_targetPrimaryManifest->duplicateWith($record);
-                $id = opal\query\record\task\Base::extractRecordId($record);
+                $id = opal\record\task\Base::extractRecordId($record);
                 $lookupManifests[$id] = $record;
             }
             
@@ -213,13 +213,13 @@ class InlineManyRelationValueContainer implements
         $index = array();
         
         foreach($records as $record) {
-            if($record instanceof opal\query\record\IRecord) {
-                $id = opal\query\record\task\Base::extractRecordId($record);
-            } else if($record instanceof opal\query\record\IPrimaryManifest) {
-                $id = opal\query\record\task\Base::extractRecordId($record);
+            if($record instanceof opal\record\IRecord) {
+                $id = opal\record\task\Base::extractRecordId($record);
+            } else if($record instanceof opal\record\IPrimaryManifest) {
+                $id = opal\record\task\Base::extractRecordId($record);
             } else {
                 $record = $this->_targetPrimaryManifest->duplicateWith($record);
-                $id = opal\query\record\task\Base::extractRecordId($record);
+                $id = opal\record\task\Base::extractRecordId($record);
             }
             
             if(isset($this->_new[$id])) {
@@ -250,7 +250,7 @@ class InlineManyRelationValueContainer implements
 // Query
     public function select($field1=null) {
         if(!$this->_record) {
-            throw new opal\query\record\ValuePreparationException(
+            throw new opal\record\ValuePreparationException(
                 'Cannot lookup relations, value container has not been prepared'
             );
         }
@@ -274,7 +274,7 @@ class InlineManyRelationValueContainer implements
     
     public function fetch() {
         if(!$this->_record) {
-            throw new opal\query\record\ValuePreparationException(
+            throw new opal\record\ValuePreparationException(
                 'Cannot lookup relations, value container has not been prepared'
             );
         }
@@ -297,7 +297,7 @@ class InlineManyRelationValueContainer implements
 
     public function getRelatedPrimaryKeys() {
         if(!$this->_record) {
-            throw new opal\query\record\ValuePreparationException(
+            throw new opal\record\ValuePreparationException(
                 'Cannot lookup relations, value container has not been prepared'
             );
         }
@@ -307,7 +307,7 @@ class InlineManyRelationValueContainer implements
     
     
 // Tasks
-    public function deploySaveTasks(opal\query\record\task\ITaskSet $taskSet, opal\query\record\IRecord $parentRecord, $fieldName, opal\query\record\task\ITask $recordTask=null) {
+    public function deploySaveTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $parentRecord, $fieldName, opal\record\task\ITask $recordTask=null) {
         $localUnit = $parentRecord->getRecordAdapter();
         $application = $localUnit->getApplication();
         $targetUnit = axis\Unit::fromId($this->_targetUnitId, $application);
@@ -315,7 +315,7 @@ class InlineManyRelationValueContainer implements
         
         // Save any changed populated records
         foreach($this->_current as $id => $record) {
-            if($record instanceof opal\query\record\IRecord) {
+            if($record instanceof opal\record\IRecord) {
                 $record->deploySaveTasks($taskSet);
             }
         }
@@ -330,20 +330,20 @@ class InlineManyRelationValueContainer implements
         
         // Insert relation tasks
         foreach($this->_new as $id => $record) {
-            if($record instanceof opal\query\record\IPrimaryManifest) {
+            if($record instanceof opal\record\IPrimaryManifest) {
                 $targetManifest = $record;
             } else {
                 $targetManifest = $this->_targetPrimaryManifest->duplicateWith($record);
             }
             
-            if($record instanceof opal\query\record\IRecord) {
+            if($record instanceof opal\record\IRecord) {
                 if(!$targetRecordTask = $record->deploySaveTasks($taskSet)) {
                     $targetRecordTask = $taskSet->update($record);
                 }
                 
                 if($recordTask) {
                     $targetRecordTask->addDependency(
-                        new opal\query\record\task\dependency\UpdateManifestField(
+                        new opal\record\task\dependency\UpdateManifestField(
                             $this->_targetField, $recordTask
                         )
                     );
@@ -357,7 +357,7 @@ class InlineManyRelationValueContainer implements
                     $values[$this->_targetField.'_'.$key] = $value;
                 }
                 
-                $targetRecordTask = new opal\query\record\task\UpdateRaw(
+                $targetRecordTask = new opal\record\task\UpdateRaw(
                     $targetUnit, $record, $values
                 );
                 
@@ -365,7 +365,7 @@ class InlineManyRelationValueContainer implements
                 
                 if($recordTask) {
                     $targetRecordTask->addDependency(
-                        new opal\query\record\task\dependency\UpdateRawManifest(
+                        new opal\record\task\dependency\UpdateRawManifest(
                             $this->_targetField, $recordTask
                         )
                     );
@@ -382,20 +382,20 @@ class InlineManyRelationValueContainer implements
                 $fields[] = $this->_targetField.'_'.$key;
             }
             
-            $nullManifest = new opal\query\record\PrimaryManifest($fields, null);
+            $nullManifest = new opal\record\PrimaryManifest($fields, null);
             
             foreach($this->_remove as $id => $record) {
-                if($record instanceof opal\query\record\IPrimaryManifest) {
+                if($record instanceof opal\record\IPrimaryManifest) {
                     $targetManifest = $record;
                 } else {
                     $targetManifest = $this->_targetPrimaryManifest->duplicateWith($record);
                 }
                 
-                if($record instanceof opal\query\record\IRecord) {
+                if($record instanceof opal\record\IRecord) {
                     $record->set($this->_targetField, $nullManifest);
                     $record->deploySaveTasks($taskSet);
                 } else {
-                    $targetRecordTask = new opal\query\record\task\UpdateRaw(
+                    $targetRecordTask = new opal\record\task\UpdateRaw(
                         $targetUnit, $record, $nullManifest->toArray()
                     );
                     
@@ -407,7 +407,7 @@ class InlineManyRelationValueContainer implements
         return $this;
     }
     
-    public function acceptSaveTaskChanges(opal\query\record\IRecord $record) {
+    public function acceptSaveTaskChanges(opal\record\IRecord $record) {
         $this->_current = array_merge($this->_current, $this->_new);
         $this->_new = array();
         $this->_remove = array();
@@ -416,7 +416,7 @@ class InlineManyRelationValueContainer implements
         return $this;
     }
     
-    public function deployDeleteTasks(opal\query\record\task\ITaskSet $taskSet, opal\query\record\IRecord $parentRecord, $fieldName, opal\query\record\task\ITask $recordTask=null) {
+    public function deployDeleteTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $parentRecord, $fieldName, opal\record\task\ITask $recordTask=null) {
         $localUnit = $parentRecord->getRecordAdapter();
         $application = $localUnit->getApplication();
         $targetUnit = axis\Unit::fromId($this->_targetUnitId, $application);
@@ -427,9 +427,9 @@ class InlineManyRelationValueContainer implements
             $values[$this->_targetField.'_'.$key] = $value;
         }
         
-        $inverseManifest = new opal\query\record\PrimaryManifest(array_keys($values), $values);
+        $inverseManifest = new opal\record\PrimaryManifest(array_keys($values), $values);
         
-        $targetRecordTask = new opal\query\record\task\UpdateRaw(
+        $targetRecordTask = new opal\record\task\UpdateRaw(
             $targetUnit, $inverseManifest, $inverseManifest->duplicateWith(null)->toArray()
         );
 
@@ -438,7 +438,7 @@ class InlineManyRelationValueContainer implements
         
             if($recordTask) {
                 $recordTask->addDependency(
-                    new opal\query\record\task\dependency\Base(
+                    new opal\record\task\dependency\Base(
                         $this->_targetField, $targetRecordTask
                     )
                 );
@@ -448,7 +448,7 @@ class InlineManyRelationValueContainer implements
         return $this;
     }
     
-    public function acceptDeleteTaskChanges(opal\query\record\IRecord $record) {
+    public function acceptDeleteTaskChanges(opal\record\IRecord $record) {
         $this->_new = array_merge($this->_current, $this->_new);
         $this->_current = array();
         $this->_remove = array();

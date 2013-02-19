@@ -11,9 +11,9 @@ use df\axis;
 use df\opal;
 
 class OneChildRelationValueContainer implements 
-    opal\query\record\ITaskAwareValueContainer, 
-    opal\query\record\IPreparedValueContainer,
-    opal\query\record\IIdProviderValueContainer {
+    opal\record\ITaskAwareValueContainer, 
+    opal\record\IPreparedValueContainer,
+    opal\record\IIdProviderValueContainer {
     
     protected $_targetField;
     protected $_record = false;
@@ -29,7 +29,7 @@ class OneChildRelationValueContainer implements
         return $this->_record !== false;
     }
     
-    public function prepareValue(opal\query\record\IRecord $record, $fieldName) {
+    public function prepareValue(opal\record\IRecord $record, $fieldName) {
         $application = $record->getRecordAdapter()->getApplication();
         $targetUnit = axis\Unit::fromId($this->_targetUnitId, $application);
         $query = $targetUnit->fetch();
@@ -58,7 +58,7 @@ class OneChildRelationValueContainer implements
         return $this;
     }
     
-    public function prepareToSetValue(opal\query\record\IRecord $record, $fieldName) {
+    public function prepareToSetValue(opal\record\IRecord $record, $fieldName) {
         return $this;
     }
     
@@ -68,9 +68,9 @@ class OneChildRelationValueContainer implements
         }
         
         if($value instanceof self
-        || $value instanceof opal\query\record\IRecord) {
+        || $value instanceof opal\record\IRecord) {
             $value = $value->getPrimaryManifest();
-        } else if(!$value instanceof opal\query\record\IPrimaryManifest) {
+        } else if(!$value instanceof opal\record\IPrimaryManifest) {
             return false;
         }
         
@@ -83,12 +83,12 @@ class OneChildRelationValueContainer implements
         if($value instanceof self) {
             $record = $value->_record;
             $value = $value->getPrimaryManifest();
-        } else if($value instanceof opal\query\record\IRecord) {
+        } else if($value instanceof opal\record\IRecord) {
             $record = $value;
             $value = $value->getPrimaryManifest();
-        } else if(!$value instanceof opal\query\record\IPrimaryManifest) {
+        } else if(!$value instanceof opal\record\IPrimaryManifest) {
             // TODO: swap array('id') for target primary fields
-            $value = new opal\query\record\PrimaryManifest(array('id'), array($value));
+            $value = new opal\record\PrimaryManifest(array('id'), array($value));
         }
         
         $this->_insertPrimaryManifest = $value;
@@ -123,7 +123,7 @@ class OneChildRelationValueContainer implements
         return $output;
     }
     
-    public function populateInverse(opal\query\record\IRecord $record=null) {
+    public function populateInverse(opal\record\IRecord $record=null) {
         if(!$this->_insertPrimaryManifest) {
             $this->_record = $record;
         }
@@ -133,9 +133,9 @@ class OneChildRelationValueContainer implements
     
     
 // Tasks
-    public function deploySaveTasks(opal\query\record\task\ITaskSet $taskSet, opal\query\record\IRecord $record, $fieldName, opal\query\record\task\ITask $recordTask=null) {
+    public function deploySaveTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $record, $fieldName, opal\record\task\ITask $recordTask=null) {
         if($this->_insertPrimaryManifest) {
-            if(!$this->_record instanceof opal\query\record\IRecord) {
+            if(!$this->_record instanceof opal\record\IRecord) {
                 $this->prepareValue($record, $fieldName);
             }
             
@@ -161,7 +161,7 @@ class OneChildRelationValueContainer implements
                 
                 if($recordTask) {
                     $task->addDependency(
-                        new opal\query\record\task\dependency\UpdateManifestField(
+                        new opal\record\task\dependency\UpdateManifestField(
                             $this->_targetField, $recordTask
                         )
                     );
@@ -179,15 +179,15 @@ class OneChildRelationValueContainer implements
         return $this;
     }
     
-    public function acceptSaveTaskChanges(opal\query\record\IRecord $record) {
+    public function acceptSaveTaskChanges(opal\record\IRecord $record) {
         return $this;
     }
     
-    public function deployDeleteTasks(opal\query\record\task\ITaskSet $taskSet, opal\query\record\IRecord $record, $fieldName, opal\query\record\task\ITask $recordTask=null) {
+    public function deployDeleteTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $record, $fieldName, opal\record\task\ITask $recordTask=null) {
         core\stub($taskSet, $record, $recordTask);
     }
     
-    public function acceptDeleteTaskChanges(opal\query\record\IRecord $record) {
+    public function acceptDeleteTaskChanges(opal\record\IRecord $record) {
         return $this;
     }
     

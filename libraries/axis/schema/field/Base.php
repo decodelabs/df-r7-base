@@ -57,7 +57,7 @@ abstract class Base implements axis\schema\IField, core\IDumpable {
     
     
 // Values
-    public function inflateValueFromRow($key, array $row, opal\query\record\IRecord $forRecord=null) {
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
         if(isset($row[$key])) {
             return $row[$key];
         } else {

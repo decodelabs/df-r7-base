@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\opal\query\record\task;
+namespace df\opal\record\task;
 
 use df;
 use df\core;
@@ -13,7 +13,7 @@ class ReplaceRecord extends Base implements IReplaceRecordTask {
     
     use TRecordTask;
 
-    public function __construct(opal\query\record\IRecord $record) {
+    public function __construct(opal\record\IRecord $record) {
         $this->_record = $record;
         parent::__construct(self::extractRecordId($record));
     }

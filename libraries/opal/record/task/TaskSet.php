@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\opal\query\record\task;
+namespace df\opal\record\task;
 
 use df;
 use df\core;
@@ -29,7 +29,7 @@ class TaskSet implements ITaskSet {
     }
     
     
-    public function save(opal\query\record\IRecord $record) {
+    public function save(opal\record\IRecord $record) {
         if($record->isNew()) {
             return $this->insert($record);
         } else if($record->hasChanged()) {
@@ -39,7 +39,7 @@ class TaskSet implements ITaskSet {
         }
     }
     
-    public function insert(opal\query\record\IRecord $record) {
+    public function insert(opal\record\IRecord $record) {
         $task = new InsertRecord($record);
         $id = $task->getId();
         
@@ -61,7 +61,7 @@ class TaskSet implements ITaskSet {
         return $task;
     }
     
-    public function replace(opal\query\record\IRecord $record) {
+    public function replace(opal\record\IRecord $record) {
         $task = new ReplaceRecord($record);
         $id = $task->getId();
         
@@ -83,7 +83,7 @@ class TaskSet implements ITaskSet {
         return $task;
     }
     
-    public function update(opal\query\record\IRecord $record) {
+    public function update(opal\record\IRecord $record) {
         $task = new UpdateRecord($record);
         $id = $task->getId();
         
@@ -105,7 +105,7 @@ class TaskSet implements ITaskSet {
         return $task;
     }
     
-    public function delete(opal\query\record\IRecord $record) {
+    public function delete(opal\record\IRecord $record) {
         $task = new DeleteRecord($record);
         $id = $task->getId();
         
@@ -170,12 +170,12 @@ class TaskSet implements ITaskSet {
         return isset($this->_tasks[$id]);
     }
 
-    public function isRecordQueued(opal\query\record\IRecord $record) {
+    public function isRecordQueued(opal\record\IRecord $record) {
         $id = $record->getRecordAdapter()->getQuerySourceId().'#'.Base::extractRecordId($record);
         return isset($this->_tasks[$id]);
     }
     
-    public function setRecordAsQueued(opal\query\record\IRecord $record) {
+    public function setRecordAsQueued(opal\record\IRecord $record) {
         $id = $record->getRecordAdapter()->getQuerySourceId().'#'.Base::extractRecordId($record);
 
         if(!isset($this->_tasks[$id])) {

@@ -11,9 +11,9 @@ use df\axis;
 use df\opal;
 
 class BridgedManyRelationValueContainer implements 
-    opal\query\record\ITaskAwareValueContainer, 
-    opal\query\record\IPreparedValueContainer,
-    opal\query\record\IManyRelationValueContainer,
+    opal\record\ITaskAwareValueContainer, 
+    opal\record\IPreparedValueContainer,
+    opal\record\IManyRelationValueContainer,
     core\IArrayProvider,
     \Countable,
     \IteratorAggregate {
@@ -41,15 +41,15 @@ class BridgedManyRelationValueContainer implements
         $this->_bridgeTargetFieldName = $bridgeTargetFieldName;
         $this->_isDominant = $isDominant;
         
-        $this->_localPrimaryManifest = new opal\query\record\PrimaryManifest($localPrimaryFields);
-        $this->_targetPrimaryManifest = new opal\query\record\PrimaryManifest($targetPrimaryFields);
+        $this->_localPrimaryManifest = new opal\record\PrimaryManifest($localPrimaryFields);
+        $this->_targetPrimaryManifest = new opal\record\PrimaryManifest($targetPrimaryFields);
     }
     
     public function isPrepared() {
         return $this->_record !== null;
     }
     
-    public function prepareValue(opal\query\record\IRecord $record, $fieldName) {
+    public function prepareValue(opal\record\IRecord $record, $fieldName) {
         $this->_localField = $fieldName;
         $this->_record = $record;
         $this->_localPrimaryManifest = $record->getPrimaryManifest();
@@ -57,7 +57,7 @@ class BridgedManyRelationValueContainer implements
         return $this;
     }
     
-    public function prepareToSetValue(opal\query\record\IRecord $record, $fieldName) {
+    public function prepareToSetValue(opal\record\IRecord $record, $fieldName) {
         return $this->prepareValue($record, $fieldName);
     }
     
@@ -156,13 +156,13 @@ class BridgedManyRelationValueContainer implements
         $lookupManifests = array();
         
         foreach($records as $record) {
-            if($record instanceof opal\query\record\IRecord) {
-                $id = opal\query\record\task\Base::extractRecordId($record);
-            } else if($record instanceof opal\query\record\IPrimaryManifest) {
-                $id = opal\query\record\task\Base::extractRecordId($record);
+            if($record instanceof opal\record\IRecord) {
+                $id = opal\record\task\Base::extractRecordId($record);
+            } else if($record instanceof opal\record\IPrimaryManifest) {
+                $id = opal\record\task\Base::extractRecordId($record);
             } else {
                 $record = $this->_targetPrimaryManifest->duplicateWith($record);
-                $id = opal\query\record\task\Base::extractRecordId($record);
+                $id = opal\record\task\Base::extractRecordId($record);
             }
             
             if(isset($this->_new[$id])) {
@@ -195,14 +195,14 @@ class BridgedManyRelationValueContainer implements
         $lookupManifests = array();
         
         foreach($records as $record) {
-            if($record instanceof opal\query\record\IRecord) {
-                $id = opal\query\record\task\Base::extractRecordId($record);
-            } else if($record instanceof opal\query\record\IPrimaryManifest) {
-                $id = opal\query\record\task\Base::extractRecordId($record);
+            if($record instanceof opal\record\IRecord) {
+                $id = opal\record\task\Base::extractRecordId($record);
+            } else if($record instanceof opal\record\IPrimaryManifest) {
+                $id = opal\record\task\Base::extractRecordId($record);
                 $lookupManifests[$id] = $record;
             } else {
                 $record = $this->_targetPrimaryManifest->duplicateWith($record);
-                $id = opal\query\record\task\Base::extractRecordId($record);
+                $id = opal\record\task\Base::extractRecordId($record);
                 $lookupManifests[$id] = $record;
             }
             
@@ -298,7 +298,7 @@ class BridgedManyRelationValueContainer implements
 // Query
     public function select($field1=null) {
         if(!$this->_record) {
-            throw new opal\query\record\ValuePreparationException(
+            throw new opal\record\ValuePreparationException(
                 'Cannot lookup relations, value container has not been prepared'
             );
         }
@@ -327,7 +327,7 @@ class BridgedManyRelationValueContainer implements
 
     public function selectFromBridge($field1=null) {
         if(!$this->_record) {
-            throw new opal\query\record\ValuePreparationException(
+            throw new opal\record\ValuePreparationException(
                 'Cannot lookup relations, value container has not been prepared'
             );
         }
@@ -347,7 +347,7 @@ class BridgedManyRelationValueContainer implements
     
     public function fetch() {
         if(!$this->_record) {
-            throw new opal\query\record\ValuePreparationException(
+            throw new opal\record\ValuePreparationException(
                 'Cannot lookup relations, value container has not been prepared'
             );
         }
@@ -376,7 +376,7 @@ class BridgedManyRelationValueContainer implements
 
     public function fetchFromBridge() {
         if(!$this->_record) {
-            throw new opal\query\record\ValuePreparationException(
+            throw new opal\record\ValuePreparationException(
                 'Cannot lookup relations, value container has not been prepared'
             );
         }
@@ -402,7 +402,7 @@ class BridgedManyRelationValueContainer implements
     
     
 // Tasks
-    public function deploySaveTasks(opal\query\record\task\ITaskSet $taskSet, opal\query\record\IRecord $parentRecord, $fieldName, opal\query\record\task\ITask $recordTask=null) {
+    public function deploySaveTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $parentRecord, $fieldName, opal\record\task\ITask $recordTask=null) {
         $localUnit = $parentRecord->getRecordAdapter();
         $this->_localPrimaryManifest->updateWith($parentRecord);
 
@@ -415,7 +415,7 @@ class BridgedManyRelationValueContainer implements
 
         // Save any changed populated records
         foreach($this->_current as $id => $record) {
-            if($record instanceof opal\query\record\IRecord) {
+            if($record instanceof opal\record\IRecord) {
                 $record->deploySaveTasks($taskSet);
             }
         }
@@ -431,7 +431,7 @@ class BridgedManyRelationValueContainer implements
             }
             
             if(!empty($bridgeData)) {
-                $removeAllTask = new opal\query\record\task\DeleteKey($bridgeUnit, $bridgeData);
+                $removeAllTask = new opal\record\task\DeleteKey($bridgeUnit, $bridgeData);
                 $taskSet->addTask($removeAllTask);
             }
         }
@@ -449,12 +449,12 @@ class BridgedManyRelationValueContainer implements
             
             if($recordTask) {
                 $bridgeTask->addDependency(
-                    new opal\query\record\task\dependency\UpdateBridge($this->_bridgeLocalFieldName, $recordTask)
+                    new opal\record\task\dependency\UpdateBridge($this->_bridgeLocalFieldName, $recordTask)
                 );
             }
             
             // Target manifest
-            if($record instanceof opal\query\record\IPrimaryManifest) {
+            if($record instanceof opal\record\IPrimaryManifest) {
                 $targetManifest = $record;
             } else {
                 $targetManifest = $this->_targetPrimaryManifest->duplicateWith($record);
@@ -464,7 +464,7 @@ class BridgedManyRelationValueContainer implements
             // Target task
             $targetRecordTask = null;
             
-            if($record instanceof opal\query\record\IRecord) {
+            if($record instanceof opal\record\IRecord) {
                 $targetRecordTask = $record->deploySaveTasks($taskSet);
             }
             
@@ -473,7 +473,7 @@ class BridgedManyRelationValueContainer implements
             
             if($targetRecordTask) {
                 $bridgeTask->addDependency(
-                    new opal\query\record\task\dependency\UpdateBridge(
+                    new opal\record\task\dependency\UpdateBridge(
                         $this->_bridgeTargetFieldName, 
                         $targetRecordTask
                     )
@@ -484,7 +484,7 @@ class BridgedManyRelationValueContainer implements
             // Remove-all dependency
             if($removeAllTask) {
                 $bridgeTask->addDependency(
-                    new opal\query\record\task\dependency\Base('*removeAll*', $removeAllTask)
+                    new opal\record\task\dependency\Base('*removeAll*', $removeAllTask)
                 );
             }
         }
@@ -499,7 +499,7 @@ class BridgedManyRelationValueContainer implements
                     $bridgeData[$this->_bridgeLocalFieldName.'_'.$key] = $value;
                 }
                 
-                if($record instanceof opal\query\record\IPrimaryManifest) {
+                if($record instanceof opal\record\IPrimaryManifest) {
                     $targetManifest = $record;
                 } else {
                     $targetManifest = $this->_targetPrimaryManifest->duplicateWith($record);
@@ -513,14 +513,14 @@ class BridgedManyRelationValueContainer implements
                     continue;
                 }
                 
-                $taskSet->addTask(new opal\query\record\task\DeleteKey($bridgeUnit, $bridgeData));
+                $taskSet->addTask(new opal\record\task\DeleteKey($bridgeUnit, $bridgeData));
             }
         }
         
         return $this;
     }
     
-    public function acceptSaveTaskChanges(opal\query\record\IRecord $record) {
+    public function acceptSaveTaskChanges(opal\record\IRecord $record) {
         $this->_current = array_merge($this->_current, $this->_new);
         $this->_new = array();
         $this->_remove = array();
@@ -529,7 +529,7 @@ class BridgedManyRelationValueContainer implements
         return $this;
     }
     
-    public function deployDeleteTasks(opal\query\record\task\ITaskSet $taskSet, opal\query\record\IRecord $parentRecord, $fieldName, opal\query\record\task\ITask $recordTask=null) {
+    public function deployDeleteTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $parentRecord, $fieldName, opal\record\task\ITask $recordTask=null) {
         if(!$recordTask) {
             return $this;
         }
@@ -546,13 +546,13 @@ class BridgedManyRelationValueContainer implements
         }
 
         if(!empty($bridgeData)) {
-            $taskSet->addTask(new opal\query\record\task\DeleteKey($bridgeUnit, $bridgeData));
+            $taskSet->addTask(new opal\record\task\DeleteKey($bridgeUnit, $bridgeData));
         }
         
         return $this;
     }
     
-    public function acceptDeleteTaskChanges(opal\query\record\IRecord $record) {
+    public function acceptDeleteTaskChanges(opal\record\IRecord $record) {
         $this->_new = array_merge($this->_current, $this->_new);
         $this->_current = array();
         $this->_remove = array();

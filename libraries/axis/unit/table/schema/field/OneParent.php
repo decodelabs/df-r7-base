@@ -21,7 +21,7 @@ class OneParent extends One implements axis\schema\IOneParentField {
     
     
 // Values
-    public function inflateValueFromRow($key, array $row, opal\query\record\IRecord $forRecord=null) {
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
         $values = array();
         
         foreach($this->_targetPrimaryFields as $field) {
@@ -39,7 +39,7 @@ class OneParent extends One implements axis\schema\IOneParentField {
                 $values, $this->_targetUnitId, $this->_targetPrimaryFields, $this->_targetField
             );
         } else {
-            return new opal\query\record\PrimaryManifest($this->_targetPrimaryFields, $values);
+            return new opal\record\PrimaryManifest($this->_targetPrimaryFields, $values);
         }
     }
     

@@ -46,7 +46,7 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
     
     
 // Values
-    public function inflateValueFromRow($key, array $row, opal\query\record\IRecord $forRecord=null) {
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
         $output = $this->sanitizeValue(null, $forRecord);
 
         if(isset($row[$key])) {
@@ -127,7 +127,7 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
                     $query->where($targetFieldName, $operator, $value);
                 } else {
                     foreach($value as $inVal) {
-                        $targetManifest = new opal\query\record\PrimaryManifest(
+                        $targetManifest = new opal\record\PrimaryManifest(
                             $this->_targetPrimaryFields, $inVal
                         );
                         
@@ -138,7 +138,7 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
                 break;
                 
             default:
-                $targetManifest = new opal\query\record\PrimaryManifest(
+                $targetManifest = new opal\record\PrimaryManifest(
                     $this->_targetPrimaryFields, $value
                 );
 

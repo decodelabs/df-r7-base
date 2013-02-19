@@ -14,7 +14,7 @@ class DateTime extends Base implements axis\schema\IDateField {
     
     
 // Values
-    public function inflateValueFromRow($key, array $row, opal\query\record\IRecord $forRecord=null) {
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
         if(isset($row[$key])) { 
             return core\time\Date::factory($row[$key]);
         } else {

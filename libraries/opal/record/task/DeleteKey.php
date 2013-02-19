@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\opal\query\record\task;
+namespace df\opal\record\task;
 
 use df;
 use df\core;
@@ -18,7 +18,7 @@ class DeleteKey extends Base implements IDeleteKeyTask {
         $this->_keys = $keys;
         $this->_adapter = $adapter;
         
-        parent::__construct(implode(opal\query\record\PrimaryManifest::COMBINE_SEPARATOR, $keys));
+        parent::__construct(implode(opal\record\PrimaryManifest::COMBINE_SEPARATOR, $keys));
     }
     
     public function getKeys() {

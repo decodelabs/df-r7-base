@@ -1900,7 +1900,7 @@ abstract class Table implements ITable, core\IDumpable {
     
 // Record
     public function newRecord(array $values=null) {
-        return new opal\query\record\Base($this, $values);
+        return new opal\record\Base($this, $values);
     }
 
 
