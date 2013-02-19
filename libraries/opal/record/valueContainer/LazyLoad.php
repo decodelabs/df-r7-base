@@ -3,13 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\opal\record;
+namespace df\opal\record\valueContainer;
 
 use df;
 use df\core;
 use df\opal;
     
-class LazyLoadValueContainer implements IPreparedValueContainer {
+class LazyLoad implements opal\record\IPreparedValueContainer {
 
     protected $_value;
     protected $_isLoaded = false;
@@ -60,15 +60,6 @@ class LazyLoadValueContainer implements IPreparedValueContainer {
     
     public function eq($value) {
         return null;
-
-
-        core\dump($this->_value, $value);
-        if(!$this->_isLoaded) {
-            return false;
-        }
-
-
-        return $this->_value == $value;
     }
 
     public function getDumpValue() {
