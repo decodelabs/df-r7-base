@@ -9,7 +9,19 @@ use df;
 use df\core;
 use df\opal;
 
-class UpdateRawManifest extends Base {
+class UpdateRawManifest implements opal\record\task\IParentFieldAwareDependency {
+    
+    use opal\record\task\TDependency;
+    use opal\record\task\TParentFieldAwareDependency;
+
+    public function __construct($parentFields, opal\record\task\ITask $requiredTask) {
+        if(!is_array($parentFields)) {
+            $parentFields = array($parentFields => $parentFields);
+        }
+        
+        $this->_parentFields = $parentFields;
+        $this->_requiredTask = $requiredTask;
+    }
     
     public function applyResolution(opal\record\task\ITask $dependentTask) {
         if($dependentTask instanceof opal\record\task\UpdateRaw) {

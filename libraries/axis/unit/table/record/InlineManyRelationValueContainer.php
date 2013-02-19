@@ -437,11 +437,7 @@ class InlineManyRelationValueContainer implements
             $taskSet->addTask($targetRecordTask);
         
             if($recordTask) {
-                $recordTask->addDependency(
-                    new opal\record\task\dependency\Base(
-                        $this->_targetField, $targetRecordTask
-                    )
-                );
+                $recordTask->addDependency($targetRecordTask);
             }
         }
         

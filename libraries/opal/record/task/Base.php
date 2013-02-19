@@ -55,8 +55,8 @@ abstract class Base implements ITask {
 // Dependencies
     public function addDependency($dependency) {
         if($dependency instanceof opal\record\task\ITask) {
-            $dependency = new opal\record\task\dependency\Base($dependency->getId(), $dependency);
-        } else if(!$dependency instanceof opal\record\task\dependency\IDependency) {
+            $dependency = new opal\record\task\dependency\Generic($dependency);
+        } else if(!$dependency instanceof opal\record\task\IDependency) {
             throw new InvalidArgumentException('Invalid dependency');
         }
 

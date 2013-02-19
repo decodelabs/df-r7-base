@@ -35,6 +35,60 @@ interface ITaskSet {
 }
 
 
+interface IDependency {
+    public function getId();
+    public function getRequiredTask();
+    public function getRequiredTaskId();
+    public function applyResolution(ITask $dependentTask);
+    public function resolve(ITaskSet $taskSet, ITask $dependentTask);
+}
+
+trait TDependency {
+
+    protected $_idSalt;
+    protected $_requiredTask;
+
+    public function getId() {
+        if($this->_idSalt === null) {
+            $this->_idSalt = uniqid('_');
+        }
+
+        return $this->_requiredTask->getId().'|'.$this->_idSalt;
+    }
+
+    public function getRequiredTask() {
+        return $this->_requiredTask;
+    }
+    
+    public function getRequiredTaskId() {
+        return $this->_requiredTask->getId();
+    }
+    
+    public function applyResolution(opal\record\task\ITask $dependentTask) {
+        return $this;
+    }
+    
+    public function resolve(opal\record\task\ITaskSet $taskSet, opal\record\task\ITask $dependentTask) {
+        core\stub($this, $dependentTask, $taskSet);
+    }
+}
+
+interface IParentFieldAwareDependency extends IDependency {
+    public function getParentFields();
+}
+
+trait TParentFieldAwareDependency {
+
+    protected $_parentFields = array();
+
+    public function getParentFields() {
+        return $this->_parentFields;
+    }
+}
+
+
+
+
 interface ITask {
     public function getId();
     public function getAdapter();

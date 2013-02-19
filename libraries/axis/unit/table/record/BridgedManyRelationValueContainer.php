@@ -483,9 +483,7 @@ class BridgedManyRelationValueContainer implements
 
             // Remove-all dependency
             if($removeAllTask) {
-                $bridgeTask->addDependency(
-                    new opal\record\task\dependency\Base('*removeAll*', $removeAllTask)
-                );
+                $bridgeTask->addDependency($removeAllTask);
             }
         }
 
