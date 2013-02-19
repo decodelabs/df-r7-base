@@ -9,13 +9,14 @@ use df;
 use df\core;
 use df\opal;
 
-class DeleteRecord extends Base implements IDeleteRecordTask {
+class DeleteRecord implements IDeleteRecordTask {
     
+    use TTask;
     use TRecordTask;
     
     public function __construct(opal\record\IRecord $record) {
         $this->_record = $record;
-        parent::__construct(self::extractRecordId($record));
+        $this->_setId(opal\record\Base::extractRecordId($record));
     }
     
     public function getRecordTaskName() {

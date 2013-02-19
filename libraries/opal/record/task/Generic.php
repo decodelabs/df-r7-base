@@ -10,20 +10,22 @@ use df\core;
 use df\opal;
 
     
-class Generic extends Base {
+class Generic implements IOptionalAdapterAwareTask {
+
+    use TTask;
+    use TAdapterAwareTask;
 
     protected $_callback;
-    protected $_adapter;
 
-    public function __construct(opal\query\IAdapter $adapter, $id, Callable $callback) {
+    public function __construct($id, Callable $callback, opal\query\IAdapter $adapter=null) {
         $this->_adapter = $adapter;
         $this->_callback = $callback;
 
-        parent::__construct($id);
+        $this->_setId($id);
     }
 
-    public function getAdapter() {
-        return $this->_adapter;
+    public function hasAdapter() {
+        return $this->_adapter !== null;
     }
 
     public function getCallback() {
@@ -31,7 +33,7 @@ class Generic extends Base {
     }
 
     public function execute(opal\query\ITransaction $transaction) {
-        $this->_callback->__invoke($this->_adapter, $transaction);
+        $this->_callback->__invoke($this, $transaction);
         return $this;
     }
 }

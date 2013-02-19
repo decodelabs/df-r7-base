@@ -134,8 +134,28 @@ class TaskSet implements ITaskSet {
         return $task;
     }
 
-    public function addGenericTask(opal\query\IAdapter $adapter, $id, Callable $callback) {
-        $task = new Generic($adapter, $id, $callback);
+    public function addGenericTask($a, $b=null, $c=null) {
+        $id = uniqid();
+        $adapter = null;
+        $callback = null;
+
+        foreach(func_get_args() as $arg) {
+            if(is_string($arg)) {
+                $id = $arg;
+            } else if($arg instanceof opal\query\IAdapter) {
+                $adapter = $arg;
+            } else if(is_callable($arg)) {
+                $callback = $arg;
+            }
+        }
+
+        if($callback === null) {
+            throw new InvalidArgumentException(
+                'Generic tasks must have a callback'
+            );
+        }
+
+        $task = new Generic($id, $callback, $adapter);
         $this->addTask($task);
 
         return $task;
@@ -152,10 +172,13 @@ class TaskSet implements ITaskSet {
             );
         }
         
-        $this->_transaction->registerAdapter($task->getAdapter());
+        if($adapter = $task->getAdapter()) {
+            $this->_transaction->registerAdapter($adapter);
+        }
+
         $this->_tasks[$id] = $task;
 
-        if($this->_isExecuting) {
+        if($this->_isExecuting && $task instanceof IEventBroadcastingTask) {
             $task->reportPreEvent($this);
         }
 
@@ -171,12 +194,12 @@ class TaskSet implements ITaskSet {
     }
 
     public function isRecordQueued(opal\record\IRecord $record) {
-        $id = $record->getRecordAdapter()->getQuerySourceId().'#'.Base::extractRecordId($record);
+        $id = $record->getRecordAdapter()->getQuerySourceId().'#'.opal\record\Base::extractRecordId($record);
         return isset($this->_tasks[$id]);
     }
     
     public function setRecordAsQueued(opal\record\IRecord $record) {
-        $id = $record->getRecordAdapter()->getQuerySourceId().'#'.Base::extractRecordId($record);
+        $id = $record->getRecordAdapter()->getQuerySourceId().'#'.opal\record\Base::extractRecordId($record);
 
         if(!isset($this->_tasks[$id])) {
             $this->_tasks[$id] = false;
@@ -196,7 +219,9 @@ class TaskSet implements ITaskSet {
         $this->_tasks = array_filter($this->_tasks);
         
         foreach($this->_tasks as $task) {
-            $task->reportPreEvent($this);
+            if($task instanceof IEventBroadcastingTask) {
+                $task->reportPreEvent($this);
+            }
         }
         
         uasort($this->_tasks, function($taskA, $taskB) {
@@ -220,7 +245,9 @@ class TaskSet implements ITaskSet {
                     });
                 }
 
-                $task->reportPostEvent($this);
+                if($task instanceof IEventBroadcastingTask) {
+                    $task->reportPostEvent($this);
+                }
             }
         } catch(\Exception $e) {
             $this->_transaction->rollback();

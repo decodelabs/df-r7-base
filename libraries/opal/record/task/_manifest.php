@@ -25,7 +25,7 @@ interface ITaskSet {
     public function delete(opal\record\IRecord $record);
 
     public function addRawQuery($id, opal\query\IWriteQuery $query);
-    public function addGenericTask(opal\query\IAdapter $adapter, $id, Callable $callback);
+    public function addGenericTask($a, $b=null, $c=null);
 
     public function addTask(ITask $task);
     public function hasTask($id);
@@ -103,10 +103,132 @@ interface ITask {
     public function hasDependants();
     public function applyResolutionToDependants();
     
+    public function execute(opal\query\ITransaction $transaction);
+}
+
+
+
+trait TTask {
+
+    protected $_id;
+    protected $_dependencies = array();
+    protected $_dependants = array();
+
+    protected function _setId($id) {
+        $adapter = $this->getAdapter();
+
+        if($adapter) {
+            $prefix = $adapter->getQuerySourceId();
+        } else {
+            $prefix = uniqid();
+        }
+
+        $this->_id = $prefix.'#'.$id;
+    }
+    
+    public function getId() {
+        return $this->_id;
+    }
+
+    
+// Dependencies
+    public function addDependency($dependency) {
+        if($dependency instanceof opal\record\task\ITask) {
+            $dependency = new opal\record\task\dependency\Generic($dependency);
+        } else if(!$dependency instanceof opal\record\task\IDependency) {
+            throw new InvalidArgumentException('Invalid dependency');
+        }
+
+            
+        $id = $dependency->getId();
+
+        if(isset($this->_dependencies[$id])) {
+            return $this;
+        }
+        
+        $this->_dependencies[$id] = $dependency;
+        $dependency->getRequiredTask()->addDependant($this);
+        
+        return $this;
+    }
+
+    public function countDependencies() {
+        return count($this->_dependencies);
+    }
+
+    public function hasDependencies() {
+        return !empty($this->_dependencies);
+    }
+    
+    public function resolveDependencies(ITaskSet $taskSet) {
+        while(!empty($this->_dependencies)) {
+            $dependency = array_shift($this->_dependencies);
+            $dependency->resolve($taskSet, $this);
+        }
+        
+        return $this;
+    }
+    
+    public function applyDependencyResolution(ITask $dependencyTask) {
+        $taskId = $dependencyTask->getId();
+        
+        foreach($this->_dependencies as $id => $dependency) {
+            if($taskId == $dependency->getRequiredTaskId()) {
+                $dependency->applyResolution($this);
+                unset($this->_dependencies[$id]);
+            }
+        }
+        
+        return $this;
+    }
+    
+    
+// Dependants
+    public function addDependant(ITask $task) {
+        $this->_dependants[$task->getId()] = $task;
+        return $this;
+    }
+
+    public function countDependants() {
+        return count($this->_dependants);
+    }
+
+    public function hasDependants() {
+        return !empty($this->_dependants);
+    }
+    
+    public function applyResolutionToDependants() {
+        $output = false;
+
+        while(!empty($this->_dependants)) {
+            $output = true;
+            $task = array_shift($this->_dependants);
+            $task->applyDependencyResolution($this);
+        }
+
+        return $output;
+    }
+}
+
+
+trait TAdapterAwareTask {
+
+    protected $_adapter;
+
+    public function getAdapter() {
+        return $this->_adapter;
+    }
+}
+
+
+interface IEventBroadcastingTask extends ITask {
     public function reportPreEvent(ITaskSet $taskSet);
     public function reportPostEvent(ITaskSet $taskSet);
+}
 
-    public function execute(opal\query\ITransaction $transaction);
+
+interface IOptionalAdapterAwareTask extends ITask {
+    public function hasAdapter();
 }
 
 
@@ -124,7 +246,7 @@ interface IKeyTask extends ITask {
 interface IDeleteKeyTask extends IDeleteTask, IKeyTask {}
 
 
-interface IRecordTask extends ITask {
+interface IRecordTask extends ITask, IEventBroadcastingTask {
 
     const EVENT_PRE = 'pre';
     const EVENT_POST = 'post';

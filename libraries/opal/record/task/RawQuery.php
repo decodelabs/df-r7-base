@@ -9,13 +9,15 @@ use df;
 use df\core;
 use df\opal;
     
-class RawQuery extends Base {
+class RawQuery implements ITask {
+
+    use TTask;
 
     protected $_query;
 
     public function __construct($id, opal\query\IWriteQuery $query) {
         $this->_query = $query;
-        parent::__construct($id);
+        $this->_setId($id);
     }
 
     public function getAdapter() {

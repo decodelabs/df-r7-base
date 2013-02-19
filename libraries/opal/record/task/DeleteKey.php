@@ -9,24 +9,22 @@ use df;
 use df\core;
 use df\opal;
 
-class DeleteKey extends Base implements IDeleteKeyTask {
+class DeleteKey implements IDeleteKeyTask {
     
+    use TTask;
+    use TAdapterAwareTask;
+
     protected $_keys = array();
-    protected $_adapter;
     
     public function __construct(opal\query\IAdapter $adapter, array $keys) {
         $this->_keys = $keys;
         $this->_adapter = $adapter;
         
-        parent::__construct(implode(opal\record\PrimaryManifest::COMBINE_SEPARATOR, $keys));
+        $this->_setId(implode(opal\record\PrimaryManifest::COMBINE_SEPARATOR, $keys));
     }
     
     public function getKeys() {
         return $this->_keys;
-    }
-    
-    public function getAdapter() {
-        return $this->_adapter;
     }
     
     public function execute(opal\query\ITransaction $transaction) {

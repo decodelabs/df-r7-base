@@ -43,7 +43,8 @@ class SlugTreeRecord extends opal\record\Base {
         $taskSet->addGenericTask(
             $adapter,
             'resetParents:'.$id,
-            function($adapter, $transaction) use ($id, $slug) {
+            function($task, $transaction) use ($id, $slug) {
+                $adapter = $task->getAdapter();
                 $transaction->update([
                         'parent' => $adapter->fetchParentFor($slug.'/x')
                     ])
@@ -60,7 +61,8 @@ class SlugTreeRecord extends opal\record\Base {
             $newLocation = $this->_getSlugLocation($this->get('slug'));
 
             // Update sub descendants
-            $taskSet->addGenericTask($adapter, 'updateSubDescendantSlugs', function($adapter, $transaction) use ($origLocation, $newLocation) {
+            $taskSet->addGenericTask($adapter, 'updateSubDescendantSlugs', function($task, $transaction) use ($origLocation, $newLocation) {
+                $adapter = $task->getAdapter();
                 $list = $adapter->selectDistinct('slug_location')
                     ->where('slug_location', 'begins', $origLocation)
                     ->orderBy('slug_location ASC');

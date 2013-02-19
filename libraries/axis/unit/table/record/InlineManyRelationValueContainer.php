@@ -82,7 +82,7 @@ class InlineManyRelationValueContainer implements
     
     public function populateInverse(opal\record\IRecord $record=null) {
         if($record) {
-            $id = opal\record\task\Base::extractRecordId($record);
+            $id = opal\record\Base::extractRecordId($record);
             $this->_current[$id] = $record;
         }
         
@@ -141,13 +141,13 @@ class InlineManyRelationValueContainer implements
         
         foreach($records as $record) {
             if($record instanceof opal\record\IRecord) {
-                $id = opal\record\task\Base::extractRecordId($record);
+                $id = opal\record\Base::extractRecordId($record);
             } else if($record instanceof opal\record\IPrimaryManifest) {
-                $id = opal\record\task\Base::extractRecordId($record);
+                $id = opal\record\Base::extractRecordId($record);
                 $lookupManifests[$id] = $record;
             } else {
                 $record = $this->_targetPrimaryManifest->duplicateWith($record);
-                $id = opal\record\task\Base::extractRecordId($record);
+                $id = opal\record\Base::extractRecordId($record);
                 $lookupManifests[$id] = $record;
             }
             
@@ -214,12 +214,12 @@ class InlineManyRelationValueContainer implements
         
         foreach($records as $record) {
             if($record instanceof opal\record\IRecord) {
-                $id = opal\record\task\Base::extractRecordId($record);
+                $id = opal\record\Base::extractRecordId($record);
             } else if($record instanceof opal\record\IPrimaryManifest) {
-                $id = opal\record\task\Base::extractRecordId($record);
+                $id = opal\record\Base::extractRecordId($record);
             } else {
                 $record = $this->_targetPrimaryManifest->duplicateWith($record);
-                $id = opal\record\task\Base::extractRecordId($record);
+                $id = opal\record\Base::extractRecordId($record);
             }
             
             if(isset($this->_new[$id])) {

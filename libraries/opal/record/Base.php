@@ -21,6 +21,32 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     protected $_adapter;
 
     private $_primaryFields = false;
+
+    public static function extractRecordId($record) {
+        $manifest = null;
+        $isRecord = false;
+        
+        if($record instanceof IRecord) {
+            $isRecord = true;
+            $manifest = $record->getPrimaryManifest();
+        } else if($record instanceof IPrimaryManifest) {
+            $manifest = $record;
+        }
+        
+        if($manifest && !$manifest->isNull()) {
+            return $manifest->getCombinedId();
+        }
+        
+        if($isRecord) {
+            return '(#'.spl_object_hash($record).')';
+        }
+        
+        if(is_array($record)) {
+            return '{'.implode(PrimaryManifest::COMBINE_SEPARATOR, $record).'}';
+        }
+        
+        return (string)$record;
+    }
     
     public function __construct(opal\query\IAdapter $adapter, $row=null, array $fields=null) {
         $this->_adapter = $adapter;
