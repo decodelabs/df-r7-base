@@ -17,7 +17,7 @@ abstract class Base extends axis\Unit implements
     opal\query\IIntegralAdapter,
     core\IDumpable {
     
-    protected static $_defaultRecordClass = 'df\\opal\\query\\record\\Base';
+    protected static $_defaultRecordClass = 'df\\opal\\record\\Base';
     
     protected $_adapter;
     
