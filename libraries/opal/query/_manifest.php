@@ -551,6 +551,7 @@ interface ISource extends IAdapterAware {
     public function getFieldByAlias($alias);
     public function getFieldByQualifiedName($qName);
     public function getFirstOutputDataField();
+    public function isOutputField(IField $field);
     
     public function getOutputFields();
     public function getDereferencedOutputFields();
@@ -614,6 +615,7 @@ interface IField {
     public function hasDiscreetAlias();
     public function getQualifiedName();
     public function dereference();
+    public function isOutputField();
 }
 
 interface IIntrinsicField extends IField {}

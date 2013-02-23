@@ -45,6 +45,9 @@ class Wildcard implements opal\query\IWildcardField, core\IDumpable {
         return array($this);
     }
     
+    public function isOutputField() {
+        return true;
+    }
     
 // Dump
     public function getDumpProperties() {

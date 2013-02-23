@@ -439,12 +439,6 @@ abstract class Table implements ITable, core\IDumpable {
 
             if(!empty($populates)) {
                 $requiresBatchIterator = true;
-
-                /*
-                foreach($populates as $populate) {
-
-                }
-                */
             }
         }
         
@@ -1751,7 +1745,9 @@ abstract class Table implements ITable, core\IDumpable {
         if($value instanceof opal\query\IField) {
             if($value instanceof opal\query\IAggregateField 
             && $value->hasDiscreetAlias()) {
-                $valString = $this->_adapter->quoteFieldAliasReference($value->getAlias());
+                $valString = $this->_adapter->quoteFieldAliasDefinition($value->getAlias());
+            } else if($value->isOutputField()) {
+                $valString = $this->_adapter->quoteFieldAliasDefinition($value->getQualifiedName());
             } else {
                 $valString = $this->_defineQueryField($stmt, $value);
             }

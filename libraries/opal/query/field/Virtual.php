@@ -70,6 +70,10 @@ class Virtual implements opal\query\IVirtualField, core\IDumpable {
 
         return $output;
     }
+
+    public function isOutputField() {
+        return $this->_source->isOutputField($this);
+    }
     
 // Dump
     public function getDumpProperties() {

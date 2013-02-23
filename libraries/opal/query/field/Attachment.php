@@ -46,6 +46,10 @@ class Attachment implements opal\query\IAttachmentField, core\IDumpable {
     public function dereference() {
         return array($this);
     }
+
+    public function isOutputField() {
+        return true;
+    }
     
 // Dump
     public function getDumpProperties() {

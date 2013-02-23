@@ -196,13 +196,17 @@ class Source implements ISource, core\IDumpable {
     public function getDereferencedOutputFields() {
         $output = array();
         
-        foreach($this->_outputFields as $field) {
-            foreach($field->dereference() as $field) {
+        foreach($this->_outputFields as $mainField) {
+            foreach($mainField->dereference() as $field) {
                 $output[$field->getAlias()] = $field;
             }
         }
         
         return $output;
+    }
+
+    public function isOutputField(IField $field) {
+        return isset($this->_outputFields[$field->getAlias()]);
     }
     
     public function getPrivateFields() {
@@ -212,8 +216,8 @@ class Source implements ISource, core\IDumpable {
     public function getDereferencedPrivateFields() {
         $output = array();
         
-        foreach($this->_privateFields as $field) {
-            foreach($field->dereference() as $field) {
+        foreach($this->_privateFields as $mainField) {
+            foreach($mainField->dereference() as $field) {
                 $output[$field->getQualifiedName()] = $field;
             }
         }

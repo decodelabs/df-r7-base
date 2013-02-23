@@ -50,6 +50,10 @@ class Correlation implements opal\query\ICorrelationField, core\IDumpable {
         return [$this];
     }
 
+    public function isOutputField() {
+        return true;
+    }
+
 // Dump
     public function getDumpProperties() {
         return [$this->getAlias() => $this->_query];

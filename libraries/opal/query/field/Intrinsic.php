@@ -53,6 +53,10 @@ class Intrinsic implements opal\query\IIntrinsicField, core\IDumpable {
     public function dereference() {
         return [$this];
     }
+
+    public function isOutputField() {
+        return $this->_source->isOutputField($this);
+    }
     
 // Dump
     public function getDumpProperties() {
