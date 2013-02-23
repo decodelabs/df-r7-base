@@ -705,6 +705,10 @@ trait TForm_DependentDelegate {
     public function addValueListDependency($name, core\collection\IInputTree $value, $error=null, $context=null) {
         return $this->addDependency(new arch\form\dependency\ValueList($name, $value, $error, $context));
     }
+
+    public function addGenericDependency($name, $value, $error=null, $context=null) {
+        return $this->addDependency(new arch\form\dependency\Generic($name, $value, $error, $context));
+    }
     
     public function addDependency(IDependency $dependency) {
         $this->_dependencies[$dependency->getName()] = $dependency;

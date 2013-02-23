@@ -138,6 +138,7 @@ interface IDependentDelegate {
     public function addSelectorDependency(ISelectorDelegate $delegate, $error=null, $context=null);
     public function addValueDependency($name, core\collection\IInputTree $value, $error=null, $context=null);
     public function addValueListDependency($name, core\collection\IInputTree $value, $error=null, $context=null);
+    public function addGenericDependency($name, $value, $error=null, $context=null);
     public function addDependency(IDependency $dependency);
 
     public function getDependency($name);
