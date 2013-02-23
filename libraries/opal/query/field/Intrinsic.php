@@ -11,6 +11,8 @@ use df\opal;
 
 class Intrinsic implements opal\query\IIntrinsicField, core\IDumpable {
     
+    use opal\query\TField;
+    
     protected $_name;
     protected $_alias;
     protected $_source;

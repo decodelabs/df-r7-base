@@ -616,6 +616,27 @@ interface IField {
     public function getQualifiedName();
     public function dereference();
     public function isOutputField();
+
+    public function setLogicalAlias($alias);
+    public function getLogicalAlias();
+}
+
+trait TField {
+
+    protected $_logicalAlias;
+
+    public function setLogicalAlias($alias) {
+        if(empty($alias)) {
+            $alias = null;
+        }
+
+        $this->_logicalAlias = $alias;
+        return $this;
+    }
+
+    public function getLogicalAlias() {
+        return $this->_logicalAlias;
+    }
 }
 
 interface IIntrinsicField extends IField {}

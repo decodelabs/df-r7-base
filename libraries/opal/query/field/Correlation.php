@@ -11,6 +11,8 @@ use df\opal;
     
 class Correlation implements opal\query\ICorrelationField, core\IDumpable {
 
+    use opal\query\TField;
+    
     protected $_query;
 
     public function __construct(opal\query\ICorrelationQuery $query) {

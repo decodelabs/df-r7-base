@@ -11,6 +11,8 @@ use df\opal;
 
 class Aggregate implements opal\query\IAggregateField, core\IDumpable {
     
+    use opal\query\TField;
+
     const TYPE_COUNT = 1;
     const TYPE_SUM = 2;
     const TYPE_AVG = 3;

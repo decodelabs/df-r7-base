@@ -11,6 +11,8 @@ use df\opal;
 
 class Wildcard implements opal\query\IWildcardField, core\IDumpable {
     
+    use opal\query\TField;
+    
     protected $_source;
     
     public function __construct(opal\query\ISource $source) {

@@ -512,7 +512,8 @@ abstract class Table implements ITable, core\IDumpable {
             } else {
                 $fieldAlias = $field->getAlias();
             }
-            
+
+            $field->setLogicalAlias($fieldAlias);
             $outFields[/*$fieldAlias*/] = $this->_defineQueryField($stmt, $field, true, $fieldAlias);
         }
         
@@ -585,6 +586,7 @@ abstract class Table implements ITable, core\IDumpable {
                  */
                 $aggregateFields[$qName] = $field;
             } else {
+                $field->setLogicalAlias($qName);
                 $outFields[$qName] = $this->_defineQueryField($stmt, $field, true, $qName);
             }
         }
@@ -951,7 +953,9 @@ abstract class Table implements ITable, core\IDumpable {
                 continue;
             }
             
-            $outFields[] = $this->_defineQueryField($stmt, $field, true, $field->getQualifiedName());
+            $fieldAlias = $field->getQualifiedName();
+            $field->setLogicalAlias($fieldAlias);
+            $outFields[] = $this->_defineQueryField($stmt, $field, true, $fieldAlias);
         }
         
         $stmt->appendSql(
@@ -997,7 +1001,9 @@ abstract class Table implements ITable, core\IDumpable {
                 continue;
             }
             
-            $outFields[] = $this->_defineQueryField($stmt, $field, true, $field->getQualifiedName());
+            $fieldAlias = $field->getQualifiedName();
+            $field->setLogicalAlias($fieldAlias);
+            $outFields[] = $this->_defineQueryField($stmt, $field, true, $fieldAlias);
         }
 
 
@@ -1745,10 +1751,13 @@ abstract class Table implements ITable, core\IDumpable {
         if($value instanceof opal\query\IField) {
             if($value instanceof opal\query\IAggregateField 
             && $value->hasDiscreetAlias()) {
+                // Aggregate
                 $valString = $this->_adapter->quoteFieldAliasDefinition($value->getAlias());
-            } else if($value->isOutputField()) {
-                $valString = $this->_adapter->quoteFieldAliasDefinition($value->getQualifiedName());
+            } else if($alias = $value->getLogicalAlias()) {
+                // Defined in a field list
+                $valString = $this->_adapter->quoteFieldAliasDefinition($alias);
             } else {
+                // Direct field reference
                 $valString = $this->_defineQueryField($stmt, $value);
             }
         } else if(is_array($value)) {

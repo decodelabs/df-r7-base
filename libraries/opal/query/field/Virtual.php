@@ -11,6 +11,8 @@ use df\opal;
 
 class Virtual implements opal\query\IVirtualField, core\IDumpable {
     
+    use opal\query\TField;
+    
     protected $_name;
     protected $_alias;
     protected $_targetFields = array();

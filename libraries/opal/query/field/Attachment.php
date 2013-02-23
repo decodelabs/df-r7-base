@@ -11,6 +11,8 @@ use df\opal;
 
 class Attachment implements opal\query\IAttachmentField, core\IDumpable {
     
+    use opal\query\TField;
+    
     protected $_name;
     protected $_attachment;
     
