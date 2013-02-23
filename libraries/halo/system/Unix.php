@@ -87,4 +87,15 @@ class Unix extends Base {
             core\stub('no posix');
         }
     }
+
+    public function which($binaryName) {
+        $result = halo\process\Base::launch('which', $binaryName)->getOutput();
+        $result = trim($result);
+
+        if(empty($result)) {
+            return $binaryName;
+        }
+        
+        return $result;
+    }
 }

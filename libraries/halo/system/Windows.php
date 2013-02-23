@@ -62,4 +62,10 @@ class Windows extends Base {
     public function groupNameToGroupId($name) {
         return $name;
     }
+
+
+// Helpers
+    public function which($binaryName) {
+        core\stub($binaryName);
+    }
 }

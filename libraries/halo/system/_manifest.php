@@ -30,4 +30,6 @@ interface ISystem {
     public function userNameToUserId($name);
     public function groupIdToGroupName($id);
     public function groupNameToGroupId($name);
+
+    public function which($binaryName);
 }
