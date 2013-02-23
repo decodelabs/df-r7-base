@@ -358,11 +358,11 @@ abstract class Base extends axis\Unit implements
             $targetUnit = $field->getTargetUnit($application);
             $targetAlias = $fieldName.'Count';
             $targetFieldName = $field->getTargetField();
-            $localName = $this->getUnitName();
+            $localAlias = $query->getSource()->getAlias();
 
             $query->correlate('COUNT('.$targetAlias.'.@primary)', $alias)
                 ->from($targetUnit, $targetAlias)
-                ->on($targetAlias.'.'.$targetFieldName, '=', $localName.'.@primary')
+                ->on($targetAlias.'.'.$targetFieldName, '=', $localAlias.'.@primary')
                 ->endCorrelation();
         }
 
