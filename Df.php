@@ -40,7 +40,11 @@ class Launchpad {
 // Run
     public static function run($appType=null) {
         $parts = explode('/', str_replace('\\', '/', realpath($_SERVER['SCRIPT_FILENAME'])));
-        $environmentId = substr(array_pop($parts), 0, -4);
+        $environmentId = array_pop($parts);
+
+        if(substr($environmentId, -4) == '.php') {
+            $environmentId = substr($environmentId, 0, -4);
+        }
         
         $envParts = explode('.', $environmentId, 2);
         $environmentId = array_shift($envParts);
@@ -83,7 +87,6 @@ class Launchpad {
         } else {
             $appType = ucfirst($appType);
         }
-        
         
         if($appType == 'Http') {
             // If you're on apache, it sometimes hides some env variables = v. gay

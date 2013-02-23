@@ -120,10 +120,19 @@ class Environment extends Config {
     
     public function getPhpBinaryPath() {
         if(isset($this->_values['phpBinaryPath'])) {
-            return $this->_values['phpBinaryPath'];
+            $output = $this->_values['phpBinaryPath'];
+        } else {
+            $output = 'php';
         }
         
-        return 'php';
+        if(false === strpos($output, '/')
+        && false === strpos($output, '\\')) {
+            $output = halo\system\Base::getInstance()->which($output);
+            $this->_values['phpBinaryPath'] = $output;
+            $this->save();
+        }
+
+        return $output;
     }
     
     
