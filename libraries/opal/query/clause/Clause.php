@@ -402,7 +402,7 @@ class Clause implements opal\query\IClause, core\IDumpable {
                     $output = array();
                 
                     foreach($this->_preparedValue as $part) {
-                        $output[] = $adapter->prepareQueryClauseValue($this->_field, $part);
+                        $output[] = $this->_prepareInnerValue($adapter, $part);
                     }
                     
                     $this->_preparedValue = $output;
@@ -414,21 +414,27 @@ class Clause implements opal\query\IClause, core\IDumpable {
                     break;
                     
                 default:
-                    $this->_preparedValue = $adapter->prepareQueryClauseValue(
-                        $this->_field, $this->_preparedValue
+                    $this->_preparedValue = $this->_prepareInnerValue(
+                        $adapter, $this->_preparedValue
                     );
                     
                     break;
             }
             
-            if($this->_preparedValue instanceof opal\record\IRecord) {
-                $this->_preparedValue = $this->_preparedValue->getPrimaryManifest();
-            }
-
             $this->_hasPreparedValue = true;
         }
 
         return $this->_preparedValue;
+    }
+
+    protected function _prepareInnerValue($adapter, $value) {
+        $preparedValue = $adapter->prepareQueryClauseValue($this->_field, $value);
+
+        if($preparedValue instanceof opal\record\IRecord) {
+            $preparedValue = $preparedValue->getPrimaryManifest();
+        }
+
+        return $preparedValue;
     }
     
     public function referencesSourceAliases(array $sourceAliases) {
