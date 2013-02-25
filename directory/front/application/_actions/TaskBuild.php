@@ -147,12 +147,18 @@ class TaskBuild extends arch\Action {
                     'require_once \''.$entryPath.'.php\';'."\n";
 
             file_put_contents($entryPath, $data);
-            core\io\Util::chmod($entryPath, 0777, true);
+
+            try {
+                core\io\Util::chmod($entryPath, 0777, true);
+            } catch(\Exception $e) {}
 
             if($environmentMode == 'development') {
                 $entryPath = $appPath.'/entry/'.$environmentId;
                 file_put_contents($entryPath, $data);
-                core\io\Util::chmod($entryPath, 0777, true);
+
+                try {
+                    core\io\Util::chmod($entryPath, 0777, true);
+                } catch(\Exception $e) {}
             }
         }
 
