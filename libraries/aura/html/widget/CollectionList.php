@@ -71,10 +71,15 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
             }
         }
         
+        $colClasses = array();
+
         foreach($this->_fields as $fieldKey => $field) {
             $tagContent = array();
+            $colClasses[$fieldKey] = array();
 
             foreach($field->getHeaderList() as $key => $label) {
+                $colClasses[$fieldKey][] = 'field-'.$key;
+
                 if($orderData !== null && in_array($key, $orderFields)) {
                     if(isset($orderData[$key])) {
                         if($orderData[$key]->isAscending()) {
@@ -112,7 +117,10 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                 }
             }
 
-            $thTag = new aura\html\Element('th', $tagContent);
+
+            $colClasses[$fieldKey] = implode(' ', $colClasses[$fieldKey]);
+
+            $thTag = new aura\html\Element('th', $tagContent, ['class' => $colClasses]);
             $headRow->push($thTag->render());
         }
         
@@ -128,7 +136,13 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                 $renderContext->iterate($j);
                 
                 foreach($this->_fields as $key => $field) {
-                    $cellTag = new aura\html\Tag('td');
+                    $attr = null;
+
+                    if(isset($colClasses[$key])) {
+                        $attr = ['class' => $colClasses[$key]];
+                    }
+
+                    $cellTag = new aura\html\Tag('td', $attr);
                     $renderContext->iterateField($key, $cellTag, $rowTag);
                     $value = $field->render($row, $renderContext);
                     

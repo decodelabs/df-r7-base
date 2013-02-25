@@ -42,7 +42,7 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
         
         foreach($fields as $key => $field) {
             $row = new aura\html\ElementContent();
-            $trTag = new aura\html\Tag('tr');
+            $trTag = new aura\html\Tag('tr', ['class' => 'field-'.$key]);
             $thTag = new aura\html\Element('th', $field->getName());
             $tdTag = new aura\html\Tag('td');
             
