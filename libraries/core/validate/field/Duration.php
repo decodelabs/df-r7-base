@@ -13,6 +13,7 @@ class Duration extends Base implements core\validate\IDurationField {
     use core\validate\TRangeField;
 
     protected $_inputUnit = null;
+    protected $_unitSelectable = true;
 
     public function setInputUnit($unit) {
         if($unit !== null) {
@@ -27,8 +28,21 @@ class Duration extends Base implements core\validate\IDurationField {
         return $this->_inputUnit;
     }
 
+    public function shouldAllowUnitSelection($flag=null) {
+        if($flag !== null) {
+            $this->_unitSelectable = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_unitSelectable;
+    }
+
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
+
+        if($this->_unitSelectable) {
+            $this->_inputUnit = $node->unit->getValue();
+        }
 
         if(!$length = $this->_checkRequired($node, $value)) {
             return null;
@@ -37,7 +51,7 @@ class Duration extends Base implements core\validate\IDurationField {
         $duration = $this->_normalizeDuration($value);
         $this->_validateRange($node, $duration);
 
-        return $this->_finalize($node, $value);
+        return $this->_finalize($node, $duration);
     }
 
     public function applyValueTo(&$record, $value) {

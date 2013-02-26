@@ -94,6 +94,18 @@ class Duration implements IDuration, core\IDumpable {
         $output = new self(0, $referenceDate);
         return $output->setYears($years);
     }
+
+    public static function getUnitList($locale=null) {
+        return [
+            self::SECONDS => self::getUnitString(self::SECONDS, 1, $locale),
+            self::MINUTES => self::getUnitString(self::MINUTES, 1, $locale),
+            self::HOURS   => self::getUnitString(self::HOURS, 1, $locale),
+            self::DAYS    => self::getUnitString(self::DAYS, 1, $locale),
+            self::WEEKS   => self::getUnitString(self::WEEKS, 1, $locale),
+            self::MONTHS  => self::getUnitString(self::MONTHS, 1, $locale),
+            self::YEARS   => self::getUnitString(self::YEARS, 1, $locale),
+        ];
+    }
     
     public function __construct($time=0, IDate $referenceDate=null) {
         if($time instanceof IDuration) {
