@@ -95,6 +95,10 @@ class Launchpad {
                     $_SERVER['HTTP_'.strtoupper(str_replace('-', '_', $key))] = $value;
                 }
             }
+
+            if(isset($_SERVER['CONTENT_TYPE'])) {
+                $_SERVER['HTTP_CONTENT_TYPE'] = $_SERVER['CONTENT_TYPE'];
+            }
             
             // Normalize REQUEST_URI
             if(isset($_SERVER['HTTP_X_ORIGINAL_URL'])) {

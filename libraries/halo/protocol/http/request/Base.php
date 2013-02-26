@@ -363,10 +363,25 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
             $postData = null;
             
             if($this->_environmentMode) {
-                $postData = &$_POST;
+                if(strtolower($this->_headers->get('content-type')) == 'application/x-www-form-urlencoded') {
+                    try {
+                        $this->_postData = core\collection\Tree::fromArrayDelimitedString(file_get_contents('php://input'));
+
+                        if($this->_postData->isEmpty() && !empty($_POST)) {
+                            $this->_postData = null;
+                        }
+                    } catch(\Exception $e) {
+                        $this->_postData = null;
+                    }
+                }
+
+                if(empty($this->_postData)) {
+                    $this->_postData = new core\collection\Tree($_POST);
+                }
+            } else {
+                $this->_postData = new core\collection\Tree(null);
             }
             
-            $this->_postData = new core\collection\Tree($postData);
         }
         
         return $this->_postData;
