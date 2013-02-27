@@ -8,13 +8,20 @@ namespace df\core\application;
 use df;
 use df\core;
 use df\arch;
+use df\halo;
 
 class Task extends Base implements arch\IDirectoryRequestApplication {
     
     const RUN_MODE = 'Task';
     
     protected $_context;
+    protected $_request;
+    protected $_response;
 
+
+    public function getDefaultDirectoryAccess() {
+        return arch\IAccess::ALL;
+    }
     
 // Request
     public function setTaskRequest(arch\IRequest $request) {
@@ -32,8 +39,19 @@ class Task extends Base implements arch\IDirectoryRequestApplication {
         return $this->_request;
     }
 
-    public function getDefaultDirectoryAccess() {
-        return arch\IAccess::ALL;
+    
+// Response
+    public function setTaskResponse(halo\task\IResponse $response) {
+        $this->_response = $response;
+        return $this;
+    }
+
+    public function getTaskResponse() {
+        if(!$this->_response) {
+            $this->_response = halo\task\Response::defaultFactory();
+        }
+
+        return $this->_response;
     }
     
     
@@ -60,7 +78,7 @@ class Task extends Base implements arch\IDirectoryRequestApplication {
         
         if($request !== null) {
             $this->_request = $request;
-        } else {
+        } else if(!$this->_request) {
             $command = core\cli\Command::fromArgv();
             
             if(!$arg = $command[2]) {
@@ -82,7 +100,7 @@ class Task extends Base implements arch\IDirectoryRequestApplication {
             try {
                 while(true) {
                     $response = $this->_dispatchRequest($request);
-                    
+
                     if($response instanceof arch\IRequest) {
                         $request = $response;
                         continue;
@@ -127,6 +145,10 @@ class Task extends Base implements arch\IDirectoryRequestApplication {
         // Forwarding
         if($response instanceof arch\IRequest) {
             return $response;
+        }
+
+        if($response === null) {
+            $response = $this->_response;
         }
         
         return $response;
