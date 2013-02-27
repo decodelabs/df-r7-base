@@ -24,8 +24,7 @@ class Task implements arch\IContextHelper {
         $application = core\application\Base::factory('Task');
         $application->setTaskRequest($request);
 
-        $output = df\Launchpad::runApplication($application);
-        core\dump($output);
+        return df\Launchpad::runApplication($application);
     }
 
     public function getResponse() {
