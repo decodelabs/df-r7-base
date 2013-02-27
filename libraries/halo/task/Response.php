@@ -99,6 +99,14 @@ class Response implements IResponse, core\IDumpable {
 
 
 // IO
+    public function flush() {
+        foreach($this->_channels as $channel) {
+            $channel->flush();
+        }
+
+        return $this;
+    }
+
     public function write($data) {
         foreach($this->_channels as $channel) {
             $channel->write($data);

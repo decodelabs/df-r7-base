@@ -158,6 +158,8 @@ class Task extends Base implements arch\IDirectoryRequestApplication {
     public function launchPayload($payload) {
         if(is_string($payload)) {
             echo $payload."\r\n";
+        } else if($payload instanceof halo\task\IResponse || $payload instanceof core\io\IChannel) {
+            $payload->flush();
         } else if(!empty($payload)) {
             core\stub($payload);
         }

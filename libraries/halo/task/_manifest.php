@@ -27,6 +27,7 @@ interface IResponse extends core\IRegistryObject {
     public function getChannels();
     public function clearChannels();
 
+    public function flush();
     public function write($data);
     public function writeLine($line);
     public function writeError($error);
