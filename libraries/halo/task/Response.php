@@ -9,9 +9,21 @@ use df;
 use df\core;
 use df\halo;
     
-class Response implements IResponse {
+class Response implements IResponse, core\IDumpable {
+
+    const REGISTRY_KEY = 'taskResponse';
 
     protected $_channels = array();
+
+    public static function defaultFactory() {
+        if(isset($_SERVER['argv']) && !df\Launchpad::$invokingApplication) {
+            $channel = new core\io\channel\Std();
+        } else {
+            $channel = new core\io\channel\Memory();
+        }
+
+        return new self([$channel]);
+    }
 
     public function __construct(array $channels=null) {
         if($channels !== null) {
@@ -19,6 +31,16 @@ class Response implements IResponse {
         }
     }
 
+
+// Registry
+    public function getRegistryObjectKey() {
+        return static::REGISTRY_KEY;
+    }
+
+    public function onApplicationShutdown() {}
+
+
+// Channels
     public function setChannels(array $channels) {
         $this->_channels = array();
         return $this->addChannels($channels);
@@ -76,6 +98,7 @@ class Response implements IResponse {
     }
 
 
+// IO
     public function write($data) {
         foreach($this->_channels as $channel) {
             $channel->write($data);
@@ -106,5 +129,10 @@ class Response implements IResponse {
         }
 
         return $this;
+    }
+
+// Dump
+    public function getDumpProperties() {
+        return $this->_channels;
     }
 }

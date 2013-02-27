@@ -17,7 +17,7 @@ interface IException {}
 
 
 // Interfaces
-interface IResponse {
+interface IResponse extends core\IRegistryObject {
     public function setChannels(array $channels);
     public function addChannels(array $channels);
     public function addChannel(core\io\IChannel $channel);
