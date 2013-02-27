@@ -44,6 +44,13 @@ class Memory implements core\io\IFile, core\io\IContainedStateChannel, core\IDum
         return $output;
     }
 
+    public function flush() {
+        echo $this->_data;
+        $this->_data = '';
+
+        return $this;
+    }
+
 
 // Loading
     public function open($mode=core\io\IMode::READ_WRITE) {

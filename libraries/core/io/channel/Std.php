@@ -17,6 +17,10 @@ class Std implements core\io\IChannel {
         return 'STD';
     }
 
+    public function flush() {
+        return $this;
+    }
+
     public function writeError($error) {
         fwrite(STDERR, $error);
         return $this;

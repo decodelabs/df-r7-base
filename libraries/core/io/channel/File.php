@@ -28,6 +28,10 @@ class File implements core\io\IFile, core\io\ILocalFilePointer, core\io\IContain
         return $this->_path;
     }
 
+    public function flush() {
+        return $this;
+    }
+
 // Loading
     public function open($mode=core\io\IMode::READ_WRITE) {
         if($this->_fp) {
@@ -206,7 +210,7 @@ class File implements core\io\IFile, core\io\ILocalFilePointer, core\io\IContain
 
         return $output;
     }
-    
+
     public function writeError($error) {
         $this->_error .= $error;
         return $this;
