@@ -13,6 +13,7 @@ class Memory implements core\io\IFile, core\io\IContainedStateChannel, core\IDum
     use core\io\TWriter;
 
     protected $_contentType = null;
+    protected $_id;
 
     private $_data;
     private $_error;
@@ -24,8 +25,23 @@ class Memory implements core\io\IFile, core\io\IContainedStateChannel, core\IDum
         $this->setContentType($contentType);
     }
 
+    public function setId($id) {
+        $this->_id = $id;
+        return $this;
+    }
+
+    public function getId() {
+        return $this->_id;
+    }
+
     public function getChannelId() {
-        return 'Memory';
+        $output = 'Memory';
+
+        if($this->_id) {
+            $output .= ':'.$this->_id;
+        }
+
+        return $output;
     }
 
 
