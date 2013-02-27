@@ -12,7 +12,7 @@ use df\arch;
     
 class Navigation implements arch\IContextHelper {
 
-    use archLib\TContextHelper;
+    use arch\TContextHelper;
 
     public function getMenu($id) {
         return archLib\navigation\menu\Base::factory($this->_context, $id);
