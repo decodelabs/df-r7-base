@@ -66,7 +66,7 @@ class Base implements ITheme {
     
     protected function _setDefaultViewTitle(aura\view\IHtmlView $view) {
         if(!$view->hasTitle()) {
-            $breadcrumbs = $view->getContext()->arch->getBreadcrumbs();
+            $breadcrumbs = $view->getContext()->navigation->getBreadcrumbs();
             $parts = [];
 
             foreach($breadcrumbs->getEntries() as $entry) {

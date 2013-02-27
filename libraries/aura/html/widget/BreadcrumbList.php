@@ -115,7 +115,7 @@ class BreadcrumbList extends Base implements IListWidget, core\IDumpable {
     
     public function addSitemapEntries() {
         $this->setEntries(
-            $this->_context->arch->getBreadcrumbs()
+            $this->_context->navigation->getBreadcrumbs()
         );
 
         return $this;
