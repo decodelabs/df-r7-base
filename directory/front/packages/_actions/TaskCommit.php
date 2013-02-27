@@ -11,12 +11,10 @@ use df\apex;
 use df\halo;
 use df\arch;
     
-class TaskCommit extends arch\Action {
+class TaskCommit extends arch\task\Action {
 
-    public function execute() {
-        $response = new halo\task\Response([
-            new core\io\channel\Std()
-        ]);
+    protected function _run() {
+        $response = $this->task->getResponse();
 
         $name = $this->request->query['package'];
         core\stub($name);
@@ -25,13 +23,13 @@ class TaskCommit extends arch\Action {
             return $this->arch->newRequest('packages/commit-all');
         }
 
-        $response->writeLine('Pushing changes for package "'.$name.'"');
+        $this->response->writeLine('Pushing changes for package "'.$name.'"');
         $model = $this->data->getModel('package');
 
         if(!$result = $model->push($name)) {
-            $response->writeLine('!! Package "'.$name.'" repo could not be found !!');
+            $this->response->writeLine('!! Package "'.$name.'" repo could not be found !!');
         } else {
-            $response->write($result."\n");
+            $this->response->write($result."\n");
         }
     }
 }

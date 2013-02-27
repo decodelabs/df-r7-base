@@ -11,26 +11,22 @@ use df\apex;
 use df\halo;
 use df\arch;
     
-class TaskUpdate extends arch\Action {
+class TaskUpdate extends arch\task\Action {
 
-    public function execute() {
-        $response = new halo\task\Response([
-            new core\io\channel\Std()
-        ]);
-
+    protected function _run() {
         $name = $this->request->query['package'];
 
         if(empty($name)) {
             return $this->arch->newRequest('packages/update-all');
         }
 
-        $response->writeLine('Pulling updates for package "'.$name.'"');
+        $this->response->writeLine('Pulling updates for package "'.$name.'"');
         $model = $this->data->getModel('package');
 
         if(!$result = $model->pull($name)) {
-            $response->writeLine('!! Package "'.$name.'" repo could not be found !!');
+            $this->response->writeLine('!! Package "'.$name.'" repo could not be found !!');
         } else {
-            $response->write($result."\n");
+            $this->response->write($result."\n");
         }
     }
 }

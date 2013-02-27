@@ -11,7 +11,7 @@ use df\apex;
 use df\arch;
 use df\halo;
     
-class TaskBuild extends arch\Action {
+class TaskBuild extends arch\task\Action {
 
     const PURGE_OLD_BUILDS = true;
 
@@ -19,16 +19,12 @@ class TaskBuild extends arch\Action {
         'libraries', 'daemons', 'directory', 'models', 'themes', 'tests'
     ];
 
-    public function execute() {
+    protected function _run() {
         if(df\Launchpad::IS_COMPILED) {
             $this->throwError(403, 'Cannot compile app from production environment - run from dev mode instead');
         }
 
-        $response = new halo\task\Response([
-            new core\io\channel\Std()
-        ]);
-
-        $response->writeLine('Launching app builder...');
+        $this->response->writeLine('Launching app builder...');
 
         // Prepare info
         $timestamp = date('YmdHis');
@@ -53,7 +49,7 @@ class TaskBuild extends arch\Action {
 
 
         // Generate Df.php
-        $response->writeLine('Generating Df.php');
+        $this->response->writeLine('Generating Df.php');
 
         $dfFile = file_get_contents(df\Launchpad::DF_PATH.'/Df.php');
         $dfFile = str_replace('IS_COMPILED = false', 'IS_COMPILED = true', $dfFile);
@@ -68,7 +64,7 @@ class TaskBuild extends arch\Action {
 
         // Copy packages
         foreach(array_reverse($packages) as $package) {
-            $response->writeLine('Merging '.$package->name.' package');
+            $this->response->writeLine('Merging '.$package->name.' package');
 
             if(is_dir($package->path.'/libraries')) {
                 core\io\Util::copyDirInto($package->path.'/libraries', $destinationPath);
@@ -96,7 +92,7 @@ class TaskBuild extends arch\Action {
 
 
         // Copy app folder
-        $response->writeLine('Merging app folder');
+        $this->response->writeLine('Merging app folder');
 
         foreach(scandir($appPackage->path) as $entry) {
             if($entry == '.' 
@@ -123,7 +119,7 @@ class TaskBuild extends arch\Action {
 
 
         // Entry point
-        $response->writeLine('Generating entry points');
+        $this->response->writeLine('Generating entry points');
 
         foreach(['testing', 'production'] as $environmentMode) {
             $entryPath = $appPath.'/entry/'.$environmentId.'.'.$environmentMode.'.php';
@@ -165,7 +161,7 @@ class TaskBuild extends arch\Action {
         core\io\Util::chmod($destinationPath, 0777, true);
 
 
-        $response->writeLine('App build complete');
+        $this->response->writeLine('App build complete');
 
         if($purgeOldBuilds) {
             return $this->arch->newRequest('task://application/purge-builds');

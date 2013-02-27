@@ -11,15 +11,11 @@ use df\apex;
 use df\arch;
 use df\halo;
     
-class TaskPurgeBuilds extends arch\Action {
+class TaskPurgeBuilds extends arch\task\Action {
 
     const CONTINGENCY = 1;
 
-    public function execute() {
-        $response = new halo\task\Response([
-            new core\io\channel\Std()
-        ]);
-
+    protected function _run() {
         $contingency = (int)$this->request->query->get('contingency', self::CONTINGENCY);
 
         if($contingency < 0) {
@@ -29,8 +25,8 @@ class TaskPurgeBuilds extends arch\Action {
         $appPath = df\Launchpad::$applicationPath;
         $runPath = $appPath.'/data/local/run';
 
-        $response->writeLine('Purging old builds...');
-        $response->writeLine('Keeping '.$contingency.' build(s) as contingency');
+        $this->response->writeLine('Purging old builds...');
+        $this->response->writeLine('Keeping '.$contingency.' build(s) as contingency');
 
         $list = scandir($runPath);
         sort($list);
@@ -42,11 +38,11 @@ class TaskPurgeBuilds extends arch\Action {
 
         foreach($list as $entry) {
             if(is_file($runPath.'/'.$entry)) {
-                $response->writeLine('Deleting file build '.$entry);
+                $this->response->writeLine('Deleting file build '.$entry);
 
                 core\io\Util::deleteFile($runPath.'/'.$entry);
             } else if(is_dir($runPath.'/'.$entry)) {
-                $response->writeLine('Deleting build '.$entry);
+                $this->response->writeLine('Deleting build '.$entry);
 
                 core\io\Util::deleteDir($runPath.'/'.$entry);
             }

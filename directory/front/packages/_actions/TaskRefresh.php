@@ -11,26 +11,22 @@ use df\apex;
 use df\halo;
 use df\arch;
     
-class TaskRefresh extends arch\Action {
+class TaskRefresh extends arch\task\Action {
 
-    public function execute() {
-        $response = new halo\task\Response([
-            new core\io\channel\Std()
-        ]);
-
+    protected function _run() {
         $name = $this->request->query['package'];
 
         if(empty($name)) {
             return $this->arch->newRequest('packages/refresh-all');
         }
 
-        $response->writeLine('Refreshing package "'.$name.'"');
+        $this->response->writeLine('Refreshing package "'.$name.'"');
         $model = $this->data->getModel('package');
 
         if(!$result = $model->updateRemote($name)) {
-            $response->writeLine('!! Package "'.$name.'" repo could not be found !!');
+            $this->response->writeLine('!! Package "'.$name.'" repo could not be found !!');
         } else {
-            $response->write($result."\n");
+            $this->response->write($result."\n");
         }
     }
 }

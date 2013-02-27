@@ -11,14 +11,10 @@ use df\apex;
 use df\halo;
 use df\arch;
     
-class TaskUpdateAll extends arch\Action {
+class TaskUpdateAll extends arch\task\Action {
 
-    public function execute() {
-        $response = new halo\task\Response([
-            new core\io\channel\Std()
-        ]);
-
-        $response->writeLine('Finding all package repositories...');
+    protected function _run() {
+        $this->response->writeLine('Finding all package repositories...');
         $model = $this->data->getModel('package');
 
         foreach($model->getInstalledPackageList() as $package) {
@@ -26,12 +22,12 @@ class TaskUpdateAll extends arch\Action {
                 continue;
             }
 
-            $response->writeLine('Pulling updates for package "'.$package['name'].'"');
+            $this->response->writeLine('Pulling updates for package "'.$package['name'].'"');
             $result = $package['repo']->pull();
 
-            $response->write($result."\r\n");
+            $this->response->write($result."\r\n");
         }
 
-        $response->writeLine('Done');
+        $this->response->writeLine('Done');
     }
 }

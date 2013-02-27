@@ -11,14 +11,10 @@ use df\apex;
 use df\halo;
 use df\arch;
     
-class TaskInitGitignore extends arch\Action {
+class TaskInitGitignore extends arch\task\Action {
 
-    public function execute() {
-        $response = new halo\task\Response([
-            new core\io\channel\Std()
-        ]);
-
-        $response->writeLine('Copying default .gitignore file...');
+    protected function _run() {
+        $this->response->writeLine('Copying default .gitignore file...');
 
         $path = df\Launchpad::$applicationPath;
 
@@ -26,9 +22,9 @@ class TaskInitGitignore extends arch\Action {
         core\io\Util::chmod($path.'/.gitignore', 0777);
 
         if(is_file($path.'/.gitignore')) {
-            $response->writeLine('Done');
+            $this->response->writeLine('Done');
         } else {
-            $response->writeError('Unable to copy .gitignore file');
+            $this->response->writeError('Unable to copy .gitignore file');
         }
     }
 }
