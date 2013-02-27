@@ -71,7 +71,7 @@ class Delete extends arch\form\Action {
             $this->_deleteItem();
             $itemName = $this->_getItemName();
             
-            $this->arch->notify(
+            $this->comms->notify(
                 core\string\Manipulator::formatId($itemName).'.deleted', 
                 $this->_(
                     'The %n% has been successfully deleted', 
