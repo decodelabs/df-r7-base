@@ -7,7 +7,7 @@ namespace df\core\io\channel;
 
 use df\core;
 
-class File implements core\io\IFile, core\io\ILocalFilePointer {
+class File implements core\io\IFile, core\io\ILocalFilePointer, core\io\IContainedStateChannel {
 
     use core\io\TReader;
     use core\io\TWriter;
@@ -196,6 +196,17 @@ class File implements core\io\IFile, core\io\ILocalFilePointer {
     }
 
 // Error
+    public function getErrorBuffer() {
+        return $this->_error;
+    }
+
+    public function flushErrorBuffer() {
+        $output = $this->_error;
+        $this->_error = null;
+
+        return $output;
+    }
+    
     public function writeError($error) {
         $this->_error .= $error;
         return $this;

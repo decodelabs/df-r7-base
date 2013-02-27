@@ -7,15 +7,19 @@ namespace df\core\io\channel;
 
 use df\core;
 
-class Memory implements core\io\IFile {
+class Memory implements core\io\IFile, core\io\IContainedStateChannel, core\IDumpable {
+
+    use core\io\TReader;
+    use core\io\TWriter;
 
     protected $_contentType = null;
 
     private $_data;
+    private $_error;
     private $_pos = 0;
 
 
-    public function __construct($data, $contentType=null, $mode=core\io\IMode::READ_WRITE) {
+    public function __construct($data='', $contentType=null, $mode=core\io\IMode::READ_WRITE) {
         $this->putContents($data);
         $this->setContentType($contentType);
     }
@@ -78,6 +82,28 @@ class Memory implements core\io\IFile {
     
     public function getContents() {
         return $this->_data;
+    }
+
+
+// Error
+    public function getErrorBuffer() {
+        return $this->_error;
+    }
+
+    public function flushErrorBuffer() {
+        $output = $this->_error;
+        $this->_error = null;
+
+        return $output;
+    }
+
+    public function writeError($error) {
+        $this->_error .= $error;
+        return $this;
+    }
+
+    public function writeErrorLine($line) {
+        return $this->writeError($line."\r\n");
     }
     
 
@@ -170,9 +196,27 @@ class Memory implements core\io\IFile {
 
 // Write
     protected function _writeChunk($data, $length) {
+        $cPos = $this->_pos;
         $this->_data .= substr($data, 0, $length);
         $this->_pos = strlen($this->_data);
         
-        return $this;
+        return $this->_pos - $cPos;
+    }
+
+
+// Dump
+    public function getDumpProperties() {
+        $output = array();
+
+        if($this->_contentType) {
+            $output['contentType'] = $this->_contentType;
+        }
+
+        if($this->_error) {
+            $output['error'] = $this->_error;
+        }
+
+        $output['data'] = $this->_data;
+        return $output;
     }
 }

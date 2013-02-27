@@ -414,6 +414,11 @@ interface IChannel extends IReader, IWriter {
     public function writeErrorLine($line);
 }
 
+interface IContainedStateChannel extends IChannel {
+    public function getErrorBuffer();
+    public function flushErrorBuffer();
+}
+
 
 // File
 interface IFilePointer {
