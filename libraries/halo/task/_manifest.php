@@ -17,20 +17,7 @@ interface IException {}
 
 
 // Interfaces
-interface IResponse extends core\IRegistryObject {
-    public function setChannels(array $channels);
-    public function addChannels(array $channels);
-    public function addChannel(core\io\IChannel $channel);
-    public function hasChannel($id);
-    public function getChannel($id);
-    public function removeChannel($id);
-    public function getChannels();
-    public function clearChannels();
+interface IResponse extends core\io\IMultiplexer, core\IRegistryObject {
 
-    public function flush();
-    public function write($data);
-    public function writeLine($line);
-    public function writeError($error);
-    public function writeErrorLine($line);
 }
 
