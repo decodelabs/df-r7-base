@@ -34,10 +34,10 @@ class Task implements arch\IContextHelper {
             return $application->getTaskResponse();
         }
 
-        $key = halo\task\Response::REGISTRY_KEY;
+        $key = core\io\Multiplexer::REGISTRY_KEY.':task';
 
         if(!$output = $application->getRegistryObject($key)) {
-            $output = halo\task\Response::defaultFactory();
+            $output = arch\task\Response::defaultFactory();
             $application->setRegistryObject($output);
         }
 

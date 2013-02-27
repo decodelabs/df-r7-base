@@ -10,13 +10,52 @@ use df\core;
     
 class Multiplexer implements IMultiplexer, core\IDumpable {
 
+    const REGISTRY_KEY = 'multiplexer';
+
+    protected $_id;
     protected $_channels = array();
 
-    public function __construct(array $channels=null) {
+    public static function defaultFactory($id=null) {
+        if(isset($_SERVER['argv']) && !df\Launchpad::$invokingApplication) {
+            $channel = new core\io\channel\Std();
+        } else {
+            $channel = new core\io\channel\Memory();
+        }
+
+        return new self([$channel], $id);
+    }
+
+    public function __construct(array $channels=null, $id=null) {
+        $this->setId($id);
+
         if($channels !== null) {
             $this->addChannels($channels);
         }
     }
+
+    public function setId($id) {
+        $this->_id = $id;
+        return $this;
+    }
+
+    public function getId() {
+        return $this->_id;
+    }
+
+
+// Registry
+    public function getRegistryObjectKey() {
+        $output = static::REGISTRY_KEY;
+
+        if($this->_id) {
+            $output .= ':'.$this->_id;
+        }
+
+        return $output;
+    }
+
+    public function onApplicationShutdown() {}
+
 
 // Channels
     public function setChannels(array $channels) {

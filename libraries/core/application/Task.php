@@ -41,14 +41,14 @@ class Task extends Base implements arch\IDirectoryRequestApplication {
 
     
 // Response
-    public function setTaskResponse(halo\task\IResponse $response) {
+    public function setTaskResponse(core\io\Multiplexer $response) {
         $this->_response = $response;
         return $this;
     }
 
     public function getTaskResponse() {
         if(!$this->_response) {
-            $this->_response = halo\task\Response::defaultFactory();
+            $this->_response = core\io\Multiplexer::defaultFactory('task');
         }
 
         return $this->_response;
@@ -158,7 +158,7 @@ class Task extends Base implements arch\IDirectoryRequestApplication {
     public function launchPayload($payload) {
         if(is_string($payload)) {
             echo $payload."\r\n";
-        } else if($payload instanceof halo\task\IResponse || $payload instanceof core\io\IChannel) {
+        } else if($payload instanceof core\io\IFlushable) {
             $payload->flush();
         } else if(!empty($payload)) {
             core\stub($payload);

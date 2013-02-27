@@ -405,12 +405,15 @@ trait TWriter {
 }
 
 
+interface IFlushable {
+    public function flush();
+}
+
 
 
 // Channel
-interface IChannel extends IReader, IWriter {
+interface IChannel extends IReader, IWriter, IFlushable {
     public function getChannelId();
-    public function flush();
     public function writeError($error);
     public function writeErrorLine($line);
 }
@@ -461,7 +464,10 @@ interface IFile extends IFilePointer, IChannel {
 }
 
 
-interface IMultiplexer {
+interface IMultiplexer extends IFlushable, core\IRegistryObject {
+    public function setId($id);
+    public function getId();
+
     public function setChannels(array $channels);
     public function addChannels(array $channels);
     public function addChannel(IChannel $channel);
@@ -471,7 +477,6 @@ interface IMultiplexer {
     public function getChannels();
     public function clearChannels();
 
-    public function flush();
     public function write($data);
     public function writeLine($line);
     public function writeError($error);
