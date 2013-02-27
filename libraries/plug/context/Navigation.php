@@ -12,10 +12,10 @@ use df\arch;
     
 class Navigation implements arch\IContextHelper {
 
-    use archLib\TContextHelper;
+    use arch\TContextHelper;
 
     public function getMenu($id) {
-        return archLib\navigation\menu\Base::factory($this->_context, $id);
+        return arch\navigation\menu\Base::factory($this->_context, $id);
     }
 
     public function getBreadcrumbs($empty=false) {
@@ -23,9 +23,9 @@ class Navigation implements arch\IContextHelper {
 
         if(!$output = $application->getRegistryObject('breadcrumbs')) {
             if($empty) {
-                $output = new archLib\navigation\breadcrumbs\EntryList();
+                $output = new arch\navigation\breadcrumbs\EntryList();
             } else {
-                $output = archLib\navigation\breadcrumbs\EntryList::generateFromRequest(
+                $output = arch\navigation\breadcrumbs\EntryList::generateFromRequest(
                     $this->_context->request
                 );
             }
@@ -38,9 +38,9 @@ class Navigation implements arch\IContextHelper {
 
     public function clearMenuCache($id=null) {
         if($id !== null) {
-            archLib\navigation\menu\Base::clearCacheFor($this->_context, $id);
+            arch\navigation\menu\Base::clearCacheFor($this->_context, $id);
         } else {
-            archLib\navigation\menu\Base::clearCache($this->_context);
+            arch\navigation\menu\Base::clearCache($this->_context);
         }
 
         return $this;
