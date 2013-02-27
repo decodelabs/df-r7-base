@@ -10,6 +10,7 @@ use df\core;
 
 // Exceptions
 interface IException {}
+class RuntimeException extends \RuntimeException implements IException {}
 
 
 // Interfaces
