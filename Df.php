@@ -28,6 +28,7 @@ class Launchpad {
     public static $isDistributed = false;
 
     public static $loader;
+    public static $invokingApplication;
     public static $application;
     public static $debug;
     
@@ -143,7 +144,8 @@ class Launchpad {
     }
     
     public static function runApplication(core\IApplication $application) {
-        $lastApp = self::$application;
+        $prevApp = self::$invokingApplication;
+        self::$invokingApplication = self::$application;
         self::$application = $application;
         $e = null;
         
@@ -153,9 +155,11 @@ class Launchpad {
             $payload = call_user_func_array([$application, 'dispatch'], $args);
         } catch(\Exception $e) {}
         
-        if($lastApp) {
-            self::$application = $lastApp;
+        if(self::$invokingApplication) {
+            self::$application = self::$invokingApplication;
         }
+
+        self::$invokingApplication = $prevApp;
         
         if($e) {
             throw $e;
