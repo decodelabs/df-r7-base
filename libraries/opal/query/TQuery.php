@@ -556,7 +556,7 @@ trait TQuery_Attachment {
     
 // Output
     public function asOne($name) {
-        if($this->_joinClauseList->isEmpty()) {
+        if(!$this->_joinClauseList || $this->_joinClauseList->isEmpty()) {
             throw new LogicException(
                 'No join clauses have been defined for attachment '.$name
             );
@@ -572,7 +572,7 @@ trait TQuery_Attachment {
     }
     
     public function asMany($name, $keyField=null) {
-        if($this->_joinClauseList->isEmpty()) {
+        if(!$this->_joinClauseList || $this->_joinClauseList->isEmpty()) {
             throw new LogicException(
                 'No join clauses have been defined for attachment '.$name
             );
