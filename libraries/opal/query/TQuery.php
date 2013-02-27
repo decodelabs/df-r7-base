@@ -331,7 +331,11 @@ trait TQuery_JoinClauseFactoryBase {
     }
     
     public function getNonLocalFieldReferences() {
-        return $this->_joinClauseList->getNonLocalFieldReferences();
+        if($this->_joinClauseList) {
+            return $this->_joinClauseList->getNonLocalFieldReferences();
+        }
+
+        return array();
     }
     
     public function referencesSourceAliases(array $sourceAliases) {
