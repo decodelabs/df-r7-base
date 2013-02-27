@@ -172,10 +172,6 @@ class Memory implements core\io\IFile, core\io\IContainedStateChannel, core\IDum
 
 
 // Housekeeping
-    public function flush() {
-        return true;
-    }
-
     public function truncate($size=0) {
         $this->_data = substr($this->_data, 0, $size);
         return $this;
