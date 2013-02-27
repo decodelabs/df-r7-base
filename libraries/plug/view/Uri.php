@@ -127,7 +127,7 @@ class Uri implements aura\view\IHelper {
     }
 
     public function back($default=null, $success=true) {
-        return $this->request($this->_view->getContext()->arch->backRequest($default, $success));
+        return $this->request($this->_view->getContext()->directory->backRequest($default, $success));
     }
     
     public function mailto($url) {

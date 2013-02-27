@@ -20,7 +20,7 @@ class TaskCommit extends arch\task\Action {
         core\stub($name);
 
         if(empty($name)) {
-            return $this->arch->newRequest('packages/commit-all');
+            return $this->directory->newRequest('packages/commit-all');
         }
 
         $this->response->writeLine('Pushing changes for package "'.$name.'"');

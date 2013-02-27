@@ -17,7 +17,7 @@ class TaskRefresh extends arch\task\Action {
         $name = $this->request->query['package'];
 
         if(empty($name)) {
-            return $this->arch->newRequest('packages/refresh-all');
+            return $this->directory->newRequest('packages/refresh-all');
         }
 
         $this->response->writeLine('Refreshing package "'.$name.'"');

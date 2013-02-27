@@ -164,7 +164,7 @@ class TaskBuild extends arch\task\Action {
         $this->response->writeLine('App build complete');
 
         if($purgeOldBuilds) {
-            return $this->arch->newRequest('task://application/purge-builds');
+            return $this->directory->newRequest('task://application/purge-builds');
         }
     }
 }

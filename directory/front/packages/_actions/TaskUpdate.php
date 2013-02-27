@@ -17,7 +17,7 @@ class TaskUpdate extends arch\task\Action {
         $name = $this->request->query['package'];
 
         if(empty($name)) {
-            return $this->arch->newRequest('packages/update-all');
+            return $this->directory->newRequest('packages/update-all');
         }
 
         $this->response->writeLine('Pulling updates for package "'.$name.'"');

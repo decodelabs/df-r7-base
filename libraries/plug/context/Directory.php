@@ -7,16 +7,16 @@ namespace df\plug\context;
 
 use df;
 use df\core;
-use df\arch as archLib;
+use df\arch;
 use df\halo;
 
-class Arch implements archLib\IContextHelper {
+class Directory implements arch\IContextHelper {
     
-    use archLib\TContextHelper;
+    use arch\TContextHelper;
 
 // Request
     public function newRequest($request) {
-        return archLib\Request::factory($request);
+        return arch\Request::factory($request);
     }
 
     public function backRequest($default=null, $success=true) {
@@ -31,7 +31,7 @@ class Arch implements archLib\IContextHelper {
             
         if($default === null) {
             $default = $request->getParent();
-        } else if(!$default instanceof archLib\IRequest) {
+        } else if(!$default instanceof arch\IRequest) {
             $default = $this->newRequest($default);
         } else {
             $default = clone $default;
@@ -43,39 +43,39 @@ class Arch implements archLib\IContextHelper {
 
 // Actions
     public function actionExists($request, $runMode=null) {
-        $request = archLib\Request::factory($request);
+        $request = arch\Request::factory($request);
 
         if($runMode === null) {
             $runMode = $this->_context->getRunMode();
         }
 
-        $actionClass = archLib\Action::getClassFor($request, $runMode);
+        $actionClass = arch\Action::getClassFor($request, $runMode);
 
         if(class_exists($actionClass)) {
             return true;
         }
 
-        $controllerClass = archLib\Controller::getClassFor($request, $runMode);
+        $controllerClass = arch\Controller::getClassFor($request, $runMode);
 
         if(!class_exists($controllerClass)) {
             return false;
         }
 
-        return (bool)archLib\Action::getControllerMethodName(
+        return (bool)arch\Action::getControllerMethodName(
             $controllerClass, 
-            archLib\Context::factory($this->_context->getApplication(), $request)
+            arch\Context::factory($this->_context->getApplication(), $request)
         );
     }
     
-    public function getAction($name, $context=true, archLib\IController $controller=null, $runMode=null) {
+    public function getAction($name, $context=true, arch\IController $controller=null, $runMode=null) {
         if($context === true) {
             $context = $this->_context;
         }
         
-        if($context instanceof archLib\IContext) {
+        if($context instanceof arch\IContext) {
             $request = clone $context->location;
         } else {
-            $request = archLib\Request::factory($context);
+            $request = arch\Request::factory($context);
         }
         
         $request->setAction($name);
@@ -84,25 +84,25 @@ class Arch implements archLib\IContextHelper {
             $runMode = $this->_context->getRunMode();
         }
         
-        $context = archLib\Context::factory($this->_context->getApplication(), $request);
-        return archLib\Action::factory($context, $controller);
+        $context = arch\Context::factory($this->_context->getApplication(), $request);
+        return arch\Action::factory($context, $controller);
     }
     
     public function controllerExists($request, $runMode=null) {
-        $request = archLib\Request::factory($request);
+        $request = arch\Request::factory($request);
 
         if($runMode === null) {
             $runMode = $this->_context->getRunMode();
         }
 
-        $class = archLib\Controller::getClassFor($request, $runMode);
+        $class = arch\Controller::getClassFor($request, $runMode);
 
         return class_exists($class);
     }
 
     public function getController($request) {
-        return archLib\Controller::factory(
-            archLib\Context::factory(
+        return arch\Controller::factory(
+            arch\Context::factory(
                 $this->_context->getApplication(), $request
             )
         );
@@ -113,19 +113,19 @@ class Arch implements archLib\IContextHelper {
             $context = $this->_context;
         }
         
-        if($context instanceof archLib\IContext) {
+        if($context instanceof arch\IContext) {
             $request = clone $context->location;
         } else {
-            $request = archLib\Request::factory($context);
+            $request = arch\Request::factory($context);
         }
         
-        $context = archLib\Context::factory($this->_context->getApplication(), $request);
-        return archLib\Component::factory($context, $name);
+        $context = arch\Context::factory($this->_context->getApplication(), $request);
+        return arch\Component::factory($context, $name);
     }
 
 
 // Facets
     public function newFacetController(Callable $initializer=null) {
-        return new archLib\FacetController($this->_context, $initializer);
+        return new arch\FacetController($this->_context, $initializer);
     }
 }
