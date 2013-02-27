@@ -219,3 +219,15 @@ interface ITable extends core\policy\IEntity, opal\query\IAdapter, opal\query\IE
     public function lock();
     public function unlock();
 }
+
+
+interface ISchemaExecutor {
+    public function getAdapter();
+
+    public function exists($name);
+    public function introspect($name);
+    public function create(opal\rdbms\schema\ISchema $schema);
+    public function alter($currentName, opal\rdbms\schema\ISchema $schema);
+    public function rename($oldName, $newName);
+    public function drop($name);
+}

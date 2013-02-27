@@ -55,7 +55,7 @@ abstract class Table implements ITable, core\IDumpable {
     }
     
     public function getSchema() {
-        $schema = $this->_introspectSchema();
+        $schema = SchemaExecutor::factory($this->_adapter)->introspect($this->_name);
         $schema->acceptChanges()->isAudited(true);
         
         return $schema;
@@ -126,6 +126,13 @@ abstract class Table implements ITable, core\IDumpable {
     }
     
     
+## SCHEMA ##
+    public function exists() {
+        return SchemaExecutor::factory($this->_adapter)->exists($this->_name);
+    }
+
+
+
     
 // Create
     public function create(opal\rdbms\schema\ISchema $schema, $dropIfExists=false) {
@@ -135,10 +142,12 @@ abstract class Table implements ITable, core\IDumpable {
                 $this->_adapter->getDsn()->getDatabase(), $this->_name
             );
         }
+
+        $exec = SchemaExecutor::factory($this->_adapter);
         
-        if($this->exists()) {
+        if($exec->exists($this->_name)) {
             if($dropIfExists) {
-                $this->drop();
+                $exec->drop($this->_name);
             } else {
                 throw new opal\rdbms\TableConflictException(
                     'Table '.$schema->getName().' already exists', 0, null,
@@ -146,109 +155,8 @@ abstract class Table implements ITable, core\IDumpable {
                 );
             }
         }
-        
-        $schema->normalize();
-        $this->_create($schema);
-        
-        return $this;
-    }
-    
-    
-    protected function _create(opal\rdbms\schema\ISchema $schema) {
-        // Table definition
-        $sql = 'CREATE';
-        
-        if($schema->isTemporary()) {
-            $sql .= ' TEMPORARY';
-        }
-        
-        $sql .= ' TABLE '.$this->_adapter->quoteIdentifier($schema->getName()).' ('."\n";
-        $primaryIndex = $schema->getPrimaryIndex();
-        $definitions = array();
-        
-        
-        // Fields
-        foreach($schema->getFields() as $name => $field) {
-            if(null !== ($def = $this->_generateFieldDefinition($field))) {
-                $definitions[] = $def;
-            }
-        }
-        
-        
-        // Indexes
-        foreach($schema->getIndexes() as $index) {
-            if($index->isVoid()) {
-                throw new opal\schema\RuntimeException(
-                    'Index '.$index->getName().' is invalid'
-                );
-            }
-            
-            if(null !== ($def = $this->_generateInlineIndexDefinition($index, $primaryIndex))) {
-                $definitions[] = $def;
-            }
-        }
 
-
-        // Foreign keys
-        foreach($schema->getForeignKeys() as $key) {
-            if($key->isVoid()) {
-                throw new opal\rdbms\schema\IInvalidForeignKey(
-                    'Foreign key '.$key->getName().' is invalid'
-                );
-            }
-            
-            if(null !== ($def = $this->_generateInlineForeignKeyDefinition($key))) {
-                $definitions[] = $def;
-            }
-        }
-        
-        
-        
-        // Flatten definitions
-        $sql .= '    '.implode(','."\n".'    ', $definitions)."\n".')'."\n";
-        
-        
-        
-        
-        // Table options
-        $tableOptions = $this->_defineTableOptions($schema);
-        
-        if(!empty($tableOptions)) {
-            $sql .= implode(','."\n", $tableOptions);
-        }
-        
-        $sql = array($sql);
-        
-        
-        // Indexes
-        foreach($schema->getIndexes() as $index) {
-            if(null !== ($def = $this->_generateStandaloneIndexDefinition($index, $primaryIndex))) {
-                $sql[] = $def;
-            }
-        }
-        
-        
-        // Triggers
-        foreach($schema->getTriggers() as $trigger) {
-            if(null !== ($def = $this->_generateTriggerDefinition($trigger))) {
-                $sql[] = $def;
-            }
-        }
-        
-        
-        // TODO: stored procedures
-        
-        
-        try {
-            foreach($sql as $query) {
-                $this->_adapter->prepare($query)->executeRaw();
-            }
-        } catch(\Exception $e) {
-            $this->drop();
-            
-            throw $e;
-        }
-        
+        $exec->create($schema);
         return $this;
     }
     
@@ -256,31 +164,23 @@ abstract class Table implements ITable, core\IDumpable {
 // Alter
     public function alter(opal\rdbms\schema\ISchema $schema) {
         $schema->normalize();
-        $this->_alter($schema);
-        
+        SchemaExecutor::factory($this->_adapter)->alter($this->_name, $schema);
+        $this->_setName($schema->getName());
         return $this;
     }
-    
-    abstract protected function _alter(opal\rdbms\schema\ISchema $schema);
     
     
 // Rename
     public function rename($newName) {
-        $sql = 'ALTER TABLE '.$this->_adapter->quoteIdentifier($this->_name).' '.
-               'RENAME TO '.$this->_adapter->quoteIdentifier($newName);
-               
-        $this->_adapter->prepare($sql)->executeRaw();
-        $this->_name = $newName;
-        
+        SchemaExecutor::factory($this->_adapter)->rename($this->_name, $newName);
+        $this->_setName($newName);
         return $this;
     }
     
     
 // Drop
     public function drop() {
-        $sql = 'DROP TABLE IF EXISTS '.$this->_adapter->quoteIdentifier($this->_name);
-        $this->_adapter->prepare($sql)->executeRaw();
-        
+        SchemaExecutor::factory($this->_adapter)->drop($this->_name);
         return $this;
     }
     
@@ -293,70 +193,6 @@ abstract class Table implements ITable, core\IDumpable {
     public function unlock() {
         return $this->_adapter->unlockTable($this->_name);
     }
-    
-    
-// Table options
-    protected function _defineTableOptions(opal\rdbms\schema\ISchema $schema) {
-        return null;
-    }
-    
-    
-// Foreign keys
-    protected function _generateInlineForeignKeyDefinition(opal\rdbms\schema\IForeignKey $key) {
-        $keySql = 'CONSTRAINT '.$this->_adapter->quoteIdentifier($key->getName()).' FOREIGN KEY';
-        $fields = array();
-        $references = array();
-        
-        foreach($key->getReferences() as $reference) {
-            $fields[] = $this->_adapter->quoteIdentifier($reference->getField()->getName());
-            $references[] = $this->_adapter->quoteIdentifier($reference->getTargetFieldName());
-        }
-        
-        $keySql .= ' ('.implode(',', $fields).')';
-        $keySql .= ' REFERENCES '.$this->_adapter->quoteIdentifier($key->getTargetSchema());
-        $keySql .= ' ('.implode(',', $references).')';
-        
-        if(null !== ($action = $key->getDeleteAction())) {
-            $action = $this->_normalizeForeignKeyAction($action);
-            $keySql .= ' ON DELETE '.$action;
-        }
-        
-        if(null !== ($action = $key->getUpdateAction())) {
-            $action = $this->_normalizeForeignKeyAction($action);
-            $keySql .= ' ON UPDATE '.$action;
-        }
-        
-        return $keySql;
-    }
-
-    protected function _normalizeForeignKeyAction($action) {
-        switch($action = strtoupper($action)) {
-            case 'RESTRICT':
-            case 'CASCADE':
-            case 'NO ACTION':
-                break;
-                
-            case 'SET NULL':
-            default:
-                $action = 'SET NULL';
-                break;
-        }
-        
-        return $action;
-    }
-    
-
-// Triggers
-    protected function _generateTriggerDefinition(opal\rdbms\schema\ITrigger $trigger) {
-        $triggerSql = 'CREATE TRIGGER '.$this->_adapter->quoteIdentifier($trigger->getName());
-        $triggerSql .= $trigger->getTimingName();
-        $triggerSql .= ' '.$trigger->getEventName();
-        $triggerSql .= ' ON '.$this->_adapter->quoteIdentifier($this->_name);
-        $triggerSql .= ' FOR EACH ROW BEGIN '.implode('; ', $trigger->getStatements()).'; END';
-        
-        return $triggerSql;
-    }
-
 
 // Count
     public function count() {
@@ -1036,7 +872,7 @@ abstract class Table implements ITable, core\IDumpable {
             'AS '.$this->_adapter->quoteTableAliasDefinition($source->getAlias()).
             $joinSql
         );
-        
+
 
         $joinClauses = $attachment->getJoinClauseList();
         $whereClauses = $attachment->getWhereClauseList();
@@ -1058,6 +894,8 @@ abstract class Table implements ITable, core\IDumpable {
             $clauses = null;
         }
 
+
+        // TODO: add filter clause for attachment clauses
 
         if($clauses) {
             $whereSql = $this->_defineQueryClauseList($stmt, $clauses, $rows);
@@ -1878,15 +1716,6 @@ abstract class Table implements ITable, core\IDumpable {
             $stmt->appendSql("\n".$this->_defineQueryLimit($limit, $offset));
         }
     }
-    
-    
-// Stubs
-    abstract protected function _generateFieldDefinition(opal\rdbms\schema\IField $field);
-    abstract protected function _generateInlineIndexDefinition(opal\rdbms\schema\IIndex $index, opal\rdbms\schema\IIndex $primaryIndex=null);
-    abstract protected function _generateStandaloneIndexDefinition(opal\rdbms\schema\IIndex $index, opal\rdbms\schema\IIndex $primaryIndex=null);
-    abstract protected function _introspectSchema();
-    abstract protected function _defineQueryLimit($limit, $offset=null);
-    
     
             
 // Transaction
