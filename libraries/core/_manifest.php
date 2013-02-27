@@ -385,10 +385,10 @@ interface IApplication {
     public function getPassKey();
     
     // Cache
-    public function _setCacheObject(IRegistryObject $object);
-    public function _getCacheObject($key);
-    public function _hasCacheObject($key);
-    public function _removeCacheObject($key);
+    public function setRegistryObject(IRegistryObject $object);
+    public function getRegistryObject($key);
+    public function hasRegistryObject($key);
+    public function removeRegistryObject($key);
 }
 
 interface IRegistryObject {
@@ -423,7 +423,7 @@ trait TManager {
             $application = df\Launchpad::getActiveApplication();
         }
         
-        if(!$output = $application->_getCacheObject(static::REGISTRY_PREFIX)) {
+        if(!$output = $application->getRegistryObject(static::REGISTRY_PREFIX)) {
             $output = static::_getDefaultInstance($application);
             static::setInstance($output);
         }
@@ -432,7 +432,7 @@ trait TManager {
     }
 
     public static function setInstance(IManager $manager) {
-        return $manager->getApplication()->_setCacheObject($manager);
+        return $manager->getApplication()->setRegistryObject($manager);
     }
 
     protected static function _getDefaultInstance(IApplication $application) {

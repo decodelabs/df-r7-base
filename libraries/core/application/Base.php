@@ -15,7 +15,7 @@ abstract class Base implements core\IApplication, core\IDumpable {
     protected $_debugTransport;
     
     protected $_isRunning = false;
-    protected $_objectCache = array();
+    protected $_registry = array();
     
     public static function factory($appType) {
         $class = 'df\\core\\application\\'.$appType;
@@ -87,7 +87,7 @@ abstract class Base implements core\IApplication, core\IDumpable {
     }
     
     public function shutdown() {
-        foreach($this->_objectCache as $object) {
+        foreach($this->_registry as $object) {
             $object->onApplicationShutdown();
         }
     }
@@ -164,29 +164,29 @@ abstract class Base implements core\IApplication, core\IDumpable {
 
     
 // Cache objects
-    public function _setCacheObject(core\IRegistryObject $object) {
-        $this->_objectCache[$object->getRegistryObjectKey()] = $object;
+    public function setRegistryObject(core\IRegistryObject $object) {
+        $this->_registry[$object->getRegistryObjectKey()] = $object;
         return $this;
     }
     
-    public function _getCacheObject($key) {
-        if(isset($this->_objectCache[$key])) {
-            return $this->_objectCache[$key];
+    public function getRegistryObject($key) {
+        if(isset($this->_registry[$key])) {
+            return $this->_registry[$key];
         }
         
         return null;
     }
     
-    public function _hasCacheObject($key) {
-        return isset($this->_objectCache[$key]);
+    public function hasRegistryObject($key) {
+        return isset($this->_registry[$key]);
     }
     
-    public function _removeCacheObject($key) {
+    public function removeRegistryObject($key) {
         if($key instanceof IRegistryObject) {
             $key = $key->getRegistryObjectKey();
         }
         
-        unset($this->_objectCache[$key]);
+        unset($this->_registry[$key]);
         return $this;
     }
     
@@ -199,7 +199,7 @@ abstract class Base implements core\IApplication, core\IDumpable {
             'environmentId' => $this->getEnvironmentId(),
             'environmentMode' => $this->getEnvironmentMode(),
             'runMode' => $this->getRunMode(),
-            'cacheObjects' => count($this->_objectCache)
+            'registry' => count($this->_registry)
         ];
     }
 } 

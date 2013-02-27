@@ -176,7 +176,7 @@ class Arch implements archLib\IContextHelper {
     public function getBreadcrumbs($empty=false) {
         $application = $this->_context->getApplication();
 
-        if(!$output = $application->_getCacheObject('breadcrumbs')) {
+        if(!$output = $application->getRegistryObject('breadcrumbs')) {
             if($empty) {
                 $output = new archLib\navigation\breadcrumbs\EntryList();
             } else {
@@ -185,7 +185,7 @@ class Arch implements archLib\IContextHelper {
                 );
             }
             
-            $application->_setCacheObject($output);
+            $application->setRegistryObject($output);
         }
 
         return $output;

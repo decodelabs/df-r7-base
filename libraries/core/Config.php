@@ -43,8 +43,8 @@ abstract class Config implements IConfig, core\IDumpable {
         }
         
         if($handlerClass::STORE_IN_MEMORY) {
-            if(!$config = $application->_getCacheObject(self::REGISTRY_PREFIX.$id)) {
-                $application->_setCacheObject(
+            if(!$config = $application->getRegistryObject(self::REGISTRY_PREFIX.$id)) {
+                $application->setRegistryObject(
                     $config = new $handlerClass($application, $id)
                 );
             }

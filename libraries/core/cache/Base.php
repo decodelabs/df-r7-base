@@ -32,8 +32,8 @@ abstract class Base implements ICache {
         $class = get_called_class();
         $id = self::REGISTRY_PREFIX.$class::getCacheId();
         
-        if(!$cache = $application->_getCacheObject($id)) {
-            $application->_setCacheObject(
+        if(!$cache = $application->getRegistryObject($id)) {
+            $application->setRegistryObject(
                 $cache = new $class($application)
             );
         }

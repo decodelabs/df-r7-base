@@ -330,7 +330,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
             $this->_responseAugmentor->resetCurrent();
         }
         
-        $this->_removeCacheObject('breadcrumbs');
+        $this->removeRegistryObject('breadcrumbs');
 
         $this->_context = null;
         $this->_context = arch\Context::factory($this, clone $request);

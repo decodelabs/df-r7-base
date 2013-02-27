@@ -29,7 +29,7 @@ abstract class Model implements IModel, core\IDumpable {
         
         $name = lcfirst($name);
         
-        if($model = $application->_getCacheObject(self::REGISTRY_PREFIX.$name)) {
+        if($model = $application->getRegistryObject(self::REGISTRY_PREFIX.$name)) {
             return $model;
         }
         
@@ -42,7 +42,7 @@ abstract class Model implements IModel, core\IDumpable {
         }
         
         $model = new $class($application);
-        $application->_setCacheObject($model);
+        $application->setRegistryObject($model);
         
         return $model;
     }

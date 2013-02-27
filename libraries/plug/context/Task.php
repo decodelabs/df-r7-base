@@ -36,9 +36,9 @@ class Task implements arch\IContextHelper {
 
         $key = halo\task\Response::REGISTRY_KEY;
 
-        if(!$output = $application->_getCacheObject($key)) {
+        if(!$output = $application->getRegistryObject($key)) {
             $output = halo\task\Response::defaultFactory();
-            $application->_setCacheObject($output);
+            $application->setRegistryObject($output);
         }
 
         return $output;
