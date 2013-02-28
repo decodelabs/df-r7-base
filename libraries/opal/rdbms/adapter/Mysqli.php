@@ -210,7 +210,7 @@ class Mysqli extends opal\rdbms\adapter\Base {
         
         return implode('.', $parts);
     }
-    
+
     public function quoteValue($value) {
         return '\''.mysqli_real_escape_string($this->_connection, $value).'\'';
     }

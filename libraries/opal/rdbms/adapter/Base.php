@@ -162,11 +162,11 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
         return $this->quoteIdentifier($alias);
     }
     
-    public function quoteFieldAliasReference($alias) {
-        return $this->quoteIdentifier($alias);
+    public function quoteFieldAliasDefinition($alias) {
+        return $this->quoteValue($alias);
     }
 
-    public function quoteFieldAliasDefinition($alias) {
+    public function quoteFieldAliasReference($alias) {
         return $this->quoteValue($alias);
     }
 
@@ -207,7 +207,7 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
     }
 
     public function getTable($name) {
-        return opal\rdbms\Table::factory($this, $name);
+        return new opal\rdbms\Table($this, $name);
     }
     
     public function createTable(opal\rdbms\schema\ISchema $schema, $dropIfExists=false) {

@@ -1,0 +1,86 @@
+<?php 
+/**
+ * This file is part of the Decode Framework
+ * @license http://opensource.org/licenses/MIT
+ */
+namespace df\opal\rdbms\variant\sqlite;
+
+use df;
+use df\core;
+use df\opal;
+    
+class QueryExecutor extends opal\rdbms\QueryExecutor {
+
+// Truncate
+    public function truncate($tableName) {
+        $sql = 'DELETE FROM '.$this->_adapter->quoteIdentifier($tableName);
+        $this->_adapter->executeSql($sql);
+        $this->_adapter->executeSql('VACUUM');
+        
+        return $this;
+    }
+
+
+// Batch insert
+    public function executeBatchInsertQuery($tableName) {
+        $this->_stmt = $this->_adapter->prepare('INSERT INTO '.$this->_adapter->quoteIdentifier($tableName));
+        
+        $fields = $bindValues = $this->_query->getFields();
+        $this->_stmt->appendSql(' ('.implode(',', $fields).') VALUES ');
+        
+        foreach($bindValues as &$field) {
+            $field = ':'.$field;
+        }
+        
+        $this->_stmt->appendSql('('.implode(',', $bindValues).')');
+        
+        $rows = array();
+        $output = 0;
+        
+        foreach($this->_query->getRows() as $row) {
+            foreach($row as $key => $value) {
+                $this->_stmt->bind($key, $value);
+            }
+            
+            $output += $this->_stmt->executeWrite();
+        }
+        
+        return $output;
+    }
+
+// Replace
+    public function executeReplaceQuery($tableName) {
+        core\stub($this->_query);
+    }
+
+// Batch replace
+    public function executeBatchReplaceQuery($tableName) {
+        core\stub($this->_query);
+    }
+
+
+// Limit
+    public function defineLimit($limit, $offset=null) {
+        $limit = (int)$limit;
+        $offset = (int)$offset;
+        
+        if($offset < 0) {
+            $offset = 0;
+        }
+        
+        if($offset > 0 && $limit == 0) {
+            $limit = '18446744073709551615';
+        }
+        
+        
+        if($limit > 0) {
+            $output = 'LIMIT '.$limit;
+            
+            if($offset > 0) {
+                $output .= ' OFFSET '.$offset;
+            }
+            
+            return $output;
+        }
+    }
+}

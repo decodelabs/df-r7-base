@@ -78,6 +78,7 @@ interface IParentSourceProvider {
 
 interface IParentQueryAware extends IParentSourceProvider {
     public function getParentQuery();
+    public function isSourceDeepNested(ISource $source);
 }
 
 
@@ -226,6 +227,7 @@ interface IOrderableQuery extends IQuery {
     public function setOrderDirectives(array $directives);
     public function getOrderDirectives();
     public function clearOrderDirectives();
+    public function isPrimaryOrderSource($sourceAlias=null);
 }
 
 interface ILimitableQuery extends IQuery {
@@ -245,7 +247,7 @@ interface IOffsettableQuery extends IQuery {
 
 interface ICorrelationQuery extends 
     IQuery, 
-    IParentSourceProvider, 
+    IParentQueryAware, 
     IJoinConstrainableQuery,
     IJoinClauseFactory,
     IWhereClauseFactory,
@@ -261,7 +263,7 @@ interface ICorrelationQuery extends
 }
 
 
-interface IJoinQuery extends IQuery, IParentSourceProvider, IJoinClauseFactory, IWhereClauseFactory {
+interface IJoinQuery extends IQuery, IParentQueryAware, IJoinClauseFactory, IWhereClauseFactory {
     
     const INNER = 0;
     const LEFT = 1;

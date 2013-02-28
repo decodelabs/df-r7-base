@@ -43,7 +43,7 @@ abstract class Database implements IDatabase {
     }
 
     public function getTable($name) {
-        return Table::factory($this->_adapter, $name);
+        return new Table($this->_adapter, $name);
     }
 
 

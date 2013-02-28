@@ -231,3 +231,59 @@ interface ISchemaExecutor {
     public function rename($oldName, $newName);
     public function drop($name);
 }
+
+interface IQueryExecutor {
+    public function getAdapter();
+    public function getQuery();
+    public function getStatement();
+
+// Table queries
+    public function truncate($tableName);
+    public function countTable($tableName);
+
+// Query passthrough
+    public function executeReadQuery($tableName, opal\query\IField $keyField=null, opal\query\IField $valField=null, $forFetch=false, $forCount=false);
+    public function executeLocalReadQuery($tableName, opal\query\IField $keyField=null, opal\query\IField $valField=null, $forFetch=false, $forCount=false);
+    public function executeRemoteJoinedReadQuery($tableName, opal\query\IField $keyField=null, opal\query\IField $valField=null, $forCount=false);
+    public function executeInsertQuery($tableName);
+    public function executeBatchInsertQuery($tableName);
+    public function executeReplaceQuery($tableName);
+    public function executeBatchReplaceQuery($tableName);
+    public function executeUpdateQuery($tableName);
+    public function executeDeleteQuery($tableName);
+
+// Remote data
+    public function fetchRemoteJoinData($tableName, array $rows);
+    public function fetchAttachmentData($tableName, array $rows);
+
+// Subquery builders
+    public function buildCorrelation(IStatement $stmt);
+    public function buildJoin(IStatement $stmt);
+
+// Fields
+    public function defineField(opal\query\IField $field, $alias=null);
+    public function defineFieldReference(opal\query\IField $field, $allowAlias=false, $forUpdateOrDelete=false);
+
+// Clauses
+    public function writeJoinClauseSection();
+    public function writeJoinClauseList(opal\query\IClauseList $list);
+    public function writeWhereClauseSection(array $remoteJoinData=null, $forUpdateOrDelete=false);
+    public function writeWhereClauseList(opal\query\IClauseList $list, array $remoteJoinData=null, $forUpdateOrDelete=false);
+    public function writeHavingClauseSection();
+    public function writeHavingClauseList(opal\query\IClauseList $list);
+
+    public function defineClauseList(opal\query\IClauseList $list, array $remoteJoinData=null, $allowAlias=false, $forUpdateOrDelete=false);
+    public function defineClause(opal\query\IClause $clause, array $remoteJoinData=null, $allowAlias=false, $forUpdateOrDelete=false);
+    public function defineClauseCorrelation(opal\query\IField $field, $fieldString, $operator, opal\query\ICorrelationQuery $query, $allowAlias=false);
+    public function defineClauseLocalCorrelation(opal\query\IField $field, $fieldString, $operator, opal\query\ICorrelationQuery $query);
+    public function defineClauseRemoteCorrelation(opal\query\IField $field, $fieldString, $operator, opal\query\ICorrelationQuery $query, $allowAlias=false);
+    public function defineClauseExpression(opal\query\IField $field, $fieldString, $operator, $value, $allowAlias=false);
+    public function normalizeArrayClauseValue($value, $allowAlias=false);
+    public function normalizeScalarClauseValue($value, $allowAlias=false);
+
+// Group, order, limit
+    public function writeGroupSection();
+    public function writeOrderSection($forUpdateOrDelete=false);
+    public function writeLimitSection($forUpdateOrDelete=false);
+    public function defineLimit($limit, $offset=null);
+}

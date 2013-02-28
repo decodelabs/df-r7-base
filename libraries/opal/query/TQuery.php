@@ -49,6 +49,10 @@ trait TQuery_ParentAware {
     
     protected $_parent;
     
+    public function getParentQuery() {
+        return $this->_parent;
+    }
+
     public function getParentSourceManager() {
         return $this->_parent->getSourceManager();
     }
@@ -59,6 +63,23 @@ trait TQuery_ParentAware {
 
     public function getParentSourceAlias() {
         return $this->_parent->getSourceAlias();
+    }
+
+    public function isSourceDeepNested(ISource $source) {
+        if(!$this->_parent instanceof IParentQueryAware) {
+            return false;
+        }
+
+        $gp = $this->_parent->getParentQuery();
+        $sourceId = $source->getId();
+
+        do {
+            if($gp->getSource()->getId() == $sourceId) {
+                return true;
+            }
+        } while($gp instanceof IParentQueryAware);
+
+        return false;
     }
 }
 
@@ -1013,6 +1034,22 @@ trait TQuery_Orderable {
     public function clearOrderDirectives() {
         $this->_order = array();
         return $this;
+    }
+
+    public function isPrimaryOrderSource($sourceAlias=null) {
+        if(!isset($this->_order[0])) {
+            return true;
+        }
+
+        if($sourceAlias === null) {
+            $sourceAlias = $this->getSource()->getAlias();
+        }
+
+        if($sourceAlias instanceof ISource) {
+            $sourceAlias = $sourceAlias->getAlias();
+        }
+
+        return $this->_order[0]->getField()->getSourceAlias() == $sourceAlias;
     }
 }
 

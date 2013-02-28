@@ -110,6 +110,10 @@ class Sqlite extends Base_Pdo {
         return implode('.', $parts);
     }
     
+    public function quoteFieldAliasReference($alias) {
+        return '`'.trim($alias, '`\'').'`';
+    }
+    
     public function quoteValue($value) {
         return $this->_connection->quote($value);
     }

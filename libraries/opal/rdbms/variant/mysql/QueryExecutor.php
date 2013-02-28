@@ -1,4 +1,4 @@
-<?php
+<?php 
 /**
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
@@ -8,22 +8,20 @@ namespace df\opal\rdbms\variant\mysql;
 use df;
 use df\core;
 use df\opal;
+    
+class QueryExecutor extends opal\rdbms\QueryExecutor {
 
-class Table extends opal\rdbms\Table {
-    
-    
 // Truncate
-    public function truncate() {
-        $sql = 'TRUNCATE TABLE '.$this->_adapter->quoteIdentifier($this->_name);
+    public function truncate($tableName) {
+        $sql = 'TRUNCATE TABLE '.$this->_adapter->quoteIdentifier($tableName);
         $this->_adapter->prepare($sql)->executeRaw();
-        
+
         return $this;
     }
-    
-    
-    
-// Query limit
-    protected function _defineQueryLimit($limit, $offset=null) {
+
+
+// Limit
+    public function defineLimit($limit, $offset=null) {
         $limit = (int)$limit;
         $offset = (int)$offset;
         

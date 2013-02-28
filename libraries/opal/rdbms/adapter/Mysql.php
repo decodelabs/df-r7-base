@@ -127,7 +127,7 @@ class Mysql extends Base_Pdo {
         
         return implode('.', $parts);
     }
-    
+
     public function quoteValue($value) {
         return $this->_connection->quote($value);
     }
