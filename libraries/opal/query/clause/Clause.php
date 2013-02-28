@@ -258,6 +258,22 @@ class Clause implements opal\query\IClause, core\IDumpable {
     public function setValue($value) {
         if(is_array($value)) {
             switch($this->_operator) {
+                case self::OP_IN:
+                    if(count($value) == 1) {
+                        $this->_operator = self::OP_EQ;
+                        $value = array_shift($value);
+                    }
+
+                    break;
+
+                case self::OP_NOT_IN:
+                    if(count($value) == 1) {
+                        $this->_operator = self::OP_NEQ;
+                        $value = array_shift($value);
+                    }
+
+                    break;
+
                 case self::OP_EQ:
                     $this->_operator = self::OP_IN;
                     break;
@@ -389,6 +405,7 @@ class Clause implements opal\query\IClause, core\IDumpable {
 
             $this->_preparedValue = $this->_value;
 
+            // Prepare
             switch($this->_operator) {
                 case self::OP_IN:
                 case self::OP_NOT_IN:
