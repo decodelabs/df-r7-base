@@ -24,10 +24,10 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
         foreach($parts as $part) {
             $valueParts = explode($valueDelimiter, trim($part), 2);
             
-            $key = str_replace(array('[', ']'), array('.', ''), urldecode(array_shift($valueParts)));
+            $key = str_replace(array(']'), array(''), urldecode(array_shift($valueParts)));
             $value = urldecode(array_shift($valueParts));
             
-            $output->getNestedChild($key)->setValue($value);
+            $output->getNestedChild($key, '[')->setValue($value);
         }
         
         return $output;
