@@ -211,6 +211,14 @@ class Mysqli extends opal\rdbms\adapter\Base {
         return implode('.', $parts);
     }
 
+    public function quoteFieldAliasDefinition($alias) {
+        return '"'.trim($alias, '`\'').'"';
+    }
+
+    public function quoteFieldAliasReference($alias) {
+        return '`'.trim($alias, '`\'').'`';
+    }
+    
     public function quoteValue($value) {
         return '\''.mysqli_real_escape_string($this->_connection, $value).'\'';
     }

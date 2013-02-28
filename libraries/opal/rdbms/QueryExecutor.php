@@ -824,11 +824,14 @@ abstract class QueryExecutor implements IQueryExecutor {
             && $field instanceof opal\query\IAggregateField 
             && $field->hasDiscreetAlias();
 
+        $deepNest = false;
+
         if(!$isDiscreetAggregate 
         && !$allowAlias 
         && $this->_query instanceof opal\query\IParentQueryAware
         && $this->_query->isSourceDeepNested($field->getSource())) {
             $allowAlias = true;
+            $deepNest = true;
         }
 
         if($isDiscreetAggregate) {
@@ -842,7 +845,11 @@ abstract class QueryExecutor implements IQueryExecutor {
             return $this->_adapter->quoteIdentifier($field->getName());
         } else if($allowAlias && ($alias = $field->getLogicalAlias())) {
             // Defined in a field list
-            return $this->_adapter->quoteFieldAliasReference($alias);
+            if($deepNest) {
+                return $this->_adapter->quoteFieldAliasDefinition($alias);
+            } else {
+                return $this->_adapter->quoteFieldAliasReference($alias);
+            }
         } else {
             return $this->_adapter->quoteTableAliasReference($field->getSourceAlias()).'.'.
                    $this->_adapter->quoteIdentifier($field->getName());

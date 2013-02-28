@@ -128,6 +128,14 @@ class Mysql extends Base_Pdo {
         return implode('.', $parts);
     }
 
+    public function quoteFieldAliasDefinition($alias) {
+        return '"'.trim($alias, '`\'').'"';
+    }
+
+    public function quoteFieldAliasReference($alias) {
+        return '`'.trim($alias, '`\'').'`';
+    }
+    
     public function quoteValue($value) {
         return $this->_connection->quote($value);
     }

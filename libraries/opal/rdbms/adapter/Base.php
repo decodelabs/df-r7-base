@@ -167,7 +167,7 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
     }
 
     public function quoteFieldAliasReference($alias) {
-        return $this->quoteValue($alias);
+        return $this->quoteIdentifier($alias);
     }
 
     public function prepareValue($value, opal\rdbms\schema\IField $field=null) {
