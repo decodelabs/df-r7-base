@@ -271,6 +271,12 @@ class InlineManyRelationValueContainer implements
         
         return $query;
     }
+
+    public function selectDistinct($field1=null) {
+        $query = call_user_func_array([$this, 'select'], func_get_args());
+        $query->isDistinct(true);
+        return $query;
+    }
     
     public function fetch() {
         if(!$this->_record) {

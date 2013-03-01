@@ -325,6 +325,12 @@ class BridgedManyRelationValueContainer implements
             ->wherePrerequisite($bridgeAlias.'.'.$this->_bridgeLocalFieldName, '=', $this->_localPrimaryManifest);
     }
 
+    public function selectDistinct($field1=null) {
+        $query = call_user_func_array([$this, 'select'], func_get_args());
+        $query->isDistinct(true);
+        return $query;
+    }
+
     public function selectFromBridge($field1=null) {
         if(!$this->_record) {
             throw new opal\record\ValuePreparationException(
@@ -343,6 +349,12 @@ class BridgedManyRelationValueContainer implements
 
             // Add local primary key(s) as prerequisite
             ->wherePrerequisite($bridgeAlias.'.'.$this->_bridgeLocalFieldName, '=', $this->_localPrimaryManifest);
+    }
+
+    public function selectDistinctFromBridge($field1=null) {
+        $query = call_user_func_array([$this, 'selectFromBridge'], func_get_args());
+        $query->isDistinct(true);
+        return $query;
     }
     
     public function fetch() {
