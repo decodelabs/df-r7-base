@@ -13,6 +13,8 @@ class Date extends Base implements core\validate\IDateField {
     use core\validate\TRangeField;
 
     protected $_defaultToNow = false;
+    protected $_mustBePast = false;
+    protected $_mustBeFuture = false;
     
     public function setMin($date) {
         if($date !== null) {
@@ -41,6 +43,34 @@ class Date extends Base implements core\validate\IDateField {
         return $this->_defaultToNow;
     }
 
+    public function mustBePast($flag=null) {
+        if($flag !== null) {
+            $this->_mustBePast = (bool)$flag;
+
+            if($this->_mustBePast) {
+                $this->_mustBeFuture = false;
+            }
+
+            return $this;
+        }
+
+        return $this->_mustBePast;
+    }
+
+    public function mustBeFuture($flag=null) {
+        if($flag !== null) {
+            $this->_mustBeFuture = (bool)$flag;
+
+            if($this->_mustBeFuture) {
+                $this->_mustBePast = false;
+            }
+
+            return $this;
+        }
+
+        return $this->_mustBeFuture;
+    }
+
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
         
@@ -53,16 +83,24 @@ class Date extends Base implements core\validate\IDateField {
         }
         
         $date = core\time\Date::factory($value);
+        $this->_validateRange($node, $date);
+
+        if($this->_mustBePast && !$date->isPast()) {
+            $node->addError('future', $this->_('This date must not be in the future'));
+        }
+
+        if($this->_mustBeFuture && !$date->isFuture()) {
+            $node->addError('future', $this->_('This date must not be in the past'));
+        }
 
         if($this->_shouldSanitize) {
             $value = $date->toString(core\time\Date::W3C);
         }
         
-        $this->_validateRange($node, $value);
         return $this->_finalize($node, $value);
     }
 
-    protected function _validateRange(core\collection\IInputTree $node, $value) {
+    protected function _validateRange(core\collection\IInputTree $node, $date) {
         if($this->_min !== null && $date->lt($this->_min)) {
             $node->addError('min', $this->_(
                 'This field must be after %min%',
