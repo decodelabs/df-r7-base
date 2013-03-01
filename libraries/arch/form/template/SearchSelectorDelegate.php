@@ -19,15 +19,19 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
     use arch\form\TForm_ValueListSelectorDelegate;
     use arch\form\TForm_DependentDelegate;
 
+    protected $_searchMessage = null;
+    protected $_searchPlaceholder = null;
+
     protected function _renderOverlaySelectorContent(aura\html\widget\Overlay $ol) {
         $fs = $ol->addFieldSet($this->_('Select'));
 
         // Search
-        $fs->addFieldArea($this->_('Search'))->push(
+        $fs->addFieldArea($this->_('Search'))->setDescription($this->_searchMessage)->push(
             $this->html->textbox(
                     $this->fieldName('search'), 
                     $this->values->search
                 )
+                ->setPlaceholder($this->_searchPlaceholder)
                 ->isRequired($this->_isRequired && !$this->hasSelection()),
 
             $this->html->eventButton(
