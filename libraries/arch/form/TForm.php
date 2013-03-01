@@ -710,6 +710,10 @@ trait TForm_DependentDelegate {
         return $this->addDependency(new arch\form\dependency\Generic($name, $value, $error, $context));
     }
     
+    public function addFilter($context, $value, $name=null) {
+        return $this->addDependency(new arch\form\dependency\Filter($context, $value, $name=null));
+    }
+
     public function addDependency(IDependency $dependency) {
         $this->_dependencies[$dependency->getName()] = $dependency;
         return $this;
