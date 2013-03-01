@@ -26,6 +26,15 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
             ->toString();
     }
 
+    public static function formatInitials($name) {
+        return self::factory($name)
+            ->replace(array('-', '_'), ' ')
+            ->regexReplace('/([^ ])([A-Z])/u', '$1 $2')
+            ->wordsToUpper()
+            ->regexReplace('/[^A-Z0-9]/', '')
+            ->toString();
+    }
+
     public static function formatLabel($label) {
         return self::factory($label)
             ->replace(array('-', '_'), ' ')

@@ -193,6 +193,7 @@ interface IManipulator extends core\collection\IIndexedCollection, core\IStringP
     
 // Macros
     public static function formatName($name);
+    public static function formatInitials($name);
     public static function formatLabel($label);
     public static function formatId($id);
     public static function formatSlug($slug, $allowedChars=null);
