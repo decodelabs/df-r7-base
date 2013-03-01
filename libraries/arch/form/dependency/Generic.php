@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\arch;
     
-class Generic implements arch\form\IDependency {
+class Generic implements arch\form\IDependency, core\IDumpable {
 
     use arch\form\TDependency;
 
@@ -28,5 +28,15 @@ class Generic implements arch\form\IDependency {
 
     public function getValue() {
         return $this->_value;
+    }
+
+// Dump
+    public function getDumpProperties() {
+        return [
+            'name' => $this->_name,
+            'value' => $this->_value,
+            'errorMessage' => $this->_error,
+            'context' => $this->_context
+        ];
     }
 }

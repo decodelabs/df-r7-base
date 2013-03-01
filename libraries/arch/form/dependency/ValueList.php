@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\arch;
     
-class ValueList implements arch\form\IDependency {
+class ValueList implements arch\form\IDependency, core\IDumpable {
 
     use arch\form\TDependency;
 
@@ -32,5 +32,15 @@ class ValueList implements arch\form\IDependency {
 
     public function getValue() {
         return $this->_node->toArray();
+    }
+
+// Dump
+    public function getDumpProperties() {
+        return [
+            'name' => $this->_name,
+            'node' => $this->_node,
+            'errorMessage' => $this->_error,
+            'context' => $this->_context
+        ];
     }
 }

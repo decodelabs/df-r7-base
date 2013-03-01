@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\arch;
     
-class Selector implements arch\form\IDependency {
+class Selector implements arch\form\IDependency, core\IDumpable {
 
     use arch\form\TDependency;
 
@@ -32,5 +32,13 @@ class Selector implements arch\form\IDependency {
 
     public function getValue() {
         return $this->_delegate->getSelected();
+    }
+
+// Dump
+    public function getDumpProperties() {
+        return [
+            'name' => $this->_name,
+            'delegate' => get_class($this->_delegate)
+        ];
     }
 }

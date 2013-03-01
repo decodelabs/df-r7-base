@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\arch;
     
-class Filter implements arch\form\IDependency {
+class Filter implements arch\form\IDependency, core\IDumpable {
 
     use arch\form\TDependency;
 
@@ -31,5 +31,19 @@ class Filter implements arch\form\IDependency {
 
     public function getValue() {
         return $this->_value;
+    }
+
+// Dump
+    public function getDumpProperties() {
+        $output = array();
+
+        if($this->_name != $this->_context) {
+            $output['name'] = $this->_name;
+        }
+
+        $output['value'] = $this->_value;
+        $output['context'] = $this->_context;
+
+        return $output;
     }
 }
