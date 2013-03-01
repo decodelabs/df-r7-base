@@ -322,9 +322,18 @@ class InlineManyRelationValueContainer implements
         
         
         // Remove all
-        if($this->_removeAll) {
-            core\stub('Complete remove all functionality');
-            // TODO: set all inverse ids to null
+        $removeAllTask = null;
+
+        if($this->_removeAll && !$parentRecord->isNew()) {
+            $removeAllTask = $taskSet->addRawQuery(
+                'rmRel:'.opal\record\Base::extractRecordId($parentRecord).'/'.$this->_localField,
+                $query = $targetUnit->update([$this->_targetField => null])
+                    ->where($this->_targetField, '=', $parentManifest)
+            );
+
+            if(!empty($this->_new)) {
+                $query->where('@primary', '!in', $this->_new);
+            }
         }
         
         
@@ -375,7 +384,7 @@ class InlineManyRelationValueContainer implements
 
             
         // Remove relation tasks
-        if(!empty($this->_remove)) {
+        if(!empty($this->_remove) && !$removeAllTask) {
             $fields = array();
                 
             foreach($parentManifest->toArray() as $key => $value) {
