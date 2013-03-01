@@ -1270,21 +1270,29 @@ abstract class QueryExecutor implements IQueryExecutor {
             case opal\query\clause\Clause::OP_LTE:
                 return $fieldString.' '.$operator.' '.$this->normalizeScalarClauseValue($value, $allowAlias);
                 
-            // IN()
+            // <NOT> IN()
             case opal\query\clause\Clause::OP_IN:
-                if(empty($value)) {
-                    return '1 != 1';
-                }
-                
-                return $fieldString.' IN ('.implode(',', $this->normalizeArrayClauseValue($value, $allowAlias)).')';
-                
-            // NOT IN()
             case opal\query\clause\Clause::OP_NOT_IN:
+                $not = $operator == opal\query\clause\Clause::OP_NOT_IN;
+
                 if(empty($value)) {
-                    return '1 = 1';
+                    return '1 '.($not ? null : '!').'= 1';
+                }
+
+                $hasNull = false;
+
+                if(in_array(null, $value)) {
+                    $value = array_filter($value, function($a) { return $a !== null; });
+                    $hasNull = true;
                 }
                 
-                return $fieldString.' NOT IN ('.implode(',', $this->normalizeArrayClauseValue($value, $allowAlias)).')';
+                $output = $fieldString.($not ? ' NOT' : null).' IN ('.implode(',', $this->normalizeArrayClauseValue($value, $allowAlias)).')';
+
+                if($hasNull) {
+                    $output = '('.$output.' OR '.$fieldString.' IS'.($not ? ' NOT' : null).' NULL)';
+                }
+
+                return $output;
                 
             // BETWEEN()
             case opal\query\clause\Clause::OP_BETWEEN:
