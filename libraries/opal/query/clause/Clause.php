@@ -382,7 +382,7 @@ class Clause implements opal\query\IClause, core\IDumpable {
             }
         }
 
-        return $output;
+        return array_unique($output);
     }
     
     public function getValue() {
