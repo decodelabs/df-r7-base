@@ -11,6 +11,7 @@ use df\core;
 class HeaderMap implements IHeaderMap, core\IDumpable {
     
     use core\TStringProvider;
+    use core\TValueMap;
     use TArrayCollection;
     use TValueMapArrayAccess;
     

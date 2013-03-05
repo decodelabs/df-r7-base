@@ -73,8 +73,19 @@ interface IValueMap {
     public function get($key, $default=null);
     public function has($key);
     public function remove($key);
+    public function importFrom(IValueMap $source, array $fields);
 }
 
+trait TValueMap {
+
+    public function importFrom(IValueMap $source, array $fields) {
+        foreach($fields as $field) {
+            $this->set($field, $source->get($field));
+        }
+
+        return $this;
+    }
+}
 
 interface IValueContainer {
     public function setValue($value);

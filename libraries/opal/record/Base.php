@@ -12,6 +12,7 @@ use df\user;
 
 class Base implements IRecord, \Serializable, core\IDumpable {
     
+    use core\TValueMap;
     use core\collection\TExtractList;
     use user\TAccessLock;
     

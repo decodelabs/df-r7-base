@@ -10,6 +10,8 @@ use df\core;
 
 class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection, \Serializable, core\IDumpable {
     
+    use core\TValueMap;
+    
     use TValueMapArrayAccess;
     use TArrayCollection;
     use TArrayCollection_Seekable;

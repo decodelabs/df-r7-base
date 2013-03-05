@@ -10,6 +10,8 @@ use df\core;
 
 class Memcache implements core\cache\IBackend {
     
+    use core\TValueMap;
+    
     protected $_connection;
     protected $_prefix;
     protected $_lifeTime;

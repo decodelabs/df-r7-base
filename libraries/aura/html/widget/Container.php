@@ -12,6 +12,8 @@ use df\arch;
 
 class Container extends Base implements IContainerWidget, IWidgetShortcutProvider, core\IDumpable {
     
+    use core\TValueMap;
+    
     protected $_children;
     protected $_context;
     

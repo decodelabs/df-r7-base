@@ -10,6 +10,7 @@ use df\core;
 
 class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
     
+    use core\TValueMap;
     use core\collection\TExtractList;
     
     protected $_encoding = null;

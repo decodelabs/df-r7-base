@@ -12,6 +12,7 @@ use df\halo;
 class CookieCollection implements halo\protocol\http\IResponseCookieCollection, core\collection\IMappedCollection, core\IDumpable {
     
     use core\TStringProvider;
+    use core\TValueMap;
     use core\collection\TValueMapArrayAccess;
     use core\collection\TExtractList;
     

@@ -11,6 +11,8 @@ use df\user;
 
 class Handler implements user\ISessionHandler, core\IDumpable {
     
+    use core\TValueMap;
+
     protected $_namespace;    
     protected $_nodes = array();
     protected $_manager;

@@ -127,6 +127,7 @@ trait TArrayCollection_ValueContainerSortable {
 // Value map
 trait TArrayCollection_AssociativeValueMap {
     
+    use core\TValueMap;
     use TValueMapArrayAccess;
     
     public function import($input) {
@@ -172,6 +173,7 @@ trait TArrayCollection_AssociativeValueMap {
 
 trait TArrayCollection_IndexedValueMap {
     
+    use core\TValueMap;
     use TValueMapArrayAccess;
     
     public function import($input) {

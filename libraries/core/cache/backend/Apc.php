@@ -10,6 +10,8 @@ use df\core;
 
 class Apc implements core\cache\IBackend {
     
+    use core\TValueMap;
+    
     protected $_prefix;
     protected $_lifeTime;
     protected $_cache;

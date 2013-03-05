@@ -10,6 +10,7 @@ use df\core;
 
 abstract class Base implements ICache {
     
+    use core\TValueMap;
     use core\TApplicationAware;
     
     const REGISTRY_PREFIX = 'cache://';

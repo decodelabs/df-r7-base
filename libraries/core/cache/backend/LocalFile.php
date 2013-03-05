@@ -10,6 +10,8 @@ use df\core;
     
 class LocalFile implements core\cache\IDirectFileBackend {
 
+    use core\TValueMap;
+    
     protected $_lifeTime;
     protected $_cache;
     protected $_path;
