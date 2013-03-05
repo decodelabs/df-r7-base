@@ -79,8 +79,15 @@ interface IValueMap {
 trait TValueMap {
 
     public function importFrom(IValueMap $source, array $fields) {
-        foreach($fields as $field) {
-            $this->set($field, $source->get($field));
+        foreach($fields as $key => $field) {
+            if(is_string($key)) {
+                $field = $key;
+                $value = $field;
+            } else {
+                $value = $source->get($field);
+            }
+
+            $this->set($field, $value);
         }
 
         return $this;
