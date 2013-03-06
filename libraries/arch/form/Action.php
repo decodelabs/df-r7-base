@@ -97,7 +97,7 @@ abstract class Action extends arch\Action implements IAction {
         
         $this->_onSessionCreate();
         $this->_setupDelegates();
-        
+
         if($this->_state->isNew()) {
             $this->_setDefaultValues();
         }

@@ -75,8 +75,11 @@ interface ISelfContainedRenderableDelegate {
     public function renderFieldSetContent(aura\html\widget\FieldSet $fieldSet);
 }
 
-interface IResultProviderDelegate {
+interface IRequirableDelegate {
     public function isRequired($flag=null);
+}
+
+interface IResultProviderDelegate extends IRequirableDelegate {
     public function apply();
 }
 

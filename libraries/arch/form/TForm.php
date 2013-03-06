@@ -310,7 +310,7 @@ trait TForm_InlineFieldRenderableDelegate {
 trait TForm_SelfContainedRenderableDelegate {
 
     public function renderFieldSet($legend=null) {
-        $this->renderFieldSet(
+        $this->renderFieldSetContent(
             $output = $this->html->fieldSet($legend)
         );
 
@@ -320,7 +320,7 @@ trait TForm_SelfContainedRenderableDelegate {
 
 
 // Result provider
-trait TForm_ResultProviderDelegate {
+trait TForm_RequirableDelegate {
 
     protected $_isRequired = false;
 
@@ -339,7 +339,7 @@ trait TForm_ResultProviderDelegate {
 // Selector
 trait TForm_SelectorDelegate {
 
-    use TForm_ResultProviderDelegate;
+    use TForm_RequirableDelegate;
     
     protected $_isForMany = true;
 
