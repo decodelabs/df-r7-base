@@ -96,8 +96,16 @@ class Data implements archLib\IContextHelper, opal\query\IEntryPoint {
         return axis\Model::factory($name, $this->_context->getApplication());
     }
     
-    public function getModelUnit($unitId) {
+    public function getUnit($unitId) {
         return axis\Unit::fromId($unitId, $this->_context->getApplication());
+    }
+
+    public function getSchema($unitId) {
+        return axis\Unit::fromId($unitId, $this->_context->getApplication())->getUnitSchema();
+    }
+
+    public function getSchemaField($unitId, $field) {
+        return $this->getSchema($unitId)->getField($field);
     }
 
 
