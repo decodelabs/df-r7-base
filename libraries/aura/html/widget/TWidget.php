@@ -791,6 +791,10 @@ trait TWidget_NavigationEntryController {
     }
 
     public function addEntry($entry) {
+        if($entry instanceof IWidgetProxy) {
+            $entry = $entry->toWidget();
+        }
+
         if(is_array($entry)) {
             return $this->addEntries($entry);
         } else if($entry instanceof arch\navigation\entry\Void) {

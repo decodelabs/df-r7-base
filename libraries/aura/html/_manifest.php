@@ -115,7 +115,8 @@ trait TElementContent {
             $stringValue = $this->_renderChild($value);
             $isWidget = false;
             
-            if($value instanceof aura\html\widget\IWidget) {
+            if($value instanceof aura\html\widget\IWidget
+            || $value instanceof aura\html\widget\IWidgetProxy) {
                 $isWidget = true;
                 $stringValue = trim($stringValue)."\n";
             }
@@ -144,6 +145,10 @@ trait TElementContent {
             return $output;
         }
         
+        if($value instanceof aura\html\widget\IWidgetProxy) {
+            $value = $value->toWidget();
+        }
+
         if($value instanceof aura\view\IDeferredRenderable
         && $this instanceof aura\view\IDeferredRenderable) {
             $value->setRenderTarget($this->getRenderTarget());

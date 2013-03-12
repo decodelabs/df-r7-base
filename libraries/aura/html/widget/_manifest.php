@@ -63,6 +63,10 @@ interface IWidget extends aura\view\IDeferredRenderable, aura\html\IElementRepre
     public function getTitle();
 }
 
+interface IWidgetProxy {
+    public function toWidget();
+}
+
 
 interface IBodyContentAwareWidget extends IWidget {
     public function withBody();
