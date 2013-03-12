@@ -18,6 +18,7 @@ abstract class RecordLink extends arch\component\Base {
     protected $_disposition = 'informative';
     protected $_isNullable = false;
     protected $_note;
+    protected $_maxLength;
     protected $_missingMessage;
     protected $_record;
 
@@ -95,6 +96,22 @@ abstract class RecordLink extends arch\component\Base {
         return $this->_missingMessage;
     }
 
+// Max length
+    public function setMaxLength($length) {
+        if(!$length) {
+            $length = null;
+        } else {
+            $length = (int)$length;
+        }
+
+        $this->_maxLength = $length;
+        return $this;
+    }
+
+    public function getMaxLength() {
+        return $this->_maxLength;
+    }
+
 // Render
     protected function _execute() {
         if($this->_record === null && $this->_isNullable) {
@@ -102,6 +119,7 @@ abstract class RecordLink extends arch\component\Base {
         }
 
         $id = null;
+        $view = $this->getView();
 
         if($this->_record) {
             $id = $this->_getRecordId();
@@ -114,7 +132,7 @@ abstract class RecordLink extends arch\component\Base {
                 $message = $this->_(static::DEFAULT_MISSING_MESSAGE);
             }
 
-            return $this->getView()->html->link('#', $message)
+            return $view->html->link('#', $message)
                 ->isDisabled(true)
                 ->setIcon('error')
                 ->addClass('state-error');
@@ -123,7 +141,11 @@ abstract class RecordLink extends arch\component\Base {
         $name = $this->_getRecordName();
         $url = $this->_getRecordUrl($id);
 
-        return $this->getView()->html->link($url, $name)
+        if($this->_maxLength) {
+            $name = $view->format->shorten($name, $this->_maxLength);
+        }
+
+        return $view->html->link($url, $name)
             ->setIcon($this->_icon)
             ->setDisposition($this->_disposition)
             ->setNote($this->_note);
