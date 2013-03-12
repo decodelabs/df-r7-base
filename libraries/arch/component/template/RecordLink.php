@@ -9,8 +9,11 @@ use df;
 use df\core;
 use df\arch;
 use df\aura;
+use df\user;
     
-abstract class RecordLink extends arch\component\Base {
+abstract class RecordLink extends arch\component\Base implements aura\html\widget\IWidgetProxy {
+
+    use aura\html\widget\TWidget_AccessControlled;
 
     const DEFAULT_MISSING_MESSAGE = 'not found';
 
@@ -20,11 +23,24 @@ abstract class RecordLink extends arch\component\Base {
     protected $_note;
     protected $_maxLength;
     protected $_missingMessage;
+    protected $_action;
+    protected $_redirectFrom;
+    protected $_redirectTo;
+    protected $_name;
+    protected $_matchRequest;
     protected $_record;
 
-    protected function _init($record=null) {
+    protected function _init($record=null, $name=null, $match=null) {
         if($record) {
             $this->setRecord($record);
+        }
+
+        if($name !== null) {
+            $this->setName($name);
+        }
+
+        if($match !== null) {
+            $this->setMatchRequest($match);
         }
     }
 
@@ -112,7 +128,105 @@ abstract class RecordLink extends arch\component\Base {
         return $this->_maxLength;
     }
 
+// Match
+    public function setMatchRequest($request) {
+        $this->_matchRequest = $request;
+        return $this;
+    }
+    
+    public function getMatchRequest() {
+        return $this->_matchRequest;
+    }
+
+// Action
+    public function setAction($action) {
+        switch($action) {
+            case 'add':
+                $this->setIcon('add');
+                $this->setDisposition('positive');
+
+                if($this->_redirectFrom === null) {
+                    $this->setRedirectFrom(true);
+                }
+
+                if(!$this->_name) {
+                    $this->setName($this->_('Add'));
+                }
+
+                break;
+
+            case 'edit':
+                $this->setIcon('edit');
+                $this->setDisposition('operative');
+
+                if($this->_redirectFrom === null) {
+                    $this->setRedirectFrom(true);
+                }
+
+                if(!$this->_name) {
+                    $this->setName($this->_('Edit'));
+                }
+
+                break;
+
+            case 'delete':
+                $this->setIcon('delete');
+                $this->setDisposition('negative');
+
+                if($this->_redirectFrom === null) {
+                    $this->setRedirectFrom(true);
+                }
+
+                if(!$this->_name) {
+                    $this->setName($this->_('Delete'));
+                }
+
+                break;
+        }
+
+        $this->_action = $action;
+        return $this;
+    }
+
+    public function getAction() {
+        return $this->_action;
+    }
+
+
+// Name
+    public function setName($name) {
+        $this->_name = $name;
+        return $this;
+    }
+
+    public function getName() {
+        return $this->_name;
+    }
+
+// Redirect
+    public function setRedirectFrom($rf) {
+        $this->_redirectFrom = $rf;
+        return $this;
+    }
+
+    public function getRedirectFrom() {
+        return $this->_redirectFrom;
+    }
+
+    public function setRedirectTo($rt) {
+        $this->_redirectTo = $rt;
+        return $this;
+    }
+
+    public function getRedirectTo() {
+        return $this->_redirectTo;
+    }
+
 // Render
+    public function toWidget() {
+        return $this->render();
+    }
+
     protected function _execute() {
         if($this->_record === null && $this->_isNullable) {
             return null;
@@ -138,17 +252,55 @@ abstract class RecordLink extends arch\component\Base {
                 ->addClass('state-error');
         }
 
-        $name = $this->_getRecordName();
-        $url = $this->_getRecordUrl($id);
+        if($this->_name === null) {
+            $name = $this->_getRecordName();
+        } else {
+            $name = $this->_name;
+        }
 
-        if($this->_maxLength) {
+        $url = $this->_getRecordUrl($id);
+        $url = $this->normalizeOutputUrl($url, true);
+
+        if($url instanceof arch\IRequest) {
+            if($this->_action) {
+                $url->setAction($this->_action);
+            }
+
+            $this->directory->normalizeRequest($url, $this->_redirectFrom, $this->_redirectTo);
+        }
+
+        $title = null;
+
+        if($this->_maxLength && is_string($name)) {
+            if($title === null) {
+                $title = $name;
+            }
+
             $name = $view->format->shorten($name, $this->_maxLength);
         }
 
-        return $view->html->link($url, $name)
+        $output = $view->html->link($url, $name, $this->_matchRequest)
             ->setIcon($this->_icon)
             ->setDisposition($this->_disposition)
-            ->setNote($this->_note);
+            ->setNote($this->_note)
+            ->setTitle($title)
+            ->setAccessLocks($this->_accessLocks);
+
+        if($this->_action && $this->_record instanceof user\IAccessLock) {
+            switch($this->_action) {
+                case 'add':
+                case 'edit':
+                case 'delete':
+                    $output->addAccessLock($this->_record->getActionLock($this->_action));
+                    break;
+
+                default:
+                    $output->addAccessLock($this->_record->getActionLock('access'));
+                    break;
+            }
+        }
+
+        return $output;
     }
 
     protected function _getRecordId() {
