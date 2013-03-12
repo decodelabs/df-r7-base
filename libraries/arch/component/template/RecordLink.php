@@ -10,7 +10,8 @@ use df\core;
 use df\arch;
 use df\aura;
 use df\user;
-    
+use df\opal;
+
 abstract class RecordLink extends arch\component\Base implements aura\html\widget\IWidgetProxy {
 
     use aura\html\widget\TWidget_AccessControlled;
@@ -46,6 +47,11 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
 
 // Record
     public function setRecord($record) {
+        if($record instanceof opal\record\IPrimaryManifest
+        && $record->isNull()) {
+            $record = null;
+        }
+
         if(is_scalar($record)) {
             $record = ['id' => $record];
         }
@@ -141,20 +147,6 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
 // Action
     public function setAction($action) {
         switch($action) {
-            case 'add':
-                $this->setIcon('add');
-                $this->setDisposition('positive');
-
-                if($this->_redirectFrom === null) {
-                    $this->setRedirectFrom(true);
-                }
-
-                if(!$this->_name) {
-                    $this->setName($this->_('Add'));
-                }
-
-                break;
-
             case 'edit':
                 $this->setIcon('edit');
                 $this->setDisposition('operative');
@@ -214,6 +206,10 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
     }
 
     public function setRedirectTo($rt) {
+        if(is_string($rt)) {
+            $rt = $this->directory->backRequest($rt);
+        }
+
         $this->_redirectTo = $rt;
         return $this;
     }
@@ -233,7 +229,6 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
         }
 
         $id = null;
-        $view = $this->getView();
 
         if($this->_record) {
             $id = $this->_getRecordId();
@@ -246,7 +241,7 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
                 $message = $this->_(static::DEFAULT_MISSING_MESSAGE);
             }
 
-            return $view->html->link('#', $message)
+            return $this->html->link('#', $message)
                 ->isDisabled(true)
                 ->setIcon('error')
                 ->addClass('state-error');
@@ -266,7 +261,7 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
                 $url->setAction($this->_action);
             }
 
-            $this->directory->normalizeRequest($url, $this->_redirectFrom, $this->_redirectTo);
+            $url = $this->directory->normalizeRequest($url, $this->_redirectFrom, $this->_redirectTo);
         }
 
         $title = null;
@@ -276,10 +271,10 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
                 $title = $name;
             }
 
-            $name = $view->format->shorten($name, $this->_maxLength);
+            $name = $this->view->format->shorten($name, $this->_maxLength);
         }
 
-        $output = $view->html->link($url, $name, $this->_matchRequest)
+        $output = $this->html->link($url, $name, $this->_matchRequest)
             ->setIcon($this->_icon)
             ->setDisposition($this->_disposition)
             ->setNote($this->_note)
@@ -288,7 +283,6 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
 
         if($this->_action && $this->_record instanceof user\IAccessLock) {
             switch($this->_action) {
-                case 'add':
                 case 'edit':
                 case 'delete':
                     $output->addAccessLock($this->_record->getActionLock($this->_action));
