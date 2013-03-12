@@ -46,7 +46,7 @@ class Import implements aura\view\IHelper {
 
         try {
             $context = $this->_view->getContext()->spawnInstance($location);
-            $output = arch\Component::factory($context, $name, $args);
+            $output = arch\component\Base::factory($context, $name, $args);
             $output->setRenderTarget($this->_view);
 
             return $output;

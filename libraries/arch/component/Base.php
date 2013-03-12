@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch;
+namespace df\arch\component;
 
 use df;
 use df\core;
@@ -11,9 +11,9 @@ use df\arch;
 use df\user;
 use df\aura;
 
-abstract class Component implements IComponent {
+abstract class Base implements arch\IComponent {
     
-    use TContextProxy;
+    use arch\TContextProxy;
     use user\TAccessLock;
     use core\TStringProvider;
     use aura\view\TDeferredRenderable;
@@ -23,7 +23,7 @@ abstract class Component implements IComponent {
     public $view;
     public $html;
     
-    public static function factory(IContext $context, $name, array $args=null) {
+    public static function factory(arch\IContext $context, $name, array $args=null) {
         $path = $context->location->getController();
         $area = $context->location->getArea();
 
@@ -44,7 +44,7 @@ abstract class Component implements IComponent {
             $class = 'df\\apex\\directory\\shared\\'.implode('\\', $parts);
 
             if(!class_exists($class)) {
-                throw new RuntimeException(
+                throw new arch\RuntimeException(
                     'Component ~'.$area.'/'.$path.'/'.ucfirst($name).' could not be found'
                 );
             }

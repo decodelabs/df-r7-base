@@ -11,7 +11,7 @@ use df\apex;
 use df\arch;
 use df\axis;
     
-class SlugTreeBreadcrumbs extends arch\Component {
+class SlugTreeBreadcrumbs extends arch\component\Base {
 
     protected $_node;
 

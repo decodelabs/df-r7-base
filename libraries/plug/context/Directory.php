@@ -120,7 +120,7 @@ class Directory implements arch\IContextHelper {
         }
         
         $context = arch\Context::factory($this->_context->getApplication(), $request);
-        return arch\Component::factory($context, $name);
+        return arch\component\Base::factory($context, $name);
     }
 
 
