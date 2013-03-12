@@ -19,6 +19,33 @@ class Directory implements arch\IContextHelper {
         return arch\Request::factory($request);
     }
 
+    public function normalizeRequest($request, $from=null, $to=null) {
+        if(!$request instanceof arch\IRequest) {
+            $request = arch\Request::factory($request);
+        } else {
+            $request = clone $request;
+        }
+        
+        
+        if($from !== null) {
+            if($from === true) {
+                $from = $this->_context->request;
+            }
+            
+            $request->setRedirectFrom($from);
+        }
+        
+        if($to !== null) {
+            if($to === true) {
+                $to = $this->_context->request;
+            }
+            
+            $request->setRedirectTo($to);
+        }
+
+        return $request;
+    }
+
     public function backRequest($default=null, $success=true) {
         $request = $this->_context->request;
         
