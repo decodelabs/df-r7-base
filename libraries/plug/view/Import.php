@@ -38,11 +38,8 @@ class Import implements aura\view\IHelper {
         }
     }
     
-    public function component($name, $location=null, array $args=null) {
-        if(is_array($location)) {
-            $args = $location;
-            $location = null;
-        }
+    public function component($name, $location) {
+        $args = array_slice(func_get_args(), 2);
 
         try {
             $context = $this->_view->getContext()->spawnInstance($location);
