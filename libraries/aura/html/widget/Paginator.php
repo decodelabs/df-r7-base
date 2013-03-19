@@ -119,7 +119,7 @@ class Paginator extends Base implements core\IDumpable {
                 $linkList[] = $element->render();
                 $skip = false;
             } else if(!$skip) {
-                $linkList[] = '<span>..</span>';
+                $linkList[] = new aura\html\Element('span', '..');
                 $skip = true;
             }
         }
