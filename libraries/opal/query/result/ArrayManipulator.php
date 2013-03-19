@@ -996,8 +996,9 @@ class ArrayManipulator implements IArrayManipulator {
             if($keyName) {
                 if(isset($row[$keyName])) {
                     $key = $row[$keyName];
-                } else if(isset($row[$keyName = $keyField->getAlias()])) {
-                    $key = $row[$keyName];
+                } else if(isset($row[$t = $keyField->getAlias()])) {
+                    $key = $row[$t];
+                    $keyName = $t;
                 } else if($keyNameList !== null) {
                     $key = array();
 
