@@ -107,7 +107,7 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
             $this->_headers = clone $this->_headers;
         }
         
-        parent::__clone();
+        return $this;
     }
     
     public function __get($member) {
