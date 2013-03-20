@@ -158,8 +158,8 @@ trait TForm {
         
         return $output;
     }
-    
-    
+
+
     
 // Events
     public function handleEvent($name, array $args=array()) {
@@ -494,6 +494,7 @@ trait TForm_ValueListSelectorDelegate {
 // Events
     protected function _onClearEvent() {
         unset($this->values->selected);
+        return $this->http->redirect('#'.$this->elementId('selector'));
     }
 
     protected function _onRemoveEvent($id) {
@@ -522,6 +523,7 @@ trait TForm_InlineFieldRenderableSelectorDelegate {
 
 // Render
     public function renderFieldAreaContent(aura\html\widget\FieldArea $fa) {
+        $fa->setId($this->elementId('selector'));
         $fa->isRequired($this->_isRequired);
         
         $this->_renderModeUi([$fa]);
@@ -671,12 +673,16 @@ trait TForm_InlineFieldRenderableSelectorDelegate {
                 $this->setSelected($this->_state->getStore('originalSelection'));
             }
         });
+
+        return $this->http->redirect('#'.$this->elementId('selector'));
     }
 
     protected function _onEndSelectEvent() {
         $this->_switchMode('select', 'details', function() {
             $this->_state->removeStore('originalSelection');
         });
+
+        return $this->http->redirect('#'.$this->elementId('selector'));
     }
 
     protected function _onResetEvent() {

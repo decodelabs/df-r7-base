@@ -41,7 +41,11 @@ interface IForm {
     public function loadDelegate($id, $name, $request=null);
     public function getDelegate($id);
     public function handleEvent($name, array $args=array());
+
     public function isValid();
+    public function fieldName($name);
+    public function eventName($name);
+    public function elementId($name);
 }
 
 interface IAction extends arch\IAction, IForm {

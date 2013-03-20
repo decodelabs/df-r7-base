@@ -78,4 +78,8 @@ class Delegate implements IDelegate {
         
         return '_delegates['.$this->_delegateId.']['.implode('[', $parts);
     }
+
+    public function elementId($name) {
+        return core\string\Manipulator::formatSlug($this->getDelegateId().'-'.$name);   
+    }
 }

@@ -262,6 +262,15 @@ abstract class Action extends arch\Action implements IAction {
         return $this->http->defaultRedirect($defaultRedirect, $success);
     }
     
+
+// Names
+    public function fieldName($name) {
+        return $name;
+    }
+
+    public function elementId($name) {
+        return core\string\Manipulator::formatSlug($name);   
+    }
     
     
 // Events
