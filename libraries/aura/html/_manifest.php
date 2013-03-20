@@ -278,6 +278,10 @@ class ElementString implements IElementRepresentation, core\IDumpable {
         $this->_content .= $str;
         return $this;
     }
+
+    public function isEmpty() {
+        return !strlen($this->_content);
+    }
     
     public function getDumpProperties() {
         return $this->_content;
