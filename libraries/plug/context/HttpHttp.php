@@ -7,16 +7,16 @@ namespace df\plug\context;
 
 use df;
 use df\core;
-use df\arch as archLib;
+use df\arch;
 use df\halo;
 
-class HttpHttp implements archLib\IContextHelper {
+class HttpHttp implements arch\IContextHelper {
     
-    use archLib\TContextAware;
+    use arch\TContextAware;
 
     protected $_httpRequest;
     
-    public function __construct(archLib\IContext $context) {
+    public function __construct(arch\IContext $context) {
         $this->_context = $context;
         $this->_httpRequest = $this->_context->getApplication()->getHttpRequest();
     }
@@ -47,7 +47,7 @@ class HttpHttp implements archLib\IContextHelper {
     
     
     public function directoryRequestToUrl($request) {
-        return $this->_context->getApplication()->requestToUrl(archLib\Request::factory($request));
+        return $this->_context->getApplication()->requestToUrl(arch\Request::factory($request));
     }
     
     
@@ -91,15 +91,21 @@ class HttpHttp implements archLib\IContextHelper {
         }
         
         if(is_string($request)) {
-            $request = archLib\Request::factory($request);
+            $request = arch\Request::factory($request);
         }
-        
-        if($request instanceof archLib\IRequest) {
+
+        if($request instanceof arch\IRequest) {
             $url = $this->_context->getApplication()->requestToUrl($request);
         } else {
             $url = halo\protocol\http\Url::factory((string)$request);
         }
-        
+
+        if($url->isJustFragment()) {
+            $fragment = $url->getFragment();
+            $url = clone $this->_httpRequest->getUrl();
+            $url->setFragment($fragment);
+        }
+
         return new halo\protocol\http\response\Redirect($url);
     }
     
