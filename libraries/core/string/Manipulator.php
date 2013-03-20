@@ -59,7 +59,8 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
         return self::factory($slug)
             ->translitToAscii()
             ->toLower()
-            ->replace(array(' ', '/'), array('-', '_'))
+            ->replace([' ', '.', ','], '-')
+            ->replace('/', '_')
             ->regexReplace('/[^a-z0-9_\-'.preg_quote($allowedChars, '/').']/', '')
             ->toString();
     }
