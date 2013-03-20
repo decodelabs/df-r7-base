@@ -225,6 +225,7 @@ interface IWriter extends IWritable, core\IAttributeContainer, core\IStringProvi
 
     // CData
     public function writeCData($content);
+    public function writeCDataElement($name, $content, array $attributes=null);
     public function startCData();
     public function writeCDataContent($content);
     public function endCData();

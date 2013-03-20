@@ -234,6 +234,19 @@ class Writer implements IWriter {
         return $this;
     }
 
+    public function writeCDataElement($name, $content, array $attributes=null) {
+        $this->startElement($name);
+
+        if($attributes !== null) {
+            $this->setAttributes($attributes);
+        }
+
+        $this->writeCData($content);
+        $this->endElement();
+        
+        return $this;
+    }
+
     public function startCData() {
         $this->_completeCurrentNode();
         $this->_document->startCData();
