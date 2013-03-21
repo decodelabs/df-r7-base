@@ -342,8 +342,16 @@ trait TForm_InlineFieldRenderableDelegate {
 trait TForm_SelfContainedRenderableDelegate {
 
     public function renderFieldSet($legend=null) {
-        $this->renderFieldSetContent(
+        $this->renderContainerContent(
             $output = $this->html->fieldSet($legend)
+        );
+
+        return $output;
+    }
+
+    public function renderContainer() {
+        $this->renderContainerContent(
+            $output = $this->html->container()
         );
 
         return $output;

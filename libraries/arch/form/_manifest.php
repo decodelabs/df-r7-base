@@ -76,7 +76,8 @@ interface IInlineFieldRenderableDelegate {
 
 interface ISelfContainedRenderableDelegate {
     public function renderFieldSet($legend=null);
-    public function renderFieldSetContent(aura\html\widget\FieldSet $fieldSet);
+    public function renderContainer();
+    public function renderContainerContent(aura\html\widget\IContainerWidget $fieldSet);
 }
 
 interface IRequirableDelegate {
