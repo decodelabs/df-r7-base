@@ -954,6 +954,7 @@ trait TWidget_IconProvider {
                 // transitive
                 case 'back':
                 case 'cancel':
+                case 'preview':
                     $this->setDisposition('transitive');
                     break;
             }
