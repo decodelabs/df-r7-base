@@ -15,7 +15,7 @@ class SlotRenderer implements aura\view\IDeferredRenderable {
     use aura\view\TDeferredRenderable;
     use core\TStringProvider;
 
-    const TYPE_STRING = 'string';
+    const TYPE_VALUE = 'value';
     const TYPE_CALLBACK = 'callback';
     const TYPE_TEMPLATE = 'template';
 
@@ -34,8 +34,7 @@ class SlotRenderer implements aura\view\IDeferredRenderable {
             if(is_callable($value)) {
                 $type = self::TYPE_CALLBACK;
             } else {
-                $value = (string)$value;
-                $type = self::TYPE_STRING;
+                $type = self::TYPE_VALUE;
             }
 
             $location = null;
@@ -79,7 +78,7 @@ class SlotRenderer implements aura\view\IDeferredRenderable {
 
     public function render() {
         switch($this->_type) {
-            case self::TYPE_STRING:
+            case self::TYPE_VALUE:
                 return $this->_value;
 
             case self::TYPE_CALLBACK:
