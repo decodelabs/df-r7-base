@@ -34,7 +34,7 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
     }
 
     public function string($value) {
-        return new aura\html\ElementString($value);
+        return new aura\html\ElementString(implode('', func_get_args()));
     }
     
     public function tag($name, array $attributes=array()) {
