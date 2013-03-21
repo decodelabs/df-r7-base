@@ -361,6 +361,10 @@ class Writer implements IWriter {
         switch($this->_currentNode) {
             case self::ELEMENT:
                 foreach($this->_attributes as $key => $value) {
+                    if(is_bool($value)) {
+                        $value = $value ? 'true' : 'false';
+                    }
+
                     if(in_array($key, $this->_rawAttributeNames)) {
                         $this->_document->startAttribute($key);
                         $this->_document->writeRaw($value);

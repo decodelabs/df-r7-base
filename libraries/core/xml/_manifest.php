@@ -122,6 +122,7 @@ interface ITree extends IReadable, IWritable, core\IAttributeContainer, \Countab
 
     // Attributes
     public function countAttributes();
+    public function getBooleanAttribute($name, $default=null);
 
     // Content
     public function setInnerXml($string);
