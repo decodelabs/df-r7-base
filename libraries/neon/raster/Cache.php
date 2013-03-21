@@ -25,7 +25,12 @@ class Cache extends core\cache\Base {
         }
 
         if(!$output = $this->getDirectFilePath($key)) {
-            $image = Image::loadFile($sourceFilePath)->setOutputFormat('PNG32');
+            try {
+                $image = Image::loadFile($sourceFilePath)->setOutputFormat('PNG32');
+            } catch(FormatException $e) {
+                return $sourceFilePath;
+            }
+
             $image->transform($transformation)->apply();
 
             $this->set($key, $image->toString());

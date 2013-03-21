@@ -12,6 +12,7 @@ use df\neon;
 // Exceptions
 interface IException {}
 class RuntimeException extends \RuntimeException implements IException {}
+class FormatException extends RuntimeException {}
 class InvalidAgumentException extends \InvalidArgumentException implements IException {}
 
 

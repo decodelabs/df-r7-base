@@ -38,34 +38,40 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
             $this->_height = $i[1];
         }
 
-        switch(@$i[2]) {
-            case 1: // gif
-                $this->_pointer = imageCreateFromGif($file);
-                break;
-                
-            case 2: // jpg
-                $this->_pointer = imageCreateFromJpeg($file);
-                break;
-                
-            case 3: // png
-                $this->_pointer = imageCreateFromPng($file);
-                break;
-                
-            case 15: // wbmp
-                $this->_pointer = imageCreateFromWbmp($file);
-                break;
-                
-            case 16: // xbm
-                $this->_pointer = imageCreateFromXbm($file);
-                break;
-                
-            default:
-                $this->_pointer = imageCreateFromString(file_get_contents($file));
-                break;
+        try {
+            switch(@$i[2]) {
+                case 1: // gif
+                    $this->_pointer = imageCreateFromGif($file);
+                    break;
+                    
+                case 2: // jpg
+                    $this->_pointer = imageCreateFromJpeg($file);
+                    break;
+                    
+                case 3: // png
+                    $this->_pointer = imageCreateFromPng($file);
+                    break;
+                    
+                case 15: // wbmp
+                    $this->_pointer = imageCreateFromWbmp($file);
+                    break;
+                    
+                case 16: // xbm
+                    $this->_pointer = imageCreateFromXbm($file);
+                    break;
+                    
+                default:
+                    $this->_pointer = imageCreateFromString(file_get_contents($file));
+                    break;
+            }
+        } catch(\ErrorException $e) {
+            throw new neon\raster\FormatException(
+                $e->getMessage()
+            );
         }
 
         if(!$this->_pointer) {
-            throw new neon\raster\RuntimeException(
+            throw new neon\raster\FormatException(
                 'Unable to load raster image '.$file
             );
         }

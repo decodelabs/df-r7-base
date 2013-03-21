@@ -44,7 +44,7 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
             $this->_pointer = new \Imagick();
             $this->_pointer->readImage($file);
         } catch(\ImagickException $e) {
-            throw new neon\raster\RuntimeException($e->getMessage());
+            throw new neon\raster\FormatException($e->getMessage());
         }
 
         $this->_width = $this->_pointer->getImageWidth();
@@ -58,7 +58,7 @@ class ImageMagick extends Base implements neon\raster\IImageManipulationDriver, 
             $this->_pointer = new \Imagick();
             $this->_pointer->readImageBlob($string);
         } catch(\ImagickException $e) {
-            throw new neon\raster\RuntimeException($e->getMessage());
+            throw new neon\raster\FormatException($e->getMessage());
         }
 
         $this->_width = $this->_pointer->getImageWidth();
