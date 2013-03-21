@@ -209,6 +209,14 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
     
 // Convert
     public static function stringToBoolean($value) {
+        if(is_bool($value)) {
+            return $value;
+        }
+
+        if(empty($value)) {
+            return false;
+        }
+
         switch(strtolower($value)) {
             case 'false':
             case '0':
