@@ -21,7 +21,7 @@ class Delegate implements IDelegate {
         $this->_context = $context;
         $this->_state = $state;
         $this->_delegateId = $id;
-        
+
         $this->values = $state->getValues();
         $this->_onConstruct();
     }

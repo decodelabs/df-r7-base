@@ -111,6 +111,38 @@ trait TForm {
         
         return $output;
     }
+
+    public function unloadDelegate($id) {
+        if(!is_array($id)) {
+            $id = explode('.', trim($id, ' .'));
+        }
+        
+        if(empty($id)) {
+            throw new DelegateException(
+                'Empty delegate id detected'
+            );
+        }
+        
+        $top = array_shift($id);
+        
+        if(!isset($this->_delegates[$top])) {
+            throw new DelegateException(
+                'Delegate '.$top.' could not be found'
+            );
+        }
+        
+        $delegate = $this->_delegates[$top];
+        
+        if(!empty($id)) {
+            $delegate->unloadDelegate($id);
+            return $this;
+        }
+
+        $this->_state->clearDelegateState($top);
+        unset($this->_delegates[$top]);
+        
+        return $this;
+    }
     
     
     protected function _getDelegateIdPrefix() {

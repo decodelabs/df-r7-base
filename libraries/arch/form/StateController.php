@@ -111,7 +111,16 @@ class StateController implements IStateController, \Serializable {
         
         return $this->_delegates[$id];
     }
-    
+
+    public function clearDelegateState($id) {
+        if(isset($this->_delegates[$id])) {
+            $this->_delegates[$id]->reset();
+            unset($this->_delegates[$id]);
+        }
+
+        return $this;
+    }
+
     
     public function isNew($flag=null) {
         if($flag !== null) {
