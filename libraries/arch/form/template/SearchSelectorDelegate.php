@@ -32,7 +32,8 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
                     $this->values->search
                 )
                 ->setPlaceholder($this->_searchPlaceholder)
-                ->isRequired($this->_isRequired && !$this->hasSelection()),
+                ->isRequired($this->_isRequired && !$this->hasSelection())
+                ->setFormEvent($this->eventName('search')),
 
             $this->html->eventButton(
                     $this->eventName('search'), 
