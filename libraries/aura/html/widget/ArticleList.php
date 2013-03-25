@@ -45,7 +45,7 @@ class ArticleList extends BulletList implements IOrderedDataDrivenListWidget {
             $articleTag = new aura\html\Tag('article');
 
             $renderContext->iterate($key, $articleTag, $liTag);
-            $value = $this->_renderListItem($renderContext, $value);
+            $value = $renderContext->renderCell($value, $this->_renderer);
             
             if($value === null) {
                 continue;

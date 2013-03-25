@@ -13,7 +13,7 @@ use df\arch;
 class BulletList extends Base implements ILinearListWidget, IDataDrivenListWidget, core\IDumpable {
     
     use TWidget_DataDrivenList;
-    use TWidget_LinearList;
+    use TWidget_RendererProvider;
     
     const PRIMARY_TAG = 'ul';
     
@@ -41,8 +41,7 @@ class BulletList extends Base implements ILinearListWidget, IDataDrivenListWidge
         foreach($data as $key => $value) {
             $liTag = new aura\html\Tag('li');
             $renderContext->iterate($key, $liTag);
-            
-            $value = $this->_renderListItem($renderContext, $value);
+            $value = $renderContext->renderCell($value, $this->_renderer);
             
             if($value === null) {
                 continue;

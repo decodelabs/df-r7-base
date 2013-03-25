@@ -611,17 +611,14 @@ trait TForm_InlineFieldRenderableSelectorDelegate {
                     );
                 }
 
-                $fa->push($this->html->_(
-                    [
-                        '0' => '%l%',
-                        'n > 0' => '%l%<br />and <strong>%c%</strong> more selected'
-                    ],
-                    [
-                        '%l%' => implode('<br />', $displayList),
-                        '%c%' => $count
-                    ],
-                    $count
-                ));
+                if($count) {
+                    $displayList[] = $this->html->_(
+                        'and <strong>%c%</strong> more selected', 
+                        ['%c%' => $count]
+                    );
+                }
+
+                $fa->push($this->html->bulletList($displayList));
             }
         } else {
             // Single entry

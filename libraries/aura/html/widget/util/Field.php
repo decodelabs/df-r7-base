@@ -11,13 +11,13 @@ use df\aura;
 
 class Field implements aura\html\widget\IField, core\IDumpable {
     
-    protected $_key;
-    protected $_name;
-    protected $_labels = array();
-    protected $_renderer;
+    public $key;
+    public $name;
+    public $labels = array();
+    public $renderer;
     
-    public function __construct($key, $name, Callable $renderer) {
-        $this->_key = $key;
+    public function __construct($key, $name, Callable $renderer=null) {
+        $this->key = $key;
         $this->setName($name);
         $this->setRenderer($renderer);
     }
@@ -25,17 +25,17 @@ class Field implements aura\html\widget\IField, core\IDumpable {
     
 // Key
     public function getKey() {
-        return $this->_key;
+        return $this->key;
     }
     
 // Name
     public function setName($name) {
-        $this->_name = $name;
+        $this->name = $name;
         return $this;
     }
     
     public function getName() {
-        return $this->_name;
+        return $this->name;
     }
 
 
@@ -45,75 +45,58 @@ class Field implements aura\html\widget\IField, core\IDumpable {
             $label = core\string\Manipulator::formatLabel($key);
         }
 
-        $this->_labels[$key] = $label;
+        $this->labels[$key] = $label;
         return $this;
     }
 
     public function removeLabel($key) {
-        unset($this->_labels[$key]);
+        unset($this->labels[$key]);
         return $this;
     }
 
     public function getLabels() {
-        return $this->_labels;
+        return $this->labels;
     }
 
     public function getHeaderList() {
-        return array_merge([$this->_key => $this->_name], $this->_labels);
+        return array_merge([$this->key => $this->name], $this->labels);
     }
     
 // Renderer
-    public function setRenderer(Callable $renderer) {
-        $this->_renderer = $renderer;
+    public function setRenderer(Callable $renderer=null) {
+        $this->renderer = $renderer;
         return $this;
     }
     
     public function getRenderer() {
-        return $this->_renderer;
+        return $this->renderer;
     }
     
     public function render($data, aura\html\widget\IRendererContext $renderContext) {
-        $renderer = $this->_renderer;
-        $value = $renderer($data, $renderContext);
-
-        if($value instanceof aura\html\IRenderable) {
-            $value = $value->render();
-        } else if($value instanceof aura\view\IRenderable) {
-            $value = $value->renderTo($renderContext->getView());
-        }
-        
-        if(empty($value) && $value != '0') {
-            $value = new aura\html\ElementString('<span class="prop-na">n/a</span>');
-        }
-
-        if($value instanceof core\time\IDate) {
-            $value = $renderContext->getView()->html->userDate($value);
-        }
-
-        return $value;
+        return $renderContext->renderCell($data, $this);
     }
     
     
 // Dump
     public function getDumpProperties() {
         $output = [
-            'key' => $this->_key
+            'key' => $this->key
         ];
         
         $exp = false;
         
-        if($this->_name != $this->_key) {
-            $output['name'] = $this->_name;
+        if($this->name != $this->key) {
+            $output['name'] = $this->name;
             $exp = true;
         }
         
-        if(!$this->_renderer instanceof \Closure) {
-            $output['renderer'] = $this->_renderer;
+        if(!$this->renderer instanceof \Closure) {
+            $output['renderer'] = $this->renderer;
             $exp = true;
         }
         
         if(!$exp) {
-            return $this->_key;
+            return $this->key;
         }
         
         return $output;

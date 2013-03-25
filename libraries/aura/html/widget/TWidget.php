@@ -45,6 +45,21 @@ trait TWidget {
 }
 
 
+trait TWidget_RendererProvider {
+    
+    protected $_renderer;
+    
+    public function setRenderer(Callable $renderer=null) {
+        $this->_renderer = $renderer;
+        return $this;
+    }
+    
+    public function getRenderer() {
+        return $this->_renderer;
+    }
+}
+
+
 trait TWidget_BodyContentAware {
     
     protected $_body;
@@ -1034,46 +1049,6 @@ trait TWidget_OrderedDataDrivenList {
 
         $this->_data = $data;
         return $this;
-    }
-}
-
-
-trait TWidget_LinearList {
-    
-    protected $_renderer;
-    
-    public function setRenderer(Callable $renderer=null) {
-        $this->_renderer = $renderer;
-        return $this;
-    }
-    
-    public function getRenderer() {
-        return $this->_renderer;
-    }
-    
-    protected function _renderListItem(IRendererContext $renderContext, $value) {
-        if($renderer = $this->_renderer) {
-            try {
-                $value = $renderer($value, $renderContext);
-            } catch(\Exception $e) {
-                $value = '<span class="state-error">'.$e->getMessage().'</span>';
-            }
-        } else {
-            if($value instanceof core\IStringProvider) {
-                $value = $value->toString();
-            }
-            
-            if($value instanceof core\IArrayProvider) {
-                $value = $value->toArray();
-            }
-            
-            if(is_array($value)) {
-                $value = new self($value);
-                $value->setRenderTarget($this->getRenderTarget());
-            }
-        }
-        
-        return $value;
     }
 }
 

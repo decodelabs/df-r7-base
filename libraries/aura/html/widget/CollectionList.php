@@ -144,7 +144,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
 
                     $cellTag = new aura\html\Tag('td', $attr);
                     $renderContext->iterateField($key, $cellTag, $rowTag);
-                    $value = $field->render($row, $renderContext);
+                    $value = $renderContext->renderCell($row, $field->renderer);
                     
                     $rowTag->push($cellTag->renderWith($value));
                 }

@@ -72,6 +72,32 @@ class RendererContext implements aura\html\widget\IRendererContext {
         return $this;
     }
 
+    public function renderCell($value, Callable $renderer=null) {
+        if($renderer) {
+            try {
+                $value = $renderer($value, $this);
+            } catch(\Exception $e) {
+                $value = '<span class="state-error">'.$e->getMessage().'</span>';
+            }
+        }
+
+        if($value instanceof aura\html\IRenderable) {
+            $value = $value->render();
+        } else if($value instanceof aura\view\IRenderable) {
+            $value = $value->renderTo($renderContext->getView());
+        }
+        
+        if(empty($value) && $value != '0') {
+            $value = new aura\html\ElementString('<span class="prop-na">n/a</span>');
+        }
+
+        if($value instanceof core\time\IDate) {
+            $value = $renderContext->getView()->html->userDate($value);
+        }
+
+        return $value;
+    }
+
 
     public function setRenderTarget(aura\view\IRenderTarget $renderTarget=null) {
         $this->_widget->setRenderTarget($renderTarget);
