@@ -672,9 +672,9 @@ trait TForm_InlineFieldRenderableSelectorDelegate {
             $ba->push(
                 $this->html->eventButton(
                         $this->eventName('beginSelect'),
-                        $this->_('Change selection')
+                        $this->_('Select')
                     )
-                    ->setIcon('edit')
+                    ->setIcon('tick')
                     ->setDisposition('operative')
                     ->shouldValidate(false),
 
