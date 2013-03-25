@@ -25,6 +25,10 @@ class FieldError extends Base implements IFormOrientedWidget, core\IErrorContain
     }
     
     protected function _render() {
+        if(empty($this->_errors)) {
+            return '';
+        }
+
         $tag = $this->getTag();
         $output = new aura\html\ElementContent();
         
