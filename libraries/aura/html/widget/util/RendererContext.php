@@ -84,7 +84,7 @@ class RendererContext implements aura\html\widget\IRendererContext {
         if($value instanceof aura\html\IRenderable) {
             $value = $value->render();
         } else if($value instanceof aura\view\IRenderable) {
-            $value = $value->renderTo($renderContext->getView());
+            $value = $value->renderTo($this->getView());
         }
         
         if(empty($value) && $value != '0') {
@@ -92,7 +92,7 @@ class RendererContext implements aura\html\widget\IRendererContext {
         }
 
         if($value instanceof core\time\IDate) {
-            $value = $renderContext->getView()->html->userDate($value);
+            $value = $this->getView()->html->userDate($value);
         }
 
         return $value;
