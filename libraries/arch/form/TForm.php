@@ -570,6 +570,8 @@ trait TForm_InlineFieldRenderableSelectorDelegate {
     }
 
     protected function _renderInlineDetails(aura\html\widget\FieldArea $fa) {
+        $fa->addClass('delegate-selector');
+
         if($this instanceof arch\form\IDependentDelegate) {
             $messages = $this->getUnresolvedDependencyMessages();
 
@@ -579,12 +581,11 @@ trait TForm_InlineFieldRenderableSelectorDelegate {
             }
         }
 
-
         if($messages = $this->_getSelectionErrors()) {
             $fa->push($this->html->fieldError($messages));
         }
 
-
+        $fa->push($this->html->string('<div class="selection">'));
         $selectList = $this->_fetchSelectionList();
 
         if($this->_isForMany) {
@@ -594,8 +595,7 @@ trait TForm_InlineFieldRenderableSelectorDelegate {
 
             if(empty($selected)) {
                 $fa->push(
-                    $this->html->element('em', $this->_('nothing selected')),
-                    $this->html->string('<br />')
+                    $this->html->element('em', $this->_('nothing selected'))
                 );
             } else {
                 $tempList = $selected;
@@ -640,19 +640,18 @@ trait TForm_InlineFieldRenderableSelectorDelegate {
                     $this->html->hidden(
                             $this->fieldName('selected'),
                             $resultId
-                        ),
-
-                    $this->html->string('<br />')
+                        )
                 );
             } else {
                 // No selection
 
                 $fa->push(
-                    $this->html->element('em', $this->_('nothing selected')),
-                    $this->html->string('<br />')
+                    $this->html->element('em', $this->_('nothing selected'))
                 );
             }
         }
+
+        $fa->push($this->html->string('</div>'));
 
         $ba = $fa->addButtonArea();
         $this->_renderDetailsButtonGroup($ba, $selected);
