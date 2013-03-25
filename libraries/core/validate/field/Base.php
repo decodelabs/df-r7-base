@@ -96,7 +96,7 @@ abstract class Base implements core\validate\IField {
             }
             
             if($this->_isRequired) {
-                $node->addError('required', $this->_handler->_('Please fill in this field'));
+                $node->addError('required', $this->_handler->_('This field cannot be empty'));
             }
         }
         
