@@ -56,15 +56,16 @@ class Base implements ITheme {
     }
     
     public function renderToHtml(aura\view\IHtmlView $view) {
-        $this->_setDefaultViewTitle($view);
-        $request = $view->getContext()->request;
-        
-        $view->getBodyTag()
-            ->setDataAttribute('location', implode('/', $request->getLiteralPathArray()))
-            ->setDataAttribute('layout', $view->getLayout());
+        $this->applyDefaultIncludes($view);
+        $this->applyDefaultViewTitle($view);
+        $this->applyDefaultBodyTagData($view);
+    }
+
+    public function applyDefaultIncludes(aura\view\IView $view) {
+        // stub
     }
     
-    protected function _setDefaultViewTitle(aura\view\IHtmlView $view) {
+    public function applyDefaultViewTitle(aura\view\IView $view) {
         if(!$view->hasTitle()) {
             $breadcrumbs = $view->getContext()->navigation->getBreadcrumbs();
             $parts = [];
@@ -87,6 +88,14 @@ class Base implements ITheme {
             
             $view->setTitleSuffix($suffix);
         }
+    }
+
+    public function applyDefaultBodyTagData(aura\view\IView $view) {
+        $request = $view->getContext()->request;
+        
+        $view->getBodyTag()
+            ->setDataAttribute('location', implode('/', $request->getLiteralPathArray()))
+            ->setDataAttribute('layout', $view->getLayout());
     }
 
 
