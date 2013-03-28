@@ -16,6 +16,7 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
     use TArrayCollection;
     use TArrayCollection_Seekable;
     use TArrayCollection_ValueContainerSortable;
+    use TArrayCollection_MappedMovable;
     
     protected $_value;
     

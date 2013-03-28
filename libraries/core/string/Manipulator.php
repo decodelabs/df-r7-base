@@ -12,6 +12,7 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
     
     use core\TValueMap;
     use core\collection\TExtractList;
+    use core\collection\TNaiveIndexedMovable;
     
     protected $_encoding = null;
     protected $_value;
@@ -678,8 +679,8 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
         
         $this->_value .= $value;
         $indexLength = $index + max(mb_strlen($value), 1);
-        
-        if($indexLength < 0) {
+
+        if($indexLength > 0) {
             $this->_value .= mb_substr($oldVal, $indexLength);
         }
             

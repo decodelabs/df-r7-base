@@ -16,6 +16,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, core\IDumpable {
     use core\collection\TArrayCollection_Seekable;
     use core\collection\TArrayCollection_Sliceable;
     use core\collection\TArrayCollection_ProcessedShiftable;
+    use core\collection\TArrayCollection_IndexedMovable;
         
     protected $_separator = '/';
     protected $_autoCanonicalize = true;

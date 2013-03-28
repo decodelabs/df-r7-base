@@ -66,6 +66,11 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
         $this->_children->put($index, $value);
         return $this;
     }
+
+    public function move($key, $index) {
+        $this->_children->move($key, $index);
+        return $this;
+    }
     
     public function get($index, $default=null) {
         return $this->_children->get($index, $default);

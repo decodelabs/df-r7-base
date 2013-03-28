@@ -70,6 +70,20 @@ interface ISortable {
     public function sortByKey();
     public function reverseSortByKey();
     public function reverse();
+    public function move($key, $index);
+}
+
+// Movable
+interface IMovable {
+    public function move($key, $index);
+}
+
+trait TNaiveIndexedMovable {
+
+    public function move($key, $index) {
+        $value = $this->get($key);
+        return $this->remove($key)->put($key + $index, $value);
+    }
 }
 
 
@@ -138,7 +152,7 @@ interface IShiftableCollection extends ICollection {
     public function unshift($value);
 }
 
-interface IRandomAccessCollection extends IShiftableCollection, core\IValueMap, \ArrayAccess {}
+interface IRandomAccessCollection extends IShiftableCollection, IMovable, core\IValueMap, \ArrayAccess {}
 
 
 
@@ -179,7 +193,7 @@ interface IPriorityQueue extends IQueue, ISiftingCollection {
 
 interface IStack extends IIndexedCollection {}
 
-interface IMap extends IMappedCollection, ISeekable, ISortable {}
+interface IMap extends IMappedCollection, ISeekable, ISortable, IMovable {}
 
 interface IHeap extends ISiftingCollection {
     public function insert($value);

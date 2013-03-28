@@ -17,6 +17,10 @@ trait TArrayCollection {
     protected $_collection = array();
     
     public function __construct($input=null) {
+        if(func_get_args() > 1) {
+            $input = func_get_args();
+        }
+
         if($input !== null) {
             $this->import($input);
         }
@@ -120,6 +124,141 @@ trait TArrayCollection_ValueContainerSortable {
                 return 1;
             }
         });
+    }
+}
+
+trait TArrayCollection_IndexedMovable {
+
+    public function move($key, $index) {
+        $key = (int)$key;
+        $index = (int)$index;
+        $count = count($this->_collection);
+        
+        if($count <= 1) {
+            return $this;
+        }
+
+        if($key < 0) {
+            $key += $count;
+            
+            if($key < 0) {
+                throw new OutOfBoundsException(
+                    'Trying to move a negative index outside of current bounds'
+                );
+            }
+        }
+        
+        if($index == 0 || !array_key_exists($key, $this->_collection)) {
+            return $this;
+        }
+
+        $temp = array();
+
+        if($index < 0) {
+            foreach($this->_collection as $currentKey => $value) {
+                if($currentKey == $key) {
+                    $buffer = array_slice($temp, $index);
+                    $temp = array_slice($temp, 0, $index);
+                    $temp[] = $value;
+                    $temp = array_merge($temp, $buffer);
+                    continue;
+                }
+
+                $temp[] = $value;
+            }
+        } else {
+            $found = false;
+            $keyValue = $this->_collection[$key];
+
+            foreach($this->_collection as $currentKey => $value) {
+                if($currentKey == $key) {
+                    $found = true;
+                    $index--;
+                    continue;
+                }
+
+                if($found) {
+                    $index--;
+                }
+
+                $temp[] = $value;
+
+                if($index == 0) {
+                    $temp[] = $keyValue;
+                    $index = 0;
+                }
+            }
+
+            if($index > 0) {
+                $temp[] = $keyValue;
+            }
+        }
+
+        $this->_collection = $temp;
+        return $this;
+    }
+}
+
+
+trait TArrayCollection_MappedMovable {
+
+    public function move($key, $index) {
+        $index = (int)$index;
+        $count = count($this->_collection);
+        
+        if($count <= 1) {
+            return $this;
+        }
+
+        if($index == 0 || !array_key_exists($key, $this->_collection)) {
+            return $this;
+        }
+
+        if($index < 0) {
+            foreach($this->_collection as $currentKey => $value) {
+                if($currentKey == $key) {
+                    $buffer = array_slice($temp, $index, null, true);
+                    $temp = array_slice($temp, 0, $index, true);
+                    $temp[$key] = $value;
+                    
+                    foreach($buffer as $bKey => $bValue) {
+                        $temp[$bKey] = $bValue;
+                    }
+
+                    continue;
+                }
+
+                $temp[$currentKey] = $value;
+            }
+        } else {
+            $found = false;
+            $keyValue = $this->_collection[$key];
+
+            foreach($this->_collection as $currentKey => $value) {
+                if($currentKey == $key) {
+                    $found = true;
+                    continue;
+                }
+
+                if($found) {
+                    $index--;
+                }
+
+                $temp[$currentKey] = $value;
+
+                if($index == 0) {
+                    $temp[$key] = $keyValue;
+                    $index = 0;
+                }
+            }
+
+            if($index > 0) {
+                $temp[$key] = $keyValue;
+            }
+        }
+
+        $this->_collection = $temp;
+        return $this;
     }
 }
 
@@ -672,6 +811,7 @@ trait TArrayCollection_Queue {
     use TArrayCollection_Seekable;
     use TArrayCollection_Sliceable;
     use TArrayCollection_Shiftable;
+    use TArrayCollection_IndexedMovable;
     
     public function getReductiveIterator() {
         return new ReductiveIndexIterator($this);
@@ -705,6 +845,7 @@ trait TArrayCollection_Map {
     use TArrayCollection_ScalarSortable;
     use TArrayCollection_AssociativeValueMap;
     use TArrayCollection_Seekable;
+    use TArrayCollection_MappedMovable;
     
     public function getReductiveIterator() {
         return new ReductiveMapIterator($this);
