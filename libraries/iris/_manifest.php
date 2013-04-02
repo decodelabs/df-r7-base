@@ -174,13 +174,19 @@ interface ILexer extends ILocationProxyProvider {
     public function getTokens();
 
     public function extract($length=1);
-    public function peek($offset, $length);
+    public function peek($offset=0, $length=1);
     public function substring($position, $length);
+
     public function extractAlpha();
     public function extractAlphanumeric();
     public function extractNumeric();
     public function extractWhitespace();
     public function extractRegexRange($regex);
+
+    public function peekAlpha($offset=0, $length=1);
+    public function peekAlphanumeric($offset=0, $length=1);
+    public function peekNumeric($offset=0, $length=1);
+    public function peekWhitespace($offset=0, $length=1);
 }
 
 

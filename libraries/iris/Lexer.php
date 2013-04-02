@@ -26,6 +26,7 @@ class Lexer implements ILexer, core\IDumpable {
     protected $_isStarted = false;
     protected $_latchLine = 1;
     protected $_latchColumn = 1;
+    protected $_tokens = array();
 
     public function __construct(ISource $source, array $scanners=null) {
         $this->_source = $source;
@@ -224,7 +225,7 @@ class Lexer implements ILexer, core\IDumpable {
         return $output;
     }
 
-    public function peek($offset, $length) {
+    public function peek($offset=0, $length=1) {
         $length = (int)$length;
         $offset = (int)$offset;
 
@@ -299,6 +300,27 @@ class Lexer implements ILexer, core\IDumpable {
         }
 
         return $output;
+    }
+
+
+    public function peekAlpha($offset=0, $length=1) {
+        $output = $this->peek($offset, $length);
+        return core\string\Util::isAlpha($output) ? $output : null;
+    }
+
+    public function peekAlphanumeric($offset=0, $length=1) {
+        $output = $this->peek($offset, $length);
+        return core\string\Util::isAlphanumeric($output) ? $output : null;
+    }
+
+    public function peekNumeric($offset=0, $length=1) {
+        $output = $this->peek($offset, $length);
+        return core\string\Util::isDigit($output) ? $output : null;
+    }
+
+    public function peekWhitespace($offset=0, $length=1) {
+        $output = $this->peek($offset, $length);
+        return core\string\Util::isWhitespace($output) ? $output : null;
     }
 
 
