@@ -12,10 +12,10 @@ use df\iris;
 class TypeReference extends iris\map\Node implements iris\map\IAspect, core\IDumpable {
 
     protected $_name;
-    protected $_context = iris\parser\processor\Type::CONTEXT_CLASS;
+    protected $_context = iris\processor\Type::CONTEXT_CLASS;
     protected $_namespace;
 
-    public function __construct(EntityNamespace $namespace, $name, $context=iris\parser\processor\Type::CONTEXT_CLASS) {
+    public function __construct(EntityNamespace $namespace, $name, $context=iris\processor\Type::CONTEXT_CLASS) {
         parent::__construct($namespace);
 
         $this->setNamespace($namespace);

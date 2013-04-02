@@ -17,101 +17,26 @@ abstract class Parser implements IParser {
     public $lastComment;
     public $unit;
 
-    protected $_sourceUri;
     protected $_tokens;
     protected $_isStarted = false;
     protected $_processors = array();
+    protected $_lexer;
 
-    public function __construct($sourceUri, array $tokens=null, array $processors=null) {
-        if($sourceUri instanceof ISourceUriAware) {
-            $sourceUri = $sourceUri->getSourceUri();
-        }
-
-        $this->_sourceUri = $sourceUri;
-
-        if($tokens !== null) {
-            $this->setTokens($tokens);
-        }
+    public function __construct(ILexer $lexer, array $processors=null) {
+        $this->_lexer = $lexer;
 
         if(!empty($processors)) {
             $this->setProcessors($processors);
         }
     }
 
-// Source
+// Lexer
+    public function getLexer() {
+        return $this->_lexer;
+    }
+
     public function getSourceUri() {
-        return $this->_sourceUri;
-    }
-
-
-// Tokens
-    public function setTokens(array $tokens) {
-        return $this->clearTokens()
-            ->addTokens($tokens);
-    }
-
-    public function addTokens(array $tokens) {
-        foreach($tokens as $token) {
-            if(!$token instanceof IToken) {
-                throw new InvalidArgumentException(
-                    'Invalid token added to parser'
-                );
-            }
-
-            $this->_tokens[] = $token;
-        }
-        return $this;
-    }
-
-    public function addToken(IToken $token) {
-        $this->_tokens[] = $token;
-        return $this;
-    }
-
-    public function getTokens() {
-        return $this->_tokens;
-    }
-
-    public function hasToken(IToken $token) {
-        foreach($this->_tokens as $test) {
-            if($token === $test) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public function removeToken(IToken $token) {
-        if($this->_isStarted) {
-            throw new LogicException(
-                'Cannot remove tokens, parser already started'
-            );
-        }
-
-        foreach($this->_tokens as $i => $test) {
-            if($token === $test) {
-                unset($this->_tokens[$i]);
-                break;
-            }
-        }
-
-        return $this;
-    }
-
-    public function clearTokens() {
-        if($this->_isStarted) {
-            throw new LogicException(
-                'Cannot clear tokens, parser already started'
-            );
-        }
-
-        $this->_tokens = array();
-        return $this;
-    }
-
-    public function countTokens() {
-        return count($this->_tokens);
+        return $this->_lexer->getSourceUri();
     }
 
 
@@ -199,10 +124,6 @@ abstract class Parser implements IParser {
 
         $this->_isStarted = true;
         $this->unit = new iris\map\Unit(new Location($this->getSourceUri()));
-
-        if(!isset($this->_tokens[$this->position])) {
-            return $this->unit;
-        }
 
         $this->_setCurrentToken();
         $this->parseRoot();
@@ -358,6 +279,10 @@ abstract class Parser implements IParser {
     }
 
     protected function _setCurrentToken() {
+        if(empty($this->_tokens)) {
+            $this->_extractTokens();
+        }
+
         $this->token = isset($this->_tokens[$this->position]) ?
             $this->_tokens[$this->position] : 
             null;
@@ -368,6 +293,15 @@ abstract class Parser implements IParser {
         } else if(@$this->_tokens[$this->position - 1] !== $this->lastComment) {
             $this->lastComment = null;
         }
+    }
+
+    protected function _extractTokens($count=10) {
+        while($count > 0) {
+            $this->_tokens[] = $this->_lexer->extractToken();
+            $count--;
+        }
+
+        core\dump($this->_tokens);
     }
 
     public function peek($offset=1, $length=1) {

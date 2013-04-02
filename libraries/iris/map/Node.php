@@ -14,11 +14,11 @@ abstract class Node implements INode {
     protected $_location;
     protected $_comment;
 
-    public function __construct(iris\lexer\ILocationProvider $locationProvider=null) {
+    public function __construct(iris\ILocationProvider $locationProvider=null) {
         if($locationProvider) {
             $this->_location = $locationProvider->getLocation();
         } else {
-            $this->_location = new iris\lexer\Location(null, 1, 1);
+            $this->_location = new iris\Location(null, 1, 1);
         }
     }
 
@@ -38,7 +38,7 @@ abstract class Node implements INode {
         return $this->_location;
     }
 
-    public function replaceLocation(iris\lexer\ILocationProvider $locationProvider) {
+    public function replaceLocation(iris\ILocationProvider $locationProvider) {
         $this->_location = $locationProvider->getLocation();
         return $this;
     }
@@ -48,7 +48,7 @@ abstract class Node implements INode {
     }
 
 
-    public function duplicate(iris\lexer\ILocationProvider $locationProvider=null) {
+    public function duplicate(iris\ILocationProvider $locationProvider=null) {
         $output = clone $this;
 
         if($locationProvider) {

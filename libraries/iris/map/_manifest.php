@@ -17,10 +17,10 @@ class LogicException extends \LogicException implements IException {}
 class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 
 // Interfaces
-interface INode extends iris\lexer\ILocationProvider {
+interface INode extends iris\ILocationProvider {
     public function getLocationId();
-    public function replaceLocation(iris\lexer\ILocationProvider $locationProvider);
-    public function duplicate(iris\lexer\ILocationProvider $locationProvider=null);
+    public function replaceLocation(iris\ILocationProvider $locationProvider);
+    public function duplicate(iris\ILocationProvider $locationProvider=null);
 }
 
 

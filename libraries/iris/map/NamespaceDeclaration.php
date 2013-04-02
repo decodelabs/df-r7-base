@@ -15,7 +15,7 @@ class NamespaceDeclaration extends Node implements core\IDumpable {
     protected $_namespaceShortcuts = array();
     protected $_typeShortcuts = array();
 
-    public function __construct(iris\lexer\ILocationProvider $locationProvider, iris\map\aspect\EntityNamespace $namespace) {
+    public function __construct(iris\ILocationProvider $locationProvider, iris\map\aspect\EntityNamespace $namespace) {
         parent::__construct($locationProvider);
         $this->setNamespace($namespace);
     }

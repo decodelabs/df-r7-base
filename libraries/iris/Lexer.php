@@ -23,10 +23,10 @@ class Lexer implements ILexer, core\IDumpable {
 
     protected $_scanners = array();
     protected $_source;
+    protected $_isInitialized = false;
     protected $_isStarted = false;
     protected $_latchLine = 1;
     protected $_latchColumn = 1;
-    protected $_tokens = array();
 
     public function __construct(ISource $source, array $scanners=null) {
         $this->_source = $source;
@@ -121,11 +121,9 @@ class Lexer implements ILexer, core\IDumpable {
 
 
 // Exec
-    public function tokenize() {
-        if($this->_isStarted) {
-            throw new LogicException(
-                'Lexer has already been started'
-            );
+    public function initialize() {
+        if($this->_isInitialized) {
+            return $this;
         }
 
         if(empty($this->_scanners)) {
@@ -143,14 +141,28 @@ class Lexer implements ILexer, core\IDumpable {
             $scanner->initialize($this);
         }
 
+        $this->_isInitialized = true;
+        return $this;
+    }
+
+    public function tokenize() {
+        if($this->_isStarted) {
+            throw new LogicException(
+                'Lexer has already been started'
+            );
+        }
+
+        $this->initialize();
+
         $this->_isStarted = true;
+        $tokens = array();
 
         do {
             $token = $this->extractToken();
-            $this->_tokens[] = $token;
+            $tokens[] = $token;
         } while(!$token->is('eof'));
 
-        return $this->_tokens;
+        return $tokens;
     }
 
     public function extractToken() {
@@ -187,10 +199,6 @@ class Lexer implements ILexer, core\IDumpable {
 
     public function newToken($type, $value=null) {
         return new Token($type, $value, $this->lastWhitespace, $this->_latchLine, $this->_latchColumn, $this->_source->getSourceUri());
-    }
-
-    public function getTokens() {
-        return $this->_tokens;
     }
 
 
@@ -231,6 +239,10 @@ class Lexer implements ILexer, core\IDumpable {
 
         if($length < 1) {
             return '';
+        }
+
+        if($offset == 0 && $length == 1) {
+            return $this->char;
         }
 
         return $this->_source->substring($this->position + $offset, $length);
@@ -334,7 +346,6 @@ class Lexer implements ILexer, core\IDumpable {
             'lastLine' => $this->lastLine,
             'linePosition' => $this->linePosition,
             'lastWhitespace' => $this->lastWhitespace,
-            'tokens' => $this->_tokens,
             'scanners' => $this->_scanners
         ];
     }

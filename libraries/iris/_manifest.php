@@ -171,7 +171,6 @@ interface ILexer extends ILocationProxyProvider {
     public function tokenize();
     public function extractToken();
     public function newToken($type, $value=null);
-    public function getTokens();
 
     public function extract($length=1);
     public function peek($offset=0, $length=1);
@@ -210,15 +209,7 @@ interface IToken extends ILocationProxyProvider {
 
 interface IParser {
     public function getSourceUri();
-
-    public function setTokens(array $tokens);
-    public function addTokens(array $tokens);
-    public function addToken(IToken $token);
-    public function getTokens();
-    public function hasToken(IToken $token);
-    public function removeToken(IToken $token);
-    public function clearTokens();
-    public function countTokens();
+    public function getLexer();
 
     public function setProcessors(array $processors);
     public function addProcessors(array $processors);

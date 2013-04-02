@@ -30,21 +30,34 @@ class Symbol implements iris\IScanner, core\IDumpable {
             ->addSymbols($symbols);
     }
 
-    public function addSymbols(array $symbols) {
-        foreach($symbols as $symbol) {
-            $this->addSymbol($symbol);
+    public function addSymbols(array $symbols, $type=null) {
+        foreach($symbols as $key => $value) {
+            if(is_array($value)) {
+                if(is_string($key)) {
+                    $keyType = $key;
+                } else {
+                    $keyType = $type;
+                }
+
+                $this->addSymbols($value, $keyType);
+            } else if(is_string($key)) {
+                $this->addSymbol($key, $value);
+            } else {
+                $this->addSymbol($value, $type);
+            }
         }
 
         return $this;
     }
 
-    public function addSymbol($symbol) {
+    public function addSymbol($symbol, $type=null) {
         $symbol = trim($symbol);
 
-        if(!isset($this->_symbols[$symbol])) {
-            $this->_symbols[$symbol] = 0;
+        if($type === null) {
+            $type = 'default';
         }
 
+        $this->_symbols[$symbol] = $type;
         return $this;
     }
 
@@ -83,7 +96,7 @@ class Symbol implements iris\IScanner, core\IDumpable {
     public function run(iris\ILexer $lexer) {
         $symbols = array();
 
-        foreach($this->_symbols as $symbol => $count) {
+        foreach($this->_symbols as $symbol => $type) {
             if(mb_substr($symbol, 0, 1) != $lexer->char) {
                 continue;
             }
@@ -92,8 +105,6 @@ class Symbol implements iris\IScanner, core\IDumpable {
 
             if($lexer->peek(0, $length) == $symbol) {
                 $lexer->extract($length);
-                $this->_symbols[$symbol]++;
-
                 return $lexer->newToken('symbol', $symbol);
             }
         }

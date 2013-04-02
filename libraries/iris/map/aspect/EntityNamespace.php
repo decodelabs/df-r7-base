@@ -14,11 +14,11 @@ class EntityNamespace extends iris\map\Node implements iris\map\IAspect, core\IS
     use core\collection\TArrayCollection_Queue;
     use core\TStringProvider;
 
-    public static function root(iris\lexer\ILocationProvider $locationProvider) {
+    public static function root(iris\ILocationProvider $locationProvider) {
         return new self($locationProvider, ['__root__']);
     }
 
-    public function __construct(iris\lexer\ILocationProvider $locationProvider, $input=null) {
+    public function __construct(iris\ILocationProvider $locationProvider, $input=null) {
         parent::__construct($locationProvider);
 
         if($input !== null) {

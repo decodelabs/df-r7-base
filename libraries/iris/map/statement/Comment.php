@@ -13,7 +13,7 @@ class Comment extends iris\map\Node implements iris\map\IStatement, core\IDumpab
 
     protected $_body;
 
-    public function __construct(iris\lexer\ILocationProvider $locationProvider, $body) {
+    public function __construct(iris\ILocationProvider $locationProvider, $body) {
         parent::__construct($locationProvider);
 
         $this->setBody($body);
