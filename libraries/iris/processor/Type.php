@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\iris\parser\processor;
+namespace df\iris\processor;
 
 use df;
 use df\core;
@@ -53,11 +53,11 @@ class Type extends Base {
         return $this->_contextSeparator;
     }
 
-    public function initialize(iris\parser\IParser $parser) {
+    public function initialize(iris\IParser $parser) {
         parent::initialize($parser);
 
         if(!$parser->getProcessor('UnitNamespace')) {
-            throw new iris\parser\LogicException(
+            throw new iris\LogicException(
                 'Type processor is dependent on Namespace processor'
             );
         }
@@ -69,7 +69,7 @@ class Type extends Base {
 
         if($this->parser->peek(1)->matches('symbol', null, $this->_contextSeparator)) {
             if(!$this->_allowContext) {
-                throw new iris\parser\UnexpectedValueException(
+                throw new iris\UnexpectedTokenException(
                     'Type context hints are not allowed',
                     $this->parser->peek(1)
                 );
@@ -78,7 +78,7 @@ class Type extends Base {
             $context = $this->parser->extractWord();
 
             if(strlen($context->value) > 1) {
-                throw new iris\parser\UnexpectedValueException(
+                throw new iris\UnexpectedTokenException(
                     'Invalid type context: '.$context->value,
                     $context
                 );
@@ -91,7 +91,7 @@ class Type extends Base {
         $name = $this->parser->extractWord();
 
         if(!$this->testName($name->value)) {
-            throw new UnexpectedValueException(
+            throw new iris\UnexpectedTokenException(
                 'Invalid type name :'.$name->value,
                 $name
             );

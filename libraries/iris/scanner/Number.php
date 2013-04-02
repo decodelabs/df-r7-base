@@ -3,13 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\iris\lexer\processor;
+namespace df\iris\scanner;
 
 use df;
 use df\core;
 use df\iris;
     
-class Number implements iris\lexer\IProcessor, core\IDumpable {
+class Number implements iris\IScanner, core\IDumpable {
 
     protected $_allowHex = true;
     protected $_allowOctal = true;
@@ -65,23 +65,23 @@ class Number implements iris\lexer\IProcessor, core\IDumpable {
     }
 
 
-    public function initialize(iris\lexer\ILexer $lexer) {
+    public function initialize(iris\ILexer $lexer) {
 
     }
 
-    public function check(iris\lexer\ILexer $lexer) {
+    public function check(iris\ILexer $lexer) {
         return core\string\Util::isDigit($lexer->char)
             || ($lexer->char == '.' && core\string\Util::isDigit($lexer->peek(1, 1)));
     }
 
-    public function run(iris\lexer\ILexer $lexer) {
+    public function run(iris\ILexer $lexer) {
         if($lexer->char == '0') {
             $peek = $lexer->peek(1, 1);
 
             if(strtolower($peek) == 'x') {
                 // Hex
                 if(!$this->_allowHex) {
-                    throw new iris\lexer\UnexpectedValueException(
+                    throw new iris\UnexpectedCharacterException(
                         'Hex numbers are not allowed',
                         $lexer->getLocation()
                     );
@@ -94,7 +94,7 @@ class Number implements iris\lexer\IProcessor, core\IDumpable {
             } else if(core\string\Util::isDigit($peek)) {
                 // Octal
                 if(!$this->_allowOctal) {
-                    throw new iris\lexer\UnexpectedValueException(
+                    throw new iris\UnexpectedCharacterException(
                         'Octal numbers are not allowed',
                         $lexer->getLocation()
                     );
@@ -132,7 +132,7 @@ class Number implements iris\lexer\IProcessor, core\IDumpable {
         if(strtolower($lexer->char) == 'e') {
             // E notation
             if(!$this->_allowENotation) {
-                throw new UnexpectedValueException(
+                throw new iris\UnexpectedCharacterException(
                     'E notation numbers are not allowed'
                 );
             }
@@ -160,7 +160,7 @@ class Number implements iris\lexer\IProcessor, core\IDumpable {
 
         if($next == 'f') {
             if(!$this->_allowSuffixes) {
-                throw new UnexpectedValueException(
+                throw new iris\UnexpectedCharacterException(
                     'Float suffixes are not allowed',
                     $lexer->getLocation()
                 );
@@ -170,7 +170,7 @@ class Number implements iris\lexer\IProcessor, core\IDumpable {
             $floatSuffix = true;
         } else if($next == 'd') {
             if(!$this->_allowSuffixes) {
-                throw new UnexpectedValueException(
+                throw new iris\UnexpectedCharacterException(
                     'Decimal suffixes are not allowed',
                     $lexer->getLocation()
                 );

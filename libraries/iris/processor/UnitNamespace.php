@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\iris\parser\processor;
+namespace df\iris\processor;
 
 use df;
 use df\core;
@@ -100,11 +100,11 @@ class UnitNamespace extends Base {
 
 
 // Processor
-    public function initialize(iris\parser\IParser $parser) {
+    public function initialize(iris\IParser $parser) {
         parent::initialize($parser);
 
         if(!$parser->getProcessor('Type')) {
-            throw new LogicException(
+            throw new iris\LogicException(
                 'Namespace processor is dependent on Type processor'
             );
         }
@@ -116,7 +116,7 @@ class UnitNamespace extends Base {
 
         if($this->parser->token->matches('keyword', null, $this->_shortcutKeyword)) {
             if(!$this->_allowRoot) {
-                throw new iris\parser\UnexpectedValueException(
+                throw new iris\UnexpectedTokenException(
                     'Root namespace is not available'
                 );
             }
@@ -201,7 +201,7 @@ class UnitNamespace extends Base {
             } else if($this->_allowRoot) {
                 return iris\map\aspect\EntityNamespace::root($this->parser->token);
             } else {
-                throw new iris\parser\UnexpectedValueException(
+                throw new iris\UnexpectedTokenException(
                     'Cannot extract base namespace name',
                     $this->parser->token
                 );
@@ -223,7 +223,7 @@ class UnitNamespace extends Base {
         $token = $this->parser->extractMatch('word');
 
         if(!$this->testNameComponent($token->value)) {
-            throw new iris\parser\UnexpectedValueException(
+            throw new iris\UnexpectedTokenException(
                 $token->value.' is not a valid namespace name',
                 $token
             );
@@ -245,7 +245,7 @@ class UnitNamespace extends Base {
             $declaration = $this->parser->currentNamespace;
 
             if($declaration === null) {
-                throw new iris\parser\UnexpectedValueException(
+                throw new iris\UnexpectedTokenException(
                     'No declaration has been defined for namespace shortcuts',
                     $this->token
                 );
@@ -294,7 +294,7 @@ class UnitNamespace extends Base {
                     $type = null;
 
                     if($namespace === null) {
-                        throw new iris\parser\UnexpectedValueException(
+                        throw new iris\UnexpectedTokenException(
                             'Type aliasing is not allowed',
                             $keywordToken
                         );

@@ -95,7 +95,7 @@ trait TEncodingProvider {
 
     public function setEncoding($encoding) {
         if(!core\string\Manipulator::isValidEncoding($encoding)) {
-            throw new iris\lexer\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 $encoding.' is not a valid encoding'
             );
         }

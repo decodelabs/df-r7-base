@@ -3,13 +3,12 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\iris\lexer;
+namespace df\flex\latex;
 
 use df;
 use df\core;
+use df\flex;
 use df\iris;
     
-class SourceUri extends core\uri\Url implements ISourceUri {
-
-    
-}
+// Exceptions
+interface IException {}

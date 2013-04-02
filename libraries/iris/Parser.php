@@ -3,13 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\iris\parser;
+namespace df\iris;
 
 use df;
 use df\core;
 use df\iris;
     
-abstract class Base implements IParser {
+abstract class Parser implements IParser {
 
     public $position = 0;
     public $token;
@@ -23,7 +23,7 @@ abstract class Base implements IParser {
     protected $_processors = array();
 
     public function __construct($sourceUri, array $tokens=null, array $processors=null) {
-        if($sourceUri instanceof iris\lexer\ISourceUriAware) {
+        if($sourceUri instanceof ISourceUriAware) {
             $sourceUri = $sourceUri->getSourceUri();
         }
 
@@ -52,7 +52,7 @@ abstract class Base implements IParser {
 
     public function addTokens(array $tokens) {
         foreach($tokens as $token) {
-            if(!$token instanceof iris\lexer\IToken) {
+            if(!$token instanceof IToken) {
                 throw new InvalidArgumentException(
                     'Invalid token added to parser'
                 );
@@ -63,7 +63,7 @@ abstract class Base implements IParser {
         return $this;
     }
 
-    public function addToken(iris\lexer\IToken $token) {
+    public function addToken(IToken $token) {
         $this->_tokens[] = $token;
         return $this;
     }
@@ -72,7 +72,7 @@ abstract class Base implements IParser {
         return $this->_tokens;
     }
 
-    public function hasToken(iris\lexer\IToken $token) {
+    public function hasToken(IToken $token) {
         foreach($this->_tokens as $test) {
             if($token === $test) {
                 return true;
@@ -82,7 +82,7 @@ abstract class Base implements IParser {
         return false;
     }
 
-    public function removeToken(iris\lexer\IToken $token) {
+    public function removeToken(IToken $token) {
         if($this->_isStarted) {
             throw new LogicException(
                 'Cannot remove tokens, parser already started'
@@ -198,7 +198,7 @@ abstract class Base implements IParser {
         }
 
         $this->_isStarted = true;
-        $this->unit = new iris\map\Unit(new iris\lexer\Location($this->getSourceUri()));
+        $this->unit = new iris\map\Unit(new Location($this->getSourceUri()));
 
         if(!isset($this->_tokens[$this->position])) {
             return $this->unit;
@@ -273,7 +273,7 @@ abstract class Base implements IParser {
 
         foreach($sequence as $i => $ids) {
             if(!isset($test[$i])) {
-                throw new UnexpectedValueException(
+                throw new UnexpectedTokenException(
                     'Sequence could not be extracted, reached end of token stream',
                     array_pop($test)
                 );
@@ -282,7 +282,7 @@ abstract class Base implements IParser {
             $token = $test[$i];
 
             if(!$token->is($ids)) {
-                throw new UnexpectedValueException(
+                throw new UnexpectedTokenException(
                     'Sequence could not be extracted',
                     $token
                 );
@@ -309,7 +309,7 @@ abstract class Base implements IParser {
                 $id .= ' '.trim($value);
             }
 
-            throw new UnexpectedValueException(
+            throw new UnexpectedTokenException(
                 $id.' could not be extracted',
                 $this->token
             );
@@ -328,7 +328,7 @@ abstract class Base implements IParser {
 
     public function extractWord() {
         if(!$output = $this->extractIf(['word', 'keyword'])) {
-            throw new UnexpectedValueException(
+            throw new UnexpectedTokenException(
                 'Word could not be extracted',
                 $this->token
             );

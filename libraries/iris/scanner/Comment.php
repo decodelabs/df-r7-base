@@ -3,13 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\iris\lexer\processor;
+namespace df\iris\scanner;
 
 use df;
 use df\core;
 use df\iris;
     
-class Comment implements iris\lexer\IProcessor {
+class Comment implements iris\IScanner {
 
     protected $_markers = [
         '//' => "\n",
@@ -79,15 +79,15 @@ class Comment implements iris\lexer\IProcessor {
         return $this->_allowNesting;
     }
 
-    public function initialize(iris\lexer\ILexer $lexer) {
+    public function initialize(iris\ILexer $lexer) {
         if(empty($this->_markers)) {
-            throw new LogicException(
-                'Comment processor does not have any markers to match'
+            throw new iris\LogicException(
+                'Comment scanner does not have any markers to match'
             );
         }
     }
 
-    public function check(iris\lexer\ILexer $lexer) {
+    public function check(iris\ILexer $lexer) {
         foreach($this->_markers as $start => $end) {
             if($lexer->peek(0, mb_strlen($start)) == $start) {
                 return true;
@@ -97,7 +97,7 @@ class Comment implements iris\lexer\IProcessor {
         return false;
     }
 
-    public function run(iris\lexer\ILexer $lexer) {
+    public function run(iris\ILexer $lexer) {
         foreach($this->_markers as $start => $end) {
             $startLength = mb_strlen($start);
 

@@ -3,13 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\iris\lexer\processor;
+namespace df\iris\scanner;
 
 use df;
 use df\core;
 use df\iris;
     
-class Symbol implements iris\lexer\IProcessor, core\IDumpable {
+class Symbol implements iris\IScanner, core\IDumpable {
 
     protected $_symbols = array();
 
@@ -63,9 +63,9 @@ class Symbol implements iris\lexer\IProcessor, core\IDumpable {
     }
 
 
-    public function initialize(iris\lexer\ILexer $lexer) {
+    public function initialize(iris\ILexer $lexer) {
         if(empty($this->_symbols)) {
-            throw new LogicException(
+            throw new iris\LogicException(
                 'Symbol processor does not have any symbols to match'
             );
         }
@@ -76,11 +76,11 @@ class Symbol implements iris\lexer\IProcessor, core\IDumpable {
     }
     
 
-    public function check(iris\lexer\ILexer $lexer) {
+    public function check(iris\ILexer $lexer) {
         return true;
     }
 
-    public function run(iris\lexer\ILexer $lexer) {
+    public function run(iris\ILexer $lexer) {
         $symbols = array();
 
         foreach($this->_symbols as $symbol => $count) {

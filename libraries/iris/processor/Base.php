@@ -3,13 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\iris\parser\processor;
+namespace df\iris\processor;
 
 use df;
 use df\core;
 use df\iris;
     
-abstract class Base implements iris\parser\IProcessor {
+abstract class Base implements iris\IProcessor {
 
     public $parser;
 
@@ -18,7 +18,7 @@ abstract class Base implements iris\parser\IProcessor {
         return array_pop($parts);
     }
 
-    public function initialize(iris\parser\IParser $parser) {
+    public function initialize(iris\IParser $parser) {
         $this->parser = $parser;
     }
 }

@@ -3,13 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\iris\lexer;
+namespace df\iris;
 
 use df;
 use df\core;
 use df\iris;
     
-class Base implements ILexer, core\IDumpable {
+class Lexer implements ILexer, core\IDumpable {
 
     use TLocationProvider;
 
@@ -21,18 +21,18 @@ class Base implements ILexer, core\IDumpable {
     public $linePosition = 0;
     public $lastWhitespace = '';
 
-    protected $_processors = array();
+    protected $_scanners = array();
     protected $_source;
     protected $_isStarted = false;
     protected $_latchLine = 1;
     protected $_latchColumn = 1;
 
-    public function __construct(ISource $source, array $processors=null) {
+    public function __construct(ISource $source, array $scanners=null) {
         $this->_source = $source;
         $this->char = $source->substring(0);
 
-        if($processors) {
-            $this->setProcessors($processors);
+        if($scanners) {
+            $this->setScanners($scanners);
         }
     }
 
@@ -53,68 +53,68 @@ class Base implements ILexer, core\IDumpable {
     }
 
 
-// Processors
-    public function setProcessors(array $processors) {
-        return $this->clearProcessors()
-            ->addProcessors($processors);
+// Scanners
+    public function setScanners(array $scanners) {
+        return $this->clearScanners()
+            ->addScanners($scanners);
     }
 
-    public function addProcessors(array $processors) {
-        foreach($processors as $processor) {
-            if(!$processor instanceof IProcessor) {
+    public function addScanners(array $scanners) {
+        foreach($scanners as $scanner) {
+            if(!$scanner instanceof IScanner) {
                 throw new InvalidArgumentException(
-                    'Invalid processor detected'
+                    'Invalid scanner detected'
                 );
             }
 
-            $this->addProcessor($processor);
+            $this->addScanner($scanner);
         }
 
         return $this;
     }
 
-    public function addProcessor(IProcessor $processor) {
-        if($this->hasProcessor($processor)) {
+    public function addScanner(IScanner $scanner) {
+        if($this->hasScanner($scanner)) {
             throw new LogicException(
-                'Processor '.$processor->getName().' has already been added to the lexer'
+                'Scanner '.$scanner->getName().' has already been added to the lexer'
             );
         }
 
-        $this->_processors[$processor->getName()] = $processor;
+        $this->_scanners[$scanner->getName()] = $scanner;
         return $this;
     }
 
-    public function hasProcessor($name) {
-        if($name instanceof IProcessor) {
+    public function hasScanner($name) {
+        if($name instanceof IScanner) {
             $name = $name->getName();
         }
 
         $name = ucfirst($name);
 
-        return isset($this->_processors[$name]);
+        return isset($this->_scanners[$name]);
     }
 
-    public function getProcessor($name) {
+    public function getScanner($name) {
         $name = ucfirst($name);
 
-        if(isset($this->_processors[$name])) {
-            return $this->_processors[$name];
+        if(isset($this->_scanners[$name])) {
+            return $this->_scanners[$name];
         }
     }
 
-    public function removeProcessor($name) {
-        if($name instanceof IProcessor) {
+    public function removeScanner($name) {
+        if($name instanceof IScanner) {
             $name = $name->getName();
         }
 
         $name = ucfirst($name);
 
-        unset($this->_processors[$name]);
+        unset($this->_scanners[$name]);
         return $this;
     }
 
-    public function clearProcessors() {
-        $this->_processors = array();
+    public function clearScanners() {
+        $this->_scanners = array();
         return $this;
     }
 
@@ -127,19 +127,19 @@ class Base implements ILexer, core\IDumpable {
             );
         }
 
-        if(empty($this->_processors)) {
+        if(empty($this->_scanners)) {
             throw new LogicException(
-                'Lexer has no processors'
+                'Lexer has no scanners'
             );  
         }
 
 
-        uasort($this->_processors, function($a, $b) {
+        uasort($this->_scanners, function($a, $b) {
             return $a->getWeight() > $b->getWeight();
         });
 
-        foreach($this->_processors as $processor) {
-            $processor->initialize($this);
+        foreach($this->_scanners as $scanner) {
+            $scanner->initialize($this);
         }
 
         $this->_isStarted = true;
@@ -159,9 +159,9 @@ class Base implements ILexer, core\IDumpable {
 
         $token = null;
 
-        foreach($this->_processors as $processor) {
-            if($processor->check($this)) {
-                if($token = $processor->run($this)) {
+        foreach($this->_scanners as $scanner) {
+            if($scanner->check($this)) {
+                if($token = $scanner->run($this)) {
                     break;
                 }
             }
@@ -171,8 +171,8 @@ class Base implements ILexer, core\IDumpable {
             if(!$this->char) {
                 $token = $this->newToken('eof');
             } else {
-                throw new UnexpectedValueException(
-                    'Lexer doesn\'t have a processor to handle char: '.$this->char,
+                throw new UnexpectedCharacterException(
+                    'Lexer doesn\'t have a scanner to handle char: '.$this->char,
                     $this->getLocation()
                 );
             }
@@ -313,7 +313,7 @@ class Base implements ILexer, core\IDumpable {
             'linePosition' => $this->linePosition,
             'lastWhitespace' => $this->lastWhitespace,
             'tokens' => $this->_tokens,
-            'processors' => $this->_processors
+            'scanners' => $this->_scanners
         ];
     }
 }

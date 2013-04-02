@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\iris\lexer;
+namespace df\iris;
 
 use df;
 use df\core;
@@ -15,8 +15,9 @@ interface IException {}
 class RuntimeException extends \RuntimeException implements IException {}
 class LogicException extends \LogicException implements IException {}
 class InvalidArgumentException extends \InvalidArgumentException implements IException {}
+class UnexpectedValueException extends \UnexpectedValueException implements IException {}
 
-class UnexpectedValueException extends \UnexpectedValueException implements IException, core\IDumpable {
+class UnexpectedCharacterException extends UnexpectedValueException implements core\IDumpable {
 
     protected $_location;
     
@@ -36,6 +37,27 @@ class UnexpectedValueException extends \UnexpectedValueException implements IExc
         return $this->_location;
     }
 }
+
+class UnexpectedTokenException extends UnexpectedValueException implements core\IDumpable {
+
+    protected $_token;
+    
+    public function __construct($message, IToken $token=null) {
+        parent::__construct($message);
+        
+        if($token) {
+            $this->_token = clone $token;
+        }
+    }
+    
+    public function getToken() {
+        return $this->_token;
+    }
+
+    public function getDumpProperties() {
+        return $this->_token;
+    }
+}   
 
 
 // Interfaces    
@@ -61,6 +83,10 @@ trait TSourceUriProvider {
     public function getSourceUri() {
         return $this->_sourceUri;
     }
+}
+
+interface ISource extends ISourceUriAware, core\string\IEncodingAware {
+    public function substring($start, $length=1);
 }
 
 interface ILocationProxy {
@@ -123,7 +149,7 @@ trait TLocation {
     }
 }
 
-interface IProcessor {
+interface IScanner {
     public function getName();
     public function getWeight();
     public function initialize(ILexer $lexer);
@@ -131,18 +157,16 @@ interface IProcessor {
     public function run(ILexer $lexer);
 }
 
-
-
 interface ILexer extends ILocationProxyProvider {
     public function getSource();
 
-    public function setProcessors(array $processors);
-    public function addProcessors(array $processors);
-    public function addProcessor(IProcessor $processor);
-    public function hasProcessor($name);
-    public function getProcessor($name);
-    public function removeProcessor($name);
-    public function clearProcessors();
+    public function setScanners(array $scanners);
+    public function addScanners(array $scanners);
+    public function addScanner(IScanner $scanner);
+    public function hasScanner($name);
+    public function getScanner($name);
+    public function removeScanner($name);
+    public function clearScanners();
 
     public function tokenize();
     public function extractToken();
@@ -160,12 +184,6 @@ interface ILexer extends ILocationProxyProvider {
 }
 
 
-
-interface ISource extends ISourceUriAware, core\string\IEncodingAware {
-    public function substring($start, $length=1);
-}
-
-
 interface IToken extends ILocationProxyProvider {
     public function getType();
     public function getSubType();
@@ -180,4 +198,48 @@ interface IToken extends ILocationProxyProvider {
     public function eq(IToken $token);
     public function is($compId);
     public function matches($type, $subType=null, $value=null);
+}
+
+
+
+interface IParser {
+    public function getSourceUri();
+
+    public function setTokens(array $tokens);
+    public function addTokens(array $tokens);
+    public function addToken(IToken $token);
+    public function getTokens();
+    public function hasToken(IToken $token);
+    public function removeToken(IToken $token);
+    public function clearTokens();
+    public function countTokens();
+
+    public function setProcessors(array $processors);
+    public function addProcessors(array $processors);
+    public function addProcessor(IProcessor $processor);
+    public function hasProcessor($name);
+    public function getProcessor($name);
+    public function removeProcessor($name);
+    public function clearProcessors();
+
+    public function parse();
+    public function parseRoot();
+    public function getLastCommentBody();
+
+    public function extract($count=1);
+    public function extractIf($ids, $limit=1);
+    public function extractSequence($ids);
+    public function extractMatch($type, $subType=null, $value=null);
+    public function extractIfMatch($type, $subType=null, $value=null);
+    public function extractStatementEnd();
+    public function extractWord();
+    public function rewind($count=1);
+    public function peek($offset=1, $length=1);
+    public function purge();
+}
+
+
+interface IProcessor {
+    public function getName();
+    public function initialize(IParser $parser);
 }

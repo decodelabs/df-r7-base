@@ -3,13 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\iris\lexer\processor;
+namespace df\iris\scanner;
 
 use df;
 use df\core;
 use df\iris;
     
-class Variable implements iris\lexer\IProcessor, core\IDumpable {
+class Variable implements iris\IScanner, core\IDumpable {
 
     protected $_markers = array();
 
@@ -64,15 +64,15 @@ class Variable implements iris\lexer\IProcessor, core\IDumpable {
     }
 
 
-    public function initialize(iris\lexer\ILexer $lexer) {
+    public function initialize(iris\ILexer $lexer) {
         if(empty($this->_markers)) {
-            throw new LogicException(
+            throw new iris\LogicException(
                 'Variable processor does not have any markers to match'
             );
         }
     }
 
-    public function check(iris\lexer\ILexer $lexer) {
+    public function check(iris\ILexer $lexer) {
         if(!isset($this->_markers[$lexer->char])) {
             return false;
         }
@@ -81,7 +81,7 @@ class Variable implements iris\lexer\IProcessor, core\IDumpable {
         return core\string\Util::isAlpha($peek) || $peek == '_';
     }
 
-    public function run(iris\lexer\ILexer $lexer) {
+    public function run(iris\ILexer $lexer) {
         $type = $this->_markers[$lexer->char];
         $lexer->extract();
         $word = $lexer->extractRegexRange('a-zA-Z0-9_');

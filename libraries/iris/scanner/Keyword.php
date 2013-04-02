@@ -3,13 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\iris\lexer\processor;
+namespace df\iris\scanner;
 
 use df;
 use df\core;
 use df\iris;
     
-class Keyword implements iris\lexer\IProcessor, core\IDumpable {
+class Keyword implements iris\IScanner, core\IDumpable {
 
     protected $_words = array();
     protected $_lowerWords = array();
@@ -85,19 +85,19 @@ class Keyword implements iris\lexer\IProcessor, core\IDumpable {
         return 1;
     }
 
-    public function initialize(iris\lexer\ILexer $lexer) {
+    public function initialize(iris\ILexer $lexer) {
         if(empty($this->_words)) {
-            throw new iris\lexer\LogicException(
-                'Keyword processor does not have any words to match'
+            throw new iris\LogicException(
+                'Keyword scanner does not have any words to match'
             );
         }
     }
 
-    public function check(iris\lexer\ILexer $lexer) {
+    public function check(iris\ILexer $lexer) {
         return core\string\Util::isAlpha($lexer->char) || $lexer->char == '_';
     }
 
-    public function run(iris\lexer\ILexer $lexer) {
+    public function run(iris\ILexer $lexer) {
         $word = $lexer->extractRegexRange('a-zA-Z0-9_');
 
         if($this->_isCaseSensitive && isset($this->_words[$word])) {

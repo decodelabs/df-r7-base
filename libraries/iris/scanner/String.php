@@ -3,13 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\iris\lexer\processor;
+namespace df\iris\scanner;
 
 use df;
 use df\core;
 use df\iris;
     
-class String implements iris\lexer\IProcessor {
+class String implements iris\IScanner {
 
     protected $_containers = [
         '"' => 'derefString', 
@@ -131,11 +131,11 @@ class String implements iris\lexer\IProcessor {
         return $this->_alignMultiLine;
     }
 
-    public function initialize(iris\lexer\ILexer $lexer) {
+    public function initialize(iris\ILexer $lexer) {
         
     }
 
-    public function check(iris\lexer\ILexer $lexer) {
+    public function check(iris\ILexer $lexer) {
         if(isset($this->_containers[$lexer->char])) {
             return true;
         }
@@ -147,7 +147,7 @@ class String implements iris\lexer\IProcessor {
         return false;
     }
 
-    public function run(iris\lexer\ILexer $lexer) {
+    public function run(iris\ILexer $lexer) {
         if($this->_allowChars && $lexer->char == $this->_charSymbol) {
             // Char
             $lexer->extract(2);
@@ -167,7 +167,7 @@ class String implements iris\lexer\IProcessor {
             }
 
             if($lexer->char != $this->_charContainer) {
-                throw new iris\lexer\UnexpectedValueException(
+                throw new iris\UnexpectedCharacterException(
                     'Expected close of char literal, instead got '.$lexer->char,
                     $lexer->getLocation()
                 );
@@ -185,7 +185,7 @@ class String implements iris\lexer\IProcessor {
         while(true) {
             if($lexer->char === false) {
                 // EOF
-                throw new iris\lexer\UnexpectedValueException(
+                throw new iris\UnexpectedCharacterException(
                     'Unexpected string termination',
                     $lexer->getPosition()
                 );
@@ -218,7 +218,7 @@ class String implements iris\lexer\IProcessor {
 
     protected function _processEscape($lexer) {
         if($lexer->char != $this->_escapeSymbol) {
-            throw new iris\lexer\UnexpectedValueException(
+            throw new iris\UnexpectedCharacterException(
                 'Expected escape symbol',
                 $lexer->getLocation()
             );
@@ -289,12 +289,12 @@ class String implements iris\lexer\IProcessor {
                 }
 
                 if($numTabs == 0) {
-                    throw new iris\lexer\UnexpectedValueException(
+                    throw new iris\UnexpectedCharacterException(
                         'Leading space in multi-line string must be '.$numSpaces.' spaces, ',
                         $lexer->getLocation()
                     );
                 } else {
-                    throw new iris\lexer\UnexpectedValueException(
+                    throw new iris\UnexpectedCharacterException(
                         'Leading space in multi-line string must be '.$numTabs.' tabs and '.$numSpaces.' spaces, ',
                         $lexer->getLocation()
                     );
