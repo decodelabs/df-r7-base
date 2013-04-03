@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\iris;
     
-abstract class Parser implements IParser {
+abstract class Parser implements IParser, core\IDumpable {
 
     public $position = 0;
     public $token;
@@ -80,6 +80,11 @@ abstract class Parser implements IParser {
         }
 
         $this->_processors[$processor->getName()] = $processor;
+
+        if($this->_isStarted) {
+            $processor->initialize($this);
+        }
+
         return $this;
     }
 
@@ -129,12 +134,13 @@ abstract class Parser implements IParser {
                 'Parser has already been started'
             );
         }
+        
+        $this->_isStarted = true;
 
         foreach($this->_processors as $processor) {
             $processor->initialize($this);
         }
 
-        $this->_isStarted = true;
         $this->unit = new iris\map\Unit(new Location($this->getSourceUri()));
 
         $this->_setCurrentToken();
@@ -162,6 +168,7 @@ abstract class Parser implements IParser {
             $output = array_shift($this->_tokens);
         } else {
             $output = array_slice($this->_tokens, 0, $count);
+            $this->_tokens = array_slice($this->_tokens, $count);
             $this->position += $count;
         }
 
@@ -335,7 +342,8 @@ abstract class Parser implements IParser {
         }
 
         $this->position -= $count;
-        $this->_tokens = array_merge(array_slice($this->_extractBuffer, -$count), $this->_tokens);
+        $extractList = array_slice($this->_extractBuffer, -$count);
+        $this->_tokens = array_merge($extractList, $this->_tokens);
         $this->_extractBuffer = array_slice($this->_extractBuffer, 0, -$count);
         $this->_setCurrentToken();
 
@@ -423,5 +431,43 @@ abstract class Parser implements IParser {
         }
 
         return $output;
+    }
+
+    public function peekSequence($ids) {
+        $sequence = func_get_args();
+        $length = count($sequence);
+        $test = array_slice($this->_tokens, 0, $length);
+        $output = array();
+
+        $this->_importTokens($length);
+
+        foreach($sequence as $i => $ids) {
+            if(!isset($test[$i])) {
+                return false;
+            }
+
+            $token = $test[$i];
+
+            if(!$token->is($ids)) {
+                return false;
+            }
+
+            $output[] = $token;
+        }
+
+        return $output;
+    }
+
+// Dump
+    public function getDumpProperties() {
+        return [
+            'token' => $this->token,
+            'position' => $this->position,
+            'unit' => $this->unit,
+            'tokens' => $this->_tokens,
+            'extractBuffer' => count($this->_extractBuffer),
+            'processors' => $this->_processors,
+            'lexer' => $this->_lexer
+        ];
     }
 }

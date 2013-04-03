@@ -69,6 +69,10 @@ class Token implements IToken, core\IDumpable {
         return mb_substr_count($this->whitespace, "\n") == 1;
     }
 
+    public function countNewLines() {
+        return mb_substr_count($this->whitespace, "\n");
+    }
+
 
     public function eq(IToken $token) {
         return $this->type == $token->type

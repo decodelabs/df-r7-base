@@ -199,6 +199,7 @@ interface IToken extends ILocationProxyProvider {
     public function isAfterWhitespace();
     public function isAfterNewline();
     public function isOnNextLine();
+    public function countNewLines();
 
     public function eq(IToken $token);
     public function is($compId);
@@ -238,6 +239,7 @@ interface IParser {
     public function extractWord();
     public function rewind($count=1);
     public function peek($offset=1, $length=1);
+    public function peekSequence($ids);
 }
 
 
