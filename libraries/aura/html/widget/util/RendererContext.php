@@ -12,6 +12,7 @@ use df\aura;
 class RendererContext implements aura\html\widget\IRendererContext {
     
     use core\collection\TArrayCollection;
+    use core\collection\TArrayCollection_Constructor;
     use core\collection\TArrayCollection_AssociativeValueMap;
 
     protected $_key;

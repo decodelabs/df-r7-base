@@ -98,6 +98,7 @@ trait TElementContent {
     
     use core\TStringProvider;
     use core\collection\TArrayCollection_Queue;
+    use core\collection\TArrayCollection_Constructor;
     
     public function toString() {
         return $this->getElementContentString();

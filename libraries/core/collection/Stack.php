@@ -11,4 +11,5 @@ use df\core;
 class Stack implements IStack, IAggregateIteratorCollection, core\IDumpable {
 
     use TArrayCollection_Stack;
+    use TArrayCollection_Constructor;
 }

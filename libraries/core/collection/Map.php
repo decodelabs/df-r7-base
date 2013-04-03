@@ -11,4 +11,5 @@ use df\core;
 class Map implements IMap, IAggregateIteratorCollection, core\IDumpable {
     
     use TArrayCollection_Map;
+    use TArrayCollection_Constructor;
 }

@@ -11,6 +11,7 @@ use df\core;
 class Set implements ISet, IAggregateIteratorCollection, core\IDumpable {
     
     use TArrayCollection;
+    use TArrayCollection_Constructor;
     use TArrayCollection_UniqueSet;
     
     public function import($input) {

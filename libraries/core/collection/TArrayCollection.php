@@ -16,16 +16,6 @@ trait TArrayCollection {
     
     protected $_collection = array();
     
-    public function __construct($input=null) {
-        if(func_get_args() > 1) {
-            $input = func_get_args();
-        }
-
-        if($input !== null) {
-            $this->import($input);
-        }
-    }
-    
     public function isEmpty() {
         return empty($this->_collection);
     }
@@ -53,6 +43,19 @@ trait TArrayCollection {
     
     public function getDumpProperties() {
         return $this->_collection;
+    }
+}
+
+trait TArrayCollection_Constructor {
+
+    public function __construct($input=null) {
+        if(func_get_args() > 1) {
+            $input = func_get_args();
+        }
+
+        if($input !== null) {
+            $this->import($input);
+        }
     }
 }
 

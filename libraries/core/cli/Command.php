@@ -12,6 +12,7 @@ class Command implements ICommand {
     
     use core\TStringProvider;
     use core\collection\TArrayCollection;
+    use core\collection\TArrayCollection_Constructor;
     use core\collection\TArrayCollection_ProcessedIndexedValueMap;
     use core\collection\TArrayCollection_ProcessedShiftable;
     use core\collection\TArrayCollection_IndexedMovable;
