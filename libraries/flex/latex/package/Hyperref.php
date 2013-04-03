@@ -10,9 +10,9 @@ use df\core;
 use df\flex;
 use df\iris;
     
-class Makeidx extends Base {
+class Hyperref extends Base {
 
     protected static $_commands = [
-        'makeindex', 'index', 'printindex'
+        'href', 'hyperref', 'url'
     ];
 }

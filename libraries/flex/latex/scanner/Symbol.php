@@ -25,17 +25,18 @@ class Symbol implements iris\IScanner {
     }
 
     public function check(iris\ILexer $lexer) {
-        return $lexer->peekAlphanumeric() === null;
+        return $lexer->peekAlphanumeric() === null
+            && !empty($lexer->char);
     }
 
     public function run(iris\ILexer $lexer) {
         $symbol = $lexer->extract();
-        $type = 'passive';
+        $type = 'symbol';
 
         if(in_array($symbol, ['#', '$', '^', '&', '_', '{', '}', '~'])) {
-            $type = 'active';
+            $type = 'keySymbol';
         }
 
-        return $lexer->newToken('symbol/'.$type, $symbol);
+        return $lexer->newToken($type, $symbol);
     }
 }

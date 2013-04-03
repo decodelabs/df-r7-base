@@ -10,9 +10,10 @@ use df\core;
 use df\flex;
 use df\iris;
     
-class Makeidx extends Base {
+class Graphics extends Base {
 
     protected static $_commands = [
-        'makeindex', 'index', 'printindex'
+        'DeclareGraphicsExtensions', 'DeclareGraphicsRule', 'graphicspath', 'includegraphics', 
+        'reflectbox', 'resizebox', 'rotatebox', 'scalebox',
     ];
 }

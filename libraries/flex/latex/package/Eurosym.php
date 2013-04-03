@@ -10,9 +10,9 @@ use df\core;
 use df\flex;
 use df\iris;
     
-class Makeidx extends Base {
+class Eurosym extends Base {
 
     protected static $_commands = [
-        'makeindex', 'index', 'printindex'
+        'euro'
     ];
 }

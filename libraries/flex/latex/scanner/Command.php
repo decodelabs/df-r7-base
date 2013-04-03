@@ -30,20 +30,19 @@ class Command implements iris\IScanner {
 
     public function run(iris\ILexer $lexer) {
         $lexer->extract();
-        $command = '';
-        $type = 'keyword';
 
-        if(in_array($lexer->char, ['#', '$', '%', '^', '&', '_', '{', '}', '~', '\\'])) {
+        if($lexer->char == '\\') {
             $command = $lexer->extract();
-            $type = 'symbol';
+        } else if($lexer->char == '@' || $lexer->peekAlpha()) {
+            $command = $lexer->extractRegexRange('a-zA-Z@');
         } else {
-            $command .= $lexer->extractRegexRange('a-zA-Z@');
+            return $lexer->newToken('symbol', $lexer->extract());
         }
 
         if($lexer->char == '*') {
             $command .= $lexer->extract();
         }
 
-        return $lexer->newToken('command/'.$type, $command);
+        return $lexer->newToken('command', $command);
     }
 }

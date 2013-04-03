@@ -10,7 +10,9 @@ use df\core;
 use df\flex;
 use df\iris;
     
-class Document extends iris\map\Node implements flex\latex\IDocument {
+class Document extends iris\map\Node implements flex\latex\IDocument, core\IDumpable {
+
+    use flex\latex\TContainerNode;
 
     protected $_documentClass;
     protected $_options = array();
@@ -19,6 +21,7 @@ class Document extends iris\map\Node implements flex\latex\IDocument {
     protected $_title;
     protected $_author;
     protected $_date;
+
 
 // Class
     public function setDocumentClass($class) {
@@ -100,5 +103,28 @@ class Document extends iris\map\Node implements flex\latex\IDocument {
 
     public function getDate() {
         return $this->_date;
+    }
+
+// Dump
+    public function getDumpProperties() {
+        $output = [];
+
+        if($this->_title) {
+            $output['title'] = $this->_title;
+        }
+
+        if($this->_author) {
+            $output['author'] = $this->_author;
+        }
+
+        if($this->_date) {
+            $output['date'] = $this->_date;
+        }
+
+        $output['documentClass'] = '['.implode(',', $this->_options).']{'.$this->_documentClass.'}';
+        $output['packages'] = implode(',', array_keys($this->_packages));
+        $output['children'] = $this->_collection;
+
+        return $output;
     }
 }
