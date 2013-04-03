@@ -17,8 +17,11 @@ abstract class Parser implements IParser {
     public $lastComment;
     public $unit;
 
-    protected $_tokens;
+    protected $_tokens = array();
+    protected $_extractBuffer = array();
+    protected $_extractBufferSize = 100;
     protected $_isStarted = false;
+    protected $_hasLastToken = false;
     protected $_processors = array();
     protected $_lexer;
 
@@ -39,6 +42,15 @@ abstract class Parser implements IParser {
         return $this->_lexer->getSourceUri();
     }
 
+// Buffer
+    public function setExtractBufferSize($size) {
+        $this->_extractBufferSize = (int)$size;
+        return $this;
+    }
+
+    public function getExtractBufferSize() {
+        return $this->_extractBufferSize;
+    }
 
 // Processors
     public function setProcessors(array $processors) {
@@ -147,15 +159,48 @@ abstract class Parser implements IParser {
 
         if($count == 1) {
             $this->position++;
-            $output = $this->token;
+            $output = array_shift($this->_tokens);
         } else {
-            $output = array_slice($this->_tokens, $this->position, $count);
+            $output = array_slice($this->_tokens, 0, $count);
             $this->position += $count;
         }
 
+        $this->_bufferTokens($output);
         $this->_setCurrentToken();
 
         return $output;
+    }
+
+    public function extractMatch($type, $subType=null, $value=null) {
+        if($this->token->matches($type, $subType, $value)) {
+            return $this->extract(1);
+        } else {
+            $id = ucfirst($type);
+
+            if($subType !== null) {
+                $id .= '/'.$subType;
+            }
+
+            if($value !== null) {
+                $id .= ' '.trim($value);
+            }
+
+            throw new UnexpectedTokenException(
+                $id.' could not be extracted',
+                $this->token
+            );
+        }
+    }
+
+    public function extractValue($value) {
+        if($this->token->isValue($value)) {
+            return $this->extract(1);
+        } else {
+            throw new UnexpectedTokenException(
+                'Value \''.$value.'\' could not be extracted',
+                $this->token
+            );
+        }
     }
 
     public function extractIf($ids, $limit=1) {
@@ -186,11 +231,41 @@ abstract class Parser implements IParser {
         return $output;
     }
 
+    public function extractIfValue($values, $limit=1) {
+        $limit = (int)$limit;
+
+        if($limit < 1) {
+            $limit = 1;
+        }
+
+        if($limit === 1) {
+            if($this->token->isValue($values)) {
+                $output = $this->extract();
+            } else {
+                $output = null;
+            }
+        } else {
+            $output = array();
+
+            for($i = 0; $i < $limit; $i++) {
+                if(!$this->token->isValue($values)) {
+                    break;
+                }
+
+                $output[] = $this->extract();
+            }
+        }
+
+        return $output;
+    }
+
     public function extractSequence($ids) {
         $sequence = func_get_args();
         $length = count($sequence);
-        $test = array_slice($this->_tokens, $this->position, $length);
+        $test = array_slice($this->_tokens, 0, $length);
         $output = array();
+
+        $this->_importTokens($length);
 
         foreach($sequence as $i => $ids) {
             if(!isset($test[$i])) {
@@ -212,30 +287,12 @@ abstract class Parser implements IParser {
             $output[] = $token;
         }
 
-        $this->position += $length;
+        $this->extract($length);
+
         return $output;
     }
 
-    public function extractMatch($type, $subType=null, $value=null) {
-        if($this->token->matches($type, $subType, $value)) {
-            return $this->extract(1);
-        } else {
-            $id = ucfirst($type);
-
-            if($subType !== null) {
-                $id .= '/'.$subType;
-            }
-
-            if($value !== null) {
-                $id .= ' '.trim($value);
-            }
-
-            throw new UnexpectedTokenException(
-                $id.' could not be extracted',
-                $this->token
-            );
-        }
-    }
+    
 
     public function extractIfMatch($type, $subType=null, $value=null) {
         if($this->token->matches($type, $subType, $value)) {
@@ -265,75 +322,106 @@ abstract class Parser implements IParser {
             $count = 1;
         }
 
-
-        if($this->position - $count < 0) {
+        if($count > $this->_extractBufferSize) {
             throw new RuntimeException(
-                'Cannot rewind '.$count.' places'
+                'Cannot rewind further than extractBufferSize ('.$this->_extractBufferSize.')'
+            );
+        }
+
+        if($count > count($this->_extractBuffer)) {
+            throw new RuntimeException(
+                'Cannot rewind '.$count.' places, buffer does not contain that many entries'
             );
         }
 
         $this->position -= $count;
+        $this->_tokens = array_merge(array_slice($this->_extractBuffer, -$count), $this->_tokens);
+        $this->_extractBuffer = array_slice($this->_extractBuffer, 0, -$count);
         $this->_setCurrentToken();
 
         return $this;
     }
 
     protected function _setCurrentToken() {
-        if(empty($this->_tokens)) {
-            $this->_extractTokens();
+        if(empty($this->_tokens) && !$this->_hasLastToken) {
+            $this->_importTokens();
         }
 
-        $this->token = isset($this->_tokens[$this->position]) ?
-            $this->_tokens[$this->position] : 
+        $this->token = isset($this->_tokens[0]) ?
+            $this->_tokens[0] : 
             null;
 
         if($this->token && $this->token->matches('comment')) {
             $this->lastComment = $this->token;
             $this->extract();
-        } else if(@$this->_tokens[$this->position - 1] !== $this->lastComment) {
+        } else if(@$this->_extractBuffer[count($this->_extractBufferSize) - 1] !== $this->lastComment) {
             $this->lastComment = null;
         }
     }
 
-    protected function _extractTokens($count=10) {
-        while($count > 0) {
-            $this->_tokens[] = $this->_lexer->extractToken();
-            $count--;
+    protected function _importTokens($count=10) {
+        if($this->_hasLastToken) {
+            return;
         }
 
-        core\dump($this->_tokens);
+        while($count > 0) {
+            $token = $this->_lexer->extractToken();
+
+            if(!$token instanceof IToken) {
+                $this->_hasLastToken = true;
+                return;
+            }
+
+            $this->_tokens[] = $token;
+            $count--;
+
+            if($token->is('eof')) {
+                $this->_hasLastToken = true;
+                return;
+            }
+        }
+    }
+
+    protected function _bufferTokens($tokens) {
+        if(!is_array($tokens)) {
+            $tokens = func_get_args();
+        }
+
+        foreach($tokens as $token) {
+            if(is_array($token)) {
+                $this->_bufferTokens($token);
+            } else if($token instanceof IToken) {
+                $this->_extractBuffer[] = $token;
+            }
+        }
+
+        while(count($this->_extractBuffer) > $this->_extractBufferSize) {
+            array_shift($this->_extractBuffer);
+        }
     }
 
     public function peek($offset=1, $length=1) {
         $length = (int)$length;
+        $offset = (int)$offset;
+
+        if(count($this->_tokens) < $length + $offset) {
+            $this->_importTokens($length + $offset);
+        }
 
         if($length < 1) {
             $length = 1;
         }
 
         if($length == 1) {
-            $position = $this->position + $length;
-
-            if(isset($this->_tokens[$position])) {
-                $output = $this->_tokens[$position];
+            if(isset($this->_tokens[1])) {
+                $output = $this->_tokens[1];
             } else {
                 $output = null;
             }
         } else {
-            $output = array_slice($this->_tokens, $this->position, $length);
+            $output = array_slice($this->_tokens, $offset, $length);
         }
 
         return $output;
-    }
-
-    public function purge() {
-        if($this->position > 0) {
-            $this->_tokens = array_slice($this->_tokens, $this->position);
-            $this->position = 0;
-
-            $this->_setCurrentToken();
-        }
-
-        return $this;
     }
 }
