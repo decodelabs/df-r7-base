@@ -13,6 +13,14 @@ use df\iris;
 class Lexer extends iris\Lexer {
 
     public function __construct(iris\ISource $source) {
-        core\dump($source);
+        parent::__construct(
+            $source,
+            [
+                new flex\latex\scanner\Command(),
+                new flex\latex\scanner\Word(),
+                new flex\latex\scanner\Symbol(),
+                new iris\scanner\Comment(['%' => "\n"])
+            ]
+        );
     }
 }
