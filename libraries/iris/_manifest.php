@@ -202,6 +202,7 @@ interface IToken extends ILocationProxyProvider {
 
     public function eq(IToken $token);
     public function is($compId);
+    public function isValue($value);
     public function matches($type, $subType=null, $value=null);
 }
 
@@ -210,6 +211,9 @@ interface IToken extends ILocationProxyProvider {
 interface IParser {
     public function getSourceUri();
     public function getLexer();
+
+    public function setExtractBufferSize($size);
+    public function getExtractBufferSize();
 
     public function setProcessors(array $processors);
     public function addProcessors(array $processors);
@@ -224,15 +228,16 @@ interface IParser {
     public function getLastCommentBody();
 
     public function extract($count=1);
-    public function extractIf($ids, $limit=1);
-    public function extractSequence($ids);
     public function extractMatch($type, $subType=null, $value=null);
+    public function extractValue($value);
+    public function extractIf($ids, $limit=1);
+    public function extractIfValue($values, $limit=1);
     public function extractIfMatch($type, $subType=null, $value=null);
+    public function extractSequence($ids);
     public function extractStatementEnd();
     public function extractWord();
     public function rewind($count=1);
     public function peek($offset=1, $length=1);
-    public function purge();
 }
 
 

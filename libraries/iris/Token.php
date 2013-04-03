@@ -93,6 +93,16 @@ class Token implements IToken, core\IDumpable {
         return false;
     }
 
+    public function isValue($value) {
+        foreach(func_get_args() as $value) {
+            if($value == $this->value) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function matches($type, $subType=null, $value=null) {
         if($type != $this->type) {
             return false;

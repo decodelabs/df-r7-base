@@ -166,6 +166,10 @@ class Lexer implements ILexer, core\IDumpable {
     }
 
     public function extractToken() {
+        if(!$this->_isInitialized) {
+            $this->initialize();
+        }
+
         $this->lastWhitespace = $this->extractWhitespace();
         $this->_latchLine = $this->line;
         $this->_latchColumn = $this->column;
