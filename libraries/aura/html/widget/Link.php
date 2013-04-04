@@ -22,6 +22,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
        
     const PRIMARY_TAG = 'a';
     const WRAP_BODY = true;
+    const DEFAULT_ACTIVE_CLASS = 'state-active';
     
     protected $_uri;
     protected $_matchRequest;
@@ -37,6 +38,8 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
     protected $_note;
     protected $_showDescription = true;
     protected $_bodyWrapper;
+    protected $_activeClass;
+    protected $_shouldWrapBody = true;
     
     public function __construct(arch\IContext $context, $uri, $body=null, $matchRequest=null) {
         $checkUriMatch = false;
@@ -154,7 +157,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         }
         
         if($active) {
-            $tag->addClass('state-active');
+            $tag->addClass($this->getActiveClass());
         }
         
         
@@ -201,7 +204,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
             ];
         }
         
-        if(static::WRAP_BODY) {
+        if(static::WRAP_BODY && $this->_shouldWrapBody) {
             $body = $this->_bodyWrapper->renderWith($body);
         }
 
@@ -408,6 +411,25 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
     }
     
 
+    public function setActiveClass($class) {
+        $this->_activeClass = $class;
+
+        if(empty($this->_activeClass)) {
+            $this->_activeClass = null;
+        }
+
+        return $this;
+    }
+
+    public function getActiveClass() {
+        if(!empty($this->_activeClass)) {
+            return $this->_activeClass;
+        }
+
+        return static::DEFAULT_ACTIVE_CLASS;
+    }
+
+
 // Hiding
     public function shouldHideIfInaccessible($flag=null) {
         if($flag !== null) {
@@ -490,6 +512,15 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         }
 
         return $this->_bodyWrapper;
+    }
+
+    public function shouldWrapBody($flag=null) {
+        if($flag !== null) {
+            $this->_shouldWrapBody = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_shouldWrapBody;
     }
     
     
