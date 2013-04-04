@@ -12,7 +12,7 @@ use df\arch;
     
 class Notification extends Base {
 
-    const PRIMARY_TAG = 'article';
+    const PRIMARY_TAG = 'div';
 
     protected $_message;
 
