@@ -118,6 +118,20 @@ class Html extends Base implements IHtmlView {
     public function getFullTitle() {
         return $this->_titlePrefix.$this->_title.$this->_titleSuffix;
     }
+
+    public function getPageTitle() {
+        $output = $this->_title;
+
+        if(empty($output)) {
+            $output = trim($this->_titlePrefix, ':<>- ');
+        }
+
+        if(empty($output)) {
+            $output = trim($this->_titleSuffix, ':<>- ');
+        }
+
+        return $output;
+    }
     
     
 // Base
