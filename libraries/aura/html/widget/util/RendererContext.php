@@ -78,7 +78,7 @@ class RendererContext implements aura\html\widget\IRendererContext {
             try {
                 $value = $renderer($value, $this);
             } catch(\Exception $e) {
-                $value = '<span class="state-error">'.$e->getMessage().'</span>';
+                $value = new aura\html\ElementString('<span class="state-error">ERROR: '.$e->getMessage().'</span>');
             }
         }
 
