@@ -34,6 +34,7 @@ interface IEntryList extends core\IArrayInterchange, \Countable {
     public function addEntries($entries);
     public function addEntry($entry);
     public function getEntry($id);
+    public function getLastEntry();
     public function getEntries();
     public function clearEntries();
 }
@@ -111,6 +112,11 @@ trait TEntryList {
         }
         
         return null;
+    }
+
+    public function getLastEntry() {
+        $t = $this->_entries;
+        return array_pop($t);
     }
     
     public function getEntries() {
