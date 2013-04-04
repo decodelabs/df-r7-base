@@ -87,7 +87,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         return new self($context, $templatePath);
     }
     
-    public static function loadLayout(aura\view\ILayoutView $view, $pathName=null, $type=null) {
+    public static function loadLayout(aura\view\ILayoutView $view, $innerContent=null, $pathName=null, $type=null) {
         if($pathName === null) {
             $pathName = $view->getLayout();
         }
@@ -130,7 +130,10 @@ class Template implements aura\view\ITemplate, core\IDumpable {
             );
         }
         
-        return new self($context, $layoutPath, true);
+        $output = new self($context, $layoutPath, true);
+        $output->_innerContent = $innerContent;
+
+        return $output;
     }
     
     public function __construct(arch\IContext $context, $absolutePath, $isLayout=false) {
@@ -166,7 +169,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         $this->_isRendering = true;
         $this->_view = $target->getView();
         
-        if($this->_isLayout) {
+        if($this->_isLayout && $this->_innerContent === null) {
             // Prepare inner template content before rendering to ensure 
             // sub templates can affect layout properties
             $this->renderInnerContent();
