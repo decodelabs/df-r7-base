@@ -38,8 +38,12 @@ class Navigation implements arch\IContextHelper {
 
     public function getPageTitle() {
         $breadcrumbs = $this->getBreadcrumbs();
-        $entry = $breadcrumbs->getLastEntry();
-        return $entry->getText();
+
+        if($entry = $breadcrumbs->getLastEntry()) {
+            return $entry->getText();
+        }
+
+        return $this->_context->getApplication()->getName();
     }
 
     public function clearMenuCache($id=null) {
