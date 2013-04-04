@@ -256,7 +256,6 @@ interface IHtmlView extends ILayoutView {
     public function setTitleSuffix($suffix);
     public function getTitleSuffix();
     public function getFullTitle();
-    public function getPageTitle();
     
     // Base
     public function setBaseHref($url);

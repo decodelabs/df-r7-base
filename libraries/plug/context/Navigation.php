@@ -36,6 +36,12 @@ class Navigation implements arch\IContextHelper {
         return $output;
     }
 
+    public function getPageTitle() {
+        $breadcrumbs = $this->getBreadcrumbs();
+        $entry = $breadcrumbs->getLastEntry();
+        return $entry->getText();
+    }
+
     public function clearMenuCache($id=null) {
         if($id !== null) {
             arch\navigation\menu\Base::clearCacheFor($this->_context, $id);
