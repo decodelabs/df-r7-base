@@ -434,11 +434,11 @@ class Html extends Base implements IHtmlView {
         }
 
         if($weight === null) {
-            $weight = 50;
+            $weight = count($this->_headJs) + 20;
         }
-        
+
         $this->_headJs->insert($this->_createJsEntry($uri, $attributes, $fallbackScript, $condition), $weight);
-        
+
         return $this;
     }
 
@@ -452,7 +452,7 @@ class Html extends Base implements IHtmlView {
         }
 
         if($weight === null) {
-            $weight = 50;
+            $weight = count($this->_headJs) + 20;
         }
 
         $this->_footJs->insert($this->_createJsEntry($uri, $attributes, $fallbackScript, $condition), $weight);
@@ -686,7 +686,7 @@ class Html extends Base implements IHtmlView {
                 $line = $this->_addCondition($line, $entry['condition']);
             }
 
-            $output .= $line;
+            $output = $line.$output;
         }
 
         return $output;
@@ -711,7 +711,7 @@ class Html extends Base implements IHtmlView {
                 $line = $this->_addCondition($line, $entry['condition']);
             }
 
-            $output .= $line;
+            $output = $line.$output;
         }
 
         return $output;
