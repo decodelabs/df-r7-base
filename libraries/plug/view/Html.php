@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\aura;
 use df\arch;
+use df\flex;
 
 class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
     
@@ -27,6 +28,12 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
         $text = str_replace("\n", "\n".'<br />', $text);
 
         return $this->string($text);
+    }
+
+    public function simpleTags($text) {
+        return $this->string(
+            (new flex\simpleTags\Parser($text))->toHtml()
+        );
     }
 
     public function _($phrase, array $data=null, $plural=null, $locale=null) {
