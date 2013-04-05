@@ -36,7 +36,8 @@ class Parser {
         }
 
         $text = strip_tags($text, implode('', $tags));
-        $text = '<p>'.str_replace("\n\n", '</p>'."\n".'<p>', $text).'</p>';
+        $text = '<p>'.str_replace("\n\n", '</p>'.'<p>', $text).'</p>';
+        $text = str_replace(["\n", '</p>'], ['<br />', '</p>'."\n"], trim($text));
 
         return $text;
     }
