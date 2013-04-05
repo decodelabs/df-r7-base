@@ -452,7 +452,7 @@ class Html extends Base implements IHtmlView {
         }
 
         if($weight === null) {
-            $weight = count($this->_headJs) + 20;
+            $weight = count($this->_footJs) + 20;
         }
 
         $this->_footJs->insert($this->_createJsEntry($uri, $attributes, $fallbackScript, $condition), $weight);
