@@ -15,10 +15,14 @@ class Tag implements ITag, core\IDumpable {
     use core\TStringProvider;
     use core\string\THtmlStringEscapeHandler;
     
-    private static $_closedTags = array(
+    private static $_closedTags = [
         'area', 'base', 'br', 'col', 'hr', 'img', 'input', 'keygen', 
         'link', 'meta', 'param', 'source', 'wbr'
-    );
+    ];
+
+    private static $_booleanAttributes = [
+        'spellcheck'
+    ];
     
     protected $_name;
     protected $_isClosable = true;
@@ -100,6 +104,19 @@ class Tag implements ITag, core\IDumpable {
         
         if($value === null) {
             return $this->removeAttribute($key);
+        }
+
+        if(is_bool($value)) {
+            if(in_array($key, self::$_booleanAttributes)) {
+                $value = $value ? 'true' : 'false';
+            } else {
+                if($value) {
+                    $value = $key;
+                } else {
+                    unset($this->_attributes[$key]);
+                    return $this;
+                }
+            }
         }
         
         $this->_attributes[$key] = $value;
