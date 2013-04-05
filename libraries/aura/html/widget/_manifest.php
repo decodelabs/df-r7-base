@@ -143,6 +143,8 @@ interface ITextEntryWidget extends IVisualInputWidget {
     
     public function setPlaceholder($placeholder);
     public function getPlaceholder();
+
+    public function shouldSpellCheck($flag=null);
 }
 
 interface IRangeEntryWidget extends IDataEntryWidget {

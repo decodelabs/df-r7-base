@@ -467,6 +467,7 @@ trait TWidget_TextEntry {
     
     protected $_maxLength;
     protected $_placeholder;
+    protected $_spellCheck = null;
     
     public function setMaxLength($length) {
         $this->_maxLength = $length;
@@ -486,6 +487,15 @@ trait TWidget_TextEntry {
     public function getPlaceholder() {
         return $this->_placeholder;
     }
+
+    public function shouldSpellCheck($flag=null) {
+        if($flag !== null) {
+            $this->_spellCheck = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_spellCheck;
+    }
     
     protected function _applyTextEntryAttributes(aura\html\ITag $tag) {
         if($this->_maxLength !== null) {
@@ -494,6 +504,10 @@ trait TWidget_TextEntry {
         
         if($this->_placeholder !== null) {
             $tag->setAttribute('placeholder', $this->_placeholder);
+        }
+
+        if($this->_spellCheck !== null) {
+            $tag->setAttribute('spellcheck', (bool)$this->_spellCheck);
         }
     }
 }
