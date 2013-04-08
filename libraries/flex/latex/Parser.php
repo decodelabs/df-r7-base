@@ -34,20 +34,33 @@ class Parser extends iris\Parser {
         core\dump($this);
     }
 
-    public function parseStandardContent(IContainerNode $container, $expectBraceEnd=false) {
-        $this->_pushContainer($container);
+    public function parseStandardContent(IContainerNode $container, $expectEnd=false, $addToParent=true) {
+        $pop = $this->pushContainer($container);
 
-        $textNode = null;
+        $expectBraceEnd = (bool)$expectEnd;
+
+        if($expectEnd === true) {
+            $expectEnd = '}';
+        }
 
         while(true) {
+            $comment = $this->lastComment;
             $token = $this->extract();
 
             if(!$token || $token->matches('eof')) {
                 break;
             }
 
+            if($expectBraceEnd && $token->isValue($expectEnd)) {
+                break;
+            }
+
             switch($token->type) {
                 case 'command':
+                    if(!$this->lastComment) {
+                        $this->lastComment = $comment;
+                    }
+
                     $this->parseCommand($token->value);
 
                     if($token->value == 'end') {
@@ -64,7 +77,7 @@ class Parser extends iris\Parser {
                     break;
 
                 case 'keySymbol':
-                    if($token->isValue('}')) {
+                    if($token->isValue($expectEnd)) {
                         throw new iris\UnexpectedTokenException(
                             'Wasn\'t expecting a brace end here..', 
                             $token
@@ -77,7 +90,7 @@ class Parser extends iris\Parser {
                 case 'symbol':
                 case 'word':
                     $this->rewind(1);
-                    $this->parseText($textNode, !$expectBraceEnd);
+                    $this->parseText(!$expectBraceEnd);
                     break;
 
                 default:
@@ -87,26 +100,26 @@ class Parser extends iris\Parser {
                     );
             }
 
-            if($expectBraceEnd && $this->token->isValue('}')) {
+            if($expectBraceEnd && $this->token->isValue($expectEnd)) {
                 break;
             }
         }
 
-        $this->_popContainer();
+        if($pop) {
+            $this->popContainer($addToParent);
+        }
     }
 
 
 // Text
-    public function parseText(ITextNode $textNode=null, $ensureParagraph) {
+    public function parseText($ensureParagraph) {
         $location = $this->token->getLocation();
 
         if($ensureParagraph && !$this->container instanceof IParagraph) {
-            $this->_pushContainer(new flex\latex\map\Paragraph($location));
+            $this->pushContainer(new flex\latex\map\Paragraph($location));
         }
 
-        if($textNode === null) {
-            $textNode = new flex\latex\map\TextNode($location);
-        }
+        $textNode = new flex\latex\map\TextNode($location);
 
         while($this->token->is('word', 'symbol')) {
             if(!$textNode->isEmpty() && $this->token->isAfterWhitespace()) {
@@ -148,10 +161,22 @@ class Parser extends iris\Parser {
 
         if($this->container instanceof IParagraph 
         && $this->token->countNewLines() >= 2) {
-            $this->_popContainer();
+            $this->popContainer();
         }
 
         return $textNode;
+    }
+
+    public function extractRefId() {
+        $output = $this->extractWord()->value;
+
+        while(!$this->token->isAfterWhitespace() 
+        && $this->token->is('word', 'symbol')
+        && !$this->token->isValue('}')) {
+            $output .= $this->extract()->value;
+        }
+
+        return $output;
     }
 
 
@@ -160,6 +185,14 @@ class Parser extends iris\Parser {
         switch($token->value) {
             case '$':
                 return $this->parseInlineMathMode($token);
+
+            case '~':
+                // TODO: join connecting nodes
+                return;
+
+            case '}':
+                // Recoverable syntax error
+                return;
 
             default:
                 core\dump($token, $this);
@@ -171,9 +204,9 @@ class Parser extends iris\Parser {
 // Math mode
     public function parseInlineMathMode(iris\IToken $token) {
         $doMath = true;
+        $end = '$';
 
-        if($this->token->isValue('^', '_')
-        && $this->peek()->isValue('{')) {
+        if($this->token->isValue('^', '_')) {
             $doMath = false;
             $object = new flex\latex\map\TextNode($token->getLocation());
 
@@ -182,10 +215,16 @@ class Parser extends iris\Parser {
             );
 
 
-            $rewind = 2;
-            $this->extract(2);
+            $rewind = 1;
+            $this->extract();
 
-            while(!$this->token->isValue('}')) {
+            if($this->token->isValue('{')) {
+                $rewind++;
+                $this->extract();
+                $end = '}';
+            }
+
+            while(!$this->token->isValue($end)) {
                 if(!$this->token->is('word')) {
                     $this->rewind($rewind);
                     $doMath = true;
@@ -194,34 +233,79 @@ class Parser extends iris\Parser {
                 }
 
                 $rewind++;
+                $token = $this->extract();
 
                 if(!$object->isEmpty()) {
                     $object->appendText(' ');
                 }
 
-                $object->appendText($this->extract()->value);
+                $object->appendText($token->value);
             }
 
             if(!$doMath) {
-                $this->extractValue('}');
-                $this->extractValue('$');
+                $this->extractValue($end);
+
+                if($end != '$') {
+                    $this->extractValue('$');
+                }
             }
         } 
 
         if($doMath) {
             // Math
             $object = new flex\latex\map\MathNode($token->getLocation());
+            $object->isInline(true);
 
             while(!$this->token->isValue('$')) {
+                $token = $this->extract();
+
                 if(!$object->isEmpty()) {
-                    $object->appendSymbols($this->token->getWhitespace());
+                    $object->appendSymbols($token->getWhitespace());
                 }
 
-                $object->appendSymbols($this->extract()->value);
+                if($token->matches('command')) {
+                    $object->appendSymbols('\\');
+                }
+
+                $object->appendSymbols($token->value);
             }
 
             $this->extractValue('$');
         }
+
+        $this->container->push($object);
+        return $object;
+    }
+
+
+    public function parseBlockMathMode($blockType) {
+        $object = new flex\latex\map\MathNode($this->token->getLocation());
+        $object->isInline(false);
+        $object->setBlockType($blockType);
+
+        // Put on containerStack to give label command a target
+        $this->_containerStack[] = $object;
+
+        while(!$this->token->is('command=end')) {
+            $token = $this->extract();
+
+            if($token->is('command=label')) {
+                $this->parseCommand('label');
+            } else {
+                if(!$object->isEmpty()) {
+                    $object->appendSymbols($token->getWhitespace());
+                }
+
+                if($token->matches('command')) {
+                    $object->appendSymbols('\\');
+                }
+
+                $object->appendSymbols($token->value);
+            }
+        }
+
+        // Pop back off stack
+        array_pop($this->_containerStack);
 
         $this->container->push($object);
         return $object;
@@ -235,6 +319,35 @@ class Parser extends iris\Parser {
     }
 
     public function parseCommand($name) {
+        if($name == 'begin') {
+            $comment = $this->lastComment;
+
+            $this->extractValue('{');
+            $envName = $this->extractWord()->value;
+            $this->extractValue('}');
+
+            if(!$this->lastComment) {
+                $this->lastComment = $comment;
+            }
+
+            return $this->parseEnvironment($envName);
+        } else if($name == 'end') {
+            $this->extractValue('{');
+            $env = $this->extractWord();
+            $this->extractValue('}');
+
+            if($env->value != $this->environment) {
+                throw new iris\UnexpectedTokenException(
+                    'Found end of '.$env->value.' environment, expected end of '.$this->environment,
+                    $env
+                );
+            }
+
+            return;
+        }
+
+
+
         $lookup = rtrim($name, '*');
 
         if(!isset($this->_commands[$lookup])) {
@@ -244,7 +357,97 @@ class Parser extends iris\Parser {
         }
 
         $package = $this->_commands[$lookup];
-        return $package->parseCommand($name);
+
+        if($isStar = (substr($name, -1) == '*')) {
+            $name = substr($name, 0, -1);
+        }
+
+        $args = [];
+
+        if(strlen($name) == 1) {
+            $func = 'command_callSymbol';
+            $args[] = $name;
+        } else {
+            $func = 'command_'.str_replace(['@'], ['AT'], ltrim($name, '\\'));
+        }
+
+        $args[] = $isStar;
+
+        if(!method_exists($package, $func)) {
+            throw new flex\latex\UnexpectedValueException(
+                'Package '.$package->getName().' does not have a parser for command '.$name
+            );
+        }
+
+        return call_user_func_array([$package, $func], $args);
+    }
+
+    public function extractMacroFromCommand() {
+        $value = $this->parseCommand($this->extract()->value);
+        
+        if(!$value instanceof IMacro) {
+            throw new UnexpectedValueException(
+                'Expecting macro'
+            );
+        }
+
+        return $value;
+    }
+
+    public function skipCommand($requireBlock=true) {
+        $this->extractOptionList();
+        
+        if(($requireBlock && $this->extractValue('{'))
+        || $this->extractIfValue('{')) {
+            $level = 1;
+
+            while(true) {
+                $token = $this->extract();
+
+                if($token->isValue('{')) {
+                    $level++;
+                } else if($token->isValue('}')) {
+                    $level--;
+
+                    if(!$level) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        $this->extractOptionList();
+    }
+
+    public function extractOptionList() {
+        $options = array();
+
+        if($this->extractIfValue('[')) {
+            while(true) {
+                if($this->token->is('command')) {
+                    $value = $this->extractMacroFromCommand();
+                    $option = $value->name;
+                } else {
+                    $word = $this->extractWord();
+                    $option = $word->value;
+                    $value = true;
+
+                    if($this->extractIfValue('=')) {
+                        $value = $this->extractWord()->value;
+                    } 
+                }
+
+                $options[$option] = $value;
+
+                if($this->extractIfValue(']')) {
+                    break;
+                } else {
+                    $this->extractValue(',');
+                }
+            }
+        }
+
+        return $options;
     }
 
 // Environments
@@ -263,27 +466,56 @@ class Parser extends iris\Parser {
         $lastEnv = $this->environment;
         $this->environment = $name;
         $package = $this->_environments[$name];
-        $output = $package->parseEnvironment($name);
+
+        $func = 'environment_'.$name;
+
+        if(!method_exists($package, $func)) {
+            throw new flex\latex\UnexpectedValueException(
+                'Package '.$package->getName().' does not have a parser for environment '.$name
+            );
+        }
+
+        $output = call_user_func_array([$package, $func], []);
         $this->environment = $lastEnv;
 
         return $output;
     }
 
+    public function moveToEnvironment($name) {
+        $this->extractMatch('command', null, 'begin');
+        $peek = $this->peek(1);
 
-// Containers
-    protected function _pushContainer(IContainerNode $container) {
-        $this->_containerStack[] = $container;
-        $this->container = $container;
+        if($peek->value != $name) {
+            throw new iris\UnexpectedTokenException(
+                'Environment '.$peek->value.' was found instead of '.$name,
+                $peek
+            );
+        }
+
+        return $this->parseCommand('begin');
     }
 
-    protected function _popContainer() {
+
+// Containers
+    public function pushContainer(IContainerNode $container) {
+        if($container !== $this->container) {
+            $this->_containerStack[] = $container;
+            $this->container = $container;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function popContainer($addToParent=true) {
         $output = array_pop($this->_containerStack);
         $i = count($this->_containerStack) - 1;
 
         if(isset($this->_containerStack[$i])) {
             $this->container = $this->_containerStack[$i];
 
-            if($output && !$output->isEmpty()) {
+            if($addToParent && $output && !$output->isEmpty()) {
                 $this->container->push($output);
             }
         } else {
@@ -293,12 +525,18 @@ class Parser extends iris\Parser {
         return $output;
     }
 
+    public function getContainerStack() {
+        return $this->_containerStack;
+    }
+
 // Dump
     public function getDumpProperties() {
         return array_merge(
             [
                 'commands' => count($this->_commands),
-                'environments' => count($this->_environments)
+                'environments' => count($this->_environments),
+                'token' => $this->token,
+                'document' => $this->document
             ], 
             parent::getDumpProperties(),
             [

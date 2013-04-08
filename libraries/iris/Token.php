@@ -86,6 +86,7 @@ class Token implements IToken, core\IDumpable {
         }
         
         foreach($ids as $id) {
+            $type = $subType = $value = null;
             @list($type, $value) = explode('=', $id, 2);
             @list($type, $subType) = explode('/', $type, 2);
 
@@ -97,8 +98,12 @@ class Token implements IToken, core\IDumpable {
         return false;
     }
 
-    public function isValue($value) {
-        foreach(func_get_args() as $value) {
+    public function isValue($values) {
+        if(!is_array($values)) {
+            $values = func_get_args();
+        }
+        
+        foreach($values as $value) {
             if($value == $this->value) {
                 return true;
             }

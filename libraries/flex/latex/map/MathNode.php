@@ -13,9 +13,12 @@ use df\iris;
 class MathNode extends iris\map\Node implements flex\latex\IMathNode, core\IDumpable {
 
     use flex\latex\TNodeClassProvider;
+    use flex\latex\TReferable;
 
     public $symbols;
+
     protected $_isInline = false;
+    protected $_blockType;
 
     public function isInline($flag=null) {
         if($flag !== null) {
@@ -25,6 +28,17 @@ class MathNode extends iris\map\Node implements flex\latex\IMathNode, core\IDump
 
         return $this->_isInline;
     }
+
+    public function setBlockType($type) {
+        $this->_blockType = $type;
+        return $this;
+    }
+
+    public function getBlockType() {
+        return $this->_blockType;
+    }
+
+
 
     public function setSymbols($symbols) {
         $this->symbols = $symbols;
@@ -47,6 +61,13 @@ class MathNode extends iris\map\Node implements flex\latex\IMathNode, core\IDump
 
 // Dump
     public function getDumpProperties() {
-        return $this->symbols;
+        if($this->_isInline) {
+            return $this->symbols;
+        }
+
+        return [
+            'id' => $this->id,
+            'math' => $this->symbols
+        ];
     }
 }

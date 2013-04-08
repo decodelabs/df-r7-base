@@ -81,14 +81,15 @@ trait TContainerNode {
 }
 
 interface IPackage extends iris\IProcessor {
-    public function parseCommand($name);
-    public function parseEnvironment($name);
+    //public function parseCommand($name);
+    //public function parseEnvironment($name);
 }
 
+interface IEnvironmentNode extends iris\map\IEntity {}
 
 
 // Map
-interface IDocument extends iris\map\IEntity, IContainerNode {
+interface IDocument extends IEnvironmentNode, IContainerNode {
     // Class
     public function setDocumentClass($class);
     public function getDocumentClass();
@@ -114,7 +115,67 @@ interface IDocument extends iris\map\IEntity, IContainerNode {
     public function getDate();
 }
 
-interface ISection extends iris\map\IAspect, IContainerNode {
+interface IBlock extends iris\map\IAspect, IContainerNode {}
+
+interface IMacro extends iris\map\IAspect {
+    public function setName($name);
+    public function getName();
+}
+
+
+interface IReference extends iris\map\IAspect {
+    public function setId($id);
+    public function getId();
+    public function setType($type);
+    public function getType();
+}
+
+interface IReferable extends iris\map\IEntity {
+    public function setId($id);
+    public function getId();
+}
+
+trait TReferable {
+
+    public $id;
+
+    public function setId($id) {
+        $this->id = $id;
+        return $this;
+    }
+
+    public function getId() {
+        return $this->id;
+    }
+}
+
+interface IGenericBlock extends IBlock, core\IAttributeContainer, IReferable {
+    public function isInline($flag=null);
+    public function setType($type);
+    public function getType();
+}
+
+interface IPlacementAware extends iris\map\IAspect {
+    public function setPlacement($placement);
+    public function getPlacement();
+}
+
+trait TPlacementAware {
+
+    protected $_placement;
+
+    public function setPlacement($placement) {
+        $this->_placement = $placement;
+        return $this;
+    }
+
+    public function getPlacement() {
+        return $this->_placement;
+    }
+}
+
+
+interface ISection extends IBlock {
     public function setNumber($number);
     public function getNumber();
     public function setLevel($level);
@@ -122,7 +183,7 @@ interface ISection extends iris\map\IAspect, IContainerNode {
 }
 
 
-interface IParagraph extends iris\map\IAspect, IContainerNode {}
+interface IParagraph extends IBlock {}
 
 interface ITextNode extends iris\map\IAspect, INodeClassProvider {
     public function setText($text);
@@ -131,10 +192,73 @@ interface ITextNode extends iris\map\IAspect, INodeClassProvider {
     public function isEmpty();
 }
 
-interface IMathNode extends iris\map\IAspect {
+interface IMathNode extends IReferable {
     public function isInline($flag=null);
+    public function setBlockType($type);
+    public function getBlockType();
+
     public function setSymbols($text);
     public function appendSymbols($text);
     public function getSymbols();
     public function isEmpty();
+}
+
+
+
+interface ICaptioned extends iris\map\IAspect {
+    public function setCaption(IGenericBlock $caption);
+    public function getCaption();
+}
+
+trait TCaptioned {
+
+    protected $_caption;
+
+    public function setCaption(IGenericBlock $caption) {
+        if(!$caption->getType() == 'caption') {
+            throw new iris\UnexpectedTokenException(
+                'Generic block is not a caption'
+            );
+        }
+
+        $this->_caption = $caption;
+        return $this;
+    }
+
+    public function getCaption() {
+        return $this->_caption;
+    }
+}
+
+interface IFigure extends IEnvironmentNode, IContainerNode, IReferable, ICaptioned, IPlacementAware {
+    public function setNumber($number);
+    public function getNumber();
+}
+
+interface ITabular extends iris\map\IAspect {
+    public function addColumn(IColumn $column);
+    public function getColumns();
+}
+
+interface ITable extends ITabular, IEnvironmentNode, IContainerNode, IReferable, ICaptioned, IPlacementAware {
+
+}
+
+interface IColumn extends iris\map\IAspect {
+    public function setAlignment($align);
+    public function getAlignment();
+    public function setParagraphSizing($size);
+    public function getParagraphSizing();
+    public function hasLeftBorder($flag=null);
+    public function hasRightBorder($flag=null);
+}
+
+interface IStructure extends IEnvironmentNode, IContainerNode, IReferable  {
+    public function setType($type);
+    public function getType();
+}
+
+interface IBibliography extends IEnvironmentNode, IContainerNode {
+    public function setDigitLength($length);
+    public function getDigitLength();
 }

@@ -341,6 +341,22 @@ abstract class Parser implements IParser, core\IDumpable {
             );
         }
 
+        $test = $this->_extractBuffer;
+        
+        for($i = 0; $i < $count; $i++) {
+            $testToken = array_pop($test);
+
+            if(!$testToken) {
+                throw new RuntimeException(
+                    'Cannot rewind '.$count.' places, buffer does not contain that many entries'
+                );
+            }
+
+            if($testToken->matches('comment')) {
+                $count++;
+            }
+        }
+
         $this->position -= $count;
         $extractList = array_slice($this->_extractBuffer, -$count);
         $this->_tokens = array_merge($extractList, $this->_tokens);
@@ -360,8 +376,9 @@ abstract class Parser implements IParser, core\IDumpable {
             null;
 
         if($this->token && $this->token->matches('comment')) {
-            $this->lastComment = $this->token;
+            $comment = $this->token;
             $this->extract();
+            $this->lastComment = $comment;
         } else if(@$this->_extractBuffer[count($this->_extractBufferSize) - 1] !== $this->lastComment) {
             $this->lastComment = null;
         }

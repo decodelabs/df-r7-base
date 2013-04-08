@@ -41,6 +41,7 @@ abstract class Base extends iris\processor\Base implements flex\latex\IPackage {
         return $this;
     }
 
+    /*
     public function parseCommand($name) {
         if($isStar = (substr($name, -1) == '*')) {
             $name = substr($name, 0, -1);
@@ -77,4 +78,5 @@ abstract class Base extends iris\processor\Base implements flex\latex\IPackage {
 
         return call_user_func_array([$this, $func], []);
     }
+    */
 }
