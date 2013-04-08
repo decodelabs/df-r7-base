@@ -318,7 +318,7 @@ class Core extends Base {
         $this->parser->popContainer();
         $this->parser->extractMatch('command', null, 'end');
         $this->parser->parseCommand('end');
-        
+
         return $bibliography;
     }
 
@@ -650,8 +650,10 @@ class Core extends Base {
         $block->setType('subheading');
 
         $this->parser->extractValue('{');
-        $this->parser->parseStandardContent($block, true);
+        $this->parser->parseStandardContent($block, true, false);
         $this->parser->extractValue('}');
+
+        $this->parser->pushContainer($block);
 
         return $block;
     }

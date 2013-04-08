@@ -21,6 +21,7 @@ interface INode extends iris\ILocationProvider {
     public function getLocationId();
     public function replaceLocation(iris\ILocationProvider $locationProvider);
     public function duplicate(iris\ILocationProvider $locationProvider=null);
+    public function normalize();
 }
 
 

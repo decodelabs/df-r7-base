@@ -146,6 +146,8 @@ abstract class Parser implements IParser, core\IDumpable {
         $this->_setCurrentToken();
         $this->parseRoot();
 
+        $this->unit->normalize();
+
         return $this->unit;
     }
 

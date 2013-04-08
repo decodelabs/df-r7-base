@@ -26,12 +26,17 @@ class Parser extends iris\Parser {
         ]);
     }
 
+    public function parse() {
+        parent::parse();
+        return $this->document;
+    }
+
     public function parseRoot() {
         $this->document = new flex\latex\map\Document($this->token->getLocation());
         $this->unit->addEntity($this->document);
 
         $this->parseEnvironment('root');
-        core\dump($this);
+        return $this->document;
     }
 
     public function parseStandardContent(IContainerNode $container, $expectEnd=false, $addToParent=true) {

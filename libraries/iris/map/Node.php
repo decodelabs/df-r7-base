@@ -58,6 +58,11 @@ abstract class Node implements INode {
         return $output;
     }
 
+    public function normalize() {
+        // do nothing by default
+        return $this;
+    }
+
 // Comment
     public function setComment($comment) {
         $comment = trim($comment);

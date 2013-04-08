@@ -61,7 +61,7 @@ class MathNode extends iris\map\Node implements flex\latex\IMathNode, core\IDump
 
 // Dump
     public function getDumpProperties() {
-        if($this->_isInline) {
+        if($this->_isInline || !$this->id) {
             return $this->symbols;
         }
 
