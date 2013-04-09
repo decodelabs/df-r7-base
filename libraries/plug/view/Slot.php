@@ -11,7 +11,7 @@ use df\plug;
 use df\arch;
 use df\aura;
     
-class Slot implements aura\view\IHelper {
+class Slot implements aura\view\IHelper, \ArrayAccess {
     
     use aura\view\THelper;
 
@@ -62,5 +62,24 @@ class Slot implements aura\view\IHelper {
         }
 
         return $renderer->renderTo($this->_view);
+    }
+
+
+// Array access
+    public function offsetSet($key, $value) {
+        return $this->set($key, $value);
+    }
+
+    public function offsetGet($key) {
+        return $this->getValue($key);
+    }
+
+    public function offsetExists($key) {
+        return isset($this->_slots[$key]);
+    }
+
+    public function offsetUnset($key) {
+        unset($this->_slots[$key]);
+        return $this;
     }
 }
