@@ -52,6 +52,12 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
         );
     }
 
+    public function inlineSimpleTags($text) {
+        return $this->string(
+            (new flex\simpleTags\Parser($text))->toInlineHtml()
+        );
+    }
+
     public function _($phrase, array $data=null, $plural=null, $locale=null) {
         return $this->string($this->_view->_($phrase, $data, $plural, $locale));
     }

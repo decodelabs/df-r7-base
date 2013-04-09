@@ -23,6 +23,27 @@ class Parser {
     }
 
     public function toHtml() {
+        if(null === ($text = $this->_prepareBody())) {
+            return null;
+        }
+
+        $text = '<p>'.str_replace("\n\n", '</p>'.'<p>', $text).'</p>';
+        $text = str_replace(["\n", '</p>'], ['<br />', '</p>'."\n"], trim($text));
+
+        return $text;
+    }
+
+    public function toInlineHtml() {
+        if(null === ($text = $this->_prepareBody())) {
+            return null;
+        }
+
+        $text = str_replace("\n", '<br />'."\n", $text);
+        
+        return $text;
+    }
+
+    protected function _prepareBody() {
         $text = trim($this->_body);
 
         if(empty($text) && $text !== '0') {
@@ -36,9 +57,6 @@ class Parser {
         }
 
         $text = strip_tags($text, implode('', $tags));
-        $text = '<p>'.str_replace("\n\n", '</p>'.'<p>', $text).'</p>';
-        $text = str_replace(["\n", '</p>'], ['<br />', '</p>'."\n"], trim($text));
-
         return $text;
     }
 }
