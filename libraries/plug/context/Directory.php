@@ -150,6 +150,21 @@ class Directory implements arch\IContextHelper {
         return arch\component\Base::factory($context, $name);
     }
 
+    public function getThemeComponent($name, $themeId, $context=true) {
+        if($context === true) {
+            $context = $this->_context;
+        }
+
+        if($context instanceof arch\IContext) {
+            $request = clone $context->location;
+        } else {
+            $request = arch\Request::factory($context);
+        }
+        
+        $context = arch\Context::factory($this->_context->getApplication(), $request);
+        return arch\component\Base::themeFactory($context, $themeId, $name);
+    }
+
 
 // Facets
     public function newFacetController(Callable $initializer=null) {

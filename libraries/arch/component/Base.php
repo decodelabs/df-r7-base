@@ -52,6 +52,22 @@ abstract class Base implements arch\IComponent {
         
         return new $class($context, $args);
     }
+
+    public static function themeFactory(arch\IContext $context, $themeName, $name, array $args=null) {
+        $class = 'df\\apex\\themes\\'.$themeName.'\\components\\'.ucfirst($name);
+
+        if(!class_exists($class)) {
+            $class = 'df\\apex\\themes\\shared\\components\\'.ucfirst($name);
+
+            if(!class_exists($class)) {
+                throw new arch\RuntimeException(
+                    'Theme component '.ucfirst($name).' could not be found'
+                );
+            }
+        }
+
+        return new $class($context, $args);
+    }
     
     public function __construct(arch\IContext $context, array $args=null) {
         $this->_context = $context;

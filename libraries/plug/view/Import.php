@@ -52,6 +52,27 @@ class Import implements aura\view\IHelper {
         }
     }
 
+    public function themeComponent($name) {
+        $args = array_slice(func_get_args(), 1);
+
+        if(false !== strpos($name, '/')) {
+            $parts = explode('/', $name, 2);
+            $themeId = array_shift($parts);
+            $name = array_shift($parts);
+        } else {
+            $themeId = $this->_view->getTheme()->getId();
+        }
+
+        try {
+            $output = arch\component\Base::themeFactory($this->_view->getContext(), $themeId, $name, $args);
+            $output->setRenderTarget($this->_view);
+
+            return $output;
+        } catch(\Exception $e) {
+            return $this->_view->newErrorContainer($e);
+        }
+    }
+
     public function menu($id) {
         try {
             return arch\navigation\menu\Base::factory($id);
