@@ -19,6 +19,22 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
         return aura\html\widget\Base::factory($this->_view->getContext(), $member, $args)->setRenderTarget($this->_view);
     }
     
+    public function previewText($html, $length=null) {
+        $html = (string)$html;
+
+        if(!strlen($html)) {
+            return null;
+        }
+
+        $output = strip_tags($html);
+
+        if($length !== null) {
+            $output = $this->_view->format->shorten($output, $length);
+        }
+
+        return $output;
+    }
+
     public function plainText($text) {
         if(empty($text) && $text !== '0') {
             return null;
