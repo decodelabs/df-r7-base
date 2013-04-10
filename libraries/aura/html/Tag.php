@@ -41,6 +41,24 @@ class Tag implements ITag, core\IDumpable {
     
 // Name
     public function setName($name) {
+        if(false !== strpos($name, '#')) {
+            $parts = explode('#', $name, 2);
+            $name = array_shift($parts);
+            $id = array_shift($parts);
+
+            if(false !== strpos($id, '.')) {
+                $classes = explode('.', $id);
+                $id = array_shift($classes);
+                $this->addClasses($classes);
+            }
+        }
+
+        if(false !== strpos($name, '.')) {
+            $classes = explode('.', $name);
+            $name = array_shift($classes);
+            $this->addClasses($classes);
+        }
+
         $this->_name = $name;
         $this->_isClosable = !in_array($this->_name, self::$_closedTags);
         
