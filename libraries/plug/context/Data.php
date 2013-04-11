@@ -109,6 +109,30 @@ class Data implements archLib\IContextHelper, opal\query\IEntryPoint {
     }
 
 
+// Data helpers
+    public function hasRelation($record, $field) {
+        return (bool)$this->getRelationId($record, $field);
+    }
+
+    public function getRelationId($record, $field) {
+        $output = null;
+
+        if($record instanceof opal\record\IRecord) {
+            $output = $record->{$field}->getRawId();
+        } else if(is_array($record)) {
+            if($record[$field] instanceof opal\record\IPrimaryManifest) {
+                if(!$record[$field]->isNull()) {
+                    $output = $record[$field]->getValue();
+                }
+            } else if($record[$field] instanceof opal\record\IRecord) {
+                $output = $record[$field]->getPrimaryValue();
+            }
+        }
+
+        return $output;
+    }
+
+
 
 // Policy
     public function fetchEntity($locator) {
