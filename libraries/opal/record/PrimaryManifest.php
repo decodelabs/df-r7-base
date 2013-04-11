@@ -204,12 +204,20 @@ class PrimaryManifest implements IPrimaryManifest, core\IDumpable {
         return 'manifest?'.$output->toArrayDelimitedString();
     }
     
+    public function getValue() {
+        if(count($this->_keys) == 1) {
+            return $this->getFirstKeyValue();
+        }
+
+        return $this->_keys;
+    }
+
     public function getFirstKeyValue() {
         foreach($this->_keys as $value) {
             return $value;
         }
     }
-    
+
     public function duplicateWith($values) {
         if($values instanceof IPrimaryManifest) {
             return $values;

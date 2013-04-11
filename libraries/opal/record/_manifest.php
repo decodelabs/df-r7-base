@@ -106,6 +106,7 @@ interface IPrimaryManifest extends \ArrayAccess {
     public function isNull();
     public function getCombinedId();
     public function getEntityId();
+    public function getValue();
     public function getFirstKeyValue();
     public function duplicateWith($values);
     public function eq(IPrimaryManifest $manifest);
