@@ -47,15 +47,23 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
     }
 
     public function simpleTags($text) {
-        return $this->string(
-            (new flex\simpleTags\Parser($text))->toHtml()
-        );
+        $output = (new flex\simpleTags\Parser($text))->toHtml();
+
+        if($output !== null) {
+            $output = $this->string($output);
+        }
+
+        return $output;
     }
 
     public function inlineSimpleTags($text) {
-        return $this->string(
-            (new flex\simpleTags\Parser($text))->toInlineHtml()
-        );
+        $output = (new flex\simpleTags\Parser($text))->toInlineHtml();
+
+        if($output !== null) {
+            $output = $this->string($output);
+        }
+
+        return $output;
     }
 
     public function _($phrase, array $data=null, $plural=null, $locale=null) {
