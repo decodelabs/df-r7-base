@@ -22,6 +22,8 @@ class Mysql extends Base_Pdo {
                 'Opal only supports Mysql version 5 and above'
             );
         }
+
+        $this->executeSql('SET time_zone = \'+00:00\'');
     }
     
     protected function _getPdoDsn() {

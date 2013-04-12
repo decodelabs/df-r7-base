@@ -52,6 +52,8 @@ class Mysqli extends opal\rdbms\adapter\Base {
         if($encoding = $this->_dsn->getOption('encoding')) {
             mysqli_query($this->_connection, 'SET NAMES '.$encoding);
         }
+
+        $this->executeSql('SET time_zone = \'+00:00\'');
     }
 
     protected function _closeConnection() {
