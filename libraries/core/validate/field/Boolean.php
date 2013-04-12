@@ -9,6 +9,8 @@ use df;
 use df\core;
 
 class Boolean extends Base implements core\validate\IBooleanField {
+    
+    protected $_isRequired = true;
 
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
