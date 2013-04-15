@@ -120,12 +120,19 @@ class Data implements archLib\IContextHelper, opal\query\IEntryPoint {
         if($record instanceof opal\record\IRecord) {
             $output = $record->{$field}->getRawId();
         } else if(is_array($record)) {
-            if($record[$field] instanceof opal\record\IPrimaryManifest) {
-                if(!$record[$field]->isNull()) {
-                    $output = $record[$field]->getValue();
-                }
-            } else if($record[$field] instanceof opal\record\IRecord) {
-                $output = $record[$field]->getPrimaryValue();
+            if(isset($record[$field])) {
+                $value = $record[$field];
+            } else {
+                $value = null;
+            }
+
+            if($value instanceof opal\record\IRecord) {
+                $value = $value->getPrimaryManifest();
+            }
+
+            if($value instanceof opal\record\IPrimaryManifest 
+            && !$value->isNull()) {
+                $output = $value->getValue();
             }
         }
 
