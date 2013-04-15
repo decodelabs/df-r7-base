@@ -27,8 +27,10 @@ abstract class CollectionList extends arch\component\Base implements aura\html\w
             $this->setFields($fields);
         }
 
-        $parts = explode('\\', get_class($this));
-        $this->_viewArg = lcfirst(array_pop($parts));
+        if($this->_viewArg === null) {
+            $parts = explode('\\', get_class($this));
+            $this->_viewArg = lcfirst(array_pop($parts));
+        }
     }
 
 // Collection
