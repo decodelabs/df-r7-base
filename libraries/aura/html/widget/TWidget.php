@@ -1077,6 +1077,10 @@ trait TWidget_MappedList {
     }
     
     public function addField($key, $a=null, $b=null) {
+        return $this->addFieldAtIndex(null, $key, $a, $b);
+    }
+
+    public function addFieldAtIndex($index, $key, $a=null, $b=null) {
         $name = null;
         $renderer = null;
         
@@ -1119,7 +1123,46 @@ trait TWidget_MappedList {
             };
         }
         
-        $this->_fields[$key] = new aura\html\widget\util\Field($key, $name, $renderer);
+        $field = new aura\html\widget\util\Field($key, $name, $renderer);
+
+        if($index === null) {
+            $this->_fields[$key] = $field;
+        } else {
+            $index = (int)$index;
+            $count = count($this->_fields);
+
+            if($index < 0) {
+                $index += $count;
+
+                if($index < 0) {
+                    $index = 0;
+                }
+            }
+
+            if($index > $count) {
+                $index = $count;
+            }
+
+            $fields = array();
+            $added = false;
+            $i = 0;
+
+            foreach($this->_fields as $tKey => $tField) {
+                if($index == $i) {
+                    $fields[$key] = $field;
+                    $added = true;
+                }
+
+                $fields[$tKey] = $tField;
+                $i++;
+            }
+
+            if(!$added) {
+                $fields[$key] = $field;
+            }
+
+            $this->_fields = $fields;
+        }
         
         return $this;
     }

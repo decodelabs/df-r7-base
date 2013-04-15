@@ -333,6 +333,7 @@ interface ILinearListWidget extends IListWidget {
 interface IMappedListWidget extends IListWidget {
     public function setField(IField $field);
     public function addField($key, $a=null, $b=null);
+    public function addFieldAtIndex($index, $key, $a=null, $b=null);
     public function removeField($key);
     public function addLabel($fieldKey, $labelKey, $label=null);
     public function removeLabel($fieldKey, $labelKey);
