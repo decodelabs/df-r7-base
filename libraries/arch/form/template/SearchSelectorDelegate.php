@@ -64,6 +64,10 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
             } else {
                 $fa = $fs->addFieldArea($this->_('Search results'));
                 $collectionWidget = $this->_renderCollectionList($searchResults);
+
+                if($collectionWidget instanceof aura\html\widget\IWidgetProxy) {
+                    $collectionWidget = $collectionWidget->toWidget();
+                }
                 
                 if($collectionWidget instanceof aura\html\widget\IMappedListWidget) {
                     // Collection list
@@ -180,6 +184,7 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
                 unset($this->values->selected);
             } else {
                 $fa = $fs->addFieldArea($this->_('Selected'));
+                $fa->addClass('delegate-selector');
 
                 $id = $this->_getResultId($selected);
                 $name = $this->_getResultDisplayName($selected);
@@ -187,7 +192,7 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
                 $fa->push(
                     $this->html->hidden($this->fieldName('selected'), $id),
 
-                    $name,
+                    $this->html->element('div.selection', $name),
 
                     $this->html->eventButton(
                             $this->eventName('clear'), 
@@ -198,6 +203,7 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
 
                     $this->html->string('<br />')
                 );
+
             }
         }
     }
@@ -211,6 +217,7 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
                 unset($this->values->selected);
             } else {
                 $fa = $fs->addFieldArea($this->_('Selected'));
+                $fa->addClass('delegate-selector');
 
                 foreach($selectedList as $result) {
                     $id = $this->_getResultId($result);
@@ -219,7 +226,7 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
                     $fa->push(
                         $this->html->hidden($this->fieldName('selected['.$id.']'), $id),
 
-                        $name,
+                        $this->html->element('div.selection', $name),
 
                         $this->html->eventButton(
                                 $this->eventName('remove', $id), 
