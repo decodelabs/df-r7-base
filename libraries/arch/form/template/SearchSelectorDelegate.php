@@ -63,33 +63,70 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
                 unset($this->values->searchResults);
             } else {
                 $fa = $fs->addFieldArea($this->_('Search results'));
+                $collectionWidget = $this->_renderCollectionList($searchResults);
+                
+                if($collectionWidget instanceof aura\html\widget\IMappedListWidget) {
+                    // Collection list
+                    $collectionWidget->addFieldAtIndex(0, 'select', 'x', function($row) {
+                        $id = $this->_getResultId($row);
 
-                foreach($searchResults as $result) {
-                    $id = $this->_getResultId($result);
-                    $name = $this->_getResultDisplayName($result);
+                        if(!$this->_isForMany) {
+                            $tickWidget = $this->html->radioButton(
+                                $this->fieldName('selected'),
+                                $this->isSelected($id),
+                                null,
+                                $id
+                            );
+                        } else {
+                            $tickWidget = $this->html->checkbox(
+                                $this->fieldName('selected['.$id.']'),
+                                $this->isSelected($id),
+                                null,
+                                $id
+                            );
+                        }
 
-                    if(!$this->_isForMany) {
-                        $tickWidget = $this->html->radioButton(
-                            $this->fieldName('selected'),
-                            $this->isSelected($id),
-                            $name,
-                            $id
-                        );
-                    } else {
-                        $tickWidget = $this->html->checkbox(
-                            $this->fieldName('selected['.$id.']'),
-                            $this->isSelected($id),
-                            $name,
-                            $id
+                        return [
+                            $tickWidget,
+                            $this->html->hidden($this->fieldName('searchResults[]'), $id)
+                        ];
+                    });
+
+                    $fa->push($collectionWidget);
+                } else if($collectionWidget !== null) {
+                    // Something else - trust child class
+                    $fa->push($collectionWidget);
+                } else {
+                    // Fallback to standard
+                    foreach($searchResults as $result) {
+                        $id = $this->_getResultId($result);
+                        $name = $this->_getResultDisplayName($result);
+
+                        if(!$this->_isForMany) {
+                            $tickWidget = $this->html->radioButton(
+                                $this->fieldName('selected'),
+                                $this->isSelected($id),
+                                $name,
+                                $id
+                            );
+                        } else {
+                            $tickWidget = $this->html->checkbox(
+                                $this->fieldName('selected['.$id.']'),
+                                $this->isSelected($id),
+                                $name,
+                                $id
+                            );
+                        }
+
+                        $fa->push(
+                            $this->html->hidden($this->fieldName('searchResults[]'), $id),
+                            $tickWidget,
+                            $this->html->string('<br />')
                         );
                     }
-
-                    $fa->push(
-                        $this->html->hidden($this->fieldName('searchResults[]'), $id),
-                        $tickWidget,
-                        $this->html->string('<br />')
-                    );
                 }
+
+                
 
                 $fa->addEventButton(
                         $this->eventName('select'),
@@ -196,6 +233,11 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
                 }
             }
         }
+    }
+
+
+    protected function _renderCollectionList($result) {
+        return null;
     }
 
 
