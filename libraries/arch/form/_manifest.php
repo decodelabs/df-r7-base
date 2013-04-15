@@ -154,6 +154,7 @@ interface IDependentDelegate {
     public function getDependencies();
     public function getDependenciesByContext($context);
     public function getDependencyValuesByContext($context);
+    public function hasDependencyContext($context);
     public function getUnresolvedDependencies();
     public function getUnresolvedDependencyMessages();
 }

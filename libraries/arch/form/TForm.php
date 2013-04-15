@@ -796,6 +796,16 @@ trait TForm_DependentDelegate {
         return $output;
     }
 
+    public function hasDependencyContext($context) {
+        foreach($this->_dependencies as $name => $dep) {
+            if($dep->getContext() == $context) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function getUnresolvedDependencies() {
         $output = array();
 
