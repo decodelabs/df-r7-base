@@ -110,8 +110,8 @@ abstract class Base implements arch\IComponent {
             $output->setRenderTarget($this->_renderTarget);
         }
 
-        $this->view = null;
-        $this->html = null;
+        //$this->view = null;
+        //$this->html = null;
 
         return $output;
     }
