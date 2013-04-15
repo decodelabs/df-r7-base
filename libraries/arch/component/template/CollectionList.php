@@ -16,8 +16,9 @@ abstract class CollectionList extends arch\component\Base implements aura\html\w
     protected $_errorMessage;
     protected $_fields = array();
     protected $_urlRedirect = true;
+    protected $_viewArg;
 
-    protected function _init($collection=null, array $fields=null) {
+    protected function _init(array $fields=null, $collection=null) {
         if($collection) {
             $this->setCollection($collection);
         }
@@ -112,6 +113,16 @@ abstract class CollectionList extends arch\component\Base implements aura\html\w
         return $this->_urlRedirect;
     }
 
+// View arg
+    public function setViewArg($arg) {
+        $this->_viewArg = $arg;
+        return $this;
+    }
+
+    public function getViewArg() {
+        return $this->_viewArg;
+    }
+
 
 // Render
     public function toWidget() {
@@ -119,6 +130,12 @@ abstract class CollectionList extends arch\component\Base implements aura\html\w
     }
 
     protected function _execute() {
+        if($this->_collection === null
+        && $this->_viewArg !== null
+        && $this->view->hasArg($this->_viewArg)) {
+            $this->_collection = $this->view->getArg($this->_viewArg);
+        }
+
         $output = $this->view->html->collectionList($this->_collection);
 
         if($this->_errorMessage !== null) {
@@ -131,13 +148,11 @@ abstract class CollectionList extends arch\component\Base implements aura\html\w
             if($value === true) {
                 $func = 'add'.ucfirst($key).'Field';
 
-                if(!method_exists($this, $func)) {
-                    throw new arch\RuntimeException(
-                        'Collection list component does not have a handler for field '.$key
-                    );
+                if(method_exists($this, $func)) {
+                    $this->{$func}($output);
+                } else {
+                    $output->addField($key);
                 }
-
-                $this->{$func}($output);
             } else if(is_callable($value)) {
                 $value($output);
             }
