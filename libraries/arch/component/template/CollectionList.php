@@ -103,6 +103,11 @@ abstract class CollectionList extends arch\component\Base implements aura\html\w
         return $this;
     }
 
+    public function isFieldVisible($key) {
+        return isset($this->_fields[$key]) 
+            && $this->_fields[$key] !== false;
+    }
+
     public function addCustomField($key, Callable $callback) {
         $this->_fields[$key] = $callback;
         return $this;
