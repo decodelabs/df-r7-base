@@ -17,7 +17,6 @@ interface IException {}
 class RuntimeException extends \RuntimeException implements IException {}
 class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 class ContentNotFoundException extends RuntimeException {}
-class HelperNotFoundException extends RuntimeException {}
 
 
 // Interfaces
@@ -186,8 +185,10 @@ trait TThemedView {
     
     public function getTheme() {
         if($this->_theme === null) {
-            return aura\theme\Base::factory($this->_context);
+            $this->_theme = aura\theme\Base::factory($this->_context);
         }
+
+        return $this->_theme;
     }
 }
 
@@ -349,6 +350,39 @@ trait THelper {
     }
 
     protected function _init() {}
+}
+
+
+interface ICascadingHelperProvider extends arch\IContextAware, IRenderTargetProvider {
+    public function __call($method, $args);
+    public function __get($key);
+}
+
+trait TCascadingHelperProvider {
+
+    public $view;
+
+    public function __call($method, $args) {
+        return call_user_func_array(array($this->_context, $method), $args);
+    }
+    
+    public function __get($key) {
+        if(!$this->view) {
+            $this->view = $this->getView();
+        }
+
+        if($key == 'view') {
+            return $this->view;
+        } else if($key == 'context') {
+            return $this->_context;
+        }
+
+        if($output = $this->view->getHelper($key, true)) {
+            return $output;
+        }
+
+        return $this->_context->__get($key);
+    }
 }
 
 

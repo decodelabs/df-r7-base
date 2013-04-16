@@ -15,6 +15,7 @@ class UnexpectedValueException extends \UnexpectedValueException implements IExc
 class RuntimeException extends \RuntimeException implements IException {}
 class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 class ApplicationNotFoundException extends RuntimeException {}
+class HelperNotFoundException extends RuntimeException {}
 
 // Generic interfaces
 interface IStringProvider {
@@ -262,7 +263,7 @@ trait TArrayAccessedAttributeContainer {
 
 
 interface IHelperProvider {
-    public function getHelper($name);
+    public function getHelper($name, $returnNull=false);
     public function __get($member);
 }
 
@@ -274,14 +275,26 @@ trait THelperProvider {
         return $this->getHelper($key);
     }
     
-    public function getHelper($name) {
+    public function getHelper($name, $returnNull=false) {
         $name = ucfirst($name);
         
         if(!isset($this->_helpers[$name])) {
-            $this->_helpers[$name] = $this->_loadHelper($name);
+            if(!$output = $this->_loadHelper($name)) {
+                $this->_helpers[$name] = $output = null;
+            } else {
+                $this->_helpers[$name] = $output;
+            }
+        } else {
+            $output = $this->_helpers[$name];
         }
         
-        return $this->_helpers[$name];
+        if(!$output && !$returnNull) {
+            throw new HelperNotFoundException(
+                'Helper '.$name.' could not be found'
+            );
+        }
+
+        return $output;
     }
     
     abstract protected function _loadHelper($name);

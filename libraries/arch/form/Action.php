@@ -14,7 +14,7 @@ use df\halo;
 abstract class Action extends arch\Action implements IAction {
     
     use TForm;
-    
+
     const SESSION_ID_KEY = 'fsid';
     const MAX_SESSIONS = 15;
     const SESSION_PRUNE_THRESHOLD = 5400; // 1.5 hrs
@@ -165,7 +165,6 @@ abstract class Action extends arch\Action implements IAction {
             $this->view->setContentProvider($this->content);
         }
 
-        $this->html = $this->view->getHelper('html');
         $this->content->setRenderTarget($this->view);
         
         foreach($this->_delegates as $delegate) {

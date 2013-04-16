@@ -308,9 +308,7 @@ class Base implements IView {
             $class = 'df\\plug\\view\\'.$name;
             
             if(!class_exists($class)) {
-                return $this->newErrorContainer(
-                    new HelperNotFoundException('View helper '.$name.' could not be found')
-                );
+                return null;
             }
         }
         

@@ -243,10 +243,7 @@ class Context implements IContext, \Serializable, core\i18n\translate\ITranslati
             $class = 'df\\plug\\context\\'.$name;
             
             if(!class_exists($class)) {
-                
-                throw new HelperNotFoundException(
-                    'Context helper '.$name.' could not be found'
-                );
+                return null;
             }
         }
         

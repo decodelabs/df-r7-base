@@ -207,7 +207,7 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
 
     public function setRedirectTo($rt) {
         if(is_string($rt)) {
-            $rt = $this->directory->backRequest($rt);
+            $rt = $this->_context->directory->backRequest($rt);
         }
 
         $this->_redirectTo = $rt;
@@ -254,14 +254,10 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
         }
 
         $url = $this->_getRecordUrl($id);
-        $url = $this->normalizeOutputUrl($url, true);
+        $url = $this->_context->normalizeOutputUrl($url, true, $this->_redirectFrom, $this->_redirectTo);
 
-        if($url instanceof arch\IRequest) {
-            if($this->_action) {
-                $url->setAction($this->_action);
-            }
-
-            $url = $this->directory->normalizeRequest($url, $this->_redirectFrom, $this->_redirectTo);
+        if($url instanceof arch\IRequest && $this->_action) {
+            $url->setAction($this->_action);
         }
 
         $title = null;
@@ -275,11 +271,12 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
         }
 
         $output = $this->html->link($url, $name, $this->_matchRequest)
+            ->shouldCheckAccess((bool)$this->_action)
             ->setIcon($this->_icon)
             ->setDisposition($this->_disposition)
             ->setNote($this->_note)
             ->setTitle($title)
-            ->setAccessLocks($this->_accessLocks);
+            ->addAccessLocks($this->_accessLocks);
 
         if($this->_action && $this->_record instanceof user\IAccessLock) {
             switch($this->_action) {

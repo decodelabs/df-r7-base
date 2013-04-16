@@ -170,7 +170,6 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
 
         
         $icon = $this->_generateIcon();
-
         
         if($this->_hrefLang !== null) {
             $tag->setAttribute('hreflang', $this->_hrefLang);

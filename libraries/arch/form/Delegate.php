@@ -12,8 +12,8 @@ use df\aura;
 
 class Delegate implements IDelegate {
     
+    use arch\TContextAware;
     use TForm;
-    use arch\TContextProxy;
     
     protected $_delegateId;
 
@@ -56,7 +56,6 @@ class Delegate implements IDelegate {
     public function setRenderContext(aura\view\IView $view, aura\view\IContentProvider $content, $isRenderingInline=false) {
         $this->view = $view;
         $this->content = $content;
-        $this->html = $view->getHelper('html');
         $this->_isRenderingInline = $isRenderingInline;
         
         foreach($this->_delegates as $delegate) {

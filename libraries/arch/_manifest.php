@@ -16,7 +16,6 @@ use df\aura;
 interface IException {}
 class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 class RuntimeException extends \RuntimeException implements IException {}
-class HelperNotFoundException extends RuntimeException {}
 
 
 // Interfaces
@@ -42,8 +41,6 @@ interface IContext extends core\IApplicationAware, core\IHelperProvider {
     // Helpers
     public function throwError($code=500, $message='');
     public function findFile($path);
-    public function getHelper($method);
-    public function __get($key);
     
     public function getI18nManager();
     public function getPolicyManager();

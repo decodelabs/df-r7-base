@@ -13,16 +13,14 @@ use df\aura;
 
 abstract class Base implements arch\IComponent {
     
-    use arch\TContextProxy;
+    use arch\TContextAware;
     use user\TAccessLock;
     use core\TStringProvider;
     use aura\view\TDeferredRenderable;
+    use aura\view\TCascadingHelperProvider;
 
     const DEFAULT_ACCESS = arch\IAccess::ALL;
 
-    public $view;
-    public $html;
-    
     public static function factory(arch\IContext $context, $name, array $args=null) {
         $path = $context->location->getController();
         $area = $context->location->getArea();
@@ -102,16 +100,11 @@ abstract class Base implements arch\IComponent {
 
     public function render() {
         $this->view = $this->getRenderTarget()->getView();
-        $this->html = $this->view->html;
-        
         $output = $this->_execute();
 
         if($output instanceof aura\view\IDeferredRenderable) {
             $output->setRenderTarget($this->_renderTarget);
         }
-
-        //$this->view = null;
-        //$this->html = null;
 
         return $output;
     }
