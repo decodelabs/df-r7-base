@@ -126,9 +126,9 @@ class Context implements IContext, \Serializable, core\i18n\translate\ITranslati
         return $this->location;
     }
     
-    public function normalizeOutputUrl($uri, $toRequest=false) {
+    public function normalizeOutputUrl($uri, $toRequest=false, $from=null, $to=null) {
         if($toRequest && $uri instanceof IRequest) {
-            return $uri;
+            return $this->_applyRequestRedirect($uri, $from, $to);
         } else if($uri instanceof core\uri\IUrl && !$uri instanceof IRequest) {
             return $uri;
         }
@@ -170,7 +170,7 @@ class Context implements IContext, \Serializable, core\i18n\translate\ITranslati
                 $uri = new Request($uri);
             }
             
-            return $uri;
+            return $this->_applyRequestRedirect($uri, $from, $to);
         }
         
         if($this->application instanceof arch\IRoutedDirectoryRequestApplication) {
@@ -178,12 +178,32 @@ class Context implements IContext, \Serializable, core\i18n\translate\ITranslati
                 $uri = new Request($uri);
             }
             
-            $uri = $this->application->requestToUrl($uri);
+            $uri = $this->application->requestToUrl($this->_applyRequestRedirect($uri, $from, $to));
         } else {
             $uri = new core\uri\Url($uri);
         }
         
         return $uri;
+    }
+
+    protected function _applyRequestRedirect(arch\IRequest $request, $from, $to) {
+        if($from !== null) {
+            if($from === true) {
+                $from = $this->request;
+            }
+            
+            $request->setRedirectFrom($from);
+        }
+        
+        if($to !== null) {
+            if($to === true) {
+                $to = $this->request;
+            }
+            
+            $request->setRedirectTo($to);
+        }
+
+        return $request;
     }
 
 

@@ -33,7 +33,7 @@ interface IContext extends core\IApplicationAware, core\IHelperProvider {
     // Requests
     public function getRequest();
     public function getLocation();
-    public function normalizeOutputUrl($uri);
+    public function normalizeOutputUrl($uri, $toRequest=false, $from=null, $to=null);
     
     // Locale
     public function setLocale($locale);
@@ -206,7 +206,7 @@ interface IAction extends IContextAware, user\IAccessLock {
     public static function getControllerMethodName($controllerClass, IContext $context);
 }
 
-interface IComponent extends IContextAware, aura\view\IDeferredRenderable, user\IAccessLock {
+interface IComponent extends IContextAware, aura\view\IDeferredRenderable, user\IAccessLock, aura\view\ICascadingHelperProvider {
     public function getName();
 }
 
