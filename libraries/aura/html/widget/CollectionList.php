@@ -120,7 +120,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
 
             $colClasses[$fieldKey] = implode(' ', $colClasses[$fieldKey]);
 
-            $thTag = new aura\html\Element('th', $tagContent, ['class' => $colClasses]);
+            $thTag = new aura\html\Element('th', $tagContent, ['class' => $colClasses[$fieldKey]]);
             $headRow->push($thTag->render());
         }
         
