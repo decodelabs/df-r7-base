@@ -118,6 +118,20 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
             ->addClass((bool)$value ? 'state-locked' : 'state-unlocked');
     }
 
+    public function mailLink($address, $body=null) {
+        if(empty($address)) {
+            return null;
+        }
+
+        if($body === null) {
+            $body = $address;
+        }
+
+        return $this->link($this->_view->uri->mailto($address), $body)
+            ->setIcon('mail')
+            ->setDisposition('transitive');
+    }
+
     public function backLink($default=null, $success=true) {
         return $this->link(
                 $this->_view->uri->back($default, $success),
