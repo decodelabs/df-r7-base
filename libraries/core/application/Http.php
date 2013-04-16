@@ -101,7 +101,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
 // Routing
     public function requestToUrl(arch\IRequest $request) {
         $request = $this->_routeOut($request);
-        
+
         if($this->_defaultRouteProtocol === null) {
             $this->_defaultRouteProtocol = (isset($_SERVER['HTTPS']) && !strcasecmp($_SERVER['HTTPS'], 'on')) ? 'https' : 'http';
         }
@@ -158,7 +158,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
     protected function _getRouterFor(arch\IRequest $request) {
         $location = $request->getDirectoryLocation();
 
-        if(isset($routerCache[$location])) {
+        if(isset($this->_routerCache[$location])) {
             return $this->_routerCache[$location];
         }
 
@@ -418,7 +418,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
             echo (string)$response;
             return;
         }
-        
+
         $isFile = $response instanceof halo\protocol\http\IFileResponse;
         
         if($response->hasCookies()) {
