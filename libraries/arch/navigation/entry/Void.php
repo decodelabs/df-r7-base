@@ -26,4 +26,11 @@ class Void extends Base {
     public function getId() {
         return $this->_id;
     }
+
+    public function toArray() {
+        return [
+            'type' => 'Void',
+            'id' => $this->_id
+        ];
+    }
 }
