@@ -13,6 +13,10 @@ class Void extends Base {
     
     protected $_id;
     
+    protected static function _fromArray(array $entry) {
+        return new self(@$entry['id']);
+    }
+
     public function __construct($id) {
         $this->setId($id);
     }
