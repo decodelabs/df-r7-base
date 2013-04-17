@@ -20,7 +20,14 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 
 
 // Interfaces
-interface IStateController {
+interface IStoreProvider {
+    public function setStore($key, $value);
+    public function getStore($key, $default=null);
+    public function removeStore($key);
+    public function clearStore();
+}
+
+interface IStateController extends IStoreProvider {
     public function getSessionId();
     public function getValues();
     
@@ -28,14 +35,9 @@ interface IStateController {
     
     public function isNew($flag=null);
     public function reset();
-
-    public function setStore($key, $value);
-    public function getStore($key, $default=null);
-    public function removeStore($key);
-    public function clearStore();
 }
 
-interface IForm {
+interface IForm extends IStoreProvider {
     public function isRenderingInline();
     public function getStateController();
     public function loadDelegate($id, $name, $request=null);

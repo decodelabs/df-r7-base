@@ -175,6 +175,27 @@ trait TForm {
     public function isRenderingInline() {
         return $this->_isRenderingInline;
     }
+
+
+// Store
+    public function setStore($key, $value) {
+        $this->_state->setStore($key, $value);
+        return $this;
+    }
+
+    public function getStore($key, $default=null) {
+        return $this->_state->getStore($key, $default);
+    }
+
+    public function removeStore($key) {
+        $this->_state->removeStore($key);
+        return $this;
+    }
+
+    public function clearStore() {
+        $this->_state->clearStore();
+        return $this;
+    }
     
     
 // Values

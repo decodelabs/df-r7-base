@@ -95,7 +95,12 @@ abstract class Action extends arch\Action implements IAction {
         
         $this->values = $this->_state->getValues();
         
-        $this->_onSessionCreate();
+        $response = $this->_onSessionCreate();
+
+        if(!empty($response)) {
+            return $response;
+        }
+
         $this->_setupDelegates();
 
         if($this->_state->isNew()) {
