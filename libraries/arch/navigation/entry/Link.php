@@ -33,7 +33,7 @@ class Link extends Base {
             ))
             ->setId($tree['id'])
             ->setTooltip($tree['tooltip'])
-            ->setDescription($tree['id'])
+            ->setDescription($tree['description'])
             ->addAccessLocks($tree->accessLocks->toArray())
             ->shouldHideIfInaccessible((bool)$tree['hideIfInaccessible'])
             ->shouldCheckMatch((bool)$tree['checkMatch'])
