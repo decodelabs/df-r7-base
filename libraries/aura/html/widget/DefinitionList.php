@@ -39,9 +39,9 @@ class DefinitionList extends Base implements IDataDrivenListWidget, IMappedListW
         foreach($fields as $key => $field) {
             $ddTag = new aura\html\Element('dt', $field->getName());
             $dtTag = new aura\html\Tag('dd');
-            
-            $renderContext->iterate($key, $dtTag);
-            $value = $field->render($this->_data, $renderContext);
+
+            $renderContext->iterateField($key, $dtTag);
+            $value = $renderContext->renderCell($this->_data, $field->renderer);
             
             $children->push($ddTag->render(), $dtTag->renderWith($value));
         }

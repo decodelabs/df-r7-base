@@ -73,7 +73,7 @@ class Field implements aura\html\widget\IField, core\IDumpable {
     }
     
     public function render($data, aura\html\widget\IRendererContext $renderContext) {
-        return $renderContext->renderCell($data, $this);
+        return $renderContext->renderCell($data, $this->renderer);
     }
     
     
