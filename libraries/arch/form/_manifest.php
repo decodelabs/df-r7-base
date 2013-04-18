@@ -50,6 +50,7 @@ interface IForm extends IStoreProvider {
     public function elementId($name);
 }
 
+
 interface IAction extends arch\IAction, IForm {
     public function complete($defaultRedirect=null, $success=true);
 }

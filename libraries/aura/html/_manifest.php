@@ -97,8 +97,13 @@ interface IElementContentCollection extends
 trait TElementContent {
     
     use core\TStringProvider;
-    use core\collection\TArrayCollection_Queue;
+    use core\collection\TArrayCollection;
     use core\collection\TArrayCollection_Constructor;
+    use core\collection\TArrayCollection_ProcessedIndexedValueMap;
+    use core\collection\TArrayCollection_Seekable;
+    use core\collection\TArrayCollection_Sliceable;
+    use core\collection\TArrayCollection_ProcessedShiftable;
+    use core\collection\TArrayCollection_IndexedMovable;
     
     public function toString() {
         return $this->getElementContentString();
@@ -172,6 +177,20 @@ trait TElementContent {
         
         return $output;
     }
+
+    protected function _expandInput($input) {
+        if(!is_array($input)) {
+            $input = [$input];
+        }
+
+        foreach($input as $i => $value) {
+            if($value instanceof aura\html\widget\IWidgetProxy) {
+                $input[$i] = $value->toWidget();
+            }
+        }
+
+        return $input;
+    }
     
     public function render() {
         return new ElementString($this->toString());
@@ -239,6 +258,10 @@ trait TElementContent {
         }
         
         return $output;
+    }
+
+    public function getReductiveIterator() {
+        return new ReductiveIndexIterator($this);
     }
 }
 
