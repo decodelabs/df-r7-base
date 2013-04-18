@@ -548,8 +548,11 @@ trait TArrayCollection_ProcessedIndexedValueMap {
         return $this;
     }
 
-    abstract protected function _expandInput($input);
-    abstract protected function _onInsert();
+    protected function _expandInput($input) {
+        return (array)$input;
+    }
+
+    protected function _onInsert() {}
 }
 
 
