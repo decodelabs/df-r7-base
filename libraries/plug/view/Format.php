@@ -22,6 +22,16 @@ class Format implements aura\view\IHelper {
         return core\i18n\Manager::getInstance($this->_view->getContext()->getApplication())->getModule('numbers', $locale)->formatPercent($number);
     }
     
+    public function calcPercent($divisor, $total, $locale=null) {
+        if($total <= 0) {
+            $number = 0;
+        } else {
+            $number = $divisor / $total;
+        }
+
+        return $this->percent($number, $locale);
+    }
+
     public function currency($number, $code, $locale=null) {
         return core\i18n\Manager::getInstance($this->_view->getContext()->getApplication())->getModule('numbers', $locale)->formatCurrency($number, $code);
     }
