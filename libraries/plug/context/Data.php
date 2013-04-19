@@ -118,7 +118,7 @@ class Data implements archLib\IContextHelper, opal\query\IEntryPoint {
         $output = null;
 
         if($record instanceof opal\record\IRecord) {
-            $output = $record->{$field}->getRawId();
+            $output = $record->getRawId($field);
         } else if(is_array($record)) {
             if(isset($record[$field])) {
                 $value = $record[$field];
