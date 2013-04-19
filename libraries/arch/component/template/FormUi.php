@@ -10,7 +10,9 @@ use df\core;
 use df\arch;
 use df\aura;
     
-abstract class FormUi extends arch\component\Base implements arch\form\IForm, aura\html\widget\IWidgetProxy {
+abstract class FormUi extends arch\component\Base implements arch\form\IForm, aura\html\widget\IWidgetProxy, core\IArgContainer, \ArrayAccess {
+
+    use core\TArrayAccessedArgContainer;
 
     public $values;
     public $content;
