@@ -45,6 +45,8 @@ interface IManager extends core\IManager {
     // Authentication
     public function isLoggedIn();
     public function authenticate(user\authentication\IRequest $request);
+    public function refreshClientData();
+    public function importClientData(user\IClientDataObject $data);
     public function logout();
     
     
@@ -64,6 +66,7 @@ interface IManager extends core\IManager {
 }
 
 interface IUserModel {
+    public function getClientData($id);
     public function getAuthenticationDomainInfo(user\authentication\IRequest $request);
     public function generateKeyring(IClient $client);
 }

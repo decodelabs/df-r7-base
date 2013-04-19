@@ -179,6 +179,30 @@ class Manager implements IManager, core\IDumpable {
         return $result;
     }
 
+    public function refreshClientData() {
+        $model = $this->_getUserModel();
+        $data = $model->getClientData($this->getClient()->getId());
+        $this->importClientData($data);
+
+        return $this;
+    }
+
+    public function importClientData(user\IClientDataObject $data) {
+        $client = $this->getClient();
+
+        if($client->getId() != $data->getId()) {
+            throw new AuthenticationException(
+                'Client data to import is not for the currently authenticated user'
+            );
+        }
+
+        $client->import($data);
+
+        $session = $this->getSessionNamespace(self::CLIENT_SESSION_NAMESPACE);
+        $session->set(self::CLIENT_SESSION_KEY, $client);
+        return $this;
+    }
+
     protected function _getUserModel() {
         $model = axis\Model::factory('user', $this->_application);
         
