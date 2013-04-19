@@ -13,7 +13,7 @@ use df\arch;
 class Template implements aura\view\ITemplate, core\IDumpable {
         
     use arch\TContextAware;
-    use aura\view\TArgContainer;
+    use core\TArrayAccessedArgContainer;
     use aura\view\TDeferredRenderable;
         
     private $_path;
@@ -279,23 +279,6 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         return $this->_view->esc($this->getAttribute($name, $default));
     }
     
-
-    public function offsetSet($key, $value) {
-        return $this->setArg($key, $value);
-    }
-    
-    public function offsetGet($key) {
-        return $this->getArg($key);
-    }
-    
-    public function offsetExists($key) {
-        return $this->hasArg($key);
-    }
-    
-    public function offsetUnset($key) {
-        return $this->removeArg($key);
-    }
-
 
 // Helpers
     public function __get($member) {

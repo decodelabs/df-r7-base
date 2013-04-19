@@ -17,12 +17,13 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 class ApplicationNotFoundException extends RuntimeException {}
 class HelperNotFoundException extends RuntimeException {}
 
-// Generic interfaces
+### Generic interfaces
+
+// String provider
 interface IStringProvider {
     public function toString();
     public function __toString();
 }
-
 
 trait TStringProvider {
     
@@ -35,7 +36,7 @@ trait TStringProvider {
     }
 }
 
-
+// Array provider
 interface IArrayProvider {
     public function toArray();
 }
@@ -69,6 +70,8 @@ trait TExtendedArrayInterchange {
     }
 }
 
+
+// Value map
 interface IValueMap {
     public function set($key, $value);
     public function get($key, $default=null);
@@ -95,6 +98,7 @@ trait TValueMap {
     }
 }
 
+// Value container
 interface IValueContainer {
     public function setValue($value);
     public function getValue($default=null);
@@ -105,6 +109,8 @@ interface IUserValueContainer extends IValueContainer {
     public function hasValue();
 }
 
+
+// Error container
 interface IErrorContainer {
     public function isValid();
     public function setErrors(array $errors);
@@ -176,6 +182,7 @@ trait TErrorContainer {
 }
 
 
+// Attribute container
 interface IAttributeContainer {
     public function setAttributes(array $attributes);
     public function addAttributes(array $attributes);
@@ -186,7 +193,6 @@ interface IAttributeContainer {
     public function hasAttribute($key);
     public function countAttributes();
 }
-
 
 trait TAttributeContainer {
     
@@ -256,12 +262,93 @@ trait TAttributeContainerArrayAccessProxy {
 }
 
 trait TArrayAccessedAttributeContainer {
-    
     use TAttributeContainer;
     use TAttributeContainerArrayAccessProxy;
 }
 
 
+
+// Arg container
+interface IArgContainer {
+    public function setArgs(array $args);
+    public function addArgs(array $args);
+    public function getArgs(array $add=array());
+    public function setArg($name, $value);
+    public function getArg($name, $default=null);
+    public function hasArg($name);
+    public function removeArg($name);
+}
+
+trait TArgContainer {
+    
+    protected $_args = array();
+    
+    public function setArgs(array $args) {
+        $this->_args = array();
+        return $this->addArgs($args);
+    }
+    
+    public function addArgs(array $args) {
+        foreach($args as $key => $value){
+            $this->setArg($key, $value);
+        }
+        
+        return $this;
+    }
+    
+    public function getArgs(array $add=array()) {
+        return array_merge($this->_args, $add);
+    }
+    
+    public function setArg($key, $value) {
+        $this->_args[$key] = $value;
+        return $this;
+    }
+    
+    public function getArg($key, $default=null) {
+        if(isset($this->_args[$key])) {
+            return $this->_args[$key];
+        }
+        
+        return $default;
+    }
+    
+    public function removeArg($key) {
+        unset($this->_args[$key]);
+        return $this;
+    }
+    
+    public function hasArg($key) {
+        return isset($this->_args[$key]);
+    }
+}
+
+trait TArgContainerArrayAccessProxy {
+
+    public function offsetSet($key, $value) {
+        return $this->setArg($key, $value);
+    }
+    
+    public function offsetGet($key) {
+        return $this->getArg($key);
+    }
+    
+    public function offsetExists($key) {
+        return $this->hasArg($key);
+    }
+    
+    public function offsetUnset($key) {
+        return $this->removeArg($key);
+    }
+}
+
+trait TArrayAccessedArgContainer {
+    use TArgContainer;
+    use TArgContainerArrayAccessProxy;
+}
+
+
+// Helpers
 interface IHelperProvider {
     public function getHelper($name, $returnNull=false);
     public function __get($member);
@@ -303,6 +390,7 @@ trait THelperProvider {
 interface IHelper {}
 
 
+// Dumpable
 interface IDumpable {
     public function getDumpProperties();
 }
@@ -336,7 +424,7 @@ interface ILoader {
 }
 
 
-
+// Package
 interface IPackage {}
 
 class Package implements IPackage {

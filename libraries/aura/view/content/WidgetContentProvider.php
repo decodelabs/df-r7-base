@@ -13,7 +13,7 @@ use df\arch;
 class WidgetContentProvider extends aura\html\ElementContent implements aura\view\IContentProvider, aura\html\widget\IWidgetShortcutProvider {
     
     use arch\TContextAware;
-    use aura\view\TArgContainer;
+    use core\TArgContainer;
     use aura\view\TDeferredRenderable;
     
     public function __construct(arch\IContext $context) {

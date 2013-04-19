@@ -78,67 +78,10 @@ interface IRenderTarget extends arch\IContextAware {
 }
 
 
-interface IArgContainer {
-    public function setArgs(array $args);
-    public function addArgs(array $args);
-    public function getArgs(array $add=array());
-    public function setArg($name, $value);
-    public function getArg($name, $default=null);
-    public function hasArg($name);
-    public function removeArg($name);
-    
-}
-
-
-trait TArgContainer {
-    
-    protected $_args = array();
-    
-    public function setArgs(array $args) {
-        $this->_args = array();
-        return $this->addArgs($args);
-    }
-    
-    public function addArgs(array $args) {
-        foreach($args as $key => $value){
-            $this->setArg($key, $value);
-        }
-        
-        return $this;
-    }
-    
-    public function getArgs(array $add=array()) {
-        return array_merge($this->_args, $add);
-    }
-    
-    public function setArg($key, $value) {
-        $this->_args[$key] = $value;
-        return $this;
-    }
-    
-    public function getArg($key, $default=null) {
-        if(isset($this->_args[$key])) {
-            return $this->_args[$key];
-        }
-        
-        return $default;
-    }
-    
-    public function removeArg($key) {
-        unset($this->_args[$key]);
-        return $this;
-    }
-    
-    public function hasArg($key) {
-        return isset($this->_args[$key]);
-    }
-}
-
-
 
 interface IContentProvider extends 
     IDeferredRenderable, 
-    IArgContainer,
+    core\IArgContainer,
     arch\IProxyResponse 
     {}
 
@@ -152,7 +95,7 @@ interface IView extends
     IContentConsumer, 
     IRenderTarget, 
     halo\protocol\http\IStringResponse, 
-    IArgContainer, 
+    core\IArgContainer, 
     \ArrayAccess, 
     core\IHelperProvider, 
     core\string\IStringEscapeHandler,
