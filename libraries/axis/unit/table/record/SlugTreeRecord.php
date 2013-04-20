@@ -75,15 +75,15 @@ class SlugTreeRecord extends opal\record\Base {
 
                 $length = strlen($origLocation);
 
-                foreach($list as $label) {
-                    $newSubLocation = ltrim($newLocation.'/'.ltrim(substr($label['slug_location'], $length), '/'), '/');
+                foreach($list as $node) {
+                    $newSubLocation = ltrim($newLocation.'/'.ltrim(substr($node['slug_location'], $length), '/'), '/');
 
                     $transaction->update([
                             'slug_location' => $newSubLocation,
                             'parent' => $adapter->fetchParentFor($newSubLocation.'/x')
                         ])
                         ->in($adapter)
-                        ->where('slug_location', '=', $label['slug_location'])
+                        ->where('slug_location', '=', $node['slug_location'])
                         ->execute();
                 }
             });
@@ -165,7 +165,7 @@ class SlugTreeRecord extends opal\record\Base {
 
         $query->correlate('COUNT(child.id) as hasChildren')
             ->from($adapter, 'child')
-            ->on('child.parent', '=', 'label.id')
+            ->on('child.parent', '=', 'id')
             ->endCorrelation();
 
         if($context !== null) {
@@ -178,29 +178,29 @@ class SlugTreeRecord extends opal\record\Base {
         $output = array();
         $length = strlen($slug);
 
-        foreach($query as $label) {
-            $labelLocation = $label->getSlugLocation();
+        foreach($query as $node) {
+            $nodeLocation = $node->getSlugLocation();
 
-            if($labelLocation != $slug) {
+            if($nodeLocation != $slug) {
                 if($length) {
-                    $labelLocation = substr($labelLocation, $length + 1);
+                    $nodeLocation = substr($nodeLocation, $length + 1);
                 }
 
-                if(false !== ($pos = strpos($labelLocation, '/'))) {
-                    $labelLocation = substr($labelLocation, 0, $pos);
+                if(false !== ($pos = strpos($nodeLocation, '/'))) {
+                    $nodeLocation = substr($nodeLocation, 0, $pos);
                 }
 
-                if(isset($output[$labelLocation])) {
+                if(isset($output[$nodeLocation])) {
                     continue;
                 }
 
-                $label = $adapter->createVirtualNode($slug.'/'.$labelLocation);
-                $label->forceSet('hasChildren', true);
+                $node = $adapter->createVirtualNode($slug.'/'.$nodeLocation);
+                $node->forceSet('hasChildren', true);
             } else {
-                $label->forceSet('hasChildren', (bool)$label->get('hasChildren'));
+                $node->forceSet('hasChildren', (bool)$node->get('hasChildren'));
             }
 
-            $output[$label->getSlugName()] = $label;
+            $output[$node->getSlugName()] = $node;
         }
 
         return $output;
