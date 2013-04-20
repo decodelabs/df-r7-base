@@ -195,13 +195,17 @@ class SlugTreeRecord extends opal\record\Base {
                 $node->forceSet('hasChildren', (bool)$node->get('hasChildren'));
             }
 
-            $output[$node->getSlugName()] = $node;
+            $output[$node->getSlugName()] = $this->_customizeNodeListEntry($node);
         }
 
         return $output;
     }
 
     protected function _customizeNodeListQuery($query) {}
+    
+    protected function _customizeNodeListEntry($node) {
+        return $node;
+    }
 
     public function fetchParentPath() {
         $slug = $this['slug'];
