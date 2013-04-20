@@ -46,7 +46,7 @@ class Delete extends arch\form\Action {
         
         $fs->addButtonArea()->push(
             $this->html->eventButton(
-                    $this->eventNAme('delete'),
+                    $this->eventName('delete'),
                     $this->_('Delete')
                 )
                 ->setIcon('delete'),
