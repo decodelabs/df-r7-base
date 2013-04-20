@@ -14,7 +14,7 @@ use df\opal;
 class SlugTreeRecord extends opal\record\Base {
 
     protected function _onPreSave() {
-        if(!$this->getRawId('parent')) {
+        if(!$this->getRawId('parent') || $this->hasChanged('slug')) {
             $this->parent = $this->getRecordAdapter()->fetchParentFor($this['slug']);
         }
     }
@@ -34,43 +34,49 @@ class SlugTreeRecord extends opal\record\Base {
         );
     }
 
-    protected function _onPreDelete($taskSet) {
+    protected function _onPreDelete($taskSet, $deleteTask) {
         // Set alternative parent for descendants
         $adapter = $this->getRecordAdapter();
         $id = $this['id'];
         $slug = $this['slug'];
 
-        $taskSet->addGenericTask(
+        $updateTask = $taskSet->addGenericTask(
             $adapter,
             'resetParents:'.$id,
-            function($task, $transaction) use ($id, $slug) {
+            function($task, $transaction) use ($id, $slug, $taskSet) {
                 $adapter = $task->getAdapter();
+
                 $transaction->update([
                         'parent' => $adapter->fetchParentFor($slug.'/x')
                     ])
                     ->in($adapter)
-                    ->where('parent', '=', $id);
+                    ->where('parent', '=', $id)
+                    ->execute();
             }
         );
+
+        $updateTask->addDependency($deleteTask);
     }
 
     protected function _onPreUpdate($taskSet) {
         if($this->hasChanged('slug')) {
             $adapter = $this->getRecordAdapter();
-            $origLocation = $this->_getSlugLocation($this->getOriginal('slug'));
+            $origSlug = $this->getOriginal('slug');
             $newLocation = $this->_getSlugLocation($this->get('slug'));
 
             // Update sub descendants
-            $taskSet->addGenericTask($adapter, 'updateSubDescendantSlugs', function($task, $transaction) use ($origLocation, $newLocation) {
+            $taskSet->addGenericTask($adapter, 'updateSubDescendantSlugs', function($task, $transaction) use ($origSlug, $newLocation) {
+                $origLocation = $this->_getSlugLocation($origSlug);
+
                 $adapter = $task->getAdapter();
                 $list = $adapter->selectDistinct('slug_location')
-                    ->where('slug_location', 'begins', $origLocation)
+                    ->where('slug_location', 'begins', $origSlug)
                     ->orderBy('slug_location ASC');
 
                 $length = strlen($origLocation);
 
                 foreach($list as $label) {
-                    $newSubLocation = $newLocation.substr($label['slug_location'], $length);
+                    $newSubLocation = ltrim($newLocation.'/'.ltrim(substr($label['slug_location'], $length), '/'), '/');
 
                     $transaction->update([
                             'slug_location' => $newSubLocation,
@@ -142,11 +148,12 @@ class SlugTreeRecord extends opal\record\Base {
         if(empty($slug)) {
             // Root
             $query = $adapter->fetch()
-                ->where('parent', '=', null);
+                ->where('parent', '=', null)
+                ->orWhere('slug_location', '!like', '*/*');
         } else if($this->isNew()) {
             // Virtual
             $query = $adapter->fetch()
-                ->where('slug_location', 'begins', $slug);
+                ->where('slug_location', '=', $slug);
         } else {
             // Actual
             $query = $adapter->fetch()

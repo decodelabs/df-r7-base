@@ -87,7 +87,7 @@ abstract class SlugTree extends Base {
             ->orderBy('slug DESC');
 
         $clause = $query->beginWhereClause()
-                ->where('context', '=', $context);
+            ->where('context', '=', $context);
 
         if($shared) {
             $clause->orWhere('isShared', '=', true);
