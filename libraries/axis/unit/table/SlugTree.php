@@ -41,6 +41,12 @@ abstract class SlugTree extends Base {
         return $node;
     }
 
+    public function fetchSlugList() {
+        return $this->selectDistinct('slug')
+            ->orderBy('slug ASC')
+            ->toList('slug');
+    }
+
     public function createVirtualNode($slug) {
         $slug = core\string\Manipulator::formatPathSlug($slug);
 
