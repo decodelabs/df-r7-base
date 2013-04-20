@@ -54,13 +54,13 @@ class Action implements IAction, core\IDumpable {
         $this->_controller = $controller;
         $this->_context = $context;
         $this->_isInline = get_class($this) == __CLASS__;
-    }
-    
-    public function getController() {
+
         if(!$this->_controller) {
             $this->_controller = Controller::factory($this->_context);
         }
-        
+    }
+    
+    public function getController() {
         return $this->_controller;
     }
     
@@ -90,9 +90,7 @@ class Action implements IAction, core\IDumpable {
             }
             
             if($output === null && $func = $this->getActionMethodName($this, $this->_context)) {
-                if($this->_controller) {
-                    $this->_controller->setActiveAction($this);
-                }
+                $this->_controller->setActiveAction($this);
                 
                 try {
                     $output = $this->$func();
@@ -100,16 +98,14 @@ class Action implements IAction, core\IDumpable {
                     $output = $e->getResponse();
                 }
                 
-                if($this->_controller) {
-                    $this->_controller->setActiveAction(null);
-                }
+                $this->_controller->setActiveAction(null);
             }
         }
         
         if($func === null) {
             $controller = $this->getController();
             
-            if($func = $this->getControllerMethodName($this->_controller, $this->_context)) {
+            if($func = $this->getControllerMethodName($controller, $this->_context)) {
                 if($controller::CHECK_ACCESS) {
                     $client = $this->_context->getUserManager()->getClient();
                 
