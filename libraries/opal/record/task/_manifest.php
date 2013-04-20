@@ -29,6 +29,7 @@ interface ITaskSet {
 
     public function addTask(ITask $task);
     public function hasTask($id);
+    public function getTask($id);
     public function isRecordQueued(opal\record\IRecord $record);
     public function setRecordAsQueued(opal\record\IRecord $record);
     public function execute();

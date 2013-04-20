@@ -193,6 +193,16 @@ class TaskSet implements ITaskSet {
         return isset($this->_tasks[$id]);
     }
 
+    public function getTask($id) {
+        if($id instanceof ITask) {
+            $id = $id->getId();
+        }
+
+        if(isset($this->_tasks[$id])) {
+            return $tis->_tasks[$id];
+        }
+    }
+
     public function isRecordQueued(opal\record\IRecord $record) {
         $id = $record->getRecordAdapter()->getQuerySourceId().'#'.opal\record\Base::extractRecordId($record);
         return isset($this->_tasks[$id]);
