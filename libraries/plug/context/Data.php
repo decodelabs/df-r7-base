@@ -39,7 +39,7 @@ class Data implements archLib\IContextHelper, opal\query\IEntryPoint {
         $query = $this->fetch()
             ->from($source);
 
-        if(is_array($primary) && reset($primary) && is_string(key($primary))) {
+        if(is_array($primary) && is_string(key($primary))) {
             foreach($primary as $key => $value) {
                 $query->where($key, '=', $value);
             }
