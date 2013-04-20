@@ -17,6 +17,30 @@ interface IException {}
 class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 class RuntimeException extends \RuntimeException implements IException {}
 
+interface IForcedResponse {
+    public function setResponse($response);
+    public function getResponse();
+}
+
+class ForcedResponse extends \Exception implements IForcedResponse {
+
+    protected $_response;
+
+    public function __construct($response) {
+        $this->setResponse($response);
+        parent::__construct('forced response');
+    }
+
+    public function setResponse($response) {
+        $this->_response = $response;
+        return $this;
+    }
+
+    public function getResponse() {
+        return $this->_response;
+    }
+}
+
 
 // Interfaces
 interface IAccess extends user\IState {}
@@ -191,6 +215,7 @@ interface IController extends IContextAware, user\IAccessLock {
     public function isControllerInline();
     public function setActiveAction(IAction $action=null);
     public function getActiveAction();
+    public function forceResponse($response);
 }
 
 
@@ -198,6 +223,7 @@ interface IAction extends IContextAware, user\IAccessLock {
     public function dispatch();
     public function isActionInline();
     public function getController();
+    public function forceResponse($response);
 
     public static function getActionMethodName($actionClass, IContext $context);
     public static function getControllerMethodName($controllerClass, IContext $context);

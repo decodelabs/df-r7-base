@@ -70,6 +70,10 @@ class Controller implements IController, core\IDumpable {
     public function getActiveAction() {
         return $this->_activeAction;
     }
+
+    public function forceResponse($response) {
+        throw new ForcedResponse($response);
+    }
     
     
 // Dump

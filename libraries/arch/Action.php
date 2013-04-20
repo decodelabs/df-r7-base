@@ -80,7 +80,12 @@ class Action implements IAction, core\IDumpable {
             }
             
             if(method_exists($this, '_beforeDispatch')) {
-                $output = $this->_beforeDispatch();
+                try {
+                    $output = $this->_beforeDispatch();
+                } catch(ForcedResponse $e) {
+                    $output = $e->getResponse();
+                }
+
                 $func = false;
             }
             
@@ -89,7 +94,11 @@ class Action implements IAction, core\IDumpable {
                     $this->_controller->setActiveAction($this);
                 }
                 
-                $output = $this->$func();
+                try {
+                    $output = $this->$func();
+                } catch(ForcedResponse $e) {
+                    $output = $e->getResponse();
+                }
                 
                 if($this->_controller) {
                     $this->_controller->setActiveAction(null);
@@ -110,7 +119,13 @@ class Action implements IAction, core\IDumpable {
                 }
                 
                 $controller->setActiveAction($this);
-                $output = $controller->$func();
+
+                try {
+                    $output = $controller->$func();
+                } catch(ForcedResponse $e) {
+                    $output = $e->getResponse();
+                }
+
                 $controller->setActiveAction(null);
             }
         }
@@ -124,10 +139,18 @@ class Action implements IAction, core\IDumpable {
         }
         
         if(method_exists($this, '_afterDispatch')) {
-            $output = $this->_afterDispatch($output);
+            try {
+                $output = $this->_afterDispatch($output);
+            } catch(ForcedResponse $e) {
+                $output = $e->getResponse();
+            }
         }
         
         return $output;
+    }
+    
+    public function forceResponse($response) {
+        throw new ForcedResponse($response);
     }
     
     public static function getActionMethodName($actionClass, IContext $context) {
