@@ -647,13 +647,16 @@ class Base implements IRecord, \Serializable, core\IDumpable {
 
         $func = $funcPrefix.$taskName;
 
-        if(!method_exists($this, $func) && in_array($taskName, ['Insert', 'Update', 'Replace'])) {
-            $func = $funcPrefix.'Save';
-        }
-
-
         if(method_exists($this, $func)) {
             call_user_func_array([$this, $func], [$taskSet, $task]);
+        }
+
+        if(in_array($taskName, ['Insert', 'Update', 'Replace'])) {
+            $func = $funcPrefix.'Save';
+
+            if(method_exists($this, $func)) {
+                call_user_func_array([$this, $func], [$taskSet, $task]);
+            }
         }
 
         return $this;
