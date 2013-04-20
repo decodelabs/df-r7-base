@@ -576,6 +576,10 @@ class BridgedManyRelationValueContainer implements
         return $this;
     }
 
+    public function __toString() {
+        return (string)count($this);
+    }
+
     
 // Dump
     public function getDumpValue() {

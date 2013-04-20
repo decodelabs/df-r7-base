@@ -466,6 +466,10 @@ class InlineManyRelationValueContainer implements
         
         return $this;
     }
+
+    public function __toString() {
+        return count($this);
+    }
     
 
     
