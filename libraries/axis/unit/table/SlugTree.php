@@ -47,25 +47,11 @@ abstract class SlugTree extends Base {
             ->toList('slug');
     }
 
-    public function createVirtualNode($slug) {
-        $slug = core\string\Manipulator::formatPathSlug($slug);
+    abstract public function createVirtualNode($slug);
 
-        return $this->newRecord([
-            'slug' => $slug,
-            'name' => empty($slug) ? 'Root' : core\string\Manipulator::formatName(basename($slug)),
-            'context' => 'shared',
-            'isShared' => true,
-            'description' => null
-        ]);
-    }
-
-    public function fetchParentFor($slug, $context=null, $shared=true) {
+    public function fetchParentFor($slug) {
         if($slug instanceof axis\unit\table\record\SlugTreeRecord) {
             $slug = $slug['slug'];
-        }
-
-        if($context === null) {
-            $context = 'shared';
         }
 
         $parts = explode('/', trim($slug, '/'));
@@ -86,14 +72,6 @@ abstract class SlugTree extends Base {
             ->where('slug', 'in', $slugs)
             ->orderBy('slug DESC');
 
-        $clause = $query->beginWhereClause()
-            ->where('context', '=', $context);
-
-        if($shared) {
-            $clause->orWhere('isShared', '=', true);
-        }
-
-        $clause->endClause();
         return $query->toRow();
     }
 

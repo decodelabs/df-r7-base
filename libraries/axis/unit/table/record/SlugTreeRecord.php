@@ -163,6 +163,8 @@ class SlugTreeRecord extends opal\record\Base {
                     ->endClause();
         }
 
+        $query->countRelation('files');
+
         $query->correlate('COUNT(child.id) as hasChildren')
             ->from($adapter, 'child')
             ->on('child.parent', '=', 'id')
