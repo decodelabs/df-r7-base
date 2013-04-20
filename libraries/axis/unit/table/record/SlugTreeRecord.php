@@ -141,7 +141,7 @@ class SlugTreeRecord extends opal\record\Base {
         return $this;
     }
 
-    public function fetchNodeList($context=null) {
+    public function fetchNodeList() {
         $adapter = $this->getRecordAdapter();
         $slug = $this['slug'];
 
@@ -163,19 +163,12 @@ class SlugTreeRecord extends opal\record\Base {
                     ->endClause();
         }
 
-        $query->countRelation('files');
-
         $query->correlate('COUNT(child.id) as hasChildren')
             ->from($adapter, 'child')
             ->on('child.parent', '=', 'id')
             ->endCorrelation();
 
-        if($context !== null) {
-            $query->beginWhereClause()
-                ->where('context', '=', $context)
-                ->orWhere('isShared', '=', true)
-                ->endClause();
-        }
+        call_user_func_array([$this, '_customizeNodeListQuery'], [$query] + func_get_args());
 
         $output = array();
         $length = strlen($slug);
@@ -207,6 +200,8 @@ class SlugTreeRecord extends opal\record\Base {
 
         return $output;
     }
+
+    protected function _customizeNodeListQuery($query) {}
 
     public function fetchParentPath() {
         $slug = $this['slug'];
