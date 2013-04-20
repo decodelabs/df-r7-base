@@ -195,32 +195,34 @@ class Initiator implements IInitiator {
             );
         }
 
+        foreach($fields as $field) {
+            $children = array();
 
-        if($this->_joinType == IPopulateQuery::TYPE_ALL) {
-            foreach($fields as $field) {
-                $children = array();
+            if(false !== strpos($field, '.')) {
+                $children = explode('.', $field);
+                $field = array_shift($children);
+            }
 
-                if(false !== strpos($field, '.')) {
-                    $children = explode('.', $field);
-                    $field = array_shift($children);
-                }
-
+            if(!$populate = $parent->getPopulate($field)) {
                 $populate = new Populate($parent, $field, $type);
-                $populate->endPopulate();
 
-                if(!empty($children)) {
-                    $targetPopulate = $populate;
-
-                    foreach($children as $child) {
-                        $targetPopulate = $temp = $targetPopulate->populateSome($child);
-                        $temp->endPopulate();
-                    }
+                if($this->_joinType == IPopulateQuery::TYPE_ALL) {
+                    $populate->endPopulate();
                 }
             }
 
+            if(!empty($children)) {
+                foreach($children as $child) {
+                    $populate = $populate->populateSome($child);
+                    //$populate->endPopulate();
+                }
+            }
+        }
+
+        if($this->_joinType == IPopulateQuery::TYPE_ALL) {
             return $parent;
         } else {
-            return new Populate($parent, array_shift($fields), $type);
+            return $populate;
         }
     }
 

@@ -207,6 +207,7 @@ interface IPopulatableQuery extends IQuery {
     public function populate($field1);
     public function populateSome($field);
     public function addPopulate(IPopulateQuery $populate);
+    public function getPopulate($fieldName);
     public function getPopulates();
     public function clearPopulates();
 }

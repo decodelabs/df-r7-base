@@ -439,6 +439,12 @@ trait TQuery_Populatable {
         return $this;
     }
 
+    public function getPopulate($fieldName) {
+        if(isset($this->_populates[$fieldName])) {
+            return $this->_populates[$fieldName];
+        }
+    }
+
     public function getPopulates() {
         return $this->_populates;
     }
