@@ -14,6 +14,7 @@ abstract class CollectionList extends arch\component\Base implements aura\html\w
 
     protected $_collection;
     protected $_errorMessage;
+    protected $_renderIfEmpty = null;
     protected $_fields = array();
     protected $_urlRedirect = null;
     protected $_viewArg;
@@ -53,6 +54,14 @@ abstract class CollectionList extends arch\component\Base implements aura\html\w
         return $this->_errorMessage;
     }
 
+    public function shouldRenderIfEmpty($flag=null) {
+        if($flag !== null) {
+            $this->_renderIfEmpty = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_renderIfEmpty;
+    }
 
 // Fields
     public function setFields(array $fields) {
@@ -152,6 +161,10 @@ abstract class CollectionList extends arch\component\Base implements aura\html\w
             $output->setErrorMessage($this->_errorMessage);
         } else {
             $output->setErrorMessage($this->_('This list is currently empty'));
+        }
+
+        if($this->_renderIfEmpty !== null) {
+            $output->shouldRenderIfEmpty($this->_renderIfEmpty);
         }
 
         foreach($this->_fields as $key => $value) {

@@ -20,6 +20,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
     public $paginator;
     
     protected $_errorMessage = 'No results to display';
+    protected $_renderIfEmpty = true;
     
     public function __construct(arch\IContext $context, $data, core\collection\IPaginator $paginator=null) {
         $this->setData($data);
@@ -31,6 +32,15 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
         if($paginator) {
             $this->paginator = self::factory($context, 'Paginator', array($paginator));
         }
+    }
+
+    public function shouldRenderIfEmpty($flag=null) {
+        if($flag !== null) {
+            $this->_renderIfEmpty = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_renderIfEmpty;
     }
     
     protected function _render() {
@@ -154,6 +164,10 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
         }
         
         if($empty) {
+            if(!$this->_renderIfEmpty) {
+                return '';
+            }
+
             $errorTag = new aura\html\Element('td', $this->_errorMessage, array('colspan' => count($this->_fields)));
             $errorTag->addClass('state-error');
             $content->append('<tr>'.$errorTag->render().'</tr>');
