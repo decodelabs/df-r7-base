@@ -44,27 +44,27 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
         return new self($input);
     }
     
-    public function __construct($input=null, $value=null) {
+    public function __construct($input=null, $value=null, $extractArray=false) {
         $this->setValue($value);
         
         if($input !== null) {
-            $this->import($input);
+            $this->import($input, $extractArray);
         }
     }
     
     
-    public function import($input) {
+    public function import($input, $extractArray=true) {
         if($input instanceof ITree) {
             return $this->importTree($input);
         }
         
-        if($input instanceof core\IArrayProvider) {
+        if($extractArray && $input instanceof core\IArrayProvider) {
             $input = $input->toArray();
         }
         
         if(is_array($input)) {
             foreach($input as $key => $value) {
-                $this->__set($key, $value);
+                $this->__set($key, $value, $extractArray);
             }
         } else {
             $this->setValue($input);
@@ -214,13 +214,16 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
     }
     
     
-    
     public function __set($key, $value) {
-        $class = get_class($this);
-        $this->_collection[$key] = new $class($value);
-        return $this;
+        return $this->_set($key, $value, false);
     }
     
+    public function _set($key, $value, $extractArray=false) {
+        $class = get_class($this);
+        $this->_collection[$key] = new $class($value, null, $extractArray);
+        return $this;
+    }
+
     public function __get($key) {
         if(!array_key_exists($key, $this->_collection)) {
             $class = get_class($this);
