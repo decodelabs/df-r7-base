@@ -197,8 +197,12 @@ class Util implements IUtil {
     
     public static function isDirEmpty($path) {
         if(!is_dir($path)) {
+            if(!file_exists($path)) {
+                return true;
+            } 
+
             throw new \Exception(
-                'Path is not a directory'
+                'Path is not a directory: '.$path
             );
         }
         
