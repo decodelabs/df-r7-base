@@ -234,9 +234,7 @@ class TaskSet implements ITaskSet {
             }
         }
         
-        uasort($this->_tasks, function($taskA, $taskB) {
-            return $taskA->countDependencies() > $taskB->countDependencies();
-        });
+        $this->_sortTasks();
 
         try {
             while(!empty($this->_tasks)) {
@@ -250,9 +248,7 @@ class TaskSet implements ITaskSet {
                 $task->execute($this->_transaction);
 
                 if($task->applyResolutionToDependants()) {
-                    uasort($this->_tasks, function($taskA, $taskB) {
-                        return $taskA->countDependencies() > $taskB->countDependencies();
-                    });
+                    $this->_sortTasks();
                 }
 
                 if($task instanceof IEventBroadcastingTask) {
@@ -268,5 +264,14 @@ class TaskSet implements ITaskSet {
         $this->_isExecuting = false;
 
         return $this;
+    }
+
+    protected function _sortTasks() {
+        uasort($this->_tasks, function($taskA, $taskB) {
+            $aCount = $taskA ? $taskA->countDependencies() : 0;
+            $bCount = $taskB ? $taskB->countDependencies() : 0;
+
+            return $aCount > $bCount;
+        });
     }
 }
