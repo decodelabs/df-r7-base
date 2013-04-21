@@ -46,6 +46,14 @@ class SlugTreeBreadcrumbs extends arch\component\Base {
                 $request->query->slug = $slug;
             }
 
+            // Strip out pagination vars
+            unset(
+                $request->query->lm,
+                $request->query->pg,
+                $request->query->of,
+                $request->query->od
+            );
+
             $output->addEntry(
                 $output->newLink($request, $node['name'])  
                     ->setId($slug)
