@@ -176,6 +176,12 @@ class Url extends core\uri\Url implements IUrl {
                 
             case 'port':
                 return $this->getPort();
+
+            case 'path':
+                return $this->getPath();
+
+            case 'query':
+                return $this->getQuery();
         }
     }
     
@@ -192,6 +198,12 @@ class Url extends core\uri\Url implements IUrl {
                 
             case 'port':
                 return $this->setPort($value);
+
+            case 'path':
+                return $this->setPath($value);
+
+            case 'query':
+                return $this->setQuery($value);
         }
     }
     
