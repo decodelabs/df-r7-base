@@ -105,6 +105,10 @@ class BridgedManyRelationValueContainer implements
         return new \ArrayIterator($this->toArray());
     }
     
+    public function getPopulated() {
+        return $this->_current;
+    }
+
     
 // Manifests
     public function getLocalPrimaryManifest() {

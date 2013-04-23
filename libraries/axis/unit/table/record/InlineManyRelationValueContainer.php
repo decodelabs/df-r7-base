@@ -102,6 +102,10 @@ class InlineManyRelationValueContainer implements
     public function getIterator() {
         return new \ArrayIterator($this->toArray());
     }
+
+    public function getPopulated() {
+        return $this->_current;
+    }
     
     
 // Records
