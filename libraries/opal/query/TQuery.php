@@ -69,14 +69,16 @@ trait TQuery_ParentAware {
         if(!$this->_parent instanceof IParentQueryAware) {
             return false;
         }
-
-        $gp = $this->_parent->getParentQuery();
+        $gp = $this->_parent;
         $sourceId = $source->getId();
 
         do {
+            $gp = $gp->getParentQuery();
+
             if($gp->getSource()->getId() == $sourceId) {
                 return true;
             }
+
         } while($gp instanceof IParentQueryAware);
 
         return false;
