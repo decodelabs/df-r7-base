@@ -124,19 +124,6 @@ class Tag implements ITag, core\IDumpable {
             return $this->removeAttribute($key);
         }
 
-        if(is_bool($value)) {
-            if(in_array($key, self::$_booleanAttributes)) {
-                $value = $value ? 'true' : 'false';
-            } else {
-                if($value) {
-                    $value = $key;
-                } else {
-                    unset($this->_attributes[$key]);
-                    return $this;
-                }
-            }
-        }
-        
         $this->_attributes[$key] = $value;
         
         return $this;
@@ -367,6 +354,16 @@ class Tag implements ITag, core\IDumpable {
         foreach($this->_attributes as $key => $value) {
             if($value === null) {
                 $attributes[] = $key;
+            } else if(is_bool($value)) {
+                if(in_array($key, self::$_booleanAttributes)) {
+                    $value = $value ? 'true' : 'false';
+                } else {
+                    if($value) {
+                        $attributes[] = $key;
+                    } else {
+                        continue;
+                    }
+                }
             } else if($value instanceof IElementRepresentation) {
                 $attributes[] = $key.'="'.(string)$value.'"';
             } else {
