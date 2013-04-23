@@ -10,6 +10,7 @@ use df\core;
 use df\aura;
 use df\arch;
 use df\flex;
+use df\spur;
 
 class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
     
@@ -391,5 +392,11 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
                 'alt' => $alt
             ]
         );
+    }
+
+// Video
+    public function videoEmbed($embed, $width=null, $height=null) {
+        return spur\video\Embed::parse($embed)
+            ->setDimensions($width, $height);
     }
 }
