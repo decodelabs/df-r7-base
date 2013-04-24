@@ -57,7 +57,7 @@ class Shell implements user\ISessionPerpetuator {
         return $this;
     }
 
-    public function perpetuateRememberKey(user\IManager $manager, $userId, $key) {
+    public function perpetuateRememberKey(user\IManager $manager, user\RememberKey $key) {
         // How's this going to work?
         return $this;
     }
