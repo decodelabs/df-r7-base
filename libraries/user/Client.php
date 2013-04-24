@@ -53,6 +53,12 @@ class Client implements IClient {
         }
     }
     
+    public static function factory(IClientDataObject $data) {
+        $output = new self();
+        $output->import($data);
+        return $output;
+    }
+
     public static function generateGuest(user\IManager $manager) {
         $output = new self();
         $output->_id = null;
@@ -200,7 +206,7 @@ class Client implements IClient {
     }
     
     
-    public function canAccess(IAccessLock $lock, $action=null) {
+    public function canAccess(IAccessLock $lock, $action=null, $linkTo=false) {
         $domain = $lock->getAccessLockDomain();
 
         if($domain == 'dynamic') {
@@ -247,7 +253,12 @@ class Client implements IClient {
                         break;
                         
                     case IState::CONFIRMED:
-                        $output = $this->isConfirmed();
+                        if($linkTo) {
+                            $output = $this->isLoggedIn();
+                        } else {
+                            $output = $this->isConfirmed();
+                        }
+
                         break;
                     
                     case IState::DEV:

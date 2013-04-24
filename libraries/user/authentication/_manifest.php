@@ -18,7 +18,7 @@ interface IAdapter {
 }
 
 
-interface IRequest {
+interface IRequest extends core\IAttributeContainer {
     public function setAdapterName($adapter);
     public function getAdapterName();
     

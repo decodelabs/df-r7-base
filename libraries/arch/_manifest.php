@@ -280,7 +280,7 @@ trait TDirectoryAccessLock {
             return $application->getDefaultDirectoryAccess();
         }
 
-        return arch\IAccess::NONE;
+        return arch\IAccess::CONFIRMED;
     }
 
     public function getAccessLockId() {

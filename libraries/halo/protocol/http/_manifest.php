@@ -158,10 +158,10 @@ interface IResponseAugmentor {
     public function newCookie($name, $value);
     
     public function setCookieForCurrentRequest(IResponseCookie $cookie);
-    public function removeCookieForCurrentRequest(IResponseCookie $cookie);
+    public function removeCookieForCurrentRequest($cookie);
     
     public function setCookieForAnyRequest(IResponseCookie $cookie);
-    public function removeCookieForAnyRequest(IResponseCookie $cookie);
+    public function removeCookieForAnyRequest($cookie);
     
     public function getCookieCollectionForCurrentRequest();
     public function getCookieCollectionForAnyRequest();

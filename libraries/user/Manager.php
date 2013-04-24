@@ -22,6 +22,8 @@ class Manager implements IManager, core\IDumpable {
     const SESSION_TRANSITION_PROBABILITY = 10;
     const SESSION_TRANSITION_LIFETIME = 10;
     const SESSION_TRANSITION_COOLOFF = 20;
+
+    const REMEMBER_PURGE_THRESHOLD = 20;
     
     protected $_client;
     
@@ -38,49 +40,54 @@ class Manager implements IManager, core\IDumpable {
 // Client
     public function getClient() {
         if(!$this->_client) {
-            $session = $this->getSessionNamespace(self::CLIENT_SESSION_NAMESPACE);
-            $this->_client = $session->get(self::CLIENT_SESSION_KEY);
-            $regenKeyring = false;
-
-            if($this->_client === null) {
-                $this->_client = Client::generateGuest($this);
-                $regenKeyring = true;
-                $rethrowException = false;
-            } else {
-                $cache = user\session\Cache::getInstance($this->_application);
-                $regenKeyring = $cache->shouldRegenerateKeyring($this->_client->getKeyringTimestamp());
-                $rethrowException = false;
-            }
-
-            if($regenKeyring) {
-                //$notify = \df\arch\notify\Manager::getInstance();
-                //$notify->setInstantMessage($notify->newMessage('keyring.regen', 'Regenerating client keyring', 'debug'));
-
-                try {
-                    $this->_client->setKeyring(
-                        $this->_getUserModel()->generateKeyring($this->_client)
-                    );
-                } catch(\Exception $e) {
-                    if($rethrowException) {
-                        throw $e;
-                    }
-                }
-
-                $session->set(self::CLIENT_SESSION_KEY, $this->_client);
-            }
-            
-            return $this->_client;
+            $this->_loadClient();
         }
         
         return $this->_client;
     }
 
-    public function canAccess($lock, $action=null) {
+    protected function _loadClient() {
+        $session = $this->getSessionNamespace(self::CLIENT_SESSION_NAMESPACE);
+        $this->_client = $session->get(self::CLIENT_SESSION_KEY);
+        $regenKeyring = false;
+
+        if($this->_client === null) {
+            $this->_client = Client::generateGuest($this);
+            $regenKeyring = true;
+            $rethrowException = false;
+        } else {
+            $cache = user\session\Cache::getInstance($this->_application);
+            $regenKeyring = $cache->shouldRegenerateKeyring($this->_client->getKeyringTimestamp());
+            $rethrowException = false;
+        }
+
+        if(!$this->_client->isLoggedIn() && ($key = $this->_sessionPerpetuator->getRememberKey($this))) {
+            if($this->authenticateRememberKey($key)) {
+                $regenKeyring = false;
+            }
+        }
+
+        if($regenKeyring) {
+            try {
+                $this->_client->setKeyring(
+                    $this->_getUserModel()->generateKeyring($this->_client)
+                );
+            } catch(\Exception $e) {
+                if($rethrowException) {
+                    throw $e;
+                }
+            }
+
+            $session->set(self::CLIENT_SESSION_KEY, $this->_client);
+        }
+    }
+
+    public function canAccess($lock, $action=null, $linkTo=false) {
         if(!$lock instanceof IAccessLock) {
             $lock = $this->getAccessLock($lock);
         }
 
-        return $this->getClient()->canAccess($lock, $action);
+        return $this->getClient()->canAccess($lock, $action, $linkTo);
     }
 
     public function getAccessLock($lock) {
@@ -128,6 +135,7 @@ class Manager implements IManager, core\IDumpable {
     public function authenticate(user\authentication\IRequest $request) {
         $timer = new core\time\Timer();
         
+        // Get adapter
         $name = $request->getAdapterName();
         $class = 'df\\user\\authentication\\adapter\\'.$name;
         
@@ -139,6 +147,7 @@ class Manager implements IManager, core\IDumpable {
         
         $model = $this->_getUserModel();
         
+        // Fetch user
         $result = new user\authentication\Result($name);
         $result->setIdentity($request->getIdentity());
         $domainInfo = $model->getAuthenticationDomainInfo($request);
@@ -148,13 +157,16 @@ class Manager implements IManager, core\IDumpable {
             return $result;
         }
         
+        // Authenticate
         $result->setDomainInfo($domainInfo);
         $adapter = new $class($this);
         $adapter->authenticate($request, $result);
         
         if($result->isValid()) {
+            $session = $this->getSessionNamespace(self::CLIENT_SESSION_NAMESPACE);
             $this->_accessLockCache = array();
 
+            // Import user data
             $domainInfo->onAuthentication();
             $clientData = $domainInfo->getClientData();
             
@@ -167,16 +179,62 @@ class Manager implements IManager, core\IDumpable {
             $client = $this->getClient();
             $client->import($clientData);
 
+            // Set state
             $client->setAuthenticationState(IState::CONFIRMED);
             $client->setKeyring($model->generateKeyring($client));
             
             $clientData->onAuthentication();
             
-            $session = $this->getSessionNamespace(self::CLIENT_SESSION_NAMESPACE);
+
+            // Remember me
+            if($request->getAttribute('rememberMe')) {
+                $perpetuator = $this->getSessionPerpetuator();
+                $key = $model->generateRememberKey($client);
+                $perpetuator->perpetuateRememberKey($this, $key);
+            }
+
+
+            // Store session
             $session->set(self::CLIENT_SESSION_KEY, $client);
         }
         
         return $result;
+    }
+
+    public function authenticateRememberKey(RememberKey $key) {
+        $model = $this->_getUserModel();
+
+        if(!$model->hasRememberKey($key)) {
+            return false;
+        }
+
+        $session = $this->getSessionNamespace(self::CLIENT_SESSION_NAMESPACE);
+        $this->_accessLockCache = array();
+
+        $clientData = $model->getClientData($key->userId);
+        $this->_client = Client::factory($clientData);
+
+        // Set state
+        $this->_client->setAuthenticationState(IState::BOUND);
+        $this->_client->setKeyring($model->generateKeyring($this->_client));
+
+        $clientData->onAuthentication();
+
+
+        // Remember me
+        $model->destroyRememberKey($key);
+        $perpetuator = $this->getSessionPerpetuator();
+        $key = $model->generateRememberKey($this->_client);
+        $perpetuator->perpetuateRememberKey($this, $key);
+        
+        if((mt_rand() % 100) < self::REMEMBER_PURGE_THRESHOLD) {
+            $model->purgeRememberKeys();
+        }
+
+        // Store session
+        $session->set(self::CLIENT_SESSION_KEY, $this->_client);
+
+        return true;
     }
 
     public function refreshClientData() {
@@ -414,6 +472,15 @@ class Manager implements IManager, core\IDumpable {
     public function destroySession() {
         $this->_accessLockCache = array();
         $this->_openSession();
+
+        if($this->_sessionPerpetuator) {
+            $key = $this->_sessionPerpetuator->getRememberKey($this);
+            $this->_sessionPerpetuator->destroy($this);
+
+            if($key) {
+                $this->_getUserModel()->destroyRememberKey($key);
+            }
+        }
         
         $this->_sessionCache->removeDescriptor($this->_sessionDescriptor);
         $this->_sessionBackend->killSession($this->_sessionDescriptor);

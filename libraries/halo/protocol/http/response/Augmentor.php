@@ -40,7 +40,7 @@ class Augmentor implements halo\protocol\http\IResponseAugmentor {
         return $this;
     }
     
-    public function removeCookieForCurrentRequest(halo\protocol\http\IResponseCookie $cookie) {
+    public function removeCookieForCurrentRequest($cookie) {
         $this->_currentCookies->remove($cookie);
         return $this;
     }
@@ -52,7 +52,7 @@ class Augmentor implements halo\protocol\http\IResponseAugmentor {
         return $this;
     }
     
-    public function removeCookieForAnyRequest(halo\protocol\http\IResponseCookie $cookie) {
+    public function removeCookieForAnyRequest($cookie) {
         $this->_globalCookies->remove($cookie);
         $this->_currentCookies->remove($cookie);
         return $this;

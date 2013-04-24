@@ -32,11 +32,17 @@ interface IState {
 
 
 
+class RememberKey {
+    public $userId;
+    public $key;
+}
+
+
 // Interfaces
 interface IManager extends core\IManager {
     // Client
     public function getClient();
-    public function canAccess($lock, $action=null);
+    public function canAccess($lock, $action=null, $linkTo=false);
     public function getAccessLock($lock);
 
     public function analyzePassword($password);
@@ -45,6 +51,7 @@ interface IManager extends core\IManager {
     // Authentication
     public function isLoggedIn();
     public function authenticate(user\authentication\IRequest $request);
+    public function authenticateRememberKey(RememberKey $key);
     public function refreshClientData();
     public function importClientData(user\IClientDataObject $data);
     public function logout();
@@ -69,6 +76,11 @@ interface IUserModel {
     public function getClientData($id);
     public function getAuthenticationDomainInfo(user\authentication\IRequest $request);
     public function generateKeyring(IClient $client);
+
+    public function generateRememberKey(IClient $client);
+    public function hasRememberKey(RememberKey $key);
+    public function destroyRememberKey(RememberKey $key);
+    public function purgeRememberKeys();
 }
 
 interface IClientDataObject {
@@ -103,7 +115,7 @@ interface IClient extends IClientDataObject {
     public function getKeyring();
     public function getKeyringTimestamp();
     
-    public function canAccess(IAccessLock $lock, $action=null);
+    public function canAccess(IAccessLock $lock, $action=null, $linkTo=false);
 }
 
 
@@ -213,7 +225,13 @@ interface ISessionPerpetuator {
     public function getLifeTime();
     
     public function getInputId();
+
     public function perpetuate(user\IManager $manager, ISessionDescriptor $descriptor);
+    public function destroy(user\IManager $manager);
+
+    public function perpetuateRememberKey(user\IManager $manager, RememberKey $key);
+    public function getRememberKey(user\IManager $manager);
+    public function destroyRememberKey(user\IManager $manager);
 }
 
 

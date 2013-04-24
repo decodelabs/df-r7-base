@@ -47,6 +47,29 @@ class Shell implements user\ISessionPerpetuator {
 
         return $this;
     }
+
+    public function destroy(user\IManager $manager) {
+        $cache = Shell_Cache::getInstance($manager->getApplication());
+        $cache->remove($this->_userKey);
+
+        $this->destroyRememberKey($manager);
+
+        return $this;
+    }
+
+    public function perpetuateRememberKey(user\IManager $manager, $userId, $key) {
+        // How's this going to work?
+        return $this;
+    }
+
+    public function getRememberKey(user\IManager $manager) {
+        return null;
+    }
+
+    public function destroyRememberKey(user\IManager $manager) {
+        // Derp
+        return $this;
+    }
 }
 
 

@@ -186,7 +186,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
     }
 
     public function getDefaultDirectoryAccess() {
-        return arch\IAccess::NONE;
+        return arch\IAccess::CONFIRMED;
     }
     
     
@@ -392,7 +392,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
         if($this->_responseAugmentor) {
             $this->_responseAugmentor->apply($response);
         }
-        
+
         return $response;
     }
     
@@ -420,11 +420,11 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
         }
 
         $isFile = $response instanceof halo\protocol\http\IFileResponse;
-        
+
         if($response->hasCookies()) {
             $response->getCookies()->applyTo($response->getHeaders());
         }
-        
+
         $sendData = true;
         
         if($this->_httpRequest->isCachedByClient()) {

@@ -62,7 +62,7 @@ class CookieCollection implements halo\protocol\http\IResponseCookieCollection, 
         return $this;
     }
     
-    public function isEmpty($includeRemoved=false) {
+    public function isEmpty($includeRemoved=true) {
         $output = empty($this->_set);
         
         if($includeRemoved) {
