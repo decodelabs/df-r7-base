@@ -139,6 +139,10 @@ class OneRelationValueContainer implements
         $this->_record = $record;
         return $this;
     }
+
+    public function __toString() {
+        return (string)$this->getRawId();
+    }
     
     
     

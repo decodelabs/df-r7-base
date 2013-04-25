@@ -1013,6 +1013,10 @@ class ArrayManipulator implements IArrayManipulator {
             }
 
             if($key) {
+                if(!is_scalar($key)) {
+                    $key = (string)$key;
+                }
+
                 $this->_rows[$key] = $current;
             } else {
                 $this->_rows[] = $current;

@@ -559,6 +559,9 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $output;
     }
     
+    public function __toString() {
+        return $this->getPrimaryManifest()->__toString();
+    }
     
 // Storage
     public function save(opal\record\task\ITaskSet $taskSet=null) {
