@@ -243,7 +243,10 @@ abstract class Action extends arch\Action implements IAction {
         $target = $this;
         
         if(!empty($targetId)) {
-            $target = $this->getDelegate($targetId);
+            while(!empty($targetId)) {
+                $target->handleDelegateEvent(implode('.', $targetId), $event, $args);
+                $target = $target->getDelegate(array_shift($targetId));
+            }
         }
         
         $response = $target->handleEvent($event, $args);
@@ -281,8 +284,8 @@ abstract class Action extends arch\Action implements IAction {
     protected function _onCancelEvent() {
         return $this->complete(static::DEFAULT_REDIRECT, false);
     }
-    
-    
+
+
 // Action dispatch
     public static function getActionMethodName($actionClass, arch\IContext $context) {
         $method = ucfirst(strtolower($context->getApplication()->getHttpRequest()->getMethod()));

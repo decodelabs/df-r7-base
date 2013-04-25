@@ -43,6 +43,7 @@ interface IForm extends IStoreProvider {
     public function loadDelegate($id, $name, $request=null);
     public function getDelegate($id);
     public function handleEvent($name, array $args=array());
+    public function handleDelegateEvent($delegateId, $event, $args);
 
     public function isValid();
     public function fieldName($name);
