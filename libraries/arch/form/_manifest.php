@@ -62,7 +62,7 @@ interface IDelegate extends IForm, arch\IContextAware {
     public function getDelegateKey();
     public function initialize();
     public function setRenderContext(aura\view\IView $view, aura\view\IContentProvider $content, $isRenderingInline=false);
-    public function complete();
+    public function complete($success);
 }
 
 

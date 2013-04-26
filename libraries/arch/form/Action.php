@@ -260,6 +260,10 @@ abstract class Action extends arch\Action implements IAction {
 
     public function complete($defaultRedirect=null, $success=true) {
         $this->_isComplete = true;
+
+        foreach($this->_delegates as $delegate) {
+            $delegate->complete($success);
+        }
         
         if($this->_sessionNamespace) {
             $session = $this->_context->getUserManager()->getSessionNamespace($this->_sessionNamespace);
