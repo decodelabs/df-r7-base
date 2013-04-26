@@ -39,7 +39,7 @@ interface IInitiator extends core\IApplicationAware, ITransactionAware {
     public function beginUpdate(array $valueMap=null);
     public function beginDelete();
 
-    public function beginCorrelation(IQuery $parent, $field, $alias=null);
+    public function beginCorrelation(ISourceProvider $parent, $field, $alias=null);
     public function beginPopulate(IQuery $parent, array $fields, $type=IPopulateQuery::TYPE_ALL);
 
     public function beginJoin(IQuery $parent, array $fields=array(), $type=IJoinQuery::INNER);

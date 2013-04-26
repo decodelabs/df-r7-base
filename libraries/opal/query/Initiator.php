@@ -162,7 +162,7 @@ class Initiator implements IInitiator {
 
 
 // Correlation
-    public function beginCorrelation(IQuery $parent, $field, $alias=null) {
+    public function beginCorrelation(ISourceProvider $parent, $field, $alias=null) {
         $this->_setMode(IQueryTypes::CORRELATION);
         $this->_parentQuery = $parent;
         $this->_fieldMap = [$field => $alias];
