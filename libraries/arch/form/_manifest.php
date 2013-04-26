@@ -42,8 +42,6 @@ interface IForm extends IStoreProvider {
     public function getStateController();
     public function loadDelegate($id, $name, $request=null);
     public function getDelegate($id);
-    public function handleEvent($name, array $args=array());
-    public function handleDelegateEvent($delegateId, $event, $args);
 
     public function isValid();
     public function fieldName($name);
@@ -51,13 +49,18 @@ interface IForm extends IStoreProvider {
     public function elementId($name);
 }
 
+interface IActiveForm extends IForm {
+    public function handleEvent($name, array $args=array());
+    public function handleDelegateEvent($delegateId, $event, $args);
+}
 
-interface IAction extends arch\IAction, IForm {
+
+interface IAction extends arch\IAction, IActiveForm {
     public function complete($defaultRedirect=null, $success=true);
 }
 
 
-interface IDelegate extends IForm, arch\IContextAware {
+interface IDelegate extends IActiveForm, arch\IContextAware {
     public function getDelegateId();
     public function getDelegateKey();
     public function initialize();
