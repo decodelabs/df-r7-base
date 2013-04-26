@@ -227,6 +227,12 @@ class Client implements IClient {
         
         if(isset($this->_keyring[$domain])) {
             $output = $lock->lookupAccessKey($this->_keyring[$domain], $action);
+        } else if(isset($this->_keyring['*'])) {
+            $output = $lock->lookupAccessKey($this->_keyring['*'], $action);
+
+            if(!$output && isset($this->_keyring['*']['*']) && $this->_keyring['*']['*'] === true) {
+                $output = true;
+            }
         }
         
         if($output === null) {
