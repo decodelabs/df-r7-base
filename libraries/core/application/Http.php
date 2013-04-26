@@ -186,7 +186,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
     }
 
     public function getDefaultDirectoryAccess() {
-        return arch\IAccess::CONFIRMED;
+        return arch\IAccess::NONE;
     }
     
     
