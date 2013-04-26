@@ -72,12 +72,6 @@ class Util implements IUtil {
     public static function countFilesIn($path) {
         if(!is_dir($path)) {
             return 0;
-
-            /*
-            throw new \Exception(
-                'Source directory does not exist'
-            );
-            */
         }
 
         $output = 0;
@@ -91,21 +85,47 @@ class Util implements IUtil {
         return $output;
     }
 
+    public static function countDirsIn($path) {
+        if(!is_dir($path)) {
+            return 0;
+        }
+
+        $output = 0;
+
+        foreach(new \DirectoryIterator($path) as $item) {
+            if($item->isDir()) {
+                $output++;
+            }
+        }
+
+        return $output;
+    }
+
     public static function listFilesIn($path) {
         if(!is_dir($path)) {
             return array();
-
-            /*
-            throw new \Exception(
-                'Source directory does not exist'
-            );
-            */
         }
 
         $output = array();
 
         foreach(new \DirectoryIterator($path) as $item) {
             if($item->isFile()) {
+                $output[] = $item->getFilename();
+            }
+        }
+
+        return $output;
+    }
+
+    public static function listDirsIn($path) {
+        if(!is_dir($path)) {
+            return array();
+        }
+
+        $output = array();
+
+        foreach(new \DirectoryIterator($path) as $item) {
+            if($item->isDir()) {
                 $output[] = $item->getFilename();
             }
         }

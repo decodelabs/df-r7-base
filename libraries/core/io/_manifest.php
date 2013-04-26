@@ -496,7 +496,9 @@ interface IUtil {
     public static function deleteFile($path);
 
     public static function countFilesIn($path);
+    public static function countDirsIn($path);
     public static function listFilesIn($path);
+    public static function listDirsIn($path);
 
     public static function copyDir($source, $destination, $merge=false);
     public static function copyDirInto($source, $destination);
