@@ -230,7 +230,7 @@ class Client implements IClient {
         } else if(isset($this->_keyring['*'])) {
             $output = $lock->lookupAccessKey($this->_keyring['*'], $action);
 
-            if(!$output && isset($this->_keyring['*']['*']) && $this->_keyring['*']['*'] === true) {
+            if(!$output && isset($this->_keyring['*']['*']) && $this->_keyring['*']['*'] == true) {
                 $output = true;
             }
         }
