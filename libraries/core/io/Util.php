@@ -71,9 +71,13 @@ class Util implements IUtil {
 
     public static function countFilesIn($path) {
         if(!is_dir($path)) {
+            return 0;
+
+            /*
             throw new \Exception(
                 'Source directory does not exist'
             );
+            */
         }
 
         $output = 0;
@@ -89,9 +93,13 @@ class Util implements IUtil {
 
     public static function listFilesIn($path) {
         if(!is_dir($path)) {
+            return array();
+
+            /*
             throw new \Exception(
                 'Source directory does not exist'
             );
+            */
         }
 
         $output = array();
