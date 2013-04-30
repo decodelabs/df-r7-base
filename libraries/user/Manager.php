@@ -105,21 +105,28 @@ class Manager implements IManager, core\IDumpable {
             return $this->_accessLockCache[$lockId];
         }
 
-        try {
-            $parts = explode('#', $lock);
-            $policyId = array_shift($parts);
-            $action = array_shift($parts);
+        if($lock == '*') {
+            $lock = (new user\access\lock\Boolean(true))
+                ->setAccessLockDomain('*');
+        } else if(substr($lock, 0, 10) == 'virtual://') {
+            $lock = new user\access\lock\Virtual(substr($lock, 10));
+        } else {
+            try {
+                $parts = explode('#', $lock);
+                $policyId = array_shift($parts);
+                $action = array_shift($parts);
 
-            $policy = core\policy\Manager::getInstance($this->_application);
-            $lock = $policy->fetchEntity($policyId);
-        } catch(\Exception $e) {
-            $lock = new user\access\lock\Boolean(true);
+                $policy = core\policy\Manager::getInstance($this->_application);
+                $lock = $policy->fetchEntity($policyId);
+            } catch(\Exception $e) {
+                $lock = new user\access\lock\Boolean(true);
+            }
+
+            if($action !== null) {
+                $lock = $lock->getActionLock($action);
+            }
         }
         
-        if($action !== null) {
-            $lock = $lock->getActionLock($action);
-        }
-
         $this->_accessLockCache[$lockId] = $lock;
 
         return $lock;

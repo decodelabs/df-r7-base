@@ -210,7 +210,7 @@ class Client implements IClient {
         $domain = $lock->getAccessLockDomain();
 
         if($domain == 'dynamic') {
-            return $lock->getDefaultAccess();
+            return $lock->getDefaultAccess($action);
         }
 
         $lockId = $domain.'://'.$lock->getAccessLockId();
@@ -227,12 +227,16 @@ class Client implements IClient {
         
         if(isset($this->_keyring[$domain])) {
             $output = $lock->lookupAccessKey($this->_keyring[$domain], $action);
+
+            if(!$output && isset($this->_keyring[$domain]['*'])) {
+                $output = $this->_keyring[$domain]['*'];
+            }
         } else if(isset($this->_keyring['*'])) {
             $output = $lock->lookupAccessKey($this->_keyring['*'], $action);
+        }
 
-            if(!$output && isset($this->_keyring['*']['*']) && $this->_keyring['*']['*'] == true) {
-                $output = true;
-            }
+        if(!$output && isset($this->_keyring['*']['*'])) {
+            $output = $this->_keyring['*']['*'];
         }
         
         if($output === null) {

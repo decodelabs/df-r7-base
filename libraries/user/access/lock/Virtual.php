@@ -9,35 +9,33 @@ use df;
 use df\core;
 use df\user;
     
-class Boolean implements user\IAccessLock {
+class Virtual implements user\IAccessLock {
 
     use user\TAccessLock;
 
-    protected $_value = true;
-    protected $_domain = 'dynamic';
+    protected $_value;
 
     public function __construct($value) {
-        $this->_value = (bool)$value;
-    }
-
-    public function setAccessLockDomain($domain) {
-        $this->_domain = $domain;
-        return $this;
+        $this->_value = $value;
     }
 
     public function getAccessLockDomain() {
-        return $this->_domain;
+        return 'virtual';
     }
 
     public function lookupAccessKey(array $keys, $action=null) {
+        if(isset($keys[$this->_value])) {
+            return $keys[$this->_value];
+        }
+        
         return null;
     }
 
     public function getDefaultAccess($action=null) {
-        return !$this->_value;
+        return false;
     }
 
     public function getAccessLockId() {
-        return null;
+        return 'virtual://'.$this->_value;
     }
 }
