@@ -223,6 +223,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
         $response = false;
         $previousError = false;
         $valid = true;
+        $redirectPath = '/';
         
         $path = null;
         $url = $this->_httpRequest->getUrl();
@@ -245,23 +246,33 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
                 }
             }
         }
-        
+
+        if($valid) {
+            $redirectPath = (string)$path;
+        }
+
         if($url->getDomain() != $this->_baseDomain) {
             $valid = false;
         }
         
         if(!$valid) {
-            $baseUrl = (string)$this->requestToUrl(new arch\Request('/'));
-                    
-            $response = new halo\protocol\http\response\String(
-                '<html><head><title>Bad request</title></head><body>'.
-                '<p>Sorry, you are not in the right place!</p>'.
-                '<p>Go here instead: <a href="'.$baseUrl.'">'.$baseUrl.'</a></p>',
-                'text/html'
-            );
-            
-            $response->getHeaders()->setStatusCode(404);
-            return $response;
+            $baseUrl = (string)$this->requestToUrl(new arch\Request($redirectPath));
+
+            if($this->isDevelopment()) {        
+                $response = new halo\protocol\http\response\String(
+                    '<html><head><title>Bad request</title></head><body>'.
+                    '<p>Sorry, you are not in the right place!</p>'.
+                    '<p>Go here instead: <a href="'.$baseUrl.'">'.$baseUrl.'</a></p>',
+                    'text/html'
+                );
+                
+                $response->getHeaders()->setStatusCode(404);
+                return $response;
+            } else {
+                $response = new halo\protocol\http\response\Redirect($baseUrl);
+                $response->isPermanent(true);
+                return $response;
+            }
         }
         
         
