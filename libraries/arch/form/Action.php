@@ -259,6 +259,10 @@ abstract class Action extends arch\Action implements IAction {
     }
 
     public function complete($defaultRedirect=null, $success=true) {
+        if($defaultRedirect === null) {
+            $defaultRedirect = static::DEFAULT_REDIRECT;
+        }
+        
         $this->_isComplete = true;
 
         foreach($this->_delegates as $delegate) {
