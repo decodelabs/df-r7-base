@@ -74,6 +74,14 @@ class Format implements aura\view\IHelper {
         return core\i18n\Manager::getInstance($this->_view->getContext()->getApplication())->getModule('numbers', $locale)->formatFileSize($bytes, $precision, $longNames);
     }
 
+    public function binHex($binary) {
+        if($binary === null) {
+            return null;
+        }
+
+        return bin2hex($binary);
+    }
+
     
 // Date
     public function date($date, $size=core\time\Date::MEDIUM, $locale=true) {
