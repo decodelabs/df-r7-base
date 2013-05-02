@@ -471,7 +471,7 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
         }
         
         if(!empty($this->_value)) {
-            array_unshift($children, new core\debug\dumper\Property('value', $this->_value, 'protected'));
+            array_unshift($children, new core\debug\dumper\Property(null, $this->_value, 'protected'));
         }
         
         return $children;
