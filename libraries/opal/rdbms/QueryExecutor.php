@@ -850,10 +850,12 @@ abstract class QueryExecutor implements IQueryExecutor {
             } else {
                 return $this->_adapter->quoteFieldAliasReference($alias);
             }
+        } else if($field instanceof opal\query\ICorrelationField) {
+            return $this->_adapter->quoteFieldAliasReference($field->getLogicalAlias());
         } else {
             return $this->_adapter->quoteTableAliasReference($field->getSourceAlias()).'.'.
                    $this->_adapter->quoteIdentifier($field->getName());
-       }
+        }
     }
 
 
@@ -915,7 +917,7 @@ abstract class QueryExecutor implements IQueryExecutor {
             return $this;
         }
 
-        $clauseString = $this->defineClauseList($clauses, true);
+        $clauseString = $this->defineClauseList($clauses, null, true);
         
         if(!empty($clauseString)) {
             $this->_stmt->appendSql("\n".'HAVING '.$clauseString);
