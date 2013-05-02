@@ -10,6 +10,7 @@ use df\core;
     
 class Duration extends Base implements core\validate\IDurationField {
 
+    use core\validate\TSanitizingField;
     use core\validate\TRangeField;
 
     protected $_inputUnit = null;
@@ -39,9 +40,10 @@ class Duration extends Base implements core\validate\IDurationField {
 
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
+        $value = $this->_sanitizeValue($value);
 
-        if($this->_unitSelectable) {
-            $this->_inputUnit = $node->unit->getValue();
+        if($this->_unitSelectable && ($unit = $node->unit->getValue())) {
+            $this->_inputUnit = $unit;
         }
 
         if(!$length = $this->_checkRequired($node, $value)) {
