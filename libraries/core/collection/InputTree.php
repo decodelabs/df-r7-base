@@ -12,6 +12,14 @@ class InputTree extends Tree implements IInputTree {
     
     use core\TErrorContainer;
     
+    public static function factory($input) {
+        if($input instanceof IInputTree) {
+            return $input;
+        }
+
+        return new self($input);
+    }
+
     protected function _getSerializeValues() {
         $output = parent::_getSerializeValues();
         
