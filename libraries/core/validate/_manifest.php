@@ -223,11 +223,14 @@ trait TMaxLengthField {
 interface ISanitizingField extends IField {
     public function setSanitizer(Callable $sanitizer);
     public function getSanitizer();
+    public function setDefaultValue($value);
+    public function getDefaultValue();
 }
 
 trait TSanitizingField {
 
     protected $_sanitizer;
+    protected $_defaultValue;
     
     public function setSanitizer(Callable $sanitizer) {
         $this->_sanitizer = $sanitizer;
@@ -238,7 +241,20 @@ trait TSanitizingField {
         return $this->_sanitizer;
     }
 
+    public function setDefaultValue($value) {
+        $this->_defaultValue = $value;
+        return $this;
+    }
+
+    public function getDefaultValue() {
+        return $this->_defaultValue;
+    }
+
     protected function _sanitizeValue($value) {
+        if($value === null) {
+            $value = $this->_defaultValue;
+        }
+
         if($this->_sanitizer) {
             $value = call_user_func_array($this->_sanitizer, [$value]);
         }
