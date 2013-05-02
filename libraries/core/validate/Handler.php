@@ -14,7 +14,8 @@ class Handler implements IHandler {
     protected $_fields = array();
     protected $_isValid = null;
     protected $_shouldSanitize = true;
-    protected $_currentData = null;
+
+    public $data = null;
     
     public function addField($name, $type) {
         $field = core\validate\field\Base::factory($this, $type, $name);
@@ -76,10 +77,14 @@ class Handler implements IHandler {
         }
     }
     
-    public function validate(core\collection\IInputTree $data) {
+    public function validate($data) {
+        if(!$data instanceof core\collection\IInputTree) {
+            $data = core\collection\InputTree::factory($data);
+        }
+
         $this->_isValid = true;
         $this->_values = array();
-        $this->_currentData = $data;
+        $this->data = $data;
         
         foreach($this->_fields as $name => $field) {
             $node = $data->{$name};
@@ -90,12 +95,11 @@ class Handler implements IHandler {
             }
         }
         
-        $this->_currentData = null;
         return $this;
     }
     
     public function getCurrentData() {
-        return $this->_currentData;
+        return $this->data;
     }
     
     public function applyTo(&$record) {

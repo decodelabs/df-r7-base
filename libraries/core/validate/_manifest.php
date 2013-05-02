@@ -26,7 +26,7 @@ interface IHandler {
     public function shouldSanitize($flag=null);
     
     public function isValid();
-    public function validate(core\collection\IInputTree $data);
+    public function validate($data);
     public function applyTo(&$targetRecord);
 }
 
