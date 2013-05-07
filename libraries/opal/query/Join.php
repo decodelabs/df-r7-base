@@ -14,6 +14,7 @@ class Join implements IJoinQuery, core\IDumpable {
     use TQuery;
     use TQuery_ParentAware;
     use TQuery_ParentAwareJoinClauseFactory;
+    use TQuery_NestedComponent;
     use TQuery_PrerequisiteClauseFactory;
     use TQuery_PrerequisiteAwareWhereClauseFactory;
     
@@ -91,7 +92,7 @@ class Join implements IJoinQuery, core\IDumpable {
     
     public function endJoin() {
         $this->_parent->addJoin($this);
-        return $this->_parent;
+        return $this->getNestedParent();
     }
     
     

@@ -175,9 +175,12 @@ class Initiator implements IInitiator {
     public function beginPopulate(IQuery $parent, array $fields, $type=IPopulateQuery::TYPE_ALL) {
         $this->_setMode(IQueryTypes::POPULATE);
         $this->_parentQuery = $parent;
+        $isAll = false;
 
         switch($type) {
             case IPopulateQuery::TYPE_ALL:
+                $isAll = true;
+
             case IPopulateQuery::TYPE_SOME:
                 $this->_joinType = $type;
                 break;
@@ -205,23 +208,25 @@ class Initiator implements IInitiator {
 
             if(!$populate = $parent->getPopulate($field)) {
                 $populate = new Populate($parent, $field, $type);
-
-                if($this->_joinType == IPopulateQuery::TYPE_ALL) {
-                    $populate->endPopulate();
-                }
             }
 
             if(!empty($children)) {
                 foreach($children as $child) {
-                    $populate = $populate->populateSome($child);
-                    //$populate->endPopulate();
+                    $populate->endPopulate();
+
+                    $childPopulate = $populate->populateSome($child);
+                    $childPopulate->setNestedParent($populate);
+
+                    $populate = $childPopulate;
                 }
             }
         }
 
-        if($this->_joinType == IPopulateQuery::TYPE_ALL) {
+        if($isAll) {
+            $populate->endPopulate();
             return $parent;
         } else {
+            $populate->setNestedParent($parent);
             return $populate;
         }
     }

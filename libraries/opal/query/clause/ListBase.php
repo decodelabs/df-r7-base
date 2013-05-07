@@ -11,6 +11,8 @@ use df\opal;
 
 class ListBase implements opal\query\IClauseList, core\IDumpable {
     
+    use opal\query\TQuery_NestedComponent;
+
     protected $_isOr = false;
     protected $_clauses = array();
     protected $_parent;
@@ -192,7 +194,7 @@ class ListBase implements opal\query\IClauseList, core\IDumpable {
     }
     
     public function endClause() {
-        return $this->_parent;
+        return $this->getNestedParent();
     }
     
 // Dump

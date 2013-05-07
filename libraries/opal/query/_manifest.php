@@ -81,6 +81,11 @@ interface IParentQueryAware extends IParentSourceProvider {
     public function isSourceDeepNested(ISource $source);
 }
 
+interface INestedComponent {
+    public function setNestedParent($parent);
+    public function getNestedParent();
+}
+
 
 // Entry point
 interface IEntryPoint {
@@ -249,6 +254,7 @@ interface IOffsettableQuery extends IQuery {
 interface ICorrelationQuery extends 
     IQuery, 
     IParentQueryAware, 
+    INestedComponent,
     IJoinConstrainableQuery,
     IJoinClauseFactory,
     IWhereClauseFactory,
@@ -264,7 +270,12 @@ interface ICorrelationQuery extends
 }
 
 
-interface IJoinQuery extends IQuery, IParentQueryAware, IJoinClauseFactory, IWhereClauseFactory {
+interface IJoinQuery extends 
+    IQuery, 
+    IParentQueryAware, 
+    INestedComponent,
+    IJoinClauseFactory, 
+    IWhereClauseFactory {
     
     const INNER = 0;
     const LEFT = 1;
@@ -282,6 +293,7 @@ interface IJoinConstraintQuery extends IJoinQuery {}
 interface IPopulateQuery extends 
     IQuery, 
     IParentQueryAware,
+    INestedComponent,
     IPopulatableQuery,
     IWhereClauseQuery,
     IOrderableQuery,
@@ -298,7 +310,11 @@ interface IPopulateQuery extends
 }
 
 
-interface IAttachQuery extends IQuery, IParentQueryAware, IJoinClauseFactory {
+interface IAttachQuery extends 
+    IQuery, 
+    IParentQueryAware, 
+    INestedComponent,
+    IJoinClauseFactory {
         
     const TYPE_ONE = 0;
     const TYPE_MANY = 1;
@@ -706,7 +722,15 @@ interface IClauseMatcher {
 }
 
 
-interface IClauseList extends IJoinClauseProvider, IWhereClauseProvider, IHavingClauseProvider, \Countable, core\IArrayProvider, ISourceProvider {
+interface IClauseList extends 
+    INestedComponent,
+    IJoinClauseProvider, 
+    IWhereClauseProvider, 
+    IHavingClauseProvider, 
+    \Countable, 
+    core\IArrayProvider, 
+    ISourceProvider {
+
     public function _addClause(IClauseProvider $clause=null);
     public function clear();
     public function endClause();

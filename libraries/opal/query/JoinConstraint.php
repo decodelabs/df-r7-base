@@ -37,7 +37,7 @@ class JoinConstraint extends Join implements IJoinConstraintQuery {
     
     public function endJoin() {
         $this->_parent->addJoinConstraint($this);
-        return $this->_parent;
+        return $this->getNestedParent();
     }
     
     

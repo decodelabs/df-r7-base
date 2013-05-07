@@ -14,6 +14,7 @@ class Correlation implements ICorrelationQuery, core\IDumpable {
     use TQuery;
     use TQuery_ParentAware;
     use TQuery_ParentAwareJoinClauseFactory;
+    use TQuery_NestedComponent;
     use TQuery_JoinConstrainable;
     use TQuery_WhereClauseFactory;
     use TQuery_Limitable;
@@ -89,7 +90,7 @@ class Correlation implements ICorrelationQuery, core\IDumpable {
            $this->_parent->addCorrelation($this);
         }
 
-        return $this->_parent;
+        return $this->getNestedParent();
     }
 
     public function getCorrelationSource() {

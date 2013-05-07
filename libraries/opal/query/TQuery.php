@@ -86,6 +86,29 @@ trait TQuery_ParentAware {
 }
 
 
+trait TQuery_NestedComponent {
+
+    protected $_nestedParent;
+
+    public function setNestedParent($parent) {
+        $this->_nestedParent = $parent;
+        return $this;
+    }
+
+    public function getNestedParent() {
+        if($this->_nestedParent) {
+            return $this->_nestedParent;
+        }
+
+        if($this instanceof IParentQueryAware) {
+            return $this->getParentQuery();
+        }
+
+        return null;
+    }
+}
+
+
 
 /*************************
  * Base
@@ -462,6 +485,7 @@ trait TQuery_Populatable {
 trait TQuery_Populate {
 
     use TQuery_ParentAware;
+    use TQuery_NestedComponent;
 
     protected $_field;
     protected $_type;
@@ -484,7 +508,8 @@ trait TQuery_Populate {
 
 
     public function endPopulate() {
-        return $this->_parent->addPopulate($this);
+        $this->_parent->addPopulate($this);
+        return $this->getNestedParent();
     }
 }
 
@@ -536,7 +561,8 @@ trait TQuery_Attachable {
 trait TQuery_Attachment {
     
     use TQuery_ParentAware;
-    
+    use TQuery_NestedComponent;
+
     protected $_isPopulate = false;
     protected $_type;
     protected $_keyField;
@@ -601,7 +627,7 @@ trait TQuery_Attachment {
             $this->_parent->addAttachment($name, $this);
         }
 
-        return $this->_parent;
+        return $this->getNestedParent();
     }
     
     public function asMany($name, $keyField=null) {
@@ -621,7 +647,7 @@ trait TQuery_Attachment {
             $this->_parent->addAttachment($name, $this);
         }
 
-        return $this->_parent;
+        return $this->getNestedParent();
     }
     
     public function getListKeyField() {
@@ -659,7 +685,7 @@ trait TQuery_AttachmentListExtension {
             $this->_parent->addAttachment($name, $this);
         }
 
-        return $this->_parent;
+        return $this->getNestedParent();
     }
 }
 
