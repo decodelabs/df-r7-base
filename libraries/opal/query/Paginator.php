@@ -27,18 +27,39 @@ class Paginator implements IPaginator {
     
     public function __construct(IReadQuery $query) {
         $this->_query = $query;
+
+        $adapter = $query->getSource()->getAdapter();
+
+        if($adapter instanceof IPaginatingAdapter) {
+            $adapter->applyPagination($this);
+        }
+
+        if($query instanceof ICorrelatableQuery) {
+            foreach($query->getCorrelations() as $name => $correlation) {
+                $this->_orderableFields[$correlation->getAlias()] = $correlation;
+            }
+        }
     }
     
     
+// Orderable fields
     public function setOrderableFields($fields) {
+        $this->_orderableFields = array();
+
+        if(!is_array($fields)) {
+            $fields = func_get_args();
+        }
+
+        return $this->addOrderableFields($fields);
+    }
+
+    public function addOrderableFields($fields) {
         $source = $this->_query->getSource();
         $sourceManager = $this->_query->getSourceManager();
         
         if(!is_array($fields)) {
             $fields = func_get_args();
         }
-        
-        $this->_orderableFields = array();
         
         foreach($fields as $key => $field) {
             $field = $sourceManager->extrapolateField($source, $field);
@@ -52,14 +73,21 @@ class Paginator implements IPaginator {
 
         return $this;
     }
+
+    public function getOrderableFields() {
+        return $this->_orderableFields;
+    }
     
     public function getOrderableFieldNames() {
         return array_keys($this->_orderableFields);
     }
     
+
+// Default order
     public function setDefaultOrder($field1) {
         $source = $this->_query->getSource();
         $sourceManager = $this->_query->getSourceManager();
+        $this->_order = array();
         
         foreach(func_get_args() as $field) {
             $parts = explode(' ', $field);
@@ -86,6 +114,8 @@ class Paginator implements IPaginator {
         return $this->_order;
     }
     
+
+// Limit
     public function setDefaultLimit($limit) {
         $this->_limit = (int)$limit;
         
@@ -100,6 +130,8 @@ class Paginator implements IPaginator {
         return $this->_limit;
     }
     
+
+// Offset
     public function setDefaultOffset($offset) {
         $this->_offset = (int)$offset;
         return $this;
@@ -110,6 +142,7 @@ class Paginator implements IPaginator {
     }
     
     
+// Key map
     public function setKeyMap(array $map) {
         foreach($this->_keyMap as $key => $val) {
             if(isset($map[$key])) {
@@ -124,6 +157,8 @@ class Paginator implements IPaginator {
         return $this->_keyMap;
     }
     
+
+// IO
     public function end() {
         $this->_query->setPaginator($this);
         return $this->_query;

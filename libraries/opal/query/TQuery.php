@@ -236,6 +236,19 @@ trait TQuery_Correlatable {
 
         return $this;
     }
+
+    public function getCorrelations() {
+        $source = $this->getSource();
+        $output = array();
+
+        foreach($source->getOutputFields() as $name => $field) {
+            if($field instanceof ICorrelationField) {
+                $output[$name] = $field;
+            }
+        }
+
+        return $output;
+    }
 }
 
 
@@ -1188,6 +1201,10 @@ trait TQuery_Pageable {
         return new Paginator($this);
     }
     
+    public function paginateWith($data) {
+        return $this->paginate()->applyWith($data);
+    }
+
     public function setPaginator(core\collection\IPaginator $paginator) {
         $this->_paginator = $paginator;
         return $this;

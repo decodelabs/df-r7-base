@@ -15,6 +15,7 @@ abstract class Base extends axis\Unit implements
     core\policy\IActiveParentEntity, 
     opal\query\IEntryPoint,
     opal\query\IIntegralAdapter,
+    opal\query\IPaginatingAdapter,
     core\IDumpable {
     
     protected static $_defaultRecordClass = 'df\\opal\\record\\Base';
@@ -173,7 +174,38 @@ abstract class Base extends axis\Unit implements
         return $this->_adapter->handleQueryException($query, $e);
     }
     
-    
+    public function applyPagination(opal\query\IPaginator $paginator) {
+        $schema = $this->getUnitSchema();
+        $default = null;
+
+        foreach($schema->getFields() as $name => $field) {
+            if($field instanceof axis\schema\INullPrimitiveField
+            || $field instanceof axis\schema\IManyRelationField) {
+                continue;
+            }
+
+            if($default === null
+            || $default == 'id ASC') {
+                if(in_array($name, ['id', 'name', 'title'])) {
+                    $default = $name.' ASC';
+                } else if($name == 'date') {
+                    $default = 'date DESC';
+                }
+            }
+
+            $fields[] = $name;
+        }
+
+        if(!empty($fields)) {
+            $paginator->addOrderableFields($fields);
+        }
+
+        if($default !== null) {
+            $paginator->setDefaultOrder($default);
+        }
+
+        return $this;
+    }
     
     
 // Query proxy

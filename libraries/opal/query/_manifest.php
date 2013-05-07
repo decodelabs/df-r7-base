@@ -180,6 +180,7 @@ interface ICorrelatableQuery extends IQuery {
     public function correlate($field, $alias=null);
     public function countRelation($field, $alias=null);
     public function addCorrelation(ICorrelationQuery $correlation);
+    public function getCorrelations();
 }
 
 interface IJoinProviderQuery extends IQuery {
@@ -340,6 +341,7 @@ interface IOrderDirective extends core\IStringProvider {
 
 interface IPageableQuery extends IReadQuery, core\collection\IPageable {
     public function paginate();
+    public function paginateWith($data);
 }
 
 
@@ -554,6 +556,10 @@ interface IIntegralAdapter extends IAdapter {
     public function getRecordFieldNames();
 }
 
+interface IPaginatingAdapter extends IAdapter {
+    public function applyPagination(IPaginator $paginator);
+}
+
 
 // Source
 interface ISource extends IAdapterAware {
@@ -750,6 +756,10 @@ interface IHavingClauseList extends IClauseList, IHavingClauseFactory {}
 // Paginator
 interface IPaginator extends core\collection\IOrderablePaginator {
     public function setOrderableFields($field1);
+    public function addOrderableFields($field1);
+    public function getOrderableFields();
+    //public function getOrderableFieldNames();
+
     public function setDefaultOrder($field1);
     public function setDefaultLimit($limit);
     public function setDefaultOffset($offset);
