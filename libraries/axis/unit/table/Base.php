@@ -250,7 +250,7 @@ abstract class Base extends axis\Unit implements
 
             if(!$primaryIndex = $schema->getPrimaryIndex()) {
                 throw new axis\schema\RuntimeException(
-                    'Unit '.$this->getUnitId().' does not had a primary index'
+                    'Unit '.$this->getUnitId().' does not have a primary index'
                 );
             }
 
@@ -301,7 +301,7 @@ abstract class Base extends axis\Unit implements
 
         if(!$field instanceof axis\schema\IRelationField) {
             throw new axis\RuntimeException(
-                'Unit '.$this->getUnitId().' does not had a populatable relation field named '.$fieldName
+                'Unit '.$this->getUnitId().' does not have a populatable relation field named '.$fieldName
             );
         }
 
