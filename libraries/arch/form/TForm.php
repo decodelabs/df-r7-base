@@ -626,7 +626,7 @@ trait TForm_InlineFieldRenderableSelectorDelegate {
             $fa->push($this->html->fieldError($messages));
         }
 
-        $fa->push($this->html->string('<div class="selection">'));
+        $fa->push($this->html->string('<div class="widget-selection"><div class="body">'));
         $selectList = $this->_fetchSelectionList();
 
         if($this->_isForMany) {
@@ -693,6 +693,8 @@ trait TForm_InlineFieldRenderableSelectorDelegate {
 
         $ba = $fa->addButtonArea();
         $this->_renderDetailsButtonGroup($ba, $selected);
+
+        $fa->push($this->html->string('</div>'));
     }
 
     protected function _renderDetailsButtonGroup(aura\html\widget\ButtonArea $ba, $selected) {

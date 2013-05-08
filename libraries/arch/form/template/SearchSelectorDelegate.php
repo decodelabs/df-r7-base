@@ -200,18 +200,20 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
                 $name = $this->_getResultDisplayName($selected);
 
                 $fa->push(
-                    $this->html->hidden($this->fieldName('selected'), $id),
+                    $this->html->element('div.widget-selection', [
+                        $this->html->hidden($this->fieldName('selected'), $id),
 
-                    $this->html->element('div.selection', $name),
+                        $this->html->element('div.body', $name),
 
-                    $this->html->eventButton(
-                            $this->eventName('clear'), 
-                            $this->_('Remove')
+                        $this->html->buttonArea(
+                            $this->html->eventButton(
+                                    $this->eventName('clear'), 
+                                    $this->_('Remove')
+                                )
+                                ->shouldValidate(false)
+                                ->setIcon('remove')
                         )
-                        ->shouldValidate(false)
-                        ->setIcon('remove'),
-
-                    $this->html->string('<br />')
+                    ])
                 );
 
             }
@@ -234,18 +236,20 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
                     $name = $this->_getResultDisplayName($result);
 
                     $fa->push(
-                        $this->html->hidden($this->fieldName('selected['.$id.']'), $id),
+                        $this->html->element('div.widget-selection', [
+                            $this->html->hidden($this->fieldName('selected['.$id.']'), $id),
+                            
+                            $this->html->element('div.body', $name),
 
-                        $this->html->element('div.selection', $name),
-
-                        $this->html->eventButton(
-                                $this->eventName('remove', $id), 
-                                $this->_('Remove')
+                            $this->html->buttonArea(
+                                $this->html->eventButton(
+                                        $this->eventName('remove', $id), 
+                                        $this->_('Remove')
+                                    )
+                                    ->shouldValidate(false)
+                                    ->setIcon('remove')
                             )
-                            ->shouldValidate(false)
-                            ->setIcon('remove'),
-
-                        $this->html->string('<br />')
+                        ])
                     );
                 }
             }
