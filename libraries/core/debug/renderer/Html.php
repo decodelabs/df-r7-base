@@ -290,7 +290,11 @@ class Html extends Base {
         if(strlen($conv)) {
             $string = $conv;
         } else {
-            $string = htmlspecialchars($string, ENT_QUOTES);    
+            $conv = htmlspecialchars($string, ENT_QUOTES);
+
+            if(strlen($conv)) {
+                $string = $conv;
+            }
         }
         
         return $string;
