@@ -138,6 +138,16 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
                     )
                     ->shouldValidate(false)
                     ->setIcon('add');
+
+                if($this->_isForMany) {
+                    $fa->addEventButton(
+                            $this->eventName('selectAll'),
+                            $this->_('Add all matches')
+                        )
+                        ->shouldValidate(false)
+                        ->setDisposition('positive')
+                        ->setIcon('star');
+                }
             }
         }
 
@@ -279,5 +289,16 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
 
     protected function _onSelectEvent() {
         unset($this->values->search, $this->values->searchResults);
+    }
+
+    protected function _onSelectAllEvent() {
+        if(!$this->_isForMany) {
+            return;
+        }
+
+        $this->setSelected($this->values->searchResults->toArray());
+        unset($this->values->search, $this->values->searchResults);
+
+        $this->_onEndSelectEvent();
     }
 }
