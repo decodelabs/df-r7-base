@@ -32,6 +32,9 @@ interface IMessage extends core\mime\IMultiPart {
     public function setBodyText($content);
     public function getBodyText();
 
+    public function addFileAttachment($path, $fileName=null, $contentType=null);
+    public function addStringAttachment($string, $fileName, $contentType=null);
+
     public function isPrivate($flag=null);
 
     public function setFromAddress($address, $name=null);

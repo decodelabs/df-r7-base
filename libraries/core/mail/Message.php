@@ -81,6 +81,7 @@ class Message extends core\mime\MultiPart implements IMessage {
         return $output;
     }
 
+// Subject
     public function setSubject($subject) {
         $this->_headers->set('subject', (string)$subject);
         return $this;
@@ -90,6 +91,7 @@ class Message extends core\mime\MultiPart implements IMessage {
         return $this->_headers->get('subject');
     }
 
+// Body HTML
     public function setBodyHtml($content) {
         $this->_createAltPart();
 
@@ -103,13 +105,14 @@ class Message extends core\mime\MultiPart implements IMessage {
             $this->_bodyHtml->setContent($content);
         }
 
-        return $this->_bodyHtml;
+        return $this;
     }
 
     public function getBodyHtml() {
         return $this->_bodyHtml;
     }
 
+// Body text
     public function setBodyText($content) {
         $this->_createAltPart();
         $content = str_replace(["\r", "\n"], ['', "\r\n"], $content);
@@ -124,7 +127,7 @@ class Message extends core\mime\MultiPart implements IMessage {
             $this->_bodyText->setContent($content);
         }
 
-        return $this->_bodyText;
+        return $this;
     }
 
     public function getBodyText() {
@@ -140,6 +143,48 @@ class Message extends core\mime\MultiPart implements IMessage {
         $this->prependPart($this->_altPart);
     }
 
+
+
+// Attachments
+    public function addFileAttachment($path, $fileName=null, $contentType=null) {
+        $file = core\io\LocalFilePointer::factory($path);
+        $pathName = basename($file->getPath());
+
+        if(!$file->exists()) {
+            throw new InvalidArgumentException(
+                'Attachment file '.$pathName.' does not exist'
+            );
+        }
+
+        if($fileName === null) {
+            $fileName = $pathName;
+        }
+
+        if($contentType === null) {
+            $contentType = $file->getContentType();
+        }
+
+        $part = $this->newContentPart($file)
+            ->setContentType($contentType)
+            ->setFileName($fileName, 'attachment');
+
+        return $this;
+    }
+
+    public function addStringAttachment($string, $fileName, $contentType=null) {
+        if($contentType === null) {
+            $contentType = core\mime\Type::fileToMime($fileName);
+        }
+
+        $part = $this->newContentPart($string)
+            ->setContentType($contentType)
+            ->setFileName($fileName, 'attachment');
+
+        return $this;
+    }
+
+
+// Private
     public function isPrivate($flag=null) {
         if($flag !== null) {
             $this->_isPrivate = (bool)$flag;
@@ -149,6 +194,7 @@ class Message extends core\mime\MultiPart implements IMessage {
         return (bool)$this->_isPrivate;
     }
 
+// From
     public function setFromAddress($address, $name=null) {
         $address = Address::factory($address, $name);
 
@@ -180,6 +226,7 @@ class Message extends core\mime\MultiPart implements IMessage {
     }
 
 
+// To
     public function addToAddress($address, $name=null) {
         $address = Address::factory($address, $name);
 
@@ -219,6 +266,7 @@ class Message extends core\mime\MultiPart implements IMessage {
     }
 
 
+// CC
     public function addCCAddress($address, $name=null) {
         $address = Address::factory($address, $name);
 
@@ -258,6 +306,7 @@ class Message extends core\mime\MultiPart implements IMessage {
     }
 
 
+// BCC
     public function addBCCAddress($address, $name=null) {
         $address = Address::factory($address, $name);
 
@@ -297,6 +346,7 @@ class Message extends core\mime\MultiPart implements IMessage {
     }
 
 
+// Reply to
     public function setReplyToAddress($address=null) {
         if($address === null) {
             $this->_headers->remove('reply-to');
@@ -326,11 +376,13 @@ class Message extends core\mime\MultiPart implements IMessage {
     }
 
 
+// Headers
     public function prepareHeaders() {
         parent::prepareHeaders();
+        $isWin = (0 === strpos(PHP_OS, 'WIN'));
 
         if($this->_from) {
-            if($isWin = 0 === strpos(PHP_OS, 'WIN')) {
+            if($isWin) {
                 $this->_headers->set('from', $this->_from->getAddress());
             } else {
                 $this->_headers->set('from', $this->_from->toString());

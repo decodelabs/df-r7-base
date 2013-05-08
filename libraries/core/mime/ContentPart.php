@@ -147,7 +147,7 @@ class ContentPart implements IContentPart, core\IDumpable {
             );    
         }
 
-        $this->_content = (string)$content;
+        $this->_content = $content;
         return $this;
     }
 
@@ -155,21 +155,31 @@ class ContentPart implements IContentPart, core\IDumpable {
         return $this->_content;
     }
 
+    public function getContentString() {
+        if($this->_content instanceof core\io\IFilePointer) {
+            return $this->_content->getContents();
+        }
+
+        return (string)$this->_content;
+    }
+
     public function getEncodedContent() {
+        $content = $this->getContentString();
+
         switch($this->getEncoding()) {
             case IMessageEncoding::E_8BIT:
             case IMessageEncoding::E_7BIT:
-                return wordwrap($this->_content, IMessageLine::LENGTH, IMessageLine::END, 1);
+                return wordwrap($content, IMessageLine::LENGTH, IMessageLine::END, 1);
 
             case IMessageEncoding::QP:
-                return quoted_printable_encode($this->_content);
+                return quoted_printable_encode($content);
 
             case IMessageEncoding::BASE64:
-                return rtrim(chunk_split(base64_encode($this->_content), IMessageLine::LENGTH, IMessageLine::END));
+                return rtrim(chunk_split(base64_encode($content), IMessageLine::LENGTH, IMessageLine::END));
 
             case IMessageEncoding::BINARY:
             default:
-                return $this->_content;
+                return $content;
         }
     }
 

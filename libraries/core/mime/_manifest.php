@@ -71,6 +71,7 @@ interface IContentPart extends IPart {
 
     public function setContent($content);
     public function getContent();
+    public function getContentString();
     public function getEncodedContent();
 }
 
