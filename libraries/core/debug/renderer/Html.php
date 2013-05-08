@@ -294,6 +294,8 @@ class Html extends Base {
 
             if(strlen($conv)) {
                 $string = $conv;
+            } else {
+                $string = str_replace(['&', '<', '>'], ['&amp;', '&lt;', '&gt;'], $string);
             }
         }
         
