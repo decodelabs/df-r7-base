@@ -12,9 +12,16 @@ class LocalFilePointer implements ILocalFilePointer, core\IDumpable {
     protected $_path;
     protected $_contentType;
 
+    public static function factory($path) {
+        if($path instanceof IFilePointer) {
+            return $path;
+        }
+
+        return new self((string)$path);
+    }
+
     public function __construct($path) {
         $this->_path = $path;
-        //$this->_path = (string)core\uri\FilePath::factory($path);
     }
     
     public function open($mode=IMode::READ_WRITE) {
