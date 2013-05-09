@@ -84,7 +84,11 @@ class EntityLocatorNode implements IEntityLocatorNode, core\IDumpable {
         $type = $this->_type;
         
         if($this->_id !== null) {
-            $type .= ':"'.addslashes($this->_id).'"';
+            if(strpbrk($this->_id, '" :/\'\\')) {
+                $type .= ':"'.addslashes($this->_id).'"';
+            } else {
+                $type .= ':'.$this->_id;
+            }
         }
         
         $output[] = $type;

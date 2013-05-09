@@ -24,6 +24,16 @@ class EntityLocator implements IEntityLocator, core\IDumpable {
         
         return new self($locator);
     }
+
+    public static function domainFactory($domain, $id=null) {
+        $output = self::factory($domain);
+
+        if($id !== null) {
+            $output->setId($id);
+        }
+
+        return $output;
+    }
     
     public function __construct($locator) {
         if($locator instanceof core\uri\IGenericUrl) {
@@ -40,7 +50,7 @@ class EntityLocator implements IEntityLocator, core\IDumpable {
     
 
     // Format:
-    // handler://[path/to/]Entity[:id][[path/to/]SubEntity[:id]]]
+    // handler://[path/to/]Entity[:id][/[path/to/]SubEntity[:id]]]
     private function _splitEntityPath($path) {
         $path = trim($path, '/').'/';
         $length = strlen($path);
