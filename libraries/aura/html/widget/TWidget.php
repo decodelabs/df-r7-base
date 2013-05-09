@@ -835,7 +835,7 @@ trait TWidget_NavigationEntryController {
         || $entry instanceof arch\navigation\entry\Menu) {
             $this->addMenu($entry);
         } else if($entry instanceof arch\navigation\entry\Spacer
-        || (is_string($entry) && $this->_entries->getLast() instanceof ILinkWidget)) {
+        || (is_string($entry))) {
             $this->addSpacer();
         }
 
@@ -871,7 +871,10 @@ trait TWidget_NavigationEntryController {
     }
     
     public function addSpacer() {
-        $this->_entries->push(new aura\html\ElementString('<span class="widget-spacer"></span>'));
+        if($this->_entries->getLast() instanceof ILinkWidget) {
+            $this->_entries->push(new aura\html\ElementString('<span class="widget-spacer"></span>'));
+        }
+        
         return $this;
     }
     
