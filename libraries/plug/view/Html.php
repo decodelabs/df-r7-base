@@ -67,6 +67,23 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
         return $output;
     }
 
+    public function convert($body, $format='SimpleTags') {
+        switch(strtolower($format)) {
+            case 'simpletags':
+                return $this->simpleTags($body);
+
+            case 'inlinesimpletags':
+                return $this->inlineSimpleTags($body);
+
+            case 'plaintext':
+                return $this->plainText($body);
+
+            case 'rawhtml':
+            case 'html':
+                return $this->string($value);
+        }
+    }
+
     public function _($phrase, array $data=null, $plural=null, $locale=null) {
         return $this->string($this->_view->_($phrase, $data, $plural, $locale));
     }
