@@ -135,7 +135,7 @@ abstract class HeaderBar extends arch\component\Base
     protected function _getDefaultTitle() {}
     protected function _getDefaultSubTitle() {}
 
-    abstract protected function _addOperativeLinks($primaryMenu);
+    protected function _addOperativeLinks($primaryMenu) {}
     protected function _addSubOperativeLinks($primaryMenu) {}
     protected function _addTransitiveLinks($primaryMenu) {}
     protected function _addSectionLinks($secondaryMenu) {}
