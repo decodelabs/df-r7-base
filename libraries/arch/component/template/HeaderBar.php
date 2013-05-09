@@ -90,21 +90,26 @@ abstract class HeaderBar extends arch\component\Base
 
         // Title
         if(empty($this->_title)) {
-            $this->_setDefaultTitle();
+            $title = $this->_getDefaultTitle();
+        } else {
+            $title = $this->_title;
         }
 
-        if($this->_title !== null) {
-            $output[] = $this->html->element('h2', $this->_title);
+        if($title !== null) {
+            $output[] = $this->html->element('h2', $title);
         }
 
 
         // SubTitle
+
         if(empty($this->_subTitle)) {
-            $this->_setDefaultSubTitle();
+            $subTitle = $this->_getDefaultSubTitle();
+        } else {
+            $subTitle = $this->_subTitle;
         }
 
-        if($this->_subTitle !== null) {
-            $output[] = $this->html->element('h3', $this->_subTitle);
+        if($subTitle !== null) {
+            $output[] = $this->html->element('h3', $subTitle);
         }
 
 
@@ -127,8 +132,8 @@ abstract class HeaderBar extends arch\component\Base
     }
 
 
-    protected function _setDefaultTitle() {}
-    protected function _setDefaultSubTitle() {}
+    protected function _getDefaultTitle() {}
+    protected function _getDefaultSubTitle() {}
 
     abstract protected function _addOperativeLinks($primaryMenu);
     protected function _addSubOperativeLinks($primaryMenu) {}
