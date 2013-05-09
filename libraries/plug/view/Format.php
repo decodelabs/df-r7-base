@@ -195,4 +195,12 @@ class Format implements aura\view\IHelper {
     public function shorten($string, $length=20) {
         return core\string\Manipulator::shorten($string, $length);
     }
+
+
+
+    public function counterNote($counter) {
+        if($counter) {
+            return '('.$this->number($counter).')';
+        }
+    }
 }
