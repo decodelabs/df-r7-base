@@ -174,7 +174,7 @@ class Embed implements IVideoEmbed {
 
 // String
     public function render() {
-        $tag = new aura\html\Tag('iframe', [
+        $tag = new aura\html\Element('iframe', null, [
             'src' => $this->_url,
             'width' => $this->_width,
             'height' => $this->_height,
