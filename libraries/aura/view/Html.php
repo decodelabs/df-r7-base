@@ -61,7 +61,7 @@ class Html extends Base implements IHtmlView {
         $this
             ->setMeta('X-UA-Compatible', 'IE=edge,chrome=1')
             ->setMeta('content-type', $this->getContentType())
-            ->setMeta('viewport', 'width=device-width')//; initial-scale=1.0; maximum-scale=1.0;')
+            ->setMeta('viewport', 'width=device-width; initial-scale=1.0; maximum-scale=1.0;')
             ;
     }
 
