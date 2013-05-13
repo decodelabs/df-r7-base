@@ -173,6 +173,23 @@ abstract class Unit implements IUnit {
         return $this->_model->getApplication();
     }
 
+    public function getContext() {
+        return $this->_model->getUnit('context');
+    }
+
+    public function __get($member) {
+        switch($member) {
+            case 'model':
+                return $this->_model;
+
+            case 'settings':
+                return $this->getUnitSettings();
+
+            case 'context':
+                return $this->_model->getUnit('context');
+        }
+    }
+
 
 // Access
     public function getAccessLockDomain() {
