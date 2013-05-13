@@ -69,7 +69,7 @@ abstract class Model implements IModel, core\IDumpable {
     
     public function getUnit($name) {
         $name = lcfirst($name);
-        
+
         if(isset($this->_units[$name])) {
             return $this->_units[$name];
         }

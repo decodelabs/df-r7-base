@@ -55,6 +55,11 @@ abstract class Unit implements IUnit {
     
     public static function factory(axis\IModel $model, $name) {
         $name = lcfirst($name);
+
+        if($name == 'context') {
+            return new Context($model);
+        }
+
         $class = 'df\\apex\\models\\'.$model->getModelName().'\\'.$name.'\\Unit';
         
         if(!class_exists($class)) {

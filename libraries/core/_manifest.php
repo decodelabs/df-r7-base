@@ -570,6 +570,128 @@ trait TManager {
 }
 
 
+// Context
+interface IContext extends core\IApplicationAware, core\IHelperProvider {
+    public function getRunMode();
+
+    // Locale
+    public function setLocale($locale);
+    public function getLocale();
+
+    // Helpers
+    public function throwError($code=500, $message='');
+    public function findFile($path);
+    
+    public function getI18nManager();
+    public function getPolicyManager();
+    public function getSystemInfo();
+    public function getUserManager();
+}
+
+
+trait TContext {
+
+    use THelperProvider;
+
+    public $application;
+    protected $_locale;
+
+// Application
+    public function getApplication() {
+        return $this->application;
+    }
+    
+    public function getRunMode() {
+        return $this->application->getRunMode();
+    }
+
+
+// Locale
+    public function setLocale($locale) {
+        if($locale === null) {
+            $this->_locale = null;
+        } else {
+            $this->_locale = core\i18n\Locale::factory($locale);
+        }
+        
+        return $this;
+    }
+    
+    public function getLocale() {
+        if($this->_locale) {
+            return $this->_locale;
+        } else {
+            return core\i18n\Manager::getInstance($this->application)->getLocale(); 
+        }
+    }
+
+
+// Helpers
+    public function throwError($code=500, $message='') {
+        throw new ContextException($message, (int)$code);
+    }
+    
+    public function findFile($path) {
+        return df\Launchpad::$loader->findFile($path);
+    }
+
+    public function getI18nManager() {
+        return core\i18n\Manager::getInstance($this->application);
+    }
+    
+    public function getPolicyManager() {
+        return core\policy\Manager::getInstance($this->application);
+    }
+    
+    public function getSystemInfo() {
+        return df\halo\system\Base::getInstance();
+    }
+    
+    public function getUserManager() {
+        return df\user\Manager::getInstance($this->application);
+    }
+
+    public function __get($key) {
+        return $this->_getDefaultMember($key);
+    }
+
+    protected function _getDefaultMember($key) {
+        switch($key) {
+            case 'context':
+                return $this;
+            
+            case 'application':
+                return $this->application;
+                
+            case 'runMode':
+                return $this->application->getRunMode();
+                
+            case 'locale':
+                return $this->getLocale();
+                
+                
+            case 'i18n':
+                return core\i18n\Manager::getInstance($this->application);
+                
+            case 'policy':
+                return core\policy\Manager::getInstance($this->application);
+                
+            case 'system':
+                return df\halo\system\Base::getInstance();
+                
+            case 'user':
+                return df\user\Manager::getInstance($this->application);
+                
+            default:
+                return $this->getHelper($key);
+        }
+    }
+}
+
+class ContextException extends \RuntimeException implements IException {}
+
+
+
 // Payload
 interface IPayload {}
 interface IDeferredPayload extends IPayload, IApplicationAware {}

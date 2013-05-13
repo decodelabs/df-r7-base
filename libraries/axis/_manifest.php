@@ -73,6 +73,11 @@ interface ISchemaDefinitionStorageUnit extends IStorageUnit {
 }
 
 
+interface IContext extends IUnit, core\IContext, core\i18n\translate\ITranslationProxy {
+
+}
+
+
 
 
 interface IAdapter {}

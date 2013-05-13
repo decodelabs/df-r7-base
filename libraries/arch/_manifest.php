@@ -45,11 +45,10 @@ class ForcedResponse extends \Exception implements IForcedResponse {
 // Interfaces
 interface IAccess extends user\IState {}
 
-interface IContext extends core\IApplicationAware, core\IHelperProvider {
-    public function spawnInstance($request);
+interface IContext extends core\IContext, core\i18n\translate\ITranslationProxy {
     
     // Application
-    public function getRunMode();
+    public function spawnInstance($request);
     public function getDispatchContext();
     public function isDispatchContext();
     
@@ -57,19 +56,6 @@ interface IContext extends core\IApplicationAware, core\IHelperProvider {
     public function getRequest();
     public function getLocation();
     public function normalizeOutputUrl($uri, $toRequest=false, $from=null, $to=null);
-    
-    // Locale
-    public function setLocale($locale);
-    public function getLocale();
-    
-    // Helpers
-    public function throwError($code=500, $message='');
-    public function findFile($path);
-    
-    public function getI18nManager();
-    public function getPolicyManager();
-    public function getSystemInfo();
-    public function getUserManager();
 }
 
 interface IContextAware {

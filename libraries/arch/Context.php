@@ -11,16 +11,13 @@ use df\arch;
 use df\user;
 use df\halo;
 
-class Context implements IContext, \Serializable, core\i18n\translate\ITranslationProxy, core\IDumpable {
+class Context implements IContext, \Serializable, core\IDumpable {
     
-    use core\THelperProvider;
-    
+    use core\TContext;
+
     public $request;
     public $location;
-    public $application;
     
-    protected $_locale;
-
     public static function getCurrent(core\IApplication $application=null) {
         if(!$application) {
             $application = df\Launchpad::getActiveApplication();
@@ -94,14 +91,6 @@ class Context implements IContext, \Serializable, core\i18n\translate\ITranslati
     
     
 // Application
-    public function getApplication() {
-        return $this->application;
-    }
-    
-    public function getRunMode() {
-        return $this->application->getRunMode();
-    }
-    
     public function getDispatchContext() {
         if(!$this->application instanceof IContextAware) {
             throw new RuntimeException(
@@ -207,35 +196,8 @@ class Context implements IContext, \Serializable, core\i18n\translate\ITranslati
     }
 
 
-// Misc members
-    public function setLocale($locale) {
-        if($locale === null) {
-            $this->_locale = null;
-        } else {
-            $this->_locale = core\i18n\Locale::factory($locale);
-        }
-        
-        return $this;
-    }
-    
-    public function getLocale() {
-        if($this->_locale) {
-            return $this->_locale;
-        } else {
-            return core\i18n\Manager::getInstance($this->application)->getLocale(); 
-        }
-    }
-    
     
 // Helpers
-    public function throwError($code=500, $message='') {
-        throw new \Exception($message, (int)$code);
-    }
-    
-    public function findFile($path) {
-        return df\Launchpad::$loader->findFile($path);
-    }
-    
     protected function _loadHelper($name) {
         $class = 'df\\plug\\context\\'.$this->application->getRunMode().$name;
         
@@ -250,35 +212,8 @@ class Context implements IContext, \Serializable, core\i18n\translate\ITranslati
         return new $class($this);
     }
     
-    
-    public function getI18nManager() {
-        return core\i18n\Manager::getInstance($this->application);
-    }
-    
-    public function getPolicyManager() {
-        return core\policy\Manager::getInstance($this->application);
-    }
-    
-    public function getSystemInfo() {
-        return halo\system\Base::getInstance();
-    }
-    
-    public function getUserManager() {
-        return user\Manager::getInstance($this->application);
-    }
-    
-    
     public function __get($key) {
         switch($key) {
-            case 'context':
-                return $this;
-            
-            case 'application':
-                return $this->application;
-                
-            case 'runMode':
-                return $this->application->getRunMode();
-                
             case 'dispatchContext':
                 return $this->getDispatchContext();
 
@@ -288,39 +223,26 @@ class Context implements IContext, \Serializable, core\i18n\translate\ITranslati
             case 'location':
                 return $this->location;
                 
-            case 'locale':
-                return $this->getLocale();
-                
-                
-            case 'i18n':
-                return core\i18n\Manager::getInstance($this->application);
-                
-            case 'policy':
-                return core\policy\Manager::getInstance($this->application);
-                
-            case 'system':
-                return halo\system\Base::getInstance();
-                
-            case 'user':
-                return user\Manager::getInstance($this->application);
-                
             default:
-                return $this->getHelper($key);
+                return $this->_getDefaultMember($key);
         }
     }
-
-
+    
     public function _($phrase, array $data=null, $plural=null, $locale=null) {
+        if($locale === null) {
+            $locale = $this->_locale;
+        }
+
         $translator = core\i18n\translate\Handler::factory('arch/Context', $locale);
         return $translator->_($phrase, $data, $plural);
     }
-    
-   
+
     
 // Dump
     public function getDumpProperties() {
         return array(
             'request' => $this->request,
+            'location' => $this->location,
             'application' => $this->application
         );
     }
