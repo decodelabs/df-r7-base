@@ -33,4 +33,14 @@ class EventButton extends Button {
     public function getEvent() {
         return $this->getValue();
     }
+
+    public function setValue($event) {
+        if($event == 'cancel'
+        || $event == 'reset') {
+            $this->shouldValidate(false);
+        }
+
+
+        return parent::setValue($event);
+    }
 }

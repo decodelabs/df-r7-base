@@ -40,7 +40,7 @@ class Button extends Base implements IButtonWidget, IIconProviderWidget, core\ID
         $this->_applyInputAttributes($tag);
         
         if(!$this->_shouldValidate) {
-            $tag->setAttribute('formnovalidate', 'formnovalidate');
+            $tag->setAttribute('formnovalidate', true);
         }
 
         if($this->_disposition !== null) {

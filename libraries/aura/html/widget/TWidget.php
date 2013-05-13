@@ -404,7 +404,7 @@ trait TWidget_VisualInput {
     
     protected function _applyVisualInputAttributes(aura\html\ITag $tag) {
         if(!$this->_shouldValidate) {
-            $tag->setAttribute('novalidate', 'novalidate');
+            $tag->setAttribute('novalidate', true);
         }
         
         if($this->_shouldAutoComplete !== null) {
