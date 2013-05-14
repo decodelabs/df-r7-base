@@ -57,6 +57,31 @@ class Parser {
         }
 
         $text = strip_tags($text, implode('', $tags));
-        return $text;
+        $length = strlen($text);
+        $output = '';
+        $last = null;
+
+        for($i = 0; $i < $length; $i++) {
+            $char = $text{$i};
+            $next = @$text{$i+1};
+
+            if($char == ' ') {
+                $rep = ' ';
+
+                if($last == "\n"
+                || $last == ' '
+                || $next == ' ') {
+                    $rep = '&nbsp;';
+                }
+
+                $output .= $rep;
+            } else {
+                $output .= $char;
+            }
+
+            $last = $char;
+        }
+
+        return $output;
     }
 }
