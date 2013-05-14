@@ -308,7 +308,7 @@ class Base implements IView {
             $class = 'df\\plug\\view\\'.$name;
             
             if(!class_exists($class)) {
-                return null;
+                return $this->_loadSharedHelper($name);
             }
         }
         

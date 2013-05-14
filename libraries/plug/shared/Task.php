@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\plug\context;
+namespace df\plug\shared;
 
 use df;
 use df\core;
@@ -11,9 +11,9 @@ use df\plug;
 use df\halo;
 use df\arch;
     
-class Task implements arch\IContextHelper {
+class Task implements core\ISharedHelper {
 
-    use arch\TContextHelper;
+    use core\TSharedHelper;
 
     public function launch($request) {
         return halo\process\Base::launchTask($request);
@@ -28,17 +28,15 @@ class Task implements arch\IContextHelper {
     }
 
     public function getResponse() {
-        $application = $this->_context->getApplication();
-
-        if($application instanceof core\application\Task) {
-            return $application->getTaskResponse();
+        if($this->application instanceof core\application\Task) {
+            return $this->application->getTaskResponse();
         }
 
         $key = core\io\Multiplexer::REGISTRY_KEY.':task';
 
-        if(!$output = $application->getRegistryObject($key)) {
+        if(!$output = $this->application->getRegistryObject($key)) {
             $output = arch\task\Response::defaultFactory();
-            $application->setRegistryObject($output);
+            $this->application->setRegistryObject($output);
         }
 
         return $output;

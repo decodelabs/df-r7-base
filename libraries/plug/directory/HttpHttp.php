@@ -3,14 +3,14 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\plug\context;
+namespace df\plug\directory;
 
 use df;
 use df\core;
 use df\arch;
 use df\halo;
 
-class HttpHttp implements arch\IContextHelper {
+class HttpHttp implements arch\IDirectoryHelper {
     
     use arch\TContextAware;
 

@@ -3,15 +3,15 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\plug\view;
+namespace df\plug\shared;
 
 use df;
 use df\core;
 use df\aura;
 
-class Debug implements aura\view\IHelper {
+class Debug implements core\ISharedHelper {
     
-    use aura\view\THelper;
+    use core\TSharedHelper;
     
     public function dump($arg1) {
         core\debug()->addDumpList(func_get_args(), false, core\debug\StackCall::factory(1));

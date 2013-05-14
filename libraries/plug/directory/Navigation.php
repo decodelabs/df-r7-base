@@ -3,16 +3,16 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\plug\context;
+namespace df\plug\directory;
 
 use df;
 use df\core;
 use df\plug;
 use df\arch;
     
-class Navigation implements arch\IContextHelper {
+class Navigation implements arch\IDirectoryHelper {
 
-    use arch\TContextHelper;
+    use arch\TDirectoryHelper;
 
     public function getMenu($id) {
         return arch\navigation\menu\Base::factory($this->_context, $id);

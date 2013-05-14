@@ -44,7 +44,7 @@ final class Context extends Unit implements IContext {
             $class = 'df\\plug\\model\\'.$name;
             
             if(!class_exists($class)) {
-                return null;
+                return $this->_loadSharedHelper($name);
             }
         }
         

@@ -385,9 +385,30 @@ trait THelperProvider {
     }
     
     abstract protected function _loadHelper($name);
+
+    protected function _loadSharedHelper($name) {
+        $class = 'df\\plug\\shared\\'.$this->application->getRunMode().$name;
+        
+        if(!class_exists($class)) {
+            $class = 'df\\plug\\shared\\'.$name;
+            
+            if(!class_exists($class)) {
+                return null;
+            }
+        }
+
+        if($this instanceof IApplicationAware) {
+            $application = $this->getApplication();
+        } else {
+            $application = df\Launchpad::$application;
+        }
+
+        return new $class($application);
+    }
 }
 
 interface IHelper {}
+
 
 
 // Dumpable
@@ -689,6 +710,21 @@ trait TContext {
 }
 
 class ContextException extends \RuntimeException implements IException {}
+
+interface ISharedHelper extends IContext {}
+
+trait TSharedHelper {
+
+    use TContext;
+
+    public function __construct(IApplication $application) {
+        $this->application = $application;
+    }
+
+    protected function _loadHelper($name) {
+        return $this->_loadSharedHelper($name);
+    }
+}
 
 
 

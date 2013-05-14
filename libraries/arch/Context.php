@@ -199,13 +199,13 @@ class Context implements IContext, \Serializable, core\IDumpable {
     
 // Helpers
     protected function _loadHelper($name) {
-        $class = 'df\\plug\\context\\'.$this->application->getRunMode().$name;
+        $class = 'df\\plug\\directory\\'.$this->application->getRunMode().$name;
         
         if(!class_exists($class)) {
-            $class = 'df\\plug\\context\\'.$name;
+            $class = 'df\\plug\\directory\\'.$name;
             
             if(!class_exists($class)) {
-                return null;
+                return $this->_loadSharedHelper($name);
             }
         }
         

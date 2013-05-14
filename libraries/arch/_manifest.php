@@ -90,9 +90,9 @@ trait TContextProxy {
     }
 }
 
-interface IContextHelper extends IContextAware, core\IHelper {}
+interface IDirectoryHelper extends IContextAware, core\IHelper {}
 
-trait TContextHelper {
+trait TDirectoryHelper {
 
     use TContextAware;
 

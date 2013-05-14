@@ -3,23 +3,35 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\plug\view;
+namespace df\plug\shared;
 
 use df;
 use df\core;
 use df\aura;
 
-class Format implements aura\view\IHelper {
+class Format implements core\ISharedHelper {
     
-    use aura\view\THelper;
+    use core\TSharedHelper;
     
 // Numbers
     public function number($number, $format=null, $locale=null) {
-        return core\i18n\Manager::getInstance($this->_view->getContext()->getApplication())->getModule('numbers', $locale)->format($number, $format);
+        if($locale === null) {
+            $locale = $this->_locale;
+        }
+
+        return core\i18n\Manager::getInstance($this->application)
+            ->getModule('numbers', $locale)
+            ->format($number, $format);
     }
     
     public function percent($number, $locale=null) {
-        return core\i18n\Manager::getInstance($this->_view->getContext()->getApplication())->getModule('numbers', $locale)->formatPercent($number);
+        if($locale === null) {
+            $locale = $this->_locale;
+        }
+
+        return core\i18n\Manager::getInstance($this->application)
+            ->getModule('numbers', $locale)
+            ->formatPercent($number);
     }
     
     public function calcPercent($divisor, $total, $locale=null) {
@@ -33,19 +45,43 @@ class Format implements aura\view\IHelper {
     }
 
     public function currency($number, $code, $locale=null) {
-        return core\i18n\Manager::getInstance($this->_view->getContext()->getApplication())->getModule('numbers', $locale)->formatCurrency($number, $code);
+        if($locale === null) {
+            $locale = $this->_locale;
+        }
+
+        return core\i18n\Manager::getInstance($this->application)
+            ->getModule('numbers', $locale)
+            ->formatCurrency($number, $code);
     }
     
     public function scientific($number, $locale=null) {
-        return core\i18n\Manager::getInstance($this->_view->getContext()->getApplication())->getModule('numbers', $locale)->formatScientific($number);
+        if($locale === null) {
+            $locale = $this->_locale;
+        }
+
+        return core\i18n\Manager::getInstance($this->application)
+            ->getModule('numbers', $locale)
+            ->formatScientific($number);
     }
     
     public function spellout($number, $locale=null) {
-        return core\i18n\Manager::getInstance($this->_view->getContext()->getApplication())->getModule('numbers', $locale)->formatSpellout($number);
+        if($locale === null) {
+            $locale = $this->_locale;
+        }
+
+        return core\i18n\Manager::getInstance($this->application)
+            ->getModule('numbers', $locale)
+            ->formatSpellout($number);
     }
     
     public function ordinal($number, $locale=null) {
-        return core\i18n\Manager::getInstance($this->_view->getContext()->getApplication())->getModule('numbers', $locale)->formatOrdinal($number);
+        if($locale === null) {
+            $locale = $this->_locale;
+        }
+
+        return core\i18n\Manager::getInstance($this->application)
+            ->getModule('numbers', $locale)
+            ->formatOrdinal($number);
     }
     
     public function duration($duration, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $locale=null) {
@@ -59,6 +95,10 @@ class Format implements aura\view\IHelper {
             return null;
         }
 
+        if($locale === null) {
+            $locale = $this->_locale;
+        }
+
         if($locale !== null) {
             $duration->setLocale($locale);
         }
@@ -67,11 +107,23 @@ class Format implements aura\view\IHelper {
     }
 
     public function genericDuration($number, $locale=null) {
-        return core\i18n\Manager::getInstance($this->_view->getContext()->getApplication())->getModule('numbers', $locale)->formatDuration($number);
+        if($locale === null) {
+            $locale = $this->_locale;
+        }
+
+        return core\i18n\Manager::getInstance($this->application)
+            ->getModule('numbers', $locale)
+            ->formatDuration($number);
     }
 
     public function fileSize($bytes, $precision=2, $longNames=false, $locale=null) {
-        return core\i18n\Manager::getInstance($this->_view->getContext()->getApplication())->getModule('numbers', $locale)->formatFileSize($bytes, $precision, $longNames);
+        if($locale === null) {
+            $locale = $this->_locale;
+        }
+
+        return core\i18n\Manager::getInstance($this->application)
+            ->getModule('numbers', $locale)
+            ->formatFileSize($bytes, $precision, $longNames);
     }
 
     public function binHex($binary) {
@@ -87,6 +139,10 @@ class Format implements aura\view\IHelper {
     public function date($date, $size=core\time\Date::MEDIUM, $locale=true) {
         if($date === null) {
             return null;
+        }
+
+        if($locale === null) {
+            $locale = $this->_locale;
         }
 
         return core\time\Date::factory($date)
@@ -105,6 +161,10 @@ class Format implements aura\view\IHelper {
     public function dateTime($date, $size=core\time\Date::MEDIUM, $locale=true) {
         if($date === null) {
             return null;
+        }
+
+        if($locale === null) {
+            $locale = $this->_locale;
         }
         
         return core\time\Date::factory($date)
@@ -133,6 +193,10 @@ class Format implements aura\view\IHelper {
         if($date === null) {
             return null;
         }
+
+        if($locale === null) {
+            $locale = $this->_locale;
+        }
         
         return core\time\Date::factory($date)
             ->localeTimeFormat($size, $locale);
@@ -148,14 +212,30 @@ class Format implements aura\view\IHelper {
     }
     
     
-    public function timeSince($date, $locale=true, $maxUnits=2, $shortUnits=false, $maxUnit=core\time\Duration::YEARS) {
+    public function timeSince($date, $locale=null, $maxUnits=2, $shortUnits=false, $maxUnit=core\time\Duration::YEARS) {
+        if($locale === null) {
+            $locale = $this->_locale;
+        }
+
+        if($locale === null) {
+            $locale = true;
+        }
+        
         return core\time\Date::factory($date)
             ->timeSince()
             ->setLocale($locale)
             ->toString($maxUnits, $shortUnits, $maxUnit);
     }
     
-    public function timeUntil($date, $locale=true, $maxUnits=2, $shortUnits=false, $maxUnit=core\time\Duration::YEARS) {
+    public function timeUntil($date, $locale=null, $maxUnits=2, $shortUnits=false, $maxUnit=core\time\Duration::YEARS) {
+        if($locale === null) {
+            $locale = $this->_locale;
+        }
+
+        if($locale === null) {
+            $locale = true;
+        }
+        
         return core\time\Date::factory($date)
             ->timeUntil()
             ->setLocale($locale)

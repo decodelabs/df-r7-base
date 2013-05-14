@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\plug\context;
+namespace df\plug\shared;
 
 use df;
 use df\core;
@@ -11,9 +11,9 @@ use df\arch as archLib;
 use df\axis;
 use df\opal;
 
-class Data implements archLib\IContextHelper, opal\query\IEntryPoint {
+class Data implements core\ISharedHelper, opal\query\IEntryPoint {
     
-    use archLib\TContextHelper;
+    use core\TSharedHelper;
     use opal\query\TQuery_EntryPoint;
     
     
@@ -25,7 +25,7 @@ class Data implements archLib\IContextHelper, opal\query\IEntryPoint {
     
 // Query
     private function _getEntryPointApplication() {
-        return $this->_context->getApplication();
+        return $this->application;
     }
     
 
@@ -52,24 +52,24 @@ class Data implements archLib\IContextHelper, opal\query\IEntryPoint {
         $name = $query->getSource()->getDisplayName();
 
         if(!$output = $query->toRow()) {
-            $this->_context->throwError(404, 'Item not found - '.$name.'#'.$primary);
+            $this->throwError(404, 'Item not found - '.$name.'#'.$primary);
         }
 
-        if(!$this->_context->user->canAccess($output, $action)) {
-            $this->_context->throwError(401, 'Cannot '.$actionName.' '.$name.' items');
+        if(!$this->getUserManager()->canAccess($output, $action)) {
+            $this->throwError(401, 'Cannot '.$actionName.' '.$name.' items');
         }
 
         return $output;
     }
 
     public function newRecord($source, array $values=null) {
-        $sourceManager = new opal\query\SourceManager($this->_context->getApplication());
+        $sourceManager = new opal\query\SourceManager($this->application);
         $source = $sourceManager->newSource($source, null);
         $adapter = $source->getAdapter();
 
         $output = $adapter->newRecord($values);
 
-        if(!$this->_context->user->canAccess($output, 'add')) {
+        if(!$this->getUserManager()->canAccess($output, 'add')) {
             $this->throwError(401, 'Cannot add '.$source->getDisplayName().' items');
         }
 
@@ -83,11 +83,11 @@ class Data implements archLib\IContextHelper, opal\query\IEntryPoint {
             $actionName = 'access';
         }
         
-        $sourceManager = new opal\query\SourceManager($this->_context->getApplication());
+        $sourceManager = new opal\query\SourceManager($this->application);
         $source = $sourceManager->newSource($source, null);
         $adapter = $source->getAdapter();
 
-        if(!$this->_context->user->canAccess($adapter, $action)) {
+        if(!$this->getUserManager()->canAccess($adapter, $action)) {
             $this->throwError(401, 'Cannot '.$actionName.' '.$source->getDisplayName().' items');
         }
 
@@ -102,15 +102,15 @@ class Data implements archLib\IContextHelper, opal\query\IEntryPoint {
     }
 
     public function getModel($name) {
-        return axis\Model::factory($name, $this->_context->getApplication());
+        return axis\Model::factory($name, $this->application);
     }
     
     public function getUnit($unitId) {
-        return axis\Unit::fromId($unitId, $this->_context->getApplication());
+        return axis\Unit::fromId($unitId, $this->application);
     }
 
     public function getSchema($unitId) {
-        return axis\Unit::fromId($unitId, $this->_context->getApplication())->getUnitSchema();
+        return axis\Unit::fromId($unitId, $this->application)->getUnitSchema();
     }
 
     public function getSchemaField($unitId, $field) {
@@ -152,7 +152,7 @@ class Data implements archLib\IContextHelper, opal\query\IEntryPoint {
 
 // Policy
     public function fetchEntity($locator) {
-        return $this->_context->policy->fetchEntity($locator);
+        return $this->getPolicyManager()->fetchEntity($locator);
     }
 
     public function fetchEntityForAction($id, $action=null) {
@@ -163,11 +163,11 @@ class Data implements archLib\IContextHelper, opal\query\IEntryPoint {
         }
 
         if(!$output = $this->fetchEntity($id)) {
-            $this->_context->throwError(404, 'Entity not found - '.$id);
+            $this->throwError(404, 'Entity not found - '.$id);
         }
 
-        if(!$this->_context->user->canAccess($output, $action)) {
-            $this->_context->throwError(401, 'Cannot '.$actionName.' entity '.$id);
+        if(!$this->getUserManager()->canAccess($output, $action)) {
+            $this->throwError(401, 'Cannot '.$actionName.' entity '.$id);
         }
 
         return $output;
@@ -177,7 +177,7 @@ class Data implements archLib\IContextHelper, opal\query\IEntryPoint {
 // Crypt
     public function hash($message, $salt=null) {
         if($salt === null) {
-            $salt = $this->_context->getApplication()->getPassKey();
+            $salt = $this->application->getPassKey();
         }
         
         return core\string\Util::passwordHash($message, $salt);
@@ -185,9 +185,8 @@ class Data implements archLib\IContextHelper, opal\query\IEntryPoint {
     
     public function encrypt($message, $password=null, $salt=null) {
         if($password === null) {
-            $application = $this->_context->getApplication();
-            $password = $application->getPassKey();
-            $salt = $application->getUniquePrefix();
+            $password = $this->application->getPassKey();
+            $salt = $this->application->getUniquePrefix();
         }
         
         return core\string\Util::encrypt($message, $password, $salt);
@@ -195,9 +194,8 @@ class Data implements archLib\IContextHelper, opal\query\IEntryPoint {
     
     public function decrypt($message, $password=null, $salt=null) {
         if($password === null) {
-            $application = $this->_context->getApplication();
-            $password = $application->getPassKey();
-            $salt = $application->getUniquePrefix();
+            $password = $this->application->getPassKey();
+            $salt = $this->application->getUniquePrefix();
         }
         
         return core\string\Util::decrypt($message, $password, $salt);

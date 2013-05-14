@@ -3,16 +3,16 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\plug\context;
+namespace df\plug\directory;
 
 use df;
 use df\core;
-use df\arch as archLib;
+use df\arch;
 use df\aura as auraLib;
 
-class Aura implements archLib\IContextHelper {
+class Aura implements arch\IDirectoryHelper {
     
-    use archLib\TContextHelper;
+    use arch\TDirectoryHelper;
     
     public function getView($path, $request=null) {
         $parts = explode('.', $path);

@@ -3,19 +3,19 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\plug\context;
+namespace df\plug\shared;
 
 use df;
 use df\core;
 use df\plug;
 use df\arch;
     
-class Comms implements arch\IContextHelper {
+class Comms implements core\ISharedHelper {
 
-    use arch\TContextHelper;
+    use core\TSharedHelper;
 
     public function getNotificationManager() {
-        return arch\notify\Manager::getInstance($this->_context->getApplication());
+        return arch\notify\Manager::getInstance($this->application);
     }
 
     public function notify($id, $message=null, $type=null) {
