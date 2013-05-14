@@ -229,6 +229,13 @@ interface IHtmlView extends ILayoutView {
     public function hasRobots();
     public function removeRobots();
     
+    // Link
+    public function addLink($id, $rel, $url, array $attributes=null);
+    public function getLinks();
+    public function getLink($id);
+    public function removeLink($id);
+    public function clearLinks();
+
     // Favicon
     public function setFaviconHref($url);
     public function getFaviconHref();

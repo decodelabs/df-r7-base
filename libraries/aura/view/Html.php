@@ -44,8 +44,7 @@ class Html extends Base implements IHtmlView {
     protected $_headScripts = array();
     protected $_footScripts = array();
     
-    protected $_feeds = array();
-    protected $_faviconHref;
+    protected $_links = array();
     
     public $bodyTag;
     
@@ -292,20 +291,64 @@ class Html extends Base implements IHtmlView {
     public function removeRobots() {
         return $this->removeMeta('robots');
     }
+
+
+// Link
+    public function addLink($id, $rel, $url, array $attr=null) {
+        $attributes = [
+            'rel' => $rel,
+            'href' => $this->_context->normalizeOutputUrl($url)
+        ];
+
+        if($attr) {
+            $attributes = array_merge($attributes, $attr);
+        }
+
+        $this->_links[$id] = $this->html->element('link', null, $attributes);
+        return $this;
+    }
+
+    public function getLinks() {
+        return $this->_links;
+    }
+
+    public function getLink($id) {
+        if(isset($this->_links[$id])) {
+            return $this->_links[$id];
+        }
+    }
+
+    public function removeLink($id) {
+        unset($this->_links[$id]);
+        return $this;
+    }
+
+    public function clearLinks() {
+        $this->_links = [];
+        return $this;
+    }
+
+
     
-    // Favicon
+// Favicon
     public function setFaviconHref($url) {
-        $this->_faviconHref = $url;
+        if(!isset($this->_links['favicon'])) {
+            $this->addLink('favicon', 'shortcut icon', $url);
+        } else {
+            $this->_links['favicon']->setAttribute('href', $this->_context->normalizeOutputUrl($url));
+        }
+
         return $this;
     }
     
     public function getFaviconHref() {
-        return $this->_faviconHref;
+        if(isset($this->_links['favicon'])) {
+            return $this->_links['favicon']->getAttribute('href');
+        }
     }
     
-    public function linkFavicon($uri) {
-        $this->setFaviconHref($this->_context->normalizeOutputUrl($uri));
-        return $this;
+    public function linkFavicon($url) {
+        return $this->addLink('favicon', 'shortcut icon', $url);
     }
     
     
@@ -645,8 +688,8 @@ class Html extends Base implements IHtmlView {
         }
         
         // Favicon
-        if($this->_faviconHref !== null) {
-            $output .= '    <link rel="shortcut icon" href="'.$this->esc($this->_faviconHref).'" />'."\n";//type="'.core\mime\Type::fileToMime($this->_faviconUrl).'" />'."\n";
+        foreach($this->_links as $link) {
+            $output .= '    '.$link."\n";
         }
 
         // Meta
