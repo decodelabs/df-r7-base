@@ -34,7 +34,7 @@ class Tag implements ITag, core\IDumpable {
         $this->setName($name);
         
         if($attributes !== null) {
-            $this->setAttributes($attributes);
+            $this->addAttributes($attributes);
         }
     }
     
@@ -50,6 +50,10 @@ class Tag implements ITag, core\IDumpable {
                 $classes = explode('.', $id);
                 $id = array_shift($classes);
                 $this->addClasses($classes);
+            }
+
+            if(!empty($id)) {
+                $this->setId($id);
             }
         }
 
@@ -303,7 +307,7 @@ class Tag implements ITag, core\IDumpable {
         if(preg_match('/[^a-zA-Z0-9\-_]/', $id)) {
             throw new InvalidArgumentException('Invalid tag id '.$id.'!');
         }
-        
+
         $this->setAttribute('id', $id);
         return $this;
     }
