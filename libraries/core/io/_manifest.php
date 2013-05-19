@@ -509,5 +509,8 @@ interface IUtil {
 
     public static function chmod($path, $mode, $recursive=false);
 
+    public static function getBaseName($path);
+    public static function getFileName($path);
+    public static function getExtension($path);
     public static function stripLocationFromFilePath($path);
 }

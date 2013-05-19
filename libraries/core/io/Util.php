@@ -293,6 +293,21 @@ class Util implements IUtil {
     }
 
 
+    public static function getBaseName($path) {
+        return basename($path);
+    }
+
+    public static function getFileName($path) {
+        $base = basename($path);
+        $parts = explode('.', $base, 2);
+        return array_shift($parts);
+    }
+
+    public static function getExtension($path) {
+        $base = basename($path);
+        $parts = explode('.', $base, 2);
+        return array_pop($parts);
+    }
 
     public static function stripLocationFromFilePath($path) {
         if(!df\Launchpad::$loader) {
