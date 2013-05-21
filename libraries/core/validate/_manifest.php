@@ -256,7 +256,7 @@ trait TSanitizingField {
         }
 
         if($this->_sanitizer) {
-            $value = call_user_func_array($this->_sanitizer, [$value]);
+            $value = call_user_func_array($this->_sanitizer, [$value, $this]);
         }
 
         return $value;
