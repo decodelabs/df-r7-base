@@ -87,7 +87,7 @@ abstract class Base extends axis\Unit implements
         
         $cache = axis\schema\Cache::getInstance($this->_model->getApplication());
         $cache->remove($this->getUnitId());
-        
+
         return $this;
     }
     
@@ -130,9 +130,10 @@ abstract class Base extends axis\Unit implements
     
     
     public function destroyStorage() {
-        $this->clearUnitSchemaCache();
+        $defUnit = $this->_model->getSchemaDefinitionUnit();
+        $defUnit->clearUnitSchemaCache();
         $this->_adapter->destroyStorage();
-        $this->_model->getSchemaDefinitionUnit()->remove($this);
+        $defUnit->remove($this);
         
         return $this;
     }
