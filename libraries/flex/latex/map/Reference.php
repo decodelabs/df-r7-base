@@ -25,8 +25,25 @@ class Reference extends iris\map\Node implements flex\latex\IReference, core\IDu
         return $this->_type;
     }
 
+    public function getTargetType() {
+        switch($this->_type) {
+            case 'cite':
+                return 'bibitem';
+
+            case 'label':
+                return 'figure';
+                
+            default:
+                core\dump('ref target', $this->_type);
+        }
+    }
+
+    public function isEmpty() {
+        return false;
+    }
+
 // Dump
     public function getDumpProperties() {
-        return $this->id;
+        return $this->_type.': '.$this->id;
     }
 }

@@ -72,12 +72,30 @@ trait TNodeClassProvider {
     }
 }
 
-interface IContainerNode extends iris\map\INode, core\collection\IQueue, INodeClassProvider {}
+interface IContainerNode extends iris\map\INode, core\collection\IQueue, \IteratorAggregate, INodeClassProvider {
+    public function getReferenceMap();
+}
 
 trait TContainerNode {
 
     use core\collection\TArrayCollection_Queue;
-    use TNodeClassProvider;    
+    use TNodeClassProvider;  
+
+    public function getReferenceMap() {
+        $output = array();
+
+        foreach($this->_collection as $child) {
+            if($child instanceof flex\latex\IContainerNode) {
+                $output = array_merge($output, $child->getReferenceMap());
+            }
+
+            if($child instanceof IReferable && ($id = $child->getId())) {
+                $output[$id] = $child;
+            }
+        }
+
+        return $output;
+    }  
 }
 
 interface IPackage extends iris\IProcessor {
@@ -113,6 +131,9 @@ interface IDocument extends IEnvironmentNode, IContainerNode {
     public function getAuthor();
     public function setDate($date);
     public function getDate();
+
+    // Bibliography
+    public function getBibliography();
 }
 
 interface IBlock extends iris\map\IAspect, IContainerNode {}
@@ -128,6 +149,7 @@ interface IReference extends iris\map\IAspect {
     public function getId();
     public function setType($type);
     public function getType();
+    public function getTargetType();
 }
 
 interface IReferable extends iris\map\IEntity {
@@ -241,7 +263,8 @@ interface ITabular extends iris\map\IAspect {
 }
 
 interface ITable extends ITabular, IEnvironmentNode, IContainerNode, IReferable, ICaptioned, IPlacementAware {
-
+    public function isFirstRowHead();
+    public function isFirstColumnHead();
 }
 
 interface IColumn extends iris\map\IAspect {

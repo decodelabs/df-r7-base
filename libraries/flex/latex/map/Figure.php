@@ -28,6 +28,10 @@ class Figure extends iris\map\Node implements flex\latex\IFigure, core\IDumpable
         return $this->number;
     }
 
+    public function isEmpty() {
+        return false;
+    }
+
 
 // Dump
     public function getDumpProperties() {

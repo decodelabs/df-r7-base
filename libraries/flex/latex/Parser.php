@@ -125,8 +125,21 @@ class Parser extends iris\Parser {
         }
 
         $textNode = new flex\latex\map\TextNode($location);
+        $first = true;
 
         while($this->token->is('word', 'symbol')) {
+            if($first && $this->token->isAfterWhitespace()) {
+                $last = $this->getLastToken();
+
+                if($last 
+                && ($last->matches('keySymbol', null, '}') || $last->matches('keySymbol', null, '$'))
+                && strlen($this->token->getWhitespaceAfterLastNewLine())) {
+                    $textNode->appendText(' ');
+                }
+            }
+
+            $first = false;
+
             if(!$textNode->isEmpty() && $this->token->isAfterWhitespace()) {
                 $lineCount = $this->token->countNewLines();
 
@@ -136,7 +149,7 @@ class Parser extends iris\Parser {
                     } else {
                         $textNode->appendText("\n\n");
                     }
-                } else {
+                } else if(substr($textNode->text, -1) != ' ') {
                     $textNode->appendText(' ');
                 }
             }
@@ -161,6 +174,11 @@ class Parser extends iris\Parser {
         }
 
         if($textNode) {
+            if(($this->token->matches('command') || $this->token->matches('keySymbol', null, '$'))
+            && $this->token->isAfterWhitespace()) {
+                $textNode->appendText($this->token->getWhitespaceBeforeNewLine());
+            }
+
             $this->container->push($textNode);
         }
 
@@ -170,6 +188,12 @@ class Parser extends iris\Parser {
         }
 
         return $textNode;
+    }
+
+    public function closeParagraph() {
+        if($this->container instanceof flex\latex\map\Paragraph) {
+            $this->popContainer(true);
+        }
     }
 
     public function extractRefId() {
@@ -466,6 +490,10 @@ class Parser extends iris\Parser {
             throw new UnexpectedValueException(
                 'Environment '.$name.' does not have a handler package'
             );
+        }
+
+        if($this->container instanceof flex\latex\map\Paragraph) {
+            $this->popContainer();
         }
 
         $lastEnv = $this->environment;

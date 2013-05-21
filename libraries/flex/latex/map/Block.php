@@ -38,6 +38,18 @@ class Block extends iris\map\Node implements flex\latex\IGenericBlock, core\IDum
         return $this->_type;
     }
 
+    public function containsOnlySpan() {
+        if(count($this->_collection) > 1 || empty($this->_collection)) {
+            return false;
+        }
+
+        if(!$this->_collection[0] instanceof self) {
+            return false;
+        }
+
+        return in_array($this->_collection[0]->getType(), ['italic', 'align', 'bold']);
+    }
+
 // Dump
     public function getDumpProperties() {
         $output = [];

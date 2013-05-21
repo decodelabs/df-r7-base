@@ -195,6 +195,8 @@ interface IToken extends ILocationProxyProvider {
     public function getTypeString();
     public function getValue();
     public function getWhitespace();
+    public function getWhitespaceBeforeNewLine();
+    public function getWhitespaceAfterLastNewLine();
 
     public function isAfterWhitespace();
     public function isAfterNewline();
@@ -212,6 +214,7 @@ interface IToken extends ILocationProxyProvider {
 interface IParser {
     public function getSourceUri();
     public function getLexer();
+    public function getUnit();
 
     public function setExtractBufferSize($size);
     public function getExtractBufferSize();
@@ -228,6 +231,9 @@ interface IParser {
     public function parseRoot();
     public function getLastCommentBody();
 
+    public function isStarted();
+    public function hasRun();
+
     public function extract($count=1);
     public function extractMatch($type, $subType=null, $value=null);
     public function extractValue($value);
@@ -238,6 +244,7 @@ interface IParser {
     public function extractStatementEnd();
     public function extractWord();
     public function rewind($count=1);
+    public function getLastToken();
     public function peek($offset=1, $length=1);
     public function peekSequence($ids);
 }
@@ -246,4 +253,9 @@ interface IParser {
 interface IProcessor {
     public function getName();
     public function initialize(IParser $parser);
+}
+
+
+interface ITranslator {
+    public function translate();
 }

@@ -32,6 +32,38 @@ class Table extends iris\map\Node implements flex\latex\ITable, core\IDumpable {
         return $this->push($row);
     }
 
+    public function isFirstRowHead() {
+        foreach($this->_collection as $child) {
+            if(is_array($child)) {
+                foreach($child as $cell) {
+                    if($cell->getType() != 'cell') {
+                        continue;
+                    }
+
+                    if(!$cell->containsOnlySpan() && !$cell->isEmpty()) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        }
+    }
+
+    public function isFirstColumnHead() {
+        foreach($this->_collection as $child) {
+            if(!is_array($child) || !isset($child[0])) {
+                continue;
+            }
+
+            if(!$child[0]->containsOnlySpan() && !$child[0]->isEmpty()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 
 // Dump
     public function getDumpProperties() {

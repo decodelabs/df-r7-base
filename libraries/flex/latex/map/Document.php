@@ -105,6 +105,16 @@ class Document extends iris\map\Node implements flex\latex\IDocument, core\IDump
         return $this->_date;
     }
 
+
+// References
+    public function getBibliography() {
+        foreach($this->_collection as $child) {
+            if($child instanceof flex\latex\map\Bibliography) {
+                return $child;
+            }
+        }
+    }
+
 // Dump
     public function getDumpProperties() {
         $output = [];

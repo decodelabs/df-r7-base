@@ -21,6 +21,7 @@ abstract class Parser implements IParser, core\IDumpable {
     protected $_extractBuffer = array();
     protected $_extractBufferSize = 100;
     protected $_isStarted = false;
+    protected $_hasRun = false;
     protected $_hasLastToken = false;
     protected $_processors = array();
     protected $_lexer;
@@ -40,6 +41,11 @@ abstract class Parser implements IParser, core\IDumpable {
 
     public function getSourceUri() {
         return $this->_lexer->getSourceUri();
+    }
+
+// Unit
+    public function getUnit() {
+        return $this->unit;
     }
 
 // Buffer
@@ -147,6 +153,7 @@ abstract class Parser implements IParser, core\IDumpable {
         $this->parseRoot();
 
         $this->unit->normalize();
+        $this->_hasRun = true;
 
         return $this->unit;
     }
@@ -155,6 +162,14 @@ abstract class Parser implements IParser, core\IDumpable {
         if($this->lastComment) {
             return $this->lastComment->value;
         }
+    }
+
+    public function isStarted() {
+        return $this->_isStarted;
+    }
+
+    public function hasRun() {
+        return $this->_hasRun;
     }
 
 
@@ -366,6 +381,10 @@ abstract class Parser implements IParser, core\IDumpable {
         $this->_setCurrentToken();
 
         return $this;
+    }
+
+    public function getLastToken() {
+        return @array_slice($this->_extractBuffer, -1)[0];
     }
 
     protected function _setCurrentToken() {

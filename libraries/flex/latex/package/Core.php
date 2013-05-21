@@ -71,7 +71,7 @@ class Core extends Base {
     public function environment_center() {
         $block = new flex\latex\map\Block($this->parser->token);
         $block->isInline(false);
-        $block->setType('span');
+        $block->setType('align');
         $block->setAttribute('align', 'center');
 
         return $this->parser->parseStandardContent($block);
@@ -141,8 +141,9 @@ class Core extends Base {
 
         $options = array_keys($this->parser->extractOptionList());
         $figure->setPlacement(array_shift($options));
-
+        
         $this->parser->parseStandardContent($figure);
+        
         return $figure;
     }
 
@@ -580,6 +581,8 @@ class Core extends Base {
     protected $_sectionCounter = 0;
 
     public function command_section($isStar) {
+        $this->parser->closeParagraph();
+
         $section = new flex\latex\map\Block($this->parser->token);
         $section->setType('section');
         $section->setAttribute('level', 1);
@@ -602,6 +605,8 @@ class Core extends Base {
     protected $_subsectionCounter = 0;
 
     public function command_subsection($isStar) {
+        $this->parser->closeParagraph();
+        
         $section = new flex\latex\map\Block($this->parser->token);
         $section->setType('section');
         $section->setAttribute('level', 2);
@@ -624,6 +629,8 @@ class Core extends Base {
     protected $_subsubsectionCounter = 0;
 
     public function command_subsubsection($isStar) {
+        $this->parser->closeParagraph();
+        
         if($this->parser->container instanceof flex\latex\IGenericBlock
         && $this->parser->container->getType() == 'bibitem') {
             return $this->_bibitemSubsection();
@@ -662,9 +669,8 @@ class Core extends Base {
 // Textit
     public function command_textit() {
         $block = new flex\latex\map\Block($this->parser->token);
-        $block->setType('span');
+        $block->setType('italic');
         $block->isInline(true);
-        $block->setAttribute('italic', true);
 
         $this->parser->extractValue('{');
         $this->parser->parseStandardContent($block, true);
