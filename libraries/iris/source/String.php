@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\iris;
     
-class String implements ISource {
+class String implements iris\ISource {
 
     protected $_string;
     protected $_uri;
