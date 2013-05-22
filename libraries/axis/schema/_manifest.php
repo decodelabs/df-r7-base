@@ -522,7 +522,7 @@ trait TBridgedRelationField {
 interface IOneField extends IOneRelationField, IMultiPrimitiveField {}
 interface IOneParentField extends IOneRelationField, IMultiPrimitiveField {}
 interface IOneChildField extends IOneRelationField, INullPrimitiveField {}
-interface IManyToOneField extends IOneRelationField, IMultiPrimitiveField {}
+interface IManyToOneField extends IOneRelationField, IMultiPrimitiveField, IInverseRelationField {}
 
 interface IManyField extends IManyRelationField, IBridgedRelationField {}
 
