@@ -14,8 +14,12 @@ class String implements iris\ISource {
     protected $_string;
     protected $_uri;
 
-    public function __construct($uri, $string, $encoding=null) {
-        $this->_uri = SourceUri::factory($uri);
+    public function __construct($string, $uri=null, $encoding=null) {
+        if($uri === null) {
+            $uri = 'dynamic://'.hash('crc32', $string);
+        }
+
+        $this->_uri = iris\SourceUri::factory($uri);
         $this->_string = new core\string\Manipulator($string, $encoding);
     }
 
