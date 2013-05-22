@@ -11,6 +11,7 @@ use df\core;
 class Slug extends Base implements core\validate\ISlugField {
 
     use core\validate\TStorageAwareField;
+    use core\validate\TSanitizingField;
     use core\validate\TUniqueCheckerField;
 
     protected $_allowPathFormat = false;
@@ -48,6 +49,7 @@ class Slug extends Base implements core\validate\ISlugField {
 
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
+        $value = $this->_sanitizeValue($value);
 
         if(false !== strpos($value, '/') && !$this->_allowPathFormat) {
             $node->addError('invalid', $this->_handler->_('Path type slugs are not allowed here'));

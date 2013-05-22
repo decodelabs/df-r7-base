@@ -366,7 +366,7 @@ interface IIdListField extends IField, ISanitizingField {}
 interface IIntegerField extends IField, IRangeField {}
 interface IPasswordField extends IField, IMinLengthField {}
 
-interface ISlugField extends IField, IUniqueCheckerField {
+interface ISlugField extends IField, ISanitizingField, IUniqueCheckerField {
     public function allowPathFormat($flag=null);
     public function setDefaultValueField($field);
     public function getDefaultValueField();
