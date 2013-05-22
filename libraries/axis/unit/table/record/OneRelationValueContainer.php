@@ -155,7 +155,11 @@ class OneRelationValueContainer implements
     public function deploySaveTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $record, $fieldName, opal\record\task\ITask $recordTask=null) {
         if($this->_record instanceof opal\record\IRecord) {
             $task = $this->_record->deploySaveTasks($taskSet);
-            
+
+            if(!$task && $this->_record->isNew()) {
+                $task = $taskSet->getTask($this->_record);
+            }
+
             if($task && $recordTask && $this->_record->isNew()) {
                 $recordTask->addDependency(
                     new opal\record\task\dependency\UpdateManifestField($fieldName, $task)

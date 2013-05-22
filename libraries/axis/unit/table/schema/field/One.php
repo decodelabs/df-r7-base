@@ -58,25 +58,12 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
 
         if($this instanceof axis\schema\IInverseRelationField) {
             $targetField = $this->_targetField;
-
-            /*
-            if($hasKey && $row[$key] instanceof opal\record\IRecord) {
-                $inverseValue = $row[$key]->getRaw($targetField);
-                $inverseValue->populateInverse($forRecord);
-            }
-            */
         }
 
 
         $output = new axis\unit\table\record\OneRelationValueContainer(
             $forRecord, $value, $this->_targetUnitId, $this->_targetPrimaryFields, $targetField
         );
-
-        /*
-        if($hasKey) {
-            $output->populateInverse($row[$key]);
-        }
-        */
 
         return $output;
     }

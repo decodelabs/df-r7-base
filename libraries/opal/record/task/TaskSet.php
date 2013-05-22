@@ -196,20 +196,22 @@ class TaskSet implements ITaskSet {
     public function getTask($id) {
         if($id instanceof ITask) {
             $id = $id->getId();
+        } else if($id instanceof opal\record\IRecord) {
+            $id = $this->_getRecordId($id);
         }
 
         if(isset($this->_tasks[$id])) {
-            return $tis->_tasks[$id];
+            return $this->_tasks[$id];
         }
     }
 
     public function isRecordQueued(opal\record\IRecord $record) {
-        $id = $record->getRecordAdapter()->getQuerySourceId().'#'.opal\record\Base::extractRecordId($record);
+        $id = $this->_getRecordId($record);
         return isset($this->_tasks[$id]);
     }
     
     public function setRecordAsQueued(opal\record\IRecord $record) {
-        $id = $record->getRecordAdapter()->getQuerySourceId().'#'.opal\record\Base::extractRecordId($record);
+        $id = $this->_getRecordId($record);
 
         if(!isset($this->_tasks[$id])) {
             $this->_tasks[$id] = false;
@@ -218,6 +220,9 @@ class TaskSet implements ITaskSet {
         return $this;
     }
     
+    protected function _getRecordId(opal\record\IRecord $record) {
+        return $record->getRecordAdapter()->getQuerySourceId().'#'.opal\record\Base::extractRecordId($record);
+    }
     
     
     public function execute() {
