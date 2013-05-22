@@ -166,7 +166,7 @@ class Html extends iris\Translator {
         $imgTag = $this->element('img', null, ['src' => $src, 'alt' => $alt]);
 
         $this->html .= "\n".$figTag->open()."\n";
-        $this->html .= '    '.$imgTag."\n";
+        $this->html .= '    '.$this->element('h4', 'Figure '.$figure->getNumber())."\n";
 
         if($captionTag) {
             $this->html .= '    '.$captionTag->open();
@@ -174,6 +174,7 @@ class Html extends iris\Translator {
             $this->html .= $captionTag->close()."\n";
         }
 
+        $this->html .= '    '.$imgTag."\n";
         $this->html .= $figTag->close()."\n";
     }
 
