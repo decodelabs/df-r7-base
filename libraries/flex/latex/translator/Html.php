@@ -25,6 +25,14 @@ class Html extends iris\Translator {
     protected $_references = array();
     protected $_imageDereferencer;
 
+    public static function createLexer(iris\ISource $source) {
+        return new flex\latex\Lexer($source);
+    }
+
+    public static function createParser(iris\ILexer $lexer) {
+        return new flex\latex\Parser($lexer);   
+    }
+
     public function translate() {
         foreach($this->unit->getEntities() as $document) {
             $this->_beginDocument($document);
