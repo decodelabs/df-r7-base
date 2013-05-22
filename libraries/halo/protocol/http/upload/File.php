@@ -107,6 +107,16 @@ class File implements halo\protocol\http\IUploadFile {
     public function getContentType() {
         return $this->_type;
     }
+
+    public function getPointer() {
+        if(!$this->_isSuccess) {
+            throw new halo\protocol\http\RuntimeException(
+                'No valid file path has been determined yet'
+            );
+        }
+
+        return new core\io\LocalFilePointer($this->_destinationPath);
+    }
     
 
     public function isValid() {
@@ -151,27 +161,7 @@ class File implements halo\protocol\http\IUploadFile {
         }
 
         $this->_isProcessed = true;
-        $maxSize = $this->_handler->getMaxFileSize()->getMegabytes();
-
-        if($maxSize > 0 && $this->_size->getMegabytes() > $maxSize) {
-            $inputNode->addError('tooBig', $this->_(
-                'The file exceeds the maximum upload file size'
-            ));
-        }
-
-        if($this->_extension && !$this->_handler->isExtensionAllowed($this->_extension)) {
-            $inputNode->addError('extensionNotAllowed', $this->_(
-                'Files with the extension %e% are not allowed to be uploaded here',
-                ['%e%' => $this->_extension]
-            ));
-        }
-
-        if(!$this->_handler->isTypeAccepted($this->_type)) {
-            $inputNode->addError('tpyeNotAccepted', $this->_(
-                'File of type %t% are not allowed to be uploaded here',
-                ['%t%' => $this->_type]
-            ));
-        }
+        $this->_validateFile($inputNode);
 
         if(!$inputNode->isValid()) {
             return $this;
@@ -203,14 +193,6 @@ class File implements halo\protocol\http\IUploadFile {
             }
         }
 
-        if(!is_uploaded_file($this->_tempPath)) {
-            $inputNode->addError('uploadNotFound', $this->_(
-                'There was a problem finding the uploaded file in the temp location - please try again'
-            ));
-
-            return $this;
-        }
-
         if(!move_uploaded_file($this->_tempPath, $fullPath)) {
             $inputNode->addError('uploadTransfer', $this->_(
                 'There was a problem transferring the uploaded file - please try again'
@@ -223,6 +205,57 @@ class File implements halo\protocol\http\IUploadFile {
         $this->_isSuccess = true;
 
         return $this;
+    }
+
+    public function tempUpload(core\collection\IInputTree $inputNode) {
+        if($this->_isProcessed) {
+            return $this;
+        }
+
+        $this->_isProcessed = true;
+        $this->_validateFile($inputNode);
+
+        if(!$inputNode->isValid()) {
+            return $this;
+        }
+
+
+        $this->_destinationPath = $this->_tempPath;
+        $this->_isSuccess = true;
+
+        return $this;
+    }
+
+    protected function _validateFile(core\collection\IInputTree $inputNode) {
+        $maxSize = $this->_handler->getMaxFileSize()->getMegabytes();
+
+        if($maxSize > 0 && $this->_size->getMegabytes() > $maxSize) {
+            $inputNode->addError('tooBig', $this->_(
+                'The file exceeds the maximum upload file size'
+            ));
+        }
+
+        if($this->_extension && !$this->_handler->isExtensionAllowed($this->_extension)) {
+            $inputNode->addError('extensionNotAllowed', $this->_(
+                'Files with the extension %e% are not allowed to be uploaded here',
+                ['%e%' => $this->_extension]
+            ));
+        }
+
+        if(!$this->_handler->isTypeAccepted($this->_type)) {
+            $inputNode->addError('tpyeNotAccepted', $this->_(
+                'File of type %t% are not allowed to be uploaded here',
+                ['%t%' => $this->_type]
+            ));
+        }
+
+        if(!is_uploaded_file($this->_tempPath)) {
+            $inputNode->addError('uploadNotFound', $this->_(
+                'There was a problem finding the uploaded file in the temp location - please try again'
+            ));
+
+            return $this;
+        }
     }
 
     protected function _autoRename($fullPath) {

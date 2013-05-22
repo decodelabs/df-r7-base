@@ -270,6 +270,7 @@ interface IUploadHandler extends core\mime\IAcceptTypeProcessor, \Countable, \It
     public function getMaxFileSize();
 
     public function uploadAll($destination, core\collection\IInputTree $inputCollection, $conflictAction=IUploadFile::RENAME);
+    public function tempUploadAll(core\collection\IInputTree $inputCollection);
 }
 
 interface IUploadFile {
@@ -290,6 +291,7 @@ interface IUploadFile {
     public function getDestinationPath();
     public function getSize();
     public function getContentType();
+    public function getPointer();
 
     public function isValid();
     public function isSuccess();
@@ -297,4 +299,5 @@ interface IUploadFile {
     public function getErrorString();
 
     public function upload($destination, core\collection\IInputTree $inputNode, $conflictAction=IUploadFile::RENAME);
+    public function tempUpload(core\collection\IInputTree $inputNode);
 }

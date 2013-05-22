@@ -129,6 +129,14 @@ class Handler implements halo\protocol\http\IUploadHandler {
         return $this;
     }
 
+    public function tempUploadAll(core\collection\IInputTree $inputCollection) {
+        foreach($this as $file) {
+            $file->tempUpload($inputCollection);
+        }
+
+        return $this;
+    }
+
 
 // Countable
     public function count() {
