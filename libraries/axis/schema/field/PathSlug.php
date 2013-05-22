@@ -43,7 +43,7 @@ class PathSlug extends Base implements
         ];
     }
 
-    public function sanitizeValue($value, $forRecord) {
+    public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
         if($value === null && $this->isNullable()) {
             return null;
         }
@@ -93,7 +93,7 @@ class PathSlug extends Base implements
 
     protected function _createSubClause(opal\query\IClauseFactory $parent, $value, $operator) {
         $output = new opal\query\clause\WhereList($parent, true);
-        $slug = $this->sanitizeValue($value, false);
+        $slug = $this->sanitizeValue($value);
 
         if($slug === null) {
             return $output

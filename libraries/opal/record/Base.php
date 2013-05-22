@@ -511,7 +511,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
                         $value = null;
                     }
 
-                    $row[$name] = $field->sanitizeValue($value, true);
+                    $row[$name] = $field->sanitizeValue($value, $this);
                 }
             }
         }
@@ -738,7 +738,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
 
             if(isset($fieldProcessors[$key])) {
                 $fieldProcessor = $fieldProcessors[$key];
-                $value = $fieldProcessors[$key]->sanitizeValue($value, false);
+                $value = $fieldProcessors[$key]->sanitizeValue($value, $this);
             }
         }
 
@@ -784,7 +784,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
 
             if(isset($fieldProcessors[$key])) {
                 $fieldProcessor = $fieldProcessors[$key];
-                $value = $fieldProcessors[$key]->sanitizeValue($value, false);
+                $value = $fieldProcessors[$key]->sanitizeValue($value);
             }
         }
         

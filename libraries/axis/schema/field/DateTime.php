@@ -23,7 +23,7 @@ class DateTime extends Base implements axis\schema\IDateField {
     }
     
     public function deflateValue($value) {
-        $value = $this->sanitizeValue($value, true);
+        $value = $this->sanitizeValue($value);
         
         if(empty($value)) {
             return null;
@@ -32,7 +32,7 @@ class DateTime extends Base implements axis\schema\IDateField {
         return $value->format(core\time\Date::DB);
     }
     
-    public function sanitizeValue($value, $forRecord) {
+    public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
         if(empty($value)) {
             if($this->isNullable()) {
                 return null;

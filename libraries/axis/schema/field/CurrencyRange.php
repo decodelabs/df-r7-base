@@ -67,7 +67,7 @@ class CurrencyRange extends Base implements axis\schema\IMultiPrimitiveField {
         ];
     }
 
-    public function sanitizeValue($value, $forRecord) {
+    public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
         if(!is_array($value)) {
             $value = [(string)$value, null];
         }

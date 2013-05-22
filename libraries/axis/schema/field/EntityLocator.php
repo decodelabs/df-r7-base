@@ -25,7 +25,7 @@ class EntityLocator extends Base implements
     }
 
     public function deflateValue($value) {
-        $value = $this->sanitizeValue($value, true);
+        $value = $this->sanitizeValue($value);
 
         if(empty($value)) {
             return null;
@@ -37,7 +37,7 @@ class EntityLocator extends Base implements
         ];
     }
 
-    public function sanitizeValue($value, $forRecord) {
+    public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
         if(empty($value)) {
             if($this->isNullable()) {
                 return null;
@@ -96,7 +96,7 @@ class EntityLocator extends Base implements
 
     protected function _createSubClause(opal\query\IClauseFactory $parent, $value, $operator) {
         $output = new opal\query\clause\WhereList($parent, true);
-        $locator = $this->sanitizeValue($value, false);
+        $locator = $this->sanitizeValue($value);
 
         if($locator === null) {
             return $output

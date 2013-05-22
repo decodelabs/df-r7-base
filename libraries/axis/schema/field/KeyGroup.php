@@ -37,7 +37,7 @@ class KeyGroup extends Base implements axis\schema\IRelationField, axis\schema\I
 
         if($forRecord) {
             $output = new axis\unit\table\record\OneRelationValueContainer(
-                $values, $this->_targetUnitId, $this->_targetPrimaryFields
+                $forRecord, $values, $this->_targetUnitId, $this->_targetPrimaryFields
             );
 
             if(isset($row[$key])) {
@@ -74,13 +74,13 @@ class KeyGroup extends Base implements axis\schema\IRelationField, axis\schema\I
         return $output;
     }
 
-    public function sanitizeValue($value, $forRecord) {
+    public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
         if(!$forRecord) {
             return $value;
         }
         
         return new axis\unit\table\record\OneRelationValueContainer(
-            $value, $this->_targetUnitId, $this->_targetPrimaryFields
+            $forRecord, $value, $this->_targetUnitId, $this->_targetPrimaryFields
         );
     }
 

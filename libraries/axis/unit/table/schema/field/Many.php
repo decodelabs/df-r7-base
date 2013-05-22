@@ -60,7 +60,7 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
         return null;
     }
     
-    public function sanitizeValue($value, $forRecord) {
+    public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
         if($forRecord) {
             $output = new axis\unit\table\record\BridgedManyRelationValueContainer(
                 $this->_bridgeUnitId, 

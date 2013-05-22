@@ -36,7 +36,7 @@ class OneParent extends One implements axis\schema\IOneParentField {
         
         if($forRecord) {
             return new axis\unit\table\record\OneRelationValueContainer(
-                $values, $this->_targetUnitId, $this->_targetPrimaryFields, $this->_targetField
+                $forRecord, $values, $this->_targetUnitId, $this->_targetPrimaryFields, $this->_targetField
             );
         } else {
             return new opal\record\PrimaryManifest($this->_targetPrimaryFields, $values);

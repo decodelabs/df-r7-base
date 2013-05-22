@@ -31,7 +31,7 @@ class DataObject extends Base implements opal\schema\ILargeByteSizeRestrictedFie
     }
     
     public function deflateValue($value) {
-        $value = $this->sanitizeValue($value, true);
+        $value = $this->sanitizeValue($value);
         
         if($value === null) {
             return null;
@@ -44,7 +44,7 @@ class DataObject extends Base implements opal\schema\ILargeByteSizeRestrictedFie
         }
     }
     
-    public function sanitizeValue($value, $forRecord) {
+    public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
         if(!$value instanceof core\collection\ITree) {
             if(empty($value)) {
                 $value = null;

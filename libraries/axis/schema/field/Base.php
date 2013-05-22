@@ -69,7 +69,7 @@ abstract class Base implements axis\schema\IField, core\IDumpable {
         return $value;
     }
     
-    public function sanitizeValue($value, $forRecord) {
+    public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
         return $value;
     }
     

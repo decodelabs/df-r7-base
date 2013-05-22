@@ -59,20 +59,24 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
         if($this instanceof axis\schema\IInverseRelationField) {
             $targetField = $this->_targetField;
 
+            /*
             if($hasKey && $row[$key] instanceof opal\record\IRecord) {
                 $inverseValue = $row[$key]->getRaw($targetField);
                 $inverseValue->populateInverse($forRecord);
             }
+            */
         }
 
 
         $output = new axis\unit\table\record\OneRelationValueContainer(
-            $value, $this->_targetUnitId, $this->_targetPrimaryFields, $targetField
+            $forRecord, $value, $this->_targetUnitId, $this->_targetPrimaryFields, $targetField
         );
 
+        /*
         if($hasKey) {
             $output->populateInverse($row[$key]);
         }
+        */
 
         return $output;
     }
@@ -101,13 +105,19 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
         return $output;
     }
     
-    public function sanitizeValue($value, $forRecord) {
+    public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
         if(!$forRecord) {
             return $value;
         }
+
+        $targetField = null;
+
+        if($this instanceof axis\schema\IInverseRelationField) {
+            $targetField = $this->_targetField;
+        }
         
         return new axis\unit\table\record\OneRelationValueContainer(
-            $value, $this->_targetUnitId, $this->_targetPrimaryFields
+            $forRecord, $value, $this->_targetUnitId, $this->_targetPrimaryFields, $targetField
         );
     }
     

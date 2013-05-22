@@ -37,13 +37,13 @@ class RainbowKey extends Base implements
         }
         
         if(!$value instanceof core\string\IRainbowKey) {
-            $value = $this->sanitizeValue($value, false);
+            $value = $this->sanitizeValue($value);
         }
         
         return $value->getBytes();
     }
     
-    public function sanitizeValue($value, $forRecord) {
+    public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
         return core\string\RainbowKey::factory($value, $this->_byteSize);
     }
 

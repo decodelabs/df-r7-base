@@ -93,7 +93,7 @@ class Guid extends Base implements axis\schema\IAutoGeneratorField {
         return $value->getBytes();
     }
     
-    public function sanitizeValue($value, $forRecord) {
+    public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
         return core\string\Uuid::factory($value);
     }
 

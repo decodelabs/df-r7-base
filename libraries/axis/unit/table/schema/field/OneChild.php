@@ -30,7 +30,7 @@ class OneChild extends axis\schema\field\Base implements axis\schema\IOneChildFi
         return null;
     }
     
-    public function sanitizeValue($value, $forRecord) {
+    public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
         if($forRecord) {
             $output = new axis\unit\table\record\OneChildRelationValueContainer(
                 $this->_targetUnitId, $this->_targetField

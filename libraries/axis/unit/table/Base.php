@@ -412,7 +412,7 @@ abstract class Base extends axis\Unit implements
             return $value;
         }
         
-        return $axisField->deflateValue($axisField->sanitizeValue($value, false));
+        return $axisField->deflateValue($axisField->sanitizeValue($value));
     }
     
     public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false) {
@@ -577,7 +577,7 @@ abstract class Base extends axis\Unit implements
             if(!isset($row[$name])) {
                 $value = $field->generateInsertValue($row);
             } else {
-                $value = $field->sanitizeValue($row[$name], false);
+                $value = $field->sanitizeValue($row[$name]);
             }
             
             $value = $field->deflateValue($value);
@@ -634,7 +634,7 @@ abstract class Base extends axis\Unit implements
                 if(!isset($row[$name])) {
                     $value = $field->generateInsertValue($row);
                 } else {
-                    $value = $field->sanitizeValue($row[$name], false);
+                    $value = $field->sanitizeValue($row[$name]);
                 }
                 
                 $value = $field->deflateValue($value);
@@ -679,7 +679,7 @@ abstract class Base extends axis\Unit implements
                 continue;
             }
             
-            $value = $field->deflateValue($field->sanitizeValue($value, false));
+            $value = $field->deflateValue($field->sanitizeValue($value));
             
             if(is_array($value)) {
                 unset($values[$name]);

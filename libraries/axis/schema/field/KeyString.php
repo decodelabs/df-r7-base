@@ -36,7 +36,7 @@ class KeyString extends String {
 
 
 // Values
-    public function sanitizeValue($value, $forRecord) {
+    public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
         if($this->_case != core\string\ICase::NONE && $value !== null) {
             $value = core\string\Manipulator::applyCase($value, $this->_case, $this->_characterSet);
         }

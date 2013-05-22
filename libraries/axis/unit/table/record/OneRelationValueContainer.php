@@ -20,12 +20,17 @@ class OneRelationValueContainer implements
     protected $_targetUnitId;
     protected $_populateInverseField = null;
     
-    public function __construct($value, $targetUnitId, array $primaryFields, $populateInverseField=null) {
+    public function __construct(opal\record\IRecord $parentRecord=null, $value, $targetUnitId, array $primaryFields, $populateInverseField=null) {
         $this->_value = new opal\record\PrimaryManifest($primaryFields);
         $this->_targetUnitId = $targetUnitId;
         $this->_populateInverseField = $populateInverseField;
-        
+
         $this->setValue($value);
+
+        if($parentRecord && $this->_record && !empty($this->_populateInverseField)) {
+            $inverseValue = $this->_record->getRaw($this->_populateInverseField);
+            $inverseValue->populateInverse($parentRecord);
+        }
     } 
     
     public function isPrepared() {
@@ -132,7 +137,7 @@ class OneRelationValueContainer implements
     }
     
     public function duplicateForChangeList() {
-        return new self(null, $this->_targetUnitId, $this->_value->getFieldNames());
+        return new self(null, null, $this->_targetUnitId, $this->_value->getFieldNames());
     }
     
     public function populateInverse(opal\record\IRecord $record=null) {

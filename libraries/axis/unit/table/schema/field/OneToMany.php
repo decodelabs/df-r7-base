@@ -43,7 +43,7 @@ class OneToMany extends axis\schema\field\Base implements axis\schema\IOneToMany
         return null;
     }
     
-    public function sanitizeValue($value, $forRecord) {
+    public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
         if($forRecord) {
             $output = new axis\unit\table\record\InlineManyRelationValueContainer(
                 $this->_targetUnitId,

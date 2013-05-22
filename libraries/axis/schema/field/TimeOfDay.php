@@ -22,7 +22,7 @@ class TimeOfDay extends Base {
     }
     
     public function deflateValue($value) {
-        $value = $this->sanitizeValue($value, true);
+        $value = $this->sanitizeValue($value);
         
         if(empty($value)) {
             return null;
@@ -31,7 +31,7 @@ class TimeOfDay extends Base {
         return $value->toString();
     }
     
-    public function sanitizeValue($value, $forRecord) {
+    public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
         if(empty($value)) {
             if($this->isNullable()) {
                 return null;
