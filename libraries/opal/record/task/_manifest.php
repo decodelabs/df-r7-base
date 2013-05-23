@@ -241,10 +241,20 @@ interface IDeleteTask extends ITask {}
 
 
 interface IKeyTask extends ITask {
+    public function setKeys(array $keys);
+    public function addKeys(array $keys);
+    public function addKey($key, $value);
     public function getKeys();
 }
 
-interface IDeleteKeyTask extends IDeleteTask, IKeyTask {}
+interface IFilterKeyTask extends ITask {
+    public function setFilterKeys(array $keys);
+    public function addFilterKeys(array $keys);
+    public function addFilterKey($key, $value);
+    public function getFilterKeys();
+}
+
+interface IDeleteKeyTask extends IDeleteTask, IKeyTask, IFilterKeyTask {}
 
 
 interface IRecordTask extends ITask, IEventBroadcastingTask {
@@ -279,7 +289,10 @@ trait TRecordTask {
     }
 }
 
-interface IInsertRecordTask extends IRecordTask, IInsertTask {}
+interface IInsertRecordTask extends IRecordTask, IInsertTask {
+    public function ifNotExists($flag=null);
+}
+
 interface IReplaceRecordTask extends IRecordTask, IReplaceTask {}
 interface IUpdateRecordTask extends IRecordTask, IUpdateTask {}
 interface IDeleteRecordTask extends IRecordTask, IDeleteTask {}
