@@ -45,7 +45,7 @@ class Clause implements opal\query\IClause, core\IDumpable {
         if($value instanceof opal\query\IQuery
         && !$value instanceof opal\query\ICorrelationQuery) {
             throw new opal\query\ValueException(
-                'Only correlation queries are allowed as clause values'
+                'Only correlation queries are allowed as query clause values'
             );
         }
 

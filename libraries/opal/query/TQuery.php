@@ -1470,7 +1470,7 @@ trait TQuery_EntryPoint {
         return Initiator::factory($this->_getEntryPointApplication())
             ->beginSelect(func_get_args(), true);
     }
-    
+
     public function fetch() {
         return Initiator::factory($this->_getEntryPointApplication())
             ->beginFetch();

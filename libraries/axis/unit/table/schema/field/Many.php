@@ -118,9 +118,9 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
         $localFieldName = $this->getBridgeLocalFieldName();
         $targetFieldName = $this->getBridgeTargetFieldName();
 
-        $query = $bridgeUnit->select(
-            $localFieldName.' as id'
-        );
+        $query = opal\query\Initiator::factory($application)
+            ->beginCorrelation($parent, $localFieldName, 'id')
+            ->from($bridgeUnit, $localFieldName.'Bridge');
 
         $mainOperator = 'in';
         
