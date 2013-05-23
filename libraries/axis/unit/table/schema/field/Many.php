@@ -159,6 +159,7 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
 
 // Populate
     public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate) {
+        core\debug()->dump($populate);
         $application = $populate->getSourceManager()->getApplication();
 
         $parentSource = $populate->getParentSource();
@@ -171,7 +172,7 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
         $bridgeTargetFieldName = $this->getBridgeTargetFieldName();
 
         $bridgeUnit = axis\Unit::fromId($this->_bridgeUnitId, $application);
-        $bridgeSourceAlias = $populate->getFieldName().'_bridge';
+        $bridgeSourceAlias = $populate->getFieldName().'_bridge'.uniqid();
 
         $output = opal\query\FetchAttach::fromPopulate($populate)
             ->rightJoinConstraint()
