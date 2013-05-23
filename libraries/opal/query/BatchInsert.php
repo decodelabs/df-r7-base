@@ -14,6 +14,8 @@ class BatchInsert implements IBatchInsertQuery, core\IDumpable {
     use TQuery;
     use TQuery_LocalSource;
     use TQuery_BatchDataInsert;    
+
+    protected $_ifNotExists = false;
     
     public function __construct(ISourceManager $sourceManager, ISource $source, $rows) {
         $this->_sourceManager = $sourceManager;
@@ -24,6 +26,16 @@ class BatchInsert implements IBatchInsertQuery, core\IDumpable {
     
     public function getQueryType() {
         return IQueryTypes::BATCH_INSERT;
+    }
+
+
+    public function ifNotExists($flag=null) {
+        if($flag !== null) {
+            $this->_ifNotExists = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_ifNotExists;
     }
     
 

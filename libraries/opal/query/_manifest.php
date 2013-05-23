@@ -421,7 +421,10 @@ interface IBatchDataInsertQuery extends IWriteQuery {
 }
 
 
-interface IInsertQuery extends IDataInsertQuery {}
+interface IInsertQuery extends IDataInsertQuery {
+    public function ifNotExists($flag=null);
+}
+
 interface IReplaceQuery extends IDataInsertQuery {}
 interface IBatchInsertQuery extends IBatchDataInsertQuery {}
 interface IBatchReplaceQuery extends IBatchDataInsertQuery {}

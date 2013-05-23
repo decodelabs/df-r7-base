@@ -346,6 +346,11 @@ abstract class QueryExecutor implements IQueryExecutor {
         }
         
         $this->_stmt->appendSql(' ('.implode(',', $fields).') VALUES ('.implode(',', $values).')');
+
+        if($this->_query->ifNotExists()) {
+            $this->_stmt->appendSql(' ON DUPLICATE KEY UPDATE '.$fields[0].'='.$fields[0]);
+        }
+
         $this->_stmt->executeWrite();
         
         return $this->_adapter->getLastInsertId();

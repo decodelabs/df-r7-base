@@ -15,6 +15,8 @@ class Insert implements IInsertQuery, core\IDumpable {
     use TQuery_LocalSource;
     use TQuery_DataInsert;
 
+    protected $_ifNotExists = false;
+
     public function __construct(ISourceManager $sourceManager, ISource $source, $row) {
         $this->_sourceManager = $sourceManager;
         $this->_source = $source;
@@ -24,6 +26,15 @@ class Insert implements IInsertQuery, core\IDumpable {
     
     public function getQueryType() {
         return IQueryTypes::INSERT;
+    }
+
+    public function ifNotExists($flag=null) {
+        if($flag !== null) {
+            $this->_ifNotExists = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_ifNotExists;
     }
     
     
