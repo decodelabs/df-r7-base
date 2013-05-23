@@ -317,4 +317,4 @@ interface IElement extends ITag, IElementContent {}
 
 
 interface IStyleBlock extends core\IStringProvider {}
-interface IStyleCollection extends core\IStringProvider {}
+interface IStyleCollection extends core\collection\IMap, core\collection\IAggregateIteratorCollection, core\IStringProvider {}
