@@ -12,6 +12,10 @@ use df\iris;
     
 class Command implements iris\IScanner {
 
+    protected static $_symbolCommands = [
+        '\\', '`', '\'', '^', '"', '~', '=', '.'
+    ];
+
     public function getName() {
         return 'Command';
     }
@@ -31,7 +35,7 @@ class Command implements iris\IScanner {
     public function run(iris\ILexer $lexer) {
         $lexer->extract();
 
-        if($lexer->char == '\\') {
+        if(in_array($lexer->char, self::$_symbolCommands)) {
             $command = $lexer->extract();
         } else if($lexer->char == '@' || $lexer->peekAlpha()) {
             $command = $lexer->extractRegexRange('a-zA-Z@');

@@ -18,7 +18,9 @@ class Core extends Base {
     ];
 
     protected static $_commands = [
-        '@', '\\', ',', ';', ':', '!', '-', '=', '>', '<', '+', '\'', '`', '|', '(', ')', '[', ']',
+        '@', '\\', ',', ';', ':', '!', '-', '>', '<', '+', '|', '(', ')', '[', ']',
+
+        '`', '\'', '^', '"', 'H', '~', 'c', 'k', 'l', '=', 'b', '.', 'd', 'r', 'u', 'v', 't',
 
         'addcontentsline', 'addtocontents', 'addtocounter', 'address', 'addtolength', 'addvspace', 'alph',
         'appendix', 'arabic', 'author', 'backslash', 'baselineskip', 'baselinestretch', 'bf', 
@@ -337,6 +339,16 @@ class Core extends Base {
                     );
                 }
 
+                break;
+
+            case '`':
+            case '\'':
+            case '^':
+            case '"':
+            case '~':
+            case '=':
+            case '.':
+                $this->parser->extractCharacterSymbol($symbol);
                 break;
 
             default:
