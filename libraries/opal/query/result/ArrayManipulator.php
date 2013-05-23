@@ -231,10 +231,6 @@ class ArrayManipulator implements IArrayManipulator {
             }
         }
         
-        if($query instanceof opal\query\IAttachableQuery) {
-            $this->applyAttachments($query->getAttachments());
-        }
-        
         return $this->_rows;
     }
 
@@ -626,6 +622,10 @@ class ArrayManipulator implements IArrayManipulator {
             return $this;
         }
 
+        return $this->applyAttachments($this->rewritePopulates($populates));
+    }
+
+    public function rewritePopulates(array $populates) {
         $attachments = array();
 
         foreach($populates as $populate) {
@@ -641,7 +641,7 @@ class ArrayManipulator implements IArrayManipulator {
             }
         }
 
-        return $this->applyAttachments($attachments);
+        return $attachments;
     }
 
     
@@ -670,7 +670,7 @@ class ArrayManipulator implements IArrayManipulator {
                     throw $e;
                 }
             }
-            
+
             $manipulator = new self($source, $sourceData, true);
             $clauseList = $attachment->getJoinClauseList()->toArray();
             $clauseIndex = new opal\query\clause\Matcher($clauseList, true);
@@ -734,21 +734,12 @@ class ArrayManipulator implements IArrayManipulator {
             }
               
 
-            // Prepare child populates
-            $childPopulates = $attachment instanceof opal\query\IPopulatableQuery ?
-                $attachment->getPopulates() : null;
+            $index = array();
+            $dataSet = array();
 
-
-            // Prepare child attachments
-            $childAttachments = $attachment instanceof opal\query\IAttachableQuery ?
-                $attachment->getAttachments() : null;
-                
-                
-            //core\dump($sourceData);
-            
             
             // Iterate data
-            foreach($this->_rows as &$row) {
+            foreach($this->_rows as $i => $row) {
                 
                 // Filter source data
                 if(empty($clauseList)) {
@@ -792,22 +783,51 @@ class ArrayManipulator implements IArrayManipulator {
                     $manipulator->applyLimit($limit, $offset);
                 }
 
+                $setCount = count($dataSet);
 
-                // Child populates
-                if(!empty($childPopulates)) {
-                    $manipulator->applyPopulates($childPopulates);
+                foreach($manipulator->getRows() as $dataSetRow) {
+                    $delta = ++$setCount;
+                    $index[$i][$delta] = $delta;
+                    $dataSet[$delta] = $dataSetRow;
                 }
-                
-                
-                // Child attachments
-                if(!empty($childAttachments)) {
-                    $manipulator->applyAttachments($childAttachments);
+            }
+
+            $manipulator->setRows($dataSet);
+
+
+            // Child attachments
+            $childAttachments = array();
+
+            if($attachment instanceof opal\query\IPopulatableQuery) {
+                $childAttachments = array_merge($childAttachments, $this->rewritePopulates($attachment->getPopulates()));
+            }
+
+            if($attachment instanceof opal\query\IAttachableQuery) {
+                $childAttachments = array_merge($childAttachments, $attachment->getAttachments());
+            }
+
+            if(!empty($childAttachments)) {
+                $manipulator->applyAttachments($childAttachments);
+            }
+
+            
+            $dataSet = $manipulator->getRows();
+
+            // Format and apply output
+            foreach($this->_rows as $i => &$row) {
+                $attachData = array();
+
+                if(isset($index[$i])) {
+                    foreach($index[$i] as $delta) {
+                        $attachData[] = $dataSet[$delta];
+                    }
                 }
-                
-                
-                // Format output
-                $attachData = $manipulator->applyOutputFields($keyField, $valField, $isFetchQuery)->getRows();
-                    
+
+                $attachData = $manipulator
+                    ->setRows($attachData)
+                    ->applyOutputFields($keyField, $valField, $isFetchQuery)
+                    ->getRows();
+
                 if($isValueAttachment) {
                     $attachData = array_shift($attachData);
                 }
