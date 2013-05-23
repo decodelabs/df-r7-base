@@ -452,13 +452,13 @@ class BridgedManyRelationValueContainer implements
             }
         }
 
-
+        $filterKeys = array();
         
         // Insert relation tasks
         foreach($this->_new as $id => $record) {
             // Build bridge
             $bridgeRecord = $bridgeUnit->newRecord();
-            $bridgeTask = $taskSet->replace($bridgeRecord);
+            $bridgeTask = $taskSet->insert($bridgeRecord)->ifNotExists(true);
 
             // Local ids
             $bridgeRecord->__set($this->_bridgeLocalFieldName, $this->_localPrimaryManifest);
@@ -475,6 +475,13 @@ class BridgedManyRelationValueContainer implements
             } else {
                 $targetManifest = $this->_targetPrimaryManifest->duplicateWith($record);
             }
+
+            // Filter remove all task
+            if($removeAllTask) {
+                foreach($targetManifest->toArray() as $key => $value) {
+                    $filterKeys[$this->_bridgeTargetFieldName.'_'.$key][$id] = $value;
+                }
+            }
             
 
             // Target task
@@ -485,7 +492,7 @@ class BridgedManyRelationValueContainer implements
             }
             
             // Target ids
-            $bridgeRecord->__set($this->_bridgeTargetFieldName, $targetManifest);            
+            $bridgeRecord->__set($this->_bridgeTargetFieldName, $targetManifest);
             
             if($targetRecordTask) {
                 $bridgeTask->addDependency(
@@ -501,6 +508,10 @@ class BridgedManyRelationValueContainer implements
             if($removeAllTask) {
                 $bridgeTask->addDependency($removeAllTask);
             }
+        }
+
+        if($removeAllTask && !empty($filterKeys)) {
+            $removeAllTask->setFilterKeys($filterKeys);
         }
 
         
