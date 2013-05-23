@@ -32,7 +32,7 @@ class OneToMany extends axis\schema\field\Base implements axis\schema\IOneToMany
     public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
         $output = $this->sanitizeValue(null, $forRecord);
 
-        if(isset($row[$key])) {
+        if($forRecord && isset($row[$key])) {
             $output->populateList($row[$key]);
         }
 
