@@ -204,6 +204,22 @@ class Html extends iris\Translator {
     }
 
 
+// Ordered list
+    protected function _translateOrderedListStructure(flex\latex\map\Structure $list) {
+        $tag = $this->tag('ol', ['id' => $list->getId()]);
+        $this->html .= $tag->open()."\n";
+
+        foreach($list as $item) {
+            $liTag = $this->tag('li');
+            $this->html .= '    '.$liTag->open();
+            $this->_translateContainerNode($item);
+            $this->html .= $liTag->close()."\n";
+        }
+
+        $this->html .= $tag->close()."\n";
+    }
+
+
 // Paragraph
     protected function _translateParagraph(flex\latex\map\Paragraph $paragraph) {
         $tag = $this->tag('p', ['class' => $paragraph->getClasses()]);
@@ -275,6 +291,18 @@ class Html extends iris\Translator {
 
             default:
                 core\dump('section', $block);
+        }
+    }
+
+
+// Structure
+    protected function _translateStructure(flex\latex\map\Structure $structure) {
+        $func = '_translate'.ucfirst($structure->getType()).'Structure';
+
+        if(method_exists($this, $func)) {
+            $this->{$func}($structure);
+        } else {
+            core\dump('structure', $structure);
         }
     }
 
