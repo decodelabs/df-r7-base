@@ -834,6 +834,8 @@ class ArrayManipulator implements IArrayManipulator {
 
                 $row[$attachmentQueryField->getQualifiedName()] = $attachData;
             }
+
+            unset($row);
         }
 
         return $this;
