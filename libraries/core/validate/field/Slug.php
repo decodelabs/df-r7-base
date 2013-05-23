@@ -60,7 +60,7 @@ class Slug extends Base implements core\validate\ISlugField {
             return null;
         }
         
-        $value = $this->_sanitizeValue($value);
+        $value = $this->_sanitizeSlugValue($value);
         
         if(!$length = $this->_checkRequired($node, $value)) {
             return null;
@@ -70,7 +70,7 @@ class Slug extends Base implements core\validate\ISlugField {
         return $this->_finalize($node, $value);
     }
 
-    protected function _sanitizeValue($value) {
+    protected function _sanitizeSlugValue($value) {
         $value = trim($value);
 
         if(empty($value) && $this->_defaultValueField) {
