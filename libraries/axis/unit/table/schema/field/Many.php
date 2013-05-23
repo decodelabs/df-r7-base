@@ -159,7 +159,6 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
 
 // Populate
     public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate) {
-        core\debug()->dump($populate);
         $application = $populate->getSourceManager()->getApplication();
 
         $parentSource = $populate->getParentSource();
