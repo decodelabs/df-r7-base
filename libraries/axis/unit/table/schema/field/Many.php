@@ -172,7 +172,7 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
         $bridgeTargetFieldName = $this->getBridgeTargetFieldName();
 
         $bridgeUnit = axis\Unit::fromId($this->_bridgeUnitId, $application);
-        $bridgeSourceAlias = $populate->getFieldName().'_bridge'.uniqid();
+        $bridgeSourceAlias = $populate->getFieldName().'_bridge';
 
         $output = opal\query\FetchAttach::fromPopulate($populate)
             ->rightJoinConstraint()

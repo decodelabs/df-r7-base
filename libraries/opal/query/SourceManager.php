@@ -67,6 +67,18 @@ class SourceManager implements ISourceManager, core\IDumpable {
         }
         
         if(isset($this->_sources[$alias])) {
+            if($adapter === $this->_sources[$alias]->getAdapter()) {
+                $output = $this->_sources[$alias];
+
+                if($fields !== null) {
+                    foreach($fields as $field) {
+                        $this->extrapolateOutputField($source, $field);
+                    }
+                }
+
+                return $output;
+            }
+
             throw new RuntimeException(
                 'A source has already been defined with alias '.$alias
             );
