@@ -49,7 +49,7 @@ trait TArrayCollection {
 trait TArrayCollection_Constructor {
 
     public function __construct($input=null) {
-        if(func_get_args() > 1) {
+        if(func_num_args() > 1) {
             $input = func_get_args();
         }
 
