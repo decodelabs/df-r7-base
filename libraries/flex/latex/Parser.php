@@ -482,7 +482,7 @@ class Parser extends iris\Parser {
                     $object->appendSymbols($token->getWhitespace());
                 }
 
-                if($token->matches('command')) {
+                if($token->matches('command') || $token->matches('symbol', 'esc')) {
                     $object->appendSymbols('\\');
                 }
 
@@ -527,7 +527,7 @@ class Parser extends iris\Parser {
                     $object->appendSymbols($token->getWhitespace());
                 }
 
-                if($token->matches('command')) {
+                if($token->matches('command') || $token->matches('symbol', 'esc')) {
                     $object->appendSymbols('\\');
                 }
 

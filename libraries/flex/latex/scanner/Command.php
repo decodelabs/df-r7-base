@@ -40,7 +40,7 @@ class Command implements iris\IScanner {
         } else if($lexer->char == '@' || $lexer->peekAlpha()) {
             $command = $lexer->extractRegexRange('a-zA-Z@');
         } else {
-            return $lexer->newToken('symbol', $lexer->extract());
+            return $lexer->newToken('symbol/esc', $lexer->extract());
         }
 
         if($lexer->char == '*') {

@@ -166,7 +166,7 @@ class Html extends iris\Translator {
         $imgTag = $this->element('img', null, ['src' => $src, 'alt' => $alt]);
 
         $this->html .= "\n".$figTag->open()."\n";
-        $this->html .= '    '.$this->element('h4', 'Figure '.$figure->getNumber())."\n";
+        $this->html .= '    '.$imgTag."\n";
 
         if($captionTag) {
             $this->html .= '    '.$captionTag->open();
@@ -174,7 +174,6 @@ class Html extends iris\Translator {
             $this->html .= $captionTag->close()."\n";
         }
 
-        $this->html .= '    '.$imgTag."\n";
         $this->html .= $figTag->close()."\n";
     }
 
@@ -190,6 +189,7 @@ class Html extends iris\Translator {
     protected function _translateMathNode(flex\latex\map\MathNode $math) {
         $this->_hasMath = true;
 
+
         if($math->isInline()) {
             $tag = $this->tag('span.math.inline');
             $this->html .= $tag->open();
@@ -198,7 +198,19 @@ class Html extends iris\Translator {
         } else {
             $tag = $this->tag('div.math.block');
             $this->html .= "\n".$tag->open();
-            $this->html .= '\\['.$math->symbols.'\\]';
+            $this->html .= '\\[';
+
+            if($type = $math->getBlockType()) {
+                $this->html .= '\\begin{'.$type.'}'."\n";
+            }
+
+            $this->html .= $math->symbols;
+
+            if($type) {
+                $this->html .= "\n".'\\end{'.$type.'}';
+            }
+
+            $this->html .= '\\]';
             $this->html .= $tag->close()."\n";
         } 
     }

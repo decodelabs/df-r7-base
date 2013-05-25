@@ -123,6 +123,18 @@ class Token implements IToken, core\IDumpable {
     }
 
     public function matches($type, $subType=null, $value=null) {
+        if(empty($type)) {
+            $type = null;
+        }
+
+        if(empty($subType)) {
+            $subType = null;
+        }
+
+        if(empty($value)) {
+            $value = null;
+        }
+
         if($type != $this->type) {
             return false;
         }
