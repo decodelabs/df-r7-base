@@ -55,7 +55,7 @@ class Html extends Base implements IHtmlView {
         
         $this->bodyTag = new aura\html\Tag('body');
         
-        $this->_baseHref = $context->normalizeOutputUrl('/');
+        //$this->_baseHref = $context->normalizeOutputUrl('/');
 
         $this
             ->setMeta('X-UA-Compatible', 'IE=edge,chrome=1')
