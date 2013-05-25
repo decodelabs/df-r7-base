@@ -130,7 +130,7 @@ class Html extends iris\Translator {
 // Bibitem
     protected function _translateBibitemBlock(flex\latex\map\Block $block) {
         $this->_bibCount++;
-        $liTag = $this->tag('li#bibitem-'.$block->getId());
+        $liTag = $this->tag('li#bibitem-'.core\string\Manipulator::formatId($block->getId()));
         $this->html .= '    '.$liTag->open();
         $this->_translateContainerNode($block);
         $this->html .= $liTag->close()."\n";
@@ -156,13 +156,14 @@ class Html extends iris\Translator {
             $captionTag = $this->tag('figcaption');
         }
 
-        $src = $this->_dereferenceImage($figure->getId(), $figure->getNumber());
+        $id = core\string\Manipulator::formatId($figure->getId());
+        $src = $this->_dereferenceImage($id, $figure->getNumber());
 
         if(!$alt) {
             $alt = core\string\Manipulator::formatLabel(core\io\Util::getFileName($src));
         }
 
-        $figTag = $this->tag('figure', ['id' => $figure->getId()]);
+        $figTag = $this->tag('figure', ['id' => $id]);
         $imgTag = $this->element('img', null, ['src' => $src, 'alt' => $alt]);
 
         $this->html .= "\n".$figTag->open()."\n";
@@ -197,6 +198,11 @@ class Html extends iris\Translator {
             $this->html .= $tag->close();
         } else {
             $tag = $this->tag('div.math.block');
+
+            if($id = $math->getId()) {
+                $tag->setId('mathNode-'.core\string\Manipulator::formatId($id));
+            }
+
             $this->html .= "\n".$tag->open();
             $this->html .= '\\[';
 
@@ -218,7 +224,11 @@ class Html extends iris\Translator {
 
 // Ordered list
     protected function _translateOrderedListStructure(flex\latex\map\Structure $list) {
-        $tag = $this->tag('ol', ['id' => $list->getId()]);
+        if($id = $list->getId()) {
+            $id = core\string\Manipulator::formatId($id);
+        }
+
+        $tag = $this->tag('ol', ['id' => $id]);
         $this->html .= $tag->open()."\n";
 
         foreach($list as $item) {
@@ -243,16 +253,57 @@ class Html extends iris\Translator {
 // Reference
     protected function _translateReference(flex\latex\map\Reference $ref) {
         $id = $ref->getId();
+        $htmlId = core\string\Manipulator::formatId($id);
 
         if(isset($this->_references[$id])) {
             $type = $this->_references[$id]['type'];
             $body = $this->_references[$id]['body'];
         } else {
             $type = $ref->getTargetType();
-            $body = $ref->getType().': '.$ref->getId();
+            $body = $ref->getType().': '.$htmlId;
         }
 
-        $this->html .= $this->element('a.reference.'.$type, $body, ['href' => '#'.$type.'-'.$id]);
+        switch($type) {
+            case 'bibitem':
+                $body = '['.$body.']';
+                break;
+
+            case 'figure':
+                if(strtolower(substr(rtrim($this->html), -6)) == 'figure') {
+                    $this->html = rtrim($this->html);
+                    $temp = substr($this->html, -6);
+                    $this->html = substr($this->html, 0, -6);
+                    $body = $temp.' '.$body;
+                }
+
+                break;
+
+            case 'mathNode':
+                if(strtolower(substr(rtrim($this->html), -8)) == 'equation') {
+                    $this->html = rtrim($this->html);
+                    $temp = substr($this->html, -8);
+                    $this->html = substr($this->html, 0, -8);
+                    $body = $temp.' '.$body;
+                }
+
+                break;
+
+            case 'table':
+                if(strtolower(substr(rtrim($this->html), -5)) == 'table') {
+                    $this->html = rtrim($this->html);
+                    $temp = substr($this->html, -5);
+                    $this->html = substr($this->html, 0, -5);
+                    $body = $temp.' '.$body;
+                }
+
+                break;
+        }
+
+        if(substr($this->html, -1) == '>') {
+            $this->html .= ' ';
+        }
+
+        $this->html .= $this->element('a.reference.'.$type, $body, ['href' => '#'.$type.'-'.$htmlId]);
     }
 
 // Section
@@ -346,7 +397,8 @@ class Html extends iris\Translator {
         $tableTag = $this->tag('table');
 
         if($id = $table->getId()) {
-            $tableTag->setId('table-'.$table->getId());
+            $id = core\string\Manipulator::formatId($id);
+            $tableTag->setId('table-'.$id);
         }
 
         $this->html .= "\n".$tableTag->open()."\n";
@@ -425,9 +477,7 @@ class Html extends iris\Translator {
             $text = $this->esc($text);
         }
 
-        if($this->lastNode instanceof flex\latex\map\TextNode) {
-            $this->html .= '<br />'."\n";
-        }
+        $text = str_replace("\n", '<br />'."\n", $text);
 
         $this->html .= $text;
     }
