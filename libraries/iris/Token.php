@@ -67,6 +67,10 @@ class Token implements IToken, core\IDumpable {
         return array_pop($parts);
     }
 
+    public function isWhitespaceSingleNewLine() {
+        return str_replace("\r", '', $this->whitespace) == "\n";
+    }
+
     public function isAfterWhitespace() {
         return strlen($this->whitespace) > 0;
     }
