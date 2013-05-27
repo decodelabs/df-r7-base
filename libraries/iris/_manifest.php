@@ -198,6 +198,7 @@ interface IToken extends ILocationProxyProvider {
     public function getWhitespaceBeforeNewLine();
     public function getWhitespaceAfterLastNewLine();
 
+    public function isWhitespaceSingleNewLine();
     public function isAfterWhitespace();
     public function isAfterNewline();
     public function isOnNextLine();
