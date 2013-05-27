@@ -331,12 +331,8 @@ class Core extends Base {
     public function command_callSymbol($symbol, $isStar) {
         switch($symbol) {
             case '\\':
-                if($this->parser->container instanceof flex\latex\IContainerNode
-                && !$this->parser->container->isEmpty()) {
-                    $this->parser->container->push(
-                        (new flex\latex\map\TextNode($this->parser->token))
-                            ->setText("\n")
-                    );
+                if($this->parser->container && !$this->parser->container->isEmpty()) {
+                    $this->parser->writeToTextNode("\n");
                 }
 
                 break;

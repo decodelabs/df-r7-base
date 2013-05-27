@@ -208,6 +208,33 @@ class Parser extends iris\Parser {
         return $output;
     }
 
+    public function writeToTextNode($text) {
+        $pop = false;
+        
+        if(!$this->container) {
+            $pop = true;
+            $this->pushContainer(new flex\latex\map\Paragraph($this->token));
+        }
+
+        $textNode = $this->container->getLast();
+
+        if(!$textNode instanceof flex\latex\map\TextNode) {
+            $textNode = new flex\latex\map\TextNode($this->token);
+        }
+
+        if(substr($text, 0, 1) == ' ' && substr($textNode->getText(), -1) == ' ') {
+            $text = substr($text, 1);
+        }
+
+        $textNode->appendText($text);
+
+        if($pop) {
+            $this->popContainer(true);
+        }
+
+        return $textNode;
+    }
+
 
 // Symbols
     public function parseKeySymbol(iris\IToken $token) {
@@ -398,20 +425,11 @@ class Parser extends iris\Parser {
             $symbol = '"';
         }
 
-
-
         if(isset(self::$_characterMap[$symbol][$letter])) {
             $utf8 = self::$_characterMap[$symbol][$letter];
         }
 
-        $textNode = $this->container->getLast();
-
-        if(!$textNode instanceof flex\latex\map\TextNode) {
-            $textNode = new flex\latex\map\TextNode($this->parser->token);
-            $this->container->push($textNode);
-        }
-
-        $textNode->appendText($utf8);
+        $this->writeToTextNode($utf8);
 
         if($symbol != 'l') {
             $this->extractValue('}');
@@ -424,6 +442,12 @@ class Parser extends iris\Parser {
     public function parseInlineMathMode(iris\IToken $token) {
         $doMath = true;
         $end = '$';
+
+        $lastToken = $this->getLastToken();
+
+        if($lastToken->isWhitespaceSingleNewLine()) {
+            $this->writeToTextNode(' ');
+        }
 
         if($this->token->isValue('^', '_')) {
             $doMath = false;
