@@ -594,10 +594,8 @@ class Core extends Base {
         $section = new flex\latex\map\Block($this->parser->token);
         $section->setType('section');
         $section->setAttribute('level', 1);
-
-        if(!$isStar) {
-            $section->setAttribute('number', ++$this->_sectionCounter);
-        }
+        $section->setAttribute('number', ++$this->_sectionCounter);
+        $section->setAttribute('renderNumber', !$isStar);
 
         $this->_subsectionCounter = 0;
 
@@ -618,10 +616,8 @@ class Core extends Base {
         $section = new flex\latex\map\Block($this->parser->token);
         $section->setType('section');
         $section->setAttribute('level', 2);
-
-        if(!$isStar) {
-            $section->setAttribute('number', ++$this->_subsectionCounter);
-        }
+        $section->setAttribute('number', ++$this->_subsectionCounter);
+        $section->setAttribute('renderNumber', !$isStar);
 
         $this->_subsubsectionCounter = 0;
 
@@ -647,10 +643,8 @@ class Core extends Base {
         $section = new flex\latex\map\Block($this->parser->token);
         $section->setType('section');
         $section->setAttribute('level', 3);
-
-        if(!$isStar) {
-            $section->setAttribute('number', ++$this->_subsubsectionCounter);
-        }
+        $section->setAttribute('number', ++$this->_subsubsectionCounter);
+        $section->setAttribute('renderNumber', !$isStar);
 
         $this->parser->extractValue('{');
         $this->parser->parseStandardContent($section, true);
