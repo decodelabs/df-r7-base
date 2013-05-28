@@ -123,6 +123,11 @@ class Html extends iris\Translator {
         return $output;
     }
 
+// Align
+    protected function _translateAlignBlock(flex\latex\map\Block $block) {
+        return $this->_translateContainerNode($block);
+    }
+
 // Bibliography
     protected function _translateBibliography(flex\latex\map\Bibliography $bib) {
         $output = '';
