@@ -154,7 +154,25 @@ class Parser extends iris\Parser {
                 }
             }
 
-            $textNode->appendText($this->extract()->value);
+            $word = $this->extract()->value;
+
+            if($word == '`') {
+                if($this->token->value == '`') {
+                    $this->extract();
+                    $word = '“';
+                } else {
+                    $word = '‘';
+                }
+            } else if($word == '\'') {
+                if($this->token->value == '\'') {
+                    $this->extract();
+                    $word = '”';
+                } else {
+                    $word = '’';
+                }
+            }
+
+            $textNode->appendText($word);
         }
 
         if($textNode->isEmpty()) {
