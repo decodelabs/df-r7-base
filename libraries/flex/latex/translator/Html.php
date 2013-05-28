@@ -15,6 +15,7 @@ class Html extends iris\Translator {
 
     use core\string\THtmlStringEscapeHandler;
 
+    public $document;
     public $lastNode;
     public $buffer = '';
 
@@ -73,6 +74,7 @@ class Html extends iris\Translator {
     protected function _beginDocument(flex\latex\map\Document $document) {
         //$this->html .= $this->element('h1', $document->getTitle())."\n";
         $refCounts = [];
+        $this->document = $document;
 
         foreach($document->getReferenceMap() as $id => $item) {
             if(isset($this->_references[$id])) {
