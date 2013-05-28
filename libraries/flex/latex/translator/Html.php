@@ -311,6 +311,10 @@ class Html extends iris\Translator {
 
         switch($type) {
             case 'bibitem':
+                if(ctype_alnum(substr($this->buffer, -1))) {
+                    $this->buffer .= ' ';
+                }
+                
                 $body = '['.$body.']';
                 break;
 
