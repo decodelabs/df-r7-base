@@ -15,8 +15,8 @@ class Html extends iris\Translator {
 
     use core\string\THtmlStringEscapeHandler;
 
-    public $html;
     public $lastNode;
+    public $buffer = '';
 
     protected $_inSection = false;
     protected $_inBibliography = false;
@@ -34,13 +34,16 @@ class Html extends iris\Translator {
     }
 
     public function translate() {
+        $output = '';
+
         foreach($this->unit->getEntities() as $document) {
             $this->_beginDocument($document);
-            $this->_translateContainerNode($document);
-            $this->_finaliseDocument($document);
+            $output .= $this->_translateContainerNode($document);
+            $output .= $this->_finaliseDocument($document);
+            $this->buffer = '';
         }
 
-        return $this->html;
+        return $output;
     }
 
     public function hasMath() {
@@ -95,6 +98,8 @@ class Html extends iris\Translator {
     }
 
     protected function _translateContainerNode(flex\latex\IContainerNode $node) {
+        $lastBuffer = $this->buffer;
+        $this->buffer = '';
         $this->lastNode = null;
 
         foreach($node as $child) {
@@ -103,37 +108,53 @@ class Html extends iris\Translator {
             $func = '_translate'.ucfirst($name);
 
             if(method_exists($this, $func)) {
-                $this->{$func}($child);
+                $this->buffer .= $this->{$func}($child);
                 $this->lastNode = $child;
             } else {
                 core\dump($child);
             }
         }
+
+        $output = $this->buffer;
+        $this->buffer = $lastBuffer;
+
+        return $output;
     }
 
 // Bibliography
     protected function _translateBibliography(flex\latex\map\Bibliography $bib) {
+        $output = '';
+
         if($this->_inSection) {
-            $this->html .= '</section>'."\n";
+            $output .= '</section>'."\n";
             $this->_inSection = false;
         }
 
         $bibTag = $this->tag('section#bibliography');
         $this->_inBibliography = true;
-        $this->html .= "\n".$bibTag->open().'<ol>'."\n";
-        $this->_translateContainerNode($bib);
-        $this->html .= '</ol>'.$bibTag->close()."\n";
+
+        $output .= "\n".$bibTag->open().'<ol>'."\n";
+        $output .= $this->_translateContainerNode($bib);
+        $output .= '</ol>'.$bibTag->close()."\n";
+
         $this->_inBibliography = false;
+
+        return $output;
     }
 
 
 // Bibitem
     protected function _translateBibitemBlock(flex\latex\map\Block $block) {
+        $output = '';
         $this->_bibCount++;
+
         $liTag = $this->tag('li#bibitem-'.core\string\Manipulator::formatId($block->getId()));
-        $this->html .= '    '.$liTag->open();
-        $this->_translateContainerNode($block);
-        $this->html .= $liTag->close()."\n";
+
+        $output .= '    '.$liTag->open();
+        $output .= $this->_translateContainerNode($block);
+        $output .= $liTag->close()."\n";
+
+        return $output;
     }
 
 
@@ -142,7 +163,7 @@ class Html extends iris\Translator {
         $func = '_translate'.ucfirst($block->getType()).'Block';
 
         if(method_exists($this, $func)) {
-            $this->{$func}($block);
+            return $this->{$func}($block);
         } else {
             core\dump('block', $block);
         }
@@ -150,6 +171,7 @@ class Html extends iris\Translator {
 
 // Figure
     protected function _translateFigure(flex\latex\map\Figure $figure) {
+        $output = '';
         $alt = $captionTag = null;
 
         if($caption = $figure->getCaption()) {
@@ -166,36 +188,42 @@ class Html extends iris\Translator {
         $figTag = $this->tag('figure', ['id' => $id]);
         $imgTag = $this->element('img', null, ['src' => $src, 'alt' => $alt]);
 
-        $this->html .= "\n".$figTag->open()."\n";
-        $this->html .= '    '.$imgTag."\n";
+        $output .= "\n".$figTag->open()."\n";
+        $output .= '    '.$imgTag."\n";
 
         if($captionTag) {
-            $this->html .= '    '.$captionTag->open();
-            $this->html .= $this->_translateContainerNode($caption);
-            $this->html .= $captionTag->close()."\n";
+            $output .= '    '.$captionTag->open();
+            $output .= $this->_translateContainerNode($caption);
+            $output .= $captionTag->close()."\n";
         }
 
-        $this->html .= $figTag->close()."\n";
+        $output .= $figTag->close()."\n";
+        return $output;
     }
 
 // Italic
     protected function _translateItalicBlock(flex\latex\map\Block $block) {
+        $output = '';
         $tag = $this->tag('em', ['class' => $block->getClasses()]);
-        $this->html .= $tag->open();
-        $this->_translateContainerNode($block);
-        $this->html .= $tag->close();
+
+        $output .= $tag->open();
+        $output .= $this->_translateContainerNode($block);
+        $output .= $tag->close();
+
+        return $output;
     }
 
 // Math
     protected function _translateMathNode(flex\latex\map\MathNode $math) {
         $this->_hasMath = true;
+        $output = '';
 
 
         if($math->isInline()) {
             $tag = $this->tag('span.math.inline');
-            $this->html .= $tag->open();
-            $this->html .= '\\('.$math->symbols.'\\)';
-            $this->html .= $tag->close();
+            $output .= $tag->open();
+            $output .= '\\('.$math->symbols.'\\)';
+            $output .= $tag->close();
         } else {
             $tag = $this->tag('div.math.block');
 
@@ -203,55 +231,66 @@ class Html extends iris\Translator {
                 $tag->setId('mathNode-'.core\string\Manipulator::formatId($id));
             }
 
-            $this->html .= "\n".$tag->open();
-            $this->html .= '\\[';
+            $output .= "\n".$tag->open();
+            $output .= '\\[';
 
             if($type = $math->getBlockType()) {
-                $this->html .= '\\begin{'.$type.'}'."\n";
+                $output .= '\\begin{'.$type.'}'."\n";
             }
 
-            $this->html .= $math->symbols;
+            $output .= $math->symbols;
 
             if($type) {
-                $this->html .= "\n".'\\end{'.$type.'}';
+                $output .= "\n".'\\end{'.$type.'}';
             }
 
-            $this->html .= '\\]';
-            $this->html .= $tag->close()."\n";
+            $output .= '\\]';
+            $output .= $tag->close()."\n";
         } 
+
+        return $output;
     }
 
 
 // Ordered list
     protected function _translateOrderedListStructure(flex\latex\map\Structure $list) {
+        $output = '';
+
         if($id = $list->getId()) {
             $id = core\string\Manipulator::formatId($id);
         }
 
         $tag = $this->tag('ol', ['id' => $id]);
-        $this->html .= $tag->open()."\n";
+        $output .= $tag->open()."\n";
 
         foreach($list as $item) {
             $liTag = $this->tag('li');
-            $this->html .= '    '.$liTag->open();
-            $this->_translateContainerNode($item);
-            $this->html .= $liTag->close()."\n";
+
+            $output .= '    '.$liTag->open();
+            $output .= $this->_translateContainerNode($item);
+            $output .= $liTag->close()."\n";
         }
 
-        $this->html .= $tag->close()."\n";
+        $output .= $tag->close()."\n";
+        return $output;
     }
 
 
 // Paragraph
     protected function _translateParagraph(flex\latex\map\Paragraph $paragraph) {
+        $output = '';
         $tag = $this->tag('p', ['class' => $paragraph->getClasses()]);
-        $this->html .= $tag->open();
-        $this->_translateContainerNode($paragraph);
-        $this->html .= $tag->close()."\n";
+
+        $output .= $tag->open();
+        $output .= $this->_translateContainerNode($paragraph);
+        $output .= $tag->close()."\n";
+
+        return $output;
     }
 
 // Reference
     protected function _translateReference(flex\latex\map\Reference $ref) {
+        $output = '';
         $id = $ref->getId();
         $htmlId = core\string\Manipulator::formatId($id);
 
@@ -269,92 +308,97 @@ class Html extends iris\Translator {
                 break;
 
             case 'figure':
-                if(strtolower(substr(rtrim($this->html), -6)) == 'figure') {
-                    $this->html = rtrim($this->html);
-                    $temp = substr($this->html, -6);
-                    $this->html = substr($this->html, 0, -6);
+                if(strtolower(substr(rtrim($this->buffer), -6)) == 'figure') {
+                    $this->buffer = rtrim($this->buffer);
+                    $temp = substr($this->buffer, -6);
+                    $this->buffer = substr($this->buffer, 0, -6);
                     $body = $temp.' '.$body;
                 }
 
                 break;
 
             case 'mathNode':
-                if(strtolower(substr(rtrim($this->html), -8)) == 'equation') {
-                    $this->html = rtrim($this->html);
-                    $temp = substr($this->html, -8);
-                    $this->html = substr($this->html, 0, -8);
+                if(strtolower(substr(rtrim($this->buffer), -8)) == 'equation') {
+                    $this->buffer = rtrim($this->buffer);
+                    $temp = substr($this->buffer, -8);
+                    $this->buffer = substr($this->buffer, 0, -8);
                     $body = $temp.' '.$body;
                 }
 
                 break;
 
             case 'table':
-                if(strtolower(substr(rtrim($this->html), -5)) == 'table') {
-                    $this->html = rtrim($this->html);
-                    $temp = substr($this->html, -5);
-                    $this->html = substr($this->html, 0, -5);
+                if(strtolower(substr(rtrim($this->buffer), -5)) == 'table') {
+                    $this->buffer = rtrim($this->buffer);
+                    $temp = substr($this->buffer, -5);
+                    $this->buffer = substr($this->buffer, 0, -5);
                     $body = $temp.' '.$body;
                 }
 
                 break;
         }
 
-        if(substr($this->html, -1) == '>') {
-            $this->html .= ' ';
+        if(substr($this->buffer, -1) == '>') {
+            $this->buffer .= ' ';
         }
 
-        $this->html .= $this->element('a.reference.'.$type, $body, ['href' => '#'.$type.'-'.$htmlId]);
+        $output .= $this->element('a.reference.'.$type, $body, ['href' => '#'.$type.'-'.$htmlId]);
+        return $output;
     }
 
 // Section
     protected function _translateSectionBlock(flex\latex\map\Block $block) {
+        $output = '';
+
         switch($block->getAttribute('level')) {
             case 1:
                 if($this->_inSection) {
-                    $this->html .= '</section>'."\n";
+                    $output .= '</section>'."\n";
                     $this->_inSection = false;
                 }
 
-                $this->html .= "\n".'<section>'."\n";
+                $output .= "\n".'<section>'."\n";
                 $this->_inSection = true;
                 $tag = $this->tag('h2', ['id' => 'section-'.$block->getAttribute('number')]);
 
-                $this->html .= $tag->open();
-                $this->_translateContainerNode($block);
-                $this->html .= $tag->close()."\n";
+                $output .= $tag->open();
+                $output .= $this->_translateContainerNode($block);
+                $output .= $tag->close()."\n";
                 break;
 
             case 2:
                 if(!$this->_inSection) {
-                    $this->html .= "\n".'<section>'."\n";
+                    $output .= "\n".'<section>'."\n";
                     $this->_inSection = true;
                 } else {
-                    $this->html .= "\n";
+                    $output .= "\n";
                 }
 
                 $tag = $this->element('h3', ['id' => 'subsection-'.$block->getAttribute('number')]);
-                $this->html .= $tag->open();
-                $this->_translateContainerNode($block);
-                $this->html .= $tag->close()."\n";
+                $output .= $tag->open();
+                $output .= $this->_translateContainerNode($block);
+                $output .= $tag->close()."\n";
                 break;
 
             case 3:
                 if(!$this->_inSection) {
-                    $this->html .= "\n".'<section>'."\n";
+                    $output .= "\n".'<section>'."\n";
                     $this->_inSection = true;
                 } else {
-                    $this->html .= "\n";
+                    $output .= "\n";
                 }
 
                 $tag = $this->element('h4', ['id' => 'subsubsection-'.$block->getAttribute('number')]);
-                $this->html .= $tag->open();
-                $this->_translateContainerNode($block);
-                $this->html .= $tag->close()."\n";
+                $output .= $tag->open();
+                $output .= $this->_translateContainerNode($block);
+                $output .= $tag->close()."\n";
                 break;
 
             default:
                 core\dump('section', $block);
         }
+
+        return $output;
     }
 
 
@@ -363,7 +407,7 @@ class Html extends iris\Translator {
         $func = '_translate'.ucfirst($structure->getType()).'Structure';
 
         if(method_exists($this, $func)) {
-            $this->{$func}($structure);
+            return $this->{$func}($structure);
         } else {
             core\dump('structure', $structure);
         }
@@ -372,22 +416,27 @@ class Html extends iris\Translator {
 
 // Subheading
     protected function _translateSubheadingBlock(flex\latex\map\Block $block) {
+        $output = '';
         if($this->_inBibliography) {
-            $this->html .= '</ol>'."\n";
+            $output .= '</ol>'."\n";
         }
 
         $tag = $this->tag('h3');
-        $this->html .= $tag->open();
-        $this->_translateContainerNode($block);
-        $this->html .= $tag->close()."\n";
+        $output .= $tag->open();
+        $output .= $this->_translateContainerNode($block);
+        $output .= $tag->close()."\n";
 
         if($this->_inBibliography) {
-            $this->html .= '<ol start="'.($this->_bibCount+1).'">'."\n";
+            $output .= '<ol start="'.($this->_bibCount+1).'">'."\n";
         }
+
+        return $output;
     }
 
 // Table
     protected function _translateTable(flex\latex\map\Table $table) {
+        $output = '';
+
         if($rowHead = $table->isFirstRowHead()) {
             $colHead = false;
         } else {
@@ -401,13 +450,13 @@ class Html extends iris\Translator {
             $tableTag->setId('table-'.$id);
         }
 
-        $this->html .= "\n".$tableTag->open()."\n";
+        $output .= "\n".$tableTag->open()."\n";
 
         if($caption = $table->getCaption()) {
             $captionTag = $this->tag('caption');
-            $this->html .= $captionTag->open();
-            $this->_translateContainerNode($caption);
-            $this->html .= $captionTag->close()."\n";
+            $output .= $captionTag->open();
+            $output .= $this->_translateContainerNode($caption);
+            $output .= $captionTag->close()."\n";
         }
 
         $firstRow = true;
@@ -420,10 +469,10 @@ class Html extends iris\Translator {
             $rowTag = $this->tag('tr');
 
             if($firstRow && $rowHead) {
-                $this->html .= '<thead>'."\n";
+                $output .= '<thead>'."\n";
             }
                 
-            $this->html .= $rowTag->open()."\n";
+            $output .= $rowTag->open()."\n";
             $firstCell = true;
 
             foreach($row as $cell) {
@@ -431,7 +480,7 @@ class Html extends iris\Translator {
                        || ($firstRow && $rowHead);
 
                 $cellTag = $this->tag($isHead ? 'th' : 'td');
-                $this->html .= '    '.$cellTag->open();
+                $output .= '    '.$cellTag->open();
 
                 if($isHead && !$cell->isEmpty()) {
                     $bodyCell = $cell->toArray()[0];
@@ -439,31 +488,32 @@ class Html extends iris\Translator {
                     $bodyCell = $cell;
                 }
 
-                $l = strlen($this->html);
-                $this->_translateContainerNode($bodyCell);
+                $cellContent = $this->_translateContainerNode($bodyCell);
 
-                if($l == strlen($this->html)) {
-                    $this->html .= '&nbsp;';
+                if(!strlen($cellContent)) {
+                    $cellContent = '&nbsp;';
                 }
 
-                $this->html .= $cellTag->close()."\n";
+                $output .= $cellContent;
+                $output .= $cellTag->close()."\n";
                 $firstCell = false;
             }
 
-            $this->html .= $rowTag->close()."\n";
+            $output .= $rowTag->close()."\n";
 
             if($firstRow && $rowHead) {
-                $this->html .= '</thead>'."\n".'<tbody>'."\n";
+                $output .= '</thead>'."\n".'<tbody>'."\n";
             }
 
             $firstRow = false;
         }
 
         if($rowHead) {
-            $this->html .= '<tbody>'."\n";
+            $output .= '<tbody>'."\n";
         }
 
-        $this->html .= $tableTag->close()."\n";
+        $output .= $tableTag->close()."\n";
+        return $output;
     }
 
 // Text node
@@ -478,15 +528,25 @@ class Html extends iris\Translator {
         }
 
         $text = str_replace("\n", '<br />'."\n", $text);
+        $text = preg_replace(
+            '/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/',
+            '<a href="$1" target="_blank">$1</a>',
+            $text
+        );
 
-        $this->html .= $text;
+
+        return $text;
     }
 
     protected function _finaliseDocument($document) {
+        $output = '';
+
         if($this->_inSection) {
-            $this->html .= '</section>'."\n";
+            $output .= '</section>'."\n";
             $this->_inSection = false;
         }
+
+        return $output;
     }
 
     protected function tag($tag, array $attributes=array()) {
@@ -495,5 +555,10 @@ class Html extends iris\Translator {
 
     protected function element($tag, $content, array $attributes=array()) {
         return new aura\html\Element($tag, $content, $attributes);
+    }
+
+    protected function containerElement($tag, flex\latex\IContainerNode $node, array $attributes=array()) {
+        $tag = $this->tag($tag, $attributes);
+        return $tag->open().$this->_translateContainerNode($node).$tag->close();
     }
 }
