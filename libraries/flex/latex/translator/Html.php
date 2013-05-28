@@ -306,7 +306,7 @@ class Html extends iris\Translator {
             $body = $this->_references[$id]['body'];
         } else {
             $type = $ref->getTargetType();
-            $body = $ref->getType().': '.$htmlId;
+            $body = $htmlId;
         }
 
         switch($type) {
@@ -320,6 +320,12 @@ class Html extends iris\Translator {
                     $temp = substr($this->buffer, -6);
                     $this->buffer = substr($this->buffer, 0, -6);
                     $body = $temp.' '.$body;
+                } else {
+                    if(ctype_alnum(substr($this->buffer, -1))) {
+                        $this->buffer .= ' ';
+                    }
+
+                    $body = 'Figure '.$body;
                 }
 
                 break;
@@ -330,6 +336,12 @@ class Html extends iris\Translator {
                     $temp = substr($this->buffer, -8);
                     $this->buffer = substr($this->buffer, 0, -8);
                     $body = $temp.' '.$body;
+                } else {
+                    if(ctype_alnum(substr($this->buffer, -1))) {
+                        $this->buffer .= ' ';
+                    }
+
+                    $body = 'Equation '.$body;
                 }
 
                 break;
@@ -340,6 +352,12 @@ class Html extends iris\Translator {
                     $temp = substr($this->buffer, -5);
                     $this->buffer = substr($this->buffer, 0, -5);
                     $body = $temp.' '.$body;
+                } else {
+                    if(ctype_alnum(substr($this->buffer, -1))) {
+                        $this->buffer .= ' ';
+                    }
+
+                    $body = 'Table '.$body;
                 }
 
                 break;
