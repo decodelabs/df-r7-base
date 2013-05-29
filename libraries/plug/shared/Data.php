@@ -76,6 +76,10 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
         return $output;
     }
 
+    public function newRecordTaskSet() {
+        return new opal\record\task\TaskSet($this->application);
+    }
+
     public function checkAccess($source, $action=null) {
         $actionName = $action;
 
