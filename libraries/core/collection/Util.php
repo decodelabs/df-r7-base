@@ -1,0 +1,30 @@
+<?php 
+/**
+ * This file is part of the Decode Framework
+ * @license http://opensource.org/licenses/MIT
+ */
+namespace df\core\collection;
+
+use df;
+use df\core;
+    
+class Util implements IUtil {
+
+    public static function flattenArray($array) {
+        if(!is_array($array)) {
+            return [$array];
+        }
+
+        $output = array();
+
+        foreach($array as $value) {
+            if(is_array($value)) {
+                $output = array_merge($output, self::flattenArray($value));
+            } else {
+                $output[] = $value;
+            }
+        }
+
+        return array_unique($output);
+    }
+}

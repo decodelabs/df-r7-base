@@ -277,3 +277,8 @@ trait THeaderMapProvider {
         return '';
     }
 }
+
+
+interface IUtil {
+    public static function flattenArray($array);
+}
