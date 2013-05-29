@@ -133,6 +133,14 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     }
     
     public function getPrimaryManifest() {
+        return $this->_getPrimaryManifest(true);
+    }
+
+    public function getOriginalPrimaryManifest() {
+        return $this->_getPrimaryManifest(false);
+    }
+
+    protected function _getPrimaryManifest($includeChanges=true) {
         $fields = $this->_getPrimaryFields();
 
         if($fields === null) {
@@ -144,7 +152,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         $values = array();
         
         foreach($fields as $field) {
-            if(array_key_exists($field, $this->_changes)) {
+            if($includeChanges && array_key_exists($field, $this->_changes)) {
                 $values[$field] = $this->_changes[$field];
             } else if(isset($this->_values[$field])) {
                 $values[$field] = $this->_values[$field];
