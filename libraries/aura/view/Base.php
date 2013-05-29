@@ -308,7 +308,17 @@ class Base implements IView {
             $class = 'df\\plug\\view\\'.$name;
             
             if(!class_exists($class)) {
-                return $this->_loadSharedHelper($name);
+                $class = 'df\\plug\\directory\\'.$this->_context->getRunMode().$name;
+
+                if(!class_exists($class)) {
+                    $class = 'df\\plug\\directory\\'.$name;
+
+                    if(!class_exists($class)) {
+                        return $this->_loadSharedHelper($name);
+                    }
+                }
+
+                return new $class($this->_context);
             }
         }
         
