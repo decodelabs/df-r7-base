@@ -10,7 +10,7 @@ use df\core as coreLib;
 use df\flex;
 use df\iris;
     
-class Core extends Base {
+class Foundation extends Base {
 
     protected static $_environments = [
         'root', 'center', 'document', 'enumerate', 'equation', 'eqnarray', 'figure', 
@@ -19,8 +19,6 @@ class Core extends Base {
 
     protected static $_commands = [
         '@', '\\', ',', ';', ':', '!', '-', '>', '<', '+', '|', '(', ')', '[', ']',
-
-        '`', '\'', '^', '"', 'H', '~', 'c', 'k', 'l', '=', 'b', '.', 'd', 'r', 'u', 'v', 't',
 
         'addcontentsline', 'addtocontents', 'addtocounter', 'address', 'addtolength', 'addvspace', 'alph',
         'appendix', 'arabic', 'author', 'backslash', 'baselineskip', 'baselinestretch', 'bf', 
@@ -47,6 +45,9 @@ class Core extends Base {
         'usepackage', 'uwave', 'value', 'vbox', 'vcenter', 'vdots', 'vector', 'verb', 'vfill', 'vline', 
         'vphantom', 'vspace'
     ];
+
+
+
 
 
 // Root
@@ -337,6 +338,7 @@ class Core extends Base {
 
                 break;
 
+            /*
             case '`':
             case '\'':
             case '^':
@@ -346,6 +348,7 @@ class Core extends Base {
             case '.':
                 $this->parser->extractCharacterSymbol($symbol);
                 break;
+            */
 
             default:
                 coreLib\dump($symbol, $isStar);

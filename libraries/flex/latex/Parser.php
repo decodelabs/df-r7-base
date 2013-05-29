@@ -22,7 +22,8 @@ class Parser extends iris\Parser {
 
     public function __construct(Lexer $lexer) {
         parent::__construct($lexer, [
-            new flex\latex\package\Core()
+            new flex\latex\package\Foundation(),
+            new flex\latex\package\Textcomp()
         ]);
     }
 
@@ -275,185 +276,6 @@ class Parser extends iris\Parser {
         }
     }
 
-    protected static $_characterMap = [
-        '`' => [   // \`{o}   ò   grave accent
-            'A' => 'À',
-            'a' => 'à',
-            'E' => 'È',
-            'e' => 'è',
-            'I' => 'Ì',
-            'i' => 'ì',
-            'O' => 'Ò',
-            'o' => 'ò',
-            'U' => 'Ù',
-            'u' => 'ù'
-        ], 
-        '\'' => [   // \'{o}   ó   acute accent
-            'A' => 'Á',
-            'a' => 'á',
-            'E' => 'É',
-            'e' => 'é',
-            'I' => 'Í',
-            'i' => 'í',
-            'O' => 'Ó',
-            'o' => 'ó',
-            'U' => 'Ú',
-            'u' => 'ú',
-            'Y' => 'Ý',
-            'y' => 'ý'
-        ], 
-        '^' => [   // \^{o}   ô   circumflex
-            'A' => 'Â',
-            'a' => 'â',
-            'E' => 'Ê',
-            'e' => 'ê',
-            'I' => 'Î',
-            'i' => 'î',
-            'O' => 'Ô',
-            'o' => 'ô',
-            'U' => 'Û',
-            'u' => 'û'
-        ], 
-        '"' => [   // \"{o}   ö   umlaut, trema or dieresis
-            'A' => 'Ä',
-            'a' => 'ä',
-            'E' => 'Ë',
-            'e' => 'ë',
-            'I' => 'Ï',
-            'i' => 'ï',
-            'O' => 'Ö',
-            'o' => 'ö',
-            'U' => 'Ü',
-            'u' => 'ü',
-            'y' => 'ÿ'
-        ], 
-        'H' => [], // \H{o}   ő   long Hungarian umlaut (double acute)
-        '~' => [   // \~{o}   õ   tilde
-            'A' => 'Ã',
-            'a' => 'ã',
-            'N' => 'Ñ',
-            'n' => 'ñ',
-            'O' => 'Õ',
-            'o' => 'õ'
-        ], 
-        'c' => [   // \c{c}   ç   cedilla
-            'C' => 'Ç',
-            'c' => 'ç',
-            'G' => 'Ģ',
-            'K' => 'Ķ',
-            'k' => 'ķ',
-            'L' => 'Ļ',
-            'l' => 'ļ',
-            'N' => 'Ņ',
-            'n' => 'ņ',
-            'R' => 'Ŗ',
-            'r' => 'ŗ',
-            'S' => 'Ş',
-
-        ], 
-        'k' => [   // \k{a}   ą   ogonek
-            'A' => 'Ą',
-            'a' => 'ą',
-            'E' => 'Ę',
-            'e' => 'ę',
-            'I' => 'Į',
-            'i' => 'į',
-            'U' => 'Ų',
-            'u' => 'ų'
-        ], 
-        'l' => [   // \l  ł   l with stroke
-            'L' => 'Ł',
-            'l' => 'ł'
-        ],
-        '=' => [   // \={o}   ō   macron accent (a bar over the letter)
-            'A' => 'Ā',
-            'a' => 'ā',
-            'E' => 'Ē',
-            'e' => 'ē',
-            'I' => 'Ī',
-            'i' => 'ī',
-            'O' => 'Ō',
-            'o' => 'ō',
-            'U' => 'Ū',
-            'u' => 'ū'
-        ], 
-        'b' => [], // \b{o}   o   bar under the letter
-        '.' => [   // \.{o}   ȯ   dot over the letter
-            'C' => 'Ċ',
-            'c' => 'ċ',
-            'E' => 'Ė',
-            'e' => 'ė',
-            'G' => 'Ġ',
-            'g' => 'ġ',
-            'Z' => 'Ż',
-            'z' => 'ż'
-        ], 
-        'd' => [], // \d{u}   ụ  dot under the letter
-        'r' => [   // \r{a}   å   ring over the letter (for å there is also the special command \aa)
-            'A' => 'Å',
-            'a' => 'å',
-            'U' => 'Ů',
-            'u' => 'ů'
-        ], 
-        'u' => [   // \u{o}   ŏ   breve over the letter
-            'A' => 'Ă',
-            'a' => 'ă',
-            'E' => 'Ĕ',
-            'e' => 'ĕ',
-            'G' => 'Ğ',
-            'g' => 'ğ',
-            'I' => 'Ĭ',
-            'i' => 'ĭ',
-            'O' => 'Ŏ',
-            'o' => 'ŏ',
-            'U' => 'Ŭ',
-            'u' => 'ŭ'
-        ], 
-        'v' => [   // \v{s}   š   caron/hacek ("v") over the letter
-            'C' => 'Č',
-            'c' => 'č',
-            'E' => 'Ě',
-            'e' => 'ě',
-            'N' => 'Ň',
-            'n' => 'ň',
-            'R' => 'Ř',
-            'r' => 'ř',
-            'T' => 'Ť',
-            'Z' => 'Ž',
-            'z' => 'ž'
-        ], 
-        't' => [   // \t{oo}  o͡o "tie" (inverted u) over the two letters
-            'oo' => 'o͡o'
-        ]
-    ];
-
-    public function extractCharacterSymbol($symbol) {
-        $letter = $utf8 = $symbol;
-
-        if($symbol != 'l') {
-            $this->extractValue('{');
-            $letter = $utf8 = $this->extractWord()->value;
-        }
-
-        if($symbol == 't') {
-            $letter = $utf8 = $letter.$this->extractWord()->value;
-        }
-
-        if($symbol == 'H') {
-            $symbol = '"';
-        }
-
-        if(isset(self::$_characterMap[$symbol][$letter])) {
-            $utf8 = self::$_characterMap[$symbol][$letter];
-        }
-
-        $this->writeToTextNode($utf8);
-
-        if($symbol != 'l') {
-            $this->extractValue('}');
-        }
-    }
-
 
 
 // Math mode
@@ -556,7 +378,7 @@ class Parser extends iris\Parser {
         $object->isInline(false);
         $object->setBlockType($blockType);
 
-        // Put on containerStack to give label command a target
+        // Put on containerStack to give label command a target  
         $this->_containerStack[] = $object;
 
         while(!$this->token->is('command=end')) {
@@ -620,12 +442,6 @@ class Parser extends iris\Parser {
         }
 
 
-        if(in_array($name, ['`', '\'', '^', '"', 'H', '~', 'c', 'k', 'l', '=', 'b', '.', 'd', 'r', 'u', 'v', 't'])) {
-            return $this->extractCharacterSymbol($name);
-        }
-
-
-
         $lookup = rtrim($name, '*');
 
         if(!isset($this->_commands[$lookup])) {
@@ -636,28 +452,32 @@ class Parser extends iris\Parser {
 
         $package = $this->_commands[$lookup];
 
-        if($isStar = (substr($name, -1) == '*')) {
-            $name = substr($name, 0, -1);
-        }
-
-        $args = [];
-
-        if(strlen($name) == 1) {
-            $func = 'command_callSymbol';
-            $args[] = $name;
+        if($package instanceof IActivePackage) {
+            return $package->parseCommand($name);
         } else {
-            $func = 'command_'.str_replace(['@'], ['AT'], ltrim($name, '\\'));
+            if($isStar = (substr($name, -1) == '*')) {
+                $name = substr($name, 0, -1);
+            }
+
+            $args = [];
+
+            if(strlen($name) == 1) {
+                $func = 'command_callSymbol';
+                $args[] = $name;
+            } else {
+                $func = 'command_'.str_replace(['@'], ['AT'], ltrim($name, '\\'));
+            }
+
+            $args[] = $isStar;
+
+            if(!method_exists($package, $func)) {
+                throw new flex\latex\UnexpectedValueException(
+                    'Package '.$package->getName().' does not have a parser for command '.$name
+                );
+            }
+
+            return call_user_func_array([$package, $func], $args);
         }
-
-        $args[] = $isStar;
-
-        if(!method_exists($package, $func)) {
-            throw new flex\latex\UnexpectedValueException(
-                'Package '.$package->getName().' does not have a parser for command '.$name
-            );
-        }
-
-        return call_user_func_array([$package, $func], $args);
     }
 
     public function extractMacroFromCommand() {
