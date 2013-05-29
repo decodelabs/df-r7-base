@@ -22,18 +22,14 @@ class Textcomp extends Base implements flex\latex\IActivePackage {
 
     public function parseCommand($command) {
         if(isset(self::$_characterMap[$command])) {
-            return $this->extractCharacterSymbol($command);
+            $output = $this->extractCharacterSymbol($command);
+        } else if(isset(self::$_text[$command])) {
+            $output = self::$_text[$command];
+        } else /*if(in_array($command, self::$_special))*/ {
+            $output = $command;
         }
 
-        if(isset(self::$_text[$command])) {
-            return self::$_text[$command];
-        }
-
-        if(in_array($command, self::$_special)) {
-            return $command;
-        }
-
-        return $command;
+        return $this->parser->writeToTextNode($output);
     }
 
     public function extractCharacterSymbol($symbol) {
@@ -52,8 +48,8 @@ class Textcomp extends Base implements flex\latex\IActivePackage {
             $utf8 = self::$_characterMap[$symbol][$letter];
         }
 
-        $this->parser->writeToTextNode($utf8);
         $this->parser->extractValue('}');
+        return $utf8;
     }
 
     protected static $_special = ['$', '%', '_', '{', '}', '&', '#'];
