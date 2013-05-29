@@ -309,9 +309,11 @@ class Html extends iris\Translator {
             $body = $htmlId;
         }
 
+        $matchString = '({[=|';
+
         switch($type) {
             case 'bibitem':
-                if(ctype_alnum(substr($this->buffer, -1))) {
+                if(!stristr(substr($this->buffer, -1), $matchString)) {
                     $this->buffer .= ' ';
                 }
                 
@@ -325,7 +327,7 @@ class Html extends iris\Translator {
                     $this->buffer = substr($this->buffer, 0, -6);
                     $body = $temp.' '.$body;
                 } else {
-                    if(ctype_alnum(substr($this->buffer, -1))) {
+                    if(!stristr(substr($this->buffer, -1), $matchString)) {
                         $this->buffer .= ' ';
                     }
 
@@ -341,7 +343,7 @@ class Html extends iris\Translator {
                     $this->buffer = substr($this->buffer, 0, -8);
                     $body = $temp.' '.$body;
                 } else {
-                    if(ctype_alnum(substr($this->buffer, -1))) {
+                    if(!stristr(substr($this->buffer, -1), $matchString)) {
                         $this->buffer .= ' ';
                     }
 
@@ -357,7 +359,7 @@ class Html extends iris\Translator {
                     $this->buffer = substr($this->buffer, 0, -5);
                     $body = $temp.' '.$body;
                 } else {
-                    if(ctype_alnum(substr($this->buffer, -1))) {
+                    if(!stristr(substr($this->buffer, -1), $matchString)) {
                         $this->buffer .= ' ';
                     }
 
