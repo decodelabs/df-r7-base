@@ -22,7 +22,7 @@ class FileUpload extends Base implements IFileUploadWidget, core\IDumpable {
     
     protected $_acceptTypes = array();
     
-    public function __construct(arch\IContext $context, $name, $value) {
+    public function __construct(arch\IContext $context, $name, $value=null) {
         $this->setName($name);
         $this->setValue($value);
     }
