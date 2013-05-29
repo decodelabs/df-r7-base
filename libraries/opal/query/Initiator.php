@@ -74,6 +74,7 @@ class Initiator implements IInitiator {
 // Select
     public function beginSelect(array $fields=array(), $distinct=false) {
         $this->_setMode(IQueryTypes::SELECT);
+        $fields = core\collection\Util::flattenArray($fields);
         
         if(empty($fields)) {
             $fields = array('*');
@@ -175,6 +176,7 @@ class Initiator implements IInitiator {
     public function beginPopulate(IQuery $parent, array $fields, $type=IPopulateQuery::TYPE_ALL) {
         $this->_setMode(IQueryTypes::POPULATE);
         $this->_parentQuery = $parent;
+        $fields = core\collection\Util::flattenArray($fields);
         $isAll = false;
 
         switch($type) {
@@ -237,6 +239,7 @@ class Initiator implements IInitiator {
     public function beginJoin(IQuery $parent, array $fields=array(), $type=IJoinQuery::INNER) {
         $this->_setMode(IQueryTypes::JOIN);
         $this->_parentQuery = $parent;
+        $fields = core\collection\Util::flattenArray($fields);
         
         switch($type) {
             case IJoinQuery::INNER:
@@ -286,6 +289,7 @@ class Initiator implements IInitiator {
 // Attach
     public function beginAttach(IReadQuery $parent, array $fields=array()) {
         $this->_parentQuery = $parent;
+        $fields = core\collection\Util::flattenArray($fields);
         
         if(isset($fields[0]) && is_array($fields[0])) {
             $fields = $fields[0];
