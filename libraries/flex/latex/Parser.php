@@ -125,7 +125,14 @@ class Parser extends iris\Parser {
             $this->pushContainer(new flex\latex\map\Paragraph($location));
         }
 
-        $textNode = new flex\latex\map\TextNode($location);
+        $textNode = $this->container->getLast();
+        $append = false;
+
+        if(!$textNode instanceof flex\latex\map\TextNode) {
+            $textNode = new flex\latex\map\TextNode($location);
+            $append = true;
+        }
+
         $first = true;
 
         while($this->token->is('word', 'symbol')) {
@@ -198,7 +205,9 @@ class Parser extends iris\Parser {
                 $textNode->appendText($this->token->getWhitespaceBeforeNewLine());
             }
 
-            $this->container->push($textNode);
+            if($append) {
+                $this->container->push($textNode);
+            }
         }
 
         if($this->container instanceof IParagraph 

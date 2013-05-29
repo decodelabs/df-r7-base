@@ -27,6 +27,7 @@ interface IRecord extends core\collection\IMappedCollection, user\IAccessLock, c
     public function spawnNew(array $newValues=null);
     
     public function getPrimaryManifest();
+    public function getOriginalPrimaryManifest();
     
     public function hasChanged($field=null);
     public function clearChanges();

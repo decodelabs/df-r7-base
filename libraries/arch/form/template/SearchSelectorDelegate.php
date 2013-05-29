@@ -158,7 +158,7 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
                     $this->eventName('endSelect'),
                     $this->_('Done')
                 )
-                ->setIcon('tick')
+                ->setIcon('select')
                 ->setDisposition('positive')
                 ->shouldValidate(false)
         );

@@ -704,7 +704,7 @@ trait TForm_InlineFieldRenderableSelectorDelegate {
                         $this->eventName('beginSelect'),
                         $this->_('Select')
                     )
-                    ->setIcon('tick')
+                    ->setIcon('select')
                     ->setDisposition('positive')
                     ->shouldValidate(false)
             );
@@ -714,7 +714,7 @@ trait TForm_InlineFieldRenderableSelectorDelegate {
                         $this->eventName('beginSelect'),
                         $this->_('Select')
                     )
-                    ->setIcon('tick')
+                    ->setIcon('select')
                     ->setDisposition('operative')
                     ->shouldValidate(false),
 
