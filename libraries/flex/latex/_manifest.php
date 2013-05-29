@@ -103,6 +103,10 @@ interface IPackage extends iris\IProcessor {
     //public function parseEnvironment($name);
 }
 
+interface IActivePackage extends IPackage {
+    public function parseCommand($name);
+}
+
 interface IEnvironmentNode extends iris\map\IEntity {}
 
 
