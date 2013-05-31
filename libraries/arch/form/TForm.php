@@ -183,6 +183,10 @@ trait TForm {
         return $this;
     }
 
+    public function hasStore($key) {
+        return $this->_state->hasStore($key);
+    }
+
     public function getStore($key, $default=null) {
         return $this->_state->getStore($key, $default);
     }
