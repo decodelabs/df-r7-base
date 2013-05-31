@@ -16,6 +16,7 @@ class Figure extends iris\map\Node implements flex\latex\IFigure, core\IDumpable
     use flex\latex\TReferable;
     use flex\latex\TCaptioned;
     use flex\latex\TPlacementAware;
+    use flex\latex\TListedNode;
 
     public $number;
 

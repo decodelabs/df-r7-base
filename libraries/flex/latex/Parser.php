@@ -381,11 +381,13 @@ class Parser extends iris\Parser {
         return $object;
     }
 
+    protected $_mathCounter = 0;
 
     public function parseBlockMathMode($blockType) {
         $object = new flex\latex\map\MathNode($this->token->getLocation());
         $object->isInline(false);
         $object->setBlockType($blockType);
+        $object->setNumber(++$this->_mathCounter);
 
         // Put on containerStack to give label command a target  
         $this->_containerStack[] = $object;

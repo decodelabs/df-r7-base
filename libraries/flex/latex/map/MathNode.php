@@ -14,6 +14,7 @@ class MathNode extends iris\map\Node implements flex\latex\IMathNode, core\IDump
 
     use flex\latex\TNodeClassProvider;
     use flex\latex\TReferable;
+    use flex\latex\TListedNode;
 
     public $symbols;
 

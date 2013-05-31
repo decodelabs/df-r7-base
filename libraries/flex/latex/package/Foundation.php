@@ -152,10 +152,13 @@ class Foundation extends Base {
 
 
 // Table
+    protected $_tableCounter = 0;
+
     public function environment_table() {
         $table = new flex\latex\map\Table($this->parser->token);
         $options = array_keys($this->parser->extractOptionList());
         $table->setPlacement(array_shift($options));
+        $table->setNumber(++$this->_tableCounter);
 
         $this->parser->parseStandardContent($table);
 
@@ -168,6 +171,7 @@ class Foundation extends Base {
 
         if(!$this->parser->container instanceof flex\latex\ITabular) {
             $table = new flex\latex\map\Table($this->parser->token);
+            $table->setNumber(++$this->_tableCounter);
             $this->parser->pushContainer($table);
             $pop = true;
         }
@@ -597,7 +601,7 @@ class Foundation extends Base {
         $section = new flex\latex\map\Block($this->parser->token);
         $section->setType('section');
         $section->setAttribute('level', 1);
-        $section->setAttribute('number', ++$this->_sectionCounter);
+        $section->setNumber(++$this->_sectionCounter);
         $section->setAttribute('renderNumber', !$isStar);
 
         $this->_subsectionCounter = 0;
@@ -619,7 +623,7 @@ class Foundation extends Base {
         $section = new flex\latex\map\Block($this->parser->token);
         $section->setType('section');
         $section->setAttribute('level', 2);
-        $section->setAttribute('number', ++$this->_subsectionCounter);
+        $section->setNumber(++$this->_subsectionCounter);
         $section->setAttribute('renderNumber', !$isStar);
 
         $this->_subsubsectionCounter = 0;
@@ -646,7 +650,7 @@ class Foundation extends Base {
         $section = new flex\latex\map\Block($this->parser->token);
         $section->setType('section');
         $section->setAttribute('level', 3);
-        $section->setAttribute('number', ++$this->_subsubsectionCounter);
+        $section->setNumber(++$this->_subsubsectionCounter);
         $section->setAttribute('renderNumber', !$isStar);
 
         $this->parser->extractValue('{');

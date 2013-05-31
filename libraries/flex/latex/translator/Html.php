@@ -199,6 +199,7 @@ class Html extends iris\Translator {
         $output .= '    '.$imgTag."\n";
 
         if($captionTag) {
+            $output .= '    '.$this->element('h4', 'Figure '.$figure->getNumber())."\n";
             $output .= '    '.$captionTag->open();
             $output .= $this->_translateContainerNode($caption);
             $output .= $captionTag->close()."\n";
@@ -239,6 +240,7 @@ class Html extends iris\Translator {
             }
 
             $output .= "\n".$tag->open();
+            $output .= '    '.$this->element('h4', 'Equation '.$math->getNumber())."\n";
             $output .= '\\[';
 
             if($type = $math->getBlockType()) {
@@ -390,7 +392,7 @@ class Html extends iris\Translator {
 
                 $output .= "\n".'<section>'."\n";
                 $this->_inSection = true;
-                $tag = $this->tag('h2', ['id' => 'section-'.$block->getAttribute('number')]);
+                $tag = $this->tag('h2', ['id' => 'section-'.$block->getNumber()]);
 
                 $output .= $tag->open();
                 $output .= $this->_translateContainerNode($block);
@@ -405,7 +407,7 @@ class Html extends iris\Translator {
                     $output .= "\n";
                 }
 
-                $tag = $this->element('h3', ['id' => 'subsection-'.$block->getAttribute('number')]);
+                $tag = $this->element('h3', ['id' => 'subsection-'.$block->getNumber()]);
                 $output .= $tag->open();
                 $output .= $this->_translateContainerNode($block);
                 $output .= $tag->close()."\n";
@@ -419,7 +421,7 @@ class Html extends iris\Translator {
                     $output .= "\n";
                 }
 
-                $tag = $this->element('h4', ['id' => 'subsubsection-'.$block->getAttribute('number')]);
+                $tag = $this->element('h4', ['id' => 'subsubsection-'.$block->getNumber()]);
                 $output .= $tag->open();
                 $output .= $this->_translateContainerNode($block);
                 $output .= $tag->close()."\n";
@@ -482,11 +484,20 @@ class Html extends iris\Translator {
         }
 
         $output .= "\n".$tableTag->open()."\n";
+        $captionContent = null;
 
         if($caption = $table->getCaption()) {
+            $captionContent = $this->_translateContainerNode($caption);
+        }
+
+        if($number = $table->getNumber()) {
+            $captionContent = trim($this->element('h4', 'Table '.$number).' '.$captionContent);
+        }
+
+        if($captionContent) {
             $captionTag = $this->tag('caption');
             $output .= $captionTag->open();
-            $output .= $this->_translateContainerNode($caption);
+            $output .= $captionContent;
             $output .= $captionTag->close()."\n";
         }
 
