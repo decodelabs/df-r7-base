@@ -14,6 +14,7 @@ class Structure extends iris\map\Node implements flex\latex\IStructure, core\IDu
 
     use flex\latex\TContainerNode;
     use flex\latex\TReferable;
+    use flex\latex\TListedNode;
 
     protected $_type;
 

@@ -16,6 +16,7 @@ class Table extends iris\map\Node implements flex\latex\ITable, core\IDumpable {
     use flex\latex\TReferable;
     use flex\latex\TCaptioned;
     use flex\latex\TPlacementAware;
+    use flex\latex\TListedNode;
 
     protected $_columns = array();
 

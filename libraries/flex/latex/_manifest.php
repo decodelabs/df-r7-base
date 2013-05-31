@@ -98,6 +98,25 @@ trait TContainerNode {
     }  
 }
 
+interface IListedNode extends iris\map\INode {
+    public function setNumber($number);
+    public function getNumber();
+}
+
+trait TListedNode {
+
+    protected $_number;
+
+    public function setNumber($number) {
+        $this->_number = $number;
+        return $this;
+    }
+
+    public function getNumber() {
+        return $this->_number;
+    }
+}
+
 interface IPackage extends iris\IProcessor {
     //public function parseCommand($name);
     //public function parseEnvironment($name);
@@ -175,7 +194,7 @@ trait TReferable {
     }
 }
 
-interface IGenericBlock extends IBlock, core\IAttributeContainer, IReferable {
+interface IGenericBlock extends IBlock, IListedNode, core\IAttributeContainer, IReferable {
     public function isInline($flag=null);
     public function setType($type);
     public function getType();
@@ -201,13 +220,6 @@ trait TPlacementAware {
 }
 
 
-interface ISection extends IBlock {
-    public function setNumber($number);
-    public function getNumber();
-    public function setLevel($level);
-    public function getLevel();
-}
-
 
 interface IParagraph extends IBlock {}
 
@@ -218,7 +230,7 @@ interface ITextNode extends iris\map\IAspect, INodeClassProvider {
     public function isEmpty();
 }
 
-interface IMathNode extends IReferable {
+interface IMathNode extends IReferable, IListedNode {
     public function isInline($flag=null);
     public function setBlockType($type);
     public function getBlockType();
@@ -256,7 +268,7 @@ trait TCaptioned {
     }
 }
 
-interface IFigure extends IEnvironmentNode, IContainerNode, IReferable, ICaptioned, IPlacementAware {
+interface IFigure extends IEnvironmentNode, IContainerNode, IReferable, ICaptioned, IPlacementAware, IListedNode {
     public function setNumber($number);
     public function getNumber();
 }
@@ -266,7 +278,7 @@ interface ITabular extends iris\map\IAspect {
     public function getColumns();
 }
 
-interface ITable extends ITabular, IEnvironmentNode, IContainerNode, IReferable, ICaptioned, IPlacementAware {
+interface ITable extends ITabular, IEnvironmentNode, IContainerNode, IReferable, ICaptioned, IPlacementAware, IListedNode {
     public function isFirstRowHead();
     public function isFirstColumnHead();
 }
@@ -280,7 +292,7 @@ interface IColumn extends iris\map\IAspect {
     public function hasRightBorder($flag=null);
 }
 
-interface IStructure extends IEnvironmentNode, IContainerNode, IReferable  {
+interface IStructure extends IEnvironmentNode, IContainerNode, IReferable, IListedNode {
     public function setType($type);
     public function getType();
 }

@@ -14,6 +14,7 @@ class Block extends iris\map\Node implements flex\latex\IGenericBlock, core\IDum
 
     use flex\latex\TContainerNode;
     use flex\latex\TReferable;
+    use flex\latex\TListedNode;
     use core\TAttributeContainer;
 
     protected $_isInline = false;
