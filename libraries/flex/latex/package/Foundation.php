@@ -6,7 +6,7 @@
 namespace df\flex\latex\package;
 
 use df;
-use df\core as coreLib;
+use df\core;
 use df\flex;
 use df\iris;
     
@@ -355,7 +355,7 @@ class Foundation extends Base {
             */
 
             default:
-                coreLib\dump($symbol, $isStar);
+                core\dump($symbol, $isStar);
         }
     }
 
@@ -677,6 +677,12 @@ class Foundation extends Base {
 
 // Textit
     public function command_textit() {
+        $lastToken = $this->parser->getLastToken();
+
+        if($lastToken->isWhitespaceSingleNewLine()) {
+            $this->parser->writeToTextNode(' ');
+        }
+
         $block = new flex\latex\map\Block($this->parser->token);
         $block->setType('italic');
         $block->isInline(true);

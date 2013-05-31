@@ -164,6 +164,7 @@ class Parser extends iris\Parser {
 
             $word = $this->extract()->value;
 
+            // Quotes
             if($word == '`') {
                 if($this->token->value == '`') {
                     $this->extract();
@@ -177,6 +178,22 @@ class Parser extends iris\Parser {
                     $word = '”';
                 } else {
                     $word = '’';
+                }
+            }
+
+            // Dashes
+            if($word == '-') {
+                if($this->token->value == '-') {
+                    $this->extract();
+
+                    if($this->token->value == '-') {
+                        $this->extract();
+                        $word = '—';
+                    } else {
+                        $word = '–';
+                    }
+                } else {
+                    $word = '-';
                 }
             }
 
