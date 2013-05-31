@@ -22,6 +22,7 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 // Interfaces
 interface IStoreProvider {
     public function setStore($key, $value);
+    public function hasStore($key);
     public function getStore($key, $default=null);
     public function removeStore($key);
     public function clearStore();
