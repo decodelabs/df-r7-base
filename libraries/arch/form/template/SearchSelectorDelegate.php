@@ -21,9 +21,46 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
 
     protected $_searchMessage = null;
     protected $_searchPlaceholder = null;
+    protected $_defaultSearchString = null;
+
+    public function setSearchMessage($message) {
+        $this->_searchMessage = $message;
+        return $this;
+    }
+
+    public function getSearchMessage() {
+        return $this->_searchMessage;
+    }
+
+    public function setSearchPlaceholder($placeholder) {
+        $this->_searchPlaceholder = $placeholder;
+        return $this;
+    }
+
+    public function getSearchPlaceholder() {
+        return $this->_searchPlaceholder;
+    }
+
+    public function setDefaultSearchString($search) {
+        $this->_defaultSearchString = $search;
+        return $this;
+    }
+
+    public function getDefaultSearchString() {
+        return $this->_defaultSearchString;
+    }
+
+    protected function _setDefaultValues() {
+        $this->values->search = $this->_defaultSearchString;
+    }
 
     protected function _renderOverlaySelectorContent(aura\html\widget\Overlay $ol) {
         $fs = $ol->addFieldSet($this->_('Select'));
+
+        if(!$this->values->search->hasValue() && $this->_defaultSearchString !== null) {
+            $this->values->search->setValue($this->_defaultSearchString);
+            $this->_onSearchEvent();
+        }
 
         // Search
         $fs->addFieldArea($this->_('Search'))->setDescription($this->_searchMessage)->push(
