@@ -151,6 +151,24 @@ class Foundation extends Base {
     }
 
 
+// Footnotesize
+    public function command_footnotesize() {
+        if($this->parser->getLastToken()->isWhitespaceSingleNewLine()) {
+            $this->parser->writeToTextNode(' ');
+        }
+
+        $block = new flex\latex\map\Block($this->parser->token);
+        $block->setType('small');
+        $block->isInline(true);
+
+        $this->parser->extractValue('{');
+        $this->parser->parseStandardContent($block, true);
+        $this->parser->extractValue('}');
+
+        return $block;
+    }
+
+
 // Table
     protected $_tableCounter = 0;
 
