@@ -311,14 +311,9 @@ class Html extends iris\Translator {
             $body = $htmlId;
         }
 
-        $matchString = '({[=|';
-
         switch($type) {
             case 'bibitem':
-                if(!stristr(substr($this->buffer, -1), $matchString)) {
-                    $this->buffer .= ' ';
-                }
-                
+                $this->_fixBufferLinkSpacing();
                 $body = '['.$body.']';
                 break;
 
@@ -329,10 +324,7 @@ class Html extends iris\Translator {
                     $this->buffer = substr($this->buffer, 0, -6);
                     $body = $temp.' '.$body;
                 } else {
-                    if(!stristr(substr($this->buffer, -1), $matchString)) {
-                        $this->buffer .= ' ';
-                    }
-
+                    $this->_fixBufferLinkSpacing();
                     $body = 'Figure '.$body;
                 }
 
@@ -345,10 +337,7 @@ class Html extends iris\Translator {
                     $this->buffer = substr($this->buffer, 0, -8);
                     $body = $temp.' '.$body;
                 } else {
-                    if(!stristr(substr($this->buffer, -1), $matchString)) {
-                        $this->buffer .= ' ';
-                    }
-
+                    $this->_fixBufferLinkSpacing();
                     $body = 'Equation '.$body;
                 }
 
@@ -361,10 +350,7 @@ class Html extends iris\Translator {
                     $this->buffer = substr($this->buffer, 0, -5);
                     $body = $temp.' '.$body;
                 } else {
-                    if(!stristr(substr($this->buffer, -1), $matchString)) {
-                        $this->buffer .= ' ';
-                    }
-
+                    $this->_fixBufferLinkSpacing();
                     $body = 'Table '.$body;
                 }
 
@@ -377,6 +363,12 @@ class Html extends iris\Translator {
 
         $output .= $this->element('a.reference.'.$type, $body, ['href' => '#'.$type.'-'.$htmlId]);
         return $output;
+    }
+
+    protected function _fixBufferLinkSpacing() {
+        if(!strpbrk(substr($this->buffer, -1), '({[=| ')) {
+            $this->buffer .= ' ';
+        }
     }
 
 // Section
