@@ -569,9 +569,10 @@ class Html extends iris\Translator {
 
         $text = str_replace("\n", '<br />'."\n", $text);
         $text = preg_replace_callback(
-            '/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/',
+            '/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_\:]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/',
             function($matches) {
                 $url = trim($matches[1], '. ');
+                core\dump($url);
                 return '<a href="'.$url.'" target="_blank">'.$url.'</a>';
             },
             $text
