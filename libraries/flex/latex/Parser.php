@@ -128,7 +128,8 @@ class Parser extends iris\Parser {
         $textNode = $this->container->getLast();
         $append = false;
 
-        if(!$textNode instanceof flex\latex\map\TextNode) {
+        if(!$textNode instanceof flex\latex\map\TextNode
+         || $textNode->hasClasses()) {
             $textNode = new flex\latex\map\TextNode($location);
             $append = true;
         }
