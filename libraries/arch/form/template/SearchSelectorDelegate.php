@@ -50,10 +50,6 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
         return $this->_defaultSearchString;
     }
 
-    protected function _setDefaultValues() {
-        $this->values->search = $this->_defaultSearchString;
-    }
-
     protected function _renderOverlaySelectorContent(aura\html\widget\Overlay $ol) {
         $fs = $ol->addFieldSet($this->_('Select'));
 
