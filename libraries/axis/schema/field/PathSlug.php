@@ -106,6 +106,15 @@ class PathSlug extends Base implements
             case 'not begins':
                 return $output->where($this->_name.'_location', $operator, $slug);
 
+            case 'ends':
+            case 'not ends':
+                return $output->where($this->_name.'_name', $operator, $slug);
+
+            case 'contains':
+            case 'not contains':
+                return $output
+                    ->where($this->_name.'_name', $operator, $slug)
+                    ->orWhere($this->_name.'_location', $operator, $slug);
 
             default:
                 $parts = explode('/', $slug);
