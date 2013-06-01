@@ -43,6 +43,8 @@ interface IForm extends IStoreProvider {
     public function getStateController();
     public function loadDelegate($id, $name, $request=null);
     public function getDelegate($id);
+    public function hasDelegate($id);
+    public function unloadDelegate($id);
 
     public function isValid();
     public function fieldName($name);

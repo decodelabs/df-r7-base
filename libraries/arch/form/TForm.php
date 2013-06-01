@@ -130,6 +130,30 @@ trait TForm {
         return $output;
     }
 
+    public function hasDelegate($id) {
+        if(!is_array($id)) {
+            $id = explode('.', trim($id, ' .'));
+        }
+        
+        if(empty($id)) {
+            return false;
+        }
+        
+        $top = array_shift($id);
+        
+        if(!isset($this->_delegates[$top])) {
+            return false;
+        }
+        
+        $delegate = $this->_delegates[$top];
+        
+        if(!empty($id)) {
+            return $delegate->hasDelegate($id);
+        }
+
+        return true;
+    }
+
     public function unloadDelegate($id) {
         if(!is_array($id)) {
             $id = explode('.', trim($id, ' .'));
