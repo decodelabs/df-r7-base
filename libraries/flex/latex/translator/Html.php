@@ -579,7 +579,7 @@ class Html extends iris\Translator {
 
         $text = str_replace("\n", '<br />'."\n", $text);
         $text = preg_replace_callback(
-            '/(http(s)?\:\/\/[^ ])/',
+            '/(http(s)?\:\/\/[^\s\<\>]+)/',
             function($matches) {
                 $url = htmlspecialchars(trim($matches[1], '. '));
                 return '<a href="'.$url.'" target="_blank">'.$url.'</a>';
