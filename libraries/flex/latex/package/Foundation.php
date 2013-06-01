@@ -499,6 +499,7 @@ class Foundation extends Base {
                 }
 
                 $container->setId($id);
+                break;
             }
         }
 
