@@ -557,6 +557,12 @@ class Html extends iris\Translator {
 
         if(!empty($classes)) {
             $text = $this->element('span', $text, ['class' => $classes]);
+
+            if($text->hasClass('superscript')) {
+                $text->setName('sup');
+            } else if($text->hasClass('subscript')) {
+                $text->setName('sub');
+            }
         } else {
             $text = $this->esc($text);
         }

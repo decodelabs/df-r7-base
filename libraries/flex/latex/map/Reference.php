@@ -31,8 +31,10 @@ class Reference extends iris\map\Node implements flex\latex\IReference, core\IDu
                 return 'bibitem';
 
             case 'label':
+            case 'ref':
                 return 'figure';
                 
+
             default:
                 core\dump('ref target', $this->_type);
         }

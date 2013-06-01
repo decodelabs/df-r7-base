@@ -22,6 +22,7 @@ interface INodeClassProvider {
     public function addClasses($classes);
     public function addClass($class);
     public function getClasses();
+    public function hasClasses();
     public function removeClass($class);
     public function clearClasses();
 }
@@ -59,6 +60,10 @@ trait TNodeClassProvider {
 
     public function getClasses() {
         return array_keys($this->_classes);
+    }
+
+    public function hasClasses() {
+        return !empty($this->_classes);
     }
 
     public function removeClass($class) {
