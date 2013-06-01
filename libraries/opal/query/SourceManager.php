@@ -72,7 +72,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
 
                 if($fields !== null) {
                     foreach($fields as $field) {
-                        $this->extrapolateOutputField($source, $field);
+                        $this->extrapolateOutputField($output, $field);
                     }
                 }
 
