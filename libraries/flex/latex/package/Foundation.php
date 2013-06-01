@@ -614,6 +614,24 @@ class Foundation extends Base {
     }
 
 
+// Small
+    public function command_small() {
+        if($this->parser->getLastToken()->isWhitespaceSingleNewLine()) {
+            $this->parser->writeToTextNode(' ');
+        }
+
+        $block = new flex\latex\map\Block($this->parser->token);
+        $block->setType('small');
+        $block->isInline(true);
+
+        $this->parser->extractValue('{');
+        $this->parser->parseStandardContent($block, true);
+        $this->parser->extractValue('}');
+
+        return $block;
+    }
+
+
 // Subsection
     protected $_subsectionCounter = 0;
 
@@ -677,9 +695,7 @@ class Foundation extends Base {
 
 // Textit
     public function command_textit() {
-        $lastToken = $this->parser->getLastToken();
-
-        if($lastToken->isWhitespaceSingleNewLine()) {
+        if($this->parser->getLastToken()->isWhitespaceSingleNewLine()) {
             $this->parser->writeToTextNode(' ');
         }
 
@@ -697,6 +713,24 @@ class Foundation extends Base {
 // Textwidth
     public function command_textwidth() {
         return (new flex\latex\map\Macro($this->parser->token))->setName('textwidth');
+    }
+
+
+// Tiny
+    public function command_tiny() {
+        if($this->parser->getLastToken()->isWhitespaceSingleNewLine()) {
+            $this->parser->writeToTextNode(' ');
+        }
+
+        $block = new flex\latex\map\Block($this->parser->token);
+        $block->setType('tiny');
+        $block->isInline(true);
+
+        $this->parser->extractValue('{');
+        $this->parser->parseStandardContent($block, true);
+        $this->parser->extractValue('}');
+
+        return $block;
     }
 
 
