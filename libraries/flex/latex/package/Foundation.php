@@ -508,7 +508,8 @@ class Foundation extends Base {
         $stack = $this->parser->getContainerStack();
 
         foreach(array_reverse($stack) as $container) {
-            if($container instanceof flex\latex\IReferable) {
+            if($container instanceof flex\latex\IReferable
+            && !$container instanceof flex\latex\map\Block) {
                 if($container->getId()) {
                     throw new iris\UnexpectedTokenException(
                         'Trying to set id on container that already has an id',
