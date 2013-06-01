@@ -49,6 +49,15 @@ abstract class FormUi extends arch\component\Base implements arch\form\IForm, au
         return $this->_form->getDelegate($id);
     }
 
+    public function hasDelegate($id) {
+        return $this->_form->hasDelegate($id);
+    }
+
+    public function unloadDelegate($id) {
+        $this->_form->unloadDelegate($id);
+        return $this;
+    }
+
 // Helpers
     public function isValid() {
         return $this->_form->isValid();
