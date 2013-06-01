@@ -72,6 +72,10 @@ abstract class FormUi extends arch\component\Base implements arch\form\IForm, au
         return $this;
     }
 
+    public function hasStore($key) {
+        return $this->_form->hasStore($key);
+    }
+
     public function getStore($key, $default=null) {
         return $this->_form->getStore($key, $default);
     }
