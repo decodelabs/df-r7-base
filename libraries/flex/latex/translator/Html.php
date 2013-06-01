@@ -427,6 +427,16 @@ class Html extends iris\Translator {
     }
 
 
+// Small
+    protected function _translateSmallBlock(flex\latex\map\Block $block) {
+        return (string)$this->element(
+            'small', 
+            $this->string($this->_translateContainerNode($block)), 
+            ['class' => $block->getClasses()]
+        );
+    }
+
+
 // Structure
     protected function _translateStructure(flex\latex\map\Structure $structure) {
         $func = '_translate'.ucfirst($structure->getType()).'Structure';
@@ -581,6 +591,17 @@ class Html extends iris\Translator {
         return $text;
     }
 
+
+// Tiny
+    protected function _translateTinyBlock(flex\latex\map\Block $block) {
+        return (string)$this->element(
+                'small', 
+                $this->string($this->_translateContainerNode($block)), 
+                ['class' => $block->getClasses()]
+            )
+            ->addClass('tiny');
+    }
+
     protected function _finaliseDocument($document) {
         $output = '';
 
@@ -598,6 +619,10 @@ class Html extends iris\Translator {
 
     protected function element($tag, $content, array $attributes=array()) {
         return new aura\html\Element($tag, $content, $attributes);
+    }
+
+    protected function string($html) {
+        return new aura\html\ElementString($html);
     }
 
     protected function containerElement($tag, flex\latex\IContainerNode $node, array $attributes=array()) {
