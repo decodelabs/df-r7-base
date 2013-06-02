@@ -79,6 +79,7 @@ trait TNodeClassProvider {
 
 interface IContainerNode extends iris\map\INode, core\collection\IQueue, \IteratorAggregate, INodeClassProvider {
     public function getReferenceMap();
+    public function reduceContents();
 }
 
 trait TContainerNode {
@@ -101,6 +102,23 @@ trait TContainerNode {
 
         return $output;
     }  
+
+    public function reduceContents() {
+        $output = '';
+
+        foreach($this->_collection as $child) {
+            if($child instanceof IContainerNode) {
+                $output .= $child->reduceContents();
+            } else if($child instanceof ITextNode) {
+                $output .= $child->text;
+            } else {
+                core\dump($child);
+            }
+        }
+
+        $this->_collection = array();
+        return $output;
+    }
 }
 
 interface IListedNode extends iris\map\INode {
