@@ -245,8 +245,10 @@ class Parser extends iris\Parser {
     public function extractRefId() {
         $output = $this->extractWord()->value;
 
-        while(!$this->token->isAfterWhitespace() 
-        && $this->token->is('word', 'symbol')
+        while(
+            //!$this->token->isAfterWhitespace() 
+        //&& 
+        $this->token->is('word', 'symbol')
         && !$this->token->isValue('}')) {
             $output .= $this->extract()->value;
         }
