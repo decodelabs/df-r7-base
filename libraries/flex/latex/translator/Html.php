@@ -524,6 +524,15 @@ class Html extends iris\Translator {
                        || ($firstRow && $rowHead);
 
                 $cellTag = $this->tag($isHead ? 'th' : 'td');
+
+                if($cell->hasAttribute('colspan')) {
+                    $cellTag->setAttribute('colspan', $cell->getAttribute('colspan'));
+                }
+
+                if($cell->hasAttribute('rowspan')) {
+                    $cellTag->setAttribute('rowspan', $cell->getAttribute('rowspan'));
+                }
+
                 $output .= '    '.$cellTag->open();
 
                 if($isHead && !$cell->isEmpty()) {

@@ -584,6 +584,7 @@ class Foundation extends Base {
 
         $this->parser->extractValue('{');
         $this->parser->parseStandardContent($this->parser->container, true, false);
+        $this->parser->extractValue('}');
 
         return $this->parser->container;
     }
@@ -780,6 +781,12 @@ class Foundation extends Base {
         while(true) {
             $word = $this->parser->extractWord();
             $this->parser->document->addPackage($word->value, $options);
+
+            $class = 'df\\flex\\latex\\package\\'.ucfirst($word->value);
+
+            if(class_exists($class)) {
+                $this->parser->addProcessor(new $class());
+            }
 
             if($this->parser->extractIfValue('}')) {
                 break;
