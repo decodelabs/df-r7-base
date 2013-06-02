@@ -802,13 +802,10 @@ class Foundation extends Base {
 // Title
     public function command_title() {
         $this->parser->extractValue('{');
-        $title = '';
-
-        while($token = $this->parser->extractIfMatch('word')) {
-            $title .= ' '.$token->value;
-        }
-
-        $title = trim($title);
+        $block = new flex\latex\map\Block($this->parser->token);
+        $this->parser->parseStandardContent($block, true, false);
+        
+        $title = trim($block->reduceContents());
         $this->parser->document->setTitle($title);
         $this->parser->extractValue('}');
     }
