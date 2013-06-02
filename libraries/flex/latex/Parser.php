@@ -469,6 +469,12 @@ class Parser extends iris\Parser {
                 );
             }
 
+            if($env->value == 'document') {
+                while($this->token) {
+                    $this->extract();
+                }
+            }
+
             return;
         }
 

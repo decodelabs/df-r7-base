@@ -393,7 +393,6 @@ class Foundation extends Base {
     }
 
 
-
 // Symbol
     public function command_callSymbol($symbol, $isStar) {
         switch($symbol) {
