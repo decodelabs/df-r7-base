@@ -284,6 +284,29 @@ class Html extends iris\Translator {
         return $output;
     }
 
+// Unordered list
+    protected function _translateUnorderedListStructure(flex\latex\map\Structure $list) {
+        $output = '';
+
+        if($id = $list->getId()) {
+            $id = core\string\Manipulator::formatId($id);
+        }
+
+        $tag = $this->tag('ul', ['id' => $id]);
+        $output .= $tag->open()."\n";
+
+        foreach($list as $item) {
+            $liTag = $this->tag('li');
+
+            $output .= '    '.$liTag->open();
+            $output .= $this->_translateContainerNode($item);
+            $output .= $liTag->close()."\n";
+        }
+
+        $output .= $tag->close()."\n";
+        return $output;
+    }
+
 
 // Paragraph
     protected function _translateParagraph(flex\latex\map\Paragraph $paragraph) {
