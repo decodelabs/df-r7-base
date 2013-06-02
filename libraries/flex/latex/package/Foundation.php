@@ -14,7 +14,7 @@ class Foundation extends Base {
 
     protected static $_environments = [
         'root', 'center', 'document', 'enumerate', 'equation', 'eqnarray', 'figure', 
-        'multline', 'table', 'tabular', 'thebibliography'
+        'itemize', 'multline', 'table', 'tabular', 'thebibliography'
     ];
 
     protected static $_commands = [
@@ -174,6 +174,36 @@ class Foundation extends Base {
         $this->parser->extractValue('}');
 
         return $block;
+    }
+
+
+// Itemize
+    public function environment_itemize() {
+        $list = new flex\latex\map\Structure($this->parser->token);
+        $list->setType('unorderedList');
+        $this->parser->pushContainer($list);
+
+        while(!$this->parser->token->matches('command', null, 'end')) {
+            $item = new flex\latex\map\Block($this->parser->token);
+            $item->setType('listItem');
+
+            $this->parser->extractMatch('command', null, 'item');
+
+            if($this->parser->token->value == '[') {
+                $this->parser->extractValue('[');
+                $marker = $this->parser->extract();
+                $this->parser->extractValue(']');
+                $item->setAttribute('marker', $marker->value);
+            }
+
+            $this->parser->parseStandardContent($item, ['item', 'end']);
+        }
+
+        $this->parser->popContainer();
+        $this->parser->extractMatch('command', null, 'end');
+        $this->parser->parseCommand('end');
+
+        return $list;
     }
 
 
