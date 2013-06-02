@@ -176,6 +176,20 @@ class Html extends iris\Translator {
         }
     }
 
+
+// Bold
+    protected function _translateBoldBlock(flex\latex\map\Block $block) {
+        $output = '';
+        $tag = $this->tag('strong', ['class' => $block->getClasses()]);
+
+        $output .= $tag->open();
+        $output .= $this->_translateContainerNode($block);
+        $output .= $tag->close();
+
+        return $output;
+    }
+
+
 // Figure
     protected function _translateFigure(flex\latex\map\Figure $figure) {
         $output = '';

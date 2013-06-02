@@ -758,6 +758,24 @@ class Foundation extends Base {
     }
 
 
+// Textbf
+    public function command_textbf() {
+        if($this->parser->getLastToken()->isWhitespaceSingleNewLine()) {
+            $this->parser->writeToTextNode(' ');
+        }
+
+        $block = new flex\latex\map\Block($this->parser->token);
+        $block->setType('bold');
+        $block->isInline(true);
+
+        $this->parser->extractValue('{');
+        $this->parser->parseStandardContent($block, true);
+        $this->parser->extractValue('}');
+
+        return $block;
+    }
+
+
 // Textit
     public function command_textit() {
         if($this->parser->getLastToken()->isWhitespaceSingleNewLine()) {
