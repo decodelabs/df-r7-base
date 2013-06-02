@@ -191,9 +191,15 @@ class Foundation extends Base {
 
             if($this->parser->token->value == '[') {
                 $this->parser->extractValue('[');
-                $marker = $this->parser->extract();
+                $marker = '';
+
+                while($this->parser->token->value != ']') {
+                    $marker .= $this->parser->token->getWhitespace().$this->parser->token->value;
+                    $this->parser->extract();
+                }
+
                 $this->parser->extractValue(']');
-                $item->setAttribute('marker', $marker->value);
+                $item->setAttribute('marker', $marker);
             }
 
             $this->parser->parseStandardContent($item, ['item', 'end']);
