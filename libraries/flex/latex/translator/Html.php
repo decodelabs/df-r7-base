@@ -613,14 +613,14 @@ class Html extends iris\Translator {
         $text = preg_replace_callback(
             '/(http(s)?\:\/\/[^\s\<\>]+)/',
             function($matches) {
-                $url = htmlspecialchars(trim($matches[1], '. '));
+                $url = htmlspecialchars(trim($matches[1], ';:. '));
                 return '<a href="'.$url.'" target="_blank">'.$url.'</a>';
             },
             $text
         );
 
         $text = preg_replace_callback(
-            '/([^\s@\<\>\(\)\[\]]+@[^\s@\<\>\(\)\[\]\.]+\.[^\s@\<\>\(\)\[\]]+)/', 
+            '/([^\s@\<\>\(\)\[\]\:\;]+@[^\s@\<\>\(\)\[\]\:\;\.]+\.[^\s@\<\>\(\)\[\]\:\;]+)/', 
             function($matches) {
                 $email = htmlspecialchars(trim($matches[1], '. '));
                 return '<a href="mailto:'.$email.'">'.$email.'</a>';
