@@ -14,7 +14,7 @@ class Foundation extends Base {
 
     protected static $_environments = [
         'root', 'center', 'document', 'enumerate', 'equation', 'eqnarray', 'figure', 
-        'table', 'tabular', 'thebibliography'
+        'multline', 'table', 'tabular', 'thebibliography'
     ];
 
     protected static $_commands = [
@@ -128,6 +128,14 @@ class Foundation extends Base {
         return $output;
     }
 
+    public function environment_multline() {
+        $output = $this->parser->parseBlockMathMode('multline');
+
+        $this->parser->extractMatch('command', null, 'end');
+        $this->parser->parseCommand('end');
+        
+        return $output;
+    }
 
 // Figure
     protected $_figureCounter = 0;
