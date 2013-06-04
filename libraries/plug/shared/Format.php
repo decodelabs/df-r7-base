@@ -16,7 +16,7 @@ class Format implements core\ISharedHelper {
 // Numbers
     public function number($number, $format=null, $locale=null) {
         if($locale === null) {
-            $locale = $this->_locale;
+            $locale = $this->_context->getLocale();
         }
 
         return core\i18n\Manager::getInstance($this->_context->application)
@@ -26,7 +26,7 @@ class Format implements core\ISharedHelper {
     
     public function percent($number, $locale=null) {
         if($locale === null) {
-            $locale = $this->_locale;
+            $locale = $this->_context->getLocale();
         }
 
         return core\i18n\Manager::getInstance($this->_context->application)
@@ -46,7 +46,7 @@ class Format implements core\ISharedHelper {
 
     public function currency($number, $code, $locale=null) {
         if($locale === null) {
-            $locale = $this->_locale;
+            $locale = $this->_context->getLocale();
         }
 
         return core\i18n\Manager::getInstance($this->_context->application)
@@ -56,7 +56,7 @@ class Format implements core\ISharedHelper {
     
     public function scientific($number, $locale=null) {
         if($locale === null) {
-            $locale = $this->_locale;
+            $locale = $this->_context->getLocale();
         }
 
         return core\i18n\Manager::getInstance($this->_context->application)
@@ -66,7 +66,7 @@ class Format implements core\ISharedHelper {
     
     public function spellout($number, $locale=null) {
         if($locale === null) {
-            $locale = $this->_locale;
+            $locale = $this->_context->getLocale();
         }
 
         return core\i18n\Manager::getInstance($this->_context->application)
@@ -76,7 +76,7 @@ class Format implements core\ISharedHelper {
     
     public function ordinal($number, $locale=null) {
         if($locale === null) {
-            $locale = $this->_locale;
+            $locale = $this->_context->getLocale();
         }
 
         return core\i18n\Manager::getInstance($this->_context->application)
@@ -96,7 +96,7 @@ class Format implements core\ISharedHelper {
         }
 
         if($locale === null) {
-            $locale = $this->_locale;
+            $locale = $this->_context->getLocale();
         }
 
         if($locale !== null) {
@@ -108,7 +108,7 @@ class Format implements core\ISharedHelper {
 
     public function genericDuration($number, $locale=null) {
         if($locale === null) {
-            $locale = $this->_locale;
+            $locale = $this->_context->getLocale();
         }
 
         return core\i18n\Manager::getInstance($this->_context->application)
@@ -118,7 +118,7 @@ class Format implements core\ISharedHelper {
 
     public function fileSize($bytes, $precision=2, $longNames=false, $locale=null) {
         if($locale === null) {
-            $locale = $this->_locale;
+            $locale = $this->_context->getLocale();
         }
 
         return core\i18n\Manager::getInstance($this->_context->application)
@@ -142,7 +142,7 @@ class Format implements core\ISharedHelper {
         }
 
         if($locale === null) {
-            $locale = $this->_locale;
+            $locale = $this->_context->getLocale();
         }
 
         return core\time\Date::factory($date)
@@ -164,7 +164,7 @@ class Format implements core\ISharedHelper {
         }
 
         if($locale === null) {
-            $locale = $this->_locale;
+            $locale = $this->_context->getLocale();
         }
         
         return core\time\Date::factory($date)
@@ -195,7 +195,7 @@ class Format implements core\ISharedHelper {
         }
 
         if($locale === null) {
-            $locale = $this->_locale;
+            $locale = $this->_context->getLocale();
         }
         
         return core\time\Date::factory($date)
@@ -214,7 +214,7 @@ class Format implements core\ISharedHelper {
     
     public function timeSince($date, $locale=null, $maxUnits=2, $shortUnits=false, $maxUnit=core\time\Duration::YEARS) {
         if($locale === null) {
-            $locale = $this->_locale;
+            $locale = $this->_context->getLocale();
         }
 
         if($locale === null) {
@@ -229,7 +229,7 @@ class Format implements core\ISharedHelper {
     
     public function timeUntil($date, $locale=null, $maxUnits=2, $shortUnits=false, $maxUnit=core\time\Duration::YEARS) {
         if($locale === null) {
-            $locale = $this->_locale;
+            $locale = $this->_context->getLocale();
         }
 
         if($locale === null) {
