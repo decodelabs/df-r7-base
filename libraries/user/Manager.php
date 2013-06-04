@@ -296,7 +296,7 @@ class Manager implements IManager, core\IDumpable {
     
     
     
-// Session
+// Session perpetuator
     public function setSessionPerpetuator(ISessionPerpetuator $perpetuator) {
         if($this->_sessionIsOpen) {
             throw new RuntimeException(
@@ -311,7 +311,21 @@ class Manager implements IManager, core\IDumpable {
     public function getSessionPerpetuator() {
         return $this->_sessionPerpetuator;
     }
+
+    protected function _loadSessionPerpetuator() {
+        switch($this->_application->getRunMode()) {
+            case 'Http':
+                $this->_sessionPerpetuator = new user\session\perpetuator\Cookie($this);
+                break;
+                
+            default:
+                $this->_sessionPerpetuator = new user\session\perpetuator\Shell($this);
+                break;
+        }
+    }
     
+
+// Session backend
     public function setSessionBackend(ISessionBackend $backend) {
         if($this->_sessionIsOpen) {
             throw new RuntimeException(
@@ -326,11 +340,23 @@ class Manager implements IManager, core\IDumpable {
     public function getSessionBackend() {
         return $this->_sessionBackend;
     }
+
+    protected function _loadSessionBackend() {
+        $this->_sessionBackend = $this->_getUserModel()->getSessionBackend();
+
+        if(!$this->_sessionBackend instanceof user\ISessionBackend) {
+            $this->_sessionBackend = new user\session\backend\Sqlite($this);
+        }
+    }
     
+
+// Session cache
     public function getSessionCache() {
         return $this->_sessionCache;
     }
-    
+
+
+// Session descriptor
     public function getSessionDescriptor() {
         $this->_openSession();
         return $this->_sessionDescriptor;
@@ -340,34 +366,25 @@ class Manager implements IManager, core\IDumpable {
         return $this->getSessionDescriptor()->getExternalId();
     }
     
+
+// Session handlers
     protected function _openSession() {
         if($this->_isSessionOpen) {
             return;
         }
         
         $this->_isSessionOpen = true;
-        $this->_sessionCache = user\session\Cache::getInstance($this->_application);
+        
+        if($this->_sessionCache === null) {
+            $this->_sessionCache = user\session\Cache::getInstance($this->_application);
+        }
         
         if($this->_sessionBackend === null) {
-            // TODO: get backend from config
-            
-            if($this->_application->isDistributed()) {
-                core\stub('need a remote shared session backend');
-            } else {
-                $this->_sessionBackend = new user\session\backend\Sqlite($this);
-            }
+            $this->_loadSessionBackend();
         }
         
         if($this->_sessionPerpetuator === null) {
-            switch($this->_application->getRunMode()) {
-                case 'Http':
-                    $this->_sessionPerpetuator = new user\session\perpetuator\Cookie($this);
-                    break;
-                    
-                default:
-                    $this->_sessionPerpetuator = new user\session\perpetuator\Shell($this);
-                    break;
-            }
+            $this->_loadSessionPerpetuator();
         }
         
         $externalId = $this->_sessionPerpetuator->getInputId();
@@ -502,7 +519,7 @@ class Manager implements IManager, core\IDumpable {
     
     
     
-    
+// Passwords
     public function analyzePassword($password) {
         return new core\string\PasswordAnalyzer($password, $this->_application->getPassKey());
     }

@@ -81,6 +81,8 @@ interface IUserModel {
     public function hasRememberKey(RememberKey $key);
     public function destroyRememberKey(RememberKey $key);
     public function purgeRememberKeys();
+
+    public function getSessionBackend();
 }
 
 interface IClientDataObject {
