@@ -397,13 +397,19 @@ trait THelperProvider {
             }
         }
 
-        if($this instanceof IApplicationAware) {
-            $application = $this->getApplication();
-        } else {
-            $application = df\Launchpad::$application;
+        $context = $this;
+
+        if(!$context instanceof IContext) {
+            if($this instanceof IApplicationAware) {
+                $application = $this->getApplication();
+            } else {
+                $application = df\Launchpad::$application;
+            }
+
+            $context = new SharedContext($application);
         }
 
-        return new $class($application);
+        return new $class($context);
     }
 }
 
@@ -709,11 +715,7 @@ trait TContext {
     }
 }
 
-class ContextException extends \RuntimeException implements IException {}
-
-interface ISharedHelper extends IContext {}
-
-trait TSharedHelper {
+class SharedContext implements IContext {
 
     use TContext;
 
@@ -723,6 +725,19 @@ trait TSharedHelper {
 
     protected function _loadHelper($name) {
         return $this->_loadSharedHelper($name);
+    }
+}
+
+class ContextException extends \RuntimeException implements IException {}
+
+interface ISharedHelper extends IHelper {}
+
+trait TSharedHelper {
+
+    protected $_context;
+
+    public function __construct(IContext $context) {
+        $this->_context = $context;
     }
 }
 

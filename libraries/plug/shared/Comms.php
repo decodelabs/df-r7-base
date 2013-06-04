@@ -15,7 +15,7 @@ class Comms implements core\ISharedHelper {
     use core\TSharedHelper;
 
     public function getNotificationManager() {
-        return arch\notify\Manager::getInstance($this->application);
+        return arch\notify\Manager::getInstance($this->_context->application);
     }
 
     public function notify($id, $message=null, $type=null) {
