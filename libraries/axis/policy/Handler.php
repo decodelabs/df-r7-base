@@ -18,10 +18,10 @@ class Handler implements core\policy\IEntityHandler {
                     return axis\Model::factory($node->getId(), $manager->getApplication());
                     
                 case 'Unit':
-                    return axis\Unit::fromId($node->getId(), $manager->getApplication());
+                    return axis\Model::loadUnitFromId($node->getId(), $manager->getApplication());
                     
                 case 'Schema':
-                    $unit = axis\Unit::fromId($node->getId(), $manager->getApplication());
+                    $unit = axis\Model::loadUnitFromId($node->getId(), $manager->getApplication());
                     
                     if(!$unit instanceof axis\ISchemaBasedStorageUnit) {
                         throw new axis\LogicException(

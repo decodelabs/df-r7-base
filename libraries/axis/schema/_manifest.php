@@ -162,7 +162,7 @@ trait TRelationField {
     }
 
     public function getTargetUnit(core\IApplication $application=null) {
-        return axis\Unit::fromId($this->_targetUnitId, $application);
+        return axis\Model::loadUnitFromId($this->_targetUnitId, $application);
     }
 
 
@@ -174,13 +174,13 @@ trait TRelationField {
     protected function _sanitizeTargetUnitId(axis\ISchemaBasedStorageUnit $unit) {
         $model = $unit->getModel();
         
-        if(false === strpos($this->_targetUnitId, axis\Unit::ID_SEPARATOR)) {
-            $this->_targetUnitId = $model->getModelName().axis\Unit::ID_SEPARATOR.$this->_targetUnitId;
+        if(false === strpos($this->_targetUnitId, axis\IUnit::ID_SEPARATOR)) {
+            $this->_targetUnitId = $model->getModelName().axis\IUnit::ID_SEPARATOR.$this->_targetUnitId;
         }
     }
 
     protected function _validateTargetUnit(axis\ISchemaBasedStorageUnit $localUnit) {
-        $targetUnit = axis\Unit::fromId($this->_targetUnitId, $localUnit->getApplication());
+        $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId, $localUnit->getApplication());
         
         if($targetUnit->getUnitType() != $localUnit->getUnitType()) {
             throw new RuntimeException(
@@ -259,7 +259,7 @@ trait TRelationField {
             return new opal\schema\Primitive_Null($this);
         }
 
-        $targetUnit = axis\Unit::fromId($this->_targetUnitId, $unit->getApplication());
+        $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId, $unit->getApplication());
         $targetSchema = $targetUnit->getTransientUnitSchema();
         $targetPrimaryIndex = $targetSchema->getPrimaryIndex();
 
@@ -432,7 +432,7 @@ trait TBridgedRelationField {
     }
     
     public function getBridgeUnit(core\IApplication $application=null) {
-        return axis\Unit::fromId($this->_bridgeUnitId, $application);
+        return axis\Model::loadUnitFromId($this->_bridgeUnitId, $application);
     }
 
     public function getBridgeLocalFieldName() {
@@ -457,11 +457,11 @@ trait TBridgedRelationField {
 
         if($this instanceof IManyToManyField) {
             if($this->isDominant() && empty($this->_bridgeUnitId)) {
-                $this->_bridgeUnitId = $modelName.axis\Unit::ID_SEPARATOR.$this->_getBridgeUnitType().'('.$localUnit->getUnitName().'.'.$this->_name.')';
+                $this->_bridgeUnitId = $modelName.axis\IUnit::ID_SEPARATOR.$this->_getBridgeUnitType().'('.$localUnit->getUnitName().'.'.$this->_name.')';
             }
             
-            if(!empty($this->_bridgeUnitId) && false === strpos($this->_bridgeUnitId, axis\Unit::ID_SEPARATOR)) {
-                $this->_bridgeUnitId = $modelName.axis\Unit::ID_SEPARATOR.$this->_bridgeUnitId;
+            if(!empty($this->_bridgeUnitId) && false === strpos($this->_bridgeUnitId, axis\IUnit::ID_SEPARATOR)) {
+                $this->_bridgeUnitId = $modelName.axis\IUnit::ID_SEPARATOR.$this->_bridgeUnitId;
             }
 
             if($this->_bridgeTargetFieldName == $localUnit->getUnitName()) {
@@ -473,11 +473,11 @@ trait TBridgedRelationField {
             }
         } else {
             if(empty($this->_bridgeUnitId)) {
-                $this->_bridgeUnitId = $modelName.axis\Unit::ID_SEPARATOR.$this->_getBridgeUnitType().'('.$localUnit->getUnitName().'.'.$this->_name.')';
+                $this->_bridgeUnitId = $modelName.axis\IUnit::ID_SEPARATOR.$this->_getBridgeUnitType().'('.$localUnit->getUnitName().'.'.$this->_name.')';
             }
             
-            if(false === strpos($this->_bridgeUnitId, axis\Unit::ID_SEPARATOR)) {
-                $this->_bridgeUnitId = $modelName.axis\Unit::ID_SEPARATOR.$this->_bridgeUnitId;
+            if(false === strpos($this->_bridgeUnitId, axis\IUnit::ID_SEPARATOR)) {
+                $this->_bridgeUnitId = $modelName.axis\IUnit::ID_SEPARATOR.$this->_bridgeUnitId;
             }
 
             if($this->_bridgeTargetFieldName == $localUnit->getUnitName()) {
@@ -487,7 +487,7 @@ trait TBridgedRelationField {
     }
 
     protected function _validateBridgeUnit(axis\ISchemaBasedStorageUnit $localUnit) {
-        $bridgeUnit = axis\Unit::fromId($this->_bridgeUnitId, $localUnit->getApplication());
+        $bridgeUnit = axis\Model::loadUnitFromId($this->_bridgeUnitId, $localUnit->getApplication());
 
         if($bridgeUnit->getModel()->getModelName() != $localUnit->getModel()->getModelName()) {
             throw new RuntimeException(

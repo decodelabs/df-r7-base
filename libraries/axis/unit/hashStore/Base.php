@@ -9,8 +9,10 @@ use df;
 use df\core;
 use df\axis;
 
-abstract class Base extends axis\Unit implements IHashStore {
+abstract class Base implements IHashStore {
     
+    use axis\TUnit;
+
     public function getUnitType() {
         return 'hashStore';
     }
