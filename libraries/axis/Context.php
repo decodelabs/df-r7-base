@@ -9,13 +9,18 @@ use df;
 use df\core;
 use df\axis;
     
-final class Context extends Unit implements IContext {
+final class Context implements IContext {
 
+    use axis\TUnit;
     use core\TContext;
 
     public function __construct(IModel $model) {
-        parent::__construct($model);
+        $this->_model = $model;
         $this->application = $model->getApplication();
+    }
+
+    public function getApplication() {
+        return $this->application;
     }
 
     public function getUnitType() {
