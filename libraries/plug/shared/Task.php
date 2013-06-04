@@ -28,15 +28,15 @@ class Task implements core\ISharedHelper {
     }
 
     public function getResponse() {
-        if($this->application instanceof core\application\Task) {
-            return $this->application->getTaskResponse();
+        if($this->_context->application instanceof core\application\Task) {
+            return $this->_context->application->getTaskResponse();
         }
 
         $key = core\io\Multiplexer::REGISTRY_KEY.':task';
 
-        if(!$output = $this->application->getRegistryObject($key)) {
+        if(!$output = $this->_context->application->getRegistryObject($key)) {
             $output = arch\task\Response::defaultFactory();
-            $this->application->setRegistryObject($output);
+            $this->_context->application->setRegistryObject($output);
         }
 
         return $output;

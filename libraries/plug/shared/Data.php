@@ -25,7 +25,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
     
 // Query
     private function _getEntryPointApplication() {
-        return $this->application;
+        return $this->_context->application;
     }
     
 
@@ -52,32 +52,32 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
         $name = $query->getSource()->getDisplayName();
 
         if(!$output = $query->toRow()) {
-            $this->throwError(404, 'Item not found - '.$name.'#'.$primary);
+            $this->_context->throwError(404, 'Item not found - '.$name.'#'.$primary);
         }
 
-        if(!$this->getUserManager()->canAccess($output, $action)) {
-            $this->throwError(401, 'Cannot '.$actionName.' '.$name.' items');
+        if(!$this->_context->getUserManager()->canAccess($output, $action)) {
+            $this->_context->throwError(401, 'Cannot '.$actionName.' '.$name.' items');
         }
 
         return $output;
     }
 
     public function newRecord($source, array $values=null) {
-        $sourceManager = new opal\query\SourceManager($this->application);
+        $sourceManager = new opal\query\SourceManager($this->_context->application);
         $source = $sourceManager->newSource($source, null);
         $adapter = $source->getAdapter();
 
         $output = $adapter->newRecord($values);
 
-        if(!$this->getUserManager()->canAccess($output, 'add')) {
-            $this->throwError(401, 'Cannot add '.$source->getDisplayName().' items');
+        if(!$this->_context->getUserManager()->canAccess($output, 'add')) {
+            $this->_context->throwError(401, 'Cannot add '.$source->getDisplayName().' items');
         }
 
         return $output;
     }
 
     public function newRecordTaskSet() {
-        return new opal\record\task\TaskSet($this->application);
+        return new opal\record\task\TaskSet($this->_context->application);
     }
 
     public function checkAccess($source, $action=null) {
@@ -87,12 +87,12 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
             $actionName = 'access';
         }
         
-        $sourceManager = new opal\query\SourceManager($this->application);
+        $sourceManager = new opal\query\SourceManager($this->_context->application);
         $source = $sourceManager->newSource($source, null);
         $adapter = $source->getAdapter();
 
-        if(!$this->getUserManager()->canAccess($adapter, $action)) {
-            $this->throwError(401, 'Cannot '.$actionName.' '.$source->getDisplayName().' items');
+        if(!$this->_context->getUserManager()->canAccess($adapter, $action)) {
+            $this->_context->throwError(401, 'Cannot '.$actionName.' '.$source->getDisplayName().' items');
         }
 
         return $this;
@@ -106,15 +106,15 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
     }
 
     public function getModel($name) {
-        return axis\Model::factory($name, $this->application);
+        return axis\Model::factory($name, $this->_context->application);
     }
     
     public function getUnit($unitId) {
-        return axis\Model::loadUnitFromId($unitId, $this->application);
+        return axis\Model::loadUnitFromId($unitId, $this->_context->application);
     }
 
     public function getSchema($unitId) {
-        return axis\Model::loadUnitFromId($unitId, $this->application)->getUnitSchema();
+        return axis\Model::loadUnitFromId($unitId, $this->_context->application)->getUnitSchema();
     }
 
     public function getSchemaField($unitId, $field) {
@@ -156,7 +156,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
 
 // Policy
     public function fetchEntity($locator) {
-        return $this->getPolicyManager()->fetchEntity($locator);
+        return $this->_context->getPolicyManager()->fetchEntity($locator);
     }
 
     public function fetchEntityForAction($id, $action=null) {
@@ -167,11 +167,11 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
         }
 
         if(!$output = $this->fetchEntity($id)) {
-            $this->throwError(404, 'Entity not found - '.$id);
+            $this->_context->throwError(404, 'Entity not found - '.$id);
         }
 
-        if(!$this->getUserManager()->canAccess($output, $action)) {
-            $this->throwError(401, 'Cannot '.$actionName.' entity '.$id);
+        if(!$this->_context->getUserManager()->canAccess($output, $action)) {
+            $this->_context->throwError(401, 'Cannot '.$actionName.' entity '.$id);
         }
 
         return $output;
@@ -181,7 +181,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
 // Crypt
     public function hash($message, $salt=null) {
         if($salt === null) {
-            $salt = $this->application->getPassKey();
+            $salt = $this->_context->application->getPassKey();
         }
         
         return core\string\Util::passwordHash($message, $salt);
@@ -189,8 +189,8 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
     
     public function encrypt($message, $password=null, $salt=null) {
         if($password === null) {
-            $password = $this->application->getPassKey();
-            $salt = $this->application->getUniquePrefix();
+            $password = $this->_context->application->getPassKey();
+            $salt = $this->_context->application->getUniquePrefix();
         }
         
         return core\string\Util::encrypt($message, $password, $salt);
@@ -198,8 +198,8 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
     
     public function decrypt($message, $password=null, $salt=null) {
         if($password === null) {
-            $password = $this->application->getPassKey();
-            $salt = $this->application->getUniquePrefix();
+            $password = $this->_context->application->getPassKey();
+            $salt = $this->_context->application->getUniquePrefix();
         }
         
         return core\string\Util::decrypt($message, $password, $salt);
