@@ -27,10 +27,7 @@ class Delete extends arch\form\Action {
         $fs = $form->addFieldSet($this->_('%n% information', ['%n%' => ucfirst($itemName)]));
         
         $fs->push($this->html->string(
-            '<p>'.$this->_(
-                'Are you sure you want to delete this %n%?',
-                ['%n%' => $itemName]
-            ).'</p>'
+            '<p>'.$this->_getMainMessage($itemName).'</p>'
         ));
         
         if(static::IS_PERMANENT) {
@@ -47,9 +44,9 @@ class Delete extends arch\form\Action {
         $fs->addButtonArea()->push(
             $this->html->eventButton(
                     $this->eventName('delete'),
-                    $this->_('Delete')
+                    $this->_getMainButtonText()
                 )
-                ->setIcon('delete'),
+                ->setIcon($this->_getMainButtonIcon()),
                 
             $this->html->eventButton(
                     $this->eventName('cancel'),
@@ -59,6 +56,20 @@ class Delete extends arch\form\Action {
         );
     }
     
+    protected function _getMainMessage($itemName) {
+        return $this->_(
+            'Are you sure you want to delete this %n%?',
+            ['%n%' => $itemName]
+        );
+    }
+
+    protected function _getMainButtonText() {
+        return $this->_('Delete');
+    }
+
+    protected function _getMainButtonIcon() {
+        return 'delete';
+    }
     
     protected function _renderMessages(/*aura\html\widget\IContainerWidget*/ $container) {}
     protected function _renderItemDetails(/*aura\html\widget\IContainerWidget*/ $container) {}
