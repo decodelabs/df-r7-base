@@ -10,14 +10,19 @@ use df\core;
 use df\axis;
 use df\opal;
 
-abstract class Base extends axis\Unit implements
-    axis\IAdapterBasedStorageUnit {
+abstract class Base implements axis\IAdapterBasedStorageUnit {
     
-    protected $_index;
+    use axis\TUnit;
+    use axis\TAdapterBasedStorageUnit;
+
+    public function __construct(axis\IModel $model, $unitName=null) {
+        $this->_model = $model;
+        $this->_loadAdapter();
+    }
     
-    public static function loadAdapter(axis\IAdapterBasedStorageUnit $unit) {
-        $config = axis\ConnectionConfig::getInstance($unit->getModel()->getApplication());
-        $settings = $config->getSettingsFor($unit);
+    protected function _loadAdapter() {
+        $config = axis\ConnectionConfig::getInstance($this->getModel()->getApplication());
+        $settings = $config->getSettingsFor($this);
         $adapterId = lcfirst($settings['adapter']);
         
         if(empty($adapterId)) {
@@ -34,31 +39,23 @@ abstract class Base extends axis\Unit implements
             );
         }
         
-        $indexName = $unit->getApplication()->getUniquePrefix().'_'.preg_replace('/[^a-zA-Z0-9_]/', '_', $unit->getUnitId());
+        $indexName = $this->getApplication()->getUniquePrefix().'_'.preg_replace('/[^a-zA-Z0-9_]/', '_', $this->getUnitId());
         $client = $class::factory($settings);
         
-        return $client->getIndex($indexName);
+        $this->_adapter = $client->getIndex($indexName);
     }
-    
-    public function __construct(axis\IModel $model, $unitName=null) {
-        parent::__construct($model);
-        $this->_index = self::loadAdapter($this);
-    }
-    
+
     public function getUnitType() {
         return 'search';
     }
     
-    public function getUnitAdapter() {
-        return $this->_index;
-    }
 
     public function getIndex() {
-        return $this->_index;
+        return $this->_adapter;
     }
     
     public function getClient() {
-        return $this->_index->getClient();
+        return $this->_adapter->getClient();
     }
 
 
@@ -72,21 +69,21 @@ abstract class Base extends axis\Unit implements
     
     
     public function newDocument($id=null, array $values=null) {
-        return $this->_index->newDocument($id, $values);
+        return $this->_adapter->newDocument($id, $values);
     }
     
     public function storeDocument(opal\search\IDocument $document) {
-        $this->_index->storeDocument($document);
+        $this->_adapter->storeDocument($document);
         return $this;
     }
     
     public function storeDocumentList(array $documents) {
-        $this->_index->storeDocumentList($documents);
+        $this->_adapter->storeDocumentList($documents);
         return $this;
     }
     
     public function find($query) {
-        return $this->_index->find($query);
+        return $this->_adapter->find($query);
     }
 
     public function fetchByPrimary($keys) {

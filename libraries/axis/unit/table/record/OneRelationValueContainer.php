@@ -44,7 +44,7 @@ class OneRelationValueContainer implements
         
         
         $application = $record->getRecordAdapter()->getApplication();
-        $targetUnit = axis\Unit::fromId($this->_targetUnitId, $application);
+        $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId, $application);
         $query = $targetUnit->fetch();
         
         foreach($this->_value->toArray() as $field => $value) {

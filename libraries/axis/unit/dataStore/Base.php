@@ -9,8 +9,10 @@ use df;
 use df\core;
 use df\axis;
 
-abstract class Base extends axis\Unit implements IDataStore {
+abstract class Base implements IDataStore {
     
+    use axis\TUnit;
+
     public function getUnitType() {
         return 'dataStore';
     }

@@ -217,7 +217,7 @@ class BridgedManyRelationValueContainer implements
         
         if(!empty($lookupManifests)) {
             $application = $this->_record->getRecordAdapter()->getApplication();
-            $targetUnit = axis\Unit::fromId($this->_targetUnitId, $application);
+            $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId, $application);
             
             
             $query = opal\query\Initiator::factory($application)
@@ -273,7 +273,7 @@ class BridgedManyRelationValueContainer implements
             $application = $this->_record->getRecordAdapter()->getApplication();
         }
         
-        return axis\Unit::fromId($this->_bridgeUnitId, $application);
+        return axis\Model::loadUnitFromId($this->_bridgeUnitId, $application);
     }
 
     public function getTargetUnit() {
@@ -283,7 +283,7 @@ class BridgedManyRelationValueContainer implements
             $application = $this->_record->getRecordAdapter()->getApplication();
         }
         
-        return axis\Unit::fromId($this->_targetUnitId, $application);
+        return axis\Model::loadUnitFromId($this->_targetUnitId, $application);
     }
 
     public function getBridgeLocalFieldName() {
@@ -310,8 +310,8 @@ class BridgedManyRelationValueContainer implements
         $localUnit = $this->_record->getRecordAdapter();
         $application = $localUnit->getApplication();
         
-        $targetUnit = axis\Unit::fromId($this->_targetUnitId, $application);
-        $bridgeUnit = axis\Unit::fromId($this->_bridgeUnitId, $application);
+        $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId, $application);
+        $bridgeUnit = axis\Model::loadUnitFromId($this->_bridgeUnitId, $application);
 
         $bridgeAlias = $this->_bridgeLocalFieldName.'Bridge';
         
@@ -344,7 +344,7 @@ class BridgedManyRelationValueContainer implements
         
         $localUnit = $this->_record->getRecordAdapter();
         $application = $localUnit->getApplication();
-        $bridgeUnit = axis\Unit::fromId($this->_bridgeUnitId, $application);
+        $bridgeUnit = axis\Model::loadUnitFromId($this->_bridgeUnitId, $application);
         $bridgeAlias = $this->_bridgeLocalFieldName.'Bridge';
         
         return opal\query\Initiator::factory($application)
@@ -371,8 +371,8 @@ class BridgedManyRelationValueContainer implements
         $localUnit = $this->_record->getRecordAdapter();
         $application = $localUnit->getApplication();
         
-        $targetUnit = axis\Unit::fromId($this->_targetUnitId, $application);
-        $bridgeUnit = axis\Unit::fromId($this->_bridgeUnitId, $application);
+        $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId, $application);
+        $bridgeUnit = axis\Model::loadUnitFromId($this->_bridgeUnitId, $application);
         
         $bridgeAlias = $this->_bridgeLocalFieldName.'Bridge';
 
@@ -399,7 +399,7 @@ class BridgedManyRelationValueContainer implements
         
         $localUnit = $this->_record->getRecordAdapter();
         $application = $localUnit->getApplication();
-        $bridgeUnit = axis\Unit::fromId($this->_bridgeUnitId, $application);
+        $bridgeUnit = axis\Model::loadUnitFromId($this->_bridgeUnitId, $application);
         $bridgeAlias = $this->_bridgeLocalFieldName.'Bridge';
         
         return opal\query\Initiator::factory($application)
@@ -423,8 +423,8 @@ class BridgedManyRelationValueContainer implements
         $this->_localPrimaryManifest->updateWith($parentRecord);
 
         $application = $localUnit->getApplication();
-        $targetUnit = axis\Unit::fromId($this->_targetUnitId, $application);
-        $bridgeUnit = axis\Unit::fromId($this->_bridgeUnitId, $application);
+        $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId, $application);
+        $bridgeUnit = axis\Model::loadUnitFromId($this->_bridgeUnitId, $application);
 
         $removeAllTask = null;
         
@@ -563,7 +563,7 @@ class BridgedManyRelationValueContainer implements
         $application = $localUnit->getApplication();
             
         $this->_localPrimaryManifest->updateWith($parentRecord);
-        $bridgeUnit = axis\Unit::fromId($this->_bridgeUnitId, $application);
+        $bridgeUnit = axis\Model::loadUnitFromId($this->_bridgeUnitId, $application);
         $bridgeData = array();
             
         foreach($this->_localPrimaryManifest->toArray() as $key => $value) {

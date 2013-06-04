@@ -54,7 +54,7 @@ class ConnectionConfig extends core\Config {
         if(!isset($this->_values['units'][$unitId])) {
             $originalId = $unitId;
             
-            $parts = explode(axis\Unit::ID_SEPARATOR, $unitId);
+            $parts = explode(axis\IUnit::ID_SEPARATOR, $unitId);
             $unitId = array_shift($parts);
             
             if(!isset($this->_values['units'][$unitId])) {

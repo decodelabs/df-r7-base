@@ -78,7 +78,7 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
         }
         
         $output = array();
-        $targetUnit = axis\Unit::fromId($this->_targetUnitId);
+        $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId);
         $schema = $targetUnit->getUnitSchema();
         
         foreach($value->toArray() as $key => $value) {
@@ -173,7 +173,7 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
     }
 
     public function duplicateForRelation(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
-        $targetUnit = axis\Unit::fromId($this->_targetUnitId, $unit->getApplication());
+        $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId, $unit->getApplication());
         $targetSchema = $targetUnit->getTransientUnitSchema();
         $output = array();
 

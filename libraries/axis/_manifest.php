@@ -34,6 +34,11 @@ interface IModel extends core\IApplicationAware, core\policy\IParentEntity, core
 
 
 interface IUnit extends core\IApplicationAware, user\IAccessLock {
+
+    const ID_SEPARATOR = '/';
+    const DEFAULT_ACCESS = axis\IAccess::GUEST;
+
+    public function _setUnitName($name);
     public function getUnitName();
     public function getCanonicalUnitName();
     public function getUnitId();
@@ -41,6 +46,153 @@ interface IUnit extends core\IApplicationAware, user\IAccessLock {
     public function getModel();
     public function getUnitSettings();
 }
+
+trait TUnit {
+
+    use user\TAccessLock;
+
+    public static $actionAccess = [];
+    
+    private $_unitName;
+    private $_unitSettings;
+
+    protected $_model;
+
+    public function __construct(axis\IModel $model) {
+        $this->_model = $model;
+    }
+
+    public function _setUnitName($name) {
+        $this->_unitName = $name;
+        return $this;
+    }
+
+    public function getUnitName() {
+        if(!$this->_unitName) {
+            $parts = explode('\\', get_class($this));
+            array_pop($parts);
+            $this->_unitName = array_pop($parts);
+        }
+        
+        return $this->_unitName;
+    }
+    
+    public function getCanonicalUnitName() {
+        return preg_replace('/[^a-zA-Z0-9_]/', '_', $this->getUnitName());
+    }
+    
+    public function getUnitId() {
+        return $this->_model->getModelName().IUnit::ID_SEPARATOR.$this->getUnitName();
+    }
+
+    public function getUnitSettings() {
+        if($this->_unitSettings === null) {
+            $config = axis\ConnectionConfig::getInstance($this->_model->getApplication());
+            $this->_unitSettings = $config->getSettingsFor($this);
+        }
+
+        return $this->_unitSettings;
+    }
+
+    protected function _shouldPrefixNames() {
+        $settings = $this->getUnitSettings();
+        return (bool)$settings['prefixNames'];
+    }
+    
+    public function getModel() {
+        return $this->_model;
+    }
+    
+    public function getApplication() {
+        return $this->_model->getApplication();
+    }
+
+    public function getContext() {
+        return $this->_model->getUnit('context');
+    }
+
+    public function __get($member) {
+        switch($member) {
+            case 'model':
+                return $this->_model;
+
+            case 'settings':
+                return $this->getUnitSettings();
+
+            case 'context':
+                return $this->_model->getUnit('context');
+        }
+    }
+
+// Policy
+    public function getEntityLocator() {
+        return new core\policy\EntityLocator('axis://Unit:"'.$this->getUnitId().'"');
+    }
+
+
+// Access
+    public function getAccessLockDomain() {
+        return 'model';
+    }
+
+    public function lookupAccessKey(array $keys, $action=null) {
+        $id = $this->getUnitId();
+
+        $parts = explode(IUnit::ID_SEPARATOR, $id);
+        $test = $parts[0].IUnit::ID_SEPARATOR;
+
+        if($action !== null) {
+            if(isset($keys[$id.'#'.$action])) {
+                return $keys[$id.'#'.$action];
+            }
+
+            if(isset($keys[$test.'*#'.$action])) {
+                return $keys[$test.'*#'.$action];
+            }
+
+            if(isset($keys[$test.'%#'.$action])) {
+                return $keys[$test.'%#'.$action];
+            }
+
+            if(isset($keys['*#'.$action])) {
+                return $keys['*#'.$action];
+            }
+        }
+
+
+        if(isset($keys[$id])) {
+            return $keys[$id];
+        }
+
+        if(isset($keys[$test.'*'])) {
+            return $keys[$test.'*'];
+        }
+
+        if(isset($keys[$test.'%'])) {
+            return $keys[$test.'%'];
+        }
+
+        return null;
+    }
+
+    public function getDefaultAccess($action=null) {
+        if($action === null) {
+            return static::DEFAULT_ACCESS;
+        }
+
+        if(isset(static::$actionAccess[$action])) {
+            return static::$actionAccess[$action];
+        }
+
+        return static::DEFAULT_ACCESS;
+    }
+
+    public function getAccessLockId() {
+        return $this->getUnitId();
+    }
+}
+
+
 
 interface IVirtualUnit extends IUnit {
     public static function loadVirtual(IModel $model, array $args);
@@ -54,6 +206,37 @@ interface IStorageUnit extends IUnit {
 
 interface IAdapterBasedStorageUnit extends IStorageUnit {
     public function getUnitAdapter();
+}
+
+trait TAdapterBasedStorageUnit {
+
+    protected $_adapter;
+
+    public function getUnitAdapter() {
+        return $this->_adapter;
+    }
+
+    protected function _loadAdapter() {
+        $config = axis\ConnectionConfig::getInstance($this->getModel()->getApplication());
+        $adapterId = $config->getAdapterIdFor($this);
+        $unitType = $this->getUnitType();
+        
+        if(empty($adapterId)) {
+            throw new axis\RuntimeException(
+                'No adapter has been configured for '.ucfirst($this->getUnitType()).' unit type'
+            );
+        }
+        
+        $class = 'df\\axis\\unit\\'.lcfirst($unitType).'\\adapter\\'.$adapterId;
+        
+        if(!class_exists($class)) {
+            throw new axis\RuntimeException(
+                ucfirst($this->getUnitType()).' unit adapter '.$adapterId.' could not be found'
+            );
+        }
+        
+        $this->_adapter = new $class($this);
+    }
 }
 
 interface ISchemaBasedStorageUnit extends IAdapterBasedStorageUnit, opal\schema\ISchemaContext {

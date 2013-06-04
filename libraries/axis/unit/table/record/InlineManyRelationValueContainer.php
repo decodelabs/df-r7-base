@@ -162,7 +162,7 @@ class InlineManyRelationValueContainer implements
         
         if(!empty($lookupManifests)) {
             $application = $this->_record->getRecordAdapter()->getApplication();
-            $targetUnit = axis\Unit::fromId($this->_targetUnitId, $application);
+            $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId, $application);
             
             $query = opal\query\Initiator::factory($application)
                 ->beginSelect($this->_targetPrimaryManifest->getFieldNames())
@@ -262,7 +262,7 @@ class InlineManyRelationValueContainer implements
         $localUnit = $this->_record->getRecordAdapter();
         $localSchema = $localUnit->getUnitSchema();
         $application = $localUnit->getApplication();
-        $targetUnit = axis\Unit::fromId($this->_targetUnitId, $application);
+        $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId, $application);
         
         // Init query
         $query = opal\query\Initiator::factory($application)
@@ -292,7 +292,7 @@ class InlineManyRelationValueContainer implements
         $localUnit = $this->_record->getRecordAdapter();
         $localSchema = $localUnit->getUnitSchema();
         $application = $localUnit->getApplication();
-        $targetUnit = axis\Unit::fromId($this->_targetUnitId, $application);
+        $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId, $application);
         
         // Init query
         $query = opal\query\Initiator::factory($application)
@@ -320,7 +320,7 @@ class InlineManyRelationValueContainer implements
     public function deploySaveTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $parentRecord, $fieldName, opal\record\task\ITask $recordTask=null) {
         $localUnit = $parentRecord->getRecordAdapter();
         $application = $localUnit->getApplication();
-        $targetUnit = axis\Unit::fromId($this->_targetUnitId, $application);
+        $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId, $application);
         $parentManifest = $parentRecord->getPrimaryManifest();
         
         // Save any changed populated records
@@ -438,7 +438,7 @@ class InlineManyRelationValueContainer implements
     public function deployDeleteTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $parentRecord, $fieldName, opal\record\task\ITask $recordTask=null) {
         $localUnit = $parentRecord->getRecordAdapter();
         $application = $localUnit->getApplication();
-        $targetUnit = axis\Unit::fromId($this->_targetUnitId, $application);
+        $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId, $application);
         $parentManifest = $parentRecord->getPrimaryManifest();
         $values = array();
         

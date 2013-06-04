@@ -60,7 +60,7 @@ class KeyGroup extends Base implements axis\schema\IRelationField, axis\schema\I
         }
         
         $output = array();
-        $targetUnit = axis\Unit::fromId($this->_targetUnitId);
+        $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId);
         $schema = $targetUnit->getUnitSchema();
         
         foreach($value->toArray() as $key => $value) {

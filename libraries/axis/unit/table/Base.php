@@ -10,32 +10,29 @@ use df\core;
 use df\axis;
 use df\opal;
 
-abstract class Base extends axis\Unit implements 
+abstract class Base implements 
     axis\ISchemaBasedStorageUnit, 
     core\policy\IActiveParentEntity, 
     opal\query\IEntryPoint,
     opal\query\IIntegralAdapter,
     opal\query\IPaginatingAdapter,
     core\IDumpable {
+
+    use axis\TUnit;
+    use axis\TAdapterBasedStorageUnit;
     
     protected static $_defaultRecordClass = 'df\\opal\\record\\Base';
-    
-    protected $_adapter;
     
     private $_recordClass;
     private $_schema;
     
     public function __construct(axis\IModel $model, $unitName=null) {
-        parent::__construct($model);
-        $this->_adapter = self::loadAdapter($this);
+        $this->_model = $model;
+        $this->_loadAdapter();
     }
     
     public function getUnitType() {
         return 'table';
-    }
-    
-    public function getUnitAdapter() {
-        return $this->_adapter;
     }
     
     public function getStorageBackendName() {
@@ -348,7 +345,7 @@ abstract class Base extends axis\Unit implements
             $fields = ['*'];
         //}
 
-        $adapter = axis\Unit::fromId($id, $this->_model->getApplication());
+        $adapter = axis\Model::loadUnitFromId($id, $this->_model->getApplication());
         return $sourceManager->newSource($adapter, $alias, $fields);
     }
 

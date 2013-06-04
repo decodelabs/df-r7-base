@@ -110,11 +110,11 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
     }
     
     public function getUnit($unitId) {
-        return axis\Unit::fromId($unitId, $this->application);
+        return axis\Model::loadUnitFromId($unitId, $this->application);
     }
 
     public function getSchema($unitId) {
-        return axis\Unit::fromId($unitId, $this->application)->getUnitSchema();
+        return axis\Model::loadUnitFromId($unitId, $this->application)->getUnitSchema();
     }
 
     public function getSchemaField($unitId, $field) {

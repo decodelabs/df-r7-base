@@ -10,25 +10,22 @@ use df\core;
 use df\axis;
 use df\opal;
 
-final class Virtual extends axis\Unit implements axis\ISchemaDefinitionStorageUnit, axis\ISchemaBasedStorageUnit, axis\IVirtualUnit {
+final class Virtual implements axis\ISchemaDefinitionStorageUnit, axis\ISchemaBasedStorageUnit, axis\IVirtualUnit {
 
-    protected $_adapter;
+    use axis\TUnit;
+    use axis\TAdapterBasedStorageUnit;
 
     public static function loadVirtual(axis\IModel $model, array $args) {
         return new self($model);
     }    
     
     public function __construct(axis\IModel $model, $unitName=null) {
-        parent::__construct($model);
-        $this->_adapter = self::loadAdapter($this);
+        $this->_model = $model;
+        $this->_loadAdapter();
     }
     
     public function getUnitType() {
         return 'schemaDefinition';
-    }
-    
-    public function getUnitAdapter() {
-        return $this->_adapter;
     }
     
     public function getStorageBackendName() {
