@@ -30,43 +30,49 @@ class Embed implements IVideoEmbed {
         $embed = trim($embed);
 
         $parts = explode('<', $embed, 2);
-        $embed = '<'.array_pop($parts);
 
-        if(!preg_match('/^\<([a-zA-Z0-9\-]+) /i', $embed, $matches)) {
-            core\stub($embed);
-        }
+        if(count($parts) == 2) {
+            $embed = '<'.array_pop($parts);
 
-        $tag = strtolower($matches[1]);
+            if(!preg_match('/^\<([a-zA-Z0-9\-]+) /i', $embed, $matches)) {
+                core\stub($embed);
+            }
 
-        switch($tag) {
-            case 'iframe':
-            case 'object':
-                if(!preg_match('/src\=\"([^\"]+)\"/i', $embed, $matches)) {
-                    throw new UnexpectedValueException(
-                        'Could not extract source from flash embed'
-                    );
-                }
+            $tag = strtolower($matches[1]);
 
-                $url = trim($matches[1]);
-                $output = new self($url);
-
-                if(preg_match('/width\=\"([^\"]+)\"/i', $embed, $matches)) {
-                    $width = $matches[1];
-
-                    if(preg_match('/height\=\"([^\"]+)\"/i', $embed, $matches)) {
-                        $height = $matches[1];
-                    } else {
-                        $height = round(($width / $output->_width) * $output->_height);
+            switch($tag) {
+                case 'iframe':
+                case 'object':
+                    if(!preg_match('/src\=\"([^\"]+)\"/i', $embed, $matches)) {
+                        throw new UnexpectedValueException(
+                            'Could not extract source from flash embed'
+                        );
                     }
 
-                    $output->setWidth($width);
-                    $output->setHeight($height);
-                }
+                    $url = trim($matches[1]);
+                    $output = new self($url);
 
-                break;
+                    if(preg_match('/width\=\"([^\"]+)\"/i', $embed, $matches)) {
+                        $width = $matches[1];
 
-            default:
-                core\stub($embed);
+                        if(preg_match('/height\=\"([^\"]+)\"/i', $embed, $matches)) {
+                            $height = $matches[1];
+                        } else {
+                            $height = round(($width / $output->_width) * $output->_height);
+                        }
+
+                        $output->setWidth($width);
+                        $output->setHeight($height);
+                    }
+
+                    break;
+
+                default:
+                    core\stub($embed);
+            }
+        } else {
+            // check is url
+            $output = new self($embed);
         }
 
         return $output;
