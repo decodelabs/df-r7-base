@@ -43,7 +43,7 @@ class Writer implements IWriter {
         return new self($interchange);
     }
 
-    protected function __construct(IRootInterchange $interchange=null, $path=null) {
+    public function __construct(IRootInterchange $interchange=null, $path=null) {
         if($interchange) {
             $this->setRootInterchange($interchange);
         }
@@ -405,6 +405,16 @@ class Writer implements IWriter {
             $this->_document->endDocument();
         }
 
+        return $this;
+    }
+
+    public function toTree() {
+        return Tree::fromXmlString($this->toXmlString());
+    }
+
+    public function importTreeNode(ITree $tree) {
+        $this->_completeCurrentNode();
+        $this->_document->writeRaw($tree->toNodeXmlString());
         return $this;
     }
 
