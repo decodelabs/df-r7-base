@@ -252,4 +252,6 @@ interface IWriter extends IWritable, core\IAttributeContainer, core\IStringProvi
 
     // Misc
     public function finalize();
+    public function toTree();
+    public function importTreeNode(ITree $tree);
 }
