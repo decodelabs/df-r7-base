@@ -22,7 +22,8 @@ class SelectList extends Base implements IUngroupedSelectionInputWidget, IFocusa
     const ARRAY_INPUT = false;
 
     protected $_markSelected = true;
-    
+    protected $_noSelectionLabel = '--';
+
     public function __construct(arch\IContext $context, $name, $value=null, $options=null) {
         $this->setName($name);
         $this->setValue($value);
@@ -39,6 +40,15 @@ class SelectList extends Base implements IUngroupedSelectionInputWidget, IFocusa
         }
 
         return $this->_markSelected;
+    }
+
+    public function setNoSelectionLabel($label) {
+        $this->_noSelectionLabel = $label;
+        return $this;
+    }
+
+    public function getNoSelectionLabel() {
+        return $this->_noSelectionLabel;
     }
     
     protected function _render() {
@@ -71,6 +81,10 @@ class SelectList extends Base implements IUngroupedSelectionInputWidget, IFocusa
             }
             
             $optionList->push($option->render());
+        }
+
+        if(!$selectionFound && $this->_noSelectionLabel !== null) {
+            $optionList->unshift(new aura\html\Element('option', $this->_noSelectionLabel, ['value' => '--']));
         }
         
         return $tag->renderWith($optionList, true);

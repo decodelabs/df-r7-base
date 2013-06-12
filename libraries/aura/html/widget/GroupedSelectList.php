@@ -23,7 +23,8 @@ class GroupedSelectList extends Base implements IGroupedSelectionInputWidget, IF
     
     protected $_selected;
     protected $_markSelected = true;
-    
+    protected $_noSelectionLabel = '--';
+
     public function __construct(arch\IContext $context, $name, $value=null, $options=null) {
         $this->setName($name);
         $this->setValue($value);
@@ -37,6 +38,15 @@ class GroupedSelectList extends Base implements IGroupedSelectionInputWidget, IF
         }
 
         return $this->_markSelected;
+    }
+
+    public function setNoSelectionLabel($label) {
+        $this->_noSelectionLabel = $label;
+        return $this;
+    }
+
+    public function getNoSelectionLabel() {
+        return $this->_noSelectionLabel;
     }
         
     protected function _render() {
@@ -75,6 +85,10 @@ class GroupedSelectList extends Base implements IGroupedSelectionInputWidget, IF
             }
             
             $groupList->push($optGroup->render(true));
+        }
+
+        if(!$selectionFound && $this->_noSelectionLabel !== null) {
+            $groupList->unshift(new aura\html\Element('option', $this->_noSelectionLabel, ['value' => '--']));
         }
         
         return $tag->renderWith($groupList, true);
