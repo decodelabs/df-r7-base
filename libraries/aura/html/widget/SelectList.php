@@ -20,6 +20,8 @@ class SelectList extends Base implements IUngroupedSelectionInputWidget, IFocusa
     
     const PRIMARY_TAG = 'select';
     const ARRAY_INPUT = false;
+
+    protected $_markSelected = true;
     
     public function __construct(arch\IContext $context, $name, $value=null, $options=null) {
         $this->setName($name);
@@ -28,6 +30,15 @@ class SelectList extends Base implements IUngroupedSelectionInputWidget, IFocusa
         if($options !== null) {
             $this->addOptions($options);
         }
+    }
+
+    public function shouldMarkSelected($flag=null) {
+        if($flag !== null) {
+            $this->_markSelected = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_markSelected;
     }
     
     protected function _render() {
@@ -42,9 +53,10 @@ class SelectList extends Base implements IUngroupedSelectionInputWidget, IFocusa
         $selectionFound = false;
         
         foreach($this->_options as $value => $label) {
-            $option = new aura\html\Element('option', null, array('value' => $value));
+            $isSelected = !$selectionFound && $this->_checkSelected($value, $selectionFound);
+            $option = new aura\html\Element('option', null, ['value' => $value]);
             
-            if(!$selectionFound && $this->_checkSelected($value, $selectionFound)) {
+            if($isSelected) {
                 $option->setAttribute('selected', 'selected');
             }
             
@@ -52,6 +64,10 @@ class SelectList extends Base implements IUngroupedSelectionInputWidget, IFocusa
                 $optionRenderer($option, $value, $label);
             } else {
                 $option->push($label);
+            }
+            
+            if($isSelected && $this->_markSelected) {
+                $option->unshift('» ');
             }
             
             $optionList->push($option->render());

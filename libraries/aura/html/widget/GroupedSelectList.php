@@ -22,10 +22,21 @@ class GroupedSelectList extends Base implements IGroupedSelectionInputWidget, IF
     const ARRAY_INPUT = false;
     
     protected $_selected;
+    protected $_markSelected = true;
     
-    public function __construct(arch\IContext $context, $name, $value=null) {
+    public function __construct(arch\IContext $context, $name, $value=null, $options=null) {
         $this->setName($name);
         $this->setValue($value);
+        $this->setOptions($options);
+    }
+        
+    public function shouldMarkSelected($flag=null) {
+        if($flag !== null) {
+            $this->_markSelected = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_markSelected;
     }
         
     protected function _render() {
@@ -43,9 +54,10 @@ class GroupedSelectList extends Base implements IGroupedSelectionInputWidget, IF
             $optGroup = new aura\html\Element('optgroup', null, array('label' => $this->getGroupName($groupId)));
             
             foreach($group as $value => $label) {
+                $isSelected = !$selectionFound && $this->_checkSelected($value, $selectionFound);
                 $option = new aura\html\Element('option', null, array('value' => $value));
                 
-                if(!$selectionFound && $this->_checkSelected($value, $selectionFound)) {
+                if($isSelected) {
                     $option->setAttribute('selected', 'selected');
                 }
                 
@@ -55,6 +67,10 @@ class GroupedSelectList extends Base implements IGroupedSelectionInputWidget, IF
                     $option->push($label);
                 }
                 
+                if($isSelected && $this->_markSelected) {
+                    $option->unshift('» ');
+                }
+
                 $optGroup->push($option->render());
             }
             

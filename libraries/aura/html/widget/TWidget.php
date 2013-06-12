@@ -673,35 +673,57 @@ trait TWidget_GroupedSelectionInput {
     protected $_groupNames = array();
     
 // Options
-    public function setOptions($groupId, $options, $labelsAsValues=false) {
+    public function setOptions($options, $labelsAsValues=false) {
+        $this->_groupOptions = array();
+        return $this->addOptions($options, $labelsAsValues);
+    }
+
+    public function addOptions($options, $labelsAsValues=false) {
+        foreach(core\collection\Util::ensureIterable($options) as $key => $set) {
+            $this->addGroupOptions($key, $set, $labelsAsValues);
+            $this->setGroupName($key, core\string\Manipulator::formatLabel($key));
+        }
+
+        return $this;
+    }
+
+    public function getOptions() {
+        return $this->_groupOptions;
+    }
+
+    public function sortOptions($byLabel=false) {
+        foreach($this->_groupOptions as $key => $set) {
+            $this->sortGroupOptions($key);
+        }
+
+        return $this;
+    }
+
+
+// Group Options
+    public function setGroupOptions($groupId, $options, $labelsAsValues=false) {
         unset($this->_groupOptions[$groupId]);
-        return $this->addOptions($groupId, $options, $labelsAsValues);
+        return $this->addGroupOptions($groupId, $options, $labelsAsValues);
     }
     
-    public function addOptions($groupId, $options, $labelsAsValues=false) {
+    public function addGroupOptions($groupId, $options, $labelsAsValues=false) {
         if(!isset($this->_groupOptions[$groupId])) {
             $this->_groupOptions[$groupId] = array();
             $this->_groupNames[$groupId] = $groupId;
         }
         
-        if($options instanceof core\collection\ICollection) {
-            $options = $options->toArray();
-        }
-        
-        if(is_array($options)) {
-            foreach($options as $value => $label) {
-                if($labelsAsValues) {
-                    $value = $label;
-                }
-                
-                $this->_groupOptions[$groupId][$value] = $label;
+        foreach(core\collection\Util::ensureIterable($options) as $value => $label) {
+            if($labelsAsValues) {
+                $value = $label;
             }
+            
+            $this->_groupOptions[$groupId][$value] = $label;
         }
         
         return $this;
     }
     
-    public function getOptions($groupId) {
+    public function getGroupOptions($groupId) {
         if(!isset($this->_groupOptions[$groupId])) {
             return array();
         }
@@ -709,7 +731,7 @@ trait TWidget_GroupedSelectionInput {
         return $this->_groupOptions[$groupId];
     }
     
-    public function sortOptions($groupId, $byLabel=false) {
+    public function sortGroupOptions($groupId, $byLabel=false) {
         if(isset($this->_groupOptions[$groupId])) {
             if($byLabel) {
                 asort($this->_groupOptions[$groupId]);

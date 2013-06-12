@@ -179,10 +179,15 @@ interface IUngroupedOptionWidget extends IFormOrientedWidget {
 interface IUngroupedSelectionInputWidget extends IUngroupedOptionWidget, ISelectionInputWidget {}
 
 interface IGroupedSelectionInputWidget extends ISelectionInputWidget {
-    public function setOptions($groupId, $options, $labelsAsValues=false);
-    public function addOptions($groupId, $options, $labelsAsValues=false);
-    public function getOptions($groupId);
-    public function sortOptions($groupId, $byLabel=false);
+    public function setOptions($options, $labelsAsValues=false);
+    public function addOptions($options, $labelsAsValues=false);
+    public function getOptions();
+    public function sortOptions($byLabel=false);
+
+    public function setGroupOptions($groupId, $options, $labelsAsValues=false);
+    public function addGroupOptions($groupId, $options, $labelsAsValues=false);
+    public function getGroupOptions($groupId);
+    public function sortGroupOptions($groupId, $byLabel=false);
     
     public function addGroup($id, $name, $options=null, $labelsAsValues=false);
     public function getGroup($id);
