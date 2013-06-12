@@ -281,4 +281,6 @@ trait THeaderMapProvider {
 
 interface IUtil {
     public static function flattenArray($array);
+    public static function isIterable($collection);
+    public static function ensureIterable($collection);
 }

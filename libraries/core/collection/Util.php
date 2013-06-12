@@ -27,4 +27,24 @@ class Util implements IUtil {
 
         return array_unique($output);
     }
+
+    public static function isIterable($collection) {
+        return is_array($collection) || $collection instanceof Traversable;
+    }
+
+    public static function ensureIterable($collection) {
+        if(is_array($collection) || $collection instanceof Traversable) {
+            return $collection;
+        }
+
+        if($collection instanceof core\IArrayProvider) {
+            return $collection->toArray();
+        }
+
+        if(empty($collection)) {
+            return [];
+        } else {
+            return [$collection];
+        }
+    }
 }
