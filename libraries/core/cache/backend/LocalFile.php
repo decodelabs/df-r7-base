@@ -129,6 +129,32 @@ class LocalFile implements core\cache\IDirectFileBackend {
         return true;
     }
 
+    public function clearBegins($key) {
+        $key = $this->_normalizeKey($key);
+        $length = strlen($key);
+
+        foreach(core\io\Util::listFilesIn($this->_path) as $name) {
+            if(substr($name, 6, $length) == $key) {
+                core\io\Util::deleteFile($this->_path.'/cache-'.$key);
+            }
+        }
+
+        return true;
+    }
+
+    public function clearMatches($regex) {
+        $key = $this->_normalizeKey($key);
+        $length = strlen($key);
+
+        foreach(core\io\Util::listFilesIn($this->_path) as $name) {
+            if(preg_match($regex, substr($name, 6))) {
+                core\io\Util::deleteFile($this->_path.'/cache-'.$key);
+            }
+        }
+
+        return true;
+    }
+
     public function count() {
         return core\io\Util::countFilesIn($this->_path);
     }

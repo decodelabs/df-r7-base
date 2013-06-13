@@ -69,9 +69,35 @@ class Apc implements core\cache\IBackend {
     public function clear() {
         $info = apc_cache_info('user');
 
-        foreach($info['cache_list'] as $key) {
-            if(0 === strpos($key['info'], $this->_prefix)) {
-                apc_delete($key['info']);
+        foreach($info['cache_list'] as $set) {
+            if(0 === strpos($set['info'], $this->_prefix)) {
+                apc_delete($set['info']);
+            }
+        }
+        
+        return $this;
+    }
+
+    public function clearBegins($key) {
+        $info = apc_cache_info('user');
+
+        foreach($info['cache_list'] as $set) {
+            if(0 === strpos($set['info'], $this->_prefix.$key)) {
+                apc_delete($set['info']);
+            }
+        }
+        
+        return $this;
+    }
+
+    public function clearMatches($regex) {
+        $info = apc_cache_info('user');
+        $prefixLength = strlen($this->_prefix);
+
+        foreach($info['cache_list'] as $set) {
+            if(0 === strpos($set['info'], $this->_prefix)
+            && preg_match($regex, substr($set['info'], $prefixLength))) {
+                apc_delete($set['info']);
             }
         }
         

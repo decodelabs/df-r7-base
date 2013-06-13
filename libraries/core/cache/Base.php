@@ -164,6 +164,16 @@ abstract class Base implements ICache {
         return $this;
     }
 
+    public function clearBegins($key) {
+        $this->_backend->clearBegins($key);
+        return $this;
+    }
+
+    public function clearMatches($regex) {
+        $this->_backend->clearMatches($regex);
+        return $this;
+    }
+
     public function count() {
         return $this->_backend->count();
     }
