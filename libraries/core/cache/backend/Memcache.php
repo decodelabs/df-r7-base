@@ -92,6 +92,26 @@ class Memcache implements core\cache\IBackend {
         return $this;
     }
 
+    public function clearBegins($key) {
+        foreach($this->getKeys() as $test) {
+            if(0 === strpos($test, $key)) {
+                $this->remove($test);
+            }
+        }
+
+        return $this;
+    }
+
+    public function clearMatches($regex) {
+        foreach($this->getKeys() as $test) {
+            if(preg_match($regex, $test)) {
+                $this->remove($test);
+            }
+        }
+
+        return $this;
+    }
+
     public function count() {
         $output = 0;
         $allSlabs = $memcache->getExtendedStats('slabs');

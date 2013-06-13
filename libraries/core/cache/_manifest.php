@@ -21,6 +21,8 @@ interface ICache extends core\IValueMap, \ArrayAccess, core\IApplicationAware, c
     public function getDefaultLifeTime();
     public function isCacheDistributed();
     public function clear();
+    public function clearBegins($key);
+    public function clearMatches($regex);
     public function getCreationTime($key);
     public function getKeys();
 
@@ -38,6 +40,8 @@ interface IBackend extends core\IValueMap, \Countable {
     public function setLifeTime($lifeTime);
     public function getLifeTime();
     public function clear();
+    public function clearBegins($key);
+    public function clearMatches($regex);
     public function getCreationTime($key);
     public function getKeys();
 }
