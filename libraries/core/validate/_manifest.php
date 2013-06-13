@@ -343,7 +343,7 @@ trait TUniqueCheckerField {
 // Actual
 interface IBooleanField extends IField {}
 
-interface IDateField extends IField, IRangeField {
+interface IDateField extends IField, IRangeField, ISanitizingField {
     public function shouldDefaultToNow($flag=null);
     public function mustBePast($flag=null);
     public function mustBeFuture($flag=null);
