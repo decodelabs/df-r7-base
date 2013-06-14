@@ -250,7 +250,7 @@ interface IResponseCookieCollection extends core\IStringProvider {
 
 
 // Peer
-interface IAsyncClient extends halo\peer\IClient {
+interface IClient extends halo\peer\IClient {
     public function addRequest($request, Callable $callback);
 }
 

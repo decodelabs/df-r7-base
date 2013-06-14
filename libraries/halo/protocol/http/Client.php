@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\halo;
 
-class AsyncClient implements IAsyncClient {
+class Client implements IClient {
     
     use halo\event\TDispatcherProvider;
     use halo\peer\TPeer_Client;
