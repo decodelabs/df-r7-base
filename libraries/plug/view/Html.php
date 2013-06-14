@@ -47,8 +47,8 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
         return $this->string($text);
     }
 
-    public function simpleTags($text) {
-        $output = (new flex\simpleTags\Parser($text))->toHtml();
+    public function simpleTags($text, array $customTags=null) {
+        $output = (new flex\simpleTags\Parser($text, $customTags))->toHtml();
 
         if($output !== null) {
             $output = $this->string($output);
