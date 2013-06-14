@@ -21,6 +21,46 @@ class Cookie implements halo\protocol\http\IResponseCookie {
     protected $_path;
     protected $_isSecure = false;
     protected $_isHttpOnly = false;
+
+    public static function fromString($string) {
+        $parts = explode(';', $string);
+        $main = explode('=', trim(array_shift($parts)), 2);
+        $output = new self(array_shift($main), array_shift($main));
+
+        foreach($parts as $part) {
+            $set = explode('=', trim($part), 2);
+            $key = strtolower(array_shift($set));
+            $value = trim(array_shift($set));
+
+            switch($key) {
+                case 'max-age':
+                    $output->setMaxAge(core\time\Duration::factory($value));
+                    break;
+
+                case 'expires':
+                    $output->setExpiryDate(core\time\Date::factory($value));#
+                    break;
+
+                case 'domain':
+                    $output->setDomain($value);
+                    break;
+
+                case 'path':
+                    $output->setPath($value);
+                    break;
+
+                case 'secure':
+                    $output->isSecure(true);
+                    break;
+
+                case 'httponly':
+                    $output->isHttpOnly(true);
+                    break;
+            }
+        }
+        
+        return $output;
+    }
     
     public function __construct($name, $value) {
         $this->setName($name);
