@@ -48,6 +48,12 @@ interface ISession {
     public function getSocket();
     public function setWriteState($state);
     public function getWriteState();
+
+    public function setStore($key, $value);
+    public function hasStore($key);
+    public function getStore($key, $default=null);
+    public function removeStore($key);
+    public function clearStore();
 }
 
 interface IRequestResponseSession {
