@@ -514,11 +514,11 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
         
         if($this->_postData && !$this->_postData->isEmpty()) {
             if(!$headers->has('content-type')) {
-                $headers->set('content-type', 'x-www-form-urlencoded');
+                $headers->set('content-type', 'application/x-www-form-urlencoded');
             }
 
             switch($headers->get('content-type')) {
-                case 'x-www-form-urlencoded':
+                case 'application/x-www-form-urlencoded':
                     $this->_bodyData = $this->_postData->toArrayDelimitedString();
                     break;
 
