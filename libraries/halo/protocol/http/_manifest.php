@@ -252,6 +252,10 @@ interface IResponseCookieCollection extends core\IStringProvider {
 // Peer
 interface IClient extends halo\peer\IClient {
     public function addRequest($request, Callable $callback);
+    public function sendRequest($request);
+
+    public function get($url, $headers=null, $cookies=null);
+    public function post($url, $data, $headers=null, $cookies=null);
 }
 
 
