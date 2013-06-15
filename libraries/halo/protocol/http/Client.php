@@ -9,13 +9,14 @@ use df;
 use df\core;
 use df\halo;
 
-class Client implements IClient {
+class Client implements IClient, core\IDumpable {
     
     use halo\event\TDispatcherProvider;
     use halo\peer\TPeer_Client;
     
     const PROTOCOL_DISPOSITION = halo\peer\IClient::CLIENT_FIRST;
-    
+    const USER_AGENT = 'DF halo HTTP client';
+
     public function __construct() {
         if(($num = func_num_args()) > 1) {
             $args = func_get_args();
@@ -47,9 +48,16 @@ class Client implements IClient {
     
     public function addRequest($request, Callable $callback) {
         $request = halo\protocol\http\request\Base::factory($request);
+        $headers = $request->getHeaders();
+
+        if(!$headers->has('user-agent')) {
+            $headers->set('user-agent', static::USER_AGENT);
+        }
         
+        $scheme = $request->getUrl()->isSecure() ? 'ssl' : 'tcp';
+
         $session = new PeerSession(
-            halo\socket\Client::factory('tcp://'.$request->getSocketAddress())
+            halo\socket\Client::factory($scheme.'://'.$request->getSocketAddress())
         );
         
         $session->setRequest($request);
@@ -200,5 +208,16 @@ class Client implements IClient {
         if($callback = $session->getCallback()) {
             $callback($response, $this, $session);
         }
+    }
+
+
+// Dump
+    public function getDumpProperties() {
+        return [
+            'isRunning' => $this->isRunning(),
+            'chunkSize' => $this->_readChunkSize.' / '.$this->_writeChunkSize,
+            'sessions' => $this->_sessionCount,
+            'dispatcher' => $this->_dispatcher
+        ];
     }
 }
