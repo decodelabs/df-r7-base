@@ -513,7 +513,18 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
         $headers->set('host', $host);
         
         if($this->_postData && !$this->_postData->isEmpty()) {
-            core\stub('Convert post data to raw body data');
+            if(!$headers->has('content-type')) {
+                $headers->set('content-type', 'x-www-form-urlencoded');
+            }
+
+            switch($headers->get('content-type')) {
+                case 'x-www-form-urlencoded':
+                    $this->_bodyData = $this->_postData->toArrayDelimitedString();
+                    break;
+
+                default:
+                    core\stub('Convert post data to raw body data');
+            }
         }
         
         if($this->_bodyData !== null) {
