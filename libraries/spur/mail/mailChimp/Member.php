@@ -18,11 +18,11 @@ class Member implements IMember, core\IDumpable {
     protected $_webId;
     protected $_emailType;
     protected $_signupIp;
-    protected $_signupTimestamp;
+    protected $_signupDate;
     protected $_optinIp;
-    protected $_optinTimestamp;
-    protected $_creationTimestamp;
-    protected $_updateTimestamp;
+    protected $_optinDate;
+    protected $_creationDate;
+    protected $_updateDate;
     protected $_memberRating = 0;
     protected $_language = 'en';
     protected $_status;
@@ -45,11 +45,11 @@ class Member implements IMember, core\IDumpable {
         $this->_webId = $apiData['web_id'];
         $this->_emailType = $apiData['email_type'];
         $this->_signupIp = $apiData['ip_signup'];
-        $this->_signupTimestamp = $apiData['timestamp_signup'];
+        $this->_signupDate = $apiData['timestamp_signup'];
         $this->_optinIp = $apiData['ip_opt'];
-        $this->_optinTimestamp = $apiData['timestamp_opt'];
-        $this->_creationTimestamp = $apiData['timestamp'];
-        $this->_updateTimestamp = $apiData['info_changed'];
+        $this->_optinDate = $apiData['timestamp_opt'];
+        $this->_creationDate = $apiData['timestamp'];
+        $this->_updateDate = $apiData['info_changed'];
         $this->_memberRating = $apiData['member_rating'];
         $this->_language = $apiData['language'];
         $this->_status = $apiData['status'];
@@ -103,24 +103,24 @@ class Member implements IMember, core\IDumpable {
         return new halo\Ip($this->_signupIp);
     }
 
-    public function getSignupTimestamp() {
-        return new core\time\Date($this->_signupTimestamp);
+    public function getSignupDate() {
+        return new core\time\Date($this->_signupDate);
     }
 
     public function getOptinIp() {
         return new halo\Ip($this->_optinIp);
     }
 
-    public function getOptinTimestamp() {
-        return new core\time\Date($this->_optinTimestamp);
+    public function getOptinDate() {
+        return new core\time\Date($this->_optinDate);
     }
 
-    public function getCreationTimestamp() {
-        return new core\time\Date($this->_creationTimestamp);
+    public function getCreationDate() {
+        return new core\time\Date($this->_creationDate);
     }
 
-    public function getUpdateTimestamp() {
-        return new core\time\Date($this->_updateTimestamp);
+    public function getUpdateDate() {
+        return new core\time\Date($this->_updateDate);
     }
 
     public function getMemberRating() {
@@ -168,6 +168,99 @@ class Member implements IMember, core\IDumpable {
     }
 
 
+
+// Entry
+    public function setEmailAddress($address) {
+        $address = core\mail\Address::factory($address);
+
+        if(!$address->isValid()) {
+            throw new InvalidArgumentException(
+                'Invalid email address: '.$address
+            );
+        }
+
+        $this->_email = $address->getAddress();
+        $this->_merges['EMAIL'] = $address->getAddress();
+
+        return $this;
+    }
+
+    public function updateEmailAddress($address) {
+        $this->setEmailAddress($address);
+
+        $this->_mediator->callServer('listUpdateMember', $this->_listId, $this->_id, [
+            'EMAIL' => $this->_merges['EMAIL']
+        ]);
+
+        $this->_email = $this->_merges['EMAIL'];
+
+        return $this;
+    }
+
+    public function setName($firstName, $surname) {
+        $this->_merges['FNAME'] = $firstName;
+        $this->_merges['LNAME'] = $surname;
+        
+        return $this;
+    }
+
+    public function updateName($firstName, $surname) {
+        $this->setName($firstName, $surname);
+
+        $this->_mediator->callServer('listUpdateMember', $this->_listId, $this->_id, [
+            'FNAME' => $this->_merges['FNAME'],
+            'LNAME' => $this->_merges['LNAME']
+        ]);
+
+        return $this;
+    }
+
+    public function setEmailType($type) {
+        $type = strtolower($type);
+
+        switch($type) {
+            case 'html':
+            case 'text':
+                break;
+
+            default:
+                $type = 'html';
+        }
+
+        $this->_emailType = $type;
+        return $this;
+    }
+
+    public function updateEmailType($type) {
+        $this->setEmailType($type);
+        $this->_mediator->callServer('listUpdateMember', $this->_listId, $this->_id, [], $this->_emailType);
+        return $this;
+    }
+
+    public function setMergeData(array $data) {
+        foreach($data as $key => $value) {
+            $this->_merges[strtoupper($key)] = $value;
+        }
+
+        return $this;
+    }
+
+    public function updateMergeData(array $data) {
+        $this->setMergeData($data);
+        $this->_mediator->callServer('listUpdateMember', $this->_listId, $this->_id, $this->_merges);
+        return $this;
+    }
+
+    public function save() {
+        $merges = $this->_merges;
+
+        // TODO: add group info
+
+        $this->_mediator->callServer('listUpdateMember', $this->_listId, $this->_id, $merges, $this->_emailType, true);
+        return $this;
+    }
+
+
 // Dump
     public function getDumpProperties() {
         $output = [
@@ -177,11 +270,11 @@ class Member implements IMember, core\IDumpable {
             'webId' => $this->_webId,
             'emailType' => $this->_emailType,
             'signupIp' => $this->getSignupIp(),
-            'signupTimestamp' => $this->getSignupTimestamp(),
+            'signupDate' => $this->getSignupDate(),
             'optinIp' => $this->getOptinIp(),
-            'optinTimestamp' => $this->getOptinTimestamp(),
-            'creationTimestamp' => $this->getCreationTimestamp(),
-            'updateTimestamp' => $this->getUpdateTimestamp(),
+            'optinDate' => $this->getOptinDate(),
+            'creationDate' => $this->getCreationDate(),
+            'updateDate' => $this->getUpdateDate(),
             'memberRating' => $this->_memberRating,
             'language' => $this->_language,
             'status' => $this->_status,

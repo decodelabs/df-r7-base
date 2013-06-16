@@ -172,18 +172,29 @@ class Mediator implements IMediator, \Serializable {
     public function fetchMember($listId, $emailAddress) {
         $data = $this->callServer('listMemberInfo', $listId, [$emailAddress]);
 
-        if(!isset($data['data'][0])) {
+        if(!isset($data['data'][0]) || isset($data['data'][0]['error'])) {
             throw new RuntimeException(
                 'Member '.$emailAddress.' could not be found'
             );
         }
-        
+
         return new Member($this, $listId, $data['data'][0]);
     }
 
     public function fetchMemberSet($listId, array $emailAddresses) {
         $data = $this->callServer('listMemberInfo', $listId, $emailAddresses);
-        return new Member($this, $listId, $data['data']);
+        $output = array();
+
+        foreach($data['data'] as $memberData) {
+            if(isset($memberData['error'])) {
+                continue;
+            }
+
+            $member = new Member($this, $listId, $memberData);
+            $output[$member->getId()] = $member;
+        }
+        
+        return $output;
     }
 
 

@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\spur;
     
-class SubscriberList implements IList {
+class SubscriberList implements IList, core\IDumpable {
     
     protected $_id;
     protected $_webId;
@@ -67,7 +67,7 @@ class SubscriberList implements IList {
     }
 
     public function getCreationDate() {
-        return core\time\Date::factory($this->_creationDate);
+        return new core\time\Date($this->_creationDate);
     }
 
     public function hasEmailTypeOption() {
@@ -103,7 +103,7 @@ class SubscriberList implements IList {
     }
 
     public function getBeamerAddress() {
-        return $this->_beamerAddress;
+        return new core\mail\Address($this->_beamerAddress);
     }
 
     public function getVisibility() {
@@ -270,5 +270,29 @@ class SubscriberList implements IList {
 
     public function deleteWebHook($url) {
         return $this->_mediator->deleteWebHook($this->_id, $url);
+    }
+
+
+
+// Dump
+    public function getDumpProperties() {
+        return [
+            'id' => $this->_id,
+            'webId' => $this->_webId,
+            'name' => $this->_name,
+            'creationDate' => $this->getCreationDate(),
+            'emailTypeOption' => $this->_emailTypeOption,
+            'useAwesomeBar' => $this->_useAwesomeBar,
+            'defaultFromAddress' => $this->getDefaultFromAddress(),
+            'defaultSubject' => $this->_defaultSubject,
+            'defaultLanguage' => $this->_defaultLanguage,
+            'listRating' => $this->_listRating,
+            'shortSubscribeUrl' => $this->_shortSubscribeUrl,
+            'longSubscribeUrl' => $this->_longSubscribeUrl,
+            'breamerAddress' => $this->getBeamerAddress(),
+            'visibility' => $this->_visibility,
+            'stats' => $this->_stats,
+            'modules' => $this->_modules
+        ];
     }
 }

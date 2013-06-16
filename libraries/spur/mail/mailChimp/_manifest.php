@@ -139,11 +139,11 @@ interface IMember extends IApiRepresentation {
     public function getWebId();
     public function getEmailType();
     public function getSignupIp();
-    public function getSignupTimestamp();
+    public function getSignupDate();
     public function getOptinIp();
-    public function getOptinTimestamp();
-    public function getCreationTimestamp();
-    public function getUpdateTimestamp();
+    public function getOptinDate();
+    public function getCreationDate();
+    public function getUpdateDate();
     public function getMemberRating();
     public function getLanguage();
     public function getStatus();
@@ -155,6 +155,16 @@ interface IMember extends IApiRepresentation {
     public function getStaticSegmentData();
     public function getNotes();
     public function getGroupSetData();
+
+    public function setEmailAddress($address);
+    public function updateEmailAddress($address);
+    public function setName($firstName, $surname);
+    public function updateName($firstName, $surname);
+    public function setEmailType($type);
+    public function updateEmailType($type);
+    public function setMergeData(array $data);
+    public function updateMergeData(array $data);
+    public function save();
 }
 
 interface IWebHook extends IApiRepresentation {
