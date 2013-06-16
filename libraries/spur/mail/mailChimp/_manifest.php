@@ -40,6 +40,7 @@ interface IMediator {
 
     public function fetchMember($listId, $emailAddress);
     public function fetchMemberSet($listId, array $emailAddresses);
+    public function updateEmailAddress($listId, $memberId, $newEmailAddress);
 
     public function fetchWebHooks($listId);
     public function addWebHook($listId, $url, array $actions, array $sources);

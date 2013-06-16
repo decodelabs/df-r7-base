@@ -197,6 +197,16 @@ class Mediator implements IMediator, \Serializable {
         return $output;
     }
 
+    public function updateEmailAddress($listId, $memberId, $newEmailAddress) {
+        $newEmailAddress = core\mail\Address::factory($newEmailAddress);
+
+        $this->callServer('listUpdateMember', $listId, $memberId, [
+            'EMAIL' => $newEmailAddress->getAddress()
+        ]);
+
+        return $this;
+    }
+
 
 // Hooks
     public function fetchWebHooks($listId) {
