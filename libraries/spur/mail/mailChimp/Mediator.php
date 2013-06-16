@@ -10,7 +10,7 @@ use df\core;
 use df\spur;
 use df\halo;
     
-class Mediator implements IMediator {
+class Mediator implements IMediator, \Serializable {
 
     const API_URL = 'http://api.mailchimp.com/1.3/';
 
@@ -26,6 +26,21 @@ class Mediator implements IMediator {
         $this->isSecure($secure);
     }
 
+// Serialize
+    public function serialize() {
+        return serialize([
+            'key' => $this->_apiKey,
+            'secure' => $this->_isSecure
+        ]);
+    }
+
+    public function unserialize($data) {
+        $data = unserialize($data);
+        $this->__construct($data['key'], $data['secure']);
+        return $this;
+    }
+
+// Client
     public function getHttpClient() {
         return $this->_httpClient;
     }
@@ -65,12 +80,88 @@ class Mediator implements IMediator {
     }
 
 
-// IO
-    public function __call($method, array $args) {
-        return $this->callServer($method, $args);
+// Entry points
+    public function fetchAllLists() {
+        $data = $this->callServer('lists');
+        $output = array();
+
+        foreach($data['data'] as $listData) {
+            $list = new SubscriberList($this, $listData);
+            $output[$list->getId()] = $list;
+        }
+
+        return $output;
     }
 
-    public function callServer($method, array $args=array()) {
+    public function fetchList($id) {
+        $data = $this->callServer('lists', ['list_id' => $id]);
+        return new SubscriberList($this, $data['data'][0]);
+    }
+
+
+    public function fetchGroupSets($listId) {
+        $data = $this->callServer('listInterestGroupings', $listId);
+        $output = array();
+
+        foreach($data as $setData) {
+            $set = new GroupSet($this, $listId, $setData);
+            $output[$set->getId()] = $set;
+        }
+
+        return $output;
+    }
+
+    public function fetchGroups($listId) {
+        $sets = $this->fetchGroupSets($listId);
+        $output = array();
+
+        foreach($sets as $set) {
+            foreach($set->getGroups() as $group) {
+                $output[] = $group;
+            }
+        }
+
+        return $output;
+    }
+
+    public function addGroupSet($listId, $name, array $groupNames, $type=null) {
+        if(!in_array($type, ['checkboxes', 'hidden', 'dropdown', 'radio'])) {
+            $type = 'checkboxes';
+        }
+
+        $setId = $this->callServer('listInterestGroupingAdd', $listId, $name, $type, $groupNames);
+        $groups = array();
+        $bit = 0;
+
+        foreach($groupNames as $groupName) {
+            $groups[] = [
+                'bit' => ++$bit,
+                'name' => $groupName,
+                'display_order' => $bit,
+                'subscribers' => 0
+            ];
+        }
+
+        return new GroupSet($this, $listId, [
+            'id' => $setId,
+            'name' => $name,
+            'form_field' => $type,
+            'display_order' => 1,
+            'groups' => $groups
+        ]);
+    }
+
+
+// IO
+    public function __call($method, array $args) {
+        return $this->callServerArgs($method, $args);
+    }
+
+    public function callServer($method) {
+        return $this->callServerArgs($method, array_slice(func_get_args(), 1));
+    }
+
+    public function callServerArgs($method, array $args=array()) {
         if(!$this->_activeUrl) {
             $this->_activeUrl = halo\protocol\http\Url::factory(self::API_URL);
             $this->_activeUrl->setDomain($this->_dataCenter.'.'.$this->_activeUrl->getDomain());
@@ -98,7 +189,7 @@ class Mediator implements IMediator {
         $request = halo\protocol\http\request\Base::factory($url);
         $request->setMethod('post');
         $request->setPostData($newArgs);
-        
+
         $response = $this->_httpClient->sendRequest($request);
         $data = unserialize($response->getContent());
         $headers = $response->getHeaders();
