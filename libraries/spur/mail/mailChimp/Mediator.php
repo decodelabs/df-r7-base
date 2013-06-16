@@ -80,7 +80,9 @@ class Mediator implements IMediator, \Serializable {
     }
 
 
-// Entry points
+## Entry points
+
+// Lists
     public function fetchAllLists() {
         $data = $this->callServer('lists');
         $output = array();
@@ -99,6 +101,8 @@ class Mediator implements IMediator, \Serializable {
     }
 
 
+
+// Groups
     public function fetchGroupSets($listId) {
         $data = $this->callServer('listInterestGroupings', $listId);
         $output = array();
@@ -151,6 +155,69 @@ class Mediator implements IMediator, \Serializable {
         ]);
     }
 
+    public function renameGroupSet($setId, $newName) {
+        $this->callServer('listInterestGroupingUpdate', $setId, 'name', $newName);
+
+        return $this;
+    }
+
+    public function deleteGroupSet($setId) {
+        $this->callServer('listInterestGroupingDel', $setId);
+
+        return $this;
+    }
+
+
+// Members
+    public function fetchMember($listId, $emailAddress) {
+        $data = $this->callServer('listMemberInfo', $listId, [$emailAddress]);
+
+        if(!isset($data['data'][0])) {
+            throw new RuntimeException(
+                'Member '.$emailAddress.' could not be found'
+            );
+        }
+        
+        return new Member($this, $listId, $data['data'][0]);
+    }
+
+    public function fetchMemberSet($listId, array $emailAddresses) {
+        $data = $this->callServer('listMemberInfo', $listId, $emailAddresses);
+        return new Member($this, $listId, $data['data']);
+    }
+
+
+// Hooks
+    public function fetchWebHooks($listId) {
+        $data = $this->callServer('listWebhooks', $listId);
+        $output = array();
+
+        foreach($data as $hookData) {
+            $output[] = new WebHook($this, $listId, $hookData);
+        }
+
+        return $output;
+    }
+
+    public function addWebHook($listId, $url, array $actions, array $sources) {
+        $actions = WebHook::normalizeActions($actions);
+        $sources = WebHook::normalizeSources($sources);
+
+        $this->callServer('listWebhookAdd', $listId, $url, $actions, $sources);
+
+        return new WebHook($this, $listId, [
+            'url' => $url,
+            'actions' => $actions,
+            'sources' => $sources
+        ]);
+    }
+
+    public function deleteWebHook($listId, $url) {
+        $this->callServer('listWebhookDel', $listId, $url);
+        return $this;
+    }
+
+
 
 // IO
     public function __call($method, array $args) {
@@ -188,7 +255,8 @@ class Mediator implements IMediator, \Serializable {
 
         $request = halo\protocol\http\request\Base::factory($url);
         $request->setMethod('post');
-        $request->setPostData($newArgs);
+        $request->setBodyData(json_encode($newArgs));
+        $request->getHeaders()->set('content-type', 'application/json');
 
         $response = $this->_httpClient->sendRequest($request);
         $data = unserialize($response->getContent());

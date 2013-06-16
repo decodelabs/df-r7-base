@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\spur;
     
-class GroupSet implements IGroupSet {
+class GroupSet implements IGroupSet, core\IDumpable {
 
     protected $_listId;
     protected $_id;
@@ -61,6 +61,8 @@ class GroupSet implements IGroupSet {
         return $this->_groups;
     }
 
+
+// Entry
     public function addGroup($name) {
         $this->_mediator->callServer('listInterestGroupAdd', $this->_listId, $name, $this->_id);
 
@@ -86,19 +88,29 @@ class GroupSet implements IGroupSet {
 
 
     public function rename($newName) {
-        $mediator = $this->_set->getMediator();
-        
-        if($mediator->callServer('listInterestGroupingUpdate', $this->_id, 'name', $newName)) {
-            $this->_name = $newName;
-        }
+        $this->_mediator->renameGroupSet($this->_id, $newName);
+        $this->_name = $newName;
 
         return $this;
     }
 
     public function delete() {
-        $mediator = $this->_set->getMediator();
-        $mediator->callServer('listInterestGroupingDel', $this->_id);
+        $this->_mediator->deleteGroupSet($this->_id);
 
         return $this;
+    }
+
+
+
+// Dump
+    public function getDumpProperties() {
+        return [
+            'list' => $this->_listId,
+            'id' => $this->_id,
+            'name' => $this->_name,
+            'formFieldType' => $this->_formFieldType,
+            'displayOrder' => $this->_displayOrder,
+            'groups' => $this->_groups
+        ];
     }
 }

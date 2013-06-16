@@ -14,6 +14,7 @@ use df\spur;
 interface IException {}
 class BadMethodCallException extends \BadMethodCallException implements IException {}
 class RuntimeException extends \RuntimeException implements IException {}
+class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 
 
 // Interfaces
@@ -34,6 +35,15 @@ interface IMediator {
     public function fetchGroupSets($listId);
     public function fetchGroups($listId);
     public function addGroupSet($listId, $name, array $groupNames, $type=null);
+    public function renameGroupSet($setId, $newName);
+    public function deleteGroupSet($setId);
+
+    public function fetchMember($listId, $emailAddress);
+    public function fetchMemberSet($listId, array $emailAddresses);
+
+    public function fetchWebHooks($listId);
+    public function addWebHook($listId, $url, array $actions, array $sources);
+    public function deleteWebHook($listId, $url);
 
 // IO
     public function __call($method, array $args);
@@ -85,6 +95,13 @@ interface IList extends IApiRepresentation {
     public function fetchGroupSets();
     public function fetchGroups();
     public function addGroupSet($name, array $groupNames, $type=null);
+
+    public function fetchMember($emailAddress);
+    public function fetchMemberSet(array $emailAddresses);
+
+    public function fetchWebHooks();
+    public function addWebHook($url, array $actions, array $sources);
+    public function deleteWebHook($url);
 }
 
 
@@ -111,5 +128,45 @@ interface IGroup extends IApiRepresentation {
     public function countSubscribers();
 
     public function rename($newName);
+    public function delete();
+}
+
+
+interface IMember extends IApiRepresentation {
+    public function getListId();
+    public function getEmailAddress();
+    public function getId();
+    public function getWebId();
+    public function getEmailType();
+    public function getSignupIp();
+    public function getSignupTimestamp();
+    public function getOptinIp();
+    public function getOptinTimestamp();
+    public function getCreationTimestamp();
+    public function getUpdateTimestamp();
+    public function getMemberRating();
+    public function getLanguage();
+    public function getStatus();
+    public function isGoldenMonkey();
+    public function getMergeData();
+    public function getListData();
+    public function getGeoData();
+    public function getClientData();
+    public function getStaticSegmentData();
+    public function getNotes();
+    public function getGroupSetData();
+}
+
+interface IWebHook extends IApiRepresentation {
+    public static function getAvailableActions();
+    public static function normalizeActions(array $actions);
+    public static function getAvailableSources();
+    public static function normalizeSources(array $sources);
+
+    public function getListId();
+    public function getUrl();
+    public function getActions();
+    public function getSources();
+
     public function delete();
 }

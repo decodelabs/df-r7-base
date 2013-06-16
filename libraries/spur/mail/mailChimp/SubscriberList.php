@@ -247,4 +247,28 @@ class SubscriberList implements IList {
     public function addGroupSet($name, array $groupNames, $type=null) {
         return $this->_mediator->addGroupSet($this->_id, $name, $groupNames, $type);
     }
+
+
+
+    public function fetchMember($emailAddress) {
+        return $this->_mediator->fetchMember($this->_id, $emailAddress);
+    }
+
+    public function fetchMemberSet(array $emailAddresses) {
+        return $this->_mediator->fetchMemberSet($this->_id, $emailAddresses);
+    }
+
+
+
+    public function fetchWebHooks() {
+        return $this->_mediator->fetchWebHooks($this->_id);
+    }
+
+    public function addWebHook($url, array $actions, array $sources) {
+        return $this->_mediator->addWebHook($this->_id, $url, $actions, $sources);
+    }
+
+    public function deleteWebHook($url) {
+        return $this->_mediator->deleteWebHook($this->_id, $url);
+    }
 }

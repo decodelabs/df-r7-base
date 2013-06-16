@@ -8,7 +8,7 @@ namespace df\core\mail;
 use df;
 use df\core;
     
-class Address implements IAddress {
+class Address implements IAddress, core\IDumpable {
 
     use core\TStringProvider;
 
@@ -90,5 +90,10 @@ class Address implements IAddress {
         }
 
         return $output;
+    }
+
+// Dump
+    public function getDumpProperties() {
+        return $this->toString();
     }
 }

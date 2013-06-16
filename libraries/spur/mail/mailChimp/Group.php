@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\spur;
     
-class Group implements IGroup {
+class Group implements IGroup, core\IDumpable {
 
     protected $_bit;
     protected $_name;
@@ -51,6 +51,7 @@ class Group implements IGroup {
 
 
 
+// Entry
     public function rename($newName) {
         $mediator = $this->_set->getMediator();
         
@@ -69,5 +70,17 @@ class Group implements IGroup {
         }
 
         return $this;
+    }
+
+
+// Dump
+    public function getDumpProperties() {
+        return [
+            'set' => $this->_set->getId(),
+            'bit' => $this->_bit,
+            'name' => $this->_name,
+            'displayOrder' => $this->_displayOrder,
+            'subscribers' => $this->_subscribers
+        ];
     }
 }
