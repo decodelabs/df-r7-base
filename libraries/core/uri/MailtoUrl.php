@@ -38,6 +38,10 @@ class MailtoUrl implements IMailtoUrl, core\IDumpable {
         if($url == '' || $url === null) {
             return $this;
         }
+
+        if($url instanceof core\mail\IAddress) {
+            $url = $url->getAddress();
+        }
         
         if($url instanceof self) {
             $this->_username = $url->_username;
