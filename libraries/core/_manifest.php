@@ -754,6 +754,7 @@ interface IConfig extends IApplicationAware, IRegistryObject {
     public function getDefaultValues();
     public function getConfigId();
     public function getConfigValues();
+    public function reset();
 }
 
 

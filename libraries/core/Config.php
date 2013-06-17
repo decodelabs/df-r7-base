@@ -66,18 +66,7 @@ abstract class Config implements IConfig, core\IDumpable {
         $this->_id = implode('/', $parts);
         
         if(null === ($values = $this->_loadValues())) {
-            $values = $this->getDefaultValues();
-            
-            if(!is_array($values)) {
-                throw new UnexpectedValueException(
-                    'Default values must be an array'
-                );
-            }
-
-            $this->_values = $values;
-            $this->_sanitizeValuesOnCreate();
-            
-            
+            $this->reset();
             $this->save();
         } else {
             $this->_values = $values;
@@ -114,6 +103,21 @@ abstract class Config implements IConfig, core\IDumpable {
         $this->_sanitizeValuesOnSave();
         $this->_saveValues();
         
+        return $this;
+    }
+
+    public function reset() {
+        $values = $this->getDefaultValues();
+            
+        if(!is_array($values)) {
+            throw new UnexpectedValueException(
+                'Default values must be an array'
+            );
+        }
+
+        $this->_values = $values;
+        $this->_sanitizeValuesOnCreate();
+
         return $this;
     }
 
