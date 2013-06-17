@@ -43,7 +43,12 @@ class Label extends Base implements ILabelWidget, core\IDumpable {
     
     public function setInputId($inputId) {
         if($inputId instanceof IWidget) {
-            $inputId = $inputId->getId();
+            $widget = $inputId;
+            $inputId = $widget->getId();
+
+            if(!$inputId) {
+                $widget->setId($inputId = 'input-'.core\string\Generator::random());
+            }
         }
         
         $this->_inputId = $inputId;
