@@ -239,6 +239,10 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
     }
 
     public function saveEventButton($mainAction=null, $mainActionText=null) {
+        if($mainAction === false) {
+            return null;
+        }
+
         if(!$mainAction) {
             $mainAction = 'save';
         }
