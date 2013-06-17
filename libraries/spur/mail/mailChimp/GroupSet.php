@@ -61,6 +61,16 @@ class GroupSet implements IGroupSet, core\IDumpable {
         return $this->_groups;
     }
 
+    public function getGroupNameString() {
+        $output = [];
+
+        foreach($this->_groups as $group) {
+            $output[] = str_replace(',', '\\,', $group->getName());
+        }
+
+        return implode(', ', $output);
+    }
+
 
 // Entry
     public function addGroup($name) {
