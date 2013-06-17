@@ -15,16 +15,16 @@ class Config extends core\Config {
     const STORE_IN_MEMORY = true;
     
     public function getDefaultValues() {
-        return array(
-            'caches' => array(),
-            'backends' => array(
-                'Memcache' => array(
+        return [
+            'caches' => [],
+            'backends' => [
+                'Memcache' => [
                     'host' => '127.0.0.1',
                     'port' => 11211,
                     'persistent' => true
-                )
-            )
-        );
+                ]
+            ]
+        ];
     }
     
     public function getOptionsFor(ICache $cache, $mergeDefaults=true) {
