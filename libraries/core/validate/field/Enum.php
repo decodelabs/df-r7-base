@@ -35,8 +35,8 @@ class Enum extends Base implements core\validate\IEnumField {
 
         if(!in_array($eValue, $this->_options)) {
             $node->addError('invalid', $this->_handler->_(
-                'Please select a valid option from %o%', 
-                ['%o%' => implode(', ', $this->_options)]
+                'Please select a valid option'// from %o%', 
+                //['%o%' => implode(', ', $this->_options)]
             ));
         }
 
