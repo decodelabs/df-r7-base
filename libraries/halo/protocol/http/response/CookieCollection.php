@@ -19,6 +19,15 @@ class CookieCollection implements halo\protocol\http\IResponseCookieCollection, 
     protected $_set = array();
     protected $_remove = array();
     
+    public static function fromHeaders(halo\protocol\http\IResponseHeaderCollection $headers) {
+        $cookies = $headers->get('Set-Cookie');
+
+        if(!is_array($cookies)) {
+            $cookies = [$cookies];
+        }
+
+        return new self($cookies);
+    }
     
     public function __construct($input=null) {
         if($input !== null) {
@@ -54,6 +63,11 @@ class CookieCollection implements halo\protocol\http\IResponseCookieCollection, 
             
             if(is_array($input)) {
                 foreach($input as $key => $value) {
+                    if(is_numeric($key)) {
+                        $key = Cookie::fromString($value);
+                        $value = null;
+                    }
+
                     $this->set($key, $value);
                 }
             }

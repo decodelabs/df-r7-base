@@ -69,7 +69,7 @@ trait TPeer {
         
         // Read from socket
         $data = $socket->readChunk($this->_readChunkSize);
-        
+
         if($data === false) { // Peer has shutdown writing
             // Remove binding
             $handler->unbind($binding);
@@ -154,7 +154,7 @@ trait TPeer {
                     } catch(halo\event\BindException $e) {
                         $this->_unregisterSessionBySocket($socket);
                     }
-                    
+
                     return;
                     
                 case IIoState::BUFFER:
@@ -169,9 +169,9 @@ trait TPeer {
         $data = substr($session->writeBuffer, 0, $this->_writeChunkSize);
         
         // Write to socket
-        $written = $socket->write($data);
-        
-        if($written === false) {
+        try {
+            $socket->write($data);
+        } catch(core\io\OverflowException $e) {
             // Peer has stopped reading
             
             $handler->unbind($binding);
@@ -187,7 +187,7 @@ trait TPeer {
         }
         
         // Put rest of chunks back into session buffer
-        $session->writeBuffer = substr($session->writeBuffer, $written);
+        $session->writeBuffer = substr($session->writeBuffer, strlen($data));
     }
 
 
@@ -392,6 +392,7 @@ trait TPeer_Session {
     
     protected $_writeState = IIoState::BUFFER;
     protected $_socket;
+    protected $_store = array();
     
     public function __construct(halo\socket\ISocket $socket) {
         $this->_socket = $socket;
@@ -412,6 +413,34 @@ trait TPeer_Session {
     
     public function getWriteState() {
         return $this->_writeState;
+    }
+
+// Store
+    public function setStore($key, $value) {
+        $this->_store[$key] = $value;
+        return $this;
+    }
+
+    public function hasStore($key) {
+        return isset($this->_store[$key]);
+    }
+
+    public function getStore($key, $default=null) {
+        if(isset($this->_store[$key])) {
+            return $this->_store[$key];
+        }
+
+        return $default;
+    }
+
+    public function removeStore($key) {
+        unset($this->_store[$key]);
+        return $this;
+    }
+
+    public function clearStore() {
+        $this->_store = array();
+        return $this;
     }
 }
 

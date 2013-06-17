@@ -93,7 +93,7 @@ class Client implements opal\search\IClient {
         
         $response = null;
         
-        new halo\protocol\http\AsyncClient($request, function($httpResponse) use (&$response) {
+        new halo\protocol\http\Client($request, function($httpResponse) use (&$response) {
             $message = null;
             
             try {

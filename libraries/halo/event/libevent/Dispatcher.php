@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\halo;
 
-class Dispatcher extends halo\event\Dispatcher {
+class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
     
     protected $_base;
     protected $_cycleHandlerEvent;
@@ -174,5 +174,14 @@ class Dispatcher extends halo\event\Dispatcher {
         }
 
         return $event;
+    }
+
+
+// Dump
+    public function getDumpProperties() {
+        return [
+            'base' => $this->_base,
+            'handlers' => $this->_handlers
+        ];
     }
 }

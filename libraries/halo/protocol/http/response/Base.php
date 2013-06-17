@@ -16,40 +16,22 @@ abstract class Base implements halo\protocol\http\IResponse {
     protected $_cookies;
     
     public static function fromString($string) {
-        $output = new String();
-        $parts = preg_split('|(?:\r?\n){2}|m', $string, 2);
-        
-        $headers = array_shift($parts);
-        $content = array_shift($parts);
-        
-        $lines = explode("\n", $headers);
-        $http = array_shift($lines);
-        $headers = $output->getHeaders()->clear();
-        
-        if(!preg_match("|^HTTP/([\d\.x]+) (\d+) ([^\r\n]+)|", $http, $matches)) {
-            throw new halo\protocol\http\UnexpectedValueException(
-                'Headers do not appear to be valid HTTP format'
-            );
-        }
-        
-        $headers->setHttpVersion($matches[1]);
-        $headers->setStatusCode($matches[2]);
-        $headers->setStatusMessage($matches[3]);
-        
-        foreach($lines as $line) {
-            $headers->set(trim(strtok(trim($line), ':')), trim(strtok('')));
-        }
+        $content = null;
+        $output = self::fromHeaderString($string, $content);
+        $headers = $output->getHeaders();
         
         if($headers->has('transfer-encoding')) {
             switch(strtolower($headers->get('transfer-encoding'))) {
                 case 'chunked':
                     $content = self::decodeChunked($content);
                     
+                    /*
                     if(strlen($content)) {
                         foreach(explode("\n", $content) as $line) {
                             $headers->set(trim(strtok(trim($line), ':')), trim(strtok('')));
                         }
                     }
+                    */
                     
                     break;
                     
@@ -100,6 +82,34 @@ abstract class Base implements halo\protocol\http\IResponse {
         return $output;
     }
     
+    public static function fromHeaderString($string, &$content=null) {
+        $output = new String();
+        $parts = preg_split('|(?:\r?\n){2}|m', $string, 2);
+        
+        $headers = array_shift($parts);
+        $content = array_shift($parts);
+        
+        $lines = explode("\n", $headers);
+        $http = array_shift($lines);
+        $headers = $output->getHeaders()->clear();
+        
+        if(!preg_match("|^HTTP/([\d\.x]+) (\d+) ([^\r\n]+)|", $http, $matches)) {
+            throw new halo\protocol\http\UnexpectedValueException(
+                'Headers do not appear to be valid HTTP format'
+            );
+        }
+        
+        $headers->setHttpVersion($matches[1]);
+        $headers->setStatusCode($matches[2]);
+        $headers->setStatusMessage($matches[3]);
+        
+        foreach($lines as $line) {
+            $headers->add(trim(strtok(trim($line), ':')), trim(strtok('')));
+        }
+
+        return $output;
+    }
+
     public static function decodeChunked(&$content) {
         $output = '';
         
@@ -195,7 +205,11 @@ abstract class Base implements halo\protocol\http\IResponse {
     
     public function getCookies() {
         if(!$this->_cookies) {
-            $this->_cookies = new CookieCollection();
+            if($this->_headers) {
+                $this->_cookies = CookieCollection::fromHeaders($this->_headers);
+            } else {
+                $this->_cookies = new CookieCollection();
+            }
         }
         
         return $this->_cookies;
