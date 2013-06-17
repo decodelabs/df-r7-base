@@ -255,14 +255,22 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
             ->setIcon('save');
     }
 
-    public function resetEventButton() {
-        return $this->eventButton('reset', $this->_view->_('Reset'))
+    public function resetEventButton($label=null) {
+        if($label === null) {
+            $label = $this->_view->_('Reset');
+        }
+
+        return $this->eventButton('reset', $label)
             ->setIcon('refresh')
             ->shouldValidate(false);
     }
 
-    public function cancelEventButton() {
-        return $this->eventButton('cancel', $this->_view->_('Cancel'))
+    public function cancelEventButton($label=null) {
+        if($label === null) {
+            $label = $this->_view->_('Cancel');
+        }
+
+        return $this->eventButton('cancel', $label)
             ->setIcon('cancel')
             ->shouldValidate(false);
     }
