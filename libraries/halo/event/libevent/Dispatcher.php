@@ -25,13 +25,13 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
     }
     
     public function start() {
-        echo "Starting event loop\n\n";
+        //echo "Starting event loop\n\n";
         
         $this->_isRunning = true;
         event_base_loop($this->_base);
         $this->_isRunning = false;
         
-        echo "\nEnding event loop\n";
+        //echo "\nEnding event loop\n";
         
         return $this;
     }
