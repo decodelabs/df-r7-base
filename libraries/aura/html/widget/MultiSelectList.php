@@ -16,7 +16,12 @@ class MultiSelectList extends SelectList implements IMultiSelectWidget {
     
     protected $_size;
     protected $_value = array();
+    protected $_noSelectionLabel = null;
     
+    public function setNoSelectionLabel($label) {
+        return $this;
+    }
+
     protected function _render() {
         $tag = $this->getTag();
         $tag->setAttribute('multiple', 'multiple');
