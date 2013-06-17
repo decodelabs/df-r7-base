@@ -27,7 +27,7 @@ class Dispatcher extends halo\event\Dispatcher {
     protected $_generateMaps = true;
     
     public function start() {
-        echo  "Starting select event loop\n\n";
+        //echo  "Starting select event loop\n\n";
         
         $this->_breakLoop = false;
         $this->_isRunning = true;
@@ -136,7 +136,7 @@ class Dispatcher extends halo\event\Dispatcher {
         $this->_breakLoop = false;
         $this->_isRunning = false;
         
-        echo "\nEnding select event loop\n";
+        //echo "\nEnding select event loop\n";
         
         return $this;
     }
