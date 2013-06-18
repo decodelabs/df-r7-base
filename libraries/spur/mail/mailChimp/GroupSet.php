@@ -61,6 +61,12 @@ class GroupSet implements IGroupSet, core\IDumpable {
         return $this->_groups;
     }
 
+    public function getGroup($bit) {
+        if(isset($this->_groups[$bit])) {
+            return $this->_groups[$bit];
+        }
+    }
+
     public function getGroupNameString() {
         $output = [];
 
