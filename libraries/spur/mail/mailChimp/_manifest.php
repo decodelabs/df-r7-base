@@ -126,6 +126,7 @@ interface IGroupSet extends IApiRepresentation {
 interface IGroup extends IApiRepresentation {
     public function getGroupSet();
     public function getBit();
+    public function getCompoundId();
     public function getName();
     public function getDisplayOrder();
     public function countSubscribers();
