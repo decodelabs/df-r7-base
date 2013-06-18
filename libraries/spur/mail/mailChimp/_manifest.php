@@ -114,6 +114,7 @@ interface IGroupSet extends IApiRepresentation {
     public function getDisplayOrder();
 
     public function getGroups();
+    public function getGroup($bit);
     public function getGroupNameString();
     public function addGroup($name);
     public function _removeGroup($bit);
