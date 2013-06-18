@@ -236,6 +236,12 @@ class SubscriberList implements IList, core\IDumpable {
 
 
 // Entry
+    public function ensureSubscription($emailAddress, array $merges, array $groups, $emailType='html', $sendWelcome=false) {
+        $this->_mediator->ensureSubscription($this->_id, $emailAddress, $merges, $groups, $emailType, $sendWelcome);
+        return $this;
+    }
+
+
     public function fetchGroupSets() {
         return $this->_mediator->fetchGroupSets($this->_id);
     }

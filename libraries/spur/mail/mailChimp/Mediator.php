@@ -100,6 +100,42 @@ class Mediator implements IMediator, \Serializable {
         return new SubscriberList($this, $data['data'][0]);
     }
 
+    public function ensureSubscription($listId, $emailAddress, array $merges, array $groups, $emailType='html', $sendWelcome=false) {
+        $groupings = array();
+
+        foreach($groups as $group) {
+            $groupings[$group->getGroupSet()->getId()][] = $group->getPreparedName();
+        }
+
+        $merges['EMAIL'] = $emailAddress;
+        $merges['GROUPINGS'] = array();
+
+        foreach($groupings as $id => $set) {
+            $merges['GROUPINGS'][] = [
+                'id' => $id,
+                'groups' => implode(',', $set)
+            ];
+        }
+
+        if(empty($merges['GROUPINGS'])) {
+            foreach($this->fetchGroupSets($listId) as $set) {
+                $merges['GROUPINGS'][] = [
+                    'id' => $set->getId(),
+                    'groups' => ''
+                ];
+            }
+        }
+
+        $emailType = strtolower($emailType);
+
+        if(!in_array($emailType, ['html', 'text'])) {
+            $emailType = 'html';
+        }
+
+        $this->callServer('listSubscribe', $listId, $emailAddress, $merges, $emailType, false, true, true, $sendWelcome);
+        return $this;
+    }
+
 
 
 // Groups

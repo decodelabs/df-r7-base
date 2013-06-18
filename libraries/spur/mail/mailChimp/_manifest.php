@@ -31,6 +31,7 @@ interface IMediator {
 // Entry points
     public function fetchAllLists();
     public function fetchList($id);
+    public function ensureSubscription($listId, $emailAddress, array $merges, array $groups, $emailType='html', $sendWelcome=false);
 
     public function fetchGroupSets($listId);
     public function fetchGroups($listId);
@@ -93,6 +94,8 @@ interface IList extends IApiRepresentation {
 
     public function getModules();
 
+    public function ensureSubscription($emailAddress, array $merges, array $groups, $emailType='html', $sendWelcome=false);
+
     public function fetchGroupSets();
     public function fetchGroups();
     public function addGroupSet($name, array $groupNames, $type=null);
@@ -128,6 +131,7 @@ interface IGroup extends IApiRepresentation {
     public function getBit();
     public function getCompoundId();
     public function getName();
+    public function getPreparedName();
     public function getDisplayOrder();
     public function countSubscribers();
 
@@ -168,6 +172,10 @@ interface IMember extends IApiRepresentation {
     public function updateEmailType($type);
     public function setMergeData(array $data);
     public function updateMergeData(array $data);
+
+    public function setGroups(array $groups);
+    public function addGroups(array $groups);
+    
     public function save();
 }
 

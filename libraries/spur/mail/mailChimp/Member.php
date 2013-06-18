@@ -100,19 +100,27 @@ class Member implements IMember, core\IDumpable {
     }
 
     public function getSignupIp() {
-        return new halo\Ip($this->_signupIp);
+        if($this->_signupIp) {
+            return new halo\Ip($this->_signupIp);
+        }
     }
 
     public function getSignupDate() {
-        return new core\time\Date($this->_signupDate);
+        if($this->_signupDate) {
+            return new core\time\Date($this->_signupDate);
+        }
     }
 
     public function getOptinIp() {
-        return new halo\Ip($this->_optinIp);
+        if($this->_optinIp) {
+            return new halo\Ip($this->_optinIp);
+        }
     }
 
     public function getOptinDate() {
-        return new core\time\Date($this->_optinDate);
+        if($this->_optinDate) {
+            return new core\time\Date($this->_optinDate);
+        }
     }
 
     public function getCreationDate() {
@@ -120,7 +128,9 @@ class Member implements IMember, core\IDumpable {
     }
 
     public function getUpdateDate() {
-        return new core\time\Date($this->_updateDate);
+        if($this->_updateDate) {
+            return new core\time\Date($this->_updateDate);
+        }
     }
 
     public function getMemberRating() {
@@ -251,10 +261,53 @@ class Member implements IMember, core\IDumpable {
         return $this;
     }
 
+
+    public function setGroups(array $groups) {
+        $this->_groupSets = array();
+        return $this->addGroups($groups);
+    }
+
+    public function addGroups(array $groups) {
+        foreach($groups as $group) {
+            $this->_groupSets[$group->getGroupSet()->getId()][] = $group->getName();
+        }
+
+        foreach($this->_groupSets as $i => $set) {
+            $this->_groupSets[$i] = array_unique($set);
+        }
+
+        return $this;
+    }
+
+    public function setGroupSetData(array $data) {
+        $this->_groupSets = $data;
+        return $this;
+    }
+
+
     public function save() {
         $merges = $this->_merges;
+        $merges['GROUPINGS'] = array();
 
-        // TODO: add group info
+        foreach($this->_groupSets as $id => $groups) {
+            array_walk($groups, function($group) {
+                return str_replace(',', '\\,', $group);
+            });
+
+            $merges['GROUPINGS'][] = [
+                'id' => $id,
+                'groups' => implode(',', $groups)
+            ];
+        }
+
+        if(empty($merges['GROUPINGS'])) {
+            foreach($this->_mediator->fetchGroupSets($this->_listId) as $set) {
+                $merges['GROUPINGS'][] = [
+                    'id' => $set->getId(),
+                    'groups' => ''
+                ];
+            }
+        }
 
         $this->_mediator->callServer('listUpdateMember', $this->_listId, $this->_id, $merges, $this->_emailType, true);
         return $this;
