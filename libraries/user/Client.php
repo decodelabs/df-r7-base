@@ -11,6 +11,8 @@ use df\user;
 
 class Client implements IClient {
     
+    use TNameExtractor;
+
     protected $_id;
     protected $_email;
     protected $_fullName;
@@ -99,7 +101,7 @@ class Client implements IClient {
     public function getNickName() {
         return $this->_nickName;
     }
-    
+
     public function getStatus() {
         return $this->_authState;
     }
