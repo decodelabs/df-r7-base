@@ -45,6 +45,10 @@ class Group implements IGroup, core\IDumpable {
         return $this->_name;
     }
 
+    public function getPreparedName() {
+        return str_replace(',', '\\,', $this->_name);
+    }
+
     public function getDisplayOrder() {
         return $this->_displayOrder;
     }

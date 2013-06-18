@@ -71,7 +71,7 @@ class GroupSet implements IGroupSet, core\IDumpable {
         $output = [];
 
         foreach($this->_groups as $group) {
-            $output[] = str_replace(',', '\\,', $group->getName());
+            $output[] = $group->getPreparedName();
         }
 
         return implode(', ', $output);
