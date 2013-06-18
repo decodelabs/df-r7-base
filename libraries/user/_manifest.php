@@ -90,12 +90,27 @@ interface IClientDataObject {
     public function getEmail();
     public function getFullName();
     public function getNickName();
+    public function getFirstName();
+    public function getSurname();
     public function getStatus();
     public function getJoinDate();
     public function getLoginDate();
     public function getLanguage();
     public function getCountry();
     public function getTimezone();
+}
+
+trait TNameExtractor {
+
+    public function getFirstName() {
+        $parts = explode(' ', $this->getFullName(), 2);
+        return array_shift($parts);
+    }
+
+    public function getSurname() {
+        $parts = explode(' ', $this->getFullName(), 2);
+        return array_pop($parts);
+    }
 }
 
 interface IActiveClientDataObject extends IClientDataObject {

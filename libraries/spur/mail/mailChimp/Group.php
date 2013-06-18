@@ -37,6 +37,10 @@ class Group implements IGroup, core\IDumpable {
         return $this->_bit;
     }
 
+    public function getCompoundId() {
+        return $this->_set->getId().':'.$this->_bit;
+    }
+
     public function getName() {
         return $this->_name;
     }
