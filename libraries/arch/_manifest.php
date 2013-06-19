@@ -42,10 +42,22 @@ class ForcedResponse extends \Exception implements IForcedResponse {
 }
 
 
+interface IResponseForcer {
+    public function forceResponse($response);
+}
+
+trait TResponseForcer {
+    
+    public function forceResponse($response) {
+        throw new ForcedResponse($response);
+    }
+}
+
+
 // Interfaces
 interface IAccess extends user\IState {}
 
-interface IContext extends core\IContext, core\i18n\translate\ITranslationProxy {
+interface IContext extends core\IContext, core\i18n\translate\ITranslationProxy, IResponseForcer {
     
     // Application
     public function spawnInstance($request);
@@ -57,6 +69,8 @@ interface IContext extends core\IContext, core\i18n\translate\ITranslationProxy 
     public function getLocation();
     public function normalizeOutputUrl($uri, $toRequest=false, $from=null, $to=null);
 }
+
+
 
 interface IContextAware {
     public function getContext();
@@ -200,19 +214,17 @@ interface IProxyResponse {
 
 
 
-interface IController extends IContextAware, user\IAccessLock {
+interface IController extends IContextAware, user\IAccessLock, IResponseForcer {
     public function isControllerInline();
     public function setActiveAction(IAction $action=null);
     public function getActiveAction();
-    public function forceResponse($response);
 }
 
 
-interface IAction extends IContextAware, user\IAccessLock {
+interface IAction extends IContextAware, user\IAccessLock, IResponseForcer {
     public function dispatch();
     public function isActionInline();
     public function getController();
-    public function forceResponse($response);
 
     public static function getActionMethodName($actionClass, IContext $context);
     public static function getControllerMethodName($controllerClass, IContext $context);
