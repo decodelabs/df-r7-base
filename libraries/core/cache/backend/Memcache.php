@@ -17,16 +17,21 @@ class Memcache implements core\cache\IBackend {
     protected $_lifeTime;
     protected $_cache;
     
+    public static function purgeAll(core\collection\ITree $options) {
+        if(!self::isLoadable()) {
+            return;
+        }
+
+        $connection = self::_loadConnection($options);
+        $connection->flush();
+    }
+
     public static function isLoadable() {
         return extension_loaded('memcache');
     }
-    
-    public function __construct(core\cache\ICache $cache, $lifeTime, core\collection\ITree $options) {
-        $this->_cache = $cache;
-        $this->_lifeTime = $lifeTime;
-        $this->_prefix = $cache->getApplication()->getUniquePrefix().'-'.$cache->getCacheId().':';
-        
-        $this->_connection = new \Memcache();
+
+    protected static function _loadConnection(core\collection\ITree $options) {
+        $output = new \Memcache();
         
         if($options->has('servers')) {
             $serverList = $options->servers;
@@ -35,12 +40,22 @@ class Memcache implements core\cache\IBackend {
         }
         
         foreach($serverList as $serverOptions) {
-            $this->_connection->addServer(
+            $output->addServer(
                 $serverOptions->get('host', '127.0.0.1'),
                 $serverOptions->get('port', 11211),
                 (bool)$serverOptions->get('persistent', true)
             );
         }
+
+        return $output;
+    }
+    
+    public function __construct(core\cache\ICache $cache, $lifeTime, core\collection\ITree $options) {
+        $this->_cache = $cache;
+        $this->_lifeTime = $lifeTime;
+        $this->_prefix = $cache->getApplication()->getUniquePrefix().'-'.$cache->getCacheId().':';
+        
+        $this->_connection = self::_loadConnection($options);
     }
     
     public function setLifeTime($lifeTime) {

@@ -36,6 +36,7 @@ interface ICache extends core\IValueMap, \ArrayAccess, core\IApplicationAware, c
 
 
 interface IBackend extends core\IValueMap, \Countable {
+    public static function purgeAll(core\collection\ITree $options);
     public static function isLoadable();
     public function setLifeTime($lifeTime);
     public function getLifeTime();
