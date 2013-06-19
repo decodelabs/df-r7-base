@@ -41,6 +41,22 @@ abstract class Base implements ICache {
         
         return $cache;
     }
+
+    public static function purgeAll() {
+        $config = Config::getInstance(df\Launchpad::$application);
+
+        foreach(df\Launchpad::$loader->lookupFileList('core/cache/backend/') as $file) {
+            $name = substr(basename($file), 0, -4);
+            $class = 'df\\core\\cache\\backend\\'.$name;
+
+            if(!class_exists($class)) {
+                continue;
+            }
+
+            $options = new core\collection\Tree($config->getBackendOptions($name));
+            $class::purgeAll($options);
+        }
+    }
     
     
 // Construct

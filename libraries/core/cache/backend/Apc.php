@@ -16,6 +16,15 @@ class Apc implements core\cache\IBackend {
     protected $_lifeTime;
     protected $_cache;
     
+    public static function purgeAll(core\collection\ITree $options) {
+        if(!self::isLoadable()) {
+            return;
+        }
+
+        apc_clear_cache('user');
+        apc_clear_cache('system');
+    }
+
     public static function isLoadable() {
         return extension_loaded('apc');
     }

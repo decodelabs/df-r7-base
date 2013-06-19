@@ -17,6 +17,18 @@ class LocalFile implements core\cache\IDirectFileBackend {
     protected $_path;
     protected $_serialize = true;
 
+    public static function purgeAll(core\collection\ITree $options) {
+        if(!self::isLoadable()) {
+            return;
+        }
+
+        $path1 = df\Launchpad::$application->getSharedDataStoragePath().'/cache/';
+        $path2 = df\Launchpad::$application->getLocalDataStoragePath().'/cache/';
+
+        core\io\Util::emptyDir($path1);
+        core\io\Util::emptyDir($path2);
+    }
+
     public static function isLoadable() {
         return true;
     }
