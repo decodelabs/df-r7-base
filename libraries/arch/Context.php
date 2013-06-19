@@ -14,6 +14,7 @@ use df\halo;
 class Context implements IContext, \Serializable, core\IDumpable {
     
     use core\TContext;
+    use TResponseForcer;
 
     public $request;
     public $location;

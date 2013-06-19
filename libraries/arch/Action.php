@@ -13,6 +13,7 @@ class Action implements IAction, core\IDumpable {
     
     use TContextProxy;
     use TDirectoryAccessLock;
+    use TResponseForcer;
     
     const CHECK_ACCESS = true;
     const DEFAULT_ACCESS = null;
@@ -143,10 +144,6 @@ class Action implements IAction, core\IDumpable {
         }
         
         return $output;
-    }
-    
-    public function forceResponse($response) {
-        throw new ForcedResponse($response);
     }
     
     public static function getActionMethodName($actionClass, IContext $context) {

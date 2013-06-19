@@ -13,6 +13,7 @@ class Controller implements IController, core\IDumpable {
     
     use TContextProxy;
     use TDirectoryAccessLock;
+    use TResponseForcer;
     
     const CHECK_ACCESS = true;
     const DEFAULT_ACCESS = null;
@@ -71,10 +72,6 @@ class Controller implements IController, core\IDumpable {
         return $this->_activeAction;
     }
 
-    public function forceResponse($response) {
-        throw new ForcedResponse($response);
-    }
-    
     
 // Dump
     public function getDumpProperties() {
