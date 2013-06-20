@@ -260,7 +260,7 @@ abstract class Action extends arch\Action implements IAction {
 
     public function complete($defaultRedirect=null, $success=true) {
         if($defaultRedirect === null) {
-            $defaultRedirect = static::DEFAULT_REDIRECT;
+            $defaultRedirect = $this->_getDefaultRedirect();
         }
         
         $this->_isComplete = true;
@@ -290,7 +290,11 @@ abstract class Action extends arch\Action implements IAction {
     
 // Events
     protected function _onCancelEvent() {
-        return $this->complete(static::DEFAULT_REDIRECT, false);
+        return $this->complete($this->_getDefaultRedirect(), false);
+    }
+
+    protected function _getDefaultRedirect() {
+        return static::DEFAULT_REDIRECT;
     }
 
 
