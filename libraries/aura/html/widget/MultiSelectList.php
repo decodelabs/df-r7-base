@@ -77,6 +77,16 @@ class MultiSelectList extends SelectList implements IMultiSelectWidget {
     
 // Size
     public function setSize($size) {
+        if($size === true) {
+            $size = count($this->_options);
+
+            if($size < 5) {
+                $size = 5;
+            } else if($size > 50) {
+                $size = 50;
+            }
+        }
+
         $this->_size = $size;
         return $this;
     }

@@ -21,7 +21,7 @@ class GroupedMultiSelectList extends GroupedSelectList implements IMultiSelectWi
     public function setNoSelectionLabel($label) {
         return $this;
     }
-    
+
     protected function _render() {
         $tag = $this->getTag();
         $tag->setAttribute('multiple', 'multiple');
@@ -77,6 +77,20 @@ class GroupedMultiSelectList extends GroupedSelectList implements IMultiSelectWi
     
 // Size
     public function setSize($size) {
+        if($size === true) {
+            $size = 0;
+
+            foreach($this->_groupOptions as $set) {
+                $size += count($set);
+            }
+
+            if($size < 5) {
+                $size = 5;
+            } else if($size > 50) {
+                $size = 50;
+            }
+        }
+
         $this->_size = $size;
         return $this;
     }
