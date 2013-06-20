@@ -16,9 +16,13 @@ class Template extends Base implements ITemplateWidget, \ArrayAccess, core\IDump
     protected $_location;
     protected $_args = array();
     
-    public function __construct(arch\IContext $context, $path, $location=null) {
+    public function __construct(arch\IContext $context, $path, $location=null, array $args=null) {
         $this->setPath($path);
         $this->setLocation($location);
+
+        if($args !== null) {
+            $this->setArgs($args);
+        }
     }
 
     public function toResponse() {
