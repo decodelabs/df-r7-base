@@ -8,7 +8,7 @@ namespace df\core\debug\dumper;
 use df;
 use df\core;
 
-class Reference implements core\debug\IDump {
+class Reference implements IReferenceNode {
     
     use core\TStringProvider;
     
@@ -23,6 +23,10 @@ class Reference implements core\debug\IDump {
     public function getType() {
         return $this->_type;
     }
+
+    public function isArray() {
+        return $this->_type == 'array';
+    }
     
     public function getDumpId() {
         return $this->_dumpId;
@@ -30,9 +34,5 @@ class Reference implements core\debug\IDump {
     
     public function toString() {
         return $this->_type.'(&'.$this->_dumpId.')';
-    }
-    
-    public function isArray() {
-        return $this->_type == 'array';
     }
 }

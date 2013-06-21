@@ -3,65 +3,59 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\debug\node;
+namespace df\core\log\node;
 
 use df;
 use df\core;
 
-class Message implements core\debug\IMessageNode {
+class Message implements core\log\IMessageNode {
     
     use core\debug\TLocationProvider;
-    
-    const INFO = 1;
-    const TODO = 2;
-    const WARNING = 3;
-    const ERROR = 4;
-    const DEPRECATED = 5;
     
     protected $_message;
     protected $_type;
     
-    public function __construct($message, $type=self::INFO, $file=null, $line=null) {
+    public function __construct($message, $type=core\log\IMessageNode::INFO, $file=null, $line=null) {
         $this->_message = $message;
         
         if(is_string($type)) {
             switch(strtolower($type)) {
                 case 'info':
-                    $type = self::INFO;
+                    $type = core\log\IMessageNode::INFO;
                     break;
                     
                 case 'todo':
-                    $type = self::TODO;
+                    $type = core\log\IMessageNode::TODO;
                     break;
                     
                 case 'warning':
-                    $type = self::WARNING;
+                    $type = core\log\IMessageNode::WARNING;
                     break;
                     
                 case 'error':
-                    $type = self::ERROR;
+                    $type = core\log\IMessageNode::ERROR;
                     break;
                     
                 case 'deprecated':
-                    $type = self::DEPRECATED;
+                    $type = core\log\IMessageNode::DEPRECATED;
                     break;
                     
                 default:
-                    $type = self::INFO;
+                    $type = core\log\IMessageNode::INFO;
                     break;
             }
         }
         
         switch($type) {
-            case self::INFO:
-            case self::TODO:
-            case self::WARNING:
-            case self::ERROR:
-            case self::DEPRECATED:
+            case core\log\IMessageNode::INFO:
+            case core\log\IMessageNode::TODO:
+            case core\log\IMessageNode::WARNING:
+            case core\log\IMessageNode::ERROR:
+            case core\log\IMessageNode::DEPRECATED:
                 break;
                 
             default:
-                $type = self::INFO;
+                $type = core\log\IMessageNode::INFO;
                 break;
         }
         
@@ -80,16 +74,16 @@ class Message implements core\debug\IMessageNode {
     
     public function getNodeTitle() {
         switch($this->_type) {
-            case self::INFO: return 'Info';
-            case self::TODO: return 'Todo';
-            case self::WARNING: return 'Warning';
-            case self::ERROR: return 'Error';  
-            case self::DEPRECATED: return 'Deprecated';  
+            case core\log\IMessageNode::INFO: return 'Info';
+            case core\log\IMessageNode::TODO: return 'Todo';
+            case core\log\IMessageNode::WARNING: return 'Warning';
+            case core\log\IMessageNode::ERROR: return 'Error';  
+            case core\log\IMessageNode::DEPRECATED: return 'Deprecated';  
         }
     }
     
     public function isCritical() {
-        return $this->_type === self::ERROR;
+        return $this->_type === core\log\IMessageNode::ERROR;
     }
     
     public function getNodeType() {

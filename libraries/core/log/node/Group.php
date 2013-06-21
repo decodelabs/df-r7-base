@@ -3,12 +3,12 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\debug\node;
+namespace df\core\log\node;
 
 use df;
 use df\core;
 
-class Group implements core\debug\IGroupNode {
+class Group implements core\log\IGroupNode {
     
     use core\debug\TLocationProvider;
     
@@ -54,7 +54,7 @@ class Group implements core\debug\IGroupNode {
         return $this->_children;
     }
     
-    public function addChild(core\debug\INode $node) {
+    public function addChild(core\log\INode $node) {
         $this->_children[] = $node;
         return $this;
     }
@@ -92,7 +92,7 @@ class Group implements core\debug\IGroupNode {
     }
     
     public function addDump($dumpObject, $deep=false, core\debug\IStackCall $stackCall) {
-        require_once __DIR__.'/Dump.php';
+        df\Launchpad::loadBaseClass('core/log/node/Dump');
         return $this->addChild(new Dump($dumpObject, $deep, $stackCall->getFile(), $stackCall->getLine()));
     }
     
@@ -122,7 +122,7 @@ class Group implements core\debug\IGroupNode {
     }
     
     public function addException(\Exception $exception) {
-        require_once __DIR__.'/Exception.php';
+        df\Launchpad::loadBaseClass('core/log/node/Exception');
         $this->addChild(new Exception($exception));
         
         return $this;
@@ -131,19 +131,19 @@ class Group implements core\debug\IGroupNode {
     
 // Messages
     public function info($message) {
-        return $this->addMessage($message, Message::INFO, core\debug\StackCall::factory(1));
+        return $this->addMessage($message, IMessageNode::INFO, core\debug\StackCall::factory(1));
     }
     
     public function todo($message) {
-        return $this->addMessage($message, Message::TODO, core\debug\StackCall::factory(1));
+        return $this->addMessage($message, IMessageNode::TODO, core\debug\StackCall::factory(1));
     }
     
     public function warning($message) {
-        return $this->addMessage($message, Message::WARNING, core\debug\StackCall::factory(1));
+        return $this->addMessage($message, IMessageNode::WARNING, core\debug\StackCall::factory(1));
     }
     
     public function error($message) {
-        return $this->addMessage($message, Message::ERROR, core\debug\StackCall::factory(1));
+        return $this->addMessage($message, IMessageNode::ERROR, core\debug\StackCall::factory(1));
     }
     
     public function deprecated() {
@@ -151,13 +151,13 @@ class Group implements core\debug\IGroupNode {
         
         return $this->addMessage(
             $call->getSignature().' is deprecated',
-            Message::DEPRECATED, 
+            IMessageNode::DEPRECATED, 
             $call
         );
     }
     
     public function addMessage($message, $type, core\debug\IStackCall $stackCall) {
-        require_once __DIR__.'/Message.php';
+        df\Launchpad::loadBaseClass('core/log/node/Message');
         $this->addChild(new Message($message, $type, $stackCall->getFile(), $stackCall->getLine()));
         
         return $this;
@@ -170,10 +170,10 @@ class Group implements core\debug\IGroupNode {
     }
     
     public function addStub(array $dumpObjects, core\debug\IStackCall $stackCall) {
-        require_once __DIR__.'/Stub.php';
+        df\Launchpad::loadBaseClass('core/log/node/Stub');
         
         $message = $stackCall->getSignature().' is not yet implemented';
-        $stub = new core\debug\node\Stub($message, $stackCall->getFile(), $stackCall->getLine());
+        $stub = new Stub($message, $stackCall->getFile(), $stackCall->getLine());
         $this->addChild($stub);
         
         foreach($dumpObjects as $dumpObject) {
@@ -184,10 +184,40 @@ class Group implements core\debug\IGroupNode {
     }
     
     public function stackTrace($rewind=0) {
-        require_once dirname(__DIR__).'/StackTrace.php';
-        require_once dirname(__DIR__).'/StackCall.php';
+        df\Launchpad::loadBaseClass('core/debug/StackTrace');
+        df\Launchpad::loadBaseClass('core/debug/StackCall');
         
         $this->addChild(core\debug\StackTrace::factory($rewind + 1));
         return $this;
+    }
+
+
+// Nodes
+    public function getNodeCounts() {
+        $output = [
+            'info' => 0,
+            'todo' => 0,
+            'warning' => 0,
+            'error' => 0,
+            'deprecated' => 0,
+            'stub' => 0,
+            'dump' => 0,
+            'exception' => 0,
+            'stackTrace' => 0,
+            'group' => 0
+        ];
+        
+        $this->_countNodes($this, $output);
+        return $output;
+    }
+    
+    private function _countNodes(IGroupNode $node, &$counts) {
+        foreach($node->getChildren() as $child) {
+            $counts[$child->getNodeType()]++;
+            
+            if($child instanceof IGroupNode) {
+                $this->_countNodes($child, $counts);
+            }
+        }
     }
 }

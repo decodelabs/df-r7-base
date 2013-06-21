@@ -12,8 +12,7 @@ use df\halo;
 class HttpCapture extends Http {
     
     public function execute(core\debug\IContext $context) {
-        require_once dirname(__DIR__).'/renderer/Html.php';
-        
+        df\Launchpad::loadBaseClass('core/debug/renderer/Html');
         $renderer = new core\debug\renderer\Html($context);
         $response = new halo\protocol\http\response\String($renderer->render(), 'text/html');
         

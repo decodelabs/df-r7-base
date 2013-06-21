@@ -3,12 +3,12 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\debug\node;
+namespace df\core\log\node;
 
 use df;
 use df\core;
 
-class Dump implements core\debug\IDumpNode {
+class Dump implements core\log\IDumpNode {
     
     use core\debug\TLocationProvider;
     

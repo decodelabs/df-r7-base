@@ -8,6 +8,8 @@ namespace df\core\debug;
 use df;
 use df\core;
 
+df\Launchpad::loadBaseClass('core/log/_manifest');
+
 // Exceptions
 interface IException {}
 class RuntimeException extends \RuntimeException implements IException {}
@@ -33,10 +35,6 @@ trait TLocationProvider {
     }
 }
 
-interface IMessageProvider {
-    public function getMessage();
-}
-
 interface IEntryPoint {
     public function dump($arg1);
     public function dumpDeep($arg1);
@@ -50,66 +48,25 @@ interface IEntryPoint {
     public function stackTrace($rewind=0);
 }
 
-interface INode extends ILocationProvider {
-    public function getNodeTitle();
-    public function getNodeType();
-    public function isCritical();
-}
-
-interface IGroupNode extends INode, IEntryPoint, core\IArrayProvider {
-    public function setNodeTitle($title);
-    public function addChild(INode $node);
-    public function getChildren();
-    public function hasChildren();
-    public function clearChildren();
-    
-    public function newGroup($title=null, $file=null, $line=null);
-    public function addDump($dumpObject, $deep=false, IStackCall $stackCall);
-    public function addDumpList(array $dumpObjects, $deep=false, IStackCAll $stackCall);
-    public function addException(\Exception $exception);
-    public function addMessage($message, $type, IStackCall $stackCall);
-    public function addStub(array $dumpObjects, IStackCall $stackCall);
-}
-
-interface IMessageNode extends INode, IMessageProvider {
-    public function getType();
-}
-
-interface IDumpNode extends INode {
-    public function &getObject();
-    public function isDeep();
-}
-
-interface IExceptionNode extends INode {
-    public function getException();
-    public function getExceptionClass();
-    public function getCode();
-    public function getMessage();
-    public function getStackTrace();
-    public function getStackCall();
-}
-
-interface IStubNode extends IGroupNode, IMessageProvider {}
-
-interface IContext extends IGroupNode {
-    public function isEnabled();
-    public function enable();
-    public function disable();
-    
+interface IContext extends core\log\IGroupNode {
     public function setTransport(ITransport $transport);
     public function getTransport();
     public function flush();
-    
-    public function getNodeCounts();
 }
 
 
 
-interface IStackTrace extends INode, core\IArrayProvider {
+interface IStackTrace extends core\log\INode, core\IArrayProvider {
     
 }
 
 interface IStackCall extends ILocationProvider {
+
+    const STATIC_METHOD = 1;
+    const OBJECT_METHOD = 2;
+    const NAMESPACE_FUNCTION = 3;
+    const GLOBAL_FUNCTION = 4;
+
     public function getArgs();
     public function hasArgs();
     public function countArgs();
@@ -142,13 +99,4 @@ interface ITransport {
 
 interface IRenderer {
     public function render();
-}
-
-
-interface IInspector {
-    
-}
-
-interface IDump extends core\IStringProvider {
-    
 }

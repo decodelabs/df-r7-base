@@ -8,7 +8,7 @@ namespace df\core\debug\dumper;
 use df;
 use df\core;
 
-class Resource implements core\debug\IDump {
+class Resource implements IResourceNode {
     
     use core\TStringProvider;
     

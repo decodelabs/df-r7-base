@@ -8,7 +8,7 @@ namespace df\core\debug\dumper;
 use df;
 use df\core;
 
-class Structure implements core\debug\IDump {
+class Structure implements IStructureNode {
     
     use core\TStringProvider;
     

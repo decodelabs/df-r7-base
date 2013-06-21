@@ -3,12 +3,12 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\debug\node;
+namespace df\core\log\node;
 
 use df;
 use df\core;
 
-class Exception implements core\debug\IExceptionNode {
+class Exception implements core\log\IExceptionNode {
 
     protected $_stackCall;
     protected $_exception;

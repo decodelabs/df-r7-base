@@ -25,8 +25,7 @@ class Base implements core\debug\ITransport {
             header('Content-Type: text/plain');
         }
         
-        require_once dirname(__DIR__).'/renderer/PlainText.php';
-        
+        df\Launchpad::loadBaseClass('core/debug/renderer/PlainText');
         $renderer = new core\debug\renderer\PlainText($context);
         echo $renderer->render();
         

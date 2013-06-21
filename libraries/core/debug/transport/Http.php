@@ -28,7 +28,7 @@ class Http implements core\debug\ITransport {
         
         $this->_isExecuting = true;
         
-        require_once dirname(__DIR__).'/renderer/Html.php';
+        df\Launchpad::loadBaseClass('core/debug/renderer/Html');
         $renderer = new core\debug\renderer\Html($context);
         
         if(!headers_sent()) {

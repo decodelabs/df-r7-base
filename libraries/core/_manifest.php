@@ -523,6 +523,7 @@ interface IApplication {
     public function getRunMode();
     public function isDistributed();
     public function getDebugTransport();
+    public function createDebugTransport();
     
     // Members
     public function setName($name);

@@ -8,7 +8,7 @@ namespace df\core\debug\dumper;
 use df;
 use df\core;
 
-class String implements core\debug\IDump {
+class String implements IStringNode {
     
     use core\TStringProvider;
     

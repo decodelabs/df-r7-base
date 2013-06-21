@@ -133,13 +133,13 @@ abstract class Base implements core\IApplication, core\IDumpable {
     
     public function getDebugTransport() {
         if(!$this->_debugTransport) {
-            $this->_debugTransport = $this->_getNewDebugTransport();
+            $this->_debugTransport = $this->createDebugTransport();
         }
         
         return $this->_debugTransport;
     }
     
-    protected function _getNewDebugTransport() {
+    public function createDebugTransport() {
         return new core\debug\transport\Base();
     }
     

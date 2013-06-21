@@ -8,6 +8,8 @@ namespace df\core\debug\renderer;
 use df;
 use df\core;
 
+df\Launchpad::loadBaseClass('core/debug/renderer/Base');
+
 class PlainText extends Base {
     
     protected $_eol = "\n";
@@ -49,7 +51,7 @@ class PlainText extends Base {
         return $output;
     }
     
-    protected function _renderGroup(core\debug\IGroupNode $group, $depth=0) {
+    protected function _renderGroup(core\log\IGroupNode $group, $depth=0) {
         $indent = str_repeat('#', $depth * $this->_indent);
         $output = '';
         $lineLength = $this->_lineLength - strlen($indent);
@@ -58,33 +60,35 @@ class PlainText extends Base {
             $block = $indent.'|'.str_repeat('-', $lineLength - 1).$this->_eol; 
             $block .= $indent.'| '.$node->getNodeTitle().' - '.$this->_getNodeLocation($node).$this->_eol;
             
-            if($node instanceof core\debug\IMessageNode) {
+            if($node instanceof core\log\IMessageNode) {
                 // Message
                 $message = wordwrap($node->getMessage(), $lineLength - 5, $this->_eol.$indent.'| > ');
                 $block .= $indent.'| > '.$message.$this->_eol;
                 
-            } else if($node instanceof core\debug\IStubNode) {
+            } else if($node instanceof core\log\IStubNode) {
                 // Stub
                 $message = wordwrap($node->getMessage(), $lineLength - 5, $this->_eol.$indent.'| > ');
                 $block .= $indent.'| > '.$message.$this->_eol;
                 
-            } else if($node instanceof core\debug\IExceptionNode) {
+            } else if($node instanceof core\log\IExceptionNode) {
                 // Exception
                 $message = wordwrap($node->getMessage(), $lineLength - 5, $this->_eol.$indent.'| > ');
                 $block .= $indent.'| > '.$message.$this->_eol;
                 $block .= $this->_renderGroup(
-                    (new core\debug\node\Group('exception'))->addChild($node->getStackTrace()),
+                    (new core\log\node\Group('exception'))->addChild($node->getStackTrace()),
                     $depth + 1
                 );
                 
-            } else if($node instanceof core\debug\IDumpNode) {
+            } else if($node instanceof core\log\IDumpNode) {
                 // Dump
+                df\Launchpad::loadBaseClass('core/debug/dumper/Inspector');
                 $inspector = new core\debug\dumper\Inspector();
+
                 $object = $node->getObject();
                 $data = $inspector->inspect($object, $node->isDeep());
                 $block .= $indent.'| '.str_replace("\n", $this->_eol.$indent.'| ', $data->toString()).$this->_eol;
                 
-            } else if($node instanceof core\debug\IStackTrace) {
+            } else if($node instanceof core\log\IStackTrace) {
                 // Stack trace
                 foreach($node->toArray() as $stackCall) {
                     $location = $this->_normalizeLocation($stackCall->getFile(), $stackCall->getLine());
@@ -104,7 +108,7 @@ class PlainText extends Base {
             
             $output .= $block;
             
-            if($node instanceof core\debug\IGroupNode && $node->hasChildren()) {
+            if($node instanceof core\log\IGroupNode && $node->hasChildren()) {
                 $output .= $this->_renderGroup($node, $depth + 1);
             }
         }

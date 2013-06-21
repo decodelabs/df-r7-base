@@ -491,7 +491,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
         return $output;
     }
     
-    protected function _getNewDebugTransport() {
+    public function createDebugTransport() {
         return new core\debug\transport\Http();
     }
 }
