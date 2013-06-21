@@ -47,4 +47,16 @@ class Util implements IUtil {
             return [$collection];
         }
     }
+
+    public static function normalizeEnumValue($value, array $map, $defaultValue=null) {
+        if(in_array($value, $map)) {
+            return $value;
+        }
+
+        if(isset($map[$value])) {
+            return $map[$value];
+        }
+
+        return $defaultValue;
+    }
 }
