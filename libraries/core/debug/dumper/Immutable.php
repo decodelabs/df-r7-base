@@ -38,7 +38,7 @@ class Immutable implements IImmutableNode {
         return $this->_value;
     }
 
-    public function getDataValue() {
+    public function getDataValue(IInspector $inspector) {
         return $this->_value;
     }
     

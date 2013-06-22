@@ -22,7 +22,7 @@ class String implements IStringNode {
         return $this->_string;
     }
     
-    public function getDataValue() {
+    public function getDataValue(IInspector $inspector) {
         return $this->_string;
     }
 

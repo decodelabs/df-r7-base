@@ -32,7 +32,7 @@ class Reference implements IReferenceNode {
         return $this->_dumpId;
     }
 
-    public function getDataValue() {
+    public function getDataValue(IInspector $inspector) {
         return $this->toString();
     }
     

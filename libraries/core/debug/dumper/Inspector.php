@@ -100,7 +100,7 @@ class Inspector implements IInspector {
                 continue;
             }
             
-            $array[$testKey] = &$testData;
+            $array[$testKey] = $testData;
             $isSame = isset($ref[$testKey]) && $ref[$testKey] === $testData;
             
             unset($array[$testKey]);

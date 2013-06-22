@@ -34,7 +34,7 @@ class ChromePhp implements core\log\IWriter {
             $data = base64_encode(utf8_encode(json_encode([
                 'version' => self::VERSION,
                 'columns' => ['log', 'backtrace', 'type'],
-                'request_uri' => @$_SERVER['REQUEST_URI'],
+                'request_uri' => $this->_getRequest(),
                 'rows' => $this->_buffer
             ])));
 
@@ -51,6 +51,9 @@ class ChromePhp implements core\log\IWriter {
 
     public function writeNode(core\log\IHandler $handler, core\log\INode $node) {
         switch($node->getNodeType()) {
+            case 'context':
+                return $this->writeContextNode($handler, $node);
+
             case 'dump':
                 return $this->writeDumpNode($handler, $node);
                 
@@ -75,12 +78,31 @@ class ChromePhp implements core\log\IWriter {
         }
     }
 
+    public function writeContextNode(core\log\IHandler $handler, core\debug\IContext $node) {
+        $this->_addRow($node, $this->_getRequest(), 'group');
+        $renderer = new core\debug\renderer\PlainText($handler);
+        
+        $this->_addRow(
+            null,
+            $renderer->renderStats(),
+            'info'
+        );
+
+        foreach($node->getChildren() as $child) {
+            $this->writeNode($handler, $child);
+            $this->_writeBacktrace = false;
+        }
+
+        $this->_writeBacktrace = true;
+        return $this->_addRow($node, null, 'groupEnd');
+    }
+
     public function writeDumpNode(core\log\IHandler $handler, core\log\IDumpNode $node) {
         $inspector = new core\debug\dumper\Inspector();
         $data = $inspector->inspect($node->getObject(), $node->isDeep());
 
         return $this->_addRow(
-            $node, $data->getDataValue()
+            $node, $data->getDataValue($inspector)
         );
     }
 
@@ -109,23 +131,7 @@ class ChromePhp implements core\log\IWriter {
     }
 
     public function writeGroupNode(core\log\IHandler $handler, core\log\IGroupNode $node) {
-        if($isContext = ($node instanceof core\debug\IContext)) {
-            $title = $this->_getRequest();
-        } else {
-            $title = $node->getNodeTitle();
-        }
-
-        $this->_addRow($node, $title, 'group');
-
-        if($isContext) {
-            $renderer = new core\debug\renderer\PlainText($handler);
-            
-            $this->_addRow(
-                null,
-                $renderer->renderStats(),
-                'info'
-            );
-        }
+        $this->_addRow($node, $node->getNodeTitle(), 'group');
 
         foreach($node->getChildren() as $child) {
             $this->writeNode($handler, $child);

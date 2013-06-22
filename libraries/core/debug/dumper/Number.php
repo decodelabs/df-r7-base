@@ -26,7 +26,7 @@ class Number implements INumberNode {
         return is_float($this->_number);
     }
     
-    public function getDataValue() {
+    public function getDataValue(IInspector $inspector) {
         return $this->_number;
     }
 

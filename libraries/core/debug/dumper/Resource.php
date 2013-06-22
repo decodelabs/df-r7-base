@@ -40,7 +40,7 @@ class Resource implements IResourceNode {
         return $this->_name;
     }
 
-    public function getDataValue() {
+    public function getDataValue(IInspector $inspector) {
         return $this->toString();
     }
     
