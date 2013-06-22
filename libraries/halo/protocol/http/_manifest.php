@@ -153,8 +153,20 @@ interface IRedirectResponse extends IResponse {
 
 
 interface IResponseAugmentor {
+    public function resetAll();
     public function resetCurrent();
     public function apply(IResponse $response);
+
+    // Headers
+    public function addHeaderForCurrentRequest($name, $value);
+    public function setHeaderForCurrentRequest($name, $value);
+    public function removeHeaderForCurrentRequest($name);
+
+    public function addHeaderForAnyRequest($name, $value);
+    public function setHeaderForAnyRequest($name, $value);
+    public function removeHeaderAnyRequest($name);
+
+    // Cookies
     public function newCookie($name, $value);
     
     public function setCookieForCurrentRequest(IResponseCookie $cookie);

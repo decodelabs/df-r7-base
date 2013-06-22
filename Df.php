@@ -37,6 +37,10 @@ class Launchpad {
     private static $_isRun = false;
     private static $_isShutdown = false;
     
+    public static function loadBaseClass($path) {
+        $path = __DIR__.'/libraries/'.$path.'.php';
+        require_once $path;
+    }
     
 // Run
     public static function run($appType=null) {
@@ -129,6 +133,12 @@ class Launchpad {
 
         // Run
         $payload = self::runApplication($application);
+
+
+        // Write debug loggers
+        if(self::$debug) {
+            self::$debug->execute();
+        }
         
         
         // Launch payload
@@ -154,7 +164,7 @@ class Launchpad {
             array_shift($args);
             $payload = call_user_func_array([$application, 'dispatch'], $args);
         } catch(\Exception $e) {}
-        
+
         if(self::$invokingApplication) {
             self::$application = self::$invokingApplication;
         }
@@ -199,16 +209,16 @@ class Launchpad {
         chdir(self::$applicationPath.'/entry');
         
         // Load core library
-        include self::getBasePackagePath().'/core/_manifest.php';
-        
-        
+        self::loadBaseClass('core/_manifest');
+
+
         // Register loader
         if(self::IS_COMPILED) {
             self::$loader = new core\Loader(['root' => dirname(self::DF_PATH)]);
         } else {
             self::$loader = new core\DevLoader(['root' => dirname(self::DF_PATH)]);
         }
-        
+
         self::$loader->activate();
         self::$loader->loadBasePackages();
     }
@@ -251,7 +261,7 @@ class Launchpad {
                 try {
                     core\debug()
                         ->exception($e)
-                        ->flush();
+                        ->render();
                         
                     self::shutdown();
                 } catch(\Exception $g) {}
@@ -320,8 +330,13 @@ class Launchpad {
     
     public static function getDebugContext() {
         if(!self::$debug) {
-            require_once self::getBasePackagePath().'/core/debug/node/Context.php';
-            self::$debug = new core\debug\node\Context();
+            self::loadBaseClass('core/debug/Context');
+
+            if(self::$application) {
+                self::$debug = self::$application->createDebugContext();
+            } else {
+                self::$debug = new core\debug\Context();
+            }
         }
         
         return self::$debug;

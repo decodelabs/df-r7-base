@@ -10,16 +10,12 @@ use df\core;
 
 class Property {
     
-    const VIS_PRIVATE = 0;
-    const VIS_PROTECTED = 1;
-    const VIS_PUBLIC = 2;
-    
     protected $_name = null;
     protected $_value;
-    protected $_visibility = self::VIS_PUBLIC;
+    protected $_visibility = IProperty::VIS_PUBLIC;
     protected $_deep = false;
     
-    public function __construct($name, $value, $visibility=self::VIS_PUBLIC, $deep=false) {
+    public function __construct($name, $value, $visibility=IProperty::VIS_PUBLIC, $deep=false) {
         $this->setName($name);
         $this->_value = $value;
         $this->setVisibility($visibility);
@@ -56,7 +52,7 @@ class Property {
         return $this->_value;
     }
     
-    public function inspectValue(Inspector $inspector) {
+    public function inspectValue(IInspector $inspector) {
         if($this->_value instanceof core\debug\IDump) {
             return $this->_value;
         }
@@ -67,34 +63,19 @@ class Property {
     
 // Visibility
     public function setVisibility($visibility) {
-        if(is_string($visibility)) {
-            switch(strtolower($visibility)) {
-                case 'private':
-                    $visibility = self::VIS_PRIVATE;
-                    break;
-                    
-                case 'protected':
-                    $visibility = self::VIS_PROTECTED;
-                    break;
-                    
-                default:
-                    $visibility = self::VIS_PUBLIC;
-                    break;
-            }
-        }
-        
-        switch($visibility) {
-            case self::VIS_PRIVATE:
-            case self::VIS_PROTECTED:
-            case self::VIS_PUBLIC:
-                $this->_visibility = $visibility;
-                break;
-                
-            default:
-                $this->_visibility = self::VIS_PUBLIC;
-                break;
-        }
-        
+        df\Launchpad::loadBaseClass('core/collection/_manifest');
+        df\Launchpad::loadBaseClass('core/collection/Util');
+
+        $this->_visibility = core\collection\Util::normalizeEnumValue(
+            $visibility,
+            [
+                'public' => IProperty::VIS_PUBLIC,
+                'protected' => IProperty::VIS_PROTECTED,
+                'private' => IProperty::VIS_PRIVATE
+            ],
+            IProperty::VIS_PUBLIC
+        );
+
         return $this;
     }
     
@@ -104,27 +85,27 @@ class Property {
     
     public function getVisibilityString() {
         switch($visibility) {
-            case self::VIS_PRIVATE:
+            case IProperty::VIS_PRIVATE:
                 return 'private';
                 
-            case self::VIS_PROTECTED:
+            case IProperty::VIS_PROTECTED:
                 return 'protected';
                 
-            case self::VIS_PUBLIC:
+            case IProperty::VIS_PUBLIC:
                 return 'public';
         }
     }
     
     public function isPublic() {
-        return $this->_visibility === self::VIS_PUBLIC;
+        return $this->_visibility === IProperty::VIS_PUBLIC;
     }
     
     public function isProtected() {
-        return $this->_visibility === self::VIS_PROTECTED;
+        return $this->_visibility === IProperty::VIS_PROTECTED;
     }
     
     public function isPrivate() {
-        return $this->_visibility === self::VIS_PRIVATE;
+        return $this->_visibility === IProperty::VIS_PRIVATE;
     }
     
 // Deep

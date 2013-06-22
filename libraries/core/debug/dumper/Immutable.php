@@ -8,7 +8,7 @@ namespace df\core\debug\dumper;
 use df;
 use df\core;
 
-class Immutable implements core\debug\IDump {
+class Immutable implements IImmutableNode {
     
     use core\TStringProvider;
     
@@ -22,6 +22,10 @@ class Immutable implements core\debug\IDump {
         return $this->_value === null;
     }
     
+    public function isBoolean() {
+        return $this->_value !== null;
+    }
+
     public function getType() {
         if($this->_value === null) {
             return 'null';
@@ -31,6 +35,10 @@ class Immutable implements core\debug\IDump {
     }
     
     public function getValue() {
+        return $this->_value;
+    }
+
+    public function getDataValue() {
         return $this->_value;
     }
     

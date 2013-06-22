@@ -8,7 +8,7 @@ namespace df\core\debug\dumper;
 use df;
 use df\core;
 
-class Resource implements core\debug\IDump {
+class Resource implements IResourceNode {
     
     use core\TStringProvider;
     
@@ -38,6 +38,10 @@ class Resource implements core\debug\IDump {
     
     public function getName() {
         return $this->_name;
+    }
+
+    public function getDataValue() {
+        return $this->toString();
     }
     
     public function toString() {

@@ -164,14 +164,4 @@ class Task extends Base implements arch\IDirectoryRequestApplication {
             core\stub($payload);
         }
     }
-    
-    
-// Environment
-    public function getDebugTransport() {
-        if(!$this->_debugTransport) {
-            $this->_debugTransport = new core\debug\transport\Base();
-        }
-        
-        return $this->_debugTransport;
-    }
 }

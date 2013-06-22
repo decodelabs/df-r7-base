@@ -8,7 +8,7 @@ namespace df\core\debug\dumper;
 use df;
 use df\core;
 
-class Structure implements core\debug\IDump {
+class Structure implements IStructureNode {
     
     use core\TStringProvider;
     
@@ -55,6 +55,31 @@ class Structure implements core\debug\IDump {
         
         $output .= ')';
         
+        return $output;
+    }
+
+    public function getDataValue() {
+        $output = array();
+
+        if($this->_type) {
+            $output['___class_name'] = $this->_type;
+        }
+
+        $inspector = new Inspector();
+
+        foreach($this->_properties as $property) {
+            $name = $property->getName();
+
+            if($property->isPrivate()) {
+                $name = '§ '.$name;
+            } else if($property->isProtected()) {
+                $name = '± '.$name;
+            }
+
+            $value = $property->getValue();
+            $output[$name] = $inspector->inspect($value)->getDataValue();
+        }
+
         return $output;
     }
     

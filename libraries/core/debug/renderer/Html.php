@@ -21,7 +21,7 @@ class Html extends Base {
     }
     
     
-    protected function _getNodeDescription(core\debug\INode $node) {
+    protected function _getNodeDescription(core\log\INode $node) {
         switch($node->getNodeType()) {
             case 'dump':
                 $object = $node->getObject();
@@ -76,7 +76,7 @@ class Html extends Base {
     
     
     
-    protected function _getNodeBody(core\debug\INode $node) {
+    protected function _getNodeBody(core\log\INode $node) {
         switch($node->getNodeType()) {
             case 'dump':
                 $object = &$node->getObject();
@@ -94,7 +94,7 @@ class Html extends Base {
                     $output .= '<div class="chainedException">'."\n";
                     
                     $output .= $this->_renderExceptionMessage(
-                        new core\debug\node\Exception($chainedException), 
+                        new core\log\node\Exception($chainedException), 
                         '<strong>Chained exception #'.($i+1).'</strong>: '
                     );
                     
@@ -121,7 +121,7 @@ class Html extends Base {
         }
     }
     
-    protected function _renderDumpData(core\debug\dumper\Inspector $inspector, core\debug\IDump $data) {
+    protected function _renderDumpData(core\debug\dumper\Inspector $inspector, core\debug\dumper\INode $data) {
         // Immutable
         if($data instanceof core\debug\dumper\Immutable) {
             return '<span class="dump-'.$data->getType().'">'.$data->toString().'</span>';
@@ -246,7 +246,7 @@ class Html extends Base {
         }
     }
     
-    protected function _renderExceptionMessage(core\debug\IExceptionNode $node, $messagePrefix=null) {
+    protected function _renderExceptionMessage(core\log\IExceptionNode $node, $messagePrefix=null) {
         $output  = '<p class="message">'.$messagePrefix.$this->esc($node->getMessage()).'</p>'."\n";
         $output .= '<p class="location">Location: <strong>'.$this->_normalizeLocation($node->getFile(), $node->getLine()).'</strong></p>'."\n";
         $output .= '<p class="call">Triggering call: <strong>'.$this->esc($node->getStackCall()->getSignature()).'</strong></p>'."\n";

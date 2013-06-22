@@ -8,7 +8,10 @@ namespace df\core\debug\dumper;
 use df;
 use df\core;
 
-class Inspector {
+df\Launchpad::loadBaseClass('core/debug/dumper/_manifest');
+df\Launchpad::loadBaseClass('core/debug/dumper/Property');
+
+class Inspector implements IInspector {
     
     protected static $_instanceCount = 0;
     
@@ -24,26 +27,26 @@ class Inspector {
     public static function getInstanceCount() {
         return self::$_instanceCount;
     }
-    
+
     public function inspect(&$object, $deep=false) {
         if(is_null($object)) {
-            require_once __DIR__.'/Immutable.php';
+            df\Launchpad::loadBaseClass('core/debug/dumper/Immutable');
             return new Immutable(null);
             
         } else if(is_bool($object)) {
-            require_once __DIR__.'/Immutable.php';
+            df\Launchpad::loadBaseClass('core/debug/dumper/Immutable');
             return new Immutable($object);
             
         } else if(is_string($object)) {
-            require_once __DIR__.'/String.php';
+            df\Launchpad::loadBaseClass('core/debug/dumper/String');
             return new String($object);
             
         } else if(is_numeric($object)) {
-            require_once __DIR__.'/Number.php';
+            df\Launchpad::loadBaseClass('core/debug/dumper/Number');
             return new Number($object);
             
         } else if(is_resource($object)) {
-            require_once __DIR__.'/Resource.php';
+            df\Launchpad::loadBaseClass('core/debug/dumper/Resource');
             return new Resource($object);
             
         } else if(is_array($object)) {
@@ -65,16 +68,16 @@ class Inspector {
             
             $this->_arrayRefHits[$dumpId]++;
             
-            require_once __DIR__.'/Reference.php';
+            df\Launchpad::loadBaseClass('core/debug/dumper/Reference');
             return new Reference(null, $dumpId);
         }
         
-        require_once __DIR__.'/Structure.php';
+        df\Launchpad::loadBaseClass('core/debug/dumper/Structure');
         $this->_registerArray($array);
         $properties = array();
         
         foreach(array_keys($array) as $key) {
-            $properties[$key] = new Property($key, $array[$key], Property::VIS_PUBLIC, $deep);
+            $properties[$key] = new Property($key, $array[$key], IProperty::VIS_PUBLIC, $deep);
         }
         
         return new Structure($this, null, $dumpId, $properties);
@@ -132,11 +135,11 @@ class Inspector {
             
             $this->_objectHashHits[$dumpId]++;
             
-            require_once __DIR__.'/Reference.php';
+            df\Launchpad::loadBaseClass('core/debug/dumper/Reference');
             return new Reference(get_class($object), $dumpId);
         }
         
-        require_once __DIR__.'/Structure.php';
+        df\Launchpad::loadBaseClass('core/debug/dumper/Structure');
         $dumpId = $this->_registerObject($object);
         $properties = $this->_getObjectProperties($object, $deep);
         
@@ -148,12 +151,12 @@ class Inspector {
             $properties = $object->getDumpProperties();
             
             if(!is_array($properties)) {
-                $properties = [new Property(null, $properties, Property::VIS_PUBLIC, $deep)];
+                $properties = [new Property(null, $properties, IProperty::VIS_PUBLIC, $deep)];
             }
             
             foreach($properties as $key => $property) {
                 if(!$property instanceof Property) {
-                    $properties[$key] = new Property($key, $property, Property::VIS_PUBLIC, $deep);
+                    $properties[$key] = new Property($key, $property, IProperty::VIS_PUBLIC, $deep);
                 }
             }
         } else {
@@ -203,11 +206,11 @@ class Inspector {
                         $name = $refProperty->getName();
                         
                         if($refProperty->isPublic()) {
-                            $visibility = Property::VIS_PUBLIC;
+                            $visibility = IProperty::VIS_PUBLIC;
                         } else if($refProperty->isProtected()) {
-                            $visibility = Property::VIS_PROTECTED;
+                            $visibility = IProperty::VIS_PROTECTED;
                         } else {
-                            $visibility = Property::VIS_PRIVATE;
+                            $visibility = IProperty::VIS_PRIVATE;
                         }
                         
                         $value = $refProperty->getValue($object);
@@ -247,8 +250,8 @@ class Inspector {
                 }
                 
                 return [
-                    new Property('flags', $object->getIteratorMode(), Property::VIS_PRIVATE),
-                    new Property('dllist', $values, Property::VIS_PRIVATE)
+                    new Property('flags', $object->getIteratorMode(), IProperty::VIS_PRIVATE),
+                    new Property('dllist', $values, IProperty::VIS_PRIVATE)
                 ];
                 
             case 'SplPriorityQueue':
@@ -261,9 +264,9 @@ class Inspector {
                 }
                 
                 return [
-                    new Property('flags', 1, Property::VIS_PRIVATE),
-                    new Property('isCorrupted', false, Property::VIS_PRIVATE),
-                    new Property('heap', $values, Property::VIS_PRIVATE)
+                    new Property('flags', 1, IProperty::VIS_PRIVATE),
+                    new Property('isCorrupted', false, IProperty::VIS_PRIVATE),
+                    new Property('heap', $values, IProperty::VIS_PRIVATE)
                 ];
                 
             case 'SplHeap':
@@ -274,9 +277,9 @@ class Inspector {
                 }
                 
                 return [
-                    new Property('flags', 1, Property::VIS_PRIVATE),
-                    new Property('isCorrupted', false, Property::VIS_PRIVATE),
-                    new Property('heap', $values, Property::VIS_PRIVATE)
+                    new Property('flags', 1, IProperty::VIS_PRIVATE),
+                    new Property('isCorrupted', false, IProperty::VIS_PRIVATE),
+                    new Property('heap', $values, IProperty::VIS_PRIVATE)
                 ];
                 
             case 'ReflectionClass':

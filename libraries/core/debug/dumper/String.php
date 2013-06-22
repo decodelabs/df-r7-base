@@ -8,7 +8,7 @@ namespace df\core\debug\dumper;
 use df;
 use df\core;
 
-class String implements core\debug\IDump {
+class String implements IStringNode {
     
     use core\TStringProvider;
     
@@ -22,6 +22,10 @@ class String implements core\debug\IDump {
         return $this->_string;
     }
     
+    public function getDataValue() {
+        return $this->_string;
+    }
+
     public function toString() {
         return '"'.$this->_string.'"';
     }

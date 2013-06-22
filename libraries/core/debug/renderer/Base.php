@@ -19,7 +19,7 @@ abstract class Base implements core\debug\IRenderer {
         
         
         $this->_stats['Date'] = gmdate('d M Y H:i:s');
-        $this->_stats['Time'] = \df\Launchpad::getFormattedRunningTime($context->runningTime);
+        $this->_stats['Time'] = df\Launchpad::getFormattedRunningTime($context->runningTime);
         
         if($app = df\Launchpad::$application) {
             $this->_stats['Mode'] = $app->getRunMode();
@@ -71,7 +71,7 @@ abstract class Base implements core\debug\IRenderer {
         return $output;
     }
     
-    protected function _getNodeLocation(core\debug\INode $node) {
+    protected function _getNodeLocation(core\log\INode $node) {
         return $this->_normalizeLocation($node->getFile(), $node->getLine());
     }
     

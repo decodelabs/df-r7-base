@@ -8,7 +8,7 @@ namespace df\core\debug\dumper;
 use df;
 use df\core;
 
-class Number implements core\debug\IDump {
+class Number implements INumberNode {
     
     use core\TStringProvider;
     
@@ -26,6 +26,10 @@ class Number implements core\debug\IDump {
         return is_float($this->_number);
     }
     
+    public function getDataValue() {
+        return $this->_number;
+    }
+
     public function toString() {
         $output = (string)$this->_number;
         

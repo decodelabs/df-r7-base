@@ -10,11 +10,6 @@ use df\core;
 
 class StackCall implements IStackCall, core\IDumpable {
     
-    const TYPE_STATIC = 1;
-    const TYPE_OBJECT = 2;
-    const TYPE_NS_FUNCTION = 3;
-    const TYPE_GLOBAL_FUNCTION = 4;
-    
     protected $_function;
     protected $_className;
     protected $_namespace;
@@ -74,11 +69,11 @@ class StackCall implements IStackCall, core\IDumpable {
         if(isset($callData['type'])) {
             switch($callData['type']) {
                 case '::': 
-                    $this->_type = self::TYPE_STATIC;
+                    $this->_type = IStackCall::STATIC_METHOD;
                     break;
                     
                 case '->':
-                    $this->_type = self::TYPE_OBJECT;
+                    $this->_type = IStackCall::OBJECT_METHOD;
                     break;
                     
                 default:
@@ -144,19 +139,19 @@ class StackCall implements IStackCall, core\IDumpable {
     }
     
     public function isStatic() {
-        return $this->_type === self::TYPE_STATIC;
+        return $this->_type === IStackCall::STATIC_METHOD;
     }
     
     public function isObject() {
-        return $this->_type === self::TYPE_OBJECT;
+        return $this->_type === IStackCall::OBJECT_METHOD;
     }
     
     public function isNamespaceFunction() {
-        return $this->_type === self::TYPE_NS_FUNCTION;
+        return $this->_type === IStackCall::NAMESPACE_FUNCTION;
     }
     
     public function isGlobalFunction() {
-        return $this->_type === self::TYPE_GLOBAL_FUNCTION;
+        return $this->_type === IStackCall::GLOBAL_FUNCTION;
     }
     
 
@@ -212,11 +207,11 @@ class StackCall implements IStackCall, core\IDumpable {
         }
         
         switch($this->_type) {
-            case self::TYPE_STATIC:
+            case IStackCall::STATIC_METHOD:
                 $output .= '::';
                 break;
                 
-            case self::TYPE_OBJECT:
+            case IStackCall::OBJECT_METHOD:
                 $output .= '->';
                 break;
         }

@@ -522,7 +522,10 @@ interface IApplication {
     public function canDebug();
     public function getRunMode();
     public function isDistributed();
-    public function getDebugTransport();
+
+    // Debug
+    public function createDebugContext();
+    public function renderDebugContext(core\debug\IContext $context);
     
     // Members
     public function setName($name);
@@ -787,25 +790,25 @@ function stub() {
             func_get_args(), 
             core\debug\StackCall::factory(1)
         )
-        ->flush();
+        ->render();
 }
 
 function dump($arg1) {
     return df\Launchpad::getDebugContext()->addDumpList(
             func_get_args(), 
-            false, 
-            core\debug\StackCall::factory(1)
+            core\debug\StackCall::factory(1),
+            false
         )
-        ->flush();
+        ->render();
 }
 
 function dumpDeep($arg1) {
     return df\Launchpad::getDebugContext()->addDumpList(
             func_get_args(), 
-            true, 
-            core\debug\StackCall::factory(1)
+            core\debug\StackCall::factory(1),
+            true
         )
-        ->flush();
+        ->render();
 }
 
 function debug() {

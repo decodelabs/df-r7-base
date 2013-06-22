@@ -130,19 +130,19 @@ abstract class Base implements core\IApplication, core\IDumpable {
     public function isDistributed() {
         return df\Launchpad::$isDistributed;
     }
-    
-    public function getDebugTransport() {
-        if(!$this->_debugTransport) {
-            $this->_debugTransport = $this->_getNewDebugTransport();
-        }
-        
-        return $this->_debugTransport;
+
+
+// Debug
+    public function createDebugContext() {
+        return new core\debug\Context();
     }
     
-    protected function _getNewDebugTransport() {
-        return new core\debug\transport\Base();
-    }
-    
+    public function renderDebugContext(core\debug\IContext $context) {
+        df\Launchpad::loadBaseClass('core/debug/renderer/PlainText');
+        echo (new core\debug\renderer\PlainText($context))->render();
+
+        return $this;
+    }    
     
 // Members
     public function setName($name) {

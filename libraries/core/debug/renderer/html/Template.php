@@ -19,7 +19,7 @@ use df\core;
             <?php require __DIR__.'/style.css'; ?>
         </style>
         <script type="text/javascript">
-            <?php require __DIR__.'/jquery-1.7.1.min.js'; ?>
+            <?php require __DIR__.'/jquery.js'; ?>
             <?php require __DIR__.'/functions.js'; ?>
         </script>
     </head>
@@ -54,10 +54,10 @@ use df\core;
         <?php
         $nodeRender = function($stack, $nodeRender) {
             foreach($stack as $key => $node) {
-                $hasChildren = $node instanceof core\debug\IGroupNode && $node->hasChildren();
-                $hasBody = $node instanceof core\debug\IExceptionNode
-                        || $node instanceof core\debug\IDumpNode
-                        || $node instanceof core\debug\IStackTrace;
+                $hasChildren = $node instanceof core\log\IGroupNode && $node->hasChildren();
+                $hasBody = $node instanceof core\log\IExceptionNode
+                        || $node instanceof core\log\IDumpNode
+                        || $node instanceof core\log\IStackTrace;
         ?>
         <div class="nodeBlock node-<?php echo $this->esc($node->getNodeType()); ?><?php if($hasBody || $hasChildren) { echo ' collapsible'; } ?>">
             <header class="nodeHeader">
