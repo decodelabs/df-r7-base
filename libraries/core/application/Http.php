@@ -302,7 +302,8 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
                 }
             } catch(\Exception $e) {
                 if($previousError) {
-                    throw $previousError;
+                    core\debug()->error('CALAMITY: We appear to have caused an error in trying to render the error pages!');
+                    throw $e;
                 }
                 
                 while(ob_get_level()) {
@@ -487,9 +488,11 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
                 $output->addWriter(new core\log\writer\ChromePhp());
             }
 
+            /*
             if(core\log\writer\FirePhp::isAvailable()) {
                 $output->addWriter(new core\log\writer\FirePhp());
             }
+            */
         }
 
         return $output;
