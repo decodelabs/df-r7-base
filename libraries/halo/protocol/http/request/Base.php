@@ -287,22 +287,14 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
     
     public function getHeaders() {
         if(!$this->_headers) {
-            $this->_headers = new HeaderCollection();
-            
             if($this->_environmentMode) {
-                foreach($_SERVER as $key => $var) {
-                    if(substr($key, 0, 5) != 'HTTP_') {
-                        continue;
-                    }
-                    
-                    $key = substr($key, 5);
-                    
-                    if($key == 'COOKIE') {
-                        $this->setCookieData($var);
-                    }
-                    
-                    $this->_headers->set($key, $var);
+                $this->_headers = HeaderCollection::fromEnvironment();
+
+                if($this->_headers->has('cookie')) {
+                    $this->setCookieData($this->_headers->get('cookie'));
                 }
+            } else {
+                $this->_headers = new HeaderCollection();
             }
         }
         
@@ -423,7 +415,7 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
             $this->_cookieData = null;
         } else {
             if(is_string($cookies)) {
-                $cookies = core\collection\Tree::fromArrayDelimitedString($cookies, ';');
+                $cookies = core\collection\Tree::fromArrayDelimitedString(trim($cookies, ';'), ';');
             } else if(!$query instanceof core\collection\ITree) {
                 $cookies = new core\collection\Tree($cookies);
             }

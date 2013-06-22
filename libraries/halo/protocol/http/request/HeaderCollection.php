@@ -13,6 +13,20 @@ class HeaderCollection extends core\collection\HeaderMap implements halo\protoco
     
     use halo\protocol\http\THeaderCollection;
     
+    public static function fromEnvironment() {
+        $output = new self();
+
+        foreach($_SERVER as $key => $var) {
+            if(substr($key, 0, 5) != 'HTTP_') {
+                continue;
+            }
+            
+            $output->add(substr($key, 5), $var);
+        }
+
+        return $output;
+    }
+
     public function reset() {
         $this->clear();
         $this->_httpVersion = '1.1';
