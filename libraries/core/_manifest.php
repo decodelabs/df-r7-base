@@ -788,25 +788,55 @@ function qDump($arg1) {
 function stub() {
     return df\Launchpad::getDebugContext()->addStub(
             func_get_args(), 
-            core\debug\StackCall::factory(1)
+            core\debug\StackCall::factory(1),
+            true
         )
         ->render();
+}
+
+function stubQuiet() {
+    return df\Launchpad::getDebugContext()->addStub(
+            func_get_args(), 
+            core\debug\StackCall::factory(1),
+            false
+        );
 }
 
 function dump($arg1) {
     return df\Launchpad::getDebugContext()->addDumpList(
             func_get_args(), 
             core\debug\StackCall::factory(1),
-            false
+            false,
+            true
         )
         ->render();
+}
+
+function dumpQuiet($arg1) {
+    return df\Launchpad::getDebugContext()->addDumpList(
+            func_get_args(), 
+            core\debug\StackCall::factory(1),
+            false,
+            false
+        );
 }
 
 function dumpDeep($arg1) {
     return df\Launchpad::getDebugContext()->addDumpList(
             func_get_args(), 
             core\debug\StackCall::factory(1),
+            true,
             true
+        )
+        ->render();
+}
+
+function dumpDeepQuiet($arg1) {
+    return df\Launchpad::getDebugContext()->addDumpList(
+            func_get_args(), 
+            core\debug\StackCall::factory(1),
+            true,
+            false
         )
         ->render();
 }

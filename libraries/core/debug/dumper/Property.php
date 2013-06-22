@@ -84,7 +84,7 @@ class Property {
     }
     
     public function getVisibilityString() {
-        switch($visibility) {
+        switch($this->_visibility) {
             case IProperty::VIS_PRIVATE:
                 return 'private';
                 

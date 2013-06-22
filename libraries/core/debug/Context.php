@@ -74,4 +74,8 @@ class Context extends core\log\node\Group implements IContext {
     public function getStackTrace() {
         return $this->_stackTrace;
     }
+
+    public function getNodeType() {
+        return 'context';
+    }
 }

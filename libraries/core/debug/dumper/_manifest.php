@@ -24,7 +24,7 @@ interface IInspector {
 
 
 interface INode extends core\IStringProvider {
-    public function getDataValue();
+    public function getDataValue(IInspector $inspector);
 }
 
 interface IImmutableNode extends INode {

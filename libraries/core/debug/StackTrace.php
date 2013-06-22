@@ -61,11 +61,24 @@ class StackTrace implements IStackTrace, core\IDumpable {
             }
         }
     }
-    
+
     public function toArray() {
+        $output = [];
+
+        foreach($this->_calls as $call) {
+            $output[] = $call->toArray();
+        }
+
+        return $output;
+    }
+
+    public function getCalls() {
         return $this->_calls;
     }
     
+    public function getFirstCall() {
+        return $this->_calls[0];
+    }
     
 // Debug node
     public function getNodeTitle() {

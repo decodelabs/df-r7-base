@@ -258,6 +258,69 @@ trait TWriterProvider {
 
 interface IWriter {
     public function getId();
-    public function writeNode(IHandler $handler, INode $node);
     public function flush(core\log\IHandler $handler);
+    public function writeNode(IHandler $handler, INode $node);
+    public function writeContextNode(core\log\IHandler $handler, core\debug\IContext $node);
+    public function writeDumpNode(core\log\IHandler $handler, core\log\IDumpNode $node);
+    public function writeExceptionNode(core\log\IHandler $handler, core\log\IExceptionNode $node);
+    public function writeGroupNode(core\log\IHandler $handler, core\log\IGroupNode $node);
+    public function writeMessageNode(core\log\IHandler $handler, core\log\IMessageNode $node);
+    public function writeStackTraceNode(core\log\IHandler $handler, core\debug\IStackTrace $node);
+    public function writeStubNode(core\log\IHandler $handler, core\log\IStubNode $node);
+}
+
+
+trait TWriter {
+
+    public function getId() {
+        $parts = explode('\\', get_class($this));
+        return array_pop($parts);
+    }
+
+    public function writeNode(core\log\IHandler $handler, core\log\INode $node) {
+        switch($node->getNodeType()) {
+            case 'context':
+                return $this->writeContextNode($handler, $node);
+
+            case 'dump':
+                return $this->writeDumpNode($handler, $node);
+                
+            case 'exception':
+                return $this->writeExceptionNode($handler, $node);
+                
+            case 'group':
+                return $this->writeGroupNode($handler, $node);
+                
+            case 'info':
+            case 'todo':
+            case 'warning':
+            case 'error':
+            case 'deprecated':
+                return $this->writeMessageNode($handler, $node);
+
+            case 'stackTrace':
+                return $this->writeStackTraceNode($handler, $node);
+
+            case 'stub':
+                return $this->writeStubNode($handler, $node);
+        }
+    }
+}
+
+trait THttpWriter {
+    
+    protected $_request = null;
+
+    protected function _getRequest() {
+        if(!$this->_request) {
+            $application = df\Launchpad::$application;
+
+            if($application instanceof core\application\Http
+            && $application->hasContext()) {
+                $this->_request = $application->getHttpRequest()->getUrl()->toString();
+            }
+        }
+
+        return $this->_request ? $this->_request : @$_SERVER['REQUEST_URI'];
+    }
 }

@@ -58,14 +58,12 @@ class Structure implements IStructureNode {
         return $output;
     }
 
-    public function getDataValue() {
+    public function getDataValue(IInspector $inspector) {
         $output = array();
 
         if($this->_type) {
             $output['___class_name'] = $this->_type;
         }
-
-        $inspector = new Inspector();
 
         foreach($this->_properties as $property) {
             $name = $property->getName();
@@ -77,7 +75,8 @@ class Structure implements IStructureNode {
             }
 
             $value = $property->getValue();
-            $output[$name] = $inspector->inspect($value)->getDataValue();
+            $output[$name] = $inspector->inspect($value)->getDataValue($inspector);
+            unset($value);
         }
 
         return $output;

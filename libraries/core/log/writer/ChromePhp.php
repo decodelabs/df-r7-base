@@ -11,20 +11,20 @@ use df\halo;
     
 class ChromePhp implements core\log\IWriter {
 
+    use core\log\TWriter;
+    use core\log\THttpWriter;
+
     const VERSION = '4.0.0';
     const HEADER_NAME = 'X-ChromeLogger-Data';
 
     protected $_buffer = array();
-    protected $_request = null;
     protected $_writeBacktrace = true;
 
-    public static function isAvailable() {
-        return false !== strpos($_SERVER['HTTP_USER_AGENT'], 'Chrome')
-            || false !== strpos($_SERVER['HTTP_USER_AGENT'], 'CriOS');
-    }
+    public static function isAvailable(halo\protocol\http\IRequestHeaderCollection $headers) {
+        $agent = $headers->get('user-agent');
 
-    public function getId() {
-        return 'ChromePhp';
+        return false !== strpos($agent, 'Chrome')
+            || false !== strpos($agent, 'CriOS');
     }
 
     public function flush(core\log\IHandler $handler) {
@@ -34,7 +34,7 @@ class ChromePhp implements core\log\IWriter {
             $data = base64_encode(utf8_encode(json_encode([
                 'version' => self::VERSION,
                 'columns' => ['log', 'backtrace', 'type'],
-                'request_uri' => @$_SERVER['REQUEST_URI'],
+                'request_uri' => $this->_getRequest(),
                 'rows' => $this->_buffer
             ])));
 
@@ -49,30 +49,23 @@ class ChromePhp implements core\log\IWriter {
         return $this;
     }
 
-    public function writeNode(core\log\IHandler $handler, core\log\INode $node) {
-        switch($node->getNodeType()) {
-            case 'dump':
-                return $this->writeDumpNode($handler, $node);
-                
-            case 'exception':
-                return $this->writeExceptionNode($handler, $node);
-                
-            case 'group':
-                return $this->writeGroupNode($handler, $node);
-                
-            case 'info':
-            case 'todo':
-            case 'warning':
-            case 'error':
-            case 'deprecated':
-                return $this->writeMessageNode($handler, $node);
+    public function writeContextNode(core\log\IHandler $handler, core\debug\IContext $node) {
+        $this->_addRow($node, $this->_getRequest(), 'group');
+        $renderer = new core\debug\renderer\PlainText($handler);
+        
+        $this->_addRow(
+            null,
+            $renderer->renderStats(),
+            'info'
+        );
 
-            case 'stackTrace':
-                return $this->writeStackTraceNode($handler, $node);
-
-            case 'stub':
-                return $this->writeStubNode($handler, $node);
+        foreach($node->getChildren() as $child) {
+            $this->writeNode($handler, $child);
+            $this->_writeBacktrace = false;
         }
+
+        $this->_writeBacktrace = true;
+        return $this->_addRow($node, null, 'groupEnd');
     }
 
     public function writeDumpNode(core\log\IHandler $handler, core\log\IDumpNode $node) {
@@ -80,7 +73,7 @@ class ChromePhp implements core\log\IWriter {
         $data = $inspector->inspect($node->getObject(), $node->isDeep());
 
         return $this->_addRow(
-            $node, $data->getDataValue()
+            $node, $data->getDataValue($inspector)
         );
     }
 
@@ -109,23 +102,7 @@ class ChromePhp implements core\log\IWriter {
     }
 
     public function writeGroupNode(core\log\IHandler $handler, core\log\IGroupNode $node) {
-        if($isContext = ($node instanceof core\debug\IContext)) {
-            $title = $this->_getRequest();
-        } else {
-            $title = $node->getNodeTitle();
-        }
-
-        $this->_addRow($node, $title, 'group');
-
-        if($isContext) {
-            $renderer = new core\debug\renderer\PlainText($handler);
-            
-            $this->_addRow(
-                null,
-                $renderer->renderStats(),
-                'info'
-            );
-        }
+        $this->_addRow($node, $node->getNodeTitle(), 'group');
 
         foreach($node->getChildren() as $child) {
             $this->writeNode($handler, $child);
@@ -202,23 +179,10 @@ class ChromePhp implements core\log\IWriter {
     protected function _convertStackTrace(core\debug\IStackTrace $trace) {
         $output = array();
 
-        foreach($trace->toArray() as $call) {
+        foreach($trace->getCalls() as $call) {
             $output[] = $call->getSignature().' - '.$call->getFile().' : '.$call->getLine();
         }
 
         return $output;
-    }
-
-    protected function _getRequest() {
-        if(!$this->_request) {
-            $application = df\Launchpad::$application;
-
-            if($application instanceof core\application\Http
-            && $application->hasContext()) {
-                $this->_request = $application->getHttpRequest()->getUrl()->toString();
-            }
-        }
-
-        return $this->_request ? $this->_request : @$_SERVER['REQUEST_URI'];
     }
 }
