@@ -59,10 +59,7 @@ class Context extends core\log\node\Group implements IContext {
 
     public function flush() {
         foreach($this->getWriters() as $writer) {
-            foreach($this->_children as $node) {
-                $writer->writeNode($this, $node);
-            }
-
+            $writer->writeNode($this, $this);
             $writer->flush($this);
         }
 

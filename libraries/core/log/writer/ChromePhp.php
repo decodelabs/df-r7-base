@@ -109,7 +109,23 @@ class ChromePhp implements core\log\IWriter {
     }
 
     public function writeGroupNode(core\log\IHandler $handler, core\log\IGroupNode $node) {
-        $this->_addRow($node, $node->getNodeTitle(), 'group');
+        if($isContext = ($node instanceof core\debug\IContext)) {
+            $title = $this->_getRequest();
+        } else {
+            $title = $node->getNodeTitle();
+        }
+
+        $this->_addRow($node, $title, 'group');
+
+        if($isContext) {
+            $renderer = new core\debug\renderer\PlainText($handler);
+            
+            $this->_addRow(
+                null,
+                $renderer->renderStats(),
+                'info'
+            );
+        }
 
         foreach($node->getChildren() as $child) {
             $this->writeNode($handler, $child);
@@ -117,7 +133,7 @@ class ChromePhp implements core\log\IWriter {
         }
 
         $this->_writeBacktrace = true;
-        return $this->_addRow($node, $node->getNodeTitle(), 'groupEnd');
+        return $this->_addRow($node, null, 'groupEnd');
     }
 
     public function writeMessageNode(core\log\IHandler $handler, core\log\IMessageNode $node) {
@@ -167,25 +183,11 @@ class ChromePhp implements core\log\IWriter {
     }
 
 
-    protected function _addRow(core\log\INode $node, $logString, $type='log') {
+    protected function _addRow(core\log\INode $node=null, $logString, $type='log') {
         $backTrace = null;
 
-        if($this->_writeBacktrace && substr($type, 0, 5) != 'group') {
-            if(!$this->_request) {
-                $application = df\Launchpad::$application;
-
-                if($application instanceof core\application\Http
-                && $application->hasContext()) {
-                    $this->_request = $application->getContext()->request->toString();
-                }
-            }
-
-            $request = $this->_request ? $this->_request : @$_SERVER['REQUEST_URI'];
+        if($this->_writeBacktrace && $node && substr($type, 0, 5) != 'group') {
             $backTrace = core\io\Util::stripLocationFromFilePath($node->getFile()).' : '.$node->getLine();
-
-            if($request) {
-                $backTrace .= ' ['.$request.']';
-            }
         }
 
         $this->_buffer[] = [
@@ -205,5 +207,18 @@ class ChromePhp implements core\log\IWriter {
         }
 
         return $output;
+    }
+
+    protected function _getRequest() {
+        if(!$this->_request) {
+            $application = df\Launchpad::$application;
+
+            if($application instanceof core\application\Http
+            && $application->hasContext()) {
+                $this->_request = $application->getHttpRequest()->getUrl()->toString();
+            }
+        }
+
+        return $this->_request ? $this->_request : @$_SERVER['REQUEST_URI'];
     }
 }

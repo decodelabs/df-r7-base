@@ -50,6 +50,16 @@ class PlainText extends Base {
         
         return $output;
     }
+
+    public function renderStats() {
+        $output = [];
+
+        foreach($this->_stats as $key => $value) {
+            $output[] = $key.': '.$value;
+        }
+
+        return implode(', ', $output);
+    }
     
     protected function _renderGroup(core\log\IGroupNode $group, $depth=0) {
         $indent = str_repeat('#', $depth * $this->_indent);

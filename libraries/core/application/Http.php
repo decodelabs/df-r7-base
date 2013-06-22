@@ -334,6 +334,11 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
     
     
     protected function _dispatchRequest(arch\IRequest $request) {
+        // Ensure a debug context
+        if($this->isDevelopment()) {
+            core\debug();
+        }
+
         if($this->_responseAugmentor) {
             $this->_responseAugmentor->resetCurrent();
         }
