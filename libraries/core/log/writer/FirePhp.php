@@ -21,7 +21,7 @@ class FirePhp implements core\log\IWriter {
 
     const CHUNK_SIZE = 5000;
 
-    protected $_messageIndex = 0;
+    protected static $_messageIndex = 0;
     protected $_buffer = array();
 
     public static function isAvailable(halo\protocol\http\IRequestHeaderCollection $headers) {
@@ -58,8 +58,7 @@ class FirePhp implements core\log\IWriter {
         $application = df\Launchpad::$application;
 
         if($application instanceof core\application\Http) {
-            $this->_buffer['X-Wf-1-Index'] = $this->_messageIndex;
-
+            $this->_buffer['X-Wf-1-Index'] = self::$_messageIndex;
             $augmentor = $application->getResponseAugmentor();
 
             foreach($this->_buffer as $key => $value) {
@@ -225,7 +224,7 @@ class FirePhp implements core\log\IWriter {
                     $chunkData = strlen($part).'|'.$part.'|';
                 }
                 
-                $this->_buffer['X-Wf-1-1-1-'.++$this->_messageIndex] = $chunkData;
+                $this->_buffer['X-Wf-1-1-1-'.++self::$_messageIndex] = $chunkData;
             }
         }
 

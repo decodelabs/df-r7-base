@@ -54,7 +54,7 @@ trait TEntryPoint {
 
 // Entry point
     public function newGroup($title=null, $file=null, $line=null) {
-        return new self($title, $file, $line);
+        return new core\log\node\Group($title, $file, $line);
     }
     
     
@@ -233,7 +233,7 @@ interface IWriterProvider {
 }
 
 interface IHandler extends IEntryPoint, IWriterProvider {
-
+    public function flush();
 }
 
 trait TWriterProvider {
