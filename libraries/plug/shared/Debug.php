@@ -64,4 +64,8 @@ class Debug implements core\ISharedHelper {
     public function flush() {
         core\debug()->flush();
     }
+
+    public function render() {
+        core\debug()->render();
+    }
 }
