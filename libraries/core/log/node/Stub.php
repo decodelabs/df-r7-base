@@ -12,9 +12,11 @@ class Stub extends Group implements core\log\IStubNode {
     
     protected $_title = 'Stub';
     protected $_message;
+    protected $_isCritical = true;
     
-    public function __construct($message, $file=null, $line=null) {
+    public function __construct($message, $critical=true, $file=null, $line=null) {
         $this->_message = $message;
+        $this->_isCritical = $critical;
         parent::__construct($this->_title, $file, $line);
     }
     
@@ -27,6 +29,6 @@ class Stub extends Group implements core\log\IStubNode {
     }
     
     public function isCritical() {
-        return true;
+        return $this->_isCritical;
     }
 }

@@ -16,12 +16,14 @@ class Dump implements core\log\IDumpNode {
     
     protected $_object;
     protected $_id;
-    protected $_deep = false;
+    protected $_isDeep = false;
+    protected $_isCritical = true;
     
-    public function __construct(&$object, $deep=false, $file=null, $line=null) {
+    public function __construct(&$object, $deep=false, $critical=true, $file=null, $line=null) {
         $this->_object = &$object;
         $this->_id = ++self::$_counter;
-        $this->_deep = (bool)$deep;
+        $this->_isDeep = (bool)$deep;
+        $this->_isCritical = $critical;
         
         $this->_file = $file;
         $this->_line = $line;
@@ -36,7 +38,7 @@ class Dump implements core\log\IDumpNode {
     }
     
     public function isCritical() {
-        return true;
+        return $this->_isCritical;
     }
     
     public function &getObject() {
@@ -44,6 +46,6 @@ class Dump implements core\log\IDumpNode {
     }
     
     public function isDeep() {
-        return $this->_deep;
+        return $this->_isDeep;
     }
 }

@@ -133,6 +133,12 @@ class Launchpad {
 
         // Run
         $payload = self::runApplication($application);
+
+
+        // Write debug loggers
+        if(self::$debug) {
+            self::$debug->execute();
+        }
         
         
         // Launch payload
@@ -158,7 +164,7 @@ class Launchpad {
             array_shift($args);
             $payload = call_user_func_array([$application, 'dispatch'], $args);
         } catch(\Exception $e) {}
-        
+
         if(self::$invokingApplication) {
             self::$application = self::$invokingApplication;
         }
@@ -255,7 +261,7 @@ class Launchpad {
                 try {
                     core\debug()
                         ->exception($e)
-                        ->flush();
+                        ->render();
                         
                     self::shutdown();
                 } catch(\Exception $g) {}
@@ -325,7 +331,12 @@ class Launchpad {
     public static function getDebugContext() {
         if(!self::$debug) {
             self::loadBaseClass('core/debug/Context');
-            self::$debug = new core\debug\Context();
+
+            if(self::$application) {
+                self::$debug = self::$application->createDebugContext();
+            } else {
+                self::$debug = new core\debug\Context();
+            }
         }
         
         return self::$debug;

@@ -18,8 +18,8 @@ use df\core;
         <style type="text/css">
             <?php require __DIR__.'/style.css'; ?>
         </style>
-        <script src="http://code.jquery.com/jquery-2.0.2.min.js"></script>
         <script type="text/javascript">
+            <?php require __DIR__.'/jquery.js'; ?>
             <?php require __DIR__.'/functions.js'; ?>
         </script>
     </head>

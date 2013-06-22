@@ -67,10 +67,6 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
     public function getResponseAugmentor() {
         if(!$this->_responseAugmentor) {
             $this->_responseAugmentor = new halo\protocol\http\response\Augmentor();
-            
-            if($this->_debugTransport) {
-                $this->_debugTransport->setResponseAugmentor($this->_responseAugmentor);
-            }
         }
         
         return $this->_responseAugmentor;
@@ -214,7 +210,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
         } else {
             $this->_httpRequest = new halo\protocol\http\request\Base(null, true);
         }
-        
+
         if(empty($this->_basePort)) {
             $this->_basePort = $this->_httpRequest->getUrl()->getPort();
         }
@@ -398,11 +394,6 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
         */
        
         $response->onDispatchComplete();
-           
-        // Apply globally defined cookies, headers, etc
-        if($this->_responseAugmentor) {
-            $this->_responseAugmentor->apply($response);
-        }
 
         return $response;
     }
@@ -430,12 +421,18 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
             return;
         }
 
-        $isFile = $response instanceof halo\protocol\http\IFileResponse;
+        // Apply globally defined cookies, headers, etc
+        if($this->_responseAugmentor) {
+            $this->_responseAugmentor->apply($response);
+        }
 
+        // Make sure cookies are in headers
         if($response->hasCookies()) {
             $response->getCookies()->applyTo($response->getHeaders());
         }
 
+        // Only send data if needed
+        $isFile = $response instanceof halo\protocol\http\IFileResponse;
         $sendData = true;
         
         if($this->_httpRequest->isCachedByClient()) {
@@ -479,19 +476,55 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
             }
         }
     }
-    
-// Environment
-    public function getDebugTransport() {
-        $output = parent::getDebugTransport();
-        
-        if($this->_responseAugmentor) {
-            $output->setResponseAugmentor($this->_responseAugmentor);
+
+
+// Debug
+    public function createDebugContext() {
+        $output = new core\debug\Context();
+
+        if($this->isDevelopment() || $this->isTesting()) {
+            if(core\log\writer\ChromePhp::isAvailable()) {
+                $output->addWriter(new core\log\writer\ChromePhp());
+            }
+
+            if(core\log\writer\FirePhp::isAvailable()) {
+                $output->addWriter(new core\log\writer\FirePhp());
+            }
         }
-        
+
         return $output;
     }
-    
-    public function createDebugTransport() {
-        return new core\debug\transport\Http();
+
+    public function renderDebugContext(core\debug\IContext $context) {
+        $renderer = new core\debug\renderer\Html($context);
+        
+        if(!headers_sent()) {
+            if(strncasecmp(PHP_SAPI, 'cgi', 3)) {
+                header('HTTP/1.1 501');
+            } else {
+                header('Status: 501');
+            }
+
+            header('Content-Type: text/html; charset=UTF-8');
+            header('Cache-Control: no-cache, no-store, must-revalidate');
+            header('Pragma: no-cache');
+            
+            try {
+                if($this->_responseAugmentor) {
+                    $cookies = $this->_responseAugmentor->getCookieCollectionForCurrentRequest();
+                    
+                    foreach($cookies->toArray() as $cookie) {
+                        header('Set-Cookie: '.$cookie->toString());
+                    }
+                    
+                    foreach($cookies->getRemoved() as $cookie) {
+                        header('Set-Cookie: '.$cookie->toInvalidateString());
+                    }
+                }
+            } catch(\Exception $e) {}
+        }
+        
+        echo $renderer->render();
+        return $this;
     }
 }

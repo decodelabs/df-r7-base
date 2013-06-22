@@ -35,30 +35,14 @@ trait TLocationProvider {
     }
 }
 
-interface IEntryPoint {
-    public function dump($arg1);
-    public function dumpDeep($arg1);
-    public function exception(\Exception $exception);
-    public function info($message);
-    public function todo($message);
-    public function warning($message);
-    public function error($message);
-    public function deprecated();
-    public function stub();
-    public function stackTrace($rewind=0);
-}
-
-interface IContext extends core\log\IGroupNode {
-    public function setTransport(ITransport $transport);
-    public function getTransport();
+interface IContext extends core\log\IGroupNode, core\log\IHandler {
+    public function render();
     public function flush();
+    public function execute();
 }
 
 
-
-interface IStackTrace extends core\log\INode, core\IArrayProvider {
-    
-}
+interface IStackTrace extends core\log\INode, core\IArrayProvider {}
 
 interface IStackCall extends ILocationProvider {
 
@@ -91,11 +75,6 @@ interface IStackCall extends ILocationProvider {
     public function getCallingFile();
     public function getCallingLine();
 }
-
-interface ITransport {
-    public function execute(IContext $context);
-}
-
 
 interface IRenderer {
     public function render();

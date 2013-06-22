@@ -31,6 +31,10 @@ class Reference implements IReferenceNode {
     public function getDumpId() {
         return $this->_dumpId;
     }
+
+    public function getDataValue() {
+        return $this->toString();
+    }
     
     public function toString() {
         return $this->_type.'(&'.$this->_dumpId.')';

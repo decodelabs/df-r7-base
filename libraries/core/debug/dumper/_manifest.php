@@ -23,7 +23,9 @@ interface IInspector {
 }
 
 
-interface INode extends core\IStringProvider {}
+interface INode extends core\IStringProvider {
+    public function getDataValue();
+}
 
 interface IImmutableNode extends INode {
     public function isNull();

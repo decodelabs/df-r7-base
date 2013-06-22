@@ -39,6 +39,10 @@ class Resource implements IResourceNode {
     public function getName() {
         return $this->_name;
     }
+
+    public function getDataValue() {
+        return $this->toString();
+    }
     
     public function toString() {
         return '* '.$this->_type.' '.$this->_name;

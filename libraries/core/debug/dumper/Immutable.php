@@ -37,6 +37,10 @@ class Immutable implements IImmutableNode {
     public function getValue() {
         return $this->_value;
     }
+
+    public function getDataValue() {
+        return $this->_value;
+    }
     
     public function toString() {
         if($this->_value === null) {

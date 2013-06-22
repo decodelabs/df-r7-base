@@ -14,21 +14,21 @@ class Debug implements core\ISharedHelper {
     use core\TSharedHelper;
     
     public function dump($arg1) {
-        core\debug()->addDumpList(func_get_args(), false, core\debug\StackCall::factory(1));
+        core\debug()->addDumpList(func_get_args(), core\debug\StackCall::factory(1), false, false);
         return $this;
     }
     
     public function dumpDeep($arg1) {
-        core\debug()->addDumpList(func_get_args(), true, core\debug\StackCall::factory(1));
+        core\debug()->addDumpList(func_get_args(), core\debug\StackCall::factory(1), true, false);
         return $this;
     }
     
     public function dumpNow($arg1) {
-        core\debug()->addDumpList(func_get_args(), false, core\debug\StackCall::factory(1))->flush();
+        core\debug()->addDumpList(func_get_args(), core\debug\StackCall::factory(1), false, true)->render();
     }
     
     public function dumpDeepNow($arg1) {
-        core\debug()->addDumpList(func_get_args(), true, core\debug\StackCall::factory(1))->flush();
+        core\debug()->addDumpList(func_get_args(), core\debug\StackCall::factory(1), true, true)->render();
     }
     
     public function log($log) {

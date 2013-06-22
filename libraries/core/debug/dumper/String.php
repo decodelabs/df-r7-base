@@ -22,6 +22,10 @@ class String implements IStringNode {
         return $this->_string;
     }
     
+    public function getDataValue() {
+        return $this->_string;
+    }
+
     public function toString() {
         return '"'.$this->_string.'"';
     }

@@ -27,7 +27,7 @@ class Inspector implements IInspector {
     public static function getInstanceCount() {
         return self::$_instanceCount;
     }
-    
+
     public function inspect(&$object, $deep=false) {
         if(is_null($object)) {
             df\Launchpad::loadBaseClass('core/debug/dumper/Immutable');

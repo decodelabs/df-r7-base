@@ -26,6 +26,10 @@ class Number implements INumberNode {
         return is_float($this->_number);
     }
     
+    public function getDataValue() {
+        return $this->_number;
+    }
+
     public function toString() {
         $output = (string)$this->_number;
         
