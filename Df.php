@@ -38,7 +38,12 @@ class Launchpad {
     private static $_isShutdown = false;
     
     public static function loadBaseClass($path) {
-        $path = __DIR__.'/libraries/'.$path.'.php';
+        if(self::IS_COMPILED) {
+            $path = __DIR__.'/core/'.$path.'.php';
+        } else {
+            $path = __DIR__.'/libraries/'.$path.'.php';
+        }
+        
         require_once $path;
     }
     
