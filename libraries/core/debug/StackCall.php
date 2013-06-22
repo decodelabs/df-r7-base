@@ -138,6 +138,16 @@ class StackCall implements IStackCall, core\IDumpable {
         return $this->_type;
     }
     
+    public function getTypeString() {
+        switch($this->_type) {
+            case IStackCall::STATIC_METHOD:
+                return '::';
+                
+            case IStackCall::OBJECT_METHOD:
+                return '->';
+        }
+    }
+
     public function isStatic() {
         return $this->_type === IStackCall::STATIC_METHOD;
     }
@@ -206,14 +216,8 @@ class StackCall implements IStackCall, core\IDumpable {
             $output .= $this->_className;
         }
         
-        switch($this->_type) {
-            case IStackCall::STATIC_METHOD:
-                $output .= '::';
-                break;
-                
-            case IStackCall::OBJECT_METHOD:
-                $output .= '->';
-                break;
+        if($this->_type) {
+            $output .= $this->getTypeString();
         }
         
         $output .= $this->_function;
@@ -233,6 +237,16 @@ class StackCall implements IStackCall, core\IDumpable {
         return $output;
     }
     
+    public function toArray() {
+        return [
+            'file' => $this->getFile(),
+            'line' => $this->getLine(),
+            'function' => $this->_function,
+            'class' => $this->_className,
+            'type' => $this->getTypeString(),
+            'args' => $this->_args
+        ];
+    }
     
 
     

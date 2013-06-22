@@ -42,9 +42,11 @@ interface IContext extends core\log\IGroupNode, core\log\IHandler {
 }
 
 
-interface IStackTrace extends core\log\INode, core\IArrayProvider {}
+interface IStackTrace extends core\log\INode, core\IArrayProvider {
+    public function getCalls();
+}
 
-interface IStackCall extends ILocationProvider {
+interface IStackCall extends ILocationProvider, core\IArrayProvider {
 
     const STATIC_METHOD = 1;
     const OBJECT_METHOD = 2;
@@ -57,6 +59,7 @@ interface IStackCall extends ILocationProvider {
     public function getArgString();
     
     public function getType();
+    public function getTypeString();
     public function isStatic();
     public function isObject();
     public function isNamespaceFunction();

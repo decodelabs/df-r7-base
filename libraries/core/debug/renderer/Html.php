@@ -263,7 +263,7 @@ class Html extends Base {
         $output .= '        <th>Parent call</th>'."\n";
         $output .= '    </tr>'."\n";
         
-        $calls = $stackTrace->toArray();
+        $calls = $stackTrace->getCalls();
         $i = count($calls);
         
         foreach($calls as $i => $call) {

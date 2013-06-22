@@ -489,15 +489,17 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
         $output = new core\debug\Context();
 
         if($this->isDevelopment() || $this->isTesting()) {
-            if(core\log\writer\ChromePhp::isAvailable()) {
-                $output->addWriter(new core\log\writer\ChromePhp());
+            if($this->_httpRequest) {
+                $headers = $this->_httpRequest->getHeaders();
+            } else {
+                $headers = halo\protocol\http\request\HeaderCollection::fromEnvironment();
             }
 
-            /*
-            if(core\log\writer\FirePhp::isAvailable()) {
+            if(core\log\writer\FirePhp::isAvailable($headers)) {
                 $output->addWriter(new core\log\writer\FirePhp());
+            } else if(core\log\writer\ChromePhp::isAvailable($headers)) {
+                $output->addWriter(new core\log\writer\ChromePhp());
             }
-            */
         }
 
         return $output;

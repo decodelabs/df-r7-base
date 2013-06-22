@@ -61,6 +61,10 @@ abstract class Base implements core\debug\IRenderer {
         }
     }
     
+    public function getStats() {
+        return $this->_stats;
+    }
+
     protected function _getNormalizedIncludeList() {
         $output = array();
         
