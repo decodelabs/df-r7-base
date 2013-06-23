@@ -254,7 +254,7 @@ class Html extends iris\Translator {
             }
 
             $output .= "\n".$tag->open();
-            $output .= '    '.$this->element('h4', 'Equation '.$math->getNumber())."\n";
+            $output .= '    '.$this->element('h4', '('.$math->getNumber().')')."\n";
             $output .= '\\[';
 
             if($type = $math->getBlockType()) {
