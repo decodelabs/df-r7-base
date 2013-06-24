@@ -56,7 +56,7 @@ class SessionExtended extends Base implements ISessionExtendedCache {
     }
 
     public function clearSession() {
-        $this->_session->clear();
+        $this->_session->clearForAll();
         return $this;
     }
 }

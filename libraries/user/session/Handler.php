@@ -172,6 +172,14 @@ class Handler implements user\ISessionHandler, core\IDumpable {
         
         return $this;
     }
+
+    public function clearForAll() {
+        $this->_manager->getSessionBackend()->clearNamespaceForAll($this->_namespace);
+        $this->_manager->getSessionCache()->clear();
+        $this->_nodes = array();
+
+        return $this;
+    }
     
     public function prune($age=7200) {
         $age = (int)$age;
