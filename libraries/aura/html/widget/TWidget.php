@@ -1094,8 +1094,18 @@ trait TWidget_OrderedDataDrivenList {
 
 trait TWidget_MappedList {
     
+    protected $_rowProcessor;
     protected $_fields = array();
     
+    public function setRowProcessor(Callable $processor=null) {
+        $this->_rowProcessor = $processor;
+        return $this;
+    }
+
+    public function getRowProcessor() {
+        return $this->_rowProcessor;
+    }
+
     public function setField(IField $field) {
         $this->_fields[$field->getId()] = $field;
         return $this;

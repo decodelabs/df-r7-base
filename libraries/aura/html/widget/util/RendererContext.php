@@ -22,9 +22,14 @@ class RendererContext implements aura\html\widget\IRendererContext {
     protected $_rowTag;
     protected $_store = array();
     protected $_widget;
-    
+    protected $_rowProcessor;
+
     public function __construct(aura\html\widget\IWidget $widget) {
         $this->_widget = $widget;
+
+        if($widget instanceof aura\html\widget\IMappedListWidget) {
+            $this->_rowProcessor = $widget->getRowProcessor();
+        }
     }
     
     public function getWidget() {
@@ -51,6 +56,14 @@ class RendererContext implements aura\html\widget\IRendererContext {
         return $this->_rowTag;
     }
     
+    public function prepareRow($row) {
+        if($this->_rowProcessor) {
+            $c = $this->_rowProcessor;
+            $row = $c($row);
+        }
+
+        return $row;
+    }
     
     
     public function iterate($key, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null) {
