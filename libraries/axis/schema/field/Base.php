@@ -73,6 +73,10 @@ abstract class Base implements axis\schema\IField, core\IDumpable {
         return $value;
     }
     
+    public function normalizeSavedValue($value, opal\record\IRecord $forRecord=null) {
+        return $value;
+    }
+
     public function generateInsertValue(array $row) {
         if($this->_defaultValue !== null) {
             return $this->_defaultValue;

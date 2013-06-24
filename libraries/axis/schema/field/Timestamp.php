@@ -13,20 +13,22 @@ use df\opal;
 class Timestamp extends Base implements opal\schema\IAutoTimestampField {
     
     use opal\schema\TField_AutoTimestamp;
-    
-    /*
-    public function setDefaultValue($value) {
-        if($value !== null) {
-            $this->_shouldTimestampAsDefault = false;
-        }
-        
-        return parent::setDefaultValue($value);
-    }
-    */
 
     public function deflateValue($value) {
         if(empty($value)) {
             $value = null;
+        }
+
+        return $value;
+    }
+
+    public function normalizeSavedValue($value, opal\record\IRecord $forRecord=null) {
+        if($this->_shouldTimestampOnUpdate || $value === null) {
+            return new opal\record\valueContainer\LazyLoad($value, function($value, $record, $fieldName) {
+                return $record->getRecordAdapter()->select($this->_name)
+                    ->where('@primary', '=', $record->getPrimaryManifest())
+                    ->toValue($this->_name);
+            });
         }
 
         return $value;
