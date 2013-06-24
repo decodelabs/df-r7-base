@@ -28,7 +28,10 @@ interface IRendererContext extends core\collection\IMappedCollection, aura\view\
     public function getCounter();
     public function getCellTag();
     public function getRowTag();
+    public function prepareRow($row);
     public function iterate($key, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null);
+    public function iterateField($field, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null);
+    public function renderCell($value, Callable $renderer=null);
 }
 
 interface IField {
@@ -336,6 +339,8 @@ interface ILinearListWidget extends IListWidget {
 }
 
 interface IMappedListWidget extends IListWidget {
+    public function setRowProcessor(Callable $processor=null);
+    public function getRowProcessor();
     public function setField(IField $field);
     public function addField($key, $a=null, $b=null);
     public function addFieldAtIndex($index, $key, $a=null, $b=null);

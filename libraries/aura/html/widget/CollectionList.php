@@ -142,6 +142,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
             
             foreach($this->_data as $j => $row) {
                 $empty = false;
+                $row = $renderContext->prepareRow($row);
                 $rowTag = new aura\html\Element('tr');
                 $renderContext->iterate($j);
                 
