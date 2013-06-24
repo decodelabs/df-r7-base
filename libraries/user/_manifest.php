@@ -154,6 +154,9 @@ trait TAccessLock {
 
 
 interface ISessionHandler extends core\IValueMap, \ArrayAccess {
+    public function setLifeTime($lifeTime);
+    public function getLifeTime();
+
     public function getSessionDescriptor();
     public function getSessionId();
     public function transitionSessionId();
