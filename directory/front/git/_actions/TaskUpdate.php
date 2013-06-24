@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\apex\directory\front\packages\_actions;
+namespace df\apex\directory\front\git\_actions;
 
 use df;
 use df\core;
@@ -17,7 +17,7 @@ class TaskUpdate extends arch\task\Action {
         $name = $this->request->query['package'];
 
         if(empty($name)) {
-            return $this->directory->newRequest('packages/update-all');
+            return $this->directory->newRequest('git/update-all');
         }
 
         $this->response->writeLine('Pulling updates for package "'.$name.'"');
