@@ -20,7 +20,7 @@ abstract class Action extends arch\Action implements IAction {
     const SESSION_PRUNE_THRESHOLD = 5400; // 1.5 hrs
     const SESSION_AUTO_RESUME = true;
     
-    const DEFAULT_EVENT = 'default';
+    const DEFAULT_EVENT = 'save';
     const DEFAULT_REDIRECT = null;
 
     private $_isNew = false;
@@ -223,7 +223,7 @@ abstract class Action extends arch\Action implements IAction {
             $event = static::DEFAULT_EVENT;
             
             if(empty($event)) {
-                $event = 'default';
+                $event = self::DEFAULT_EVENT;
             }
         }
         
