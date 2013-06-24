@@ -3,12 +3,12 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\policy;
+namespace df\core\policy\entity;
 
 use df;
 use df\core;
 
-class EntityLocatorNode implements IEntityLocatorNode, core\IDumpable {
+class LocatorNode implements core\policy\IEntityLocatorNode, core\IDumpable {
     
     protected $_type;
     protected $_id;

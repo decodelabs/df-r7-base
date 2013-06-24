@@ -25,10 +25,6 @@ interface IManager extends core\IManager {
     public function fetchEntity($url);
 }
 
-interface IPolicyModel {
-
-}
-
 
 
 interface IHandler {}

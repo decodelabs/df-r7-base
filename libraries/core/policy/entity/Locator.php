@@ -3,22 +3,22 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\policy;
+namespace df\core\policy\entity;
 
 use df;
 use df\core;
 
-class EntityLocator implements IEntityLocator, core\IDumpable {
+class Locator implements core\policy\IEntityLocator, core\IDumpable {
     
     protected $_scheme;
     protected $_nodes = array();
     
     public static function factory($locator) {
-        if($locator instanceof IEntityLocator) {
+        if($locator instanceof core\policy\IEntityLocator) {
             return $locator;
         }
 
-        if($locator instanceof IEntityLocatorProvider) {
+        if($locator instanceof core\policy\IEntityLocatorProvider) {
             return $locator->getEntityLocator();
         }
         
@@ -57,7 +57,7 @@ class EntityLocator implements IEntityLocator, core\IDumpable {
         $mode = 0;
         $part = '';
         
-        $node = new EntityLocatorNode();
+        $node = new LocatorNode();
         
         for($i = 0; $i < $length; $i++) {
             $char = $path{$i};
@@ -74,7 +74,7 @@ class EntityLocator implements IEntityLocator, core\IDumpable {
                     } else if(ctype_alpha($char)) {
                         $part .= $char;
                     } else {
-                        throw new InvalidArgumentException(
+                        throw new core\policy\InvalidArgumentException(
                             'Unexpected char: '.$char.' in locator: '.$path.' at char: '.$i
                         );
                     }
@@ -93,13 +93,13 @@ class EntityLocator implements IEntityLocator, core\IDumpable {
                         $part = '';
                         
                         $this->_nodes[] = $node;
-                        $node = new EntityLocatorNode();
+                        $node = new LocatorNode();
                         
                         $mode = 0; // Location
                     } else if(preg_match('/[a-zA-Z0-9-_]/', $char)) {
                         $part .= $char;
                     } else {
-                        throw new InvalidArgumentException(
+                        throw new core\policy\InvalidArgumentException(
                             'Unexpected char: '.$char.' in locator: '.$path.' at char: '.$i
                         );
                     }
@@ -116,11 +116,11 @@ class EntityLocator implements IEntityLocator, core\IDumpable {
                         $part = '';
                         
                         $this->_nodes[] = $node;
-                        $node = new EntityLocatorNode();
+                        $node = new LocatorNode();
                     } else if(ctype_alnum($char)) {
                         $part .= $char;
                     } else {
-                        throw new InvalidArgumentException(
+                        throw new core\policy\InvalidArgumentException(
                             'Unexpected char: '.$char.' in locator: '.$path.' at char: '.$i
                         );
                     }
@@ -148,7 +148,7 @@ class EntityLocator implements IEntityLocator, core\IDumpable {
                 // Entity id end quote
                 case 5:
                     if($char != '/') {
-                        throw new InvalidArgumentException(
+                        throw new core\policy\InvalidArgumentException(
                             'Unexpected char: '.$char.' in locator: '.$path.' at char: '.$i
                         );
                     }
@@ -158,7 +158,7 @@ class EntityLocator implements IEntityLocator, core\IDumpable {
                     $part = '';
                     
                     $this->_nodes[] = $node;
-                    $node = new EntityLocatorNode();
+                    $node = new LocatorNode();
                     
                     break;
             }
@@ -166,11 +166,11 @@ class EntityLocator implements IEntityLocator, core\IDumpable {
         }
         
         if(empty($this->_nodes)) {
-            throw new InvalidArgumentException(
+            throw new core\policy\InvalidArgumentException(
                 'No entity type definition detected in: '.$path
             );
         } else if($mode != 0) {
-            throw new InvalidArgumentException(
+            throw new core\policy\InvalidArgumentException(
                 'Unexpected end of locator: '.$path
             );
         }
@@ -197,8 +197,8 @@ class EntityLocator implements IEntityLocator, core\IDumpable {
 
     public function addNodes(array $nodes) {
         foreach($nodes as $node) {
-            if(!$node instanceof IEntityLocatorNode) {
-                throw new InvalidArgumentException(
+            if(!$node instanceof core\policy\IEntityLocatorNode) {
+                throw new core\policy\InvalidArgumentException(
                     'Nodes much implement IEntityLocatorNode'
                 );
             }
@@ -209,7 +209,7 @@ class EntityLocator implements IEntityLocator, core\IDumpable {
         return $this;
     }
 
-    public function addNode(IEntityLocatorNode $node) {
+    public function addNode(core\policy\IEntityLocatorNode $node) {
         $this->_nodes[] = $node;
         return $this;
     }
@@ -371,7 +371,7 @@ class EntityLocator implements IEntityLocator, core\IDumpable {
     }
     
     public function toStringUpTo($type) {
-        if($type instanceof IEntityLocatorNode) {
+        if($type instanceof core\policy\IEntityLocatorNode) {
             $type = $type->getType();
         }
         

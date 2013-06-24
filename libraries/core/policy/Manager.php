@@ -35,7 +35,7 @@ class Manager implements IManager, core\IDumpable {
             $scheme = (string)$scheme;
             
             if(false !== strpos($scheme, ':')) {
-                $scheme = EntityLocator::factory($scheme);
+                $scheme = core\policy\entity\Locator::factory($scheme);
                 $scheme = $scheme->getScheme();
             }
         }
@@ -62,7 +62,7 @@ class Manager implements IManager, core\IDumpable {
     }
     
     public function fetchEntity($locator) {
-        $locator = EntityLocator::factory($locator);
+        $locator = core\policy\entity\Locator::factory($locator);
         
         if((!$handler = $this->getHandler($locator))
         || (!$handler instanceof IEntityHandler)) {
@@ -109,19 +109,6 @@ class Manager implements IManager, core\IDumpable {
         
         
         return $entity;
-    }
-
-
-    protected function _getPolicyModel() {
-        $model = axis\Model::factory('policy', $this->_application);
-        
-        if(!$model instanceof IPolicyModel) {
-            throw new UnexpectedValueException(
-                'Policy model does not implement core\\policy\\IPolicyModel'
-            );
-        }
-        
-        return $model;
     }
 
 
