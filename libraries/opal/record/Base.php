@@ -364,11 +364,28 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     }
     
     public function acceptChanges($insertId=null, array $insertData=null) {
+        $oldValues = $this->_values;
         $this->_values = array_merge($this->_values, $this->_changes);
         $this->clearChanges();
         
+        // Normalize values
+        if($this->_adapter instanceof opal\query\IIntegralAdapter) {
+            $fieldProcessors = $this->_adapter->getQueryResultValueProcessors();
+            
+            if(!empty($fieldProcessors)) {
+                foreach($fieldProcessors as $name => $field) {
+                    $this->_values[$name] = $field->normalizeSavedValue(
+                        $this->_values[$name], 
+                        $this
+                    );
+                }
+            }
+        }
+
+
         $this->_isPopulated = false;
         
+        // Import primary key
         if($insertId !== null && (null !== ($primaryFields = $this->_getPrimaryFields()))) {
             if(!$insertId instanceof IPrimaryManifest) {
                 if(count($primaryFields) > 1) {
@@ -390,6 +407,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         }
 
 
+        // Merge insert data
         foreach($this->_values as $key => $value) {
             if($value === null && isset($insertData[$key])) {
                 $this->_values[$key] = $value = $insertData[$key];

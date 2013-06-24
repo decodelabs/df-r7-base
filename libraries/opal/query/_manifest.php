@@ -693,6 +693,7 @@ interface IFieldValueProcessor {
     public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null);
     public function deflateValue($value);
     public function sanitizeValue($value, opal\record\IRecord $forRecord=null);
+    public function normalizeSavedValue($value, opal\record\IRecord $forRecord=null);
     public function compareValues($value1, $value2);
 }
 
