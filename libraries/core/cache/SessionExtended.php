@@ -11,13 +11,14 @@ use df\user;
     
 class SessionExtended extends Base implements ISessionExtendedCache {
 
+    const SESSION_LIFE_TIME = null;
+
     protected $_session;
-    protected $_sessionLifeTime = null;
 
     protected function __construct(core\IApplication $application) {
         parent::__construct($application);
 
-        $lifeTime = $this->_sessionLifeTime;
+        $lifeTime = static::SESSION_LIFE_TIME;
 
         if(!$lifeTime) {
             $lifeTime = $this->getLifeTime();
