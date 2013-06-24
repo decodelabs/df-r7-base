@@ -12,14 +12,21 @@ use df\user;
 class SessionExtended extends Base implements ISessionExtendedCache {
 
     protected $_session;
+    protected $_sessionLifeTime = null;
 
     protected function __construct(core\IApplication $application) {
         parent::__construct($application);
 
+        $lifeTime = $this->_sessionLifeTime;
+
+        if(!$lifeTime) {
+            $lifeTime = $this->getLifeTime();
+        }
+
         $this->_session = user\Manager::getInstance($application)->getSessionNamespace(
                 'cache://'.$this->getCacheId()
             )
-            ->setLifeTime($this->getLifeTime());
+            ->setLifeTime($lifeTime);
     }
 
     public function clear() {
