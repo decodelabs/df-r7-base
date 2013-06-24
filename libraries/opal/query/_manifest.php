@@ -131,6 +131,8 @@ interface IPrerequisiteClauseFactory extends IClauseFactory {
 interface IWhereClauseFactory extends IClauseFactory {
     public function where($field, $operator, $value);
     public function orWhere($field, $operator, $value);
+    public function whereField($leftField, $operator, $rightField);
+    public function orWhereField($leftField, $operator, $rightField);
     public function whereCorrelation($field, $operator, $keyField);
     public function orWhereCorrelation($field, $operator, $keyField);
     public function beginWhereClause();

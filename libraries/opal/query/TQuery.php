@@ -829,6 +829,38 @@ trait TQuery_WhereClauseFactory {
         return $this;
     }
 
+    public function whereField($leftField, $operator, $rightField) {
+        $source = $this->getSource();
+        $source->testWhereClauseSupport();
+        
+        $this->_getWhereClauseList()->addWhereClause(
+            opal\query\clause\Clause::factory(
+                $this, 
+                $this->getSourceManager()->extrapolateIntrinsicField($source, $leftField), 
+                $operator, 
+                $this->getSourceManager()->extrapolateIntrinsicField($source, $rightField), 
+                false
+            )
+        );
+        
+        return $this;
+    }
+
+    public function orWhereField($leftField, $operator, $rightField) {
+        $source = $this->getSource();
+        $source->testWhereClauseSupport();
+        
+        $this->_getWhereClauseList()->addWhereClause(
+            opal\query\clause\Clause::factory(
+                $this,
+                $this->getSourceManager()->extrapolateIntrinsicField($source, $leftField), 
+                $operator, 
+                $this->getSourceManager()->extrapolateIntrinsicField($source, $rightField), 
+                true
+            )
+        );
+    }
+
     public function whereCorrelation($field, $operator, $keyField) {
         $initiator = $this->_newQuery()->beginCorrelation($this, $keyField);
 
