@@ -130,6 +130,10 @@ class TaskBuild extends arch\task\Action {
 
             $data .= 'df\\Launchpad::runAs(\''.$environmentId.'\', \''.$environmentMode.'\', dirname(__DIR__));';
             file_put_contents($entryPath, $data);
+
+            try {
+                core\io\Util::chmod($entryPath, 0777, true);
+            } catch(\Exception $e) {}
         }
 
         $phpPath = core\Environment::getInstance($this->application)->getPhpBinaryPath();
