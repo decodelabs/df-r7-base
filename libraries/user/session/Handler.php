@@ -16,6 +16,7 @@ class Handler implements user\ISessionHandler, core\IDumpable {
     protected $_namespace;    
     protected $_nodes = array();
     protected $_manager;
+    protected $_lifeTime = null;
     
     public static function createNode($namespace, $key, $res, $locked=false) {
         $output = new \stdClass();
@@ -55,6 +56,21 @@ class Handler implements user\ISessionHandler, core\IDumpable {
         }
     }
     
+
+    public function setLifeTime($lifeTime) {
+        $this->_lifeTime = (int)$lifeTime;
+
+        if($this->_lifeTime <= 0) {
+            $this->_lifeTime = null;
+        }
+
+        return $this;
+    }
+
+    public function getLifeTime() {
+        return $this->_lifeTime;
+    }
+
     
     public function getSessionDescriptor() {
         return $this->_manager->getSessionDescriptor();
@@ -134,17 +150,11 @@ class Handler implements user\ISessionHandler, core\IDumpable {
     }
 
     public function getUpdateTime($key) {
-        if(isset($this->_nodes[$key])) {
-            return $this->_nodes[$key]->updateTime;
-        }
+        return $this->_get($key)->updateTime;
     }
 
     public function getTimeSinceLastUpdate($key) {
-        if(isset($this->_nodes[$key])) {
-            return time() - $this->_nodes[$key]->updateTime;
-        } else {
-            return 0;
-        }
+        return time() - $this->getUpdateTime($key);
     }
     
     
@@ -203,6 +213,11 @@ class Handler implements user\ISessionHandler, core\IDumpable {
             }
             
             $this->_nodes[$key] = $node;
+        }
+
+        if($this->_lifeTime !== null && time() - $this->_nodes[$key]->updateTime > $this->_lifeTime) {
+            $this->remove($key);
+            $this->_nodes[$key] = self::createNode($this->_namespace, $key, null);
         }
         
         return $this->_nodes[$key];

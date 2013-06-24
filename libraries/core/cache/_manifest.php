@@ -34,6 +34,15 @@ interface ICache extends core\IValueMap, \ArrayAccess, core\IApplicationAware, c
 }
 
 
+interface ISessionExtendedCache extends ICache {
+    public function setSession($key, $value);
+    public function getSession($key, $default=null);
+    public function hasSession($key);
+    public function removeSession($key);
+    public function clearSession();
+}
+
+
 
 interface IBackend extends core\IValueMap, \Countable {
     public static function purgeAll(core\collection\ITree $options);
