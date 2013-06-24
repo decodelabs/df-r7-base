@@ -126,7 +126,7 @@ trait TUnit {
 
 // Policy
     public function getEntityLocator() {
-        return new core\policy\EntityLocator('axis://Unit:"'.$this->getUnitId().'"');
+        return new core\policy\entity\Locator('axis://Unit:"'.$this->getUnitId().'"');
     }
 
 

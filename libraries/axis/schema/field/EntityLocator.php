@@ -21,7 +21,7 @@ class EntityLocator extends Base implements
         }
 
         $id = isset($row[$key.'_id']) ? $row[$key.'_id'] : null;
-        return core\policy\EntityLocator::domainFactory($row[$key.'_domain'], $id);
+        return core\policy\entity\Locator::domainFactory($row[$key.'_domain'], $id);
     }
 
     public function deflateValue($value) {
@@ -50,7 +50,7 @@ class EntityLocator extends Base implements
             }
         }
 
-        return core\policy\EntityLocator::factory($value);
+        return core\policy\entity\Locator::factory($value);
     }
 
     public function compareValues($value1, $value2) {

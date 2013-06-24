@@ -308,7 +308,7 @@ class Table implements ITable, core\IDumpable {
 // Policy
     public function getEntityLocator() {
         $output = $this->_adapter->getEntityLocator();
-        $output->addNode(new core\policy\EntityLocatorNode(null, 'Table', $this->getName()));
+        $output->addNode(new core\policy\entity\LocatorNode(null, 'Table', $this->getName()));
         return $output;
     }
     
