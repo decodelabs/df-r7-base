@@ -43,8 +43,6 @@ class Sqlite implements user\ISessionBackend {
     }
     
     public function idExists($id) {
-        //core\debug()->info('idExists');
-        
         $this->_connectManifest();
         
         return (bool)$this->_manifestTable->select('count(*) as count')
@@ -55,8 +53,6 @@ class Sqlite implements user\ISessionBackend {
     }
     
     public function insertDescriptor(user\ISessionDescriptor $descriptor) {
-        //core\debug()->info('insertDescriptor');
-        
         $this->_connectManifest();
         $this->_manifestTable->insert($descriptor)->execute();
         
@@ -64,8 +60,6 @@ class Sqlite implements user\ISessionBackend {
     }
     
     public function fetchDescriptor($id, $transitionTime) {
-        //core\debug()->info('fetchDescriptor');
-        
         $this->_connectManifest();
         
         $output = $this->_manifestTable->select('*')
@@ -84,8 +78,6 @@ class Sqlite implements user\ISessionBackend {
     }
     
     public function touchSession(user\ISessionDescriptor $descriptor) {
-        //core\debug()->info('touchSession');
-        
         $this->_connectManifest();
         $values = $descriptor->touchInfo(user\Manager::SESSION_TRANSITION_LIFETIME);
         
@@ -97,8 +89,6 @@ class Sqlite implements user\ISessionBackend {
     }
     
     public function applyTransition(user\ISessionDescriptor $descriptor) {
-        //core\debug()->info('applyTransition');
-        
         $this->_connectManifest();
         
         $this->_manifestTable->update(array(
@@ -114,8 +104,6 @@ class Sqlite implements user\ISessionBackend {
     }
     
     public function killSession(user\ISessionDescriptor $descriptor) {
-        //core\debug()->info('killSession');
-        
         $this->_connectManifest();
         $id = $descriptor->getInternalId();
         
@@ -137,9 +125,6 @@ class Sqlite implements user\ISessionBackend {
     
     
     public function getNamespaceKeys(user\ISessionDescriptor $descriptor, $namespace) {
-        ////core\dump('oi');
-        //core\debug()->info('getNamespaceKeys');
-        
         return $this->_getDataTable($descriptor)
             ->select('key')
             ->where('namespace', '=', $namespace)
@@ -148,17 +133,25 @@ class Sqlite implements user\ISessionBackend {
     }
     
     public function clearNamespace(user\ISessionDescriptor $descriptor, $namespace) {
-        //core\debug()->info('clearNamespace');
-        
         $this->_getDataTable($descriptor)
             ->delete()
             ->where('namespace', '=', $namespace)
             ->execute();
     }
+
+    public function clearNamespaceForAll($namespace) {
+        $this->_connectManifest();
+        $descriptor = new user\session\Descriptor(null, null);
+        
+        foreach($this->_manifestTable->select('internalId') as $session) {
+            $descriptor->internalId = $session['internalId'];
+            $this->_getDataTable($descriptor)->delete()
+                ->where('namespace', '=', $namespace)
+                ->execute();
+        }
+    }
     
     public function pruneNamespace(user\ISessionDescriptor $descriptor, $namespace, $age) {
-        //core\debug()->info('pruneNamespace');
-        
         $this->_getDataTable($descriptor)
             ->delete()
             ->where('namespace', '=', $namespace)
@@ -170,8 +163,6 @@ class Sqlite implements user\ISessionBackend {
     
     
     public function fetchNode(user\ISessionDescriptor $descriptor, $namespace, $key) {
-        //core\debug()->info('fetchNode: '.$key);
-        
         $res = $this->_getDataTable($descriptor)->select('*')
             ->where('namespace', '=', $namespace)
             ->where('key', '=', $key)
@@ -194,8 +185,6 @@ class Sqlite implements user\ISessionBackend {
     }
     
     public function lockNode(user\ISessionDescriptor $descriptor, \stdClass $node) {
-        //core\debug()->info('lockNode: '.$node->key);
-        
         $this->_beginDataTransaction($descriptor);
         $node->isLocked = true;
         
@@ -203,8 +192,6 @@ class Sqlite implements user\ISessionBackend {
     }
     
     public function unlockNode(user\ISessionDescriptor $descriptor, \stdClass $node) {
-        //core\debug()->info('unlockNode: '.$node->key);
-        
         if($transaction = $this->_getDataTransaction($descriptor)) {
             $transaction->commit();
         }
@@ -213,8 +200,6 @@ class Sqlite implements user\ISessionBackend {
     }
     
     public function updateNode(user\ISessionDescriptor $descriptor, \stdClass $node) {
-        //core\debug()->info('updateNode: '.$node->key);
-        
         if($transaction = $this->_getDataTransaction($descriptor)) {
             if(empty($node->creationTime)) {
                 $node->creationTime = time();
@@ -242,8 +227,6 @@ class Sqlite implements user\ISessionBackend {
     }
     
     public function removeNode(user\ISessionDescriptor $descriptor, $namespace, $key) {
-        //core\debug()->info('removeNode: '.$key);
-        
         $this->_getDataTable($descriptor)
             ->delete()
             ->where('namespace', '=', $namespace)
@@ -254,8 +237,6 @@ class Sqlite implements user\ISessionBackend {
     }
 
     public function hasNode(user\ISessionDescriptor $descriptor, $namespace, $key) {
-        //core\debug()->info('hasNode: '.$key);
-        
         return (bool)$this->_getDataTable($descriptor)
             ->select('count(*) as count')
             ->where('namespace', '=', $namespace)
@@ -266,8 +247,6 @@ class Sqlite implements user\ISessionBackend {
     
     
     public function collectGarbage() {
-        //core\debug()->info('collectGarbage');
-        
         $this->_connectManifest();
         $delete = false;
         

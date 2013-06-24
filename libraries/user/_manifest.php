@@ -172,8 +172,9 @@ interface ISessionHandler extends core\IValueMap, \ArrayAccess {
     
     public function getAllKeys();
     public function clear();
+    public function clearForAll();
     public function prune($age=7200);
-    
+
     public function __set($key, $value);
     public function __get($key);
     public function __isset($key);
@@ -196,6 +197,7 @@ interface ISessionBackend {
     public function getNamespaceKeys(ISessionDescriptor $descriptor, $namespace);
     public function pruneNamespace(ISessionDescriptor $descriptor, $namespace, $age);
     public function clearNamespace(ISessionDescriptor $descriptor, $namespace);
+    public function clearNamespaceForAll($namespace);
     
     public function fetchNode(ISessionDescriptor $descriptor, $namespace, $key);
     public function fetchLastUpdatedNode(ISessionDescriptor $descriptor, $namespace);
