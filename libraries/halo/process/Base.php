@@ -52,11 +52,15 @@ abstract class Base implements IProcess {
         return self::newScriptLauncher($path, $args)->launch();
     }
 
-    public static function launchTask($request) {
+    public static function launchTask($request, $environmentMode=null) {
         $request = arch\Request::factory($request);
 
+        if($environmentMode === null) {
+            $environmentMode = df\Launchpad::$environmentMode;
+        }
+
         $path = df\Launchpad::$applicationPath.'/entry/';
-        $path .= df\Launchpad::$environmentId.'.'.df\Launchpad::$environmentMode.'.php';
+        $path .= df\Launchpad::$environmentId.'.'.$environmentMode.'.php';
 
         return self::launchScript($path, 'task '.$request);
     }
@@ -69,11 +73,15 @@ abstract class Base implements IProcess {
         return self::newScriptLauncher($path, $args)->launchBackground();
     }
     
-    public static function launchBackgroundTask($request) {
+    public static function launchBackgroundTask($request, $environmentMode=null) {
         $request = arch\Request::factory($request);
 
+        if($environmentMode === null) {
+            $environmentMode = df\Launchpad::$environmentMode;
+        }
+
         $path = df\Launchpad::$applicationPath.'/entry/';
-        $path .= df\Launchpad::$environmentId.'.'.df\Launchpad::$environmentMode.'.php';
+        $path .= df\Launchpad::$environmentId.'.'.$environmentMode.'.php';
 
         return self::launchBackgroundScript($path, 'task '.$request);
     }
