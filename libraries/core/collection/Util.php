@@ -49,7 +49,7 @@ class Util implements IUtil {
     }
 
     public static function normalizeEnumValue($value, array $map, $defaultValue=null) {
-        if(in_array($value, $map)) {
+        if(in_array($value, $map, true)) {
             return $value;
         }
 
