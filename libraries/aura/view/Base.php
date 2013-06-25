@@ -47,6 +47,9 @@ class Base implements IView {
     public function getHeaders() {
         if(!$this->_headers) {
             $this->_headers = new halo\protocol\http\response\HeaderCollection();
+            $this->_headers->setCacheAccess('no-cache')
+                ->canStoreCache(false)
+                ->shouldRevalidateCache(true);
         }
         
         return $this->_headers;
