@@ -251,6 +251,10 @@ trait TSanitizingField {
     }
 
     protected function _sanitizeValue($value) {
+        if($value == '') {
+            $value = null;
+        }
+
         if($value === null) {
             $value = $this->_defaultValue;
         }
