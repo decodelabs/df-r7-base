@@ -211,6 +211,16 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
             $this->_httpRequest = new halo\protocol\http\request\Base(null, true);
         }
 
+        if($this->_httpRequest->hasCookie('debug')) {
+            df\Launchpad::$isTesting = true;
+
+            $notify = arch\notify\Manager::getInstance($this);
+            $notify->setInstantMessage(
+                $notify->newMessage('global.debug', 'Currently in enforced debug mode', 'debug')
+                    ->setLink('~devtools/application/debug-mode', 'Change debug settings')
+            );
+        }
+
         if(empty($this->_basePort)) {
             $this->_basePort = $this->_httpRequest->getUrl()->getPort();
         }
