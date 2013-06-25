@@ -48,4 +48,11 @@ class Comms implements core\ISharedHelper {
 
         return $this;
     }
+
+    public function removeQueuedNotification($id) {
+        $manager = $this->getNotificationManager();
+        $manager->removeQueuedMessage($id);
+
+        return $this;
+    }
 }

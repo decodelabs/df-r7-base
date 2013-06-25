@@ -152,6 +152,10 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
         return $output;
     }
 
+    public function stringToBoolean($string) {
+        return core\string\Manipulator::stringToBoolean($string);
+    }
+
 
 
 // Policy
