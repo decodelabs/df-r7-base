@@ -213,6 +213,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
 
         if($this->_httpRequest->hasCookie('debug')) {
             df\Launchpad::$isTesting = true;
+            df\Launchpad::$debug = $this->createDebugContext();
 
             $notify = arch\notify\Manager::getInstance($this);
             $notify->setInstantMessage(
@@ -498,7 +499,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
     public function createDebugContext() {
         $output = new core\debug\Context();
 
-        if($this->isDevelopment() || $this->isTesting()) {
+        if($this->isTesting()) {
             if($this->_httpRequest) {
                 $headers = $this->_httpRequest->getHeaders();
             } else {
