@@ -30,7 +30,7 @@ class Correlation implements ICorrelationQuery, core\IDumpable {
         $this->_fieldAlias = $fieldAlias;
 
         if($this->_fieldAlias === null) {
-            $field = $this->_source->getFirstOutputDataField();
+            $field = $this->_source->getLastOutputDataField();
             $this->_fieldAlias = $field->getAlias();
         }
     }

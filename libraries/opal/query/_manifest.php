@@ -581,6 +581,7 @@ interface ISource extends IAdapterAware {
     public function getFieldByAlias($alias);
     public function getFieldByQualifiedName($qName);
     public function getFirstOutputDataField();
+    public function getLastOutputDataField();
     public function isOutputField(IField $field);
     
     public function getOutputFields();

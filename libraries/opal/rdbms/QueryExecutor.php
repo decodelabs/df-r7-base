@@ -649,11 +649,9 @@ abstract class QueryExecutor implements IQueryExecutor {
         
         
         // Fields
-        foreach($source->getDereferencedOutputFields() as $field) {
-            $fieldAlias = $field->getAlias();
-            $outFields[/*$fieldAlias*/] = $this->defineField($field, $fieldAlias);
-        }
-
+        $fieldAlias = $this->_query->getFieldAlias();
+        $field = $source->getFieldByAlias($fieldAlias);
+        $outFields[/*$fieldAlias*/] = $this->defineField($field, $fieldAlias);
 
 
         // Joins
@@ -799,7 +797,6 @@ abstract class QueryExecutor implements IQueryExecutor {
                       $this->_adapter->quoteIdentifier($field->getName());
             
         } else if($field instanceof opal\query\IVirtualField) {
-            //core\dump($field);
             throw new InvalidArgumentException(
                 'Virtual fields can not be used directly'
             );

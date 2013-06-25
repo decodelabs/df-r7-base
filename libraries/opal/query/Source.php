@@ -188,6 +188,18 @@ class Source implements ISource, core\IDumpable {
             return $field;
         }
     }
+
+    public function getLastOutputDataField() {
+        $t = $this->_outputFields;
+
+        while(!empty($t)) {
+            $output = array_pop($t);
+
+            if(!$output instanceof opal\query\IWildcardField) {
+                return $output;
+            }
+        }
+    }
    
     public function getOutputFields() {
         return $this->_outputFields;
