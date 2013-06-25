@@ -13,6 +13,8 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
     
     use core\collection\TExtractList;
     
+    protected static $_queryCount = 0;
+
     protected $_sql;
     protected $_bindings = array();
     protected $_isExecuted = false;
@@ -23,6 +25,10 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
     protected $_adapter;
     
     private $_keyIndex = 0;
+
+    public static function getQueryCount() {
+        return self::$_queryCount;
+    }
     
     public function __construct(opal\rdbms\IAdapter $adapter, $sql=null) {
         $this->_adapter = $adapter;
@@ -143,6 +149,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
         try {
             //$timer = new core\time\Timer();
             $result = $this->_execute();
+            self::$_queryCount++;
             
             //core\debug()->dump($this->_sql, $timer);//, $this->_bindings);
         } catch(\Exception $e) {
@@ -168,6 +175,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
         try {
             //$timer = new core\time\Timer();
             $this->_execute();
+            self::$_queryCount++;
             
             //core\debug()->dump($this);//, /*$timer);//,*/ $this->_bindings);
         } catch(\Exception $e) {
@@ -202,6 +210,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
         try {
             //$timer = new core\time\Timer();
             $result = $this->_execute(true);
+            self::$_queryCount++;
             
             //core\debug()->dump($this);//, $this->_bindings);
         } catch(\Exception $e) {

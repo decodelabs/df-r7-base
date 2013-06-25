@@ -41,6 +41,10 @@ abstract class Base implements core\debug\IRenderer {
         if(class_exists('df\\core\\Loader', false)) {
             $this->_stats['Includes'] .= ' / '.core\Loader::getTotalIncludeMisses();
         }
+
+        if(class_exists('df\\opal\\rdbms\\adapter\\statement\\Base', false)) {
+            $this->_stats['Queries'] = \df\opal\rdbms\adapter\statement\Base::getQueryCount();
+        }
         
         $caches = array();
         
