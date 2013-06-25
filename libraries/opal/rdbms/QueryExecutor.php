@@ -651,6 +651,11 @@ abstract class QueryExecutor implements IQueryExecutor {
         // Fields
         $fieldAlias = $this->_query->getFieldAlias();
         $field = $source->getFieldByAlias($fieldAlias);
+
+        if(!$field) {
+            core\dump('Correlation field not found.. this shouldn\'t happen!', $fieldAlias, $source);
+        }
+
         $outFields[/*$fieldAlias*/] = $this->defineField($field, $fieldAlias);
 
 

@@ -386,7 +386,14 @@ class Initiator implements IInitiator {
                 
             case IQueryTypes::CORRELATION:
                 $sourceManager = $this->_parentQuery->getSourceManager();
-                $source = $sourceManager->newSource($sourceAdapter, $alias, $this->getFields());
+                foreach($this->_fieldMap as $fieldName => $fieldAlias) { break; }
+
+                if($fieldAlias !== null) {
+                    $fieldName = explode(' as ', $fieldName);
+                    $fieldName = array_shift($fieldName).' as '.$fieldAlias;
+                }
+                
+                $source = $sourceManager->newSource($sourceAdapter, $alias, [$fieldName]);
 
                 if(!$source->getAdapter()->supportsQueryType($this->_mode)) {
                     throw new LogicException(
@@ -394,8 +401,6 @@ class Initiator implements IInitiator {
                         'does not support CORRELATION queries'
                     );
                 }
-
-                foreach($this->_fieldMap as $fieldAlias) { break; }
 
                 $output = new Correlation($this->_parentQuery, $source, $fieldAlias);
 
