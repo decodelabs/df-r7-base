@@ -19,6 +19,7 @@ class Environment extends Config {
     public function getDefaultValues() {
         return [
             'httpBaseUrl' => $this->_generateHttpBaseUrlList(),
+            'sendFileHeader' => 'X-Sendfile',
             'phpBinaryPath' => 'php',
             'distributed' => false,
             'activeLocations' => [],
@@ -111,6 +112,26 @@ class Environment extends Config {
         return $baseUrl;
     }
     
+
+// Send file header
+    public function setSendFileHeader($header) {
+        $this->_values['sendFileHeader'] = $header;
+        return $this;
+    }
+
+    public function getSendFileHeader() {
+        $output = null;
+
+        if(isset($this->_values['sendFileHeader'])) {
+            $output = $this->_values['sendFileHeader'];
+        }
+
+        if(empty($output)) {
+            $output = 'X-Sendfile';
+        }
+
+        return $output;
+    }
 
 // PHP Binary path
     public function setPhpBinaryPath($path) {

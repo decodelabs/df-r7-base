@@ -20,6 +20,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
     
     protected $_httpRequest;
     protected $_responseAugmentor;
+    protected $_sendFileHeader = 'X-Sendfile';
     
     protected $_context;
     
@@ -37,6 +38,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
         $domain = explode(':', array_shift($this->_basePath), 2);
         $this->_baseDomain = array_shift($domain);
         $this->_basePort = array_shift($domain);
+        $this->_sendFileHeader = $envConfig->getSendFileHeader();
     }
     
     
@@ -461,16 +463,18 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
             }
         }
         
+        // Redirect to x-sendfile header
+        if($isFile && $sendData && $response->isStaticFile()) {
+            $response->getHeaders()->set($this->_sendFileHeader, $response->getStaticFilePath());
+            $sendData = false;
+        }
         
-        // TODO: Implement X-Sendfile capabilities
-        //if($isFile && $sendData && $response->isStaticFile()) {
-            
-        //}
-        
+        // Send headers
         if($response->hasHeaders()) {
             $response->getHeaders()->send();
         }
         
+        // Send data
         if($sendData) {
             while(ob_get_level()) {
                 ob_end_clean();
