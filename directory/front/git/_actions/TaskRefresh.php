@@ -14,19 +14,25 @@ use df\arch;
 class TaskRefresh extends arch\task\Action {
 
     protected function _run() {
-        $name = $this->request->query['package'];
+        $names = $this->request->query->packages->toArray();
 
-        if(empty($name)) {
+        if($this->request->query->has('package')) {
+            $names[] = $this->request->query['package'];
+        }
+
+        if(empty($names)) {
             return $this->directory->newRequest('git/refresh-all');
         }
 
-        $this->response->writeLine('Refreshing git package "'.$name.'"');
-        $model = $this->data->getModel('package');
+        foreach($names as $name) {
+            $this->response->writeLine('Pulling updates for package "'.$name.'"');
+            $model = $this->data->getModel('package');
 
-        if(!$result = $model->updateRemote($name)) {
-            $this->response->writeLine('!! Package "'.$name.'" repo could not be found !!');
-        } else {
-            $this->response->write($result."\n");
+            if(!$result = $model->updateRemote($name)) {
+                $this->response->writeLine('!! Package "'.$name.'" repo could not be found !!');
+            } else {
+                $this->response->write($result."\n");
+            }
         }
     }
 }
