@@ -22,7 +22,7 @@ class CookieCollection implements halo\protocol\http\IResponseCookieCollection, 
     public static function fromHeaders(halo\protocol\http\IResponseHeaderCollection $headers) {
         $cookies = $headers->get('Set-Cookie');
 
-        if(!is_array($cookies)) {
+        if($cookies !== null && !is_array($cookies)) {
             $cookies = [$cookies];
         }
 
