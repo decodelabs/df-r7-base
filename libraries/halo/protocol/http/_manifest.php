@@ -71,6 +71,10 @@ interface IRequest extends core\IStringProvider, core\collection\IHeaderMapProvi
     public function setCookieData($cookies);
     public function getCookieData();
     public function hasCookieData();
+    public function setCookie($key, $value);
+    public function getCookie($key, $default=null);
+    public function hasCookie($key);
+    public function removeCookie($key);
     
     // Ip
     public function setIp($ip);

@@ -442,6 +442,24 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
         
         return $this->_cookieData !== null;
     }
+
+    public function setCookie($key, $value) {
+        $this->getCookieData()->set($key, $value);
+        return $this;
+    }
+
+    public function getCookie($key, $default=null) {
+        return $this->getCookieData()->get($key, $default);
+    }
+
+    public function hasCookie($key) {
+        return $this->getCookieData()->has($key);
+    }
+
+    public function removeCookie($key) {
+        $this->getCookieData()->remove($key);
+        return $this;
+    }
     
     
 // Ip
