@@ -39,7 +39,7 @@ class Environment extends Config {
 // Http base url
     public function setHttpBaseUrl($url, $environmentMode=null) {
         if($environmentMode === null) {
-            $environmentMode = df\Launchpad::$environmentMode;
+            $environmentMode = df\Launchpad::getEnvironmentMode();
         }
         
         if($url === null) {
@@ -56,7 +56,7 @@ class Environment extends Config {
     
     public function getHttpBaseUrl($environmentMode=null) {
         if($environmentMode === null) {
-            $environmentMode = df\Launchpad::$environmentMode;
+            $environmentMode = df\Launchpad::getEnvironmentMode();
         }
         
         if(!isset($this->_values['httpBaseUrl'][$environmentMode]) && isset($_SERVER['HTTP_HOST'])) {
@@ -70,7 +70,7 @@ class Environment extends Config {
     
     protected function _generateHttpBaseUrlList() {
         $baseUrl = $this->_generateHttpBaseUrl();
-        $envMode = df\Launchpad::$environmentMode;
+        $envMode = df\Launchpad::getEnvironmentMode();
         
         $output = [
             'development' => null,

@@ -168,7 +168,8 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
 
     public function notificationList() {
         try {
-            $manager = arch\notify\Manager::getInstance($this->_view->getContext()->getApplication());
+            $application = $this->_view->getContext()->getApplication();
+            $manager = arch\notify\Manager::getInstance($application);
             $messageCount = 0;
 
 
@@ -176,7 +177,7 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
                 $manager->flushQueue();
             }
 
-            $isProduction = df\Launchpad::$environmentMode == 'production';
+            $isProduction = $application->isProduction();
 
             $output = '<section class="widget-notificationList">'."\n";
 

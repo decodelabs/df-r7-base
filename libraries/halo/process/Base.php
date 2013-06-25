@@ -56,7 +56,7 @@ abstract class Base implements IProcess {
         $request = arch\Request::factory($request);
 
         if($environmentMode === null) {
-            $environmentMode = df\Launchpad::$environmentMode;
+            $environmentMode = df\Launchpad::getEnvironmentMode();
         }
 
         $path = df\Launchpad::$applicationPath.'/entry/';
@@ -77,7 +77,7 @@ abstract class Base implements IProcess {
         $request = arch\Request::factory($request);
 
         if($environmentMode === null) {
-            $environmentMode = df\Launchpad::$environmentMode;
+            $environmentMode = df\Launchpad::getEnvironmentMode();
         }
 
         $path = df\Launchpad::$applicationPath.'/entry/';

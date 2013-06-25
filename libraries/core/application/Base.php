@@ -99,23 +99,23 @@ abstract class Base implements core\IApplication, core\IDumpable {
     }
     
     public function getEnvironmentMode() {
-        return df\Launchpad::$environmentMode;
+        return df\Launchpad::getEnvironmentMode();
     }
     
     public function isDevelopment() {
-        return df\Launchpad::$environmentMode == 'development';
+        return df\Launchpad::isDevelopment();
     }
     
     public function isTesting() {
-        return df\Launchpad::$environmentMode == 'testing';
+        return df\Launchpad::isTesting();
     }
     
     public function isProduction() {
-        return df\Launchpad::$environmentMode == 'production';
+        return df\Launchpad::isProduction();
     }
 
     public function canDebug() {
-        return $this->isDevelopment() || $this->isTesting();
+        return df\Launchpad::isTesting();
     }
     
     public function getRunMode() {

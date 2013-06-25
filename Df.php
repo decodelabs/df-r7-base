@@ -21,7 +21,7 @@ class Launchpad {
     public static $applicationPath;
     
     public static $environmentId;
-    public static $environmentMode = 'development';
+    public static $isTesting = true;
     
     public static $uniquePrefix;
     public static $passKey;
@@ -58,9 +58,10 @@ class Launchpad {
         
         $envParts = explode('.', $environmentId, 2);
         $environmentId = array_shift($envParts);
+        $isTesting = true;
         
-        if(!$environmentMode = array_shift($envParts)) {
-            $environmentMode = self::$environmentMode;
+        if($environmentMode = array_shift($envParts)) {
+            $isTesting = $environmentMode == 'production';
         }
         
         if(array_pop($parts) != 'entry') {
@@ -69,15 +70,15 @@ class Launchpad {
             );
         }
         
-        return self::runAs($environmentId, $environmentMode, implode('/', $parts), $appType);
+        return self::runAs($environmentId, $isTesting, implode('/', $parts), $appType);
     }
     
-    public static function runAs($environmentId, $environmentMode, $appPath, $appType=null) {
+    public static function runAs($environmentId, $isTesting, $appPath, $appType=null) {
         if(self::$_isRun) {
             return;
         }
         
-        self::init($environmentId, $environmentMode, $appPath);
+        self::init($environmentId, $isTesting, $appPath);
         self::$_isRun = true;
         
         // Set error handlers
@@ -183,7 +184,7 @@ class Launchpad {
         return $payload;
     }
     
-    public static function init($environmentId, $environmentMode, $appPath) {
+    public static function init($environmentId, $isTesting, $appPath) {
         if(self::$_isInit) {
             return;
         }
@@ -192,11 +193,10 @@ class Launchpad {
         self::$_startTime = microtime(true);
         self::$applicationPath = $appPath;
         self::$environmentId = $environmentId;
-        self::$environmentMode = $environmentMode;
+        self::$isTesting = (bool)$isTesting;
 
-        if($environmentMode == 'development') {
-            umask(0);
-        }
+        // This probably needs putting on a leash!
+        umask(0);
         
         // Very strict error reporting, makes sure you write clean code :)
         $errorReporting = E_ALL | E_STRICT;
@@ -226,6 +226,26 @@ class Launchpad {
 
         self::$loader->activate();
         self::$loader->loadBasePackages();
+    }
+
+    public static function getEnvironmentMode() {
+        if(self::IS_COMPILED) {
+            return self::$isTesting ? 'testing' : 'production';
+        } else {
+            return 'development';
+        }
+    }
+
+    public static function isDevelopment() {
+        return !self::IS_COMPILED;
+    }
+    
+    public static function isTesting() {
+        return self::$isTesting || !self::IS_COMPILED;
+    }
+    
+    public static function isProduction() {
+        return !self::$isTesting && self::IS_COMPILED;
     }
     
     
