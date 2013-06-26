@@ -439,7 +439,7 @@ class BridgedManyRelationValueContainer implements
         
         
         // Remove all
-        if($this->_removeAll) {
+        if($this->_removeAll && !$this->_localPrimaryManifest->isNull()) {
             $bridgeData = array();
             
             foreach($this->_localPrimaryManifest->toArray() as $key => $value) {
