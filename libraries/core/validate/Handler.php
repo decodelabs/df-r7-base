@@ -102,16 +102,22 @@ class Handler implements IHandler {
         return $this->data;
     }
     
-    public function applyTo(&$record) {
+    public function applyTo(&$record, array $fields=null) {
         if(!is_array($record) && !$record instanceof \ArrayAccess) {
             throw new RuntimeException(
                 'Target record does not implement ArrayAccess'
             );
         }
 
+        if(empty($fields)) {
+            $fields = array_keys($this->_values);
+        }
+
         if($this->_isValid) {
-            foreach($this->_values as $key => $value) {
-                $this->_fields[$key]->applyValueTo($record, $value);
+            foreach($fields as $key) {
+                if(array_key_exists($key, $this->_values)) {
+                    $this->_fields[$key]->applyValueTo($record, $this->_values[$key]);
+                }
             }
         }
         

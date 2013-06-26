@@ -27,7 +27,7 @@ interface IHandler {
     
     public function isValid();
     public function validate($data);
-    public function applyTo(&$targetRecord);
+    public function applyTo(&$targetRecord, array $fields=null);
 }
 
 
