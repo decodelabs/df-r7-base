@@ -17,8 +17,19 @@ class Timestamp extends Base implements opal\schema\IAutoTimestampField {
     public function deflateValue($value) {
         if(empty($value)) {
             $value = null;
+        } else if($value instanceof core\time\IDate) {
+            $value = $value->format(core\time\Date::DB);
         }
 
+        return $value;
+    }
+
+    public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
+        if(!empty($value)) {
+            $value = core\time\Date::factory($value);
+            $value->toUtc();
+        }
+        
         return $value;
     }
 
