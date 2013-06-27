@@ -10,7 +10,7 @@ use df\core;
 use df\arch;
 use df\aura;
 
-class Confirm extends arch\form\Action {
+abstract class Confirm extends arch\form\Action {
     
     const ITEM_NAME = 'item';
     const DEFAULT_EVENT = 'confirm';
@@ -85,7 +85,7 @@ class Confirm extends arch\form\Action {
     }
     
     protected function _validateItem() {}
-    protected function _apply() {}
+    abstract protected function _apply();
 
     protected function _completeForm() {
         return $this->complete();
