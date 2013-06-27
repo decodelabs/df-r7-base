@@ -8,6 +8,7 @@ namespace df\arch\navigation;
 use df;
 use df\core;
 use df\arch;
+use df\user;
 
 // Exceptions
 interface IException {}
@@ -174,5 +175,205 @@ trait TEntryList {
 
     public function count() {
         return count($this->_entries);
+    }
+}
+
+
+interface ILink extends user\IAccessControlled {
+
+// Uri
+    public function setUri($uri, $setAsMatchRequest=false);
+    public function getUri();
+
+// Body
+    public function setBody($body);
+    public function getBody();
+
+// Match request
+    public function setMatchRequest($request);
+    public function getMatchRequest();
+
+// Icon
+    public function setIcon($icon);
+    public function getIcon();
+
+// Note
+    public function setNote($note);
+    public function getNote();
+
+// Description
+    public function setDescription($description);
+    public function getDescription();
+    public function shouldShowDescription($flag=null);
+
+// Visibility
+    public function shouldHideIfInaccessible($flag=null);
+
+// Disposition
+    public function setDisposition($disposition);
+    public function getDisposition();
+
+// Alt matches
+    public function addAltMatches($matches);
+    public function addAltMatch($match);
+    public function getAltMatches();
+    public function clearAltMatches();
+}
+
+trait TSharedLinkComponents {
+
+    use user\TAccessControlled;
+
+    protected $_uri;
+    protected $_matchRequest;
+    protected $_note;
+    protected $_description;
+    protected $_showDescription = true;
+    protected $_hideIfInaccessible = false;
+    protected $_altMatches = array();
+
+// Uri
+    public function setUri($uri, $setAsMatchRequest=false) {
+        $this->_uri = $uri;
+        
+        if($setAsMatchRequest) {
+            $this->setMatchRequest($uri);
+        }
+        
+        return $this;
+    }
+    
+    public function getUri() {
+        return $this->_uri;
+    }
+    
+    
+// Match request
+    public function setMatchRequest($request) {
+        $this->_matchRequest = $request;
+        return $this;
+    }
+    
+    public function getMatchRequest() {
+        return $this->_matchRequest;
+    }
+
+
+    public function ensureMatchRequest() {
+        if($this->_matchRequest) {
+            return $this;
+        }
+
+        if($this->_uri instanceof arch\IRequest) {
+            $this->_matchRequest = $this->_uri;
+        }
+
+        if(is_string($this->_uri) && substr($this->_uri, 0, 4) != 'http') {
+            $this->_matchRequest = $this->_uri;
+        }
+
+        return $this;
+    }
+
+
+// Note
+    public function setNote($note) {
+        $this->_note = $note;
+        return $this;
+    }
+
+    public function getNote() {
+        return $this->_note;
+    }
+
+// Description
+    public function setDescription($description) {
+        $this->_description = $description;
+        return $this;
+    }
+
+    public function getDescription() {
+        return $this->_description;
+    }
+
+    public function shouldShowDescription($flag=null) {
+        if($flag !== null) {
+            $this->_showDescription = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_showDescription;
+    }
+
+
+// Visibility
+    public function shouldHideIfInaccessible($flag=null) {
+        if($flag !== null) {
+            $this->_hideIfInaccessible = (bool)$flag;
+            return $this;
+        }
+        
+        return $this->_hideIfInaccessible;
+    }
+
+
+// Alt matches
+    public function addAltMatches($matches) {
+        if(!is_array($matches)) {
+            $matches = func_get_args();
+        }
+        
+        foreach($matches as $match) {
+            $this->addAltMatch($match);
+        }
+        
+        return $this;
+    }
+    
+    public function addAltMatch($match) {
+        $match = trim($match);
+        
+        if(strlen($match)) {
+            $this->_altMatches[] = $match;
+        }
+        
+        return $this;
+    }
+    
+    public function getAltMatches() {
+        return $this->_altMatches;
+    }
+
+    public function clearAltMatches() {
+        $this->_altMatches = array();
+        return $this;
+    }
+
+// IO
+    protected function _setSharedLinkComponentData(core\collection\ITree $data) {
+        $this
+            ->setUri($data['uri'])
+            ->setMatchRequest($data['matchRequest'])
+            ->setNote($data['note'])
+            ->setDescription($data['description'])
+            ->shouldShowDescription((bool)$data->get('showDescription', true))
+            ->shouldHideIfInaccessible((bool)$data->get('hideIfInaccessible', false))
+            ->addAltMatches($data->altMatches->toArray())
+            ->addAccessLocks($tree->accessLocks->toArray())
+            ->shouldCheckAccess((bool)$data->get('checkAccess', true));
+    }
+
+    protected function _getSharedLinkComponentData() {
+        return [
+            'uri' => $this->_uri,
+            'matchRequest' => $this->_matchRequest,
+            'note' => $this->_note,
+            'description' => $this->_description,
+            'showDescription' => $this->_showDescription,
+            'hideIfInaccessible' => $this->_hideIfInaccessible,
+            'altMatches' => $this->_altMatches,
+            'accessLocks' => $this->_accessLocks,
+            'checkAccess' => $this->_checkAccess
+        ];
     }
 }

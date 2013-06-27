@@ -97,49 +97,6 @@ trait TWidget_Disableable {
     }
 }
 
-trait TWidget_AccessControlled {
-    
-    protected $_checkAccess = false;
-    protected $_accessLocks = array();
-    
-    public function shouldCheckAccess($flag=null) {
-        if($flag !== null) {
-            $this->_checkAccess = (bool)$flag;
-            return $this;
-        }
-        
-        return $this->_checkAccess;
-    }
-
-    public function setAccessLocks(array $locks) {
-        $this->_accessLocks = array();
-        return $this->addAccessLocks($locks);
-    }
-
-    public function addAccessLocks(array $locks) {
-        foreach($locks as $lock) {
-            $this->addAccessLock($lock);
-        }
-
-        return $this;
-    }
-    
-    public function addAccessLock($lock) {
-        $this->_accessLocks[] = $lock;
-        $this->_checkAccess = true;
-        return $this;
-    }
-    
-    public function getAccessLocks() {
-        return $this->_accessLocks;
-    }
-    
-    public function clearAccessLocks() {
-        $this->_accessLocks = array();
-        return $this;
-    }
-}
-
 
 // Forms
 trait TWidget_FormData {

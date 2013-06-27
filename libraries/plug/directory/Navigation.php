@@ -40,7 +40,7 @@ class Navigation implements arch\IDirectoryHelper {
         $breadcrumbs = $this->getBreadcrumbs();
 
         if($entry = $breadcrumbs->getLastEntry()) {
-            return $entry->getText();
+            return $entry->getBody();
         }
 
         return $this->_context->getApplication()->getName();

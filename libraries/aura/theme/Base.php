@@ -71,7 +71,7 @@ class Base implements ITheme {
             $parts = [];
 
             foreach($breadcrumbs->getEntries() as $entry) {
-                array_unshift($parts, $entry->getText());
+                array_unshift($parts, $entry->getBody());
             }
             
             if(!empty($parts)) {

@@ -9,89 +9,67 @@ use df;
 use df\core;
 use df\arch;
 
-class Link extends Base {
+class Link extends Base implements arch\navigation\ILink {
     
-    protected $_location;
-    protected $_text;
+    use arch\navigation\TSharedLinkComponents;
+
+    protected $_body;
     protected $_icon;
-    protected $_tooltip;
-    protected $_description;
-    protected $_accessLocks = array();
-    protected $_hideIfInaccessible = false;
-    protected $_altMatches = array(); 
     protected $_checkMatch = false;
     protected $_newWindow = false;
+    protected $_disposition;
     protected $_class;
     
     protected static function _fromArray(array $entry) {
         $tree = new core\collection\Tree($entry);
         
         return (new self(
-                $tree['location'],
-                $tree['text'],
+                $tree['uri'],
+                $tree['body'],
                 $tree['icon']
             ))
             ->setId($tree['id'])
-            ->setTooltip($tree['tooltip'])
-            ->setDescription($tree['description'])
-            ->addAccessLocks($tree->accessLocks->toArray())
-            ->shouldHideIfInaccessible((bool)$tree['hideIfInaccessible'])
-            ->shouldCheckMatch((bool)$tree['checkMatch'])
-            ->addAltMatches($tree->altMatches->toArray())
+            ->setDisposition($tree['disposition'])
             ->shouldOpenInNewWindow((bool)$tree['newWindow'])
             ->setWeight($tree['weight'])
-            ->setClass($tree['class']);
+            ->setClass($tree['class'])
+            ->_setSharedLinkComponentData($tree);
     }
     
-    public function __construct($location, $text, $icon=null) {
-        $this->setLocation($location);
-        $this->setText($text);
+    public function __construct($uri, $body, $icon=null) {
+        $this->setUri($uri);
+        $this->setBody($body);
         $this->setIcon($icon);
     }
     
     public function toArray() {
-        return [
+        return array_merge([
             'type' => 'Link',
             'id' => $this->getId(),
             'weight' => $this->getWeight(),
-            'location' => $this->_location,
-            'text' => $this->_text,
+            'body' => $this->_body,
             'icon' => $this->_icon,
-            'tooltip' => $this->_tooltip,
-            'description' => $this->_description,
-            'accessLocks' => $this->_accessLocks,
-            'hideIfInaccessible' => $this->_hideIfInaccessible,
-            'checkMatch' => $this->_checkMatch,
-            'altMatches' => $this->_altMatches,
             'newWindow' => $this->_newWindow,
+            'disposition' => $this->_disposition,
             'class' => $this->_class
-        ];
+        ], $this->_getSharedLinkComponentData());
     }
     
     public function getId() {
         if($this->_id === null) {
-            return $this->_id = 'link-'.md5((string)$this->getLocation());
+            return $this->_id = 'link-'.md5((string)$this->getUri());
         }
         
         return parent::getId();
     }
     
-    public function setLocation($location) {
-        $this->_location = $location;
+    public function setBody($body) {
+        $this->_body = $body;
         return $this;
     }
     
-    public function getLocation() {
-        return $this->_location;
-    }
-    
-    public function setText($text) {
-        $this->_text = $text;
-        return $this;
-    }
-    
-    public function getText() {
-        return $this->_text;
+    public function getBody() {
+        return $this->_body;
     }
     
     public function setIcon($icon) {
@@ -101,54 +79,6 @@ class Link extends Base {
     
     public function getIcon() {
         return $this->_icon;
-    }
-
-    public function setTooltip($tooltip) {
-        $this->_tooltip = $tooltip;
-        return $this;
-    }
-
-    public function getTooltip() {
-        return $this->_tooltip;
-    }
-    
-    public function setDescription($description) {
-        $this->_description = $description;
-        return $this;
-    }
-    
-    public function getDescription() {
-        return $this->_description;
-    }
-    
-    public function addAccessLocks($locks) {
-        if(!is_array($locks)) {
-            $locks = func_get_args();
-        }
-        
-        foreach($locks as $lock) {
-            $this->addAccessLock($lock);
-        }
-        
-        return $this;
-    }
-    
-    public function addAccessLock($lock) {
-        $this->_accessLocks[]  = $lock;
-        return $this;
-    }
-    
-    public function getAccessLocks() {
-        return $this->_accessLocks;
-    }
-    
-    public function shouldHideIfInaccessible($flag=null) {
-        if($flag !== null) {
-            $this->_hideIfInaccessible = (bool)$flag;
-            return $this;
-        }
-        
-        return $this->_hideIfInaccessible;
     }
     
     public function shouldCheckMatch($flag=null) {
@@ -160,37 +90,6 @@ class Link extends Base {
         return $this->_checkMatch;
     }
     
-    public function addAltMatches($matches) {
-        if(!is_array($matches)) {
-            $matches = func_get_args();
-        }
-        
-        foreach($matches as $match) {
-            $this->addAltMatch($match);
-        }
-        
-        return $this;
-    }
-    
-    public function addAltMatch($match) {
-        $match = trim($match);
-        
-        if(strlen($match)) {
-            $this->_altMatches[] = $match;
-        }
-        
-        return $this;
-    }
-    
-    public function getAltMatches() {
-        return $this->_altMatches;
-    }
-
-    public function clearAltMatches() {
-        $this->_altMatches = array();
-        return $this;
-    }
-    
     public function shouldOpenInNewWindow($flag=null) {
         if($flag !== null) {
             $this->_newWindow = (bool)$flag;
@@ -198,6 +97,15 @@ class Link extends Base {
         }
         
         return $this->_newWindow;
+    }
+
+    public function setDisposition($disposition) {
+        $this->_disposition = $disposition;
+        return $this;
+    }
+
+    public function getDisposition() {
+        return $this->_disposition;
     }
 
     public function setClass($class) {

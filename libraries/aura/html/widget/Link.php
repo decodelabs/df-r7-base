@@ -15,28 +15,21 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
     
     use TWidget_BodyContentAware;
     use TWidget_Disableable;
-    use TWidget_AccessControlled;
     use TWidget_TargetAware;
     use TWidget_DispositionAware;
     use TWidget_IconProvider;
+    use arch\navigation\TSharedLinkComponents;
        
     const PRIMARY_TAG = 'a';
     const WRAP_BODY = true;
     const DEFAULT_ACTIVE_CLASS = 'state-active';
     
-    protected $_uri;
-    protected $_matchRequest;
-    protected $_altMatches = array();
     protected $_rel = array();
     protected $_isActive = false;
     protected $_isComputedActive = null;
-    protected $_hideIfInaccessible = false;
     protected $_hrefLang;
     protected $_media;
     protected $_contentType;
-    protected $_description;
-    protected $_note;
-    protected $_showDescription = true;
     protected $_bodyWrapper;
     protected $_activeClass;
     protected $_shouldWrapBody = true;
@@ -52,15 +45,23 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
 
         if($uri instanceof arch\navigation\entry\Link) {
             $link = $uri;
-            $uri = $link->getLocation();
-            $body = $context->_($link->getText());
+            $uri = $link->getUri();
+            $body = $link->getBody();
 
             if($icon = $link->getIcon()) {
                 $this->setIcon($icon);
             }
 
-            if($description = $context->_($link->getDescription())) {
+            if($description = $link->getDescription()) {
                 $this->setDescription($description);
+            }
+
+            if(null !== ($note = $link->getNote())) {
+                $this->setNote($note);
+            }
+
+            if($disposition = $link->getDisposition()) {
+                $this->setDisposition($disposition);
             }
 
             $this->addAccessLocks($link->getAccessLocks());
@@ -212,82 +213,6 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         }
 
         return $tag->renderWith([$icon, $body]);
-    }
-    
-    
-// Uri
-    public function setUri($uri, $setAsMatchRequest=false) {
-        $this->_uri = $uri;
-        
-        if($setAsMatchRequest) {
-            $this->setMatchRequest($uri);
-        }
-        
-        return $this;
-    }
-    
-    public function getUri() {
-        return $this->_uri;
-    }
-    
-    
-// Match request
-    public function setMatchRequest($request) {
-        $this->_matchRequest = $request;
-        return $this;
-    }
-    
-    public function getMatchRequest() {
-        return $this->_matchRequest;
-    }
-
-
-    public function ensureMatchRequest() {
-        if($this->_matchRequest) {
-            return $this;
-        }
-
-        if($this->_uri instanceof arch\IRequest) {
-            $this->_matchRequest = $this->_uri;
-        }
-
-        if(is_string($this->_uri) && substr($this->_uri, 0, 4) != 'http') {
-            $this->_matchRequest = $this->_uri;
-        }
-
-        return $this;
-    }
-
-
-    public function addAltMatches($matches) {
-        if(!is_array($matches)) {
-            $matches = func_get_args();
-        }
-        
-        foreach($matches as $match) {
-            $this->addAltMatch($match);
-        }
-        
-        return $this;
-    }
-    
-    public function addAltMatch($match) {
-        $match = trim($match);
-        
-        if(strlen($match)) {
-            $this->_altMatches[] = $match;
-        }
-        
-        return $this;
-    }
-    
-    public function getAltMatches() {
-        return $this->_altMatches;
-    }
-
-    public function clearAltMatches() {
-        $this->_altMatches = array();
-        return $this;
     }
     
     
@@ -469,36 +394,6 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
     
     public function getContentType() {
         return $this->_contentType;
-    }
-
-// Description
-    public function setDescription($description) {
-        $this->_description = $description;
-        return $this;
-    }
-
-    public function getDescription() {
-        return $this->_description;
-    }
-
-    public function shouldShowDescription($flag=null) {
-        if($flag !== null) {
-            $this->_showDescription = (bool)$flag;
-            return $this;
-        }
-
-        return $this->_showDescription;
-    }
-
-
-// Note
-    public function setNote($note) {
-        $this->_note = $note;
-        return $this;
-    }
-
-    public function getNote() {
-        return $this->_note;
     }
 
 

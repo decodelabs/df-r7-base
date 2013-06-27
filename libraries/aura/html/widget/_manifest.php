@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\aura;
 use df\arch;
+use df\user;
 
 // Exceptions
 interface IException {}
@@ -81,18 +82,6 @@ interface IBodyContentAwareWidget extends IWidget {
 interface IDisableableWidget {
     public function isDisabled($flag=null);
 }
-
-
-interface IAccessControlledWidget {
-    public function shouldCheckAccess($flag=null);
-    public function setAccessLocks(array $locks);
-    public function addAccessLocks(array $locks);
-    public function addAccessLock(/*user\IAccessLock */$lock);
-    public function getAccessLocks();
-    public function clearAccessLocks();
-}
-
-
 
 interface IContainerWidget extends IWidget, core\collection\IIndexedQueue, aura\html\IWidgetFinder {}
 
@@ -363,13 +352,7 @@ interface ITemplateWidget extends IWidget, aura\view\IContentProvider {
 
 
 // Links
-interface ILinkWidget extends IWidget, IBodyContentAwareWidget, IDisableableWidget, IDispositionAwareWidget {
-    public function setUri($uri, $setAsMatchRequest=false);
-    public function getUri();
-    
-    public function setMatchRequest($request);
-    public function getMatchRequest();
-    
+interface ILinkWidget extends IWidget, IBodyContentAwareWidget, IDisableableWidget, IDispositionAwareWidget, arch\navigation\ILink {
     public function setTarget($target);
     public function getTarget();
     

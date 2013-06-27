@@ -14,7 +14,7 @@ use df\opal;
 
 abstract class RecordLink extends arch\component\Base implements aura\html\widget\IWidgetProxy {
 
-    use aura\html\widget\TWidget_AccessControlled;
+    use user\TAccessControlled;
 
     const DEFAULT_MISSING_MESSAGE = 'not found';
 
