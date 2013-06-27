@@ -29,6 +29,11 @@ abstract class Confirm extends arch\form\Action {
         ));
         
         $this->_renderMessages($fs);
+        
+        if(!$this->isValid()) {
+            $fs->push($this->html->fieldError($this->values));   
+        }
+
         $this->_renderItemDetails($fs);
         
         $fs->addButtonArea()->push(
