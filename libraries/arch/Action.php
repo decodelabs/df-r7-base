@@ -27,10 +27,6 @@ class Action implements IAction, core\IDumpable {
             $context->getRunMode()
         );
         
-        if(!class_exists($class)) {
-            $class = __CLASS__;
-        }
-
         return new $class($context, $controller);
     }
 
@@ -46,8 +42,19 @@ class Action implements IAction, core\IDumpable {
         
         $parts[] = '_actions';
         $parts[] = $runMode.ucfirst($request->getAction());
+        $end = implode('\\', $parts);
         
-        return 'df\\apex\\directory\\'.$request->getArea().'\\'.implode('\\', $parts);
+        $class = 'df\\apex\\directory\\'.$request->getArea().'\\'.$end;
+
+        if(!class_exists($class)) {
+            $class = 'df\\apex\\directory\\shared\\'.$end;
+
+            if(!class_exists($class)) {
+                $class = __CLASS__;
+            }
+        }
+
+        return $class;
     }
     
     
