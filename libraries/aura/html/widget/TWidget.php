@@ -972,7 +972,7 @@ trait TWidget_IconProvider {
 
                 // external
                 case 'link':
-                    $this->setDisposition('external');
+                    //$this->setDisposition('external');
                     break;
             }
         }
