@@ -196,6 +196,7 @@ interface IDisposition {
     const INFORMATIVE = 'informative';
     const OPERATIVE = 'operative';
     const TRANSITIVE = 'transitive';
+    const EXTERNAL = 'external';
 }
 
 interface IDispositionAwareWidget {

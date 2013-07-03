@@ -909,6 +909,7 @@ trait TWidget_DispositionAware {
             case 'informative':
             case 'operative':
             case 'transitive':
+            case 'external':
                 break;
 
             case 'neutral':
@@ -967,6 +968,11 @@ trait TWidget_IconProvider {
                 case 'cancel':
                 case 'preview':
                     $this->setDisposition('transitive');
+                    break;
+
+                // external
+                case 'link':
+                    $this->setDisposition('external');
                     break;
             }
         }
