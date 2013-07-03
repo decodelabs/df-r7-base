@@ -379,7 +379,7 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
 
         return $this->_timeTag(
             $date->format(core\time\Date::W3C), 
-            $this->_view->format->timeSince($date, $locale, $maxUnits, $shortUnits, $maxUnit)
+            $this->_view->format->timeSince($date, $maxUnits, $shortUnits, $maxUnit, $locale)
         );
     }
     
@@ -392,7 +392,7 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
 
         return $this->_timeTag(
             $date->format(core\time\Date::W3C), 
-            $this->_view->format->timeUntil($date, $locale, $maxUnits, $shortUnits, $maxUnit)
+            $this->_view->format->timeUntil($date, $maxUnits, $shortUnits, $maxUnit, $locale)
         );
     }
 

@@ -212,7 +212,7 @@ class Format implements core\ISharedHelper {
     }
     
     
-    public function timeSince($date, $locale=null, $maxUnits=2, $shortUnits=false, $maxUnit=core\time\Duration::YEARS) {
+    public function timeSince($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $locale=null) {
         if($locale === null) {
             $locale = $this->_context->getLocale();
         }
@@ -227,7 +227,7 @@ class Format implements core\ISharedHelper {
             ->toString($maxUnits, $shortUnits, $maxUnit);
     }
     
-    public function timeUntil($date, $locale=null, $maxUnits=2, $shortUnits=false, $maxUnit=core\time\Duration::YEARS) {
+    public function timeUntil($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $locale=null) {
         if($locale === null) {
             $locale = $this->_context->getLocale();
         }
