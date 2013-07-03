@@ -604,7 +604,7 @@ class Duration implements IDuration, core\IDumpable {
         }
     }
 
-    public function toString($maxUnits=1, $shortUnits=false, $maxUnit=self::YEARS) {
+    public function toString($maxUnits=1, $shortUnits=false, $maxUnit=self::YEARS, $roundLastUnit=true) {
         $translator = core\i18n\translate\Handler::factory('core/time/Duration', $this->_locale);
         $seconds = $this->_seconds;
         $isNegative = false;
@@ -613,24 +613,24 @@ class Duration implements IDuration, core\IDumpable {
             $seconds *= -1;
             $isNegative = true;
         }
-        
+
         $maxUnit = self::normalizeUnitId($maxUnit);
         $output = $this->_createOutputArray($seconds, $maxUnits, $maxUnit);
-        
+
         foreach($output as $unit => $value) {
             if($isNegative) {
                 $value *= -1;
             }
             
-            $round = 1;
-            
+            $round = (int)!$roundLastUnit;
+
             if($unit == self::SECONDS && $maxUnit == self::SECONDS) {
                 $round = 3;
             }
             
             $output[$unit] = $this->_addUnitString($translator, round($value, $round), $unit, $shortUnits);
         }
-        
+
         return implode(', ', $output);
     }
     
