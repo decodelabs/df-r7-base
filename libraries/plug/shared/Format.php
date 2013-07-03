@@ -241,6 +241,22 @@ class Format implements core\ISharedHelper {
             ->setLocale($locale)
             ->toString($maxUnits, $shortUnits, $maxUnit, $roundLastUnit);
     }
+
+    public function timeFromNow($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null) {
+        $date = core\time\Date::factory($date);
+
+        if($date->isPast()) {
+            return $this->_context->_(
+                '%t% ago',
+                ['%t%' => $this->timeSince($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)]
+            );
+        } else {
+            return $this->_context->_(
+                'in %t%',
+                ['%t%' => $this->timeUntil($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)]
+            );
+        }
+    }
     
     
 // Strings

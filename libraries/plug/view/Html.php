@@ -396,6 +396,27 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
         );
     }
 
+    public function timeFromNow($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null) {
+        $date = core\time\Date::factory($date);
+
+        if($date->isPast()) {
+            $output = $this->_view->getContext()->_(
+                '%t% ago',
+                ['%t%' => $this->_view->format->timeSince($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)]
+            );
+        } else {
+            $output = $this->_view->getContext()->_(
+                'in %t%',
+                ['%t%' => $this->_view->format->timeUntil($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)]
+            );
+        }
+
+        return $this->_timeTag(
+            $date->format(core\time\Date::W3C), 
+            $output
+        );
+    }
+
     protected function _timeTag($w3cString, $formattedString) {
         return $this->element(
             'time', 
