@@ -30,23 +30,26 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
     public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
         $hasKey = array_key_exists($key, $row);
 
-        $value = array();
-        
-        foreach($this->_targetPrimaryFields as $field) {
-            $fieldKey = $key.'_'.$field;
+        if($hasKey) {
+            $value = $row[$key];
+        } else {
+            $value = array();
             
-            if(isset($row[$fieldKey])) {
-                $value[$field] = $row[$fieldKey];
-            } else {
-                $value[$field] = null;
+            foreach($this->_targetPrimaryFields as $field) {
+                $fieldKey = $key.'_'.$field;
+                
+                if(isset($row[$fieldKey])) {
+                    $value[$field] = $row[$fieldKey];
+                } else {
+                    $value[$field] = null;
+                }
             }
         }
-
 
         if(!$forRecord) {
             // Only need a simple value
             if($hasKey) {
-                return $row[$key];
+                return $value;
             } else {
                 return new opal\record\PrimaryManifest($this->_targetPrimaryFields, $value);
             }
