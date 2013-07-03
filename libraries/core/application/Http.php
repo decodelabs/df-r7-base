@@ -512,9 +512,10 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
 
             if(core\log\writer\FirePhp::isAvailable($headers)) {
                 $output->addWriter(new core\log\writer\FirePhp());
-            } else if(core\log\writer\ChromePhp::isAvailable($headers)) {
+            } 
+            /*else if(core\log\writer\ChromePhp::isAvailable($headers)) {
                 $output->addWriter(new core\log\writer\ChromePhp());
-            }
+            }*/
         }
 
         return $output;
