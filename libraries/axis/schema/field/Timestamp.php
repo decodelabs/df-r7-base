@@ -14,6 +14,14 @@ class Timestamp extends Base implements opal\schema\IAutoTimestampField {
     
     use opal\schema\TField_AutoTimestamp;
 
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
+        if(isset($row[$key])) { 
+            return core\time\Date::factory($row[$key]);
+        } else {
+            return null;
+        } 
+    }
+    
     public function deflateValue($value) {
         if(empty($value)) {
             $value = null;
