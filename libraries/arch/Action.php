@@ -26,6 +26,10 @@ class Action implements IAction, core\IDumpable {
             $context->location,
             $context->getRunMode()
         );
+
+        if(!$class) {
+            $class = __CLASS__;
+        }
         
         return new $class($context, $controller);
     }
@@ -50,7 +54,7 @@ class Action implements IAction, core\IDumpable {
             $class = 'df\\apex\\directory\\shared\\'.$end;
 
             if(!class_exists($class)) {
-                $class = __CLASS__;
+                $class = null;
             }
         }
 
