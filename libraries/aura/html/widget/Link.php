@@ -101,6 +101,10 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         
         $active = $this->_isActive || $this->_isComputedActive;
         $disabled = $this->_isDisabled;
+
+        if($this->_uri === null) {
+            $disabled = true;
+        }
         
         if($this->_checkAccess && !$disabled) {
             $userManager = $context->user;
