@@ -212,7 +212,7 @@ class Format implements core\ISharedHelper {
     }
     
     
-    public function timeSince($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $locale=null) {
+    public function timeSince($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null) {
         if($locale === null) {
             $locale = $this->_context->getLocale();
         }
@@ -224,10 +224,10 @@ class Format implements core\ISharedHelper {
         return core\time\Date::factory($date)
             ->timeSince()
             ->setLocale($locale)
-            ->toString($maxUnits, $shortUnits, $maxUnit);
+            ->toString($maxUnits, $shortUnits, $maxUnit, $roundLastUnit);
     }
     
-    public function timeUntil($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $locale=null) {
+    public function timeUntil($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null) {
         if($locale === null) {
             $locale = $this->_context->getLocale();
         }
@@ -239,7 +239,7 @@ class Format implements core\ISharedHelper {
         return core\time\Date::factory($date)
             ->timeUntil()
             ->setLocale($locale)
-            ->toString($maxUnits, $shortUnits, $maxUnit);
+            ->toString($maxUnits, $shortUnits, $maxUnit, $roundLastUnit);
     }
     
     

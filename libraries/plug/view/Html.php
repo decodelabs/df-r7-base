@@ -370,7 +370,7 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
     }
     
     
-    public function timeSince($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $locale=true) {
+    public function timeSince($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=true) {
         if($date === null) {
             return null;
         }
@@ -379,11 +379,11 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
 
         return $this->_timeTag(
             $date->format(core\time\Date::W3C), 
-            $this->_view->format->timeSince($date, $maxUnits, $shortUnits, $maxUnit, $locale)
+            $this->_view->format->timeSince($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)
         );
     }
     
-    public function timeUntil($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $locale=true) {
+    public function timeUntil($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=true) {
         if($date === null) {
             return null;
         }
@@ -392,7 +392,7 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
 
         return $this->_timeTag(
             $date->format(core\time\Date::W3C), 
-            $this->_view->format->timeUntil($date, $maxUnits, $shortUnits, $maxUnit, $locale)
+            $this->_view->format->timeUntil($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)
         );
     }
 
