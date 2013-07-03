@@ -84,7 +84,7 @@ class Format implements core\ISharedHelper {
             ->formatOrdinal($number);
     }
     
-    public function duration($duration, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $locale=null) {
+    public function duration($duration, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null) {
         if($duration === null) {
             return null;
         }
@@ -103,7 +103,7 @@ class Format implements core\ISharedHelper {
             $duration->setLocale($locale);
         }
 
-        return $duration->toString($maxUnits, $shortUnits, $maxUnit);
+        return $duration->toString($maxUnits, $shortUnits, $maxUnit, $roundLastUnit);
     }
 
     public function genericDuration($number, $locale=null) {
