@@ -134,6 +134,9 @@ interface IRelationField extends IField, IQueryClauseRewriterField {
     public function setTargetUnitId($targetUnitId);
     public function getTargetUnitId();
     public function getTargetUnit(core\IApplication $application=null);
+
+    public function shouldCascadeDelete($flag=null);
+
     public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate);
 }
 
@@ -141,6 +144,7 @@ interface IRelationField extends IField, IQueryClauseRewriterField {
 trait TRelationField {
 
     protected $_targetUnitId;
+    protected $_deleteCascade = false;
 
     public function setTargetUnitId($targetUnit) {
         if($targetUnit instanceof axis\IUnit) {
@@ -166,6 +170,22 @@ trait TRelationField {
     }
 
 
+    public function shouldCascadeDelete($flag=null) {
+        if($flag !== null) {
+            $t = $this->_deleteCascade;
+            $this->_deleteCascade = (bool)$flag;
+
+            if($t != $this->_deleteCascade) {
+                $this->_hasChanged = true;
+            }
+            
+            return $this;
+        }
+
+        return $this->_deleteCascade;
+    }
+
+
     public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate) {
         return null;
     }
@@ -187,15 +207,6 @@ trait TRelationField {
                 'Relation target unit '.$targetUnit->getUnitId().' does not match local unit '.$localUnit->getUnitId().' type ('.$localUnit->getUnitType().')'
             );
         }
-
-        /*
-        if($this instanceof IBridgedRelationField
-        && $targetUnit->getUnitId() == $localUnit->getUnitId()) {
-            throw new RuntimeException(
-                'Bridged relation targets cannot currently reference the local unit ('.$localUnit->getUnitId().')'
-            );
-        }
-        */
 
         return $targetUnit;
     }
@@ -299,11 +310,18 @@ trait TRelationField {
 
     protected function _setRelationStorageArray(array $data) {
         $this->_targetUnitId = $data['tui'];
+
+        if(isset($data['odc'])) {
+            $this->_deleteCascade = (bool)$data['odc'];
+        } else {
+            $this->_deleteCascade = false;
+        }
     }
 
     protected function _getRelationStorageArray() {
         return [
-            'tui' => $this->_targetUnitId
+            'tui' => $this->_targetUnitId,
+            'odc' => $this->_deleteCascade
         ];
     }
 }
