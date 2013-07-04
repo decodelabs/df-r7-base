@@ -10,7 +10,7 @@ use df\core;
 use df\axis;
 use df\opal;
 
-abstract class Base implements axis\schema\IField, core\IDumpable {
+abstract class Base implements axis\schema\IField, \Serializable, core\IDumpable {
     
     use opal\schema\TField;
     
@@ -53,6 +53,20 @@ abstract class Base implements axis\schema\IField, core\IDumpable {
         }
         
         return $output;
+    }
+
+
+// Serialize
+    public function serialize() {
+        return json_encode($this->toStorageArray());
+    }
+
+    public function unserialize($data) {
+        $data = json_decode($data, true);
+        $this->_setName($data['nam']);
+        $this->_importStorageArray($data);
+
+        return $this;
     }
     
     
