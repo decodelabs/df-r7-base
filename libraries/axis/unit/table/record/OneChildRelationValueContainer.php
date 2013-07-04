@@ -128,7 +128,7 @@ class OneChildRelationValueContainer implements
     }
     
     public function duplicateForChangeList() {
-        $output = new self($this->_field->getTargetUnitId(), $this->_field->getTargetField());
+        $output = new self($this->_field);
         $output->_insertPrimaryManifest = $this->_insertPrimaryManifest;
         return $output;
     }

@@ -149,7 +149,7 @@ class OneRelationValueContainer implements
     }
     
     public function duplicateForChangeList() {
-        return new self(null, null, $this->_field->getTargetUnitId(), $this->_value->getFieldNames());
+        return new self($this->_field);
     }
     
     public function populateInverse(opal\record\IRecord $record=null) {
