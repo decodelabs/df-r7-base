@@ -135,7 +135,7 @@ interface IRelationField extends IField, IQueryClauseRewriterField {
     public function getTargetUnitId();
     public function getTargetUnit(core\IApplication $application=null);
 
-    public function shouldCascadeDelete($flag=null);
+    //public function shouldCascadeDelete($flag=null);
 
     public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate);
 }
@@ -144,7 +144,7 @@ interface IRelationField extends IField, IQueryClauseRewriterField {
 trait TRelationField {
 
     protected $_targetUnitId;
-    protected $_deleteCascade = false;
+    //protected $_deleteCascade = false;
 
     public function setTargetUnitId($targetUnit) {
         if($targetUnit instanceof axis\IUnit) {
@@ -169,7 +169,7 @@ trait TRelationField {
         return axis\Model::loadUnitFromId($this->_targetUnitId, $application);
     }
 
-
+/*
     public function shouldCascadeDelete($flag=null) {
         if($flag !== null) {
             $t = $this->_deleteCascade;
@@ -184,6 +184,7 @@ trait TRelationField {
 
         return $this->_deleteCascade;
     }
+*/
 
 
     public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate) {
@@ -311,17 +312,19 @@ trait TRelationField {
     protected function _setRelationStorageArray(array $data) {
         $this->_targetUnitId = $data['tui'];
 
+        /*
         if(isset($data['odc'])) {
             $this->_deleteCascade = (bool)$data['odc'];
         } else {
             $this->_deleteCascade = false;
         }
+        */
     }
 
     protected function _getRelationStorageArray() {
         return [
             'tui' => $this->_targetUnitId,
-            'odc' => $this->_deleteCascade
+            //'odc' => $this->_deleteCascade
         ];
     }
 }
