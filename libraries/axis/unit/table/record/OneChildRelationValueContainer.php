@@ -15,14 +15,30 @@ class OneChildRelationValueContainer implements
     opal\record\IPreparedValueContainer,
     opal\record\IIdProviderValueContainer {
     
-    protected $_targetField;
-    protected $_record = false;
     protected $_insertPrimaryManifest;
-    protected $_targetUnitId;
-    
-    public function __construct($targetUnitId, $targetField) {
-        $this->_targetUnitId = $targetUnitId;
-        $this->_targetField = $targetField;
+    protected $_record = false;
+    protected $_field;
+
+    public function __construct(axis\schema\IOneChildField $field) {
+        $this->_field = $field;
+    }
+
+    public function getTargetUnitId() {
+        return $this->_field->getTargetUnitId();
+    }
+
+    public function getTargetUnit() {
+        $application = null;
+
+        if($this->_record) {
+            $application = $this->_record->getRecordAdapter()->getApplication();
+        }
+        
+        return $this->_getTargetUnit($application);
+    }
+
+    protected function _getTargetUnit(core\IApplication $application=null) {
+        return axis\Model::loadUnitFromId($this->_field->getTargetUnitId(), $application);
     }
     
     public function isPrepared() {
@@ -31,7 +47,7 @@ class OneChildRelationValueContainer implements
     
     public function prepareValue(opal\record\IRecord $record, $fieldName) {
         $application = $record->getRecordAdapter()->getApplication();
-        $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId, $application);
+        $targetUnit = $this->_getTargetUnit($application);
         $query = $targetUnit->fetch();
         
         if($this->_insertPrimaryManifest) {
@@ -39,19 +55,13 @@ class OneChildRelationValueContainer implements
                 $query->where($field, '=', $value);
             }
         } else {
-            $query->where($this->_targetField, '=', $record->getPrimaryManifest());
-            
-            /*
-            foreach($record->getPrimaryManifest()->toArray() as $field => $value) {
-                $query->where($this->_targetField.'_'.$field, '=', $value);
-            }
-            */
+            $query->where($this->_field->getTargetField(), '=', $record->getPrimaryManifest());
         }
         
         $this->_record = $query->toRow();
         
         if($this->_record) {
-            $inverseValue = $this->_record->getRaw($this->_targetField);
+            $inverseValue = $this->_record->getRaw($this->_field->getTargetField());
             $inverseValue->populateInverse($record);
         }
         
@@ -118,7 +128,7 @@ class OneChildRelationValueContainer implements
     }
     
     public function duplicateForChangeList() {
-        $output = new self($this->_targetUnitId, $this->_targetField);
+        $output = new self($this->_field->getTargetUnitId(), $this->_field->getTargetField());
         $output->_insertPrimaryManifest = $this->_insertPrimaryManifest;
         return $output;
     }
@@ -140,15 +150,16 @@ class OneChildRelationValueContainer implements
             }
             
             $originalRecord = null;
+            $targetField = $this->_field->getTargetField();
 
             if(!$record->isNew()) {
                 $application = $record->getRecordAdapter()->getApplication();
-                $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId, $application);
+                $targetUnit = axis\Model::loadUnitFromId($this->_field->getTargetUnitId(), $application);
                 
                 $query = $targetUnit->fetch();
                         
                 foreach($record->getPrimaryManifest()->toArray() as $field => $value) {
-                    $query->where($this->_targetField.'_'.$field, '=', $value);
+                    $query->where($targetField.'_'.$field, '=', $value);
                 }
                 
                 $originalRecord = $query->toRow();
@@ -162,16 +173,16 @@ class OneChildRelationValueContainer implements
                 if($recordTask) {
                     $task->addDependency(
                         new opal\record\task\dependency\UpdateManifestField(
-                            $this->_targetField, $recordTask
+                            $targetField, $recordTask
                         )
                     );
                 } else if(!$this->_insertPrimaryManifest->isNull()) {
-                    $this->_record->set($this->_targetField, $this->_insertPrimaryManifest);
+                    $this->_record->set($targetField, $this->_insertPrimaryManifest);
                 }
             }
             
             if($originalRecord) {
-                $originalRecord->set($this->_targetField, null);
+                $originalRecord->set($targetField, null);
                 $taskSet->save($originalRecord);
             }
         }
@@ -206,7 +217,7 @@ class OneChildRelationValueContainer implements
             return $this->_insertPrimaryManifest;
         }
         
-        return '['.$this->_targetUnitId.']';
+        return '['.$this->_field->getTargetUnitId().']';
     }
     
     public function getDumpProperties() {
@@ -214,7 +225,7 @@ class OneChildRelationValueContainer implements
             return $this->_record;
         }
         
-        $output = $this->_targetUnitId;
+        $output = $this->_field->getTargetUnitId();
         
         if($this->_insertPrimaryManifest) {
             $output .= ' : ';

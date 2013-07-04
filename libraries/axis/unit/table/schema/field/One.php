@@ -18,8 +18,8 @@ use df\opal;
 class One extends axis\schema\field\Base implements axis\schema\IOneField {
     
     use axis\schema\TRelationField;
-
-    protected $_targetPrimaryFields = array('id');
+    use axis\schema\TTargetPrimaryFieldAwareRelationField;
+    
     
     protected function _init($targetTableUnit) {
         $this->setTargetUnitId($targetTableUnit);
@@ -57,18 +57,9 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
 
 
         // Need to build a value container
-        $targetField = null;
-
-        if($this instanceof axis\schema\IInverseRelationField) {
-            $targetField = $this->_targetField;
-        }
-
-
-        $output = new axis\unit\table\record\OneRelationValueContainer(
-            $forRecord, $value, $this->_targetUnitId, $this->_targetPrimaryFields, $targetField
+        return new axis\unit\table\record\OneRelationValueContainer(
+            $this, $forRecord, $value
         );
-
-        return $output;
     }
     
     public function deflateValue($value) {
@@ -99,15 +90,9 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
         if(!$forRecord) {
             return $value;
         }
-
-        $targetField = null;
-
-        if($this instanceof axis\schema\IInverseRelationField) {
-            $targetField = $this->_targetField;
-        }
         
         return new axis\unit\table\record\OneRelationValueContainer(
-            $forRecord, $value, $this->_targetUnitId, $this->_targetPrimaryFields, $targetField
+            $this, $forRecord, $value
         );
     }
     

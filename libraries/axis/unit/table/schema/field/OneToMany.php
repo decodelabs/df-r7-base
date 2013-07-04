@@ -19,9 +19,8 @@ class OneToMany extends axis\schema\field\Base implements axis\schema\IOneToMany
     
     use axis\schema\TRelationField;
     use axis\schema\TInverseRelationField;
+    use axis\schema\TTargetPrimaryFieldAwareRelationField;
 
-    protected $_targetPrimaryFields = array('id');
-    
     protected function _init($targetUnit, $targetField=null) {
         $this->setTargetUnitId($targetUnit);
         $this->setTargetField($targetField);
@@ -55,11 +54,7 @@ class OneToMany extends axis\schema\field\Base implements axis\schema\IOneToMany
     
     public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
         if($forRecord) {
-            $output = new axis\unit\table\record\InlineManyRelationValueContainer(
-                $this->_targetUnitId,
-                $this->_targetField,
-                $this->_targetPrimaryFields
-            );
+            $output = new axis\unit\table\record\InlineManyRelationValueContainer($this);
 
             if(is_array($value)) {
                 $output->addList($value);

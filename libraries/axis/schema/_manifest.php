@@ -178,7 +178,7 @@ trait TRelationField {
             if($t != $this->_deleteCascade) {
                 $this->_hasChanged = true;
             }
-            
+
             return $this;
         }
 
@@ -409,28 +409,44 @@ trait TInverseRelationField {
 
 
 
+interface ITargetPrimaryFieldAwareRelationField extends IRelationField {
+    public function getTargetPrimaryFieldNames();
+}
+
+trait TTargetPrimaryFieldAwareRelationField {
+
+    protected $_targetPrimaryFields = ['id'];
+
+    public function getTargetPrimaryFieldNames() {
+        return $this->_targetPrimaryFields;
+    }
+}
+
 
 interface IOneRelationField extends IRelationField {}
 interface IManyRelationField extends IRelationField, INullPrimitiveField {}
 
-interface IBridgedRelationField extends IRelationField {
+interface IBridgedRelationField extends IRelationField, ITargetPrimaryFieldAwareRelationField {
     public function setBridgeUnitId($id);
     public function getBridgeUnitId();
     
     public function getBridgeUnit(core\IApplication $application=null);
     public function getBridgeTargetFieldName();
     public function isSelfReference();
+    public function isDominant($flag=null);
     
     public function getLocalPrimaryFieldNames();
-    public function getTargetPrimaryFieldNames();
 }
 
 
 trait TBridgedRelationField {
 
+    use TTargetPrimaryFieldAwareRelationField;
+
     protected $_bridgeUnitId;
     protected $_bridgeLocalFieldName;
     protected $_bridgeTargetFieldName;
+    protected $_localPrimaryFields = ['id'];
 
     public function setBridgeUnitId($id) {
         if($id instanceof axis\IUnit) {
@@ -521,34 +537,42 @@ trait TBridgedRelationField {
         return 'table.ManyBridge';
     }
 
+// Field names
+    public function getLocalPrimaryFieldNames() {
+        return $this->_localPrimaryFields;
+    }
+    
+
+// Ext. serialize
     protected function _setBridgeRelationStorageArray(array $data) {
         $this->_bridgeUnitId = $data['bui'];
         $this->_bridgeLocalFieldName = $data['blf'];
         $this->_bridgeTargetFieldName = $data['btf'];
+        $this->_localPrimaryFields = (array)$data['lpf'];
+        $this->_targetPrimaryFields = (array)$data['tpf'];
     }
 
     protected function _getBridgeRelationStorageArray() {
         return [
             'bui' => $this->_bridgeUnitId,
             'blf' => $this->_bridgeLocalFieldName,
-            'btf' => $this->_bridgeTargetFieldName
+            'btf' => $this->_bridgeTargetFieldName,
+            'lpf' => $this->_localPrimaryFields,
+            'tpf' => $this->_targetPrimaryFields
         ];
     }
 }
 
 
-interface IOneField extends IOneRelationField, IMultiPrimitiveField {}
+interface IOneField extends IOneRelationField, IMultiPrimitiveField, ITargetPrimaryFieldAwareRelationField {}
 interface IOneParentField extends IOneRelationField, IMultiPrimitiveField {}
 interface IOneChildField extends IOneRelationField, INullPrimitiveField {}
 interface IManyToOneField extends IOneRelationField, IMultiPrimitiveField, IInverseRelationField {}
 
 interface IManyField extends IManyRelationField, IBridgedRelationField {}
+interface IManyToManyField extends IManyRelationField, IBridgedRelationField, IInverseRelationField {}
 
-interface IManyToManyField extends IManyRelationField, IBridgedRelationField, IInverseRelationField {
-    public function isDominant($flag=null);
-}
-
-interface IOneToManyField extends IManyRelationField, IInverseRelationField {}
+interface IOneToManyField extends IManyRelationField, IInverseRelationField, ITargetPrimaryFieldAwareRelationField {}
 
 
 

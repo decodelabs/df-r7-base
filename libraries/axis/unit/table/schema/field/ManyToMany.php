@@ -40,32 +40,6 @@ class ManyToMany extends Many implements axis\schema\IManyToManyField {
     }
     
     
-    
-// Values
-    public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
-        if($forRecord) {
-            $output = new axis\unit\table\record\BridgedManyRelationValueContainer(
-                $this->_bridgeUnitId,
-                $this->_targetUnitId,
-                $this->_bridgeLocalFieldName, 
-                $this->_bridgeTargetFieldName,
-                $this->_localPrimaryFields,
-                $this->_targetPrimaryFields,
-                $this->_isDominant
-            );
-
-            if(is_array($value)) {
-                $output->addList($value);
-            }
-
-            return $output;
-        } else {
-            return $value;
-        }
-    }
-    
-    
-    
 // Validation
     public function sanitize(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $localSchema) {
         $this->_sanitizeTargetUnitId($localUnit);

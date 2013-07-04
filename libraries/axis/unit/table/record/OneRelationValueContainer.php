@@ -17,20 +17,14 @@ class OneRelationValueContainer implements
         
     protected $_value;
     protected $_record = false;
-    protected $_targetUnitId;
-    protected $_populateInverseField = null;
+    protected $_field;
     
-    public function __construct(opal\record\IRecord $parentRecord=null, $value, $targetUnitId, array $primaryFields, $populateInverseField=null) {
-        $this->_value = new opal\record\PrimaryManifest($primaryFields);
-        $this->_targetUnitId = $targetUnitId;
-        $this->_populateInverseField = $populateInverseField;
+    public function __construct(axis\schema\IRelationField $field, opal\record\IRecord $parentRecord=null, $value=null) {
+        $this->_field = $field;
+        $this->_value = new opal\record\PrimaryManifest($field->getTargetPrimaryFieldNames());
 
         $this->setValue($value);
-
-        if($parentRecord && $this->_record && !empty($this->_populateInverseField)) {
-            $inverseValue = $this->_record->getRaw($this->_populateInverseField);
-            $inverseValue->populateInverse($parentRecord);
-        }
+        $this->_applyInversePopulation($parentRecord);
     } 
     
     public function isPrepared() {
@@ -44,7 +38,7 @@ class OneRelationValueContainer implements
         
         
         $application = $record->getRecordAdapter()->getApplication();
-        $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId, $application);
+        $targetUnit = axis\Model::loadUnitFromId($this->_field->getTargetUnitId(), $application);
         $query = $targetUnit->fetch();
         
         foreach($this->_value->toArray() as $field => $value) {
@@ -52,13 +46,17 @@ class OneRelationValueContainer implements
         }
         
         $this->_record = $query->toRow();
-        
-        if($this->_record && !empty($this->_populateInverseField)) {
-            $inverseValue = $this->_record->getRaw($this->_populateInverseField);
-            $inverseValue->populateInverse($record);
-        }
+        $this->_applyInversePopulation($record);
         
         return $this;
+    }
+
+    protected function _applyInversePopulation($parentRecord) {
+        if($parentRecord && $this->_record 
+        && $this->_field instanceof axis\schema\IInverseRelationField) {
+            $inverseValue = $this->_record->getRaw($this->_field->getTargetField());
+            $inverseValue->populateInverse($parentRecord);
+        }
     }
     
     public function prepareToSetValue(opal\record\IRecord $record, $fieldName) {
@@ -133,11 +131,25 @@ class OneRelationValueContainer implements
     }
 
     public function getTargetUnitId() {
-        return $this->_targetUnitId;
+        return $this->_field->getTargetUnitId();
+    }
+
+    public function getTargetUnit() {
+        $application = null;
+
+        if($this->_record) {
+            $application = $this->_record->getRecordAdapter()->getApplication();
+        }
+        
+        return $this->_getTargetUnit($application);
+    }
+
+    protected function _getTargetUnit(core\IApplication $application=null) {
+        return axis\Model::loadUnitFromId($this->_field->getTargetUnitId(), $application);
     }
     
     public function duplicateForChangeList() {
-        return new self(null, null, $this->_targetUnitId, $this->_value->getFieldNames());
+        return new self(null, null, $this->_field->getTargetUnitId(), $this->_value->getFieldNames());
     }
     
     public function populateInverse(opal\record\IRecord $record=null) {
@@ -201,7 +213,7 @@ class OneRelationValueContainer implements
             return $this->_record;
         }
         
-        $output = $this->_targetUnitId.' : ';
+        $output = $this->_field->getTargetUnitId().' : ';
         
         if($this->_value->countFields() == 1) {
             $value = $this->_value->getFirstKeyValue();

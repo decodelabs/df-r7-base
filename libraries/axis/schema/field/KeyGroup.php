@@ -10,11 +10,10 @@ use df\core;
 use df\axis;
 use df\opal;
     
-class KeyGroup extends Base implements axis\schema\IRelationField, axis\schema\IMultiPrimitiveField {
+class KeyGroup extends Base implements axis\schema\IRelationField, axis\schema\IMultiPrimitiveField, axis\schema\ITargetPrimaryFieldAwareRelationField {
 
     use axis\schema\TRelationField;
-
-    protected $_targetPrimaryFields = array('id');
+    use axis\schema\TTargetPrimaryFieldAwareRelationField;
 
     protected function _init($targetTableUnit) {
         $this->setTargetUnitId($targetTableUnit);
@@ -37,7 +36,7 @@ class KeyGroup extends Base implements axis\schema\IRelationField, axis\schema\I
 
         if($forRecord) {
             $output = new axis\unit\table\record\OneRelationValueContainer(
-                $forRecord, $values, $this->_targetUnitId, $this->_targetPrimaryFields
+                $this, $forRecord, $values
             );
 
             if(isset($row[$key])) {
@@ -80,7 +79,7 @@ class KeyGroup extends Base implements axis\schema\IRelationField, axis\schema\I
         }
         
         return new axis\unit\table\record\OneRelationValueContainer(
-            $forRecord, $value, $this->_targetUnitId, $this->_targetPrimaryFields
+            $this, $forRecord, $value
         );
     }
 

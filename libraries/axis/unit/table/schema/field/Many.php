@@ -21,9 +21,6 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
     use axis\schema\TRelationField;
     use axis\schema\TBridgedRelationField;
 
-    protected $_localPrimaryFields = array('id');
-    protected $_targetPrimaryFields = array('id');
-    
     public function __construct(axis\schema\ISchema $schema, $type, $name, array $args=null) {
         parent::__construct($schema, $type, $name, $args);
         $this->_bridgeUnitId = $this->_getBridgeUnitType().'('.$schema->getName().'.'.$this->_name.')';
@@ -34,17 +31,10 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
     }
     
     
-    
-// Field names
-    public function getLocalPrimaryFieldNames() {
-        return $this->_localPrimaryFields;
+    public function isDominant($flag=null) {
+        return true;
     }
-    
-    public function getTargetPrimaryFieldNames() {
-        return $this->_targetPrimaryFields;
-    }
-    
-    
+
 // Values
     public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
         $value = null;
@@ -72,15 +62,7 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
     
     public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
         if($forRecord) {
-            $output = new axis\unit\table\record\BridgedManyRelationValueContainer(
-                $this->_bridgeUnitId, 
-                $this->_targetUnitId,
-                $this->_bridgeLocalFieldName, 
-                $this->_bridgeTargetFieldName,
-                $this->_localPrimaryFields, 
-                $this->_targetPrimaryFields,
-                true
-            );
+            $output = new axis\unit\table\record\BridgedManyRelationValueContainer($this);
 
             if(is_array($value)) {
                 $output->addList($value);
@@ -244,20 +226,13 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
         $this->_setBaseStorageArray($data);
         $this->_setRelationStorageArray($data);
         $this->_setBridgeRelationStorageArray($data);
-
-        $this->_localPrimaryFields = (array)$data['lpf'];
-        $this->_targetPrimaryFields = (array)$data['tpf'];
     }
     
     public function toStorageArray() {
         return array_merge(
             $this->_getBaseStorageArray(),
             $this->_getRelationStorageArray(),
-            $this->_getBridgeRelationStorageArray(),
-            [
-                'lpf' => $this->_localPrimaryFields,
-                'tpf' => $this->_targetPrimaryFields,
-            ]
+            $this->_getBridgeRelationStorageArray()
         );
     }
 }
