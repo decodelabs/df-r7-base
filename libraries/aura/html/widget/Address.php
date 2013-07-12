@@ -45,8 +45,8 @@ class Address extends Base implements core\IDumpable {
         $view = $this->getRenderTarget()->getView();
         
         $poBox = $this->_address->getPostOfficeBox();
-        $streetAddress = $this->_address->getStreetAddress();
-        $extendedAddress = $this->_address->getExtendedAddress();
+        $streetAddress = $this->_address->getMainStreetLine();
+        $extendedAddress = $this->_address->getExtendedStreetLine();
         $locality = $this->_address->getLocality();
         $region = $this->_address->getRegion();
         $postcode = $this->_address->getPostalCode();

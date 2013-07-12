@@ -313,13 +313,98 @@ interface ISessionPerpetuator {
 
 
 
-interface IAddress {
+interface IAddress extends core\IStringProvider {
     public function getPostOfficeBox();
-    public function getStreetAddress();
-    public function getExtendedAddress();
+    public function getStreetLine1();
+    public function getStreetLine2();
+    public function getStreetLine3();
+    public function getMainStreetLine();
+    public function getExtendedStreetLine();
     public function getFullStreetAddress();
     public function getLocality();
     public function getRegion();
     public function getPostalCode();
     public function getCountryCode();
+    public function toOneLineString();
+}
+
+trait TAddress {
+    
+    public function getMainStreetLine() {
+        $output = $this->getStreetLine1();
+
+        if($this->getStreetLine3() && $t = $this->getStreetLine2()) {
+            $output .= ', '.$t;
+        }
+
+        return $output;
+    }
+
+    public function getExtendedStreetLine() {
+        if($output = $this->getStreetLine3()) {
+            return $output;
+        }
+
+        return $this->getStreetLine2();
+    }
+
+    public function getFullStreetAddress() {
+        $output = $this->getStreetLine1();
+        $address2 = $this->getStreetLine2();
+        $address3 = $this->getStreetLine3();
+        
+        if(!empty($address2)) {
+            $output .= ', '.$address2;
+        }
+
+        if(!empty($address3)) {
+            $output .= ', '.$address3;
+        }
+        
+        return $output;
+    }
+
+    public function getPostOfficeBox() {
+        foreach([$this->getStreetLine1(), $this->getStreetLine2(), $this->getStreetLine3()] as $line) {
+            if(substr(str_replace('.', ' ', strtolower($line)), 0, 6) == 'po box') {
+                return $line;
+            }
+        }
+
+        return null;
+    }
+
+    public function toString() {
+        $output = $this->getStreetLine1()."\n";
+        $address2 = $this->getStreetLine2();
+        $address3 = $this->getStreetLine3();
+        $locality = $this->getLocality();
+        $region = $this->getRegion();
+        
+        if(!empty($address2)) {
+            $output .= $address2."\n";
+        }
+
+        if(!empty($address3)) {
+            $output .= $address3."\n";
+        }
+
+        if(!empty($locality)) {
+            $output .= $locality."\n";
+        }
+
+        if(!empty($region)) {
+            $output .= $region."\n";
+        }
+
+        $output .=
+            $this->getPostalCode()."\n".
+            $this->getCountryCode();
+
+        return $output;
+    }
+
+    public function toOneLineString() {
+        return $this->getFullStreetAddress().', '.$this->getLocality().', '.$this->getPostalCode().', '.$this->getCountryCode();
+    }
 }
