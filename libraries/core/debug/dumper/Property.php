@@ -116,6 +116,7 @@ class Property {
     public function canInline() {
         return !$this->_deep 
             && !$this->hasName() 
-            && (is_scalar($this->_value) || is_null($this->_value));
+            && (is_scalar($this->_value) || is_null($this->_value))
+            && false === strpos($this->_value, "\n");
     }
 }
