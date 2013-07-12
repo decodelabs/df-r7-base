@@ -22,11 +22,11 @@ class Address extends Base implements core\IDumpable {
     protected $_address;
     protected $_mode = self::FULL;
     
-    public function __construct(arch\IContext $context, user\IAddress $address=null) {
+    public function __construct(arch\IContext $context, user\IPostalAddress $address=null) {
         $this->setAddress($address);
     }
     
-    public function setAddress(user\IAddress $address=null) {
+    public function setAddress(user\IPostalAddress $address=null) {
         $this->_address = $address;
         return $this;
     }

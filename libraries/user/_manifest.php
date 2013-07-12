@@ -313,7 +313,7 @@ interface ISessionPerpetuator {
 
 
 
-interface IAddress extends core\IStringProvider {
+interface IPostalAddress extends core\IStringProvider, core\IArrayProvider {
     public function getPostOfficeBox();
     public function getStreetLine1();
     public function getStreetLine2();
@@ -328,7 +328,7 @@ interface IAddress extends core\IStringProvider {
     public function toOneLineString();
 }
 
-trait TAddress {
+trait TPostalAddress {
     
     public function getMainStreetLine() {
         $output = $this->getStreetLine1();
@@ -375,36 +375,24 @@ trait TAddress {
     }
 
     public function toString() {
-        $output = $this->getStreetLine1()."\n";
-        $address2 = $this->getStreetLine2();
-        $address3 = $this->getStreetLine3();
-        $locality = $this->getLocality();
-        $region = $this->getRegion();
-        
-        if(!empty($address2)) {
-            $output .= $address2."\n";
-        }
-
-        if(!empty($address3)) {
-            $output .= $address3."\n";
-        }
-
-        if(!empty($locality)) {
-            $output .= $locality."\n";
-        }
-
-        if(!empty($region)) {
-            $output .= $region."\n";
-        }
-
-        $output .=
-            $this->getPostalCode()."\n".
-            $this->getCountryCode();
-
-        return $output;
+        return implode("\n", array_filter($this->toArray(), function($line) {
+            return !empty($line);
+        }));
     }
 
     public function toOneLineString() {
         return $this->getFullStreetAddress().', '.$this->getLocality().', '.$this->getPostalCode().', '.$this->getCountryCode();
+    }
+
+    public function toArray() {
+        return [
+            'street1' => $this->getStreetLine1(),
+            'street2' => $this->getStreetLine2(),
+            'street3' => $this->getStreetLine3(),
+            'locality' => $this->getLocality(),
+            'region' => $this->getRegion(),
+            'postalCode' => $this->getPostalCode(),
+            'countryCode' => $this->getCountryCode()
+        ];
     }
 }
