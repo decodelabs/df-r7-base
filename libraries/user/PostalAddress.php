@@ -9,9 +9,10 @@ use df;
 use df\core;
 use df\user;
   
-class PostalAddress implements IPostalAddress {
+class PostalAddress implements IPostalAddress, core\IDumpable {
 
     use TPostalAddress;
+    use core\TStringProvider;
 
     protected $_street1;
     protected $_street2;
@@ -62,5 +63,11 @@ class PostalAddress implements IPostalAddress {
 
     public function getCountryCode() {
         return $this->_countryCode;
+    }
+
+
+// Dump
+    public function getDumpProperties() {
+        return $this->toString();
     }
 }
