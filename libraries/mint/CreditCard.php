@@ -8,6 +8,7 @@ namespace df\mint;
 use df;
 use df\core;
 use df\mint;
+use df\user;
     
 class CreditCard implements ICreditCard, core\IDumpable {
 
@@ -35,6 +36,7 @@ class CreditCard implements ICreditCard, core\IDumpable {
     protected $_expiryYear;
     protected $_cvv;
     protected $_issueNumber;
+    protected $_billingAddress;
 
     public static function fromArray(array $data) {
         $output = new self();
@@ -79,6 +81,17 @@ class CreditCard implements ICreditCard, core\IDumpable {
 
                 case 'issueNumber':
                     $output->setIssueNumber($value);
+                    break;
+
+                case 'billingAddress':
+                    if(is_array($value)) {
+                        $value = user\PostalAddress::fromArray($value);
+                    }
+
+                    if($value instanceof user\IPostalAddress) {
+                        $output->setBillingAddress($value);
+                    }
+
                     break;
             }
         }
@@ -246,6 +259,17 @@ class CreditCard implements ICreditCard, core\IDumpable {
     }
 
 
+// Billing address
+    public function setBillingAddress(user\IPostalAddress $address=null) {
+        $this->_billingAddress = $address;
+        return $this;
+    }
+
+    public function getBillingAddress() {
+        return $this->_billingAddress;
+    }
+
+
 // Valid
     public function isValid() {
         if(!$this->_number || !$this->_expiryMonth || !$this->_expiryYear) {
@@ -274,7 +298,8 @@ class CreditCard implements ICreditCard, core\IDumpable {
             'expiryMonth' => $this->_expiryMonth,
             'expiryYear' => $this->_expiryYear,
             'cvv' => $this->_cvv,
-            'issueNumber' => $this->_issueNumber
+            'issueNumber' => $this->_issueNumber,
+            'billingAddress' => $this->_billingAddress->toArray()
         ];
     }
 
@@ -307,6 +332,10 @@ class CreditCard implements ICreditCard, core\IDumpable {
 
         if($this->_issueNumber) {
             $output['issueNumber'] = $this->_issueNumber;
+        }
+
+        if($this->_billingAddress) {
+            $output['billingAddress'] = $this->_billingAddress;
         }
 
         $output['valid'] = $this->isValid();

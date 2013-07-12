@@ -25,6 +25,19 @@ interface IGateway {
 
 }
 
+interface IRefundProviderGateway extends IGateway {
+    public function refund();
+}
+
+interface ICardStoreGateway extends IGateway {
+    public function addCard(ICreditCard $card);
+    public function updateCard(ICreditCard $card);
+    public function deleteCard(ICreditCard $card);
+}
+
+
+
+
 interface ICreditCard extends core\IArrayProvider {
     public function setName($name);
     public function getName();
@@ -58,6 +71,9 @@ interface ICreditCard extends core\IArrayProvider {
     public function setIssueNumber($number);
     public function getIssueNumber();
 
+    public function setBillingAddress(user\IPostalAddress $address=null);
+    public function getBillingAddress();
+
     public function isValid();
 }
 
@@ -69,9 +85,6 @@ interface ICustomer {
     public function setEmail($email);
     public function getEmail();
 
-    public function setBillingAddress(user\IAddress $address=null);
-    public function getBillingAddress();
-
-    public function setShippingAddress(user\IAddress $address=null);
+    public function setShippingAddress(user\IPostalAddress $address=null);
     public function getShippingAddress();
 }
