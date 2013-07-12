@@ -325,6 +325,7 @@ interface IPostalAddress extends core\IStringProvider, core\IArrayProvider {
     public function getRegion();
     public function getPostalCode();
     public function getCountryCode();
+    public function getCountryName();
     public function toOneLineString();
 }
 
@@ -374,8 +375,16 @@ trait TPostalAddress {
         return null;
     }
 
+    public function getCountryName() {
+        return core\i18n\Manager::getInstance()->countries->getName($this->getCountryCode());
+    }
+
     public function toString() {
-        return implode("\n", array_filter($this->toArray(), function($line) {
+        $data = $this->toArray();
+        $data['country'] = $this->getCountryName();
+        $data['countryCode'] = null;
+
+        return implode("\n", array_filter($data, function($line) {
             return !empty($line);
         }));
     }
