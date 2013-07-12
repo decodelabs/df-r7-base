@@ -29,16 +29,21 @@ interface IRefundProviderGateway extends IGateway {
     public function refund();
 }
 
+interface ICustomerTrackingGateway extends IGateway {
+
+}
+
 interface ICardStoreGateway extends IGateway {
-    public function addCard(ICreditCard $card);
-    public function updateCard(ICreditCard $card);
-    public function deleteCard(ICreditCard $card);
+    public function addCard($customerId, ICreditCard $card);
+    public function updateCard($customerId, $token, ICreditCard $card);
+    public function deleteCard($customerId, $token, ICreditCard $card);
 }
 
 
 
+interface ICreditCardReference {}
 
-interface ICreditCard extends core\IArrayProvider {
+interface ICreditCard extends ICreditCardReference, core\IArrayProvider {
     public function setName($name);
     public function getName();
 
@@ -77,14 +82,24 @@ interface ICreditCard extends core\IArrayProvider {
     public function isValid();
 }
 
+interface ICreditCardToken extends ICreditCardReference {
+
+}
+
+
+
 
 interface ICustomer {
-    public function setCreditCard(ICreditCard $card=null);
-    public function getCreditCard();
 
-    public function setEmail($email);
-    public function getEmail();
+}
 
-    public function setShippingAddress(user\IPostalAddress $address=null);
-    public function getShippingAddress();
+
+
+interface ICurrency {
+    public function setAmount($amount);
+    public function getAmount();
+    public function setCode($code);
+    public function getCode();
+    public function convert($code, $origRate, $newRate);
+    public function hasRecognisedCode();
 }

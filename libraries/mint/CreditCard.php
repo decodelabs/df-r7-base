@@ -299,7 +299,7 @@ class CreditCard implements ICreditCard, core\IDumpable {
             'expiryYear' => $this->_expiryYear,
             'cvv' => $this->_cvv,
             'issueNumber' => $this->_issueNumber,
-            'billingAddress' => $this->_billingAddress->toArray()
+            'billingAddress' => $this->_billingAddress ? $this->_billingAddress->toArray() : null
         ];
     }
 
