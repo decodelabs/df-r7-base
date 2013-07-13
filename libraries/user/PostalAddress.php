@@ -24,7 +24,7 @@ class PostalAddress implements IPostalAddress, core\IDumpable {
 
     public static function fromArray(array $data) {
         $output = new self();
-        $keys = ['street1', 'street2', 'street3', 'locality', 'region', 'postalCode', 'countryCode'];
+        $keys = ['street1', 'street2', 'street3', 'locality', 'region', 'postalCode', 'countryCode', 'countryName'];
 
         foreach($data as $key => $value) {
             if(in_array($key, $keys)) {

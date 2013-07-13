@@ -331,6 +331,8 @@ interface IPostalAddress extends core\IStringProvider, core\IArrayProvider {
 
 trait TPostalAddress {
     
+    protected $_countryName;
+
     public function getMainStreetLine() {
         $output = $this->getStreetLine1();
 
@@ -376,7 +378,11 @@ trait TPostalAddress {
     }
 
     public function getCountryName() {
-        return core\i18n\Manager::getInstance()->countries->getName($this->getCountryCode());
+        if(!$this->_countryName) {
+            $this->_countryName = core\i18n\Manager::getInstance()->countries->getName($this->getCountryCode());
+        }
+
+        return $this->_countryName;
     }
 
     public function toString() {
