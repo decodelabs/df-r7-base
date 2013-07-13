@@ -64,13 +64,40 @@ trait TPeer {
         call_user_func_array(array($this, $func), $args);
     }
 
+    protected $_reads = 0;
+
     protected function _onSocketDataAvailable($handler, $binding, $session) {
         $socket = $handler->getSocket();
+        $result = null;
+
+        $this->_reads++;
         
         // Read from socket
-        $data = $socket->readChunk($this->_readChunkSize);
+        $data = '';
+        $endRead = false;
 
-        if($data === false) { // Peer has shutdown writing
+        while(true) {
+            $chunk = $socket->readChunk($this->_readChunkSize);
+
+            if($chunk === false) {
+                $endRead = true;
+                break;
+            } else if($chunk === '') {
+                break;
+            }
+
+            $data .= $chunk;
+        }
+
+        if(strlen($data)) {
+            // Add data to session
+            $session->readBuffer .= $data;
+            
+            // Allow implementation to do something with it
+            $result = $this->_handleReadBuffer($session, $data);
+        }
+
+        if($endRead) { // Peer has shutdown writing
             // Remove binding
             $handler->unbind($binding);
             $this->_onPeerShutdownWriting($session);
@@ -80,13 +107,9 @@ trait TPeer {
                 return;
             }
             
-            $result = IIoState::WRITE;
-        } else {
-            // Add data to session
-            $session->readBuffer .= $data;
-            
-            // Allow implementation to do something with it
-            $result = $this->_handleReadBuffer($session, $data);
+            if(!$result) {
+                $result = IIoState::WRITE;
+            }
         }
         
         

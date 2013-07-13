@@ -100,8 +100,7 @@ trait TStreams_IoSocket {
             return false;
         }
         
-        if($output === ''
-        || $output === null
+        if($output === null
         || $output === false) {
             return false;
         }
@@ -117,8 +116,7 @@ trait TStreams_IoSocket {
             return false;
         }
         
-        if($output === ''
-        || $output === null
+        if($output === null
         || $output === false) {
             return false;
         }
@@ -134,8 +132,7 @@ trait TStreams_IoSocket {
             return false;
         }
 
-        if($output === ''
-        || $output === null
+        if($output === null
         || $output === false) {
             return false;
         }

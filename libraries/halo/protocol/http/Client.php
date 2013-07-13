@@ -128,8 +128,6 @@ class Client implements IClient, core\IDumpable {
             
             if(1/*!$request->hasFileStream()*/) {
                 $session->writeBuffer .= $request->getBodyData();
-
-                //core\dump(str_replace(array("\r", "\n"), array('\r', '\n'."\n"), $session->writeBuffer), $request);
                 return halo\peer\IIoState::OPEN_READ;
             }
             
@@ -201,8 +199,7 @@ class Client implements IClient, core\IDumpable {
     
     protected function _onSessionEnd(halo\peer\ISession $session) {
         if(!$response = $session->getResponse()) {
-            core\dump($this->_test);
-            core\stub('Generate a default connection error response');
+            core\stub('Generate a default connection error response', $session);
         }
         
         if($callback = $session->getCallback()) {
