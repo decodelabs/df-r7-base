@@ -86,7 +86,7 @@ trait TUrl_PasswordContainer {
     protected $_password;
     
     public function setPassword($password) {
-        if(strlen($password)) {
+        if($password !== null) {
             $this->_password = (string)$password;
         } else {
             $this->_password = null;
