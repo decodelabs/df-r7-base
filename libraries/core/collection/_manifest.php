@@ -129,6 +129,36 @@ interface IPaginator {
     public function getKeyMap();
 }
 
+trait TPaginator {
+
+    protected $_limit = 30;
+    protected $_offset = 0;
+    protected $_total = null;
+
+    protected $_keyMap = [
+        'limit' => 'lm',
+        'page' => 'pg',
+        'offset' => 'of',
+        'order' => 'od'
+    ];
+
+    public function getLimit() {
+        return $this->_limit;
+    }
+
+    public function getOffset() {
+        return $this->_offset;
+    }
+
+    public function getKeyMap() {
+        return $this->_keyMap;
+    }
+
+    public function countTotal() {
+        return (int)$this->_total;
+    }
+}
+
 interface IOrderablePaginator extends IPaginator {
     public function getOrderDirectives();
     public function getOrderableFieldNames();

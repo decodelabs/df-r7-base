@@ -11,19 +11,11 @@ use df\opal;
 
 class Paginator implements IPaginator {
     
+    use core\collection\TPaginator;
+
     protected $_orderableFields = array();
     protected $_order = array();
-    protected $_limit = 30;
-    protected $_offset = 0;
-    protected $_total = null;
     protected $_query;
-    
-    protected $_keyMap = array(
-        'limit' => 'lm',
-        'page' => 'pg',
-        'offset' => 'of',
-        'order' => 'od'
-    );
     
     public function __construct(IReadQuery $query) {
         $this->_query = $query;
@@ -126,19 +118,11 @@ class Paginator implements IPaginator {
         return $this;
     }
     
-    public function getLimit() {
-        return $this->_limit;
-    }
-    
 
 // Offset
     public function setDefaultOffset($offset) {
         $this->_offset = (int)$offset;
         return $this;
-    }
-    
-    public function getOffset() {
-        return $this->_offset;
     }
     
     
@@ -151,10 +135,6 @@ class Paginator implements IPaginator {
         }
         
         return $this;
-    }
-    
-    public function getKeyMap() {
-        return $this->_keyMap;
     }
     
 
