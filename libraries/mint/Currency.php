@@ -51,6 +51,15 @@ class Currency implements ICurrency, core\IDumpable {
         '710' => 'ZAR'
     ];
 
+    protected static $_decimals = [
+        'CLP' => 0,
+        'JPY' => 0,
+        'KRW' => 0,
+        'LAK' => 0,
+        'VND' => 0,
+        'VUV' => 0
+    ];
+
     protected $_amount;
     protected $_code;
 
@@ -95,6 +104,10 @@ class Currency implements ICurrency, core\IDumpable {
         return $this->_amount;
     }
 
+    public function getIntegerAmount() {
+        return (int)round($this->_amount * $this->getDecimalFactor());
+    }
+
     public function setCode($code) {
         if(isset(self::$_currencies[$code])) {
             $code = self::$_currencies[$code];
@@ -115,6 +128,18 @@ class Currency implements ICurrency, core\IDumpable {
 
     public function hasRecognisedCode() {
         return $this->isRecognisedCode($this->_code);
+    }
+
+    public function getDecimalPlaces() {
+        if(isset(self::$_decimals[$this->_code])) {
+            return self::$_decimals[$this->_code];
+        }
+
+        return 2;
+    }
+
+    public function getDecimalFactor() {
+        return pow(10, $this->getDecimalPlaces());
     }
 
 

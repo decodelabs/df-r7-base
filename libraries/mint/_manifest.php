@@ -70,8 +70,8 @@ interface ICreditCard extends ICreditCardReference, core\IArrayProvider {
     public function getExpiryString();
     public function getExpiryDate();
 
-    public function setCvv($cvv);
-    public function getCvv();
+    public function setVerificationCode($code);
+    public function getVerificationCode();
 
     public function setIssueNumber($number);
     public function getIssueNumber();
@@ -98,8 +98,11 @@ interface ICustomer {
 interface ICurrency {
     public function setAmount($amount);
     public function getAmount();
+    public function getIntegerAmount();
     public function setCode($code);
     public function getCode();
     public function convert($code, $origRate, $newRate);
     public function hasRecognisedCode();
+    public function getDecimalPlaces();
+    public function getDecimalFactor();
 }
