@@ -389,7 +389,7 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
         $output = array();
         
         foreach($this->_toUrlEncodedArrayDelimitedSet() as $key => $value) {
-            if(!empty($value)) {
+            if(!empty($value) || $value === '0' || $value === 0) {
                 $output[] = $key.$valueDelimiter.rawurlencode($value);
             } else {
                 $output[] = $key;
