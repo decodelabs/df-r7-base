@@ -50,6 +50,8 @@ interface ICreditCard extends ICreditCardReference, core\IArrayProvider {
     public static function isValidNumber($number);
     public function setNumber($number);
     public function getNumber();
+    public function setLast4Digits($digits);
+    public function getLast4Digits();
 
     public static function getSupportedBrands();
     public function getBrand();

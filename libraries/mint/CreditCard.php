@@ -29,6 +29,7 @@ class CreditCard implements ICreditCard, core\IDumpable {
 
     protected $_name;
     protected $_number;
+    protected $_last4;
     protected $_brand;
     protected $_startMonth;
     protected $_startYear;
@@ -49,6 +50,10 @@ class CreditCard implements ICreditCard, core\IDumpable {
 
                 case 'number':
                     $output->setNumber($value);
+                    break;
+
+                case 'last4':
+                    $output->setLast4Digits($value);
                     break;
 
                 case 'start':
@@ -124,6 +129,11 @@ class CreditCard implements ICreditCard, core\IDumpable {
 
     public function setNumber($number) {
         $this->_number = $number;
+
+        if($number !== null) {
+            $this->_last4 = null;
+        }
+
         $this->_brand = null;
 
         return $this;
@@ -131,6 +141,24 @@ class CreditCard implements ICreditCard, core\IDumpable {
 
     public function getNumber() {
         return $this->_number;
+    }
+
+    public function setLast4Digits($digits) {
+        $this->_last4 = $digits;
+
+        if($digits !== null) {
+            $this->_number = null;
+        }
+
+        return $this;
+    }
+
+    public function getLast4Digits() {
+        if($this->_last4) {
+            return $this->_last4;
+        }
+
+        return substr($this->_number, -4);
     }
 
 
@@ -293,6 +321,7 @@ class CreditCard implements ICreditCard, core\IDumpable {
         return [
             'name' => $this->_name,
             'number' => $this->_number,
+            'last4' => $this->_last4,
             'startMonth' => $this->_startMonth,
             'startYear' => $this->_startYear,
             'expiryMonth' => $this->_expiryMonth,
@@ -307,10 +336,13 @@ class CreditCard implements ICreditCard, core\IDumpable {
 
 // Dump
     public function getDumpProperties() {
-        $output = [
-            'name' => $this->_name,
-            'number' => $this->_number
-        ];
+        $output = ['name' => $this->_name];
+
+        if($this->_last4) {
+            $output['number'] = str_pad($this->_last4, 16, 'x', STR_PAD_LEFT);
+        } else {
+            $output['number'] = $this->_number;
+        }
 
         if($this->_number) {
             $output['brand'] = $this->getBrand();
