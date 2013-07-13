@@ -86,6 +86,12 @@ class Currency implements ICurrency, core\IDumpable {
         return new self($amount, $code);
     }
 
+    public static function fromIntegerAmount($amount, $code) {
+        $output = new self(0, $code);
+        $output->setAmount($amount / $output->getDecimalFactor());
+        return $output;
+    }
+
     public static function isRecognisedCode($code) {
         return in_array($code, self::$_currencies);
     }
@@ -145,6 +151,6 @@ class Currency implements ICurrency, core\IDumpable {
 
 // Dump
     public function getDumpProperties() {
-        return $this->_amount.' '.$this->_code;
+        return number_format($this->_amount, $this->getDecimalPlaces()).' '.$this->_code;
     }
 }
