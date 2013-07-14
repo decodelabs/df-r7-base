@@ -79,7 +79,7 @@ class Mediator implements IMediator, core\IDumpable {
 
 // Charges
     public function newChargeRequest($amount, mint\ICreditCardReference $card, $description=null) {
-        return new ChargeRequest($amount, $card, $description);
+        return new ChargeRequest($this, $amount, $card, $description);
     }
 
     public function submitCharge(IChargeRequest $request, $returnRaw=false) {
@@ -196,6 +196,19 @@ class Mediator implements IMediator, core\IDumpable {
 
         return new core\collection\PageableQueue($rows, $limit, $offset, $data['count']);
     }
+
+
+
+// Customers
+    public function newCustomerRequest($emailAddress=null, mint\ICreditCardReference $card=null, $description=null, $balance=null) {
+        return new CustomerRequest($this, $emailAddress, $card, $description, $balance);
+    }
+
+    public function submitCustomer(ICustomerRequest $request, $returnRaw=false) {
+        core\stub($request);
+    }
+
+
 
 
 // IO

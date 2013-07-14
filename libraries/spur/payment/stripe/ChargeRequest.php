@@ -19,7 +19,10 @@ class ChargeRequest implements IChargeRequest {
     protected $_shouldCapture = true;
     protected $_applicationFee;
 
-    public function __construct($amount, mint\ICreditCardReference $card, $description=null) {
+    protected $_mediator;
+
+    public function __construct(IMediator $mediator, $amount, mint\ICreditCardReference $card, $description=null) {
+        $this->_mediator = $mediator;
         $this->setAmount($amount);
         $this->setCard($card);
         $this->setDescription($description);
@@ -105,5 +108,9 @@ class ChargeRequest implements IChargeRequest {
         }
 
         return $output;
+    }
+
+    public function submit() {
+        return $this->_mediator->submitCharge($this);
     }
 }

@@ -65,6 +65,11 @@ interface IMediator {
     public function captureCharge($id, $amount=null, $applicationFee=null, $returnRaw=false);
     public function fetchChargeList($limit=10, $offset=0, $filter=null, $customerId=null, $returnRaw=false);
 
+
+// Customers
+    public function newCustomerRequest($emailAddress=null, mint\ICreditCardReference $card=null, $description=null, $balance=null);
+    public function submitCustomer(ICustomerRequest $request, $returnRaw=false);
+
 // IO
     public function callServer($method, $path, array $data=array());
 }
@@ -74,7 +79,13 @@ interface IMediatorProvider {
 }
 
 
-interface IChargeRequest {
+interface IApiObjectRequest extends IMediatorProvider {
+    public function getSubmitArray();
+    public function submit();
+}
+
+
+interface IChargeRequest extends IApiObjectRequest {
     public function setAmount($amount);
     public function getAmount();
     public function setCustomerId($id);
@@ -86,8 +97,6 @@ interface IChargeRequest {
     public function shouldCapture($flag=null);
     public function setApplicationFee($amount);
     public function getApplicationFee();
-
-    public function getSubmitArray();
 }
 
 
@@ -130,6 +139,51 @@ interface ICharge extends IMediatorProvider {
 
     public function hasDispute();
     public function getDispute();
+}
+
+
+
+interface ICustomerRequest extends IApiObjectRequest {
+    public function setId($id);
+    public function getId();
+    public function setEmailAddress($email);
+    public function getEmailAddress();
+    public function setDescription($description);
+    public function getDescription();
+    public function setBalance($amount);
+    public function getBalance();
+    public function setCard(mint\ICreditCardReference $card=null);
+    public function getCard();
+    public function setCouponCode($code);
+    public function getCouponCode();
+    public function setPlanId($id);
+    public function getPlanId();
+    public function setQuantity($quantity);
+    public function getQuantity();
+}
+
+
+interface ICustomer extends IMediatorProvider {
+    public function getId();
+    public function isLive();
+    public function isDelinquent();
+    public function getCreationDate();
+    public function getEmailAddress();
+    public function getDescription();
+
+    public function getBalance();
+    public function isInCredit();
+    public function owesPayment();
+
+    public function hasDiscount();
+    public function getDiscount();
+
+    public function hasSubscription();
+    public function getSubscription();
+
+    public function getCards();
+    public function countCards();
+    public function getDefaultCard();
 }
 
 
