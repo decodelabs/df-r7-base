@@ -50,4 +50,16 @@ class PageableQueue implements IIndexedQueue, IAggregateIteratorCollection, IPag
         $this->_keyMap = $keyMap;
         return $this;
     }
+
+
+// Dump
+    public function getDumpProperties() {
+        $output = [
+            'limit' => new core\debug\dumper\Property('limit', $this->_limit, 'protected'),
+            'offset' => new core\debug\dumper\Property('offset', $this->_offset, 'protected'),
+            'total' => new core\debug\dumper\Property('total', $this->_total, 'protected')
+        ];
+
+        return array_merge($output, $this->_collection);
+    }
 }
