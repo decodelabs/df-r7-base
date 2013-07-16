@@ -62,8 +62,8 @@ interface IMediator {
 
 
 // Charges
-    public function newChargeRequest($amount, mint\ICreditCardReference $card, $description=null);
-    public function submitCharge(IChargeRequest $request, $returnRaw=false);
+    public function newChargeRequest($amount, mint\ICreditCardReference $card=null, $description=null);
+    public function createCharge(IChargeRequest $request, $returnRaw=false);
     public function fetchCharge($id, $returnRaw=false);
     public function refundCharge($id, $amount=null, $refundApplicationFee=null, $returnRaw=false);
     public function captureCharge($id, $amount=null, $applicationFee=null, $returnRaw=false);
@@ -72,12 +72,18 @@ interface IMediator {
 
 // Customers
     public function newCustomerRequest($emailAddress=null, mint\ICreditCardReference $card=null, $description=null, $balance=null);
-    public function submitCustomer(ICustomerRequest $request, $returnRaw=false);
+    public function createCustomer(ICustomerRequest $request, $returnRaw=false);
     public function fetchCustomer($id, $returnRaw=null);
     public function updateCustomer(ICustomerRequest $request, $returnRaw=false);
     public function deleteCustomer($id);
     public function fetchCustomerList($limit=10, $offset=0, $filter=null, $returnRaw=false);
-    
+
+// Cards
+    public function createCard($customer, mint\ICreditCard $card, $returnRaw=false);
+    public function fetchCard($customer, $id, $returnRaw=false);
+    public function updateCard($customer, $id, mint\ICreditCard $card, $returnRaw=false);
+    public function deleteCard($customer, $id);
+    public function fetchCardList($customer, $limit=10, $offset=0, $returnRaw=false);
 
 // IO
     public function callServer($method, $path, array $data=array());
@@ -87,6 +93,14 @@ interface IMediatorProvider {
     public function getMediator();
 }
 
+trait TMediatorProvider {
+
+    protected $_mediator;
+
+    public function getMediator() {
+        return $this->_mediator;
+    }
+}
 
 interface IApiObjectRequest extends IMediatorProvider {
     public function setSubmitAction($action);
@@ -96,13 +110,37 @@ interface IApiObjectRequest extends IMediatorProvider {
     public function submit();
 }
 
+trait TApiObjectRequest {
+
+    use TMediatorProvider;
+
+    protected $_submitAction = 'create';
+
+    public function setSubmitAction($action) {
+        $this->_submitAction = $action;
+        return $this;
+    }
+
+    public function getSubmitAction() {
+        return $this->_submitAction;
+    }
+}
+
+
+interface ICreditCard extends mint\ICreditCard, IMediatorProvider {
+    public function getId();
+    public function getFingerprint();
+    public function hasPassedVerificationCheck();
+    public function hasPassedAddressCheck();
+    public function hasPassedPostalCodeCheck();
+}
 
 interface IChargeRequest extends IApiObjectRequest {
     public function setAmount($amount);
     public function getAmount();
     public function setCustomerId($id);
     public function getCustomerId();
-    public function setCard(mint\ICreditCardReference $card);
+    public function setCard(mint\ICreditCardReference $card=null);
     public function getCard();
     public function setDescription($description);
     public function getDescription();
@@ -133,10 +171,6 @@ interface ICharge extends IMediatorProvider {
     public function capture($amount=null, $applicationFee=null);
 
     public function getCard();
-    public function getCardFingerprint();
-    public function hasPassedCardVerificationCheck();
-    public function hasPassedAddressCheck();
-    public function hasPassedPostalCodeCheck();
 
     public function hasCustomer();
     public function getCustomerId();
@@ -166,12 +200,16 @@ interface ICustomerRequest extends IApiObjectRequest {
     public function getBalance();
     public function setCard(mint\ICreditCardReference $card=null);
     public function getCard();
+    public function setDefaultCardId($card);
+    public function getDefaultCardId();
     public function setCouponCode($code);
     public function getCouponCode();
     public function setPlanId($id);
     public function getPlanId();
     public function setQuantity($quantity);
     public function getQuantity();
+    public function setTargetCustomer(ICustomer $customer);
+    public function getTargetCustomer();
 }
 
 
@@ -194,8 +232,12 @@ interface ICustomer extends IMediatorProvider {
     public function getSubscription();
 
     public function getCards();
+    public function getCard($id);
     public function countCards();
     public function getDefaultCard();
+    public function createCard(mint\ICreditCard $card);
+    public function updateCard($id, mint\ICreditCard $card);
+    public function deleteCard($id);
 
     public function update();
     public function delete();

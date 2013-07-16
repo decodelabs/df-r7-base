@@ -12,17 +12,18 @@ use df\mint;
     
 class CustomerRequest implements ICustomerRequest {
 
+    use TApiObjectRequest;
+
     protected $_id;
     protected $_emailAddress;
     protected $_description;
     protected $_balance;
     protected $_card;
+    protected $_defaultCardId;
     protected $_couponCode;
     protected $_planId;
     protected $_quantity = 1;
-
-    protected $_action = 'create';
-    protected $_mediator;
+    protected $_targetCustomer;
 
     public function __construct(IMediator $mediator, $emailAddress=null, mint\ICreditCardReference $card=null, $description=null, $balance=null) {
         $this->_mediator = $mediator;
@@ -32,10 +33,8 @@ class CustomerRequest implements ICustomerRequest {
         $this->setBalance($balance);
     }
 
-    public function getMediator() {
-        return $this->_mediator;
-    }
 
+// Id
     public function setId($id) {
         $this->_id = $id;
         return $this;
@@ -45,6 +44,8 @@ class CustomerRequest implements ICustomerRequest {
         return $this->_id;
     }
 
+
+// Email
     public function setEmailAddress($email) {
         $this->_emailAddress = $email;
         return $this;
@@ -54,6 +55,8 @@ class CustomerRequest implements ICustomerRequest {
         return $this->_emailAddress;
     }
 
+
+// Description
     public function setDescription($description) {
         $this->_description = $description;
         return $this;
@@ -63,6 +66,8 @@ class CustomerRequest implements ICustomerRequest {
         return $this->_description;
     }
 
+
+// Balance
     public function setBalance($amount) {
         $this->_balance = mint\Currency::factory($amount);
         return $this;
@@ -72,6 +77,8 @@ class CustomerRequest implements ICustomerRequest {
         return $this->_balance;
     }
 
+
+// Card
     public function setCard(mint\ICreditCardReference $card=null) {
         $this->_card = $card;
         return $this;
@@ -81,6 +88,21 @@ class CustomerRequest implements ICustomerRequest {
         return $this->_card;
     }
 
+    public function setDefaultCardId($card) {
+        if($card instanceof ICreditCard) {
+            $card = $card->getId();
+        }
+
+        $this->_defaultCardId = $card;
+        return $this;
+    }
+
+    public function getDefaultCardId() {
+        return $this->_defaultCardId;
+    }
+
+
+// Coupon
     public function setCouponCode($code) {
         $this->_couponCode = $code;
         return $this;
@@ -90,6 +112,8 @@ class CustomerRequest implements ICustomerRequest {
         return $this->_couponCode;
     }
 
+
+// Plan
     public function setPlanId($id) {
         $this->_planId = $id;
         return $this;
@@ -99,6 +123,8 @@ class CustomerRequest implements ICustomerRequest {
         return $this->_planId;
     }
 
+
+// Quantity
     public function setQuantity($quantity) {
         $quantity = (int)$quantity;
 
@@ -115,19 +141,22 @@ class CustomerRequest implements ICustomerRequest {
     }
 
 
-    public function setSubmitAction($action) {
-        $this->_action = $action;
+// Target customer
+    public function setTargetCustomer(ICustomer $customer) {
+        $this->_targetCustomer = $customer;
         return $this;
     }
 
-    public function getSubmitAction() {
-        return $this->_action;
+    public function getTargetCustomer() {
+        return $this->_targetCustomer;
     }
 
+
+// Submit
     public function getSubmitArray() {
         $output = [];
 
-        if($this->_action == 'create' && $this->_id !== null) {
+        if($this->_submitAction == 'create' && $this->_id !== null) {
             $output['id'] = $this->_id;
         }
 
@@ -147,6 +176,10 @@ class CustomerRequest implements ICustomerRequest {
             $output['card'] = Mediator::cardReferenceToArray($this->_card);
         }
 
+        if($this->_defaultCardId) {
+            $output['default_card'] = $this->_defaultCardId;
+        }
+
         if($this->_couponCode !== null) {
             $output['coupon'] = $this->_couponCode;
         }
@@ -163,13 +196,19 @@ class CustomerRequest implements ICustomerRequest {
     }
 
     public function submit() {
-        switch($this->_action) {
+        switch($this->_submitAction) {
             case 'update':
-                return $this->_mediator->updateCustomer($this);
+                if($this->_targetCustomer) {
+                    $data = $this->_mediator->updateCustomer($this, true);
+                    $this->_targetCustomer->__construct($this->_mediator, $data);
+                    return $this->_targetCustomer;
+                } else {
+                    return $this->_mediator->updateCustomer($this);
+                }
 
             case 'create':
             default:
-                return $this->_mediator->submitCustomer($this);
+                return $this->_mediator->createCustomer($this);
         }
     }
 }

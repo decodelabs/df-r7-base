@@ -12,6 +12,8 @@ use df\mint;
     
 class Dispute implements IDispute {
 
+    use TMediatorProvider;
+
     protected $_chargeId;
     protected $_amount;
     protected $_creationDate;
@@ -21,8 +23,6 @@ class Dispute implements IDispute {
     protected $_evidenceDueDate;
     protected $_evidence;
 
-    protected $_mediator;
-    
     public function __construct(IMediator $mediator, core\collection\ITree $data) {
         $this->_mediator = $mediator;
         $this->_chargeId = $data['charge'];
@@ -37,10 +37,6 @@ class Dispute implements IDispute {
         }
 
         $this->_evidence = $data['evidence'];
-    }
-
-    public function getMediator() {
-        return $this->_mediator;
     }
 
 // Basic details

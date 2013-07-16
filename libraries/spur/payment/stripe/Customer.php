@@ -13,6 +13,8 @@ use df\user;
     
 class Customer implements ICustomer {
 
+    use TMediatorProvider;
+
     protected $_id;
     protected $_isLive = true;
     protected $_isDelinquent = false;
@@ -26,8 +28,6 @@ class Customer implements ICustomer {
 
     protected $_cards = [];
     protected $_defaultCard;
-
-    protected $_mediator;
 
     public function __construct(IMediator $mediator, core\collection\ITree $data) {
         $this->_mediator = $mediator;
@@ -50,7 +50,7 @@ class Customer implements ICustomer {
         }
 
         foreach($data->cards->data as $row) {
-            $card = $mediator->cardDataToCardObject($row);
+            $card = new CreditCard($this->_mediator, $row);
             $this->_cards[$row['id']] = $card;
         }
 
@@ -59,10 +59,6 @@ class Customer implements ICustomer {
         if(isset($this->_cards[$cardId])) {
             $this->_defaultCard = $this->_cards[$cardId];
         }
-    }
-
-    public function getMediator() {
-        return $this->_mediator;
     }
 
     public function getId() {
@@ -125,6 +121,12 @@ class Customer implements ICustomer {
         return $this->_cards;
     }
 
+    public function getCard($id) {
+        if(isset($this->_cards[$id])) {
+            return $this->_cards[$id];
+        }
+    }
+
     public function countCards() {
         return count($this->_cards);
     }
@@ -136,12 +138,27 @@ class Customer implements ICustomer {
 
     public function update() {
         return $this->_mediator->newCustomerRequest()
+            ->setTargetCustomer($this)
             ->setSubmitAction('update')
             ->setId($this->_id);
     }
 
     public function delete() {
         return $this->_mediator->deleteCustomer($this);
+    }
+
+    public function createCard(mint\ICreditCard $card) {
+        return $this->_mediator->createCard($this, $card);
+    }
+
+    public function updateCard($id, mint\ICreditCard $card) {
+        if($card instanceof ICreditCard) {
+            $data = $this->_mediator->updateCard($this, $id, $card, true);
+            $card->__construct($this->_mediator, $data);
+            return $card;
+        } else {
+            return $this->_mediator->updateCard($this, $id, $card);
+        }
     }
 }
 

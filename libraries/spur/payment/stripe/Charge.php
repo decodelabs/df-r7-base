@@ -13,6 +13,8 @@ use df\user;
 
 class Charge implements ICharge {
 
+    use TMediatorProvider;
+
     protected $_id;
     protected $_amount;
     protected $_creationDate;
@@ -26,17 +28,11 @@ class Charge implements ICharge {
     protected $_refundAmount;
 
     protected $_card;
-    protected $_cardFingerprint;
-    protected $_cardVerificationCheckResult = true;
-    protected $_addressCheckResult = true;
-    protected $_postalCodeCheckResult = true;
     protected $_customerId;
 
     protected $_fees = [];
     protected $_invoiceId;
     protected $_dispute;
-
-    protected $_mediator;
 
     public function __construct(IMediator $mediator, core\collection\ITree $data) {
         $this->_mediator = $mediator;
@@ -64,14 +60,8 @@ class Charge implements ICharge {
             $this->_refundAmount = mint\Currency::fromIntegerAmount($data['amount_refunded'], $this->_amount->getCode());
         }
 
-        $card = $data->card;
-        $this->_card = $mediator->cardDataToCardObject($card);
-        $this->_cardFingerprint = $card['fingerprint'];
-        $this->_cardVerificationCheckResult = $card->has('cvc_check') ? (bool)$card['cvc_check'] : true;
-        $this->_addressCheckResult = $card->has('address_line1_check') ? (bool)$card['address_line1_check'] : true;
-        $this->_postalCodeCheckResult = $card->has('address_zip_check') ? (bool)$card['address_zip_check'] : true;
-
-        $this->_customerId = $card['customer'];
+        $this->_card = new CreditCard($this->_mediator, $data->card);
+        $this->_customerId = $data['customer'];
 
         foreach($data->fee_details as $feeData) {
             $this->_fees[] = new Fee($feeData);
@@ -82,11 +72,6 @@ class Charge implements ICharge {
         if($data->dispute->count()) {
             $this->_dispute = new Dispute($mediator, $data->dispute);
         }
-    }
-
-// Mediator
-    public function getMediator() {
-        return $this->_mediator;
     }
 
 // Basic details
@@ -184,21 +169,6 @@ class Charge implements ICharge {
         return $this->_card;
     }
 
-    public function getCardFingerprint() {
-        return $this->_cardFingerprint;
-    }
-
-    public function hasPassedCardVerificationCheck() {
-        return $this->_cardVerificationCheckResult;
-    }
-
-    public function hasPassedAddressCheck() {
-        return $this->_addressCheckResult;
-    }
-
-    public function hasPassedPostalCodeCheck() {
-        return $this->_postalCodeCheckResult;
-    }
 
 // Customer
     public function hasCustomer() {
@@ -210,7 +180,9 @@ class Charge implements ICharge {
     }
 
     public function fetchCustomer() {
-        core\stub($this->_customerId);
+        if($this->_customerId) {
+            return $this->_mediator->fetchCustomer($this->_customerId);
+        }
     }
 
 

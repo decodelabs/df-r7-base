@@ -12,6 +12,8 @@ use df\mint;
     
 class ChargeRequest implements IChargeRequest {
 
+    use TApiObjectRequest;
+
     protected $_amount;
     protected $_customerId;
     protected $_card;
@@ -19,10 +21,7 @@ class ChargeRequest implements IChargeRequest {
     protected $_shouldCapture = true;
     protected $_applicationFee;
 
-    protected $_action = 'create';
-    protected $_mediator;
-
-    public function __construct(IMediator $mediator, $amount, mint\ICreditCardReference $card, $description=null) {
+    public function __construct(IMediator $mediator, $amount, mint\ICreditCardReference $card=null, $description=null) {
         $this->_mediator = $mediator;
         $this->setAmount($amount);
         $this->setCard($card);
@@ -47,7 +46,7 @@ class ChargeRequest implements IChargeRequest {
         return $this->_customerId;
     }
 
-    public function setCard(mint\ICreditCardReference $card) {
+    public function setCard(mint\ICreditCardReference $card=null) {
         $this->_card = $card;
         return $this;
     }
@@ -83,16 +82,6 @@ class ChargeRequest implements IChargeRequest {
         return $this->_applicationFee;
     }
 
-
-    public function setSubmitAction($action) {
-        $this->_action = $action;
-        return $this;
-    }
-
-    public function getSubmitAction() {
-        return $this->_action;
-    }
-
     public function getSubmitArray() {
         $output = [
             'amount' => $this->_amount->getIntegerAmount(),
@@ -121,6 +110,6 @@ class ChargeRequest implements IChargeRequest {
     }
 
     public function submit() {
-        return $this->_mediator->submitCharge($this);
+        return $this->_mediator->createCharge($this);
     }
 }

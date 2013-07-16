@@ -92,26 +92,6 @@ class Mediator implements IMediator, core\IDumpable {
         return $output;
     }
 
-    public static function cardDataToCardObject(core\collection\ITree $data) {
-        $isCountryCode = strlen($data['address_country']) == 2;
-
-        return mint\CreditCard::fromArray([
-            'name' => $data['name'],
-            'last4' => $data['last4'],
-            'expiryMonth' => $data['exp_month'],
-            'expiryYear' => $data['exp_year'],
-            'billingAddress' => user\PostalAddress::fromArray([
-                'street1' => $data['address_line1'],
-                'street2' => $data['address_line2'],
-                'locality' => $data['address_city'],
-                'region' => $data['address_state'],
-                'postalCode' => $data['address_zip'],
-                'countryCode' => $isCountryCode ? $data['address_country'] : null,
-                'countryName' => $isCountryCode ? null : $data['address_country']
-            ])
-        ]);
-    }
-
     protected function _createListInputArray($limit, $offset, $filter) {
         $intput = [];
 
@@ -142,11 +122,11 @@ class Mediator implements IMediator, core\IDumpable {
 
 
 // Charges
-    public function newChargeRequest($amount, mint\ICreditCardReference $card, $description=null) {
+    public function newChargeRequest($amount, mint\ICreditCardReference $card=null, $description=null) {
         return new ChargeRequest($this, $amount, $card, $description);
     }
 
-    public function submitCharge(IChargeRequest $request, $returnRaw=false) {
+    public function createCharge(IChargeRequest $request, $returnRaw=false) {
         $data = $this->callServer('post', 'charges', $request->getSubmitArray());
 
         if($returnRaw) {
@@ -246,7 +226,7 @@ class Mediator implements IMediator, core\IDumpable {
         return new CustomerRequest($this, $emailAddress, $card, $description, $balance);
     }
 
-    public function submitCustomer(ICustomerRequest $request, $returnRaw=false) {
+    public function createCustomer(ICustomerRequest $request, $returnRaw=false) {
         $request->setSubmitAction('create');
         $data = $this->callServer('post', 'customers', $request->getSubmitArray());
 
@@ -304,6 +284,89 @@ class Mediator implements IMediator, core\IDumpable {
         return new core\collection\PageableQueue($rows, $limit, $offset, $data['count']);
     }
 
+
+
+// Cards
+    public function createCard($customer, mint\ICreditCard $card, $returnRaw=false) {
+        if($customer instanceof ICustomer) {
+            $customer = $customer->getId();
+        }
+
+        $data = $this->callServer('post', 'customers/'.$customer.'/cards', [
+            'card' => $this->cardReferenceToArray($card)
+        ]);
+
+        if($returnRaw) {
+            return $data;
+        }
+
+        return new CreditCard($this, $data);
+    }
+
+    public function fetchCard($customer, $id, $returnRaw=false) {
+        if($customer instanceof ICustomer) {
+            $customer = $customer->getId();
+        }
+
+        $data = $this->callServer('get', 'customers/'.$customer.'/cards/'.$id);
+
+        if($returnRaw) {
+            return $data;
+        }
+
+        return new CreditCard($this, $data);
+    }
+
+    public function updateCard($customer, $id, mint\ICreditCard $card, $returnRaw=false) {
+        if($customer instanceof ICustomer) {
+            $customer = $customer->getId();
+        }
+
+        $input = $this->cardReferenceToArray($card);
+        unset($input['cvc'], $input['number']);
+
+        $data = $this->callServer('post', 'customers/'.$customer.'/cards/'.$id, $input);
+
+        if($returnRaw) {
+            return $data;
+        }
+
+        return new CreditCard($this, $data);
+    }
+
+    public function deleteCard($customer, $id) {
+        if($customer instanceof ICustomer) {
+            $customer = $customer->getId();
+        }
+
+        if($id instanceof ICreditCard) {
+            $id = $id->getId();
+        }
+
+        $this->callServer('delete', 'customers/'.$customer.'/cards/'.$id);
+        return $this;
+    }
+
+    public function fetchCardList($customer, $limit=10, $offset=0, $returnRaw=false) {
+        if($customer instanceof ICustomer) {
+            $customer = $customer->getId();
+        }
+
+        $input = $this->_createListInputArray($limit, $offset, null);
+        $data = $this->callServer('get', 'customers/'.$customer.'/cards', $input);
+
+        if($returnRaw) {
+            return $data;
+        }
+
+        $rows = [];
+
+        foreach($data->data as $row) {
+            $rows[] = new CreditCard($this, $row);
+        }
+
+        return new core\collection\PageableQueue($rows, $limit, $offset, $data['count']);
+    }
 
 
 // IO
