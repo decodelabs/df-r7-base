@@ -19,6 +19,7 @@ class ChargeRequest implements IChargeRequest {
     protected $_shouldCapture = true;
     protected $_applicationFee;
 
+    protected $_action = 'create';
     protected $_mediator;
 
     public function __construct(IMediator $mediator, $amount, mint\ICreditCardReference $card, $description=null) {
@@ -82,6 +83,15 @@ class ChargeRequest implements IChargeRequest {
         return $this->_applicationFee;
     }
 
+
+    public function setSubmitAction($action) {
+        $this->_action = $action;
+        return $this;
+    }
+
+    public function getSubmitAction() {
+        return $this->_action;
+    }
 
     public function getSubmitArray() {
         $output = [

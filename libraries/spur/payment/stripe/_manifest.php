@@ -56,6 +56,10 @@ interface IMediator {
     public function setApiKey($key);
     public function getApiKey();
 
+// Currency
+    public function setDefaultCurrencyCode($code);
+    public function getDefaultCurrencyCode();
+
 
 // Charges
     public function newChargeRequest($amount, mint\ICreditCardReference $card, $description=null);
@@ -69,6 +73,11 @@ interface IMediator {
 // Customers
     public function newCustomerRequest($emailAddress=null, mint\ICreditCardReference $card=null, $description=null, $balance=null);
     public function submitCustomer(ICustomerRequest $request, $returnRaw=false);
+    public function fetchCustomer($id, $returnRaw=null);
+    public function updateCustomer(ICustomerRequest $request, $returnRaw=false);
+    public function deleteCustomer($id);
+    public function fetchCustomerList($limit=10, $offset=0, $filter=null, $returnRaw=false);
+    
 
 // IO
     public function callServer($method, $path, array $data=array());
@@ -80,6 +89,9 @@ interface IMediatorProvider {
 
 
 interface IApiObjectRequest extends IMediatorProvider {
+    public function setSubmitAction($action);
+    public function getSubmitAction();
+
     public function getSubmitArray();
     public function submit();
 }
@@ -184,6 +196,9 @@ interface ICustomer extends IMediatorProvider {
     public function getCards();
     public function countCards();
     public function getDefaultCard();
+
+    public function update();
+    public function delete();
 }
 
 

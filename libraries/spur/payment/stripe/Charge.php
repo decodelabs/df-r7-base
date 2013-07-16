@@ -65,24 +65,7 @@ class Charge implements ICharge {
         }
 
         $card = $data->card;
-        $isCountryCode = strlen($card['address_country']) == 2;
-
-        $this->_card = mint\CreditCard::fromArray([
-            'name' => $card['name'],
-            'last4' => $card['last4'],
-            'expiryMonth' => $card['exp_month'],
-            'expiryYear' => $card['exp_year'],
-            'billingAddress' => user\PostalAddress::fromArray([
-                'street1' => $card['address_line1'],
-                'street2' => $card['address_line2'],
-                'locality' => $card['address_city'],
-                'region' => $card['address_state'],
-                'postalCode' => $card['address_zip'],
-                'countryCode' => $isCountryCode ? $card['address_country'] : null,
-                'countryName' => $isCountryCode ? null : $card['address_country']
-            ])
-        ]);
-
+        $this->_card = $mediator->cardDataToCardObject($card);
         $this->_cardFingerprint = $card['fingerprint'];
         $this->_cardVerificationCheckResult = $card->has('cvc_check') ? (bool)$card['cvc_check'] : true;
         $this->_addressCheckResult = $card->has('address_line1_check') ? (bool)$card['address_line1_check'] : true;

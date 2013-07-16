@@ -10,7 +10,8 @@ use df\core;
 use df\spur;
 use df\halo;
 use df\mint;
-    
+use df\user;
+
 class Mediator implements IMediator, core\IDumpable {
 
     const API_URL = 'https://api.stripe.com/v1/';
@@ -18,6 +19,7 @@ class Mediator implements IMediator, core\IDumpable {
     protected $_httpClient;
     protected $_apiKey;
     protected $_activeUrl;
+    protected $_defaultCurrencyCode = 'USD';
 
     public function __construct($apiKey) {
         $this->_httpClient = new halo\protocol\http\Client();
@@ -41,6 +43,20 @@ class Mediator implements IMediator, core\IDumpable {
     public function getApiKey() {
         return $this->_apiKey;
     }
+
+
+
+// Curreny
+    public function setDefaultCurrencyCode($code) {
+        $this->_defaultCurrencyCode = $code;
+        return $this;
+    }
+
+    public function getDefaultCurrencyCode() {
+        return $this->_defaultCurrencyCode;
+    }
+
+
 
 // Helpers
     public static function cardReferenceToArray(mint\ICreditCardReference $card) {
@@ -74,6 +90,54 @@ class Mediator implements IMediator, core\IDumpable {
         }
 
         return $output;
+    }
+
+    public static function cardDataToCardObject(core\collection\ITree $data) {
+        $isCountryCode = strlen($data['address_country']) == 2;
+
+        return mint\CreditCard::fromArray([
+            'name' => $data['name'],
+            'last4' => $data['last4'],
+            'expiryMonth' => $data['exp_month'],
+            'expiryYear' => $data['exp_year'],
+            'billingAddress' => user\PostalAddress::fromArray([
+                'street1' => $data['address_line1'],
+                'street2' => $data['address_line2'],
+                'locality' => $data['address_city'],
+                'region' => $data['address_state'],
+                'postalCode' => $data['address_zip'],
+                'countryCode' => $isCountryCode ? $data['address_country'] : null,
+                'countryName' => $isCountryCode ? null : $data['address_country']
+            ])
+        ]);
+    }
+
+    protected function _createListInputArray($limit, $offset, $filter) {
+        $intput = [];
+
+        if($limit != 10 && $limit > 0) {
+            $input['count'] = (int)$limit;
+        }
+
+        if($offset >= 0) {
+            $input['offset'] = (int)$offset;
+        }
+
+        if(is_array($filter)) {
+            $filter = array_intersect_key($filter, array_flip(['gt', 'gte', 'lt', 'lte']));
+
+            if(!empty($filter)) {
+                foreach($filter as $key => $value) {
+                    $filter[$key] = core\time\Date::factory($value)->toTimestamp();
+                }
+
+                $input['created'] = $filter;
+            }
+        } else if($filter !== null) {
+            $input['created'] = core\time\Date::factory($filter)->toTimestamp();
+        }
+
+        return $input;
     }
 
 
@@ -154,29 +218,7 @@ class Mediator implements IMediator, core\IDumpable {
     }
 
     public function fetchChargeList($limit=10, $offset=0, $filter=null, $customerId=null, $returnRaw=false) {
-        $input = [];
-
-        if($limit != 10 && $limit > 0) {
-            $input['count'] = (int)$limit;
-        }
-
-        if($offset >= 0) {
-            $input['offset'] = (int)$offset;
-        }
-
-        if(is_array($filter)) {
-            $filter = array_intersect_key($filter, array_flip(['gt', 'gte', 'lt', 'lte']));
-
-            if(!empty($filter)) {
-                foreach($filter as $key => $value) {
-                    $filter[$key] = core\time\Date::factory($value)->toTimestamp();
-                }
-
-                $input['created'] = $filter;
-            }
-        } else if($filter !== null) {
-            $input['created'] = core\time\Date::factory($filter)->toTimestamp();
-        }
+        $input = $this->_createListInputArray($limit, $offset, $filter);
 
         if($customerId !== null) {
             $input['customer'] = $customerId;
@@ -205,9 +247,62 @@ class Mediator implements IMediator, core\IDumpable {
     }
 
     public function submitCustomer(ICustomerRequest $request, $returnRaw=false) {
-        core\stub($request);
+        $request->setSubmitAction('create');
+        $data = $this->callServer('post', 'customers', $request->getSubmitArray());
+
+        if($returnRaw) {
+            return $data;
+        }
+
+        return new Customer($this, $data);
     }
 
+    public function fetchCustomer($id, $returnRaw=null) {
+        $data = $this->callServer('get', 'customers/'.$id);
+
+        if($returnRaw) {
+            return $data;
+        }
+
+        return new Customer($this, $data);
+    }
+
+    public function updateCustomer(ICustomerRequest $request, $returnRaw=false) {
+        $request->setSubmitAction('update');
+        $data = $this->callServer('post', 'customers/'.$request->getId(), $request->getSubmitArray());
+
+        if($returnRaw) {
+            return $data;
+        }
+
+        return new Customer($this, $data);
+    }
+
+    public function deleteCustomer($id) {
+        if($id instanceof ICustomer) {
+            $id = $id->getId();
+        }
+
+        $data = $this->callServer('delete', 'customers/'.$id);
+        return $this;
+    }
+
+    public function fetchCustomerList($limit=10, $offset=0, $filter=null, $returnRaw=false) {
+        $input = $this->_createListInputArray($limit, $offset, $filter);
+        $data = $this->callServer('get', 'customers', $input);
+
+        if($returnRaw) {
+            return $data;
+        }
+
+        $rows = [];
+
+        foreach($data->data as $row) {
+            $rows[] = new Customer($this, $row);
+        }
+
+        return new core\collection\PageableQueue($rows, $limit, $offset, $data['count']);
+    }
 
 
 

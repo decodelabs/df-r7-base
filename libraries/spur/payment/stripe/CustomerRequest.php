@@ -21,6 +21,7 @@ class CustomerRequest implements ICustomerRequest {
     protected $_planId;
     protected $_quantity = 1;
 
+    protected $_action = 'create';
     protected $_mediator;
 
     public function __construct(IMediator $mediator, $emailAddress=null, mint\ICreditCardReference $card=null, $description=null, $balance=null) {
@@ -113,15 +114,25 @@ class CustomerRequest implements ICustomerRequest {
         return $this->_quantity;
     }
 
+
+    public function setSubmitAction($action) {
+        $this->_action = $action;
+        return $this;
+    }
+
+    public function getSubmitAction() {
+        return $this->_action;
+    }
+
     public function getSubmitArray() {
         $output = [];
 
-        if($this->_id !== null) {
+        if($this->_action == 'create' && $this->_id !== null) {
             $output['id'] = $this->_id;
         }
 
         if($this->_emailAddress !== null) {
-            $output['emailAddress'] = $this->_emailAddress;
+            $output['email'] = $this->_emailAddress;
         }
 
         if($this->_description !== null) {
@@ -129,7 +140,7 @@ class CustomerRequest implements ICustomerRequest {
         }
 
         if($this->_balance) {
-            $output['balance'] = $this->_balance->getIntegerAmount();
+            $output['account_balance'] = $this->_balance->getIntegerAmount();
         }
 
         if($this->_card) {
@@ -152,6 +163,13 @@ class CustomerRequest implements ICustomerRequest {
     }
 
     public function submit() {
-        return $this->_mediator->submitCustomer($this);
+        switch($this->_action) {
+            case 'update':
+                return $this->_mediator->updateCustomer($this);
+
+            case 'create':
+            default:
+                return $this->_mediator->submitCustomer($this);
+        }
     }
 }
