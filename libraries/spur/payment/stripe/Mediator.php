@@ -284,6 +284,15 @@ class Mediator implements IMediator, core\IDumpable {
         return new core\collection\PageableQueue($rows, $limit, $offset, $data['count']);
     }
 
+    public function endDiscount($id) {
+        if($id instanceof ICustomer) {
+            $id = $id->getId();
+        }
+
+        $this->callServer('delete', 'customers/'.$id.'/discount');
+        return $this;
+    }
+
 
 
 // Cards
@@ -468,6 +477,63 @@ class Mediator implements IMediator, core\IDumpable {
         }
 
         return new Subscription($this, $data);
+    }
+
+
+// Coupons
+    public function newCouponRequest($id, $application, $amount=null, $percent=null) {
+        return (new Coupon($this))
+            ->setId($id)
+            ->setApplication($application)
+            ->setAmount($amount)
+            ->setPercent($percent);
+    }
+
+    public function createCoupon(ICoupon $coupon, $returnRaw=false) {
+        $coupon->setSubmitAction('create');
+        $data = $this->callServer('post', 'coupons', $coupon->getSubmitArray());
+
+        if($returnRaw) {
+            return $data;
+        }
+
+        return new Coupon($this, $data);
+    }
+
+    public function fetchCoupon($id, $returnRaw=false) {
+        $data = $this->callServer('get', 'coupons/'.$id);
+
+        if($returnRaw) {
+            return $data;
+        }
+
+        return new Coupon($this, $data);
+    }
+
+    public function deleteCoupon($id) {
+        if($id instanceof ICoupon) {
+            $id = $id->getId();
+        }
+
+        $this->callServer('delete', 'coupons/'.$id);
+        return $this;
+    }
+
+    public function fetchCouponList($limit=10, $offset=0, $returnRaw=false) {
+        $input = $this->_createListInputArray($limit, $offset, null);
+        $data = $this->callServer('get', 'coupons', $input);
+
+        if($returnRaw) {
+            return $data;
+        }
+
+        $rows = [];
+
+        foreach($data->data as $row) {
+            $rows[] = new Coupon($this, $row);
+        }
+
+        return new core\collection\PageableQueue($rows, $limit, $offset, $data['count']);
     }
 
 

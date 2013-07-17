@@ -77,6 +77,7 @@ interface IMediator {
     public function updateCustomer(ICustomerRequest $request, $returnRaw=false);
     public function deleteCustomer($id);
     public function fetchCustomerList($limit=10, $offset=0, $filter=null, $returnRaw=false);
+    public function endDiscount($customerId);
 
 // Cards
     public function createCard($customer, mint\ICreditCard $card, $returnRaw=false);
@@ -99,6 +100,14 @@ interface IMediator {
     public function newSubscriptionRequest($customerId, $planId, mint\ICreditCardReference $card=null, $quantity=1);
     public function updateSubscription(ISubscriptionRequest $request, $returnRaw=false);
     public function cancelSubscription($customerId, $atPeriodEnd=false, $returnRaw=false);
+
+
+// Coupons
+    public function newCouponRequest($id, $application, $amount=null, $percent=null);
+    public function createCoupon(ICoupon $coupon, $returnRaw=false);
+    public function fetchCoupon($id, $returnRaw=false);
+    public function deleteCoupon($id);
+    public function fetchCouponList($limit=10, $offset=0, $returnRaw=false);
 
 
 // IO
@@ -242,7 +251,10 @@ interface ICustomer extends IMediatorProvider {
     public function owesPayment();
 
     public function hasDiscount();
-    public function getDiscount();
+    public function getCoupon();
+    public function getDiscountStartDate();
+    public function getDiscountEndDate();
+    public function endDiscount();
 
     public function hasSubscription();
     public function getSubscription();
@@ -366,4 +378,32 @@ interface ISubscription extends IMediatorProvider {
     public function getTrialEndDate();
 
     public function cancel($atPeriodEnd=false);
+}
+
+
+
+interface ICoupon extends IApiObjectRequest {
+    public function setId($id);
+    public function getId();
+    public function isLive();
+
+    public function setApplication($application);
+    public function getApplication();
+    public function setDurationMonths($months);
+    public function getDurationMonths();
+
+    public function countRedemptions();
+    public function setMaxRedemptions($max);
+    public function getMaxRedemptions();
+
+    public function setExpiryDate($date);
+    public function getExpiryDate();
+
+    public function setAmount($amount);
+    public function getAmount();
+
+    public function setPercent($percent);
+    public function getPercent();
+
+    public function delete();
 }

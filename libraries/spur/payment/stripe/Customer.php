@@ -23,7 +23,9 @@ class Customer implements ICustomer, core\IDumpable {
     protected $_description;
 
     protected $_balance;
-    protected $_discount;
+    protected $_coupon;
+    protected $_discountStartDate;
+    protected $_discountEndDate;
     protected $_subscription;
 
     protected $_cards = [];
@@ -42,7 +44,12 @@ class Customer implements ICustomer, core\IDumpable {
         $this->_balance = mint\Currency::fromIntegerAmount($data['account_balance'], $mediator->getDefaultCurrencyCode());
 
         if(!$data->discount->isEmpty()) {
-            $this->_discount = new Discount($mediator, $data->discount);
+            $this->_coupon = new Coupon($mediator, $data->discount->coupon);
+            $this->_discountStartDate = new core\time\Date($data->discount['start']);
+
+            if($data->discount['end']) {
+                $this->_discountEndDate = new core\time\Date($data->discount['end']);
+            }
         }
 
         if(!$data->subscription->isEmpty()) {
@@ -104,11 +111,28 @@ class Customer implements ICustomer, core\IDumpable {
 
 // Discount
     public function hasDiscount() {
-        return $this->_discount !== null;
+        return $this->_coupon !== null;
     }
 
-    public function getDiscount() {
-        return $this->_discount;
+    public function getCoupon() {
+        return $this->_coupon;
+    }
+
+    public function getDiscountStartDate() {
+        return $this->_discountStartDate;
+    }
+
+    public function getDiscountEndDate() {
+        return $this->_discountEndDate;
+    }
+
+    public function endDiscount() {
+        $this->_mediator->endDiscount($this);
+        $this->_coupon = null;
+        $this->_discountStartDate = null;
+        $this->_discountEndDate = null;
+        
+        return $this;
     }
 
 
@@ -208,7 +232,9 @@ class Customer implements ICustomer, core\IDumpable {
             'emailAddress' => $this->_emailAddress,
             'description' => $this->_description,
             'balance' => $this->_balance,
-            'discount' => $this->_discount,
+            'coupon' => $this->_coupon,
+            'discountStart' => $this->_discountStartDate,
+            'discountEnd' => $this->_discountEndDate,
             'subscription' => $this->_subscription,
             'cards' => []
         ];
