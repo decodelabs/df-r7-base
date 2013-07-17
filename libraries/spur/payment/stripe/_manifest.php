@@ -110,6 +110,10 @@ interface IMediator {
     public function fetchCouponList($limit=10, $offset=0, $returnRaw=false);
 
 
+// Account
+    public function getAccountDetails();
+
+
 // IO
     public function callServer($method, $path, array $data=array());
 }
@@ -406,4 +410,15 @@ interface ICoupon extends IApiObjectRequest {
     public function getPercent();
 
     public function delete();
+}
+
+
+interface IAccountDetails {
+    public function getId();
+    public function getEmailAddress();
+    public function getSupportedCurrencies();
+    public function canCharge();
+    public function hasSubmittedDetails();
+    public function isTransferEnabled();
+    public function getStatementDescriptor();
 }

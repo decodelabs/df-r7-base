@@ -537,6 +537,13 @@ class Mediator implements IMediator, core\IDumpable {
     }
 
 
+
+// Account
+    public function getAccountDetails() {
+        return new AccountDetails($this->callServer('get', 'account'));
+    }
+
+
 // IO
     public function callServer($method, $path, array $data=array()) {
         if(!$this->_activeUrl) {
