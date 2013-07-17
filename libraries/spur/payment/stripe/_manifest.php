@@ -85,6 +85,15 @@ interface IMediator {
     public function deleteCard($customer, $id);
     public function fetchCardList($customer, $limit=10, $offset=0, $returnRaw=false);
 
+
+// Plans
+    public function newPlanRequest($id, $name, $amount, $intervalQuantity=1, $intervalUnit='month');
+    public function createPlan(IPlan $plan, $returnRaw=false);
+    public function fetchPlan($id, $returnRaw=false);
+    public function renamePlan($id, $newName, $returnRaw=false);
+    public function deletePlan($id);
+    public function fetchPlanList($limit=10, $offset=0, $returnRaw=false);
+
 // IO
     public function callServer($method, $path, array $data=array());
 }
@@ -272,4 +281,25 @@ interface IDispute extends IMediatorProvider {
     public function getEvidenceDueDate();
     public function hasEvidence();
     public function getEvidence();
+}
+
+
+
+interface IPlan {
+    public function setId($id);
+    public function getId();
+    public function setName($name);
+    public function getName();
+    public function setAmount($amount);
+    public function getAmount();
+    public function isLive();
+    public function setInterval($quantity, $unit='month');
+    public function getInterval();
+    public function getIntervalQuantity();
+    public function getIntervalUnit();
+    public function setTrialPeriodDays($days);
+    public function getTrialPeriodDays();
+
+    public function rename($newName);
+    public function delete();
 }

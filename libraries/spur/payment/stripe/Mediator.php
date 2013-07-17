@@ -369,6 +369,80 @@ class Mediator implements IMediator, core\IDumpable {
     }
 
 
+
+// Plans
+    public function newPlanRequest($id, $name, $amount, $intervalQuantity=1, $intervalUnit='month') {
+        return (new Plan($this))
+            ->setSubmitAction('create')
+            ->setId($id)
+            ->setName($name)
+            ->setAmount($amount)
+            ->setInterval($intervalQuantity, $intervalUnit);
+    }
+
+    public function createPlan(IPlan $plan, $returnRaw=false) {
+        $data = $this->callServer('post', 'plans', $plan->getSubmitArray());
+
+        if($returnRaw) {
+            return $data;
+        }
+
+        return new Plan($this, $data);
+    }
+
+    public function fetchPlan($id, $returnRaw=false) {
+        $data = $this->callServer('get', 'plans/'.$id);
+
+        if($returnRaw) {
+            return $data;
+        }
+
+        return new Plan($this, $data);
+    }
+
+    public function renamePlan($id, $newName, $returnRaw=false) {
+        if($id instanceof IPlan) {
+            $id = $id->getId();
+        }
+
+        $data = $this->callServer('post', 'plans/'.$id, [
+            'name' => $newName
+        ]);
+
+        if($returnRaw) {
+            return $data;
+        }
+
+        return new Plan($this, $data);
+    }
+
+    public function deletePlan($id) {
+        if($id instanceof IPlan) {
+            $id = $id->getId();
+        }
+
+        $this->callServer('delete', 'plans/'.$id);
+        return $this;        
+    }
+
+    public function fetchPlanList($limit=10, $offset=0, $returnRaw=false) {
+        $input = $this->_createListInputArray($limit, $offset, null);
+        $data = $this->callServer('get', 'plans', $input);
+
+        if($returnRaw) {
+            return $data;
+        }
+
+        $rows = [];
+
+        foreach($data->data as $row) {
+            $rows[] = new Plan($this, $row);
+        }
+
+        return new core\collection\PageableQueue($rows, $limit, $offset, $data['count']);
+    }
+
+
 // IO
     public function callServer($method, $path, array $data=array()) {
         if(!$this->_activeUrl) {
