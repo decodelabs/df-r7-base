@@ -94,6 +94,13 @@ interface IMediator {
     public function deletePlan($id);
     public function fetchPlanList($limit=10, $offset=0, $returnRaw=false);
 
+
+// Subscriptions
+    public function newSubscriptionRequest($customerId, $planId, mint\ICreditCardReference $card=null, $quantity=1);
+    public function updateSubscription(ISubscriptionRequest $request, $returnRaw=false);
+    public function cancelSubscription($customerId, $atPeriodEnd=false, $returnRaw=false);
+
+
 // IO
     public function callServer($method, $path, array $data=array());
 }
@@ -239,6 +246,9 @@ interface ICustomer extends IMediatorProvider {
 
     public function hasSubscription();
     public function getSubscription();
+    public function newSubscriptionRequest($planId, mint\ICreditCardReference $card=null, $quantity=1);
+    public function updateSubscription(ISubscriptionRequest $request);
+    public function cancelSubscription($atPeriodEnd=false);
 
     public function getCards();
     public function getCard($id);
@@ -285,7 +295,7 @@ interface IDispute extends IMediatorProvider {
 
 
 
-interface IPlan {
+interface IPlan extends IApiObjectRequest {
     public function setId($id);
     public function getId();
     public function setName($name);
@@ -302,4 +312,58 @@ interface IPlan {
 
     public function rename($newName);
     public function delete();
+}
+
+
+interface ISubscriptionRequest extends IApiObjectRequest {
+    public function setCustomerId($customer);
+    public function getCustomerId();
+
+    public function setPlanId($plan);
+    public function getPlanId();
+
+    public function setCouponCode($code);
+    public function getCouponCode();
+
+    public function shouldProrate($flag=null);
+
+    public function setTrialEndDate($date);
+    public function getTrialEndDate();
+
+    public function setCard(mint\ICreditCardReference $card=null);
+    public function getCard();
+
+    public function setQuantity($quantity);
+    public function getQuantity();
+}
+
+
+interface ISubscription extends IMediatorProvider {
+    public function getCustomerId();
+    public function fetchCustomer();
+
+    public function getPlan();
+    public function shouldCancelAtPeriodEnd();
+    public function getQuantity();
+
+    public function getStatus();
+    public function isTrialing();
+    public function isActive();
+    public function isPastDue();
+    public function isCanceled();
+    public function isUnpaid();
+
+    public function getStartDate();
+    public function getCancelDate();
+    public function hasEnded();
+    public function getEndDate();
+
+    public function getPeriodStartDate();
+    public function getPeriodEndDate();
+
+    public function hasTrialPeriod();
+    public function getTrialStartDate();
+    public function getTrialEndDate();
+
+    public function cancel($atPeriodEnd=false);
 }

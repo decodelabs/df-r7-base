@@ -443,6 +443,34 @@ class Mediator implements IMediator, core\IDumpable {
     }
 
 
+// Subscriptions
+    public function newSubscriptionRequest($customerId, $planId, mint\ICreditCardReference $card=null, $quantity=1) {
+        return new SubscriptionRequest($this, $customerId, $planId, $card, $quantity);
+    }
+
+    public function updateSubscription(ISubscriptionRequest $request, $returnRaw=false) {
+        $data = $this->callServer('post', 'customers/'.$request->getCustomerId().'/subscription', $request->getSubmitArray());
+
+        if($returnRaw) {
+            return $data;
+        }
+
+        return new Subscription($this, $data);
+    }
+
+    public function cancelSubscription($customerId, $atPeriodEnd=false, $returnRaw=false) {
+        $data = $this->callServer('delete', 'customers/'.$customerId.'/subscription', [
+            'at_period_end' => $atPeriodEnd ? 'true' : 'false'
+        ]);
+
+        if($returnRaw) {
+            return $data;
+        }
+
+        return new Subscription($this, $data);
+    }
+
+
 // IO
     public function callServer($method, $path, array $data=array()) {
         if(!$this->_activeUrl) {
@@ -460,7 +488,7 @@ class Mediator implements IMediator, core\IDumpable {
             if($method == 'post') {
                 $request->setPostData($data);
                 $request->getHeaders()->set('content-type', 'application/x-www-form-urlencoded');
-            } else if($method == 'get') {
+            } else {
                 $url->setQuery($data);
             }
         }

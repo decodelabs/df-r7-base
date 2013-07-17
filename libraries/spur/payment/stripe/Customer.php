@@ -11,7 +11,7 @@ use df\spur;
 use df\mint;
 use df\user;
     
-class Customer implements ICustomer {
+class Customer implements ICustomer, core\IDumpable {
 
     use TMediatorProvider;
 
@@ -42,15 +42,15 @@ class Customer implements ICustomer {
         $this->_balance = mint\Currency::fromIntegerAmount($data['account_balance'], $mediator->getDefaultCurrencyCode());
 
         if(!$data->discount->isEmpty()) {
-            $this->_discount = new Discount($this, $data->discount);
+            $this->_discount = new Discount($mediator, $data->discount);
         }
 
         if(!$data->subscription->isEmpty()) {
-            $this->_subscription = new Subscription($this, $data->subscription);
+            $this->_subscription = new Subscription($mediator, $data->subscription);
         }
 
         foreach($data->cards->data as $row) {
-            $card = new CreditCard($this->_mediator, $row);
+            $card = new CreditCard($mediator, $row);
             $this->_cards[$row['id']] = $card;
         }
 
@@ -61,6 +61,8 @@ class Customer implements ICustomer {
         }
     }
 
+
+// Details
     public function getId() {
         return $this->_id;
     }
@@ -86,6 +88,7 @@ class Customer implements ICustomer {
     }
 
 
+// Balance
     public function getBalance() {
         return $this->_balance;
     }
@@ -99,6 +102,7 @@ class Customer implements ICustomer {
     }
 
 
+// Discount
     public function hasDiscount() {
         return $this->_discount !== null;
     }
@@ -108,6 +112,7 @@ class Customer implements ICustomer {
     }
 
 
+// Subscription
     public function hasSubscription() {
         return $this->_subscription !== null;
     }
@@ -116,7 +121,30 @@ class Customer implements ICustomer {
         return $this->_subscription;
     }
 
+    public function newSubscriptionRequest($planId, mint\ICreditCardReference $card=null, $quantity=1) {
+        return $this->_mediator->newSubscriptionRequest($this->_id, $planId, $card, $quantity);
+    }
 
+    public function updateSubscription(ISubscriptionRequest $request) {
+        $request->setCustomerId($this->_id);
+        $this->_subscription = $this->_mediator->updateSubscription($request);
+        return $this;
+    }
+
+    public function cancelSubscription($atPeriodEnd=false) {
+        if($this->_subscription) {
+            $this->_subscription->cancel($atPeriodEnd);
+
+            if(!$atPeriodEnd) {
+                $this->_subscription = null;
+            }
+        }
+
+        return $this;
+    }
+
+
+// Cards
     public function getCards() {
         return $this->_cards;
     }
@@ -136,6 +164,8 @@ class Customer implements ICustomer {
     }
 
 
+
+// Submit
     public function update() {
         return $this->_mediator->newCustomerRequest()
             ->setTargetCustomer($this)
@@ -160,5 +190,37 @@ class Customer implements ICustomer {
             return $this->_mediator->updateCard($this, $id, $card);
         }
     }
-}
 
+    public function deleteCard($id) {
+        $this->_mediator->deleteCard($this, $id);
+        return $this;
+    }
+
+
+
+// Dump
+    public function getDumpProperties() {
+        $output = [
+            'id' => $this->_id,
+            'isLive' => $this->_isLive,
+            'isDelinquent' => $this->_isDelinquent,
+            'creationDate' => $this->_creationDate,
+            'emailAddress' => $this->_emailAddress,
+            'description' => $this->_description,
+            'balance' => $this->_balance,
+            'discount' => $this->_discount,
+            'subscription' => $this->_subscription,
+            'cards' => []
+        ];
+
+        foreach($this->_cards as $key => $card) {
+            if($card === $this->_defaultCard) {
+                $key = '* '.$key;
+            }
+
+            $output['cards'][$key] = $card;
+        }
+
+        return $output;
+    }
+}
