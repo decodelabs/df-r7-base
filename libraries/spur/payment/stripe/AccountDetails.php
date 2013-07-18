@@ -10,7 +10,7 @@ use df\core;
 use df\spur;
 use df\mint;
     
-class AccountDetails implements IAccountDetails {
+class AccountDetails implements IAccountDetails, core\IDumpable {
 
     protected $_id;
     protected $_emailAddress;
@@ -56,5 +56,19 @@ class AccountDetails implements IAccountDetails {
 
     public function getStatementDescriptor() {
         return $this->_statementDescriptor;
+    }
+
+
+// Dump
+    public function getDumpProperties() {
+        return [
+            'id' => $this->_id,
+            'emailAddress' => $this->_emailAddress,
+            'supportedCurrencies' => implode(', ', $this->_supportedCurrencies),
+            'canCharge' => $this->_canCharge,
+            'hasSubmittedDetails' => $this->_hasSubmittedDetails,
+            'isTransferEnabled' => $this->_isTransferEnabled,
+            'statementDescriptor' => $this->_statementDescriptor
+        ];
     }
 }
