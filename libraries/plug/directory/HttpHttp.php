@@ -66,6 +66,10 @@ class HttpHttp implements arch\IDirectoryHelper {
     public function getHeaders() {
         return $this->_httpRequest->getHeaders();
     }
+
+    public function getReferrer() {
+        return $this->_httpRequest->getHeaders()->get('Referer');
+    }
     
     public function getPostData() {
         return $this->_httpRequest->getPostData();
