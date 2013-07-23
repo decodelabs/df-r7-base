@@ -33,7 +33,7 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
             $output = $this->_view->format->shorten($output, $length);
         }
 
-        return $output;
+        return $this->string($output);
     }
 
     public function plainText($text) {
