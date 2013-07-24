@@ -69,7 +69,7 @@ class CustomerRequest implements ICustomerRequest {
 
 // Balance
     public function setBalance($amount) {
-        $this->_balance = mint\Currency::factory($amount);
+        $this->_balance = mint\Currency::factory($amount, $this->_mediator->getDefaultCurrencyCode());
         return $this;
     }
 

@@ -121,7 +121,7 @@ class Charge implements ICharge {
         }
 
         if($amount !== null) {
-            $amount = mint\Currency::factory($amount);
+            $amount = mint\Currency::factory($amount, $this->_mediator->getDefaultCurrencyCode());
             return $amount->getAmount() <= $this->getRemainingRefundAmount();
         }
 

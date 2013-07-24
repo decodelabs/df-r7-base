@@ -154,7 +154,7 @@ class Mediator implements IMediator, core\IDumpable {
         $input = [];
 
         if($amount !== null) {
-            $amount = mint\Currency::factory($amount);
+            $amount = mint\Currency::factory($amount, $this->_defaultCurrencyCode);
             $input['amount'] = $amount->getIntegerAmount();
         }
 
@@ -179,12 +179,12 @@ class Mediator implements IMediator, core\IDumpable {
         $input = [];
 
         if($amount !== null) {
-            $amount = mint\Currency::factory($amount);
+            $amount = mint\Currency::factory($amount, $this->_defaultCurrencyCode);
             $input['amount'] = $amount->getIntegerAmount();
         }
 
         if($applicationFee !== null) {
-            $applicationFee = mint\Currency::factory($applicationFee);
+            $applicationFee = mint\Currency::factory($applicationFee, $this->_defaultCurrencyCode);
             $input['application_fee'] = $application->getIntegerAmount();
         }
 

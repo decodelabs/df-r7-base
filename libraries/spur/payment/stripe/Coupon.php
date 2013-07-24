@@ -127,7 +127,7 @@ class Coupon implements ICoupon, core\IDumpable {
 
 // Amount
     public function setAmount($amount) {
-        $this->_amount = $amount ? mint\Currency::factory($amount) : null;
+        $this->_amount = $amount ? mint\Currency::factory($amount, $this->_mediator->getDefaultCurrencyCode()) : null;
         return $this;
     }
 
