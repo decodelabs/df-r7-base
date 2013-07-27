@@ -341,7 +341,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             return false;
         }
 
-        if((string)$this->getPath() != (string)$request->getPath()) {
+        if($this->getLiteralPathString() != $request->getLiteralPathString()) {
             return false;
         }
 
@@ -358,6 +358,23 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         return true;
     }
     
+    public function containsPath($request) {
+        $request = self::factory($request);
+
+        if($this->_scheme != $request->_scheme) {
+            return false;
+        }
+
+        $rpString = $request->getLiteralPathString();
+        $tpString = $this->getLiteralPathString();
+
+        if(0 !== stripos($rpString, $tpString)) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function contains($request) {
         $request = self::factory($request);
 
@@ -365,24 +382,30 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             return false;
         }
     
-        $rpString = (string)$request->getPath();
-        $tpString = (string)$this->getPath();
+        $rpString = $request->getLiteralPathString();
+        $tpString = $this->getLiteralPathString();
 
         if(0 !== stripos($rpString, $tpString)) {
             return false;
         }
 
-        if($rpString == $tpString && $this->_query) {
-            $rQuery = $request->getQuery();
+        if($rpString == $tpString && $request->_query) {
+            foreach($request->_query as $key => $value) {
+                if(!$this->_query) {
+                    return false;
+                }
 
-            foreach($this->_query as $key => $value) {
-                if(!isset($rQuery->{$key}) || $rQuery[$key] != $value) {
+                if(!isset($this->_query->{$key}) || $$this->_query[$key] != $value) {
                     return false;
                 }
             }
         }
 
         return true;
+    }
+
+    public function isPathWithin($request) {
+        return self::factory($request)->containsPath($this);
     }
 
     public function isWithin($request) {
@@ -411,6 +434,10 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         }
         
         return $parts;
+    }
+
+    public function getLiteralPathString() {
+        return implode('/', $this->getLiteralPathArray());
     }
     
     public function toString() {

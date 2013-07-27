@@ -173,11 +173,14 @@ interface IRequest extends core\uri\IUrl, user\IAccessLock {
     
     // Match
     public function eq($request);
+    public function containsPath($request);
     public function contains($request);
+    public function isPathWithin($request);
     public function isWithin($request);
     
     public function getLiteralPath();
     public function getLiteralPathArray();
+    public function getLiteralPathString();
     public function getDirectoryLocation();
     
     // Redirect
