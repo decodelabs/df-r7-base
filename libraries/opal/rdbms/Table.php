@@ -107,6 +107,8 @@ class Table implements ITable, core\IDumpable {
     public function handleQueryException(opal\query\IQuery $query, \Exception $e) {
         return false;
     }
+
+    public function ensureStorageConsistency() {}
     
     
 ## SCHEMA ##

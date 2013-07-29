@@ -661,15 +661,9 @@ class ArrayManipulator implements IArrayManipulator {
             $source = $attachment->getSource();
             $adapter = $source->getAdapter();
 
-            try {
-                $sourceData = $adapter->fetchAttachmentData($attachment, $this->_rows);
-            } catch(\Exception $e) {
-                if($source->handleQueryException($attachment, $e)) {
-                    $sourceData = $adapter->fetchAttachmentData($attachment, $this->_rows);
-                } else {
-                    throw $e;
-                }
-            }
+            $sourceData = $attachment->getSourceManager()->executeQuery($attachment, function($adapter) use($attachment) {
+                return $adapter->fetchAttachmentData($attachment, $this->_rows);
+            });
 
             $manipulator = new self($source, $sourceData, true);
             $clauseList = $attachment->getJoinClauseList()->toArray();

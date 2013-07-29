@@ -30,17 +30,9 @@ class Delete implements IDeleteQuery, core\IDumpable {
     
 // Execute
     public function execute() {
-        $adapter = $this->_source->getAdapter();
-        
-        try {
+        return $this->_sourceManager->executeQuery($this, function($adapter) {
             return $adapter->executeDeleteQuery($this);
-        } catch(\Exception $e) {
-            if($this->_sourceManager->handleQueryException($this, $e)) {
-                return $adapter->executeDeleteQuery($this);
-            } else {
-                throw $e;
-            }
-        }
+        });
     }
     
     

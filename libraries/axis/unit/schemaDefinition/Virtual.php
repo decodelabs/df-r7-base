@@ -40,8 +40,6 @@ final class Virtual implements axis\ISchemaDefinitionStorageUnit, axis\ISchemaBa
     
     public function fetchFor(axis\ISchemaBasedStorageUnit $unit, $transient=false) {
         $cache = axis\schema\Cache::getInstance($this->_model->getApplication());
-        //$cache->clear(); // delete me
-        
         $schema = $cache->get($unit->getUnitId());
         
         if($schema !== null && !$schema instanceof axis\schema\ISchema) {
@@ -179,6 +177,11 @@ final class Virtual implements axis\ISchemaDefinitionStorageUnit, axis\ISchemaBa
         return $this->fetchFor($this->_model->getUnit($id));
     }
     
+    public function fetchStoredUnitList() {
+        return $this->_adapter->fetchStoredUnitList();
+    }
+
+
     public function destroyStorage() {
         $this->_adapter->destroyStorage();
     }

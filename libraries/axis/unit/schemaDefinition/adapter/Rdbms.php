@@ -66,6 +66,12 @@ class Rdbms implements axis\ISchemaDefinitionStorageAdapter {
             
         return $this;
     }
+
+    public function fetchStoredUnitList() {
+        return $this->_table->select('unitId')
+            ->orderBy('unitId ASC')
+            ->toList('unitId');
+    }
     
     
     

@@ -38,6 +38,8 @@ class SourceManager implements ISourceManager, core\IDumpable {
         return $this->_parent;
     }
 
+
+// Transaction
     public function setTransaction(ITransaction $transaction=null) {
         $this->_transaction = $transaction;
 
@@ -58,6 +60,8 @@ class SourceManager implements ISourceManager, core\IDumpable {
         return $this->_transaction;
     }
     
+
+// Sources
     public function newSource($adapter, $alias, array $fields=null, $forWrite=false) {
         $adapter = $this->extrapolateSourceAdapter($adapter);
         $sourceId = $adapter->getQuerySourceId();
@@ -147,20 +151,8 @@ class SourceManager implements ISourceManager, core\IDumpable {
     }
     
     
-    public function handleQueryException(IQuery $query, \Exception $e) {
-        foreach($this->_sources as $source) {
-            if($source->handleQueryException($query, $e)) {
-                return true;
-            }
-        }
-        
-        return false;
-    }
-    
-    
-    
-    
-    
+
+// Extrapolate
     public function extrapolateSourceAdapter($adapter) {
         if($adapter instanceof ISource) {
             $adapter = $adapter->getAdapter();
@@ -401,6 +393,45 @@ class SourceManager implements ISourceManager, core\IDumpable {
         
         return $alias;
     }
+
+
+// Query executor
+    public function handleQueryException(IQuery $query, \Exception $e) {
+        foreach($this->_sources as $source) {
+            if($source->handleQueryException($query, $e)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    public function executeQuery(IQuery $query, Callable $executor) {
+        $adapter = $query->getSource()->getAdapter();
+
+        try {
+            $output = $executor($adapter);
+        } catch(\Exception $e) {
+            $handled = false;
+
+            foreach($this->_sources as $source) {
+                if($source->handleQueryException($query, $e)) {
+                    $handled = true;
+                    break;
+                }
+            }
+
+            if(!$handled) {
+                throw $e;
+            }
+
+            $adapter->ensureStorageConsistency();
+            $output = $executor($adapter);
+        }
+
+        return $output;
+    }
+
     
     
 // Dump

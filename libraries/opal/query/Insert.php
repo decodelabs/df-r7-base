@@ -45,15 +45,9 @@ class Insert implements IInsertQuery, core\IDumpable {
             $this->_row = $adapter->deflateInsertValues($this->_row);
         }
         
-        try {
-            $output = $adapter->executeInsertQuery($this);
-        } catch(\Exception $e) {
-            if($this->_sourceManager->handleQueryException($this, $e)) {
-                $output = $adapter->executeInsertQuery($this);
-            } else {
-                throw $e;
-            }
-        }
+        $output = $this->_sourceManager->executeQuery($this, function($adapter) {
+            return $adapter->executeInsertQuery($this);
+        });
         
         if($adapter instanceof IIntegralAdapter) {
             $output = $adapter->normalizeInsertId($output, $this->_row);

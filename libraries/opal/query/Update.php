@@ -47,16 +47,9 @@ class Update implements IUpdateQuery, core\IDumpable {
             return 0;
         }
         
-        
-        try {
+        return $this->_sourceManager->executeQuery($this, function($adapter) {
             return $adapter->executeUpdateQuery($this);
-        } catch(\Exception $e) {
-            if($this->_sourceManager->handleQueryException($this, $e)) {
-                return $adapter->executeUpdateQuery($this);
-            } else {
-                throw $e;
-            }
-        }
+        });
     }
     
     

@@ -37,17 +37,9 @@ class Fetch implements IFetchQuery, core\IDumpable {
     
 // Output
     public function count() {
-        $adapter = $this->_source->getAdapter();
-        
-        try {
+        return $this->_sourceManager->executeQuery($this, function($adapter) {
             return (int)$adapter->countFetchQuery($this);
-        } catch(\Exception $e) {
-            if($this->_sourceManager->handleQueryException($this, $e)) {
-                return (int)$adapter->countFetchQuery($this);
-            } else {
-                throw $e;
-            }
-        }
+        });
     }
 
     protected function _fetchSourceData($keyField=null) {
@@ -55,17 +47,9 @@ class Fetch implements IFetchQuery, core\IDumpable {
             $keyField = $this->_sourceManager->extrapolateDataField($this->_source, $keyField);
         }
         
-        $adapter = $this->_source->getAdapter();
-        
-        try {
-            $output = $adapter->executeFetchQuery($this, $keyField);
-        } catch(\Exception $e) {
-            if($this->_sourceManager->handleQueryException($this, $e)) {
-                $output = $adapter->executeFetchQuery($this, $keyField);
-            } else {
-                throw $e;
-            }
-        }
+        $output = $this->_sourceManager->executeQuery($this, function($adapter) use($keyField) {
+            return $adapter->executeFetchQuery($this, $keyField);
+        });
 
         if($this->_paginator && $this->_offset == 0 && $this->_limit) {
             $count = count($output);

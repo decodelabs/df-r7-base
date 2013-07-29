@@ -513,6 +513,7 @@ interface IAdapter extends user\IAccessLock {
     public function supportsQueryFeature($feature);
     
     public function handleQueryException(IQuery $query, \Exception $e);
+    public function ensureStorageConsistency();
     
     public function executeSelectQuery(ISelectQuery $query, IField $keyField=null, IField $valField=null);
     public function countSelectQuery(ISelectQuery $query);
@@ -606,7 +607,7 @@ interface ISourceManager extends core\IApplicationAware, ITransactionAware {
     public function getSourceByAlias($alias);
     public function countSourceAdapters();
     
-    public function handleQueryException(IQuery $query, \Exception $e);
+    public function executeQuery(IQuery $query, Callable $executor);
     
     public function extrapolateSourceAdapter($adapter);
     public function extrapolateOutputField(ISource $source, $name);

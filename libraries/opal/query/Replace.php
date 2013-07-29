@@ -33,16 +33,10 @@ class Replace implements IReplaceQuery, core\IDumpable {
             $this->_row = $adapter->deflateReplaceValues($this->_row);
         }
         
-        try {
-            $output = $adapter->executeReplaceQuery($this);
-        } catch(\Exception $e) {
-            if($this->_sourceManager->handleQueryException($this, $e)) {
-                $output = $adapter->executeReplaceQuery($this);
-            } else {
-                throw $e;
-            }
-        }
-        
+        $output = $this->_sourceManager->executeQuery($this, function($adapter) {
+            return $adapter->executeReplaceQuery($this);
+        });
+
         if($adapter instanceof IIntegralAdapter) {
             $output = $adapter->normalizeReplaceId($output, $this->_row);
         }

@@ -56,20 +56,10 @@ class Select implements ISelectQuery, core\IDumpable {
     
 // Output
     public function count() {
-        $adapter = $this->_source->getAdapter();
-        
-        try {
+        return $this->_sourceManager->executeQuery($this, function($adapter) {
             return (int)$adapter->countSelectQuery($this);
-        } catch(\Exception $e) {
-            if($this->_sourceManager->handleQueryException($this, $e)) {
-                return (int)$adapter->countSelectQuery($this);
-            } else {
-                throw $e;
-            }
-        }
+        });
     }
-
-    
     
     public function toList($valField1, $valField2=null) {
         if($valField2 !== null) {
@@ -129,17 +119,9 @@ class Select implements ISelectQuery, core\IDumpable {
             }
         }
         
-        $adapter = $this->_source->getAdapter();
-        
-        try {
-            $output = $adapter->executeSelectQuery($this, $keyField, $valField);
-        } catch(\Exception $e) {
-            if($this->_sourceManager->handleQueryException($this, $e)) {
-                $output = $adapter->executeSelectQuery($this, $keyField, $valField);
-            } else {
-                throw $e;
-            }
-        }
+        $output = $this->_sourceManager->executeQuery($this, function($adapter) use($keyField, $valField) {
+            return $adapter->executeSelectQuery($this, $keyField, $valField);
+        });
 
         if($this->_paginator && $this->_offset == 0 && $this->_limit) {
             $count = count($output);

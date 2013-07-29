@@ -41,16 +41,9 @@ class BatchReplace implements IBatchReplaceQuery, core\IDumpable {
                 $this->_fields = array_fill_keys($fields, true);
             }
             
-            
-            try {
-                $this->_inserted += $adapter->executeBatchReplaceQuery($this);
-            } catch(\Exception $e) {
-                if($this->_sourceManager->handleQueryException($this, $e)) {
-                    $this->_inserted += $adapter->executeBatchReplaceQuery($this);
-                } else {
-                    throw $e;
-                }
-            }
+            $this->_inserted += $this->_sourceManager->executeQuery($this, function($adapter) {
+                return (int)$adapter->executeBatchReplaceQuery($this);
+            });
         }
         
         $this->clearRows();

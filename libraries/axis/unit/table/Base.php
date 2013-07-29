@@ -167,6 +167,11 @@ abstract class Base implements
                 return $this->_adapter->supportsQueryFeature($feature);
         }
     }
+
+    public function ensureStorageConsistency() {
+        $this->_adapter->ensureStorageConsistency();
+        return $this;
+    }
     
     public function handleQueryException(opal\query\IQuery $query, \Exception $e) {
         return $this->_adapter->handleQueryException($query, $e);

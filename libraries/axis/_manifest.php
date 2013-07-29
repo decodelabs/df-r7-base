@@ -253,6 +253,7 @@ interface ISchemaDefinitionStorageUnit extends IStorageUnit {
     public function store(ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema);
     public function remove(ISchemaBasedStorageUnit $unit);
     public function clearCache(ISchemaBasedStorageUnit $unit=null);
+    public function fetchStoredUnitList();
 }
 
 
