@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\mint;
     
-class Paypal extends Base {
+class PaypalExpressCheckout extends Base {
 
     
 }

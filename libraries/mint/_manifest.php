@@ -22,21 +22,43 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 
 // Interfaces
 interface IGateway {
+    public function setDefaultCurrency($code);
+    public function getDefaultCurrency();
 
+    public function getSupportedCurrencies();
+    public function isCurrencySupported($code);
+
+    public function submitCharge(ICharge $charge);
+}
+
+interface ICaptureProviderGateway extends IGateway {
+    public function authorizeCharge(ICharge $charge);
+    public function captureCharge($id);
 }
 
 interface IRefundProviderGateway extends IGateway {
-    public function refund();
+    public function refund($chargeId, $amount=null);
 }
 
 interface ICustomerTrackingGateway extends IGateway {
-
+    public function addCustomer(ICustomer $customer);
+    public function updateCustomer(ICustomer $customer);
+    public function deleteCustomer($customerId);
 }
 
-interface ICardStoreGateway extends IGateway {
+interface ICardStoreGateway extends ICustomerTrackingGateway {
     public function addCard($customerId, ICreditCard $card);
-    public function updateCard($customerId, $token, ICreditCard $card);
-    public function deleteCard($customerId, $token, ICreditCard $card);
+    public function updateCard($customerId, $cardId, ICreditCard $card);
+    public function deleteCard($customerId, $cardId, ICreditCard $card);
+}
+
+interface ISubscriptionProviderGateway extends ICustomerTrackingGateway {
+    public function addPlan();
+    public function updatePlan();
+    public function deletePlan();
+
+    public function subscribeCustomer($planId, $customerId);
+    public function unsubscribeCustomer($planId, $customerId);
 }
 
 
@@ -104,7 +126,7 @@ interface ICurrency {
     public function setCode($code);
     public function getCode();
     public function convert($code, $origRate, $newRate);
-    public function hasRecognisedCode();
+    public function hasRecognizedCode();
     public function getDecimalPlaces();
     public function getDecimalFactor();
 }
