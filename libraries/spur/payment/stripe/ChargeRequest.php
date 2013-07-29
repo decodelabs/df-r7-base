@@ -29,7 +29,7 @@ class ChargeRequest implements IChargeRequest {
     }
 
     public function setAmount($amount) {
-        $this->_amount = mint\Currency::factory($amount, $this->_mediator->getDefaultCurrencyCode());
+        $this->_amount = mint\Currency::factory($amount, $this->_mediator->getDefaultCurrency());
         return $this;
     }
 

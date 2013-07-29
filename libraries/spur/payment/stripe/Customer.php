@@ -41,7 +41,7 @@ class Customer implements ICustomer, core\IDumpable {
         $this->_emailAddress = $data['email'];
         $this->_description = $data['description'];
 
-        $this->_balance = mint\Currency::fromIntegerAmount($data['account_balance'], $mediator->getDefaultCurrencyCode());
+        $this->_balance = mint\Currency::fromIntegerAmount($data['account_balance'], $mediator->getDefaultCurrency());
 
         if(!$data->discount->isEmpty()) {
             $this->_coupon = new Coupon($mediator, $data->discount->coupon);

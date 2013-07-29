@@ -19,7 +19,7 @@ class Mediator implements IMediator, core\IDumpable {
     protected $_httpClient;
     protected $_apiKey;
     protected $_activeUrl;
-    protected $_defaultCurrencyCode = 'USD';
+    protected $_defaultCurrency = 'USD';
 
     public function __construct($apiKey) {
         $this->_httpClient = new halo\protocol\http\Client();
@@ -47,13 +47,13 @@ class Mediator implements IMediator, core\IDumpable {
 
 
 // Curreny
-    public function setDefaultCurrencyCode($code) {
-        $this->_defaultCurrencyCode = $code;
+    public function setDefaultCurrency($code) {
+        $this->_defaultCurrency = $code;
         return $this;
     }
 
-    public function getDefaultCurrencyCode() {
-        return $this->_defaultCurrencyCode;
+    public function getDefaultCurrency() {
+        return $this->_defaultCurrency;
     }
 
 
@@ -154,7 +154,7 @@ class Mediator implements IMediator, core\IDumpable {
         $input = [];
 
         if($amount !== null) {
-            $amount = mint\Currency::factory($amount, $this->_defaultCurrencyCode);
+            $amount = mint\Currency::factory($amount, $this->_defaultCurrency);
             $input['amount'] = $amount->getIntegerAmount();
         }
 
@@ -179,12 +179,12 @@ class Mediator implements IMediator, core\IDumpable {
         $input = [];
 
         if($amount !== null) {
-            $amount = mint\Currency::factory($amount, $this->_defaultCurrencyCode);
+            $amount = mint\Currency::factory($amount, $this->_defaultCurrency);
             $input['amount'] = $amount->getIntegerAmount();
         }
 
         if($applicationFee !== null) {
-            $applicationFee = mint\Currency::factory($applicationFee, $this->_defaultCurrencyCode);
+            $applicationFee = mint\Currency::factory($applicationFee, $this->_defaultCurrency);
             $input['application_fee'] = $application->getIntegerAmount();
         }
 

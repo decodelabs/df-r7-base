@@ -57,8 +57,8 @@ interface IMediator {
     public function getApiKey();
 
 // Currency
-    public function setDefaultCurrencyCode($code);
-    public function getDefaultCurrencyCode();
+    public function setDefaultCurrency($code);
+    public function getDefaultCurrency();
 
 
 // Charges
