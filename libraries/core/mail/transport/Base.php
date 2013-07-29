@@ -59,11 +59,25 @@ abstract class Base implements core\mail\ITransport {
     }
 
     public static function getAvailableTransports() {
-        return [
-            'Mail' => 'PHP native mail()',
-            'Smtp' => 'External SMTP connection',
-            'DevMail' => 'Dummy transport stored in local database for testing purposes'
-        ];
+        $output = array();
+
+        foreach(df\Launchpad::$loader->lookupFileList('core/mail/transport', 'php') as $name => $path) {
+            $name = substr($name, 0, -4);
+
+            if(in_array($name, ['Base', '_manifest'])) {
+                continue;
+            }
+
+            $class = 'df\\core\\mail\\transport\\'.$name;
+
+            if(!class_exists($class)) {
+                continue;
+            }
+
+            $output[$name] = $class::getDescription();
+        }
+
+        return $output;
     }
 
     protected function _prepareMessage(core\mail\IMessage $message) {
@@ -108,4 +122,9 @@ abstract class Base implements core\mail\ITransport {
     }
 
     public function __construct(array $settings=null) {}
+
+    public static function getName() {
+        $parts = explode('\\', get_called_class());
+        return array_pop($parts);
+    }
 }

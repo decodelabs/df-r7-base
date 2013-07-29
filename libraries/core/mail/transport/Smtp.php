@@ -13,6 +13,10 @@ class Smtp extends Base {
 
     protected $_mediator;
 
+    public static function getDescription() {
+        return 'External SMTP connection';
+    }
+
     public function __construct(array $settings=null) {
         if($settings !== null) {
             if(!isset($settings['dsn'])) {

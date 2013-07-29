@@ -11,6 +11,10 @@ use df\axis;
     
 class DevMail extends Base {
 
+    public static function getDescription() {
+        return 'Dummy transport stored in local database for testing purposes';
+    }
+
     public function send(core\mail\IMessage $message) {
         $this->_prepareMessage($message);
         $model = axis\Model::factory('mail');

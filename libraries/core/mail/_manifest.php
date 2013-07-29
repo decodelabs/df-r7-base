@@ -70,6 +70,8 @@ interface IMessage extends core\mime\IMultiPart {
 }
 
 interface ITransport {
+    public static function getName();
+    public static function getDescription();
     public function send(IMessage $message);
 }
 

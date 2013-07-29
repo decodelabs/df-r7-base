@@ -10,6 +10,10 @@ use df\core;
     
 class Mail extends Base {
 
+    public static function getDescription() {
+        return 'PHP native mail()';
+    }
+
     public function send(core\mail\IMessage $message) {
         $this->_prepareMessage($message);
         $headers = $message->getHeaderString(['to', 'subject']);
