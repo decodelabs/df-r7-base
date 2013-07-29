@@ -92,8 +92,8 @@ class Currency implements ICurrency, core\IDumpable {
         return $output;
     }
 
-    public static function isRecognisedCode($code) {
-        return in_array($code, self::$_currencies);
+    public static function isRecognizedCode($code) {
+        return isset(self::$_currencies[$code]) || in_array($code, self::$_currencies);
     }
 
     public function __construct($amount, $code) {
@@ -114,12 +114,16 @@ class Currency implements ICurrency, core\IDumpable {
         return (int)round($this->_amount * $this->getDecimalFactor());
     }
 
-    public function setCode($code) {
+    public static function normalizeCode($code) {
         if(isset(self::$_currencies[$code])) {
             $code = self::$_currencies[$code];
         }
 
-        $this->_code = strtoupper($code);
+        return strtoupper($code);
+    }
+
+    public function setCode($code) {
+        $this->_code = self::normalizeCode($code);
         return $this;
     }
 
@@ -132,8 +136,8 @@ class Currency implements ICurrency, core\IDumpable {
             ->setCode($code);
     }
 
-    public function hasRecognisedCode() {
-        return $this->isRecognisedCode($this->_code);
+    public function hasRecognizedCode() {
+        return $this->isRecognizedCode($this->_code);
     }
 
     public function getDecimalPlaces() {
