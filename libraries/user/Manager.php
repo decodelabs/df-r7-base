@@ -23,8 +23,6 @@ class Manager implements IManager, core\IDumpable {
     const SESSION_TRANSITION_LIFETIME = 10;
     const SESSION_TRANSITION_COOLOFF = 20;
 
-    const REMEMBER_PURGE_THRESHOLD = 20;
-    
     protected $_client;
     
     protected $_sessionDescriptor;
@@ -234,10 +232,6 @@ class Manager implements IManager, core\IDumpable {
         $key = $model->generateRememberKey($this->_client);
         $perpetuator->perpetuateRememberKey($this, $key);
         
-        if((mt_rand() % 100) < self::REMEMBER_PURGE_THRESHOLD) {
-            $model->purgeRememberKeys();
-        }
-
         // Store session
         $session->set(self::CLIENT_SESSION_KEY, $this->_client);
 
@@ -399,6 +393,7 @@ class Manager implements IManager, core\IDumpable {
         
         if((mt_rand() % 100) < self::SESSION_GC_PROBABILITY) {
             $this->_sessionBackend->collectGarbage();
+            $this->_getUserModel()->purgeRememberKeys();
         }
         
         if(!$this->_sessionDescriptor->hasJustTransitioned(120)
