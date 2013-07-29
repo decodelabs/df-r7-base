@@ -141,6 +141,10 @@ trait TElementContent {
     }
 
     protected function _renderChild($value) {
+        if(is_callable($value)) {
+            $value = $value();
+        }
+
         if(is_array($value)) {
             $output = '';
             
