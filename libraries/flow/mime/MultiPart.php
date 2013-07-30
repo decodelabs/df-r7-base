@@ -38,7 +38,7 @@ class MultiPart implements IMultiPart, core\IDumpable {
                 $output->addPart(self::fromString($part));
             }
         } else {
-            $output = new ContentPart($body, $headers);
+            $output = new ContentPart($body, $headers, true);
         }
         
         return $output;

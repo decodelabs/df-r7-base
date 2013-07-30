@@ -16,7 +16,7 @@ class ContentPart implements IContentPart, core\IDumpable {
 
     protected $_content = null;
 
-    public function __construct($content, $headers=null) {
+    public function __construct($content, $headers=null, $decodeContent=false) {
         $this->_headers = core\collection\HeaderMap::factory($headers);
 
         if($headers === null || !$this->_headers->has('content-type')) {
@@ -27,7 +27,49 @@ class ContentPart implements IContentPart, core\IDumpable {
             $this->_headers->set('content-transfer-encoding', core\string\IEncoding::A7BIT);
         }
 
+        if($decodeContent) {
+            $encoding = $headers->get('content-transfer-encoding');
+            
+            switch($encoding) {
+                case core\string\IEncoding::A7BIT:
+                case core\string\IEncoding::A8BIT:
+                    $content = $this->_unchunk($content, IPart::LINE_LENGTH, IPart::LINE_END);
+                    break;
+
+                case core\string\IEncoding::QP:
+                    $content = quoted_printable_decode($content);
+                    break;
+
+                case core\string\IEncoding::BASE64:
+                    $content = base64_decode($this->_unchunk($content, IPart::LINE_LENGTH, IPart::LINE_END));
+                    break;
+
+                case core\string\IEncoding::BINARY:
+                    break;
+                    
+                default: 
+                    throw new InvalidArgumentException(
+                        'Invalid encoding type: '.$encoding
+                    );
+            }
+        }
+
         $this->setContent($content);
+    }
+
+    protected function _unchunk($content, $length, $end) {
+        $strlen = strlen($content) + $length - 1;
+        $endlen = strlen($end);
+        $output = '';
+
+        for($i = 0; $i < $strlen; $i += $length) {
+            if($i) {
+                $output .= substr($content, $i - $length, $length);
+                $i += $endlen;
+            }
+        }
+
+        return $output;
     }
 
     public function isMultiPart() {
