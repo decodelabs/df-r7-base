@@ -47,11 +47,16 @@ class Comms implements core\ISharedHelper {
 
 
 // Notifications
-    public function newNotification() {
-
+    public function notify($subject, $body, $to=null) {
+        return $this->sendNotification($this->newNotification($subject, $body, $to));
     }
 
-    public function sendNotification() {
+    public function newNotification($subject, $body, $to=null) {
+        return $this->_manager->newNotification($subject, $body, $to);
+    }
 
+    public function sendNotification(flow\INotification $notification) {
+        $this->_manager->sendNotification($notification);
+        return $this;
     }
 }

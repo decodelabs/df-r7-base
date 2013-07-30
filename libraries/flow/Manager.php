@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\flow;
 use df\user;
+use df\flex;
     
 class Manager implements IManager {
 
@@ -27,6 +28,39 @@ class Manager implements IManager {
 
     public function onApplicationShutdown() {
         $this->_saveFlashQueue();
+    }
+
+
+## Notification
+    public function newNotification($subject, $body, $to=null, $from=null) {
+        return new Notification($subject, $body, $to, $from);
+    }
+
+    public function sendNotification(INotification $notification) {
+        $emails = $notification->getToEmails();
+        $userModel = user\Manager::getInstance($this->_application)->getUserModel();
+        $userList = $userModel->getClientDataList($notification->getToUsers(), array_keys($emails));
+
+        foreach($userList as $user) {
+            $emails[$user->getEmail()] = $user->getFullName();
+        }
+
+        $parser = new flex\simpleTags\Parser($notification->getBody());
+
+        $mail = new flow\mail\Message();
+        $mail->setSubject($notification->getSubject());
+        $mail->setBodyHtml($parser->toHtml());
+
+        foreach($emails as $address => $name) {
+            $mail->addToAddress($address, $name);
+        }
+
+        if($from = $notification->getFromEmail()) {
+            $mail->setFromAddress($from);
+        }
+
+        $mail->send();
+        return $this;
     }
 
 

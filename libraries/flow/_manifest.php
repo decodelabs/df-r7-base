@@ -20,6 +20,10 @@ class RuntimeException extends \RuntimeException implements IException {}
 // Interfaces
 interface IManager extends core\IManager {
 
+// Notification
+    public function newNotification($subject, $body, $to=null, $from=null);
+    public function sendNotification(INotification $notification);
+
 // Flash
     public function setFlashLimit($limit);
     public function getFlashLimit();
@@ -77,4 +81,26 @@ class FlashQueue {
     public $constant = array();
     public $queued = array();
     public $instant = array();
+}
+
+
+interface INotification {
+
+    public function setSubject($subject);
+    public function getSubject();
+    public function setBody($body);
+    public function getBody();
+
+    public function setTo($to);
+    public function addTo($to);
+    public function addToEmail($email);
+    public function getToEmails();
+    public function clearToEmails();
+    public function addToUser($id);
+    public function getToUsers();
+    public function clearToUsers();
+    public function clearTo();
+
+    public function setFromEmail($email=null);
+    public function getFromEmail();
 }
