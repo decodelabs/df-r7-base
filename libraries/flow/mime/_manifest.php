@@ -3,10 +3,11 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\mime;
+namespace df\flow\mime;
 
 use df;
 use df\core;
+use df\flow;
     
 
 // Exceptions

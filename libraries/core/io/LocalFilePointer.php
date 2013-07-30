@@ -6,6 +6,7 @@
 namespace df\core\io;
 
 use df\core;
+use df\flow;
 
 class LocalFilePointer implements ILocalFilePointer, core\IDumpable {
     
@@ -55,7 +56,7 @@ class LocalFilePointer implements ILocalFilePointer, core\IDumpable {
 
     public function getContentType() {
         if($this->_contentType === null) {
-            $this->_contentType = core\mime\Type::fileToMime($this->_path);
+            $this->_contentType = flow\mime\Type::fileToMime($this->_path);
         }
 
         return $this->_contentType;

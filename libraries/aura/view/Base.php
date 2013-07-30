@@ -10,6 +10,7 @@ use df\core;
 use df\aura;
 use df\arch;
 use df\halo;
+use df\flow;
 
 class Base implements IView {
     
@@ -128,7 +129,7 @@ class Base implements IView {
     }
 
     public function getContentType() {
-        return core\mime\Type::extToMime($this->_type);
+        return flow\mime\Type::extToMime($this->_type);
     }
     
     public function getContentLength() {

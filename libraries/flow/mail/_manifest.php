@@ -24,7 +24,7 @@ interface IAddress extends core\IStringProvider {
     public function isValid();
 }
 
-interface IMessage extends core\mime\IMultiPart {
+interface IMessage extends flow\mime\IMultiPart {
     public function setSubject($subject);
     public function getSubject();
 

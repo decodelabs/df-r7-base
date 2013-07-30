@@ -8,10 +8,11 @@ namespace df\halo\protocol\http\upload;
 use df;
 use df\core;
 use df\halo;
+use df\flow;
     
 class Handler implements halo\protocol\http\IUploadHandler {
 
-    use core\mime\TAcceptTypeProcessor;
+    use flow\mime\TAcceptTypeProcessor;
 
     protected $_files = array();
     protected $_extensions = array();

@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\flow;
     
-class Message extends core\mime\MultiPart implements IMessage {
+class Message extends flow\mime\MultiPart implements IMessage {
 
     protected $_from;
     protected $_to = array();
@@ -97,9 +97,9 @@ class Message extends core\mime\MultiPart implements IMessage {
         $this->_createAltPart();
 
         if($this->_bodyHtml === null) {
-            $this->_bodyHtml = (new core\mime\ContentPart($content))
+            $this->_bodyHtml = (new flow\mime\ContentPart($content))
                 ->setContentType('text/html')
-                ->setEncoding(core\mime\IMessageEncoding::QP);
+                ->setEncoding(flow\mime\IMessageEncoding::QP);
 
             $this->_altPart->addPart($this->_bodyHtml);
         } else {
@@ -119,9 +119,9 @@ class Message extends core\mime\MultiPart implements IMessage {
         $content = str_replace(["\r", "\n"], ['', "\r\n"], $content);
 
         if($this->_bodyText === null) {
-            $this->_bodyText = (new core\mime\ContentPart($content))
+            $this->_bodyText = (new flow\mime\ContentPart($content))
                 ->setContentType('text/plain')
-                ->setEncoding(core\mime\IMessageEncoding::QP);
+                ->setEncoding(flow\mime\IMessageEncoding::QP);
 
             $this->_altPart->prependPart($this->_bodyText);
         } else {
@@ -140,7 +140,7 @@ class Message extends core\mime\MultiPart implements IMessage {
             return false;
         }
 
-        $this->_altPart = new core\mime\MultiPart(core\mime\IMultiPart::ALTERNATIVE);
+        $this->_altPart = new flow\mime\MultiPart(flow\mime\IMultiPart::ALTERNATIVE);
         $this->prependPart($this->_altPart);
     }
 
@@ -174,7 +174,7 @@ class Message extends core\mime\MultiPart implements IMessage {
 
     public function addStringAttachment($string, $fileName, $contentType=null) {
         if($contentType === null) {
-            $contentType = core\mime\Type::fileToMime($fileName);
+            $contentType = flow\mime\Type::fileToMime($fileName);
         }
 
         $part = $this->newContentPart($string)
