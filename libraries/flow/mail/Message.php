@@ -3,10 +3,11 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\mail;
+namespace df\flow\mail;
 
 use df;
 use df\core;
+use df\flow;
     
 class Message extends core\mime\MultiPart implements IMessage {
 
@@ -435,7 +436,7 @@ class Message extends core\mime\MultiPart implements IMessage {
 
     public function send(ITransport $transport=null) {
         if(!$transport) {
-            $transport = core\mail\transport\Base::factory();
+            $transport = flow\mail\transport\Base::factory();
         }
 
         return $transport->send($this);

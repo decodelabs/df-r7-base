@@ -3,10 +3,11 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\mail\transport;
+namespace df\flow\mail\transport;
 
 use df;
 use df\core;
+use df\flow;
 use df\halo;
 
 class Smtp extends Base {
@@ -20,19 +21,19 @@ class Smtp extends Base {
     public function __construct(array $settings=null) {
         if($settings !== null) {
             if(!isset($settings['dsn'])) {
-                throw new core\mail\InvalidArgumentException(
+                throw new flow\mail\InvalidArgumentException(
                     'SMTP settings does not include DSN'
                 );
             }
 
             if(!isset($settings['username'])) {
-                throw new core\mail\InvalidArgumentException(
+                throw new flow\mail\InvalidArgumentException(
                     'SMTP settings does not include username'
                 );
             }
 
             if(!isset($settings['password'])) {
-                throw new core\mail\InvalidArgumentException(
+                throw new flow\mail\InvalidArgumentException(
                     'SMTP settings does not include password'
                 );
             }
@@ -52,9 +53,9 @@ class Smtp extends Base {
         return $this;
     }
 
-    public function send(core\mail\IMessage $message) {
+    public function send(flow\mail\IMessage $message) {
         if(!$this->_mediator) {
-            $config = core\mail\Config::getInstance();
+            $config = flow\mail\Config::getInstance();
             $settings = $config->getDefaultTransportSettings('Smtp');
             $this->__construct($settings);
         }

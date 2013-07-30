@@ -8,6 +8,7 @@ namespace df\halo\protocol\smtp;
 use df;
 use df\core;
 use df\halo;
+use df\flow;
     
 class Mediator implements IMediator {
 
@@ -227,7 +228,7 @@ class Mediator implements IMediator {
             );
         }
 
-        if($address instanceof core\mail\IAddress) {
+        if($address instanceof flow\mail\IAddress) {
             $address = $address->getAddress();
         }
 
@@ -252,7 +253,7 @@ class Mediator implements IMediator {
             );
         }
 
-        if($address instanceof core\mail\IAddress) {
+        if($address instanceof flow\mail\IAddress) {
             $address = $address->getAddress();
         }
 

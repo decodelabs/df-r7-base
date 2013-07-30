@@ -7,6 +7,7 @@ namespace df\core\uri;
 
 use df;
 use df\core;
+use df\flow;
 
 class MailtoUrl implements IMailtoUrl, core\IDumpable {
     
@@ -39,7 +40,7 @@ class MailtoUrl implements IMailtoUrl, core\IDumpable {
             return $this;
         }
 
-        if($url instanceof core\mail\IAddress) {
+        if($url instanceof flow\mail\IAddress) {
             $url = $url->getAddress();
         }
         

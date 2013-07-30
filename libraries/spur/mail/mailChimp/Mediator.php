@@ -8,6 +8,7 @@ namespace df\spur\mail\mailChimp;
 use df;
 use df\core;
 use df\spur;
+use df\flow;
 use df\halo;
     
 class Mediator implements IMediator, \Serializable {
@@ -234,7 +235,7 @@ class Mediator implements IMediator, \Serializable {
     }
 
     public function updateEmailAddress($listId, $memberId, $newEmailAddress) {
-        $newEmailAddress = core\mail\Address::factory($newEmailAddress);
+        $newEmailAddress = flow\mail\Address::factory($newEmailAddress);
 
         $this->callServer('listUpdateMember', $listId, $memberId, [
             'EMAIL' => $newEmailAddress->getAddress()

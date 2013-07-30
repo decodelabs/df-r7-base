@@ -3,10 +3,11 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\mail;
+namespace df\flow\mail;
 
 use df;
 use df\core;
+use df\flow;
     
 class Address implements IAddress, core\IDumpable {
 

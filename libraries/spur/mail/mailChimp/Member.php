@@ -8,6 +8,7 @@ namespace df\spur\mail\mailChimp;
 use df;
 use df\core;
 use df\spur;
+use df\flow;
 use df\halo;
 
 class Member implements IMember, core\IDumpable {
@@ -84,7 +85,7 @@ class Member implements IMember, core\IDumpable {
     }
 
     public function getEmailAddress() {
-        return new core\mail\Address($this->_email);
+        return new flow\mail\Address($this->_email);
     }
 
     public function getId() {
@@ -181,7 +182,7 @@ class Member implements IMember, core\IDumpable {
 
 // Entry
     public function setEmailAddress($address) {
-        $address = core\mail\Address::factory($address);
+        $address = flow\mail\Address::factory($address);
 
         if(!$address->isValid()) {
             throw new InvalidArgumentException(

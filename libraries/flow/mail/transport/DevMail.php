@@ -3,10 +3,11 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\mail\transport;
+namespace df\flow\mail\transport;
 
 use df;
 use df\core;
+use df\flow;
 use df\axis;
 use df\arch;
     
@@ -16,13 +17,13 @@ class DevMail extends Base {
         return 'Dummy transport stored in local database for testing purposes';
     }
 
-    public function send(core\mail\IMessage $message) {
+    public function send(flow\mail\IMessage $message) {
         $this->_prepareMessage($message);
         $model = axis\Model::factory('mail');
 
-        if(!$model instanceof core\mail\IMailModel) {
-            throw new core\mail\RuntimeException(
-                'Mail model does not implements core\\mail\\IMailModel'
+        if(!$model instanceof flow\mail\IMailModel) {
+            throw new flow\mail\RuntimeException(
+                'Mail model does not implements flow\\mail\\IMailModel'
             );
         }
 

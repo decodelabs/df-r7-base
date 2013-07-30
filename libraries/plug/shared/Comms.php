@@ -14,6 +14,8 @@ class Comms implements core\ISharedHelper {
 
     use core\TSharedHelper;
 
+
+// Flash messages
     public function getFlashManager() {
         return arch\flash\Manager::getInstance($this->_context->application);
     }
@@ -55,4 +57,8 @@ class Comms implements core\ISharedHelper {
 
         return $this;
     }
+
+
+// Notifications
+    
 }

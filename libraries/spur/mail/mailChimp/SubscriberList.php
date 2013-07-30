@@ -8,6 +8,7 @@ namespace df\spur\mail\mailChimp;
 use df;
 use df\core;
 use df\spur;
+use df\flow;
     
 class SubscriberList implements IList, core\IDumpable {
     
@@ -38,7 +39,7 @@ class SubscriberList implements IList, core\IDumpable {
         $this->_creationDate = $apiData['date_created'];
         $this->_emailTypeOption = $apiData['email_type_option'];
         $this->_useAwesomeBar = $apiData['use_awesomebar'];
-        $this->_defaultFromAddress = core\mail\Address::factory($apiData['default_from_email'], $apiData['default_from_name']);
+        $this->_defaultFromAddress = flow\mail\Address::factory($apiData['default_from_email'], $apiData['default_from_name']);
         $this->_defaultSubject = $apiData['default_subject'];
         $this->_defaultLanguage = $apiData['default_language'];
         $this->_listRating = $apiData['list_rating'];
@@ -103,7 +104,7 @@ class SubscriberList implements IList, core\IDumpable {
     }
 
     public function getBeamerAddress() {
-        return new core\mail\Address($this->_beamerAddress);
+        return new flow\mail\Address($this->_beamerAddress);
     }
 
     public function getVisibility() {

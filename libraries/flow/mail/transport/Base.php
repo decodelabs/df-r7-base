@@ -3,12 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\mail\transport;
+namespace df\flow\mail\transport;
 
 use df;
 use df\core;
+use df\flow;
     
-abstract class Base implements core\mail\ITransport {
+abstract class Base implements flow\mail\ITransport {
 
     public static function factory($name=null) {
         $settings = null;
@@ -22,7 +23,7 @@ abstract class Base implements core\mail\ITransport {
         if($name === null) {
             $name = self::getDefaultTransportName();
             $class = self::getTransportClass($name);
-            $config = core\mail\Config::getInstance();
+            $config = flow\mail\Config::getInstance();
             $settings = $config->getDefaultTransportSettings($name);
         }
 
@@ -33,7 +34,7 @@ abstract class Base implements core\mail\ITransport {
         if(df\Launchpad::$application->isDevelopment()) {
             return 'DevMail';
         } else {
-            $config = core\mail\Config::getInstance();
+            $config = flow\mail\Config::getInstance();
             $name = $config->getDefaultTransport();
 
             if(!self::getTransportClass($name)) {
@@ -45,7 +46,7 @@ abstract class Base implements core\mail\ITransport {
     }
 
     public static function getTransportClass($name) {
-        $class = 'df\\core\\mail\\transport\\'.$name;
+        $class = 'df\\flow\\mail\\transport\\'.$name;
 
         if(class_exists($class)) {
             return $class;
@@ -61,14 +62,14 @@ abstract class Base implements core\mail\ITransport {
     public static function getAvailableTransports() {
         $output = array();
 
-        foreach(df\Launchpad::$loader->lookupFileList('core/mail/transport', 'php') as $name => $path) {
+        foreach(df\Launchpad::$loader->lookupFileList('flow/mail/transport', 'php') as $name => $path) {
             $name = substr($name, 0, -4);
 
             if(in_array($name, ['Base', '_manifest'])) {
                 continue;
             }
 
-            $class = 'df\\core\\mail\\transport\\'.$name;
+            $class = 'df\\flow\\mail\\transport\\'.$name;
 
             if(!class_exists($class)) {
                 continue;
@@ -80,8 +81,8 @@ abstract class Base implements core\mail\ITransport {
         return $output;
     }
 
-    protected function _prepareMessage(core\mail\IMessage $message) {
-        $config = core\mail\Config::getInstance();
+    protected function _prepareMessage(flow\mail\IMessage $message) {
+        $config = flow\mail\Config::getInstance();
 
         if(!$isFromValid = $message->isFromAddressValid()) {
             if(!$message->isFromAddressSet()) {
@@ -94,21 +95,21 @@ abstract class Base implements core\mail\ITransport {
             }
 
             if(!$isFromValid) {
-                throw new core\mail\RuntimeException(
+                throw new flow\mail\RuntimeException(
                     'The mail is missing a valid from address'
                 );
             }
         }
 
         if(!$message->hasToAddresses()) {
-            throw new core\mail\RuntimeException(
+            throw new flow\mail\RuntimeException(
                 'The mail is missing a valid to address'
             );
         }
 
         if(!$message->isPrivate() && count($bcc = $config->getCatchAllBCCAddresses())) {
             foreach($bcc as $address) {
-                $address = core\mail\Address::factory($address);
+                $address = flow\mail\Address::factory($address);
 
                 if(!$message->hasToAddress($address)) {
                     try {
