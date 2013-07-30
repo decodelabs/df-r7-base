@@ -93,15 +93,20 @@ interface INotification {
 
     public function setTo($to);
     public function addTo($to);
-    public function addToEmail($email);
-    public function getToEmails();
-    public function clearToEmails();
-    public function addToUser($id);
-    public function getToUsers();
-    public function clearToUsers();
     public function clearTo();
     public function hasRecipients();
+    public function shouldFilterClient($flag=null);
 
-    public function setFromEmail($email=null);
+    public function addToEmail($email, $name=null);
+    public function getToEmails();
+    public function removeToEmail($email);
+    public function clearToEmails();
+    
+    public function addToUser($id);
+    public function getToUsers();
+    public function removeToUser($id);
+    public function clearToUsers();
+
+    public function setFromEmail($email=null, $name=null);
     public function getFromEmail();
 }

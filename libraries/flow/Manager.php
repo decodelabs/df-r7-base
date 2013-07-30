@@ -41,16 +41,16 @@ class Manager implements IManager {
         $userManager = user\Manager::getInstance($this->_application);
         $userModel = $userManager->getUserModel();
         $userList = $userModel->getClientDataList($notification->getToUsers(), array_keys($emails));
+        $client = $userManager->client;
 
         foreach($userList as $user) {
             $emails[$user->getEmail()] = $user->getFullName();
         }
 
-        if(!$notification->hasRecipients()) {
-            $client = $userManager->client;
-            $emails = [
-                $client->getEmail() => $client->getFullName()
-            ];
+        if($notification->shouldFilterClient()) {
+            unset($emails[$client->getEmail()]);
+        } else if(!$notification->hasRecipients()) {
+            $emails = [$client->getEmail() => $client->getFullName()];
         }
 
         if(empty($emails)) {
@@ -63,15 +63,16 @@ class Manager implements IManager {
         $mail->setSubject($notification->getSubject());
         $mail->setBodyHtml($parser->toHtml());
 
-        foreach($emails as $address => $name) {
-            $mail->addToAddress($address, $name);
-        }
-
         if($from = $notification->getFromEmail()) {
             $mail->setFromAddress($from);
         }
 
-        $mail->send();
+        foreach($emails as $address => $name) {
+            $activeMail = clone $mail;
+            $activeMail->addToAddress($address, $name);
+            $activeMail->send();
+        }
+
         return $this;
     }
 

@@ -16,6 +16,7 @@ class Notification implements INotification {
     protected $_toEmails = array();
     protected $_toUsers = array();
     protected $_from;
+    protected $_filterClient = false;
 
     public function __construct($subject, $body, $to=null, $from=null) {
         $this->setSubject($subject);
@@ -93,8 +94,27 @@ class Notification implements INotification {
         return $this;
     }
 
-    public function addToEmail($email) {
-        $email = flow\mail\Address::factory($email);
+    public function clearTo() {
+        return $this->clearToEmails()->clearToUsers();
+    }
+
+    public function hasRecipients() {
+        return !empty($this->_toEmails) || !empty($this->_toUsers);
+    }
+
+    public function shouldFilterClient($flag=null) {
+        if($flag !== null) {
+            $this->_filterClient = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_filterClient;
+    }
+
+
+
+    public function addToEmail($email, $name=null) {
+        $email = flow\mail\Address::factory($email, null);
         $this->_toEmails[$email->getAddress()] = $email->getName();
         return $this;
     }
@@ -102,6 +122,12 @@ class Notification implements INotification {
     public function getToEmails() {
         return $this->_toEmails;
     }   
+
+    public function removeToEmail($email) {
+        $email = flow\mail\Address::factory($email);
+        unset($this->_toEmails[$email->getAddress()]);
+        return $this;
+    }
 
     public function clearToEmails() {
         $this->_toEmails = array();
@@ -124,29 +150,29 @@ class Notification implements INotification {
         return array_keys($this->_toUsers);
     }
 
+    public function removeToUser($id) {
+        unset($this->_toUsers[(int)$id]);
+        return $this;
+    }
+
     public function clearToUsers() {
         $this->_toUsers = array();
         return $this;
     }
 
-    public function clearTo() {
-        return $this->clearToEmails()->clearToUsers();
-    }
-
-    public function hasRecipients() {
-        return !empty($this->_toEmails) || !empty($this->_toUsers);
-    }
-
 
 
 // From
-    public function setFromEmail($email=null) {
-        $this->_from = flow\mail\Address::factory($email);
+    public function setFromEmail($email=null, $name=null) {
+        if($email !== null) {
+            $email = flow\mail\Address::factory($email, $name);
+        }
+
+        $this->_from = $email;
         return $this;
     }
 
     public function getFromEmail() {
         return $this->_from;
     }
-
 }
