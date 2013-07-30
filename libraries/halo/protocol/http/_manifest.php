@@ -8,7 +8,6 @@ namespace df\halo\protocol\http;
 use df;
 use df\core;
 use df\halo;
-use df\flow;
 
 // Exceptions
 interface IException {}
@@ -278,7 +277,7 @@ interface IClient extends halo\peer\IClient {
 
 
 // Upload
-interface IUploadHandler extends flow\mime\IAcceptTypeProcessor, \Countable, \IteratorAggregate, \ArrayAccess {
+interface IUploadHandler extends core\io\IAcceptTypeProcessor, \Countable, \IteratorAggregate, \ArrayAccess {
 
     public function setAllowedExtensions(array $extensions);
     public function addAllowedExtensions(array $extensions);
