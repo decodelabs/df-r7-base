@@ -99,7 +99,7 @@ class Message extends flow\mime\MultiPart implements IMessage {
         if($this->_bodyHtml === null) {
             $this->_bodyHtml = (new flow\mime\ContentPart($content))
                 ->setContentType('text/html')
-                ->setEncoding(flow\mime\IMessageEncoding::QP);
+                ->setEncoding(core\string\IEncoding::QP);
 
             $this->_altPart->addPart($this->_bodyHtml);
         } else {
@@ -121,7 +121,7 @@ class Message extends flow\mime\MultiPart implements IMessage {
         if($this->_bodyText === null) {
             $this->_bodyText = (new flow\mime\ContentPart($content))
                 ->setContentType('text/plain')
-                ->setEncoding(flow\mime\IMessageEncoding::QP);
+                ->setEncoding(core\string\IEncoding::QP);
 
             $this->_altPart->prependPart($this->_bodyText);
         } else {

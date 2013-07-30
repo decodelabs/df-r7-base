@@ -18,7 +18,6 @@ class Manager implements IManager {
     const SESSION_NAMESPACE = 'flow';
     const FLASH_SESSION_KEY = 'flashQueue';
 
-    protected $_flashLimit = 15;
     protected $_flashQueue;
     protected $_isFlashQueueProcessed = false;
 
@@ -36,17 +35,19 @@ class Manager implements IManager {
 
 // Limit
     public function setFlashLimit($limit) {
-        $this->_flashLimit = (int)$limit;
+        $this->_loadFlashQueue();
+        $this->_flashQueue->limit = (int)$limit;
 
-        if($this->_flashLimit <= 0) {
-            $this->_flashLimit = 1;
+        if($this->_flashQueue->limit <= 0) {
+            $this->_flashQueue->limit = 1;
         }
 
         return $this;
     }
 
     public function getFlashLimit() {
-        return $this->_flashLimit;
+        $this->_loadFlashQueue();
+        return $this->_flashQueue->limit;
     }
 
 
@@ -70,7 +71,7 @@ class Manager implements IManager {
                 }
             }
 
-            $limit = $this->_flashLimit - count($this->_flashQueue->instant);
+            $limit = $this->_flashQueue->limit - count($this->_flashQueue->instant);
 
             for($i = 0; $i < $limit; $i++) {
                 if(!$message = array_shift($this->_flashQueue->queued)) {
@@ -170,7 +171,7 @@ class Manager implements IManager {
 
         unset($this->_flashQueue->instant[$id], $this->_flashQueue->queued[$id]);
         
-        if($instantIfSpace && count($this->_flashQueue->instant) < $this->_flashLimit) {
+        if($instantIfSpace && count($this->_flashQueue->instant) < $this->_flashQueue->limit) {
             $this->_flashQueue->instant[$id] = $message;
         } else {
             $this->_flashQueue->queued[$id] = $message;

@@ -60,8 +60,8 @@ interface IEncoding {
     const BYTE4LE = 'byte4le';
     const BASE64 = 'BASE64';
     const HTML_ENTITIES = 'HTML-ENTITIES';
-    const E_7BIT = '7bit';
-    const E_8BIT = '8bit';
+    const A7BIT = '7bit';
+    const A8BIT = '8bit';
     const EUC_CN = 'EUC-CN';
     const CP936 = 'CP936';
     const HZ = 'HZ';

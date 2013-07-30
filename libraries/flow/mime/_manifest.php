@@ -17,32 +17,11 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 
 
 // Interfaces
-interface IMessageType {
-    const OCTETSTREAM = 'application/octet-stream';
-    const TEXT = 'text/plain';
-    const HTML = 'text/html';
-}
-
-interface IMessageDisposition {
-    const ATTACHMENT = 'attachment';
-    const INLINE = 'inline';
-}
-
-interface IMessageEncoding {
-    const E_7BIT = core\string\IEncoding::E_7BIT;
-    const E_8BIT = core\string\IEncoding::E_8BIT;
-    const QP = core\string\IEncoding::QP;
-    const BASE64 = core\string\IEncoding::BASE64;
-    const BINARY = core\string\IEncoding::BINARY;
-}
-
-interface IMessageLine {
-    const LENGTH = 74;
-    const END = PHP_EOL;
-}
-
-
 interface IPart extends core\IStringProvider, core\collection\IHeaderMapProvider {
+
+    const LINE_LENGTH = 74;
+    const LINE_END = PHP_EOL;
+
     public function isMultiPart();
 
     public function setContentType($type);

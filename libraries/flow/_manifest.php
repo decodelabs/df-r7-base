@@ -44,18 +44,13 @@ interface IManager extends core\IManager {
 }
 
 
-interface IMessage {
+interface IFlashMessage {
 
     const INFO = 'info';
     const SUCCESS = 'success';
     const ERROR = 'error';
     const WARNING = 'warning';
     const DEBUG = 'debug';
-
-}
-
-
-interface IFlashMessage extends IMessage {
     
     public function getId();
     public function setType($type);
@@ -78,6 +73,7 @@ interface IFlashMessage extends IMessage {
 
 
 class FlashQueue {
+    public $limit = 15;
     public $constant = array();
     public $queued = array();
     public $instant = array();

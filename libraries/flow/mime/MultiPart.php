@@ -156,7 +156,7 @@ class MultiPart implements IMultiPart, core\IDumpable {
     }
 
     public function toString() {
-        $output = $this->getHeaderString().IMessageLine::END.IMessageLine::END;
+        $output = $this->getHeaderString().IPart::LINE_END.IPart::LINE_END;
         $output .= $this->getBodyString();
 
         return $output;
@@ -187,7 +187,7 @@ class MultiPart implements IMultiPart, core\IDumpable {
     }
 
     public function getBodyString() {
-        $lineEnd = IMessageLine::END;
+        $lineEnd = IPart::LINE_END;
         $output = '';
 
         if($this->isMultiPart()) {

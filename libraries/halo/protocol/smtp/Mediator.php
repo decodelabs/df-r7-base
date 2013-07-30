@@ -278,7 +278,7 @@ class Mediator implements IMediator {
 
         $this->sendRequest('DATA', 354);
 
-        foreach(explode(flow\mime\IMessageLine::END, $data) as $line) {
+        foreach(explode(flow\mime\IPart::LINE_END, $data) as $line) {
             if(substr($line, 0, 1) == '.') {
                 $line = '.'.$line;
             }

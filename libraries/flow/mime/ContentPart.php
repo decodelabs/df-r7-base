@@ -20,11 +20,11 @@ class ContentPart implements IContentPart, core\IDumpable {
         $this->_headers = core\collection\HeaderMap::factory($headers);
 
         if($headers === null || !$this->_headers->has('content-type')) {
-            $this->_headers->set('content-type', IMessageType::TEXT.'; charset="utf-8"');
+            $this->_headers->set('content-type', 'text/plain; charset="utf-8"');
         }
 
         if($headers === null || !$this->_headers->has('content-transfer-encoding')) {
-            $this->_headers->set('content-transfer-encoding', IMessageEncoding::E_7BIT);
+            $this->_headers->set('content-transfer-encoding', core\string\IEncoding::A7BIT);
         }
 
         $this->setContent($content);
@@ -65,11 +65,11 @@ class ContentPart implements IContentPart, core\IDumpable {
 
     public function setEncoding($encoding) {
         switch($encoding) {
-            case IMessageEncoding::E_8BIT:
-            case IMessageEncoding::E_7BIT:
-            case IMessageEncoding::QP:
-            case IMessageEncoding::BASE64:
-            case IMessageEncoding::BINARY:
+            case core\string\IEncoding::A8BIT:
+            case core\string\IEncoding::A7BIT:
+            case core\string\IEncoding::QP:
+            case core\string\IEncoding::BASE64:
+            case core\string\IEncoding::BINARY:
                 break;
                 
             default: 
@@ -168,17 +168,17 @@ class ContentPart implements IContentPart, core\IDumpable {
         $content = $this->getContentString();
 
         switch($this->getEncoding()) {
-            case IMessageEncoding::E_8BIT:
-            case IMessageEncoding::E_7BIT:
-                return wordwrap($content, IMessageLine::LENGTH, IMessageLine::END, 1);
+            case core\string\IEncoding::A8BIT:
+            case core\string\IEncoding::A7BIT:
+                return wordwrap($content, IPart::LINE_LENGTH, IPart::LINE_END, 1);
 
-            case IMessageEncoding::QP:
+            case core\string\IEncoding::QP:
                 return quoted_printable_encode($content);
 
-            case IMessageEncoding::BASE64:
-                return rtrim(chunk_split(base64_encode($content), IMessageLine::LENGTH, IMessageLine::END));
+            case core\string\IEncoding::BASE64:
+                return rtrim(chunk_split(base64_encode($content), IPart::LINE_LENGTH, IPart::LINE_END));
 
-            case IMessageEncoding::BINARY:
+            case core\string\IEncoding::BINARY:
             default:
                 return $content;
         }
@@ -186,7 +186,7 @@ class ContentPart implements IContentPart, core\IDumpable {
 
 
     public function toString() {
-        $output = $this->getHeaderString().IMessageLine::END.IMessageLine::END;
+        $output = $this->getHeaderString().IPart::LINE_END.IPart::LINE_END;
         $output .= $this->getEncodedContent();
 
         return $output;
