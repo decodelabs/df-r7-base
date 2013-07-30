@@ -136,6 +136,10 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
         return $this->icon((bool)$value ? 'lock' : 'unlock', $body)
             ->addClass((bool)$value ? 'state-locked' : 'state-unlocked');
     }
+    
+    public function basicLink($url, $body) {
+        return $this->element('a', $body, ['href' => $this->_view->getContext()->normalizeOutputUrl($url)]);
+    }
 
     public function mailLink($address, $body=null) {
         if(empty($address)) {
