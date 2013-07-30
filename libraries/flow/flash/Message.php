@@ -3,11 +3,11 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\flash;
+namespace df\flow\flash;
 
 use df;
 use df\core;
-use df\arch;
+use df\flow;
 use df\user;
     
 class Message implements IMessage {

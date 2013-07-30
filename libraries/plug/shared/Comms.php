@@ -8,7 +8,7 @@ namespace df\plug\shared;
 use df;
 use df\core;
 use df\plug;
-use df\arch;
+use df\flow;
     
 class Comms implements core\ISharedHelper {
 
@@ -17,7 +17,7 @@ class Comms implements core\ISharedHelper {
 
 // Flash messages
     public function getFlashManager() {
-        return arch\flash\Manager::getInstance($this->_context->application);
+        return flow\flash\Manager::getInstance($this->_context->application);
     }
 
     public function flash($id, $message=null, $type=null) {

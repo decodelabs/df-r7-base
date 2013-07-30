@@ -3,11 +3,11 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\flash;
+namespace df\flow\flash;
 
 use df;
 use df\core;
-use df\arch;
+use df\flow;
 use df\user;
     
 class Manager implements IManager {
@@ -34,14 +34,6 @@ class Manager implements IManager {
         }
     }
 
-    /*
-    public function __destruct() {
-        if(!$this->_isSaved) {
-            $this->_saveQueue();
-        }
-    }
-    */
-
     public function onApplicationShutdown() {
         if(!$this->_isSaved) {
             $this->_saveQueue();
@@ -53,13 +45,9 @@ class Manager implements IManager {
             return false;
         }
 
-        try {
-            $session = user\Manager::getInstance($this->_application)->getSessionNamespace(self::SESSION_NAMESPACE);
-        } catch(\Exception $e) {
-            //return false;
-        }
-
+        $session = user\Manager::getInstance($this->_application)->getSessionNamespace(self::SESSION_NAMESPACE);
         $session->set(self::SESSION_KEY, $this->_queue);
+        
         $this->_isSaved = true;
         return true;
     }

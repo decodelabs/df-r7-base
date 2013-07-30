@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\aura;
 use df\arch;
+use df\flow;
     
 class FlashMessage extends Base {
 
@@ -54,7 +55,7 @@ class FlashMessage extends Base {
 
 
     public function setMessage($message, $type=null) {
-        $this->_message = clone arch\flash\Message::factory(null, $message, $type);
+        $this->_message = clone flow\flash\Message::factory(null, $message, $type);
         return $this;
     }
 

@@ -11,6 +11,7 @@ use df\aura;
 use df\arch;
 use df\flex;
 use df\spur;
+use df\flow;
 
 class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
     
@@ -169,7 +170,7 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
     public function flashList() {
         try {
             $application = $this->_view->getContext()->getApplication();
-            $manager = arch\flash\Manager::getInstance($application);
+            $manager = flow\flash\Manager::getInstance($application);
             $messageCount = 0;
 
 
@@ -201,7 +202,6 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
 
                 $messageCount++;
                 $output .= $this->flashMessage($message);
-                
             }
 
             $output .= '</section>';

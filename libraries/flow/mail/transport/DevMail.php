@@ -29,7 +29,7 @@ class DevMail extends Base {
 
         $record = $model->storeDevMail($message);
 
-        $flash = arch\flash\Manager::getInstance();
+        $flash = flow\flash\Manager::getInstance();
         $flash->setInstantMessage(
             $flash->newMessage('devMail.send', 'A new email has been received at the dev mail inbox', 'debug')
                 ->setDescription('Mail is stored locally when in development mode so you don\'t spam your test users')

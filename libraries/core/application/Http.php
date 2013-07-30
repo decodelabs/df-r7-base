@@ -8,6 +8,7 @@ namespace df\core\application;
 use df;
 use df\core;
 use df\halo;
+use df\flow;
 use df\arch;
 
 class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo\protocol\http\IResponseAugmentorProvider {
@@ -217,7 +218,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
             df\Launchpad::$isTesting = true;
             df\Launchpad::$debug = $this->createDebugContext();
 
-            $flash = arch\flash\Manager::getInstance($this);
+            $flash = flow\flash\Manager::getInstance($this);
             $flash->setInstantMessage(
                 $flash->newMessage('global.debug', 'Currently in enforced debug mode', 'debug')
                     ->setLink('~devtools/application/debug-mode', 'Change debug settings')
