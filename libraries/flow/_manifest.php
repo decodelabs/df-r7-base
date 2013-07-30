@@ -100,6 +100,7 @@ interface INotification {
     public function getToUsers();
     public function clearToUsers();
     public function clearTo();
+    public function hasRecipients();
 
     public function setFromEmail($email=null);
     public function getFromEmail();

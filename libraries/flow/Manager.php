@@ -38,11 +38,23 @@ class Manager implements IManager {
 
     public function sendNotification(INotification $notification) {
         $emails = $notification->getToEmails();
-        $userModel = user\Manager::getInstance($this->_application)->getUserModel();
+        $userManager = user\Manager::getInstance($this->_application);
+        $userModel = $userManager->getUserModel();
         $userList = $userModel->getClientDataList($notification->getToUsers(), array_keys($emails));
 
         foreach($userList as $user) {
             $emails[$user->getEmail()] = $user->getFullName();
+        }
+
+        if(!$notification->hasRecipients()) {
+            $client = $userManager->client;
+            $emails = [
+                $client->getEmail() => $client->getFullName()
+            ];
+        }
+
+        if(empty($emails)) {
+            return $this;
         }
 
         $parser = new flex\simpleTags\Parser($notification->getBody());

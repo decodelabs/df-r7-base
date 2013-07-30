@@ -133,6 +133,10 @@ class Notification implements INotification {
         return $this->clearToEmails()->clearToUsers();
     }
 
+    public function hasRecipients() {
+        return !empty($this->_toEmails) || !empty($this->_toUsers);
+    }
+
 
 
 // From
