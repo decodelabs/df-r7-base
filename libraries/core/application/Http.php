@@ -218,11 +218,12 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
             df\Launchpad::$isTesting = true;
             df\Launchpad::$debug = $this->createDebugContext();
 
-            $flash = flow\flash\Manager::getInstance($this);
-            $flash->setInstantMessage(
-                $flash->newMessage('global.debug', 'Currently in enforced debug mode', 'debug')
-                    ->setLink('~devtools/application/debug-mode', 'Change debug settings')
-            );
+            flow\Manager::getInstance($this)->flashNow(
+                    'global.debug', 
+                    'Currently in enforced debug mode', 
+                    'debug'
+                )
+                ->setLink('~devtools/application/debug-mode', 'Change debug settings');
         }
 
         if(empty($this->_basePort)) {

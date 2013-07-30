@@ -170,19 +170,15 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
     public function flashList() {
         try {
             $application = $this->_view->getContext()->getApplication();
-            $manager = flow\flash\Manager::getInstance($application);
+            $manager = flow\Manager::getInstance($application);
+            $manager->processFlashQueue();
             $messageCount = 0;
-
-
-            if(!$manager->isFlushed()) {
-                $manager->flushQueue();
-            }
 
             $isProduction = $application->isProduction();
 
             $output = '<section class="widget-flashList">'."\n";
 
-            foreach($manager->getConstantMessages() as $message) {
+            foreach($manager->getConstantFlashes() as $message) {
                 $message->isDisplayed(true);
 
                 if($isProduction && $message->isDebug()) {
@@ -193,7 +189,7 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
                 $output .= $this->flashMessage($message);
             }
 
-            foreach($manager->getInstantMessages() as $message) {
+            foreach($manager->getInstantFlashes() as $message) {
                 $message->isDisplayed(true);
 
                 if($isProduction && $message->isDebug()) {

@@ -14,51 +14,44 @@ class Comms implements core\ISharedHelper {
 
     use core\TSharedHelper;
 
+    protected $_manager;
 
-// Flash messages
-    public function getFlashManager() {
-        return flow\flash\Manager::getInstance($this->_context->application);
+    public function __construct(core\IContext $context) {
+        $this->_context = $context;
+        $this->_manager = flow\Manager::getInstance($this->_context->application);
     }
 
-    public function flash($id, $message=null, $type=null) {
-        $manager = $this->getFlashManager();
-        $message = $manager->newMessage($id, $message, $type);
-        $manager->queueMessage($message);
 
-        return $message;
+// Flash messages
+    public function flash($id, $message=null, $type=null) {
+        return $this->_manager->flash($id, $message, $type);
     }
 
     public function flashNow($id, $message=null, $type=null) {
-        $manager = $this->getFlashManager();
-        $message = $manager->newMessage($id, $message, $type);
-        $manager->setInstantMessage($message);
-
-        return $message;
+        return $this->_manager->flashNow($id, $message, $type);
     }
 
     public function flashAlways($id, $message=null, $type=null) {
-        $manager = $this->getFlashManager();
-        $message = $manager->newMessage($id, $message, $type);
-        $manager->setConstantMessage($message);
-
-        return $message;
+        return $this->_manager->flashAlways($id, $message, $type);
     }
 
     public function removeConstantFlash($id) {
-        $manager = $this->getFlashManager();
-        $manager->removeConstantMessage($id);
-
+        $this->_manager->removeConstantFlash($id);
         return $this;
     }
 
     public function removeQueuedFlash($id) {
-        $manager = $this->getFlashManager();
-        $manager->removeQueuedMessage($id);
-
+        $this->_manager->removeQueuedFlash($id);
         return $this;
     }
 
 
 // Notifications
-    
+    public function newNotification() {
+
+    }
+
+    public function sendNotification() {
+
+    }
 }

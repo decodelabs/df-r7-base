@@ -155,13 +155,6 @@ class MultiPart implements IMultiPart, core\IDumpable {
         return $output;
     }
 
-    public function newMessage($type=IMultiPart::MIXED) {
-        $output = new Message($type);
-        $this->addPart($output);
-        return $output;
-    }
-
-
     public function toString() {
         $output = $this->getHeaderString().IMessageLine::END.IMessageLine::END;
         $output .= $this->getBodyString();

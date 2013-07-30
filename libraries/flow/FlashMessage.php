@@ -3,28 +3,28 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\flow\flash;
+namespace df\flow;
 
 use df;
 use df\core;
 use df\flow;
 use df\user;
     
-class Message implements IMessage {
+class FlashMessage implements IFlashMessage {
 
     protected $_id;
     protected $_isDisplayed = false;
     protected $_displayCount = 0;
-    protected $_type = IMessage::INFO;
+    protected $_type = IFlashMessage::INFO;
     protected $_message;
     protected $_description;
     protected $_link;
     protected $_linkText;
 
     public static function factory($id, $message=null, $type=null) {
-        if($id instanceof IMessage) {
+        if($id instanceof IFlashMessage) {
             return $id;
-        } else if($message instanceof IMessage) {
+        } else if($message instanceof IFlashMessage) {
             return $message;
         }
 
@@ -55,15 +55,15 @@ class Message implements IMessage {
 
     public function setType($type) {
         switch($type) {
-            case IMessage::INFO:
-            case IMessage::SUCCESS:
-            case IMessage::ERROR:
-            case IMessage::WARNING:
-            case IMessage::DEBUG:
+            case IFlashMessage::INFO:
+            case IFlashMessage::SUCCESS:
+            case IFlashMessage::ERROR:
+            case IFlashMessage::WARNING:
+            case IFlashMessage::DEBUG:
                 break;
 
             default: 
-                $type = IMessage::INFO;
+                $type = IFlashMessage::INFO;
                 break;
         }
 
@@ -76,7 +76,7 @@ class Message implements IMessage {
     }
 
     public function isDebug() {
-        return $this->_type === IMessage::DEBUG;
+        return $this->_type === IFlashMessage::DEBUG;
     }
 
 

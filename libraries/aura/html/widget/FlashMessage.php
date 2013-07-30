@@ -55,7 +55,7 @@ class FlashMessage extends Base {
 
 
     public function setMessage($message, $type=null) {
-        $this->_message = clone flow\flash\Message::factory(null, $message, $type);
+        $this->_message = clone flow\FlashMessage::factory(null, $message, $type);
         return $this;
     }
 
