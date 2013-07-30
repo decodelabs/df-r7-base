@@ -68,7 +68,7 @@ class Manager implements IManager, core\IDumpable {
         if($regenKeyring) {
             try {
                 $this->_client->setKeyring(
-                    $this->_getUserModel()->generateKeyring($this->_client)
+                    $this->getUserModel()->generateKeyring($this->_client)
                 );
             } catch(\Exception $e) {
                 if($rethrowException) {
@@ -150,7 +150,7 @@ class Manager implements IManager, core\IDumpable {
             );
         }
         
-        $model = $this->_getUserModel();
+        $model = $this->getUserModel();
         
         // Fetch user
         $result = new user\authentication\Result($name);
@@ -207,7 +207,7 @@ class Manager implements IManager, core\IDumpable {
     }
 
     public function authenticateRememberKey(RememberKey $key) {
-        $model = $this->_getUserModel();
+        $model = $this->getUserModel();
 
         if(!$model->hasRememberKey($key)) {
             return false;
@@ -239,7 +239,7 @@ class Manager implements IManager, core\IDumpable {
     }
 
     public function refreshClientData() {
-        $model = $this->_getUserModel();
+        $model = $this->getUserModel();
         $data = $model->getClientData($this->getClient()->getId());
         $this->importClientData($data);
 
@@ -262,7 +262,7 @@ class Manager implements IManager, core\IDumpable {
         return $this;
     }
 
-    protected function _getUserModel() {
+    public function getUserModel() {
         $model = axis\Model::factory('user', $this->_application);
         
         if(!$model instanceof IUserModel) {
@@ -336,7 +336,7 @@ class Manager implements IManager, core\IDumpable {
     }
 
     protected function _loadSessionBackend() {
-        $this->_sessionBackend = $this->_getUserModel()->getSessionBackend();
+        $this->_sessionBackend = $this->getUserModel()->getSessionBackend();
 
         if(!$this->_sessionBackend instanceof user\ISessionBackend) {
             $this->_sessionBackend = new user\session\backend\Sqlite($this);
@@ -393,7 +393,7 @@ class Manager implements IManager, core\IDumpable {
         
         if((mt_rand() % 100) < self::SESSION_GC_PROBABILITY) {
             $this->_sessionBackend->collectGarbage();
-            $this->_getUserModel()->purgeRememberKeys();
+            $this->getUserModel()->purgeRememberKeys();
         }
         
         if(!$this->_sessionDescriptor->hasJustTransitioned(120)
@@ -497,7 +497,7 @@ class Manager implements IManager, core\IDumpable {
             $this->_sessionPerpetuator->destroy($this);
 
             if($key) {
-                $this->_getUserModel()->destroyRememberKey($key);
+                $this->getUserModel()->destroyRememberKey($key);
             }
         }
         
