@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\arch\notify;
+namespace df\arch\flash;
 
 use df;
 use df\core;
@@ -14,8 +14,8 @@ class Manager implements IManager {
 
     use core\TManager;
 
-    const REGISTRY_PREFIX = 'manager://notify';
-    const SESSION_NAMESPACE = 'notify';
+    const REGISTRY_PREFIX = 'manager://flash';
+    const SESSION_NAMESPACE = 'flash';
     const SESSION_KEY = 'queue';
 
     protected $_limit = 15;

@@ -32,7 +32,7 @@ class Delete extends arch\form\Action {
         
         if(static::IS_PERMANENT) {
             $fs->push(
-                $this->html->notification(
+                $this->html->flashMessage(
                     $this->_('CAUTION: This action is permanent!'), 'warning'
                 )
             );
@@ -87,7 +87,7 @@ class Delete extends arch\form\Action {
             $this->_deleteItem();
             $itemName = $this->_getItemName();
             
-            $this->comms->notify(
+            $this->comms->flash(
                 core\string\Manipulator::formatId($itemName).'.deleted', 
                 $this->_(
                     'The %n% has been successfully deleted', 

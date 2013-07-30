@@ -81,7 +81,7 @@ abstract class Action extends arch\Action implements IAction {
             $keys = $session->getAllKeys();
             
             if(count($keys) > static::MAX_SESSIONS) {
-                $this->_context->comms->notify(
+                $this->_context->comms->flash(
                     'form.session.prune',
                     $this->_context->_('The maximum form session threshold has been reached'),
                     'debug'

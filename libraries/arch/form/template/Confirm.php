@@ -69,9 +69,9 @@ abstract class Confirm extends arch\form\Action {
         if($this->values->isValid()) {
             $output = $this->_apply();
             
-            $this->comms->notify(
+            $this->comms->flash(
                 core\string\Manipulator::formatId($this->_getItemName()).'.confirm', 
-                $this->_getNotifyMessage(), 
+                $this->_getFlashMessage(), 
                 'success'
             );
             
@@ -85,7 +85,7 @@ abstract class Confirm extends arch\form\Action {
         }
     }
 
-    protected function _getNotifyMessage() {
+    protected function _getFlashMessage() {
         return $this->_('Action successfully completed');
     }
     

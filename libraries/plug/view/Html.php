@@ -166,10 +166,10 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
             ->setIcon($result ? $onIcon : $offIcon);
     }
 
-    public function notificationList() {
+    public function flashList() {
         try {
             $application = $this->_view->getContext()->getApplication();
-            $manager = arch\notify\Manager::getInstance($application);
+            $manager = arch\flash\Manager::getInstance($application);
             $messageCount = 0;
 
 
@@ -179,7 +179,7 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
 
             $isProduction = $application->isProduction();
 
-            $output = '<section class="widget-notificationList">'."\n";
+            $output = '<section class="widget-flashList">'."\n";
 
             foreach($manager->getConstantMessages() as $message) {
                 $message->isDisplayed(true);
@@ -189,7 +189,7 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
                 }
 
                 $messageCount++;
-                $output .= $this->notification($message);
+                $output .= $this->flashMessage($message);
             }
 
             foreach($manager->getInstantMessages() as $message) {
@@ -200,7 +200,7 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
                 }
 
                 $messageCount++;
-                $output .= $this->notification($message);
+                $output .= $this->flashMessage($message);
                 
             }
 

@@ -217,9 +217,9 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
             df\Launchpad::$isTesting = true;
             df\Launchpad::$debug = $this->createDebugContext();
 
-            $notify = arch\notify\Manager::getInstance($this);
-            $notify->setInstantMessage(
-                $notify->newMessage('global.debug', 'Currently in enforced debug mode', 'debug')
+            $flash = arch\flash\Manager::getInstance($this);
+            $flash->setInstantMessage(
+                $flash->newMessage('global.debug', 'Currently in enforced debug mode', 'debug')
                     ->setLink('~devtools/application/debug-mode', 'Change debug settings')
             );
         }

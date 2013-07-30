@@ -10,7 +10,7 @@ use df\core;
 use df\aura;
 use df\arch;
     
-class Notification extends Base {
+class FlashMessage extends Base {
 
     const PRIMARY_TAG = 'div';
 
@@ -54,7 +54,7 @@ class Notification extends Base {
 
 
     public function setMessage($message, $type=null) {
-        $this->_message = clone arch\notify\Message::factory(null, $message, $type);
+        $this->_message = clone arch\flash\Message::factory(null, $message, $type);
         return $this;
     }
 

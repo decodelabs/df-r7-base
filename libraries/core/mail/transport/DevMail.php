@@ -8,6 +8,7 @@ namespace df\core\mail\transport;
 use df;
 use df\core;
 use df\axis;
+use df\arch;
     
 class DevMail extends Base {
 
@@ -27,9 +28,9 @@ class DevMail extends Base {
 
         $record = $model->storeDevMail($message);
 
-        $notify = \df\arch\notify\Manager::getInstance();
-        $notify->setInstantMessage(
-            $notify->newMessage('devMail.send', 'A new email has been received at the dev mail inbox', 'debug')
+        $flash = arch\flash\Manager::getInstance();
+        $flash->setInstantMessage(
+            $flash->newMessage('devMail.send', 'A new email has been received at the dev mail inbox', 'debug')
                 ->setDescription('Mail is stored locally when in development mode so you don\'t spam your test users')
                 ->setLink('~devtools/mail/dev/details?mail='.$record['id'])
         );
