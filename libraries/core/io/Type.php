@@ -3,11 +3,10 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\flow\mime;
+namespace df\core\io;
 
 use df;
 use df\core;
-use df\flow;
 
 class Type {
 

@@ -6,7 +6,6 @@
 namespace df\core\io\channel;
 
 use df\core;
-use df\flow;
 
 class File implements core\io\IFile, core\io\ILocalFilePointer, core\io\IContainedStateChannel {
 
@@ -80,7 +79,7 @@ class File implements core\io\IFile, core\io\ILocalFilePointer, core\io\IContain
 
     public function getContentType() {
         if(!$this->_contentType) {
-            $this->_contentType = flow\mime\Type::fileToMime($this->_path);
+            $this->_contentType = core\io\Type::fileToMime($this->_path);
         }
         
         return $this->_contentType;

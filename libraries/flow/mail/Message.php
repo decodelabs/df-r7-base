@@ -174,7 +174,7 @@ class Message extends flow\mime\MultiPart implements IMessage {
 
     public function addStringAttachment($string, $fileName, $contentType=null) {
         if($contentType === null) {
-            $contentType = flow\mime\Type::fileToMime($fileName);
+            $contentType = core\io\Type::fileToMime($fileName);
         }
 
         $part = $this->newContentPart($string)
