@@ -12,6 +12,7 @@ use df\arch;
 
 class Html extends Base implements IHtmlView {
     
+    use TResponseView;
     use TLayoutView;
     
     const DEFAULT_TITLE = '*untitled';

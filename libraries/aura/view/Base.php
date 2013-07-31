@@ -17,10 +17,7 @@ class Base implements IView {
     use core\THelperProvider;
     use core\string\THtmlStringEscapeHandler;
     
-    protected $_headers;
-    protected $_cookies;
     protected $_contentProvider;
-    protected $_renderedContent = null;
     
     public static function factory($type, arch\IContext $context) {
         $type = ucfirst($type);
@@ -39,129 +36,6 @@ class Base implements IView {
     }
     
     
-// Response
-    public function isOk() {
-        return true;
-    }
-
-    public function getHeaders() {
-        if(!$this->_headers) {
-            $this->_headers = new halo\protocol\http\response\HeaderCollection();
-            $this->_headers->setCacheAccess('no-cache')
-                ->canStoreCache(false)
-                ->shouldRevalidateCache(true);
-        }
-        
-        return $this->_headers;
-    }
-    
-    public function setHeaders(core\collection\IHeaderMap $headers) {
-        $this->_headers = $headers;
-        return $this;
-    }
-
-    public function prepareHeaders() {
-        if($this->hasCookies()) {
-            $this->_cookies->applyTo($this->getHeaders());
-        }
-
-        return $this;
-    }
-
-    public function hasHeaders() {
-        return $this->_headers && !$this->_headers->isEmpty();
-    }
-
-    public function getCookies() {
-        if(!$this->_cookies) {
-            $this->_cookies = new halo\protocol\http\response\CookieCollection();
-        }
-        
-        return $this->_cookies;
-    }
-    
-    public function hasCookies() {
-        return $this->_cookies && !$this->_cookies->isEmpty();
-    }
-
-    public function onDispatchComplete() {
-        if($this->_renderedContent === null) {
-            $this->_renderedContent = $this->render();
-        }
-
-        $this->getHeaders()->set('Content-Type', $this->getContentType());
-        
-        return $this;
-    }
-    
-    public function getContent() {
-        if($this->_renderedContent === null) {
-            $this->_renderedContent = $this->render();
-        }
-        
-        return $this->_renderedContent;
-    }
-    
-    public function getEncodedContent() {
-        $content = $this->getContent();
-        
-        if(!$this->_headers || empty($content)) {
-            return $content;
-        }
-        
-        $contentEncoding = $this->_headers->get('content-encoding');
-        $transferEncoding = $this->_headers->get('transfer-encoding');
-        
-        if(!$contentEncoding && !$transferEncoding) {
-            return $content;
-        }
-        
-        return halo\protocol\http\response\Base::encodeContent(
-            $content, $contentEncoding, $transferEncoding
-        );
-    }
-    
-    public function setContentType($type) {
-        throw new RuntimeException(
-            'View content type cannot be changed'
-        );
-    }
-
-    public function getContentType() {
-        return core\io\Type::extToMime($this->_type);
-    }
-    
-    public function getContentLength() {
-        return strlen($this->getContent());
-    }
-    
-    public function setLastModified(core\time\IDate $date) {
-        $this->getHeaders()->set('last-modified', $date);
-        return $this;
-    }
-    
-    public function getLastModified() {
-        if($this->_headers && $this->_headers->has('last-modified')) {
-            return core\time\Date::factory($this->_headers->get('last-modified'));
-        }
-        
-        return new core\time\Date();
-    }
-    
-    public function getHeaderString(array $skipKeys=null) {
-        $this->prepareHeaders();
-        
-        return halo\protocol\http\response\Base::buildHeaderString($this->_headers);
-    }
-    
-    public function getResponseString() {
-        $output = $this->getHeaderString()."\r\n\r\n";
-        $output .= $this->getEncodedContent()."\r\n";
-                  
-        return $output;
-    }
-    
-    
 // Content
     public function getType() {
         return $this->_type;
@@ -176,16 +50,6 @@ class Base implements IView {
         return $this->_contentProvider;
     }
 
-// Attachment
-    public function setAttachmentFileName($fileName) {
-        $this->getHeaders()->setAttachmentFileName($fileName);
-        return $this;
-    }
-
-    public function getAttachmentFileName() {
-        return $this->getHeaders()->getAttachmentFileName();
-    }
-    
     
 // Args
     public function setArgs(array $args) {

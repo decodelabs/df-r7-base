@@ -95,7 +95,6 @@ interface IContentConsumer {
 interface IView extends 
     IContentConsumer, 
     IRenderTarget, 
-    halo\protocol\http\IStringResponse, 
     core\IArgContainer, 
     \ArrayAccess, 
     core\IHelperProvider, 
@@ -105,6 +104,43 @@ interface IView extends
     public function getType();
     public function render();
     public function newErrorContainer(\Exception $e);
+}
+
+
+interface IResponseView extends IView, halo\protocol\http\IStringResponse {}
+
+trait TResponseView {
+
+    use halo\protocol\http\TStringResponse;
+
+    protected $_renderedContent = null;
+
+    public function onDispatchComplete() {
+        if($this->_renderedContent === null) {
+            $this->_renderedContent = $this->render();
+        }
+
+        $this->prepareHeaders();
+        return $this;
+    }
+
+    public function getContent() {
+        if($this->_renderedContent === null) {
+            $this->_renderedContent = $this->render();
+        }
+        
+        return $this->_renderedContent;
+    }
+
+    public function setContentType($type) {
+        throw new RuntimeException(
+            'View content type cannot be changed'
+        );
+    }
+
+    public function getContentType() {
+        return core\io\Type::extToMime($this->_type);
+    }
 }
 
 
@@ -189,7 +225,7 @@ interface ILayoutMap {
 }
 
 
-interface IHtmlView extends ILayoutView {
+interface IHtmlView extends IResponseView, ILayoutView {
     public function getBodyTag();
     
     // Title
