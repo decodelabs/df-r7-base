@@ -17,6 +17,7 @@ interface IException {}
 class RuntimeException extends \RuntimeException implements IException {}
 class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 class ContentNotFoundException extends RuntimeException {}
+class BadMethodCallException extends \BadMethodCallException implements IException {}
 
 
 // Interfaces
