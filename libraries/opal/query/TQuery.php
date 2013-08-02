@@ -1243,11 +1243,13 @@ trait TQuery_Pageable {
     }
     
     public function getPaginator() {
+        /*
         if(!$this->_paginator) {
             $this->_paginator = $this->paginate()
                 ->setDefaultLimit($this->_limit)
                 ->setDefaultOffset($this->_offset);
         }
+        */
         
         return $this->_paginator;
     }
