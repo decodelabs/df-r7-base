@@ -1046,7 +1046,10 @@ trait TWidget_OrderedDataDrivenList {
     public function setData($data) {
         if($data instanceof core\collection\IPageable) {
             $paginator = $data->getPaginator();
-            $this->setStartIndex($paginator->getOffset());
+            
+            if($paginator) {
+                $this->setStartIndex($paginator->getOffset());
+            }
         }
 
         $this->_data = $data;
