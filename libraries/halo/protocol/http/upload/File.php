@@ -42,6 +42,11 @@ class File implements halo\protocol\http\IUploadFile {
             $fileName;
 
         $this->_type = $data['type'];
+
+        if($this->_type == 'application/octet-stream') {
+            $this->_type = core\io\Type::extToMime($this->_extension);
+        }
+
         $this->_tempPath = $data['tmp_name'];
         $this->_error = $data['error'];
         $this->_size = core\unit\FileSize::factory($data['size']);
