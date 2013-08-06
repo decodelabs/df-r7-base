@@ -8,6 +8,7 @@ namespace df\plug\shared;
 use df;
 use df\core;
 use df\aura;
+use df\mint;
 
 class Format implements core\ISharedHelper {
     
@@ -44,9 +45,18 @@ class Format implements core\ISharedHelper {
         return $this->percent($number, $locale);
     }
 
-    public function currency($number, $code, $locale=null) {
+    public function currency($number, $code=null, $locale=null) {
         if($locale === null) {
             $locale = $this->_context->getLocale();
+        }
+
+        if($number instanceof mint\ICurrency) {
+            $code = $number->getCode();
+            $number = $number->getAmount();
+        }
+
+        if($code === null) {
+            $code = 'USD';
         }
 
         return core\i18n\Manager::getInstance($this->_context->application)
