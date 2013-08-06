@@ -304,7 +304,9 @@ class CreditCard implements ICreditCard, core\IDumpable {
             return false;
         }
 
-        if($this->getExpiryDate()->isPast()) {
+        $date = clone $this->getExpiryDate();
+
+        if($date->modify('+1 month')->modify('-1 day')->isPast()) {
             return false;
         }
 
