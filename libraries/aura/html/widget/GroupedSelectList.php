@@ -88,7 +88,7 @@ class GroupedSelectList extends Base implements IGroupedSelectionInputWidget, IF
         }
 
         if(!$selectionFound && $this->_noSelectionLabel !== null) {
-            $groupList->unshift(new aura\html\Element('option', $this->_noSelectionLabel, ['value' => '--']));
+            $groupList->unshift(new aura\html\Element('option', $this->_noSelectionLabel, ['value' => null, 'disabled' => true, 'selected' => true]));
         }
         
         return $tag->renderWith($groupList, true);
