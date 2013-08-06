@@ -12,7 +12,6 @@ use df\arch;
 class Config extends core\Config implements IConfig {
     
     const ID = 'menus';
-    const IS_DISTRIBUTED = true;
     const STORE_IN_MEMORY = false;
     
     public function getDefaultValues() {

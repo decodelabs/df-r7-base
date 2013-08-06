@@ -503,8 +503,7 @@ interface IApplication {
     public static function getApplicationPath();
     public function getLocalDataStoragePath();
     public function getSharedDataStoragePath();
-    public function getLocalStaticStoragePath();
-    public function getSharedStaticStoragePath();
+    public function getStaticStoragePath();
     
     // Execute
     public function dispatch();

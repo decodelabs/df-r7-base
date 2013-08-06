@@ -13,7 +13,6 @@ abstract class Config implements IConfig, core\IDumpable {
     const REGISTRY_PREFIX = 'config://';
     
     const ID = null;
-    const IS_DISTRIBUTED = true;
     const USE_ENVIRONMENT_ID_BY_DEFAULT = false;
     const STORE_IN_MEMORY = true;
     
@@ -93,10 +92,6 @@ abstract class Config implements IConfig, core\IDumpable {
     
     final public function getConfigValues() {
         return $this->_values;
-    }
-    
-    final public function isConfigDistributed() {
-        return static::IS_DISTRIBUTED;
     }
     
     final public function save() {
@@ -189,11 +184,7 @@ abstract class Config implements IConfig, core\IDumpable {
     }
     
     private function _getBasePath() {
-        if(static::IS_DISTRIBUTED) {
-            return $this->_application->getSharedStaticStoragePath().'/config';
-        } else {
-            return $this->_application->getLocalStaticStoragePath().'/config';
-        }
+        return $this->_application->getStaticStoragePath().'/config';
     }
     
     private function _exportArray(array $values, $level=1) {

@@ -12,7 +12,6 @@ use df\halo;
 class Environment extends Config {
     
     const ID = 'environment';
-    const IS_DISTRIBUTED = false;
     const STORE_IN_MEMORY = true;
     const USE_ENVIRONMENT_ID_BY_DEFAULT = true;
     
@@ -32,7 +31,7 @@ class Environment extends Config {
 
     protected function _sanitizeValuesOnCreate() {
         try {
-            halo\process\Base::launchTask('application/init-gitignore');
+            halo\process\Base::launchTask('git/init-gitignore');
         } catch(\Exception $e) {}
     }
         

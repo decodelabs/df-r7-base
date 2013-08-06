@@ -49,12 +49,8 @@ abstract class Base implements core\IApplication, core\IDumpable {
         return df\Launchpad::$applicationPath.'/data/shared';
     }
     
-    public function getLocalStaticStoragePath() {
-        return df\Launchpad::$applicationPath.'/static/local';
-    }
-    
-    public function getSharedStaticStoragePath() {
-        return df\Launchpad::$applicationPath.'/static/shared';
+    public function getStaticStoragePath() {
+        return df\Launchpad::$applicationPath.'/data/static';
     }
     
     
