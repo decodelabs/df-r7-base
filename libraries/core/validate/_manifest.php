@@ -13,11 +13,12 @@ use df\opal;
 // Exceptions
 interface IException {}
 class RuntimeException extends \RuntimeException implements IException {}
+class BadMethodCallException extends \BadMethodCallException implements IException {}
 
 
 
 // Interfaces
-interface IHandler {
+interface IHandler extends \ArrayAccess {
     public function addField($name, $type);
     public function getField($name);
     public function getFields();

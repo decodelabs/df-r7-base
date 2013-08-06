@@ -55,6 +55,8 @@ class Handler implements IHandler {
         return (bool)$this->_isValid;
     }
     
+
+// Io
     public function getValues() {
         if($this->_isValid === null) {
             throw new RuntimeException(
@@ -76,7 +78,26 @@ class Handler implements IHandler {
             return $this->_values[$name];
         }
     }
+
+    public function offsetSet($offset, $value) {
+        throw new BadMethodCallException('Validator values cannot be set via array access');
+    }
+
+    public function offsetGet($offset) {
+        return $this->getValue($offset);
+    }
+
+    public function offsetExists($offset) {
+        return array_key_exists($offset, $this->_values);
+    }
+
+    public function offsetUnset($offset) {
+        throw new BadMethodCallException('Validator values cannot be set via array access');
+    }
     
+
+
+// Validate
     public function validate($data) {
         if(!$data instanceof core\collection\IInputTree) {
             $data = core\collection\InputTree::factory($data);
