@@ -110,6 +110,28 @@ interface IUserValueContainer extends IValueContainer {
 }
 
 
+// Chainer
+interface IChainable {
+    public function chain(Callable $callback);
+    public function chainIf($test, Callable $callback);
+}
+
+trait TChainable {
+    public function chain(Callable $callback) {
+        $callback->__invoke($this);
+        return $this;
+    }
+
+    public function chainIf($test, Callable $callback) {
+        if($test) {
+            $callback->__invoke($this);
+        }
+
+        return $this;
+    }
+}
+
+
 // Error container
 interface IErrorContainer {
     public function isValid();

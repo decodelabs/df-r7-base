@@ -160,7 +160,7 @@ interface IHavingClauseFactory extends IClauseFactory {
 
 
 // Query
-interface IQuery extends ISourceProvider, ITransactionAware, user\IAccessLock {
+interface IQuery extends ISourceProvider, ITransactionAware, user\IAccessLock, core\IChainable {
     public function getQueryType();
 }
 
