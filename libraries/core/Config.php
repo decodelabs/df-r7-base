@@ -97,6 +97,7 @@ abstract class Config implements IConfig, core\IDumpable {
     final public function save() {
         $this->_sanitizeValuesOnSave();
         $this->_saveValues();
+        $this->_onSave();
         
         return $this;
     }
@@ -127,6 +128,8 @@ abstract class Config implements IConfig, core\IDumpable {
     protected function _sanitizeValuesOnSave() {
         return null;
     }
+
+    protected function _onSave() {}
     
 // IO
     private function _loadValues() {
