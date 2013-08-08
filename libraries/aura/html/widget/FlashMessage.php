@@ -80,4 +80,9 @@ class FlashMessage extends Base {
     public function getDescription() {
         return $this->_description;
     }
+
+    public function setLink($link, $text=null) {
+        $this->_message->setLink($link, $text);
+        return $this;
+    }
 }
