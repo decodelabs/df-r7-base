@@ -151,6 +151,10 @@ class TaskBuild extends arch\task\Action {
             core\io\Util::chmod($entryPath, 0777, true);
         } catch(\Exception $e) {}
 
+        
+        // Clear cache
+        core\cache\Base::purgeAll();
+
 
         // End
         $this->response->writeLine('App build complete');
