@@ -106,10 +106,36 @@ class Manager implements IManager, core\IDumpable {
             }
         }
         
-        
-        
         return $entity;
     }
+
+
+
+// Events
+    public function triggerEvent(IEvent $event) {
+        if($event->hasHandler()) {
+            $handler = $this->getHandler($event->getHandler());
+
+            if($handler instanceof IEventHandler) {
+                $handler->triggerEvent($event);
+            }
+        }
+
+        if($event->hasEntityLocator()) {
+            Hook::triggerEvent($event);
+        }
+        
+        return $this;
+    }
+
+    public function triggerEntityEvent($locator, $action, array $data=null) {
+        return $this->triggerEvent(new Event($action, $data, $locator));
+    }
+
+    public function triggerHandlerEvent($handler, $action, array $data=null) {
+        return $this->triggerEvent(new Event($action, $data, null, $handler));
+    }
+
 
 
 // Dump

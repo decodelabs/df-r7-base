@@ -176,6 +176,10 @@ class Locator implements core\policy\IEntityLocator, core\IDumpable {
         }
     }
 
+    public function getEntityLocator() {
+        return $this;
+    }
+
 
 // Scheme
     public function setScheme($scheme) {

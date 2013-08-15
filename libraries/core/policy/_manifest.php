@@ -17,21 +17,31 @@ class UnexpectedValueException extends \UnexpectedValueException implements IExc
 
 
 // Interfaces
-interface IManager extends core\IManager {
+interface IManager extends IEventReceiver, core\IManager {
+    // Handlers
     public function registerHandler($scheme, IHandler $handler);
     public function unregisterHandler($scheme);
     public function getHandler($scheme);
     public function getHandlers();
-    public function fetchEntity($url);
+
+    // Entities
+    public function fetchEntity($locator);
+
+    // Events
+    public function triggerEntityEvent($locator, $action, array $data=null);
+    public function triggerHandlerEvent($handler, $action, array $data=null);
 }
 
 
 
+// Entity
 interface IHandler {}
 
 interface IEntityHandler extends IHandler {
     public function fetchEntity(IManager $manager, IEntityLocatorNode $node);
 }
+
+interface IEventHandler extends IHandler, IEventReceiver {}
 
 
 interface IEntityLocatorProvider {
@@ -49,7 +59,7 @@ interface IActiveParentEntity extends IParentEntity {
 }
 
 
-interface IEntityLocator extends core\IStringProvider  {
+interface IEntityLocator extends IEntityLocatorProvider, core\IStringProvider  {
     public function setScheme($scheme);
     public function getScheme();
 
@@ -90,3 +100,38 @@ interface IEntityLocatorNode extends core\IStringProvider {
     public function setId($id);
     public function getId();
 }
+
+
+
+
+// Event
+interface IEvent extends core\collection\IMap {
+    // Entity
+    public function setEntity($locator);
+    public function hasEntityLocator();
+    public function getEntityLocator();
+    public function hasCachedEntity();
+    public function getCachedEntity();
+    public function clearCachedEntity();
+
+    // Handler
+    public function setHandler($handler);
+    public function hasHandler();
+    public function getHandler();
+
+    // Action
+    public function setAction($action);
+    public function getAction();
+}
+
+interface IEventReceiver {
+    public function triggerEvent(IEvent $event);
+}
+
+interface IHook {
+    public static function triggerEvent(IEvent $event);
+    public function getName();
+    public function getActionMap();
+}
+
+class HookCache extends core\cache\Base {}
