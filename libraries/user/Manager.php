@@ -242,6 +242,7 @@ class Manager implements IManager, core\IDumpable {
         $model = $this->getUserModel();
         $data = $model->getClientData($this->getClient()->getId());
         $this->importClientData($data);
+        $this->regenerateKeyring();
 
         return $this;
     }
@@ -279,6 +280,15 @@ class Manager implements IManager, core\IDumpable {
         return $this;
     }
 
+    public function regenerateKeyring() {
+        $client = $this->getClient();
+
+        $client->setKeyring(
+            $this->getUserModel()->generateKeyring($client)
+        );
+
+        return $this;
+    }
 
 
     public function instigateGlobalKeyringRegeneration() {

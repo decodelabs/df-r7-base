@@ -54,6 +54,8 @@ interface IManager extends core\IManager {
     public function authenticateRememberKey(RememberKey $key);
     public function refreshClientData();
     public function importClientData(user\IClientDataObject $data);
+    public function regenerateKeyring();
+    public function instigateGlobalKeyringRegeneration();
     public function logout();
     
     
