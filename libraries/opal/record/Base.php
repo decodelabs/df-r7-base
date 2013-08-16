@@ -12,6 +12,8 @@ use df\user;
 
 class Base implements IRecord, \Serializable, core\IDumpable {
     
+    const BROADCAST_HOOK_EVENTS = false;
+
     use core\TValueMap;
     use core\collection\TExtractList;
     use user\TAccessLock;
@@ -668,23 +670,39 @@ class Base implements IRecord, \Serializable, core\IDumpable {
 
     public function triggerTaskEvent(opal\record\task\ITaskSet $taskSet, opal\record\task\IRecordTask $task, $when) {
         $taskName = $task->getRecordTaskName();
-        $funcPrefix = '_on';
+        $funcPrefix = null;
 
         if($when == opal\record\task\IRecordTask::EVENT_PRE) {
-            $funcPrefix .= 'Pre';
+            $funcPrefix = 'Pre';
         }
 
-        $func = $funcPrefix.$taskName;
+        $func = '_on'.$funcPrefix.$taskName;
 
         if(method_exists($this, $func)) {
             call_user_func_array([$this, $func], [$taskSet, $task]);
         }
 
+        if(static::BROADCAST_HOOK_EVENTS) {
+            $event = new core\policy\Event(
+                $funcPrefix.$taskName, 
+                ['taskSet' => $taskSet, 'task' => $task], 
+                $this
+            );
+            
+            $policyManager = core\policy\Manager::getInstance();
+            $policyManager->triggerEvent($event);
+        }
+
         if(in_array($taskName, ['Insert', 'Update', 'Replace'])) {
-            $func = $funcPrefix.'Save';
+            $func = '_on'.$funcPrefix.'Save';
 
             if(method_exists($this, $func)) {
                 call_user_func_array([$this, $func], [$taskSet, $task]);
+            }
+
+            if(static::BROADCAST_HOOK_EVENTS) {
+                $event->setAction($funcPrefix.'Save');
+                $policyManager->triggerEvent($event);
             }
         }
 
