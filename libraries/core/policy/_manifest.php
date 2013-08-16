@@ -128,7 +128,7 @@ interface IEventReceiver {
     public function triggerEvent(IEvent $event);
 }
 
-interface IHook {
+interface IHook extends core\IContextAware {
     public static function triggerEvent(IEvent $event);
     public function getName();
     public function getActionMap();

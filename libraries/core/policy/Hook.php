@@ -10,8 +10,9 @@ use df\core;
     
 abstract class Hook implements IHook {  
 
+    use core\TContextProxy;
+
     protected static $_actionMap = [];
-    protected $_context;
 
     public static function getClassList() {
         $list = [];
