@@ -71,44 +71,11 @@ interface IContext extends core\IContext, core\i18n\translate\ITranslationProxy,
 }
 
 
-
-interface IContextAware {
-    public function getContext();
-    public function hasContext();
-}
-
-trait TContextAware {
-    
-    protected $_context;
-    
-    public function getContext() {
-        return $this->_context;
-    }
-
-    public function hasContext() {
-        return $this->_context !== null;
-    }
-}
-
-
-trait TContextProxy {
-    
-    use TContextAware;
-    
-    public function __call($method, $args) {
-        return call_user_func_array(array($this->_context, $method), $args);
-    }
-    
-    public function __get($key) {
-        return $this->_context->__get($key);
-    }
-}
-
-interface IDirectoryHelper extends IContextAware, core\IHelper {}
+interface IDirectoryHelper extends core\IContextAware, core\IHelper {}
 
 trait TDirectoryHelper {
 
-    use TContextAware;
+    use core\TContextAware;
 
     public function __construct(IContext $context) {
         $this->_context = $context;
@@ -120,7 +87,7 @@ trait TDirectoryHelper {
 
 
 
-interface IDirectoryRequestApplication extends core\IApplication, IContextAware {
+interface IDirectoryRequestApplication extends core\IApplication, core\IContextAware {
     public function getDefaultDirectoryAccess();
 }
 
@@ -217,14 +184,14 @@ interface IProxyResponse {
 
 
 
-interface IController extends IContextAware, user\IAccessLock, IResponseForcer {
+interface IController extends core\IContextAware, user\IAccessLock, IResponseForcer {
     public function isControllerInline();
     public function setActiveAction(IAction $action=null);
     public function getActiveAction();
 }
 
 
-interface IAction extends IContextAware, user\IAccessLock, IResponseForcer {
+interface IAction extends core\IContextAware, user\IAccessLock, IResponseForcer {
     public function dispatch();
     public function isActionInline();
     public function getController();
@@ -233,12 +200,12 @@ interface IAction extends IContextAware, user\IAccessLock, IResponseForcer {
     public static function getControllerMethodName($controllerClass, IContext $context);
 }
 
-interface IComponent extends IContextAware, aura\view\IDeferredRenderable, user\IAccessLock, aura\view\ICascadingHelperProvider {
+interface IComponent extends core\IContextAware, aura\view\IDeferredRenderable, user\IAccessLock, aura\view\ICascadingHelperProvider {
     public function getName();
 }
 
 
-interface IFacetController extends IContextAware, IProxyResponse, core\IAttributeContainer, \ArrayAccess {
+interface IFacetController extends core\IContextAware, IProxyResponse, core\IAttributeContainer, \ArrayAccess {
     public function setInitializer(Callable $initializer=null);
     public function getInitializer();
 

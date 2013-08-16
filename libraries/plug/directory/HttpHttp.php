@@ -12,7 +12,7 @@ use df\halo;
 
 class HttpHttp implements arch\IDirectoryHelper {
     
-    use arch\TContextAware;
+    use core\TContextAware;
 
     protected $_httpRequest;
     

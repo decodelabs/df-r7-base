@@ -11,7 +11,7 @@ use df\arch;
 
 class Base implements IMenu, \Serializable, core\IDumpable {
     
-    use arch\TContextAware;
+    use core\TContextAware;
     
     const DEFAULT_SOURCE = 'Directory';
     

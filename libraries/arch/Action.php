@@ -11,7 +11,7 @@ use df\arch;
 
 class Action implements IAction, core\IDumpable {
     
-    use TContextProxy;
+    use core\TContextProxy;
     use TDirectoryAccessLock;
     use TResponseForcer;
     

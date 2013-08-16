@@ -11,7 +11,7 @@ use df\arch;
 
 
 // Interfaces
-interface IMenu extends arch\IContextAware, arch\navigation\IEntryListGenerator {
+interface IMenu extends core\IContextAware, arch\navigation\IEntryListGenerator {
     public function getId();
     public function setSubId($id);
     public function getSubId();

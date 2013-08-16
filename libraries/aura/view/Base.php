@@ -13,7 +13,7 @@ use df\halo;
 
 class Base implements IView {
     
-    use arch\TContextAware;
+    use core\TContextAware;
     use core\THelperProvider;
     use core\string\THtmlStringEscapeHandler;
     

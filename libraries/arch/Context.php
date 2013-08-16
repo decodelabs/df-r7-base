@@ -24,7 +24,7 @@ class Context implements IContext, \Serializable, core\IDumpable {
             $application = df\Launchpad::getActiveApplication();
         }
 
-        if($application instanceof arch\IContextAware) {
+        if($application instanceof core\IContextAware) {
             return $application->getContext();
         }
 
@@ -34,7 +34,7 @@ class Context implements IContext, \Serializable, core\IDumpable {
     public static function factory(core\IApplication $application, $request=null) {
         if(!empty($request)) {
             $request = arch\Request::factory($request);
-        } else if($application instanceof arch\IContextAware
+        } else if($application instanceof core\IContextAware
         && $application->hasContext()) {
             $request = $application->getContext()->location;
         } else {
@@ -48,7 +48,7 @@ class Context implements IContext, \Serializable, core\IDumpable {
         $this->application = $application;
         $this->location = $request;
 
-        if($this->application instanceof IContextAware 
+        if($this->application instanceof core\IContextAware 
         && $this->application->hasContext()) {
             $this->request = $this->application->getContext()->location;
         } else {
@@ -79,7 +79,7 @@ class Context implements IContext, \Serializable, core\IDumpable {
         $this->location = Request::factory($data);
         $this->application = df\Launchpad::$application;
 
-        if($this->application instanceof IContextAware 
+        if($this->application instanceof core\IContextAware 
         && $this->application->hasContext()) {
             $this->request = $this->application->getContext()->location;
         } else {
@@ -93,7 +93,7 @@ class Context implements IContext, \Serializable, core\IDumpable {
     
 // Application
     public function getDispatchContext() {
-        if(!$this->application instanceof IContextAware) {
+        if(!$this->application instanceof core\IContextAware) {
             throw new RuntimeException(
                 'Current application is not context aware'
             );

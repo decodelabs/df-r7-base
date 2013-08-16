@@ -12,7 +12,7 @@ use df\aura;
     
 class FacetController implements IFacetController {
 
-    use TContextAware;
+    use core\TContextAware;
     use core\TArrayAccessedAttributeContainer;
 
     protected $_initializer;

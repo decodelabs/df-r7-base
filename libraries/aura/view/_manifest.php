@@ -74,7 +74,7 @@ trait TDeferredRenderable {
 }
 
 
-interface IRenderTarget extends arch\IContextAware {
+interface IRenderTarget extends core\IContextAware {
     public function getView();
 }
 
@@ -340,7 +340,7 @@ trait THelper {
 }
 
 
-interface ICascadingHelperProvider extends arch\IContextAware, IRenderTargetProvider {
+interface ICascadingHelperProvider extends core\IContextAware, IRenderTargetProvider {
     public function __call($method, $args);
     public function __get($key);
 }

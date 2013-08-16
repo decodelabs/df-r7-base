@@ -12,7 +12,7 @@ use df\arch;
 
 class Template implements aura\view\ITemplate, core\IDumpable {
         
-    use arch\TContextAware;
+    use core\TContextAware;
     use core\TArrayAccessedArgContainer;
     use aura\view\TDeferredRenderable;
         

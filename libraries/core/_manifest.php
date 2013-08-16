@@ -754,6 +754,42 @@ class SharedContext implements IContext {
 
 class ContextException extends \RuntimeException implements IException {}
 
+interface IContextAware {
+    public function getContext();
+    public function hasContext();
+}
+
+trait TContextAware {
+    
+    protected $_context;
+    
+    public function getContext() {
+        return $this->_context;
+    }
+
+    public function hasContext() {
+        return $this->_context !== null;
+    }
+}
+
+
+trait TContextProxy {
+    
+    use TContextAware;
+    
+    public function __call($method, $args) {
+        if($this->_context) {
+            return call_user_func_array(array($this->_context, $method), $args);
+        }
+    }
+    
+    public function __get($key) {
+        if($this->_context) {
+            return $this->_context->__get($key);
+        }
+    }
+}
+
 interface ISharedHelper extends IHelper {}
 
 trait TSharedHelper {

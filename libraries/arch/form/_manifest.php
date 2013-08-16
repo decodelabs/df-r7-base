@@ -63,7 +63,7 @@ interface IAction extends arch\IAction, IActiveForm {
 }
 
 
-interface IDelegate extends IActiveForm, arch\IContextAware {
+interface IDelegate extends IActiveForm, core\IContextAware {
     public function getDelegateId();
     public function getDelegateKey();
     public function initialize();

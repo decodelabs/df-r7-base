@@ -12,7 +12,7 @@ use df\aura;
 
 class Delegate implements IDelegate {
     
-    use arch\TContextAware;
+    use core\TContextAware;
     use TForm;
     
     protected $_delegateId;

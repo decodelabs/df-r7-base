@@ -9,9 +9,9 @@ use df;
 use df\core;
 use df\arch;
 
-abstract class Base implements arch\navigation\menu\ISource, arch\IContextAware {
+abstract class Base implements arch\navigation\menu\ISource, core\IContextAware {
     
-    use arch\TContextAware;
+    use core\TContextAware;
 
     public static function loadAll(arch\IContext $context) {
         $output = array();

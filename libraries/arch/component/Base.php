@@ -13,7 +13,7 @@ use df\aura;
 
 abstract class Base implements arch\IComponent {
     
-    use arch\TContextAware;
+    use core\TContextAware;
     use user\TAccessLock;
     use core\TStringProvider;
     use aura\view\TDeferredRenderable;
