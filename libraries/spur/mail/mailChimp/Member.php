@@ -313,6 +313,17 @@ class Member implements IMember, core\IDumpable {
         $this->_mediator->callServer('listUpdateMember', $this->_listId, $this->_id, $merges, $this->_emailType, true);
         return $this;
     }
+    
+    public function unsubscribe($sendGoodbye=false, $sendNotify=false) {
+        $this->_mediator->callServer('listUnsubscribe', $this->_listId, $this->_email, false, (bool)$sendGoodbye, (bool)$sendNotify);
+        return $this;
+    }
+
+    public function delete($sendGoodbye=false, $sendNotify=false) {
+        $this->_mediator->callServer('listUnsubscribe', $this->_listId, $this->_email, true, (bool)$sendGoodbye, (bool)$sendNotify);
+        return $this;
+    }
+
 
 
 // Dump

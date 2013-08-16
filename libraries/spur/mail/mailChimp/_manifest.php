@@ -32,6 +32,7 @@ interface IMediator {
     public function fetchAllLists();
     public function fetchList($id);
     public function ensureSubscription($listId, $emailAddress, array $merges, array $groups, $emailType='html', $sendWelcome=false);
+    public function unsubscsribe($listId, $emailAddress, $sendGoodbye=false, $sendNotify=false);
 
     public function fetchGroupSets($listId);
     public function fetchGroups($listId);
@@ -42,6 +43,7 @@ interface IMediator {
     public function fetchMember($listId, $emailAddress);
     public function fetchMemberSet($listId, array $emailAddresses);
     public function updateEmailAddress($listId, $memberId, $newEmailAddress);
+    public function deleteMember($listId, $emailAddress, $sendGoodbye=false, $sendNotify=false);
 
     public function fetchWebHooks($listId);
     public function addWebHook($listId, $url, array $actions, array $sources);
@@ -95,6 +97,7 @@ interface IList extends IApiRepresentation {
     public function getModules();
 
     public function ensureSubscription($emailAddress, array $merges, array $groups, $emailType='html', $sendWelcome=false);
+    public function unsubscsribe($emailAddress, $sendGoodbye=false, $sendNotify=false);
 
     public function fetchGroupSets();
     public function fetchGroups();
@@ -102,6 +105,7 @@ interface IList extends IApiRepresentation {
 
     public function fetchMember($emailAddress);
     public function fetchMemberSet(array $emailAddresses);
+    public function deleteMember($emailAddress, $sendGoodbye=false, $sendNotify=false);
 
     public function fetchWebHooks();
     public function addWebHook($url, array $actions, array $sources);
@@ -177,6 +181,8 @@ interface IMember extends IApiRepresentation {
     public function addGroups(array $groups);
     
     public function save();
+    public function unsubscribe($sendGoodbye=false, $sendNotify=false);
+    public function delete($sendGoodbye=false, $sendNotify=false);
 }
 
 interface IWebHook extends IApiRepresentation {

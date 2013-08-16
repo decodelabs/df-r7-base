@@ -242,6 +242,12 @@ class SubscriberList implements IList, core\IDumpable {
         return $this;
     }
 
+    public function unsubscsribe($emailAddress, $sendGoodbye=false, $sendNotify=false) {
+        $this->_mediator->unsubscsribe($this->_id, $emailAddress, $sendGoodbye, $sendNotify);
+        return $this;
+    }
+
+
 
     public function fetchGroupSets() {
         return $this->_mediator->fetchGroupSets($this->_id);
@@ -263,6 +269,11 @@ class SubscriberList implements IList, core\IDumpable {
 
     public function fetchMemberSet(array $emailAddresses) {
         return $this->_mediator->fetchMemberSet($this->_id, $emailAddresses);
+    }
+
+    public function deleteMember($emailAddress, $sendGoodbye=false, $sendNotify=false) {
+        $this->_mediator->deleteMember($this->_id, $emailAddress, $sendGoodbye, $sendNotify);
+        return $this;
     }
 
 

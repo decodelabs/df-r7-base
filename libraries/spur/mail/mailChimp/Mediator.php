@@ -137,6 +137,12 @@ class Mediator implements IMediator, \Serializable {
         return $this;
     }
 
+    public function unsubscsribe($listId, $emailAddress, $sendGoodbye=false, $sendNotify=false) {
+        $emailAddress = flow\mail\Address::factory($emailAddress);
+        $this->callServer('listUnsubscribe', $listId, $emailAddress, true, (bool)$sendGoodbye, (bool)$sendNotify);
+        return $this;
+    }
+
 
 
 // Groups
@@ -241,6 +247,12 @@ class Mediator implements IMediator, \Serializable {
             'EMAIL' => $newEmailAddress->getAddress()
         ]);
 
+        return $this;
+    }
+
+    public function deleteMember($listId, $emailAddress, $sendGoodbye=false, $sendNotify=false) {
+        $emailAddress = flow\mail\Address::factory($emailAddress);
+        $this->callServer('listUnsubscribe', $listId, $emailAddress, true, (bool)$sendGoodbye, (bool)$sendNotify);
         return $this;
     }
 
