@@ -129,11 +129,11 @@ class Memcache implements core\cache\IBackend {
 
     public function count() {
         $output = 0;
-        $allSlabs = $memcache->getExtendedStats('slabs');
+        $allSlabs = $this->_connection->getExtendedStats('slabs');
 
         foreach($allSlabs as $server => $slabs) {
             foreach($slabs as $slabId => $slabMeta) {
-               $cdump = $memcache->getExtendedStats('cachedump', $slabId);
+               $cdump = $this->_connection->getExtendedStats('cachedump', $slabId);
 
                 foreach($cdump as $keys => $arrVal) {
                     if(!is_array($arrVal)) {
@@ -154,12 +154,16 @@ class Memcache implements core\cache\IBackend {
 
     public function getKeys() {
         $output = array();
-        $allSlabs = $memcache->getExtendedStats('slabs');
+        $allSlabs = $this->_connection->getExtendedStats('slabs');
         $length = strlen($this->_prefix);
 
         foreach($allSlabs as $server => $slabs) {
             foreach($slabs as $slabId => $slabMeta) {
-               $cdump = $memcache->getExtendedStats('cachedump', $slabId);
+                if(is_string($slabId)) {
+                    continue;
+                }
+
+                $cdump = $this->_connection->getExtendedStats('cachedump', $slabId);
 
                 foreach($cdump as $keys => $arrVal) {
                     if(!is_array($arrVal)) {
