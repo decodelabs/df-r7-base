@@ -25,10 +25,10 @@ class GroupedSelectList extends Base implements IGroupedSelectionInputWidget, IF
     protected $_markSelected = true;
     protected $_noSelectionLabel = '--';
 
-    public function __construct(arch\IContext $context, $name, $value=null, $options=null) {
+    public function __construct(arch\IContext $context, $name, $value=null, $options=null, $labelsAsValues=false) {
         $this->setName($name);
         $this->setValue($value);
-        $this->setOptions($options);
+        $this->setOptions($options, $labelsAsValues);
     }
         
     public function shouldMarkSelected($flag=null) {
