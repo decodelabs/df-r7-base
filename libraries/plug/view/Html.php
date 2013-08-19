@@ -427,22 +427,42 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
 
 
 // Image
-    public function image($url, $alt=null) {
-        return $this->element(
+    public function image($url, $alt=null, $width=null, $height=null) {
+        $output = $this->element(
             'img', null, [
                 'src' => $this->_view->uri->to($url),
                 'alt' => $alt
             ]
         );
+
+        if($width !== null) {
+            $output->setAttribute('width', $width);
+        }
+
+        if($height !== null) {
+            $output->setAttribute('height',  $height);
+        }
+
+        return $output;
     }
 
-    public function themeImage($path, $alt=null) {
-        return $this->element(
+    public function themeImage($path, $alt=null, $width=null, $height=null) {
+        $output = $this->element(
             'img', null, [
                 'src' => $this->_view->uri->themeAsset($path),
                 'alt' => $alt
             ]
         );
+
+        if($width !== null) {
+            $output->setAttribute('width', $width);
+        }
+
+        if($height !== null) {
+            $output->setAttribute('height',  $height);
+        }
+
+        return $output;
     }
 
 // Video
