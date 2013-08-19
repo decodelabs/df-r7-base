@@ -11,6 +11,8 @@ use df\core;
 class Apc implements core\cache\IBackend {
     
     use core\TValueMap;
+
+    protected static $_apcu = null;
     
     protected $_prefix;
     protected $_lifeTime;
@@ -21,11 +23,19 @@ class Apc implements core\cache\IBackend {
             return;
         }
 
-        apc_clear_cache('user');
-        apc_clear_cache('system');
+        if(self::$_apcu) {
+            apc_clear_cache();
+        } else {
+            apc_clear_cache('user');
+            apc_clear_cache('system');
+        }
     }
 
     public static function isLoadable() {
+        if(self::$_apcu === null) {
+            self::$_apcu = version_compare(PHP_VERSION, '5.5.0') >= 0;
+        }
+
         return extension_loaded('apc');
     }
     
