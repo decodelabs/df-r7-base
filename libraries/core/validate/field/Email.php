@@ -10,6 +10,9 @@ use df\core;
 
 class Email extends Base implements core\validate\IEmailField {
     
+    use core\validate\TStorageAwareField;
+    use core\validate\TUniqueCheckerField;
+
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
         
@@ -25,6 +28,7 @@ class Email extends Base implements core\validate\IEmailField {
             $node->addError('invalid', $this->_handler->_('This is not a valid email address'));
         }
         
+        $this->_validateUnique($node, $value);
         return $this->_finalize($node, $value);
     }
 }

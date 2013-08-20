@@ -296,12 +296,15 @@ interface IUniqueCheckerField extends IStorageAwareField {
     public function getStorageField();
     public function setUniqueFilterId($id);
     public function getUniqueFilterId();
+    public function setUniqueErrorMessage($message);
+    public function getUniqueErrorMessage();
 }
 
 trait TUniqueCheckerField {
 
     protected $_storageField;
     protected $_filterId;
+    protected $_uniqueErrorMessage;
 
     public function setStorageField($field) {
         $this->_storageField = $field;
@@ -321,6 +324,15 @@ trait TUniqueCheckerField {
         return $this->_filterId;
     }
 
+    public function setUniqueErrorMessage($message) {
+        $this->_uniqueErrorMessage = $message;
+        return $this;
+    }
+
+    public function getUniqueErrorMessage() {
+        return $this->_uniqueErrorMessage;
+    }
+
     protected function _validateUnique(core\collection\IInputTree $node, $value) {
         if($this->_storageAdapter) {
             if(null === ($fieldName = $this->_storageField)) {
@@ -329,7 +341,7 @@ trait TUniqueCheckerField {
 
             $query = (new opal\query\EntryPoint())
                 ->select()
-                ->from($this->_storageAdapter, 'slugUnit')
+                ->from($this->_storageAdapter, 'checkUnit')
                 ->where($fieldName, '=', $value);
 
             if($this->_filterId !== null) {
@@ -337,7 +349,13 @@ trait TUniqueCheckerField {
             }
 
             if($query->count()) {
-                $node->addError('unique', $this->_handler->_('Another record is already using that slug'));
+                $message = $this->_uniqueErrorMessage;
+
+                if($message === null) {
+                    $message = $this->_handler->_('That value has already been entered before');
+                }
+
+                $node->addError('unique', $message);
             }
         }
     }
@@ -359,7 +377,7 @@ interface IDurationField extends IField, IRangeField {
     public function getInputUnit();
 }
 
-interface IEmailField extends IField {}
+interface IEmailField extends IField, IUniqueCheckerField {}
 
 interface IEnumField extends IField {
     public function setOptions(array $options);
