@@ -17,6 +17,7 @@ class OneRelationValueContainer implements
         
     protected $_value;
     protected $_record = false;
+    protected $_parentRecord;
     protected $_field;
     
     public function __construct(axis\schema\IRelationField $field, opal\record\IRecord $parentRecord=null, $value=null) {
@@ -60,6 +61,7 @@ class OneRelationValueContainer implements
     }
     
     public function prepareToSetValue(opal\record\IRecord $record, $fieldName) {
+        $this->_parentRecord = $record;
         return $this;
     }
     
@@ -102,6 +104,11 @@ class OneRelationValueContainer implements
         
         $this->_value = $value;
         $this->_record = $record;
+
+        if($record && $this->_parentRecord) {
+            $this->_applyInversePopulation($this->_parentRecord);
+            $this->_parentRecord = null;
+        }
         
         return $this;
     }
