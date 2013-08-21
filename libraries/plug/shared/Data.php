@@ -182,6 +182,45 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
     }
 
 
+
+// JSON
+    public function jsonEncode($data) {
+        return json_encode($this->_prepareJsonData($data));
+    }
+
+    protected function _prepareJsonData($data) {
+        if(is_scalar($data)) {
+            return $data;
+        }
+
+        if($data instanceof core\time\IDate) {
+            return $data->format(core\time\Date::W3C);
+        }
+
+        if($data instanceof core\IArrayProvider) {
+            $data = $data->toArray();
+        }
+
+        if(!is_array($data)) {
+            if(method_exists($data, '__toString')) {
+                return (string)$data;
+            }
+
+            return $data;
+        }
+
+        foreach($data as $key => $value) {
+            $data[$key] = $this->_prepareJsonData($value);
+        }
+
+        return $data;
+    }
+
+    public function jsonDecode($data) {
+        return json_decode($data);
+    }
+
+
 // Crypt
     public function hash($message, $salt=null) {
         if($salt === null) {
