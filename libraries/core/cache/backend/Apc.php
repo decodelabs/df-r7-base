@@ -86,11 +86,11 @@ class Apc implements core\cache\IBackend {
     }
     
     public function clear() {
-        $info = apc_cache_info('user');
+        $setKey = self::$_apcu ? 'key' : 'info';
 
-        foreach($info['cache_list'] as $set) {
-            if(0 === strpos($set['info'], $this->_prefix)) {
-                apc_delete($set['info']);
+        foreach($this->_getCacheList() as $set) {
+            if(0 === strpos($set[$setKey], $this->_prefix)) {
+                apc_delete($set[$setKey]);
             }
         }
         
@@ -98,11 +98,11 @@ class Apc implements core\cache\IBackend {
     }
 
     public function clearBegins($key) {
-        $info = apc_cache_info('user');
+        $setKey = self::$_apcu ? 'key' : 'info';
 
-        foreach($info['cache_list'] as $set) {
-            if(0 === strpos($set['info'], $this->_prefix.$key)) {
-                apc_delete($set['info']);
+        foreach($this->_getCacheList() as $set) {
+            if(0 === strpos($set[$setKey], $this->_prefix.$key)) {
+                apc_delete($set[$setKey]);
             }
         }
         
@@ -110,13 +110,13 @@ class Apc implements core\cache\IBackend {
     }
 
     public function clearMatches($regex) {
-        $info = apc_cache_info('user');
         $prefixLength = strlen($this->_prefix);
+        $setKey = self::$_apcu ? 'key' : 'info';
 
-        foreach($info['cache_list'] as $set) {
-            if(0 === strpos($set['info'], $this->_prefix)
-            && preg_match($regex, substr($set['info'], $prefixLength))) {
-                apc_delete($set['info']);
+        foreach($this->_getCacheList() as $set) {
+            if(0 === strpos($set[$setKey], $this->_prefix)
+            && preg_match($regex, substr($set[$setKey], $prefixLength))) {
+                apc_delete($set[$setKey]);
             }
         }
         
@@ -125,10 +125,10 @@ class Apc implements core\cache\IBackend {
 
     public function count() {
         $output = 0;
-        $info = apc_cache_info('user');
+        $setKey = self::$_apcu ? 'key' : 'info';
 
-        foreach($info['cache_list'] as $key) {
-            if(0 === strpos($key['info'], $this->_prefix)) {
+        foreach($this->_getCacheList() as $set) {
+            if(0 === strpos($set[$setKey], $this->_prefix)) {
                 $output++;
             }
         }
@@ -138,12 +138,12 @@ class Apc implements core\cache\IBackend {
 
     public function getKeys() {
         $output = array();
-        $info = apc_cache_info('user');
         $length = strlen($this->_prefix);
+        $setKey = self::$_apcu ? 'key' : 'info';
 
-        foreach($info['cache_list'] as $key) {
-            if(0 === strpos($key['info'], $this->_prefix)) {
-                $output[] = substr($key['info'], $length);
+        foreach($this->_getCacheList() as $set) {
+            if(0 === strpos($set[$setKey], $this->_prefix)) {
+                $output[] = substr($set[$setKey], $length);
             }
         }
 
@@ -158,5 +158,19 @@ class Apc implements core\cache\IBackend {
         }
         
         return null;
+    }
+
+    protected function _getCacheList() {
+        if(self::$_apcu) {
+            $info = apc_cache_info();
+        } else {
+            $info = apc_cache_info('user');
+        }
+
+        if(isset($info['cache_list'])) {
+            return $info['cache_list'];
+        }
+
+        return [];
     }
 }
