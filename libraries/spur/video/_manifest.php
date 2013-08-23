@@ -19,6 +19,7 @@ class UnexpectedValueException extends \UnexpectedValueException implements IExc
 interface IVideoEmbed extends aura\html\IElementRepresentation {
     public function setUrl($url);
     public function getUrl();
+
     public function setWidth($width);
     public function scaleWidth($width);
     public function getWidth();
@@ -26,4 +27,13 @@ interface IVideoEmbed extends aura\html\IElementRepresentation {
     public function getHeight();
     public function setDimensions($width, $height=null);
     public function shouldAllowFullScreen($flag=null);
+
+    public function setStartTime($seconds);
+    public function getStartTime();
+    public function setEndTime($seconds);
+    public function getEndTime();
+    public function setDuration($seconds);
+    public function getDuration();
+
+    public function shouldAutoPlay($flag=null);
 }

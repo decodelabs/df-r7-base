@@ -25,6 +25,10 @@ class Embed implements IVideoEmbed {
     protected $_width = 640;
     protected $_height = 360;
     protected $_allowFullScreen = true;
+    protected $_startTime;
+    protected $_endTime;
+    protected $_duration;
+    protected $_autoPlay = false;
 
     public static function parse($embed) {
         $embed = trim($embed);
@@ -100,16 +104,7 @@ class Embed implements IVideoEmbed {
             $url = implode('?', $parts);
         }
 
-        $func = '_prepareGenericUrl';
-
-        foreach(self::$_urlMap as $search => $key) {
-            if(false !== stripos($url, $search)) {
-                $func = '_prepare'.ucfirst($key).'Url';
-                break;
-            }
-        }
-
-        $this->_url = $this->$func($url);
+        $this->_url = $url;
         return $this;
     }
 
@@ -178,10 +173,78 @@ class Embed implements IVideoEmbed {
     }
 
 
+// Duration
+    public function setStartTime($seconds) {
+        $this->_startTime = (int)$seconds;
+
+        if(!$this->_startTime) {
+            $this->_startTime = null;
+        }
+
+        return $this;
+    }
+
+    public function getStartTime() {
+        return $this->_startTime;
+    }
+
+    public function setEndTime($seconds) {
+        $this->_endTime = (int)$seconds;
+
+        if(!$this->_endTime) {
+            $this->_endTime = null;
+        } else {
+            $this->_duration = null;
+        }
+
+        return $this;
+    }
+
+    public function getEndTime() {
+        return $this->_endTime;
+    }
+
+    public function setDuration($seconds) {
+        $this->_duration = (int)$seconds;
+
+        if(!$this->_duration) {
+            $this->_duration = null;
+        } else {
+            $this->_endTime = null;
+        }
+
+        return $this;
+    }
+
+    public function getDuration() {
+        return $this->_duration;
+    }
+
+
+// Auto play
+    public function shouldAutoPlay($flag=null) {
+        if($flag !== null) {
+            $this->_autoPlay = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_autoPlay;
+    }
+
+
 // String
     public function render() {
+        $func = '_prepareGenericUrl';
+
+        foreach(self::$_urlMap as $search => $key) {
+            if(false !== stripos($this->_url, $search)) {
+                $func = '_prepare'.ucfirst($key).'Url';
+                break;
+            }
+        }
+
         $tag = new aura\html\Element('iframe', null, [
-            'src' => $this->_url,
+            'src' => $this->$func($this->_url),
             'width' => $this->_width,
             'height' => $this->_height,
             'frameborder' => 0
@@ -219,7 +282,25 @@ class Embed implements IVideoEmbed {
             }
         }
         
-        return 'http://www.youtube.com/embed/'.$id;
+        $output = new halo\protocol\http\Url('http://www.youtube.com/embed/'.$id);
+
+        if($this->_startTime !== null) {
+            $output->query->start = $this->_startTime;
+        }
+
+        if($this->_endTime !== null) {
+            $output->query->end = $this->_endTime;
+        }
+
+        if($this->_duration !== null) {
+            $output->query->end = $this->_duration + $this->_startTime;
+        }
+
+        if($this->_autoPlay) {
+            $output->query->autoplay = 1;
+        }
+
+        return $output;
     }
 
     protected function _prepareVimeoUrl($url) {
@@ -230,6 +311,26 @@ class Embed implements IVideoEmbed {
             return $url;
         }
 
-        return 'http://player.vimeo.com/video/'.$id;
+        $output = new halo\protocol\http\Url('http://player.vimeo.com/video/'.$id);
+
+        if($this->_autoPlay) {
+            $output->query->autoplay = 1;
+        }
+
+        /*
+        if($this->_startTime !== null) {
+            $output->query->start = $this->_startTime.'s';
+        }
+
+        if($this->_endTime !== null) {
+            $output->query->end = $this->_endTime.'s';
+        }
+
+        if($this->_duration !== null) {
+            $output->query->end = $this->_duration + $this->_startTime;
+        }
+        */
+
+        return $output;
     }
 }
