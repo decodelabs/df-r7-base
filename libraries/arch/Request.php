@@ -357,6 +357,34 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
 
         return true;
     }
+
+    public function matches($request) {
+        $request = self::factory($request);
+
+        if($this->_scheme != $request->_scheme) {
+            return false;
+        }
+
+        if($this->getLiteralPathString() != $request->getLiteralPathString()) {
+            return false;
+        }
+
+        return true;
+
+        if($this->_query) {
+            foreach($this->_query as $key => $value) {
+                if(!$request->_query) {
+                    return false;
+                }
+
+                if(!isset($request->_query->{$key}) || $request->_query[$key] != $value) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
     
     public function containsPath($request) {
         $request = self::factory($request);
@@ -389,13 +417,13 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             return false;
         }
 
-        if($rpString == $tpString && $request->_query) {
-            foreach($request->_query as $key => $value) {
-                if(!$this->_query) {
+        if($rpString == $tpString && $this->_query) {
+            foreach($this->_query as $key => $value) {
+                if(!$request->_query) {
                     return false;
                 }
 
-                if(!isset($this->_query->{$key}) || $$this->_query[$key] != $value) {
+                if(!isset($request->_query->{$key}) || $request->_query[$key] != $value) {
                     return false;
                 }
             }

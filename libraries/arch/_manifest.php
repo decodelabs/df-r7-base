@@ -140,6 +140,7 @@ interface IRequest extends core\uri\IUrl, user\IAccessLock {
     
     // Match
     public function eq($request);
+    public function matches($request);
     public function containsPath($request);
     public function contains($request);
     public function isPathWithin($request);
