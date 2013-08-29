@@ -10,10 +10,12 @@ use df\core;
 
 class Integer extends Base implements core\validate\IIntegerField {
     
+    use core\validate\TSanitizingField;
     use core\validate\TRangeField;
     
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
+        $value = $this->_sanitizeValue($value);
         
         if(!$length = $this->_checkRequired($node, $value)) {
             return null;
