@@ -56,6 +56,10 @@ class Slot implements aura\view\IHelper, \ArrayAccess {
         return $default;
     }
 
+    public function has($id) {
+        return isset($this->_slots[$id]);
+    }
+
     public function render($id, $default=null) {
         if(!$renderer = $this->get($id, $default)) {
             return '';
