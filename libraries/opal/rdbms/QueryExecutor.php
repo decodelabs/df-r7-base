@@ -1040,6 +1040,7 @@ abstract class QueryExecutor implements IQueryExecutor {
             case opal\query\clause\Clause::OP_CONTAINS:
             case opal\query\clause\Clause::OP_BEGINS:
             case opal\query\clause\Clause::OP_ENDS:
+            case opal\query\clause\Clause::OP_MATCHES:
                 // Test using IN operator on data set
                 $operator = opal\query\clause\Clause::OP_IN;
                 return array_unique($listData);
@@ -1050,6 +1051,7 @@ abstract class QueryExecutor implements IQueryExecutor {
             case opal\query\clause\Clause::OP_NOT_CONTAINS:
             case opal\query\clause\Clause::OP_NOT_BEGINS:
             case opal\query\clause\Clause::OP_NOT_ENDS:
+            case opal\query\clause\Clause::OP_NOT_MATCHES:
                 // Test using NOT IN operator on data set
                 $operator = opal\query\clause\Clause::OP_NOT_IN;
                 return array_unique($listData);
@@ -1084,6 +1086,8 @@ abstract class QueryExecutor implements IQueryExecutor {
             case opal\query\clause\Clause::OP_NOT_BEGINS:
             case opal\query\clause\Clause::OP_ENDS:
             case opal\query\clause\Clause::OP_NOT_ENDS:
+            case opal\query\clause\Clause::OP_MATCHES:
+            case opal\query\clause\Clause::OP_NOT_MATCHES:
                 // Regexp clauses cannot be done inline
                 $isRegexp = true;
         }
@@ -1248,6 +1252,26 @@ abstract class QueryExecutor implements IQueryExecutor {
                 return $fieldString.' REGEXP '.$this->normalizeScalarClauseValue(
                     core\string\Util::generateLikeMatchRegex($values), $allowAlias
                 );
+
+            // LIKE
+            case opal\query\clause\Clause::OP_MATCHES:
+                foreach($values as &$value) {
+                    $value = '%'.$value.'%';
+                }
+
+                return $fieldString.' REGEXP '.$this->normalizeScalarClauseValue(
+                    core\string\Util::generateLikeMatchRegex($values), $allowAlias
+                );
+                
+            // NOT LIKE
+            case opal\query\clause\Clause::OP_NOT_MATCHES:
+                foreach($values as &$value) {
+                    $value = '%'.$value.'%';
+                }
+
+                return $fieldString.' NOT REGEXP '.$this->normalizeScalarClauseValue(
+                    core\string\Util::generateLikeMatchRegex($values), $allowAlias
+                );
             
             
             default:
@@ -1366,6 +1390,20 @@ abstract class QueryExecutor implements IQueryExecutor {
             case opal\query\clause\Clause::OP_NOT_ENDS:
                 return $fieldString.' NOT LIKE '.$this->normalizeScalarClauseValue(
                     '%'.str_replace(array('_', '%'), array('\_', '\%'), $value), 
+                    $allowAlias
+                );
+
+            // MATCHES
+            case opal\query\clause\Clause::OP_MATCHES:
+                return $fieldString.' LIKE '.$this->normalizeScalarClauseValue(
+                    '%'.str_replace(array('?', '*'), array('_', '%'), $value).'%', 
+                    $allowAlias
+                );
+                
+            // NOT MATCHES
+            case opal\query\clause\Clause::OP_NOT_MATCHES:
+                return $fieldString.' NOT LIKE '.$this->normalizeScalarClauseValue(
+                    '%'.str_replace(array('?', '*'), array('_', '%'), $value).'%', 
                     $allowAlias
                 );
             

@@ -32,6 +32,8 @@ class Clause implements opal\query\IClause, core\IDumpable {
     const OP_NOT_BEGINS = 'not begins';
     const OP_ENDS = 'ends';
     const OP_NOT_ENDS = 'not ends';
+    const OP_MATCHES = 'matches';
+    const OP_NOT_MATCHES = 'not matches';
     
     protected $_isOr = false;
     protected $_field;
@@ -173,6 +175,7 @@ class Clause implements opal\query\IClause, core\IDumpable {
             case self::OP_NOT_CONTAINS:
             case self::OP_NOT_BEGINS:
             case self::OP_NOT_ENDS:
+            case self::OP_NOT_MATCHES:
                 return true;
         }
         
@@ -199,6 +202,8 @@ class Clause implements opal\query\IClause, core\IDumpable {
             case self::OP_NOT_BEGINS: return self::OP_BEGINS;
             case self::OP_ENDS: return self::OP_NOT_ENDS;
             case self::OP_NOT_ENDS: return self::OP_ENDS;
+            case self::OP_MATCHES: return self::OP_NOT_MATCHES;
+            case self::OP_NOT_MATCHES: return self::OP_MATCHES;
                 
             default:
                 throw new opal\query\OperatorException(
@@ -234,6 +239,8 @@ class Clause implements opal\query\IClause, core\IDumpable {
                 case self::OP_NOT_BEGINS:
                 case self::OP_ENDS:
                 case self::OP_NOT_ENDS:
+                case self::OP_MATCHES:
+                case self::OP_NOT_MATCHES:
                     break;
                     
                 default:

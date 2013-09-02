@@ -86,6 +86,8 @@ class Matcher implements opal\query\IClauseMatcher {
                     case opal\query\clause\Clause::OP_NOT_BEGINS:
                     case opal\query\clause\Clause::OP_ENDS:
                     case opal\query\clause\Clause::OP_NOT_ENDS:
+                    case opal\query\clause\Clause::OP_MATCHES:
+                    case opal\query\clause\Clause::OP_NOT_MATCHES:
                         $limit = $output->compare->getLimit();
                         $output->compare->limit(1);
                         $clause->setValue($output->compare->toValue($targetField->getName()));
@@ -268,6 +270,12 @@ class Matcher implements opal\query\IClauseMatcher {
                 
             case opal\query\clause\Clause::OP_NOT_ENDS:
                 return !core\string\Util::ends($compare, $value);
+
+            case opal\query\clause\Clause::OP_MATCHES:
+                return core\string\Util::likeMatch($compare, '*'.$value.'*');
+                
+            case opal\query\clause\Clause::OP_NOT_MATCHES:
+                return !core\string\Util::likeMatch($compare, '*'.$value.'*');
             
             
             default:
