@@ -24,7 +24,7 @@ class Base implements IView {
         $class = 'df\\aura\\view\\'.$type;
         
         if(!class_exists($class)) {
-            $class = __CLASS__;
+            $class = 'df\\aura\\view\\Generic';
         }
         
         return new $class($type, $context);
