@@ -291,6 +291,17 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
         $request = new arch\Request();
         
         if($path) {
+            if(preg_match('/^\~[a-zA-Z0-9_]+$/i', $path)) {
+                $orig = (string)$url;
+                $url->getPath()->shouldAddTrailingSlash(true);
+
+                if((string)$url != $orig) {
+                    $response = new halo\protocol\http\response\Redirect($url);
+                    $response->isPermanent(true);
+                    return $response;
+                }
+            }
+
             $request->setPath($path);
         }
             
