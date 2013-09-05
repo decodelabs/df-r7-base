@@ -358,10 +358,13 @@ class Html extends Base implements IHtmlView {
     public function linkCss($uri, $media=null, $weight=null, array $attributes=null, $condition=null) {
         if(!$this->_css) {
             $this->_css = new \SplPriorityQueue();
+            $this->_css->maxWeight = 1;
         }
 
         if($weight === null) {
-            $weight = 50;
+            $weight = ++$this->_css->maxWeight;
+        } else if($weight > $this->_css->maxWeight) {
+            $this->_css->maxWeight = $weight;
         }
 
         if(!$attributes) {
@@ -477,10 +480,13 @@ class Html extends Base implements IHtmlView {
     public function linkHeadJs($uri, $weight=null, array $attributes=null, $fallbackScript=null, $condition=null) {
         if(!$this->_headJs) {
             $this->_headJs = new \SplPriorityQueue();
+            $this->_headJs->maxWeight = 1;
         }
 
         if($weight === null) {
-            $weight = count($this->_headJs) + 20;
+            $weight = ++$this->_headJs->maxWeight;
+        } else if($weight > $this->_headJs->maxWeight) {
+            $this->_headJs->maxWeight = $weight;
         }
 
         $this->_headJs->insert($this->_createJsEntry($uri, $attributes, $fallbackScript, $condition), $weight);
@@ -495,10 +501,13 @@ class Html extends Base implements IHtmlView {
     public function linkFootJs($uri, $weight=null, array $attributes=null, $fallbackScript=null, $condition=null) {
         if(!$this->_footJs) {
             $this->_footJs = new \SplPriorityQueue();
+            $this->_footJs->maxWeight = 1;
         }
 
         if($weight === null) {
-            $weight = count($this->_footJs) + 20;
+            $weight = ++$this->_footJs->maxWeight;
+        } else if($weight > $this->_footJs->maxWeight) {
+            $this->_footJs->maxWeight = $weight;
         }
 
         $this->_footJs->insert($this->_createJsEntry($uri, $attributes, $fallbackScript, $condition), $weight);
