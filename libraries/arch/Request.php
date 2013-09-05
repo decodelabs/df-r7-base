@@ -458,7 +458,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         }
         
         if($addTrailingSlash) {
-            $parts[] = static::DEFAULT_ACTION.'.'.static::DEFAULT_TYPE;
+            $parts[] = static::DEFAULT_ACTION;//.'.'.static::DEFAULT_TYPE;
         }
         
         return $parts;

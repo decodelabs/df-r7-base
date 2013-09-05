@@ -94,7 +94,7 @@ class Base implements ITheme {
         $request = $view->getContext()->request;
         
         $view->getBodyTag()
-            ->setDataAttribute('location', implode('/', $request->getLiteralPathArray()))
+            ->setDataAttribute('location', $request->getLiteralPathString())
             ->setDataAttribute('layout', $view->getLayout());
     }
 
