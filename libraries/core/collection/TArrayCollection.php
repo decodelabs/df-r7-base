@@ -99,7 +99,7 @@ trait TArrayCollection_ValueContainerSortable {
     
     use TArrayCollection_Sortable;
     
-    public function sortByValue() {
+    public function sortByValue($flags=\SORT_REGULAR) {
         uasort($this->_collection, function(core\IValueContainer $a, core\IValueContainer $b) {
             $a = $a->getValue();
             $b = $b->getValue();
@@ -114,7 +114,7 @@ trait TArrayCollection_ValueContainerSortable {
         });
     }
     
-    public function reverseSortByValue() {
+    public function reverseSortByValue($flags=\SORT_REGULAR) {
         uasort($this->_collection, function(core\IValueContainer $b, core\IValueContainer $a) {
             $a = $a->getValue();
             $b = $b->getValue();
