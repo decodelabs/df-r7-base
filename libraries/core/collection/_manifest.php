@@ -65,10 +65,10 @@ trait TValueMapArrayAccess {
 
 // Sortable
 interface ISortable {
-    public function sortByValue();
-    public function reverseSortByValue();
-    public function sortByKey();
-    public function reverseSortByKey();
+    public function sortByValue($flags=\SORT_REGULAR);
+    public function reverseSortByValue($flags=\SORT_REGULAR);
+    public function sortByKey($flags=\SORT_REGULAR);
+    public function reverseSortByKey($flags=\SORT_REGULAR);
     public function reverse();
     public function move($key, $index);
 }

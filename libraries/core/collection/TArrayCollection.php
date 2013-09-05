@@ -64,13 +64,13 @@ trait TArrayCollection_Constructor {
 // Sortable
 trait TArrayCollection_Sortable {
     
-    public function sortByKey() {
-        ksort($this->_collection);
+    public function sortByKey($flags=\SORT_REGULAR) {
+        ksort($this->_collection, $flags);
         return $this;
     }
     
-    public function reverseSortByKey() {
-        krsort($this->_collection);
+    public function reverseSortByKey($flags=\SORT_REGULAR) {
+        krsort($this->_collection, $flags);
         return $this;
     }
     
@@ -84,13 +84,13 @@ trait TArrayCollection_ScalarSortable {
     
     use TArrayCollection_Sortable;
     
-    public function sortByValue() {
-        asort($this->_collection);
+    public function sortByValue($flags=\SORT_REGULAR) {
+        asort($this->_collection, $flags);
         return $this;
     }
     
-    public function reverseSortByValue() {
-        arsort($this->_collection);
+    public function reverseSortByValue($flags=\SORT_REGULAR) {
+        arsort($this->_collection, $flags);
         return $this;
     }
 }
