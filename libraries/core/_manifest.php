@@ -118,13 +118,13 @@ interface IChainable {
 
 trait TChainable {
     public function chain(Callable $callback) {
-        $callback->__invoke($this);
+        $callback($this);
         return $this;
     }
 
     public function chainIf($test, Callable $callback) {
         if($test) {
-            $callback->__invoke($this);
+            $callback($this);
         }
 
         return $this;

@@ -10,6 +10,8 @@ use df\core;
 
 class Handler implements IHandler {
     
+    use core\TChainable;
+
     protected $_values = array();
     protected $_fields = array();
     protected $_isValid = null;
