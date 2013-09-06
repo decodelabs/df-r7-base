@@ -72,7 +72,9 @@ class Embed implements IVideoEmbed {
                     break;
 
                 default:
-                    core\stub($embed);
+                    throw new UnexpectedValueException(
+                        'Don\'t know how to parse this video embed'
+                    );
             }
         } else {
             // check is url
@@ -266,7 +268,7 @@ class Embed implements IVideoEmbed {
 
 // Url prepare
     protected function _prepareGenericUrl($url) {
-        return $url;
+        return halo\protocol\http\Url::factory($url);
     }
 
     protected function _prepareYoutubeUrl($url) {

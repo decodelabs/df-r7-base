@@ -402,3 +402,4 @@ interface ITextField extends IField, ISanitizingField, IMinLengthField, IMaxLeng
 }
 
 interface IUrlField extends IField {}
+interface IVideoEmbedField extends IField {}
