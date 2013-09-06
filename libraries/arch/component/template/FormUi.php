@@ -13,6 +13,7 @@ use df\aura;
 abstract class FormUi extends arch\component\Base implements arch\form\IForm, aura\html\widget\IWidgetProxy, core\IArgContainer, \ArrayAccess {
 
     use core\TArrayAccessedArgContainer;
+    use core\TChainable;
 
     public $values;
     public $content;

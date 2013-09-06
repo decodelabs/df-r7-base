@@ -15,6 +15,8 @@ use df\opal;
 
 // BASE
 trait TForm {
+
+    use core\TChainable;
     
     public $view;
     //public $html;
