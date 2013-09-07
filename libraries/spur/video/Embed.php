@@ -39,7 +39,9 @@ class Embed implements IVideoEmbed {
             $embed = '<'.array_pop($parts);
 
             if(!preg_match('/^\<([a-zA-Z0-9\-]+) /i', $embed, $matches)) {
-                core\stub($embed);
+                throw new UnexpectedValueException(
+                    'Don\'t know how to parse this video embed'
+                );
             }
 
             $tag = strtolower($matches[1]);

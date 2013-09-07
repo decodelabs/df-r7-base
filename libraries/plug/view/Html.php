@@ -470,8 +470,12 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
         $embed = trim($embed);
 
         if(!empty($embed)) {
-            return spur\video\Embed::parse($embed)
-                ->setDimensions($width, $height);
+            try {
+                return spur\video\Embed::parse($embed)
+                    ->setDimensions($width, $height);
+            } catch(spur\video\IException $e) {
+                return new aura\view\content\ErrorContainer($this->_view, $e);
+            }
         } else {
             return '';
         }
