@@ -655,6 +655,10 @@ class Html extends Base implements IHtmlView {
         if(!$this->_context->request->isArea('front')) {
             $this->canIndex(false)->canFollow(false);
         }
+
+        if(strtolower($this->_context->http->request->headers->get('x-requested-with')) == 'xmlhttprequest') {
+            $this->_shouldRenderBase = false;
+        }
     }
     
     public function render() {
