@@ -138,6 +138,8 @@ interface IRequest extends core\uri\IUrl, user\IAccessLock {
     public function isDefaultType();
     public static function formatType($type);
     
+    public function getComponents();
+
     // Match
     public function eq($request);
     public function matches($request);

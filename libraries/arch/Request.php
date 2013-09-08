@@ -331,6 +331,19 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             ))
         ));
     }
+
+
+    public function getComponents() {
+        $literal = $this->getLiteralPathArray();
+
+        return [
+            'action' => array_pop($literal),
+            'area' => array_shift($literal),
+            'controller' => implode('/', $literal),
+            'controllerParts' => $literal,
+            'query' => $this->getQuery()
+        ];
+    }
     
     
 // Match
