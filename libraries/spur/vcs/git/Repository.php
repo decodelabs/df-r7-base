@@ -204,6 +204,50 @@ class Repository implements IRepository {
     }
 
 
+    public function setUpstream($remote, $remoteBranch='master', $localBranch='master') {
+        $this->_runCommand('branch', [
+            '--set-upstream-to' => $remote.'/'.$remoteBranch,
+            $localBranch
+        ]);
+
+        return $this;
+    }
+
+
+
+
+    public function countRemoteBranches() {
+        $result = trim($this->_runCommand('branch -r'));
+
+        if(empty($result)) {
+            return 0;
+        }
+
+        return count(explode("\n", trim($result)));
+    }
+
+
+
+    public function getRemotes() {
+        $result = trim($this->_runCommand('remote'));
+
+        if(empty($result)) {
+            return [];
+        }
+
+        return explode("\n", trim($result));
+    }
+
+    public function countRemotes() {
+        return count($this->getRemotes());
+    }
+
+    public function addRemote($name, $url) {
+        $this->_runCommand('remote add', [$name, $url]);
+        return $this;
+    } 
+
+
 // Tags
     public function getTags() {
         $result = $this->_runCommand('for-each-ref', [
@@ -276,10 +320,14 @@ class Repository implements IRepository {
             $target = 'HEAD';
         }
 
-        $result = $this->_runCommand('rev-list', [
-            '--count',
-            $target
-        ]);
+        try {
+            $result = $this->_runCommand('rev-list', [
+                '--count',
+                $target
+            ]);
+        } catch(RuntimeException $e) {
+            return 0;
+        }
 
         return (int)$result;
     }
@@ -434,6 +482,16 @@ class Repository implements IRepository {
     }
 
 
+    public function commitAllChanges($message) {
+        $result = $this->_runCommand('add .');
+        $result = $this->_runCommand('commit', [
+            '-am', '"'.$message.'"'
+        ]);
+
+        return $this;
+    }
+
+
 // Tree / blob
     public function getTree($id) {
         return new Tree($this, $id);
@@ -468,6 +526,24 @@ class Repository implements IRepository {
         }
 
         return $result;
+    }
+
+    public function push($remoteBranch=null) {
+        $result = $this->_runCommand('push', [
+            $remoteBranch
+        ]);
+
+        if(empty($result)) {
+            $result = true;
+        }
+
+        return $result;
+    }
+
+    public function pushUpstream($remote='origin', $branch='master') {
+        return $this->_runCommand('push', [
+            $remote, $branch, '-u'
+        ]);
     }
 
 

@@ -37,6 +37,13 @@ interface IRepository {
     public function getActiveBranchName();
     public function getActiveBranch();
     public function deleteBranch($branch);
+    public function setUpstream($remote, $remoteBranch='master', $localBranch='master');
+
+    public function countRemoteBranches();
+
+    public function getRemotes();
+    public function countRemotes();
+    public function addRemote($name, $url);
 
     public function getTags();
 
@@ -56,11 +63,14 @@ interface IRepository {
     public function getUnpulledCommitIds($remoteBranch=null);
     public function getUnpulledCommits($remoteBranch=null);
 
+    public function commitAllChanges($message);
+
     public function getTree($id);
     public function getBlob($id);
 
     public function updateRemote($remote=null);
     public function pull($remoteBranch=null);
+    public function push($remoteBranch=null);
 }
 
 interface IBranch {
