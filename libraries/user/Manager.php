@@ -346,7 +346,9 @@ class Manager implements IManager, core\IDumpable {
     }
 
     protected function _loadSessionBackend() {
-        $this->_sessionBackend = $this->getUserModel()->getSessionBackend();
+        if(axis\ConnectionConfig::getInstance($this->_application)->isSetup()) {
+            $this->_sessionBackend = $this->getUserModel()->getSessionBackend();
+        }
 
         if(!$this->_sessionBackend instanceof user\ISessionBackend) {
             $this->_sessionBackend = new user\session\backend\Sqlite($this);

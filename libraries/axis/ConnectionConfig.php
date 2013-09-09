@@ -13,13 +13,16 @@ class ConnectionConfig extends core\Config {
     
     const ID = 'DataConnections';
     const USE_ENVIRONMENT_ID_BY_DEFAULT = true;
+    const DEFAULT_DSN = 'mysql://user:pass@localhost/database';
     
+    protected $_isSetup = null;
+
     public function getDefaultValues() {
         return [
             'connections' => [
                 'master' => [
                     'adapter' => 'Rdbms',
-                    'dsn' => 'mysql://user:pass@localhost/database'
+                    'dsn' => self::DEFAULT_DSN
                 ],
                 'search' => [
                     'adapter' => 'Elastic'
@@ -30,6 +33,26 @@ class ConnectionConfig extends core\Config {
                 '@search' => 'search'
             ]
         ];
+    }
+
+    public function isSetup() {
+        if($this->_isSetup === null) {
+            if(!isset($this->_values['connections']['master'])) {
+                $this->_isSetup = false;
+            } else {
+                $node = $this->_values['connections']['master'];
+
+                if(isset($node['adapter']) && $node['adapter'] != 'Rdbms') {
+                    $this->_isSetup = true;
+                } else if(isset($node['dsn']) && $node['dsn'] != self::DEFAULT_DSN) {
+                    $this->_isSetup = true;
+                } else {
+                    $this->_isSetup = false;
+                }
+            }
+        }
+
+        return $this->_isSetup;
     }
     
     public function getAdapterIdFor(IUnit $unit) {
