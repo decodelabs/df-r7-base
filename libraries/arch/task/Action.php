@@ -16,14 +16,16 @@ abstract class Action extends arch\Action {
 
     public function __construct(arch\IContext $context, arch\IController $controller=null) {
         parent::__construct($context, $controller);
-
-        $this->response = $this->task->getResponse();
         $this->_init();
     }
 
     protected function _init() {}
 
     final public function execute() {
+        if(!$this->response) {
+            $this->response = $this->task->getResponse();
+        }
+
         try {
             $output = $this->_run();
         } catch(\Exception $e) {
@@ -34,6 +36,18 @@ abstract class Action extends arch\Action {
     }
 
     abstract protected function _run();
+
+    public function runChild($request) {
+        $request = arch\Request::factory($request);
+        $context = $this->_context->spawnInstance($request);
+        $action = arch\Action::factory($context);
+
+        if(!$action instanceof self) {
+            $this->throwError(500, 'Child action '.$request.' does not extend arch\\task\\Action');
+        }
+
+        return $action->dispatch();
+    }
 
     protected function _handleException(\Exception $e) {
         throw $e;
