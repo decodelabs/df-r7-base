@@ -39,7 +39,7 @@ class Context extends core\log\node\Group implements IContext {
             df\Launchpad::$application->renderDebugContext($this);
         } else {
             df\Launchpad::loadBaseClass('core/debug/renderer/PlainText');
-            echo (new core\debug\renderer\PlainText($context))->render();
+            echo (new core\debug\renderer\PlainText($this))->render();
         }
 
         df\Launchpad::shutdown();
