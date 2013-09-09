@@ -11,6 +11,7 @@ use df\core;
 
 // Exceptions
 interface IException {}
+class RuntimeException extends \RuntimeException implements IException {}
 class LogicException extends \LogicException implements IException {}
 class OverflowException extends \OverflowException implements IException {}
 
@@ -418,6 +419,8 @@ interface IChannel extends IReader, IWriter, IFlushable {
     public function writeErrorLine($line);
 }
 
+interface IMultiplexReaderChannel extends IChannel {}
+
 interface IContainedStateChannel extends IChannel {
     public function getErrorBuffer();
     public function flushErrorBuffer();
@@ -481,6 +484,8 @@ interface IMultiplexer extends IFlushable, core\IRegistryObject {
     public function writeLine($line);
     public function writeError($error);
     public function writeErrorLine($line);
+
+    public function readLine();
 }
 
 

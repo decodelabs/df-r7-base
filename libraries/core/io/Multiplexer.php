@@ -156,6 +156,22 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
         return $this;
     }
 
+
+
+
+    public function readLine() {
+        foreach($this->_channels as $channel) {
+            if($channel instanceof core\io\IMultiplexReaderChannel) {
+                return $channel->readLine();
+            }
+        }
+
+        throw new RuntimeException(
+            'There are no multiplex reader channels available'
+        );
+    }
+
+
 // Dump
     public function getDumpProperties() {
         return $this->_channels;

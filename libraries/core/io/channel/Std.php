@@ -8,7 +8,7 @@ namespace df\core\io\channel;
 use df;
 use df\core;
     
-class Std implements core\io\IChannel {
+class Std implements core\io\IMultiplexReaderChannel {
 
     use core\io\TReader;
     use core\io\TWriter;
