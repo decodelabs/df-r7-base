@@ -18,7 +18,7 @@ class Handler implements IHandler {
     protected $_shouldSanitize = true;
 
     public $data = null;
-    
+
     public function addField($name, $type) {
         $field = core\validate\field\Base::factory($this, $type, $name);
         $field->shouldSanitize($this->_shouldSanitize);
