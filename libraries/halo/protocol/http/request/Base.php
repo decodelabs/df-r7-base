@@ -90,7 +90,11 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
         }
         
         if($this->_environmentMode = $environmentMode) {
-            $this->setMethod($_SERVER['REQUEST_METHOD']);
+            if(isset($_SERVER['REQUEST_METHOD'])) {
+                $this->setMethod($_SERVER['REQUEST_METHOD']);
+            } else {
+                $this->setMethod('GET');
+            }
         }
     }
     
@@ -258,9 +262,21 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
                     $url = 'http';
                 }
                 
-                $url .= '://'.$_SERVER['HTTP_HOST'].':'.$_SERVER['SERVER_PORT'];
-            
-                $req = explode('?', ltrim($_SERVER['REQUEST_URI'], '/'), 2);
+                if(isset($_SERVER['HTTP_HOST'])) {
+                    $url .= '://'.$_SERVER['HTTP_HOST'].':'.$_SERVER['SERVER_PORT'];
+                } else {
+                    $url .= '://'.gethostname();
+                }
+                
+                if(isset($_SERVER['REQUEST_URI'])) {
+                    $req = ltrim($_SERVER['REQUEST_URI'], '/');
+                } else if(isset($_SERVER['argv'][2])) {
+                    $req = $_SERVER['argv'][2];
+                } else {
+                    $req = '';
+                }
+
+                $req = explode('?', $req, 2);
                 $req[0] = urldecode($req[0]);
                 
                 $url .= '/'.implode('?', $req);
