@@ -95,7 +95,8 @@ class Base implements ITheme {
         
         $view->getBodyTag()
             ->setDataAttribute('location', $request->getLiteralPathString())
-            ->setDataAttribute('layout', $view->getLayout());
+            ->setDataAttribute('layout', $view->getLayout())
+            ->setDataAttribute('base', $view->application->getBaseUrl()->getPathString());
     }
 
 
