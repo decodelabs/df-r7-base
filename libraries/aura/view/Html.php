@@ -355,7 +355,7 @@ class Html extends Base implements IHtmlView {
     
     
 // CSS
-    public function linkCss($uri, $media=null, $weight=null, array $attributes=null, $condition=null) {
+    public function linkCss($uri, $weight=null, array $attributes=null, $condition=null) {
         if(!$this->_css) {
             $this->_css = new \SplPriorityQueue();
             $this->_css->maxWeight = 1;
@@ -375,10 +375,6 @@ class Html extends Base implements IHtmlView {
         $attributes['rel'] = 'stylesheet';
         $attributes['type'] = 'text/css';
         
-        if($media !== null) {
-            $attributes['media'] = $media;
-        }        
-        
         $this->_css->insert([
             'tag' => new aura\html\Tag('link', $attributes),
             'condition' => $condition
@@ -387,8 +383,8 @@ class Html extends Base implements IHtmlView {
         return $this;
     }
 
-    public function linkConditionalCss($condition, $uri, $media=null, $weight=null, array $attributes=null) {
-        return $this->linkCss($uri, $media, $weight, $attributes, $condition);
+    public function linkConditionalCss($condition, $uri, $weight=null, array $attributes=null) {
+        return $this->linkCss($uri, $weight, $attributes, $condition);
     }
 
     public function getCss() {

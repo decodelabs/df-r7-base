@@ -279,8 +279,8 @@ interface IHtmlView extends IResponseView, ILayoutView {
     public function linkFavicon($uri);
     
     // CSS
-    public function linkCss($uri, $media=null, $weight=null, array $attributes=null, $condition=null);
-    public function linkConditionalCss($condition, $uri, $media=null, $weight=null, array $attributes=null);
+    public function linkCss($uri, $weight=null, array $attributes=null, $condition=null);
+    public function linkConditionalCss($condition, $uri, $weight=null, array $attributes=null);
     public function getCss();
     public function clearCss();
     
