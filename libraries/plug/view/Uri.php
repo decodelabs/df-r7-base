@@ -115,12 +115,19 @@ class Uri implements aura\view\IHelper {
         return $this->requestToUrl($request);
     }
 
+    public function asset($path) {
+        $request = new arch\Request('assets/download');
+        $request->query->file = $path;
+
+        return $this->request($request);
+    }
+
     public function themeAsset($path, $theme=null) {
         if($theme === null) {
             $theme = $this->_view->getTheme()->getId();
         }
 
-        $request = new arch\Request('theme/assets?theme='.$theme);
+        $request = new arch\Request('theme/download?theme='.$theme);
         $request->query->file = $path;
 
         return $this->request($request);

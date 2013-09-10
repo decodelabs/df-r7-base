@@ -16,7 +16,7 @@ class TaskBuild extends arch\task\Action {
     const PURGE_OLD_BUILDS = true;
 
     protected static $_appExport = [
-        'libraries', 'daemons', 'directory', 'hooks', 'models', 'themes', 'tests'
+        'libraries', 'assets', 'daemons', 'directory', 'hooks', 'models', 'themes', 'tests'
     ];
 
     protected function _run() {
