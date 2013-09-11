@@ -78,6 +78,23 @@ class HttpHttp implements arch\IDirectoryHelper {
     public function getCookies() {
         return $this->_httpRequest->getCookieData();
     }
+
+
+    public function isGetRequest() {
+        return $this->getMethod() == 'GET';
+    }
+
+    public function isPostRequest() {
+        return $this->getMethod() == 'POST';
+    }
+
+    public function isPutRequest() {
+        return $this->getMethod() == 'PUT';
+    }
+
+    public function isDeleteRequest() {
+        return $this->getMethod() == 'DELETE';
+    }
     
     
     
