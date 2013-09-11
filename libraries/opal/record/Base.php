@@ -573,10 +573,12 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return count(array_merge($this->_values, $this->_changes));
     }
     
-    public function toArray() {
-        $output = array_merge($this->_values, $this->_changes);
-        
-        foreach($output as $key => $value) {
+    public function toArray(array $keys=null) {
+        foreach(array_merge($this->_values, $this->_changes) as $key => $value) {
+            if($keys !== null && !in_array($key, $keys)) {
+                continue;
+            }
+
             if($value instanceof IValueContainer) {
                 $value = $value->getValue();
             }
