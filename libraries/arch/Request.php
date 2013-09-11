@@ -179,8 +179,16 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     }
     
     public function getController() {
+        return $this->formatController($this->_getControllerParts());
+    }
+
+    public function getRawController() {
+        return implode('/', $this->_getControllerParts());
+    }
+
+    protected function _getControllerParts() {
         if(!$this->_path) {
-            return static::DEFAULT_CONTROLLER;
+            return [static::DEFAULT_CONTROLLER];
         }
         
         $parts = $this->_path->toArray();
@@ -196,10 +204,10 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         }
         
         if(empty($parts)) {
-            return static::DEFAULT_CONTROLLER;
+            return [static::DEFAULT_CONTROLLER];
         }
-        
-        return $this->formatController($parts);
+
+        return $parts;
     }
     
     public function isController($controller) {
@@ -254,6 +262,14 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         }
         
         return $this->formatAction($fileName);
+    }
+
+    public function getRawAction() {
+        if(!$this->_path || $this->_path->shouldAddTrailingSlash() || !strlen($fileName = $this->_path->getFileName())) {
+            return static::DEFAULT_ACTION;
+        }
+        
+        return $fileName;
     }
     
     public function isAction($action) {
