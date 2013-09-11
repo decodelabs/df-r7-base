@@ -117,6 +117,10 @@ class OneRelationValueContainer implements
         if($this->_record !== false) {
             return $this->_record;
         }
+
+        if($this->_value && !$this->_value->isNull()) {
+            return $this->_value->getValue();
+        }
         
         return $default;
     }
