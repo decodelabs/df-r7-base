@@ -39,7 +39,7 @@ abstract class Action extends arch\Action {
 
     public function runChild($request) {
         $request = arch\Request::factory($request);
-        $context = $this->_context->spawnInstance($request);
+        $context = $this->_context->spawnInstance($request, true);
         $action = arch\Action::factory($context);
 
         if(!$action instanceof self) {

@@ -60,7 +60,7 @@ interface IAccess extends user\IState {}
 interface IContext extends core\IContext, core\i18n\translate\ITranslationProxy, IResponseForcer {
     
     // Application
-    public function spawnInstance($request);
+    public function spawnInstance($request=null, $copyRequest=false);
     public function getDispatchContext();
     public function isDispatchContext();
     

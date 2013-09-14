@@ -56,7 +56,7 @@ class Context implements IContext, \Serializable, core\IDumpable {
         }
     } 
     
-    public function spawnInstance($request=null) {
+    public function spawnInstance($request=null, $copyRequest=false) {
         if($request === null) {
             return $this;
         }
@@ -67,7 +67,13 @@ class Context implements IContext, \Serializable, core\IDumpable {
             return $this;
         }
         
-        return new self($this->application, $request);
+        $output = new self($this->application, $request);
+
+        if($copyRequest) {
+            $output->request = $output->location;
+        }
+
+        return $output;
     }
 
 

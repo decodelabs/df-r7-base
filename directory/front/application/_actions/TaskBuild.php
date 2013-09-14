@@ -116,7 +116,6 @@ class TaskBuild extends arch\task\Action {
             }
         }
 
-
         // Generate entries
         $this->runChild('application/generate-entries?build='.$buildId);
         
