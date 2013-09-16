@@ -213,7 +213,7 @@ trait TArrayCollection_MappedMovable {
             return $this;
         }
 
-        if($index == 0 || !array_key_exists($key, $this->_collection)) {
+        if(!array_key_exists($key, $this->_collection)) {
             return $this;
         }
 
@@ -234,28 +234,23 @@ trait TArrayCollection_MappedMovable {
                 $temp[$currentKey] = $value;
             }
         } else {
-            $found = false;
             $keyValue = $this->_collection[$key];
+            unset($this->_collection[$key]);
+            $temp = [];
+            $i = 0;
+            $found = false;
 
             foreach($this->_collection as $currentKey => $value) {
-                if($currentKey == $key) {
+                if($i == $index) {
+                    $temp[$key] = $keyValue;
                     $found = true;
-                    continue;
-                }
-
-                if($found) {
-                    $index--;
                 }
 
                 $temp[$currentKey] = $value;
-
-                if($index == 0) {
-                    $temp[$key] = $keyValue;
-                    $index = 0;
-                }
+                $i++;
             }
 
-            if($index > 0) {
+            if(!$found) {
                 $temp[$key] = $keyValue;
             }
         }
