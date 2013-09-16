@@ -386,6 +386,7 @@ interface IEnumField extends IField {
 
 interface IFloatField extends IField, IRangeField {}
 interface IIdListField extends IField, ISanitizingField {}
+interface ITextListField extends IField, ISanitizingField {}
 interface IIntegerField extends IField, IRangeField {}
 interface IPasswordField extends IField, IMinLengthField {}
 
