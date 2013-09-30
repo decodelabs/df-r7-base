@@ -158,6 +158,11 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
         return $default;
     }
 
+    public function getBase($key, $default=null) {
+        $parts = explode(';', $this->get($key, $default));
+        return array_shift($parts);
+    }
+
     public function setNamedValue($key, $name, $keyValue) {
         $value = $this->get($key);
 

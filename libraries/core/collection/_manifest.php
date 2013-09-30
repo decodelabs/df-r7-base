@@ -255,6 +255,7 @@ interface IInputTree extends ITree, core\IErrorContainer {}
 
 
 interface IHeaderMap extends IMappedCollection, core\IStringProvider, \Iterator {
+    public function getBase($key, $default=null);
     public function append($key, $value);
     public function setNamedValue($key, $name, $keyValue);
     public function getNamedValue($key, $name, $default=null);

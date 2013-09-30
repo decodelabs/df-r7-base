@@ -371,25 +371,37 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
             $postData = null;
             
             if($this->_environmentMode) {
-                if(strtolower($this->_headers->get('content-type')) == 'application/x-www-form-urlencoded') {
-                    try {
-                        $this->_postData = core\collection\Tree::fromArrayDelimitedString(file_get_contents('php://input'));
+                $payload = file_get_contents('php://input');
+                $usePost = true;
 
-                        if($this->_postData->isEmpty() && !empty($_POST)) {
+                switch(strtolower($this->_headers->getBase('content-type'))) {
+                    case 'application/x-www-form-urlencoded':
+                        try {
+                            $this->_postData = core\collection\Tree::fromArrayDelimitedString($payload);
+                        } catch(\Exception $e) {
                             $this->_postData = null;
                         }
-                    } catch(\Exception $e) {
-                        $this->_postData = null;
-                    }
+
+                        break;
+
+                    case 'application/json':
+                        $usePost = false;
+                        $this->_postData = core\collection\Tree::factory(json_decode($payload, true));
+                        break;
                 }
 
-                if(empty($this->_postData)) {
+                if($usePost && $this->_postData && $this->_postData->isEmpty()) {
+                    $this->_postData = null;
+                }
+
+                if(empty($this->_postData) && !empty($_POST) && $usePost) {
                     $this->_postData = new core\collection\Tree($_POST);
                 }
-            } else {
-                $this->_postData = new core\collection\Tree(null);
             }
             
+            if(!$this->_postData) {
+                $this->_postData = new core\collection\Tree(null);
+            }
         }
         
         return $this->_postData;
