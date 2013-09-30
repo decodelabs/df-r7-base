@@ -15,6 +15,10 @@ class DataObject extends Base implements opal\schema\ILargeByteSizeRestrictedFie
     use opal\schema\TField_LargeByteSizeRestricted;
     
     protected function _init($size=null) {
+        if($size === null) {
+            $size = opal\schema\IFieldSize::LARGE;
+        }
+
         $this->setExponentSize($size);
     }
     
