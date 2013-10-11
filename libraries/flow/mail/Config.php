@@ -29,15 +29,15 @@ class Config extends core\Config {
             );
         }
 
-        $this->_values['defaultTransport'] = $name;
+        $this->values['defaultTransport'] = $name;
         return $this;
     }
 
     public function getDefaultTransport() {
-        if(!isset($this->_values['defaultTransport'])) {
+        if(!isset($this->values['defaultTransport'])) {
             $output = 'Mail';
         } else {
-            $output = $this->_values['defaultTransport'];
+            $output = $this->values['defaultTransport'];
         }
 
         if(is_array($output)) {
@@ -52,15 +52,15 @@ class Config extends core\Config {
     }
 
     public function getDefaultTransportSettings($checkName=null) {
-        if(isset($this->_values['defaultTransport'])
-        && is_array($this->_values['defaultTransport'])) {
+        if(isset($this->values['defaultTransport'])
+        && is_array($this->values['defaultTransport'])) {
             if($checkName !== null
-            && isset($this->_values['defaultTransport']['name'])
-            && $checkName != $this->_values['defaultTransport']['name']) {
+            && isset($this->values['defaultTransport']['name'])
+            && $checkName != $this->values['defaultTransport']['name']) {
                 return array();
             }
             
-            return $this->_values['defaultTransport'];
+            return $this->values['defaultTransport'];
         }
 
         return array();
@@ -75,13 +75,13 @@ class Config extends core\Config {
             );
         }
 
-        $this->_values['defaultAddress'] = (string)$address;
+        $this->values['defaultAddress'] = (string)$address;
         return $this;
     }
 
     public function getDefaultAddress() {
-        if(isset($this->_values['defaultAddress'])) {
-            return $this->_values['defaultAddress'];
+        if(isset($this->values['defaultAddress'])) {
+            return $this->values['defaultAddress'];
         }
 
         return 'webmaster@mydomain.com';
@@ -96,15 +96,15 @@ class Config extends core\Config {
             }
         }
 
-        $this->_values['catchAllBCC'] = $addresses;
+        $this->values['catchAllBCC'] = $addresses;
         return $this;
     }
 
     public function getCatchAllBCCAddresses() {
         $output = array();
 
-        if(isset($this->_values['catchAllBCC'])) {
-            foreach($this->_values['catchAllBCC'] as $address) {
+        if(isset($this->values['catchAllBCC'])) {
+            foreach($this->values['catchAllBCC'] as $address) {
                 $output[] = Address::factory($address);
             }
         }

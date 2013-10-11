@@ -27,13 +27,13 @@ class Config extends core\Config {
     
 // Application name
     public function setApplicationName($name) {
-        $this->_values['applicationName'] = (string)$name;
+        $this->values['applicationName'] = (string)$name;
         return $this;
     }
     
     public function getApplicationName() {
-        if(isset($this->_values['applicationName'])) {
-            return $this->_values['applicationName'];
+        if(isset($this->values['applicationName'])) {
+            return $this->values['applicationName'];
         }
         
         return 'My Application';
@@ -46,17 +46,17 @@ class Config extends core\Config {
             $prefix = core\string\Generator::random(3, 3);
         }
         
-        $this->_values['uniquePrefix'] = strtolower((string)$prefix);
+        $this->values['uniquePrefix'] = strtolower((string)$prefix);
         return $this;
     }
     
     public function getUniquePrefix() {
-        if(!isset($this->_values['uniquePrefix'])) {
+        if(!isset($this->values['uniquePrefix'])) {
             $this->setUniquePrefix();
             $this->save();
         }
         
-        return $this->_values['uniquePrefix'];
+        return $this->values['uniquePrefix'];
     }
     
     
@@ -66,17 +66,17 @@ class Config extends core\Config {
             $passKey = core\string\Generator::passKey();
         }
         
-        $this->_values['passKey'] = (string)$passKey;
+        $this->values['passKey'] = (string)$passKey;
         return $this;
     }
     
     public function getPassKey() {
-        if(!isset($this->_values['passKey'])) {
+        if(!isset($this->values['passKey'])) {
             $this->setPassKey();
             $this->save();
         }
         
-        return $this->_values['passKey'];
+        return $this->values['passKey'];
     }
     
     
@@ -84,11 +84,11 @@ class Config extends core\Config {
     public function getActivePackages() {
         $output = array();
         
-        if(!isset($this->_values['packages']) || !is_array($this->_values['packages'])) {
+        if(!isset($this->values['packages']) || !is_array($this->values['packages'])) {
             return $output;
         }
         
-        foreach($this->_values['packages'] as $name => $enabled) {
+        foreach($this->values['packages'] as $name => $enabled) {
             if($enabled) {
                 $output[] = $name;
             }

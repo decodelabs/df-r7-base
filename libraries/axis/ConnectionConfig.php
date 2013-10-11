@@ -37,10 +37,10 @@ class ConnectionConfig extends core\Config {
 
     public function isSetup() {
         if($this->_isSetup === null) {
-            if(!isset($this->_values['connections']['master'])) {
+            if(!isset($this->values['connections']['master'])) {
                 $this->_isSetup = false;
             } else {
-                $node = $this->_values['connections']['master'];
+                $node = $this->values['connections']['master'];
 
                 if(isset($node['adapter']) && $node['adapter'] != 'Rdbms') {
                     $this->_isSetup = true;
@@ -62,35 +62,35 @@ class ConnectionConfig extends core\Config {
     public function getSettingsFor(IUnit $unit) {
         $connectionId = $this->getconnectionIdFor($unit);
         
-        if(!isset($this->_values['connections'][$connectionId])) {
+        if(!isset($this->values['connections'][$connectionId])) {
             throw new RuntimeException(
                 'There are no connections for '.$unit->getUnitId().', with connection id '.$connectionId
             );
         }
         
-        return new core\collection\Tree($this->_values['connections'][$connectionId]);
+        return new core\collection\Tree($this->values['connections'][$connectionId]);
     }
     
     public function getConnectionIdFor(IUnit $unit) {
         $unitId = $unit->getUnitId();
         
-        if(!isset($this->_values['units'][$unitId])) {
+        if(!isset($this->values['units'][$unitId])) {
             $originalId = $unitId;
             
             $parts = explode(axis\IUnit::ID_SEPARATOR, $unitId);
             $unitId = array_shift($parts);
             
-            if(!isset($this->_values['units'][$unitId])) {
+            if(!isset($this->values['units'][$unitId])) {
                 try {
                     $unitId = '@'.$unit->getUnitType();
                 } catch(\Exception $e) {
                     $unitId = null;
                 }
                 
-                if($unitId === null || !isset($this->_values['units'][$unitId])) {
+                if($unitId === null || !isset($this->values['units'][$unitId])) {
                     $unitId = 'default';
                 
-                    if(!isset($this->_values['units'][$unitId])) {
+                    if(!isset($this->values['units'][$unitId])) {
                         throw new RuntimeException(
                             'There are no connections matching '.$originalId
                         );
@@ -99,6 +99,6 @@ class ConnectionConfig extends core\Config {
             }
         }
         
-        return (string)$this->_values['units'][$unitId];
+        return (string)$this->values['units'][$unitId];
     }
 }

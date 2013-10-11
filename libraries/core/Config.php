@@ -17,9 +17,9 @@ abstract class Config implements IConfig, core\IDumpable {
     const STORE_IN_MEMORY = true;
     const USE_TREE = false;
     
-    protected $_id;
-    protected $_values = array();
+    public $values = [];
     
+    protected $_id;
     private $_application;
     
 // Loading
@@ -70,9 +70,9 @@ abstract class Config implements IConfig, core\IDumpable {
             $this->save();
         } else {
             if(static::USE_TREE) {
-                $this->_values = new core\collection\Tree($values);
+                $this->values = new core\collection\Tree($values);
             } else {
-                $this->_values = $values;
+                $this->values = $values;
             }
         }
         
@@ -97,9 +97,9 @@ abstract class Config implements IConfig, core\IDumpable {
     
     final public function getConfigValues() {
         if(static::USE_TREE) {
-            return $this->_values->toArray();
+            return $this->values->toArray();
         } else {
-            return $this->_values;
+            return $this->values;
         }
     }
     
@@ -121,9 +121,9 @@ abstract class Config implements IConfig, core\IDumpable {
         }
 
         if(static::USE_TREE) {
-            $this->_values = new core\collection\Tree($values);
+            $this->values = new core\collection\Tree($values);
         } else {
-            $this->_values = $values;
+            $this->values = $values;
         }
 
         $this->_sanitizeValuesOnCreate();
@@ -196,9 +196,9 @@ abstract class Config implements IConfig, core\IDumpable {
         core\io\Util::ensureDirExists(dirname($savePath));
         
         if(static::USE_TREE) {
-            $values = $this->_values->toArray();
+            $values = $this->values->toArray();
         } else {
-            $values = $this->_values;
+            $values = $this->values;
         }
 
         $content = '<?php'."\n".'return '.$this->_exportArray($values).';';

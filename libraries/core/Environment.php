@@ -43,20 +43,20 @@ class Environment extends Config {
         }
         
         if($url === null) {
-            $this->_values['httpBaseUrl'][$environmentMode] = null;
+            $this->values['httpBaseUrl'][$environmentMode] = null;
         } else {
             $url = halo\protocol\http\Url::factory($url);
             $url->getPath()->shouldAddTrailingSlash(true)->isAbsolute(true);
             
-            $this->_values['httpBaseUrl'][$environmentMode] = $url->getDomain().$url->getPathString();
+            $this->values['httpBaseUrl'][$environmentMode] = $url->getDomain().$url->getPathString();
         }
         
         return $this;
     }
     
     public function getHttpBaseUrl($environmentMode=null) {
-        if(!isset($this->_values['httpBaseUrl'])) {
-            $this->_values['httpBaseUrl'] = $this->_generateHttpBaseUrlList();
+        if(!isset($this->values['httpBaseUrl'])) {
+            $this->values['httpBaseUrl'] = $this->_generateHttpBaseUrlList();
             $this->save();
         }
 
@@ -64,13 +64,13 @@ class Environment extends Config {
             $environmentMode = df\Launchpad::getEnvironmentMode();
         }
         
-        if(!isset($this->_values['httpBaseUrl'][$environmentMode]) && isset($_SERVER['HTTP_HOST'])) {
+        if(!isset($this->values['httpBaseUrl'][$environmentMode]) && isset($_SERVER['HTTP_HOST'])) {
             if(null !== ($baseUrl = $this->_generateHttpBaseUrl())) {
                 $this->setHttpBaseUrl($baseUrl)->save();
             }
         }
         
-        return trim($this->_values['httpBaseUrl'][$environmentMode], '/');
+        return trim($this->values['httpBaseUrl'][$environmentMode], '/');
     }
     
     protected function _generateHttpBaseUrlList() {
@@ -123,15 +123,15 @@ class Environment extends Config {
 
 // Send file header
     public function setSendFileHeader($header) {
-        $this->_values['sendFileHeader'] = $header;
+        $this->values['sendFileHeader'] = $header;
         return $this;
     }
 
     public function getSendFileHeader() {
         $output = null;
 
-        if(isset($this->_values['sendFileHeader'])) {
-            $output = $this->_values['sendFileHeader'];
+        if(isset($this->values['sendFileHeader'])) {
+            $output = $this->values['sendFileHeader'];
         }
 
         if(empty($output)) {
@@ -143,13 +143,13 @@ class Environment extends Config {
 
 // PHP Binary path
     public function setPhpBinaryPath($path) {
-        $this->_values['phpBinaryPath'] = $path;
+        $this->values['phpBinaryPath'] = $path;
         return $this;
     }
     
     public function getPhpBinaryPath() {
-        if(isset($this->_values['phpBinaryPath'])) {
-            $output = $this->_values['phpBinaryPath'];
+        if(isset($this->values['phpBinaryPath'])) {
+            $output = $this->values['phpBinaryPath'];
         } else {
             $output = 'php';
         }
@@ -157,7 +157,7 @@ class Environment extends Config {
         if(false === strpos($output, '/')
         && false === strpos($output, '\\')) {
             $output = halo\system\Base::getInstance()->which($output);
-            $this->_values['phpBinaryPath'] = $output;
+            $this->values['phpBinaryPath'] = $output;
             $this->save();
         }
 
@@ -168,24 +168,24 @@ class Environment extends Config {
 // Load balancing
     public function isDistributed($flag=null) {
         if($flag !== null) {
-            $this->_values['distributed'] = (bool)$flag;
+            $this->values['distributed'] = (bool)$flag;
             return $this;
         }
         
-        if(!isset($this->_values['distributed'])) {
+        if(!isset($this->values['distributed'])) {
             return false;
         }
         
-        return (bool)$this->_values['distributed'];
+        return (bool)$this->values['distributed'];
     }
 
 // Locations
     public function getActiveLocations() {
-        if(!isset($this->_values['activeLocations'])) {
+        if(!isset($this->values['activeLocations'])) {
             return array();
         }
 
-        $output = $this->_values['activeLocations'];
+        $output = $this->values['activeLocations'];
 
         if(!is_array($output)) {
             $output = ['default' => $output];
@@ -208,7 +208,7 @@ class Environment extends Config {
             );
         }
 
-        $this->_values['daemonUser'] = $user;
+        $this->values['daemonUser'] = $user;
         return $this;
     }
 
@@ -216,11 +216,11 @@ class Environment extends Config {
         $output = null;
         $save = false;
 
-        if(!isset($this->_values['daemonUser'])) {
+        if(!isset($this->values['daemonUser'])) {
             $output = $this->_extrapolateDaemonUser();
             $save = true;
         } else {
-            $output = $this->_values['daemonUser'];
+            $output = $this->values['daemonUser'];
         }
 
         if(empty($output)) {
@@ -253,7 +253,7 @@ class Environment extends Config {
             );
         }
 
-        $this->_values['daemonGroup'] = $group;
+        $this->values['daemonGroup'] = $group;
         return $this;
     }
 
@@ -261,11 +261,11 @@ class Environment extends Config {
         $output = null;
         $save = false;
 
-        if(!isset($this->_values['daemonGroup'])) {
+        if(!isset($this->values['daemonGroup'])) {
             $output = $this->_extrapolateDaemonGroup();
             $save = true;
         } else {
-            $output = $this->_values['daemonGroup'];
+            $output = $this->values['daemonGroup'];
         }
 
         if(empty($output)) {
@@ -289,15 +289,15 @@ class Environment extends Config {
 
 // Dev credentials
     public function setDeveloperCredentials($username, $password) {
-        $this->_values['devUser'] = $username;
-        $this->_values['devPassword'] = $password;
+        $this->values['devUser'] = $username;
+        $this->values['devPassword'] = $password;
 
         return $this;
     }
 
     public function getDeveloperCredentials() {
-        if(isset($this->_values['devUser'], $this->_values['devPassword'])) {
-            return ['user' => $this->_values['devUser'], 'password' => $this->_values['devPassword']];
+        if(isset($this->values['devUser'], $this->values['devPassword'])) {
+            return ['user' => $this->values['devUser'], 'password' => $this->values['devPassword']];
         }
 
         return null;

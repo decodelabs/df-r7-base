@@ -32,7 +32,7 @@ class Config extends core\Config {
         $output = null;
         
         if(isset($this->_caches[$id])) {
-            $output = $this->_values['caches'][$id];
+            $output = $this->values['caches'][$id];
         }
 
         $list = array();
@@ -56,8 +56,8 @@ class Config extends core\Config {
             
             $output['backend'] = $name;
             
-            if(isset($this->_values['backends'][$output['backend']])) {
-                $output = array_merge($output, $this->_values['backends'][$output['backend']]);
+            if(isset($this->values['backends'][$output['backend']])) {
+                $output = array_merge($output, $this->values['backends'][$output['backend']]);
             }
             
             break;
@@ -69,8 +69,8 @@ class Config extends core\Config {
     public function getBackendOptions($backend) {
         $output = array();
 
-        if(isset($this->_values['backends'][$backend])) {
-            $output = $this->_values['backends'][$backend];
+        if(isset($this->values['backends'][$backend])) {
+            $output = $this->values['backends'][$backend];
         }
 
         if(!is_array($output)) {

@@ -20,7 +20,7 @@ class Config extends core\Config {
     }
 
     public function isEnabled() {
-        foreach($this->_values as $adapter) {
+        foreach($this->values as $adapter) {
             if(!$adapter->get('enabled', true)) {
                 continue;
             }
@@ -32,13 +32,13 @@ class Config extends core\Config {
     }
 
     public function getAdapters() {
-        return clone $this->_values;
+        return clone $this->values;
     }
 
     public function getEnabledAdapters() {
         $output = [];
 
-        foreach($this->_values as $name => $adapter) {
+        foreach($this->values as $name => $adapter) {
             if($adapter->get('enabled', true)) {
                 $output[$name] = clone $adapter;
             }
@@ -54,7 +54,7 @@ class Config extends core\Config {
             $name = $name->getName();
         }
 
-        $this->_values->{$name} = [
+        $this->values->{$name} = [
             'enabled' => $isEnabled,
             'options' => $options,
             'userAttributes' => $defaultUserAttributes
@@ -64,27 +64,27 @@ class Config extends core\Config {
     }
 
     public function getAdapter($name) {
-        if(!isset($this->_values->{$name})) {
+        if(!isset($this->values->{$name})) {
             return null;
         }
 
-        return $this->_values->{$name};
+        return $this->values->{$name};
     }
 
     public function isAdapterEnabled($name, $flag=null) {
         if($flag !== null) {
-            if(isset($this->_values->{$name})) {
-                $this->_values->{$name}->enabled = (bool)$flag;
+            if(isset($this->values->{$name})) {
+                $this->values->{$name}->enabled = (bool)$flag;
             }
 
             return $this;
         }
 
-        if(!isset($this->_values->{$name})) {
+        if(!isset($this->values->{$name})) {
             return false;
         }
 
-        return $this->_values->{$name}->get('enabled', true);
+        return $this->values->{$name}->get('enabled', true);
     }
 
     public function removeAdapter($name) {
@@ -92,7 +92,7 @@ class Config extends core\Config {
             $name = $name->getName();
         }
 
-        unset($this->_values->{$name});
+        unset($this->values->{$name});
         return $this;
     }
 }

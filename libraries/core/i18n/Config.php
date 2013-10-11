@@ -34,13 +34,13 @@ class Config extends core\Config {
             throw new RuntimeException('Default locale '.$locale.' is not allowed');
         }
         
-        $this->_values['locale']['default'] = (string)$locale;
+        $this->values['locale']['default'] = (string)$locale;
         return $this;
     }
     
     public function getDefaultLocale() {
-        if(isset($this->_values['locale']['default'])) {
-            return $this->_values['locale']['default'];
+        if(isset($this->values['locale']['default'])) {
+            return $this->values['locale']['default'];
         }
         
         return 'en_GB';
@@ -55,12 +55,12 @@ class Config extends core\Config {
             $allow[] = (string)Locale::factory($application, $locale);
         }
         
-        $this->_values['locale']['allow'] = $allow;
+        $this->values['locale']['allow'] = $allow;
         return $this;
     }
     
     public function getAllowedLocales() {
-        return (array)$this->_values['locale']['allow'];
+        return (array)$this->values['locale']['allow'];
     }
     
     public function setDeniedLocales(array $locales) {
@@ -71,12 +71,12 @@ class Config extends core\Config {
             $deny[] = (string)Locale::factory($application, $locale);
         }
         
-        $this->_values['locale']['deny'] = $deny;
+        $this->values['locale']['deny'] = $deny;
         return $this;
     }
     
     public function getDeniedLocales() {
-        return (array)$this->_values['locale']['deny'];
+        return (array)$this->values['locale']['deny'];
     }
     
     public function isLocaleAllowed($locale) {
@@ -88,8 +88,8 @@ class Config extends core\Config {
             $locale->getLanguage()
         ));
         
-        if(!empty($this->_values['locale']['allow'])) {
-            $allow = (array)$this->_values['locale']['allow'];
+        if(!empty($this->values['locale']['allow'])) {
+            $allow = (array)$this->values['locale']['allow'];
             
             foreach($test as $testLocale) {
                 if(in_array($testLocale, $allow)) {
@@ -100,8 +100,8 @@ class Config extends core\Config {
             return false;
         }
             
-        if(!empty($this->_values['locale']['deny'])) {
-            $allow = (array)$this->_values['locale']['deny'];
+        if(!empty($this->values['locale']['deny'])) {
+            $allow = (array)$this->values['locale']['deny'];
             
             foreach($test as $testLocale) {
                 if(in_array($testLocale, $deny)) {
@@ -118,12 +118,12 @@ class Config extends core\Config {
 // Detect
     public function shouldDetectClientLocale($flag=null) {
         if($flag !== null) {
-            $this->_values['locale']['detectClient'] = (bool)$flag;
+            $this->values['locale']['detectClient'] = (bool)$flag;
             return $this;
         }
         
-        if(isset($this->_values['locale']['detectClient'])) {
-            return (bool)$this->_values['locale']['detectClient'];
+        if(isset($this->values['locale']['detectClient'])) {
+            return (bool)$this->values['locale']['detectClient'];
         }
         
         return false;
@@ -132,12 +132,12 @@ class Config extends core\Config {
 // Translation
     public function isTranslationEnabled($flag=null) {
         if($flag !== null) {
-            $this->_values['translation']['enabled'] = (bool)$flag;
+            $this->values['translation']['enabled'] = (bool)$flag;
             return $this;
         }
         
-        if(isset($this->_values['translation']['enabled'])) {
-            return (bool)$this->_values['translation']['enabled'];
+        if(isset($this->values['translation']['enabled'])) {
+            return (bool)$this->values['translation']['enabled'];
         }
         
         return false;

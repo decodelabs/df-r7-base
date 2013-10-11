@@ -24,10 +24,10 @@ class Config extends core\Config {
     public function getThemeIdFor($area) {
         $area = ltrim($area, arch\Request::AREA_MARKER);
         
-        if(isset($this->_values[$area])) {
-            return $this->_values[$area];
-        } else if(isset($this->_values['default'])) {
-            return $this->_values['default'];
+        if(isset($this->values[$area])) {
+            return $this->values[$area];
+        } else if(isset($this->values['default'])) {
+            return $this->values['default'];
         } else {
             return 'shared';
         }
