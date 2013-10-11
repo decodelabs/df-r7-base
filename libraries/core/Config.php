@@ -15,6 +15,7 @@ abstract class Config implements IConfig, core\IDumpable {
     const ID = null;
     const USE_ENVIRONMENT_ID_BY_DEFAULT = false;
     const STORE_IN_MEMORY = true;
+    const USE_TREE = false;
     
     protected $_id;
     protected $_values = array();
@@ -68,7 +69,11 @@ abstract class Config implements IConfig, core\IDumpable {
             $this->reset();
             $this->save();
         } else {
-            $this->_values = $values;
+            if(static::USE_TREE) {
+                $this->_values = new core\collection\Tree($values);
+            } else {
+                $this->_values = $values;
+            }
         }
         
         $this->_sanitizeValuesOnLoad();
@@ -91,7 +96,11 @@ abstract class Config implements IConfig, core\IDumpable {
     }
     
     final public function getConfigValues() {
-        return $this->_values;
+        if(static::USE_TREE) {
+            return $this->_values->toArray();
+        } else {
+            return $this->_values;
+        }
     }
     
     final public function save() {
@@ -111,9 +120,13 @@ abstract class Config implements IConfig, core\IDumpable {
             );
         }
 
-        $this->_values = $values;
-        $this->_sanitizeValuesOnCreate();
+        if(static::USE_TREE) {
+            $this->_values = new core\collection\Tree($values);
+        } else {
+            $this->_values = $values;
+        }
 
+        $this->_sanitizeValuesOnCreate();
         return $this;
     }
 
@@ -182,7 +195,13 @@ abstract class Config implements IConfig, core\IDumpable {
 
         core\io\Util::ensureDirExists(dirname($savePath));
         
-        $content = '<?php'."\n".'return '.$this->_exportArray($this->_values).';';
+        if(static::USE_TREE) {
+            $values = $this->_values->toArray();
+        } else {
+            $values = $this->_values;
+        }
+
+        $content = '<?php'."\n".'return '.$this->_exportArray($values).';';
         file_put_contents($savePath, $content, LOCK_EX);
     }
     
@@ -246,7 +265,7 @@ abstract class Config implements IConfig, core\IDumpable {
     public function getDumpProperties() {
         return array_merge(
             ['configId' => new core\debug\dumper\Property('configId', $this->_id, 'protected')],
-            $this->_values
+            $this->getConfigValues()
         );
     }
 }
