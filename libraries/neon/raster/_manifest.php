@@ -49,6 +49,7 @@ interface IImageManipulationController {
 interface IImageCompositeController {
     public function composite(IImage $image, $x=IPosition::CENTER, $y=IPosition::CENTER);
     public function watermark(IImage $image, $x=IPosition::RIGHT, $y=IPosition::BOTTOM, $scaleFactor=1.0);
+    public function textWatermark($text, $fontSize, $color, $x=IPosition::RIGHT, $y=IPosition::BOTTOM);
 }
 
 interface IImageFilterController {
