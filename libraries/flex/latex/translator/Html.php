@@ -348,6 +348,8 @@ class Html extends iris\Translator {
             $body = $htmlId;
         }
 
+        $stripBuffer = strtolower(rtrim($this->buffer));
+
         switch($type) {
             case 'bibitem':
                 $this->_fixBufferLinkSpacing();
@@ -355,42 +357,54 @@ class Html extends iris\Translator {
                 break;
 
             case 'figure':
-                if(strtolower(substr(rtrim($this->buffer), -6)) == 'figure') {
+                if(substr($stripBuffer, -6) == 'figure') {
                     $this->buffer = rtrim($this->buffer);
-                    $temp = substr($this->buffer, -6);
+                    $prefix = substr($this->buffer, -6);
                     $this->buffer = substr($this->buffer, 0, -6);
-                    $body = $temp.' '.$body;
                 } else {
                     $this->_fixBufferLinkSpacing();
-                    $body = 'Figure '.$body;
+                    $prefix = 'Figure';
                 }
 
+                if($this->_isBufferInParagraph($stripBuffer)) {
+                    $prefix = strtolower($prefix);
+                }
+
+                $body = $prefix.' '.$body;
                 break;
 
             case 'mathNode':
-                if(strtolower(substr(rtrim($this->buffer), -8)) == 'equation') {
+                if(substr($stripBuffer, -8) == 'equation') {
                     $this->buffer = rtrim($this->buffer);
-                    $temp = substr($this->buffer, -8);
+                    $prefix = substr($this->buffer, -8);
                     $this->buffer = substr($this->buffer, 0, -8);
-                    $body = $temp.' '.$body;
                 } else {
                     $this->_fixBufferLinkSpacing();
-                    $body = 'Equation '.$body;
+                    $prefix = 'Equation';
                 }
 
+                if($this->_isBufferInParagraph($stripBuffer)) {
+                    $prefix = strtolower($prefix);
+                }
+
+                $body = $prefix.' '.$body;
                 break;
 
             case 'table':
-                if(strtolower(substr(rtrim($this->buffer), -5)) == 'table') {
+                if(substr($stripBuffer, -5) == 'table') {
                     $this->buffer = rtrim($this->buffer);
-                    $temp = substr($this->buffer, -5);
+                    $prefix = substr($this->buffer, -5);
                     $this->buffer = substr($this->buffer, 0, -5);
-                    $body = $temp.' '.$body;
                 } else {
                     $this->_fixBufferLinkSpacing();
-                    $body = 'Table '.$body;
+                    $prefix = 'Table';
                 }
 
+                if($this->_isBufferInParagraph($stripBuffer)) {
+                    $prefix = strtolower($prefix);
+                }
+
+                $body = $prefix.' '.$body;
                 break;
         }
 
@@ -406,6 +420,10 @@ class Html extends iris\Translator {
         if(!strpbrk(substr($this->buffer, -1), '({[=| ')) {
             $this->buffer .= ' ';
         }
+    }
+
+    protected function _isBufferInParagraph($buffer) {
+        return preg_match('/[a-zA-Z0-9\(\)\[\]\,\<\>_\-]$/i', $buffer);
     }
 
 // Section
