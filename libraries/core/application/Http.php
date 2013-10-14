@@ -21,7 +21,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
     
     protected $_httpRequest;
     protected $_responseAugmentor;
-    protected $_sendFileHeader = 'X-Sendfile';
+    protected $_sendFileHeader;
     
     protected $_context;
     
