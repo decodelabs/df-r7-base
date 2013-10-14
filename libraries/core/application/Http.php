@@ -477,7 +477,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
         }
         
         // Redirect to x-sendfile header
-        if($isFile && $sendData && $response->isStaticFile()) {
+        if($this->_sendFileHeader && $isFile && $sendData && $response->isStaticFile()) {
             $response->getHeaders()->set($this->_sendFileHeader, $response->getStaticFilePath());
             $sendData = false;
         }
