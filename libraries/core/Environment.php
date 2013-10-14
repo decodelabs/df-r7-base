@@ -135,7 +135,8 @@ class Environment extends Config {
         }
 
         if(empty($output)) {
-            $output = 'X-Sendfile';
+            //$output = 'X-Sendfile';
+            $output = null;
         }
 
         return $output;
