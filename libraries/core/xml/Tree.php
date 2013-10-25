@@ -16,6 +16,11 @@ class Tree implements ITree, core\IDumpable {
 
     protected $_element;
 
+    public static function normalizeString($string) {
+        $string = iconv('UTF-8', 'UTF-8//TRANSLIT', $string);
+        return preg_replace('/[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]+/u', '', $string);
+    }
+
     public static function fromXmlFile($xmlFile) {
         try {
             $document = self::_newDOMDocument();
@@ -30,6 +35,14 @@ class Tree implements ITree, core\IDumpable {
     }
 
     public static function fromXmlString($xmlString) {
+        $xmlString = trim($xmlString);
+
+        if(!stristr($xmlString, '<?xml version="1.0" encoding="UTF-8"?>')) {
+            $xmlString = '<?xml version="1.0" encoding="UTF-8"?>'."\n".$xmlString;
+        }
+
+        $xmlString = self::normalizeString($xmlString);
+
         try {
             $document = self::_newDOMDocument();
             $document->loadXML($xmlString);
