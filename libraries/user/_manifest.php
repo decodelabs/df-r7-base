@@ -47,6 +47,11 @@ interface IManager extends core\IManager {
 
     public function analyzePassword($password);
     
+    // Options
+    public function setClientOption($key, $value);
+    public function getClientOption($key, $default=null);
+    public function setClientOptions(array $options);
+    public function getClientOptions();
     
     // Authentication
     public function isLoggedIn();
@@ -69,7 +74,6 @@ interface IManager extends core\IManager {
     public function getSessionId();
     public function transitionSessionId();
     public function isSessionOpen();
-    
     public function getSessionNamespace($namespace);
     public function destroySession();
 }
@@ -86,6 +90,9 @@ interface IUserModel {
     public function purgeRememberKeys();
 
     public function getSessionBackend();
+
+    public function fetchClientOptions($id);
+    public function updateClientOptions($id, array $options);
 }
 
 interface IClientDataObject {
@@ -134,6 +141,12 @@ interface IClient extends IClientDataObject {
     public function setKeyring(array $keyring);
     public function getKeyring();
     public function getKeyringTimestamp();
+
+    public function hasOptions();
+    public function hasOption($key);
+    public function getOption($key, $default=null);
+    public function getOptions();
+    public function importOptions(array $options);
     
     public function canAccess(IAccessLock $lock, $action=null, $linkTo=false);
 }

@@ -129,6 +129,55 @@ class Manager implements IManager, core\IDumpable {
 
         return $lock;
     }
+
+
+
+// Options
+    public function setClientOption($key, $value) {
+        return $this->setClientOptions([$key => $value]);
+    }
+
+    public function getClientOption($key, $default=null) {
+        $client = $this->getClient();
+        $this->_ensureClientOptions($client);
+        return $client->getOption($key, $default);
+    }
+
+    public function setClientOptions(array $options) {
+        $client = $this->getClient();
+        $this->_ensureClientOptions($client);
+        $this->getUserModel()->updateClientOptions($client->getId(), $options);
+
+        $options = array_merge($client->getOptions(), $options);
+        $client->importOptions($options);
+
+        $session = $this->getSessionNamespace(self::CLIENT_SESSION_NAMESPACE);
+        $session->set(self::CLIENT_SESSION_KEY, $client);
+        
+        return $this;
+    }
+
+    public function getClientOptions() {
+        $client = $this->getClient();
+        $this->_ensureClientOptions($client);
+        return $client->getOptions();
+    }
+
+    private function _ensureClientOptions($client) {
+        if($client->hasOptions()) {
+            return;
+        }
+
+        $options = $this->getUserModel()->fetchClientOptions($client->getId());
+
+        if(!is_array($options)) {
+            $options = [];
+        }
+
+        $client->importOptions($options);
+        return $client;
+    }
+
     
     
     
@@ -198,6 +247,8 @@ class Manager implements IManager, core\IDumpable {
                 $perpetuator->perpetuateRememberKey($this, $key);
             }
 
+            // Options
+            $this->_ensureClientOptions($client);
 
             // Store session
             $session->set(self::CLIENT_SESSION_KEY, $client);
@@ -231,6 +282,9 @@ class Manager implements IManager, core\IDumpable {
         $perpetuator = $this->getSessionPerpetuator();
         $key = $model->generateRememberKey($this->_client);
         $perpetuator->perpetuateRememberKey($this, $key);
+
+        // Options
+        $this->_ensureClientOptions($this->_client);
         
         // Store session
         $session->set(self::CLIENT_SESSION_KEY, $this->_client);
@@ -257,6 +311,7 @@ class Manager implements IManager, core\IDumpable {
         }
 
         $client->import($data);
+        $this->_ensureClientOptions($client);
 
         $session = $this->getSessionNamespace(self::CLIENT_SESSION_NAMESPACE);
         $session->set(self::CLIENT_SESSION_KEY, $client);

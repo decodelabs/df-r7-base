@@ -22,12 +22,14 @@ class Client implements IClient, \Serializable {
     protected $_country = 'GB';
     protected $_language = 'en';
     protected $_timezone = 'UTC';
+
+    protected $_options = null;
     
     protected $_authState = IState::GUEST;
     protected $_keyring = array();
     protected $_keyringTimestamp;
 
-    private $_accessCache = array();
+    private $_accessCache = [];
 
     public static function stateIdToName($state) {
         if($state === null) {
@@ -82,6 +84,7 @@ class Client implements IClient, \Serializable {
         
         $output->_timezone = $i18nManager->timezones->suggestForCountry($output->_country);
         $output->_authState = IState::GUEST;
+        $output->_options = [];
         
         return $output;
     }
@@ -97,6 +100,7 @@ class Client implements IClient, \Serializable {
             'cn' => $this->_country,
             'ln' => $this->_language,
             'tz' => $this->_timezone,
+            'op' => $this->_options,
             'as' => $this->_authState,
             'kr' => $this->_keyring,
             'kt' => $this->_keyringTimestamp
@@ -121,6 +125,11 @@ class Client implements IClient, \Serializable {
         $this->_country = $data['cn'];
         $this->_language = $data['ln'];
         $this->_timezone = $data['tz'];
+
+        if(isset($data['op'])) {
+            $this->_options = $data['op'];
+        }
+
         $this->_authState = $data['as'];
         $this->_keyring = $data['kr'];
         $this->_keyringTimestamp = $data['kt'];
@@ -229,6 +238,7 @@ class Client implements IClient, \Serializable {
         $this->_language = $clientData->getLanguage();
         $this->_country = $clientData->getCountry();
         $this->_timezone = $clientData->getTimezone();
+        $this->_options = null;
     }
     
     public function setKeyring(array $keyring) {
@@ -329,5 +339,33 @@ class Client implements IClient, \Serializable {
         $this->_accessCache[$lockId] = $output;
         
         return $output;
+    }
+
+
+// Options
+    public function hasOptions() {
+        return $this->_options !== null;
+    }
+
+    public function hasOption($key) {
+        return $this->_options !== null 
+            && array_key_exists($key, $this->_options);
+    }
+
+    public function getOption($key, $default=null) {
+        if($this->hasOption($key)) {
+            return $this->_options[$key];
+        }
+
+        return $default;
+    }
+
+    public function getOptions() {
+        return $this->_options;
+    }
+
+    public function importOptions(array $options) {
+        $this->_options = $options;
+        return $this;
     }
 }
