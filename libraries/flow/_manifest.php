@@ -76,11 +76,47 @@ interface IFlashMessage {
 
 
 
-class FlashQueue {
+class FlashQueue implements \Serializable {
+
     public $limit = 15;
     public $constant = array();
     public $queued = array();
     public $instant = array();
+
+    public function serialize() {
+        $data = ['l' => $this->limit];
+
+        if(!empty($this->constant)) {
+            $data['c'] = $this->constant;
+        }
+
+        if(!empty($this->queued)) {
+            $data['q'] = $this->queued;
+        }
+
+        if(!empty($this->instant)) {
+            $data['i'] = $this->instant;
+        }
+
+        return serialize($data);
+    }
+
+    public function unserialize($data) {
+        $data = unserialize($data);
+        $this->limit = $data['l'];
+
+        if(isset($data['c'])) {
+            $this->constant = $data['c'];
+        }
+
+        if(isset($data['q'])) {
+            $this->queued = $data['q'];
+        }
+
+        if(isset($data['i'])) {
+            $this->instant = $data['i'];
+        }
+    }
 }
 
 

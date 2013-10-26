@@ -10,7 +10,7 @@ use df\core;
 use df\flow;
 use df\user;
     
-class FlashMessage implements IFlashMessage {
+class FlashMessage implements IFlashMessage, \Serializable {
 
     protected $_id;
     protected $_isDisplayed = false;
@@ -46,6 +46,52 @@ class FlashMessage implements IFlashMessage {
 
         if($type !== null) {
             $this->setType($type);
+        }
+    }
+
+    public function serialize() {
+        $data = [
+            'id' => $this->_id,
+            'dp' => $this->_isDisplayed,
+            'dc' => $this->_displayCount,
+            'tp' => $this->_type,
+            'ms' => $this->_message
+        ];
+
+        if($this->_description) {
+            $data['ds'] = $this->_description;
+        }
+
+        if($this->_link) {
+            $data['ln'] = $this->_link;
+        }
+
+        if($this->_linkText) {
+            $data['lt'] = $this->_linkText;
+        }
+
+        return json_encode($data);
+    }
+
+    public function unserialize($data) {
+        $data = json_decode($data, true);
+
+        $this->_id = $data['id'];
+        $this->_isDisplayed = $data['dp'];
+        $this->_displayCount = $data['dc'];
+        $this->_type = $data['tp'];
+        $this->_message = $data['ms'];
+
+        if(isset($data['ds'])) {
+            $this->_description = $data['ds'];
+        }
+
+        if(isset($data['ln'])) {
+            $this->_link = $data['ln'];
+        }
+
+        if(isset($data['lt'])) {
+            $this->_linkText = $data['lt'];
         }
     }
 
