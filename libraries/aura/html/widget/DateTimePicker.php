@@ -12,11 +12,15 @@ use df\arch;
 
 class DateTimePicker extends DatePicker {
     
-    const INPUT_TYPE = 'datetime';
-    const DEFAULT_PLACEHOLDER = 'yyyy-MM-ddThh:mmZ (UTC)';
+    const INPUT_TYPE = 'datetime-local';
+    const DEFAULT_PLACEHOLDER = 'yyyy-MM-ddThh:mm';
+    
+    protected function _stringToDate($date) {
+        return core\time\Date::factory((string)$date, true)->toUtc();
+    }
     
     protected function _dateToString(core\time\IDate $date) {
-        $date->toUtc();
-        return $date->format('Y-m-d\TH:i\Z');
+        $date->toUserTimezone();
+        return $date->format('Y-m-d\TH:i');
     }
 }
