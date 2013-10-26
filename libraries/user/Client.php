@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\user;
 
-class Client implements IClient {
+class Client implements IClient, \Serializable {
     
     use TNameExtractor;
 
@@ -84,6 +84,46 @@ class Client implements IClient {
         $output->_authState = IState::GUEST;
         
         return $output;
+    }
+
+    public function serialize() {
+        return serialize([
+            'id' => $this->_id,
+            'em' => $this->_email,
+            'fn' => $this->_fullName,
+            'nn' => $this->_nickName,
+            'jd' => $this->_joinDate ? $this->_joinDate->format(core\time\Date::DBDATE) : null,
+            'ld' => $this->_loginDate ? (string)$this->_loginDate : null,
+            'cn' => $this->_country,
+            'ln' => $this->_language,
+            'tz' => $this->_timezone,
+            'as' => $this->_authState,
+            'kr' => $this->_keyring,
+            'kt' => $this->_keyringTimestamp
+        ]);
+    }
+
+    public function unserialize($data) {
+        $data = unserialize($data);
+        $this->_id = $data['id'];
+        $this->_email = $data['em'];
+        $this->_fullName = $data['fn'];
+        $this->_nickName = $data['nn'];
+
+        if($data['jd']) {
+            $this->_joinDate = new core\time\Date($data['jd']);
+        }
+
+        if($data['ld']) {
+            $this->_loginDate = new core\time\Date($data['ld']);
+        }
+
+        $this->_country = $data['cn'];
+        $this->_language = $data['ln'];
+        $this->_timezone = $data['tz'];
+        $this->_authState = $data['as'];
+        $this->_keyring = $data['kr'];
+        $this->_keyringTimestamp = $data['kt'];
     }
     
     public function getId() {
