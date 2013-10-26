@@ -622,7 +622,7 @@ abstract class Base implements
     public function deflateBatchInsertValues(array $rows, array &$queryFields) {
         $schema = $this->getUnitSchema();
         $fields = $schema->getFields();
-        $queryFields = array_keys($fields);
+        $queryFields = array();
         $values = array();
         
         foreach($rows as $row) {
@@ -644,15 +644,18 @@ abstract class Base implements
                 if(is_array($value)) {
                     foreach($value as $key => $val) {
                         $rowValues[$key] = $val;
+                        $queryFields[$key] = true;
                     }
                 } else {
                     $rowValues[$name] = $value;
+                    $queryFields[$name] = true;
                 }
             }
             
             $values[] = $rowValues;
         }
-        
+
+        $queryFields = array_keys($queryFields);
         return $values;
     }
     

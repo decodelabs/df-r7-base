@@ -413,6 +413,7 @@ interface IBatchDataInsertQuery extends IWriteQuery {
     public function getRows();
     public function clearRows();
     public function getFields();
+    public function getDereferencedFields();
     
     public function countPending();
     public function countInserted();

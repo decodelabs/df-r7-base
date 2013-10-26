@@ -51,7 +51,7 @@ class BatchInsert implements IBatchInsertQuery, core\IDumpable {
             }
             
             if(!empty($fields)) {
-                $this->_fields = array_fill_keys($fields, true);
+                $this->_dereferencedFields = array_fill_keys($fields, true);
             }
 
             $this->_inserted += $this->_sourceManager->executeQuery($this, function($adapter) {

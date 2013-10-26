@@ -362,7 +362,7 @@ abstract class QueryExecutor implements IQueryExecutor {
         
         $rows = array();
         $fields = array();
-        $fieldList = $this->_query->getFields();
+        $fieldList = $this->_query->getDereferencedFields();
         
         foreach($fieldList as $field) {
             $fields[] = $this->_adapter->quoteIdentifier($field);
@@ -419,14 +419,14 @@ abstract class QueryExecutor implements IQueryExecutor {
         
         $rows = array();
         $fields = array();
-        $fieldList = $this->_query->getFields();
+        $fieldList = $this->_query->getDereferencedFields();
         $duplicates = array();
-        
+
         foreach($fieldList as $field) {
             $fields[] = $fieldString = $this->_adapter->quoteIdentifier($field);
             $duplicates[] = $fieldString.'=VALUES('.$fieldString.')';
         }
-        
+
         foreach($this->_query->getRows() as $row) {
             foreach($fieldList as $key) {
                 $id = $this->_stmt->generateUniqueKey();
@@ -439,7 +439,7 @@ abstract class QueryExecutor implements IQueryExecutor {
                 $this->_stmt->bind($id, $value);
                 $row[$key] = ':'.$id;
             }
-            
+
             $rows[] = '('.implode(',', $row).')';
         }
         

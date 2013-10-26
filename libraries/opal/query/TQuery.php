@@ -1357,6 +1357,7 @@ trait TQuery_BatchDataInsert {
     
     protected $_rows = array();
     protected $_fields = array();
+    protected $_dereferencedFields = null;
     protected $_flushThreshold = 500;
     protected $_inserted = 0;
     
@@ -1425,6 +1426,14 @@ trait TQuery_BatchDataInsert {
     
     public function getFields() {
         return array_keys($this->_fields);
+    }
+
+    public function getDereferencedFields() {
+        if($this->_dereferencedFields === null) {
+            return $this->getFields();
+        }
+
+        return array_keys($this->_dereferencedFields);
     }
     
 
