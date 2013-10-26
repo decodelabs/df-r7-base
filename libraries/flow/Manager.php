@@ -40,10 +40,21 @@ class Manager implements IManager {
         $emails = $notification->getToEmails();
         $userManager = user\Manager::getInstance($this->_application);
         $userModel = $userManager->getUserModel();
-        $userList = $userModel->getClientDataList($notification->getToUsers(), array_keys($emails));
+        $userList = $notification->getToUsers();
+        $keys = [];
+
+        foreach($userList as $key => $user) {
+            if($user === null) {
+                $keys[] = $key;
+            } else {
+                $emails[$user->getEmail()] = $user->getFullName();
+            }
+        }
+
+        $clientList = $userModel->getClientDataList($keys, array_keys($emails));
         $client = $userManager->client;
 
-        foreach($userList as $user) {
+        foreach($clientList as $user) {
             $emails[$user->getEmail()] = $user->getFullName();
         }
 

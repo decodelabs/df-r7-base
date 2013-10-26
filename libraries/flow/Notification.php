@@ -8,6 +8,7 @@ namespace df\flow;
 use df;
 use df\core;
 use df\flow;
+use df\user;
     
 class Notification implements INotification {
 
@@ -80,6 +81,11 @@ class Notification implements INotification {
                 continue;
             }
 
+            if($user instanceof user\IClientDataObject) {
+                $this->addToUser($user);
+                continue;
+            }
+
             if(is_array($user) || $user instanceof \ArrayAccess) {
                 if(isset($user['id'])) {
                     $this->addToUser((int)$user['id']);
@@ -135,18 +141,26 @@ class Notification implements INotification {
     }
 
     public function addToUser($id) {
-        if(is_array($id) || $id instanceof \ArrayAccess) {
-            $id = $id['id'];
-        }
+        if($id instanceof user\IClientDataObject) {
+            $this->_toUsers[$id->getId()] = $id;
+        } else {
+            if(is_array($id) || $id instanceof \ArrayAccess) {
+                $id = $id['id'];
+            }
 
-        if(is_numeric($id)) {
-            $this->_toUsers[(int)$id] = null;
+            if(is_numeric($id)) {
+                $this->_toUsers[(int)$id] = null;
+            }
         }
 
         return $this;
     }
 
     public function getToUsers() {
+        return $this->_toUsers;
+    }
+
+    public function getToUserIds() {
         return array_keys($this->_toUsers);
     }
 

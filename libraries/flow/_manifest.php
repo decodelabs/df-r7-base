@@ -140,6 +140,7 @@ interface INotification {
     
     public function addToUser($id);
     public function getToUsers();
+    public function getToUserIds();
     public function removeToUser($id);
     public function clearToUsers();
 
