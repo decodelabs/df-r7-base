@@ -368,4 +368,38 @@ class Client implements IClient, \Serializable {
         $this->_options = $options;
         return $this;
     }
+
+
+// Array access
+    public function offsetSet($key, $value) {
+        throw new RuntimeException('Client objects are read only');
+    }
+
+    public function offsetGet($key) {
+        switch($key) {
+            case 'id': return $this->_id;
+            case 'email': return $this->_email;
+            case 'fullName': return $this->_fullName;
+            case 'nickName': return $this->_nickName;
+            case 'firstName': return $this->getFirstName();
+            case 'surname': return $this->getSurname();
+            case 'stats': return $this->_authState;
+            case 'joinDate': return $this->_joinDate;
+            case 'loginDate': return $this->_loginDate;
+            case 'language': return $this->_language;
+            case 'country': return $this->_country;
+            case 'timezone': return $this->_timezone;
+        }
+    }
+
+    public function offsetExists($key) {
+        return in_array($key, [
+            'id', 'email', 'fullName', 'nickName', 'firstName', 'surname', 
+            'stats', 'joinDate', 'loginDate', 'language', 'country', 'timezone'
+        ]);
+    }
+
+    public function offsetUnset($key) {
+        throw new RuntimeException('Client objects are read only');
+    }
 }

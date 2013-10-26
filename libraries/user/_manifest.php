@@ -95,7 +95,7 @@ interface IUserModel {
     public function updateClientOptions($id, array $options);
 }
 
-interface IClientDataObject {
+interface IClientDataObject extends \ArrayAccess {
     public function getId();
     public function getEmail();
     public function getFullName();
