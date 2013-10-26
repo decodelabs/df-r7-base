@@ -15,8 +15,12 @@ abstract class Base extends core\Config implements axis\IUnit {
     
     public function __construct(axis\IModel $model) {
         $this->_model = $model;
-        
-        $id = 'model/'.$model->getModelName().'.'.$this->getCanonicalUnitName();
+        $id = static::ID;
+
+        if($id === null) {
+            $id = 'model/'.$model->getModelName().'.'.$this->getCanonicalUnitName();
+        }
+
         parent::__construct($model->getApplication(), $id);
     }
     
