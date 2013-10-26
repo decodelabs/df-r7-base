@@ -87,7 +87,7 @@ class Client implements IClient, \Serializable {
     }
 
     public function serialize() {
-        return serialize([
+        return json_encode([
             'id' => $this->_id,
             'em' => $this->_email,
             'fn' => $this->_fullName,
@@ -104,7 +104,7 @@ class Client implements IClient, \Serializable {
     }
 
     public function unserialize($data) {
-        $data = unserialize($data);
+        $data = json_decode($data, true);
         $this->_id = $data['id'];
         $this->_email = $data['em'];
         $this->_fullName = $data['fn'];
