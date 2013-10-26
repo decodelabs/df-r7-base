@@ -96,6 +96,10 @@ class Currency implements ICurrency, core\IDumpable {
         return isset(self::$_currencies[$code]) || in_array($code, self::$_currencies);
     }
 
+    public static function getRecognizedCodes() {
+        return self::$_currencies;
+    }
+
     public function __construct($amount, $code) {
         $this->setAmount($amount);
         $this->setCode($code);
