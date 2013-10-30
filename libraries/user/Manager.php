@@ -15,7 +15,7 @@ class Manager implements IManager, core\IDumpable {
     use core\TManager;
     
     const REGISTRY_PREFIX = 'manager://user';
-    const CLIENT_SESSION_NAMESPACE = 'user';
+    const USER_SESSION_NAMESPACE = 'user';
     const CLIENT_SESSION_KEY = 'Client';
     
     public $_session;
@@ -38,7 +38,7 @@ class Manager implements IManager, core\IDumpable {
     }
 
     protected function _loadClient() {
-        $session = $this->session->getNamespace(self::CLIENT_SESSION_NAMESPACE);
+        $session = $this->session->getNamespace(self::USER_SESSION_NAMESPACE);
         $this->_client = $session->get(self::CLIENT_SESSION_KEY);
         $regenKeyring = false;
 
@@ -160,7 +160,7 @@ class Manager implements IManager, core\IDumpable {
         $options = array_merge($client->getOptions(), $options);
         $client->importOptions($options);
 
-        $session = $this->session->getNamespace(self::CLIENT_SESSION_NAMESPACE);
+        $session = $this->session->getNamespace(self::USER_SESSION_NAMESPACE);
         $session->set(self::CLIENT_SESSION_KEY, $client);
         
         return $this;
@@ -226,7 +226,7 @@ class Manager implements IManager, core\IDumpable {
         $adapter->authenticate($request, $result);
         
         if($result->isValid()) {
-            $session = $this->session->getNamespace(self::CLIENT_SESSION_NAMESPACE);
+            $session = $this->session->getNamespace(self::USER_SESSION_NAMESPACE);
             $this->_accessLockCache = array();
 
             // Import user data
@@ -273,7 +273,7 @@ class Manager implements IManager, core\IDumpable {
             return false;
         }
 
-        $session = $this->session->getNamespace(self::CLIENT_SESSION_NAMESPACE);
+        $session = $this->session->getNamespace(self::USER_SESSION_NAMESPACE);
         $this->_accessLockCache = array();
 
         $clientData = $model->getClientData($key->userId);
@@ -322,7 +322,7 @@ class Manager implements IManager, core\IDumpable {
         $client->import($data);
         $this->_ensureClientOptions($client);
 
-        $session = $this->session->getNamespace(self::CLIENT_SESSION_NAMESPACE);
+        $session = $this->session->getNamespace(self::USER_SESSION_NAMESPACE);
         $session->set(self::CLIENT_SESSION_KEY, $client);
         return $this;
     }
