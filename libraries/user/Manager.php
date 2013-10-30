@@ -356,7 +356,7 @@ class Manager implements IManager, core\IDumpable {
     
     
 // Session perpetuator
-    public function setSessionPerpetuator(ISessionPerpetuator $perpetuator) {
+    public function setSessionPerpetuator(user\session\IPerpetuator $perpetuator) {
         if($this->_sessionIsOpen) {
             throw new RuntimeException(
                 'Cannot set session perpetuator, the session has already started'
@@ -385,7 +385,7 @@ class Manager implements IManager, core\IDumpable {
     
 
 // Session backend
-    public function setSessionBackend(ISessionBackend $backend) {
+    public function setSessionBackend(user\session\IBackend $backend) {
         if($this->_sessionIsOpen) {
             throw new RuntimeException(
                 'Cannot set session backend, the session has already started'
@@ -405,7 +405,7 @@ class Manager implements IManager, core\IDumpable {
             $this->_sessionBackend = $this->getUserModel()->getSessionBackend();
         }
 
-        if(!$this->_sessionBackend instanceof user\ISessionBackend) {
+        if(!$this->_sessionBackend instanceof user\session\IBackend) {
             $this->_sessionBackend = new user\session\backend\Sqlite($this);
         }
     }

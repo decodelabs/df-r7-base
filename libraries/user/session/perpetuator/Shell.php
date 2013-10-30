@@ -10,7 +10,7 @@ use df\core;
 use df\user;
 use df\halo;
     
-class Shell implements user\ISessionPerpetuator {
+class Shell implements user\session\IPerpetuator {
 
     protected $_userKey;
     protected $_inputId;
@@ -41,7 +41,7 @@ class Shell implements user\ISessionPerpetuator {
         return $this->_inputId;
     }
 
-    public function perpetuate(user\IManager $manager, user\ISessionDescriptor $descriptor) {
+    public function perpetuate(user\IManager $manager, user\session\IDescriptor $descriptor) {
         $cache = Shell_Cache::getInstance($manager->getApplication());
         $cache->set($this->_userKey, $descriptor->getExternalId(), $this->_lifeTime);
 

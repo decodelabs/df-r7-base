@@ -11,7 +11,7 @@ use df\user;
 use df\arch;
 use df\halo;
 
-class Cookie implements user\ISessionPerpetuator {
+class Cookie implements user\session\IPerpetuator {
     
     protected $_sessionCookieName = '_s';
     protected $_rememberCookieName = '_r';
@@ -45,7 +45,7 @@ class Cookie implements user\ISessionPerpetuator {
         return $this->_inputId;
     }
     
-    public function perpetuate(user\IManager $manager, user\ISessionDescriptor $descriptor) {
+    public function perpetuate(user\IManager $manager, user\session\IDescriptor $descriptor) {
         $outputId = $descriptor->getExternalId();
         
         if($outputId != $this->_inputId) {

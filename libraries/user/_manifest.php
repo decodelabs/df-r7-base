@@ -65,9 +65,9 @@ interface IManager extends core\IManager {
     
     
     // Session
-    public function setSessionPerpetuator(ISessionPerpetuator $perpetuator);
+    public function setSessionPerpetuator(user\session\IPerpetuator $perpetuator);
     public function getSessionPerpetuator();
-    public function setSessionBackend(ISessionBackend $backend);
+    public function setSessionBackend(user\session\IBackend $backend);
     public function getSessionBackend();
     public function getSessionCache();
     public function getSessionDescriptor();
@@ -220,112 +220,6 @@ trait TAccessControlled {
         return $this;
     }
 }
-
-
-
-interface ISessionHandler extends core\IValueMap, \ArrayAccess {
-    public function setLifeTime($lifeTime);
-    public function getLifeTime();
-
-    public function getSessionDescriptor();
-    public function getSessionId();
-    public function transitionSessionId();
-    public function isSessionOpen();
-    
-    public function acquire($key);
-    public function release($key);
-    public function update($key, \Closure $func);
-    public function refresh($key);
-    public function refreshAll();
-    public function getUpdateTime($id);
-    public function getTimeSinceLastUpdate($key);
-    
-    public function getAllKeys();
-    public function clear();
-    public function clearForAll();
-    public function prune($age=7200);
-
-    public function __set($key, $value);
-    public function __get($key);
-    public function __isset($key);
-    public function __unset($key);
-    
-    public function getLastUpdated();
-}
-
-interface ISessionBackend {
-    public function setLifeTime($lifeTime);
-    public function getLifeTime();
-    
-    public function insertDescriptor(ISessionDescriptor $descriptor);
-    public function fetchDescriptor($id, $transitionTime);
-    public function touchSession(ISessionDescriptor $descriptor);
-    public function applyTransition(ISessionDescriptor $descriptor);
-    public function killSession(ISessionDescriptor $descriptor);
-    public function idExists($id);
-    
-    public function getNamespaceKeys(ISessionDescriptor $descriptor, $namespace);
-    public function pruneNamespace(ISessionDescriptor $descriptor, $namespace, $age);
-    public function clearNamespace(ISessionDescriptor $descriptor, $namespace);
-    public function clearNamespaceForAll($namespace);
-    
-    public function fetchNode(ISessionDescriptor $descriptor, $namespace, $key);
-    public function fetchLastUpdatedNode(ISessionDescriptor $descriptor, $namespace);
-    public function lockNode(ISessionDescriptor $descriptor, \stdClass $node);
-    public function unlockNode(ISessionDescriptor $descriptor, \stdClass $node);
-    public function updateNode(ISessionDescriptor $descriptor, \stdClass $node);
-    public function removeNode(ISessionDescriptor $descriptor, $namespace, $key);
-    public function hasNode(ISessionDescriptor $descriptor, $namespace, $key);
-    public function collectGarbage();
-}
-
-
-interface ISessionDescriptor extends core\IArrayInterchange, opal\query\IDataRowProvider {
-    public function isNew();
-    public function hasJustStarted($flag=null);
-    
-    public function setInternalId($id);
-    public function getInternalId();
-    public function setExternalId($id);
-    public function getExternalId();
-    
-    public function setTransitionId($id);
-    public function getTransitionId();
-    public function applyTransition($newExternalId);
-    
-    public function setUserId($id);
-    public function getUserId();
-    
-    public function setStartTime($time);
-    public function getStartTime();
-    
-    public function setAccessTime($time);
-    public function getAccessTime();
-    public function isAccessOlderThan($seconds);
-    
-    public function setTransitionTime($time);
-    public function getTransitionTime();
-    public function hasJustTransitioned($transitionLifeTime=10);
-    
-    public function needsTouching($transitionLifeTime=10);
-    public function touchInfo($transitionLifeTime=10);
-}
-
-
-interface ISessionPerpetuator {
-    public function setLifeTime($lifeTime);
-    public function getLifeTime();
-    
-    public function getInputId();
-
-    public function perpetuate(user\IManager $manager, ISessionDescriptor $descriptor);
-    public function destroy(user\IManager $manager);
-
-    public function perpetuateRememberKey(user\IManager $manager, RememberKey $key);
-    public function getRememberKey(user\IManager $manager);
-    public function destroyRememberKey(user\IManager $manager);
-}
-
 
 
 

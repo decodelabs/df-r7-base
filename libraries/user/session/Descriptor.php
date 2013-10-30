@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\user;
 
-class Descriptor implements user\ISessionDescriptor {
+class Descriptor implements user\session\IDescriptor {
     
     public $internalId;
     public $externalId;

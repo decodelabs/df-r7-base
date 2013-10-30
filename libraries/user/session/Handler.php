@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\user;
 
-class Handler implements user\ISessionHandler, core\IDumpable {
+class Handler implements user\session\IHandler, core\IDumpable {
     
     use core\TValueMap;
 

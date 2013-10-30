@@ -13,7 +13,7 @@ class Cache extends core\cache\Base {
     
     const CACHE_ID = 'session';
     
-    public function insertDescriptor(user\ISessionDescriptor $descriptor) {
+    public function insertDescriptor(user\session\IDescriptor $descriptor) {
         $key = 'd:'.$descriptor->externalId;
         
         //core\debug()->info('insert cache descriptor: '.$key);
@@ -34,7 +34,7 @@ class Cache extends core\cache\Base {
         return $this->get('d:'.$externalId);
     }
     
-    public function removeDescriptor(user\ISessionDescriptor $descriptor) {
+    public function removeDescriptor(user\session\IDescriptor $descriptor) {
         $key = 'd:'.$descriptor->externalId;
         
         //core\debug()->info('remove cache descriptor: '.$key);
@@ -43,7 +43,7 @@ class Cache extends core\cache\Base {
     }
     
     
-    public function fetchNode(user\ISessionDescriptor $descriptor, $namespace, $nsKey) {
+    public function fetchNode(user\session\IDescriptor $descriptor, $namespace, $nsKey) {
         $key = 'i:'.$descriptor->internalId.'/'.$namespace.'#'.$nsKey;
         
         //core\debug()->info('fetch cache node: '.$key);
@@ -51,7 +51,7 @@ class Cache extends core\cache\Base {
         return $this->get($key);
     }
     
-    public function insertNode(user\ISessionDescriptor $descriptor, \stdClass $node) {
+    public function insertNode(user\session\IDescriptor $descriptor, \stdClass $node) {
         $key = 'i:'.$descriptor->internalId.'/'.$node->namespace.'#'.$node->key;
         
         //core\debug()->info('insert cache node: '.$key);
@@ -66,7 +66,7 @@ class Cache extends core\cache\Base {
         return $node;
     }
     
-    public function removeNode(user\ISessionDescriptor $descriptor, $namespace, $nsKey) {
+    public function removeNode(user\session\IDescriptor $descriptor, $namespace, $nsKey) {
         $key = 'i:'.$descriptor->internalId.'/'.$namespace.'#'.$nsKey;
         
         //core\debug()->info('remove cache node: '.$key);
