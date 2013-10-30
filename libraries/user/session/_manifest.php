@@ -17,6 +17,20 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 
 
 // Interfaces    
+interface IController extends core\IApplicationAware {
+    public function isOpen();
+    public function setPerpetuator(IPerpetuator $perpetuator);
+    public function getPerpetuator();
+    public function setBackend(IBackend $backend);
+    public function getBackend();
+    public function getCache();
+    public function getDescriptor();
+    public function getId();
+    public function transitionId();
+    public function getNamespace($namespace);
+    public function destroy();
+}
+
 interface IHandler extends core\IValueMap, \ArrayAccess {
     public function setLifeTime($lifeTime);
     public function getLifeTime();
@@ -112,10 +126,10 @@ interface IPerpetuator {
     
     public function getInputId();
 
-    public function perpetuate(user\IManager $manager, IDescriptor $descriptor);
-    public function destroy(user\IManager $manager);
+    public function perpetuate(IController $controller, IDescriptor $descriptor);
+    public function destroy(IController $controller);
 
-    public function perpetuateRememberKey(user\IManager $manager, user\RememberKey $key);
-    public function getRememberKey(user\IManager $manager);
-    public function destroyRememberKey(user\IManager $manager);
+    public function perpetuateRememberKey(IController $controller, user\RememberKey $key);
+    public function getRememberKey(IController $controller);
+    public function destroyRememberKey(IController $controller);
 }

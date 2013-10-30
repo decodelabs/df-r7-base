@@ -16,14 +16,14 @@ class Shell implements user\session\IPerpetuator {
     protected $_inputId;
     protected $_lifeTime;
 
-    public function __construct(user\IManager $manager) {
+    public function __construct(user\session\IController $controller) {
         $process = halo\process\Base::getCurrent();
 
         $uid = $process->getOwnerId();
         $name = $process->getOwnerName();
 
         $this->_userKey = md5($uid.$name);
-        $cache = Shell_Cache::getInstance($manager->getApplication());
+        $cache = Shell_Cache::getInstance($controller->getApplication());
 
         $this->_inputId = $cache->get($this->_userKey);
     }
@@ -41,32 +41,32 @@ class Shell implements user\session\IPerpetuator {
         return $this->_inputId;
     }
 
-    public function perpetuate(user\IManager $manager, user\session\IDescriptor $descriptor) {
-        $cache = Shell_Cache::getInstance($manager->getApplication());
+    public function perpetuate(user\session\IController $controller, user\session\IDescriptor $descriptor) {
+        $cache = Shell_Cache::getInstance($controller->getApplication());
         $cache->set($this->_userKey, $descriptor->getExternalId(), $this->_lifeTime);
 
         return $this;
     }
 
-    public function destroy(user\IManager $manager) {
-        $cache = Shell_Cache::getInstance($manager->getApplication());
+    public function destroy(user\session\IController $controller) {
+        $cache = Shell_Cache::getInstance($controller->getApplication());
         $cache->remove($this->_userKey);
 
-        $this->destroyRememberKey($manager);
+        $this->destroyRememberKey($controller);
 
         return $this;
     }
 
-    public function perpetuateRememberKey(user\IManager $manager, user\RememberKey $key) {
+    public function perpetuateRememberKey(user\session\IController $controller, user\RememberKey $key) {
         // How's this going to work?
         return $this;
     }
 
-    public function getRememberKey(user\IManager $manager) {
+    public function getRememberKey(user\session\IController $controller) {
         return null;
     }
 
-    public function destroyRememberKey(user\IManager $manager) {
+    public function destroyRememberKey(user\session\IController $controller) {
         // Derp
         return $this;
     }

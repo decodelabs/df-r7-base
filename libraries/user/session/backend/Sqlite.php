@@ -79,7 +79,7 @@ class Sqlite implements user\session\IBackend {
     
     public function touchSession(user\session\IDescriptor $descriptor) {
         $this->_connectManifest();
-        $values = $descriptor->touchInfo(user\Manager::SESSION_TRANSITION_LIFETIME);
+        $values = $descriptor->touchInfo(user\session\Controller::TRANSITION_LIFETIME);
         
         $this->_manifestTable->update($values)
             ->where('internalId', '=', $descriptor->internalId)

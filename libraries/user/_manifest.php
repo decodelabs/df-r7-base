@@ -42,11 +42,15 @@ class RememberKey {
 interface IManager extends core\IManager {
     // Client
     public function getClient();
+    public function clearClient();
     public function canAccess($lock, $action=null, $linkTo=false);
     public function getAccessLock($lock);
-
     public function analyzePassword($password);
-    
+
+    // Session
+    public function getSessionController();
+    public function getSessionNamespace($namespace);
+
     // Options
     public function setClientOption($key, $value);
     public function getClientOption($key, $default=null);
@@ -62,20 +66,6 @@ interface IManager extends core\IManager {
     public function regenerateKeyring();
     public function instigateGlobalKeyringRegeneration();
     public function logout();
-    
-    
-    // Session
-    public function setSessionPerpetuator(user\session\IPerpetuator $perpetuator);
-    public function getSessionPerpetuator();
-    public function setSessionBackend(user\session\IBackend $backend);
-    public function getSessionBackend();
-    public function getSessionCache();
-    public function getSessionDescriptor();
-    public function getSessionId();
-    public function transitionSessionId();
-    public function isSessionOpen();
-    public function getSessionNamespace($namespace);
-    public function destroySession();
 }
 
 interface IUserModel {

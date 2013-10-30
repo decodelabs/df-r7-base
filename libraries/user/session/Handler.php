@@ -15,7 +15,7 @@ class Handler implements user\session\IHandler, core\IDumpable {
 
     protected $_namespace;    
     protected $_nodes = array();
-    protected $_manager;
+    protected $_controller;
     protected $_lifeTime = null;
     
     public static function createNode($namespace, $key, $res, $locked=false) {
@@ -45,8 +45,8 @@ class Handler implements user\session\IHandler, core\IDumpable {
         return $output;
     }
     
-    public function __construct(user\IManager $manager, $namespace) {
-        $this->_manager = $manager;
+    public function __construct(user\session\IController $controller, $namespace) {
+        $this->_controller = $controller;
         $this->_namespace = $namespace;
         
         if(empty($namespace)) {
@@ -73,35 +73,35 @@ class Handler implements user\session\IHandler, core\IDumpable {
 
     
     public function getSessionDescriptor() {
-        return $this->_manager->getSessionDescriptor();
+        return $this->_controller->getDescriptor();
     }
     
     public function getSessionId() {
-        return $this->_manager->getSessionId();
+        return $this->_controller->getId();
     }
     
     public function transitionSessionId() {
-        $this->_manager->transitionSessionId();
+        $this->_controller->transitionId();
         return $this;
     }
     
     public function isSessionOpen() {
-        return $this->_manager->isSessionOpen();
+        return $this->_controller->isOpen();
     }
     
     
     
     public function acquire($key) {
-        $descriptor = $this->_manager->getSessionDescriptor();
+        $descriptor = $this->_controller->getDescriptor();
         
         if(!isset($this->_nodes[$key])) {
             $this->__get($key);
         }
         
-        $this->_manager->getSessionCache()->removeNode($descriptor, $this->_namespace, $key);
+        $this->_controller->getCache()->removeNode($descriptor, $this->_namespace, $key);
         
         if(!$this->_nodes[$key]->isLocked) {
-            $this->_manager->getSessionBackend()->lockNode(
+            $this->_controller->getBackend()->lockNode(
                 $descriptor, $this->_nodes[$key]
             );
         }
@@ -111,8 +111,8 @@ class Handler implements user\session\IHandler, core\IDumpable {
     
     public function release($key) {
         if(isset($this->_nodes[$key]) && $this->_nodes[$key]->isLocked) {
-            $descriptor = $this->_manager->getSessionDescriptor();
-            $this->_manager->getSessionBackend()->unlockNode($descriptor, $this->_nodes[$key]);
+            $descriptor = $this->_controller->getDescriptor();
+            $this->_controller->getBackend()->unlockNode($descriptor, $this->_nodes[$key]);
             $this->_nodes[$key]->isLocked = false;
         }
         
@@ -159,23 +159,23 @@ class Handler implements user\session\IHandler, core\IDumpable {
     
     
     public function getAllKeys() {
-        $descriptor = $this->_manager->getSessionDescriptor();
-        return $this->_manager->getSessionBackend()->getNamespaceKeys($descriptor, $this->_namespace);
+        $descriptor = $this->_controller->getDescriptor();
+        return $this->_controller->getBackend()->getNamespaceKeys($descriptor, $this->_namespace);
     }
 
     public function clear() {
-        $descriptor = $this->_manager->getSessionDescriptor();
+        $descriptor = $this->_controller->getDescriptor();
         
-        $this->_manager->getSessionBackend()->clearNamespace($descriptor, $this->_namespace);
-        $this->_manager->getSessionCache()->clear();
+        $this->_controller->getBackend()->clearNamespace($descriptor, $this->_namespace);
+        $this->_controller->getCache()->clear();
         $this->_nodes = array();
         
         return $this;
     }
 
     public function clearForAll() {
-        $this->_manager->getSessionBackend()->clearNamespaceForAll($this->_namespace);
-        $this->_manager->getSessionCache()->clear();
+        $this->_controller->getBackend()->clearNamespaceForAll($this->_namespace);
+        $this->_controller->getCache()->clear();
         $this->_nodes = array();
 
         return $this;
@@ -188,9 +188,9 @@ class Handler implements user\session\IHandler, core\IDumpable {
             return $this;
         }
         
-        $descriptor = $this->_manager->getSessionDescriptor();
-        $this->_manager->getSessionBackend()->pruneNamespace($descriptor, $this->_namespace, $age);
-        $this->_manager->getSessionCache()->clear();
+        $descriptor = $this->_controller->getDescriptor();
+        $this->_controller->getBackend()->pruneNamespace($descriptor, $this->_namespace, $age);
+        $this->_controller->getCache()->clear();
         
         return $this;
     }
@@ -202,11 +202,11 @@ class Handler implements user\session\IHandler, core\IDumpable {
     
     public function __get($key) {
         if(!isset($this->_nodes[$key])) {
-            $descriptor = $this->_manager->getSessionDescriptor();
-            $cache = $this->_manager->getSessionCache();
+            $descriptor = $this->_controller->getDescriptor();
+            $cache = $this->_controller->getCache();
             
             if(!$node = $cache->fetchNode($descriptor, $this->_namespace, $key)) {
-                $node = $this->_manager->getSessionBackend()->fetchNode(
+                $node = $this->_controller->getBackend()->fetchNode(
                     $descriptor, $this->_namespace, $key
                 );
                 
@@ -251,9 +251,9 @@ class Handler implements user\session\IHandler, core\IDumpable {
         $node->updateTime = time();
         $node->value = $value;
             
-        $descriptor = $this->_manager->getSessionDescriptor();
-        $this->_manager->getSessionCache()->insertNode($descriptor, $node);
-        $this->_manager->getSessionBackend()->updateNode($descriptor, $node);
+        $descriptor = $this->_controller->getDescriptor();
+        $this->_controller->getCache()->insertNode($descriptor, $node);
+        $this->_controller->getBackend()->updateNode($descriptor, $node);
         
         
         if($atomicLock) {
@@ -274,8 +274,8 @@ class Handler implements user\session\IHandler, core\IDumpable {
     }
     
     public function getLastUpdated() {
-        $descriptor = $this->_manager->getSessionDescriptor();
-        $node = $this->_manager->getSessionBackend()->fetchLastUpdatedNode($descriptor, $this->_namespace);
+        $descriptor = $this->_controller->getDescriptor();
+        $node = $this->_controller->getBackend()->fetchLastUpdatedNode($descriptor, $this->_namespace);
         
         if($node) {
             $this->_nodes[$node->key] = $node;
@@ -290,8 +290,8 @@ class Handler implements user\session\IHandler, core\IDumpable {
             return true;
         }
         
-        $descriptor = $this->_manager->getSessionDescriptor();
-        return $this->_manager->getSessionBackend()->hasNode($descriptor, $this->_namespace, $key);
+        $descriptor = $this->_controller->getDescriptor();
+        return $this->_controller->getBackend()->hasNode($descriptor, $this->_namespace, $key);
     }
     
     public function remove($key) {
@@ -303,9 +303,9 @@ class Handler implements user\session\IHandler, core\IDumpable {
             unset($this->_nodes[$key]);
         }
         
-        $descriptor = $this->_manager->getSessionDescriptor();
-        $this->_manager->getSessionBackend()->removeNode($descriptor, $this->_namespace, $key);
-        $this->_manager->getSessionCache()->removeNode($descriptor, $this->_namespace, $key);
+        $descriptor = $this->_controller->getDescriptor();
+        $this->_controller->getBackend()->removeNode($descriptor, $this->_namespace, $key);
+        $this->_controller->getCache()->removeNode($descriptor, $this->_namespace, $key);
         
         return $this;
     }
@@ -332,7 +332,7 @@ class Handler implements user\session\IHandler, core\IDumpable {
     public function getDumpProperties() {
         $output = array();
         
-        if($this->_manager->isSessionOpen()) {
+        if($this->_controller->isOpen()) {
             foreach($this->_nodes as $key => $node) {
                 $output[$key] = $node->value;
             }

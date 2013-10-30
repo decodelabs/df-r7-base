@@ -18,22 +18,15 @@ class Manager implements IManager, core\IDumpable {
     const CLIENT_SESSION_NAMESPACE = 'user';
     const CLIENT_SESSION_KEY = 'Client';
     
-    const SESSION_GC_PROBABILITY = 3;
-    const SESSION_TRANSITION_PROBABILITY = 10;
-    const SESSION_TRANSITION_LIFETIME = 10;
-    const SESSION_TRANSITION_COOLOFF = 20;
-
+    public $_session;
     protected $_client;
-    
-    protected $_sessionDescriptor;
-    protected $_sessionPerpetuator;
-    protected $_sessionBackend;
-    protected $_sessionCache;
-    protected $_isSessionOpen = false;
-    protected $_sessionNamespaces = array();
 
     private $_accessLockCache = array();
     
+    protected function __construct(core\IApplication $application) {
+        $this->_application = $application;
+        $this->session = new user\session\Controller($application);
+    }
     
 // Client
     public function getClient() {
@@ -45,7 +38,7 @@ class Manager implements IManager, core\IDumpable {
     }
 
     protected function _loadClient() {
-        $session = $this->getSessionNamespace(self::CLIENT_SESSION_NAMESPACE);
+        $session = $this->session->getNamespace(self::CLIENT_SESSION_NAMESPACE);
         $this->_client = $session->get(self::CLIENT_SESSION_KEY);
         $regenKeyring = false;
 
@@ -59,7 +52,7 @@ class Manager implements IManager, core\IDumpable {
             $rethrowException = false;
         }
 
-        if(!$this->_client->isLoggedIn() && ($key = $this->_sessionPerpetuator->getRememberKey($this))) {
+        if(!$this->_client->isLoggedIn() && ($key = $this->session->getPerpetuator()->getRememberKey($this->session))) {
             if($this->authenticateRememberKey($key)) {
                 $regenKeyring = false;
             }
@@ -78,6 +71,12 @@ class Manager implements IManager, core\IDumpable {
 
             $session->set(self::CLIENT_SESSION_KEY, $this->_client);
         }
+    }
+
+    public function clearClient() {
+        $this->_client = null;
+        $this->_accessLockCache = [];
+        return $this;
     }
 
     public function canAccess($lock, $action=null, $linkTo=false) {
@@ -131,6 +130,16 @@ class Manager implements IManager, core\IDumpable {
     }
 
 
+// Session
+    public function getSessionController() {
+        return $this->session;
+    }
+
+    public function getSessionNamespace($namespace) {
+        return $this->session->getNamespace($namespace);
+    }
+
+
 
 // Options
     public function setClientOption($key, $value) {
@@ -151,7 +160,7 @@ class Manager implements IManager, core\IDumpable {
         $options = array_merge($client->getOptions(), $options);
         $client->importOptions($options);
 
-        $session = $this->getSessionNamespace(self::CLIENT_SESSION_NAMESPACE);
+        $session = $this->session->getNamespace(self::CLIENT_SESSION_NAMESPACE);
         $session->set(self::CLIENT_SESSION_KEY, $client);
         
         return $this;
@@ -217,7 +226,7 @@ class Manager implements IManager, core\IDumpable {
         $adapter->authenticate($request, $result);
         
         if($result->isValid()) {
-            $session = $this->getSessionNamespace(self::CLIENT_SESSION_NAMESPACE);
+            $session = $this->session->getNamespace(self::CLIENT_SESSION_NAMESPACE);
             $this->_accessLockCache = array();
 
             // Import user data
@@ -242,9 +251,9 @@ class Manager implements IManager, core\IDumpable {
 
             // Remember me
             if($request->getAttribute('rememberMe')) {
-                $perpetuator = $this->getSessionPerpetuator();
+                $perpetuator = $this->session->getPerpetuator();
                 $key = $model->generateRememberKey($client);
-                $perpetuator->perpetuateRememberKey($this, $key);
+                $perpetuator->perpetuateRememberKey($this->session, $key);
             }
 
             // Options
@@ -264,7 +273,7 @@ class Manager implements IManager, core\IDumpable {
             return false;
         }
 
-        $session = $this->getSessionNamespace(self::CLIENT_SESSION_NAMESPACE);
+        $session = $this->session->getNamespace(self::CLIENT_SESSION_NAMESPACE);
         $this->_accessLockCache = array();
 
         $clientData = $model->getClientData($key->userId);
@@ -279,7 +288,7 @@ class Manager implements IManager, core\IDumpable {
 
         // Remember me
         $model->destroyRememberKey($key);
-        $perpetuator = $this->getSessionPerpetuator();
+        $perpetuator = $this->session->getPerpetuator();
         $key = $model->generateRememberKey($this->_client);
         $perpetuator->perpetuateRememberKey($this, $key);
 
@@ -313,7 +322,7 @@ class Manager implements IManager, core\IDumpable {
         $client->import($data);
         $this->_ensureClientOptions($client);
 
-        $session = $this->getSessionNamespace(self::CLIENT_SESSION_NAMESPACE);
+        $session = $this->session->getNamespace(self::CLIENT_SESSION_NAMESPACE);
         $session->set(self::CLIENT_SESSION_KEY, $client);
         return $this;
     }
@@ -331,7 +340,7 @@ class Manager implements IManager, core\IDumpable {
     }
     
     public function logout() {
-        $this->destroySession();
+        $this->session->destroy();
         return $this;
     }
 
@@ -353,233 +362,7 @@ class Manager implements IManager, core\IDumpable {
         return $this;
     }
     
-    
-    
-// Session perpetuator
-    public function setSessionPerpetuator(user\session\IPerpetuator $perpetuator) {
-        if($this->_sessionIsOpen) {
-            throw new RuntimeException(
-                'Cannot set session perpetuator, the session has already started'
-            );
-        }
-        
-        $this->_sessionPerpetuator = $perpetuator;
-        return $this;
-    }
-    
-    public function getSessionPerpetuator() {
-        return $this->_sessionPerpetuator;
-    }
 
-    protected function _loadSessionPerpetuator() {
-        switch($this->_application->getRunMode()) {
-            case 'Http':
-                $this->_sessionPerpetuator = new user\session\perpetuator\Cookie($this);
-                break;
-                
-            default:
-                $this->_sessionPerpetuator = new user\session\perpetuator\Shell($this);
-                break;
-        }
-    }
-    
-
-// Session backend
-    public function setSessionBackend(user\session\IBackend $backend) {
-        if($this->_sessionIsOpen) {
-            throw new RuntimeException(
-                'Cannot set session backend, the session has already started'
-            );
-        }
-        
-        $this->_sessionBackend = $backend;
-        return $this;
-    }
-    
-    public function getSessionBackend() {
-        return $this->_sessionBackend;
-    }
-
-    protected function _loadSessionBackend() {
-        if(axis\ConnectionConfig::getInstance($this->_application)->isSetup()) {
-            $this->_sessionBackend = $this->getUserModel()->getSessionBackend();
-        }
-
-        if(!$this->_sessionBackend instanceof user\session\IBackend) {
-            $this->_sessionBackend = new user\session\backend\Sqlite($this);
-        }
-    }
-    
-
-// Session cache
-    public function getSessionCache() {
-        return $this->_sessionCache;
-    }
-
-
-// Session descriptor
-    public function getSessionDescriptor() {
-        $this->_openSession();
-        return $this->_sessionDescriptor;
-    }
-    
-    public function getSessionId() {
-        return $this->getSessionDescriptor()->getExternalId();
-    }
-    
-
-// Session handlers
-    protected function _openSession() {
-        if($this->_isSessionOpen) {
-            return;
-        }
-        
-        $this->_isSessionOpen = true;
-        
-        if($this->_sessionCache === null) {
-            $this->_sessionCache = user\session\Cache::getInstance($this->_application);
-        }
-        
-        if($this->_sessionBackend === null) {
-            $this->_loadSessionBackend();
-        }
-        
-        if($this->_sessionPerpetuator === null) {
-            $this->_loadSessionPerpetuator();
-        }
-        
-        $externalId = $this->_sessionPerpetuator->getInputId();
-        
-        if(empty($externalId)) {
-            $this->_sessionDescriptor = $this->_startSession();
-        } else {
-            $this->_sessionDescriptor = $this->_resumeSession($externalId);
-        }
-        
-        $this->_sessionPerpetuator->perpetuate($this, $this->_sessionDescriptor);
-        
-        if((mt_rand() % 100) < self::SESSION_GC_PROBABILITY) {
-            $this->_sessionBackend->collectGarbage();
-            $this->getUserModel()->purgeRememberKeys();
-        }
-        
-        if(!$this->_sessionDescriptor->hasJustTransitioned(120)
-        || ((mt_rand() % 100) < self::SESSION_TRANSITION_PROBABILITY)) {
-            $this->transitionSessionId();
-        }
-        
-        if($this->_sessionDescriptor->needsTouching(self::SESSION_TRANSITION_LIFETIME)) {
-            $this->_sessionBackend->touchSession($this->_sessionDescriptor);
-            $this->_sessionCache->insertDescriptor($this->_sessionDescriptor);
-        }
-    }
-
-
-    protected function _startSession() {
-        $time = time();
-        $externalId = $this->_generateSessionId();
-        
-        $descriptor = new user\session\Descriptor($externalId, $externalId);
-        $descriptor->setStartTime($time);
-        $descriptor->setAccessTime($time);
-        
-        $output = $this->_sessionBackend->insertDescriptor($descriptor);
-        $output->hasJustStarted(true);
-        
-        $this->_sessionCache->insertDescriptor($descriptor);
-        
-        return $output;
-    }
-    
-    protected function _resumeSession($externalId) {
-        $descriptor = $this->_sessionCache->fetchDescriptor($externalId);
-        
-        if(!$descriptor) {
-            $descriptor = $this->_sessionBackend->fetchDescriptor(
-                $externalId, time() - self::SESSION_TRANSITION_LIFETIME
-            );
-            
-            if($descriptor) {
-                $this->_sessionCache->insertDescriptor($descriptor);
-            }
-        }
-        
-        if($descriptor === null) {
-            return $this->_startSession();
-        }
-        
-        if(!$descriptor->hasJustTransitioned(self::SESSION_TRANSITION_LIFETIME)) {
-            $descriptor->transitionId = null;
-        }
-        
-        // TODO: check accessTime is within perpetuator life time
-        
-        return $descriptor;
-    }
-    
-    protected function _generateSessionId() {
-        do {
-            $output = core\string\Generator::sessionId(
-                $this->_application->getPassKey()
-            );
-        } while($this->_sessionBackend->idExists($output));
-        
-        return $output;
-    }
-    
-    public function transitionSessionId() {
-        $this->_openSession();
-        
-        if($this->_sessionDescriptor->hasJustStarted()
-        || $this->_sessionDescriptor->hasJustTransitioned(self::SESSION_TRANSITION_COOLOFF)) {
-            return $this;
-        }
-        
-        $this->_sessionCache->removeDescriptor($this->_sessionDescriptor);
-        $this->_sessionDescriptor->applyTransition($this->_generateSessionId());
-        $this->_sessionBackend->applyTransition($this->_sessionDescriptor);
-        $this->_sessionPerpetuator->perpetuate($this, $this->_sessionDescriptor);
-        
-        return $this;
-    }
-    
-    public function isSessionOpen() {
-        return $this->_isSessionOpen;
-    }
-    
-    public function getSessionNamespace($namespace) {
-        if(!isset($this->_sessionNamespaces[$namespace])) {
-            $this->_sessionNamespaces[$namespace] = new user\session\Handler($this, $namespace);
-        }
-        
-        return $this->_sessionNamespaces[$namespace];
-    }
-    
-    public function destroySession() {
-        $this->_accessLockCache = array();
-        $this->_openSession();
-
-        if($this->_sessionPerpetuator) {
-            $key = $this->_sessionPerpetuator->getRememberKey($this);
-            $this->_sessionPerpetuator->destroy($this);
-
-            if($key) {
-                $this->getUserModel()->destroyRememberKey($key);
-            }
-        }
-        
-        $this->_sessionCache->removeDescriptor($this->_sessionDescriptor);
-        $this->_sessionBackend->killSession($this->_sessionDescriptor);
-        $this->_sessionDescriptor = null;
-        $this->_sessionNamespaces = array();
-        $this->_isSessionOpen = false;
-        
-        $this->_client = null;
-        
-        return $this;
-    }
-    
-    
     
 // Passwords
     public function analyzePassword($password) {
@@ -590,6 +373,9 @@ class Manager implements IManager, core\IDumpable {
         switch($member) {
             case 'client':
                 return $this->getClient();
+
+            case 'session':
+                return $this->session;
         }
     }
     
@@ -597,12 +383,7 @@ class Manager implements IManager, core\IDumpable {
     public function getDumpProperties() {
         return [
             'client' => $this->_client,
-            'session' => [
-                'backend' => $this->_sessionBackend,
-                'perpetuator' => $this->_sessionPerpetuator,
-                'descriptor' => $this->_sessionDescriptor,
-                'namespaces' => $this->_sessionNamespaces
-            ]
+            'session' => $this->session
         ];
     }
 }

@@ -18,8 +18,8 @@ class Cookie implements user\session\IPerpetuator {
     protected $_inputId;
     protected $_lifeTime;
     
-    public function __construct(user\IManager $manager) {
-        $httpRequest = $manager->getApplication()->getHttpRequest();
+    public function __construct(user\session\IController $controller) {
+        $httpRequest = $controller->getApplication()->getHttpRequest();
         
         if($httpRequest->hasCookieData()) {
             $this->_inputId = $httpRequest->getCookieData()->get($this->_sessionCookieName);
@@ -45,11 +45,11 @@ class Cookie implements user\session\IPerpetuator {
         return $this->_inputId;
     }
     
-    public function perpetuate(user\IManager $manager, user\session\IDescriptor $descriptor) {
+    public function perpetuate(user\session\IController $controller, user\session\IDescriptor $descriptor) {
         $outputId = $descriptor->getExternalId();
         
         if($outputId != $this->_inputId) {
-            $application = $manager->getApplication();
+            $application = $controller->getApplication();
         
             if($application instanceof halo\protocol\http\IResponseAugmentorProvider) {
                 $augmentor = $application->getResponseAugmentor();
@@ -69,8 +69,8 @@ class Cookie implements user\session\IPerpetuator {
             ->isHttpOnly(true);
     }
 
-    public function destroy(user\IManager $manager) {
-        $application = $manager->getApplication();
+    public function destroy(user\session\IController $controller) {
+        $application = $controller->getApplication();
         
         if($application instanceof halo\protocol\http\IResponseAugmentorProvider) {
             $augmentor = $application->getResponseAugmentor();
@@ -82,15 +82,15 @@ class Cookie implements user\session\IPerpetuator {
 
             $augmentor->removeCookieForAnyRequest($this->_getRememberCookie(
                 $application, 
-                $this->getRememberKey($manager)
+                $this->getRememberKey($controller)
             ));
         }
 
         return $this;
     }
 
-    public function perpetuateRememberKey(user\IManager $manager, user\RememberKey $key) {
-        $application = $manager->getApplication();
+    public function perpetuateRememberKey(user\session\IController $controller, user\RememberKey $key) {
+        $application = $controller->getApplication();
 
         if($application instanceof halo\protocol\http\IResponseAugmentorProvider) {
             $augmentor = $application->getResponseAugmentor();
@@ -116,9 +116,8 @@ class Cookie implements user\session\IPerpetuator {
             ->isHttpOnly(true);
     }
 
-    public function getRememberKey(user\IManager $manager) {
-        $application = $manager->getApplication();
-        $httpRequest = $manager->getApplication()->getHttpRequest();
+    public function getRememberKey(user\session\IController $controller) {
+        $httpRequest = $controller->getApplication()->getHttpRequest();
         
         if($httpRequest->hasCookieData()) {
             $value = $httpRequest->getCookieData()->get($this->_rememberCookieName);
@@ -135,15 +134,15 @@ class Cookie implements user\session\IPerpetuator {
         return null;
     }
 
-    public function destroyRememberKey(user\IManager $manager) {
-        $application = $manager->getApplication();
+    public function destroyRememberKey(user\session\IController $application) {
+        $application = $application->getApplication();
         
         if($application instanceof halo\protocol\http\IResponseAugmentorProvider) {
             $augmentor = $application->getResponseAugmentor();
 
             $augmentor->removeCookieForAnyRequest($this->_getRememberCookie(
                 $application, 
-                $this->getRememberKey($manager)
+                $this->getRememberKey($application)
             ));
         }
 
