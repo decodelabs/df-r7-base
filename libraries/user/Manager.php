@@ -20,7 +20,6 @@ class Manager implements IManager, core\IDumpable {
     
     public $_session;
     protected $_client;
-
     private $_accessLockCache = array();
     
     protected function __construct(core\IApplication $application) {
@@ -290,7 +289,7 @@ class Manager implements IManager, core\IDumpable {
         $model->destroyRememberKey($key);
         $perpetuator = $this->session->getPerpetuator();
         $key = $model->generateRememberKey($this->_client);
-        $perpetuator->perpetuateRememberKey($this, $key);
+        $perpetuator->perpetuateRememberKey($this->session, $key);
 
         // Options
         $this->_ensureClientOptions($this->_client);

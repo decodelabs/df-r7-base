@@ -134,15 +134,15 @@ class Cookie implements user\session\IPerpetuator {
         return null;
     }
 
-    public function destroyRememberKey(user\session\IController $application) {
-        $application = $application->getApplication();
+    public function destroyRememberKey(user\session\IController $controller) {
+        $application = $controller->getApplication();
         
         if($application instanceof halo\protocol\http\IResponseAugmentorProvider) {
             $augmentor = $application->getResponseAugmentor();
 
             $augmentor->removeCookieForAnyRequest($this->_getRememberCookie(
                 $application, 
-                $this->getRememberKey($application)
+                $this->getRememberKey($controller)
             ));
         }
 
