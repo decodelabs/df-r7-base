@@ -14,6 +14,7 @@ abstract class Confirm extends arch\form\Action {
     
     const ITEM_NAME = 'item';
     const DEFAULT_EVENT = 'confirm';
+    const DISPOSITION = 'positive';
     
     protected function _getItemName() {
         return static::ITEM_NAME;
@@ -41,7 +42,8 @@ abstract class Confirm extends arch\form\Action {
                     $this->eventName('confirm'),
                     $this->_getMainButtonText()
                 )
-                ->setIcon($this->_getMainButtonIcon()),
+                ->setIcon($this->_getMainButtonIcon())
+                ->setDisposition(static::DISPOSITION),
                 
             $this->html->eventButton(
                     $this->eventName('cancel'),
@@ -83,6 +85,10 @@ abstract class Confirm extends arch\form\Action {
                 return $complete;
             }
         }
+    }
+
+    protected function _getMainMessage($itemName) {
+        return $this->_('Are you sure?');
     }
 
     protected function _getFlashMessage() {
