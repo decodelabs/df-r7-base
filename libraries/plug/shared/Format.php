@@ -302,6 +302,10 @@ class Format implements core\ISharedHelper {
         return core\string\Manipulator::shorten($string, $length);
     }
 
+    public function stringToBoolean($string) {
+        return core\string\Manipulator::stringToBoolean($string);
+    }
+
 
 
     public function counterNote($counter) {
