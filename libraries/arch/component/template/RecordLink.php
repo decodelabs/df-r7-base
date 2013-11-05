@@ -21,6 +21,7 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
     protected $_icon = 'item';
     protected $_disposition = 'informative';
     protected $_isNullable = false;
+    protected $_isDisabled = false;
     protected $_note;
     protected $_maxLength;
     protected $_missingMessage;
@@ -92,6 +93,17 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
         }
 
         return $this->_isNullable;
+    }
+
+
+// Disabled
+    public function isDisabled($flag=null) {
+        if($flag !== null) {
+            $this->_isDisabled = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_isDisabled;
     }
 
 // Note
@@ -279,7 +291,8 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
             ->setDisposition($this->_disposition)
             ->setNote($this->_note)
             ->setTitle($title)
-            ->addAccessLocks($this->_accessLocks);
+            ->addAccessLocks($this->_accessLocks)
+            ->isDisabled($this->_isDisabled);
 
         if($this->_action && $this->_record instanceof user\IAccessLock) {
             switch($this->_action) {
