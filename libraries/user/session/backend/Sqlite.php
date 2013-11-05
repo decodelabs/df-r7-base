@@ -20,8 +20,8 @@ class Sqlite implements user\session\IBackend {
     protected $_dataTransactions = array();
     protected $_lifeTime = 86400; // 24 hours
     
-    public function __construct(user\IManager $manager) {
-        $application = $manager->getApplication();
+    public function __construct(user\session\IController $controller) {
+        $application = $controller->getApplication();
         $this->_storePath = $application->getSharedDataStoragePath().'/session/sqlite';
         
         core\io\Util::ensureDirExists($this->_storePath);
