@@ -103,6 +103,10 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
                 'Cannot change statement parameters, statement has already been executed'
             );
         }
+
+        if(is_bool($value)) {
+            $value = (int)$value;
+        }
         
         $this->_bindings[ltrim($key, ':')] = $value;
         return $this;
