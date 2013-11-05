@@ -81,6 +81,8 @@ interface ILauncher {
     public function getPriority();
     public function setWorkingDirectory($path);
     public function getWorkingDirectory();
+    public function setMultiplexer(core\io\IMultiplexer $multiplexer=null);
+    public function getMultiplexer();
     
     public function launch();
     public function launchBackground();

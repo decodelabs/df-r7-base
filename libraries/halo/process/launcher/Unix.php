@@ -36,8 +36,21 @@ class Unix extends Base {
             return $result->registerFailure();
         } 
         
-        $result->setOutput(stream_get_contents($pipes[1]));
-        $result->setError(stream_get_contents($pipes[2]));
+        $output = stream_get_contents($pipes[1]);
+        $error = stream_get_contents($pipes[2]);
+
+        $result->setOutput($output);
+        $result->setError($error);
+
+        if($this->_multiplexer) {
+            if(!empty($output)) {
+                $this->_multiplexer->write($output);
+            }
+
+            if(!empty($error)) {
+                $this->_multiplexer->writeError($error);
+            }
+        }
         
         foreach($pipes as $pipe) {
             fclose($pipe);

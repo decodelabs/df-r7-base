@@ -18,6 +18,7 @@ abstract class Base implements halo\process\ILauncher {
     protected $_title;
     protected $_priority;
     protected $_workingDirectory;
+    protected $_multiplexer;
     
     public static function factory($processName, $args=null, $path=null) {
         $system = halo\system\Base::getInstance();
@@ -111,5 +112,14 @@ abstract class Base implements halo\process\ILauncher {
 
     public function getWorkingDirectory() {
         return $this->_workingDirectory;
+    }
+
+    public function setMultiplexer(core\io\IMultiplexer $multiplexer=null) {
+        $this->_multiplexer = $multiplexer;
+        return $this;
+    }
+
+    public function getMultiplexer() {
+        return $this->_multiplexer;
     }
 }
