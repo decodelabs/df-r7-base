@@ -26,6 +26,14 @@ class TaskBuild extends arch\task\Action {
 
         $this->response->writeLine('Launching app builder...');
 
+
+        // Run custom actions
+        if($this->directory->actionExists('application/build-custom')) {
+            $this->response->writeLine('Running custom user build tasks...');
+            $this->runChild('application/build-custom');
+        }
+
+
         // Prepare info
         $timestamp = date('YmdHis');
         $purgeOldBuilds = $this->request->query->get('purge', self::PURGE_OLD_BUILDS);
