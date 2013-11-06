@@ -68,8 +68,10 @@ class FieldArea extends Container implements IFormOrientedWidget {
             
             $this->_label->setInputId($inputId);
         }
+
+        $labelContainer = new aura\html\Element('div.widget-labelArea', $this->_label);
         
-        $output = [$this->_label->render()];
+        $output = [$labelContainer];
         $inputAreaBody = $this->_children;
 
         if($this->_description !== null) {
@@ -83,7 +85,7 @@ class FieldArea extends Container implements IFormOrientedWidget {
             ];
         }
 
-        $output[] = new aura\html\Element('div', $inputAreaBody, ['class' => 'widget-inputArea']);
+        $output[] = new aura\html\Element('div.widget-inputArea', $inputAreaBody);
         
         if(!empty($errors)) {
             $tag->addClass('state-error');
