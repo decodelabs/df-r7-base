@@ -284,6 +284,24 @@ trait TForm {
     }
 
     public function handleDelegateEvent($delegateId, $event, $args) {}
+
+
+    public function getAvailableEvents() {
+        $output = [];
+        $ref = new \ReflectionClass($this);
+
+        foreach($ref->getMethods() as $method) {
+            if(preg_match('/^\_on([A-Z\_][a-zA-Z0-9_]*)Event$/', $method->getName(), $matches)) {
+                $output[] = $this->eventName(lcfirst($matches[1]));
+            }
+        }
+
+        foreach($this->_delegates as $delegate) {
+            $output = array_merge($output, $delegate->getAvailableEvents());
+        }
+
+        return $output;
+    }
 }
 
 

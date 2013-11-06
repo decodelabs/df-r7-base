@@ -150,13 +150,14 @@ abstract class Action extends arch\Action implements IAction {
         $this->view = $view;
         
         $this->_isRenderingInline = true;
-        $this->onGetRequest();
+        $method = self::getActionMethodName($this, $this->context);
+        call_user_method($method, $this);
         $this->_isRenderingInline = false;
 
         return $this->content;
     }
 
-    public function onGetRequest() {
+    public function onHtmlGetRequest() {
         $setContentProvider = false;
 
         if(!$this->view) {
@@ -190,6 +191,14 @@ abstract class Action extends arch\Action implements IAction {
             ->shouldRevalidateCache(true);
         
         return $this->view;
+    }
+
+    public function onJsonGetRequest() {
+        $data = $this->getStateData();
+        $data['events'] = $this->getAvailableEvents();
+        $data['defaultEvent'] = static::DEFAULT_EVENT;
+
+        return $this->data->jsonEncode($data);
     }
     
     public function onPostRequest() {
@@ -277,6 +286,26 @@ abstract class Action extends arch\Action implements IAction {
         return $this->http->defaultRedirect($defaultRedirect, $success);
     }
     
+    public function getStateData() {
+        $output = [
+            'isValid' => $this->isValid(),
+            'values' => $this->values->toArrayDelimitedSet(),
+            'errors' => []
+        ];
+
+        foreach($this->_delegates as $delegate) {
+            $delegateState = $delegate->getStateData();
+
+            if(!$delegateState['isValid']) {
+                $output['isValid'] = false;
+            }
+
+            $output['values'] = array_merge($output['values'], $delegateState['values']);
+            $output['errors'] = array_merge($output['errors'], $delegateState['errors']);
+        }
+
+        return $output;
+    }
 
 // Names
     public function fieldName($name) {
@@ -301,7 +330,12 @@ abstract class Action extends arch\Action implements IAction {
 // Action dispatch
     public static function getActionMethodName($actionClass, arch\IContext $context) {
         $method = ucfirst(strtolower($context->getApplication()->getHttpRequest()->getMethod()));
-        $func = 'on'.$method.'Request';
+
+        if($method == 'Post') {
+            $func = 'onPostRequest';
+        } else {
+            $func = 'on'.$context->request->getType().$method.'Request';
+        }
         
         if(!method_exists($actionClass, $func)) {
             throw new RuntimeException(

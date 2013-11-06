@@ -90,4 +90,27 @@ class Delegate implements IDelegate {
     public function elementId($name) {
         return core\string\Manipulator::formatSlug($this->getDelegateId().'-'.$name);   
     }
+
+
+
+    public function getStateData() {
+        $output = [
+            'isValid' => $this->isValid(),
+            'values' => $this->values->toArrayDelimitedSet('_delegates['.$this->_delegateId.']'),
+            'errors' => []
+        ];
+
+        foreach($this->_delegates as $delegate) {
+            $delegateState = $delegate->getStateData();
+
+            if(!$delegateState['isValid']) {
+                $output['isValid'] = false;
+            }
+
+            $output['values'] = array_merge($output['values'], $delegateState['values']);
+            $output['errors'] = array_merge($output['errors'], $delegateState['errors']);
+        }
+
+        return $output;
+    }
 }
