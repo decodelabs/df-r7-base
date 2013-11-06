@@ -11,6 +11,7 @@ use df\core;
 abstract class Base implements core\validate\IField {
     
     protected $_name;
+    protected $_recordName = null;
     protected $_isRequired = false;
     protected $_shouldSanitize = true;
     protected $_customValidator = null;
@@ -37,6 +38,19 @@ abstract class Base implements core\validate\IField {
     
     public function getName() {
         return $this->_name;
+    }
+
+    public function setRecordName($name) {
+        $this->_recordName = $name;
+        return $this;
+    }
+
+    public function getRecordName() {
+        if($this->_recordName) {
+            return $this->_recordName;
+        } else {
+            return $this->_name;
+        }
     }
     
     public function getHandler() {
@@ -83,7 +97,7 @@ abstract class Base implements core\validate\IField {
             );
         }
         
-        $record[$this->_name] = $value;
+        $record[$this->getRecordName()] = $value;
         return $this;
     }
     

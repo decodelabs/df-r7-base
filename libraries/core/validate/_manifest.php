@@ -36,6 +36,8 @@ interface IHandler extends \ArrayAccess, core\IChainable {
 interface IField {
     public function getHandler();
     public function getName();
+    public function setRecordName($name);
+    public function getRecordName();
     public function isRequired($flag=null);
     public function shouldSanitize($flag=null);
     public function setCustomValidator(Callable $validator);

@@ -37,7 +37,7 @@ class IdList extends Base implements core\validate\IIdListField {
             $value = array($value);
         }
         
-        $record[$this->_name] = $value;
+        $record[$this->getRecordName()] = $value;
         return $this;
     }
 }
