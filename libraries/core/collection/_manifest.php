@@ -245,12 +245,16 @@ interface ITree extends IRandomAccessCollection, IMappedContainerCollection, cor
     public function getNestedChild($parts, $separator='.');
     public function contains($value, $includeChildren=false);
     public function toArrayDelimitedString($setDelimiter='&', $valueDelimiter='=');
+    public function toArrayDelimitedSet($prefix=null);
+    public function toUrlEncodedArrayDelimitedSet($prefix=null);
     public function getKeys();
     public function clearKeys();
     public function hasAnyValue(array $checkKeys=null);
 }
 
-interface IInputTree extends ITree, core\IErrorContainer {}
+interface IInputTree extends ITree, core\IErrorContainer {
+    public function toArrayDelimitedErrorSet($prefix=null);
+}
 
 
 

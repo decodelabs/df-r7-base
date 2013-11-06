@@ -388,7 +388,7 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
     public function toArrayDelimitedString($setDelimiter='&', $valueDelimiter='=') {
         $output = array();
         
-        foreach($this->_toUrlEncodedArrayDelimitedSet() as $key => $value) {
+        foreach($this->toUrlEncodedArrayDelimitedSet() as $key => $value) {
             if(!empty($value) || $value === '0' || $value === 0) {
                 $output[] = $key.$valueDelimiter.rawurlencode($value);
             } else {
@@ -415,7 +415,7 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
         return $output;
     }
     
-    protected function _toArrayDelimitedSet($prefix=null) {
+    public function toArrayDelimitedSet($prefix=null) {
         $output = array();
         
         if($prefix 
@@ -428,13 +428,13 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
                 $key = $prefix.'['.$key.']';
             }
             
-            $output = array_merge($output, $child->_toArrayDelimitedSet($key));
+            $output = array_merge($output, $child->toArrayDelimitedSet($key));
         }
         
         return $output;
     }
     
-    public function _toUrlEncodedArrayDelimitedSet($prefix=null) {
+    public function toUrlEncodedArrayDelimitedSet($prefix=null) {
         $output = array();
         
         if($prefix 
@@ -447,7 +447,7 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
                 $key = $prefix.'['.rawurlencode($key).']';
             }
             
-            $output = array_merge($output, $child->_toUrlEncodedArrayDelimitedSet($key));
+            $output = array_merge($output, $child->toUrlEncodedArrayDelimitedSet($key));
         }
         
         return $output;

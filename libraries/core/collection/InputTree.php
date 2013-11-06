@@ -71,6 +71,24 @@ class InputTree extends Tree implements IInputTree {
         
         return true;
     }
+
+    public function toArrayDelimitedErrorSet($prefix=null) {
+        $output = array();
+
+        if($prefix && !empty($this->_errors)) {
+            $output[$prefix] = $this->_errors;
+        }
+
+        foreach($this as $key => $child) {
+            if($prefix) {
+                $key = $prefix.'['.$key.']';
+            }
+
+            $output = array_merge($output, $child->toArrayDelimitedErrorSet($key));
+        }
+
+        return $output;
+    }
     
 // Dump
     public function getDumpProperties() {
