@@ -10,8 +10,11 @@ use df\core;
 
 class Url extends Base implements core\validate\IUrlField {
     
+    use core\validate\TSanitizingField;
+
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
+        $value = $this->_sanitizeValue($value);
         
         if(!$length = $this->_checkRequired($node, $value)) {
             return null;
