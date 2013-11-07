@@ -104,6 +104,7 @@ abstract class Action extends arch\Action implements IAction {
         $this->_setupDelegates();
 
         if($this->_state->isNew()) {
+            $this->_isNew = true;
             $this->_setDefaultValues();
         }
         
@@ -113,6 +114,10 @@ abstract class Action extends arch\Action implements IAction {
         
         $this->_state->isNew(false);
         $this->_onInitComplete();
+    }
+
+    public function isNew() {
+        return $this->_isNew;
     }
 
     protected function _createSessionId() {
@@ -157,6 +162,9 @@ abstract class Action extends arch\Action implements IAction {
         return $this->content;
     }
 
+
+
+// HTML Request
     public function onHtmlGetRequest() {
         $setContentProvider = false;
 
@@ -193,18 +201,108 @@ abstract class Action extends arch\Action implements IAction {
         return $this->view;
     }
 
-    public function onJsonGetRequest() {
-        $data = $this->getStateData();
-        $data['events'] = $this->getAvailableEvents();
-        $data['defaultEvent'] = static::DEFAULT_EVENT;
+    public function onHtmlPostRequest() {
+        $response = $this->_runPostRequest();
 
-        return $this->data->jsonEncode($data);
-    }
-    
-    public function onPostRequest() {
-        $httpRequest = $this->_context->getApplication()->getHttpRequest();
-        $postData = clone $httpRequest->getPostData();
+        if(empty($response)) {
+            $response = $this->http->redirect()->isAlternativeContent(true);
+        }
         
+        return $response;
+    }
+
+
+
+// JSON Request
+    public function onJsonGetRequest() {
+        return $this->_newJsonResponse($this->_getJsonResponseData());
+    }
+
+    public function onJsonPostRequest() {
+        $response = $this->_runPostRequest();
+        $data = $this->_getJsonResponseData();
+
+        if($response instanceof halo\protocol\http\response\IRedirectResponse) {
+            $data['redirect'] = (string)$response->getUrl();
+        }
+
+        return $this->_newJsonResponse($data);
+    }
+
+    private function _getJsonResponseData() {
+        return array_merge($this->getStateData(), [
+            'events' => $this->getAvailableEvents(),
+            'defaultEvent' => static::DEFAULT_EVENT,
+            'isNew' => $this->_isNew,
+            'isComplete' => $this->_isComplete,
+            'redirect' => null
+        ]);
+    }
+
+    private function _newJsonResponse($json) {
+        return $this->http->stringResponse($this->data->jsonEncode($json), 'application/json');
+    }
+
+
+// AJAX Request
+    public function onAjaxGetRequest() {
+        return $this->_newJsonResponse([
+            'content' => $this->_getAjaxResponseContent(),
+            'type' => 'text/html',
+            'redirect' => null,
+            'isNew' => $this->_isNew,
+            'isComplete' => $this->_isComplete
+        ]);
+    }
+
+    public function onAjaxPostRequest() {
+        $response = $this->_runPostRequest();
+        $content = $redirect = null;
+        $type = 'text/html';
+
+        if($response instanceof halo\protocol\http\response\IRedirectResponse) {
+            $redirect = (string)$response->getUrl();
+        } else if($response instanceof halo\protocol\http\response\IResponse) {
+            $content = $response->getContent();
+            $type = $response->getContentType();
+        } else if(is_string($response)) {
+            $content = $response;
+        }
+
+        if($content === null) {
+            $content = $this->_getAjaxResponseContent();
+        }
+
+        return $this->_newJsonResponse([
+            'content' => $content,
+            'type' => $type,
+            'redirect' => $redirect,
+            'isNew' => $this->_isNew,
+            'isComplete' => $this->_isComplete
+        ]);
+    }
+
+    private function _getAjaxResponseContent() {
+        $view = $this->onHtmlGetRequest();
+        $output = $this->html->flashList();
+
+        if($output) {
+            $output .= "\n";
+        }
+
+        $output .= (string)$view->getContentProvider();
+        return $output;
+    }
+
+
+    
+    
+    private function _runPostRequest(core\collection\ITree $postData=null) {
+        if($postData === null) {
+            $httpRequest = $this->_context->getApplication()->getHttpRequest();
+            $postData = clone $httpRequest->getPostData();
+        }
+
         $event = null;
         
         if($postData->has('formEvent')) {
@@ -258,13 +356,7 @@ abstract class Action extends arch\Action implements IAction {
             }
         }
         
-        $response = $target->handleEvent($event, $args);
-        
-        if(empty($response)) {
-            $response = $this->http->redirect()->isAlternativeContent(true);
-        }
-        
-        return $response;
+        return $target->handleEvent($event, $args);
     }
 
     public function complete($defaultRedirect=null, $success=true) {
@@ -277,7 +369,7 @@ abstract class Action extends arch\Action implements IAction {
         foreach($this->_delegates as $delegate) {
             $delegate->complete($success);
         }
-        
+
         if($this->_sessionNamespace) {
             $session = $this->_context->getUserManager()->getSessionNamespace($this->_sessionNamespace);
             $session->remove($this->_state->getSessionId());
@@ -289,6 +381,7 @@ abstract class Action extends arch\Action implements IAction {
     public function getStateData() {
         $output = [
             'isValid' => $this->isValid(),
+            'isNew' => $this->_isNew,
             'values' => $this->values->toArrayDelimitedSet(),
             'errors' => []
         ];
@@ -330,12 +423,7 @@ abstract class Action extends arch\Action implements IAction {
 // Action dispatch
     public static function getActionMethodName($actionClass, arch\IContext $context) {
         $method = ucfirst(strtolower($context->getApplication()->getHttpRequest()->getMethod()));
-
-        if($method == 'Post') {
-            $func = 'onPostRequest';
-        } else {
-            $func = 'on'.$context->request->getType().$method.'Request';
-        }
+        $func = 'on'.$context->request->getType().$method.'Request';
         
         if(!method_exists($actionClass, $func)) {
             throw new RuntimeException(

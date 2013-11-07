@@ -16,6 +16,7 @@ class Delegate implements IDelegate {
     use TForm;
     
     protected $_delegateId;
+    private $_isNew = false;
 
     public function __construct(arch\IContext $context, IStateController $state, $id) {
         $this->_context = $context;
@@ -42,6 +43,7 @@ class Delegate implements IDelegate {
         $this->_setupDelegates();
 
         if($this->_state->isNew()) {
+            $this->_isNew = true;
             $this->_setDefaultValues();
         }
         
@@ -51,6 +53,10 @@ class Delegate implements IDelegate {
         
         $this->_onInitComplete();
         return $this;
+    }
+
+    public function isNew() {
+        return $this->_isNew;
     }
     
     public function setRenderContext(aura\view\IView $view, aura\view\IContentProvider $content, $isRenderingInline=false) {
@@ -96,6 +102,7 @@ class Delegate implements IDelegate {
     public function getStateData() {
         $output = [
             'isValid' => $this->isValid(),
+            'isNew' => $this->_isNew,
             'values' => $this->values->toArrayDelimitedSet('_delegates['.$this->_delegateId.']'),
             'errors' => []
         ];

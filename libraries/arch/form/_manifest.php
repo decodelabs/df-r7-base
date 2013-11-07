@@ -53,6 +53,8 @@ interface IForm extends IStoreProvider, core\IChainable {
 }
 
 interface IActiveForm extends IForm {
+    public function isNew();
+
     public function handleEvent($name, array $args=array());
     public function handleDelegateEvent($delegateId, $event, $args);
 
