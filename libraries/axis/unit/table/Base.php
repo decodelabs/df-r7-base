@@ -292,7 +292,11 @@ abstract class Base implements
             $fields = array();
 
             foreach($primaryIndex->getFields() as $fieldName => $indexField) {
-                $fields[] = $this->extrapolateQuerySourceFieldFromSchemaField($source, $fieldName, $fieldName, $indexField);
+                $subField = $this->extrapolateQuerySourceFieldFromSchemaField($source, $fieldName, $fieldName, $indexField);
+
+                foreach($subField->dereference() as $innerField) {
+                    $fields[] = $innerField;
+                }
             }
 
             return new opal\query\field\Virtual($source, $name, $alias, $fields);
@@ -423,8 +427,7 @@ abstract class Base implements
         if($name{0} == '@') {
             switch(strtolower($name)) {
                 case '@primary':
-                    $fieldList = array_keys($this->getUnitSchema()->getPrimaryIndex()->getFields());
-                    return $this->mapVirtualClause($parent, $field, $operator, $value, $isOr, $fieldList);
+                    return $this->mapVirtualClause($parent, $field, $operator, $value, $isOr);
 
                 default:
                     throw new axis\schema\RuntimeException(
@@ -443,7 +446,8 @@ abstract class Base implements
         return $axisField->rewriteVirtualQueryClause($parent, $field, $operator, $value, $isOr);
     }
 
-    public function mapVirtualClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr, array $fieldList, $localPrefix=null) {
+    public function mapVirtualClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr, $localPrefix=null) {
+        $fieldList = $field->dereference();
         $fieldCount = count($fieldList);
         $targetPrefix = null;
 
@@ -490,14 +494,9 @@ abstract class Base implements
         }
 
 
-        foreach($fieldList as $fieldName) {
+        foreach($fieldList as $subField) {
             $subValue = null;
-            $keyName = $fieldName;
-
-            if($localPrefix !== null) {
-                $keyName = $localPrefix.'_'.$keyName;
-            }
-
+            $keyName = $subField->getName();
 
             if($value instanceof opal\query\IVirtualField) {
                 if(!isset($valueFields[$keyName])) {

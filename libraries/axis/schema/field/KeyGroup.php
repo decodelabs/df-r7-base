@@ -92,7 +92,7 @@ class KeyGroup extends Base implements axis\schema\IRelationField, axis\schema\I
 // Clause
     public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false) {
         return $field->getSource()->getAdapter()->mapVirtualClause(
-            $parent, $field, $operator, $value, $isOr, $this->_targetPrimaryFields, $this->_name
+            $parent, $field, $operator, $value, $isOr, $this->_name
         );
     }
 

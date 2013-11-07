@@ -28,7 +28,7 @@ class ManyToOne extends One implements axis\schema\IManyToOneField, axis\schema\
 // Clause
     public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false) {
         return $field->getSource()->getAdapter()->mapVirtualClause(
-            $parent, $field, $operator, $value, $isOr, $this->_targetPrimaryFields, $this->_name
+            $parent, $field, $operator, $value, $isOr, $this->_name
         );
     }
     
