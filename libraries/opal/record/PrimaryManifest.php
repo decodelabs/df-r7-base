@@ -56,7 +56,7 @@ class PrimaryManifest implements IPrimaryManifest, core\IDumpable {
     
     public function toArray() {
         $output = array();
-        
+
         foreach($this->_keys as $key => $value) {
             if($value instanceof self) {
                 foreach($value->toArray() as $subKey => $subValue) {
@@ -112,7 +112,7 @@ class PrimaryManifest implements IPrimaryManifest, core\IDumpable {
         if($values instanceof self) {
             $values = $values->toArray();
         }
-        
+
         if(!$values instanceof IRecord && !is_array($values)) {
             if($values === null || count($fields) == 1) {
                 $values = array_fill_keys($fields, $values);
@@ -125,7 +125,13 @@ class PrimaryManifest implements IPrimaryManifest, core\IDumpable {
         
         foreach($fields as $field) {
             if(isset($values[$field])) {
-                $this->_keys[$field] = $values[$field];
+                $value = $values[$field];
+
+                if($value instanceof IRecord) {
+                    $value = $value->getPrimaryManifest();
+                }
+
+                $this->_keys[$field] = $value;
             } else {
                 $this->_keys[$field] = null;
             }

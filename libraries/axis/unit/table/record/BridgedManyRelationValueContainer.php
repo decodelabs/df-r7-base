@@ -449,16 +449,11 @@ class BridgedManyRelationValueContainer implements
         
         // Remove all
         if($this->_removeAll && !$this->_localPrimaryManifest->isNull()) {
-            $bridgeData = array();
-            
-            foreach($this->_localPrimaryManifest->toArray() as $key => $value) {
-                $bridgeData[$bridgeLocalFieldName.'_'.$key] = $value;
-            }
-            
-            if(!empty($bridgeData)) {
-                $removeAllTask = new opal\record\task\DeleteKey($bridgeUnit, $bridgeData);
-                $taskSet->addTask($removeAllTask);
-            }
+            $removeAllTask = new opal\record\task\DeleteKey($bridgeUnit, [
+                $bridgeLocalFieldName => $this->_localPrimaryManifest
+            ]);
+
+            $taskSet->addTask($removeAllTask);
         }
 
         $filterKeys = array();
@@ -471,7 +466,7 @@ class BridgedManyRelationValueContainer implements
 
             // Local ids
             $bridgeRecord->__set($bridgeLocalFieldName, $this->_localPrimaryManifest);
-            
+
             if($recordTask) {
                 $bridgeTask->addDependency(
                     new opal\record\task\dependency\UpdateBridge($bridgeLocalFieldName, $recordTask)
@@ -502,7 +497,7 @@ class BridgedManyRelationValueContainer implements
             
             // Target ids
             $bridgeRecord->__set($bridgeTargetFieldName, $targetManifest);
-            
+
             if($targetRecordTask) {
                 $bridgeTask->addDependency(
                     new opal\record\task\dependency\UpdateBridge(
