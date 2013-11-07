@@ -23,6 +23,7 @@ class RendererContext implements aura\html\widget\IRendererContext {
     protected $_store = array();
     protected $_widget;
     protected $_rowProcessor;
+    protected $_nullToNa = true;
 
     public function __construct(aura\html\widget\IWidget $widget) {
         $this->_widget = $widget;
@@ -31,7 +32,7 @@ class RendererContext implements aura\html\widget\IRendererContext {
             $this->_rowProcessor = $widget->getRowProcessor();
         }
     }
-    
+
     public function getWidget() {
         return $this->_widget;
     }
@@ -63,6 +64,15 @@ class RendererContext implements aura\html\widget\IRendererContext {
         }
 
         return $row;
+    }
+
+    public function shouldConvertNullToNa($flag=null) {
+        if($flag !== null) {
+            $this->_nullToNa = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_nullToNa;
     }
     
     
@@ -101,7 +111,7 @@ class RendererContext implements aura\html\widget\IRendererContext {
             $value = $value->renderTo($this->getView());
         }
         
-        if(empty($value) && $value != '0') {
+        if($this->_nullToNa && empty($value) && $value != '0') {
             $value = new aura\html\ElementString('<span class="prop-na">n/a</span>');
         }
 
