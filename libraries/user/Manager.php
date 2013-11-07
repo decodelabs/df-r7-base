@@ -59,16 +59,21 @@ class Manager implements IManager, core\IDumpable {
 
         if($regenKeyring) {
             try {
-                $this->_client->setKeyring(
-                    $this->getUserModel()->generateKeyring($this->_client)
-                );
+                if($this->_client->isLoggedIn()) {
+                    $this->refreshClientData();
+                } else {
+                    $this->_client->setKeyring(
+                        $this->getUserModel()->generateKeyring($this->_client)
+                    );
+
+                    $session->set(self::CLIENT_SESSION_KEY, $this->_client);
+                }
             } catch(\Exception $e) {
                 if($rethrowException) {
                     throw $e;
                 }
             }
 
-            $session->set(self::CLIENT_SESSION_KEY, $this->_client);
         }
     }
 
@@ -301,11 +306,13 @@ class Manager implements IManager, core\IDumpable {
     }
 
     public function refreshClientData() {
-        $model = $this->getUserModel();
-        $data = $model->getClientData($this->getClient()->getId());
-        $this->importClientData($data);
-        $this->regenerateKeyring();
+        if($this->isLoggedIn()) {
+            $model = $this->getUserModel();
+            $data = $model->getClientData($this->getClient()->getId());
+            $this->importClientData($data);
+        }
 
+        $this->regenerateKeyring();
         return $this;
     }
 
