@@ -136,7 +136,7 @@ class Base implements IView {
             } catch(aura\view\ContentNotFoundException $e) {}
         }
 
-        return $this->_contentProvider->renderTo($this);
+        return $innerContent;
     }
     
     protected function _beforeRender() {}
