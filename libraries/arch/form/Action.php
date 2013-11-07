@@ -26,6 +26,7 @@ abstract class Action extends arch\Action implements IAction {
     private $_isNew = false;
     private $_isComplete = false;
     private $_sessionNamespace;
+    private $_initResponse;
 
     
     public function __construct(arch\IContext $context, arch\IController $controller=null) {
@@ -98,20 +99,20 @@ abstract class Action extends arch\Action implements IAction {
         $response = $this->_onSessionCreate();
 
         if(!empty($response)) {
-            return $response;
+            $this->_initResponse = $response;
+        } else {
+            $this->_setupDelegates();
+
+            if($this->_state->isNew()) {
+                $this->_isNew = true;
+                $this->_setDefaultValues();
+            }
+            
+            foreach($this->_delegates as $delegate) {
+                $delegate->initialize();
+            }
         }
 
-        $this->_setupDelegates();
-
-        if($this->_state->isNew()) {
-            $this->_isNew = true;
-            $this->_setDefaultValues();
-        }
-        
-        foreach($this->_delegates as $delegate) {
-            $delegate->initialize();
-        }
-        
         $this->_state->isNew(false);
         $this->_onInitComplete();
     }
@@ -166,6 +167,10 @@ abstract class Action extends arch\Action implements IAction {
 
 // HTML Request
     public function onHtmlGetRequest() {
+        if($this->_initResponse) {
+            return $this->_initResponse;
+        }
+
         $setContentProvider = false;
 
         if(!$this->view) {
@@ -202,6 +207,10 @@ abstract class Action extends arch\Action implements IAction {
     }
 
     public function onHtmlPostRequest() {
+        if($this->_initResponse) {
+            return $this->_initResponse;
+        }
+
         $response = $this->_runPostRequest();
 
         if(empty($response)) {
@@ -230,6 +239,26 @@ abstract class Action extends arch\Action implements IAction {
     }
 
     private function _getJsonResponseData() {
+        if($this->_initResponse) {
+            $redirect = null;
+
+            if($this->_initResponse instanceof halo\protocol\http\IRedirectResponse) {
+                $redirect = clone $this->_initResponse->getUrl();
+                $redirect->path->setExtension('json');
+                $redirect = (string)$redirect;
+            }
+
+            return [
+                'values' => [],
+                'errors' => [],
+                'events' => [],
+                'defaultEvent' => static::DEFAULT_EVENT,
+                'isNew' => $this->_isNew,
+                'isComplete' => $this->_isComplete,
+                'redirect' => $redirect
+            ];
+        }
+
         return array_merge($this->getStateData(), [
             'events' => $this->getAvailableEvents(),
             'defaultEvent' => static::DEFAULT_EVENT,
@@ -246,23 +275,33 @@ abstract class Action extends arch\Action implements IAction {
 
 // AJAX Request
     public function onAjaxGetRequest() {
-        return $this->_newJsonResponse([
-            'content' => $this->_getAjaxResponseContent(),
-            'type' => 'text/html',
-            'redirect' => null,
-            'isNew' => $this->_isNew,
-            'isComplete' => $this->_isComplete
-        ]);
+        if($this->_initResponse) {
+            $response = $this->_initResponse;
+        } else {
+            $response = null;
+        }
+
+        return $this->_newJsonResponse($this->_getAjaxResponseData($response, $response === null));
     }
 
     public function onAjaxPostRequest() {
-        $response = $this->_runPostRequest();
+        if($this->_initResponse) {
+            $response = $this->_initResponse;
+        } else {
+            $response = $this->_runPostRequest();
+        }
+
+        return $this->_newJsonResponse($this->_getAjaxResponseData($response, true));
+    }
+
+    private function _getAjaxResponseData($response, $loadUi=false) {
         $content = $redirect = null;
         $type = 'text/html';
 
-
         if($response instanceof halo\protocol\http\IRedirectResponse) {
-            $redirect = (string)$response->getUrl();
+            $redirect = clone $response->getUrl();
+            $redirect->path->setExtension('ajax');
+            $redirect = (string)$redirect;
         } else if($response instanceof halo\protocol\http\response\IResponse) {
             $content = $response->getContent();
             $type = $response->getContentType();
@@ -270,17 +309,17 @@ abstract class Action extends arch\Action implements IAction {
             $content = $response;
         }
 
-        if($content === null) {
+        if($content === null && $loadUi) {
             $content = $this->_getAjaxResponseContent();
         }
 
-        return $this->_newJsonResponse([
+        return [
             'content' => $content,
             'type' => $type,
             'redirect' => $redirect,
             'isNew' => $this->_isNew,
             'isComplete' => $this->_isComplete
-        ]);
+        ];
     }
 
     private function _getAjaxResponseContent() {
