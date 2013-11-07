@@ -222,7 +222,7 @@ abstract class Action extends arch\Action implements IAction {
         $response = $this->_runPostRequest();
         $data = $this->_getJsonResponseData();
 
-        if($response instanceof halo\protocol\http\response\IRedirectResponse) {
+        if($response instanceof halo\protocol\http\IRedirectResponse) {
             $data['redirect'] = (string)$response->getUrl();
         }
 
@@ -260,7 +260,8 @@ abstract class Action extends arch\Action implements IAction {
         $content = $redirect = null;
         $type = 'text/html';
 
-        if($response instanceof halo\protocol\http\response\IRedirectResponse) {
+
+        if($response instanceof halo\protocol\http\IRedirectResponse) {
             $redirect = (string)$response->getUrl();
         } else if($response instanceof halo\protocol\http\response\IResponse) {
             $content = $response->getContent();
