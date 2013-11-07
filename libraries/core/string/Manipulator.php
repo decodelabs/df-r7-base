@@ -49,6 +49,7 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
     public static function formatId($id) {
         return self::factory($id)
             ->translitToAscii()
+            ->regexReplace('/([^ ])([A-Z])/u', '$1 $2')
             ->replace(array('-', '.', '+'), ' ')
             ->regexReplace('/[^a-zA-Z0-9_ ]/', '')
             ->wordsToUpper()
