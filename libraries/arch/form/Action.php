@@ -376,7 +376,11 @@ abstract class Action extends arch\Action implements IAction {
             $session->remove($this->_state->getSessionId());
         }
         
-        return $this->http->defaultRedirect($defaultRedirect, $success);
+        if($this->request->getType() == 'Html') {
+            return $this->http->defaultRedirect($defaultRedirect, $success);
+        } else if($defaultRedirect) {
+            return $this->http->redirect($defaultRedirect);
+        }
     }
     
     public function getStateData() {
