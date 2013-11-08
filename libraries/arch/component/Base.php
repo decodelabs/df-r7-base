@@ -21,6 +21,8 @@ abstract class Base implements arch\IComponent {
 
     const DEFAULT_ACCESS = arch\IAccess::ALL;
 
+    protected $_args = [];
+
     public static function factory(arch\IContext $context, $name, array $args=null) {
         $path = $context->location->getController();
         $area = $context->location->getArea();
@@ -74,6 +76,8 @@ abstract class Base implements arch\IComponent {
             $args = array();
         }
 
+        $this->_args = $args;
+
         if(method_exists($this, '_init')) {
             call_user_func_array([$this, '_init'], $args);
         }
@@ -100,7 +104,14 @@ abstract class Base implements arch\IComponent {
 
     public function render() {
         $this->view = $this->getRenderTarget()->getView();
-        $output = $this->_execute();
+
+        if(!method_exists($this, '_execute')) {
+            throw new arch\LogicException(
+                'Component requires an _execute method'
+            );
+        }
+        
+        $output = call_user_func_array([$this, '_execute'], $this->_args);
 
         if($output instanceof aura\view\IDeferredRenderable) {
             $output->setRenderTarget($this->_renderTarget);
@@ -108,8 +119,6 @@ abstract class Base implements arch\IComponent {
 
         return $output;
     }
-
-    abstract protected function _execute();
 
 
 // Access

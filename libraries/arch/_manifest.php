@@ -16,6 +16,7 @@ use df\aura;
 interface IException {}
 class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 class RuntimeException extends \RuntimeException implements IException {}
+class LogicException extends \LogicException implements IException {}
 
 interface IForcedResponse {
     public function setResponse($response);
