@@ -21,7 +21,7 @@ abstract class Base implements arch\IComponent {
 
     const DEFAULT_ACCESS = arch\IAccess::ALL;
 
-    protected $_args = [];
+    private $_args = [];
 
     public static function factory(arch\IContext $context, $name, array $args=null) {
         $path = $context->location->getController();
