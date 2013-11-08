@@ -16,7 +16,16 @@ abstract class Generator implements IGenerator {
         if($additionalChars !== null) {
             $characters->push($additionalChars);
         }
-        
+
+        return self::_generateRandom($characters, $minLength, $maxLength);
+    }
+
+    public static function randomNumber($minLength=6, $maxLength=14) {
+        $characters = new core\string\Manipulator('0123456789');
+        return self::_generateRandom($characters, $minLength, $maxLength);
+    }
+
+    private static function _generateRandom(IManipulator $characters, $minLength, $maxLength) {
         if(!is_int($minLength)) {
             $minLength = 4;
         }
