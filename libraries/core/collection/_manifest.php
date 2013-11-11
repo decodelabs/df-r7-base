@@ -121,9 +121,10 @@ interface IPageable {
     public function getPaginator();
 }
 
-interface IPaginator {
+interface IPaginator extends core\IArrayProvider {
     public function getLimit();
     public function getOffset();
+    public function getPage();
     public function setTotal($total);
     public function countTotal();
     public function getKeyMap();
@@ -150,12 +151,37 @@ trait TPaginator {
         return $this->_offset;
     }
 
+    public function getPage() {
+        $output = ($this->_offset / $this->_limit) + 1;
+        $total = $this->countTotal();
+
+        if($total !== null) {
+            $test = ceil($total / $this->_limit);
+
+            if($test < $output) {
+                $output = $test;
+            }
+        }
+
+        return (int)$output;
+    }
+
     public function getKeyMap() {
         return $this->_keyMap;
     }
 
     public function countTotal() {
         return (int)$this->_total;
+    }
+
+    public function toArray() {
+        return [
+            'limit' => $this->_limit,
+            'offset' => $this->_offset,
+            'page' => $this->getPage(),
+            'total' => $this->countTotal(),
+            'keyMap' => $this->_keyMap
+        ];
     }
 }
 
