@@ -403,7 +403,10 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
             $response = (string)$response;
             
             if($this->_responseAugmentor) {
-                $response = new halo\protocol\http\response\String($response, 'text/html');
+                $response = new halo\protocol\http\response\String(
+                    $response, 
+                    core\io\Type::extToMime($this->_context->request->getType())
+                );
             } else {
                 return $response;
             }
