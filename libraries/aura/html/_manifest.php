@@ -167,13 +167,13 @@ trait TElementContent {
         if($value instanceof IRenderable) {
             $output = $value->render();
         } else if($value instanceof aura\view\IDeferredRenderable) {
-            $value = $value = $value->render();
+            $value = $value->render();
 
             if(is_string($value)) {
                 $value = new ElementString($value);
             }
 
-            $output = $this->_renderChild($value);
+            $output = $value = $this->_renderChild($value);
         } else if($value instanceof aura\view\IRenderable) {
             $value = $value->renderTo($this->getRenderTarget());
 
@@ -181,7 +181,7 @@ trait TElementContent {
                 $value = new ElementString($value);
             }
 
-            $output = $this->_renderChild($value);
+            $output = $value = $this->_renderChild($value);
         } else {
             $output = (string)$value;
         }
