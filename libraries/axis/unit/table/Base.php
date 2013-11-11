@@ -478,7 +478,7 @@ abstract class Base implements
 
                 if($localPrefix === null && $targetPrefix !== null) {
                     $targetFieldName = substr($targetFieldName, strlen($targetPrefix) + 1);
-                } else if($localPrefix !== null && $targetPrefix === null) {
+                } else if($localPrefix !== null && $localPrefix != $targetPrefix) {
                     $targetFieldName = $localPrefix.'_'.$targetFieldName;
                 }
 
