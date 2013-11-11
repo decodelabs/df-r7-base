@@ -32,7 +32,7 @@ class BridgedManyRelationValueContainer implements
     public function __construct(axis\schema\IBridgedRelationField $field) {
         $this->_field = $field;
         $this->_localPrimaryManifest = new opal\record\PrimaryManifest($field->getLocalPrimaryFieldNames());
-        $this->_targetPrimaryManifest = new opal\record\PrimaryManifest($field->getTargetPrimaryFieldNames());
+        $this->_targetPrimaryManifest = $field->getTargetPrimaryManifest();
     }
     
     public function isPrepared() {
@@ -42,7 +42,7 @@ class BridgedManyRelationValueContainer implements
     public function prepareValue(opal\record\IRecord $record, $fieldName) {
         $this->_record = $record;
         $this->_localPrimaryManifest = $record->getPrimaryManifest();
-        
+
         return $this;
     }
     
@@ -207,7 +207,7 @@ class BridgedManyRelationValueContainer implements
         if(!empty($lookupManifests)) {
             $application = $this->_record->getRecordAdapter()->getApplication();
             $targetUnit = $this->_getTargetUnit($application);
-            
+
             $query = opal\query\Initiator::factory($application)
                 ->beginSelect($this->_targetPrimaryManifest->getFieldNames())
                 ->from($targetUnit);

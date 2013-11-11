@@ -77,7 +77,7 @@ class KeyGroup extends Base implements axis\schema\IRelationField, axis\schema\I
         if(!$forRecord) {
             return $value;
         }
-        
+
         return new axis\unit\table\record\OneRelationValueContainer(
             $this, $forRecord, $value
         );

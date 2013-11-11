@@ -29,7 +29,7 @@ class InlineManyRelationValueContainer implements
     
     public function __construct(axis\schema\IOneToManyField $field) {
         $this->_field = $field;
-        $this->_targetPrimaryManifest = new opal\record\PrimaryManifest($field->getTargetPrimaryFieldNames());
+        $this->_targetPrimaryManifest = $field->getTargetPrimaryManifest();
     }
     
     public function isPrepared() {

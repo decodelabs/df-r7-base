@@ -414,14 +414,46 @@ trait TInverseRelationField {
 
 interface ITargetPrimaryFieldAwareRelationField extends IRelationField {
     public function getTargetPrimaryFieldNames();
+    public function getTargetPrimaryManifest();
 }
 
 trait TTargetPrimaryFieldAwareRelationField {
 
     protected $_targetPrimaryFields = ['id'];
+    private $_targetPrimaryManifest;
 
     public function getTargetPrimaryFieldNames() {
         return $this->_targetPrimaryFields;
+    }
+
+    public function getTargetPrimaryManifest() {
+        if(!$this->_targetPrimaryManifest) {
+            $targetUnit = $this->getTargetUnit();
+            $targetSchema = $targetUnit->getUnitSchema();
+            $values = [];
+
+            foreach($this->_targetPrimaryFields as $fieldName) {
+                $field = $targetSchema->getField($fieldName);
+
+                if($field instanceof axis\schema\IMultiPrimitiveField) {
+                    $innerFields = [];
+                    $nameLength = strlen($fieldName);
+
+                    foreach($field->getPrimitiveFieldNames() as $subFieldName) {
+                        $innerFields[] = substr($subFieldName, $nameLength + 1);
+                    }
+                    
+                    $values[$fieldName] = new opal\record\PrimaryManifest($innerFields);
+                    $test = true;
+                } else {
+                    $values[$fieldName] = null;
+                }
+            }
+
+            $this->_targetPrimaryManifest = new opal\record\PrimaryManifest(array_keys($values), $values);
+        }
+
+        return $this->_targetPrimaryManifest;
     }
 }
 

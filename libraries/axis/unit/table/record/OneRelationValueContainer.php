@@ -22,7 +22,7 @@ class OneRelationValueContainer implements
     
     public function __construct(axis\schema\IRelationField $field, opal\record\IRecord $parentRecord=null, $value=null) {
         $this->_field = $field;
-        $this->_value = new opal\record\PrimaryManifest($field->getTargetPrimaryFieldNames());
+        $this->_value = $field->getTargetPrimaryManifest();
 
         $this->setValue($value);
         $this->_applyInversePopulation($parentRecord);

@@ -42,6 +42,14 @@ class PrimaryManifest implements IPrimaryManifest, core\IDumpable {
         $this->updateWith($values);
     }
     
+    public function __clone() {
+        foreach($this->_keys as $key => $value) {
+            if($value instanceof self) {
+                $this->_keys[$key] = clone $value;
+            }
+        }
+    }
+
     public function getKeys() {
         return $this->_keys;
     }
@@ -130,10 +138,14 @@ class PrimaryManifest implements IPrimaryManifest, core\IDumpable {
                 if($value instanceof IRecord) {
                     $value = $value->getPrimaryManifest();
                 }
-
-                $this->_keys[$field] = $value;
             } else {
-                $this->_keys[$field] = null;
+                $value = null;
+            }
+
+            if($this->_keys[$field] instanceof self) {
+                $this->_keys[$field]->updateWith($value);
+            } else {
+                $this->_keys[$field] = $value;
             }
         }
         
@@ -145,7 +157,7 @@ class PrimaryManifest implements IPrimaryManifest, core\IDumpable {
     }
     
     public function getFieldNames() {
-        return array_keys($this->_keys);
+        return array_keys($this->toArray());
     }
     
     public function isNull() {
@@ -228,8 +240,10 @@ class PrimaryManifest implements IPrimaryManifest, core\IDumpable {
         if($values instanceof IPrimaryManifest) {
             return $values;
         }
-        
-        return new self(array_keys($this->_keys), $values);
+
+        $output = clone $this;
+        $output->updateWith($values);
+        return $output;
     }
     
     public function eq(IPrimaryManifest $manifest) {
