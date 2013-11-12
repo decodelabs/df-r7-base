@@ -223,6 +223,10 @@ class Format implements core\ISharedHelper {
     
     
     public function timeSince($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null) {
+        if($date === null) {
+            return null;
+        }
+
         if($locale === null) {
             $locale = $this->_context->getLocale();
         }
@@ -238,6 +242,10 @@ class Format implements core\ISharedHelper {
     }
     
     public function timeUntil($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null) {
+        if($date === null) {
+            return null;
+        }
+        
         if($locale === null) {
             $locale = $this->_context->getLocale();
         }
