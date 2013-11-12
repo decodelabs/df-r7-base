@@ -108,6 +108,14 @@ class Type {
         'vcd' => 'application/x-cdlink',    
         'swf' => 'application/x-shockwave-flash',
     
+
+    // Fonts
+        'eot' => 'application/vnd.ms-fontobject',
+        'ttf' => 'font/ttf',
+        'otf' => 'font/otf',
+        'woff' => 'application/font-woff',
+
+
     // Audio
         '3gp' => 'audio/3gpp',
         '3gpp' => 'audio/3gpp',
