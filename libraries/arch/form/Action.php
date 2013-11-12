@@ -367,7 +367,7 @@ abstract class Action extends arch\Action implements IAction {
         $this->values->clear()->import($postData);
         
         if(empty($event)) {
-            $event = static::DEFAULT_EVENT;
+            $event = $this->_getDefaultEvent();
             
             if(empty($event)) {
                 $event = self::DEFAULT_EVENT;
@@ -467,6 +467,10 @@ abstract class Action extends arch\Action implements IAction {
 
     protected function _getDefaultRedirect() {
         return static::DEFAULT_REDIRECT;
+    }
+
+    protected function _getDefaultEvent() {
+        return static::DEFAULT_EVENT;
     }
 
 
