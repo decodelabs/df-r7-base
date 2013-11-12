@@ -405,7 +405,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
                 core\io\Type::extToMime(strtolower($this->_context->request->getType()))
             );
 
-            $response->getHeaders()->setCacheExpiration(60);
+            //$response->getHeaders()->setCacheExpiration(60);
         }
         
         
