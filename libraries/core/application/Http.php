@@ -400,16 +400,12 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
         
         // Basic response
         if(!$response instanceof halo\protocol\http\IResponse) {
-            $response = (string)$response;
-            
-            //if($this->_responseAugmentor) {
-                $response = new halo\protocol\http\response\String(
-                    $response, 
-                    core\io\Type::extToMime(strtolower($this->_context->request->getType()))
-                );
-            //} else {
-                //return $response;
-            //}
+            $response = new halo\protocol\http\response\String(
+                (string)$response, 
+                core\io\Type::extToMime(strtolower($this->_context->request->getType()))
+            );
+
+            $response->getHeaders()->setCacheExpiration(60);
         }
         
         
