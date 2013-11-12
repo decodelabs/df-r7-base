@@ -306,6 +306,15 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
         
         return str_pad($outChars, $pad, '0', STR_PAD_LEFT);
     }
+
+
+// Meta
+    public static function countWords($value) {
+        return self::factory(trim($value).' ')
+            ->regexReplace('/[^\w\s]+/', '')
+            ->regexReplace('/[\s]+/', ' ')
+            ->substringCount(' ');
+    }
     
     
     

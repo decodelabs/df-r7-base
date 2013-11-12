@@ -210,6 +210,7 @@ interface IManipulator extends core\collection\IIndexedCollection, core\IStringP
     
     public static function stringToBoolean($value);
     public static function baseConvert($input, $fromBase, $toBase, $pad=1);
+    public static function countWords($value);
     
     
 // Encoding
