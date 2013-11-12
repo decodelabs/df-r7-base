@@ -22,6 +22,13 @@ class TaskPurgeBuilds extends arch\task\Action {
             $contingency = 0;
         }
 
+        $keepLast = true;
+
+        if(isset($this->request->query->all)) {
+            $keepLast = false;
+            $contingency = 0;
+        }
+
         $appPath = df\Launchpad::$applicationPath;
         $runPath = $appPath.'/data/local/run';
 
@@ -32,9 +39,14 @@ class TaskPurgeBuilds extends arch\task\Action {
         sort($list);
         unset($list[0], $list[1]);
 
-        for($i = 0; $i < $contingency + 1; $i++) {
+        if($keepLast) {
+            $contingency++;
+        }
+
+        for($i = 0; $i < $contingency; $i++) {
             array_pop($list);
         }
+
 
         foreach($list as $entry) {
             if(is_file($runPath.'/'.$entry)) {
