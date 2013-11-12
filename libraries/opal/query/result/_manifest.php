@@ -54,6 +54,7 @@ interface IOutputManifest {
     
     public function getWildcardMap();
     
+    public function getAggregateFields();
     public function getAggregateFieldAliases();
     public function hasAggregateFields();
     

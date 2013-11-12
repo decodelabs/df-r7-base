@@ -47,8 +47,8 @@ class OutputManifest implements IOutputManifest {
             $this->addOutputField($field);
         }
         
-        foreach($source->getPrivateFields() as $qName => $field) {
-            $this->_privateFields[$qName] = $field;
+        foreach($source->getPrivateFields() as $alias => $field) {
+            $this->_privateFields[$alias] = $field;
         }
         
         if(isset($this->_wildcards[$sourceAlias], $rows[0])) {
@@ -79,11 +79,10 @@ class OutputManifest implements IOutputManifest {
         }
         
         $alias = $field->getAlias();
-        $qName = $field->getQualifiedName();
-        $this->_outputFields[$qName] = $field;
+        $this->_outputFields[$alias] = $field;
         
         if($field instanceof opal\query\IAggregateField) {
-            $this->_aggregateFields[$alias] = $qName;
+            $this->_aggregateFields[$alias] = $field;
         }
 
         if($field instanceof opal\query\ICorrelationField) {
@@ -110,9 +109,13 @@ class OutputManifest implements IOutputManifest {
     public function getWildcardMap() {
         return $this->_wildcards;
     }
+
+    public function getAggregateFields() {
+        return $this->_aggregateFields;
+    }
     
     public function getAggregateFieldAliases() {
-        return $this->_aggregateFields;
+        return array_keys($this->_aggregateFields);
     }
     
     public function hasAggregateFields() {

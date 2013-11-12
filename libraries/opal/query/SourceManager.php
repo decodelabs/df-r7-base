@@ -220,7 +220,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
             return $name;
         }
 
-        if(!$isOutput && ($field = $this->_findFieldByAlias($name))) {
+        if(!$isOutput && ($field = $this->_findFieldByAlias($name, $source))) {
             $this->_testField($field, $allowIntrinsic, $allowWildcard, $allowAggregate);
             return $field;
         }
@@ -359,9 +359,15 @@ class SourceManager implements ISourceManager, core\IDumpable {
         }
     }
     
-    protected function _findFieldByAlias($alias) {
-        foreach($this->_sources as $source) {
-            if($field = $source->getFieldByAlias($alias)) {
+    protected function _findFieldByAlias($alias, ISource $source) {
+        $sourceId = $source->getId();
+
+        foreach($this->_sources as $testSource) {
+            if($testSource !== $source && $testSource->getId() == $sourceId) {
+                continue;
+            }
+
+            if($field = $testSource->getFieldByAlias($alias)) {
                 return $field;
             }
         }

@@ -419,12 +419,12 @@ class ArrayManipulator implements IArrayManipulator {
         
         $this->normalizeRows();
         $fields = $this->_outputManifest->getAllFields();
-        $aggregateFields = $this->_outputManifest->getAggregateFieldAliases();
+        $aggregateFields = $this->_outputManifest->getAggregateFields();
         
         // init aggregates
         foreach($this->_rows as &$row) {
-            foreach($aggregateFields as $alias => $qName) {
-                $fieldName = $fields[$alias]->getTargetField()->getQualifiedName();
+            foreach($aggregateFields as $alias => $field) {
+                $fieldName = $field->getTargetField()->getQualifiedName();
                 
                 if(isset($row[$fieldName])) {
                     $row[$qName] = $row[$fieldName];
@@ -856,15 +856,15 @@ class ArrayManipulator implements IArrayManipulator {
         $primarySource = $this->_outputManifest->getPrimarySource();
         $primaryAdapter = $primarySource->getAdapter();
         $outputFields = $this->_outputManifest->getOutputFields();
-        $aggregateFields = $this->_outputManifest->getAggregateFieldAliases();
+        $aggregateFields = $this->_outputManifest->getAggregateFields();
         $wildcards = $this->_outputManifest->getWildcardMap();
         $fieldProcessors = $this->_outputManifest->getOutputFieldProcessors();
 
         // Prepare qualified names
         $qNameMap = array();
 
-        foreach($outputFields as $qName => $field) {
-            $qNameMap[$qName] = $field->getAlias();
+        foreach($outputFields as $alias => $field) {
+            $qNameMap[$alias] = $field->getQualifiedName();
         }
 
         // Prepare key / val field
@@ -918,7 +918,7 @@ class ArrayManipulator implements IArrayManipulator {
         if($forFetch) {
             $fetchObject = isset($temp[0][$objectKey]);
         }
-        
+
 
         // Iterate data
         foreach($temp as $row) {
@@ -933,7 +933,7 @@ class ArrayManipulator implements IArrayManipulator {
                 $tempRow = $row;
                 $row = array();
                 
-                foreach($qNameMap as $qName => $alias) {
+                foreach($qNameMap as $alias => $qName) {
                     if(isset($fieldProcessors[$qName])) {
                         $row[$qName] = $fieldProcessors[$qName]->inflateValueFromRow(
                             $qName, $tempRow, $record
@@ -990,15 +990,15 @@ class ArrayManipulator implements IArrayManipulator {
                 
                 
                 // Add known fields
-                foreach($qNameMap as $qName => $alias) {
+                foreach($qNameMap as $alias => $qName) {
                     $qValue = null;
 
                     if(isset($row[$qName])) {
                         $qValue = $row[$qName];
                     }
 
-                    if(isset($aggregateFields[$qName])) {
-                        $qValue = $aggregateFields[$qName]->normalizeOutputValue($qValue);
+                    if(isset($aggregateFields[$alias])) {
+                        $qValue = $aggregateFields[$alias]->normalizeOutputValue($qValue);
                     }
 
                     if($qValue !== null || !isset($current[$alias])) {

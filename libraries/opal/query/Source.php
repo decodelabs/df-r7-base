@@ -17,6 +17,7 @@ class Source implements ISource, core\IDumpable {
     protected $_privateFields = array();
 
     protected $_alias;
+    private $_id;
     
     public function __construct(IAdapter $adapter, $alias) {
         $this->_adapter = $adapter;
@@ -28,7 +29,11 @@ class Source implements ISource, core\IDumpable {
     }
 
     public function getId() {
-        return $this->_adapter->getQuerySourceId();
+        if(!$this->_id) {
+            $this->_id = $this->_adapter->getQuerySourceId();
+        }
+        
+        return $this->_id;
     }
 
     public function getUniqueId() {
@@ -139,15 +144,15 @@ class Source implements ISource, core\IDumpable {
         foreach($fields as $field) {
             $alias = $field->getAlias();
             $this->_outputFields[$alias] = $field;
-            unset($this->_privateFields[$field->getQualifiedName()]);
+            unset($this->_privateFields[$field->getAlias()]);
         }
         
         return $this;
     }
     
     public function addPrivateField(opal\query\IField $field) {
-        if(!isset($this->_outputFields[$field->getQualifiedName()])) {
-            $this->_privateFields[$field->getQualifiedName()] = $field;
+        if(!in_array($field, $this->_outputFields, true)) {
+            $this->_privateFields[$field->getAlias()] = $field;
         }
         
         return $this;
