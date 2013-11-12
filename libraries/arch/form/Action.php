@@ -456,7 +456,13 @@ abstract class Action extends arch\Action implements IAction {
     
 // Events
     protected function _onCancelEvent() {
-        return $this->complete($this->_getDefaultRedirect(), false);
+        $redirect = $this->_getDefaultRedirect();
+
+        if(!$redirect && in_array($this->request->getType(), ['Json', 'Ajax'])) {
+            $redirect = $this->request;
+        }
+
+        return $this->complete($redirect, false);
     }
 
     protected function _getDefaultRedirect() {
