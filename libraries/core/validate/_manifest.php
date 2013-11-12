@@ -152,11 +152,11 @@ trait TMinLengthField {
 
         if($this->_minLength > 0 && $length < $this->_minLength) {
             $node->addError('minLength', $this->_handler->_(
-                array(
-                    'n = 1 || n = -1' => 'This field must be at least %min% character',
-                    '*' => 'This field must be at least %min% characters'
-                ),
-                array('%min%' => $this->_minLength),
+                [
+                    'n = 1' => 'This field must contain at least %min% character',
+                    '*' => 'This field must contain at least %min% characters'
+                ],
+                ['%min%' => $this->_minLength],
                 $this->_minLength
             ));
         }
@@ -209,11 +209,11 @@ trait TMaxLengthField {
 
         if($this->_maxLength !== null && $length > $this->_maxLength) {
             $node->addError('maxLength', $this->_handler->_(
-                array(
-                    'n = 1 || n = -1' => 'This field must not me more than %max% character',
-                    '*' => 'This field must not me more than %max% characters'
-                ),
-                array('%max%' => $this->_maxLength),
+                [
+                    'n = 1' => 'This field must not contain more than %max% character',
+                    '*' => 'This field must not contain more than %max% characters'
+                ],
+                ['%max%' => $this->_maxLength],
                 $this->_maxLength
             ));
         }
@@ -407,6 +407,11 @@ interface ISlugField extends IField, ISanitizingField, IUniqueCheckerField {
 interface ITextField extends IField, ISanitizingField, IMinLengthField, IMaxLengthField {
     public function setPattern($pattern);
     public function getPattern();
+
+    public function setMinWordLength($length);
+    public function getMinWordLength();
+    public function setMaxWordLength($length);
+    public function getMaxWordLength();
 }
 
 interface IUrlField extends IField {}
