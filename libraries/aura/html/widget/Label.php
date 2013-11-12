@@ -28,17 +28,14 @@ class Label extends Base implements ILabelWidget, core\IDumpable {
         $tag = $this->getTag();
         
         if($this->_body->isEmpty()) {
-            //$body = new aura\html\ElementString('&nbsp;');
             $tag->addClass('state-empty');
         }
-        
-        $body = $this->_body->toString();
-        
+
         if($this->_inputId !== null) {
             $tag->setAttribute('for', $this->_inputId);
         }
         
-        return $tag->renderWith($body);
+        return $tag->renderWith($this->_body);
     }
     
     public function setInputId($inputId) {
