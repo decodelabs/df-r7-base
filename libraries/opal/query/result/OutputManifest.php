@@ -42,7 +42,7 @@ class OutputManifest implements IOutputManifest {
         if(!$this->_primarySource) {
             $this->_primarySource = $source;
         }
-        
+
         foreach($source->getOutputFields() as $alias => $field) {
             $this->addOutputField($field);
         }
@@ -84,6 +84,12 @@ class OutputManifest implements IOutputManifest {
         
         if($field instanceof opal\query\IAggregateField) {
             $this->_aggregateFields[$alias] = $qName;
+        }
+
+        if($field instanceof opal\query\ICorrelationField) {
+            if($aggregateField = $field->getAggregateOutputField()) {
+                $this->_aggregateFields[$aggregateField->getAlias()] = $aggregateField;
+            }
         }
         
         return $this;

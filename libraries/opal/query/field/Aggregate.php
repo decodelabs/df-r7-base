@@ -18,6 +18,7 @@ class Aggregate implements opal\query\IAggregateField, core\IDumpable {
     const TYPE_AVG = 3;
     const TYPE_MIN = 4;
     const TYPE_MAX = 5;
+    const TYPE_HAS = 6;
     
     protected $_type;
     protected $_alias;
@@ -40,6 +41,9 @@ class Aggregate implements opal\query\IAggregateField, core\IDumpable {
                 
             case self::TYPE_MAX:
                 return 'MAX';
+
+            case self::TYPE_HAS:
+                return 'HAS';
         }
     }
     
@@ -74,6 +78,10 @@ class Aggregate implements opal\query\IAggregateField, core\IDumpable {
             case self::TYPE_MAX:
             case 'MAX':
                 $type = self::TYPE_MAX;
+                break;
+
+            case 'HAS':
+                $type = self::TYPE_HAS;
                 break;
                 
             default:
@@ -138,6 +146,22 @@ class Aggregate implements opal\query\IAggregateField, core\IDumpable {
 
     public function isOutputField() {
         return true;
+    }
+
+    public function normalizeOutputValue($value) {
+        switch($this->_type) {
+            case self::TYPE_COUNT:
+                return (int)$value;
+                
+            case self::TYPE_SUM:
+            case self::TYPE_AVG:
+            case self::TYPE_MIN:
+            case self::TYPE_MAX:
+                return (double)$value;
+
+            case self::TYPE_HAS:
+                return (bool)$value;
+        }
     }
     
 // Dump

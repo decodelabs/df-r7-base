@@ -502,6 +502,10 @@ class ArrayManipulator implements IArrayManipulator {
                         case opal\query\field\Aggregate::TYPE_MAX:
                             $row[$qName] = max($aggregateData[$qName]);
                             break;
+
+                        case opal\query\field\Aggregate::TYPE_HAS:
+                            $row[$qName] = !empty($aggregateData[$qName]);
+                            break;
                     }
                 }
             }
@@ -858,7 +862,7 @@ class ArrayManipulator implements IArrayManipulator {
 
         // Prepare qualified names
         $qNameMap = array();
-        
+
         foreach($outputFields as $qName => $field) {
             $qNameMap[$qName] = $field->getAlias();
         }
@@ -991,6 +995,10 @@ class ArrayManipulator implements IArrayManipulator {
 
                     if(isset($row[$qName])) {
                         $qValue = $row[$qName];
+                    }
+
+                    if(isset($aggregateFields[$qName])) {
+                        $qValue = $aggregateFields[$qName]->normalizeOutputValue($qValue);
                     }
 
                     if($qValue !== null || !isset($current[$alias])) {

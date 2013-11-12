@@ -36,6 +36,14 @@ class Correlation implements opal\query\ICorrelationField, core\IDumpable {
         //return 'CORRELATION('.$this->getSourceAlias().'.'.$this->getAlias().')';
     }
 
+    public function getAggregateOutputField() {
+        foreach($this->_query->getSource()->getOutputFields() as $field) {
+            if($field instanceof opal\query\IAggregateField) {
+                return $field;
+            }
+        }
+    }
+
     public function getName() {
         return $this->getAlias();
     }

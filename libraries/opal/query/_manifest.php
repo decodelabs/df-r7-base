@@ -677,12 +677,14 @@ interface IWildcardField extends IField {}
 
 interface ICorrelationField extends IField {
     public function getCorrelationQuery();
+    public function getAggregateOutputField();
 }
 
 interface IAggregateField extends IField {
     public function getType();
     public function getTypeName();
     public function getTargetField();
+    public function normalizeOutputValue($value);
 }
 
 interface IAttachmentField extends IField {}

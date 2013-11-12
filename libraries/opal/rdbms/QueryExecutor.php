@@ -794,8 +794,15 @@ abstract class QueryExecutor implements IQueryExecutor {
                 $targetFieldString = $this->defineField($field->getTargetField(), false);
             }
             
-            $output = $field->getTypeName().'('.$targetFieldString.')';
-            
+            switch($field->getType()) {
+                case opal\query\field\Aggregate::TYPE_HAS:
+                    $output = 'COUNT('.$targetFieldString.')';
+                    break;
+
+                default:
+                    $output = $field->getTypeName().'('.$targetFieldString.')';
+                    break;
+            }
         } else if($field instanceof opal\query\IIntrinsicField) {
             // Intrinsic
             $output = $this->_adapter->quoteTableAliasReference($field->getSourceAlias()).'.'.
