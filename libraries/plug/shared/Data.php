@@ -184,8 +184,16 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
 
 
 // JSON
-    public function jsonEncodeCollectionQuery(opal\query\IReadQuery $query, array $extraData=array()) {
-        $extraData['data'] = $query->toArray();
+    public function jsonEncodeCollectionQuery(opal\query\IReadQuery $query, array $extraData=array(), Callable $rowSanitizer=null) {
+        $data = $query->toArray();
+
+        if($rowSanitizer) {
+            foreach($data as $key => $row) {
+                $data[$key] = $rowSanitizer->__invoke($row, $key);
+            }
+        }
+
+        $extraData['data'] = $data;
         $extraData['paginator'] = $query->getPaginator();
         return $this->jsonEncode($extraData);
     }
