@@ -36,18 +36,8 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
             $actionName = 'access';
         }
 
-        $query = $this->fetch()
-            ->from($source);
-
-        if(is_array($primary) && is_string(key($primary))) {
-            foreach($primary as $key => $value) {
-                $query->where($key, '=', $value);
-            }
-
-            $primary = implode(',', $primary);
-        } else {
-            $query->where('@primary', '=', $primary);
-        }
+        $query = $this->fetch()->from($source);
+        $this->applyQueryActionClause($query, $primary);
 
         $name = $query->getSource()->getDisplayName();
 
@@ -60,6 +50,20 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
         }
 
         return $output;
+    }
+
+    public function applyQueryActionClause(opal\query\IQuery $query, $primary) {
+        if(is_array($primary) && is_string(key($primary))) {
+            foreach($primary as $key => $value) {
+                $query->where($key, '=', $value);
+            }
+
+            $primary = implode(',', $primary);
+        } else {
+            $query->where('@primary', '=', $primary);
+        }
+
+        return $this;
     }
 
     public function newRecord($source, array $values=null) {
