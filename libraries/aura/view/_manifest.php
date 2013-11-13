@@ -226,6 +226,7 @@ interface ILayoutMap {
 
 
 interface IHtmlView extends IResponseView, ILayoutView {
+    public function getHtmlTag();
     public function getBodyTag();
     
     // Title

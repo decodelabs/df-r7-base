@@ -47,6 +47,7 @@ class Html extends Base implements IHtmlView {
     
     protected $_links = array();
     
+    public $htmlTag;
     public $bodyTag;
     
     protected $_shouldRenderBase = true;
@@ -54,6 +55,7 @@ class Html extends Base implements IHtmlView {
     public function __construct($type, arch\IContext $context) {
         parent::__construct($type, $context);
         
+        $this->htmlTag = new aura\html\Tag('html', ['lang' => 'en']);
         $this->bodyTag = new aura\html\Tag('body');
         
         //$this->_baseHref = $context->normalizeOutputUrl('/');
@@ -67,6 +69,10 @@ class Html extends Base implements IHtmlView {
 
 
 // Tags
+    public function getHtmlTag() {
+        return $this->htmlTag;
+    }
+
     public function getBodyTag() {
         return $this->bodyTag;
     }
@@ -663,14 +669,14 @@ class Html extends Base implements IHtmlView {
         if($this->_shouldRenderBase) {
             $output = 
                 '<!DOCTYPE html>'."\n".
-                '<html lang="en" class="no-js">'."\n".
+                $this->htmlTag->open()."\n".
                 $this->_renderHead()."\n".
                 $this->bodyTag->open()."\n".
                 $output."\n".
                 $this->_renderJsList($this->_footJs).
                 $this->_renderScriptList($this->_footScripts).
                 $this->bodyTag->close()."\n".
-                '</html>';
+                $this->htmlTag->close();
         }
         
         return $output;
