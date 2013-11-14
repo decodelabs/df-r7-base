@@ -95,11 +95,13 @@ class Date extends Base implements core\validate\IDateField {
             $node->addError('future', $this->_handler->_('This date must not be in the past'));
         }
 
+        $value = $this->_applyCustomValidator($node, $date);
+        
         if($this->_shouldSanitize) {
-            $value = $date->toString(core\time\Date::W3C);
+            $node->setValue($value->toString(core\time\Date::W3C));
         }
         
-        return $this->_finalize($node, $value);
+        return $value;
     }
 
     protected function _validateRange(core\collection\IInputTree $node, $date) {
