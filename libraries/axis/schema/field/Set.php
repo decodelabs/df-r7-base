@@ -21,6 +21,46 @@ class Set extends Base implements
         $this->setOptions($options);
     }
 
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
+        $value = null;
+        
+        if(isset($row[$key])) {
+            $value = $row[$key];
+        }
+
+        if(!empty($value)) {
+            $value = explode(',', $value);
+        }
+        
+        return $this->sanitizeValue($value, $forRecord);
+    }
+    
+    public function deflateValue($value) {
+        $value = $this->sanitizeValue($value);
+        
+        if($value === null) {
+            return null;
+        }
+        
+        return implode(',', $value);
+    }
+
+    public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
+        if($value === null) {
+            if($this->isNullable()) {
+                return null;
+            } else {
+                $value = [];
+            }
+        }
+
+        if(!is_array($value)) {
+            $value = [(string)$value];
+        }
+
+        return $value;
+    }
+
 // Primitive
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
         return new opal\schema\Primitive_Set($this, $this->_options);
