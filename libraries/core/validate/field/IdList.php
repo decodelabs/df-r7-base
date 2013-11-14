@@ -12,14 +12,30 @@ class IdList extends Base implements core\validate\IIdListField {
     
     use core\validate\TSanitizingField;
 
+    protected $_useKeys = false;
+
+    public function shouldUseKeys($flag=null) {
+        if($flag !== null) {
+            $this->_useKeys = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_useKeys;
+    }
+
     public function validate(core\collection\IInputTree $node) {
         if((!$count = count($node)) && $this->_isRequired) {
             $node->addError('required', $this->_handler->_(
                 'This field requires at least one selection'
             ));
         }
-        
+
         $value = $node->toArray();
+        
+        if($this->_useKeys) {
+            $value = array_keys($value);
+        }
+        
         $value = (array)$this->_sanitizeValue($value);
         $value = $this->_applyCustomValidator($node, $value);
         

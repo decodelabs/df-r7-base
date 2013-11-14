@@ -392,7 +392,11 @@ interface IEnumField extends IField {
 }
 
 interface IFloatField extends IField, IRangeField {}
-interface IIdListField extends IField, ISanitizingField {}
+
+interface IIdListField extends IField, ISanitizingField {
+    public function shouldUseKeys($flag=null);
+}
+
 interface ITextListField extends IField, ISanitizingField {}
 interface IIntegerField extends IField, IRangeField {}
 interface IPasswordField extends IField, IMinLengthField {}
