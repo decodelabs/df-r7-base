@@ -652,11 +652,15 @@ interface IField {
 
     public function setLogicalAlias($alias);
     public function getLogicalAlias();
+
+    public function setOverrideField(IField $field=null);
+    public function getOverrideField();
 }
 
 trait TField {
 
     protected $_logicalAlias;
+    protected $_overrideField;
 
     public function setLogicalAlias($alias) {
         if(empty($alias)) {
@@ -669,6 +673,15 @@ trait TField {
 
     public function getLogicalAlias() {
         return $this->_logicalAlias;
+    }
+
+    public function setOverrideField(IField $field=null) {
+        $this->_overrideField = $field;
+        return $this;
+    }
+
+    public function getOverrideField() {
+        return $this->_overrideField;
     }
 }
 

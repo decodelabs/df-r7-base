@@ -861,10 +861,15 @@ class ArrayManipulator implements IArrayManipulator {
         $fieldProcessors = $this->_outputManifest->getOutputFieldProcessors();
 
         // Prepare qualified names
-        $qNameMap = array();
+        $qNameMap = [];
+        $overrides = [];
 
         foreach($outputFields as $alias => $field) {
             $qNameMap[$alias] = $field->getQualifiedName();
+
+            while($field = $field->getOverrideField()) {
+                $overrides[$alias][] = $field->getQualifiedName();
+            }
         }
 
         // Prepare key / val field
@@ -930,19 +935,10 @@ class ArrayManipulator implements IArrayManipulator {
 
             // Pre-process row
             if(!empty($fieldProcessors)) {
-                $tempRow = $row;
-                $row = array();
-                
-                foreach($qNameMap as $alias => $qName) {
-                    if(isset($fieldProcessors[$qName])) {
-                        $row[$qName] = $fieldProcessors[$qName]->inflateValueFromRow(
-                            $qName, $tempRow, $record
-                        );
-                    } else if(isset($tempRow[$qName])) {
-                        $row[$qName] = $tempRow[$qName];
-                    } else {
-                        $row[$alias] = null;
-                    }
+                foreach($fieldProcessors as $qName => $fieldProcessor) {
+                    $row[$qName] = $fieldProcessor->inflateValueFromRow(
+                        $qName, $row, $record
+                    );
                 }
             }
 
@@ -995,7 +991,15 @@ class ArrayManipulator implements IArrayManipulator {
 
                     if(isset($row[$qName])) {
                         $qValue = $row[$qName];
+                    } else if(isset($overrides[$alias])) {
+                        foreach($overrides[$alias] as $overrideQName) {
+                            if(isset($row[$overrideQName])) {
+                                $qValue = $row[$overrideQName];
+                                break;
+                            }
+                        }
                     }
+
 
                     if(isset($aggregateFields[$alias])) {
                         $qValue = $aggregateFields[$alias]->normalizeOutputValue($qValue);

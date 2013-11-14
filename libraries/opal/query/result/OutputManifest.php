@@ -79,6 +79,12 @@ class OutputManifest implements IOutputManifest {
         }
         
         $alias = $field->getAlias();
+
+        if(isset($this->_outputFields[$alias]) 
+        && $field !== isset($this->_outputFields[$alias])) {
+            $field->setOverrideField($this->_outputFields[$alias]);
+        }
+
         $this->_outputFields[$alias] = $field;
         
         if($field instanceof opal\query\IAggregateField) {
