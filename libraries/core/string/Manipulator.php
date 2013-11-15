@@ -315,6 +315,21 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
             ->regexReplace('/[\s]+/', ' ')
             ->substringCount(' ');
     }
+
+    public static function splitWords($value, $strip=true, $expand=true) {
+        $output = self::factory(trim($value));
+
+        if($strip) {
+            $output->regexReplace('/[^\w\s]+/', '');
+        }
+
+        if($expand) {
+            $output->regexReplace('/([a-z])([A-Z])/u', '$1 $2');
+        }
+
+        $output = $output->regexReplace('/[\s]+/', ' ')->toString();
+        return explode(' ', $output);
+    }
     
     
     
