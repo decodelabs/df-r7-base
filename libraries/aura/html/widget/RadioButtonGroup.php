@@ -21,6 +21,7 @@ class RadioButtonGroup extends Base implements IUngroupedSelectionInputWidget, c
     const ARRAY_INPUT = false;
     
     protected $_inputIdCounter = 0;
+    protected $_shouldWrapBody = true;
     
     public function __construct(arch\IContext $context, $name, $value=null, $options=null) {
         $this->setName($name);
@@ -63,6 +64,10 @@ class RadioButtonGroup extends Base implements IUngroupedSelectionInputWidget, c
             if($optionRenderer = $this->_optionRenderer) {
                 $optionRenderer($labelTag, $value, $label);
             } else {
+                if($this->_shouldWrapBody) {
+                    $label = new aura\html\Element('span', $label);
+                }
+
                 $labelTag->push($label);
             }
             
@@ -81,6 +86,15 @@ class RadioButtonGroup extends Base implements IUngroupedSelectionInputWidget, c
         }
         
         return $selectionFound = $value == $currValue;
+    }
+
+    public function shouldWrapBody($flag=null) {
+        if($flag !== null) {
+            $this->_shouldWrapBody = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_shouldWrapBody;
     }
     
 // Dump
