@@ -227,6 +227,10 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         $output = array();
         
         foreach($this->_changes as $key => $value) {
+            if($value instanceof IPreparedValueContainer && !$value->isPrepared()) {
+                $value->prepareValue($this, $key);
+            }
+
             if($value instanceof IValueContainer) {
                 $value = $value->getValueForStorage();
             } else if($value instanceof IRecord) {
@@ -243,6 +247,10 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         $output = array_merge($this->_values, $this->_changes);
         
         foreach($output as $key => $value) {
+            if($value instanceof IPreparedValueContainer && !$value->isPrepared()) {
+                $value->prepareValue($this, $key);
+            }
+
             if($value instanceof IValueContainer) {
                 $value = $value->getValueForStorage();
             } else if($value instanceof IRecord) {
@@ -280,6 +288,10 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         
         foreach($this->_changes as $key => $value) {
             if(array_key_exists($key, $this->_values) && $value !== null) {
+                if($value instanceof IPreparedValueContainer && !$value->isPrepared()) {
+                    $value->prepareValue($this, $key);
+                }
+
                 if($value instanceof IValueContainer) {
                     $value = $value->getValueForStorage();
                 } else if($value instanceof IRecord) {
@@ -318,6 +330,10 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         
         foreach($this->_changes as $key => $value) {
             if(!array_key_exists($key, $this->_values) && $this->_changes[$key] !== null) {
+                if($value instanceof IPreparedValueContainer && !$value->isPrepared()) {
+                    $value->prepareValue($this, $key);
+                }
+
                 if($value instanceof IValueContainer) {
                     $value = $value->getValueForStorage();
                 } else if($value instanceof IRecord) {
@@ -353,6 +369,10 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         $output = array();
         
         foreach($this->_values as $key => $value) {
+            if($value instanceof IPreparedValueContainer && !$value->isPrepared()) {
+                $value->prepareValue($this, $key);
+            }
+
             if($value instanceof IValueContainer) {
                 $value = $value->getValueForStorage();
             } else if($value instanceof IRecord) {
@@ -490,9 +510,9 @@ class Base implements IRecord, \Serializable, core\IDumpable {
             if(!empty($fieldProcessors)) {
                 $temp = $row;
                 $row = array();
-                
+
                 foreach($fieldProcessors as $name => $field) {
-                    $row[$name] = $field->inflateValueFromRow($name, $temp, $this);
+                    $value = $field->inflateValueFromRow($name, $temp, $this);
                 }
             }
         }

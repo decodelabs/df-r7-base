@@ -63,9 +63,12 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
     public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
         if($forRecord) {
             $output = new axis\unit\table\record\BridgedManyRelationValueContainer($this);
+            $output->prepareToSetValue($forRecord, $this->_name);
 
             if(is_array($value)) {
                 $output->addList($value);
+            } else if($value !== null) {
+                $output->add($value);
             }
 
             return $output;
