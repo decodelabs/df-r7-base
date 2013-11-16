@@ -41,7 +41,7 @@ class OneRelationValueContainer implements
         $application = $record->getRecordAdapter()->getApplication();
         $targetUnit = axis\Model::loadUnitFromId($this->_field->getTargetUnitId(), $application);
         $query = $targetUnit->fetch();
-        
+
         foreach($this->_value->toArray() as $field => $value) {
             $query->where($field, '=', $value);
         }
@@ -98,9 +98,9 @@ class OneRelationValueContainer implements
             if($value === null) {
                 $record = null;
             }
-
-            $value = $this->_value->duplicateWith($value);
         }
+
+        $value = $this->_value->duplicateWith($value);
         
         $this->_value = $value;
         $this->_record = $record;
@@ -126,7 +126,11 @@ class OneRelationValueContainer implements
     }
     
     public function getValueForStorage() {
-        return $this->_value;
+        if($this->_record) {
+            return $this->_value->duplicateWith($this->_record->getPrimaryManifest());
+        } else {
+            return $this->_value;
+        }
     }
     
     public function getPrimaryManifest() {

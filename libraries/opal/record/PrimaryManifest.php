@@ -237,10 +237,6 @@ class PrimaryManifest implements IPrimaryManifest, core\IDumpable {
     }
 
     public function duplicateWith($values) {
-        if($values instanceof IPrimaryManifest) {
-            return $values;
-        }
-
         $output = clone $this;
         $output->updateWith($values);
         return $output;
