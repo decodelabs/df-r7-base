@@ -127,6 +127,7 @@ interface IPaginator extends core\IArrayProvider {
     public function getPage();
     public function setTotal($total);
     public function countTotal();
+    public function countTotalPages();
     public function getKeyMap();
 }
 
@@ -174,12 +175,18 @@ trait TPaginator {
         return (int)$this->_total;
     }
 
+    public function countTotalPages() {
+        $total = $this->countTotal();
+        return ceil($total / $this->getLimit());
+    }
+
     public function toArray() {
         return [
             'limit' => $this->_limit,
             'offset' => $this->_offset,
             'page' => $this->getPage(),
             'total' => $this->countTotal(),
+            'totalPages' => $this->countTotalPages(),
             'keyMap' => $this->_keyMap
         ];
     }
