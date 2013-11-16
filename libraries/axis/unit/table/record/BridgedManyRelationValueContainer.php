@@ -41,7 +41,7 @@ class BridgedManyRelationValueContainer implements
     
     public function prepareValue(opal\record\IRecord $record, $fieldName) {
         $this->_record = $record;
-        $this->_localPrimaryManifest = $record->getPrimaryManifest();
+        $this->_localPrimaryManifest->updateWith($record);
 
         return $this;
     }
@@ -78,6 +78,18 @@ class BridgedManyRelationValueContainer implements
     
     public function duplicateForChangeList() {
         return $this;
+    }
+
+    public function getNew() {
+        return $this->_new;
+    }
+
+    public function getCurrent() {
+        return $this->_current;
+    }
+
+    public function getRemoved() {
+        return $this->_remove;
     }
     
     
@@ -303,6 +315,8 @@ class BridgedManyRelationValueContainer implements
             );
         }
         
+        $this->_localPrimaryManifest->updateWith($this->_record);
+
         $localUnit = $this->_record->getRecordAdapter();
         $application = $localUnit->getApplication();
         
@@ -341,13 +355,15 @@ class BridgedManyRelationValueContainer implements
             );
         }
         
+        $this->_localPrimaryManifest->updateWith($this->_record);
+
         $localUnit = $this->_record->getRecordAdapter();
         $application = $localUnit->getApplication();
         $bridgeUnit = $this->_getBridgeUnit($application);
 
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
         $bridgeAlias = $bridgeLocalFieldName.'Bridge';
-        
+
         return opal\query\Initiator::factory($application)
             ->beginSelect(func_get_args())
             ->from($bridgeUnit, $bridgeAlias)
@@ -368,6 +384,8 @@ class BridgedManyRelationValueContainer implements
                 'Cannot lookup relations, value container has not been prepared'
             );
         }
+
+        $this->_localPrimaryManifest->updateWith($this->_record);
         
         $localUnit = $this->_record->getRecordAdapter();
         $application = $localUnit->getApplication();
@@ -400,6 +418,8 @@ class BridgedManyRelationValueContainer implements
                 'Cannot lookup relations, value container has not been prepared'
             );
         }
+
+        $this->_localPrimaryManifest->updateWith($this->_record);
         
         $localUnit = $this->_record->getRecordAdapter();
         $application = $localUnit->getApplication();
