@@ -138,6 +138,10 @@ class OneRelationValueContainer implements
     }
 
     public function getRawId() {
+        if($this->_record) {
+            return $this->_record->getPrimaryManifest()->getFirstKeyValue();
+        }
+
         if($this->_value) {
             return $this->_value->getFirstKeyValue();
         }
