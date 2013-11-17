@@ -130,16 +130,22 @@ class PrimaryManifest implements IPrimaryManifest, core\IDumpable {
                 );
             }
         }
-        
+
         foreach($fields as $field) {
+            $value = null;
+
             if(isset($values[$field])) {
                 $value = $values[$field];
+            } else if(false !== strpos($field, '_')) {
+                $parts = explode('_', $field, 2);
 
-                if($value instanceof IRecord) {
-                    $value = $value->getPrimaryManifest();
+                if(isset($values[$parts[0]])) {
+                    $value = $values[$parts[0]][$parts[1]];
                 }
-            } else {
-                $value = null;
+            }
+
+            if($value instanceof IRecord) {
+                $value = $value->getPrimaryManifest();
             }
 
             if($this->_keys[$field] instanceof self) {
