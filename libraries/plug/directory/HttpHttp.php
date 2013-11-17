@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\arch;
 use df\halo;
-use df\aura;
+use df\aura as auraLib;
 
 class HttpHttp implements arch\IDirectoryHelper {
     
@@ -103,7 +103,7 @@ class HttpHttp implements arch\IDirectoryHelper {
         return new halo\protocol\http\response\String($content, $contentType);
     }
 
-    public function ajaxResponse(aura\view\IView $view, array $extraData=array()) {
+    public function ajaxResponse(auraLib\view\IView $view, array $extraData=array()) {
         return $this->_context->http->stringResponse(
             $this->_context->data->jsonEncode(array_merge(
                 ['content' => (string)$view->getContentProvider()->setRenderTarget($view)],
