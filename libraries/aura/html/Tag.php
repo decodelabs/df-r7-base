@@ -359,8 +359,8 @@ class Tag implements ITag, core\IDumpable {
             if($value === null) {
                 $attributes[] = $key;
             } else if(is_bool($value)) {
-                if(in_array($key, self::$_booleanAttributes)) {
-                    $value = $value ? 'true' : 'false';
+                if(substr($key, 0, 5) == 'data-' || in_array($key, self::$_booleanAttributes)) {
+                    $attributes[] = $key.'="'.($value ? 'true' : 'false').'"';
                 } else {
                     if($value) {
                         $attributes[] = $key;
