@@ -34,6 +34,9 @@ interface IEntry extends core\IArrayInterchange {
 interface IEntryList extends core\IArrayInterchange, \Countable {
     public function addEntries($entries);
     public function addEntry($entry);
+    public function addLink($uri, $body, $icon=null);
+    public function addSpacer();
+    public function addMenu($delegate, $text, $icon=null);
     public function getEntry($id);
     public function getEntryByIndex($index);
     public function getLastEntry();
@@ -106,6 +109,24 @@ trait TEntryList {
         $this->_isSorted = false;
 
         return $this;
+    }
+
+    public function addLink($uri, $body, $icon=null) {
+        $entry = new arch\navigation\entry\Link($uri, $body, $icon);
+        $this->addEntry($entry);
+        return $entry;
+    }
+
+    public function addSpacer() {
+        $entry = new arch\navigation\entry\Spacer();
+        $this->addEntry($entry);
+        return $entry;
+    }
+
+    public function addMenu($delegate, $text, $icon=null) {
+        $entry = new arch\navigation\entry\Menu($delegate, $text, $icon);
+        $this->addEntry($entry);
+        return $entry;
     }
     
     public function getEntry($id) {
