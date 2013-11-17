@@ -44,4 +44,14 @@ class Aura implements arch\IDirectoryHelper {
 
         return $output;
     }
+
+    public function createAjaxResponse(auraLib\view\IView $view, array $extraData=array()) {
+        return $this->_context->http->stringResponse(
+            $this->_context->data->jsonEncode(array_merge(
+                ['content' => (string)$view->getContentProvider()->setRenderTarget($view)],
+                $extraData
+            )),
+            'application/json'
+        );
+    }
 }
