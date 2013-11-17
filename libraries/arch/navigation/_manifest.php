@@ -351,7 +351,7 @@ trait TSharedLinkComponents {
 
 // IO
     protected function _setSharedLinkComponentData(core\collection\ITree $data) {
-        $this
+        return $this
             ->setUri($data['uri'])
             ->setMatchRequest($data['matchRequest'])
             ->setNote($data['note'])
@@ -359,7 +359,7 @@ trait TSharedLinkComponents {
             ->shouldShowDescription((bool)$data->get('showDescription', true))
             ->shouldHideIfInaccessible((bool)$data->get('hideIfInaccessible', false))
             ->addAltMatches($data->altMatches->toArray())
-            ->addAccessLocks($tree->accessLocks->toArray())
+            ->addAccessLocks($data->accessLocks->toArray())
             ->shouldCheckAccess((bool)$data->get('checkAccess', true));
     }
 
