@@ -674,8 +674,8 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         $taskName = $task->getRecordTaskName();
         $funcPrefix = null;
 
-        if($when == opal\record\task\IRecordTask::EVENT_PRE) {
-            $funcPrefix = 'Pre';
+        if($when != opal\record\task\IRecordTask::EVENT_POST) {
+            $funcPrefix = ucfirst($when);
         }
 
         $func = '_on'.$funcPrefix.$taskName;

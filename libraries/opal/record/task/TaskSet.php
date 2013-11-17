@@ -250,6 +250,11 @@ class TaskSet implements ITaskSet {
                 }
                 
                 $task->resolveDependencies($this);
+
+                if($task instanceof IEventBroadcastingTask) {
+                    $task->reportExecuteEvent($this);
+                }
+                
                 $task->execute($this->_transaction);
 
                 if($task->applyResolutionToDependants()) {

@@ -224,6 +224,7 @@ trait TAdapterAwareTask {
 
 interface IEventBroadcastingTask extends ITask {
     public function reportPreEvent(ITaskSet $taskSet);
+    public function reportExecuteEvent(ITaskSet $taskSet);
     public function reportPostEvent(ITaskSet $taskSet);
 }
 
@@ -260,6 +261,7 @@ interface IDeleteKeyTask extends IDeleteTask, IKeyTask, IFilterKeyTask {}
 interface IRecordTask extends ITask, IEventBroadcastingTask {
 
     const EVENT_PRE = 'pre';
+    const EVENT_EXECUTE = 'execute';
     const EVENT_POST = 'post';
 
     public function getRecord();
@@ -280,6 +282,11 @@ trait TRecordTask {
 
     public function reportPreEvent(ITaskSet $taskSet) {
         $this->_record->triggerTaskEvent($taskSet, $this, IRecordTask::EVENT_PRE);
+        return $this;
+    }
+
+    public function reportExecuteEvent(ITaskSet $taskSet) {
+        $this->_record->triggerTaskEvent($taskSet, $this, IRecordTask::EVENT_EXECUTE);
         return $this;
     }
 
