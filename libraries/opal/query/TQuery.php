@@ -205,10 +205,22 @@ trait TQuery_Correlatable {
     }
 
     public function countRelation($field, $alias=null) {
-        return $this->beginCountRelation($field, $alias)->endCorrelation();
+        return $this->_beginRelationCorrelation($field, $alias, 'COUNT')->endCorrelation();
     }
 
     public function beginCountRelation($field, $alias=null) {
+        return $this->_beginRelationCorrelation($field, $alias, 'COUNT');
+    }
+
+    public function hasRelation($field, $alias=null) {
+        return $this->_beginRelationCorrelation($field, $alias, 'HAS')->endCorrelation();
+    }
+
+    public function beginHasRelation($field, $alias=null) {
+        return $this->_beginRelationCorrelation($field, $alias, 'HAS');
+    }
+
+    protected function _beginRelationCorrelation($field, $alias, $aggregateType) {
         if($alias === null) {
             $alias = $field;
         }
@@ -221,7 +233,7 @@ trait TQuery_Correlatable {
             );
         }
 
-        return $sourceAdapter->rewriteCountRelationCorrelation($this, $field, $alias);
+        return $sourceAdapter->rewriteRelationCorrelation($this, $field, $alias, $aggregateType);
     }
 
     public function addCorrelation(ICorrelationQuery $correlation) {

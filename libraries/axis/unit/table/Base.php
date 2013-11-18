@@ -367,7 +367,7 @@ abstract class Base implements
     }
 
 
-    public function rewriteCountRelationCorrelation(opal\query\ICorrelatableQuery $query, $fieldName, $alias) {
+    public function rewriteRelationCorrelation(opal\query\ICorrelatableQuery $query, $fieldName, $alias, $aggregateType) {
         $schema = $this->getTransientUnitSchema();
         $field = $schema->getField($fieldName);
 
@@ -379,26 +379,26 @@ abstract class Base implements
 
         $application = $query->getSourceManager()->getApplication();
         $fieldName = $field->getName();
+        $fieldAlias = $alias ? $alias : $fieldName;
 
         if($field instanceof axis\schema\IBridgedRelationField) {
             // Field is bridged
-            
-            $bridgeAlias = $fieldName.'Bridge';
+            $bridgeAlias = $fieldAlias.'Bridge';
             $localAlias = $query->getSource()->getAlias();
             $localName = $field->getBridgeLocalFieldName();
             $targetName = $field->getBridgeTargetFieldName();
 
-            $correlation = $query->correlate('COUNT('.$bridgeAlias.'.'.$targetName.')', $alias)
+            $correlation = $query->correlate($aggregateType.'('.$bridgeAlias.'.'.$targetName.')', $alias)
                 ->from($this->getBridgeUnit($fieldName), $bridgeAlias)
                 ->on($bridgeAlias.'.'.$localName, '=', $localAlias.'.@primary');
         } else {
             // Field is OneToMany
             $targetUnit = $field->getTargetUnit($application);
-            $targetAlias = $fieldName.'Count';
+            $targetAlias = $fieldAlias;
             $targetFieldName = $field->getTargetField();
             $localAlias = $query->getSource()->getAlias();
 
-            $correlation = $query->correlate('COUNT('.$targetAlias.'.@primary)', $alias)
+            $correlation = $query->correlate($aggregateType.'('.$targetAlias.'.@primary)', $alias)
                 ->from($targetUnit, $targetAlias)
                 ->on($targetAlias.'.'.$targetFieldName, '=', $localAlias.'.@primary');
         }

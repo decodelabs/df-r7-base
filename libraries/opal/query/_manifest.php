@@ -181,6 +181,9 @@ interface IDistinctQuery extends IQuery {
 interface ICorrelatableQuery extends IQuery {
     public function correlate($field, $alias=null);
     public function countRelation($field, $alias=null);
+    public function beginCountRelation($field, $alias=null);
+    public function hasRelation($field, $alias=null);
+    public function beginHasRelation($field, $alias=null);
     public function addCorrelation(ICorrelationQuery $correlation);
     public function getCorrelations();
 }
@@ -548,7 +551,7 @@ interface IIntegralAdapter extends IAdapter {
     public function prepareQueryClauseValue(IField $field, $value);
     public function rewriteVirtualQueryClause(IClauseFactory $parent, IVirtualField $field, $operator, $value, $isOr=false);
 
-    public function rewriteCountRelationCorrelation(ICorrelatableQuery $query, $field, $alias);
+    public function rewriteRelationCorrelation(ICorrelatableQuery $query, $field, $alias, $aggregateType);
     
     public function getQueryResultValueProcessors(array $fields=null);
     public function deflateInsertValues(array $row);
