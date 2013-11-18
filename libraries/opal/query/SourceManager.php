@@ -227,7 +227,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
             
         $passedSourceAlias = $source->getAlias();
             
-        if(preg_match('/^([a-zA-Z_]+)\((.+)\)$/', $name, $matches)) {
+        if(preg_match('/^([a-zA-Z_]+)\((distinct )?(.+)\)$/i', $name, $matches)) {
             if(!$allowAggregate) {
                 throw new InvalidArgumentException(
                     'Aggregate field reference "'.$name.'" found when intrinsic field expected'
@@ -243,7 +243,8 @@ class SourceManager implements ISourceManager, core\IDumpable {
             
             // aggregate
             $type = $matches[1];
-            $targetField = $this->extrapolateField($source, $matches[2]);
+            $distinct = !empty($matches[2]);
+            $targetField = $this->extrapolateField($source, $matches[3]);
             
             if($checkAlias === true && $passedSourceAlias !== $targetField->getSourceAlias()) {
                 throw new InvalidArgumentException(
@@ -264,6 +265,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
             }
             
             $field = new opal\query\field\Aggregate($source, $type, $targetField, $alias);
+            $field->isDistinct($distinct);
             
             if($isOutput) {
                 $source->addOutputField($field);

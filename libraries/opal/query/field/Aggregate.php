@@ -23,6 +23,7 @@ class Aggregate implements opal\query\IAggregateField, core\IDumpable {
     protected $_type;
     protected $_alias;
     protected $_targetField;
+    protected $_isDistinct = false;
     protected $_source;
     
     public static function typeIdToName($id) {
@@ -121,11 +122,11 @@ class Aggregate implements opal\query\IAggregateField, core\IDumpable {
     }
     
     public function getName() {
-        return $this->getTypeName().'('.$this->_targetField->getName().')';
+        return $this->getTypeName().'('.($this->_isDistinct ? 'distinct ' : '').$this->_targetField->getName().')';
     }
     
     public function getQualifiedName() {
-        return $this->getTypeName().'('.$this->_targetField->getQualifiedName().')';
+        return $this->getTypeName().'('.($this->_isDistinct ? 'distinct ' : '').$this->_targetField->getQualifiedName().')';
     }
     
     public function getAlias() {
@@ -138,6 +139,15 @@ class Aggregate implements opal\query\IAggregateField, core\IDumpable {
     
     public function hasDiscreetAlias() {
         return $this->_alias !== $this->getName();
+    }
+
+    public function isDistinct($flag=null) {
+        if($flag !== null) {
+            $this->_isDistinct = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_isDistinct;
     }
     
     public function dereference() {

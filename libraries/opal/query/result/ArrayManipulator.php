@@ -420,14 +420,20 @@ class ArrayManipulator implements IArrayManipulator {
         $this->normalizeRows();
         $fields = $this->_outputManifest->getAllFields();
         $aggregateFields = $this->_outputManifest->getAggregateFields();
+        $aggregateFieldMap = [];
+
+        foreach($aggregateFields as $alias => $field) {
+            $aggregateFieldMap[$alias] = $field->getQualifiedName();
+        }
+
         
         // init aggregates
         foreach($this->_rows as &$row) {
             foreach($aggregateFields as $alias => $field) {
-                $fieldName = $field->getTargetField()->getQualifiedName();
+                $qName = $aggregateFieldMap[$alias];
                 
-                if(isset($row[$fieldName])) {
-                    $row[$qName] = $row[$fieldName];
+                if(isset($row[$qName])) {
+                    $row[$qName] = $row[$qName];
                 } else {
                     $row[$qName] = null;
                 }
@@ -474,37 +480,42 @@ class ArrayManipulator implements IArrayManipulator {
                 $aggregateData = array();
                 
                 foreach($group as $groupRow) {
-                    foreach($aggregateFields as $alias => $qName) {
+                    foreach($aggregateFieldMap as $alias => $qName) {
                         $aggregateData[$qName][] = $groupRow[$qName];
                     }
                 }
                 
-                foreach($aggregateFields as $alias => $qName) {
+                foreach($aggregateFieldMap as $alias => $qName) {
                     $field = $fields[$alias];
+                    $rowAggregateData = $aggregateData[$qName];
+
+                    if($aggregateFields[$alias]->isDistinct()) {
+                        $rowAggregateData = array_unique($rowAggregateData);
+                    }
                         
                     switch($field->getType()) {
                         case opal\query\field\Aggregate::TYPE_COUNT:
-                            $row[$qName] = count($aggregateData[$qName]);
+                            $row[$qName] = count($rowAggregateData);
                             break;
                             
                         case opal\query\field\Aggregate::TYPE_SUM:
-                            $row[$qName] = array_sum($aggregateData[$qName]);
+                            $row[$qName] = array_sum($rowAggregateData);
                             break;
                         
                         case opal\query\field\Aggregate::TYPE_AVG:
-                            $row[$qName] = array_sum($aggregateData[$qName]) / count($aggregateData[$qName]);
+                            $row[$qName] = array_sum($rowAggregateData) / count($rowAggregateData);
                             break;
                             
                         case opal\query\field\Aggregate::TYPE_MIN:
-                            $row[$qName] = min($aggregateData[$qName]);
+                            $row[$qName] = min($rowAggregateData);
                             break;
                             
                         case opal\query\field\Aggregate::TYPE_MAX:
-                            $row[$qName] = max($aggregateData[$qName]);
+                            $row[$qName] = max($rowAggregateData);
                             break;
 
                         case opal\query\field\Aggregate::TYPE_HAS:
-                            $row[$qName] = !empty($aggregateData[$qName]);
+                            $row[$qName] = !empty($rowAggregateData);
                             break;
                     }
                 }

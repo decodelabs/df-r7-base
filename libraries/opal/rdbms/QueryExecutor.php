@@ -793,6 +793,10 @@ abstract class QueryExecutor implements IQueryExecutor {
             } else {
                 $targetFieldString = $this->defineField($field->getTargetField(), false);
             }
+
+            if($field->isDistinct()) {
+                $targetFieldString = 'DISTINCT '.$targetFieldString;
+            }
             
             switch($field->getType()) {
                 case opal\query\field\Aggregate::TYPE_HAS:
