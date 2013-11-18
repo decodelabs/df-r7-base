@@ -22,9 +22,15 @@ class Scripts extends Base implements IScriptsModule, core\i18n\module\generator
         return $id;
     }
     
-    public function getList() {
+    public function getList(array $ids=null) {
         $this->_loadData();
-        return $this->_data;
+        $output = $this->_data;
+
+        if($ids !== null) {
+            $output = array_intersect_key($output, array_flip(array_values($ids)));
+        }
+
+        return $output;
     }
     
     public function isValidId($id) {

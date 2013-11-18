@@ -20,7 +20,7 @@ interface IModule {
 
 interface IListModule extends IModule {
     public function getName($id);
-    public function getList();
+    public function getList(array $ids=null);
     public function isValidId($id);
 }
 

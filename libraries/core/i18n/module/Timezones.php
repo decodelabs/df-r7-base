@@ -64,11 +64,15 @@ class Timezones extends Base implements ITimezonesModule {
         }
     }
     
-    public function getList() {
+    public function getList(array $ids=null) {
         $output = array();
         
         foreach($this->getContinentList() as $key => $val) {
             $output = array_merge($output, $val);
+        }
+
+        if($ids !== null) {
+            $output = array_intersect_key($output, array_flip(array_values($ids)));
         }
         
         return $output;

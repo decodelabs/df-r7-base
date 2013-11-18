@@ -34,11 +34,15 @@ class Languages extends Base implements ILanguagesModule, core\i18n\module\gener
         return $id;
     }
     
-    public function getList() {
+    public function getList(array $ids=null) {
         $this->_loadData();
         $output = array();
         
         foreach($this->_data as $key => $name) {
+            if($ids !== null && !in_array($key, $ids)) {
+                continue;
+            }
+
             if(strlen($key) == 2) {
                 $output[$key] = $name;    
             }    
