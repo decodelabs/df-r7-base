@@ -698,6 +698,7 @@ interface IAggregateField extends IField {
     public function getTypeName();
     public function getTargetField();
     public function normalizeOutputValue($value);
+    public function isDistinct($flag=null);
 }
 
 interface IAttachmentField extends IField {}
