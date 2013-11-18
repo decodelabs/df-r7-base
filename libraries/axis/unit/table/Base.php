@@ -388,10 +388,9 @@ abstract class Base implements
             $localName = $field->getBridgeLocalFieldName();
             $targetName = $field->getBridgeTargetFieldName();
 
-            $query->correlate('COUNT('.$bridgeAlias.'.'.$targetName.')', $alias)
+            $correlation = $query->correlate('COUNT('.$bridgeAlias.'.'.$targetName.')', $alias)
                 ->from($this->getBridgeUnit($fieldName), $bridgeAlias)
-                ->on($bridgeAlias.'.'.$localName, '=', $localAlias.'.@primary')
-                ->endCorrelation();
+                ->on($bridgeAlias.'.'.$localName, '=', $localAlias.'.@primary');
         } else {
             // Field is OneToMany
             $targetUnit = $field->getTargetUnit($application);
@@ -399,13 +398,13 @@ abstract class Base implements
             $targetFieldName = $field->getTargetField();
             $localAlias = $query->getSource()->getAlias();
 
-            $query->correlate('COUNT('.$targetAlias.'.@primary)', $alias)
+            $correlation = $query->correlate('COUNT('.$targetAlias.'.@primary)', $alias)
                 ->from($targetUnit, $targetAlias)
-                ->on($targetAlias.'.'.$targetFieldName, '=', $localAlias.'.@primary')
-                ->endCorrelation();
+                ->on($targetAlias.'.'.$targetFieldName, '=', $localAlias.'.@primary');
         }
 
-        return $this;
+        $correlation->endCorrelation();
+        return $correlation;
     }
 
 

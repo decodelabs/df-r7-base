@@ -205,6 +205,10 @@ trait TQuery_Correlatable {
     }
 
     public function countRelation($field, $alias=null) {
+        return $this->beginCountRelation($field, $alias)->endCorrelation();
+    }
+
+    public function beginCountRelation($field, $alias=null) {
         if($alias === null) {
             $alias = $field;
         }
@@ -217,9 +221,7 @@ trait TQuery_Correlatable {
             );
         }
 
-        $sourceAdapter->rewriteCountRelationCorrelation($this, $field, $alias);
-
-        return $this;
+        return $sourceAdapter->rewriteCountRelationCorrelation($this, $field, $alias);
     }
 
     public function addCorrelation(ICorrelationQuery $correlation) {
