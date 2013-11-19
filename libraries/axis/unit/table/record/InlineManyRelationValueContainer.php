@@ -456,18 +456,26 @@ class InlineManyRelationValueContainer implements
         $application = $localUnit->getApplication();
         $targetUnit = $this->_getTargetUnit($application);
         $targetField = $this->_field->getTargetField();
+        $targetSchema = $targetUnit->getUnitSchema();
         $parentManifest = $parentRecord->getPrimaryManifest();
         $values = array();
-        
+
         foreach($parentManifest->toArray() as $key => $value) {
             $values[$targetField.'_'.$key] = $value;
         }
         
         $inverseManifest = new opal\record\PrimaryManifest(array_keys($values), $values);
-        
-        $targetRecordTask = new opal\record\task\UpdateRaw(
-            $targetUnit, $inverseManifest, $inverseManifest->duplicateWith(null)->toArray()
-        );
+        $primaryIndex = $targetSchema->getPrimaryIndex();
+
+        if($primaryIndex->hasField($targetSchema->getField($targetField))) {
+            $targetRecordTask = new opal\record\task\DeleteKey(
+                $targetUnit, $values
+            );
+        } else {
+            $targetRecordTask = new opal\record\task\UpdateRaw(
+                $targetUnit, $inverseManifest, $inverseManifest->duplicateWith(null)->toArray()
+            );
+        }
 
         if(!$taskSet->hasTask($targetRecordTask)) {  
             $taskSet->addTask($targetRecordTask);
