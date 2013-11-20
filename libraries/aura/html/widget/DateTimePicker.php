@@ -26,7 +26,14 @@ class DateTimePicker extends DatePicker {
     }
 
     protected function _stringToDate($date) {
-        return core\time\Date::factory((string)$date, true)->toUtc();
+        if($this->_outputFormat != 'Y-m-d\TH:i') {
+            $output = core\time\Date::fromFormatString((string)$date, $this->_outputFormat, true);
+        } else {
+            $output = core\time\Date::factory((string)$date, true);
+        }
+
+        $output->toUtc();
+        return $output;
     }
     
     protected function _dateToString(core\time\IDate $date) {

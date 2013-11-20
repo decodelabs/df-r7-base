@@ -50,6 +50,14 @@ class TimePicker extends DatePicker {
     protected function _stringToDate($date) {
         return core\time\Date::factory((string)$date, true);
     }
+
+    protected function _stringToDate($date) {
+        if($this->_outputFormat != 'h:i') {
+            return core\time\Date::fromFormatString((string)$date, $this->_outputFormat, true);
+        } else {
+            return core\time\Date::factory((string)$date, true);
+        }
+    }
     
     protected function _dateToString(core\time\IDate $date) {
         return $date->format($this->_outputFormat);
