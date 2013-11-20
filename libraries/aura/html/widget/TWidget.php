@@ -914,7 +914,7 @@ trait TWidget_DispositionAware {
 
             case 'neutral':
             default:
-                $disposition = null;
+                $disposition = 'neutral';
                 break;
         }
 
@@ -923,6 +923,10 @@ trait TWidget_DispositionAware {
     }
 
     public function getDisposition() {
+        if($this->_disposition == 'neutral') {
+            return null;
+        }
+
         return $this->_disposition;
     }
 }
@@ -936,7 +940,7 @@ trait TWidget_IconProvider {
     public function setIcon($icon) {
         $this->_icon = $icon;
 
-        if($this instanceof IDispositionAwareWidget && !$this->_disposition) {
+        if($this instanceof IDispositionAwareWidget && $this->_disposition === null) {
             switch($icon) {
                 // positive
                 case 'add':
