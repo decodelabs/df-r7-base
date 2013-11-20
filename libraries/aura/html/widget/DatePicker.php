@@ -107,9 +107,9 @@ class DatePicker extends NumberTextbox implements IDateWidget {
     
     protected function _stringToDate($date) {
         if($this->_outputFormat != 'Y-m-d') {
-            return core\time\Date::fromFormatString($date, $this->_outputFormat);
+            return core\time\Date::fromFormatString((string)$date, $this->_outputFormat);
         } else {
-            return core\time\Date::factory($date);
+            return core\time\Date::factory((string)$date);
         }
     }
     

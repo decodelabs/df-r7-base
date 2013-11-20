@@ -104,6 +104,7 @@ class Date extends Base implements core\validate\IDateField {
             return $value;
         }
 
+
         $date = $this->_sanitizeValue($date);
         $this->_validateRange($node, $date);
 
@@ -118,7 +119,11 @@ class Date extends Base implements core\validate\IDateField {
         $value = $this->_applyCustomValidator($node, $date);
         
         if($this->_shouldSanitize) {
-            $node->setValue($value->toString(core\time\Date::W3C));
+            if($this->_expectedFormat) {
+                $node->setValue($value->format($this->_expectedFormat));
+            } else {
+                $node->setValue($value->format(core\time\Date::W3C));
+            }
         }
         
         return $value;
