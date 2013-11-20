@@ -157,7 +157,7 @@ abstract class Action extends arch\Action implements IAction {
         
         $this->_isRenderingInline = true;
         $method = self::getActionMethodName($this, $this->context);
-        call_user_method($method, $this);
+        call_user_method_array($method, $this, []);
         $this->_isRenderingInline = false;
 
         return $this->content;
