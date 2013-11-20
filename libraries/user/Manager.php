@@ -309,13 +309,20 @@ class Manager implements IManager, core\IDumpable {
     }
 
     public function refreshClientData() {
+        $client = $this->getClient();
+
         if($this->isLoggedIn()) {
             $model = $this->getUserModel();
-            $data = $model->getClientData($this->getClient()->getId());
-            $this->importClientData($data);
+            $data = $model->getClientData($client->getId());
+            $client->import($data);
+            $this->_ensureClientOptions($client);
         }
 
         $this->regenerateKeyring();
+
+        $session = $this->session->getNamespace(self::USER_SESSION_NAMESPACE);
+        $session->set(self::CLIENT_SESSION_KEY, $client);
+
         return $this;
     }
 
