@@ -13,7 +13,17 @@ use df\arch;
 class TimePicker extends DatePicker {
     
     const INPUT_TYPE = 'time';
-    const DEFAULT_PLACEHOLDER = 'hh:mm';
+
+    protected $_outputFormat = 'h:i';
+    protected $_placeholder = 'hh:mm';
+
+    protected function _getInputType() {
+        if($this->_outputFormat != 'hh:mm') {
+            return 'text';
+        } else {
+            return 'time';
+        }
+    }
     
     protected function _normalizeDateString($date) {
         if($date instanceof core\time\IDate) {
@@ -42,6 +52,6 @@ class TimePicker extends DatePicker {
     }
     
     protected function _dateToString(core\time\IDate $date) {
-        return $date->format('h:i');
+        return $date->format($this->_outputFormat);
     }
 }

@@ -13,14 +13,35 @@ use df\arch;
 class DatePicker extends NumberTextbox implements IDateWidget {
     
     const INPUT_TYPE = 'date';
-    const DEFAULT_PLACEHOLDER = 'yyyy-MM-dd';
+
+    protected $_outputFormat = 'Y-m-d';
+    protected $_placeholder = 'yyyy-MM-dd';
     
+    public function __construct(arch\IContext $context, $name, $value=null, $outputFormat=null) {
+        if($outputFormat !== null) {
+            $this->_outputFormat = $outputFormat;
+        }
+
+        parent::__construct($context, $name, $value);
+    }
+
     protected function _render() {
-        if(static::DEFAULT_PLACEHOLDER !== null) {
-            $this->getTag()->setAttribute('placeholder', static::DEFAULT_PLACEHOLDER);
+        $tag = $this->getTag();
+        $tag->setAttribute('type', $this->_getInputType());
+
+        if($this->_placeholder !== null) {
+            $tag->setAttribute('placeholder', $this->_placeholder);
         }
         
         return parent::_render();
+    }
+
+    protected function _getInputType() {
+        if($this->_outputFormat != 'Y-m-d') {
+            return 'text';
+        } else {
+            return 'date';
+        }
     }
     
     public function setValue($value) {
@@ -43,7 +64,7 @@ class DatePicker extends NumberTextbox implements IDateWidget {
         } else {
             $value = $innerValue;
         }
-        
+
         return parent::setValue($value);
     }
     
@@ -55,6 +76,19 @@ class DatePicker extends NumberTextbox implements IDateWidget {
         return parent::setMax($this->_normalizeDateString($max));
     }
     
+    public function getOutputFormat() {
+        return $this->_outputFormat;
+    }
+
+    public function setPlaceholder($placeholder) {
+        $this->_placeholder = $placeholder;
+        return $this;
+    }
+    
+    public function getPlaceholder() {
+        return $this->_placeholder;
+    }
+
     protected function _normalizeDateString($date) {
         if(!$date instanceof core\time\IDate) {
             try {
@@ -76,6 +110,6 @@ class DatePicker extends NumberTextbox implements IDateWidget {
     }
     
     protected function _dateToString(core\time\IDate $date) {
-        return $date->format('Y-m-d');
+        return $date->format($this->_outputFormat);
     }
 }

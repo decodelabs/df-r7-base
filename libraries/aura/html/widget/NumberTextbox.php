@@ -30,7 +30,7 @@ class NumberTextbox extends Base implements IRangeEntryWidget, core\IDumpable {
     
     protected function _render() {
         $tag = $this->getTag();
-        $tag->setAttribute('type', static::INPUT_TYPE);
+        $tag->setAttribute('type', $this->_getInputType());
         
         $this->_applyFormDataAttributes($tag);
         $this->_applyInputAttributes($tag);
@@ -40,6 +40,10 @@ class NumberTextbox extends Base implements IRangeEntryWidget, core\IDumpable {
         $this->_applyRangeEntryAttributes($tag);
         
         return $tag;
+    }
+
+    protected function _getInputType() {
+        return static::INPUT_TYPE;
     }
     
     

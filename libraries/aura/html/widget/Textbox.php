@@ -39,7 +39,7 @@ class Textbox extends Base implements ITextboxWidget, core\IDumpable {
     
     protected function _render() {
         $tag = $this->getTag();
-        $tag->setAttribute('type', static::INPUT_TYPE);
+        $tag->setAttribute('type', $this->_getInputType());
         $tag->addClass('widget-textbox');
         
         $this->_applyFormDataAttributes($tag);
@@ -60,6 +60,11 @@ class Textbox extends Base implements ITextboxWidget, core\IDumpable {
         
         return $tag;
     }
+
+    protected function _getInputType() {
+        return static::INPUT_TYPE;
+    }
+
     
 // Pattern
     public function setPattern($pattern) {
