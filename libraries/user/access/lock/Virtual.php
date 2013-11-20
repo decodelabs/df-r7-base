@@ -36,6 +36,6 @@ class Virtual implements user\IAccessLock {
     }
 
     public function getAccessLockId() {
-        return 'virtual://'.$this->_value;
+        return $this->_value;
     }
 }
