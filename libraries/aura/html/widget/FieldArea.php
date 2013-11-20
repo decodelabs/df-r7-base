@@ -40,23 +40,7 @@ class FieldArea extends Container implements IFormOrientedWidget {
             $errors = $this->_errorContainer->getErrors();
         }
         
-        foreach($this->_children as $child) {
-            if($child instanceof IInputWidget) {
-                if(!$primaryWidget) {
-                    $primaryWidget = $child;
-                }
-                
-                if(!$isRequired) {
-                    $isRequired = $child->isRequired();
-                }
-                
-                $value = $child->getValue();
-                
-                if($value->hasErrors()) {
-                    $errors = array_merge($errors, $value->getErrors());
-                }
-            }
-        }
+        $this->_walkChildren($this->_children->toArray(), $errors, $isRequired, $primaryWidget);
         
         if($primaryWidget instanceof IFocusableInputWidget) {
             $inputId = $primaryWidget->getId();
@@ -100,6 +84,28 @@ class FieldArea extends Container implements IFormOrientedWidget {
         }
         
         return $tag->renderWith($output, true);
+    }
+
+    protected function _walkChildren(array $children, &$errors, &$isRequired, &$primaryWidget) {
+        foreach($children as $child) {
+            if($child instanceof IInputWidget) {
+                if(!$primaryWidget) {
+                    $primaryWidget = $child;
+                }
+                
+                if(!$isRequired) {
+                    $isRequired = $child->isRequired();
+                }
+                
+                $value = $child->getValue();
+                
+                if($value->hasErrors()) {
+                    $errors = array_merge($errors, $value->getErrors());
+                }
+            } else if($child instanceof aura\html\IElement) {
+                $this->_walkChildren($child->toArray(), $errors, $isRequired, $primaryWidget);
+            }
+        }
     }
 
     public function renderInputArea() {
