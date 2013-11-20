@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\user;
 use df\axis;
+use df\arch;
 
 class Manager implements IManager, core\IDumpable {
     
@@ -111,6 +112,8 @@ class Manager implements IManager, core\IDumpable {
                 ->setAccessLockDomain('*');
         } else if(substr($lock, 0, 10) == 'virtual://') {
             $lock = new user\access\lock\Virtual(substr($lock, 10));
+        } else if(substr($lock, 0, 12) == 'directory://') {
+            $lock = new arch\Request($lock);
         } else {
             try {
                 $parts = explode('#', $lock);
