@@ -377,6 +377,8 @@ interface IDateField extends IField, IRangeField, ISanitizingField {
     public function shouldDefaultToNow($flag=null);
     public function mustBePast($flag=null);
     public function mustBeFuture($flag=null);
+    public function setExpectedFormat($format);
+    public function getExpectedFormat();
 }
 
 interface IDurationField extends IField, IRangeField {

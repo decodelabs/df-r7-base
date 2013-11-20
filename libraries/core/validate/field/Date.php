@@ -16,6 +16,7 @@ class Date extends Base implements core\validate\IDateField {
     protected $_defaultToNow = false;
     protected $_mustBePast = false;
     protected $_mustBeFuture = false;
+    protected $_expectedFormat = null;
     
     public function setMin($date) {
         if($date !== null) {
@@ -72,6 +73,15 @@ class Date extends Base implements core\validate\IDateField {
         return $this->_mustBeFuture;
     }
 
+    public function setExpectedFormat($format) {
+        $this->_expectedFormat = $format;
+        return $this;
+    }
+
+    public function getExpectedFormat() {
+        return $this->_expectedFormat;
+    }
+
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
         
@@ -83,7 +93,17 @@ class Date extends Base implements core\validate\IDateField {
             }
         }
         
-        $date = core\time\Date::factory($value);
+        try {
+            if($this->_expectedFormat) {
+                $date = core\time\Date::fromFormatString($value, $this->_expectedFormat);
+            } else {
+                $date = core\time\Date::factory($value);
+            }
+        } catch(\Exception $e) {
+            $node->addError('invalid', $this->_handler->_('This is not a valid date'));
+            return $value;
+        }
+
         $date = $this->_sanitizeValue($date);
         $this->_validateRange($node, $date);
 

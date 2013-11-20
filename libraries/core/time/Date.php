@@ -49,6 +49,18 @@ class Date implements IDate, core\IDumpable {
         
         return new self($formatter->parse($string), $timezone);
     }
+
+    public static function fromFormatString($date, $format, $timezone=true, $locale=null) {
+        if($date instanceof IDate) {
+            return $date;
+        }
+
+        $timezone = self::_normalizeTimezone($timezone);
+        $locale = (string)core\i18n\Locale::factory($locale);
+
+        $date = \DateTime::createFromFormat($format, $date, $timezone);
+        return new self($date);
+    }
     
     public static function factory($date, $timezone=null) {
         if($date instanceof IDuration) {
@@ -88,6 +100,9 @@ class Date implements IDate, core\IDumpable {
     public function __construct($date=null, $timezone=null) {
         if($date instanceof self) {
             $this->_date = clone $date->_date;
+            return;
+        } else if($date instanceof \DateTime) {
+            $this->_date = $date;
             return;
         }
         
