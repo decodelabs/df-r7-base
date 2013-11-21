@@ -85,6 +85,10 @@ class Action implements IAction, core\IDumpable {
         if(!$this->_isInline) {
             if(static::CHECK_ACCESS) {
                 $client = $this->_context->getUserManager()->getClient();
+
+                if($client->isDeactivated()) {
+                    $this->throwError(403, 'Client deactivated');
+                }
                 
                 if(!$client->canAccess($this)) {
                     $this->throwError(401, 'Insufficient permissions');
@@ -120,6 +124,10 @@ class Action implements IAction, core\IDumpable {
             if($func = $this->getControllerMethodName($controller, $this->_context)) {
                 if($controller::CHECK_ACCESS) {
                     $client = $this->_context->getUserManager()->getClient();
+
+                    if($client->isDeactivated()) {
+                        $this->throwError(403, 'Client deactivated');
+                    }
                 
                     if(!$client->canAccess($this)) {
                         $this->throwError(401, 'Insufficient permissions');
