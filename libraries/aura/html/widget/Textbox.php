@@ -26,7 +26,7 @@ class Textbox extends Base implements ITextboxWidget, core\IDumpable {
     const DEFAULT_PLACEHOLDER = null;
     
     protected $_pattern;
-    protected $_formEvent = 'default';
+    protected $_formEvent;
     
     public function __construct(arch\IContext $context, $name, $value=null) {
         $this->setName($name);
