@@ -269,14 +269,14 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         return $this->_view->esc($value);
     }
     
-    public function escAttribute($name, $default=null) {
+    public function escArg($name, $default=null) {
         if(!$this->_view) {
             throw new aura\view\RuntimeException(
                 'This template is not currently rendering'
             );
         }
         
-        return $this->_view->esc($this->getAttribute($name, $default));
+        return $this->_view->esc($this->getArg($name, $default));
     }
     
 

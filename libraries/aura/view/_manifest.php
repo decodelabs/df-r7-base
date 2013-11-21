@@ -380,7 +380,7 @@ interface ITemplate extends IContentProvider, \ArrayAccess, IRenderTarget, core\
 
     // Escaping
     public function esc($value, $default=null);
-    public function escAttribute($name, $default=null);
+    public function escArg($name, $default=null);
     
     // Helpers
     public function __get($member);
