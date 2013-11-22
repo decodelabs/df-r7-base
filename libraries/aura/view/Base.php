@@ -122,13 +122,13 @@ class Base implements IView {
     public function render() {
         $this->_checkContentProvider();
         
-        if($this instanceof IThemedView) {
-            $this->getTheme()->renderTo($this);
-        }
-        
         $this->_beforeRender();
         $innerContent = $this->getContentProvider()->renderTo($this);
         
+        if($this instanceof IThemedView) {
+            $this->getTheme()->renderTo($this);
+        }
+
         if($this instanceof ILayoutView && $this->shouldUseLayout()) {
             try {
                 $layout = aura\view\content\Template::loadLayout($this, $innerContent);

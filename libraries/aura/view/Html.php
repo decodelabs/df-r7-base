@@ -665,10 +665,6 @@ class Html extends Base implements IHtmlView {
     }
 
     protected function _beforeRender() {
-        if(empty($this->_title) && empty($this->_titlePrefix) && empty($this->_titleSuffix)) {
-            $this->setTitle(static::DEFAULT_TITLE);
-        }
-        
         if(!$this->_context->request->isArea('front')) {
             $this->canIndex(false)->canFollow(false);
         }
@@ -680,6 +676,10 @@ class Html extends Base implements IHtmlView {
     
     public function render() {
         $output = parent::render();
+
+        if(empty($this->_title) && empty($this->_titlePrefix) && empty($this->_titleSuffix)) {
+            $this->setTitle(static::DEFAULT_TITLE);
+        }
         
         if($this->_shouldRenderBase) {
             $output = 

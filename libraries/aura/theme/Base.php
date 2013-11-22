@@ -21,7 +21,7 @@ class Base implements ITheme {
         } else if($id instanceof arch\IContext) {
             $context = $id;
             $config = Config::getInstance($context->getApplication());
-            $id = $config->getThemeIdFor($context->request->getArea());
+            $id = $config->getThemeIdFor($context->location->getArea());
         }
         
         $id = lcfirst($id);
