@@ -11,7 +11,7 @@ use df\aura;
 use df\arch;
 use df\flow;
 
-class Notification extends Base {
+class Notification extends Base implements INotificationProxyView {
 
     protected $_subject;
 
@@ -33,7 +33,8 @@ class Notification extends Base {
         }
 
         $manager = flow\Manager::getInstance($this->application);
-        return $manager->newNotification($subject, $content, $to, $from);
+        return $manager->newNotification($subject, $content, $to, $from)
+            ->setBodyType(flow\INotification::SIMPLE_TAGS);
     }
 
     public function toHtml() {

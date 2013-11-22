@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\aura;
 use df\arch;
+use df\flow;
 
 class Html extends Base implements IHtmlView {
     
@@ -639,6 +640,20 @@ class Html extends Base implements IHtmlView {
         return 'text/html; charset=utf-8';
     }
     
+// Notification
+    public function toNotification($to=null, $from=null) {
+        $content = $this->render();
+        $subject = $this->getTitle();
+
+        if(empty($subject)) {
+            $subject = $this->_('Notification from %a%', ['%a%' => $this->_context->application->getName()]);
+        }
+
+        $manager = flow\Manager::getInstance($this->_context->application);
+        return $manager->newNotification($subject, $content, $to, $from)
+            ->setBodyType(flow\INotification::HTML);
+    }
+
 // Rendering
     public function shouldRenderBase($flag=null) {
         if($flag !== null) {

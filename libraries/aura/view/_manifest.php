@@ -224,8 +224,11 @@ interface ILayoutMap {
     public function mapLayout(ILayoutView $view);
 }
 
+interface INotificationProxyView extends IView {
+    public function toNotification($to=null, $from=null);
+}
 
-interface IHtmlView extends IResponseView, ILayoutView {
+interface IHtmlView extends IResponseView, ILayoutView, INotificationProxyView {
     public function getHtmlTag();
     public function getBodyTag();
     

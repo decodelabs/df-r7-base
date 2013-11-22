@@ -14,6 +14,7 @@ class Notification implements INotification {
 
     protected $_subject;
     protected $_body;
+    protected $_bodyType = INotification::SIMPLE_TAGS;
     protected $_toEmails = array();
     protected $_toUsers = array();
     protected $_from;
@@ -52,6 +53,25 @@ class Notification implements INotification {
 
     public function getBody() {
         return $this->_body;
+    }
+
+    public function setBodyType($type) {
+        switch($type) {
+            case INotification::SIMPLE_TAGS:
+            case INotification::HTML:
+                $this->_bodyType = $type;
+                break;
+
+            default:
+                $this->_bodyType = INotification::SIMPLE_TAGS;
+                break;
+        }
+
+        return $this;
+    }
+
+    public function getBodyType() {
+        return $this->_bodyType;
     }
 
 

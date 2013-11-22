@@ -68,11 +68,19 @@ class Manager implements IManager {
             return $this;
         }
 
-        $parser = new flex\simpleTags\Parser($notification->getBody());
-
         $mail = new flow\mail\Message();
         $mail->setSubject($notification->getSubject());
-        $mail->setBodyHtml($parser->toHtml());
+
+        switch($notification->getBodyType()) {
+            case INotification::SIMPLE_TAGS:
+                $parser = new flex\simpleTags\Parser($notification->getBody());
+                $mail->setBodyHtml($parser->toHtml());
+                break;
+            
+            case INotification::HTML:
+                $mail->setBodyHtml($notification->getBody());
+                break;
+        }
 
         if($from = $notification->getFromEmail()) {
             $mail->setFromAddress($from);

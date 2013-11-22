@@ -70,9 +70,9 @@ class Comms implements core\ISharedHelper {
 
         $view = $aura->getView($path, $contextRequest);
 
-        if(!$view instanceof aura\view\Notification) {
+        if(!$view instanceof aura\view\INotificationProxyView) {
             throw new aura\view\InvalidArgumentException(
-                'Templated notifications can only use .notification templates'
+                'Templated notifications can only use view templates that support conversion to notifications'
             );
         }
 
