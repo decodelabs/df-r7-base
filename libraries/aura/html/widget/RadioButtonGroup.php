@@ -22,6 +22,7 @@ class RadioButtonGroup extends Base implements IUngroupedSelectionInputWidget, c
     
     protected $_inputIdCounter = 0;
     protected $_shouldWrapBody = true;
+    protected $_labelClass = null;
     
     public function __construct(arch\IContext $context, $name, $value=null, $options=null) {
         $this->setName($name);
@@ -41,6 +42,11 @@ class RadioButtonGroup extends Base implements IUngroupedSelectionInputWidget, c
         
         foreach($this->_options as $value => $label) {
             $labelTag = new aura\html\Element('label');
+
+            if($this->_labelClass) {
+                $labelTag->addClass($this->_labelClass);
+            }
+
             $inputTag = new aura\html\Tag('input', array(
                 'type' => static::INPUT_TYPE
             ));
@@ -95,6 +101,15 @@ class RadioButtonGroup extends Base implements IUngroupedSelectionInputWidget, c
         }
 
         return $this->_shouldWrapBody;
+    }
+
+    public function setLabelClass($class) {
+        $this->_labelClass = $class;
+        return $this;
+    }
+
+    public function getLabelClass() {
+        return $this->_labelClass;
     }
     
 // Dump
