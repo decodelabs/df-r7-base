@@ -13,6 +13,8 @@ use df\user;
 
 
 trait TWidget {
+
+    use core\TChainable;
     
     protected $_primaryTag;
     
