@@ -17,6 +17,7 @@ class Notification implements INotification {
     protected $_bodyType = INotification::SIMPLE_TAGS;
     protected $_toEmails = array();
     protected $_toUsers = array();
+    protected $_toAdmin = false;
     protected $_from;
     protected $_filterClient = false;
 
@@ -24,7 +25,9 @@ class Notification implements INotification {
         $this->setSubject($subject);
         $this->setBody($body);
 
-        if($to !== null) {
+        if($to === true) {
+            $this->_toAdmin = true;
+        } else if($to !== null) {
             $this->addTo($to);
         }
 
@@ -76,6 +79,15 @@ class Notification implements INotification {
 
 
 // To
+    public function shouldSendToAdmin($flag=null) {
+        if($flag !== null) {
+            $this->_toAdmin = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_toAdmin;
+    }
+
     public function setTo($to) {
         $this->clearTo();
         return $this->addTo($to);

@@ -53,8 +53,16 @@ class Comms implements core\ISharedHelper {
         return $this->sendNotification($this->newNotification($subject, $body, $to, $from));
     }
 
+    public function adminNotify($subject, $body) {
+        return $this->notify($subject, $body, true);
+    }
+
     public function templateNotify($path, $contextRequest, array $args=array(), $to=null, $from=null) {
         return $this->sendNotification($this->newTemplateNotification($path, $contextRequest, $args, $to, $from));
+    }
+
+    public function templateAdminNotify($path, $contextRequest, array $args=array()) {
+        return $this->templateNotify($path, $contextRequest, $args, true);
     }
 
     public function newNotification($subject, $body, $to=null, $from=null) {

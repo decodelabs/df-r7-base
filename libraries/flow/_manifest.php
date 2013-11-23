@@ -132,6 +132,7 @@ interface INotification {
     public function setBodyType($type);
     public function getBodyType();
 
+    public function shouldSendToAdmin($flag=null);
     public function setTo($to);
     public function addTo($to);
     public function clearTo();

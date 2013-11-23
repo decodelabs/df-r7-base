@@ -43,6 +43,17 @@ class Manager implements IManager {
         $userList = $notification->getToUsers();
         $keys = [];
 
+        if($notification->shouldSendToAdmin()) {
+            $config = flow\mail\Config::getInstance($this->_application);
+
+            foreach($config->getAdminAddresses() as $address) {
+                if($address->isValid()) {
+                    $emails[$address->getAddress()] = $address->getName();
+                }
+            }
+        }
+
+
         foreach($userList as $key => $user) {
             if($user === null) {
                 $keys[] = $key;
@@ -60,7 +71,7 @@ class Manager implements IManager {
 
         if($notification->shouldFilterClient()) {
             unset($emails[$client->getEmail()]);
-        } else if(!$notification->hasRecipients()) {
+        } else if(!$notification->hasRecipients() && $userManager->isLoggedIn()) {
             $emails = [$client->getEmail() => $client->getFullName()];
         }
 

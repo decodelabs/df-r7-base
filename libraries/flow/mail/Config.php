@@ -18,6 +18,7 @@ class Config extends core\Config {
         return [
             'defaultTransport' => 'Mail',
             'defaultAddress' => 'webmaster@mydomain.com',
+            'adminAddresses' => [],
             'catchAllBCC' => []
         ];
     }
@@ -87,16 +88,45 @@ class Config extends core\Config {
         return 'webmaster@mydomain.com';
     }
 
-    public function setCatchAllBCCAddresses(array $addresses) {
+    public function setAdminAddresses(array $addresses) {
+        $values = [];
+
         foreach($addresses as $i => $address) {
             $address = Address::factory($address);
 
             if($address->isValid()) {
-                $addresses[$i] = (string)$address;
+                $values[] = (string)$address;
             }
         }
 
-        $this->values['catchAllBCC'] = $addresses;
+        $this->values['adminAddresses'] = $values;
+        return $this;
+    }
+
+    public function getAdminAddresses() {
+        $output = array();
+
+        if(isset($this->values['adminAddresses'])) {
+            foreach($this->values['adminAddresses'] as $address) {
+                $output[] = Address::factory($address);
+            }
+        }
+
+        return $output;
+    }
+
+    public function setCatchAllBCCAddresses(array $addresses) {
+        $values = [];
+
+        foreach($addresses as $i => $address) {
+            $address = Address::factory($address);
+
+            if($address->isValid()) {
+                $values[] = (string)$address;
+            }
+        }
+
+        $this->values['catchAllBCC'] = $values;
         return $this;
     }
 
