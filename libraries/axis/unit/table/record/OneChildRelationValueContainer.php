@@ -15,7 +15,7 @@ class OneChildRelationValueContainer implements
     opal\record\IPreparedValueContainer,
     opal\record\IIdProviderValueContainer {
     
-    protected $_insertPrimaryManifest;
+    protected $_insertPrimaryKeySet;
     protected $_record = false;
     protected $_field;
 
@@ -50,12 +50,12 @@ class OneChildRelationValueContainer implements
         $targetUnit = $this->_getTargetUnit($application);
         $query = $targetUnit->fetch();
         
-        if($this->_insertPrimaryManifest) {
-            foreach($this->_insertPrimaryManifest->toArray() as $field => $value) {
+        if($this->_insertPrimaryKeySet) {
+            foreach($this->_insertPrimaryKeySet->toArray() as $field => $value) {
                 $query->where($field, '=', $value);
             }
         } else {
-            $query->where($this->_field->getTargetField(), '=', $record->getPrimaryManifest());
+            $query->where($this->_field->getTargetField(), '=', $record->getPrimaryKeySet());
         }
         
         $this->_record = $query->toRow();
@@ -79,12 +79,12 @@ class OneChildRelationValueContainer implements
         
         if($value instanceof self
         || $value instanceof opal\record\IRecord) {
-            $value = $value->getPrimaryManifest();
-        } else if(!$value instanceof opal\record\IPrimaryManifest) {
+            $value = $value->getPrimaryKeySet();
+        } else if(!$value instanceof opal\record\IPrimaryKeySet) {
             return false;
         }
         
-        return $this->_record->getPrimaryManifest()->eq($value);
+        return $this->_record->getPrimaryKeySet()->eq($value);
     }
     
     public function setValue($value) {
@@ -92,16 +92,16 @@ class OneChildRelationValueContainer implements
         
         if($value instanceof self) {
             $record = $value->_record;
-            $value = $value->getPrimaryManifest();
+            $value = $value->getPrimaryKeySet();
         } else if($value instanceof opal\record\IRecord) {
             $record = $value;
-            $value = $value->getPrimaryManifest();
-        } else if(!$value instanceof opal\record\IPrimaryManifest) {
+            $value = $value->getPrimaryKeySet();
+        } else if(!$value instanceof opal\record\IPrimaryKeySet) {
             // TODO: swap array('id') for target primary fields
-            $value = new opal\record\PrimaryManifest(array('id'), array($value));
+            $value = new opal\record\PrimaryKeySet(array('id'), array($value));
         }
         
-        $this->_insertPrimaryManifest = $value;
+        $this->_insertPrimaryKeySet = $value;
         $this->_record = $record;
         
         return $this;
@@ -129,12 +129,12 @@ class OneChildRelationValueContainer implements
     
     public function duplicateForChangeList() {
         $output = new self($this->_field);
-        $output->_insertPrimaryManifest = $this->_insertPrimaryManifest;
+        $output->_insertPrimaryKeySet = $this->_insertPrimaryKeySet;
         return $output;
     }
     
     public function populateInverse(opal\record\IRecord $record=null) {
-        if(!$this->_insertPrimaryManifest) {
+        if(!$this->_insertPrimaryKeySet) {
             $this->_record = $record;
         }
         
@@ -144,7 +144,7 @@ class OneChildRelationValueContainer implements
     
 // Tasks
     public function deploySaveTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $record, $fieldName, opal\record\task\ITask $recordTask=null) {
-        if($this->_insertPrimaryManifest) {
+        if($this->_insertPrimaryKeySet) {
             if(!$this->_record instanceof opal\record\IRecord) {
                 $this->prepareValue($record, $fieldName);
             }
@@ -158,7 +158,7 @@ class OneChildRelationValueContainer implements
                 
                 $query = $targetUnit->fetch();
                         
-                foreach($record->getPrimaryManifest()->toArray() as $field => $value) {
+                foreach($record->getPrimaryKeySet()->toArray() as $field => $value) {
                     $query->where($targetField.'_'.$field, '=', $value);
                 }
                 
@@ -166,18 +166,18 @@ class OneChildRelationValueContainer implements
             }
             
             if(!$this->_record) {
-                $this->_insertPrimaryManifest->updateWith(null);
+                $this->_insertPrimaryKeySet->updateWith(null);
             } else {
                 $task = $this->_record->deploySaveTasks($taskSet);
                 
                 if($recordTask) {
                     $task->addDependency(
-                        new opal\record\task\dependency\UpdateManifestField(
+                        new opal\record\task\dependency\UpdateKeySetField(
                             $targetField, $recordTask
                         )
                     );
-                } else if(!$this->_insertPrimaryManifest->isNull()) {
-                    $this->_record->set($targetField, $this->_insertPrimaryManifest);
+                } else if(!$this->_insertPrimaryKeySet->isNull()) {
+                    $this->_record->set($targetField, $this->_insertPrimaryKeySet);
                 }
             }
             
@@ -209,12 +209,12 @@ class OneChildRelationValueContainer implements
             return $this->_record;
         }
         
-        if($this->_insertPrimaryManifest) {
-            if($this->_insertPrimaryManifest->countFields() == 1) {
-                return $this->_insertPrimaryManifest->getFirstKeyValue();
+        if($this->_insertPrimaryKeySet) {
+            if($this->_insertPrimaryKeySet->countFields() == 1) {
+                return $this->_insertPrimaryKeySet->getFirstKeyValue();
             }
             
-            return $this->_insertPrimaryManifest;
+            return $this->_insertPrimaryKeySet;
         }
         
         return '['.$this->_field->getTargetUnitId().']';
@@ -227,11 +227,11 @@ class OneChildRelationValueContainer implements
         
         $output = $this->_field->getTargetUnitId();
         
-        if($this->_insertPrimaryManifest) {
+        if($this->_insertPrimaryKeySet) {
             $output .= ' : ';
             
-            if($this->_insertPrimaryManifest->countFields() == 1) {
-                $value = $this->_insertPrimaryManifest->getFirstKeyValue();
+            if($this->_insertPrimaryKeySet->countFields() == 1) {
+                $value = $this->_insertPrimaryKeySet->getFirstKeyValue();
                 
                 if($value === null) {
                     $output .= 'null';
@@ -241,7 +241,7 @@ class OneChildRelationValueContainer implements
             } else {
                 $t = array();
                 
-                foreach($this->_insertPrimaryManifest->toArray() as $key => $value) {
+                foreach($this->_insertPrimaryKeySet->toArray() as $key => $value) {
                     $valString = $key.'=';
                     
                     if($value === null) {

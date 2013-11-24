@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\opal;
 
-class UpdateRawManifest implements opal\record\task\IParentFieldAwareDependency {
+class UpdateRawKeySet implements opal\record\task\IParentFieldAwareDependency {
     
     use opal\record\task\TDependency;
     use opal\record\task\TParentFieldAwareDependency;
@@ -25,7 +25,7 @@ class UpdateRawManifest implements opal\record\task\IParentFieldAwareDependency 
     
     public function applyResolution(opal\record\task\ITask $dependentTask) {
         if($dependentTask instanceof opal\record\task\UpdateRaw) {
-            $manifest = $this->_requiredTask->getRecord()->getPrimaryManifest();
+            $keySet = $this->_requiredTask->getRecord()->getPrimaryKeySet();
             
             foreach($this->_parentFields as $key => $field) {
                 break;
@@ -33,7 +33,7 @@ class UpdateRawManifest implements opal\record\task\IParentFieldAwareDependency 
             
             $values = array();
             
-            foreach($manifest->toArray() as $key => $value) {
+            foreach($keySet->toArray() as $key => $value) {
                 $values[$field.'_'.$key] = $value;
             }
             

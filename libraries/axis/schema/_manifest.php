@@ -120,24 +120,16 @@ trait TAutoGeneratorField {
 }
 
 
-interface IMultiPrimitiveField extends IField {
-    public function getPrimitiveFieldNames();
-}
+interface IMultiPrimitiveField extends IField, opal\schema\IMultiPrimitiveField {}
+interface INullPrimitiveField extends IField, opal\schema\INullPrimitiveField {}
+interface IQueryClauseRewriterField extends IField, opal\schema\IQueryClauseRewriterField {}
 
-interface INullPrimitiveField extends IField {}
-
-interface IQueryClauseRewriterField extends IField {
-    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false);
-}
-
-interface IRelationField extends IField, IQueryClauseRewriterField {
+interface IRelationField extends IField, opal\schema\IRelationField, IQueryClauseRewriterField {
     public function setTargetUnitId($targetUnitId);
     public function getTargetUnitId();
     public function getTargetUnit(core\IApplication $application=null);
 
     //public function shouldCascadeDelete($flag=null);
-
-    public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate);
 }
 
 
@@ -233,31 +225,22 @@ trait TRelationField {
             );
         }
 
+        $this->_targetRelationManifest = new opal\schema\RelationManifest($targetPrimaryIndex);
         return $targetPrimaryIndex;
     }
 
-    protected function _validateDefaultValue(axis\ISchemaBasedStorageUnit $localUnit, array $targetPrimaryFields) {
+    protected function _validateDefaultValue(axis\ISchemaBasedStorageUnit $localUnit) {
         if($this->_defaultValue === null) {
             return;
         }
 
         if($this instanceof IOneRelationField) {
-            if(!is_array($this->_defaultValue)) {
-                if(count($targetPrimaryFields) > 1) {
-                    throw new axis\schema\RuntimeException(
-                        'Default value for a multi key relation must be a keyed array'
-                    );
-                }
-                
-                $this->_defaultValue = array($targetPrimaryFields[0] => $this->_defaultValue);
-            }
-            
-            foreach($targetPrimaryFields as $field) {
-                if(!array_key_exists($field, $this->_defaultValue)) {
-                    throw new axis\schema\RuntimeException(
-                        'Default value for a multi key relation must contain values for all target primary keys'
-                    );
-                }
+            $targetRelationManifest = $this->getTargetRelationManifest();
+
+            if(!$targetRelationManifest->validateValue($this->_defaultValue)) {
+                throw new axis\schema\RuntimeException(
+                    'Default value for relation field does not fit relation manifest'
+                );
             }
         } else if($this instanceof IManyRelationField) {
             // TODO: validate default value
@@ -330,10 +313,7 @@ trait TRelationField {
 }
 
 
-interface IInverseRelationField extends IRelationField {
-    public function setTargetField($field);
-    public function getTargetField();
-}
+interface IInverseRelationField extends IRelationField, opal\schema\IInverseRelationField {}
 
 
 trait TInverseRelationField {
@@ -412,48 +392,14 @@ trait TInverseRelationField {
 
 
 
-interface ITargetPrimaryFieldAwareRelationField extends IRelationField {
-    public function getTargetPrimaryFieldNames();
-    public function getTargetPrimaryManifest();
-}
+interface ITargetPrimaryFieldAwareRelationField extends IRelationField, opal\schema\ITargetPrimaryFieldAwareRelationField {}
 
 trait TTargetPrimaryFieldAwareRelationField {
 
-    protected $_targetPrimaryFields = ['id'];
-    private $_targetPrimaryManifest;
+    use opal\schema\TField_TargetPrimaryFieldAwareRelation;
 
-    public function getTargetPrimaryFieldNames() {
-        return $this->_targetPrimaryFields;
-    }
-
-    public function getTargetPrimaryManifest() {
-        if(!$this->_targetPrimaryManifest) {
-            $targetUnit = $this->getTargetUnit();
-            $targetSchema = $targetUnit->getUnitSchema();
-            $values = [];
-
-            foreach($this->_targetPrimaryFields as $fieldName) {
-                $field = $targetSchema->getField($fieldName);
-
-                if($field instanceof axis\schema\IMultiPrimitiveField) {
-                    $innerFields = [];
-                    $nameLength = strlen($fieldName);
-
-                    foreach($field->getPrimitiveFieldNames() as $subFieldName) {
-                        $innerFields[] = substr($subFieldName, $nameLength + 1);
-                    }
-                    
-                    $values[$fieldName] = new opal\record\PrimaryManifest($innerFields);
-                    $test = true;
-                } else {
-                    $values[$fieldName] = null;
-                }
-            }
-
-            $this->_targetPrimaryManifest = new opal\record\PrimaryManifest(array_keys($values), $values);
-        }
-
-        return $this->_targetPrimaryManifest;
+    public function getTargetPrimaryIndex() {
+        return $this->getTargetUnit()->getTransientUnitSchema()->getPrimaryIndex();
     }
 }
 
@@ -470,7 +416,7 @@ interface IBridgedRelationField extends IRelationField, ITargetPrimaryFieldAware
     public function isSelfReference();
     public function isDominant($flag=null);
     
-    public function getLocalPrimaryFieldNames();
+    public function getLocalRelationManifest();
 }
 
 
@@ -481,7 +427,7 @@ trait TBridgedRelationField {
     protected $_bridgeUnitId;
     protected $_bridgeLocalFieldName;
     protected $_bridgeTargetFieldName;
-    protected $_localPrimaryFields = ['id'];
+    protected $_localRelationManifest;
 
     public function setBridgeUnitId($id) {
         if($id instanceof axis\IUnit) {
@@ -572,9 +518,13 @@ trait TBridgedRelationField {
         return 'table.ManyBridge';
     }
 
-// Field names
-    public function getLocalPrimaryFieldNames() {
-        return $this->_localPrimaryFields;
+    public function getLocalRelationManifest() {
+        if(!$this->_localRelationManifest) {
+            $schema = $this->getBridgeUnit()->getTransientUnitSchema();
+            $this->_localRelationManifest = $schema->getField($this->_bridgeLocalFieldName)->getTargetRelationManifest();
+        }
+
+        return $this->_localRelationManifest;
     }
     
 
@@ -583,17 +533,13 @@ trait TBridgedRelationField {
         $this->_bridgeUnitId = $data['bui'];
         $this->_bridgeLocalFieldName = $data['blf'];
         $this->_bridgeTargetFieldName = $data['btf'];
-        $this->_localPrimaryFields = (array)$data['lpf'];
-        $this->_targetPrimaryFields = (array)$data['tpf'];
     }
 
     protected function _getBridgeRelationStorageArray() {
         return [
             'bui' => $this->_bridgeUnitId,
             'blf' => $this->_bridgeLocalFieldName,
-            'btf' => $this->_bridgeTargetFieldName,
-            'lpf' => $this->_localPrimaryFields,
-            'tpf' => $this->_targetPrimaryFields
+            'btf' => $this->_bridgeTargetFieldName
         ];
     }
 }

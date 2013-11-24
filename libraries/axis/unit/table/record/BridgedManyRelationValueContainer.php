@@ -23,16 +23,16 @@ class BridgedManyRelationValueContainer implements
     protected $_remove = array();
     protected $_removeAll = false;
     
-    protected $_localPrimaryManifest;
-    protected $_targetPrimaryManifest;
+    protected $_localPrimaryKeySet;
+    protected $_targetPrimaryKeySet;
     protected $_field;
 
     protected $_record = null;
     
     public function __construct(axis\schema\IBridgedRelationField $field) {
         $this->_field = $field;
-        $this->_localPrimaryManifest = new opal\record\PrimaryManifest($field->getLocalPrimaryFieldNames());
-        $this->_targetPrimaryManifest = $field->getTargetPrimaryManifest();
+        $this->_localPrimaryKeySet = $field->getLocalRelationManifest()->toPrimaryKeySet();
+        $this->_targetPrimaryKeySet = $field->getTargetRelationManifest()->toPrimaryKeySet();
     }
     
     public function isPrepared() {
@@ -41,7 +41,7 @@ class BridgedManyRelationValueContainer implements
     
     public function prepareValue(opal\record\IRecord $record, $fieldName) {
         $this->_record = $record;
-        $this->_localPrimaryManifest->updateWith($record);
+        $this->_localPrimaryKeySet->updateWith($record);
 
         return $this;
     }
@@ -111,13 +111,13 @@ class BridgedManyRelationValueContainer implements
     }
 
     
-// Manifests
-    public function getLocalPrimaryManifest() {
-        return $this->_localPrimaryManifest;
+// Key sets
+    public function getLocalPrimaryKeySet() {
+        return $this->_localPrimaryKeySet;
     }
     
-    public function getTargetPrimaryManifest() {
-        return $this->_targetPrimaryManifest;
+    public function getTargetPrimaryKeySet() {
+        return $this->_targetPrimaryKeySet;
     }
     
     
@@ -157,16 +157,13 @@ class BridgedManyRelationValueContainer implements
     }
     
     public function removeList(array $records) {
-        $index = array();
-        $lookupManifests = array();
-        
         foreach($records as $record) {
             if($record instanceof opal\record\IRecord) {
                 $id = opal\record\Base::extractRecordId($record);
-            } else if($record instanceof opal\record\IPrimaryManifest) {
+            } else if($record instanceof opal\record\IPrimaryKeySet) {
                 $id = opal\record\Base::extractRecordId($record);
             } else {
-                $record = $this->_targetPrimaryManifest->duplicateWith($record);
+                $record = $this->_targetPrimaryKeySet->duplicateWith($record);
                 $id = opal\record\Base::extractRecordId($record);
             }
             
@@ -197,18 +194,18 @@ class BridgedManyRelationValueContainer implements
 
     protected function _normalizeInputRecordList(array $records) {
         $index = array();
-        $lookupManifests = array();
+        $lookupKeySets = array();
         
         foreach($records as $record) {
             if($record instanceof opal\record\IRecord) {
                 $id = opal\record\Base::extractRecordId($record);
-            } else if($record instanceof opal\record\IPrimaryManifest) {
+            } else if($record instanceof opal\record\IPrimaryKeySet) {
                 $id = opal\record\Base::extractRecordId($record);
-                $lookupManifests[$id] = $record;
+                $lookupKeySets[$id] = $record;
             } else {
-                $record = $this->_targetPrimaryManifest->duplicateWith($record);
+                $record = $this->_targetPrimaryKeySet->duplicateWith($record);
                 $id = opal\record\Base::extractRecordId($record);
-                $lookupManifests[$id] = $record;
+                $lookupKeySets[$id] = $record;
             }
             
             if(!isset($this->_current[$id])) {
@@ -216,18 +213,18 @@ class BridgedManyRelationValueContainer implements
             }
         }
         
-        if(!empty($lookupManifests)) {
+        if(!empty($lookupKeySets)) {
             $application = $this->_record->getRecordAdapter()->getApplication();
             $targetUnit = $this->_getTargetUnit($application);
 
             $query = opal\query\Initiator::factory($application)
-                ->beginSelect($this->_targetPrimaryManifest->getFieldNames())
+                ->beginSelect($this->_targetPrimaryKeySet->getFieldNames())
                 ->from($targetUnit);
             
-            foreach($lookupManifests as $manifest) {
+            foreach($lookupKeySets as $keySet) {
                 $clause = $query->beginOrWhereClause();
                 
-                foreach($manifest->toArray() as $key => $value) {
+                foreach($keySet->toArray() as $key => $value) {
                     $clause->where($key, '=', $value);
                 }
                 
@@ -236,13 +233,13 @@ class BridgedManyRelationValueContainer implements
             
             $res = $query->toArray();
             
-            foreach($lookupManifests as $id => $manifest) {
+            foreach($lookupKeySets as $id => $keySet) {
                 if(empty($res)) {
                     unset($index[$id]);
                     continue;
                 }
                 
-                $keys = $manifest->toArray();
+                $keys = $keySet->toArray();
                 $found = false;
                 
                 foreach($res as $row) {
@@ -315,7 +312,7 @@ class BridgedManyRelationValueContainer implements
             );
         }
         
-        $this->_localPrimaryManifest->updateWith($this->_record);
+        $this->_localPrimaryKeySet->updateWith($this->_record);
 
         $localUnit = $this->_record->getRecordAdapter();
         $application = $localUnit->getApplication();
@@ -339,7 +336,7 @@ class BridgedManyRelationValueContainer implements
                 ->endJoin()
 
             // Add local primary key(s) as prerequisite
-            ->wherePrerequisite($bridgeAlias.'.'.$bridgeLocalFieldName, '=', $this->_localPrimaryManifest);
+            ->wherePrerequisite($bridgeAlias.'.'.$bridgeLocalFieldName, '=', $this->_localPrimaryKeySet);
     }
 
     public function selectDistinct($field1=null) {
@@ -355,7 +352,7 @@ class BridgedManyRelationValueContainer implements
             );
         }
         
-        $this->_localPrimaryManifest->updateWith($this->_record);
+        $this->_localPrimaryKeySet->updateWith($this->_record);
 
         $localUnit = $this->_record->getRecordAdapter();
         $application = $localUnit->getApplication();
@@ -369,7 +366,7 @@ class BridgedManyRelationValueContainer implements
             ->from($bridgeUnit, $bridgeAlias)
 
             // Add local primary key(s) as prerequisite
-            ->wherePrerequisite($bridgeAlias.'.'.$bridgeLocalFieldName, '=', $this->_localPrimaryManifest);
+            ->wherePrerequisite($bridgeAlias.'.'.$bridgeLocalFieldName, '=', $this->_localPrimaryKeySet);
     }
 
     public function selectDistinctFromBridge($field1=null) {
@@ -385,7 +382,7 @@ class BridgedManyRelationValueContainer implements
             );
         }
 
-        $this->_localPrimaryManifest->updateWith($this->_record);
+        $this->_localPrimaryKeySet->updateWith($this->_record);
         
         $localUnit = $this->_record->getRecordAdapter();
         $application = $localUnit->getApplication();
@@ -409,7 +406,7 @@ class BridgedManyRelationValueContainer implements
                 ->endJoin()
 
             // Add local primary key(s) as prerequisite
-            ->wherePrerequisite($bridgeAlias.'.'.$bridgeLocalFieldName, '=', $this->_localPrimaryManifest);
+            ->wherePrerequisite($bridgeAlias.'.'.$bridgeLocalFieldName, '=', $this->_localPrimaryKeySet);
     }
 
     public function fetchFromBridge() {
@@ -419,7 +416,7 @@ class BridgedManyRelationValueContainer implements
             );
         }
 
-        $this->_localPrimaryManifest->updateWith($this->_record);
+        $this->_localPrimaryKeySet->updateWith($this->_record);
         
         $localUnit = $this->_record->getRecordAdapter();
         $application = $localUnit->getApplication();
@@ -433,7 +430,7 @@ class BridgedManyRelationValueContainer implements
             ->from($bridgeUnit, $bridgeAlias)
 
             // Add local primary key(s) as prerequisite
-            ->wherePrerequisite($bridgeAlias.'.'.$bridgeLocalFieldName, '=', $this->_localPrimaryManifest);
+            ->wherePrerequisite($bridgeAlias.'.'.$bridgeLocalFieldName, '=', $this->_localPrimaryKeySet);
     }
 
     public function getRelatedPrimaryKeys() {
@@ -446,7 +443,7 @@ class BridgedManyRelationValueContainer implements
 // Tasks
     public function deploySaveTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $parentRecord, $fieldName, opal\record\task\ITask $recordTask=null) {
         $localUnit = $parentRecord->getRecordAdapter();
-        $this->_localPrimaryManifest->updateWith($parentRecord);
+        $this->_localPrimaryKeySet->updateWith($parentRecord);
 
         $application = $localUnit->getApplication();
         $targetUnit = $this->_getTargetUnit($application);
@@ -468,9 +465,9 @@ class BridgedManyRelationValueContainer implements
         
         
         // Remove all
-        if($this->_removeAll && !$this->_localPrimaryManifest->isNull()) {
+        if($this->_removeAll && !$this->_localPrimaryKeySet->isNull()) {
             $removeAllTask = new opal\record\task\DeleteKey($bridgeUnit, [
-                $bridgeLocalFieldName => $this->_localPrimaryManifest
+                $bridgeLocalFieldName => $this->_localPrimaryKeySet
             ]);
 
             $taskSet->addTask($removeAllTask);
@@ -485,7 +482,7 @@ class BridgedManyRelationValueContainer implements
             $bridgeTask = $taskSet->insert($bridgeRecord)->ifNotExists(true);
 
             // Local ids
-            $bridgeRecord->__set($bridgeLocalFieldName, $this->_localPrimaryManifest);
+            $bridgeRecord->__set($bridgeLocalFieldName, $this->_localPrimaryKeySet);
 
             if($recordTask) {
                 $bridgeTask->addDependency(
@@ -493,16 +490,16 @@ class BridgedManyRelationValueContainer implements
                 );
             }
             
-            // Target manifest
-            if($record instanceof opal\record\IPrimaryManifest) {
-                $targetManifest = $record;
+            // Target key set
+            if($record instanceof opal\record\IPrimaryKeySet) {
+                $targetKeySet = $record;
             } else {
-                $targetManifest = $this->_targetPrimaryManifest->duplicateWith($record);
+                $targetKeySet = $this->_targetPrimaryKeySet->duplicateWith($record);
             }
 
             // Filter remove all task
             if($removeAllTask) {
-                foreach($targetManifest->toArray() as $key => $value) {
+                foreach($targetKeySet->toArray() as $key => $value) {
                     $filterKeys[$bridgeTargetFieldName.'_'.$key][$id] = $value;
                 }
             }
@@ -516,7 +513,7 @@ class BridgedManyRelationValueContainer implements
             }
             
             // Target ids
-            $bridgeRecord->__set($bridgeTargetFieldName, $targetManifest);
+            $bridgeRecord->__set($bridgeTargetFieldName, $targetKeySet);
 
             if($targetRecordTask) {
                 $bridgeTask->addDependency(
@@ -540,21 +537,21 @@ class BridgedManyRelationValueContainer implements
 
         
         // Delete relation tasks
-        if(!$removeAllTask && !empty($this->_remove) && !$this->_localPrimaryManifest->isNull()) {
+        if(!$removeAllTask && !empty($this->_remove) && !$this->_localPrimaryKeySet->isNull()) {
             foreach($this->_remove as $id => $record) {
                 $bridgeData = array();
             
-                foreach($this->_localPrimaryManifest->toArray() as $key => $value) {
+                foreach($this->_localPrimaryKeySet->toArray() as $key => $value) {
                     $bridgeData[$bridgeLocalFieldName.'_'.$key] = $value;
                 }
                 
-                if($record instanceof opal\record\IPrimaryManifest) {
-                    $targetManifest = $record;
+                if($record instanceof opal\record\IPrimaryKeySet) {
+                    $targetKeySet = $record;
                 } else {
-                    $targetManifest = $this->_targetPrimaryManifest->duplicateWith($record);
+                    $targetKeySet = $this->_targetPrimaryKeySet->duplicateWith($record);
                 }
                 
-                foreach($targetManifest->toArray() as $key => $value) {
+                foreach($targetKeySet->toArray() as $key => $value) {
                     $bridgeData[$bridgeTargetFieldName.'_'.$key] = $value;
                 }
                 
@@ -586,13 +583,13 @@ class BridgedManyRelationValueContainer implements
         $localUnit = $parentRecord->getRecordAdapter();
         $application = $localUnit->getApplication();
             
-        $this->_localPrimaryManifest->updateWith($parentRecord);
+        $this->_localPrimaryKeySet->updateWith($parentRecord);
         $bridgeUnit = $this->_getBridgeUnit($application);
 
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
         $bridgeData = array();
             
-        foreach($this->_localPrimaryManifest->toArray() as $key => $value) {
+        foreach($this->_localPrimaryKeySet->toArray() as $key => $value) {
             $bridgeData[$bridgeLocalFieldName.'_'.$key] = $value;
         }
 
@@ -625,8 +622,8 @@ class BridgedManyRelationValueContainer implements
 // Dump
     public function getDumpValue() {
         if(empty($this->_current) && empty($this->_new) && empty($this->_remove)) {
-            return implode(', ', $this->_localPrimaryManifest->getFieldNames()).
-            ' -> ['.implode(', ', $this->_targetPrimaryManifest->getFieldNames()).']';
+            return implode(', ', $this->_localPrimaryKeySet->getFieldNames()).
+            ' -> ['.implode(', ', $this->_targetPrimaryKeySet->getFieldNames()).']';
         }
         
         $output = $this->_current;

@@ -21,7 +21,7 @@ class DeleteKey implements IDeleteKeyTask {
         $this->_keys = $keys;
         $this->_adapter = $adapter;
         
-        $this->_setId(implode(opal\record\PrimaryManifest::COMBINE_SEPARATOR, $keys));
+        $this->_setId(implode(opal\record\PrimaryKeySet::COMBINE_SEPARATOR, $keys));
     }
     
 

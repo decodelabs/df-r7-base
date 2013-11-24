@@ -42,6 +42,10 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
         $name = $query->getSource()->getDisplayName();
 
         if(!$output = $query->toRow()) {
+            if(is_array($primary)) {
+                $primary = implode(',', $primary);
+            }
+
             $this->_context->throwError(404, 'Item not found - '.$name.'#'.$primary);
         }
 
@@ -57,8 +61,6 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
             foreach($primary as $key => $value) {
                 $query->where($key, '=', $value);
             }
-
-            $primary = implode(',', $primary);
         } else {
             $query->where('@primary', '=', $primary);
         }
@@ -138,18 +140,18 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
             $output = $record->getRawId($field);
         } else if(is_array($record)) {
             if(isset($record[$field])) {
-                $value = $record[$field];
+                $output = $record[$field];
             } else {
-                $value = null;
+                $output = null;
             }
 
-            if($value instanceof opal\record\IRecord) {
-                $value = $value->getPrimaryManifest();
+            if($output instanceof opal\record\IRecord) {
+                $output = $output->getPrimaryKeySet();
             }
 
-            if($value instanceof opal\record\IPrimaryManifest 
-            && !$value->isNull()) {
-                $output = $value->getValue();
+            if($output instanceof opal\record\IPrimaryKeySet 
+            && !$output->isNull()) {
+                $output = $output->getValue();
             }
         }
 

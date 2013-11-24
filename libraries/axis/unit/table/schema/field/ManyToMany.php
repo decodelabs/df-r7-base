@@ -15,8 +15,6 @@ class ManyToMany extends Many implements axis\schema\IManyToManyField {
     use axis\schema\TInverseRelationField;
 
     protected $_isDominant = false;
-    protected $_localPrimaryFields = array('id');
-    protected $_targetPrimaryFields = array('id');
      
     protected function _init($targetUnit, $targetField=null) {
         $this->setTargetUnitId($targetUnit);
@@ -53,18 +51,6 @@ class ManyToMany extends Many implements axis\schema\IManyToManyField {
             );
         }
         
-        $this->_localPrimaryFields = array();
-        
-        foreach($localPrimaryIndex->getFields() as $name => $field) {
-            if($field instanceof axis\schema\IMultiPrimitiveField) {
-                foreach($field->getPrimitiveFieldNames() as $name) {
-                    $this->_localPrimaryFields[] = $name;
-                }
-            } else {
-                $this->_localPrimaryFields[] = $name;
-            }
-        }
-        
         return $this;
     }
     
@@ -74,8 +60,6 @@ class ManyToMany extends Many implements axis\schema\IManyToManyField {
         $targetSchema = $targetUnit->getTransientUnitSchema();
         $targetPrimaryIndex = $this->_validateTargetPrimaryIndex($targetUnit, $targetSchema);
         $targetField = $this->_validateInverseRelationField($targetUnit, $targetSchema);
-        
-        $this->_targetPrimaryFields = array_keys($targetPrimaryIndex->getFields());
         
         
         // Dominance
@@ -91,7 +75,7 @@ class ManyToMany extends Many implements axis\schema\IManyToManyField {
             $this->_bridgeUnitId = $targetField->getBridgeUnitId();
         }
         
-        $this->_validateDefaultValue($localUnit, $this->_targetPrimaryFields);
+        $this->_validateDefaultValue($localUnit);
         
         return $this;
     }

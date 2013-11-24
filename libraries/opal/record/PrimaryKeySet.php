@@ -9,14 +9,14 @@ use df;
 use df\core;
 use df\opal;
 
-class PrimaryManifest implements IPrimaryManifest, core\IDumpable {
+class PrimaryKeySet implements IPrimaryKeySet, core\IDumpable {
     
     const COMBINE_SEPARATOR = '+';
     
     protected $_keys = array();
 
     public static function fromEntityId($id) {
-        if(substr($id, 0, 9) != 'manifest?') {
+        if(substr($id, 0, 9) != 'keySet?') {
             throw new InvalidArgumentException(
                 'Invalid entity id: '.$id
             );
@@ -27,7 +27,7 @@ class PrimaryManifest implements IPrimaryManifest, core\IDumpable {
         $values = array();
 
         foreach($tree as $key => $value) {
-            if(substr($value, 0, 10) == '[manifest?') {
+            if(substr($value, 0, 10) == '[keySet?') {
                 $value = self::fromEntityId(substr($value, 1, -1));
             }
 
@@ -115,23 +115,43 @@ class PrimaryManifest implements IPrimaryManifest, core\IDumpable {
     }
 
     public function updateWith($values) {
-        $fields = array_keys($this->_keys);
-
-        if($values instanceof self) {
-            $values = $values->toArray();
+        if($values instanceof IRecord) {
+            $values = $values->getPrimaryKeySet();
         }
 
-        if(!$values instanceof IRecord && !is_array($values)) {
-            if($values === null || count($fields) == 1) {
-                $values = array_fill_keys($fields, $values);
+        if($values instanceof self) {
+            $values = $values->_keys;
+        }
+
+        if(!is_array($values)) {
+            if($values === null || count($this->_keys) == 1) {
+                $values = array_fill_keys(array_keys($this->_keys), $values);
             } else {
                 throw new InvalidArgumentException(
-                    'Primary manifest values do not map to keys'
+                    'Primary key set values do not map to keys'
                 );
             }
         }
 
-        foreach($fields as $field) {
+        foreach($this->_keys as $field => $origValue) {
+            if($origValue instanceof self) {
+                $inner = null;
+
+                foreach($values as $key => $value) {
+                    if($key == $field) {
+                        $inner = $value;
+                        break;
+                    } else if(0 === strpos($key, $field.'_')) {
+                        $inner = [];
+                        $parts = explode('_', $key, 2);
+                        $inner[array_pop($parts)] = $value;
+                    }
+                }
+
+                $origValue->updateWith($inner);
+                continue;
+            }
+
             $value = null;
 
             if(isset($values[$field])) {
@@ -145,7 +165,7 @@ class PrimaryManifest implements IPrimaryManifest, core\IDumpable {
             }
 
             if($value instanceof IRecord) {
-                $value = $value->getPrimaryManifest();
+                $value = $value->getPrimaryKeySet();
             }
 
             if($this->_keys[$field] instanceof self) {
@@ -172,7 +192,7 @@ class PrimaryManifest implements IPrimaryManifest, core\IDumpable {
                 return true;
             }
 
-            if($value instanceof IPrimaryManifest && $value->isNull()) {
+            if($value instanceof IPrimaryKeySet && $value->isNull()) {
                 return true;
             }
         }
@@ -185,7 +205,7 @@ class PrimaryManifest implements IPrimaryManifest, core\IDumpable {
         
         foreach($this->_keys as $key) {
             if($key instanceof IRecord) {
-                $key = $key->getPrimaryManifest();
+                $key = $key->getPrimaryKeySet();
             }
             
             if($key instanceof self) {
@@ -210,7 +230,7 @@ class PrimaryManifest implements IPrimaryManifest, core\IDumpable {
         foreach($this->_keys as $key => $value) {
             if($value instanceof IRecord) {
                 $returnFirst = false;
-                $value = $value->getPrimaryManifest();
+                $value = $value->getPrimaryKeySet();
             }
             
             if($value instanceof self) {
@@ -225,7 +245,7 @@ class PrimaryManifest implements IPrimaryManifest, core\IDumpable {
             $output->{$key} = (string)$value;
         }
 
-        return 'manifest?'.$output->toArrayDelimitedString();
+        return 'keySet?'.$output->toArrayDelimitedString();
     }
     
     public function getValue() {
@@ -242,16 +262,30 @@ class PrimaryManifest implements IPrimaryManifest, core\IDumpable {
         }
     }
 
+    public function getRawValue() {
+        if(count($this->_keys) > 1) {
+            return $this;
+        }
+
+        $output = $this->getFirstKeyValue();
+
+        if($output instanceof self) {
+            $output = $output->getRawValue();
+        }
+
+        return $output;
+    }
+
     public function duplicateWith($values) {
         $output = clone $this;
         $output->updateWith($values);
         return $output;
     }
     
-    public function eq(IPrimaryManifest $manifest) {
+    public function eq(IPrimaryKeySet $keySet) {
         foreach($this->_keys as $key => $value) {
-            if(!array_key_exists($key, $manifest->_keys)
-            || $manifest->_keys[$key] !== $value) {
+            if(!array_key_exists($key, $keySet->_keys)
+            || $keySet->_keys[$key] !== $value) {
                 return false;
             }
         }

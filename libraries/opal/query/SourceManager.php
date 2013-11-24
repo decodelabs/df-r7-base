@@ -220,6 +220,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
             return $name;
         }
 
+
         if(!$isOutput && ($field = $this->_findFieldByAlias($name, $source, $checkAlias))) {
             $this->_testField($field, $allowIntrinsic, $allowWildcard, $allowAggregate);
             return $field;
@@ -284,7 +285,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
                 $sourceAlias = $source->getAlias();
                 $qName = $sourceAlias.'.'.$name;
             }
-            
+
             $source = null;
 
             if(isset($this->_sources[$sourceAlias])) {
@@ -356,7 +357,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
                     $source->addPrivateField($field);
                 }
             }
-            
+
             return $field;
         }
     }

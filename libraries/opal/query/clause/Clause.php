@@ -293,6 +293,19 @@ class Clause implements opal\query\IClause, core\IDumpable {
             }
         }
 
+
+        if($value instanceof opal\query\IVirtualField) {
+            $deref = $value->dereference();
+
+            if(count($deref) > 1) {
+                throw new opal\query\ValueException(
+                    'Unable to dereference virtual field to single intrinsic for clause value'
+                );
+            }
+            
+            $value = $deref[0];
+        }
+
         if($value instanceof opal\query\ICorrelationQuery) {
             switch($this->_operator) {
                 case self::OP_EQ:
@@ -443,7 +456,7 @@ class Clause implements opal\query\IClause, core\IDumpable {
         $preparedValue = $adapter->prepareQueryClauseValue($this->_field, $value);
 
         if($preparedValue instanceof opal\record\IRecord) {
-            $preparedValue = $preparedValue->getPrimaryManifest();
+            $preparedValue = $preparedValue->getPrimaryKeySet();
         }
 
         return $preparedValue;
@@ -486,7 +499,7 @@ class Clause implements opal\query\IClause, core\IDumpable {
         if($this->_value instanceof opal\query\IField) {
             $value = $this->_value->getQualifiedName();
         } else if($this->_value instanceof opal\record\IRecord) {
-            $value = $this->_value->getRecordAdapter()->getQuerySourceId().' : '.$this->_value->getPrimaryManifest();
+            $value = $this->_value->getRecordAdapter()->getQuerySourceId().' : '.$this->_value->getPrimaryKeySet();
         } else if($this->_value instanceof opal\query\IQuery) {
             $value = $this->_value;
         } else if($this->_value === null) {

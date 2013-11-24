@@ -83,7 +83,9 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
     
 // Clause
     public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false) {
-        if(count($this->_localPrimaryFields) != 1) {
+        $localRelationManifest = $this->getLocalRelationManifest();
+
+        if(!$localRelationManifest->isSingleField()) {
             throw new RuntimeException(
                 'Query clause on field '.$this->_name.' cannot be executed as it relies on a multi-field primary key. '.
                 'You should probably use a fieldless join constraint instead'
@@ -96,8 +98,8 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
         $application = $localUnit->getApplication();
         
         $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId, $application);
-        $targetField = $sourceManager->extrapolateIntrinsicField($source, $this->_localPrimaryFields[0]);
-        
+        $targetField = $sourceManager->extrapolateIntrinsicField($source, $localRelationManifest->getSingleFieldName());
+
         $bridgeUnit = axis\Model::loadUnitFromId($this->_bridgeUnitId, $application);
         
         $localFieldName = $this->getBridgeLocalFieldName();
@@ -116,29 +118,23 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
             $operator = opal\query\clause\Clause::normalizeOperator($operator);
         }
         
+        $targetRelationManifest = $this->getTargetRelationManifest();
+        $targetPrimaryKeySet = $targetRelationManifest->toPrimaryKeySet();
+
         switch($operator) {
             case opal\query\clause\Clause::OP_IN:
-                if($isSingleField = count($this->_targetPrimaryFields) == 1) {
+                if($targetRelationManifest->isSingleField()) {
                     $query->where($targetFieldName, $operator, $value);
                 } else {
                     foreach($value as $inVal) {
-                        $targetManifest = new opal\record\PrimaryManifest(
-                            $this->_targetPrimaryFields, $inVal
-                        );
-                        
-                        $query->orWhere($targetFieldName, '=', $targetManifest);
+                        $query->orWhere($targetFieldName, '=', $targetPrimaryKeySet->duplicateWith($inVal));
                     }
                 }
                 
                 break;
                 
             default:
-                $targetManifest = new opal\record\PrimaryManifest(
-                    $this->_targetPrimaryFields, $value
-                );
-
-                $query->where($targetFieldName, $operator, $targetManifest);
-                
+                $query->where($targetFieldName, $operator, $targetPrimaryKeySet->duplicateWith($value));
                 break;
         }
         
@@ -194,18 +190,6 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
             );
         }
 
-        $this->_localPrimaryFields = array();
-        
-        foreach($localPrimaryIndex->getFields() as $name => $field) {
-            if($field instanceof axis\schema\IMultiPrimitiveField) {
-                foreach($field->getPrimitiveFieldNames() as $name) {
-                    $this->_localPrimaryFields[] = $name;
-                }
-            } else {
-                $this->_localPrimaryFields[] = $name;
-            }
-        }
-
         return $this;
     }
     
@@ -213,9 +197,7 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
         $targetUnit = $this->_validateTargetUnit($localUnit);
         $targetSchema = $targetUnit->getTransientUnitSchema();
         $targetPrimaryIndex = $this->_validateTargetPrimaryIndex($targetUnit, $targetSchema);
-        
-        $this->_targetPrimaryFields = array_keys($targetPrimaryIndex->getFields());
-        $this->_validateDefaultValue($localUnit, $this->_targetPrimaryFields);
+        $this->_validateDefaultValue($localUnit);
 
         $bridgeUnit = $this->_validateBridgeUnit($localUnit);
         

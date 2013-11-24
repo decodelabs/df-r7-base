@@ -45,7 +45,7 @@ class Timestamp extends Base implements opal\schema\IAutoTimestampField {
         if($this->_shouldTimestampOnUpdate || $value === null) {
             return new opal\record\valueContainer\LazyLoad($value, function($value, $record, $fieldName) {
                 return $record->getRecordAdapter()->select($this->_name)
-                    ->where('@primary', '=', $record->getPrimaryManifest())
+                    ->where('@primary', '=', $record->getPrimaryKeySet())
                     ->toValue($this->_name);
             });
         }

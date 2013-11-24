@@ -761,3 +761,29 @@ trait TField_LargeByteSizeRestricted {
         return ['lby' => $this->_exponentSize];
     }
 }
+
+
+
+trait TField_TargetPrimaryFieldAwareRelation {
+
+    protected $_targetRelationManifest;
+
+    public function getTargetRelationManifest() {
+        if($this->_targetRelationManifest) {
+            return $this->_targetRelationManifest;
+        } else if($this->_targetRelationManifest === false) {
+            return null;
+        }
+
+        $primaryIndex = $this->getTargetPrimaryIndex();
+
+        if($primaryIndex) {
+            $this->_targetRelationManifest = new opal\schema\RelationManifest($primaryIndex);
+        } else {
+            $this->_targetRelationManifest = false;
+            return null;
+        }
+
+        return $this->_targetRelationManifest;
+    }
+}

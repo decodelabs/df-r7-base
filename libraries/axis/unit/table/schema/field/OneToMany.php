@@ -111,9 +111,7 @@ class OneToMany extends axis\schema\field\Base implements axis\schema\IOneToMany
         $targetSchema = $targetUnit->getTransientUnitSchema();
         $targetPrimaryIndex = $this->_validateTargetPrimaryIndex($targetUnit, $targetSchema);
         $targetField = $this->_validateInverseRelationField($targetUnit, $targetSchema);
-        
-        $this->_targetPrimaryFields = array_keys($targetPrimaryIndex->getFields());
-        $this->_validateDefaultValue($localUnit, $this->_targetPrimaryFields);
+        $this->_validateDefaultValue($localUnit);
         
         return $this;
     }
@@ -125,18 +123,13 @@ class OneToMany extends axis\schema\field\Base implements axis\schema\IOneToMany
         $this->_setBaseStorageArray($data);
         $this->_setRelationStorageArray($data);
         $this->_setInverseRelationStorageArray($data);
-
-        $this->_targetPrimaryFields = (array)$data['tpf'];
     }
     
     public function toStorageArray() {
         return array_merge(
             $this->_getBaseStorageArray(),
             $this->_getRelationStorageArray(),
-            $this->_getInverseRelationStorageArray(),
-            [
-                'tpf' => $this->_targetPrimaryFields
-            ]
+            $this->_getInverseRelationStorageArray()
         );
     }
 }

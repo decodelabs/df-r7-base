@@ -48,7 +48,7 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
 
 // Record
     public function setRecord($record) {
-        if($record instanceof opal\record\IPrimaryManifest
+        if($record instanceof opal\record\IPrimaryKeySet
         && $record->isNull()) {
             $record = null;
         }
@@ -315,7 +315,11 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
     }
 
     protected function _getRecordName() {
-        return $this->_record['name'];
+        if(isset($this->_record['name'])) {
+            return $this->_record['name'];
+        } else {
+            return '???';
+        }
     }
 
     abstract protected function _getRecordUrl($id);

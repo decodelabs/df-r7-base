@@ -23,13 +23,13 @@ class InlineManyRelationValueContainer implements
     protected $_remove = array();
     protected $_removeAll = false;
     
-    protected $_targetPrimaryManifest;
+    protected $_targetPrimaryKeySet;
     protected $_field;
     protected $_record = null;
     
     public function __construct(axis\schema\IOneToManyField $field) {
         $this->_field = $field;
-        $this->_targetPrimaryManifest = $field->getTargetPrimaryManifest();
+        $this->_targetPrimaryKeySet = $field->getTargetRelationManifest()->toPrimaryKeySet();
     }
     
     public function isPrepared() {
@@ -155,18 +155,18 @@ class InlineManyRelationValueContainer implements
 
     protected function _normalizeInputRecordList(array $records) {
         $index = array();
-        $lookupManifests = array();
+        $lookupKeySets = array();
         
         foreach($records as $record) {
             if($record instanceof opal\record\IRecord) {
                 $id = opal\record\Base::extractRecordId($record);
-            } else if($record instanceof opal\record\IPrimaryManifest) {
+            } else if($record instanceof opal\record\IPrimaryKeySet) {
                 $id = opal\record\Base::extractRecordId($record);
-                $lookupManifests[$id] = $record;
+                $lookupKeySets[$id] = $record;
             } else {
-                $record = $this->_targetPrimaryManifest->duplicateWith($record);
+                $record = $this->_targetPrimaryKeySet->duplicateWith($record);
                 $id = opal\record\Base::extractRecordId($record);
-                $lookupManifests[$id] = $record;
+                $lookupKeySets[$id] = $record;
             }
             
             if(!isset($this->_current[$id])) {
@@ -174,18 +174,18 @@ class InlineManyRelationValueContainer implements
             }
         }
         
-        if(!empty($lookupManifests)) {
+        if(!empty($lookupKeySets)) {
             $application = $this->_record->getRecordAdapter()->getApplication();
             $targetUnit = $this->_getTargetUnit($application);
             
             $query = opal\query\Initiator::factory($application)
-                ->beginSelect($this->_targetPrimaryManifest->getFieldNames())
+                ->beginSelect($this->_targetPrimaryKeySet->getFieldNames())
                 ->from($targetUnit);
             
-            foreach($lookupManifests as $manifest) {
+            foreach($lookupKeySets as $keySet) {
                 $clause = $query->beginOrWhereClause();
                 
-                foreach($manifest->toArray() as $key => $value) {
+                foreach($keySet->toArray() as $key => $value) {
                     $clause->where($key, '=', $value);
                 }
                 
@@ -194,13 +194,13 @@ class InlineManyRelationValueContainer implements
             
             $res = $query->toArray();
             
-            foreach($lookupManifests as $id => $manifest) {
+            foreach($lookupKeySets as $id => $keySet) {
                 if(empty($res)) {
                     unset($index[$id]);
                     continue;
                 }
                 
-                $keys = $manifest->toArray();
+                $keys = $keySet->toArray();
                 $found = false;
                 
                 foreach($res as $row) {
@@ -233,10 +233,10 @@ class InlineManyRelationValueContainer implements
         foreach($records as $record) {
             if($record instanceof opal\record\IRecord) {
                 $id = opal\record\Base::extractRecordId($record);
-            } else if($record instanceof opal\record\IPrimaryManifest) {
+            } else if($record instanceof opal\record\IPrimaryKeySet) {
                 $id = opal\record\Base::extractRecordId($record);
             } else {
-                $record = $this->_targetPrimaryManifest->duplicateWith($record);
+                $record = $this->_targetPrimaryKeySet->duplicateWith($record);
                 $id = opal\record\Base::extractRecordId($record);
             }
             
@@ -284,8 +284,8 @@ class InlineManyRelationValueContainer implements
             ->from($targetUnit, $this->_field->getName());
                 
                 
-        $manifest = $this->_record->getPrimaryManifest();
-        $query->wherePrerequisite($this->_field->getName().'.'.$this->_field->getTargetField(), '=', $manifest);
+        $primaryKeySet = $this->_record->getPrimaryKeySet();
+        $query->wherePrerequisite($this->_field->getName().'.'.$this->_field->getTargetField(), '=', $primaryKeySet);
         
         return $query;
     }
@@ -313,8 +313,8 @@ class InlineManyRelationValueContainer implements
             ->beginFetch()
             ->from($targetUnit, $this->_field->getName());
             
-        $manifest = $this->_record->getPrimaryManifest();
-        $query->wherePrerequisite($this->_field->getName().'.'.$this->_field->getTargetField(), '=', $manifest);
+        $primaryKeySet = $this->_record->getPrimaryKeySet();
+        $query->wherePrerequisite($this->_field->getName().'.'.$this->_field->getTargetField(), '=', $primaryKeySet);
         
         return $query;
     }
@@ -336,7 +336,7 @@ class InlineManyRelationValueContainer implements
         $application = $localUnit->getApplication();
         $targetUnit = $this->_getTargetUnit($application);
         $targetField = $this->_field->getTargetField();
-        $parentManifest = $parentRecord->getPrimaryManifest();
+        $parentKeySet = $parentRecord->getPrimaryKeySet();
 
         
         // Save any changed populated records
@@ -354,7 +354,7 @@ class InlineManyRelationValueContainer implements
             $removeAllTask = $taskSet->addRawQuery(
                 'rmRel:'.opal\record\Base::extractRecordId($parentRecord).'/'.$this->_field->getName(),
                 $query = $targetUnit->update([$targetField => null])
-                    ->where($targetField, '=', $parentManifest)
+                    ->where($targetField, '=', $parentKeySet)
             );
 
             if(!empty($this->_new)) {
@@ -365,10 +365,10 @@ class InlineManyRelationValueContainer implements
         
         // Insert relation tasks
         foreach($this->_new as $id => $record) {
-            if($record instanceof opal\record\IPrimaryManifest) {
-                $targetManifest = $record;
+            if($record instanceof opal\record\IPrimaryKeySet) {
+                $targetKeySet = $record;
             } else {
-                $targetManifest = $this->_targetPrimaryManifest->duplicateWith($record);
+                $targetKeySet = $this->_targetPrimaryKeySet->duplicateWith($record);
             }
             
             if($record instanceof opal\record\IRecord) {
@@ -378,17 +378,17 @@ class InlineManyRelationValueContainer implements
                 
                 if($recordTask) {
                     $targetRecordTask->addDependency(
-                        new opal\record\task\dependency\UpdateManifestField(
+                        new opal\record\task\dependency\UpdateKeySetField(
                             $targetField, $recordTask
                         )
                     );
                 } else {
-                    $record->set($targetField, $parentManifest);
+                    $record->set($targetField, $parentKeySet);
                 }
             } else {
                 $values = array();
                 
-                foreach($parentManifest->toArray() as $key => $value) {
+                foreach($parentKeySet->toArray() as $key => $value) {
                     $values[$targetField.'_'.$key] = $value;
                 }
                 
@@ -400,7 +400,7 @@ class InlineManyRelationValueContainer implements
                 
                 if($recordTask) {
                     $targetRecordTask->addDependency(
-                        new opal\record\task\dependency\UpdateRawManifest(
+                        new opal\record\task\dependency\UpdateRawKeySet(
                             $targetField, $recordTask
                         )
                     );
@@ -413,25 +413,25 @@ class InlineManyRelationValueContainer implements
         if(!empty($this->_remove) && !$removeAllTask) {
             $fields = array();
                 
-            foreach($parentManifest->toArray() as $key => $value) {
+            foreach($parentKeySet->toArray() as $key => $value) {
                 $fields[] = $targetField.'_'.$key;
             }
             
-            $nullManifest = new opal\record\PrimaryManifest($fields, null);
+            $nullKeySet = new opal\record\PrimaryKeySet($fields, null);
             
             foreach($this->_remove as $id => $record) {
-                if($record instanceof opal\record\IPrimaryManifest) {
-                    $targetManifest = $record;
+                if($record instanceof opal\record\IPrimaryKeySet) {
+                    $targetKeySet = $record;
                 } else {
-                    $targetManifest = $this->_targetPrimaryManifest->duplicateWith($record);
+                    $targetKeySet = $this->_targetPrimaryKeySet->duplicateWith($record);
                 }
                 
                 if($record instanceof opal\record\IRecord) {
-                    $record->set($targetField, $nullManifest);
+                    $record->set($targetField, $nullKeySet);
                     $record->deploySaveTasks($taskSet);
                 } else {
                     $targetRecordTask = new opal\record\task\UpdateRaw(
-                        $targetUnit, $record, $nullManifest->toArray()
+                        $targetUnit, $record, $nullKeySet->toArray()
                     );
                     
                     $taskSet->addTask($targetRecordTask);
@@ -457,14 +457,14 @@ class InlineManyRelationValueContainer implements
         $targetUnit = $this->_getTargetUnit($application);
         $targetField = $this->_field->getTargetField();
         $targetSchema = $targetUnit->getUnitSchema();
-        $parentManifest = $parentRecord->getPrimaryManifest();
+        $parentKeySet = $parentRecord->getPrimaryKeySet();
         $values = array();
 
-        foreach($parentManifest->toArray() as $key => $value) {
+        foreach($parentKeySet->toArray() as $key => $value) {
             $values[$targetField.'_'.$key] = $value;
         }
         
-        $inverseManifest = new opal\record\PrimaryManifest(array_keys($values), $values);
+        $inverseKeySet = new opal\record\PrimaryKeySet(array_keys($values), $values);
         $primaryIndex = $targetSchema->getPrimaryIndex();
 
         if($primaryIndex->hasField($targetSchema->getField($targetField))) {
@@ -473,7 +473,7 @@ class InlineManyRelationValueContainer implements
             );
         } else {
             $targetRecordTask = new opal\record\task\UpdateRaw(
-                $targetUnit, $inverseManifest, $inverseManifest->duplicateWith(null)->toArray()
+                $targetUnit, $inverseKeySet, $inverseKeySet->duplicateWith(null)->toArray()
             );
         }
 

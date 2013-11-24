@@ -26,8 +26,8 @@ interface IRecord extends core\collection\IMappedCollection, user\IAccessLock, c
     public function makeNew(array $newValues=null);
     public function spawnNew(array $newValues=null);
     
-    public function getPrimaryManifest();
-    public function getOriginalPrimaryManifest();
+    public function getPrimaryKeySet();
+    public function getOriginalPrimaryKeySet();
     
     public function hasChanged($field=null);
     public function clearChanges();
@@ -99,7 +99,7 @@ interface IManyRelationValueContainer extends IValueContainer {
 }
 
 
-interface IPrimaryManifest extends \ArrayAccess {
+interface IPrimaryKeySet extends \ArrayAccess {
     public function toArray();
     public function updateWith($record);
     public function countFields();
@@ -110,5 +110,5 @@ interface IPrimaryManifest extends \ArrayAccess {
     public function getValue();
     public function getFirstKeyValue();
     public function duplicateWith($values);
-    public function eq(IPrimaryManifest $manifest);
+    public function eq(IPrimaryKeySet $keySet);
 }

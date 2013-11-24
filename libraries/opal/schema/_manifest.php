@@ -245,6 +245,32 @@ interface IOptionProviderField extends IField {
 
 
 
+interface IMultiPrimitiveField extends IField {
+    public function getPrimitiveFieldNames();
+}
+
+interface INullPrimitiveField extends IField {}
+
+interface IQueryClauseRewriterField extends IField {
+    public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false);
+}
+
+
+interface IRelationField extends IField {
+    public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate);
+}
+
+interface IInverseRelationField extends IRelationField {
+    public function setTargetField($field);
+    public function getTargetField();
+}
+
+interface ITargetPrimaryFieldAwareRelationField extends IField {
+    public function getTargetPrimaryIndex();
+    public function getTargetRelationManifest();
+}
+
+
 
 
 interface IPrimitive extends IField {
@@ -254,6 +280,7 @@ interface IPrimitive extends IField {
 interface IMultiFieldPrimitive extends IPrimitive {
     public function getPrimitives();
 }
+
 
 
 
@@ -333,4 +360,13 @@ interface ITrigger extends IChangeTracker {
     public function addStatement($statement);
     public function getStatements();
     public function hasFieldReference($fields);
+}
+
+
+interface IRelationManifest extends \IteratorAggregate, core\IArrayProvider {
+    public function getPrimitiveFieldNames($prefix=null);
+    public function isSingleField();
+    public function getSingleFieldName();
+    public function validateValue($value);
+    public function extractFromRow($key, array $row);
 }

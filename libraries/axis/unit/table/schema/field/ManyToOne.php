@@ -40,21 +40,7 @@ class ManyToOne extends One implements axis\schema\IManyToOneField, axis\schema\
         $targetSchema = $targetUnit->getTransientUnitSchema();
         $targetPrimaryIndex = $this->_validateTargetPrimaryIndex($targetUnit, $targetSchema);
         $targetField = $this->_validateInverseRelationField($targetUnit, $targetSchema);
-        
-        
-        $this->_targetPrimaryFields = array();
-        
-        foreach($targetPrimaryIndex->getFields() as $name => $field) {
-            if($field instanceof axis\schema\IMultiPrimitiveField) {
-                foreach($field->getPrimitiveFieldNames() as $name) {
-                    $this->_targetPrimaryFields[] = $name;
-                }
-            } else {
-                $this->_targetPrimaryFields[] = $name;
-            }
-        }
-        
-        $this->_validateDefaultValue($localUnit, $this->_targetPrimaryFields);
+        $this->_validateDefaultValue($localUnit);
         
         return $this;
     }

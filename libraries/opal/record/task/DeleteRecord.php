@@ -29,10 +29,10 @@ class DeleteRecord implements IDeleteRecordTask {
         }
         
         $query = $transaction->delete()->from($this->getAdapter());
-        $manifest = $this->_record->getOriginalPrimaryManifest();
+        $keySet = $this->_record->getOriginalPrimaryKeySet();
         
-        if(!$manifest->isNull()) {
-            foreach($manifest->toArray() as $field => $value) {
+        if(!$keySet->isNull()) {
+            foreach($keySet->toArray() as $field => $value) {
                 $query->where($field, '=', $value);
             }
         } else {

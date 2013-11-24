@@ -22,7 +22,7 @@ class OneRelationValueContainer implements
     
     public function __construct(axis\schema\IRelationField $field, opal\record\IRecord $parentRecord=null, $value=null) {
         $this->_field = $field;
-        $this->_value = $field->getTargetPrimaryManifest();
+        $this->_value = $field->getTargetRelationManifest()->toPrimaryKeySet();
 
         $this->setValue($value);
         $this->_applyInversePopulation($parentRecord);
@@ -36,7 +36,6 @@ class OneRelationValueContainer implements
         if($this->_value->isNull()) {
             return $this;
         }
-        
         
         $application = $record->getRecordAdapter()->getApplication();
         $targetUnit = axis\Model::loadUnitFromId($this->_field->getTargetUnitId(), $application);
@@ -67,14 +66,14 @@ class OneRelationValueContainer implements
     
     public function eq($value) {
         if($value instanceof self) {
-            $value = $value->getPrimaryManifest();
+            $value = $value->getPrimaryKeySet();
         } else if($value instanceof opal\record\IRecord) {
             if($value->isNew()) {
                 return false;
             }
 
-            $value = $value->getPrimaryManifest();
-        } else if(!$value instanceof opal\record\IPrimaryManifest) {
+            $value = $value->getPrimaryKeySet();
+        } else if(!$value instanceof opal\record\IPrimaryKeySet) {
             try {
                 $value = $this->_value->duplicateWith($value);
             } catch(opal\record\IException $e) {
@@ -90,18 +89,18 @@ class OneRelationValueContainer implements
         
         if($value instanceof self) {
             $record = $value->_record;
-            $value = $value->getPrimaryManifest();
+            $value = $value->getPrimaryKeySet();
         } else if($value instanceof opal\record\IRecord) {
             $record = $value;
-            $value = $value->getPrimaryManifest();
-        } else if(!$value instanceof opal\record\IPrimaryManifest) {
+            $value = $value->getPrimaryKeySet();
+        } else if(!$value instanceof opal\record\IPrimaryKeySet) {
             if($value === null) {
                 $record = null;
             }
         }
 
         $value = $this->_value->duplicateWith($value);
-        
+
         $this->_value = $value;
         $this->_record = $record;
 
@@ -127,19 +126,19 @@ class OneRelationValueContainer implements
     
     public function getValueForStorage() {
         if($this->_record) {
-            return $this->_value->duplicateWith($this->_record->getPrimaryManifest());
+            return $this->_value->duplicateWith($this->_record->getPrimaryKeySet());
         } else {
             return $this->_value;
         }
     }
     
-    public function getPrimaryManifest() {
+    public function getPrimaryKeySet() {
         return $this->_value;
     }
 
     public function getRawId() {
         if($this->_record) {
-            return $this->_record->getPrimaryManifest()->getFirstKeyValue();
+            return $this->_record->getPrimaryKeySet()->getFirstKeyValue();
         }
 
         if($this->_value) {
@@ -193,7 +192,7 @@ class OneRelationValueContainer implements
 
             if($task && $recordTask && $this->_record->isNew()) {
                 $recordTask->addDependency(
-                    new opal\record\task\dependency\UpdateManifestField($fieldName, $task)
+                    new opal\record\task\dependency\UpdateKeySetField($fieldName, $task)
                 );
             }
         }
@@ -220,9 +219,11 @@ class OneRelationValueContainer implements
             return $this->_record;
         }
         
+        /*
         if($this->_value->countFields() == 1) {
             return $this->_value->getFirstKeyValue();
         }
+        */
         
         return $this->_value;
     }

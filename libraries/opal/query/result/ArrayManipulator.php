@@ -885,7 +885,7 @@ class ArrayManipulator implements IArrayManipulator {
 
         // Prepare key / val field
         $oldValField = $keyName = $valQName = null;
-        $outputPrimaryManifest = false;
+        $outputPrimaryKeySet = false;
         $keyNameList = null;
         
         if($keyField) {
@@ -910,7 +910,7 @@ class ArrayManipulator implements IArrayManipulator {
 
                 if(count($derefFields) > 1) {
                     if($valField->getName() == '@primary') {
-                        $outputPrimaryManifest = true;
+                        $outputPrimaryKeySet = true;
                     }
 
                     core\stub('multi primary deref', $outputFields);

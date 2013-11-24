@@ -26,10 +26,10 @@ class UpdateRecord implements IUpdateRecordTask {
     public function execute(opal\query\ITransaction $transaction) {
         $data = $this->_record->getChangesForStorage();
         $query = $transaction->update($data)->in($this->getAdapter());
-        $manifest = $this->_record->getOriginalPrimaryManifest();
+        $keySet = $this->_record->getOriginalPrimaryKeySet();
 
-        if(!$manifest->isNull()) {
-            foreach($manifest->toArray() as $field => $value) {
+        if(!$keySet->isNull()) {
+            foreach($keySet->toArray() as $field => $value) {
                 $query->where($field, '=', $value);
             }
         } else {

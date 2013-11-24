@@ -460,7 +460,7 @@ abstract class Base implements
         }
 
         if($value instanceof opal\record\IRecord) {
-            $value = $value->getPrimaryManifest();
+            $value = $value->getPrimaryKeySet();
         }
         
         if($value instanceof opal\query\IVirtualField) {
@@ -483,7 +483,7 @@ abstract class Base implements
 
                 $valueFields[$targetFieldName] = $targetField;
             }
-        } else if($value instanceof opal\record\IPrimaryManifest) {
+        } else if($value instanceof opal\record\IPrimaryKeySet) {
             $value = $value->getIntrinsicFieldMap($localPrefix);
         } else if(is_scalar($value) && $fieldCount > 1) {
             throw new axis\schema\RuntimeException(
@@ -499,6 +499,7 @@ abstract class Base implements
 
             if($value instanceof opal\query\IVirtualField) {
                 if(!isset($valueFields[$keyName])) {
+                    core\dump($valueFields, $keyName);
                     throw new axis\schema\RuntimeException(
                         'KeyGroup join fields do not match between '.
                         $parent->getSource()->getAdapter()->getUnitId().':'.$field->getName().' and '.
@@ -614,7 +615,7 @@ abstract class Base implements
             }
         }
         
-        return new opal\record\PrimaryManifest($fields, $values);
+        return new opal\record\PrimaryKeySet($fields, $values);
     }
     
     public function deflateBatchInsertValues(array $rows, array &$queryFields) {
@@ -772,16 +773,16 @@ abstract class Base implements
     
     public function fetchByPrimary($keys) {
         $query = $this->fetch();
-        $primaryManifest = null;
+        $primaryKeySet = null;
 
-        if(is_string($keys) && substr($keys, 0, 9) == 'manifest?') {
-            $primaryManifest = opal\record\PrimaryManifest::fromEntityId($keys);
-        } else if($keys instanceof opal\record\IPrimaryManifest) {
-            $primaryManifest = $keys;
+        if(is_string($keys) && substr($keys, 0, 9) == 'keySet?') {
+            $primaryKeySet = opal\record\PrimaryKeySet::fromEntityId($keys);
+        } else if($keys instanceof opal\record\IPrimaryKeySet) {
+            $primaryKeySet = $keys;
         }
 
-        if($primaryManifest) {
-            foreach($primaryManifest->toArray() as $key => $value) {
+        if($primaryKeySet) {
+            foreach($primaryKeySet->toArray() as $key => $value) {
                 $query->where($key, '=', $value);
             }
         } else {
@@ -858,7 +859,7 @@ abstract class Base implements
     public function getSubEntityLocator(core\policy\IEntity $entity) {
         if($entity instanceof opal\record\IRecord) {
             $output = new core\policy\entity\Locator('axis://'.$this->getModel()->getModelName().'/'.ucfirst($this->getUnitName()));
-            $id = $entity->getPrimaryManifest()->getEntityId();
+            $id = $entity->getPrimaryKeySet()->getEntityId();
             $output->setId($id);
 
             return $output;

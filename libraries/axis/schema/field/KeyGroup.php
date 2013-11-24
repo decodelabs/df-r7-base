@@ -22,40 +22,26 @@ class KeyGroup extends Base implements axis\schema\IRelationField, axis\schema\I
 
 // Values
     public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
-        $values = array();
-        
-        foreach($this->_targetPrimaryFields as $field) {
-            $fieldKey = $key.'_'.$field;
-            
-            if(isset($row[$fieldKey])) {
-                $values[$field] = $row[$fieldKey];
+        $value = $this->getTargetRelationManifest()->extractFromRow($key, $row);
+
+        if(!$forRecord) {
+            // Only need a simple value
+            if(!is_array($value) || array_key_exists($key, $row)) {
+                return $value;
             } else {
-                $values[$field] = null;
+                return $this->getTargetRelationManifest()->toPrimaryKeySet($value);
             }
         }
 
-        if($forRecord) {
-            $output = new axis\unit\table\record\OneRelationValueContainer(
-                $this, $forRecord, $values
-            );
-
-            if(isset($row[$key])) {
-                $output->populateInverse($row[$key]);
-            }
-
-            return $output;
-        } else {
-            if(isset($row[$key])) {
-                return $row[$key];
-            }
-            
-            return new opal\record\PrimaryManifest($this->_targetPrimaryFields, $values);
-        }
+        // Need to build a value container
+        return new axis\unit\table\record\OneRelationValueContainer(
+            $this, $forRecord, $value
+        );
     }
 
     public function deflateValue($value) {
-        if(!$value instanceof opal\record\IPrimaryManifest) {
-            $value = new opal\record\PrimaryManifest($this->_targetPrimaryFields, $value);
+        if(!$value instanceof opal\record\IPrimaryKeySet) {
+            $value = $this->getTargetRelationManifest()->toPrimaryKeySet($value);
         }
         
         $output = array();
@@ -120,19 +106,6 @@ class KeyGroup extends Base implements axis\schema\IRelationField, axis\schema\I
         $targetUnit = $this->_validateTargetUnit($localUnit);
         $targetSchema = $targetUnit->getTransientUnitSchema();
         $targetPrimaryIndex = $this->_validateTargetPrimaryIndex($targetUnit, $targetSchema);
-
-        // Primary fields
-        $this->_targetPrimaryFields = array();
-        
-        foreach($targetPrimaryIndex->getFields() as $name => $field) {
-            if($field instanceof axis\schema\IMultiPrimitiveField) {
-                foreach($field->getPrimitiveFieldNames() as $name) {
-                    $this->_targetPrimaryFields[] = $name;
-                }
-            } else {
-                $this->_targetPrimaryFields[] = $name;
-            }
-        }
     }
 
     public function duplicateForRelation(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
@@ -142,13 +115,7 @@ class KeyGroup extends Base implements axis\schema\IRelationField, axis\schema\I
 
 // Primitive
     public function getPrimitiveFieldNames() {
-        $output = array();
-        
-        foreach($this->_targetPrimaryFields as $field) {
-            $output[] = $this->_name.'_'.$field;
-        }
-        
-        return $output;
+        return $this->getTargetRelationManifest()->getPrimitiveFieldNames($this->_name);
     }
 
 
@@ -156,8 +123,6 @@ class KeyGroup extends Base implements axis\schema\IRelationField, axis\schema\I
 // Ext. serialize
     protected function _importStorageArray(array $data) {
         $this->_setBaseStorageArray($data);
-        
-        $this->_targetPrimaryFields = (array)$data['tpf'];
         $this->_targetUnitId = $data['tui'];
     }
     
@@ -165,7 +130,6 @@ class KeyGroup extends Base implements axis\schema\IRelationField, axis\schema\I
         return array_merge(
             $this->_getBaseStorageArray(),
             [
-                'tpf' => $this->_targetPrimaryFields,
                 'tui' => $this->_targetUnitId
             ]
         );

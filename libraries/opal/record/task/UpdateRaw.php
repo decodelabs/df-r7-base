@@ -14,15 +14,15 @@ class UpdateRaw implements IUpdateTask {
     use TTask;
     use TAdapterAwareTask;
 
-    protected $_primaryManifest;
+    protected $_primaryKeySet;
     protected $_values;
     
-    public function __construct(opal\query\IAdapter $adapter, opal\record\IPrimaryManifest $primaryManifest, array $values) {
-        $this->_primaryManifest = $primaryManifest;
+    public function __construct(opal\query\IAdapter $adapter, opal\record\IPrimaryKeySet $primaryKeySet, array $values) {
+        $this->_primaryKeySet = $primaryKeySet;
         $this->_values = $values;
         $this->_adapter = $adapter;
         
-        $this->_setId(opal\record\Base::extractRecordId($primaryManifest));
+        $this->_setId(opal\record\Base::extractRecordId($primaryKeySet));
     }
     
     public function setValues(array $values) {
@@ -35,13 +35,13 @@ class UpdateRaw implements IUpdateTask {
     }
     
     public function execute(opal\query\ITransaction $transaction) {
-        if($this->_primaryManifest->isNull()) {
+        if($this->_primaryKeySet->isNull()) {
             return $this;
         }
         
         $query = $transaction->update($this->_values)->in($this->_adapter);
         
-        foreach($this->_primaryManifest->toArray() as $field => $value) {
+        foreach($this->_primaryKeySet->toArray() as $field => $value) {
             $query->where($field, '=', $value);
         }
         

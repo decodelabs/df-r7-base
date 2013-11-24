@@ -28,33 +28,16 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
     
 // Values
     public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
-        $hasKey = array_key_exists($key, $row);
-
-        if($hasKey) {
-            $value = $row[$key];
-        } else {
-            $value = array();
-            
-            foreach($this->_targetPrimaryFields as $field) {
-                $fieldKey = $key.'_'.$field;
-                
-                if(isset($row[$fieldKey])) {
-                    $value[$field] = $row[$fieldKey];
-                } else {
-                    $value[$field] = null;
-                }
-            }
-        }
+        $value = $this->getTargetRelationManifest()->extractFromRow($key, $row);
 
         if(!$forRecord) {
             // Only need a simple value
-            if($hasKey) {
+            if(!is_array($value) || array_key_exists($key, $row)) {
                 return $value;
             } else {
-                return new opal\record\PrimaryManifest($this->_targetPrimaryFields, $value);
+                return $this->getTargetRelationManifest()->toPrimaryKeySet($value);
             }
         }
-
 
         // Need to build a value container
         return new axis\unit\table\record\OneRelationValueContainer(
@@ -64,11 +47,11 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
     
     public function deflateValue($value) {
         if($value instanceof opal\record\IRecord) {
-            $value = $value->getPrimaryManifest();
+            $value = $value->getPrimaryKeySet();
         }
 
-        if(!$value instanceof opal\record\IPrimaryManifest) {
-            $value = new opal\record\PrimaryManifest($this->_targetPrimaryFields, $value);
+        if(!$value instanceof opal\record\IPrimaryKeySet) {
+            $value = new opal\record\PrimaryKeySet($this->getTargetRelationManifest()->getPrimitiveFieldNames(), $value);
         }
         
         $output = array();
@@ -139,23 +122,7 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
         $targetUnit = $this->_validateTargetUnit($localUnit);
         $targetSchema = $targetUnit->getTransientUnitSchema();
         $targetPrimaryIndex = $this->_validateTargetPrimaryIndex($targetUnit, $targetSchema);
-        
-
-        // Primary fields
-        $this->_targetPrimaryFields = array();
-        
-        foreach($targetPrimaryIndex->getFields() as $name => $field) {
-            if($field instanceof axis\schema\IMultiPrimitiveField) {
-                foreach($field->getPrimitiveFieldNames() as $name) {
-                    $this->_targetPrimaryFields[] = $name;
-                }
-            } else {
-                $this->_targetPrimaryFields[] = $name;
-            }
-        }
-
-
-        $this->_validateDefaultValue($localUnit, $this->_targetPrimaryFields);
+        $this->_validateDefaultValue($localUnit);
 
         return $this;
     }
@@ -163,9 +130,10 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
     public function duplicateForRelation(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
         $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId, $unit->getApplication());
         $targetSchema = $targetUnit->getTransientUnitSchema();
+        $targetRelationManifest = $this->getTargetRelationManifest();
         $output = array();
 
-        foreach($this->_targetPrimaryFields as $fieldName) {
+        foreach($targetRelationManifest as $fieldName => $primitive) {
             $field = $targetSchema->getField($fieldName);
 
             $dupField = $field->duplicateForRelation($targetUnit, $targetSchema);
@@ -180,13 +148,7 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
     
 // Primitive
     public function getPrimitiveFieldNames() {
-        $output = array();
-        
-        foreach($this->_targetPrimaryFields as $field) {
-            $output[] = $this->_name.'_'.$field;
-        }
-        
-        return $output;
+        return $this->getTargetRelationManifest()->getPrimitiveFieldNames($this->_name);
     }
 
     
@@ -195,23 +157,18 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
     protected function _importStorageArray(array $data) {
         $this->_setBaseStorageArray($data);
         $this->_setRelationStorageArray($data);
-        
-        $this->_targetPrimaryFields = (array)$data['tpf'];
     }
     
     public function toStorageArray() {
         return array_merge(
             $this->_getBaseStorageArray(),
-            $this->_getRelationStorageArray(),
-            [
-                'tpf' => $this->_targetPrimaryFields
-            ]
+            $this->_getRelationStorageArray()
         );
     }
     
     
 // Dump
     public function getDumpProperties() {
-        return parent::getDumpProperties().' '.$this->_targetUnitId.' : '.implode(', ', $this->_targetPrimaryFields);
+        return parent::getDumpProperties().' '.$this->_targetUnitId;
     }
 }

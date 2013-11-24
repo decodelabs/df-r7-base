@@ -26,10 +26,10 @@ class UpdateBridge implements opal\record\task\IParentFieldAwareDependency {
     public function applyResolution(opal\record\task\ITask $dependentTask) {
         if($dependentTask instanceof opal\record\task\IRecordTask) {
             $record = $dependentTask->getRecord();
-            $manifest = $this->_requiredTask->getRecord()->getPrimaryManifest();
+            $keySet = $this->_requiredTask->getRecord()->getPrimaryKeySet();
             $field = current($this->_parentFields);
             
-            $record->set($field, $manifest);
+            $record->set($field, $keySet);
         }
         
         return $this;

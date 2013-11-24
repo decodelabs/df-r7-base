@@ -20,31 +20,6 @@ class OneParent extends One implements axis\schema\IOneParentField {
     }
     
     
-// Values
-/*
-    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
-        $values = array();
-        
-        foreach($this->_targetPrimaryFields as $field) {
-            $fieldKey = $key.'_'.$field;
-            
-            if(isset($row[$fieldKey])) {
-                $values[$field] = $row[$fieldKey];
-            } else {
-                $values[$field] = null;
-            }
-        }
-        
-        if($forRecord) {
-            return new axis\unit\table\record\OneRelationValueContainer(
-                $this, $forRecord, $values
-            );
-        } else {
-            return new opal\record\PrimaryManifest($this->_targetPrimaryFields, $values);
-        }
-    }
-*/    
-    
 // Validate
     public function validate(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $schema) {
         // Target
@@ -52,9 +27,7 @@ class OneParent extends One implements axis\schema\IOneParentField {
         $targetSchema = $targetUnit->getTransientUnitSchema();
         $targetPrimaryIndex = $this->_validateTargetPrimaryIndex($targetUnit, $targetSchema);
         $targetField = $this->_validateInverseRelationField($targetUnit, $targetSchema);
-        
-        $this->_targetPrimaryFields = array_keys($targetPrimaryIndex->getFields());
-        $this->_validateDefaultValue($localUnit, $this->_targetPrimaryFields);
+        $this->_validateDefaultValue($localUnit);
         
         return $this;
     }

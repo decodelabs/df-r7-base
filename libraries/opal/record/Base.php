@@ -26,18 +26,18 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     private $_primaryFields = false;
 
     public static function extractRecordId($record) {
-        $manifest = null;
+        $keySet = null;
         $isRecord = false;
         
         if($record instanceof IRecord) {
             $isRecord = true;
-            $manifest = $record->getPrimaryManifest();
-        } else if($record instanceof IPrimaryManifest) {
-            $manifest = $record;
+            $keySet = $record->getPrimaryKeySet();
+        } else if($record instanceof IPrimaryKeySet) {
+            $keySet = $record;
         }
         
-        if($manifest && !$manifest->isNull()) {
-            return $manifest->getCombinedId();
+        if($keySet && !$keySet->isNull()) {
+            return $keySet->getCombinedId();
         }
         
         if($isRecord) {
@@ -45,7 +45,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         }
         
         if(is_array($record)) {
-            return '{'.implode(PrimaryManifest::COMBINE_SEPARATOR, $record).'}';
+            return '{'.implode(PrimaryKeySet::COMBINE_SEPARATOR, $record).'}';
         }
         
         return (string)$record;
@@ -134,15 +134,15 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $output->makeNew($newValues);
     }
     
-    public function getPrimaryManifest() {
-        return $this->_getPrimaryManifest(true);
+    public function getPrimaryKeySet() {
+        return $this->_getPrimaryKeySet(true);
     }
 
-    public function getOriginalPrimaryManifest() {
-        return $this->_getPrimaryManifest(false);
+    public function getOriginalPrimaryKeySet() {
+        return $this->_getPrimaryKeySet(false);
     }
 
-    protected function _getPrimaryManifest($includeChanges=true) {
+    protected function _getPrimaryKeySet($includeChanges=true) {
         $fields = $this->_getPrimaryFields();
 
         if($fields === null) {
@@ -167,7 +167,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
             }
         }
         
-        return new PrimaryManifest($fields, $values); 
+        return new PrimaryKeySet($fields, $values); 
     }
     
     protected function _getPrimaryFields() {
@@ -230,7 +230,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
             if($value instanceof IValueContainer) {
                 $value = $value->getValueForStorage();
             } else if($value instanceof IRecord) {
-                $value = $value->getPrimaryManifest();
+                $value = $value->getPrimaryKeySet();
             }
             
             $output[$key] = $this->_deflateValue($key, $value);
@@ -246,7 +246,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
             if($value instanceof IValueContainer) {
                 $value = $value->getValueForStorage();
             } else if($value instanceof IRecord) {
-                $value = $value->getPrimaryManifest();
+                $value = $value->getPrimaryKeySet();
             }
             
             $output[$key] = $this->_deflateValue($key, $value);
@@ -283,7 +283,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
                 if($value instanceof IValueContainer) {
                     $value = $value->getValueForStorage();
                 } else if($value instanceof IRecord) {
-                    $value = $value->getPrimaryManifest();
+                    $value = $value->getPrimaryKeySet();
                 }
                 
                 $output[$key] = $this->_deflateValue($key, $value);
@@ -321,7 +321,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
                 if($value instanceof IValueContainer) {
                     $value = $value->getValueForStorage();
                 } else if($value instanceof IRecord) {
-                    $value = $value->getPrimaryManifest();
+                    $value = $value->getPrimaryKeySet();
                 }
                 
                 $output[$key] = $this->_deflateValue($key, $value);;
@@ -356,7 +356,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
             if($value instanceof IValueContainer) {
                 $value = $value->getValueForStorage();
             } else if($value instanceof IRecord) {
-                $value = $value->getPrimaryManifest();
+                $value = $value->getPrimaryKeySet();
             }
             
             $output[$key] = $this->_deflateValue($key, $value);
@@ -389,11 +389,11 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         
         // Import primary key
         if($insertId !== null && (null !== ($primaryFields = $this->_getPrimaryFields()))) {
-            if(!$insertId instanceof IPrimaryManifest) {
+            if(!$insertId instanceof IPrimaryKeySet) {
                 if(count($primaryFields) > 1) {
                     // Cant do anything here??
                 } else {
-                    $insertId = new PrimaryManifest($primaryFields, array($primaryFields[0] => $insertId));
+                    $insertId = new PrimaryKeySet($primaryFields, array($primaryFields[0] => $insertId));
                 }
             }
             
@@ -590,7 +590,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     }
     
     public function __toString() {
-        return $this->getPrimaryManifest()->__toString();
+        return $this->getPrimaryKeySet()->__toString();
     }
     
 // Storage
@@ -752,6 +752,10 @@ class Base implements IRecord, \Serializable, core\IDumpable {
             $output = $output->getRawId();
         } else if($output instanceof IValueContainer) {
             $output = $output->getValue();
+        }
+
+        if($output instanceof IPrimaryKeySet) {
+            $output = $output->getRawValue();
         }
 
         return $output;
@@ -987,8 +991,8 @@ class Base implements IRecord, \Serializable, core\IDumpable {
             return $this->_adapter->getSubEntityLocator($this);
         }
 
-        $manifest = $this->getPrimaryManifest();
-        $id = $manifest->getEntityId();
+        $keySet = $this->getPrimaryKeySet();
+        $id = $keySet->getEntityId();
 
         $output = $this->_adapter->getEntityLocator();
         $output->addNode(new core\policy\entity\LocatorNode(null, 'Record', $id));

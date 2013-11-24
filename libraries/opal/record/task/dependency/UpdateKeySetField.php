@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\opal;
 
-class UpdateManifestField implements opal\record\task\IParentFieldAwareDependency {
+class UpdateKeySetField implements opal\record\task\IParentFieldAwareDependency {
     
     use opal\record\task\TDependency;
     use opal\record\task\TParentFieldAwareDependency;
@@ -26,10 +26,10 @@ class UpdateManifestField implements opal\record\task\IParentFieldAwareDependenc
     public function applyResolution(opal\record\task\ITask $dependentTask) {
         if($dependentTask instanceof opal\record\task\IRecordTask) {
             $record = $dependentTask->getRecord();
-            $manifest = $this->_requiredTask->getRecord()->getPrimaryManifest();
+            $keySet = $this->_requiredTask->getRecord()->getPrimaryKeySet();
             
             foreach($this->_parentFields as $key => $field) {
-                $record->set($field, $manifest);
+                $record->set($field, $keySet);
             }
         }
         
