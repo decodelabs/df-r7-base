@@ -286,15 +286,3 @@ interface IUuid extends core\IStringProvider {
     public function getNode();
     public function getTime();
 }
-
-interface IRainbowKey extends core\IStringProvider {
-    public static function createFromHex($hexItemId, $generatorId, $itemIdSize=8);
-    public static function create($itemId, $generatorId, $itemIdSize=8);
-    
-    public function getBytes();
-    public function getHex();
-    
-    public function getGeneratorId();
-    public function getItemId();
-    public function getItemIdSize();
-}
