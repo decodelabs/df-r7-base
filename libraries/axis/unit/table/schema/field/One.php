@@ -32,7 +32,7 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
 
         if(!$forRecord) {
             // Only need a simple value
-            if(!is_array($value) || array_key_exists($key, $row)) {
+            if(array_key_exists($key, $row)) {
                 return $value;
             } else {
                 return $this->getTargetRelationManifest()->toPrimaryKeySet($value);
