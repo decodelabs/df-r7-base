@@ -1647,9 +1647,18 @@ trait TQuery_DataUpdate {
         $this->_valueMap = array_merge($this->_valueMap, $values);
     }
     
-    public function setExpression($field, $expression) {
-        core\stub($field, $expression);
+    public function express($field, $var1) {
+        return call_user_func_array([$this, 'beginExpression'], func_get_args())->endExpression();
     }
+
+    public function beginExpression($field, $var1) {
+        return new Expression($this, $field, array_slice(func_get_args(), 1));
+    }
+
+    public function expressCorrelation($field, $targetField) {
+        core\stub($field, $targetField);
+    }
+
     
     public function getValueMap() {
         return $this->_valueMap;
@@ -1665,6 +1674,10 @@ trait TQuery_DataUpdate {
         $schema = $adapter->getQueryAdapterSchema();
         
         foreach($values as $name => $value) {
+            if($value instanceof opal\query\IExpression) {
+                continue;
+            }
+
             if(!$field = $schema->getField($name)) {
                 continue;
             }

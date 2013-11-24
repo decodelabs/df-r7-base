@@ -442,7 +442,9 @@ interface IBatchReplaceQuery extends IBatchDataInsertQuery {}
  */
 interface IDataUpdateQuery extends IWriteQuery {
     public function set($field, $value=null);
-    public function setExpression($field, $expression);
+    public function express($field, $element1);
+    public function beginExpression($field, $element1);
+    public function expressCorrelation($field, $targetField);
     public function getValueMap();
 }
  
@@ -771,6 +773,36 @@ interface IClauseList extends
 interface IJoinClauseList extends IClauseList, IJoinClauseFactory, IParentSourceProvider {}
 interface IWhereClauseList extends IClauseList, IWhereClauseFactory {}
 interface IHavingClauseList extends IClauseList, IHavingClauseFactory {}
+
+
+interface IExpression {
+    public function getParentQuery();
+    public function getParentExpression();
+    public function getElements();
+
+    public function op($operator);
+    public function group($element1);
+    public function express($element1);
+    public function beginExpression($element1);
+    public function correlate($targetField);
+    public function isExpectingValue();
+    public function addExpression(IExpression $expression);
+    public function endExpression();
+}
+
+interface IExpressionOperator {
+    const ADD = '+';
+    const SUBTRACT = '-';
+    const MULTIPLY = '*';
+    const DIVIDE = '/';
+    const MOD = '%';
+
+    public function getOperator();
+}
+
+interface IExpressionValue {
+    public function getValue();
+}
 
 
 // Paginator

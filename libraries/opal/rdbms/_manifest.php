@@ -281,6 +281,9 @@ interface IQueryExecutor {
     public function normalizeArrayClauseValue($value, $allowAlias=false);
     public function normalizeScalarClauseValue($value, $allowAlias=false);
 
+// Expression
+    public function defineExpression(opal\query\IExpression $expression);
+
 // Group, order, limit
     public function writeGroupSection();
     public function writeOrderSection($forUpdateOrDelete=false);

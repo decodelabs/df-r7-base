@@ -458,15 +458,21 @@ abstract class QueryExecutor implements IQueryExecutor {
             );
         }
 
-        $this->_stmt->appendSql('UPDATE '.$this->_adapter->quoteIdentifier($tableName).' SET');
+        $this->_stmt->appendSql(
+            'UPDATE '.$this->_adapter->quoteIdentifier($tableName).
+            'AS '.$this->_adapter->quoteTableAliasDefinition($this->_query->getSource()->getAlias()).' SET'
+        );
+
         $values = array();
         
         foreach($this->_query->getValueMap() as $field => $value) {
-            // TODO: check for expression
-
-            $id = $this->_stmt->generateUniqueKey();
-            $values[] = $this->_adapter->quoteIdentifier($field).' = :'.$id;
-            $this->_stmt->bind($id, $value);
+            if($value instanceof opal\query\IExpression) {
+                $values[] = $this->_adapter->quoteIdentifier($field).' = '.$this->defineExpression($value);
+            } else {
+                $id = $this->_stmt->generateUniqueKey();
+                $values[] = $this->_adapter->quoteIdentifier($field).' = :'.$id;
+                $this->_stmt->bind($id, $value);
+            }
         }
         
         $this->_stmt->appendSql("\n  ".implode(','."\n".'  ', $values));
@@ -1471,6 +1477,30 @@ abstract class QueryExecutor implements IQueryExecutor {
         return $valString;
     }
 
+
+
+// Expression
+    public function defineExpression(opal\query\IExpression $expression) {
+        $elements = $expression->getElements();
+        $output = [];
+
+        foreach($elements as $element) {
+            if($element instanceof opal\query\IField) {
+                $output[] = $this->defineFieldReference($element, false);
+            } else if($element instanceof opal\query\IExpressionValue) {
+                $output[] = $bindString = ':'.$this->_stmt->generateUniqueKey();
+                $this->_stmt->bind($bindString, $element->getValue());
+            } else if($element instanceof opal\query\IExpressionOperator) {
+                $output[] = $element->getOperator();
+            } else if($element instanceof opal\query\ICorrelationQuery) {
+                core\stub($element);
+            } else if($element instanceof opal\query\IExpression) {
+                $output[] = '('.$this->defineExpression($element).')';
+            }
+        }
+
+        return implode(' ', $output);
+    }
 
 
 // Groups
