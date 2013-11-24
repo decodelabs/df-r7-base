@@ -37,7 +37,6 @@ interface IField extends opal\schema\IField, opal\query\IFieldValueProcessor {
     public function getFieldTypeDisplayName();
     public function getFieldSchemaString();
     
-    public function generateInsertValue(array $row);
     public function duplicateForRelation(axis\ISchemaBasedStorageUnit $unit, ISchema $schema);
     
     public function sanitize(axis\ISchemaBasedStorageUnit $unit, ISchema $schema);
@@ -94,37 +93,8 @@ trait TLengthRestrictedField {
 }
 
 
-interface IAutoGeneratorField extends IField {
-    public function shouldAutoGenerate($flag=null);
-}
 
-
-trait TAutoGeneratorField {
-    
-    protected $_autoGenerate = true;
-    
-    public function shouldAutoGenerate($flag=null) {
-        if($flag !== null) {
-            $flag = (bool)$flag;
-            
-            if($flag != $this->_autoGenerate) {
-                $this->_hasChanged = true;
-            }
-            
-            $this->_autoGenerate = (bool)$flag;
-            return $this;
-        }
-        
-        return $this->_autoGenerate;
-    }
-}
-
-
-interface IMultiPrimitiveField extends IField, opal\schema\IMultiPrimitiveField {}
-interface INullPrimitiveField extends IField, opal\schema\INullPrimitiveField {}
-interface IQueryClauseRewriterField extends IField, opal\schema\IQueryClauseRewriterField {}
-
-interface IRelationField extends IField, opal\schema\IRelationField, IQueryClauseRewriterField {
+interface IRelationField extends IField, opal\schema\IRelationField, opal\schema\IQueryClauseRewriterField {
     public function setTargetUnitId($targetUnitId);
     public function getTargetUnitId();
     public function getTargetUnit(core\IApplication $application=null);
@@ -158,6 +128,10 @@ trait TRelationField {
     }
 
     public function getTargetUnit(core\IApplication $application=null) {
+        return axis\Model::loadUnitFromId($this->_targetUnitId, $application);
+    }
+
+    public function getTargetQueryAdapter(core\IApplication $application=null) {
         return axis\Model::loadUnitFromId($this->_targetUnitId, $application);
     }
 
@@ -234,7 +208,7 @@ trait TRelationField {
             return;
         }
 
-        if($this instanceof IOneRelationField) {
+        if($this instanceof opal\schema\IOneRelationField) {
             $targetRelationManifest = $this->getTargetRelationManifest();
 
             if(!$targetRelationManifest->validateValue($this->_defaultValue)) {
@@ -242,7 +216,7 @@ trait TRelationField {
                     'Default value for relation field does not fit relation manifest'
                 );
             }
-        } else if($this instanceof IManyRelationField) {
+        } else if($this instanceof opal\schema\IManyRelationField) {
             // TODO: validate default value
         }
     }
@@ -250,7 +224,7 @@ trait TRelationField {
 
 
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
-        if($this instanceof INullPrimitiveField) {
+        if($this instanceof opal\schema\INullPrimitiveField) {
             return new opal\schema\Primitive_Null($this);
         }
 
@@ -264,7 +238,7 @@ trait TRelationField {
             $primitive = $field->toPrimitive($targetUnit, $targetSchema)
                 ->isNullable(true);
 
-            if($field instanceof axis\schema\IMultiPrimitiveField) {
+            if($field instanceof opal\schema\IMultiPrimitiveField) {
                 $name = $primitive->getName();
             }
 
@@ -312,8 +286,6 @@ trait TRelationField {
     }
 }
 
-
-interface IInverseRelationField extends IRelationField, opal\schema\IInverseRelationField {}
 
 
 trait TInverseRelationField {
@@ -390,10 +362,6 @@ trait TInverseRelationField {
     }
 }
 
-
-
-interface ITargetPrimaryFieldAwareRelationField extends IRelationField, opal\schema\ITargetPrimaryFieldAwareRelationField {}
-
 trait TTargetPrimaryFieldAwareRelationField {
 
     use opal\schema\TField_TargetPrimaryFieldAwareRelation;
@@ -404,25 +372,19 @@ trait TTargetPrimaryFieldAwareRelationField {
 }
 
 
-interface IOneRelationField extends IRelationField {}
-interface IManyRelationField extends IRelationField, INullPrimitiveField {}
-
-interface IBridgedRelationField extends IRelationField, ITargetPrimaryFieldAwareRelationField {
+interface IBridgedRelationField extends IRelationField, opal\schema\IBridgedRelationField {
     public function setBridgeUnitId($id);
     public function getBridgeUnitId();
     
     public function getBridgeUnit(core\IApplication $application=null);
-    public function getBridgeTargetFieldName();
-    public function isSelfReference();
     public function isDominant($flag=null);
-    
-    public function getLocalRelationManifest();
 }
 
 
 trait TBridgedRelationField {
 
     use TTargetPrimaryFieldAwareRelationField;
+    use opal\schema\TField_BridgedRelation;
 
     protected $_bridgeUnitId;
     protected $_bridgeLocalFieldName;
@@ -450,17 +412,16 @@ trait TBridgedRelationField {
         return axis\Model::loadUnitFromId($this->_bridgeUnitId, $application);
     }
 
+    public function getBridgeQueryAdapter(core\IApplication $application=null) {
+        return axis\Model::loadUnitFromId($this->_bridgeUnitId, $application);
+    }
+
     public function getBridgeLocalFieldName() {
         return $this->_bridgeLocalFieldName;
     }
 
     public function getBridgeTargetFieldName() {
         return $this->_bridgeTargetFieldName;
-    }
-
-    public function isSelfReference() {
-        return $this->_bridgeLocalFieldName == substr($this->_bridgeTargetFieldName, 0, -3)
-            || $this->_bridgeTargetFieldName == substr($this->_bridgeLocalFieldName, 0, -3);
     }
 
     protected function _sanitizeBridgeUnitId(axis\ISchemaBasedStorageUnit $localUnit) {
@@ -481,9 +442,9 @@ trait TBridgedRelationField {
 
             if($this->_bridgeTargetFieldName == $localUnit->getUnitName()) {
                 if($this->isDominant()) {
-                    $this->_bridgeTargetFieldName .= 'Ref';
+                    $this->_bridgeTargetFieldName .= opal\schema\IBridgedRelationField::SELF_REFERENCE_SUFFIX;
                 } else {
-                    $this->_bridgeLocalFieldName .= 'Ref';
+                    $this->_bridgeLocalFieldName .= opal\schema\IBridgedRelationField::SELF_REFERENCE_SUFFIX;
                 }
             }
         } else {
@@ -496,7 +457,7 @@ trait TBridgedRelationField {
             }
 
             if($this->_bridgeTargetFieldName == $localUnit->getUnitName()) {
-                $this->_bridgeTargetFieldName .= 'Ref';
+                $this->_bridgeTargetFieldName .= opal\schema\IBridgedRelationField::SELF_REFERENCE_SUFFIX;
             }
         }
     }
@@ -545,18 +506,15 @@ trait TBridgedRelationField {
 }
 
 
-interface IOneField extends IOneRelationField, IMultiPrimitiveField, ITargetPrimaryFieldAwareRelationField {}
-interface IOneParentField extends IOneRelationField, IMultiPrimitiveField {}
-interface IOneChildField extends IOneRelationField, INullPrimitiveField {}
-interface IManyToOneField extends IOneRelationField, IMultiPrimitiveField, IInverseRelationField {}
+interface IOneField extends IRelationField, opal\schema\IOneRelationField, opal\schema\IMultiPrimitiveField, opal\schema\ITargetPrimaryFieldAwareRelationField {}
+interface IOneParentField extends IRelationField, opal\schema\IOneRelationField, opal\schema\IMultiPrimitiveField {}
+interface IOneChildField extends IRelationField, opal\schema\IOneRelationField, opal\schema\INullPrimitiveField {}
+interface IManyToOneField extends IRelationField, opal\schema\IOneRelationField, opal\schema\IMultiPrimitiveField, opal\schema\IInverseRelationField {}
 
-interface IManyField extends IManyRelationField, IBridgedRelationField {}
-interface IManyToManyField extends IManyRelationField, IBridgedRelationField, IInverseRelationField {}
+interface IManyField extends IRelationField, opal\schema\IManyRelationField, IBridgedRelationField {}
+interface IManyToManyField extends IRelationField, opal\schema\IManyRelationField, IBridgedRelationField, opal\schema\IInverseRelationField {}
 
-interface IOneToManyField extends IManyRelationField, IInverseRelationField, ITargetPrimaryFieldAwareRelationField {}
-
-
-
+interface IOneToManyField extends IRelationField, opal\schema\IManyRelationField, opal\schema\IInverseRelationField, opal\schema\ITargetPrimaryFieldAwareRelationField {}
 
 
 

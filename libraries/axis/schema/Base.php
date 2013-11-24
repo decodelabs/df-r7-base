@@ -82,7 +82,7 @@ class Base implements ISchema, core\IDumpable {
         $fields = $index->getFields();
 
         foreach($fields as $name => $field) {
-            if($field instanceof axis\schema\INullPrimitiveField) {
+            if($field instanceof opal\schema\INullPrimitiveField) {
                 throw new opal\schema\RuntimeException(
                     'Indexes cannot be defined for NullPrimitive fields ('.$this->getName().'.'.$name.')'
                 );
@@ -139,7 +139,7 @@ class Base implements ISchema, core\IDumpable {
         $output = array();
         
         foreach($this->_fields as $field) {
-            if($field instanceof axis\schema\IMultiPrimitiveField) {
+            if($field instanceof opal\schema\IMultiPrimitiveField) {
                 $names = $field->getPrimitiveFieldNames();
                 
                 if(!empty($names)) {
@@ -147,7 +147,7 @@ class Base implements ISchema, core\IDumpable {
                         $output[] = $name;
                     }
                 }
-            } else if($field instanceof axis\schema\INullPrimitiveField) {
+            } else if($field instanceof opal\schema\INullPrimitiveField) {
                 continue;
             } else {
                 $output[] = $field->getName();

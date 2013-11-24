@@ -182,8 +182,8 @@ abstract class Base implements
         $default = null;
 
         foreach($schema->getFields() as $name => $field) {
-            if($field instanceof axis\schema\INullPrimitiveField
-            || $field instanceof axis\schema\IManyRelationField) {
+            if($field instanceof opal\schema\INullPrimitiveField
+            || $field instanceof opal\schema\IManyRelationField) {
                 continue;
             }
 
@@ -264,150 +264,9 @@ abstract class Base implements
     
 
 // Query helpers
-    public function dereferenceQuerySourceWildcard(opal\query\ISource $source) {
-        $output = array();
-        
-        foreach($this->getUnitSchema()->getFields() as $name => $field) {
-            if($field instanceof axis\schema\INullPrimitiveField) {
-                continue;
-            }
-         
-            $output[] = $this->extrapolateQuerySourceField($source, $name, null, $field);
-        }
-
-        return $output;
+    public function getQueryAdapterSchema() {
+        return $this->getUnitSchema();
     }
-    
-    public function extrapolateQuerySourceField(opal\query\ISource $source, $name, $alias=null, opal\schema\IField $field=null) {
-        // Get primary
-        if($name == '@primary') {
-            $schema = $this->getUnitSchema();
-
-            if(!$primaryIndex = $schema->getPrimaryIndex()) {
-                throw new axis\schema\RuntimeException(
-                    'Unit '.$this->getUnitId().' does not have a primary index'
-                );
-            }
-
-            $fields = array();
-
-            foreach($primaryIndex->getFields() as $fieldName => $indexField) {
-                $subField = $this->extrapolateQuerySourceFieldFromSchemaField($source, $fieldName, $fieldName, $indexField);
-
-                foreach($subField->dereference() as $innerField) {
-                    $fields[] = $innerField;
-                }
-            }
-
-            return new opal\query\field\Virtual($source, $name, $alias, $fields);
-        }
-
-
-        // Dereference from source manager
-        if($field === null) {
-            if(!$field = $this->getUnitSchema()->getField($name)) {
-                return new opal\query\field\Intrinsic($source, $name, $alias);
-            }
-        }
-        
-        // Generic
-        return $this->extrapolateQuerySourceFieldFromSchemaField($source, $name, $alias, $field);
-    }
-
-    public function extrapolateQuerySourceFieldFromSchemaField(opal\query\ISource $source, $name, $alias, axis\schema\IField $field) {
-        if($field instanceof axis\schema\IMultiPrimitiveField) {
-            $privateFields = array();
-            
-            foreach($field->getPrimitiveFieldNames() as $fieldName) {
-                $privateFields[] = new opal\query\field\Intrinsic($source, $fieldName, $alias);
-            }
-
-            $output = new opal\query\field\Virtual($source, $name, $alias, $privateFields);
-        } else if($field instanceof axis\schema\INullPrimitiveField) {
-            $output = new opal\query\field\Virtual($source, $name, $alias);
-        } else {
-            $output = new opal\query\field\Intrinsic($source, $name, $alias);
-        }
-
-        return $output;
-    }
-
-
-// Populates
-    public function getPopulateQuerySourceAdapter(opal\query\ISourceManager $sourceManager, $fieldName) {
-        $schema = $this->getUnitSchema();
-        $field = $schema->getField($fieldName);
-
-        if(!$field instanceof axis\schema\IRelationField) {
-            throw new axis\RuntimeException(
-                'Unit '.$this->getUnitId().' does not have a populatable relation field named '.$fieldName
-            );
-        }
-
-        //if($field instanceof axis\schema\IBridgedRelationField) {
-            //$id = $field->getBridgeUnitId();
-            //$alias = $fieldName.'_bridge';
-            //$fields = ['*'];
-        //} else {
-            $id = $field->getTargetUnitId();
-            $alias = uniqid('ppl_'.$fieldName);
-            $fields = ['*'];
-        //}
-
-        $adapter = axis\Model::loadUnitFromId($id, $this->_model->getApplication());
-        return $sourceManager->newSource($adapter, $alias, $fields);
-    }
-
-    public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate) {
-        $fieldName = $populate->getFieldName();
-        $schema = $this->getUnitSchema();
-        $field = $schema->getField($fieldName);
-
-        return $field->rewritePopulateQueryToAttachment($populate);
-    }
-
-
-    public function rewriteRelationCorrelation(opal\query\ICorrelatableQuery $query, $fieldName, $alias, $aggregateType) {
-        $schema = $this->getTransientUnitSchema();
-        $field = $schema->getField($fieldName);
-
-        if(!$field instanceof axis\schema\IManyRelationField) {
-            throw new axis\schema\FieldTypeNotFoundException(
-                $fieldName.' is not a many relation field'
-            );
-        }
-
-        $application = $query->getSourceManager()->getApplication();
-        $fieldName = $field->getName();
-        $fieldAlias = $alias ? $alias : $fieldName;
-
-        if($field instanceof axis\schema\IBridgedRelationField) {
-            // Field is bridged
-            $bridgeAlias = $fieldAlias.'Bridge';
-            $localAlias = $query->getSource()->getAlias();
-            $localName = $field->getBridgeLocalFieldName();
-            $targetName = $field->getBridgeTargetFieldName();
-
-            $correlation = $query->correlate($aggregateType.'('.$bridgeAlias.'.'.$targetName.')', $alias)
-                ->from($this->getBridgeUnit($fieldName), $bridgeAlias)
-                ->on($bridgeAlias.'.'.$localName, '=', $localAlias.'.@primary');
-        } else {
-            // Field is OneToMany
-            $targetUnit = $field->getTargetUnit($application);
-            $targetAlias = $fieldAlias;
-            $targetFieldName = $field->getTargetField();
-            $localAlias = $query->getSource()->getAlias();
-
-            $correlation = $query->correlate($aggregateType.'('.$targetAlias.'.@primary)', $alias)
-                ->from($targetUnit, $targetAlias)
-                ->on($targetAlias.'.'.$targetFieldName, '=', $localAlias.'.@primary');
-        }
-
-        $correlation->endCorrelation();
-        return $correlation;
-    }
-
-
 
 // Clause helpers
     public function prepareQueryClauseValue(opal\query\IField $field, $value) {
@@ -421,22 +280,8 @@ abstract class Base implements
     }
     
     public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false) {
-        $name = $field->getName();
-
-        if($name{0} == '@') {
-            switch(strtolower($name)) {
-                case '@primary':
-                    return $this->mapVirtualClause($parent, $field, $operator, $value, $isOr);
-
-                default:
-                    throw new axis\schema\RuntimeException(
-                        'Query field '.$field->getName().' has no virtual field rewriter'
-                    );
-            }
-        }
-
         if((!$axisField = $this->getUnitSchema()->getField($field->getName()))
-         || !$axisField instanceof axis\schema\IQueryClauseRewriterField) {
+         || !$axisField instanceof opal\schema\IQueryClauseRewriterField) {
             throw new axis\schema\RuntimeException(
                 'Query field '.$field->getName().' has no virtual field rewriter'
             );
@@ -444,106 +289,6 @@ abstract class Base implements
         
         return $axisField->rewriteVirtualQueryClause($parent, $field, $operator, $value, $isOr);
     }
-
-    public function mapVirtualClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr, $localPrefix=null) {
-        $fieldList = $field->dereference();
-        $fieldCount = count($fieldList);
-        $targetPrefix = null;
-
-        $output = null;
-
-        if($fieldCount > 1) {
-            $output = new opal\query\clause\ListBase($parent, $isOr);
-            $clauseFactory = $output;
-        } else {
-            $clauseFactory = $parent;
-        }
-
-        if($value instanceof opal\record\IRecord) {
-            $value = $value->getPrimaryKeySet();
-        }
-        
-        if($value instanceof opal\query\IVirtualField) {
-            $targetPrefix = $value->getName();
-
-            if($targetPrefix{0} == '@') {
-                $targetPrefix = null;
-            }
-
-            $valueFields = array();
-
-            foreach($value->dereference() as $targetField) {
-                $targetFieldName = $targetField->getName();
-
-                if($localPrefix === null && $targetPrefix !== null) {
-                    $targetFieldName = substr($targetFieldName, strlen($targetPrefix) + 1);
-                } else if($localPrefix !== null && $localPrefix != $targetPrefix) {
-                    $targetFieldName = $localPrefix.'_'.$targetFieldName;
-                }
-
-                $valueFields[$targetFieldName] = $targetField;
-            }
-        } else if($value instanceof opal\record\IPrimaryKeySet) {
-            $value = $value->getIntrinsicFieldMap($localPrefix);
-        } else if(is_scalar($value) && $fieldCount > 1) {
-            throw new axis\schema\RuntimeException(
-                'KeyGroup fields do not match on '.
-                $parent->getSource()->getAdapter()->getName().':'.$field->getName()
-            );
-        }
-
-
-        foreach($fieldList as $subField) {
-            $subValue = null;
-            $keyName = $subField->getName();
-
-            if($value instanceof opal\query\IVirtualField) {
-                if(!isset($valueFields[$keyName])) {
-                    core\dump($valueFields, $keyName);
-                    throw new axis\schema\RuntimeException(
-                        'KeyGroup join fields do not match between '.
-                        $parent->getSource()->getAdapter()->getUnitId().':'.$field->getName().' and '.
-                        $value->getSource()->getAdapter()->getUnitId().':'.$value->getName().
-                        ' for keyName '.$keyName
-                    );
-                }
-                
-                $subValue = $valueFields[$keyName];
-            } else if($operator != opal\query\clause\Clause::OP_IN
-                   && $operator != opal\query\clause\Clause::OP_NOT_IN
-                   && is_array($value)) {
-
-                // this does not cover all eventualities
-                // in [[id_a, id_b], [id_a, id_b]]
-                // need to check operator further up
-
-                if(!array_key_exists($keyName, $value)) {
-                    throw new axis\schema\RuntimeException(
-                        'KeyGroup fields do not match on '.
-                        $parent->getSource()->getAdapter()->getUnitId().':'.$field->getName().
-                        ' for keyName '.$keyName
-                    );
-                }
-                
-                $subValue = $value[$keyName];
-            } else {
-                $subValue = $value;
-            }
-
-            $newField = new opal\query\field\Intrinsic($field->getSource(), $keyName);
-            $clause = opal\query\clause\Clause::factory($clauseFactory, $newField, $operator, $subValue, $output ? false : $isOr);
-
-            if($output) {
-                $output->_addClause($clause);
-            } else {
-                return $clause;
-            }
-        }
-        
-        return $output;
-    }
-    
-    
     
     
 // Value processors
@@ -564,141 +309,6 @@ abstract class Base implements
         
         return $output;
     }
-    
-    
-    public function deflateInsertValues(array $row) {
-        $schema = $this->getUnitSchema();
-        $values = array();
-        
-        foreach($schema->getFields() as $name => $field) {
-            if($field instanceof axis\schema\INullPrimitiveField) {
-                continue;
-            }
-            
-            if(!isset($row[$name])) {
-                $value = $field->generateInsertValue($row);
-            } else {
-                $value = $field->sanitizeValue($row[$name]);
-            }
-            
-            $value = $field->deflateValue($value);
-        
-            if(is_array($value)) {
-                foreach($value as $key => $val) {
-                    $values[$key] = $val;
-                }
-            } else {
-                $values[$name] = $value;
-            }
-        }
-        
-        return $values;
-    }
-    
-    public function normalizeInsertId($originalId, array $row) {
-        if(null === ($fields = $this->getRecordPrimaryFieldNames())) {
-            return null;
-        }
-        
-        $schema = $this->getUnitSchema();
-        $values = array();
-        
-        foreach($fields as $name) {
-            $field = $schema->getField($name);
-            
-            if($originalId 
-            && (($field instanceof opal\schema\IAutoIncrementableField && $field->shouldAutoIncrement())
-              || $field instanceof axis\schema\IAutoGeneratorField)) {
-                $values[$name] = $originalId;
-            } else {
-                $values[$name] = $field->inflateValueFromRow($name, $row, null);
-            }
-        }
-        
-        return new opal\record\PrimaryKeySet($fields, $values);
-    }
-    
-    public function deflateBatchInsertValues(array $rows, array &$queryFields) {
-        $schema = $this->getUnitSchema();
-        $fields = $schema->getFields();
-        $queryFields = array();
-        $values = array();
-        
-        foreach($rows as $row) {
-            $rowValues = array();
-            
-            foreach($fields as $name => $field) {
-                if($field instanceof axis\schema\INullPrimitiveField) {
-                    continue;
-                }
-                
-                if(!isset($row[$name])) {
-                    $value = $field->generateInsertValue($row);
-                } else {
-                    $value = $field->sanitizeValue($row[$name]);
-                }
-                
-                $value = $field->deflateValue($value);
-            
-                if(is_array($value)) {
-                    foreach($value as $key => $val) {
-                        $rowValues[$key] = $val;
-                        $queryFields[$key] = true;
-                    }
-                } else {
-                    $rowValues[$name] = $value;
-                    $queryFields[$name] = true;
-                }
-            }
-            
-            $values[] = $rowValues;
-        }
-
-        $queryFields = array_keys($queryFields);
-        return $values;
-    }
-    
-    public function deflateReplaceValues(array $row) {
-        return $this->deflateInsertValues($row);
-    }
-    
-    public function deflateBatchReplaceValues(array $rows, array &$queryFields) {
-        return $this->deflateBatchInsertValues($rows, $queryFields);
-    }
-    
-    public function normalizeReplaceId($originalId, array $row) {
-        return $this->normalizeInsertId($originalId, $row);
-    }
-    
-    public function deflateUpdateValues(array $values) {
-        $schema = $this->getUnitSchema();
-        
-        foreach($values as $name => $value) {
-            if(!$field = $schema->getField($name)) {
-                continue;
-            }
-            
-            if($field instanceof axis\schema\INullPrimitiveField) {
-                unset($values[$name]);
-                continue;
-            }
-            
-            $value = $field->deflateValue($field->sanitizeValue($value));
-            
-            if(is_array($value)) {
-                unset($values[$name]);
-                
-                foreach($value as $key => $val) {
-                    $values[$key] = $val;
-                }
-            } else {
-                $values[$name] = $value;
-            }
-        }
-        
-        return $values;
-    }
-    
     
     
     
@@ -733,22 +343,8 @@ abstract class Base implements
             }
         }
         
-        return new $this->_recordClass($this, $values, $this->getRecordFieldNames());
+        return new $this->_recordClass($this, $values, array_keys($this->getUnitSchema()->getFields()));
     }
-    
-    public function getRecordPrimaryFieldNames() {
-        if(!$index = $this->getUnitSchema()->getPrimaryIndex()) {
-            return null;
-        }
-        
-        return array_keys($index->getFields());
-    }
-    
-    public function getRecordFieldNames() {
-        return array_keys($this->getUnitSchema()->getFields());
-    }
-    
-    
     
     
     

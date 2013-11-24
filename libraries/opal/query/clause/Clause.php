@@ -61,6 +61,21 @@ class Clause implements opal\query\IClause, core\IDumpable {
     private static function _virtualFactory(opal\query\IClauseFactory $parent, opal\query\IField $field, $operator, $value, $isOr=false) {
         $source = $field->getSource();
         $adapter = $source->getAdapter();
+        $name = $field->getName();
+
+        if($name{0} == '@') {
+            switch(strtolower($name)) {
+                case '@primary':
+                    return self::mapVirtualClause(
+                        $parent, $field, $operator, $value, $isOr
+                    );
+
+                default:
+                    throw new opal\InvalidArgumentException(
+                        'Query field '.$field->getName().' has no virtual field rewriter'
+                    );
+            }
+        }
         
         if($adapter instanceof opal\query\IIntegralAdapter) {
             $operator = self::normalizeOperator($operator);
@@ -73,53 +88,10 @@ class Clause implements opal\query\IClause, core\IDumpable {
                 return $output;
             }
         }
-        
-        
-        // Adapter couldn't handle it, will have to fudge it instead :)
-        $targetFields = $field->getTargetFields();
-        
-        if(count($targetFields) == 1) {
-            return new self(array_shift($targetFields), $operator, $value, $isOr);
-        }
-        
-            
-        if($value instanceof opal\query\ICorrelationQuery
-        || $value instanceof opal\query\IField) {
-            throw new opal\query\ValueException(
-                'Correlation subquery or field clauses on multi-value virtual fields is not currently supported'
-            );
-        }
-        
-        
-        if($adapter instanceof opal\query\IIntegralAdapter) {
-            try {
-                $value = $adapter->prepareQueryClauseValue(
-                    $field, $value
-                );
-            } catch(\Exception $e) {
-                throw new opal\query\ValueException(
-                    'Invalid clause value - '.$e->getMessage(),
-                    $e->getCode()
-                );
-            }
-        }
-        
-        
-        $list = new ListBase($parent, $isOr);
-        
-        foreach($targetFields as $targetField) {
-            $targetFieldName = $targetField->getName();
-            
-            if(isset($value[$targetFieldName])) {
-                $targetValue = $value[$targetFieldName];
-            } else {
-                $targetValue = null;
-            }
-            
-            $list->_addClause(new self($targetField, $operator, $targetValue));
-        }
-        
-        return $list;
+
+        throw new opal\query\InvalidArgumentException(
+            'Adapter could not rewrite virtual query clause'
+        );
     }
     
     protected function __construct(opal\query\IField $field, $operator, $value, $isOr=false) {
@@ -484,6 +456,127 @@ class Clause implements opal\query\IClause, core\IDumpable {
         }
         
         return $output;
+    }
+
+
+// Mapping
+    public static function mapVirtualClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr) {
+        if($value instanceof opal\query\IField) {
+            return self::mapVirtualFieldClause($parent, $field, $operator, $value, $isOr);
+        } else {
+            return self::mapVirtualValueClause($parent, $field, $operator, $value, $isOr);
+        }
+    }
+
+    public static function mapVirtualFieldClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, opal\query\IField $value, $isOr) {
+        $fieldList = $field->dereference();
+        $fieldCount = count($fieldList);
+        $clauses = [];
+
+        $valueList = $value->dereference();
+
+        if(count($fieldList) == 1 && count($valueList) == 1) {
+            return opal\query\clause\Clause::factory($parent, $fieldList[0], $operator, $valueList[0], $isOr);
+        }
+
+        core\dump($fieldList, $valueList);
+    }
+
+    public static function mapVirtualValueClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr) {
+        $fieldList = $field->dereference();
+        $fieldCount = count($fieldList);
+        $clauses = [];
+
+        if($value instanceof opal\record\IPrimaryKeySet) {
+            $value = $value->getRawValue();
+        }
+
+        if(($operator == self::OP_IN
+        || $operator == self::OP_NOT_IN)
+        && $fieldCount > 1) {
+            if(self::isNegatedOperator($operator)) {
+                $innerOperator = '!=';
+            } else {
+                $innerOperator = '=';
+            }
+
+            foreach($value as $innerValue) {
+                $clauses[] = $innerList = new opal\query\clause\ListBase($parent, true);
+
+                foreach($fieldList as $fieldIndex => $innerField) {
+                    $clauseValue = self::_extractMultiKeyFieldValue($field, $innerField, $fieldIndex, $innerValue);
+
+                    $innerList->_addClause(self::factory(
+                        $parent, $innerField, $innerOperator, $clauseValue
+                    ));
+                }
+            }
+        } else {
+            foreach($fieldList as $fieldIndex => $innerField) {
+                if(is_array($value)) {
+                    if($operator == self::OP_IN
+                    || $operator == self::OP_NOT_IN) {
+                        $clauseValue = $value;
+                    } else {
+                        $clauseValue = self::_extractMultiKeyFieldValue($field, $innerField, $fieldIndex, $value);
+                    }
+                } else {
+                    $clauseValue = $value;
+                }
+
+                $clauses[] = self::factory($parent, $innerField, $operator, $clauseValue);
+            }
+        }
+
+        return self::_buildClauseList($parent, $clauses, $isOr);
+    }
+
+    protected static function _extractMultiKeyFieldValue(opal\query\IVirtualField $parentField, opal\query\IField $field, $fieldIndex, array $value) {
+        $name = $field->getName();
+
+        if(array_key_exists($name, $value)) {
+            return $value[$name];
+        } else if(array_key_exists($fieldIndex, $value)) {
+            return $value[$fieldIndex];
+        }
+
+        $parentName = $parentField->getName();
+
+        if(0 === strpos($name, $parentName)) {
+            $innerName = substr($name, strlen($parentName));
+            
+            if(array_key_exists($innerName, $value)) {
+                return $value[$innerName];
+            }
+        }
+
+        foreach($value as $key => $innerValue) {
+            if(0 === strpos($name, $key.'_')) {
+                return $innerValue;
+            } else if(substr($name, -(strlen($key) + 1)) == '_'.$key) {
+                return $innerValue;
+            }
+        }
+
+        throw new opal\query\InvalidArgumentException(
+            'Could not extract multi key field value for '.$name
+        );
+    }
+
+    protected static function _buildClauseList(opal\query\IClauseFactory $parent, array $clauses, $isOr) {
+        if(count($clauses) == 1) {
+            $clause = array_shift($clauses);
+            $clause->isOr($isOr);
+            return $clause;
+        }
+
+        $clauseList = new opal\query\clause\ListBase($parent, $isOr);
+
+        foreach($clauses as $clause) {
+            $clauseList->_addClause($clause);
+        }
+
+        return $clauseList;
     }
     
 // Dump

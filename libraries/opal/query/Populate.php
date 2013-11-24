@@ -33,6 +33,14 @@ class Populate implements IPopulateQuery, core\IDumpable {
     }
 
     public function __construct(IPopulatableQuery $parent, $fieldName, $type) {
+        $adapter = $parent->getSource()->getAdapter();
+
+        if(!$adapter instanceof opal\query\IIntegralAdapter) {
+            throw new LogicException(
+                'Cannot populate field '.$fieldName.' - adapter is not integral'
+            );
+        }
+
         $this->_parent = $parent;
         $this->_type = $type;
 
@@ -46,10 +54,20 @@ class Populate implements IPopulateQuery, core\IDumpable {
         );
 
         $this->_sourceManager->setParentSourceManager($parentSourceManager);
-        $this->_source = $parent->getSource()->getAdapter()->getPopulateQuerySourceAdapter($this->_sourceManager, $fieldName);
-    }
 
-    
+        $schema = $adapter->getQueryAdapterSchema();
+        $field = $schema->getField($fieldName);
+
+        if(!$field instanceof opal\schema\IRelationField) {
+            throw new RuntimeException(
+                'Cannot populate '.$fieldName.' - field is not a relation'
+            );
+        }
+
+        $adapter = $field->getTargetQueryAdapter($this->_sourceManager->getApplication());
+        $alias = uniqid('ppl_'.$fieldName);
+        $this->_source = $this->_sourceManager->newSource($adapter, $alias, ['*']);
+    }
 
     public function getParentQuery() {
         return $this->_parent;

@@ -48,7 +48,7 @@ abstract class Base implements axis\schema\IField, \Serializable, core\IDumpable
             $output->shouldAutoIncrement(false);
         }
         
-        if($output instanceof axis\schema\IAutoGeneratorField) {
+        if($output instanceof opal\schema\IAutoGeneratorField) {
             $output->shouldAutoGenerate(false);
         }
         

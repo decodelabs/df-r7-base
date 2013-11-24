@@ -10,7 +10,7 @@ use df\core;
 use df\axis;
 use df\opal;
     
-class CurrencyRange extends Base implements axis\schema\IMultiPrimitiveField {
+class CurrencyRange extends Base implements opal\schema\IMultiPrimitiveField {
 
     protected $_requireLowPoint = true;
     protected $_requireHighPoint = true;

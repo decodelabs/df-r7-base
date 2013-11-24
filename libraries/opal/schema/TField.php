@@ -764,6 +764,28 @@ trait TField_LargeByteSizeRestricted {
 
 
 
+trait TAutoGeneratorField {
+    
+    protected $_autoGenerate = true;
+    
+    public function shouldAutoGenerate($flag=null) {
+        if($flag !== null) {
+            $flag = (bool)$flag;
+            
+            if($flag != $this->_autoGenerate) {
+                $this->_hasChanged = true;
+            }
+            
+            $this->_autoGenerate = (bool)$flag;
+            return $this;
+        }
+        
+        return $this->_autoGenerate;
+    }
+}
+
+
+
 trait TField_TargetPrimaryFieldAwareRelation {
 
     protected $_targetRelationManifest;
@@ -785,5 +807,17 @@ trait TField_TargetPrimaryFieldAwareRelation {
         }
 
         return $this->_targetRelationManifest;
+    }
+}
+
+
+trait TField_BridgedRelation {
+
+    public function isSelfReference() {
+        $local = $this->getBridgeLocalFieldName();
+        $target = $this->getBridgeTargetFieldName();
+
+        return $local == $target.IBridgedRelationField::SELF_REFERENCE_SUFFIX
+            || $target == $local.IBridgedRelationField::SELF_REFERENCE_SUFFIX;
     }
 }

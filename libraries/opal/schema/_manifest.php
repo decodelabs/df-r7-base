@@ -244,6 +244,11 @@ interface IOptionProviderField extends IField {
 }
 
 
+interface IAutoGeneratorField extends IField {
+    public function shouldAutoGenerate($flag=null);
+}
+
+
 
 interface IMultiPrimitiveField extends IField {
     public function getPrimitiveFieldNames();
@@ -258,6 +263,7 @@ interface IQueryClauseRewriterField extends IField {
 
 interface IRelationField extends IField {
     public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate);
+    public function getTargetQueryAdapter(core\IApplication $application=null);
 }
 
 interface IInverseRelationField extends IRelationField {
@@ -268,6 +274,20 @@ interface IInverseRelationField extends IRelationField {
 interface ITargetPrimaryFieldAwareRelationField extends IField {
     public function getTargetPrimaryIndex();
     public function getTargetRelationManifest();
+}
+
+interface IOneRelationField extends IRelationField {}
+interface IManyRelationField extends IRelationField, INullPrimitiveField {}
+
+interface IBridgedRelationField extends IRelationField, ITargetPrimaryFieldAwareRelationField {
+
+    const SELF_REFERENCE_SUFFIX = 'Ref';
+
+    public function getBridgeLocalFieldName();
+    public function getBridgeTargetFieldName();
+    public function getBridgeQueryAdapter(core\IApplication $application=null);
+    public function isSelfReference();
+    public function getLocalRelationManifest();
 }
 
 

@@ -11,8 +11,8 @@ use df\axis;
 use df\opal;
     
 class EntityLocator extends Base implements
-    axis\schema\IMultiPrimitiveField,
-    axis\schema\IQueryClauseRewriterField {
+    opal\schema\IMultiPrimitiveField,
+    opal\schema\IQueryClauseRewriterField {
 
 // Values
     public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {

@@ -338,12 +338,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
                 }
                 
                 // If adapter supports virtuals, give it a chance to dereference it from the alias
-                $adapter = $source->getAdapter();
-                $field = null;
-                
-                if($adapter instanceof IIntegralAdapter) {
-                    $field = $adapter->extrapolateQuerySourceField($source, $name, $alias);
-                }
+                $field = $source->extrapolateIntegralAdapterField($name, $alias);
                 
                 if(!$field) {
                     $field = new opal\query\field\Intrinsic($source, $name, $alias);

@@ -645,15 +645,22 @@ class ArrayManipulator implements IArrayManipulator {
 
         foreach($populates as $populate) {
             $localAdapter = $populate->getParentSource()->getAdapter();
-            $attachment = $localAdapter->rewritePopulateQueryToAttachment($populate);
+            $schema = $localAdapter->getQueryAdapterSchema();
+            $field = $schema->getField($populate->getFieldName());
+
+            $attachment = $field->rewritePopulateQueryToAttachment($populate);
+
+            if(!$attachment instanceof opal\query\IAttachQuery) {
+                throw new opal\query\InvalidArgumentException(
+                    'Cannot populate '.$populate->getFieldName().' - integral schema field cannot convert to attachment'
+                );
+            }
 
             foreach($populate->getPopulates() as $childPopulate) {
                 $attachment->addPopulate($childPopulate);
             }
-
-            if($attachment instanceof opal\query\IAttachQuery) {
-                $attachments[$populate->getFieldName()] = $attachment;
-            }
+            
+            $attachments[$populate->getFieldName()] = $attachment;
         }
 
         return $attachments;

@@ -542,28 +542,12 @@ interface IAdapter extends user\IAccessLock {
 }
 
 interface IIntegralAdapter extends IAdapter {
-    public function dereferenceQuerySourceWildcard(ISource $source);
-    public function extrapolateQuerySourceField(ISource $source, $name, $alias=null, opal\schema\IField $field=null);
+    public function getQueryAdapterSchema();
 
-    public function getPopulateQuerySourceAdapter(ISourceManager $sourceManager, $field);
-    public function rewritePopulateQueryToAttachment(IPopulateQuery $populate);
-    
     public function prepareQueryClauseValue(IField $field, $value);
     public function rewriteVirtualQueryClause(IClauseFactory $parent, IVirtualField $field, $operator, $value, $isOr=false);
 
-    public function rewriteRelationCorrelation(ICorrelatableQuery $query, $field, $alias, $aggregateType);
-    
     public function getQueryResultValueProcessors(array $fields=null);
-    public function deflateInsertValues(array $row);
-    public function normalizeInsertId($originalId, array $row);
-    public function deflateBatchInsertValues(array $rows, array &$fields);
-    public function deflateReplaceValues(array $row);
-    public function normalizeReplaceId($originalId, array $row);
-    public function deflateBatchReplaceValues(array $rows, array &$fields);
-    public function deflateUpdateValues(array $values);
-    
-    public function getRecordPrimaryFieldNames();
-    public function getRecordFieldNames();
 }
 
 interface IPaginatingAdapter extends IAdapter {
@@ -581,6 +565,9 @@ interface ISource extends IAdapterAware {
     
     public function handleQueryException(IQuery $query, \Exception $e);
     
+    public function extrapolateIntegralAdapterField($name, $alias=null, opal\schema\IField $field=null);
+    public function extrapolateIntegralAdapterFieldFromSchemaField($name, $alias, opal\schema\IField $field);
+
     public function addOutputField(IField $field);
     public function addPrivateField(IField $field);
     public function getFieldByAlias($alias);
@@ -717,6 +704,7 @@ interface IFieldValueProcessor {
     public function sanitizeValue($value, opal\record\IRecord $forRecord=null);
     public function normalizeSavedValue($value, opal\record\IRecord $forRecord=null);
     public function compareValues($value1, $value2);
+    public function generateInsertValue(array $row);
 }
 
 
@@ -746,6 +734,10 @@ interface IClause extends IJoinClauseProvider, IWhereClauseProvider, IHavingClau
     public function setValue($value);
     public function getValue();
     public function getPreparedValue();
+
+    public static function mapVirtualClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr);
+    public static function mapVirtualFieldClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, opal\query\IField $value, $isOr);
+    public static function mapVirtualValueClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr);
 }
 
 interface IClauseMatcher {

@@ -42,13 +42,8 @@ class BatchInsert implements IBatchInsertQuery, core\IDumpable {
 // Execute
     public function execute() {
         if(!empty($this->_rows)) {
-            $adapter = $this->_source->getAdapter();
-            
             $fields = array();
-            
-            if($adapter instanceof IIntegralAdapter) {
-                $this->_rows = $adapter->deflateBatchInsertValues($this->_rows, $fields);
-            }
+            $this->_rows = $this->_deflateBatchInsertValues($this->_rows, $fields);
             
             if(!empty($fields)) {
                 $this->_dereferencedFields = array_fill_keys($fields, true);

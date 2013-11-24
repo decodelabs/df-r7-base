@@ -66,11 +66,11 @@ abstract class Base implements axis\schema\IBridge {
         
         // Remove fields
         foreach($this->_axisSchema->getFieldsToRemove() as $name => $axisField) {
-            if($axisField instanceof axis\schema\IMultiPrimitiveField) {
+            if($axisField instanceof opal\schema\IMultiPrimitiveField) {
                 foreach($axisField->getPrimitiveFieldNames() as $name) {
                     $this->_targetSchema->removeField($name);
                 }
-            } else if($axisField instanceof axis\schema\INullPrimitiveField) {
+            } else if($axisField instanceof opal\schema\INullPrimitiveField) {
                 continue;
             } else {
                 $this->_targetSchema->removeField($name);
@@ -96,7 +96,7 @@ abstract class Base implements axis\schema\IBridge {
                     
                     $lastChild = $child;
                 }
-            } else if($axisField instanceof axis\schema\INullPrimitiveField) {
+            } else if($axisField instanceof opal\schema\INullPrimitiveField) {
                 continue;
             } else {
                 $this->_targetSchema->replacePreparedField(
@@ -115,7 +115,7 @@ abstract class Base implements axis\schema\IBridge {
                         $this->_createField($child)
                     );
                 }
-            } else if($axisField instanceof axis\schema\INullPrimitiveField) {
+            } else if($axisField instanceof opal\schema\INullPrimitiveField) {
                 continue;
             } else {
                 $this->_targetSchema->addPreparedField(
@@ -232,7 +232,7 @@ abstract class Base implements axis\schema\IBridge {
                         $ref->isDescending()
                     );
                 }
-            } else if($axisField instanceof axis\schema\INullPrimitiveField) {
+            } else if($axisField instanceof opal\schema\INullPrimitiveField) {
                 throw new axis\LogicException(
                     'You cannot put indexes on NullPrimitive fields'
                 );

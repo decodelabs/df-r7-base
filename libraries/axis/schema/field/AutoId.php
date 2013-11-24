@@ -12,7 +12,7 @@ use df\opal;
 
 class AutoId extends Base implements
     opal\schema\IByteSizeRestrictedField,
-    axis\schema\IAutoGeneratorField,
+    opal\schema\IAutoGeneratorField,
     axis\schema\IAutoPrimaryField {
         
     use opal\schema\TField_ByteSizeRestricted;

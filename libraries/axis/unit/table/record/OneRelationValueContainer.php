@@ -53,7 +53,7 @@ class OneRelationValueContainer implements
 
     protected function _applyInversePopulation($parentRecord) {
         if($parentRecord && $this->_record 
-        && $this->_field instanceof axis\schema\IInverseRelationField) {
+        && $this->_field instanceof opal\schema\IInverseRelationField) {
             $inverseValue = $this->_record->getRaw($this->_field->getTargetField());
             $inverseValue->populateInverse($parentRecord);
         }

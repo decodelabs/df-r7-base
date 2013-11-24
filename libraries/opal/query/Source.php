@@ -117,6 +117,67 @@ class Source implements ISource, core\IDumpable {
     
     
 // Fields
+    public function extrapolateIntegralAdapterField($name, $alias=null, opal\schema\IField $field=null) {
+        if(!$this->_adapter instanceof IIntegralAdapter) {
+            return null;
+        }
+
+        // Get primary
+        if($name == '@primary') {
+            $schema = $this->_adapter->getQueryAdapterSchema();
+
+            if(!$primaryIndex = $schema->getPrimaryIndex()) {
+                throw new axis\schema\RuntimeException(
+                    'Unit '.$this->getUnitId().' does not have a primary index'
+                );
+            }
+
+            $fields = array();
+
+            foreach($primaryIndex->getFields() as $fieldName => $indexField) {
+                $subField = $this->extrapolateIntegralAdapterFieldFromSchemaField($fieldName, $fieldName, $indexField);
+
+                foreach($subField->dereference() as $innerField) {
+                    $fields[] = $innerField;
+                }
+            }
+
+            return new opal\query\field\Virtual($this, $name, $alias, $fields);
+        }
+
+
+        // Dereference from source manager
+        if($field === null) {
+            $schema = $this->_adapter->getQueryAdapterSchema();
+
+            if(!$field = $schema->getField($name)) {
+                return new opal\query\field\Intrinsic($this, $name, $alias);
+            }
+        }
+        
+        // Generic
+        return $this->extrapolateIntegralAdapterFieldFromSchemaField($name, $alias, $field);
+    }
+
+    public function extrapolateIntegralAdapterFieldFromSchemaField($name, $alias, opal\schema\IField $field) {
+        if($field instanceof opal\schema\IMultiPrimitiveField) {
+            $privateFields = array();
+            
+            foreach($field->getPrimitiveFieldNames() as $fieldName) {
+                $privateFields[] = new opal\query\field\Intrinsic($this, $fieldName, $alias);
+            }
+
+            $output = new opal\query\field\Virtual($this, $name, $alias, $privateFields);
+        } else if($field instanceof opal\schema\INullPrimitiveField) {
+            $output = new opal\query\field\Virtual($this, $name, $alias);
+        } else {
+            $output = new opal\query\field\Intrinsic($this, $name, $alias);
+        }
+
+        return $output;
+    }
+
+
     public function addOutputField(opal\query\IField $field) {
         $fields = array();
         
@@ -124,15 +185,15 @@ class Source implements ISource, core\IDumpable {
             $fields = $field->getTargetFields();
         } else if($field instanceof opal\query\IWildcardField 
         && $this->_adapter instanceof IIntegralAdapter) {
-            $queryFields = $this->_adapter->dereferenceQuerySourceWildcard($this);
-            
-            if(is_array($queryFields) && !empty($queryFields)) {
-                foreach($queryFields as $queryField) {
-                    if(is_string($queryField)) {
-                        $queryField = new opal\query\field\Intrinsic($this, $queryField);
-                    }
-                    
-                    $fields[] = $queryField;
+            foreach($this->_adapter->getQueryAdapterSchema()->getFields() as $name => $queryField) {
+                if($field instanceof opal\schema\INullPrimitiveField) {
+                    continue;
+                }
+
+                $field = $this->extrapolateIntegralAdapterField($name, null, $queryField);
+
+                if($field) {
+                    $fields[] = $field;
                 }
             }
         }
@@ -149,7 +210,7 @@ class Source implements ISource, core\IDumpable {
         
         return $this;
     }
-    
+
     public function addPrivateField(opal\query\IField $field) {
         if(!in_array($field, $this->_outputFields, true)) {
             $this->_privateFields[$field->getAlias()] = $field;
@@ -249,7 +310,6 @@ class Source implements ISource, core\IDumpable {
     public function getAllDereferencedFields() {
         return array_merge($this->getDereferencedOutputFields(), $this->getDereferencedPrivateFields());
     }
-    
     
 // Dump
     public function getDumpProperties() {

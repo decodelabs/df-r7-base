@@ -10,7 +10,10 @@ use df\core;
 use df\axis;
 use df\opal;
     
-class KeyGroup extends Base implements axis\schema\IRelationField, axis\schema\IMultiPrimitiveField, axis\schema\ITargetPrimaryFieldAwareRelationField {
+class KeyGroup extends Base implements 
+    axis\schema\IRelationField, 
+    opal\schema\IMultiPrimitiveField, 
+    opal\schema\ITargetPrimaryFieldAwareRelationField {
 
     use axis\schema\TRelationField;
     use axis\schema\TTargetPrimaryFieldAwareRelationField;
@@ -77,8 +80,8 @@ class KeyGroup extends Base implements axis\schema\IRelationField, axis\schema\I
 
 // Clause
     public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false) {
-        return $field->getSource()->getAdapter()->mapVirtualClause(
-            $parent, $field, $operator, $value, $isOr, $this->_name
+        return opal\query\clause\Clause::mapVirtualClause(
+            $parent, $field, $operator, $value, $isOr
         );
     }
 

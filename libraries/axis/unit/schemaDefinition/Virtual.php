@@ -69,6 +69,7 @@ final class Virtual implements axis\ISchemaDefinitionStorageUnit, axis\ISchemaBa
         if(!$schema) {
             $schema = $unit->buildInitialSchema();
             $unit->updateUnitSchema($schema);
+            $setCache = false;
             
             if(!$transient) {
                 $unit->validateUnitSchema($schema);
@@ -80,8 +81,8 @@ final class Virtual implements axis\ISchemaDefinitionStorageUnit, axis\ISchemaBa
                 $setCache = true;
             }
         }
-        
-        if($setCache && !$transient) {    
+
+        if($setCache) {    
             $cache->set($unit->getUnitId(), $schema);
         }
         

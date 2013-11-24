@@ -10,9 +10,9 @@ use df\core;
 use df\axis;
 use df\opal;
 
-class Guid extends Base implements axis\schema\IAutoGeneratorField {
+class Guid extends Base implements opal\schema\IAutoGeneratorField {
     
-    use axis\schema\TAutoGeneratorField;
+    use opal\schema\TAutoGeneratorField;
     
     const UUID1 = 1;
     const UUID4 = 2;

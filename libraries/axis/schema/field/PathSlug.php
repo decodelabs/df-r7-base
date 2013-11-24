@@ -12,8 +12,8 @@ use df\opal;
     
 class PathSlug extends Base implements 
     axis\schema\IAutoUniqueField, 
-    axis\schema\IMultiPrimitiveField,
-    axis\schema\IQueryClauseRewriterField {
+    opal\schema\IMultiPrimitiveField,
+    opal\schema\IQueryClauseRewriterField {
 
 
 // Values

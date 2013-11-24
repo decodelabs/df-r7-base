@@ -55,7 +55,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         $this->_adapter = $adapter;
         
         if($fields === null && $adapter instanceof opal\query\IIntegralAdapter) {
-            $fields = $adapter->getRecordFieldNames();
+            $fields = array_keys($adapter->getQueryAdapterSchema()->getFields());
         }
         
         if(!empty($fields)) { 
@@ -172,10 +172,14 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     
     protected function _getPrimaryFields() {
         if($this->_primaryFields === false) {
+            $this->_primaryFields = null;
+
             if($this->_adapter instanceof opal\query\IIntegralAdapter) {
-                $this->_primaryFields = $this->_adapter->getRecordPrimaryFieldNames();
-            } else {
-                $this->_primaryFields = null;
+                $index = $this->_adapter->getQueryAdapterSchema()->getPrimaryIndex();
+
+                if($index) {
+                    $this->_primaryFields = array_keys($index->getFields());
+                }
             }
         }
         

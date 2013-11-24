@@ -38,10 +38,7 @@ class Update implements IUpdateQuery, core\IDumpable {
 // Execute
     public function execute() {
         $adapter = $this->_source->getAdapter();
-        
-        if($adapter instanceof IIntegralAdapter) {
-            $this->_valueMap = $adapter->deflateUpdateValues($this->_valueMap);
-        }
+        $this->_valueMap = $this->_deflateUpdateValues($this->_valueMap);
         
         if(empty($this->_valueMap)) {
             return 0;

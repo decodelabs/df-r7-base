@@ -220,12 +220,13 @@ trait TQuery_Correlatable {
         return $this->_beginRelationCorrelation($field, $alias, 'HAS');
     }
 
-    protected function _beginRelationCorrelation($field, $alias, $aggregateType) {
+    protected function _beginRelationCorrelation($fieldName, $alias, $aggregateType) {
         if($alias === null) {
-            $alias = $field;
+            $alias = $fieldName;
         }
 
-        $sourceAdapter = $this->getSource()->getAdapter();
+        $source = $this->getSource();
+        $sourceAdapter = $source->getAdapter();
 
         if(!$sourceAdapter instanceof IIntegralAdapter) {
             throw new LogicException(
@@ -233,7 +234,43 @@ trait TQuery_Correlatable {
             );
         }
 
-        return $sourceAdapter->rewriteRelationCorrelation($this, $field, $alias, $aggregateType);
+        $schema = $sourceAdapter->getQueryAdapterSchema();
+        $field = $schema->getField($fieldName);
+
+        if(!$field instanceof opal\schema\IManyRelationField) {
+            throw new opal\query\InvalidArgumentException(
+                'Cannot begin relation correlation - '.$fieldName.' is not a many relation field'
+            );
+        }
+
+        $application = $this->getSourceManager()->getApplication();
+        $fieldAlias = $alias ? $alias : $fieldName;
+
+        if($field instanceof opal\schema\IBridgedRelationField) {
+            // Field is bridged
+            $bridgeAdapter = $field->getBridgeQueryAdapter($application);
+            $bridgeAlias = $fieldAlias.'Bridge';
+            $localAlias = $source->getAlias();
+            $localName = $field->getBridgeLocalFieldName();
+            $targetName = $field->getBridgeTargetFieldName();
+
+            $correlation = $this->correlate($aggregateType.'('.$bridgeAlias.'.'.$targetName.')', $alias)
+                ->from($bridgeAdapter, $bridgeAlias)
+                ->on($bridgeAlias.'.'.$localName, '=', $localAlias.'.@primary');
+        } else {
+            // Field is OneToMany (hopefully!)
+            $targetAdapter = $field->getTargetQueryAdapter($application);
+            $targetAlias = $fieldAlias;
+            $targetFieldName = $field->getTargetField();
+            $localAlias = $source->getAlias();
+
+            $correlation = $this->correlate($aggregateType.'('.$targetAlias.'.@primary)', $alias)
+                ->from($targetAdapter, $targetAlias)
+                ->on($targetAlias.'.'.$targetFieldName, '=', $localAlias.'.@primary');
+        }
+
+        $correlation->endCorrelation();
+        return $correlation;
     }
 
     public function addCorrelation(ICorrelationQuery $correlation) {
@@ -1363,6 +1400,73 @@ trait TQuery_DataInsert {
     public function getRow() {
         return $this->_row;
     }
+
+
+    protected function _normalizeInsertId($originalId, array $row) {
+        $adapter = $this->_source->getAdapter();
+
+        if(!$adapter instanceof IIntegralAdapter) {
+            return $originalId;
+        }
+
+        $index = $adapter->getQueryAdapterSchema()->getPrimaryIndex();
+
+        if(!$index) {
+            return $originalId;
+        }
+
+        $fields = $index->getFields();
+        $values = array();
+        
+        foreach($fields as $name => $field) {
+            if($originalId 
+            && (($field instanceof opal\schema\IAutoIncrementableField && $field->shouldAutoIncrement())
+              || $field instanceof opal\schema\IAutoGeneratorField)) {
+                $values[$name] = $originalId;
+            } else if($field instanceof opal\query\IFieldValueProcessor) {
+                $values[$name] = $field->inflateValueFromRow($name, $row, null);
+            } else {
+                $values[$name] = $originalId;
+            }
+        }
+
+        return new opal\record\PrimaryKeySet(array_keys($fields), $values);
+    }
+
+    protected function _deflateInsertValues(array $row) {
+        $adapter = $this->_source->getAdapter();
+
+        if(!$adapter instanceof IIntegralAdapter) {
+            return $row;
+        }
+
+        $schema = $adapter->getQueryAdapterSchema();
+        $values = array();
+        
+        foreach($schema->getFields() as $name => $field) {
+            if($field instanceof opal\schema\INullPrimitiveField) {
+                continue;
+            }
+            
+            if(!isset($row[$name])) {
+                $value = $field->generateInsertValue($row);
+            } else {
+                $value = $field->sanitizeValue($row[$name]);
+            }
+            
+            $value = $field->deflateValue($value);
+        
+            if(is_array($value)) {
+                foreach($value as $key => $val) {
+                    $values[$key] = $val;
+                }
+            } else {
+                $values[$name] = $value;
+            }
+        }
+        
+        return $values;
+    }
 }
 
 
@@ -1473,6 +1577,52 @@ trait TQuery_BatchDataInsert {
     public function getFlushThreshold() {
         return $this->_flushThreshold;
     }
+
+    protected function _deflateBatchInsertValues(array $rows, array &$queryFields) {
+        $adapter = $this->_source->getAdapter();
+
+        if(!$adapter instanceof IIntegralAdapter) {
+            return $row;
+        }
+
+        $schema = $adapter->getQueryAdapterSchema();
+        $fields = $schema->getFields();
+        $queryFields = array();
+        $values = array();
+        
+        foreach($rows as $row) {
+            $rowValues = array();
+            
+            foreach($fields as $name => $field) {
+                if($field instanceof opal\schema\INullPrimitiveField) {
+                    continue;
+                }
+                
+                if(!isset($row[$name])) {
+                    $value = $field->generateInsertValue($row);
+                } else {
+                    $value = $field->sanitizeValue($row[$name]);
+                }
+                
+                $value = $field->deflateValue($value);
+            
+                if(is_array($value)) {
+                    foreach($value as $key => $val) {
+                        $rowValues[$key] = $val;
+                        $queryFields[$key] = true;
+                    }
+                } else {
+                    $rowValues[$name] = $value;
+                    $queryFields[$name] = true;
+                }
+            }
+            
+            $values[] = $rowValues;
+        }
+
+        $queryFields = array_keys($queryFields);
+        return $values;
+    }
 }
 
 
@@ -1503,6 +1653,41 @@ trait TQuery_DataUpdate {
     
     public function getValueMap() {
         return $this->_valueMap;
+    }
+
+    protected function _deflateUpdateValues(array $values) {
+        $adapter = $this->_source->getAdapter();
+
+        if(!$adapter instanceof IIntegralAdapter) {
+            return $row;
+        }
+
+        $schema = $adapter->getQueryAdapterSchema();
+        
+        foreach($values as $name => $value) {
+            if(!$field = $schema->getField($name)) {
+                continue;
+            }
+            
+            if($field instanceof opal\schema\INullPrimitiveField) {
+                unset($values[$name]);
+                continue;
+            }
+            
+            $value = $field->deflateValue($field->sanitizeValue($value));
+            
+            if(is_array($value)) {
+                unset($values[$name]);
+                
+                foreach($value as $key => $val) {
+                    $values[$key] = $val;
+                }
+            } else {
+                $values[$name] = $value;
+            }
+        }
+        
+        return $values;
     }
 }
 
