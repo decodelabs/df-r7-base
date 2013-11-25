@@ -15,6 +15,7 @@ class FieldArea extends Container implements IFormOrientedWidget {
     protected $_label;
     protected $_description;
     protected $_errorContainer;
+    protected $_errorPosition = 'top';
     protected $_isRequired = false;
     
     public function __construct(arch\IContext $context, $labelBody=null) {
@@ -32,7 +33,7 @@ class FieldArea extends Container implements IFormOrientedWidget {
         $tag = $this->getTag();
         $view = $this->getRenderTarget()->getView();
         
-        $primaryWidget = null;
+        $primaryWidget = $fieldError = null;
         $errors = array();
         $isRequired = $this->_isRequired;
 
@@ -41,6 +42,17 @@ class FieldArea extends Container implements IFormOrientedWidget {
         }
         
         $this->_walkChildren($this->_children->toArray(), $errors, $isRequired, $primaryWidget);
+        $output = [];
+
+        if(!empty($errors)) {
+            $tag->addClass('state-error');
+            $fieldError = new FieldError($this->_context, $errors);
+            $fieldError->setRenderTarget($this->getRenderTarget());
+
+            if($this->_errorPosition == 'top') {
+                $output[] = $fieldError->render();
+            }
+        }
         
         if($primaryWidget instanceof IFocusableInputWidget) {
             $inputId = $primaryWidget->getId();
@@ -55,7 +67,12 @@ class FieldArea extends Container implements IFormOrientedWidget {
 
         $labelContainer = new aura\html\Element('div.widget-labelArea', $this->_label);
         
-        $output = [$labelContainer];
+        $output[] = $labelContainer;
+
+        if($fieldError && $this->_errorPosition == 'middle') {
+            $output[] = $fieldError->render();
+        }
+
         $inputAreaBody = $this->_children;
 
         if($this->_description !== null) {
@@ -70,13 +87,9 @@ class FieldArea extends Container implements IFormOrientedWidget {
         }
 
         $output[] = new aura\html\Element('div.widget-inputArea', $inputAreaBody);
-        
-        if(!empty($errors)) {
-            $tag->addClass('state-error');
-            $fieldError = new FieldError($this->_context, $errors);
-            $fieldError->setRenderTarget($this->getRenderTarget());
-            //$output[] = $fieldError->render();
-            array_unshift($output, $fieldError->render());
+
+        if($fieldError && $this->_errorPosition == 'bottom') {
+            $output[] = $fieldError->render();
         }
         
         if($isRequired) {
@@ -166,6 +179,28 @@ class FieldArea extends Container implements IFormOrientedWidget {
 
     public function getErrorContainer() {
         return $this->_errorContainer;
+    }
+
+    public function setErrorPosition($position) {
+        $position = strtolower($position);
+
+        switch($position) {
+            case 'top':
+            case 'middle':
+            case 'bottom':
+                $this->_errorPosition = $position;
+                break;
+
+            default:
+                $this->_errorPosition = 'top';
+                break;
+        }
+
+        return $this;
+    }
+
+    public function getErrorPosition() {
+        return $this->_errorPosition;
     }
 
 // Required
