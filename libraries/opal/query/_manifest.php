@@ -162,6 +162,7 @@ interface IHavingClauseFactory extends IClauseFactory {
 // Query
 interface IQuery extends ISourceProvider, ITransactionAware, user\IAccessLock, core\IChainable {
     public function getQueryType();
+    public function importBlock($name);
 }
 
 interface IReadQuery extends IQuery, \IteratorAggregate, core\IArrayProvider {
@@ -550,6 +551,7 @@ interface IIntegralAdapter extends IAdapter {
     public function rewriteVirtualQueryClause(IClauseFactory $parent, IVirtualField $field, $operator, $value, $isOr=false);
 
     public function getQueryResultValueProcessors(array $fields=null);
+    public function applyQueryBlock(IQuery $query, $name, array $args);
 }
 
 interface IPaginatingAdapter extends IAdapter {

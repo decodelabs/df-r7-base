@@ -142,6 +142,20 @@ trait TQuery {
     }
 
 
+    public function importBlock($name) {
+        $adapter = $this->getSource()->getAdapter();
+
+        if(!$adapter instanceof opal\query\IIntegralAdapter) {
+            throw new LogicException(
+                'Cannot import query block - adapter is not integral'
+            );
+        }
+
+        $adapter->applyQueryBlock($this, $name, array_slice(func_get_args(), 1));
+        return $this;
+    }
+
+
     public function setTransaction(ITransaction $transaction=null) {
         $this->getSourceManager()->setTransaction($transaction);
         return $this;

@@ -263,12 +263,11 @@ abstract class Base implements
 
     
 
-// Query helpers
+// Integral adapter
     public function getQueryAdapterSchema() {
         return $this->getUnitSchema();
     }
 
-// Clause helpers
     public function prepareQueryClauseValue(opal\query\IField $field, $value) {
         $schema = $this->getUnitSchema();
 
@@ -289,9 +288,7 @@ abstract class Base implements
         
         return $axisField->rewriteVirtualQueryClause($parent, $field, $operator, $value, $isOr);
     }
-    
-    
-// Value processors
+
     public function getQueryResultValueProcessors(array $fields=null) {
         $schema = $this->getUnitSchema();
         
@@ -310,6 +307,20 @@ abstract class Base implements
         return $output;
     }
     
+
+    public function applyQueryBlock(opal\query\IQuery $query, $name, array $args) {
+        $method = 'apply'.ucfirst($name).'QueryBlock';
+
+        if(!method_exists($this, $method)) {
+            throw new axis\LogicException(
+                'Query block '.$name.' does not exist'
+            );
+        }
+
+        array_unshift($args, $query);
+        call_user_func_array([$this, $method], $args);
+        return $this;
+    }
     
     
 // Transactions
