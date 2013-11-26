@@ -12,6 +12,9 @@ use df\arch;
 
 class Base implements ITheme {
     
+    const COOKIE_NOTICE = false;
+    const COOKIE_NOTICE_COOKIE = 'cnx';
+
     protected $_id;
     protected $_iconMap = null;
     
@@ -59,6 +62,10 @@ class Base implements ITheme {
         $this->applyDefaultIncludes($view);
         $this->applyDefaultViewTitle($view);
         $this->applyDefaultBodyTagData($view);
+
+        if(static::COOKIE_NOTICE && !$view->context->http->getCookie(static::COOKIE_NOTICE_COOKIE)) {
+            $this->applyCookieNotice($view);
+        }
     }
 
     public function applyDefaultIncludes(aura\view\IView $view) {
@@ -97,6 +104,10 @@ class Base implements ITheme {
             ->setDataAttribute('location', $request->getLiteralPathString())
             ->setDataAttribute('layout', $view->getLayout())
             ->setDataAttribute('base', $view->application->getBaseUrl()->getPathString());
+    }
+
+    public function applyCookieNotice(aura\view\IView $view) {
+        $view->slot->set('cookieNotice', 'elements/CookieNotice.html', '~front/');
     }
 
 
