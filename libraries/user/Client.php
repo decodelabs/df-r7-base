@@ -23,6 +23,7 @@ class Client implements IClient, \Serializable {
     protected $_language = 'en';
     protected $_timezone = 'UTC';
 
+    protected $_groupIds = [];
     protected $_options = null;
     
     protected $_authState = IState::GUEST;
@@ -84,6 +85,7 @@ class Client implements IClient, \Serializable {
         
         $output->_timezone = $i18nManager->timezones->suggestForCountry($output->_country);
         $output->_authState = IState::GUEST;
+        $output->_groupIds = [];
         $output->_options = [];
         
         return $output;
@@ -100,6 +102,7 @@ class Client implements IClient, \Serializable {
             'cn' => $this->_country,
             'ln' => $this->_language,
             'tz' => $this->_timezone,
+            'gr' => $this->_groupIds,
             'op' => $this->_options,
             'as' => $this->_authState,
             'kr' => $this->_keyring,
@@ -125,6 +128,10 @@ class Client implements IClient, \Serializable {
         $this->_country = $data['cn'];
         $this->_language = $data['ln'];
         $this->_timezone = $data['tz'];
+
+        if(isset($data['gr'])) {
+            $this->_groupIds = (array)$data['gr'];
+        }
 
         if(isset($data['op'])) {
             $this->_options = $data['op'];
@@ -173,6 +180,10 @@ class Client implements IClient, \Serializable {
     
     public function getTimezone() {
         return $this->_timezone;
+    }
+
+    public function getGroupIds() {
+        return $this->_groupIds;
     }
     
     
@@ -238,6 +249,7 @@ class Client implements IClient, \Serializable {
         $this->_language = $clientData->getLanguage();
         $this->_country = $clientData->getCountry();
         $this->_timezone = $clientData->getTimezone();
+        $this->_groupIds = $clientData->getGroupIds();
         $this->_options = null;
     }
     

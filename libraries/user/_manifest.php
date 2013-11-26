@@ -98,6 +98,7 @@ interface IClientDataObject extends \ArrayAccess {
     public function getLanguage();
     public function getCountry();
     public function getTimezone();
+    public function getGroupIds();
 }
 
 trait TNameExtractor {
