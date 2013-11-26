@@ -18,6 +18,7 @@ class SlotRenderer implements aura\view\IDeferredRenderable {
     const TYPE_VALUE = 'value';
     const TYPE_CALLBACK = 'callback';
     const TYPE_TEMPLATE = 'template';
+    const TYPE_RENDERABLE = 'renderable';
 
     protected $_value;
     protected $_location;
@@ -33,6 +34,8 @@ class SlotRenderer implements aura\view\IDeferredRenderable {
 
             if(is_callable($value)) {
                 $type = self::TYPE_CALLBACK;
+            } else if($value instanceof aura\view\IRenderable) {
+                $type = self::TYPE_RENDERABLE;
             } else {
                 $type = self::TYPE_VALUE;
             }
@@ -80,6 +83,13 @@ class SlotRenderer implements aura\view\IDeferredRenderable {
         switch($this->_type) {
             case self::TYPE_VALUE:
                 return $this->_value;
+
+            case self::TYPE_RENDERABLE:
+                if($this->_value instanceof aura\view\IDeferredRenderable && $this->_value->getRenderTarget()) {
+                    return $this->_value->render();
+                }
+
+                return $this->_value->renderTo($this->getView());
 
             case self::TYPE_CALLBACK:
                 return call_user_func_array($this->_value, [$this->getView()]);
