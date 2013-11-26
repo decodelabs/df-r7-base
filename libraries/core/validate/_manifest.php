@@ -368,6 +368,8 @@ trait TUniqueCheckerField {
 // Actual
 interface IBooleanField extends IField, ISanitizingField {}
 
+interface IColorField extends IField, ISanitizingField {}
+
 interface ICurrencyField extends IField, IRangeField {
     public function setInputUnit($unit);
     public function getInputUnit();
