@@ -76,10 +76,6 @@ class HttpHttp implements arch\IDirectoryHelper {
         return $this->_httpRequest->getPostData();
     }
     
-    public function getCookies() {
-        return $this->_httpRequest->getCookieData();
-    }
-
 
     public function isGetRequest() {
         return $this->getMethod() == 'GET';
@@ -179,6 +175,10 @@ class HttpHttp implements arch\IDirectoryHelper {
         $augmentor->setCookieForAnyRequest($cookie);
         return $cookie;
     }
+
+    public function getCookie($name, $default=null) {
+        return $this->getCookies()->get($name, $default);
+    }
     
     public function removeCookie($name) {
         $application = $this->_context->getApplication();
@@ -194,5 +194,9 @@ class HttpHttp implements arch\IDirectoryHelper {
         
         $augmentor->removeCookieForAnyRequest($cookie);
         return $cookie;
+    }
+
+    public function getCookies() {
+        return $this->_httpRequest->getCookieData();
     }
 }
