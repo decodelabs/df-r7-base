@@ -21,7 +21,7 @@ abstract class Base implements arch\IComponent {
 
     const DEFAULT_ACCESS = arch\IAccess::ALL;
 
-    private $_args = [];
+    protected $_componentArgs = [];
 
     public static function factory(arch\IContext $context, $name, array $args=null) {
         $path = $context->location->getController();
@@ -76,7 +76,7 @@ abstract class Base implements arch\IComponent {
             $args = array();
         }
 
-        $this->_args = $args;
+        $this->_componentArgs = $args;
 
         if(method_exists($this, '_init')) {
             call_user_func_array([$this, '_init'], $args);
@@ -111,7 +111,7 @@ abstract class Base implements arch\IComponent {
             );
         }
         
-        $output = call_user_func_array([$this, '_execute'], $this->_args);
+        $output = call_user_func_array([$this, '_execute'], $this->_componentArgs);
 
         if($output instanceof aura\view\IDeferredRenderable) {
             $output->setRenderTarget($this->_renderTarget);

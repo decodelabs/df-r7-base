@@ -24,6 +24,8 @@ abstract class FormUi extends arch\component\Base implements arch\form\IForm, au
         $this->_form = $form;
         $this->values = &$form->values;
         $this->content = &$form->content;
+
+        array_shift($this->_componentArgs);
     }
 
     public function getForm() {
