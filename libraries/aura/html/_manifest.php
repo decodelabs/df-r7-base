@@ -57,7 +57,7 @@ interface ITagDataContainer extends core\IAttributeContainer {
 
 
 
-interface ITag extends IElementRepresentation, \ArrayAccess, ITagDataContainer, core\string\IStringEscapeHandler {
+interface ITag extends IElementRepresentation, \ArrayAccess, ITagDataContainer, core\string\IStringEscapeHandler, core\IChainable {
     // Name
     public function setName($name);
     public function getName();
