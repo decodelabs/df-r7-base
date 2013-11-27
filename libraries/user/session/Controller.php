@@ -188,8 +188,8 @@ class Controller implements IController {
         $descriptor->setStartTime($time);
         $descriptor->setAccessTime($time);
         
-        $output = $this->_backend->insertDescriptor($descriptor);
-        $output->hasJustStarted(true);
+        $descriptor = $this->_backend->insertDescriptor($descriptor);
+        $descriptor->hasJustStarted(true);
         
         $this->_cache->insertDescriptor($descriptor);
         
