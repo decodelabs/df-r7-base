@@ -193,7 +193,7 @@ class Controller implements IController {
         
         $this->_cache->insertDescriptor($descriptor);
         
-        return $output;
+        return $descriptor;
     }
     
     protected function _resume($externalId) {
