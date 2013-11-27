@@ -83,7 +83,7 @@ interface IWidgetFinder {
 
 
 
-interface IElementContent extends IElementRepresentation {
+interface IElementContent extends IElementRepresentation, core\IChainable {
     public function getElementContentString();
     public function esc($value);
 }
@@ -97,6 +97,7 @@ interface IElementContentCollection extends
 trait TElementContent {
     
     use core\TStringProvider;
+    use core\TChainable;
     use core\collection\TArrayCollection;
     use core\collection\TArrayCollection_Constructor;
     use core\collection\TArrayCollection_ProcessedIndexedValueMap;
