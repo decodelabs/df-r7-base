@@ -16,6 +16,8 @@ class DataList extends Base implements IUngroupedOptionWidget, core\IDumpable {
 
     const PRIMARY_TAG = 'datalist';
 
+    protected $_idDataAttribute = 'id';
+
     public function __construct(arch\IContext $context, $id, $options=null) {
         $this->setId($id);
 
@@ -24,19 +26,32 @@ class DataList extends Base implements IUngroupedOptionWidget, core\IDumpable {
         }
     }
 
+    public function setIdDataAttribute($attr) {
+        $this->_idDataAttribute = $attr;
+        return $this;
+    }
+
+    public function getIdDataAttribute() {
+        return $this->_idDataAttribute;
+    }
+
     protected function _render() {
         $tag = $this->getTag();
         $optionList = new aura\html\ElementContent();
 
         foreach($this->_options as $key => $label) {
             $option = new aura\html\Element('option');
-            
+
             if($optionRenderer = $this->_optionRenderer) {
                 $optionRenderer($option, $value, $label);
             } else {
-                $option->push($label);
+                $option->setAttribute('value', $label);
             }
-            
+
+            if($this->_idDataAttribute) {
+                $option->setDataAttribute($this->_idDataAttribute, $key);
+            }
+
             $optionList->push($option->render());
         }
 
