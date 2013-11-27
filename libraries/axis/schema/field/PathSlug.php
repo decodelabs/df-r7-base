@@ -23,7 +23,12 @@ class PathSlug extends Base implements
         }
 
         $output = $row[$key.'_name'];
-        $location = trim($row[$key.'_location'], '/');
+
+        if(isset($row[$key.'_location'])) {
+            $location = trim($row[$key.'_location'], '/');
+        } else {
+            $location = null;
+        }
 
         if(!empty($location)) {
             $output = $location.'/'.$output;
