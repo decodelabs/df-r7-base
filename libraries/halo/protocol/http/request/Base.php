@@ -557,7 +557,13 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
 
             switch($headers->get('content-type')) {
                 case 'application/x-www-form-urlencoded':
-                    $this->_bodyData = $this->_postData->toArrayDelimitedString();
+                    $postData = $this->_postData->toArrayDelimitedString();
+
+                    if($url->shouldEncodeQueryAsRfc3986()) {
+                        $postData = str_replace('%7E', '~', $postData);
+                    }
+
+                    $this->_bodyData = $postData;
                     break;
 
                 default:

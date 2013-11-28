@@ -99,7 +99,7 @@ interface IQueryContainer {
     public function getQueryString();
     public function getQueryTerm($key, $default=null);
     public function hasQuery();
-    
+    public function shouldEncodeQueryAsRfc3986($flag=null);
 }
 
 /*****************
