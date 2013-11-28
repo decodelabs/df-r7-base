@@ -71,6 +71,10 @@ class Tcp_Client extends halo\socket\Client implements halo\socket\ISequenceClie
                 STREAM_CLIENT_CONNECT | STREAM_CLIENT_ASYNC_CONNECT,
                 $context
             );
+
+            if($rTimeout = $this->_getOption('receiveTimeout')) {
+                stream_set_timeout($socket, 0, $rTimeout * 1000);
+            }
         } catch(\Exception $e) {
             throw new halo\socket\ConnectionException(
                 'Could not connect client to '.$this->_address.' - '.$this->_getLastErrorMessage()
@@ -106,6 +110,11 @@ class Tcp_Client extends halo\socket\Client implements halo\socket\ISequenceClie
         if(!is_resource($this->_socket)) {
             return false;
         } 
+
+        $info = stream_get_meta_data($this->_socket);
+        if($info['timed_out']) {
+            return false;
+        }
         
         if(stream_socket_get_name($this->_socket, true) === false) {
             return false;
