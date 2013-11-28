@@ -37,7 +37,7 @@ class Address implements IAddress, core\IDumpable {
         $parts = explode('<', $string, 2);
 
         $address = rtrim(trim(array_pop($parts)), '>');
-        $name = trim(array_shift($parts));
+        $name = trim(array_shift($parts), '\"\'');
 
         if(empty($name)) {
             $name = null;
@@ -87,7 +87,7 @@ class Address implements IAddress, core\IDumpable {
         $output = $this->_address;
 
         if(!empty($this->_name)) {
-            $output = $this->_name.' <'.$output.'>';
+            $output = '"'.$this->_name.'" <'.$output.'>';
         }
 
         return $output;
