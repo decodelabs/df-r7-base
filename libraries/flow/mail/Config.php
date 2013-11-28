@@ -17,12 +17,11 @@ class Config extends core\Config {
 
     public function getDefaultValues() {
         return [
-            'defaultTransport' => [
-                'name' => 'Mail'
-            ],
+            'defaultTransport' => 'Mail',
             'defaultAddress' => 'webmaster@mydomain.com',
             'adminAddresses' => [],
-            'catchAllBCC' => []
+            'catchAllBCC' => [],
+            'transports' => flow\mail\transport\Base::getAllDefaultConfigValues()
         ];
     }
 
@@ -33,24 +32,16 @@ class Config extends core\Config {
             );
         }
 
-        $this->values['defaultTransport'] = $name;
+        $this->values->defaultTransport = $name;
         return $this;
     }
 
     public function getDefaultTransport() {
-        if($this->values->defaultTransport->hasValue()) {
-            return $this->values['defaultTransport'];
-        }
-
-        if(isset($this->values->defaultTransport->name)) {
-            return $this->values->defaultTransport['name'];
-        }
-
-        return 'Mail';
+        return $this->values->get('defaultTransport', 'Mail');
     }
 
     public function getDefaultTransportSettings($checkName=null) {
-        return $this->values->defaultTransport;
+        return $this->values->transports->{$this->getDefaultTransport()};
     }
 
     public function setDefaultAddress($address, $name=null) {

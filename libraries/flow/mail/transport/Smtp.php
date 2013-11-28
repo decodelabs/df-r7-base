@@ -18,6 +18,14 @@ class Smtp extends Base {
         return 'External SMTP connection';
     }
 
+    public static function getDefaultConfigValues() {
+        return [
+            'dsn' => null,
+            'username' => null,
+            'password' => null
+        ];
+    }
+
     public function __construct(core\collection\ITree $settings=null) {
         if($settings !== null) {
             if(!isset($settings['dsn'])) {

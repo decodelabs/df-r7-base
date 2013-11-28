@@ -18,6 +18,14 @@ class AmazonSes extends Base {
         return 'Amazon SES';
     }
 
+    public static function getDefaultConfigValues() {
+        return [
+            'url' => null,
+            'accessKey' => null,
+            'secretKey' => null
+        ];
+    }
+
     public function __construct(core\collection\ITree $settings=null) {
         if($settings !== null) {
             $this->connect($settings['url'], $settings['accessKey'], $settings['secretKey']);
