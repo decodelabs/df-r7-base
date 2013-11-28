@@ -122,7 +122,7 @@ abstract class Base implements flow\mail\ITransport {
         $message->prepareHeaders();
     }
 
-    public function __construct(array $settings=null) {}
+    public function __construct(core\collection\ITree $settings=null) {}
 
     public static function getName() {
         $parts = explode('\\', get_called_class());

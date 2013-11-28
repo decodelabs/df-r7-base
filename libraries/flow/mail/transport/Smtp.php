@@ -18,7 +18,7 @@ class Smtp extends Base {
         return 'External SMTP connection';
     }
 
-    public function __construct(array $settings=null) {
+    public function __construct(core\collection\ITree $settings=null) {
         if($settings !== null) {
             if(!isset($settings['dsn'])) {
                 throw new flow\mail\InvalidArgumentException(

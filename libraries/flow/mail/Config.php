@@ -12,11 +12,14 @@ use df\flow;
 class Config extends core\Config {
 
     const ID = 'mail';
+    const USE_TREE = true;    
     const USE_ENVIRONMENT_ID_BY_DEFAULT = true;
 
     public function getDefaultValues() {
         return [
-            'defaultTransport' => 'Mail',
+            'defaultTransport' => [
+                'name' => 'Mail'
+            ],
             'defaultAddress' => 'webmaster@mydomain.com',
             'adminAddresses' => [],
             'catchAllBCC' => []
@@ -35,36 +38,19 @@ class Config extends core\Config {
     }
 
     public function getDefaultTransport() {
-        if(!isset($this->values['defaultTransport'])) {
-            $output = 'Mail';
-        } else {
-            $output = $this->values['defaultTransport'];
-        }
-
-        if(is_array($output)) {
-            if(isset($output['name'])) {
-                return $output['name'];
-            }
-
-            $output = 'Mail';
-        }
-
-        return $output;
-    }
-
-    public function getDefaultTransportSettings($checkName=null) {
-        if(isset($this->values['defaultTransport'])
-        && is_array($this->values['defaultTransport'])) {
-            if($checkName !== null
-            && isset($this->values['defaultTransport']['name'])
-            && $checkName != $this->values['defaultTransport']['name']) {
-                return array();
-            }
-            
+        if($this->values->defaultTransport->hasValue()) {
             return $this->values['defaultTransport'];
         }
 
-        return array();
+        if(isset($this->values->defaultTransport->name)) {
+            return $this->values->defaultTransport['name'];
+        }
+
+        return 'Mail';
+    }
+
+    public function getDefaultTransportSettings($checkName=null) {
+        return $this->values->defaultTransport;
     }
 
     public function setDefaultAddress($address, $name=null) {
@@ -81,11 +67,7 @@ class Config extends core\Config {
     }
 
     public function getDefaultAddress() {
-        if(isset($this->values['defaultAddress'])) {
-            return $this->values['defaultAddress'];
-        }
-
-        return 'webmaster@mydomain.com';
+        return $this->values->get('defaultAddress', 'webmaster@mydomain.com');
     }
 
     public function setAdminAddresses(array $addresses) {
@@ -106,10 +88,8 @@ class Config extends core\Config {
     public function getAdminAddresses() {
         $output = array();
 
-        if(isset($this->values['adminAddresses'])) {
-            foreach($this->values['adminAddresses'] as $address) {
-                $output[] = Address::factory($address);
-            }
+        foreach($this->values->adminAddresses as $address) {
+            $output[] = Address::factory($address->getValue());
         }
 
         return $output;
@@ -133,10 +113,8 @@ class Config extends core\Config {
     public function getCatchAllBCCAddresses() {
         $output = array();
 
-        if(isset($this->values['catchAllBCC'])) {
-            foreach($this->values['catchAllBCC'] as $address) {
-                $output[] = Address::factory($address);
-            }
+        foreach($this->values->catchAllBCC as $address) {
+            $output[] = Address::factory($address->getValue());
         }
 
         return $output;
