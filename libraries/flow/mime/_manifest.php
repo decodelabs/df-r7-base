@@ -20,7 +20,7 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 interface IPart extends core\IStringProvider, core\collection\IHeaderMapProvider {
 
     const LINE_LENGTH = 74;
-    const LINE_END = PHP_EOL;
+    const LINE_END = "\r\n";
 
     public function isMultiPart();
 
