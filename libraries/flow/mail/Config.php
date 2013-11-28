@@ -44,6 +44,10 @@ class Config extends core\Config {
         return $this->values->transports->{$this->getDefaultTransport()};
     }
 
+    public function getTransportSettings($name) {
+        return $this->values->transports->{$name};
+    }
+
     public function setDefaultAddress($address, $name=null) {
         $address = Address::factory($address, $name);
 
