@@ -93,7 +93,7 @@ class Mediator implements IMediator, core\IDumpable {
     }
 
     protected function _createListInputArray($limit, $offset, $filter) {
-        $intput = [];
+        $input = [];
 
         if($limit != 10 && $limit > 0) {
             $input['count'] = (int)$limit;
