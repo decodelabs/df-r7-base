@@ -58,6 +58,7 @@ class Client implements IClient, core\IDumpable {
 
         $session = new PeerSession(
             halo\socket\Client::factory($scheme.'://'.$request->getSocketAddress())
+                ->setReceiveTimeout(100)
         );
         
         $session->setRequest($request);
@@ -140,7 +141,7 @@ class Client implements IClient, core\IDumpable {
             halo\peer\IIoState::OPEN_READ : 
             halo\peer\IIoState::BUFFER;
     }
-    
+
     protected function _handleReadBuffer(halo\peer\ISession $session, $data) {
         if(!$response = $session->getResponse()) {
             if(false === strpos($session->readBuffer, "\r\n\r\n")) {
