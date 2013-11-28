@@ -440,6 +440,15 @@ class Message extends flow\mime\MultiPart implements IMessage {
             $transport = flow\mail\transport\Base::factory();
         }
 
-        return $transport->send($this);
+        try {
+            return $transport->send($this);
+        } catch(\Exception $e) {
+            if($transport->getName() != 'Mail') {
+                $transport = flow\mail\transport\Base::factory('Mail');
+                return $transport->send($this);
+            } else {
+                throw $e;
+            }
+        }
     }
 }
