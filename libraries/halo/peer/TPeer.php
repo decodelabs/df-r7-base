@@ -95,6 +95,8 @@ trait TPeer {
             
             // Allow implementation to do something with it
             $result = $this->_handleReadBuffer($session, $data);
+        } else if(!$socket->checkConnection()) {
+            $endRead = true;
         }
 
         if($endRead) { // Peer has shutdown writing
