@@ -147,6 +147,10 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
             $timeout = -1;
         }
 
+        if($timeout != -1) {
+            $timeout *= 1000;
+        }
+
         $event = event_new();
 
         if(!event_set($event, $target, $flags, $callback, $arg)) {
