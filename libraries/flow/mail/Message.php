@@ -431,6 +431,7 @@ class Message extends flow\mime\MultiPart implements IMessage {
             $this->_headers->set('bcc', implode(', ', $bcc));
         }
 
+        $this->_headers->set('MIME-Version', '1.0');
         return $this;
     }
 
