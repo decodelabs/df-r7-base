@@ -13,6 +13,12 @@ class Std implements core\io\IMultiplexReaderChannel {
     use core\io\TReader;
     use core\io\TWriter;
 
+    protected $_readBlocking = true;
+
+    public function __construct() {
+        $this->setReadBlocking(true);
+    }
+
     public function getChannelId() {
         return 'STD';
     }
@@ -31,8 +37,30 @@ class Std implements core\io\IMultiplexReaderChannel {
     }
 
 
+    public function setReadBlocking($flag) {
+        stream_set_blocking(STDIN, (int)((bool)$flag));
+        $this->_readBlocking = (bool)$flag;
+        return $this;
+    }
+
+    public function getReadBlocking() {
+        return $this->_readBlocking;
+    }
+
     protected function _readChunk($length) {
-        return fread(STDIN, $length);
+        try {
+            $output = fread(STDIN, $length);
+        } catch(\Exception $e) {
+            return false;
+        }
+
+        if($output === ''
+        || $output === null
+        || $output === false) {
+            return false;
+        }
+        
+        return $output;
     }
 
     protected function _readLine() {

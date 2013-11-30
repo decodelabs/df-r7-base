@@ -419,13 +419,21 @@ interface IChannel extends IReader, IWriter, IFlushable {
     public function writeErrorLine($line);
 }
 
-interface IMultiplexReaderChannel extends IChannel {}
+interface IMultiplexReaderChannel extends IChannel {
+    public function setReadBlocking($flag);
+    public function getReadBlocking();
+}
 
 interface IContainedStateChannel extends IChannel {
     public function getErrorBuffer();
     public function flushErrorBuffer();
 }
 
+interface IStreamChannel extends IContainedStateChannel {
+    public function getStreamDescriptor();
+    public function setBlocking($flag);
+    public function getBlocking();
+}
 
 // File
 interface IFilePointer {
@@ -486,6 +494,8 @@ interface IMultiplexer extends IFlushable, core\IRegistryObject {
     public function writeErrorLine($line);
 
     public function readLine();
+    public function readChunk($size);
+    public function setReadBlocking($flag);
 }
 
 
