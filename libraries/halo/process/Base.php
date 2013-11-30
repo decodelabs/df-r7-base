@@ -44,29 +44,31 @@ abstract class Base implements IProcess {
     }
     
     
-    public static function launch($process, $args=null, $path=null) {
-        return self::newLauncher($process, $args, $path)->launch();
+    public static function launch($process, $args=null, $path=null, core\io\IMultiplexer $multiplexer=null) {
+        return self::newLauncher($process, $args, $path)
+            ->setMultiplexer($multiplexer)
+            ->launch();
     }
 
-    public static function launchScript($path, $args=null) {
-        return self::newScriptLauncher($path, $args)->launch();
+    public static function launchScript($path, $args=null, core\io\IMultiplexer $multiplexer=null) {
+        return self::newScriptLauncher($path, $args)
+            ->setMultiplexer($multiplexer)
+            ->launch();
     }
 
-    public static function launchTask($request, $environmentMode=null) {
+    public static function launchTask($request, core\io\IMultiplexer $multiplexer=null) {
         $request = arch\Request::factory($request);
-
-        if($environmentMode === null) {
-            $environmentMode = df\Launchpad::getEnvironmentMode();
-        }
-
+        $environmentMode = df\Launchpad::getEnvironmentMode();
         $path = df\Launchpad::$applicationPath.'/entry/';
         $path .= df\Launchpad::$environmentId.'.'.$environmentMode.'.php';
 
-        return self::launchScript($path, 'task '.$request);
+        return self::launchScript($path, 'task '.$request, $multiplexer);
     }
     
-    public static function launchBackground($process, $args=null, $path=null) {
-        return self::newLauncher($process, $args, $path)->launchBackground();
+    public static function launchBackground($process, $args=null, $path=null, core\io\IMultiplexer $multiplexer=null) {
+        return self::newLauncher($process, $args, $path)
+            ->setMultiplexer($multiplexer)
+            ->launchBackground();
     }
 
     public static function launchBackgroundScript($path, $args=null) {
