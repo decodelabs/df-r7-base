@@ -11,6 +11,8 @@ use df\halo;
 
 class Unix extends Base {
 
+    protected $_readChunkSize = 512;
+
     /*
     public function isPrivileged() {
         core\stub();
@@ -35,21 +37,58 @@ class Unix extends Base {
         if(!is_resource($processHandle)) {
             return $result->registerFailure();
         } 
-        
-        $output = stream_get_contents($pipes[1]);
-        $error = stream_get_contents($pipes[2]);
 
-        $result->setOutput($output);
-        $result->setError($error);
+        $outputBuffer = $errorBuffer = $input = false;
+
+        $outputStream = new core\io\channel\Stream($pipes[1]);
+        $outputStream->setBlocking(false);
+
+        $errorStream = new core\io\channel\Stream($pipes[2]);
+        $errorStream->setBlocking(false);
 
         if($this->_multiplexer) {
-            if(!empty($output)) {
-                $this->_multiplexer->write($output);
+            $this->_multiplexer->setReadBlocking(false);
+        }
+
+        while(true) {
+            $status = proc_get_status($processHandle);
+
+            $outputBuffer = $outputStream->readChunk($this->_readChunkSize);
+            $errorBuffer = $errorStream->readChunk($this->_readChunkSize);
+
+            if($this->_multiplexer) {
+                $input = $this->_multiplexer->readChunk($this->_readChunkSize);
             }
 
-            if(!empty($error)) {
-                $this->_multiplexer->writeError($error);
+            if($outputBuffer !== false) {
+                $result->appendOutput($outputBuffer);
+
+                if($this->_multiplexer) {
+                    $this->_multiplexer->write($outputBuffer);
+                }
             }
+
+            if($errorBuffer !== false) {
+                $result->appendError($errorBuffer);
+
+                if($this->_multiplexer) {
+                    $this->_multiplexer->writeError($errorBuffer);
+                }
+            }
+
+            if($input !== false) {
+                fwrite($pipes[0], $input);
+            }
+
+            if(!$status['running'] && $outputBuffer === false && $errorBuffer === false && $input === false) {
+                break;
+            }
+
+            usleep(10000);
+        }
+
+        if($this->_multiplexer) {
+            $this->_multiplexer->setReadBlocking(true);
         }
         
         foreach($pipes as $pipe) {
