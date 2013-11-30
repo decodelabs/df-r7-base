@@ -623,6 +623,7 @@ trait TManager {
 
 // Context
 interface IContext extends core\IApplicationAware, core\IHelperProvider {
+    public function setRunMode($mode);
     public function getRunMode();
 
     // Locale
@@ -646,13 +647,23 @@ trait TContext {
 
     public $application;
     protected $_locale;
+    protected $_runMode;
 
 // Application
     public function getApplication() {
         return $this->application;
     }
     
+    public function setRunMode($runMode) {
+        $this->_runMode = $runMode;
+        return $this;
+    }
+
     public function getRunMode() {
+        if($this->_runMode) {
+            return $this->_runMode;
+        }
+
         return $this->application->getRunMode();
     }
 

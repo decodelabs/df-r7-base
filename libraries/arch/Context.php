@@ -18,7 +18,7 @@ class Context implements IContext, \Serializable, core\IDumpable {
 
     public $request;
     public $location;
-    
+
     public static function getCurrent(core\IApplication $application=null) {
         if(!$application) {
             $application = df\Launchpad::getActiveApplication();
@@ -31,7 +31,7 @@ class Context implements IContext, \Serializable, core\IDumpable {
         return null;
     }
 
-    public static function factory(core\IApplication $application, $request=null) {
+    public static function factory(core\IApplication $application, $request=null, $runMode=null) {
         if(!empty($request)) {
             $request = arch\Request::factory($request);
         } else if($application instanceof core\IContextAware
@@ -41,12 +41,13 @@ class Context implements IContext, \Serializable, core\IDumpable {
             $request = new arch\Request('/');
         }
 
-        return new self($application, $request); 
+        return new self($application, $request, $runMode); 
     }
     
-    public function __construct(core\IApplication $application, arch\IRequest $request) {
+    public function __construct(core\IApplication $application, arch\IRequest $request, $runMode=null) {
         $this->application = $application;
         $this->location = $request;
+        $this->_runMode = $runMode;
 
         if($this->application instanceof core\IContextAware 
         && $this->application->hasContext()) {
