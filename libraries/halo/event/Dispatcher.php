@@ -70,7 +70,7 @@ abstract class Dispatcher implements IDispatcher {
     
 
 // Stream
-    public function getStreamHandler(core\io\stream\IStream $stream) {
+    public function getStreamHandler(core\io\IStreamChannel $stream) {
         foreach($this->_handlers as $id => $handler) {
             if($handler instanceof IStreamHandler 
             && $handler->getStream() === $stream) {
@@ -83,7 +83,7 @@ abstract class Dispatcher implements IDispatcher {
         );
     }
     
-    public function removeStream(core\io\stream\IStream $stream) {
+    public function removeStream(core\io\IStreamChannel $stream) {
         foreach($this->_handlers as $id => $handler) {
             if($handler instanceof IStreamHandler 
             && $handler->getStream() === $stream) {

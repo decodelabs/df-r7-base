@@ -44,9 +44,9 @@ interface IDispatcher {
     public function getSocketHandler(halo\socket\ISocket $socket);
     public function removeSocket(halo\socket\ISocket $socket);
 
-    public function newStreamHandler(core\io\stream\IStream $stream); 
-    public function getStreamHandler(core\io\stream\IStream $stream);
-    public function removeStream(core\io\stream\IStream $stream);
+    public function newStreamHandler(core\io\IStreamChannel $stream); 
+    public function getStreamHandler(core\io\IStreamChannel $stream);
+    public function removeStream(core\io\IStreamChannel $stream);
 
     public function getHandlers();
     public function countHandlers();
@@ -378,13 +378,13 @@ trait TStreamHandler {
 
     protected $_stream;
     
-    public function __construct(IDispatcher $dispatcher, core\io\stream\IStream $stream) {
+    public function __construct(IDispatcher $dispatcher, core\io\IStreamChannel $stream) {
         $this->_dispatcher = $dispatcher;
         $this->_stream = $stream;
     }
     
     public function getId() {
-        return 'stream:'.$this->_stream->getId();
+        return $this->_stream->getChannelId();
     }
     
     public function getStream() {

@@ -50,7 +50,7 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
         return $this->_registerHandler(new Handler_Socket($this, $socket));
     }
     
-    public function newStreamHandler(core\io\stream\IStream $stream) {
+    public function newStreamHandler(core\io\IStreamChannel $stream) {
         return $this->_registerHandler(new Handler_Stream($this, $stream));
     }
     
