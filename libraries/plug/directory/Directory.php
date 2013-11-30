@@ -94,25 +94,10 @@ class Directory implements arch\IDirectoryHelper {
         );
     }
     
-    public function getAction($name, $context=true, arch\IController $controller=null, $runMode=null) {
-        if($context === true) {
-            $context = $this->_context;
-        }
-        
-        if($context instanceof arch\IContext) {
-            $request = clone $context->location;
-        } else {
-            $request = arch\Request::factory($context);
-        }
-        
-        $request->setAction($name);
-        
-        if($runMode === null) {
-            $runMode = $this->_context->getRunMode();
-        }
-        
-        $context = arch\Context::factory($this->_context->getApplication(), $request);
-        return arch\Action::factory($context, $controller);
+    public function getAction($request, $runMode=null) {
+        $request = arch\Request::factory($request);
+        $context = arch\Context::factory($this->_context->getApplication(), $request, $runMode);
+        return arch\Action::factory($context);
     }
     
     public function controllerExists($request, $runMode=null) {
