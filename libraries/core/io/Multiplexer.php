@@ -171,6 +171,28 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
         );
     }
 
+    public function readChunk($size) {
+        foreach($this->_channels as $channel) {
+            if($channel instanceof core\io\IMultiplexReaderChannel) {
+                if(false !== ($data = $channel->readChunk($size))) {
+                    return $data;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public function setReadBlocking($flag) {
+        foreach($this->_channels as $channel) {
+            if($channel instanceof core\io\IMultiplexReaderChannel) {
+                $channel->setReadBlocking($flag);
+            }
+        }
+
+        return $this;
+    }
+
 
 // Dump
     public function getDumpProperties() {
