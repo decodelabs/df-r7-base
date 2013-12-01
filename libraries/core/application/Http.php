@@ -374,7 +374,11 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
         $this->_context = null;
         $this->_context = arch\Context::factory($this, clone $request);
         
-        $action = arch\Action::factory($this->_context);
+        $action = arch\Action::factory(
+            $this->_context,
+            arch\Controller::factory($this->_context)
+        );
+        
         $response = $action->dispatch();
         
         // Dereference proxy responses
