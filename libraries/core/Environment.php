@@ -17,8 +17,6 @@ class Environment extends Config {
     
     public function getDefaultValues() {
         return [
-            'httpBaseUrl' => $this->_generateHttpBaseUrlList(),
-            'sendFileHeader' => 'X-Sendfile',
             'phpBinaryPath' => 'php',
             'distributed' => false,
             'activeLocations' => [],
@@ -34,113 +32,7 @@ class Environment extends Config {
             halo\process\Base::launchTask('git/init-gitignore');
         } catch(\Exception $e) {}
     }
-        
-    
-// Http base url
-    public function setHttpBaseUrl($url, $environmentMode=null) {
-        if($environmentMode === null) {
-            $environmentMode = df\Launchpad::getEnvironmentMode();
-        }
-        
-        if($url === null) {
-            $this->values['httpBaseUrl'][$environmentMode] = null;
-        } else {
-            $url = halo\protocol\http\Url::factory($url);
-            $url->getPath()->shouldAddTrailingSlash(true)->isAbsolute(true);
-            
-            $this->values['httpBaseUrl'][$environmentMode] = $url->getDomain().$url->getPathString();
-        }
-        
-        return $this;
-    }
-    
-    public function getHttpBaseUrl($environmentMode=null) {
-        if(!isset($this->values['httpBaseUrl'])) {
-            $this->values['httpBaseUrl'] = $this->_generateHttpBaseUrlList();
-            $this->save();
-        }
 
-        if($environmentMode === null) {
-            $environmentMode = df\Launchpad::getEnvironmentMode();
-        }
-        
-        if(!isset($this->values['httpBaseUrl'][$environmentMode]) && isset($_SERVER['HTTP_HOST'])) {
-            if(null !== ($baseUrl = $this->_generateHttpBaseUrl())) {
-                $this->setHttpBaseUrl($baseUrl)->save();
-            }
-        }
-        
-        return trim($this->values['httpBaseUrl'][$environmentMode], '/');
-    }
-    
-    protected function _generateHttpBaseUrlList() {
-        if(!isset($_SERVER['HTTP_HOST'])) {
-            return null;
-        }
-
-        $baseUrl = $this->_generateHttpBaseUrl();
-        $envMode = df\Launchpad::getEnvironmentMode();
-        
-        $output = [
-            'development' => null,
-            'testing' => null,
-            'production' => null
-        ];
-        
-        $output[$envMode] = $baseUrl;
-        
-        if(substr($baseUrl, 0, strlen($envMode) + 1) == $envMode.'.') {
-            $baseUrl = substr($host, strlen($envMode) + 1);
-        }
-        
-        foreach($output as $key => $val) {
-            if($val === null) {
-                $output[$key] = $key.'.'.$baseUrl;
-            }
-        }
-            
-        return $output;
-    }
-    
-    protected function _generateHttpBaseUrl() {
-        $baseUrl = null;
-        $request = new halo\protocol\http\request\Base(true);
-        $host = $request->getUrl()->getDomain();
-        $path = $request->getUrl()->getPathString();
-        
-        $baseUrl = $host.'/'.trim(dirname($_SERVER['SCRIPT_NAME']), '/').'/';
-        $currentUrl = $host.'/'.$path;
-        
-        if(substr($currentUrl, 0, strlen($baseUrl)) != $baseUrl) {
-            $parts = explode('/', $currentUrl);
-            array_pop($parts);
-            $baseUrl = implode('/', $parts).'/';
-        }
-        
-        return $baseUrl;
-    }
-    
-
-// Send file header
-    public function setSendFileHeader($header) {
-        $this->values['sendFileHeader'] = $header;
-        return $this;
-    }
-
-    public function getSendFileHeader() {
-        $output = null;
-
-        if(isset($this->values['sendFileHeader'])) {
-            $output = $this->values['sendFileHeader'];
-        }
-
-        if(empty($output)) {
-            //$output = 'X-Sendfile';
-            $output = null;
-        }
-
-        return $output;
-    }
 
 // PHP Binary path
     public function setPhpBinaryPath($path) {
