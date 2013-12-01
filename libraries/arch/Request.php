@@ -360,6 +360,40 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             'query' => $this->getQuery()
         ];
     }
+
+    public function toSlug() {
+        if($this->_path) {
+            $parts = $this->_path->toArray();
+        } else {
+            $parts = array();
+        }
+        
+        if(isset($parts[0]) && substr($parts[0], 0, 1) == '~') {
+            array_shift($parts);
+        }
+
+        if(empty($parts)) {
+            return '/';
+        }
+
+        $action = array_pop($parts);
+
+        if(false !== ($pos = strpos($action, '.'))) {
+            $action = substr($action, 0, $pos);
+        }
+
+        if(strlen($action)) {
+            $parts[] = $action;
+        }
+
+        $output = implode('/', $parts);
+
+        if(!strlen($output)) {
+            return '/';
+        }
+
+        return $output;
+    }
     
     
 // Match
