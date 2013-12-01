@@ -11,7 +11,6 @@ use df\core;
 class Config extends core\Config {
     
     const ID = 'Cache';
-    const USE_ENVIRONMENT_ID_BY_DEFAULT = true;
     const STORE_IN_MEMORY = true;
     
     public function getDefaultValues() {
