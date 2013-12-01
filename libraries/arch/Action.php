@@ -147,11 +147,8 @@ class Action implements IAction, core\IDumpable {
         }
         
         if($func === null) {
-            $class = 'df\\apex\\directory\\'.$this->_context->location->getArea().'\\_actions\\HttpDefault';
-
-            if(class_exists($class)) {
-                $defaultAction = new $class($this->_context);
-                return $defaultAction->dispatch();
+            if(null !== ($output = $this->_dispatchRootDefaultAction())) {
+                return $output;
             }
 
             throw new RuntimeException(
@@ -170,6 +167,15 @@ class Action implements IAction, core\IDumpable {
         }
         
         return $output;
+    }
+
+    protected function _dispatchRootDefaultAction() {
+        $class = 'df\\apex\\directory\\'.$this->_context->location->getArea().'\\_actions\\HttpDefault';
+
+        if(class_exists($class) && get_class($this) != $class) {
+            $defaultAction = new $class($this->_context);
+            return $defaultAction->dispatch();
+        }
     }
     
     public static function getActionMethodName($actionClass, IContext $context) {
