@@ -13,7 +13,6 @@ class Config extends core\Config {
 
     const ID = 'mail';
     const USE_TREE = true;    
-    const USE_ENVIRONMENT_ID_BY_DEFAULT = true;
 
     public function getDefaultValues() {
         return [
