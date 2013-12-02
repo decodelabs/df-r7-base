@@ -290,6 +290,11 @@ class Clause implements opal\query\IClause, core\IDumpable {
 
                 case self::OP_IN:
                 case self::OP_NOT_IN:
+                
+                case self::OP_LT:
+                case self::OP_LTE:
+                case self::OP_GT:
+                case self::OP_GTE:
                     break;
 
                 default:
