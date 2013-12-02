@@ -103,6 +103,20 @@ trait TForm {
             $this->_getDelegateIdPrefix().$id
         );
     }
+
+    public function directLoadDelegate($id, $class) {
+        if(!class_exists($class)) {
+            throw new DelegateException(
+                'Cannot direct load delegate '.$id.' - class not found'
+            );
+        }
+
+        return $this->_delegates[$id] = new $class(
+            $this->_context,
+            $this->_state->getDelegateState($id),
+            $this->_getDelegateIdPrefix().$id
+        );
+    }
     
     public function getDelegate($id) {
         if(!is_array($id)) {
