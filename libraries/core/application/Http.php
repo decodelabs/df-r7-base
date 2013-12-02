@@ -18,6 +18,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
     protected $_baseDomain;
     protected $_basePort;
     protected $_basePath;
+    protected $_useHttps = false;
     
     protected $_httpRequest;
     protected $_responseAugmentor;
@@ -40,6 +41,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
         $this->_baseDomain = array_shift($domain);
         $this->_basePort = array_shift($domain);
         $this->_sendFileHeader = $config->getSendFileHeader();
+        $this->_useHttps = $config->isSecure();
     }
     
     
@@ -212,6 +214,17 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
             $this->_httpRequest = $httpRequest;
         } else {
             $this->_httpRequest = new halo\protocol\http\request\Base(null, true);
+        }
+
+        if($this->_useHttps && !$this->_httpRequest->getUrl()->isSecure()) {
+            $response = new halo\protocol\http\response\Redirect(
+                $this->_httpRequest->getUrl()
+                    ->isSecure(true)
+                    ->setPort(null)
+            );
+
+            $response->isPermanent(true);
+            return $response;
         }
 
         if($this->_httpRequest->hasCookie('debug')) {
@@ -584,7 +597,8 @@ class Http_Config extends core\Config {
     public function getDefaultValues() {
         return [
             'httpBaseUrl' => $this->_generateHttpBaseUrlList(),
-            'sendFileHeader' => 'X-Sendfile'
+            'sendFileHeader' => 'X-Sendfile',
+            'secure' => false
         ];
     }
 
@@ -692,5 +706,20 @@ class Http_Config extends core\Config {
         }
 
         return $output;
+    }
+
+
+// Https
+    public function isSecure($flag=null) {
+        if($flag !== null) {
+            $this->values['secure'] = (bool)$flag;
+            return $this;
+        }
+
+        if(!isset($this->values['secure'])) {
+            return false;
+        }
+
+        return (bool)$this->values['secure'];
     }
 }
