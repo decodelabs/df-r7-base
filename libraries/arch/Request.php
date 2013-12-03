@@ -368,7 +368,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             $parts = array();
         }
         
-        if(isset($parts[0]) && substr($parts[0], 0, 1) == '~') {
+        if(isset($parts[0]) && $parts[0] == '~front') {
             array_shift($parts);
         }
 
