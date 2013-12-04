@@ -474,6 +474,7 @@ class Clause implements opal\query\IClause, core\IDumpable {
     }
 
     public static function mapVirtualFieldClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, opal\query\IField $value, $isOr) {
+        $operator = self::normalizeOperator($operator);
         $fieldList = $field->dereference();
         $fieldCount = count($fieldList);
         $clauses = [];
@@ -488,6 +489,7 @@ class Clause implements opal\query\IClause, core\IDumpable {
     }
 
     public static function mapVirtualValueClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr) {
+        $operator = self::normalizeOperator($operator);
         $fieldList = $field->dereference();
         $fieldCount = count($fieldList);
         $clauses = [];
@@ -534,6 +536,16 @@ class Clause implements opal\query\IClause, core\IDumpable {
         }
 
         return self::_buildClauseList($parent, $clauses, $isOr);
+    }
+
+    protected static function _extractMultiKeyFieldValueSet(opal\query\IVirtualField $parentField, opal\query\IField $field, $fieldIndex, array $value) {
+        $output = [];
+
+        foreach($value as $inner) {
+            $output[] = $this->_extractMultiKeyFieldValue($parentField, $field, $fieldIndex, $inner);
+        }
+
+        return $output;
     }
 
     protected static function _extractMultiKeyFieldValue(opal\query\IVirtualField $parentField, opal\query\IField $field, $fieldIndex, array $value) {
