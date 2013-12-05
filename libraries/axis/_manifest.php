@@ -33,7 +33,7 @@ interface IModel extends core\IApplicationAware, core\policy\IParentEntity, core
 
 
 
-interface IUnit extends core\IApplicationAware, user\IAccessLock {
+interface IUnit extends core\IApplicationAware, core\policy\IEntity, user\IAccessLock {
 
     const ID_SEPARATOR = '/';
     const DEFAULT_ACCESS = axis\IAccess::GUEST;
@@ -126,7 +126,7 @@ trait TUnit {
 
 // Policy
     public function getEntityLocator() {
-        return new core\policy\entity\Locator('axis://Unit:"'.$this->getUnitId().'"');
+        return new core\policy\entity\Locator('axis://'.$this->_model->getModelName().'/'.ucfirst($this->getUnitName()));
     }
 
 
