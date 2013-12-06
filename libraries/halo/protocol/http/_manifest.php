@@ -155,6 +155,10 @@ interface IRedirectResponse extends IResponse {
     public function isAlternativeContent($flag=null);
 }
 
+interface IGeneratorResponse extends IResponse, core\io\IChunkReceiver {
+    public function generate(core\io\IChannel $channel);
+}
+
 
 trait TStringResponse {
 

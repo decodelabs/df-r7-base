@@ -19,6 +19,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
     protected $_basePort;
     protected $_basePath;
     protected $_useHttps = false;
+    protected $_manualChunk = false;
     
     protected $_httpRequest;
     protected $_responseAugmentor;
@@ -42,6 +43,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
         $this->_basePort = array_shift($domain);
         $this->_sendFileHeader = $config->getSendFileHeader();
         $this->_useHttps = $config->isSecure();
+        $this->_manualChunk = $config->shouldChunkManually();
     }
     
     
@@ -509,7 +511,9 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
                 ob_end_clean();
             }
             
+            flush();
             set_time_limit(0);
+            $channel = new core\io\channel\Stream('php://output');
             
             // TODO: Seek to resume header location if requested
             
@@ -517,13 +521,20 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
                 $file = $response->getContentFileStream();
             
                 while(!$file->eof()) {
-                    echo $file->readChunk(8192);
+                    //echo $file->readChunk(8192);
+                    $channel->write($file->readChunk(8192));
                 }
                 
                 $file->close();
+            } else if($response instanceof halo\protocol\http\IGeneratorResponse) {
+                $response->shouldChunkManually($this->_manualChunk);
+                $response->generate($channel);
             } else {
-                echo $response->getContent();
+                //echo $response->getContent();
+                $channel->write($response->getContent());
             }
+
+            $channel->close();
         }
     }
 
@@ -598,7 +609,8 @@ class Http_Config extends core\Config {
         return [
             'httpBaseUrl' => $this->_generateHttpBaseUrlList(),
             'sendFileHeader' => 'X-Sendfile',
-            'secure' => false
+            'secure' => false,
+            'manualChunk' => false
         ];
     }
 
@@ -721,5 +733,19 @@ class Http_Config extends core\Config {
         }
 
         return (bool)$this->values['secure'];
+    }
+
+// Chunk
+    public function shouldChunkManually($flag=null) {
+        if($flag !== null) {
+            $this->values['manualChunk'] = (bool)$flag;
+            return $this;
+        }
+
+        if(!isset($this->values['manualChunk'])) {
+            return false;
+        }
+
+        return (bool)$this->values['manualChunk'];
     }
 }
