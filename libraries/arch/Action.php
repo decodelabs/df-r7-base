@@ -172,7 +172,15 @@ class Action implements IAction, core\IDumpable {
     protected function _dispatchRootDefaultAction() {
         $class = 'df\\apex\\directory\\'.$this->_context->location->getArea().'\\_actions\\HttpDefault';
 
-        if(class_exists($class) && get_class($this) != $class) {
+        if(!class_exists($class)) {
+            $class = 'df\\apex\\directory\\shared\\_actions\\HttpDefault';
+
+            if(!class_exists($class)) {
+                $class = null;
+            }
+        }
+
+        if($class && get_class($this) != $class) {
             $defaultAction = new $class($this->_context);
             return $defaultAction->dispatch();
         }
