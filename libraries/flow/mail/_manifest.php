@@ -67,6 +67,9 @@ interface IMessage extends flow\mime\IMultiPart {
     public function setReplyToAddress($address=null);
     public function getReplyToAddress();
 
+    public function setReturnPath($address=null);
+    public function getReturnPath();
+
     public function send(ITransport $transport=null);
 }
 

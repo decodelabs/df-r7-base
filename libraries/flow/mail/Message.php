@@ -376,6 +376,34 @@ class Message extends flow\mime\MultiPart implements IMessage {
         return $output;
     }
 
+    public function setReturnPath($address=null) {
+        if($address === null) {
+            $this->_headers->remove('return-path');
+        } else {
+            $address = Address::factory($address);
+
+            if(!$address->isValid()) {
+                throw new InvalidArgumentException(
+                    'Invalid return-path address'
+                );
+            }
+
+            $this->_headers->set('return-path', $address->getAddress());
+        }
+
+        return $this;
+    }
+
+    public function getReturnPath() {
+        $output = $this->_headers->get('return-path');
+
+        if($output !== null) {
+            $output = new Address($output);
+        }
+
+        return $output;
+    }
+
 
 // Headers
     public function prepareHeaders() {

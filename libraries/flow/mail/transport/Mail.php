@@ -20,7 +20,12 @@ class Mail extends Base {
         $headers = $message->getHeaderString(['to', 'subject']);
         $to = $message->getHeaders()->get('to');
         $body = $message->getBodyString();
+        $additional = null;
 
-        return mail($to, $message->getSubject(), $body, $headers);
+        if($returnPath = $message->getReturnPath()) {
+            $additional = '-f'.$returnPath->getAddress();
+        }
+
+        return mail($to, $message->getSubject(), $body, $headers, $additional);
     }
 }
