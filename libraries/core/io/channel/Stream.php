@@ -18,6 +18,10 @@ class Stream implements core\io\IStreamChannel {
     protected $_isBlocking = true;
 
     public function __construct($resource) {
+        if(is_string($resource)) {
+            $resource = fopen($resource, 'a+');
+        }
+
         $this->_resource = $resource;
         $this->setBlocking(true);
     }
@@ -103,5 +107,10 @@ class Stream implements core\io\IStreamChannel {
 
     public function getBlocking() {
         return $this->_isBlocking;
+    }
+
+    public function close() {
+        @fclose($this->_resource);
+        return $this;
     }
 }
