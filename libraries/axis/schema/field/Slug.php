@@ -35,7 +35,7 @@ class Slug extends Base implements axis\schema\IAutoUniqueField {
         }
 
         if($this->_allowPathFormat) {
-            return core\string\Manipulator::formatPathSlug($value);
+            return core\string\Manipulator::formatPathSlug($value, '~');
         } else {
             return core\string\Manipulator::formatSlug($value);
         }

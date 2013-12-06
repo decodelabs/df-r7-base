@@ -407,6 +407,7 @@ interface IPasswordField extends IField, IMinLengthField {}
 
 interface ISlugField extends IField, ISanitizingField, IUniqueCheckerField {
     public function allowPathFormat($flag=null);
+    public function allowAreaMarker($flag=null);
     public function setDefaultValueField($field);
     public function getDefaultValueField();
     public function shouldGenerateIfEmpty($flag=null);

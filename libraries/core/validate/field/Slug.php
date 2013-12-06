@@ -15,6 +15,7 @@ class Slug extends Base implements core\validate\ISlugField {
     use core\validate\TUniqueCheckerField;
 
     protected $_allowPathFormat = false;
+    protected $_allowAreaMarker = false;
     protected $_defaultValueField = null;
     protected $_generateIfEmpty = false;
 
@@ -25,6 +26,15 @@ class Slug extends Base implements core\validate\ISlugField {
         }    
         
         return $this->_allowPathFormat;
+    }
+
+    public function allowAreaMarker($flag=null) {
+        if($flag !== null) {
+            $this->_allowAreaMarker = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_allowAreaMarker;
     }
 
     public function setDefaultValueField($field) {
@@ -86,7 +96,7 @@ class Slug extends Base implements core\validate\ISlugField {
         }
 
         if($this->_allowPathFormat) {
-            $value = core\string\Manipulator::formatPathSlug($value);
+            $value = core\string\Manipulator::formatPathSlug($value, $this->_allowAreaMarker ? '~' : null);
         } else {
             $value = core\string\Manipulator::formatSlug($value);
         }
