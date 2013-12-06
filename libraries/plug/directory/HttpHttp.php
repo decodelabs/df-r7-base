@@ -10,6 +10,7 @@ use df\core;
 use df\arch;
 use df\halo;
 use df\aura as auraLib;
+use df\flex;
 
 class HttpHttp implements arch\IDirectoryHelper {
     
@@ -95,6 +96,7 @@ class HttpHttp implements arch\IDirectoryHelper {
     
     
     
+// Responses
     public function stringResponse($content, $contentType=null) {
         return new halo\protocol\http\response\String($content, $contentType);
     }
@@ -157,9 +159,23 @@ class HttpHttp implements arch\IDirectoryHelper {
         
         return $this->redirect($default);
     }
+
+
+
+// Generator
+    public function generator($contentType, core\io\IChunkSender $sender) {
+        return new halo\protocol\http\response\Generator($contentType, $sender);
+    }
+
+    public function csvGenerator($fileName, Callable $generator) {
+        return $this->generator('text/csv', new flex\csv\Builder($generator))
+            ->setAttachmentFileName($fileName);
+    }
     
     
     
+
+// Cookies
     public function setCookie($name, $value=null) {
         $application = $this->_context->getApplication();
         $augmentor = $application->getResponseAugmentor();
