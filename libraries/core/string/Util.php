@@ -133,13 +133,13 @@ abstract class Util implements IUtil {
         return $output;
     }
 
-    public static function implodeDelimited(array $data, $delimiter=',', $quote='\'', $terminator=null) {
+    public static function implodeDelimited(array $data, $delimiter=',', $quote='"', $terminator=null) {
         $output = array();
         
         if($terminator !== null) {
             foreach($data as $row) {
-                foreach($row as &$value) {
-                    $value = $quote.str_replace($quote, '\\'.$quote, $value).$quote;
+                foreach($row as $key => $value) {
+                    $row[$key] = $quote.str_replace($quote, '\\'.$quote, $value).$quote;
                 }
                 
                 $output[] = implode($delimiter, $row);
