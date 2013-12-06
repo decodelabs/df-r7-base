@@ -411,6 +411,16 @@ interface IFlushable {
 }
 
 
+interface IChunkSender {
+    public function setChunkReceiver(IChunkReceiver $reader);
+    public function getChunkReceiver();
+    public function sendChunks();
+}
+
+interface IChunkReceiver {
+    public function writeChunk($chunk);
+}
+
 
 // Channel
 interface IChannel extends IReader, IWriter, IFlushable {
@@ -433,6 +443,7 @@ interface IStreamChannel extends IContainedStateChannel {
     public function getStreamDescriptor();
     public function setBlocking($flag);
     public function getBlocking();
+    public function close();
 }
 
 // File
