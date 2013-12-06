@@ -24,6 +24,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     const REDIRECT_TO = 'rt';
     
     protected $_scheme = 'directory';
+    protected $_defaultAccess = null;
     
     public static function factory($url) {
         if($url instanceof IRequest) {
@@ -795,8 +796,17 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         
         return null;
     }
+
+    public function setDefaultAccess($access) {
+        $this->_defaultAccess = $access;
+        return $this;
+    }
     
     public function getDefaultAccess($lockAction=null) {
+        if($this->_defaultAccess !== null) {
+            return $this->_defaultAccess;
+        }
+
         try {
             $context = arch\Context::factory(
                 df\Launchpad::$application,
