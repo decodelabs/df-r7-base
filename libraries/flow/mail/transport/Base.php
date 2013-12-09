@@ -127,6 +127,10 @@ abstract class Base implements flow\mail\ITransport {
             }
         }
 
+        if(!$message->getReturnPath() && ($returnPath = $config->getDefaultReturnPath())) {
+            $message->setReturnPath($returnPath);
+        }
+
         if(!$message->hasToAddresses()) {
             throw new flow\mail\RuntimeException(
                 'The mail is missing a valid to address'

@@ -18,6 +18,7 @@ class Config extends core\Config {
         return [
             'defaultTransport' => 'Mail',
             'defaultAddress' => 'webmaster@mydomain.com',
+            'defaultReturnPath' => null,
             'adminAddresses' => [],
             'catchAllBCC' => [],
             'transports' => flow\mail\transport\Base::getAllDefaultConfigValues()
@@ -62,6 +63,23 @@ class Config extends core\Config {
 
     public function getDefaultAddress() {
         return $this->values->get('defaultAddress', 'webmaster@mydomain.com');
+    }
+
+    public function setDefaultReturnPath($address) {
+        $address = Address::factory($address);
+
+        if(!$address->isValid()) {
+            throw new InvalidArgumentException(
+                'Return path '.(string)$address.' is invalid'
+            );
+        }
+
+        $this->values['defaultReturnPath'] = $address->getAddress();
+        return $this;
+    }
+
+    public function getDefaultReturnPath() {
+        return $this->values['defaultReturnPath'];
     }
 
     public function setAdminAddresses(array $addresses) {
