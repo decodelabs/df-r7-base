@@ -59,7 +59,7 @@ class Context implements IContext, \Serializable, core\IDumpable {
     
     public function spawnInstance($request=null, $copyRequest=false) {
         if($request === null) {
-            return $this;
+            return clone $this;
         }
         
         $request = arch\Request::factory($request);
