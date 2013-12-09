@@ -70,7 +70,7 @@ trait TDependency {
     }
     
     public function resolve(opal\record\task\ITaskSet $taskSet, opal\record\task\ITask $dependentTask) {
-        core\stub($this, $dependentTask, $taskSet);
+        //core\stub($this->_requiredTask, $dependentTask, $taskSet);
     }
 }
 
