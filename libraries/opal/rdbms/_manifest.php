@@ -242,9 +242,9 @@ interface IQueryExecutor {
     public function countTable($tableName);
 
 // Query passthrough
-    public function executeReadQuery($tableName, opal\query\IField $keyField=null, opal\query\IField $valField=null, $forFetch=false, $forCount=false);
-    public function executeLocalReadQuery($tableName, opal\query\IField $keyField=null, opal\query\IField $valField=null, $forFetch=false, $forCount=false);
-    public function executeRemoteJoinedReadQuery($tableName, opal\query\IField $keyField=null, opal\query\IField $valField=null, $forCount=false);
+    public function executeReadQuery($tableName, $forCount=false);
+    public function executeLocalReadQuery($tableName, $forCount=false);
+    public function executeRemoteJoinedReadQuery($tableName, $forCount=false);
     public function executeInsertQuery($tableName);
     public function executeBatchInsertQuery($tableName);
     public function executeReplaceQuery($tableName);

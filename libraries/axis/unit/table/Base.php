@@ -212,16 +212,16 @@ abstract class Base implements
     
     
 // Query proxy
-    public function executeSelectQuery(opal\query\ISelectQuery $query, opal\query\IField $keyField=null, opal\query\IField $valField=null) {
-        return $this->_adapter->executeSelectQuery($query, $keyField, $valField);
+    public function executeSelectQuery(opal\query\ISelectQuery $query) {
+        return $this->_adapter->executeSelectQuery($query);
     }
     
     public function countSelectQuery(opal\query\ISelectQuery $query) {
         return $this->_adapter->countSelectQuery($query);
     }
     
-    public function executeFetchQuery(opal\query\IFetchQuery $query, opal\query\IField $keyField=null) {
-        return $this->_adapter->executeFetchQuery($query, $keyField);
+    public function executeFetchQuery(opal\query\IFetchQuery $query) {
+        return $this->_adapter->executeFetchQuery($query);
     }
 
     public function countFetchQuery(opal\query\IFetchQuery $query) {

@@ -169,6 +169,7 @@ interface IReadQuery extends IQuery, \IteratorAggregate, core\IArrayProvider {
     public function toKeyArray($keyField);
     public function toRow();
     public function getRawResult();
+    public function getOutputManifest();
 }
 
 interface IWriteQuery extends IQuery {
@@ -522,9 +523,9 @@ interface IAdapter extends user\IAccessLock {
     public function handleQueryException(IQuery $query, \Exception $e);
     public function ensureStorageConsistency();
     
-    public function executeSelectQuery(ISelectQuery $query, IField $keyField=null, IField $valField=null);
+    public function executeSelectQuery(ISelectQuery $query);
     public function countSelectQuery(ISelectQuery $query);
-    public function executeFetchQuery(IFetchQuery $query, IField $keyField=null);
+    public function executeFetchQuery(IFetchQuery $query);
     public function countFetchQuery(IFetchQuery $query);
     public function executeInsertQuery(IInsertQuery $query);
     public function executeBatchInsertQuery(IBatchInsertQuery $query);

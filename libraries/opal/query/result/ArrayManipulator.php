@@ -142,7 +142,7 @@ class ArrayManipulator implements IArrayManipulator {
         return $this->_rows;
     }
 
-    public function applyRemoteJoinQuery(opal\query\IQuery $query, array $localJoins, array $remoteJoins, $keyField=null, $valField=null, $forCount=false) {
+    public function applyRemoteJoinQuery(opal\query\IQuery $query, array $localJoins, array $remoteJoins, $forCount=false) {
         if(empty($this->_rows)) {
             if($forCount) {
                 $this->_rows = array('count' => 0);
@@ -200,17 +200,8 @@ class ArrayManipulator implements IArrayManipulator {
                 
                 $this->applyLimit($query->getLimit(), $offset);
             }
-            
-            if($query instanceof opal\query\IAttachableQuery) {
-                $this->applyAttachments($query->getAttachments());
-            }
-            
-            $this->applyOutputFields(
-                $keyField, $valField,
-                $query instanceof opal\query\IFetchQuery
-            );
         }
-        
+
         return $this->_rows;
     }
 
@@ -280,8 +271,18 @@ class ArrayManipulator implements IArrayManipulator {
                 }
             } else {
                 $sourceData = $adapter->fetchRemoteJoinData($join, $this->_rows);
+
+                if($sourceData instanceof core\IArrayProvider) {
+                    $sourceData = $sourceData->toArray();
+                }
+
+                if(!is_array($sourceData)) {
+                    throw new UnexpectedValueException(
+                        'Invalid source data for remote join'
+                    );
+                }
             }
-            
+
             $this->_outputManifest->importSource($source, $sourceData, true);
             
             $rows = $this->_rows;
@@ -305,7 +306,7 @@ class ArrayManipulator implements IArrayManipulator {
             }
 
             $clauseIndex = new opal\query\clause\Matcher($clauses->toArray(), true);
-            
+
             switch($join->getType()) {
                 case opal\query\IJoinQuery::INNER:
                     foreach($rows as $row) {

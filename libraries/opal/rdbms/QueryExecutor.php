@@ -63,124 +63,65 @@ abstract class QueryExecutor implements IQueryExecutor {
 
 
 // Read
-    public function executeReadQuery($tableName, opal\query\IField $keyField=null, opal\query\IField $valField=null, $forFetch=false, $forCount=false) {
+    public function executeReadQuery($tableName, $forCount=false) {
         if($this->_query->getSourceManager()->countSourceAdapters() == 1) {
-            return $this->executeLocalReadQuery($tableName, $keyField, $valField, $forFetch, $forCount);
+            return $this->executeLocalReadQuery($tableName, $forCount);
         } else {
-            return $this->executeRemoteJoinedReadQuery($tableName, $keyField, $valField, $forCount);
+            return $this->executeRemoteJoinedReadQuery($tableName, $forCount);
         }
     }
      
-    public function executeLocalReadQuery($tableName, opal\query\IField $keyField=null, opal\query\IField $valField=null, $forFetch=false, $forCount=false) {
+    public function executeLocalReadQuery($tableName, $forCount=false) {
         $source = $this->_query->getSource();
         $outFields = array();
-        $requiresBatchIterator = false;
-        $supportsProcessors = $source->getAdapter()->supportsQueryFeature(opal\query\IQueryFeatures::VALUE_PROCESSOR);
-        
-        if(!$forCount) {
-            $requiresBatchIterator = $forFetch
-                || !empty($keyField) 
-                || !empty($valField) 
-                || $supportsProcessors;
-        }
         
 
-        // Populates
-        $populates = array();
-        $populateFields = array();
-
-        if(!$forCount && $this->_query instanceof opal\query\IPopulatableQuery) {
-            $populates = $this->_query->getPopulates();
-
-            if(!empty($populates)) {
-                $requiresBatchIterator = true;
-            }
-        }
-        
-        
-        // Attachments
-        $attachments = array();
-        $attachFields = array();
-        
-        if(!$forCount && $this->_query instanceof opal\query\IAttachableQuery) {
-            $attachments = $this->_query->getAttachments();
-            
-            if(!empty($attachments)) {
-                $requiresBatchIterator = true;
-                
-                // Get fields that need to be fetched from source for attachment clauses
-                foreach($attachments as $attachment) {
-                    foreach($attachment->getNonLocalFieldReferences() as $field) {
-                        foreach($field->dereference() as $derefField) {
-                            $qName = $derefField->getQualifiedName();
-                            $attachFields[] = $this->defineField($derefField, $qName);
-                        }
-                    }
-                }
-            }
-        }
-        
-        
-        
-        // Joins
-        $joinSql = null;
-        $joinSources = array();
-        $joinFields = array();
-        
-        if($this->_query instanceof opal\query\IJoinProviderQuery) {
-            $joins = $this->_query->getJoins();
-            
-            if(!empty($joins)) {
-                // Build join statements
-                foreach($joins as $join) {
-                    $joinSources[] = $joinSource = $join->getSource();
-
-                    $jExec = QueryExecutor::factory($this->_adapter, $join);
-                    $joinSql .= "\n".$jExec->buildJoin($this->_stmt);
-                    
-                    if($supportsProcessors) {
-                        $requiresBatchIterator = true;
-                    }
-                }
-                 
-                 
-                // Get join source fields
-                foreach($joinSources as $joinSource) {  
-                    foreach($joinSource->getDereferencedOutputFields() as $field) {
-                        if($requiresBatchIterator) {
-                            $fieldAlias = $field->getQualifiedName();
-                        } else {
-                            $fieldAlias = $field->getAlias();
-                        }
-            
-                        $joinFields[] = $this->defineField($field, $fieldAlias);
-                    }
-                }
-            }
-        }
-
-        
-        
         // Fields
         foreach($source->getDereferencedOutputFields() as $field) {
-            if($requiresBatchIterator) {
-                $fieldAlias = $field->getQualifiedName();
-            } else {
-                $fieldAlias = $field->getAlias();
-            }
+            $fieldAlias = $field->getQualifiedName();
+            //$fieldAlias = $field->getAlias();
 
             $field->setLogicalAlias($fieldAlias);
             $outFields[] = $this->defineField($field, $fieldAlias);
         }
+
+
+        // Joins
+        $joinSql = null;
         
+        if($this->_query instanceof opal\query\IJoinProviderQuery) {
+            // Build join statements
+            foreach($this->_query->getJoins() as $join) {
+                $joinSource = $join->getSource();
+
+                $jExec = QueryExecutor::factory($this->_adapter, $join);
+                $joinSql .= "\n".$jExec->buildJoin($this->_stmt);
+
+                foreach($joinSource->getDereferencedOutputFields() as $field) {
+                    $fieldAlias = $field->getQualifiedName();
+                    //$fieldAlias = $field->getAlias();
+        
+                    $outFields[] = $this->defineField($field, $fieldAlias);
+                }
+            }
+        }
+
+
+        // Attachments
+        if(!$forCount && $this->_query instanceof opal\query\IAttachableQuery) {
+            // Get fields that need to be fetched from source for attachment clauses
+            foreach($this->_query->getAttachments() as $attachment) {
+                foreach($attachment->getNonLocalFieldReferences() as $field) {
+                    foreach($field->dereference() as $derefField) {
+                        $qName = $derefField->getQualifiedName();
+                        $outFields[] = $this->defineField($derefField, $qName);
+                    }
+                }
+            }
+        }
         
         if(!$forCount) {
-            /*
-             * We need to create 3 separate arrays in reverse order and then merge them
-             * as we have to definitively know if a BatchIterator is required when getting
-             * local fields. The only way to know this is to do attachments and joins first.
-             */
-            $outFields = array_unique(array_merge($outFields, $joinFields, $attachFields, $populateFields));
+            $outFields = array_unique($outFields);
         }
         
         $distinct = $this->_query instanceof opal\query\IDistinctQuery && $this->_query->isDistinct() ? ' DISTINCT' : null;
@@ -204,27 +145,11 @@ abstract class QueryExecutor implements IQueryExecutor {
             $this->writeLimitSection();
         }
         
-        $res = $this->_stmt->executeRead();
-        
-        if(!$forCount && $requiresBatchIterator) {
-            // We have keyField, valField, attachments and / or value processors or is for fetch
-            
-            $output = new opal\query\result\BatchIterator($source, $res);
-            $output->addSources($joinSources)
-                ->isForFetch((bool)$forFetch)
-                ->setPopulates($populates)
-                ->setAttachments($attachments)
-                ->setListKeyField($keyField)
-                ->setListValueField($valField);
-                
-            return $output;
-        }
-        
-        return $res;
+        return $this->_stmt->executeRead();
     }
             
             
-    public function executeRemoteJoinedReadQuery($tableName, opal\query\IField $keyField=null, opal\query\IField $valField=null, $forCount=false) {
+    public function executeRemoteJoinedReadQuery($tableName, $forCount=false) {
         $source = $this->_query->getSource();
         $primaryAdapterHash = $source->getAdapterHash();
         
@@ -317,7 +242,7 @@ abstract class QueryExecutor implements IQueryExecutor {
         }
         
         $arrayManipulator = new opal\query\result\ArrayManipulator($source, $this->_stmt->executeRead()->toArray(), true);
-        return $arrayManipulator->applyRemoteJoinQuery($this->_query, $localJoins, $remoteJoins, $keyField, $valField, $forCount);
+        return $arrayManipulator->applyRemoteJoinQuery($this->_query, $localJoins, $remoteJoins, $forCount);
     }
 
 
@@ -544,7 +469,7 @@ abstract class QueryExecutor implements IQueryExecutor {
             $this->writeWhereClauseList($clauses, $rows);
         }
         
-        return $this->_stmt->executeRead()->toArray();
+        return $this->_stmt->executeRead();
     }
 
     public function fetchAttachmentData($tableName, array $rows) {
@@ -569,9 +494,6 @@ abstract class QueryExecutor implements IQueryExecutor {
             $field->setLogicalAlias($fieldAlias);
             $outFields[] = $this->defineField($field, $fieldAlias);
         }
-
-
-
 
         $joinSql = null;
         $joinsApplied = false;

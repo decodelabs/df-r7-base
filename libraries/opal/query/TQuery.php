@@ -1375,6 +1375,35 @@ trait TQuery_Read {
     }
     
     abstract protected function _fetchSourceData($keyField=null);
+
+    public function getOutputManifest() {
+        $output = new opal\query\result\OutputManifest($this->getSource());
+
+        if($this instanceof opal\query\IJoinProviderQuery) {
+            foreach($this->getJoins() as $join) {
+                $output->importSource($join->getSource());
+            }
+        }
+
+        return $output;
+    }
+
+    protected function _createBatchIterator($res, opal\query\IField $keyField=null, opal\query\IField $valField=null, $forFetch=false) {
+        $output = new opal\query\result\BatchIterator($this->getSource(), $res, $this->getOutputManifest());
+        $output->isForFetch($forFetch)
+            ->setListKeyField($keyField)
+            ->setListValueField($valField);
+
+        if($this instanceof opal\query\IPopulatableQuery) {
+            $output->setPopulates($this->getPopulates());
+        }
+
+        if($this instanceof opal\query\IAttachableQuery) {
+            $output->setAttachments($this->getAttachments());
+        }
+
+        return $output;
+    }
 }
 
 

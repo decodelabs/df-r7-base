@@ -14,6 +14,7 @@ use df\opal;
 interface IException {}
 class RuntimeException extends \RuntimeException implements IException {}
 class InvalidArgumentException extends \InvalidArgumentException implements IException {}
+class UnexpectedValueException extends \UnexpectedValueException implements IException {}
 
 
 // Result iterator
@@ -69,7 +70,7 @@ interface IArrayManipulator {
     public function isEmpty();
     
     public function applyReadQuery(opal\query\IQuery $query, $keyField=null, $valField=null);
-    public function applyRemoteJoinQuery(opal\query\IQuery $query, array $localJoins, array $remoteJoins, $keyField=null, $valField=null);
+    public function applyRemoteJoinQuery(opal\query\IQuery $query, array $localJoins, array $remoteJoins);
     public function applyAttachmentDataQuery(opal\query\IAttachQuery $query);
     public function applyBatchIteratorExpansion(IBatchIterator $batchIterator);
     

@@ -77,6 +77,7 @@ class Table implements ITable, core\IDumpable {
 
             case opal\query\IQueryTypes::JOIN:
             case opal\query\IQueryTypes::JOIN_CONSTRAINT:
+            case opal\query\IQueryTypes::REMOTE_JOIN:
                 
             case opal\query\IQueryTypes::SELECT_ATTACH:
             case opal\query\IQueryTypes::FETCH_ATTACH:
@@ -184,14 +185,14 @@ class Table implements ITable, core\IDumpable {
 
 
 ## Queries ##
-    public function executeSelectQuery(opal\query\ISelectQuery $query, opal\query\IField $keyField=null, opal\query\IField $valField=null) {
+    public function executeSelectQuery(opal\query\ISelectQuery $query) {
         return QueryExecutor::factory($this->_adapter, $query)
-            ->executeReadQuery($this->_name, $keyField, $valField, false);
+            ->executeReadQuery($this->_name);
     }
     
     public function countSelectQuery(opal\query\ISelectQuery $query) {
         $row = QueryExecutor::factory($this->_adapter, $query)
-            ->executeReadQuery($this->_name, null, null, false, true)
+            ->executeReadQuery($this->_name, true)
             ->getCurrent();
 
         if(isset($row['count'])) {
@@ -201,14 +202,14 @@ class Table implements ITable, core\IDumpable {
         return 0;
     }
     
-    public function executeFetchQuery(opal\query\IFetchQuery $query, opal\query\IField $keyField=null) {
+    public function executeFetchQuery(opal\query\IFetchQuery $query) {
         return QueryExecutor::factory($this->_adapter, $query)
-            ->executeReadQuery($this->_name, $keyField, null, true);
+            ->executeReadQuery($this->_name);
     }
     
     public function countFetchQuery(opal\query\IFetchQuery $query) {
         $row = QueryExecutor::factory($this->_adapter, $query)
-            ->executeReadQuery($this->_name, null, null, true, true)
+            ->executeReadQuery($this->_name, true)
             ->getCurrent();
         
         if(isset($row['count'])) {

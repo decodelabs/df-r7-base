@@ -218,7 +218,11 @@ class Matcher implements opal\query\IClauseMatcher {
     public static function compare($value, $operator, $compare) {
         switch($operator) {
             case opal\query\clause\Clause::OP_EQ:
-                return $value === $compare;
+                if(is_scalar($value)) {
+                    return $value == $compare;
+                } else {
+                    return $value === $compare;
+                }
                 
             case opal\query\clause\Clause::OP_NEQ:
                 return $value != $compare;
