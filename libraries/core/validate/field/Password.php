@@ -13,6 +13,8 @@ class Password extends Base implements core\validate\IPasswordField {
     use core\validate\TMinLengthField;
     
     protected $_matchField = null;
+    protected $_minStrength = 18;
+    protected $_checkStrength = true;
     
     public function setMatchField($field) {
         $this->_matchField = $field;
@@ -22,6 +24,25 @@ class Password extends Base implements core\validate\IPasswordField {
     public function getMatchField() {
         return $this->_matchField;
     }
+
+    public function setMinStrength($strength) {
+        $this->_minStrength = (int)$strength;
+        return $this;
+    }
+
+    public function getMinStrength() {
+        return $this->_minStrength;
+    }
+
+    public function shouldCheckStrength($flag=null) {
+        if($flag !== null) {
+            $this->_checkStrength = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_checkStrength;
+    }
+
     
     public function validate(core\collection\IInputTree $node) {
         $this->_setDefaultMinLength(6);
@@ -38,12 +59,15 @@ class Password extends Base implements core\validate\IPasswordField {
         }
 
         $value = $this->_applyCustomValidator($node, $value);
-        $analyzer = new core\string\PasswordAnalyzer($value, df\Launchpad::$application->getPassKey());
-        
-        if($analyzer->getStrength() < 25) {
-            $node->addError('strength', $this->_handler->_(
-                'This password is not strong enough - consider using numbers, capitals and more characters'
-            ));
+
+        if($this->_checkStrength && $this->_minStrength > 0) {
+            $analyzer = new core\string\PasswordAnalyzer($value, df\Launchpad::$application->getPassKey());
+            
+            if($analyzer->getStrength() < $this->_minStrength) {
+                $node->addError('strength', $this->_handler->_(
+                    'This password is not strong enough - consider using numbers, capitals and more characters'
+                ));
+            }
         }
         
         
@@ -58,6 +82,6 @@ class Password extends Base implements core\validate\IPasswordField {
             }
         }
         
-        return $analyzer->getHash();
+        return core\string\Util::passwordHash($value, df\Launchpad::$application->getPassKey());
     }
 }

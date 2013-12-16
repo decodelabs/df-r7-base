@@ -403,7 +403,12 @@ interface IIdListField extends IField, ISanitizingField {
 
 interface ITextListField extends IField, ISanitizingField {}
 interface IIntegerField extends IField, IRangeField {}
-interface IPasswordField extends IField, IMinLengthField {}
+
+interface IPasswordField extends IField, IMinLengthField {
+    public function setMinStrength($strength);
+    public function getMinStrength();
+    public function shouldCheckStrength($flag=null);
+}
 
 interface ISlugField extends IField, ISanitizingField, IUniqueCheckerField {
     public function allowPathFormat($flag=null);
