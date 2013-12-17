@@ -64,7 +64,7 @@ class Smtp extends Base {
     public function send(flow\mail\IMessage $message) {
         if(!$this->_mediator) {
             $config = flow\mail\Config::getInstance();
-            $settings = $config->getDefaultTransportSettings('Smtp');
+            $settings = $config->getTransportSettings('Smtp');
             $this->__construct($settings);
         }
 

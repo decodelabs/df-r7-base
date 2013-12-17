@@ -48,11 +48,10 @@ abstract class Base implements flow\mail\ITransport {
 
         if($name === null) {
             $name = self::getDefaultTransportName();
+            $class = self::getTransportClass($name);
+            $config = flow\mail\Config::getInstance();
+            $settings = $config->getDefaultTransportSettings();
         }
-
-        $class = self::getTransportClass($name);
-        $config = flow\mail\Config::getInstance();
-        $settings = $config->getTransportSettings($name);
 
         return new $class($settings);
     }
