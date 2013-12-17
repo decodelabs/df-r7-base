@@ -157,15 +157,15 @@ class Mediator implements IMediator {
         $params['Source'] = (string)$message->getFromAddress();
 
         if(null !== ($subject = $message->getSubject())) {
-            $params['Message.Subject.Data'] = $this->_encodeData($subject);
+            $params['Message.Subject.Data'] = $subject;
         }
 
         if($bodyText = $message->getBodyText()) {
-            $params['Message.Body.Text.Data'] = $this->_encodeData($bodyText->getContent());
+            $params['Message.Body.Text.Data'] = $bodyText->getContent();
         }
 
         if($bodyHtml = $message->getBodyHtml()) {
-            $params['Message.Body.Html.Data'] = $this->_encodeData($bodyHtml->getContent());
+            $params['Message.Body.Html.Data'] = $bodyHtml->getContent();
         }
 
         $xml = $this->callServer('post', $params);
@@ -175,7 +175,7 @@ class Mediator implements IMediator {
     public function sendRawMessage(flow\mail\IMessage $message) {
         $xml = $this->callServer('post', [
             'Action' => 'SendRawEmail',
-            'RawMessage.Data' => $this->_encodeData((string)$message),
+            'RawMessage.Data' => (string)$message,
             'Source' => $message->getFromAddress()->getAddress()
         ]);
 
@@ -187,7 +187,7 @@ class Mediator implements IMediator {
 
         $xml = $this->callServer('post', [
             'Action' => 'SendRawEmail',
-            'RawMessage.Data' => $this->_encodeData((string)$string),
+            'RawMessage.Data' => (string)$string,
             'Source' => $from->getAddress()
         ]);
 
@@ -251,9 +251,5 @@ class Mediator implements IMediator {
         }
 
         return $xml;
-    }
-
-    protected function _encodeData($data) {
-        return str_replace('%7E', '~', rawurlencode($data));
     }
 }
