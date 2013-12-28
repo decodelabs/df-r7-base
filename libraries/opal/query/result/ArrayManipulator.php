@@ -829,6 +829,7 @@ class ArrayManipulator implements IArrayManipulator {
 
             
             $dataSet = $manipulator->getRows();
+            $qName = $attachmentQueryField->getQualifiedName();
 
             // Format and apply output
             foreach($this->_rows as $i => &$row) {
@@ -849,7 +850,7 @@ class ArrayManipulator implements IArrayManipulator {
                     $attachData = array_shift($attachData);
                 }
 
-                $row[$attachmentQueryField->getQualifiedName()] = $attachData;
+                $row[$qName] = $attachData;
             }
 
             unset($row);
@@ -960,7 +961,6 @@ class ArrayManipulator implements IArrayManipulator {
                     );
                 }
             }
-
 
             // Single value output
             if($valQName) { 
