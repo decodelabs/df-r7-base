@@ -260,7 +260,11 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
         }
 
         if($this->_name === null) {
-            $name = $this->_getRecordName();
+            try {
+                $name = $this->_getRecordName();
+            } catch(\Exception $e) {
+                $name = $id;
+            }
         } else {
             $name = $this->_name;
         }
