@@ -305,7 +305,7 @@ class Html extends Base implements IHtmlView {
     public function addLink($id, $rel, $url, array $attr=null) {
         $attributes = [
             'rel' => $rel,
-            'href' => $this->_context->normalizeOutputUrl($url)
+            'href' => $this->_normalizeLinkUrl($url)
         ];
 
         if($attr) {
@@ -343,7 +343,7 @@ class Html extends Base implements IHtmlView {
         if(!isset($this->_links['favicon'])) {
             $this->addLink('favicon', 'shortcut icon', $url);
         } else {
-            $this->_links['favicon']->setAttribute('href', $this->_context->normalizeOutputUrl($url));
+            $this->_links['favicon']->setAttribute('href', $this->_normalizeLinkUrl($url));
         }
 
         return $this;
@@ -378,7 +378,7 @@ class Html extends Base implements IHtmlView {
             $attributes = array();
         }
 
-        $attributes['href'] = $this->_context->normalizeOutputUrl($uri);
+        $attributes['href'] = $this->_normalizeLinkUrl($uri);
         $attributes['rel'] = 'stylesheet';
         $attributes['type'] = 'text/css';
         
@@ -527,7 +527,7 @@ class Html extends Base implements IHtmlView {
             $attributes = array();
         }
 
-        $attributes['src'] = $this->_context->normalizeOutputUrl($uri);
+        $attributes['src'] = $this->_normalizeLinkUrl($uri);
         $attributes['type'] = 'text/javascript';
 
         return [
@@ -825,5 +825,15 @@ class Html extends Base implements IHtmlView {
         } else {
             return '<meta name="'.$this->esc($key).'" content="'.$this->esc($value).'" />';
         }
+    }
+
+    protected function _normalizeLinkUrl($url) {
+        $output = $this->_context->normalizeOutputUrl($url);
+
+        if(df\Launchpad::COMPILE_TIMESTAMP) {
+            $output->query->cts = df\Launchpad::COMPILE_TIMESTAMP;
+        }
+
+        return $output;
     }
 }
