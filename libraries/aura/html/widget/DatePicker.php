@@ -12,7 +12,7 @@ use df\arch;
 
 class DatePicker extends NumberTextbox implements IDateWidget {
     
-    const INPUT_TYPE = 'date';
+    const INPUT_TYPE = null;
 
     protected $_outputFormat = 'Y-m-d';
     protected $_placeholder = 'yyyy-MM-dd';
@@ -37,6 +37,10 @@ class DatePicker extends NumberTextbox implements IDateWidget {
     }
 
     protected function _getInputType() {
+        if(static::INPUT_TYPE !== null) {
+            return static::INPUT_TYPE;
+        }
+
         if($this->_outputFormat != 'Y-m-d') {
             return 'text';
         } else {
