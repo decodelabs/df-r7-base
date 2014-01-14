@@ -28,7 +28,7 @@ class Html extends Base implements IHtmlView {
         'instance-key', 'imagetoolbar', 'last-modified', 'link', 'location', 'mime-version', 
         'page-enter', 'page-exit', 'pics-label', 'pragma', 'public', 'range', 'refresh', 'server', 
         'set-cookie', 'site-enter', 'site-exit', 'title', 'transfer-encoding', 'uri', 'vary', 'via', 
-        'warning', 'window-target'
+        'warning', 'window-target', 'x-ua-compatible'
     ); 
     
     protected $_title;
