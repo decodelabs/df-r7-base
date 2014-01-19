@@ -212,7 +212,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         $this->_innerContent = false;
         $provider = $this->getView()->getContentProvider();
         
-        if($provider !== $this) {
+        if($provider && $provider !== $this) {
             return $this->_innerContent = $provider->renderTo($this);
         }
     }

@@ -120,10 +120,12 @@ class Base implements IView {
     }
     
     public function render() {
-        $this->_checkContentProvider();
-        
         $this->_beforeRender();
-        $innerContent = $this->getContentProvider()->renderTo($this);
+        $innerContent = null;
+
+        if($this->_contentProvider) {
+            $innerContent = $this->getContentProvider()->renderTo($this);
+        }
         
         if($this instanceof IThemedView) {
             $this->getTheme()->renderTo($this);
