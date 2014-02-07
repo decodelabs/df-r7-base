@@ -96,6 +96,10 @@ class Descriptor implements user\session\IDescriptor {
     }
 
     public function setTransitionId($id) {
+        if(empty($id)) {
+            $id = null;
+        }
+
         $this->transitionId = $id;
         return $this;
     }
@@ -105,7 +109,7 @@ class Descriptor implements user\session\IDescriptor {
     }
     
     public function applyTransition($newExternalId) {
-        $this->transitionId = $this->externalId;
+        $this->setTransitionId($this->externalId);
         $this->transitionTime = $this->accessTime = time();
         return $this->setExternalId($newExternalId);
     }
