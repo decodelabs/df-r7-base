@@ -26,6 +26,9 @@ class String extends Base implements
         return core\string\Manipulator::compare($value1, $value2);
     }
     
+    public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
+        return (string)$value;
+    }
     
     
 // Primitive
