@@ -141,6 +141,10 @@ class Descriptor implements user\session\IDescriptor {
         if($this->accessTime - $this->transitionTime >= $transitionLifeTime) {
             $output['transitionId'] = $this->transitionId = null;
         }
+
+        if(empty($output['transitionId'])) {
+            $output['transitionId'] = null;
+        }
         
         return $output;
     }
