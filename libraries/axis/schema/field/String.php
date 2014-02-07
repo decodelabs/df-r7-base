@@ -27,7 +27,11 @@ class String extends Base implements
     }
     
     public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
-        return (string)$value;
+        if($value !== null) {
+            $value = (string)$value;
+        }
+
+        return $value;
     }
     
     
