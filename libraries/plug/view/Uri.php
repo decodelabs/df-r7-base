@@ -63,6 +63,40 @@ class Uri implements aura\view\IHelper {
         return $this->request($this->_view->getContext()->request, $from, $to);
     }
 
+    public function mapCurrent(array $map, array $queryValues=null) {
+        $request = clone $this->_view->getContext()->request;
+
+        foreach($map as $key => $value) {
+            switch($key) {
+                case 'controller':
+                    $request->setController($value);
+                    break;
+
+                case 'action':
+                    $request->setAction($value);
+                    break;
+
+                case 'type':
+                    $request->setType($value);
+                    break;
+
+                case 'fileName':
+                    $request->setFileName($value);
+                    break;
+
+                case 'query':
+                    $request->setQuery($value);
+                    break;
+            }
+        }
+
+        if($queryValues !== null) {
+            $request->getQuery()->import($queryValues);
+        }
+
+        return $this->requestToUrl($request);
+    }
+
     public function query(array $queryValues) {
         $request = clone $this->_view->getContext()->request;
         $request->getQuery()->import($queryValues);
