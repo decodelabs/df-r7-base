@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\aura;
 use df\arch;
+use df\neon;
 
 class ColorPicker extends Base implements IDataEntryWidget, core\IDumpable {
     
@@ -25,16 +26,19 @@ class ColorPicker extends Base implements IDataEntryWidget, core\IDumpable {
         $this->setName($name);
         $this->setValue($value);
     }
-    
+
     protected function _render() {
         $tag = $this->getTag();
         
         $tag->setAttribute('type', 'color');
-        $this->_applyFormDataAttributes($tag);
+        $this->_applyFormDataAttributes($tag, false);
         $this->_applyInputAttributes($tag);
         $this->_applyFocusableInputAttributes($tag);
         $this->_applyVisualInputAttributes($tag);
         $this->_applyDataListEntryAttributes($tag);
+
+        $value = neon\Color::factory($this->getValueString());
+        $tag->setAttribute('value', $value->toHexString());
         
         return $tag;
     }
