@@ -32,7 +32,7 @@ class Color extends Base implements core\validate\IColorField {
         }
 
         $value = $this->_applyCustomValidator($node, $value);
-        
+
         if($this->_shouldSanitize) {
             $node->setValue((string)$value);
         }

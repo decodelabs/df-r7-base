@@ -100,7 +100,7 @@ abstract class Base implements core\validate\IField {
         $name = $this->getRecordName();
 
         if($value !== null || !isset($record[$name])) {
-            $record[$this->getRecordName()] = $value;
+            $record[$name] = $value;
         }
         
         return $this;

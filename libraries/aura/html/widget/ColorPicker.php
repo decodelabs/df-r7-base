@@ -37,8 +37,13 @@ class ColorPicker extends Base implements IDataEntryWidget, core\IDumpable {
         $this->_applyVisualInputAttributes($tag);
         $this->_applyDataListEntryAttributes($tag);
 
-        $value = neon\Color::factory($this->getValueString());
-        $tag->setAttribute('value', $value->toHexString());
+        $value = $this->getValueString();
+
+        if(!empty($value)) {
+            $value = neon\Color::factory($value)->toHexString();
+        }
+        
+        $tag->setAttribute('value', $value);
         
         return $tag;
     }
