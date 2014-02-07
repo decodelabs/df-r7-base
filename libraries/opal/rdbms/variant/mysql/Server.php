@@ -88,7 +88,6 @@ class Server implements opal\rdbms\IServer {
             case 1102:
             case 1103:
             case 1109:
-            case 1146:
             case 2047:
                 return new opal\rdbms\AccessException($message, $number, $sql);
                 
