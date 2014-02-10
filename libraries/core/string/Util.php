@@ -195,6 +195,36 @@ abstract class Util implements IUtil {
     }
 
 
+// Hex
+    public static function ascii32ToHex32($string) {
+        for($i = 0; $i < strlen($string); $i++) {
+            $char = substr($string, $i, 1);
+            
+            if(ord($char) < 32) {
+                $hex = dechex(ord($char));
+                
+                if(strlen($hex) == 1) {
+                    $hex = '0'.$hex;
+                }
+                
+                $string = str_replace($char, '\\'.$hex, $string);
+            }
+        }
+        
+        return $string;
+    }
+    
+    public static function hex32ToAscii32($string) {
+        return preg_replace_callback(
+            "/\\\([0-9A-Fa-f]{2})/", 
+            function($matches) {
+                return chr(hexdec($matches[0]));
+            }, 
+            $string
+        );
+    }
+
+
 // Ord
     public static function mbOrd($chr) {
         $h = ord($chr{0});

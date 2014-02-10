@@ -175,6 +175,9 @@ interface IUtil {
     public static function isDigit($string);
     public static function isWhitespace($string);
 
+    public static function ascii32ToHex32($string);
+    public static function hex32ToAscii32($string);
+
     public static function mbOrd($chr);
 
     public static function likeMatch($pattern, $string, $char='_', $wildcard='%');
