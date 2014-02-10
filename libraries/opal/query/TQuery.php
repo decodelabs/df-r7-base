@@ -1711,7 +1711,7 @@ trait TQuery_DataUpdate {
         $adapter = $this->_source->getAdapter();
 
         if(!$adapter instanceof IIntegralAdapter) {
-            return $row;
+            return $values;
         }
 
         $schema = $adapter->getQueryAdapterSchema();
