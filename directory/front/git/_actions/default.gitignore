@@ -47,3 +47,8 @@ Thumbs.db
 ######################
 data/local
 data/shared
+
+.htaccess
+.sass-cache/*
+node_modules
+ssh.json
