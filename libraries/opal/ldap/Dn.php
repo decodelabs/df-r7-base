@@ -262,6 +262,6 @@ class Dn implements IDn, core\IDumpable {
 
 // Dump
     public function getDumpProperties() {
-        return $this->_collection;
+        return $this->implode();
     }
 }

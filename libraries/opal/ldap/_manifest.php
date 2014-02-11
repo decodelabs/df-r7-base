@@ -127,6 +127,12 @@ interface IRdn extends \Countable, core\IAttributeContainer, core\IStringProvide
 }
 
 interface IConnection {
+
+    const ACTIVE_DIRECTORY = 'ActiveDirectory';
+    const OPEN_LDAP = 'OpenLdap';
+    const EDIRECTORY = 'EDirectory';
+    const GENERIC = null;
+
     public function getHost();
     public function getPort();
     public function getEncryption();
@@ -138,6 +144,7 @@ interface IConnection {
     public function connect();
     public function disconnect();
     public function bind($username, $password);
+    public function bindIdentity(IIdentity $identity);
     public function isBound();
 }
 
@@ -168,4 +175,25 @@ interface IIdentity {
     public function hasUpn();
     public function setPassword($password);
     public function getPassword();
+}
+
+interface IAdapter {
+    public static function getArrayAttributes();
+    public static function getDateAttributes();
+    public static function getBooleanAttributes();
+    public static function getBinaryAttributes();
+
+    public function getConnection();
+    public function setContext($context);
+    public function getContext();
+    public function getHash();
+
+    public function setPrivilegedIdentity(IIdentity $identity=null);
+    public function getPrivilegedIdentity();
+    public function normalizeIdentity(IIdentity $identity, $autoFill=false);
+
+    public function isBound();
+    public function getBoundIdentity();
+    public function bind(IIdentity $identity);
+    public function ensureBind();
 }
