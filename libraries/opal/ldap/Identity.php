@@ -56,7 +56,7 @@ class Identity implements IIdentity {
         if($this->_uidUsername) {
             $output = $this->_uidUsername;
 
-            if($this->_uidDomain) {
+            if($this->_uidDomain && false === strpos($output, '=')) {
                 $output = $this->_uidDomain.'\\'.$output;
             }
 

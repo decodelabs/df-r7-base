@@ -13,6 +13,7 @@ class Insert implements IInsertQuery, core\IDumpable {
     
     use TQuery;
     use TQuery_LocalSource;
+    use TQuery_Locational;
     use TQuery_DataInsert;
 
     protected $_ifNotExists = false;

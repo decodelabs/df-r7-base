@@ -8,9 +8,13 @@ namespace df\opal\ldap;
 use df;
 use df\core;
 use df\opal;
+use df\user;
 
 abstract class Adapter implements IAdapter {
     
+    use opal\query\TQuery_ImplicitSourceEntryPoint;
+    use user\TAccessLock;
+
     const BIND_REQUIRES_DN = true;
     const UID_ATTRIBUTE = 'uid';
 
@@ -37,6 +41,8 @@ abstract class Adapter implements IAdapter {
     protected $_context;
     protected $_privilegedIdentity;
     protected $_boundIdentity;
+
+    protected $_querySourceId;
 
     public static function factory($connection, $context, IIdentity $privilegedIdentity=null) {
         $connection = Connection::factory($connection);
@@ -95,10 +101,6 @@ abstract class Adapter implements IAdapter {
         return $this->_context;
     }
     
-    public function getHash() {
-        return $this->_connection->getHash();
-    }
-    
 
 // Identity
     public function setPrivilegedIdentity(IIdentity $identity=null) {
@@ -116,11 +118,13 @@ abstract class Adapter implements IAdapter {
     
     public function normalizeIdentity(IIdentity $identity, $autoFill=false) {
         if($identity->hasUid()) {
-            if(!strlen($identity->getUidDomain())) {
+            if(!strlen($identity->getUidDomain()) && false === strpos($identity->getUidUsername(), '=')) {
                 $identity->setUidDomain($this->_context->getDomain());
             }
+
+            $uidDomain = $identity->getUidDomain();
             
-            if($identity->getUidDomain() != $this->_context->getDomain()) {
+            if(strlen($uidDomain) && $uidDomain != $this->_context->getDomain()) {
                 throw new DomainException(
                     'Identity is not part of domain '.$this->_context->getDomain()
                 );
@@ -163,7 +167,575 @@ abstract class Adapter implements IAdapter {
                 );
             }
         }
+
+        return $this;
     }
+
+
+// Query source
+    public function getQuerySourceId() {
+        if(!$this->_querySourceId) {
+            $connectionString = $this->_connection->getConnectionString();
+            $parts = explode('://', $connectionString);
+
+            $this->_querySourceId = 'opal://'.array_shift($parts).'/'.array_shift($parts);
+        }
+
+        return $this->_querySourceId;
+    }
+
+    public function getQuerySourceAdapterHash() {
+        return $this->_connection->getHash();
+    }
+
+    public function getQuerySourceDisplayName() {
+        return $this->getQuerySourceId();
+    }
+
+    public function getDelegateQueryAdapter() {
+        return $this;
+    }
+
+    public function supportsQueryType($type) {
+        switch($type) {
+            case opal\query\IQueryTypes::SELECT:
+            case opal\query\IQueryTypes::FETCH:
+            /*
+            case opal\query\IQueryTypes::INSERT:
+            case opal\query\IQueryTypes::BATCH_INSERT:
+            case opal\query\IQueryTypes::REPLACE:
+            case opal\query\IQueryTypes::BATCH_REPLACE:
+            case opal\query\IQueryTypes::UPDATE:
+            case opal\query\IQueryTypes::DELETE:
+                
+            case opal\query\IQueryTypes::CORRELATION:
+
+            case opal\query\IQueryTypes::JOIN:
+            case opal\query\IQueryTypes::JOIN_CONSTRAINT:
+            case opal\query\IQueryTypes::REMOTE_JOIN:
+                
+            case opal\query\IQueryTypes::SELECT_ATTACH:
+            case opal\query\IQueryTypes::FETCH_ATTACH:
+            */
+                return true;
+                
+            default:
+                return false;
+        }
+    }
+
+    public function supportsQueryFeature($feature) {
+        switch($feature) {
+            //case opal\query\IQueryFeatures::AGGREGATE:
+            case opal\query\IQueryFeatures::WHERE_CLAUSE:
+            //case opal\query\IQueryFeatures::GROUP_DIRECTIVE:
+            //case opal\query\IQueryFeatures::HAVING_CLAUSE:
+            case opal\query\IQueryFeatures::ORDER_DIRECTIVE:
+            case opal\query\IQueryFeatures::LIMIT:
+            case opal\query\IQueryFeatures::OFFSET:
+            //case opal\query\IQueryFeatures::TRANSACTION:
+            case opal\query\IQueryFeatures::LOCATION:
+                return true;
+                
+            default:
+                return false;
+        }
+    }
+
+    public function handleQueryException(opal\query\IQuery $query, \Exception $e) {
+        return false;
+    }
+
+    public function ensureStorageConsistency() {}
+
+
+    public function fetchRootDse() {
+        $data = $this->select('*', '+')
+            ->inside('')
+            ->toRow();
+
+        unset($data['*'], $data['+']);
+
+        return opal\ldap\rootDse\Base::factory($this, $data);
+    }
+
+
+// Queries
+    public function executeSelectQuery(opal\query\ISelectQuery $query) {
+        $result = $this->_executeReadQueryRequest($query);
+        return $this->_prepareReadQueryResponse($query, $result);
+    }
+    
+    public function countSelectQuery(opal\query\ISelectQuery $query) {
+        $result = $this->_executeReadQueryRequest($query);
+        return ldap_count_entries($this->_connection->getResource(), $result);
+    }
+    
+    public function executeFetchQuery(opal\query\IFetchQuery $query) {
+        $result = $this->_executeReadQueryRequest($query);
+        return $this->_prepareReadQueryResponse($query, $result);
+    }
+    
+    public function countFetchQuery(opal\query\IFetchQuery $query) {
+        $result = $this->_executeReadQueryRequest($query);
+        return ldap_count_entries($this->_connection->getResource(), $result);
+    }
+    
+    
+
+// Insert query
+    public function executeInsertQuery(opal\query\IInsertQuery $query) {
+        core\stub($query);
+    }
+    
+// Batch insert query
+    public function executeBatchInsertQuery(opal\query\IBatchInsertQuery $query) {
+        core\stub($query);
+    }
+    
+// Replace query
+    public function executeReplaceQuery(opal\query\IReplaceQuery $query) {
+        core\stub($query);
+    }
+    
+// Batch replace query
+    public function executeBatchReplaceQuery(opal\query\IBatchReplaceQuery $query) {
+        core\stub($query);
+    }
+    
+// Update query
+    public function executeUpdateQuery(opal\query\IUpdateQuery $query) {
+        core\stub($query);
+    }
+    
+// Delete query
+    public function executeDeleteQuery(opal\query\IDeleteQuery $query) {
+        core\stub($query);
+    }
+    
+// Remote data
+    public function fetchRemoteJoinData(opal\query\IJoinQuery $join, array $rows) {
+        core\stub($query);
+    }
+    
+    public function fetchAttachmentData(opal\query\IAttachQuery $attachment, array $rows) {
+        core\stub($query);
+    }
+
+
+
+// Query processors
+    protected function _executeReadQueryRequest(opal\query\IReadQuery $query) {
+        $this->ensureBind();
+        $filter = $this->_buildFilter($query);
+
+        $baseDn = $query->getLocation();
+        $subNodeSearch = $query->shouldSearchChildLocations();
+        $readEntry = $query->getLimit() == 1;
+
+        if($baseDn === null) {
+            $baseDn = $this->_context->getBaseDn();
+        }
+
+        $baseDn = $this->_prepareDn(Dn::factory($baseDn));
+        $attributes = [];
+
+        foreach($query->getSource()->getOutputFields() as $field) {
+            $name = $field->getName();
+
+            if(in_array(strtolower($name), ['uid', 'samaccountname'])) {
+                $name = static::UID_ATTRIBUTE;
+            }
+
+            $attributes[] = $name;
+        }
+
+        $connection = $this->_connection->getResource();
+
+        if($subNodeSearch) {
+            $result = @ldap_search($connection, $baseDn, $filter, $attributes);
+        } else if($readEntry) {
+            $result = @ldap_read($connection, $baseDn, $filter, $attributes);  
+        } else {
+            $result = @ldap_list($connection, $baseDn, $filter, $attributes);
+        }
+
+        if(!$result) {
+            throw new QueryException(
+                'Search failed: '.@ldap_error($connection)
+            );
+        }
+        
+        return $result;
+    }
+
+    protected function _prepareReadQueryResponse(opal\query\IReadQuery $query, $result) {
+        if(!$result) {
+            return [];
+        }
+
+        $reverse = false;
+        $connection = $this->_connection->getResource();
+        $total = ldap_count_entries($connection, $result);
+
+        $orderDirectives = $query->getOrderDirectives();
+
+        if(!empty($orderDirectives)) {
+            for($i = count($orderDirectives) - 1; $i >= 0; $i--) {
+                $directive = $orderDirectives[$i];
+                $field = $directive->getField()->getName();
+                @ldap_sort($connection, $result, $field);
+
+                if($i == 0 && $directive->isDescending()) {
+                    $reverse = true;
+                }
+            }
+        }
+        
+        if($query->hasLimit()) {
+            $limit = $query->getLimit();
+        } else {
+            $limit = $total;
+        }
+
+        $start = (int)$query->getOffset();
+        $end = $start + $limit - 1;
+
+        $fields = [];
+
+        foreach($query->getSource()->getOutputFields() as $field) {
+            $name = $field->getName();
+
+            if($name == '*' || $name == '+') {
+                continue;
+            }
+
+            $fields[] = $name;
+        }
+
+        $output = [];
+
+        for(
+            $current = 0, $rowEntry = ldap_first_entry($connection, $result);
+            $current <= $end && is_resource($rowEntry);
+            $current++, $rowEntry = ldap_next_entry($connection, $rowEntry)
+        ) {
+            if($current < $start) {
+                continue;
+            }
+
+            $row = [];
+
+            foreach(ldap_get_attributes($connection, $rowEntry) as $key => $value) {
+                if(!is_array($value)) {
+                    continue;
+                }
+
+                unset($value['count']);
+
+                if(in_array(strtolower($key), ['uid', 'samaccountname'])) {
+                    $key = static::UID_ATTRIBUTE;
+                }
+
+                if(!in_array($key, static::$_arrayAttrs) && count($value) == 1) {
+                    $value = array_shift($value);
+                }
+
+                if(in_array($key, static::$_dateAttrs)) {
+                    try {
+                        $value = $this->_inflateDate($key, $value);
+                    } catch(\Exception $e) {
+                        $value = null;
+                    }
+                } else if(in_array($key, static::$_binaryAttrs)) {
+                    $value = $this->_inflateBinaryAttribute($key, $value); 
+                } else if(in_array($key, static::$_booleanAttrs)) {
+                    $value = $this->_inflateBooleanAttribute($key, $value);
+                }
+
+                $row[$key] = $value;
+            }
+
+            foreach($fields as $field) {
+                if(!isset($row[$field])) {
+                    $row[$field] = null;
+                }
+            }
+
+            $output[] = $row;
+        }
+
+        if($reverse) {
+            $output = array_reverse($output);
+        }
+
+        return $output;
+    }
+
+    protected function _buildFilter(opal\query\IQuery $query) {
+        $clauses = $query->getWhereClauseList();
+
+        if($clauses->isEmpty()) {
+            return '(objectClass=*)';
+        }
+
+        return $this->_clauseListToString($clauses->toArray());
+    }
+
+    protected function _clauseListToString(array $clauses) {
+        $set = [];
+        $stack = [];
+
+        foreach($clauses as $clause) {
+            if($clause instanceof opal\query\IClause) {
+                $clauseString = $this->_clauseToString($clause);
+            } else if($clause instanceof opal\query\IClauseList) {
+                $clauseString = $this->_clauseToString($clause->toArray());
+            }
+
+            if(!strlen($clauseString)) {
+                continue;
+            }
+
+            if($clause->isOr()) {
+                if(!empty($set)) {
+                    $stack[] = $set;
+                }
+
+                $set = [$clauseString];
+            } else {
+                $set[] = $clauseString;
+            }
+        }
+
+        if(!empty($set)) {
+            $stack[] = $set;
+        }
+
+        foreach($stack as $i => $set) {
+            if(count($set) == 1) {
+                $set = array_shift($set);
+            } else {
+                $set = '(&'.implode('', $set).')';
+            }
+
+            $stack[$i] = $set;
+        }
+
+        $count = count($stack);
+
+        if(!$count) {
+            return null;
+        } else if($count == 1) {
+            return array_shift($stack);
+        } else {
+            return '(|'.implode('', $stack).')';
+        }
+    }
+
+    protected function _clauseToString(opal\query\IClause $clause) {
+        $output = null;
+        $field = $clause->getField()->getName();
+        $value = $clause->getPreparedValue();
+        $operator = $clause->getOperator();
+        $negate = false;
+
+        if(strtolower($field) == 'uid' || strtolower($field) == 'samaccountname') {
+            $field = static::UID_ATTRIBUTE;
+        }
+
+        switch($operator) {
+            // = | !=
+            case opal\query\clause\Clause::OP_NEQ:
+                $negate = true;
+            case opal\query\clause\Clause::OP_EQ:
+                $output = '('.$field.'='.$this->_normalizeScalarClauseValue($field, $value).')';
+                break;
+                
+            // > | >= | < | <=
+            case opal\query\clause\Clause::OP_GT:
+            case opal\query\clause\Clause::OP_GTE:
+            case opal\query\clause\Clause::OP_LT: 
+            case opal\query\clause\Clause::OP_LTE:
+                $output = '('.$field.$operator.$this->_normalizeScalarClauseValue($field, $value).')';
+                break;
+                
+            // <NOT> IN()
+            case opal\query\clause\Clause::OP_NOT_IN:
+                $negate = true;
+            case opal\query\clause\Clause::OP_IN:
+                $tempList = [];
+
+                foreach($value as $innerVal) {
+                    $tempList[] = new opal\query\clause\Clause(
+                        $clause->getField(),
+                        '=',
+                        $innerVal,
+                        true
+                    );
+                }
+
+                $output = $this->_clauseListToString($tempList);
+                break;
+                
+            // <NOT> BETWEEN()
+            case opal\query\clause\Clause::OP_NOT_BETWEEN:
+                $negate = true;
+            case opal\query\clause\Clause::OP_BETWEEN:
+                $tempList = [
+                    new opal\query\clause\Clause(
+                        $clause->getField(),
+                        '<=',
+                        array_shift($value)
+                    ),
+
+                    new opal\query\clause\Clause(
+                        $clause->getField(),
+                        '>=',
+                        array_shift($value)
+                    )
+                ];
+
+                $output = $this->_clauseListToString($tempList);
+                break;
+                
+            // <NOT> LIKE
+            case opal\query\clause\Clause::OP_NOT_LIKE:
+                $negate = true;
+            case opal\query\clause\Clause::OP_LIKE:
+                $output = '('.$field.'~='.$this->_normalizeScalarClauseValue($field, $value).')';
+                break;
+                
+            // <NOT> CONTAINS
+            case opal\query\clause\Clause::OP_NOT_CONTAINS:
+            case opal\query\clause\Clause::OP_NOT_MATCHES:
+                $negate = true;
+            case opal\query\clause\Clause::OP_CONTAINS:
+            case opal\query\clause\Clause::OP_MATCHES:
+                $output = '('.$field.'=*'.$this->_normalizeScalarClauseValue($field, $value).'*)';
+                break;
+            
+            // <NOT> BEGINS
+            case opal\query\clause\Clause::OP_NOT_BEGINS:
+                $negate = true;
+            case opal\query\clause\Clause::OP_BEGINS:
+                $output = '('.$field.'='.$this->_normalizeScalarClauseValue($field, $value).'*)';
+                break;
+                
+            // <NOT> ENDS
+            case opal\query\clause\Clause::OP_NOT_ENDS:
+                $negate = true;
+            case opal\query\clause\Clause::OP_ENDS:
+                $output = '('.$field.'=*'.$this->_normalizeScalarClauseValue($field, $value).')';
+                break;
+            
+            default:
+                throw new opal\query\OperatorException(
+                    'Operator '.$operator.' is not recognized'
+                );
+        }
+
+        if($output === null) {
+            return null;
+        }
+
+        if($negate) {
+            $output = '(!'.$output.')';
+        }
+
+        return $output;
+    }
+
+    protected function _normalizeScalarClauseValue($field, $value) {
+        if(in_array($field, self::$_dateAttrs)) {
+            $value = $this->_deflateDate($field, $value);
+        } else if(in_array($field, self::$_binaryAttrs)) {
+            $value = $this->_deflateBinaryAttribute($field, $value);
+        } else if(in_array($field, self::$_booleanAttrs)) {
+            $value = $this->_deflateBooleanAttribute($field, $value);
+        }
+
+        return $this->_escapeValue($value);
+    }
+
+
+// IO
+    protected function _inflateDate($name, $date) {
+        if($date === null || $date == 0) {
+            return null;
+        }
+        
+        return core\time\Date::factory($date);
+    }
+    
+    protected function _deflateDate($name, $date) {
+        $date = core\time\Date::factory($date);
+        return $date->toTimestamp();
+    }
+    
+    protected function _inflateBinaryAttribute($name, $value) {
+        if(!strlen($value)) {
+            return null;
+        }
+        
+        return bin2hex($value);
+    }
+    
+    protected function _deflateBinaryAttribute($name, $value) {
+        if(!strlen($value)) {
+            return null;
+        }
+        
+        return pack("H*", $value);
+    }
+
+    protected function _inflateBooleanAttribute($name, $value) {
+        return core\string\Manipulator::stringToBoolean($value);
+    }
+
+    protected function _deflateBooleanAttribute($name, $value) {
+        return (bool)$value ? 'true' : 'false';
+    }
+
+
+
+// Transaction
+    public function beginQueryTransaction() {
+        return $this;
+    }
+    
+    public function commitQueryTransaction() {
+        return $this;
+    }
+    
+    public function rollbackQueryTransaction() {
+        return $this;
+    }
+
+
+// Record
+    public function newRecord(array $values=null) {
+        return new opal\record\Base($this, $values);
+    }
+
+
+// Access
+    public function getAccessLockDomain() {
+        return 'ldap';
+    }
+
+    public function lookupAccessKey(array $keys, $action=null) {
+        core\stub($keys, $action);
+    }
+
+    public function getDefaultAccess($action=null) {
+        return true;
+    }
+
+    public function getAccessLockId() {
+        return $this->_querySourceId;
+    }
+
 
 
 // Helpers

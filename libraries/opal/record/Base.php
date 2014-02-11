@@ -462,7 +462,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         foreach($row as $key => $value) {
             $this->_values[$key] = $this->_inflateValue($key, $value);
         }
-        
+
         $this->_isPopulated = true;
         return $this;
     }

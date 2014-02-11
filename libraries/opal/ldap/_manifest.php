@@ -19,6 +19,7 @@ class InvalidDnException extends UnexpectedValueException {}
 class ConnectionException extends RuntimeException {}
 class BindException extends RuntimeException {}
 class DomainException extends RuntimeException {}
+class QueryException extends RuntimeException {}
 
 
 // Interfaces
@@ -135,6 +136,7 @@ interface IConnection {
 
     public function getHost();
     public function getPort();
+    public function getConnectionString();
     public function getEncryption();
     public function hasEncryption();
     public function usesSsl();
@@ -177,7 +179,7 @@ interface IIdentity {
     public function getPassword();
 }
 
-interface IAdapter {
+interface IAdapter extends opal\query\IAdapter, opal\query\IEntryPoint {
     public static function getArrayAttributes();
     public static function getDateAttributes();
     public static function getBooleanAttributes();
@@ -186,7 +188,6 @@ interface IAdapter {
     public function getConnection();
     public function setContext($context);
     public function getContext();
-    public function getHash();
 
     public function setPrivilegedIdentity(IIdentity $identity=null);
     public function getPrivilegedIdentity();
@@ -196,4 +197,14 @@ interface IAdapter {
     public function getBoundIdentity();
     public function bind(IIdentity $identity);
     public function ensureBind();
+
+    public function fetchRootDse();
+}
+
+interface IRootDse extends core\collection\IMappedCollection {
+    public function getNamingContexts();
+    public function getSubschemaSubentry();
+    public function supportsVersion($version);
+    public function supportsSaslMechanism($mechanism);
+    public function getSchemaDn();
 }

@@ -83,6 +83,10 @@ class Connection implements IConnection {
     public function getPort() {
         return $this->_port;
     }
+
+    public function getConnectionString() {
+        return $this->_connectionString;
+    }
     
     public function getEncryption() {
         return $this->_encryption;

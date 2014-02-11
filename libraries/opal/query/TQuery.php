@@ -187,6 +187,42 @@ trait TQuery_LocalSource {
 
 
 
+/****************************
+ * Locational
+ */
+trait TQuery_Locational {
+
+    protected $_location;
+    protected $_searchChildLocations = false;
+
+    public function inside($location, $searchChildLocations=false) {
+        if(!$this->getSource()->getAdapter()->supportsQueryFeature(IQueryFeatures::LOCATION)) {
+            throw new LogicException(
+                'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().
+                ' does not support location base queries'
+            );
+        }
+
+        $this->_location = $location;
+        $this->_searchChildLocations = (bool)$searchChildLocations;
+        return $this;
+    }
+
+    public function getLocation() {
+        return $this->_location;
+    }
+
+    public function shouldSearchChildLocations($flag=null) {
+        if($flag !== null) {
+            $this->_searchChildLocations = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_searchChildLocations;
+    }
+}
+
+
 
 /****************************
  * Distinct

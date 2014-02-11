@@ -258,6 +258,12 @@ interface IOffsettableQuery extends IQuery {
     public function hasOffset();
 }
 
+interface ILocationalQuery extends IQuery {
+    public function inside($location, $searchChildLocations=false);
+    public function getLocation();
+    public function shouldSearchChildLocations($flag=null);
+}
+
 
 interface ICorrelationQuery extends 
     IQuery, 
@@ -359,6 +365,7 @@ interface IPageableQuery extends IReadQuery, core\collection\IPageable {
 interface ISelectQuery extends 
     IReadQuery, 
     \Countable,
+    ILocationalQuery,
     IDistinctQuery,
     ICorrelatableQuery,
     IJoinableQuery, 
@@ -390,6 +397,7 @@ interface ISelectAttachQuery extends ISelectQuery, IAttachQuery {
 interface IFetchQuery extends 
     IReadQuery, 
     \Countable,
+    ILocationalQuery,
     ICorrelatableQuery,
     IJoinConstrainableQuery,
     IPopulatableQuery, 
@@ -407,12 +415,12 @@ interface IFetchAttachQuery extends IFetchQuery, IAttachQuery {
 /***********
  * Insert
  */
-interface IDataInsertQuery extends IWriteQuery {
+interface IDataInsertQuery extends IWriteQuery, ILocationalQuery {
     public function setRow($row);
     public function getRow();
 }
 
-interface IBatchDataInsertQuery extends IWriteQuery {
+interface IBatchDataInsertQuery extends IWriteQuery,ILocationalQuery {
     public function addRows($rows);
     public function addRow($row);
     public function getRows();
@@ -442,7 +450,7 @@ interface IBatchReplaceQuery extends IBatchDataInsertQuery {}
 /***********
  * Update
  */
-interface IDataUpdateQuery extends IWriteQuery {
+interface IDataUpdateQuery extends IWriteQuery, ILocationalQuery {
     public function set($field, $value=null);
     public function express($field, $element1);
     public function beginExpression($field, $element1);
@@ -462,6 +470,7 @@ interface IUpdateQuery extends
  */
 interface IDeleteQuery extends 
     IWriteQuery, 
+    ILocationalQuery,
     IPrerequisiteClauseQuery, 
     ILimitableQuery {}
 
@@ -502,6 +511,7 @@ interface IQueryFeatures {
     const OFFSET = 7;
     const TRANSACTION = 10;
     const VALUE_PROCESSOR = 101;
+    const LOCATION = 201;
 }
  
  

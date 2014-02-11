@@ -13,6 +13,7 @@ class Replace implements IReplaceQuery, core\IDumpable {
     
     use TQuery;
     use TQuery_LocalSource;
+    use TQuery_Locational;
     use TQuery_DataInsert;
     
     public function __construct(ISourceManager $sourceManager, ISource $source, $row) {

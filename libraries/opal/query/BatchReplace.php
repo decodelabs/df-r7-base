@@ -13,6 +13,7 @@ class BatchReplace implements IBatchReplaceQuery, core\IDumpable {
     
     use TQuery;
     use TQuery_LocalSource;
+    use TQuery_Locational;
     use TQuery_BatchDataInsert;
     
     public function __construct(ISourceManager $sourceManager, ISource $source, $rows) {

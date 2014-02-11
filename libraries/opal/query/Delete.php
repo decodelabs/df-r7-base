@@ -13,6 +13,7 @@ class Delete implements IDeleteQuery, core\IDumpable {
     
     use TQuery;
     use TQuery_LocalSource;
+    use TQuery_Locational;
     use TQuery_PrerequisiteClauseFactory;
     use TQuery_PrerequisiteAwareWhereClauseFactory;
     use TQuery_Orderable;
