@@ -17,6 +17,7 @@ abstract class Adapter implements IAdapter {
 
     const BIND_REQUIRES_DN = true;
     const UID_ATTRIBUTE = 'uid';
+    const ENTRY_DN_ATTRIBUTE = 'entryDN';
 
     protected static $_arrayAttrs = array(
         'objectClass', 'memberOf', 'dSCorePropagationData', 'namingContexts',
@@ -35,6 +36,12 @@ abstract class Adapter implements IAdapter {
     
     protected static $_binaryAttrs = array(
         'objectGUID', 'objectSid'
+    );
+
+    protected static $_metaFields = array(
+        'structuralObjectClass', 'entryUUID', 'creatorsName', 'createTimestamp',
+        'entryCSN', 'modifiersName', 'modifyTimestamp', 'entryDN', 
+        'subschemaSubentry', 'hasSubordinates'
     );
     
     protected $_connection;
@@ -104,10 +111,6 @@ abstract class Adapter implements IAdapter {
 
 // Identity
     public function setPrivilegedIdentity(IIdentity $identity=null) {
-        if($identity) {
-            $this->normalizeIdentity($identity);
-        }
-        
         $this->_privilegedIdentity = $identity;
         return $this;
     }
@@ -116,32 +119,6 @@ abstract class Adapter implements IAdapter {
         return $this->_privilegedIdentity;
     }
     
-    public function normalizeIdentity(IIdentity $identity, $autoFill=false) {
-        if($identity->hasUid()) {
-            if(!strlen($identity->getUidDomain()) && false === strpos($identity->getUidUsername(), '=')) {
-                $identity->setUidDomain($this->_context->getDomain());
-            }
-
-            $uidDomain = $identity->getUidDomain();
-            
-            if(strlen($uidDomain) && $uidDomain != $this->_context->getDomain()) {
-                throw new DomainException(
-                    'Identity is not part of domain '.$this->_context->getDomain()
-                );
-            }
-        } else if($autoFill) {
-            // fetch uid details
-        }
-        
-        if($identity->hasUpn()) {
-            
-        } else if($autoFill) {
-            // fetch upn details
-        }
-        
-        return $this;
-    }
-
     public function isBound() {
         return $this->_boundIdentity !== null;
     }
@@ -151,8 +128,7 @@ abstract class Adapter implements IAdapter {
     }
     
     public function bind(IIdentity $identity) {
-        $this->normalizeIdentity($identity);
-        $this->_connection->bindIdentity($identity);
+        $this->_connection->bindIdentity($identity, $this->_context);
         $this->_boundIdentity = $identity;
         return $this;
     }
@@ -200,13 +176,15 @@ abstract class Adapter implements IAdapter {
         switch($type) {
             case opal\query\IQueryTypes::SELECT:
             case opal\query\IQueryTypes::FETCH:
-            /*
+
             case opal\query\IQueryTypes::INSERT:
+            case opal\query\IQueryTypes::UPDATE:
+            case opal\query\IQueryTypes::DELETE:
+
+            /*
             case opal\query\IQueryTypes::BATCH_INSERT:
             case opal\query\IQueryTypes::REPLACE:
             case opal\query\IQueryTypes::BATCH_REPLACE:
-            case opal\query\IQueryTypes::UPDATE:
-            case opal\query\IQueryTypes::DELETE:
                 
             case opal\query\IQueryTypes::CORRELATION:
 
@@ -285,7 +263,28 @@ abstract class Adapter implements IAdapter {
 
 // Insert query
     public function executeInsertQuery(opal\query\IInsertQuery $query) {
-        core\stub($query);
+        $this->ensureBind();
+        $row = $query->getRow();
+        $connection = $this->_connection->getResource();
+        $location = $query->getLocation();
+
+        if($location === null) {
+            throw new QueryException(
+                'Base DN has not been set for insert query'
+            );
+        }
+
+        $baseDn = $this->_prepareDn(Dn::factory($location));
+
+        try {
+            ldap_add($connection, $baseDn, $row);
+        } catch(\Exception $e) {
+            throw new QueryException(
+                $e->getMessage(), $e->getCode()
+            );
+        }
+
+        return true;
     }
     
 // Batch insert query
@@ -305,12 +304,44 @@ abstract class Adapter implements IAdapter {
     
 // Update query
     public function executeUpdateQuery(opal\query\IUpdateQuery $query) {
-        core\stub($query);
+        $this->ensureBind();
+        $row = $query->getValueMap();
+        $connection = $this->_connection->getResource();
+        $location = $query->getLocation();
+
+        if($location === null) {
+            $dnList = $this->_fetchDnsForWriteQuery($query);
+        } else {
+            $dnList = [$this->_prepareDn(Dn::factory($location))];
+        }
+
+        $count = 0;
+
+        foreach($dnList as $dn) {
+            ldap_modify($connection, $dn, $row);
+            $count++;
+        }
+
+        return $count;
     }
     
 // Delete query
     public function executeDeleteQuery(opal\query\IDeleteQuery $query) {
-        core\stub($query);
+        $this->ensureBind();
+        $connection = $this->_connection->getResource();
+        $location = $query->getLocation();
+
+        if($location === null) {
+            $dnList = $this->_fetchDnsForWriteQuery($query);
+        } else {
+            $dnList = [$this->_prepareDn(Dn::factory($location))];
+        }
+
+        $count = 0;
+
+        foreach($dnList as $dn) {
+            ldap_delete($connection, $dn);
+        }
     }
     
 // Remote data
@@ -348,6 +379,10 @@ abstract class Adapter implements IAdapter {
             }
 
             $attributes[] = $name;
+        }
+
+        if($query instanceof opal\query\IFetchQuery) {
+            $attributes[] = '+';
         }
 
         $connection = $this->_connection->getResource();
@@ -413,6 +448,8 @@ abstract class Adapter implements IAdapter {
             $fields[] = $name;
         }
 
+        $isFetch = $query instanceof opal\query\IFetchQuery;
+        $metaFields = static::$_metaFields;
         $output = [];
 
         for(
@@ -425,6 +462,7 @@ abstract class Adapter implements IAdapter {
             }
 
             $row = [];
+            $meta = [];
 
             foreach(ldap_get_attributes($connection, $rowEntry) as $key => $value) {
                 if(!is_array($value)) {
@@ -453,13 +491,21 @@ abstract class Adapter implements IAdapter {
                     $value = $this->_inflateBooleanAttribute($key, $value);
                 }
 
-                $row[$key] = $value;
+                if($isFetch && in_array($key, $metaFields)) {
+                    $meta[$key] = $value;
+                } else {
+                    $row[$key] = $value;
+                }
             }
 
             foreach($fields as $field) {
                 if(!isset($row[$field])) {
                     $row[$field] = null;
                 }
+            }
+
+            if($isFetch) {
+                $row[':meta'] = $meta;
             }
 
             $output[] = $row;
@@ -490,7 +536,7 @@ abstract class Adapter implements IAdapter {
             if($clause instanceof opal\query\IClause) {
                 $clauseString = $this->_clauseToString($clause);
             } else if($clause instanceof opal\query\IClauseList) {
-                $clauseString = $this->_clauseToString($clause->toArray());
+                $clauseString = $this->_clauseListToString($clause->toArray());
             }
 
             if(!strlen($clauseString)) {
@@ -658,6 +704,23 @@ abstract class Adapter implements IAdapter {
         return $this->_escapeValue($value);
     }
 
+    protected function _fetchDnsForWriteQuery(opal\query\IWriteQuery $query) {
+        $whereList = $query->getWhereClauseList();
+
+        if($whereList->isEmpty()) {
+            throw new QueryException(
+                'Cannot lookup record DNs, no clauses have been passed'
+            );
+        }
+
+        $output = $this->select('*', '+')
+            ->inside(null, true)
+            ->addWhereClause($whereList)
+            ->toList(static::ENTRY_DN_ATTRIBUTE);
+
+        return $output;
+    }
+
 
 // IO
     protected function _inflateDate($name, $date) {
@@ -715,7 +778,7 @@ abstract class Adapter implements IAdapter {
 
 // Record
     public function newRecord(array $values=null) {
-        return new opal\record\Base($this, $values);
+        return new Record($this, $values);
     }
 
 
@@ -764,6 +827,18 @@ abstract class Adapter implements IAdapter {
     }
 
     protected function _prepareDn(IDn $dn) {
+        $baseDn = $this->_context->getBaseDn();
+
+        if(!$dn->isChildOf($baseDn)) {
+            foreach($baseDn->toArray() as $rdn) {
+                $dn->push($rdn);
+            }
+        }        
+
+        return $this->_flattenDn($dn);
+    }
+
+    protected function _flattenDn(IDn $dn) {
         return (string)$dn;
     }
 }

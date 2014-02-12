@@ -242,7 +242,7 @@ class Connection implements IConnection {
         if(!$this->isConnected()) {
             $this->connect();
         }
-        
+
         $this->_bind = @ldap_bind($this->_connection, $username, $password);
         
         if(!$this->_bind) {
@@ -257,9 +257,9 @@ class Connection implements IConnection {
         return $this;
     }
 
-    public function bindIdentity(IIdentity $identity) {
+    public function bindIdentity(IIdentity $identity, IContext $context) {
         return $this->bind(
-            $identity->getUsername(), 
+            $identity->getPreparedUsername($this, $context), 
             $identity->getPassword()
         );
     }

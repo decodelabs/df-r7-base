@@ -11,13 +11,12 @@ use df\opal;
 
 class Identity implements IIdentity {
     
-    protected $_uidUsername;
-    protected $_uidDomain;
-    protected $_upnUsername;
-    protected $_upnDomain;
+    protected $_username;
     protected $_password;
+    protected $_domain;
+    protected $_domainType = null;
 
-    public static function factory($username, $password=null, $domain=null) {
+    public static function factory($username, $password=null, $domain=null, $domainType=null) {
         if($username instanceof IIdentity) {
             return $username;
         }
@@ -25,128 +24,86 @@ class Identity implements IIdentity {
         return new self($username, $password, $domain);
     }
 
-    public function __construct($username, $password=null, $domain=null) {
+    public function __construct($username, $password=null, $domain=null, $domainType=null) {
         $this->setUsername($username);
         $this->setPassword($password);
 
-        if($domain) {
-            if($this->_uidDomain && $this->_uidDomain != strtoupper($domain)) {
-                throw new DomainException(
-                    'Identity does not match domain '.$domain
-                );
-            }
-
-            $this->setUidDomain($domain);
+        if($domain !== null) {
+            $this->setDomain($domain, $domainType);
         }
     }
 
     public function setUsername($username) {
         if(false !== strpos($username, '@')) {
-            return $this->setUpn($username);
+            $parts = explode('@', $username, 2);
+            $username = array_shift($parts);
+            $this->setDomain(array_shift($parts), 'upn');
         }
         
         if(false !== strpos($username, '\\')) {
-            return $this->setUid($username);
+            $parts = explode('\\', $username, 2);
+            $username = array_shift($parts);
+            $this->setDomain(array_shift($parts), 'uid');
         }
-        
-        return $this->setUidUsername($username);
+
+        if(false !== strpos($username, '=')) {
+            $dn = Dn::factory($username);
+            $username = $dn[0];
+            $dn->shift();
+            $this->setDomain($dn->buildDomain(), 'dn');
+        }
+
+        $this->_username = $username;
+        return $this;
     }
 
     public function getUsername() {
-        if($this->_uidUsername) {
-            $output = $this->_uidUsername;
+        return $this->_username;
+    }
 
-            if($this->_uidDomain && false === strpos($output, '=')) {
-                $output = $this->_uidDomain.'\\'.$output;
-            }
+    public function getPreparedUsername(IConnection $connection, IContext $context) {
+        $connectionType = $connection->getType();
+        $domainType = $this->_domainType;
 
-            return $output;
-        } else if($this->_upnUsername) {
-            $output = $this->_upnUsername;
-
-            if($this->_upnDomain) {
-                $output .= '@'.$this->_upnDomain;
-            }
-
-            return $output;
+        if($connectionType == 'OpenLdap') {
+            $domainType = 'dn';
         }
-        
-        return null;
-    }
-    
-    public function setUid($username) {
-        $parts = explode('\\', $username);
-        $this->setUidDomain(array_shift($parts));
-        $this->setUidUsername(array_shift($parts));
-        return $this;
-    }
-    
-    public function setUidDomain($domain) {
-        $this->_uidDomain = strtoupper($domain);
-        return $this;
-    }
-    
-    public function getUidDomain() {
-        return $this->_uidDomain;
-    }
-    
-    public function setUidUsername($username) {
-        $this->_uidUsername = $username;
-        return $this;
-    }
-    
-    public function getUidUsername() {
-        return $this->_uidUsername;
-    }
-    
-    public function hasUid() {
-        return $this->_uidUsername !== null;
-    }
-    
-    
-    public function setUpn($upn) {
-        $parts = explode('@', $upn);
-        $this->setUpnUsername(array_shift($parts));
-        $this->setUpnDomain(array_shift($parts));
-        return $this;
-    }
-    
-    public function getUpn() {
-        if(!$this->_upnUsername) {
-            return null;
+
+        switch($domainType) {
+            case 'upn':
+                if($connectionType == 'ActiveDirectory') {
+                    return $this->_domain.'@'.$this->_username;
+                } else {
+                    return $this->_username;
+                }
+
+            case 'uid':
+                if($connectionType == 'ActiveDirectory') {
+                    return $this->_domain.'\\'.$this->_username;
+                } else {
+                    return $this->_username;
+                }
+
+            case 'dn':
+                $username = $this->_username;
+
+                if(!$username instanceof IRdn) {
+                    $username = Rdn::factory('cn='.$username);
+                }
+
+                if(!$this->_domain) {
+                    $this->_domain = clone $context->getBaseDn();
+                    $this->_domain->unshift('ou=users');
+                }
+
+                $output = Dn::factory($this->_domain);
+                $output->unshift($username);
+                return $output;
+
+            default:
+                return $this->_username;
         }
-        
-        $output = $this->_upnUsername;
-        
-        if($this->_upnDomain) {
-            $output .= '@'.$this->_upnDomain;
-        }
-        
-        return $output;
     }
-    
-    public function setUpnUsername($username) {
-        $this->_upnUsername = $username;
-        return $this;
-    }
-    
-    public function getUpnUsername() {
-        return $this->_upnUsername;
-    }
-    
-    public function setUpnDomain($domain) {
-        $this->_upnDomain = $domain;
-        return $this;
-    }
-    
-    public function getUpnDomain() {
-        return $this->_upnDomain;
-    }
-    
-    public function hasUpn() {
-        return $this->_upnUsername !== null;
-    }
-    
     
     public function setPassword($password) {
         $this->_password = $password;
@@ -155,5 +112,31 @@ class Identity implements IIdentity {
     
     public function getPassword() {
         return $this->_password;
+    }
+
+    public function setDomain($domain, $type=null) {
+        $this->_domain = $domain;
+        $this->_domainType = $type;
+        return $this;
+    }
+
+    public function getDomain() {
+        return $this->_domain;
+    }
+
+    public function getDomainType() {
+        return $this->_domainType;
+    }
+
+    public function hasUidDomain() {
+        return $this->_domainType == 'uid';
+    }
+
+    public function hasUpnDomain() {
+        return $this->_domainType == 'upn';
+    }
+
+    public function hasDnDomain() {
+        return $this->_domainType == 'dn';
     }
 }

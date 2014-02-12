@@ -138,11 +138,13 @@ class Transaction implements ITransaction, core\IDumpable {
             }
         }
         
+        /*
         if(!$isCapable && $forWrite) {
             throw new RuntimeException(
                 'Adapter '.$adapter->getQuerySourceDisplayName().' is not capable of transactions'
             );
         }
+        */
         
         return $this;
     }

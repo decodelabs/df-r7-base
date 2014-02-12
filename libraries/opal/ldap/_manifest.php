@@ -119,6 +119,7 @@ interface IDn extends core\collection\IIndexedQueue, core\IStringProvider {
     public function isChildOf($dn);
     public function getFirstEntry($key);
     public function getAllEntries($key);
+    public function buildDomain();
 }
 
 
@@ -146,7 +147,7 @@ interface IConnection {
     public function connect();
     public function disconnect();
     public function bind($username, $password);
-    public function bindIdentity(IIdentity $identity);
+    public function bindIdentity(IIdentity $identity, IContext $context);
     public function isBound();
 }
 
@@ -162,21 +163,15 @@ interface IContext {
 interface IIdentity {
     public function setUsername($username);
     public function getUsername();
-    public function setUid($username);
-    public function setUidDomain($domain);
-    public function getUidDomain();
-    public function setUidUsername($username);
-    public function getUidUsername();
-    public function hasUid();
-    public function setUpn($upn);
-    public function getUpn();
-    public function setUpnUsername($username);
-    public function getUpnUsername();
-    public function setUpnDomain($domain);
-    public function getUpnDomain();
-    public function hasUpn();
+    public function getPreparedUsername(IConnection $connection, IContext $context);
     public function setPassword($password);
     public function getPassword();
+    public function setDomain($domain, $type=null);
+    public function getDomain();
+    public function getDomainType();
+    public function hasUidDomain();
+    public function hasUpnDomain();
+    public function hasDnDomain();
 }
 
 interface IAdapter extends opal\query\IAdapter, opal\query\IEntryPoint {
@@ -191,7 +186,6 @@ interface IAdapter extends opal\query\IAdapter, opal\query\IEntryPoint {
 
     public function setPrivilegedIdentity(IIdentity $identity=null);
     public function getPrivilegedIdentity();
-    public function normalizeIdentity(IIdentity $identity, $autoFill=false);
 
     public function isBound();
     public function getBoundIdentity();
@@ -207,4 +201,9 @@ interface IRootDse extends core\collection\IMappedCollection {
     public function supportsVersion($version);
     public function supportsSaslMechanism($mechanism);
     public function getSchemaDn();
+}
+
+interface IRecord extends opal\record\ILocationalRecord, core\IAttributeContainer {
+    public function getEntryDn();
+    public function inside($location);
 }

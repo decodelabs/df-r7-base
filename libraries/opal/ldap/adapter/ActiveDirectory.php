@@ -14,7 +14,7 @@ class ActiveDirectory extends opal\ldap\Adapter {
     const BIND_REQUIRES_DN = false;
     const UID_ATTRIBUTE = 'sAMAccountName';
     
-    protected function _prepareDn(opal\ldap\IDn $dn) {
+    protected function _flattenDn(opal\ldap\IDn $dn) {
         return $dn->implode(',', core\string\ICase::UPPER);
     }
     

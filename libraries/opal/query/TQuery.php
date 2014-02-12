@@ -1456,6 +1456,10 @@ trait TQuery_DataInsert {
     protected $_row;
     
     public function setRow($row) {
+        if($this instanceof ILocationalQuery && $row instanceof opal\record\ILocationalRecord) {
+            $this->inside($row->getQueryLocation());
+        }
+
         if($row instanceof opal\query\IDataRowProvider) {
             $row = $row->toDataRowArray();
         } else if($row instanceof core\IArrayProvider) {

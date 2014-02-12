@@ -28,6 +28,10 @@ class UpdateRecord implements IUpdateRecordTask {
         $query = $transaction->update($data)->in($this->getAdapter());
         $keySet = $this->_record->getOriginalPrimaryKeySet();
 
+        if($this->_record instanceof opal\record\ILocationalRecord) {
+            $query->inside($this->_record->getQueryLocation());
+        }
+
         if(!$keySet->isNull()) {
             foreach($keySet->toArray() as $field => $value) {
                 $query->where($field, '=', $value);

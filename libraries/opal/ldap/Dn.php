@@ -247,6 +247,9 @@ class Dn implements IDn, core\IDumpable {
         return $output;
     }
 
+    public function buildDomain() {
+        return implode('.', $this->getAllEntries('dc'));
+    }
 
 
     public function getReductiveIterator() {

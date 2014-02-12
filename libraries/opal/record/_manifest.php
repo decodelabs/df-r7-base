@@ -59,6 +59,10 @@ interface IRecord extends core\collection\IMappedCollection, user\IAccessLock, c
     public function triggerTaskEvent(opal\record\task\ITaskSet $taskSet, opal\record\task\IRecordTask $task, $when);
 }
 
+interface ILocationalRecord extends IRecord {
+    public function getQueryLocation();
+}
+
 
 interface IValueContainer extends core\IValueContainer {
     public function getValueForStorage();

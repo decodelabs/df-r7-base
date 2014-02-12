@@ -40,6 +40,10 @@ class InsertRecord implements IInsertRecordTask {
         $query = $transaction->insert($data)
             ->into($this->getAdapter())
             ->ifNotExists((bool)$this->_ifNotExists);
+
+        if($this->_record instanceof opal\record\ILocationalRecord) {
+            $query->inside($this->_record->getQueryLocation());
+        }
             
         $id = $query->execute();
         $row = $query->getRow();

@@ -94,7 +94,7 @@ class Clause implements opal\query\IClause, core\IDumpable {
         );
     }
     
-    protected function __construct(opal\query\IField $field, $operator, $value, $isOr=false) {
+    public function __construct(opal\query\IField $field, $operator, $value, $isOr=false) {
         $this->setField($field);
         $this->setOperator($operator);
         $this->setValue($value);
