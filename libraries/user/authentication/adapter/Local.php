@@ -20,6 +20,10 @@ class Local implements user\authentication\IAdapter {
             'enabled' => true
         ];
     }
+
+    public static function getDisplayName() {
+        return 'Email and password';
+    }
     
     public function authenticate(user\authentication\IRequest $request, user\authentication\IResult $result) {
         $application = $this->_manager->getApplication();

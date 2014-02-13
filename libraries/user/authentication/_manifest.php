@@ -15,6 +15,7 @@ use df\user;
 // Interfaces
 interface IAdapter {
     public static function getDefaultConfigValues();
+    public static function getDisplayName();
     public function getName();
     public function authenticate(IRequest $request, IResult $result);
 }

@@ -39,6 +39,10 @@ class Ldap implements user\authentication\IAdapter {
             ]
         ];
     }
+
+    public static function getDisplayName() {
+        return 'LDAP Network Domain';
+    }
     
     public function authenticate(user\authentication\IRequest $request, user\authentication\IResult $result) {
         $application = $this->_manager->getApplication();
