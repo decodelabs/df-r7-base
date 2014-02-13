@@ -28,12 +28,6 @@ class Context implements IContext {
             $upnDomain = null;
         }
 
-        if($upnDomain === null && $baseDn !== null) {
-            $upnDomain = $baseDn;
-        } else if($baseDn === null && $upnDomain !== null) {
-            $baseDn = $upnDomain;
-        }
-
         $this->setBaseDn($baseDn);
         $this->setUpnDomain($upnDomain);
     }
@@ -61,15 +55,15 @@ class Context implements IContext {
     }
     
     public function setUpnDomain($domain=null) {
-        if(!$domain) {
-            $domain = implode('.', $this->_baseDn->getAllEntries('dc'));
-        }
-        
         $this->_upnDomain = $domain;
         return $this;
     }
     
     public function getUpnDomain() {
+        if(!$this->_upnDomain) {
+            return implode('.', $this->_baseDn->getAllEntries('dc'));
+        }
+
         return $this->_upnDomain;
     }
 }

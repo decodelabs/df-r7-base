@@ -42,8 +42,8 @@ class Identity implements IIdentity {
         
         if(false !== strpos($username, '\\')) {
             $parts = explode('\\', $username, 2);
-            $username = array_shift($parts);
             $this->setDomain(array_shift($parts), 'uid');
+            $username = array_shift($parts);
         }
 
         if(false !== strpos($username, '=')) {
@@ -64,22 +64,35 @@ class Identity implements IIdentity {
     public function getPreparedUsername(IConnection $connection, IContext $context) {
         $connectionType = $connection->getType();
         $domainType = $this->_domainType;
+        $domain = $this->_domain;
 
         if($connectionType == 'OpenLdap') {
             $domainType = 'dn';
+        } else if($connectionType == 'ActiveDirectory') {
+            if(!$domainType) {
+                $domainType = 'upn';
+            }
         }
 
         switch($domainType) {
             case 'upn':
                 if($connectionType == 'ActiveDirectory') {
-                    return $this->_username.'@'.$this->_domain;
+                    if(!$domain) {
+                        $domain = $context->getUpnDomain();
+                    }
+
+                    return $this->_username.'@'.$domain;
                 } else {
                     return $this->_username;
                 }
 
             case 'uid':
                 if($connectionType == 'ActiveDirectory') {
-                    return $this->_domain.'\\'.$this->_username;
+                    if(!$domain) {
+                        $domain = $context->getDomain();
+                    }
+
+                    return $domain.'\\'.$this->_username;
                 } else {
                     return $this->_username;
                 }
@@ -91,12 +104,12 @@ class Identity implements IIdentity {
                     $username = Rdn::factory('cn='.$username);
                 }
 
-                if(!$this->_domain) {
-                    $this->_domain = clone $context->getBaseDn();
-                    $this->_domain->unshift('ou=users');
+                if(!$domain) {
+                    $domain = clone $context->getBaseDn();
+                    $domain->unshift('ou=users');
                 }
 
-                $output = Dn::factory($this->_domain);
+                $output = Dn::factory($domain);
                 $output->unshift($username);
                 return $output;
 
