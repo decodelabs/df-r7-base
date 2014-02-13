@@ -72,7 +72,7 @@ class Identity implements IIdentity {
         switch($domainType) {
             case 'upn':
                 if($connectionType == 'ActiveDirectory') {
-                    return $this->_domain.'@'.$this->_username;
+                    return $this->_username.'@'.$this->_domain;
                 } else {
                     return $this->_username;
                 }
