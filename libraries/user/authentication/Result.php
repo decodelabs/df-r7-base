@@ -15,6 +15,7 @@ class Result implements IResult {
     const FAILURE = 0;
     const IDENTITY_NOT_FOUND = -1;
     const INVALID_CREDENTIAL = -2;
+    const ERROR = -3;
     
     protected $_adapterName;
     protected $_identity;

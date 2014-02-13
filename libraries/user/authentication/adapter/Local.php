@@ -13,21 +13,31 @@ use df\opal;
 
 class Local implements user\authentication\IAdapter {
     
-    protected $_manager;
-    
-    public function __construct(user\IManager $manager) {
-        $this->_manager = $manager;
+    use user\authentication\TAdapter;
+
+    public static function getDefaultConfigValues() {
+        return [
+            'enabled' => true
+        ];
     }
     
     public function authenticate(user\authentication\IRequest $request, user\authentication\IResult $result) {
         $application = $this->_manager->getApplication();
+        $model = $this->_manager->getUserModel();
+        $domainInfo = $model->getAuthenticationDomainInfo($request);
+        
+        if(!$domainInfo instanceof user\authentication\IDomainInfo) {
+            $result->setCode(user\authentication\Result::IDENTITY_NOT_FOUND);
+            return $result;
+        }
+        
+        $result->setDomainInfo($domainInfo);
             
         $passwordHash = core\string\Util::passwordHash(
             $request->getCredential('password'),
             $application->getPassKey()
         );
         
-        $domainInfo = $result->getDomainInfo();
         $domainPassword = $domainInfo->getPassword();
             
         if($domainPassword != $passwordHash) {

@@ -214,25 +214,27 @@ class Manager implements IManager, core\IDumpable {
                 'Authentication adapter '.$name.' could not be found'
             );
         }
+
+        $config = user\authentication\Config::getInstance($this->_application);
+
+        if(!$config->isAdapterEnabled($name)) {
+            throw new AuthenticationException(
+                'Authentication adapter '.$name.' is not enabled'
+            );
+        }
         
+        $adapter = new $class($this);
         $model = $this->getUserModel();
         
         // Fetch user
         $result = new user\authentication\Result($name);
         $result->setIdentity($request->getIdentity());
-        $domainInfo = $model->getAuthenticationDomainInfo($request);
-        
-        if(!$domainInfo instanceof user\authentication\IDomainInfo) {
-            $result->setCode(user\authentication\Result::IDENTITY_NOT_FOUND);
-            return $result;
-        }
         
         // Authenticate
-        $result->setDomainInfo($domainInfo);
-        $adapter = new $class($this);
         $adapter->authenticate($request, $result);
         
         if($result->isValid()) {
+            $domainInfo = $result->getDomainInfo();
             $session = $this->session->getNamespace(self::USER_SESSION_NAMESPACE);
             $this->_accessLockCache = array();
 

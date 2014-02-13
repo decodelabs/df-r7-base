@@ -14,7 +14,23 @@ use df\user;
 
 // Interfaces
 interface IAdapter {
+    public static function getDefaultConfigValues();
+    public function getName();
     public function authenticate(IRequest $request, IResult $result);
+}
+
+trait TAdapter {
+
+    protected $_manager;
+    
+    public function __construct(user\IManager $manager) {
+        $this->_manager = $manager;
+    }
+
+    public function getName() {
+        $parts = explode('\\', get_class($this));
+        return array_pop($parts);
+    }
 }
 
 
