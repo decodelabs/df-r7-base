@@ -71,7 +71,7 @@ class Delegate implements IDelegate {
         return $this;
     }
     
-    public function complete($success) {
+    public function complete($success=true) {
         $this->_onComplete($success);
 
         foreach($this->_delegates as $delegate) {

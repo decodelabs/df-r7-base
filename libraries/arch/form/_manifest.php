@@ -74,7 +74,7 @@ interface IDelegate extends IActiveForm, core\IContextAware {
     public function getDelegateKey();
     public function initialize();
     public function setRenderContext(aura\view\IView $view, aura\view\IContentProvider $content, $isRenderingInline=false);
-    public function complete($success);
+    public function complete($success=true);
 }
 
 
@@ -100,9 +100,15 @@ interface IRequirableDelegate {
     public function isRequired($flag=null);
 }
 
-interface IResultProviderDelegate extends IRequirableDelegate {
+interface IParentEventHandlerDelegate extends IDelegate {
     public function apply();
 }
+
+interface IParentUiHandlerDelegate extends IDelegate {
+    public function renderUi();
+}
+
+interface IResultProviderDelegate extends IRequirableDelegate, IParentEventHandlerDelegate {}
 
 interface ISelectorDelegate extends IResultProviderDelegate {
     public function isForOne($flag=null);
@@ -116,6 +122,9 @@ interface ISelectorDelegate extends IResultProviderDelegate {
 
 interface IInlineFieldRenderableSelectorDelegate extends IModalDelegate, IInlineFieldRenderableDelegate, ISelectorDelegate {}
 
+interface IAdapterDelegate extends IParentUiHandlerDelegate, IParentEventHandlerDelegate {
+    
+}
 
 interface IDependency {
     public function getName();
