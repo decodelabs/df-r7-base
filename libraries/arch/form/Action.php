@@ -121,6 +121,10 @@ abstract class Action extends arch\Action implements IAction {
         return $this->_isNew;
     }
 
+    public function isComplete() {
+        return $this->_isComplete;
+    }
+
     protected function _createSessionId() {
         return core\string\Generator::sessionId();
     }
@@ -396,7 +400,13 @@ abstract class Action extends arch\Action implements IAction {
             }
         }
         
-        return $target->handleEvent($event, $args);
+        $output = $target->handleEvent($event, $args);
+
+        if($target->isComplete()) {
+            $this->_finalizeCompletion();
+        }
+
+        return $output;
     }
 
     public function complete($defaultRedirect=null, $success=true) {
@@ -405,20 +415,22 @@ abstract class Action extends arch\Action implements IAction {
         }
         
         $this->_isComplete = true;
-
-        foreach($this->_delegates as $delegate) {
-            $delegate->complete($success);
-        }
-
-        if($this->_sessionNamespace) {
-            $session = $this->_context->getUserManager()->getSessionNamespace($this->_sessionNamespace);
-            $session->remove($this->_state->getSessionId());
-        }
         
         if($this->request->getType() == 'Html') {
             return $this->http->defaultRedirect($defaultRedirect, $success);
         } else if($defaultRedirect) {
             return $this->http->redirect($defaultRedirect);
+        }
+    }
+
+    protected function _finalizeCompletion($success=true) {
+        foreach($this->_delegates as $delegate) {
+            $delegate->setComplete($success);
+        }
+
+        if($this->_sessionNamespace) {
+            $session = $this->_context->getUserManager()->getSessionNamespace($this->_sessionNamespace);
+            $session->remove($this->_state->getSessionId());
         }
     }
     

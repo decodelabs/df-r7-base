@@ -14,9 +14,12 @@ class Delegate implements IDelegate {
     
     use core\TContextAware;
     use TForm;
+
+    const DEFAULT_REDIRECT = null;
     
     protected $_delegateId;
     private $_isNew = false;
+    private $_isComplete = false;
 
     public function __construct(arch\IContext $context, IStateController $state, $id) {
         $this->_context = $context;
@@ -70,19 +73,41 @@ class Delegate implements IDelegate {
         
         return $this;
     }
+
+    public function complete($defaultRedirect=null, $success=true) {
+        if($defaultRedirect === null) {
+            $defaultRedirect = $this->_getDefaultRedirect();
+        }
+
+        $this->_isComplete = true;
+        
+        if($this->request->getType() == 'Html') {
+            return $this->http->defaultRedirect($defaultRedirect, $success);
+        } else if($defaultRedirect) {
+            return $this->http->redirect($defaultRedirect);
+        }
+    }
     
-    public function complete($success=true) {
+    public function setComplete($success=true) {
         $this->_onComplete($success);
 
         foreach($this->_delegates as $delegate) {
-            $delegate->complete($success);
+            $delegate->setComplete($success);
         }
         
         $this->_state->reset();
         return $this;
     }
 
+    public function isComplete() {
+        return $this->_isComplete;
+    }
+
     protected function _onComplete($success) {}
+
+    protected function _getDefaultRedirect() {
+        return static::DEFAULT_REDIRECT;
+    }
 
 
 // Names

@@ -61,11 +61,13 @@ interface IActiveForm extends IForm {
 
     public function getAvailableEvents();
     public function getStateData();
+    public function complete($defaultRedirect=null, $success=true);
+    public function isComplete();
 }
 
 
 interface IAction extends arch\IAction, IActiveForm {
-    public function complete($defaultRedirect=null, $success=true);
+    
 }
 
 
@@ -74,7 +76,7 @@ interface IDelegate extends IActiveForm, core\IContextAware {
     public function getDelegateKey();
     public function initialize();
     public function setRenderContext(aura\view\IView $view, aura\view\IContentProvider $content, $isRenderingInline=false);
-    public function complete($success=true);
+    public function setComplete($success=true);
 }
 
 
