@@ -205,5 +205,7 @@ interface IRootDse extends core\collection\IMappedCollection {
 
 interface IRecord extends opal\record\ILocationalRecord, core\IAttributeContainer {
     public function getEntryDn();
+    public function getGlobalId();
+    public function getObjectClasses();
     public function inside($location);
 }

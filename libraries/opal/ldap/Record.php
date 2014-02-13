@@ -61,9 +61,38 @@ class Record extends opal\record\Base implements IRecord {
         return Dn::factory($output);
     }
 
+    public function getGlobalId() {
+        $output = $this->getAttribute($this->_getGlobalIdAttribute());
+
+        if(!$output) {
+            throw new UnexpectedValueException(
+                'Entry global id has not been stored in record'
+            );
+        }
+
+        return $output;
+    }
+
+    public function getObjectClasses() {
+        $output = $this->getAttribute('objectClass');
+
+        if(!$output) {
+            throw new UnexpectedValueException(
+                'Entry objectClass data has not been stored in record'
+            );
+        }
+
+        return $output;
+    }
+
     protected function _getEntryDnAttribute() {
         $adapter = $this->getRecordAdapter();
         return $adapter::ENTRY_DN_ATTRIBUTE;
+    }
+
+    protected function _getGlobalIdAttribute() {
+        $adapter = $this->getRecordAdapter();
+        return $adapter::GLOBAL_ID_ATTRIBUTE;
     }
 
 

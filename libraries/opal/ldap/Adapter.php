@@ -18,6 +18,7 @@ abstract class Adapter implements IAdapter {
     const BIND_REQUIRES_DN = true;
     const UID_ATTRIBUTE = 'uid';
     const ENTRY_DN_ATTRIBUTE = 'entryDN';
+    const GLOBAL_ID_ATTRIBUTE = 'entryUUID';
 
     protected static $_arrayAttrs = array(
         'objectClass', 'memberOf', 'dSCorePropagationData', 'namingContexts',
