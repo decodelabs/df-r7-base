@@ -280,6 +280,7 @@ interface ITree extends IRandomAccessCollection, IMappedContainerCollection, cor
     public function toArrayDelimitedString($setDelimiter='&', $valueDelimiter='=');
     public function toArrayDelimitedSet($prefix=null);
     public function toUrlEncodedArrayDelimitedSet($prefix=null);
+    public function hasKey($key);
     public function getKeys();
     public function clearKeys();
     public function hasAnyValue(array $checkKeys=null);
