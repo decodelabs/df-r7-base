@@ -1536,6 +1536,12 @@ trait TQuery_DataInsert {
             } else {
                 $value = $field->sanitizeValue($row[$name]);
             }
+
+            if($field instanceof opal\schema\IAutoTimestampField 
+            && ($value === null || $value === '') 
+            && $field->shouldTimestampAsDefault()) {
+                continue;
+            }
             
             $value = $field->deflateValue($value);
         
@@ -1686,6 +1692,12 @@ trait TQuery_BatchDataInsert {
                 } else {
                     $value = $field->sanitizeValue($row[$name]);
                 }
+
+                if($field instanceof opal\schema\IAutoTimestampField 
+                && ($value === null || $value === '') 
+                && $field->shouldTimestampAsDefault()) {
+                    continue;
+                }
                 
                 $value = $field->deflateValue($value);
             
@@ -1768,6 +1780,12 @@ trait TQuery_DataUpdate {
             if($field instanceof opal\schema\INullPrimitiveField) {
                 unset($values[$name]);
                 continue;
+            }
+
+            if($field instanceof opal\schema\IAutoTimestampField 
+            && ($value === null || $value === '') 
+            && !$field->isNullable()) {
+                $value = new core\time\Date();
             }
             
             $value = $field->deflateValue($field->sanitizeValue($value));

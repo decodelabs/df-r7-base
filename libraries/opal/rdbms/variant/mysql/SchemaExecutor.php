@@ -322,7 +322,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
 
 
 // Indexes
-    protected function _generateInlineIndexDefinition(opal\rdbms\schema\IIndex $index, opal\rdbms\schema\IIndex $primaryIndex=null) {
+    protected function _generateInlineIndexDefinition($tableName, opal\rdbms\schema\IIndex $index, opal\rdbms\schema\IIndex $primaryIndex=null) {
         if(null !== ($type = $index->getIndexType())) {
             switch($type = strtoupper($type)) {
                 case 'BTREE':
@@ -704,11 +704,11 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
         
         // Add indexes
         foreach($updateIndexes as $name => $index) {
-            $definitions[] = 'ADD '.$this->_generateInlineIndexDefinition($index, $primaryIndex);
+            $definitions[] = 'ADD '.$this->_generateInlineIndexDefinition($newName, $index, $primaryIndex);
         }
         
         foreach($addIndexes as $name => $index) {
-            $definitions[] = 'ADD '.$this->_generateInlineIndexDefinition($index, $primaryIndex);
+            $definitions[] = 'ADD '.$this->_generateInlineIndexDefinition($newName, $index, $primaryIndex);
         }
         
         

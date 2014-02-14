@@ -420,25 +420,37 @@ class SourceManager implements ISourceManager, core\IDumpable {
 
     public function executeQuery(IQuery $query, Callable $executor) {
         $adapter = $query->getSource()->getAdapter();
+        $count = 0;
+        $exceptions = [];
 
-        try {
-            $output = $executor($adapter);
-        } catch(\Exception $e) {
-            $handled = false;
+        while(true) {
+            try {
+                $output = $executor($adapter);
+                break;
+            } catch(\Exception $e) {
+                $exceptions[] = $e;
+                $handled = false;
 
-            foreach($this->_sources as $source) {
-                if($source->handleQueryException($query, $e)) {
-                    $handled = true;
-                    break;
+                foreach($this->_sources as $source) {
+                    if($source->handleQueryException($query, $e)) {
+                        $handled = true;
+                        break;
+                    }
+                }
+
+                if(!$handled) {
+                    throw $e;
                 }
             }
 
-            if(!$handled) {
-                throw $e;
-            }
+            $count++;
 
-            $adapter->ensureStorageConsistency();
-            $output = $executor($adapter);
+            if($count > 20) {
+                core\dump($exceptions);
+                throw new RuntimeException(
+                    'Stuck in query exception loop'
+                );
+            }
         }
 
         return $output;

@@ -20,7 +20,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
         
         if($res->isEmpty()) {
             throw new opal\rdbms\TableNotFoundException(
-                'Table '.$tableName.' could not be found', 1, $sql
+                'Table '.$tableName.' could not be found', 1, $stmt->getSql()
             );
         }
         
@@ -153,7 +153,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
                     // Inline indexes
                     case 'PRIMARY KEY':
                     case 'UNIQUE':
-                        $index = $schema->addUniqeIndex($matches[1], array());
+                        $index = $schema->addUniqueIndex($matches[1], array());
                         preg_match('/'.$type.' \((.*)\)/i', $def, $matches);
                         
                         foreach(core\string\Util::parseDelimited($matches[1], ',', null) as $part) {
@@ -334,8 +334,8 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
         }
         
         if($field instanceof opal\schema\IAutoTimestampField
-        && $field->shouldTimestampAsDefault()) {
-            $fieldSql .= 'DEFAULT (DATETIME(\'now\'))';
+        && ($field->shouldTimestampAsDefault() || !$field->isNullable())) {
+            $fieldSql .= ' DEFAULT (DATETIME(\'now\'))';
         } else if(null !== ($defaultValue = $field->getDefaultValue())) {
             $fieldSql .= ' DEFAULT '.$this->_adapter->prepareValue($defaultValue, $field);
         } else if(!$field->isNullable()) {
@@ -345,7 +345,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
         if(null !== ($collation = $field->getCollation())) {
             $fieldSql .= ' COLLATE '.$this->_adapter->quoteValue($collation);
         }
-        
+
         return $fieldSql;
     }
 
@@ -365,12 +365,12 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
 ## Create ##
 
 // Indexes
-    protected function _generateInlineIndexDefinition(opal\rdbms\schema\IIndex $index, opal\rdbms\schema\IIndex $primaryIndex=null) {
+    protected function _generateInlineIndexDefinition($tableName, opal\rdbms\schema\IIndex $index, opal\rdbms\schema\IIndex $primaryIndex=null) {
         if(!$index->isUnique()) {
             return null;
         }
-        
-        $indexSql = 'CONSTRAINT '.$this->_adapter->quoteIdentifier($index->getName());
+
+        $indexSql = 'CONSTRAINT '.$this->_adapter->quoteIdentifier($tableName.'_'.$index->getName());
         
         if($index === $primaryIndex) {
             $indexSql .= ' PRIMARY KEY';
@@ -406,7 +406,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
             return null;
         }
         
-        $indexSql = 'CREATE INDEX '.$this->_adapter->quoteIdentifier($index->getName());
+        $indexSql = 'CREATE INDEX '.$this->_adapter->quoteIdentifier($tableName.'_'.$index->getName());
         $indexSql .= ' ON '.$this->_adapter->quoteIdentifier($tableName);
         
         $indexFields = array();
@@ -427,8 +427,8 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
         
         return $indexSql;
     }
-    
-    
+
+
 // Foreign keys
     protected function _generateInlineForeignKeyDefinition(opal\rdbms\schema\IForeignKey $key) {
         $keySql = parent::_generateInlineForeignKeyDefinition($key);

@@ -172,10 +172,11 @@ class Rdbms implements
 // Query exceptions
     public function handleQueryException(opal\query\IQuery $query, \Exception $e) {
         // Table not found
-        if($e instanceof opal\rdbms\TableNotFoundException 
-        && strtolower($e->table) == strtolower($this->_unit->getStorageBackendName())) {
-            // Allow source manager to call ensureStorageConsistency()
-            return true;
+        if($e instanceof opal\rdbms\TableNotFoundException) {
+            if(strtolower($e->table) == strtolower($this->_unit->getStorageBackendName())) {
+                $this->ensureStorageConsistency();
+                return true;
+            }
         }
         
         return false;
@@ -188,6 +189,12 @@ class Rdbms implements
         $idList = $defUnit->fetchStoredUnitList();
         $tableList = $this->_getRdbmsAdapter()->getDatabase()->getTableList();
         $update = [];
+
+        $unitId = $this->_unit->getUnitId();
+
+        if(!in_array($unitId, $idList)) {
+            $idList[] = $unitId;
+        }
 
         foreach($idList as $unitId) {
             $unit = $model->loadUnitFromId($unitId);

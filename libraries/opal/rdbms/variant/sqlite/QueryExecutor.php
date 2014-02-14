@@ -21,6 +21,43 @@ class QueryExecutor extends opal\rdbms\QueryExecutor {
     }
 
 
+// Insert
+    public function executeInsertQuery($tableName) {
+        $this->_stmt->appendSql('INSERT');
+
+        if($this->_query->ifNotExists()) {
+            $this->_stmt->appendSql(' OR IGNORE');
+        }
+
+        $this->_stmt->appendSql(' INTO '.$this->_adapter->quoteIdentifier($tableName));
+        
+        
+        $fields = array();
+        $values = array();
+        
+        foreach($this->_query->getRow() as $field => $value) {
+            $fields[] = $this->_adapter->quoteIdentifier($field);
+            $values[] = ':'.$field;
+
+            if(is_array($value)) {
+                if(count($value) == 1) {
+                    // This is a total hack - you need to trace the real problem with multi-value keys
+                    $value = array_shift($value);
+                } else {
+                    core\dump($value, $field, 'You need to trace back multi key primary field retention');
+                }
+            }
+
+            $this->_stmt->bind($field, $value);
+        }
+        
+        $this->_stmt->appendSql(' ('.implode(',', $fields).') VALUES ('.implode(',', $values).')');
+        $this->_stmt->executeWrite();
+        
+        return $this->_adapter->getLastInsertId();
+    }
+
+
 // Batch insert
     public function executeBatchInsertQuery($tableName) {
         $this->_stmt = $this->_adapter->prepare('INSERT INTO '.$this->_adapter->quoteIdentifier($tableName));

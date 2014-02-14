@@ -26,7 +26,14 @@ class Sqlite extends Base_Pdo {
     }
 
     protected function _getPdoDsn() {
-        return 'sqlite:'.$this->_dsn->getDatabase();
+        $database = $this->_dsn->getDatabase();
+
+        if(!$database || $database == 'default') {
+            $database = df\Launchpad::$application->getSharedDataStoragePath().'/sqlite/default.db';
+            core\io\Util::ensureDirExists(dirname($database));
+        }
+
+        return 'sqlite:'.$database;
     }
     
     protected function _getPdoOptions() {

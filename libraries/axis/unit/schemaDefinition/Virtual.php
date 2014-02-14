@@ -179,7 +179,12 @@ final class Virtual implements axis\ISchemaDefinitionStorageUnit, axis\ISchemaBa
     }
     
     public function fetchStoredUnitList() {
-        return $this->_adapter->fetchStoredUnitList();
+        try {
+            return $this->_adapter->fetchStoredUnitList();
+        } catch(\Exception $e) {
+            $this->_adapter->ensureStorage();
+            return $this->_adapter->fetchStoredUnitList();
+        }
     }
 
 

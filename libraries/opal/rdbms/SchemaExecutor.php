@@ -76,7 +76,7 @@ abstract class SchemaExecutor implements ISchemaExecutor {
                 );
             }
             
-            if(null !== ($def = $this->_generateInlineIndexDefinition($index, $primaryIndex))) {
+            if(null !== ($def = $this->_generateInlineIndexDefinition($schemaName, $index, $primaryIndex))) {
                 $definitions[] = $def;
             }
         }
@@ -128,7 +128,7 @@ abstract class SchemaExecutor implements ISchemaExecutor {
         
         
         // TODO: stored procedures
-        
+
         try {
             foreach($sql as $query) {
                 $this->_adapter->prepare($query)->executeRaw();
@@ -148,7 +148,7 @@ abstract class SchemaExecutor implements ISchemaExecutor {
     abstract protected function _generateFieldDefinition(opal\rdbms\schema\IField $field);
 
 // Indexes
-    abstract protected function _generateInlineIndexDefinition(opal\rdbms\schema\IIndex $index, opal\rdbms\schema\IIndex $primaryIndex=null);
+    abstract protected function _generateInlineIndexDefinition($tableName, opal\rdbms\schema\IIndex $index, opal\rdbms\schema\IIndex $primaryIndex=null);
     abstract protected function _generateStandaloneIndexDefinition($tableName, opal\rdbms\schema\IIndex $index, opal\rdbms\schema\IIndex $primaryIndex=null);
 
 

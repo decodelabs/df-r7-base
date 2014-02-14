@@ -385,7 +385,8 @@ abstract class QueryExecutor implements IQueryExecutor {
 
         $this->_stmt->appendSql(
             'UPDATE '.$this->_adapter->quoteIdentifier($tableName).
-            'AS '.$this->_adapter->quoteTableAliasDefinition($this->_query->getSource()->getAlias()).' SET'
+            //' AS '.$this->_adapter->quoteTableAliasDefinition($this->_query->getSource()->getAlias()).
+            ' SET'
         );
 
         $values = array();

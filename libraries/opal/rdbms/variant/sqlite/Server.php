@@ -31,6 +31,10 @@ class Server implements opal\rdbms\IServer {
         switch($number) {
         // Query error
             case 1:
+                if(preg_match('/no such table\: ([a-zA-Z0-9_]+)/i', $message, $matches)) {
+                    return new opal\rdbms\TableNotFoundException($message, $number, $sql, null, $matches[1]);
+                }
+
             case 13:
             case 18:
             case 20:
