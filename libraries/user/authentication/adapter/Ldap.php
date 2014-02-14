@@ -255,11 +255,12 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
         }
 
         $globalId = $ldapUser->getGlobalId();
+        $authIdentity = $ldapDomain.':'.$globalId;
 
         $model = $this->_manager->getUserModel();
         $domainInfo = $model->getAuthenticationDomainInfo(
             (new user\authentication\Request('Ldap'))
-                ->setIdentity($globalId)
+                ->setIdentity($authIdentity)
         );
 
         if(!$domainInfo) {
@@ -296,7 +297,7 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
             $domainInfo = $model->auth->newRecord([
                     'user' => $client,
                     'adapter' => 'Ldap',
-                    'identity' => $globalId,
+                    'identity' => $authIdentity,
                     'bindDate' => 'now'
                 ])
                 ->save();
