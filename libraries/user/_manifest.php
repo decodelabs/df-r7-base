@@ -59,6 +59,7 @@ interface IManager extends core\IManager {
     
     // Authentication
     public function isLoggedIn();
+    public function loadAuthenticationAdapter($name);
     public function authenticate(user\authentication\IRequest $request);
     public function authenticateRememberKey(RememberKey $key);
     public function refreshClientData();

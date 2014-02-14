@@ -91,13 +91,11 @@ class Manager implements IManager, core\IDumpable {
             $config = user\authentication\Config::getInstance($this->_application);
 
             foreach($config->getEnabledAdapters() as $name => $options) {
-                $class = 'df\\user\\authentication\\adapter\\'.$name;
-
-                if(!class_exists($class)) {
+                try {
+                    $adapter = $this->loadAuthenticationAdapter($name);
+                } catch(AuthenticationException $e) {
                     continue;
                 }
-
-                $adapter = new $class($this);
 
                 if(!$adapter instanceof user\authentication\IIdentityRecallAdapter) {
                     continue;
@@ -242,18 +240,24 @@ class Manager implements IManager, core\IDumpable {
         return $this->getClient()->isLoggedIn();
     }
 
-    public function authenticate(user\authentication\IRequest $request) {
-        $timer = new core\time\Timer();
-        
-        // Get adapter
-        $name = $request->getAdapterName();
-        $class = 'df\\user\\authentication\\adapter\\'.$name;
+    public function loadAuthenticationAdapter($name) {
+        $class = 'df\\user\\authentication\\adapter\\'.ucfirst($name);
         
         if(!class_exists($class)) {
             throw new AuthenticationException(
                 'Authentication adapter '.$name.' could not be found'
             );
         }
+
+        return new $class($this);
+    }
+
+    public function authenticate(user\authentication\IRequest $request) {
+        $timer = new core\time\Timer();
+        
+        // Get adapter
+        $name = $request->getAdapterName();
+        $adapter = $this->loadAuthenticationAdapter($name);
 
         $config = user\authentication\Config::getInstance($this->_application);
 
@@ -263,7 +267,6 @@ class Manager implements IManager, core\IDumpable {
             );
         }
         
-        $adapter = new $class($this);
         $model = $this->getUserModel();
         
         // Fetch user
