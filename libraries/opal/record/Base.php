@@ -195,6 +195,24 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         
         return !empty($this->_changes);
     }
+
+    public function hasAnyChanged($fields) {
+        if(!is_array($fields)) {
+            $fields = func_get_args();
+        }
+
+        foreach($fields as $field) {
+            if(empty($field)) {
+                continue;
+            }
+
+            if($this->hasChanged($field)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
     
     public function clearChanges() {
         $this->_changes = array();

@@ -30,6 +30,7 @@ interface IRecord extends core\collection\IMappedCollection, user\IAccessLock, c
     public function getOriginalPrimaryKeySet();
     
     public function hasChanged($field=null);
+    public function hasAnyChanged($field1);
     public function clearChanges();
     public function countChanges();
     public function getChanges();
