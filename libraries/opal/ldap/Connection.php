@@ -142,7 +142,15 @@ class Connection implements IConnection {
 
     protected function _detectType() {
         $this->connect();
-        $result = ldap_read($this->_connection, '', '(objectclass=*)', ['*', '+']);
+
+        try {
+            $result = ldap_read($this->_connection, '', '(objectclass=*)', ['*', '+']);
+        } catch(\Exception $e) {
+            throw new ConnectionException(
+                $e->getMessage(),
+                $e->getCode()
+            );
+        }
 
         if(!$result) {
             throw new ConnectionException(
@@ -207,9 +215,16 @@ class Connection implements IConnection {
         }
         
         
-        $connection = $useUri ?
-            ldap_connect($this->_connectionString) :
-            ldap_connect($this->_host, $this->_port);
+        try {
+            $connection = $useUri ?
+                ldap_connect($this->_connectionString) :
+                ldap_connect($this->_host, $this->_port);
+        } catch(\Exception $e) {
+            throw new ConnectionException(
+                $e->getMessage(),
+                $e->getCode()
+            );
+        }
             
         if(!is_resource($connection)) {
             throw new ConnectionException(
@@ -231,7 +246,7 @@ class Connection implements IConnection {
     
     public function disconnect() {
         if(is_resource($this->_connection)) {
-            ldap_unbind($this->_connection);
+            @ldap_unbind($this->_connection);
         }
         
         $this->_connection = null;
