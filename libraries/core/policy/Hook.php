@@ -43,7 +43,7 @@ abstract class Hook implements IHook {
 
         $cache = HookCache::getInstance($context->application);
         $domain = $entityLocator->getDomain();
-        
+
         if(!$entitySet = $cache->get($domain)) {
             $emptySet = $cache->get('__empty', []);
 
@@ -115,7 +115,11 @@ abstract class Hook implements IHook {
                         $val[$i] = $name.':'.$methodName;
                     }
 
-                    $map[$domain][$key] = $val;
+                    if(!isset($map[$domain][$key])) {
+                        $map[$domain][$key] = [];
+                    }
+
+                    $map[$domain][$key] = array_merge($map[$domain][$key], $val);
                 }
             }
         }
