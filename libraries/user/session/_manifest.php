@@ -125,6 +125,7 @@ interface IPerpetuator {
     public function getLifeTime();
     
     public function getInputId();
+    public function canRecallIdentity();
 
     public function perpetuate(IController $controller, IDescriptor $descriptor);
     public function destroy(IController $controller);

@@ -10,7 +10,7 @@ use df\core;
 use df\user;
 use df\opal;
 
-class Ldap implements user\authentication\IAdapter {
+class Ldap implements user\authentication\IAdapter, user\authentication\IIdentityRecallAdapter {
     
     use user\authentication\TAdapter;
 
@@ -43,14 +43,114 @@ class Ldap implements user\authentication\IAdapter {
     public static function getDisplayName() {
         return 'LDAP Network Domain';
     }
+
+    public function recallIdentity() {
+        $application = $this->_manager->getApplication();
+
+        if(!$application instanceof core\application\Http) {
+            return null;
+        }
+
+        $config = user\authentication\Config::getInstance($application);
+        $options = $config->getOptionsFor('Ldap');
+
+        if(!$options->ntlm['enabled'] || !count($options->ntlm->ranges)) {
+            return null;
+        }
+
+        $httpRequest = $application->getHttpRequest();
+        $ip = $httpRequest->getIp();
+        $inRange = false;
+
+        foreach($options->ntlm->ranges as $range) {
+            if($ip->isInRange($range->getValue())) {
+                $inRange = true;
+                break;
+            }
+        }
+
+        if(!$inRange) {
+            return null;
+        }
+
+        $headers = $httpRequest->getHeaders();
+
+        if(!$headers->has('authorization')) {
+            // Is there a cleaner way of doing this?
+            header('HTTP/1.1 401 Unauthorized');
+            header('WWW-Authenticate: NTLM');
+            exit;
+        }
+
+        $auth = $headers->get('authorization');
+
+        if(substr($auth, 0, 5) != 'NTLM ') {
+            return null;
+        }
+
+        $c64 = base64_decode(substr($auth, 5));
+        $state = ord($c64{8});
+
+        switch($state) {
+            case 1:
+                $chars = array(0,2,0,0,0,0,0,0,0,40,0,0,0,1,130,0,0,0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0);
+                $ret = 'NTLMSSP';
+                
+                foreach($chars as $char) {
+                    $ret .= chr($char);
+                }
+
+                header('HTTP/1.1 401 Unauthorized');
+                header('WWW-Authenticate: NTLM '.trim(base64_encode($ret)));
+                exit;
+                
+            case 3:
+                $l = ord($c64{31}) * 256 + ord($c64{30});
+                $o = ord($c64{33}) * 256 + ord($c64{32});
+                $domain = str_replace("\0", '', substr($c64, $o, $l));
+
+                $l = ord($c64{39}) * 256 + ord($c64{38});
+                $o = ord($c64{41}) * 256 + ord($c64{40});
+                $user = str_replace("\0", '', substr($c64, $o, $l));
+
+                if(!strlen($user)) {
+                    return null;
+                }
+                
+                $request = new user\authentication\Request('ldap');
+                $request->setIdentity($user);
+                $request->setCredential('domain', $domain);
+                $request->setAttribute('ntlm', true);
+
+                return $request;
+                
+            default:
+                return null;
+        }
+
+        return null;
+    }
     
     public function authenticate(user\authentication\IRequest $request, user\authentication\IResult $result) {
         $application = $this->_manager->getApplication();
         
-        $identity = opal\ldap\Identity::factory(
-            $request->getIdentity(),
-            $request->getCredential('password')
-        );
+        if($request->getAttribute('ntlm')) {
+            $isNtlm = true;
+
+            $identity = opal\ldap\Identity::factory(
+                $request->getIdentity(),
+                null,
+                $request->getCredential('domain')
+            );
+        } else {
+            $isNtlm = false;
+
+            $identity = opal\ldap\Identity::factory(
+                $request->getIdentity(),
+                $request->getCredential('password')
+            );
+        }
+        
 
         $config = user\authentication\Config::getInstance($application);
         $options = $config->getOptionsFor('Ldap');
@@ -91,7 +191,11 @@ class Ldap implements user\authentication\IAdapter {
             );
 
             try {
-                $adapter->bind($identity);
+                if($isNtlm) {
+                    $adapter->ensureBind();
+                } else {
+                    $adapter->bind($identity);
+                }
             } catch(opal\ldap\BindException $e) {
                 switch($e->getCode()) {
                     case opal\ldap\IStatus::SERVER_DOWN:
@@ -112,7 +216,7 @@ class Ldap implements user\authentication\IAdapter {
                         break;
                 }
             }
-            
+
             if(!$adapter->isBound()) {
                 continue;
             }

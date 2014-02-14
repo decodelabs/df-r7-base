@@ -15,14 +15,18 @@ class Cookie implements user\session\IPerpetuator {
     
     protected $_sessionCookieName = '_s';
     protected $_rememberCookieName = '_r';
+    protected $_logoutCookieName = 'logout';
     protected $_inputId;
+    protected $_canRecall = true;
     protected $_lifeTime;
     
     public function __construct(user\session\IController $controller) {
         $httpRequest = $controller->getApplication()->getHttpRequest();
         
         if($httpRequest->hasCookieData()) {
-            $this->_inputId = $httpRequest->getCookieData()->get($this->_sessionCookieName);
+            $cookies = $httpRequest->getCookieData();
+            $this->_inputId = $cookies->get($this->_sessionCookieName);
+            $this->_canRecall = !$cookies->has($this->_logoutCookieName);
         }
         
         // TODO: get life time from config
@@ -43,6 +47,10 @@ class Cookie implements user\session\IPerpetuator {
     
     public function getInputId() {
         return $this->_inputId;
+    }
+
+    public function canRecallIdentity() {
+        return $this->_canRecall;
     }
     
     public function perpetuate(user\session\IController $controller, user\session\IDescriptor $descriptor) {
@@ -84,6 +92,13 @@ class Cookie implements user\session\IPerpetuator {
                 $application, 
                 $this->getRememberKey($controller)
             ));
+
+            $augmentor->setCookieForAnyRequest(
+                $augmentor->newCookie($this->_logoutCookieName, '1')
+                    ->setExpiryDate(core\time\Date::factory('+5 minutes'))
+                    ->setBaseUrl($application->getBaseUrl())
+                    ->isHttpOnly(true)
+            );
         }
 
         return $this;

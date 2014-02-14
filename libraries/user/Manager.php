@@ -41,21 +41,21 @@ class Manager implements IManager, core\IDumpable {
         $session = $this->session->getNamespace(self::USER_SESSION_NAMESPACE);
         $this->_client = $session->get(self::CLIENT_SESSION_KEY);
         $regenKeyring = false;
+        $isNew = false;
 
         if($this->_client === null) {
             $this->_client = Client::generateGuest($this);
             $regenKeyring = true;
             $rethrowException = false;
+            $isNew = true;
         } else {
             $cache = user\session\Cache::getInstance($this->_application);
             $regenKeyring = $cache->shouldRegenerateKeyring($this->_client->getKeyringTimestamp());
             $rethrowException = false;
         }
 
-        if(!$this->_client->isLoggedIn() && ($key = $this->session->getPerpetuator()->getRememberKey($this->session))) {
-            if($this->authenticateRememberKey($key)) {
-                $regenKeyring = false;
-            }
+        if(!$this->_client->isLoggedIn() && $this->_recallIdentity($isNew)) {
+            $regenKeyring = false;
         }
 
         if($regenKeyring) {
@@ -76,6 +76,46 @@ class Manager implements IManager, core\IDumpable {
             }
 
         }
+    }
+
+    private function _recallIdentity($isNew) {
+        if($key = $this->session->getPerpetuator()->getRememberKey($this->session)) {
+            if($this->authenticateRememberKey($key)) {
+                return true;
+            }
+        }
+
+        $canRecall = $this->session->getPerpetuator()->canRecallIdentity();
+
+        if($canRecall) {
+            $config = user\authentication\Config::getInstance($this->_application);
+
+            foreach($config->getEnabledAdapters() as $name => $options) {
+                $class = 'df\\user\\authentication\\adapter\\'.$name;
+
+                if(!class_exists($class)) {
+                    continue;
+                }
+
+                $adapter = new $class($this);
+
+                if(!$adapter instanceof user\authentication\IIdentityRecallAdapter) {
+                    continue;
+                }
+
+                $request = $adapter->recallIdentity();
+
+                if(!$request instanceof user\authentication\IRequest) {
+                    continue;
+                }
+
+                if($this->authenticate($request)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     public function clearClient() {

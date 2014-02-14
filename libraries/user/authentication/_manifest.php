@@ -34,6 +34,10 @@ trait TAdapter {
     }
 }
 
+interface IIdentityRecallAdapter extends IAdapter {
+    public function recallIdentity();
+}
+
 
 interface IRequest extends core\IAttributeContainer {
     public function setAdapterName($adapter);

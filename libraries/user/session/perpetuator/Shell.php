@@ -41,6 +41,10 @@ class Shell implements user\session\IPerpetuator {
         return $this->_inputId;
     }
 
+    public function canRecallIdentity() {
+        return true;
+    }
+
     public function perpetuate(user\session\IController $controller, user\session\IDescriptor $descriptor) {
         $cache = Shell_Cache::getInstance($controller->getApplication());
         $cache->set($this->_userKey, $descriptor->getExternalId(), $this->_lifeTime);
