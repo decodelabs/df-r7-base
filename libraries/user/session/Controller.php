@@ -135,7 +135,7 @@ class Controller implements IController {
 
 // Handlers
     protected function _open() {
-        if($this->_isOpen) {
+        if($this->_isOpen && $this->_descriptor) {
             return;
         }
         
