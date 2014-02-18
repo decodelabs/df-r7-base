@@ -45,9 +45,118 @@ interface IField extends opal\schema\IField, opal\query\IFieldValueProcessor {
 }
 
 
-interface IAutoIndexField extends IField {}
-interface IAutoUniqueField extends IAutoIndexField {}
-interface IAutoPrimaryField extends IAutoUniqueField {}
+interface IAutoIndexField extends IField {
+    public function shouldBeIndexed($flag=null);
+}
+
+trait TAutoIndexField {
+
+    protected $_autoIndex = true;
+
+    public function shouldBeIndexed($flag=null) {
+        if($flag !== null) {
+            $flag = (bool)$flag;
+            
+            if($flag !== $this->_autoIndex) {
+                $this->_hasChanged = true;
+            }
+            
+            $this->_autoIndex = $flag;
+            return $this;
+        }
+        
+        return $this->_autoIndex;
+    }
+
+// Ext. serialize
+    protected function _setAutoIndexStorageArray(array $data) {
+        $this->_autoIndex = isset($data['aui']) ? (bool)$data['aui'] : true;
+    }
+
+    protected function _getAutoIndexStorageArray() {
+        return [
+            'aui' => $this->_autoIndex
+        ];
+    }
+}
+
+interface IAutoUniqueField extends IAutoIndexField {
+    public function shouldBeUnique($flag=null);
+}
+
+trait TAutoUniqueField {
+
+    use TAutoIndexField;
+
+    protected $_autoUnique = true;
+
+    public function shouldBeUnique($flag=null) {
+        if($flag !== null) {
+            $flag = (bool)$flag;
+            
+            if($flag !== $this->_autoUnique) {
+                $this->_hasChanged = true;
+            }
+            
+            $this->_autoUnique = $flag;
+            return $this;
+        }
+        
+        return $this->_autoUnique;
+    }
+
+// Ext. serialize
+    protected function _setAutoUniqueStorageArray(array $data) {
+        $this->_autoUnique = isset($data['auu']) ? (bool)$data['auu'] : true;
+        $this->_setAutoIndexStorageArray($data);
+    }
+
+    protected function _getAutoUniqueStorageArray() {
+        return array_merge(
+            ['auu' => $this->_autoUnique],
+            $this->_getAutoIndexStorageArray()
+        );
+    }
+}
+
+interface IAutoPrimaryField extends IAutoUniqueField {
+    public function shouldBePrimary($flag=null);
+}
+
+trait TAutoPrimaryField {
+
+    use TAutoUniqueField;
+
+    protected $_autoPrimary = true;
+
+    public function shouldBePrimary($flag=null) {
+        if($flag !== null) {
+            $flag = (bool)$flag;
+            
+            if($flag !== $this->_autoPrimary) {
+                $this->_hasChanged = true;
+            }
+            
+            $this->_autoPrimary = $flag;
+            return $this;
+        }
+        
+        return $this->_autoPrimary;
+    }
+
+// Ext. serialize
+    protected function _setAutoPrimaryStorageArray(array $data) {
+        $this->_autoPrimary = isset($data['aup']) ? (bool)$data['aup'] : true;
+        $this->_setAutoUniqueStorageArray($data);
+    }
+
+    protected function _getAutoPrimaryStorageArray() {
+        return array_merge(
+            ['aup' => $this->_autoPrimary],
+            $this->_getAutoUniqueStorageArray()
+        );
+    }
+}
 
 
 interface IDateField extends IField {}

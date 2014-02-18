@@ -16,6 +16,8 @@ class PathSlug extends Base implements
     opal\schema\IQueryClauseRewriterField {
 
 
+    use axis\schema\TAutoUniqueField;
+
 // Values
     public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
         if(!isset($row[$key.'_name'])) {
@@ -161,9 +163,13 @@ class PathSlug extends Base implements
 // Ext. serialize
     protected function _importStorageArray(array $data) {
         $this->_setBaseStorageArray($data);
+        $this->_setAutoUniqueStorageArray($data);
     }
 
     public function toStorageArray() {
-        return $this->_getBaseStorageArray();
+        return array_merge(
+            $this->_getBaseStorageArray(),
+            $this->_getAutoUniqueStorageArray()
+        );
     }
 }

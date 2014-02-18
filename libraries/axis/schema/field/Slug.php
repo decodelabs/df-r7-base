@@ -12,6 +12,8 @@ use df\opal;
     
 class Slug extends Base implements axis\schema\IAutoUniqueField {
 
+    use axis\scheam\TAutoUniqueField;
+
     protected $_allowPathFormat = false;
 
     public function allowPathFormat($flag=null) {
@@ -54,6 +56,7 @@ class Slug extends Base implements axis\schema\IAutoUniqueField {
 // Ext. serialize
     protected function _importStorageArray(array $data) {
         $this->_setBaseStorageArray($data);
+        $this->_setAutoUniqueStorageArray($data);
 
         $this->_allowPathFormat = $data['apf'];
     }
@@ -61,6 +64,7 @@ class Slug extends Base implements axis\schema\IAutoUniqueField {
     public function toStorageArray() {
         return array_merge(
             $this->_getBaseStorageArray(),
+            $this->_getAutoUniqueStorageArray(),
             [
                 'apf' => $this->_allowPathFormat
             ]

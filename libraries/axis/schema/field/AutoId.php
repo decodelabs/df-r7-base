@@ -16,6 +16,7 @@ class AutoId extends Base implements
     axis\schema\IAutoPrimaryField {
         
     use opal\schema\TField_ByteSizeRestricted;
+    use axis\schema\TAutoPrimaryField;
     
     protected function _init($size=null) {
         $this->setByteSize($size);
@@ -68,12 +69,14 @@ class AutoId extends Base implements
     protected function _importStorageArray(array $data) {
         $this->_setBaseStorageArray($data);
         $this->_setByteSizeRestrictedStorageArray($data);
+        $this->_setAutoPrimaryStorageArray($data);
     }
 
     public function toStorageArray() {
         return array_merge(
             $this->_getBaseStorageArray(),
-            $this->_getByteSizeRestrictedStorageArray()
+            $this->_getByteSizeRestrictedStorageArray(),
+            $this->_getAutoPrimaryStorageArray()
         );
     }
 }

@@ -107,13 +107,25 @@ class Base implements ISchema, core\IDumpable {
             }
             
             if($field instanceof axis\schema\IAutoIndexField && !$this->getIndex($field->getName())) {
+                if(!$field->shouldBeIndexed()) {
+                    continue;
+                }
+
                 $index = $this->addIndex($field->getName(), $field);
                 
                 if($field instanceof axis\schema\IAutoUniqueField) {
+                    if(!$field->shouldBeUnique()) {
+                        continue;
+                    }
+
                     $index->isUnique(true);
                 }
                 
                 if($field instanceof axis\schema\IAutoPrimaryField) {
+                    if(!$field->shouldBePrimary()) {
+                        continue;
+                    }
+                    
                     $this->setPrimaryIndex($index);
                 }
             }
