@@ -969,6 +969,12 @@ trait TForm_DependentDelegate {
         foreach($values as $context => $values) {
             $query->where($context, 'in', array_unique($values));
         }
+
+        foreach($this->_dependencies as $dep) {
+            $dep->setApplied(false);
+        }
+
+        return $this;
     }
 
     public function setDependencyContextApplied($context, $applied=true) {
