@@ -84,7 +84,7 @@ class StackCall implements IStackCall, core\IDumpable {
         }
         
         if(isset($callData['args'])) {
-            $this->_args = $callData['args'];
+            $this->_args = (array)$callData['args'];
         }
     }
 
@@ -104,6 +104,10 @@ class StackCall implements IStackCall, core\IDumpable {
     
     public function getArgString() {
         $output = array();
+
+        if(!is_array($this->_args)) {
+            $this->_args = [$this->_args];
+        }
         
         foreach($this->_args as $arg) {
             if(is_string($arg)) {
