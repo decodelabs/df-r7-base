@@ -15,11 +15,12 @@ class Selector implements arch\form\IDependency, core\IDumpable {
 
     protected $_delegate;
 
-    public function __construct(arch\form\ISelectorDelegate $delegate, $error=null, $context=null) {
+    public function __construct(arch\form\ISelectorDelegate $delegate, $error=null, $context=null, Callable $callback=null) {
         $this->_name = $delegate->getDelegateKey();
         $this->_delegate = $delegate;
         $this->setErrorMessage($error);
         $this->setContext($context);
+        $this->setCallback($callback);
     }
 
     public function getDelegate() {
@@ -38,7 +39,8 @@ class Selector implements arch\form\IDependency, core\IDumpable {
     public function getDumpProperties() {
         return [
             'name' => $this->_name,
-            'delegate' => get_class($this->_delegate)
+            'delegate' => get_class($this->_delegate),
+            'callback' => $this->_callback
         ];
     }
 }

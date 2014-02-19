@@ -40,7 +40,8 @@ class ValueList implements arch\form\IDependency, core\IDumpable {
             'name' => $this->_name,
             'node' => $this->_node,
             'errorMessage' => $this->_error,
-            'context' => $this->_context
+            'context' => $this->_context,
+            'callback' => $this->_callback
         ];
     }
 }

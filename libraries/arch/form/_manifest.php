@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\arch;
 use df\aura;
+use df\opal;
 
 // Exceptions
 interface IException extends arch\IException {}
@@ -139,6 +140,13 @@ interface IDependency {
 
     public function setErrorMessage($message);
     public function getErrorMessage();
+
+    public function setCallback(Callable $callback=null);
+    public function getCallback();
+    public function hasCallback();
+
+    public function setApplied($applied=true);
+    public function isApplied();
 }
 
 trait TDependency {
@@ -146,6 +154,8 @@ trait TDependency {
     protected $_name;
     protected $_context;
     protected $_error;
+    protected $_callback;
+    protected $_isApplied = false;
 
     public function getName() {
         return $this->_name;
@@ -167,6 +177,28 @@ trait TDependency {
     public function getErrorMessage() {
         return $this->_error;
     }
+
+    public function setCallback(Callable $callback=null) {
+        $this->_callback = $callback;
+        return $this;
+    }
+
+    public function getCallback() {
+        return $this->_callback;
+    }
+
+    public function hasCallback() {
+        return $this->_callback !== null;
+    }
+
+    public function setApplied($applied=true) {
+        $this->_isApplied = (bool)$applied;
+        return $this;
+    }
+
+    public function isApplied() {
+        return $this->_isApplied;
+    }
 }
 
 interface IDependentDelegate {
@@ -184,4 +216,6 @@ interface IDependentDelegate {
     public function hasDependencyContext($context);
     public function getUnresolvedDependencies();
     public function getUnresolvedDependencyMessages();
+    public function applyDependencies(opal\query\IQuery $query);
+    public function setDependencyContextApplied($context, $applied=true);
 }

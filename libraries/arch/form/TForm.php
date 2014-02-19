@@ -846,8 +846,8 @@ trait TForm_DependentDelegate {
 
     protected $_dependencies = array();
 
-    public function addSelectorDependency(ISelectorDelegate $delegate, $error=null, $context=null) {
-        return $this->addDependency(new arch\form\dependency\Selector($delegate, $error, $context));
+    public function addSelectorDependency(ISelectorDelegate $delegate, $error=null, $context=null, Callable $callback=null) {
+        return $this->addDependency(new arch\form\dependency\Selector($delegate, $error, $context, $callback));
     }
 
     public function addValueDependency($name, core\collection\IInputTree $value, $error=null, $context=null) {
@@ -942,5 +942,44 @@ trait TForm_DependentDelegate {
         }
 
         return $output;
+    }
+
+    public function applyDependencies(opal\query\IQuery $query) {
+        if(empty($this->_dependencies)) {
+            return;
+        }
+
+        $values = [];
+
+        foreach($this->_dependencies as $name => $dep) {
+            if($dep->isApplied() || !$dep->hasValue()) {
+                continue;
+            }
+
+            if($dep->hasCallback()) {
+                $callback = $dep->getCallback();
+                $callback($query, $dep->getValue(), $dep);
+            } else {
+                $values[$dep->getContext()][$name] = $dep->getValue();
+            }
+
+            $dep->setApplied(true);
+        }
+
+        foreach($values as $context => $values) {
+            $query->where($context, 'in', array_unique($values));
+        }
+    }
+
+    public function setDependencyContextApplied($context, $applied=true) {
+        foreach($this->_dependencies as $dependency) {
+            if($dependency->getContext() != $context) {
+                continue;
+            }
+
+            $dependency->setApplied($applied);
+        }
+
+        return $this;
     }
 }

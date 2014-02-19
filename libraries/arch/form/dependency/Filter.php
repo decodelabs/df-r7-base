@@ -20,6 +20,11 @@ class Filter implements arch\form\IDependency, core\IDumpable {
             $name = $context;
         }
 
+        if(is_callable($value)) {
+            $this->setCallback($value);
+            $value = null;
+        }
+
         $this->_name = $name;
         $this->_value = $value;
         $this->setContext($context);
@@ -43,6 +48,7 @@ class Filter implements arch\form\IDependency, core\IDumpable {
 
         $output['value'] = $this->_value;
         $output['context'] = $this->_context;
+        $output['callback'] = $this->_callback;
 
         return $output;
     }

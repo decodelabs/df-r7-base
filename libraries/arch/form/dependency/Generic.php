@@ -17,6 +17,12 @@ class Generic implements arch\form\IDependency, core\IDumpable {
 
     public function __construct($name, $value, $error=null, $context=null) {
         $this->_name = $name;
+
+        if(is_callable($value)) {
+            $this->setCallback($value);
+            $value = null;
+        }
+
         $this->_value = $value;
         $this->setErrorMessage($error);
         $this->setContext($context);
@@ -36,7 +42,8 @@ class Generic implements arch\form\IDependency, core\IDumpable {
             'name' => $this->_name,
             'value' => $this->_value,
             'errorMessage' => $this->_error,
-            'context' => $this->_context
+            'context' => $this->_context,
+            'callback' => $this->_callback
         ];
     }
 }
