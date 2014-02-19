@@ -12,7 +12,7 @@ use df\opal;
     
 class Slug extends Base implements axis\schema\IAutoUniqueField {
 
-    use axis\scheam\TAutoUniqueField;
+    use axis\schema\TAutoUniqueField;
 
     protected $_allowPathFormat = false;
 
