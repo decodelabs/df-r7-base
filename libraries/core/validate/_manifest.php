@@ -298,6 +298,11 @@ interface IUniqueCheckerField extends IStorageAwareField {
     public function getStorageField();
     public function setUniqueFilterId($id);
     public function getUniqueFilterId();
+    public function addUniqueFilters(array $filters);
+    public function addUniqueFilter($field, $value);
+    public function removeUniqueFilter($field);
+    public function getUniqueFilters();
+    public function clearUniqueFilters();
     public function setUniqueErrorMessage($message);
     public function getUniqueErrorMessage();
 }
@@ -305,7 +310,7 @@ interface IUniqueCheckerField extends IStorageAwareField {
 trait TUniqueCheckerField {
 
     protected $_storageField;
-    protected $_filterId;
+    protected $_uniqueFilters = [];
     protected $_uniqueErrorMessage;
 
     public function setStorageField($field) {
@@ -318,13 +323,43 @@ trait TUniqueCheckerField {
     }
 
     public function setUniqueFilterId($id) {
-        $this->_filterId = $id;
+        $this->_uniqueFilters['@primary'] = $id;
         return $this;
     }
 
     public function getUniqueFilterId() {
-        return $this->_filterId;
+        if(isset($this->_uniqueFilters['@primary'])) {
+            return $this->_uniqueFilters['@filters'];
+        }
     }
+
+    public function addUniqueFilters(array $filters) {
+        foreach($filters as $key => $value) {
+            $this->addUniqueFilter($key, $value);
+        }
+
+        return $this;
+    }
+
+    public function addUniqueFilter($key, $value) {
+        $this->_uniqueFilters[$key] = $value;
+        return $this;
+    }
+
+    public function removeUniqueFilter($field) {
+        unset($this->_uniqueFilters[$field]);
+        return $this;
+    }
+
+    public function getUniqueFilters() {
+        return $this->_uniqueFilters;
+    }
+
+    public function clearUniqueFilters() {
+        $this->_uniqueFilters = [];
+        return $this;
+    }
+
 
     public function setUniqueErrorMessage($message) {
         $this->_uniqueErrorMessage = $message;
@@ -346,8 +381,14 @@ trait TUniqueCheckerField {
                 ->from($this->_storageAdapter, 'checkUnit')
                 ->where($fieldName, '=', $value);
 
-            if($this->_filterId !== null) {
-                $query->where('@primary', '!=', $this->_filterId);
+            if(!empty($this->_uniqueFilters)) {
+                foreach($this->_uniqueFilters as $field => $value) {
+                    if(is_callable($value)) {
+                        $value($query, $field);
+                    } else {
+                        $query->where($field, '!=', $value);
+                    }
+                }
             }
 
             if($query->count()) {
