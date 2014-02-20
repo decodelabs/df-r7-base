@@ -299,7 +299,7 @@ interface IUniqueCheckerField extends IStorageAwareField {
     public function setUniqueFilterId($id);
     public function getUniqueFilterId();
     public function addUniqueFilters(array $filters);
-    public function addUniqueFilter($field, $value);
+    public function addUniqueFilter($field, $value, $in=true);
     public function removeUniqueFilter($field);
     public function getUniqueFilters();
     public function clearUniqueFilters();
@@ -323,13 +323,13 @@ trait TUniqueCheckerField {
     }
 
     public function setUniqueFilterId($id) {
-        $this->_uniqueFilters['@primary'] = $id;
+        $this->addUniqueFilter('@primary', $id, false);
         return $this;
     }
 
     public function getUniqueFilterId() {
         if(isset($this->_uniqueFilters['@primary'])) {
-            return $this->_uniqueFilters['@filters'];
+            return $this->_uniqueFilters['@primary'];
         }
     }
 
@@ -341,8 +341,12 @@ trait TUniqueCheckerField {
         return $this;
     }
 
-    public function addUniqueFilter($key, $value) {
-        $this->_uniqueFilters[$key] = $value;
+    public function addUniqueFilter($key, $value, $in=true) {
+        $this->_uniqueFilters[$key] = [
+            'value' => $value,
+            'inclusive' => (bool)$in
+        ];
+
         return $this;
     }
 
@@ -382,11 +386,13 @@ trait TUniqueCheckerField {
                 ->where($fieldName, '=', $value);
 
             if(!empty($this->_uniqueFilters)) {
-                foreach($this->_uniqueFilters as $field => $value) {
+                foreach($this->_uniqueFilters as $field => $set) {
+                    $value = $set['value'];
+
                     if(is_callable($value)) {
                         $value($query, $field);
                     } else {
-                        $query->where($field, '!=', $value);
+                        $query->where($field, $set['inclusive'] ? '=' : '!=', $value);
                     }
                 }
             }
