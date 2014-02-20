@@ -158,6 +158,33 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
         return $output;
     }
 
+    public function getRelationRecord($record, $field, $allowFetch=false) {
+        if(!isset($record[$field])) {
+            return null;
+        }
+        
+        if($record instanceof opal\record\IRecord && !$allowFetch) {
+            $output = $record->getRaw($field);
+
+            if($output instanceof opal\record\IPreparedValueContainer) {
+                if(!$output->isPrepared()) {
+                    return null;
+                }
+
+                $output = $output->getValue();
+            }
+
+        } else {
+            $output = $record[$field];
+        }
+
+        if($output instanceof opal\record\IPrimaryKeySet || is_scalar($output)) {
+            return null;
+        }
+
+        return $output;
+    }
+
     public function stringToBoolean($string) {
         return core\string\Manipulator::stringToBoolean($string);
     }
