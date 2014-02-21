@@ -109,24 +109,26 @@ abstract class Base implements core\validate\IField {
         
         $name = $this->getRecordName();
 
-        if($value !== null || !isset($record[$name])) {
+        //if($value !== null || !isset($record[$name])) {
             $record[$name] = $value;
-        }
+        //}
         
         return $this;
     }
     
     protected function _checkRequired(core\collection\IInputTree $node, $value) {
+        if($this->_shouldSanitize) {
+            $node->setValue($value);
+        }
+
         if(!$length = mb_strlen($value)) {
             $value = null;
             
-            if($this->_shouldSanitize) {
-                $node->setValue($value);
-            }
-            
             if($this->_isRequired) {
                 $node->addError('required', $this->_handler->_('This field cannot be empty'));
-            } else if($this->_requireGroup !== null && !$this->_handler->checkRequireGroup($this->_requireGroup)) {
+            }
+
+            if($this->_requireGroup !== null && !$this->_handler->checkRequireGroup($this->_requireGroup)) {
                 $this->_handler->setRequireGroupUnfulfilled($this->_requireGroup, $this->_name);
             }
         } else if($this->_requireGroup !== null) {
