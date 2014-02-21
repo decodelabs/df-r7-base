@@ -80,14 +80,11 @@ class ManyBridge extends Base implements axis\IVirtualUnit {
     protected function _onCreate(axis\schema\ISchema $schema) {}
 
 
-    public function getBridgeFieldNames($aliasPrefix=null) {
+    public function getBridgeFieldNames($aliasPrefix=null, array $filter=array()) {
         $output = array();
-        $i = 0;
 
         foreach($this->getUnitSchema()->getFields() as $name => $field) {
-            $i++;
-
-            if($i <= 2) {
+            if(in_array($name, $filter)) {
                 continue;
             }
 

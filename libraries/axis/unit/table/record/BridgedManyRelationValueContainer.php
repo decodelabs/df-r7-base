@@ -323,14 +323,18 @@ class BridgedManyRelationValueContainer implements
         $localFieldName = $this->_field->getName();
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
         $bridgeTargetFieldName = $this->_field->getBridgeTargetFieldName();
-        $bridgeAlias = $bridgeLocalFieldName.'Bridge';
+        $bridgeAlias = $bridgeUnit->getUnitName();
+
+        if(false !== strpos($bridgeAlias, '(')) {
+            $bridgeAlias = $bridgeLocalFieldName.'Bridge';
+        }
         
         return opal\query\Initiator::factory($application)
             ->beginSelect(func_get_args())
             ->from($targetUnit, $localFieldName)
         
             // Join bridge table as constraint
-            ->join($bridgeUnit->getBridgeFieldNames($localFieldName))
+            ->join($bridgeUnit->getBridgeFieldNames($localFieldName, [$bridgeTargetFieldName]))
                 ->from($bridgeUnit, $bridgeAlias)
                 ->on($bridgeAlias.'.'.$bridgeTargetFieldName, '=', $localFieldName.'.@primary')
                 ->endJoin()
@@ -393,7 +397,11 @@ class BridgedManyRelationValueContainer implements
         $localFieldName = $this->_field->getName();
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
         $bridgeTargetFieldName = $this->_field->getBridgeTargetFieldName();
-        $bridgeAlias = $bridgeLocalFieldName.'Bridge';
+        $bridgeAlias = $bridgeUnit->getUnitName();
+
+        if(false !== strpos($bridgeAlias, '(')) {
+            $bridgeAlias = $bridgeLocalFieldName.'Bridge';
+        }
 
         return opal\query\Initiator::factory($application)
             ->beginFetch()
