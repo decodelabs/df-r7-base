@@ -17,6 +17,7 @@ abstract class HeaderBar extends arch\component\Base
     protected $_title;
     protected $_subTitle;
     protected $_backLinkRequest;
+    protected $_icon;
 
     protected function _init($record=null, $title=null, $subTitle=null) {
         $this->setRecord($record);
@@ -77,6 +78,17 @@ abstract class HeaderBar extends arch\component\Base
     }
 
 
+// Icon
+    public function setIcon($icon) {
+        $this->_icon = $icon;
+        return $this;
+    }
+
+    public function getIcon() {
+        return $this->_icon;
+    }
+
+
     
 // Render
     /*
@@ -96,7 +108,11 @@ abstract class HeaderBar extends arch\component\Base
         }
 
         if($title !== null) {
-            $output[] = $this->html->element('h2', $title);
+            $output[] = $title = $this->html->element('h2', $title);
+
+            if($this->_icon) {
+                $title->unshift($this->html->icon($this->_icon));
+            }
         }
 
 
