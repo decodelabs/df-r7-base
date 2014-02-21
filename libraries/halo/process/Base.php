@@ -56,9 +56,12 @@ abstract class Base implements IProcess {
             ->launch();
     }
 
-    public static function launchTask($request, core\io\IMultiplexer $multiplexer=null) {
+    public static function launchTask($request, core\io\IMultiplexer $multiplexer=null, $environmentMode=null) {
+        if($environmentMode === null) {
+            $environmentMode = df\Launchpad::getEnvironmentMode();
+        }
+        
         $request = arch\Request::factory($request);
-        $environmentMode = df\Launchpad::getEnvironmentMode();
         $path = df\Launchpad::$applicationPath.'/entry/';
         $path .= df\Launchpad::$environmentId.'.'.$environmentMode.'.php';
 
