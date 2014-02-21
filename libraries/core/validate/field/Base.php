@@ -13,6 +13,7 @@ abstract class Base implements core\validate\IField {
     protected $_name;
     protected $_recordName = null;
     protected $_isRequired = false;
+    protected $_requireGroup = null;
     protected $_shouldSanitize = true;
     protected $_customValidator = null;
     protected $_handler;
@@ -65,6 +66,15 @@ abstract class Base implements core\validate\IField {
         
         return $this->_isRequired;
     }
+
+    public function setRequireGroup($name) {
+        $this->_requireGroup = $name;
+        return $this;
+    }
+
+    public function getRequireGroup() {
+        return $this->_requireGroup;
+    }
     
     public function shouldSanitize($flag=null) {
         if($flag !== null) {
@@ -116,7 +126,11 @@ abstract class Base implements core\validate\IField {
             
             if($this->_isRequired) {
                 $node->addError('required', $this->_handler->_('This field cannot be empty'));
+            } else if($this->_requireGroup !== null && !$this->_handler->checkRequireGroup($this->_requireGroup)) {
+                $this->_handler->setRequireGroupUnfulfilled($this->_requireGroup, $this->_name);
             }
+        } else if($this->_requireGroup !== null) {
+            $this->_handler->setRequireGroupFulfilled($this->_requireGroup);
         }
         
         return $length;

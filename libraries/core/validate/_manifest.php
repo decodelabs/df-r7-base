@@ -25,6 +25,9 @@ interface IHandler extends \ArrayAccess, core\IChainable {
     public function getValues();
     public function getValue($name);
     public function shouldSanitize($flag=null);
+    public function setRequireGroupFulfilled($name);
+    public function setRequireGroupUnfulfilled($name, $field);
+    public function checkRequireGroup($name);
     
     public function isValid();
     public function validate($data);
@@ -42,6 +45,8 @@ interface IField {
     public function shouldSanitize($flag=null);
     public function setCustomValidator(Callable $validator);
     public function getCustomValidator();
+    public function setRequireGroup($name);
+    public function getRequireGroup();
     
     public function end();
     public function validate(core\collection\IInputTree $node);

@@ -12,8 +12,9 @@ class Handler implements IHandler {
     
     use core\TChainable;
 
-    protected $_values = array();
-    protected $_fields = array();
+    protected $_values = [];
+    protected $_fields = [];
+    protected $_requireGroups = [];
     protected $_isValid = null;
     protected $_shouldSanitize = true;
 
@@ -55,6 +56,28 @@ class Handler implements IHandler {
         }
         
         return (bool)$this->_isValid;
+    }
+
+    public function setRequireGroupFulfilled($name) {
+        $this->_requireGroups[$name] = true;
+        return $this;
+    }
+
+    public function setRequireGroupUnfulfilled($name, $field) {
+        if(isset($this->_requireGroups[$name]) && $this->_requireGroups[$name] === true) {
+            return $this;
+        }
+
+        $this->_requireGroups[$name][] = $field;
+        return $this;
+    }
+
+    public function checkRequireGroup($name) {
+        if(isset($this->_requireGroups[$name])) {
+            return $this->_requireGroups[$name] === true;
+        }
+
+        return false;
     }
     
 
@@ -106,7 +129,8 @@ class Handler implements IHandler {
         }
 
         $this->_isValid = true;
-        $this->_values = array();
+        $this->_values = [];
+        $this->_requireGroups = [];
         $this->data = $data;
         
         foreach($this->_fields as $name => $field) {
@@ -114,6 +138,17 @@ class Handler implements IHandler {
             $this->_values[$name] = $field->validate($node);
             
             if(!$node->isValid()) {
+                $this->_isValid = false;
+            }
+        }
+
+        foreach($this->_requireGroups as $name => $fields) {
+            if($field === true) {
+                continue;
+            }
+
+            foreach($fields as $field) {
+                $data->{$field}->addError('required', $this->_('You must enter a value in one of these fields'));
                 $this->_isValid = false;
             }
         }
