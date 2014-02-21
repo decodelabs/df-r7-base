@@ -71,7 +71,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
         }
         
         if(isset($this->_sources[$alias])) {
-            if($adapter === $this->_sources[$alias]->getAdapter()) {
+            if($adapter->getQuerySourceId() == $this->_sources[$alias]->getAdapter()->getQuerySourceId()) {
                 $output = $this->_sources[$alias];
 
                 if($fields !== null) {
