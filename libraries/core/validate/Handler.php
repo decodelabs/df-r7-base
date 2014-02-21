@@ -143,7 +143,7 @@ class Handler implements IHandler {
         }
 
         foreach($this->_requireGroups as $name => $fields) {
-            if($field === true) {
+            if($fields === true) {
                 continue;
             }
 
