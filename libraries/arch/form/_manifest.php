@@ -137,6 +137,7 @@ interface IDependency {
 
     public function hasValue();
     public function getValue();
+    public function shouldFilter($flag=null);
 
     public function setErrorMessage($message);
     public function getErrorMessage();
@@ -156,6 +157,7 @@ trait TDependency {
     protected $_error;
     protected $_callback;
     protected $_isApplied = false;
+    protected $_shouldFilter = true;
 
     public function getName() {
         return $this->_name;
@@ -167,6 +169,15 @@ trait TDependency {
 
     public function getContext() {
         return $this->_context;
+    }
+
+    public function shouldFilter($flag=null) {
+        if($flag !== null) {
+            $this->_shouldFilter = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_shouldFilter;
     }
 
     public function setErrorMessage($error) {

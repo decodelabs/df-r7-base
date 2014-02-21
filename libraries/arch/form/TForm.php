@@ -952,7 +952,7 @@ trait TForm_DependentDelegate {
         $values = [];
 
         foreach($this->_dependencies as $name => $dep) {
-            if($dep->isApplied() || !$dep->hasValue()) {
+            if($dep->isApplied() || !$dep->shouldFilter() || !$dep->hasValue()) {
                 continue;
             }
 

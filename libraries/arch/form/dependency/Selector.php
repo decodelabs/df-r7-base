@@ -21,6 +21,7 @@ class Selector implements arch\form\IDependency, core\IDumpable {
         $this->setErrorMessage($error);
         $this->setContext($context);
         $this->setCallback($callback);
+        $this->_shouldFilter = false;
     }
 
     public function getDelegate() {
