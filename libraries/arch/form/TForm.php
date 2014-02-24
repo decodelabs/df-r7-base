@@ -577,11 +577,16 @@ trait TForm_ValueListSelectorDelegate {
     }
 
     public function setSelected($selected) {
+        unset($this->values->selected);
+
         if($selected === null) {
-            unset($this->values->selected);
             return $this;
         }
 
+        return $this->addSelected($selected);
+    }
+
+    public function addSelected($selected) {
         if(!$this->_isForMany) {
             if($selected instanceof opal\record\IRecord) {
                 $selected = $selected->getPrimaryKeySet();
@@ -727,6 +732,17 @@ trait TForm_InlineFieldRenderableSelectorDelegate {
                 }
 
                 $fa->push($this->html->bulletList($displayList));
+
+                foreach($selected as $row) {
+                    $id = $this->_getResultId($row);
+
+                    $fa->push(
+                        $this->html->hidden(
+                            $this->fieldName('selected['.$id.']'), 
+                            $id
+                        )
+                    );
+                }
             }
         } else {
             // Single entry
