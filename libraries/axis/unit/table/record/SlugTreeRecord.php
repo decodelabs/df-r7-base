@@ -13,13 +13,13 @@ use df\opal;
     
 class SlugTreeRecord extends opal\record\Base {
 
-    protected function _onPreSave() {
+    protected function _onPreSave($taskSet, $task) {
         if(!$this->getRawId('parent') || $this->hasChanged('slug')) {
             $this->parent = $this->getRecordAdapter()->fetchParentFor($this['slug']);
         }
     }
 
-    protected function _onSave($taskSet) {
+    protected function _onSave($taskSet, $task) {
         // Set this as parent for any relevant descendants
         $taskSet->addRawQuery(
             'setParents:'.$this['id'],
@@ -58,7 +58,7 @@ class SlugTreeRecord extends opal\record\Base {
         $updateTask->addDependency($deleteTask);
     }
 
-    protected function _onPreUpdate($taskSet) {
+    protected function _onPreUpdate($taskSet, $task) {
         if($this->hasChanged('slug')) {
             $adapter = $this->getRecordAdapter();
             $origSlug = $this->getOriginal('slug');
