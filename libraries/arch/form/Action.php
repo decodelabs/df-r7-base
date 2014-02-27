@@ -424,6 +424,8 @@ abstract class Action extends arch\Action implements IAction {
     }
 
     protected function _finalizeCompletion($success=true) {
+        $this->_isComplete = true;
+        
         foreach($this->_delegates as $delegate) {
             $delegate->setComplete($success);
         }
