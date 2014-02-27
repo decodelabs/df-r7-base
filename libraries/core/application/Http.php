@@ -325,6 +325,11 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
         }
         
         $request->setFragment($url->getFragment());
+
+        if($this->_httpRequest->getHeaders()->has('x-ajax-request-type')) {
+            $request->setType($this->_httpRequest->getHeaders()->get('x-ajax-request-type'));
+        }
+
         $request = $this->_routeIn($request);
         
         // Start dispatch loop
