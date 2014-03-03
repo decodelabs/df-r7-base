@@ -57,7 +57,7 @@ class ManyBridge extends Base implements axis\IVirtualUnit {
         $output->_dominantUnitName = $unitName;
         $output->_dominantFieldName = $fieldName;
         $output->_isVirtual = true;
-        
+
         return $output;
     }
 
@@ -76,6 +76,25 @@ class ManyBridge extends Base implements axis\IVirtualUnit {
         parent::__construct($model, $unitName);
     }
     
+    public function getUnitName() {
+        if($this->_isVirtual) {
+            $class = get_class($this);
+            $args = [$this->_dominantUnitName.'.'.$this->_dominantFieldName];
+
+            if($class != __CLASS__) {
+                $parts = explode('\\', $class);
+                array_pop($parts);
+                $unitId = array_pop($parts);
+                $modelName = array_pop($parts);
+                $args[] = $modelName.'/'.$unitId;
+            }
+            
+            return 'table.ManyBridge('.implode(',', $args).')';
+        } else {
+            return parent::getUnitName();
+        }
+    }
+
     public function getCanonicalUnitName() {
         if($this->_isVirtual) {
             return $this->_dominantUnitName.'_'.$this->_dominantFieldName;

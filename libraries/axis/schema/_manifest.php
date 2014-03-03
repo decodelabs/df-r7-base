@@ -587,11 +587,13 @@ trait TBridgedRelationField {
     protected function _validateBridgeUnit(axis\ISchemaBasedStorageUnit $localUnit) {
         $bridgeUnit = axis\Model::loadUnitFromId($this->_bridgeUnitId, $localUnit->getApplication());
 
-        if($bridgeUnit->getModel()->getModelName() != $localUnit->getModel()->getModelName()) {
-            throw new RuntimeException(
-                'Bridge units must be local to the dominant participant - '.
-                $this->_bridgeUnitId.' should be on model '.$localUnit->getModel()->getModelName()
-            );
+        if($this instanceof IManyToManyField) {
+            if($bridgeUnit->getModel()->getModelName() != $localUnit->getModel()->getModelName()) {
+                throw new RuntimeException(
+                    'Bridge units must be local to the dominant participant - '.
+                    $this->_bridgeUnitId.' should be on model '.$localUnit->getModel()->getModelName()
+                );
+            }
         }
 
         return $bridgeUnit;

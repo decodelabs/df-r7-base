@@ -84,7 +84,7 @@ abstract class Model implements IModel, core\IDumpable {
         $class = 'df\\apex\\models\\'.$this->getModelName().'\\'.$name.'\\Unit';
         
         if(!class_exists($class)) {
-            if(preg_match('/^([a-z0-9_]+)\.([a-z0-9_]+)\(([a-zA-Z0-9_., ]*)\)$/i', $name, $matches)) {
+            if(preg_match('/^([a-z0-9_]+)\.([a-z0-9_]+)\(([a-zA-Z0-9_.\, \/]*)\)$/i', $name, $matches)) {
                 $class = 'df\\axis\\unit\\'.$matches[1].'\\'.$matches[2];
                 
                 if(!class_exists($class)) {
@@ -135,7 +135,7 @@ abstract class Model implements IModel, core\IDumpable {
     }
 
     public static function loadUnitFromId($id, core\IApplication $application=null) {
-        $parts = explode(IUnit::ID_SEPARATOR, $id);
+        $parts = explode(IUnit::ID_SEPARATOR, $id, 2);
 
         return self::factory(array_shift($parts), $application)
             ->getUnit(array_shift($parts));
