@@ -95,6 +95,21 @@ class ManyBridge extends Base implements axis\IVirtualUnit {
         }
     }
 
+    public function getDirectUnitName() {
+        if($this->_isVirtual) {
+            $class = get_class($this);
+
+            if($class != __CLASS__) {
+                $parts = explode('\\', $class);
+                array_pop($parts);
+                $unitId = array_pop($parts);
+                return$unitId;
+            }
+        } else {
+            return parent::getUnitName();
+        }
+    }
+
     public function getCanonicalUnitName() {
         if($this->_isVirtual) {
             return $this->_dominantUnitName.'_'.$this->_dominantFieldName;

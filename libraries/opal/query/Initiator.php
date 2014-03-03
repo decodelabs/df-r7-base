@@ -173,7 +173,7 @@ class Initiator implements IInitiator {
 
 
 // Populate
-    public function beginPopulate(IQuery $parent, array $fields, $type=IPopulateQuery::TYPE_ALL) {
+    public function beginPopulate(IQuery $parent, array $fields, $type=IPopulateQuery::TYPE_ALL, $isSelect=false) {
         $this->_setMode(IQueryTypes::POPULATE);
         $this->_parentQuery = $parent;
         $fields = core\collection\Util::flattenArray($fields);
@@ -223,6 +223,8 @@ class Initiator implements IInitiator {
                 }
             }
         }
+
+        $populate->isSelect($isSelect);
 
         if($isAll) {
             $populate->endPopulate();
@@ -307,6 +309,12 @@ class Initiator implements IInitiator {
         }
         
         return $this;
+    }
+
+    public static function beginAttachFromPopulate(IPopulateQuery $populate) {
+        return $populate->isSelect() ?
+            SelectAttach::fromPopulate($populate) :
+            FetchAttach::fromPopulate($populate);
     }
     
     

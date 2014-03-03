@@ -82,7 +82,7 @@ class OneToMany extends axis\schema\field\Base implements axis\schema\IOneToMany
 
 // Populate
     public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate) {
-        $output = opal\query\FetchAttach::fromPopulate($populate);
+        $output = opal\query\Initiator::beginAttachFromPopulate($populate);
 
         $parentSourceAlias = $populate->getParentSourceAlias();
         $targetSourceAlias = $populate->getSourceAlias();

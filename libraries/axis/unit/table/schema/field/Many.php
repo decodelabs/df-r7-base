@@ -164,12 +164,21 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
         $bridgeUnit = axis\Model::loadUnitFromId($this->_bridgeUnitId, $application);
         $bridgeSourceAlias = $populate->getFieldName().'_bridge';
 
-        $output = opal\query\FetchAttach::fromPopulate($populate)
-            ->rightJoinConstraint()
-                ->from($bridgeUnit, $bridgeSourceAlias)
-                ->on($bridgeSourceAlias.'.'.$bridgeTargetFieldName, '=', $targetSourceAlias.'.@primary')
-                ->endJoin()
-            ->on($bridgeSourceAlias.'.'.$bridgeLocalFieldName, '=', $parentSourceAlias.'.@primary');
+        $output = opal\query\Initiator::beginAttachFromPopulate($populate);
+
+        if($populate->isSelect()) {
+            $output->rightJoin($bridgeUnit->getBridgeFieldNames($bridgeUnit->getDirectUnitName(), [$bridgeLocalFieldName, $bridgeTargetFieldName]))
+                    ->from($bridgeUnit, $bridgeSourceAlias)
+                    ->on($bridgeSourceAlias.'.'.$bridgeTargetFieldName, '=', $targetSourceAlias.'.@primary')
+                    ->endJoin()
+                ->on($bridgeSourceAlias.'.'.$bridgeLocalFieldName, '=', $parentSourceAlias.'.@primary');
+        } else {
+            $output->rightJoinConstraint()
+                    ->from($bridgeUnit, $bridgeSourceAlias)
+                    ->on($bridgeSourceAlias.'.'.$bridgeTargetFieldName, '=', $targetSourceAlias.'.@primary')
+                    ->endJoin()
+                ->on($bridgeSourceAlias.'.'.$bridgeLocalFieldName, '=', $parentSourceAlias.'.@primary');
+        }
             
         $output->asMany($this->_name);
 

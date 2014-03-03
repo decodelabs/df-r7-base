@@ -94,7 +94,7 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
 
 // Populate
     public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate) {
-        $output = opal\query\FetchAttach::fromPopulate($populate);
+        $output = opal\query\Initiator::beginAttachFromPopulate($populate);
 
         $parentSourceAlias = $populate->getParentSourceAlias();
         $targetSourceAlias = $populate->getSourceAlias();

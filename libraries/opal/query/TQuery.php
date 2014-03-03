@@ -568,8 +568,16 @@ trait TQuery_Populatable {
         return $this->_newQuery()->beginPopulate($this, func_get_args(), IPopulateQuery::TYPE_ALL);
     }
 
+    public function populateSelect($field1) {
+        return $this->_newQuery()->beginPopulate($this, func_get_args(), IPopulateQuery::TYPE_ALL, true);
+    }
+
     public function populateSome($field) {
         return $this->_newQuery()->beginPopulate($this, [$field], IPopulateQuery::TYPE_SOME);
+    }
+
+    public function populateSelectSome($filed) {
+        return $this->_newQuery()->beginPopulate($this, [$field], IPopulateQuery::TYPE_SOME, true);
     }
 
     public function addPopulate(IPopulateQuery $populate) {
@@ -604,6 +612,7 @@ trait TQuery_Populate {
 
     protected $_field;
     protected $_type;
+    protected $_isSelect = false;
 
     public function getQueryType() {
         return IQueryTypes::POPULATE;
@@ -619,6 +628,15 @@ trait TQuery_Populate {
 
     public function getPopulateType() {
         return $this->_type;
+    }
+
+    public function isSelect($flag=null) {
+        if($flag !== null) {
+            $this->_isSelect = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_isSelect;
     }
 
 
