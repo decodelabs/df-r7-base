@@ -540,32 +540,45 @@ trait TBridgedRelationField {
         $this->_bridgeLocalFieldName = $localUnit->getUnitName();
         $this->_bridgeTargetFieldName = $targetUnit->getUnitName();
 
-        if($this instanceof IManyToManyField) {
-            if($this->isDominant() && empty($this->_bridgeUnitId)) {
-                $this->_bridgeUnitId = $modelName.axis\IUnit::ID_SEPARATOR.$this->_getBridgeUnitType().'('.$localUnit->getUnitName().'.'.$this->_name.')';
-            }
-            
-            if(!empty($this->_bridgeUnitId) && false === strpos($this->_bridgeUnitId, axis\IUnit::ID_SEPARATOR)) {
-                $this->_bridgeUnitId = $modelName.axis\IUnit::ID_SEPARATOR.$this->_bridgeUnitId;
+        $isManyToMany = $this instanceof IManyToManyField;
+
+        if(!empty($this->_bridgeUnitId) && false === strpos($this->_bridgeUnitId, '(')) {
+            $parts = explode('/', $this->_bridgeUnitId, 2);
+            $bridgeModelName = array_shift($parts);
+            $bridgeId = array_shift($parts);
+
+            if(!$bridgeId) {
+                $bridgeId = $bridgeModelName;
+                $bridgeModelName = $modelName;
             }
 
-            if($this->_bridgeTargetFieldName == $localUnit->getUnitName()) {
-                if($this->isDominant()) {
-                    $this->_bridgeTargetFieldName .= opal\schema\IBridgedRelationField::SELF_REFERENCE_SUFFIX;
+            $bridgeClass = axis\unit\table\ManyBridge::getBridgeClass($bridgeModelName, $bridgeId);
+
+            if($bridgeClass::IS_SHARED) {
+                if($isManyToMany && !$this->isDominant()) {
+                    $this->_bridgeUnitId = $modelName.axis\IUnit::ID_SEPARATOR.$this->_getBridgeUnitType().'('.$targetUnit->getUnitName().'.'.$this->getTargetField().','.$bridgeModelName.'/'.$bridgeId.')';
                 } else {
-                    $this->_bridgeLocalFieldName .= opal\schema\IBridgedRelationField::SELF_REFERENCE_SUFFIX;
+                    $this->_bridgeUnitId = $modelName.axis\IUnit::ID_SEPARATOR.$this->_getBridgeUnitType().'('.$localUnit->getUnitName().'.'.$this->_name.','.$bridgeModelName.'/'.$bridgeId.')';
                 }
             }
-        } else {
-            if(empty($this->_bridgeUnitId)) {
+        }
+
+        if(empty($this->_bridgeUnitId)) {
+            if($isManyToMany && !$this->isDominant()) {
+                $this->_bridgeUnitId = $modelName.axis\IUnit::ID_SEPARATOR.$this->_getBridgeUnitType().'('.$targetUnit->getUnitName().'.'.$this->getTargetField().')';
+            } else {
                 $this->_bridgeUnitId = $modelName.axis\IUnit::ID_SEPARATOR.$this->_getBridgeUnitType().'('.$localUnit->getUnitName().'.'.$this->_name.')';
             }
-            
-            if(false === strpos($this->_bridgeUnitId, axis\IUnit::ID_SEPARATOR)) {
-                $this->_bridgeUnitId = $modelName.axis\IUnit::ID_SEPARATOR.$this->_bridgeUnitId;
-            }
+        }
 
-            if($this->_bridgeTargetFieldName == $localUnit->getUnitName()) {
+        if(false === strpos($this->_bridgeUnitId, axis\IUnit::ID_SEPARATOR)) {
+            $this->_bridgeUnitId = $modelName.axis\IUnit::ID_SEPARATOR.$this->_bridgeUnitId;
+        }
+
+        if($this->_bridgeTargetFieldName == $localUnit->getUnitName()) {
+            if($isManyToMany && !$this->isDominant()) {
+                $this->_bridgeLocalFieldName .= opal\schema\IBridgedRelationField::SELF_REFERENCE_SUFFIX;
+            } else {
                 $this->_bridgeTargetFieldName .= opal\schema\IBridgedRelationField::SELF_REFERENCE_SUFFIX;
             }
         }

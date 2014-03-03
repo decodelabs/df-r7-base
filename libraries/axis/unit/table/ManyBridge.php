@@ -7,22 +7,73 @@ use df\axis;
 
 class ManyBridge extends Base implements axis\IVirtualUnit {
     
-    protected $_dominantUnitName;
-    protected $_dominantFieldName;
+    const IS_SHARED = false;
+    const DOMINANT_UNIT = null;
+    const DOMINANT_FIELD = null;
+
+    private $_dominantUnitName;
+    private $_dominantFieldName;
     private $_isVirtual = false;
     
+    public static function getBridgeClass($modelName, $id) {
+        $class = 'df\\apex\\models\\'.$modelName.'\\'.$id.'\\Unit';
+
+        if(!class_exists($class)) {
+            throw new axis\RuntimeException(
+                'Could not find bridge unit '.$id
+            );
+        }
+
+        if(!is_subclass_of($class, 'df\\axis\\unit\\table\\ManyBridge')) {
+            throw new axis\RuntimeException(
+                'Unit '.$id.' is not a ManyBridge'
+            );
+        }
+
+        return $class;
+    }
+
     public static function loadVirtual(axis\IModel $model, array $args) {
         $fieldId = array_shift($args);
         $parts = explode('.', $fieldId);
         $unitName = array_shift($parts);
         $fieldName = array_shift($parts);
+        $class = __CLASS__;
+
+        if($unitId = array_shift($args)) {
+            $parts = explode('/', $unitId, 2);
+            $modelName = array_shift($parts);
+            $id = array_shift($parts);
+
+            if(!$id) {
+                $id = $modelName;
+                $modelName = $model->getModelName();
+            }
+
+            $class = self::getBridgeClass($modelName, $id);
+        }
         
-        $output = new self($model);
+        $output = new $class($model);
         $output->_dominantUnitName = $unitName;
         $output->_dominantFieldName = $fieldName;
         $output->_isVirtual = true;
         
         return $output;
+    }
+
+    public function __construct(axis\IModel $model, $unitName=null) {
+        if(!static::IS_SHARED && get_class($this) !== __CLASS__) {
+            if(!static::DOMINANT_UNIT || !static::DOMINANT_FIELD) {
+                throw new axis\schema\LogicException(
+                    'Dominant field info has not been defined in class '.get_class($this)
+                );
+            }
+
+            $this->_dominantUnitName = static::DOMINANT_UNIT;
+            $this->_dominantFieldName = static::DOMINANT_FIELD;
+        }
+
+        parent::__construct($model, $unitName);
     }
     
     public function getCanonicalUnitName() {
