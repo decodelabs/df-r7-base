@@ -289,6 +289,8 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
             $name = $this->view->format->shorten($name, $this->_maxLength);
         }
 
+        $name = $this->_decorateBody($name);
+
         $output = $this->html->link($url, $name, $this->_matchRequest)
             ->shouldCheckAccess((bool)$this->_action)
             ->setIcon($this->_icon)
@@ -324,6 +326,10 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
         } else {
             return '???';
         }
+    }
+
+    protected function _decorateBody($name) {
+        return $name;
     }
 
     abstract protected function _getRecordUrl($id);
