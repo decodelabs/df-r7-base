@@ -167,7 +167,7 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
         $output = opal\query\Initiator::beginAttachFromPopulate($populate);
 
         if($populate->isSelect()) {
-            $output->rightJoin($bridgeUnit->getBridgeFieldNames($bridgeUnit->getDirectUnitName(), [$bridgeLocalFieldName, $bridgeTargetFieldName]))
+            $output->rightJoin($bridgeUnit->getBridgeFieldNames($this->_name, [$bridgeLocalFieldName, $bridgeTargetFieldName]))
                     ->from($bridgeUnit, $bridgeSourceAlias)
                     ->on($bridgeSourceAlias.'.'.$bridgeTargetFieldName, '=', $targetSourceAlias.'.@primary')
                     ->endJoin()
