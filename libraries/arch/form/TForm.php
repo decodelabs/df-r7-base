@@ -619,8 +619,11 @@ trait TForm_ValueListSelectorDelegate {
         if($selection instanceof opal\record\IRecord) {
             $selection = $selection->getPrimaryKeySet();
         } else if($selection instanceof opal\record\IPartial) {
-            // Need to distinguish between record partial and bridge partial            
-            $selection = $selection->getPrimaryKeySet();
+            if($selection->isBridge()) {
+                core\stub($selection);
+            } else {
+                $selection = $selection->getPrimaryKeySet();
+            }
         }
 
         return (string)$selection;

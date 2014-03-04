@@ -461,7 +461,7 @@ class BridgedManyRelationValueContainer implements
         $bridgeUnit = $this->getBridgeUnit();
 
         foreach($this->selectDistinctFromBridge() as $row) {
-            $output[] = new opal\record\Partial($bridgeUnit, $row);
+            $output[] = $bridgeUnit->newPartial($row);
         }
 
         return $output;

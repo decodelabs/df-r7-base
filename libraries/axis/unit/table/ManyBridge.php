@@ -164,6 +164,9 @@ class ManyBridge extends Base implements axis\IVirtualUnit {
     
     protected function _onCreate(axis\schema\ISchema $schema) {}
 
+    public function newPartial(array $values=null) {
+        return parent::newPartial($values)->isBridge(true);
+    }
 
     public function getBridgeFieldNames($aliasPrefix=null, array $filter=array()) {
         $output = array();

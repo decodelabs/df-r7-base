@@ -16,6 +16,7 @@ class Partial implements IPartial, core\IDumpable {
     use core\collection\TArrayCollection;
     use core\collection\TArrayCollection_AssociativeValueMap;
 
+    protected $_isBridge = false;
 
     public function __construct(opal\query\IAdapter $adapter=null, $row=null, array $fields=null) {
         $this->_adapter = $adapter;
@@ -32,6 +33,15 @@ class Partial implements IPartial, core\IDumpable {
     public function setRecordAdapter(opal\query\IAdapter $adapter) {
         $this->_adapter = $adapter;
         return $this;
+    }
+
+    public function isBridge($flag=null) {
+        if($flag !== null) {
+            $this->_isBridge = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_isBridge;
     }
 
 

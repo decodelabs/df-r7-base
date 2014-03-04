@@ -127,6 +127,7 @@ interface ILocationalRecord extends IRecord {
 
 interface IPartial extends core\collection\IMappedCollection, IRecordAdapterProvider, IPrimaryKeySetProvider {
     public function setRecordAdapter(opal\query\IAdapter $adapter);
+    public function isBridge($flag=null);
     public function getValuesForStorage();
 }
 
