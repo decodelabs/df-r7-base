@@ -885,8 +885,8 @@ trait TForm_DependentDelegate {
 
     protected $_dependencies = array();
 
-    public function addSelectorDependency(ISelectorDelegate $delegate, $error=null, $context=null, Callable $callback=null) {
-        return $this->addDependency(new arch\form\dependency\Selector($delegate, $error, $context, $callback));
+    public function addSelectorDependency(ISelectorDelegate $delegate, $error=null, $context=null, $filter=false) {
+        return $this->addDependency(new arch\form\dependency\Selector($delegate, $error, $context, $filter));
     }
 
     public function addValueDependency($name, core\collection\IInputTree $value, $error=null, $context=null) {

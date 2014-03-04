@@ -15,13 +15,17 @@ class Selector implements arch\form\IDependency, core\IDumpable {
 
     protected $_delegate;
 
-    public function __construct(arch\form\ISelectorDelegate $delegate, $error=null, $context=null, Callable $callback=null) {
+    public function __construct(arch\form\ISelectorDelegate $delegate, $error=null, $context=null, $filter=false) {
         $this->_name = $delegate->getDelegateKey();
         $this->_delegate = $delegate;
         $this->setErrorMessage($error);
         $this->setContext($context);
-        $this->setCallback($callback);
-        $this->_shouldFilter = false;
+
+        if($filter === false) {
+            $this->_shouldFilter = false;
+        } else if(is_callable($filter)) {
+            $this->setCallback($filter);
+        }
     }
 
     public function getDelegate() {
