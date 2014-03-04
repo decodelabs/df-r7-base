@@ -142,6 +142,10 @@ class Rdbms implements
     public function newRecord(array $values=null) {
         return $this->_unit->newRecord($values);
     }
+
+    public function newPartial(array $values=null) {
+        return $this->_unit->newPartial($values);
+    }
     
     
     

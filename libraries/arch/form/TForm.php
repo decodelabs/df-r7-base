@@ -507,7 +507,13 @@ trait TForm_SelectorDelegate {
 
 trait TForm_SelectorDelegateQueryTools {
 
-    protected function _fetchSelectionList() {
+    private $_selectionList = null;
+
+    protected function _fetchSelectionList($cache=true) {
+        if($cache && $this->_selectionList !== null) {
+            return $this->_selectionList;
+        }
+
         $selected = $this->getSelected();
 
         if(empty($selected)) {
@@ -518,7 +524,13 @@ trait TForm_SelectorDelegateQueryTools {
             $selected = [$selected];
         }
 
-        return $this->_fetchResultList($selected);
+        $output = $this->_fetchResultList($selected);
+
+        if($cache) {
+            $this->_selectionList = $output;
+        }
+
+        return $output;
     }
 
     abstract protected function _fetchResultList(array $ids);
@@ -588,22 +600,30 @@ trait TForm_ValueListSelectorDelegate {
 
     public function addSelected($selected) {
         if(!$this->_isForMany) {
-            if($selected instanceof opal\record\IRecord) {
-                $selected = $selected->getPrimaryKeySet();
-            }
-
-            $this->values->selected = $selected;
+            $this->values->selected = $this->_sanitizeSelection($selected);
         } else {
             if(!is_array($selected)) {
                 $selected = (array)$selected;
             }
 
             foreach($selected as $id) {
+                $id = $this->_sanitizeSelection($id);
                 $this->values->selected[$id] = $id;
             }
         }
 
         return $this;
+    }
+
+    protected function _sanitizeSelection($selection) {
+        if($selection instanceof opal\record\IRecord) {
+            $selection = $selection->getPrimaryKeySet();
+        } else if($selection instanceof opal\record\IPartial) {
+            // Need to distinguish between record partial and bridge partial            
+            $selection = $selection->getPrimaryKeySet();
+        }
+
+        return (string)$selection;
     }
 
     public function getSelected() {

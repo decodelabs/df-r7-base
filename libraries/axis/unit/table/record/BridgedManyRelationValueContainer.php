@@ -157,7 +157,15 @@ class BridgedManyRelationValueContainer implements
     }
     
     public function removeList(array $records) {
+        $bridgeUnit = $this->getBridgeUnit();
+        $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
+
         foreach($records as $record) {
+            if($record instanceof opal\record\IPartial) {
+                $record->setRecordAdapter($bridgeUnit);
+                $record[$bridgeLocalFieldName] = $this->_localPrimaryKeySet;
+            }
+
             if($record instanceof opal\record\IRecord) {
                 $id = opal\record\Base::extractRecordId($record);
             } else if($record instanceof opal\record\IPrimaryKeySet) {
@@ -195,9 +203,16 @@ class BridgedManyRelationValueContainer implements
     protected function _normalizeInputRecordList(array $records) {
         $index = array();
         $lookupKeySets = array();
+        $bridgeUnit = $this->getBridgeUnit();
+        $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
         
         foreach($records as $record) {
-            if($record instanceof opal\record\IRecord) {
+            if($record instanceof opal\record\IPartial) {
+                $record->setRecordAdapter($bridgeUnit);
+                $record[$bridgeLocalFieldName] = $this->_localPrimaryKeySet;
+            }
+
+            if($record instanceof opal\record\IPrimaryKeySetProvider) {
                 $id = opal\record\Base::extractRecordId($record);
             } else if($record instanceof opal\record\IPrimaryKeySet) {
                 $id = opal\record\Base::extractRecordId($record);
@@ -441,6 +456,17 @@ class BridgedManyRelationValueContainer implements
             ->wherePrerequisite($bridgeAlias.'.'.$bridgeLocalFieldName, '=', $this->_localPrimaryKeySet);
     }
 
+    public function fetchBridgePartials() {
+        $output = [];
+        $bridgeUnit = $this->getBridgeUnit();
+
+        foreach($this->selectDistinctFromBridge() as $row) {
+            $output[] = new opal\record\Partial($bridgeUnit, $row);
+        }
+
+        return $output;
+    }
+
     public function getRelatedPrimaryKeys() {
         $bridgeTargetFieldName = $this->_field->getBridgeTargetFieldName();
         return $this->selectFromBridge($bridgeTargetFieldName)->toList($bridgeTargetFieldName);
@@ -482,12 +508,13 @@ class BridgedManyRelationValueContainer implements
         }
 
         $filterKeys = array();
-        
+
         // Insert relation tasks
         foreach($this->_new as $id => $record) {
             // Build bridge
             $bridgeRecord = $bridgeUnit->newRecord();
-            $bridgeTask = $taskSet->insert($bridgeRecord)->ifNotExists(true);
+            //$bridgeTask = $taskSet->insert($bridgeRecord)->ifNotExists(true);
+            $bridgeTask = $taskSet->replace($bridgeRecord);
 
             // Local ids
             $bridgeRecord->__set($bridgeLocalFieldName, $this->_localPrimaryKeySet);
@@ -499,7 +526,9 @@ class BridgedManyRelationValueContainer implements
             }
             
             // Target key set
-            if($record instanceof opal\record\IPrimaryKeySet) {
+            if($record instanceof opal\record\IPartial) {
+                $targetKeySet = $this->_targetPrimaryKeySet->duplicateWith($record->get($bridgeTargetFieldName));
+            } else if($record instanceof opal\record\IPrimaryKeySet) {
                 $targetKeySet = $record;
             } else {
                 $targetKeySet = $this->_targetPrimaryKeySet->duplicateWith($record);
@@ -530,6 +559,11 @@ class BridgedManyRelationValueContainer implements
                         $targetRecordTask
                     )
                 );
+            }
+
+
+            if($record instanceof opal\record\IPartial) {
+                $bridgeRecord->import($record->getValuesForStorage());
             }
             
 
@@ -570,7 +604,7 @@ class BridgedManyRelationValueContainer implements
                 $taskSet->addTask(new opal\record\task\DeleteKey($bridgeUnit, $bridgeData));
             }
         }
-        
+
         return $this;
     }
     

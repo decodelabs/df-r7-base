@@ -115,7 +115,7 @@ class PrimaryKeySet implements IPrimaryKeySet, core\IDumpable {
     }
 
     public function updateWith($values) {
-        if($values instanceof IRecord) {
+        if($values instanceof IPrimaryKeySetProvider) {
             $values = $values->getPrimaryKeySet();
         }
 
@@ -164,7 +164,7 @@ class PrimaryKeySet implements IPrimaryKeySet, core\IDumpable {
                 }
             }
 
-            if($value instanceof IRecord) {
+            if($value instanceof IPrimaryKeySetProvider) {
                 $value = $value->getPrimaryKeySet();
             }
 
@@ -204,7 +204,7 @@ class PrimaryKeySet implements IPrimaryKeySet, core\IDumpable {
         $strings = array();
         
         foreach($this->_keys as $key) {
-            if($key instanceof IRecord) {
+            if($key instanceof IPrimaryKeySetProvider) {
                 $key = $key->getPrimaryKeySet();
             }
             
@@ -228,7 +228,7 @@ class PrimaryKeySet implements IPrimaryKeySet, core\IDumpable {
         $output = new core\collection\Tree();
         
         foreach($this->_keys as $key => $value) {
-            if($value instanceof IRecord) {
+            if($value instanceof IPrimaryKeySetProvider) {
                 $returnFirst = false;
                 $value = $value->getPrimaryKeySet();
             }

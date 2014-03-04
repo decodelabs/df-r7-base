@@ -19,15 +19,74 @@ class ValuePreparationException extends RuntimeException {}
 
 
 // Interfaces
-interface IRecord extends core\collection\IMappedCollection, user\IAccessLock, core\policy\IEntity {
+interface IRecordAdapterProvider {
     public function getRecordAdapter();
-    
+}
+
+trait TRecordAdapterProvider {
+
+    protected $_adapter;
+
+    public function getRecordAdapter() {
+        return $this->_adapter;
+    }
+}
+
+
+interface IPrimaryKeySetProvider extends IRecordAdapterProvider {
+    public function getPrimaryKeySet();
+    public function getOriginalPrimaryKeySet();
+}
+
+trait TPrimaryKeySetProvider {
+
+    private $_primaryFields = false;
+
+    public function getPrimaryKeySet() {
+        return $this->_getPrimaryKeySet(true);
+    }
+
+    public function getOriginalPrimaryKeySet() {
+        return $this->_getPrimaryKeySet(false);
+    }
+
+    protected function _getPrimaryKeySet($includeChanges=true) {
+        $fields = $this->_getPrimaryFields();
+
+        if($fields === null) {
+            throw new LogicException(
+                'Record type '.$this->getRecordAdapter()->getQuerySourceId().' has no primary fields'
+            );
+        }
+
+        return $this->_buildPrimaryKeySet($fields, $includeChanges);
+    }
+
+    abstract protected function _buildPrimaryKeySet(array $fields, $includeChanges=true);
+
+    protected function _getPrimaryFields() {
+        if($this->_primaryFields === false) {
+            $this->_primaryFields = null;
+            $adapter = $this->getRecordAdapter();
+
+            if($adapter instanceof opal\query\IIntegralAdapter) {
+                $index = $adapter->getQueryAdapterSchema()->getPrimaryIndex();
+
+                if($index) {
+                    $this->_primaryFields = array_keys($index->getFields());
+                }
+            }
+        }
+        
+        return $this->_primaryFields;
+    }
+}
+
+
+interface IRecord extends core\collection\IMappedCollection, user\IAccessLock, core\policy\IEntity, IRecordAdapterProvider, IPrimaryKeySetProvider {
     public function isNew();
     public function makeNew(array $newValues=null);
     public function spawnNew(array $newValues=null);
-    
-    public function getPrimaryKeySet();
-    public function getOriginalPrimaryKeySet();
     
     public function hasChanged($field=null);
     public function hasAnyChanged($field1);
@@ -63,6 +122,14 @@ interface IRecord extends core\collection\IMappedCollection, user\IAccessLock, c
 interface ILocationalRecord extends IRecord {
     public function getQueryLocation();
 }
+
+
+
+interface IPartial extends core\collection\IMappedCollection, IRecordAdapterProvider, IPrimaryKeySetProvider {
+    public function setRecordAdapter(opal\query\IAdapter $adapter);
+    public function getValuesForStorage();
+}
+
 
 
 interface IValueContainer extends core\IValueContainer {
@@ -104,7 +171,7 @@ interface IManyRelationValueContainer extends IValueContainer {
 }
 
 
-interface IPrimaryKeySet extends \ArrayAccess {
+interface IPrimaryKeySet extends \ArrayAccess, core\IArrayProvider {
     public function toArray();
     public function updateWith($record);
     public function countFields();

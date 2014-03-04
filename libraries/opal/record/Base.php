@@ -14,6 +14,8 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     
     const BROADCAST_HOOK_EVENTS = false;
 
+    use TRecordAdapterProvider;
+    use TPrimaryKeySetProvider;
     use core\TValueMap;
     use core\collection\TExtractList;
     use user\TAccessLock;
@@ -21,15 +23,12 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     protected $_values = array();
     protected $_changes = array();
     protected $_isPopulated = false;
-    protected $_adapter;
-
-    private $_primaryFields = false;
 
     public static function extractRecordId($record) {
         $keySet = null;
         $isRecord = false;
         
-        if($record instanceof IRecord) {
+        if($record instanceof IPrimaryKeySetProvider) {
             $isRecord = true;
             $keySet = $record->getPrimaryKeySet();
         } else if($record instanceof IPrimaryKeySet) {
@@ -98,10 +97,6 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $this;
     }
     
-    public function getRecordAdapter() {
-        return $this->_adapter;
-    }
-    
     public function isNew() {
         return !$this->_isPopulated;
     }
@@ -134,23 +129,8 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return $output->makeNew($newValues);
     }
     
-    public function getPrimaryKeySet() {
-        return $this->_getPrimaryKeySet(true);
-    }
 
-    public function getOriginalPrimaryKeySet() {
-        return $this->_getPrimaryKeySet(false);
-    }
-
-    protected function _getPrimaryKeySet($includeChanges=true) {
-        $fields = $this->_getPrimaryFields();
-
-        if($fields === null) {
-            throw new LogicException(
-                'Record type '.$this->_adapter->getQuerySourceId().' has no primary fields'
-            );
-        }
-
+    protected function _buildPrimaryKeySet(array $fields, $includeChanges=true) {
         $values = array();
         
         foreach($fields as $field) {
@@ -170,21 +150,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         return new PrimaryKeySet($fields, $values); 
     }
     
-    protected function _getPrimaryFields() {
-        if($this->_primaryFields === false) {
-            $this->_primaryFields = null;
-
-            if($this->_adapter instanceof opal\query\IIntegralAdapter) {
-                $index = $this->_adapter->getQueryAdapterSchema()->getPrimaryIndex();
-
-                if($index) {
-                    $this->_primaryFields = array_keys($index->getFields());
-                }
-            }
-        }
-        
-        return $this->_primaryFields;
-    }
+    
     
     
 // Changes

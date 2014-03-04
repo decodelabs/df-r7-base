@@ -556,6 +556,7 @@ interface IAdapter extends user\IAccessLock {
     public function rollbackQueryTransaction();
     
     public function newRecord(array $values=null);
+    public function newPartial(array $values=null);
     
 }
 

@@ -69,10 +69,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
     }
 
     public function newRecord($source, array $values=null) {
-        $sourceManager = new opal\query\SourceManager($this->_context->application);
-        $source = $sourceManager->newSource($source, null);
-        $adapter = $source->getAdapter();
-
+        $adapter = $this->_sourceToAdapter($source);
         $output = $adapter->newRecord($values);
 
         if(!$this->_context->getUserManager()->canAccess($output, 'add')) {
@@ -80,6 +77,16 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
         }
 
         return $output;
+    }
+
+    public function newPartial($source, array $values=null) {
+        return $this->_sourceToAdapter($source)->newPartial($values);
+    }
+
+    private function _sourceToAdapter($source) {
+        $sourceManager = new opal\query\SourceManager($this->_context->application);
+        $source = $sourceManager->newSource($source, null);
+        return $source->getAdapter();
     }
 
     public function newRecordTaskSet() {

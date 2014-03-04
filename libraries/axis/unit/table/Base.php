@@ -356,6 +356,10 @@ abstract class Base implements
         
         return new $this->_recordClass($this, $values, array_keys($this->getUnitSchema()->getFields()));
     }
+
+    public function newPartial(array $values=null) {
+        return new opal\record\Partial($this, $values);
+    }
     
     
     

@@ -39,7 +39,11 @@ class QuerySourceAdapter implements opal\query\IAdapter {
     }
 
     public function newRecord(array $values=null) {
-        core\stub();
+        return new opal\record\Base($this, $values);
+    }
+
+    public function newPartial(array $values=null) {
+        return new opal\record\Partial($this, $values);
     }
 
 
