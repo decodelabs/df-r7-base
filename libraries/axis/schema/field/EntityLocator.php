@@ -96,6 +96,12 @@ class EntityLocator extends Base implements
 
     protected function _createSubClause(opal\query\IClauseFactory $parent, $value, $operator) {
         $output = new opal\query\clause\WhereList($parent, true);
+
+        if($value instanceof opal\query\IField) {
+            $output->whereField($this->_name.'_id', '=', $value->getName());
+            return $output;
+        }
+
         $locator = $this->sanitizeValue($value);
 
         if($locator === null) {
