@@ -234,11 +234,11 @@ class Rdbms extends Base {
     
     
 // Indexes
-    protected function _getIndexName(opal\schema\IIndex $axisIndex, $isPrimary) {
+    protected function _getIndexName(opal\schema\IIndex $axisIndex, $isPrimary, opal\schema\IPrimitive $primitive=null) {
         if($isPrimary && $this->_rdbmsAdapter->getServerType() == 'mysql') {
             return 'PRIMARY';
         } 
         
-        return 'idx_'.$axisIndex->getName();
+        return parent::_getIndexName($axisIndex, $isPrimary, $primitive);
     }
 }

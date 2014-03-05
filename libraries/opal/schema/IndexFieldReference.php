@@ -37,6 +37,10 @@ class IndexFieldReference implements IIndexFieldReference, core\IDumpable {
     public function getField() {
         return $this->_field;
     }
+
+    public function isMultiField() {
+        return $this->_field instanceof opal\schema\IMultiPrimitiveField;
+    }
     
     public function setSize($size) {
         if($size !== null) {
@@ -63,8 +67,7 @@ class IndexFieldReference implements IIndexFieldReference, core\IDumpable {
         
         return $this->_isDescending;
     }
-    
-    
+
     public static function fromStorageArray(opal\schema\ISchema $schema, array $data) {
         return new self($schema->getField($data['fld']), $data['siz'], $data['des']);
     }

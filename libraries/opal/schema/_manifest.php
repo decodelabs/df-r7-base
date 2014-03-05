@@ -323,12 +323,14 @@ interface IIndex extends IChangeTracker {
     public function hasField(IField $field);
     public function getFieldReferences();
     public function getFields();
+    public function isSingleMultiPrimitiveField();
     public function isVoid();
 }
 
 interface IIndexFieldReference {
     public function _setField(IField $field);
     public function getField();
+    public function isMultiField();
     public function setSize($size);
     public function getSize();
     public function isDescending($flag=null);

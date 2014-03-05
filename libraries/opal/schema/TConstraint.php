@@ -223,6 +223,14 @@ trait TConstraint_Index {
         
         return $output;
     }
+
+    public function isSingleMultiPrimitiveField() {
+        if(count($this->_fieldReferences) != 1) {
+            return false;
+        }
+
+        return $this->_fieldReferences[0]->isMultiField();
+    }
     
     public function isVoid() {
         return empty($this->_fieldReferences);
