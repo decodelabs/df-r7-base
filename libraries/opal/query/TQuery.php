@@ -565,19 +565,26 @@ trait TQuery_Populatable {
     protected $_populates = array();
 
     public function populate($field1) {
-        return $this->_newQuery()->beginPopulate($this, func_get_args(), IPopulateQuery::TYPE_ALL);
+        return $this->_newQuery()->beginPopulate($this, func_get_args(), IPopulateQuery::TYPE_ALL)->endPopulate();
     }
 
-    public function populateSelect($field1) {
-        return $this->_newQuery()->beginPopulate($this, func_get_args(), IPopulateQuery::TYPE_ALL, true);
+    public function populateSelect($populateField, $targetField1=null) {
+        $fields = func_get_args();
+
+        return $this->_newQuery()->beginPopulate($this, [array_shift($fields)], IPopulateQuery::TYPE_ALL, $fields)
+            ->isSelect(true)
+            ->endPopulate();
     }
 
     public function populateSome($field) {
         return $this->_newQuery()->beginPopulate($this, [$field], IPopulateQuery::TYPE_SOME);
     }
 
-    public function populateSelectSome($filed) {
-        return $this->_newQuery()->beginPopulate($this, [$field], IPopulateQuery::TYPE_SOME, true);
+    public function populateSelectSome($populateField, $targetField1=null) {
+        $fields = func_get_args();
+
+        return $this->_newQuery()->beginPopulate($this, [array_shift($fields)], IPopulateQuery::TYPE_SOME, $fields)
+            ->isSelect(true);
     }
 
     public function addPopulate(IPopulateQuery $populate) {
@@ -638,7 +645,6 @@ trait TQuery_Populate {
 
         return $this->_isSelect;
     }
-
 
     public function endPopulate() {
         $this->_parent->addPopulate($this);

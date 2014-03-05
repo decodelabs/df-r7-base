@@ -32,7 +32,7 @@ class Populate implements IPopulateQuery, core\IDumpable {
         }
     }
 
-    public function __construct(IPopulatableQuery $parent, $fieldName, $type) {
+    public function __construct(IPopulatableQuery $parent, $fieldName, $type, array $selectFields=null) {
         $adapter = $parent->getSource()->getAdapter();
 
         if(!$adapter instanceof opal\query\IIntegralAdapter) {
@@ -66,7 +66,12 @@ class Populate implements IPopulateQuery, core\IDumpable {
 
         $adapter = $field->getTargetQueryAdapter($this->_sourceManager->getApplication());
         $alias = uniqid('ppl_'.$fieldName);
-        $this->_source = $this->_sourceManager->newSource($adapter, $alias, ['*']);
+
+        if(empty($selectFields)) {
+            $selectFields = ['*'];
+        }
+
+        $this->_source = $this->_sourceManager->newSource($adapter, $alias, $selectFields);
     }
 
     public function getParentQuery() {

@@ -40,7 +40,7 @@ interface IInitiator extends core\IApplicationAware, ITransactionAware {
     public function beginDelete();
 
     public function beginCorrelation(ISourceProvider $parent, $field, $alias=null);
-    public function beginPopulate(IQuery $parent, array $fields, $type=IPopulateQuery::TYPE_ALL, $isSelect=false);
+    public function beginPopulate(IQuery $parent, array $fields, $type=IPopulateQuery::TYPE_ALL, array $selectFields=null);
 
     public function beginJoin(IQuery $parent, array $fields=array(), $type=IJoinQuery::INNER);
     public function beginJoinConstraint(IQuery $parent, $type=IJoinQuery::INNER);
@@ -219,9 +219,9 @@ interface IAttachableQuery extends IReadQuery {
 
 interface IPopulatableQuery extends IQuery {
     public function populate($field1);
-    public function populateSelect($field1);
+    public function populateSelect($populateField, $targetField1=null);
     public function populateSome($field);
-    public function populateSelectSome($field);
+    public function populateSelectSome($populateField, $targetField1=null);
     public function addPopulate(IPopulateQuery $populate);
     public function getPopulate($fieldName);
     public function getPopulates();

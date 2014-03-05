@@ -173,7 +173,7 @@ class Initiator implements IInitiator {
 
 
 // Populate
-    public function beginPopulate(IQuery $parent, array $fields, $type=IPopulateQuery::TYPE_ALL, $isSelect=false) {
+    public function beginPopulate(IQuery $parent, array $fields, $type=IPopulateQuery::TYPE_ALL, array $selectFields=null) {
         $this->_setMode(IQueryTypes::POPULATE);
         $this->_parentQuery = $parent;
         $fields = core\collection\Util::flattenArray($fields);
@@ -209,7 +209,7 @@ class Initiator implements IInitiator {
             }
 
             if(!$populate = $parent->getPopulate($field)) {
-                $populate = new Populate($parent, $field, $type);
+                $populate = new Populate($parent, $field, $type, $selectFields);
             }
 
             if(!empty($children)) {
@@ -224,15 +224,11 @@ class Initiator implements IInitiator {
             }
         }
 
-        $populate->isSelect($isSelect);
-
-        if($isAll) {
-            $populate->endPopulate();
-            return $parent;
-        } else {
+        if(!$isAll) {
             $populate->setNestedParent($parent);
-            return $populate;
         }
+
+        return $populate;
     }
 
     
