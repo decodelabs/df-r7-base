@@ -71,7 +71,7 @@ class Partial implements IPartial, core\IDumpable {
     public function getValuesForStorage() {
         $output = $this->_collection;
 
-        foreach($this->_getPrimaryFields() as $field) {
+        foreach(opal\schema\Introspector::getPrimaryFields($this->_adapter) as $field) {
             unset($output[$field]);
         }
 
@@ -95,23 +95,16 @@ class Partial implements IPartial, core\IDumpable {
         
         
         // Sanitize values from adapter
-        if($this->_adapter instanceof opal\query\IIntegralAdapter) {        
-            $fieldProcessors = $this->_adapter->getQueryResultValueProcessors(array_keys($row));
-            
-            if(!empty($fieldProcessors)) {
-                $temp = $row;
-                $row = array();
-                
-                foreach($fieldProcessors as $name => $field) {
-                    if(isset($temp[$name])) {
-                        $value = $temp[$name];
-                    } else {
-                        $value = null;
-                    }
+        $temp = $row;
 
-                    $row[$name] = $field->sanitizeValue($value);
-                }
+        foreach(opal\schema\Introspector::getFieldProcessors($this->_adapter, array_keys($row)) as $name => $field) {
+            if(isset($temp[$name])) {
+                $value = $temp[$name];
+            } else {
+                $value = null;
             }
+
+            $row[$name] = $field->sanitizeValue($value);
         }
         
         

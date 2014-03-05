@@ -40,8 +40,6 @@ interface IPrimaryKeySetProvider extends IRecordAdapterProvider {
 
 trait TPrimaryKeySetProvider {
 
-    private $_primaryFields = false;
-
     public function getPrimaryKeySet() {
         return $this->_getPrimaryKeySet(true);
     }
@@ -51,7 +49,7 @@ trait TPrimaryKeySetProvider {
     }
 
     protected function _getPrimaryKeySet($includeChanges=true) {
-        $fields = $this->_getPrimaryFields();
+        $fields = opal\schema\Introspector::getPrimaryFields($this->_adapter);
 
         if($fields === null) {
             throw new LogicException(
@@ -63,23 +61,6 @@ trait TPrimaryKeySetProvider {
     }
 
     abstract protected function _buildPrimaryKeySet(array $fields, $includeChanges=true);
-
-    protected function _getPrimaryFields() {
-        if($this->_primaryFields === false) {
-            $this->_primaryFields = null;
-            $adapter = $this->getRecordAdapter();
-
-            if($adapter instanceof opal\query\IIntegralAdapter) {
-                $index = $adapter->getQueryAdapterSchema()->getPrimaryIndex();
-
-                if($index) {
-                    $this->_primaryFields = array_keys($index->getFields());
-                }
-            }
-        }
-        
-        return $this->_primaryFields;
-    }
 }
 
 

@@ -52,10 +52,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     
     public function __construct(opal\query\IAdapter $adapter, $row=null, array $fields=null) {
         $this->_adapter = $adapter;
-        
-        if($fields === null && $adapter instanceof opal\query\IIntegralAdapter) {
-            $fields = array_keys($adapter->getQueryAdapterSchema()->getFields());
-        }
+        $fields = opal\schema\Introspector::getRecordFields($adapter, $fields);
         
         if(!empty($fields)) { 
             $this->_values = array_fill_keys($fields, null);
@@ -63,17 +60,10 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         
         
         // Prepare value slots
-        if($this->_adapter instanceof opal\query\IIntegralAdapter) {
-            $fieldProcessors = $this->_adapter->getQueryResultValueProcessors();
-            
-            if(!empty($fieldProcessors)) {
-                foreach($fieldProcessors as $name => $field) {
-                    $this->_values[$name] = $field->inflateValueFromRow($name, array(), $this);
-                }
-            }
+        foreach(opal\schema\Introspector::getFieldProcessors($adapter) as $name => $field) {
+            $this->_values[$name] = $field->inflateValueFromRow($name, [], $this);
         }
-        
-        
+
         // Import initial values
         if($row !== null) {
             $this->import($row);
@@ -105,7 +95,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         $this->_isPopulated = false;
 
         // Clear primary values
-        if(null !== ($fields = $this->_getPrimaryFields())) {
+        if(null !== ($fields = opal\schema\Introspector::getPrimaryFields($this->_adapter))) {
             foreach($fields as $field) {
                 unset($this->_changes[$field]);
 
@@ -359,24 +349,17 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         $this->clearChanges();
         
         // Normalize values
-        if($this->_adapter instanceof opal\query\IIntegralAdapter) {
-            $fieldProcessors = $this->_adapter->getQueryResultValueProcessors();
-            
-            if(!empty($fieldProcessors)) {
-                foreach($fieldProcessors as $name => $field) {
-                    $this->_values[$name] = $field->normalizeSavedValue(
-                        $this->_values[$name], 
-                        $this
-                    );
-                }
-            }
+        foreach(opal\schema\Introspector::getFieldProcessors($this->_adapter) as $name => $field) {
+            $this->_values[$name] = $field->normalizeSavedValue(
+                $this->_values[$name], 
+                $this
+            );
         }
-
 
         $this->_isPopulated = false;
         
         // Import primary key
-        if($insertId !== null && (null !== ($primaryFields = $this->_getPrimaryFields()))) {
+        if($insertId !== null && (null !== ($primaryFields = opal\schema\Introspector::getPrimaryFields($this->_adapter)))) {
             if(!$insertId instanceof IPrimaryKeySet) {
                 if(count($primaryFields) > 1) {
                     // Cant do anything here??
@@ -472,19 +455,12 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         
         
         // Inflate values from adapter
-        if($this->_adapter instanceof opal\query\IIntegralAdapter) {
-            $fieldProcessors = $this->_adapter->getQueryResultValueProcessors();
-            
-            if(!empty($fieldProcessors)) {
-                $temp = $row;
-                $row = array();
+        $temp = $row;
 
-                foreach($fieldProcessors as $name => $field) {
-                    $value = $field->inflateValueFromRow($name, $temp, $this);
-                }
-            }
+        foreach(opal\schema\Introspector::getFieldProcessors($this->_adapter) as $name => $field) {
+            $row[$name] = $field->inflateValueFromRow($name, $temp, $this);
         }
-        
+
         
         // Inflate values from extension
         foreach($row as $key => $value) {
@@ -513,23 +489,16 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         
         
         // Sanitize values from adapter
-        if($this->_adapter instanceof opal\query\IIntegralAdapter) {        
-            $fieldProcessors = $this->_adapter->getQueryResultValueProcessors(array_keys($row));
-            
-            if(!empty($fieldProcessors)) {
-                $temp = $row;
-                $row = array();
-                
-                foreach($fieldProcessors as $name => $field) {
-                    if(isset($temp[$name])) {
-                        $value = $temp[$name];
-                    } else {
-                        $value = null;
-                    }
+        $temp = $row;
 
-                    $row[$name] = $field->sanitizeValue($value, $this);
-                }
+        foreach(opal\schema\Introspector::getFieldProcessors($this->_adapter, array_keys($row)) as $name => $field) {
+            if(isset($temp[$name])) {
+                $value = $temp[$name];
+            } else {
+                $value = null;
             }
+
+            $row[$name] = $field->sanitizeValue($value, $this);
         }
         
         
@@ -769,15 +738,8 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         $value = $this->_sanitizeValue($key, $value);
         
         // Sanitize value from extension
-        $fieldProcessor = null;
-
-        if($this->_adapter instanceof opal\query\IIntegralAdapter) {
-            $fieldProcessors = $this->_adapter->getQueryResultValueProcessors(array($key));
-
-            if(isset($fieldProcessors[$key])) {
-                $fieldProcessor = $fieldProcessors[$key];
-                $value = $fieldProcessors[$key]->sanitizeValue($value, $this);
-            }
+        if($fieldProcessor = opal\schema\Introspector::getFieldProcessor($this->_adapter, $key)) {
+            $value = $fieldProcessor->sanitizeValue($value, $this);
         }
 
         if(array_key_exists($key, $this->_changes)) {
@@ -815,17 +777,9 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         $value = $this->_sanitizeValue($key, $value);
         
         // Sanitize value from extension
-        $fieldProcessor = null;
-
-        if($this->_adapter instanceof opal\query\IIntegralAdapter) {
-            $fieldProcessors = $this->_adapter->getQueryResultValueProcessors(array($key));
-
-            if(isset($fieldProcessors[$key])) {
-                $fieldProcessor = $fieldProcessors[$key];
-                $value = $fieldProcessors[$key]->sanitizeValue($value);
-            }
+        if($fieldProcessor = opal\schema\Introspector::getFieldProcessor($this->_adapter, $key)) {
+            $value = $fieldProcessor->sanitizeValue($value);
         }
-        
         
         
         if(array_key_exists($key, $this->_changes)) {

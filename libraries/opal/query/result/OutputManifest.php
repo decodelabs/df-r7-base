@@ -130,24 +130,18 @@ class OutputManifest implements IOutputManifest {
     
     public function getOutputFieldProcessors() {
         if($this->_fieldProcessors === null) {
-            $this->_fieldProcessors = array();
+            $this->_fieldProcessors = [];
             
             foreach($this->_sources as $source) {
                 $sourceAlias = $source->getAlias();
                 $adapter = $source->getAdapter();
-                
-                if($adapter instanceof opal\query\IIntegralAdapter) {
-                    $fieldProcessors = $adapter->getQueryResultValueProcessors(array_keys($source->getOutputFields()));
-                    
-                    if(!empty($fieldProcessors)) {
-                        foreach($fieldProcessors as $name => $fieldProcessor) {
-                            if(!$fieldProcessor instanceof opal\query\IFieldValueProcessor) {
-                                continue;
-                            }
-                            
-                            $this->_fieldProcessors[$sourceAlias.'.'.$name] = $fieldProcessor;
-                        }
+
+                foreach(opal\schema\Introspector::getFieldProcessors($adapter, array_keys($source->getOutputFields())) as $name => $field) {
+                    if(!$field instanceof opal\query\IFieldValueProcessor) {
+                        continue;
                     }
+                    
+                    $this->_fieldProcessors[$sourceAlias.'.'.$name] = $field;
                 }
             }
         }
