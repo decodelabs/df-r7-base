@@ -217,17 +217,12 @@ class Initiator implements IInitiator {
                     $populate->endPopulate();
 
                     $childPopulate = $populate->populateSome($child);
-                    $childPopulate->setNestedParent($populate);
-
                     $populate = $childPopulate;
                 }
             }
         }
 
-        if(!$isAll) {
-            $populate->setNestedParent($parent);
-        }
-
+        $populate->setNestedParent($parent);
         return $populate;
     }
 
