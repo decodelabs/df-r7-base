@@ -428,9 +428,14 @@ class ArrayManipulator implements IArrayManipulator {
         $aggregateFieldMap = [];
 
         foreach($aggregateFields as $alias => $field) {
-            $aggregateFieldMap[$alias] = $field->getQualifiedName();
+            if(!$fields[$alias] instanceof opal\query\ICorrelationField) {
+                $aggregateFieldMap[$alias] = $field->getQualifiedName();
+            }
         }
 
+        if(empty($aggregateFieldMap)) {
+            return $this;
+        }
         
         // init aggregates
         foreach($this->_rows as &$row) {
@@ -492,6 +497,11 @@ class ArrayManipulator implements IArrayManipulator {
                 
                 foreach($aggregateFieldMap as $alias => $qName) {
                     $field = $fields[$alias];
+
+                    if($field instanceof opal\query\ICorrelationField) {
+                        continue;
+                    }
+
                     $rowAggregateData = $aggregateData[$qName];
 
                     if($aggregateFields[$alias]->isDistinct()) {

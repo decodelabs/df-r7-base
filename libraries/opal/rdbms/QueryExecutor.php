@@ -712,7 +712,7 @@ abstract class QueryExecutor implements IQueryExecutor {
             // Wildcard
             $output = $this->_adapter->quoteTableAliasReference($field->getSourceAlias()).'.*';
             $defineAlias = false;
-            
+
         } else if($field instanceof opal\query\IAggregateField) {
             // Aggregate
             $targetField = $field->getTargetField();

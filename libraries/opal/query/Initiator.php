@@ -249,6 +249,10 @@ class Initiator implements IInitiator {
         $this->_setMode(IQueryTypes::JOIN);
         $this->_parentQuery = $parent;
         $fields = core\collection\Util::flattenArray($fields);
+
+        if(empty($fields)) {
+            $fields = ['*'];
+        }
         
         switch($type) {
             case IJoinQuery::INNER:

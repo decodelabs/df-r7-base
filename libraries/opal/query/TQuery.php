@@ -143,7 +143,21 @@ trait TQuery {
 
 
     public function importBlock($name) {
-        $adapter = $this->getSource()->getAdapter();
+        if(preg_match('/(.+)\.(.+)$/', $name, $matches)) {
+            $source = $this->getSourceManager()->getSourceByAlias($matches[1]);
+
+            if(!$source) {
+                throw new InvalidArgumentException(
+                    'Cannot import query block - adapter source '.$matches[1].' could not be found'
+                );
+            }
+
+            $name = $matches[2];
+        } else {
+            $source = $this->getSource();
+        }
+
+        $adapter = $source->getAdapter();
 
         if(!$adapter instanceof opal\query\IIntegralAdapter) {
             throw new LogicException(
@@ -152,6 +166,35 @@ trait TQuery {
         }
 
         $adapter->applyQueryBlock($this, $name, array_slice(func_get_args(), 1));
+        return $this;
+    }
+
+    public function importRelationBlock($relationField, $name) {
+        $field = $this->_lookupRelationField($relationField);
+
+        if(preg_match('/(.+)\.(.+)$/', $name, $matches)) {
+            $source = $this->getSourceManager()->getSourceByAlias($matches[1]);
+
+            if(!$source) {
+                throw new InvalidArgumentException(
+                    'Cannot import query block - adapter source '.$matches[1].' could not be found'
+                );
+            }
+
+            $name = $matches[2];
+            $adapter = $source->getAdapter();
+        } else {
+            $field = $this->_lookupRelationField($relationField);
+            $adapter = $field->getTargetQueryAdapter();
+        }
+
+        if(!$adapter instanceof opal\query\IIntegralAdapter) {
+            throw new LogicException(
+                'Cannot import query block - adapter is not integral'
+            );
+        }
+
+        $adapter->applyRelationQueryBlock($this, $field->getName(), $name, array_slice(func_get_args(), 1));
         return $this;
     }
 
@@ -438,7 +481,7 @@ trait TQuery_Joinable {
 
         if($field instanceof opal\schema\IBridgedRelationField) {
             // Field is bridged
-            core\stuf($field);
+            core\stub($field);
             $bridgeAdapter = $field->getBridgeQueryAdapter($application);
             $bridgeAlias = $fieldName.'Bridge';
             $localAlias = $source->getAlias();
@@ -450,7 +493,7 @@ trait TQuery_Joinable {
                 ->on($bridgeAlias.'.'.$localName, '=', $localAlias.'.@primary');
         } else if($field instanceof opal\schema\IManyRelationField) {
             // Field is OneToMany
-            core\stuf($field);
+            core\stub($field);
             $targetAdapter = $field->getTargetQueryAdapter($application);
             $targetAlias = $fieldName;
             $targetFieldName = $field->getTargetField();
@@ -860,6 +903,24 @@ trait TQuery_Attachable {
     public function attach() {
         return $this->_newQuery()->beginAttach($this, func_get_args());
     }
+
+    public function attachRelation($relationField) {
+        $fields = func_get_args();
+
+        $populate = $this->_newQuery()->beginPopulate($this, [array_shift($fields)], IPopulateQuery::TYPE_ALL, $fields)
+            ->isSelect($this instanceof ISelectQuery);
+
+        $field = $this->_lookupRelationField($relationField);
+        $attachment = $field->rewritePopulateQueryToAttachment($populate);
+
+        if(!$attachment instanceof opal\query\IAttachQuery) {
+            throw new opal\query\InvalidArgumentException(
+                'Cannot populate '.$populate->getFieldName().' - integral schema field cannot convert to attachment'
+            );
+        }
+
+        return $attachment;
+    }
     
     public function addAttachment($name, IAttachQuery $attachment) {
         $source = $this->getSource();
@@ -871,7 +932,7 @@ trait TQuery_Attachable {
             );
         }
         
-        if(isset($this->_attachments[$name])) {
+        if(isset($this->_attachments[$name]) && $this->_attachments[$name] !== $attachment) {
             throw new RuntimeException(
                 'An attachment has already been created with the name "'.$name.'"'
             );

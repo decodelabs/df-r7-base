@@ -191,8 +191,15 @@ class Source implements ISource, core\IDumpable {
                 }
 
                 $field = $this->extrapolateIntegralAdapterField($name, null, $queryField);
+                $qName = $field->getQualifiedName();
 
                 if($field) {
+                    foreach($this->_outputFields as $outField) {
+                        if($outField->getQualifiedName() == $qName) {
+                            continue 2;
+                        }
+                    }
+
                     $fields[] = $field;
                 }
             }

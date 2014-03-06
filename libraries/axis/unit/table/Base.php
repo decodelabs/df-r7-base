@@ -313,11 +313,25 @@ abstract class Base implements
 
         if(!method_exists($this, $method)) {
             throw new axis\LogicException(
-                'Query block '.$name.' does not exist'
+                'Query block '.$name.' does not exist on '.$this->getUnitId()
             );
         }
 
         array_unshift($args, $query);
+        call_user_func_array([$this, $method], $args);
+        return $this;
+    }
+
+    public function applyRelationQueryBlock(opal\query\IQuery $query, $relationField, $name, array $args) {
+        $method = 'apply'.ucfirst($name).'RelationQueryBlock';
+
+        if(!method_exists($this, $method)) {
+            throw new axis\LogicException(
+                'Relation query block '.$name.' does not exist on '.$this->getUnitId()
+            );
+        }
+
+        array_unshift($args, $query, $relationField);
         call_user_func_array([$this, $method], $args);
         return $this;
     }

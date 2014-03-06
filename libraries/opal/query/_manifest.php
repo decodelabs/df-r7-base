@@ -165,6 +165,7 @@ interface IHavingClauseFactory extends IClauseFactory {
 interface IQuery extends ISourceProvider, ITransactionAware, user\IAccessLock, core\IChainable {
     public function getQueryType();
     public function importBlock($name);
+    public function importRelationBlock($relationField, $name);
 }
 
 interface IReadQuery extends IQuery, \IteratorAggregate, core\IArrayProvider {
@@ -219,6 +220,7 @@ interface IJoinConstrainableQuery extends IJoinProviderQuery {
 
 interface IAttachableQuery extends IReadQuery {
     public function attach();
+    public function attachRelation($relationField);
     public function addAttachment($name, IAttachQuery $attachment);
     public function getAttachments();
     public function clearAttachments();
@@ -601,6 +603,7 @@ interface IIntegralAdapter extends IAdapter {
 
     public function getQueryResultValueProcessors(array $fields=null);
     public function applyQueryBlock(IQuery $query, $name, array $args);
+    public function applyRelationQueryBlock(IQuery $query, $relationField, $name, array $args);
 }
 
 interface IPaginatingAdapter extends IAdapter {
