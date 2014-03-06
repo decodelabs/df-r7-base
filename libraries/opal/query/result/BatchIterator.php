@@ -18,6 +18,8 @@ class BatchIterator implements IBatchIterator {
     protected $_isForFetch = false;
     protected $_populates = array();
     protected $_attachments = array();
+    protected $_combines = array();
+
     protected $_keyField;
     protected $_valField;
     protected $_batchData = array();
@@ -93,6 +95,15 @@ class BatchIterator implements IBatchIterator {
     
     public function getAttachments() {
         return $this->_attachments;
+    }
+
+    public function setCombines(array $combines) {
+        $this->_combines = $combines;
+        return $this;
+    }
+
+    public function getCombines() {
+        return $this->_combines;
     }
     
     public function setListKeyField(opal\query\IField $field=null) {

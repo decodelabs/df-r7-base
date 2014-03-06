@@ -29,17 +29,46 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
     }
     
 
-    public function fetchForAction($source, $primary, $action=null) {
-        $actionName = $action;
+    public function fetchForAction($source, $primary, $action=null, Callable $chain=null) {
+        $output = $this->_queryForAction($this->fetch()->from($source), $primary, $action, $chain);
 
-        if($actionName === null) {
-            $actionName = 'access';
+        if(!$this->_context->getUserManager()->canAccess($output, $action)) {
+            $actionName = $action;
+
+            if($actionName === null) {
+                $actionName = 'access';
+            }
+
+            $this->_context->throwError(401, 'Cannot '.$actionName.' '.$name.' items');
         }
 
-        $query = $this->fetch()->from($source);
+        return $output;
+    }
+
+    public function selectForAction($source, $fields, $primary=null, $action=null, $chain=null) {
+        if(!is_array($fields)) {
+            $chain = $action;
+            $action = $primary;
+            $primary = $fields;
+            $fields = ['*'];
+        }
+
+        return $this->_queryForAction($this->select($fields)->from($source), $primary, $action, $chain);
+    }
+
+    public function _queryForAction(opal\query\IReadQuery $query, &$primary, &$action, Callable $chain=null) {
+        if(is_callable($action)) {
+            $chain = $action;
+            $action = null;
+        }
+
         $this->applyQueryActionClause($query, $primary);
 
         $name = $query->getSource()->getDisplayName();
+
+        if($chain) {
+            $query->chain($chain);
+        }
 
         if(!$output = $query->toRow()) {
             if(is_array($primary)) {
@@ -47,10 +76,6 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
             }
 
             $this->_context->throwError(404, 'Item not found - '.$name.'#'.$primary);
-        }
-
-        if(!$this->_context->getUserManager()->canAccess($output, $action)) {
-            $this->_context->throwError(401, 'Cannot '.$actionName.' '.$name.' items');
         }
 
         return $output;

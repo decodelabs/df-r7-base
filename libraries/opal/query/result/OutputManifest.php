@@ -18,6 +18,7 @@ class OutputManifest implements IOutputManifest {
     protected $_outputFields = array();
     protected $_privateFields = array();
     protected $_fieldProcessors = null;
+    protected $_combines = array();
     
     public function __construct(opal\query\ISource $source, array $rows=null, $isNormalized=true) {
         $this->importSource($source, $rows, $isNormalized);
@@ -81,7 +82,8 @@ class OutputManifest implements IOutputManifest {
         $alias = $field->getAlias();
 
         if(isset($this->_outputFields[$alias]) 
-        && $field !== isset($this->_outputFields[$alias])) {
+        && $field !== isset($this->_outputFields[$alias])
+        && !$this->_outputFields[$alias] instanceof opal\query\ILateAttchField) {
             $field->setOverrideField($this->_outputFields[$alias]);
         }
 
@@ -95,6 +97,10 @@ class OutputManifest implements IOutputManifest {
             if($aggregateField = $field->getAggregateOutputField()) {
                 $this->_aggregateFields[$aggregateField->getAlias()] = $aggregateField;
             }
+        }
+
+        if($field instanceof opal\query\ICombineField) {
+            $this->_combines[$field->getName()] = $field->getCombine();
         }
         
         return $this;
@@ -147,5 +153,9 @@ class OutputManifest implements IOutputManifest {
         }
         
         return $this->_fieldProcessors;
+    }
+
+    public function getCombines() {
+        return $this->_combines;
     }
 }

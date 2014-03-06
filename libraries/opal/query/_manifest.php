@@ -41,6 +41,7 @@ interface IInitiator extends core\IApplicationAware, ITransactionAware {
 
     public function beginCorrelation(ISourceProvider $parent, $field, $alias=null);
     public function beginPopulate(IQuery $parent, array $fields, $type=IPopulateQuery::TYPE_ALL, array $selectFields=null);
+    public function beginCombine(ICombinableQuery $parent, array $fields);
 
     public function beginJoin(IQuery $parent, array $fields=array(), $type=IJoinQuery::INNER);
     public function beginJoinConstraint(IQuery $parent, $type=IJoinQuery::INNER);
@@ -198,8 +199,14 @@ interface IJoinProviderQuery extends IQuery {
 
 interface IJoinableQuery extends IJoinProviderQuery {
     public function join($field1=null);
+    public function joinRelation($relationField, $field1=null);
+    public function beginJoinRelation($relationField, $field1=null);
     public function leftJoin($field1=null);
+    public function leftJoinRelation($relationField, $field1=null);
+    public function beginLeftJoinRelation($relationField, $field1=null);
     public function rightJoin($field1=null);
+    public function rightJoinRelation($relationField, $field1=null);
+    public function beginRightJoinRelation($relationField, $field1=null);
     public function addJoin(IJoinQuery $join);
 }
 
@@ -226,6 +233,13 @@ interface IPopulatableQuery extends IQuery {
     public function getPopulate($fieldName);
     public function getPopulates();
     public function clearPopulates();
+}
+
+interface ICombinableQuery extends IQuery {
+    public function combine($field1);
+    public function addCombine($name, ICombineQuery $combine);
+    public function getCombines();
+    public function clearCombines();
 }
 
 
@@ -328,6 +342,23 @@ interface IPopulateQuery extends
 }
 
 
+interface ICombineQuery extends 
+    IQuery,
+    IParentQueryAware,
+    INestedComponent {
+    
+    public function setFields($field1);
+    public function addFields($field1);
+    public function getFields();
+    public function removeField($name);
+    public function clearFields();
+
+    public function asOne($name);
+    public function asCopy($name);
+    public function isCopy($flag=null); 
+}
+
+
 interface IAttachQuery extends 
     IQuery, 
     IParentQueryAware, 
@@ -375,6 +406,7 @@ interface ISelectQuery extends
     IJoinableQuery, 
     IAttachableQuery, 
     IPopulatableQuery,
+    ICombinableQuery,
     IPrerequisiteClauseQuery,
     IGroupableQuery, 
     IHavingClauseQuery, 
@@ -495,6 +527,7 @@ interface IQueryTypes {
     
     const CORRELATION = 101;
     const POPULATE = 102;
+    const COMBINE = 103;
 
     const JOIN = 201;
     const JOIN_CONSTRAINT = 202;
@@ -622,6 +655,7 @@ interface ISourceManager extends core\IApplicationAware, ITransactionAware {
     
     public function extrapolateSourceAdapter($adapter);
     public function extrapolateOutputField(ISource $source, $name);
+    public function realiasOutputField(ISource $parentSource, ISource $source, $name);
     public function extrapolateField(ISource $source, $name);
     public function extrapolateIntrinsicField(ISource $source, $name, $checkAlias=null);
     public function extrapolateAggregateField(ISource $source, $name, $checkAlias=null);
@@ -711,7 +745,15 @@ interface IAggregateField extends IField {
     public function isDistinct($flag=null);
 }
 
-interface IAttachmentField extends IField {}
+interface ILateAttachField extends IField {}
+
+interface IAttachmentField extends ILateAttachField {
+    public function getAttachment();
+}
+
+interface ICombineField extends ILateAttachField {
+    public function getCombine();
+}
 
 interface IVirtualField extends IField {
     public function getTargetFields();

@@ -19,6 +19,7 @@ class Select implements ISelectQuery, core\IDumpable {
     use TQuery_Joinable;
     use TQuery_Attachable;
     use TQuery_Populatable;
+    use TQuery_Combinable;
     use TQuery_PrerequisiteClauseFactory;
     use TQuery_PrerequisiteAwareWhereClauseFactory;
     use TQuery_Groupable;
@@ -146,6 +147,10 @@ class Select implements ISelectQuery, core\IDumpable {
         
         if(!empty($this->_populates)) {
             $output['populates'] = $this->_populates;
+        }
+
+        if(!empty($this->_combines)) {
+            $output['combines'] = $this->_combines;
         }
 
         if(!empty($this->_joins)) {

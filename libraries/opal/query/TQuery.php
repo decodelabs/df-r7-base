@@ -164,6 +164,31 @@ trait TQuery {
     public function getTransaction() {
         return $this->getSourceManager()->getTransaction();
     }
+
+    protected function _lookupRelationField($fieldName) {
+        $sourceManager = $this->getSourceManager();
+        $queryField = $sourceManager->extrapolateField($this->getSource(), $fieldName);
+
+        $source = $queryField->getSource();
+        $sourceAdapter = $source->getAdapter();
+
+        if(!$sourceAdapter instanceof IIntegralAdapter) {
+            throw new LogicException(
+                'Source adapter is not integral and does not have relation meta data'
+            );
+        }
+
+        $schema = $sourceAdapter->getQueryAdapterSchema();
+        $field = $schema->getField($queryField->getName());
+
+        if(!$field instanceof opal\schema\IRelationField) {
+            throw new opal\query\InvalidArgumentException(
+                $fieldName.' is not a relation field'
+            );
+        }
+
+        return $field;
+    }
 }
 
 
@@ -362,17 +387,89 @@ trait TQuery_Joinable {
     
     protected $_joins = array();
     
+// Inner
     public function join($field1=null) {
         return $this->_newQuery()->beginJoin($this, func_get_args(), IJoinQuery::INNER);
     }
+
+    public function joinRelation($relationField, $field1=null) {
+        return $this->_beginJoinRelation($relationField, array_slice(func_get_args(), 1), IJoinQuery::INNER)->endJoin();
+    }
+
+    public function beginJoinRelation($relationField, $field1=null) {
+        return $this->_beginJoinRelation($relationField, array_slice(func_get_args(), 1), IJoinQuery::INNER);
+    }
     
+
+// Left
     public function leftJoin($field1=null) {
         return $this->_newQuery()->beginJoin($this, func_get_args(), IJoinQuery::LEFT);
     }
+
+    public function leftJoinRelation($relationField, $field1=null) {
+        return $this->_beginJoinRelation($relationField, array_slice(func_get_args(), 1), IJoinQuery::LEFT)->endJoin();
+    }
+
+    public function beginLeftJoinRelation($relationField, $field1=null) {
+        return $this->_beginJoinRelation($relationField, array_slice(func_get_args(), 1), IJoinQuery::LEFT);
+    }
     
+
+// Right
     public function rightJoin($field1=null) {
         return $this->_newQuery()->beginJoin($this, func_get_args(), IJoinQuery::RIGHT);
     }
+
+    public function rightJoinRelation($relationField, $field1=null) {
+        return $this->_beginJoinRelation($relationField, array_slice(func_get_args(), 1), IJoinQuery::RIGHT)->endJoin();
+    }
+
+    public function beginRightJoinRelation($relationField, $field1=null) {
+        return $this->_beginJoinRelation($relationField, array_slice(func_get_args(), 1), IJoinQuery::RIGHT);
+    }
+
+
+    protected function _beginJoinRelation($fieldName, array $targetFields, $joinType=IJoinQuery::INNER) {
+        $field = $this->_lookupRelationField($fieldName);
+
+        $application = $this->getSourceManager()->getApplication();
+        $join = $this->_newQuery()->beginJoin($this, $targetFields, $joinType);
+        $targetAlias = $field->getName();
+
+        if($field instanceof opal\schema\IBridgedRelationField) {
+            // Field is bridged
+            core\stuf($field);
+            $bridgeAdapter = $field->getBridgeQueryAdapter($application);
+            $bridgeAlias = $fieldName.'Bridge';
+            $localAlias = $source->getAlias();
+            $localName = $field->getBridgeLocalFieldName();
+            $targetName = $field->getBridgeTargetFieldName();
+
+            $correlation = $this->correlate($aggregateType.'('.$bridgeAlias.'.'.$targetName.')', $alias)
+                ->from($bridgeAdapter, $bridgeAlias)
+                ->on($bridgeAlias.'.'.$localName, '=', $localAlias.'.@primary');
+        } else if($field instanceof opal\schema\IManyRelationField) {
+            // Field is OneToMany
+            core\stuf($field);
+            $targetAdapter = $field->getTargetQueryAdapter($application);
+            $targetAlias = $fieldName;
+            $targetFieldName = $field->getTargetField();
+            $localAlias = $source->getAlias();
+
+            $correlation = $this->correlate($aggregateType.'('.$targetAlias.'.@primary)', $alias)
+                ->from($targetAdapter, $targetAlias)
+                ->on($targetAlias.'.'.$targetFieldName, '=', $localAlias.'.@primary');
+        } else {
+            // Field is One
+            $targetAdapter = $field->getTargetQueryAdapter($application);
+            
+            $join = $join->from($targetAdapter, $targetAlias)
+                ->on($targetAlias.'.@primary', '=', $fieldName);
+        }
+
+        return $join;
+    }
+
     
     public function addJoin(IJoinQuery $join) {
         $source = $this->getSource();
@@ -654,12 +751,111 @@ trait TQuery_Populate {
 
 
 
+
+
+/*************************
+ * Combine
+ */
+trait TQuery_Combinable {
+
+    protected $_combines = [];
+
+    public function combine($field1) {
+        return $this->_newQuery()->beginCombine($this, func_get_args());
+    }
+
+    public function addCombine($name, ICombineQuery $combine) {
+        $this->_combines[$name] = $combine;
+        return $this;
+    }
+
+    public function getCombines() {
+        return $this->_combines;
+    }
+
+    public function clearCombines() {
+        $this->_combines = [];
+        return $this;
+    }
+}
+
+
+trait TQuery_Combine {
+
+    use TQuery_ParentAware;
+    use TQuery_NestedComponent;
+
+    protected $_fields = [];
+    protected $_isCopy = false;
+
+    public function getQueryType() {
+        return IQueryTypes::COMBINE;
+    }
+
+    public function setFields($fields) {
+        return $this->clearFields()->addFields(core\collection\Util::flattenArray(func_get_args()));
+    }
+
+    public function addFields($fields) {
+        $fields = core\collection\Util::flattenArray(func_get_args());
+        $sourceManager = $this->getSourceManager();
+        $parentSource = $this->_parent->getSource();
+        $source = $this->getSource();
+
+        foreach($fields as $fieldName) {
+            $field = $sourceManager->realiasOutputField($parentSource, $source, $fieldName);
+            $this->_fields[$field->getAlias()] = $field;
+        }
+        
+        return $this;
+    }
+
+    public function getFields() {
+        return $this->_fields;
+    }
+
+    public function removeField($name) {
+        unset($this->_fields[$name]);
+        return $this;
+    }
+
+    public function clearFields() {
+        $this->_fields = [];
+        return $this;
+    }
+
+    public function asOne($name) {
+        $this->_isCopy = false;
+        $this->_parent->addCombine($name, $this);
+        return $this->_parent;
+    }
+
+    public function asCopy($name) {
+        $this->_isCopy = true;
+        $this->_parent->addCombine($name, $this);
+        return $this->_parent;
+    }
+
+    public function isCopy($flag=null) {
+        if($flag !== null) {
+            $this->_isCopy = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_isCopy;
+    }
+}
+
+
+
+
+
 /*************************
  * Attachments
  */
 trait TQuery_Attachable {
     
-    protected $_attachments = array();
+    protected $_attachments = [];
     
     public function attach() {
         return $this->_newQuery()->beginAttach($this, func_get_args());
@@ -675,7 +871,7 @@ trait TQuery_Attachable {
             );
         }
         
-        if(isset($this->_attach[$name])) {
+        if(isset($this->_attachments[$name])) {
             throw new RuntimeException(
                 'An attachment has already been created with the name "'.$name.'"'
             );
@@ -690,7 +886,7 @@ trait TQuery_Attachable {
     }
     
     public function clearAttachments() {
-        $this->_attachments = array();
+        $this->_attachments = [];
         return $this;
     }
 }
@@ -1460,6 +1656,10 @@ trait TQuery_Read {
 
         if($this instanceof opal\query\IAttachableQuery) {
             $output->setAttachments($this->getAttachments());
+        }
+
+        if($this instanceof opal\query\ICombinableQuery) {
+            $output->setCombines($this->getCombines());
         }
 
         return $output;

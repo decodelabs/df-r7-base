@@ -193,6 +193,34 @@ class SourceManager implements ISourceManager, core\IDumpable {
         return $this->_extrapolateField($source, $name, $fieldAlias, null, true, true, true, true);
     }
 
+    public function realiasOutputField(ISource $parentSource, ISource $source, $name) {
+        $alias = $name;
+        $sourceAlias = null;
+
+        if(preg_match('/(.+) as (.+)$/', $name, $matches)) {
+            $name = $matches[1];
+            $alias = $matches[2];
+        }
+
+        if(preg_match('/(.+)\.(.+)$/', $name, $matches)) {
+            $sourceAlias = $matches[1];
+            $name = $matches[2];
+        }
+
+        if($sourceAlias && !isset($this->_sources[$sourceAlias])) {
+            throw new InvalidArgumentException(
+                'No source has been defined with alias '.$sourceAlias
+            );
+        }
+
+        if(!$field = $this->_findFieldByAlias($name, $parentSource, null, $sourceAlias)) {
+            $targetSource = $sourceAlias ? $this->_sources[$sourceAlias] : $parentSource;
+            $field = $this->_extrapolateField($targetSource, $name, null, null, true, true, true, true);
+        }
+
+        return new opal\query\field\Virtual($source, $name, $alias, [$field]);
+    }
+
     public function extrapolateField(ISource $source, $name) {
         return $this->_extrapolateField($source, $name);
     }
@@ -357,7 +385,13 @@ class SourceManager implements ISourceManager, core\IDumpable {
         }
     }
     
-    protected function _findFieldByAlias($alias, ISource $source, $checkAlias=null) {
+    protected function _findFieldByAlias($alias, ISource $source, $checkAlias=null, $sourceAlias=null) {
+        if($sourceAlias !== null && isset($this->_sources[$sourceAlias])) {
+            if($field = $this->_sources[$sourceAlias]->getFieldByAlias($alias)) {
+                return $field;
+            }
+        }
+
         if($field = $source->getFieldByAlias($alias)) {
             return $field;
         }

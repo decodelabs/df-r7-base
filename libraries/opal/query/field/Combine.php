@@ -9,24 +9,24 @@ use df;
 use df\core;
 use df\opal;
 
-class Attachment implements opal\query\IAttachmentField, core\IDumpable {
+class Combine implements opal\query\ICombineField, core\IDumpable {
     
     use opal\query\TField;
     
     protected $_name;
-    protected $_attachment;
+    protected $_combine;
     
-    public function __construct($name, opal\query\IAttachQuery $attachment) {
+    public function __construct($name, opal\query\ICombineQuery $combine) {
         $this->_name = $name;
-        $this->_attachment = $attachment;
+        $this->_combine = $combine;
     }
     
     public function getSource() {
-        return $this->_attachment->getSource();
+        return $this->_combine->getSource();
     }
     
     public function getSourceAlias() {
-        return $this->_attachment->getSourceAlias();
+        return $this->_combine->getSourceAlias();
     }
     
     public function getName() {
@@ -34,7 +34,7 @@ class Attachment implements opal\query\IAttachmentField, core\IDumpable {
     }
     
     public function getQualifiedName() {
-        return $this->_attachment->getParentQuery()->getSourceAlias().'.'.$this->_name;
+        return $this->_combine->getParentQuery()->getSourceAlias().'.'.$this->_name;
     }
     
     public function getAlias() {
@@ -53,12 +53,13 @@ class Attachment implements opal\query\IAttachmentField, core\IDumpable {
         return true;
     }
 
-    public function getAttachment() {
-        return $this->_attachment;
+    public function getCombine() {
+        return $this->_combine;
     }
-    
+
+
 // Dump
     public function getDumpProperties() {
-        return 'attach('.$this->getQualifiedName().')';
+        return 'combine('.$this->getQualifiedName().', ['.implode(', ', array_keys($this->_combine->getFields())).'])';
     }
 }

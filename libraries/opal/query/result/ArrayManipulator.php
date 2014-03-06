@@ -132,6 +132,10 @@ class ArrayManipulator implements IArrayManipulator {
                     return $output;
                 }
             }
+
+            if($query instanceof opal\query\ICombinableQuery) {
+                $this->applyCombines($query->getCombines());
+            }
             
             $this->applyOutputFields(
                 $keyField, $valField,
@@ -227,8 +231,8 @@ class ArrayManipulator implements IArrayManipulator {
 
     public function applyBatchIteratorExpansion(IBatchIterator $batchIterator) {
         $this->applyPopulates($batchIterator->getPopulates());
-        
         $this->applyAttachments($batchIterator->getAttachments());
+        $this->applyCombines($batchIterator->getCombines());
         
         $this->applyOutputFields(
             $batchIterator->getListKeyField(), 
@@ -813,7 +817,7 @@ class ArrayManipulator implements IArrayManipulator {
 
 
             // Child attachments
-            $childAttachments = array();
+            $childAttachments = [];
 
             if($attachment instanceof opal\query\IPopulatableQuery) {
                 $childAttachments = array_merge($childAttachments, $this->rewritePopulates($attachment->getPopulates()));
@@ -827,9 +831,14 @@ class ArrayManipulator implements IArrayManipulator {
                 $manipulator->applyAttachments($childAttachments);
             }
 
+            if($attachment instanceof opal\query\ICombinableQuery) {
+                $manipulator->applyCombines($attachment->getCombines());
+            }
+
             
             $dataSet = $manipulator->getRows();
             $qName = $attachmentQueryField->getQualifiedName();
+            
 
             // Format and apply output
             foreach($this->_rows as $i => &$row) {
@@ -858,6 +867,22 @@ class ArrayManipulator implements IArrayManipulator {
 
         return $this;
     }
+
+
+
+// Combines
+    public function applyCombines(array $combines) {
+        if(empty($combines)) {
+            return $this;
+        }
+
+
+        foreach($combines as $name => $combine) {
+            $this->_outputManifest->addOutputField(new opal\query\field\Combine($name, $combine));
+        }
+        
+        return $this;
+    }
     
     
 // Output
@@ -879,6 +904,7 @@ class ArrayManipulator implements IArrayManipulator {
         $aggregateFields = $this->_outputManifest->getAggregateFields();
         $wildcards = $this->_outputManifest->getWildcardMap();
         $fieldProcessors = $this->_outputManifest->getOutputFieldProcessors();
+        $combines = $this->_outputManifest->getCombines();
 
         // Prepare qualified names
         $qNameMap = [];
@@ -1027,6 +1053,28 @@ class ArrayManipulator implements IArrayManipulator {
                     if($qValue !== null || !isset($current[$alias])) {
                         $current[$alias] = $qValue;
                     }
+                }
+
+                foreach($combines as $combineName => $combine) {
+                    $combineFields = $combine->getFields();
+                    $combineRow = [];
+
+                    foreach($combineFields as $combineFieldName => $combineField) {
+                        $targetField = $combineField->dereference()[0];
+                        $targetQName = $targetField->getQualifiedName();
+
+                        if(isset($row[$targetQName])) {
+                            $combineRow[$combineFieldName] = $row[$targetQName];
+                        } else {
+                            $combineRow[$combineFieldName] = null;
+                        }
+
+                        if(!$combine->isCopy()) {
+                            unset($current[$combineField->getName()]);
+                        }
+                    }
+
+                    $current[$combineName] = $combineRow;
                 }
                 
                 

@@ -31,6 +31,9 @@ interface IBatchIterator extends core\collection\ICollection, \IteratorAggregate
 
     public function setAttachments(array $attachments);
     public function getAttachments();
+
+    public function setCombines(array $combines);
+    public function getCombines();
     
     public function setListKeyField(opal\query\IField $field=null);
     public function getListKeyField();
@@ -60,6 +63,7 @@ interface IOutputManifest {
     public function hasAggregateFields();
     
     public function getOutputFieldProcessors();
+    public function getCombines();
 }
 
 
@@ -84,5 +88,6 @@ interface IArrayManipulator {
     public function applyLimit($limit, $offset);
     public function applyPopulates(array $populates);
     public function applyAttachments(array $attachments);
+    public function applyCombines(array $combines);
     public function applyOutputFields(opal\query\IField $keyField=null, opal\query\IField $valField=null, $forFetch=false);
 }

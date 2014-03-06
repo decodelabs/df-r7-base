@@ -33,6 +33,14 @@ class SelectAttach extends Select implements ISelectAttachQuery {
             'sources' => $this->_sourceManager,
             'fields' => $this->_source
         ];
+
+        if(!empty($this->_populates)) {
+            $output['populates'] = $this->_populates;
+        }
+
+        if(!empty($this->_combines)) {
+            $output['combines'] = $this->_combines;
+        }
         
         if(!empty($this->_joins)) {
             $output['join'] = $this->_joins;

@@ -231,6 +231,17 @@ class Initiator implements IInitiator {
         return $populate;
     }
 
+
+
+// Combine
+    public function beginCombine(ICombinableQuery $parent, array $fields) {
+        $this->_setMode(IQueryTypes::COMBINE);
+        $this->_parentQuery = $parent;
+        $fields = core\collection\Util::flattenArray($fields);
+
+        return new Combine($parent, $fields);
+    }
+
     
     
 // Join
