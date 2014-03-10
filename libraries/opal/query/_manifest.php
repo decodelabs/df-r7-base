@@ -45,7 +45,7 @@ interface IInitiator extends core\IApplicationAware, ITransactionAware {
 
     public function beginJoin(IQuery $parent, array $fields=array(), $type=IJoinQuery::INNER);
     public function beginJoinConstraint(IQuery $parent, $type=IJoinQuery::INNER);
-    public function beginAttach(IReadQuery $parent, array $fields=array());
+    public function beginAttach(IReadQuery $parent, array $fields=array(), $isSelect=false);
     public static function beginAttachFromPopulate(IPopulateQuery $populate);
     
     public function getFields();
@@ -220,7 +220,11 @@ interface IJoinConstrainableQuery extends IJoinProviderQuery {
 
 interface IAttachableQuery extends IReadQuery {
     public function attach();
+    public function selectAttach();
+    public function fetchAttach();
     public function attachRelation($relationField);
+    public function selectAttachRelation($relationField);
+    public function fetchAttachRelation($relationField);
     public function addAttachment($name, IAttachQuery $attachment);
     public function getAttachments();
     public function clearAttachments();

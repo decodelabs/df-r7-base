@@ -295,7 +295,7 @@ class Initiator implements IInitiator {
 
 
 // Attach
-    public function beginAttach(IReadQuery $parent, array $fields=array()) {
+    public function beginAttach(IReadQuery $parent, array $fields=array(), $isSelect=false) {
         $this->_parentQuery = $parent;
         $fields = core\collection\Util::flattenArray($fields);
         
@@ -303,14 +303,18 @@ class Initiator implements IInitiator {
             $fields = $fields[0];
         }
         
-        if(empty($fields)) {
+        if(!$isSelect) {
             $this->_setMode(IQueryTypes::FETCH_ATTACH);
             $this->_fieldMap = ['*' => null];
         } else {
             $this->_setMode(IQueryTypes::SELECT_ATTACH);
-            
-            foreach($fields as $field) {
-                $this->_fieldMap[$field] = null;
+
+            if(empty($fields)) {
+                $this->_fieldMap = ['*' => null];
+            } else {
+                foreach($fields as $field) {
+                    $this->_fieldMap[$field] = null;
+                }
             }
         }
         

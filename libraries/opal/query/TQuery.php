@@ -901,14 +901,34 @@ trait TQuery_Attachable {
     protected $_attachments = [];
     
     public function attach() {
-        return $this->_newQuery()->beginAttach($this, func_get_args());
+        return $this->_newQuery()->beginAttach($this, func_get_args(), $this instanceof ISelectQuery);
+    }
+
+    public function selectAttach() {
+        return $this->_newQuery()->beginAttach($this, func_get_args(), true);
+    }
+
+    public function fetchAttach() {
+        return $this->_newQuery()->beginAttach($this);
     }
 
     public function attachRelation($relationField) {
         $fields = func_get_args();
+        return $this->_attachRelation(array_shift($fields), $fields, $this instanceof ISelectQuery);
+    }
 
-        $populate = $this->_newQuery()->beginPopulate($this, [array_shift($fields)], IPopulateQuery::TYPE_ALL, $fields)
-            ->isSelect($this instanceof ISelectQuery);
+    public function selectAttachRelation($relationField) {
+        $fields = func_get_args();
+        return $this->_attachRelation(array_shift($fields), $fields, true);
+    }
+
+    public function fetchAttachRelation($relationField) {
+        return $this->_attachRelation($relationField, [], false);
+    }
+    
+    private function _attachRelation($relationField, array $fields, $isSelect) {
+        $populate = $this->_newQuery()->beginPopulate($this, [$relationField], IPopulateQuery::TYPE_ALL, $fields)
+            ->isSelect($isSelect);
 
         $field = $this->_lookupRelationField($relationField);
         $attachment = $field->rewritePopulateQueryToAttachment($populate);
@@ -921,7 +941,7 @@ trait TQuery_Attachable {
 
         return $attachment;
     }
-    
+
     public function addAttachment($name, IAttachQuery $attachment) {
         $source = $this->getSource();
 
