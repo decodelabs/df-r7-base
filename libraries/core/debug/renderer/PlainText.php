@@ -98,9 +98,9 @@ class PlainText extends Base {
                 $data = $inspector->inspect($object, $node->isDeep());
                 $block .= $indent.'| '.str_replace("\n", $this->_eol.$indent.'| ', $data->toString()).$this->_eol;
                 
-            } else if($node instanceof core\log\IStackTrace) {
+            } else if($node instanceof core\debug\IStackTrace) {
                 // Stack trace
-                foreach($node->toArray() as $stackCall) {
+                foreach($node->getCalls() as $stackCall) {
                     $location = $this->_normalizeLocation($stackCall->getFile(), $stackCall->getLine());
                     $signature = $stackCall->getSignature();
                     $line = $indent.'| > '.$location;
