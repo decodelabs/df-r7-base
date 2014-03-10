@@ -101,10 +101,13 @@ abstract class Action extends arch\Action implements IAction {
         if(!empty($response)) {
             $this->_initResponse = $response;
         } else {
-            $this->_setupDelegates();
-
             if($this->_state->isNew()) {
                 $this->_isNew = true;
+            }
+            
+            $this->_setupDelegates();
+
+            if($this->_isNew) {
                 $this->_setDefaultValues();
             }
             
