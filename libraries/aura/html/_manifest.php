@@ -25,6 +25,7 @@ interface IElementRepresentation extends core\IStringProvider, IRenderable {}
 
 interface ITagDataContainer extends core\IAttributeContainer {
     // Data attributes
+    public function addDataAttributes(array $attributes);
     public function setDataAttribute($key, $value);
     public function getDataAttribute($key, $default=null);
     public function hasDataAttribute($key);

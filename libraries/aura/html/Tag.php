@@ -188,6 +188,14 @@ class Tag implements ITag, core\IDumpable {
     
     
 // Data attributes
+    public function addDataAttributes(array $attributes) {
+        foreach($attributes as $key => $value) {
+            $this->setDataAttribute($key, $value);
+        }
+
+        return $this;
+    }
+
     public function setDataAttribute($key, $value) {
         $key = strtolower($key);
         

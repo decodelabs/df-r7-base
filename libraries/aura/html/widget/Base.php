@@ -154,6 +154,11 @@ abstract class Base implements IWidget {
     
     
 // Data attributes
+    public function addDataAttributes(array $attributes) {
+        $this->getTag()->addDataAttributes($attributes);
+        return $this;
+    }
+
     public function setDataAttribute($key, $val) {
         $this->getTag()->setDataAttribute($key, $val);
         return $this;
