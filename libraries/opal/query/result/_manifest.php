@@ -76,7 +76,7 @@ interface IArrayManipulator {
     public function applyReadQuery(opal\query\IQuery $query, $keyField=null, $valField=null);
     public function applyRemoteJoinQuery(opal\query\IQuery $query, array $localJoins, array $remoteJoins);
     public function applyAttachmentDataQuery(opal\query\IAttachQuery $query);
-    public function applyBatchIteratorExpansion(IBatchIterator $batchIterator);
+    public function applyBatchIteratorExpansion(IBatchIterator $batchIterator, $batchNumber);
     
     public function normalizeRows();
     public function applyJoins(array $joins);

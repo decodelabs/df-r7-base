@@ -229,10 +229,16 @@ class ArrayManipulator implements IArrayManipulator {
         return $this->_rows;
     }
 
-    public function applyBatchIteratorExpansion(IBatchIterator $batchIterator) {
-        $this->applyPopulates($batchIterator->getPopulates());
+    public function applyBatchIteratorExpansion(IBatchIterator $batchIterator, $batchNumber) {
+        if($batchNumber == 0) {
+            $this->applyPopulates($batchIterator->getPopulates());
+        }
+
         $this->applyAttachments($batchIterator->getAttachments());
-        $this->applyCombines($batchIterator->getCombines());
+
+        if($batchNumber == 0) {
+            $this->applyCombines($batchIterator->getCombines());
+        }
         
         $this->applyOutputFields(
             $batchIterator->getListKeyField(), 

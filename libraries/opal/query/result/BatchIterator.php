@@ -24,6 +24,7 @@ class BatchIterator implements IBatchIterator {
     protected $_valField;
     protected $_batchData = array();
     protected $_batchSize = self::DEFAULT_BATCH_SIZE;
+    protected $_batchNumber = 0;
     protected $_result;
     protected $_arrayManipulator;
     
@@ -197,7 +198,7 @@ class BatchIterator implements IBatchIterator {
         }
         
         $this->_arrayManipulator->setRows($batch);
-        $this->_batchData = $this->_arrayManipulator->applyBatchIteratorExpansion($this);
+        $this->_batchData = $this->_arrayManipulator->applyBatchIteratorExpansion($this, $this->_batchNumber++);
         reset($this->_batchData);
     }
     
