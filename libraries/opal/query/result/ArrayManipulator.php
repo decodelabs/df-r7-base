@@ -230,15 +230,9 @@ class ArrayManipulator implements IArrayManipulator {
     }
 
     public function applyBatchIteratorExpansion(IBatchIterator $batchIterator, $batchNumber) {
-        if($batchNumber == 0) {
-            $this->applyPopulates($batchIterator->getPopulates());
-        }
-
+        $this->applyPopulates($batchIterator->getPopulates());
         $this->applyAttachments($batchIterator->getAttachments());
-
-        if($batchNumber == 0) {
-            $this->applyCombines($batchIterator->getCombines());
-        }
+        $this->applyCombines($batchIterator->getCombines());
         
         $this->applyOutputFields(
             $batchIterator->getListKeyField(), 

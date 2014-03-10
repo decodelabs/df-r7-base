@@ -932,7 +932,9 @@ trait TQuery_Attachable {
             );
         }
         
-        if(isset($this->_attachments[$name]) && $this->_attachments[$name] !== $attachment) {
+        if(isset($this->_attachments[$name]) 
+        && $this->_attachments[$name] !== $attachment 
+        && !($this->_attachments[$name]->isPopulate() && $attachment->isPopulate())) {
             throw new RuntimeException(
                 'An attachment has already been created with the name "'.$name.'"'
             );
