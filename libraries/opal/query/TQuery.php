@@ -901,7 +901,8 @@ trait TQuery_Attachable {
     protected $_attachments = [];
     
     public function attach() {
-        return $this->_newQuery()->beginAttach($this, func_get_args(), $this instanceof ISelectQuery);
+        $fields = func_get_args();
+        return $this->_newQuery()->beginAttach($this, $fields, !empty($fields) || $this instanceof ISelectQuery);
     }
 
     public function selectAttach() {
