@@ -1067,16 +1067,25 @@ class ArrayManipulator implements IArrayManipulator {
 
                 foreach($combines as $combineName => $combine) {
                     $combineFields = $combine->getFields();
+                    $nullFields = $combine->getNullFields();
                     $combineRow = [];
+                    $isNull = false;
 
                     foreach($combineFields as $combineFieldName => $combineField) {
-                        $targetField = $combineField->dereference()[0];
-                        $targetQName = $targetField->getQualifiedName();
+                        if(!$isNull) {
+                            $targetField = $combineField->dereference()[0];
+                            $targetQName = $targetField->getQualifiedName();
 
-                        if(isset($row[$targetQName])) {
-                            $combineRow[$combineFieldName] = $row[$targetQName];
-                        } else {
-                            $combineRow[$combineFieldName] = null;
+                            if(isset($row[$targetQName])) {
+                                $combineRow[$combineFieldName] = $row[$targetQName];
+                            } else {
+                                $combineRow[$combineFieldName] = null;
+                            }
+
+                            if($combineRow[$combineFieldName] === null && isset($nullFields[$combineFieldName])) {
+                                $combineRow = null;
+                                $isNull = true;
+                            }
                         }
 
                         if(!$combine->isCopy()) {

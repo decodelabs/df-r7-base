@@ -359,6 +359,11 @@ interface ICombineQuery extends
     public function removeField($name);
     public function clearFields();
 
+    public function nullOn($field);
+    public function getNullFields();
+    public function removeNullField($field);
+    public function clearNullFields();
+
     public function asOne($name);
     public function asCopy($name);
     public function isCopy($flag=null); 

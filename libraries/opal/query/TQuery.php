@@ -829,6 +829,7 @@ trait TQuery_Combine {
     use TQuery_NestedComponent;
 
     protected $_fields = [];
+    protected $_nullFields = [];
     protected $_isCopy = false;
 
     public function getQueryType() {
@@ -866,6 +867,38 @@ trait TQuery_Combine {
         $this->_fields = [];
         return $this;
     }
+
+
+    public function nullOn($field) {
+        $fields = core\collection\Util::flattenArray(func_get_args());
+
+        foreach($fields as $field) {
+            if(!isset($this->_fields[$field])) {
+                throw new InvalidArgumentException(
+                    'Combine field '.$field.' has not been defined'
+                );
+            }
+
+            $this->_nullFields[$field] = true;
+        }
+
+        return $this;
+    }
+
+    public function getNullFields() {
+        return $this->_nullFields;
+    }
+
+    public function removeNullField($field) {
+        unset($this->_nullFields[$field]);
+        return $this;
+    }
+
+    public function clearNullFields() {
+        $this->_nullFields = [];
+        return $this;
+    }
+
 
     public function asOne($name) {
         $this->_isCopy = false;
