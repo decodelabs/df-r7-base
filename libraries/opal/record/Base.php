@@ -16,6 +16,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
 
     use TRecordAdapterProvider;
     use TPrimaryKeySetProvider;
+    use TAccessLockProvider;
     use core\TValueMap;
     use core\collection\TExtractList;
     use user\TAccessLock;
@@ -901,24 +902,6 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     protected function _onValueChange($key, $oldValue, $newValue) {}
     protected function _onValueRemove($key, $oldValue) {}
     
-
-
-// Access
-    public function getAccessLockDomain() {
-        return $this->_adapter->getAccessLockDomain();
-    }
-
-    public function lookupAccessKey(array $keys, $action=null) {
-        return $this->_adapter->lookupAccessKey($keys, $action);
-    }
-
-    public function getDefaultAccess($action=null) {
-        return $this->_adapter->getDefaultAccess($action);
-    }
-
-    public function getAccessLockId() {
-        return $this->_adapter->getAccessLockId();
-    }
 
 
 // Policy

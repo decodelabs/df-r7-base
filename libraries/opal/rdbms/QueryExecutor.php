@@ -108,7 +108,7 @@ abstract class QueryExecutor implements IQueryExecutor {
 
 
         // Attachments
-        if(!$forCount && $this->_query instanceof opal\query\IAttachableQuery) {
+        if(!$forCount && $this->_query instanceof opal\query\IAttachProviderQuery) {
             // Get fields that need to be fetched from source for attachment clauses
             foreach($this->_query->getAttachments() as $attachment) {
                 foreach($attachment->getNonLocalFieldReferences() as $field) {

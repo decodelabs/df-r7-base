@@ -89,7 +89,7 @@ class JoinList extends ListBase implements opal\query\IJoinClauseList {
     
     public function getParentSource() {
         if($this->_parent instanceof opal\query\IJoinProviderQuery
-        || $this->_parent instanceof opal\query\IAttachableQuery
+        || $this->_parent instanceof opal\query\IAttachProviderQuery
         || !$this->_parent instanceof opal\query\IParentSourceProvider) {
             return $this->_parent->getSource();
         } else {

@@ -52,15 +52,40 @@ trait TPrimaryKeySetProvider {
         $fields = opal\schema\Introspector::getPrimaryFields($this->_adapter);
 
         if($fields === null) {
-            throw new LogicException(
-                'Record type '.$this->getRecordAdapter()->getQuerySourceId().' has no primary fields'
-            );
+            if($this->_adapter) {
+                throw new LogicException(
+                    'Record type '.$this->_adapter->getQuerySourceId().' has no primary fields'
+                );
+            } else {
+                throw new LogicException(
+                    'Anonymous record has no primary fields'
+                );
+            }
         }
 
         return $this->_buildPrimaryKeySet($fields, $includeChanges);
     }
 
     abstract protected function _buildPrimaryKeySet(array $fields, $includeChanges=true);
+}
+
+trait TAccessLockProvider {
+    
+    public function getAccessLockDomain() {
+        return $this->_adapter->getAccessLockDomain();
+    }
+
+    public function lookupAccessKey(array $keys, $action=null) {
+        return $this->_adapter->lookupAccessKey($keys, $action);
+    }
+
+    public function getDefaultAccess($action=null) {
+        return $this->_adapter->getDefaultAccess($action);
+    }
+
+    public function getAccessLockId() {
+        return $this->_adapter->getAccessLockId();
+    }
 }
 
 
@@ -106,10 +131,13 @@ interface ILocationalRecord extends IRecord {
 
 
 
-interface IPartial extends core\collection\IMappedCollection, IRecordAdapterProvider, IPrimaryKeySetProvider {
+interface IPartial extends core\collection\IMappedCollection, user\IAccessLock, core\policy\IEntity, IRecordAdapterProvider, IPrimaryKeySetProvider {
     public function setRecordAdapter(opal\query\IAdapter $adapter);
     public function isBridge($flag=null);
     public function getValuesForStorage();
+
+    public function populateWithPreparedData(array $row);
+    public function populateWithRawData($row);
 }
 
 

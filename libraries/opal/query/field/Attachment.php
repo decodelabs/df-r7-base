@@ -56,6 +56,10 @@ class Attachment implements opal\query\IAttachmentField, core\IDumpable {
     public function getAttachment() {
         return $this->_attachment;
     }
+
+    public function shouldBeProcessed() {
+        return !$this->_attachment instanceof opal\query\ISelectQuery;
+    }
     
 // Dump
     public function getDumpProperties() {

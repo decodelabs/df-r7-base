@@ -91,8 +91,8 @@ class BridgedManyRelationValueContainer implements
     public function getRemoved() {
         return $this->_remove;
     }
-    
-    
+
+
 // Collection
     public function toArray() {
         return array_merge($this->_current, $this->_new);
@@ -207,13 +207,15 @@ class BridgedManyRelationValueContainer implements
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
         
         foreach($records as $record) {
-            if($record instanceof opal\record\IPartial) {
+            if($record instanceof opal\record\IPartial && $record->isBridge()) {
                 $record->setRecordAdapter($bridgeUnit);
                 $record[$bridgeLocalFieldName] = $this->_localPrimaryKeySet;
-            }
-
-            if($record instanceof opal\record\IPrimaryKeySetProvider) {
+                $ks = $this->_targetPrimaryKeySet->duplicateWith($record[$this->_field->getBridgeTargetFieldName()]);
+                $id = opal\record\Base::extractRecordId($ks);
+                $lookupKeySets[$id] = $ks;
+            } else if($record instanceof opal\record\IPrimaryKeySetProvider) {
                 $id = opal\record\Base::extractRecordId($record);
+                //$lookupKeySets[$id] = $record->getPrimaryKeySet();
             } else if($record instanceof opal\record\IPrimaryKeySet) {
                 $id = opal\record\Base::extractRecordId($record);
                 $lookupKeySets[$id] = $record;
@@ -227,7 +229,7 @@ class BridgedManyRelationValueContainer implements
                 $index[(string)$id] = $record;
             }
         }
-        
+
         if(!empty($lookupKeySets)) {
             $application = $this->_record->getRecordAdapter()->getApplication();
             $targetUnit = $this->_getTargetUnit($application);
@@ -247,7 +249,7 @@ class BridgedManyRelationValueContainer implements
             }
             
             $res = $query->toArray();
-            
+
             foreach($lookupKeySets as $id => $keySet) {
                 if(empty($res)) {
                     unset($index[$id]);
@@ -393,7 +395,74 @@ class BridgedManyRelationValueContainer implements
         $query->isDistinct(true);
         return $query;
     }
+
+    public function selectFromNew($field1=null) {
+        if(!$this->_record) {
+            throw new opal\record\ValuePreparationException(
+                'Cannot lookup relations, value container has not been prepared'
+            );
+        }
+
+        $this->_localPrimaryKeySet->updateWith($this->_record);
+
+        $localUnit = $this->_record->getRecordAdapter();
+        $application = $localUnit->getApplication();
+        
+        $targetUnit = $this->_getTargetUnit($application);
+        $localFieldName = $this->_field->getName();
+        
+        return opal\query\Initiator::factory($application)
+            ->beginSelect(func_get_args())
+            ->from($targetUnit, $localFieldName)
+            ->wherePrerequisite('@primary', 'in', $this->_getKeySets($this->_new));
+    }
+
+    public function selectFromNewToBridge($field1=null) {
+        $localUnit = $this->_record->getRecordAdapter();
+        $application = $localUnit->getApplication();
+        $bridgeUnit = $this->_getBridgeUnit($application);
+
+        $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
+        $bridgeTargetFieldName = $this->_field->getBridgeTargetFieldName();
+        $bridgeAlias = $bridgeUnit->getUnitName();
+
+        if(false !== strpos($bridgeAlias, '(')) {
+            $bridgeAlias = $bridgeLocalFieldName.'Bridge';
+        }
+
+        return $this->selectFromNew(func_get_args())
+            ->whereCorrelation('@primary', '!in', $bridgeTargetFieldName)
+                ->from($bridgeUnit, $bridgeAlias)
+                ->where($bridgeAlias.'.'.$bridgeLocalFieldName, '=', $this->_localPrimaryKeySet)
+                ->endCorrelation();
+    }
     
+    public function countChanges() {
+        $output = 0;
+        $newKeys = $this->_getKeySets($this->_new);
+        $removeKeys = $this->_getKeySets($this->_remove);
+        $currentKeys = $this->getRelatedPrimaryKeys();
+
+        foreach($currentKeys as $id) {
+            if(isset($newKeys[(string)$id])) {
+                unset($newKeys[(string)$id]);
+                continue;
+            }
+
+            if($this->_removeAll) {
+                $output++;
+                continue;
+            }
+
+            if(isset($removeKeys[(string)$id])) {
+                $output++;
+            }
+        }
+
+        $output += count($newKeys);
+        return $output;
+    }
+
     public function fetch() {
         if(!$this->_record) {
             throw new opal\record\ValuePreparationException(
@@ -470,6 +539,26 @@ class BridgedManyRelationValueContainer implements
     public function getRelatedPrimaryKeys() {
         $bridgeTargetFieldName = $this->_field->getBridgeTargetFieldName();
         return $this->selectFromBridge($bridgeTargetFieldName)->toList($bridgeTargetFieldName);
+    }
+
+    protected function _getKeySets(array $records) {
+        $keys = [];
+
+        foreach($records as $record) {
+            if($record instanceof opal\record\IPartial && $record->isBridge()) {
+                $ks = $this->_targetPrimaryKeySet->duplicateWith($record[$this->_field->getBridgeTargetFieldName()]);
+            } else if($record instanceof opal\record\IPrimaryKeySetProvider) {
+                $ks = $record->getPrimaryKeySet();
+            } else if($record instanceof opal\record\IPrimaryKeySet) {
+                $ks = $record;
+            } else {
+                $ks = $this->_targetPrimaryKeySet->duplicateWith($record);
+            }
+
+            $keys[(string)$ks] = $ks;
+        }
+
+        return $keys;
     }
     
     

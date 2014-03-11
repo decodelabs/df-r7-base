@@ -115,7 +115,7 @@ class ArrayManipulator implements IArrayManipulator {
                 $this->applyLimit($query->getLimit(), $offset);
             }
             
-            if($query instanceof opal\query\IAttachableQuery) {
+            if($query instanceof opal\query\IAttachProviderQuery) {
                 $attachments = $query->getAttachments();
                 
                 if(!empty($attachments)) {
@@ -833,7 +833,7 @@ class ArrayManipulator implements IArrayManipulator {
                 $childAttachments = array_merge($childAttachments, $this->rewritePopulates($attachment->getPopulates()));
             }
 
-            if($attachment instanceof opal\query\IAttachableQuery) {
+            if($attachment instanceof opal\query\IAttachProviderQuery) {
                 $childAttachments = array_merge($childAttachments, $attachment->getAttachments());
             }
 
@@ -915,6 +915,7 @@ class ArrayManipulator implements IArrayManipulator {
         $wildcards = $this->_outputManifest->getWildcardMap();
         $fieldProcessors = $this->_outputManifest->getOutputFieldProcessors();
         $combines = $this->_outputManifest->getCombines();
+        $requiresPartial = $this->_outputManifest->requiresPartial();
 
         // Prepare qualified names
         $qNameMap = [];
@@ -983,10 +984,14 @@ class ArrayManipulator implements IArrayManipulator {
 
         // Iterate data
         foreach($temp as $row) {
-            $record = null;
+            $record = $partial = null;
 
             if($forFetch) {
-                $record = $primaryAdapter->newRecord();
+                if($requiresPartial) {
+                    $partial = $primaryAdapter->newPartial();
+                } else {
+                    $record = $primaryAdapter->newRecord();
+                }
             }
 
             // Pre-process row
@@ -1098,6 +1103,10 @@ class ArrayManipulator implements IArrayManipulator {
                 
                 
                 // Convert to record object
+                if($partial) {
+                    $record = $partial;
+                }
+
                 if($record) {
                     $current = $record->populateWithPreparedData($current);
                 }

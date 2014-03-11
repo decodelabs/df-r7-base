@@ -929,52 +929,9 @@ trait TQuery_Combine {
 /*************************
  * Attachments
  */
-trait TQuery_Attachable {
-    
+trait TQuery_AttachBase {
+
     protected $_attachments = [];
-    
-    public function attach() {
-        $fields = func_get_args();
-        return $this->_newQuery()->beginAttach($this, $fields, !empty($fields) || $this instanceof ISelectQuery);
-    }
-
-    public function selectAttach() {
-        return $this->_newQuery()->beginAttach($this, func_get_args(), true);
-    }
-
-    public function fetchAttach() {
-        return $this->_newQuery()->beginAttach($this);
-    }
-
-    public function attachRelation($relationField) {
-        $fields = func_get_args();
-        return $this->_attachRelation(array_shift($fields), $fields, $this instanceof ISelectQuery);
-    }
-
-    public function selectAttachRelation($relationField) {
-        $fields = func_get_args();
-        return $this->_attachRelation(array_shift($fields), $fields, true);
-    }
-
-    public function fetchAttachRelation($relationField) {
-        return $this->_attachRelation($relationField, [], false);
-    }
-    
-    private function _attachRelation($relationField, array $fields, $isSelect) {
-        $populate = $this->_newQuery()->beginPopulate($this, [$relationField], IPopulateQuery::TYPE_ALL, $fields)
-            ->isSelect($isSelect);
-
-        $field = $this->_lookupRelationField($relationField);
-        $attachment = $field->rewritePopulateQueryToAttachment($populate);
-
-        if(!$attachment instanceof opal\query\IAttachQuery) {
-            throw new opal\query\InvalidArgumentException(
-                'Cannot populate '.$populate->getFieldName().' - integral schema field cannot convert to attachment'
-            );
-        }
-
-        return $attachment;
-    }
 
     public function addAttachment($name, IAttachQuery $attachment) {
         $source = $this->getSource();
@@ -1005,6 +962,59 @@ trait TQuery_Attachable {
     public function clearAttachments() {
         $this->_attachments = [];
         return $this;
+    }
+}
+
+trait TQuery_RelationAttachable {
+
+    use TQuery_AttachBase;
+
+    public function attachRelation($relationField) {
+        $fields = func_get_args();
+        return $this->_attachRelation(array_shift($fields), $fields, !empty($fields) || $this instanceof ISelectQuery);
+    }
+
+    public function selectAttachRelation($relationField) {
+        $fields = func_get_args();
+        return $this->_attachRelation(array_shift($fields), $fields, true);
+    }
+
+    public function fetchAttachRelation($relationField) {
+        return $this->_attachRelation($relationField, [], false);
+    }
+    
+    private function _attachRelation($relationField, array $fields, $isSelect) {
+        $populate = $this->_newQuery()->beginPopulate($this, [$relationField], IPopulateQuery::TYPE_ALL, $fields)
+            ->isSelect($isSelect);
+
+        $field = $this->_lookupRelationField($relationField);
+        $attachment = $field->rewritePopulateQueryToAttachment($populate);
+
+        if(!$attachment instanceof opal\query\IAttachQuery) {
+            throw new opal\query\InvalidArgumentException(
+                'Cannot populate '.$populate->getFieldName().' - integral schema field cannot convert to attachment'
+            );
+        }
+
+        return $attachment;
+    }
+}
+
+trait TQuery_Attachable {
+    
+    use TQuery_RelationAttachable;
+
+    public function attach() {
+        $fields = func_get_args();
+        return $this->_newQuery()->beginAttach($this, $fields, !empty($fields) || $this instanceof ISelectQuery);
+    }
+
+    public function selectAttach() {
+        return $this->_newQuery()->beginAttach($this, func_get_args(), true);
+    }
+
+    public function fetchAttach() {
+        return $this->_newQuery()->beginAttach($this);
     }
 }
 
@@ -1075,7 +1085,7 @@ trait TQuery_Attachment {
         
         $this->_type = IAttachQuery::TYPE_ONE;
 
-        if($this->_parent instanceof IAttachableQuery) {
+        if($this->_parent instanceof IAttachProviderQuery) {
             $this->_parent->addAttachment($name, $this);
         }
 
@@ -1095,7 +1105,7 @@ trait TQuery_Attachment {
         
         $this->_type = IAttachQuery::TYPE_MANY;
 
-        if($this->_parent instanceof IAttachableQuery) {
+        if($this->_parent instanceof IAttachProviderQuery) {
             $this->_parent->addAttachment($name, $this);
         }
 
@@ -1133,7 +1143,7 @@ trait TQuery_AttachmentListExtension {
         
         $this->_type = IAttachQuery::TYPE_LIST;
 
-        if($this->_parent instanceof IAttachableQuery) {
+        if($this->_parent instanceof IAttachProviderQuery) {
             $this->_parent->addAttachment($name, $this);
         }
 
@@ -1161,7 +1171,7 @@ trait TQuery_AttachmentValueExtension {
         $this->_valField = $manager->extrapolateDataField($source, $field);
         $this->_type = IAttachQuery::TYPE_VALUE;
 
-        if($this->_parent instanceof IAttachableQuery) {
+        if($this->_parent instanceof IAttachProviderQuery) {
             $this->_parent->addAttachment($name, $this);
         }
 
@@ -1771,7 +1781,7 @@ trait TQuery_Read {
             $output->setPopulates($this->getPopulates());
         }
 
-        if($this instanceof opal\query\IAttachableQuery) {
+        if($this instanceof opal\query\IAttachProviderQuery) {
             $output->setAttachments($this->getAttachments());
         }
 

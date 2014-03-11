@@ -482,7 +482,7 @@ abstract class Base implements
     }
 
     public function getSubEntityLocator(core\policy\IEntity $entity) {
-        if($entity instanceof opal\record\IRecord) {
+        if($entity instanceof opal\record\IPrimaryKeySetProvider) {
             $output = new core\policy\entity\Locator('axis://'.$this->getModel()->getModelName().'/'.ucfirst($this->getUnitName()));
             $id = $entity->getPrimaryKeySet()->getEntityId();
             $output->setId($id);

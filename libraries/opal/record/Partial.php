@@ -8,13 +8,16 @@ namespace df\opal\record;
 use df;
 use df\core;
 use df\opal;
+use df\user;
 
 class Partial implements IPartial, core\IDumpable {
     
     use TRecordAdapterProvider;
     use TPrimaryKeySetProvider;
+    use TAccessLockProvider;
     use core\collection\TArrayCollection;
     use core\collection\TArrayCollection_AssociativeValueMap;
+    use user\TAccessLock;
 
     protected $_isBridge = false;
 
@@ -78,6 +81,18 @@ class Partial implements IPartial, core\IDumpable {
         return $output;
     }
 
+    public function populateWithPreparedData(array $row) {
+        foreach($row as $key => $value) {
+            $this->_collection[$key] = $value;
+        }
+
+        return $this;
+    }
+    
+    public function populateWithRawData($row) {
+        return $this->import($row);
+    }
+
 
 // Collection
     public function import($row) {
@@ -114,6 +129,28 @@ class Partial implements IPartial, core\IDumpable {
         }
         
         return $this;
+    }
+
+
+// Policy
+    public function getEntityLocator() {
+        if(!$this->_adapter instanceof core\policy\IParentEntity) {
+            throw new core\policy\EntityNotFoundException(
+                'Partial adapter is not a policy entity handler'
+            );
+        }
+
+        if($this->_adapter instanceof core\policy\IActiveParentEntity) {
+            return $this->_adapter->getSubEntityLocator($this);
+        }
+
+        $keySet = $this->getPrimaryKeySet();
+        $id = $keySet->getEntityId();
+
+        $output = $this->_adapter->getEntityLocator();
+        $output->addNode(new core\policy\entity\LocatorNode(null, 'Record', $id));
+        
+        return $output;
     }
 
 

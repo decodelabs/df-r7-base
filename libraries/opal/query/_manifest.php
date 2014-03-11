@@ -218,16 +218,22 @@ interface IJoinConstrainableQuery extends IJoinProviderQuery {
     public function addJoinConstraint(IJoinConstraintQuery $join);
 }
 
-interface IAttachableQuery extends IReadQuery {
-    public function attach();
-    public function selectAttach();
-    public function fetchAttach();
-    public function attachRelation($relationField);
-    public function selectAttachRelation($relationField);
-    public function fetchAttachRelation($relationField);
+interface IAttachProviderQuery extends IReadQuery {
     public function addAttachment($name, IAttachQuery $attachment);
     public function getAttachments();
     public function clearAttachments();
+}
+
+interface IRelationAttachableQuery extends IAttachProviderQuery {
+    public function attachRelation($relationField);
+    public function selectAttachRelation($relationField);
+    public function fetchAttachRelation($relationField);
+}
+
+interface IAttachableQuery extends IRelationAttachableQuery {
+    public function attach();
+    public function selectAttach();
+    public function fetchAttach();
 }
 
 interface IPopulatableQuery extends IQuery {
@@ -447,6 +453,7 @@ interface IFetchQuery extends
     ILocationalQuery,
     ICorrelatableQuery,
     IJoinConstrainableQuery,
+    IRelationAttachableQuery,
     IPopulatableQuery, 
     IPrerequisiteClauseQuery, 
     IOrderableQuery, 
@@ -711,6 +718,8 @@ interface IField {
 
     public function setOverrideField(IField $field=null);
     public function getOverrideField();
+
+    public function shouldBeProcessed();
 }
 
 trait TField {
@@ -738,6 +747,10 @@ trait TField {
 
     public function getOverrideField() {
         return $this->_overrideField;
+    }
+
+    public function shouldBeProcessed() {
+        return true;
     }
 }
 

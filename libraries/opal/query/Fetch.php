@@ -16,6 +16,7 @@ class Fetch implements IFetchQuery, core\IDumpable {
     use TQuery_Locational;
     use TQuery_Correlatable;
     use TQuery_JoinConstrainable;
+    use TQuery_RelationAttachable;
     use TQuery_PrerequisiteClauseFactory;
     use TQuery_PrerequisiteAwareWhereClauseFactory;
     use TQuery_Orderable;

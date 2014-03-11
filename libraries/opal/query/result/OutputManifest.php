@@ -83,7 +83,7 @@ class OutputManifest implements IOutputManifest {
 
         if(isset($this->_outputFields[$alias]) 
         && $field !== isset($this->_outputFields[$alias])
-        && !$this->_outputFields[$alias] instanceof opal\query\ILateAttchField) {
+        && !$this->_outputFields[$alias] instanceof opal\query\ILateAttachField) {
             $field->setOverrideField($this->_outputFields[$alias]);
         }
 
@@ -141,21 +141,42 @@ class OutputManifest implements IOutputManifest {
             foreach($this->_sources as $source) {
                 $sourceAlias = $source->getAlias();
                 $adapter = $source->getAdapter();
+                $fieldNames = [];
 
-                foreach(opal\schema\Introspector::getFieldProcessors($adapter, array_keys($source->getOutputFields())) as $name => $field) {
+                foreach($source->getOutputFields() as $name => $field) {
+                    if(isset($this->_outputFields[$name])) {
+                        $field = $this->_outputFields[$name];
+                    }
+
+                    if($field->shouldBeProcessed()) {
+                        $fieldNames[] = $name;
+                    }
+                }
+
+                foreach(opal\schema\Introspector::getFieldProcessors($adapter, $fieldNames) as $name => $field) {
                     if(!$field instanceof opal\query\IFieldValueProcessor) {
                         continue;
                     }
-                    
+
                     $this->_fieldProcessors[$sourceAlias.'.'.$name] = $field;
                 }
             }
         }
-        
+
         return $this->_fieldProcessors;
     }
 
     public function getCombines() {
         return $this->_combines;
+    }
+
+    public function requiresPartial() {
+        foreach($this->_outputFields as $field) {
+            if(!$field->shouldBeProcessed()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -64,6 +64,7 @@ interface IOutputManifest {
     
     public function getOutputFieldProcessors();
     public function getCombines();
+    public function requiresPartial();
 }
 
 
