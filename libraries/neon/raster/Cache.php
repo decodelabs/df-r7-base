@@ -28,7 +28,7 @@ class Cache extends core\cache\Base {
             try {
                 $image = Image::loadFile($sourceFilePath)->setOutputFormat('PNG32');
             } catch(FormatException $e) {
-                return $sourceFilePath;
+                $image = Image::newCanvas(100, 100, neon\Color::factory('black'));
             }
 
             $image->transform($transformation)->apply();

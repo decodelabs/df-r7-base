@@ -91,6 +91,19 @@ class Image implements IImage {
         return new self((new $class())->loadString($string));
     }
 
+    public static function newCanvas($width, $height, $color=null) {
+        $class = self::getDefaultDriverClass();
+        $output = new self(new $class());
+
+        $output->_driver->loadCanvas(
+            $output->_normalizePixelSize($width), 
+            $output->_normalizePixelSize($height), 
+            $output->_normalizeColor($color)
+        );
+
+        return $output;
+    }
+
 
     protected function __construct(IDriver $driver) {
         $this->_driver = $driver;
