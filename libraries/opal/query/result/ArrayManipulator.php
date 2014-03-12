@@ -703,6 +703,11 @@ class ArrayManipulator implements IArrayManipulator {
             });
 
             $manipulator = new self($source, $sourceData, true);
+
+            if($attachment instanceof opal\query\ISelectAttachQuery && $attachment->isPopulate()) {
+                $manipulator->_outputManifest->queryRequiresPartial(true);
+            }
+
             $clauseList = $attachment->getJoinClauseList()->toArray();
             $clauseIndex = new opal\query\clause\Matcher($clauseList, true);
             $isFetchQuery = $attachment instanceof opal\query\IFetchQuery;
@@ -917,6 +922,7 @@ class ArrayManipulator implements IArrayManipulator {
         $combines = $this->_outputManifest->getCombines();
         $requiresPartial = $this->_outputManifest->requiresPartial();
 
+
         // Prepare qualified names
         $qNameMap = [];
         $overrides = [];
@@ -986,12 +992,12 @@ class ArrayManipulator implements IArrayManipulator {
         foreach($temp as $row) {
             $record = $partial = null;
 
-            if($forFetch) {
-                if($requiresPartial) {
-                    $partial = $primaryAdapter->newPartial();
-                } else {
-                    $record = $primaryAdapter->newRecord();
-                }
+            if($requiresPartial) {
+                $partial = $primaryAdapter->newPartial();
+            }
+
+            if($forFetch && !$requiresPartial) {
+                $record = $primaryAdapter->newRecord();
             }
 
             // Pre-process row

@@ -90,7 +90,7 @@ class OneRelationValueContainer implements
         if($value instanceof self) {
             $record = $value->_record;
             $value = $value->getPrimaryKeySet();
-        } else if($value instanceof opal\record\IRecord) {
+        } else if($value instanceof opal\record\IPrimaryKeySetProvider) {
             $record = $value;
             $value = $value->getPrimaryKeySet();
         } else if(!$value instanceof opal\record\IPrimaryKeySet) {

@@ -58,7 +58,11 @@ class Attachment implements opal\query\IAttachmentField, core\IDumpable {
     }
 
     public function shouldBeProcessed() {
-        return !$this->_attachment instanceof opal\query\ISelectQuery;
+        if($this->_attachment instanceof opal\query\ISelectQuery && !$this->_attachment->isPopulate()) {
+            return false;
+        }
+
+        return true;
     }
     
 // Dump

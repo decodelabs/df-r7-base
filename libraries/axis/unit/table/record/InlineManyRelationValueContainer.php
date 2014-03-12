@@ -158,7 +158,7 @@ class InlineManyRelationValueContainer implements
         $lookupKeySets = array();
         
         foreach($records as $record) {
-            if($record instanceof opal\record\IRecord) {
+            if($record instanceof opal\record\IPrimaryKeySetProvider) {
                 $id = opal\record\Base::extractRecordId($record);
             } else if($record instanceof opal\record\IPrimaryKeySet) {
                 $id = opal\record\Base::extractRecordId($record);
@@ -231,7 +231,7 @@ class InlineManyRelationValueContainer implements
         $index = array();
         
         foreach($records as $record) {
-            if($record instanceof opal\record\IRecord) {
+            if($record instanceof opal\record\IPrimaryKeySetProvider) {
                 $id = opal\record\Base::extractRecordId($record);
             } else if($record instanceof opal\record\IPrimaryKeySet) {
                 $id = opal\record\Base::extractRecordId($record);

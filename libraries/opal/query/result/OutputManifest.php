@@ -19,6 +19,7 @@ class OutputManifest implements IOutputManifest {
     protected $_privateFields = array();
     protected $_fieldProcessors = null;
     protected $_combines = array();
+    protected $_queryRequiresPartial = false;
     
     public function __construct(opal\query\ISource $source, array $rows=null, $isNormalized=true) {
         $this->importSource($source, $rows, $isNormalized);
@@ -170,7 +171,20 @@ class OutputManifest implements IOutputManifest {
         return $this->_combines;
     }
 
+    public function queryRequiresPartial($flag=null) {
+        if($flag !== null) {
+            $this->_queryRequiresPartial = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_queryRequiresPartial;
+    }
+
     public function requiresPartial() {
+        if($this->_queryRequiresPartial) {
+            return true;
+        }
+
         foreach($this->_outputFields as $field) {
             if(!$field->shouldBeProcessed()) {
                 return true;
