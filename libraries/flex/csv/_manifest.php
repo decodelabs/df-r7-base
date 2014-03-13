@@ -16,6 +16,19 @@ class RuntimeException extends \RuntimeException implements IException {}
 
 
 // Interfaces
+interface IReader extends core\IArrayProvider, \Iterator {
+    public function getChannel();
+    public function setDelimiter($delimiter);
+    public function getDelimiter();
+    public function setEnclosure($enclosure);
+    public function getEnclosure();
+
+    public function setFields($field1);
+    public function getFields();
+    
+    public function getRow();
+}
+
 interface IBuilder extends core\io\IChunkSender {
     public function setGenerator(Callable $generator=null);
     public function getGenerator();
