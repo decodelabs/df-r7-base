@@ -190,6 +190,10 @@ class Reader implements IReader {
             }
         }
 
+        if(empty($this->_currentRow)) {
+            $this->_currentRow = null;
+        }
+
         return $this->_currentRow;
     }
 
@@ -247,6 +251,6 @@ class Reader implements IReader {
     }
 
     public function valid() {
-        return !$this->_channel->eof();
+        return !$this->_channel->eof() || strlen($this->_buffer) || $this->_currentRow !== null;
     }
 }
