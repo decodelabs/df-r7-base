@@ -40,8 +40,8 @@ class File implements core\io\IFile, core\io\ILocalFilePointer, core\io\IContain
         
         $this->_mode = $mode;
         
-        if($mode{0} == 'r' && !is_readable($this->_path)) {
-            throw new RuntimeException('File '.$this->_path.' is not readable!');
+        if($mode == core\io\IMode::READ_ONLY && !is_readable($this->_path)) {
+            throw new core\io\RuntimeException('File '.$this->_path.' is not readable!');
         }
         
         $this->_fp = fopen($this->_path, $mode);

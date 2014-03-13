@@ -24,8 +24,9 @@ interface IReader extends core\IArrayProvider, \Iterator {
     public function getEnclosure();
 
     public function setFields($field1);
+    public function extractFields();
     public function getFields();
-    
+
     public function getRow();
 }
 

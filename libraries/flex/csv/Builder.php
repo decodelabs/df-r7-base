@@ -18,6 +18,21 @@ class Builder implements IBuilder {
     protected $_receiver;
     protected $_generator;
 
+    public static function openFile($path, Callable $generator=null) {
+        return (new self($generator))
+            ->setChunkReceiver(
+                (new core\io\channel\File($path, core\io\IMode::READ_WRITE_TRUNCATE))
+                    ->setContentType('text/csv')
+            );
+    }
+
+    public static function openString(Callable $generator=null) {
+        return (new self($generator))
+            ->setChunkReceiver(
+                new core\io\channel\Memory(null, 'text/csv', core\io\IMode::READ_WRITE_TRUNCATE)
+            );
+    }
+
     public function __construct(Callable $generator=null) {
         $this->setGenerator($generator);
     }
@@ -59,7 +74,7 @@ class Builder implements IBuilder {
             );
         }
 
-        return $this;
+        return $this->_receiver;
     }
 
 
@@ -129,8 +144,52 @@ class Builder implements IBuilder {
             );
         }
 
-        $this->_receiver->writeChunk(
-            core\string\Util::implodeDelimited($row)."\r\n"
-        );
+        $this->_receiver->writeChunk($this->_writeCsv($row));
+    }
+
+    protected function _writeCsv($data=[], $delimiter=',', $enclosure='"') {
+        $str = '';
+        $escape_char = '\\';
+
+        foreach($data as $value) {
+            if(is_array($value)) {
+                $value = implode(',', $value);
+            } else if(!is_scalar($value)) {
+                $value = (string)$value;
+            }
+
+            if(strpos($value, $delimiter) !== false ||
+               strpos($value, $enclosure) !== false ||
+               strpos($value, "\n") !== false ||
+               strpos($value, "\r") !== false ||
+               strpos($value, "\t") !== false ||
+               strpos($value, ' ') !== false) {
+                $str2 = $enclosure;
+                $escaped = 0;
+                $len = strlen($value);
+
+                for($i = 0; $i < $len; $i++) {
+                    if($value[$i] == $escape_char) {
+                        $escaped = 1;
+                    } else if (!$escaped && $value[$i] == $enclosure) {
+                        $str2 .= $enclosure;
+                    } else {
+                        $escaped = 0;
+                    }
+
+                    $str2 .= $value[$i];
+                }
+
+                $str2 .= $enclosure;
+                $str .= $str2.$delimiter;
+            } else {
+                $str .= $value.$delimiter;
+            }
+        }
+
+        $str = substr($str,0,-1);
+        $str .= "\n";
+
+        return $str;
     }
 }

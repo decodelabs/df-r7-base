@@ -59,7 +59,7 @@ class Generator extends Base implements halo\protocol\http\IGeneratorResponse {
         return $this;
     }
 
-    public function writeChunk($chunk) {
+    public function writeChunk($chunk, $length=null) {
         if($this->_channel) {
             if($this->_manualChunk) {
                 $this->_channel->write(dechex(strlen($chunk))."\r\n");

@@ -32,6 +32,13 @@ interface IMode {
 
 
 // Reader
+interface IChunkSender {
+    public function setChunkReceiver(IChunkReceiver $reader);
+    public function getChunkReceiver();
+    public function sendChunks();
+}
+
+
 interface IReader {
     public function read();
     public function readChunk($length);
@@ -224,10 +231,13 @@ trait TPeekReader {
 
 
 // Writer
-interface IWriter {
+interface IChunkReceiver {
+    public function writeChunk($chunk, $length=null);
+}
+
+interface IWriter extends IChunkReceiver {
     public function write($data);
     public function writeLine($line);
-    public function writeChunk($data, $length);
     public function writeBuffer(&$buffer, $length);
 
     public function writeByte($byte);
@@ -272,7 +282,7 @@ trait TWriter {
         return $this->write($line."\r\n");
     }
     
-    public function writeChunk($data, $length) {
+    public function writeChunk($data, $length=null) {
         if(!$this->isWritingEnabled()) {
             throw new LogicException(
                 'Writing has already been shut down'
@@ -411,15 +421,7 @@ interface IFlushable {
 }
 
 
-interface IChunkSender {
-    public function setChunkReceiver(IChunkReceiver $reader);
-    public function getChunkReceiver();
-    public function sendChunks();
-}
 
-interface IChunkReceiver {
-    public function writeChunk($chunk);
-}
 
 
 // Channel

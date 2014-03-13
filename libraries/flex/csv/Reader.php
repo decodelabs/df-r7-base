@@ -38,6 +38,7 @@ class Reader implements IReader {
 
     public function __construct(core\io\IChannel $channel) {
         $this->_channel = $channel;
+        $this->_channel->seek(0);
     }
 
     public function getChannel() {
@@ -76,6 +77,18 @@ class Reader implements IReader {
         return $this;
     }
 
+    public function extractFields() {
+        if($this->_fields !== null) {
+            throw new RuntimeException(
+                'Fields have already been set'
+            );
+        }
+
+        $this->setFields(array_values($this->getRow()));
+        $this->_currentRow = null;
+        return $this;
+    }
+
     public function getFields() {
         return $this->_fields;
     }
@@ -105,8 +118,12 @@ class Reader implements IReader {
         $cell = '';
 
         while(true) {
-            $this->_fillBuffer();
+            $isEof = !$this->_fillBuffer();
             $char = $this->_extract();
+
+            if($char === null || $char === false || $char === '') {
+                break;
+            }
 
             switch($mode) {
                 case self::MODE_START:
@@ -183,14 +200,15 @@ class Reader implements IReader {
 
     protected function _fillBuffer() {
         if(strlen($this->_buffer) > self::BUFFER_THRESHOLD) {
-            return;
+            return true;
         }
 
         if($this->_channel->eof()) {
-            return;
+            return false;
         }
 
         $this->_buffer .= $this->_channel->readChunk(self::BUFFER_READ_SIZE);
+        return $this->_buffer;
     }
 
     protected function _writeCell(&$cell) {
