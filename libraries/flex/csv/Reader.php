@@ -26,6 +26,7 @@ class Reader implements IReader {
     protected $_currentRow = null;
     protected $_rowCount = 0;
     protected $_buffer;
+    protected $_rewindSeek = 0;
 
     public static function openFile($path) {
         ini_set('auto_detect_line_endings', true);
@@ -86,6 +87,10 @@ class Reader implements IReader {
 
         $this->setFields(array_values($this->getRow()));
         $this->_currentRow = null;
+        $this->_rowCount = 0;
+        $this->_rewindSeek = $this->_channel->tell() - strlen($this->_buffer);
+        $this->_buffer = null;
+
         return $this;
     }
 
@@ -224,7 +229,7 @@ class Reader implements IReader {
 
 // Iterator
     public function rewind() {
-        $this->_channel->seek(0);
+        $this->_channel->seek($this->_rewindSeek);
         $this->_rowCount = 0;
         return $this;
     }
