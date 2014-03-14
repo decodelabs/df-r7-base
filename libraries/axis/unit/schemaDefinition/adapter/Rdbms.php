@@ -59,7 +59,8 @@ class Rdbms implements axis\ISchemaDefinitionStorageAdapter {
     public function update(axis\ISchemaBasedStorageUnit $unit, $jsonData, $version) {
         $this->_table->update([
                 'schema' => $jsonData,
-                'version' => $version
+                'version' => $version,
+                'timestamp' => core\time\Date::factory('now')->toString()
             ])
             ->where('unitId', '=', $unit->getUnitId())
             ->execute();

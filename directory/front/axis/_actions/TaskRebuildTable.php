@@ -84,5 +84,9 @@ class TaskRebuildTable extends arch\task\Action {
         $this->response->writeLine('Renaming tables');
         $currentTable->rename($currentTableName.axis\IUnit::BACKUP_SUFFIX.$this->format->customDate('now', 'Ymd_his'));
         $newTable->rename($currentTableName);
+
+        $this->response->writeLine('Updating schema cache');
+        $schemaDefinition = new axis\unit\schemaDefinition\Virtual($this->_unit->getModel());
+        $schemaDefinition->store($this->_unit, $axisSchema);
     }
 }
