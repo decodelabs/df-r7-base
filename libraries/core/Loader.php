@@ -151,7 +151,7 @@ class Loader implements ILoader {
             $extensions = null;
         }
 
-        $output = array();
+        $output = [];
         $paths = $this->getFileSearchPaths(rtrim($path, '/').'/');
         
         foreach($paths as $path) {
@@ -178,6 +178,31 @@ class Loader implements ILoader {
                     }
                 }
                 
+                $output[$baseName] = $filePath;
+            }
+        }
+        
+        return $output;
+    }
+
+    public function lookupFolderList($path) {
+        $output = [];
+        $paths = $this->getFileSearchPaths(rtrim($path, '/').'/');
+        
+        foreach($paths as $path) {
+            if(!is_dir($path)) {
+                continue;
+            }
+
+            $dir = new \DirectoryIterator($path);
+            
+            foreach($dir as $item) {
+                if(!$item->isDir() || $item->isDot()) {
+                    continue;
+                }
+                
+                $filePath = $item->getPathname();
+                $baseName = basename($filePath);
                 $output[$baseName] = $filePath;
             }
         }
