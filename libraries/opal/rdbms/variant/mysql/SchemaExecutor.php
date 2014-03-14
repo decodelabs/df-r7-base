@@ -11,6 +11,38 @@ use df\opal;
     
 class SchemaExecutor extends opal\rdbms\SchemaExecutor {
 
+## Stats ##
+    public function getTableStats($name) {
+        $stmt = $this->_adapter->prepare($sql = 'SHOW TABLE STATUS WHERE Name = :a');
+        $stmt->bind('a', $name);
+        $res = $stmt->executeRead();
+        
+        if($res->isEmpty()) {
+            throw new opal\rdbms\TableNotFoundException(
+                'Table '.$name.' could not be found', 1051, $sql
+            );
+        }
+        
+        $status = $res->getCurrent();
+        $output = new opal\rdbms\TableStats();
+
+        $count = $this->_adapter->prepare('SELECT COUNT(*) as count FROM '.$this->_adapter->quoteIdentifier($name))
+            ->executeRead()
+            ->getCurrent()['count'];
+
+        $output
+            ->setVersion($status['Version'])
+            ->setRowCount($count)
+            ->setSize($status['Data_length'])
+            ->setIndexSize($status['Index_length'])
+            ->setCreationDate($status['Create_time'])
+            ->setSchemaUpdateDate($status['Update_time'])
+            ->setAttributes($status);
+        
+        return $output;
+    }
+
+
 ## Introspect ##
     public function introspect($name) {
         $stmt = $this->_adapter->prepare($sql = 'SHOW TABLE STATUS WHERE Name = :a');

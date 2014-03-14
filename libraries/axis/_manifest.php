@@ -37,6 +37,7 @@ interface IUnit extends core\IApplicationAware, core\policy\IEntity, user\IAcces
 
     const ID_SEPARATOR = '/';
     const DEFAULT_ACCESS = axis\IAccess::GUEST;
+    const BACKUP_SUFFIX = '__bak_';
 
     public function _setUnitName($name);
     public function getUnitName();
@@ -264,7 +265,21 @@ interface IContext extends IUnit, core\IContext, core\i18n\translate\ITranslatio
 
 
 
-interface IAdapter {}
+interface IAdapter {
+    public function getDisplayName();
+    public function getUnit();
+}
+
+interface IConnectionProxyAdapter extends IAdapter {
+    public function getConnection();
+    public function getConnectionDisplayName();
+}
+
+interface IIntrospectableAdapter extends IAdapter {
+    public function getStorageList();
+    public function describeStorage($name=null);
+    public function destroyDescribedStorage($name);
+}
 
 interface ISchemaProviderAdapter extends IAdapter {
     public function createStorageFromSchema(axis\schema\ISchema $schema);

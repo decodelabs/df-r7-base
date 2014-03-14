@@ -13,12 +13,14 @@ use df\user;
 
 class Rdbms implements 
     axis\ISchemaProviderAdapter, 
+    axis\IConnectionProxyAdapter,
+    axis\IIntrospectableAdapter,
     opal\query\IAdapter,
     core\IDumpable {
     
     use user\TAccessLock;
     
-    protected $_rdbmsAdapter;
+    protected $_connection;
     protected $_querySourceAdapter;    
     protected $_unit;
     
@@ -26,6 +28,26 @@ class Rdbms implements
         $this->_unit = $unit;
     }
     
+    public function getDisplayName() {
+        return 'Rdbms';
+    }
+
+    public function getUnit() {
+        return $this->_unit;
+    }
+
+    public function getConnection() {
+        if(!$this->_connection) {
+            $settings = $this->_unit->getUnitSettings();
+            $this->_connection = opal\rdbms\adapter\Base::factory($settings['dsn']);
+        }
+        
+        return $this->_connection;
+    }
+
+    public function getConnectionDisplayName() {
+        return $this->getConnection()->getDsn()->getDisplayString();
+    }
     
 // Query source
     public function getQuerySourceId() {
@@ -37,24 +59,15 @@ class Rdbms implements
     }
     
     public function getQuerySourceAdapterHash() {
-        return $this->_getRdbmsAdapter()->getDsnHash();
+        return $this->getConnection()->getDsnHash();
     }
     
     public function getQuerySourceAdapter() {
         if(!$this->_querySourceAdapter) {
-            $this->_querySourceAdapter = $this->_getRdbmsAdapter()->getTable($this->_unit->getStorageBackendName());
+            $this->_querySourceAdapter = $this->getConnection()->getTable($this->_unit->getStorageBackendName());
         }
         
         return $this->_querySourceAdapter;
-    }
-    
-    protected function _getRdbmsAdapter() {
-        if(!$this->_rdbmsAdapter) {
-            $settings = $this->_unit->getUnitSettings();
-            $this->_rdbmsAdapter = opal\rdbms\adapter\Base::factory($settings['dsn']);
-        }
-        
-        return $this->_rdbmsAdapter;
     }
     
     public function getDelegateQueryAdapter() {
@@ -152,7 +165,7 @@ class Rdbms implements
     
 // Create
     public function createStorageFromSchema(axis\schema\ISchema $axisSchema) {
-        $adapter = $this->_getRdbmsAdapter();
+        $adapter = $this->getConnection();
         $bridge = new axis\schema\bridge\Rdbms($this->_unit, $adapter, $axisSchema);
         $dbSchema = $bridge->updateTargetSchema();
         
@@ -191,7 +204,7 @@ class Rdbms implements
         $defUnit = $model->getSchemaDefinitionUnit();
 
         $idList = $defUnit->fetchStoredUnitList();
-        $tableList = $this->_getRdbmsAdapter()->getDatabase()->getTableList();
+        $tableList = $this->getConnection()->getDatabase()->getTableList();
         $update = [];
 
         $unitId = $this->_unit->getUnitId();
@@ -218,6 +231,40 @@ class Rdbms implements
             }
         }
 
+        return $this;
+    }
+
+
+
+// Introspection
+    public function getStorageList() {
+        return $this->getConnection()->getDatabase()->getTableList();
+    }
+
+    public function describeStorage($name=null) {
+        if($name === null) {
+            $name = $this->_unit->getStorageBackendName();
+        }
+
+        $table = $this->getConnection()->getTable($name);
+        $stats = $table->getStats();
+        
+        return new axis\introspector\StorageDescriber(
+            $name,
+            $this->getConnection()->getAdapterName(),
+            $stats->getRowCount(),
+            $stats->getSize(),
+            $stats->getIndexSize(),
+            $stats->getCreationDate()
+        );
+    }
+
+    public function destroyDescribedStorage($name) {
+        if($name instanceof axis\introspector\IStorageDescriber) {
+            $name = $name->getName();
+        }
+
+        $this->getConnection()->getTable($name)->drop();
         return $this;
     }
 

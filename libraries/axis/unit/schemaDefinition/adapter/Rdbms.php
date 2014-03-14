@@ -23,6 +23,14 @@ class Rdbms implements axis\ISchemaDefinitionStorageAdapter {
         $rdbmsAdapter = opal\rdbms\adapter\Base::factory($settings['dsn']);
         $this->_table = $rdbmsAdapter->getTable($this->_unit->getStorageBackendName());
     }
+
+    public function getDisplayName() {
+        return 'Rdbms';
+    }
+
+    public function getUnit() {
+        return $this->_unit;
+    }
     
     public function fetchFor(axis\ISchemaBasedStorageUnit $unit) {
         return $this->_table->select('schema')

@@ -43,6 +43,10 @@ class Table implements ITable, core\IDumpable {
         
         return $schema;
     }
+
+    public function getStats() {
+        return SchemaExecutor::factory($this->_adapter)->getTableStats($this->_name);
+    }
     
     
 // Query source

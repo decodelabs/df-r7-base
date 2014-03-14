@@ -101,4 +101,15 @@ class ConnectionConfig extends core\Config {
         
         return (string)$this->values['units'][$unitId];
     }
+
+    public function getDefinedUnits() {
+        if(!isset($this->values['units'])) {
+            return [];
+        }
+
+        $output = (array)$this->values['units'];
+        unset($output['default'], $output['@search']);
+
+        return array_keys($output);
+    }
 }

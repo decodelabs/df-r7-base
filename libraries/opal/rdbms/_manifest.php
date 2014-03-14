@@ -110,7 +110,7 @@ interface IDsn extends core\IStringProvider {
     public function getOption($key, $default=null);
     public function getHash();
     public function getConnectionString();
-    public function getDisplayString();
+    public function getDisplayString($credentials=false);
 }
 
 
@@ -209,6 +209,7 @@ interface ITable extends core\policy\IEntity, opal\query\IAdapter, opal\query\IE
     public function getName();
     public function getAdapter();
     public function getSchema();
+    public function getStats();
     
     public function exists();
     public function create(opal\rdbms\schema\ISchema $schema, $dropIfExists=false);
@@ -220,9 +221,24 @@ interface ITable extends core\policy\IEntity, opal\query\IAdapter, opal\query\IE
     public function unlock();
 }
 
+interface ITableStats extends core\IAttributeContainer {
+    public function setVersion($version);
+    public function getVersion();
+    public function setRowCount($rows);
+    public function getRowCount();
+    public function setSize($size);
+    public function getSize();
+    public function setIndexSize($size);
+    public function getIndexSize();
+    public function setCreationDate($date);
+    public function getCreationDate();
+    public function setSchemaUpdateDate($date);
+    public function getSchemaUpdateDate();
+}
 
 interface ISchemaExecutor {
     public function getAdapter();
+    public function getTableStats($name);
 
     public function exists($name);
     public function introspect($name);

@@ -11,6 +11,11 @@ use df\opal;
     
 class SchemaExecutor extends opal\rdbms\SchemaExecutor {
 
+    ## Stats ##
+    public function getTableStats($name) {
+        core\stub($name);   
+    }
+
 ## Introspect ##
     public function introspect($tableName) {
         $stmt = $this->_adapter->prepare('SELECT * FROM sqlite_master WHERE tbl_name = :a');

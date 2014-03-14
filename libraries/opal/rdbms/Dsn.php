@@ -302,10 +302,10 @@ class Dsn implements IDsn, core\IDumpable {
         return $output;
     }
 
-    public function getDisplayString() {
-        $output = $this->_adapter.'://';
+    public function getDisplayString($credentials=false) {
+        $output = lcfirst($this->_adapter).'://';
         
-        if($this->_username !== null || $this->_password !== null) {
+        if($credentials && ($this->_username !== null || $this->_password !== null)) {
             $output .= $this->_username.':****@';
         }
         
