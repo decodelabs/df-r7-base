@@ -215,8 +215,13 @@ class Date implements IDate, core\IDumpable {
         $locale = (string)core\i18n\Locale::factory($locale);
         $size = $this->_normalizeFormatterSize($size);
         
-        return \IntlDateFormatter::create($locale, $size, $size, $this->getTimezone())
-            ->format($this->toTimestamp());
+        $output = \IntlDateFormatter::create($locale, $size, $size, $this->getTimezone());
+
+        if($output) {
+            return $output->format($this->toTimestamp());
+        } else {
+            return $this->format('Y-m-d H:i:s');
+        }
     }
     
     public function userLocaleDateFormat($size='long') {
