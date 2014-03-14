@@ -85,6 +85,15 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
         }
     }
 
+    public function shorten($string, $length=20) {
+        if(strlen($string) <= $length) {
+            return $string;
+        }
+
+        $newString = core\string\Manipulator::shorten($string, $length);
+        return $this->element('abbr', $newString)->setAttribute('title', $string);
+    }
+
     public function _($phrase, array $data=null, $plural=null, $locale=null) {
         return $this->string($this->_view->_($phrase, $data, $plural, $locale));
     }
@@ -384,9 +393,10 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
         $date = core\time\Date::factory($date);
 
         return $this->_timeTag(
-            $date->format(core\time\Date::W3C), 
-            $this->_view->format->timeSince($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)
-        );
+                $date->format(core\time\Date::W3C), 
+                $this->_view->format->timeSince($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)
+            )
+            ->setAttribute('title', $this->_view->format->dateTime($date));
     }
     
     public function timeUntil($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=true) {
@@ -397,9 +407,10 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
         $date = core\time\Date::factory($date);
 
         return $this->_timeTag(
-            $date->format(core\time\Date::W3C), 
-            $this->_view->format->timeUntil($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)
-        );
+                $date->format(core\time\Date::W3C), 
+                $this->_view->format->timeUntil($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)
+            )
+            ->setAttribute('title', $this->_view->format->dateTime($date));
     }
 
     public function timeFromNow($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null) {
@@ -418,9 +429,10 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
         }
 
         return $this->_timeTag(
-            $date->format(core\time\Date::W3C), 
-            $output
-        );
+                $date->format(core\time\Date::W3C), 
+                $output
+            )
+            ->setAttribute('title', $this->_view->format->dateTime($date));
     }
 
     protected function _timeTag($w3cString, $formattedString) {
