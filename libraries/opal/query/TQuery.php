@@ -2022,7 +2022,7 @@ trait TQuery_BatchDataInsert {
         $adapter = $this->_source->getAdapter();
 
         if(!$adapter instanceof IIntegralAdapter) {
-            return $row;
+            return $rows;
         }
 
         $schema = $adapter->getQueryAdapterSchema();
