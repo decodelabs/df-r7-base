@@ -182,7 +182,7 @@ class Source implements ISource, core\IDumpable {
         $fields = array();
         
         if($field instanceof opal\query\IVirtualField) {
-            $fields = $field->getTargetFields();
+            //$fields = $field->getTargetFields();
         } else if($field instanceof opal\query\IWildcardField 
         && $this->_adapter instanceof IIntegralAdapter) {
             foreach($this->_adapter->getQueryAdapterSchema()->getFields() as $name => $queryField) {
@@ -214,7 +214,7 @@ class Source implements ISource, core\IDumpable {
             $this->_outputFields[$alias] = $field;
             unset($this->_privateFields[$field->getAlias()]);
         }
-        
+
         return $this;
     }
 
@@ -283,7 +283,7 @@ class Source implements ISource, core\IDumpable {
         
         foreach($this->_outputFields as $mainField) {
             foreach($mainField->dereference() as $field) {
-                $output[$field->getAlias()] = $field;
+                $output[$field->getQualifiedName()] = $field;
             }
         }
         
