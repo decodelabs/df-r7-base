@@ -21,6 +21,7 @@ class Config extends core\Config {
             'defaultReturnPath' => null,
             'adminAddresses' => [],
             'catchAllBCC' => [],
+            'devmailTesting' => true,
             'transports' => flow\mail\transport\Base::getAllDefaultConfigValues()
         ];
     }
@@ -130,5 +131,19 @@ class Config extends core\Config {
         }
 
         return $output;
+    }
+
+    public function useDevmailInTesting($flag=null) {
+        if($flag !== null) {
+            $this->values->devmailTesting = (bool)$flag;
+            return $this;
+        }
+
+        if(!isset($this->values->devmailTesting)) {
+            $this->values->devmailTesting = true;
+            $this->save();
+        }
+
+        return (bool)$this->values['devmailTesting'];
     }
 }

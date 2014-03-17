@@ -59,16 +59,21 @@ abstract class Base implements flow\mail\ITransport {
     public static function getDefaultTransportName() {
         if(df\Launchpad::$application->isDevelopment()) {
             return 'DevMail';
-        } else {
-            $config = flow\mail\Config::getInstance();
-            $name = $config->getDefaultTransport();
-
-            if(!self::getTransportClass($name)) {
-                $name = 'Mail';
-            }
-
-            return $name;
         }
+
+        $config = flow\mail\Config::getInstance();
+
+        if(df\Launchpad::$application->isTesting() && $config->useDevmailInTesting()) {
+            return 'DevMail';
+        }
+
+        $name = $config->getDefaultTransport();
+
+        if(!self::getTransportClass($name)) {
+            $name = 'Mail';
+        }
+
+        return $name;
     }
 
     public static function getTransportClass($name) {
