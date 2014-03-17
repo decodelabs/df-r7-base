@@ -61,7 +61,7 @@ class Launchpad {
         $isTesting = true;
         
         if($environmentMode = array_shift($envParts)) {
-            $isTesting = $environmentMode == 'production';
+            $isTesting = $environmentMode != 'production';
         }
         
         if(array_pop($parts) != 'entry') {
