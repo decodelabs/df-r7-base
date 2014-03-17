@@ -742,6 +742,12 @@ abstract class QueryExecutor implements IQueryExecutor {
                       $this->_adapter->quoteIdentifier($field->getName());
             
         } else if($field instanceof opal\query\IVirtualField) {
+            $deref = $field->dereference();
+
+            if(count($deref) == 1) {
+                return $this->defineField($deref[0], $alias);
+            }
+
             throw new InvalidArgumentException(
                 'Virtual fields can not be used directly'
             );
