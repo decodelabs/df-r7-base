@@ -959,15 +959,17 @@ class ArrayManipulator implements IArrayManipulator {
         if($valField) {
             if($valField instanceof opal\query\IVirtualField) {
                 $derefFields = $valField->dereference();
+                $oldValField = $valField;
 
                 if(count($derefFields) > 1) {
                     if($valField->getName() == '@primary') {
                         $outputPrimaryKeySet = true;
                     }
 
-                    core\stub('multi primary deref', $outputFields);
+                    //core\stub('multi primary deref', $outputFields);
+                    $valQName = $valField->getQualifiedName();
+                    $valName = $valField->getName();
                 } else {
-                    $oldValField = $valField;
                     $valField = array_shift($derefFields);
                     $valQName = $valField->getQualifiedName();
                     $valName = $valField->getName();
