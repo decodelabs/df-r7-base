@@ -21,7 +21,13 @@ class TaskGenerateEntries extends arch\task\Action {
         $environmentId = df\Launchpad::$environmentId;
 
         if($buildId = $this->request->query['build']) {
-            foreach(['testing', 'production'] as $mode) {
+            if(substr($buildId, -8) == '-testing') {
+                $modes = ['testing'];
+            } else {
+                $modes = ['testing', 'production'];
+            }
+
+            foreach($modes as $mode) {
                 $entryPath = $appPath.'/entry/'.$environmentId.'.'.$mode.'.php';
                 
                 $data = '<?php'."\n\n".

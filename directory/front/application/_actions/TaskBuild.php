@@ -37,6 +37,7 @@ class TaskBuild extends arch\task\Action {
         // Prepare info
         $timestamp = date('YmdHis');
         $purgeOldBuilds = $this->request->query->get('purge', self::PURGE_OLD_BUILDS);
+        $isTesting = isset($this->request->query->testing);
 
         $appPath = df\Launchpad::$applicationPath;
         $environmentId = df\Launchpad::$environmentId;
@@ -45,6 +46,11 @@ class TaskBuild extends arch\task\Action {
 
         $runPath = $appPath.'/data/local/run';
         $buildId = 'df-'.$timestamp;
+
+        if($isTesting) {
+            $buildId .= '-testing';
+        }
+
         $destinationPath = $runPath.'/'.$buildId;
 
         if(is_dir($destinationPath)) {
@@ -135,7 +141,7 @@ class TaskBuild extends arch\task\Action {
         $this->response->writeLine('App build complete');
 
         if($purgeOldBuilds) {
-            $this->runChild('application/purge-builds');
+            $this->runChild('application/purge-builds?'.(!$isTesting ? 'purgeTesting' : null));
         }
     }
 }

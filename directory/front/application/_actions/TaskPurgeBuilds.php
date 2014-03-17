@@ -37,7 +37,19 @@ class TaskPurgeBuilds extends arch\task\Action {
 
         $list = scandir($runPath);
         sort($list);
+        $testList = [];
         unset($list[0], $list[1]);
+
+        foreach($list as $i => $entry) {
+            if(substr($entry, -8) == '-testing') {
+                unset($list[$i]);
+                $testList[] = $entry;
+            }
+        }
+
+        if(!isset($this->request->query->purgeTesting)) {
+            array_pop($testList);
+        }
 
         if($keepLast) {
             $contingency++;
@@ -47,6 +59,7 @@ class TaskPurgeBuilds extends arch\task\Action {
             array_pop($list);
         }
 
+        $list = array_merge($list, $testList);
 
         foreach($list as $entry) {
             if(is_file($runPath.'/'.$entry)) {
