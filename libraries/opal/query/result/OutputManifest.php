@@ -103,6 +103,8 @@ class OutputManifest implements IOutputManifest {
         if($field instanceof opal\query\ICombineField) {
             $this->_combines[$field->getName()] = $field->getCombine();
         }
+
+        $this->_fieldProcessors = null;
         
         return $this;
     }
@@ -138,7 +140,7 @@ class OutputManifest implements IOutputManifest {
     public function getOutputFieldProcessors() {
         if($this->_fieldProcessors === null) {
             $this->_fieldProcessors = [];
-            
+
             foreach($this->_sources as $source) {
                 $sourceAlias = $source->getAlias();
                 $adapter = $source->getAdapter();
@@ -150,7 +152,7 @@ class OutputManifest implements IOutputManifest {
                     }
 
                     if($field->shouldBeProcessed()) {
-                        $fieldNames[] = $name;
+                        $fieldNames[] = $field->getName();
                     }
                 }
 

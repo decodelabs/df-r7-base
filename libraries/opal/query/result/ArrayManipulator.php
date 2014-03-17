@@ -1078,6 +1078,7 @@ class ArrayManipulator implements IArrayManipulator {
                     }
                 }
 
+                // Combines
                 foreach($combines as $combineName => $combine) {
                     $combineFields = $combine->getFields();
                     $nullFields = $combine->getNullFields();
@@ -1086,7 +1087,7 @@ class ArrayManipulator implements IArrayManipulator {
 
                     foreach($combineFields as $combineFieldName => $combineField) {
                         if(!$isNull) {
-                            $targetField = $combineField->dereference()[0];
+                            $targetField = $combineField->getTargetFields()[0];
                             $targetQName = $targetField->getQualifiedName();
 
                             if(isset($row[$targetQName])) {
