@@ -85,20 +85,21 @@ class EntityLocator extends Base implements
             $output = new opal\query\clause\WhereList($parent, $isOr);
 
             foreach($value as $sub) {
-                $output->_addClause($this->_createSubClause($output, $sub, $subOperator));
+                $output->_addClause($this->_createSubClause($output, $field, $sub, $subOperator));
             }
 
             return $output;
         } else {
-            return $this->_createSubClause($parent, $value, $subOperator);
+            return $this->_createSubClause($parent, $field, $value, $subOperator);
         }
     }
 
-    protected function _createSubClause(opal\query\IClauseFactory $parent, $value, $operator) {
+    protected function _createSubClause(opal\query\IClauseFactory $parent, opal\query\IField $field, $value, $operator) {
         $output = new opal\query\clause\WhereList($parent, true);
+        $sourceAlias = $field->getSource()->getAlias();
 
         if($value instanceof opal\query\IField) {
-            $output->whereField($this->_name.'_id', '=', $value->getName());
+            $output->whereField($sourceAlias.'.'.$this->_name.'_id', '=', $value->getName());
             return $output;
         }
 
@@ -106,14 +107,14 @@ class EntityLocator extends Base implements
 
         if($locator === null) {
             return $output
-                ->where($this->_name.'_id', '=', $locator)
-                ->where($this->_name.'_domain', '=', $locator);
+                ->where($sourceAlias.'.'.$this->_name.'_id', '=', $locator)
+                ->where($sourceAlias.'.'.$this->_name.'_domain', '=', $locator);
         }
 
         switch($operator) {
             case 'begins':
             case 'not begins':
-                return $output->where($this->_name.'_domain', $operator, $locator->getDomain());
+                return $output->where($sourceAlias.'.'.$this->_name.'_domain', $operator, $locator->getDomain());
 
 
             default:
@@ -124,8 +125,8 @@ class EntityLocator extends Base implements
                 }
 
                 return $output
-                    ->where($this->_name.'_domain', $operator, $locator->getDomain())
-                    ->where($this->_name.'_id', $idOperator, $locator->getId());
+                    ->where($sourceAlias.'.'.$this->_name.'_domain', $operator, $locator->getDomain())
+                    ->where($sourceAlias.'.'.$this->_name.'_id', $idOperator, $locator->getId());
         }
     }
 

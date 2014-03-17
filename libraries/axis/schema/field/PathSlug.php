@@ -89,39 +89,40 @@ class PathSlug extends Base implements
             $output = new opal\query\clause\WhereList($parent, $isOr);
 
             foreach($value as $sub) {
-                $output->_addClause($this->_createSubClause($output, $sub, $subOperator));
+                $output->_addClause($this->_createSubClause($output, $field, $sub, $subOperator));
             }
 
             return $output;
         } else {
-            return $this->_createSubClause($parent, $value, $subOperator);
+            return $this->_createSubClause($parent, $field, $value, $subOperator);
         }
     }
 
-    protected function _createSubClause(opal\query\IClauseFactory $parent, $value, $operator) {
+    protected function _createSubClause(opal\query\IClauseFactory $parent, opal\query\IField $field, $value, $operator) {
         $output = new opal\query\clause\WhereList($parent, true);
         $slug = $this->sanitizeValue($value);
+        $sourceAlias = $field->getSource()->getAlias();
 
         if($slug === null) {
             return $output
-                ->where($this->_name.'_name', '=', $slug)
-                ->where($this->_name.'_location', '=', $slug);
+                ->where($sourceAlias.'.'.$this->_name.'_name', '=', $slug)
+                ->where($sourceAlias.'.'.$this->_name.'_location', '=', $slug);
         }
 
         switch($operator) {
             case 'begins':
             case 'not begins':
-                return $output->where($this->_name.'_location', $operator, $slug);
+                return $output->where($sourceAlias.'.'.$this->_name.'_location', $operator, $slug);
 
             case 'ends':
             case 'not ends':
-                return $output->where($this->_name.'_name', $operator, $slug);
+                return $output->where($sourceAlias.'.'.$this->_name.'_name', $operator, $slug);
 
             case 'contains':
             case 'not contains':
                 return $output
-                    ->where($this->_name.'_name', $operator, $slug)
-                    ->orWhere($this->_name.'_location', $operator, $slug);
+                    ->where($sourceAlias.'.'.$this->_name.'_name', $operator, $slug)
+                    ->orWhere($sourceAlias.'.'.$this->_name.'_location', $operator, $slug);
 
             default:
                 $parts = explode('/', $slug);
@@ -139,8 +140,8 @@ class PathSlug extends Base implements
                 }
 
                 return $output
-                    ->where($this->_name.'_location', $operator, $location)
-                    ->where($this->_name.'_name', $nameOperator, $name);
+                    ->where($sourceAlias.'.'.$this->_name.'_location', $operator, $location)
+                    ->where($sourceAlias.'.'.$this->_name.'_name', $nameOperator, $name);
         }
     }
 
