@@ -477,7 +477,7 @@ trait TQuery_Joinable {
 
         $application = $this->getSourceManager()->getApplication();
         $join = $this->_newQuery()->beginJoin($this, $targetFields, $joinType);
-        $targetAlias = $field->getName();
+        $targetAlias = 'jrl_'.$field->getName();
 
         if($field instanceof opal\schema\IBridgedRelationField) {
             // Field is bridged
