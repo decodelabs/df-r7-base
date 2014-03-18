@@ -30,7 +30,9 @@ interface IDataRowProvider {
 
 // Initiator
 interface IInitiator extends core\IApplicationAware, ITransactionAware {
-    public function beginSelect(array $fields=array());
+    public function beginSelect(array $fields=array(), $distinct=false);
+    public function beginUnion();
+    public function beginUnionSelect(IUnionQuery $union, array $fields=array(), $unionDistinct=true, $selectDistinct=false);
     public function beginFetch();
     public function beginInsert($row);
     public function beginBatchInsert($rows=array());
@@ -93,6 +95,7 @@ interface INestedComponent {
 interface IEntryPoint {
     public function select($field1=null);
     public function selectDistinct($field1=null);
+    public function union();
     public function fetch();
     public function insert($values);
     public function batchInsert($rows=array());
@@ -445,6 +448,33 @@ interface ISelectAttachQuery extends ISelectQuery, IAttachQuery {
 
 
 /***********
+ * Union
+ */
+interface IUnionQuery extends 
+    IReadQuery,
+    \Countable,
+    IAttachableQuery,
+    ICombinableQuery,
+    IOrderableQuery, 
+    ILimitableQuery,
+    IOffsettableQuery,
+    IPageableQuery {
+    public function with($field1=null);
+    public function withAll($field1=null);
+    public function addQuery(IUnionSelectQuery $query);
+    public function getQueries();
+}
+
+interface IUnionSelectQuery extends ISelectQuery {
+    public function isUnionDistinct($flag=null);
+
+    public function endUnion();
+    public function with($field1=null);
+    public function withAll($field1=null);
+}
+
+
+/***********
  * Fetch
  */
 interface IFetchQuery extends 
@@ -535,13 +565,14 @@ interface IDeleteQuery extends
  */
 interface IQueryTypes {
     const SELECT = 1;
-    const FETCH = 2;
-    const INSERT = 3;
-    const BATCH_INSERT = 4;
-    const REPLACE = 5;
-    const BATCH_REPLACE = 6;
-    const UPDATE = 7;
-    const DELETE = 8;
+    const UNION = 2;
+    const FETCH = 3;
+    const INSERT = 4;
+    const BATCH_INSERT = 5;
+    const REPLACE = 6;
+    const BATCH_REPLACE = 7;
+    const UPDATE = 8;
+    const DELETE = 9;
     
     const CORRELATION = 101;
     const POPULATE = 102;
@@ -590,6 +621,8 @@ interface IAdapter extends user\IAccessLock {
     
     public function executeSelectQuery(ISelectQuery $query);
     public function countSelectQuery(ISelectQuery $query);
+    public function executeUnionQuery(IUnionQuery $query);
+    public function countUnionQuery(IUnionQuery $query);
     public function executeFetchQuery(IFetchQuery $query);
     public function countFetchQuery(IFetchQuery $query);
     public function executeInsertQuery(IInsertQuery $query);
@@ -768,6 +801,14 @@ interface IAggregateField extends IField {
     public function getTargetField();
     public function normalizeOutputValue($value);
     public function isDistinct($flag=null);
+}
+
+interface IExpressionField extends IField {
+    public function setAlias($alias);
+    public function setAltSourceAlias($alias);
+    public function getAltSourceAlias();
+    public function getExpression();
+    public function isNull();
 }
 
 interface ILateAttachField extends IField {}

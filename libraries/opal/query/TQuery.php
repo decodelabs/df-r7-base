@@ -1757,7 +1757,7 @@ trait TQuery_Read {
         return $this->_fetchSourceData();
     }
     
-    abstract protected function _fetchSourceData($keyField=null);
+    abstract protected function _fetchSourceData($keyField=null, $valField=null);
 
     public function getOutputManifest() {
         $output = new opal\query\result\OutputManifest($this->getSource());
@@ -1793,6 +1793,42 @@ trait TQuery_Read {
     }
 }
 
+
+trait TQuery_SelectSourceDataFetcher {
+
+    protected function _fetchSourceData($keyField=null, $valField=null) {
+        if($keyField !== null) {
+            $keyField = $this->_sourceManager->extrapolateDataField($this->_source, $keyField);
+        }
+        
+        if($valField !== null) {
+            if(isset($this->_attachments[$valField])) {
+                $valField = new opal\query\field\Attachment($valField, $this->_attachments[$valField]);
+            } else {
+                $valField = $this->_sourceManager->extrapolateDataField($this->_source, $valField);
+            }
+        }
+
+        $parts = explode('\\', get_class($this));
+        $func = 'execute'.array_pop($parts).'Query';
+        
+        $output = $this->_sourceManager->executeQuery($this, function($adapter) use($func) {
+            return $adapter->{$func}($this);
+        });
+
+        $output = $this->_createBatchIterator($output, $keyField, $valField);
+
+        if($this->_paginator && $this->_offset == 0 && $this->_limit) {
+            $count = count($output);
+
+            if($count < $this->_limit) {
+                $this->_paginator->setTotal($count);
+            }
+        }
+
+        return $output;
+    }
+}
 
 
 
@@ -2179,6 +2215,11 @@ trait TQuery_EntryPoint {
             ->beginSelect(func_get_args(), true);
     }
 
+    public function union() {
+        return Initiator::factory($this->_getEntryPointApplication())
+            ->beginUnion();
+    }
+
     public function fetch() {
         return Initiator::factory($this->_getEntryPointApplication())
             ->beginFetch();
@@ -2244,6 +2285,13 @@ trait TQuery_ImplicitSourceEntryPoint {
     public function selectDistinct($field1=null) {
         return Initiator::factory($this->_getEntryPointApplication())
             ->beginSelect(func_get_args(), true)
+            ->from($this);
+    }
+
+    public function union() {
+        return Initiator::factory($this->_getEntryPointApplication())
+            ->beginUnion()
+            ->with(func_get_args())
             ->from($this);
     }
 

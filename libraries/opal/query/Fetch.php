@@ -44,7 +44,7 @@ class Fetch implements IFetchQuery, core\IDumpable {
         });
     }
 
-    protected function _fetchSourceData($keyField=null) {
+    protected function _fetchSourceData($keyField=null, $valField=null) {
         if($keyField !== null) {
             $keyField = $this->_sourceManager->extrapolateDataField($this->_source, $keyField);
         }

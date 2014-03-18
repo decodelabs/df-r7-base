@@ -31,6 +31,14 @@ class ImplicitSourceTransaction extends Transaction {
             ->beginSelect(func_get_args(), true)
             ->from($this->_source);
     }
+
+    public function union() {
+        return Initiator::factory($this->_application)
+            ->setTransaction($this)
+            ->beginUnion()
+            ->with(func_get_args())
+            ->from($this->_source);
+    }
     
     public function fetch() {
         return Initiator::factory($this->_application)

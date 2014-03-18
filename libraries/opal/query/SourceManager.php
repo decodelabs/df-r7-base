@@ -62,7 +62,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
     
 
 // Sources
-    public function newSource($adapter, $alias, array $fields=null, $forWrite=false) {
+    public function newSource($adapter, $alias, array $fields=null, $forWrite=false, $debug=false) {
         $adapter = $this->extrapolateSourceAdapter($adapter);
         $sourceId = $adapter->getQuerySourceId();
         
@@ -106,13 +106,12 @@ class SourceManager implements ISourceManager, core\IDumpable {
             $this->_transaction->registerAdapter($source->getAdapter(), $forWrite);
         }
         
-        
         if($fields !== null) {
             foreach($fields as $field) {
                 $this->extrapolateOutputField($source, $field);
             }
         }
-        
+
         return $source;
     }
     
@@ -185,7 +184,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
     public function extrapolateOutputField(ISource $source, $name) {
         $fieldAlias = null;
         
-        if(preg_match('/(.+) as (.+)$/', $name, $matches)) {
+        if(preg_match('/(.+) as ([^ ]+)$/', $name, $matches)) {
             $name = $matches[1];
             $fieldAlias = $matches[2];
         }
@@ -197,7 +196,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
         $alias = $name;
         $sourceAlias = null;
 
-        if(preg_match('/(.+) as (.+)$/', $name, $matches)) {
+        if(preg_match('/(.+) as ([^ ]+)$/', $name, $matches)) {
             $name = $matches[1];
             $alias = $matches[2];
         }
@@ -248,8 +247,11 @@ class SourceManager implements ISourceManager, core\IDumpable {
             return $name;
         }
 
+        if(!strlen($name)) {
+            $name = null;
+        }
 
-        if(!$isOutput && ($field = $this->_findFieldByAlias($name, $source, $checkAlias))) {
+        if(!$isOutput && $name !== null && ($field = $this->_findFieldByAlias($name, $source, $checkAlias))) {
             $this->_testField($field, $allowIntrinsic, $allowWildcard, $allowAggregate);
             return $field;
         }
@@ -257,6 +259,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
         $passedSourceAlias = $source->getAlias();
             
         if(preg_match('/^([a-zA-Z_]+)\((distinct )?(.+)\)$/i', $name, $matches)) {
+            // aggregate
             if(!$allowAggregate) {
                 throw new InvalidArgumentException(
                     'Aggregate field reference "'.$name.'" found when intrinsic field expected'
@@ -270,7 +273,6 @@ class SourceManager implements ISourceManager, core\IDumpable {
                 }
             }
             
-            // aggregate
             $type = $matches[1];
             $distinct = !empty($matches[2]);
             $targetField = $this->extrapolateField($source, $matches[3]);
@@ -301,6 +303,18 @@ class SourceManager implements ISourceManager, core\IDumpable {
             } else {
                 $source->addPrivateField($field);
             }
+            
+            return $field;
+        } else if($name === null || substr($name, 0, 1) == '#') {
+            // expression
+            $field = new opal\query\field\Expression($source, $name, $alias);
+
+            if($isOutput) {
+                $source->addOutputField($field);
+            } else {
+                $source->addPrivateField($field);
+            }
+
             
             return $field;
         } else {

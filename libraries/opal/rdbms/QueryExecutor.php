@@ -70,17 +70,66 @@ abstract class QueryExecutor implements IQueryExecutor {
             return $this->executeRemoteJoinedReadQuery($tableName, $forCount);
         }
     }
+
+    public function executeUnionQuery($tableName, $forCount=false) {
+        $queries = $this->_query->getQueries();
+        $sourceHash = null;
+        $first = true;
+
+
+        foreach($queries as $query) {
+            $source = $query->getSource();
+
+            if($sourceHash === null) {
+                $sourceHash = $source->getHash();
+            } else if($source->getHash() != $sourceHash) {
+                throw new opal\query\LogicException(
+                    'Union queries must all be on the same adapter'
+                );
+            }
+
+            if($first) {
+                $this->_stmt->appendSql('(');
+            } else {
+                $this->_stmt->appendSql(')'."\n".'UNION'."\n".'(');
+            }
+
+            $qExec = QueryExecutor::factory($this->_adapter, $query);
+            $tableName = $query->getSource()->getAdapter()->getDelegateQueryAdapter()->getName();
+            $qExec->buildLocalReadQuery($tableName, false);
+            $statement = $qExec->getStatement();
+            $this->_stmt->importBindings($statement);
+            $this->_stmt->appendSql($statement->getSql());
+
+            $first = false;
+        }
+
+        $this->_stmt->appendSql(')');
+
+        if($forCount) {
+            $this->_stmt->prependSql('SELECT COUNT(*) as count FROM (')->appendSql(') as baseQuery');
+        } else {
+            $this->writeOrderSection();
+            $this->writeLimitSection();
+        }
+
+        return $this->_stmt->executeRead();
+    }
      
     public function executeLocalReadQuery($tableName, $forCount=false) {
+        $this->buildLocalReadQuery($tableName, $forCount);
+        return $this->_stmt->executeRead();
+    }
+
+    public function buildLocalReadQuery($tableName, $forCount=false) {
         $source = $this->_query->getSource();
         $outFields = array();
         
 
         // Fields
         foreach($source->getDereferencedOutputFields() as $field) {
+            //core\debug()->dump($field);
             $fieldAlias = $field->getQualifiedName();
-            //$fieldAlias = $field->getAlias();
-
             $field->setLogicalAlias($fieldAlias);
             $outFields[] = $this->defineField($field, $fieldAlias);
         }
@@ -99,8 +148,6 @@ abstract class QueryExecutor implements IQueryExecutor {
 
                 foreach($joinSource->getDereferencedOutputFields() as $field) {
                     $fieldAlias = $field->getQualifiedName();
-                    //$fieldAlias = $field->getAlias();
-        
                     $outFields[] = $this->defineField($field, $fieldAlias);
                 }
             }
@@ -132,8 +179,7 @@ abstract class QueryExecutor implements IQueryExecutor {
             'AS '.$this->_adapter->quoteTableAliasDefinition($source->getAlias()).
             $joinSql
         );
-        
-        
+
         $this->writeWhereClauseSection();
         $this->writeGroupSection();
         $this->writeHavingClauseSection();
@@ -144,8 +190,8 @@ abstract class QueryExecutor implements IQueryExecutor {
             $this->writeOrderSection();
             $this->writeLimitSection();
         }
-        
-        return $this->_stmt->executeRead();
+
+        return $this->_stmt;
     }
             
             
@@ -735,6 +781,14 @@ abstract class QueryExecutor implements IQueryExecutor {
                 default:
                     $output = $field->getTypeName().'('.$targetFieldString.')';
                     break;
+            }
+        } else if($field instanceof opal\query\IExpressionField) {
+            $expression = $field->getExpression();
+            
+            if($expression) {
+                core\stub($expression);
+            } else {
+                $output = 'NULL';
             }
         } else if($field instanceof opal\query\IIntrinsicField) {
             // Intrinsic

@@ -259,6 +259,7 @@ interface IQueryExecutor {
 
 // Query passthrough
     public function executeReadQuery($tableName, $forCount=false);
+    public function executeUnionQuery($tableName, $forCount=false);
     public function executeLocalReadQuery($tableName, $forCount=false);
     public function executeRemoteJoinedReadQuery($tableName, $forCount=false);
     public function executeInsertQuery($tableName);

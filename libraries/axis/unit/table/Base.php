@@ -219,6 +219,14 @@ abstract class Base implements
     public function countSelectQuery(opal\query\ISelectQuery $query) {
         return $this->_adapter->countSelectQuery($query);
     }
+
+    public function executeUnionQuery(opal\query\IUnionQuery $query) {
+        return $this->_adapter->executeUnionQuery($query);
+    }
+
+    public function countUnionQuery(opal\query\IUnionQuery $query) {
+        return $this->_adapter->countUnionQuery($query);
+    }
     
     public function executeFetchQuery(opal\query\IFetchQuery $query) {
         return $this->_adapter->executeFetchQuery($query);
@@ -388,6 +396,13 @@ abstract class Base implements
         return opal\query\Initiator::factory($this->getApplication())
             ->beginSelect(func_get_args(), true)
             ->from($this, $this->getCanonicalUnitName()); 
+    }
+
+    public function union() {
+        return opal\query\Initiator::factory($this->getApplication())
+            ->beginUnion()
+            ->with(func_get_args())
+            ->from($this);
     }
 
     public function fetch() {

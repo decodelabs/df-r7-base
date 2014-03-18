@@ -69,6 +69,7 @@ class Table implements ITable, core\IDumpable {
     public function supportsQueryType($type) {
         switch($type) {
             case opal\query\IQueryTypes::SELECT:
+            case opal\query\IQueryTypes::UNION:
             case opal\query\IQueryTypes::FETCH:
             case opal\query\IQueryTypes::INSERT:
             case opal\query\IQueryTypes::BATCH_INSERT:
@@ -197,6 +198,23 @@ class Table implements ITable, core\IDumpable {
     public function countSelectQuery(opal\query\ISelectQuery $query) {
         $row = QueryExecutor::factory($this->_adapter, $query)
             ->executeReadQuery($this->_name, true)
+            ->getCurrent();
+
+        if(isset($row['count'])) {
+            return $row['count'];
+        }
+        
+        return 0;
+    }
+
+    public function executeUnionQuery(opal\query\IUnionQuery $query) {
+        return QueryExecutor::factory($this->_adapter, $query)
+            ->executeUnionQuery($this->_name);
+    }
+
+    public function countUnionQuery(opal\query\IUnionQuery $query) {
+        $row = QueryExecutor::factory($this->_adapter, $query)
+            ->executeUnionQuery($this->_name, true)
             ->getCurrent();
 
         if(isset($row['count'])) {

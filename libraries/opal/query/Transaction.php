@@ -30,6 +30,12 @@ class Transaction implements ITransaction, core\IDumpable {
             ->setTransaction($this)
             ->beginSelect(func_get_args(), true);
     }
+
+    public function union() {
+        return Initiator::factory($this->_application)
+            ->setTransaction($this)
+            ->beginUnion();
+    }
     
     public function fetch() {
         return Initiator::factory($this->_application)

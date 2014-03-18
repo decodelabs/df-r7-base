@@ -92,6 +92,14 @@ class Rdbms implements
     public function countSelectQuery(opal\query\ISelectQuery $query) {
         return $this->getQuerySourceAdapter()->countSelectQuery($query);
     }
+
+    public function executeUnionQuery(opal\query\IUnionQuery $query) {
+        return $this->getQuerySourceAdapter()->executeUnionQuery($query);
+    }
+
+    public function countUnionQuery(opal\query\IUnionQuery $query) {
+        return $this->getQuerySourceAdapter()->countUnionQuery($query);
+    }
     
     public function executeFetchQuery(opal\query\IFetchQuery $query) {
         return $this->getQuerySourceAdapter()->executeFetchQuery($query);

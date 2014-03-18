@@ -100,6 +100,19 @@ class QuerySourceAdapter implements opal\query\IAdapter {
         return $manipulator->applyReadQuery($query, true);
     }
     
+    public function executeUnionQuery(opal\query\IUnionQuery $query) {
+        throw new opal\query\LogicException(
+            'Native data adapter does not support union queries'
+        );
+    }
+    
+    public function countUnionQuery(opal\query\IUnionQuery $query) {
+        throw new opal\query\LogicException(
+            'Native data adapter does not support union queries'
+        );
+    }
+
+
     public function executeFetchQuery(opal\query\IFetchQuery $query) {
         $manipulator = new opal\query\result\ArrayManipulator($query->getSource(), $this->_fetchData($query), true);
         return $manipulator->applyReadQuery($query);

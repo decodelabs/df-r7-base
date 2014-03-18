@@ -250,6 +250,18 @@ abstract class Adapter implements IAdapter {
         return ldap_count_entries($this->_connection->getResource(), $result);
     }
     
+    public function executeUnionQuery(opal\query\IUnionQuery $query) {
+        throw new QueryException(
+            'LDAP does not support union queries'
+        );
+    }
+
+    public function countUnionQuery(opal\query\IUnionQuery $query) {
+        throw new QueryException(
+            'LDAP does not support union queries'
+        );
+    }
+
     public function executeFetchQuery(opal\query\IFetchQuery $query) {
         $result = $this->_executeReadQueryRequest($query);
         return $this->_prepareReadQueryResponse($query, $result);

@@ -20,6 +20,8 @@ class Initiator implements IInitiator {
     protected $_joinType = null;
     protected $_parentQuery = null;
     protected $_distinct = false;
+    protected $_union = null;
+    protected $_isUnionDistinct = false;
     protected $_applicator;
     
     public static function modeIdToName($id) {
@@ -74,20 +76,30 @@ class Initiator implements IInitiator {
 // Select
     public function beginSelect(array $fields=array(), $distinct=false) {
         $this->_setMode(IQueryTypes::SELECT);
-        $fields = core\collection\Util::flattenArray($fields);
+        $fields = core\collection\Util::flattenArray($fields, false);
         
         if(empty($fields)) {
             $fields = array('*');
-        } else if(is_array($fields[0])) {
-            $fields = $fields[0];
-        }
-        
-        foreach($fields as $field) {
-            $this->_fieldMap[$field] = null;
         }
 
+        $this->_fieldMap = $fields;
         $this->_distinct = (bool)$distinct;
         
+        return $this;
+    }
+
+// Union
+    public function beginUnion() {
+        $this->_setMode(IQueryTypes::UNION);
+        $sourceManager = new opal\query\SourceManager($this->_application, $this->_transaction);
+        return new Union($sourceManager);
+    }
+
+    public function beginUnionSelect(IUnionQuery $union, array $fields=array(), $unionDistinct=true, $selectDistinct=false) {
+        $this->beginSelect($fields, $selectDistinct);
+        $this->_mode = IQueryTypes::UNION;
+        $this->_union = $union;
+        $this->_isUnionDistinct = (bool)$unionDistinct;
         return $this;
     }
     
@@ -297,7 +309,7 @@ class Initiator implements IInitiator {
 // Attach
     public function beginAttach(IReadQuery $parent, array $fields=array(), $isSelect=false) {
         $this->_parentQuery = $parent;
-        $fields = core\collection\Util::flattenArray($fields);
+        $fields = core\collection\Util::flattenArray($fields, false);
         
         if(isset($fields[0]) && is_array($fields[0])) {
             $fields = $fields[0];
@@ -310,11 +322,9 @@ class Initiator implements IInitiator {
             $this->_setMode(IQueryTypes::SELECT_ATTACH);
 
             if(empty($fields)) {
-                $this->_fieldMap = ['*' => null];
+                $this->_fieldMap = ['*'];
             } else {
-                foreach($fields as $field) {
-                    $this->_fieldMap[$field] = null;
-                }
+                $this->_fieldMap = $fields;
             }
         }
         
@@ -330,6 +340,13 @@ class Initiator implements IInitiator {
     
 // Query data
     public function getFields() {
+        switch($this->_mode) {
+            case IQueryTypes::SELECT:
+            case IQueryTypes::UNION:
+            case IQueryTypes::SELECT_ATTACH:
+                return $this->_fieldMap;
+        }
+
         return array_keys($this->_fieldMap);
     }
     
@@ -373,9 +390,24 @@ class Initiator implements IInitiator {
                         'does not support SELECT queries'
                     );
                 }
-                
+
                 return (new Select($sourceManager, $source))->isDistinct((bool)$this->_distinct);
                 
+            case IQueryTypes::UNION:
+                $sourceManager = $this->_union->getSourceManager();
+                $source = $sourceManager->newSource($sourceAdapter, $alias, $this->getFields(), false, true);
+
+                if(!$source->getAdapter()->supportsQueryType($this->_mode)) {
+                    throw new LogicException(
+                        'Query adapter '.$source->getAdapter()->getQuerySourceDisplayName().' '.
+                        'does not support UNION queries'
+                    );
+                }
+
+                return (new UnionSelect($this->_union, $source))
+                    ->isDistinct((bool)$this->_distinct)
+                    ->isUnionDistinct((bool)$this->_isUnionDistinct);
+
             case IQueryTypes::FETCH:
                 $sourceManager = new opal\query\SourceManager($this->_application, $this->_transaction);
                 $source = $sourceManager->newSource($sourceAdapter, $alias, array('*'));

@@ -29,6 +29,7 @@ class Select implements ISelectQuery, core\IDumpable {
     use TQuery_Offsettable;
     use TQuery_Pageable;
     use TQuery_Read;
+    use TQuery_SelectSourceDataFetcher;
     
     public function __construct(ISourceManager $sourceManager, ISource $source) {
         $this->_sourceManager = $sourceManager;
@@ -108,35 +109,7 @@ class Select implements ISelectQuery, core\IDumpable {
         }
     }
     
-    protected function _fetchSourceData($keyField=null, $valField=null) {
-        if($keyField !== null) {
-            $keyField = $this->_sourceManager->extrapolateDataField($this->_source, $keyField);
-        }
-        
-        if($valField !== null) {
-            if(isset($this->_attachments[$valField])) {
-                $valField = new opal\query\field\Attachment($valField, $this->_attachments[$valField]);
-            } else {
-                $valField = $this->_sourceManager->extrapolateDataField($this->_source, $valField);
-            }
-        }
-        
-        $output = $this->_sourceManager->executeQuery($this, function($adapter) {
-            return $adapter->executeSelectQuery($this);
-        });
-
-        $output = $this->_createBatchIterator($output, $keyField, $valField);
-
-        if($this->_paginator && $this->_offset == 0 && $this->_limit) {
-            $count = count($output);
-
-            if($count < $this->_limit) {
-                $this->_paginator->setTotal($count);
-            }
-        }
-
-        return $output;
-    }
+    
     
 // Dump
     public function getDumpProperties() {
