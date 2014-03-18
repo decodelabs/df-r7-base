@@ -73,7 +73,15 @@ class TaskRebuildTable extends arch\task\Action {
         $insert = $newTable->batchInsert();
         $count = 0;
 
+        $fields = $dbSchema->getFields();
+
         foreach($currentTable->select() as $row) {
+            foreach($row as $key => $value) {
+                if(!isset($fields[$key])) {
+                    unset($row[$key]);
+                }
+            }
+
             $insert->addRow($row);
             $count++;
         }
@@ -86,6 +94,7 @@ class TaskRebuildTable extends arch\task\Action {
         $newTable->rename($currentTableName);
 
         $this->response->writeLine('Updating schema cache');
+        axis\schema\Cache::getInstance($this->application)->clear();
         $schemaDefinition = new axis\unit\schemaDefinition\Virtual($this->_unit->getModel());
         $schemaDefinition->store($this->_unit, $axisSchema);
     }
