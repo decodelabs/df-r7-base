@@ -10,7 +10,7 @@ use df\core;
     
 class Util implements IUtil {
 
-    public static function flattenArray($array) {
+    public static function flattenArray($array, $unique=true) {
         if(!is_array($array)) {
             return [$array];
         }
@@ -19,13 +19,17 @@ class Util implements IUtil {
 
         foreach($array as $value) {
             if(is_array($value)) {
-                $output = array_merge($output, self::flattenArray($value));
+                $output = array_merge($output, self::flattenArray($value, $unique));
             } else {
                 $output[] = $value;
             }
         }
 
-        return array_unique($output);
+        if($unique) {
+            return array_unique($output);
+        } else {
+            return $output;
+        }
     }
 
     public static function isIterable($collection) {
