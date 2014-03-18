@@ -111,6 +111,20 @@ class RadioButtonGroup extends Base implements IUngroupedSelectionInputWidget, c
     public function getLabelClass() {
         return $this->_labelClass;
     }
+
+    public function isInline($flag=null) {
+        if($flag !== null) {
+            if($flag) {
+                $this->getTag()->addClass('inline');
+            } else {
+                $this->getTag()->removeClass('inline');
+            }
+
+            return $this;
+        } else {
+            return $this->getTag()->hasClass('inline');
+        }
+    }
     
 // Dump
     public function getDumpProperties() {
