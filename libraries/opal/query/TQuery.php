@@ -256,6 +256,50 @@ trait TQuery_LocalSource {
 
 
 /****************************
+ * Derivable
+ */
+trait TQuery_Derivable {
+
+    protected $_derivationParentInitiator;
+
+    public function setDerivationParentInitiator(IInitiator $initiator) {
+        $this->_derivationParentInitiator = $initiator;
+        return $this;
+    }
+
+    public function getDerivationParentInitiator() {
+        return $this->_derivationParentInitiator;
+    }
+
+    public function getDerivationSourceAdapter() {
+        return $this->getSource()->getAdapter();
+    }
+
+    public function endSource() {
+        if(!$this->_derivationParentInitiator) {
+            throw new LogicException(
+                'Cannot create derived source - no parent initiator has been created'
+            );
+        }
+
+        $adapter = new DerivedSourceAdapter($this);
+
+        if(!$adapter->supportsQueryType(IQueryTypes::DERIVATION)) {
+            throw new LogicException(
+                'Query adapter '.$adapter->getQuerySourceDisplayName().' does not support derived tables'
+            );
+        }
+
+        $output = $this->_derivationParentInitiator->from($adapter, uniqid('drv_'));
+        $this->_derivationParentInitiator = null;
+        return $output;
+    }
+}
+
+
+
+
+/****************************
  * Locational
  */
 trait TQuery_Locational {

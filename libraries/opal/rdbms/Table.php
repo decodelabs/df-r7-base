@@ -79,6 +79,7 @@ class Table implements ITable, core\IDumpable {
             case opal\query\IQueryTypes::DELETE:
                 
             case opal\query\IQueryTypes::CORRELATION:
+            case opal\query\IQueryTypes::DERIVATION:
 
             case opal\query\IQueryTypes::JOIN:
             case opal\query\IQueryTypes::JOIN_CONSTRAINT:

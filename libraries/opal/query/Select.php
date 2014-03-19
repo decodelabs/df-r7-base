@@ -13,6 +13,7 @@ class Select implements ISelectQuery, core\IDumpable {
             
     use TQuery;
     use TQuery_LocalSource;
+    use TQuery_Derivable;
     use TQuery_Locational;
     use TQuery_Distinct;
     use TQuery_Correlatable;

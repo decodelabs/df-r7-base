@@ -48,6 +48,10 @@ class Source implements ISource, core\IDumpable {
         return $this->_adapter->getQuerySourceDisplayName();
     }
     
+    public function isDerived() {
+        return $this->_adapter instanceof IDerivedSourceAdapter;
+    }
+
     public function handleQueryException(IQuery $query, \Exception $e) {
         if($this->_adapter->handleQueryException($query, $e)) {
             return true;
@@ -118,6 +122,13 @@ class Source implements ISource, core\IDumpable {
     
 // Fields
     public function extrapolateIntegralAdapterField($name, $alias=null, opal\schema\IField $field=null) {
+        if($this->isDerived()) {
+            return $this->getAdapter()
+                ->getDerivationSource()
+                ->extrapolateIntegralAdapterField($name, $alias, $field)
+                ->rewriteAsDerived($this);
+        }
+
         if(!$this->_adapter instanceof IIntegralAdapter) {
             return null;
         }

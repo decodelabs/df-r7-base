@@ -50,6 +50,10 @@ class Wildcard implements opal\query\IWildcardField, core\IDumpable {
     public function isOutputField() {
         return true;
     }
+
+    public function rewriteAsDerived(opal\query\ISource $source) {
+        core\stub($source);
+    }
     
 // Dump
     public function getDumpProperties() {

@@ -544,8 +544,23 @@ class Initiator implements IInitiator {
         }
     }
 
+    public function fromUnion() {
+        return self::factory($this->_application)->beginUnion()
+            ->setDerivationParentInitiator($this);
+    }
+
+    public function fromSelect($field1=null) {
+        return self::factory($this->_application)->beginSelect(func_get_args(), false)
+            ->setDerivationParentInitiator($this);
+    }
+
+    public function fromSelectDistinct($field1=null) {
+        return self::factory($this->_application)->beginSelect(func_get_args(), true)
+            ->setDerivationParentInitiator($this);
+    }
+
     public function into($sourceAdapter, $alias=null) {
-        $sourceManager = new opal\query\SourceManager($this->_application, $this->_transaction);
+        $sourceManager = new SourceManager($this->_application, $this->_transaction);
         
         switch($this->_mode) {
             case IQueryTypes::INSERT:

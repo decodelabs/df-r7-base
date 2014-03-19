@@ -57,6 +57,10 @@ class Combine implements opal\query\ICombineField, core\IDumpable {
         return $this->_combine;
     }
 
+    public function rewriteAsDerived(opal\query\ISource $source) {
+        core\stub($source);
+    }
+
 
 // Dump
     public function getDumpProperties() {

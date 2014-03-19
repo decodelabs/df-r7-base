@@ -60,6 +60,9 @@ interface IInitiator extends core\IApplicationAware, ITransactionAware {
     public function getApplicator();
     
     public function from($sourceAdapter, $alias=null);
+    public function fromUnion();
+    public function fromSelect($field1=null);
+    public function fromSelectDistinct($field1=null);
     public function into($sourceAdapter, $alias=null);
     public function in($sourceAdapter, $alias=null);
 }
@@ -184,6 +187,12 @@ interface IWriteQuery extends IQuery {
 
 interface IDistinctQuery extends IQuery {
     public function isDistinct($flag=null);
+}
+
+interface IDerivableQuery extends IQuery {
+    public function setDerivationParentInitiator(IInitiator $initiator);
+    public function getDerivationParentInitiator();
+    public function getDerivationSourceAdapter();
 }
 
 interface ICorrelatableQuery extends IQuery {
@@ -420,6 +429,7 @@ interface IPageableQuery extends IReadQuery, core\collection\IPageable {
 interface ISelectQuery extends 
     IReadQuery, 
     \Countable,
+    IDerivableQuery,
     ILocationalQuery,
     IDistinctQuery,
     ICorrelatableQuery,
@@ -453,6 +463,7 @@ interface ISelectAttachQuery extends ISelectQuery, IAttachQuery {
 interface IUnionQuery extends 
     IReadQuery,
     \Countable,
+    IDerivableQuery,
     IAttachableQuery,
     ICombinableQuery,
     IOrderableQuery, 
@@ -468,7 +479,7 @@ interface IUnionQuery extends
 interface IUnionSelectQuery extends ISelectQuery {
     public function isUnionDistinct($flag=null);
 
-    public function endUnion();
+    public function endSelect();
     public function with($field1=null);
     public function withAll($field1=null);
 }
@@ -575,8 +586,10 @@ interface IQueryTypes {
     const DELETE = 9;
     
     const CORRELATION = 101;
-    const POPULATE = 102;
-    const COMBINE = 103;
+    const DERIVATION = 102;
+
+    const POPULATE = 151;
+    const COMBINE = 152;
 
     const JOIN = 201;
     const JOIN_CONSTRAINT = 202;
@@ -659,6 +672,11 @@ interface IPaginatingAdapter extends IAdapter {
     public function applyPagination(IPaginator $paginator);
 }
 
+interface IDerivedSourceAdapter extends IAdapter {
+    public function getDerivationQuery();
+    public function getDerivationSource();
+}
+
 
 // Source
 interface ISource extends IAdapterAware {
@@ -667,6 +685,7 @@ interface ISource extends IAdapterAware {
     public function getUniqueId();
     public function getHash();
     public function getDisplayName();
+    public function isDerived();
     
     public function handleQueryException(IQuery $query, \Exception $e);
     
@@ -753,6 +772,7 @@ interface IField {
     public function getOverrideField();
 
     public function shouldBeProcessed();
+    public function rewriteAsDerived(ISource $source);
 }
 
 trait TField {

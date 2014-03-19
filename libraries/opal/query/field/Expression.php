@@ -89,4 +89,8 @@ class Expression implements opal\query\IExpressionField {
     public function isOutputField() {
         return $this->_source->isOutputField($this);
     }
+
+    public function rewriteAsDerived(opal\query\ISource $source) {
+        core\stub($source);
+    }
 }

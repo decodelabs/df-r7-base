@@ -28,20 +28,20 @@ class UnionSelect extends Select implements IUnionSelectQuery {
         return $this->_isUnionDistinct;
     }
 
-    public function endUnion() {
+    public function endSelect() {
         $this->_union->addQuery($this);
         return $this->_union;
     }
 
     public function with($field1=null) {
-        $this->endUnion();
+        $this->endSelect();
 
         return Initiator::factory($this->_sourceManager->getApplication())
             ->beginUnionSelect($this->_union, func_get_args(), true);
     }
 
     public function withAll($field1=null) {
-        $this->endUnion();
+        $this->endSelect();
 
         return Initiator::factory($this->_sourceManager->getApplication())
             ->beginUnionSelect($this->_union, func_get_args(), false);

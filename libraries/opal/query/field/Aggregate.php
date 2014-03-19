@@ -173,6 +173,10 @@ class Aggregate implements opal\query\IAggregateField, core\IDumpable {
                 return (bool)$value;
         }
     }
+
+    public function rewriteAsDerived(opal\query\ISource $source) {
+        core\stub($source);
+    }
     
 // Dump
     public function getDumpProperties() {

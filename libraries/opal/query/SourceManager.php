@@ -341,8 +341,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
                     'Source alias "'.$sourceAlias.'" has not been defined'
                 );
             }
-            
-            
+
             if($checkAlias === true && $passedSourceAlias !== $source->getAlias()) {
                 throw new InvalidArgumentException(
                     'Source alias "'.$passedSourceAlias.'" found when alias "'.$source->getAlias().'" is expected'
@@ -381,7 +380,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
                 
                 // If adapter supports virtuals, give it a chance to dereference it from the alias
                 $field = $source->extrapolateIntegralAdapterField($name, $alias);
-                
+
                 if(!$field) {
                     $field = new opal\query\field\Intrinsic($source, $name, $alias);
                 }

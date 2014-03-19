@@ -72,6 +72,10 @@ abstract class QueryExecutor implements IQueryExecutor {
     }
 
     public function executeUnionQuery($tableName, $forCount=false) {
+        return $this->buildUnionQuery($tableName, $forCount)->executeRead();
+    }
+
+    public function buildUnionQuery($tableName, $forCount=false) {
         $queries = $this->_query->getQueries();
         $sourceHash = null;
         $first = true;
@@ -113,7 +117,7 @@ abstract class QueryExecutor implements IQueryExecutor {
             $this->writeLimitSection();
         }
 
-        return $this->_stmt->executeRead();
+        return $this->_stmt;
     }
      
     public function executeLocalReadQuery($tableName, $forCount=false) {
@@ -128,7 +132,6 @@ abstract class QueryExecutor implements IQueryExecutor {
 
         // Fields
         foreach($source->getDereferencedOutputFields() as $field) {
-            //core\debug()->dump($field);
             $fieldAlias = $field->getQualifiedName();
             $field->setLogicalAlias($fieldAlias);
             $outFields[] = $this->defineField($field, $fieldAlias);
@@ -173,9 +176,31 @@ abstract class QueryExecutor implements IQueryExecutor {
         
         $distinct = $this->_query instanceof opal\query\IDistinctQuery && $this->_query->isDistinct() ? ' DISTINCT' : null;
         
+        $this->_stmt->appendSql('SELECT'.$distinct."\n".'  '.implode(','."\n".'  ', $outFields)."\n");
+
+        if($source->isDerived()) {
+            $query = $source->getAdapter()->getDerivationQuery();
+            $qExec = QueryExecutor::factory($this->_adapter, $query);
+            $tableName = $query->getSource()->getAdapter()->getDelegateQueryAdapter()->getName();
+
+            if($query instanceof opal\query\ISelectQuery) {
+                $qExec->buildLocalReadQuery($tableName, false);
+            } else if($query instanceof opal\query\IUnionQuery) {
+                $qExec->buildUnionQuery($tableName, false);
+            } else {
+                throw new opal\query\LogicException(
+                    'Don\'t know how to derive from query type: '.$query->getQueryType()
+                );
+            }
+            
+            $statement = $qExec->getStatement();
+            $this->_stmt->importBindings($statement);
+            $this->_stmt->appendSql('FROM ('."\n".'    '.str_replace("\n", "\n    ", $statement->getSql())."\n".') ');
+        } else {
+            $this->_stmt->appendSql('FROM '.$this->_adapter->quoteIdentifier($tableName).' ');
+        }
+
         $this->_stmt->appendSql(
-            'SELECT'.$distinct."\n".'  '.implode(','."\n".'  ', $outFields)."\n".
-            'FROM '.$this->_adapter->quoteIdentifier($tableName).' '.
             'AS '.$this->_adapter->quoteTableAliasDefinition($source->getAlias()).
             $joinSql
         );
@@ -861,7 +886,7 @@ abstract class QueryExecutor implements IQueryExecutor {
             return $this->_adapter->quoteFieldAliasReference($field->getLogicalAlias());
         } else {
             return $this->_adapter->quoteTableAliasReference($field->getSourceAlias()).'.'.
-                   $this->_adapter->quoteIdentifier($field->getName());
+                   $this->_adapter->quoteFieldAliasReference($field->getName());
         }
     }
 
@@ -1501,7 +1526,10 @@ abstract class QueryExecutor implements IQueryExecutor {
         $groupFields = array();
         
         foreach($groups as $field) {
-            $groupFields[] = $this->defineFieldReference($field, true);
+            foreach($field->dereference() as $field) {
+                $directiveString = $this->defineFieldReference($field, true);
+                $groupFields[] = $directiveString;
+            }
         }
         
         $this->_stmt->appendSql("\n".'GROUP BY '.implode(', ', $groupFields));

@@ -34,6 +34,10 @@ class OutputManifest implements IOutputManifest {
     }
     
     public function importSource(opal\query\ISource $source, array $rows=null, $isNormalized=true) {
+        if($source->isDerived()) {
+            $source = $source->getAdapter()->getDerivationSource();
+        }
+
         if($source === $this->_primarySource) {
             return $this;
         }
@@ -52,7 +56,7 @@ class OutputManifest implements IOutputManifest {
         foreach($source->getPrivateFields() as $alias => $field) {
             $this->_privateFields[$alias] = $field;
         }
-        
+
         if(isset($this->_wildcards[$sourceAlias], $rows[0])) {
             unset($this->_wildcards[$sourceAlias]);
             
@@ -69,7 +73,7 @@ class OutputManifest implements IOutputManifest {
                 }
             }
         }
-        
+
         return $this;
     }
     

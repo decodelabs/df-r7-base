@@ -76,6 +76,16 @@ class Virtual implements opal\query\IVirtualField, core\IDumpable {
     public function isOutputField() {
         return $this->_source->isOutputField($this);
     }
+
+    public function rewriteAsDerived(opal\query\ISource $source) {
+        $targetFields = [];
+
+        foreach($this->_targetFields as $field) {
+            $targetFields[] = $field->rewriteAsDerived($source);
+        }
+
+        return new self($source, $this->_name, $this->_source->getAlias().'.'.$this->_alias, $targetFields);
+    }
     
 // Dump
     public function getDumpProperties() {

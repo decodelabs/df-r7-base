@@ -12,6 +12,7 @@ use df\opal;
 class Union implements IUnionQuery {
     
     use TQuery;
+    use TQuery_Derivable;
     use TQuery_Attachable;
     use TQuery_Combinable;
     use TQuery_Orderable;
@@ -70,6 +71,13 @@ class Union implements IUnionQuery {
             } else {
                 $primarySource = $this->_primaryQuery->getSource();
                 $newSource = $query->getSource();
+
+                if($newSource->getHash() != $primarySource->getHash()) {
+                    throw new LogicException(
+                        'Union queries must all be on the same adapter'
+                    );
+                }
+
                 $newFields = array_values($newSource->getOutputFields());
                 $i = 0;
 
