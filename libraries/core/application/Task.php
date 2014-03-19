@@ -139,6 +139,7 @@ class Task extends Base implements arch\IDirectoryRequestApplication {
     
     protected function _dispatchRequest(arch\IRequest $request) {
         $this->_context = arch\Context::factory($this, clone $request);
+        $this->_context->request = $request;
         $action = arch\Action::factory($this->_context);
         $response = $action->dispatch();
         
