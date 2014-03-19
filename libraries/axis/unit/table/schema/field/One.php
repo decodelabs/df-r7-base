@@ -33,9 +33,13 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
             if(array_key_exists($key, $row)) {
                 return $row[$key];
             } else {
-                return $this->getTargetRelationManifest()->toPrimaryKeySet(
-                    $this->getTargetRelationManifest()->extractFromRow($key, $row)
-                );
+                $key = $this->getTargetRelationManifest()->extractFromRow($key, $row);
+
+                if($key === null) {
+                    return null;
+                }
+
+                return $this->getTargetRelationManifest()->toPrimaryKeySet($key);
             }
         }
 
