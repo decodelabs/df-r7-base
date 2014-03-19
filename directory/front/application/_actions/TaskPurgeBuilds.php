@@ -23,9 +23,11 @@ class TaskPurgeBuilds extends arch\task\Action {
         }
 
         $keepLast = true;
+        $keepTesting = true;
 
         if(isset($this->request->query->all)) {
             $keepLast = false;
+            $keepTesting = false;
             $contingency = 0;
         }
 
@@ -47,7 +49,7 @@ class TaskPurgeBuilds extends arch\task\Action {
             }
         }
 
-        if(!isset($this->request->query->purgeTesting)) {
+        if(!isset($this->request->query->purgeTesting) && $keepTesting) {
             array_pop($testList);
         }
 
@@ -71,6 +73,11 @@ class TaskPurgeBuilds extends arch\task\Action {
 
                 core\io\Util::deleteDir($runPath.'/'.$entry);
             }
+        }
+
+        if(core\io\Util::isDirEmpty($runPath)) {
+            $this->response->writeLine('Deleting run folder');
+            core\io\Util::deleteDir($runPath);
         }
     }
 }
