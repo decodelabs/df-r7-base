@@ -49,6 +49,7 @@ class TaskBuild extends arch\task\Action {
 
         if($isTesting) {
             $buildId .= '-testing';
+            $this->response->writeLine('Builder is running in testing mode');
         }
 
         $destinationPath = $runPath.'/'.$buildId;
