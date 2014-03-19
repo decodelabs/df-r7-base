@@ -34,5 +34,7 @@ class TaskUpdate extends arch\task\Action {
                 $this->response->write($result."\n");
             }
         }
+
+        return $this->directory->newRequest('application/build?testing');
     }
 }

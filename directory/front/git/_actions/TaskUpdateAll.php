@@ -29,5 +29,6 @@ class TaskUpdateAll extends arch\task\Action {
         }
 
         $this->response->writeLine('Done');
+        return $this->directory->newRequest('application/build?testing');
     }
 }
