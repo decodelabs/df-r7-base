@@ -920,7 +920,7 @@ class ArrayManipulator implements IArrayManipulator {
         $wildcards = $this->_outputManifest->getWildcardMap();
         $fieldProcessors = $this->_outputManifest->getOutputFieldProcessors();
         $combines = $this->_outputManifest->getCombines();
-        $requiresPartial = $this->_outputManifest->requiresPartial();
+        $requiresPartial = $this->_outputManifest->requiresPartial($forFetch);
 
 
         // Prepare qualified names

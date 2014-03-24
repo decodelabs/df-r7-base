@@ -186,9 +186,13 @@ class OutputManifest implements IOutputManifest {
         return $this->_queryRequiresPartial;
     }
 
-    public function requiresPartial() {
+    public function requiresPartial($forFetch=true) {
         if($this->_queryRequiresPartial) {
             return true;
+        }
+
+        if(!$forFetch) {
+            return false;
         }
 
         foreach($this->_outputFields as $field) {

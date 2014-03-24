@@ -66,7 +66,7 @@ interface IOutputManifest {
     public function getCombines();
 
     public function queryRequiresPartial($flag=null);
-    public function requiresPartial();
+    public function requiresPartial($forFetch=true);
 }
 
 
