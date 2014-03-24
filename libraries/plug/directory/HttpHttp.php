@@ -76,6 +76,10 @@ class HttpHttp implements arch\IDirectoryHelper {
     public function getPostData() {
         return $this->_httpRequest->getPostData();
     }
+
+    public function getUserAgent() {
+        return $this->_httpRequest->getHeaders()->get('User-Agent');
+    }
     
 
     public function isGetRequest() {
