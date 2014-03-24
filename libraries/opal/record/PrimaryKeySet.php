@@ -258,6 +258,10 @@ class PrimaryKeySet implements IPrimaryKeySet, core\IDumpable {
 
     public function getFirstKeyValue() {
         foreach($this->_keys as $value) {
+            if($value instanceof IPrimaryKeySet) {
+                $value = $value->getValue();
+            }
+
             return $value;
         }
     }

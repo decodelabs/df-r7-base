@@ -276,6 +276,10 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
             return $data;
         }
 
+        if($data instanceof opal\record\IPrimaryKeySet) {
+            $data = $data->getValue();
+        }
+
         if($data instanceof core\time\IDate) {
             return $data->format(core\time\Date::W3C);
         }
