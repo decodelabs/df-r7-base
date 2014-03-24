@@ -274,6 +274,10 @@ interface IResponseAugmentor {
     public function resetCurrent();
     public function apply(IResponse $response);
 
+    // Status
+    public function setStatusCode($code);
+    public function getStatusCode();
+
     // Headers
     public function addHeaderForCurrentRequest($name, $value);
     public function setHeaderForCurrentRequest($name, $value);

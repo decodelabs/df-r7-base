@@ -16,6 +16,8 @@ class Augmentor implements halo\protocol\http\IResponseAugmentor {
 
     protected $_globalCookies;
     protected $_currentCookies;
+
+    protected $_statusCode;
     
     public function __construct() {
         $this->resetAll();
@@ -31,11 +33,16 @@ class Augmentor implements halo\protocol\http\IResponseAugmentor {
     public function resetCurrent() {
         $this->_currentHeaders = $this->_globalHeaders;
         $this->_currentCookies = clone $this->_globalCookies;
+        $this->_statusCode = null;
         return $this;
     }
     
     public function apply(halo\protocol\http\IResponse $response) {
         $headers = $response->getHeaders();
+
+        if($this->_statusCode !== null) {
+            $headers->setStatusCode($this->_statusCode);
+        }
 
         foreach($this->_currentHeaders as $set) {
             switch($set[0]) {
@@ -55,6 +62,21 @@ class Augmentor implements halo\protocol\http\IResponseAugmentor {
 
         $response->getCookies()->import($this->_currentCookies);
         return $this;
+    }
+
+
+// Status
+    public function setStatusCode($code) {
+        if(!HeaderCollection::isValidStatusCode($code)) {
+            $code = null;
+        }
+
+        $this->_statusCode = $code;
+        return $this;
+    }
+
+    public function getStatusCode() {
+        return $this->_statusCode;
     }
     
 
