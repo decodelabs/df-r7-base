@@ -251,6 +251,24 @@ class StackCall implements IStackCall, core\IDumpable {
             'args' => $this->_args
         ];
     }
+
+    public function toJsonArray() {
+        return [
+            'file' => core\io\Util::stripLocationFromFilePath($this->getFile()),
+            'line' => $this->getLine(),
+            'signature' => $this->getSignature()
+            /*
+            'function' => $this->_function,
+            'class' => $this->_className,
+            'type' => $this->getTypeString(),
+            'args' => $this->getArgString()
+            */
+        ];
+    }
+
+    public function toJson() {
+        return json_encode($this->toJsonArray());
+    }
     
 
     
@@ -278,8 +296,8 @@ class StackCall implements IStackCall, core\IDumpable {
         
         return $this->_originLine;
     }
-    
-    
+
+
 // Dump
     public function getDumpProperties() {
         return [

@@ -13,12 +13,16 @@ class StackTrace implements IStackTrace, core\IDumpable {
     use TLocationProvider;
     
     protected $_calls = array();
+
+    public static function fromException(\Exception $e) {
+        return self::factory(0, $e->getTrace());
+    }
     
     public static function factory($rewind=0, array $data=null) {
         if($data === null) { 
             $data = debug_backtrace();
         }
-        
+
         $output = array();
         
         while($rewind > 0) {
@@ -70,6 +74,16 @@ class StackTrace implements IStackTrace, core\IDumpable {
         }
 
         return $output;
+    }
+
+    public function toJson() {
+        $output = [];
+
+        foreach($this->_calls as $call) {
+            $output[] = $call->toJsonArray();
+        }
+
+        return json_encode($output);
     }
 
     public function getCalls() {

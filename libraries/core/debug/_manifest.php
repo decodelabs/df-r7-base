@@ -44,6 +44,7 @@ interface IContext extends core\log\IGroupNode, core\log\IHandler {
 
 interface IStackTrace extends core\log\INode, core\IArrayProvider {
     public function getCalls();
+    public function toJson();
 }
 
 interface IStackCall extends ILocationProvider, core\IArrayProvider {
@@ -77,6 +78,9 @@ interface IStackCall extends ILocationProvider, core\IArrayProvider {
     
     public function getCallingFile();
     public function getCallingLine();
+
+    public function toJsonArray();
+    public function toJson();
 }
 
 interface IRenderer {
