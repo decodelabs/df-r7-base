@@ -34,6 +34,11 @@ class TaskPurgeBuilds extends arch\task\Action {
         $appPath = df\Launchpad::$applicationPath;
         $runPath = $appPath.'/data/local/run';
 
+        if(!is_dir($runPath)) {
+            $this->response->writeLine('No builds to purge');
+            return;
+        }
+
         $this->response->writeLine('Purging old builds...');
         $this->response->writeLine('Keeping '.$contingency.' build(s) as contingency');
 
