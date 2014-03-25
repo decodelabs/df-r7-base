@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\axis;
     
-abstract class Base extends core\cache\Base implements axis\IUnit {
+abstract class Base extends core\cache\Base implements axis\IUnit, axis\IAdapterBaseUnit {
 
     use axis\TUnit;
 
@@ -20,5 +20,18 @@ abstract class Base extends core\cache\Base implements axis\IUnit {
     
     public function getUnitType() {
         return 'cache';
+    }
+
+    public function getUnitAdapter() {
+        return $this->getCacheBackend();
+    }
+
+    public function getUnitAdapterName() {
+        $parts = explode('\\', get_class($this->getCacheBackend()));
+        return array_pop($parts);
+    }
+
+    public function getUnitAdapterConnectionName() {
+        return $this->getCacheBackend()->getConnectionDescription();
     }
 }

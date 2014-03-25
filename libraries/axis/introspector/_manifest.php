@@ -32,7 +32,9 @@ interface IUnitInspector {
     public function isVirtual();
 
     public function hasAdapter();
+    public function hasQueryAdapter();
     public function getAdapter();
+    public function getQueryAdapter();
     public function getAdapterName();
     public function getAdapterConnectionName();
 

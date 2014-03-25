@@ -199,15 +199,19 @@ interface IVirtualUnit extends IUnit {
     public static function loadVirtual(IModel $model, array $args);
 }
 
+interface IAdapterBasedUnit {
+    public function getUnitAdapter();
+    public function getUnitAdapterName();
+    public function getUnitAdapterConnectionName();
+}
+
 interface IStorageUnit extends IUnit {
     public function fetchByPrimary($id);
     public function destroyStorage();
     public function getStorageBackendName();
 }
 
-interface IAdapterBasedStorageUnit extends IStorageUnit {
-    public function getUnitAdapter();
-}
+interface IAdapterBasedStorageUnit extends IStorageUnit, IAdapterBasedUnit {}
 
 trait TAdapterBasedStorageUnit {
 
@@ -215,6 +219,19 @@ trait TAdapterBasedStorageUnit {
 
     public function getUnitAdapter() {
         return $this->_adapter;
+    }
+
+    public function getUnitAdapterName() {
+        return $this->_adapter->getDisplayName();
+    }
+
+    public function getUnitAdapterConnectionName() {
+        if($this->_adapter instanceof axis\IConnectionProxyAdapter) {
+            return $this->_adapter->getConnectionDisplayName();
+        } else {
+            // This needs to be something better!
+            return $this->_adapter->getQuerySourceDisplayName();
+        }
     }
 
     protected function _loadAdapter() {

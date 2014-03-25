@@ -48,33 +48,34 @@ class UnitInspector implements IUnitInspector, core\IDumpable {
 
 // Adapter
     public function hasAdapter() {
+        return $this->_unit instanceof axis\IAdapterBasedUnit;
+    }
+
+    public function hasQueryAdapter() {
         return $this->_unit instanceof axis\IAdapterBasedStorageUnit;
     }
 
     public function getAdapter() {
         if($this->hasAdapter()) {
             return $this->_unit->getUnitAdapter();
+        } 
+    }
+
+    public function getQueryAdapter() {
+        if($this->hasQueryAdapter()) {
+            return $this->_unit->getUnitAdapter();
         }
     }
 
     public function getAdapterName() {
-        if(!$adapter = $this->getAdapter()) {
-            return;
+        if($this->hasAdapter()) {
+            return $this->_unit->getUnitAdapterName();
         }
-
-        return $adapter->getDisplayName();
     }
 
     public function getAdapterConnectionName() {
-        if(!$adapter = $this->getAdapter()) {
-            return;
-        }
-
-        if($adapter instanceof axis\IConnectionProxyAdapter) {
-            return $adapter->getConnectionDisplayName();
-        } else {
-            // This needs to be something better!
-            return $adapter->getQuerySourceDisplayName();
+        if($this->hasAdapter()) {
+            return $this->_unit->getUnitAdapterConnectionName();
         }
     }
 

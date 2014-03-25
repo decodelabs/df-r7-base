@@ -67,8 +67,10 @@ class Probe implements IProbe {
             $unit = axis\Model::loadUnitFromId($unitId);
             $output[$unitId] = $inspector = new UnitInspector($unit);
 
-            if($adapter = $inspector->getAdapter()) {
+            if($adapter = $inspector->getQueryAdapter()) {
                 $adapters[$adapter->getQuerySourceAdapterHash()] = $adapter;
+            } else if($adapter = $inspector->getAdapter()) {
+                $adapters[$inspector->getAdapterName()] = $adapter;
             }
         }
 
