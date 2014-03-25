@@ -84,7 +84,12 @@ class Probe implements IProbe {
                     continue;
                 }
 
-                $unit = axis\Model::loadUnitFromId($unitId);
+                try {
+                    $unit = axis\Model::loadUnitFromId($unitId);
+                } catch(axis\RuntimeException $e) {
+                    continue;
+                }
+                
                 $output[$unitId] = new UnitInspector($unit);
             }
         }
