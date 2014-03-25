@@ -17,6 +17,8 @@ class RuntimeException extends \RuntimeException implements IException {}
 // Interfaces
 interface ICache extends core\IValueMap, \ArrayAccess, core\IApplicationAware, core\IRegistryObject, \Countable {
     public static function getCacheId();
+    public function getCacheBackend();
+    public function getCacheStats();
     public function getLifeTime();
     public function getDefaultLifeTime();
     public function isCacheDistributed();
@@ -47,6 +49,8 @@ interface ISessionExtendedCache extends ICache {
 interface IBackend extends core\IValueMap, \Countable {
     public static function purgeAll(core\collection\ITree $options);
     public static function isLoadable();
+    public function getConnectionDescription();
+    public function getStats();
     public function setLifeTime($lifeTime);
     public function getLifeTime();
     public function clear();

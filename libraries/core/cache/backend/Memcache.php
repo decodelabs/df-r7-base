@@ -57,6 +57,15 @@ class Memcache implements core\cache\IBackend {
         
         $this->_connection = self::_loadConnection($options);
     }
+
+    public function getConnectionDescription() {
+        $stats = $this->_connection->getExtendedStats();
+        return implode(' + ', array_keys($stats));
+    }
+
+    public function getStats() {
+        return $this->_connection->getStats();
+    }
     
     public function setLifeTime($lifeTime) {
         $this->_lifeTime = $lifeTime;

@@ -51,6 +51,28 @@ class Apc implements core\cache\IBackend {
         $this->_prefix = $cache->getApplication()->getUniquePrefix().'-'.$cache->getCacheId().':';
     }
 
+    public function getConnectionDescription() {
+        return 'localhost/'.$this->_cache->getCacheId();
+    }
+
+    public function getStats() {
+        if(self::$_apcu) {
+            $info = apc_cache_info();
+        } else {
+            $info = apc_cache_info('user');
+        }
+
+        $info = [
+            'totalEntries' => count($info['cache_list']), 
+            'entries' => $this->count(),
+            'size' => $info['mem_size']
+        ] + $info;
+
+        unset($info['cache_list'], $info['deleted_list'], $info['slot_distribution'], $info['mem_size']);
+        
+        return $info;
+    }
+
     public function setLifeTime($lifeTime) {
         $this->_lifeTime = $lifeTime;
         return $this;

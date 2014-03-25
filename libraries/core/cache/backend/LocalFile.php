@@ -48,6 +48,25 @@ class LocalFile implements core\cache\IDirectFileBackend {
         core\io\Util::ensureDirExists($this->_path);
     }
 
+    public function getConnectionDescription() {
+        return core\io\Util::stripLocationFromFilePath($this->_path);
+    }
+
+    public function getStats() {
+        $count = 0;
+        $size = 0;
+
+        foreach(core\io\Util::listFilesIn($this->_path) as $name) {
+            $count++;
+            $size += filesize($this->_path.'/'.$name);
+        }
+
+        return [
+            'entries' => $count,
+            'size' => $size
+        ];
+    }
+
     public function setLifeTime($lifeTime) {
         $this->_lifeTime = $lifeTime;
         return $this;
@@ -147,7 +166,7 @@ class LocalFile implements core\cache\IDirectFileBackend {
 
         foreach(core\io\Util::listFilesIn($this->_path) as $name) {
             if(substr($name, 6, $length) == $key) {
-                core\io\Util::deleteFile($this->_path.'/cache-'.$key);
+                core\io\Util::deleteFile($this->_path.'/cache-'.$name);
             }
         }
 
@@ -155,12 +174,9 @@ class LocalFile implements core\cache\IDirectFileBackend {
     }
 
     public function clearMatches($regex) {
-        $key = $this->_normalizeKey($key);
-        $length = strlen($key);
-
         foreach(core\io\Util::listFilesIn($this->_path) as $name) {
             if(preg_match($regex, substr($name, 6))) {
-                core\io\Util::deleteFile($this->_path.'/cache-'.$key);
+                core\io\Util::deleteFile($this->_path.'/cache-'.$name);
             }
         }
 

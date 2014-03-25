@@ -134,6 +134,14 @@ abstract class Base implements ICache {
         
         return self::$_cacheIds[$class]; 
     }
+
+    public function getCacheBackend() {
+        return $this->_backend;
+    }
+
+    public function getCacheStats() {
+        return $this->_backend->getStats();
+    }
     
     final public function getRegistryObjectKey() {
         return self::REGISTRY_PREFIX.static::getCacheId();
