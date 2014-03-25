@@ -521,7 +521,8 @@ trait TQuery_Joinable {
 
         $application = $this->getSourceManager()->getApplication();
         $join = $this->_newQuery()->beginJoin($this, $targetFields, $joinType);
-        $targetAlias = 'jrl_'.$field->getName();
+
+        $targetAlias = 'jrl_'.str_replace('.', '_', $fieldName);
 
         if($field instanceof opal\schema\IBridgedRelationField) {
             // Field is bridged
