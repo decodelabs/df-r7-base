@@ -59,7 +59,9 @@ class Slug extends Base implements core\validate\ISlugField {
 
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
-        $value = $this->_sanitizeValue($value);
+        $value = $this->_sanitizeValue($value, false);
+        $value = $this->_sanitizeSlugValue($value);
+        $value = $this->_sanitizeValue($value, true);
 
         if(false !== strpos($value, '/') && !$this->_allowPathFormat) {
             $node->addError('invalid', $this->_handler->_('Path type slugs are not allowed here'));
@@ -70,7 +72,6 @@ class Slug extends Base implements core\validate\ISlugField {
             return null;
         }
         
-        $value = $this->_sanitizeSlugValue($value);
         
         if(!$length = $this->_checkRequired($node, $value)) {
             return null;

@@ -258,7 +258,7 @@ trait TSanitizingField {
         return $this->_defaultValue;
     }
 
-    protected function _sanitizeValue($value) {
+    protected function _sanitizeValue($value, $runSanitizer=true) {
         if($value == '') {
             $value = null;
         }
@@ -267,7 +267,7 @@ trait TSanitizingField {
             $value = $this->_defaultValue;
         }
 
-        if($this->_sanitizer) {
+        if($this->_sanitizer && $runSanitizer) {
             $value = call_user_func_array($this->_sanitizer, [$value, $this]);
         }
 
