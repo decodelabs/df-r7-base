@@ -339,6 +339,7 @@ abstract class Base implements
             );
         }
 
+        array_shift($args);
         array_unshift($args, $query, $relationField);
         call_user_func_array([$this, $method], $args);
         return $this;
