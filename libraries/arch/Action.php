@@ -19,7 +19,7 @@ class Action implements IAction, core\IDumpable {
     const DEFAULT_ACCESS = null;
     
     private $_isInline = false;
-    private $_controller;
+    public $controller;
     
     public static function factory(IContext $context, IController $controller=null) {
         $class = self::getClassFor(
@@ -63,20 +63,20 @@ class Action implements IAction, core\IDumpable {
     
     
     public function __construct(IContext $context, IController $controller=null) {
-        $this->_controller = $controller;
+        $this->controller = $controller;
         $this->_context = $context;
         $this->_isInline = get_class($this) == __CLASS__;
 
-        if(!$this->_controller) {
-            $this->_controller = Controller::factory($this->_context);
+        if(!$this->controller) {
+            $this->controller = Controller::factory($this->_context);
         }
     }
     
     public function getController() {
-        return $this->_controller;
+        return $this->controller;
     }
-    
-    
+
+
 // Dispatch
     public function dispatch() {
         $output = null;
@@ -106,7 +106,7 @@ class Action implements IAction, core\IDumpable {
             }
             
             if($output === null && $func = $this->getActionMethodName($this, $this->_context)) {
-                $this->_controller->setActiveAction($this);
+                $this->controller->setActiveAction($this);
                 
                 try {
                     $output = $this->$func();
@@ -114,12 +114,12 @@ class Action implements IAction, core\IDumpable {
                     $output = $e->getResponse();
                 }
                 
-                $this->_controller->setActiveAction(null);
+                $this->controller->setActiveAction(null);
             }
         }
         
         if($func === null) {
-            $controller = $this->getController();
+            $controller = $this->controller;
             
             if($func = $this->getControllerMethodName($controller, $this->_context)) {
                 if($controller::CHECK_ACCESS) {
@@ -243,13 +243,11 @@ class Action implements IAction, core\IDumpable {
             return $this->_getClassDefaultAccess();
         }
 
-        $controller = $this->getController();
-        
-        if($controller->isControllerInline()) {
+        if($this->controller->isControllerInline()) {
             //return $this->_getClassDefaultAccess();
             return true;
         } else {
-            return $controller->getDefaultAccess($action);
+            return $this->controller->getDefaultAccess($action);
         }
     }
 
@@ -264,7 +262,7 @@ class Action implements IAction, core\IDumpable {
         
         return [
             'type' => $runMode,
-            'controller' => $this->_controller,
+            'controller' => $this->controller,
             'context' => $this->_context
         ];
     }
