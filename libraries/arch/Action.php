@@ -54,7 +54,19 @@ class Action implements IAction, core\IDumpable {
             $class = 'df\\apex\\directory\\shared\\'.$end;
 
             if(!class_exists($class)) {
-                $class = null;
+                array_pop($parts);
+                $parts[] = $runMode.'Default';
+                $end = implode('\\', $parts);
+
+                $class = 'df\\apex\\directory\\'.$request->getArea().'\\'.$end;
+
+                if(!class_exists($class)) {
+                    $class = 'df\\apex\\directory\\shared\\'.$end;
+
+                    if(!class_exists($class)) {
+                        $class = null;
+                    }
+                }
             }
         }
 
