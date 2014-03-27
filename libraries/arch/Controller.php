@@ -12,11 +12,7 @@ use df\arch;
 class Controller implements IController, core\IDumpable {
     
     use core\TContextProxy;
-    use TDirectoryAccessLock;
     use TResponseForcer;
-    
-    const CHECK_ACCESS = true;
-    const DEFAULT_ACCESS = null;
     
     protected $_type;
     private $_isInline = false;

@@ -191,7 +191,7 @@ interface IProxyResponse {
 
 
 
-interface IController extends core\IContextAware, user\IAccessLock, IResponseForcer {
+interface IController extends core\IContextAware, IResponseForcer {
     public function isControllerInline();
 }
 
