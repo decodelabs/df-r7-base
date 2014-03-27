@@ -208,21 +208,6 @@ interface IComponent extends core\IContextAware, aura\view\IDeferredRenderable, 
 }
 
 
-interface IFacetController extends core\IContextAware, IProxyResponse, core\IAttributeContainer, \ArrayAccess {
-    public function setInitializer(Callable $initializer=null);
-    public function getInitializer();
-
-    public function setAction(Callable $action);
-    public function getAction();
-
-    public function addFacet($id, Callable $action);
-    public function hasFacet($id);
-    public function getFacet($id);
-    public function removeFacet($id);
-}
-
-
-
 trait TDirectoryAccessLock {
 
     use user\TAccessLock;

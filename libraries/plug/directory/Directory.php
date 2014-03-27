@@ -132,10 +132,4 @@ class Directory implements arch\IDirectoryHelper {
         $context = arch\Context::factory($this->_context->getApplication(), $request);
         return arch\component\Base::themeFactory($context, $themeId, $name);
     }
-
-
-// Facets
-    public function newFacetController(Callable $initializer=null) {
-        return new arch\FacetController($this->_context, $initializer);
-    }
 }
