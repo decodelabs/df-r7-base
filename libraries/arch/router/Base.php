@@ -11,13 +11,7 @@ use df\arch;
     
 abstract class Base implements arch\IRouter {
 
-    public function newRequest($input, core\collection\ITree $query=null, array $filter=null) {
-        $output = arch\Request::factory($input);
-
-        if($query) {
-            $output->importQuery($query, $filter);
-        }
-
-        return $output;
+    public function newRequest($input) {
+        return arch\Request::factory($input);
     }
 }
