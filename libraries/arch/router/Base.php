@@ -15,23 +15,9 @@ abstract class Base implements arch\IRouter {
         $output = arch\Request::factory($input);
 
         if($query) {
-            $this->importQuery($output, $query, $filter);
+            $output->importQuery($query, $filter);
         }
 
         return $output;
-    }
-
-    public function importQuery(arch\IRequest $request, core\collection\ITree $query, array $filter=null) {
-        $newQuery = $request->query;
-
-        foreach($query as $key => $node) {
-            if($filter && in_array($key, $filter)) {
-                continue;
-            }
-
-            $newQuery->{$key} = clone $node;
-        }
-
-        return $request;
     }
 }

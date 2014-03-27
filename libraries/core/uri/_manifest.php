@@ -95,6 +95,7 @@ interface IFragmentContainer {
 
 interface IQueryContainer {
     public function setQuery($query);
+    public function importQuery($query, array $filter=null);
     public function getQuery();
     public function getQueryString();
     public function getQueryTerm($key, $default=null);

@@ -352,6 +352,30 @@ trait TUrl_QueryContainer {
         
         return $this;
     }
+
+    public function importQuery($query, array $filter=null) {
+        if(empty($query)) {
+            return $this;
+        }
+
+        if(is_string($query)) {
+            $query = core\collection\Tree::fromArrayDelimitedString($query);
+        } else if(!$query instanceof core\collection\ITree) {
+            $query = new core\collection\Tree($query);
+        }
+
+        $currentQuery = $this->getQuery();
+
+        foreach($query as $key => $node) {
+            if($filter && in_array($key, $filter)) {
+                continue;
+            }
+
+            $currentQuery->{$key} = clone $node;
+        }
+
+        return $this;
+    }
     
     public function getQuery() {
         if(!$this->_query) {
