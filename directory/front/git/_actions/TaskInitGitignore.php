@@ -13,7 +13,7 @@ use df\arch;
     
 class TaskInitGitignore extends arch\task\Action {
 
-    protected function _run() {
+    public function execute() {
         $this->response->writeLine('Copying default .gitignore file');
         $path = df\Launchpad::$applicationPath;
 

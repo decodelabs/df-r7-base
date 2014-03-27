@@ -193,18 +193,14 @@ interface IProxyResponse {
 
 interface IController extends core\IContextAware, user\IAccessLock, IResponseForcer {
     public function isControllerInline();
-    public function setActiveAction(IAction $action=null);
-    public function getActiveAction();
 }
 
 
 interface IAction extends core\IContextAware, user\IAccessLock, IResponseForcer {
     public function dispatch();
-    public function isActionInline();
     public function getController();
-
-    public static function getActionMethodName($actionClass, IContext $context);
-    public static function getControllerMethodName($controllerClass, IContext $context);
+    public function getActionMethodName();
+    public function handleException(\Exception $e);
 }
 
 interface IComponent extends core\IContextAware, aura\view\IDeferredRenderable, user\IAccessLock, aura\view\ICascadingHelperProvider {

@@ -13,7 +13,7 @@ use df\arch;
     
 class TaskUpdateAll extends arch\task\Action {
 
-    protected function _run() {
+    public function execute() {
         $this->response->writeLine('Finding all package repositories...');
         $model = $this->data->getModel('package');
 

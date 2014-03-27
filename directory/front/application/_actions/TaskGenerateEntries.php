@@ -13,8 +13,7 @@ use df\arch;
     
 class TaskGenerateEntries extends arch\task\Action {
 
-    protected function _run() {
-
+    public function execute() {
         $phpPath = core\Environment::getInstance($this->application)->getPhpBinaryPath();
         $appPath = df\Launchpad::$applicationPath;
         $environmentId = df\Launchpad::$environmentId;

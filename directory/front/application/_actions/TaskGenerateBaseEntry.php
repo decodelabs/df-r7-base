@@ -13,7 +13,7 @@ use df\arch;
     
 class TaskGenerateBaseEntry extends arch\task\Action {
 
-    protected function _run() {
+    public function execute() {
         $this->response->writeLine('Generating base entry point');
 
         $phpPath = core\Environment::getInstance($this->application)->getPhpBinaryPath();

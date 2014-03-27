@@ -76,22 +76,7 @@ class Directory implements arch\IDirectoryHelper {
             $runMode = $this->_context->getRunMode();
         }
 
-        $actionClass = arch\Action::getClassFor($request, $runMode);
-
-        if(class_exists($actionClass)) {
-            return true;
-        }
-
-        $controllerClass = arch\Controller::getClassFor($request, $runMode);
-
-        if(!class_exists($controllerClass)) {
-            return false;
-        }
-
-        return (bool)arch\Action::getControllerMethodName(
-            $controllerClass, 
-            arch\Context::factory($this->_context->getApplication(), $request)
-        );
+        return null !== arch\Action::getClassFor($request, $runMode);
     }
     
     public function getAction($request, $runMode=null) {
@@ -107,9 +92,7 @@ class Directory implements arch\IDirectoryHelper {
             $runMode = $this->_context->getRunMode();
         }
 
-        $class = arch\Controller::getClassFor($request, $runMode);
-
-        return class_exists($class);
+        return null !== arch\Controller::getClassFor($request, $runMode);
     }
 
     public function getController($request) {

@@ -19,7 +19,7 @@ class TaskBuild extends arch\task\Action {
         'libraries', 'assets', 'daemons', 'directory', 'hooks', 'models', 'themes', 'tests'
     ];
 
-    protected function _run() {
+    public function execute() {
         if(df\Launchpad::IS_COMPILED) {
             $this->throwError(403, 'Cannot compile app from production environment - run from dev mode instead');
         }

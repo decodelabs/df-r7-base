@@ -15,7 +15,7 @@ class TaskPurgeBuilds extends arch\task\Action {
 
     const CONTINGENCY = 1;
 
-    protected function _run() {
+    public function execute() {
         $contingency = (int)$this->request->query->get('contingency', self::CONTINGENCY);
 
         if($contingency < 0) {

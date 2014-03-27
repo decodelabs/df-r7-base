@@ -19,15 +19,13 @@ class Controller implements IController, core\IDumpable {
     const DEFAULT_ACCESS = null;
     
     protected $_type;
-    protected $_activeAction;
-    
     private $_isInline = false;
     
     public static function factory(IContext $context) {
         $runMode = $context->getRunMode();
         $class = self::getClassFor($context->location, $runMode);
         
-        if(!class_exists($class)) {
+        if(!$class) {
             $class = __CLASS__;
         }
         
@@ -45,8 +43,13 @@ class Controller implements IController, core\IDumpable {
         }
         
         $parts[] = $runMode.'Controller';
-        
-        return 'df\\apex\\directory\\'.$request->getArea().'\\'.implode('\\', $parts);
+        $class = 'df\\apex\\directory\\'.$request->getArea().'\\'.implode('\\', $parts);
+
+        if(!class_exists($class)) {
+            $class = null;
+        }
+
+        return $class;
     }
     
     protected function __construct(arch\IContext $context, $type) {
@@ -62,17 +65,6 @@ class Controller implements IController, core\IDumpable {
     }
     
     
-// Action
-    public function setActiveAction(IAction $action=null) {
-        $this->_activeAction = $action;
-        return $this;
-    }
-    
-    public function getActiveAction() {
-        return $this->_activeAction;
-    }
-
-    
 // Dump
     public function getDumpProperties() {
         $runMode = $this->_context->getRunMode();
@@ -83,7 +75,6 @@ class Controller implements IController, core\IDumpable {
         
         return [
             'type' => $runMode,
-            'activeAction' => $this->_activeAction,
             'context' => $this->_context
         ];
     }

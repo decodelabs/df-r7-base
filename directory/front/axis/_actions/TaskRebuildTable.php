@@ -17,7 +17,7 @@ class TaskRebuildTable extends arch\task\Action {
     protected $_unit;
     protected $_adapter;
 
-    protected function _run() {
+    public function execute() {
         $unitId = $this->request->query['unit'];
 
         if(!$this->_unit = axis\Model::loadUnitFromId($unitId)) {

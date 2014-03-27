@@ -21,21 +21,11 @@ abstract class Action extends arch\Action {
 
     protected function _init() {}
 
-    final public function execute() {
+    protected function _beforeDispatch() {
         if(!$this->response) {
             $this->response = $this->task->getResponse();
         }
-
-        try {
-            $output = $this->_run();
-        } catch(\Exception $e) {
-            $output = $this->_handleException($e);
-        }
-
-        return $output;
     }
-
-    abstract protected function _run();
 
     public function runChild($request) {
         $request = arch\Request::factory($request);
@@ -47,9 +37,5 @@ abstract class Action extends arch\Action {
         }
 
         return $action->dispatch();
-    }
-
-    protected function _handleException(\Exception $e) {
-        throw $e;
     }
 }

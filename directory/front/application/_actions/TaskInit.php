@@ -13,7 +13,7 @@ use df\arch;
     
 class TaskInit extends arch\task\Action {
 
-    protected function _run() {
+    public function execute() {
         $this->response->writeLine('Initialising app...');
         $this->runChild('application/generate-base-entry');
         $this->runChild('git/init');

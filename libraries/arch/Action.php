@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\arch;
 
-class Action implements IAction, core\IDumpable {
+abstract class Action implements IAction, core\IDumpable {
     
     use core\TContextProxy;
     use TDirectoryAccessLock;
@@ -18,7 +18,6 @@ class Action implements IAction, core\IDumpable {
     const CHECK_ACCESS = true;
     const DEFAULT_ACCESS = null;
     
-    private $_isInline = false;
     public $controller;
     
     public static function factory(IContext $context, IController $controller=null) {
@@ -28,7 +27,10 @@ class Action implements IAction, core\IDumpable {
         );
 
         if(!$class) {
-            $class = __CLASS__;
+            throw new RuntimeException(
+                'No action could be found for '.$context->location->toString(),
+                404
+            );
         }
         
         return new $class($context, $controller);
@@ -77,7 +79,6 @@ class Action implements IAction, core\IDumpable {
     public function __construct(IContext $context, IController $controller=null) {
         $this->controller = $controller;
         $this->_context = $context;
-        $this->_isInline = get_class($this) == __CLASS__;
 
         if(!$this->controller) {
             $this->controller = Controller::factory($this->_context);
@@ -94,67 +95,35 @@ class Action implements IAction, core\IDumpable {
         $output = null;
         $func = null;
         
-        if(!$this->_isInline) {
-            if(static::CHECK_ACCESS) {
-                $client = $this->_context->getUserManager()->getClient();
+        if(static::CHECK_ACCESS) {
+            $client = $this->_context->getUserManager()->getClient();
 
-                if($client->isDeactivated()) {
-                    $this->throwError(403, 'Client deactivated');
-                }
-                
-                if(!$client->canAccess($this)) {
-                    $this->throwError(401, 'Insufficient permissions');
-                }
+            if($client->isDeactivated()) {
+                $this->throwError(403, 'Client deactivated');
             }
             
-            if(method_exists($this, '_beforeDispatch')) {
-                try {
-                    $output = $this->_beforeDispatch();
-                } catch(ForcedResponse $e) {
-                    $output = $e->getResponse();
-                }
-
-                $func = false;
-            }
-            
-            if($output === null && $func = $this->getActionMethodName($this, $this->_context)) {
-                $this->controller->setActiveAction($this);
-                
-                try {
-                    $output = $this->$func();
-                } catch(ForcedResponse $e) {
-                    $output = $e->getResponse();
-                }
-                
-                $this->controller->setActiveAction(null);
+            if(!$client->canAccess($this)) {
+                $this->throwError(401, 'Insufficient permissions');
             }
         }
         
-        if($func === null) {
-            $controller = $this->controller;
-            
-            if($func = $this->getControllerMethodName($controller, $this->_context)) {
-                if($controller::CHECK_ACCESS) {
-                    $client = $this->_context->getUserManager()->getClient();
+        if(method_exists($this, '_beforeDispatch')) {
+            try {
+                $output = $this->_beforeDispatch();
+            } catch(ForcedResponse $e) {
+                $output = $e->getResponse();
+            }
+        }
 
-                    if($client->isDeactivated()) {
-                        $this->throwError(403, 'Client deactivated');
-                    }
-                
-                    if(!$client->canAccess($this)) {
-                        $this->throwError(401, 'Insufficient permissions');
-                    }
-                }
-                
-                $controller->setActiveAction($this);
-
-                try {
-                    $output = $controller->$func();
-                } catch(ForcedResponse $e) {
-                    $output = $e->getResponse();
-                }
-
-                $controller->setActiveAction(null);
+        $func = $this->getActionMethodName();
+        
+        if($output === null && $func) {
+            try {
+                $output = $this->$func();
+            } catch(ForcedResponse $e) {
+                $output = $e->getResponse();
+            } catch(\Exception $e) {
+                $output = $this->handleException($e);
             }
         }
         
@@ -198,82 +167,30 @@ class Action implements IAction, core\IDumpable {
         }
     }
     
-    public static function getActionMethodName($actionClass, IContext $context) {
-        $type = $context->location->getType();
+    public function getActionMethodName() {
+        $type = $this->_context->location->getType();
         $func = 'executeAs'.$type;
         
-        if(!method_exists($actionClass, $func)) {
+        if(!method_exists($this, $func)) {
             $func = 'execute';
             
-            if(!method_exists($actionClass, $func)) {
+            if(!method_exists($this, $func)) {
                 $func = null;
             }
         }
         
         return $func;
     }
-    
-    public static function getControllerMethodName($controllerClass, IContext $context) {
-        $actionName = $context->location->getAction();
-        
-        if(is_numeric(substr($actionName, 0, 1))) {
-            $actionName = '_'.$actionName;
-        }
-        
-        $type = $context->location->getType();
-        $func = $actionName.$type.'Action';
-        
-        if(!method_exists($controllerClass, $func)) {
-            $func = $actionName.'Action';  
-            
-            if(!method_exists($controllerClass, $func)) {
-                $func = 'default'.$type.'Action';
-                
-                if(!method_exists($controllerClass, $func)) {
-                    $func = 'defaultAction';
-                    
-                    if(!method_exists($controllerClass, $func)) {
-                        $func = null;
-                    }    
-                }
-            }  
-        }    
-        
-        return $func;
-    }
-    
-    
-    public function isActionInline() {
-        return $this->_isInline;
-    }
-    
-    
-    
-// Access
-    public function getDefaultAccess($action=null) {
-        if(!$this->_isInline) {
-            return $this->_getClassDefaultAccess();
-        }
 
-        if($this->controller->isControllerInline()) {
-            //return $this->_getClassDefaultAccess();
-            return true;
-        } else {
-            return $this->controller->getDefaultAccess($action);
-        }
+    public function handleException(\Exception $e) {
+        throw $e;
     }
-
+    
     
 // Dump
     public function getDumpProperties() {
-        $runMode = $this->_context->getRunMode();
-        
-        if($this->_isInline) {
-            $runMode .= ' (inline)';
-        }
-        
         return [
-            'type' => $runMode,
+            'type' => $this->_context->getRunMode(),
             'controller' => $this->controller,
             'context' => $this->_context
         ];

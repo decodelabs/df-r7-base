@@ -14,7 +14,7 @@ use df\spur;
     
 class TaskInit extends arch\task\Action {
 
-    protected function _run() {
+    public function execute() {
         $path = df\Launchpad::$applicationPath;
         $this->runChild('git/init-gitignore');
 

@@ -12,7 +12,7 @@ use df\arch;
     
 class TaskClearBuild extends arch\task\Action {
 
-    protected function _run() {
+    public function execute() {
         $appPath = $this->application->getApplicationPath();
         $envId = $this->application->getEnvironmentId();
 

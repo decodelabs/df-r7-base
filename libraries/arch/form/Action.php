@@ -163,7 +163,7 @@ abstract class Action extends arch\Action implements IAction {
         $this->view = $view;
         
         $this->_isRenderingInline = true;
-        $method = self::getActionMethodName($this, $this->context);
+        $method = $this->getActionMethodName();
         call_user_func_array([$this, $method], []);
         $this->_isRenderingInline = false;
 
@@ -492,14 +492,14 @@ abstract class Action extends arch\Action implements IAction {
 
 
 // Action dispatch
-    public static function getActionMethodName($actionClass, arch\IContext $context) {
-        $method = ucfirst(strtolower($context->getApplication()->getHttpRequest()->getMethod()));
-        $func = 'on'.$context->request->getType().$method.'Request';
+    public function getActionMethodName() {
+        $method = ucfirst(strtolower($this->_context->getApplication()->getHttpRequest()->getMethod()));
+        $func = 'on'.$this->_context->request->getType().$method.'Request';
         
-        if(!method_exists($actionClass, $func)) {
+        if(!method_exists($this, $func)) {
             throw new RuntimeException(
-                'Form action '.$context->request.' does not support '.
-                $context->getApplication()->getHttpRequest()->getMethod().' http method',
+                'Form action '.$this->_context->request.' does not support '.
+                $this->_context->getApplication()->getHttpRequest()->getMethod().' http method',
                 405
             );
         }

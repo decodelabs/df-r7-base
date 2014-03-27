@@ -13,7 +13,7 @@ use df\arch;
     
 class TaskRefresh extends arch\task\Action {
 
-    protected function _run() {
+    public function execute() {
         $names = $this->request->query->packages->toArray();
 
         if($this->request->query->has('package')) {
