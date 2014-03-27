@@ -30,14 +30,7 @@ class Controller implements IController, core\IDumpable {
 
     public static function getClassFor(IRequest $request, $runMode='Http') {
         $runMode = ucfirst($runMode);
-        $path = $request->getController();
-        
-        if(!empty($path)) {
-            $parts = explode('/', $path);
-        } else {
-            $parts = array();
-        }
-        
+        $parts = $request->getControllerParts();
         $parts[] = $runMode.'Controller';
         $class = 'df\\apex\\directory\\'.$request->getArea().'\\'.implode('\\', $parts);
 

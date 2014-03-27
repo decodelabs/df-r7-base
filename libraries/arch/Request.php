@@ -180,14 +180,18 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     }
     
     public function getController() {
-        return $this->formatController($this->_getControllerParts());
+        return $this->formatController($this->getRawControllerParts());
+    }
+
+    public function getControllerParts() {
+        return $this->formatControllerParts($this->getRawControllerParts());
     }
 
     public function getRawController() {
-        return implode('/', $this->_getControllerParts());
+        return implode('/', $this->getRawControllerParts());
     }
 
-    protected function _getControllerParts() {
+    public function getRawControllerParts() {
         if(!$this->_path) {
             return [static::DEFAULT_CONTROLLER];
         }
@@ -231,10 +235,14 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         if(!is_array($controller)) {
             $controller = explode('/', $controller);
         }
-        
-        foreach($controller as $i => $part) {
+
+        return implode('/', self::formatControllerParts($controller));
+    }
+
+    public static function formatControllerParts(array $parts) {
+        foreach($parts as $i => $part) {
             if($part != '~') {
-                $controller[$i] = lcfirst(
+                $parts[$i] = lcfirst(
                     str_replace(' ', '', ucwords(
                         preg_replace('/[^a-zA-Z0-9_ ]/', '', str_replace(
                             array('-', '.', '+'), ' ', $part
@@ -244,7 +252,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             }
         }
         
-        return implode('/', $controller);
+        return $parts;
     }
 
 // Action

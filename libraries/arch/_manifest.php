@@ -118,11 +118,14 @@ interface IRequest extends core\uri\IUrl, user\IAccessLock {
     // Controller
     public function setController($controller);
     public function getController();
+    public function getControllerParts();
     public function getRawController();
+    public function getRawControllerParts();
     public function isController($controller);
     public static function getDefaultController();
     public function isDefaultController();
     public static function formatController($controller);
+    public static function formatControllerParts(array $parts);
     
     // Action
     public function setAction($action);
