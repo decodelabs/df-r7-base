@@ -12,6 +12,8 @@ use df\aura;
     
 abstract class CollectionList extends arch\component\Base implements aura\html\widget\IWidgetProxy {
 
+    const DEFAULT_ERROR_MESSAGE = null;
+
     protected $_collection;
     protected $_errorMessage;
     protected $_renderIfEmpty = null;
@@ -20,6 +22,10 @@ abstract class CollectionList extends arch\component\Base implements aura\html\w
     protected $_viewArg;
 
     protected function _init(array $fields=null, $collection=null) {
+        if(static::DEFAULT_ERROR_MESSAGE !== null) {
+            $this->_errorMessage = $this->_(static::DEFAULT_ERROR_MESSAGE);
+        }
+
         if($collection) {
             $this->setCollection($collection);
         }
