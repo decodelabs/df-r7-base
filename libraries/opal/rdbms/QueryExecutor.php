@@ -877,11 +877,11 @@ abstract class QueryExecutor implements IQueryExecutor {
             return $this->_adapter->quoteIdentifier($field->getName());
         } else if($allowAlias && ($alias = $field->getLogicalAlias())) {
             // Defined in a field list
-            if($deepNest) {
-                return $this->_adapter->quoteFieldAliasDefinition($alias);
-            } else {
+            //if($deepNest) {
+                //return $this->_adapter->quoteFieldAliasDefinition($alias);
+            //} else {
                 return $this->_adapter->quoteFieldAliasReference($alias);
-            }
+            //}
         } else if($field instanceof opal\query\ICorrelationField) {
             return $this->_adapter->quoteFieldAliasReference($field->getLogicalAlias());
         } else {
