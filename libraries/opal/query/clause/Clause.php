@@ -432,7 +432,7 @@ class Clause implements opal\query\IClause, core\IDumpable {
     protected function _prepareInnerValue($adapter, $value) {
         $preparedValue = $adapter->prepareQueryClauseValue($this->_field, $value);
 
-        if($preparedValue instanceof opal\record\IRecord) {
+        if($preparedValue instanceof opal\record\IPrimaryKeySetProvider) {
             $preparedValue = $preparedValue->getPrimaryKeySet();
         }
 
@@ -608,7 +608,7 @@ class Clause implements opal\query\IClause, core\IDumpable {
         
         if($this->_value instanceof opal\query\IField) {
             $value = $this->_value->getQualifiedName();
-        } else if($this->_value instanceof opal\record\IRecord) {
+        } else if($this->_value instanceof opal\record\IPrimaryKeySetProvider) {
             $value = $this->_value->getRecordAdapter()->getQuerySourceId().' : '.$this->_value->getPrimaryKeySet();
         } else if($this->_value instanceof opal\query\IQuery) {
             $value = $this->_value;
