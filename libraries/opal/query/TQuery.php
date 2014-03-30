@@ -1805,11 +1805,29 @@ trait TQuery_Read {
     abstract protected function _fetchSourceData($keyField=null, $valField=null);
 
     public function getOutputManifest() {
-        $output = new opal\query\result\OutputManifest($this->getSource());
+        $source = $this->getSource();
 
-        if($this instanceof opal\query\IJoinProviderQuery) {
+        if($source->isDerived()) {
+            $output = $source->getAdapter()->getDerivationQuery()->getOutputManifest();
+        } else {
+            $output = new opal\query\result\OutputManifest($source);
+        }
+
+        if($this instanceof IJoinProviderQuery) {
             foreach($this->getJoins() as $join) {
                 $output->importSource($join->getSource());
+            }
+        }
+
+        return $output;
+    }
+
+    public function getOutputFields() {
+        $output = $this->getSource()->getOutputFields();
+
+        if($this instanceof IJoinProviderQuery) {
+            foreach($this->getJoins() as $join) {
+                $output = array_merge($output, $join->getSource()->getOutputFields());
             }
         }
 

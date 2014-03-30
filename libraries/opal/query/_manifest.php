@@ -179,6 +179,7 @@ interface IReadQuery extends IQuery, \IteratorAggregate, core\IArrayProvider {
     public function toRow();
     public function getRawResult();
     public function getOutputManifest();
+    public function getOutputFields();
 }
 
 interface IWriteQuery extends IQuery {

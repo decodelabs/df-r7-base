@@ -78,10 +78,10 @@ class Union implements IUnionQuery {
                     );
                 }
 
-                $newFields = array_values($newSource->getOutputFields());
+                $newFields = array_values($query->getOutputFields());
                 $i = 0;
 
-                foreach($primarySource->getOutputFields() as $name => $field) {
+                foreach($this->_primaryQuery->getOutputFields() as $name => $field) {
                     if($field instanceof IExpressionField && $field->isNull() && isset($newFields[$i])) {
                         $newField = $newFields[$i];
 
@@ -99,6 +99,18 @@ class Union implements IUnionQuery {
         }
 
         return $this;
+    }
+
+    public function getOutputManifest() {
+        $output = new opal\query\result\OutputManifest($this->getSource());
+
+        if($this->_primaryQuery instanceof IJoinProviderQuery) {
+            foreach($this->_primaryQuery->getJoins() as $join) {
+                $output->importSource($join->getSource());
+            }
+        }
+
+        return $output;
     }
 
     public function getQueries() {
