@@ -164,6 +164,10 @@ trait TUrl_DomainContainer {
     public function getDomain() {
         return $this->_domain;
     }
+
+    public function hasDomain() {
+        return $this->_domain !== null;
+    }
     
     public function isAbsolute() {
         return (bool)strlen($this->_domain);

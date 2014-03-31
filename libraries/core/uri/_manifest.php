@@ -61,6 +61,7 @@ interface ICredentialContainer extends IUsernameContainer {
 interface IDomainContainer {
     public function setDomain($domain);
     public function getDomain();
+    public function hasDomain();
     public function lookupIp();
 }
 
