@@ -51,7 +51,7 @@ class GenericRenderer implements aura\view\IDeferredRenderable {
             if($renderTarget) {
                 $application = $renderTarget->getView()->getContext()->getApplication();
             
-                if($application->isDevelopment()) {
+                if($application->isTesting()) {
                     $message .= $this->esc(' - '.$e->getMessage()).'<br /><code>'.$this->esc($e->getFile().' : '.$e->getLine()).'</code>';
                 }
             }
