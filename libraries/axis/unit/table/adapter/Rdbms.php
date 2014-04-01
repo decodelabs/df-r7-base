@@ -214,6 +214,7 @@ class Rdbms implements
         $idList = $defUnit->fetchStoredUnitList();
         $tableList = $this->getConnection()->getDatabase()->getTableList();
         $update = [];
+        $remove = [];
 
         $unitId = $this->_unit->getUnitId();
 
@@ -222,11 +223,25 @@ class Rdbms implements
         }
 
         foreach($idList as $unitId) {
-            $unit = $model->loadUnitFromId($unitId);
+            try {
+                $unit = $model->loadUnitFromId($unitId);
+            } catch(axis\RuntimeException $e) {
+                $remove[] = $unitId;
+                continue;
+            }
+
             $backendName = $unit->getStorageBackendName();
 
             if(!in_array($backendName, $tableList)) {
                 $update[$backendName] = $unit;
+            }
+        }
+
+        if(!empty($remove)) {
+            $defUnit->clearCache();
+            
+            foreach($remove as $unitId) {
+                $defUnit->removeId($unitId);
             }
         }
 

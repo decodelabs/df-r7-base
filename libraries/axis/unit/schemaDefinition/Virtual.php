@@ -132,6 +132,11 @@ final class Virtual implements axis\ISchemaDefinitionStorageUnit, axis\ISchemaBa
         
         return $this;
     }
+
+    public function removeId($unitId) {
+        $this->_adapter->removeId($unitId);
+        return $this;
+    }
     
     public function clearUnitSchemaCache() {
         return $this->clearCache($this);

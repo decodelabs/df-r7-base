@@ -69,8 +69,12 @@ class Rdbms implements axis\ISchemaDefinitionStorageAdapter {
     }
     
     public function remove(axis\ISchemaBasedStorageUnit $unit) {
+        return $this->removeId($unit->getUnitId());
+    }
+
+    public function removeId($unitId) {
         $this->_table->delete()
-            ->where('unitId', '=', $unit->getUnitId())
+            ->where('unitId', '=', $unitId)
             ->execute();
             
         return $this;

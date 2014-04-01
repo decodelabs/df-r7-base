@@ -223,7 +223,7 @@ abstract class Base implements halo\protocol\http\IResponse {
         if(!$this->_headers) {
             return true;
         }
-        
+
         return $this->_headers->hasSuccessStatusCode();
     }
     

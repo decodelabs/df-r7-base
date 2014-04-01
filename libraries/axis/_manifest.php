@@ -270,6 +270,7 @@ interface ISchemaDefinitionStorageUnit extends IStorageUnit {
     public function fetchFor(ISchemaBasedStorageUnit $unit, $transient=false);
     public function store(ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema);
     public function remove(ISchemaBasedStorageUnit $unit);
+    public function removeId($unitId);
     public function clearCache(ISchemaBasedStorageUnit $unit=null);
     public function fetchStoredUnitList();
 }
@@ -311,6 +312,7 @@ interface ISchemaDefinitionStorageAdapter extends ISchemaProviderAdapter {
     public function insert(ISchemaBasedStorageUnit $unit, $jsonData, $version);
     public function update(ISchemaBasedStorageUnit $unit, $jsonData, $version);
     public function remove(ISchemaBasedStorageUnit $unit);
+    public function removeId($unitId);
     
     public function ensureStorage();
 }
