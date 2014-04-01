@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\axis;
     
-abstract class Base extends core\cache\Base implements axis\IUnit, axis\IAdapterBaseUnit {
+abstract class Base extends core\cache\Base implements axis\IUnit, axis\IAdapterBasedUnit {
 
     use axis\TUnit;
 
