@@ -309,3 +309,10 @@ interface IQueryExecutor {
     public function writeLimitSection($forUpdateOrDelete=false);
     public function defineLimit($limit, $offset=null);
 }
+
+interface IAlias {
+    const IDENTIFIER = true;
+    const NONE = false;
+    const DEFINITION = 'def';
+    const DEEP_DEFINITION = 'deepdef';
+}

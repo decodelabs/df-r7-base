@@ -859,11 +859,17 @@ abstract class QueryExecutor implements IQueryExecutor {
         $deepNest = false;
 
         if(!$isDiscreetAggregate 
-        && !$allowAlias 
         && $this->_query instanceof opal\query\IParentQueryAware
         && $this->_query->isSourceDeepNested($field->getSource())) {
-            $allowAlias = true;
             $deepNest = true;
+
+            if($allowAlias === IAlias::DEEP_DEFINITION) {
+                $allowAlias = IAlias::DEFINITION;
+            }
+        }
+
+        if(!$deepNest && $allowAlias === IAlias::DEEP_DEFINITION) {
+            $allowAlias = IAlias::NONE;
         }
 
         if($isDiscreetAggregate) {
@@ -877,11 +883,11 @@ abstract class QueryExecutor implements IQueryExecutor {
             return $this->_adapter->quoteIdentifier($field->getName());
         } else if($allowAlias && ($alias = $field->getLogicalAlias())) {
             // Defined in a field list
-            //if($deepNest) {
-                //return $this->_adapter->quoteFieldAliasDefinition($alias);
-            //} else {
+            if($allowAlias === IAlias::DEFINITION) {
+                return $this->_adapter->quoteFieldAliasDefinition($alias);
+            } else {
                 return $this->_adapter->quoteFieldAliasReference($alias);
-            //}
+            }
         } else if($field instanceof opal\query\ICorrelationField) {
             return $this->_adapter->quoteFieldAliasReference($field->getLogicalAlias());
         } else {
@@ -905,7 +911,7 @@ abstract class QueryExecutor implements IQueryExecutor {
             return $this;
         }
 
-        $clauseString = $this->defineClauseList($clauses);
+        $clauseString = $this->defineClauseList($clauses, null, IAlias::DEEP_DEFINITION);
         
         if(!empty($clauseString)) {
             $this->_stmt->appendSql("\n".'  ON '.$clauseString);
