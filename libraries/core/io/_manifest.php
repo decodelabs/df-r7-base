@@ -49,6 +49,7 @@ interface IReader {
     public function readInt();
     public function readLong();
     public function readVInt();
+    public function readChar();
     public function readString();
     public function readUtf8String();
     public function readBinary();
@@ -150,6 +151,10 @@ trait TReader {
         }
         
         return $val;
+    }
+
+    public function readChar() {
+        return $this->readChunk(1);
     }
 
     public function readString() {
@@ -479,6 +484,7 @@ interface IFile extends IFilePointer, IChannel {
     public function unlock();
 
     public function seek($offset, $whence=\SEEK_SET);
+    public function readFrom($offset, $length);
     public function tell();
     
     public function flush();

@@ -165,6 +165,11 @@ class Memory implements core\io\IFile, core\io\IContainedStateChannel, core\IDum
         return $this;
     }
 
+    public function readFrom($offset, $length) {
+        $this->_pos = $offset;
+        return $this->_readChunk($length);
+    }
+
     public function tell() {
         return $this->_pos;
     }

@@ -110,6 +110,12 @@ class File implements core\io\IFile, core\io\ILocalFilePointer, core\io\IContain
 
 
 
+    public function readChar() {
+        return fgetc($this->_fp);
+    }
+
+
+
 // Lock
     public function lock($type, $nonBlocking=false) {
         if($nonBlocking) {
@@ -137,6 +143,11 @@ class File implements core\io\IFile, core\io\ILocalFilePointer, core\io\IContain
     public function seek($offset, $whence=SEEK_SET) {
         fseek($this->_fp, $offset, $whence);
         return $this;
+    }
+
+    public function readFrom($offset, $length) {
+        fseek($this->_fp, $offset);
+        return $this->_readChunk($length);
     }
 
     public function tell() {
@@ -171,6 +182,10 @@ class File implements core\io\IFile, core\io\ILocalFilePointer, core\io\IContain
 
 // Read
     protected function _readChunk($length) {
+        if($length <= 0) {
+            return '';
+        }
+        
         return fread($this->_fp, $length);
     }
 
