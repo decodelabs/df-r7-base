@@ -80,6 +80,10 @@ class HttpHttp implements arch\IDirectoryHelper {
     public function getUserAgent() {
         return $this->_httpRequest->getHeaders()->get('User-Agent');
     }
+
+    public function getIp() {
+        return $this->_httpRequest->getIp();
+    }
     
 
     public function isGetRequest() {
