@@ -50,7 +50,7 @@ class Mediator implements IMediator {
             $this->_heloHost = $heloHost;
         }
 
-        $dsn = halo\socket\address\Inet::factory($dsn);
+        $dsn = halo\net\socket\address\Inet::factory($dsn);
         $port = $dsn->getPort();
         $security = $dsn->getSecureTransport();
 
@@ -64,7 +64,7 @@ class Mediator implements IMediator {
             $dsn->setPort($port);
         }
 
-        $this->_socket = halo\socket\Client::factory($dsn)
+        $this->_socket = halo\net\socket\Client::factory($dsn)
             ->setConnectionTimeout(self::CONNECTION_TIMEOUT)
             ->shouldBlock(true)
             ->shouldSecureOnConnect($security != 'tls')

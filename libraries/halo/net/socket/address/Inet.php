@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\halo\socket\address;
+namespace df\halo\net\socket\address;
 
 use df;
 use df\core;
@@ -153,7 +153,7 @@ class Inet extends Base implements IInetAddress, core\IDumpable {
                 
             default:
                 if(false == getprotobyname($scheme)) {
-                    throw new halo\socket\InvalidArgumentException(
+                    throw new halo\net\socket\InvalidArgumentException(
                         'Protocol '.$scheme.' is not currently supported'
                     );
                 }

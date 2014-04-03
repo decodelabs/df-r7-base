@@ -19,7 +19,7 @@ class Angel extends Base implements IAngel {
     }
 
     protected function _preparePrivilegedResources() {
-        $left = halo\socket\Client::factory('tcp');
+        $left = halo\net\socket\Client::factory('tcp');
         $right = $left->connectPair();
         core\dump($left, $right);
     }

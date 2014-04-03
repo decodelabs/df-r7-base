@@ -9,13 +9,13 @@ use df;
 use df\core;
 use df\halo;
 
-class PeerSession implements halo\peer\ISession {
+class PeerSession implements halo\net\ISession {
     
-    use halo\peer\TPeer_Session;
-    use halo\peer\TPeer_RequestResponseSession;
-    use halo\peer\TPeer_FileStreamSession;
-    use halo\peer\TPeer_ErrorCodeSession;
-    use halo\peer\TPeer_CallbackSession;
+    use halo\net\TPeer_Session;
+    use halo\net\TPeer_RequestResponseSession;
+    use halo\net\TPeer_FileStreamSession;
+    use halo\net\TPeer_ErrorCodeSession;
+    use halo\net\TPeer_CallbackSession;
     
     protected $_contentLength = null;
     

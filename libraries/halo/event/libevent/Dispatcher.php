@@ -46,7 +46,7 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
     }
     
     
-    public function newSocketHandler(halo\socket\ISocket $socket) {
+    public function newSocketHandler(halo\net\socket\ISocket $socket) {
         return $this->_registerHandler(new Handler_Socket($this, $socket));
     }
     

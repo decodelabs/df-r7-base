@@ -11,7 +11,7 @@ use df\halo;
 
 
 // Exceptions
-interface IException extends halo\IException {}
+interface IException {}
 class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 class RuntimeException extends \RuntimeException implements IException {}
 class BindException extends RuntimeException {}
@@ -40,9 +40,9 @@ interface IDispatcher {
     public function setCycleHandler(Callable $callback=null);
     public function getCycleHandler();
 
-    public function newSocketHandler(halo\socket\ISocket $socket);
-    public function getSocketHandler(halo\socket\ISocket $socket);
-    public function removeSocket(halo\socket\ISocket $socket);
+    public function newSocketHandler(halo\net\socket\ISocket $socket);
+    public function getSocketHandler(halo\net\socket\ISocket $socket);
+    public function removeSocket(halo\net\socket\ISocket $socket);
 
     public function newStreamHandler(core\io\IStreamChannel $stream); 
     public function getStreamHandler(core\io\IStreamChannel $stream);
@@ -352,7 +352,7 @@ trait TSocketHandler {
 
     protected $_socket;
 
-    public function __construct(IDispatcher $dispatcher, halo\socket\ISocket $socket) {
+    public function __construct(IDispatcher $dispatcher, halo\net\socket\ISocket $socket) {
         $this->_dispatcher = $dispatcher;
         $this->_socket = $socket;
     }

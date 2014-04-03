@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\halo\socket\address;
+namespace df\halo\net\socket\address;
 
 use df;
 use df\core;
@@ -120,7 +120,7 @@ class Unix extends Base implements IUnixAddress {
             return 'stream';
         }
         
-        throw new halo\socket\InvalidArgumentException(
+        throw new halo\net\socket\InvalidArgumentException(
             'Protocol '.$this->_scheme.' is not currently supported'
         );
     }

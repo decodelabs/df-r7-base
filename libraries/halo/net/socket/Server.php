@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\halo\socket;
+namespace df\halo\net\socket;
 
 use df;
 use df\core;
@@ -19,7 +19,7 @@ abstract class Server extends Base implements IServerSocket {
     protected $_isListening = false;
     
     public static function factory($address, $useStreams=false) {
-        $address = halo\socket\address\Base::factory($address);
+        $address = halo\net\socket\address\Base::factory($address);
         
         if($address instanceof IServerSocket) {
             return $address;

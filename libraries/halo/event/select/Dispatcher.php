@@ -193,7 +193,7 @@ class Dispatcher extends halo\event\Dispatcher {
         return $this;
     }
     
-    public function newSocketHandler(halo\socket\ISocket $socket) {
+    public function newSocketHandler(halo\net\socket\ISocket $socket) {
         return $this->_registerHandler(new Handler_Socket($this, $socket));
     }
     

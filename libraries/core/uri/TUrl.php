@@ -184,7 +184,7 @@ trait TUrl_DomainContainer {
             );
         }        
         
-        return new halo\Ip($ip);
+        return new halo\net\Ip($ip);
     }
 }
 
@@ -196,7 +196,7 @@ trait TUrl_IpContainer {
     
     public function setIp($ip) {
         if($ip !== null) {
-            $ip = halo\Ip::factory($ip); 
+            $ip = halo\net\Ip::factory($ip); 
         }
         
         $this->_ip = $ip;
@@ -205,7 +205,7 @@ trait TUrl_IpContainer {
     
     public function getIp() {
         if(!$this->_ip) {
-            $this->_ip = halo\Ip::getV4Loopback();
+            $this->_ip = halo\net\Ip::getV4Loopback();
         }
         
         return $this->_ip;

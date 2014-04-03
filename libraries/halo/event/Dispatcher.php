@@ -44,7 +44,7 @@ abstract class Dispatcher implements IDispatcher {
     
 
 // Socket
-    public function getSocketHandler(halo\socket\ISocket $socket) {
+    public function getSocketHandler(halo\net\socket\ISocket $socket) {
         foreach($this->_handlers as $id => $handler) {
             if($handler instanceof ISocketHandler 
             && $handler->getSocket() === $socket) {
@@ -57,7 +57,7 @@ abstract class Dispatcher implements IDispatcher {
         );
     }
 
-    public function removeSocket(halo\socket\ISocket $socket) {
+    public function removeSocket(halo\net\socket\ISocket $socket) {
         foreach($this->_handlers as $id => $handler) {
             if($handler instanceof ISocketHandler 
             && $handler->getSocket() === $socket) {

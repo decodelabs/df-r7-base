@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\halo\socket;
+namespace df\halo\net\socket;
 
 use df;
 use df\core;
@@ -20,7 +20,7 @@ abstract class Client extends Base implements IClientSocket, core\IDumpable {
     protected $_isConnected = false;
 
     public static function factory($address, $useStreams=false) {
-        $address = halo\socket\address\Base::factory($address);
+        $address = halo\net\socket\address\Base::factory($address);
         
         if($address instanceof IClientSocket) {
             return $address;
@@ -35,7 +35,7 @@ abstract class Client extends Base implements IClientSocket, core\IDumpable {
         return new $class($address);
     }
 
-    protected static function _getClass(halo\socket\address\IAddress $address, $useStreams=false) {
+    protected static function _getClass(halo\net\socket\address\IAddress $address, $useStreams=false) {
         $class = null;
         $protocol = ucfirst($address->getScheme());
         $nativeClass = 'df\\halo\\socket\\native\\'.$protocol.'_Client';

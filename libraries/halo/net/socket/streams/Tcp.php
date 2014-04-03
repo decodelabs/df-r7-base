@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\halo\socket\streams;
+namespace df\halo\net\socket\streams;
 
 use df;
 use df\core;
@@ -11,10 +11,10 @@ use df\halo;
 
 
 // Client
-class Tcp_Client extends halo\socket\Client implements halo\socket\ISequenceClientSocket, halo\socket\ISecureClientSocket {
+class Tcp_Client extends halo\net\socket\Client implements halo\net\socket\ISequenceClientSocket, halo\net\socket\ISecureClientSocket {
     
-    use halo\socket\TSequenceClientSocket;
-    use halo\socket\TSecureClientSocket;
+    use halo\net\socket\TSequenceClientSocket;
+    use halo\net\socket\TSecureClientSocket;
     use TStreams;
     use TStreams_IoSocket;
 
@@ -32,7 +32,7 @@ class Tcp_Client extends halo\socket\Client implements halo\socket\ISequenceClie
                 $this->connect();
                 
                 /*
-                throw new halo\socket\RuntimeException(
+                throw new halo\net\socket\RuntimeException(
                     'Client sockets cannot generate an ID before they are connected'
                 );
                 */
@@ -76,7 +76,7 @@ class Tcp_Client extends halo\socket\Client implements halo\socket\ISequenceClie
                 stream_set_timeout($socket, 0, $rTimeout * 1000);
             }
         } catch(\Exception $e) {
-            throw new halo\socket\ConnectionException(
+            throw new halo\net\socket\ConnectionException(
                 'Could not connect client to '.$this->_address.' - '.$this->_getLastErrorMessage()
             );
         }
@@ -127,10 +127,10 @@ class Tcp_Client extends halo\socket\Client implements halo\socket\ISequenceClie
 
 
 // Server
-class Tcp_Server extends halo\socket\Server implements halo\socket\ISequenceServerSocket, halo\socket\ISecureServerSocket {
+class Tcp_Server extends halo\net\socket\Server implements halo\net\socket\ISequenceServerSocket, halo\net\socket\ISecureServerSocket {
     
-    use halo\socket\TSecureServerSocket;
-    use halo\socket\TSequenceServerSocket;
+    use halo\net\socket\TSecureServerSocket;
+    use halo\net\socket\TSequenceServerSocket;
     use TStreams;
 
     protected static $_defaultOptions = array(
@@ -173,7 +173,7 @@ class Tcp_Server extends halo\socket\Server implements halo\socket\ISequenceServ
                 $context
             );
         } catch(\Exception $e) {
-            throw new halo\socket\ConnectionException(
+            throw new halo\net\socket\ConnectionException(
                 'Could not create socket on '.$this->_address.' - '.$this->_getLastErrorMessage()
             );
         }
@@ -204,10 +204,10 @@ class Tcp_Server extends halo\socket\Server implements halo\socket\ISequenceServ
 
 
 // Server peer
-class Tcp_ServerPeer extends halo\socket\ServerPeer implements halo\socket\ISequenceServerPeerSocket, halo\socket\ISecureServerPeerSocket {
+class Tcp_ServerPeer extends halo\net\socket\ServerPeer implements halo\net\socket\ISequenceServerPeerSocket, halo\net\socket\ISecureServerPeerSocket {
 
-    use halo\socket\TSequenceServerPeerSocket;
-    use halo\socket\TSecureServerPeerSocket;
+    use halo\net\socket\TSequenceServerPeerSocket;
+    use halo\net\socket\TSecureServerPeerSocket;
     use TStreams;
     use TStreams_IoSocket;
     
@@ -215,7 +215,7 @@ class Tcp_ServerPeer extends halo\socket\ServerPeer implements halo\socket\ISequ
         return array();
     }
     
-    public function __construct(halo\socket\IServerSocket $parent, $socket, $address) {
+    public function __construct(halo\net\socket\IServerSocket $parent, $socket, $address) {
         parent::__construct($parent, $socket, $address);
         
         $this->_isSecure = $parent->isSecure();

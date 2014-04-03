@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\halo\socket;
+namespace df\halo\net\socket;
 
 use df;
 use df\core;

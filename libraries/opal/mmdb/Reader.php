@@ -71,7 +71,7 @@ class Reader implements IReader {
 
 
     public function get($ip) {
-        $ip = halo\Ip::factory($ip);
+        $ip = halo\net\Ip::factory($ip);
 
         if($this->_metaData['ip_version'] == 4 && !$ip->isV4()) {
             throw new InvalidArgumentException(
@@ -88,7 +88,7 @@ class Reader implements IReader {
         return $this->_resolveDataPointer($pointer);
     }
 
-    protected function _findAddressInTree(halo\IIp $ip) {
+    protected function _findAddressInTree(halo\net\IIp $ip) {
         $rawAddress = array_merge(unpack('C*', inet_pton($ip->toString())));
         $bitCount = count($rawAddress) * 8;
 

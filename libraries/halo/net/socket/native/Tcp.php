@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\halo\socket\native;
+namespace df\halo\net\socket\native;
 
 use df;
 use df\core;
@@ -11,9 +11,9 @@ use df\halo;
 
 
 // Server
-class Tcp_Server extends halo\socket\Server implements halo\socket\ISequenceServerSocket {
+class Tcp_Server extends halo\net\socket\Server implements halo\net\socket\ISequenceServerSocket {
     
-    use halo\socket\TSequenceServerSocket;
+    use halo\net\socket\TSequenceServerSocket;
     use TNative;
 
     protected static $_defaultOptions = array(
@@ -45,7 +45,7 @@ class Tcp_Server extends halo\socket\Server implements halo\socket\ISequenceServ
         );
         
         if(!is_resource($this->_socket)) {
-            throw new halo\socket\ConnectionException(
+            throw new halo\net\socket\ConnectionException(
                 'Could not create socket on '.$this->_address.' - '.$this->_getLastErrorMessage()
             );
         }
@@ -55,13 +55,13 @@ class Tcp_Server extends halo\socket\Server implements halo\socket\ISequenceServ
         
         
         if(!@socket_bind($this->_socket, $this->_address->getIp()->toString(), $this->_address->getPort())) {
-            throw new halo\socket\ConnectionException(
+            throw new halo\net\socket\ConnectionException(
                 'Could not bind server address '.$this->_address.' - '.$this->_getLastErrorMessage()
             );
         }
         
         if(!@socket_listen($this->_socket, $this->getConnectionQueueSize())) {
-            throw new halo\socket\ConnectionException(
+            throw new halo\net\socket\ConnectionException(
                 'Could not listen on '.$this->_address.' - '.$this->_getLastErrorMessage()
             );
         }
@@ -128,7 +128,7 @@ class Tcp_Server extends halo\socket\Server implements halo\socket\ISequenceServ
     
     protected function _getPeerAddress($socket) {
         if(!@socket_getpeername($socket, $address, $port)) {
-            throw new halo\socket\CreationException(
+            throw new halo\net\socket\CreationException(
                 'Could not get peer name - '.$this->_getLastErrorMessage()
             );
         }
@@ -149,9 +149,9 @@ class Tcp_Server extends halo\socket\Server implements halo\socket\ISequenceServ
 
 
 // Server peer
-class Tcp_ServerPeer extends halo\socket\ServerPeer implements halo\socket\ISequenceServerPeerSocket {
+class Tcp_ServerPeer extends halo\net\socket\ServerPeer implements halo\net\socket\ISequenceServerPeerSocket {
     
-    use halo\socket\TSequenceServerPeerSocket;
+    use halo\net\socket\TSequenceServerPeerSocket;
     use TNative;
     use TNative_IoSocket;
 
@@ -159,7 +159,7 @@ class Tcp_ServerPeer extends halo\socket\ServerPeer implements halo\socket\ISequ
         return array();
     }
     
-    public function __construct(halo\socket\IServerSocket $parent, $socket, $address) {
+    public function __construct(halo\net\socket\IServerSocket $parent, $socket, $address) {
         parent::__construct($parent, $socket, $address);
         $this->_applyOptions();
     }

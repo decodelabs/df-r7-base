@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\halo\socket;
+namespace df\halo\net\socket;
 
 use df;
 use df\core;
@@ -145,7 +145,7 @@ trait TSecureConnectingSocket {
                 break;
                 
             default:
-                throw new halo\socket\InvalidArgumentException(
+                throw new halo\net\socket\InvalidArgumentException(
                     $transport.' is not a supported secure transport'
                 );
         }
@@ -218,7 +218,7 @@ trait TSecureConnectingSocket {
     
     protected function _setSecureOption($name, $value) {
         if($this->isConnected()) {
-            throw new halo\socket\RuntimeException(
+            throw new halo\net\socket\RuntimeException(
                 'You cannot change secure connection options once the socket has been created'
             );
         }
@@ -256,7 +256,7 @@ trait TSequenceSocket {
         }
         
         if($this->_socket) {
-            throw new halo\socket\RuntimeException(
+            throw new halo\net\socket\RuntimeException(
                 'You cannot set the socket type after it has been created'
             );
         }
@@ -271,7 +271,7 @@ trait TSequenceSocket {
         }
         
         if($this->_isConnected) {
-            throw new halo\socket\RuntimeException(
+            throw new halo\net\socket\RuntimeException(
                 'You cannot change out of band options once the socket is connected'
             );
         }
@@ -390,7 +390,7 @@ trait TSequenceServerSocket {
 
     public function setConnectionQueueSize($size) {
         if($this->isListening()) {
-            throw new halo\socket\RuntimeException(
+            throw new halo\net\socket\RuntimeException(
                 'Can\'t set connection queue size once the server is listening'
             );
         }

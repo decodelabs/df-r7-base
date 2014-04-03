@@ -495,7 +495,7 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
         if(empty($ip)) {
             $this->_ip = null;
         } else {
-            $this->_ip = halo\Ip::factory($ip);
+            $this->_ip = halo\net\Ip::factory($ip);
         }
         
         return $this;
@@ -518,7 +518,7 @@ class Base implements halo\protocol\http\IRequest, core\IDumpable {
                     $ip = substr($ip, 0, $pos - 1);
                 }
                 
-                $this->_ip = new halo\Ip($ip);
+                $this->_ip = new halo\net\Ip($ip);
             } else {
                 $this->_ip = $this->_url->lookupIp();
             }

@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\halo\peer;
+namespace df\halo\net;
 
 use df;
 use df\core;
@@ -37,7 +37,7 @@ trait TPeer {
         return $this->_unregisterSessionBySocket($session->getSocket());
     }
     
-    protected function _unregisterSessionBySocket(halo\socket\ISocket $socket) {
+    protected function _unregisterSessionBySocket(halo\net\socket\ISocket $socket) {
         $id = $socket->getId();
         
         if(isset($this->_sessions[$id])) {
@@ -344,9 +344,9 @@ trait TPeer_Server {
     }
     
     abstract protected function _createMasterSockets();
-    abstract protected function _createSessionFromSocket(halo\socket\IServerPeerSocket $socket);
+    abstract protected function _createSessionFromSocket(halo\net\socket\IServerPeerSocket $socket);
     
-    protected function _registerMasterSocket(halo\socket\IServerSocket $socket) {
+    protected function _registerMasterSocket(halo\net\socket\IServerSocket $socket) {
         $this->_masterSockets[$socket->getId()] = $socket;
         return $this;
     }
@@ -403,7 +403,7 @@ trait TPeer_Server {
     
     
 // Event stubs
-    protected function _canAccept(halo\socket\IServerSocket $socket) { return true; }
+    protected function _canAccept(halo\net\socket\IServerSocket $socket) { return true; }
 }
 
 
@@ -419,7 +419,7 @@ trait TPeer_Session {
     protected $_socket;
     protected $_store = array();
     
-    public function __construct(halo\socket\ISocket $socket) {
+    public function __construct(halo\net\socket\ISocket $socket) {
         $this->_socket = $socket;
     }
     

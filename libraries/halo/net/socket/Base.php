@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\halo\socket;
+namespace df\halo\net\socket;
 
 use df;
 use df\core;
@@ -31,7 +31,7 @@ abstract class Base implements ISocket {
     protected $_options = array();
     
     public function __construct($address) {
-        $this->_address = halo\socket\address\Base::factory($address);
+        $this->_address = halo\net\socket\address\Base::factory($address);
         
         if(static::$_populatedOptions === null) {
             self::$_populatedOptions = static::_populateOptions();

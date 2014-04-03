@@ -12,9 +12,9 @@ use df\halo;
 class Client implements IClient, core\IDumpable {
     
     use halo\event\TDispatcherProvider;
-    use halo\peer\TPeer_Client;
+    use halo\net\TPeer_Client;
     
-    const PROTOCOL_DISPOSITION = halo\peer\IClient::CLIENT_FIRST;
+    const PROTOCOL_DISPOSITION = halo\net\IClient::CLIENT_FIRST;
     const USER_AGENT = 'DF halo HTTP client';
 
     public function __construct() {
@@ -57,7 +57,7 @@ class Client implements IClient, core\IDumpable {
         $scheme = $request->getUrl()->isSecure() ? 'ssl' : 'tcp';
 
         $session = new PeerSession(
-            halo\socket\Client::factory($scheme.'://'.$request->getSocketAddress())
+            halo\net\socket\Client::factory($scheme.'://'.$request->getSocketAddress())
                 ->setReceiveTimeout(100)
         );
         
@@ -121,7 +121,7 @@ class Client implements IClient, core\IDumpable {
     
     protected function _createInitialSessions() {}
     
-    protected function _handleWriteBuffer(halo\peer\ISession $session) {
+    protected function _handleWriteBuffer(halo\net\ISession $session) {
         if(!$fileStream = $session->getFileStream()) {
             $request = $session->getRequest();
             $session->writeBuffer = $request->getHeaderString();
@@ -129,7 +129,7 @@ class Client implements IClient, core\IDumpable {
             
             if(1/*!$request->hasFileStream()*/) {
                 $session->writeBuffer .= $request->getBodyData();
-                return halo\peer\IIoState::OPEN_READ;
+                return halo\net\IIoState::OPEN_READ;
             }
             
             $session->setFileStream($fileStream = $request->getFileStream());
@@ -138,11 +138,11 @@ class Client implements IClient, core\IDumpable {
         $session->writeBuffer .= $fileStream->readChunk(8192);
         
         return $fileStream->eof() ? 
-            halo\peer\IIoState::OPEN_READ : 
-            halo\peer\IIoState::BUFFER;
+            halo\net\IIoState::OPEN_READ : 
+            halo\net\IIoState::BUFFER;
     }
 
-    protected function _handleReadBuffer(halo\peer\ISession $session, $data) {
+    protected function _handleReadBuffer(halo\net\ISession $session, $data) {
         if(!$response = $session->getResponse()) {
             if(false === strpos($session->readBuffer, "\r\n\r\n")) {
                 return;
@@ -173,7 +173,7 @@ class Client implements IClient, core\IDumpable {
                 $session->readBuffer = array_pop($parts);
 
                 if(!$length) {
-                    return halo\peer\IIoState::END;
+                    return halo\net\IIoState::END;
                 }
             }
         } else if(!$length) {
@@ -188,17 +188,17 @@ class Client implements IClient, core\IDumpable {
 
             if($isChunked) {
                 if(trim($session->readBuffer) == '0') {
-                    return halo\peer\IIoState::END;
+                    return halo\net\IIoState::END;
                 }
 
                 $session->setStore('length', 0);
             } else {
-                return halo\peer\IIoState::END;
+                return halo\net\IIoState::END;
             }
         }
     }
     
-    protected function _onSessionEnd(halo\peer\ISession $session) {
+    protected function _onSessionEnd(halo\net\ISession $session) {
         if(!$response = $session->getResponse()) {
             core\stub('Generate a default connection error response', $session);
         }
