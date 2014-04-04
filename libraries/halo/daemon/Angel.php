@@ -8,6 +8,7 @@ namespace df\halo\daemon;
 use df;
 use df\core;
 use df\halo;
+use df\link;
     
 class Angel extends Base implements IAngel {
 
@@ -19,7 +20,7 @@ class Angel extends Base implements IAngel {
     }
 
     protected function _preparePrivilegedResources() {
-        $left = halo\net\socket\Client::factory('tcp');
+        $left = link\socket\Client::factory('tcp');
         $right = $left->connectPair();
         core\dump($left, $right);
     }

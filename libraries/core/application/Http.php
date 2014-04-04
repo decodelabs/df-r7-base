@@ -7,11 +7,11 @@ namespace df\core\application;
 
 use df;
 use df\core;
-use df\halo;
+use df\link;
 use df\flow;
 use df\arch;
 
-class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo\protocol\http\IResponseAugmentorProvider {
+class Http extends Base implements arch\IRoutedDirectoryRequestApplication, link\http\IResponseAugmentorProvider {
     
     const RUN_MODE = 'Http';
     
@@ -49,12 +49,12 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
     
 // Base Url
     public function getBaseUrl() {
-        return new halo\protocol\http\Url($this->_baseDomain.':'.$this->_basePort.'/'.implode('/', $this->_basePath).'/');
+        return new link\http\Url($this->_baseDomain.':'.$this->_basePort.'/'.implode('/', $this->_basePath).'/');
     }
     
     
 // Http request
-    public function setHttpRequest(halo\protocol\http\IRequest $request) {
+    public function setHttpRequest(link\http\IRequest $request) {
         $this->_httpRequest = $request;
         return $this;
     }
@@ -73,7 +73,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
 // Response augmentor
     public function getResponseAugmentor() {
         if(!$this->_responseAugmentor) {
-            $this->_responseAugmentor = new halo\protocol\http\response\Augmentor();
+            $this->_responseAugmentor = new link\http\response\Augmentor();
         }
         
         return $this->_responseAugmentor;
@@ -109,7 +109,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
             $this->_defaultRouteProtocol = (isset($_SERVER['HTTPS']) && !strcasecmp($_SERVER['HTTPS'], 'on')) ? 'https' : 'http';
         }
 
-        return halo\protocol\http\Url::fromDirectoryRequest(
+        return link\http\Url::fromDirectoryRequest(
             $request,
             $this->_defaultRouteProtocol,
             $this->_baseDomain, 
@@ -194,7 +194,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
     
     
 // Execute
-    public function dispatch(halo\protocol\http\IRequest $httpRequest=null) {
+    public function dispatch(link\http\IRequest $httpRequest=null) {
         $this->_beginDispatch();
 
         if($this->isDevelopment()) {
@@ -215,11 +215,11 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
         if($httpRequest !== null) {
             $this->_httpRequest = $httpRequest;
         } else {
-            $this->_httpRequest = new halo\protocol\http\request\Base(null, true);
+            $this->_httpRequest = new link\http\request\Base(null, true);
         }
 
         if($this->_useHttps && !$this->_httpRequest->getUrl()->isSecure()) {
-            $response = new halo\protocol\http\response\Redirect(
+            $response = new link\http\response\Redirect(
                 $this->_httpRequest->getUrl()
                     ->isSecure(true)
                     ->setPort(null)
@@ -285,7 +285,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
             $baseUrl = (string)$this->requestToUrl(new arch\Request($redirectPath));
 
             if($this->isDevelopment()) {        
-                $response = new halo\protocol\http\response\String(
+                $response = new link\http\response\String(
                     '<html><head><title>Bad request</title></head><body>'.
                     '<p>Sorry, you are not in the right place!</p>'.
                     '<p>Go here instead: <a href="'.$baseUrl.'">'.$baseUrl.'</a></p>',
@@ -295,7 +295,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
                 $response->getHeaders()->setStatusCode(404);
                 return $response;
             } else {
-                $response = new halo\protocol\http\response\Redirect($baseUrl);
+                $response = new link\http\response\Redirect($baseUrl);
                 $response->isPermanent(true);
                 return $response;
             }
@@ -311,7 +311,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
                 $url->getPath()->shouldAddTrailingSlash(true);
 
                 if((string)$url != $orig) {
-                    $response = new halo\protocol\http\response\Redirect($url);
+                    $response = new link\http\response\Redirect($url);
                     $response->isPermanent(true);
                     return $response;
                 }
@@ -423,8 +423,8 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
         
         
         // Basic response
-        if(!$response instanceof halo\protocol\http\IResponse) {
-            $response = new halo\protocol\http\response\String(
+        if(!$response instanceof link\http\IResponse) {
+            $response = new link\http\response\String(
                 (string)$response, 
                 core\io\Type::extToMime(strtolower($this->_context->request->getType()))
             );
@@ -471,7 +471,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
         }
         
         
-        if(!$response instanceof halo\protocol\http\IResponse) {
+        if(!$response instanceof link\http\IResponse) {
             echo (string)$response;
             return;
         }
@@ -487,7 +487,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
         }
 
         // Only send data if needed
-        $isFile = $response instanceof halo\protocol\http\IFileResponse;
+        $isFile = $response instanceof link\http\IFileResponse;
         $sendData = true;
         
         if($this->_httpRequest->isCachedByClient()) {
@@ -531,7 +531,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
                 }
                 
                 $file->close();
-            } else if($response instanceof halo\protocol\http\IGeneratorResponse) {
+            } else if($response instanceof link\http\IGeneratorResponse) {
                 $response->shouldChunkManually($this->_manualChunk);
                 $response->generate($channel);
             } else {
@@ -552,7 +552,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, halo
             if($this->_httpRequest) {
                 $headers = $this->_httpRequest->getHeaders();
             } else {
-                $headers = halo\protocol\http\request\HeaderCollection::fromEnvironment();
+                $headers = link\http\request\HeaderCollection::fromEnvironment();
             }
 
             /*
@@ -628,7 +628,7 @@ class Http_Config extends core\Config {
         if($url === null) {
             $this->values['httpBaseUrl'][$environmentMode] = null;
         } else {
-            $url = halo\protocol\http\Url::factory($url);
+            $url = link\http\Url::factory($url);
             $url->getPath()->shouldAddTrailingSlash(true)->isAbsolute(true);
             
             $this->values['httpBaseUrl'][$environmentMode] = $url->getDomain().$url->getPathString();
@@ -687,7 +687,7 @@ class Http_Config extends core\Config {
     
     protected function _generateHttpBaseUrl() {
         $baseUrl = null;
-        $request = new halo\protocol\http\request\Base(true);
+        $request = new link\http\request\Base(true);
         $host = $request->getUrl()->getDomain();
         $path = $request->getUrl()->getPathString();
         

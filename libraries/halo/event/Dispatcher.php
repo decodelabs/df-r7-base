@@ -8,6 +8,7 @@ namespace df\halo\event;
 use df;
 use df\core;
 use df\halo;
+use df\link;
 
 abstract class Dispatcher implements IDispatcher {
     
@@ -44,7 +45,7 @@ abstract class Dispatcher implements IDispatcher {
     
 
 // Socket
-    public function getSocketHandler(halo\net\socket\ISocket $socket) {
+    public function getSocketHandler(link\socket\ISocket $socket) {
         foreach($this->_handlers as $id => $handler) {
             if($handler instanceof ISocketHandler 
             && $handler->getSocket() === $socket) {
@@ -57,7 +58,7 @@ abstract class Dispatcher implements IDispatcher {
         );
     }
 
-    public function removeSocket(halo\net\socket\ISocket $socket) {
+    public function removeSocket(link\socket\ISocket $socket) {
         foreach($this->_handlers as $id => $handler) {
             if($handler instanceof ISocketHandler 
             && $handler->getSocket() === $socket) {

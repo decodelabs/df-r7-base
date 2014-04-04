@@ -8,6 +8,7 @@ namespace df\halo\event;
 use df;
 use df\core;
 use df\halo;
+use df\link;
 
 
 // Exceptions
@@ -40,9 +41,9 @@ interface IDispatcher {
     public function setCycleHandler(Callable $callback=null);
     public function getCycleHandler();
 
-    public function newSocketHandler(halo\net\socket\ISocket $socket);
-    public function getSocketHandler(halo\net\socket\ISocket $socket);
-    public function removeSocket(halo\net\socket\ISocket $socket);
+    public function newSocketHandler(link\socket\ISocket $socket);
+    public function getSocketHandler(link\socket\ISocket $socket);
+    public function removeSocket(link\socket\ISocket $socket);
 
     public function newStreamHandler(core\io\IStreamChannel $stream); 
     public function getStreamHandler(core\io\IStreamChannel $stream);
@@ -352,7 +353,7 @@ trait TSocketHandler {
 
     protected $_socket;
 
-    public function __construct(IDispatcher $dispatcher, halo\net\socket\ISocket $socket) {
+    public function __construct(IDispatcher $dispatcher, link\socket\ISocket $socket) {
         $this->_dispatcher = $dispatcher;
         $this->_socket = $socket;
     }

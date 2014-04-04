@@ -7,7 +7,7 @@ namespace df\core\log\writer;
 
 use df;
 use df\core;
-use df\halo;
+use df\link;
 
 class FirePhp implements core\log\IWriter {
 
@@ -24,7 +24,7 @@ class FirePhp implements core\log\IWriter {
     protected static $_messageIndex = 0;
     protected $_buffer = array();
 
-    public static function isAvailable(halo\protocol\http\IRequestHeaderCollection $headers) {
+    public static function isAvailable(link\http\IRequestHeaderCollection $headers) {
         if(preg_match_all('/\sFirePHP\/([\.\d]*)\s?/si', $headers->get('user-agent'), $matches) 
         && version_compare($matches[1][0],'0.0.6','>=')) {
             return true;

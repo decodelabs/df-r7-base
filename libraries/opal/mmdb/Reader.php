@@ -8,7 +8,7 @@ namespace df\opal\mmdb;
 use df;
 use df\core;
 use df\opal;
-use df\halo;
+use df\link;
 
 class Reader implements IReader {
     
@@ -71,7 +71,7 @@ class Reader implements IReader {
 
 
     public function get($ip) {
-        $ip = halo\net\Ip::factory($ip);
+        $ip = link\Ip::factory($ip);
 
         if($this->_metaData['ip_version'] == 4 && !$ip->isV4()) {
             throw new InvalidArgumentException(
@@ -88,7 +88,7 @@ class Reader implements IReader {
         return $this->_resolveDataPointer($pointer);
     }
 
-    protected function _findAddressInTree(halo\net\IIp $ip) {
+    protected function _findAddressInTree(link\IIp $ip) {
         $rawAddress = array_merge(unpack('C*', inet_pton($ip->toString())));
         $bitCount = count($rawAddress) * 8;
 

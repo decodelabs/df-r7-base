@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\arch;
 use df\user;
+use df\link;
 
 class Request extends core\uri\Url implements IRequest, core\IDumpable {
     
@@ -567,7 +568,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     
     public function convertToHttpUrl($scheme, $domain, $port, array $basePath) {
         if($this->_isJustFragment) {
-            return new halo\protocol\http\Url('#'.$this->_fragment);
+            return new link\http\Url('#'.$this->_fragment);
         }
         
         $path = null;
@@ -587,7 +588,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             $path->shouldAddTrailingSlash(true);
         }
         
-        $output = new halo\protocol\http\Url();
+        $output = new link\http\Url();
         $output->_scheme = $scheme;
         $output->_domain = $domain;
         $output->_port = $port;

@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\user;
 use df\arch;
-use df\halo;
+use df\link;
 
 class Cookie implements user\session\IPerpetuator {
     
@@ -59,7 +59,7 @@ class Cookie implements user\session\IPerpetuator {
         if($outputId != $this->_inputId) {
             $application = $controller->getApplication();
         
-            if($application instanceof halo\protocol\http\IResponseAugmentorProvider) {
+            if($application instanceof link\http\IResponseAugmentorProvider) {
                 $augmentor = $application->getResponseAugmentor();
                 $cookie = $this->_getSessionCookie($application, $outputId);
                 $augmentor->setCookieForAnyRequest($cookie);
@@ -80,7 +80,7 @@ class Cookie implements user\session\IPerpetuator {
     public function destroy(user\session\IController $controller) {
         $application = $controller->getApplication();
         
-        if($application instanceof halo\protocol\http\IResponseAugmentorProvider) {
+        if($application instanceof link\http\IResponseAugmentorProvider) {
             $augmentor = $application->getResponseAugmentor();
 
             $augmentor->removeCookieForAnyRequest($this->_getSessionCookie(
@@ -107,7 +107,7 @@ class Cookie implements user\session\IPerpetuator {
     public function perpetuateRememberKey(user\session\IController $controller, user\RememberKey $key) {
         $application = $controller->getApplication();
 
-        if($application instanceof halo\protocol\http\IResponseAugmentorProvider) {
+        if($application instanceof link\http\IResponseAugmentorProvider) {
             $augmentor = $application->getResponseAugmentor();
             $cookie = $this->_getRememberCookie($application, $key);
             $augmentor->setCookieForAnyRequest($cookie);
@@ -152,7 +152,7 @@ class Cookie implements user\session\IPerpetuator {
     public function destroyRememberKey(user\session\IController $controller) {
         $application = $controller->getApplication();
         
-        if($application instanceof halo\protocol\http\IResponseAugmentorProvider) {
+        if($application instanceof link\http\IResponseAugmentorProvider) {
             $augmentor = $application->getResponseAugmentor();
 
             $augmentor->removeCookieForAnyRequest($this->_getRememberCookie(

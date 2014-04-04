@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\aura;
 use df\arch;
-use df\halo;
+use df\link;
 
 class Uri implements aura\view\IHelper {
     
@@ -46,10 +46,10 @@ class Uri implements aura\view\IHelper {
             switch(strtolower($matches[1])) {
                 case 'http':
                 case 'https':
-                    return new halo\protocol\http\Url($uri);
+                    return new link\http\Url($uri);
                     
                 case 'ftp':
-                    return new halo\protocol\ftp\Url($uri);
+                    return new link\ftp\Url($uri);
                     
                 case 'mailto':
                     return new core\uri\MailtoUrl($uri);
@@ -176,10 +176,10 @@ class Uri implements aura\view\IHelper {
     }
     
     public function http($url) {
-        return halo\protocol\http\Url::factory($url);
+        return link\http\Url::factory($url);
     }
     
     public function ftp($url) {
-        return halo\protocol\ftp\Url::factory($url);
+        return link\ftp\Url::factory($url);
     }
 }

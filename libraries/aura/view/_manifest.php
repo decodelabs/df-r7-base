@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\aura;
 use df\arch;
-use df\halo;
+use df\link;
 
 
 // Exceptions
@@ -107,11 +107,11 @@ interface IView extends
 }
 
 
-interface IResponseView extends IView, halo\protocol\http\IStringResponse {}
+interface IResponseView extends IView, link\http\IStringResponse {}
 
 trait TResponseView {
 
-    use halo\protocol\http\TStringResponse;
+    use link\http\TStringResponse;
 
     protected $_renderedContent = null;
 

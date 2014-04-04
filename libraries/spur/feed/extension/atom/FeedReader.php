@@ -8,7 +8,7 @@ namespace df\spur\feed\extension\atom;
 use df;
 use df\core;
 use df\spur;
-use df\halo;
+use df\link;
 
 class FeedReader implements spur\feed\IFeedReaderPlugin {
     
@@ -256,7 +256,7 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
     }
     
     protected function _relativeToAbsoluteUrl($urlString) {
-        $url = halo\protocol\http\Url::factory($urlString);
+        $url = link\http\Url::factory($urlString);
         
         if(!$url->hasDomain()) {
             if($baseUrl = $this->getBaseUrl()) {

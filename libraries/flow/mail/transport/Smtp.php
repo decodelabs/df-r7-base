@@ -8,7 +8,7 @@ namespace df\flow\mail\transport;
 use df;
 use df\core;
 use df\flow;
-use df\halo;
+use df\link;
 
 class Smtp extends Base {
 
@@ -55,7 +55,7 @@ class Smtp extends Base {
             $this->_mediator->quit();
         }
 
-        $this->_mediator = new halo\protocol\smtp\Mediator($dsn);
+        $this->_mediator = new link\smtp\Mediator($dsn);
         $this->_mediator->login($username, $password);
 
         return $this;

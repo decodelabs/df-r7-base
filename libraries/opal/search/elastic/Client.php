@@ -8,7 +8,7 @@ namespace df\opal\search\elastic;
 use df;
 use df\core;
 use df\opal;
-use df\halo;
+use df\link;
 
 class Client implements opal\search\IClient {
     
@@ -83,7 +83,7 @@ class Client implements opal\search\IClient {
                 );
         }
         
-        $request = new halo\protocol\http\request\Base(
+        $request = new link\http\request\Base(
             $this->_servers[0]['host'].':'.$this->_servers[0]['port'].'/'.$uri->getPath()
         );
         
@@ -93,7 +93,7 @@ class Client implements opal\search\IClient {
         
         $response = null;
         
-        new halo\protocol\http\Client($request, function($httpResponse) use (&$response) {
+        new link\http\Client($request, function($httpResponse) use (&$response) {
             $message = null;
             
             try {

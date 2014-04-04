@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\spur;
 use df\flow;
-use df\halo;
+use df\link;
     
 class Mediator implements IMediator {
 
@@ -20,7 +20,7 @@ class Mediator implements IMediator {
     protected $_httpClient;
 
     public function __construct($url=null, $accessKey=null, $secretKey=null) {
-        $this->_httpClient = new halo\protocol\http\Client();
+        $this->_httpClient = new link\http\Client();
 
         if($url !== null) {
             $this->setUrl($url);
@@ -43,7 +43,7 @@ class Mediator implements IMediator {
 
 // Url
     public function setUrl($url) {
-        $this->_activeUrl = halo\protocol\http\Url::factory($url);
+        $this->_activeUrl = link\http\Url::factory($url);
         $this->_activeUrl->isSecure(true);
         return $this;
     }
@@ -218,7 +218,7 @@ class Mediator implements IMediator {
 
         if(!$this->_activeRequest) {
             $this->_activeUrl->shouldEncodeQueryAsRfc3986(true);
-            $this->_activeRequest = halo\protocol\http\request\Base::factory($this->_activeUrl);
+            $this->_activeRequest = link\http\request\Base::factory($this->_activeUrl);
         }
 
         $request = clone $this->_activeRequest;

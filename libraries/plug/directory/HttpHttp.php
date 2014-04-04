@@ -8,7 +8,7 @@ namespace df\plug\directory;
 use df;
 use df\core;
 use df\arch;
-use df\halo;
+use df\link;
 use df\aura as auraLib;
 use df\flex;
 
@@ -106,7 +106,7 @@ class HttpHttp implements arch\IDirectoryHelper {
     
 // Responses
     public function stringResponse($content, $contentType=null) {
-        return new halo\protocol\http\response\String($content, $contentType);
+        return new link\http\response\String($content, $contentType);
     }
 
     public function ajaxResponse(auraLib\view\IView $view, array $extraData=array()) {
@@ -120,7 +120,7 @@ class HttpHttp implements arch\IDirectoryHelper {
     }
     
     public function fileResponse($path, $checkPath=true) {
-        return new halo\protocol\http\response\File($path, $checkPath);
+        return new link\http\response\File($path, $checkPath);
     }
     
     public function redirect($request=null) {
@@ -135,7 +135,7 @@ class HttpHttp implements arch\IDirectoryHelper {
         if($request instanceof arch\IRequest) {
             $url = $this->_context->getApplication()->requestToUrl($request);
         } else {
-            $url = halo\protocol\http\Url::factory((string)$request);
+            $url = link\http\Url::factory((string)$request);
         }
 
         if($url->isJustFragment()) {
@@ -144,11 +144,11 @@ class HttpHttp implements arch\IDirectoryHelper {
             $url->setFragment($fragment);
         }
 
-        return new halo\protocol\http\response\Redirect($url);
+        return new link\http\response\Redirect($url);
     }
     
     public function redirectExternal($url) {
-        return new halo\protocol\http\response\Redirect($url);
+        return new link\http\response\Redirect($url);
     }
     
     public function defaultRedirect($default=null, $success=true) {
@@ -172,7 +172,7 @@ class HttpHttp implements arch\IDirectoryHelper {
 
 // Generator
     public function generator($contentType, core\io\IChunkSender $sender) {
-        return new halo\protocol\http\response\Generator($contentType, $sender);
+        return new link\http\response\Generator($contentType, $sender);
     }
 
     public function csvGenerator($fileName, Callable $generator) {
@@ -188,7 +188,7 @@ class HttpHttp implements arch\IDirectoryHelper {
         $application = $this->_context->getApplication();
         $augmentor = $application->getResponseAugmentor();
         
-        if($name instanceof halo\protocol\http\IResponseCookie) {
+        if($name instanceof link\http\IResponseCookie) {
             $cookie = $name;
         } else {
             $cookie = $augmentor->newCookie($name, $value)
@@ -208,7 +208,7 @@ class HttpHttp implements arch\IDirectoryHelper {
         $application = $this->_context->getApplication();
         $augmentor = $application->getResponseAugmentor();
         
-        if($name instanceof halo\protocol\http\IResponseCookie) {
+        if($name instanceof link\http\IResponseCookie) {
             $cookie = $name;
         } else {
             $cookie = $augmentor->newCookie($name, 'deleted')

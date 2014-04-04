@@ -8,7 +8,7 @@ namespace df\spur\video;
 use df;
 use df\core;
 use df\spur;
-use df\halo;
+use df\link;
 use df\aura;
     
 class Embed implements IVideoEmbed {
@@ -270,11 +270,11 @@ class Embed implements IVideoEmbed {
 
 // Url prepare
     protected function _prepareGenericUrl($url) {
-        return halo\protocol\http\Url::factory($url);
+        return link\http\Url::factory($url);
     }
 
     protected function _prepareYoutubeUrl($url) {
-        $url = halo\protocol\http\Url::factory($url);
+        $url = link\http\Url::factory($url);
 
         if(isset($url->query->v)) {
             $id = $url->query['v'];
@@ -286,7 +286,7 @@ class Embed implements IVideoEmbed {
             }
         }
         
-        $output = new halo\protocol\http\Url('http://www.youtube.com/embed/'.$id);
+        $output = new link\http\Url('http://www.youtube.com/embed/'.$id);
 
         if($this->_startTime !== null) {
             $output->query->start = $this->_startTime;
@@ -308,14 +308,14 @@ class Embed implements IVideoEmbed {
     }
 
     protected function _prepareVimeoUrl($url) {
-        $urlObj = halo\protocol\http\Url::factory($url);
+        $urlObj = link\http\Url::factory($url);
         $id = $urlObj->path->getLast();
 
         if(!is_numeric($id)) {
             return $url;
         }
 
-        $output = new halo\protocol\http\Url('http://player.vimeo.com/video/'.$id);
+        $output = new link\http\Url('http://player.vimeo.com/video/'.$id);
 
         if($this->_autoPlay) {
             $output->query->autoplay = 1;

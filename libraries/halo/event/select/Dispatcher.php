@@ -8,6 +8,7 @@ namespace df\halo\event\select;
 use df;
 use df\core;
 use df\halo;
+use df\link;
 
 class Dispatcher extends halo\event\Dispatcher {
     
@@ -193,7 +194,7 @@ class Dispatcher extends halo\event\Dispatcher {
         return $this;
     }
     
-    public function newSocketHandler(halo\net\socket\ISocket $socket) {
+    public function newSocketHandler(link\socket\ISocket $socket) {
         return $this->_registerHandler(new Handler_Socket($this, $socket));
     }
     

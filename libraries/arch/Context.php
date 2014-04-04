@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\arch;
 use df\user;
-use df\halo;
+use df\link;
 
 class Context implements IContext, \Serializable, core\IDumpable {
     
@@ -138,7 +138,7 @@ class Context implements IContext, \Serializable, core\IDumpable {
             if(substr($uri, 0, 7) == 'mailto:') {
                 return new core\uri\MailtoUrl($uri);
             } else if(substr($uri, 0, 2) == '//') {
-                return new halo\protocol\http\Url($uri);
+                return new link\http\Url($uri);
             } else {
                 $parts = explode('://', $uri, 2);
                 
@@ -146,10 +146,10 @@ class Context implements IContext, \Serializable, core\IDumpable {
                     switch(strtolower($scheme)) {
                         case 'http':
                         case 'https':
-                            return new halo\protocol\http\Url($uri);
+                            return new link\http\Url($uri);
                             
                         case 'ftp':
-                            return new halo\protocol\ftp\Url($uri);
+                            return new link\ftp\Url($uri);
                             
                         case 'mailto':
                             return new core\uri\MailtoUrl($uri);

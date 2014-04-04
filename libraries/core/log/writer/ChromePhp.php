@@ -7,7 +7,7 @@ namespace df\core\log\writer;
 
 use df;
 use df\core;
-use df\halo;
+use df\link;
     
 class ChromePhp implements core\log\IWriter {
 
@@ -20,7 +20,7 @@ class ChromePhp implements core\log\IWriter {
     protected $_buffer = array();
     protected $_writeBacktrace = true;
 
-    public static function isAvailable(halo\protocol\http\IRequestHeaderCollection $headers) {
+    public static function isAvailable(link\http\IRequestHeaderCollection $headers) {
         $agent = $headers->get('user-agent');
 
         return false !== strpos($agent, 'Chrome')

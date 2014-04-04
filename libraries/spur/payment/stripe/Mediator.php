@@ -8,7 +8,7 @@ namespace df\spur\payment\stripe;
 use df;
 use df\core;
 use df\spur;
-use df\halo;
+use df\link;
 use df\mint;
 use df\user;
 
@@ -22,7 +22,7 @@ class Mediator implements IMediator, core\IDumpable {
     protected $_defaultCurrency = 'USD';
 
     public function __construct($apiKey) {
-        $this->_httpClient = new halo\protocol\http\Client();
+        $this->_httpClient = new link\http\Client();
         $this->setApiKey($apiKey);
     }
 
@@ -547,13 +547,13 @@ class Mediator implements IMediator, core\IDumpable {
 // IO
     public function callServer($method, $path, array $data=array()) {
         if(!$this->_activeUrl) {
-            $this->_activeUrl = halo\protocol\http\Url::factory(self::API_URL);
+            $this->_activeUrl = link\http\Url::factory(self::API_URL);
         }
 
         $url = clone $this->_activeUrl;
         $url->path->shouldAddTrailingSlash(false)->push($path);
 
-        $request = halo\protocol\http\request\Base::factory($url);
+        $request = link\http\request\Base::factory($url);
         $request->setMethod($method);
         $request->getHeaders()->set('Authorization', 'Bearer '.$this->_apiKey);
 

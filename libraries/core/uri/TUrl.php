@@ -7,7 +7,7 @@ namespace df\core\uri;
 
 use df;
 use df\core;
-use df\halo;
+use df\link;
 
 
 trait TUrl_TransientScheme {
@@ -184,7 +184,7 @@ trait TUrl_DomainContainer {
             );
         }        
         
-        return new halo\net\Ip($ip);
+        return new link\Ip($ip);
     }
 }
 
@@ -196,7 +196,7 @@ trait TUrl_IpContainer {
     
     public function setIp($ip) {
         if($ip !== null) {
-            $ip = halo\net\Ip::factory($ip); 
+            $ip = link\Ip::factory($ip); 
         }
         
         $this->_ip = $ip;
@@ -205,7 +205,7 @@ trait TUrl_IpContainer {
     
     public function getIp() {
         if(!$this->_ip) {
-            $this->_ip = halo\net\Ip::getV4Loopback();
+            $this->_ip = link\Ip::getV4Loopback();
         }
         
         return $this->_ip;

@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\arch;
 use df\aura;
-use df\halo;
+use df\link;
 
 abstract class Action extends arch\Action implements IAction {
     
@@ -238,7 +238,7 @@ abstract class Action extends arch\Action implements IAction {
         $response = $this->_runPostRequest();
         $data = $this->_getJsonResponseData();
 
-        if($response instanceof halo\protocol\http\IRedirectResponse) {
+        if($response instanceof link\http\IRedirectResponse) {
             $data['redirect'] = (string)$response->getUrl();
         }
 
@@ -249,7 +249,7 @@ abstract class Action extends arch\Action implements IAction {
         if($this->_initResponse) {
             $redirect = null;
 
-            if($this->_initResponse instanceof halo\protocol\http\IRedirectResponse) {
+            if($this->_initResponse instanceof link\http\IRedirectResponse) {
                 $redirect = clone $this->_initResponse->getUrl();
                 $redirect->path->setExtension('json');
                 $redirect = (string)$redirect;
@@ -305,11 +305,11 @@ abstract class Action extends arch\Action implements IAction {
         $content = $redirect = null;
         $type = 'text/html';
 
-        if($response instanceof halo\protocol\http\IRedirectResponse) {
+        if($response instanceof link\http\IRedirectResponse) {
             $redirect = clone $response->getUrl();
             $redirect->path->setExtension('ajax');
             $redirect = (string)$redirect;
-        } else if($response instanceof halo\protocol\http\response\IResponse) {
+        } else if($response instanceof link\http\response\IResponse) {
             $content = $response->getContent();
             $type = $response->getContentType();
         } else if(is_string($response)) {
