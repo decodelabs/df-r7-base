@@ -8,6 +8,7 @@ namespace df\user;
 use df;
 use df\core;
 use df\user;
+use df\link;
 
 class Client implements IClient, \Serializable {
     
@@ -19,9 +20,9 @@ class Client implements IClient, \Serializable {
     protected $_nickName;
     protected $_joinDate;
     protected $_loginDate;
-    protected $_country = 'GB';
+    protected $_country;
     protected $_language = 'en';
-    protected $_timezone = 'UTC';
+    protected $_timezone;
 
     protected $_groupIds = [];
     protected $_options = null;
@@ -73,21 +74,43 @@ class Client implements IClient, \Serializable {
         $output->_joinDate = null;
         $output->_loginDate = null;
         
-        $i18nManager = core\i18n\Manager::getInstance($manager->getApplication());
+        $application = $manager->getApplication();
+        $i18nManager = core\i18n\Manager::getInstance($application);
         $locale = $i18nManager->getLocale();
-        
+
         $output->_language = $locale->getLanguage();
-        $output->_country = $locale->getRegion();
+
+        if($application instanceof core\application\Http) {
+            $ip = $application->getHttpRequest()->getIp();
+            $geoIp = link\geoIp\Handler::factory()->lookup($ip);
+
+            if($geoIp->country) {
+                $output->_country = $geoIp->country;
+            } else {
+                $output->_country = $locale->getRegion();
+            }
+
+            if($geoIp->timezone) {
+                $output->_timezone = $geoIp->timezone;
+            }
+        }
+        
+        if($output->_country === null) {
+            $output->_country = $locale->getRegion();
+        }
         
         if($output->_country === null) {
             $output->_country = $i18nManager->countries->suggestCountryForLanguage($output->_language);
         }
         
-        $output->_timezone = $i18nManager->timezones->suggestForCountry($output->_country);
+        if($output->_timezone === null) {
+            $output->_timezone = $i18nManager->timezones->suggestForCountry($output->_country);
+        }
+
         $output->_authState = IState::GUEST;
         $output->_groupIds = [];
         $output->_options = [];
-        
+
         return $output;
     }
 

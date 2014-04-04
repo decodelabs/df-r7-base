@@ -52,6 +52,7 @@ class Manager implements IManager, core\IDumpable {
             $cache = user\session\Cache::getInstance($this->_application);
             $regenKeyring = $cache->shouldRegenerateKeyring($this->_client->getKeyringTimestamp());
             $rethrowException = false;
+            core\i18n\Manager::getInstance($this->_application)->setLocale($this->_client->getLanguage().'_'.$this->_client->getCountry());
         }
 
         if(!$this->_client->isLoggedIn() && $this->_recallIdentity($isNew)) {
