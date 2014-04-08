@@ -458,6 +458,20 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
 
         return true;
     }
+
+    public function matchesPath($request) {
+        $request = self::factory($request);
+
+        if($this->_scheme != $request->_scheme) {
+            return false;
+        }
+
+        if($this->getLiteralPathString() != $request->getLiteralPathString()) {
+            return false;
+        }
+
+        return true;
+    }
     
     public function containsPath($request) {
         $request = self::factory($request);
