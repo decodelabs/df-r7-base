@@ -102,7 +102,7 @@ class Rdbms extends Base {
 
 // Decimal
     protected function _createDecimalField(opal\schema\IPrimitive $primitive) {
-        $field = $this->_targetSchema->createField($primitive->getName(), 'decimal', $primitive->getPrecision(), $primitive->getScale());
+        $field = $this->_targetSchema->createField($primitive->getName(), 'decimal', $primitive->getScale(), $primitive->getPrecision());
         $this->_importBasePrimitiveOptions($field, $primitive);
         return $field;
     }
@@ -118,7 +118,7 @@ class Rdbms extends Base {
 
 // Float
     protected function _createFloatField(opal\schema\IPrimitive $primitive) {
-        $field = $this->_targetSchema->createField($primitive->getName(), 'float', $primitive->getPrecision(), $primitive->getScale());
+        $field = $this->_targetSchema->createField($primitive->getName(), 'float', $primitive->getScale(), $primitive->getPrecision());
         $this->_importBasePrimitiveOptions($field, $primitive);
         return $field;
     }

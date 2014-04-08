@@ -10,25 +10,18 @@ use df\core;
 use df\axis;
 use df\opal;
     
-class Percentage extends Base implements opal\schema\IFloatingNumericField {
+class Percentage extends Base implements opal\schema\IFloatingPointNumericField {
 
     use opal\schema\TField_FloatingPointNumeric;
 
     protected function _init($precision=4) {
         $this->setPrecision($precision);
-    }
-
-    public function setPrecision($scale) {
-        return $this->setScale($scale - 3);
-    }
-
-    public function getPrecision() {
-        return $this->_scale + 3;
+        $this->setScale($precision + 3);
     }
 
 // Primitive
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
-        $output = new opal\schema\Primitive_Decimal($this, $this->_scale + 3, $this->_scale);
+        $output = new opal\schema\Primitive_Decimal($this, $this->_precision, $this->_scale);
 
         if($this->_isUnsigned) {
             $output->isUnsigned(true);
