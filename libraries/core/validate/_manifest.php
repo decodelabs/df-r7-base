@@ -24,6 +24,7 @@ interface IHandler extends \ArrayAccess, core\IChainable {
     public function getFields();
     public function getValues();
     public function getValue($name);
+    public function setValue($name, $value);
     public function shouldSanitize($flag=null);
     public function setRequireGroupFulfilled($name);
     public function setRequireGroupUnfulfilled($name, $field);

@@ -104,8 +104,20 @@ class Handler implements IHandler {
         }
     }
 
+    public function setValue($name, $value) {
+        if($this->_isValid === null) {
+            throw new RuntimeException(
+                'This validator has not been run yet'
+            );
+        }
+
+        $this->_values[$name] = $value;
+        return $this;
+    }
+
     public function offsetSet($offset, $value) {
-        throw new BadMethodCallException('Validator values cannot be set via array access');
+        //throw new BadMethodCallException('Validator values cannot be set via array access');
+        return $this->setValue($offset, $value);
     }
 
     public function offsetGet($offset) {
