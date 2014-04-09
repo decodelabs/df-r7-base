@@ -33,7 +33,15 @@ class Populate implements IPopulateQuery, core\IDumpable {
     }
 
     public function __construct(IPopulatableQuery $parent, $fieldName, $type, array $selectFields=null) {
-        $adapter = $parent->getSource()->getAdapter();
+        $this->_parent = $parent;
+        $this->_type = $type;
+
+        $parentSourceManager = $parent->getSourceManager();
+
+        $this->_field = $parentSourceManager->extrapolateIntrinsicField($parent->getSource(), $fieldName);
+        $intrinsicFieldName = $this->_field->getName();
+
+        $adapter = $this->_field->getSource()->getAdapter();
 
         if(!$adapter instanceof opal\query\IIntegralAdapter) {
             throw new LogicException(
@@ -41,13 +49,6 @@ class Populate implements IPopulateQuery, core\IDumpable {
             );
         }
 
-        $this->_parent = $parent;
-        $this->_type = $type;
-
-        $parentSourceManager = $parent->getSourceManager();
-
-        $this->_field = $parentSourceManager->extrapolateIntrinsicField($parent->getSource(), $fieldName);
-        
         $this->_sourceManager = new SourceManager(
             $parentSourceManager->getApplication(), 
             $parentSourceManager->getTransaction()
@@ -56,26 +57,35 @@ class Populate implements IPopulateQuery, core\IDumpable {
         $this->_sourceManager->setParentSourceManager($parentSourceManager);
 
         $schema = $adapter->getQueryAdapterSchema();
-        $field = $schema->getField($fieldName);
+        $field = $schema->getField($intrinsicFieldName);
 
         if(!$field instanceof opal\schema\IRelationField) {
             throw new RuntimeException(
-                'Cannot populate '.$fieldName.' - field is not a relation'
+                'Cannot populate '.$intrinsicFieldName.' - field is not a relation'
             );
         }
 
         $adapter = $field->getTargetQueryAdapter($this->_sourceManager->getApplication());
-        $alias = uniqid('ppl_'.$fieldName);
+        $alias = uniqid('ppl_'.$intrinsicFieldName);
 
         if(empty($selectFields)) {
             $selectFields = ['*'];
         }
+
 
         $this->_source = $this->_sourceManager->newSource($adapter, $alias, $selectFields);
     }
 
     public function getParentQuery() {
         return $this->_parent;
+    }
+
+    public function getParentSource() {
+        return $this->_field->getSource();
+    }
+
+    public function getParentSourceAlias() {
+        return $this->_field->getSource()->getAlias();
     }
 
 

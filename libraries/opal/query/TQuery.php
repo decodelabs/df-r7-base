@@ -1029,7 +1029,7 @@ trait TQuery_RelationAttachable {
     }
     
     private function _attachRelation($relationField, array $fields, $isSelect) {
-        $populate = $this->_newQuery()->beginPopulate($this, [$relationField], IPopulateQuery::TYPE_ALL, $fields)
+        $populate = $this->_newQuery()->beginAttachRelation($this, [$relationField], IPopulateQuery::TYPE_ALL, $fields)
             ->isSelect($isSelect);
 
         $field = $this->_lookupRelationField($relationField);

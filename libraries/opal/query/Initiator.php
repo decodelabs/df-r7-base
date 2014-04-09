@@ -238,6 +238,42 @@ class Initiator implements IInitiator {
         return $populate;
     }
 
+    public function beginAttachRelation(IQuery $parent, array $fields, $type=IPopulateQuery::TYPE_ALL, array $selectFields=null) {
+        $this->_setMode(IQueryTypes::POPULATE);
+        $this->_parentQuery = $parent;
+        $fields = core\collection\Util::flattenArray($fields);
+        $isAll = false;
+
+        switch($type) {
+            case IPopulateQuery::TYPE_ALL:
+                $isAll = true;
+
+            case IPopulateQuery::TYPE_SOME:
+                $this->_joinType = $type;
+                break;
+
+            default:
+                throw new InvalidArgumentException(
+                    $type.' is not a valid populate type'
+                );
+        }
+
+        if(count($fields) != 1) {
+            throw new InvalidArgumentException(
+                'attachRelation() can only handle one field at a time'
+            );
+        }
+
+        $field = array_shift($fields);
+
+        if(!$populate = $parent->getPopulate($field)) {
+            $populate = new Populate($parent, $field, $type, $selectFields);
+        }
+        
+        $populate->setNestedParent($parent);
+        return $populate;
+    }
+
 
 
 // Combine
