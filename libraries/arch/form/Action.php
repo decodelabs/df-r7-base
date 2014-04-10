@@ -309,7 +309,7 @@ abstract class Action extends arch\Action implements IAction {
             $redirect = clone $response->getUrl();
             $redirect->path->setExtension('ajax');
             $redirect = (string)$redirect;
-        } else if($response instanceof link\http\response\IResponse) {
+        } else if($response instanceof link\http\IResponse) {
             $content = $response->getContent();
             $type = $response->getContentType();
         } else if(is_string($response)) {
