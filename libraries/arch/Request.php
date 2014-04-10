@@ -361,11 +361,16 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
 
     public function getComponents() {
         $literal = $this->getLiteralPathArray();
-        array_pop($literal);
+        $action = array_pop($literal);
+
+        if($fileName = $this->_path->getFileName()) {
+            $action = $fileName;
+        }
 
         return [
-            'action' => $this->_path->getFileName(),
-            'type' => $this->_path->getExtension(),
+            'action' => $action,
+            'extension' => $this->_path->getExtension(),
+            'type' => $this->getType(),
             'area' => array_shift($literal),
             'controller' => implode('/', $literal),
             'controllerParts' => $literal,
