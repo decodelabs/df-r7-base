@@ -58,8 +58,8 @@ class RadioButtonGroup extends Base implements IUngroupedSelectionInputWidget, c
             $inputId = null;
             
             if($id !== null) {
-                $inputId = $id.'-'.++$this->_inputIdCounter;
-                $labelTag->setInputId($inputId);
+                $inputId = $id.'-'.$this->_inputIdCounter++;
+                $labelTag->setAttribute('for', $inputId);
                 $inputTag->setId($inputId);
             }
             
