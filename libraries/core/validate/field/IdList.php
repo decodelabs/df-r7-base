@@ -24,7 +24,23 @@ class IdList extends Base implements core\validate\IIdListField {
     }
 
     public function validate(core\collection\IInputTree $node) {
-        if((!$count = count($node)) && $this->_isRequired) {
+        $required = $this->_isRequired;
+
+        if($this->_toggleField) {
+            if($field = $this->_handler->getField($this->_toggleField)) {
+                $toggle = (bool)$this->_handler[$this->_toggleField];
+
+                if(!$toggle) {
+                    $node->setValue($value = []);
+                }
+
+                if($required) {
+                    $required = $toggle;
+                }
+            }
+        }
+
+        if((!$count = count($node)) && $required) {
             $node->addError('required', $this->_handler->_(
                 'This field requires at least one selection'
             ));
