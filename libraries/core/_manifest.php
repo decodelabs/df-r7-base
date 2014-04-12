@@ -95,7 +95,7 @@ trait TValueMap {
             }
 
             if($shouldImport) {
-                $values[$key] = $value;
+                $values[$field] = $value;
             } else {
                 $this->set($field, $value);
             }
