@@ -183,11 +183,13 @@ class Handler implements IHandler {
             $fields = array_keys($this->_values);
         }
 
-        if($this->_isValid) {
-            foreach($fields as $key) {
-                if(array_key_exists($key, $this->_values)) {
-                    $this->_fields[$key]->applyValueTo($record, $this->_values[$key]);
-                }
+        foreach($fields as $key) {
+            if(!$this->data->{$key}->isValid()) {
+                continue;
+            }
+
+            if(array_key_exists($key, $this->_values)) {
+                $this->_fields[$key]->applyValueTo($record, $this->_values[$key]);
             }
         }
         
