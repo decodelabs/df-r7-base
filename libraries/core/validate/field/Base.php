@@ -14,6 +14,7 @@ abstract class Base implements core\validate\IField {
     protected $_recordName = null;
     protected $_isRequired = false;
     protected $_requireGroup = null;
+    protected $_toggleField = null;
     protected $_shouldSanitize = true;
     protected $_customValidator = null;
     protected $_handler;
@@ -76,6 +77,15 @@ abstract class Base implements core\validate\IField {
         return $this->_requireGroup;
     }
     
+    public function setToggleField($name) {
+        $this->_toggleField = $name;
+        return $this;
+    }
+
+    public function getToggleField() {
+        return $this->_toggleField;
+    }
+
     public function shouldSanitize($flag=null) {
         if($flag !== null) {
             $this->_shouldSanitize = (bool)$flag;
@@ -121,10 +131,22 @@ abstract class Base implements core\validate\IField {
             $node->setValue($value);
         }
 
+        $required = $this->_isRequired;
+
+        if($this->_toggleField) {
+            if($field = $this->_handler->getField($this->_toggleField)) {
+                $required = (bool)$this->_handler[$this->_toggleField];
+
+                if(!$required) {
+                    $node->setValue($value = null);
+                }
+            }
+        }
+
         if(!$length = mb_strlen($value)) {
             $value = null;
             
-            if($this->_isRequired) {
+            if($required) {
                 $node->addError('required', $this->_handler->_('This field cannot be empty'));
             }
 

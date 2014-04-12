@@ -48,6 +48,8 @@ interface IField {
     public function getCustomValidator();
     public function setRequireGroup($name);
     public function getRequireGroup();
+    public function setToggleField($name);
+    public function getToggleField();
     
     public function end();
     public function validate(core\collection\IInputTree $node);
