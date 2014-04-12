@@ -18,10 +18,14 @@ class FieldArea extends Container implements IFormOrientedWidget {
     protected $_errorPosition = 'top';
     protected $_isRequired = false;
     
-    public function __construct(arch\IContext $context, $labelBody=null) {
+    public function __construct(arch\IContext $context, $labelBody=null, $errorPosition=null) {
         parent::__construct($context);
         
         $this->_label = new Label($context, $labelBody);
+
+        if($errorPosition !== null) {
+            $this->setErrorPosition($errorPosition);
+        }
     }
     
     public function setRenderTarget(aura\view\IRenderTarget $renderTarget=null) {
