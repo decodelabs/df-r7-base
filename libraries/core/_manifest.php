@@ -83,6 +83,9 @@ interface IValueMap {
 trait TValueMap {
 
     public function importFrom(IValueMap $source, array $fields) {
+        $values = [];
+        $shouldImport = $this instanceof core\collection\ICollection;
+
         foreach($fields as $key => $field) {
             if(is_string($key)) {
                 $field = $key;
@@ -91,7 +94,15 @@ trait TValueMap {
                 $value = $source->get($field);
             }
 
-            $this->set($field, $value);
+            if($shouldImport) {
+                $values[$key] = $value;
+            } else {
+                $this->set($field, $value);
+            }
+        }
+
+        if($shouldImport) {
+            $this->import($values);
         }
 
         return $this;
