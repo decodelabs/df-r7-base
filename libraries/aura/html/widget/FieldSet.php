@@ -17,9 +17,10 @@ class FieldSet extends Container implements IFieldSetWidget, IWidgetShortcutProv
     const PRIMARY_TAG = 'fieldset';
     
     protected $_legendBody;
+    protected $_legendTagName = 'legend';
     protected $_name;
     protected $_targetFormId;
-    
+
     public function __construct(arch\IContext $context, $legend=null) {
         parent::__construct($context);
         
@@ -48,7 +49,7 @@ class FieldSet extends Container implements IFieldSetWidget, IWidgetShortcutProv
         $legend = null;
         
         if(!$this->_legendBody->isEmpty()) {
-            $legend = (new aura\html\Element('legend', $this->_legendBody))->render();
+            $legend = (new aura\html\Element($this->_legendTagName, $this->_legendBody))->render();
         }
         
         return $tag->renderWith([
@@ -72,6 +73,15 @@ class FieldSet extends Container implements IFieldSetWidget, IWidgetShortcutProv
     
     public function getLegendBody() {
         return $this->_legendBody;
+    }
+
+    public function setLegendTagName($tagName) {
+        $this->_legendTagName = $tagName;
+        return $this;
+    }
+
+    public function getLegendTagName() {
+        return $this->_legendTagName;
     }
     
     
