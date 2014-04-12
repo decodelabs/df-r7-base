@@ -32,7 +32,15 @@ class Boolean extends Base {
     }
 
     public function compareValues($value1, $value2) {
-        return (bool)$value1 === (bool)$value2;
+        if($value1 !== null) {
+            $value1 = (bool)$value1;
+        }
+
+        if($value2 !== null) {
+            $value2 = (bool)$value2;
+        }
+
+        return $value1 === $value2;
     }
 
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
