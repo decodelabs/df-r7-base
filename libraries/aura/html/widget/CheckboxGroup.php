@@ -13,6 +13,32 @@ class CheckboxGroup extends RadioButtonGroup implements IMultipleSelectionInputW
     
     const INPUT_TYPE = 'checkbox';
     const ARRAY_INPUT = true;
+
+    protected $_allRequired = false;
+
+    public function isAllRequired($flag=null) {
+        if($flag !== null) {
+            $this->_allRequired = (bool)$flag;
+
+            if($this->_allRequired) {
+                $this->_isRequired = true;
+            }
+
+            return $this;
+        }
+
+        return $this->_allRequired;
+    }
+
+    protected function _render() {
+        $required = $this->_isRequired;
+        $this->_isRequired = $this->_allRequired;
+
+        $output = parent::_render();
+
+        $this->_isRequired = $required;
+        return $output;
+    }
     
     protected function _checkSelected($value, &$selectionFound) {
         return $this->_value->contains($value);
