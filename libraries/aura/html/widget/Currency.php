@@ -16,6 +16,7 @@ class Currency extends NumberTextbox {
     protected $_inputUnit = 'GBP';
     protected $_defaultInputUnit = 'GBP';
     protected $_unitSelectable = false;
+    protected $_showUnit = true;
 
     public function __construct(arch\IContext $context, $name, $value=null, $inputUnit=null, $allowSelection=false) {
         $this->_unitSelectable = (bool)$allowSelection;
@@ -50,7 +51,7 @@ class Currency extends NumberTextbox {
                     ])
                     ->setRenderTarget($this->getRenderTarget())
             ]);
-        } else {
+        } else if($this->_showUnit) {
             $unit = $context->i18n->numbers->getCurrencyName($this->_inputUnit);
             $output = new aura\html\Element('label', [$output, ' ', 
                 new aura\html\Element('abbr', $this->_inputUnit, ['title' => $unit]),
@@ -73,6 +74,16 @@ class Currency extends NumberTextbox {
         return $this->_unitSelectable;
     }
 
+    public function shouldShowUnit($flag=null) {
+        if($flag !== null) {
+            $this->_showUnit = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_showUnit;
+    }
+
+
     public function setValue($value) {
         $innerValue = $value;
 
@@ -90,6 +101,10 @@ class Currency extends NumberTextbox {
 
         if($innerValue == 0 && !$this->isRequired()) {
             $innerValue = null;
+        }
+
+        if($innerValue) {
+            $innerValue = round(str_replace(',', '', $innerValue), 2);
         }
 
         if($value instanceof core\IValueContainer) {

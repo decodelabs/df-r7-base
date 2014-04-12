@@ -7,6 +7,7 @@ namespace df\core\validate\field;
 
 use df;
 use df\core;
+use df\mint;
     
 class Currency extends Base implements core\validate\ICurrencyField {
 
