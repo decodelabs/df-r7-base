@@ -465,6 +465,11 @@ interface IPasswordField extends IField, IMinLengthField {
     public function shouldCheckStrength($flag=null);
 }
 
+interface ISetField extends IField {
+    public function setOptions(array $options);
+    public function getOptions();    
+}
+
 interface ISlugField extends IField, ISanitizingField, IUniqueCheckerField {
     public function allowPathFormat($flag=null);
     public function allowAreaMarker($flag=null);
