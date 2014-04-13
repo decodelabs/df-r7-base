@@ -44,6 +44,10 @@ class DefinitionList extends Base implements IDataDrivenListWidget, IMappedListW
 
             $renderContext->iterateField($key, $dtTag);
             $value = $renderContext->renderCell($data, $field->renderer);
+
+            if($renderContext->shouldSkipRow()) {
+                continue;
+            }
             
             $children->push($ddTag->render(), $dtTag->renderWith($value));
         }

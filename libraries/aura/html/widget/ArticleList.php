@@ -46,8 +46,8 @@ class ArticleList extends BulletList implements IOrderedDataDrivenListWidget {
 
             $renderContext->iterate($key, $articleTag, $liTag);
             $value = $renderContext->renderCell($value, $this->_renderer);
-            
-            if($value === null) {
+
+            if($value === null || $renderContext->shouldSkipRow()) {
                 continue;
             }
             

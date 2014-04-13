@@ -33,6 +33,8 @@ interface IRendererContext extends core\collection\IMappedCollection, aura\view\
     public function iterate($key, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null);
     public function iterateField($field, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null);
     public function renderCell($value, Callable $renderer=null);
+    public function skipRow();
+    public function shouldSkipRow();
 }
 
 interface IField {

@@ -43,8 +43,8 @@ class BulletList extends Base implements ILinearListWidget, IDataDrivenListWidge
             $liTag = new aura\html\Tag('li');
             $renderContext->iterate($key, $liTag);
             $value = $renderContext->renderCell($value, $this->_renderer);
-            
-            if($value === null) {
+
+            if($value === null || $renderContext->shouldSkipRow()) {
                 continue;
             }
             

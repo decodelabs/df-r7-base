@@ -159,6 +159,10 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                     
                     $rowTag->push($cellTag->renderWith($value));
                 }
+
+                if($renderContext->shouldSkipRow()) {
+                    continue;
+                }
                 
                 $content->append($rowTag->render(true));
             }
