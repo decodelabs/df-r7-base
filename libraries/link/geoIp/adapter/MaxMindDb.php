@@ -65,25 +65,41 @@ class MaxMindDb implements link\geoIp\IAdapter {
         if(isset($data['continent']['code'])) {
             $result->continent = $data['continent']['code'];
             $result->continentName = $data['continent']['names']['en'];
-            $result->continentGeonameId = $data['continent']['geoname_id'];
+
+            if(isset($data['continent']['geoname_id'])) {
+                $result->continentGeonameId = $data['continent']['geoname_id'];
+            }
         }
 
         if(isset($data['country']['iso_code'])) {
             $result->country = $data['country']['iso_code'];
             $result->countryName = $data['country']['names']['en'];
-            $result->countryGeonameId = $data['country']['geoname_id'];
+
+            if(isset($data['country']['geoname_id'])) {
+                $result->countryGeonameId = $data['country']['geoname_id'];
+            }
         }
 
         if(isset($data['subdivisions'])) {
-            $region = array_pop($data['subdivisions']);
-            $result->region = $region['iso_code'];
-            $result->regionName = $region['names']['en'];
-            $result->regionGeonameId = $region['geoname_id'];
+            if($region = array_pop($data['subdivisions'])) {
+                $result->regionName = $region['names']['en'];
+                
+                if(isset($region['iso_code'])) {
+                    $result->region = $region['iso_code'];
+                }
+
+                if(isset($region['geoname_id'])) {
+                    $result->regionGeonameId = $region['geoname_id'];
+                }
+            }
         }
 
         if(isset($data['city']['names'])) {
             $result->cityName = $data['city']['names']['en'];
-            $result->cityGeonameId = $data['city']['geoname_id'];
+
+            if(isset($data['city']['geoname_id'])) {
+                $result->cityGeonameId = $data['city']['geoname_id'];
+            }
         }
 
         if(isset($data['postal']['code'])) {
