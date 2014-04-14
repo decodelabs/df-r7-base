@@ -17,7 +17,7 @@ class Date extends Base implements core\validate\IDateField {
     protected $_mustBePast = false;
     protected $_mustBeFuture = false;
     protected $_expectedFormat = null;
-    protected $_expectLocal = true;
+    protected $_isLocal = false;
     
     public function setMin($date) {
         if($date !== null) {
@@ -83,13 +83,13 @@ class Date extends Base implements core\validate\IDateField {
         return $this->_expectedFormat;
     }
 
-    public function shouldExpectLocal($flag=null) {
+    public function isLocal($flag=null) {
         if($flag !== null) {
-            $this->_expectLocal = (bool)$flag;
+            $this->_isLocal = (bool)$flag;
             return $this;
         }
 
-        return $this->_expectLocal;
+        return $this->_isLocal;
     }
 
     public function validate(core\collection\IInputTree $node) {
@@ -105,9 +105,9 @@ class Date extends Base implements core\validate\IDateField {
         
         try {
             if($this->_expectedFormat) {
-                $date = core\time\Date::fromFormatString($value, $this->_expectedFormat, $this->_expectLocal);
+                $date = core\time\Date::fromFormatString($value, $this->_expectedFormat, $this->_isLocal);
             } else {
-                $date = core\time\Date::factory($value, $this->_expectLocal);
+                $date = core\time\Date::factory($value, $this->_isLocal);
             }
         } catch(\Exception $e) {
             $node->addError('invalid', $this->_handler->_('This is not a valid date'));

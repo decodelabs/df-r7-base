@@ -24,6 +24,7 @@ interface IDate extends \Serializable, core\IStringProvider {
     public function toUtc();
     public function toTimezone($timezone);
     public function getTimezone();
+    public function getTimezoneAbbreviation();
     
     // Formatting
     public function toTimestamp();

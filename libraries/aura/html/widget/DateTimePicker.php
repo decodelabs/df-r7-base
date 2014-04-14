@@ -16,6 +16,7 @@ class DateTimePicker extends DatePicker {
     
     protected $_outputFormat = 'Y-m-d\TH:i';
     protected $_placeholder = 'yyyy-MM-ddThh:mm';
+    protected $_showTimezone = true;
 
     protected function _getInputType() {
         if($this->_outputFormat != 'Y-m-d\TH:i') {
@@ -23,6 +24,29 @@ class DateTimePicker extends DatePicker {
         } else {
             return 'datetime-local';
         }
+    }
+
+    protected function _render() {
+        $output = parent::_render();
+
+        if($this->_showTimezone) {
+            $date = $this->_stringToDate($this->getValue()->getValue())->toUserTimezone();
+            
+            $output = new aura\html\Element('label', [$output, ' ', 
+                new aura\html\Element('abbr', $date->getTimezoneAbbreviation(), ['title' => $date->getTimezone()])
+            ]);
+        }
+
+        return $output;
+    }
+
+    public function shouldShowTimezone($flag=null) {
+        if($flag !== null) {
+            $this->_showTimezone = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_showTimezone;
     }
 
     protected function _stringToDate($date) {

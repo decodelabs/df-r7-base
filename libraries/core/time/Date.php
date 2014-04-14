@@ -182,6 +182,10 @@ class Date implements IDate, core\IDumpable {
     public function getTimezone() {
         return $this->_date->getTimezone()->getName();
     }
+
+    public function getTimezoneAbbreviation() {
+        return $this->_date->format('T');
+    }
     
     
 // Formatting
