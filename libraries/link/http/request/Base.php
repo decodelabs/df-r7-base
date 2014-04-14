@@ -513,12 +513,21 @@ class Base implements link\http\IRequest, core\IDumpable {
                 } else if(isset($_SERVER['REMOTE_ADDR'])) {
                     $ip = $_SERVER['REMOTE_ADDR'];
                 }
-                
-                if(($pos = strpos($ip, ',')) > 0) {
-                    $ip = substr($ip, 0, $pos - 1);
+
+                $parts = explode(',', $ip);
+
+                while(!empty($parts)) {
+                    $ip = trim(array_shift($parts));
+
+                    try {
+                        $this->_ip = new link\Ip($ip);
+                        break;
+                    } catch(link\InvalidArgumentException $e) {
+                        if(empty($parts)) {
+                            throw $e;
+                        }
+                    }
                 }
-                
-                $this->_ip = new link\Ip($ip);
             } else {
                 $this->_ip = $this->_url->lookupIp();
             }
