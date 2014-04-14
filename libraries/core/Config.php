@@ -21,6 +21,7 @@ abstract class Config implements IConfig, core\IDumpable {
     
     protected $_id;
     private $_application;
+    private $_filePath = null;
     
 // Loading
     public static function getInstance(IApplication $application=null) {
@@ -149,21 +150,36 @@ abstract class Config implements IConfig, core\IDumpable {
         $parts = explode('/', $this->_id);
         $name = array_pop($parts);
         $environmentId = $this->_application->getEnvironmentId();
+        $environmentMode = $this->_application->getEnvironmentMode();
         $basePath = $this->_getBasePath();
         
         if(!empty($parts)) {
             $basePath .= '/'.implode('/', $parts);
         }
-        
-        $corePath = $basePath.'/'.$name.'.php';
-        $environmentPath = $basePath.'/'.$name.'#'.$environmentId.'.php';
-        
+
+        $basePath .= '/'.$name;
+        $paths = [];
+
+        if($environmentMode != 'production') {
+            $paths[] = $basePath.'#'.$environmentId.'--'.$environmentMode.'.php';
+        }
+
+        $paths[] = $basePath.'#'.$environmentId.'.php';
+
+        if($environmentMode != 'production') {
+            $paths[] = $basePath.'--'.$environmentMode.'.php';
+        }
+
+        $paths[] = $basePath.'.php';
         $output = null;
-        
-        if(is_file($environmentPath)) {
-            $output = require $environmentPath;
-        } else if(is_file($corePath)) {
-            $output = require $corePath;
+
+
+        foreach($paths as $path) {
+            if(is_file($path)) {
+                $this->_filePath = $path;
+                $output = require $path;
+                break;
+            }
         }
         
         if($output !== null && !is_array($output)) {
@@ -174,23 +190,27 @@ abstract class Config implements IConfig, core\IDumpable {
     }
     
     private function _saveValues() {
-        $environmentId = $this->_application->getEnvironmentId();
-        $parts = explode('/', $this->_id);
-        $name = array_pop($parts);
-        $basePath = $this->_getBasePath();
-        
-        if(!empty($parts)) {
-            $basePath .= '/'.implode('/', $parts);
-        }
-        
-        $corePath = $basePath.'/'.$name.'.php';
-        $environmentPath = $basePath.'/'.$name.'#'.$environmentId.'.php';
-        $isEnvironment = static::USE_ENVIRONMENT_ID_BY_DEFAULT || is_file($environmentPath);
-        
-        if($isEnvironment) {
-            $savePath = $environmentPath;
+        if($this->_filePath) {
+            $savePath = $this->_filePath;
         } else {
-            $savePath = $corePath;
+            $environmentId = $this->_application->getEnvironmentId();
+            $parts = explode('/', $this->_id);
+            $name = array_pop($parts);
+            $basePath = $this->_getBasePath();
+            
+            if(!empty($parts)) {
+                $basePath .= '/'.implode('/', $parts);
+            }
+            
+            $corePath = $basePath.'/'.$name.'.php';
+            $environmentPath = $basePath.'/'.$name.'#'.$environmentId.'.php';
+            $isEnvironment = static::USE_ENVIRONMENT_ID_BY_DEFAULT || is_file($environmentPath);
+            
+            if($isEnvironment) {
+                $savePath = $environmentPath;
+            } else {
+                $savePath = $corePath;
+            }
         }
 
         core\io\Util::ensureDirExists(dirname($savePath));
