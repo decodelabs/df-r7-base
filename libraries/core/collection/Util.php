@@ -16,8 +16,13 @@ class Util implements IUtil {
         }
 
         $output = array();
+        $sort = \SORT_STRING;
 
         foreach($array as $value) {
+            if(is_object($value)) {
+                $sort = \SORT_REGULAR;
+            }
+
             if(is_array($value)) {
                 $output = array_merge($output, self::flattenArray($value, $unique));
             } else {
@@ -26,7 +31,7 @@ class Util implements IUtil {
         }
 
         if($unique) {
-            return array_unique($output);
+            return array_unique($output, $sort);
         } else {
             return $output;
         }
