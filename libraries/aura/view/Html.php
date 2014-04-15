@@ -822,6 +822,8 @@ class Html extends Base implements IHtmlView {
     protected function _metaToString($key, $value) {
         if(in_array(strtolower($key), self::$_httpMeta)) {
             return '<meta http-equiv="'.$this->esc($key).'" content="'.$this->esc($value).'" />';
+        } elseif(strpos($key, ':') !== false) {
+            return '<meta property="'.$this->esc($key).'" content="'.$this->esc($value).'" />';
         } else {
             return '<meta name="'.$this->esc($key).'" content="'.$this->esc($value).'" />';
         }
