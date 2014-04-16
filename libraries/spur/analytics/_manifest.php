@@ -65,7 +65,7 @@ interface IAdapter {
 
     public function setOptions(array $options);
     public function setOption($key, $val);
-    public function getOption($key);
+    public function getOption($key, $default=null);
     public function getOptions();
     public function getRequiredOptions();
     public function clearOptions();
@@ -73,4 +73,5 @@ interface IAdapter {
 
     public function setDefaultUserAttributes(array $attributes);
     public function getDefaultUserAttributes();
+    public function getDefaultUserAttributeMap();
 }

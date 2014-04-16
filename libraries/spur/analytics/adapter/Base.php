@@ -113,12 +113,12 @@ abstract class Base implements spur\analytics\IAdapter {
         return $this;
     }
 
-    public function getOption($key) {
+    public function getOption($key, $default=null) {
         if(isset($this->_options[$key])) {
             return $this->_options[$key];
         }
 
-        return null;
+        return $default;
     }
 
     public function getOptions() {
@@ -151,9 +151,17 @@ abstract class Base implements spur\analytics\IAdapter {
         $available = spur\analytics\Handler::getAvailableUserAttributes();
         $this->_defaultUserAttributes = [];
 
-        foreach($attributes as $attribute) {
+        foreach($attributes as $key => $value) {
+            if(is_string($key)) {
+                $attribute = $key;
+                $map = $value;
+            } else {
+                $attribute = $value;
+                $map = null;
+            }
+
             if(in_array($attribute, $available)) {
-                $this->_defaultUserAttributes[] = $attribute;
+                $this->_defaultUserAttributes[$attribute] = $map;
             }
         }
 
@@ -161,6 +169,10 @@ abstract class Base implements spur\analytics\IAdapter {
     }
 
     public function getDefaultUserAttributes() {
+        return array_keys($this->_defaultUserAttributes);
+    }
+
+    public function getDefaultUserAttributeMap() {
         return $this->_defaultUserAttributes;
     }
 }

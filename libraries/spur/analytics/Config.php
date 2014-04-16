@@ -20,15 +20,9 @@ class Config extends core\Config {
         $defaultAttributes = ['email', 'fullName', 'isLoggedIn'];
 
         foreach(spur\analytics\adapter\Base::loadAll() as $name => $adapter) {
-            $options = [];
-
-            foreach($adapter->getRequiredOptions() as $option) {
-                $options[$option] = null;
-            }
-
             $output[lcfirst($name)] = [
                 'enabled' => false,
-                'options' => $options,
+                'options' => $adapter->getOptions(),
                 'userAttributes' => $defaultAttributes
             ];
         }

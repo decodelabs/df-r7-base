@@ -115,7 +115,7 @@ class Handler implements IHandler {
         $output = $includeCustom ? $this->_userAttributes : [];
 
         foreach($attributes as $attribute) {
-            if(!in_array($attributes, self::$_availableUserAttributes)) {
+            if(!in_array($attribute, self::$_availableUserAttributes)) {
                 continue;
             }
 
