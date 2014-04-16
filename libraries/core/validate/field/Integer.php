@@ -24,7 +24,7 @@ class Integer extends Base implements core\validate\IIntegerField {
         $options = array('flags' => FILTER_FLAG_ALLOW_OCTAL | FILTER_FLAG_ALLOW_HEX);
 
         if(!filter_var($value, FILTER_VALIDATE_INT, $options) && $value !== '0') {
-            $node->addError('invalid', $this->_handler->_(
+            $this->_applyMessage($node, 'invalid', $this->_handler->_(
                 'This is not a valid number'
             ));
         } else {

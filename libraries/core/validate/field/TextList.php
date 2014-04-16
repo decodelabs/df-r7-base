@@ -41,7 +41,7 @@ class TextList extends Base implements core\validate\ITextListField {
         }
 
         if((!$count = count($node)) && $required) {
-            $node->addError('required', $this->_handler->_(
+            $this->_applyMessage($node, 'required', $this->_handler->_(
                 'This field requires at least one selection'
             ));
         }
@@ -52,7 +52,7 @@ class TextList extends Base implements core\validate\ITextListField {
         if(!$this->_allowEmptyEntries) {
             foreach($value as $key => $keyValue) {
                 if(trim($keyValue) === '') {
-                    $node->{$key}->addError('required', $this->_handler->_(
+                    $this->_applyMessage($node->{$key}, 'required', $this->_handler->_(
                         'This field cannot be empty'
                     ));
                 }

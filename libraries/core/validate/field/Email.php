@@ -25,7 +25,9 @@ class Email extends Base implements core\validate\IEmailField {
         $value = filter_var($value, FILTER_SANITIZE_EMAIL);
         
         if(!filter_var($value, FILTER_VALIDATE_EMAIL)) {
-            $node->addError('invalid', $this->_handler->_('This is not a valid email address'));
+            $this->_applyMessage($node, 'invalid', $this->_handler->_(
+                'This is not a valid email address'
+            ));
         }
         
         $this->_validateUnique($node, $value);

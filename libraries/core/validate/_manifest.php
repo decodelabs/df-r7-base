@@ -50,6 +50,8 @@ interface IField {
     public function getRequireGroup();
     public function setToggleField($name);
     public function getToggleField();
+    public function setMessageGenerator(Callable $generator=null);
+    public function getMessageGenerator();
     
     public function end();
     public function validate(core\collection\IInputTree $node);
@@ -99,16 +101,16 @@ trait TRangeField {
 
     protected function _validateRange(core\collection\IInputTree $node, $value) {
         if($this->_min !== null && $value < $this->_min) {
-            $node->addError('min', $this->_handler->_(
+            $this->_applyMessage($node, 'min', $this->_handler->_(
                 'This field must be at least %min%',
-                array('%min%' => $this->_min)
+                ['%min%' => $this->_min]
             ));
         }
         
         if($this->_max !== null && $value > $this->_max) {
-            $node->addError('max', $this->_handler->_(
+            $this->_applyMessage($node, 'max', $this->_handler->_(
                 'This field must not be more than %max%',
-                array('%max%' => $this->_max)
+                ['%max%' => $this->_max]
             ));
         }
     }
@@ -159,7 +161,7 @@ trait TMinLengthField {
         }
 
         if($this->_minLength > 0 && $length < $this->_minLength) {
-            $node->addError('minLength', $this->_handler->_(
+            $this->_applyMessage($node, 'minLength', $this->_handler->_(
                 [
                     'n = 1' => 'This field must contain at least %min% character',
                     '*' => 'This field must contain at least %min% characters'
@@ -216,7 +218,7 @@ trait TMaxLengthField {
         }
 
         if($this->_maxLength !== null && $length > $this->_maxLength) {
-            $node->addError('maxLength', $this->_handler->_(
+            $this->_applyMessage($node, 'maxLength', $this->_handler->_(
                 [
                     'n = 1' => 'This field must not contain more than %max% character',
                     '*' => 'This field must not contain more than %max% characters'
@@ -412,7 +414,7 @@ trait TUniqueCheckerField {
                     $message = $this->_handler->_('That value has already been entered before');
                 }
 
-                $node->addError('unique', $message);
+                $this->_applyMessage($node, 'unique', $message);
             }
         }
     }

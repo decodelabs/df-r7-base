@@ -64,7 +64,7 @@ class Password extends Base implements core\validate\IPasswordField {
             $analyzer = new core\string\PasswordAnalyzer($value, df\Launchpad::$application->getPassKey());
             
             if($analyzer->getStrength() < $this->_minStrength) {
-                $node->addError('strength', $this->_handler->_(
+                $this->_applyMessage($node, 'strength', $this->_handler->_(
                     'This password is not strong enough - consider using numbers, capitals and more characters'
                 ));
             }
@@ -76,7 +76,7 @@ class Password extends Base implements core\validate\IPasswordField {
             $matchNode = $data->{$this->_matchField};
             
             if($matchNode->getValue() != $value) {
-                $matchNode->addError('invalid', $this->_handler->_(
+                $this->_applyMessage($matchNode, 'invalid', $this->_handler->_(
                     'Your passwords do not match'
                 ));
             }

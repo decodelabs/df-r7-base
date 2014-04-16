@@ -43,14 +43,14 @@ class Set extends Base implements core\validate\IEnumField {
         }
 
         if((!$count = count($node)) && $required) {
-            $node->addError('required', $this->_handler->_(
+            $this->_applyMessage($node, 'required', $this->_handler->_(
                 'This field requires at least one selection'
             ));
         }
         
         foreach($value as $key => $keyValue) {
             if(trim($keyValue) === '') {
-                $node->{$key}->addError('required', $this->_handler->_(
+                $this->_applyMessage($node->{$key}, 'required', $this->_handler->_(
                     'This field cannot be empty'
                 ));
 
@@ -58,7 +58,7 @@ class Set extends Base implements core\validate\IEnumField {
             }
 
             if(!in_array($keyValue, $this->_options)) {
-                $node->{$key}->addError('invalid', $this->_handler->_(
+                $this->_applyMessage($node->{$key}, 'invalid', $this->_handler->_(
                     'This is not a valid option'
                 ));
             }

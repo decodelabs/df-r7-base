@@ -79,9 +79,9 @@ class Duration extends Base implements core\validate\IDurationField {
             $min = core\time\Duration::factory($this->_min);
 
             if($value->lt($min)) {
-                $node->addError('min', $this->_handler->_(
+                $this->_applyMessage($node, 'min', $this->_handler->_(
                     'This field must be at least %min%',
-                    array('%min%' => $min)
+                    ['%min%' => $min]
                 ));
             }
         }
@@ -90,9 +90,9 @@ class Duration extends Base implements core\validate\IDurationField {
             $max = core\time\Duration::factory($this->_max);
 
             if($value->gt($max)) {
-                $node->addError('max', $this->_handler->_(
+                $this->_applyMessage($node, 'max', $this->_handler->_(
                     'This field must not be more than %max%',
-                    array('%max%' => $max)
+                    ['%max%' => $max]
                 ));
             }
         }

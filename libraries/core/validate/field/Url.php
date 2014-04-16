@@ -27,7 +27,7 @@ class Url extends Base implements core\validate\IUrlField {
         $value = filter_var($value, FILTER_SANITIZE_URL);
         
         if(!filter_var($value, FILTER_VALIDATE_URL)) {
-            $node->addError('invalid', $this->_handler->_(
+            $this->_applyMessage($node, 'invalid', $this->_handler->_(
                 'This is not a valid URL'
             ));
         }

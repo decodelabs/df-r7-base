@@ -17,6 +17,7 @@ abstract class Base implements core\validate\IField {
     protected $_toggleField = null;
     protected $_shouldSanitize = true;
     protected $_customValidator = null;
+    protected $_messageGenerator = null;
     protected $_handler;
     
     
@@ -104,6 +105,30 @@ abstract class Base implements core\validate\IField {
     public function getCustomValidator() {
         return $this->_customValidator;
     }
+
+    public function setMessageGenerator(Callable $generator=null) {
+        $this->_messageGenerator = $generator;
+        return $this;
+    }
+
+    public function getMessageGenerator() {
+        return $this->_messageGenerator;
+    }
+
+    protected function _applyMessage(core\collection\IInputTree $node, $code, $defaultMessage) {
+        $message = null;
+
+        if($this->_messageGenerator) {
+            $generator = $this->_messageGenerator;
+            $message = $generator($code, $this, $this->_handler);
+        }
+
+        if(empty($message)) {
+            $message = $defaultMessage;
+        }
+
+        $node->addError($code, $message);
+    }
     
     
     public function end() {
@@ -151,7 +176,7 @@ abstract class Base implements core\validate\IField {
             $value = null;
             
             if($required) {
-                $node->addError('required', $this->_handler->_('This field cannot be empty'));
+                $this->_applyMessage($node, 'required', 'This field cannot be empty');
             }
 
             if($this->_requireGroup !== null && !$this->_handler->checkRequireGroup($this->_requireGroup)) {

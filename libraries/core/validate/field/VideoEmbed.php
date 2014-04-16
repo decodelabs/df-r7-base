@@ -21,7 +21,7 @@ class VideoEmbed extends Base implements core\validate\IVideoEmbedField {
         try {
             $embed = spur\video\Embed::parse($value);
         } catch(spur\video\IException $e) {
-            $node->addError('invalid', $this->_(
+            $this->_applyMessage($node, 'invalid', $this->_(
                 'This does not appear to be a valid video embed'
             ));
         }

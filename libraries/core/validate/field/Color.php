@@ -24,10 +24,10 @@ class Color extends Base implements core\validate\IColorField {
         try {
             $value = neon\Color::factory($value);
         } catch(\Exception $e) {
-            $node->addError('invalid', $this->_(
+            $this->_applyMessage($node, 'invalid', $this->_handler->_(
                 'Please enter a valid color'
             ));
-
+            
             return null;
         }
 

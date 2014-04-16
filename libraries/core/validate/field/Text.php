@@ -96,7 +96,7 @@ class Text extends Base implements core\validate\ITextField {
             $wordCount = core\string\Manipulator::countWords($value);
 
             if($this->_minWordLength !== null && $wordCount < $this->_minWordLength) {
-                $node->addError('minLength', $this->_handler->_(
+                $this->_applyMessage($node, 'minWordLength', $this->_handler->_(
                     [
                         'n = 1' => 'This field must contain at least %min% word',
                         '*' => 'This field must contain at least %min% words'
@@ -107,7 +107,7 @@ class Text extends Base implements core\validate\ITextField {
             }
 
             if($this->_maxWordLength !== null && $wordCount > $this->_maxWordLength) {
-                $node->addError('maxWordLength', $this->_handler->_(
+                $this->_applyMessage($node, 'maxWordLength', $this->_handler->_(
                     [
                         'n = 1' => 'This field must not me more than %max% word',
                         '*' => 'This field must not me more than %max% words'
@@ -120,7 +120,7 @@ class Text extends Base implements core\validate\ITextField {
         
         if($this->_pattern !== null && !filter_var(
             $value, FILTER_VALIDATE_REGEXP, 
-            array('options' => array('regexp' => $this->_pattern))
+            ['options' => ['regexp' => $this->_pattern]]
         )) {
             $node->addError('pattern', $this->_handler->_('The value entered is invalid'));
         }

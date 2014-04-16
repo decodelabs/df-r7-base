@@ -53,7 +53,7 @@ class Currency extends Base implements core\validate\ICurrencyField {
         }
 
         if(!filter_var($value, FILTER_VALIDATE_FLOAT, ['decimal' => true]) && $value !== '0') {
-            $node->addError('invalid', $this->_handler->_(
+            $this->_applyMessage($node, 'invalid', $this->_handler->_(
                 'This is not a valid number'
             ));
         }

@@ -110,7 +110,10 @@ class Date extends Base implements core\validate\IDateField {
                 $date = core\time\Date::factory($value, $this->_isLocal);
             }
         } catch(\Exception $e) {
-            $node->addError('invalid', $this->_handler->_('This is not a valid date'));
+            $this->_applyMessage($node, 'invalid', $this->_handler->_(
+                'This is not a valid date'
+            ));
+
             return $value;
         }
 
@@ -120,11 +123,15 @@ class Date extends Base implements core\validate\IDateField {
         $this->_validateRange($node, $date);
 
         if($this->_mustBePast && !$date->isPast()) {
-            $node->addError('future', $this->_handler->_('This date must not be in the future'));
+            $this->_applyMessage($node, 'mustBePast', $this->_handler->_(
+                'This date must not be in the future'
+            ));
         }
 
         if($this->_mustBeFuture && !$date->isFuture()) {
-            $node->addError('future', $this->_handler->_('This date must not be in the past'));
+            $this->_applyMessage($node, 'mustBeFuture', $this->_handler->_(
+                'This date must not be in the past'
+            ));
         }
 
         $value = $this->_applyCustomValidator($node, $date);
@@ -142,14 +149,14 @@ class Date extends Base implements core\validate\IDateField {
 
     protected function _validateRange(core\collection\IInputTree $node, $date) {
         if($this->_min !== null && $date->lt($this->_min)) {
-            $node->addError('min', $this->_(
+            $this->_applyMessage($node, 'min', $this->_(
                 'This field must be after %min%',
                 array('%min%' => $this->_min->format('Y-m-d'))
             ));
         }
         
         if($this->_max !== null && $date->gt($this->_max)) {
-            $node->addError('max', $this->_(
+            $this->_applyMessage($node, 'max', $this->_(
                 'This field must be after %max%',
                 array('%max%' => $this->_max->format('Y-m-d'))
             ));
