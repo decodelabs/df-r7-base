@@ -55,8 +55,10 @@ abstract class Base implements spur\analytics\IAdapter {
         return $output;
     }
 
-    public static function listAll() {
-        foreach(df\Launchpad::$loader->lookupFileList('spur/analytics/adapter', ['php']) as $path) {
+    public static function loadAll() {
+        $output = [];
+
+        foreach(df\Launchpad::$loader->lookupFileList('spur/analytics/adapter', ['php']) as $baseName => $path) {
             $name = substr($baseName, 0, -4);
             
             if($name === 'Base' || $name === '_manifest') {
@@ -69,7 +71,7 @@ abstract class Base implements spur\analytics\IAdapter {
                 continue;
             }
 
-            $output[$adapter->getName()] = $adapter->getName();
+            $output[$adapter->getName()] = $adapter;
         }
 
         asort($output);

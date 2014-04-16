@@ -10,7 +10,7 @@ use df\core;
 use df\spur;
 use df\aura;
     
-class Google extends Base {
+class GoogleClassic extends Base {
 
     protected $_options = [
         'trackingId' => null
@@ -19,7 +19,7 @@ class Google extends Base {
     public function apply(spur\analytics\IHandler $handler, aura\view\IHtmlView $view) {
         $attributes = $handler->getDefinedUserAttributes($this->getDefaultUserAttributes(), false);
         $events = $handler->getEvents();
-        $script = '        var _gaq = _gaq || [];'."\n".
+        $script = 'var _gaq = _gaq || [];'."\n".
             $this->_createCallString('_setAccount', [$this->getTrackingId()])."\n";
 
         ksort($attributes);
@@ -48,11 +48,11 @@ class Google extends Base {
 
         $script .= "\n";
         $script .= 
-            '        (function() {'."\n".
-            '            var ga = document.createElement(\'script\'); ga.type = \'text/javascript\'; ga.async = true;'."\n".
-            '            ga.src = (\'https:\' == document.location.protocol ? \'https://ssl\' : \'http://www\') + \'.google-analytics.com/ga.js\';'."\n".
-            '            var s = document.getElementsByTagName(\'script\')[0]; s.parentNode.insertBefore(ga, s);'."\n".
-            '        })();'."\n"
+            '(function() {'."\n".
+            '    var ga = document.createElement(\'script\'); ga.type = \'text/javascript\'; ga.async = true;'."\n".
+            '    ga.src = (\'https:\' == document.location.protocol ? \'https://ssl\' : \'http://www\') + \'.google-analytics.com/ga.js\';'."\n".
+            '    var s = document.getElementsByTagName(\'script\')[0]; s.parentNode.insertBefore(ga, s);'."\n".
+            '})();'."\n"
             ;
 
         $view->addHeadScript('google-analytics', $script);
@@ -60,7 +60,7 @@ class Google extends Base {
 
     protected function _createCallString($method, array $args=array()) {
         array_unshift($args, $method);
-        return '        _gaq.push('.str_replace('"', '\'', json_encode($args)).');';
+        return '_gaq.push('.str_replace('"', '\'', json_encode($args)).');';
     }
 
     public function setTrackingId($id) {
