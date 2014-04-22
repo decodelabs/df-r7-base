@@ -223,9 +223,9 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint {
 
 
 
-// Policy
+// Mesh
     public function fetchEntity($locator) {
-        return $this->_context->getPolicyManager()->fetchEntity($locator);
+        return $this->_context->getMeshManager()->fetchEntity($locator);
     }
 
     public function fetchEntityForAction($id, $action=null) {

@@ -336,7 +336,7 @@ class Table implements ITable, core\IDumpable {
     }
     
 
-// Policy
+// Mesh
     public function getEntityLocator() {
         $output = $this->_adapter->getEntityLocator();
         $output->addNode(new mesh\entity\LocatorNode(null, 'Table', $this->getName()));

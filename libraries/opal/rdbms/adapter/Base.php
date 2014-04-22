@@ -223,12 +223,12 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
     }
     
     
-// Policy
+// Mesh
     public function getEntityLocator() {
         return new mesh\entity\Locator('opal://rdbms/'.$this->getAdapterName().':"'.$this->getDsn()->getConnectionString().'"');
     }
 
-    public function fetchSubEntity(core\policy\IManager $manager, mesh\entity\ILocatorNode $node) {
+    public function fetchSubEntity(mesh\IManager $manager, mesh\entity\ILocatorNode $node) {
         $id = $node->getId();
         
         if($id === null) {

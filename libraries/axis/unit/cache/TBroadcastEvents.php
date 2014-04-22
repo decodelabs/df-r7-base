@@ -8,12 +8,13 @@ namespace df\axis\unit\cache;
 use df;
 use df\core;
 use df\axis;
+use df\mesh;
 
     
 trait TBroadcastEvents {
 
     public function set($key, $value, $lifeTime=null) {
-        $this->context->policy->triggerEvent(new core\policy\Event(
+        $this->context->mesh->triggerEvent(new mesh\event\Event(
             'set', ['value' => $value, 'lifeTime' => $lifeTime], $this
         ));
 
@@ -21,7 +22,7 @@ trait TBroadcastEvents {
     }
     
     public function remove($key) {
-        $this->context->policy->triggerEvent(new core\policy\Event(
+        $this->context->mesh->triggerEvent(new mesh\event\Event(
             'remove', [$key], $this
         ));
 
@@ -29,7 +30,7 @@ trait TBroadcastEvents {
     }
 
     public function clear() {
-        $this->context->policy->triggerEvent(new core\policy\Event(
+        $this->context->mesh->triggerEvent(new mesh\event\Event(
             'clear', null, $this
         ));
 
@@ -37,7 +38,7 @@ trait TBroadcastEvents {
     }
     
     public function clearBegins($key) {
-        $this->context->policy->triggerEvent(new core\policy\Event(
+        $this->context->mesh->triggerEvent(new mesh\event\Event(
             'clearBegins', ['key' => $key], $this
         ));
 
@@ -45,7 +46,7 @@ trait TBroadcastEvents {
     }
 
     public function clearMatches($regex) {
-        $this->context->policy->triggerEvent(new core\policy\Event(
+        $this->context->mesh->triggerEvent(new mesh\event\Event(
             'clearMatches', ['regex' => $regex], $this
         ));
 
@@ -57,7 +58,7 @@ trait TBroadcastEvents {
 trait TBroadcastEvents_Session {
 
     public function setSession($key, $value) {
-        $this->context->policy->triggerEvent(new core\policy\Event(
+        $this->context->mesh->triggerEvent(new mesh\event\Event(
             'setSession', ['key' => $key, 'value' => $value], $this
         ));
 
@@ -65,7 +66,7 @@ trait TBroadcastEvents_Session {
     }
 
     public function removeSession($key) {
-        $this->context->policy->triggerEvent(new core\policy\Event(
+        $this->context->mesh->triggerEvent(new mesh\event\Event(
             'removeSession', ['key' => $key], $this
         ));
 
@@ -73,7 +74,7 @@ trait TBroadcastEvents_Session {
     }
 
     public function clearSession() {
-        $this->context->policy->triggerEvent(new core\policy\Event(
+        $this->context->mesh->triggerEvent(new mesh\event\Event(
             'clearSession', null, $this
         ));
 

@@ -3,16 +3,16 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\axis\policy;
+namespace df\axis;
 
 use df;
 use df\core;
 use df\axis;
 use df\mesh;
 
-class Handler implements core\policy\IEntityHandler {
+class MeshHandler implements mesh\IEntityHandler {
     
-    public function fetchEntity(core\policy\IManager $manager, mesh\entity\ILocatorNode $node) {
+    public function fetchEntity(mesh\IManager $manager, mesh\entity\ILocatorNode $node) {
         if(!$node->hasLocation()) {
             switch($node->getType()) {
                 case 'Model':

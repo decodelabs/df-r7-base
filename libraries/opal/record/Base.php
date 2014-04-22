@@ -81,7 +81,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     
     public function unserialize($data) {
         $values = unserialize($data);
-        $adapter = core\policy\Manager::getInstance()->fetchEntity($values['adapter']);
+        $adapter = mesh\Manager::getInstance()->fetchEntity($values['adapter']);
         
         $this->__construct($adapter);
         $this->populateWithRawData($values['values']);
@@ -644,14 +644,14 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         }
 
         if(static::BROADCAST_HOOK_EVENTS) {
-            $event = new core\policy\Event(
+            $event = new mesh\event\Event(
                 $funcPrefix.$taskName, 
                 ['taskSet' => $taskSet, 'task' => $task], 
                 $this
             );
             
-            $policyManager = core\policy\Manager::getInstance();
-            $policyManager->triggerEvent($event);
+            $meshManager = mesh\Manager::getInstance();
+            $meshManager->triggerEvent($event);
         }
 
         if(in_array($taskName, ['Insert', 'Update', 'Replace'])) {
@@ -663,7 +663,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
 
             if(static::BROADCAST_HOOK_EVENTS) {
                 $event->setAction($funcPrefix.'Save');
-                $policyManager->triggerEvent($event);
+                $meshManager->triggerEvent($event);
             }
         }
 
@@ -905,11 +905,11 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     
 
 
-// Policy
+// Mesh
     public function getEntityLocator() {
         if(!$this->_adapter instanceof mesh\entity\IParentEntity) {
             throw new mesh\entity\EntityNotFoundException(
-                'Record adapter is not a policy entity handler'
+                'Record adapter is not an entity handler'
             );
         }
 

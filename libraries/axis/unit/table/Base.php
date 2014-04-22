@@ -487,8 +487,8 @@ abstract class Base implements
 
     
     
-// Policy
-    public function fetchSubEntity(core\policy\IManager $manager, mesh\entity\ILocatorNode $node) {
+// Mesh
+    public function fetchSubEntity(mesh\IManager $manager, mesh\entity\ILocatorNode $node) {
         switch($node->getType()) {
             case 'Record':
                 return $this->fetchByPrimary($node->getId());

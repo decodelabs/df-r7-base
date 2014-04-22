@@ -133,11 +133,11 @@ class Partial implements IPartial, core\IDumpable {
     }
 
 
-// Policy
+// Mesh
     public function getEntityLocator() {
         if(!$this->_adapter instanceof mesh\entity\IParentEntity) {
             throw new mesh\entity\EntityNotFoundException(
-                'Partial adapter is not a policy entity handler'
+                'Partial adapter is not an entity handler'
             );
         }
 

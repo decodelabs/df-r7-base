@@ -25,7 +25,7 @@ interface ILocatorProvider {
 interface IEntity extends ILocatorProvider {}
 
 interface IParentEntity extends IEntity {
-    public function fetchSubEntity(core\policy\IManager $manager, ILocatorNode $node);
+    public function fetchSubEntity(mesh\IManager $manager, ILocatorNode $node);
 }
 
 interface IActiveParentEntity extends IParentEntity {

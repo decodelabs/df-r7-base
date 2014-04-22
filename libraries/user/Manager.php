@@ -156,11 +156,11 @@ class Manager implements IManager, core\IDumpable {
         } else {
             try {
                 $parts = explode('#', $lock);
-                $policyId = array_shift($parts);
+                $entityId = array_shift($parts);
                 $action = array_shift($parts);
 
-                $policy = core\policy\Manager::getInstance($this->_application);
-                $lock = $policy->fetchEntity($policyId);
+                $meshManager = mesh\Manager::getInstance($this->_application);
+                $lock = $meshManager->fetchEntity($entityId);
             } catch(\Exception $e) {
                 $lock = new user\access\lock\Boolean(true);
             }

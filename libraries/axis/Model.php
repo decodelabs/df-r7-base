@@ -175,12 +175,12 @@ abstract class Model implements IModel, core\IDumpable {
         return $output;
     }
 
-// Policy
+// Mesh
     public function getEntityLocator() {
         return new mesh\entity\Locator('axis://Model:'.$this->getModelName());
     }
 
-    public function fetchSubEntity(core\policy\IManager $manager, mesh\entity\ILocatorNode $node) {
+    public function fetchSubEntity(mesh\IManager $manager, mesh\entity\ILocatorNode $node) {
         $id = $node->getId();
         
         switch($node->getType()) {

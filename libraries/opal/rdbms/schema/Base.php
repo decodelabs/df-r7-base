@@ -147,7 +147,7 @@ abstract class Base implements ISchema, core\IDumpable {
         );
     }
 
-// Policy
+// Mesh
     public function getEntityLocator() {
         $output = $this->_adapter->getEntityLocator();
         $output->addNode(new mesh\entity\LocatorNode(null, 'Schema', $this->getName()));

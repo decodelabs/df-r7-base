@@ -712,7 +712,7 @@ interface ISource extends IAdapterAware {
 
 // Manager
 interface ISourceManager extends core\IApplicationAware, ITransactionAware {
-    public function getPolicyManager();
+    public function getMeshManager();
 
     public function setParentSourceManager(ISourceManager $parent);
     public function getParentSourceManager();

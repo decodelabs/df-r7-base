@@ -167,7 +167,7 @@ class Transaction implements ITransaction, core\IDumpable {
         return array(
             'level' => $this->_level,
             'adapters' => $adapters,
-            'policyManager' => $this->_application
+            'application' => $this->_application
         );
     }
 }

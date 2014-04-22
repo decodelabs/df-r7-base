@@ -126,7 +126,7 @@ trait TUnit {
         }
     }
 
-// Policy
+// Mesh
     public function getEntityLocator() {
         return new mesh\entity\Locator('axis://'.$this->_model->getModelName().'/'.ucfirst($this->getUnitName()));
     }

@@ -647,7 +647,7 @@ interface IContext extends core\IApplicationAware, core\IHelperProvider {
     public function findFile($path);
     
     public function getI18nManager();
-    public function getPolicyManager();
+    public function getMeshManager();
     public function getSystemInfo();
     public function getUserManager();
 }
@@ -713,8 +713,8 @@ trait TContext {
         return core\i18n\Manager::getInstance($this->application);
     }
     
-    public function getPolicyManager() {
-        return core\policy\Manager::getInstance($this->application);
+    public function getMeshManager() {
+        return df\mesh\Manager::getInstance($this->application);
     }
     
     public function getSystemInfo() {
@@ -747,8 +747,8 @@ trait TContext {
             case 'i18n':
                 return core\i18n\Manager::getInstance($this->application);
                 
-            case 'policy':
-                return core\policy\Manager::getInstance($this->application);
+            case 'mesh':
+                return df\mesh\Manager::getInstance($this->application);
                 
             case 'system':
                 return df\halo\system\Base::getInstance();

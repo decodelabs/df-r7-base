@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\policy;
+namespace df\mesh;
 
 use df;
 use df\core;
@@ -13,7 +13,7 @@ class Manager implements IManager, core\IDumpable {
     
     use core\TManager;
     
-    const REGISTRY_PREFIX = 'manager://policy';
+    const REGISTRY_PREFIX = 'manager://mesh';
     
     protected $_handlers = array();
     
@@ -42,7 +42,7 @@ class Manager implements IManager, core\IDumpable {
         }
         
         if(!isset($this->_handlers[$scheme])) {
-            $class = 'df\\'.lcfirst($scheme).'\\policy\Handler';
+            $class = 'df\\'.lcfirst($scheme).'\\MeshHandler';
             
             if(class_exists($class)) {
                 $handler = new $class();
@@ -113,7 +113,7 @@ class Manager implements IManager, core\IDumpable {
 
 
 // Events
-    public function triggerEvent(IEvent $event) {
+    public function triggerEvent(mesh\event\IEvent $event) {
         if($event->hasHandler()) {
             $handler = $this->getHandler($event->getHandler());
 
@@ -123,27 +123,27 @@ class Manager implements IManager, core\IDumpable {
         }
 
         if($event->hasEntityLocator()) {
-            Hook::triggerEvent($event);
+            mesh\event\Hook::triggerEvent($event);
         }
         
         return $this;
     }
 
     public function triggerEntityEvent($locator, $action, array $data=null) {
-        return $this->triggerEvent(new Event($action, $data, $locator));
+        return $this->triggerEvent(new mesh\event\Event($action, $data, $locator));
     }
 
     public function triggerHandlerEvent($handler, $action, array $data=null) {
-        return $this->triggerEvent(new Event($action, $data, null, $handler));
+        return $this->triggerEvent(new mesh\event\Event($action, $data, null, $handler));
     }
 
 
 
 // Dump
     public function getDumpProperties() {
-        return array(
+        return [
             'handlers' => implode(', ', array_keys($this->_handlers)),
             'application' => $this->_application
-        );
+        ];
     }
 }

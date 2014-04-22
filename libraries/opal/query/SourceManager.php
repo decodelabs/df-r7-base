@@ -8,6 +8,7 @@ namespace df\opal\query;
 use df;
 use df\core;
 use df\opal;
+use df\mesh;
 
 class SourceManager implements ISourceManager, core\IDumpable {
     
@@ -25,8 +26,8 @@ class SourceManager implements ISourceManager, core\IDumpable {
         $this->_transaction = $transaction;
     }
     
-    public function getPolicyManager() {
-        return core\policy\Manager::getInstance($this->_application);
+    public function getMeshManager() {
+        return mesh\Manager::getInstance($this->_application);
     }
 
     public function setParentSourceManager(ISourceManager $parent) {
@@ -159,7 +160,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
             if(isset($this->_aliases[$adapter])) {
                 $adapter = $this->_sources[$this->_aliases[$adapter]]->getAdapter();
             } else {
-                $entity = $this->getPolicyManager()->fetchEntity($adapter);
+                $entity = $this->getMeshManager()->fetchEntity($adapter);
                 
                 if(!$entity instanceof IAdapter) {
                     throw new InvalidArgumentException(
