@@ -7,6 +7,7 @@ namespace df\core\policy;
 
 use df;
 use df\core;
+use df\mesh;
     
 class Event implements IEvent {
 
@@ -36,13 +37,13 @@ class Event implements IEvent {
 
 // Entity
     public function setEntity($locator) {
-        if($locator instanceof IEntity) {
+        if($locator instanceof mesh\entity\IEntity) {
             $this->_entity = $locator;
             $locator = $this->_entity->getEntityLocator();
         }
 
-        if(!$locator instanceof IEntityLocator) {
-            $locator = core\policy\entity\Locator::factory($locator);
+        if(!$locator instanceof mesh\entity\ILocator) {
+            $locator = mesh\entity\Locator::factory($locator);
         }
 
         $this->_entityLocator = $locator;

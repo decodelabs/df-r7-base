@@ -8,6 +8,7 @@ namespace df\opal\rdbms;
 use df;
 use df\core;
 use df\opal;
+use df\mesh;
 
 // Exceptions
 interface IException {}
@@ -114,7 +115,7 @@ interface IDsn extends core\IStringProvider {
 }
 
 
-interface IAdapter extends core\policy\IParentEntity {
+interface IAdapter extends mesh\entity\IParentEntity {
     public function getAdapterName();
 
 // Connection
@@ -205,7 +206,7 @@ interface IDatabase {
     public function truncate();
 }
 
-interface ITable extends core\policy\IEntity, opal\query\IAdapter, opal\query\IEntryPoint, \Countable, opal\schema\ISchemaContext {
+interface ITable extends mesh\entity\IEntity, opal\query\IAdapter, opal\query\IEntryPoint, \Countable, opal\schema\ISchemaContext {
     public function getName();
     public function getAdapter();
     public function getSchema();

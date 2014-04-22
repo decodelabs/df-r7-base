@@ -3,13 +3,16 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\policy\entity;
+namespace df\mesh\entity;
 
 use df;
 use df\core;
+use df\mesh;
 
-class LocatorNode implements core\policy\IEntityLocatorNode, core\IDumpable {
+class LocatorNode implements ILocatorNode, core\IDumpable {
     
+    use core\TStringProvider;
+
     protected $_type;
     protected $_id;
     protected $_location;
@@ -93,14 +96,6 @@ class LocatorNode implements core\policy\IEntityLocatorNode, core\IDumpable {
         
         $output[] = $type;
         return implode('/', $output); 
-    }
-    
-    public function __toString() {
-        try {
-            return (string)$this->toString();
-        } catch(\Exception $e) {
-            return '';
-        }
     }
     
 // Dump

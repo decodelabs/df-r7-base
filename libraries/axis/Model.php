@@ -8,6 +8,7 @@ namespace df\axis;
 use df;
 use df\core;
 use df\axis;
+use df\mesh;
 
 abstract class Model implements IModel, core\IDumpable {
     
@@ -176,10 +177,10 @@ abstract class Model implements IModel, core\IDumpable {
 
 // Policy
     public function getEntityLocator() {
-        return new core\policy\entity\Locator('axis://Model:'.$this->getModelName());
+        return new mesh\entity\Locator('axis://Model:'.$this->getModelName());
     }
 
-    public function fetchSubEntity(core\policy\IManager $manager, core\policy\IEntityLocatorNode $node) {
+    public function fetchSubEntity(core\policy\IManager $manager, mesh\entity\ILocatorNode $node) {
         $id = $node->getId();
         
         switch($node->getType()) {

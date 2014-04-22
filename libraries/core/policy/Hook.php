@@ -7,6 +7,7 @@ namespace df\core\policy;
 
 use df;
 use df\core;
+use df\mesh;
     
 abstract class Hook implements IHook {  
 
@@ -91,7 +92,7 @@ abstract class Hook implements IHook {
             $hook = new $class($context);
             
             foreach($hook->getActionMap() as $entityLocator => $entitySet) {
-                $entityLocator = core\policy\entity\Locator::factory($entityLocator);
+                $entityLocator = mesh\entity\Locator::factory($entityLocator);
                 $domain = $entityLocator->getDomain();
 
                 if(!isset($map[$domain])) {

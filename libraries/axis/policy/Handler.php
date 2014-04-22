@@ -8,10 +8,11 @@ namespace df\axis\policy;
 use df;
 use df\core;
 use df\axis;
+use df\mesh;
 
 class Handler implements core\policy\IEntityHandler {
     
-    public function fetchEntity(core\policy\IManager $manager, core\policy\IEntityLocatorNode $node) {
+    public function fetchEntity(core\policy\IManager $manager, mesh\entity\ILocatorNode $node) {
         if(!$node->hasLocation()) {
             switch($node->getType()) {
                 case 'Model':
@@ -43,7 +44,7 @@ class Handler implements core\policy\IEntityHandler {
                 return $unit;
             }
             
-            if(!$unit instanceof core\policy\IParentEntity) {
+            if(!$unit instanceof mesh\entity\IParentEntity) {
                 return null;
             }
             

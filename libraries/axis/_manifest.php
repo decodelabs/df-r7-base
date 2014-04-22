@@ -10,6 +10,7 @@ use df\core;
 use df\axis;
 use df\opal;
 use df\user;
+use df\mesh;
 
 
 // Exceptions
@@ -21,7 +22,7 @@ class RuntimeException extends \RuntimeException implements IException {}
 interface IAccess extends user\IState {}
 
 
-interface IModel extends core\IApplicationAware, core\policy\IParentEntity, core\IRegistryObject {
+interface IModel extends core\IApplicationAware, mesh\entity\IParentEntity, core\IRegistryObject {
     public function getModelName();
     
     public function getUnit($name);
@@ -33,7 +34,7 @@ interface IModel extends core\IApplicationAware, core\policy\IParentEntity, core
 
 
 
-interface IUnit extends core\IApplicationAware, core\policy\IEntity, user\IAccessLock {
+interface IUnit extends core\IApplicationAware, mesh\entity\IEntity, user\IAccessLock {
 
     const ID_SEPARATOR = '/';
     const DEFAULT_ACCESS = axis\IAccess::GUEST;
@@ -127,7 +128,7 @@ trait TUnit {
 
 // Policy
     public function getEntityLocator() {
-        return new core\policy\entity\Locator('axis://'.$this->_model->getModelName().'/'.ucfirst($this->getUnitName()));
+        return new mesh\entity\Locator('axis://'.$this->_model->getModelName().'/'.ucfirst($this->getUnitName()));
     }
 
 

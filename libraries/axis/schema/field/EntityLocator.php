@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\axis;
 use df\opal;
+use df\mesh;
     
 class EntityLocator extends Base implements
     opal\schema\IMultiPrimitiveField,
@@ -21,7 +22,7 @@ class EntityLocator extends Base implements
         }
 
         $id = isset($row[$key.'_id']) ? $row[$key.'_id'] : null;
-        return core\policy\entity\Locator::domainFactory($row[$key.'_domain'], $id);
+        return mesh\entity\Locator::domainFactory($row[$key.'_domain'], $id);
     }
 
     public function deflateValue($value) {
@@ -50,7 +51,7 @@ class EntityLocator extends Base implements
             }
         }
 
-        return core\policy\entity\Locator::factory($value);
+        return mesh\entity\Locator::factory($value);
     }
 
     public function compareValues($value1, $value2) {

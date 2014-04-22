@@ -7,6 +7,7 @@ namespace df\core\policy;
 
 use df;
 use df\core;
+use df\mesh;
 
 class Manager implements IManager, core\IDumpable {
     
@@ -29,13 +30,13 @@ class Manager implements IManager, core\IDumpable {
     }
     
     public function getHandler($scheme) {
-        if($scheme instanceof IEntityLocator) {
+        if($scheme instanceof mesh\entity\ILocator) {
             $scheme = $scheme->getScheme();
         } else {
             $scheme = (string)$scheme;
             
             if(false !== strpos($scheme, ':')) {
-                $scheme = core\policy\entity\Locator::factory($scheme);
+                $scheme = mesh\entity\Locator::factory($scheme);
                 $scheme = $scheme->getScheme();
             }
         }
@@ -62,11 +63,11 @@ class Manager implements IManager, core\IDumpable {
     }
     
     public function fetchEntity($locator) {
-        $locator = core\policy\entity\Locator::factory($locator);
+        $locator = mesh\entity\Locator::factory($locator);
         
         if((!$handler = $this->getHandler($locator))
         || (!$handler instanceof IEntityHandler)) {
-            throw new RuntimeException(
+            throw new mesh\entity\RuntimeException(
                 'There is no entity handler for scheme: '.$locator->getScheme()
             );
         }
@@ -78,7 +79,7 @@ class Manager implements IManager, core\IDumpable {
         $entity = $handler->fetchEntity($this, $node);
         
         if($entity === null) {
-            throw new core\policy\EntityNotFoundException(
+            throw new mesh\entity\EntityNotFoundException(
                 'Entity type '.$locator->toStringUpTo($node).' could not be found'
             );
         }
@@ -87,8 +88,8 @@ class Manager implements IManager, core\IDumpable {
             $lastNode = $node;
             
             foreach($nodes as $node) {
-                if(!$entity instanceof IParentEntity) {
-                    throw new EntityNotFoundException(
+                if(!$entity instanceof mesh\entity\IParentEntity) {
+                    throw new mesh\entity\EntityNotFoundException(
                         'Could not load entity '.$node->toString().' - '.
                         'parent entity '.$locator->toStringUpTo($lastNode).' does not provide sub entities'
                     );
@@ -97,7 +98,7 @@ class Manager implements IManager, core\IDumpable {
                 $entity = $entity->fetchSubEntity($this, $node);
                 
                 if($entity === null) {
-                    throw new core\policy\EntityNotFoundException(
+                    throw new mesh\entity\EntityNotFoundException(
                         'Entity type '.$locator->toStringUpTo($node).' could not be found'
                     );
                 }

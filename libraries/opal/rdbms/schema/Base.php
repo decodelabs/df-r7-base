@@ -8,6 +8,7 @@ namespace df\opal\rdbms\schema;
 use df;
 use df\core;
 use df\opal;
+use df\mesh;
 
 abstract class Base implements ISchema, core\IDumpable {
     
@@ -149,7 +150,7 @@ abstract class Base implements ISchema, core\IDumpable {
 // Policy
     public function getEntityLocator() {
         $output = $this->_adapter->getEntityLocator();
-        $output->addNode(new core\policy\entity\LocatorNode(null, 'Schema', $this->getName()));
+        $output->addNode(new mesh\entity\LocatorNode(null, 'Schema', $this->getName()));
         return $output;
     }
 }

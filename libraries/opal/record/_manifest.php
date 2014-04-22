@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\opal;
 use df\user;
+use df\mesh;
 
 // Exceptions
 interface IException {}
@@ -89,7 +90,7 @@ trait TAccessLockProvider {
 }
 
 
-interface IRecord extends core\collection\IMappedCollection, user\IAccessLock, core\policy\IEntity, IRecordAdapterProvider, IPrimaryKeySetProvider {
+interface IRecord extends core\collection\IMappedCollection, user\IAccessLock, mesh\entity\IEntity, IRecordAdapterProvider, IPrimaryKeySetProvider {
     public function isNew();
     public function makeNew(array $newValues=null);
     public function spawnNew(array $newValues=null);
@@ -131,7 +132,7 @@ interface ILocationalRecord extends IRecord {
 
 
 
-interface IPartial extends core\collection\IMappedCollection, user\IAccessLock, core\policy\IEntity, IRecordAdapterProvider, IPrimaryKeySetProvider {
+interface IPartial extends core\collection\IMappedCollection, user\IAccessLock, mesh\entity\IEntity, IRecordAdapterProvider, IPrimaryKeySetProvider {
     public function setRecordAdapter(opal\query\IAdapter $adapter);
     public function isBridge($flag=null);
     public function getValuesForStorage();

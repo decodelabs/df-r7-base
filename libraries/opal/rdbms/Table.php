@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\opal;
 use df\user;
+use df\mesh;
 
 class Table implements ITable, core\IDumpable {
     
@@ -338,16 +339,16 @@ class Table implements ITable, core\IDumpable {
 // Policy
     public function getEntityLocator() {
         $output = $this->_adapter->getEntityLocator();
-        $output->addNode(new core\policy\entity\LocatorNode(null, 'Table', $this->getName()));
+        $output->addNode(new mesh\entity\LocatorNode(null, 'Table', $this->getName()));
         return $output;
     }
     
     
 // Dump
     public function getDumpProperties() {
-        return array(
+        return [
             'adapter' => $this->_adapter->getDsn()->getDisplayString(),
             'name' => $this->_name
-        );
+        ];
     }
 }

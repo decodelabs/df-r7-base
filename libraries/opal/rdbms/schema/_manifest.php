@@ -8,6 +8,7 @@ namespace df\opal\rdbms\schema;
 use df;
 use df\core;
 use df\opal;
+use df\mesh;
 
 // Interfaces
 interface ISqlVariantAware {
@@ -33,7 +34,7 @@ interface ISchema extends
     opal\schema\IForeignKeyProvider, 
     opal\schema\ITriggerProvider, 
     ISqlVariantAware,
-    core\policy\IEntity {
+    mesh\entity\IEntity {
     public function getAdapter();
     public function getTable();
     public function getSqlVariant();

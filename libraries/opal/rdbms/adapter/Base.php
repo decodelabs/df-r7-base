@@ -8,6 +8,7 @@ namespace df\opal\rdbms\adapter;
 use df;
 use df\core;
 use df\opal;
+use df\mesh;
 
 abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
     
@@ -224,14 +225,14 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
     
 // Policy
     public function getEntityLocator() {
-        return new core\policy\entity\Locator('opal://rdbms/'.$this->getAdapterName().':"'.$this->getDsn()->getConnectionString().'"');
+        return new mesh\entity\Locator('opal://rdbms/'.$this->getAdapterName().':"'.$this->getDsn()->getConnectionString().'"');
     }
 
-    public function fetchSubEntity(core\policy\IManager $manager, core\policy\IEntityLocatorNode $node) {
+    public function fetchSubEntity(core\policy\IManager $manager, mesh\entity\ILocatorNode $node) {
         $id = $node->getId();
         
         if($id === null) {
-            throw new core\policy\EntityNotFoundException(
+            throw new mesh\entity\EntityNotFoundException(
                 'Opal entities must be referenced with an id in it\'s locator'
             );
         }

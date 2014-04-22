@@ -9,10 +9,11 @@ use df;
 use df\core;
 use df\axis;
 use df\opal;
+use df\mesh;
 
 abstract class Base implements 
     axis\ISchemaBasedStorageUnit, 
-    core\policy\IActiveParentEntity, 
+    mesh\entity\IActiveParentEntity, 
     opal\query\IEntryPoint,
     opal\query\IIntegralAdapter,
     opal\query\IPaginatingAdapter,
@@ -487,7 +488,7 @@ abstract class Base implements
     
     
 // Policy
-    public function fetchSubEntity(core\policy\IManager $manager, core\policy\IEntityLocatorNode $node) {
+    public function fetchSubEntity(core\policy\IManager $manager, mesh\entity\ILocatorNode $node) {
         switch($node->getType()) {
             case 'Record':
                 return $this->fetchByPrimary($node->getId());
@@ -497,16 +498,16 @@ abstract class Base implements
         }
     }
 
-    public function getSubEntityLocator(core\policy\IEntity $entity) {
+    public function getSubEntityLocator(mesh\entity\IEntity $entity) {
         if($entity instanceof opal\record\IPrimaryKeySetProvider) {
-            $output = new core\policy\entity\Locator('axis://'.$this->getModel()->getModelName().'/'.ucfirst($this->getUnitName()));
+            $output = new mesh\entity\Locator('axis://'.$this->getModel()->getModelName().'/'.ucfirst($this->getUnitName()));
             $id = $entity->getPrimaryKeySet()->getEntityId();
             $output->setId($id);
 
             return $output;
         }
 
-        throw new core\policy\UnexpectedValueException(
+        throw new mesh\entity\UnexpectedValueException(
             'Unknown entity type'
         );
     }
@@ -514,10 +515,10 @@ abstract class Base implements
     
 // Dump
     public function getDumpProperties() {
-        return array(
+        return [
             'type' => $this->getUnitType(),
             'unitId' => $this->getUnitId(),
             'adapter' => $this->_adapter
-        );
+        ];
     }
 }

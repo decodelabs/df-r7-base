@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\opal;
 use df\user;
+use df\mesh;
 
 class Base implements IRecord, \Serializable, core\IDumpable {
     
@@ -906,13 +907,13 @@ class Base implements IRecord, \Serializable, core\IDumpable {
 
 // Policy
     public function getEntityLocator() {
-        if(!$this->_adapter instanceof core\policy\IParentEntity) {
-            throw new core\policy\EntityNotFoundException(
+        if(!$this->_adapter instanceof mesh\entity\IParentEntity) {
+            throw new mesh\entity\EntityNotFoundException(
                 'Record adapter is not a policy entity handler'
             );
         }
 
-        if($this->_adapter instanceof core\policy\IActiveParentEntity) {
+        if($this->_adapter instanceof mesh\entity\IActiveParentEntity) {
             return $this->_adapter->getSubEntityLocator($this);
         }
 
@@ -920,7 +921,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         $id = $keySet->getEntityId();
 
         $output = $this->_adapter->getEntityLocator();
-        $output->addNode(new core\policy\entity\LocatorNode(null, 'Record', $id));
+        $output->addNode(new mesh\entity\LocatorNode(null, 'Record', $id));
         
         return $output;
     }
