@@ -10,6 +10,7 @@ use df\core;
 use df\user;
 use df\axis;
 use df\arch;
+use df\mesh;
 
 class Manager implements IManager, core\IDumpable {
     
