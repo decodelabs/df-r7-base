@@ -16,29 +16,35 @@ class UnexpectedValueException extends \UnexpectedValueException implements IExc
 
 
 // Interfaces
+interface IEmitter {
+    public function emitEvent($entity, $action, array $data=null);
+    public function emitEventObject(IEvent $event);
+}
+
+interface IDispatcher extends IEmitter {
+
+}
+
+interface IGenerator {
+
+}
+
+
 interface IEvent extends core\collection\IMap {
     // Entity
-    public function setEntity($locator);
-    public function hasEntityLocator();
-    public function getEntityLocator();
+    public function setEntity(mesh\entity\ILocatorProvider $entity);
+    public function hasEntity();
+    public function getEntity();
     public function hasCachedEntity();
     public function getCachedEntity();
     public function clearCachedEntity();
-
-    // Handler
-    public function setHandler($handler);
-    public function hasHandler();
-    public function getHandler();
+    public function getEntityLocator();
 
     // Action
     public function setAction($action);
     public function getAction();
 }
 
-
-interface IEventReceiver {
-    public function triggerEvent(IEvent $event);
-}
 
 interface IHook extends core\IContextAware {
     public static function triggerEvent(IEvent $event);

@@ -113,28 +113,13 @@ class Manager implements IManager, core\IDumpable {
 
 
 // Events
-    public function triggerEvent(mesh\event\IEvent $event) {
-        if($event->hasHandler()) {
-            $handler = $this->getHandler($event->getHandler());
+    public function emitEvent($entity, $action, array $data=null) {
+        return $this->emitEventObject(new mesh\event\Event($entity, $action, $data));
+    }
 
-            if($handler instanceof IEventHandler) {
-                $handler->triggerEvent($event);
-            }
-        }
-
-        if($event->hasEntityLocator()) {
-            mesh\event\Hook::triggerEvent($event);
-        }
-        
+    public function emitEventObject(mesh\event\IEvent $event) {
+        mesh\event\Hook::triggerEvent($event);
         return $this;
-    }
-
-    public function triggerEntityEvent($locator, $action, array $data=null) {
-        return $this->triggerEvent(new mesh\event\Event($action, $data, $locator));
-    }
-
-    public function triggerHandlerEvent($handler, $action, array $data=null) {
-        return $this->triggerEvent(new mesh\event\Event($action, $data, null, $handler));
     }
 
 

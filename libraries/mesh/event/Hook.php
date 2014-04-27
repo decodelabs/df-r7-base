@@ -34,10 +34,6 @@ abstract class Hook implements IHook {
     public static function triggerEvent(IEvent $event, core\IContext $context=null) {
         $entityLocator = $event->getEntityLocator();
 
-        if(!$entityLocator) {
-            return;
-        }
-
         if($context === null) {
             $context = new core\SharedContext(df\Launchpad::$application);
         }

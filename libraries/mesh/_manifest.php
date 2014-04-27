@@ -17,7 +17,7 @@ class UnexpectedValueException extends \UnexpectedValueException implements IExc
 
 
 // Interfaces
-interface IManager extends mesh\event\IEventReceiver, core\IManager {
+interface IManager extends mesh\event\IEmitter, core\IManager {
     // Handlers
     public function registerHandler($scheme, IHandler $handler);
     public function unregisterHandler($scheme);
@@ -26,10 +26,6 @@ interface IManager extends mesh\event\IEventReceiver, core\IManager {
 
     // Entities
     public function fetchEntity($locator);
-
-    // Events
-    public function triggerEntityEvent($locator, $action, array $data=null);
-    public function triggerHandlerEvent($handler, $action, array $data=null);
 }
 
 
@@ -41,4 +37,4 @@ interface IEntityHandler extends IHandler {
     public function fetchEntity(IManager $manager, mesh\entity\ILocatorNode $node);
 }
 
-interface IEventHandler extends IHandler, mesh\event\IEventReceiver {}
+interface IEventHandler extends IHandler, mesh\event\IEmitter {}

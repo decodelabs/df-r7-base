@@ -16,42 +16,45 @@ class Event implements IEvent {
     protected $_action;
     protected $_entityLocator;
     protected $_entity;
-    protected $_handler;
 
-    public function __construct($action, array $data=null, $entity=null, $handler=null) {
+    public function __construct($entity, $action, array $data=null) {
+        if(!$entity instanceof mesh\entity\ILocatorProvider) {
+            $entity = mesh\entity\Locator::factory($entity);
+        }
+
+        $this->setEntity($entity);
         $this->setAction($action);
 
         if($data !== null) {
             $this->import($data);
         }
-
-        if($entity !== null) {
-            $this->setEntity($entity);
-        }
-
-        if($handler !== null) {
-            $this->setHandler($handler);
-        }
     }
 
 
 // Entity
-    public function setEntity($locator) {
-        if($locator instanceof mesh\entity\IEntity) {
-            $this->_entity = $locator;
-            $locator = $this->_entity->getEntityLocator();
+    public function setEntity(mesh\entity\ILocatorProvider $entity) {
+        if($entity instanceof mesh\entity\IEntity) {
+            $this->_entity = $entity;
         }
 
-        if(!$locator instanceof mesh\entity\ILocator) {
-            $locator = mesh\entity\Locator::factory($locator);
-        }
-
-        $this->_entityLocator = $locator;
+        $this->_entityLocator = $entity->getEntityLocator();
         return $this;
     }
 
-    public function hasEntityLocator() {
-        return $this->_entityLocator !== null;
+    public function hasEntity() {
+        return $this->_entity !== null;
+    }
+
+    public function getEntity() {
+        if(!$this->_entity) {
+            if(!$this->_entityLocator) {
+                return null;
+            }
+
+            $this->_entity = mesh\Manager::getInstance()->fetchEntity($this->_entityLocator);
+        }
+
+        return $this->_entity;
     }
 
     public function getEntityLocator() {
@@ -69,21 +72,6 @@ class Event implements IEvent {
     public function clearCachedEntity() {
         $this->_entity = null;
         return $this;
-    }
-
-
-// Handler
-    public function setHandler($handler) {
-        $this->_handler = $handler;
-        return $this;
-    }
-
-    public function hasHandler() {
-        return $this->_handler !== null;
-    }
-
-    public function getHandler() {
-        return $this->_handler;
     }
 
 

@@ -645,13 +645,13 @@ class Base implements IRecord, \Serializable, core\IDumpable {
 
         if(static::BROADCAST_HOOK_EVENTS) {
             $event = new mesh\event\Event(
+                $this,
                 $funcPrefix.$taskName, 
-                ['taskSet' => $taskSet, 'task' => $task], 
-                $this
+                ['taskSet' => $taskSet, 'task' => $task]
             );
             
             $meshManager = mesh\Manager::getInstance();
-            $meshManager->triggerEvent($event);
+            $meshManager->emitEventObject($event);
         }
 
         if(in_array($taskName, ['Insert', 'Update', 'Replace'])) {
@@ -663,7 +663,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
 
             if(static::BROADCAST_HOOK_EVENTS) {
                 $event->setAction($funcPrefix.'Save');
-                $meshManager->triggerEvent($event);
+                $meshManager->emitEventObject($event);
             }
         }
 

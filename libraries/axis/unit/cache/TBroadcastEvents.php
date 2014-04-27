@@ -14,41 +14,40 @@ use df\mesh;
 trait TBroadcastEvents {
 
     public function set($key, $value, $lifeTime=null) {
-        $this->context->mesh->triggerEvent(new mesh\event\Event(
-            'set', ['value' => $value, 'lifeTime' => $lifeTime], $this
-        ));
+        $this->context->mesh->emitEvent($this, 'set', [
+            'value' => $value, 
+            'lifeTime' => $lifeTime
+        ]);
 
         return parent::set($key, $value, $lifeTime);
     }
     
     public function remove($key) {
-        $this->context->mesh->triggerEvent(new mesh\event\Event(
-            'remove', [$key], $this
-        ));
+        $this->context->mesh->emitEvent($this, 'remove', [
+            'key' => $key
+        ]);
 
         return parent::remove($key);
     }
 
     public function clear() {
-        $this->context->mesh->triggerEvent(new mesh\event\Event(
-            'clear', null, $this
-        ));
+        $this->context->mesh->emitEvent($this, 'clear');
 
         return parent::clear();
     }
     
     public function clearBegins($key) {
-        $this->context->mesh->triggerEvent(new mesh\event\Event(
-            'clearBegins', ['key' => $key], $this
-        ));
+        $this->context->mesh->emitEvent($this, 'clearBegins', [
+            'key' => $key
+        ]);
 
         return parent::clearBegins($key);
     }
 
     public function clearMatches($regex) {
-        $this->context->mesh->triggerEvent(new mesh\event\Event(
-            'clearMatches', ['regex' => $regex], $this
-        ));
+        $this->context->mesh->emitEvent($this, 'clearMatches', [
+            'regex' => $regex
+        ]);
 
         return parent::clearMatches($regex);
     }
@@ -58,25 +57,24 @@ trait TBroadcastEvents {
 trait TBroadcastEvents_Session {
 
     public function setSession($key, $value) {
-        $this->context->mesh->triggerEvent(new mesh\event\Event(
-            'setSession', ['key' => $key, 'value' => $value], $this
-        ));
+        $this->context->mesh->emitEvent($this, 'setSession', [
+            'key' => $key, 
+            'value' => $value
+        ]);
 
         return parent::setSession($key, $value);
     }
 
     public function removeSession($key) {
-        $this->context->mesh->triggerEvent(new mesh\event\Event(
-            'removeSession', ['key' => $key], $this
-        ));
+        $this->context->mesh->emitEvent($this, 'removeSession', [
+            'key' => $key
+        ]);
 
         return parent::removeSession($key);
     }
 
     public function clearSession() {
-        $this->context->mesh->triggerEvent(new mesh\event\Event(
-            'clearSession', null, $this
-        ));
+        $this->context->mesh->emitEvent($this, 'clearSession');
 
         return parent::clearSession();
     }
