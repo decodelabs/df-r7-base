@@ -56,18 +56,8 @@ class Handler implements IHandler {
     public static function getAdapterList() {
         $output = [];
 
-        foreach(df\Launchpad::$loader->lookupFileList('link/geoIp/adapter', ['php']) as $baseName => $path) {
-            $name = substr($baseName, 0, -4);
-            
-            if($name === 'Base' || $name === '_manifest') {
-                continue;
-            }
-            
-            $class = 'df\\link\\geoIp\\adapter\\'.$name;
-
-            if(class_exists($class)) {
-                $output[$name] = $class::isAvailable();
-            }
+        foreach(df\Launchpad::$loader->lookupClassList('link/geoIp/adapter') as $name => $class) {
+            $output[$name] = $class::isAvailable();
         }
         
         ksort($output);

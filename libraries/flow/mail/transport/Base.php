@@ -14,19 +14,7 @@ abstract class Base implements flow\mail\ITransport {
     public static function getAllDefaultConfigValues() {
         $output = [];
 
-        foreach(df\Launchpad::$loader->lookupFileList('flow/mail/transport', 'php') as $name => $path) {
-            $name = substr($name, 0, -4);
-
-            if(in_array($name, ['Base', '_manifest'])) {
-                continue;
-            }
-
-            $class = 'df\\flow\\mail\\transport\\'.$name;
-
-            if(!class_exists($class)) {
-                continue;
-            }
-
+        foreach(df\Launchpad::$loader->lookupClassList('flow/mail/transport') as $name => $class) {
             $output[$name] = $class::getDefaultConfigValues();
         }
 
@@ -93,19 +81,7 @@ abstract class Base implements flow\mail\ITransport {
     public static function getAvailableTransports() {
         $output = array();
 
-        foreach(df\Launchpad::$loader->lookupFileList('flow/mail/transport', 'php') as $name => $path) {
-            $name = substr($name, 0, -4);
-
-            if(in_array($name, ['Base', '_manifest'])) {
-                continue;
-            }
-
-            $class = 'df\\flow\\mail\\transport\\'.$name;
-
-            if(!class_exists($class)) {
-                continue;
-            }
-
+        foreach(df\Launchpad::$loader->lookupClassList('flow/mail/transport') as $name => $class) {
             $output[$name] = $class::getDescription();
         }
 

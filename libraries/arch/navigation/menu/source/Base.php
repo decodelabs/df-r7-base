@@ -14,15 +14,9 @@ abstract class Base implements arch\navigation\menu\ISource, core\IContextAware 
     use core\TContextAware;
 
     public static function loadAll(arch\IContext $context) {
-        $output = array();
-        
-        foreach(df\Launchpad::$loader->lookupFileList('arch/navigation/menu/source', ['php']) as $baseName => $path) {
-            $name = substr($baseName, 0, -4);
-            
-            if($name === 'Base' || $name === '_manifest') {
-                continue;
-            }
-            
+        $output = [];
+
+        foreach(df\Launchpad::$loader->lookupClassList('arch/navigation/menu/source') as $name => $class) {
             try {
                 $source = self::factory($context, $name);
             } catch(arch\navigation\SourceNotFoundException $e) {
@@ -31,7 +25,7 @@ abstract class Base implements arch\navigation\menu\ISource, core\IContextAware 
             
             $output[$source->getName()] = $source;
         }
-        
+
         ksort($output);
         return $output;
     }

@@ -18,19 +18,7 @@ class Config extends core\Config {
     public function getDefaultValues() {
         $output = [];
 
-        foreach(df\Launchpad::$loader->lookupFileList('user/authentication/adapter', ['php']) as $baseName => $path) {
-            $name = substr($baseName, 0, -4);
-            
-            if($name === 'Base' || $name === '_manifest') {
-                continue;
-            }
-            
-            $class = 'df\\user\\authentication\\adapter\\'.$name;
-
-            if(!class_exists($class)) {
-                continue;
-            }
-
+        foreach(df\Launchpad::$loader->lookupClassList('user/authentication/adapter') as $name => $class) {
             $output[$name] = $class::getDefaultConfigValues();
             
             if(!isset($output[$name]['enabled'])) {

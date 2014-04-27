@@ -185,6 +185,37 @@ class Loader implements ILoader {
         return $output;
     }
 
+    public function lookupClassList($path, $test=true) {
+        $path = trim($path, '/');
+        $output = [];
+
+        foreach($this->lookupFileList($path, ['php']) as $fileName => $filePath) {
+            $name = substr($fileName, 0, -4);
+
+            if(substr($name, 0, 1) == '_') {
+                continue;
+            }
+
+            $class = 'df\\'.str_replace('/', '\\', $path).'\\'.$name;
+
+            if($test) {
+                if(!class_exists($class)) {
+                    continue;
+                }
+
+                $ref = new \ReflectionClass($class);
+
+                if($ref->isAbstract()) {
+                    continue;
+                }
+            }
+
+            $output[$name] = $class;
+        }
+
+        return $output;
+    }
+
     public function lookupFolderList($path) {
         $output = [];
         $paths = $this->getFileSearchPaths(rtrim($path, '/').'/');

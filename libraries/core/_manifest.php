@@ -469,6 +469,7 @@ interface ILoader {
     public function findFile($path);
     public function getFileSearchPaths($path);
     public function lookupFileList($path, $extensions=null);
+    public function lookupClassList($path, $test=true);
     public function lookupFolderList($path);
     
     public function registerLocation($name, $path);

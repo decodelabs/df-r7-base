@@ -16,19 +16,7 @@ abstract class Hook implements IHook {
     protected static $_actionMap = [];
 
     public static function getClassList() {
-        $list = [];
-
-        foreach(df\Launchpad::$loader->lookupFileList('apex/hooks/', 'php') as $fileName => $path) {
-            $name = substr($fileName, 0, -4);
-
-            if(in_array($name, ['_manifest', 'Base'])) {
-                continue;
-            }
-
-            $list[$name] = 'df\\apex\\hooks\\'.$name;
-        }
-
-        return $list;
+        return df\Launchpad::$loader->lookupClassList('apex/hooks/', true);
     }
 
     public static function triggerEvent(IEvent $event, core\IContext $context=null) {

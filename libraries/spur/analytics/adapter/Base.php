@@ -58,13 +58,7 @@ abstract class Base implements spur\analytics\IAdapter {
     public static function loadAll() {
         $output = [];
 
-        foreach(df\Launchpad::$loader->lookupFileList('spur/analytics/adapter', ['php']) as $baseName => $path) {
-            $name = substr($baseName, 0, -4);
-            
-            if($name === 'Base' || $name === '_manifest') {
-                continue;
-            }
-
+        foreach(df\Launchpad::$loader->lookupClassList('spur/analytics/adapter') as $name => $class) {
             try {
                 $adapter = self::factory($name);
             } catch(spur\analytics\IException $e) {
