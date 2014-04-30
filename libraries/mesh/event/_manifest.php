@@ -21,12 +21,30 @@ interface IEmitter {
     public function emitEventObject(IEvent $event);
 }
 
-interface IDispatcher extends IEmitter {
+trait TEmitter {
 
+    public function emitEvent($entity, $action, array $data=null) {
+        return $this->emitEventObject(new mesh\event\Event($entity, $action, $data));
+    }
+}
+
+interface IDispatcher extends IEmitter {
+    public function bind($entity, $action, Callable $listener);
+    public function addBinding(IBinding $binding);
 }
 
 interface IGenerator {
 
+}
+
+interface IBinding {
+    public function getId();
+    public function setEntityLocator($entityLocator);
+    public function getEntityLocator();
+    public function setAction($action);
+    public function getAction();
+    public function setListener(Callable $listener);
+    public function getListener();
 }
 
 
