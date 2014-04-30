@@ -15,7 +15,7 @@ class Util implements IUtil {
             return [$array];
         }
 
-        $output = array();
+        $output = [];
         $sort = \SORT_STRING;
 
         foreach($array as $value) {

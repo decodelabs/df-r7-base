@@ -40,9 +40,9 @@ class Replace implements IReplaceQuery, core\IDumpable {
 
 // Dump
     public function getDumpProperties() {
-        return array(
+        return [
             'source' => $this->_source->getAdapter(),
             'row' => $this->_row
-        );
+        ];
     }
 }

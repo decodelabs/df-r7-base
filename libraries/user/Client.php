@@ -28,7 +28,7 @@ class Client implements IClient, \Serializable {
     protected $_options = null;
     
     protected $_authState = IState::GUEST;
-    protected $_keyring = array();
+    protected $_keyring = [];
     protected $_keyringTimestamp;
 
     private $_accessCache = [];
@@ -224,7 +224,7 @@ class Client implements IClient, \Serializable {
                 break;
         }
         
-        $this->_accessCache = array();
+        $this->_accessCache = [];
 
         return $this;
     }
@@ -260,7 +260,7 @@ class Client implements IClient, \Serializable {
     
     
     public function import(IClientDataObject $clientData) {
-        $this->_accessCache = array();
+        $this->_accessCache = [];
 
         $this->_id = $clientData->getId();
         $this->_email = $clientData->getEmail();
@@ -277,7 +277,7 @@ class Client implements IClient, \Serializable {
     }
     
     public function setKeyring(array $keyring) {
-        $this->_accessCache = array();
+        $this->_accessCache = [];
         $this->_keyring = $keyring;
         $this->_keyringTimestamp = time();
 

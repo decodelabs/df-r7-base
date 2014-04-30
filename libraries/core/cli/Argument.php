@@ -55,7 +55,7 @@ class Argument implements IArgument, core\IDumpable {
     }
     
     public function getClusterOptions() {
-        $output = array();
+        $output = [];
         
         if($this->isOptionCluster()) {
             for($i = 2; $i < strlen($this->_option); $i++) {

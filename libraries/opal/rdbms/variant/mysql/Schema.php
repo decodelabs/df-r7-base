@@ -247,7 +247,7 @@ class Schema extends opal\rdbms\schema\Base implements ISchema, core\IDumpable {
         
         // Engine
         $res = $this->_adapter->prepare('SHOW ENGINES')->executeRead();
-        $availableEngines = array();
+        $availableEngines = [];
         $defaultEngine = null;
         
         foreach($res as $row) {

@@ -305,7 +305,7 @@ abstract class Base implements
             return $schema->getFields();
         }
         
-        $output = array();
+        $output = [];
         
         foreach($fields as $fieldName) {
             if($field = $schema->getField($fieldName)) {
@@ -451,7 +451,7 @@ abstract class Base implements
             ->into($this, $this->getCanonicalUnitName());
     }
     
-    public function batchInsert($rows=array()) {
+    public function batchInsert($rows=[]) {
         return opal\query\Initiator::factory($this->getApplication())
             ->beginBatchInsert($rows)
             ->into($this, $this->getCanonicalUnitName());
@@ -463,7 +463,7 @@ abstract class Base implements
             ->in($this, $this->getCanonicalUnitName());
     }
     
-    public function batchReplace($rows=array()) {
+    public function batchReplace($rows=[]) {
         return opal\query\Initiator::factory($this->getApplication())
             ->beginBatchReplace($rows)
             ->in($this, $this->getCanonicalUnitName());

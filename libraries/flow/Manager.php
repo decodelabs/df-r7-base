@@ -237,7 +237,7 @@ class Manager implements IManager {
     
     public function clearConstantFlashes() {
         $this->_loadFlashQueue();
-        $this->_flashQueue->constant = array();
+        $this->_flashQueue->constant = [];
         return $this;
     }
     

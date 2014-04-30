@@ -674,7 +674,7 @@ class Duration implements IDuration, core\IDumpable {
             $maxUnits = 1;
         }
         
-        $output = array();
+        $output = [];
         $units = 0;
         
         // Years
@@ -803,15 +803,15 @@ class Duration implements IDuration, core\IDumpable {
                 if($shortUnits) {
                     return $translator->_(
                         '%n% sc',
-                        array('%n%' => $number)
+                        ['%n%' => $number]
                     );
                 } else {
                     return $translator->_(
-                        array(
+                        [
                             'n = 1 || n = -1' => '%n% second',
                             '*' => '%n% seconds'
-                        ),
-                        array('%n%' => $number),
+                        ],
+                        ['%n%' => $number],
                         $number
                     );
                 }
@@ -820,15 +820,15 @@ class Duration implements IDuration, core\IDumpable {
                 if($shortUnits) {
                     return $translator->_(
                         '%n% mn',
-                        array('%n%' => $number)
+                        ['%n%' => $number]
                     );
                 } else {
                     return $translator->_(
-                        array(
+                        [
                             'n = 1 || n = -1' => '%n% minute',
                             '*' => '%n% minutes'
-                        ),
-                        array('%n%' => $number),
+                        ],
+                        ['%n%' => $number],
                         $number
                     );
                 }
@@ -837,15 +837,15 @@ class Duration implements IDuration, core\IDumpable {
                 if($shortUnits) {
                     return $translator->_(
                         '%n% hr',
-                        array('%n%' => $number)
+                        ['%n%' => $number]
                     );
                 } else {
                     return $translator->_(
-                        array(
+                        [
                             'n = 1 || n = -1' => '%n% hour',
                             '*' => '%n% hours'
-                        ),
-                        array('%n%' => $number),
+                        ],
+                        ['%n%' => $number],
                         $number
                     );
                 }
@@ -854,15 +854,15 @@ class Duration implements IDuration, core\IDumpable {
                 if($shortUnits) {
                     return $translator->_(
                         '%n% dy',
-                        array('%n%' => $number)
+                        ['%n%' => $number]
                     );
                 } else {
                     return $translator->_(
-                        array(
+                        [
                             'n = 1 || n = -1' => '%n% day',
                             '*' => '%n% days'
-                        ),
-                        array('%n%' => $number),
+                        ],
+                        ['%n%' => $number],
                         $number
                     );
                 }
@@ -871,15 +871,15 @@ class Duration implements IDuration, core\IDumpable {
                 if($shortUnits) {
                     return $translator->_(
                         '%n% wk',
-                        array('%n%' => $number)
+                        ['%n%' => $number]
                     );
                 } else {
                     return $translator->_(
-                        array(
+                        [
                             'n = 1 || n = -1' => '%n% week',
                             '*' => '%n% weeks'
-                        ),
-                        array('%n%' => $number),
+                        ],
+                        ['%n%' => $number],
                         $number
                     );
                 }
@@ -888,15 +888,15 @@ class Duration implements IDuration, core\IDumpable {
                 if($shortUnits) {
                     return $translator->_(
                         '%n% mo',
-                        array('%n%' => $number)
+                        ['%n%' => $number]
                     );
                 } else {
                     return $translator->_(
-                        array(
+                        [
                             'n = 1 || n = -1' => '%n% month',
                             '*' => '%n% months'
-                        ),
-                        array('%n%' => $number),
+                        ],
+                        ['%n%' => $number],
                         $number
                     );
                 }
@@ -905,15 +905,15 @@ class Duration implements IDuration, core\IDumpable {
                 if($shortUnits) {
                     return $translator->_(
                         '%n% yr',
-                        array('%n%' => $number)
+                        ['%n%' => $number]
                     );
                 } else {
                     return $translator->_(
-                        array(
+                        [
                             'n = 1 || n = -1' => '%n% year',
                             '*' => '%n% years'
-                        ),
-                        array('%n%' => $number),
+                        ],
+                        ['%n%' => $number],
                         $number
                     );
                 }

@@ -20,7 +20,7 @@ class RendererContext implements aura\html\widget\IRendererContext {
     protected $_counter = -1;
     protected $_cellTag;
     protected $_rowTag;
-    protected $_store = array();
+    protected $_store = [];
     protected $_widget;
     protected $_rowProcessor;
     protected $_nullToNa = true;
@@ -81,7 +81,7 @@ class RendererContext implements aura\html\widget\IRendererContext {
         $this->_counter++;
         $this->clear();
 
-        $this->_store = array();
+        $this->_store = [];
         $this->_key = $key;
         $this->_cellTag = $cellTag;
         $this->_rowTag = $rowTag;

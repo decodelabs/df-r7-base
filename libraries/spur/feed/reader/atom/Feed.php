@@ -11,9 +11,9 @@ use df\spur;
 
 class Feed extends spur\feed\reader\Feed {
 
-    protected static $_defaultExtensions = array(
+    protected static $_defaultExtensions = [
         'atom', 'dublinCore', 'content', 'wellFormedWeb', 'slash', 'thread'
-    );
+    ];
     
     protected function _getXPathPrefix() {
         return '/atom:feed';

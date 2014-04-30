@@ -13,8 +13,8 @@ class Source implements ISource, core\IDumpable {
     
     use TQuery_AdapterAware;
     
-    protected $_outputFields = array();
-    protected $_privateFields = array();
+    protected $_outputFields = [];
+    protected $_privateFields = [];
 
     protected $_alias;
     private $_id;
@@ -143,7 +143,7 @@ class Source implements ISource, core\IDumpable {
                 );
             }
 
-            $fields = array();
+            $fields = [];
 
             foreach($primaryIndex->getFields() as $fieldName => $indexField) {
                 $subField = $this->extrapolateIntegralAdapterFieldFromSchemaField($fieldName, $fieldName, $indexField);
@@ -172,7 +172,7 @@ class Source implements ISource, core\IDumpable {
 
     public function extrapolateIntegralAdapterFieldFromSchemaField($name, $alias, opal\schema\IField $field) {
         if($field instanceof opal\schema\IMultiPrimitiveField) {
-            $privateFields = array();
+            $privateFields = [];
             
             foreach($field->getPrimitiveFieldNames() as $fieldName) {
                 $privateFields[] = new opal\query\field\Intrinsic($this, $fieldName, $alias);
@@ -190,7 +190,7 @@ class Source implements ISource, core\IDumpable {
 
 
     public function addOutputField(opal\query\IField $field) {
-        $fields = array();
+        $fields = [];
         
         if($field instanceof opal\query\IVirtualField) {
             //$fields = $field->getTargetFields();
@@ -290,7 +290,7 @@ class Source implements ISource, core\IDumpable {
     }
     
     public function getDereferencedOutputFields() {
-        $output = array();
+        $output = [];
         
         foreach($this->_outputFields as $mainField) {
             foreach($mainField->dereference() as $field) {
@@ -310,7 +310,7 @@ class Source implements ISource, core\IDumpable {
     }
     
     public function getDereferencedPrivateFields() {
-        $output = array();
+        $output = [];
         
         foreach($this->_privateFields as $mainField) {
             foreach($mainField->dereference() as $field) {

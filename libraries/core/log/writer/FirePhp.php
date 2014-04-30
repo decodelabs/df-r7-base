@@ -22,7 +22,7 @@ class FirePhp implements core\log\IWriter {
     const CHUNK_SIZE = 5000;
 
     protected static $_messageIndex = 0;
-    protected $_buffer = array();
+    protected $_buffer = [];
 
     public static function isAvailable(link\http\IRequestHeaderCollection $headers) {
         if(preg_match_all('/\sFirePHP\/([\.\d]*)\s?/si', $headers->get('user-agent'), $matches) 
@@ -197,7 +197,7 @@ class FirePhp implements core\log\IWriter {
         return $this->_addRow('GROUP_END');
     }
 
-    protected function _addRow($type, $label=null, $body=null, $file=null, $line=null, array $meta=array()) {
+    protected function _addRow($type, $label=null, $body=null, $file=null, $line=null, array $meta=[]) {
         $meta['Type'] = $type;
 
         if($label !== null) {

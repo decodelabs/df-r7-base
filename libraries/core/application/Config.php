@@ -82,7 +82,7 @@ class Config extends core\Config {
     
 // Packages
     public function getActivePackages() {
-        $output = array();
+        $output = [];
         
         if(!isset($this->values['packages']) || !is_array($this->values['packages'])) {
             return $output;

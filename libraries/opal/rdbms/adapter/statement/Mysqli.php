@@ -20,7 +20,7 @@ class Mysqli extends Base {
         $connection = $this->_adapter->getConnection();
         $stmt = $connection->stmt_init();
         
-        $bindings = array();
+        $bindings = [];
         $sql = '';
         $length = strlen($this->_sql);
         $mode = 0;
@@ -89,7 +89,7 @@ class Mysqli extends Base {
             $types = str_repeat('s', count($bindings));
             
             array_unshift($args, $types);
-            call_user_func_array(array($stmt, 'bind_param'), $args);
+            call_user_func_array([$stmt, 'bind_param'], $args);
         }
         
         $stmt->execute();
@@ -107,7 +107,7 @@ class Mysqli extends Base {
     }
 
     protected function _refBindings(array &$bindings) {
-        $refs = array();
+        $refs = [];
         
         foreach($bindings as $key => $value) {
             $refs[$key] = &$bindings[$key];

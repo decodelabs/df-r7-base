@@ -24,7 +24,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
     const WRAP_BODY = true;
     const DEFAULT_ACTIVE_CLASS = 'state-active';
     
-    protected $_rel = array();
+    protected $_rel = [];
     protected $_isActive = false;
     protected $_isComputedActive = null;
     protected $_hrefLang;
@@ -222,7 +222,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
     
 // Relationship
     public function setRelationship($rel) {
-        $this->_rel = array();
+        $this->_rel = [];
         return $this->addRelationship($rel);
     }
     

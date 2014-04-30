@@ -15,7 +15,7 @@ class Slot implements aura\view\IHelper, \ArrayAccess {
     
     use aura\view\THelper;
 
-    protected $_slots = array();
+    protected $_slots = [];
 
     public function startCapture() {
         ob_start();

@@ -79,9 +79,9 @@ interface IFlashMessage {
 class FlashQueue implements \Serializable {
 
     public $limit = 15;
-    public $constant = array();
-    public $queued = array();
-    public $instant = array();
+    public $constant = [];
+    public $queued = [];
+    public $instant = [];
 
     public function serialize() {
         $data = ['l' => $this->limit];

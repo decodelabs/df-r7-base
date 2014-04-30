@@ -138,9 +138,9 @@ class Descriptor implements user\session\IDescriptor {
     }
     
     public function touchInfo($transitionLifeTime=10) {
-        $output = array(
+        $output = [
             'accessTime' => $this->accessTime = time()
-        );
+        ];
         
         if($this->accessTime - $this->transitionTime >= $transitionLifeTime) {
             $output['transitionId'] = $this->transitionId = null;
@@ -214,7 +214,7 @@ class Descriptor implements user\session\IDescriptor {
     }
     
     public function toDataRowArray() {
-        return array(
+        return [
             'internalId' => $this->internalId,
             'externalId' => $this->externalId,
             'transitionId' => $this->transitionId,
@@ -222,6 +222,6 @@ class Descriptor implements user\session\IDescriptor {
             'startTime' => $this->startTime,
             'accessTime' => $this->accessTime,
             'transitionTime' => $this->transitionTime
-        );
+        ];
     }
 }

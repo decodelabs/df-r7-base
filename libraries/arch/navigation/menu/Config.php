@@ -87,11 +87,11 @@ class Config extends core\Config implements IConfig {
         }
         
         if(!isset($output['delegates'])) {
-            $output['delegates'] = array();
+            $output['delegates'] = [];
         }
         
         if(!isset($output['entries'])) {
-            $output['entries'] = array();
+            $output['entries'] = [];
         }
         
         return $output;

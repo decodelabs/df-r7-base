@@ -44,7 +44,7 @@ class Wildcard implements opal\query\IWildcardField, core\IDumpable {
     }
     
     public function dereference() {
-        return array($this);
+        return [$this];
     }
     
     public function isOutputField() {

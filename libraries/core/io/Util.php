@@ -103,10 +103,10 @@ class Util implements IUtil {
 
     public static function listFilesIn($path) {
         if(!is_dir($path)) {
-            return array();
+            return [];
         }
 
-        $output = array();
+        $output = [];
 
         foreach(new \DirectoryIterator($path) as $item) {
             if($item->isFile()) {
@@ -119,10 +119,10 @@ class Util implements IUtil {
 
     public static function listDirsIn($path) {
         if(!is_dir($path)) {
-            return array();
+            return [];
         }
 
-        $output = array();
+        $output = [];
 
         foreach(new \DirectoryIterator($path) as $item) {
             if($item->isDir()) {

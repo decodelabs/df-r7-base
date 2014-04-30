@@ -29,7 +29,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, link
     
     protected $_routeMatchCount = 0;
     protected $_routeCount = 0;
-    protected $_routers = array();
+    protected $_routers = [];
     protected $_defaultRouteProtocol = null;
     
     
@@ -156,7 +156,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, link
         return $request;
     }
 
-    protected $_routerCache = array();
+    protected $_routerCache = [];
 
     protected function _getRouterFor(arch\IRequest $request) {
         $location = $request->getDirectoryLocation();

@@ -16,7 +16,7 @@ class MultiPart implements IMultiPart, core\IDumpable {
 
     private static $_boundaryCounter = 0;
 
-    protected $_parts = array();
+    protected $_parts = [];
 
     public static function fromString($string) {
         $class = get_called_class();
@@ -135,7 +135,7 @@ class MultiPart implements IMultiPart, core\IDumpable {
     }
 
     public function clearParts() {
-        $this->_parts = array();
+        $this->_parts = [];
         return $this;
     }
 
@@ -248,7 +248,7 @@ class MultiPart implements IMultiPart, core\IDumpable {
 
 // Dump
     public function getDumpProperties() {
-        $output = array();
+        $output = [];
 
         foreach($this->_headers as $key => $header) {
             $output[] = new core\debug\dumper\Property($key, $header, 'protected');

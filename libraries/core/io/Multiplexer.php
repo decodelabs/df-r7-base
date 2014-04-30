@@ -13,7 +13,7 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
     const REGISTRY_KEY = 'multiplexer';
 
     protected $_id;
-    protected $_channels = array();
+    protected $_channels = [];
 
     public static function defaultFactory($id=null) {
         if(isset($_SERVER['argv']) && !df\Launchpad::$invokingApplication) {
@@ -59,7 +59,7 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
 
 // Channels
     public function setChannels(array $channels) {
-        $this->_channels = array();
+        $this->_channels = [];
         return $this->addChannels($channels);
     }
 
@@ -110,7 +110,7 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
     }
 
     public function clearChannels() {
-        $this->_channels = array();
+        $this->_channels = [];
         return $this;
     }
 

@@ -147,7 +147,7 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
     }
     
     public function push($value) {
-        call_user_func_array(array($this->_children, 'push'), func_get_args());
+        call_user_func_array([$this->_children, 'push'], func_get_args());
         return $this;
     }
     
@@ -156,7 +156,7 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
     }
     
     public function unshift($value) {
-        call_user_func_array(array($this->_children, 'unshift'), func_get_args());
+        call_user_func_array([$this->_children, 'unshift'], func_get_args());
         return $this;
     }
 

@@ -20,30 +20,30 @@ abstract class Adapter implements IAdapter {
     const ENTRY_DN_ATTRIBUTE = 'entryDN';
     const GLOBAL_ID_ATTRIBUTE = 'entryUUID';
 
-    protected static $_arrayAttrs = array(
+    protected static $_arrayAttrs = [
         'objectClass', 'memberOf', 'dSCorePropagationData', 'namingContexts',
         'supportedControl', 'supportedLDAPVersion', 'supportedLDAPPolicies',
         'supportedSASLMechanisms', 'supportedCapabilities'
-    );
+    ];
     
-    protected static $_dateAttrs = array(
+    protected static $_dateAttrs = [
         'whenCreated', 'whenChanged', 'badPasswordTime', 'lastLogoff', 'lastLogon',
         'pwdLastSet', 'accountExpires', 'lastLogonTimestamp', 'currentTime'
-    );
+    ];
     
-    protected static $_booleanAttrs = array(
+    protected static $_booleanAttrs = [
         'isSynchronized', 'isGlobalCatalogReady'
-    );
+    ];
     
-    protected static $_binaryAttrs = array(
+    protected static $_binaryAttrs = [
         'objectGUID', 'objectSid'
-    );
+    ];
 
-    protected static $_metaFields = array(
+    protected static $_metaFields = [
         'structuralObjectClass', 'entryUUID', 'creatorsName', 'createTimestamp',
         'entryCSN', 'modifiersName', 'modifyTimestamp', 'entryDN', 
         'subschemaSubentry', 'hasSubordinates'
-    );
+    ];
     
     protected $_connection;
     protected $_context;

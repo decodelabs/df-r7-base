@@ -46,7 +46,7 @@ class Combine implements opal\query\ICombineField, core\IDumpable {
     }
     
     public function dereference() {
-        return array($this);
+        return [$this];
     }
 
     public function isOutputField() {

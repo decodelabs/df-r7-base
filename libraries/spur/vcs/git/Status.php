@@ -11,8 +11,8 @@ use df\spur;
     
 class Status implements IStatus, core\IDumpable {
 
-    protected $_tracked = array();
-    protected $_untracked = array();
+    protected $_tracked = [];
+    protected $_untracked = [];
     protected $_repository;
 
     public function __construct(IRepository $repository) {
@@ -21,8 +21,8 @@ class Status implements IStatus, core\IDumpable {
     }
 
     public function refresh() {
-        $this->_tracked = array();
-        $this->_untracked = array();
+        $this->_tracked = [];
+        $this->_untracked = [];
 
         $result = $this->_repository->_runCommand('status', [
             '--porcelain',

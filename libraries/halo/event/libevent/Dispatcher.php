@@ -14,8 +14,8 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
     
     protected $_base;
     protected $_cycleHandlerEvent;
-    protected $_signalEvents = array();
-    protected $_timerEvents = array();
+    protected $_signalEvents = [];
+    protected $_timerEvents = [];
     
     public function __construct() {
         $this->_base = event_base_new();

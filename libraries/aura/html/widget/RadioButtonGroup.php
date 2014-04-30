@@ -47,9 +47,9 @@ class RadioButtonGroup extends Base implements IUngroupedSelectionInputWidget, c
                 $labelTag->addClass($this->_labelClass);
             }
 
-            $inputTag = new aura\html\Tag('input', array(
+            $inputTag = new aura\html\Tag('input', [
                 'type' => static::INPUT_TYPE
-            ));
+            ]);
             
             $this->_applyFormDataAttributes($inputTag);
             $this->_applyInputAttributes($inputTag);

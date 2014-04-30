@@ -12,7 +12,7 @@ use df\arch;
 
 class FieldError extends Base implements IFormOrientedWidget, core\IErrorContainer, core\IDumpable {
     
-    protected $_errors = array();
+    protected $_errors = [];
     
     public function __construct(arch\IContext $context, $errors=null) {
         if($errors !== null) {
@@ -36,7 +36,7 @@ class FieldError extends Base implements IFormOrientedWidget, core\IErrorContain
             $output->push(
                 new aura\html\Element(
                     'div', $error,
-                    array('data-errorid' => $code)
+                    ['data-errorid' => $code]
                 )
             );
         }
@@ -53,7 +53,7 @@ class FieldError extends Base implements IFormOrientedWidget, core\IErrorContain
     }
     
     public function setErrors(array $errors) {
-        $this->_errors = array();
+        $this->_errors = [];
         return $this->addErrors($errors);
     }
     
@@ -91,7 +91,7 @@ class FieldError extends Base implements IFormOrientedWidget, core\IErrorContain
     }
     
     public function clearErrors() {
-        $this->_errors = array();
+        $this->_errors = [];
         return $this;
     }
     

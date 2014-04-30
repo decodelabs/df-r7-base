@@ -470,7 +470,7 @@ class Gd extends Base implements neon\raster\IImageManipulationDriver, neon\rast
         }
         
         $cols = $rotate ? $height : $width;
-        $rangeList = array();
+        $rangeList = [];
         
         $colors = $this->_normalizeGradientColorSet($colors, $totalRows);
         

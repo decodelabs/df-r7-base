@@ -453,7 +453,7 @@ trait TQuery_Correlatable {
 
     public function getCorrelations() {
         $source = $this->getSource();
-        $output = array();
+        $output = [];
 
         foreach($source->getOutputFields() as $name => $field) {
             if($field instanceof ICorrelationField) {
@@ -472,7 +472,7 @@ trait TQuery_Correlatable {
  */
 trait TQuery_Joinable {
     
-    protected $_joins = array();
+    protected $_joins = [];
     
 // Inner
     public function join($field1=null) {
@@ -583,7 +583,7 @@ trait TQuery_Joinable {
             $sourceManager->removeSource($sourceAlias);
         }
         
-        $this->_joins = array();
+        $this->_joins = [];
         return $this;
     }
 }
@@ -592,7 +592,7 @@ trait TQuery_Joinable {
 
 trait TQuery_JoinConstrainable {
     
-    protected $_joinConstraints = array();
+    protected $_joinConstraints = [];
     
     public function joinConstraint() {
         return $this->_newQuery()->beginJoinConstraint($this, IJoinQuery::INNER);
@@ -630,7 +630,7 @@ trait TQuery_JoinConstrainable {
             $sourceManager->removeSource($sourceAlias);
         }
         
-        $this->_joinConstraints = array();
+        $this->_joinConstraints = [];
         return $this;
     }
 }
@@ -681,7 +681,7 @@ trait TQuery_JoinClauseFactoryBase {
             return $this->_joinClauseList->getNonLocalFieldReferences();
         }
 
-        return array();
+        return [];
     }
     
     public function referencesSourceAliases(array $sourceAliases) {
@@ -747,7 +747,7 @@ trait TQuery_ParentAwareJoinClauseFactory {
  */
 trait TQuery_Populatable {
     
-    protected $_populates = array();
+    protected $_populates = [];
 
     public function populate($field1) {
         return $this->_newQuery()->beginPopulate($this, func_get_args(), IPopulateQuery::TYPE_ALL)->endPopulate();
@@ -790,7 +790,7 @@ trait TQuery_Populatable {
     }
 
     public function clearPopulates() {
-        $this->_populates = array();
+        $this->_populates = [];
         return $this;
     }
 
@@ -1231,7 +1231,7 @@ trait TQuery_AttachmentValueExtension {
  */
 trait TQuery_PrerequisiteClauseFactory {
     
-    protected $_prerequisites = array();
+    protected $_prerequisites = [];
     
     public function wherePrerequisite($field, $operator, $value) {
         $source = $this->getSource();
@@ -1273,7 +1273,7 @@ trait TQuery_PrerequisiteClauseFactory {
     }
     
     public function clearPrerequisites() {
-        $this->_prerequisites = array();
+        $this->_prerequisites = [];
         return $this;
     }
 }
@@ -1459,7 +1459,7 @@ trait TQuery_PrerequisiteAwareWhereClauseFactory {
  */
 trait TQuery_Groupable {
     
-    protected $_groups = array();
+    protected $_groups = [];
     
     public function groupBy($field1) {
         $source = $this->getSource();
@@ -1477,7 +1477,7 @@ trait TQuery_Groupable {
     }
     
     public function clearGroupFields() {
-        $this->_groups = array();
+        $this->_groups = [];
         return $this;
     }
 }
@@ -1575,7 +1575,7 @@ trait TQuery_HavingClauseFactory {
  */
 trait TQuery_Orderable {
     
-    protected $_order = array();
+    protected $_order = [];
     
     public function orderBy($field1) {
         $source = $this->getSource();
@@ -1605,7 +1605,7 @@ trait TQuery_Orderable {
     }
     
     public function clearOrderDirectives() {
-        $this->_order = array();
+        $this->_order = [];
         return $this;
     }
 
@@ -1949,7 +1949,7 @@ trait TQuery_DataInsert {
         }
 
         $fields = $index->getFields();
-        $values = array();
+        $values = [];
         
         foreach($fields as $name => $field) {
             if($originalId 
@@ -1974,7 +1974,7 @@ trait TQuery_DataInsert {
         }
 
         $schema = $adapter->getQueryAdapterSchema();
-        $values = array();
+        $values = [];
         
         foreach($schema->getFields() as $name => $field) {
             if($field instanceof opal\schema\INullPrimitiveField) {
@@ -2012,8 +2012,8 @@ trait TQuery_DataInsert {
 
 trait TQuery_BatchDataInsert {
     
-    protected $_rows = array();
-    protected $_fields = array();
+    protected $_rows = [];
+    protected $_fields = [];
     protected $_dereferencedFields = null;
     protected $_flushThreshold = 500;
     protected $_inserted = 0;
@@ -2077,7 +2077,7 @@ trait TQuery_BatchDataInsert {
     }
     
     public function clearRows() {
-        $this->_rows = array();
+        $this->_rows = [];
         return $this;
     }
     
@@ -2126,11 +2126,11 @@ trait TQuery_BatchDataInsert {
 
         $schema = $adapter->getQueryAdapterSchema();
         $fields = $schema->getFields();
-        $queryFields = array();
-        $values = array();
+        $queryFields = [];
+        $values = [];
         
         foreach($rows as $row) {
-            $rowValues = array();
+            $rowValues = [];
             
             foreach($fields as $name => $field) {
                 if($field instanceof opal\schema\INullPrimitiveField) {
@@ -2180,13 +2180,13 @@ trait TQuery_BatchDataInsert {
  */
 trait TQuery_DataUpdate {
     
-    protected $_valueMap = array();
+    protected $_valueMap = [];
     
     public function set($key, $value=null) {
         if(is_array($key)) {
             $values = $key;
         } else {
-            $values = array($key => $value);
+            $values = [$key => $value];
         }
         
         $this->_valueMap = array_merge($this->_valueMap, $values);
@@ -2293,7 +2293,7 @@ trait TQuery_EntryPoint {
             ->beginInsert($row);
     }
     
-    public function batchInsert($rows=array()) {
+    public function batchInsert($rows=[]) {
         return Initiator::factory($this->_getEntryPointApplication())
             ->beginBatchInsert($rows);
     }
@@ -2303,7 +2303,7 @@ trait TQuery_EntryPoint {
             ->beginReplace($row);
     }
     
-    public function batchReplace($rows=array()) {
+    public function batchReplace($rows=[]) {
         return Initiator::factory($this->_getEntryPointApplication())
             ->beginBatchReplace($rows);
     }
@@ -2370,7 +2370,7 @@ trait TQuery_ImplicitSourceEntryPoint {
             ->into($this);
     }
     
-    public function batchInsert($rows=array()) {
+    public function batchInsert($rows=[]) {
         return Initiator::factory($this->_getEntryPointApplication())
             ->beginBatchInsert($rows)
             ->into($this);
@@ -2382,7 +2382,7 @@ trait TQuery_ImplicitSourceEntryPoint {
             ->in($this);
     }
     
-    public function batchReplace($rows=array()) {
+    public function batchReplace($rows=[]) {
         return Initiator::factory($this->_getEntryPointApplication())
             ->beginBatchReplace($rows)
             ->in($this);

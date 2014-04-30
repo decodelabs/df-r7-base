@@ -159,14 +159,14 @@ interface IErrorContainer {
 
 trait TErrorContainer {
     
-    protected $_errors = array();
+    protected $_errors = [];
     
     public function isValid() {
         return $this->hasErrors();
     }
     
     public function setErrors(array $errors) {
-        $this->_errors = array();
+        $this->_errors = [];
         return $this->addErrors($errors);
     }
     
@@ -204,7 +204,7 @@ trait TErrorContainer {
     }
     
     public function clearErrors() {
-        $this->_errors = array();
+        $this->_errors = [];
         return $this;
     }
     
@@ -229,10 +229,10 @@ interface IAttributeContainer {
 
 trait TAttributeContainer {
     
-    protected $_attributes = array();
+    protected $_attributes = [];
     
     public function setAttributes(array $attributes) {
-        $this->_attributes = array();
+        $this->_attributes = [];
         return $this->addAttributes($attributes);
     }
     
@@ -305,7 +305,7 @@ trait TArrayAccessedAttributeContainer {
 interface IArgContainer {
     public function setArgs(array $args);
     public function addArgs(array $args);
-    public function getArgs(array $add=array());
+    public function getArgs(array $add=[]);
     public function setArg($name, $value);
     public function getArg($name, $default=null);
     public function hasArg($name);
@@ -314,10 +314,10 @@ interface IArgContainer {
 
 trait TArgContainer {
     
-    protected $_args = array();
+    protected $_args = [];
     
     public function setArgs(array $args) {
-        $this->_args = array();
+        $this->_args = [];
         return $this->addArgs($args);
     }
     
@@ -329,7 +329,7 @@ trait TArgContainer {
         return $this;
     }
     
-    public function getArgs(array $add=array()) {
+    public function getArgs(array $add=[]) {
         return array_merge($this->_args, $add);
     }
     
@@ -389,7 +389,7 @@ interface IHelperProvider {
 
 trait THelperProvider {
     
-    protected $_helpers = array();
+    protected $_helpers = [];
     
     public function __get($key) {
         return $this->getHelper($key);
@@ -812,7 +812,7 @@ trait TContextProxy {
     
     public function __call($method, $args) {
         if($this->_context) {
-            return call_user_func_array(array($this->_context, $method), $args);
+            return call_user_func_array([$this->_context, $method], $args);
         }
     }
     

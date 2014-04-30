@@ -23,7 +23,7 @@ class Timezones extends Base implements ITimezonesModule {
         if(isset(self::$_countries[$country])) {
             return self::$_countries[$country];
         } else {
-            return array();
+            return [];
         }
     }
     
@@ -44,7 +44,7 @@ class Timezones extends Base implements ITimezonesModule {
         if(isset(self::$_continents[$continent])) {
             return self::$_continents[$continent];
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -65,7 +65,7 @@ class Timezones extends Base implements ITimezonesModule {
     }
     
     public function getList(array $ids=null) {
-        $output = array();
+        $output = [];
         
         foreach($this->getContinentList() as $key => $val) {
             $output = array_merge($output, $val);
@@ -108,18 +108,18 @@ class Timezones extends Base implements ITimezonesModule {
         }
     }
 
-    protected static $_continents = array();
-    protected static $_countries = array(
-        'AD' => array('Europe/Andorra'),
-        'AE' => array('Asia/Dubai'),
-        'AF' => array('Asia/Kabul'),
-        'AG' => array('America/Antigua'),
-        'AI' => array('America/Anguilla'),
-        'AL' => array('Europe/Tirane'),
-        'AM' => array('Asia/Yerevan'),
-        'AN' => array('America/Curacao'),
-        'AO' => array('Africa/Luanda'),
-        'AQ' => array(
+    protected static $_continents = [];
+    protected static $_countries = [
+        'AD' => ['Europe/Andorra'],
+        'AE' => ['Asia/Dubai'],
+        'AF' => ['Asia/Kabul'],
+        'AG' => ['America/Antigua'],
+        'AI' => ['America/Anguilla'],
+        'AL' => ['Europe/Tirane'],
+        'AM' => ['Asia/Yerevan'],
+        'AN' => ['America/Curacao'],
+        'AO' => ['Africa/Luanda'],
+        'AQ' => [
             'Antarctica/McMurdo',
             'Antarctica/South_Pole',
             'Antarctica/Rothera',
@@ -130,8 +130,8 @@ class Timezones extends Base implements ITimezonesModule {
             'Antarctica/Vostok',
             'Antarctica/DumontDUrville',
             'Antarctica/Syowa'
-        ),
-        'AR' => array(
+        ],
+        'AR' => [
             'America/Buenos_Aires',
             'America/Cordoba',
             'America/Jujuy',
@@ -143,10 +143,10 @@ class Timezones extends Base implements ITimezonesModule {
             'America/ComodRivadavia',
             'America/Rio_Gallegos',
             'America/Ushuaia'
-        ),
-        'AS' => array('Pacific/Pago_Pago'),
-        'AT' => array('Europe/Vienna'),
-        'AU' => array(
+        ],
+        'AS' => ['Pacific/Pago_Pago'],
+        'AT' => ['Europe/Vienna'],
+        'AU' => [
             'Australia/Lord_Howe',
             'Australia/Hobart',
             'Australia/Melbourne',
@@ -157,23 +157,23 @@ class Timezones extends Base implements ITimezonesModule {
             'Australia/Adelaide',
             'Australia/Darwin',
             'Australia/Perth'
-        ),
-        'AW' => array('America/Aruba'),
-        'AX' => array('Europe/Mariehamn'),
-        'AZ' => array('Asia/Baku'),
-        'BA' => array('Europe/Sarajevo'),
-        'BB' => array('America/Barbados'),
-        'BD' => array('Asia/Dhaka'),
-        'BE' => array('Europe/Brussels'),
-        'BF' => array('Africa/Ouagadougou'),
-        'BG' => array('Europe/Sofia'),
-        'BH' => array('Asia/Bahrain'),
-        'BI' => array('Africa/Bujumbura'),
-        'BJ' => array('Africa/Porto-Novo'),
-        'BM' => array('Atlantic/Bermuda'),
-        'BN' => array('Asia/Brunei'),
-        'BO' => array('America/La_Paz'),
-        'BR' => array(
+        ],
+        'AW' => ['America/Aruba'],
+        'AX' => ['Europe/Mariehamn'],
+        'AZ' => ['Asia/Baku'],
+        'BA' => ['Europe/Sarajevo'],
+        'BB' => ['America/Barbados'],
+        'BD' => ['Asia/Dhaka'],
+        'BE' => ['Europe/Brussels'],
+        'BF' => ['Africa/Ouagadougou'],
+        'BG' => ['Europe/Sofia'],
+        'BH' => ['Asia/Bahrain'],
+        'BI' => ['Africa/Bujumbura'],
+        'BJ' => ['Africa/Porto-Novo'],
+        'BM' => ['Atlantic/Bermuda'],
+        'BN' => ['Asia/Brunei'],
+        'BO' => ['America/La_Paz'],
+        'BR' => [
             'America/Noronha',
             'America/Belem',
             'America/Fortaleza',
@@ -189,13 +189,13 @@ class Timezones extends Base implements ITimezonesModule {
             'America/Manaus',
             'America/Eirunepe',
             'America/Rio_Branco'
-        ),
-        'BS' => array('America/Nassau'),
-        'BT' => array('Asia/Thimphu'),
-        'BW' => array('Africa/Gaborone'),
-        'BY' => array('Europe/Minsk'),
-        'BZ' => array('America/Belize'),
-        'CA' => array(
+        ],
+        'BS' => ['America/Nassau'],
+        'BT' => ['Asia/Thimphu'],
+        'BW' => ['Africa/Gaborone'],
+        'BY' => ['Europe/Minsk'],
+        'BZ' => ['America/Belize'],
+        'CA' => [
             'America/St_Johns',
             'America/Halifax',
             'America/Glace_Bay',
@@ -219,177 +219,177 @@ class Timezones extends Base implements ITimezonesModule {
             'America/Vancouver',
             'America/Whitehorse',
             'America/Dawson'
-        ),
-        'CC' => array('Indian/Cocos'),
-        'CD' => array(
+        ],
+        'CC' => ['Indian/Cocos'],
+        'CD' => [
             'Africa/Kinshasa',
             'Africa/Lubumbashi'
-        ),
-        'CF' => array('Africa/Bangui'),
-        'CG' => array('Africa/Brazzaville'),
-        'CH' => array('Europe/Zurich'),
-        'CI' => array('Africa/Abidjan'),
-        'CK' => array('Pacific/Rarotonga'),
-        'CL' => array(
+        ],
+        'CF' => ['Africa/Bangui'],
+        'CG' => ['Africa/Brazzaville'],
+        'CH' => ['Europe/Zurich'],
+        'CI' => ['Africa/Abidjan'],
+        'CK' => ['Pacific/Rarotonga'],
+        'CL' => [
             'America/Santiago',
             'Pacific/Easter'
-        ),
-        'CM' => array('Africa/Douala'),
-        'CN' => array(
+        ],
+        'CM' => ['Africa/Douala'],
+        'CN' => [
             'Asia/Shanghai',
             'Asia/Harbin',
             'Asia/Chongqing',
             'Asia/Urumqi',
             'Asia/Kashgar'
-        ),
-        'CO' => array('America/Bogota'),
-        'CR' => array('America/Costa_Rica'),
-        'CS' => array('Europe/Belgrade'),
-        'CU' => array('America/Havana'),
-        'CV' => array('Atlantic/Cape_Verde'),
-        'CX' => array('Indian/Christmas'),
-        'CY' => array('Asia/Nicosia'),
-        'CZ' => array('Europe/Prague'),
-        'DE' => array('Europe/Berlin'),
-        'DJ' => array('Africa/Djibouti'),
-        'DK' => array('Europe/Copenhagen'),
-        'DM' => array('America/Dominica'),
-        'DO' => array('America/Santo_Domingo'),
-        'DZ' => array('Africa/Algiers'),
-        'EC' => array(
+        ],
+        'CO' => ['America/Bogota'],
+        'CR' => ['America/Costa_Rica'],
+        'CS' => ['Europe/Belgrade'],
+        'CU' => ['America/Havana'],
+        'CV' => ['Atlantic/Cape_Verde'],
+        'CX' => ['Indian/Christmas'],
+        'CY' => ['Asia/Nicosia'],
+        'CZ' => ['Europe/Prague'],
+        'DE' => ['Europe/Berlin'],
+        'DJ' => ['Africa/Djibouti'],
+        'DK' => ['Europe/Copenhagen'],
+        'DM' => ['America/Dominica'],
+        'DO' => ['America/Santo_Domingo'],
+        'DZ' => ['Africa/Algiers'],
+        'EC' => [
             'America/Guayaquil',
             'Pacific/Galapagos'
-        ),
-        'EE' => array('Europe/Tallinn'),
-        'EG' => array('Africa/Cairo'),
-        'EH' => array('Africa/El_Aaiun'),
-        'ER' => array('Africa/Asmera'),
-        'ES' => array(
+        ],
+        'EE' => ['Europe/Tallinn'],
+        'EG' => ['Africa/Cairo'],
+        'EH' => ['Africa/El_Aaiun'],
+        'ER' => ['Africa/Asmera'],
+        'ES' => [
             'Europe/Madrid',
             'Africa/Ceuta',
             'Atlantic/Canary'
-        ),
-        'ET' => array('Africa/Addis_Ababa'),
-        'FI' => array('Europe/Helsinki'),
-        'FJ' => array('Pacific/Fiji'),
-        'FK' => array('Atlantic/Stanley'),
-        'FM' => array(
+        ],
+        'ET' => ['Africa/Addis_Ababa'],
+        'FI' => ['Europe/Helsinki'],
+        'FJ' => ['Pacific/Fiji'],
+        'FK' => ['Atlantic/Stanley'],
+        'FM' => [
             'Pacific/Yap',
             'Pacific/Truk',
             'Pacific/Ponape',
             'Pacific/Kosrae'
-        ),
-        'FO' => array('Atlantic/Faeroe'),
-        'FR' => array('Europe/Paris'),
-        'GA' => array('Africa/Libreville'),
-        'GB' => array(
+        ],
+        'FO' => ['Atlantic/Faeroe'],
+        'FR' => ['Europe/Paris'],
+        'GA' => ['Africa/Libreville'],
+        'GB' => [
             'Europe/London',
             'Europe/Belfast'
-        ),
-        'GD' => array('America/Grenada'),
-        'GE' => array('Asia/Tbilisi'),
-        'GF' => array('America/Cayenne'),
-        'GH' => array('Africa/Accra'),
-        'GI' => array('Europe/Gibraltar'),
-        'GL' => array(
+        ],
+        'GD' => ['America/Grenada'],
+        'GE' => ['Asia/Tbilisi'],
+        'GF' => ['America/Cayenne'],
+        'GH' => ['Africa/Accra'],
+        'GI' => ['Europe/Gibraltar'],
+        'GL' => [
             'America/Godthab',
             'America/Danmarkshavn',
             'America/Scoresbysund',
             'America/Thule'
-        ),
-        'GM' => array('Africa/Banjul'),
-        'GN' => array('Africa/Conakry'),
-        'GP' => array('America/Guadeloupe'),
-        'GQ' => array('Africa/Malabo'),
-        'GR' => array('Europe/Athens'),
-        'GS' => array('Atlantic/South_Georgia'),
-        'GT' => array('America/Guatemala'),
-        'GU' => array('Pacific/Guam'),
-        'GW' => array('Africa/Bissau'),
-        'GY' => array('America/Guyana'),
-        'HK' => array('Asia/Hong_Kong'),
-        'HN' => array('America/Tegucigalpa'),
-        'HR' => array('Europe/Zagreb'),
-        'HT' => array('America/Port-au-Prince'),
-        'HU' => array('Europe/Budapest'),
-        'ID' => array(
+        ],
+        'GM' => ['Africa/Banjul'],
+        'GN' => ['Africa/Conakry'],
+        'GP' => ['America/Guadeloupe'],
+        'GQ' => ['Africa/Malabo'],
+        'GR' => ['Europe/Athens'],
+        'GS' => ['Atlantic/South_Georgia'],
+        'GT' => ['America/Guatemala'],
+        'GU' => ['Pacific/Guam'],
+        'GW' => ['Africa/Bissau'],
+        'GY' => ['America/Guyana'],
+        'HK' => ['Asia/Hong_Kong'],
+        'HN' => ['America/Tegucigalpa'],
+        'HR' => ['Europe/Zagreb'],
+        'HT' => ['America/Port-au-Prince'],
+        'HU' => ['Europe/Budapest'],
+        'ID' => [
             'Asia/Jakarta',
             'Asia/Pontianak',
             'Asia/Makassar',
             'Asia/Jayapura'
-        ),
-        'IE' => array('Europe/Dublin'),
-        'IL' => array('Asia/Jerusalem'),
-        'IN' => array('Asia/Calcutta'),
-        'IO' => array('Indian/Chagos'),
-        'IQ' => array('Asia/Baghdad'),
-        'IR' => array('Asia/Tehran'),
-        'IS' => array('Atlantic/Reykjavik'),
-        'IT' => array('Europe/Rome'),
-        'JM' => array('America/Jamaica'),
-        'JO' => array('Asia/Amman'),
-        'JP' => array('Asia/Tokyo'),
-        'KE' => array('Africa/Nairobi'),
-        'KG' => array('Asia/Bishkek'),
-        'KH' => array('Asia/Phnom_Penh'),
-        'KI' => array(
+        ],
+        'IE' => ['Europe/Dublin'],
+        'IL' => ['Asia/Jerusalem'],
+        'IN' => ['Asia/Calcutta'],
+        'IO' => ['Indian/Chagos'],
+        'IQ' => ['Asia/Baghdad'],
+        'IR' => ['Asia/Tehran'],
+        'IS' => ['Atlantic/Reykjavik'],
+        'IT' => ['Europe/Rome'],
+        'JM' => ['America/Jamaica'],
+        'JO' => ['Asia/Amman'],
+        'JP' => ['Asia/Tokyo'],
+        'KE' => ['Africa/Nairobi'],
+        'KG' => ['Asia/Bishkek'],
+        'KH' => ['Asia/Phnom_Penh'],
+        'KI' => [
             'Pacific/Tarawa',
             'Pacific/Enderbury',
             'Pacific/Kiritimati'
-        ),
-        'KM' => array('Indian/Comoro'),
-        'KN' => array('America/St_Kitts'),
-        'KP' => array('Asia/Pyongyang'),
-        'KR' => array('Asia/Seoul'),
-        'KW' => array('Asia/Kuwait'),
-        'KY' => array('America/Cayman'),
-        'KZ' => array(
+        ],
+        'KM' => ['Indian/Comoro'],
+        'KN' => ['America/St_Kitts'],
+        'KP' => ['Asia/Pyongyang'],
+        'KR' => ['Asia/Seoul'],
+        'KW' => ['Asia/Kuwait'],
+        'KY' => ['America/Cayman'],
+        'KZ' => [
             'Asia/Almaty',
             'Asia/Qyzylorda',
             'Asia/Aqtobe',
             'Asia/Aqtau',
             'Asia/Oral'
-        ),
-        'LA' => array('Asia/Vientiane'),
-        'LB' => array('Asia/Beirut'),
-        'LC' => array('America/St_Lucia'),
-        'LI' => array('Europe/Vaduz'),
-        'LK' => array('Asia/Colombo'),
-        'LR' => array('Africa/Monrovia'),
-        'LS' => array('Africa/Maseru'),
-        'LT' => array('Europe/Vilnius'),
-        'LU' => array('Europe/Luxembourg'),
-        'LV' => array('Europe/Riga'),
-        'LY' => array('Africa/Tripoli'),
-        'MA' => array('Africa/Casablanca'),
-        'MC' => array('Europe/Monaco'),
-        'MD' => array('Europe/Chisinau'),
-        'MG' => array('Indian/Antananarivo'),
-        'MH' => array(
+        ],
+        'LA' => ['Asia/Vientiane'],
+        'LB' => ['Asia/Beirut'],
+        'LC' => ['America/St_Lucia'],
+        'LI' => ['Europe/Vaduz'],
+        'LK' => ['Asia/Colombo'],
+        'LR' => ['Africa/Monrovia'],
+        'LS' => ['Africa/Maseru'],
+        'LT' => ['Europe/Vilnius'],
+        'LU' => ['Europe/Luxembourg'],
+        'LV' => ['Europe/Riga'],
+        'LY' => ['Africa/Tripoli'],
+        'MA' => ['Africa/Casablanca'],
+        'MC' => ['Europe/Monaco'],
+        'MD' => ['Europe/Chisinau'],
+        'MG' => ['Indian/Antananarivo'],
+        'MH' => [
             'Pacific/Majuro',
             'Pacific/Kwajalein'
-        ),
-        'MK' => array('Europe/Skopje'),
-        'ML' => array(
+        ],
+        'MK' => ['Europe/Skopje'],
+        'ML' => [
             'Africa/Bamako',
             'Africa/Timbuktu'
-        ),
-        'MM' => array('Asia/Rangoon'),
-        'MN' => array(
+        ],
+        'MM' => ['Asia/Rangoon'],
+        'MN' => [
             'Asia/Ulaanbaatar',
             'Asia/Hovd',
             'Asia/Choibalsan'
-        ),
-        'MO' => array('Asia/Macau'),
-        'MP' => array('Pacific/Saipan'),
-        'MQ' => array('America/Martinique'),
-        'MR' => array('Africa/Nouakchott'),
-        'MS' => array('America/Montserrat'),
-        'MT' => array('Europe/Malta'),
-        'MU' => array('Indian/Mauritius'),
-        'MV' => array('Indian/Maldives'),
-        'MW' => array('Africa/Blantyre'),
-        'MX' => array(
+        ],
+        'MO' => ['Asia/Macau'],
+        'MP' => ['Pacific/Saipan'],
+        'MQ' => ['America/Martinique'],
+        'MR' => ['Africa/Nouakchott'],
+        'MS' => ['America/Montserrat'],
+        'MT' => ['Europe/Malta'],
+        'MU' => ['Indian/Mauritius'],
+        'MV' => ['Indian/Maldives'],
+        'MW' => ['Africa/Blantyre'],
+        'MX' => [
             'America/Mexico_City',
             'America/Cancun',
             'America/Merida',
@@ -398,54 +398,54 @@ class Timezones extends Base implements ITimezonesModule {
             'America/Chihuahua',
             'America/Hermosillo',
             'America/Tijuana'
-        ),
-        'MY' => array(
+        ],
+        'MY' => [
             'Asia/Kuala_Lumpur',
             'Asia/Kuching'
-        ),
-        'MZ' => array('Africa/Maputo'),
-        'NA' => array('Africa/Windhoek'),
-        'NC' => array('Pacific/Noumea'),
-        'NE' => array('Africa/Niamey'),
-        'NF' => array('Pacific/Norfolk'),
-        'NG' => array('Africa/Lagos'),
-        'NI' => array('America/Managua'),
-        'NL' => array('Europe/Amsterdam'),
-        'NO' => array('Europe/Oslo'),
-        'NP' => array('Asia/Katmandu'),
-        'NR' => array('Pacific/Nauru'),
-        'NU' => array('Pacific/Niue'),
-        'NZ' => array(
+        ],
+        'MZ' => ['Africa/Maputo'],
+        'NA' => ['Africa/Windhoek'],
+        'NC' => ['Pacific/Noumea'],
+        'NE' => ['Africa/Niamey'],
+        'NF' => ['Pacific/Norfolk'],
+        'NG' => ['Africa/Lagos'],
+        'NI' => ['America/Managua'],
+        'NL' => ['Europe/Amsterdam'],
+        'NO' => ['Europe/Oslo'],
+        'NP' => ['Asia/Katmandu'],
+        'NR' => ['Pacific/Nauru'],
+        'NU' => ['Pacific/Niue'],
+        'NZ' => [
             'Pacific/Auckland',
             'Pacific/Chatham'
-        ),
-        'OM' => array('Asia/Muscat'),
-        'PA' => array('America/Panama'),
-        'PE' => array('America/Lima'),
-        'PF' => array(
+        ],
+        'OM' => ['Asia/Muscat'],
+        'PA' => ['America/Panama'],
+        'PE' => ['America/Lima'],
+        'PF' => [
             'Pacific/Tahiti',
             'Pacific/Marquesas',
             'Pacific/Gambier'
-        ),
-        'PG' => array('Pacific/Port_Moresby'),
-        'PH' => array('Asia/Manila'),
-        'PK' => array('Asia/Karachi'),
-        'PL' => array('Europe/Warsaw'),
-        'PM' => array('America/Miquelon'),
-        'PN' => array('Pacific/Pitcairn'),
-        'PR' => array('America/Puerto_Rico'),
-        'PS' => array('Asia/Gaza'),
-        'PT' => array(
+        ],
+        'PG' => ['Pacific/Port_Moresby'],
+        'PH' => ['Asia/Manila'],
+        'PK' => ['Asia/Karachi'],
+        'PL' => ['Europe/Warsaw'],
+        'PM' => ['America/Miquelon'],
+        'PN' => ['Pacific/Pitcairn'],
+        'PR' => ['America/Puerto_Rico'],
+        'PS' => ['Asia/Gaza'],
+        'PT' => [
             'Europe/Lisbon',
             'Atlantic/Madeira',
             'Atlantic/Azores'
-        ),
-        'PW' => array('Pacific/Palau'),
-        'PY' => array('America/Asuncion'),
-        'QA' => array('Asia/Qatar'),
-        'RE' => array('Indian/Reunion'),
-        'RO' => array('Europe/Bucharest'),
-        'RU' => array(
+        ],
+        'PW' => ['Pacific/Palau'],
+        'PY' => ['America/Asuncion'],
+        'QA' => ['Asia/Qatar'],
+        'RE' => ['Indian/Reunion'],
+        'RO' => ['Europe/Bucharest'],
+        'RU' => [
             'Europe/Kaliningrad',
             'Europe/Moscow',
             'Europe/Samara',
@@ -460,59 +460,59 @@ class Timezones extends Base implements ITimezonesModule {
             'Asia/Magadan',
             'Asia/Kamchatka',
             'Asia/Anadyr'
-        ),
-        'RW' => array('Africa/Kigali'),
-        'SA' => array('Asia/Riyadh'),
-        'SB' => array('Pacific/Guadalcanal'),
-        'SC' => array('Indian/Mahe'),
-        'SD' => array('Africa/Khartoum'),
-        'SE' => array('Europe/Stockholm'),
-        'SG' => array('Asia/Singapore'),
-        'SH' => array('Atlantic/St_Helena'),
-        'SI' => array('Europe/Ljubljana'),
-        'SJ' => array(
+        ],
+        'RW' => ['Africa/Kigali'],
+        'SA' => ['Asia/Riyadh'],
+        'SB' => ['Pacific/Guadalcanal'],
+        'SC' => ['Indian/Mahe'],
+        'SD' => ['Africa/Khartoum'],
+        'SE' => ['Europe/Stockholm'],
+        'SG' => ['Asia/Singapore'],
+        'SH' => ['Atlantic/St_Helena'],
+        'SI' => ['Europe/Ljubljana'],
+        'SJ' => [
             'Arctic/Longyearbyen',
             'Atlantic/Jan_Mayen'
-        ),
-        'SK' => array('Europe/Bratislava'),
-        'SL' => array('Africa/Freetown'),
-        'SM' => array('Europe/San_Marino'),
-        'SN' => array('Africa/Dakar'),
-        'SO' => array('Africa/Mogadishu'),
-        'SR' => array('America/Paramaribo'),
-        'ST' => array('Africa/Sao_Tome'),
-        'SV' => array('America/El_Salvador'),
-        'SY' => array('Asia/Damascus'),
-        'SZ' => array('Africa/Mbabane'),
-        'TC' => array('America/Grand_Turk'),
-        'TD' => array('Africa/Ndjamena'),
-        'TF' => array('Indian/Kerguelen'),
-        'TG' => array('Africa/Lome'),
-        'TH' => array('Asia/Bangkok'),
-        'TJ' => array('Asia/Dushanbe'),
-        'TK' => array('Pacific/Fakaofo'),
-        'TL' => array('Asia/Dili'),
-        'TM' => array('Asia/Ashgabat'),
-        'TN' => array('Africa/Tunis'),
-        'TO' => array('Pacific/Tongatapu'),
-        'TR' => array('Europe/Istanbul'),
-        'TT' => array('America/Port_of_Spain'),
-        'TV' => array('Pacific/Funafuti'),
-        'TW' => array('Asia/Taipei'),
-        'TZ' => array('Africa/Dar_es_Salaam'),
-        'UA' => array(
+        ],
+        'SK' => ['Europe/Bratislava'],
+        'SL' => ['Africa/Freetown'],
+        'SM' => ['Europe/San_Marino'],
+        'SN' => ['Africa/Dakar'],
+        'SO' => ['Africa/Mogadishu'],
+        'SR' => ['America/Paramaribo'],
+        'ST' => ['Africa/Sao_Tome'],
+        'SV' => ['America/El_Salvador'],
+        'SY' => ['Asia/Damascus'],
+        'SZ' => ['Africa/Mbabane'],
+        'TC' => ['America/Grand_Turk'],
+        'TD' => ['Africa/Ndjamena'],
+        'TF' => ['Indian/Kerguelen'],
+        'TG' => ['Africa/Lome'],
+        'TH' => ['Asia/Bangkok'],
+        'TJ' => ['Asia/Dushanbe'],
+        'TK' => ['Pacific/Fakaofo'],
+        'TL' => ['Asia/Dili'],
+        'TM' => ['Asia/Ashgabat'],
+        'TN' => ['Africa/Tunis'],
+        'TO' => ['Pacific/Tongatapu'],
+        'TR' => ['Europe/Istanbul'],
+        'TT' => ['America/Port_of_Spain'],
+        'TV' => ['Pacific/Funafuti'],
+        'TW' => ['Asia/Taipei'],
+        'TZ' => ['Africa/Dar_es_Salaam'],
+        'UA' => [
             'Europe/Kiev',
             'Europe/Uzhgorod',
             'Europe/Zaporozhye',
             'Europe/Simferopol'
-        ),
-        'UG' => array('Africa/Kampala'),
-        'UM' => array(
+        ],
+        'UG' => ['Africa/Kampala'],
+        'UM' => [
             'Pacific/Johnston',
             'Pacific/Midway',
             'Pacific/Wake'
-        ),
-        'US' => array(
+        ],
+        'US' => [
             'America/New_York',
             'America/Detroit',
             'America/Louisville',
@@ -535,25 +535,25 @@ class Timezones extends Base implements ITimezonesModule {
             'America/Nome',
             'America/Adak',
             'Pacific/Honolulu'
-        ),
-        'UY' => array('America/Montevideo'),
-        'UZ' => array(
+        ],
+        'UY' => ['America/Montevideo'],
+        'UZ' => [
             'Asia/Samarkand',
             'Asia/Tashkent'
-        ),
-        'VA' => array('Europe/Vatican'),
-        'VC' => array('America/St_Vincent'),
-        'VE' => array('America/Caracas'),
-        'VG' => array('America/Tortola'),
-        'VI' => array('America/St_Thomas'),
-        'VN' => array('Asia/Saigon'),
-        'VU' => array('Pacific/Efate'),
-        'WF' => array('Pacific/Wallis'),
-        'WS' => array('Pacific/Apia'),
-        'YE' => array('Asia/Aden'),
-        'YT' => array('Indian/Mayotte'),
-        'ZA' => array('Africa/Johannesburg'),
-        'ZM' => array('Africa/Lusaka'),
-        'ZW' => array('Africa/Harare')
-    );
+        ],
+        'VA' => ['Europe/Vatican'],
+        'VC' => ['America/St_Vincent'],
+        'VE' => ['America/Caracas'],
+        'VG' => ['America/Tortola'],
+        'VI' => ['America/St_Thomas'],
+        'VN' => ['Asia/Saigon'],
+        'VU' => ['Pacific/Efate'],
+        'WF' => ['Pacific/Wallis'],
+        'WS' => ['Pacific/Apia'],
+        'YE' => ['Asia/Aden'],
+        'YT' => ['Indian/Mayotte'],
+        'ZA' => ['Africa/Johannesburg'],
+        'ZM' => ['Africa/Lusaka'],
+        'ZW' => ['Africa/Harare']
+    ];
 }

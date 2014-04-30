@@ -15,7 +15,7 @@ class Dynamic extends Base {
 
     protected $_recordId;
     protected $_displayName;
-    protected $_entries = array();
+    protected $_entries = [];
     
 
     protected function _getStorageArray() {
@@ -60,7 +60,7 @@ class Dynamic extends Base {
     }
     
     public function setEntries(array $entries) {
-        $this->_entries = array();
+        $this->_entries = [];
         return $this->addEntries($entries);
     }
     

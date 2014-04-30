@@ -188,7 +188,7 @@ class LocalFile implements core\cache\IDirectFileBackend {
     }
 
     public function getKeys() {
-        $output = array();
+        $output = [];
 
         foreach(core\io\Util::listFilesIn($this->_path) as $key) {
             $output[] = substr($key, 6);
@@ -245,7 +245,7 @@ class LocalFile implements core\cache\IDirectFileBackend {
     }
 
     public function getDirectFileList() {
-        $output = array();
+        $output = [];
 
         foreach(core\io\Util::listFilesIn($this->_path) as $fileName) {
             $key = substr($fileName, 6);

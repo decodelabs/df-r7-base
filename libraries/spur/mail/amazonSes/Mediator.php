@@ -197,7 +197,7 @@ class Mediator implements IMediator {
 
 
 // IO
-    public function callServer($method, array $data=array()) {
+    public function callServer($method, array $data=[]) {
         if(!$this->_activeUrl) {
             throw new RuntimeException(
                 'Amazon SES API url has not been set'

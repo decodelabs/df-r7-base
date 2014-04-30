@@ -21,7 +21,7 @@ abstract class Base implements IWidget {
     
     private $_widgetName;
     
-    public static function factory(arch\IContext $context, $name, array $args=array()) {
+    public static function factory(arch\IContext $context, $name, array $args=[]) {
         $name = ucfirst($name);
         $class = 'df\\aura\\html\\widget\\'.$name;
         

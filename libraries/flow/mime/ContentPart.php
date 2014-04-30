@@ -256,7 +256,7 @@ class ContentPart implements IContentPart, core\IDumpable {
 
 // Dump
     public function getDumpProperties() {
-        $output = array();
+        $output = [];
 
         foreach($this->_headers as $key => $header) {
             $output[] = new core\debug\dumper\Property($key, $header, 'protected');

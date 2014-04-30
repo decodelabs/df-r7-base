@@ -79,14 +79,14 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
             if(isset($matches[3])) {
                 $args = core\string\Util::parseDelimited($matches[3], ',', '\'');
             } else {
-                $args = array();
+                $args = [];
             }
             
             if($type == 'enum' || $type == 'set') {
                 $field = $schema->addField($row['Field'], $type, $args);
             } else {
                 array_unshift($args, $row['Field'], $type);
-                $field = call_user_func_array(array($schema, 'addField'), $args);
+                $field = call_user_func_array([$schema, 'addField'], $args);
             }
             
             if(isset($matches[5])) {
@@ -194,7 +194,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
             $res = $stmt->executeRead();
             
             
-            $constraints = array();
+            $constraints = [];
             
             foreach($res as $row) {
                 $constraints[$row['CONSTRAINT_NAME']] = $row;
@@ -271,7 +271,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
         if($field instanceof opal\schema\IOptionProviderField) {
             $fieldSql .= '('.core\string\Util::implodeDelimited($field->getOptions()).')';
         } else {
-            $options = array();
+            $options = [];
             
             if($field instanceof opal\schema\ILengthRestrictedField
             && null !== ($length = $field->getLength())) {
@@ -391,7 +391,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
             $indexSql .= ' USING '.$type;
         }
         
-        $indexFields = array();
+        $indexFields = [];
         
         foreach($index->getFieldReferences() as $reference) {
             $fieldDef = $this->_adapter->quoteIdentifier($reference->getField()->getName());
@@ -458,7 +458,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
 
 // Table options
     protected function _defineTableOptions(opal\rdbms\schema\ISchema $schema) {
-        $sql = array();
+        $sql = [];
         
         foreach($schema->getOptionChanges() as $key => $value) {
             switch($key) {
@@ -619,7 +619,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
         
         $keys = $schema->getForeignKeys();
         $renameKeys = $schema->getForeignKeyRenameMap();
-        $tempSwapKeys = array();
+        $tempSwapKeys = [];
         $removeKeys = $schema->getForeignKeysToRemove();
         $updateKeys = $schema->getForeignKeysToUpdate();
         $addKeys = $schema->getForeignKeysToAdd();
@@ -650,7 +650,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
         $updateTriggers = $schema->getTriggersToUpdate();
         $addTriggers = $schema->getTriggersToAdd();
         
-        $sql = array();
+        $sql = [];
         $mainSql = 'ALTER TABLE '.$this->_adapter->quoteIdentifier($currentName);
         
         
@@ -667,7 +667,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
         // Remove keys (to avoid conflicts)
         if(!empty($tempSwapKeys) || !empty($removeKeys)) {
             $swapSql = $mainSql;
-            $definitions = array();
+            $definitions = [];
             
             foreach($tempSwapKeys as $origName => $key) {
                 $definitions[] = 'DROP FOREIGN KEY '.$this->_adapter->quoteIdentifier($origName);

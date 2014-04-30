@@ -90,7 +90,7 @@ class Apc implements core\cache\IBackend {
 
         return apc_store(
             $this->_prefix.$key, 
-            array(serialize($value), time()), 
+            [serialize($value), time()], 
             $lifeTime
         );
     }
@@ -165,7 +165,7 @@ class Apc implements core\cache\IBackend {
     }
 
     public function getKeys() {
-        $output = array();
+        $output = [];
         $length = strlen($this->_prefix);
         $setKey = self::$_apcu ? 'key' : 'info';
 

@@ -58,7 +58,7 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
             $value = new opal\record\PrimaryKeySet($this->getTargetRelationManifest()->getPrimitiveFieldNames(), $value);
         }
         
-        $output = array();
+        $output = [];
         $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId);
         $schema = $targetUnit->getUnitSchema();
         
@@ -135,7 +135,7 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
         $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId, $unit->getApplication());
         $targetSchema = $targetUnit->getTransientUnitSchema();
         $targetRelationManifest = $this->getTargetRelationManifest();
-        $output = array();
+        $output = [];
 
         foreach($targetRelationManifest as $fieldName => $primitive) {
             $field = $targetSchema->getField($fieldName);

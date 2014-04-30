@@ -12,7 +12,7 @@ use df\neon;
 
 trait TAttributeModule {
 
-    protected $_attributes = array();
+    protected $_attributes = [];
 
     public function getName() {
         $parts = explode('\\', get_class($this));
@@ -316,7 +316,7 @@ trait TAttributeModule {
             'word-spacing', 'writing-mode'
         ];
 
-        $output = array();
+        $output = [];
 
         foreach($this->_attributes as $key => $value) {
             if(in_array($key, $attr)) {
@@ -1814,7 +1814,7 @@ trait TAttributeModule_PathData {
 // Point data
 trait TAttributeModule_PointData {
 
-    protected $_points = array();
+    protected $_points = [];
 
     public function setPoints($points) {
         if(is_string($points)) {
@@ -1823,10 +1823,10 @@ trait TAttributeModule_PointData {
         }
 
         if(!is_array($points)) {
-            $points = array($points);
+            $points = [$points];
         }
 
-        $this->_points = array();
+        $this->_points = [];
 
         while(!empty($points)) {
             $point = array_shift($points);
@@ -1878,7 +1878,7 @@ trait TAttributeModule_PointData {
     }
 
     protected function _onSetPoints() {
-        $output = array();
+        $output = [];
 
         foreach($this->_points as $point) {
             $output[] = $point->getX().','.$point->getY();

@@ -20,19 +20,19 @@ class Base implements IMenu, \Serializable, core\IDumpable {
     protected $_delegates = null;
     
     public static function loadAll(arch\IContext $context, array $whiteList=null) {
-        $output = array();
+        $output = [];
         $sources = arch\navigation\menu\source\Base::loadAll($context);
         
         if($whiteList !== null) {
             $temp = $whiteList;
-            $whiteList = array();
+            $whiteList = [];
             
             foreach($temp as $id) {
                 $id = self::normalizeId($id);
                 $sourceName = $id->getScheme();
                 
                 if(!isset($whiteList[$sourceName])) {
-                    $whiteList[$sourceName] = array();
+                    $whiteList[$sourceName] = [];
                 }
                 
                 $whiteList[$sourceName][] = $id;
@@ -51,7 +51,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
                 if(isset($whiteList[$sourceName])) {
                     $sourceWhiteList = $whiteList[$sourceName];
                 } else {
-                    $sourceWhiteList = array();
+                    $sourceWhiteList = [];
                 }
             }
             
@@ -62,7 +62,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
     }
 
     public static function loadList(arch\IContext $context, array $ids) {
-        $output = array();
+        $output = [];
 
         foreach($ids as $id) {
             try {
@@ -201,7 +201,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
 // Delegates
     public function initDelegates() {
         if(!is_array($this->_delegates)) {
-            $this->_delegates = array();
+            $this->_delegates = [];
             $this->_setupDelegates();
         }
         

@@ -12,8 +12,8 @@ class Locale implements ILocale, \Serializable, core\IDumpable {
     protected $_language;
     protected $_script;
     protected $_region;
-    protected $_variants = array();
-    protected $_keywords = array();
+    protected $_variants = [];
+    protected $_keywords = [];
     
     public static function factory($locale, core\IApplication $application=null) {
         if($locale instanceof ILocale) {
@@ -69,7 +69,7 @@ class Locale implements ILocale, \Serializable, core\IDumpable {
 // Accessors
     public function toString() {
         try {
-            $values = array('language' => $this->_language);
+            $values = ['language' => $this->_language];
             
             if($this->_region !== null) {
                 $values['region'] = $this->_region;
@@ -90,7 +90,7 @@ class Locale implements ILocale, \Serializable, core\IDumpable {
         }
         
         if(!empty($this->_keywords)) {
-            $keywords = array();
+            $keywords = [];
             
             foreach($this->_keywords as $key => $value){
                 $keywords[] = $key.'='.$value;

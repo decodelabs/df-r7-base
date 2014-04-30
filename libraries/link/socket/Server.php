@@ -11,10 +11,10 @@ use df\link;
 
 abstract class Server extends Base implements IServerSocket {
     
-    protected static $_defaultOptions = array(
+    protected static $_defaultOptions = [
         'connectionQueueSize' => 128,
         'reuseAddress' => true
-    );
+    ];
     
     protected $_isListening = false;
     

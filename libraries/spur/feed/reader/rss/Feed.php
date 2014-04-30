@@ -72,16 +72,16 @@ class Feed extends spur\feed\reader\Feed {
     protected function _getXPathNamespaces() {
         switch($this->_type) {
             case spur\feed\ITypes::RSS_10:
-                return array(
+                return [
                     'rdf' => spur\feed\INamespaces::RDF,
                     'rss' => spur\feed\INamespaces::RSS_10
-                );
+                ];
                 
             case spur\feed\ITypes::RSS_09:
-                return array(
+                return [
                     'rdf' => spur\feed\INamespaces::RDF,
                     'rss' => spur\feed\INamespaces::RSS_09
-                );
+                ];
         }
     }
 

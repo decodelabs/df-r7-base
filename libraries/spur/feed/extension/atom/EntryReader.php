@@ -30,7 +30,7 @@ class EntryReader implements spur\feed\IEntryReaderPlugin {
     }
     
     public function getAuthors() {
-        $authors = array();
+        $authors = [];
         
         $list = $this->_xPath->query(
             $this->_xPathPrefix.'//atom:author'
@@ -120,10 +120,10 @@ class EntryReader implements spur\feed\IEntryReaderPlugin {
             $prefix .= ':';
         }
         
-        $regexes = array(
+        $regexes = [
             '/<\?xml[^<]*>[^<]*<'.$prefix.'div[^<]*/',
             '/<\/'.$prefix.'div>\s*$/'
-        );
+        ];
         
         $xhtml = preg_replace($regexes, '', $xhtml);
         
@@ -303,14 +303,14 @@ class EntryReader implements spur\feed\IEntryReaderPlugin {
         $prefix10 = $this->_domDocument->lookupPrefix(spur\feed\INamespaces::ATOM_10);
         
         if($this->_domDocument->isDefaultNamespace(spur\feed\INamespaces::ATOM_10) || $prefix10) {
-            return array('atom' => spur\feed\INamespaces::ATOM_10);
+            return ['atom' => spur\feed\INamespaces::ATOM_10];
         }
         
         if($this->_domDocument->isDefaultNamespace(spur\feed\INamespaces::ATOM_03) || $prefix03) {
-            return array('atom' => spur\feed\INamespaces::ATOM_03);
+            return ['atom' => spur\feed\INamespaces::ATOM_03];
         }
         
-        return array('atom' => spur\feed\INamespaces::ATOM_10);
+        return ['atom' => spur\feed\INamespaces::ATOM_10];
     }
     
     protected function _relativeToAbsoluteUrl($urlString) {

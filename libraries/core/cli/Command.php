@@ -99,7 +99,7 @@ class Command implements ICommand {
             if(is_string($input)) {
                 $input = explode(' ', $input);
             } else {
-                $input = array($input);
+                $input = [$input];
             }
         }
         

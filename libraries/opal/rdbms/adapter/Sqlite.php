@@ -37,7 +37,7 @@ class Sqlite extends Base_Pdo {
     }
     
     protected function _getPdoOptions() {
-        return array();
+        return [];
     }
     
     public function getServerType() {

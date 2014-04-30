@@ -49,7 +49,7 @@ class Index implements opal\search\IIndex {
     }
     
     public function storeDocumentList(array $documents) {
-        $dataList = array();
+        $dataList = [];
         
         foreach($documents as $document) {
             if(!$document instanceof opal\search\IDocument) {

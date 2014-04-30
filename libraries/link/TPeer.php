@@ -15,7 +15,7 @@ trait TPeer {
     protected $_readChunkSize = 16384;
     protected $_writeChunkSize = 8192;
     
-    protected $_sessions = array();
+    protected $_sessions = [];
     protected $_sessionCount = 0;
     
     
@@ -62,7 +62,7 @@ trait TPeer {
             throw new RuntimeException('Missing event handler: '.$func);
         }
             
-        call_user_func_array(array($this, $func), $args);
+        call_user_func_array([$this, $func], $args);
     }
 
     protected $_reads = 0;
@@ -305,7 +305,7 @@ trait TPeer_Server {
     
     use TPeer;
     
-    protected $_masterSockets = array();
+    protected $_masterSockets = [];
     
     protected function _setup() {
         $dispatcher = $this->getDispatcher();
@@ -418,7 +418,7 @@ trait TPeer_Session {
     
     protected $_writeState = IIoState::BUFFER;
     protected $_socket;
-    protected $_store = array();
+    protected $_store = [];
     
     public function __construct(link\socket\ISocket $socket) {
         $this->_socket = $socket;
@@ -465,7 +465,7 @@ trait TPeer_Session {
     }
 
     public function clearStore() {
-        $this->_store = array();
+        $this->_store = [];
         return $this;
     }
 }

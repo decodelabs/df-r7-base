@@ -13,8 +13,8 @@ class Paginator implements IPaginator {
     
     use core\collection\TPaginator;
 
-    protected $_orderableFields = array();
-    protected $_order = array();
+    protected $_orderableFields = [];
+    protected $_order = [];
     protected $_query;
     
     public function __construct(IReadQuery $query) {
@@ -36,7 +36,7 @@ class Paginator implements IPaginator {
     
 // Orderable fields
     public function setOrderableFields($fields) {
-        $this->_orderableFields = array();
+        $this->_orderableFields = [];
 
         if(!is_array($fields)) {
             $fields = func_get_args();
@@ -79,7 +79,7 @@ class Paginator implements IPaginator {
     public function setDefaultOrder($field1) {
         $source = $this->_query->getSource();
         $sourceManager = $this->_query->getSourceManager();
-        $this->_order = array();
+        $this->_order = [];
         
         foreach(func_get_args() as $field) {
             $parts = explode(' ', $field);
@@ -179,7 +179,7 @@ class Paginator implements IPaginator {
         
         if($data->has($this->_keyMap['order']) && !empty($this->_orderableFields)) {
             $orderNode = $data->{$this->_keyMap['order']};
-            $orderList = array();
+            $orderList = [];
             
             if(count($orderNode)) {
                 $order = $orderNode->toArray();

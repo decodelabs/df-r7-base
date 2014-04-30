@@ -158,7 +158,7 @@ class CacheControl implements link\http\IResponseCacheControl {
     }
     
     public function toString() {
-        $output = array();
+        $output = [];
         
         if($this->_access !== null) {
             $output[] = $this->_access;

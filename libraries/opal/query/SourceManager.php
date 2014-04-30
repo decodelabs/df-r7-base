@@ -15,9 +15,9 @@ class SourceManager implements ISourceManager, core\IDumpable {
     use core\TApplicationAware;
     
     protected $_parent;
-    protected $_aliases = array();
-    protected $_sources = array();
-    protected $_adapterHashes = array();
+    protected $_aliases = [];
+    protected $_sources = [];
+    protected $_adapterHashes = [];
     protected $_genCounter = 0;
     protected $_transaction;
     
@@ -508,7 +508,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
     
 // Dump
     public function getDumpProperties() {
-        $output = array();
+        $output = [];
         
         foreach($this->_sources as $alias => $source) {
             $output[] = new core\debug\dumper\Property($alias, $source->getAdapter());

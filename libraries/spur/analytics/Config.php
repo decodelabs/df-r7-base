@@ -58,7 +58,7 @@ class Config extends core\Config {
         return $output;
     }
 
-    public function setAdapter($name, $isEnabled=true, array $options=array(), array $defaultUserAttributes=array()) {
+    public function setAdapter($name, $isEnabled=true, array $options=[], array $defaultUserAttributes=[]) {
         if($name instanceof IAdapter) {
             $options = $name->getOptions();
             $defaultUserAttributes = $name->getDefaultUserAttributes();

@@ -106,7 +106,7 @@ class Populate implements IPopulateQuery, core\IDumpable {
         }
 
         if(!empty($this->_order)) {
-            $order = array();
+            $order = [];
             
             foreach($this->_order as $directive) {
                 $order[] = $directive->toString();

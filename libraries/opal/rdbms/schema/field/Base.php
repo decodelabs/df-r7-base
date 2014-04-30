@@ -104,7 +104,7 @@ abstract class Base implements opal\rdbms\schema\IField, core\IDumpable {
         $this->_type = $type;
         
         if(method_exists($this, '_init')) {
-            call_user_func_array(array($this, '_init'), $args);    
+            call_user_func_array([$this, '_init'], $args);    
         }
     }
     

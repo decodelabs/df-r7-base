@@ -72,7 +72,7 @@ abstract class Base implements spur\analytics\IAdapter {
         return $output;
     }
 
-    public static function factory($name, array $options=array(), array $defaultUserAttributes=array()) {
+    public static function factory($name, array $options=[], array $defaultUserAttributes=[]) {
         $class = 'df\\spur\\analytics\\adapter\\'.ucfirst($name);
 
         if(!class_exists($class)) {
@@ -82,7 +82,7 @@ abstract class Base implements spur\analytics\IAdapter {
         return new $class($options, $defaultUserAttributes);
     }
 
-    public function __construct(array $options=array(), array $defaultUserAttributes=array()) {
+    public function __construct(array $options=[], array $defaultUserAttributes=[]) {
         $this->setOptions($options);
         $this->setDefaultUserAttributes($defaultUserAttributes);
     }

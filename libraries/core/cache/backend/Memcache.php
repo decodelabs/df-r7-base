@@ -36,7 +36,7 @@ class Memcache implements core\cache\IBackend {
         if($options->has('servers')) {
             $serverList = $options->servers;
         } else {
-            $serverList = array($options);
+            $serverList = [$options];
         }
         
         foreach($serverList as $serverOptions) {
@@ -84,7 +84,7 @@ class Memcache implements core\cache\IBackend {
 
         return $this->_connection->set(
             $this->_prefix.$key, 
-            array(serialize($value), time()), 
+            [serialize($value), time()], 
             0,
             $lifeTime
         );
@@ -162,7 +162,7 @@ class Memcache implements core\cache\IBackend {
     }
 
     public function getKeys() {
-        $output = array();
+        $output = [];
         $allSlabs = $this->_connection->getExtendedStats('slabs');
         $length = strlen($this->_prefix);
 

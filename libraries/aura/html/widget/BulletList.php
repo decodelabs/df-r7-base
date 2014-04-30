@@ -29,7 +29,7 @@ class BulletList extends Base implements ILinearListWidget, IDataDrivenListWidge
         $data = $this->_data;
         
         if(!$this->_isDataIterable() && $data !== null) {
-            $data = array($data);
+            $data = [$data];
         }
         
         if(empty($data)) {

@@ -12,13 +12,13 @@ use df\opal;
 class OutputManifest implements IOutputManifest {
     
     protected $_primarySource;
-    protected $_sources = array();
-    protected $_wildcards = array();
-    protected $_aggregateFields = array();
-    protected $_outputFields = array();
-    protected $_privateFields = array();
+    protected $_sources = [];
+    protected $_wildcards = [];
+    protected $_aggregateFields = [];
+    protected $_outputFields = [];
+    protected $_privateFields = [];
     protected $_fieldProcessors = null;
-    protected $_combines = array();
+    protected $_combines = [];
     protected $_queryRequiresPartial = false;
     
     public function __construct(opal\query\ISource $source, array $rows=null, $isNormalized=true) {

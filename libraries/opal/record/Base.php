@@ -22,8 +22,8 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     use core\collection\TExtractList;
     use user\TAccessLock;
     
-    protected $_values = array();
-    protected $_changes = array();
+    protected $_values = [];
+    protected $_changes = [];
     protected $_isPopulated = false;
 
     public static function extractRecordId($record) {
@@ -73,10 +73,10 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     }
     
     public function serialize() {
-        return serialize(array(
+        return serialize([
             'adapter' => $this->_adapter->getQuerySourceId(),
             'values' => $this->getValuesForStorage()
-        ));
+        ]);
     }
     
     public function unserialize($data) {
@@ -123,7 +123,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     
 
     protected function _buildPrimaryKeySet(array $fields, $includeChanges=true) {
-        $values = array();
+        $values = [];
         
         foreach($fields as $field) {
             if($includeChanges && array_key_exists($field, $this->_changes)) {
@@ -173,7 +173,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     }
     
     public function clearChanges() {
-        $this->_changes = array();
+        $this->_changes = [];
         return $this;
     }
 
@@ -186,7 +186,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     }
 
     public function getChangedValues() {
-        $output = array();
+        $output = [];
 
         foreach($this->_changes as $key => $value) {
             if($value instanceof IPreparedValueContainer && !$value->isPrepared()) {
@@ -204,7 +204,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     }
     
     public function getChangesForStorage() {
-        $output = array();
+        $output = [];
         
         foreach($this->_changes as $key => $value) {
             if($value instanceof IValueContainer) {
@@ -236,7 +236,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     }
     
     public function getUpdatedValues() {
-        $output = array();
+        $output = [];
         
         foreach($this->_changes as $key => $value) {
             if(array_key_exists($key, $this->_values) && $value !== null) {
@@ -256,7 +256,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     }
     
     public function getUpdatedValuesForStorage() {
-        $output = array();
+        $output = [];
         
         foreach($this->_changes as $key => $value) {
             if(array_key_exists($key, $this->_values) && $value !== null) {
@@ -274,7 +274,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     }
     
     public function getAddedValues() {
-        $output = array();
+        $output = [];
         
         foreach($this->_changes as $key => $value) {
             if(!array_key_exists($key, $this->_values) && $this->_changes[$key] !== null) {
@@ -294,7 +294,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     }
     
     public function getAddedValuesForStorage() {
-        $output = array();
+        $output = [];
         
         foreach($this->_changes as $key => $value) {
             if(!array_key_exists($key, $this->_values) && $this->_changes[$key] !== null) {
@@ -312,7 +312,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     }
     
     public function getOriginalValues() {
-        $output = array();
+        $output = [];
         
         foreach($this->_values as $key => $value) {
             if($value instanceof IPreparedValueContainer && !$value->isPrepared()) {
@@ -330,7 +330,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     }
     
     public function getOriginalValuesForStorage() {
-        $output = array();
+        $output = [];
         
         foreach($this->_values as $key => $value) {
             if($value instanceof IValueContainer) {
@@ -366,7 +366,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
                 if(count($primaryFields) > 1) {
                     // Cant do anything here??
                 } else {
-                    $insertId = new PrimaryKeySet($primaryFields, array($primaryFields[0] => $insertId));
+                    $insertId = new PrimaryKeySet($primaryFields, [$primaryFields[0] => $insertId]);
                 }
             }
             
@@ -517,8 +517,8 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     }
     
     public function clear() {
-        $this->_values = array();
-        $this->_changes = array();
+        $this->_values = [];
+        $this->_changes = [];
         $this->_isPopulated = false;
         
         return $this;
@@ -929,7 +929,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     
 // Dump
     public function getDumpProperties() {
-        $output = array();
+        $output = [];
         
         foreach(array_merge($this->_values, $this->_changes) as $key => $value) {
             if($value instanceof IValueContainer) {

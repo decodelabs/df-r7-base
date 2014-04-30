@@ -31,7 +31,7 @@ class Definitions implements IDefinitionsContainer, core\IDumpable {
     }
 
     public function setDefinitions(array $defs) {
-        $this->_children = array();
+        $this->_children = [];
         return $this->addDefinitions($defs);
     }
 
@@ -70,7 +70,7 @@ class Definitions implements IDefinitionsContainer, core\IDumpable {
     }
 
     public function clearDefinitions() {
-        $this->_children = array();
+        $this->_children = [];
         return $this;
     }
 }

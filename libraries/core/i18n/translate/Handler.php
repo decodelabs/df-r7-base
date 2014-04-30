@@ -44,7 +44,7 @@ class Handler implements IHandler, ITranslationProxy {
         if(!empty($args)) {
             $replacements = array_shift($args);
         } else {
-            $replacements = array();
+            $replacements = [];
         }
         
         $output = $this->_fetch($phrase, $plural !== false);
@@ -67,7 +67,7 @@ class Handler implements IHandler, ITranslationProxy {
     
     protected function _fetch($phrase, $isPlural) {
         if($isPlural) {
-            $matchPhrase = array();
+            $matchPhrase = [];
                 
             foreach($phrase as $key => $value) {
                 $matchPhrase[] = '['.$key.']'.$value;

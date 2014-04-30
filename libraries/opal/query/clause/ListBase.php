@@ -14,7 +14,7 @@ class ListBase implements opal\query\IClauseList, core\IDumpable {
     use opal\query\TQuery_NestedComponent;
 
     protected $_isOr = false;
-    protected $_clauses = array();
+    protected $_clauses = [];
     protected $_parent;
     
     public function __construct(opal\query\IClauseFactory $parent, $isOr=false) {
@@ -89,7 +89,7 @@ class ListBase implements opal\query\IClauseList, core\IDumpable {
     }
     
     public function getNonLocalFieldReferences() {
-        $output = array();
+        $output = [];
         
         foreach($this->_clauses as $clause) {
             $output = array_merge($output, $clause->getNonLocalFieldReferences());
@@ -128,7 +128,7 @@ class ListBase implements opal\query\IClauseList, core\IDumpable {
     }
 
     public function extractClausesFor(opal\query\ISource $source, $checkValues=true) {
-        $output = array();
+        $output = [];
         $sourceAlias = $source->getAlias();
 
         foreach($this->_clauses as $clause) {
@@ -189,7 +189,7 @@ class ListBase implements opal\query\IClauseList, core\IDumpable {
     }
     
     public function clear() {
-        $this->_clauses = array();
+        $this->_clauses = [];
         return $this;
     }
     
@@ -199,7 +199,7 @@ class ListBase implements opal\query\IClauseList, core\IDumpable {
     
 // Dump
     public function getDumpProperties() {
-        $output = array();
+        $output = [];
         
         if($this->_parent instanceof opal\query\IClauseList) {
             if($this->_isOr) {

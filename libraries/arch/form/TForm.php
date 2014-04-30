@@ -25,7 +25,7 @@ trait TForm {
     
     protected $_isRenderingInline = false;
     protected $_state;
-    protected $_delegates = array();
+    protected $_delegates = [];
     
     protected function _init() {}
     protected function _setDefaultValues() {}
@@ -34,7 +34,7 @@ trait TForm {
     
     
     public function __call($method, $args) {
-        return call_user_func_array(array($this->_context, $method), $args);
+        return call_user_func_array([$this->_context, $method], $args);
     }
     
     public function __get($key) {
@@ -70,7 +70,7 @@ trait TForm {
         if(!empty($path)) {
             $parts = explode('/', $path);
         } else {
-            $parts = array();
+            $parts = [];
         }
         
         $type = $context->getRunMode();
@@ -277,7 +277,7 @@ trait TForm {
 
     
 // Events
-    public function handleEvent($name, array $args=array()) {
+    public function handleEvent($name, array $args=[]) {
         $func = '_on'.ucfirst($name).'Event';
         
         if(!method_exists($this, $func)) {
@@ -290,7 +290,7 @@ trait TForm {
             }
         }
         
-        return call_user_func_array(array($this, $func), $args);
+        return call_user_func_array([$this, $func], $args);
     }
 
     protected function _onResetEvent() {
@@ -543,7 +543,7 @@ trait TForm_SelectorDelegateQueryTools {
         if(!$result instanceof \Iterator
         && !$result instanceof core\collection\ICollection
         && !is_array($result)) {
-            $result = array();
+            $result = [];
         }
 
         return $result;
@@ -736,7 +736,7 @@ trait TForm_InlineFieldRenderableSelectorDelegate {
             } else {
                 $tempList = $selected;
                 $count = count($selected);
-                $displayList = array();
+                $displayList = [];
 
                 for($i = 0; $i < 3 && !empty($tempList); $i++) {
                     $count--;
@@ -883,7 +883,7 @@ trait TForm_InlineFieldRenderableSelectorDelegate {
 // Dependant
 trait TForm_DependentDelegate {
 
-    protected $_dependencies = array();
+    protected $_dependencies = [];
 
     public function addSelectorDependency(ISelectorDelegate $delegate, $error=null, $context=null, $filter=false) {
         return $this->addDependency(new arch\form\dependency\Selector($delegate, $error, $context, $filter));
@@ -922,7 +922,7 @@ trait TForm_DependentDelegate {
     }
 
     public function getDependenciesByContext($context) {
-        $output = array();
+        $output = [];
 
         foreach($this->_dependencies as $name => $dep) {
             if($dep->getContext() == $context) {
@@ -934,7 +934,7 @@ trait TForm_DependentDelegate {
     }
 
     public function getDependencyValuesByContext($context) {
-        $output = array();
+        $output = [];
 
         foreach($this->_dependencies as $name => $dep) {
             if($dep->getContext() == $context && $dep->hasValue()) {
@@ -956,7 +956,7 @@ trait TForm_DependentDelegate {
     }
 
     public function getUnresolvedDependencies() {
-        $output = array();
+        $output = [];
 
         foreach($this->_dependencies as $name => $dependency) {
             if(!$dependency->hasValue()) {
@@ -968,7 +968,7 @@ trait TForm_DependentDelegate {
     }
 
     public function getUnresolvedDependencyMessages() {
-        $output = array();
+        $output = [];
 
         foreach($this->getUnresolvedDependencies() as $name => $dep) {
             $message = $dep->getErrorMessage();

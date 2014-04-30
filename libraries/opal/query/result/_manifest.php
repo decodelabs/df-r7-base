@@ -84,7 +84,7 @@ interface IArrayManipulator {
     public function normalizeRows();
     public function applyJoins(array $joins);
     public function applyWhereClauseList(opal\query\IWhereClauseList $clauseList);
-    public function applyAggregatesAndGroups(array $groupFields=array());
+    public function applyAggregatesAndGroups(array $groupFields=[]);
     public function applyHavingClauseList(opal\query\IHavingClauseList $clauseList);
     public function applyDistinct();
     public function applyOrderDirectives(array $orderDirectives);

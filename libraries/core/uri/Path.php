@@ -105,7 +105,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, core\IDumpable {
         || in_array('..', $this->_collection)
         || in_array('', $this->_collection)) {
             $queue = $this->_collection;
-            $this->_collection = array();
+            $this->_collection = [];
             
             foreach($queue as $key => $part) {
                 if($part == '..' && !$this->isEmpty() && $this->getLast() != '..') {
@@ -148,7 +148,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, core\IDumpable {
         } else if(!is_array($input)) {
             $input = explode(
                 $this->_separator, 
-                str_replace(array('\\', '/'), $this->_separator, (string)$input)
+                str_replace(['\\', '/'], $this->_separator, (string)$input)
             );
         }
         
@@ -185,7 +185,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, core\IDumpable {
     public function clear() {
         $this->_isAbsolute = false;
         $this->_addTrailingSlash = false;
-        $this->_collection = array();
+        $this->_collection = [];
         
         return $this;
     }
@@ -224,7 +224,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, core\IDumpable {
         $input = (string)$input;
         
         if(!strlen($input)) {
-            return array();
+            return [];
         }
         
         return explode($this->_separator, ltrim($input, $this->_separator));

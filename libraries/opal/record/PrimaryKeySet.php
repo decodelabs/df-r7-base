@@ -13,7 +13,7 @@ class PrimaryKeySet implements IPrimaryKeySet, core\IDumpable {
     
     const COMBINE_SEPARATOR = '+';
     
-    protected $_keys = array();
+    protected $_keys = [];
 
     public static function fromEntityId($id) {
         if(substr($id, 0, 9) != 'keySet?') {
@@ -24,7 +24,7 @@ class PrimaryKeySet implements IPrimaryKeySet, core\IDumpable {
 
         $id = substr($id, 9);
         $tree = core\collection\Tree::fromArrayDelimitedString($id);
-        $values = array();
+        $values = [];
 
         foreach($tree as $key => $value) {
             if(substr($value, 0, 10) == '[keySet?') {
@@ -37,7 +37,7 @@ class PrimaryKeySet implements IPrimaryKeySet, core\IDumpable {
         return new self(array_keys($values), $values);
     }
     
-    public function __construct(array $fields, $values=array()) {
+    public function __construct(array $fields, $values=[]) {
         $this->_keys = array_fill_keys($fields, null);
         $this->updateWith($values);
     }
@@ -63,7 +63,7 @@ class PrimaryKeySet implements IPrimaryKeySet, core\IDumpable {
     }
     
     public function toArray() {
-        $output = array();
+        $output = [];
 
         foreach($this->_keys as $key => $value) {
             if($value instanceof self) {
@@ -79,7 +79,7 @@ class PrimaryKeySet implements IPrimaryKeySet, core\IDumpable {
     }
 
     public function getKeyMap($fieldName) {
-        $output = array();
+        $output = [];
 
         foreach($this->_keys as $key => $value) {
             if($value instanceof self) {
@@ -99,7 +99,7 @@ class PrimaryKeySet implements IPrimaryKeySet, core\IDumpable {
             return $this->toArray();
         }
         
-        $output = array();
+        $output = [];
 
         foreach($this->_keys as $key => $value) {
             if($value instanceof self) {
@@ -201,7 +201,7 @@ class PrimaryKeySet implements IPrimaryKeySet, core\IDumpable {
     }
     
     public function getCombinedId() {
-        $strings = array();
+        $strings = [];
         
         foreach($this->_keys as $key) {
             if($key instanceof IPrimaryKeySetProvider) {

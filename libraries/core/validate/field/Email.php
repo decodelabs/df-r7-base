@@ -21,7 +21,7 @@ class Email extends Base implements core\validate\IEmailField {
         }
         
         $value = strtolower($value);
-        $value = str_replace(array(' at ', ' dot '), array('@', '.'), $value);
+        $value = str_replace([' at ', ' dot '], ['@', '.'], $value);
         $value = filter_var($value, FILTER_SANITIZE_EMAIL);
         
         if(!filter_var($value, FILTER_VALIDATE_EMAIL)) {

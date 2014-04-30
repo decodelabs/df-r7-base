@@ -17,7 +17,7 @@ class ChromePhp implements core\log\IWriter {
     const VERSION = '4.0.0';
     const HEADER_NAME = 'X-ChromeLogger-Data';
 
-    protected $_buffer = array();
+    protected $_buffer = [];
     protected $_writeBacktrace = true;
 
     public static function isAvailable(link\http\IRequestHeaderCollection $headers) {
@@ -43,7 +43,7 @@ class ChromePhp implements core\log\IWriter {
             );
         }
 
-        $this->_buffer = array();
+        $this->_buffer = [];
         $this->_request = null;
 
         return $this;
@@ -177,7 +177,7 @@ class ChromePhp implements core\log\IWriter {
     }
 
     protected function _convertStackTrace(core\debug\IStackTrace $trace) {
-        $output = array();
+        $output = [];
 
         foreach($trace->getCalls() as $call) {
             $output[] = $call->getSignature().' - '.$call->getFile().' : '.$call->getLine();

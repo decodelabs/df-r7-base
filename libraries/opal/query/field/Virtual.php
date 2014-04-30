@@ -15,10 +15,10 @@ class Virtual implements opal\query\IVirtualField, core\IDumpable {
     
     protected $_name;
     protected $_alias;
-    protected $_targetFields = array();
+    protected $_targetFields = [];
     protected $_source;
     
-    public function __construct(opal\query\ISource $source, $name, $alias=null, array $targetFields=array()) {
+    public function __construct(opal\query\ISource $source, $name, $alias=null, array $targetFields=[]) {
         $this->_source = $source;
         $this->_name = $name;
         
@@ -60,7 +60,7 @@ class Virtual implements opal\query\IVirtualField, core\IDumpable {
     }
     
     public function dereference() {
-        $output = array();
+        $output = [];
 
         foreach($this->_targetFields as $key => $field) {
             if($field instanceof opal\query\IVirtualField) {

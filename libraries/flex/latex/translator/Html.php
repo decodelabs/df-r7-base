@@ -23,7 +23,7 @@ class Html extends iris\Translator {
     protected $_inBibliography = false;
     protected $_bibCount = 0;
     protected $_hasMath = false;
-    protected $_references = array();
+    protected $_references = [];
     protected $_imageDereferencer;
 
     public static function createLexer(iris\ISource $source) {
@@ -686,11 +686,11 @@ class Html extends iris\Translator {
         return $output;
     }
 
-    protected function tag($tag, array $attributes=array()) {
+    protected function tag($tag, array $attributes=[]) {
         return new aura\html\Tag($tag, $attributes);
     }
 
-    protected function element($tag, $content, array $attributes=array()) {
+    protected function element($tag, $content, array $attributes=[]) {
         return new aura\html\Element($tag, $content, $attributes);
     }
 
@@ -698,7 +698,7 @@ class Html extends iris\Translator {
         return new aura\html\ElementString($html);
     }
 
-    protected function containerElement($tag, flex\latex\IContainerNode $node, array $attributes=array()) {
+    protected function containerElement($tag, flex\latex\IContainerNode $node, array $attributes=[]) {
         $tag = $this->tag($tag, $attributes);
         return $tag->open().$this->_translateContainerNode($node).$tag->close();
     }

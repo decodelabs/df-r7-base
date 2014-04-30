@@ -71,7 +71,7 @@ trait TEntryList {
 
     use TEntryGenerator;
 
-    protected $_entries = array();
+    protected $_entries = [];
     protected $_isSorted = false;
 
     public static function fromArray(array $entries) {
@@ -185,7 +185,7 @@ trait TEntryList {
 
 
     public function clearEntries() {
-        $this->_entries = array();
+        $this->_entries = [];
         return $this;
     }
 
@@ -251,7 +251,7 @@ trait TSharedLinkComponents {
     protected $_description;
     protected $_showDescription = true;
     protected $_hideIfInaccessible = false;
-    protected $_altMatches = array();
+    protected $_altMatches = [];
 
 // Uri
     public function setUri($uri, $setAsMatchRequest=false) {
@@ -366,7 +366,7 @@ trait TSharedLinkComponents {
     }
 
     public function clearAltMatches() {
-        $this->_altMatches = array();
+        $this->_altMatches = [];
         return $this;
     }
 

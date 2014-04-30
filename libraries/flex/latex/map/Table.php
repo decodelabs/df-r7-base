@@ -18,7 +18,7 @@ class Table extends iris\map\Node implements flex\latex\ITable, core\IDumpable {
     use flex\latex\TPlacementAware;
     use flex\latex\TListedNode;
 
-    protected $_columns = array();
+    protected $_columns = [];
 
     public function addColumn(flex\latex\IColumn $column) {
         $this->_columns[] = $column;

@@ -29,8 +29,8 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
             );
         }
         
-        $triggers = array();
-        $indexes = array();
+        $triggers = [];
+        $indexes = [];
         $tableData = null;
         
         while(!$res->isEmpty()) {
@@ -79,10 +79,10 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
                 // Field
                 $args = isset($matches[5]) ?
                     core\string\Util::parseDelimited($matches[5], ',', '\'') 
-                    : array();
+                    : [];
                 
                 array_unshift($args, $matches[1], $matches[2]);
-                $field = call_user_func_array(array($schema, 'addField'), $args);
+                $field = call_user_func_array([$schema, 'addField'], $args);
                 
                 if(preg_match('/ NOT NULL( ON CONFLICT (ROLLBACK|ABORT|FAIL|IGNORE|REPLACE))?/i', $def, $matches)) {
                     $field->isNullable(false);
@@ -158,7 +158,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
                     // Inline indexes
                     case 'PRIMARY KEY':
                     case 'UNIQUE':
-                        $index = $schema->addUniqueIndex($matches[1], array());
+                        $index = $schema->addUniqueIndex($matches[1], []);
                         preg_match('/'.$type.' \((.*)\)/i', $def, $matches);
                         
                         foreach(core\string\Util::parseDelimited($matches[1], ',', null) as $part) {
@@ -226,7 +226,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
 
         // Standalone indexes
         foreach($indexes as $indexName => $indexData) {
-            $index = $schema->addIndex($indexName, array());
+            $index = $schema->addIndex($indexName, []);
             
             if(!preg_match('/INDEX ["`]?'.$indexData['name'].'["`]? ON ["`]?'.$indexData['tbl_name'].'["`]? \((.*)\)/i', $indexData['sql'], $matches)) {
                 throw new opal\schema\UnexpectedValueException(
@@ -313,7 +313,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
         if($field instanceof opal\schema\IOptionProviderField) {
             // do nothing :(
         } else {
-            $options = array();
+            $options = [];
             
             if($field instanceof opal\schema\ILengthRestrictedField
             && null !== ($length = $field->getLength())) {
@@ -383,7 +383,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
             $indexSql .= ' UNIQUE';
         }
         
-        $indexFields = array();
+        $indexFields = [];
         
         foreach($index->getFieldReferences() as $reference) {
             $fieldDef = $this->_adapter->quoteIdentifier($reference->getField()->getName());
@@ -414,7 +414,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
         $indexSql = 'CREATE INDEX '.$this->_adapter->quoteIdentifier($tableName.'_'.$index->getName());
         $indexSql .= ' ON '.$this->_adapter->quoteIdentifier($tableName);
         
-        $indexFields = array();
+        $indexFields = [];
         
         foreach($index->getFieldReferences() as $reference) {
             $fieldDef = $this->_adapter->quoteIdentifier($reference->getField()->getName());
@@ -513,8 +513,8 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
             $renameFields = $schema->getFieldRenameMap();
             $fields = $schema->getFields();
             
-            $sourceFields = array();
-            $destinationFields = array();
+            $sourceFields = [];
+            $destinationFields = [];
             
             foreach($fields as $fieldName => $field) {
                 if(isset($addFields[$fieldName])) {
@@ -532,7 +532,7 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
             
             
             // Remove triggers
-            $triggers = array();
+            $triggers = [];
             
             foreach($schema->getTriggers() as $triggerName => $trigger) {
                 $triggers[$triggerName] = $trigger;

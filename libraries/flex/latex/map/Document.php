@@ -15,8 +15,8 @@ class Document extends iris\map\Node implements flex\latex\IDocument, core\IDump
     use flex\latex\TContainerNode;
 
     protected $_documentClass;
-    protected $_options = array();
-    protected $_packages = array();
+    protected $_options = [];
+    protected $_packages = [];
 
     protected $_title;
     protected $_author;
@@ -36,7 +36,7 @@ class Document extends iris\map\Node implements flex\latex\IDocument, core\IDump
 
 // Options
     public function setOptions(array $options) {
-        $this->_options = array();
+        $this->_options = [];
         return $this->addOptions($options);
     }
 
@@ -58,12 +58,12 @@ class Document extends iris\map\Node implements flex\latex\IDocument, core\IDump
     }
 
     public function clearOptions() {
-        $this->_options = array();
+        $this->_options = [];
         return $this;
     }
 
 // Packages
-    public function addPackage($name, array $options=array()) {
+    public function addPackage($name, array $options=[]) {
         $this->_packages[$name] = $options;
         return $this;
     }

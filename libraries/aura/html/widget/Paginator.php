@@ -68,7 +68,7 @@ class Paginator extends Base implements core\IDumpable {
         $query = $request->getQuery();
         
         $map = $this->_pageData->getKeyMap();
-        $linkList = array();
+        $linkList = [];
         
         
         // Prev
@@ -81,11 +81,11 @@ class Paginator extends Base implements core\IDumpable {
                 $prevText = $this->_prevText;
             }
             
-            $element = new aura\html\Element('a', $prevText, array(
+            $element = new aura\html\Element('a', $prevText, [
                 'href' => $context->normalizeOutputUrl($request),
                 'class' => 'link-prev',
                 'rel' => 'prev'
-            ));
+            ]);
             
             $linkList[] = $element->render();
         }
@@ -102,9 +102,9 @@ class Paginator extends Base implements core\IDumpable {
             || $i < 3 
             || $i > $totalPages - 2 
             || ($i > $currentPage - 3 && $i < $currentPage + 3)) {
-                $element = new aura\html\Element('a', $i, array(
+                $element = new aura\html\Element('a', $i, [
                     'href' => $context->normalizeOutputUrl($request)
-                ));
+                ]);
                 
                 if($isCurrent) {
                     $element->addClass('link-selected');
@@ -135,11 +135,11 @@ class Paginator extends Base implements core\IDumpable {
                 $nextText = $this->_nextText;
             }
             
-            $element = new aura\html\Element('a', $nextText, array(
+            $element = new aura\html\Element('a', $nextText, [
                 'href' => $context->normalizeOutputUrl($request),
                 'class' => 'link-next',
                 'rel' => 'next'
-            ));
+            ]);
             
             $linkList[] = $element->render();
         }
@@ -148,7 +148,7 @@ class Paginator extends Base implements core\IDumpable {
             return '';
         }
         
-        $content = array();
+        $content = [];
         
         if($this->_renderDetails) {
             $mLimit = $offset + $limit;
@@ -157,11 +157,11 @@ class Paginator extends Base implements core\IDumpable {
                 $mLimit = $total;
             }
             
-            $messageData = array(
+            $messageData = [
                 '%offset%' => $offset + 1,
                 '%limit%' => $mLimit,
                 '%total%' => $total
-            );
+            ];
             
             if($messageData['%offset%'] == $messageData['%limit%']) {
                 $message = $context->_(
@@ -175,10 +175,10 @@ class Paginator extends Base implements core\IDumpable {
                 );
             }
             
-            $content[] = new aura\html\Element('div', $message, array('class' => 'block-details'));
+            $content[] = new aura\html\Element('div', $message, ['class' => 'block-details']);
         }
         
-        $content[] = new aura\html\Element('div', $linkList, array('class' => 'block-links'));
+        $content[] = new aura\html\Element('div', $linkList, ['class' => 'block-links']);
         
         return $this->getTag()->renderWith($content, true);
     }

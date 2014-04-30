@@ -31,7 +31,7 @@ class ArticleList extends BulletList implements IOrderedDataDrivenListWidget {
         $data = $this->_data;
 
         if(!$this->_isDataIterable() && $data !== null) {
-            $data = array($data);
+            $data = [$data];
         }
         
         if(empty($data)) {

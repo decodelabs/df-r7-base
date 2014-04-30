@@ -217,7 +217,7 @@ class Primitive_Integer extends Primitive implements
     
 class Primitive_MultiField extends Primitive implements IMultiFieldPrimitive {
     
-    protected $_primitives = array();
+    protected $_primitives = [];
     
     public function __construct(IField $field, array $primitives) {
         parent::__construct($field);

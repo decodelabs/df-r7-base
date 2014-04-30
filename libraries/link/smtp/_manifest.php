@@ -57,7 +57,7 @@ interface IMediator {
 
 class Response {
 
-    public $info = array();
+    public $info = [];
     public $code;
     public $message;
 

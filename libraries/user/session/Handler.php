@@ -14,7 +14,7 @@ class Handler implements user\session\IHandler, core\IDumpable {
     use core\TValueMap;
 
     protected $_namespace;    
-    protected $_nodes = array();
+    protected $_nodes = [];
     protected $_controller;
     protected $_lifeTime = null;
     
@@ -168,7 +168,7 @@ class Handler implements user\session\IHandler, core\IDumpable {
         
         $this->_controller->getBackend()->clearNamespace($descriptor, $this->_namespace);
         $this->_controller->getCache()->clear();
-        $this->_nodes = array();
+        $this->_nodes = [];
         
         return $this;
     }
@@ -176,7 +176,7 @@ class Handler implements user\session\IHandler, core\IDumpable {
     public function clearForAll() {
         $this->_controller->getBackend()->clearNamespaceForAll($this->_namespace);
         $this->_controller->getCache()->clear();
-        $this->_nodes = array();
+        $this->_nodes = [];
 
         return $this;
     }
@@ -330,7 +330,7 @@ class Handler implements user\session\IHandler, core\IDumpable {
     
 // Dump
     public function getDumpProperties() {
-        $output = array();
+        $output = [];
         
         if($this->_controller->isOpen()) {
             foreach($this->_nodes as $key => $node) {

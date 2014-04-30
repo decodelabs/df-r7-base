@@ -14,7 +14,7 @@ class PanelSet extends Base {
 
     const PRIMARY_TAG = 'table';
 
-    protected $_panels = array();
+    protected $_panels = [];
 
     public function __construct(arch\IContext $context) {
         $this->_context = $context;

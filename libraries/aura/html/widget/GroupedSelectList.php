@@ -61,11 +61,11 @@ class GroupedSelectList extends Base implements IGroupedSelectionInputWidget, IF
         $selectionFound = false;
         
         foreach($this->_groupOptions as $groupId => $group) {
-            $optGroup = new aura\html\Element('optgroup', null, array('label' => $this->getGroupName($groupId)));
+            $optGroup = new aura\html\Element('optgroup', null, ['label' => $this->getGroupName($groupId)]);
             
             foreach($group as $value => $label) {
                 $isSelected = !$selectionFound && $this->_checkSelected($value, $selectionFound);
-                $option = new aura\html\Element('option', null, array('value' => $value));
+                $option = new aura\html\Element('option', null, ['value' => $value]);
                 
                 if($isSelected) {
                     $option->setAttribute('selected', 'selected');

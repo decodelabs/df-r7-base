@@ -66,7 +66,7 @@ class IdList extends Base implements core\validate\IIdListField {
         }
         
         if(!is_array($value)) {
-            $value = array($value);
+            $value = [$value];
         }
         
         $record[$this->getRecordName()] = $value;

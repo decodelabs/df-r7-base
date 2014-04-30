@@ -12,7 +12,7 @@ use df\opal;
 class Trigger extends opal\rdbms\schema\constraint\Trigger {
     
     protected $_isTemporary = false;
-    protected $_updateFields = array();
+    protected $_updateFields = [];
     protected $_whenExpression;
     
     public function isTemporary($flag=null) {

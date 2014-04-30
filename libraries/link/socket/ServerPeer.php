@@ -52,7 +52,7 @@ abstract class ServerPeer extends Base implements IServerPeerSocket, core\IDumpa
 // Dump
     public function getDumpProperties() {
         $output = $this->getId().' (';
-        $args = array();
+        $args = [];
         
         if($this->_isConnected) {
             if($this->_readingEnabled) {

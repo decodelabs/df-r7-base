@@ -10,7 +10,7 @@ use df\core;
 
 class Counter {
     
-    protected $_locations = array();
+    protected $_locations = [];
     
     public function __construct() {
         

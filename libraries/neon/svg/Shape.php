@@ -124,7 +124,7 @@ class Shape implements core\IDumpable {
         return substr(strtolower($this->getName()), 6);
     }
 
-    protected function _createPath(array $commands, array $exAttributes=array()) {
+    protected function _createPath(array $commands, array $exAttributes=[]) {
         $output = new Shape_Path($commands);
         $attributes = $this->_attributes;
 
@@ -137,7 +137,7 @@ class Shape implements core\IDumpable {
     }
 
     public function getDumpProperties() {
-        $output = array();
+        $output = [];
 
         if($this->_title) {
             $output['title'] = $this->_title;
@@ -318,7 +318,7 @@ class Shape_Polygon extends Shape implements IPolygon, IPathProvider {
     }
 
     public function toPath() {
-        $commands = array();
+        $commands = [];
         $move = false;
 
         foreach($this->_points as $point) {
@@ -353,7 +353,7 @@ class Shape_Polyline extends Shape implements IPolyline, IPathProvider {
     }
 
     public function toPath() {
-        $commands = array();
+        $commands = [];
         $move = false;
 
         foreach($this->_points as $point) {

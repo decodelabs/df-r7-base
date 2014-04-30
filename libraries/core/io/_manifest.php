@@ -530,11 +530,11 @@ interface IAcceptTypeProcessor {
 
 trait TAcceptTypeProcessor {
 
-    protected $_acceptTypes = array();
+    protected $_acceptTypes = [];
 
     public function setAcceptTypes($types=null) {
         if($types === null) {
-            $this->_acceptTypes = array();
+            $this->_acceptTypes = [];
             return $this;
         }
         
@@ -542,7 +542,7 @@ trait TAcceptTypeProcessor {
             $types = func_get_args();
         }
         
-        $this->_acceptTypes = array();
+        $this->_acceptTypes = [];
         
         foreach($types as $type) {
             $type = trim(strtolower($type));

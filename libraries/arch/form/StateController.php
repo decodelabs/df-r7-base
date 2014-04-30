@@ -14,8 +14,8 @@ class StateController implements IStateController, \Serializable {
     protected $_sessionId;
     protected $_values;
     protected $_isNew = false;
-    protected $_delegates = array();
-    protected $_store = array();
+    protected $_delegates = [];
+    protected $_store = [];
     
     public function __construct($sessionId) {
         $this->_sessionId = $sessionId;
@@ -28,7 +28,7 @@ class StateController implements IStateController, \Serializable {
     }
     
     protected function _getSerializeValues($withId=true) {
-        $output = array();
+        $output = [];
         
         if($withId) {
             $output['id'] = $this->_sessionId;
@@ -43,7 +43,7 @@ class StateController implements IStateController, \Serializable {
         }
         
         if(!empty($this->_delegates)) {
-            $delegates = array();
+            $delegates = [];
             
             foreach($this->_delegates as $key => $delegate) {
                 $delegates[$key] = $delegate->_getSerializeValues(false);
@@ -174,7 +174,7 @@ class StateController implements IStateController, \Serializable {
     }
 
     public function clearStore() {
-        $this->_store = array();
+        $this->_store = [];
         return $this;
     }
 }

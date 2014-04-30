@@ -39,7 +39,7 @@ class Countries extends Base implements ICountriesModule, core\i18n\module\gener
     }
     
     public function suggestCountryForLanguage($language) {
-        $match = array();
+        $match = [];
         $language = strtolower($language);
         
         switch($language) {
@@ -65,7 +65,7 @@ class Countries extends Base implements ICountriesModule, core\i18n\module\gener
         }
     }
     
-    private static $_suggestionLocales = array(
+    private static $_suggestionLocales = [
         'aa_DJ', 'aa_ER', 'aa_ET', 'aa', 'af_ZA', 'af', 'am_ET', 'am', 'ar_AE', 'ar_BH', 'ar_DZ', 'ar_EG',
         'ar_IQ', 'ar_JO', 'ar_KW', 'ar_LB', 'ar_LY', 'ar_MA', 'ar_OM', 'ar_QA', 'ar_SA', 'ar_SD', 'ar_SY',
         'ar_TN', 'ar_YE', 'ar', 'as_IN', 'as', 'az_AZ', 'az', 'be_BY', 'be', 'bg_BG', 'bg', 'bn_IN', 'bn',
@@ -89,7 +89,7 @@ class Countries extends Base implements ICountriesModule, core\i18n\module\gener
         'sv_SE', 'sv', 'sw_KE', 'sw_TZ', 'sw', 'syr_SY', 'syr', 'ta_IN', 'ta', 'te_IN', 'te', 'th_TH', 'th',
         'ti_ER', 'ti_ET', 'ti', 'tig_ER', 'tig', 'tr_TR', 'tr', 'tt_RU', 'tt', 'uk_UA', 'uk', 'ur_PK', 'ur',
         'uz_AF', 'uz_UZ', 'uz', 'vi_VN', 'vi', 'wal_ET', 'wal', 'zh_CN', 'zh_HK', 'zh_MO', 'zh_SG', 'zh_TW', 'zh'
-    );
+    ];
     
 
 // Generator
@@ -98,7 +98,7 @@ class Countries extends Base implements ICountriesModule, core\i18n\module\gener
         
         
         if(isset($doc->localeDisplayNames->territories->territory)) {
-            $output = array();
+            $output = [];
             
             foreach($doc->localeDisplayNames->territories->territory as $territory) {
                 $type = (string)$territory['type'];

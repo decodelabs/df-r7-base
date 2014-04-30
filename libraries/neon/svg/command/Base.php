@@ -32,7 +32,7 @@ abstract class Base implements neon\svg\ICommand {
         if(is_string($commands)) {
             $commands = str_replace('  ', ' ', $commands);
             $matches = preg_split('/([a-zA-Z])/', $commands, null, \PREG_SPLIT_DELIM_CAPTURE | \PREG_SPLIT_NO_EMPTY);
-            $commands = array();
+            $commands = [];
 
             while(!empty($matches)) {
 
@@ -90,7 +90,7 @@ abstract class Base implements neon\svg\ICommand {
             }
 
             $command = self::$_commandKeys[$key];
-            $args = isset($matches[2]) && $matches[1] !== '' ? explode(' ', trim($matches[2])) : array();
+            $args = isset($matches[2]) && $matches[1] !== '' ? explode(' ', trim($matches[2])) : [];
         } else {
             throw new neon\svg\InvalidArgumentException(
                 $command.' is not a valid path command'

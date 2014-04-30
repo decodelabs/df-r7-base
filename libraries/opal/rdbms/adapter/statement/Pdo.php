@@ -51,7 +51,7 @@ class Pdo extends Base {
 
     public function count() {
         if($this->_cache === null) {
-            $this->_cache = array();
+            $this->_cache = [];
 
             if($this->_stmt) {
                 while($row = $this->_stmt->fetch(\PDO::FETCH_ASSOC)) {

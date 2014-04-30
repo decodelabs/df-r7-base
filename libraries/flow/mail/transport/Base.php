@@ -79,7 +79,7 @@ abstract class Base implements flow\mail\ITransport {
     }
 
     public static function getAvailableTransports() {
-        $output = array();
+        $output = [];
 
         foreach(df\Launchpad::$loader->lookupClassList('flow/mail/transport') as $name => $class) {
             $output[$name] = $class::getDescription();

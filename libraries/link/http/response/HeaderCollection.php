@@ -13,7 +13,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
     
     use link\http\THeaderCollection;
     
-    protected static $_messages = array(
+    protected static $_messages = [
         // Informational 1xx
         100 => 'Continue',
         101 => 'Switching Protocols',
@@ -65,7 +65,7 @@ class HeaderCollection extends core\collection\HeaderMap implements link\http\IR
         504 => 'Gateway Timeout',
         505 => 'HTTP Version Not Supported',
         509 => 'Bandwidth Limit Exceeded'
-    );
+    ];
     
     protected $_statusCode = 200;
     protected $_statusMessage = null;

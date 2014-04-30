@@ -50,7 +50,7 @@ abstract class Base implements IModule {
             return;
         }
         
-        $this->_data = array();
+        $this->_data = [];
         $this->_loadLocale('root');
         
         $lang = $this->_locale->getLanguage();
@@ -84,7 +84,7 @@ abstract class Base implements IModule {
         foreach($arr2 as $key => $val) {
             if(is_array($val)) {
                 if(!isset($arr1[$key]) || !is_array($arr1[$key])) {
-                    $arr1[$key] = array();
+                    $arr1[$key] = [];
                 }
                 
                 $arr1[$key] = $this->_multiMerge($arr1[$key], $val);

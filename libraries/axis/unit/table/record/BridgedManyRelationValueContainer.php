@@ -18,9 +18,9 @@ class BridgedManyRelationValueContainer implements
     \Countable,
     \IteratorAggregate {
     
-    protected $_current = array();
-    protected $_new = array();
-    protected $_remove = array();
+    protected $_current = [];
+    protected $_new = [];
+    protected $_remove = [];
     protected $_removeAll = false;
     
     protected $_localPrimaryKeySet;
@@ -54,7 +54,7 @@ class BridgedManyRelationValueContainer implements
         $this->removeAll();
         
         if(!is_array($value)) {
-            $value = array($value);
+            $value = [$value];
         }
 
         foreach($value as $id) {
@@ -193,16 +193,16 @@ class BridgedManyRelationValueContainer implements
     }
     
     public function removeAll() {
-        $this->_new = array();
-        $this->_current = array();
+        $this->_new = [];
+        $this->_current = [];
         $this->_removeAll = true;
         return $this;
     }
 
 
     protected function _normalizeInputRecordList(array $records) {
-        $index = array();
-        $lookupKeySets = array();
+        $index = [];
+        $lookupKeySets = [];
         $bridgeUnit = $this->getBridgeUnit();
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
         
@@ -596,7 +596,7 @@ class BridgedManyRelationValueContainer implements
             $taskSet->addTask($removeAllTask);
         }
 
-        $filterKeys = array();
+        $filterKeys = [];
 
         // Insert relation tasks
         foreach($this->_new as $id => $record) {
@@ -670,7 +670,7 @@ class BridgedManyRelationValueContainer implements
         // Delete relation tasks
         if(!$removeAllTask && !empty($this->_remove) && !$this->_localPrimaryKeySet->isNull()) {
             foreach($this->_remove as $id => $record) {
-                $bridgeData = array();
+                $bridgeData = [];
             
                 foreach($this->_localPrimaryKeySet->toArray() as $key => $value) {
                     $bridgeData[$bridgeLocalFieldName.'_'.$key] = $value;
@@ -699,8 +699,8 @@ class BridgedManyRelationValueContainer implements
     
     public function acceptSaveTaskChanges(opal\record\IRecord $record) {
         $this->_current = array_merge($this->_current, $this->_new);
-        $this->_new = array();
-        $this->_remove = array();
+        $this->_new = [];
+        $this->_remove = [];
         $this->_removeAll = false;
         
         return $this;
@@ -718,7 +718,7 @@ class BridgedManyRelationValueContainer implements
         $bridgeUnit = $this->_getBridgeUnit($application);
 
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
-        $bridgeData = array();
+        $bridgeData = [];
             
         foreach($this->_localPrimaryKeySet->toArray() as $key => $value) {
             $bridgeData[$bridgeLocalFieldName.'_'.$key] = $value;
@@ -733,8 +733,8 @@ class BridgedManyRelationValueContainer implements
     
     public function acceptDeleteTaskChanges(opal\record\IRecord $record) {
         $this->_new = array_merge($this->_current, $this->_new);
-        $this->_current = array();
-        $this->_remove = array();
+        $this->_current = [];
+        $this->_remove = [];
         
         return $this;
     }

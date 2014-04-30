@@ -389,7 +389,7 @@ abstract class Action extends arch\Action implements IAction {
         if(!empty($args)) {
             $args = core\string\Util::parseDelimited($args);
         } else {
-            $args = array();
+            $args = [];
         }
         
         $targetId = explode('.', trim($event, '.'));

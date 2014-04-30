@@ -37,7 +37,7 @@ class SQLError extends RuntimeException implements core\IDumpable {
     }
     
     public function getDumpProperties() {
-        return array('SQL' => $this->_sql);
+        return ['SQL' => $this->_sql];
     }
 }
 
@@ -63,11 +63,11 @@ class TableQueryException extends QueryException {
     }
     
     public function getDumpProperties() {
-        return array(
+        return [
             'database' => $this->database,
             'table' => $this->table,
             'SQL' => $this->_sql
-        );
+        ];
     }
 }
 

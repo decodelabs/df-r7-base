@@ -61,7 +61,7 @@ abstract class SlugTree extends Base {
             return null;
         }
 
-        $slugs = array();
+        $slugs = [];
 
         do {
             $slugs[] = implode('/', $parts);

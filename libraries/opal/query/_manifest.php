@@ -30,14 +30,14 @@ interface IDataRowProvider {
 
 // Initiator
 interface IInitiator extends core\IApplicationAware, ITransactionAware {
-    public function beginSelect(array $fields=array(), $distinct=false);
+    public function beginSelect(array $fields=[], $distinct=false);
     public function beginUnion();
-    public function beginUnionSelect(IUnionQuery $union, array $fields=array(), $unionDistinct=true, $selectDistinct=false);
+    public function beginUnionSelect(IUnionQuery $union, array $fields=[], $unionDistinct=true, $selectDistinct=false);
     public function beginFetch();
     public function beginInsert($row);
-    public function beginBatchInsert($rows=array());
+    public function beginBatchInsert($rows=[]);
     public function beginReplace($row);
-    public function beginBatchReplace($rows=array());
+    public function beginBatchReplace($rows=[]);
     public function beginUpdate(array $valueMap=null);
     public function beginDelete();
 
@@ -45,9 +45,9 @@ interface IInitiator extends core\IApplicationAware, ITransactionAware {
     public function beginPopulate(IQuery $parent, array $fields, $type=IPopulateQuery::TYPE_ALL, array $selectFields=null);
     public function beginCombine(ICombinableQuery $parent, array $fields);
 
-    public function beginJoin(IQuery $parent, array $fields=array(), $type=IJoinQuery::INNER);
+    public function beginJoin(IQuery $parent, array $fields=[], $type=IJoinQuery::INNER);
     public function beginJoinConstraint(IQuery $parent, $type=IJoinQuery::INNER);
-    public function beginAttach(IReadQuery $parent, array $fields=array(), $isSelect=false);
+    public function beginAttach(IReadQuery $parent, array $fields=[], $isSelect=false);
     public static function beginAttachFromPopulate(IPopulateQuery $populate);
     
     public function getFields();
@@ -101,9 +101,9 @@ interface IEntryPoint {
     public function union();
     public function fetch();
     public function insert($values);
-    public function batchInsert($rows=array());
+    public function batchInsert($rows=[]);
     public function replace($values);
-    public function batchReplace($rows=array());
+    public function batchReplace($rows=[]);
     public function update(array $valueMap=null);
     public function delete();
     

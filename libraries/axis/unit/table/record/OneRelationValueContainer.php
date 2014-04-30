@@ -244,7 +244,7 @@ class OneRelationValueContainer implements
                 $output .= $value;
             }
         } else {
-            $t = array();
+            $t = [];
             
             foreach($this->_value->toArray() as $key => $value) {
                 $valString = $key.'=';

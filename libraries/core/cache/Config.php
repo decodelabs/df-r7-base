@@ -34,15 +34,15 @@ class Config extends core\Config {
             $output = $this->values['caches'][$id];
         }
 
-        $list = array();
+        $list = [];
         
         if(isset($output['backend'])) {
             $list[] = $output['backend'];
         } else if($mergeDefaults) {
             if($cache->isCacheDistributed()) {
-                $list = array('Memcache', 'LocalFile');
+                $list = ['Memcache', 'LocalFile'];
             } else {
-                $list = array('Apc', 'Memcache', /*'Sqlite',*/ 'LocalFile');
+                $list = ['Apc', 'Memcache', /*'Sqlite',*/ 'LocalFile'];
             }
         }
         
@@ -66,14 +66,14 @@ class Config extends core\Config {
     }
 
     public function getBackendOptions($backend) {
-        $output = array();
+        $output = [];
 
         if(isset($this->values['backends'][$backend])) {
             $output = $this->values['backends'][$backend];
         }
 
         if(!is_array($output)) {
-            $output = array($output);
+            $output = [$output];
         }
 
         return $output;

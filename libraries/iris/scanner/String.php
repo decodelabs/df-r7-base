@@ -70,7 +70,7 @@ class String implements iris\IScanner {
     }
 
     public function clearContainers() {
-        $this->_containers = array();
+        $this->_containers = [];
         return $this;
     }
 

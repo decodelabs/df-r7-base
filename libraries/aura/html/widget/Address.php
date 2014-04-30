@@ -64,7 +64,7 @@ class Address extends Base implements core\IDumpable {
         $tag->setName($blockTag);
         
         if(!empty($poBox)) {
-            $content->push(new aura\html\Element($blockTag, $poBox, array('class' => 'post-office-box')));
+            $content->push(new aura\html\Element($blockTag, $poBox, ['class' => 'post-office-box']));
         }
         
         if(!empty($streetAddress)) {

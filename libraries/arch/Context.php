@@ -248,10 +248,10 @@ class Context implements IContext, \Serializable, core\IDumpable {
     
 // Dump
     public function getDumpProperties() {
-        return array(
+        return [
             'request' => $this->request,
             'location' => $this->location,
             'application' => $this->application
-        );
+        ];
     }
 }

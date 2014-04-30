@@ -59,7 +59,7 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
     
     public function getAuthors() {
         $list = $this->_xPath->query('//atom:author');
-        $authors = array();
+        $authors = [];
         
         if($list->length) {
             foreach($list as $authorNode) {

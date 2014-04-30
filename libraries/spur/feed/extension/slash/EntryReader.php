@@ -13,9 +13,9 @@ class EntryReader implements spur\feed\IEntryReaderPlugin {
     
     use spur\feed\TEntryReader;
     
-    protected static $_xPathNamespaces = array(
+    protected static $_xPathNamespaces = [
         'slash10' => 'http://purl.org/rss/1.0/modules/slash/'
-    );
+    ];
         
     public function getSection() {
         return $this->_xPath->evaluate(

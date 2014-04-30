@@ -13,9 +13,9 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
     
     use spur\feed\TFeedReader;
     
-    protected static $_xPathNamespaces = array(
+    protected static $_xPathNamespaces = [
         'itunes' => 'http://www.itunes.com/dtds/podcast-1.0.dtd'
-    );
+    ];
         
     public function getCastAuthor() {
         return $this->_xPath->evaluate(

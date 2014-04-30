@@ -20,7 +20,7 @@ class Set implements ISet, IAggregateIteratorCollection, core\IDumpable {
         }
         
         if(!is_array($input)) {
-            $input = array($input);
+            $input = [$input];
         }
         
         foreach(array_unique($input) as $value) {
@@ -36,7 +36,7 @@ class Set implements ISet, IAggregateIteratorCollection, core\IDumpable {
     
 // Dump
     public function getDumpProperties() {
-        $output = array();
+        $output = [];
         
         foreach($this->_collection as $value) {
             $output[] = new core\debug\dumper\Property(null, $value);

@@ -43,10 +43,10 @@ class Form extends Container implements IFormWidget, IWidgetShortcutProvider {
         $view = $this->getRenderTarget()->getView();
         $tag = $this->getTag();
         
-        $tag->addAttributes(array(
+        $tag->addAttributes([
             'action' => $view->getContext()->normalizeOutputUrl($this->_action),
             'method' => $this->_method
-        ));
+        ]);
         
         if($this->_encoding !== null) {
             $tag->setAttribute('enctype', $this->_encoding);
@@ -86,7 +86,7 @@ class Form extends Container implements IFormWidget, IWidgetShortcutProvider {
         
         $method = strtolower($method);
         
-        if(!in_array($method, array('get', 'post', 'put', 'delete'))) {
+        if(!in_array($method, ['get', 'post', 'put', 'delete'])) {
             throw new InvalidArgumentException(
                 'Invalid form method: '.$method
             );    

@@ -312,9 +312,9 @@ class Rdbms implements
     
 // Dump
     public function getDumpProperties() {
-        return array(
+        return [
             'adapter' => get_class($this),
             'unit' => $this->_unit->getUnitId() 
-        );
+        ];
     }
 }

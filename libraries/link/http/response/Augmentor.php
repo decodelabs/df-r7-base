@@ -11,8 +11,8 @@ use df\link;
 
 class Augmentor implements link\http\IResponseAugmentor {
     
-    protected $_globalHeaders = array();
-    protected $_currentHeaders = array();
+    protected $_globalHeaders = [];
+    protected $_currentHeaders = [];
 
     protected $_globalCookies;
     protected $_currentCookies;
@@ -24,7 +24,7 @@ class Augmentor implements link\http\IResponseAugmentor {
     }
 
     public function resetAll() {
-        $this->_globalHeaders = array();
+        $this->_globalHeaders = [];
         $this->_globalCookies = new link\http\response\CookieCollection();
         $this->resetCurrent();
         return $this;

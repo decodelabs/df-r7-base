@@ -14,7 +14,7 @@ class Template extends Base implements ITemplateWidget, \ArrayAccess, core\IDump
     
     protected $_path;
     protected $_location;
-    protected $_args = array();
+    protected $_args = [];
     
     public function __construct(arch\IContext $context, $path, $location=null, array $args=null) {
         $this->setPath($path);
@@ -101,7 +101,7 @@ class Template extends Base implements ITemplateWidget, \ArrayAccess, core\IDump
     }
     
     public function setArgs(array $args) {
-        $this->_args = array();
+        $this->_args = [];
         return $this->addArgs($args);
     }
     
@@ -110,7 +110,7 @@ class Template extends Base implements ITemplateWidget, \ArrayAccess, core\IDump
         return $this;
     }
     
-    public function getArgs(array $add=array()) {
+    public function getArgs(array $add=[]) {
         $output = $this->_args;
         
         foreach($add as $key => $var) {

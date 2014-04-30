@@ -59,7 +59,7 @@ class Structure implements IStructureNode {
     }
 
     public function getDataValue(IInspector $inspector) {
-        $output = array();
+        $output = [];
 
         if($this->_type) {
             $output['___class_name'] = $this->_type;
@@ -84,7 +84,7 @@ class Structure implements IStructureNode {
     
     private function _renderBody() {
         $indent = '   ';
-        $output = array();
+        $output = [];
         
         foreach($this->_properties as $property) {
             $dump = $property->inspectValue($this->_inspector);

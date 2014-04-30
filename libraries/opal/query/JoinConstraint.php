@@ -43,10 +43,10 @@ class JoinConstraint extends Join implements IJoinConstraintQuery {
     
 // Dump
     public function getDumpProperties() {
-        return array(
+        return [
             'type' => self::typeIdToName($this->_type),
             'source' => $this->_source->getAdapter()->getQuerySourceDisplayName(),
             'on' => $this->_joinClauseList
-        );
+        ];
     }
 }

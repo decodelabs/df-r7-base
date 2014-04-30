@@ -35,7 +35,7 @@ class Mysql extends Base_Pdo {
     }
     
     protected function _getPdoOptions() {
-        $output = array();
+        $output = [];
         
         if(!($charset = $this->_dsn->getOption('encoding'))) {
             $charset = 'utf8';

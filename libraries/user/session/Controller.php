@@ -24,7 +24,7 @@ class Controller implements IController {
     protected $_backend;
     protected $_cache;
     protected $_isOpen = false;
-    protected $_namespaces = array();
+    protected $_namespaces = [];
 
     public function __construct(core\IApplication $application) {
         $this->_application = $application;
@@ -249,7 +249,7 @@ class Controller implements IController {
         $this->_cache->removeDescriptor($this->_descriptor);
         $this->_backend->killSession($this->_descriptor);
         $this->_descriptor = null;
-        $this->_namespaces = array();
+        $this->_namespaces = [];
         $this->_isOpen = false;
         
         $this->_getManager()->clearClient();

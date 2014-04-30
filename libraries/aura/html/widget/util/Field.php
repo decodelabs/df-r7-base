@@ -13,7 +13,7 @@ class Field implements aura\html\widget\IField, core\IDumpable {
     
     public $key;
     public $name;
-    public $labels = array();
+    public $labels = [];
     public $renderer;
     
     public function __construct($key, $name, Callable $renderer=null) {

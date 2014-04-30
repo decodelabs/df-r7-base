@@ -40,7 +40,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource {
         $baseId .= '/'.$name;
 
 
-        $menus = array();
+        $menus = [];
 
         foreach(df\Launchpad::$loader->getPackages() as $package) {
             $packageName = ucfirst($package->name);
@@ -83,7 +83,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource {
     }
 
     public function loadIds(array $ids, array $whiteList=null) {
-        $output = array();
+        $output = [];
 
         foreach($ids as $id) {
             if($whiteList !== null
@@ -137,7 +137,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource {
 
     public function loadNestedMenus($areas=null) {
         $flatList = $this->loadIds($this->getMenuIds($areas));
-        $index = $output = array();
+        $index = $output = [];
 
         foreach($flatList as $id => $menu) {
             $packageName = $menu->getSubId();
@@ -180,7 +180,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource {
 
         if(!$cache->has($cacheId)
         || null === ($list = $cache->get($cacheId))) {
-            $list = array();
+            $list = [];
             $paths = df\Launchpad::$loader->getFileSearchPaths('apex/directory');
 
             foreach($paths as $path) {
@@ -206,7 +206,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource {
             }
 
             $temp = $list;
-            $list = array();
+            $list = [];
 
             foreach($temp as $id) {
                 $parts = explode('/', $id);
@@ -225,7 +225,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource {
 
     public function getAreaOptionList() {
         $ids = $this->getMenuIds();
-        $output = array();
+        $output = [];
 
         foreach($ids as $id) {
             $parts = explode('/', $id);

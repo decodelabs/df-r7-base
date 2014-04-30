@@ -99,7 +99,7 @@ class Config extends core\Config {
     }
 
     public function getAdminAddresses() {
-        $output = array();
+        $output = [];
 
         foreach($this->values->adminAddresses as $address) {
             $output[] = Address::factory($address->getValue());
@@ -124,7 +124,7 @@ class Config extends core\Config {
     }
 
     public function getCatchAllBCCAddresses() {
-        $output = array();
+        $output = [];
 
         foreach($this->values->catchAllBCC as $address) {
             $output[] = Address::factory($address->getValue());

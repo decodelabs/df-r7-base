@@ -10,11 +10,11 @@ use df\core;
 
 class File {
     
-    protected static $_textTypes = array(
+    protected static $_textTypes = [
         'as', 'atom', 'cgi', 'css', 'dtd', 'htaccess', 'htc', 'htm', 'html', 'js', 'json', 'mathml', 
         'php', 'rdf', 'smd', 'sh', 'style', 'svg', 'sql', 'template', 'txt', 'xhtml', 'xht', 'xsd', 
         'xsl', 'xslt', 'xml'
-    );
+    ];
     
     protected $_path;
     protected $_lines = 0;

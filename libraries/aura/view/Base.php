@@ -64,7 +64,7 @@ class Base implements IView {
         return $this;
     }
     
-    public function getArgs(array $add=array()) {
+    public function getArgs(array $add=[]) {
         $this->_checkContentProvider();
         return $this->_contentProvider->getArgs($add);
     }

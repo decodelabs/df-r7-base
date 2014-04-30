@@ -86,7 +86,7 @@ class Tree implements ITree, core\IDumpable {
 // Node info
     public function setTagName($name) {
         $newNode = $this->_element->ownerDocument->createElement($name);
-        $children = array();
+        $children = [];
 
         foreach($this->_element->childNodes as $child) {
             $children[] = $this->_element->ownerDocument->importNode($child, true);
@@ -134,7 +134,7 @@ class Tree implements ITree, core\IDumpable {
     }
 
     public function getAttributes() {
-        $output = array();
+        $output = [];
 
         foreach($this->_element->attributes as $attrNode) {
             $output[$attrNode->name] = $attrNode->value;
@@ -296,7 +296,7 @@ class Tree implements ITree, core\IDumpable {
     }
 
     public function getAllCDataSections() {
-        $output = array();
+        $output = [];
 
         foreach($this->_element->childNodes as $node) {
             if($node->nodeType == \XML_CDATA_SECTION_NODE) {
@@ -394,7 +394,7 @@ class Tree implements ITree, core\IDumpable {
     }
 
     protected function _getChildren($name=null) {
-        $output = array();
+        $output = [];
 
         foreach($this->_element->childNodes as $node) {
             if($node->nodeType == \XML_ELEMENT_NODE) {
@@ -489,7 +489,7 @@ class Tree implements ITree, core\IDumpable {
             $mod *= -1;
         }
 
-        $output = array();
+        $output = [];
         $i = 0;
 
         foreach($this->_element->childNodes as $node) {
@@ -644,7 +644,7 @@ class Tree implements ITree, core\IDumpable {
     }
 
     public function removeAllChildren() {
-        $queue = array();
+        $queue = [];
 
         foreach($this->_element->childNodes as $node) {
             $queue[] = $node;
@@ -781,7 +781,7 @@ class Tree implements ITree, core\IDumpable {
     }
 
     public function getAllComments() {
-        $output = array();
+        $output = [];
 
         foreach($this->_element->childNodes as $node) {
             if($node->nodeType == \XML_COMMENT_NODE) {
@@ -800,7 +800,7 @@ class Tree implements ITree, core\IDumpable {
     }
 
     public function getByType($type) {
-        $output = array();
+        $output = [];
 
         foreach($this->_element->ownerDocument->getElementsByTagName($type) as $node) {
             $output[] = new self($node);
@@ -821,7 +821,7 @@ class Tree implements ITree, core\IDumpable {
 
     public function xPath($path) {
         $xpath = new \DOMXPath($this->_element->ownerDocument);
-        $output = array();
+        $output = [];
 
         foreach($xpath->query($path) as $node) {
             $output[] = new self($node);

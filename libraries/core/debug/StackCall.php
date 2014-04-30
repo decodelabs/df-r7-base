@@ -103,7 +103,7 @@ class StackCall implements IStackCall, core\IDumpable {
     }
     
     public function getArgString() {
-        $output = array();
+        $output = [];
 
         if(!is_array($this->_args)) {
             $this->_args = [$this->_args];

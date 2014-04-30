@@ -16,7 +16,7 @@ class Manager implements IManager, core\IDumpable {
     
     const REGISTRY_PREFIX = 'manager://mesh';
     
-    protected $_handlers = array();
+    protected $_handlers = [];
     
 // Entities
     public function registerHandler($scheme, IHandler $handler) {

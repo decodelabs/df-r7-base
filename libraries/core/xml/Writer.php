@@ -26,7 +26,7 @@ class Writer implements IWriter {
     protected $_rootWritten = false;    
 
     protected $_elementContent = null;
-    protected $_rawAttributeNames = array();
+    protected $_rawAttributeNames = [];
     protected $_currentNode = null;
 
     public static function fileFactory($path, IRootInterchange $interchange=null) {
@@ -376,8 +376,8 @@ class Writer implements IWriter {
                     }
                 }
 
-                $this->_attributes = array();
-                $this->_rawAttributeNames = array();
+                $this->_attributes = [];
+                $this->_rawAttributeNames = [];
 
                 if($this->_elementContent !== null) {
                     $content = self::normalizeString($this->_elementContent);

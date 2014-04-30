@@ -14,8 +14,8 @@ class Loader implements ILoader {
     private static $_includeMisses = 0;
     
     private $_isActive = false;
-    protected $_locations = array();
-    protected $_packages = array();
+    protected $_locations = [];
+    protected $_packages = [];
     
     
 // Stats
@@ -29,7 +29,7 @@ class Loader implements ILoader {
     
     
 // Construct
-    public function __construct(array $locations=array()) {
+    public function __construct(array $locations=[]) {
         $this->_locations = $locations;
     }
     

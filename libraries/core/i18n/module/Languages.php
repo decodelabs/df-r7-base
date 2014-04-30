@@ -36,7 +36,7 @@ class Languages extends Base implements ILanguagesModule, core\i18n\module\gener
     
     public function getList(array $ids=null) {
         $this->_loadData();
-        $output = array();
+        $output = [];
         
         foreach($this->_data as $key => $name) {
             if($ids !== null && !in_array($key, $ids)) {
@@ -63,7 +63,7 @@ class Languages extends Base implements ILanguagesModule, core\i18n\module\gener
 
 // Generator
     public function _convertCldr(core\i18n\ILocale $locale, \SimpleXMLElement $doc) {
-        $output = array();
+        $output = [];
         
         if(isset($doc->localeDisplayNames->languages->language)) {
             foreach($doc->localeDisplayNames->languages->language as $language) {

@@ -67,7 +67,7 @@ class PasswordAnalyzer implements IPasswordAnalyzer {
     }
     
     protected function _getFrequencyTable() {
-        $freqs = array();
+        $freqs = [];
         $str = self::FREQUENCY;
         $s = ord(' ');
         $length = strlen($str);

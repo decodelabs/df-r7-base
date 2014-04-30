@@ -115,7 +115,7 @@ class Mediator implements IMediator {
         }
 
         if(!is_array($code)) {
-            $code = array($code);
+            $code = [$code];
         }
 
         $output = new Response();

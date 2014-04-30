@@ -34,7 +34,7 @@ abstract class Base implements axis\schema\IField, \Serializable, core\IDumpable
         $this->_setName($name);
         
         if($args !== null && method_exists($this, '_init')) {
-            call_user_func_array(array($this, '_init'), $args);    
+            call_user_func_array([$this, '_init'], $args);    
         }
     }
     

@@ -12,7 +12,7 @@ class Set extends Base implements core\validate\IEnumField {
 
     use core\validate\TSanitizingField;
 
-    protected $_options = array();
+    protected $_options = [];
 
     public function setOptions(array $options) {
         $this->_options = $options;
@@ -77,7 +77,7 @@ class Set extends Base implements core\validate\IEnumField {
         }
         
         if(!is_array($value)) {
-            $value = array($value);
+            $value =[$value];
         }
         
         $record[$this->getRecordName()] = $value;

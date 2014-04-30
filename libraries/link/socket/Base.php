@@ -12,14 +12,14 @@ use df\link;
 abstract class Base implements ISocket {
     
     protected static $_populatedOptions = null;
-    protected static $_defaultOptions = array(
+    protected static $_defaultOptions = [
         'sendBufferSize' => null,
         'receiveBufferSize' => null,
         'sendLowWaterMark' => null,
         'receiveLowWaterMark' => null,
         'sendTimeout' => null,
         'receiveTimeout' => null
-    );
+    ];
     
     protected $_id;
     protected $_sessionId;
@@ -28,7 +28,7 @@ abstract class Base implements ISocket {
     protected $_readingEnabled = false;
     protected $_writingEnabled = false;
     protected $_shouldBlock = false;
-    protected $_options = array();
+    protected $_options = [];
     
     public function __construct($address) {
         $this->_address = link\socket\address\Base::factory($address);

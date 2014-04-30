@@ -147,7 +147,7 @@ class Index implements opal\rdbms\schema\IIndex, core\IDumpable {
             $output .= ' UNIQUE';
         }
         
-        $fields = array();
+        $fields = [];
         
         foreach($this->_fieldReferences as $reference) {
             $fieldDef = $reference->getField()->getName();

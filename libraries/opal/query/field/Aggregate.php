@@ -151,7 +151,7 @@ class Aggregate implements opal\query\IAggregateField, core\IDumpable {
     }
     
     public function dereference() {
-        return array($this);
+        return [$this];
     }
 
     public function isOutputField() {

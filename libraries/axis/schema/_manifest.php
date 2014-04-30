@@ -341,7 +341,7 @@ trait TRelationField {
         $targetSchema = $targetUnit->getTransientUnitSchema();
         $targetPrimaryIndex = $targetSchema->getPrimaryIndex();
 
-        $primitives = array();
+        $primitives = [];
 
         foreach($targetPrimaryIndex->getFields() as $name => $field) {
             $primitive = $field->toPrimitive($targetUnit, $targetSchema)

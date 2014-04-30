@@ -57,11 +57,11 @@ class Comms implements core\ISharedHelper {
         return $this->notify($subject, $body, true);
     }
 
-    public function templateNotify($path, $contextRequest, array $args=array(), $to=null, $from=null) {
+    public function templateNotify($path, $contextRequest, array $args=[], $to=null, $from=null) {
         return $this->sendNotification($this->newTemplateNotification($path, $contextRequest, $args, $to, $from));
     }
 
-    public function templateAdminNotify($path, $contextRequest, array $args=array()) {
+    public function templateAdminNotify($path, $contextRequest, array $args=[]) {
         return $this->templateNotify($path, $contextRequest, $args, true);
     }
 
@@ -69,7 +69,7 @@ class Comms implements core\ISharedHelper {
         return $this->_manager->newNotification($subject, $body, $to, $from);
     }
 
-    public function newTemplateNotification($path, $contextRequest, array $args=array(), $to=null, $from=null) {
+    public function newTemplateNotification($path, $contextRequest, array $args=[], $to=null, $from=null) {
         if($this->_context instanceof arch\IContext) {
             $aura = $this->_context->aura;
         } else {

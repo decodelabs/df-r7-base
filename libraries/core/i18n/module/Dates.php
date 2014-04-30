@@ -234,7 +234,7 @@ class Dates extends Base implements core\i18n\module\generator\IModule {
             return null;    
         }
         
-        $output = array();
+        $output = [];
         $calendars = $doc->dates->calendars;
         
         if(isset($calendars->{'default'})) {
@@ -245,7 +245,7 @@ class Dates extends Base implements core\i18n\module\generator\IModule {
         
         
         foreach($calendars->calendar as $calendar) {
-            $arr = array();    
+            $arr = [];    
             
             $this->_calendarDays($calendar, $arr);
             $this->_calendarMonths($calendar, $arr);
@@ -293,7 +293,7 @@ class Dates extends Base implements core\i18n\module\generator\IModule {
             return;    
         }
 
-        $arr['days'] = array(); 
+        $arr['days'] = []; 
         
         if(isset($context->{'default'})) {
             $default = (string)$context->{'default'}['choice'];    
@@ -332,7 +332,7 @@ class Dates extends Base implements core\i18n\module\generator\IModule {
                 } 
             }
             
-            $arr['days'][$type] = array();
+            $arr['days'][$type] = [];
             
             foreach($set->day as $day) {
                 $arr['days'][$type][(string)$day['type']] = (string)$day;    
@@ -366,7 +366,7 @@ class Dates extends Base implements core\i18n\module\generator\IModule {
             return;    
         }
 
-        $arr['months'] = array(); 
+        $arr['months'] = []; 
         
         if(isset($context->{'default'})) {
             $default = (string)$context->{'default'}['choice'];    
@@ -405,7 +405,7 @@ class Dates extends Base implements core\i18n\module\generator\IModule {
                 } 
             }
             
-            $arr['months'][$type] = array();
+            $arr['months'][$type] = [];
             
             foreach($set->month as $month) {
                 $arr['months'][$type][(string)$month['type']] = (string)$month;    
@@ -427,7 +427,7 @@ class Dates extends Base implements core\i18n\module\generator\IModule {
             return;
         }
         
-        $arr['dateFormat'] = array();
+        $arr['dateFormat'] = [];
         
         foreach($calendar->dateFormats->dateFormatLength as $set) {
             $type = (string)$set['type'];
@@ -450,7 +450,7 @@ class Dates extends Base implements core\i18n\module\generator\IModule {
             return;
         }
         
-        $arr['timeFormat'] = array();
+        $arr['timeFormat'] = [];
         
         foreach($calendar->timeFormats->timeFormatLength as $set) {
             $type = (string)$set['type'];

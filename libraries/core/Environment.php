@@ -75,7 +75,7 @@ class Environment extends Config {
 // Locations
     public function getActiveLocations() {
         if(!isset($this->values['activeLocations'])) {
-            return array();
+            return [];
         }
 
         $output = $this->values['activeLocations'];

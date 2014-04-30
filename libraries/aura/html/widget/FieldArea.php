@@ -38,7 +38,7 @@ class FieldArea extends Container implements IFormOrientedWidget {
         $view = $this->getRenderTarget()->getView();
         
         $primaryWidget = $fieldError = null;
-        $errors = array();
+        $errors = [];
         $isRequired = $this->_isRequired;
 
         if($this->_errorContainer) {
@@ -127,7 +127,7 @@ class FieldArea extends Container implements IFormOrientedWidget {
 
     public function renderInputArea() {
         $primaryWidget = null;
-        $errors = array();
+        $errors = [];
         $isRequired = $this->_isRequired;
 
         if($this->_errorContainer) {

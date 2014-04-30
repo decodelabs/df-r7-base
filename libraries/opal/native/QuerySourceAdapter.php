@@ -140,7 +140,7 @@ class QuerySourceAdapter implements opal\query\IAdapter {
     }
     
     protected function _fetchData(opal\query\IQuery $query) {
-        $data = array();
+        $data = [];
         $sourceAlias = $query->getSource()->getAlias();
         
         foreach($this->_rows as $origRow) {
@@ -158,7 +158,7 @@ class QuerySourceAdapter implements opal\query\IAdapter {
                 );
             }
             
-            $row = array();
+            $row = [];
             
             foreach($temp as $key => $value) {
                 $row[$sourceAlias.'.'.$key] = $value;

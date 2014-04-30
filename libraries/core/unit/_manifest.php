@@ -37,7 +37,7 @@ trait TSingleValueUnit {
 
     use core\TStringProvider;
 
-    //private static $_units = array();
+    //private static $_units = [];
 
     public function __construct($value, $unit=null, $allowPlainNumbers=false) {
         $this->parse($value, $unit, $allowPlainNumbers);

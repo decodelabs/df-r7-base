@@ -25,15 +25,15 @@ abstract class Base implements acid\IBatch {
         $result->addBatch($this);
         
         $testList = $this->_getTestMethods();
-        $return = array();
+        $return = [];
         $lastName = null;
         
         foreach($testList as $name => $method) {
             try {
                 if(isset($lastName)) {
-                    $args = array($return[$lastName]);
+                    $args = [$return[$lastName]];
                 } else {
-                    $args = array();
+                    $args = [];
                 }
                 
                 $lastName = $name;
@@ -64,7 +64,7 @@ abstract class Base implements acid\IBatch {
     
     private function _getTestMethods() {
         $ref = new \ReflectionClass($this);
-        $output = array();
+        $output = [];
         
         foreach($ref->getMethods() as $method) {
             $name = $method->getName();

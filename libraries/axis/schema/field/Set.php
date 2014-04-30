@@ -17,7 +17,7 @@ class Set extends Base implements
     use opal\schema\TField_OptionProvider;
     use opal\schema\TField_CharacterSetAware;
 
-    protected function _init(array $options=array()) {
+    protected function _init(array $options=[]) {
         $this->setOptions($options);
     }
 

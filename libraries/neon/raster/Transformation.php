@@ -13,7 +13,7 @@ class Transformation implements ITransformation {
 
     use core\TStringProvider;
 
-    protected static $_keys = array(
+    protected static $_keys = [
         'resize' => 'rs',
         'crop' => 'cr',
         'cropZoom' => 'cz',
@@ -33,10 +33,10 @@ class Transformation implements ITransformation {
         'gaussianBlur' => 'gb',
         'removeMean' => 'rm',
         'smooth' => 'sm'
-    );
+    ];
 
     protected $_image;
-    protected $_transformations = array();
+    protected $_transformations = [];
 
     public function __construct() {
         foreach(func_get_args() as $arg) {
@@ -67,7 +67,7 @@ class Transformation implements ITransformation {
             }
             
             $method = $keys[$key];
-            $args = array();
+            $args = [];
             
             if(strlen($argString)) {
                 $args = explode('|', $argString);    

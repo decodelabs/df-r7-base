@@ -28,7 +28,7 @@ interface ICollection extends \Countable, core\IArrayProvider {
 trait TExtractList {
     
     public function extractList($count) {
-        $output = array();
+        $output = [];
         
         for($i = 0; $i < (int)$count; $i++) {
             $output[] = $this->extract();

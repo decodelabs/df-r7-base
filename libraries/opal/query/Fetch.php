@@ -68,10 +68,10 @@ class Fetch implements IFetchQuery, core\IDumpable {
     
 // Dump
     public function getDumpProperties() {
-        $output = array(
+        $output = [
             'sources' => $this->_sourceManager,
             'fields' => $this->_source
-        );
+        ];
 
         if(!empty($this->_populates)) {
             $output['populates'] = $this->_populates;
@@ -86,7 +86,7 @@ class Fetch implements IFetchQuery, core\IDumpable {
         }
         
         if(!empty($this->_order)) {
-            $order = array();
+            $order = [];
             
             foreach($this->_order as $directive) {
                 $order[] = $directive->toString();

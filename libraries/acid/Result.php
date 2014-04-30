@@ -11,9 +11,9 @@ use df\acid;
 
 class Result implements IResult {
     
-    protected $_batches = array();
+    protected $_batches = [];
     protected $_successes = 0;
-    protected $_failures = array();
+    protected $_failures = [];
     
     
 // Batch

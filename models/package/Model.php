@@ -17,9 +17,9 @@ class Model extends axis\Model {
     protected $_gitUser = null;
 
     public function getInstalledPackageList() {
-        $repos = array();
+        $repos = [];
         $packages = $remainingPackages = df\Launchpad::$loader->getPackages();
-        $installed = array();
+        $installed = [];
 
         foreach(df\Launchpad::$loader->getLocations() as $location) {
             foreach(new \DirectoryIterator($location) as $item) {
@@ -98,7 +98,7 @@ class Model extends axis\Model {
     }
 
     public function updateRemotes() {
-        $output = array();
+        $output = [];
 
         foreach($this->getInstalledPackageList() as $package) {
             if(!$package['repo']) {
@@ -124,7 +124,7 @@ class Model extends axis\Model {
     }
 
     public function pullAll() {
-        $output = array();
+        $output = [];
 
         foreach($this->getInstalledPackageList() as $package) {
             if(!$package['repo']) {

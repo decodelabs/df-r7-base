@@ -57,7 +57,7 @@ class Tree implements ITree, core\IDumpable {
             $this->_id
         ]);
 
-        $output = array();
+        $output = [];
 
         if(!empty($result)) {
             foreach(explode("\n", $result) as $line) {
@@ -85,7 +85,7 @@ class Tree implements ITree, core\IDumpable {
             $this->_id
         ]);
 
-        $output = array();
+        $output = [];
 
         if(!empty($result)) {
             foreach(explode("\n", $result) as $line) {
@@ -106,7 +106,7 @@ class Tree implements ITree, core\IDumpable {
             $this->_id
         ]);
 
-        $output = array();
+        $output = [];
 
         if(!empty($result)) {
             foreach(explode("\n", $result) as $line) {

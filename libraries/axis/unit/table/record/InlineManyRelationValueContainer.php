@@ -18,9 +18,9 @@ class InlineManyRelationValueContainer implements
     \Countable,
     \IteratorAggregate {
     
-    protected $_current = array();
-    protected $_new = array();
-    protected $_remove = array();
+    protected $_current = [];
+    protected $_new = [];
+    protected $_remove = [];
     protected $_removeAll = false;
     
     protected $_targetPrimaryKeySet;
@@ -49,7 +49,7 @@ class InlineManyRelationValueContainer implements
         $this->removeAll();
         
         if(!is_array($value)) {
-            $value = array($value);
+            $value = [$value];
         }
         
         foreach($value as $id) {
@@ -154,8 +154,8 @@ class InlineManyRelationValueContainer implements
     }
 
     protected function _normalizeInputRecordList(array $records) {
-        $index = array();
-        $lookupKeySets = array();
+        $index = [];
+        $lookupKeySets = [];
         
         foreach($records as $record) {
             if($record instanceof opal\record\IPrimaryKeySetProvider) {
@@ -228,7 +228,7 @@ class InlineManyRelationValueContainer implements
     }
     
     public function removeList(array $records) {
-        $index = array();
+        $index = [];
         
         foreach($records as $record) {
             if($record instanceof opal\record\IPrimaryKeySetProvider) {
@@ -258,8 +258,8 @@ class InlineManyRelationValueContainer implements
     }
 
     public function removeAll() {
-        $this->_new = array();
-        $this->_current = array();
+        $this->_new = [];
+        $this->_current = [];
         $this->_removeAll = true;
         return $this;
     }
@@ -386,7 +386,7 @@ class InlineManyRelationValueContainer implements
                     $record->set($targetField, $parentKeySet);
                 }
             } else {
-                $values = array();
+                $values = [];
                 
                 foreach($parentKeySet->toArray() as $key => $value) {
                     $values[$targetField.'_'.$key] = $value;
@@ -411,7 +411,7 @@ class InlineManyRelationValueContainer implements
             
         // Remove relation tasks
         if(!empty($this->_remove) && !$removeAllTask) {
-            $fields = array();
+            $fields = [];
                 
             foreach($parentKeySet->toArray() as $key => $value) {
                 $fields[] = $targetField.'_'.$key;
@@ -444,8 +444,8 @@ class InlineManyRelationValueContainer implements
     
     public function acceptSaveTaskChanges(opal\record\IRecord $record) {
         $this->_current = array_merge($this->_current, $this->_new);
-        $this->_new = array();
-        $this->_remove = array();
+        $this->_new = [];
+        $this->_remove = [];
         $this->_removeAll = false;
         
         return $this;
@@ -458,7 +458,7 @@ class InlineManyRelationValueContainer implements
         $targetField = $this->_field->getTargetField();
         $targetSchema = $targetUnit->getUnitSchema();
         $parentKeySet = $parentRecord->getPrimaryKeySet();
-        $values = array();
+        $values = [];
 
         foreach($parentKeySet->toArray() as $key => $value) {
             $values[$targetField.'_'.$key] = $value;
@@ -490,8 +490,8 @@ class InlineManyRelationValueContainer implements
     
     public function acceptDeleteTaskChanges(opal\record\IRecord $record) {
         $this->_new = array_merge($this->_current, $this->_new);
-        $this->_current = array();
-        $this->_remove = array();
+        $this->_current = [];
+        $this->_remove = [];
         
         return $this;
     }

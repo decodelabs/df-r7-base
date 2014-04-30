@@ -30,7 +30,7 @@ abstract class Base implements arch\IComponent {
         if(!empty($path)) {
             $parts = explode('/', $path);
         } else {
-            $parts = array();
+            $parts = [];
         }
         
         $type = $context->getRunMode();
@@ -73,7 +73,7 @@ abstract class Base implements arch\IComponent {
         $this->_context = $context;
 
         if(empty($args)) {
-            $args = array();
+            $args = [];
         }
 
         $this->_componentArgs = $args;

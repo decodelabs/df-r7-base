@@ -18,9 +18,9 @@ class Tcp_Client extends link\socket\Client implements link\socket\ISequenceClie
     use TStreams;
     use TStreams_IoSocket;
 
-    protected static $_defaultOptions = array(
+    protected static $_defaultOptions = [
         'oobInline' => false
-    );
+    ];
     
     protected static function _populateOptions() {
         return array_merge(parent::_populateOptions(), self::$_defaultOptions);
@@ -47,7 +47,7 @@ class Tcp_Client extends link\socket\Client implements link\socket\ISequenceClie
     
 // Operation
     protected function _connectPeer() {
-        $options = array();
+        $options = [];
         
         if($this->_isSecure) {
             if($this->_secureOnConnect) {
@@ -133,9 +133,9 @@ class Tcp_Server extends link\socket\Server implements link\socket\ISequenceServ
     use link\socket\TSequenceServerSocket;
     use TStreams;
 
-    protected static $_defaultOptions = array(
+    protected static $_defaultOptions = [
         'oobInline' => false
-    );
+    ];
     
     protected static function _populateOptions() {
         return array_merge(parent::_populateOptions(), self::$_defaultOptions);
@@ -144,11 +144,11 @@ class Tcp_Server extends link\socket\Server implements link\socket\ISequenceServ
     
 // Operation
     protected function _startListening() {
-        $options = array(
-            'socket' => array(
+        $options = [
+            'socket' => [
                 'backlog' => $this->getConnectionQueueSize()
-            )
-        );
+            ]
+        ];
         
         if($this->_isSecure) {
             if($this->_secureOnConnect) {
@@ -212,7 +212,7 @@ class Tcp_ServerPeer extends link\socket\ServerPeer implements link\socket\ISequ
     use TStreams_IoSocket;
     
     protected static function _populateOptions() {
-        return array();
+        return [];
     }
     
     public function __construct(link\socket\IServerSocket $parent, $socket, $address) {

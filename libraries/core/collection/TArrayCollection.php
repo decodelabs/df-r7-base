@@ -14,14 +14,14 @@ trait TArrayCollection {
     use TExtractList;
     use core\TExtendedArrayProvider;
     
-    protected $_collection = array();
+    protected $_collection = [];
     
     public function isEmpty() {
         return empty($this->_collection);
     }
     
     public function clear() {
-        $this->_collection = array();
+        $this->_collection = [];
         return $this;
     }
     
@@ -155,7 +155,7 @@ trait TArrayCollection_IndexedMovable {
             return $this;
         }
 
-        $temp = array();
+        $temp = [];
 
         if($index < 0) {
             foreach($this->_collection as $currentKey => $value) {
@@ -319,7 +319,7 @@ trait TArrayCollection_IndexedValueMap {
         }
         
         if(!is_array($input)) {
-            $input = array($input);
+            $input = [$input];
         }
         
         foreach($input as $value) {

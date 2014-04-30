@@ -11,8 +11,8 @@ use df\iris;
     
 class Keyword implements iris\IScanner, core\IDumpable {
 
-    protected $_words = array();
-    protected $_lowerWords = array();
+    protected $_words = [];
+    protected $_lowerWords = [];
     protected $_isCaseSensitive = false;
     protected $_defaultWordType = 'word';
 
@@ -63,8 +63,8 @@ class Keyword implements iris\IScanner, core\IDumpable {
     }
 
     public function clearWords() {
-        $this->_words = array();
-        $this->_lowerWords = array();
+        $this->_words = [];
+        $this->_lowerWords = [];
         return $this;
     }
 

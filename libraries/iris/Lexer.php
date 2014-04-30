@@ -21,7 +21,7 @@ class Lexer implements ILexer, core\IDumpable {
     public $linePosition = 0;
     public $lastWhitespace = '';
 
-    protected $_scanners = array();
+    protected $_scanners = [];
     protected $_source;
     protected $_isInitialized = false;
     protected $_isStarted = false;
@@ -115,7 +115,7 @@ class Lexer implements ILexer, core\IDumpable {
     }
 
     public function clearScanners() {
-        $this->_scanners = array();
+        $this->_scanners = [];
         return $this;
     }
 
@@ -155,7 +155,7 @@ class Lexer implements ILexer, core\IDumpable {
         $this->initialize();
 
         $this->_isStarted = true;
-        $tokens = array();
+        $tokens = [];
 
         do {
             $token = $this->extractToken();

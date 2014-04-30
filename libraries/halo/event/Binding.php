@@ -37,9 +37,9 @@ class Binding implements IBinding {
         
         if(!is_array($args)) {
             if($args === null) {
-                $args = array();
+                $args = [];
             } else {
-                $args = array($args);
+                $args = [$args];
             }
         }
         

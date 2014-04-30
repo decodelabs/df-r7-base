@@ -11,8 +11,8 @@ use df\iris;
     
 class Unit extends Node implements IUnit, core\IDumpable {
 
-    protected $_statements = array();
-    protected $_entities = array();
+    protected $_statements = [];
+    protected $_entities = [];
 
 // Statements
     public function addStatement(IStatement $statement) {

@@ -227,7 +227,7 @@ trait TElementContent {
     }
 
     public function getAllWidgetsOfType($type) {
-        $output = array();
+        $output = [];
 
         foreach($this->_collection as $child) {
             if($child instanceof aura\html\widget\IWidget && $child->getWidgetName() == $type) {
@@ -259,7 +259,7 @@ trait TElementContent {
     }
 
     public function findAllWidgetsOfType($type) {
-        $output = array();
+        $output = [];
 
         foreach($this->_collection as $child) {
             if(!$child instanceof aura\html\widget\IWidget) {

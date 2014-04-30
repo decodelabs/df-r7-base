@@ -11,7 +11,7 @@ use df\opal;
 
 class TaskSet implements ITaskSet {
     
-    protected $_tasks = array();
+    protected $_tasks = [];
     protected $_transaction;
     protected $_isExecuting = false;
     

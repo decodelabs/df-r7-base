@@ -17,7 +17,7 @@ abstract class CollectionList extends arch\component\Base implements aura\html\w
     protected $_collection;
     protected $_errorMessage;
     protected $_renderIfEmpty = null;
-    protected $_fields = array();
+    protected $_fields = [];
     protected $_urlRedirect = null;
     protected $_viewArg;
 

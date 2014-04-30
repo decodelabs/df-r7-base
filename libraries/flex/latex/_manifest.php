@@ -30,14 +30,14 @@ interface INodeClassProvider {
 
 trait TNodeClassProvider {
 
-    protected $_classes = array();
+    protected $_classes = [];
 
     public function setClasses($classes) {
         if(!is_array($classes)) {
             $classes = func_get_args();
         }
 
-        $this->_classes = array();
+        $this->_classes = [];
         return $this->addClasses($classes);
     }
 
@@ -72,7 +72,7 @@ trait TNodeClassProvider {
     }
 
     public function clearClasses() {
-        $this->_classes = array();
+        $this->_classes = [];
         return $this;
     }
 }
@@ -88,7 +88,7 @@ trait TContainerNode {
     use TNodeClassProvider;  
 
     public function getReferenceMap() {
-        $output = array();
+        $output = [];
 
         foreach($this->_collection as $child) {
             if($child instanceof flex\latex\IContainerNode) {
@@ -116,7 +116,7 @@ trait TContainerNode {
             }
         }
 
-        $this->_collection = array();
+        $this->_collection = [];
         return $output;
     }
 }
@@ -166,7 +166,7 @@ interface IDocument extends IEnvironmentNode, IContainerNode {
     public function clearOptions();
 
     // Packages
-    public function addPackage($name, array $options=array());
+    public function addPackage($name, array $options=[]);
     public function hasPackage($name);
     public function getPackages();
 

@@ -30,7 +30,7 @@ class Rdn implements IRdn, core\IDumpable {
         return $output;
     }
 
-    public function __construct(array $attributes=array()) {
+    public function __construct(array $attributes=[]) {
         $this->setAttributes($attributes);
     }
 

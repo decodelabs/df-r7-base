@@ -13,12 +13,12 @@ class Location {
     protected $_name;
     protected $_id;
     protected $_path;
-    protected $_blackList = array();
+    protected $_blackList = [];
     
     protected $_directories = 0;
-    protected $_types = array();
+    protected $_types = [];
     
-    public function __construct($name, $path, array $blackList=array()) {
+    public function __construct($name, $path, array $blackList=[]) {
         $this->setName($name);
         $this->setPath($path);
         $this->setBlackList($blackList);

@@ -27,7 +27,7 @@ trait TWidget {
             }
             
             $this->_primaryTag = new aura\html\Tag(static::PRIMARY_TAG);
-            $this->_primaryTag->setClasses(array(/*'widget', */'widget-'.lcfirst($this->getWidgetName())));
+            $this->_primaryTag->setClasses([/*'widget', */'widget-'.lcfirst($this->getWidgetName())]);
         }
         
         return $this->_primaryTag;
@@ -583,10 +583,10 @@ trait TWidget_UngroupedSelectionInput {
     
     use TWidget_SelectionInput;
     
-    protected $_options = array();
+    protected $_options = [];
     
     public function setOptions($options, $labelsAsValues=false) {
-        $this->_options = array();
+        $this->_options = [];
         return $this->addOptions($options, $labelsAsValues);
     }
     
@@ -628,12 +628,12 @@ trait TWidget_GroupedSelectionInput {
     
     use TWidget_SelectionInput;
     
-    protected $_groupOptions = array();
-    protected $_groupNames = array();
+    protected $_groupOptions = [];
+    protected $_groupNames = [];
     
 // Options
     public function setOptions($options, $labelsAsValues=false) {
-        $this->_groupOptions = array();
+        $this->_groupOptions = [];
         return $this->addOptions($options, $labelsAsValues);
     }
 
@@ -667,7 +667,7 @@ trait TWidget_GroupedSelectionInput {
     
     public function addGroupOptions($groupId, $options, $labelsAsValues=false) {
         if(!isset($this->_groupOptions[$groupId])) {
-            $this->_groupOptions[$groupId] = array();
+            $this->_groupOptions[$groupId] = [];
             $this->_groupNames[$groupId] = $groupId;
         }
         
@@ -684,7 +684,7 @@ trait TWidget_GroupedSelectionInput {
     
     public function getGroupOptions($groupId) {
         if(!isset($this->_groupOptions[$groupId])) {
-            return array();
+            return [];
         }
         
         return $this->_groupOptions[$groupId];
@@ -716,7 +716,7 @@ trait TWidget_GroupedSelectionInput {
             return $this->_groupOptions[$id];
         }
         
-        return array();
+        return [];
     }
     
     public function removeGroup($id) {
@@ -1067,7 +1067,7 @@ trait TWidget_OrderedDataDrivenList {
 trait TWidget_MappedList {
     
     protected $_rowProcessor;
-    protected $_fields = array();
+    protected $_fields = [];
     
     public function setRowProcessor(Callable $processor=null) {
         $this->_rowProcessor = $processor;
@@ -1150,7 +1150,7 @@ trait TWidget_MappedList {
                 $index = $count;
             }
 
-            $fields = array();
+            $fields = [];
             $added = false;
             $i = 0;
 
@@ -1194,7 +1194,7 @@ trait TWidget_MappedList {
         }
         
         $fields = $this->_fields;
-        $this->_fields = array();
+        $this->_fields = [];
         
         return $fields;
     }

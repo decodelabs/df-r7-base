@@ -13,9 +13,9 @@ abstract class Client extends Base implements IClientSocket, core\IDumpable {
     
     use TIoSocket;
 
-    protected static $_defaultOptions = array(
+    protected static $_defaultOptions = [
         'connectionTimeout' => null
-    );
+    ];
     
     protected $_isConnected = false;
 
@@ -129,7 +129,7 @@ abstract class Client extends Base implements IClientSocket, core\IDumpable {
         }
 
         $output .= ' (';
-        $args = array();
+        $args = [];
         
         if($this->_isConnected) {
             if($this->_readingEnabled) {

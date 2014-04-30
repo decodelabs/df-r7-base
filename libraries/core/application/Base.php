@@ -15,7 +15,7 @@ abstract class Base implements core\IApplication, core\IDumpable {
     protected $_debugTransport;
     
     protected $_isRunning = false;
-    protected $_registry = array();
+    protected $_registry = [];
     
     public static function factory($appType) {
         $class = 'df\\core\\application\\'.$appType;

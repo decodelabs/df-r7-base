@@ -22,12 +22,12 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
     const UPDATE_LIMIT = 8;
     const DELETE_LIMIT = 9;
     
-    private static $_connections = array();
+    private static $_connections = [];
     
     protected $_dsn;
     protected $_connection;
     protected $_transactionLevel = 0;
-    protected $_support = array();
+    protected $_support = [];
     
     public static function factory($dsn) {
         $dsn = opal\rdbms\Dsn::factory($dsn);

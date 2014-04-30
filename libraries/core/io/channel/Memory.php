@@ -230,7 +230,7 @@ class Memory implements core\io\IFile, core\io\IContainedStateChannel, core\IDum
 
 // Dump
     public function getDumpProperties() {
-        $output = array();
+        $output = [];
 
         if($this->_contentType) {
             $output['contentType'] = $this->_contentType;

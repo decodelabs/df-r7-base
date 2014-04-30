@@ -238,7 +238,7 @@ interface IHandler extends IEntryPoint, IWriterProvider {
 
 trait TWriterProvider {
 
-    protected $_writers = array();
+    protected $_writers = [];
 
     public function addWriter(IWriter $writer) {
         $this->_writers[$writer->getId()] = $writer;

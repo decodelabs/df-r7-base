@@ -51,9 +51,9 @@ class Insert implements IInsertQuery, core\IDumpable {
     
 // Dump
     public function getDumpProperties() {
-        return array(
+        return [
             'source' => $this->_source->getAdapter(),
             'row' => $this->_row
-        );
+        ];
     }
 }

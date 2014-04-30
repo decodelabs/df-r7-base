@@ -80,7 +80,7 @@ interface IParentFieldAwareDependency extends IDependency {
 
 trait TParentFieldAwareDependency {
 
-    protected $_parentFields = array();
+    protected $_parentFields = [];
 
     public function getParentFields() {
         return $this->_parentFields;
@@ -112,8 +112,8 @@ interface ITask {
 trait TTask {
 
     protected $_id;
-    protected $_dependencies = array();
-    protected $_dependants = array();
+    protected $_dependencies = [];
+    protected $_dependants = [];
 
     protected function _setId($id) {
         $adapter = $this->getAdapter();

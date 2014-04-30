@@ -16,7 +16,7 @@ class UpdateBridge implements opal\record\task\IParentFieldAwareDependency {
 
     public function __construct($parentFields, opal\record\task\ITask $requiredTask) {
         if(!is_array($parentFields)) {
-            $parentFields = array($parentFields => $parentFields);
+            $parentFields = [$parentFields => $parentFields];
         }
         
         $this->_parentFields = $parentFields;

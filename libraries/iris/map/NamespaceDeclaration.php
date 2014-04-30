@@ -12,8 +12,8 @@ use df\iris;
 class NamespaceDeclaration extends Node implements core\IDumpable {
 
     protected $_namespace;
-    protected $_namespaceShortcuts = array();
-    protected $_typeShortcuts = array();
+    protected $_namespaceShortcuts = [];
+    protected $_typeShortcuts = [];
 
     public function __construct(iris\ILocationProvider $locationProvider, iris\map\aspect\EntityNamespace $namespace) {
         parent::__construct($locationProvider);

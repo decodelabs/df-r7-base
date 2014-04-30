@@ -20,7 +20,7 @@ class FileUpload extends Base implements IFileUploadWidget, core\IDumpable {
     const PRIMARY_TAG = 'input';
     const ARRAY_INPUT = false;
     
-    protected $_acceptTypes = array();
+    protected $_acceptTypes = [];
     
     public function __construct(arch\IContext $context, $name, $value=null) {
         $this->setName($name);
@@ -50,7 +50,7 @@ class FileUpload extends Base implements IFileUploadWidget, core\IDumpable {
 // Accept types
     public function setAcceptTypes($types=null) {
         if($types === null) {
-            $this->_acceptTypes = array();
+            $this->_acceptTypes = [];
             return $this;
         }
         
@@ -58,7 +58,7 @@ class FileUpload extends Base implements IFileUploadWidget, core\IDumpable {
             $types = func_get_args();
         }
         
-        $this->_acceptTypes = array();
+        $this->_acceptTypes = [];
         
         foreach($types as $type) {
             $type = trim(strtolower($type));

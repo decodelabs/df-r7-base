@@ -155,7 +155,7 @@ interface IHandler {
 
 trait THandler {
 
-    protected $_bindings = array();
+    protected $_bindings = [];
     protected $_dispatcher;
     
     public function getScheme() {

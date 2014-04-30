@@ -40,7 +40,7 @@ class Filter implements arch\form\IDependency, core\IDumpable {
 
 // Dump
     public function getDumpProperties() {
-        $output = array();
+        $output = [];
 
         if($this->_name != $this->_context) {
             $output['name'] = $this->_name;

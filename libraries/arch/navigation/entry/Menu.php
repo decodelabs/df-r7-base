@@ -34,14 +34,14 @@ class Menu extends Base {
     }
     
     public function toArray() {
-        return array(
+        return [
             'type' => 'Menu',
             'id' => $this->getId(),
             'weight' => $this->getWeight(),
             'delegate' => $this->_delegate,
             'text' => $this->_text,
             'icon' => $this->_icon
-        );
+        ];
     }
     
     public function getId() {

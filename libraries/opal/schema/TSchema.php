@@ -13,8 +13,8 @@ trait TSchema {
     
     protected $_isAudited = true;
     
-    //protected $_options = array();
-    protected $_optionChanges = array();
+    //protected $_options = [];
+    protected $_optionChanges = [];
     
     public function __construct($name) {
         $this->setName($name);
@@ -94,7 +94,7 @@ trait TSchema {
     }
     
     protected function _acceptOptionChanges() {
-        $this->_optionChanges = array();
+        $this->_optionChanges = [];
     }
     
     
@@ -174,10 +174,10 @@ trait TSchema {
  */
 trait TSchema_FieldProvider {
     
-    protected $_fields = array();
-    protected $_addFields = array();
-    protected $_renameFields = array();
-    protected $_removeFields = array();
+    protected $_fields = [];
+    protected $_addFields = [];
+    protected $_renameFields = [];
+    protected $_removeFields = [];
     
     public function getField($name) {
         if(isset($this->_fields[$name])) {
@@ -364,7 +364,7 @@ trait TSchema_FieldProvider {
     }
     
     public function getFieldsToUpdate() {
-        $output = array();
+        $output = [];
         
         foreach($this->_fields as $name => $field) {
             if($field->hasChanged() && !isset($this->_addFields[$name])) {
@@ -389,7 +389,7 @@ trait TSchema_FieldProvider {
     
     protected function _remapFields($insertKey=null, opal\schema\IField $insertField=null) {
         $fields = $this->_fields;
-        $this->_fields = array();
+        $this->_fields = [];
         
         if($insertField !== null && $insertKey === null) {
             $this->_fields[$insertField->getName()] = $insertField;
@@ -407,7 +407,7 @@ trait TSchema_FieldProvider {
     
     protected function _remapAddFields() {
         $addFields = $this->_addFields;
-        $this->_addFields = array();
+        $this->_addFields = [];
         
         foreach($addFields as $field) {
             $this->_addFields[$field->getName()] = $field;
@@ -441,9 +441,9 @@ trait TSchema_FieldProvider {
             $field->acceptChanges();
         }
         
-        $this->_addFields = array();
-        $this->_renameFields = array();
-        $this->_removeFields = array();
+        $this->_addFields = [];
+        $this->_renameFields = [];
+        $this->_removeFields = [];
     }
     
     
@@ -457,7 +457,7 @@ trait TSchema_FieldProvider {
     }
 
     protected function _getFieldStorageArray() {
-        $output = ['fld' => array()];
+        $output = ['fld' => []];
         
         foreach($this->_fields as $field) {
             $output['fld'][] = $field->toStorageArray();
@@ -468,7 +468,7 @@ trait TSchema_FieldProvider {
 
 // Dump
     protected function _getFieldDumpList() {
-        $fields = array();
+        $fields = [];
         
         foreach($this->_fields as $name => $field) {
             $displayName = $name;
@@ -506,10 +506,10 @@ trait TSchema_FieldProvider {
  */
 trait TSchema_IndexProvider {
     
-    protected $_indexes = array();
-    protected $_addIndexes = array();
-    protected $_renameIndexes = array();
-    protected $_removeIndexes = array();
+    protected $_indexes = [];
+    protected $_addIndexes = [];
+    protected $_renameIndexes = [];
+    protected $_removeIndexes = [];
     protected $_primaryIndex;
     protected $_lastPrimaryIndex;
     protected $_hasPrimaryIndexChanged = false;
@@ -705,7 +705,7 @@ trait TSchema_IndexProvider {
     }
     
     public function getIndexesFor(opal\schema\IField $field) {
-        $output = array();
+        $output = [];
         
         foreach($this->_indexes as $index) {
             if($index->firstFieldIs($field)) {
@@ -717,7 +717,7 @@ trait TSchema_IndexProvider {
     }
     
     public function getAllIndexesFor(opal\schema\IField $field) {
-        $output = array();
+        $output = [];
         
         foreach($this->_indexes as $index) {
             if($index->hasField($field)) {
@@ -733,7 +733,7 @@ trait TSchema_IndexProvider {
     }
     
     public function getIndexesToUpdate() {
-        $output = array();
+        $output = [];
         
         foreach($this->_indexes as $name => $index) {
             if($index->hasChanged() && !isset($this->_addIndexes[$name])) {
@@ -773,11 +773,11 @@ trait TSchema_IndexProvider {
         }
         
         if($fields === null && $name !== null) {
-            $fields = array($name);
+            $fields = [$name];
         }
         
         if(is_string($fields) || $fields instanceof opal\schema\IField) {
-            $fields = array($fields);
+            $fields = [$fields];
         }
         
         if(is_array($fields)) {
@@ -821,7 +821,7 @@ trait TSchema_IndexProvider {
     
     protected function _remapIndexes() {
         $indexes = $this->_indexes;
-        $this->_indexes = array();
+        $this->_indexes = [];
         
         foreach($indexes as $index) {
             $this->_indexes[$index->getName()] = $index;
@@ -830,7 +830,7 @@ trait TSchema_IndexProvider {
     
     protected function _remapAddIndexes() {
         $addIndexes = $this->_addIndexes;
-        $this->_addIndexes = array();
+        $this->_addIndexes = [];
         
         foreach($addIndexes as $index) {
             $this->_addFields[$index->getName()] = $index;
@@ -852,9 +852,9 @@ trait TSchema_IndexProvider {
             $index->acceptChanges();
         }
         
-        $this->_addIndexes = array();
-        $this->_renameIndexes = array();
-        $this->_removeIndexes = array();
+        $this->_addIndexes = [];
+        $this->_renameIndexes = [];
+        $this->_removeIndexes = [];
         
         return $this;
     }
@@ -874,7 +874,7 @@ trait TSchema_IndexProvider {
     }
 
     protected function _getIndexStorageArray() {
-        $output = ['idx' => array()];
+        $output = ['idx' => []];
         
         foreach($this->_indexes as $index) {
             $output['idx'][] = $index->toStorageArray();
@@ -890,7 +890,7 @@ trait TSchema_IndexProvider {
     
 // Dump
     protected function _getIndexDumpList() {
-        $indexes = array();
+        $indexes = [];
         
         foreach($this->_indexes as $name => $index) {
             $displayName = $name;
@@ -974,10 +974,10 @@ trait TSchema_IndexedFieldProvider {
  */
 trait TSchema_ForeignKeyProvider {
     
-    protected $_foreignKeys = array();
-    protected $_addForeignKeys = array();
-    protected $_renameForeignKeys = array();
-    protected $_removeForeignKeys = array();
+    protected $_foreignKeys = [];
+    protected $_addForeignKeys = [];
+    protected $_renameForeignKeys = [];
+    protected $_removeForeignKeys = [];
     
     
     public function getForeignKey($name) {
@@ -1092,7 +1092,7 @@ trait TSchema_ForeignKeyProvider {
     }
     
     public function getForeignKeysToUpdate() {
-        $output = array();
+        $output = [];
         
         foreach($this->_foreignKeys as $name => $key) {
             if($key->hasChanged() && !isset($this->_addForeignKeys[$name])) {
@@ -1128,7 +1128,7 @@ trait TSchema_ForeignKeyProvider {
     
     protected function _remapForeignKeys() {
         $keys = $this->_foreignKeys;
-        $this->_foreignKeys = array();
+        $this->_foreignKeys = [];
         
         foreach($keys as $key) {
             $this->_foreignKeys[$key->getName()] = $key;
@@ -1137,7 +1137,7 @@ trait TSchema_ForeignKeyProvider {
     
     protected function _remapAddForeignKeys() {
         $addKeys = $this->_addForeignKeys;
-        $this->_addForeignKeys = array();
+        $this->_addForeignKeys = [];
         
         foreach($addKeys as $key) {
             $this->_addForeignKeys[$key->getName()] = $key;
@@ -1160,9 +1160,9 @@ trait TSchema_ForeignKeyProvider {
             $key->acceptChanges();
         }
         
-        $this->_addForeignKeys = array();
-        $this->_renameForeignKeys = array();
-        $this->_removeForeignKeys = array();
+        $this->_addForeignKeys = [];
+        $this->_renameForeignKeys = [];
+        $this->_removeForeignKeys = [];
         
         return $this;
     }
@@ -1178,7 +1178,7 @@ trait TSchema_ForeignKeyProvider {
     }
 
     protected function _getForeignKeyStorageArray() {
-        $output = ['fky' => array()];
+        $output = ['fky' => []];
         
         foreach($this->_foreignKeys as $key) {
             $output['fky'][] = $key->toStorageArray();
@@ -1189,7 +1189,7 @@ trait TSchema_ForeignKeyProvider {
     
 // Dump
     protected function _getForeignKeyDumpList() {
-        $keys = array();
+        $keys = [];
         
         foreach($this->_foreignKeys as $name => $key) {
             $displayName = $name;
@@ -1226,10 +1226,10 @@ trait TSchema_ForeignKeyProvider {
  */
 trait TSchema_TriggerProvider {
     
-    protected $_triggers = array();
-    protected $_addTriggers = array();
-    protected $_renameTriggers = array();
-    protected $_removeTriggers = array();
+    protected $_triggers = [];
+    protected $_addTriggers = [];
+    protected $_renameTriggers = [];
+    protected $_removeTriggers = [];
     
     
     public function getTrigger($name) {
@@ -1349,7 +1349,7 @@ trait TSchema_TriggerProvider {
     }
     
     public function getTriggersToUpdate() {
-        $output = array();
+        $output = [];
         
         foreach($this->_triggers as $name => $trigger) {
             if($trigger->hasChanged() && !isset($this->_addTriggers[$name])) {
@@ -1382,7 +1382,7 @@ trait TSchema_TriggerProvider {
     
     protected function _remapTriggers() {
         $triggers = $this->_triggers;
-        $this->_triggers = array();
+        $this->_triggers = [];
         
         foreach($triggers as $trigger) {
             $this->_triggers[$trigger->getName()] = $trigger;
@@ -1391,7 +1391,7 @@ trait TSchema_TriggerProvider {
     
     protected function _remapAddTriggers() {
         $addTriggers = $this->_addTriggers;
-        $this->_addTriggers = array();
+        $this->_addTriggers = [];
         
         foreach($addTriggers as $trigger) {
             $this->_addTriggers[$trigger->getName()] = $trigger;
@@ -1414,9 +1414,9 @@ trait TSchema_TriggerProvider {
             $trigger->acceptChanges();
         }
         
-        $this->_addTriggers = array();
-        $this->_renameTriggers = array();
-        $this->_removeTriggers = array();
+        $this->_addTriggers = [];
+        $this->_renameTriggers = [];
+        $this->_removeTriggers = [];
         
         return $this;
     }
@@ -1435,7 +1435,7 @@ trait TSchema_TriggerProvider {
     }
 
     protected function _getTriggerStorageArray() {
-        $output = ['trg' => array()];
+        $output = ['trg' => []];
         
         foreach($this->_triggers as $trigger) {
             $output['trg'][] = $trigger->toStorageArray();
@@ -1447,7 +1447,7 @@ trait TSchema_TriggerProvider {
     
 // Dump
     protected function _getTriggerDumpList() {
-        $triggers = array();
+        $triggers = [];
         
         foreach($this->_triggers as $name => $trigger) {
             $displayName = $name;

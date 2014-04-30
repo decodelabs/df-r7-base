@@ -13,9 +13,9 @@ class EntryReader implements spur\feed\IEntryReaderPlugin {
     
     use spur\feed\TEntryReader;
     
-    protected static $_xPathNamespaces = array(
+    protected static $_xPathNamespaces = [
         'wfw' => 'http://wellformedweb.org/CommentAPI/'
-    );
+    ];
         
     public function getCommentFeedLink() {
         return $this->_xPath->evaluate(

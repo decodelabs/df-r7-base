@@ -41,7 +41,7 @@ class Scripts extends Base implements IScriptsModule, core\i18n\module\generator
     
 // Generator
     public function _convertCldr(core\i18n\ILocale $locale, \SimpleXMLElement $doc) {
-        $output = array();
+        $output = [];
         
         if(isset($doc->localeDisplayNames->scripts->script)) {
             foreach($doc->localeDisplayNames->scripts->script as $script) {

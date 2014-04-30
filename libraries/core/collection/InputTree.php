@@ -25,7 +25,7 @@ class InputTree extends Tree implements IInputTree {
         
         if(!empty($this->_errors)) {
             if($output === null) {
-                $output = array();
+                $output = [];
             }
             
             $output['er'] = $this->_errors;
@@ -73,7 +73,7 @@ class InputTree extends Tree implements IInputTree {
     }
 
     public function toArrayDelimitedErrorSet($prefix=null) {
-        $output = array();
+        $output = [];
 
         if($prefix && !empty($this->_errors)) {
             $output[$prefix] = $this->_errors;
@@ -92,7 +92,7 @@ class InputTree extends Tree implements IInputTree {
     
 // Dump
     public function getDumpProperties() {
-        $children = array();
+        $children = [];
         
         foreach($this->_collection as $key => $child) {
             if($child instanceof self 

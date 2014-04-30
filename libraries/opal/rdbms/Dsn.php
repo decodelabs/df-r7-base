@@ -21,7 +21,7 @@ class Dsn implements IDsn, core\IDumpable {
     protected $_port;
     protected $_socket;
     protected $_database;
-    protected $_options = array();
+    protected $_options = [];
     protected $_hash;
 
     public static function factory($dsn) {
@@ -48,7 +48,7 @@ class Dsn implements IDsn, core\IDumpable {
         }
 
         $regex = "!^(([a-z0-9-_]+)(\(([^()]+)\))?)(://((((([^@/:]+)(:([^@/]+))?)@)?((([a-z]+)\((([^?():]+)(:([^()?]+))?)\))|((([^/?:]+)(:([^/?]+))?))))/?)?([^?]+)?(\?(.+))?)?$!i";
-        $matches = array();
+        $matches = [];
         
         if(!preg_match($regex, $dsn, $matches)) {
             throw new InvalidArgumentException('Invalid dsn string: '.$dsn);

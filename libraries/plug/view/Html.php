@@ -102,11 +102,11 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
         return new aura\html\ElementString(implode('', func_get_args()));
     }
     
-    public function tag($name, array $attributes=array()) {
+    public function tag($name, array $attributes=[]) {
         return new aura\html\Tag($name, $attributes);
     }
     
-    public function element($name, $content=null, array $attributes=array()) {
+    public function element($name, $content=null, array $attributes=[]) {
         return new aura\html\Element($name, $content, $attributes);
     }
 
@@ -114,7 +114,7 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
         return new aura\html\ElementContent($content);
     }
 
-    public function span($content, array $attributes=array()) {
+    public function span($content, array $attributes=[]) {
         return $this->element('span', $content, $attributes);
     }
 
@@ -123,7 +123,7 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
 // Compound widget shortcuts
     public function icon($name, $body=null) {
         $iconChar = $this->_view->getTheme()->mapIcon($name);
-        $attrs = array();
+        $attrs = [];
 
         if($iconChar !== null) {
             $attrs = ['data-icon' => new aura\html\ElementString($iconChar)];

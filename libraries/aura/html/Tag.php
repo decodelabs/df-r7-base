@@ -27,7 +27,7 @@ class Tag implements ITag, core\IDumpable {
     
     protected $_name;
     protected $_isClosable = true;
-    protected $_classes = array();
+    protected $_classes = [];
     protected $_renderCount = 0;
     protected $_renderIfEmpty = true;
     
@@ -158,7 +158,7 @@ class Tag implements ITag, core\IDumpable {
         $key = strtolower($key);
         
         if($key == 'class') {
-            $this->_classes = array();
+            $this->_classes = [];
         } else {
             unset($this->_attributes[$key]);
         }
@@ -231,7 +231,7 @@ class Tag implements ITag, core\IDumpable {
     }
     
     public function getDataAttributes() {
-        $output = array();
+        $output = [];
         
         foreach($this->_attributes as $key => $val) {
             if(substr($key, 0, 5) == 'data-') {
@@ -290,7 +290,7 @@ class Tag implements ITag, core\IDumpable {
 
     protected function _normalizeClassList($classes) {
         if($classes === null) {
-            return array();
+            return [];
         }
         
         if(!is_array($classes)) {
@@ -362,7 +362,7 @@ class Tag implements ITag, core\IDumpable {
     
 // Strings
     public function open() {
-        $attributes = array();
+        $attributes = [];
         
         foreach($this->_attributes as $key => $value) {
             if($value === null) {

@@ -72,7 +72,7 @@ class TextList extends Base implements core\validate\ITextListField {
         }
         
         if(!is_array($value)) {
-            $value = array($value);
+            $value = [$value];
         }
         
         $record[$this->getRecordName()] = $value;

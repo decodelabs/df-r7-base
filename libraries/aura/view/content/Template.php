@@ -55,7 +55,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
 
         $context = $view->getContext();
         
-        $lookupPaths = array();
+        $lookupPaths = [];
         $area = $context->location->getArea();
 
         $lookupPaths[] = 'apex/themes/'.$themeId.'/templates/'.$area.'/'.$path.'.php';
@@ -100,7 +100,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         $theme = $view->getTheme();
         $context = $view->getContext();
 
-        $lookupPaths = array();
+        $lookupPaths = [];
         $area = $context->location->getArea();
         $themeId = $theme->getId();
         

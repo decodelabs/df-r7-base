@@ -13,9 +13,9 @@ class EntryReader implements spur\feed\IEntryReaderPlugin {
     
     use spur\feed\TEntryReader;
     
-    protected static $_xPathNamespaces = array(
+    protected static $_xPathNamespaces = [
         'cc' => 'http://backend.userland.com/creativeCommonsRssModule'
-    );
+    ];
         
     public function getLicense($index=0) {
         $licenses = $this->getLicenses();
@@ -28,7 +28,7 @@ class EntryReader implements spur\feed\IEntryReaderPlugin {
     }
     
     public function getLicenses() {
-        $licenses = array();
+        $licenses = [];
         
         $list = $this->_xPath->evaluate(
             $this->_xPathPrefix.'//cc:license'

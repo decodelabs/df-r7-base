@@ -16,7 +16,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
     protected static $_queryCount = 0;
 
     protected $_sql;
-    protected $_bindings = array();
+    protected $_bindings = [];
     protected $_isExecuted = false;
     
     protected $_row;
@@ -268,7 +268,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
     }
     
     public function toArray() {
-        $output = array();
+        $output = [];
         
         foreach($this as $key => $value) {
             $output[$key] = $value;

@@ -173,7 +173,7 @@ interface IAccessControlled {
 trait TAccessControlled {
     
     protected $_checkAccess = false;
-    protected $_accessLocks = array();
+    protected $_accessLocks = [];
     
     public function shouldCheckAccess($flag=null) {
         if($flag !== null) {
@@ -185,7 +185,7 @@ trait TAccessControlled {
     }
 
     public function setAccessLocks(array $locks) {
-        $this->_accessLocks = array();
+        $this->_accessLocks = [];
         return $this->addAccessLocks($locks);
     }
 
@@ -208,7 +208,7 @@ trait TAccessControlled {
     }
     
     public function clearAccessLocks() {
-        $this->_accessLocks = array();
+        $this->_accessLocks = [];
         return $this;
     }
 }

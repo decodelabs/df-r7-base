@@ -66,7 +66,7 @@ class Comment implements iris\IScanner {
     }
 
     public function clearMarkers() {
-        $this->_markers = array();
+        $this->_markers = [];
         return $this;
     }
 

@@ -90,7 +90,7 @@ trait TConstraint_Index {
     use TConstraint_Base;
     
     protected $_isUnique = false;
-    protected $_fieldReferences = array();
+    protected $_fieldReferences = [];
     protected $_comment;
     
     
@@ -127,7 +127,7 @@ trait TConstraint_Index {
         }
         
         if(!is_array($fields)) {
-            $fields = array($fields);
+            $fields = [$fields];
         }
         
         foreach($fields as $field) {
@@ -214,7 +214,7 @@ trait TConstraint_Index {
     }
     
     public function getFields() {
-        $output = array();
+        $output = [];
         
         foreach($this->_fieldReferences as $ref) {
             $field = $ref->getField();
@@ -265,7 +265,7 @@ trait TConstraint_Index {
         $output = [
             'nam' => $this->_name,
             'uni' => $this->_isUnique,
-            'fld' => array()
+            'fld' => []
         ];
         
         if($this->_comment !== null) {
@@ -288,7 +288,7 @@ trait TConstraint_Index {
             $output .= ' UNIQUE';
         }
         
-        $fields = array();
+        $fields = [];
         
         foreach($this->_fieldReferences as $reference) {
             $fieldDef = $reference->getField()->getName();
@@ -326,7 +326,7 @@ trait TConstraint_ForeignKey {
     use TConstraint_Base;
     
     protected $_targetSchema;
-    protected $_fieldReferences = array();
+    protected $_fieldReferences = [];
     protected $_updateAction;
     protected $_deleteAction;
     
@@ -457,7 +457,7 @@ trait TConstraint_ForeignKey {
         $output = [
             'nam' => $this->_name,
             'tsc' => $this->_targetSchema,
-            'fld' => array(),
+            'fld' => [],
             'upd' => $this->_updateAction,
             'del' => $this->_deleteAction
         ];
@@ -473,7 +473,7 @@ trait TConstraint_ForeignKey {
 // Dump
     public function getDumpProperties() {
         $output = $this->_name;
-        $refs = array();
+        $refs = [];
         
         foreach($this->_fieldReferences as $reference) {
             $refs[] = $reference->getField()->getName().' TO '.$this->_targetSchema.'.'.$reference->getTargetFieldName();
@@ -509,7 +509,7 @@ trait TConstraint_Trigger {
     
     protected $_event;
     protected $_timing = opal\schema\ITriggerTiming::BEFORE;
-    protected $_statements = array();
+    protected $_statements = [];
     
     public function __construct($name, $event, $timing, $statements) {
         $this->_setName($name);
@@ -608,10 +608,10 @@ trait TConstraint_Trigger {
     }
     
     public function setStatements($statements) {
-        $this->_statements = array();
+        $this->_statements = [];
         
         if(!is_array($statements)) {
-            $statements = array($statements);
+            $statements = [$statements];
         }
         
         foreach($statements as $statement) {
@@ -638,7 +638,7 @@ trait TConstraint_Trigger {
     
     public function hasFieldReference($fields) {
         if(!is_array($fields)) {
-            $fields = array($fields);
+            $fields = [$fields];
         }
         
         foreach($fields as $i => $field) {

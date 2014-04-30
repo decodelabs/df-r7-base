@@ -12,8 +12,8 @@ use df\opal;
 trait TDocument {
     
     protected $_id;
-    protected $_values = array();
-    protected $_boosts = array();
+    protected $_values = [];
+    protected $_boosts = [];
     
     public function __construct($id=null, array $values=null) {
         $this->setId($id);
@@ -61,7 +61,7 @@ trait TDocument {
     }
     
     public function getPreparedValues() {
-        $output = array();
+        $output = [];
         
         foreach($this->_values as $key => $value) {
             if(is_object($value)) {
@@ -108,7 +108,7 @@ trait TDocument {
     
 // Dump
     public function getDumpProperties() {
-        $values = array();
+        $values = [];
         
         foreach($this->_values as $key => $value) {
             $boost = $this->getBoost($key);

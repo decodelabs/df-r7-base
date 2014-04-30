@@ -16,8 +16,8 @@ class Sqlite implements user\session\IBackend {
     
     protected $_storePath;
     protected $_manifestTable;
-    protected $_dataTables = array();
-    protected $_dataTransactions = array();
+    protected $_dataTables = [];
+    protected $_dataTransactions = [];
     protected $_lifeTime = 86400; // 24 hours
     
     public function __construct(user\session\IController $controller) {
@@ -91,12 +91,12 @@ class Sqlite implements user\session\IBackend {
     public function applyTransition(user\session\IDescriptor $descriptor) {
         $this->_connectManifest();
         
-        $this->_manifestTable->update(array(
+        $this->_manifestTable->update([
                 'accessTime' => $descriptor->getAccessTime(),
                 'externalId' => $descriptor->getExternalId(),
                 'transitionId' => $descriptor->getTransitionId(),
                 'transitionTime' => $descriptor->getTransitionTime()
-            ))
+            ])
             ->where('internalId', '=', $descriptor->getInternalId())
             ->execute();
             
@@ -204,19 +204,19 @@ class Sqlite implements user\session\IBackend {
             if(empty($node->creationTime)) {
                 $node->creationTime = time();
                 
-                $transaction->insert(array(
+                $transaction->insert([
                         'namespace' => $node->namespace,
                         'key' => $node->key,
                         'value' => serialize($node->value),
                         'creationTime' => $node->creationTime,
                         'updateTime' => $node->updateTime
-                    ))
+                    ])
                     ->execute();
             } else {
-                $transaction->update(array(
+                $transaction->update([
                         'value' => serialize($node->value),
                         'updateTime' => $node->updateTime
-                    ))
+                    ])
                     ->where('namespace', '=', $node->namespace)
                     ->where('key', '=', $node->key)
                     ->execute();
@@ -336,7 +336,7 @@ class Sqlite implements user\session\IBackend {
             $schema->addField('updateTime', 'integer');
             
             // Indexes
-            $schema->addPrimaryIndex('primary', array('namespace', 'key'));
+            $schema->addPrimaryIndex('primary', ['namespace', 'key']);
             
             $table = $adapter->createTable($schema);
         } else {

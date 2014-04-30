@@ -13,9 +13,9 @@ class EntryReader implements spur\feed\IEntryReaderPlugin {
     
     use spur\feed\TEntryReader;
     
-    protected static $_xPathNamespaces = array(
+    protected static $_xPathNamespaces = [
         'thread10' => 'http://purl.org/syndication/thread/1.0',
-    );
+    ];
         
     public function getCommentCount() {
         return $this->_xPath->evaluate(

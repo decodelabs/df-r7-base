@@ -15,7 +15,7 @@ class Initiator implements IInitiator {
     use TQuery_TransactionAware;
     
     protected $_mode = null;
-    protected $_fieldMap = array();
+    protected $_fieldMap = [];
     protected $_data = null;
     protected $_joinType = null;
     protected $_parentQuery = null;
@@ -74,12 +74,12 @@ class Initiator implements IInitiator {
 
     
 // Select
-    public function beginSelect(array $fields=array(), $distinct=false) {
+    public function beginSelect(array $fields=[], $distinct=false) {
         $this->_setMode(IQueryTypes::SELECT);
         $fields = core\collection\Util::flattenArray($fields, false);
         
         if(empty($fields)) {
-            $fields = array('*');
+            $fields = ['*'];
         }
 
         $this->_fieldMap = $fields;
@@ -95,7 +95,7 @@ class Initiator implements IInitiator {
         return new Union($sourceManager);
     }
 
-    public function beginUnionSelect(IUnionQuery $union, array $fields=array(), $unionDistinct=true, $selectDistinct=false) {
+    public function beginUnionSelect(IUnionQuery $union, array $fields=[], $unionDistinct=true, $selectDistinct=false) {
         $this->beginSelect($fields, $selectDistinct);
         $this->_mode = IQueryTypes::UNION;
         $this->_union = $union;
@@ -107,7 +107,7 @@ class Initiator implements IInitiator {
 // Fetch
     public function beginFetch() {
         $this->_setMode(IQueryTypes::FETCH);
-        $this->_fieldMap = array('*' => null);
+        $this->_fieldMap = ['*' => null];
         
         return $this;
     }
@@ -116,7 +116,7 @@ class Initiator implements IInitiator {
 // Insert
     public function beginInsert($row) {
         $this->_setMode(IQueryTypes::INSERT);
-        $this->_fieldMap = array('*' => null);
+        $this->_fieldMap = ['*' => null];
         $this->_data = $row;
         
         return $this;
@@ -124,9 +124,9 @@ class Initiator implements IInitiator {
     
     
 // Batch insert
-    public function beginBatchInsert($rows=array()) {
+    public function beginBatchInsert($rows=[]) {
         $this->_setMode(IQueryTypes::BATCH_INSERT);
-        $this->_fieldMap = array('*' => null);
+        $this->_fieldMap = ['*' => null];
         $this->_data = $rows;
         
         return $this;
@@ -136,16 +136,16 @@ class Initiator implements IInitiator {
 // Replace
     public function beginReplace($row) {
         $this->_setMode(IQueryTypes::REPLACE);
-        $this->_fieldMap = array('*' => null);
+        $this->_fieldMap = ['*' => null];
         $this->_data = $row;
         
         return $this;
     }
     
 // Batch replace
-    public function beginBatchReplace($rows=array()) {
+    public function beginBatchReplace($rows=[]) {
         $this->_setMode(IQueryTypes::BATCH_REPLACE);
-        $this->_fieldMap = array('*' => null);
+        $this->_fieldMap = ['*' => null];
         $this->_data = $rows;
         
         return $this;
@@ -166,7 +166,7 @@ class Initiator implements IInitiator {
 // Delete
     public function beginDelete() {
         $this->_setMode(IQueryTypes::DELETE);
-        $this->_fieldMap = array('*' => null);
+        $this->_fieldMap = ['*' => null];
         
         return $this;
     }
@@ -213,7 +213,7 @@ class Initiator implements IInitiator {
         }
 
         foreach($fields as $field) {
-            $children = array();
+            $children = [];
 
             if(false !== strpos($field, '.')) {
                 $children = explode('.', $field);
@@ -288,7 +288,7 @@ class Initiator implements IInitiator {
     
     
 // Join
-    public function beginJoin(IQuery $parent, array $fields=array(), $type=IJoinQuery::INNER) {
+    public function beginJoin(IQuery $parent, array $fields=[], $type=IJoinQuery::INNER) {
         $this->_setMode(IQueryTypes::JOIN);
         $this->_parentQuery = $parent;
         $fields = core\collection\Util::flattenArray($fields);
@@ -343,7 +343,7 @@ class Initiator implements IInitiator {
 
 
 // Attach
-    public function beginAttach(IReadQuery $parent, array $fields=array(), $isSelect=false) {
+    public function beginAttach(IReadQuery $parent, array $fields=[], $isSelect=false) {
         $this->_parentQuery = $parent;
         $fields = core\collection\Util::flattenArray($fields, false);
         
@@ -446,7 +446,7 @@ class Initiator implements IInitiator {
 
             case IQueryTypes::FETCH:
                 $sourceManager = new opal\query\SourceManager($this->_application, $this->_transaction);
-                $source = $sourceManager->newSource($sourceAdapter, $alias, array('*'));
+                $source = $sourceManager->newSource($sourceAdapter, $alias, ['*']);
                 
                 if(!$source->getAdapter()->supportsQueryType($this->_mode)) {
                     throw new LogicException(

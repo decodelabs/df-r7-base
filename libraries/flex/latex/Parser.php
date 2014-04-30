@@ -16,9 +16,9 @@ class Parser extends iris\Parser {
     public $container;
     public $environment = 'root';
 
-    protected $_containerStack = array();
-    protected $_commands = array();
-    protected $_environments = array();
+    protected $_containerStack = [];
+    protected $_commands = [];
+    protected $_environments = [];
 
     public function __construct(Lexer $lexer) {
         parent::__construct($lexer, [
@@ -555,7 +555,7 @@ class Parser extends iris\Parser {
     }
 
     public function extractOptionList() {
-        $options = array();
+        $options = [];
 
         if($this->extractIfValue('[')) {
             while(true) {

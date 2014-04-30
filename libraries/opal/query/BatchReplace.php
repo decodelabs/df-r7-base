@@ -31,7 +31,7 @@ class BatchReplace implements IBatchReplaceQuery, core\IDumpable {
 // Execute
     public function execute() {
         if(!empty($this->_rows)) {
-            $fields = array();
+            $fields = [];
             $this->_rows = $this->_deflateBatchInsertValues($this->_rows, $fields);
             
             if(!empty($fields)) {
@@ -50,12 +50,12 @@ class BatchReplace implements IBatchReplaceQuery, core\IDumpable {
 
 // Dump
     public function getDumpProperties() {
-        return array(
+        return [
             'source' => $this->_source->getAdapter(),
             'fields' => implode(', ', array_keys($this->_fields)),
             'pending' => count($this->_rows),
             'inserted' => $this->_inserted,
             'flushThreshold' => $this->_flushThreshold
-        );
+        ];
     }
 }

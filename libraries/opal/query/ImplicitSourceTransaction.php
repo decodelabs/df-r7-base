@@ -54,7 +54,7 @@ class ImplicitSourceTransaction extends Transaction {
             ->into($this->_source);
     }
     
-    public function batchInsert($rows=array()) {
+    public function batchInsert($rows=[]) {
         return Initiator::factory($this->_application)
             ->setTransaction($this)
             ->beginBatchInsert($rows)
@@ -68,7 +68,7 @@ class ImplicitSourceTransaction extends Transaction {
             ->in($this->_source);
     }
     
-    public function batchReplace($rows=array()) {
+    public function batchReplace($rows=[]) {
         return Initiator::factory($this->_application)
             ->setTransaction($this)
             ->beginBatchReplace($rows)

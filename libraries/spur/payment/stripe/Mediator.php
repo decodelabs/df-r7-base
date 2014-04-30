@@ -545,7 +545,7 @@ class Mediator implements IMediator, core\IDumpable {
 
 
 // IO
-    public function callServer($method, $path, array $data=array()) {
+    public function callServer($method, $path, array $data=[]) {
         if(!$this->_activeUrl) {
             $this->_activeUrl = link\http\Url::factory(self::API_URL);
         }

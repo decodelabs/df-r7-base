@@ -13,8 +13,8 @@ class Handler implements link\http\IUploadHandler {
 
     use core\io\TAcceptTypeProcessor;
 
-    protected $_files = array();
-    protected $_extensions = array();
+    protected $_files = [];
+    protected $_extensions = [];
     protected $_maxSize;
 
     public function __construct() {
@@ -24,7 +24,7 @@ class Handler implements link\http\IUploadHandler {
 
         foreach($_FILES as $key => $set) {
             if(is_array($set['name'])) {
-                $sets = array();
+                $sets = [];
 
                 foreach($set as $fileVar => $array) {
                     $array = $this->_flattenArray($array, $key);
@@ -50,7 +50,7 @@ class Handler implements link\http\IUploadHandler {
     }
 
     protected function _flattenArray(array $array, $currentKey='') {
-        $output = array();
+        $output = [];
         
         foreach($array as $key => $var) {
             $thisKey = $currentKey.'['.$key.']';
@@ -69,7 +69,7 @@ class Handler implements link\http\IUploadHandler {
     }
 
     public function setAllowedExtensions(array $extensions) {
-        $this->_extensions = array();
+        $this->_extensions = [];
         return $this->addAllowedExtensions($extensions);
     }
 
@@ -145,7 +145,7 @@ class Handler implements link\http\IUploadHandler {
     
 // Iterator
     public function getIterator() {
-        $output = array();
+        $output = [];
         
         foreach($this->_files as $key => $set) {
             $output[$key] = new File($this, $key, $set); 

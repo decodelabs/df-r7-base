@@ -73,5 +73,5 @@ interface IMediator {
     public function sendMessage(flow\mail\IMessage $message);
     public function sendRawMessage(flow\mail\IMessage $message);
 
-    public function callServer($method, array $data=array());
+    public function callServer($method, array $data=[]);
 }

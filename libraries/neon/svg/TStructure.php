@@ -65,7 +65,7 @@ trait TStructure_Container {
 
     use TStructure_Description;
 
-    protected $_children = array();
+    protected $_children = [];
 
     public function readXml(core\xml\IReadable $reader) {
         foreach($reader->getChildren() as $child) {
@@ -112,7 +112,7 @@ trait TStructure_Container {
     }
 
     public function setChildren(array $children) {
-        $this->_chilren = array();
+        $this->_chilren = [];
         return $this->addChildren($children);
     }
 
@@ -154,7 +154,7 @@ trait TStructure_Container {
     }
 
     public function clearChildren() {
-        $this->_children = array();
+        $this->_children = [];
         return $this;
     }
 

@@ -16,8 +16,8 @@ class CookieCollection implements link\http\IResponseCookieCollection, core\coll
     use core\collection\TValueMapArrayAccess;
     use core\collection\TExtractList;
     
-    protected $_set = array();
-    protected $_remove = array();
+    protected $_set = [];
+    protected $_remove = [];
     
     public static function fromHeaders(link\http\IResponseHeaderCollection $headers) {
         $cookies = $headers->get('Set-Cookie');
@@ -87,8 +87,8 @@ class CookieCollection implements link\http\IResponseCookieCollection, core\coll
     }
     
     public function clear() {
-        $this->_set = array();
-        $this->_remove = array();
+        $this->_set = [];
+        $this->_remove = [];
     }
     
     public function extract() {
@@ -170,9 +170,9 @@ class CookieCollection implements link\http\IResponseCookieCollection, core\coll
         $cookies = $headers->get('Set-Cookie');
         
         if($cookies === null) {
-            $cookies = array();
+            $cookies = [];
         } else if(!is_array($cookies)) {
-            $cookies = array($cookies);
+            $cookies = [$cookies];
         }
         
         foreach($this->_set as $cookie) {
@@ -190,7 +190,7 @@ class CookieCollection implements link\http\IResponseCookieCollection, core\coll
     
 // Strings
     public function toString() {
-        $output = array();
+        $output = [];
         
         foreach($this->_set as $cookie) {
             $output[] = 'Set-Cookie: '.$cookie->toString();
@@ -206,7 +206,7 @@ class CookieCollection implements link\http\IResponseCookieCollection, core\coll
     
 // Dump
     public function getDumpProperties() {
-        $output = array();
+        $output = [];
         
         foreach($this->_set as $cookie) {
             $output['+ '.$cookie->getName()] = $cookie->toString();

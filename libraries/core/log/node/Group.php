@@ -14,7 +14,7 @@ class Group implements core\log\IGroupNode {
     use core\log\TEntryPoint;
     
     protected $_title;
-    protected $_children = array();
+    protected $_children = [];
     
     public function __construct($title=null, $file=null, $line=null) {
         $this->setNodeTitle($title);
@@ -73,7 +73,7 @@ class Group implements core\log\IGroupNode {
     }
     
     public function clearChildren() {
-        $this->_children = array();
+        $this->_children = [];
         return $this;
     }
     

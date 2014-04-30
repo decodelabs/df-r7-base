@@ -17,14 +17,14 @@ abstract class Util implements IUtil {
         
         if(!strlen($input)) {
             if($terminator !== null) {
-                return array(array());
+                return [[]];
             } else {
-                return array();
+                return [];
             }
         }
             
         if($terminator !== null) {
-            $row = array();
+            $row = [];
             $input .= $terminator;
         } else {
             $input .= $delimiter;
@@ -34,7 +34,7 @@ abstract class Util implements IUtil {
         $mode = 0;
         $cell = '';
         $quote = null;
-        $output = array();
+        $output = [];
         
         
         
@@ -109,7 +109,7 @@ abstract class Util implements IUtil {
                         $row[] = $cell;
                         $cell = '';
                         $output[] = $row;
-                        $row = array();
+                        $row = [];
                         $mode = 0;
                         break;
                     } else if($char == $delimiter) {
@@ -134,7 +134,7 @@ abstract class Util implements IUtil {
     }
 
     public static function implodeDelimited(array $data, $delimiter=',', $quote='"', $terminator=null) {
-        $output = array();
+        $output = [];
         
         if($terminator !== null) {
             foreach($data as $row) {
@@ -255,19 +255,19 @@ abstract class Util implements IUtil {
     
     public static function generateLikeMatchRegex($pattern, $char='_', $wildcard='%', $delimiter='/') {
         if(is_array($pattern)) {
-            $output = array();
+            $output = [];
             
             foreach(array_unique($pattern) as $part) {
-                $part = str_replace(array($char, $wildcard), array(0xFE, 0xFF), $part);
+                $part = str_replace([$char, $wildcard], [0xFE, 0xFF], $part);
                 $part = preg_quote($part, $delimiter);
-                $output[] = str_replace(array(0xFE, 0xFF), array('.', '.*'), $part);
+                $output[] = str_replace([0xFE, 0xFF], ['.', '.*'], $part);
             }
             
             return '^'.implode('|', $output).'$';
         } else {
-            $regex = str_replace(array($char, $wildcard), array(0xFE, 0xFF), $pattern);
+            $regex = str_replace([$char, $wildcard], [0xFE, 0xFF], $pattern);
             $regex = preg_quote($regex, '/');
-            return '^'.str_replace(array(0xFE, 0xFF), array('.', '.*'), $regex).'$';
+            return '^'.str_replace([0xFE, 0xFF], ['.', '.*'], $regex).'$';
         }
     }
     

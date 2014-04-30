@@ -14,8 +14,8 @@ class DeleteKey implements IDeleteKeyTask {
     use TTask;
     use TAdapterAwareTask;
 
-    protected $_keys = array();
-    protected $_filterKeys = array();
+    protected $_keys = [];
+    protected $_filterKeys = [];
     
     public function __construct(opal\query\IAdapter $adapter, array $keys) {
         $this->_keys = $keys;
@@ -27,7 +27,7 @@ class DeleteKey implements IDeleteKeyTask {
 
 // Keys
     public function setKeys(array $keys) {
-        $this->_keys = array();
+        $this->_keys = [];
         return $this->addKeys($keys);
     }
 
@@ -51,7 +51,7 @@ class DeleteKey implements IDeleteKeyTask {
 
 // Filter keys
     public function setFilterKeys(array $filterKeys) {
-        $this->_filterKeys = array();
+        $this->_filterKeys = [];
         return $this->addFilterKeys($filterKeys);
     }
 

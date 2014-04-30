@@ -148,7 +148,7 @@ class Base implements ISchema, core\IDumpable {
     
 // Fields
     public function getPrimitiveFieldNames() {
-        $output = array();
+        $output = [];
         
         foreach($this->_fields as $field) {
             if($field instanceof opal\schema\IMultiPrimitiveField) {

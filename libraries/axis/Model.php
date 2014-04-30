@@ -17,7 +17,7 @@ abstract class Model implements IModel, core\IDumpable {
     const REGISTRY_PREFIX = 'model://';
     
     private $_modelName;
-    private $_units = array();
+    private $_units = [];
     
     public static function factory($name, core\IApplication $application=null) {
         if($name instanceof IModel) {
@@ -143,7 +143,7 @@ abstract class Model implements IModel, core\IDumpable {
     }
 
     public static function getUnitMetaData(array $unitIds) {
-        $output = array();
+        $output = [];
 
         foreach($unitIds as $unitId) {
             if(isset($output[$unitId])) {

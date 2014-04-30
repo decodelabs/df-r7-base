@@ -129,7 +129,7 @@ class Numbers extends Base implements core\i18n\module\generator\IModule {
         
     public function getCurrencyList() {
         $this->_loadData();
-        $output = array();
+        $output = [];
         
         foreach($this->_data['currencies'] as $code => $currency) {
             $output[$code] = $currency['name'];
@@ -231,83 +231,83 @@ class Numbers extends Base implements core\i18n\module\generator\IModule {
             switch($unit) {
                 case 1: 
                     return $translate->_(
-                        array(
+                        [
                             'n = 1 || n = -1' => '%n% byte',
                             '*' => '%n% bytes'
-                        ),
-                        array('%n%' => $output), 
+                        ],
+                        ['%n%' => $output],
                         $output
                     );
                 
                 case 2: 
                     return $translate->_(
-                        array(
+                        [
                             'n = 1 || n = -1' => '%n% Kilobyte',
                             '*' => '%n% Kilobytes'
-                        ),
-                        array('%n%' => $output),
+                        ],
+                        ['%n%' => $output],
                         $output
                     );
                 
                 case 3: 
                     return $translate->_(
-                        array(
+                        [
                             'n = 1 || n = -1' => '%n% Megabyte',
                             '*' => '%n% Megabytes'
-                        ),
-                        array('%n%' => $output), 
+                        ],
+                        ['%n%' => $output],
                         $output
                     );
                 
                 case 4: 
                     return $translate->_(
-                        array(
+                        [
                             'n = 1 || n = -1' => '%n% Gigabyte',
                             '*' => '%n% Gigabytes'
-                        ),
-                        array('%n%' => $output), 
+                        ],
+                        ['%n%' => $output],
                         $output
                     );
                 
                 case 5: 
                     return $translate->_(
-                        array(
+                        [
                             'n = 1 || n = -1' => '%n% Terabyte',
                             '*' => '%n% Terabytes'
-                        ),
-                        array('%n%' => $output), 
+                        ],
+                        ['%n%' => $output],
                         $output
                     );
                 
                 case 6: 
                     return $translate->_(
-                        array(
+                        [
                             'n = 1 || n = -1' => '%n% Petabyte',
                             '*' => '%n% Petabytes'
-                        ),
-                        array('%n%' => $output), 
+                        ],
+                        ['%n%' => $output],
                         $output
                     );
             }
         } else {
             switch($unit) {
                 case 1: 
-                    return $translate->_('%n% b', array('%n%' => $output));
+                    return $translate->_('%n% b', ['%n%' => $output]);
                 
                 case 2: 
-                    return $translate->_('%n% Kb', array('%n%' => $output));
+                    return $translate->_('%n% Kb', ['%n%' => $output]);
                 
                 case 3: 
-                    return $translate->_('%n% Mb', array('%n%' => $output));
+                    return $translate->_('%n% Mb', ['%n%' => $output]);
                 
                 case 4: 
-                    return $translate->_('%n% Gb', array('%n%' => $output));
+                    return $translate->_('%n% Gb', ['%n%' => $output]);
                 
                 case 5: 
-                    return $translate->_('%n% Tb', array('%n%' => $output));
+                    return $translate->_('%n% Tb', ['%n%' => $output]);
                 
                 case 6: 
-                    return $translate->_('%n% Pb', array('%n%' => $output));
+                    return $translate->_('%n% Pb', ['%n%' => $output]);
             }    
         }
     }
@@ -339,11 +339,11 @@ class Numbers extends Base implements core\i18n\module\generator\IModule {
             return $output;    
         }
         
-        $output = array(
-            'symbols' => array(),
-            'formats' => array(),
-            'currencies' => array()
-        );
+        $output = [
+            'symbols' => [],
+            'formats' => [],
+            'currencies' => []
+        ];
         
         // Symbols
         if(isset($doc->numbers->symbols)) {
@@ -389,10 +389,10 @@ class Numbers extends Base implements core\i18n\module\generator\IModule {
                     $name = (string)$currency['type'];    
                 }
                 
-                $output['currencies'][(string)$currency['type']] = array(
+                $output['currencies'][(string)$currency['type']] = [
                     'name' => $name,
                     'symbol' => $symbol
-                );    
+                ];    
             }    
             
             ksort($output['currencies']);

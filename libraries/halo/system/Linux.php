@@ -11,15 +11,15 @@ use df\halo;
 
 class Linux extends Unix {
     
-    private static $_distributions = array(
-        'Debian' => array('/etc/debian_release', '/etc/debian_version'),
-        'SuSE' => array('/etc/SuSE-release', '/etc/UnitedLinux-release'),
+    private static $_distributions = [
+        'Debian' => ['/etc/debian_release', '/etc/debian_version'],
+        'SuSE' => ['/etc/SuSE-release', '/etc/UnitedLinux-release'],
         'Mandrake' => '/etc/mandrake-release',
         'Gentoo' => '/etc/gentoo-release',
         'Fedora' => '/etc/fedora-release',
-        'RedHat' => array('/etc/redhat-release', '/etc/redhat_version'),
-        'Slackware' => array('/etc/slackware-release', '/etc/slackware-version'),
-        'Trustix' => array('/etc/trustix-release', '/etc/trustix-version'),
+        'RedHat' => ['/etc/redhat-release', '/etc/redhat_version'],
+        'Slackware' => ['/etc/slackware-release', '/etc/slackware-version'],
+        'Trustix' => ['/etc/trustix-release', '/etc/trustix-version'],
         'FreeEOS' => '/etc/eos-version',
         'Arch' => '/etc/arch-release',
         'Cobalt' => '/etc/cobalt-release',
@@ -29,7 +29,7 @@ class Linux extends Unix {
         'PLD' => '/etc/pld-release',
         'HLFS' => '/etc/hlfs-release',
         'Synology' => '/etc/synoinfo.conf'
-    );
+    ];
     
     protected $_osDistribution;
     
@@ -60,7 +60,7 @@ class Linux extends Unix {
         
         foreach(self::$_distributions as $name => $files) {
             if(!is_array($files)) {
-                $files = array($files);
+                $files = [$files];
             }
             
             foreach($files as $file) {

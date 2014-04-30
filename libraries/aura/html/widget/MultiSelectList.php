@@ -15,7 +15,7 @@ class MultiSelectList extends SelectList implements IMultiSelectWidget {
     const ARRAY_INPUT = true;
     
     protected $_size;
-    protected $_value = array();
+    protected $_value = [];
     protected $_noSelectionLabel = null;
     
     public function setNoSelectionLabel($label) {
@@ -48,10 +48,10 @@ class MultiSelectList extends SelectList implements IMultiSelectWidget {
             }
             
             if(!is_array($value)) {
-                $value = array($value);
+                $value = [$value];
             }
             
-            $newValue = array();
+            $newValue = [];
             
             foreach($value as $val) {
                 $val = (string)$val;

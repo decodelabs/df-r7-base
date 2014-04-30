@@ -246,7 +246,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
                 $parts[$i] = lcfirst(
                     str_replace(' ', '', ucwords(
                         preg_replace('/[^a-zA-Z0-9_ ]/', '', str_replace(
-                            array('-', '.', '+'), ' ', $part
+                            ['-', '.', '+'], ' ', $part
                         ))
                     ))
                 );
@@ -302,7 +302,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         return lcfirst(
             str_replace(' ', '', ucwords(
                 preg_replace('/[^a-zA-Z0-9_ ]/', '', str_replace(
-                    array('-', '.', '+'), ' ', $action
+                    ['-', '.', '+'], ' ', $action
                 ))
             ))
         );
@@ -353,7 +353,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     public static function formatType($type) {
         return str_replace(' ', '', ucwords(
             preg_replace('/[^a-zA-Z0-9_ ]/', '', str_replace(
-                array('-', '.', '+'), ' ', $type
+                ['-', '.', '+'], ' ', $type
             ))
         ));
     }
@@ -382,7 +382,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         if($this->_path) {
             $parts = $this->_path->toArray();
         } else {
-            $parts = array();
+            $parts = [];
         }
         
         if(isset($parts[0]) && $parts[0] == '~front') {
@@ -541,7 +541,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             $parts = $this->_path->toArray();
             $addTrailingSlash = $this->_path->shouldAddTrailingSlash();
         } else {
-            $parts = array();
+            $parts = [];
             $addTrailingSlash = true;
         }
         
@@ -731,7 +731,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
 
 // Rewrite
     public function rewriteQueryToPath($keys) {
-        $optional = array();
+        $optional = [];
         $keys = $this->_normalizeKeys(func_get_args(), $optional);
         $path = $this->getPath();
         $query = $this->getQuery();
@@ -753,7 +753,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     }
 
     public function rewritePathToQuery($rootCount, $keys) {
-        $optional = array();
+        $optional = [];
         $keys = $this->_normalizeKeys(array_slice(func_get_args(), 1), $optional);
         $path = $this->getPath();
         $query = $this->getQuery();
@@ -771,8 +771,8 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     }
 
     protected function _normalizeKeys($keys, array &$optional) {
-        $output = array();
-        $optional = array();
+        $output = [];
+        $optional = [];
 
         foreach($keys as $i => $key) {
             if(is_array($key)) {

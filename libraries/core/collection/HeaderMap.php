@@ -37,7 +37,7 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
 
         if(is_string($input)) {
             $lines = explode("\n", str_replace("\r", '', $input));
-            $input = array();
+            $input = [];
             $last = null;
 
             foreach($lines as $line) {
@@ -79,7 +79,7 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
         $key = $this->normalizeKey($key);
         
         if(is_array($value)) {
-            $this->_collection[$key] = array();
+            $this->_collection[$key] = [];
             
             foreach($value as $k => $val) {
                 $this->add($key, $val);
@@ -114,7 +114,7 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
         }
         
         if(!is_array($this->_collection[$key])) {
-            $this->_collection[$key] = array($this->_collection[$key]);
+            $this->_collection[$key] = [$this->_collection[$key]];
         }
         
         $this->_collection[$key][] = $value;
@@ -224,7 +224,7 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
         $comp = $this->_collection[$key];
         
         if(!is_array($comp)) {
-            $comp = array($comp);
+            $comp = [$comp];
         }
         
         $value = strtolower($value);
@@ -249,7 +249,7 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
         return str_replace(
             ' ', '-', 
             ucwords(strtolower(
-                str_replace(array('-', '_'), ' ', $key)
+                str_replace(['-', '_'], ' ', $key)
             ))
         );
     }
@@ -261,7 +261,7 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
     }
     
     public function getLines(array $skipKeys=null) {
-        $output = array();
+        $output = [];
 
         if($skipKeys) {
             foreach($skipKeys as $i => $key) {
@@ -342,7 +342,7 @@ class HeaderMap implements IHeaderMap, core\IDumpable {
     
 // Dump
     public function getDumpProperties() {
-        $output = array();
+        $output = [];
         
         foreach($this->_collection as $key => $value) {
             if(is_array($value)) {

@@ -16,13 +16,13 @@ class BatchIterator implements IBatchIterator {
     const DEFAULT_BATCH_SIZE = 50;
     
     protected $_isForFetch = false;
-    protected $_populates = array();
-    protected $_attachments = array();
-    protected $_combines = array();
+    protected $_populates = [];
+    protected $_attachments = [];
+    protected $_combines = [];
 
     protected $_keyField;
     protected $_valField;
-    protected $_batchData = array();
+    protected $_batchData = [];
     protected $_batchSize = self::DEFAULT_BATCH_SIZE;
     protected $_batchNumber = 0;
     protected $_result;
@@ -30,7 +30,7 @@ class BatchIterator implements IBatchIterator {
     
     public function __construct(opal\query\ISource $source, $result, IOutputManifest $outputManifest=null) {
         $this->_batchSize = static::DEFAULT_BATCH_SIZE;
-        $this->_arrayManipulator = new ArrayManipulator($source, array(), true, $outputManifest);
+        $this->_arrayManipulator = new ArrayManipulator($source, [], true, $outputManifest);
         
         if(is_array($result)) {
             $result = new core\collection\Queue($result);
@@ -190,7 +190,7 @@ class BatchIterator implements IBatchIterator {
         }
         */
         
-        $batch = array();
+        $batch = [];
         
         while(!$this->_isResultEmpty() && $batchSize > 0) {
             $batch[] = $this->_extractResult();
@@ -216,7 +216,7 @@ class BatchIterator implements IBatchIterator {
     }
     
     public function toArray() {
-        $output = array();
+        $output = [];
         
         while(!$this->isEmpty()) {
             if($this->_keyField) {

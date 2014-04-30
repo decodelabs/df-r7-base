@@ -16,9 +16,9 @@ class Tcp_Server extends link\socket\Server implements link\socket\ISequenceServ
     use link\socket\TSequenceServerSocket;
     use TNative;
 
-    protected static $_defaultOptions = array(
+    protected static $_defaultOptions = [
         'oobInline' => false
-    );
+    ];
     
     protected static function _populateOptions() {
         return array_merge(parent::_populateOptions(), self::$_defaultOptions);
@@ -96,12 +96,12 @@ class Tcp_Server extends link\socket\Server implements link\socket\ISequenceServ
                     
                 case 'sendTimeout':
                     $key = SO_SNDTIMEO;
-                    $value = array('sec' => 0, 'usec' => $value * 1000);
+                    $value = ['sec' => 0, 'usec' => $value * 1000];
                     break;
                     
                 case 'receiveTimeout':
                     $key = SO_RCVTIMEO;
-                    $value = array('sec' => 0, 'usec' => $value * 1000);
+                    $value = ['sec' => 0, 'usec' => $value * 1000];
                     break;
                     
                 case 'reuseAddress':
@@ -156,7 +156,7 @@ class Tcp_ServerPeer extends link\socket\ServerPeer implements link\socket\ISequ
     use TNative_IoSocket;
 
     protected static function _populateOptions() {
-        return array();
+        return [];
     }
     
     public function __construct(link\socket\IServerSocket $parent, $socket, $address) {
@@ -194,12 +194,12 @@ class Tcp_ServerPeer extends link\socket\ServerPeer implements link\socket\ISequ
                     
                 case 'sendTimeout':
                     $key = SO_SNDTIMEO;
-                    $value = array('sec' => 0, 'usec' => $value * 1000);
+                    $value = ['sec' => 0, 'usec' => $value * 1000];
                     break;
                     
                 case 'receiveTimeout':
                     $key = SO_RCVTIMEO;
-                    $value = array('sec' => 0, 'usec' => $value * 1000);
+                    $value = ['sec' => 0, 'usec' => $value * 1000];
                     break;
                     
                 case 'reuseAddress':

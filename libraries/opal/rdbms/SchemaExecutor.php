@@ -56,7 +56,7 @@ abstract class SchemaExecutor implements ISchemaExecutor {
         
         $schemaName = $schema->getName();
         $sql .= ' TABLE '.$this->_adapter->quoteIdentifier($schemaName).' ('."\n";
-        $definitions = array();
+        $definitions = [];
 
         // Fields
         foreach($schema->getFields() as $field) {
@@ -108,7 +108,7 @@ abstract class SchemaExecutor implements ISchemaExecutor {
             $sql .= implode(','."\n", $tableOptions);
         }
         
-        $sql = array($sql);
+        $sql = [$sql];
         
         
         // Indexes
@@ -155,8 +155,8 @@ abstract class SchemaExecutor implements ISchemaExecutor {
 // Foreign keys
     protected function _generateInlineForeignKeyDefinition(opal\rdbms\schema\IForeignKey $key) {
         $keySql = 'CONSTRAINT '.$this->_adapter->quoteIdentifier($key->getName()).' FOREIGN KEY';
-        $fields = array();
-        $references = array();
+        $fields = [];
+        $references = [];
         
         foreach($key->getReferences() as $reference) {
             $fields[] = $this->_adapter->quoteIdentifier($reference->getField()->getName());

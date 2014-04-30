@@ -10,7 +10,7 @@ use df\core;
 
 class Type {
 
-    protected static $types = array(
+    protected static $types = [
         'ez' => 'application/andrew-inset',
         'hqx' => 'application/mac-binhex40',
         'cpt' => 'application/mac-compactpro',
@@ -235,7 +235,7 @@ class Type {
         'wm' => 'video/x-ms-wm',
         'wvx' => 'video/x-ms-wvx',
         'ice' => 'x-conference/x-cooltalk',
-    );
+    ];
 
     public static function extToMime($extension, $default='application/octet-stream') {
         $extension = strtolower($extension);

@@ -13,7 +13,7 @@ class Transaction implements ITransaction, core\IDumpable {
     
     protected $_level = 1;
     protected $_application;
-    protected $_adapters = array();
+    protected $_adapters = [];
     
     public function __construct(core\IApplication $application) {
         $this->_application = $application;
@@ -49,7 +49,7 @@ class Transaction implements ITransaction, core\IDumpable {
             ->beginInsert($row);
     }
     
-    public function batchInsert($rows=array()) {
+    public function batchInsert($rows=[]) {
         return Initiator::factory($this->_application)
             ->setTransaction($this)
             ->beginBatchInsert($rows);
@@ -61,7 +61,7 @@ class Transaction implements ITransaction, core\IDumpable {
             ->beginReplace($row);
     }
     
-    public function batchReplace($rows=array()) {
+    public function batchReplace($rows=[]) {
         return Initiator::factory($this->_application)
             ->setTransaction($this)
             ->beginBatchReplace($rows);
@@ -158,16 +158,16 @@ class Transaction implements ITransaction, core\IDumpable {
     
 // Dump
     public function getDumpProperties() {
-        $adapters = array();
+        $adapters = [];
         
         foreach($this->_adapters as $adapter) {
             $adapters[] = $adapter->getQuerySourceDisplayName();
         }
         
-        return array(
+        return [
             'level' => $this->_level,
             'adapters' => $adapters,
             'application' => $this->_application
-        );
+        ];
     }
 }

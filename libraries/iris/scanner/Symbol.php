@@ -11,9 +11,9 @@ use df\iris;
     
 class Symbol implements iris\IScanner, core\IDumpable {
 
-    protected $_symbols = array();
+    protected $_symbols = [];
 
-    public function __construct($symbols=array()) {
+    public function __construct($symbols=[]) {
         $this->setSymbols($symbols);
     }
 
@@ -71,7 +71,7 @@ class Symbol implements iris\IScanner, core\IDumpable {
     }
 
     public function clearSymbols() {
-        $this->_symbols = array();
+        $this->_symbols = [];
         return $this;
     }
 
@@ -94,7 +94,7 @@ class Symbol implements iris\IScanner, core\IDumpable {
     }
 
     public function run(iris\ILexer $lexer) {
-        $symbols = array();
+        $symbols = [];
 
         foreach($this->_symbols as $symbol => $type) {
             if(mb_substr($symbol, 0, 1) != $lexer->char) {

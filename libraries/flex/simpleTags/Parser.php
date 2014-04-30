@@ -18,7 +18,7 @@ class Parser {
     ];
 
     protected $_body;
-    protected $_customTags = array();
+    protected $_customTags = [];
 
     public function __construct($body, array $customTags=null) {
         $this->_body = $body;
@@ -31,7 +31,7 @@ class Parser {
 
 // Custom tags
     public function setCustomTags(array $tags) {
-        $this->_customTags = array();
+        $this->_customTags = [];
         return $this->addCustomTags($tags);
     }
 
@@ -58,7 +58,7 @@ class Parser {
     }
 
     public function clearCustomTags() {
-        $this->_customTags = array();
+        $this->_customTags = [];
         return $this;
     }
 
@@ -134,7 +134,7 @@ class Parser {
             $output = preg_replace_callback(
                 '/<'.$name.'([^>]*)\/?>/i', 
                 function($matches) use($name, $callback, &$newName) {
-                    $attributes = array();
+                    $attributes = [];
 
                     if(preg_match_all('/([a-zA-Z0-9]+)\="([^"]*)"/', $matches[1], $attrMatches)) {
                         foreach($attrMatches[1] as $i => $key) {

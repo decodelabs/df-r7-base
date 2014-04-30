@@ -316,7 +316,7 @@ class Foundation extends Base {
 
 
         // Parse rows
-        $row = array();
+        $row = [];
 
         while(!$this->parser->token->is('command=end')) {
             $block = new flex\latex\map\Block($this->parser->token);
@@ -334,7 +334,7 @@ class Foundation extends Base {
                     $this->parser->container->addRow($row);
                 }
 
-                $row = array();
+                $row = [];
                 continue;
             } else if($this->parser->token->is('command=hline')) {
                 $this->parser->extract();

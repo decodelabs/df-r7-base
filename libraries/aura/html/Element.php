@@ -14,7 +14,7 @@ class Element extends Tag implements IElement, core\IDumpable {
     use TElementContent;
     use core\string\THtmlStringEscapeHandler;
 
-    public function __construct($name, $content=null, array $attributes=array()) {
+    public function __construct($name, $content=null, array $attributes=[]) {
         parent::__construct($name, $attributes);
         $this->import($content);
     }

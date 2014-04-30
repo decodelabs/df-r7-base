@@ -184,7 +184,7 @@ class Mediator implements IMediator {
         }
 
         $result = $this->sendRequest('LIST', true);
-        $output = array();
+        $output = [];
 
         foreach(explode("\n", $result) as $line) {
             $line = trim($line);
@@ -208,7 +208,7 @@ class Mediator implements IMediator {
         }
 
         $result = $this->sendRequest('UIDL', true);
-        $output = array();
+        $output = [];
 
         foreach(explode("\n", $result) as $line) {
             $line = trim($line);
@@ -306,7 +306,7 @@ class Mediator implements IMediator {
     }
     
     protected function _splitList($result) {
-        $output = array();
+        $output = [];
 
         foreach(explode("\n", $result) as $line) {
             $line = rtrim($line, "\r\n");

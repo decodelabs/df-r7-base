@@ -192,7 +192,7 @@ class Connection implements IConnection {
         }
 
         $useUri = false;
-        $matches = array();
+        $matches = [];
         
         $useSsl = $this->usesSsl();
         $useTls = $this->usesTls();
@@ -301,7 +301,7 @@ class Connection implements IConnection {
     
     public function getLastErrorMessage() {
         $code = $this->getLastErrorCode();
-        $messages = array();
+        $messages = [];
         
         $errorString1 = @ldap_error($this->_connection);
         

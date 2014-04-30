@@ -148,7 +148,7 @@ class Select implements ISelectQuery, core\IDumpable {
         }
         
         if(!empty($this->_order)) {
-            $order = array();
+            $order = [];
             
             foreach($this->_order as $directive) {
                 $order[] = $directive->toString();

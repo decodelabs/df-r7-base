@@ -11,19 +11,19 @@ use df\opal;
     
 class Matcher implements opal\query\IClauseMatcher {
 
-    protected $_index = array();
+    protected $_index = [];
     protected $_isFieldComparison = false;
 
 
     public function __construct(array $clauses, $isFieldComparison=false) {
         $this->_isFieldComparison = (bool)$isFieldComparison;
 
-        $set = array();
+        $set = [];
         
         foreach($clauses as $clause) {
             if($clause->isOr() && !empty($set)) {
                 $this->_index[] = $set;
-                $set = array();
+                $set = [];
             }
             
             if($clause instanceof opal\query\IClauseList) {

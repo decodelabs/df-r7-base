@@ -22,7 +22,7 @@ class Manager implements IManager, core\IDumpable {
     
     public $_session;
     protected $_client;
-    private $_accessLockCache = array();
+    private $_accessLockCache = [];
     
     protected function __construct(core\IApplication $application) {
         $this->_application = $application;
@@ -281,7 +281,7 @@ class Manager implements IManager, core\IDumpable {
         if($result->isValid()) {
             $domainInfo = $result->getDomainInfo();
             $session = $this->session->getNamespace(self::USER_SESSION_NAMESPACE);
-            $this->_accessLockCache = array();
+            $this->_accessLockCache = [];
 
             // Import user data
             $domainInfo->onAuthentication();
@@ -328,7 +328,7 @@ class Manager implements IManager, core\IDumpable {
         }
 
         $session = $this->session->getNamespace(self::USER_SESSION_NAMESPACE);
-        $this->_accessLockCache = array();
+        $this->_accessLockCache = [];
 
         $clientData = $model->getClientData($key->userId);
         $this->_client = Client::factory($clientData);

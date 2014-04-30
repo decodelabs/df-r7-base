@@ -14,9 +14,9 @@ abstract class Dispatcher implements IDispatcher {
     
     protected $_isRunning = false;
     protected $_cycleHandler;
-    protected $_handlers = array();
-    protected $_signalHandlers = array();
-    protected $_timerHandlers = array();
+    protected $_handlers = [];
+    protected $_signalHandlers = [];
+    protected $_timerHandlers = [];
     
     public static function factory() {
         if(extension_loaded('libevent')) {

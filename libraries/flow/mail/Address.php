@@ -54,7 +54,7 @@ class Address implements IAddress, core\IDumpable {
 
     public function setAddress($address) {
         $address = strtolower($address);
-        $address = str_replace(array(' at ', ' dot '), array('@', '.'), $address);
+        $address = str_replace([' at ', ' dot '], ['@', '.'], $address);
         $address = filter_var($address, \FILTER_SANITIZE_EMAIL);
 
         $this->_address = $address;

@@ -15,7 +15,7 @@ class Database extends opal\rdbms\Database {
         $stmt = $this->_adapter->prepare('SELECT name FROM sqlite_master WHERE type=:a;');
         $stmt->bind(':a', 'table');
         $res = $stmt->executeRead();
-        $output = array();
+        $output = [];
 
         foreach($res as $row) {
             $output[] = $row['name'];

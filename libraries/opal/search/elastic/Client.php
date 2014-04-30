@@ -18,7 +18,7 @@ class Client implements opal\search\IClient {
     const DEFAULT_PORT = 9200;
     const DEFAULT_TIMEOUT = 300;
     
-    protected $_servers = array();
+    protected $_servers = [];
     protected $_status = null;
         
     public static function factory($settings) {

@@ -354,7 +354,7 @@ trait TCascadingHelperProvider {
     public $view;
 
     public function __call($method, $args) {
-        return call_user_func_array(array($this->_context, $method), $args);
+        return call_user_func_array([$this->_context, $method], $args);
     }
     
     public function __get($key) {

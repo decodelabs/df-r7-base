@@ -17,13 +17,13 @@ abstract class Parser implements IParser, core\IDumpable {
     public $lastComment;
     public $unit;
 
-    protected $_tokens = array();
-    protected $_extractBuffer = array();
+    protected $_tokens = [];
+    protected $_extractBuffer = [];
     protected $_extractBufferSize = 100;
     protected $_isStarted = false;
     protected $_hasRun = false;
     protected $_hasLastToken = false;
-    protected $_processors = array();
+    protected $_processors = [];
     protected $_lexer;
 
     public function __construct(ILexer $lexer, array $processors=null) {
@@ -124,7 +124,7 @@ abstract class Parser implements IParser, core\IDumpable {
     }
 
     public function clearProcessors() {
-        $this->_processors = array();
+        $this->_processors = [];
         return $this;
     }
 
@@ -241,7 +241,7 @@ abstract class Parser implements IParser, core\IDumpable {
                 $output = null;
             }
         } else {
-            $output = array();
+            $output = [];
 
             for($i = 0; $i < $limit; $i++) {
                 if(!$this->token->is($ids)) {
@@ -269,7 +269,7 @@ abstract class Parser implements IParser, core\IDumpable {
                 $output = null;
             }
         } else {
-            $output = array();
+            $output = [];
 
             for($i = 0; $i < $limit; $i++) {
                 if(!$this->token->isValue($values)) {
@@ -287,7 +287,7 @@ abstract class Parser implements IParser, core\IDumpable {
         $sequence = func_get_args();
         $length = count($sequence);
         $test = array_slice($this->_tokens, 0, $length);
-        $output = array();
+        $output = [];
 
         $this->_importTokens($length);
 
@@ -475,7 +475,7 @@ abstract class Parser implements IParser, core\IDumpable {
         $sequence = func_get_args();
         $length = count($sequence);
         $test = array_slice($this->_tokens, 0, $length);
-        $output = array();
+        $output = [];
 
         $this->_importTokens($length);
 

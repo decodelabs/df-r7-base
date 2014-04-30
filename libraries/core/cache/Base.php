@@ -21,7 +21,7 @@ abstract class Base implements ICache {
 
     const USE_DIRECT_FILE_BACKEND = false;
     
-    private static $_cacheIds = array();
+    private static $_cacheIds = [];
     
     private $_backend;
     

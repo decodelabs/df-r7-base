@@ -13,10 +13,10 @@ class EntryReader implements spur\feed\IEntryReaderPlugin {
     
     use spur\feed\TEntryReader;
     
-    protected static $_xPathNamespaces = array(
+    protected static $_xPathNamespaces = [
         'dc10' => 'http://purl.org/dc/elements/1.0/',
         'dc11' => 'http://purl.org/dc/elements/1.1/'
-    );
+    ];
         
     public function getId() {
         $id = $this->_xPath->evaluate(
@@ -33,7 +33,7 @@ class EntryReader implements spur\feed\IEntryReaderPlugin {
     }
     
     public function getAuthors() {
-        $authors = array();
+        $authors = [];
         
         $list = $this->_xPath->query($this->_xPathPrefix.'//dc11:creator');
         

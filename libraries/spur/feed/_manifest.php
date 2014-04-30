@@ -153,7 +153,7 @@ trait TStoreProvider {
         
         foreach($this->_plugins as $plugin) {
             if(method_exists($plugin, $method)) {
-                $output = call_user_func_array(array($plugin, $method), $args);
+                $output = call_user_func_array([$plugin, $method], $args);
                 
                 if($storeId) {
                     $this->_setStore($storeId, $output);
@@ -226,7 +226,7 @@ trait TPluginProvider {
         }
         
         if(!is_array($plugins)) {
-            $plugins = array($plugins);
+            $plugins = [$plugins];
         }
         
         $method = 'get'.ucfirst($var);

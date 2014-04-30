@@ -127,7 +127,7 @@ abstract class QueryExecutor implements IQueryExecutor {
 
     public function buildLocalReadQuery($tableName, $forCount=false) {
         $source = $this->_query->getSource();
-        $outFields = array();
+        $outFields = [];
         
 
         // Fields
@@ -224,8 +224,8 @@ abstract class QueryExecutor implements IQueryExecutor {
         $source = $this->_query->getSource();
         $primaryAdapterHash = $source->getAdapterHash();
         
-        $outFields = array();
-        $aggregateFields = array();
+        $outFields = [];
+        $aggregateFields = [];
         
         foreach($source->getAllDereferencedFields() as $field) {
             $qName = $field->getQualifiedName();
@@ -240,8 +240,8 @@ abstract class QueryExecutor implements IQueryExecutor {
         
         
         // Joins & fields
-        $remoteJoins = array();
-        $localJoins = array();
+        $remoteJoins = [];
+        $localJoins = [];
         $joinSql = null;
         
         foreach($this->_query->getJoins() as $joinSourceAlias => $join) {
@@ -322,8 +322,8 @@ abstract class QueryExecutor implements IQueryExecutor {
     public function executeInsertQuery($tableName) {
         $this->_stmt->appendSql('INSERT INTO '.$this->_adapter->quoteIdentifier($tableName));
         
-        $fields = array();
-        $values = array();
+        $fields = [];
+        $values = [];
         
         foreach($this->_query->getRow() as $field => $value) {
             $fields[] = $this->_adapter->quoteIdentifier($field);
@@ -356,8 +356,8 @@ abstract class QueryExecutor implements IQueryExecutor {
     public function executeBatchInsertQuery($tableName) {
         $this->_stmt->appendSql('INSERT INTO '.$this->_adapter->quoteIdentifier($tableName));
         
-        $rows = array();
-        $fields = array();
+        $rows = [];
+        $fields = [];
         $fieldList = $this->_query->getDereferencedFields();
         
         foreach($fieldList as $field) {
@@ -391,9 +391,9 @@ abstract class QueryExecutor implements IQueryExecutor {
     public function executeReplaceQuery($tableName) {
         $this->_stmt->appendSql('INSERT INTO '.$this->_adapter->quoteIdentifier($tableName));
         
-        $fields = array();
-        $values = array();
-        $duplicates = array();
+        $fields = [];
+        $values = [];
+        $duplicates = [];
         
         foreach($this->_query->getRow() as $field => $value) {
             $fields[] = $fieldString = $this->_adapter->quoteIdentifier($field);
@@ -413,10 +413,10 @@ abstract class QueryExecutor implements IQueryExecutor {
     public function executeBatchReplaceQuery($tableName) {
         $this->_stmt->appendSql('INSERT INTO '.$this->_adapter->quoteIdentifier($tableName));
         
-        $rows = array();
-        $fields = array();
+        $rows = [];
+        $fields = [];
         $fieldList = $this->_query->getDereferencedFields();
-        $duplicates = array();
+        $duplicates = [];
 
         foreach($fieldList as $field) {
             $fields[] = $fieldString = $this->_adapter->quoteIdentifier($field);
@@ -460,7 +460,7 @@ abstract class QueryExecutor implements IQueryExecutor {
             ' SET'
         );
 
-        $values = array();
+        $values = [];
         
         foreach($this->_query->getValueMap() as $field => $value) {
             if($value instanceof opal\query\IExpression) {
@@ -511,8 +511,8 @@ abstract class QueryExecutor implements IQueryExecutor {
             );
         }
 
-        $sources = array();
-        $outFields = array();
+        $sources = [];
+        $outFields = [];
 
         $source = $this->_query->getSource();
         $sources[$source->getUniqueId()] = $source;
@@ -551,8 +551,8 @@ abstract class QueryExecutor implements IQueryExecutor {
             );
         }
 
-        $outFields = array();
-        $sources = array();
+        $outFields = [];
+        $sources = [];
 
         $source = $this->_query->getSource();
         $sources[$source->getUniqueId()] = $source;
@@ -641,7 +641,7 @@ abstract class QueryExecutor implements IQueryExecutor {
         $this->_stmt->setKeyIndex($stmt->getKeyIndex());
 
         $source = $this->_query->getSource();
-        $outFields = array();
+        $outFields = [];
 
         $supportsProcessors = $source->getAdapter()->supportsQueryFeature(
             opal\query\IQueryFeatures::VALUE_PROCESSOR
@@ -1054,7 +1054,7 @@ abstract class QueryExecutor implements IQueryExecutor {
     }
 
     protected function _getClauseValueForRemoteJoinData(opal\query\IClause $clause, array $remoteJoinData, $qName, &$operator) {
-        $listData = array();
+        $listData = [];
                 
         foreach($remoteJoinData as $row) {
             if(isset($row[$qName])) {
@@ -1227,7 +1227,7 @@ abstract class QueryExecutor implements IQueryExecutor {
             // LIKE LIST OF %<value>%
             case opal\query\clause\Clause::OP_CONTAINS:
                 foreach($values as &$value) {
-                    $value = '%'.str_replace(array('_', '%'), array('\_', '\%'), $value).'%';
+                    $value = '%'.str_replace(['_', '%'], ['\_', '\%'], $value).'%';
                 }
                 
                 return $fieldString.' REGEXP '.$this->normalizeScalarClauseValue(
@@ -1237,7 +1237,7 @@ abstract class QueryExecutor implements IQueryExecutor {
             // NOT LIKE LIST OF %<value>%
             case opal\query\clause\Clause::OP_NOT_CONTAINS:
                 foreach($values as &$value) {
-                    $value = '%'.str_replace(array('_', '%'), array('\_', '\%'), $value).'%';
+                    $value = '%'.str_replace(['_', '%'], ['\_', '\%'], $value).'%';
                 }
                 
                 return $fieldString.' NOT REGEXP '.$this->normalizeScalarClauseValue(
@@ -1247,7 +1247,7 @@ abstract class QueryExecutor implements IQueryExecutor {
             // LIKE LIST OF <value>%
             case opal\query\clause\Clause::OP_BEGINS:
                 foreach($values as &$value) {
-                    $value = str_replace(array('_', '%'), array('\_', '\%'), $value).'%';
+                    $value = str_replace(['_', '%'], ['\_', '\%'], $value).'%';
                 }
                 
                 return $fieldString.' REGEXP '.$this->normalizeScalarClauseValue(
@@ -1257,7 +1257,7 @@ abstract class QueryExecutor implements IQueryExecutor {
             // NOT LIKE LIST OF <value>%
             case opal\query\clause\Clause::OP_NOT_BEGINS:
                 foreach($values as &$value) {
-                    $value = str_replace(array('_', '%'), array('\_', '\%'), $value).'%';
+                    $value = str_replace(['_', '%'], ['\_', '\%'], $value).'%';
                 }
                 
                 return $fieldString.' NOT REGEXP '.$this->normalizeScalarClauseValue(
@@ -1267,7 +1267,7 @@ abstract class QueryExecutor implements IQueryExecutor {
             // LIKE LIST OF %<value>
             case opal\query\clause\Clause::OP_ENDS:
                 foreach($values as &$value) {
-                    $value = '%'.str_replace(array('_', '%'), array('\_', '\%'), $value);
+                    $value = '%'.str_replace(['_', '%'], ['\_', '\%'], $value);
                 }
                 
                 return $fieldString.' REGEXP '.$this->normalizeScalarClauseValue(
@@ -1277,7 +1277,7 @@ abstract class QueryExecutor implements IQueryExecutor {
             // NOT LIKE LIST OF %<value>
             case opal\query\clause\Clause::OP_NOT_ENDS:
                 foreach($values as &$value) {
-                    $value = '%'.str_replace(array('_', '%'), array('\_', '\%'), $value);
+                    $value = '%'.str_replace(['_', '%'], ['\_', '\%'], $value);
                 }
                 
                 return $fieldString.' REGEXP '.$this->normalizeScalarClauseValue(
@@ -1371,70 +1371,70 @@ abstract class QueryExecutor implements IQueryExecutor {
             // LIKE
             case opal\query\clause\Clause::OP_LIKE:
                 return $fieldString.' LIKE '.$this->normalizeScalarClauseValue(
-                    str_replace(array('?', '*'), array('_', '%'), $value), 
+                    str_replace(['?', '*'], ['_', '%'], $value), 
                     $allowAlias
                 );
                 
             // NOT LIKE
             case opal\query\clause\Clause::OP_NOT_LIKE:
                 return $fieldString.' NOT LIKE '.$this->normalizeScalarClauseValue(
-                    str_replace(array('?', '*'), array('_', '%'), $value), 
+                    str_replace(['?', '*'], ['_', '%'], $value), 
                     $allowAlias
                 );
                 
             // LIKE %<value>%
             case opal\query\clause\Clause::OP_CONTAINS:
                 return $fieldString.' LIKE '.$this->normalizeScalarClauseValue(
-                    '%'.str_replace(array('_', '%'), array('\_', '\%'), $value).'%', 
+                    '%'.str_replace(['_', '%'], ['\_', '\%'], $value).'%', 
                     $allowAlias
                 );
                 
             // NOT LIKE %<value>%
             case opal\query\clause\Clause::OP_NOT_CONTAINS:
                 return $fieldString.' NOT LIKE '.$this->normalizeScalarClauseValue(
-                    '%'.str_replace(array('_', '%'), array('\_', '\%'), $value).'%', 
+                    '%'.str_replace(['_', '%'], ['\_', '\%'], $value).'%', 
                     $allowAlias
                 );
             
             // LIKE <value>%
             case opal\query\clause\Clause::OP_BEGINS:
                 return $fieldString.' LIKE '.$this->normalizeScalarClauseValue(
-                    str_replace(array('_', '%'), array('\_', '\%'), $value).'%', 
+                    str_replace(['_', '%'], ['\_', '\%'], $value).'%', 
                     $allowAlias
                 );
                 
             // NOT LIKE <value>%
             case opal\query\clause\Clause::OP_NOT_BEGINS:
                 return $fieldString.' NOT LIKE '.$this->normalizeScalarClauseValue(
-                    str_replace(array('_', '%'), array('\_', '\%'), $value).'%', 
+                    str_replace(['_', '%'], ['\_', '\%'], $value).'%', 
                     $allowAlias
                 );
                 
             // LIKE %<value>
             case opal\query\clause\Clause::OP_ENDS:
                 return $fieldString.' LIKE '.$this->normalizeScalarClauseValue(
-                    '%'.str_replace(array('_', '%'), array('\_', '\%'), $value), 
+                    '%'.str_replace(['_', '%'], ['\_', '\%'], $value), 
                     $allowAlias
                 );
                 
             // NOT LIKE %<value>
             case opal\query\clause\Clause::OP_NOT_ENDS:
                 return $fieldString.' NOT LIKE '.$this->normalizeScalarClauseValue(
-                    '%'.str_replace(array('_', '%'), array('\_', '\%'), $value), 
+                    '%'.str_replace(['_', '%'], ['\_', '\%'], $value), 
                     $allowAlias
                 );
 
             // MATCHES
             case opal\query\clause\Clause::OP_MATCHES:
                 return $fieldString.' LIKE '.$this->normalizeScalarClauseValue(
-                    '%'.str_replace(array('?', '*'), array('_', '%'), $value).'%', 
+                    '%'.str_replace(['?', '*'], ['_', '%'], $value).'%', 
                     $allowAlias
                 );
                 
             // NOT MATCHES
             case opal\query\clause\Clause::OP_NOT_MATCHES:
                 return $fieldString.' NOT LIKE '.$this->normalizeScalarClauseValue(
-                    '%'.str_replace(array('?', '*'), array('_', '%'), $value).'%', 
+                    '%'.str_replace(['?', '*'], ['_', '%'], $value).'%', 
                     $allowAlias
                 );
             
@@ -1458,10 +1458,10 @@ abstract class QueryExecutor implements IQueryExecutor {
         }
         
         if(!is_array($value)) {
-            $value = array($value);
+            $value = [$value];
         }
         
-        $values = array();
+        $values = [];
             
         foreach($value as $val) {
             $values[] = $this->normalizeScalarClauseValue($val, $allowAlias);
@@ -1529,7 +1529,7 @@ abstract class QueryExecutor implements IQueryExecutor {
             return $this;
         }
 
-        $groupFields = array();
+        $groupFields = [];
         
         foreach($groups as $field) {
             foreach($field->dereference() as $field) {
@@ -1558,7 +1558,7 @@ abstract class QueryExecutor implements IQueryExecutor {
             $sourceAlias = $this->_query->getSource()->getAlias();
         }
 
-        $orderFields = array();
+        $orderFields = [];
         
         foreach($directives as $directive) {
             $field = $directive->getField();

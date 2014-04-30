@@ -12,9 +12,9 @@ use df\flow;
 class Message extends flow\mime\MultiPart implements IMessage {
 
     protected $_from;
-    protected $_to = array();
-    protected $_cc = array();
-    protected $_bcc = array();
+    protected $_to = [];
+    protected $_cc = [];
+    protected $_bcc = [];
 
     protected $_altPart;
     protected $_bodyText;
@@ -262,7 +262,7 @@ class Message extends flow\mime\MultiPart implements IMessage {
     }
 
     public function clearToAddresses() {
-        $this->_to = array();
+        $this->_to = [];
         return $this;
     }
 
@@ -302,7 +302,7 @@ class Message extends flow\mime\MultiPart implements IMessage {
     }
 
     public function clearCCAddresses() {
-        $this->_cc = array();
+        $this->_cc = [];
         return $this;
     }
 
@@ -342,7 +342,7 @@ class Message extends flow\mime\MultiPart implements IMessage {
     }
 
     public function clearBCCAddresses() {
-        $this->_bcc = array();
+        $this->_bcc = [];
         return $this;
     }
 
@@ -419,9 +419,9 @@ class Message extends flow\mime\MultiPart implements IMessage {
         }
 
 
-        $to = array();
-        $cc = array();
-        $bcc = array();
+        $to = [];
+        $cc = [];
+        $bcc = [];
 
         foreach($this->_to as $address) {
             if($isWin) {

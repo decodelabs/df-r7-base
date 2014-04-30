@@ -30,7 +30,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
         }
         
         if($paginator) {
-            $this->paginator = self::factory($context, 'Paginator', array($paginator));
+            $this->paginator = self::factory($context, 'Paginator', [$paginator]);
         }
     }
 
@@ -81,11 +81,11 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
             }
         }
         
-        $colClasses = array();
+        $colClasses = [];
 
         foreach($this->_fields as $fieldKey => $field) {
-            $tagContent = array();
-            $colClasses[$fieldKey] = array();
+            $tagContent = [];
+            $colClasses[$fieldKey] = [];
 
             foreach($field->getHeaderList() as $key => $label) {
                 $colClasses[$fieldKey][] = 'field-'.$key;
@@ -173,7 +173,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                 return '';
             }
 
-            $errorTag = new aura\html\Element('td', $this->_errorMessage, array('colspan' => count($this->_fields)));
+            $errorTag = new aura\html\Element('td', $this->_errorMessage, ['colspan' => count($this->_fields)]);
             $errorTag->addClass('state-error');
             $content->append('<tr>'.$errorTag->render().'</tr>');
         }

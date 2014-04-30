@@ -13,9 +13,9 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
     
     use spur\feed\TFeedReader;
     
-    protected static $_xPathNamespaces = array(
+    protected static $_xPathNamespaces = [
         'cc' => 'http://backend.userland.com/creativeCommonsRssModule'
-    );
+    ];
     
     public function getLicense($index=0) {
         $licenses = $this->getLicenses();
@@ -28,7 +28,7 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
     }
     
     public function getLicenses() {
-        $licenses = array();
+        $licenses = [];
         
         $list = $this->_xPath->evaluate(
             'channel/cc:license'

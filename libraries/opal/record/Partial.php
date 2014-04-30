@@ -55,7 +55,7 @@ class Partial implements IPartial, core\IDumpable {
 
 
     protected function _buildPrimaryKeySet(array $fields, $includeChanges=true) {
-        $values = array();
+        $values = [];
         
         foreach($fields as $field) {
             if(isset($this->_collection[$field])) {

@@ -21,7 +21,7 @@ class DevLoader extends Loader {
             return false;
         }
         
-        $output = array();
+        $output = [];
         
         if($library == 'apex') {
             $section = array_shift($parts);
@@ -77,7 +77,7 @@ class DevLoader extends Loader {
         }
         
         $pathName = implode('/', $parts);
-        $output = array();
+        $output = [];
         
         if($library == 'apex') {
             foreach($this->_packages as $package) {

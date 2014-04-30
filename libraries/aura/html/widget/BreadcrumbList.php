@@ -50,10 +50,10 @@ class BreadcrumbList extends Base implements IListWidget, core\IDumpable {
 
 
         $content->push(
-            $containerTag = new aura\html\Element('span', null, array(
+            $containerTag = new aura\html\Element('span', null, [
                 'itemscope' => null,
                 'itemtype' => 'http://data-vocabulary.org/Breadcrumb'
-            ))
+            ])
         );
 
         $count = count($this->_entries);
@@ -76,11 +76,11 @@ class BreadcrumbList extends Base implements IListWidget, core\IDumpable {
                     $oldContainerTag->push(
                         ' ', $this->_separator, ' ',
                     
-                        $containerTag = new aura\html\Element('span', null, array(
+                        $containerTag = new aura\html\Element('span', null, [
                             'itemscope' => null,
                             'itemprop' => 'child',
                             'itemtype' => 'http://data-vocabulary.org/Breadcrumb'
-                        ))
+                        ])
                     );
                 }
             } else {

@@ -17,7 +17,7 @@ class AttributeTree extends Tree implements core\IAttributeContainer {
         
         if(!empty($this->_attributes)) {
             if($output === null) {
-                $output = array();
+                $output = [];
             }
             
             $output['at'] = $this->_attributes;
@@ -56,7 +56,7 @@ class AttributeTree extends Tree implements core\IAttributeContainer {
     
 // Dump
     public function getDumpProperties() {
-        $children = array();
+        $children = [];
         
         foreach($this->_collection as $key => $child) {
             if($child instanceof self 

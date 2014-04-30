@@ -18,11 +18,11 @@ trait TField {
     protected $_hasChanged = false;
     
     /*
-    public function __construct($name, array $args=array()) {
+    public function __construct($name, array $args=[]) {
         $this->_setName($name);
         
         if(method_exists($this, '_init')) {
-            call_user_func_array(array($this, '_init'), $args);    
+            call_user_func_array([$this, '_init'], $args);    
         }
     }
     */
@@ -162,7 +162,7 @@ trait TField_CharacterSetAware {
     }
 
     protected function _getCharacterSetStorageArray() {
-        $output = array();
+        $output = [];
         
         if($this->_characterSet !== null) {
             $output['chs'] = $this->_characterSet;
@@ -482,7 +482,7 @@ trait TField_AutoTimestamp {
 
 trait TField_OptionProvider {
     
-    protected $_options = array();
+    protected $_options = [];
     
     public function setOptions(array $options) {
         $this->_options = $options;

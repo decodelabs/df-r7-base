@@ -60,7 +60,7 @@ class SlotRenderer implements aura\view\IDeferredRenderable {
         $this->_type = $type;
         $this->_value = $value;
         $this->_location = $location ? arch\Request::factory($location) : null;
-        $this->_args = $args ? $args : array();
+        $this->_args = $args ? $args : [];
     }
 
     public function getType() {

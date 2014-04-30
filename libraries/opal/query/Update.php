@@ -54,17 +54,17 @@ class Update implements IUpdateQuery, core\IDumpable {
     
 // Dump
     public function getDumpProperties() {
-        $output = array(
+        $output = [
             'source' => $this->_source->getAdapter(),
             'valueMap' => $this->_valueMap
-        );
+        ];
         
         if($this->hasWhereClauses()) {
             $output['where'] = $this->getWhereClauseList();
         }
         
         if(!empty($this->_order)) {
-            $order = array();
+            $order = [];
             
             foreach($this->_order as $directive) {
                 $order[] = $directive->toString();

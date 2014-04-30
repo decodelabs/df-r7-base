@@ -317,7 +317,7 @@ class Clause implements opal\query\IClause, core\IDumpable {
                     }
                     
                     if(!is_array($value)) {
-                        $value = array((string)$value);
+                        $value = [(string)$value];
                     }
 
                     $value = core\collection\Util::flattenArray($value);
@@ -342,7 +342,7 @@ class Clause implements opal\query\IClause, core\IDumpable {
                     }
                     
                     $temp = $value;
-                    $value = array();
+                    $value = [];
                     
                     for($i = 0; $i < 2; $i++) {
                         $part = array_shift($temp);
@@ -401,7 +401,7 @@ class Clause implements opal\query\IClause, core\IDumpable {
 
                 case self::OP_BETWEEN:
                 case self::OP_NOT_BETWEEN:
-                    $output = array();
+                    $output = [];
                 
                     foreach($this->_preparedValue as $part) {
                         $output[] = $this->_prepareInnerValue($adapter, $part);
@@ -453,7 +453,7 @@ class Clause implements opal\query\IClause, core\IDumpable {
     }
     
     public function getNonLocalFieldReferences() {
-        $output = array();
+        $output = [];
         
         if($this->_value instanceof opal\query\IField
         && $this->_value->getSourceAlias() != $this->_field->getSourceAlias()) {

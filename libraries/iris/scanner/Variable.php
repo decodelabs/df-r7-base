@@ -11,7 +11,7 @@ use df\iris;
     
 class Variable implements iris\IScanner, core\IDumpable {
 
-    protected $_markers = array();
+    protected $_markers = [];
 
     public function __construct(array $markers) {
         $this->setMarkers($markers);
@@ -59,7 +59,7 @@ class Variable implements iris\IScanner, core\IDumpable {
     }
 
     public function clearMarkers() {
-        $this->_markers = array();
+        $this->_markers = [];
         return $this;
     }
 

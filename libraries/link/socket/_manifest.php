@@ -117,11 +117,11 @@ trait TSecureConnectingSocket {
     use TSecureSocket;
     
     /*
-    protected $_secureOptions = array(
+    protected $_secureOptions = [
         'allow_self_signed' => false,
         'CN_match' => null,
         'ciphers' => 'DEFAULT'
-    );
+    ];
     */
 
     protected $_secureOnConnect = true;
@@ -322,7 +322,7 @@ trait TSecureServerSocket {
 
     use TSecureConnectingSocket;
 
-    protected $_secureOptions = array(
+    protected $_secureOptions = [
         'allow_self_signed' => false,
         'CN_match' => null,
         'ciphers' => 'DEFAULT',
@@ -330,7 +330,7 @@ trait TSecureServerSocket {
         'local_cert' => null,
         'passphrase' => null,
         'SNI_enabled' => false,
-    );
+    ];
 
     public function setLocalCertificate($file) {
         return $this->_setSecureOption('local_cert', $file);
@@ -492,7 +492,7 @@ trait TSecureClientSocket {
 
     use TSecureConnectingSocket;
 
-    protected $_secureOptions = array(
+    protected $_secureOptions = [
         'allow_self_signed' => false,
         'CN_match' => null,
         'ciphers' => 'DEFAULT',
@@ -501,7 +501,7 @@ trait TSecureClientSocket {
         'cafile' => null,
         'capath' => null,
         'verify_depth' => null,
-    );
+    ];
 
     public function shouldVerifyPeer($flag=null) {
         if($flag !== null) {

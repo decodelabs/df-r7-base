@@ -37,7 +37,7 @@ class Base implements opal\ldap\IRootDse, core\IDumpable {
     
 
     public function getNamingContexts() {
-        $output = array();
+        $output = [];
         
         foreach($this['namingContexts'] as $dn) {
             $output[] = opal\ldap\Dn::factory($dn);

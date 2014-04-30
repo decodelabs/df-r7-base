@@ -614,10 +614,10 @@ class Base implements link\http\IRequest, core\IDumpable {
     
 // Dump
     public function getDumpProperties() {
-        $output = array(
+        $output = [
             'method' => $this->getMethod(),
             'url' => $this->getUrl()
-        );
+        ];
         
         if($ip = $this->getIp()) {
             $output['ip'] = $ip;

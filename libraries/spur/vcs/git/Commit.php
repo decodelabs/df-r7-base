@@ -13,7 +13,7 @@ class Commit implements ICommit, core\IDumpable {
 
     protected $_id;
     protected $_treeId;
-    protected $_parentIds = array();
+    protected $_parentIds = [];
     protected $_author;
     protected $_creationTimestamp;
     protected $_committer;
@@ -101,7 +101,7 @@ class Commit implements ICommit, core\IDumpable {
             $this->_fetchData();
         }
 
-        $output = array();
+        $output = [];
 
         foreach($this->_parentIds as $id) {
             $output[$id] = $this->_repository->getCommit($id);

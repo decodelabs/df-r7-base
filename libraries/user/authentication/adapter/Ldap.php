@@ -93,7 +93,7 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
 
         switch($state) {
             case 1:
-                $chars = array(0,2,0,0,0,0,0,0,0,40,0,0,0,1,130,0,0,0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0);
+                $chars = [0,2,0,0,0,0,0,0,0,40,0,0,0,1,130,0,0,0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0];
                 $ret = 'NTLMSSP';
                 
                 foreach($chars as $char) {

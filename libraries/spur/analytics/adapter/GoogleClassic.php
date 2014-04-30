@@ -58,7 +58,7 @@ class GoogleClassic extends Base {
         $view->addHeadScript('google-analytics', $script);
     }
 
-    protected function _createCallString($method, array $args=array()) {
+    protected function _createCallString($method, array $args=[]) {
         array_unshift($args, $method);
         return '_gaq.push('.str_replace('"', '\'', json_encode($args)).');';
     }

@@ -22,7 +22,7 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
 // Macros
     public static function formatName($name) {
         return self::factory($name)
-            ->replace(array('-', '_'), ' ')
+            ->replace(['-', '_'], ' ')
             ->regexReplace('/([^ ])([A-Z])/u', '$1 $2')
             ->wordsToUpper()
             ->toString();
@@ -30,7 +30,7 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
 
     public static function formatInitials($name) {
         return self::factory($name)
-            ->replace(array('-', '_'), ' ')
+            ->replace(['-', '_'], ' ')
             ->regexReplace('/([^ ])([A-Z])/u', '$1 $2')
             ->wordsToUpper()
             ->regexReplace('/[^A-Z0-9]/', '')
@@ -39,7 +39,7 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
 
     public static function formatLabel($label) {
         return self::factory($label)
-            ->replace(array('-', '_'), ' ')
+            ->replace(['-', '_'], ' ')
             ->regexReplace('/([^ ])([A-Z])/u', '$1 $2')
             ->toLower()
             ->firstToUpper()
@@ -50,7 +50,7 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
         return self::factory($id)
             ->translitToAscii()
             ->regexReplace('/([^ ])([A-Z])/u', '$1 $2')
-            ->replace(array('-', '.', '+'), ' ')
+            ->replace(['-', '.', '+'], ' ')
             ->regexReplace('/[^a-zA-Z0-9_ ]/', '')
             ->wordsToUpper()
             ->replace(' ', '')
@@ -259,7 +259,7 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
         
         
         $digitChars = '0123456789abcdefghijklmnopqrstuvwxyz';
-        $inDigits = array();
+        $inDigits = [];
         $outChars = '';
         
         $input = strtolower($input);
@@ -283,7 +283,7 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
         
         while(!empty($inDigits)) {
             $work = 0;
-            $workDigits = array();
+            $workDigits = [];
             
             foreach($inDigits as $digit) {
                 $work *= $fromBase;
@@ -393,23 +393,23 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
     }
     
     public function translitToAscii() {
-        $this->_value = str_replace(array('À','Á','Â','Ã','Ä','Å'), 'A', $this->_value);
-        $this->_value = str_replace(array('È','É','Ê','Ë'), 'E', $this->_value);
-        $this->_value = str_replace(array('Ì','Í','Î','Ï'), 'I', $this->_value);
-        $this->_value = str_replace(array('Ò','Ó','Ô','Õ','Ö','Ø'), 'O', $this->_value);
-        $this->_value = str_replace(array('Ù','Ú','Û','Ü'), 'U', $this->_value);
-        $this->_value = str_replace(array('¥','Ý'), 'Y', $this->_value);
+        $this->_value = str_replace(['À','Á','Â','Ã','Ä','Å'], 'A', $this->_value);
+        $this->_value = str_replace(['È','É','Ê','Ë'], 'E', $this->_value);
+        $this->_value = str_replace(['Ì','Í','Î','Ï'], 'I', $this->_value);
+        $this->_value = str_replace(['Ò','Ó','Ô','Õ','Ö','Ø'], 'O', $this->_value);
+        $this->_value = str_replace(['Ù','Ú','Û','Ü'], 'U', $this->_value);
+        $this->_value = str_replace(['¥','Ý'], 'Y', $this->_value);
         
-        $this->_value = str_replace(array('à','á','â','ã','ä','å'), 'a', $this->_value);
-        $this->_value = str_replace(array('è','é','ê','ë'), 'e', $this->_value);
-        $this->_value = str_replace(array('ì','í','î','ï'), 'i', $this->_value);
-        $this->_value = str_replace(array('ð','ò','ó','ô','õ','ö','ø'), 'o', $this->_value);
-        $this->_value = str_replace(array('µ','ù','ú','û','ü'), 'u', $this->_value);
-        $this->_value = str_replace(array('ý','ÿ'), 'y', $this->_value);
+        $this->_value = str_replace(['à','á','â','ã','ä','å'], 'a', $this->_value);
+        $this->_value = str_replace(['è','é','ê','ë'], 'e', $this->_value);
+        $this->_value = str_replace(['ì','í','î','ï'], 'i', $this->_value);
+        $this->_value = str_replace(['ð','ò','ó','ô','õ','ö','ø'], 'o', $this->_value);
+        $this->_value = str_replace(['µ','ù','ú','û','ü'], 'u', $this->_value);
+        $this->_value = str_replace(['ý','ÿ'], 'y', $this->_value);
         
         $this->_value = str_replace(
-            array('Æ', 'æ', 'ß', 'Ç','ç','Ð','Ñ','ñ'),
-            array('AE','ae','ss','C','c','D','N','n'),
+            ['Æ', 'æ', 'ß', 'Ç','ç','Ð','Ñ','ñ'],
+            ['AE','ae','ss','C','c','D','N','n'],
             $this->_value
         );
         

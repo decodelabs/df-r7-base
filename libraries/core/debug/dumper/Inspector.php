@@ -15,10 +15,10 @@ class Inspector implements IInspector {
     
     protected static $_instanceCount = 0;
     
-    protected $_arrayRefs = array();
-    protected $_arrayRefHits = array();
-    protected $_objectHashes = array();
-    protected $_objectHashHits = array();
+    protected $_arrayRefs = [];
+    protected $_arrayRefHits = [];
+    protected $_objectHashes = [];
+    protected $_objectHashHits = [];
     
     public function __construct() {
         self::$_instanceCount++;
@@ -74,7 +74,7 @@ class Inspector implements IInspector {
         
         df\Launchpad::loadBaseClass('core/debug/dumper/Structure');
         $this->_registerArray($array);
-        $properties = array();
+        $properties = [];
         
         foreach(array_keys($array) as $key) {
             $properties[$key] = new Property($key, $array[$key], IProperty::VIS_PUBLIC, $deep);
@@ -177,7 +177,7 @@ class Inspector implements IInspector {
                 }
             }
             
-            $properties = array();
+            $properties = [];
             
             // Inspect internal
             if($isInternal || $isParentInternal) {
@@ -187,7 +187,7 @@ class Inspector implements IInspector {
             // Inspect userland
             if(!$isInternal) {
                 $node = $reflection;
-                $nodes = array();
+                $nodes = [];
                 
                 while($node) {
                     $nodes[] = $node;
@@ -195,7 +195,7 @@ class Inspector implements IInspector {
                 }
                 
                 foreach(array_reverse($nodes) as $node) {
-                    $nodeProperties = array();
+                    $nodeProperties = [];
                     
                     foreach($node->getProperties() as $refProperty) {
                         if($refProperty->isStatic()) {
@@ -235,7 +235,7 @@ class Inspector implements IInspector {
         switch($reflection->getName()) {
             case 'SplDoublyLinkedList':
                 $isStack = \SplDoublyLinkedList::IT_MODE_LIFO & $object->getIteratorMode();
-                $values = array();
+                $values = [];
                 
                 foreach(clone $object as $i => $value) {
                     if($isStack) {
@@ -257,7 +257,7 @@ class Inspector implements IInspector {
             case 'SplPriorityQueue':
                 $temp = clone $object;
                 $temp->setExtractFlags(\SplPriorityQueue::EXTR_BOTH);
-                $values = array();
+                $values = [];
                 
                 foreach($temp as $i => $val) {
                     $values[] = $val;
@@ -270,7 +270,7 @@ class Inspector implements IInspector {
                 ];
                 
             case 'SplHeap':
-                $values = array();
+                $values = [];
                 
                 foreach(clone $object as $val) {
                     $values[] = $val;
@@ -289,7 +289,7 @@ class Inspector implements IInspector {
                 ];
                 
             case 'stdClass':
-                $output = array();
+                $output = [];
                 
                 foreach((array)$object as $key => $value) {
                     $output[$key] = new Property($key, $value);
@@ -298,7 +298,7 @@ class Inspector implements IInspector {
                 return $output;
                 
             default:
-                return array();
+                return [];
         }
     }
     

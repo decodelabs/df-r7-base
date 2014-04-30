@@ -22,7 +22,7 @@ class Font implements IFont, core\IDumpable {
     use TAttributeModule_Structure;
 
     protected $_missingGlyph;
-    protected $_glyphs = array();
+    protected $_glyphs = [];
 
     public function setMissingGlyph(IFontGlyph $glyph=null) {
         if($glyph) {
@@ -38,7 +38,7 @@ class Font implements IFont, core\IDumpable {
     }
 
     public function setGlyphs(array $glyphs) {
-        $this->_glyphs = array();
+        $this->_glyphs = [];
         return $this->addGlyphs($glyphs);
     }
 
@@ -77,12 +77,12 @@ class Font implements IFont, core\IDumpable {
     }
 
     public function clearGlyphs() {
-        $this->_glyphs = array();
+        $this->_glyphs = [];
         return $this;
     }
 
     protected function _getCustomContainerChildren() {
-        $output = array();
+        $output = [];
 
         if($this->_fontFace) {
             $output[] = $this->_fontFace;
@@ -126,7 +126,7 @@ class Font_Face implements IFontFace, core\IDumpable {
     use TAttributeModule_Core;
     use TAttributeModule_Font;
 
-    protected $_sources = array();
+    protected $_sources = [];
 
     public function getElementName() {
         return 'font-face';
@@ -430,7 +430,7 @@ class Font_Face implements IFontFace, core\IDumpable {
     }
 
     public function setSources(array $sources) {
-        $this->_sources = array();
+        $this->_sources = [];
         return $this->addSources($sources);
     }
 
@@ -553,7 +553,7 @@ class Font_FaceSource implements IFontFaceSource, core\IDumpable {
     }
 
     protected function _getCustomContainerChildren() {
-        $output = array();
+        $output = [];
 
         if($this->_uri) {
             $output[] = $this->_uri;
@@ -624,7 +624,7 @@ class Font_FaceUri implements IFontFaceUri, core\IDumpable {
     }
 
     protected function _getCustomContainerChildren() {
-        $output = array();
+        $output = [];
 
         if($this->_format) {
             $output[] = $this->_format;

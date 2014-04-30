@@ -27,7 +27,7 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
         foreach($parts as $part) {
             $valueParts = explode($valueDelimiter, trim($part), 2);
             
-            $key = str_replace(array(']'), array(''), urldecode(array_shift($valueParts)));
+            $key = str_replace(']', '', urldecode(array_shift($valueParts)));
             $value = urldecode(array_shift($valueParts));
             
             $output->getNestedChild($key, '[')->setValue($value);
@@ -101,14 +101,14 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
     }
     
     protected function _getSerializeValues() {
-        $output = array();
+        $output = [];
         
         if($this->_value !== null) {
             $output['vl'] = $this->_value;
         }
         
         if(!empty($this->_collection)) {
-            $children = array();
+            $children = [];
             
             foreach($this->_collection as $key => $child) {
                 $children[$key] = $child->_getSerializeValues();
@@ -156,7 +156,7 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
 // Collection
     public function clear() {
         $this->_value = null;
-        $this->_collection = array();
+        $this->_collection = [];
         return $this;
     }
     
@@ -390,7 +390,7 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
     }
     
     public function toArrayDelimitedString($setDelimiter='&', $valueDelimiter='=') {
-        $output = array();
+        $output = [];
         
         foreach($this->toUrlEncodedArrayDelimitedSet() as $key => $value) {
             if(!empty($value) || $value === '0' || $value === 0) {
@@ -406,7 +406,7 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
     
 // Array provider   
     public function toArray() {
-        $output = array();
+        $output = [];
         
         foreach($this->_collection as $key => $child) {
             if($child->count()) {
@@ -420,7 +420,7 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
     }
     
     public function toArrayDelimitedSet($prefix=null) {
-        $output = array();
+        $output = [];
         
         if($prefix 
         && ($this->_value !== null || empty($this->_collection))) {
@@ -439,7 +439,7 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
     }
     
     public function toUrlEncodedArrayDelimitedSet($prefix=null) {
-        $output = array();
+        $output = [];
         
         if($prefix 
         && ($this->_value !== null || empty($this->_collection))) {
@@ -460,7 +460,7 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
     
 // Dump
     public function getDumpProperties() {
-        $children = array();
+        $children = [];
         
         foreach($this->_collection as $key => $child) {
             if($child instanceof self && empty($child->_collection)) {

@@ -131,7 +131,7 @@ class Repository implements IRepository {
 
     public function getBranches() {
         $this->_fillBranchCache();
-        $output = array();
+        $output = [];
 
         foreach($this->_branches as $name) {
             $isActive = $name == $this->_activeBranch;
@@ -179,7 +179,7 @@ class Repository implements IRepository {
     protected function _fillBranchCache() {
         if($this->_branches === null) {
             $result = $this->_runCommand('branch --list');
-            $this->_branches = array();
+            $this->_branches = [];
 
             foreach(explode("\n", $result) as $line) {
                 $line = trim($line);
@@ -255,7 +255,7 @@ class Repository implements IRepository {
             'refs/tags'
         ]);
 
-        $output = array();
+        $output = [];
 
         if(!empty($result)) {
             foreach(explode("\n", $result) as $line) {
@@ -301,7 +301,7 @@ class Repository implements IRepository {
             '--'
         ]);
 
-        $output = array();
+        $output = [];
         $lines = explode("\n", $result);
 
         while(!empty($lines)) {
@@ -338,7 +338,7 @@ class Repository implements IRepository {
             'refs/heads'
         ]);
 
-        $output = array();
+        $output = [];
 
         if(!empty($result)) {
             foreach(explode("\n", $result) as $line) {
@@ -374,7 +374,7 @@ class Repository implements IRepository {
             $remoteBranch = 'origin/master';
         }
 
-        $output = array();
+        $output = [];
         $result = $this->_runCommand('log', [
             '--format' => '%H',
             $remoteBranch.'..HEAD'
@@ -400,14 +400,14 @@ class Repository implements IRepository {
             $remoteBranch = 'origin/master';
         }
 
-        $output = array();
+        $output = [];
         $result = $this->_runCommand('log', [
             '--format' => 'raw',
             $remoteBranch.'..HEAD'
         ]);
 
         if(!empty($result)) {
-            $output = array();
+            $output = [];
             $lines = explode("\n", $result);
 
             while(!empty($lines)) {
@@ -433,7 +433,7 @@ class Repository implements IRepository {
             $remoteBranch = 'origin/master';
         }
 
-        $output = array();
+        $output = [];
         $result = $this->_runCommand('log', [
             '--format' => '%H',
             'HEAD..'.$remoteBranch
@@ -459,14 +459,14 @@ class Repository implements IRepository {
             $remoteBranch = 'origin/master';
         }
 
-        $output = array();
+        $output = [];
         $result = $this->_runCommand('log', [
             '--format' => 'raw',
             'HEAD..'.$remoteBranch
         ]);
 
         if(!empty($result)) {
-            $output = array();
+            $output = [];
             $lines = explode("\n", $result);
 
             while(!empty($lines)) {

@@ -13,9 +13,9 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
     
     use spur\feed\TFeedReader;
     
-    protected static $_xPathNamespaces = array(
+    protected static $_xPathNamespaces = [
         'syn10' => 'http://purl.org/rss/1.0/modules/syndication/'
-    );
+    ];
         
     public function getUpdatePeriod() {
         $period = $this->_xPath->evaluate(

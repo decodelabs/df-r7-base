@@ -19,8 +19,8 @@ class Html extends Base implements IHtmlView {
     const DEFAULT_TITLE = '*untitled';
     const DEFAULT_LAYOUT = 'Default';
     
-    private static $_priorityMeta = array('x-ua-compatible', 'content-type');
-    private static $_httpMeta = array(
+    private static $_priorityMeta = ['x-ua-compatible', 'content-type'];
+    private static $_httpMeta = [
         'allow', 'alternates', 'bulletin-date', 'bulletin-text', 'cache-control', 'content-base',
         'content-disposition', 'content-encoding', 'content-language', 'content-length', 'content-location',
         'content-md5', 'content-range', 'content-script-type', 'content-style-type', 'content-type', 
@@ -29,24 +29,24 @@ class Html extends Base implements IHtmlView {
         'page-enter', 'page-exit', 'pics-label', 'pragma', 'public', 'range', 'refresh', 'server', 
         'set-cookie', 'site-enter', 'site-exit', 'title', 'transfer-encoding', 'uri', 'vary', 'via', 
         'warning', 'window-target', 'x-ua-compatible'
-    ); 
+    ]; 
     
     protected $_title;
     protected $_titlePrefix;
     protected $_titleSuffix;
     protected $_baseHref;
     
-    protected $_meta = array();
+    protected $_meta = [];
     
     protected $_css;
     protected $_styles;
     
     protected $_headJs;
     protected $_footJs;
-    protected $_headScripts = array();
-    protected $_footScripts = array();
+    protected $_headScripts = [];
+    protected $_footScripts = [];
     
-    protected $_links = array();
+    protected $_links = [];
     
     public $htmlTag;
     public $bodyTag;
@@ -188,7 +188,7 @@ class Html extends Base implements IHtmlView {
         if($this->hasMeta('keywords')) {
             $current = explode(' ', $this->getMeta('keywords'));
         } else {
-            $current = array();
+            $current = [];
         }
         
         return $this->setMeta('keywords', implode(' ', array_unique(array_merge($current, $keywords))));
@@ -235,7 +235,7 @@ class Html extends Base implements IHtmlView {
         if($this->hasMeta($bot)) {
             $current = explode(',', $this->getMeta($bot));
         } else {
-            $current = array();
+            $current = [];
         }
         
         $current = array_flip($current);
@@ -264,7 +264,7 @@ class Html extends Base implements IHtmlView {
         if($this->hasMeta($bot)) {
             $current = explode(',', $this->getMeta($bot));
         } else {
-            $current = array();
+            $current = [];
         }
         
         $current = array_flip($current);
@@ -375,7 +375,7 @@ class Html extends Base implements IHtmlView {
         }
 
         if(!$attributes) {
-            $attributes = array();
+            $attributes = [];
         }
 
         $attributes['href'] = $this->_normalizeLinkUrl($uri);
@@ -395,7 +395,7 @@ class Html extends Base implements IHtmlView {
     }
 
     public function getCss() {
-        $output = array();
+        $output = [];
         
         if($this->_css) {
             foreach(clone $this->_css as $tag) {
@@ -524,7 +524,7 @@ class Html extends Base implements IHtmlView {
     
     protected function _createJsEntry($uri, array $attributes=null, $fallbackScript, $condition) {
         if(!$attributes) {
-            $attributes = array();
+            $attributes = [];
         }
 
         $attributes['src'] = $this->_normalizeLinkUrl($uri);
@@ -545,7 +545,7 @@ class Html extends Base implements IHtmlView {
     }
     
     public function getHeadJs() {
-        $output = array();
+        $output = [];
         
         if($this->_headJs) {
             foreach(clone $this->_headJs as $tag) {
@@ -557,7 +557,7 @@ class Html extends Base implements IHtmlView {
     }
 
     public function getFootJs() {
-        $output = array();
+        $output = [];
         
         if($this->_footJs) {
             foreach(clone $this->_footJs as $tag) {
@@ -626,12 +626,12 @@ class Html extends Base implements IHtmlView {
     }
 
     public function clearHeadScripts() {
-        $this->_headScripts = array();
+        $this->_headScripts = [];
         return $this;
     }
 
     public function clearFootScripts() {
-        $this->_footScripts = array();
+        $this->_footScripts = [];
         return $this;
     }
     

@@ -15,7 +15,7 @@ class Manager implements IManager {
     const REGISTRY_PREFIX = 'manager://i18n';
     
     protected $_locale;
-    protected $_modules = array();
+    protected $_modules = [];
 
     
 // Locale

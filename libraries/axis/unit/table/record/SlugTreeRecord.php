@@ -170,7 +170,7 @@ class SlugTreeRecord extends opal\record\Base {
 
         call_user_func_array([$this, '_customizeNodeListQuery'], [$query] + func_get_args());
 
-        $output = array();
+        $output = [];
         $length = strlen($slug);
 
         foreach($query as $node) {
@@ -212,7 +212,7 @@ class SlugTreeRecord extends opal\record\Base {
         $adapter = $this->getRecordAdapter();
 
         if(empty($slug)) {
-            return array();
+            return [];
         }
 
         $output = [$adapter->createVirtualNode('')];
@@ -223,7 +223,7 @@ class SlugTreeRecord extends opal\record\Base {
             return $output;
         }
 
-        $slugs = array();
+        $slugs = [];
 
         do {
             $slugs[] = implode('/', $parts);

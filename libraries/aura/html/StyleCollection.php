@@ -32,7 +32,7 @@ class StyleCollection implements IStyleCollection, core\IDumpable {
         foreach($set as $key => $val) {
             if(is_numeric($key) && is_string($val)) {
                 $temp = explode(';', $val);
-                $val = array();
+                $val = [];
 
                 foreach($temp as $part) {
                     $part = trim($part);
@@ -56,7 +56,7 @@ class StyleCollection implements IStyleCollection, core\IDumpable {
     }
     
     public function toString() {
-        $output = array();
+        $output = [];
         
         foreach($this->_collection as $key => $value) {
             $output[] = $key.': '.$value.';';

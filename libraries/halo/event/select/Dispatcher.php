@@ -33,9 +33,9 @@ class Dispatcher extends halo\event\Dispatcher {
         $this->_breakLoop = false;
         $this->_isRunning = true;
         
-        $maps = array();
+        $maps = [];
         $baseTime = microtime(true);
-        $times = array();
+        $times = [];
         
         while(!$this->_breakLoop) {
             if($this->_generateMaps) {

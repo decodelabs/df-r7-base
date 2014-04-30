@@ -12,7 +12,7 @@ class StackTrace implements IStackTrace, core\IDumpable {
     
     use TLocationProvider;
     
-    protected $_calls = array();
+    protected $_calls = [];
 
     public static function fromException(\Exception $e) {
         return self::factory(0, $e->getTrace());
@@ -23,7 +23,7 @@ class StackTrace implements IStackTrace, core\IDumpable {
             $data = debug_backtrace();
         }
 
-        $output = array();
+        $output = [];
         
         while($rewind > 0) {
             $rewind--;
@@ -128,7 +128,7 @@ class StackTrace implements IStackTrace, core\IDumpable {
     
 // Dumpable
     public function getDumpProperties() {
-        $output = array();
+        $output = [];
         
         foreach($this->_calls as $call) {
             $output[] = new core\debug\dumper\Property(null, $call);

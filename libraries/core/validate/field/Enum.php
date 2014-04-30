@@ -10,7 +10,7 @@ use df\core;
     
 class Enum extends Base implements core\validate\IEnumField {
 
-    protected $_options = array();
+    protected $_options = [];
 
     public function setOptions(array $options) {
         $this->_options = $options;

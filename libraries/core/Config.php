@@ -183,7 +183,7 @@ abstract class Config implements IConfig, core\IDumpable {
         }
         
         if($output !== null && !is_array($output)) {
-            $output = array();
+            $output = [];
         }
         
         return $output;

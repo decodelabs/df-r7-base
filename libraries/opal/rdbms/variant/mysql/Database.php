@@ -15,7 +15,7 @@ class Database extends opal\rdbms\Database {
         $stmt = $this->_adapter->prepare('SHOW TABLES');
         $res = $stmt->executeRead();
         $key = 'Tables_in_'.$this->getName();
-        $output = array();
+        $output = [];
 
         foreach($res as $row) {
             $output[] = $row[$key];

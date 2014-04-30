@@ -111,7 +111,7 @@ class JoinList extends ListBase implements opal\query\IJoinClauseList {
     
     
     public function getLocalFieldList() {
-        $output = array();
+        $output = [];
         
         foreach($this->_clauses as $clause) {
             if($clause instanceof opal\query\IClauseList) {

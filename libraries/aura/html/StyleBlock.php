@@ -20,7 +20,7 @@ class StyleBlock implements IStyleBlock, core\collection\IMappedCollection, core
     public function import($input) {
         if(is_string($input)) {
             $parts = explode('{', $input);
-            $input = array();
+            $input = [];
             $count = count($parts);
             
             while(count($parts)) {
@@ -80,7 +80,7 @@ class StyleBlock implements IStyleBlock, core\collection\IMappedCollection, core
             return '';
         }
         
-        $output = array();
+        $output = [];
         
         foreach($this->_collection as $selector => $styles) {
             $output[] = $selector.' { '.$styles.' }';

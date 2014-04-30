@@ -43,7 +43,7 @@ abstract class Action implements IAction, core\IDumpable {
         if(!empty($path)) {
             $parts = explode('/', $path);
         } else {
-            $parts = array();
+            $parts = [];
         }
         
         $parts[] = '_actions';

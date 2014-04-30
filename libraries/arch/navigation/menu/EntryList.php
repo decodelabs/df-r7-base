@@ -13,7 +13,7 @@ class EntryList implements IEntryList {
     
     use arch\navigation\TEntryList;
     
-    protected $_menus = array();
+    protected $_menus = [];
     
     public function registerMenu(IMenu $menu) {
         $this->_menus[(string)$menu->getId()] = true;

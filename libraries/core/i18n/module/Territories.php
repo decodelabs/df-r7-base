@@ -45,7 +45,7 @@ class Territories extends Base implements ITerritoriesModule, core\i18n\module\g
         
         
         if(isset($doc->localeDisplayNames->territories->territory)) {
-            $output = array();
+            $output = [];
             
             foreach($doc->localeDisplayNames->territories->territory as $territory) {
                 $type = (string)$territory['type'];

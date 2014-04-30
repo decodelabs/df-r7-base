@@ -47,7 +47,7 @@ class FeedReader implements spur\feed\IFeedReaderPlugin {
             $list = $this->_xPath->query('//dc10:publisher');
         }
         
-        $authors = array();
+        $authors = [];
         
         if($list->length) {
             foreach($list as $authorNode) {

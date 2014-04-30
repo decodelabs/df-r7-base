@@ -168,8 +168,8 @@ class ManyBridge extends Base implements axis\IVirtualUnit {
         return parent::newPartial($values)->isBridge(true);
     }
 
-    public function getBridgeFieldNames($aliasPrefix=null, array $filter=array()) {
-        $output = array();
+    public function getBridgeFieldNames($aliasPrefix=null, array $filter=[]) {
+        $output = [];
 
         foreach($this->getUnitSchema()->getFields() as $name => $field) {
             if(in_array($name, $filter)) {

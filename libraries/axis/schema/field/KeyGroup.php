@@ -47,7 +47,7 @@ class KeyGroup extends Base implements
             $value = $this->getTargetRelationManifest()->toPrimaryKeySet($value);
         }
         
-        $output = array();
+        $output = [];
         $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId);
         $schema = $targetUnit->getUnitSchema();
         

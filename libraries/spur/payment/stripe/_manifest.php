@@ -115,7 +115,7 @@ interface IMediator {
 
 
 // IO
-    public function callServer($method, $path, array $data=array());
+    public function callServer($method, $path, array $data=[]);
 }
 
 interface IMediatorProvider {

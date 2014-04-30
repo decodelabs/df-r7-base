@@ -11,7 +11,7 @@ class Base implements IGenerator {
     
     protected $_cldrPath;
     protected $_savePath;
-    protected $_modules = array();
+    protected $_modules = [];
     
     public function __construct($cldrPath, $savePath=null) {
         if($cldrPath === null) {
@@ -102,7 +102,7 @@ class Base implements IGenerator {
     }
     
     public function clearModules() {
-        $this->_modules = array();
+        $this->_modules = [];
         return $this;
     }
     
@@ -114,7 +114,7 @@ class Base implements IGenerator {
     public function generate() {
         core\io\Util::ensureDirExists($this->_savePath);
         
-        $modules = array();
+        $modules = [];
         
         foreach($this->_modules as $name => $t) {
             $module = core\i18n\module\Base::factory($name);

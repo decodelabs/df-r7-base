@@ -15,7 +15,7 @@ class Request implements IRequest {
     
     protected $_adapterName;
     protected $_identity;
-    protected $_credentials = array();
+    protected $_credentials = [];
     
     public function __construct($adapterName=null) {
         $this->setAdapterName($adapterName);

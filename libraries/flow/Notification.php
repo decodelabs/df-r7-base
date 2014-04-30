@@ -15,8 +15,8 @@ class Notification implements INotification {
     protected $_subject;
     protected $_body;
     protected $_bodyType = INotification::SIMPLE_TAGS;
-    protected $_toEmails = array();
-    protected $_toUsers = array();
+    protected $_toEmails = [];
+    protected $_toUsers = [];
     protected $_toAdmin = false;
     protected $_from;
     protected $_filterClient = false;
@@ -168,7 +168,7 @@ class Notification implements INotification {
     }
 
     public function clearToEmails() {
-        $this->_toEmails = array();
+        $this->_toEmails = [];
         return $this;
     }
 
@@ -202,7 +202,7 @@ class Notification implements INotification {
     }
 
     public function clearToUsers() {
-        $this->_toUsers = array();
+        $this->_toUsers = [];
         return $this;
     }
 

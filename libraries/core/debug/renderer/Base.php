@@ -11,7 +11,7 @@ use df\core;
 abstract class Base implements core\debug\IRenderer {
     
     protected $_context;
-    protected $_stats = array();
+    protected $_stats = [];
     
     public function __construct(core\debug\IContext $context) {
         $this->_context = $context;
@@ -46,7 +46,7 @@ abstract class Base implements core\debug\IRenderer {
             $this->_stats['Queries'] = \df\opal\rdbms\adapter\statement\Base::getQueryCount();
         }
         
-        $caches = array();
+        $caches = [];
         
         if(extension_loaded('apc')) {
             $caches[] = 'apc';
@@ -70,7 +70,7 @@ abstract class Base implements core\debug\IRenderer {
     }
 
     protected function _getNormalizedIncludeList() {
-        $output = array();
+        $output = [];
         
         foreach(get_included_files() as $file) {
             $output[] = $this->_normalizeFilePath($file);
@@ -107,11 +107,11 @@ abstract class Base implements core\debug\IRenderer {
     
     protected function _getObjectInheritance($object) {
         if(!is_object($object)) {
-            return array();
+            return [];
         }
         
         $reflection = new \ReflectionClass($object);
-        $list = array();
+        $list = [];
         
         while($reflection = $reflection->getParentClass()) {
             $list[] = $reflection->getName();

@@ -55,10 +55,10 @@ class CheckboxGroup extends RadioButtonGroup implements IMultipleSelectionInputW
             }
             
             if(!is_array($value)) {
-                $value = array($value);
+                $value = [$value];
             }
             
-            $newValue = array();
+            $newValue = [];
             
             foreach($value as $val) {
                 $val = (string)$val;
