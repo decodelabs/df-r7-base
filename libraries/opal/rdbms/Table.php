@@ -339,7 +339,7 @@ class Table implements ITable, core\IDumpable {
 // Mesh
     public function getEntityLocator() {
         $output = $this->_adapter->getEntityLocator();
-        $output->addNode(new mesh\entity\LocatorNode(null, 'Table', $this->getName()));
+        $output->addNode(null, 'Table', $this->getName());
         return $output;
     }
     

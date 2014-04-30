@@ -34,7 +34,7 @@ interface IManager extends mesh\event\IEmitter, core\IManager {
 interface IHandler {}
 
 interface IEntityHandler extends IHandler {
-    public function fetchEntity(IManager $manager, mesh\entity\ILocatorNode $node);
+    public function fetchEntity(IManager $manager, array $node);
 }
 
 interface IEventHandler extends IHandler, mesh\event\IEmitter {}

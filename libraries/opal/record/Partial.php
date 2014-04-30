@@ -149,7 +149,7 @@ class Partial implements IPartial, core\IDumpable {
         $id = $keySet->getEntityId();
 
         $output = $this->_adapter->getEntityLocator();
-        $output->addNode(new mesh\entity\LocatorNode(null, 'Record', $id));
+        $output->addNode(null, 'Record', $id);
         
         return $output;
     }

@@ -12,17 +12,17 @@ use df\mesh;
 
 class MeshHandler implements mesh\IEntityHandler {
     
-    public function fetchEntity(mesh\IManager $manager, mesh\entity\ILocatorNode $node) {
-        if(!$node->hasLocation()) {
-            switch($node->getType()) {
+    public function fetchEntity(mesh\IManager $manager, array $node) {
+        if(empty($node['location'])) {
+            switch($node['type']) {
                 case 'Model':
-                    return axis\Model::factory($node->getId(), $manager->getApplication());
+                    return axis\Model::factory($node['id'], $manager->getApplication());
                     
                 case 'Unit':
-                    return axis\Model::loadUnitFromId($node->getId(), $manager->getApplication());
+                    return axis\Model::loadUnitFromId($node['id'], $manager->getApplication());
                     
                 case 'Schema':
-                    $unit = axis\Model::loadUnitFromId($node->getId(), $manager->getApplication());
+                    $unit = axis\Model::loadUnitFromId($node['id'], $manager->getApplication());
                     
                     if(!$unit instanceof axis\ISchemaBasedStorageUnit) {
                         throw new axis\LogicException(
@@ -34,13 +34,13 @@ class MeshHandler implements mesh\IEntityHandler {
             }
         }
         
-        $location = $node->getLocationArray();
+        $location = $node['location'];
         $model = axis\Model::factory(array_shift($location), $manager->getApplication());
         
         if(!empty($location)) {
             $unit = $model->getUnit(array_shift($location));
             
-            if($node->getType() == 'Unit') {
+            if($node['type'] == 'Unit') {
                 return $unit;
             }
             
@@ -51,14 +51,12 @@ class MeshHandler implements mesh\IEntityHandler {
             return $unit->fetchSubEntity($manager, $node);
         }
         
-        $id = $node->getId();
-        
-        switch($node->getType()) {
+        switch($node['type']) {
             case 'Unit':
-                return $model->getUnit($id);
+                return $model->getUnit($node['id']);
                 
             case 'Schema':
-                $unit = $model->getUnit($id);
+                $unit = $model->getUnit($node['id']);
                 
                 if(!$unit instanceof axis\ISchemaBasedStorageUnit) {
                     throw new axis\LogicException(
@@ -69,13 +67,13 @@ class MeshHandler implements mesh\IEntityHandler {
                 return $unit->getUnitSchema();
                 
             default:
-                $unit = $model->getUnit($node->getType());
+                $unit = $model->getUnit($node['type']);
                 
-                if($id === null) {
+                if($node['id'] === null) {
                     return $unit;
                 }
                 
-                return $unit->fetchByPrimary($id);
+                return $unit->fetchByPrimary($node['id']);
         }
     }
 }

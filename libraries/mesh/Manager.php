@@ -12,6 +12,7 @@ use df\mesh;
 class Manager implements IManager, core\IDumpable {
     
     use core\TManager;
+    use mesh\event\TEmitter;
     
     const REGISTRY_PREFIX = 'manager://mesh';
     
@@ -90,7 +91,7 @@ class Manager implements IManager, core\IDumpable {
             foreach($nodes as $node) {
                 if(!$entity instanceof mesh\entity\IParentEntity) {
                     throw new mesh\entity\EntityNotFoundException(
-                        'Could not load entity '.$node->toString().' - '.
+                        'Could not load entity '.$locator->toString().' - '.
                         'parent entity '.$locator->toStringUpTo($lastNode).' does not provide sub entities'
                     );
                 }
@@ -113,10 +114,6 @@ class Manager implements IManager, core\IDumpable {
 
 
 // Events
-    public function emitEvent($entity, $action, array $data=null) {
-        return $this->emitEventObject(new mesh\event\Event($entity, $action, $data));
-    }
-
     public function emitEventObject(mesh\event\IEvent $event) {
         mesh\event\Hook::triggerEvent($event);
         return $this;

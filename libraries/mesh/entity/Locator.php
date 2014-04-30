@@ -10,12 +10,15 @@ use df\core;
 use df\mesh;
 
 class Locator implements ILocator, core\IDumpable {
-    
+
     use core\TStringProvider;
 
     protected $_scheme;
-    protected $_nodes = array();
-    
+    protected $_nodes = [];
+
+    protected $_string;
+    protected $_domainString;
+
     public static function factory($locator) {
         if($locator instanceof ILocator) {
             return $locator;
@@ -37,8 +40,10 @@ class Locator implements ILocator, core\IDumpable {
 
         return $output;
     }
-    
+
     public function __construct($locator) {
+        $this->_clearCache();
+
         if($locator instanceof core\uri\IGenericUrl) {
             $this->_scheme = $locator->getScheme();
             $path = $locator->getPath()->toString();
@@ -48,19 +53,23 @@ class Locator implements ILocator, core\IDumpable {
             $path = array_shift($parts);
         }
         
-        $this->_splitEntityPath($path);
+        $this->_nodes = $this->_parseString((string)$path);
     }
-    
 
     // Format:
     // handler://[path/to/]Entity[:id][/[path/to/]SubEntity[:id]]]
-    private function _splitEntityPath($path) {
+    private function _parseString($path) {
         $path = trim($path, '/').'/';
         $length = strlen($path);
         $mode = 0;
         $part = '';
         
-        $node = new LocatorNode();
+        $output = [];
+        $node = [
+            'location' => [],
+            'type' => null,
+            'id' => null
+        ];
         
         for($i = 0; $i < $length; $i++) {
             $char = $path{$i};
@@ -72,7 +81,7 @@ class Locator implements ILocator, core\IDumpable {
                         $part .= $char;
                         $mode = 1; // Type
                     } else if($char == '/') {
-                        $node->appendLocation($part);
+                        $node['location'][] = $part;
                         $part = '';
                     } else if(ctype_alpha($char)) {
                         $part .= $char;
@@ -87,16 +96,20 @@ class Locator implements ILocator, core\IDumpable {
                 // Entity type name
                 case 1:
                     if($char == ':') {
-                        $node->setType($part);
+                        $node['type'] = ucfirst($part);
                         $part = '';
                         
                         $mode = 2; // Id
                     } else if($char == '/') {
-                        $node->setType($part);
+                        $node['type'] = ucfirst($part);
                         $part = '';
                         
-                        $this->_nodes[] = $node;
-                        $node = new LocatorNode();
+                        $output[] = $node;
+                        $node = [
+                            'location' => [],
+                            'type' => null,
+                            'id' => null
+                        ];
                         
                         $mode = 0; // Location
                     } else if(preg_match('/[a-zA-Z0-9-_]/', $char)) {
@@ -115,11 +128,15 @@ class Locator implements ILocator, core\IDumpable {
                         $mode = 3;
                     } else if($char == '/') {
                         $mode = 0; // Location
-                        $node->setId($part);
+                        $node['id'] = $part;
                         $part = '';
                         
-                        $this->_nodes[] = $node;
-                        $node = new LocatorNode();
+                        $output[] = $node;
+                        $node = [
+                            'location' => [],
+                            'type' => null,
+                            'id' => null
+                        ];
                     } else if(ctype_alnum($char)) {
                         $part .= $char;
                     } else {
@@ -157,18 +174,22 @@ class Locator implements ILocator, core\IDumpable {
                     }
                     
                     $mode = 0; // Location
-                    $node->setId($part);
+                    $node['id'] = $part;
                     $part = '';
                     
-                    $this->_nodes[] = $node;
-                    $node = new LocatorNode();
+                    $output[] = $node;
+                    $node = [
+                        'location' => [],
+                        'type' => null,
+                        'id' => null
+                    ];
                     
                     break;
             }
             
         }
         
-        if(empty($this->_nodes)) {
+        if(empty($output)) {
             throw new InvalidArgumentException(
                 'No entity type definition detected in: '.$path
             );
@@ -177,15 +198,17 @@ class Locator implements ILocator, core\IDumpable {
                 'Unexpected end of locator: '.$path
             );
         }
+
+        return $output;
     }
 
     public function getEntityLocator() {
         return $this;
     }
 
-
 // Scheme
     public function setScheme($scheme) {
+        $this->_clearCache();
         $this->_scheme = $scheme;
         return $this;
     }
@@ -193,35 +216,265 @@ class Locator implements ILocator, core\IDumpable {
     public function getScheme() {
         return $this->_scheme;
     }
-    
-
 
 // Nodes
     public function setNodes(array $nodes) {
-        $this->_nodes = array();
+        $this->_nodes = [];
         return $this->addNodes($nodes);
     }
 
     public function addNodes(array $nodes) {
         foreach($nodes as $node) {
-            if(!$node instanceof ILocatorNode) {
-                throw new InvalidArgumentException(
-                    'Nodes must implement ILocatorNode'
-                );
+            if(!is_array($node)) {
+                $this->addNodes($this->_parseString((string)$node));
+                continue;
             }
 
-            $this->addNode($node);
+            $this->importNode($node);
         }
 
         return $this;
     }
 
-    public function addNode(ILocatorNode $node) {
-        $this->_nodes[] = $node;
+    public function addNode($location, $type, $id=null) {
+        return $this->importNode([
+            'location' => $location,
+            'type' => $type,
+            'id' => $id
+        ]);
+    }
+
+    public function importNode(array $node) {
+        $this->_nodes[] = $this->_prepareNode($node);
+        $this->_clearCache();
+
         return $this;
     }
 
+    public function setNode($index, $location, $type, $id=null) {
+        return $this->setNodeArray($index, [
+            'location' => $location,
+            'type' => $type,
+            'id' => $id
+        ]);
+    }
+
+    public function setNodeArray($index, array $node) {
+        $index = (int)$index;
+        
+        if($index < 0) {
+            $index += count($this->_nodes);
+            
+            if($index < 0) {
+                throw new InvalidArgumentException(
+                    'Index is out of bounds'
+                );
+            }
+        }
+
+        $this->_nodes[$index] = $this->_prepareNode($node);
+        $this->_nodes = array_values($this->_nodes);
+        $this->_clearCache();
+
+        return $this;
+    }
+
+    public function hasNode($index) {
+        return null !== $this->_normalizeNodeIndex($index);
+    }
+
     public function getNode($index) {
+        if(null === ($index = $this->_normalizeNodeIndex($index))) {
+            return null;
+        }
+
+        return $this->_nodes[$index];
+    }
+
+    public function getNodeString($index) {
+        if(!$node = $this->getNode($index)) {
+            return null;
+        }
+
+        return $this->_nodeToString($node);
+    }
+
+    public function setNodeLocation($index, $location) {
+        if(null === ($index = $this->_normalizeNodeIndex($index))) {
+            return null;
+        }
+
+        if(!is_array($location)) {
+            if(empty($location)) {
+                $location = [];
+            } else {
+                $location = explode('/', trim($location, '/'));
+            }
+        }
+
+        $this->_nodes[$index]['location'] = $location;
+        $this->_clearCache();
+
+        return $this;
+    }
+
+    public function appendNodeLocation($index, $location) {
+        if(null === ($index = $this->_normalizeNodeIndex($index))) {
+            return null;
+        }
+
+        if(!is_array($location)) {
+            if(empty($location)) {
+                return $this;
+            } else {
+                $location = explode('/', trim($location, '/'));
+            }
+        }
+
+        foreach($location as $part) {
+            $this->_nodes[$index]['location'][] = $part;
+        }
+        
+        $this->_clearCache();
+
+        return $this;
+    }
+
+    public function getNodeLocation($index) {
+        if(!$node = $this->getNode($index)) {
+            return null;
+        }
+
+        return implode('/', $node['location']);
+    }
+
+    public function setNodeType($index, $type) {
+        if(null === ($index = $this->_normalizeNodeIndex($index))) {
+            return null;
+        }
+
+        $this->_nodes[$index]['type'] = ucfirst($type);
+        $this->_clearCache();
+
+        return $this;
+    }
+    
+    public function getNodeType($index) {
+        if(!$node = $this->getNode($index)) {
+            return null;
+        }
+
+        return $node['type'];
+    }
+
+    public function setNodeId($index, $id) {
+        if(null === ($index = $this->_normalizeNodeIndex($index))) {
+            return null;
+        }
+
+        if(!strlen($id)) {
+            $id = null;
+        } else {
+            $id = (string)$id;
+        }
+
+        $this->_nodes[$index]['id'] = $id;
+        $this->_clearCache();
+
+        return $this;
+    }
+
+    public function getNodeId($index) {
+        if(!$node = $this->getNode($index)) {
+            return null;
+        }
+
+        return $node['id'];
+    }
+
+    public function removeNode($index) {
+        if(null === ($index = $this->_normalizeNodeIndex($index))) {
+            return null;
+        }
+
+        unset($this->_nodes[$index]);
+        $this->_nodes = array_values($nodes);
+        $this->_clearCache();
+
+        return $this;
+    }
+
+    public function getNodes() {
+        return $this->_nodes;
+    }
+
+    public function getFirstNode() {
+        if(!isset($this->_nodes[0])) {
+            return null;
+        }
+
+        return $this->_nodes[0];
+    }
+
+    public function getFirstNodeLocation() {
+        if(!isset($this->_nodes[0])) {
+            return null;
+        }
+
+        return implode('/', $this->_nodes[0]['location']);
+    }
+
+    public function getFirstNodeType() {
+        if(!isset($this->_nodes[0])) {
+            return null;
+        }
+
+        return $this->_nodes[0]['type'];
+    }
+
+    public function getFirstNodeId() {
+        if(!isset($this->_nodes[0])) {
+            return null;
+        }
+
+        return $this->_nodes[0]['id'];
+    }
+
+    public function getLastNode() {
+        $i = count($this->_nodes) - 1;
+
+        if(!isset($this->_nodes[$i])) {
+            return null;
+        }
+
+        return $this->_nodes[$i];
+    }
+
+    public function getLastNodeLocation() {
+        if(!$node = $this->getLastNode()) {
+            return null;
+        }
+
+        return implode('/', $node['location']);
+    }
+
+    public function getLastNodeType() {
+        if(!$node = $this->getLastNode()) {
+            return null;
+        }
+
+        return $node['type'];
+    }
+
+    public function getLastNodeId() {
+        if(!$node = $this->getLastNode()) {
+            return null;
+        }
+
+        return $node['id'];
+    }
+
+    protected function _normalizeNodeIndex($index) {
         $index = (int)$index;
         
         if($index < 0) {
@@ -231,164 +484,129 @@ class Locator implements ILocator, core\IDumpable {
                 return null;
             }
         }
-        
-        if(isset($this->_nodes[$index])) {
-            return $this->_nodes[$index];
+
+        if(!isset($this->_nodes[$index])) {
+            return null;
         }
-        
-        return null;
+
+        return $index;
     }
 
-    public function getNodeType($index) {
-        if($node = $this->getNode($index)) {
-            return $node->getType();
+    protected function _prepareNode(array $node) {
+        // Location
+        if(!isset($node['location'])) {
+            $node['location'] = null;
         }
-    }
 
-    public function getNodeId($index) {
-        if($node = $this->getNode($index)) {
-            return $node->getId();
-        }
-    }
-
-    public function hasNode($index) {
-        $index = (int)$index;
-        
-        if($index < 0) {
-            $index += count($this->_nodes);
-            
-            if($index < 0) {
-                return false;
+        if(!is_array($node['location'])) {
+            if(empty($node['location'])) {
+                $node['location'] = [];
+            } else {
+                $node['location'] = explode('/', trim($node['location'], '/'));
             }
         }
-        
-        return isset($this->_nodes[$index]);
+
+        // Type
+        if(!isset($node['type'])) {
+            throw new InvalidArgumentException(
+                'Node has no type definition'
+            );
+        }
+
+        $node['type'] = ucfirst($node['type']);
+
+        // Id
+        if(!isset($node['id'])) {
+            $node['id'] = null;
+        }
+
+        return $node;
     }
 
-    public function removeNode($index) {
-        $index = (int)$index;
-        
-        if($index < 0) {
-            $index += count($this->_nodes);
-            
-            if($index < 0) {
-                return $this;
+    protected function _nodeToString(array $node) {
+        $output = $node['location'];
+        $type = $node['type'];
+
+        if($node['id'] !== null) {
+            if(strpbrk($node['id'], '" :/\'\\')) {
+                $type .= ':"'.addslashes($node['id']).'"';
+            } else {
+                $type .= ':'.$node['id'];
             }
         }
-        
-        unset($this->_nodes[$index]);
-        $this->_nodes = array_values($this->_nodes);
-        return $this;
+
+        $output[] = $type;
+        return implode('/', $output);
     }
 
-    public function getNodes() {
-        return $this->_nodes;
-    }
-    
-    public function getFirstNode() {
-        if(isset($this->_nodes[0])) {
-            return $this->_nodes[0];
-        }
-        
-        return null;
-    }
-    
-    public function getFirstNodeType() {
-        if(isset($this->_nodes[0])) {
-            return $this->_nodes[0]->getType();
-        }
-        
-        return null;
-    }
-    
-    public function getFirstNodeId() {
-        if(isset($this->_nodes[0])) {
-            return $this->_nodes[0]->getId();
-        }
-        
-        return null;
-    }
 
-    public function getLastNode() {
-        $i = count($this->_nodes) - 1;
-
-        if(isset($this->_nodes[$i])) {
-            return $this->_nodes[$i];
-        }
-
-        return null;
-    }
-
-    public function getLastNodeType() {
-        if($node = $this->getLastNode()) {
-            return $node->getType();
-        }
-    }
-
-    public function getLastNodeId() {
-        if($node = $this->getLastNode()) {
-            return $node->getId();
-        }
-    }
-
+// Strings
     public function getDomain() {
-        $nodes = $this->_nodes;
-        $last = clone array_pop($nodes);
+        if($this->_domainString === null) {
+            $nodes = $this->_nodes;
+            $last = array_pop($nodes);
 
-        foreach($nodes as $i => $node) {
-            $nodes[$i] = $node->toString();
+            foreach($nodes as $i => $node) {
+                $nodes[$i] = $this->_nodeToString($node);
+            }
+
+            $last['id'] = null;
+            $nodes[] = $this->_nodeToString($last);
+
+            $this->_domainString = $this->_scheme.'://'.implode('/', $nodes);
         }
 
-        $last->setId(null);
-        $nodes[] = $last->toString();
-
-        return $this->_scheme.'://'.implode('/', $nodes);
+        return $this->_domainString;
     }
 
     public function setId($id) {
-        if($node = $this->getLastNode()) {
-            $node->setId($id);
-        }
-
-        return $this;
+        return $this->setNodeId(-1, $id);
     }
 
     public function getId() {
-        if($node = $this->getLastNode()) {
-            return $node->getId();
-        }
+        return $this->getLastNodeId();
     }
-    
+        
     public function toString() {
-        $nodes = array();
-        
-        foreach($this->_nodes as $node) {
-            $nodes[] = $node->toString();
+        if($this->_string === null) {
+            $nodes = [];
+
+            foreach($this->_nodes as $node) {
+                $nodes[] = $this->_nodeToString($node);
+            }
+
+            $this->_string = $this->_scheme.'://'.implode('/', $nodes);
         }
-        
-        return $this->_scheme.'://'.implode('/', $nodes);
+
+        return $this->_string;
     }
-        
+
     public function toStringUpTo($type) {
-        if($type instanceof ILocatorNode) {
-            $type = $type->getType();
+        if(is_array($type)) {
+            if(isset($type['type'])) {
+                $type = $type['type'];
+            } else {
+                $type = null;
+            }
         }
-        
-        $output = $this->_scheme.'://';
-        $nodes = array();
-        
+
+        $nodes = [];
+
         foreach($this->_nodes as $node) {
-            $nodes[] = $node->toString();
-            
-            if($node->getType() == $type) {
+            $nodes[] = $this->_nodeToString($node);
+
+            if($node['type'] == $type) {
                 break;
             }
         }
-        
-        $output .= implode('/', $nodes);
-        return $output;
+
+        return $this->_scheme.'://'.implode('/', $nodes);
     }
     
+    protected function _clearCache() {
+        $this->_string = $this->_domainString = null;
+    }
+
 // Dump
     public function getDumpProperties() {
         return $this->toString();

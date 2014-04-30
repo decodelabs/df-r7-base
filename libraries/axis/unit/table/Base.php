@@ -488,10 +488,10 @@ abstract class Base implements
     
     
 // Mesh
-    public function fetchSubEntity(mesh\IManager $manager, mesh\entity\ILocatorNode $node) {
-        switch($node->getType()) {
+    public function fetchSubEntity(mesh\IManager $manager, array $node) {
+        switch($node['type']) {
             case 'Record':
-                return $this->fetchByPrimary($node->getId());
+                return $this->fetchByPrimary($node['id']);
 
             case 'Schema':
                 return $this->getUnitSchema();

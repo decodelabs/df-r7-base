@@ -12,10 +12,12 @@ use df\mesh;
 
 class MeshHandler implements mesh\IEntityHandler {
     
-    public function fetchEntity(mesh\IManager $manager, mesh\entity\ILocatorNode $node) {
-        switch($node->getLocation()) {
+    public function fetchEntity(mesh\IManager $manager, array $node) {
+        $location = implode('/', $node['location']);
+
+        switch($location) {
             case 'rdbms':
-                return opal\rdbms\adapter\Base::factory($node->getType().'://'.$node->getId());
+                return opal\rdbms\adapter\Base::factory($node['type'].'://'.$node['id']);
         }
     }
 }

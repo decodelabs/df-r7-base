@@ -12,16 +12,16 @@ use df\mesh;
 
 class MeshHandler implements mesh\IEntityHandler {
     
-    public function fetchEntity(mesh\IManager $manager, mesh\entity\ILocatorNode $node) {
-        switch($node->getType()) {
+    public function fetchEntity(mesh\IManager $manager, array $node) {
+        switch($node['type']) {
             case 'Controller':
-                $id = $node->getId();
+                $id = $node['id'];
             
                 if($id === null) {
                     $id = 'Http';
                 }
                 
-                $request = arch\Request::factory($id.'://~'.$node->getLocation().'/');
+                $request = arch\Request::factory($id.'://~'.implode('/', $node['location']).'/');
                 $context = arch\Context::factory($manager->getApplication(), $request);
                 
                 try {
@@ -31,13 +31,13 @@ class MeshHandler implements mesh\IEntityHandler {
                 }
                 
             case 'Context':
-                $id = $node->getId();
+                $id = $node['id'];
             
                 if($id === null) {
                     $id = 'Http';
                 }
                 
-                $request = arch\Request::factory($id.'://~'.$node->getLocation().'/');
+                $request = arch\Request::factory($id.'://~'.implode('/', $node['location']).'/');
                 return arch\Context::factory($manager->getApplication(), $request);
         }
     }

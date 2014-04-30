@@ -180,15 +180,13 @@ abstract class Model implements IModel, core\IDumpable {
         return new mesh\entity\Locator('axis://Model:'.$this->getModelName());
     }
 
-    public function fetchSubEntity(mesh\IManager $manager, mesh\entity\ILocatorNode $node) {
-        $id = $node->getId();
-        
-        switch($node->getType()) {
+    public function fetchSubEntity(mesh\IManager $manager, array $node) {
+        switch($node['type']) {
             case 'Unit':
-                return $this->getUnit($id);
+                return $this->getUnit($node['id']);
                 
             case 'Schema':
-                $unit = $this->getUnit($id);
+                $unit = $this->getUnit($node['id']);
                 
                 if(!$unit instanceof ISchemaBasedStorageUnit) {
                     throw new LogicException(

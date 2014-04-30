@@ -25,7 +25,7 @@ interface ILocatorProvider {
 interface IEntity extends ILocatorProvider {}
 
 interface IParentEntity extends IEntity {
-    public function fetchSubEntity(mesh\IManager $manager, ILocatorNode $node);
+    public function fetchSubEntity(mesh\IManager $manager, array $node);
 }
 
 interface IActiveParentEntity extends IParentEntity {
@@ -38,19 +38,30 @@ interface ILocator extends ILocatorProvider, core\IStringProvider  {
 
     public function setNodes(array $nodes);
     public function addNodes(array $nodes);
-    public function addNode(ILocatorNode $node);
-    public function getNode($index);
-    public function getNodeType($index);
-    public function getNodeId($index);
+    public function addNode($location, $type, $id=null);
+    public function importNode(array $node);
+    public function setNode($index, $location, $type, $id=null);
+    public function setNodeArray($index, array $node);
     public function hasNode($index);
+    public function getNode($index);
+    public function getNodeString($index);
+    public function setNodeLocation($index, $location);
+    public function appendNodeLocation($index, $location);
+    public function getNodeLocation($index);
+    public function setNodeType($index, $type);
+    public function getNodeType($index);
+    public function setNodeId($index, $id);
+    public function getNodeId($index);
     public function removeNode($index);
     public function getNodes();
 
     public function getFirstNode();
+    public function getFirstNodeLocation();
     public function getFirstNodeType();
     public function getFirstNodeId();
 
     public function getLastNode();
+    public function getLastNodeLocation();
     public function getLastNodeType();
     public function getLastNodeId();
 
@@ -59,17 +70,4 @@ interface ILocator extends ILocatorProvider, core\IStringProvider  {
     public function getId();
 
     public function toStringUpTo($type);
-}
-
-
-interface ILocatorNode extends core\IStringProvider {
-    public function setLocation($location);
-    public function appendLocation($location);
-    public function getLocation();
-    public function getLocationArray();
-    public function hasLocation();
-    public function setType($type);
-    public function getType();
-    public function setId($id);
-    public function getId();
 }
