@@ -185,6 +185,18 @@ class Loader implements ILoader {
         return $output;
     }
 
+    public function lookupFileListRecursive($path, $extensions=null) {
+        $output = $this->lookupFileList($path, $extensions);
+
+        foreach($this->lookupFolderList($path) as $dirName => $dirPath) {
+            foreach($this->lookupFileListRecursive($path.'/'.$dirName, $extensions) as $name => $filePath) {
+                $output[$dirName.'/'.$name] = $filePath;
+            }
+        }
+        
+        return $output;
+    }
+
     public function lookupClassList($path, $test=true) {
         $path = trim($path, '/');
         $output = [];
