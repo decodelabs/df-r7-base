@@ -157,6 +157,8 @@ interface ITree extends IReadable, IWritable, core\IAttributeContainer, \Countab
     public function getNthChildOfType($name, $index);
     public function getNthChildrenOfType($name, $formula);
 
+    public function getChildTextContent($name);
+
     // Child construction
     public function prependChild($child, $value=null);
     public function appendChild($child, $value=null);

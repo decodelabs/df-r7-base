@@ -393,6 +393,13 @@ class Tree implements ITree, core\IDumpable {
         return $this->_getNthChildren($formula, $name);
     }
 
+
+    public function getChildTextContent($name) {
+        if($node = $this->getFirstChildOfType($name)) {
+            return $node->getTextContent();
+        }
+    }
+
     protected function _getChildren($name=null) {
         $output = [];
 
@@ -823,7 +830,7 @@ class Tree implements ITree, core\IDumpable {
         $xpath = new \DOMXPath($this->_element->ownerDocument);
         $output = [];
 
-        foreach($xpath->query($path) as $node) {
+        foreach($xpath->query($path, $this->_element) as $node) {
             $output[] = new self($node);
         }
 
@@ -832,7 +839,7 @@ class Tree implements ITree, core\IDumpable {
 
     public function xPathFirst($path) {
         $xpath = new \DOMXPath($this->_element->ownerDocument);
-        $output = $xpath->query($path)->item(0);
+        $output = $xpath->query($path, $this->_element)->item(0);
 
         if($output) {
             return new self($output);
