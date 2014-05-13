@@ -19,6 +19,7 @@ class Client implements IClient, core\IDumpable {
     const USER_AGENT = 'DF link HTTP client';
 
     protected $_followRedirects = true;
+    protected $_maxRedirects = 15;
 
     public function __construct() {
         if(($num = func_num_args()) > 1) {
@@ -216,7 +217,15 @@ class Client implements IClient, core\IDumpable {
         $callback = $session->getCallback();
 
         if($response->isRedirect() && $this->_followRedirects) {
+            $redirCount = $session->getStore('redirects', 0);
             $request = clone $session->getRequest();
+
+            if($redirCount >= $this->_maxRedirects) {
+                throw new RuntimeException(
+                    'Too many redirects - '.$request->getUrl()
+                );
+            }
+
             $location = $response->getHeaders()->get('Location');
 
             if(!$location) {
@@ -225,6 +234,7 @@ class Client implements IClient, core\IDumpable {
 
             $request->setUrl($location);
             $this->addRequest($request, $callback);
+            $session->setStore('redirects', ++$redirCount);
             return;
         }
         

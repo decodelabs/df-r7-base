@@ -170,6 +170,10 @@ trait TStringResponse {
         return true;
     }
 
+    public function isRedirect() {
+        return false;
+    }
+
     public function getHeaders() {
         if(!$this->_headers) {
             $this->_headers = new link\http\response\HeaderCollection();
