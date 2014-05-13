@@ -171,6 +171,12 @@ class Client implements IClient, core\IDumpable {
             }
         }
 
+        $method = $session->getRequest()->getMethod();
+
+        if($method == 'HEAD') {
+            return link\IIoState::END;
+        }
+
         $isChunked = $session->getStore('isChunked', false);
         $length = $session->getStore('length', 0);
         $content = $response->getContent();
