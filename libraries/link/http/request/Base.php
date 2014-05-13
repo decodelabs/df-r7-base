@@ -110,6 +110,8 @@ class Base implements link\http\IRequest, core\IDumpable {
         if($this->_headers) {
             $this->_headers = clone $this->_headers;
         }
+
+        $this->_ip = null;
         
         return $this;
     }
@@ -248,6 +250,12 @@ class Base implements link\http\IRequest, core\IDumpable {
         }
         
         $this->_url = $url;
+        $this->_ip = null;
+
+        if($this->_headers) {
+            $this->_headers->remove('Host');
+        }
+
         return $this;
     }
     
