@@ -18,6 +18,8 @@ class Client implements IClient, core\IDumpable {
     const PROTOCOL_DISPOSITION = link\IClient::CLIENT_FIRST;
     const USER_AGENT = 'DF link HTTP client';
 
+    protected $_followRedirects = true;
+
     public function __construct() {
         if(($num = func_num_args()) > 1) {
             $args = func_get_args();
@@ -45,6 +47,15 @@ class Client implements IClient, core\IDumpable {
                 $this->run();
             }
         }
+    }
+
+    public function shouldFollowRedirects($flag=null) {
+        if($flag !== null) {
+            $this->_followRedirects = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_followRedirects;
     }
     
     public function addRequest($request, Callable $callback) {
@@ -177,8 +188,6 @@ class Client implements IClient, core\IDumpable {
                     return link\IIoState::END;
                 }
             }
-        } else if(!$length) {
-            core\stub('No HTTP content length detected');
         }
 
         if(strlen($session->readBuffer) >= $length) {
@@ -198,13 +207,28 @@ class Client implements IClient, core\IDumpable {
             }
         }
     }
-    
+
     protected function _onSessionEnd(link\ISession $session) {
         if(!$response = $session->getResponse()) {
             core\stub('Generate a default connection error response', $session);
         }
+
+        $callback = $session->getCallback();
+
+        if($response->isRedirect() && $this->_followRedirects) {
+            $request = clone $session->getRequest();
+            $location = $response->getHeaders()->get('Location');
+
+            if(!$location) {
+                core\stub('No redirect location specified', $response, $request);
+            }
+
+            $request->setUrl($location);
+            $this->addRequest($request, $callback);
+            return;
+        }
         
-        if($callback = $session->getCallback()) {
+        if($callback) {
             $callback($response, $this, $session);
         }
     }

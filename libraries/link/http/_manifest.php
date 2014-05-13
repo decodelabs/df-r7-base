@@ -116,6 +116,7 @@ interface IResponse extends core\IPayload, core\collection\IHeaderMapProvider, l
     public function getCookies();
     public function hasCookies();
     public function isOk();
+    public function isRedirect();
     
     // Content
     public function getContent();
@@ -384,6 +385,9 @@ interface IResponseCookieCollection extends core\IStringProvider {
 
 // Peer
 interface IClient extends link\IClient {
+
+    public function shouldFollowRedirects($flag=null);
+
     public function addRequest($request, Callable $callback);
     public function sendRequest($request);
 
