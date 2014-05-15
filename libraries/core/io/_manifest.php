@@ -455,6 +455,7 @@ interface IStreamChannel extends IContainedStateChannel {
 
 // File
 interface IFilePointer {
+
     public function open($mode=IMode::READ_WRITE);
     public function exists();
 
@@ -466,6 +467,8 @@ interface IFilePointer {
     
     public function putContents($data);
     public function getContents();
+
+    public function getHash($type);
     
     public function saveTo(core\uri\FilePath $path);
 }
