@@ -65,6 +65,7 @@ interface IRequest extends core\IStringProvider, core\collection\IHeaderMapProvi
     // Body
     public function setBodyData($data);
     public function getBodyData();
+    public function getBodyDataString();
     public function hasBodyData();
     
     // Cookies

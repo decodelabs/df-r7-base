@@ -139,13 +139,16 @@ class Client implements IClient, core\IDumpable {
             $request = $session->getRequest();
             $session->writeBuffer = $request->getHeaderString();
             $session->writeBuffer .= "\r\n\r\n";
-            
-            if(1/*!$request->hasFileStream()*/) {
-                $session->writeBuffer .= $request->getBodyData();
+
+            $body = $request->getBodyData();
+
+            if($body instanceof core\io\IFilePointer) {
+                $fileStream = $body->open();
+                $session->setFileStream($fileStream);
+            } else {
+                $session->writeBuffer .= (string)$body;
                 return link\IIoState::OPEN_READ;
             }
-            
-            $session->setFileStream($fileStream = $request->getFileStream());
         }
         
         $session->writeBuffer .= $fileStream->readChunk(8192);

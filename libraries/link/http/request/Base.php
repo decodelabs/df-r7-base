@@ -428,6 +428,8 @@ class Base implements link\http\IRequest, core\IDumpable {
     public function setBodyData($body) {
         if(is_array($body)) {
             $body = implode("\r\n", $body);
+        } else if($body instanceof core\io\IFilePointer) {
+            // do nothing?
         } else if($body !== null) {
             $body = (string)$body;
         }
@@ -438,6 +440,14 @@ class Base implements link\http\IRequest, core\IDumpable {
     
     public function getBodyData() {
         return $this->_bodyData;
+    }
+
+    public function getBodyDataString() {
+        if($this->_bodyData instanceof core\io\IFilePointer) {
+            return $this->_bodyData->getContent();
+        } else {
+            return (string)$this->_bodyData;
+        }
     }
     
     public function hasBodyData() {
@@ -589,7 +599,15 @@ class Base implements link\http\IRequest, core\IDumpable {
         }
         
         if($this->_bodyData !== null) {
-            $headers->set('Content-Length', strlen($this->_bodyData));
+            if($this->_bodyData instanceof core\io\IFilePointer) {
+                $headers->set('Content-Length', $this->_bodyData->getSize());
+
+                if(!$headers->has('Content-Type')) {
+                    $headers->set('Content-Type', $this->_bodyData->getContentType());
+                }
+            } else {
+                $headers->set('Content-Length', strlen($this->_bodyData));
+            }
         }
         
         if($this->_cookieData && !$this->_cookieData->isEmpty()) {
@@ -603,7 +621,7 @@ class Base implements link\http\IRequest, core\IDumpable {
         $output = $this->getHeaderString()."\r\n\r\n";
         
         if($this->hasBodyData()) {
-            $output .= $this->_bodyData;
+            $output .= $this->getBodyDataString();
         }
 
         return $output;
