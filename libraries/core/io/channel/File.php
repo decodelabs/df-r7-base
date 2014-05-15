@@ -91,6 +91,10 @@ class File implements core\io\IFile, core\io\ILocalFilePointer, core\io\IContain
         return hash_file($type, $this->_path);
     }
 
+    public function getRawHash($type) {
+        return hash_file($type, $this->_path, true);
+    }
+
 
 // Meta
     public function getLastModified() {

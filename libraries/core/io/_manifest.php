@@ -469,6 +469,7 @@ interface IFilePointer {
     public function getContents();
 
     public function getHash($type);
+    public function getRawHash($type);
     
     public function saveTo(core\uri\FilePath $path);
 }

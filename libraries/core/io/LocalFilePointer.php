@@ -64,6 +64,10 @@ class LocalFilePointer implements ILocalFilePointer, core\IDumpable {
     public function getHash($type) {
         return hash_file($type, $this->_path);
     }
+
+    public function getRawHash($type) {
+        return hash_file($type, $this->_path, true);
+    }
     
     public function getLastModified() {
         return filemtime($this->_path);

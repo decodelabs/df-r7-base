@@ -91,6 +91,10 @@ class Memory implements core\io\IFile, core\io\IContainedStateChannel, core\IDum
         return hash($type, $this->_data);
     }
 
+    public function getRawHash($type) {
+        return hash($type, $this->_data, true);
+    }
+
 
 // Meta
     public function getLastModified() {
