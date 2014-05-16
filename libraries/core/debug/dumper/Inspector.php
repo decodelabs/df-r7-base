@@ -54,7 +54,9 @@ class Inspector implements IInspector {
         } else if(is_object($object)) {
             return $this->_dumpObject($object, $deep);
         } else {
-            throw new core\debug\RuntimeException('Unknown data type');
+            df\Launchpad::loadBaseClass('core/debug/dumper/String');
+            return new String((string)$object);
+            //throw new core\debug\RuntimeException('Unknown data type');
         }
     }
     
