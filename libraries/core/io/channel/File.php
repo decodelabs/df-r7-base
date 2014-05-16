@@ -114,7 +114,8 @@ class File implements core\io\IFile, core\io\ILocalFilePointer, core\io\IContain
     }
     
     public function getContents() {
-        return $this->read();
+        return file_get_contents($this->_path);
+        //return $this->read();
     }
 
 
