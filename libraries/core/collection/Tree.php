@@ -273,7 +273,7 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
             }
         }
 
-        return flase;
+        return false;
     }
 
     public function remove($key) {
