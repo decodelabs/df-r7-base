@@ -253,6 +253,7 @@ class Mediator implements IMediator {
         }
 
         $headers->set('Date', $date = gmdate('D, d M Y H:i:s T'));
+        //$headers->set('Transfer-Encoding', 'chunked');
         $request->prepareHeaders();
 
         $headers->set('Authorization', $this->_createSignature(
@@ -277,7 +278,8 @@ class Mediator implements IMediator {
                 throw new ApiException(
                     $xml->Code[0]->getTextContent(),
                     $xml->Message[0]->getTextContent(),
-                    $response->getHeaders()->getStatusCode()
+                    $response->getHeaders()->getStatusCode(),
+                    $xml
                 );
             } else if($response->getHeaders()->hasStatusCode(404)) {
                 throw new RuntimeException(
@@ -297,6 +299,16 @@ class Mediator implements IMediator {
     }
 
     public function _newRequest($method, $path, $bucket=null) {
+        $request = new link\http\request\Base($this->getBucketUrl($bucket, $path, $resource));
+        $request->setMethod($method);
+        $url = $request->getUrl();
+        $url->isSecure($this->_useSsl);
+        $url->query->_resource = $resource;
+
+        return $request;
+    }
+
+    public function getBucketUrl($bucket, $path, &$resource=null) {
         $url = self::ENDPOINT;
         $path = ltrim($path, '/');
 
@@ -313,13 +325,7 @@ class Mediator implements IMediator {
             $resource = '/'.$path;
         }
 
-        $request = new link\http\request\Base($url);
-        $request->setMethod($method);
-        $url = $request->getUrl();
-        $url->isSecure($this->_useSsl);
-        $url->query->_resource = $resource;
-
-        return $request;
+        return $url;
     }
 
     protected function _isDnsBucketName($bucket) {

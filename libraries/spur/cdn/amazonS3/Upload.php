@@ -20,6 +20,7 @@ class Upload implements IUpload {
     protected $_acl = IAcl::PRIVATE_RW;
     protected $_storageClass = IStorageClass::STANDARD;
     protected $_encryption = IEncryption::NONE;
+    protected $_headers = [];
     protected $_mediator;
 
     public function __construct(IMediator $mediator, $bucket, $targetFilePath, core\io\IFilePointer $file) {
@@ -116,6 +117,38 @@ class Upload implements IUpload {
     }
 
 
+// Headers
+    public function setHeaderOverrides(array $headers) {
+        $this->clearHeaderOverrides();
+
+        foreach($headers as $key => $value) {
+            $this->setHeaderOverride($key, $value);
+        }
+
+        return $this;
+    }
+
+    public function setHeaderOverride($key, $value) {
+        $this->_headers[strtolower($key)] = $value;
+        return $this;
+    }
+
+    public function removeHeaderOverride($key) {
+        $key = strtolower($key);
+        unset($this->_headers[$key]);
+        return $this;
+    }
+
+    public function getHeaderOverrides() {
+        return $this->_headers;
+    }
+
+    public function clearHeaderOverrides() {
+        $this->_headers = [];
+        return $this;
+    }
+
+
     public function send() {
         $request = $this->_mediator->_newRequest('put', $this->_path, $this->_bucket);
         $request->setBodyData($this->_file);
@@ -135,6 +168,10 @@ class Upload implements IUpload {
 
         foreach($this->_attributes as $key => $value) {
             $headers->set('x-amz-meta-'.$key, $value);
+        }
+
+        foreach($this->_headers as $key => $value) {
+            $headers->set($key, $value);
         }
 
         $response = $this->_mediator->callServer($request);

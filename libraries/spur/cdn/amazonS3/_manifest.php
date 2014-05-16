@@ -14,17 +14,23 @@ use df\link;
 interface IException {}
 class RuntimeException extends \RuntimeException implements IException {}
 
-class ApiException extends RuntimeException {
+class ApiException extends RuntimeException implements core\IDumpable {
 
     public $apiCode;
+    public $xml;
 
-    public function __construct($apiCode, $message, $httpCode=500) {
+    public function __construct($apiCode, $message, $httpCode=500, core\xml\ITree $xml=null) {
         $this->apiCode = $apiCode;
+        $this->xml = $xml;
         parent::__construct($message, $httpCode);
     }
 
     public function getApiCode() {
         return $this->apiCode;
+    }
+
+    public function getDumpProperties() {
+        return $this->xml;
     }
 }
 
@@ -66,6 +72,7 @@ interface IMediator {
     public function getObjectInfo($bucket, $path);
 
     public function callServer(link\http\IRequest $request);
+    public function getBucketUrl($bucket, $path, &$resource=null);
 }
 
 interface IUpload extends core\IAttributeContainer {
@@ -82,6 +89,12 @@ interface IUpload extends core\IAttributeContainer {
     public function setStorageClass($class);
     public function setEncryption($encryption);
     public function getEncryption();
+
+    public function setHeaderOverrides(array $headers);
+    public function setHeaderOverride($key, $value);
+    public function removeHeaderOverride($key);
+    public function getHeaderOverrides();
+    public function clearHeaderOverrides();
 
     public function send();
 }
