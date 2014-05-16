@@ -150,10 +150,28 @@ class Client implements IClient, core\IDumpable {
                 return link\IIoState::OPEN_READ;
             }
         }
+
+        if(!$session->hasStore('isChunked')) {
+            $session->setStore('isChunked', $isChunked = ($request->getHeaders()->get('Transfer-Encoding') == 'chunked'));
+        } else {
+            $isChunked = $session->getStore('isChunked');
+        }
         
-        $session->writeBuffer .= $fileStream->readChunk(8192);
-        
-        return $fileStream->eof() ? 
+        $chunk = $fileStream->readChunk(8192);
+        $eof = $fileStream->eof();
+
+        if($isChunked) {
+            $session->writeBuffer .= dechex(strlen($chunk))."\r\n";
+            $session->writeBuffer .= $chunk."\r\n";
+
+            if($eof) {
+                $session->writeBuffer .= "0\r\n\r\n";
+            }
+        } else {
+            $session->writeBuffer .= $chunk;
+        }
+
+        return $eof ? 
             link\IIoState::OPEN_READ : 
             link\IIoState::BUFFER;
     }

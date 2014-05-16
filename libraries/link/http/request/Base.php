@@ -444,7 +444,7 @@ class Base implements link\http\IRequest, core\IDumpable {
 
     public function getBodyDataString() {
         if($this->_bodyData instanceof core\io\IFilePointer) {
-            return $this->_bodyData->getContent();
+            return $this->_bodyData->getContents();
         } else {
             return (string)$this->_bodyData;
         }
@@ -598,7 +598,7 @@ class Base implements link\http\IRequest, core\IDumpable {
             }
         }
         
-        if($this->_bodyData !== null) {
+        if($this->_bodyData !== null && $headers->get('Transfer-Encoding') != 'chunked') {
             if($this->_bodyData instanceof core\io\IFilePointer) {
                 $headers->set('Content-Length', $this->_bodyData->getSize());
 
