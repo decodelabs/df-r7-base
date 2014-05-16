@@ -17,6 +17,8 @@ trait TPeer {
     
     protected $_sessions = [];
     protected $_sessionCount = 0;
+
+    protected $_maxWriteRetries = 10;
     
     
 // Protocol
@@ -193,29 +195,35 @@ trait TPeer {
         
         // Split into chunks
         $data = substr($session->writeBuffer, 0, $this->_writeChunkSize);
-        
-        // Write to socket
-        try {
-            $socket->write($data);
-        } catch(core\io\OverflowException $e) {
-            // Peer has stopped reading
-            
-            $handler->unbind($binding);
-            $socket->shutdownWriting();
-            
-            try {
-                $handler->unfreeze($handler->getBinding($this, 'dataAvailable', halo\event\IIoState::READ));
-            } catch(halo\event\BindException $e) {
-                $this->_unregisterSessionBySocket($socket);
-            }
-            
-            return;
-        }
-        
-        // Put rest of chunks back into session buffer
-        $session->writeBuffer = substr($session->writeBuffer, strlen($data));
-    }
 
+        // Write to socket
+        $result = $socket->writeChunk($data);
+        
+        if($result) {
+            // Remove chunk from buffer
+            $session->writeBuffer = substr($session->writeBuffer, $result);
+            $session->writeRetries = 0;
+        } else {
+            usleep(500000);
+            $session->writeRetries++;
+            //core\debug()->warning('Retrying write: '.strlen($data));
+
+            if($session->writeRetries >= $this->_maxWriteRetries) {
+                // Peer has stopped reading
+                $session->writeRetries = 0;
+                $handler->unbind($binding);
+                $socket->shutdownWriting();
+                
+                try {
+                    $handler->unfreeze($handler->getBinding($this, 'dataAvailable', halo\event\IIoState::READ));
+                } catch(halo\event\BindException $e) {
+                    $this->_unregisterSessionBySocket($socket);
+                }
+                
+                return;
+            }
+        }
+    }
 
 // Event stubs
     protected function _onSessionStart(ISession $session) {}
@@ -415,6 +423,7 @@ trait TPeer_Session {
 
     public $readBuffer = '';
     public $writeBuffer = '';
+    public $writeRetries = 0;
     
     protected $_writeState = IIoState::BUFFER;
     protected $_socket;
