@@ -43,10 +43,10 @@ interface IStorageClass {
 }
 
 interface IAcl {
-    const PRIVATE_RW = 'private';
-    const PUBLIC_R = 'public-read';
-    const PUBLIC_RW = 'public-read-write';
-    const AUTHENTICATED_R = 'authenticated-read';
+    const PRIVATE_READ_WRITE = 'private';
+    const PUBLIC_READ = 'public-read';
+    const PUBLIC_READ_WRITE = 'public-read-write';
+    const AUTHENTICATED_READ = 'authenticated-read';
 }
 
 interface IEncryption {
@@ -63,13 +63,18 @@ interface IMediator {
     public function getSecretKey();
     public function shouldUseSsl($flag=null);
 
-    public function createBucket($name, $acl=IMediator::ACL_PRIVATE, $location=null);
+    public function createBucket($name, $acl=IAcl::PRIVATE_READ_WRITE, $location=null);
     public function deleteBucket($name);
     public function getBucketList();
     public function getBucketLocation($bucket);
-    public function getBucketObjectList($bucket, $limit=null, $marker=null);
+    public function getBucketObjectList($bucket, $prefix=null, $limit=null, $marker=null);
 
     public function getObjectInfo($bucket, $path);
+    public function newUpload($bucket, $path, core\io\IFilePointer $file);
+    public function newCopy($fromBucket, $fromPath, $toBucket, $toPath);
+    public function renameFile($bucket, $path, $newName, $acl=IAcl::PRIVATE_READ_WRITE);
+    public function deleteFile($bucket, $path);
+    public function deleteFolder($bucket, $path);
 
     public function callServer(link\http\IRequest $request);
     public function getBucketUrl($bucket, $path, &$resource=null);
@@ -97,4 +102,11 @@ interface IUpload extends core\IAttributeContainer {
     public function clearHeaderOverrides();
 
     public function send();
+}
+
+interface ICopy extends IUpload {
+    public function setFromBucket($bucket);
+    public function getFromBucket();
+    public function setFromFilePath($path);
+    public function getFromFilePath();
 }

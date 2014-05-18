@@ -17,7 +17,7 @@ class Upload implements IUpload {
     protected $_file;
     protected $_bucket;
     protected $_path;
-    protected $_acl = IAcl::PRIVATE_RW;
+    protected $_acl = IAcl::PRIVATE_READ_WRITE;
     protected $_storageClass = IStorageClass::STANDARD;
     protected $_encryption = IEncryption::NONE;
     protected $_headers = [];
@@ -63,14 +63,14 @@ class Upload implements IUpload {
 
     public function setAcl($acl) {
         switch($acl) {
-            case IAcl::PRIVATE_RW:
-            case IAcl::PUBLIC_R:
-            case IAcl::PUBLIC_RW:
-            case IAcl::AUTHENTICATED_R:
+            case IAcl::PRIVATE_READ_WRITE:
+            case IAcl::PUBLIC_READ:
+            case IAcl::PUBLIC_READ_WRITE:
+            case IAcl::AUTHENTICATED_READ:
                 break;
 
             default:
-                $acl = IAcl::PRIVATE_RW;
+                $acl = IAcl::PRIVATE_READ_WRITE;
                 break;
         }
 

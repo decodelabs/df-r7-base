@@ -60,7 +60,7 @@ class Mediator implements IMediator {
     }
 
 // Buckets
-    public function createBucket($name, $acl=IAcl::PRIVATE_RW, $location=null) {
+    public function createBucket($name, $acl=IAcl::PRIVATE_READ_WRITE, $location=null) {
         $request = $this->_newRequest('put', $name);
         $request->getHeaders()->set('x-amz-acl', $acl);
 
@@ -115,7 +115,7 @@ class Mediator implements IMediator {
         return $response['xml']->getTextContent();
     }
 
-    public function getBucketObjectList($bucket, $limit=null, $marker=null) {
+    public function getBucketObjectList($bucket, $prefix=null, $limit=null, $marker=null) {
         $request = $this->_newRequest('get', '/', $bucket);
         $query = $request->getUrl()->getQuery();
         $fetchAll = true;
@@ -129,6 +129,10 @@ class Mediator implements IMediator {
             } else {
                 $limit = null;
             }
+        }
+
+        if($prefix !== null) {
+            $query->prefix = (string)$prefix;
         }
 
         $output = [
@@ -203,6 +207,40 @@ class Mediator implements IMediator {
         return new Upload($this, $bucket, $path, $file);
     }
 
+    public function newCopy($fromBucket, $fromPath, $toBucket, $toPath) {
+        return new Copy($this, $fromBucket, $fromPath, $toBucket, $toPath);
+    }
+
+    public function renameFile($bucket, $path, $newName, $acl=IAcl::PRIVATE_READ_WRITE) {
+        $toPath = new core\uri\Path($path);
+        $toPath->setBasename($newName);
+        $toPath = $toPath->toString();
+
+        $this->newCopy($bucket, $path, $bucket, $toPath)
+            ->setAcl($acl)
+            ->send();
+
+        $this->deleteFile($bucket, $path);
+        return $this;
+    }
+
+    public function deleteFile($bucket, $path) {
+        $request = $this->_newRequest('delete', $path, $bucket);
+        $this->callServer($request);
+        return $this;
+    }
+
+    public function deleteFolder($bucket, $path) {
+        // TODO: send requests concurrently
+        $path = rtrim($path, '/').'/';
+
+        foreach($this->getBucketObjectList($bucket, $path)['objects'] as $name => $fileInfo) {
+            $this->deleteFile($bucket, $name);
+        }
+
+        return $this;
+    }
+
 
 // IO
     public function callServer(link\http\IRequest $request) {
@@ -253,7 +291,6 @@ class Mediator implements IMediator {
         }
 
         $headers->set('Date', $date = gmdate('D, d M Y H:i:s T'));
-        //$headers->set('Transfer-Encoding', 'chunked');
         $request->prepareHeaders();
 
         $headers->set('Authorization', $this->_createSignature(
