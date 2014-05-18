@@ -14,6 +14,7 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
 
     protected $_id;
     protected $_channels = [];
+    protected $_chunkReceivers = [];
 
     public static function defaultFactory($id=null) {
         if(isset($_SERVER['argv']) && !df\Launchpad::$invokingApplication) {
@@ -25,11 +26,17 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
         return new self([$channel], $id);
     }
 
-    public function __construct(array $channels=null, $id=null) {
+    public function __construct(array $ioSet=null, $id=null) {
         $this->setId($id);
 
-        if($channels !== null) {
-            $this->addChannels($channels);
+        if($ioSet !== null) {
+            foreach($ioSet as $id => $ioNode) {
+                if($ioNode instanceof IChannel) {
+                    $this->addChannel($ioNode);
+                } else if($ioNode instanceof IChunkReceiver) {
+                    $this->addChunkReceiver($id, $ioNode);
+                }
+            }
         }
     }
 
@@ -115,6 +122,47 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
     }
 
 
+// Chunk receivers
+    public function setChunkReceivers(array $receivers) {
+        $this->_chunkReceivers = [];
+        return $this->addChunkReceivers($receivers);
+    }
+
+    public function addChunkReceivers(array $receivers) {
+        foreach($receivers as $id => $receiver) {
+            if($receiver instanceof IChunkReceiver) {
+                $this->addChunkReceiver($id, $receiver);
+            }
+        }
+
+        return $this;
+    }
+
+    public function addChunkReceiver($id, IChunkReceiver $receiver) {
+        $this->_chunkReceivers[$id] = $receiver;
+        return $this;
+    }
+
+    public function hasChunkReceiver($id) {
+        return isset($this->_chunkReceivers[$id]);
+    }
+
+    public function getChunkReceiver($id) {
+        if(isset($this->_chunkReceivers[$id])) {
+            return $this->_chunkReceivers[$id];
+        }
+    }
+
+    public function getChunkReceivers() {
+        return $this->_chunkReceivers;
+    }
+
+    public function clearChunkReceivers() {
+        $this->_chunkReceivers = [];
+        return $this;
+    }
+
+
 // IO
     public function flush() {
         foreach($this->_channels as $channel) {
@@ -129,12 +177,20 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
             $channel->write($data);
         }
 
+        foreach($this->_chunkReceivers as $receiver) {
+            $receiver->writeChunk($data);
+        }
+
         return $this;
     }
 
     public function writeLine($line) {
         foreach($this->_channels as $channel) {
             $channel->writeLine($line);
+        }
+
+        foreach($this->_chunkReceivers as $receiver) {
+            $receiver->writeChunk($line."\r\n");
         }
 
         return $this;
@@ -145,12 +201,20 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
             $channel->writeError($error);
         }
 
+        foreach($this->_chunkReceivers as $receiver) {
+            $receiver->writeChunk($error);
+        }
+
         return $this;
     }
 
     public function writeErrorLine($line) {
         foreach($this->_channels as $channel) {
             $channel->writeErrorLine($line);
+        }
+
+        foreach($this->_chunkReceivers as $receiver) {
+            $receiver->writeChunk($line."\r\n");
         }
 
         return $this;

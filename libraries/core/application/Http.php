@@ -509,6 +509,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, link
         if($response->hasHeaders()) {
             $response->getHeaders()->send();
         }
+
         
         // Send data
         if($sendData) {
@@ -517,6 +518,8 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, link
             }
             
             flush();
+            ob_implicit_flush(true);
+
             set_time_limit(0);
             $channel = new core\io\channel\Stream('php://output');
             

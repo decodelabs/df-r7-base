@@ -171,7 +171,7 @@ class HttpHttp implements arch\IDirectoryHelper {
 
 
 // Generator
-    public function generator($contentType, core\io\IChunkSender $sender) {
+    public function generator($contentType, /*core\io\IChunkSender*/ $sender) {
         return new link\http\response\Generator($contentType, $sender);
     }
 

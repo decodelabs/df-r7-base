@@ -29,6 +29,9 @@ class Generator extends Base implements link\http\IGeneratorResponse {
         $this->getHeaders()
             ->set('content-type', $contentType)
             ->set('transfer-encoding', 'chunked')
+            ->setCacheAccess('no-cache')
+            ->getCacheControl()
+                ->canStore(false)
             ;
     }
 
@@ -57,6 +60,10 @@ class Generator extends Base implements link\http\IGeneratorResponse {
         $this->_channel = null;
 
         return $this;
+    }
+
+    public function getChannel() {
+        return $this->_channel;
     }
 
     public function writeChunk($chunk, $length=null) {

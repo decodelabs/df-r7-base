@@ -11,7 +11,7 @@ use df\halo;
 
 class Unix extends Base {
 
-    protected $_readChunkSize = 512;
+    protected $_readChunkSize = 16;
 
     /*
     public function isPrivileged() {
@@ -87,16 +87,16 @@ class Unix extends Base {
             usleep(10000);
         }
 
-        if($this->_multiplexer) {
-            $this->_multiplexer->setReadBlocking(true);
-        }
-        
         foreach($pipes as $pipe) {
             fclose($pipe);
         }
         
         proc_close($processHandle);
         $result->registerCompletion();
+
+        if($this->_multiplexer) {
+            $this->_multiplexer->setReadBlocking(true);
+        }
 
         return $result;
     }

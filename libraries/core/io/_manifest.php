@@ -511,6 +511,14 @@ interface IMultiplexer extends IFlushable, core\IRegistryObject {
     public function getChannels();
     public function clearChannels();
 
+    public function setChunkReceivers(array $receivers);
+    public function addChunkReceivers(array $receivers);
+    public function addChunkReceiver($id, IChunkReceiver $receiver);
+    public function hasChunkReceiver($id);
+    public function getChunkReceiver($id);
+    public function getChunkReceivers();
+    public function clearChunkReceivers();
+
     public function write($data);
     public function writeLine($line);
     public function writeError($error);
