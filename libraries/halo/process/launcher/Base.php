@@ -12,7 +12,7 @@ use df\halo;
 abstract class Base implements halo\process\ILauncher {
     
     protected $_processName;
-    protected $_args;
+    protected $_args = [];
     protected $_path;
     protected $_user;
     protected $_title;
@@ -56,7 +56,7 @@ abstract class Base implements halo\process\ILauncher {
     }
     
     public function setArgs($args) {
-        $this->_args = $args;
+        $this->_args = core\collection\Util::flattenArray(func_get_args());
         return $this;
     }
     

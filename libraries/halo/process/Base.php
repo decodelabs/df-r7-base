@@ -65,7 +65,7 @@ abstract class Base implements IProcess {
         $path = df\Launchpad::$applicationPath.'/entry/';
         $path .= df\Launchpad::$environmentId.'.'.$environmentMode.'.php';
 
-        return self::launchScript($path, 'task '.$request, $multiplexer);
+        return self::launchScript($path, ['task', $request], $multiplexer);
     }
     
     public static function launchBackground($process, $args=null, $path=null, core\io\IMultiplexer $multiplexer=null) {
@@ -113,7 +113,7 @@ abstract class Base implements IProcess {
             $phpPath = dirname($binaryPath);
         }
 
-        return halo\process\launcher\Base::factory($phpName, trim($path.' '.$args), $phpPath);
+        return halo\process\launcher\Base::factory($phpName, [trim($path), $args], $phpPath);
     }
     
     

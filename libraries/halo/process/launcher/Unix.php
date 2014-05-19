@@ -11,7 +11,7 @@ use df\halo;
 
 class Unix extends Base {
 
-    protected $_readChunkSize = 16;
+    protected $_readChunkSize = 64;
 
     /*
     public function isPrivileged() {
@@ -130,8 +130,20 @@ class Unix extends Base {
         
         $command .= $this->_processName;
         
-        if($this->_args) {
-            $command .= ' '.$this->_args;
+        if(!empty($this->_args)) {
+            $temp = [];
+
+            foreach($this->_args as $arg) {
+                $arg = (string)$arg;
+
+                if($arg{0} != '-') {
+                    $arg = escapeshellarg($arg);
+                }
+
+                $temp[] = $arg;
+            }
+
+            $command .= ' '.implode(' ', $temp);
         }
 
         if($this->_user) {
