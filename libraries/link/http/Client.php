@@ -105,6 +105,12 @@ class Client implements IClient, core\IDumpable {
         return $this->sendRequest($request);
     }
 
+    public function getFile($url, $file, $headers=null, $cookies=null) {
+        $request = $this->_prepareRequest($url, 'get', $headers, $cookies);
+        $request->setResponseFilePath($file);
+        return $this->sendRequest($request);
+    }
+
     public function post($url, $data, $headers=null, $cookies=null) {
         $request = $this->_prepareRequest($url, 'post', $headers, $cookies);
 
@@ -194,8 +200,12 @@ class Client implements IClient, core\IDumpable {
             }
 
             if($path = $request->getResponseFilePath()) {
-                core\io\Util::ensureDirExists(dirname($path));
-                $response->setContentFileStream(new core\io\channel\File($path, core\io\IMode::READ_WRITE_TRUNCATE));
+                if($path instanceof core\io\IChannel) {
+                    $response->setContentFileStream($path);
+                } else {
+                    core\io\Util::ensureDirExists(dirname($path));
+                    $response->setContentFileStream(new core\io\channel\File($path, core\io\IMode::READ_WRITE_TRUNCATE));
+                }
             }
 
             $session->setFileStream($response->getContentFileStream());

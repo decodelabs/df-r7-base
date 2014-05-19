@@ -406,6 +406,7 @@ interface IClient extends link\IClient {
     public function sendRequest($request);
 
     public function get($url, $headers=null, $cookies=null);
+    public function getFile($url, $file, $headers=null, $cookies=null);
     public function post($url, $data, $headers=null, $cookies=null);
 }
 
