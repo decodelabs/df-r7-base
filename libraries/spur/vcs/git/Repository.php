@@ -553,7 +553,7 @@ class Repository implements IRepository {
     }
 
     protected static function _runCommandIn($path, $command, array $arguments=null, $user=null) {
-        $argString = $command;
+        $args = [$command];
 
         if(!empty($arguments)) {
             foreach($arguments as $key => $value) {
@@ -574,20 +574,21 @@ class Repository implements IRepository {
                     }
                 }
 
-                $argString .= ' '.$key;
+                $arg = $key;
 
                 if(!is_bool($value)) {
                     if(substr($key, 0, 2) == '--') {
-                        $argString .= '=';
+                        $arg .= '=';
                     }
 
-                    $argString .= escapeshellarg($value);
+                    $arg .= escapeshellarg($value);
                 }
                 
+                $args[] = $arg;
             }
         }
 
-        $result = halo\process\launcher\Base::factory(basename(self::$_gitPath), $argString, dirname(self::$_gitPath))
+        $result = halo\process\launcher\Base::factory(basename(self::$_gitPath), $args, dirname(self::$_gitPath))
             ->setUser($user)
             ->setWorkingDirectory($path)
             ->launch();
