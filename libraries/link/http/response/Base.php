@@ -324,6 +324,10 @@ abstract class Base implements link\http\IResponse {
         
         return $content;
     }
+
+    public function getContentFileStream() {
+        return new core\io\channel\Memory($this->getContent(), $this->getContentType());
+    }
     
     public function onDispatchComplete() {}
     

@@ -34,8 +34,14 @@ class String extends Base implements link\http\IStringResponse {
     }
     
     public function setContent($content, $contentType=null) {
-        $this->_content = (string)$content;
-        
+        if($content instanceof core\io\IChannel) {
+            $this->setContentFileStream($content);
+        } else if(!$this->_content) {
+            $this->_content = new core\io\channel\Memory($content, $contentType);
+        } else {
+            $this->_content->write($content);
+        }
+
         if($contentType !== null) {
             $this->setContentType($contentType);
         }
@@ -44,6 +50,25 @@ class String extends Base implements link\http\IStringResponse {
     }
     
     public function getContent() {
+        return $this->_content->getContents();
+    }
+
+    public function setContentType($type) {
+        parent::setContentType($type);
+
+        if($this->_content instanceof core\io\channel\Memory) {
+            $this->_content->setContentType($type);
+        }
+
+        return $this;
+    }
+
+    public function setContentFileStream(core\io\IChannel $content) {
+        $this->_content = $content;
+        return $this;
+    }
+
+    public function getContentFileStream() {
         return $this->_content;
     }
 }

@@ -31,6 +31,8 @@ class Base implements link\http\IRequest, core\IDumpable {
     protected $_bodyData;
     protected $_cookieData;
     protected $_environmentMode = false;
+
+    protected $_responseFilePath;
     
     public static function fromString($string) {
         $class = get_called_class();
@@ -560,6 +562,18 @@ class Base implements link\http\IRequest, core\IDumpable {
     
     public function getSocketAddress() {
         return (string)$this->getIp().':'.$this->_url->getPort();
+    }
+
+
+
+// Response
+    public function setResponseFilePath($path) {
+        $this->_responseFilePath = $path;
+        return $this;
+    }
+
+    public function getResponseFilePath() {
+        return $this->_responseFilePath;
     }
     
     

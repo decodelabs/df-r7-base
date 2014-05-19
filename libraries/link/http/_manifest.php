@@ -81,6 +81,10 @@ interface IRequest extends core\IStringProvider, core\collection\IHeaderMapProvi
     public function setIp($ip);
     public function getIp();
     public function getSocketAddress();
+
+    // Response
+    public function setResponseFilePath($path);
+    public function getResponseFilePath();
 }
 
 
@@ -122,6 +126,7 @@ interface IResponse extends core\IPayload, core\collection\IHeaderMapProvider, l
     // Content
     public function getContent();
     public function getEncodedContent();
+    public function getContentFileStream();
     public function onDispatchComplete();
     
     // Info
@@ -144,7 +149,6 @@ interface IStringResponse extends IResponse {
 
 interface IFileResponse extends IResponse {
     public function setFile($file, $checkPath=true);
-    public function getContentFileStream();
     public function isStaticFile();
     public function getStaticFilePath();
 }
@@ -234,6 +238,10 @@ trait TStringResponse {
         return link\http\response\Base::encodeContent(
             $content, $contentEncoding, $transferEncoding
         );
+    }
+
+    public function getContentFileStream() {
+        return new core\io\channel\Memory($this->getContent(), $this->getContentType());
     }
     
     public function getContentLength() {

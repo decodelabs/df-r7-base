@@ -177,6 +177,8 @@ class Client implements IClient, core\IDumpable {
     }
 
     protected function _handleReadBuffer(link\ISession $session, $data) {
+        $request = $session->getRequest();
+
         if(!$response = $session->getResponse()) {
             if(false === strpos($session->readBuffer, "\r\n\r\n")) {
                 return;
@@ -190,17 +192,24 @@ class Client implements IClient, core\IDumpable {
             if($headers->has('content-length')) {
                 $session->setStore('length', (int)$headers->get('content-length'));
             }
+
+            if($path = $request->getResponseFilePath()) {
+                core\io\Util::ensureDirExists(dirname($path));
+                $response->setContentFileStream(new core\io\channel\File($path, core\io\IMode::READ_WRITE_TRUNCATE));
+            }
+
+            $session->setFileStream($response->getContentFileStream());
         }
 
-        $method = $session->getRequest()->getMethod();
 
-        if($method == 'HEAD') {
+        if($request->getMethod() == 'HEAD') {
             return link\IIoState::END;
         }
 
         $isChunked = $session->getStore('isChunked', false);
         $length = $session->getStore('length', 0);
-        $content = $response->getContent();
+
+        $fileStream = $session->getFileStream();
 
         if($isChunked) {
             if(!$length) {
@@ -219,10 +228,8 @@ class Client implements IClient, core\IDumpable {
         }
 
         if(strlen($session->readBuffer) >= $length) {
-            $content .= substr($session->readBuffer, 0, $length);
+            $fileStream->writeChunk(substr($session->readBuffer, 0, $length));
             $session->readBuffer = substr($session->readBuffer, $length);
-
-            $response->setContent($content);
 
             if($isChunked) {
                 if(trim($session->readBuffer) == '0') {

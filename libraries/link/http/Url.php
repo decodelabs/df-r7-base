@@ -238,11 +238,11 @@ class Url extends core\uri\Url implements IUrl {
 // Port
     public function getPort() {
         if($this->_port === null) {
-            if($this->_scheme == 'http') {
-                return 80;
-            } else if($this->_scheme == 'https') {
+            if($this->_scheme == 'https') {
                 return 443;
             }
+
+            return 80;
         }
         
         return $this->_port;
