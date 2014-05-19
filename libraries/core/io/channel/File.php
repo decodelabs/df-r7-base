@@ -5,6 +5,7 @@
  */
 namespace df\core\io\channel;
 
+use df;
 use df\core;
 
 class File implements core\io\IFile, core\io\ILocalFilePointer, core\io\IContainedStateChannel {
@@ -17,6 +18,10 @@ class File implements core\io\IFile, core\io\ILocalFilePointer, core\io\IContain
     protected $_mode;
     protected $_path;
     protected $_contentType = null;
+
+    public static function createTempFile($mode=core\io\IMode::READ_WRITE) {
+        return new self(tempnam(sys_get_temp_dir(), df\Launchpad::$application->getUniquePrefix().'-'), $mode);
+    }
 
     public function __construct($path, $mode=core\io\IMode::READ_WRITE) {
         //$this->_path = (string)core\uri\FilePath::factory($path);
