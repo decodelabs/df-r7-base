@@ -44,6 +44,11 @@ abstract class Base implements arch\IComponent {
             $class = 'df\\apex\\directory\\shared\\'.implode('\\', $parts);
 
             if(!class_exists($class)) {
+                try {
+                    $scaffold = arch\scaffold\Base::factory($context);
+                    return $scaffold->loadComponent($name, $args);
+                } catch(arch\scaffold\IException $e) {}
+
                 throw new arch\RuntimeException(
                     'Component ~'.$area.'/'.$path.'/'.ucfirst($name).' could not be found'
                 );

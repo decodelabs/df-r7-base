@@ -27,6 +27,11 @@ abstract class Action implements IAction, core\IDumpable {
         );
 
         if(!$class) {
+            try {
+                $scaffold = arch\scaffold\Base::factory($context);
+                return $scaffold->loadAction($controller);
+            } catch(arch\scaffold\IException $e) {}
+
             throw new RuntimeException(
                 'No action could be found for '.$context->location->toString(),
                 404

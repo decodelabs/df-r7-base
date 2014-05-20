@@ -84,6 +84,8 @@ trait TForm {
         }
 
         $parts[] = ucfirst($topName);
+        $state = $this->_state->getDelegateState($id);
+        $mainId = $this->_getDelegateIdPrefix().$id;
         
         $class = 'df\\apex\\directory\\'.$area.'\\'.implode('\\', $parts);
         
@@ -91,17 +93,18 @@ trait TForm {
             $class = 'df\\apex\\directory\\shared\\'.implode('\\', $parts);
 
             if(!class_exists($class)) {
+                try {
+                    $scaffold = arch\scaffold\Base::factory($context);
+                    return $this->_delegates[$id] = $scaffold->loadFormDelegate($name, $state, $mainId);
+                } catch(arch\scaffold\IException $e) {}
+
                 throw new DelegateException(
                     'Delegate '.$name.' could not be found at ~'.$area.'/'.$path
                 );
             }
         }
         
-        return $this->_delegates[$id] = new $class(
-            $context,
-            $this->_state->getDelegateState($id),
-            $this->_getDelegateIdPrefix().$id
-        );
+        return $this->_delegates[$id] = new $class($context, $state, $mainId);
     }
 
     public function directLoadDelegate($id, $class) {
