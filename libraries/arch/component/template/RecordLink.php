@@ -272,6 +272,12 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
         $url = $this->_getRecordUrl($id);
 
         if($url !== null) {
+            if(!$this->_redirectFrom) {
+                if($this->_disposition == 'positive' || $this->_disposition == 'negative' || $this->_disposition == 'operative') {
+                    $this->_redirectFrom = true;
+                }
+            }
+
             $url = $this->_context->normalizeOutputUrl($url, true, $this->_redirectFrom, $this->_redirectTo);
 
             if($url instanceof arch\IRequest && $this->_action) {
