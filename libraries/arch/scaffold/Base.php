@@ -33,7 +33,7 @@ abstract class Base implements IScaffold {
         $class = self::getClassFor($context->location, $runMode);
         
         if(!$class) {
-            $class = __CLASS__;
+            throw new RuntimeException('Scaffold could not be found for '.$context->location);
         }
         
         $output = new $class($context);
