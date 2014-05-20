@@ -311,7 +311,14 @@ trait TScaffold_SectionProvider {
 
     public function buildSectionHeaderBarComponent(array $args) {
         return (new arch\scaffold\component\HeaderBar($this, 'section', $args))
-            ->setTitle($this->getDirectoryTitle());
+            ->setTitle(
+                $this instanceof IRecordDataProviderScaffold ?
+                    $this->_(
+                        ucfirst($this->_getRecordItemName()).': %n%',
+                        ['%n%' => $this->getRecordName()]
+                    ) :
+                    $this->getDirectoryTitle()
+            );
     }
 
     public function addSectionHeaderBarOperativeLinks($menu, $bar) {
