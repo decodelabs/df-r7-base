@@ -368,7 +368,7 @@ trait TCascadingHelperProvider {
             return $this->_context;
         }
 
-        if($output = $this->view->getHelper($key, true)) {
+        if($this->view && ($output = $this->view->getHelper($key, true))) {
             return $output;
         }
 
