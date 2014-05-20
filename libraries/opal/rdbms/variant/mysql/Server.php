@@ -50,11 +50,11 @@ class Server implements opal\rdbms\IServer {
             case 1146:
                 $database = $table = null;
                 
-                if(preg_match('/Table \'([a-zA-Z0-9_]+)\.([a-zA-Z0-9_]+)\'/', $message, $matches)) {
+                if(preg_match('/Table \'([^\s\.]+)\.([^\s\.]+)\'/', $message, $matches)) {
                     $database = $matches[1];
                     $table = $matches[2];
                 }
-                
+
                 return new opal\rdbms\TableNotFoundException($message, $number, $sql, $database, $table);
                 
         // Field not found
