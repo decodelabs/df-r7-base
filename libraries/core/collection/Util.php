@@ -10,7 +10,7 @@ use df\core;
     
 class Util implements IUtil {
 
-    public static function flattenArray($array, $unique=true) {
+    public static function flattenArray($array, $unique=true, $removeNull=false) {
         if(!is_array($array)) {
             return [$array];
         }
@@ -25,7 +25,7 @@ class Util implements IUtil {
 
             if(is_array($value)) {
                 $output = array_merge($output, self::flattenArray($value, $unique));
-            } else {
+            } else if(!$removeNull || $value !== null) {
                 $output[] = $value;
             }
         }

@@ -350,7 +350,7 @@ trait THeaderMapProvider {
 
 
 interface IUtil {
-    public static function flattenArray($array);
+    public static function flattenArray($array, $unique=true, $removeNull=false);
     public static function isIterable($collection);
     public static function ensureIterable($collection);
 
