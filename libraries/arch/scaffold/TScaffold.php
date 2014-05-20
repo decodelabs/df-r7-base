@@ -231,8 +231,8 @@ trait TScaffold_RecordListProvider {
 
     protected $_recordListFields = [];
 
-    public function getRecordListQuery($mode) {
-        $output = $this->getRecordAdapter()->select();
+    public function getRecordListQuery($mode, array $fields=null) {
+        $output = $this->getRecordAdapter()->select($fields);
         $this->_prepareRecordListQuery($output, $mode);
         return $output;
     }

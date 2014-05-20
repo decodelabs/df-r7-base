@@ -27,7 +27,7 @@ class SearchSelector extends arch\form\template\SearchSelectorDelegate {
     protected function _getSearchResultIdList($search, array $selected) {
         $idKey = $this->_scaffold->getRecordIdKey();
 
-        return $this->data->britvic->framework->select('id')
+        return $this->_scaffold->getRecordListQuery('selector', [$idKey])
             ->where($this->_scaffold->getRecordNameKey(), 'matches', $search)
             ->where($idKey, '!in', $selected)
             ->chain([$this, 'applyDependencies'])
@@ -39,5 +39,9 @@ class SearchSelector extends arch\form\template\SearchSelectorDelegate {
                 'actions' => false
             ])
             ->setCollection($result);
+    }
+
+    protected function _getResultId($result) {
+        return $this->_scaffold->getRecordId($result);
     }
 }
