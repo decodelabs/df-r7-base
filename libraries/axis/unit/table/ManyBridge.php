@@ -132,7 +132,7 @@ class ManyBridge extends Base implements axis\IVirtualUnit {
         
         if(!$dominantField) {
             throw new axis\schema\FieldTypeNotFoundException(
-                'Target Many relation field could not be found on unit '.$dominantUnit->getUnitId()
+                'Target Many relation field '.$this->_dominantFieldName.' could not be found on unit '.$dominantUnit->getUnitId()
             );
         }
 
