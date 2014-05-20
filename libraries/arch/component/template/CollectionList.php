@@ -10,7 +10,7 @@ use df\core;
 use df\arch;
 use df\aura;
     
-abstract class CollectionList extends arch\component\Base implements aura\html\widget\IWidgetProxy {
+class CollectionList extends arch\component\Base implements aura\html\widget\IWidgetProxy {
 
     const DEFAULT_ERROR_MESSAGE = null;
 
@@ -72,17 +72,22 @@ abstract class CollectionList extends arch\component\Base implements aura\html\w
 // Fields
     public function setFields(array $fields) {
         foreach($fields as $key => $value) {
-            if($value === true && isset($this->_fields[$key]) && is_callable($this->_fields[$key])) {
-                continue;
-            }
-
-            if(!is_callable($value)) {
-                $value = (bool)$value;
-            }
-
-            $this->_fields[$key] = $value;
+            $this->setField($key, $value);
         }
 
+        return $this;
+    }
+
+    public function setField($key, $value) {
+        if($value === true && isset($this->_fields[$key]) && is_callable($this->_fields[$key])) {
+            return $this;
+        }
+
+        if(!is_callable($value)) {
+            $value = (bool)$value;
+        }
+
+        $this->_fields[$key] = $value;
         return $this;
     }
 
@@ -183,7 +188,7 @@ abstract class CollectionList extends arch\component\Base implements aura\html\w
                     $output->addField($key);
                 }
             } else if(is_callable($value)) {
-                $value($output);
+                $value($output, $key);
             }
         }
 
