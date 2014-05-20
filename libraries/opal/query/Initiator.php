@@ -77,8 +77,8 @@ class Initiator implements IInitiator {
     public function beginSelect(array $fields=[], $distinct=false) {
         $this->_setMode(IQueryTypes::SELECT);
         $fields = core\collection\Util::flattenArray($fields, false);
-        
-        if(empty($fields)) {
+
+        if(empty($fields) || (count($fields) == 1 && $fields[0] === null)) {
             $fields = ['*'];
         }
 
