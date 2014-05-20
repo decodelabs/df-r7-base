@@ -136,6 +136,10 @@ class Unix extends Base {
             foreach($this->_args as $arg) {
                 $arg = (string)$arg;
 
+                if(!strlen($arg)) {
+                    continue;
+                }
+
                 if($arg{0} != '-') {
                     $arg = escapeshellarg($arg);
                 }
