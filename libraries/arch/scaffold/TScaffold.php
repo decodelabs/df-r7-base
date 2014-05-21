@@ -208,13 +208,31 @@ trait TScaffold_RecordDataProvider {
         $list->addField('name', function($item) use($mode) {
             if($mode == 'list') {
                 return $this->import->component(
-                    ucfirst($this->getRecordKeyName().'Link'), 
-                    $this->_context->location, 
-                    $item
-                );
+                        ucfirst($this->getRecordKeyName().'Link'), 
+                        $this->_context->location, 
+                        $item
+                    )
+                    ->setMaxLength(50);
             }
 
             return $item['name'];
+        });
+    }
+
+    public function describeUrlField($list, $mode) {
+        $list->addField('url', function($item) use($mode) {
+            $url = $item['url'];
+
+            if($mode == 'list') {
+                $url = $this->normalizeOutputUrl($url);
+                $name = $url->getDomain();
+            } else {
+                $name = $url;
+            }
+
+            return $this->html->link($url, $name)
+                ->setIcon('link')
+                ->setTarget('_blank');
         });
     }
 
