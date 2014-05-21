@@ -41,6 +41,11 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
         if(empty($this->_sections)) {
             $this->_sections[] = 'details';
         }
+
+        if(empty($this->_recordDetailsFields)) {
+            $this->_recordDetailsFields = $this->_recordListFields;
+            unset($this->_recordDetailsFields['actions']);
+        }
     }
 
 // Actions
