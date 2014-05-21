@@ -435,7 +435,7 @@ trait TScaffold_RecordIndexHeaderBarProvider {
         $menu->addLinks(
             $bar->html->link(
                     $bar->uri->request($this->_getActionRequest('add'), true),
-                    $this->_('Add '.$this->getRecordKeyName())
+                    $this->_('Add '.$this->getRecordItemName())
                 )
                 ->setIcon('add')
                 ->addAccessLock($this->getRecordAdapter()->getEntityLocator()->toString().'#add')
