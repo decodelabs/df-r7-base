@@ -90,7 +90,7 @@ trait TAccessLockProvider {
 }
 
 
-interface IRecord extends core\collection\IMappedCollection, user\IAccessLock, mesh\entity\IEntity, IRecordAdapterProvider, IPrimaryKeySetProvider {
+interface IRecord extends core\collection\IMappedCollection, core\IExporterValueMap, user\IAccessLock, mesh\entity\IEntity, IRecordAdapterProvider, IPrimaryKeySetProvider {
     public function isNew();
     public function makeNew(array $newValues=null);
     public function spawnNew(array $newValues=null);

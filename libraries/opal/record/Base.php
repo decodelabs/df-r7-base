@@ -209,7 +209,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         foreach($this->_changes as $key => $value) {
             if($value instanceof IValueContainer) {
                 $value = $value->getValueForStorage();
-            } else if($value instanceof IRecord) {
+            } else if($value instanceof IPrimaryKeySetProvider) {
                 $value = $value->getPrimaryKeySet();
             }
             
@@ -225,7 +225,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         foreach($output as $key => $value) {
             if($value instanceof IValueContainer) {
                 $value = $value->getValueForStorage();
-            } else if($value instanceof IRecord) {
+            } else if($value instanceof IPrimaryKeySetProvider) {
                 $value = $value->getPrimaryKeySet();
             }
             
@@ -262,7 +262,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
             if(array_key_exists($key, $this->_values) && $value !== null) {
                 if($value instanceof IValueContainer) {
                     $value = $value->getValueForStorage();
-                } else if($value instanceof IRecord) {
+                } else if($value instanceof IPrimaryKeySetProvider) {
                     $value = $value->getPrimaryKeySet();
                 }
                 
@@ -300,7 +300,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
             if(!array_key_exists($key, $this->_values) && $this->_changes[$key] !== null) {
                 if($value instanceof IValueContainer) {
                     $value = $value->getValueForStorage();
-                } else if($value instanceof IRecord) {
+                } else if($value instanceof IPrimaryKeySetProvider) {
                     $value = $value->getPrimaryKeySet();
                 }
                 
@@ -335,7 +335,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         foreach($this->_values as $key => $value) {
             if($value instanceof IValueContainer) {
                 $value = $value->getValueForStorage();
-            } else if($value instanceof IRecord) {
+            } else if($value instanceof IPrimaryKeySetProvider) {
                 $value = $value->getPrimaryKeySet();
             }
             
@@ -764,6 +764,28 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     
     public function get($key, $default=null) {
         return $this->offsetGet($key, $default);
+    }
+
+    public function export($key, $default=null) {
+        $output = null;
+        
+        if(array_key_exists($key, $this->_changes)) {
+            $output = $this->_changes[$key];
+        } else if(array_key_exists($key, $this->_values)) {
+            $output = $this->_values[$key];
+        }
+
+        if($output === null) {
+            $output = $default;
+        }
+
+        if($output instanceof IValueContainer) {
+            $output = $output->getValueForStorage();
+        } else if($output instanceof IPrimaryKeySetProvider) {
+            $output = $output->getPrimaryKeySet();
+        }
+        
+        return $output;
     }
     
     public function has($key) {

@@ -80,6 +80,10 @@ interface IValueMap {
     public function importFrom(IValueMap $source, array $fields);
 }
 
+interface IExporterValueMap extends IValueMap {
+    public function export($key, $default=null);
+}
+
 trait TValueMap {
 
     public function importFrom(IValueMap $source, array $fields) {
@@ -90,6 +94,8 @@ trait TValueMap {
             if(is_string($key)) {
                 $field = $key;
                 $value = $field;
+            } if($source instanceof IExporterValueMap) {
+                $value = $source->export($field);
             } else {
                 $value = $source->get($field);
             }
