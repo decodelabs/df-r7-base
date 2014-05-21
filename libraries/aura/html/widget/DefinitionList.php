@@ -16,6 +16,8 @@ class DefinitionList extends Base implements IDataDrivenListWidget, IMappedListW
     
     use TWidget_DataDrivenList;
     use TWidget_MappedList;
+
+    protected $_renderIfEmpty = true;
     
     public function __construct(arch\IContext $context, $data) {
         $this->setData($data);
@@ -37,22 +39,37 @@ class DefinitionList extends Base implements IDataDrivenListWidget, IMappedListW
         }
         
         $data = $renderContext->prepareRow($this->_data);
+        $empty = true;
 
         foreach($fields as $key => $field) {
-            $ddTag = new aura\html\Element('dt', $field->getName());
-            $dtTag = new aura\html\Tag('dd');
+            $dtTag = new aura\html\Element('dt', $field->getName());
+            $ddTag = new aura\html\Tag('dd');
 
-            $renderContext->iterateField($key, $dtTag);
+            $renderContext->iterateField($key, $ddTag, $dtTag);
             $value = $renderContext->renderCell($data, $field->renderer);
 
             if($renderContext->shouldSkipRow()) {
                 continue;
             }
             
+            $empty = false;
             $children->push($ddTag->render(), $dtTag->renderWith($value));
+        }
+
+        if($empty && $this->_renderIfEmpty) {
+            return null;
         }
         
         return $tag->renderWith($children, true);
+    }
+
+    public function shouldRenderIfEmpty($flag=null) {
+        if($flag !== null) {
+            $this->_renderIfEmpty = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_renderIfEmpty;
     }
     
 // Dump
