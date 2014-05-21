@@ -208,21 +208,6 @@ trait TScaffold_RecordDataProvider {
         $list->addField('weight', $mode == 'list' ? '#' : $this->_('Order number'));
     }
 
-    public function describeNameField($list, $mode) {
-        $list->addField('name', function($item) use($mode) {
-            if($mode == 'list') {
-                return $this->import->component(
-                        ucfirst($this->getRecordKeyName().'Link'), 
-                        $this->_context->location, 
-                        $item
-                    )
-                    ->setMaxLength(50);
-            }
-
-            return $item['name'];
-        });
-    }
-
     public function describeUrlField($list, $mode) {
         $list->addField('url', function($item) use($mode) {
             $url = $item['url'];
@@ -268,6 +253,7 @@ trait TScaffold_RecordListProvider {
 
         $args[0] = array_merge($this->_recordListFields, $args[0]);
         $output = new arch\component\template\CollectionList($this->_context, $args);
+        $nameKey = $this->getRecordNameKey();
 
         foreach($output->getFields() as $field => $enabled) {
             if($enabled === true) {
@@ -277,11 +263,30 @@ trait TScaffold_RecordListProvider {
                     $output->setField($field, function($list, $key) use($method) {
                         return $this->{$method}($list, 'list');
                     });
+                } else if($field == $nameKey) {
+                    $output->setField($field, function($list, $key) use($field) {
+                        return $this->_autoDescribeNameKeyField($field, $list, 'list');
+                    });
                 }
             }
         }
 
         return $output;
+    }
+
+    protected function _autoDescribeNameKeyField($fieldName, $list, $mode) {
+        $list->addField($fieldName, function($item) use($mode) {
+            if($mode == 'list') {
+                return $this->import->component(
+                        ucfirst($this->getRecordKeyName().'Link'), 
+                        $this->_context->location, 
+                        $item
+                    )
+                    ->setMaxLength(50);
+            }
+
+            return $item[$fieldName];
+        });
     }
 
     public function buildSelectorFormDelegate($state, $id) {
