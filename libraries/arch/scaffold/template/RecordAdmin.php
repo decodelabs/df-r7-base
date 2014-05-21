@@ -35,6 +35,13 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
     const RECORD_NAME_KEY = 'name';
     const RECORD_URL_KEY = null;
 
+    protected function __construct(arch\IContext $context) {
+        parent::__construct($context);
+
+        if(empty($this->_sections)) {
+            $this->_sections[] = 'details';
+        }
+    }
 
 // Actions
     public function indexHtmlAction() {
@@ -61,6 +68,11 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
 
         return $this->import->component(ucfirst($keyName).'Details', $this->_context->location)
             ->setRecord($record);
+    }
+
+    public function buildDeleteDynamicAction($controller) {
+        $this->_recordAction = 'delete';
+        return new arch\scaffold\form\Delete($this, $controller);
     }
 
 // Helpers

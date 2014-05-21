@@ -79,6 +79,16 @@ abstract class Base implements IScaffold {
             $method = lcfirst($action).'Action';
 
             if(!method_exists($this, $method)) {
+                $method = 'build'.ucfirst($action).'DynamicAction';
+
+                if(method_exists($this, $method)) {
+                    $action = $this->{$method}($controller);
+
+                    if($action instanceof arch\IAction) {
+                        return $action;
+                    }
+                }
+
                 if($this instanceof ISectionProviderScaffold && ($action = $this->loadSectionAction($controller))) {
                     return $action;
                 }

@@ -49,7 +49,7 @@ trait TScaffold_RecordLoader {
         return lcfirst($adapter->getUnitName());
     }
 
-    protected function _getRecordItemName() {
+    public function getRecordItemName() {
         if(@static::RECORD_ITEM_NAME) {
             return static::RECORD_ITEM_NAME;
         }
@@ -186,14 +186,18 @@ trait TScaffold_RecordDataProvider {
             // Edit
             $this->html->link(
                     $this->_getRecordActionRequest($record, 'edit', null, true),
-                    $this->_('Edit '.$this->_getRecordItemName())
+                    $this->_('Edit '.$this->getRecordItemName())
                 )
                 ->setIcon('edit'),
 
             // Delete
             $this->html->link(
-                    $this->_getRecordActionRequest($record, 'delete', null, true),
-                    $this->_('Delete '.$this->_getRecordItemName())
+                    $this->_getRecordActionRequest(
+                        $record, 'delete', null, true,
+                        $mode == 'sectionHeaderBar' ?
+                            $this->_context->location : null
+                    ),
+                    $this->_('Delete '.$this->getRecordItemName())
                 )
                 ->setIcon('delete')
         ];
@@ -332,8 +336,8 @@ trait TScaffold_SectionProvider {
             ->setTitle(
                 $this instanceof IRecordDataProviderScaffold ?
                     $this->_(
-                        ucfirst($this->_getRecordItemName()).': %n%',
-                        ['%n%' => $this->getRecordName()]
+                        ucfirst($this->getRecordItemName()).': %n%',
+                        ['%n%' => $this->format->shorten($this->getRecordName(), 50)]
                     ) :
                     $this->getDirectoryTitle()
             );

@@ -46,7 +46,6 @@ interface IRecordListProviderScaffold extends IRecordLoaderScaffold {
     public function getRecordListQuery($mode);
 }
 
-
 interface ISectionProviderScaffold extends IScaffold {
     public function loadSectionAction(arch\IController $controller=null);
     public function getSectionItemCounts();
