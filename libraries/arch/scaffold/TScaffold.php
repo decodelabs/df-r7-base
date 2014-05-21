@@ -195,7 +195,7 @@ trait TScaffold_RecordDataProvider {
                     $this->_getRecordActionRequest(
                         $record, 'delete', null, true,
                         $mode == 'sectionHeaderBar' ?
-                            $this->_context->location : null
+                            $this->_context->location->getPath()->getDirname().'/' : null
                     ),
                     $this->_('Delete '.$this->getRecordItemName())
                 )
@@ -205,7 +205,7 @@ trait TScaffold_RecordDataProvider {
 
 
     public function describeWeightField($list, $mode) {
-        $list->addField('weight', $mode == 'list' ? $this->_('No.') : $this->_('Order number'));
+        $list->addField('weight', $mode == 'list' ? '#' : $this->_('Order number'));
     }
 
     public function describeNameField($list, $mode) {
