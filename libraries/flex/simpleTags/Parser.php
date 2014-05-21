@@ -14,7 +14,7 @@ class Parser {
 
     protected static $_tagList = [
         'a', 'abbr', 'b', 'br', 'cite', 'code', 'del', 'em', 
-        'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+        //'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
         'i', 'img', 'ins', 'q', 'small', 'span', 'strong', 
         'sub', 'sup', 'time', 'var'
     ];
@@ -73,6 +73,7 @@ class Parser {
 
         $text = '<p>'.str_replace("\n\n", '</p>'.'<p>', $text).'</p>';
         $text = str_replace(["\n", '</p>'], ['<br />', '</p>'."\n"], trim($text));
+        $text = str_replace('<p></p>', '<br />', $text);
 
         return $text;
     }
