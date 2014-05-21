@@ -237,7 +237,7 @@ trait TScaffold_RecordListProvider {
         return $output;
     }
 
-    abstract protected function _prepareRecordListQuery(opal\query\ISelectQuery $query, $mode);
+    protected function _prepareRecordListQuery(opal\query\ISelectQuery $query, $mode) {}
 
     public function buildListComponent(array $args) {
         if(!isset($args[0])) {
