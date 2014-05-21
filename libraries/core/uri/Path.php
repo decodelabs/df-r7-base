@@ -234,7 +234,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, core\IDumpable {
     
 // Accessors
     public function getDirname() {
-        return dirname($this->toString());
+        return dirname($this->toString().'a').'/';
     }
     
     public function setBaseName($baseName) {
