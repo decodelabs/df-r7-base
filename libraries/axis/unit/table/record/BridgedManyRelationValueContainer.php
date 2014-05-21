@@ -16,7 +16,8 @@ class BridgedManyRelationValueContainer implements
     opal\record\IManyRelationValueContainer,
     core\IArrayProvider,
     \Countable,
-    \IteratorAggregate {
+    \IteratorAggregate,
+    core\IDescribable {
     
     protected $_current = [];
     protected $_new = [];
@@ -33,6 +34,10 @@ class BridgedManyRelationValueContainer implements
         $this->_field = $field;
         $this->_localPrimaryKeySet = $field->getLocalRelationManifest()->toPrimaryKeySet();
         $this->_targetPrimaryKeySet = $field->getTargetRelationManifest()->toPrimaryKeySet();
+    }
+
+    public function getOutputDescription() {
+        return $this->select()->count();
     }
     
     public function isPrepared() {

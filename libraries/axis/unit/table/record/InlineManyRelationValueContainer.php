@@ -16,7 +16,8 @@ class InlineManyRelationValueContainer implements
     opal\record\IManyRelationValueContainer,
     core\IArrayProvider,
     \Countable,
-    \IteratorAggregate {
+    \IteratorAggregate,
+    core\IDescribable {
     
     protected $_current = [];
     protected $_new = [];
@@ -30,6 +31,10 @@ class InlineManyRelationValueContainer implements
     public function __construct(axis\schema\IOneToManyField $field) {
         $this->_field = $field;
         $this->_targetPrimaryKeySet = $field->getTargetRelationManifest()->toPrimaryKeySet();
+    }
+
+    public function getOutputDescription() {
+        return $this->select()->count();
     }
     
     public function isPrepared() {

@@ -36,6 +36,10 @@ trait TStringProvider {
     }
 }
 
+interface IDescribable {
+    public function getOutputDescription();
+}
+
 // Array provider
 interface IArrayProvider {
     public function toArray();

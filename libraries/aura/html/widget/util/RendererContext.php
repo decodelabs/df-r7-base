@@ -107,6 +107,10 @@ class RendererContext implements aura\html\widget\IRendererContext {
             }
         }
 
+        if($value instanceof core\IDescribable) {
+            $value = $value->getOutputDescription();
+        }
+
         if($value instanceof aura\html\IRenderable) {
             $value = $value->render();
         } else if($value instanceof aura\view\IRenderable) {
