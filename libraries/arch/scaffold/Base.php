@@ -23,7 +23,7 @@ abstract class Base implements IScaffold {
     private $_directoryKeyName;
 
     public static function factory(arch\IContext $context) {
-        $registryKey = 'scaffold('.$context->location->toString().')';
+        $registryKey = 'scaffold('.$context->location->getPath()->getDirname().')';
 
         if($output = $context->application->getRegistryObject($registryKey)) {
             return $output;
@@ -60,7 +60,7 @@ abstract class Base implements IScaffold {
     }
 
     public function getRegistryObjectKey() {
-        return 'scaffold('.$this->_context->location->toString().')';
+        return 'scaffold('.$this->_context->location->getPath()->getDirname().')';
     }
 
     public function onApplicationShutdown() {}
