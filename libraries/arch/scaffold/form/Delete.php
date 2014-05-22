@@ -19,6 +19,10 @@ class Delete extends arch\form\template\Delete {
         parent::__construct($scaffold->getContext(), $controller);
     }
 
+    protected function _getDataId() {
+        return $this->_scaffold->getRecordId();
+    }
+
     protected function _getItemName() {
         return $this->_scaffold->getRecordItemName();
     }
