@@ -35,6 +35,10 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
     const RECORD_NAME_KEY = 'name';
     const RECORD_URL_KEY = null;
 
+    const CAN_ADD_RECORD = true;
+    const CAN_EDIT_RECORD = true;
+    const CAN_DELETE_RECORD = true;
+
     protected function __construct(arch\IContext $context) {
         parent::__construct($context);
 

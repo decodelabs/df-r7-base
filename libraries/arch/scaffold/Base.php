@@ -199,4 +199,12 @@ abstract class Base implements IScaffold {
 
         return $this->directory->normalizeRequest($output, $redirFrom, $redirTo);
     }
+
+    protected function _normalizeFieldOutput($field, $value) {
+        if($value instanceof core\time\IDate) {
+            return $this->format->userDateTime($value, 'short');
+        }
+
+        return $value;
+    }
 }

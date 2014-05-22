@@ -66,6 +66,10 @@ trait TScaffold_RecordDataProvider {
     //const RECORD_URL_KEY = null;
     //const RECORD_ADAPTER = null;
 
+    //const CAN_ADD_RECORD = true;
+    //const CAN_EDIT_RECORD = true;
+    //const CAN_DELETE_RECORD = true;
+
     protected $_record;
     protected $_recordAction;
     protected $_recordDetailsFields = [];
@@ -88,7 +92,20 @@ trait TScaffold_RecordDataProvider {
             $record = $this->_ensureRecord();
         }
 
-        return $record[$this->getRecordNameKey()];
+        $key = $this->getRecordNameKey();
+        return $this->_normalizeFieldOutput($key, $record[$key]);
+    }
+
+    public function getRecordDescription($record=null) {
+        if(!$record) {
+            $record = $this->_ensureRecord();
+        }
+        
+        return $this->_describeRecord($record);
+    }
+
+    protected function _describeRecord($record) {
+        return $this->getRecordName($record);
     }
 
     public function getRecordUrl($record=null) {
@@ -148,6 +165,20 @@ trait TScaffold_RecordDataProvider {
         return $this->getRecordKeyName();
     }
 
+
+    public function canAddRecord() {
+        return static::CAN_ADD_RECORD;
+    }
+
+    public function canEditRecord($record) {
+        return static::CAN_EDIT_RECORD;
+    }
+
+    public function canDeleteRecord($record) {
+        return static::CAN_DELETE_RECORD;
+    }
+
+
     protected function _getRecordActionRequest($record, $action, array $query=null, $redirFrom=null, $redirTo=null) {
         return $this->_getActionRequest($action, [
             $this->_getRecordUrlKey() => $this->getRecordId($record)
@@ -182,16 +213,20 @@ trait TScaffold_RecordDataProvider {
     }
 
     public function getRecordOperativeLinks($record, $mode) {
-        return [
-            // Edit
-            $this->html->link(
+        $output = [];
+
+        // Edit
+        if($this->canEditRecord($record)) {
+            $output[] = $this->html->link(
                     $this->_getRecordActionRequest($record, 'edit', null, true),
                     $this->_('Edit '.$this->getRecordItemName())
                 )
-                ->setIcon('edit'),
+                ->setIcon('edit');
+        }
 
-            // Delete
-            $this->html->link(
+        // Delete
+        if($this->canDeleteRecord($record)) {
+            $output[] = $this->html->link(
                     $this->_getRecordActionRequest(
                         $record, 'delete', null, true,
                         $mode == 'sectionHeaderBar' ?
@@ -199,8 +234,10 @@ trait TScaffold_RecordDataProvider {
                     ),
                     $this->_('Delete '.$this->getRecordItemName())
                 )
-                ->setIcon('delete')
-        ];
+                ->setIcon('delete');
+        }
+
+        return $output;
     }
 
 
@@ -342,7 +379,7 @@ trait TScaffold_SectionProvider {
                 $this instanceof IRecordDataProviderScaffold ?
                     $this->_(
                         ucfirst($this->getRecordItemName()).': %n%',
-                        ['%n%' => $this->format->shorten($this->getRecordName(), 50)]
+                        ['%n%' => $this->format->shorten($this->getRecordDescription(), 50)]
                     ) :
                     $this->getDirectoryTitle()
             );
@@ -437,13 +474,15 @@ trait TScaffold_IndexHeaderBarProvider {
 trait TScaffold_RecordIndexHeaderBarProvider {
 
     public function addIndexHeaderBarOperativeLinks($menu, $bar) {
-        $menu->addLinks(
-            $bar->html->link(
-                    $bar->uri->request($this->_getActionRequest('add'), true),
-                    $this->_('Add '.$this->getRecordItemName())
-                )
-                ->setIcon('add')
-                ->addAccessLock($this->getRecordAdapter()->getEntityLocator()->toString().'#add')
-        );
+        if($this->canAddRecord()) {
+            $menu->addLinks(
+                $bar->html->link(
+                        $bar->uri->request($this->_getActionRequest('add'), true),
+                        $this->_('Add '.$this->getRecordItemName())
+                    )
+                    ->setIcon('add')
+                    ->addAccessLock($this->getRecordAdapter()->getEntityLocator()->toString().'#add')
+            );
+        }
     }
 }

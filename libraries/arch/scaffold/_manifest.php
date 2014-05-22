@@ -38,8 +38,13 @@ interface IRecordDataProviderScaffold extends IRecordLoaderScaffold {
     public function getRecordIdKey();
     public function getRecordName($record=null);
     public function getRecordNameKey();
+    public function getRecordDescription($record=null);
     public function getRecordUrl($record=null);
     public function getRecordOperativeLinks($record, $mode);
+
+    public function canAddRecord();
+    public function canEditRecord($record);
+    public function canDeleteRecord($record);
 }
 
 interface IRecordListProviderScaffold extends IRecordLoaderScaffold {
