@@ -186,6 +186,10 @@ class Manager implements IManager, core\IDumpable {
         return $this->session->getNamespace($namespace);
     }
 
+    public function getSessionStartTime() {
+        return $this->session->getDescriptor()->startTime;
+    }
+
 
 
 // Options

@@ -50,6 +50,7 @@ interface IManager extends core\IManager {
     // Session
     public function getSessionController();
     public function getSessionNamespace($namespace);
+    public function getSessionStartTime();
 
     // Options
     public function setClientOption($key, $value);
