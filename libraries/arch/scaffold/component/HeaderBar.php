@@ -15,7 +15,7 @@ class HeaderBar extends arch\component\template\HeaderBar {
     protected $_scaffold;
     protected $_name;
 
-    public function __construct(arch\scaffold\IRecordDataProviderScaffold $scaffold, $name, array $args=null) {
+    public function __construct(arch\scaffold\IScaffold $scaffold, $name, array $args=null) {
         $this->_scaffold = $scaffold;
         $this->_name = ucfirst($name);
         $this->_icon = $scaffold->getDirectoryIcon();

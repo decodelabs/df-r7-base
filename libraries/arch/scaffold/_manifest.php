@@ -23,6 +23,7 @@ interface IScaffold extends core\IRegistryObject {
     public function loadAction(arch\IController $controller=null);
     public function loadComponent($name, array $args=null);
     public function loadFormDelegate($name, arch\form\IStateController $state, $id);
+    public function loadMenu($name, $id);
 
     public function getDirectoryTitle();
     public function getDirectoryIcon();

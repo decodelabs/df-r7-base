@@ -38,6 +38,7 @@ abstract class Base implements IScaffold {
         
         $output = new $class($context);
         $context->application->setRegistryObject($output);
+
         return $output;
     }
 
@@ -156,6 +157,18 @@ abstract class Base implements IScaffold {
         return $output;
     }
 
+    public function loadMenu($name, $id) {
+        $method = 'generate'.ucfirst($name).'Menu';
+
+        if(!method_exists($this, $method)) {
+            throw new LogicException(
+                'Scaffold at '.$this->_context->location.' could not provider menu '.$name
+            );
+        }
+
+        return new arch\scaffold\navigation\Menu($this, $name, $id);
+    }
+
 
 // Directory
     public function getDirectoryTitle() {
@@ -183,7 +196,8 @@ abstract class Base implements IScaffold {
         if(static::DIRECTORY_KEY_NAME) {
             $this->_directoryKeyName = static::DIRECTORY_KEY_NAME;
         } else {
-            $this->_directoryKeyName = array_pop($this->_context->location->getControllerParts());
+            $parts = $this->_context->location->getControllerParts();
+            $this->_directoryKeyName = array_pop($parts);
         }
 
         return $this->_directoryKeyName;

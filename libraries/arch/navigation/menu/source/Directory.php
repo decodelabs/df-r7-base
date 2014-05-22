@@ -57,6 +57,18 @@ class Directory extends Base implements arch\navigation\menu\IListableSource {
                 ->setSubId($packageName);
         }
 
+        try {
+            $context = new arch\Context(
+                df\Launchpad::$application,
+                new arch\Request(arch\Request::AREA_MARKER.$area.'/'.implode('/', $parts).'/'.lcfirst($name))
+            );
+
+            $scaffold = arch\scaffold\Base::factory($context);
+            $scaffoldId = $baseId.'__scaffold';
+            $menus[$scaffoldId] = $scaffold->loadMenu($name, $scaffoldId);
+        } catch(arch\scaffold\IException $e) {}
+
+
         if(class_exists($classBase)) {
             $output = new $classBase($this->_context, $baseId);
         } else if(class_exists($sharedClassBase)) {
