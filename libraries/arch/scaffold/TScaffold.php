@@ -219,7 +219,7 @@ trait TScaffold_RecordDataProvider {
 
         foreach($output->getFields() as $field => $enabled) {
             if($enabled === true) {
-                $method = 'describe'.ucfirst($field).'Field';
+                $method = 'define'.ucfirst($field).'Field';
 
                 if(method_exists($this, $method)) {
                     $output->setField($field, function($list, $key) use($method) {
@@ -261,11 +261,11 @@ trait TScaffold_RecordDataProvider {
     }
 
 
-    public function describeWeightField($list, $mode) {
+    public function defineWeightField($list, $mode) {
         $list->addField('weight', $mode == 'list' ? '#' : $this->_('Order number'));
     }
 
-    public function describeUrlField($list, $mode) {
+    public function defineUrlField($list, $mode) {
         $list->addField('url', function($item) use($mode) {
             $url = $item['url'];
 
@@ -282,14 +282,14 @@ trait TScaffold_RecordDataProvider {
         });
     }
 
-    public function describeUserField($list) {
+    public function defineUserField($list) {
         $list->addField('user', function($item) {
             return $this->import->component('UserLink', '~admin/users/clients/', $item['user'])
                 ->setDisposition('transitive');
         });
     }
 
-    public function describeActionsField($list, $mode) {
+    public function defineActionsField($list, $mode) {
         $list->addField('actions', function($item) {
             return $this->getRecordOperativeLinks($item, 'list');
         });
@@ -325,7 +325,7 @@ trait TScaffold_RecordListProvider {
 
         foreach($output->getFields() as $field => $enabled) {
             if($enabled === true) {
-                $method = 'describe'.ucfirst($field).'Field';
+                $method = 'define'.ucfirst($field).'Field';
 
                 if(method_exists($this, $method)) {
                     $output->setField($field, function($list, $key) use($method) {
@@ -333,7 +333,7 @@ trait TScaffold_RecordListProvider {
                     });
                 } else if($field == $nameKey) {
                     $output->setField($field, function($list, $key) use($field) {
-                        return $this->_autoDescribeNameKeyField($field, $list, 'list');
+                        return $this->_autoDefineNameKeyField($field, $list, 'list');
                     });
                 }
             }
@@ -342,7 +342,7 @@ trait TScaffold_RecordListProvider {
         return $output;
     }
 
-    protected function _autoDescribeNameKeyField($fieldName, $list, $mode) {
+    protected function _autoDefineNameKeyField($fieldName, $list, $mode) {
         $list->addField($fieldName, function($item) use($mode) {
             if($mode == 'list') {
                 return $this->import->component(
