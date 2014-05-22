@@ -53,7 +53,7 @@ class DefinitionList extends Base implements IDataDrivenListWidget, IMappedListW
             }
             
             $empty = false;
-            $children->push($ddTag->render(), $dtTag->renderWith($value));
+            $children->push($dtTag->render(), $ddTag->renderWith($value));
         }
 
         if($empty && $this->_renderIfEmpty) {
