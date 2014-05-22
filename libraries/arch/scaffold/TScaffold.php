@@ -223,7 +223,9 @@ trait TScaffold_RecordDataProvider {
 
                 if(method_exists($this, $method)) {
                     $output->setField($field, function($list, $key) use($method) {
-                        return $this->{$method}($list, 'details');
+                        if(false === $this->{$method}($list, 'details')) {
+                            $list->addField($key);
+                        }
                     });
                 }
             }
@@ -329,7 +331,9 @@ trait TScaffold_RecordListProvider {
 
                 if(method_exists($this, $method)) {
                     $output->setField($field, function($list, $key) use($method) {
-                        return $this->{$method}($list, 'list');
+                        if(false === $this->{$method}($list, 'list')) {
+                            $list->addField($key);
+                        }
                     });
                 } else if($field == $nameKey) {
                     $output->setField($field, function($list, $key) use($field) {
