@@ -1500,7 +1500,11 @@ abstract class QueryExecutor implements IQueryExecutor {
 
         foreach($elements as $element) {
             if($element instanceof opal\query\IField) {
-                $output[] = $this->defineFieldReference($element, false);
+                $output[] = $this->defineFieldReference(
+                    $element, false,
+                    $this->_query instanceof opal\query\IUpdateQuery ||
+                    $this->_query instanceof opal\query\IDeleteQuery
+                );
             } else if($element instanceof opal\query\IExpressionValue) {
                 $output[] = $bindString = ':'.$this->_stmt->generateUniqueKey();
                 $this->_stmt->bind($bindString, $element->getValue());
