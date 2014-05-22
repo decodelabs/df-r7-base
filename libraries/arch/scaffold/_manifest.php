@@ -53,7 +53,8 @@ interface IRecordDataProviderScaffold extends IRecordLoaderScaffold {
 }
 
 interface IRecordListProviderScaffold extends IRecordLoaderScaffold {
-    public function getRecordListQuery($mode);
+    public function getRecordListQuery($mode, array $fields=null);
+    public function applyRecordQuerySearch(opal\query\ISelectQuery $query, $search, $mode);
 }
 
 interface ISectionProviderScaffold extends IScaffold {

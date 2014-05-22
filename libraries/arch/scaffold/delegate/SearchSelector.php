@@ -28,7 +28,9 @@ class SearchSelector extends arch\form\template\SearchSelectorDelegate {
         $idKey = $this->_scaffold->getRecordIdKey();
 
         return $this->_scaffold->getRecordListQuery('selector', [$idKey])
-            ->where($this->_scaffold->getRecordNameKey(), 'matches', $search)
+            ->chain(function($query) use($search) {
+                $this->_scaffold->applyRecordQuerySearch($query, $search, 'selector');
+            })
             ->where($idKey, '!in', $selected)
             ->chain([$this, 'applyDependencies'])
             ->toList($idKey);

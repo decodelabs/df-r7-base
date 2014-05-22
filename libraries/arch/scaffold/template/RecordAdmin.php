@@ -57,14 +57,36 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
         $keyName = $this->getRecordKeyName();
         $adapter = $this->getRecordAdapter();
 
-        $query = $this->getRecordListQuery('index')
-            ->paginateWith($this->request->query);
+        $query = $this->getRecordListQuery('index');
+        $search = $this->request->getQueryTerm('search');
+
+        if(strlen($search)) {
+            $this->applyRecordQuerySearch($query, $search, 'index');
+        }
+
+        $query->paginateWith($this->request->query);
 
         $container = $this->aura->getWidgetContainer();
         $this->view = $container->getView();
 
         $container->push(
             $this->import->component('IndexHeaderBar', $this->_context->location),
+
+            $this->html->form($this->_context->location)->setMethod('get')->push(
+                $this->html->fieldSet($this->_('Search'))->push(
+                    $this->html->searchTextbox('search', $search),
+                    $this->html->submitButton(null, $this->_('Go'))
+                        ->setIcon('search')
+                        ->setDisposition('positive'),
+
+                    $this->html->link(
+                            $this->_context->location->path->getDirname(), 
+                            $this->_('Reset')
+                        )
+                        ->setIcon('refresh')
+                )
+            ),
+
             $this->import->component(ucfirst($keyName).'List', $this->_context->location)
                 ->setCollection($query)
         );

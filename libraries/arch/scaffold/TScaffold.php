@@ -301,6 +301,10 @@ trait TScaffold_RecordListProvider {
         return $output;
     }
 
+    public function applyRecordQuerySearch(opal\query\ISelectQuery $query, $search, $mode) {
+        $query->where($this->getRecordNameKey(), 'matches', $search);
+    }
+
     protected function _prepareRecordListQuery(opal\query\ISelectQuery $query, $mode) {}
 
     public function buildListComponent(array $args) {
