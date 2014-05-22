@@ -230,10 +230,17 @@ class Context implements IContext, \Serializable, core\IDumpable {
                 
             case 'location':
                 return $this->location;
+
+            case 'scaffold':
+                return $this->getScaffold();
                 
             default:
                 return $this->_getDefaultMember($key);
         }
+    }
+
+    public function getScaffold() {
+        return arch\scaffold\Base::factory($this);
     }
     
     public function _($phrase, array $data=null, $plural=null, $locale=null) {

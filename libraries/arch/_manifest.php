@@ -69,6 +69,8 @@ interface IContext extends core\IContext, core\i18n\translate\ITranslationProxy,
     public function getRequest();
     public function getLocation();
     public function normalizeOutputUrl($uri, $toRequest=false, $from=null, $to=null);
+
+    public function getScaffold();
 }
 
 
