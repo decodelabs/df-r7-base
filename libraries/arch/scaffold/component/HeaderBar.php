@@ -26,7 +26,7 @@ class HeaderBar extends arch\component\template\HeaderBar {
     }
 
     protected function _addOperativeLinks($menu) {
-        $method = 'add'.$this->_name.'HeaderBarOperativeLinks';
+        $method = 'add'.$this->_name.'OperativeLinks';
 
         if(method_exists($this->_scaffold, $method)) {
             $this->_scaffold->{$method}($menu, $this);
@@ -34,7 +34,7 @@ class HeaderBar extends arch\component\template\HeaderBar {
     }
 
     protected function _addSubOperativeLinks($menu) {
-        $method = 'add'.$this->_name.'HeaderBarSubOperativeLinks';
+        $method = 'add'.$this->_name.'SubOperativeLinks';
 
         if(method_exists($this->_scaffold, $method)) {
             $this->_scaffold->{$method}($menu, $this);
@@ -46,7 +46,7 @@ class HeaderBar extends arch\component\template\HeaderBar {
     }
 
     protected function _addTransitiveLinks($menu) {
-        $method = 'add'.$this->_name.'HeaderBarTransitiveLinks';
+        $method = 'add'.$this->_name.'TransitiveLinks';
 
         if(method_exists($this->_scaffold, $method)) {
             $this->_scaffold->{$method}($menu, $this);
@@ -54,7 +54,7 @@ class HeaderBar extends arch\component\template\HeaderBar {
     }
 
     protected function _addSectionLinks($menu) {
-        $method = 'add'.$this->_name.'HeaderBarSectionLinks';
+        $method = 'add'.$this->_name.'SectionLinks';
 
         if(method_exists($this->_scaffold, $method)) {
             $this->_scaffold->{$method}($menu, $this);

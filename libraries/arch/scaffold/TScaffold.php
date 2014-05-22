@@ -452,22 +452,22 @@ trait TScaffold_SectionProvider {
             );
     }
 
-    public function addSectionHeaderBarOperativeLinks($menu, $bar) {
+    public function addSectionOperativeLinks($menu, $bar) {
         if($this instanceof IRecordDataProviderScaffold) {
             $menu->addLinks($this->getRecordOperativeLinks($this->getRecord(), 'sectionHeaderBar'));
         }
     }
 
-    public function addSectionHeaderBarSubOperativeLinks($menu, $bar) {
+    public function addSectionSubOperativeLinks($menu, $bar) {
         $action = $this->_context->request->getAction();
-        $method = 'add'.ucfirst($action).'SectionHeaderBarSubOperativeLinks';
+        $method = 'add'.ucfirst($action).'SectionSubOperativeLinks';
 
         if(method_exists($this, $method)) {
             $this->{$method}($menu, $bar);
         }
     }
 
-    public function addSectionHeaderBarSectionLinks($menu, $bar) {
+    public function addSectionSectionLinks($menu, $bar) {
         $menu->addLinks($this->location->getPath()->getDirname().'Sections');
     }
 
@@ -549,7 +549,7 @@ trait TScaffold_IndexHeaderBarProvider {
 
 trait TScaffold_RecordIndexHeaderBarProvider {
 
-    public function addIndexHeaderBarOperativeLinks($menu, $bar) {
+    public function addIndexOperativeLinks($menu, $bar) {
         if($this->canAddRecord()) {
             $menu->addLinks(
                 $bar->html->link(
