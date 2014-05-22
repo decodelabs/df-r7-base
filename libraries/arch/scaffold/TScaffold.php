@@ -282,6 +282,13 @@ trait TScaffold_RecordDataProvider {
         });
     }
 
+    public function describeUserField($list) {
+        $list->addField('user', function($item) {
+            return $this->import->component('UserLink', '~admin/users/clients/', $item['user'])
+                ->setDisposition('transitive');
+        });
+    }
+
     public function describeActionsField($list, $mode) {
         $list->addField('actions', function($item) {
             return $this->getRecordOperativeLinks($item, 'list');
