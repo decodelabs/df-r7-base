@@ -397,6 +397,28 @@ trait TScaffold_SectionProvider {
         }
     }
 
+    public function buildSection($name, Callable $builder) {
+        $container = $this->aura->getWidgetContainer();
+        $this->view = $container->getView();
+
+        $args = [];
+        $record = null;
+
+        if($this instanceof IRecordDataProviderScaffold) {
+            $args[] = $record = $this->getRecord();
+        }
+
+        $args[] = $this->view;
+        $args[] = $this;
+
+        $container->push(
+            $this->import->component('SectionHeaderBar', $this->_context->location, $record),
+            call_user_func_array($builder, $args)
+        );
+
+        return $this->view;
+    }
+
     public function buildSectionHeaderBarComponent(array $args) {
         return (new arch\scaffold\component\HeaderBar($this, 'section', $args))
             ->setTitle(
@@ -467,7 +489,7 @@ trait TScaffold_SectionProvider {
             $link = $entryList->newLink($request, $name)
                 ->setId($action)
                 ->setIcon($icon)
-                ->setWeight($i * 10)
+                ->setWeight($action == 'details' ? 1 : $i * 10)
                 ->setDisposition('informative');
 
             if(isset($counts[$action])) {

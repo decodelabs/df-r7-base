@@ -46,4 +46,8 @@ class SearchSelector extends arch\form\template\SearchSelectorDelegate {
     protected function _getResultId($result) {
         return $this->_scaffold->getRecordId($result);
     }
+
+    protected function _getResultDisplayName($result) {
+        return $this->_scaffold->getRecordName($result);
+    }
 }
