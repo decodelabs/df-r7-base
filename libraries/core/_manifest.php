@@ -134,7 +134,7 @@ interface IUserValueContainer extends IValueContainer {
 // Chainer
 interface IChainable {
     public function chain(Callable $callback);
-    public function chainIf($test, Callable $callback);
+    public function chainIf($test, Callable $trueCallback, Callable $falseCallback=null);
 }
 
 trait TChainable {
@@ -143,9 +143,11 @@ trait TChainable {
         return $this;
     }
 
-    public function chainIf($test, Callable $callback) {
+    public function chainIf($test, Callable $trueCallback, Callable $falseCallback=null) {
         if($test) {
-            $callback($this);
+            $trueCallback($this);
+        } else if($falseCallback) {
+            $falseCallback($this);
         }
 
         return $this;
