@@ -223,4 +223,42 @@ class HttpHttp implements arch\IDirectoryHelper {
     public function getCookies() {
         return $this->_httpRequest->getCookieData();
     }
+
+
+// Status
+    public static function isValidStatusCode($code) {
+        return link\http\response\HeaderCollection::isValidStatusCode($code);
+    }
+
+    public static function statusCodeToString($code) {
+        return link\http\response\HeaderCollection::statusCodeToString($code);
+    }
+    
+    public static function statusCodeToMessage($code) {
+        return link\http\response\HeaderCollection::statusCodeToMessage($code);
+    }
+    
+    public static function isInformationStatusCode($code) {
+        return link\http\response\HeaderCollection::isInformationStatusCode($code);
+    }
+
+    public static function isSuccessStatusCode($code) {
+        return link\http\response\HeaderCollection::isSuccessStatusCode($code);
+    }
+
+    public static function isRedirectStatusCode($code) {
+        return link\http\response\HeaderCollection::isRedirectStatusCode($code);
+    }
+
+    public static function isClientErrorStatusCode($code) {
+        return link\http\response\HeaderCollection::isClientErrorStatusCode($code);
+    }
+
+    public static function isServerErrorStatusCode($code) {
+        return link\http\response\HeaderCollection::isServerErrorStatusCode($code);
+    }
+
+    public function isErrorStatusCode($code) {
+        return link\http\response\HeaderCollection::isErrorStatusCode($code);
+    }
 }
