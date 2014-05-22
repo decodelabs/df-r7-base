@@ -15,6 +15,8 @@ class HeaderBar extends arch\component\template\HeaderBar {
     protected $_scaffold;
     protected $_name;
 
+    protected $_subOperativeLinkBuilder;
+
     public function __construct(arch\scaffold\IScaffold $scaffold, $name, array $args=null) {
         $this->_scaffold = $scaffold;
         $this->_name = ucfirst($name);
@@ -37,6 +39,10 @@ class HeaderBar extends arch\component\template\HeaderBar {
         if(method_exists($this->_scaffold, $method)) {
             $this->_scaffold->{$method}($menu, $this);
         }
+
+        if($this->_subOperativeLinkBuilder) {
+            call_user_func($this->_subOperativeLinkBuilder, $menu, $this->_scaffold->view, $this->_scaffold);
+        }
     }
 
     protected function _addTransitiveLinks($menu) {
@@ -53,5 +59,14 @@ class HeaderBar extends arch\component\template\HeaderBar {
         if(method_exists($this->_scaffold, $method)) {
             $this->_scaffold->{$method}($menu, $this);
         }
+    }
+
+    public function setSubOperativeLinkBuilder(Callable $builder=null) {
+        $this->_subOperativeLinkBuilder = $builder;
+        return $this;
+    }
+
+    public function getSubOperativeLinkBuilder() {
+        return $this->_subOperativeLinkBuilder;
     }
 }

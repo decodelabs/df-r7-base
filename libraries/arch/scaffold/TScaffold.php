@@ -397,7 +397,7 @@ trait TScaffold_SectionProvider {
         }
     }
 
-    public function buildSection($name, Callable $builder) {
+    public function buildSection($name, Callable $builder, Callable $linkBuilder=null) {
         $container = $this->aura->getWidgetContainer();
         $this->view = $container->getView();
 
@@ -411,10 +411,14 @@ trait TScaffold_SectionProvider {
         $args[] = $this->view;
         $args[] = $this;
 
-        $container->push(
-            $this->import->component('SectionHeaderBar', $this->_context->location, $record),
-            call_user_func_array($builder, $args)
-        );
+        $hb = $this->import->component('SectionHeaderBar', $this->_context->location, $record);
+
+        if($hb instanceof arch\scaffold\component\HeaderBar) {
+            $hb->setSubOperativeLinkBuilder($linkBuilder);
+        }
+
+        $body = call_user_func_array($builder, $args);
+        $container->push($hb, $body);
 
         return $this->view;
     }
