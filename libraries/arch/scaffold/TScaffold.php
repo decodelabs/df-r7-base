@@ -421,13 +421,20 @@ trait TScaffold_SectionProvider {
     }
 
     public function addSectionHeaderBarSectionLinks($menu, $bar) {
+        $menu->addLinks($this->location->getPath()->getDirname().'Sections');
+    }
+
+    public function generateSectionsMenu($entryList) {
         if(count($this->_sections) == 1) {
             return;
         }
 
         $counts = $this->getSectionItemCounts();
+        $i = 0;
 
         foreach($this->_sections as $action => $set) {
+            $i++;
+
             if(!is_array($set)) {
                 $action = $set;
                 $set = [];
@@ -453,15 +460,17 @@ trait TScaffold_SectionProvider {
                 $icon = null;
             }
 
-            $link = $this->html->link($request, $name)
+            $link = $entryList->newLink($request, $name)
+                ->setId($action)
                 ->setIcon($icon)
+                ->setWeight($i * 10)
                 ->setDisposition('informative');
 
             if(isset($counts[$action])) {
                 $link->setNote($this->format->counterNote($counts[$action]));
             }
 
-            $menu->addLink($link);
+            $entryList->addEntry($link);
         }
     }
 
