@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\arch;
 use df\aura;
+use df\opal;
 
 // Exceptions
 interface IException {}
@@ -43,8 +44,11 @@ interface IRecordDataProviderScaffold extends IRecordLoaderScaffold {
     public function getRecordOperativeLinks($record, $mode);
 
     public function canAddRecord();
-    public function canEditRecord($record);
-    public function canDeleteRecord($record);
+    public function canEditRecord($record=null);
+    public function canDeleteRecord($record=null);
+
+    public function getRecordDeleteFlags();
+    public function deleteRecord(opal\record\IRecord $record, array $flags=[]);
 }
 
 interface IRecordListProviderScaffold extends IRecordLoaderScaffold {

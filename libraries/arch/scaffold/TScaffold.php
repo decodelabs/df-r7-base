@@ -170,11 +170,11 @@ trait TScaffold_RecordDataProvider {
         return static::CAN_ADD_RECORD;
     }
 
-    public function canEditRecord($record) {
+    public function canEditRecord($record=null) {
         return static::CAN_EDIT_RECORD;
     }
 
-    public function canDeleteRecord($record) {
+    public function canDeleteRecord($record=null) {
         return static::CAN_DELETE_RECORD;
     }
 
@@ -183,6 +183,26 @@ trait TScaffold_RecordDataProvider {
         return $this->_getActionRequest($action, [
             $this->_getRecordUrlKey() => $this->getRecordId($record)
         ], $redirFrom, $redirTo);
+    }
+
+
+
+    public function buildDeleteDynamicAction($controller) {
+        if(!$this->canDeleteRecord()) {
+            $this->_context->throwError(403, 'Records cannot be deleted');
+        }
+
+        $this->_recordAction = 'delete';
+        return new arch\scaffold\form\Delete($this, $controller);
+    }
+
+    public function getRecordDeleteFlags() {
+        return [];
+    }
+
+    public function deleteRecord(opal\record\IRecord $record, array $flags=[]) {
+        $record->delete();
+        return $this;
     }
 
     public function buildLinkComponent(array $args) {

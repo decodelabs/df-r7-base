@@ -32,9 +32,28 @@ class Delete extends arch\form\template\Delete {
             $this->import->component(ucfirst($this->_scaffold->getRecordKeyName()).'Details', $this->_context->location)
                 ->setRecord($this->_scaffold->getRecord())
         );
+
+        foreach($this->_scaffold->getRecordDeleteFlags() as $key => $label) {
+            $container->push(
+                $this->html->checkbox($key, $this->values->{$key}, $label)
+            );
+        }
     }
 
     protected function _deleteItem() {
-        $this->_scaffold->getRecord()->delete();
+        $flags = $this->_scaffold->getRecordDeleteFlags();
+        $validator = $this->data->newValidator();
+
+        foreach($flags as $key => $label) {
+            $validator->addField($key, 'boolean')->end();
+        }
+
+        $validator->validate($this->values);
+
+        foreach($flags as $key => $label) {
+            $flags[$key] = $validator[$key];
+        }
+
+        $this->_scaffold->deleteRecord($this->_scaffold->getRecord(), $flags);
     }
 }

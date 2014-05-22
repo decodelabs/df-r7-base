@@ -79,11 +79,6 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
             ->setRecord($record);
     }
 
-    public function buildDeleteDynamicAction($controller) {
-        $this->_recordAction = 'delete';
-        return new arch\scaffold\form\Delete($this, $controller);
-    }
-
 // Helpers
     protected function _getDirectoryKeyName() {
         return $this->getRecordKeyName();
