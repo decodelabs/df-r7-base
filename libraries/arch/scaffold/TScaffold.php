@@ -291,6 +291,12 @@ trait TScaffold_RecordDataProvider {
         });
     }
 
+    public function defineEmailField($list) {
+        $list->addField('email', function($item) {
+            return $this->html->mailLink($item['email']);
+        });
+    }
+
     public function defineActionsField($list, $mode) {
         $list->addField('actions', function($item) {
             return $this->getRecordOperativeLinks($item, 'list');
