@@ -453,13 +453,6 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, link
         return $response;
     }
     
-    
-    private function _runBuildTask() {
-        $task = 'util build';
-        $r = shell_exec('/mnt/dev/php/php-5.4.0.rc8/bin/php '.$this->getApplicationPath().'/entry/btc-pc.php '.$task);
-        echo '<pre>'.$r.'</pre>';
-    }
-
 
     // Payload
     public function launchPayload($response) {
