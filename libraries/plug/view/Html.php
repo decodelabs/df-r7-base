@@ -170,10 +170,10 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
             ->setDisposition('transitive');
     }
 
-    public function backLink($default=null, $success=true) {
+    public function backLink($default=null, $success=true, $body=null) {
         return $this->link(
                 $this->_view->uri->back($default, $success),
-                $this->_view->_('Back')
+                $body !== null ? $body : $this->_view->_('Back')
             )
             ->setIcon('back');
     }
