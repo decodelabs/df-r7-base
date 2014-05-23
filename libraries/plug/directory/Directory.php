@@ -115,7 +115,8 @@ class Directory implements arch\IDirectoryHelper {
         }
         
         $context = arch\Context::factory($this->_context->getApplication(), $request);
-        return arch\component\Base::factory($context, $name);
+        $args = array_slice(func_get_args(), 2);
+        return arch\component\Base::factory($context, $name, $args);
     }
 
     public function getThemeComponent($name, $themeId, $context=true) {
@@ -130,7 +131,8 @@ class Directory implements arch\IDirectoryHelper {
         }
         
         $context = arch\Context::factory($this->_context->getApplication(), $request);
-        return arch\component\Base::themeFactory($context, $themeId, $name);
+        $args = array_slice(func_get_args(), 3);
+        return arch\component\Base::themeFactory($context, $themeId, $name, $args);
     }
 
     public function getScaffold($context=true) {
