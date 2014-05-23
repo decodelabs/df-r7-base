@@ -10,6 +10,7 @@ use df\core;
 use df\arch;
 use df\user;
 use df\aura;
+use df\link;
 
 abstract class Base implements arch\IComponent {
     
@@ -123,6 +124,32 @@ abstract class Base implements arch\IComponent {
         }
 
         return $output;
+    }
+
+    public function toResponse() {
+        try {
+            $this->view = $this->getRenderTarget()->getView();
+        } catch(\Exception $e) {
+            $this->view = $this->_context->aura->getWidgetContainer()->getView();
+        }
+
+        if(!method_exists($this, '_execute')) {
+            throw new arch\LogicException(
+                'Component requires an _execute method'
+            );
+        }
+        
+        $output = call_user_func_array([$this, '_execute'], $this->_componentArgs);
+
+        if($this->view && $output instanceof aura\view\IDeferredRenderable) {
+            $output->setRenderTarget($this->getRenderTarget());
+        }
+
+        if($output instanceof link\http\IResponse) {
+            return $output;
+        }
+
+        return $this->view;
     }
 
 
