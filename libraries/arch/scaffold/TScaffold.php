@@ -336,9 +336,13 @@ trait TScaffold_RecordListProvider {
                 $method = 'define'.ucfirst($field).'Field';
 
                 if(method_exists($this, $method)) {
-                    $output->setField($field, function($list, $key) use($method) {
+                    $output->setField($field, function($list, $key) use($method, $field, $nameKey) {
                         if(false === $this->{$method}($list, 'list')) {
-                            $list->addField($key);
+                            if($field == $nameKey) {
+                                return $this->_autoDefineNameKeyField($field, $list, 'list');
+                            } else {
+                                $list->addField($key);
+                            }
                         }
                     });
                 } else if($field == $nameKey) {
@@ -363,7 +367,7 @@ trait TScaffold_RecordListProvider {
                     ->setMaxLength(50);
             }
 
-            return $item[$fieldName];
+            return $this->getRecordName($item);
         });
     }
 
