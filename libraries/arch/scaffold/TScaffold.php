@@ -538,13 +538,13 @@ trait TScaffold_SectionProvider {
 
     public function addSectionSectionLinks($menu, $bar) {
         $menu->addLinks($this->location->getPath()->getDirname().'Sections');
+
+        if(count($menu->getEntries()) == 1) {
+            $menu->clearEntries();
+        }
     }
 
     public function generateSectionsMenu($entryList) {
-        if(count($this->_sections) == 1) {
-            return;
-        }
-
         $counts = $this->getSectionItemCounts();
         $i = 0;
 
