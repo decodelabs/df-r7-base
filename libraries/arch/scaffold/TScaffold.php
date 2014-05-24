@@ -93,7 +93,18 @@ trait TScaffold_RecordDataProvider {
         }
 
         $key = $this->getRecordNameKey();
-        return $this->_normalizeFieldOutput($key, $record[$key]);
+        $output = @$record[$key];
+
+        if($output === null) {
+            $fallbackKey = $this->getRecordFallbackNameKey();
+            $output = @$record[$fallbackKey];
+
+            if($output === null) {
+                $output = $this->getRecordKeyName();
+            }
+        }
+
+        return $this->_normalizeFieldOutput($key, $output);
     }
 
     public function getRecordDescription($record=null) {
@@ -152,6 +163,14 @@ trait TScaffold_RecordDataProvider {
     public function getRecordNameKey() {
         if(@static::RECORD_NAME_KEY) {
             return static::RECORD_NAME_KEY;
+        }
+
+        return 'name';
+    }
+
+    public function getRecordFallbackNameKey() {
+        if(@static::RECORD_FALLBACK_NAME_KEY) {
+            return static::RECORD_FALLBACK_NAME_KEY;
         }
 
         return 'name';
