@@ -309,6 +309,16 @@ trait TScaffold_RecordDataProvider {
         });
     }
 
+    public function defineIsLiveField($list) {
+        $list->addField('isLive', $this->_('Live'), function($item, $context) {
+            if(!$item['isLive']) {
+                $context->getRowTag()->addClass('state-disabled');
+            }
+
+            return $this->html->booleanIcon($item['isLive']);
+        });
+    }
+
     public function defineActionsField($list, $mode) {
         $list->addField('actions', function($item) {
             return $this->getRecordOperativeLinks($item, 'list');
