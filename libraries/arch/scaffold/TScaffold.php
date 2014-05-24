@@ -235,6 +235,7 @@ trait TScaffold_RecordDataProvider {
 
         $args[0] = array_merge($this->_recordDetailsFields, $args[0]);
         $output = new arch\component\template\AttributeList($this->_context, $args);
+        $output->setViewArg(lcfirst($this->getRecordKeyName()));
 
         foreach($output->getFields() as $field => $enabled) {
             if($enabled === true) {
@@ -377,6 +378,7 @@ trait TScaffold_RecordListProvider {
 
         $args[0] = array_merge($this->_recordListFields, $args[0]);
         $output = new arch\component\template\CollectionList($this->_context, $args);
+        $output->setViewArg(lcfirst($this->getRecordKeyName()).'List');
         $nameKey = $this->getRecordNameKey();
 
         foreach($output->getFields() as $field => $enabled) {

@@ -39,6 +39,8 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
     const CAN_EDIT_RECORD = true;
     const CAN_DELETE_RECORD = true;
 
+    const USE_LIST_ACTION = false;
+
     protected function __construct(arch\IContext $context) {
         parent::__construct($context);
 
@@ -59,6 +61,18 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
 
 // Actions
     public function indexHtmlAction() {
+        return $this->_defaultListAction();
+    }
+
+    public function listHtmlAction() {
+        if(!static::USE_LIST_ACTION) {
+            $this->throwError(404, 'List not active');
+        }
+
+        return $this->_defaultListAction();
+    }
+
+    private function _defaultListAction() {
         $keyName = $this->getRecordKeyName();
         $adapter = $this->getRecordAdapter();
 
@@ -85,7 +99,7 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
                         ->setDisposition('positive'),
 
                     $this->html->link(
-                            $this->_context->location->path->getDirname(), 
+                            $this->_context->location->path->toString(), 
                             $this->_('Reset')
                         )
                         ->setIcon('refresh')
