@@ -291,6 +291,13 @@ trait TScaffold_RecordDataProvider {
         });
     }
 
+    public function defineOwnerField($list, $mode) {
+        $list->addField('owner', function($item) {
+            return $this->import->component('UserLink', '~admin/users/clients/', $item['owner'])
+                ->setDisposition('transitive');
+        });
+    }
+
     public function defineEmailField($list, $mode) {
         $list->addField('email', function($item) {
             return $this->html->mailLink($item['email']);
@@ -379,7 +386,7 @@ trait TScaffold_RecordListProvider {
     }
 
     protected function _autoDefineNameKeyField($fieldName, $list, $mode) {
-        $list->addField($fieldName, function($item) use($mode) {
+        $list->addField($fieldName, function($item) use($mode, $fieldName) {
             if($mode == 'list') {
                 return $this->import->component(
                         ucfirst($this->getRecordKeyName().'Link'), 
@@ -389,7 +396,13 @@ trait TScaffold_RecordListProvider {
                     ->setMaxLength(50);
             }
 
-            return $this->getRecordName($item);
+            $output = $this->getRecordName($item);
+
+            if($fieldName == 'slug') {
+                $output = $this->html->element('samp', $output);
+            }
+
+            return $output;
         });
     }
 

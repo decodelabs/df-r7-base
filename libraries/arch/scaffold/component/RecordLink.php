@@ -26,7 +26,13 @@ class RecordLink extends arch\component\template\RecordLink {
     }
 
     protected function _getRecordName() {
-        return $this->_scaffold->getRecordName($this->_record);
+        $output = $this->_scaffold->getRecordName($this->_record);
+
+        if($this->_scaffold->getRecordNameKey() == 'slug') {
+            $output = $this->html->element('samp', $output);
+        }
+
+        return $output;
     }
 
     protected function _getRecordUrl($id) {
