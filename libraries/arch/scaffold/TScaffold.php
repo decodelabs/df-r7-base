@@ -303,13 +303,13 @@ trait TScaffold_RecordDataProvider {
         });
     }
 
-    public function defineLastEditDateField($list) {
+    public function defineLastEditDateField($list, $mode) {
         $list->addField('lastEditDate', $this->_('Edited'), function($item) {
             return $this->html->timeSince($item['lastEditDate']);
         });
     }
 
-    public function defineIsLiveField($list) {
+    public function defineIsLiveField($list, $mode) {
         $list->addField('isLive', $this->_('Live'), function($item, $context) {
             if(!$item['isLive']) {
                 $context->getRowTag()->addClass('state-disabled');
