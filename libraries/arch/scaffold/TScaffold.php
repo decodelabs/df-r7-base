@@ -242,7 +242,7 @@ trait TScaffold_RecordDataProvider {
                 $method = 'define'.ucfirst($field).'Field';
 
                 if(method_exists($this, $method)) {
-                    $output->setField($field, function($list, $key) use($method) {
+                    $output->setField($field, function($list, $key) use($method, $field) {
                         if(false === $this->{$method}($list, 'details')) {
                             $list->addField($key);
                         }
@@ -282,6 +282,36 @@ trait TScaffold_RecordDataProvider {
         return $output;
     }
 
+    protected function _autoDefineNameKeyField($fieldName, $list, $mode) {
+        $list->addField($fieldName, function($item) use($mode, $fieldName) {
+            if($mode == 'list') {
+                return $this->import->component(
+                        ucfirst($this->getRecordKeyName().'Link'), 
+                        $this->_context->location, 
+                        $item
+                    )
+                    ->setMaxLength(50);
+            }
+
+            $output = $this->getRecordName($item);
+
+            if($fieldName == 'slug') {
+                $output = $this->html->element('samp', $output);
+            }
+
+            return $output;
+        });
+    }
+
+    public function defineSlugField($list, $mode) {
+        if($this->getRecordNameKey() == 'slug') {
+            return $this->_autoDefineNameKeyField('slug', $list, $mode);
+        }
+
+        $list->addField('slug', function($item) {
+            return $this->html->element('samp', $item['slug']);
+        });
+    }
 
     public function defineWeightField($list, $mode) {
         $list->addField('weight', $mode == 'list' ? '#' : $this->_('Order number'));
@@ -404,27 +434,6 @@ trait TScaffold_RecordListProvider {
         }
 
         return $output;
-    }
-
-    protected function _autoDefineNameKeyField($fieldName, $list, $mode) {
-        $list->addField($fieldName, function($item) use($mode, $fieldName) {
-            if($mode == 'list') {
-                return $this->import->component(
-                        ucfirst($this->getRecordKeyName().'Link'), 
-                        $this->_context->location, 
-                        $item
-                    )
-                    ->setMaxLength(50);
-            }
-
-            $output = $this->getRecordName($item);
-
-            if($fieldName == 'slug') {
-                $output = $this->html->element('samp', $output);
-            }
-
-            return $output;
-        });
     }
 
     public function buildSelectorFormDelegate($state, $id) {
