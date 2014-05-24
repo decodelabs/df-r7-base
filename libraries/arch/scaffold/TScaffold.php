@@ -291,7 +291,7 @@ trait TScaffold_RecordDataProvider {
         });
     }
 
-    public function defineEmailField($list) {
+    public function defineEmailField($list, $mode) {
         $list->addField('email', function($item) {
             return $this->html->mailLink($item['email']);
         });
