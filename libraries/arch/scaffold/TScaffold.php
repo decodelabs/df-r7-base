@@ -284,7 +284,7 @@ trait TScaffold_RecordDataProvider {
         });
     }
 
-    public function defineUserField($list) {
+    public function defineUserField($list, $mode) {
         $list->addField('user', function($item) {
             return $this->import->component('UserLink', '~admin/users/clients/', $item['user'])
                 ->setDisposition('transitive');
@@ -294,6 +294,18 @@ trait TScaffold_RecordDataProvider {
     public function defineEmailField($list, $mode) {
         $list->addField('email', function($item) {
             return $this->html->mailLink($item['email']);
+        });
+    }
+
+    public function defineCreationDateField($list, $mode) {
+        $list->addField('creationDate', $this->_('Created'), function($item) {
+            return $this->html->timeSince($item['creationDate']);
+        });
+    }
+
+    public function defineLastEditDateField($list) {
+        $list->addField('lastEditDate', $this->_('Edited'), function($item) {
+            return $this->html->timeSince($item['lastEditDate']);
         });
     }
 
