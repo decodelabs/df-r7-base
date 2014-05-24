@@ -61,6 +61,11 @@ class AttributeList extends arch\component\Base implements aura\html\widget\IWid
     }
 
     public function setField($key, $value) {
+        if(is_string($value)) {
+            $key = $value;
+            $value = true;
+        }
+
         if($value === true && isset($this->_fields[$key]) && is_callable($this->_fields[$key])) {
             return $this;
         }
