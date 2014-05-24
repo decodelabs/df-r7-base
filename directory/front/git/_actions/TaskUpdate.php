@@ -36,7 +36,9 @@ class TaskUpdate extends arch\task\Action {
         }
 
         if(is_dir($this->application->getLocalDataStoragePath().'/run')) {
-            return $this->directory->newRequest('application/build?testing=1');
+            $this->runChild('application/build?testing=1');
+        } else if($this->directory->actionExists('application/build-custom') && in_array('app', $names)) {
+            $this->runChild('application/build-custom');
         }
     }
 }
