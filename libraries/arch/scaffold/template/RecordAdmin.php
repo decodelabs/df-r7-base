@@ -33,6 +33,7 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
 
     const RECORD_ID_KEY = 'id';
     const RECORD_NAME_KEY = 'name';
+    const RECORD_FALLBACK_NAME_KEY = 'name';
     const RECORD_URL_KEY = null;
 
     const CAN_ADD_RECORD = true;

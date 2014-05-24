@@ -93,13 +93,15 @@ trait TScaffold_RecordDataProvider {
         }
 
         $key = $this->getRecordNameKey();
-        $output = @$record[$key];
 
-        if($output === null) {
+        if(isset($record[$key])) {
+            $output = $record[$key];
+        } else {
             $fallbackKey = $this->getRecordFallbackNameKey();
-            $output = @$record[$fallbackKey];
 
-            if($output === null) {
+            if(isset($record[$fallbackKey])) {
+                $output = $record[$fallbackKey];
+            } else {
                 $output = $this->getRecordKeyName();
             }
         }
