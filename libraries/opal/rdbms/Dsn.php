@@ -109,6 +109,15 @@ class Dsn implements IDsn, core\IDumpable {
                 }
             }
         }
+
+        if(!$this->_database) {
+            if($this->_hostname) {
+                $this->_database = $this->_hostname;
+                $this->_hostname = null;
+            } else {
+                $this->_database = 'default';
+            }
+        }
     }
 
     

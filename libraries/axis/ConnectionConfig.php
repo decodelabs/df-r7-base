@@ -60,12 +60,19 @@ class ConnectionConfig extends core\Config {
     }
     
     public function getSettingsFor(IUnit $unit) {
-        $connectionId = $this->getconnectionIdFor($unit);
+        $connectionId = $this->getConnectionIdFor($unit);
         
         if(!isset($this->values['connections'][$connectionId])) {
             throw new RuntimeException(
                 'There are no connections for '.$unit->getUnitId().', with connection id '.$connectionId
             );
+        }
+
+        if($connectionId == 'master' && !$this->isSetup()) {
+            return new core\collection\Tree([
+                'adapter' => 'Rdbms',
+                'dsn' => 'sqlite://default'
+            ]);
         }
         
         return new core\collection\Tree($this->values['connections'][$connectionId]);
