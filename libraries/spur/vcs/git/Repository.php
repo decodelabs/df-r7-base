@@ -178,7 +178,7 @@ class Repository implements IRepository {
 
     protected function _fillBranchCache() {
         if($this->_branches === null) {
-            $result = $this->_runCommand('branch --list');
+            $result = $this->_runCommand('branch', ['--list']);
             $this->_branches = [];
 
             foreach(explode("\n", $result) as $line) {
@@ -217,7 +217,7 @@ class Repository implements IRepository {
 
 
     public function countRemoteBranches() {
-        $result = trim($this->_runCommand('branch -r'));
+        $result = trim($this->_runCommand('branch', ['-r']));
 
         if(empty($result)) {
             return 0;
@@ -243,7 +243,7 @@ class Repository implements IRepository {
     }
 
     public function addRemote($name, $url) {
-        $this->_runCommand('remote add', [$name, $url]);
+        $this->_runCommand('remote', ['add', $name, $url]);
         return $this;
     } 
 
@@ -483,7 +483,10 @@ class Repository implements IRepository {
 
 
     public function commitAllChanges($message) {
-        $result = $this->_runCommand('add .');
+        $result = $this->_runCommand('add', [
+            '.'
+        ]);
+
         $result = $this->_runCommand('commit', [
             '-am', '"'.$message.'"'
         ]);
