@@ -53,7 +53,7 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
             $this->_recordDetailsFields = $this->_recordListFields;
 
             foreach($this->_recordDetailsFields as $key => $value) {
-                if($key == 'actions' || $value == 'actions') {
+                if($key === 'actions' || $value === 'actions') {
                     unset($this->_recordDetailsFields[$key]);
                 }
             }
