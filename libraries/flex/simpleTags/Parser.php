@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\flex;
 use df\aura;
+use df\arch;
 
 class Parser {
 
@@ -130,6 +131,12 @@ class Parser {
 
             $last = $char;
         }
+
+        $context = arch\Context::getCurrent();
+
+        $output = preg_replace_callback('/ (href|src)\=\"([^\"]+)\"/', function($matches) use($context) {
+            return ' '.$matches[1].'="'.htmlspecialchars((string)$context->normalizeOutputUrl($matches[2])).'"';
+        }, $output);
 
         foreach($this->_customTags as $name => $callback) {
             $newName = null;
