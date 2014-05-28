@@ -120,6 +120,8 @@ class PathSlug extends Base implements
 
             case 'contains':
             case 'not contains':
+            case 'matches':
+            case 'not matches':
                 return $output
                     ->where($sourceAlias.'.'.$this->_name.'_name', $operator, $slug)
                     ->orWhere($sourceAlias.'.'.$this->_name.'_location', $operator, $slug);
