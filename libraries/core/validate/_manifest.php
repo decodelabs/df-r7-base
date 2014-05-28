@@ -387,7 +387,11 @@ trait TUniqueCheckerField {
     protected function _validateUnique(core\collection\IInputTree $node, $value) {
         if($this->_storageAdapter) {
             if(null === ($fieldName = $this->_storageField)) {
-                $fieldName = $this->_name;
+                if($this->_recordName) {
+                    $fieldName = $this->_recordName;
+                } else {
+                    $fieldName = $this->_name;
+                }
             }
 
             $query = (new opal\query\EntryPoint())
