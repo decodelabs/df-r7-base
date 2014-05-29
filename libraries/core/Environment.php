@@ -47,12 +47,14 @@ class Environment extends Config {
             $output = 'php';
         }
         
+        /*
         if(false === strpos($output, '/')
         && false === strpos($output, '\\')) {
-            $output = halo\system\Base::getInstance()->which($output);
+            $output = halo\system\Base::getInstance()->which('php');
             $this->values['phpBinaryPath'] = $output;
             $this->save();
         }
+        */
 
         return $output;
     }
