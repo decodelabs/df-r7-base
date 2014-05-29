@@ -75,7 +75,7 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
     
     public function importTree(ITree $input) {
         $this->_value = $input->_value;
-        
+
         foreach($input->_collection as $key => $child) {
             unset($this->_collection[$key]);
             $this->{$key}->importTree($child);
@@ -219,8 +219,14 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
     }
     
     public function _set($key, $value, $extractArray=false) {
-        $class = get_class($this);
-        $this->_collection[$key] = new $class($value, null, $extractArray);
+        if(isset($this->_collection[$key])) {
+            $this->_collection[$key]->_collection = [];
+            $this->_collection[$key]->import($value);
+        } else {
+            $class = get_class($this);
+            $this->_collection[$key] = new $class($value, null, $extractArray);
+        }
+
         return $this;
     }
 
