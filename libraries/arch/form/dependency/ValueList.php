@@ -15,11 +15,17 @@ class ValueList implements arch\form\IDependency, core\IDumpable {
 
     protected $_node;
 
-    public function __construct($name, core\collection\IInputTree $node, $error=null, $context=null) {
+    public function __construct($name, core\collection\IInputTree $node, $error=null, $context=null, $filter=false) {
         $this->_name = $name;
         $this->_node = $node;
         $this->setErrorMessage($error);
         $this->setContext($context);
+        
+        if($filter === false) {
+            $this->_shouldFilter = false;
+        } else if(is_callable($filter)) {
+            $this->setCallback($filter);
+        }
     }
 
     public function getValueNode() {

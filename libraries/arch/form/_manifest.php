@@ -164,7 +164,13 @@ trait TDependency {
     }
 
     public function setContext($context) {
+        if($context === false) {
+            $context = null;
+            $this->_shouldFilter = false;
+        }
+
         $this->_context = $context;
+        return $this;
     }
 
     public function getContext() {
@@ -214,8 +220,8 @@ trait TDependency {
 
 interface IDependentDelegate {
     public function addSelectorDependency(ISelectorDelegate $delegate, $error=null, $context=null, $filter=false);
-    public function addValueDependency($name, core\collection\IInputTree $value, $error=null, $context=null);
-    public function addValueListDependency($name, core\collection\IInputTree $value, $error=null, $context=null);
+    public function addValueDependency($name, core\collection\IInputTree $value, $error=null, $context=null, $filter=false);
+    public function addValueListDependency($name, core\collection\IInputTree $value, $error=null, $context=null, $filter=false);
     public function addGenericDependency($name, $value, $error=null, $context=null);
     public function addFilter($context, $value, $name=null);
     public function addDependency(IDependency $dependency);

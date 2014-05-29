@@ -892,11 +892,11 @@ trait TForm_DependentDelegate {
         return $this->addDependency(new arch\form\dependency\Selector($delegate, $error, $context, $filter));
     }
 
-    public function addValueDependency($name, core\collection\IInputTree $value, $error=null, $context=null) {
+    public function addValueDependency($name, core\collection\IInputTree $value, $error=null, $context=null, $filter=false) {
         return $this->addDependency(new arch\form\dependency\Value($name, $value, $error, $context));
     }
     
-    public function addValueListDependency($name, core\collection\IInputTree $value, $error=null, $context=null) {
+    public function addValueListDependency($name, core\collection\IInputTree $value, $error=null, $context=null, $filter=false) {
         return $this->addDependency(new arch\form\dependency\ValueList($name, $value, $error, $context));
     }
 
