@@ -102,7 +102,7 @@ trait TScaffold_RecordDataProvider {
             if(isset($record[$fallbackKey])) {
                 $output = $record[$fallbackKey];
             } else {
-                $output = $this->getRecordKeyName();
+                $output = '#'.$this->getRecordId($record);
             }
         }
 
