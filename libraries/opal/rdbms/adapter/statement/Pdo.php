@@ -19,7 +19,11 @@ class Pdo extends Base {
         try {
             $this->_stmt = $this->_adapter->getConnection()->prepare($this->_sql);
         } catch(\PDOException $e) {
-            throw $this->_adapter->_getQueryException($e->errorInfo[1], $e->getMessage(), $this->_sql);
+            throw $this->_adapter->_getQueryException(
+                $e->errorInfo[1], 
+                $e->getMessage(), 
+                [$this->_sql, $this->_bindings]
+            );
         }
         
         foreach($this->_bindings as $key => $value) {
@@ -29,7 +33,11 @@ class Pdo extends Base {
         try {
             $this->_stmt->execute();
         } catch(\PDOException $e) {
-            throw $this->_adapter->_getQueryException($e->errorInfo[1], $e->getMessage(), $this->_sql);
+            throw $this->_adapter->_getQueryException(
+                $e->errorInfo[1], 
+                $e->getMessage(), 
+                [$this->_sql, $this->_bindings]
+            );
         }
         
         return $this->_stmt;

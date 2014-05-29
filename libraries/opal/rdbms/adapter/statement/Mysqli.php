@@ -80,7 +80,7 @@ class Mysqli extends Base {
                 $this->_adapter,
                 mysqli_errno($connection), 
                 mysqli_error($connection), 
-                $sql
+                [$sql, $this->_bindings]
             );
         }
         
@@ -99,7 +99,7 @@ class Mysqli extends Base {
                 $this->_adapter, 
                 $num, 
                 mysqli_error($connection), 
-                $sql
+                [$sql, $this->_bindings]
             );
         }
         
