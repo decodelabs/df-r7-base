@@ -618,11 +618,64 @@ abstract class QueryExecutor implements IQueryExecutor {
         }
 
 
-        // TODO: add filter clause for attachment clauses
+        // Filter clause for attachment clauses
+        if(!$canUseJoinClauses && !$joinClauses->isEmpty()) {
+            $useJoins = true;
+            $manualJoins = clone $joinClauses;
+            $manualJoins->clear();
+
+            foreach($joinClauses->toArray() as $clause) {
+                if(!$clause instanceof opal\query\IClause) {
+                    $useJoins = false;
+                    break;
+                }
+
+                $clause = clone $clause;
+                $field = $clause->getValue();
+                $fieldName = $field->getQualifiedName();
+                $operator = $clause->getOperator();
+
+                if(opal\query\clause\Clause::normalizeOperator($operator) != '=') {
+                    $useJoins = false;
+                    break;
+                }
+
+                $value = [];
+
+                foreach($rows as $row) {
+                    if(!array_key_exists($fieldName, $row)) {
+                        $useJoins = false;
+                        break 2;
+                    }
+
+                    $value[$row[$fieldName]] = $row[$fieldName];
+                }
+
+                $newOperator = 'in';
+
+                if(opal\query\clause\Clause::isNegatedOperator($operator)) {
+                    $newOperator = '!in';
+                }
+
+                $clause->setOperator($operator);
+                $clause->setValue($value);
+                $manualJoins->_addClause($clause);
+            }
+
+            if($useJoins) {
+                if($clauses) {
+                    $clauses->_addClause($manualJoins);
+                } else {
+                    $clauses = $manualJoins;
+                }
+            }
+        }
+
 
         if($clauses) {
             $this->writeWhereClauseList($clauses, $rows);
         }
+
 
         $manipulator = new opal\query\result\ArrayManipulator($source, $this->_stmt->executeRead()->toArray(), true);
         return $manipulator->applyAttachmentDataQuery($this->_query, $joinsApplied, $clausesApplied);
