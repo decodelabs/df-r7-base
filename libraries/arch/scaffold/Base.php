@@ -113,21 +113,28 @@ abstract class Base implements IScaffold {
 
         $method = 'build'.$name.'Component';
 
-        if(!method_exists($this, $method)) {
-            throw new LogicException(
-                'Scaffold at '.$this->_context->location.' cannot provide component '.$origName
-            );
-        }
-        
-        $output = $this->{$method}($args);
+        if(method_exists($this, $method)) {
+            $output = $this->{$method}($args);
 
-        if(!$output instanceof arch\IComponent) {
-            throw new LogicException(
-                'Scaffold at '.$this->_context->location.' attempted but failed to provide component '.$origName
-            );
+            if(!$output instanceof arch\IComponent) {
+                throw new LogicException(
+                    'Scaffold at '.$this->_context->location.' attempted but failed to provide component '.$origName
+                );
+            }
+
+            return $output;
         }
 
-        return $output;
+
+        $method = 'generate'.$name.'Component';
+
+        if(method_exists($this, $method)) {
+            return new arch\scaffold\component\Generic($this, $name, $args);
+        }
+
+        throw new LogicException(
+            'Scaffold at '.$this->_context->location.' cannot provide component '.$origName
+        );
     }
 
     public function loadFormDelegate($name, arch\form\IStateController $state, $id) {
