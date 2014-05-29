@@ -715,7 +715,9 @@ trait TForm_InlineFieldRenderableSelectorDelegate {
             $messages = $this->getUnresolvedDependencyMessages();
 
             if(!empty($messages)) {
-                $fa->push($this->html->fieldError($messages));
+                foreach($messages as $key => $value) {
+                    $fa->addFlashMessage($value, 'warning');
+                }
                 return;
             }
         }
