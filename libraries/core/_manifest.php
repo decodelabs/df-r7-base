@@ -94,20 +94,21 @@ trait TValueMap {
         $values = [];
         $shouldImport = $this instanceof core\collection\ICollection;
 
-        foreach($fields as $key => $field) {
-            if(is_string($key)) {
-                $field = $key;
-                $value = $field;
-            } if($source instanceof IExporterValueMap) {
-                $value = $source->export($field);
+        foreach($fields as $toField => $fromField) {
+            if(!is_string($toField)) {
+                $toField = $fromField;
+            } 
+
+            if($source instanceof IExporterValueMap) {
+                $value = $source->export($fromField);
             } else {
-                $value = $source->get($field);
+                $value = $source->get($fromField);
             }
 
             if($shouldImport) {
-                $values[$field] = $value;
+                $values[$toField] = $value;
             } else {
-                $this->set($field, $value);
+                $this->set($toField, $value);
             }
         }
 
