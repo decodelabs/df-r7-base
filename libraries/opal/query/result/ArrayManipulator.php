@@ -20,7 +20,7 @@ class ArrayManipulator implements IArrayManipulator {
         $this->setRows($rows, $isNormalized);
         
         if(!$outputManifest) {
-            $outputManifest = new OutputManifest($source, $rows, $isNormalized);
+            $outputManifest = new OutputManifest($source, /*$rows*/null, $isNormalized);
         } else {
             $outputManifest->importSource($source, $rows, $isNormalized);
         }
