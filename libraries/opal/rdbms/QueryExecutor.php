@@ -657,7 +657,7 @@ abstract class QueryExecutor implements IQueryExecutor {
                     $newOperator = '!in';
                 }
 
-                $clause->setOperator($operator);
+                $clause->setOperator($newOperator);
                 $clause->setValue($value);
                 $manualJoins->_addClause($clause);
             }
