@@ -111,6 +111,13 @@ abstract class Base implements IScaffold {
             $name = substr($name, strlen($keyName));
         }
 
+        $method = 'generate'.$name.'Component';
+
+        if(method_exists($this, $method)) {
+            return new arch\scaffold\component\Generic($this, $name, $args);
+        }
+        
+
         $method = 'build'.$name.'Component';
 
         if(method_exists($this, $method)) {
@@ -123,13 +130,6 @@ abstract class Base implements IScaffold {
             }
 
             return $output;
-        }
-
-
-        $method = 'generate'.$name.'Component';
-
-        if(method_exists($this, $method)) {
-            return new arch\scaffold\component\Generic($this, $name, $args);
         }
 
         throw new LogicException(

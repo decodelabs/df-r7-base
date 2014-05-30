@@ -1187,6 +1187,10 @@ trait TWidget_MappedList {
     public function getFields() {
         return $this->_fields;
     }
+
+    public function hasFields() {
+        return !empty($this->_fields);
+    }
     
     protected function _generateDefaultFields() {
         foreach($this->_data as $key => $value) {

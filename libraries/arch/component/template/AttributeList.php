@@ -61,18 +61,25 @@ class AttributeList extends arch\component\Base implements aura\html\widget\IWid
     }
 
     public function setField($key, $value) {
-        if(is_string($value)) {
+        if(is_string($value) && is_int($key)) {
             $key = $value;
             $value = true;
+        }
+
+        if($key == '--') {
+            $key = uniqid('--');
+            $value = '';
         }
 
         if($value === true && isset($this->_fields[$key]) && is_callable($this->_fields[$key])) {
             return $this;
         }
 
+        /*
         if(!is_callable($value)) {
             $value = (bool)$value;
         }
+        */
 
         $this->_fields[$key] = $value;
         return $this;
@@ -143,24 +150,60 @@ class AttributeList extends arch\component\Base implements aura\html\widget\IWid
             $this->_record = $this->view->getArg($this->_viewArg);
         }
 
-        $output = $this->view->html->attributeList($this->_record);
-
-        if($this->_renderIfEmpty !== null) {
-            $output->shouldRenderIfEmpty($this->_renderIfEmpty);
-        }
+        $output = [];
+        $list = $this->_createBaseList();
 
         foreach($this->_fields as $key => $value) {
+            if(substr($key, 0, 2) == '--') {
+                if(is_string($value)) {
+                    $title = $value;
+                } else {
+                    $title = $this->view->format->name(substr($key, 2));
+                }
+
+                if($list->hasFields()) {
+                    $output[] = $list;
+                }
+
+                if(strlen($title)) {
+                    $output[] = $this->view->html->element('h4', $title);
+                }
+
+                $list = $this->_createBaseList();
+                continue;
+            }
+
             if($value === true) {
                 $func = 'add'.ucfirst($key).'Field';
 
                 if(method_exists($this, $func)) {
-                    $this->{$func}($output);
+                    $this->{$func}($list);
                 } else {
-                    $output->addField($key);
+                    $list->addField($key);
                 }
             } else if(is_callable($value)) {
-                $value($output, $key);
+                $value($list, $key);
             }
+        }
+
+        if($list->hasFields()) {
+            $output[] = $list;
+        }
+
+        if(count($output) < 2) {
+            $output = array_pop($output);
+        } else {
+            $output = $this->view->html->element('div', $output);
+        }
+
+        return $output;
+    }
+
+    protected function _createBaseList() {
+        $output = $this->view->html->attributeList($this->_record);
+
+        if($this->_renderIfEmpty !== null) {
+            $output->shouldRenderIfEmpty($this->_renderIfEmpty);
         }
 
         return $output;
