@@ -109,8 +109,15 @@ class HttpHttp implements arch\IDirectoryHelper {
         return new link\http\response\String($content, $contentType);
     }
 
+    public function ajaxElementResponse(auraLib\view\IView $view) {
+        return $this->stringResponse(
+            (string)$view->getContentProvider()->setRenderTarget($view),
+            $view->getContentType()
+        );
+    }
+
     public function ajaxResponse(auraLib\view\IView $view, array $extraData=[]) {
-        return $this->_context->http->stringResponse(
+        return $this->stringResponse(
             $this->_context->data->jsonEncode(array_merge(
                 ['content' => (string)$view->getContentProvider()->setRenderTarget($view)],
                 $extraData
