@@ -69,7 +69,7 @@ class Slug extends Base implements core\validate\ISlugField {
             ));
         }
 
-        if($this->_allowPathFormat && substr($value, -1) == '/') {
+        if($this->_allowPathFormat && substr($value, -1) == '/' && strlen($value) > 1) {
             $this->_applyMessage($node, 'required', $this->_handler->_(
                 'You must enter a full path slug'
             ));

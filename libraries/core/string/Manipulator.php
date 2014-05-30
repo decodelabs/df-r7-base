@@ -80,6 +80,10 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
 
             $parts[$i] = self::formatSlug($part, $allowedChars);
         }
+
+        if(empty($parts)) {
+            return '/';
+        }
         
         return implode('/', $parts);
     }
