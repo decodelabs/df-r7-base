@@ -9,11 +9,13 @@ use df;
 use df\core;
 use df\aura;
 use df\arch;
+use df\spur;
 
 class Base implements ITheme {
     
     const COOKIE_NOTICE = false;
     const COOKIE_NOTICE_COOKIE = 'cnx';
+    const ANALYTICS = true;
 
     protected $_id;
     protected $_iconMap = null;
@@ -67,6 +69,10 @@ class Base implements ITheme {
             $this->applyCookieNotice($view);
         }
 
+        if(static::ANALYTICS) {
+            $this->applyAnalytics($view);
+        }
+
         $this->applyDefaultMetaData($view);
     }
 
@@ -110,6 +116,10 @@ class Base implements ITheme {
 
     public function applyCookieNotice(aura\view\IView $view) {
         $view->slot->set('cookieNotice', 'elements/CookieNotice.html', '~front/');
+    }
+
+    public function applyAnalytics(aura\view\IView $view) {
+        spur\analytics\Handler::factory()->apply($view);
     }
 
     public function applyDefaultMetaData(aura\view\IView $view) {
