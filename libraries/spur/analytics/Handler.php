@@ -143,7 +143,7 @@ class Handler implements IHandler {
 
                     case 'joinDate':
                         $date = $client->getJoinDate();
-                        $output[$attribute] = $date ? $date->format(core\time\Date::DB) : null;
+                        $output[$attribute] = $date ? $date->format(core\time\Date::DBDATE) : null;
                         break;
 
                     case 'loginDate':
