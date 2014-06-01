@@ -66,6 +66,8 @@ class Base implements ITheme {
         if(static::COOKIE_NOTICE && !$view->context->http->getCookie(static::COOKIE_NOTICE_COOKIE)) {
             $this->applyCookieNotice($view);
         }
+
+        $this->applyDefaultMetaData($view);
     }
 
     public function applyDefaultIncludes(aura\view\IView $view) {
@@ -108,6 +110,12 @@ class Base implements ITheme {
 
     public function applyCookieNotice(aura\view\IView $view) {
         $view->slot->set('cookieNotice', 'elements/CookieNotice.html', '~front/');
+    }
+
+    public function applyDefaultMetaData(aura\view\IView $view) {
+        if(!$view->hasMeta('msapplication-config')) {
+            $view->setMeta('msapplication-config', 'none');
+        }
     }
 
 
