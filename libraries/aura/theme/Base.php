@@ -116,6 +116,10 @@ class Base implements ITheme {
         if(!$view->hasMeta('msapplication-config')) {
             $view->setMeta('msapplication-config', 'none');
         }
+
+        if(!$view->hasMeta('application-name')) {
+            $view->setMeta('application-name', $view->getContext()->application->getName());
+        }
     }
 
 
