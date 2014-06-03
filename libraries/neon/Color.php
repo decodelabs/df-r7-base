@@ -116,6 +116,8 @@ class Color implements IColor, core\IDumpable {
     }
 
     public static function fromHex($hex) {
+        $hex = trim($hex);
+
         if(substr($hex, 0, 2) == '0x') {
             $hex = substr($hex, 2);
         } else {
