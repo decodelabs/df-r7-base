@@ -38,6 +38,8 @@ class AmazonSes extends Base {
     }
 
     public function send(flow\mail\IMessage $message) {
+        $this->_prepareMessage($message);
+        
         if(!$this->_mediator) {
             $config = flow\mail\Config::getInstance();
             $settings = $config->getTransportSettings('AmazonSes');
