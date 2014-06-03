@@ -44,6 +44,10 @@ class PathSlug extends Base implements
         $name = array_pop($parts);
         $location = implode('/', $parts);
 
+        if($location == '/') {
+            $location = '';
+        }
+
         return [
             $this->_name.'_location' => $location,
             $this->_name.'_name' => $name
@@ -55,7 +59,13 @@ class PathSlug extends Base implements
             return null;
         }
 
-        return core\string\Manipulator::formatPathSlug($value);
+        $output = core\string\Manipulator::formatPathSlug($value);
+
+        if($output == '/') {
+            $output = '';
+        }
+        
+        return $output;
     }
 
     public function compareValues($value1, $value2) {
@@ -139,6 +149,10 @@ class PathSlug extends Base implements
 
                 if(!empty($parts)) {
                     $location = implode('/', $parts);
+                }
+
+                if($location == '/') {
+                    $location = '';
                 }
 
                 return $output
