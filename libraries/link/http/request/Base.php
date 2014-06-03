@@ -544,7 +544,8 @@ class Base implements link\http\IRequest, core\IDumpable {
                         break;
                     } catch(link\InvalidArgumentException $e) {
                         if(empty($parts)) {
-                            throw $e;
+                            $this->_ip = new link\Ip('0.0.0.0');
+                            break;
                         }
                     }
                 }
