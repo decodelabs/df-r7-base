@@ -37,7 +37,7 @@ class Address implements IAddress, core\IDumpable {
         $parts = explode('<', $string, 2);
 
         $address = rtrim(trim(array_pop($parts)), '>');
-        $name = trim(array_shift($parts), '\"\'');
+        $name = trim(array_shift($parts), ' "\'');
 
         if(empty($name)) {
             $name = null;

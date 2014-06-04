@@ -30,30 +30,15 @@ class Message extends flow\mime\MultiPart implements IMessage {
         }
 
         if($headers->has('to')) {
-            $parts = explode(',', $headers->get('to'));
-
-            foreach($parts as $part) {
-                $address = Address::factory(trim($part));
-                $output->_to[$address->getAddress()] = $address;
-            }
+            $output->_to = self::parseAddressList($headers->get('to'));
         }
 
         if($headers->has('cc')) {
-            $parts = explode(',', $headers->get('cc'));
-
-            foreach($parts as $part) {
-                $address = Address::factory(trim($part));
-                $output->_cc[$address->getAddress()] = $address;
-            }
+            $output->_cc = self::parseAddressList($headers->get('cc'));
         }
 
         if($headers->has('bcc')) {
-            $parts = explode(',', $headers->get('bcc'));
-
-            foreach($parts as $part) {
-                $address = Address::factory(trim($part));
-                $output->_bcc[$address->getAddress()] = $address;
-            }
+            $output->_bcc = self::parseAddressList($headers->get('bcc'));
         }
 
 
@@ -79,6 +64,39 @@ class Message extends flow\mime\MultiPart implements IMessage {
             }
         }
         
+        return $output;
+    }
+
+    public static function parseAddressList($list) {
+        $list = trim($list);
+        $output = [];
+
+        if(empty($list)) {
+            return $output;
+        }
+
+        $parts = explode(',', $list);
+        $prefix = null;
+
+        foreach($parts as $part) {
+            if(false === strpos($part, '@')) {
+                if($prefix) {
+                    $prefix .= ',';
+                }
+
+                $prefix .= $part;
+                continue;
+            }
+
+            if($prefix) {
+                $part = $prefix.','.$part;
+            }
+            
+            $address = Address::factory(trim($part));
+            $output[$address->getAddress()] = $address;
+            $prefix = null;
+        }
+
         return $output;
     }
 
