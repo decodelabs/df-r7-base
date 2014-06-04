@@ -126,8 +126,12 @@ class Config extends core\Config {
     public function getCatchAllBCCAddresses() {
         $output = [];
 
-        foreach($this->values->catchAllBCC as $address) {
-            $output[] = Address::factory($address->getValue());
+        if($this->values->catchAllBCC->hasValue()) {
+            $output[] = Address::factory($this->values->catchAllBCC->getValue());
+        } else if(!$this->values->catchAllBCC->isEmpty()) {
+            foreach($this->values->catchAllBCC as $address) {
+                $output[] = Address::factory($address->getValue());
+            }
         }
 
         return $output;
