@@ -16,7 +16,7 @@ class Url extends core\uri\Url implements IUrl {
     use core\uri\TUrl_DomainContainer;
     use core\uri\TUrl_PortContainer;
     
-    public static function fromDirectoryRequest(arch\IRequest $request, $scheme, $domain, $port, array $basePath) {
+    public static function fromDirectoryRequest(arch\IRequest $request, $scheme, $domain, $port, array $basePath, $mappedArea=null) {
         if($request->isJustFragment()) {
             return new self('#'.$request->getFragment());
         }
@@ -25,8 +25,10 @@ class Url extends core\uri\Url implements IUrl {
         
         if($request->_path) {
             $path = clone $request->_path;
+            $area = $path->get(0);
             
-            if($path->get(0) == '~'.$request::DEFAULT_AREA) {
+            if($area == $request::AREA_MARKER.$request::DEFAULT_AREA
+            || $area == $request::AREA_MARKER.$mappedArea) {
                 $path->shift();
             }
             

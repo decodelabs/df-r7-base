@@ -24,6 +24,10 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, link
     protected $_httpRequest;
     protected $_responseAugmentor;
     protected $_sendFileHeader;
+
+    protected $_areaDomainMap = [];
+    protected $_mappedArea = null;
+    protected $_mappedDomain = null;
     
     protected $_context;
     
@@ -44,6 +48,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, link
         $this->_sendFileHeader = $config->getSendFileHeader();
         $this->_useHttps = $config->isSecure();
         $this->_manualChunk = $config->shouldChunkManually();
+        $this->_areaDomainMap = $config->getAreaDomainMap();
     }
     
     
@@ -109,12 +114,26 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, link
             $this->_defaultRouteProtocol = (isset($_SERVER['HTTPS']) && !strcasecmp($_SERVER['HTTPS'], 'on')) ? 'https' : 'http';
         }
 
+        $domain = $this->_baseDomain;
+        $port = $this->_basePort;
+        $path = $this->_basePath;
+
+        if($this->_mappedArea) {
+            $area = $request->getArea();
+
+            if($area == $this->_mappedArea) {
+                $domain = $this->_mappedDomain;
+                $path = [];
+            }
+        }
+
         return link\http\Url::fromDirectoryRequest(
             $request,
             $this->_defaultRouteProtocol,
-            $this->_baseDomain, 
-            $this->_basePort, 
-            $this->_basePath
+            $domain, 
+            $port, 
+            $path,
+            $this->_mappedArea
         );
     }
     
@@ -197,54 +216,9 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, link
     public function dispatch(link\http\IRequest $httpRequest=null) {
         $this->_beginDispatch();
 
-        if($this->isDevelopment()) {
-            $envConfig = core\Environment::getInstance($this);
-
-            if($credentials = $envConfig->getDeveloperCredentials()) {
-                if(!isset($_SERVER['PHP_AUTH_USER'])
-                || $_SERVER['PHP_AUTH_USER'] != $credentials['user']
-                || $_SERVER['PHP_AUTH_PW'] != $credentials['password']) {
-                    header('WWW-Authenticate: Basic realm="Developer Site"');
-                    header('HTTP/1.0 401 Unauthorized');
-                    echo 'You need to authenticate to view this development site';
-                    exit;
-                }
-            }
-        }
-        
-        if($httpRequest !== null) {
-            $this->_httpRequest = $httpRequest;
-        } else {
-            $this->_httpRequest = new link\http\request\Base(null, true);
-        }
-
-        if($this->_useHttps && !$this->_httpRequest->getUrl()->isSecure()) {
-            $response = new link\http\response\Redirect(
-                $this->_httpRequest->getUrl()
-                    ->isSecure(true)
-                    ->setPort(null)
-            );
-
-            $response->isPermanent(true);
+        if($response = $this->_prepareHttpRequest($httpRequest)) {
             return $response;
         }
-
-        if($this->_httpRequest->hasCookie('debug')) {
-            df\Launchpad::$isTesting = true;
-            df\Launchpad::$debug = $this->createDebugContext();
-
-            flow\Manager::getInstance($this)->flashNow(
-                    'global.debug', 
-                    'Currently in enforced debug mode', 
-                    'debug'
-                )
-                ->setLink('~devtools/application/debug-mode', 'Change debug settings');
-        }
-
-        if(empty($this->_basePort)) {
-            $this->_basePort = $this->_httpRequest->getUrl()->getPort();
-        }
-        
         
         $response = false;
         $previousError = false;
@@ -277,8 +251,16 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, link
             $redirectPath = (string)$path;
         }
 
-        if($url->getDomain() != $this->_baseDomain) {
-            $valid = false;
+        $domain = $url->getDomain();
+        $this->_mappedArea = null;
+
+        if($domain != $this->_baseDomain) {
+            if(isset($this->_areaDomainMap[$domain])) {
+                $this->_mappedArea = ltrim($this->_areaDomainMap[$domain], arch\Request::AREA_MARKER);
+                $this->_mappedDomain = $domain;
+            } else {
+                $valid = false;
+            }
         }
         
         if(!$valid) {
@@ -318,6 +300,10 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, link
             }
 
             $request->setPath($path);
+        }
+
+        if($this->_mappedArea) {
+            $request->getPath()->unshift(arch\Request::AREA_MARKER.$this->_mappedArea);
         }
             
         if($url->hasQuery()) {
@@ -378,6 +364,63 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, link
         return $response;
     }
     
+    protected function _enforceDeveloperCredentials() {
+        $envConfig = core\Environment::getInstance($this);
+
+        if($credentials = $envConfig->getDeveloperCredentials()) {
+            if(!isset($_SERVER['PHP_AUTH_USER'])
+            || $_SERVER['PHP_AUTH_USER'] != $credentials['user']
+            || $_SERVER['PHP_AUTH_PW'] != $credentials['password']) {
+                header('WWW-Authenticate: Basic realm="Developer Site"');
+                header('HTTP/1.0 401 Unauthorized');
+                echo 'You need to authenticate to view this development site';
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected function _prepareHttpRequest(link\http\IRequest $httpRequest=null) {
+        if(!$this->isProduction()) {
+            $this->_enforceDeveloperCredentials();
+        }
+
+        if($httpRequest !== null) {
+            $this->_httpRequest = $httpRequest;
+        } else {
+            $this->_httpRequest = new link\http\request\Base(null, true);
+        }
+
+        if($this->_useHttps && !$this->_httpRequest->getUrl()->isSecure()) {
+            $response = new link\http\response\Redirect(
+                $this->_httpRequest->getUrl()
+                    ->isSecure(true)
+                    ->setPort(null)
+            );
+
+            $response->isPermanent(true);
+            return $response;
+        }
+
+        if(empty($this->_basePort)) {
+            $this->_basePort = $this->_httpRequest->getUrl()->getPort();
+        }
+
+        if($this->_httpRequest->hasCookie('debug')) {
+            df\Launchpad::$isTesting = true;
+            df\Launchpad::$debug = $this->createDebugContext();
+
+            flow\Manager::getInstance($this)->flashNow(
+                    'global.debug', 
+                    'Currently in enforced debug mode', 
+                    'debug'
+                )
+                ->setLink('~devtools/application/debug-mode', 'Change debug settings');
+        }
+
+        return null;
+    }
     
     protected function _dispatchRequest(arch\IRequest $request) {
         // Ensure a debug context
@@ -609,6 +652,7 @@ class Http_Config extends core\Config {
     public function getDefaultValues() {
         return [
             'baseUrl' => $this->_generateBaseUrlList(),
+            'areaDomainMap' => [],
             'sendFileHeader' => 'X-Sendfile',
             'secure' => false,
             'manualChunk' => false
@@ -709,6 +753,21 @@ class Http_Config extends core\Config {
         }
         
         return $baseUrl;
+    }
+
+
+// Area domain map
+    public function setAreaDomainMap(array $map) {
+        $this->values['areaDomainMap'] = $map;
+        return $this;
+    }
+
+    public function getAreaDomainMap() {
+        if(!isset($this->values['areaDomainMap']) || !is_array($this->values['areaDomainMap'])) {
+            return [];
+        }
+
+        return $this->values['areaDomainMap'];
     }
     
 
