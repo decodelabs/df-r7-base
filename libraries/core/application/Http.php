@@ -37,7 +37,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, link
         parent::__construct();
         
         $config = Http_Config::getInstance($this);
-        $this->_basePath = explode('/', $config->getHttpBaseUrl());
+        $this->_basePath = explode('/', $config->getBaseUrl());
         $domain = explode(':', array_shift($this->_basePath), 2);
         $this->_baseDomain = array_shift($domain);
         $this->_basePort = array_shift($domain);
@@ -608,34 +608,38 @@ class Http_Config extends core\Config {
 
     public function getDefaultValues() {
         return [
-            'httpBaseUrl' => $this->_generateHttpBaseUrlList(),
+            'baseUrl' => $this->_generateBaseUrlList(),
             'sendFileHeader' => 'X-Sendfile',
             'secure' => false,
             'manualChunk' => false
         ];
     }
 
-    // Http base url
-    public function setHttpBaseUrl($url, $environmentMode=null) {
+    // Base url
+    public function setBaseUrl($url, $environmentMode=null) {
         if($environmentMode === null) {
             $environmentMode = df\Launchpad::getEnvironmentMode();
         }
+
+        $this->_fixBaseUrlEntry();
         
         if($url === null) {
-            $this->values['httpBaseUrl'][$environmentMode] = null;
+            $this->values['baseUrl'][$environmentMode] = null;
         } else {
             $url = link\http\Url::factory($url);
             $url->getPath()->shouldAddTrailingSlash(true)->isAbsolute(true);
             
-            $this->values['httpBaseUrl'][$environmentMode] = $url->getDomain().$url->getPathString();
+            $this->values['baseUrl'][$environmentMode] = $url->getDomain().$url->getPathString();
         }
         
         return $this;
     }
     
-    public function getHttpBaseUrl($environmentMode=null) {
-        if(!isset($this->values['httpBaseUrl'])) {
-            $this->values['httpBaseUrl'] = $this->_generateHttpBaseUrlList();
+    public function getBaseUrl($environmentMode=null) {
+        $this->_fixBaseUrlEntry();
+
+        if(!isset($this->values['baseUrl'])) {
+            $this->values['baseUrl'] = $this->_generateBaseUrlList();
             $this->save();
         }
 
@@ -643,21 +647,29 @@ class Http_Config extends core\Config {
             $environmentMode = df\Launchpad::getEnvironmentMode();
         }
         
-        if(!isset($this->values['httpBaseUrl'][$environmentMode]) && isset($_SERVER['HTTP_HOST'])) {
-            if(null !== ($baseUrl = $this->_generateHttpBaseUrl())) {
-                $this->setHttpBaseUrl($baseUrl)->save();
+        if(!isset($this->values['baseUrl'][$environmentMode]) && isset($_SERVER['HTTP_HOST'])) {
+            if(null !== ($baseUrl = $this->_generateBaseUrl())) {
+                $this->setBaseUrl($baseUrl)->save();
             }
         }
         
-        return trim($this->values['httpBaseUrl'][$environmentMode], '/');
+        return trim($this->values['baseUrl'][$environmentMode], '/');
+    }
+
+    protected function _fixBaseUrlEntry() {
+        if(isset($this->values['httpBaseUrl'])) {
+            $this->values['baseUrl'] = $this->values['httpBaseUrl'];
+            unset($this->values['httpBaseUrl']);
+            $this->save();
+        }
     }
     
-    protected function _generateHttpBaseUrlList() {
+    protected function _generateBaseUrlList() {
         if(!isset($_SERVER['HTTP_HOST'])) {
             return null;
         }
 
-        $baseUrl = $this->_generateHttpBaseUrl();
+        $baseUrl = $this->_generateBaseUrl();
         $envMode = df\Launchpad::getEnvironmentMode();
         
         $output = [
@@ -681,7 +693,7 @@ class Http_Config extends core\Config {
         return $output;
     }
     
-    protected function _generateHttpBaseUrl() {
+    protected function _generateBaseUrl() {
         $baseUrl = null;
         $request = new link\http\request\Base(true);
         $host = $request->getUrl()->getDomain();
