@@ -13,6 +13,8 @@ class Slug extends Base implements core\validate\ISlugField {
     use core\validate\TStorageAwareField;
     use core\validate\TSanitizingField;
     use core\validate\TUniqueCheckerField;
+    use core\validate\TMinLengthField;
+    use core\validate\TMaxLengthField;
 
     protected $_allowPathFormat = false;
     protected $_allowAreaMarker = false;
@@ -81,6 +83,9 @@ class Slug extends Base implements core\validate\ISlugField {
         if(!$length = $this->_checkRequired($node, $value)) {
             return null;
         }
+
+        $this->_validateMinLength($node, $value, $length);
+        $this->_validateMaxLength($node, $value, $length);
 
         $this->_validateUnique($node, $value);
         return $this->_finalize($node, $value);

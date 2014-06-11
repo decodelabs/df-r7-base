@@ -476,7 +476,7 @@ interface ISetField extends IField {
     public function getOptions();    
 }
 
-interface ISlugField extends IField, ISanitizingField, IUniqueCheckerField {
+interface ISlugField extends IField, ISanitizingField, IUniqueCheckerField, IMinLengthField, IMaxLengthField {
     public function allowPathFormat($flag=null);
     public function allowAreaMarker($flag=null);
     public function setDefaultValueField($field);
