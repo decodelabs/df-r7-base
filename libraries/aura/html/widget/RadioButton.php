@@ -23,6 +23,7 @@ class RadioButton extends Base implements ICheckInputWidget, core\IDumpable {
     const INPUT_TYPE = 'radio';
 
     protected $_shouldWrapBody = true;
+    protected $_labelClass = null;
     
     public function __construct(arch\IContext $context, $name, $isChecked=false, $body=null, $value='1') {
         $this->setName($name);
@@ -51,6 +52,11 @@ class RadioButton extends Base implements ICheckInputWidget, core\IDumpable {
             }
 
             $output = new aura\html\Element('label', $label);
+
+            if($this->_labelClass) {
+                $output->addClass($this->_labelClass);
+            }
+            
             $output->unshift($tag, ' ');
         }
         
@@ -64,5 +70,14 @@ class RadioButton extends Base implements ICheckInputWidget, core\IDumpable {
         }
 
         return $this->_shouldWrapBody;
+    }
+
+    public function setLabelClass($class) {
+        $this->_labelClass = $class;
+        return $this;
+    }
+
+    public function getLabelClass() {
+        return $this->_labelClass;
     }
 }
