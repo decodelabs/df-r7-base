@@ -408,12 +408,20 @@ class Locator implements ILocator, core\IDumpable {
         return $this->_nodes;
     }
 
+    public function setFirstNode($location, $type, $id=null) {
+        return $this->setNode(0, $location, $type, $id);
+    }
+
     public function getFirstNode() {
         if(!isset($this->_nodes[0])) {
             return null;
         }
 
         return $this->_nodes[0];
+    }
+
+    public function setFirstNodeLocation($location) {
+        return $this->setNodeLocation(0, $location);
     }
 
     public function getFirstNodeLocation() {
@@ -424,6 +432,10 @@ class Locator implements ILocator, core\IDumpable {
         return implode('/', $this->_nodes[0]['location']);
     }
 
+    public function setFirstNodeType($type) {
+        return $this->setNodeType(0, $type);
+    }
+
     public function getFirstNodeType() {
         if(!isset($this->_nodes[0])) {
             return null;
@@ -432,12 +444,20 @@ class Locator implements ILocator, core\IDumpable {
         return $this->_nodes[0]['type'];
     }
 
+    public function setFirstNodeId($id) {
+        return $this->setNodeId(0, $id);
+    }
+
     public function getFirstNodeId() {
         if(!isset($this->_nodes[0])) {
             return null;
         }
 
         return $this->_nodes[0]['id'];
+    }
+
+    public function setLastNode($location, $type, $id=null) {
+        return $this->setNode(-1, $location, $type, $id);
     }
 
     public function getLastNode() {
@@ -450,6 +470,10 @@ class Locator implements ILocator, core\IDumpable {
         return $this->_nodes[$i];
     }
 
+    public function setLastNodeLocation($location) {
+        return $this->setNodeLocation(-1, $location);
+    }
+
     public function getLastNodeLocation() {
         if(!$node = $this->getLastNode()) {
             return null;
@@ -458,12 +482,20 @@ class Locator implements ILocator, core\IDumpable {
         return implode('/', $node['location']);
     }
 
+    public function setLastNodeType($type) {
+        return $this->setNodeType(-1, $type);
+    }
+
     public function getLastNodeType() {
         if(!$node = $this->getLastNode()) {
             return null;
         }
 
         return $node['type'];
+    }
+
+    public function setLastNodeId($id) {
+        return $this->setNodeId(-1, $id);
     }
 
     public function getLastNodeId() {
