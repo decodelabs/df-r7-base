@@ -12,8 +12,8 @@ use df\opal;
 class Sqlite extends Base_Pdo {
     
 // Connection
-    protected function _connect() {
-        parent::_connect();
+    protected function _connect($global=false) {
+        parent::_connect($global);
         
         $this->_connection->setAttribute(\PDO::ATTR_TIMEOUT, 60);
         
@@ -25,11 +25,21 @@ class Sqlite extends Base_Pdo {
         }
     }
 
-    protected function _getPdoDsn() {
-        $database = $this->_dsn->getDatabase();
+    protected function _createDb() {
+        // don't need to do anything :)
+    }
+
+    protected function _getPdoDsn($global=false) {
+        $database = $this->_dsn->getDatabaseKeyName();
 
         if(!$database || $database == 'default') {
-            $database = df\Launchpad::$application->getSharedDataStoragePath().'/sqlite/default.db';
+            $database = df\Launchpad::$application->getSharedDataStoragePath().'/sqlite/default';
+
+            if($suffix = $this->_dsn->getDatabaseSuffix()) {
+                $database .= $suffix;
+            }
+
+            $database .= '.db';
             core\io\Util::ensureDirExists(dirname($database));
         }
 

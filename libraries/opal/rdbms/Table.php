@@ -66,6 +66,10 @@ class Table implements ITable, core\IDumpable {
     public function getDelegateQueryAdapter() {
         return $this;
     }
+
+    public function getClusterId() {
+        return null;
+    }
     
     public function supportsQueryType($type) {
         switch($type) {

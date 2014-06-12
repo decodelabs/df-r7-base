@@ -626,6 +626,7 @@ interface IAdapter extends user\IAccessLock {
     public function getQuerySourceAdapterHash();
     public function getQuerySourceDisplayName();
     public function getDelegateQueryAdapter();
+    public function getClusterId();
     
     public function supportsQueryType($type);
     public function supportsQueryFeature($feature);

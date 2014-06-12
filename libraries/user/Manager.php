@@ -395,7 +395,7 @@ class Manager implements IManager, core\IDumpable {
     }
 
     public function getUserModel() {
-        $model = axis\Model::factory('user', $this->_application);
+        $model = axis\Model::factory('user', null, $this->_application);
         
         if(!$model instanceof IUserModel) {
             throw new AuthenticationException(

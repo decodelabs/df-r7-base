@@ -46,6 +46,10 @@ class DerivedSourceAdapter implements IDerivedSourceAdapter {
         return $this->_adapter->getDelegateQueryAdapter();
     }
 
+    public function getClusterId() {
+        return $this->_adapter->getClusterId();
+    }
+
     
     public function supportsQueryType($type) {
         return $this->_adapter->supportsQueryType($type);

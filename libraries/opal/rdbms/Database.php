@@ -48,7 +48,7 @@ abstract class Database implements IDatabase {
 
 
     public function drop() {
-        $stmt = $this->_adapter->prepare('DROP DATABASE IF EXISTS '.$this->getName());
+        $stmt = $this->_adapter->prepare('DROP DATABASE IF EXISTS '.$this->_adapter->quoteIdentifier($this->getName()));
         $stmt->executeRaw();
 
         return $this;

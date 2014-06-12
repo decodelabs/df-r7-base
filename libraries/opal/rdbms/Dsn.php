@@ -21,6 +21,7 @@ class Dsn implements IDsn, core\IDumpable {
     protected $_port;
     protected $_socket;
     protected $_database;
+    protected $_databaseSuffix;
     protected $_options = [];
     protected $_hash;
 
@@ -225,12 +226,34 @@ class Dsn implements IDsn, core\IDumpable {
     public function setDatabase($database) {
         $this->_hash = null;
         $this->_database = $database;
+        $this->_databaseSuffix = null;
         
         return $this;
     }
-    
+
     public function getDatabase() {
+        return $this->_database.$this->_databaseSuffix;
+    }
+
+    public function setDatabaseKeyName($name) {
+        $this->_hash = null;
+        $this->_database = $database;
+        
+        return $this;
+    }
+
+    public function getDatabaseKeyName() {
         return $this->_database;
+    }
+
+    public function setDatabaseSuffix($suffix) {
+        $this->_hash = null;
+        $this->_databaseSuffix = $suffix;
+        return $this;
+    }
+
+    public function getDatabaseSuffix() {
+        return $this->_databaseSuffix;
     }
 
     
@@ -303,6 +326,10 @@ class Dsn implements IDsn, core\IDumpable {
         }
         
         $output .= $this->_database;
+
+        if($this->_databaseSuffix) {
+            $output .= $this->_databaseSuffix;
+        }
         
         if(!empty($this->_options)) {
             $output .= '?'.http_build_query($this->_options);
@@ -341,8 +368,13 @@ class Dsn implements IDsn, core\IDumpable {
         if($this->_database === null) {
             throw new InvalidArgumentException('Dsn must contain database value!');
         }
-        
+
         $output .= $this->_database;
+
+        if($this->_databaseSuffix) {
+            $output .= $this->_databaseSuffix;
+        }
+        
         return $output;
     }
     

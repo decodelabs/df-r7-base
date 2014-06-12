@@ -23,9 +23,11 @@ class Rdbms implements
     protected $_connection;
     protected $_querySourceAdapter;    
     protected $_unit;
+    protected $_clusterId;
     
     public function __construct(axis\IAdapterBasedStorageUnit $unit) {
         $this->_unit = $unit;
+        $this->_clusterId = $unit->getModel()->getClusterId();
     }
     
     public function getDisplayName() {
@@ -39,7 +41,13 @@ class Rdbms implements
     public function getConnection() {
         if(!$this->_connection) {
             $settings = $this->_unit->getUnitSettings();
-            $this->_connection = opal\rdbms\adapter\Base::factory($settings['dsn']);
+            $dsn = opal\rdbms\Dsn::factory($settings['dsn']);
+
+            if($this->_clusterId) {
+                $dsn->setDatabaseSuffix('_'.$this->_clusterId);
+            }
+
+            $this->_connection = opal\rdbms\adapter\Base::factory($dsn, true);
         }
         
         return $this->_connection;
@@ -72,6 +80,10 @@ class Rdbms implements
     
     public function getDelegateQueryAdapter() {
         return $this->getQuerySourceAdapter()->getDelegateQueryAdapter();
+    }
+
+    public function getClusterId() {
+        return $this->_unit->getClusterId();
     }
     
     public function supportsQueryType($type) {
@@ -176,7 +188,7 @@ class Rdbms implements
         $adapter = $this->getConnection();
         $bridge = new axis\schema\bridge\Rdbms($this->_unit, $adapter, $axisSchema);
         $dbSchema = $bridge->updateTargetSchema();
-        
+
         try {
             return $adapter->createTable($dbSchema);
         } catch(opal\rdbms\TableConflictException $e) {
@@ -313,7 +325,7 @@ class Rdbms implements
 // Dump
     public function getDumpProperties() {
         return [
-            'adapter' => get_class($this),
+            'name' => $this->getDisplayName(),
             'unit' => $this->_unit->getUnitId() 
         ];
     }

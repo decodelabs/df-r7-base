@@ -37,8 +37,10 @@ class OneRelationValueContainer implements
             return $this;
         }
         
-        $application = $record->getRecordAdapter()->getApplication();
-        $targetUnit = axis\Model::loadUnitFromId($this->_field->getTargetUnitId(), $application);
+        $localUnit = $record->getRecordAdapter();
+        $application = $localUnit->getApplication();
+        $clusterId = $localUnit->getClusterId();
+        $targetUnit = axis\Model::loadUnitFromId($this->_field->getTargetUnitId(), $clusterId, $application);
         $query = $targetUnit->fetch();
 
         foreach($this->_value->toArray() as $field => $value) {
@@ -152,18 +154,23 @@ class OneRelationValueContainer implements
         return $this->_field->getTargetUnitId();
     }
 
-    public function getTargetUnit() {
+    public function getTargetUnit($clusterId=null) {
         $application = null;
 
         if($this->_record) {
-            $application = $this->_record->getRecordAdapter()->getApplication();
+            $localUnit = $this->_record->getRecordAdapter();
+            $application = $localUnit->getApplication();
+
+            if($clusterId === null) {
+                $clusterId = $localUnit->getClusterId();
+            }
         }
         
-        return $this->_getTargetUnit($application);
+        return $this->_getTargetUnit($clusterId, $application);
     }
 
-    protected function _getTargetUnit(core\IApplication $application=null) {
-        return axis\Model::loadUnitFromId($this->_field->getTargetUnitId(), $application);
+    protected function _getTargetUnit($clusterId=null, core\IApplication $application=null) {
+        return axis\Model::loadUnitFromId($this->_field->getTargetUnitId(), $clusterId, $application);
     }
     
     public function duplicateForChangeList() {

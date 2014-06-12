@@ -13,16 +13,24 @@ use df\mesh;
 class MeshHandler implements mesh\IEntityHandler {
     
     public function fetchEntity(mesh\IManager $manager, array $node) {
+        if($node['type'] == 'Model') {
+            $clusterId = null;
+
+            if(!empty($node['location'])) {
+                $clusterId = array_shift($node['location']);
+            }
+
+            return axis\Model::factory($node['id'], $clusterId, $manager->getApplication());
+        }
+
+
         if(empty($node['location'])) {
             switch($node['type']) {
-                case 'Model':
-                    return axis\Model::factory($node['id'], $manager->getApplication());
-                    
                 case 'Unit':
-                    return axis\Model::loadUnitFromId($node['id'], $manager->getApplication());
+                    return axis\Model::loadUnitFromId($node['id'], null, $manager->getApplication());
                     
                 case 'Schema':
-                    $unit = axis\Model::loadUnitFromId($node['id'], $manager->getApplication());
+                    $unit = axis\Model::loadUnitFromId($node['id'], null, $manager->getApplication());
                     
                     if(!$unit instanceof axis\ISchemaBasedStorageUnit) {
                         throw new axis\LogicException(
@@ -35,21 +43,13 @@ class MeshHandler implements mesh\IEntityHandler {
         }
         
         $location = $node['location'];
-        $model = axis\Model::factory(array_shift($location), $manager->getApplication());
-        
-        if(!empty($location)) {
-            $unit = $model->getUnit(array_shift($location));
-            
-            if($node['type'] == 'Unit') {
-                return $unit;
-            }
-            
-            if(!$unit instanceof mesh\entity\IParentEntity) {
-                return null;
-            }
-            
-            return $unit->fetchSubEntity($manager, $node);
+        $clusterId = null;
+
+        if(count($location) > 1) {
+            $clusterId = array_shift($location);
         }
+
+        $model = axis\Model::factory(array_shift($location), $clusterId, $manager->getApplication());
         
         switch($node['type']) {
             case 'Unit':

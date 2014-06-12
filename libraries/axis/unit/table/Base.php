@@ -56,7 +56,7 @@ abstract class Base implements
             );
         }
         
-        return $field->getBridgeUnit($this->getModel()->getApplication());
+        return $field->getBridgeUnit($this->getClusterId(), $this->getModel()->getApplication());
     }
     
 // Schema
@@ -500,7 +500,14 @@ abstract class Base implements
 
     public function getSubEntityLocator(mesh\entity\IEntity $entity) {
         if($entity instanceof opal\record\IPrimaryKeySetProvider) {
-            $output = new mesh\entity\Locator('axis://'.$this->getModel()->getModelName().'/'.ucfirst($this->getUnitName()));
+            $output = 'axis://';
+
+            if($clusterId = $this->getClusterId()) {
+                $output .= $clusterId.'/';
+            }
+
+            $output .= $this->getModel()->getModelName().'/'.ucfirst($this->getUnitName());
+            $output = new mesh\entity\Locator($output);
             $id = $entity->getPrimaryKeySet()->getEntityId();
             $output->setId($id);
 

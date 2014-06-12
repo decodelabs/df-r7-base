@@ -94,18 +94,23 @@ class InlineManyRelationValueContainer implements
         return $this->_field->getTargetUnitId();
     }
 
-    public function getTargetUnit() {
+    public function getTargetUnit($clusterId=null) {
         $application = null;
 
         if($this->_record) {
-            $application = $this->_record->getRecordAdapter()->getApplication();
+            $localUnit = $this->_record->getRecordAdapter();
+            $application = $localUnit->getApplication();
+
+            if($clusterId === null) {
+                $clusterId = $localUnit->getClusterId();
+            }
         }
         
-        return $this->_getTargetUnit($application);
+        return $this->_getTargetUnit($clusterId, $application);
     }
 
-    protected function _getTargetUnit(core\IApplication $application=null) {
-        return axis\Model::loadUnitFromId($this->_field->getTargetUnitId(), $application);
+    protected function _getTargetUnit($clusterId=null, core\IApplication $application=null) {
+        return axis\Model::loadUnitFromId($this->_field->getTargetUnitId(), $clusterId, $application);
     }
 
     
@@ -180,8 +185,10 @@ class InlineManyRelationValueContainer implements
         }
         
         if(!empty($lookupKeySets)) {
-            $application = $this->_record->getRecordAdapter()->getApplication();
-            $targetUnit = $this->_getTargetUnit($application);
+            $localUnit = $this->_record->getRecordAdapter();
+            $application = $localUnit->getApplication();
+            $clusterId = $localUnit->getClusterId();
+            $targetUnit = $this->_getTargetUnit($clusterId, $application);
             
             $query = opal\query\Initiator::factory($application)
                 ->beginSelect($this->_targetPrimaryKeySet->getFieldNames())
@@ -281,7 +288,8 @@ class InlineManyRelationValueContainer implements
         $localUnit = $this->_record->getRecordAdapter();
         $localSchema = $localUnit->getUnitSchema();
         $application = $localUnit->getApplication();
-        $targetUnit = $this->_getTargetUnit($application);
+        $clusterId = $localUnit->getClusterId();
+        $targetUnit = $this->_getTargetUnit($clusterId, $application);
         
         // Init query
         $query = opal\query\Initiator::factory($application)
@@ -311,7 +319,8 @@ class InlineManyRelationValueContainer implements
         $localUnit = $this->_record->getRecordAdapter();
         $localSchema = $localUnit->getUnitSchema();
         $application = $localUnit->getApplication();
-        $targetUnit = $this->_getTargetUnit($application);
+        $clusterId = $localUnit->getClusterId();
+        $targetUnit = $this->_getTargetUnit($clusterId, $application);
         
         // Init query
         $query = opal\query\Initiator::factory($application)
@@ -339,7 +348,8 @@ class InlineManyRelationValueContainer implements
     public function deploySaveTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $parentRecord, $fieldName, opal\record\task\ITask $recordTask=null) {
         $localUnit = $parentRecord->getRecordAdapter();
         $application = $localUnit->getApplication();
-        $targetUnit = $this->_getTargetUnit($application);
+        $clusterId = $localUnit->getClusterId();
+        $targetUnit = $this->_getTargetUnit($clusterId, $application);
         $targetField = $this->_field->getTargetField();
         $parentKeySet = $parentRecord->getPrimaryKeySet();
 
@@ -459,7 +469,8 @@ class InlineManyRelationValueContainer implements
     public function deployDeleteTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $parentRecord, $fieldName, opal\record\task\ITask $recordTask=null) {
         $localUnit = $parentRecord->getRecordAdapter();
         $application = $localUnit->getApplication();
-        $targetUnit = $this->_getTargetUnit($application);
+        $clusterId = $localUnit->getClusterId();
+        $targetUnit = $this->_getTargetUnit($clusterId, $application);
         $targetField = $this->_field->getTargetField();
         $targetSchema = $targetUnit->getUnitSchema();
         $parentKeySet = $parentRecord->getPrimaryKeySet();

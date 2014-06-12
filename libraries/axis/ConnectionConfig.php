@@ -31,7 +31,8 @@ class ConnectionConfig extends core\Config {
             'units' => [
                 'default' => 'master',
                 '@search' => 'search'
-            ]
+            ],
+            'clusterUnit' => null
         ];
     }
 
@@ -109,6 +110,25 @@ class ConnectionConfig extends core\Config {
         return (string)$this->values['units'][$unitId];
     }
 
+    public function getConnectionsOfType($adapters) {
+        if(!isset($this->values['connections']) || !is_array($this->values['connections'])) {
+            return [];
+        }
+
+        $output = [];
+        $adapters = core\collection\Util::flattenArray(func_get_args());
+
+        foreach($this->values['connections'] as $id => $set) {
+            if(!isset($set['adapter']) || !in_array($set['adapter'], $adapters)) {
+                continue;
+            }
+
+            $output[$id] = $set;
+        }
+
+        return $output;
+    }
+
     public function getDefinedUnits() {
         if(!isset($this->values['units'])) {
             return [];
@@ -118,5 +138,22 @@ class ConnectionConfig extends core\Config {
         unset($output['default'], $output['@search']);
 
         return array_keys($output);
+    }
+
+    public function setClusterUnitId($unit) {
+        if($unit instanceof axis\IUnit) {
+            $unit = $unit->getUnitId();
+        }
+
+        $this->values['clusterUnit'] = (string)$unit;
+        return $this;
+    }
+
+    public function getClusterUnitId() {
+        if(isset($this->values['clusterUnit'])) {
+            return $this->values['clusterUnit'];
+        }
+
+        return null;
     }
 }

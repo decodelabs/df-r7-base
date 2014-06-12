@@ -97,10 +97,10 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
         $localUnit = $source->getAdapter();
         $application = $localUnit->getApplication();
         
-        $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId, $application);
+        $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId, null, $application);
         $targetField = $sourceManager->extrapolateIntrinsicField($source, $localRelationManifest->getSingleFieldName());
 
-        $bridgeUnit = axis\Model::loadUnitFromId($this->_bridgeUnitId, $application);
+        $bridgeUnit = axis\Model::loadUnitFromId($this->_bridgeUnitId, null, $application);
         
         $localFieldName = $this->getBridgeLocalFieldName();
         $targetFieldName = $this->getBridgeTargetFieldName();
@@ -161,7 +161,7 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
         $bridgeLocalFieldName = $this->getBridgeLocalFieldName();
         $bridgeTargetFieldName = $this->getBridgeTargetFieldName();
 
-        $bridgeUnit = axis\Model::loadUnitFromId($this->_bridgeUnitId, $application);
+        $bridgeUnit = axis\Model::loadUnitFromId($this->_bridgeUnitId, null, $application);
         $bridgeSourceAlias = $populate->getFieldName().'_bridge';
 
         $output = opal\query\Initiator::beginAttachFromPopulate($populate);

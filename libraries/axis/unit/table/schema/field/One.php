@@ -132,7 +132,7 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
     }
 
     public function duplicateForRelation(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
-        $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId, $unit->getApplication());
+        $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId, null, $unit->getApplication());
         $targetSchema = $targetUnit->getTransientUnitSchema();
         $targetRelationManifest = $this->getTargetRelationManifest();
         $output = [];

@@ -12,8 +12,8 @@ use df\opal;
 class Mysql extends Base_Pdo {
     
 // Connection
-    protected function _connect() {
-        parent::_connect();
+    protected function _connect($global=false) {
+        parent::_connect($global);
         
         if(version_compare($this->getServerVersion(), '5.0.0', '<')) {
             $this->_closeConnection();
@@ -25,13 +25,24 @@ class Mysql extends Base_Pdo {
 
         $this->executeSql('SET time_zone = \'+00:00\'');
     }
+
+    protected function _createDb() {
+        $this->executeSql('CREATE DATABASE `'.$this->_dsn->getDatabase().'`');
+    }
     
-    protected function _getPdoDsn() {
+    protected function _getPdoDsn($global=false) {
         if(!($charset = $this->_dsn->getOption('encoding'))) {
             $charset = 'utf8';
         }
         
-        return 'mysql:host='.$this->_dsn->getHostname().';dbname='.$this->_dsn->getDatabase().';charset='.$charset;
+        $output = 'mysql:host='.$this->_dsn->getHostname();
+
+        if(!$global) {
+            $output .= ';dbname='.$this->_dsn->getDatabase();
+        }
+
+        $output .= ';charset='.$charset;
+        return $output;
     }
     
     protected function _getPdoOptions() {

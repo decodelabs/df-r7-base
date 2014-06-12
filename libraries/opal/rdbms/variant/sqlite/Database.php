@@ -23,4 +23,8 @@ class Database extends opal\rdbms\Database {
         
         return $output;
     }
+
+    public function rename($newName) {
+        core\stub($newName);
+    }
 }

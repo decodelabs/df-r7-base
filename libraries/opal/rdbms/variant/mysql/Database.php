@@ -23,4 +23,19 @@ class Database extends opal\rdbms\Database {
         
         return $output;
     }
+
+    public function rename($newName) {
+        $tableList = $this->getTableList();
+        $oldName = $this->getName();
+        $this->_adapter->executeSql('CREATE DATABASE IF NOT EXISTS `'.$newName.'`');
+
+        foreach($tableList as $tableName) {
+            $stmt = $this->_adapter->prepare('RENAME TABLE `'.$oldName.'`.`'.$tableName.'` TO `'.$newName.'`.`'.$tableName.'`');
+            $res = $stmt->executeWrite();
+        }
+
+        $this->drop();
+        $this->_adapter->switchDatabase($newName);
+        return $this;
+    }
 }

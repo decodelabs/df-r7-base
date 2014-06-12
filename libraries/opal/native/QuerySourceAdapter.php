@@ -38,6 +38,10 @@ class QuerySourceAdapter implements opal\query\IAdapter {
         return null;
     }
 
+    public function getClusterId() {
+        return null;
+    }
+
     public function newRecord(array $values=null) {
         return new opal\record\Base($this, $values);
     }

@@ -65,7 +65,7 @@ class Populate implements IPopulateQuery, core\IDumpable {
             );
         }
 
-        $adapter = $field->getTargetQueryAdapter($this->_sourceManager->getApplication());
+        $adapter = $field->getTargetQueryAdapter($adapter->getClusterId(), $this->_sourceManager->getApplication());
         $alias = uniqid('ppl_'.$intrinsicFieldName);
 
         if(empty($selectFields)) {

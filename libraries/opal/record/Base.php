@@ -944,7 +944,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
 
         $output = $this->_adapter->getEntityLocator();
         $output->addNode(null, 'Record', $id);
-        
+
         return $output;
     }
 

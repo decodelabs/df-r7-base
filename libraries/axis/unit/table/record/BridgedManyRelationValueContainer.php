@@ -208,7 +208,11 @@ class BridgedManyRelationValueContainer implements
     protected function _normalizeInputRecordList(array $records) {
         $index = [];
         $lookupKeySets = [];
-        $bridgeUnit = $this->getBridgeUnit();
+
+        $localUnit = $this->_record->getRecordAdapter();
+        $clusterId = $localUnit->getClusterId();
+
+        $bridgeUnit = $this->getBridgeUnit($clusterId);
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
         
         foreach($records as $record) {
@@ -236,8 +240,9 @@ class BridgedManyRelationValueContainer implements
         }
 
         if(!empty($lookupKeySets)) {
-            $application = $this->_record->getRecordAdapter()->getApplication();
-            $targetUnit = $this->_getTargetUnit($application);
+            
+            $application = $localUnit->getApplication();
+            $targetUnit = $this->_getTargetUnit($clusterId, $application);
 
             $query = opal\query\Initiator::factory($application)
                 ->beginSelect($this->_targetPrimaryKeySet->getFieldNames())
@@ -285,32 +290,42 @@ class BridgedManyRelationValueContainer implements
     }
     
 
-    public function getBridgeUnit() {
+    public function getBridgeUnit($clusterId=null) {
         $application = null;
 
         if($this->_record) {
-            $application = $this->_record->getRecordAdapter()->getApplication();
+            $localUnit = $this->_record->getRecordAdapter();
+            $application = $localUnit->getApplication();
+
+            if($clusterId === null) {
+                $clusterId = $localUnit->getClusterId();
+            }
         }
         
-        return $this->_getBridgeUnit($application);
+        return $this->_getBridgeUnit($clusterId, $application);
     }
 
-    protected function _getBridgeUnit(core\IApplication $application=null) {
-        return axis\Model::loadUnitFromId($this->_field->getBridgeUnitId(), $application);
+    protected function _getBridgeUnit($clusterId=null, core\IApplication $application=null) {
+        return axis\Model::loadUnitFromId($this->_field->getBridgeUnitId(), $clusterId, $application);
     }
 
-    public function getTargetUnit() {
+    public function getTargetUnit($clusterId=null) {
         $application = null;
 
         if($this->_record) {
-            $application = $this->_record->getRecordAdapter()->getApplication();
+            $localUnit = $this->_record->getRecordAdapter();
+            $application = $localUnit->getApplication();
+
+            if($clusterId === null) {
+                $clusterId = $localUnit->getClusterId();
+            }
         }
         
-        return $this->_getTargetUnit($application);
+        return $this->_getTargetUnit($clusterId, $application);
     }
 
-    protected function _getTargetUnit(core\IApplication $application=null) {
-        return axis\Model::loadUnitFromId($this->_field->getTargetUnitId(), $application);
+    protected function _getTargetUnit($clusterId=null, core\IApplication $application=null) {
+        return axis\Model::loadUnitFromId($this->_field->getTargetUnitId(), $clusterId, $application);
     }
 
     public function getBridgeLocalFieldName() {
@@ -338,9 +353,10 @@ class BridgedManyRelationValueContainer implements
 
         $localUnit = $this->_record->getRecordAdapter();
         $application = $localUnit->getApplication();
+        $clusterId = $localUnit->getClusterId();
         
-        $targetUnit = $this->_getTargetUnit($application);
-        $bridgeUnit = $this->_getBridgeUnit($application);
+        $targetUnit = $this->_getTargetUnit($clusterId, $application);
+        $bridgeUnit = $this->_getBridgeUnit($clusterId, $application);
 
         $localFieldName = $this->_field->getName();
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
@@ -382,7 +398,8 @@ class BridgedManyRelationValueContainer implements
 
         $localUnit = $this->_record->getRecordAdapter();
         $application = $localUnit->getApplication();
-        $bridgeUnit = $this->_getBridgeUnit($application);
+        $clusterId = $localUnit->getClusterId();
+        $bridgeUnit = $this->_getBridgeUnit($clusterId, $application);
 
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
         $bridgeAlias = $bridgeLocalFieldName.'Bridge';
@@ -412,8 +429,9 @@ class BridgedManyRelationValueContainer implements
 
         $localUnit = $this->_record->getRecordAdapter();
         $application = $localUnit->getApplication();
+        $clusterId = $localUnit->getClusterId();
         
-        $targetUnit = $this->_getTargetUnit($application);
+        $targetUnit = $this->_getTargetUnit($clusterId, $application);
         $localFieldName = $this->_field->getName();
         
         return opal\query\Initiator::factory($application)
@@ -425,7 +443,8 @@ class BridgedManyRelationValueContainer implements
     public function selectFromNewToBridge($field1=null) {
         $localUnit = $this->_record->getRecordAdapter();
         $application = $localUnit->getApplication();
-        $bridgeUnit = $this->_getBridgeUnit($application);
+        $clusterId = $localUnit->getClusterId();
+        $bridgeUnit = $this->_getBridgeUnit($clusterId, $application);
 
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
         $bridgeTargetFieldName = $this->_field->getBridgeTargetFieldName();
@@ -479,9 +498,10 @@ class BridgedManyRelationValueContainer implements
         
         $localUnit = $this->_record->getRecordAdapter();
         $application = $localUnit->getApplication();
+        $clusterId = $localUnit->getClusterId();
         
-        $targetUnit = $this->_getTargetUnit($application);
-        $bridgeUnit = $this->_getBridgeUnit($application);
+        $targetUnit = $this->_getTargetUnit($clusterId, $application);
+        $bridgeUnit = $this->_getBridgeUnit($clusterId, $application);
 
         $localFieldName = $this->_field->getName();
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
@@ -517,7 +537,8 @@ class BridgedManyRelationValueContainer implements
         
         $localUnit = $this->_record->getRecordAdapter();
         $application = $localUnit->getApplication();
-        $bridgeUnit = $this->_getBridgeUnit($application);
+        $clusterId = $localUnit->getClusterId();
+        $bridgeUnit = $this->_getBridgeUnit($clusterId, $application);
 
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
         $bridgeAlias = $bridgeLocalFieldName.'Bridge';
@@ -571,11 +592,12 @@ class BridgedManyRelationValueContainer implements
 // Tasks
     public function deploySaveTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $parentRecord, $fieldName, opal\record\task\ITask $recordTask=null) {
         $localUnit = $parentRecord->getRecordAdapter();
+        $clusterId = $localUnit->getClusterId();
         $this->_localPrimaryKeySet->updateWith($parentRecord);
 
         $application = $localUnit->getApplication();
-        $targetUnit = $this->_getTargetUnit($application);
-        $bridgeUnit = $this->_getBridgeUnit($application);
+        $targetUnit = $this->_getTargetUnit($clusterId, $application);
+        $bridgeUnit = $this->_getBridgeUnit($clusterId, $application);
 
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
         $bridgeTargetFieldName = $this->_field->getBridgeTargetFieldName();
@@ -718,9 +740,10 @@ class BridgedManyRelationValueContainer implements
             
         $localUnit = $parentRecord->getRecordAdapter();
         $application = $localUnit->getApplication();
+        $clusterId = $localUnit->getClusterId();
             
         $this->_localPrimaryKeySet->updateWith($parentRecord);
-        $bridgeUnit = $this->_getBridgeUnit($application);
+        $bridgeUnit = $this->_getBridgeUnit($clusterId, $application);
 
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
         $bridgeData = [];

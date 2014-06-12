@@ -12,7 +12,7 @@ use df\opal;
 class Mysqli extends opal\rdbms\adapter\Base {
     
 // Connection
-    protected function _connect() {
+    protected function _connect($global=false) {
         if($this->_connection) {
             return;
         }
@@ -24,11 +24,13 @@ class Mysqli extends opal\rdbms\adapter\Base {
         }
         
         try {
+            $database = $global ? null : $this->_dsn->getDatabase();
+
             $connection = mysqli_connect(
                 $this->_dsn->getHostName(),
                 $this->_dsn->getUserName(),
                 $this->_dsn->getPassword(),
-                $this->_dsn->getDatabase(),
+                $database,
                 $this->_dsn->getPort(),
                 $this->_dsn->getSocket()
             );
@@ -54,6 +56,10 @@ class Mysqli extends opal\rdbms\adapter\Base {
         }
 
         $this->executeSql('SET time_zone = \'+00:00\'');
+    }
+
+    protected function _createDb() {
+        $this->executeSql('CREATE DATABASE `'.$this->_dsn->getDatabase().'`');
     }
 
     protected function _closeConnection() {

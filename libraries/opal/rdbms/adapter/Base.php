@@ -29,7 +29,7 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
     protected $_transactionLevel = 0;
     protected $_support = [];
     
-    public static function factory($dsn) {
+    public static function factory($dsn, $autoCreate=false) {
         $dsn = opal\rdbms\Dsn::factory($dsn);
         $hash = $dsn->getHash();
         
@@ -50,7 +50,7 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
             );
         }
         
-        self::$_connections[$hash] = new $class($dsn);
+        self::$_connections[$hash] = new $class($dsn, $autoCreate);
         return self::$_connections[$hash];
     }
     
@@ -65,9 +65,21 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
     }
     
     
-    protected function __construct(opal\rdbms\IDsn $dsn) {
+    protected function __construct(opal\rdbms\IDsn $dsn, $autoCreate=false) {
         $this->_dsn = $dsn;
-        $this->_connect();
+
+        if($autoCreate) {
+            try {
+                $this->_connect();
+            } catch(opal\rdbms\DatabaseNotFoundException $e) {
+                $this->_connect(true);
+                $this->_createDb();
+                $this->_closeConnection();
+                $this->_connect();
+            }
+        } else {
+            $this->_connect();
+        }
     }
     
     public function __destruct() {
@@ -107,6 +119,14 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
         return $this->_dsn->getHash();
     }
     
+    public function switchDatabase($newName) {
+        $this->closeConnection();
+        $this->_dsn->setDatabase($newName);
+        $this->_connect();
+        self::$_connections[$this->_dsn->getHash()] = $this;
+        return $this;
+    }
+
     public function supports($feature) {
         if(!isset($this->_support[$feature])) {
             $this->_support[$feature] = (bool)$this->_supports($feature);
@@ -246,7 +266,8 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
     
     
 // Stubs
-    abstract protected function _connect();
+    abstract protected function _connect($global=false);
+    abstract protected function _createDb();
     abstract protected function _closeConnection();
     abstract protected function _supports($feature);
     abstract protected function _beginTransaction();
@@ -273,7 +294,7 @@ abstract class Base_Pdo extends opal\rdbms\adapter\Base {
     protected $_affectedRows = 0;
     
 // Connection
-    protected function _connect() {
+    protected function _connect($global=false) {
         if($this->_connection) {
             return;
         }
@@ -294,7 +315,7 @@ abstract class Base_Pdo extends opal\rdbms\adapter\Base {
         
         try {
             $connection = new \PDO(
-                $this->_getPdoDsn(),
+                $this->_getPdoDsn($global),
                 $this->_dsn->getUsername(),
                 $this->_dsn->getPassword(),
                 $this->_getPdoOptions()
@@ -308,7 +329,7 @@ abstract class Base_Pdo extends opal\rdbms\adapter\Base {
         $this->_connection = $connection;
     }
     
-    abstract protected function _getPdoDsn();
+    abstract protected function _getPdoDsn($global=false);
     abstract protected function _getPdoOptions();
     
     abstract public function _getConnectionException($code, $message);

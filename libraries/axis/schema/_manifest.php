@@ -206,7 +206,7 @@ trait TLengthRestrictedField {
 interface IRelationField extends IField, opal\schema\IRelationField, opal\schema\IQueryClauseRewriterField {
     public function setTargetUnitId($targetUnitId);
     public function getTargetUnitId();
-    public function getTargetUnit(core\IApplication $application=null);
+    public function getTargetUnit($clusterId=null, core\IApplication $application=null);
 
     //public function shouldCascadeDelete($flag=null);
 }
@@ -236,12 +236,12 @@ trait TRelationField {
         return $this->_targetUnitId;
     }
 
-    public function getTargetUnit(core\IApplication $application=null) {
-        return axis\Model::loadUnitFromId($this->_targetUnitId, $application);
+    public function getTargetUnit($clusterId=null, core\IApplication $application=null) {
+        return axis\Model::loadUnitFromId($this->_targetUnitId, $clusterId, $application);
     }
 
-    public function getTargetQueryAdapter(core\IApplication $application=null) {
-        return axis\Model::loadUnitFromId($this->_targetUnitId, $application);
+    public function getTargetQueryAdapter($clusterId=null, core\IApplication $application=null) {
+        return axis\Model::loadUnitFromId($this->_targetUnitId, $clusterId, $application);
     }
 
 /*
@@ -276,7 +276,7 @@ trait TRelationField {
     }
 
     protected function _validateTargetUnit(axis\ISchemaBasedStorageUnit $localUnit) {
-        $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId, $localUnit->getApplication());
+        $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId, null, $localUnit->getApplication());
         
         if($targetUnit->getUnitType() != $localUnit->getUnitType()) {
             throw new RuntimeException(
@@ -337,7 +337,7 @@ trait TRelationField {
             return new opal\schema\Primitive_Null($this);
         }
 
-        $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId, $unit->getApplication());
+        $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId, null, $unit->getApplication());
         $targetSchema = $targetUnit->getTransientUnitSchema();
         $targetPrimaryIndex = $targetSchema->getPrimaryIndex();
 
@@ -485,7 +485,7 @@ interface IBridgedRelationField extends IRelationField, opal\schema\IBridgedRela
     public function setBridgeUnitId($id);
     public function getBridgeUnitId();
     
-    public function getBridgeUnit(core\IApplication $application=null);
+    public function getBridgeUnit($clusterId=null, core\IApplication $application=null);
     public function isDominant($flag=null);
 }
 
@@ -517,12 +517,12 @@ trait TBridgedRelationField {
         return $this->_bridgeUnitId;
     }
     
-    public function getBridgeUnit(core\IApplication $application=null) {
-        return axis\Model::loadUnitFromId($this->_bridgeUnitId, $application);
+    public function getBridgeUnit($clusterId=null, core\IApplication $application=null) {
+        return axis\Model::loadUnitFromId($this->_bridgeUnitId, $clusterId, $application);
     }
 
-    public function getBridgeQueryAdapter(core\IApplication $application=null) {
-        return axis\Model::loadUnitFromId($this->_bridgeUnitId, $application);
+    public function getBridgeQueryAdapter($clusterId=null, core\IApplication $application=null) {
+        return axis\Model::loadUnitFromId($this->_bridgeUnitId, $clusterId, $application);
     }
 
     public function getBridgeLocalFieldName() {
@@ -534,7 +534,7 @@ trait TBridgedRelationField {
     }
 
     protected function _sanitizeBridgeUnitId(axis\ISchemaBasedStorageUnit $localUnit) {
-        $targetUnit = $this->getTargetUnit($localUnit->getApplication());
+        $targetUnit = $this->getTargetUnit(null, $localUnit->getApplication());
         $modelName = $localUnit->getModel()->getModelName();
 
         $this->_bridgeLocalFieldName = $localUnit->getUnitName();
@@ -585,7 +585,7 @@ trait TBridgedRelationField {
     }
 
     protected function _validateBridgeUnit(axis\ISchemaBasedStorageUnit $localUnit) {
-        $bridgeUnit = axis\Model::loadUnitFromId($this->_bridgeUnitId, $localUnit->getApplication());
+        $bridgeUnit = axis\Model::loadUnitFromId($this->_bridgeUnitId, null, $localUnit->getApplication());
 
         if($this instanceof IManyToManyField) {
             if($bridgeUnit->getModel()->getModelName() != $localUnit->getModel()->getModelName()) {

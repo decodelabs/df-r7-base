@@ -24,6 +24,8 @@ interface IAccess extends user\IState {}
 
 interface IModel extends core\IApplicationAware, mesh\entity\IParentEntity, core\IRegistryObject {
     public function getModelName();
+    public function getModelId();
+    public function getClusterId();
     
     public function getUnit($name);
     public function getSchemaDefinitionUnit();
@@ -44,8 +46,10 @@ interface IUnit extends core\IApplicationAware, mesh\entity\IEntity, user\IAcces
     public function getUnitName();
     public function getCanonicalUnitName();
     public function getUnitId();
+    public function getGlobalUnitId();
     public function getUnitType();
     public function getModel();
+    public function getClusterId();
     public function getUnitSettings();
 }
 
@@ -84,6 +88,10 @@ trait TUnit {
     }
     
     public function getUnitId() {
+        return $this->_model->getModelId().IUnit::ID_SEPARATOR.$this->getUnitName();
+    }
+
+    public function getGlobalUnitId() {
         return $this->_model->getModelName().IUnit::ID_SEPARATOR.$this->getUnitName();
     }
 
@@ -103,6 +111,10 @@ trait TUnit {
     
     public function getModel() {
         return $this->_model;
+    }
+
+    public function getClusterId() {
+        return $this->_model->getClusterId();
     }
     
     public function getApplication() {
@@ -128,7 +140,14 @@ trait TUnit {
 
 // Mesh
     public function getEntityLocator() {
-        return new mesh\entity\Locator('axis://'.$this->_model->getModelName().'/'.ucfirst($this->getUnitName()));
+        $output = 'axis://';
+
+        if($clusterId = $this->getClusterId()) {
+            $output .= $clusterId.'/';
+        }
+
+        $output .= $this->_model->getModelName().'/'.ucfirst($this->getUnitName());
+        return new mesh\entity\Locator($output);
     }
 
 
