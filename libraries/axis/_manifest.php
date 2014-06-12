@@ -296,6 +296,10 @@ interface ISchemaDefinitionStorageUnit extends IStorageUnit {
     public function fetchStoredUnitList();
 }
 
+interface IClusterUnit extends IStorageUnit {
+    public function getClusterOptionsList();
+}
+
 
 interface IContext extends IUnit, core\IContext, core\i18n\translate\ITranslationProxy {
 
