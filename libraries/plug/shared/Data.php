@@ -94,6 +94,14 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
         return $this;
     }
 
+    public function getClusterUnit() {
+        try {
+            return axis\Model::loadClusterUnit($this->_context->application);
+        } catch(axis\RuntimeException $e) {
+            return null;
+        }
+    }
+
     public function fetchClusterRecord($clusterId) {
         $unit = axis\Model::loadClusterUnit($this->_context->application);
         return $this->fetchForAction($unit, $clusterId);
