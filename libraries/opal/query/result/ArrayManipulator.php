@@ -950,7 +950,7 @@ class ArrayManipulator implements IArrayManipulator {
                 $keyNameList = [];
 
                 foreach($keyField->dereference() as $derefKeyField) {
-                    $keyNameList[] = $keyField->getQualifiedName();
+                    $keyNameList[] = $derefKeyField->getQualifiedName();
                 }
 
                 if(count($keyNameList) == 1) {
@@ -983,7 +983,7 @@ class ArrayManipulator implements IArrayManipulator {
             }
         }
 
-        
+
         // Prepare object field
         $objectKey = $primarySource->getAlias().'.@object';
         $fetchObject = false;
