@@ -39,9 +39,11 @@ interface IUnitInspector {
     public function getAdapterConnectionName();
 
     public function getSchema();
+    public function getTransientSchema();
 
     public function getBackups();
     public function describeStorage($name);
+    public function storageExists();
 }
 
 interface IStorageDescriber {

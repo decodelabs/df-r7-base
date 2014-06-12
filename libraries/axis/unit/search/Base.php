@@ -63,6 +63,10 @@ abstract class Base implements axis\IAdapterBasedStorageUnit {
         core\stub();
     }
     
+    public function storageExists() {
+        return core\stub();
+    }
+
     public function getStorageBackendName() {
         core\stub($this);
     }

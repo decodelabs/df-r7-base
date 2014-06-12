@@ -34,19 +34,19 @@ class Rdbms implements axis\ISchemaDefinitionStorageAdapter {
     
     public function fetchFor(axis\ISchemaBasedStorageUnit $unit) {
         return $this->_table->select('schema')
-            ->where('unitId', '=', $unit->getUnitId())
+            ->where('unitId', '=', $unit->getGlobalUnitId())
             ->toValue();
     }
     
     public function getTimestampFor(axis\ISchemaBasedStorageUnit $unit) {
         return $this->_table->select('timestamp')
-            ->where('unitId', '=', $unit->getUnitId())
+            ->where('unitId', '=', $unit->getGlobalUnitId())
             ->toValue('timestamp');
     }
     
     public function insert(axis\ISchemaBasedStorageUnit $unit, $jsonData, $version) {
         $this->_table->insert([
-                'unitId' => $unit->getUnitId(),
+                'unitId' => $unit->getGlobalUnitId(),
                 'storeName' => $unit->getStorageBackendName(),
                 'version' => $version,
                 'schema' => $jsonData
@@ -62,14 +62,14 @@ class Rdbms implements axis\ISchemaDefinitionStorageAdapter {
                 'version' => $version,
                 'timestamp' => core\time\Date::factory('now')->toString()
             ])
-            ->where('unitId', '=', $unit->getUnitId())
+            ->where('unitId', '=', $unit->getGlobalUnitId())
             ->execute();
             
         return $this;
     }
     
     public function remove(axis\ISchemaBasedStorageUnit $unit) {
-        return $this->removeId($unit->getUnitId());
+        return $this->removeId($unit->getGlobalUnitId());
     }
 
     public function removeId($unitId) {
@@ -111,5 +111,9 @@ class Rdbms implements axis\ISchemaDefinitionStorageAdapter {
         $this->_table->drop();
         
         return $this;
+    }
+
+    public function storageExists() {
+        return $this->_table->exists();
     }
 }

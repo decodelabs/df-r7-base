@@ -135,6 +135,10 @@ abstract class Base implements
         
         return $this;
     }
+
+    public function storageExists() {
+        return $this->_adapter->storageExists();
+    }
     
     
     

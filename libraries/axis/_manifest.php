@@ -228,6 +228,7 @@ interface IAdapterBasedUnit {
 interface IStorageUnit extends IUnit {
     public function fetchByPrimary($id);
     public function destroyStorage();
+    public function storageExists();
     public function getStorageBackendName();
 }
 
@@ -322,6 +323,7 @@ interface IIntrospectableAdapter extends IAdapter {
 interface ISchemaProviderAdapter extends IAdapter {
     public function createStorageFromSchema(axis\schema\ISchema $schema);
     public function destroyStorage();
+    public function storageExists();
 }
 
 

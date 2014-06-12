@@ -205,6 +205,10 @@ class Rdbms implements
         return $this;
     }
 
+    public function storageExists() {
+        return $this->getQuerySourceAdapter()->exists();
+    }
+
     
 // Query exceptions
     public function handleQueryException(opal\query\IQuery $query, \Exception $e) {

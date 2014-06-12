@@ -134,6 +134,10 @@ final class Virtual implements axis\ISchemaDefinitionStorageUnit, axis\ISchemaBa
     }
 
     public function removeId($unitId) {
+        $parts = explode('/', $unitId, 2);
+        $modelParts = explode(':', array_shift($parts));
+        $unitId = array_pop($modelParts).'/'.array_shift($parts);
+
         $this->_adapter->removeId($unitId);
         return $this;
     }
@@ -195,6 +199,11 @@ final class Virtual implements axis\ISchemaDefinitionStorageUnit, axis\ISchemaBa
 
     public function destroyStorage() {
         $this->_adapter->destroyStorage();
+        return $this;
+    }
+
+    public function storageExists() {
+        return $this->_adapter->storageExists();
     }
     
     public function buildInitialSchema() {

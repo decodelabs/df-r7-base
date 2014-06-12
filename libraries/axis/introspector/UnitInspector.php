@@ -89,6 +89,14 @@ class UnitInspector implements IUnitInspector, core\IDumpable {
         return $this->_unit->getUnitSchema();
     }
 
+    public function getTransientSchema() {
+        if(!$this->_unit instanceof axis\ISchemaBasedStorageUnit) {
+            return null;
+        }
+
+        return $this->_unit->getTransientUnitSchema();
+    }
+
 
 // Storage
     public function describeStorage($name) {
@@ -100,6 +108,14 @@ class UnitInspector implements IUnitInspector, core\IDumpable {
         }
 
         return $adapter->describeStorage($name);
+    }
+
+    public function storageExists() {
+        if(!$this->_unit instanceof axis\ISchemaBasedStorageUnit) {
+            return false;
+        }
+
+        return $this->_unit->storageExists();
     }
 
     public function getBackups() {
