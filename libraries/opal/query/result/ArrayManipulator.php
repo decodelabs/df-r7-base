@@ -596,19 +596,23 @@ class ArrayManipulator implements IArrayManipulator {
             }
             
             $field = $directive->getField();
-            $sortFieldName = $field->getQualifiedName();
-            
-            if(isset($sortFields[$sortFieldName])) {
-                continue;
-            }
-            
-            if($directive->isDescending()) {
-                $sortFields[$sortFieldName] = SORT_DESC;
-            } else {
-                $sortFields[$sortFieldName] = SORT_ASC;
+            $derefFields = $field->dereference();
+
+            foreach($derefFields as $innerField) {
+                $sortFieldName = $innerField->getQualifiedName();
+                
+                if(isset($sortFields[$sortFieldName])) {
+                    continue;
+                }
+                
+                if($directive->isDescending()) {
+                    $sortFields[$sortFieldName] = SORT_DESC;
+                } else {
+                    $sortFields[$sortFieldName] = SORT_ASC;
+                }
             }
         }
-        
+
         foreach($this->_rows as &$row) {
             foreach($sortFields as $field => $direction) {
                 if(isset($row[$field])) {

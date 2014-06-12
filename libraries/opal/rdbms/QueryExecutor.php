@@ -676,6 +676,9 @@ abstract class QueryExecutor implements IQueryExecutor {
             $this->writeWhereClauseList($clauses, $rows);
         }
 
+        // TODO: check this is viable :)
+        $this->writeOrderSection();
+
 
         $manipulator = new opal\query\result\ArrayManipulator($source, $this->_stmt->executeRead()->toArray(), true);
         return $manipulator->applyAttachmentDataQuery($this->_query, $joinsApplied, $clausesApplied);
