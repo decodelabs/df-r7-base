@@ -31,6 +31,10 @@ class Url extends core\uri\Url implements IUrl {
             || $area == $request::AREA_MARKER.$mappedArea) {
                 $path->shift();
             }
+
+            if($path->getBasename() == 'index') {
+                $path->shouldAddTrailingSlash(true)->pop();
+            }
             
             if(!empty($basePath)) {
                 $path->unshift($basePath);
