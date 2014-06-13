@@ -236,12 +236,19 @@ abstract class Base implements IScaffold {
         $output = clone $this->_context->location;
         $output->setAction($action);
         $outQuery = $output->query;
+        $propagate = $this->getPropagatingQueryVars();
+
+        foreach($outQuery->getKeys() as $key) {
+            if(!in_array($key, $propagate)) {
+                unset($outQuery->{$key});
+            }
+        }
 
         if($query !== null) {
             $outQuery->import($query);
         }
 
-        foreach($this->getPropagatingQueryVars() as $var) {
+        foreach($propagate as $var) {
             if(in_array($var, $propagationFilter)) {
                 $outQuery->{$var} = $this->request->query[$var];
             }
