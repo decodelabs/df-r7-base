@@ -101,7 +101,7 @@ class InlineManyRelationValueContainer implements
             $localUnit = $this->_record->getRecordAdapter();
             $application = $localUnit->getApplication();
 
-            if($clusterId === null) {
+            if($clusterId === null && !$this->_field->isOnGlobalCluster()) {
                 $clusterId = $localUnit->getClusterId();
             }
         }
@@ -187,7 +187,7 @@ class InlineManyRelationValueContainer implements
         if(!empty($lookupKeySets)) {
             $localUnit = $this->_record->getRecordAdapter();
             $application = $localUnit->getApplication();
-            $clusterId = $localUnit->getClusterId();
+            $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
             $targetUnit = $this->_getTargetUnit($clusterId, $application);
             
             $query = opal\query\Initiator::factory($application)
@@ -288,7 +288,7 @@ class InlineManyRelationValueContainer implements
         $localUnit = $this->_record->getRecordAdapter();
         $localSchema = $localUnit->getUnitSchema();
         $application = $localUnit->getApplication();
-        $clusterId = $localUnit->getClusterId();
+        $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
         $targetUnit = $this->_getTargetUnit($clusterId, $application);
         
         // Init query
@@ -319,7 +319,7 @@ class InlineManyRelationValueContainer implements
         $localUnit = $this->_record->getRecordAdapter();
         $localSchema = $localUnit->getUnitSchema();
         $application = $localUnit->getApplication();
-        $clusterId = $localUnit->getClusterId();
+        $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
         $targetUnit = $this->_getTargetUnit($clusterId, $application);
         
         // Init query
@@ -348,7 +348,7 @@ class InlineManyRelationValueContainer implements
     public function deploySaveTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $parentRecord, $fieldName, opal\record\task\ITask $recordTask=null) {
         $localUnit = $parentRecord->getRecordAdapter();
         $application = $localUnit->getApplication();
-        $clusterId = $localUnit->getClusterId();
+        $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
         $targetUnit = $this->_getTargetUnit($clusterId, $application);
         $targetField = $this->_field->getTargetField();
         $parentKeySet = $parentRecord->getPrimaryKeySet();
@@ -469,7 +469,7 @@ class InlineManyRelationValueContainer implements
     public function deployDeleteTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $parentRecord, $fieldName, opal\record\task\ITask $recordTask=null) {
         $localUnit = $parentRecord->getRecordAdapter();
         $application = $localUnit->getApplication();
-        $clusterId = $localUnit->getClusterId();
+        $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
         $targetUnit = $this->_getTargetUnit($clusterId, $application);
         $targetField = $this->_field->getTargetField();
         $targetSchema = $targetUnit->getUnitSchema();

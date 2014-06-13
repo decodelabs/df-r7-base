@@ -210,7 +210,7 @@ class BridgedManyRelationValueContainer implements
         $lookupKeySets = [];
 
         $localUnit = $this->_record->getRecordAdapter();
-        $clusterId = $localUnit->getClusterId();
+        $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
 
         $bridgeUnit = $this->getBridgeUnit($clusterId);
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
@@ -297,7 +297,7 @@ class BridgedManyRelationValueContainer implements
             $localUnit = $this->_record->getRecordAdapter();
             $application = $localUnit->getApplication();
 
-            if($clusterId === null) {
+            if($clusterId === null && !$this->_field->isOnGlobalCluster()) {
                 $clusterId = $localUnit->getClusterId();
             }
         }
@@ -316,7 +316,7 @@ class BridgedManyRelationValueContainer implements
             $localUnit = $this->_record->getRecordAdapter();
             $application = $localUnit->getApplication();
 
-            if($clusterId === null) {
+            if($clusterId === null && !$this->_field->isOnGlobalCluster()) {
                 $clusterId = $localUnit->getClusterId();
             }
         }
@@ -353,7 +353,7 @@ class BridgedManyRelationValueContainer implements
 
         $localUnit = $this->_record->getRecordAdapter();
         $application = $localUnit->getApplication();
-        $clusterId = $localUnit->getClusterId();
+        $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
         
         $targetUnit = $this->_getTargetUnit($clusterId, $application);
         $bridgeUnit = $this->_getBridgeUnit($clusterId, $application);
@@ -398,7 +398,7 @@ class BridgedManyRelationValueContainer implements
 
         $localUnit = $this->_record->getRecordAdapter();
         $application = $localUnit->getApplication();
-        $clusterId = $localUnit->getClusterId();
+        $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
         $bridgeUnit = $this->_getBridgeUnit($clusterId, $application);
 
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
@@ -429,7 +429,7 @@ class BridgedManyRelationValueContainer implements
 
         $localUnit = $this->_record->getRecordAdapter();
         $application = $localUnit->getApplication();
-        $clusterId = $localUnit->getClusterId();
+        $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
         
         $targetUnit = $this->_getTargetUnit($clusterId, $application);
         $localFieldName = $this->_field->getName();
@@ -443,7 +443,7 @@ class BridgedManyRelationValueContainer implements
     public function selectFromNewToBridge($field1=null) {
         $localUnit = $this->_record->getRecordAdapter();
         $application = $localUnit->getApplication();
-        $clusterId = $localUnit->getClusterId();
+        $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
         $bridgeUnit = $this->_getBridgeUnit($clusterId, $application);
 
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
@@ -498,7 +498,7 @@ class BridgedManyRelationValueContainer implements
         
         $localUnit = $this->_record->getRecordAdapter();
         $application = $localUnit->getApplication();
-        $clusterId = $localUnit->getClusterId();
+        $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
         
         $targetUnit = $this->_getTargetUnit($clusterId, $application);
         $bridgeUnit = $this->_getBridgeUnit($clusterId, $application);
@@ -537,7 +537,7 @@ class BridgedManyRelationValueContainer implements
         
         $localUnit = $this->_record->getRecordAdapter();
         $application = $localUnit->getApplication();
-        $clusterId = $localUnit->getClusterId();
+        $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
         $bridgeUnit = $this->_getBridgeUnit($clusterId, $application);
 
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
@@ -592,7 +592,7 @@ class BridgedManyRelationValueContainer implements
 // Tasks
     public function deploySaveTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $parentRecord, $fieldName, opal\record\task\ITask $recordTask=null) {
         $localUnit = $parentRecord->getRecordAdapter();
-        $clusterId = $localUnit->getClusterId();
+        $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
         $this->_localPrimaryKeySet->updateWith($parentRecord);
 
         $application = $localUnit->getApplication();
@@ -740,7 +740,7 @@ class BridgedManyRelationValueContainer implements
             
         $localUnit = $parentRecord->getRecordAdapter();
         $application = $localUnit->getApplication();
-        $clusterId = $localUnit->getClusterId();
+        $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
             
         $this->_localPrimaryKeySet->updateWith($parentRecord);
         $bridgeUnit = $this->_getBridgeUnit($clusterId, $application);

@@ -39,7 +39,7 @@ class OneRelationValueContainer implements
         
         $localUnit = $record->getRecordAdapter();
         $application = $localUnit->getApplication();
-        $clusterId = $localUnit->getClusterId();
+        $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
         $targetUnit = axis\Model::loadUnitFromId($this->_field->getTargetUnitId(), $clusterId, $application);
         $query = $targetUnit->fetch();
 
@@ -161,7 +161,7 @@ class OneRelationValueContainer implements
             $localUnit = $this->_record->getRecordAdapter();
             $application = $localUnit->getApplication();
 
-            if($clusterId === null) {
+            if($clusterId === null && !$this->_field->isOnGlobalCluster()) {
                 $clusterId = $localUnit->getClusterId();
             }
         }
