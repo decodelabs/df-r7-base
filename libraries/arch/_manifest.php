@@ -209,7 +209,13 @@ interface IAction extends core\IContextAware, user\IAccessLock, IResponseForcer 
     public function handleException(\Exception $e);
 }
 
-interface IComponent extends core\IContextAware, aura\view\IDeferredRenderable, user\IAccessLock, aura\view\ICascadingHelperProvider, arch\IProxyResponse {
+interface IComponent extends 
+    core\IContextAware, 
+    core\IChainable, 
+    aura\view\IDeferredRenderable, 
+    user\IAccessLock, 
+    aura\view\ICascadingHelperProvider, 
+    arch\IProxyResponse {
     public function getName();
 }
 

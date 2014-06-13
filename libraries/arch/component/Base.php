@@ -15,6 +15,7 @@ use df\link;
 abstract class Base implements arch\IComponent {
     
     use core\TContextAware;
+    use core\TChainable;
     use user\TAccessLock;
     use core\TStringProvider;
     use aura\view\TDeferredRenderable;
