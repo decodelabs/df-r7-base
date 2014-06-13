@@ -190,6 +190,15 @@ trait TScaffold_RecordLoader {
                 ->setTitle($this->getDirectoryTitle())
         );
 
+        if(empty($list)) {
+            $container->addFlashMessage($this->_(
+                'There are currently no %n% group entries to select from',
+                ['%n%' => $clusterName]
+            ), 'warning');
+
+            return $this->view;
+        }
+
         $form = $container->addForm()->setMethod('get');
         $fs = $form->addFieldSet($this->_('Select %n%', ['%n%' => $clusterName]));
 
