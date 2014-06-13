@@ -14,28 +14,25 @@ use df\opal;
 
 class TaskRebuildTable extends arch\task\Action {
     
-    protected $_unit;
-    protected $_adapter;
-
     public function execute() {
         $unitId = $this->request->query['unit'];
 
-        if(!$this->_unit = axis\Model::loadUnitFromId($unitId)) {
+        if(!$unit = axis\Model::loadUnitFromId($unitId)) {
             $this->throwError(404, 'Unit '.$unitId.' not found');
         }
 
-        if($this->_unit->getUnitType() != 'table') {
+        if($unit->getUnitType() != 'table') {
             $this->throwError(403, 'Unit '.$unitId.' is not a table');
         }
 
-        if(!$this->_unit instanceof axis\IAdapterBasedStorageUnit) {
+        if(!$unit instanceof axis\IAdapterBasedStorageUnit) {
             $this->throwError(403, 'Table unit '.$unitId.' is not adapter based - don\'t know how to rebuild it!');
         }
 
-        $this->response->writeLine('Rebuilding unit '.$this->_unit->getUnitId());
-        $this->_adapter = $this->_unit->getUnitAdapter();
+        $this->response->writeLine('Rebuilding unit '.$unit->getUnitId().' in global cluster');
+        $adapter = $unit->getUnitAdapter();
 
-        $parts = explode('\\', get_class($this->_adapter));
+        $parts = explode('\\', get_class($adapter));
         $adapterName = array_pop($parts);
 
         $func = '_rebuild'.$adapterName.'Table';
@@ -44,20 +41,42 @@ class TaskRebuildTable extends arch\task\Action {
             $this->throwError(403, 'Table unit '.$unitId.' is using an adapter that doesn\'t currently support rebuilding');
         }
 
-        $schema = $this->_unit->buildInitialSchema();
-        $this->_unit->updateUnitSchema($schema);
-        $this->_unit->validateUnitSchema($schema);
+        $schema = $unit->buildInitialSchema();
+        $unit->updateUnitSchema($schema);
+        $unit->validateUnitSchema($schema);
 
-        $this->{$func}($schema);
+        $this->{$func}($unit, $schema);
+
+        if($clusterUnit = $this->data->getClusterUnit()) {
+            foreach($clusterUnit->select('@primary')->toList('@primary') as $clusterId) {
+                $this->response->writeLine('');
+                $this->response->writeLine('Rebuilding in cluster: '.$clusterId);
+
+                $unit = axis\Model::loadUnitFromId($unitId, $clusterId);
+                $this->{$func}($unit, $schema);
+            }
+        }
+
+        $this->response->writeLine('');
+        $this->response->writeLine('Updating schema cache');
+        axis\schema\Cache::getInstance($this->application)->clear();
+        $schemaDefinition = new axis\unit\schemaDefinition\Virtual($unit->getModel());
+        $schemaDefinition->store($unit, $schema);
     }
 
-    protected function _rebuildRdbmsTable(axis\schema\ISchema $axisSchema) {
+    protected function _rebuildRdbmsTable(axis\IStorageUnit $unit, axis\schema\ISchema $axisSchema) {
         $this->response->writeLine('Switching to rdbms mode');
 
-        $connection = $this->_adapter->getConnection();
-        $currentTable = $this->_adapter->getQuerySourceAdapter();
+        $adapter = $unit->getUnitAdapter();
+        $connection = $adapter->getConnection();
+        $currentTable = $adapter->getQuerySourceAdapter();
 
-        $bridge = new axis\schema\bridge\Rdbms($this->_unit, $connection, $axisSchema);
+        if(!$currentTable->exists()) {
+            $this->response->writeLine('Unit rdbms table '.$currentTable->getName().' not found - nothing to do');
+            return;
+        }
+
+        $bridge = new axis\schema\bridge\Rdbms($unit, $connection, $axisSchema);
         $dbSchema = $bridge->updateTargetSchema();
         $currentTableName = $dbSchema->getName();
         $dbSchema->setName($currentTableName.'__rebuild__');
@@ -66,7 +85,7 @@ class TaskRebuildTable extends arch\task\Action {
             $this->response->writeLine('Building copy table');
             $newTable = $connection->createTable($dbSchema);
         } catch(opal\rdbms\TableConflictException $e) {
-            $this->throwError(403, 'Table unit '.$this->_unit->getUnitId().' is currently rebuilding in another process');
+            $this->throwError(403, 'Table unit '.$unit->getUnitId().' is currently rebuilding in another process');
         }
 
         $this->response->writeLine('Copying data...');
@@ -92,10 +111,5 @@ class TaskRebuildTable extends arch\task\Action {
         $this->response->writeLine('Renaming tables');
         $currentTable->rename($currentTableName.axis\IUnit::BACKUP_SUFFIX.$this->format->customDate('now', 'Ymd_his'));
         $newTable->rename($currentTableName);
-
-        $this->response->writeLine('Updating schema cache');
-        axis\schema\Cache::getInstance($this->application)->clear();
-        $schemaDefinition = new axis\unit\schemaDefinition\Virtual($this->_unit->getModel());
-        $schemaDefinition->store($this->_unit, $axisSchema);
     }
 }

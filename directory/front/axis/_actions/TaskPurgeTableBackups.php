@@ -14,28 +14,37 @@ use df\opal;
 
 class TaskPurgeTableBackups extends arch\task\Action {
     
-    protected $_unit;
-    protected $_adapter;
-
     public function execute() {
         $unitId = $this->request->query['unit'];
+        $allClusters = isset($this->request->query->allClusters);
 
-        if(!$this->_unit = axis\Model::loadUnitFromId($unitId)) {
+        if(!$unit = axis\Model::loadUnitFromId($unitId)) {
             $this->throwError(404, 'Unit '.$unitId.' not found');
         }
 
-        if($this->_unit->getUnitType() != 'table') {
+        $isClusterUnit = (bool)$unit->getClusterId();
+
+        if($isClusterUnit && $allClusters) {
+            $unit = axis\Model::loadUnitFromId($unit->getGlobalUnitId());
+        }
+
+        if($unit->getUnitType() != 'table') {
             $this->throwError(403, 'Unit '.$unitId.' is not a table');
         }
 
-        if(!$this->_unit instanceof axis\IAdapterBasedStorageUnit) {
+        if(!$unit instanceof axis\IAdapterBasedStorageUnit) {
             $this->throwError(403, 'Table unit '.$unitId.' is not adapter based - don\'t know how to rebuild it!');
         }
 
-        $this->response->writeLine('Purging backups for unit '.$this->_unit->getUnitId());
-        $this->_adapter = $this->_unit->getUnitAdapter();
+        if($isClusterUnit) {
+            $this->response->writeLine('Purging backups for unit '.$unit->getUnitId().' in cluster: '.$unit->getClusterId());
+        } else {
+            $this->response->writeLine('Purging backups for unit '.$unit->getUnitId().' in global cluster');
+        }
 
-        $parts = explode('\\', get_class($this->_adapter));
+        $adapter = $unit->getUnitAdapter();
+
+        $parts = explode('\\', get_class($adapter));
         $adapterName = array_pop($parts);
 
         $func = '_purge'.$adapterName.'Table';
@@ -44,19 +53,37 @@ class TaskPurgeTableBackups extends arch\task\Action {
             $this->throwError(403, 'Table unit '.$unitId.' is using an adapter that doesn\'t currently support rebuilding');
         }
 
-        $inspector = new axis\introspector\UnitInspector($this->_unit);
+        $inspector = new axis\introspector\UnitInspector($unit);
+        $this->{$func}($unit, $inspector->getBackups());
 
-        $this->{$func}($inspector->getBackups());
+        if($allClusters && ($clusterUnit = $this->data->getClusterUnit())) {
+            foreach($clusterUnit->select('@primary')->toList('@primary') as $clusterId) {
+                $this->response->writeLine('');
+                $this->response->writeLine('Purging in cluster: '.$clusterId);
+
+                $unit = axis\Model::loadUnitFromId($unitId, $clusterId);
+                $inspector = new axis\introspector\UnitInspector($unit);
+                $this->{$func}($unit, $inspector->getBackups());
+            }
+        }
     }
 
-    protected function _purgeRdbmsTable(array $backups) {
+    protected function _purgeRdbmsTable(axis\IStorageUnit $unit, array $backups) {
         $this->response->writeLine('Switching to rdbms mode');
-        $connection = $this->_adapter->getConnection();
+
+        $adapter = $unit->getUnitAdapter();
+        $connection = $adapter->getConnection();
+        $count = 0;
 
         foreach($backups as $backup) {
             $table = $connection->getTable($backup->name);
             $this->response->writeLine('Dropping table '.$backup->name);
             $table->drop();
+            $count++;
+        }
+
+        if(!$count) {
+            $this->response->writeLine('No backup tables to drop');
         }
     }
 }
