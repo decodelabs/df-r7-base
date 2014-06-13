@@ -27,6 +27,9 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
     use arch\scaffold\TScaffold_RecordIndexHeaderBarProvider;
 
     const RECORD_ADAPTER = null;
+    const CLUSTER = false;
+    const GLOBAL_CLUSTER = false;
+    const CLUSTER_KEY = 'cluster';
 
     const RECORD_KEY_NAME = null;
     const RECORD_ITEM_NAME = null;

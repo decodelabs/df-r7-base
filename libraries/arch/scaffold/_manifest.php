@@ -31,6 +31,10 @@ interface IScaffold extends core\IRegistryObject {
 
 interface IRecordLoaderScaffold extends IScaffold {
     public function getRecordAdapter();
+    public function isRecordAdapterClustered();
+    public function getClusterKey();
+    public function getClusterRecord();
+    public function getClusterId();
 }
 
 interface IRecordDataProviderScaffold extends IRecordLoaderScaffold {

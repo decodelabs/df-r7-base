@@ -11,6 +11,7 @@ use df\arch;
 use df\aura;
 use df\axis;
 use df\opal;
+use df\mesh;
 
 
 // Record loader
@@ -18,8 +19,13 @@ trait TScaffold_RecordLoader {
 
     //const RECORD_KEY_NAME = null;
     //const RECORD_ITEM_NAME = null;
+    //const CLUSTER = false;
+    //const GLOBAL_CLUSTER = false;
+    //const CLUSTER_KEY = 'cluster';
 
     protected $_recordAdapter;
+    protected $_clusterRecord;
+    protected $_clusterId;
 
     public function getRecordAdapter() {
         if($this->_recordAdapter) {
@@ -27,7 +33,16 @@ trait TScaffold_RecordLoader {
         }
 
         if(@static::RECORD_ADAPTER) {
-            $adapter = $this->data->fetchEntity(static::RECORD_ADAPTER);
+            $locator = static::RECORD_ADAPTER;
+
+            if($this->isRecordAdapterClustered()) {
+                $locator = new mesh\entity\Locator($locator);
+                $clusterId = $this->getClusterId();
+                $location = $clusterId.'/'.$locator->getLastNodeLocation();
+                $locator->setLastNodeLocation($location);
+            }
+
+            $adapter = $this->data->fetchEntity($locator);
 
             if($adapter instanceof axis\IUnit) {
                 $this->_recordAdapter = $adapter;
@@ -36,8 +51,58 @@ trait TScaffold_RecordLoader {
         }
 
         throw new LogicException(
-            'Unabled to find a suitable adapter for record scaffold'
+            'Unable to find a suitable adapter for record scaffold'
         );
+    }
+
+    public function isRecordAdapterClustered() {
+        return (bool)@static::CLUSTER;
+    }
+
+    public function getClusterKey() {
+        return @static::CLUSTER_KEY;
+    }
+
+    public function getClusterRecord() {
+        if($this->_clusterRecord === null) {
+            $id = $this->request->query[$this->getClusterKey()];
+
+            if(empty($id)) {
+                if(@static::GLOBAL_CLUSTER) {
+                    $this->_clusterRecord = false;
+                } else {
+                    throw new RuntimeException(
+                        'Unable to extract cluster id from request with key: '.$this->getClusterKey()
+                    );
+                }
+            }
+
+            if($this->_clusterRecord !== false) {
+                $this->_clusterRecord = $this->data->fetchClusterRecord($id);
+            }
+        }
+
+        if($this->_clusterRecord === false) {
+            return null;
+        }
+
+        return $this->_clusterRecord;
+    }
+
+    public function getClusterId() {
+        if($this->_clusterId === null) {
+            if($record = $this->getClusterRecord()) {
+                $this->_clusterId = (string)$record->getPrimaryKeySet();
+            } else {
+                $this->_clusterId = false;
+            }
+        }
+
+        if($this->_clusterId === false) {
+            return null;
+        }
+
+        return $this->_clusterId;
     }
 
     public function getRecordKeyName() {
