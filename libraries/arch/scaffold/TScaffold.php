@@ -570,6 +570,40 @@ trait TScaffold_RecordDataProvider {
         });
     }
 
+    public function definePriorityField($list, $mode) {
+        $list->addField('priority', function($item) {
+            $priority = $item['priority'];
+            return $this->html->icon('priority-'.$priority, $this->format->name($priority))
+                ->addClass('priority-'.$priority);
+        });
+    }
+
+    public function defineArchiveDateField($list, $mode) {
+        $list->addField('archiveDate', $this->_('Archive'), function($item, $context) use($mode) {
+            $date = $item['archiveDate'];
+            $hasDate = (bool)$date;
+            $isPast = $hasDate && $date->isPast();
+
+            if($isPast && $mode == 'list') {
+                $context->getRowTag()->addClass('state-lowPriority');
+            }
+
+            $output = $this->html->userDate($date);
+
+            if($output) {
+                if($isPast) {
+                    $output->addClass('disposition-negative');
+                } else if($date->lt('+1 month')) {
+                    $output->addClass('state-warning');
+                } else {
+                    $output->addClass('disposition-positive');
+                }
+            }
+
+            return $output;
+        });
+    }
+
     public function defineActionsField($list, $mode) {
         $list->addField('actions', function($item) {
             return $this->getRecordOperativeLinks($item, 'list');
@@ -712,7 +746,8 @@ trait TScaffold_SectionProvider {
                         ['%n%' => $this->format->shorten($this->getRecordDescription(), 50)]
                     ) :
                     $this->getDirectoryTitle()
-            );
+            )
+            ->setBackLinkRequest($this->_getActionRequest('index'));
     }
 
     public function addSectionOperativeLinks($menu, $bar) {
