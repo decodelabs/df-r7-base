@@ -27,6 +27,7 @@ interface IUnitInspector {
     public function getUnit();
     public function getModel();
     public function getId();
+    public function getGlobalId();
     public function getCanonicalId();
     public function getType();
     public function isVirtual();
@@ -41,6 +42,7 @@ interface IUnitInspector {
     public function getSchema();
     public function getTransientSchema();
 
+    public function isStorageUnit();
     public function getBackups();
     public function describeStorage($name);
     public function storageExists();

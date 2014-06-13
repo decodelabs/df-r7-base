@@ -30,6 +30,10 @@ class UnitInspector implements IUnitInspector, core\IDumpable {
         return $this->_unit->getUnitId();
     }
 
+    public function getGlobalId() {
+        return $this->_unit->getGlobalUnitId();
+    }
+
     public function getCanonicalId() {
         if($this->_unit instanceof axis\IStorageUnit) {
             return $this->_unit->getStorageBackendName();
@@ -99,6 +103,10 @@ class UnitInspector implements IUnitInspector, core\IDumpable {
 
 
 // Storage
+    public function isStorageUnit() {
+        return $this->_unit instanceof axis\IStorageUnit;
+    }
+
     public function describeStorage($name) {
         $adapter = $this->getAdapter();
         $output = [];
