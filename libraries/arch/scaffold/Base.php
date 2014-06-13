@@ -22,6 +22,8 @@ abstract class Base implements IScaffold {
 
     private $_directoryKeyName;
 
+    protected $_propagateQueryVars = [];
+
     public static function factory(arch\IContext $context) {
         $registryKey = 'scaffold('.$context->location->getPath()->getDirname().')';
 
@@ -70,6 +72,24 @@ abstract class Base implements IScaffold {
         return $this->view;
     }
 
+    public function getPropagatingQueryVars() {
+        return (array)$this->_propagateQueryVars;
+    }
+
+    protected function _buildQueryPropagationInputs(array $filter=[]) {
+        $output = [];
+
+        foreach($this->getPropagatingQueryVars() as $var) {
+            if(in_array($var, $filter)) {
+                continue;
+            }
+
+            $output[] = $this->html->hidden($var, $this->request->query[$var]);
+        }
+
+        return $output;
+    }
+
 
 // Loaders
     public function loadAction(arch\IController $controller=null) {
@@ -102,6 +122,8 @@ abstract class Base implements IScaffold {
 
         return new Action($this->_context, $this, [$this, $method], $controller);
     }
+
+    public function onActionDispatch(arch\IAction $action) {}
 
     public function loadComponent($name, array $args=null) {
         $keyName = $this->_getDirectoryKeyName();
@@ -210,12 +232,23 @@ abstract class Base implements IScaffold {
         return $this->_directoryKeyName;
     }
 
-    protected function _getActionRequest($action, array $query=null, $redirFrom=null, $redirTo=null) {
+    protected function _getActionRequest($action, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]) {
         $output = clone $this->_context->location;
         $output->setAction($action);
+        $outQuery = $output->query;
 
         if($query !== null) {
-            $output->query->import($query);
+            $outQuery->import($query);
+        }
+
+        foreach($this->getPropagatingQueryVars() as $var) {
+            if(in_array($var, $propagationFilter)) {
+                $outQuery->{$var} = $this->request->query[$var];
+            }
+        }
+
+        foreach($propagationFilter as $var) {
+            unset($outQuery->{$var});
         }
 
         return $this->directory->normalizeRequest($output, $redirFrom, $redirTo);

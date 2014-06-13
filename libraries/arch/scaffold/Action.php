@@ -31,6 +31,10 @@ class Action extends arch\Action {
     }
 
     public function execute() {
+        if(null !== ($pre = $this->_scaffold->onActionDispatch($this))) {
+            return $pre;
+        }
+
         $c = $this->_callback;
         return $c();
     }

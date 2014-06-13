@@ -29,7 +29,7 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
     const RECORD_ADAPTER = null;
     const CLUSTER = false;
     const GLOBAL_CLUSTER = false;
-    const CLUSTER_KEY = 'cluster';
+    const CLUSTER_KEY = null;
 
     const RECORD_KEY_NAME = null;
     const RECORD_ITEM_NAME = null;
@@ -97,13 +97,15 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
 
             $this->html->form($this->_context->location)->setMethod('get')->push(
                 $this->html->fieldSet($this->_('Search'))->push(
+                    $this->_buildQueryPropagationInputs(['search']),
+
                     $this->html->searchTextbox('search', $search),
                     $this->html->submitButton(null, $this->_('Go'))
                         ->setIcon('search')
                         ->setDisposition('positive'),
 
                     $this->html->link(
-                            $this->_context->location->path->toString(), 
+                            $this->_getActionRequest('index', null, null, null, ['search']), 
                             $this->_('Reset')
                         )
                         ->setIcon('refresh')
@@ -124,7 +126,21 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
             ->setRecord($record);
     }
 
+
+// Components
+    public function renderIndexSelectorArea() {
+        return $this->_renderClusterSelector();
+    }
+
+    public function renderDetailsSelectorArea() {
+        return $this->_renderClusterSelector();
+    }
+
 // Helpers
+    public function onActionDispatch(arch\IAction $action) {
+        return $this->_handleClusterSelection();
+    }
+
     protected function _getDirectoryKeyName() {
         return $this->getRecordKeyName();
     }

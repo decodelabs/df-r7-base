@@ -61,6 +61,14 @@ class HeaderBar extends arch\component\template\HeaderBar {
         }
     }
 
+    protected function _renderSelectorArea() {
+        $method = 'render'.$this->_name.'SelectorArea';
+
+        if(method_exists($this->_scaffold, $method)) {
+            return $this->_scaffold->{$method}($this);
+        }
+    }
+
     public function setSubOperativeLinkBuilder(Callable $builder=null) {
         $this->_subOperativeLinkBuilder = $builder;
         return $this;
