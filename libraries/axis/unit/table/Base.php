@@ -150,6 +150,10 @@ abstract class Base implements
     public function getQuerySourceAdapterHash() {
         return $this->_adapter->getQuerySourceAdapterHash();
     }
+
+    public function getQuerySourceAdapterServerHash() {
+        return $this->_adapter->getQuerySourceAdapterServerHash();
+    }
     
     public function getQuerySourceDisplayName() {
         return $this->_adapter->getQuerySourceDisplayName();

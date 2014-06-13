@@ -38,6 +38,10 @@ class DerivedSourceAdapter implements IDerivedSourceAdapter {
         return $this->_adapter->getQuerySourceAdapterHash();
     }
 
+    public function getQuerySourceAdapterServerHash() {
+        return $this->_adapter->getQuerySourceAdapterServerHash();
+    }
+
     public function getQuerySourceDisplayName() {
         return $this->_adapter->getQuerySourceDisplayName();
     }

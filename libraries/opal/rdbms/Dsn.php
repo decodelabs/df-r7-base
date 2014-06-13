@@ -23,7 +23,9 @@ class Dsn implements IDsn, core\IDumpable {
     protected $_database;
     protected $_databaseSuffix;
     protected $_options = [];
+
     protected $_hash;
+    protected $_serverHash;
 
     public static function factory($dsn) {
         if($dsn instanceof IDsn) {
@@ -125,6 +127,7 @@ class Dsn implements IDsn, core\IDumpable {
 // Adapter
     public function setAdapter($adapter) {
         $this->_hash = null;
+        $this->_serverHash = null;
         $this->_adapter = $adapter;
         
         return $this;
@@ -139,6 +142,7 @@ class Dsn implements IDsn, core\IDumpable {
 // Username
     public function setUsername($username) {
         $this->_hash = null;
+        $this->_serverHash = null;
         $this->_username = $username;
         
         return $this;
@@ -152,6 +156,7 @@ class Dsn implements IDsn, core\IDumpable {
 // Password
     public function setPassword($password) {
         $this->_hash = null;
+        $this->_serverHash = null;
         $this->_password = $password;
         
         return $this;
@@ -165,6 +170,7 @@ class Dsn implements IDsn, core\IDumpable {
 // Protocol
     public function setProtocol($protocol) {
         $this->_hash = null;
+        $this->_serverHash = null;
         $this->_protocol = $protocol;
         
         return $this;
@@ -178,6 +184,7 @@ class Dsn implements IDsn, core\IDumpable {
 // Hostname
     public function setHostname($hostname) {
         $this->_hash = null;
+        $this->_serverHash = null;
         $this->_hostname = $hostname;
         
         return $this;
@@ -199,6 +206,7 @@ class Dsn implements IDsn, core\IDumpable {
         }
         
         $this->_hash = null;
+        $this->_serverHash = null;
         $this->_port = $port;
         
         return $this;
@@ -212,6 +220,7 @@ class Dsn implements IDsn, core\IDumpable {
 // Socket
     public function setSocket($socket) {
         $this->_hash = null;
+        $this->_serverHash = null;
         $this->_socket = $socket;
         
         return $this;
@@ -225,6 +234,7 @@ class Dsn implements IDsn, core\IDumpable {
 // Database
     public function setDatabase($database) {
         $this->_hash = null;
+        $this->_serverHash = null;
         $this->_database = $database;
         $this->_databaseSuffix = null;
         
@@ -237,6 +247,7 @@ class Dsn implements IDsn, core\IDumpable {
 
     public function setDatabaseKeyName($name) {
         $this->_hash = null;
+        $this->_serverHash = null;
         $this->_database = $database;
         
         return $this;
@@ -248,6 +259,7 @@ class Dsn implements IDsn, core\IDumpable {
 
     public function setDatabaseSuffix($suffix) {
         $this->_hash = null;
+        $this->_serverHash = null;
         $this->_databaseSuffix = $suffix;
         return $this;
     }
@@ -260,6 +272,7 @@ class Dsn implements IDsn, core\IDumpable {
 // Options
     public function setOption($key, $value) {
         $this->_hash = null;
+        $this->_serverHash = null;
         $this->_options[$key] = $value;
         
         return $this;
@@ -283,6 +296,15 @@ class Dsn implements IDsn, core\IDumpable {
         
         return $this->_hash;
     }
+
+    public function getServerHash() {
+        if($this->_serverHash === null) {
+            ksort($this->_options);
+            $this->_serverHash = md5($this->getServerString());
+        }
+        
+        return $this->_serverHash;
+    }
     
     
 // String
@@ -295,6 +317,32 @@ class Dsn implements IDsn, core\IDumpable {
     }
 
     public function getConnectionString() {
+        $output = $this->_getBaseServerString();
+        $output .= $this->_getDatabaseString();
+        $output .= $this->_getOptionString();
+        
+        return $output;
+    }
+
+    public function getServerString() {
+        if($this->_adapter === null) {
+            throw new InvalidArgumentException('Dsn must contain adapter value!');
+        }
+
+        $output = $this->_adapter.'://';
+        $base = $this->_getBaseServerString();
+
+        if(empty($base)) {
+            $base = $this->_getDatabaseString();
+        }
+
+        $output .= $base;
+        $output .= $this->_getOptionString();
+
+        return $output;
+    }
+
+    protected function _getBaseServerString() {
         $output = '';
         
         if($this->_username !== null || $this->_password !== null) {
@@ -320,21 +368,31 @@ class Dsn implements IDsn, core\IDumpable {
             
             $output .= '/';
         }
-        
+
+        return $output;
+    }
+
+    protected function _getDatabaseString() {
         if($this->_database === null) {
             throw new InvalidArgumentException('Dsn must contain database value!');
         }
         
-        $output .= $this->_database;
+        $output = $this->_database;
 
         if($this->_databaseSuffix) {
             $output .= $this->_databaseSuffix;
         }
         
+        return $output;
+    }
+
+    protected function _getOptionString() {
+        $output = '';
+
         if(!empty($this->_options)) {
             $output .= '?'.http_build_query($this->_options);
         }
-        
+
         return $output;
     }
 

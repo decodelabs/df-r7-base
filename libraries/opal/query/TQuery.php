@@ -15,6 +15,7 @@ trait TQuery_AdapterAware {
     
     protected $_adapter;
     private $_adapterHash;
+    private $_adapterServerHash;
     
     public function getAdapter() {
         return $this->_adapter;
@@ -26,6 +27,14 @@ trait TQuery_AdapterAware {
         }
         
         return $this->_adapterHash; 
+    }
+
+    public function getAdapterServerHash() {
+        if($this->_adapterServerHash === null) {
+            $this->_adapterServerHash = $this->_adapter->getQuerySourceAdapterServerHash();
+        }
+
+        return $this->_adapterServerHash;
     }
 }
 

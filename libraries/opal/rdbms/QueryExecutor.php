@@ -14,6 +14,7 @@ abstract class QueryExecutor implements IQueryExecutor {
     protected $_stmt;
     protected $_query;
     protected $_adapter;
+    protected $_isMultiDb = false;
 
     public static function factory(IAdapter $adapter, opal\query\IQuery $query=null, IStatement $stmt=null) {
         $type = $adapter->getServerType();
@@ -64,7 +65,7 @@ abstract class QueryExecutor implements IQueryExecutor {
 
 // Read
     public function executeReadQuery($tableName, $forCount=false) {
-        if($this->_query->getSourceManager()->countSourceAdapters() == 1) {
+        if($this->_query->getSourceManager()->canQueryLocally()) {
             return $this->executeLocalReadQuery($tableName, $forCount);
         } else {
             return $this->executeRemoteJoinedReadQuery($tableName, $forCount);
@@ -126,9 +127,11 @@ abstract class QueryExecutor implements IQueryExecutor {
     }
 
     public function buildLocalReadQuery($tableName, $forCount=false) {
+        $sourceManager = $this->_query->getSourceManager();
         $source = $this->_query->getSource();
         $outFields = [];
-        
+
+        $this->_isMultiDb = $sourceManager->countSourceAdapters() > 1;
 
         // Fields
         foreach($source->getDereferencedOutputFields() as $field) {
@@ -147,6 +150,7 @@ abstract class QueryExecutor implements IQueryExecutor {
                 $joinSource = $join->getSource();
 
                 $jExec = QueryExecutor::factory($this->_adapter, $join);
+                $jExec->_isMultiDb = $this->_isMultiDb;
                 $joinSql .= "\n".$jExec->buildJoin($this->_stmt);
 
                 foreach($joinSource->getDereferencedOutputFields() as $field) {
@@ -181,6 +185,7 @@ abstract class QueryExecutor implements IQueryExecutor {
         if($source->isDerived()) {
             $query = $source->getAdapter()->getDerivationQuery();
             $qExec = QueryExecutor::factory($this->_adapter, $query);
+            $qExec->_isMultiDb = $this->_isMultiDb;
             $tableName = $query->getSource()->getAdapter()->getDelegateQueryAdapter()->getName();
 
             if($query instanceof opal\query\ISelectQuery) {
@@ -267,6 +272,7 @@ abstract class QueryExecutor implements IQueryExecutor {
             }
             
             $jExec = QueryExecutor::factory($this->_adapter, $join);
+            $jExec->_isMultiDb = $this->_isMultiDb;
             $joinSql .= "\n".$jExec->buildJoin($this->_stmt);
         }
         
@@ -556,6 +562,7 @@ abstract class QueryExecutor implements IQueryExecutor {
 
         $source = $this->_query->getSource();
         $sources[$source->getUniqueId()] = $source;
+        $sourceManager = $this->_query->getSourceManager();
 
         foreach($source->getAllDereferencedFields() as $field) {
             if($field instanceof opal\query\IAggregateField) {
@@ -570,12 +577,15 @@ abstract class QueryExecutor implements IQueryExecutor {
         $joinSql = null;
         $joinsApplied = false;
         
-        if($this->_query->getSourceManager()->countSourceAdapters() == 1) {
+        if($sourceManager->canQueryLocally()) {
+            $this->_isMultiDb = $sourceManager->countSourceAdapters() > 1;
+
             foreach($this->_query->getJoins() as $joinSourceAlias => $join) {
                 $joinSource = $join->getSource();
                 $sources[$joinSource->getUniqueId()] = $joinSource;
 
                 $jExec = QueryExecutor::factory($this->_adapter, $join);
+                $jExec->_isMultiDb = $this->_isMultiDb;
                 $joinSql .= "\n".$jExec->buildJoin($this->_stmt);
 
                 foreach($joinSource->getAllDereferencedFields() as $field) {
@@ -728,11 +738,17 @@ abstract class QueryExecutor implements IQueryExecutor {
             $joinSql .= "\n".$exec->buildJoin($this->_stmt);
         }
         
+        $tableAdapter = $source->getAdapter()->getDelegateQueryAdapter();
+        $tableName = $this->_adapter->quoteIdentifier($tableAdapter->getName());
+
+        if($this->_isMultiDb) {
+            $tableName = $this->_adapter->quoteIdentifier($tableAdapter->getDatabaseName()).'.'.$tableName;
+        }
         
         // SQL
         $this->_stmt->appendSql(
             'SELECT'."\n".'  '.implode(','."\n".'  ', $outFields)."\n".
-            'FROM '.$this->_adapter->quoteIdentifier($source->getAdapter()->getDelegateQueryAdapter()->getName()).' '.
+            'FROM '.$tableName.' '.
             'AS '.$this->_adapter->quoteTableAliasDefinition($source->getAlias()).
             $joinSql
         );
@@ -788,9 +804,16 @@ abstract class QueryExecutor implements IQueryExecutor {
                 $this->_stmt->appendSql('RIGHT');
                 break;
         }
+
+        $adapter = $this->_query->getSource()->getAdapter()->getDelegateQueryAdapter();
+        $tableName = $this->_adapter->quoteIdentifier($adapter->getName());
         
+        if($this->_isMultiDb) {
+            $tableName = $this->_adapter->quoteIdentifier($adapter->getDatabaseName()).'.'.$tableName;
+        }
+
         $this->_stmt->appendSql(
-            ' JOIN '.$this->_adapter->quoteIdentifier($this->_query->getSource()->getAdapter()->getDelegateQueryAdapter()->getName()).
+            ' JOIN '.$tableName.
             ' AS '.$this->_adapter->quoteTableAliasDefinition($this->_query->getSourceAlias())
         );
                    

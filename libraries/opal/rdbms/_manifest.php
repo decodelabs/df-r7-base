@@ -114,7 +114,9 @@ interface IDsn extends core\IStringProvider {
     public function setOption($key, $value);
     public function getOption($key, $default=null);
     public function getHash();
+    public function getServerHash();
     public function getConnectionString();
+    public function getServerString();
     public function getDisplayString($credentials=false);
 }
 
@@ -128,6 +130,7 @@ interface IAdapter extends mesh\entity\IParentEntity {
     public function getConnection();
     public function getDsn();
     public function getDsnHash();
+    public function getServerDsnHash();
     public function switchDatabase($name);
     public function getServerType();
     public function getServerVersion();
@@ -217,6 +220,7 @@ interface ITable extends mesh\entity\IEntity, opal\query\IAdapter, opal\query\IE
     public function getAdapter();
     public function getSchema();
     public function getStats();
+    public function getDatabaseName();
     
     public function exists();
     public function create(opal\rdbms\schema\ISchema $schema, $dropIfExists=false);

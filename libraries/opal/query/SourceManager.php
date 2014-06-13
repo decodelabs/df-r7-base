@@ -18,6 +18,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
     protected $_aliases = [];
     protected $_sources = [];
     protected $_adapterHashes = [];
+    protected $_serverHashes = [];
     protected $_genCounter = 0;
     protected $_transaction;
     
@@ -100,6 +101,8 @@ class SourceManager implements ISourceManager, core\IDumpable {
         if(!isset($this->_adapterHashes[$hash])) {
             $this->_adapterHashes[$hash] = $alias;
         }
+
+        $this->_serverHashes[$source->getAdapterServerHash()] = true;
         
         $this->_sources[$alias] = $source;
         
@@ -148,6 +151,10 @@ class SourceManager implements ISourceManager, core\IDumpable {
     
     public function countSourceAdapters() {
         return count($this->_adapterHashes);
+    }
+
+    public function canQueryLocally() {
+        return count($this->_serverHashes) == 1;
     }
     
     

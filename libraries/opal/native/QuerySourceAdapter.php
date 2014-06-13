@@ -29,6 +29,10 @@ class QuerySourceAdapter implements opal\query\IAdapter {
     public function getQuerySourceAdapterHash() {
         return md5($this->_dataSourceId);
     }
+
+    public function getQuerySourceAdapterServerHash() {
+        return $this->getQuerySourceAdapterHash();
+    }
     
     public function getQuerySourceDisplayName() {
         return $this->_dataSourceId;

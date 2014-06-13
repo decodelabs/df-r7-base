@@ -618,12 +618,14 @@ interface IQueryFeatures {
 interface IAdapterAware {
     public function getAdapter();
     public function getAdapterHash();
+    public function getAdapterServerHash();
 }
  
  
 interface IAdapter extends user\IAccessLock {
     public function getQuerySourceId();
     public function getQuerySourceAdapterHash();
+    public function getQuerySourceAdapterServerHash();
     public function getQuerySourceDisplayName();
     public function getDelegateQueryAdapter();
     public function getClusterId();
@@ -723,6 +725,7 @@ interface ISourceManager extends core\IApplicationAware, ITransactionAware {
     public function getSources();
     public function getSourceByAlias($alias);
     public function countSourceAdapters();
+    public function canQueryLocally();
     
     public function executeQuery(IQuery $query, Callable $executor);
     

@@ -119,6 +119,10 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
         return $this->_dsn->getHash();
     }
     
+    public function getServerDsnHash() {
+        return $this->_dsn->getServerHash();
+    }
+
     public function switchDatabase($newName) {
         $this->closeConnection();
         $this->_dsn->setDatabase($newName);

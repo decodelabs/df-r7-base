@@ -165,6 +165,10 @@ abstract class Adapter implements IAdapter {
         return $this->_connection->getHash();
     }
 
+    public function getQuerySourceAdapterServerHash() {
+        return $this->_connection->getHash();
+    }
+
     public function getQuerySourceDisplayName() {
         return $this->getQuerySourceId();
     }

@@ -58,6 +58,10 @@ class Table implements ITable, core\IDumpable {
     public function getQuerySourceAdapterHash() {
         return $this->_adapter->getDsnHash();
     }
+
+    public function getQuerySourceAdapterServerHash() {
+        return $this->_adapter->getServerDsnHash();
+    }
     
     public function getQuerySourceDisplayName() {
         return $this->_adapter->getDsn()->getDisplayString().'/'.$this->_name;
@@ -69,6 +73,10 @@ class Table implements ITable, core\IDumpable {
 
     public function getClusterId() {
         return null;
+    }
+
+    public function getDatabaseName() {
+        return $this->_adapter->getDsn()->getDatabase();
     }
     
     public function supportsQueryType($type) {

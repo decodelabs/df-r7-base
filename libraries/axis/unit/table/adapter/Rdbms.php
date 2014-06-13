@@ -69,6 +69,10 @@ class Rdbms implements
     public function getQuerySourceAdapterHash() {
         return $this->getConnection()->getDsnHash();
     }
+
+    public function getQuerySourceAdapterServerHash() {
+        return $this->getConnection()->getServerDsnHash();
+    }
     
     public function getQuerySourceAdapter() {
         if(!$this->_querySourceAdapter) {
