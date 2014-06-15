@@ -65,7 +65,13 @@ class TaskApcClear extends arch\task\Action {
 
             if($response->isOk()) {
                 $json = json_decode($response->getContent(), true);
-                $this->response->writeLine('Cleared '.@$json['cleared'].' HTTP APC entries via '.@$json['addr']);
+                $cleared = @$json['cleared'];
+
+                if($cleared === null) {
+                    $this->response->writeLine('Unabled to pass IP check via '.@$json['addr']);
+                } else {
+                    $this->response->writeLine('Cleared '.$cleared.' HTTP APC entries via '.@$json['addr']);
+                }
             } else {
                 $this->response->writeErrorLine('Http call failed :(');
             }

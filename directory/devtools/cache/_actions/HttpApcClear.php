@@ -22,7 +22,7 @@ class HttpApcClear extends arch\Action {
             $cleared = $this->_clearApc();
         } else {
             //$this->throwError(403, 'This action can only be triggered from localhost');
-            $cleared = 0;
+            $cleared = null;
         }
 
         return $this->data->jsonEncode([
