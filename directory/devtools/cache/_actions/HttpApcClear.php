@@ -18,10 +18,16 @@ class HttpApcClear extends arch\Action {
     const CHECK_ACCESS = false;
 
     public function executeAsJson() {
-        if($_SERVER['REMOTE_ADDR'] != '127.0.0.1') {
-            $this->throwError(401, 'This action can only be triggered from localhost');
+        if($_SERVER['REMOTE_ADDR'] == '127.0.0.1') {
+            $cleared = $this->_clearApc();
+        } else {
+            //$this->throwError(403, 'This action can only be triggered from localhost');
+            $cleared = 0;
         }
 
-        return $this->data->jsonEncode(['cleared' => $this->_clearApc()]);
+        return $this->data->jsonEncode([
+            'cleared' => $cleared,
+            'addr' => $_SERVER['REMOTE_ADDR']
+        ]);
     }
 }
