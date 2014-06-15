@@ -18,7 +18,7 @@ class HttpApcClear extends arch\Action {
     const CHECK_ACCESS = false;
 
     public function executeAsJson() {
-        if($_SERVER['REMOTE_ADDR'] == '127.0.0.1') {
+        if($_SERVER['REMOTE_ADDR'] == $_SERVER['SERVER_ADDR']) {
             $cleared = $this->_clearApc();
         } else {
             //$this->throwError(403, 'This action can only be triggered from localhost');
@@ -27,7 +27,7 @@ class HttpApcClear extends arch\Action {
 
         return $this->data->jsonEncode([
             'cleared' => $cleared,
-            'addr' => $_SERVER['SERVER_ADDR']
+            'addr' => $_SERVER['REMOTE_ADDR']
         ]);
     }
 }
