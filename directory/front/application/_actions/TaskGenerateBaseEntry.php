@@ -19,6 +19,10 @@ class TaskGenerateBaseEntry extends arch\task\Action {
         $phpPath = core\Environment::getInstance($this->application)->getPhpBinaryPath();
         $appPath = df\Launchpad::$applicationPath;
         $environmentId = df\Launchpad::$environmentId;
+
+        if($phpPath == 'php') {
+            $phpPath = halo\system\Base::getInstance()->which('php');
+        }
         
         $data = '#!'.$phpPath."\n".
                 '<?php'."\n\n".
