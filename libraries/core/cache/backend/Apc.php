@@ -7,6 +7,8 @@ namespace df\core\cache\backend;
 
 use df;
 use df\core;
+use df\arch;
+use df\halo;
 
 class Apc implements core\cache\IBackend {
     
@@ -17,6 +19,7 @@ class Apc implements core\cache\IBackend {
     protected $_prefix;
     protected $_lifeTime;
     protected $_cache;
+    protected $_isCli = false;
     
     public static function purgeAll(core\collection\ITree $options) {
         if(!self::isLoadable()) {
@@ -29,6 +32,11 @@ class Apc implements core\cache\IBackend {
             apc_clear_cache('user');
             apc_clear_cache('system');
         }
+
+        $request = new arch\Request('~devtools/cache/clear-apc?purge');
+        $request->query->mode = df\Launchpad::$application->getRunMode();
+
+        halo\process\Base::launchBackgroundTask($request);
     }
 
     public static function isLoadable() {
@@ -49,6 +57,7 @@ class Apc implements core\cache\IBackend {
         $this->_cache = $cache;
         $this->_lifeTime = $lifeTime;
         $this->_prefix = $cache->getApplication()->getUniquePrefix().'-'.$cache->getCacheId().':';
+        $this->_isCli = !isset($_SERVER['HTTP_HOST']);
     }
 
     public function getConnectionDescription() {
@@ -110,7 +119,13 @@ class Apc implements core\cache\IBackend {
     }
     
     public function remove($key) {
-        return apc_delete($this->_prefix.$key);
+        $output = apc_delete($this->_prefix.$key);
+
+        if($this->_isCli) {
+            $this->_retrigger('remove', $key);
+        }
+
+        return $output;
     }
     
     public function clear() {
@@ -121,7 +136,8 @@ class Apc implements core\cache\IBackend {
                 apc_delete($set[$setKey]);
             }
         }
-        
+
+        $this->_retrigger('clear');
         return $this;
     }
 
@@ -134,6 +150,7 @@ class Apc implements core\cache\IBackend {
             }
         }
         
+        $this->_retrigger('clearBegins', $key);
         return $this;
     }
 
@@ -148,6 +165,7 @@ class Apc implements core\cache\IBackend {
             }
         }
         
+        $this->_retrigger('clearMatches', $regex);
         return $this;
     }
 
@@ -200,5 +218,14 @@ class Apc implements core\cache\IBackend {
         }
 
         return [];
+    }
+
+    protected function _retrigger($method, $arg=null) {
+        $request = new arch\Request('~devtools/cache/clear-apc');
+        $request->query->cacheId = $this->_cache->getCacheId();
+        $request->query->mode = $this->_cache->getApplication()->getRunMode();
+        $request->query->{$method} = $arg;
+
+        halo\process\Base::launchBackgroundTask($request);
     }
 }
