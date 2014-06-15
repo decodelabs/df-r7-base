@@ -102,7 +102,22 @@ class Unix extends Base {
     }
     
     public function launchBackground() {
-        core\stub($this);
+        $command = $this->_prepareCommand();
+        $activeCommand = 'nohup '.$command.' > /dev/null 2>&1 & echo $!';
+
+        if($this->_workingDirectory !== null) {
+            $cwd = getcwd();
+            chdir(realpath($this->_workingDirectory));
+        }
+
+        exec($activeCommand, $pidArr);
+        $pid = $pidArr[0];
+
+        if($this->_workingDirectory) {
+            chdir($cwd);
+        }
+
+        return new halo\process\Unix($pid, $command);
     } 
     
     public function launchManaged() {
