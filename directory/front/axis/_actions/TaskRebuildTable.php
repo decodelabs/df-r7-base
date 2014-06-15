@@ -62,6 +62,8 @@ class TaskRebuildTable extends arch\task\Action {
         axis\schema\Cache::getInstance($this->application)->clear();
         $schemaDefinition = new axis\unit\schemaDefinition\Virtual($unit->getModel());
         $schemaDefinition->store($unit, $schema);
+
+        $this->response->writeLine('Done');
     }
 
     protected function _rebuildRdbmsTable(axis\IStorageUnit $unit, axis\schema\ISchema $axisSchema) {

@@ -33,7 +33,7 @@ class Apc implements core\cache\IBackend {
             apc_clear_cache('system');
         }
 
-        $request = new arch\Request('~devtools/cache/clear-apc?purge');
+        $request = new arch\Request('~devtools/cache/apc-clear.json?purge');
         $request->query->mode = (php_sapi_name() == 'cli' ? 'http' : 'cli');
 
         halo\process\Base::launchBackgroundTask($request);
@@ -121,9 +121,11 @@ class Apc implements core\cache\IBackend {
     public function remove($key) {
         $output = apc_delete($this->_prefix.$key);
 
+        /*
         if($this->_isCli) {
             $this->_retrigger('remove', $key);
         }
+        */
 
         return $output;
     }
@@ -221,7 +223,7 @@ class Apc implements core\cache\IBackend {
     }
 
     protected function _retrigger($method, $arg=null) {
-        $request = new arch\Request('~devtools/cache/clear-apc');
+        $request = new arch\Request('~devtools/cache/apc-clear.json');
         $request->query->cacheId = $this->_cache->getCacheId();
         $request->query->mode = $this->_isCli ? 'http' : 'cli';
         $request->query->{$method} = $arg;
