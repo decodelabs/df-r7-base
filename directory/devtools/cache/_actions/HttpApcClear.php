@@ -27,7 +27,7 @@ class HttpApcClear extends arch\Action {
 
         return $this->data->jsonEncode([
             'cleared' => $cleared,
-            'addr' => $_SERVER['REMOTE_ADDR']
+            'addr' => $_SERVER['SERVER_ADDR']
         ]);
     }
 }
