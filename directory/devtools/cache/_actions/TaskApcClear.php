@@ -43,9 +43,12 @@ class TaskApcClear extends arch\task\Action {
             $config = core\application\Http_Config::getInstance($this->application);
             $baseUrls = @(array)$config->values['baseUrl'];
 
+            /*
             if(isset($baseUrls['production']) && substr($baseUrls['production'], 0, 11) != 'production.') {
                 $baseUrl = $baseUrls['production'];
-            } else if(isset($baseUrls['testing']) && substr($baseUrls['testing'], 0, 8) != 'testing.') {
+            } else 
+            */
+            if(isset($baseUrls['testing']) && substr($baseUrls['testing'], 0, 8) != 'testing.') {
                 $baseUrl = $baseUrls['testing'];
             } else if(isset($baseUrls['development'])) {
                 $baseUrl = $baseUrls['development'];
