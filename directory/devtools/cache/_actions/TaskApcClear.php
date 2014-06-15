@@ -21,7 +21,7 @@ class TaskApcClear extends arch\task\Action {
     public function execute() {
         $mode = $this->request->query->get('mode');
         unset($this->request->query->mode);
-        $isHttp = $isTask = true;
+        $isHttp = $isCli = true;
 
         if($mode) {
             $mode = strtolower($mode);
@@ -30,15 +30,15 @@ class TaskApcClear extends arch\task\Action {
         if($mode == 'task') {
             $isHttp = false;
         } else if($mode == 'http') {
-            $isTask = false;
+            $isCli = false;
         }
 
-        if($isHttp) {
+        if($isCli && extension_loaded('apc') && ini_get('apc.enable_cli')) {
             $count = $this->_clearApc();
             $this->response->writeLine('Cleared '.$count.' CLI APC entries');
         }
 
-        if($isTask) {
+        if($isHttp) {
             $this->response->writeLine('Calling HTTP APC cache clear action...');
             $config = core\application\Http_Config::getInstance($this->application);
             $baseUrls = @(array)$config->values['baseUrl'];

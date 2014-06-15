@@ -34,7 +34,7 @@ class Apc implements core\cache\IBackend {
         }
 
         $request = new arch\Request('~devtools/cache/clear-apc?purge');
-        $request->query->mode = df\Launchpad::$application->getRunMode();
+        $request->query->mode = (php_sapi_name() == 'cli' ? 'http' : 'cli');
 
         halo\process\Base::launchBackgroundTask($request);
     }
@@ -57,7 +57,7 @@ class Apc implements core\cache\IBackend {
         $this->_cache = $cache;
         $this->_lifeTime = $lifeTime;
         $this->_prefix = $cache->getApplication()->getUniquePrefix().'-'.$cache->getCacheId().':';
-        $this->_isCli = !isset($_SERVER['HTTP_HOST']);
+        $this->_isCli = php_sapi_name() == 'cli';
     }
 
     public function getConnectionDescription() {
@@ -223,7 +223,7 @@ class Apc implements core\cache\IBackend {
     protected function _retrigger($method, $arg=null) {
         $request = new arch\Request('~devtools/cache/clear-apc');
         $request->query->cacheId = $this->_cache->getCacheId();
-        $request->query->mode = $this->_cache->getApplication()->getRunMode();
+        $request->query->mode = $this->_isCli ? 'http' : 'cli';
         $request->query->{$method} = $arg;
 
         halo\process\Base::launchBackgroundTask($request);
