@@ -228,8 +228,6 @@ class Apc implements core\cache\IBackend {
         $request->query->mode = $this->_isCli ? 'http' : 'cli';
         $request->query->{$method} = $arg;
 
-        //halo\process\Base::launchBackgroundTask($request);
-        $result = halo\process\Base::launchTask($request);
-        core\dump($result);
+        halo\process\Base::launchBackgroundTask($request);
     }
 }
