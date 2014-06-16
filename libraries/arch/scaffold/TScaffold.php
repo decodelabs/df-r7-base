@@ -286,6 +286,10 @@ trait TScaffold_RecordDataProvider {
 
         if(isset($record[$key])) {
             $output = $record[$key];
+
+            if($key == $this->getRecordIdKey()) {
+                $output = '#'.$output;
+            }
         } else {
             $fallbackKey = $this->getRecordFallbackNameKey();
 
