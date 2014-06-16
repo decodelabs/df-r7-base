@@ -306,8 +306,8 @@ class Format implements core\ISharedHelper {
         return core\string\Manipulator::alphaToNumeric($alpha);
     }
 
-    public function shorten($string, $length=20) {
-        return core\string\Manipulator::shorten($string, $length);
+    public function shorten($string, $length=20, $right=false) {
+        return core\string\Manipulator::shorten($string, $length, $right);
     }
 
     public function stringToBoolean($string) {

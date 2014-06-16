@@ -102,7 +102,7 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
     }
     
 
-    public static function shorten($string, $length) {
+    public static function shorten($string, $length, $right=false) {
         $length = (int)$length;
 
         if($length < 6) {
@@ -113,8 +113,11 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
         $output = self::factory($string);
 
         if($output->getLength() > ($length - 3)) {
-            $output->substring(0, $length - 3)
-                ->append('...');
+            if($right) {
+                $output->substring($length - 3)->prepend('...');
+            } else {
+                $output->substring(0, $length - 3)->append('...');
+            }
         }
 
         return $output->toString();
@@ -529,6 +532,11 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
         return mb_strlen($this->_value, $this->_encoding);
     }
     
+    public function prepend($string) {
+        $this->_value = $string.$this->_value;
+        return $this;
+    }
+
     public function append($string) {
         $this->_value .= $string;
         return $this;
