@@ -249,7 +249,7 @@ abstract class Base implements IScaffold {
         }
 
         foreach($propagate as $var) {
-            if(in_array($var, $propagationFilter)) {
+            if(!in_array($var, $propagationFilter)) {
                 $outQuery->{$var} = $this->request->query[$var];
             }
         }
