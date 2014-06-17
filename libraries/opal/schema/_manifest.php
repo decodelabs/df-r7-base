@@ -264,6 +264,7 @@ interface IQueryClauseRewriterField extends IField {
 interface IRelationField extends IField {
     public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate);
     public function getTargetQueryAdapter($clusterId=null, core\IApplication $application=null);
+    public function isOnGlobalCluster($flag=null);
 }
 
 interface IInverseRelationField extends IRelationField {

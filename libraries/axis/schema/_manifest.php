@@ -207,7 +207,6 @@ interface IRelationField extends IField, opal\schema\IRelationField, opal\schema
     public function setTargetUnitId($targetUnitId);
     public function getTargetUnitId();
     public function getTargetUnit($clusterId=null, core\IApplication $application=null);
-    public function isOnGlobalCluster($flag=null);
 
     //public function shouldCascadeDelete($flag=null);
 }

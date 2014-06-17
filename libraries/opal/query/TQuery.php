@@ -238,6 +238,10 @@ trait TQuery {
             );
         }
 
+        if(!$field->isOnGlobalCluster()) {
+            $clusterId = $sourceAdapter->getClusterId();
+        }
+
         return $field;
     }
 }
@@ -558,7 +562,7 @@ trait TQuery_Joinable {
                 ->on($targetAlias.'.'.$targetFieldName, '=', $localAlias.'.@primary');
         } else {
             // Field is One
-            $targetAdapter = $field->getTargetQueryAdapter(null, $application);
+            $targetAdapter = $field->getTargetQueryAdapter($clusterId, $application);
             
             $join = $join->from($targetAdapter, $targetAlias)
                 ->on($targetAlias.'.@primary', '=', $fieldName);
