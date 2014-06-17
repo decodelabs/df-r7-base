@@ -755,7 +755,11 @@ trait TScaffold_SectionProvider {
                     ) :
                     $this->getDirectoryTitle()
             )
-            ->setBackLinkRequest($this->_getActionRequest('index'));
+            ->setBackLinkRequest($this->_getSectionHeaderBarBackLinkRequest());
+    }
+
+    protected function _getSectionHeaderBarBackLinkRequest() {
+        return $this->_getActionRequest('index');
     }
 
     public function addSectionOperativeLinks($menu, $bar) {
