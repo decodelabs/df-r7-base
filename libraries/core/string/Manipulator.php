@@ -114,7 +114,7 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
 
         if($output->getLength() > ($length - 3)) {
             if($right) {
-                $output->substring($length - 3)->prepend('...');
+                $output->substring(-($length - 3))->prepend('...');
             } else {
                 $output->substring(0, $length - 3)->append('...');
             }
