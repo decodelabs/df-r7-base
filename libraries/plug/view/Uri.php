@@ -16,7 +16,8 @@ class Uri implements aura\view\IHelper {
     use aura\view\THelper;
     
     public function requestToUrl(arch\IRequest $request) {
-        return $this->_view->getContext()->getApplication()->requestToUrl($request);
+        return core\application\http\Router::getInstance($this->_view->getContext()->application)
+            ->requestToUrl($request);
     }
 
     public function to($uri, $from=null, $to=null) {

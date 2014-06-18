@@ -11,53 +11,34 @@ use df\link;
 use df\flow;
 use df\arch;
 
-class Http extends Base implements arch\IRoutedDirectoryRequestApplication, link\http\IResponseAugmentorProvider {
+class Http extends Base implements arch\IDirectoryRequestApplication, link\http\IResponseAugmentorProvider {
     
     const RUN_MODE = 'Http';
-    
-    protected $_baseDomain;
-    protected $_basePort;
-    protected $_basePath;
-    protected $_useHttps = false;
-    protected $_manualChunk = false;
     
     protected $_httpRequest;
     protected $_responseAugmentor;
     protected $_sendFileHeader;
+    protected $_manualChunk = false;
 
-    protected $_areaDomainMap = [];
-    protected $_mappedArea = null;
-    protected $_mappedDomain = null;
-    
     protected $_context;
-    
-    protected $_routeMatchCount = 0;
-    protected $_routeCount = 0;
-    protected $_routers = [];
-    protected $_defaultRouteProtocol = null;
-    
+    protected $_router;
     
     protected function __construct() {
         parent::__construct();
         
-        $config = Http_Config::getInstance($this);
-        $this->_basePath = explode('/', $config->getBaseUrl());
-        $domain = explode(':', array_shift($this->_basePath), 2);
-        $this->_baseDomain = array_shift($domain);
-        $this->_basePort = array_shift($domain);
+        $config = core\application\http\Config::getInstance($this);
         $this->_sendFileHeader = $config->getSendFileHeader();
-        $this->_useHttps = $config->isSecure();
         $this->_manualChunk = $config->shouldChunkManually();
-        $this->_areaDomainMap = $config->getAreaDomainMap();
+
+        $this->_router = core\application\http\Router::getInstance($this);
     }
     
     
-// Base Url
-    public function getBaseUrl() {
-        return new link\http\Url($this->_baseDomain.':'.$this->_basePort.'/'.implode('/', $this->_basePath).'/');
+// Router
+    public function getRouter() {
+        return $this->_router;
     }
-    
-    
+
 // Http request
     public function setHttpRequest(link\http\IRequest $request) {
         $this->_httpRequest = $request;
@@ -104,109 +85,6 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, link
         return $this->getContext()->request;
     }
     
-    
-    
-// Routing
-    public function requestToUrl(arch\IRequest $request) {
-        $request = $this->_routeOut($request);
-
-        if($this->_defaultRouteProtocol === null) {
-            $this->_defaultRouteProtocol = (isset($_SERVER['HTTPS']) && !strcasecmp($_SERVER['HTTPS'], 'on')) ? 'https' : 'http';
-        }
-
-        $domain = $this->_baseDomain;
-        $port = $this->_basePort;
-        $path = $this->_basePath;
-
-        if($this->_mappedArea) {
-            $area = $request->getArea();
-
-            if($area == $this->_mappedArea) {
-                $domain = $this->_mappedDomain;
-                $path = [];
-            }
-        }
-
-        return link\http\Url::fromDirectoryRequest(
-            $request,
-            $this->_defaultRouteProtocol,
-            $domain, 
-            $port, 
-            $path,
-            $this->_mappedArea
-        );
-    }
-    
-    public function countRoutes() {
-        return $this->_routeCount;
-    }
-    
-    public function countRouteMatches() {
-        return $this->_routeMatchCount;
-    }
-    
-    protected function _routeIn(arch\IRequest $request) {
-        $this->_routeCount++;
-
-        if($router = $this->_getRouterFor($request)) {
-            $this->_routeMatchCount++;
-            $output = $router->routeIn($request);
-
-            if($output instanceof arch\IRequest) {
-                $request = $output;
-            }
-        }
-
-        return $request;
-    }
-    
-    protected function _routeOut(arch\IRequest $request) {
-        $this->_routeCount++;
-
-        if($router = $this->_getRouterFor($request)) {
-            $this->_routeMatchCount++;
-            $output = $router->routeOut($request);
-
-            if($output instanceof arch\IRequest) {
-                $request = $output;
-            }
-        }
-
-        return $request;
-    }
-
-    protected $_routerCache = [];
-
-    protected function _getRouterFor(arch\IRequest $request) {
-        $location = $request->getDirectoryLocation();
-
-        if(isset($this->_routerCache[$location])) {
-            return $this->_routerCache[$location];
-        }
-
-        $keys[] = $location;
-        $parts = explode('/', $location);
-        $output = false;
-
-        while(!empty($parts)) {
-            $class = 'df\\apex\\directory\\'.implode('\\', $parts).'\\HttpRouter';
-            $keys[] = implode('/', $parts);
-
-            if(class_exists($class)) {
-                $output = new $class($this->_application);
-                break;
-            }
-
-            array_pop($parts);
-        }
-        
-        foreach($keys as $key) {
-            $this->_routerCache[$key] = $output;
-        }
-
-        return $output;
-    }
-
     public function getDefaultDirectoryAccess() {
         return arch\IAccess::NONE;
     }
@@ -232,19 +110,8 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, link
             $path = clone $url->getPath();
         }
         
-        
-        // Trim basePath from init request
-        if(!empty($this->_basePath)) {
-            if(!$path) {
-                $valid = false;
-            } else {
-                foreach($this->_basePath as $part) {
-                    if($part != $path->shift()) {
-                        $valid = false;
-                        break;
-                    }
-                }
-            }
+        if(!$this->_router->mapPath($path)) {
+            $valid = false;
         }
 
         if($valid) {
@@ -252,19 +119,13 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, link
         }
 
         $domain = $url->getDomain();
-        $this->_mappedArea = null;
-
-        if($domain != $this->_baseDomain) {
-            if(isset($this->_areaDomainMap[$domain])) {
-                $this->_mappedArea = ltrim($this->_areaDomainMap[$domain], arch\Request::AREA_MARKER);
-                $this->_mappedDomain = $domain;
-            } else {
-                $valid = false;
-            }
+        
+        if(!$this->_router->mapDomain($domain)) {
+            $valid = false;
         }
         
         if(!$valid) {
-            $baseUrl = (string)$this->requestToUrl(new arch\Request($redirectPath));
+            $baseUrl = (string)$this->_router->requestToUrl(new arch\Request($redirectPath));
 
             if($this->isDevelopment()) {        
                 $response = new link\http\response\String(
@@ -302,9 +163,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, link
             $request->setPath($path);
         }
 
-        if($this->_mappedArea) {
-            $request->getPath()->unshift(arch\Request::AREA_MARKER.$this->_mappedArea);
-        }
+        $this->_router->mapArea($request);
             
         if($url->hasQuery()) {
             $request->setQuery(clone $url->getQuery());
@@ -316,7 +175,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, link
             $request->setType($this->_httpRequest->getHeaders()->get('x-ajax-request-type'));
         }
 
-        $request = $this->_routeIn($request);
+        $request = $this->_router->routeIn($request);
         
         // Start dispatch loop
         while(true) {
@@ -392,7 +251,7 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, link
             $this->_httpRequest = new link\http\request\Base(null, true);
         }
 
-        if($this->_useHttps && !$this->_httpRequest->getUrl()->isSecure()) {
+        if($this->_router->shouldUseHttps() && !$this->_httpRequest->getUrl()->isSecure()) {
             $response = new link\http\response\Redirect(
                 $this->_httpRequest->getUrl()
                     ->isSecure(true)
@@ -403,8 +262,8 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, link
             return $response;
         }
 
-        if(empty($this->_basePort)) {
-            $this->_basePort = $this->_httpRequest->getUrl()->getPort();
+        if(!$this->_router->hasBasePort()) {
+            $this->_router->setBasePort($this->_httpRequest->getUrl()->getPort());
         }
 
         if($this->_httpRequest->hasCookie('debug')) {
@@ -636,188 +495,5 @@ class Http extends Base implements arch\IRoutedDirectoryRequestApplication, link
         
         echo $renderer->render();
         return $this;
-    }
-}
-
-
-
-
-// Config
-class Http_Config extends core\Config {
-
-    const ID = 'http';
-    const STORE_IN_MEMORY = false;
-    const USE_ENVIRONMENT_ID_BY_DEFAULT = true;
-
-    public function getDefaultValues() {
-        return [
-            'baseUrl' => $this->_generateBaseUrlList(),
-            'areaDomainMap' => [],
-            'sendFileHeader' => 'X-Sendfile',
-            'secure' => false,
-            'manualChunk' => false
-        ];
-    }
-
-    // Base url
-    public function setBaseUrl($url, $environmentMode=null) {
-        if($environmentMode === null) {
-            $environmentMode = df\Launchpad::getEnvironmentMode();
-        }
-
-        $this->_fixBaseUrlEntry();
-        
-        if($url === null) {
-            $this->values['baseUrl'][$environmentMode] = null;
-        } else {
-            $url = link\http\Url::factory($url);
-            $url->getPath()->shouldAddTrailingSlash(true)->isAbsolute(true);
-            
-            $this->values['baseUrl'][$environmentMode] = $url->getDomain().$url->getPathString();
-        }
-        
-        return $this;
-    }
-    
-    public function getBaseUrl($environmentMode=null) {
-        $this->_fixBaseUrlEntry();
-
-        if(!isset($this->values['baseUrl'])) {
-            $this->values['baseUrl'] = $this->_generateBaseUrlList();
-            $this->save();
-        }
-
-        if($environmentMode === null) {
-            $environmentMode = df\Launchpad::getEnvironmentMode();
-        }
-        
-        if(!isset($this->values['baseUrl'][$environmentMode]) && isset($_SERVER['HTTP_HOST'])) {
-            if(null !== ($baseUrl = $this->_generateBaseUrl())) {
-                $this->setBaseUrl($baseUrl)->save();
-            }
-        }
-        
-        return trim($this->values['baseUrl'][$environmentMode], '/');
-    }
-
-    protected function _fixBaseUrlEntry() {
-        if(isset($this->values['httpBaseUrl'])) {
-            $this->values['baseUrl'] = $this->values['httpBaseUrl'];
-            unset($this->values['httpBaseUrl']);
-            $this->save();
-        }
-    }
-    
-    protected function _generateBaseUrlList() {
-        if(!isset($_SERVER['HTTP_HOST'])) {
-            return null;
-        }
-
-        $baseUrl = $this->_generateBaseUrl();
-        $envMode = df\Launchpad::getEnvironmentMode();
-        
-        $output = [
-            'development' => null,
-            'testing' => null,
-            'production' => null
-        ];
-        
-        $output[$envMode] = $baseUrl;
-        
-        if(substr($baseUrl, 0, strlen($envMode) + 1) == $envMode.'.') {
-            $baseUrl = substr($host, strlen($envMode) + 1);
-        }
-        
-        foreach($output as $key => $val) {
-            if($val === null) {
-                $output[$key] = $key.'.'.$baseUrl;
-            }
-        }
-            
-        return $output;
-    }
-    
-    protected function _generateBaseUrl() {
-        $baseUrl = null;
-        $request = new link\http\request\Base(true);
-        $host = $request->getUrl()->getDomain();
-        $path = $request->getUrl()->getPathString();
-        
-        $baseUrl = $host.'/'.trim(dirname($_SERVER['SCRIPT_NAME']), '/').'/';
-        $currentUrl = $host.'/'.$path;
-        
-        if(substr($currentUrl, 0, strlen($baseUrl)) != $baseUrl) {
-            $parts = explode('/', $currentUrl);
-            array_pop($parts);
-            $baseUrl = implode('/', $parts).'/';
-        }
-        
-        return $baseUrl;
-    }
-
-
-// Area domain map
-    public function setAreaDomainMap(array $map) {
-        $this->values['areaDomainMap'] = $map;
-        return $this;
-    }
-
-    public function getAreaDomainMap() {
-        if(!isset($this->values['areaDomainMap']) || !is_array($this->values['areaDomainMap'])) {
-            return [];
-        }
-
-        return $this->values['areaDomainMap'];
-    }
-    
-
-// Send file header
-    public function setSendFileHeader($header) {
-        $this->values['sendFileHeader'] = $header;
-        return $this;
-    }
-
-    public function getSendFileHeader() {
-        $output = null;
-
-        if(isset($this->values['sendFileHeader'])) {
-            $output = $this->values['sendFileHeader'];
-        }
-
-        if(empty($output)) {
-            //$output = 'X-Sendfile';
-            $output = null;
-        }
-
-        return $output;
-    }
-
-
-// Https
-    public function isSecure($flag=null) {
-        if($flag !== null) {
-            $this->values['secure'] = (bool)$flag;
-            return $this;
-        }
-
-        if(!isset($this->values['secure'])) {
-            return false;
-        }
-
-        return (bool)$this->values['secure'];
-    }
-
-// Chunk
-    public function shouldChunkManually($flag=null) {
-        if($flag !== null) {
-            $this->values['manualChunk'] = (bool)$flag;
-            return $this;
-        }
-
-        if(!isset($this->values['manualChunk'])) {
-            return false;
-        }
-
-        return (bool)$this->values['manualChunk'];
     }
 }

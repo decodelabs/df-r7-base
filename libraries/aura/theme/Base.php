@@ -65,12 +65,14 @@ class Base implements ITheme {
         $this->applyDefaultViewTitle($view);
         $this->applyDefaultBodyTagData($view);
 
-        if(static::COOKIE_NOTICE && !$view->context->http->getCookie(static::COOKIE_NOTICE_COOKIE)) {
-            $this->applyCookieNotice($view);
-        }
+        if($view->context->getRunMode() == 'Http') {
+            if(static::COOKIE_NOTICE && !$view->context->http->getCookie(static::COOKIE_NOTICE_COOKIE)) {
+                $this->applyCookieNotice($view);
+            }
 
-        if(static::ANALYTICS) {
-            $this->applyAnalytics($view);
+            if(static::ANALYTICS) {
+                $this->applyAnalytics($view);
+            }
         }
 
         $this->applyDefaultMetaData($view);
@@ -107,11 +109,12 @@ class Base implements ITheme {
 
     public function applyDefaultBodyTagData(aura\view\IView $view) {
         $request = $view->getContext()->request;
+        $router = core\application\http\Router::getInstance($view->getContext()->application);
         
         $view->getBodyTag()
             ->setDataAttribute('location', $request->getLiteralPathString())
             ->setDataAttribute('layout', $view->getLayout())
-            ->setDataAttribute('base', '/'.ltrim($view->application->getBaseUrl()->getPathString(), '/'));
+            ->setDataAttribute('base', '/'.ltrim($router->getBaseUrl()->getPathString(), '/'));
     }
 
     public function applyCookieNotice(aura\view\IView $view) {

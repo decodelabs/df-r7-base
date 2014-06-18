@@ -94,12 +94,6 @@ interface IDirectoryRequestApplication extends core\IApplication, core\IContextA
     public function getDefaultDirectoryAccess();
 }
 
-interface IRoutedDirectoryRequestApplication extends IDirectoryRequestApplication {
-    public function requestToUrl(IRequest $request);
-    public function countRoutes();
-    public function countRouteMatches();
-}
-
 
 interface IRouter {
     public function routeIn(arch\IRequest $request);

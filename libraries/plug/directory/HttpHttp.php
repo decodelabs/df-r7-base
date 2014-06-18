@@ -49,7 +49,8 @@ class HttpHttp implements arch\IDirectoryHelper {
     
     
     public function directoryRequestToUrl($request) {
-        return $this->_context->getApplication()->requestToUrl(arch\Request::factory($request));
+        return core\application\http\Router::getInstance($this->_context->application)
+            ->requestToUrl(arch\Request::factory($request));
     }
     
     
@@ -140,7 +141,7 @@ class HttpHttp implements arch\IDirectoryHelper {
         }
 
         if($request instanceof arch\IRequest) {
-            $url = $this->_context->getApplication()->requestToUrl($request);
+            $url = $this->directoryRequestToUrl($request);
         } else {
             $url = link\http\Url::factory((string)$request);
         }
@@ -199,7 +200,7 @@ class HttpHttp implements arch\IDirectoryHelper {
             $cookie = $name;
         } else {
             $cookie = $augmentor->newCookie($name, $value)
-                //->setBaseUrl($application->getBaseUrl())
+                //->setBaseUrl($application->getRouter()->getBaseUrl())
                 ;
         }
         
@@ -219,7 +220,7 @@ class HttpHttp implements arch\IDirectoryHelper {
             $cookie = $name;
         } else {
             $cookie = $augmentor->newCookie($name, 'deleted')
-                //->setBaseUrl($application->getBaseUrl())
+                //->setBaseUrl($application->getRouter()->getBaseUrl())
                 ;
         }
         

@@ -23,12 +23,6 @@ abstract class Base implements core\debug\IRenderer {
         
         if($app = df\Launchpad::$application) {
             $this->_stats['Mode'] = $app->getRunMode();
-            
-            /*
-            if($app instanceof core\IRoutedDirectoryRequestApplication) {
-                $this->_stats['Routes'] = $app->countRouteMatches().' / '.$app->countRoutes();
-            }
-            */
         }
         
         if(function_exists('memory_get_peak_usage')) {

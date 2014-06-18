@@ -669,8 +669,10 @@ class Html extends Base implements IHtmlView {
             $this->canIndex(false)->canFollow(false);
         }
 
-        if(strtolower($this->_context->http->request->headers->get('x-requested-with')) == 'xmlhttprequest') {
-            $this->_shouldRenderBase = false;
+        if($this->_context->application->getRunMode() == 'Http') {
+            if(strtolower($this->_context->http->request->headers->get('x-requested-with')) == 'xmlhttprequest') {
+                $this->_shouldRenderBase = false;
+            }
         }
     }
     

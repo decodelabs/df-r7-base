@@ -162,25 +162,16 @@ class Context implements IContext, \Serializable, core\IDumpable {
             }
         }
         
+        if(!$uri instanceof IRequest) {
+            $uri = new Request($uri);
+        }
+
         if($toRequest) {
-            if(!$uri instanceof IRequest) {
-                $uri = new Request($uri);
-            }
-            
             return $this->_applyRequestRedirect($uri, $from, $to);
         }
-        
-        if($this->application instanceof arch\IRoutedDirectoryRequestApplication) {
-            if(!$uri instanceof IRequest) {
-                $uri = new Request($uri);
-            }
-            
-            $uri = $this->application->requestToUrl($this->_applyRequestRedirect($uri, $from, $to));
-        } else {
-            $uri = new core\uri\Url($uri);
-        }
-        
-        return $uri;
+
+        return core\application\http\Router::getInstance($this->application)
+            ->requestToUrl($this->_applyRequestRedirect($uri, $from, $to));
     }
 
     protected function _applyRequestRedirect(arch\IRequest $request, $from, $to) {

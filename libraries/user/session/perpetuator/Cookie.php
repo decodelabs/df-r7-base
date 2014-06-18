@@ -73,7 +73,7 @@ class Cookie implements user\session\IPerpetuator {
         $augmentor = $application->getResponseAugmentor();
                 
         return $augmentor->newCookie($this->_sessionCookieName, $outputId)
-            ->setBaseUrl($application->getBaseUrl())
+            ->setBaseUrl($application->getRouter()->getBaseUrl())
             ->isHttpOnly(true);
     }
 
@@ -96,7 +96,7 @@ class Cookie implements user\session\IPerpetuator {
             $augmentor->setCookieForAnyRequest(
                 $augmentor->newCookie($this->_logoutCookieName, '1')
                     ->setExpiryDate(core\time\Date::factory('+5 minutes'))
-                    ->setBaseUrl($application->getBaseUrl())
+                    ->setBaseUrl($application->getRouter()->getBaseUrl())
                     ->isHttpOnly(true)
             );
         }
@@ -127,7 +127,7 @@ class Cookie implements user\session\IPerpetuator {
 
         return $augmentor->newCookie($this->_rememberCookieName, $value)
             ->setExpiryDate(core\time\Date::factory('+1 month'))
-            ->setBaseUrl($application->getBaseUrl())
+            ->setBaseUrl($application->getRouter()->getBaseUrl())
             ->isHttpOnly(true);
     }
 
