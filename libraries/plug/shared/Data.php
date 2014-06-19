@@ -299,7 +299,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
 
         $extraData['data'] = $data;
         $extraData['paginator'] = $query->getPaginator();
-        return $this->jsonEncode($extraData);
+        return flex\json\Codec::encode($extraData);
     }
 
     public function jsonEncode($data) {
