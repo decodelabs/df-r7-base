@@ -55,7 +55,7 @@ abstract class Config implements IConfig, core\IDumpable {
     
     
 // Construct
-    protected function __construct($id) {
+    public function __construct($id) {
         $parts = explode('/', $id);
         $parts[] = ucfirst(array_pop($parts));
         
