@@ -381,6 +381,12 @@ class Date implements IDate, core\IDumpable {
         $this->_date->modify($string);
         return $this;
     }
+
+    public function modifyNew($string) {
+        $output = clone $this;
+        $output->_date->modify($string);
+        return $output;
+    }
     
     public function add($duration) {
         $seconds = Duration::factory($duration)->getSeconds();
@@ -394,6 +400,11 @@ class Date implements IDate, core\IDumpable {
         $this->_date->modify($string);
         return $this;
     }
+
+    public function addNew($duration) {
+        $output = clone $this;
+        return $output->add($duration);
+    }
     
     public function subtract($duration) {
         $seconds = round(Duration::factory($duration)->getSeconds());
@@ -406,6 +417,11 @@ class Date implements IDate, core\IDumpable {
         
         $this->_date->modify($string);
         return $this;
+    }
+
+    public function subtractNew($duration) {
+        $output = clone $this;
+        return $output->subtract($duration);
     }
     
     

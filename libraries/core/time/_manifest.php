@@ -51,8 +51,11 @@ interface IDate extends \Serializable, core\IStringProvider {
     
     // Modification
     public function modify($string);
+    public function modifyNew($string);
     public function add($duration);
+    public function addNew($duration);
     public function subtract($duration);
+    public function subtractNew($duration);
     
     // Duration
     public function timeSince();
