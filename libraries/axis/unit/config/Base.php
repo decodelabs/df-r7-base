@@ -13,7 +13,7 @@ abstract class Base extends core\Config implements axis\IUnit {
     
     use axis\TUnit;
     
-    protected function __construct(axis\IModel $model) {
+    public function __construct(axis\IModel $model) {
         $this->_model = $model;
         $id = static::ID;
 
