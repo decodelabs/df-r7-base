@@ -184,7 +184,7 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
         return $this;
     }
 
-    public function writeLine($line) {
+    public function writeLine($line='') {
         foreach($this->_channels as $channel) {
             $channel->writeLine($line);
         }

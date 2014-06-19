@@ -49,7 +49,7 @@ class TaskRebuildTable extends arch\task\Action {
 
         if($clusterUnit = $this->data->getClusterUnit()) {
             foreach($clusterUnit->select('@primary')->toList('@primary') as $clusterId) {
-                $this->response->writeLine('');
+                $this->response->writeLine();
                 $this->response->writeLine('Rebuilding in cluster: '.$clusterId);
 
                 $unit = axis\Model::loadUnitFromId($unitId, $clusterId);
@@ -57,7 +57,7 @@ class TaskRebuildTable extends arch\task\Action {
             }
         }
 
-        $this->response->writeLine('');
+        $this->response->writeLine();
         $this->response->writeLine('Updating schema cache');
         
         axis\schema\Cache::getInstance($this->application)->clear();

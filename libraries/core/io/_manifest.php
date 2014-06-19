@@ -242,7 +242,7 @@ interface IChunkReceiver {
 
 interface IWriter extends IChunkReceiver {
     public function write($data);
-    public function writeLine($line);
+    public function writeLine($line='');
     public function writeBuffer(&$buffer, $length);
 
     public function writeByte($byte);
@@ -283,7 +283,7 @@ trait TWriter {
         return $this;
     }
 
-    public function writeLine($line) {
+    public function writeLine($line='') {
         return $this->write($line."\r\n");
     }
     
@@ -520,7 +520,7 @@ interface IMultiplexer extends IFlushable, core\IRegistryObject {
     public function clearChunkReceivers();
 
     public function write($data);
-    public function writeLine($line);
+    public function writeLine($line='');
     public function writeError($error);
     public function writeErrorLine($line);
 

@@ -58,7 +58,7 @@ class TaskPurgeTableBackups extends arch\task\Action {
 
         if($allClusters && ($clusterUnit = $this->data->getClusterUnit())) {
             foreach($clusterUnit->select('@primary')->toList('@primary') as $clusterId) {
-                $this->response->writeLine('');
+                $this->response->writeLine();
                 $this->response->writeLine('Purging in cluster: '.$clusterId);
 
                 $unit = axis\Model::loadUnitFromId($unitId, $clusterId);
