@@ -56,7 +56,7 @@ interface IExtendedArrayProvider extends IArrayProvider {
 trait TExtendedArrayProvider {
     
     public function toJsonString() {
-        return json_encode($this->toArray());
+        return df\flex\json\Codec::encode($this->toArray());
     }
 }
 
@@ -70,7 +70,7 @@ trait TExtendedArrayInterchange {
     use TExtendedArrayProvider;
 
     public static function fromJsonString($json) {
-        return self::fromArray((array)json_decode($json, true));
+        return self::fromArray((array)df\flex\json\Codec($json));
     }
 }
 

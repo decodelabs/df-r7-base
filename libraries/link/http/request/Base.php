@@ -8,6 +8,7 @@ namespace df\link\http\request;
 use df;
 use df\core;
 use df\link;
+use df\flex;
 
 class Base implements link\http\IRequest, core\IDumpable {
     
@@ -396,7 +397,10 @@ class Base implements link\http\IRequest, core\IDumpable {
 
                     case 'application/json':
                         $usePost = false;
-                        $this->_postData = core\collection\Tree::factory(json_decode($payload, true));
+                        $this->_postData = core\collection\Tree::factory(
+                            flex\json\Codec::decode($payload)
+                        );
+
                         break;
                 }
 

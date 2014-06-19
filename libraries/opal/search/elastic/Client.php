@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\opal;
 use df\link;
+use df\flex;
 
 class Client implements opal\search\IClient {
     
@@ -130,7 +131,7 @@ class Client implements opal\search\IClient {
         $dataString = '';
         
         foreach($data as $actionSet) {
-            $dataString .= json_encode($actionSet)."\n";
+            $dataString .= flex\json\Codec::encode($actionSet)."\n";
         }
         
         return $this->sendRequest('put://_bulk', $dataString);

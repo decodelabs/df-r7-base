@@ -10,6 +10,7 @@ use df\core;
 use df\arch as archLib;
 use df\axis;
 use df\opal;
+use df\flex;
 
 class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
     
@@ -302,43 +303,11 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
     }
 
     public function jsonEncode($data) {
-        return json_encode($this->_prepareJsonData($data));
-    }
-
-    protected function _prepareJsonData($data) {
-        if(is_scalar($data)) {
-            return $data;
-        }
-
-        if($data instanceof opal\record\IPrimaryKeySet) {
-            $data = $data->getValue();
-        }
-
-        if($data instanceof core\time\IDate) {
-            return $data->format(core\time\Date::W3C);
-        }
-
-        if($data instanceof core\IArrayProvider) {
-            $data = $data->toArray();
-        }
-
-        if(!is_array($data)) {
-            if(method_exists($data, '__toString')) {
-                return (string)$data;
-            }
-
-            return $data;
-        }
-
-        foreach($data as $key => $value) {
-            $data[$key] = $this->_prepareJsonData($value);
-        }
-
-        return $data;
+        return flex\json\Codec::encode($data);
     }
 
     public function jsonDecode($data) {
-        return json_decode($data);
+        return flex\json\Codec::decode($data);
     }
 
 

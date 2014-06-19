@@ -8,6 +8,7 @@ namespace df\link\http\response;
 use df;
 use df\core;
 use df\link;
+use df\flex;
 
 abstract class Base implements link\http\IResponse {
     
@@ -244,7 +245,7 @@ abstract class Base implements link\http\IResponse {
             );
         }
         
-        $data = \json_decode($content, true);
+        $data = flex\json\Codec::decode($content);
         
         if($data === false || $data === null) {
             throw new link\http\RuntimeException(

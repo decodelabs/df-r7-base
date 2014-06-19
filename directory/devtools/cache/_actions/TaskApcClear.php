@@ -65,7 +65,7 @@ class TaskApcClear extends arch\task\Action {
             $response = $httpClient->get($url);
 
             if($response->isOk()) {
-                $json = json_decode($response->getContent(), true);
+                $json = $this->data->jsonDecode($response->getContent());
                 $cleared = @$json['cleared'];
 
                 if($cleared === null) {
