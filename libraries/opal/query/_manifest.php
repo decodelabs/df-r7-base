@@ -29,7 +29,7 @@ interface IDataRowProvider {
 
 
 // Initiator
-interface IInitiator extends core\IApplicationAware, ITransactionAware {
+interface IInitiator extends ITransactionAware {
     public function beginSelect(array $fields=[], $distinct=false);
     public function beginUnion();
     public function beginUnionSelect(IUnionQuery $union, array $fields=[], $unionDistinct=true, $selectDistinct=false);
@@ -714,7 +714,7 @@ interface ISource extends IAdapterAware {
 
 
 // Manager
-interface ISourceManager extends core\IApplicationAware, ITransactionAware {
+interface ISourceManager extends ITransactionAware {
     public function getMeshManager();
 
     public function setParentSourceManager(ISourceManager $parent);

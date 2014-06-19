@@ -15,12 +15,8 @@ class TaskSet implements ITaskSet {
     protected $_transaction;
     protected $_isExecuting = false;
     
-    public function __construct(core\IApplication $application=null) {
-        if($application === null) {
-            $application = df\Launchpad::$application;
-        }
-        
-        $this->_transaction = new opal\query\Transaction($application);
+    public function __construct() {
+        $this->_transaction = new opal\query\Transaction();
     }
     
     

@@ -26,7 +26,6 @@ class Local implements user\authentication\IAdapter {
     }
     
     public function authenticate(user\authentication\IRequest $request, user\authentication\IResult $result) {
-        $application = $this->_manager->getApplication();
         $model = $this->_manager->getUserModel();
         $domainInfo = $model->getAuthenticationDomainInfo($request);
         
@@ -39,7 +38,7 @@ class Local implements user\authentication\IAdapter {
             
         $passwordHash = core\string\Util::passwordHash(
             $request->getCredential('password'),
-            $application->getPassKey()
+            df\Launchpad::$application->getPassKey()
         );
         
         $domainPassword = $domainInfo->getPassword();

@@ -5,6 +5,7 @@
  */
 namespace df\core\i18n;
 
+use df;
 use df\core;
 
 // Exceptions

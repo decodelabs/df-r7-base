@@ -9,20 +9,7 @@ use df;
 use df\core;
 use df\opal;
     
-class EntryPoint implements IEntryPoint, core\IApplicationAware {
+class EntryPoint implements IEntryPoint {
 
     use TQuery_EntryPoint;
-    use core\TApplicationAware;
-
-    public function __construct(core\IApplication $application=null) {
-        $this->_application = $application;
-    }
-
-    public function getApplication() {
-        if(!$this->_application) {
-            $this->_application = df\Launchpad::getActiveApplication();
-        }
-
-        return $this->_application;
-    }
 }

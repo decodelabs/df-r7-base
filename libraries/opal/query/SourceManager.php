@@ -12,8 +12,6 @@ use df\mesh;
 
 class SourceManager implements ISourceManager, core\IDumpable {
     
-    use core\TApplicationAware;
-    
     protected $_parent;
     protected $_aliases = [];
     protected $_sources = [];
@@ -22,13 +20,12 @@ class SourceManager implements ISourceManager, core\IDumpable {
     protected $_genCounter = 0;
     protected $_transaction;
     
-    public function __construct(core\IApplication $application, ITransaction $transaction=null) {
-        $this->_application = $application;
+    public function __construct(ITransaction $transaction=null) {
         $this->_transaction = $transaction;
     }
     
     public function getMeshManager() {
-        return mesh\Manager::getInstance($this->_application);
+        return mesh\Manager::getInstance();
     }
 
     public function setParentSourceManager(ISourceManager $parent) {

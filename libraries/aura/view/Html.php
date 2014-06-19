@@ -649,7 +649,7 @@ class Html extends Base implements IHtmlView {
             $subject = $this->_('Notification from %a%', ['%a%' => $this->_context->application->getName()]);
         }
 
-        $manager = flow\Manager::getInstance($this->_context->application);
+        $manager = flow\Manager::getInstance();
         return $manager->newNotification($subject, $content, $to, $from)
             ->setBodyType(flow\INotification::HTML);
     }

@@ -12,75 +12,70 @@ use df\opal;
 class Transaction implements ITransaction, core\IDumpable {
     
     protected $_level = 1;
-    protected $_application;
     protected $_adapters = [];
     
-    public function __construct(core\IApplication $application) {
-        $this->_application = $application;
-    }
-    
     public function select($field1=null) {
-        return Initiator::factory($this->_application)
+        return Initiator::factory()
             ->setTransaction($this)
             ->beginSelect(func_get_args());
     }
 
     public function selectDistinct($field1=null) {
-        return Initiator::factory($this->_application)
+        return Initiator::factory()
             ->setTransaction($this)
             ->beginSelect(func_get_args(), true);
     }
 
     public function union() {
-        return Initiator::factory($this->_application)
+        return Initiator::factory()
             ->setTransaction($this)
             ->beginUnion();
     }
     
     public function fetch() {
-        return Initiator::factory($this->_application)
+        return Initiator::factory()
             ->setTransaction($this)
             ->beginFetch();
     }
     
     public function insert($row) {
-        return Initiator::factory($this->_application)
+        return Initiator::factory()
             ->setTransaction($this)
             ->beginInsert($row);
     }
     
     public function batchInsert($rows=[]) {
-        return Initiator::factory($this->_application)
+        return Initiator::factory()
             ->setTransaction($this)
             ->beginBatchInsert($rows);
     }
     
     public function replace($row) {
-        return Initiator::factory($this->_application)
+        return Initiator::factory()
             ->setTransaction($this)
             ->beginReplace($row);
     }
     
     public function batchReplace($rows=[]) {
-        return Initiator::factory($this->_application)
+        return Initiator::factory()
             ->setTransaction($this)
             ->beginBatchReplace($rows);
     }
     
     public function update(array $valueMap=null) {
-        return Initiator::factory($this->_application)
+        return Initiator::factory()
             ->setTransaction($this)
             ->beginUpdate($valueMap);
     }
     
     public function delete() {
-        return Initiator::factory($this->_application)
+        return Initiator::factory()
             ->setTransaction($this)
             ->beginDelete();
     }
     
     public function begin() {
-        return new self($this->_application);
+        return new self();
     }
     
     
@@ -166,8 +161,7 @@ class Transaction implements ITransaction, core\IDumpable {
         
         return [
             'level' => $this->_level,
-            'adapters' => $adapters,
-            'application' => $this->_application
+            'adapters' => $adapters
         ];
     }
 }

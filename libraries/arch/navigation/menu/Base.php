@@ -80,7 +80,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
         
         $id = self::normalizeId($id);
         $source = arch\navigation\menu\source\Base::factory($context, $id->getScheme());
-        $cache = Cache::getInstance($context->getApplication());
+        $cache = Cache::getInstance();
         
         //$cacheId = md5($id);
         $cacheId = (string)$id;
@@ -98,7 +98,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
 
     public static function clearCacheFor(arch\IContext $context, $id) {
         $id = self::normalizeId($id);
-        $cache = Cache::getInstance($context->getApplication());
+        $cache = Cache::getInstance();
         
         //$cacheId = md5($id);
         $cacheId = (string)$id;
@@ -107,7 +107,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
     }
     
     public static function clearCache(arch\IContext $context) {
-        $cache = Cache::getInstance($context->getApplication());
+        $cache = Cache::getInstance();
         $cache->clear();
     }
     

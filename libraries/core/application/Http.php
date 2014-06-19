@@ -26,11 +26,11 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
     protected function __construct() {
         parent::__construct();
         
-        $config = core\application\http\Config::getInstance($this);
+        $config = core\application\http\Config::getInstance();
         $this->_sendFileHeader = $config->getSendFileHeader();
         $this->_manualChunk = $config->shouldChunkManually();
 
-        $this->_router = core\application\http\Router::getInstance($this);
+        $this->_router = core\application\http\Router::getInstance();
     }
     
     
@@ -91,10 +91,10 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
     
     
 // Execute
-    public function dispatch(link\http\IRequest $httpRequest=null) {
+    public function dispatch() {
         $this->_beginDispatch();
 
-        if($response = $this->_prepareHttpRequest($httpRequest)) {
+        if($response = $this->_prepareHttpRequest()) {
             return $response;
         }
         
@@ -224,7 +224,7 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
     }
     
     protected function _enforceDeveloperCredentials() {
-        $envConfig = core\Environment::getInstance($this);
+        $envConfig = core\Environment::getInstance();
 
         if($credentials = $envConfig->getDeveloperCredentials()) {
             if(!isset($_SERVER['PHP_AUTH_USER'])
@@ -240,16 +240,12 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
         return false;
     }
 
-    protected function _prepareHttpRequest(link\http\IRequest $httpRequest=null) {
+    protected function _prepareHttpRequest() {
         if(!$this->isProduction()) {
             $this->_enforceDeveloperCredentials();
         }
 
-        if($httpRequest !== null) {
-            $this->_httpRequest = $httpRequest;
-        } else {
-            $this->_httpRequest = new link\http\request\Base(null, true);
-        }
+        $this->_httpRequest = new link\http\request\Base(null, true);
 
         if($this->_router->shouldUseHttps() && !$this->_httpRequest->getUrl()->isSecure()) {
             $response = new link\http\response\Redirect(
@@ -270,7 +266,7 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
             df\Launchpad::$isTesting = true;
             df\Launchpad::$debug = $this->createDebugContext();
 
-            flow\Manager::getInstance($this)->flashNow(
+            flow\Manager::getInstance()->flashNow(
                     'global.debug', 
                     'Currently in enforced debug mode', 
                     'debug'
@@ -294,7 +290,7 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
         $this->removeRegistryObject('breadcrumbs');
 
         $this->_context = null;
-        $this->_context = arch\Context::factory($this, clone $request);
+        $this->_context = arch\Context::factory(clone $request);
         
         $action = arch\Action::factory(
             $this->_context,

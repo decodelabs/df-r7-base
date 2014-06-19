@@ -15,7 +15,7 @@ class RuntimeException extends \RuntimeException implements IException {}
 
 
 // Interfaces
-interface ICache extends core\IValueMap, \ArrayAccess, core\IApplicationAware, core\IRegistryObject, \Countable {
+interface ICache extends core\IValueMap, \ArrayAccess, core\IRegistryObject, \Countable {
     public static function getCacheId();
     public function getCacheBackend();
     public function getCacheStats();

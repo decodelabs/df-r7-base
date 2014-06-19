@@ -22,7 +22,7 @@ class RuntimeException extends \RuntimeException implements IException {}
 interface IAccess extends user\IState {}
 
 
-interface IModel extends core\IApplicationAware, mesh\entity\IParentEntity, core\IRegistryObject {
+interface IModel extends mesh\entity\IParentEntity, core\IRegistryObject {
     public function getModelName();
     public function getModelId();
     public function getClusterId();
@@ -36,7 +36,7 @@ interface IModel extends core\IApplicationAware, mesh\entity\IParentEntity, core
 
 
 
-interface IUnit extends core\IApplicationAware, mesh\entity\IEntity, user\IAccessLock {
+interface IUnit extends mesh\entity\IEntity, user\IAccessLock {
 
     const ID_SEPARATOR = '/';
     const DEFAULT_ACCESS = axis\IAccess::GUEST;
@@ -97,7 +97,7 @@ trait TUnit {
 
     public function getUnitSettings() {
         if($this->_unitSettings === null) {
-            $config = axis\ConnectionConfig::getInstance($this->_model->getApplication());
+            $config = axis\ConnectionConfig::getInstance();
             $this->_unitSettings = $config->getSettingsFor($this);
         }
 
@@ -117,10 +117,6 @@ trait TUnit {
         return $this->_model->getClusterId();
     }
     
-    public function getApplication() {
-        return $this->_model->getApplication();
-    }
-
     public function getContext() {
         return $this->_model->getUnit('context');
     }
@@ -256,7 +252,7 @@ trait TAdapterBasedStorageUnit {
     }
 
     protected function _loadAdapter() {
-        $config = axis\ConnectionConfig::getInstance($this->getModel()->getApplication());
+        $config = axis\ConnectionConfig::getInstance();
         $adapterId = $config->getAdapterIdFor($this);
         $unitType = $this->getUnitType();
         

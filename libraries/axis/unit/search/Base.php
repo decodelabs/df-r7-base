@@ -21,7 +21,7 @@ abstract class Base implements axis\IAdapterBasedStorageUnit {
     }
     
     protected function _loadAdapter() {
-        $config = axis\ConnectionConfig::getInstance($this->getModel()->getApplication());
+        $config = axis\ConnectionConfig::getInstance();
         $settings = $config->getSettingsFor($this);
         $adapterId = lcfirst($settings['adapter']);
         
@@ -39,7 +39,7 @@ abstract class Base implements axis\IAdapterBasedStorageUnit {
             );
         }
         
-        $indexName = $this->getApplication()->getUniquePrefix().'_'.preg_replace('/[^a-zA-Z0-9_]/', '_', $this->getUnitId());
+        $indexName = df\Launchpad::$application->getUniquePrefix().'_'.preg_replace('/[^a-zA-Z0-9_]/', '_', $this->getUnitId());
         $client = $class::factory($settings);
         
         $this->_adapter = $client->getIndex($indexName);

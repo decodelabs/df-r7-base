@@ -17,7 +17,7 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
     protected $_chunkReceivers = [];
 
     public static function defaultFactory($id=null) {
-        if(isset($_SERVER['argv']) && !df\Launchpad::$invokingApplication) {
+        if(isset($_SERVER['argv'])) {
             $channel = new core\io\channel\Std();
         } else {
             $channel = new core\io\channel\Memory();

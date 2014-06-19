@@ -19,14 +19,6 @@ class Task implements core\ISharedHelper {
         return halo\process\Base::launchTask($request);
     }
 
-    public function capture($request) {
-        $request = arch\Request::factory($request);
-        $application = core\application\Base::factory('Task');
-        $application->setTaskRequest($request);
-
-        return df\Launchpad::runApplication($application);
-    }
-
     public function getResponse() {
         if($this->_context->application instanceof core\application\Task) {
             return $this->_context->application->getTaskResponse();

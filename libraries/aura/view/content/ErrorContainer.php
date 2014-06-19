@@ -29,7 +29,7 @@ class ErrorContainer implements \ArrayAccess {
     }
     
     public function __toString() {
-        if($this->getApplication()->isTesting()) {
+        if(df\Launchpad::$application->isTesting()) {
             core\debug()->exception($this->_exception);
             $message = $this->_view->esc('Error: '.$this->_exception->getMessage());
             

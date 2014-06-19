@@ -16,6 +16,6 @@ interface IException {}
 // Interfaces
 interface ITheme extends aura\view\IRenderable, aura\view\ILayoutMap {
     public function getId();
-    public function findAsset(core\IApplication $application, $path);
+    public function findAsset($path);
     public function mapIcon($name);
 }

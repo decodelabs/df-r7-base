@@ -16,11 +16,7 @@ final class Context implements IContext {
 
     public function __construct(IModel $model) {
         $this->_model = $model;
-        $this->application = $model->getApplication();
-    }
-
-    public function getApplication() {
-        return $this->application;
+        $this->application = df\Launchpad::$application;
     }
 
     public function getUnitType() {

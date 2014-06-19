@@ -23,7 +23,7 @@ class Shell implements user\session\IPerpetuator {
         $name = $process->getOwnerName();
 
         $this->_userKey = md5($uid.$name);
-        $cache = Shell_Cache::getInstance($controller->getApplication());
+        $cache = Shell_Cache::getInstance();
 
         $this->_inputId = $cache->get($this->_userKey);
     }
@@ -46,14 +46,14 @@ class Shell implements user\session\IPerpetuator {
     }
 
     public function perpetuate(user\session\IController $controller, user\session\IDescriptor $descriptor) {
-        $cache = Shell_Cache::getInstance($controller->getApplication());
+        $cache = Shell_Cache::getInstance();
         $cache->set($this->_userKey, $descriptor->getExternalId(), $this->_lifeTime);
 
         return $this;
     }
 
     public function destroy(user\session\IController $controller) {
-        $cache = Shell_Cache::getInstance($controller->getApplication());
+        $cache = Shell_Cache::getInstance();
         $cache->remove($this->_userKey);
 
         $this->destroyRememberKey($controller);

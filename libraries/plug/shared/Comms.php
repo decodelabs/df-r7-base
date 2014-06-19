@@ -20,7 +20,7 @@ class Comms implements core\ISharedHelper {
 
     public function __construct(core\IContext $context) {
         $this->_context = $context;
-        $this->_manager = flow\Manager::getInstance($this->_context->application);
+        $this->_manager = flow\Manager::getInstance();
     }
 
 
@@ -73,7 +73,7 @@ class Comms implements core\ISharedHelper {
         if($this->_context instanceof arch\IContext) {
             $aura = $this->_context->aura;
         } else {
-            $aura = arch\Context::factory($this->_context->getApplication())->aura;
+            $aura = arch\Context::factory()->aura;
         }
 
         $view = $aura->getView($path, $contextRequest);

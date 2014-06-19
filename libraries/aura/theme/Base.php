@@ -25,7 +25,7 @@ class Base implements ITheme {
             return $id;
         } else if($id instanceof arch\IContext) {
             $context = $id;
-            $config = Config::getInstance($context->getApplication());
+            $config = Config::getInstance();
             $id = $config->getThemeIdFor($context->location->getArea());
         }
         
@@ -97,7 +97,7 @@ class Base implements ITheme {
         }
         
         if(!$view->hasTitleSuffix()) {
-            $suffix = $view->getContext()->getApplication()->getName();
+            $suffix = df\Launchpad::$application->getName();
             
             if($view->hasTitle()) {
                 $suffix = ' : '.$suffix;
@@ -109,7 +109,7 @@ class Base implements ITheme {
 
     public function applyDefaultBodyTagData(aura\view\IView $view) {
         $request = $view->getContext()->request;
-        $router = core\application\http\Router::getInstance($view->getContext()->application);
+        $router = core\application\http\Router::getInstance();
         
         $view->getBodyTag()
             ->setDataAttribute('location', $request->getLiteralPathString())
@@ -137,7 +137,7 @@ class Base implements ITheme {
 
 
 // Assets
-    public function findAsset(core\IApplication $application, $path) {
+    public function findAsset($path) {
         $output = df\Launchpad::$loader->findFile(
             $lookupPath = 'apex/themes/'.$this->getId().'/assets/'.$path
         );

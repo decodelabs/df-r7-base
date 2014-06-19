@@ -160,7 +160,7 @@ class Base implements IView {
                 return $this->getContext();
                 
             case 'application':
-                return $this->_context->getApplication();
+                return $this->_context->application;
                 
             case 'contentProvider':
                 return $this->getContentProvider();

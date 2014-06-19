@@ -16,7 +16,7 @@ class TaskGenerateBaseEntry extends arch\task\Action {
     public function execute() {
         $this->response->writeLine('Generating base entry point');
 
-        $phpPath = core\Environment::getInstance($this->application)->getPhpBinaryPath();
+        $phpPath = core\Environment::getInstance()->getPhpBinaryPath();
         $appPath = df\Launchpad::$applicationPath;
         $environmentId = df\Launchpad::$environmentId;
 

@@ -32,14 +32,14 @@ final class Virtual implements axis\ISchemaDefinitionStorageUnit, axis\ISchemaBa
         $output = 'axis_schemas';
 
         if($this->_shouldPrefixNames()) {
-            $output = $this->_model->getApplication()->getUniquePrefix().'_'.$output;
+            $output = df\Launchpad::$application->getUniquePrefix().'_'.$output;
         }
 
         return $output;
     }
     
     public function fetchFor(axis\ISchemaBasedStorageUnit $unit, $transient=false) {
-        $cache = axis\schema\Cache::getInstance($this->_model->getApplication());
+        $cache = axis\schema\Cache::getInstance();
         $schema = $cache->get($unit->getGlobalUnitId());
         
         if($schema !== null && !$schema instanceof axis\schema\ISchema) {
@@ -147,7 +147,7 @@ final class Virtual implements axis\ISchemaDefinitionStorageUnit, axis\ISchemaBa
     }
     
     public function clearCache(axis\ISchemaBasedStorageUnit $unit=null) {
-        $cache = axis\schema\Cache::getInstance($this->_model->getApplication());
+        $cache = axis\schema\Cache::getInstance();
         
         if($unit) {
             $cache->remove($unit->getGlobalUnitId());

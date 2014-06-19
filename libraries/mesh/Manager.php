@@ -124,8 +124,7 @@ class Manager implements IManager, core\IDumpable {
 // Dump
     public function getDumpProperties() {
         return [
-            'handlers' => implode(', ', array_keys($this->_handlers)),
-            'application' => $this->_application
+            'handlers' => implode(', ', array_keys($this->_handlers))
         ];
     }
 }

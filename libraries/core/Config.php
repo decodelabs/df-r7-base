@@ -20,37 +20,34 @@ abstract class Config implements IConfig, core\IDumpable {
     public $values = [];
     
     protected $_id;
-    private $_application;
     private $_filePath = null;
     
 // Loading
-    public static function getInstance(IApplication $application=null) {
+    public static function getInstance() {
         if(!static::ID) {
             throw new LogicException('Invalid config id set for '.get_called_class());
         }
         
-        return static::_factory($application, static::ID);
+        return static::_factory(static::ID);
     }
     
-    final protected static function _factory(IApplication $application=null, $id) {
+    final protected static function _factory($id) {
         $handlerClass = get_called_class();
         
         if(empty($id)) {
             throw new LogicException('Invalid config id passed for '.$handlerClass);
         }
         
-        if(!$application) {
-            $application = df\Launchpad::getActiveApplication();
-        }
+        $application = df\Launchpad::getApplication();
         
         if($handlerClass::STORE_IN_MEMORY) {
             if(!$config = $application->getRegistryObject(self::REGISTRY_PREFIX.$id)) {
                 $application->setRegistryObject(
-                    $config = new $handlerClass($application, $id)
+                    $config = new $handlerClass($id)
                 );
             }
         } else {
-            $config = new $handlerClass($application, $id);
+            $config = new $handlerClass($id);
         }
         
         return $config;
@@ -58,9 +55,7 @@ abstract class Config implements IConfig, core\IDumpable {
     
     
 // Construct
-    public function __construct(IApplication $application, $id) {
-        $this->_application = $application;
-        
+    protected function __construct($id) {
         $parts = explode('/', $id);
         $parts[] = ucfirst(array_pop($parts));
         
@@ -82,10 +77,6 @@ abstract class Config implements IConfig, core\IDumpable {
 
     public function onApplicationShutdown() {}
     
-// Application aware
-    public function getApplication() {
-        return $this->_application;
-    }
     
 // Values
     final public function getConfigId() {
@@ -149,8 +140,8 @@ abstract class Config implements IConfig, core\IDumpable {
     private function _loadValues() {
         $parts = explode('/', $this->_id);
         $name = array_pop($parts);
-        $environmentId = $this->_application->getEnvironmentId();
-        $environmentMode = $this->_application->getEnvironmentMode();
+        $environmentId = df\Launchpad::$application->getEnvironmentId();
+        $environmentMode = df\Launchpad::$application->getEnvironmentMode();
         $basePath = $this->_getBasePath();
         
         if(!empty($parts)) {
@@ -193,7 +184,7 @@ abstract class Config implements IConfig, core\IDumpable {
         if($this->_filePath) {
             $savePath = $this->_filePath;
         } else {
-            $environmentId = $this->_application->getEnvironmentId();
+            $environmentId = df\Launchpad::$application->getEnvironmentId();
             $parts = explode('/', $this->_id);
             $name = array_pop($parts);
             $basePath = $this->_getBasePath();
@@ -226,7 +217,7 @@ abstract class Config implements IConfig, core\IDumpable {
     }
     
     private function _getBasePath() {
-        return $this->_application->getStaticStoragePath().'/config';
+        return df\Launchpad::$application->getStaticStoragePath().'/config';
     }
     
     private function _exportArray(array $values, $level=1) {

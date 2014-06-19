@@ -188,12 +188,11 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
 
     public function flashList() {
         try {
-            $application = $this->_view->getContext()->getApplication();
-            $manager = flow\Manager::getInstance($application);
+            $manager = flow\Manager::getInstance();
             $manager->processFlashQueue();
             $messageCount = 0;
 
-            $isProduction = $application->isProduction();
+            $isProduction = df\Launchpad::$application->isProduction();
 
             $output = '<section class="widget-flashList">'."\n";
 

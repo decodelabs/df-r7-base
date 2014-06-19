@@ -12,12 +12,6 @@ use df\opal;
 
 class Probe implements IProbe {
     
-    use core\TApplicationAware;
-
-    public function __construct(core\IApplication $application) {
-        $this->_application = $application;
-    }
-
     public function getModelList() {
         $output = [];
 
@@ -53,7 +47,7 @@ class Probe implements IProbe {
     }
 
     public function probeUnits() {
-        $config = axis\ConnectionConfig::getInstance($this->_application);
+        $config = axis\ConnectionConfig::getInstance();
 
         $unitList = array_merge(
             $this->getDefinedUnitList(),

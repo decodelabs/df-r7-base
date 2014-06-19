@@ -23,13 +23,6 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
         return new core\validate\Handler();
     }
     
-    
-// Query
-    private function _getEntryPointApplication() {
-        return $this->_context->application;
-    }
-    
-
     public function fetchForAction($source, $primary, $action=null, Callable $chain=null) {
         $output = $this->_queryForAction($this->fetch()->from($source), $primary, $action, $chain);
 
@@ -96,14 +89,14 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
 
     public function getClusterUnit() {
         try {
-            return axis\Model::loadClusterUnit($this->_context->application);
+            return axis\Model::loadClusterUnit();
         } catch(axis\RuntimeException $e) {
             return null;
         }
     }
 
     public function fetchClusterRecord($clusterId) {
-        $unit = axis\Model::loadClusterUnit($this->_context->application);
+        $unit = axis\Model::loadClusterUnit();
         return $this->fetchForAction($unit, $clusterId);
     }
 
@@ -123,13 +116,13 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
     }
 
     private function _sourceToAdapter($source) {
-        $sourceManager = new opal\query\SourceManager($this->_context->application);
+        $sourceManager = new opal\query\SourceManager();
         $source = $sourceManager->newSource($source, null);
         return $source->getAdapter();
     }
 
     public function newRecordTaskSet() {
-        return new opal\record\task\TaskSet($this->_context->application);
+        return new opal\record\task\TaskSet();
     }
 
     public function checkAccess($source, $action=null) {
@@ -139,7 +132,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
             $actionName = 'access';
         }
         
-        $sourceManager = new opal\query\SourceManager($this->_context->application);
+        $sourceManager = new opal\query\SourceManager();
         $source = $sourceManager->newSource($source, null);
         $adapter = $source->getAdapter();
 
@@ -176,15 +169,15 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
     }
 
     public function getModel($name, $clusterId=null) {
-        return axis\Model::factory($name, $this->_normalizeClusterId($clusterId), $this->_context->application);
+        return axis\Model::factory($name, $this->_normalizeClusterId($clusterId));
     }
     
     public function getUnit($unitId, $clusterId=null) {
-        return axis\Model::loadUnitFromId($unitId, $clusterId, $this->_context->application);
+        return axis\Model::loadUnitFromId($unitId, $clusterId);
     }
 
     public function getSchema($unitId) {
-        return axis\Model::loadUnitFromId($unitId, null, $this->_context->application)->getUnitSchema();
+        return axis\Model::loadUnitFromId($unitId)->getUnitSchema();
     }
 
     public function getSchemaField($unitId, $field) {

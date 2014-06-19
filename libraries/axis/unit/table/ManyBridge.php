@@ -136,7 +136,7 @@ class ManyBridge extends Base implements axis\IVirtualUnit {
             );
         }
 
-        $submissiveUnit = axis\Model::loadUnitFromId($dominantField->getTargetUnitId(), null, $this->getApplication());
+        $submissiveUnit = axis\Model::loadUnitFromId($dominantField->getTargetUnitId());
         $submissiveSchema = $submissiveUnit->getTransientUnitSchema();
 
         $schema = new axis\schema\Base($this, $this->getUnitName());

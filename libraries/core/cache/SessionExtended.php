@@ -15,8 +15,8 @@ class SessionExtended extends Base implements ISessionExtendedCache {
 
     protected $_session;
 
-    protected function __construct(core\IApplication $application) {
-        parent::__construct($application);
+    protected function __construct() {
+        parent::__construct();
 
         $lifeTime = static::SESSION_LIFE_TIME;
 
@@ -24,7 +24,7 @@ class SessionExtended extends Base implements ISessionExtendedCache {
             $lifeTime = $this->getLifeTime();
         }
 
-        $this->_session = user\Manager::getInstance($application)->getSessionNamespace(
+        $this->_session = user\Manager::getInstance()->getSessionNamespace(
                 'cache://'.$this->getCacheId()
             )
             ->setLifeTime($lifeTime);

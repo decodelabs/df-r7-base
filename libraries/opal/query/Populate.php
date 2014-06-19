@@ -49,11 +49,7 @@ class Populate implements IPopulateQuery, core\IDumpable {
             );
         }
 
-        $this->_sourceManager = new SourceManager(
-            $parentSourceManager->getApplication(), 
-            $parentSourceManager->getTransaction()
-        );
-
+        $this->_sourceManager = new SourceManager($parentSourceManager->getTransaction());
         $this->_sourceManager->setParentSourceManager($parentSourceManager);
 
         $schema = $adapter->getQueryAdapterSchema();
@@ -65,7 +61,7 @@ class Populate implements IPopulateQuery, core\IDumpable {
             );
         }
 
-        $adapter = $field->getTargetQueryAdapter($adapter->getClusterId(), $this->_sourceManager->getApplication());
+        $adapter = $field->getTargetQueryAdapter($adapter->getClusterId());
         $alias = uniqid('ppl_'.$intrinsicFieldName);
 
         if(empty($selectFields)) {

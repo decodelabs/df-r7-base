@@ -24,9 +24,8 @@ class Manager implements IManager, core\IDumpable {
     protected $_client;
     private $_accessLockCache = [];
     
-    protected function __construct(core\IApplication $application) {
-        $this->_application = $application;
-        $this->session = new user\session\Controller($application);
+    protected function __construct() {
+        $this->session = new user\session\Controller();
     }
     
 // Client
@@ -50,10 +49,10 @@ class Manager implements IManager, core\IDumpable {
             $rethrowException = false;
             $isNew = true;
         } else {
-            $cache = user\session\Cache::getInstance($this->_application);
+            $cache = user\session\Cache::getInstance();
             $regenKeyring = $cache->shouldRegenerateKeyring($this->_client->getKeyringTimestamp());
             $rethrowException = false;
-            core\i18n\Manager::getInstance($this->_application)->setLocale($this->_client->getLanguage().'_'.$this->_client->getCountry());
+            core\i18n\Manager::getInstance()->setLocale($this->_client->getLanguage().'_'.$this->_client->getCountry());
         }
 
         if(!$this->_client->isLoggedIn() && $this->_recallIdentity($isNew)) {
@@ -90,7 +89,7 @@ class Manager implements IManager, core\IDumpable {
         $canRecall = $this->session->getPerpetuator()->canRecallIdentity();
 
         if($canRecall) {
-            $config = user\authentication\Config::getInstance($this->_application);
+            $config = user\authentication\Config::getInstance();
 
             foreach($config->getEnabledAdapters() as $name => $options) {
                 try {
@@ -160,7 +159,7 @@ class Manager implements IManager, core\IDumpable {
                 $entityId = array_shift($parts);
                 $action = array_shift($parts);
 
-                $meshManager = mesh\Manager::getInstance($this->_application);
+                $meshManager = mesh\Manager::getInstance();
                 $lock = $meshManager->fetchEntity($entityId);
             } catch(\Exception $e) {
                 $lock = new user\access\lock\Boolean(true);
@@ -265,7 +264,7 @@ class Manager implements IManager, core\IDumpable {
         $name = $request->getAdapterName();
         $adapter = $this->loadAuthenticationAdapter($name);
 
-        $config = user\authentication\Config::getInstance($this->_application);
+        $config = user\authentication\Config::getInstance();
 
         if(!$config->isAdapterEnabled($name)) {
             throw new AuthenticationException(
@@ -395,7 +394,7 @@ class Manager implements IManager, core\IDumpable {
     }
 
     public function getUserModel() {
-        $model = axis\Model::factory('user', null, $this->_application);
+        $model = axis\Model::factory('user');
         
         if(!$model instanceof IUserModel) {
             throw new AuthenticationException(
@@ -433,7 +432,7 @@ class Manager implements IManager, core\IDumpable {
     
 // Passwords
     public function analyzePassword($password) {
-        return new core\string\PasswordAnalyzer($password, $this->_application->getPassKey());
+        return new core\string\PasswordAnalyzer($password, df\Launchpad::$application->getPassKey());
     }
     
     public function __get($member) {

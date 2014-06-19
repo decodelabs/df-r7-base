@@ -15,7 +15,7 @@ interface IException {}
 
 
 // Interfaces
-interface IProbe extends core\IApplicationAware {
+interface IProbe {
     public function getModelList();
     public function getDefinedUnitList();
     public function getDefinedUnitListForModel($modelName);

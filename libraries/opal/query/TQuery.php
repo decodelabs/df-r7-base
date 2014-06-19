@@ -146,7 +146,7 @@ trait TQuery {
     protected function _newQuery() {
         $sourceManager = $this->getSourceManager();
 
-        return Initiator::factory($sourceManager->getApplication())
+        return Initiator::factory()
             ->setTransaction($sourceManager->getTransaction());
     }
 
@@ -418,12 +418,11 @@ trait TQuery_Correlatable {
             );
         }
 
-        $application = $this->getSourceManager()->getApplication();
         $fieldAlias = $alias ? $alias : $fieldName;
 
         if($field instanceof opal\schema\IBridgedRelationField) {
             // Field is bridged
-            $bridgeAdapter = $field->getBridgeQueryAdapter($clusterId, $application);
+            $bridgeAdapter = $field->getBridgeQueryAdapter($clusterId);
             $bridgeAlias = $fieldAlias.'Bridge';
             $localAlias = $source->getAlias();
             $localName = $field->getBridgeLocalFieldName();
@@ -434,7 +433,7 @@ trait TQuery_Correlatable {
                 ->on($bridgeAlias.'.'.$localName, '=', $localAlias.'.@primary');
         } else {
             // Field is OneToMany (hopefully!)
-            $targetAdapter = $field->getTargetQueryAdapter($clusterId, $application);
+            $targetAdapter = $field->getTargetQueryAdapter($clusterId);
             $targetAlias = $fieldAlias;
             $targetFieldName = $field->getTargetField();
             $localAlias = $source->getAlias();
@@ -531,8 +530,6 @@ trait TQuery_Joinable {
 
     protected function _beginJoinRelation($fieldName, array $targetFields, $joinType=IJoinQuery::INNER) {
         $field = $this->_lookupRelationField($fieldName, $clusterId);
-
-        $application = $this->getSourceManager()->getApplication();
         $join = $this->_newQuery()->beginJoin($this, $targetFields, $joinType);
 
         $targetAlias = 'jrl_'.str_replace('.', '_', $fieldName);
@@ -540,7 +537,7 @@ trait TQuery_Joinable {
         if($field instanceof opal\schema\IBridgedRelationField) {
             // Field is bridged
             core\stub($field);
-            $bridgeAdapter = $field->getBridgeQueryAdapter($clusterId, $application);
+            $bridgeAdapter = $field->getBridgeQueryAdapter($clusterId);
             $bridgeAlias = $fieldName.'Bridge';
             $localAlias = $source->getAlias();
             $localName = $field->getBridgeLocalFieldName();
@@ -552,7 +549,7 @@ trait TQuery_Joinable {
         } else if($field instanceof opal\schema\IManyRelationField) {
             // Field is OneToMany
             core\stub($field);
-            $targetAdapter = $field->getTargetQueryAdapter($clusterId, $application);
+            $targetAdapter = $field->getTargetQueryAdapter($clusterId);
             $targetAlias = $fieldName;
             $targetFieldName = $field->getTargetField();
             $localAlias = $source->getAlias();
@@ -562,7 +559,7 @@ trait TQuery_Joinable {
                 ->on($targetAlias.'.'.$targetFieldName, '=', $localAlias.'.@primary');
         } else {
             // Field is One
-            $targetAdapter = $field->getTargetQueryAdapter($clusterId, $application);
+            $targetAdapter = $field->getTargetQueryAdapter($clusterId);
             
             $join = $join->from($targetAdapter, $targetAlias)
                 ->on($targetAlias.'.@primary', '=', $fieldName);
@@ -2282,65 +2279,57 @@ trait TQuery_DataUpdate {
 trait TQuery_EntryPoint {
     
     public function select($field1=null) {
-        return Initiator::factory($this->_getEntryPointApplication())
+        return Initiator::factory()
             ->beginSelect(func_get_args());
     }
 
     public function selectDistinct($field1=null) {
-        return Initiator::factory($this->_getEntryPointApplication())
+        return Initiator::factory()
             ->beginSelect(func_get_args(), true);
     }
 
     public function union() {
-        return Initiator::factory($this->_getEntryPointApplication())
+        return Initiator::factory()
             ->beginUnion();
     }
 
     public function fetch() {
-        return Initiator::factory($this->_getEntryPointApplication())
+        return Initiator::factory()
             ->beginFetch();
     }
     
     public function insert($row) {
-        return Initiator::factory($this->_getEntryPointApplication())
+        return Initiator::factory()
             ->beginInsert($row);
     }
     
     public function batchInsert($rows=[]) {
-        return Initiator::factory($this->_getEntryPointApplication())
+        return Initiator::factory()
             ->beginBatchInsert($rows);
     }
     
     public function replace($row) {
-        return Initiator::factory($this->_getEntryPointApplication())
+        return Initiator::factory()
             ->beginReplace($row);
     }
     
     public function batchReplace($rows=[]) {
-        return Initiator::factory($this->_getEntryPointApplication())
+        return Initiator::factory()
             ->beginBatchReplace($rows);
     }
     
     public function update(array $valueMap=null) {
-        return Initiator::factory($this->_getEntryPointApplication())
+        return Initiator::factory()
             ->beginUpdate($valueMap);
     }
     
     public function delete() {
-        return Initiator::factory($this->_getEntryPointApplication())
+        return Initiator::factory()
             ->beginDelete();
     }
     
     public function begin() {
-        return new Transaction($this->_getEntryPointApplication());
-    }
-    
-    private function _getEntryPointApplication() {
-        if($this instanceof core\IApplicationAware) {
-            return $this->getApplication();
-        } else {
-            return df\Launchpad::getActiveApplication();
-        }
+        return new Transaction();
     }
 }
 
@@ -2353,75 +2342,67 @@ trait TQuery_EntryPoint {
 trait TQuery_ImplicitSourceEntryPoint {
     
     public function select($field1=null) {
-        return Initiator::factory($this->_getEntryPointApplication())
+        return Initiator::factory()
             ->beginSelect(func_get_args())
             ->from($this);
     }
     
     public function selectDistinct($field1=null) {
-        return Initiator::factory($this->_getEntryPointApplication())
+        return Initiator::factory()
             ->beginSelect(func_get_args(), true)
             ->from($this);
     }
 
     public function union() {
-        return Initiator::factory($this->_getEntryPointApplication())
+        return Initiator::factory()
             ->beginUnion()
             ->with(func_get_args())
             ->from($this);
     }
 
     public function fetch() {
-        return Initiator::factory($this->_getEntryPointApplication())
+        return Initiator::factory()
             ->beginFetch()
             ->from($this);
     }
     
     public function insert($row) {
-        return Initiator::factory($this->_getEntryPointApplication())
+        return Initiator::factory()
             ->beginInsert($row)
             ->into($this);
     }
     
     public function batchInsert($rows=[]) {
-        return Initiator::factory($this->_getEntryPointApplication())
+        return Initiator::factory()
             ->beginBatchInsert($rows)
             ->into($this);
     }
     
     public function replace($row) {
-        return Initiator::factory($this->_getEntryPointApplication())
+        return Initiator::factory()
             ->beginReplace($row)
             ->in($this);
     }
     
     public function batchReplace($rows=[]) {
-        return Initiator::factory($this->_getEntryPointApplication())
+        return Initiator::factory()
             ->beginBatchReplace($rows)
             ->in($this);
     }
     
     public function update(array $valueMap=null) {
-        return Initiator::factory($this->_getEntryPointApplication())
+        return Initiator::factory()
             ->beginUpdate($valueMap)
             ->in($this);
     }
     
     public function delete() {
-        return Initiator::factory($this->_getEntryPointApplication())
+        return Initiator::factory()
             ->beginDelete()
             ->from($this);
     }
     
     public function begin() {
-        return new ImplicitSourceTransaction($this->_getEntryPointApplication(), $this);
-    }
-    
-    private function _getEntryPointApplication() {
-        if($this instanceof core\IApplicationAware) {
-            return $this->getApplication();
-        } else {
-            return df\Launchpad::getActiveApplication();
-        }
+        return new ImplicitSourceTransaction($this);
     }
 }

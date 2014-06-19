@@ -12,8 +12,6 @@ use df\axis;
     
 class Controller implements IController {
 
-    use core\TApplicationAware;
-
     const GC_PROBABILITY = 3;
     const TRANSITION_PROBABILITY = 10;
     const TRANSITION_LIFETIME = 10;
@@ -25,10 +23,6 @@ class Controller implements IController {
     protected $_cache;
     protected $_isOpen = false;
     protected $_namespaces = [];
-
-    public function __construct(core\IApplication $application) {
-        $this->_application = $application;
-    }
 
     public function isOpen() {
         return $this->_isOpen;
@@ -51,7 +45,7 @@ class Controller implements IController {
     }
 
     protected function _loadPerpetuator() {
-        switch($this->_application->getRunMode()) {
+        switch(df\Launchpad::$application->getRunMode()) {
             case 'Http':
                 $this->_perpetuator = new user\session\perpetuator\Cookie($this);
                 break;
@@ -80,7 +74,7 @@ class Controller implements IController {
     }
 
     protected function _loadBackend() {
-        if(axis\ConnectionConfig::getInstance($this->_application)->isSetup()) {
+        if(axis\ConnectionConfig::getInstance()->isSetup()) {
             $this->_backend = $this->_getUserModel()->getSessionBackend();
         }
 
@@ -125,7 +119,7 @@ class Controller implements IController {
     protected function _generateId() {
         do {
             $output = core\string\Generator::sessionId(
-                $this->_application->getPassKey()
+                df\Launchpad::$application->getPassKey()
             );
         } while($this->_backend->idExists($output));
         
@@ -142,7 +136,7 @@ class Controller implements IController {
         $this->_isOpen = true;
         
         if($this->_cache === null) {
-            $this->_cache = Cache::getInstance($this->_application);
+            $this->_cache = Cache::getInstance();
         }
         
         if($this->_backend === null) {
@@ -257,7 +251,7 @@ class Controller implements IController {
     }
 
     private function _getManager() {
-        return user\Manager::getInstance($this->_application);
+        return user\Manager::getInstance();
     }
 
     private function _getUserModel() {

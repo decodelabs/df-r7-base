@@ -239,10 +239,8 @@ trait TDirectoryAccessLock {
             return static::DEFAULT_ACCESS;
         }
 
-        $application = $this->_context->getApplication();
-
-        if($application instanceof IDirectoryRequestApplication) {
-            return $application->getDefaultDirectoryAccess();
+        if(df\Launchpad::$application instanceof IDirectoryRequestApplication) {
+            return df\Launchpad::$application->getDefaultDirectoryAccess();
         }
 
         return arch\IAccess::NONE;

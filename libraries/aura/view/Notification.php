@@ -32,7 +32,7 @@ class Notification extends Base implements INotificationProxyView {
             $subject = $this->_('Notification from %a%', ['%a%' => $this->application->getName()]);
         }
 
-        $manager = flow\Manager::getInstance($this->application);
+        $manager = flow\Manager::getInstance();
         return $manager->newNotification($subject, $content, $to, $from)
             ->setBodyType(flow\INotification::SIMPLE_TAGS);
     }

@@ -22,7 +22,7 @@ class MeshHandler implements mesh\IEntityHandler {
                 }
                 
                 $request = arch\Request::factory($id.'://~'.implode('/', $node['location']).'/');
-                $context = arch\Context::factory($manager->getApplication(), $request);
+                $context = arch\Context::factory($request);
                 
                 try {
                     return arch\Controller::factory($context);
@@ -38,7 +38,7 @@ class MeshHandler implements mesh\IEntityHandler {
                 }
                 
                 $request = arch\Request::factory($id.'://~'.implode('/', $node['location']).'/');
-                return arch\Context::factory($manager->getApplication(), $request);
+                return arch\Context::factory($request);
         }
     }
 }

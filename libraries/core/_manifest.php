@@ -446,13 +446,7 @@ trait THelperProvider {
         $context = $this;
 
         if(!$context instanceof IContext) {
-            if($this instanceof IApplicationAware) {
-                $application = $this->getApplication();
-            } else {
-                $application = df\Launchpad::$application;
-            }
-
-            $context = new SharedContext($application);
+            $context = new SharedContext();
         }
 
         return new $class($context);
@@ -556,7 +550,6 @@ interface IApplication {
     
     // Execute
     public function dispatch();
-    public function capture();
     public function isRunning();
     public function launchPayload($payload);
     public function shutdown();
@@ -593,35 +586,18 @@ interface IRegistryObject {
     public function onApplicationShutdown();
 }
 
-interface IApplicationAware {
-    public function getApplication();
-}
-
-trait TApplicationAware {
-    
-    protected $_application;
-    
-    public function getApplication() {
-        return $this->_application;
-    }
-}
-
 
 
 // Manager
-interface IManager extends IApplicationAware, IRegistryObject {}
+interface IManager extends IRegistryObject {}
 
 trait TManager {
     
-    use TApplicationAware;
-    
-    public static function getInstance(IApplication $application=null) {
-        if(!$application) {
-            $application = df\Launchpad::getActiveApplication();
-        }
+    public static function getInstance() {
+        $application = df\Launchpad::getApplication();
         
         if(!$output = $application->getRegistryObject(static::REGISTRY_PREFIX)) {
-            $output = static::_getDefaultInstance($application);
+            $output = static::_getDefaultInstance();
             static::setInstance($output);
         }
         
@@ -629,16 +605,14 @@ trait TManager {
     }
 
     public static function setInstance(IManager $manager) {
-        return $manager->getApplication()->setRegistryObject($manager);
+        return df\Launchpad::$application->setRegistryObject($manager);
     }
 
-    protected static function _getDefaultInstance(IApplication $application) {
-        return new self($application);
+    protected static function _getDefaultInstance() {
+        return new self();
     }
     
-    protected function __construct(core\IApplication $application) {
-        $this->_application = $application;
-    }
+    protected function __construct() {}
     
     public function getRegistryObjectKey() {
         return static::REGISTRY_PREFIX;
@@ -649,7 +623,7 @@ trait TManager {
 
 
 // Context
-interface IContext extends core\IApplicationAware, core\IHelperProvider {
+interface IContext extends core\IHelperProvider {
     public function setRunMode($mode);
     public function getRunMode();
 
@@ -676,11 +650,6 @@ trait TContext {
     protected $_locale;
     protected $_runMode;
 
-// Application
-    public function getApplication() {
-        return $this->application;
-    }
-    
     public function setRunMode($runMode) {
         $this->_runMode = $runMode;
         return $this;
@@ -710,7 +679,7 @@ trait TContext {
         if($this->_locale) {
             return $this->_locale;
         } else {
-            return core\i18n\Manager::getInstance($this->application)->getLocale(); 
+            return core\i18n\Manager::getInstance()->getLocale(); 
         }
     }
 
@@ -725,11 +694,11 @@ trait TContext {
     }
 
     public function getI18nManager() {
-        return core\i18n\Manager::getInstance($this->application);
+        return core\i18n\Manager::getInstance();
     }
     
     public function getMeshManager() {
-        return df\mesh\Manager::getInstance($this->application);
+        return df\mesh\Manager::getInstance();
     }
     
     public function getSystemInfo() {
@@ -737,7 +706,7 @@ trait TContext {
     }
     
     public function getUserManager() {
-        return df\user\Manager::getInstance($this->application);
+        return df\user\Manager::getInstance();
     }
 
     public function __get($key) {
@@ -760,16 +729,16 @@ trait TContext {
                 
                 
             case 'i18n':
-                return core\i18n\Manager::getInstance($this->application);
+                return core\i18n\Manager::getInstance();
                 
             case 'mesh':
-                return df\mesh\Manager::getInstance($this->application);
+                return df\mesh\Manager::getInstance();
                 
             case 'system':
                 return df\halo\system\Base::getInstance();
                 
             case 'user':
-                return df\user\Manager::getInstance($this->application);
+                return df\user\Manager::getInstance();
                 
             default:
                 return $this->getHelper($key);
@@ -790,8 +759,8 @@ class SharedContext implements IContext {
 
     use TContext;
 
-    public function __construct(IApplication $application) {
-        $this->application = $application;
+    public function __construct() {
+        $this->application = df\Launchpad::$application;
     }
 
     protected function _loadHelper($name) {
@@ -852,12 +821,10 @@ trait TSharedHelper {
 
 // Payload
 interface IPayload {}
-interface IDeferredPayload extends IPayload, IApplicationAware {}
-
 
 
 // Config
-interface IConfig extends IApplicationAware, IRegistryObject {
+interface IConfig extends IRegistryObject {
     public function getDefaultValues();
     public function getConfigId();
     public function getConfigValues();

@@ -45,20 +45,18 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
     }
 
     public function recallIdentity() {
-        $application = $this->_manager->getApplication();
-
-        if(!$application instanceof core\application\Http) {
+        if(!df\Launchpad::$application instanceof core\application\Http) {
             return null;
         }
 
-        $config = user\authentication\Config::getInstance($application);
+        $config = user\authentication\Config::getInstance();
         $options = $config->getOptionsFor('Ldap');
 
         if(!$options->ntlm['enabled'] || !count($options->ntlm->ranges)) {
             return null;
         }
 
-        $httpRequest = $application->getHttpRequest();
+        $httpRequest = df\Launchpad::$application->getHttpRequest();
         $ip = $httpRequest->getIp();
         $inRange = false;
 
@@ -132,8 +130,6 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
     }
     
     public function authenticate(user\authentication\IRequest $request, user\authentication\IResult $result) {
-        $application = $this->_manager->getApplication();
-        
         if($request->getAttribute('ntlm')) {
             $isNtlm = true;
 
@@ -152,7 +148,7 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
         }
         
 
-        $config = user\authentication\Config::getInstance($application);
+        $config = user\authentication\Config::getInstance();
         $options = $config->getOptionsFor('Ldap');
         $ldapDomain = $adapter = null;
         $results = [];

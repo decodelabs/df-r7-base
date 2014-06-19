@@ -21,7 +21,7 @@ class Cookie implements user\session\IPerpetuator {
     protected $_lifeTime;
     
     public function __construct(user\session\IController $controller) {
-        $httpRequest = $controller->getApplication()->getHttpRequest();
+        $httpRequest = df\Launchpad::$application->getHttpRequest();
         
         if($httpRequest->hasCookieData()) {
             $cookies = $httpRequest->getCookieData();
@@ -57,7 +57,7 @@ class Cookie implements user\session\IPerpetuator {
         $outputId = $descriptor->getExternalId();
         
         if($outputId != $this->_inputId) {
-            $application = $controller->getApplication();
+            $application = df\Launchpad::$application;
         
             if($application instanceof link\http\IResponseAugmentorProvider) {
                 $augmentor = $application->getResponseAugmentor();
@@ -78,7 +78,7 @@ class Cookie implements user\session\IPerpetuator {
     }
 
     public function destroy(user\session\IController $controller) {
-        $application = $controller->getApplication();
+        $application = df\Launchpad::$application;
         
         if($application instanceof link\http\IResponseAugmentorProvider) {
             $augmentor = $application->getResponseAugmentor();
@@ -105,7 +105,7 @@ class Cookie implements user\session\IPerpetuator {
     }
 
     public function perpetuateRememberKey(user\session\IController $controller, user\RememberKey $key) {
-        $application = $controller->getApplication();
+        $application = df\Launchpad::$application;
 
         if($application instanceof link\http\IResponseAugmentorProvider) {
             $augmentor = $application->getResponseAugmentor();
@@ -132,7 +132,7 @@ class Cookie implements user\session\IPerpetuator {
     }
 
     public function getRememberKey(user\session\IController $controller) {
-        $httpRequest = $controller->getApplication()->getHttpRequest();
+        $httpRequest = df\Launchpad::$application->getHttpRequest();
         
         if($httpRequest->hasCookieData()) {
             $value = $httpRequest->getCookieData()->get($this->_rememberCookieName);
@@ -150,7 +150,7 @@ class Cookie implements user\session\IPerpetuator {
     }
 
     public function destroyRememberKey(user\session\IController $controller) {
-        $application = $controller->getApplication();
+        $application = df\Launchpad::$application;
         
         if($application instanceof link\http\IResponseAugmentorProvider) {
             $augmentor = $application->getResponseAugmentor();

@@ -95,17 +95,16 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
         $sourceManager = $parent->getSourceManager();
         $source = $field->getSource();
         $localUnit = $source->getAdapter();
-        $application = $localUnit->getApplication();
         
-        $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId, null, $application);
+        $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId);
         $targetField = $sourceManager->extrapolateIntrinsicField($source, $localRelationManifest->getSingleFieldName());
 
-        $bridgeUnit = axis\Model::loadUnitFromId($this->_bridgeUnitId, null, $application);
+        $bridgeUnit = axis\Model::loadUnitFromId($this->_bridgeUnitId);
         
         $localFieldName = $this->getBridgeLocalFieldName();
         $targetFieldName = $this->getBridgeTargetFieldName();
 
-        $query = opal\query\Initiator::factory($application)
+        $query = opal\query\Initiator::factory()
             ->beginCorrelation($parent, $localFieldName, 'id')
             ->from($bridgeUnit, $localFieldName.'Bridge');
 
@@ -150,8 +149,6 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
 
 // Populate
     public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate) {
-        $application = $populate->getSourceManager()->getApplication();
-
         $parentSource = $populate->getParentSource();
         $parentSourceAlias = $parentSource->getAlias();
 
@@ -161,7 +158,7 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
         $bridgeLocalFieldName = $this->getBridgeLocalFieldName();
         $bridgeTargetFieldName = $this->getBridgeTargetFieldName();
 
-        $bridgeUnit = axis\Model::loadUnitFromId($this->_bridgeUnitId, null, $application);
+        $bridgeUnit = axis\Model::loadUnitFromId($this->_bridgeUnitId);
         $bridgeSourceAlias = $populate->getFieldName().'_bridge';
 
         $output = opal\query\Initiator::beginAttachFromPopulate($populate);

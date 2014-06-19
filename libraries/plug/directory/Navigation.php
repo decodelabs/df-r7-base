@@ -19,7 +19,7 @@ class Navigation implements arch\IDirectoryHelper {
     }
 
     public function getBreadcrumbs($empty=false) {
-        $application = $this->_context->getApplication();
+        $application = df\Launchpad::$application;
 
         if(!$output = $application->getRegistryObject('breadcrumbs')) {
             if($empty) {
@@ -43,7 +43,7 @@ class Navigation implements arch\IDirectoryHelper {
             return $entry->getBody();
         }
 
-        return $this->_context->getApplication()->getName();
+        return df\Launchpad::$application->getName();
     }
 
     public function clearMenuCache($id=null) {

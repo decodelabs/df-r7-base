@@ -11,7 +11,6 @@ use df\core;
 abstract class Base implements ICache {
     
     use core\TValueMap;
-    use core\TApplicationAware;
     
     const REGISTRY_PREFIX = 'cache://';
     const CACHE_ID = null;
@@ -25,10 +24,8 @@ abstract class Base implements ICache {
     
     private $_backend;
     
-    public static function getInstance(core\IApplication $application=null) {
-        if(!$application) {
-            $application = df\Launchpad::getActiveApplication();
-        }
+    public static function getInstance() {
+        $application = df\Launchpad::getApplication();
         
         $class = get_called_class();
         $id = self::REGISTRY_PREFIX.$class::getCacheId();
@@ -47,7 +44,7 @@ abstract class Base implements ICache {
             opcache_reset();
         }
 
-        $config = Config::getInstance(df\Launchpad::$application);
+        $config = Config::getInstance();
 
         foreach(df\Launchpad::$loader->lookupClassList('core/cache/backend') as $name => $class) {
             $options = new core\collection\Tree($config->getBackendOptions($name));
@@ -57,15 +54,14 @@ abstract class Base implements ICache {
     
     
 // Construct
-    protected function __construct(core\IApplication $application) {
-        $this->_application = $application;
+    protected function __construct() {
         $this->_backend = $this->_loadBackend();
     }
 
     public function onApplicationShutdown() {}
     
     protected function _loadBackend() {
-        $config = Config::getInstance($this->_application);
+        $config = Config::getInstance();
         $options = $config->getOptionsFor($this, !static::USE_DIRECT_FILE_BACKEND);
         $backendName = null;
 
@@ -149,7 +145,7 @@ abstract class Base implements ICache {
     }
     
     public function isCacheDistributed() {
-        return static::IS_DISTRIBUTED && $this->_application->isDistributed();
+        return static::IS_DISTRIBUTED && df\Launchpad::$application->isDistributed();
     }
     
     

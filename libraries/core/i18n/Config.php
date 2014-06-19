@@ -28,7 +28,7 @@ class Config extends core\Config {
     
 // Default locale
     public function setDefaultLocale($locale) {
-        $locale = Locale::factory($this->getApplication(), $locale);
+        $locale = Locale::factory($locale);
         
         if(!$this->isLocaleAllowed($locale)) {
             throw new RuntimeException('Default locale '.$locale.' is not allowed');
@@ -49,10 +49,9 @@ class Config extends core\Config {
 // Locale filter
     public function setAllowedLocales(array $locales) {
         $allow = [];
-        $application = $this->getApplication();
         
         foreach($locales as $locale) {
-            $allow[] = (string)Locale::factory($application, $locale);
+            $allow[] = (string)Locale::factory($locale);
         }
         
         $this->values['locale']['allow'] = $allow;
@@ -65,10 +64,9 @@ class Config extends core\Config {
     
     public function setDeniedLocales(array $locales) {
         $deny = [];
-        $application = $this->getApplication();
         
         foreach($locales as $locale) {
-            $deny[] = (string)Locale::factory($application, $locale);
+            $deny[] = (string)Locale::factory($locale);
         }
         
         $this->values['locale']['deny'] = $deny;
@@ -80,7 +78,7 @@ class Config extends core\Config {
     }
     
     public function isLocaleAllowed($locale) {
-        $locale = Locale::factory($this->getApplication(), $locale);
+        $locale = Locale::factory($locale);
         
         $test = array_unique([
             (string)$locale,

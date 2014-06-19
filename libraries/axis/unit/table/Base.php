@@ -40,7 +40,7 @@ abstract class Base implements
         $output = $this->_model->getModelName().'_'.$this->getCanonicalUnitName();
 
         if($this->_shouldPrefixNames()) {
-            $output = $this->_model->getApplication()->getUniquePrefix().'_'.$output;
+            $output = df\Launchpad::$application->getUniquePrefix().'_'.$output;
         }
 
         return $output;
@@ -56,7 +56,7 @@ abstract class Base implements
             );
         }
         
-        return $field->getBridgeUnit($this->getClusterId(), $this->getModel()->getApplication());
+        return $field->getBridgeUnit($this->getClusterId());
     }
     
 // Schema
@@ -83,7 +83,7 @@ abstract class Base implements
     public function clearUnitSchemaCache() {
         $this->_schema = null;
         
-        $cache = axis\schema\Cache::getInstance($this->_model->getApplication());
+        $cache = axis\schema\Cache::getInstance();
         $cache->remove($this->getUnitId());
 
         return $this;
@@ -397,26 +397,26 @@ abstract class Base implements
     
 // Entry point
     public function select($field1=null) {
-        return opal\query\Initiator::factory($this->getApplication())
+        return opal\query\Initiator::factory()
             ->beginSelect(func_get_args())
             ->from($this, $this->getCanonicalUnitName()); 
     }
     
     public function selectDistinct($field1=null) {
-        return opal\query\Initiator::factory($this->getApplication())
+        return opal\query\Initiator::factory()
             ->beginSelect(func_get_args(), true)
             ->from($this, $this->getCanonicalUnitName()); 
     }
 
     public function union() {
-        return opal\query\Initiator::factory($this->getApplication())
+        return opal\query\Initiator::factory()
             ->beginUnion()
             ->with(func_get_args())
             ->from($this);
     }
 
     public function fetch() {
-        return opal\query\Initiator::factory($this->getApplication())
+        return opal\query\Initiator::factory()
             ->beginFetch()
             ->from($this, $this->getCanonicalUnitName());
     }
@@ -454,43 +454,43 @@ abstract class Base implements
     }
     
     public function insert($row) {
-        return opal\query\Initiator::factory($this->getApplication())
+        return opal\query\Initiator::factory()
             ->beginInsert($row)
             ->into($this, $this->getCanonicalUnitName());
     }
     
     public function batchInsert($rows=[]) {
-        return opal\query\Initiator::factory($this->getApplication())
+        return opal\query\Initiator::factory()
             ->beginBatchInsert($rows)
             ->into($this, $this->getCanonicalUnitName());
     }
     
     public function replace($row) {
-        return opal\query\Initiator::factory($this->getApplication())
+        return opal\query\Initiator::factory()
             ->beginReplace($row)
             ->in($this, $this->getCanonicalUnitName());
     }
     
     public function batchReplace($rows=[]) {
-        return opal\query\Initiator::factory($this->getApplication())
+        return opal\query\Initiator::factory()
             ->beginBatchReplace($rows)
             ->in($this, $this->getCanonicalUnitName());
     }
     
     public function update(array $valueMap=null) {
-        return opal\query\Initiator::factory($this->getApplication())
+        return opal\query\Initiator::factory()
             ->beginUpdate($valueMap)
             ->in($this, $this->getCanonicalUnitName());
     }
     
     public function delete() {
-        return opal\query\Initiator::factory($this->getApplication())
+        return opal\query\Initiator::factory()
             ->beginDelete()
             ->from($this, $this->getCanonicalUnitName());
     }
     
     public function begin() {
-        return new opal\query\ImplicitSourceTransaction($this->getApplication(), $this);
+        return new opal\query\ImplicitSourceTransaction($this);
     }
 
     

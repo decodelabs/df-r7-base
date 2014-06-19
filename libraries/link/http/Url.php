@@ -124,7 +124,7 @@ class Url extends core\uri\Url implements IUrl {
         
         if(substr($url, 0, 1) == '/') {
             unset($path[0]);
-            $app = df\Launchpad::getActiveApplication();
+            $app = df\Launchpad::getApplication();
             
             if($app instanceof core\application\Http) {
                 $requestUrl = $app->getHttpRequest()->getUrl();

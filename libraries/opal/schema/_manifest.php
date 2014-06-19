@@ -263,7 +263,7 @@ interface IQueryClauseRewriterField extends IField {
 
 interface IRelationField extends IField {
     public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate);
-    public function getTargetQueryAdapter($clusterId=null, core\IApplication $application=null);
+    public function getTargetQueryAdapter($clusterId=null);
     public function isOnGlobalCluster($flag=null);
 }
 
@@ -286,7 +286,7 @@ interface IBridgedRelationField extends IRelationField, ITargetPrimaryFieldAware
 
     public function getBridgeLocalFieldName();
     public function getBridgeTargetFieldName();
-    public function getBridgeQueryAdapter($clusterId, core\IApplication $application=null);
+    public function getBridgeQueryAdapter($clusterId);
     public function isSelfReference();
     public function getLocalRelationManifest();
 }

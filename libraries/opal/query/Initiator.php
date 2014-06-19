@@ -11,7 +11,6 @@ use df\opal;
 
 class Initiator implements IInitiator {
     
-    use core\TApplicationAware;
     use TQuery_TransactionAware;
     
     protected $_mode = null;
@@ -50,19 +49,10 @@ class Initiator implements IInitiator {
         }
     }
     
-    public static function factory(core\IApplication $application=null) {
-        if($application === null) {
-            $application = df\Launchpad::$application;
-        }
-        
-        return new self($application);
+    public static function factory() {
+        return new self();
     }
     
-    public function __construct(core\IApplication $application) {
-        $this->_application = $application;
-    }
-    
-
     public function setApplicator(Callable $applicator=null) {
         $this->_applicator = $applicator;
         return $this;
@@ -91,7 +81,7 @@ class Initiator implements IInitiator {
 // Union
     public function beginUnion() {
         $this->_setMode(IQueryTypes::UNION);
-        $sourceManager = new opal\query\SourceManager($this->_application, $this->_transaction);
+        $sourceManager = new opal\query\SourceManager($this->_transaction);
         return new Union($sourceManager);
     }
 
@@ -417,7 +407,7 @@ class Initiator implements IInitiator {
     public function from($sourceAdapter, $alias=null) {
         switch($this->_mode) {
             case IQueryTypes::SELECT:
-                $sourceManager = new opal\query\SourceManager($this->_application, $this->_transaction);
+                $sourceManager = new opal\query\SourceManager($this->_transaction);
                 $source = $sourceManager->newSource($sourceAdapter, $alias, $this->getFields());
                 
                 if(!$source->getAdapter()->supportsQueryType($this->_mode)) {
@@ -445,7 +435,7 @@ class Initiator implements IInitiator {
                     ->isUnionDistinct((bool)$this->_isUnionDistinct);
 
             case IQueryTypes::FETCH:
-                $sourceManager = new opal\query\SourceManager($this->_application, $this->_transaction);
+                $sourceManager = new opal\query\SourceManager($this->_transaction);
                 $source = $sourceManager->newSource($sourceAdapter, $alias, ['*']);
                 
                 if(!$source->getAdapter()->supportsQueryType($this->_mode)) {
@@ -458,7 +448,7 @@ class Initiator implements IInitiator {
                 return new Fetch($sourceManager, $source);
                 
             case IQueryTypes::DELETE:
-                $sourceManager = new opal\query\SourceManager($this->_application, $this->_transaction);
+                $sourceManager = new opal\query\SourceManager($this->_transaction);
                 $source = $sourceManager->newSource($sourceAdapter, $alias, null, true);
                 
                 if(!$source->getAdapter()->supportsQueryType($this->_mode)) {
@@ -539,7 +529,7 @@ class Initiator implements IInitiator {
                 
                 $fields = $this->getFields();
 
-                $sourceManager = new opal\query\SourceManager($this->_application, $this->_transaction);
+                $sourceManager = new opal\query\SourceManager($this->_transaction);
                 $sourceManager->setParentSourceManager($this->_parentQuery->getSourceManager());
 
                 $source = $sourceManager->newSource($sourceAdapter, $alias, $fields);
@@ -581,22 +571,22 @@ class Initiator implements IInitiator {
     }
 
     public function fromUnion() {
-        return self::factory($this->_application)->beginUnion()
+        return self::factory()->beginUnion()
             ->setDerivationParentInitiator($this);
     }
 
     public function fromSelect($field1=null) {
-        return self::factory($this->_application)->beginSelect(func_get_args(), false)
+        return self::factory()->beginSelect(func_get_args(), false)
             ->setDerivationParentInitiator($this);
     }
 
     public function fromSelectDistinct($field1=null) {
-        return self::factory($this->_application)->beginSelect(func_get_args(), true)
+        return self::factory()->beginSelect(func_get_args(), true)
             ->setDerivationParentInitiator($this);
     }
 
     public function into($sourceAdapter, $alias=null) {
-        $sourceManager = new SourceManager($this->_application, $this->_transaction);
+        $sourceManager = new SourceManager($this->_transaction);
         
         switch($this->_mode) {
             case IQueryTypes::INSERT:
@@ -636,7 +626,7 @@ class Initiator implements IInitiator {
     }
 
     public function in($sourceAdapter, $alias=null) {
-        $sourceManager = new opal\query\SourceManager($this->_application, $this->_transaction);
+        $sourceManager = new opal\query\SourceManager($this->_transaction);
         
         switch($this->_mode) {
             case IQueryTypes::REPLACE:

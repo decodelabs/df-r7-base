@@ -104,7 +104,7 @@ abstract class Base implements IProcess {
     }
 
     public static function newScriptLauncher($path, $args=null) {
-        $envConfig = core\Environment::getInstance(df\Launchpad::getActiveApplication());
+        $envConfig = core\Environment::getInstance();
         $binaryPath = $envConfig->getPhpBinaryPath();
         $phpName = basename($binaryPath);
         $phpPath = null;

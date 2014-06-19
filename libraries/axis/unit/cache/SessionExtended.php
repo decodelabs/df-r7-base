@@ -15,7 +15,7 @@ abstract class SessionExtended extends core\cache\SessionExtended implements axi
 
     public function __construct(axis\IModel $model) {
         $this->_model = $model;
-        parent::__construct($model->getApplication());
+        parent::__construct();
     }
     
     public function getUnitType() {

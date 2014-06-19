@@ -13,27 +13,17 @@ use df\opal;
 
 abstract class Model implements IModel, core\IDumpable {
     
-    use core\TApplicationAware;
-    
     const REGISTRY_PREFIX = 'model://';
     
     private $_modelName;
     private $_clusterId = null;
     private $_units = [];
     
-    public static function factory($name, $clusterId=null, core\IApplication $application=null) {
+    public static function factory($name, $clusterId=null) {
         if($name instanceof IModel) {
             return $name;
         }
-
-        if($clusterId instanceof core\IApplication) {
-            $application = $clusterId;
-            $clusterId = null;
-        }
         
-        if(!$application) {
-            $application = df\Launchpad::getActiveApplication();
-        }
 
         $parts = explode(':', $name, 2);
         $name = lcfirst(array_pop($parts));
@@ -49,6 +39,7 @@ abstract class Model implements IModel, core\IDumpable {
         }
 
         $key .= $name;
+        $application = df\Launchpad::getApplication();
         
         if($model = $application->getRegistryObject($key)) {
             return $model;
@@ -62,14 +53,13 @@ abstract class Model implements IModel, core\IDumpable {
             );
         }
         
-        $model = new $class($application, $clusterId);
+        $model = new $class($clusterId);
         $application->setRegistryObject($model);
         
         return $model;
     }
     
-    public function __construct(core\IApplication $application, $clusterId=null) {
-        $this->_application = $application;
+    protected function __construct($clusterId=null) {
         $this->_clusterId = $clusterId;
     }
     
@@ -166,7 +156,7 @@ abstract class Model implements IModel, core\IDumpable {
 
     public function getSchemaDefinitionUnit() {
         if($this->_clusterId) {
-            $model = $this->factory($this->getModelName(), null, $this->_application);
+            $model = $this->factory($this->getModelName());
         } else {
             $model = $this;
         }
@@ -183,7 +173,7 @@ abstract class Model implements IModel, core\IDumpable {
         return $this->getUnit($member);
     }
 
-    public static function loadUnitFromId($id, $clusterId=null, core\IApplication $application=null) {
+    public static function loadUnitFromId($id, $clusterId=null) {
         $parts = explode(IUnit::ID_SEPARATOR, $id, 2);
         $nameParts = explode(':', array_shift($parts), 2);
         $name = array_pop($nameParts);
@@ -192,7 +182,7 @@ abstract class Model implements IModel, core\IDumpable {
             $clusterId = array_shift($nameParts);
         }
 
-        return self::factory($name, $clusterId, $application)
+        return self::factory($name, $clusterId)
             ->getUnit(array_shift($parts));
     }
 
@@ -231,8 +221,8 @@ abstract class Model implements IModel, core\IDumpable {
 
 
 // Clusters
-    public static function loadClusterUnit(core\IApplication $application=null) {
-        $config = axis\ConnectionConfig::getInstance($application);
+    public static function loadClusterUnit() {
+        $config = axis\ConnectionConfig::getInstance();
         $unitId = $config->getClusterUnitId();
 
         if(!$unitId) {
@@ -241,11 +231,11 @@ abstract class Model implements IModel, core\IDumpable {
             );
         }
 
-        return self::loadUnitFromId($unitId, null, $application);
+        return self::loadUnitFromId($unitId);
     }
 
-    public static function createCluster($clusterId, core\IApplication $application=null) {
-        $config = axis\ConnectionConfig::getInstance($application);
+    public static function createCluster($clusterId) {
+        $config = axis\ConnectionConfig::getInstance();
 
         foreach($config->getConnectionsOfType('Rdbms') as $set) {
             try {
@@ -259,8 +249,8 @@ abstract class Model implements IModel, core\IDumpable {
         }
     }
 
-    public static function renameCluster($oldId, $newId, core\IApplication $application=null) {
-        $config = axis\ConnectionConfig::getInstance($application);
+    public static function renameCluster($oldId, $newId) {
+        $config = axis\ConnectionConfig::getInstance();
 
         foreach($config->getConnectionsOfType('Rdbms') as $set) {
             try {
@@ -276,8 +266,8 @@ abstract class Model implements IModel, core\IDumpable {
         }
     }
 
-    public static function dropCluster($clusterId, core\IApplication $application=null) {
-        $config = axis\ConnectionConfig::getInstance($application);
+    public static function dropCluster($clusterId) {
+        $config = axis\ConnectionConfig::getInstance();
 
         foreach($config->getConnectionsOfType('Rdbms') as $set) {
             try {

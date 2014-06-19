@@ -838,11 +838,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         }
 
         try {
-            $context = arch\Context::factory(
-                df\Launchpad::$application,
-                $this
-            );
-            
+            $context = arch\Context::factory($this);
             $action = arch\Action::factory($context);
             return $action->getDefaultAccess($lockAction);
         } catch(\Exception $e) {

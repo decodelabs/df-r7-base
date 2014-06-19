@@ -90,7 +90,7 @@ class WhereList extends ListBase implements opal\query\IWhereClauseList {
     public function whereCorrelation($field, $operator, $keyField) {
         $sourceManager = $this->getSourceManager();
 
-        $initiator = opal\query\Initiator::factory($sourceManager->getApplication())
+        $initiator = opal\query\Initiator::factory()
             ->setTransaction($sourceManager->getTransaction())
             ->beginCorrelation($this, $keyField);
 
@@ -104,7 +104,7 @@ class WhereList extends ListBase implements opal\query\IWhereClauseList {
     public function orWhereCorrelation($field, $operator, $keyField) {
         $sourceManager = $this->getSourceManager();
 
-        $initiator = opal\query\Initiator::factory($sourceManager->getApplication())
+        $initiator = opal\query\Initiator::factory()
             ->setTransaction($sourceManager->getTransaction())
             ->beginCorrelation($this, $keyField);
 

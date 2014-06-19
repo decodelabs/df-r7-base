@@ -10,9 +10,7 @@ use df\core;
 use df\arch;
 use df\link;
 
-class Router implements core\IApplicationAware, core\IRegistryObject {
-
-    use core\TApplicationAware;
+class Router implements core\IRegistryObject {
 
     const REGISTRY_KEY = 'httpRouter';
 
@@ -30,10 +28,8 @@ class Router implements core\IApplicationAware, core\IRegistryObject {
     protected $_routerCache = [];
     protected $_defaultRouteProtocol = null;
 
-    public static function getInstance(core\IApplication $application=null) {
-        if(!$application) {
-            $application = df\Launchpad::getApplication();
-        }
+    public static function getInstance() {
+        $application = df\Launchpad::getApplication();
 
         if(!$output = $application->getRegistryObject(self::REGISTRY_KEY)) {
             $output = new self($application);
@@ -43,10 +39,8 @@ class Router implements core\IApplicationAware, core\IRegistryObject {
         return $output;
     }
 
-    public function __construct(core\IApplication $application) {
-        $this->_application = $application;
-
-        $config = core\application\http\Config::getInstance($application);
+    public function __construct() {
+        $config = core\application\http\Config::getInstance();
         $this->_basePath = explode('/', $config->getBaseUrl());
         $domain = explode(':', array_shift($this->_basePath), 2);
         $this->_baseDomain = array_shift($domain);
@@ -223,7 +217,7 @@ class Router implements core\IApplicationAware, core\IRegistryObject {
             $keys[] = implode('/', $parts);
 
             if(class_exists($class)) {
-                $output = new $class($this->_application);
+                $output = new $class(df\Launchpad::$application);
                 break;
             }
 

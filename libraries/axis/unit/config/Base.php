@@ -13,7 +13,7 @@ abstract class Base extends core\Config implements axis\IUnit {
     
     use axis\TUnit;
     
-    public function __construct(axis\IModel $model) {
+    protected function __construct(axis\IModel $model) {
         $this->_model = $model;
         $id = static::ID;
 
@@ -21,7 +21,7 @@ abstract class Base extends core\Config implements axis\IUnit {
             $id = 'model/'.$model->getModelName().'.'.$this->getCanonicalUnitName();
         }
 
-        parent::__construct($model->getApplication(), $id);
+        parent::__construct($id);
     }
     
     public function getUnitType() {

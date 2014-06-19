@@ -199,7 +199,7 @@ abstract class Action extends arch\Action implements IAction {
         
         if(method_exists($this, '_createUi')) {
             $this->_createUi();
-        } else if($this->_context->getApplication()->isDevelopment()) {
+        } else if($this->_context->application->isDevelopment()) {
             $this->content->push($this->html->string(
                 '<p>This form handler has no ui generator - you need to implement function _createUi() or override function onGetRequest()</p>'
             ));
@@ -346,7 +346,7 @@ abstract class Action extends arch\Action implements IAction {
     
     private function _runPostRequest(core\collection\ITree $postData=null) {
         if($postData === null) {
-            $httpRequest = $this->_context->getApplication()->getHttpRequest();
+            $httpRequest = $this->_context->application->getHttpRequest();
             $postData = clone $httpRequest->getPostData();
         }
 
@@ -362,7 +362,7 @@ abstract class Action extends arch\Action implements IAction {
                 try {
                     $this->getDelegate($id)->values->clear()->import($delegateValues);
                 } catch(DelegateException $e) {
-                    if($this->_context->getApplication()->isDevelopment()) {
+                    if($this->_context->application->isDevelopment()) {
                         throw $e;
                     }
                 }
@@ -493,13 +493,13 @@ abstract class Action extends arch\Action implements IAction {
 
 // Action dispatch
     public function getActionMethodName() {
-        $method = ucfirst(strtolower($this->_context->getApplication()->getHttpRequest()->getMethod()));
+        $method = ucfirst(strtolower($this->_context->application->getHttpRequest()->getMethod()));
         $func = 'on'.$this->_context->request->getType().$method.'Request';
         
         if(!method_exists($this, $func)) {
             throw new RuntimeException(
                 'Form action '.$this->_context->request.' does not support '.
-                $this->_context->getApplication()->getHttpRequest()->getMethod().' http method',
+                $this->_context->application->getHttpRequest()->getMethod().' http method',
                 405
             );
         }

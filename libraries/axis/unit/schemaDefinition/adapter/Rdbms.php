@@ -18,7 +18,7 @@ class Rdbms implements axis\ISchemaDefinitionStorageAdapter {
     public function __construct(axis\IAdapterBasedStorageUnit $unit) {
         $this->_unit = $unit;
         
-        $config = axis\ConnectionConfig::getInstance($this->_unit->getModel()->getApplication());
+        $config = axis\ConnectionConfig::getInstance();
         $settings = $config->getSettingsFor($this->_unit);
         $rdbmsAdapter = opal\rdbms\adapter\Base::factory($settings['dsn']);
         $this->_table = $rdbmsAdapter->getTable($this->_unit->getStorageBackendName());

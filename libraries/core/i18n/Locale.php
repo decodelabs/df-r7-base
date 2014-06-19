@@ -15,24 +15,24 @@ class Locale implements ILocale, \Serializable, core\IDumpable {
     protected $_variants = [];
     protected $_keywords = [];
     
-    public static function factory($locale, core\IApplication $application=null) {
+    public static function factory($locale) {
         if($locale instanceof ILocale) {
             return $locale;
         }
         
         if($locale === null || $locale === true) {
-            return Manager::getInstance($application)->getLocale();
+            return Manager::getInstance()->getLocale();
         }
         
         return new self($locale);
     }
     
-    public static function setCurrent($locale, core\IApplication $application=null) {
-        return Manager::getInstance($application)->setLocale($locale);
+    public static function setCurrent($locale) {
+        return Manager::getInstance()->setLocale($locale);
     }
     
-    public static function getCurrent(core\IApplication $application) {
-        return Manager::getInstance($application)->getLocale();
+    public static function getCurrent() {
+        return Manager::getInstance()->getLocale();
     }
     
     public function __construct($locale) {

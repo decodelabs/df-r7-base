@@ -23,10 +23,10 @@ abstract class Hook implements IHook {
         $entityLocator = $event->getEntityLocator();
 
         if($context === null) {
-            $context = new core\SharedContext(df\Launchpad::$application);
+            $context = new core\SharedContext();
         }
 
-        $cache = HookCache::getInstance($context->application);
+        $cache = HookCache::getInstance();
         $domain = $entityLocator->getDomain();
 
         if(!$entitySet = $cache->get($domain)) {
@@ -122,7 +122,7 @@ abstract class Hook implements IHook {
         }
 
         if($context === null) {
-            $context = new core\SharedContext(df\Launchpad::$application);
+            $context = new core\SharedContext();
         }
 
         return new $class($context);

@@ -20,7 +20,7 @@ class Format implements core\ISharedHelper {
             $locale = $this->_context->getLocale();
         }
 
-        return core\i18n\Manager::getInstance($this->_context->application)
+        return core\i18n\Manager::getInstance()
             ->getModule('numbers', $locale)
             ->format($number, $format);
     }
@@ -30,7 +30,7 @@ class Format implements core\ISharedHelper {
             $locale = $this->_context->getLocale();
         }
 
-        return core\i18n\Manager::getInstance($this->_context->application)
+        return core\i18n\Manager::getInstance()
             ->getModule('numbers', $locale)
             ->formatPercent($number);
     }
@@ -59,7 +59,7 @@ class Format implements core\ISharedHelper {
             $code = 'USD';
         }
 
-        return core\i18n\Manager::getInstance($this->_context->application)
+        return core\i18n\Manager::getInstance()
             ->getModule('numbers', $locale)
             ->formatCurrency($number, $code);
     }
@@ -69,7 +69,7 @@ class Format implements core\ISharedHelper {
             $locale = $this->_context->getLocale();
         }
 
-        return core\i18n\Manager::getInstance($this->_context->application)
+        return core\i18n\Manager::getInstance()
             ->getModule('numbers', $locale)
             ->formatScientific($number);
     }
@@ -79,7 +79,7 @@ class Format implements core\ISharedHelper {
             $locale = $this->_context->getLocale();
         }
 
-        return core\i18n\Manager::getInstance($this->_context->application)
+        return core\i18n\Manager::getInstance()
             ->getModule('numbers', $locale)
             ->formatSpellout($number);
     }
@@ -89,7 +89,7 @@ class Format implements core\ISharedHelper {
             $locale = $this->_context->getLocale();
         }
 
-        return core\i18n\Manager::getInstance($this->_context->application)
+        return core\i18n\Manager::getInstance()
             ->getModule('numbers', $locale)
             ->formatOrdinal($number);
     }
@@ -121,7 +121,7 @@ class Format implements core\ISharedHelper {
             $locale = $this->_context->getLocale();
         }
 
-        return core\i18n\Manager::getInstance($this->_context->application)
+        return core\i18n\Manager::getInstance()
             ->getModule('numbers', $locale)
             ->formatDuration($number);
     }
@@ -131,7 +131,7 @@ class Format implements core\ISharedHelper {
             $locale = $this->_context->getLocale();
         }
 
-        return core\i18n\Manager::getInstance($this->_context->application)
+        return core\i18n\Manager::getInstance()
             ->getModule('numbers', $locale)
             ->formatFileSize($bytes, $precision, $longNames);
     }

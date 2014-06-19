@@ -95,22 +95,19 @@ class InlineManyRelationValueContainer implements
     }
 
     public function getTargetUnit($clusterId=null) {
-        $application = null;
-
         if($this->_record) {
             $localUnit = $this->_record->getRecordAdapter();
-            $application = $localUnit->getApplication();
 
             if($clusterId === null && !$this->_field->isOnGlobalCluster()) {
                 $clusterId = $localUnit->getClusterId();
             }
         }
         
-        return $this->_getTargetUnit($clusterId, $application);
+        return $this->_getTargetUnit($clusterId);
     }
 
-    protected function _getTargetUnit($clusterId=null, core\IApplication $application=null) {
-        return axis\Model::loadUnitFromId($this->_field->getTargetUnitId(), $clusterId, $application);
+    protected function _getTargetUnit($clusterId=null) {
+        return axis\Model::loadUnitFromId($this->_field->getTargetUnitId(), $clusterId);
     }
 
     
@@ -186,11 +183,10 @@ class InlineManyRelationValueContainer implements
         
         if(!empty($lookupKeySets)) {
             $localUnit = $this->_record->getRecordAdapter();
-            $application = $localUnit->getApplication();
             $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
-            $targetUnit = $this->_getTargetUnit($clusterId, $application);
+            $targetUnit = $this->_getTargetUnit($clusterId);
             
-            $query = opal\query\Initiator::factory($application)
+            $query = opal\query\Initiator::factory()
                 ->beginSelect($this->_targetPrimaryKeySet->getFieldNames())
                 ->from($targetUnit);
             
@@ -287,12 +283,11 @@ class InlineManyRelationValueContainer implements
         
         $localUnit = $this->_record->getRecordAdapter();
         $localSchema = $localUnit->getUnitSchema();
-        $application = $localUnit->getApplication();
         $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
-        $targetUnit = $this->_getTargetUnit($clusterId, $application);
+        $targetUnit = $this->_getTargetUnit($clusterId);
         
         // Init query
-        $query = opal\query\Initiator::factory($application)
+        $query = opal\query\Initiator::factory()
             ->beginSelect(func_get_args())
             ->from($targetUnit, $this->_field->getName());
                 
@@ -318,12 +313,11 @@ class InlineManyRelationValueContainer implements
         
         $localUnit = $this->_record->getRecordAdapter();
         $localSchema = $localUnit->getUnitSchema();
-        $application = $localUnit->getApplication();
         $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
-        $targetUnit = $this->_getTargetUnit($clusterId, $application);
+        $targetUnit = $this->_getTargetUnit($clusterId);
         
         // Init query
-        $query = opal\query\Initiator::factory($application)
+        $query = opal\query\Initiator::factory()
             ->beginFetch()
             ->from($targetUnit, $this->_field->getName());
             
@@ -347,9 +341,8 @@ class InlineManyRelationValueContainer implements
 // Tasks
     public function deploySaveTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $parentRecord, $fieldName, opal\record\task\ITask $recordTask=null) {
         $localUnit = $parentRecord->getRecordAdapter();
-        $application = $localUnit->getApplication();
         $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
-        $targetUnit = $this->_getTargetUnit($clusterId, $application);
+        $targetUnit = $this->_getTargetUnit($clusterId);
         $targetField = $this->_field->getTargetField();
         $parentKeySet = $parentRecord->getPrimaryKeySet();
 
@@ -468,9 +461,8 @@ class InlineManyRelationValueContainer implements
     
     public function deployDeleteTasks(opal\record\task\ITaskSet $taskSet, opal\record\IRecord $parentRecord, $fieldName, opal\record\task\ITask $recordTask=null) {
         $localUnit = $parentRecord->getRecordAdapter();
-        $application = $localUnit->getApplication();
         $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
-        $targetUnit = $this->_getTargetUnit($clusterId, $application);
+        $targetUnit = $this->_getTargetUnit($clusterId);
         $targetField = $this->_field->getTargetField();
         $targetSchema = $targetUnit->getUnitSchema();
         $parentKeySet = $parentRecord->getPrimaryKeySet();

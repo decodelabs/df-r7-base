@@ -28,7 +28,6 @@ class Launchpad {
     public static $isDistributed = false;
 
     public static $loader;
-    public static $invokingApplication;
     public static $application;
     public static $debug;
     
@@ -119,16 +118,16 @@ class Launchpad {
         
         
         // Load application / packages
-        $application = core\application\Base::factory($appType);
+        self::$application = core\application\Base::factory($appType);
 
-        $envConfig = core\Environment::getInstance($application);
+        $envConfig = core\Environment::getInstance();
         self::$isDistributed = $envConfig->isDistributed();
 
         if(!self::IS_COMPILED) {
             self::$loader->registerLocations($envConfig->getActiveLocations());
         }
 
-        $appConfig = core\application\Config::getInstance($application);
+        $appConfig = core\application\Config::getInstance();
 
         self::$applicationName = $appConfig->getApplicationName();
         self::$uniquePrefix = $appConfig->getUniquePrefix();
@@ -138,7 +137,7 @@ class Launchpad {
 
 
         // Run
-        $payload = self::runApplication($application);
+        $payload = self::$application->dispatch();
 
 
         // Write debug loggers
@@ -148,40 +147,10 @@ class Launchpad {
         
         
         // Launch payload
-        if($payload instanceof core\IDeferredPayload) {
-            self::$application = $payload->getApplication();
-            $payload = $payload->getPayload();
-        }
-        
         self::$application->launchPayload($payload);
         
         //self::benchmark();
         self::shutdown();
-    }
-    
-    public static function runApplication(core\IApplication $application) {
-        $prevApp = self::$invokingApplication;
-        self::$invokingApplication = self::$application;
-        self::$application = $application;
-        $e = null;
-        
-        try {
-            $args = func_get_args();
-            array_shift($args);
-            $payload = call_user_func_array([$application, 'dispatch'], $args);
-        } catch(\Exception $e) {}
-
-        if(self::$invokingApplication) {
-            self::$application = self::$invokingApplication;
-        }
-
-        self::$invokingApplication = $prevApp;
-        
-        if($e) {
-            throw $e;
-        }
-        
-        return $payload;
     }
     
     public static function init($environmentId, $isTesting, $appPath) {
@@ -313,12 +282,11 @@ class Launchpad {
     
     
 // Application
-    public static function getActiveApplication() {
+    public static function getApplication() {
         if(!self::$application) {
             $class = 'df\\core\\application\\LogicException';
 
             if(!class_exists($class)) {
-                // TODO: debug the first-launch case where this happens.. it shouldn't!!
                 $class = '\\LogicException';
             }
             

@@ -22,10 +22,6 @@ class Manager implements IManager {
     protected $_flashQueue;
     protected $_isFlashQueueProcessed = false;
 
-    protected function __construct(core\IApplication $application) {
-        $this->_application = $application;
-    }
-
     public function onApplicationShutdown() {
         $this->_saveFlashQueue();
     }
@@ -38,13 +34,13 @@ class Manager implements IManager {
 
     public function sendNotification(INotification $notification) {
         $emails = $notification->getToEmails();
-        $userManager = user\Manager::getInstance($this->_application);
+        $userManager = user\Manager::getInstance();
         $userModel = $userManager->getUserModel();
         $userList = $notification->getToUsers();
         $keys = [];
 
         if($notification->shouldSendToAdmin()) {
-            $config = flow\mail\Config::getInstance($this->_application);
+            $config = flow\mail\Config::getInstance();
 
             foreach($config->getAdminAddresses() as $address) {
                 if($address->isValid()) {
@@ -166,7 +162,7 @@ class Manager implements IManager {
 
     protected function _loadFlashQueue() {
         if($this->_flashQueue === null) {
-            $session = user\Manager::getInstance($this->_application)->getSessionNamespace(self::SESSION_NAMESPACE);
+            $session = user\Manager::getInstance()->getSessionNamespace(self::SESSION_NAMESPACE);
             $this->_flashQueue = $session->get(self::FLASH_SESSION_KEY);
 
             if(!$this->_flashQueue instanceof FlashQueue) {
@@ -180,7 +176,7 @@ class Manager implements IManager {
             return false;
         }
 
-        $session = user\Manager::getInstance($this->_application)->getSessionNamespace(self::SESSION_NAMESPACE);
+        $session = user\Manager::getInstance()->getSessionNamespace(self::SESSION_NAMESPACE);
         $session->set(self::FLASH_SESSION_KEY, $this->_flashQueue);
         
         return true;

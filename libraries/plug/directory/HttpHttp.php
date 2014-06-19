@@ -20,7 +20,7 @@ class HttpHttp implements arch\IDirectoryHelper {
     
     public function __construct(arch\IContext $context) {
         $this->_context = $context;
-        $this->_httpRequest = $this->_context->getApplication()->getHttpRequest();
+        $this->_httpRequest = $this->_context->application->getHttpRequest();
     }
     
     public function __get($member) {
@@ -49,7 +49,7 @@ class HttpHttp implements arch\IDirectoryHelper {
     
     
     public function directoryRequestToUrl($request) {
-        return core\application\http\Router::getInstance($this->_context->application)
+        return core\application\http\Router::getInstance()
             ->requestToUrl(arch\Request::factory($request));
     }
     
@@ -193,7 +193,7 @@ class HttpHttp implements arch\IDirectoryHelper {
 
 // Cookies
     public function setCookie($name, $value=null) {
-        $application = $this->_context->getApplication();
+        $application = $this->_context->application;
         $augmentor = $application->getResponseAugmentor();
         
         if($name instanceof link\http\IResponseCookie) {
@@ -213,7 +213,7 @@ class HttpHttp implements arch\IDirectoryHelper {
     }
     
     public function removeCookie($name) {
-        $application = $this->_context->getApplication();
+        $application = $this->_context->application;
         $augmentor = $application->getResponseAugmentor();
         
         if($name instanceof link\http\IResponseCookie) {

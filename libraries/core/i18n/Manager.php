@@ -42,12 +42,12 @@ class Manager implements IManager {
     }
     
     public function getDefaultLocale() {
-        $config = Config::getInstance($this->_application);
+        $config = Config::getInstance();
         $default = null;
         
         if($config->shouldDetectClientLocale() 
-        && $application instanceof core\application\Http) {
-            $request = $application->getHttpRequest();
+        && df\Launchpad::$application instanceof core\application\Http) {
+            $request = df\Launchpad::$application->getHttpRequest();
             
             if(isset($request->headers['accept-language'])) {
                 $default = \Locale::acceptFromHttp($request->headers['accept-language']);
@@ -66,7 +66,7 @@ class Manager implements IManager {
             $default = 'en_GB';
         }
         
-        return Locale::factory($default, $this->_application);
+        return Locale::factory($default);
     }
     
     

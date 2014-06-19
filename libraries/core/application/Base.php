@@ -31,7 +31,9 @@ abstract class Base implements core\IApplication, core\IDumpable {
     
     
 // Construct
-    protected function __construct() {}
+    protected function __construct() {
+        df\Launchpad::$application = $this;
+    }
     
     
 // Paths
@@ -67,17 +69,13 @@ abstract class Base implements core\IApplication, core\IDumpable {
         
         if(df\Launchpad::$application !== $this) {
             throw new core\RuntimeException(
-                'Application cannot be dispatched unless it is the active application in Launchpad - use df\\Launchpad::runApplication() instead'
+                'Application cannot be dispatched unless it is the active application in Launchpad'
             );
         }
         
         return $this;
     }
 
-    public function capture() {
-        core\stub();
-    }
-    
     public function isRunning() {
         return $this->_isRunning;
     }

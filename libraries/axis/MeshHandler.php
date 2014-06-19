@@ -20,17 +20,17 @@ class MeshHandler implements mesh\IEntityHandler {
                 $clusterId = array_shift($node['location']);
             }
 
-            return axis\Model::factory($node['id'], $clusterId, $manager->getApplication());
+            return axis\Model::factory($node['id'], $clusterId);
         }
 
 
         if(empty($node['location'])) {
             switch($node['type']) {
                 case 'Unit':
-                    return axis\Model::loadUnitFromId($node['id'], null, $manager->getApplication());
+                    return axis\Model::loadUnitFromId($node['id']);
                     
                 case 'Schema':
-                    $unit = axis\Model::loadUnitFromId($node['id'], null, $manager->getApplication());
+                    $unit = axis\Model::loadUnitFromId($node['id']);
                     
                     if(!$unit instanceof axis\ISchemaBasedStorageUnit) {
                         throw new axis\LogicException(
@@ -49,7 +49,7 @@ class MeshHandler implements mesh\IEntityHandler {
             $clusterId = array_shift($location);
         }
 
-        $model = axis\Model::factory(array_shift($location), $clusterId, $manager->getApplication());
+        $model = axis\Model::factory(array_shift($location), $clusterId);
         
         switch($node['type']) {
             case 'Unit':

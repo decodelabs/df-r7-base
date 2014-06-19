@@ -14,7 +14,7 @@ class Model extends Base {
 
     public function loadMenu(core\uri\Url $id) {
         $modelName = $id->path->getFirst();
-        $model = axis\Model::factory($modelName, null, $this->_context->getApplication());
+        $model = axis\Model::factory($modelName);
         $menuId = $id->path->getLast();
 
         if(!$model instanceof arch\navigation\menu\ISourceAdapter) {

@@ -15,7 +15,7 @@ abstract class Base extends core\cache\Base implements axis\IUnit, axis\IAdapter
 
     public function __construct(axis\IModel $model) {
         $this->_model = $model;
-        parent::__construct($model->getApplication());
+        parent::__construct();
     }
     
     public function getUnitType() {

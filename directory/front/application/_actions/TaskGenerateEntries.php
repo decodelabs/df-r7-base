@@ -14,7 +14,7 @@ use df\arch;
 class TaskGenerateEntries extends arch\task\Action {
 
     public function execute() {
-        $phpPath = core\Environment::getInstance($this->application)->getPhpBinaryPath();
+        $phpPath = core\Environment::getInstance()->getPhpBinaryPath();
         $appPath = df\Launchpad::$applicationPath;
         $environmentId = df\Launchpad::$environmentId;
 

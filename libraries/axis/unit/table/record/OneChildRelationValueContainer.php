@@ -28,22 +28,19 @@ class OneChildRelationValueContainer implements
     }
 
     public function getTargetUnit($clusterId=null) {
-        $application = null;
-
         if($this->_record) {
             $localUnit = $this->_record->getRecordAdapter();
-            $application = $localUnit->getApplication();
 
             if($clusterId === null && !$this->_field->isOnGlobalCluster()) {
                 $clusterId = $localUnit->getClusterId();
             }
         }
         
-        return $this->_getTargetUnit($clusterId, $application);
+        return $this->_getTargetUnit($clusterId);
     }
 
-    protected function _getTargetUnit($clusterId=null, core\IApplication $application=null) {
-        return axis\Model::loadUnitFromId($this->_field->getTargetUnitId(), $clusterId, $application);
+    protected function _getTargetUnit($clusterId=null) {
+        return axis\Model::loadUnitFromId($this->_field->getTargetUnitId(), $clusterId);
     }
     
     public function isPrepared() {
@@ -52,9 +49,8 @@ class OneChildRelationValueContainer implements
     
     public function prepareValue(opal\record\IRecord $record, $fieldName) {
         $localUnit = $record->getRecordAdapter();
-        $application = $localUnit->getApplication();
         $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
-        $targetUnit = $this->_getTargetUnit($clusterId, $application);
+        $targetUnit = $this->_getTargetUnit($clusterId);
         $query = $targetUnit->fetch();
         
         if($this->_insertPrimaryKeySet) {
@@ -161,9 +157,8 @@ class OneChildRelationValueContainer implements
 
             if(!$record->isNew()) {
                 $localUnit = $record->getRecordAdapter();
-                $application = $localUnit->getApplication();
                 $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
-                $targetUnit = axis\Model::loadUnitFromId($this->_field->getTargetUnitId(), $clusterId, $application);
+                $targetUnit = axis\Model::loadUnitFromId($this->_field->getTargetUnitId(), $clusterId);
                 
                 $query = $targetUnit->fetch();
                         

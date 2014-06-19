@@ -81,7 +81,7 @@ class Directory implements arch\IDirectoryHelper {
     
     public function getAction($request, $runMode=null) {
         $request = arch\Request::factory($request);
-        $context = arch\Context::factory($this->_context->getApplication(), $request, $runMode);
+        $context = arch\Context::factory($request, $runMode);
         return arch\Action::factory($context);
     }
     
@@ -97,9 +97,7 @@ class Directory implements arch\IDirectoryHelper {
 
     public function getController($request) {
         return arch\Controller::factory(
-            arch\Context::factory(
-                $this->_context->getApplication(), $request
-            )
+            arch\Context::factory($request)
         );
     }
     
@@ -114,7 +112,7 @@ class Directory implements arch\IDirectoryHelper {
             $request = arch\Request::factory($context);
         }
         
-        $context = arch\Context::factory($this->_context->getApplication(), $request);
+        $context = arch\Context::factory($request);
         $args = array_slice(func_get_args(), 2);
         return arch\component\Base::factory($context, $name, $args);
     }
@@ -130,7 +128,7 @@ class Directory implements arch\IDirectoryHelper {
             $request = arch\Request::factory($context);
         }
         
-        $context = arch\Context::factory($this->_context->getApplication(), $request);
+        $context = arch\Context::factory($request);
         $args = array_slice(func_get_args(), 3);
         return arch\component\Base::themeFactory($context, $themeId, $name, $args);
     }
@@ -146,7 +144,7 @@ class Directory implements arch\IDirectoryHelper {
             $request = arch\Request::factory($context);
         }
 
-        $context = arch\Context::factory($this->_context->getApplication(), $request);
+        $context = arch\Context::factory($request);
         return arch\scaffold\Base::factory($context);
     }
 }

@@ -17,7 +17,7 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 
 
 // Interfaces    
-interface IController extends core\IApplicationAware {
+interface IController {
     public function isOpen();
     public function setPerpetuator(IPerpetuator $perpetuator);
     public function getPerpetuator();

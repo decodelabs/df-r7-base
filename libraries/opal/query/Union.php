@@ -55,12 +55,12 @@ class Union implements IUnionQuery {
 
 
     public function with($field1=null) {
-        return Initiator::factory($this->_sourceManager->getApplication())
+        return Initiator::factory()
             ->beginUnionSelect($this, func_get_args(), true);
     }
 
     public function withAll($field1=null) {
-        return Initiator::factory($this->_sourceManager->getApplication())
+        return Initiator::factory()
             ->beginUnionSelect($this, func_get_args(), false);
     }
 

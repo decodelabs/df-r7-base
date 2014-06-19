@@ -74,14 +74,13 @@ class Client implements IClient, \Serializable {
         $output->_joinDate = null;
         $output->_loginDate = null;
         
-        $application = $manager->getApplication();
-        $i18nManager = core\i18n\Manager::getInstance($application);
+        $i18nManager = core\i18n\Manager::getInstance();
         $locale = $i18nManager->getLocale();
 
         $output->_language = $locale->getLanguage();
 
-        if($application instanceof core\application\Http) {
-            $ip = $application->getHttpRequest()->getIp();
+        if(df\Launchpad::$application instanceof core\application\Http) {
+            $ip = df\Launchpad::$application->getHttpRequest()->getIp();
             $geoIp = link\geoIp\Handler::factory()->lookup($ip);
 
             if($geoIp->country) {

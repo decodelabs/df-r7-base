@@ -19,10 +19,8 @@ class Context implements IContext, \Serializable, core\IDumpable {
     public $request;
     public $location;
 
-    public static function getCurrent(core\IApplication $application=null) {
-        if(!$application) {
-            $application = df\Launchpad::getActiveApplication();
-        }
+    public static function getCurrent() {
+        $application = df\Launchpad::getApplication();
 
         if($application instanceof core\IContextAware) {
             return $application->getContext();
@@ -31,21 +29,22 @@ class Context implements IContext, \Serializable, core\IDumpable {
         return null;
     }
 
-    public static function factory(core\IApplication $application, $request=null, $runMode=null) {
+    public static function factory($request=null, $runMode=null) {
+        $application = df\Launchpad::getApplication();
+
         if(!empty($request)) {
             $request = arch\Request::factory($request);
-        } else if($application instanceof core\IContextAware
-        && $application->hasContext()) {
+        } else if($application instanceof core\IContextAware && $application->hasContext()) {
             $request = $application->getContext()->location;
         } else {
             $request = new arch\Request('/');
         }
 
-        return new self($application, $request, $runMode); 
+        return new self($request, $runMode); 
     }
     
-    public function __construct(core\IApplication $application, arch\IRequest $request, $runMode=null) {
-        $this->application = $application;
+    public function __construct(arch\IRequest $request, $runMode=null) {
+        $this->application = df\Launchpad::$application;
         $this->location = $request;
         $this->_runMode = $runMode;
 
@@ -68,7 +67,7 @@ class Context implements IContext, \Serializable, core\IDumpable {
             return $this;
         }
         
-        $output = new self($this->application, $request);
+        $output = new self($request);
 
         if($copyRequest) {
             $output->request = $output->location;
@@ -170,7 +169,7 @@ class Context implements IContext, \Serializable, core\IDumpable {
             return $this->_applyRequestRedirect($uri, $from, $to);
         }
 
-        return core\application\http\Router::getInstance($this->application)
+        return core\application\http\Router::getInstance()
             ->requestToUrl($this->_applyRequestRedirect($uri, $from, $to));
     }
 
@@ -248,8 +247,7 @@ class Context implements IContext, \Serializable, core\IDumpable {
     public function getDumpProperties() {
         return [
             'request' => $this->request,
-            'location' => $this->location,
-            'application' => $this->application
+            'location' => $this->location
         ];
     }
 }

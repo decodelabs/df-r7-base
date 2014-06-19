@@ -58,10 +58,9 @@ class Directory extends Base implements arch\navigation\menu\IListableSource {
         }
 
         try {
-            $context = new arch\Context(
-                df\Launchpad::$application,
-                new arch\Request(arch\Request::AREA_MARKER.$area.'/'.implode('/', $parts).'/'.lcfirst($name))
-            );
+            $context = new arch\Context(new arch\Request(
+                arch\Request::AREA_MARKER.$area.'/'.implode('/', $parts).'/'.lcfirst($name)
+            ));
 
             $scaffold = arch\scaffold\Base::factory($context);
             $scaffoldId = $baseId.'__scaffold';
@@ -187,7 +186,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource {
     }
 
     public function getMenuIds($areas=null) {
-        $cache = arch\navigation\menu\Cache::getInstance($this->_context->getApplication());
+        $cache = arch\navigation\menu\Cache::getInstance();
         $cacheId = 'Directory://__ID_LIST__';
 
         if(!$cache->has($cacheId)
