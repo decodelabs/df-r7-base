@@ -40,7 +40,8 @@ class TaskApcClear extends arch\task\Action {
 
         if($isHttp) {
             $this->response->writeLine('Calling HTTP APC cache clear action...');
-            $config = core\application\http\Config::getInstance();
+            
+            $config = $this->getConfig('core/application/http/Config');
             $baseUrls = @(array)$config->values['baseUrl'];
 
             /*
