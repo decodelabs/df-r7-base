@@ -116,7 +116,7 @@ interface IRequestHeaderCollection {
 
 
 
-interface IResponse extends core\IPayload, core\collection\IHeaderMapProvider, link\ISessionResponse {
+interface IResponse extends core\collection\IHeaderMapProvider, link\ISessionResponse {
     // Headers
     public function getCookies();
     public function hasCookies();

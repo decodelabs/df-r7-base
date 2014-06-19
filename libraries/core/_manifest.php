@@ -472,6 +472,7 @@ interface ILoader {
     
     public function loadClass($class);
     public function getClassSearchPaths($class);
+    public function lookupClass($path);
     
     public function findFile($path);
     public function getFileSearchPaths($path);
@@ -639,6 +640,9 @@ interface IContext extends core\IHelperProvider {
     public function getMeshManager();
     public function getSystemInfo();
     public function getUserManager();
+
+    public function getConfig($path);
+    public function getCache($path);
 }
 
 
@@ -708,6 +712,28 @@ trait TContext {
     public function getUserManager() {
         return df\user\Manager::getInstance();
     }
+
+
+    public function getConfig($path) {
+        if(!$class = df\Launchpad::$loader->lookupClass($path)) {
+            throw new core\RuntimeException(
+                'Config '.$path.' could not be found'
+            );
+        }
+        
+        return $class::getInstance();
+    }
+
+    public function getCache($path) {
+        if(!$class = df\Launchpad::$loader->lookupClass($path)) {
+            throw new core\RuntimeException(
+                'Cache '.$path.' could not be found'
+            );
+        }
+        
+        return $class::getInstance();
+    }
+
 
     public function __get($key) {
         return $this->_getDefaultMember($key);
@@ -817,10 +843,6 @@ trait TSharedHelper {
     }
 }
 
-
-
-// Payload
-interface IPayload {}
 
 
 // Config

@@ -121,6 +121,17 @@ class Loader implements ILoader {
         
         return $output;
     }
+
+    public function lookupClass($path) {
+        $parts = explode('/', trim($path, '/'));
+        $class = 'df\\'.implode('\\', $parts);
+
+        if(!class_exists($class)) {
+            return null;
+        }
+
+        return $class;
+    }
     
     
 // File finder
