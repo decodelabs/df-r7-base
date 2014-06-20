@@ -636,6 +636,7 @@ interface IContext extends core\IHelperProvider {
     public function throwError($code=500, $message='');
     public function findFile($path);
     
+    public function getLogManager();    
     public function getI18nManager();
     public function getMeshManager();
     public function getSystemInfo();
@@ -697,6 +698,10 @@ trait TContext {
         return df\Launchpad::$loader->findFile($path);
     }
 
+    public function getLogManager() {
+        return core\log\Manager::getInstance();
+    }
+
     public function getI18nManager() {
         return core\i18n\Manager::getInstance();
     }
@@ -753,6 +758,9 @@ trait TContext {
             case 'locale':
                 return $this->getLocale();
                 
+
+            case 'logs':
+                return core\log\Manager::getInstance();
                 
             case 'i18n':
                 return core\i18n\Manager::getInstance();

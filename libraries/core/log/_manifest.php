@@ -18,6 +18,14 @@ interface IException {}
 
 
 // Interfaces
+interface IManager extends core\IManager {
+    public function logAccessError($code=403, $request=null, $message=null);
+    public function logNotFound($request=null, $message=null);
+    public function logException(\Exception $exception, $request=null);
+}
+
+
+
 interface IMessageProvider {
     public function getMessage();
 }
