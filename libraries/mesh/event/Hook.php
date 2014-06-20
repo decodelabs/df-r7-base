@@ -8,6 +8,7 @@ namespace df\mesh\event;
 use df;
 use df\core;
 use df\mesh;
+use df\axis;
     
 abstract class Hook implements IHook {  
 
@@ -53,13 +54,23 @@ abstract class Hook implements IHook {
             return;
         }
 
+        $isProduction = df\Launchpad::$application->isProduction();
+
         foreach($entitySet[$action] as $target) {
             list($hookName, $methodName) = explode(':', $target);
             $hook = self::factory($hookName, $context);
             $method = 'on'.ucfirst($methodName);
 
             if(method_exists($hook, $method)) {
-                $hook->{$method}($event);
+                try {
+                    $hook->{$method}($event);
+                } catch(\Exception $e) {
+                    core\log\Manager::getInstance()->logException($e);
+
+                    if(!$isProduction) {
+                        throw $e;
+                    }
+                }
             }
         }
     }
