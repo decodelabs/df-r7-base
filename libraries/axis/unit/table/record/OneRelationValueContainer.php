@@ -125,6 +125,22 @@ class OneRelationValueContainer implements
         return $default;
     }
     
+    public function hasValue() {
+        if($this->_record === null) {
+            return false;
+        } else if($this->_record !== false) {
+            return true;
+        } else if($this->_value) {
+            return !$this->_value->isNull();
+        } else {
+            false;
+        }
+    }
+
+    public function getStringValue($default='') {
+        return $this->__toString();
+    }
+
     public function getValueForStorage() {
         if($this->_record) {
             return $this->_value->duplicateWith($this->_record->getPrimaryKeySet());

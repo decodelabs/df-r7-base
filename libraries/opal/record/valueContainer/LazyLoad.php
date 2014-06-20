@@ -11,6 +11,8 @@ use df\opal;
     
 class LazyLoad implements opal\record\IPreparedValueContainer {
 
+    use core\TUserValueContainer;
+
     protected $_value;
     protected $_isLoaded = false;
     protected $_loader;

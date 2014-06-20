@@ -883,8 +883,31 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     }
     
     public function offsetExists($key) {
-        return (array_key_exists($key, $this->_changes) && $this->_changes[$key] !== null)
-            || (array_key_exists($key, $this->_values) && $this->_values[$key] !== null);
+        if(array_key_exists($key, $this->_changes) && $this->_changes[$key] !== null) {
+            if($this->_changes[$key] instanceof IValueContainer) {
+                if($this->_changes[$key] instanceof IPreparedValueContainer && !$this->_changes[$key]->isPrepared()) {
+                    $this->_changes[$key]->prepareValue($this, $key);
+                }
+
+                return $this->_changes[$key]->hasValue();
+            } else {
+                return true;
+            }
+        }
+
+        if(array_key_exists($key, $this->_values) && $this->_values[$key] !== null) {
+            if($this->_values[$key] instanceof IValueContainer) {
+                if($this->_values[$key] instanceof IPreparedValueContainer && !$this->_values[$key]->isPrepared()) {
+                    $this->_values[$key]->prepareValue($this, $key);
+                }
+                
+                return $this->_values[$key]->hasValue();
+            } else {
+                return true;
+            }
+        }
+
+        return false;
     }
     
     public function offsetUnset($key) {

@@ -131,6 +131,23 @@ interface IUserValueContainer extends IValueContainer {
     public function hasValue();
 }
 
+trait TUserValueContainer {
+
+    public function getStringValue($default='') {
+        $value = $this->getValue();
+
+        if($value !== null) {
+            return (string)$value;
+        }
+
+        return $default;
+    }
+
+    public function hasValue() {
+        return $this->getValue() !== null;
+    }
+}
+
 
 // Chainer
 interface IChainable {

@@ -143,7 +143,7 @@ interface IPartial extends core\collection\IMappedCollection, user\IAccessLock, 
 
 
 
-interface IValueContainer extends core\IValueContainer {
+interface IValueContainer extends core\IUserValueContainer {
     public function getValueForStorage();
     public function duplicateForChangeList();
     public function eq($value);

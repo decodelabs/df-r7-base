@@ -118,6 +118,14 @@ class OneChildRelationValueContainer implements
         return $default;
     }
     
+    public function hasValue() {
+        return $this->_record !== false && $this->_record !== null;
+    }
+
+    public function getStringValue($default='') {
+        return $this->__toString();
+    }
+
     public function getValueForStorage() {
         return null;
     }

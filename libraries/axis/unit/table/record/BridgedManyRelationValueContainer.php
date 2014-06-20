@@ -18,7 +18,7 @@ class BridgedManyRelationValueContainer implements
     \Countable,
     \IteratorAggregate,
     core\IDescribable {
-    
+
     protected $_current = [];
     protected $_new = [];
     protected $_remove = [];
@@ -71,6 +71,14 @@ class BridgedManyRelationValueContainer implements
     
     public function getValue($default=null) {
         return $this;
+    }
+
+    public function hasValue() {
+        return !empty($this->_current) || !empty($this->_new);
+    }
+
+    public function getStringValue($default='') {
+        return $this->__toString();
     }
     
     public function getValueForStorage() {
