@@ -548,6 +548,10 @@ trait TScaffold_RecordDataProvider {
     }
 
     public function defineCreationDateField($list, $mode) {
+        if($this->getRecordNameKey() == 'creationDate') {
+            return $this->_autoDefineNameKeyField('creationDate', $list, $mode);
+        }
+        
         $list->addField('creationDate', $this->_('Created'), function($item) {
             return $this->html->timeSince($item['creationDate']);
         });
