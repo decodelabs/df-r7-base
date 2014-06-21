@@ -497,7 +497,7 @@ trait TScaffold_RecordDataProvider {
     }
 
     public function defineSlugField($list, $mode) {
-        if($this->getRecordNameKey() == 'slug') {
+        if($mode == 'list' && $this->getRecordNameKey() == 'slug') {
             return $this->_autoDefineNameKeyField('slug', $list, $mode);
         }
 
@@ -548,10 +548,10 @@ trait TScaffold_RecordDataProvider {
     }
 
     public function defineCreationDateField($list, $mode) {
-        if($this->getRecordNameKey() == 'creationDate') {
+        if($mode == 'list' && $this->getRecordNameKey() == 'creationDate') {
             return $this->_autoDefineNameKeyField('creationDate', $list, $mode);
         }
-        
+
         $list->addField('creationDate', $this->_('Created'), function($item) {
             return $this->html->timeSince($item['creationDate']);
         });
