@@ -48,7 +48,9 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
     protected function __construct(arch\IContext $context) {
         parent::__construct($context);
 
-        if(empty($this->_sections)) {
+        if($this->_sections === null) {
+            $this->_sections = [];
+        } else if(empty($this->_sections)) {
             $this->_sections[] = 'details';
         }
 

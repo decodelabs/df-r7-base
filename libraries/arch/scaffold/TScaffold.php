@@ -320,15 +320,6 @@ trait TScaffold_RecordDataProvider {
             $record = $this->_ensureRecord();
         }
 
-        /*
-        $output = clone $this->_context->location;
-        $output->setQuery(null);
-        $output->setAction('details');
-        $output->query->{$this->_getRecordUrlKey()} = $this->getRecordId($record);
-
-        return $output;
-        */
-
         return $this->_getRecordActionRequest($record, 'details');
     }
 
