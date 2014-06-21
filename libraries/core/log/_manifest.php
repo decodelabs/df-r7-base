@@ -9,8 +9,6 @@ use df;
 use df\core;
 
 
-df\Launchpad::loadBaseClass('core/debug/_manifest');
-
 
 // Exceptions
 interface IException {}
@@ -190,7 +188,12 @@ trait TEntryPoint {
     }
 }
 
-interface INode extends core\debug\ILocationProvider {
+interface ILocationProvider {
+    public function getFile();
+    public function getLine();
+}
+
+interface INode extends ILocationProvider {
     public function getNodeTitle();
     public function getNodeType();
     public function isCritical();
@@ -332,3 +335,5 @@ trait THttpWriter {
         return $this->_request ? $this->_request : @$_SERVER['REQUEST_URI'];
     }
 }
+
+df\Launchpad::loadBaseClass('core/debug/_manifest');
