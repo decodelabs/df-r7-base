@@ -413,6 +413,18 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
     }
 
     public function timeFromNow($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null) {
+        if($date === null) {
+            return null;
+        }
+        
+        if($locale === null) {
+            $locale = $this->_view->getContext()->getLocale();
+        }
+
+        if($locale === null) {
+            $locale = true;
+        }
+
         $date = core\time\Date::factory($date);
 
         if($date->isPast()) {
