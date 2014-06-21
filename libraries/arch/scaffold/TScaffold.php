@@ -552,14 +552,22 @@ trait TScaffold_RecordDataProvider {
             return $this->_autoDefineNameKeyField('creationDate', $list, $mode);
         }
 
-        $list->addField('creationDate', $this->_('Created'), function($item) {
-            return $this->html->timeSince($item['creationDate']);
+        $list->addField('creationDate', $this->_('Created'), function($item) use($mode) {
+            if($mode == 'list') {
+                return $this->html->timeSince($item['creationDate']);
+            } else {
+                return $this->html->timeFromNow($item['creationDate']);
+            }
         });
     }
 
     public function defineLastEditDateField($list, $mode) {
-        $list->addField('lastEditDate', $this->_('Edited'), function($item) {
-            return $this->html->timeSince($item['lastEditDate']);
+        $list->addField('lastEditDate', $this->_('Edited'), function($item) use($mode) {
+            if($mode == 'list') {
+                return $this->html->timeSince($item['lastEditDate']);
+            } else {
+                return $this->html->timeFromNow($item['lastEditDate']);
+            }
         });
     }
 
