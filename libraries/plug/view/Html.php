@@ -230,9 +230,9 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
         }
     }
 
-    public function defaultButtonGroup($mainAction=null, $mainActionText=null) {
+    public function defaultButtonGroup($mainAction=null, $mainActionText=null, $mainActionIcon=null) {
         return $this->buttonArea(
-            $this->saveEventButton($mainAction, $mainActionText),
+            $this->saveEventButton($mainAction, $mainActionText, $mainActionIcon),
             $this->resetEventButton(),
             $this->cancelEventButton()
         );
@@ -253,7 +253,7 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
         );
     }
 
-    public function saveEventButton($mainAction=null, $mainActionText=null) {
+    public function saveEventButton($mainAction=null, $mainActionText=null, $mainActionIcon=null) {
         if($mainAction === false) {
             return null;
         }
@@ -266,8 +266,13 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
             $mainActionText = $this->_view->_('Save');
         }
 
+        if(!$mainActionIcon) {
+            $mainActionIcon = 'save';
+        }
+
         return $this->eventButton($mainAction, $mainActionText)
-            ->setIcon('save');
+            ->setIcon($mainActionIcon)
+            ->setDisposition('positive');
     }
 
     public function resetEventButton($label=null) {
