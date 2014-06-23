@@ -164,8 +164,7 @@ class HttpHttp implements arch\IDirectoryHelper {
         
         if($success && ($redirect = $request->getRedirectTo())) {
             return $this->redirect($redirect);
-        } else if((!$success || ($success && !$request->getRedirectTo()))
-            && ($redirect = $request->getRedirectFrom())) {
+        } else if((!$success || ($success && !$request->getRedirectTo() && $default === null)) && ($redirect = $request->getRedirectFrom())) {
             return $this->redirect($redirect);
         }
             
