@@ -103,7 +103,7 @@ class ManyBridge extends Base implements axis\IVirtualUnit {
                 $parts = explode('\\', $class);
                 array_pop($parts);
                 $unitId = array_pop($parts);
-                return$unitId;
+                return $unitId;
             }
         } else {
             return parent::getUnitName();

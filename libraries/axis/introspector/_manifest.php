@@ -20,11 +20,13 @@ interface IProbe {
     public function getDefinedUnitList();
     public function getDefinedUnitListForModel($modelName);
     public function probeUnits();
+    public function probeStorageUnits();
     public function inspectUnit($id);
 }
 
 interface IUnitInspector {
     public function getUnit();
+    public function getClusterVariant($clusterId);
     public function getModel();
     public function getId();
     public function getGlobalId();

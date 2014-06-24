@@ -60,7 +60,13 @@ class QueryExecutor extends opal\rdbms\QueryExecutor {
 
 // Batch insert
     public function executeBatchInsertQuery($tableName) {
-        $this->_stmt = $this->_adapter->prepare('INSERT INTO '.$this->_adapter->quoteIdentifier($tableName));
+        $this->_stmt->appendSql('INSERT');
+
+        if($this->_query->ifNotExists()) {
+            $this->_stmt->appendSql(' OR IGNORE');
+        }
+
+        $this->_stmt->appendSql(' INTO '.$this->_adapter->quoteIdentifier($tableName));
         
         $fields = $bindValues = $this->_query->getFields();
         $this->_stmt->appendSql(' ('.implode(',', $fields).') VALUES ');
@@ -80,6 +86,7 @@ class QueryExecutor extends opal\rdbms\QueryExecutor {
             }
             
             $output += $this->_stmt->executeWrite();
+            $this->_stmt->reset();
         }
         
         return $output;

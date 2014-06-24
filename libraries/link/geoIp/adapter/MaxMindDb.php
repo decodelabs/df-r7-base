@@ -45,7 +45,7 @@ class MaxMindDb implements link\geoIp\IAdapter {
         $file = $settings['file'];
 
         if(dirname($file) == '.') {
-            $file = df\Launchpad::$application->getLocalDataStoragePath().'/geoIp/'.$file;
+            $file = df\Launchpad::$application->getLocalStoragePath().'/geoIp/'.$file;
         }
 
         return $file;

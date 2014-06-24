@@ -154,14 +154,8 @@ abstract class Model implements IModel, core\IDumpable {
     }
 
 
-    public function getSchemaDefinitionUnit() {
-        if($this->_clusterId) {
-            $model = $this->factory($this->getModelName());
-        } else {
-            $model = $this;
-        }
-
-        return $model->getUnit('schemaDefinition.Virtual()');
+    public static function getSchemaDefinitionUnit() {
+        return self::loadUnitFromId('axis/schemaDefinition.Virtual()');
     }
     
     public function unloadUnit(IUnit $unit) {

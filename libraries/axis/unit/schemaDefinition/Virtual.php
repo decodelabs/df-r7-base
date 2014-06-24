@@ -27,6 +27,14 @@ final class Virtual implements axis\ISchemaDefinitionStorageUnit, axis\ISchemaBa
     public function getUnitType() {
         return 'schemaDefinition';
     }
+
+    public function getUnitName() {
+        return 'schemaDefinition.Virtual()';
+    }
+
+    public function getStorageGroupName() {
+        return $this->_adapter->getStorageGroupName();
+    }
     
     public function getStorageBackendName() {
         $output = 'axis_schemas';

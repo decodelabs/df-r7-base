@@ -33,7 +33,7 @@ class Sqlite extends Base_Pdo {
         $database = $this->_dsn->getDatabaseKeyName();
 
         if(!$database || $database == 'default') {
-            $database = df\Launchpad::$application->getSharedDataStoragePath().'/sqlite/default';
+            $database = df\Launchpad::$application->getSharedStoragePath().'/sqlite/default';
 
             if($suffix = $this->_dsn->getDatabaseSuffix()) {
                 $database .= $suffix;

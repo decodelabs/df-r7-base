@@ -21,7 +21,7 @@ class Sqlite implements user\session\IBackend {
     protected $_lifeTime = 86400; // 24 hours
     
     public function __construct(user\session\IController $controller) {
-        $this->_storePath = df\Launchpad::$application->getSharedDataStoragePath().'/session/sqlite';
+        $this->_storePath = df\Launchpad::$application->getSharedStoragePath().'/session/sqlite';
         core\io\Util::ensureDirExists($this->_storePath);
         
         // TODO: get life time from config

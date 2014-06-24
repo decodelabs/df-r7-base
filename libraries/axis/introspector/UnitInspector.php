@@ -22,6 +22,12 @@ class UnitInspector implements IUnitInspector, core\IDumpable {
         return $this->_unit;
     }
 
+    public function getClusterVariant($clusterId) {
+        return new self(
+            axis\Model::loadUnitFromId($this->getGlobalId(), $clusterId)
+        );
+    }
+
     public function getModel() {
         return $this->_unit->getModel();
     }

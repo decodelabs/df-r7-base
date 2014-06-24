@@ -28,7 +28,7 @@ interface IModel extends mesh\entity\IParentEntity, core\IRegistryObject {
     public function getClusterId();
     
     public function getUnit($name);
-    public function getSchemaDefinitionUnit();
+    public static function getSchemaDefinitionUnit();
     public function unloadUnit(IUnit $unit);
 }
 
@@ -225,6 +225,7 @@ interface IStorageUnit extends IUnit {
     public function fetchByPrimary($id);
     public function destroyStorage();
     public function storageExists();
+    public function getStorageGroupName();
     public function getStorageBackendName();
 }
 
@@ -245,9 +246,10 @@ trait TAdapterBasedStorageUnit {
     public function getUnitAdapterConnectionName() {
         if($this->_adapter instanceof axis\IConnectionProxyAdapter) {
             return $this->_adapter->getConnectionDisplayName();
-        } else {
-            // This needs to be something better!
+        } else if($this->_adapter instanceof opal\query\IAdapter) {
             return $this->_adapter->getQuerySourceDisplayName();
+        } else {
+            core\stub($this->_adapter);
         }
     }
 
@@ -318,6 +320,7 @@ interface IIntrospectableAdapter extends IAdapter {
     public function getStorageList();
     public function describeStorage($name=null);
     public function destroyDescribedStorage($name);
+    public function getStorageGroupName();
 }
 
 interface ISchemaProviderAdapter extends IAdapter {
@@ -328,6 +331,7 @@ interface ISchemaProviderAdapter extends IAdapter {
 
 
 interface ISchemaDefinitionStorageAdapter extends ISchemaProviderAdapter {
+    public function getConnectionHash();
     public function fetchFor(ISchemaBasedStorageUnit $unit);
     public function getTimestampFor(ISchemaBasedStorageUnit $unit);
     
@@ -335,6 +339,9 @@ interface ISchemaDefinitionStorageAdapter extends ISchemaProviderAdapter {
     public function update(ISchemaBasedStorageUnit $unit, $jsonData, $version);
     public function remove(ISchemaBasedStorageUnit $unit);
     public function removeId($unitId);
+
+    public function fetchStoredUnitList();
+    public function fetchRawData();
     
     public function ensureStorage();
 }

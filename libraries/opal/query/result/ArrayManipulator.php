@@ -931,7 +931,18 @@ class ArrayManipulator implements IArrayManipulator {
         $overrides = [];
 
         foreach($outputFields as $alias => $field) {
-            $qNameMap[$alias] = $field->getQualifiedName();
+            $qName = $field->getQualifiedName();
+
+            if($field instanceof opal\query\IVirtualField && !isset($fieldProcessors[$qName])) {
+                $fields = $field->dereference();
+                $qNameMap[$alias] = [];
+
+                foreach($fields as $key => $innerField) {
+                    $qNameMap[$alias][$innerField->getName()] = $innerField->getQualifiedName();
+                }
+            } else {
+                $qNameMap[$alias] = $qName;
+            }
 
             while($field = $field->getOverrideField()) {
                 $overrides[$alias][] = $field->getQualifiedName();
@@ -1058,6 +1069,23 @@ class ArrayManipulator implements IArrayManipulator {
                 
                 // Add known fields
                 foreach($qNameMap as $alias => $qName) {
+                    // Multi key set
+                    if(is_array($qName)) {
+                        $qValue = [];
+
+                        foreach($qName as $innerName => $innerQName) {
+                            if(isset($row[$innerQName])) {
+                                $qValue[$innerName] = $row[$innerQName];
+                            } else {
+                                $qValue[$innerName] = null;
+                            }
+                        }
+
+                        $current[$alias] = new opal\record\PrimaryKeySet(array_keys($qValue), $qValue);
+                        continue;
+                    }
+
+                    // Single value
                     $qValue = null;
 
                     if(isset($row[$qName])) {

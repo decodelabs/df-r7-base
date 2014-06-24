@@ -36,6 +36,10 @@ abstract class Base implements
         return 'table';
     }
     
+    public function getStorageGroupName() {
+        return $this->_adapter->getStorageGroupName();
+    }
+
     public function getStorageBackendName() {
         $output = $this->_model->getModelName().'_'.$this->getCanonicalUnitName();
 

@@ -38,6 +38,15 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
     public function getAdapter() {
         return $this->_adapter;
     }
+
+    public function reset() {
+        $this->_bindings = [];
+        $this->_isExecuted = false;
+        $this->_row = null;
+        $this->_isEmpty = true;
+        $this->_keyIndex = 0;
+        return $this;
+    }
     
     
 // Preparation

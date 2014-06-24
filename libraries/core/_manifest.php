@@ -562,8 +562,8 @@ class Package implements IPackage {
 interface IApplication {
     // Paths
     public static function getApplicationPath();
-    public function getLocalDataStoragePath();
-    public function getSharedDataStoragePath();
+    public function getLocalStoragePath();
+    public function getSharedStoragePath();
     public function getStaticStoragePath();
     
     // Execute

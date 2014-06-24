@@ -68,29 +68,36 @@ class Probe implements IProbe {
             }
         }
 
-        foreach($adapters as $adapter) {
-            if(!$adapter instanceof axis\ISchemaProviderAdapter) {
+        $schemaDefinition = axis\Model::getSchemaDefinitionUnit();
+        $output[$schemaDefinition->getUnitId()] = new UnitInspector($schemaDefinition);
+
+        foreach($schemaDefinition->fetchStoredUnitList() as $unitId) {
+            if(isset($output[$unitId])) {
                 continue;
             }
 
-            $schemaDefinition = new axis\unit\schemaDefinition\Virtual($adapter->getUnit()->getModel());
-
-            foreach($schemaDefinition->fetchStoredUnitList() as $unitId) {
-                if(isset($output[$unitId])) {
-                    continue;
-                }
-
-                try {
-                    $unit = axis\Model::loadUnitFromId($unitId);
-                } catch(axis\RuntimeException $e) {
-                    continue;
-                }
-                
-                $output[$unitId] = new UnitInspector($unit);
+            try {
+                $unit = axis\Model::loadUnitFromId($unitId);
+            } catch(axis\RuntimeException $e) {
+                continue;
             }
+            
+            $output[$unitId] = new UnitInspector($unit);
         }
 
         ksort($output);
+        return $output;
+    }
+
+    public function probeStorageUnits() {
+        $output = $this->probeUnits();
+
+        foreach($output as $key => $unit) {
+            if(!$unit->isStorageUnit()) {
+                unset($output[$key]);
+            }
+        }
+        
         return $output;
     }
 

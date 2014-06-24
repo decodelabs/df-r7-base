@@ -56,6 +56,16 @@ class Rdbms implements
     public function getConnectionDisplayName() {
         return $this->getConnection()->getDsn()->getDisplayString();
     }
+
+    public function getStorageGroupName() {
+        $output = $this->getConnection()->getDsn()->getDatabase();
+
+        if(substr($output, -3) == '.db') {
+            $output = substr($output, 0, -3);
+        }
+
+        return $output;
+    }
     
 // Query source
     public function getQuerySourceId() {

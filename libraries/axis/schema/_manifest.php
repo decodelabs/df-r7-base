@@ -670,5 +670,6 @@ interface IBridge {
     public function getUnit();
     public function getAxisSchema();
     public function getTargetSchema();
+    public function createFreshTargetSchema();
     public function updateTargetSchema();
 }

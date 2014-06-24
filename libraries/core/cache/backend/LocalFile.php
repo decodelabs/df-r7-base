@@ -22,8 +22,8 @@ class LocalFile implements core\cache\IDirectFileBackend {
             return;
         }
 
-        $path1 = df\Launchpad::$application->getSharedDataStoragePath().'/cache/';
-        $path2 = df\Launchpad::$application->getLocalDataStoragePath().'/cache/';
+        $path1 = df\Launchpad::$application->getSharedStoragePath().'/cache/';
+        $path2 = df\Launchpad::$application->getLocalStoragePath().'/cache/';
 
         core\io\Util::emptyDir($path1);
         core\io\Util::emptyDir($path2);
@@ -38,9 +38,9 @@ class LocalFile implements core\cache\IDirectFileBackend {
         $this->_lifeTime = $lifeTime;
         
         if($cache->isCacheDistributed()) {
-            $this->_path = df\Launchpad::$application->getSharedDataStoragePath();
+            $this->_path = df\Launchpad::$application->getSharedStoragePath();
         } else {
-            $this->_path = df\Launchpad::$application->getLocalDataStoragePath();
+            $this->_path = df\Launchpad::$application->getDataStoragePath();
         }
 
         $this->_path .= '/cache/'.core\string\Manipulator::formatFileName($cache->getCacheId());

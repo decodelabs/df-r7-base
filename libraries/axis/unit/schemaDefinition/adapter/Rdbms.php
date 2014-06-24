@@ -10,7 +10,9 @@ use df\core;
 use df\axis;
 use df\opal;
 
-class Rdbms implements axis\ISchemaDefinitionStorageAdapter {
+class Rdbms implements 
+    axis\ISchemaDefinitionStorageAdapter,
+    axis\IConnectionProxyAdapter {
     
     protected $_table;
     protected $_unit;
@@ -31,7 +33,32 @@ class Rdbms implements axis\ISchemaDefinitionStorageAdapter {
     public function getUnit() {
         return $this->_unit;
     }
+
+    public function getStorageGroupName() {
+        $output = $this->_table->getDatabaseName();
+
+        if(substr($output, -3) == '.db') {
+            $output = substr($output, 0, -3);
+        }
+
+        return $output;
+    }
     
+
+// Connection
+    public function getConnection() {
+        return $this->_table->getAdapter();
+    }
+
+    public function getConnectionDisplayName() {
+        return $this->getConnection()->getDsn()->getDisplayString();
+    }
+
+    public function getConnectionHash() {
+        return $this->getConnection()->getDsnHash();
+    }
+
+// Definitions
     public function fetchFor(axis\ISchemaBasedStorageUnit $unit) {
         return $this->_table->select('schema')
             ->where('unitId', '=', $unit->getGlobalUnitId())
@@ -84,6 +111,10 @@ class Rdbms implements axis\ISchemaDefinitionStorageAdapter {
         return $this->_table->select('unitId')
             ->orderBy('unitId ASC')
             ->toList('unitId');
+    }
+
+    public function fetchRawData() {
+        return $this->_table->select()->toArray();
     }
     
     

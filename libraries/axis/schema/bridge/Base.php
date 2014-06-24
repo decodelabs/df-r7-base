@@ -41,6 +41,52 @@ abstract class Base implements axis\schema\IBridge {
         return $this->_targetSchema;
     }
     
+
+    public function createFreshTargetSchema() {
+        $axisPrimaryIndex = $this->_axisSchema->getPrimaryIndex();
+        $supportsIndexes = $this->_targetSchema instanceof opal\schema\IIndexProvider;
+
+        // Add fields
+        foreach($this->_axisSchema->getFields() as $name => $axisField) {
+            $primitive = $axisField->toPrimitive($this->_unit, $this->_axisSchema);
+            
+            if($primitive instanceof opal\schema\IMultiFieldPrimitive) {
+                foreach($primitive->getPrimitives() as $name => $child) {
+                    $this->_targetSchema->addPreparedField(
+                        $this->_createField($child)
+                    );
+                }
+            } else if($axisField instanceof opal\schema\INullPrimitiveField) {
+                continue;
+            } else {
+                $this->_targetSchema->addPreparedField(
+                    $this->_createField($primitive)
+                );
+            }
+        }
+
+        // Add indexes
+        if($supportsIndexes) {
+            foreach($this->_axisSchema->getIndexes() as $name => $axisIndex) {
+                $isPrimary = $axisIndex === $axisPrimaryIndex;
+                $targetIndex = null;
+                
+                foreach($this->_createIndexes($axisIndex, $isPrimary) as $newIndex) {
+                    $this->_targetSchema->addPreparedIndex($newIndex);
+
+                    if(!$targetIndex) {
+                        $targetIndex = $newIndex;
+                    }
+                }
+                
+                if($isPrimary) {
+                    $this->_targetSchema->setPrimaryIndex($targetIndex);
+                }
+            }
+        }
+
+        return $this->_targetSchema;
+    }
     
     public function updateTargetSchema() {
         $axisPrimaryIndex = $this->_axisSchema->getPrimaryIndex();
@@ -280,8 +326,14 @@ abstract class Base implements axis\schema\IBridge {
                     'You cannot put indexes on NullPrimitive fields'
                 );
             } else {
+                if(!$indexField = $this->_targetSchema->getField($primitive->getName())) {
+                    throw new axis\LogicException(
+                        'Unable to find index field '.$primitive->getName()
+                    );
+                }
+
                 $targetIndex->addField(
-                    $this->_targetSchema->getField($primitive->getName()), 
+                    $indexField, 
                     $ref->getSize(), 
                     $ref->isDescending()
                 );
