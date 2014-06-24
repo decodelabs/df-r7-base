@@ -117,6 +117,17 @@ abstract class Base implements
         
         return $this;
     }
+
+    public function getDefinedUnitSchemaVersion() {
+        $schema = $this->getTransientUnitSchema();
+        $version = $schema->getVersion();
+
+        do {
+            $func = '_onUpdateVersion'.$version++;
+        } while(method_exists($this, $func));
+
+        return $version -1;
+    }
     
     abstract protected function _onCreate(axis\schema\ISchema $schema);
     

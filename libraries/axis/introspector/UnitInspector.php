@@ -107,10 +107,30 @@ class UnitInspector implements IUnitInspector, core\IDumpable {
         return $this->_unit->getTransientUnitSchema();
     }
 
+    public function getSchemaVersion() {
+        if(!$this->_unit instanceof axis\ISchemaBasedStorageUnit) {
+            return null;
+        }
+
+        return $this->getTransientSchema()->getVersion();
+    }
+
+    public function getDefinedSchemaVersion() {
+        if(!$this->_unit instanceof axis\ISchemaBasedStorageUnit) {
+            return null;
+        }
+
+        return $this->_unit->getDefinedUnitSchemaVersion();
+    }
+
 
 // Storage
     public function isStorageUnit() {
         return $this->_unit instanceof axis\IStorageUnit;
+    }
+
+    public function isSchemaBasedStorageUnit() {
+        return $this->_unit instanceof axis\ISchemaBasedStorageUnit;
     }
 
     public function describeStorage($name) {

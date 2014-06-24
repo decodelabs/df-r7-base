@@ -43,8 +43,11 @@ interface IUnitInspector {
 
     public function getSchema();
     public function getTransientSchema();
+    public function getSchemaVersion();
+    public function getDefinedSchemaVersion();
 
     public function isStorageUnit();
+    public function isSchemaBasedStorageUnit();
     public function getBackups();
     public function describeStorage($name);
     public function storageExists();

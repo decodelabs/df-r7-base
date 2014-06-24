@@ -283,6 +283,7 @@ interface ISchemaBasedStorageUnit extends IAdapterBasedStorageUnit, opal\schema\
     public function buildInitialSchema();
     public function updateUnitSchema(axis\schema\ISchema $schema);
     public function validateUnitSchema(axis\schema\ISchema $schema);
+    public function getDefinedUnitSchemaVersion();
 }
 
 interface ISchemaDefinitionStorageUnit extends IStorageUnit {

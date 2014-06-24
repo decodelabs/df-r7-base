@@ -185,6 +185,7 @@ final class Virtual implements axis\ISchemaDefinitionStorageUnit, axis\ISchemaBa
         
         $schema->addPrimaryIndex('unitId');
         $schema->addIndex('timestamp');
+        $schema->iterateVersion();
         
         return $schema;
     }
@@ -224,5 +225,9 @@ final class Virtual implements axis\ISchemaDefinitionStorageUnit, axis\ISchemaBa
     
     public function validateUnitSchema(axis\schema\ISchema $schema) {
         return $schema;
+    }
+
+    public function getDefinedUnitSchemaVersion() {
+        return 1;
     }
 }
