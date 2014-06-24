@@ -45,6 +45,10 @@ final class Virtual implements axis\ISchemaDefinitionStorageUnit, axis\ISchemaBa
 
         return $output;
     }
+
+    public function isVirtualUnitShared() {
+        return false;
+    }
     
     public function fetchFor(axis\ISchemaBasedStorageUnit $unit, $transient=false) {
         $cache = axis\schema\Cache::getInstance();

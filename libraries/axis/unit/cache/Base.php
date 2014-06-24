@@ -34,4 +34,8 @@ abstract class Base extends core\cache\Base implements axis\IUnit, axis\IAdapter
     public function getUnitAdapterConnectionName() {
         return $this->getCacheBackend()->getConnectionDescription();
     }
+
+    public function getStorageBackendName() {
+        return $this->getCacheId();
+    }
 }

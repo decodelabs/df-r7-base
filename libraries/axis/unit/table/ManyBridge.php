@@ -161,6 +161,10 @@ class ManyBridge extends Base implements axis\IVirtualUnit {
     public function getDominantFieldName() {
         return $this->_dominantFieldName;
     }
+
+    public function isVirtualUnitShared() {
+        return static::IS_SHARED;
+    }
     
     protected function _onCreate(axis\schema\ISchema $schema) {}
 

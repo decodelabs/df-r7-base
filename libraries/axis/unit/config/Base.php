@@ -27,4 +27,8 @@ abstract class Base extends core\Config implements axis\IUnit {
     public function getUnitType() {
         return 'config';
     }
+
+    public function getStorageBackendName() {
+        return $this->getConfigId();
+    }
 }

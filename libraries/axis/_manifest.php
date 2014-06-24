@@ -51,6 +51,7 @@ interface IUnit extends mesh\entity\IEntity, user\IAccessLock {
     public function getModel();
     public function getClusterId();
     public function getUnitSettings();
+    public function getStorageBackendName();
 }
 
 trait TUnit {
@@ -117,6 +118,10 @@ trait TUnit {
         return $this->_model->getClusterId();
     }
     
+    public function getStorageBackendName() {
+        return null;
+    }
+
     public function getContext() {
         return $this->_model->getUnit('context');
     }
@@ -213,6 +218,7 @@ trait TUnit {
 
 interface IVirtualUnit extends IUnit {
     public static function loadVirtual(IModel $model, array $args);
+    public function isVirtualUnitShared();
 }
 
 interface IAdapterBasedUnit {
@@ -226,7 +232,6 @@ interface IStorageUnit extends IUnit {
     public function destroyStorage();
     public function storageExists();
     public function getStorageGroupName();
-    public function getStorageBackendName();
 }
 
 interface IAdapterBasedStorageUnit extends IStorageUnit, IAdapterBasedUnit {}

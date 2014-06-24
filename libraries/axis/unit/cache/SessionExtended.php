@@ -34,4 +34,8 @@ abstract class SessionExtended extends core\cache\SessionExtended implements axi
     public function getUnitAdapterConnectionName() {
         return $this->getCacheBackend()->getConnectionDescription();
     }
+
+    public function getStorageBackendName() {
+        return $this->getCacheId();
+    }
 }

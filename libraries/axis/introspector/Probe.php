@@ -59,7 +59,13 @@ class Probe implements IProbe {
 
         foreach($unitList as $unitId) {
             $unit = axis\Model::loadUnitFromId($unitId);
-            $output[$unitId] = $inspector = new UnitInspector($unit);
+            $inspector = new UnitInspector($unit);
+
+            if($inspector->isSharedVirtual()) {
+                continue;
+            }
+
+            $output[$unitId] = $inspector;
 
             if($adapter = $inspector->getQueryAdapter()) {
                 $adapters[$adapter->getQuerySourceAdapterHash()] = $adapter;
@@ -82,7 +88,13 @@ class Probe implements IProbe {
                 continue;
             }
             
-            $output[$unitId] = new UnitInspector($unit);
+            $inspector = new UnitInspector($unit);
+
+            if($inspector->isSharedVirtual()) {
+                continue;
+            }
+
+            $output[$unitId] = $inspector;
         }
 
         ksort($output);

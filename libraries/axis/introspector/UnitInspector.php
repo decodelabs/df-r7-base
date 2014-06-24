@@ -41,11 +41,7 @@ class UnitInspector implements IUnitInspector, core\IDumpable {
     }
 
     public function getCanonicalId() {
-        if($this->_unit instanceof axis\IStorageUnit) {
-            return $this->_unit->getStorageBackendName();
-        } else {
-            return $this->_unit->getModel()->getModelName().'_'.$this->_unit->getCanonicalUnitName();
-        }
+        return $this->_unit->getStorageBackendName();
     }
 
     public function getType() {
@@ -54,6 +50,10 @@ class UnitInspector implements IUnitInspector, core\IDumpable {
 
     public function isVirtual() {
         return $this->_unit instanceof axis\IVirtualUnit;
+    }
+
+    public function isSharedVirtual() {
+        return $this->isVirtual() && $this->_unit->isVirtualUnitShared();
     }
 
 // Adapter
