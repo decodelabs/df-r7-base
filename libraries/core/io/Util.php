@@ -101,7 +101,7 @@ class Util implements IUtil {
         return $output;
     }
 
-    public static function listFilesIn($path) {
+    public static function listFilesIn($path, $regex=null) {
         if(!is_dir($path)) {
             return [];
         }
@@ -110,14 +110,20 @@ class Util implements IUtil {
 
         foreach(new \DirectoryIterator($path) as $item) {
             if($item->isFile()) {
-                $output[] = $item->getFilename();
+                $name = $item->getFilename();
+
+                if($regex !== null && !preg_match($regex, $name)) {
+                    continue;
+                }
+
+                $output[] = $name;
             }
         }
 
         return $output;
     }
 
-    public static function listDirsIn($path) {
+    public static function listDirsIn($path, $regex=null) {
         if(!is_dir($path)) {
             return [];
         }
@@ -126,7 +132,13 @@ class Util implements IUtil {
 
         foreach(new \DirectoryIterator($path) as $item) {
             if($item->isDir()) {
-                $output[] = $item->getFilename();
+                $name = $item->getFilename();
+
+                if($regex !== null && !preg_match($regex, $name)) {
+                    continue;
+                }
+
+                $output[] = $name;
             }
         }
 

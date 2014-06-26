@@ -627,8 +627,8 @@ interface IUtil {
 
     public static function countFilesIn($path);
     public static function countDirsIn($path);
-    public static function listFilesIn($path);
-    public static function listDirsIn($path);
+    public static function listFilesIn($path, $regex=null);
+    public static function listDirsIn($path, $regex=null);
 
     public static function copyDir($source, $destination, $merge=false);
     public static function copyDirInto($source, $destination);
