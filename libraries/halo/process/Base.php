@@ -88,7 +88,7 @@ abstract class Base implements IProcess {
         $path = df\Launchpad::$applicationPath.'/entry/';
         $path .= df\Launchpad::$environmentId.'.'.$environmentMode.'.php';
 
-        return self::launchBackgroundScript($path, 'task '.$request);
+        return self::launchBackgroundScript($path, ['task', $request]);
     }
 
     public static function launchManaged($process, $args=null, $path=null) {
