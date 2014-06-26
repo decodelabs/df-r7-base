@@ -355,4 +355,5 @@ interface IUtil {
     public static function ensureIterable($collection);
 
     public static function normalizeEnumValue($value, array $map, $defaultValue=null);
+    public static function exportArray(array $values, $level=1);
 }

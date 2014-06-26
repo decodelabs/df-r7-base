@@ -212,7 +212,7 @@ abstract class Config implements IConfig, core\IDumpable {
             $values = $this->values;
         }
 
-        $content = '<?php'."\n".'return '.$this->_exportArray($values).';';
+        $content = '<?php'."\n".'return '.core\collection\Util::exportArray($values).';';
         file_put_contents($savePath, $content, LOCK_EX);
     }
     
@@ -220,57 +220,6 @@ abstract class Config implements IConfig, core\IDumpable {
         return df\Launchpad::$application->getStaticStoragePath().'/config';
     }
     
-    private function _exportArray(array $values, $level=1) {
-        $output = '['."\n";
-        
-        $i = 0;
-        $count = count($values);
-        $isNumericIndex = true;
-        
-        foreach($values as $key => $val) {
-            if($key !== $i++) {
-                $isNumericIndex = false;
-                break;
-            }
-        }
-        
-        $i = 0;
-        
-        foreach($values as $key => $val) {
-            $output .= str_repeat('    ', $level);
-            
-            if(!$isNumericIndex) {
-                $output .= '\''.addslashes($key).'\' => ';
-            }
-            
-            if(is_object($val) || is_null($val)) {
-                $output .= 'null';    
-            } else if(is_array($val)) {
-                $output .= $this->_exportArray($val, $level + 1);
-            } else if(is_int($val) || is_float($val)) {
-                $output .= $val; 
-            } else if(is_bool($val)) {
-                if($val) {
-                    $output .= 'true';
-                } else {
-                    $output .= 'false';
-                }
-            } else {
-                $output .= '\''.addslashes($val).'\'';    
-            }
-            
-            if(++$i < $count) {
-                $output .= ',';    
-            }
-            
-            $output .= "\n";
-        }
-        
-        $output .= str_repeat('    ', $level - 1).']';
-        
-        return $output;
-    }
-
 
 // Dump
     public function getDumpProperties() {
