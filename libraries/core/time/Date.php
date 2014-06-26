@@ -32,6 +32,23 @@ class Date implements IDate, core\IDumpable {
     
     protected $_date;
     
+    public static function fromCompressedString($string, $timezone=true) {
+        if($string instanceof IDate) {
+            return $string;
+        }
+
+        $date = substr($string, 0, 8);
+        $date = substr($date, 0, 4).'-'.substr($date, 4, 2).'-'.substr($date, 6, 2);
+
+        if(strlen($string) == 14) {
+            $time = substr($string, 8);
+            $time = substr($time, 0, 2).':'.substr($time, 2, 2).':'.substr($time, 4, 2);
+            $date .= ' '.$time;
+        }
+
+        return new self($date, $timezone);
+    }
+
     public static function fromLocaleString($string, $timezone=true, $size=self::SHORT, $locale=null) {
         if($string instanceof IDate) {
             return $string;
