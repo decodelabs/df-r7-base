@@ -63,7 +63,7 @@ abstract class Base implements axis\schema\IField, \Serializable, core\IDumpable
 
     public function unserialize($data) {
         $data = json_decode($data, true);
-        $this->_setName($data['nam']);
+        $this->_name = $data['nam'];
         $this->_importStorageArray($data);
 
         return $this;
@@ -113,6 +113,18 @@ abstract class Base implements axis\schema\IField, \Serializable, core\IDumpable
     
     public function validate(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
         return $this;
+    }
+
+// Primitives
+    public function getReplacedPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
+        $oldName = $schema->getOriginalFieldNameFor($this->_name);
+        $replacedField = $schema->getReplacedField($oldName);
+        
+        if(!$replacedField) {
+            return null;
+        }
+
+        return $replacedField->toPrimitive($unit, $schema);
     }
     
     

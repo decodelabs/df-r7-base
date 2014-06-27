@@ -77,6 +77,10 @@ abstract class Base implements ISchema, core\IDumpable {
             || $this->_hasTriggerChanges();
     }
 
+    public function markAsChanged() {
+        core\stub();
+    }
+
     public function acceptChanges() {
         $this->_acceptOptionChanges();
         $this->_acceptFieldChanges();

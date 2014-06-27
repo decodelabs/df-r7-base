@@ -123,6 +123,14 @@ class UnitInspector implements IUnitInspector, core\IDumpable {
         return $this->_unit->getDefinedUnitSchemaVersion();
     }
 
+    public function canUpdateSchema() {
+        if(!$this->_unit instanceof axis\ISchemaBasedStorageUnit) {
+            return false;
+        }
+
+        return $this->getSchemaVersion() < $this->getDefinedSchemaVersion();
+    }
+
 
 // Storage
     public function isStorageUnit() {

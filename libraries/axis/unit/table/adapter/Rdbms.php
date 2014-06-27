@@ -198,18 +198,27 @@ class Rdbms implements
     
     
 // Create
-    public function createStorageFromSchema(axis\schema\ISchema $axisSchema) {
+    public function updateStorageFromSchema(axis\schema\ISchema $axisSchema) {
         $adapter = $this->getConnection();
         $bridge = new axis\schema\bridge\Rdbms($this->_unit, $adapter, $axisSchema);
         $dbSchema = $bridge->updateTargetSchema();
+        $table = $adapter->getTable($dbSchema->getName());
 
-        try {
-            return $adapter->createTable($dbSchema);
-        } catch(opal\rdbms\TableConflictException $e) {
-            // TODO: check db schema matches
-
-            return $adapter->getTable($dbSchema->getName());
+        if($dbSchema->hasChanged()) {
+            if($table->exists()) {
+                //core\debug()->dump($dbSchema);
+                //return $table;
+                return $table->alter($dbSchema);
+            } else {
+                try {
+                    return $table->create($dbSchema);
+                } catch(opal\rdbms\TableConflictException $e) {
+                    // TODO: check db schema matches
+                }
+            }
         }
+
+        return $table;
     }
     
     public function destroyStorage() {

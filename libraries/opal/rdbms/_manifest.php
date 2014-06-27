@@ -165,6 +165,7 @@ interface IAdapter extends mesh\entity\IParentEntity {
 // Introspection
     public function getDatabase();
     public function getTable($name);
+    public function tableExists($name);
     public function createTable(opal\rdbms\schema\ISchema $schema, $dropIfExists=false);
     public function getSchema($name);
     public function newSchema($name);
@@ -213,7 +214,7 @@ interface IDatabase {
     
     public function drop();
     public function truncate();
-    public function rename($newName);
+    public function rename($newName, $overwrite=false);
 }
 
 interface ITable extends mesh\entity\IEntity, opal\query\IAdapter, opal\query\IEntryPoint, \Countable, opal\schema\ISchemaContext {

@@ -62,11 +62,6 @@ class TaskRebuildTable extends arch\task\Action {
         
         axis\schema\Cache::getInstance()->clear();
 
-        $request = new arch\Request('~devtools/cache/apc-clear.json');
-        $request->query->cacheId = 'axis/schema/Cache';
-        $this->runChild($request);
-
-
         $schemaDefinition = new axis\unit\schemaDefinition\Virtual($unit->getModel());
         $schemaDefinition->store($unit, $schema);
 

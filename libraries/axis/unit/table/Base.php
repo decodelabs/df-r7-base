@@ -136,8 +136,8 @@ abstract class Base implements
         return $this;
     }
     
-    public function createStorageFromSchema(axis\schema\ISchema $schema) {
-        $this->_adapter->createStorageFromSchema($schema);
+    public function updateStorageFromSchema(axis\schema\ISchema $schema) {
+        $this->_adapter->updateStorageFromSchema($schema);
         return $this;
     }
     

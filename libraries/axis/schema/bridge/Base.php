@@ -15,18 +15,29 @@ abstract class Base implements axis\schema\IBridge {
     protected $_unit;
     protected $_axisSchema;
     protected $_targetSchema;
+    protected $_isNew = true;
     
     public function __construct(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $axisSchema, opal\schema\ISchema $targetSchema=null) {
         $this->_unit = $unit;
         $this->_axisSchema = $axisSchema;
+        $this->_isNew = true;
         
         if(!$targetSchema) {
-            $targetSchema = $this->_createTargetSchema();
+            if($this->_storageExists()) {
+                $this->_isNew = false;
+                $targetSchema = $this->_getTargetSchema();
+            } else {
+                $targetSchema = $this->_createTargetSchema();
+            }
+        } else {
+            $this->_isNew = false;
         }
         
         $this->_targetSchema = $targetSchema;
     }
     
+    abstract protected function _storageExists();
+    abstract protected function _getTargetSchema();
     abstract protected function _createTargetSchema();
     
     public function getUnit() {
@@ -49,7 +60,7 @@ abstract class Base implements axis\schema\IBridge {
         // Add fields
         foreach($this->_axisSchema->getFields() as $name => $axisField) {
             $primitive = $axisField->toPrimitive($this->_unit, $this->_axisSchema);
-            
+
             if($primitive instanceof opal\schema\IMultiFieldPrimitive) {
                 foreach($primitive->getPrimitives() as $name => $child) {
                     $this->_targetSchema->addPreparedField(
@@ -89,6 +100,10 @@ abstract class Base implements axis\schema\IBridge {
     }
     
     public function updateTargetSchema() {
+        if($this->_isNew) {
+            return $this->createFreshTargetSchema();
+        }
+
         $axisPrimaryIndex = $this->_axisSchema->getPrimaryIndex();
         $lastAxisPrimaryIndex = $this->_axisSchema->getLastPrimaryIndex();
         $targetPrimaryIndex = $this->_targetSchema->getPrimaryIndex();
@@ -99,12 +114,13 @@ abstract class Base implements axis\schema\IBridge {
         if(!$primaryIndexHasChanged = $this->_axisSchema->hasPrimaryIndexChanged()) {
             $lastAxisPrimaryIndex = $axisPrimaryIndex;
         }
-        
+
         
         // Remove indexes
         if($supportsIndexes) {
             foreach($this->_axisSchema->getIndexesToRemove() as $name => $axisIndex) {
                 if($axisIndex->isSingleMultiPrimitiveField() && !$axisIndex->isUnique()) {
+                    $fieldReferences = $axisIndex->getFieldReferences();
                     $axisField = $fieldReferences[0]->getField();
                     $primitive = $axisField->toPrimitive($this->_unit, $this->_axisSchema);
 
@@ -140,9 +156,73 @@ abstract class Base implements axis\schema\IBridge {
         }
         
         // Update fields
-        foreach($this->_axisSchema->getFieldsToUpdate() as $name => $axisField) {
+        foreach($this->_axisSchema->getFieldsToUpdate() as $oldName => $axisField) {
+            if($axisField instanceof opal\schema\INullPrimitiveField) {
+                continue;
+            }
+
+            $name = $axisField->getName();
             $primitive = $axisField->toPrimitive($this->_unit, $this->_axisSchema);
-            
+            $replacedField = $this->_axisSchema->getReplacedField($oldName);
+            $replacedPrimitive = $replacedField ?
+                $axisField->getReplacedPrimitive($this->_unit, $this->_axisSchema) :
+                null;
+
+            if($replacedField && $replacedPrimitive) {
+                if(get_class($replacedField) == get_class($axisField)
+                && $replacedPrimitive instanceof opal\schema\IMultiFieldPrimitive
+                && $primitive instanceof opal\schema\IMultiFieldPrimitive
+                && count($replacedPrimitive->getPrimitives()) == count($primitive->getPrimitives())) {
+                    $replacedInnerPrimitives = array_values($replacedPrimitive->getPrimitives());
+
+                    foreach(array_values($primitive->getPrimitives()) as $i => $innerPrimitive) {
+                        $innerPrimitiveName = $innerPrimitive->getName();
+                        $replacedInnerPrimitiveName = $replacedInnerPrimitives[$i]->getName();
+
+                        if($innerPrimitiveName != $replacedInnerPrimitiveName
+                        && $this->_targetSchema->hasField($replacedInnerPrimitiveName)) {
+                            $this->_targetSchema->renameField(
+                                $replacedInnerPrimitiveName, 
+                                $innerPrimitiveName
+                            );
+                        }
+
+                        $this->_targetSchema->replacePreparedField(
+                            $this->_createField($innerPrimitive)
+                        );
+                    }
+                } else if($replacedPrimitive instanceof opal\schema\IMultiFieldPrimitive) {
+                    core\stub($replacedPrimitive, $primitive);
+                } else if($primitive instanceof opal\schema\IMultiFieldPrimitive) {
+                    core\stub($replacedPrimitive, $primitive);
+                } else {
+                    if($oldName != $name && $this->_targetSchema->hasField($replacedPrimitive->getName())) {
+                        $this->_targetSchema->renameField(
+                            $replacedPrimitive->getName(), 
+                            $primitive->getName()
+                        );
+                    }
+
+                    $this->_targetSchema->replacePreparedField(
+                        $this->_createField($primitive)
+                    );
+                }
+            } else {
+                if($primitive instanceof opal\schema\IMultiFieldPrimitive) {
+                    foreach($primitive->getPrimitives() as $innerPrimitive) {
+                        $this->_targetSchema->replacePreparedField(
+                            $this->_createField($innerPrimitive)
+                        );
+                    }
+                } else {
+                    $this->_targetSchema->replacePreparedField(
+                        $this->_createField($primitive)
+                    );
+                }
+            }
+
+
+            /*
             if($primitive instanceof opal\schema\IMultiFieldPrimitive) {
                 $childPrimitives = $primitive->getPrimitives();
                 $lastChild = $firstChild = array_shift($childPrimitives);
@@ -158,13 +238,12 @@ abstract class Base implements axis\schema\IBridge {
                     
                     $lastChild = $child;
                 }
-            } else if($axisField instanceof opal\schema\INullPrimitiveField) {
-                continue;
             } else {
                 $this->_targetSchema->replacePreparedField(
                     $this->_createField($primitive)
                 );
             }
+            */
         }
         
         // Add fields
@@ -190,31 +269,35 @@ abstract class Base implements axis\schema\IBridge {
         if($supportsIndexes) {
             // Update indexes
             foreach($this->_axisSchema->getIndexesToUpdate() as $name => $axisIndex) {
-                if($primaryIndexHasChanged 
-                && $axisIndex === $lastAxisPrimaryIndex
-                && $targetPrimaryIndex) {
-                    $newName = $this->_getIndexName($axisIndex, false);
-                    $oldName = $targetPrimaryIndex->getName();
-                    
-                    if($newName != $oldName) {
+                $isPrimary = $axisIndex === $axisPrimaryIndex;
+                $newSet = $this->_createIndexes($axisIndex, $isPrimary);
+
+                $oldIndex = clone $axisIndex;
+                $oldIndex->_setName($name);
+
+                $oldSet = $this->_createIndexes($oldIndex, $isPrimary, true);
+
+                foreach($oldSet as $i => $oldInnerIndex) {
+                    $oldName = $oldInnerIndex->getName();
+                    $newName = $newSet[$i]->getName();
+
+                    if($oldName != $newName) {
                         $this->_targetSchema->renameIndex($oldName, $newName);
                     }
                 }
-                
-                $isPrimary = $axisIndex === $axisPrimaryIndex;
-                
-                foreach($this->_createIndexes($axisIndex, $isPrimary) as $newIndex) {
+
+                foreach($newSet as $newIndex) {
                     $this->_targetSchema->replacePreparedIndex($newIndex);
-                }
-                
-                if($isPrimary) {
-                    $this->_targetSchema->setPrimaryIndex($targetIndex);
+
+                    if($isPrimary) {
+                        $this->_targetSchema->setPrimaryIndex($newIndex);
+                    }
                 }
             }
         
         
             // Add indexes
-            foreach($this->_axisSchema->getIndexes() as $name => $axisIndex) {
+            foreach($this->_axisSchema->getIndexesToAdd() as $name => $axisIndex) {
                 $isPrimary = $axisIndex === $axisPrimaryIndex;
                 $targetIndex = null;
                 
@@ -240,7 +323,7 @@ abstract class Base implements axis\schema\IBridge {
                 }
             }
         }
-
+        
         return $this->_targetSchema;
     }
 
@@ -283,19 +366,39 @@ abstract class Base implements axis\schema\IBridge {
     
     
 // Indexes
-    protected function _createIndexes(opal\schema\IIndex $axisIndex, $isPrimary) {
+    protected function _createIndexes(opal\schema\IIndex $axisIndex, $isPrimary, $forChanges=false) {
         $output = [];
         $fieldReferences = $axisIndex->getFieldReferences();
 
         if($axisIndex->isSingleMultiPrimitiveField() && !$axisIndex->isUnique()) {
             $axisField = $fieldReferences[0]->getField();
-            $primitive = $axisField->toPrimitive($this->_unit, $this->_axisSchema);
+
+            if($forChanges) {
+                $name = $axisField->getName();
+                $oldName = $this->_axisSchema->getOriginalFieldNameFor($name);
+
+                if($field = $this->_axisSchema->getReplacedField($oldName)) {
+                    $axisField = $field;
+                }
+            }
+
+            $primitive = null;
+
+            if($forChanges) {
+                $primitive = $axisField->getReplacedPrimitive($this->_unit, $this->_axisSchema);
+            }
+
+            if(!$primitive) {
+                $primitive = $axisField->toPrimitive($this->_unit, $this->_axisSchema);
+            }
 
             if($primitive instanceof opal\schema\IMultiFieldPrimitive) {
                 foreach($primitive->getPrimitives() as $name => $child) {
                     $output[] = $this->_targetSchema->createIndex($this->_getIndexName($axisIndex, $isPrimary, $child), [])
                         ->addField(
-                            $this->_targetSchema->getField($child->getName()), 
+                            $forChanges ?
+                                $this->_targetSchema->getReplacedField($child->getName()) :
+                                $this->_targetSchema->getField($child->getName()), 
                             $fieldReferences[0]->getSize(), 
                             $fieldReferences[0]->isDescending()
                         );
@@ -304,7 +407,6 @@ abstract class Base implements axis\schema\IBridge {
                 return $output;
             }
         }
-
 
         $targetIndex = $this->_targetSchema->createIndex($this->_getIndexName($axisIndex, $isPrimary), [])
             ->isUnique($axisIndex->isUnique());

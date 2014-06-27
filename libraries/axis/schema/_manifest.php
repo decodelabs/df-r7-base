@@ -42,6 +42,7 @@ interface IField extends opal\schema\IField, opal\query\IFieldValueProcessor {
     public function sanitize(axis\ISchemaBasedStorageUnit $unit, ISchema $schema);
     public function validate(axis\ISchemaBasedStorageUnit $unit, ISchema $schema);
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, ISchema $schema);
+    public function getReplacedPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema);
 }
 
 
@@ -349,17 +350,35 @@ trait TRelationField {
 
 
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
+        return $this->_toPrimitive($unit, $schema, false);
+    }
+
+    public function getReplacedPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
+        return $this->_toPrimitive($unit, $schema, true);
+    }
+
+    private function _toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema, $replaced=false) {
         if($this instanceof opal\schema\INullPrimitiveField) {
             return new opal\schema\Primitive_Null($this);
         }
-
-        $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId);
+        
+        $targetUnit = $this->getTargetUnit();
         $targetSchema = $targetUnit->getTransientUnitSchema();
         $targetPrimaryIndex = $targetSchema->getPrimaryIndex();
 
         $primitives = [];
 
         foreach($targetPrimaryIndex->getFields() as $name => $field) {
+            if($replaced) {
+                $oldName = $targetSchema->getOriginalFieldNameFor($name);
+                $replacedField = $targetSchema->getReplacedField($oldName);
+
+                if($replacedField) {
+                    $field = $replacedField;
+                    $name = $oldName;
+                }
+            }
+
             $primitive = $field->toPrimitive($targetUnit, $targetSchema)
                 ->isNullable(true);
 
@@ -367,7 +386,8 @@ trait TRelationField {
                 $name = $primitive->getName();
             }
 
-            $primitive->_setName($this->_getSubPrimitiveName($name));
+            $primitiveName = $this->_getSubPrimitiveName($name);
+            $primitive->_setName($primitiveName);
 
             if($this->_defaultValue !== null) {
                 $primitive->setDefaultValue($this->_defaultValue[$name]);
@@ -377,7 +397,7 @@ trait TRelationField {
                 $primitive->shouldAutoIncrement(false);
             }
             
-            $primitives[$name] = $primitive;
+            $primitives[$primitiveName] = $primitive;
         }
 
         if(count($primitives) == 1) {

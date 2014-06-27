@@ -56,6 +56,10 @@ class Base implements ISchema, core\IDumpable {
             || $this->_hasFieldChanges()
             || $this->_hasIndexChanges();
     }
+
+    public function markAsChanged() {
+        core\stub();
+    }
     
     public function acceptChanges() {
         $this->_acceptOptionChanges();
@@ -106,23 +110,38 @@ class Base implements ISchema, core\IDumpable {
                 $field->sanitize($unit, $this);
             }
             
-            if($field instanceof axis\schema\IAutoIndexField && !$this->getIndex($field->getName())) {
+            if($field instanceof axis\schema\IAutoIndexField) {
+                $newName = $field->getName();
+                $oldName = $this->getOriginalFieldNameFor($newName);
+
+                if($newName != $oldName) {
+                    $this->renameIndex($oldName, $newName);
+                }
+
                 if(!$field->shouldBeIndexed()) {
+                    $this->removeIndex($newName);
                     continue;
                 }
 
-                $index = $this->addIndex($field->getName(), $field);
-                
+                if(!$index = $this->getIndex($newName)) {
+                    $index = $this->addIndex($newName, $field);
+                }
+                    
                 if($field instanceof axis\schema\IAutoUniqueField) {
-                    if(!$field->shouldBeUnique()) {
+                    $unique = $field->shouldBeUnique();
+                    $index->isUnique($unique);
+
+                    if(!$unique) {
                         continue;
                     }
-
-                    $index->isUnique(true);
                 }
                 
                 if($field instanceof axis\schema\IAutoPrimaryField) {
                     if(!$field->shouldBePrimary()) {
+                        if($this->getPrimaryIndex() === $index) {
+                            $this->setPrimaryIndex(null);
+                        }
+
                         continue;
                     }
                     
@@ -130,7 +149,7 @@ class Base implements ISchema, core\IDumpable {
                 }
             }
         }
-        
+
         return $this;
     }
     

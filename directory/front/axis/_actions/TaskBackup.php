@@ -18,6 +18,13 @@ class TaskBackup extends arch\task\Action {
     protected $_backupAdapters = [];
     protected $_path;
 
+    protected $_manifest = [
+        'timestamp' => null,
+        'master' => null,
+        'connections' => [],
+        'clusterUnit' => null
+    ];
+
     public function execute() {
         $this->response->write('Probing units...');
 
@@ -26,7 +33,9 @@ class TaskBackup extends arch\task\Action {
 
         $this->response->writeLine(' found '.count($units).' to backup');
 
-        $this->_path = $this->application->getSharedStoragePath().'/backup/axis-'.date('YmdHis');
+        $this->_manifest['timestamp'] = time();
+        $backupId = 'axis-'.date('YmdHis');
+        $this->_path = $this->application->getSharedStoragePath().'/backup/'.$backupId;
         core\io\Util::ensureDirExists($this->_path);
 
         $this->response->writeLine('Backing up units on global cluster');
@@ -39,6 +48,8 @@ class TaskBackup extends arch\task\Action {
         $clusterUnit = $this->data->getClusterUnit();
 
         if($clusterUnit) {
+            $this->_manifest['clusterUnit'] = $clusterUnit->getUnitId();
+
             $this->response->writeLine();
 
             foreach($clusterUnit->select('@primary as primary') as $row) {
@@ -52,16 +63,16 @@ class TaskBackup extends arch\task\Action {
             }
         }
 
+        $this->response->writeLine();
+        $this->response->writeLine('Writing manifest file');
+        $content = '<?php'."\n".'return '.core\collection\Util::exportArray($this->_manifest).';';
+        file_put_contents($this->_path.'/manifest.php', $content, LOCK_EX);
 
-        foreach($this->_unitAdapters as $hash => $adapter) {
-            $adapter->closeConnection();
-            unset($this->_unitAdapters[$hash]);
-        }
+        $this->response->writeLine('Archiving backup');
+        $phar = new \PharData(dirname($this->_path).'/'.$backupId.'.tar');
+        $phar->buildFromDirectory($this->_path);
 
-        foreach($this->_backupAdapters as $hash => $adapter) {
-            $adapter->closeConnection();
-            unset($this->_backupAdapters[$hash]);
-        }
+        core\io\Util::deleteDir($this->_path);
     }
 
     public function handleException(\Exception $e) {
@@ -160,29 +171,35 @@ class TaskBackup extends arch\task\Action {
         }
 
         $unitAdapter = $unit->getUnitAdapter();
-        $this->_unitAdapters[$hash] = $unitAdapter->getConnection();
+        $connection = $unitAdapter->getConnection();
+        $this->_unitAdapters[$hash] = $connection;
         $dbName = $unitAdapter->getStorageGroupName();
 
-        return $this->_loadBackupAdapter($hash, $dbName);
+        return $this->_loadBackupAdapter($hash, $dbName, (string)$connection->getDsn());
     }
 
     protected function _getBackupAdapterForSchemaDefinitionUnit($unit) {
         $hash = $unit->getUnitAdapter()->getConnectionHash();
 
-        if(isset($this->_backupAdapters[$hash])) {
-            return $this->_backupAdapters[$hash];
+        if(!isset($this->_backupAdapters[$hash])) {
+            $unitAdapter = $unit->getUnitAdapter();
+            $connection = $unitAdapter->getConnection();
+            $this->_unitAdapters[$hash] = $connection;
+            $dbName = $unitAdapter->getStorageGroupName();
+            $this->_loadBackupAdapter($hash, $dbName, (string)$connection->getDsn());
         }
 
-        $unitAdapter = $unit->getUnitAdapter();
-        $this->_unitAdapters[$hash] = $unitAdapter->getConnection();
-        $dbName = $unitAdapter->getStorageGroupName();
-        return $this->_loadBackupAdapter($hash, $dbName);
+        $this->_manifest['master'] = basename($this->_backupAdapters[$hash]->getDsn()->getDatabase());
+
+        return $this->_backupAdapters[$hash];
+        
     }
 
-    protected function _loadBackupAdapter($hash, $dbName) {
+    protected function _loadBackupAdapter($hash, $dbName, $connection) {
         $this->response->writeLine('Creating backup adapter '.$dbName);
         $backupAdapter = opal\rdbms\adapter\Base::factory('sqlite://'.$this->_path.'/'.$dbName.'.sqlite');
         $this->_backupAdapters[$hash] = $backupAdapter;
+        $this->_manifest['connections'][$dbName.'.sqlite'] = $connection;
 
         return $backupAdapter;
     }

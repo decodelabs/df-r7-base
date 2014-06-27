@@ -178,6 +178,7 @@ trait TSchema_FieldProvider {
     protected $_addFields = [];
     protected $_renameFields = [];
     protected $_removeFields = [];
+    protected $_replacedFields = [];
     
     public function getField($name) {
         if(isset($this->_fields[$name])) {
@@ -267,14 +268,16 @@ trait TSchema_FieldProvider {
     }
     
     public function replacePreparedField(opal\schema\IField $field) {
+        $name = $field->getName();
+
         if(!isset($this->_fields[$name])) {
             throw new InvalidArgumentException(
                 'Field '.$name.' could not be found'
             );
         }
 
-        $oldField = $this->_fields[$name];
-        
+        $this->_replacedFields[$name] = $oldField = $this->_fields[$name];
+
         $name = $field->getName();
         $this->_fields[$name] = $field;
         
@@ -305,7 +308,7 @@ trait TSchema_FieldProvider {
     
     public function removeField($name) {
         if(isset($this->_fields[$name])) {
-            $origName = $this->_getOriginalFieldNameFor($name);
+            $origName = $this->getOriginalFieldNameFor($name);
             $this->_fields[$name]->_setName($origName);
             
             if($this instanceof IIndexProvider) {
@@ -335,6 +338,10 @@ trait TSchema_FieldProvider {
     }
 
     public function renameField($oldName, $newName) {
+        if($oldName == $newName) {
+            return $this;
+        }
+
         if(isset($this->_fields[$newName])) {
             throw new RuntimeException(
                 'Cannot rename field '.$oldName.' to '.$newName.', a field with that name has already been defined'
@@ -342,10 +349,11 @@ trait TSchema_FieldProvider {
         }
         
         if(isset($this->_fields[$oldName])) {
+            $this->_replacedFields[$oldName] = clone $this->_fields[$oldName];
             $this->_fields[$oldName]->_setName($newName);
             
             if($this->_isAudited) {
-                $this->_renameFields[$newName] = $this->_getOriginalFieldNameFor($oldName);
+                $this->_renameFields[$newName] = $this->getOriginalFieldNameFor($oldName);
             }
             
             $this->_remapFields();
@@ -353,6 +361,12 @@ trait TSchema_FieldProvider {
         }
         
         return $this;
+    }
+
+    public function getReplacedField($name) {
+        if(isset($this->_replacedFields[$name])) {
+            return $this->_replacedFields[$name];
+        }
     }
     
     public function getFields() {
@@ -368,7 +382,7 @@ trait TSchema_FieldProvider {
         
         foreach($this->_fields as $name => $field) {
             if($field->hasChanged() && !isset($this->_addFields[$name])) {
-                $output[$this->_getOriginalFieldNameFor($name)] = $field;
+                $output[$this->getOriginalFieldNameFor($name)] = $field;
             }
         }
         
@@ -414,7 +428,7 @@ trait TSchema_FieldProvider {
         }
     }
     
-    protected function _getOriginalFieldNameFor($name) {
+    public function getOriginalFieldNameFor($name) {
         if(isset($this->_renameFields[$name])) {
             return $this->_renameFields[$name];
         }
@@ -613,7 +627,7 @@ trait TSchema_IndexProvider {
     
     public function removeIndex($name) {
         if(isset($this->_indexes[$name])) {
-            $origName = $this->_getOriginalIndexNameFor($name);
+            $origName = $this->getOriginalIndexNameFor($name);
             $this->_indexes[$name]->_setName($origName);
             
             if($this->_isAudited) {
@@ -635,6 +649,10 @@ trait TSchema_IndexProvider {
     }
     
     public function renameIndex($oldName, $newName) {
+        if($oldName == $newName) {
+            return $this;
+        }
+        
         if(isset($this->_indexes[$newName])) {
             throw new RuntimeException(
                 'Cannot rename index '.$oldName.' to '.$newName.', an index with that name has already been defined'
@@ -645,7 +663,7 @@ trait TSchema_IndexProvider {
             $this->_indexes[$oldName]->_setName($newName);
             
             if($this->_isAudited) {
-                $this->_renameIndexes[$newName] = $this->_getOriginalIndexNameFor($oldName);
+                $this->_renameIndexes[$newName] = $this->getOriginalIndexNameFor($oldName);
             }
             
             $this->_remapIndexes();
@@ -697,7 +715,21 @@ trait TSchema_IndexProvider {
     }
     
     public function hasPrimaryIndexChanged() {
-        return $this->_hasPrimaryIndexChanged;
+        if($this->_hasPrimaryIndexChanged) {
+            return true;
+        }
+        
+        if(!$this->_primaryIndex) {
+            return false;
+        }
+
+        foreach($this->_primaryIndex->getFields() as $field) {
+            if($field->hasChanged()) {
+                return true;
+            }
+        }
+
+        return false;
     }
     
     public function getIndexes() {
@@ -737,7 +769,7 @@ trait TSchema_IndexProvider {
         
         foreach($this->_indexes as $name => $index) {
             if($index->hasChanged() && !isset($this->_addIndexes[$name])) {
-                $output[$this->_getOriginalIndexNameFor($name)] = $index;
+                $output[$this->getOriginalIndexNameFor($name)] = $index;
             }
         }
         
@@ -759,7 +791,7 @@ trait TSchema_IndexProvider {
     abstract public function _createIndex($name, $fields=null);
     abstract public function _createIndexFromStorageArray(array $data);
     
-    protected function _getOriginalIndexNameFor($name) {
+    public function getOriginalIndexNameFor($name) {
         if(isset($this->_renameIndexes[$name])) {
             return $this->_renameIndexes[$name];
         }
@@ -1041,7 +1073,7 @@ trait TSchema_ForeignKeyProvider {
     
     public function removeForeignKey($name) {
         if(isset($this->_foreignKeys[$name])) {
-            $origName = $this->_getOriginalForeignKeyName($name);
+            $origName = $this->getOriginalForeignKeyName($name);
             $this->_foreignKeys[$name]->_setName($origName);
             
             if($this->_isAudited) {
@@ -1063,6 +1095,10 @@ trait TSchema_ForeignKeyProvider {
     }
     
     public function renameForeignKey($oldName, $newName) {
+        if($oldName == $newName) {
+            return $this;
+        }
+
         if(isset($this->_foreignKeys[$newName])) {
             throw new RuntimeException(
                 'Cannot rename foreign key '.$oldName.' to '.$newName.', a foreign key with that name has already been defined'
@@ -1073,7 +1109,7 @@ trait TSchema_ForeignKeyProvider {
             $this->_foreignKeys[$oldName]->_setName($newName);
             
             if($this->_isAudited) {
-                $this->_renameForeignKeys[$newName] = $this->_getOriginalForeignKeyNameFor($oldName);
+                $this->_renameForeignKeys[$newName] = $this->getOriginalForeignKeyNameFor($oldName);
             }
             
             $this->_remapForeignKeys();
@@ -1096,7 +1132,7 @@ trait TSchema_ForeignKeyProvider {
         
         foreach($this->_foreignKeys as $name => $key) {
             if($key->hasChanged() && !isset($this->_addForeignKeys[$name])) {
-                $output[$this->_getOriginalForeignKeyNameFor($name)] = $key;
+                $output[$this->getOriginalForeignKeyNameFor($name)] = $key;
             }
         }
         
@@ -1118,7 +1154,7 @@ trait TSchema_ForeignKeyProvider {
     abstract public function _createForeignKey($name, $targetSchema);
     abstract public function _createForeignKeyFromStorageArray(array $data);
     
-    protected function _getOriginalForeignKeyNameFor($name) {
+    public function getOriginalForeignKeyNameFor($name) {
         if(isset($this->_renameForeignKeys[$name])) {
             return $this->_renameForeignKeys[$name];
         }
@@ -1298,7 +1334,7 @@ trait TSchema_TriggerProvider {
     
     public function removeTrigger($name) {
         if(isset($this->_triggers[$name])) {
-            $origName = $this->_getOriginalTriggerNameFor($name);
+            $origName = $this->getOriginalTriggerNameFor($name);
             $this->_triggers[$name]->_setName($origName);
             
             if($this->_isAudited) {
@@ -1320,6 +1356,10 @@ trait TSchema_TriggerProvider {
     }
     
     public function renameTrigger($oldName, $newName) {
+        if($oldName == $newName) {
+            return $this;
+        }
+
         if(isset($this->_triggers[$newName])) {
             throw new opal\rdbms\TriggerConflictException(
                 'Cannot rename trigger '.$oldName.' to '.$newName.', a field with that name has already been defined'
@@ -1330,7 +1370,7 @@ trait TSchema_TriggerProvider {
             $this->_triggers[$oldName]->_setName($newName);
             
             if($this->_isAudited) {
-                $this->_renameTriggers[$newName] = $this->_getOriginalTriggerNameFor($oldName);
+                $this->_renameTriggers[$newName] = $this->getOriginalTriggerNameFor($oldName);
             }
             
             $this->_remapTriggers();
@@ -1353,7 +1393,7 @@ trait TSchema_TriggerProvider {
         
         foreach($this->_triggers as $name => $trigger) {
             if($trigger->hasChanged() && !isset($this->_addTriggers[$name])) {
-                $output[$this->_getOriginalTriggerNameFor($name)] = $trigger;
+                $output[$this->getOriginalTriggerNameFor($name)] = $trigger;
             }
         }
         
@@ -1372,7 +1412,7 @@ trait TSchema_TriggerProvider {
         return isset($this->_triggers[$name]) || isset($this->_addTriggers[$name]);
     }
     
-    protected function _getOriginalTriggerNameFor($name) {
+    public function getOriginalTriggerNameFor($name) {
         if(isset($this->_renameTriggers[$name])) {
             return $this->_renameTriggers[$name];
         }

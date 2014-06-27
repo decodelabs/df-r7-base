@@ -12,6 +12,7 @@ use df\opal;
     
 class KeyGroup extends Base implements 
     axis\schema\IRelationField, 
+    opal\schema\IOneRelationField,
     opal\schema\IMultiPrimitiveField, 
     opal\schema\ITargetPrimaryFieldAwareRelationField {
 

@@ -114,8 +114,18 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
     public function sanitize(axis\ISchemaBasedStorageUnit $localUnit, axis\schema\ISchema $schema) {
         $this->_sanitizeTargetUnitId($localUnit);
 
+        $oldName = $schema->getOriginalFieldNameFor($this->_name);
+
+        if($oldName != $this->_name && $schema->hasIndex($oldName)) {
+            $schema->renameIndex($oldName, $this->_name);
+        }
+
         if(!$schema->hasIndex($this->_name)) {
             $schema->addIndex($this->_name);
+        } else if($schema->getReplacedField($oldName)) {
+            if($index = $schema->getIndex($oldName)) {
+                $index->markAsChanged();
+            }
         }
         
         return $this;
@@ -173,6 +183,6 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
     
 // Dump
     public function getDumpProperties() {
-        return parent::getDumpProperties().' '.$this->_targetUnitId;
+        return parent::getDumpProperties().'('.$this->_targetUnitId.')';
     }
 }

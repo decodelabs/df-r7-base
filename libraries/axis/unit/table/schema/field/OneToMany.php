@@ -132,4 +132,15 @@ class OneToMany extends axis\schema\field\Base implements axis\schema\IOneToMany
             $this->_getInverseRelationStorageArray()
         );
     }
+
+// Dump
+    public function getDumpProperties() {
+        $arg = $this->_targetUnitId;
+
+        if($this->_targetField) {
+            $arg .= ' -> '.$this->_targetField;
+        }
+
+        return parent::getDumpProperties().'('.$arg.')';
+    }
 }

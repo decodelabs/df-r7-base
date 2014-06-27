@@ -125,12 +125,12 @@ class Rdbms implements
         }
         
         $schema = $this->_unit->getTransientUnitSchema();
-        $this->createStorageFromSchema($schema);
+        $this->updateStorageFromSchema($schema);
         
         return true;        
     }
     
-    public function createStorageFromSchema(axis\schema\ISchema $axisSchema) {
+    public function updateStorageFromSchema(axis\schema\ISchema $axisSchema) {
         $bridge = new axis\schema\bridge\Rdbms($this->_unit, $this->_table->getAdapter(), $axisSchema);
         $opalSchema = $bridge->updateTargetSchema();
         $this->_table->create($opalSchema);

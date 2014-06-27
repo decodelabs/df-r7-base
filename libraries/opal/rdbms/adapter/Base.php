@@ -83,7 +83,7 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
     }
     
     public function __destruct() {
-        $this->closeConnection();
+        $this->_closeConnection();
     }
 
     public function getAdapterName() {
@@ -100,9 +100,9 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
     public function closeConnection() {
         $this->_closeConnection();
         
-        if($this->_dsn) {
+        //if($this->_dsn) {
             self::destroyConnection($this->_dsn->getHash());
-        }
+        //}
         
         return $this;
     }
@@ -233,6 +233,10 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
 
     public function getTable($name) {
         return new opal\rdbms\Table($this, $name);
+    }
+
+    public function tableExists($name) {
+        return $this->getTable($name)->exists();
     }
     
     public function createTable(opal\rdbms\schema\ISchema $schema, $dropIfExists=false) {

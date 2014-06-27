@@ -24,10 +24,15 @@ class Database extends opal\rdbms\Database {
         return $output;
     }
 
-    public function rename($newName) {
+    public function rename($newName, $overwrite=false) {
         $tableList = $this->getTableList();
         $oldName = $this->getName();
-        $this->_adapter->executeSql('CREATE DATABASE IF NOT EXISTS `'.$newName.'`');
+
+        if($overwrite) {
+            $this->_adapter->executeSql('DROP DATABASE `'.$newName.'`');
+        }
+
+        $this->_adapter->executeSql('CREATE DATABASE `'.$newName.'`');
 
         foreach($tableList as $tableName) {
             $stmt = $this->_adapter->prepare('RENAME TABLE `'.$oldName.'`.`'.$tableName.'` TO `'.$newName.'`.`'.$tableName.'`');

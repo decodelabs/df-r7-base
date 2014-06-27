@@ -45,6 +45,7 @@ interface IUnitInspector {
     public function getTransientSchema();
     public function getSchemaVersion();
     public function getDefinedSchemaVersion();
+    public function canUpdateSchema();
 
     public function isStorageUnit();
     public function isSchemaBasedStorageUnit();

@@ -87,6 +87,11 @@ trait TField {
     public function hasChanged() {
         return $this->_hasChanged;
     }
+
+    public function markAsChanged() {
+        $this->_hasChanged = true;
+        return $this;
+    }
     
     public function acceptChanges() {
         $this->_hasChanged = false;

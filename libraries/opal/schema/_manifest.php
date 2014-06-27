@@ -51,6 +51,7 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 // Interfaces
 interface IChangeTracker {
     public function hasChanged();
+    public function markAsChanged();
     public function acceptChanges();
 }
 
@@ -88,6 +89,8 @@ interface IFieldProvider extends ISchema {
     public function replacePreparedField(IField $field);
     public function removeField($name);
     public function renameField($oldName, $newName);
+    public function getOriginalFieldNameFor($name);
+    public function getReplacedField($name);
     public function getFields();
     public function getFieldsToAdd();
     public function getFieldsToUpdate();
@@ -109,6 +112,7 @@ interface IIndexProvider extends ISchema {
     public function replacePreparedIndex(IIndex $index);
     public function removeIndex($name);
     public function renameIndex($oldName, $newName);
+    public function getOriginalIndexNameFor($name);
     public function setPrimaryIndex($index);
     public function getPrimaryIndex();
     public function getLastPrimaryIndex();
@@ -142,6 +146,7 @@ interface IForeignKeyProvider extends ISchema {
     public function replacePreparedForeignKey(IForeignKey $key);
     public function removeForeignKey($name);
     public function renameForeignKey($oldName, $newName);
+    public function getOriginalForeignKeyNameFor($name);
     public function getForeignKeys();
     public function getForeignKeysToAdd();
     public function getForeignKeysToUpdate();
@@ -160,6 +165,7 @@ interface ITriggerProvider extends ISchema {
     public function replacePreparedTrigger(ITrigger $trigger);
     public function removeTrigger($name);
     public function renameTrigger($oldName, $newName);
+    public function getOriginalTriggerNameFor($name);
     public function getTriggers();
     public function getTriggersToAdd();
     public function getTriggersToUpdate();

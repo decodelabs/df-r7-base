@@ -57,4 +57,15 @@ class ManyToOne extends One implements axis\schema\IManyToOneField, opal\schema\
             $this->_getInverseRelationStorageArray()
         );
     }
+
+// Dump
+    public function getDumpProperties() {
+        $output = parent::getDumpProperties();
+
+        if($this->_targetField) {
+           $output = substr($output, 0, -1).' -> '.$this->_targetField.')';
+        }
+
+        return $output;
+    }
 }

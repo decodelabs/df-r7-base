@@ -22,7 +22,15 @@ class Rdbms extends Base {
     public function getRdbmsAdapter() {
         return $this->_rdbmsAdapter;
     }
+
+    protected function _storageExists() {
+        return $this->_rdbmsAdapter->tableExists($this->_unit->getStorageBackendName());
+    }
     
+    protected function _getTargetSchema() {
+        return $this->_rdbmsAdapter->getSchema($this->_unit->getStorageBackendName());
+    }
+
     protected function _createTargetSchema() {
         return $this->_rdbmsAdapter->newSchema($this->_unit->getStorageBackendName());
     }
