@@ -40,7 +40,7 @@ class LocalFile implements core\cache\IDirectFileBackend {
         if($cache->isCacheDistributed()) {
             $this->_path = df\Launchpad::$application->getSharedStoragePath();
         } else {
-            $this->_path = df\Launchpad::$application->getDataStoragePath();
+            $this->_path = df\Launchpad::$application->getLocalStoragePath();
         }
 
         $this->_path .= '/cache/'.core\string\Manipulator::formatFileName($cache->getCacheId());
