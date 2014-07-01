@@ -27,6 +27,8 @@ class Codec {
 
         if($data instanceof core\time\IDate) {
             return $data->format(core\time\Date::W3C);
+        } else if($data instanceof core\time\IDuration) {
+            return $data->getSeconds();
         }
 
         if($data instanceof core\IArrayProvider) {
