@@ -139,7 +139,7 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
                 return $response;
             } else {
                 $response = new link\http\response\Redirect($baseUrl);
-                $response->isPermanent(true);
+                //$response->isPermanent(true);
                 return $response;
             }
         }
