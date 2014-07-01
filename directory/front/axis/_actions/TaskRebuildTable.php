@@ -81,7 +81,7 @@ class TaskRebuildTable extends arch\task\Action {
         }
 
         $bridge = new axis\schema\bridge\Rdbms($unit, $connection, $axisSchema);
-        $dbSchema = $bridge->updateTargetSchema();
+        $dbSchema = $bridge->createFreshTargetSchema();
         $currentTableName = $dbSchema->getName();
         $dbSchema->setName($currentTableName.'__rebuild__');
 
