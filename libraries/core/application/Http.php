@@ -223,29 +223,16 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
         return $response;
     }
     
-    protected function _enforceDeveloperCredentials() {
-        $envConfig = core\Environment::getInstance();
-
-        if($credentials = $envConfig->getDeveloperCredentials()) {
-            if(!isset($_SERVER['PHP_AUTH_USER'])
-            || $_SERVER['PHP_AUTH_USER'] != $credentials['user']
-            || $_SERVER['PHP_AUTH_PW'] != $credentials['password']) {
-                header('WWW-Authenticate: Basic realm="Developer Site"');
-                header('HTTP/1.0 401 Unauthorized');
-                echo 'You need to authenticate to view this development site';
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     protected function _prepareHttpRequest() {
         if(!$this->isProduction()) {
             $this->_enforceDeveloperCredentials();
         }
 
         $this->_httpRequest = new link\http\request\Base(null, true);
+
+        if($response = $this->_checkIpRanges($this->_httpRequest->getIp())) {
+            return $response;
+        }
 
         if($this->_router->shouldUseHttps() && !$this->_httpRequest->getUrl()->isSecure()) {
             $response = new link\http\response\Redirect(
@@ -275,6 +262,51 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
         }
 
         return null;
+    }
+
+    protected function _enforceDeveloperCredentials() {
+        $envConfig = core\Environment::getInstance();
+
+        if($credentials = $envConfig->getDeveloperCredentials()) {
+            if(!isset($_SERVER['PHP_AUTH_USER'])
+            || $_SERVER['PHP_AUTH_USER'] != $credentials['user']
+            || $_SERVER['PHP_AUTH_PW'] != $credentials['password']) {
+                header('WWW-Authenticate: Basic realm="Developer Site"');
+                header('HTTP/1.0 401 Unauthorized');
+                echo 'You need to authenticate to view this development site';
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected function _checkIpRanges(link\IIp $ip) {
+        $config = core\application\http\Config::getInstance();
+        $ranges = $config->getIpRanges();
+
+        if(empty($ranges)) {
+            return;
+        }
+
+        foreach($ranges as $range) {
+            if($range->check($ip)) {
+                return;
+            }
+        }
+
+        if($ip->isLoopback()) {
+            return;
+        }
+
+        $response = new link\http\response\String(
+            '<html><head><title>Forbidden</title></head><body>'.
+            '<p>Sorry, you are not allowed to be here.</p>',
+            'text/html'
+        );
+        
+        $response->getHeaders()->setStatusCode(403);
+        return $response;
     }
     
     protected function _dispatchRequest(arch\IRequest $request) {

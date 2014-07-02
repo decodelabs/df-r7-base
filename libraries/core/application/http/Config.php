@@ -21,7 +21,8 @@ class Config extends core\Config {
             'areaDomainMap' => [],
             'sendFileHeader' => 'X-Sendfile',
             'secure' => false,
-            'manualChunk' => false
+            'manualChunk' => false,
+            'ipRanges' => null
         ];
     }
 
@@ -185,5 +186,33 @@ class Config extends core\Config {
         }
 
         return (bool)$this->values['manualChunk'];
+    }
+
+// IP Ranges
+    public function setIpRanges(array $ranges=null) {
+        if($ranges !== null) {
+            foreach($ranges as $i => $range) {
+                $ranges = link\IpRange::factory($range);
+            }
+
+            core\dump($ranges);
+        }
+
+        $this->values['ipRanges'] = $ranges;
+        return $this;
+    }
+
+    public function getIpRanges() {
+        if(isset($this->values['ipRanges']) && is_array($this->values['ipRanges'])) {
+            $output = [];
+
+            foreach($this->values['ipRanges'] as $range) {
+                $output[] = link\IpRange::factory($range);
+            }
+
+            return $output;
+        }
+
+        return [];
     }
 }
