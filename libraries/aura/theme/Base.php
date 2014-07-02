@@ -13,13 +13,10 @@ use df\spur;
 
 class Base implements ITheme {
     
-    const COOKIE_NOTICE = false;
-    const COOKIE_NOTICE_COOKIE = 'cnx';
-    const ANALYTICS = true;
-
     protected $_id;
     protected $_iconMap = null;
-    
+    protected $_facets = ['analytics'];
+
     public static function factory($id) {
         if($id instanceof ITheme) {
             return $id;
@@ -41,6 +38,18 @@ class Base implements ITheme {
     
     protected function __construct($id) {
         $this->_id = $id;
+
+        $facets = [];
+
+        if(is_array($this->_facets)) {
+            $facets = $this->_facets;
+        }
+
+        $this->_facets = [];
+
+        foreach($facets as $name) {
+            $this->loadFacet($name);
+        }
     }
     
     public function getId() {
@@ -56,6 +65,10 @@ class Base implements ITheme {
         if(method_exists($this, $func)) {
             $this->$func($view);
         }
+
+        foreach($this->_facets as $facet) {
+            $facet->renderTo($view);
+        }
         
         return $this;
     }
@@ -64,17 +77,6 @@ class Base implements ITheme {
         $this->applyDefaultIncludes($view);
         $this->applyDefaultViewTitle($view);
         $this->applyDefaultBodyTagData($view);
-
-        if($view->context->getRunMode() == 'Http') {
-            if(static::COOKIE_NOTICE && !$view->context->http->getCookie(static::COOKIE_NOTICE_COOKIE)) {
-                $this->applyCookieNotice($view);
-            }
-
-            if(static::ANALYTICS) {
-                $this->applyAnalytics($view);
-            }
-        }
-
         $this->applyDefaultMetaData($view);
     }
 
@@ -115,14 +117,6 @@ class Base implements ITheme {
             ->setDataAttribute('location', $request->getLiteralPathString())
             ->setDataAttribute('layout', $view->getLayout())
             ->setDataAttribute('base', '/'.ltrim($router->getBaseUrl()->getPathString(), '/'));
-    }
-
-    public function applyCookieNotice(aura\view\IView $view) {
-        $view->slot->set('cookieNotice', 'elements/CookieNotice.html', '~front/');
-    }
-
-    public function applyAnalytics(aura\view\IView $view) {
-        spur\analytics\Handler::factory()->apply($view);
     }
 
     public function applyDefaultMetaData(aura\view\IView $view) {
@@ -175,5 +169,40 @@ class Base implements ITheme {
 
     public function mapLayout(aura\view\ILayoutView $view) {
         return null;
+    }
+
+
+// Facets
+    public function loadFacet($name) {
+        $name = lcfirst($name);
+
+        if(!isset($this->_facets[$name])) {
+            $this->_facets[$name] = aura\theme\facet\Base::factory($name);
+        }
+
+        return $this->_facets[$name];
+    }
+
+    public function hasFacet($name) {
+        return isset($this->_facets[lcfirst($name)]);
+    }
+
+    public function getFacet($name) {
+        $name = lcfirst($name);
+
+        if(isset($this->_facets[$name])) {
+            return $this->_facets[$name];
+        }
+
+        return null;
+    }
+
+    public function removeFacet($name) {
+        unset($this->_facets[lcfirst($name)]);
+        return $this;
+    }
+
+    public function getFacets() {
+        return $this->_facets;
     }
 }

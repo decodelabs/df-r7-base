@@ -29,6 +29,7 @@ class Embed implements IVideoEmbed {
     protected $_endTime;
     protected $_duration;
     protected $_autoPlay = false;
+    protected $_provider;
 
     public static function parse($embed) {
         $embed = trim($embed);
@@ -109,11 +110,24 @@ class Embed implements IVideoEmbed {
         }
 
         $this->_url = $url;
+        $this->_provider = null;
+
+        foreach(self::$_urlMap as $search => $key) {
+            if(false !== stripos($this->_url, $search)) {
+                $this->_provider = $key;
+                break;
+            }
+        }
+
         return $this;
     }
 
     public function getUrl() {
         return $this->_url;
+    }
+
+    public function getProvider() {
+        return $this->_provider;
     }
  
  // Width
@@ -238,13 +252,10 @@ class Embed implements IVideoEmbed {
 
 // String
     public function render() {
-        $func = '_prepareGenericUrl';
-
-        foreach(self::$_urlMap as $search => $key) {
-            if(false !== stripos($this->_url, $search)) {
-                $func = '_prepare'.ucfirst($key).'Url';
-                break;
-            }
+        if($this->_provider) {
+            $func = '_prepare'.ucfirst($this->_provider).'Url';
+        } else {
+            $func = '_prepareGenericUrl';
         }
 
         $tag = new aura\html\Element('iframe', null, [

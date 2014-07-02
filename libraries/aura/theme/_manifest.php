@@ -18,4 +18,14 @@ interface ITheme extends aura\view\IRenderable, aura\view\ILayoutMap {
     public function getId();
     public function findAsset($path);
     public function mapIcon($name);
+
+    public function loadFacet($name);
+    public function hasFacet($name);
+    public function getFacet($name);
+    public function removeFacet($name);
+    public function getFacets();
+}
+
+interface IFacet extends aura\view\IRenderable {
+
 }
