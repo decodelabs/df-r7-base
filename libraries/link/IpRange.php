@@ -11,6 +11,8 @@ use df\link;
 
 class IpRange implements IIpRange {
     
+    use core\TStringProvider;
+
     protected $_isV4 = false;
     protected $_start = null;
     protected $_end = null;
@@ -172,5 +174,41 @@ class IpRange implements IIpRange {
             $hex = $ip->getV6Hex();
             return $this->_start <= $hex && $hex <= $this->_end;
         }
+    }
+
+    public function toString() {
+        if($this->_isV4) {
+            return $this->_toV4String();
+        } else {
+            return $this->_toV6String();
+        }
+    }
+
+    protected function _toV4String() {
+        if($this->_end !== null) {
+            // Hex
+            $start = long2ip(hexdec($this->_start));
+            $end = long2ip(hexdec($this->_end));
+
+            if($start == $end) {
+                return $start;
+            }
+
+            return $start.'-'.$end;
+        } else {
+            // Mask
+            $start = long2ip($this->_start);
+            $netmask = 32 - (log($this->_netmask * -1) / log(2));
+
+            if(is_nan($netmask)) {
+                $netmask = long2ip($this->_netmask);
+            }
+
+            return $start.'/'.$netmask;
+        }
+    }
+
+    protected function _toV6String() {
+        core\stub();
     }
 }

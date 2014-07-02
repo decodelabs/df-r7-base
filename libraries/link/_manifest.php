@@ -47,7 +47,7 @@ interface IIp extends core\IStringProvider {
 }
 
 
-interface IIpRange {
+interface IIpRange extends core\IStringProvider {
     public function check($ip);
 }
 
