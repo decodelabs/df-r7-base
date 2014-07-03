@@ -72,22 +72,11 @@ class IpRange implements IIpRange, core\IDumpable {
             if(false !== strpos($range, '-')) {
                 // Simple range
                 $parts = explode('-', $range, 2);
-                $start = ip2long(trim(array_shift($parts)));
-                $end = ip2long(trim(array_shift($parts)));
-                
-                if($start < 0) {
-                    $start += pow(2, 32);
-                }
-                
-                if($end < 0) {
-                    $end += pow(2, 32);
-                }
-                
-                $this->_start = sprintf('%08x', $start);
-                $this->_end = sprintf('%08x', $end);
+                $this->_start = ip2long(trim(array_shift($parts)));
+                $this->_end = ip2long(trim(array_shift($parts)));
             } else {
                 // Single ip match
-                $this->_start = $this->_end = Ip::factory($range)->getV4Hex();
+                $this->_start = $this->_end = (int)Ip::factory($range)->getV4Decimal();
             }
         }
         
@@ -159,14 +148,15 @@ class IpRange implements IIpRange, core\IDumpable {
             if(!$ip->isV4()) {
                 return false;
             }
+
+            $value = (int)$ip->getV4Decimal();
             
             if($this->_end !== null) {
                 // range
-                $hex = $ip->getV4Hex();
-                return $this->_start <= $hex && $hex <= $this->_end;
+                return $this->_start <= $value && $value <= $this->_end;
             } else {
                 // netmask
-                return ($ip->getV4Decimal() & $this->_netmask)
+                return ($value & $this->_netmask)
                     == ($this->_start & $this->_netmask);
             }
         } else {
@@ -187,8 +177,8 @@ class IpRange implements IIpRange, core\IDumpable {
     protected function _toV4String() {
         if($this->_end !== null) {
             // Hex
-            $start = long2ip(hexdec($this->_start));
-            $end = long2ip(hexdec($this->_end));
+            $start = long2ip($this->_start);
+            $end = long2ip($this->_end);
 
             if($start == $end) {
                 return $start;
