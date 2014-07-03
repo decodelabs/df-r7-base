@@ -528,17 +528,21 @@ class Base implements link\http\IRequest, core\IDumpable {
     public function getIp() {
         if($this->_ip === null) {
             if($this->_environmentMode) {
-                $ip = '0.0.0.0';
-            
-                if(isset($_SERVER['HTTP_CLIENT_IP'])) {
-                    $ip = $_SERVER['HTTP_CLIENT_IP'];
-                } else if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-                } else if(isset($_SERVER['REMOTE_ADDR'])) {
-                    $ip = $_SERVER['REMOTE_ADDR'];
+                $ips = '';
+                
+                if(isset($_SERVER['REMOTE_ADDR'])) {
+                    $ips .= $_SERVER['REMOTE_ADDR'].',';
                 }
 
-                $parts = explode(',', $ip);
+                if(isset($_SERVER['HTTP_CLIENT_IP'])) {
+                    $ips .= $_SERVER['HTTP_CLIENT_IP'].',';
+                }
+
+                if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                    $ips .= $_SERVER['HTTP_X_FORWARDED_FOR'];
+                }
+
+                $parts = explode(',', rtrim($ips, ','));
 
                 while(!empty($parts)) {
                     $ip = trim(array_shift($parts));
