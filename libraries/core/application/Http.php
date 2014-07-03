@@ -305,7 +305,7 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
             'text/html'
         );
         
-        $response->getHeaders()->setStatusCode(403);
+        //$response->getHeaders()->setStatusCode(403);
         return $response;
     }
     
