@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\link;
 
-class IpRange implements IIpRange {
+class IpRange implements IIpRange, core\IDumpable {
     
     use core\TStringProvider;
 
@@ -210,5 +210,19 @@ class IpRange implements IIpRange {
 
     protected function _toV6String() {
         core\stub();
+    }
+
+// Dump
+    public function getDumpProperties() {
+        if($this->_isV4) {
+            return $this->_toV4String();
+        } else {
+            return [
+                'v6' => true,
+                'start' => $this->_start,
+                'end' => $this->_end,
+                'netmask' => $this->_netmask
+            ];
+        }
     }
 }
