@@ -306,7 +306,7 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
 
         $response = new link\http\response\String(
             '<html><head><title>Forbidden</title></head><body>'.
-            '<p>Sorry, this site is protected by IP range.</p><p>Your IP is: <strong>'.$ip.'</strong></p>',
+            '<p>Sorry, this site is protected by IP range.</p><p>Your IP is: <strong>'.$ip.'</strong></p><pre>'.print_r($_SERVER, 1).'</pre>',
             'text/html'
         );
         
