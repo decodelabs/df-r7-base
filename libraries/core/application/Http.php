@@ -289,13 +289,18 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
             return;
         }
 
+        $augmentor = $this->getResponseAugmentor();
+        $augmentor->setHeaderForAnyRequest('x-allow-ip', (string)$ip);
+
         foreach($ranges as $range) {
             if($range->check($ip)) {
+                $augmentor->setHeaderForAnyRequest('x-allow-ip-range', (string)$range);
                 return;
             }
         }
 
         if($ip->isLoopback()) {
+            $augmentor->setHeaderForAnyRequest('x-allow-ip-range', 'loopback');
             return;
         }
 
