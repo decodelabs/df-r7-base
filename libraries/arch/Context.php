@@ -126,7 +126,11 @@ class Context implements IContext, \Serializable, core\IDumpable {
         if($toRequest && $uri instanceof IRequest) {
             return $this->_applyRequestRedirect($uri, $from, $to);
         } else if($uri instanceof core\uri\IUrl && !$uri instanceof IRequest) {
-            return $uri;
+            if($toRequest && $uri instanceof link\http\IUrl && ($request = $uri->getDirectoryRequest())) {
+                $uri = $request;
+            } else {
+                return $uri;
+            }
         }
         
         if($uri === null) {

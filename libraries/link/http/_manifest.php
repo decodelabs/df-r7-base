@@ -8,6 +8,7 @@ namespace df\link\http;
 use df;
 use df\core;
 use df\link;
+use df\arch;
 
 // Exceptions
 interface IException {}
@@ -31,6 +32,9 @@ class DebugPayload extends \Exception {
 // Interfaces
 interface IUrl extends core\uri\IGenericUrl, core\uri\ICredentialContainer, core\uri\ISecureSchemeContainer, core\uri\IDomainPortContainer {
     public function getLocalString();
+
+    public function setDirectoryRequest(arch\IRequest $request=null);
+    public function getDirectoryRequest();
 }
 
 

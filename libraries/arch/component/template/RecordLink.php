@@ -298,7 +298,7 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
         $name = $this->_decorateBody($name);
 
         $output = $this->html->link($url, $name, $this->_matchRequest)
-            ->shouldCheckAccess((bool)$this->_action)
+            //->shouldCheckAccess((bool)$this->_action)
             ->setIcon($this->_icon)
             ->setDisposition($this->_disposition)
             ->setNote($this->_note)

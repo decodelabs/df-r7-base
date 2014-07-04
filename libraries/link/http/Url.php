@@ -15,52 +15,55 @@ class Url extends core\uri\Url implements IUrl {
     use core\uri\TUrl_CredentialContainer;
     use core\uri\TUrl_DomainContainer;
     use core\uri\TUrl_PortContainer;
+
+    protected $_directoryRequest;
     
     public static function fromDirectoryRequest(arch\IRequest $request, $scheme, $domain, $port, array $basePath, $mappedArea=null) {
         if($request->isJustFragment()) {
-            return new self('#'.$request->getFragment());
-        }
+            $output = new self('#'.$request->getFragment());
+        } else {
+            $path = null;
         
-        $path = null;
-        
-        if($request->_path) {
-            $path = clone $request->_path;
-            $area = $path->get(0);
-            
-            if($area == $request::AREA_MARKER.$request::DEFAULT_AREA
-            || $area == $request::AREA_MARKER.$mappedArea) {
-                $path->shift();
-            }
+            if($request->_path) {
+                $path = clone $request->_path;
+                $area = $path->get(0);
+                
+                if($area == $request::AREA_MARKER.$request::DEFAULT_AREA
+                || $area == $request::AREA_MARKER.$mappedArea) {
+                    $path->shift();
+                }
 
-            if($path->getBasename() == 'index') {
-                $path->shouldAddTrailingSlash(true)->pop();
+                if($path->getBasename() == 'index') {
+                    $path->shouldAddTrailingSlash(true)->pop();
+                }
+                
+                if(!empty($basePath)) {
+                    $path->unshift($basePath);
+                }
+            } else if(!empty($basePath)) {
+                $path = new core\uri\Path($basePath);
+                $path->shouldAddTrailingSlash(true);
             }
             
-            if(!empty($basePath)) {
-                $path->unshift($basePath);
+            $output = new self();
+            $output->_scheme = $scheme;
+            $output->_domain = $domain;
+            $output->_port = $port;
+            
+            if(!empty($path)) {
+                $output->_path = $path;
             }
-        } else if(!empty($basePath)) {
-            $path = new core\uri\Path($basePath);
-            $path->shouldAddTrailingSlash(true);
+            
+            if(!empty($request->_query)) {
+                $output->_query = $request->_query;
+            }
+            
+            if(!empty($request->_fragment)) {
+                $output->_fragment = $request->_fragment;
+            }
         }
         
-        $output = new self();
-        $output->_scheme = $scheme;
-        $output->_domain = $domain;
-        $output->_port = $port;
-        
-        if(!empty($path)) {
-            $output->_path = $path;
-        }
-        
-        if(!empty($request->_query)) {
-            $output->_query = $request->_query;
-        }
-        
-        if(!empty($request->_fragment)) {
-            $output->_fragment = $request->_fragment;
-        }
-        
+        $output->_directoryRequest = $request;
         return $output;
     }
     
@@ -252,6 +255,17 @@ class Url extends core\uri\Url implements IUrl {
         }
         
         return $this->_port;
+    }
+
+
+// Arch request
+    public function setDirectoryRequest(arch\IRequest $request=null) {
+        $this->_directoryRequest = $request;
+        return $this;
+    }
+
+    public function getDirectoryRequest() {
+        return $this->_directoryRequest;
     }
     
     

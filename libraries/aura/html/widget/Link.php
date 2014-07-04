@@ -108,8 +108,9 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         
         if($this->_checkAccess && !$disabled) {
             $userManager = $context->user;
+            $uri = $context->normalizeOutputUrl($this->_uri, true);
             
-            if(($uri = $context->normalizeOutputUrl($this->_uri, true)) instanceof user\IAccessLock) {
+            if($uri instanceof user\IAccessLock) {
                 if(!$userManager->canAccess($uri, null, true)) {
                     $disabled = true;
                 }
