@@ -200,12 +200,14 @@ class Rdbms implements
 // Create
     public function updateStorageFromSchema(axis\schema\ISchema $axisSchema) {
         $adapter = $this->getConnection();
+        $table = $adapter->getTable($this->_unit->getStorageBackendName());
+        $tableExists = $table->exists();
+
         $bridge = new axis\schema\bridge\Rdbms($this->_unit, $adapter, $axisSchema);
         $dbSchema = $bridge->updateTargetSchema();
-        $table = $adapter->getTable($dbSchema->getName());
 
         if($dbSchema->hasChanged()) {
-            if($table->exists()) {
+            if($tableExists) {
                 //core\debug()->dump($dbSchema);
                 //return $table;
                 return $table->alter($dbSchema);

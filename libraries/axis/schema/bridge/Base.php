@@ -56,6 +56,7 @@ abstract class Base implements axis\schema\IBridge {
     public function createFreshTargetSchema() {
         if(!$this->_isNew) {
             $this->_targetSchema = $this->_createTargetSchema();
+            $this->_isNew = true;
         }
 
         $axisPrimaryIndex = $this->_axisSchema->getPrimaryIndex();
