@@ -288,13 +288,17 @@ interface ISchemaBasedStorageUnit extends IAdapterBasedStorageUnit, opal\schema\
     public function buildInitialSchema();
     public function updateUnitSchema(axis\schema\ISchema $schema);
     public function validateUnitSchema(axis\schema\ISchema $schema);
+
+    public function ensureStorage();
+    public function createStorageFromSchema(axis\schema\ISchema $schema);
+    public function updateStorageFromSchema(axis\schema\ISchema $schema);
+
     public function getDefinedUnitSchemaVersion();
 }
 
 interface ISchemaDefinitionStorageUnit extends IStorageUnit {
     public function fetchFor(ISchemaBasedStorageUnit $unit, $transient=false);
     public function store(ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema);
-    public function update(axis\ISchemaBasedStorageUnit $unit);
     public function remove(ISchemaBasedStorageUnit $unit);
     public function removeId($unitId);
     public function clearCache(ISchemaBasedStorageUnit $unit=null);
@@ -331,6 +335,8 @@ interface IIntrospectableAdapter extends IAdapter {
 }
 
 interface ISchemaProviderAdapter extends IAdapter {
+    public function ensureStorage();
+    public function createStorageFromSchema(axis\schema\ISchema $schema);
     public function updateStorageFromSchema(axis\schema\ISchema $schema);
     public function destroyStorage();
     public function storageExists();
@@ -349,6 +355,4 @@ interface ISchemaDefinitionStorageAdapter extends ISchemaProviderAdapter {
 
     public function fetchStoredUnitList();
     public function fetchRawData();
-    
-    public function ensureStorage();
 }

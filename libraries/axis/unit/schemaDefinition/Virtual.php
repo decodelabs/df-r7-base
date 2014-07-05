@@ -85,7 +85,10 @@ final class Virtual implements axis\ISchemaDefinitionStorageUnit, axis\ISchemaBa
             
             if(!$transient) {
                 $unit->validateUnitSchema($schema);
-                $unit->updateStorageFromSchema($schema);
+
+                if(!$unit->storageExists()) {
+                    $unit->createStorageFromSchema($schema);
+                }
                 
                 $schema->acceptChanges();
                 $this->store($unit, $schema);
@@ -127,91 +130,6 @@ final class Virtual implements axis\ISchemaDefinitionStorageUnit, axis\ISchemaBa
         
         $this->clearCache($unit);
         
-        return $this;
-    }
-
-    public function update(axis\ISchemaBasedStorageUnit $unit) {
-        if($unit->getClusterId()) {
-            $unit = axis\Model::loadUnitFromId($unit->getGlobalUnitId());
-        }
-
-        $schema = $unit->getUnitSchema();
-        $unit->updateUnitSchema($schema);
-        $unitId = $unit->getGlobalUnitId();
-        $store = [];
-
-        if($schema->hasPrimaryIndexChanged()) {
-            foreach($this->fetchStoredUnitList() as $relationUnitId) {
-                $relationUnit = axis\Model::loadUnitFromId($relationUnitId);
-                $relationSchema = $relationUnit->getUnitSchema();
-                $update = false;
-
-                foreach($relationSchema->getFields() as $relationField) {
-                    if(!$relationField instanceof axis\schema\IRelationField
-                    || $relationField instanceof opal\schema\INullPrimitiveField
-                    || $relationField->getTargetUnitId() != $unitId) {
-                        continue;
-                    }
-
-                    if($relationField instanceof opal\schema\IOneRelationField) {
-                        $relationField->markAsChanged();
-                        $relationSchema->replacePreparedField($relationField);
-                        $update = true;
-                    } else {
-                        core\stub($relationField, $relationUnit);
-                    }
-                }
-
-                if($update) {
-                    $relationSchema->sanitize($relationUnit);
-
-                    if($relationUnit->storageExists()) {
-                        $relationUnit->updateStorageFromSchema($relationSchema);
-                    }
-
-                    $store[$relationUnit->getUnitId()] = [
-                        'unit' => $relationUnit,
-                        'schema' => $relationSchema
-                    ];
-                }
-            }
-        }
-
-        if($unit->storageExists()) {
-            $unit->updateStorageFromSchema($schema);
-        }
-
-        $store[$unit->getUnitId()] = [
-            'unit' => $unit,
-            'schema' => $schema
-        ];
-
-
-        try {
-            $clusterUnit = axis\Model::loadClusterUnit();
-        } catch(axis\RuntimeException $e) {
-            $clusterUnit = null;
-        }
-
-        if($clusterUnit) {
-            foreach($clusterUnit->select('@primary as primary') as $row) {
-                $clusterId = $row['primary'];
-
-                foreach($store as $unitId => $set) {
-                    $clusterUnit = axis\Model::loadUnitFromId($unitId, $clusterId);
-
-                    if($clusterUnit->storageExists()) {
-                        $clusterUnit->updateStorageFromSchema($set['schema']);
-                    }
-                }
-            }
-        }
-
-
-        foreach($store as $unitId => $set) {
-            $this->store($set['unit'], $set['schema']);
-        }
-
         return $this;
     }
     
@@ -295,6 +213,20 @@ final class Virtual implements axis\ISchemaDefinitionStorageUnit, axis\ISchemaBa
         }
     }
 
+    public function ensureStorage() {
+        $this->_adapter->ensureStorage();
+        return $this;
+    }
+
+    public function createStorageFromSchema(axis\schema\ISchema $schema) {
+        $this->_adapter->createStorageFromSchema($schema);
+        return $this;
+    }
+
+    public function updateStorageFromSchema(axis\schema\ISchema $schema) {
+        $this->_adapter->updateStorageFromSchema($schema);
+        return $this;
+    }
 
     public function destroyStorage() {
         $this->_adapter->destroyStorage();

@@ -125,22 +125,32 @@ class Rdbms implements
         }
         
         $schema = $this->_unit->getTransientUnitSchema();
-        $this->updateStorageFromSchema($schema);
-        
+        $this->createStorageFromSchema($schema);
+
         return true;        
     }
-    
-    public function updateStorageFromSchema(axis\schema\ISchema $axisSchema) {
+
+
+    public function createStorageFromSchema(axis\schema\ISchema $axisSchema) {
         $bridge = new axis\schema\bridge\Rdbms($this->_unit, $this->_table->getAdapter(), $axisSchema);
-        $opalSchema = $bridge->updateTargetSchema();
-        $this->_table->create($opalSchema);
-        
-        return $this;
+        $dbSchema = $bridge->createFreshTargetSchema();
+
+        return $this->_table->create($dbSchema);
+    }
+
+    public function updateStorageFromSchema(axis\schema\ISchema $axisSchema) {
+        $bridge = new axis\schema\bridge\Rdbms($this->_unit, $this->_table->getAdapter(), $axisSchema, $this->_table->getSchema());
+        $dbSchema = $bridge->updateTargetSchema();
+
+        if($dbSchema->hasChanged()) {
+            return $this->_table->alter($dbSchema);
+        }
+
+        return $table;
     }
     
     public function destroyStorage() {
         $this->_table->drop();
-        
         return $this;
     }
 

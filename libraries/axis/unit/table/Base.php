@@ -135,6 +135,16 @@ abstract class Base implements
         $schema->validate($this);
         return $this;
     }
+
+    public function ensureStorage() {
+        $this->_adapter->ensureStorage();
+        return $this;
+    }
+
+    public function createStorageFromSchema(axis\schema\ISchema $schema) {
+        $this->_adapter->createStorageFromSchema($schema);
+        return $this;
+    }
     
     public function updateStorageFromSchema(axis\schema\ISchema $schema) {
         $this->_adapter->updateStorageFromSchema($schema);

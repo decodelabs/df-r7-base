@@ -26,6 +26,7 @@ class TaskBackup extends arch\task\Action {
     ];
 
     public function execute() {
+        axis\schema\Cache::getInstance()->clear();
         $this->response->write('Probing units...');
 
         $probe = new axis\introspector\Probe();
@@ -104,7 +105,7 @@ class TaskBackup extends arch\task\Action {
         $unitAdapter = $inspector->getAdapter();
         $unit = $inspector->getUnit();
         $backupAdapter = $this->_getBackupAdapter($inspector);
-        $schema = $inspector->getTransientSchema();
+        $schema = $inspector->getSchema();
         $bridge = new axis\schema\bridge\Rdbms($unit, $backupAdapter, $schema);
         $opalSchema = $bridge->createFreshTargetSchema();
         $table = $backupAdapter->createTable($opalSchema);

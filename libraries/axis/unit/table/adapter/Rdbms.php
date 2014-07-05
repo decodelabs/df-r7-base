@@ -198,35 +198,43 @@ class Rdbms implements
     
     
 // Create
+    public function ensureStorage() {
+        if(!$this->storageExists()) {
+            return false;
+        }
+
+        $schema = $this->_unit->getTransientUnitSchema();
+        $this->createStorageFromSchema($schema);
+
+        return $this;
+    }
+
+    public function createStorageFromSchema(axis\schema\ISchema $axisSchema) {
+        $adapter = $this->getConnection();
+        $table = $adapter->getTable($this->_unit->getStorageBackendName());
+
+        $bridge = new axis\schema\bridge\Rdbms($this->_unit, $adapter, $axisSchema);
+        $dbSchema = $bridge->createFreshTargetSchema();
+
+        return $table->create($dbSchema);
+    }
+
     public function updateStorageFromSchema(axis\schema\ISchema $axisSchema) {
         $adapter = $this->getConnection();
         $table = $adapter->getTable($this->_unit->getStorageBackendName());
-        $tableExists = $table->exists();
 
-        $bridge = new axis\schema\bridge\Rdbms($this->_unit, $adapter, $axisSchema);
+        $bridge = new axis\schema\bridge\Rdbms($this->_unit, $adapter, $axisSchema, $table->getSchema());
         $dbSchema = $bridge->updateTargetSchema();
 
         if($dbSchema->hasChanged()) {
-            if($tableExists) {
-                //core\debug()->dump($dbSchema);
-                //return $table;
-                return $table->alter($dbSchema);
-            } else {
-                try {
-                    return $table->create($dbSchema);
-                } catch(opal\rdbms\TableConflictException $e) {
-                    // TODO: check db schema matches
-                }
-            }
+            return $table->alter($dbSchema);
         }
 
         return $table;
     }
     
     public function destroyStorage() {
-        $table = $this->getQuerySourceAdapter();
-        $table->drop();
-        
+        $this->getQuerySourceAdapter()->drop();
         return $this;
     }
 
