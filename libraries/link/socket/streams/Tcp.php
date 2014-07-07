@@ -76,6 +76,8 @@ class Tcp_Client extends link\socket\Client implements link\socket\ISequenceClie
                 stream_set_timeout($socket, 0, $rTimeout * 1000);
             }
         } catch(\Exception $e) {
+            $this->_lastError = $e->getMessage();
+            
             throw new link\socket\ConnectionException(
                 'Could not connect client to '.$this->_address.' - '.$this->_getLastErrorMessage()
             );
