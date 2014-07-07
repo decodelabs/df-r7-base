@@ -31,6 +31,7 @@ class Base implements link\http\IRequest, core\IDumpable {
     protected $_postData;
     protected $_bodyData;
     protected $_cookieData;
+    protected $_secureTransport = 'ssl';
     protected $_environmentMode = false;
 
     protected $_responseFilePath;
@@ -299,6 +300,33 @@ class Base implements link\http\IRequest, core\IDumpable {
         return $this->_url;
     }
     
+
+// Security
+    public function isSecure() {
+        return $this->getUrl()->isSecure();
+    }
+
+    public function setSecureTransport($transport) {
+        $transport = strtolower($transport);
+
+        switch($transport) {
+            case 'ssl':
+            case 'sslv2':
+            case 'sslv3':
+            case 'tls':
+                $this->_secureTransport = $transport;
+                break;
+
+            default:
+                $this->_secureTransport = 'ssl';
+                break;
+        }
+    }
+
+    public function getSecureTransport() {
+        return $this->_secureTransport;
+    }
+
     
 // Headers
     public function setHeaders(core\collection\IHeaderMap $headers) {

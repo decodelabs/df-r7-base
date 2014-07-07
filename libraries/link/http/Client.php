@@ -67,7 +67,11 @@ class Client implements IClient, core\IDumpable {
             $headers->set('user-agent', static::USER_AGENT);
         }
         
-        $scheme = $request->getUrl()->isSecure() ? 'ssl' : 'tcp';
+        if($request->isSecure()) {
+            $scheme = $request->getSecureTransport();
+        } else {
+            $scheme = 'tcp';
+        }
 
         $session = new PeerSession(
             link\socket\Client::factory($scheme.'://'.$request->getSocketAddress())

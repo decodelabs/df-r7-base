@@ -57,6 +57,11 @@ interface IRequest extends core\IStringProvider, core\collection\IHeaderMapProvi
     public function setUrl($url);
     public function getUrl();
     
+    // Security
+    public function isSecure();
+    public function setSecureTransport($transport);
+    public function getSecureTransport();
+    
     // Headers
     public function isCachedByClient();
     
