@@ -48,6 +48,7 @@ interface IManager extends core\IManager {
     public function analyzePassword($password);
 
     // Session
+    public function getSessionBackend();
     public function getSessionController();
     public function getSessionNamespace($namespace);
     public function getSessionStartTime();
@@ -80,8 +81,6 @@ interface IUserModel {
     public function hasRememberKey(RememberKey $key);
     public function destroyRememberKey(RememberKey $key);
     public function purgeRememberKeys();
-
-    public function getSessionBackend();
 
     public function fetchClientOptions($id);
     public function updateClientOptions($id, array $options);

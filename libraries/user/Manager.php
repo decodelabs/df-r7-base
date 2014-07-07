@@ -177,6 +177,18 @@ class Manager implements IManager, core\IDumpable {
 
 
 // Session
+    public function getSessionBackend() {
+        $model = axis\Model::factory('session');
+
+        if(!$model instanceof user\session\IBackend) {
+            throw new LogicException(
+                'Session model does not implement user\\session\\IBackend'
+            );
+        }
+
+        return $model;
+    }
+    
     public function getSessionController() {
         return $this->session;
     }
@@ -404,7 +416,7 @@ class Manager implements IManager, core\IDumpable {
         
         return $model;
     }
-    
+
     public function logout() {
         $this->session->destroy();
         return $this;

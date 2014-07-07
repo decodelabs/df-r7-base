@@ -74,6 +74,9 @@ class Controller implements IController {
     }
 
     protected function _loadBackend() {
+        $this->_backend = $this->_getManager()->getSessionBackend();
+
+        /*
         if(axis\ConnectionConfig::getInstance()->isSetup()) {
             $this->_backend = $this->_getUserModel()->getSessionBackend();
         }
@@ -81,6 +84,7 @@ class Controller implements IController {
         if(!$this->_backend instanceof IBackend) {
             $this->_backend = new user\session\backend\Sqlite($this);
         }
+        */
     }
     
 
