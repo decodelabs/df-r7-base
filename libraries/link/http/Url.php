@@ -102,6 +102,7 @@ class Url extends core\uri\Url implements IUrl {
             
             return $this;
         }
+
         
         // Fragment
         $parts = explode('#', $url, 2);
@@ -123,6 +124,7 @@ class Url extends core\uri\Url implements IUrl {
             $this->setScheme(array_shift($parts));
         }
         
+        $url = urldecode($url);
         $path = explode('/', $url);
         
         if(substr($url, 0, 1) == '/') {
