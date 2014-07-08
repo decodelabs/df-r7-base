@@ -18,7 +18,7 @@ class Url extends core\uri\Url implements IUrl {
 
     protected $_directoryRequest;
     
-    public static function fromDirectoryRequest(arch\IRequest $request, $scheme, $domain, $port, array $basePath, $mappedArea=null) {
+    public static function fromDirectoryRequest(arch\IRequest $request, $scheme, $domain, $port, array $basePath, $mappedArea=null, arch\IRequest $routedRequest=null) {
         if($request->isJustFragment()) {
             $output = new self('#'.$request->getFragment());
         } else {
@@ -63,7 +63,7 @@ class Url extends core\uri\Url implements IUrl {
             }
         }
         
-        $output->_directoryRequest = $request;
+        $output->_directoryRequest = $routedRequest ? $routedRequest : $request;
         return $output;
     }
     

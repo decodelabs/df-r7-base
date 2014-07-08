@@ -146,6 +146,7 @@ class Router implements core\IRegistryObject {
     }
 
     public function requestToUrl(arch\IRequest $request) {
+        $origRequest = clone $request;
         $request = $this->routeOut($request);
 
         $domain = $this->_baseDomain;
@@ -167,7 +168,8 @@ class Router implements core\IRegistryObject {
             $domain, 
             $port, 
             $path,
-            $this->_mappedArea
+            $this->_mappedArea,
+            $origRequest
         );
     }
     
