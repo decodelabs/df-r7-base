@@ -50,12 +50,14 @@ class Handler implements IHandler {
     
     public function isValid() {
         if($this->_isValid === null) {
-            throw new RuntimeException(
-                'This validator has not been run yet'
-            );
+            return true;
         }
-        
-        return (bool)$this->_isValid;
+
+        if(!$this->_isValid) {
+            return false;
+        }
+
+        return $this->data->isValid();
     }
 
     public function setRequireGroupFulfilled($name) {
