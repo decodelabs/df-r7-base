@@ -16,5 +16,16 @@ class RuntimeException extends \RuntimeException implements IException {}
 
 // Interfaces
 interface IAction extends arch\IAction {
-    
+    public function authorizeRequest();
+}
+
+interface IResult extends arch\IProxyResponse {
+    public function isValid();
+
+    public function setStatusCode($code);
+    public function getStatusCode();
+
+    public function setException(\Exception $e);
+    public function hasException();
+    public function getException();
 }

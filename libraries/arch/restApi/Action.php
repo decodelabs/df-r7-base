@@ -8,12 +8,57 @@ namespace df\arch\restApi;
 use df;
 use df\core;
 use df\arch;
+use df\link;
 
 abstract class Action extends arch\Action implements IAction {
     
-    const DEFAULT_TYPE = 'json';
+    const DEFAULT_ACCESS = arch\IAccess::ALL;
+    const CHECK_ACCESS = false;
+
+    protected $_httpRequest;
 
     public function dispatch() {
-        core\dump($this);
+        $this->_httpRequest = $this->application->getHttpRequest();
+        return parent::dispatch();
+    }
+
+    public function getActionMethodName() {
+        return '_handleRequest';
+    }
+
+    protected function _handleRequest() {
+        $this->authorizeRequest();
+
+        $httpMethod = $this->_httpRequest->getMethod();
+        $func = 'execute'.ucfirst(strtolower($httpMethod));
+        $response = null;
+
+        $response = $this->{$func}();
+        return $this->_handleResponse($response);
+    }
+
+    protected function _handleResponse($response) {
+        if($response instanceof link\http\IResponse) {
+            return $response;
+        }
+
+        if(!$response instanceof IResult) {
+            $response = new Result($response);
+        }
+
+        return $response;
+    }
+
+    public function handleException(\Exception $e) {
+        core\log\Manager::getInstance()->logException($e);
+
+        $result = new Result();
+        $result->setException($e);
+
+        return $this->_handleResponse($result);
+    }
+
+    public function authorizeRequest() {
+        return true;
     }
 }
