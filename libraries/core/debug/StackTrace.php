@@ -76,14 +76,18 @@ class StackTrace implements IStackTrace, core\IDumpable {
         return $output;
     }
 
-    public function toJson() {
+    public function toJsonArray() {
         $output = [];
 
         foreach($this->_calls as $call) {
             $output[] = $call->toJsonArray();
         }
 
-        return json_encode($output);
+        return $output;
+    }
+
+    public function toJson() {
+        return json_encode($this->toJsonArray());
     }
 
     public function getCalls() {

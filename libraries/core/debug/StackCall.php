@@ -20,6 +20,7 @@ class StackCall implements IStackCall, core\IDumpable {
     protected $_callingLine;
     protected $_originFile;
     protected $_originLine;
+    protected $_local = true;
     
     public static function factory($rewind=0) {
         $data = debug_backtrace();
@@ -36,10 +37,12 @@ class StackCall implements IStackCall, core\IDumpable {
         $output['file'] = @$last['file'];
         $output['line'] = @$last['line'];
         
-        return new self($output);
+        return new self($output, true);
     }
     
-    public function __construct(array $callData) {
+    public function __construct(array $callData, $local=true) {
+        $this->_local = $local;
+
         if(isset($callData['fromFile']) && $callData['fromFile'] !== @$callData['file']) {
             $this->_callingFile = $callData['fromFile'];
         }
@@ -254,7 +257,9 @@ class StackCall implements IStackCall, core\IDumpable {
 
     public function toJsonArray() {
         return [
-            'file' => core\io\Util::stripLocationFromFilePath($this->getFile()),
+            'file' => $this->_local ?
+                core\io\Util::stripLocationFromFilePath($this->getFile()) :
+                $this->getFile(),
             'line' => $this->getLine(),
             'signature' => $this->getSignature()
             /*
