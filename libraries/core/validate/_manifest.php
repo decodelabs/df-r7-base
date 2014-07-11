@@ -264,7 +264,7 @@ trait TSanitizingField {
     }
 
     protected function _sanitizeValue($value, $runSanitizer=true) {
-        if($value == '') {
+        if($value === '') {
             $value = null;
         }
 
