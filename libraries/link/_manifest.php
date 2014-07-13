@@ -108,10 +108,11 @@ interface ISessionResponse {}
 
 
 interface IIoState {
-    const BUFFER = null;
     const WRITE = 1;
-    const OPEN_WRITE = 2;
-    const READ = 3;
-    const OPEN_READ = 4;
-    const END = 5;
+    const WRITE_LISTEN = 2;
+    const OPEN_WRITE = 3;
+    const READ = 5;
+    const READ_LISTEN = 6;
+    const OPEN_READ = 7;
+    const END = 9;
 }

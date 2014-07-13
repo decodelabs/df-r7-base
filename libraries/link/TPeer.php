@@ -73,6 +73,12 @@ trait TPeer {
         $socket = $handler->getSocket();
         $result = null;
 
+
+        // If in write / listen mode, peer is responding early, we don't need to write any more
+        if($session->getWriteState() == link\IIoState::WRITE_LISTEN) {
+            $handler->freeze($handler->getBinding($this, 'connectionWaiting', halo\event\IIoState::WRITE));
+        }
+
         $this->_reads++;
         
         // Read from socket
@@ -147,7 +153,9 @@ trait TPeer {
                 
                 break;
             
-            case IIoState::BUFFER:
+            case IIoState::READ:
+            case IIoState::READ_LISTEN:
+            case IIoState::OPEN_READ:
             default:
                 break;
         }
@@ -185,10 +193,21 @@ trait TPeer {
 
                     return;
                     
-                case IIoState::BUFFER:
+                case IIoState::WRITE:
+                case IIoState::WRITE_LISTEN:
+                case IIoState::OPEN_WRITE:
                 default:
                     // Allow implementation to write to the buffer
-                    $session->setWriteState($this->_handleWriteBuffer($session));
+                    $session->setWriteState($newState = $this->_handleWriteBuffer($session));
+
+                    if($state === IIoState::WRITE_LISTEN || $newState === IIoState::WRITE_LISTEN) {
+                        try {
+                            $handler->unfreeze($handler->getBinding($this, 'dataAvailable', halo\event\IIoState::READ));
+                        } catch(halo\event\BindException $e) {
+                            $this->_unregisterSessionBySocket($socket);
+                        }
+                    }
+
                     break;
             }
         }
@@ -198,7 +217,7 @@ trait TPeer {
 
         // Write to socket
         $result = $socket->writeChunk($data);
-        
+
         if($result) {
             // Remove chunk from buffer
             $session->writeBuffer = substr($session->writeBuffer, $result);
@@ -425,7 +444,7 @@ trait TPeer_Session {
     public $writeBuffer = '';
     public $writeRetries = 0;
     
-    protected $_writeState = IIoState::BUFFER;
+    protected $_writeState = null;
     protected $_socket;
     protected $_store = [];
     
@@ -508,19 +527,33 @@ trait TPeer_RequestResponseSession {
     
 trait TPeer_FileStreamSession {
     
-    protected $_fileStream;
+    protected $_readFileStream;
+    protected $_writeFileStream;
     
-    public function setFileStream(core\io\IFilePointer $file) {
-        $this->_fileStream = $file;
+    public function setReadFileStream(core\io\IFilePointer $file) {
+        $this->_readFileStream = $file;
         return $this;
     }
     
-    public function getFileStream() {
-        return $this->_fileStream;
+    public function getReadFileStream() {
+        return $this->_readFileStream;
     }
     
-    public function hasFileStream() {
-        return $this->_fileStream !== null;
+    public function hasReadFileStream() {
+        return $this->_readFileStream !== null;
+    }
+
+    public function setWriteFileStream(core\io\IFilePointer $file) {
+        $this->_writeFileStream = $file;
+        return $this;
+    }
+    
+    public function getWriteFileStream() {
+        return $this->_writeFileStream;
+    }
+    
+    public function hasWriteFileStream() {
+        return $this->_writeFileStream !== null;
     }
 }
 

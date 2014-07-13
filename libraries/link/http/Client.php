@@ -145,7 +145,7 @@ class Client implements IClient, core\IDumpable {
     protected function _createInitialSessions() {}
     
     protected function _handleWriteBuffer(link\ISession $session) {
-        if(!$fileStream = $session->getFileStream()) {
+        if(!$fileStream = $session->getWriteFileStream()) {
             $request = $session->getRequest();
             $session->writeBuffer = $request->getHeaderString();
             $session->writeBuffer .= "\r\n\r\n";
@@ -153,20 +153,19 @@ class Client implements IClient, core\IDumpable {
             $body = $request->getBodyData();
 
             if($body instanceof core\io\IFilePointer) {
-                $fileStream = $body->open();
-                $session->setFileStream($fileStream);
+                $session->setWriteFileStream($fileStream = $body->open());
             } else {
-                $session->writeBuffer .= (string)$body;
-                return link\IIoState::OPEN_READ;
+                $session->setWriteFileStream($fileStream = new core\io\channel\Memory((string)$body, $request->getHeaders()->get('Content-Type')));
             }
+
+            $fileStream->seek(0);
+            $session->setStore('isChunked', $request->getHeaders()->get('Transfer-Encoding') == 'chunked');
+
+            return link\IIoState::WRITE_LISTEN;
         }
 
-        if(!$session->hasStore('isChunked')) {
-            $session->setStore('isChunked', $isChunked = ($request->getHeaders()->get('Transfer-Encoding') == 'chunked'));
-        } else {
-            $isChunked = $session->getStore('isChunked');
-        }
-        
+        $isChunked = $session->getStore('isChunked');
+
         $chunk = $fileStream->readChunk(8192);
         $eof = $fileStream->eof();
 
@@ -181,9 +180,12 @@ class Client implements IClient, core\IDumpable {
             $session->writeBuffer .= $chunk;
         }
 
-        return $eof ? 
-            link\IIoState::OPEN_READ : 
-            link\IIoState::BUFFER;
+
+        if($eof) {
+            return link\IIoState::READ;
+        } else {
+            return link\IIoState::WRITE_LISTEN;
+        }
     }
 
     protected function _handleReadBuffer(link\ISession $session, $data) {
@@ -212,7 +214,7 @@ class Client implements IClient, core\IDumpable {
                 }
             }
 
-            $session->setFileStream($response->getContentFileStream());
+            $session->setReadFileStream($response->getContentFileStream());
         }
 
 
@@ -223,7 +225,7 @@ class Client implements IClient, core\IDumpable {
         $isChunked = $session->getStore('isChunked', false);
         $length = $session->getStore('length', 0);
 
-        $fileStream = $session->getFileStream();
+        $fileStream = $session->getReadFileStream();
 
         if($isChunked) {
             if(!$length) {
