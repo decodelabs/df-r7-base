@@ -20,6 +20,8 @@ class Client implements IClient, core\IDumpable {
 
     protected $_followRedirects = true;
     protected $_maxRedirects = 15;
+    protected $_maxRetries = 20;
+    protected $_retries = 0;
 
     public function __construct() {
         if(($num = func_num_args()) > 1) {
@@ -261,7 +263,15 @@ class Client implements IClient, core\IDumpable {
 
     protected function _onSessionEnd(link\ISession $session) {
         if(!$response = $session->getResponse()) {
-            core\stub('Generate a default connection error response', $session);
+            $request = clone $session->getRequest();
+            $this->addRequest($request, $callback);
+            $this->_retries++;
+
+            if($this->_retries > $this->_maxRetries) {
+                core\stub('Generate a default connection error response', $session);
+            }
+
+            return;
         }
 
         $callback = $session->getCallback();
