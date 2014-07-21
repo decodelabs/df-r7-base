@@ -42,9 +42,11 @@ class Dispatcher extends halo\event\Dispatcher {
                 $maps = $this->_generateMaps();
             }
             
+            $hasHandler = false;
             
             // Timers
             if(!empty($this->_timerHandlers)) {
+                $hasHandler = true;
                 $time = microtime(true);
 
                 foreach($this->_timerHandlers as $id => $timer) {
@@ -64,11 +66,13 @@ class Dispatcher extends halo\event\Dispatcher {
             
             // Signals
             if(!empty($this->_signalHandlers) && extension_loaded('pcntl')) {
+                $hasHandler = true;
                 pcntl_signal_dispatch();
             }
             
             // Sockets
             if(isset($maps[self::SOCKET])) {
+                $hasHandler = true;
                 $read = $maps[self::SOCKET][self::RESOURCE][self::READ];
                 $write = $maps[self::SOCKET][self::RESOURCE][self::WRITE];
                 $e = null;
@@ -98,6 +102,7 @@ class Dispatcher extends halo\event\Dispatcher {
             
             // Streams
             if(isset($maps[self::STREAM])) {
+                $hasHandler = true;
                 $read = $maps[self::STREAM][self::RESOURCE][self::READ];
                 $write = $maps[self::STREAM][self::RESOURCE][self::WRITE];
                 $e = null;
@@ -129,6 +134,10 @@ class Dispatcher extends halo\event\Dispatcher {
                 if(false === call_user_func_array($this->_cycleHandler, [$this])) {
                     $this->stop();
                 }
+            }
+
+            if(!$hasHandler) {
+                $this->stop();
             }
 
             usleep(10000);
