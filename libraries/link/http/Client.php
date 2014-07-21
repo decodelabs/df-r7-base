@@ -182,7 +182,6 @@ class Client implements IClient, core\IDumpable {
             $session->writeBuffer .= $chunk;
         }
 
-
         if($eof) {
             return link\IIoState::READ;
         } else {
@@ -219,7 +218,6 @@ class Client implements IClient, core\IDumpable {
             $session->setReadFileStream($response->getContentFileStream());
         }
 
-
         if($request->getMethod() == 'HEAD') {
             return link\IIoState::END;
         }
@@ -243,19 +241,26 @@ class Client implements IClient, core\IDumpable {
                     return link\IIoState::END;
                 }
             }
-        }
 
-        if(strlen($session->readBuffer) >= $length) {
-            $fileStream->writeChunk(substr($session->readBuffer, 0, $length));
-            $session->readBuffer = substr($session->readBuffer, $length);
+            if(strlen($session->readBuffer) >= $length) {
+                $fileStream->writeChunk(substr($session->readBuffer, 0, $length));
+                $session->readBuffer = substr($session->readBuffer, $length);
 
-            if($isChunked) {
                 if(trim($session->readBuffer) == '0') {
+                    $fileStream->close();
                     return link\IIoState::END;
                 }
 
                 $session->setStore('length', 0);
-            } else {
+            }
+        } else {
+            $length -= strlen($session->readBuffer);
+            $session->setStore('length', $length);
+            $fileStream->writeChunk($session->readBuffer);
+            $session->readBuffer = '';
+
+            if($length <= 0) {
+                $fileStream->close();
                 return link\IIoState::END;
             }
         }
