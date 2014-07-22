@@ -172,44 +172,59 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
                 );
             }
 
-            $adapter = opal\ldap\Adapter::factory(
-                opal\ldap\Connection::factory(
-                    $domainOptions['host'],
-                    $domainOptions['port'],
-                    $domainOptions['security'],
-                    $domainOptions['type']
-                ),
+            if(count($domainOptions->host)) {
+                $hosts = $domainOptions->host->getChildren();
+            } else {
+                $hosts = [$domainOptions];
+            }
 
-                opal\ldap\Context::factory($domainOptions['baseDn'])
-                    ->setControllerDomain($domainId), 
+            shuffle($hosts);
 
-                $privilegedIdentity
-            );
+            foreach($hosts as $hostOptions) {
+                try {
+                    $adapter = opal\ldap\Adapter::factory(
+                        opal\ldap\Connection::factory(
+                            $hostOptions['host'],
+                            $hostOptions['port'],
+                            $domainOptions['security'],
+                            $domainOptions['type']
+                        ),
 
-            try {
-                if($isNtlm) {
-                    $adapter->ensureBind();
-                } else {
-                    $adapter->bind($identity);
-                }
-            } catch(opal\ldap\BindException $e) {
-                switch($e->getCode()) {
-                    case opal\ldap\IStatus::SERVER_DOWN:
-                    case opal\ldap\IStatus::BUSY:
-                    case opal\ldap\IStatus::UNAVAILABLE:
-                    case opal\ldap\IStatus::UNWILLING_TO_PERFORM:
-                    case opal\ldap\IStatus::TIMEOUT:
-                    case opal\ldap\IStatus::CONNECT_ERROR:
-                        $results[$domainId] = $result::ERROR;
-                        break;
-                    
-                    case opal\ldap\IStatus::INVALID_CREDENTIALS:
-                        $results[$domainId] = $result::INVALID_CREDENTIAL;
-                        break;
+                        opal\ldap\Context::factory($domainOptions['baseDn'])
+                            ->setControllerDomain($domainId), 
+
+                        $privilegedIdentity
+                    );
+
+                    if($isNtlm) {
+                        $adapter->ensureBind();
+                    } else {
+                        $adapter->bind($identity);
+                    }
+
+                    break;
+                } catch(opal\ldap\ConnectionException $e) {
+                    continue;
+                } catch(opal\ldap\BindException $e) {
+                    switch($e->getCode()) {
+                        case opal\ldap\IStatus::SERVER_DOWN:
+                        case opal\ldap\IStatus::BUSY:
+                        case opal\ldap\IStatus::UNAVAILABLE:
+                        case opal\ldap\IStatus::UNWILLING_TO_PERFORM:
+                        case opal\ldap\IStatus::TIMEOUT:
+                        case opal\ldap\IStatus::CONNECT_ERROR:
+                            //$results[$domainId] = $result::ERROR;
+                            //break;
+                            continue 2;
                         
-                    default:
-                        $results[$domainId] = $result::FAILURE;
-                        break;
+                        case opal\ldap\IStatus::INVALID_CREDENTIALS:
+                            $results[$domainId] = $result::INVALID_CREDENTIAL;
+                            break;
+                            
+                        default:
+                            $results[$domainId] = $result::FAILURE;
+                            break;
+                    }
                 }
             }
 
