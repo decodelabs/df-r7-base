@@ -201,6 +201,10 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
     public function getKeys() {
         return array_keys($this->_collection);
     }
+
+    public function getChildren() {
+        return $this->_collection;
+    }
     
     public function contains($value, $includeChildren=false) {
         foreach($this->_collection as $child) {

@@ -284,6 +284,7 @@ interface ITree extends IRandomAccessCollection, IMappedContainerCollection, cor
     public function hasAnyKey($key1);
     public function getKeys();
     public function clearKeys();
+    public function getChildren();
     public function hasAnyValue(array $checkKeys=null);
 }
 
