@@ -415,7 +415,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     
 // Match
     public function eq($request) {
-        $request = self::factory($request);
+        $request = Request::factory($request);
 
         if($this->_scheme != $request->_scheme) {
             return false;
@@ -439,7 +439,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     }
 
     public function matches($request) {
-        $request = self::factory($request);
+        $request = Request::factory($request);
 
         if($this->_scheme != $request->_scheme) {
             return false;
@@ -465,7 +465,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     }
 
     public function matchesPath($request) {
-        $request = self::factory($request);
+        $request = Request::factory($request);
 
         if($this->_scheme != $request->_scheme) {
             return false;
@@ -479,7 +479,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     }
     
     public function containsPath($request) {
-        $request = self::factory($request);
+        $request = Request::factory($request);
 
         if($this->_scheme != $request->_scheme) {
             return false;
@@ -496,7 +496,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     }
 
     public function contains($request) {
-        $request = self::factory($request);
+        $request = Request::factory($request);
 
         if($this->_scheme != $request->_scheme) {
             return false;
@@ -525,11 +525,11 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     }
 
     public function isPathWithin($request) {
-        return self::factory($request)->containsPath($this);
+        return Request::factory($request)->containsPath($this);
     }
 
     public function isWithin($request) {
-        return self::factory($request)->contains($this);
+        return Request::factory($request)->contains($this);
     }
 
     public function getLiteralPath() {
@@ -670,7 +670,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             return $this;
         }
         
-        $from = self::factory($from);
+        $from = Request::factory($from);
         $this->getQuery()->{self::REDIRECT_FROM} = $from->encode();
         
         return $this;
@@ -693,7 +693,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             return $this;
         }
         
-        $to = self::factory($to);
+        $to = Request::factory($to);
         $this->getQuery()->{self::REDIRECT_TO} = $to->encode();
         
         return $this;
