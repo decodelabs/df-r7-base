@@ -8,7 +8,6 @@ namespace df\halo\process;
 use df;
 use df\core;
 use df\halo;
-use df\arch;
 
 abstract class Base implements IProcess {
     
@@ -56,18 +55,6 @@ abstract class Base implements IProcess {
             ->launch();
     }
 
-    public static function launchTask($request, core\io\IMultiplexer $multiplexer=null, $environmentMode=null) {
-        if($environmentMode === null) {
-            $environmentMode = df\Launchpad::getEnvironmentMode();
-        }
-        
-        $request = arch\Request::factory($request);
-        $path = df\Launchpad::$applicationPath.'/entry/';
-        $path .= df\Launchpad::$environmentId.'.'.$environmentMode.'.php';
-
-        return self::launchScript($path, ['task', $request], $multiplexer);
-    }
-    
     public static function launchBackground($process, $args=null, $path=null, core\io\IMultiplexer $multiplexer=null) {
         return self::newLauncher($process, $args, $path)
             ->setMultiplexer($multiplexer)
@@ -78,19 +65,6 @@ abstract class Base implements IProcess {
         return self::newScriptLauncher($path, $args)->launchBackground();
     }
     
-    public static function launchBackgroundTask($request, $environmentMode=null) {
-        $request = arch\Request::factory($request);
-
-        if($environmentMode === null) {
-            $environmentMode = df\Launchpad::getEnvironmentMode();
-        }
-
-        $path = df\Launchpad::$applicationPath.'/entry/';
-        $path .= df\Launchpad::$environmentId.'.'.$environmentMode.'.php';
-
-        return self::launchBackgroundScript($path, ['task', $request]);
-    }
-
     public static function launchManaged($process, $args=null, $path=null) {
         return self::newLauncher($process, $args, $path)->launchManaged();
     }

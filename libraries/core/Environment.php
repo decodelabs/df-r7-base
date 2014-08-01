@@ -7,6 +7,7 @@ namespace df\core;
 
 use df;
 use df\core;
+use df\arch;
 use df\halo;
 
 class Environment extends Config {
@@ -29,7 +30,7 @@ class Environment extends Config {
 
     protected function _sanitizeValuesOnCreate() {
         try {
-            halo\process\Base::launchTask('git/init-gitignore');
+            arch\task\Manager::getInstance()->invoke('git/init-gitignore');
         } catch(\Exception $e) {}
     }
 

@@ -658,6 +658,7 @@ interface IContext extends core\IHelperProvider {
     public function getMeshManager();
     public function getSystemInfo();
     public function getUserManager();
+    public function getTaskManager();
 
     public function getConfig($path);
     public function getCache($path);
@@ -735,6 +736,10 @@ trait TContext {
         return df\user\Manager::getInstance();
     }
 
+    public function getTaskManager() {
+        return df\arch\task\Manager::getInstance();
+    }
+
 
     public function getConfig($path) {
         if(!$class = df\Launchpad::$loader->lookupClass($path)) {
@@ -790,6 +795,9 @@ trait TContext {
                 
             case 'user':
                 return df\user\Manager::getInstance();
+
+            case 'task':
+                return df\arch\task\Manager::getInstance();
                 
             default:
                 return $this->getHelper($key);

@@ -16,20 +16,35 @@ class Unit extends axis\unit\table\Base {
     protected function _onCreate(axis\schema\ISchema $schema) {
         $schema->addPrimaryField('token', 'String', 32);
         $schema->addField('expiryDate', 'DateTime');
-        $schema->addField('request', 'String', 255);
+        $schema->addField('request', 'String', 1024);
+        $schema->addField('environmentMode', 'Enum', ['development', 'testing', 'production'])
+            ->isNullable(true);
         $schema->addField('invokeKey', 'String', 32)
             ->isNullable(true);
     }
 
-    public function prepareTask($request, core\time\IDate $expiryDate=null) {
+    public function prepareTask($request, $environmentMode=null, core\time\IDate $expiryDate=null) {
         $request = arch\Request::factory($request);
         $token = md5(uniqid('task', true));
         $parts = explode('://', (string)$request, 2);
 
+        switch(strtolower($environmentMode)) {
+            case 'production':
+            case 'testing':
+            case 'development':
+                $environmentMode = strtolower($environmentMode);
+                break;
+
+            default:
+                $environmentMode = null;
+                break;                
+        }
+
         $invoke = $this->newRecord([
                 'token' => $token,
                 'expiryDate' => $expiryDate ? $expiryDate : '+1 minute',
-                'request' => array_pop($parts)
+                'request' => array_pop($parts),
+                'environmentMode' => $environmentMode
             ])
             ->save();
 
@@ -54,10 +69,8 @@ class Unit extends axis\unit\table\Base {
             return null;
         }
 
-        $request = $invoke['request'];
         $invoke->delete();
-
-        return $request;
+        return $invoke;
     }
 
     public function purgeTasks() {

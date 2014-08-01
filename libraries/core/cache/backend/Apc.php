@@ -8,7 +8,6 @@ namespace df\core\cache\backend;
 use df;
 use df\core;
 use df\arch;
-use df\halo;
 
 class Apc implements core\cache\IBackend {
     
@@ -36,7 +35,7 @@ class Apc implements core\cache\IBackend {
         $request = new arch\Request('~devtools/cache/apc-clear.json?purge');
         $request->query->mode = (php_sapi_name() == 'cli' ? 'http' : 'cli');
 
-        halo\process\Base::launchBackgroundTask($request);
+        arch\task\Manager::getInstance()->launchBackground($request);
     }
 
     public static function isLoadable() {
@@ -228,6 +227,6 @@ class Apc implements core\cache\IBackend {
         $request->query->mode = $this->_isCli ? 'http' : 'cli';
         $request->query->{$method} = $arg;
 
-        halo\process\Base::launchBackgroundTask($request);
+        arch\task\Manager::getInstance()->launchBackground($request);
     }
 }

@@ -10,7 +10,7 @@ use df\core;
 use df\arch;
 use df\halo;
     
-abstract class Action extends arch\Action {
+abstract class Action extends arch\Action implements IAction {
 
     public $response;
 
