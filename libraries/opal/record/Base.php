@@ -32,7 +32,12 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         
         if($record instanceof IPrimaryKeySetProvider) {
             $isRecord = true;
-            $keySet = $record->getPrimaryKeySet();
+
+            try {
+                $keySet = $record->getPrimaryKeySet();
+            } catch(\Exception $e) {
+                $keySet = null;
+            }
         } else if($record instanceof IPrimaryKeySet) {
             $keySet = $record;
         }
