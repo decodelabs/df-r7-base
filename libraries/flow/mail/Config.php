@@ -19,7 +19,7 @@ class Config extends core\Config {
     public function getDefaultValues() {
         return [
             'defaultTransport' => 'Mail',
-            'defaultAddress' => 'webmaster@mydomain.com',
+            'defaultAddress' => $this->_getDefaultAdminAddress(),
             'defaultReturnPath' => null,
             'adminAddresses' => [],
             'catchAllBCC' => [],
@@ -65,7 +65,13 @@ class Config extends core\Config {
     }
 
     public function getDefaultAddress() {
-        return $this->values->get('defaultAddress', 'webmaster@mydomain.com');
+        $output = $this->values->get('defaultAddress');
+
+        if($output === null) {
+            $output = $this->_getDefaultAdminAddress();
+        }
+
+        return $output;
     }
 
     public function setDefaultReturnPath($address) {
@@ -108,9 +114,7 @@ class Config extends core\Config {
         }
 
         if(empty($output)) {
-            $name = halo\system\Base::getInstance()->getProcess()->getOwnerName();
-            $url = new link\http\Url(core\application\http\Config::getInstance()->getBaseUrl());
-            $output[] = Address::factory($name.'@'.$url->getDomain());
+            $output[] = Address::factory($this->getDefaultAddress());
         }
 
         return $output;
@@ -157,5 +161,12 @@ class Config extends core\Config {
         }
 
         return (bool)$this->values['devmailTesting'];
+    }
+
+
+    protected function _getDefaultAdminAddress() {
+        $name = halo\system\Base::getInstance()->getProcess()->getOwnerName();
+        $url = new link\http\Url(core\application\http\Config::getInstance()->getBaseUrl());
+        return $name.'@'.$url->getDomain();
     }
 }
