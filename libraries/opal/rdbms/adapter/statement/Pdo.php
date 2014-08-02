@@ -76,4 +76,12 @@ class Pdo extends Base {
 
         return $output;
     }
+
+    protected function _countAffectedRows() {
+        if(!$this->_stmt) {
+            return 0;
+        }
+
+        return $this->_stmt->rowCount();
+    }
 }

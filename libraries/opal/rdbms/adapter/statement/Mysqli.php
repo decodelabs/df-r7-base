@@ -12,11 +12,13 @@ use df\opal;
 class Mysqli extends Base {
         
     protected static $_timer;
+    protected $_affectedRows = 0;
     protected $_result;
-        
+
         
 // Execute
     protected function _execute($forWrite=false) {
+        $this->_affectedRows = 0;
         $connection = $this->_adapter->getConnection();
         $stmt = $connection->stmt_init();
         
@@ -102,7 +104,8 @@ class Mysqli extends Base {
                 [$sql, $this->_bindings]
             );
         }
-        
+
+        $this->_affectedRows = $stmt->affected_rows;
         return $this->_result = $stmt->get_result();
     }
 
@@ -137,5 +140,9 @@ class Mysqli extends Base {
 
     public function count() {
         return $this->_result->num_rows;
+    }
+
+    protected function _countAffectedRows() {
+        return $this->_affectedRows;
     }
 }

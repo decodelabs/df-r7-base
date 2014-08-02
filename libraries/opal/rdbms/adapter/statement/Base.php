@@ -232,10 +232,11 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
         }
         
         // stop profiler
-        return $this->_adapter->countAffectedRows();
+        return $this->_countAffectedRows();
     }
     
     abstract protected function _execute($forWrite=false);
+    abstract protected function _countAffectedRows();
     
     
 // Result
