@@ -8,6 +8,8 @@ namespace df\flow\mail;
 use df;
 use df\core;
 use df\flow;
+use df\halo;
+use df\link;
     
 class Config extends core\Config {
 
@@ -103,6 +105,12 @@ class Config extends core\Config {
 
         foreach($this->values->adminAddresses as $address) {
             $output[] = Address::factory($address->getValue());
+        }
+
+        if(empty($output)) {
+            $name = halo\system\Base::getInstance()->getProcess()->getOwnerName();
+            $url = new link\http\Url(core\application\http\Config::getInstance()->getBaseUrl());
+            $output[] = Address::factory($name.'@'.$url->getDomain());
         }
 
         return $output;
