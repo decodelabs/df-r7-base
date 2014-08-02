@@ -45,7 +45,7 @@ class Memory implements core\io\IFile, core\io\IContainedStateChannel, core\IDum
     }
 
     public function flush() {
-        echo $this->_data;
+        //echo $this->_data;
         $this->_data = '';
 
         return $this;
