@@ -56,6 +56,14 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
             ->replace(' ', '')
             ->toString();
     }
+
+    public static function formatActionSlug($action) {
+        return self::factory($action)
+            ->translitToAscii()
+            ->regexReplace('/([^ ])([A-Z])/u', '$1-$2')
+            ->toLower()
+            ->toString();
+    }
     
     public static function formatSlug($slug, $allowedChars=null) {
         return self::factory($slug)

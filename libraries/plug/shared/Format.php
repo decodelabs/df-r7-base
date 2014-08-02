@@ -297,6 +297,10 @@ class Format implements core\ISharedHelper {
     public function id($id) {
         return core\string\Manipulator::formatId($id);
     }
+
+    public function actionSlug($action) {
+        return core\string\Manipulator::formatActionSlug($action);
+    }
     
     public function slug($slug) {
         return core\string\Manipulator::formatSlug($slug);
