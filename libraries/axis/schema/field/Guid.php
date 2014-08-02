@@ -94,7 +94,11 @@ class Guid extends Base implements opal\schema\IAutoGeneratorField {
     }
     
     public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
-        return core\string\Uuid::factory($value);
+        if($value !== null) {
+            $value = core\string\Uuid::factory($value);
+        }
+
+        return $value;
     }
 
     public function compareValues($value1, $value2) {
