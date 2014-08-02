@@ -12,6 +12,11 @@ use df\halo;
     
 abstract class Action extends arch\Action implements IAction {
 
+    const SCHEDULE = null;
+    const SCHEDULE_ENVIRONMENT_MODE = null;
+    const SCHEDULE_PRIORITY = 'medium';
+    const SCHEDULE_AUTOMATIC = false;
+
     public $response;
 
     public function __construct(arch\IContext $context, arch\IController $controller=null) {
@@ -21,6 +26,44 @@ abstract class Action extends arch\Action implements IAction {
 
     protected function _init() {}
 
+
+// Schedule
+    public static function getSchedule() {
+        $schedule = static::SCHEDULE;
+
+        if(empty($schedule)) {
+            $schedule = null;
+        }
+
+        return $schedule;
+    }
+
+    public static function getScheduleEnvironmentMode() {
+        return static::SCHEDULE_ENVIRONMENT_MODE;
+    }
+
+    public static function getSchedulePriority() {
+        $priority = strtolower(static::SCHEDULE_PRIORITY);
+
+        switch($priority) {
+            case 'trivial':
+            case 'low':
+            case 'medium':
+            case 'high':
+            case 'critical':
+                return $priority;
+
+            default:
+                return 'medium';
+        }
+    }
+
+    public static function shouldScheduleAutomatically() {
+        return (bool)static::SCHEDULE_AUTOMATIC;
+    }
+
+
+// Dispatch
     public function dispatch() {
         if(!$this->response) {
             $this->response = $this->task->getResponse();

@@ -15,6 +15,11 @@ interface IException {}
 
 // Interfaces
 interface IAction extends arch\IAction {
+    public static function getSchedule();
+    public static function getScheduleEnvironmentMode();
+    public static function getSchedulePriority();
+    public static function shouldScheduleAutomatically();
+
     public function runChild($request);
 }
 
@@ -24,5 +29,6 @@ interface IManager extends core\IManager {
     public function launchBackground($request, $environmentMode=null);
     public function invoke($request);
     public function initiateStream($request, $environmentMode=null);
+    public function queue($request, $priority='medium', $environmentMode=null);
     public function getResponse();
 }

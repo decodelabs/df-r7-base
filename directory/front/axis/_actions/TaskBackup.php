@@ -14,6 +14,8 @@ use df\opal;
 
 class TaskBackup extends arch\task\Action {
     
+    const SCHEDULE = '0 0 * * 1';
+
     protected $_unitAdapters = [];
     protected $_backupAdapters = [];
     protected $_path;

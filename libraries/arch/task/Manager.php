@@ -55,17 +55,7 @@ class Manager implements IManager {
     }
 
     public function initiateStream($request, $environmentMode=null) {
-        $application = df\Launchpad::getApplication();
-        $context = null;
-
-        if($application instanceof IDirectoryRequestApplication) {
-            $context = $application->getContext();
-        }
-
-        if(!$context) {
-            $context = arch\Context::factory();
-        }
-
+        $context = $this->_getActiveContext();
         $token = $context->data->task->invoke->prepareTask($request, $environmentMode);
         
         return $context->http->redirect(
@@ -74,6 +64,22 @@ class Manager implements IManager {
                 $context->directory->backRequest(null, true)
             )
         );
+    }
+
+    public function queue($request, $priority='medium', $environmentMode=null) {
+        if($environmentMode === null) {
+            $environmentMode = df\Launchpad::getEnvironmentMode();
+        }
+
+        $context = $this->_getActiveContext();
+        $queue = $context->data->task->queue->newRecord([
+                'request' => $request,
+                'environmentMode' => $environmentMode,
+                'priority' => $priority
+            ])
+            ->save();
+
+        return $queue['id'];
     }
 
     public function getResponse() {
@@ -91,5 +97,20 @@ class Manager implements IManager {
         }
 
         return $output;
+    }
+
+    protected function _getActiveContext() {
+        $application = df\Launchpad::getApplication();
+        $context = null;
+
+        if($application instanceof IDirectoryRequestApplication) {
+            $context = $application->getContext();
+        }
+
+        if(!$context) {
+            $context = arch\Context::factory();
+        }
+
+        return $context;
     }
 }
