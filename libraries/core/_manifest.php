@@ -494,7 +494,7 @@ interface ILoader {
     public function findFile($path);
     public function getFileSearchPaths($path);
     public function lookupFileList($path, $extensions=null);
-    public function lookupFileListRecursive($path, $extensions=null);
+    public function lookupFileListRecursive($path, $extensions=null, Callable $folderCheck=null);
     public function lookupClassList($path, $test=true);
     public function lookupFolderList($path);
     
