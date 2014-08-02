@@ -21,10 +21,12 @@ abstract class Action extends arch\Action implements IAction {
 
     protected function _init() {}
 
-    protected function _beforeDispatch() {
+    public function dispatch() {
         if(!$this->response) {
             $this->response = $this->task->getResponse();
         }
+
+        return parent::dispatch();
     }
 
     public function runChild($request) {
