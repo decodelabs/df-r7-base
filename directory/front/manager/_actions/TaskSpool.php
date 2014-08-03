@@ -56,6 +56,10 @@ class TaskSpool extends arch\task\Action {
 
         $count = $this->data->task->log->delete()
             ->where('startDate', '<', '-1 week')
+            ->beginOrWhereClause()
+                ->where('request', '=', self::SELF_REQUEST)
+                ->where('id', '!=', $this->_log['id'])
+                ->endClause()
             ->execute();
 
         $this->response->writeLine(' deleted '.$count.' entries');
