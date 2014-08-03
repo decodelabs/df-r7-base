@@ -59,6 +59,7 @@ class TaskSpool extends arch\task\Action {
             ->beginOrWhereClause()
                 ->where('request', '=', self::SELF_REQUEST)
                 ->where('id', '!=', $this->_log['id'])
+                ->where('errorOutput', '=', null)
                 ->endClause()
             ->execute();
 
