@@ -263,7 +263,7 @@ class BridgedManyRelationValueContainer implements
                 
                 $clause->endClause();
             }
-            
+
             $res = $query->toArray();
 
             foreach($lookupKeySets as $id => $keySet) {
@@ -621,10 +621,15 @@ class BridgedManyRelationValueContainer implements
         // Insert relation tasks
         foreach($this->_new as $id => $record) {
             // Build bridge
-            $bridgeRecord = $bridgeUnit->newRecord();
-            //$bridgeTask = $taskSet->insert($bridgeRecord)->ifNotExists(true);
-            $bridgeTask = $taskSet->replace($bridgeRecord);
+            if($record instanceof opal\record\IPartial && $record->isBridge()) {
+                $bridgeRecord = $bridgeUnit->newRecord($record->toArray());
+                $bridgeTask = $taskSet->replace($bridgeRecord);
+            } else {
+                $bridgeRecord = $bridgeUnit->newRecord();
+                $bridgeTask = $taskSet->insert($bridgeRecord)->ifNotExists(true);
+            }
 
+            
             // Local ids
             $bridgeRecord->__set($bridgeLocalFieldName, $this->_localPrimaryKeySet);
 
