@@ -567,6 +567,7 @@ class Mediator implements IMediator, core\IDumpable {
             }
         }
 
+        $this->_httpClient->setMaxRetries(0);
         $response = $this->_httpClient->sendRequest($request);
         $data = $response->getJsonContent();
 

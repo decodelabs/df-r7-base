@@ -60,6 +60,15 @@ class Client implements IClient, core\IDumpable {
 
         return $this->_followRedirects;
     }
+
+    public function setMaxRetries($retries) {
+        $this->_maxRetries = (int)$retries;
+        return $this;
+    }
+
+    public function getMaxRetries() {
+        return $tis->_maxRetries;
+    }
     
     public function addRequest($request, Callable $callback) {
         $request = link\http\request\Base::factory($request);
@@ -163,7 +172,10 @@ class Client implements IClient, core\IDumpable {
             $fileStream->seek(0);
             $session->setStore('isChunked', $request->getHeaders()->get('Transfer-Encoding') == 'chunked');
 
-            return link\IIoState::WRITE_LISTEN;
+            if($request->getMethod() == 'PUT') {
+                $session->setStore('writeListen', true);
+                return link\IIoState::WRITE_LISTEN;
+            }
         }
 
         $isChunked = $session->getStore('isChunked');
@@ -184,8 +196,10 @@ class Client implements IClient, core\IDumpable {
 
         if($eof) {
             return link\IIoState::READ;
-        } else {
+        } else if($session->getStore('writeListen')) {
             return link\IIoState::WRITE_LISTEN;
+        } else {
+            return link\IIoState::WRITE;
         }
     }
 
@@ -193,7 +207,7 @@ class Client implements IClient, core\IDumpable {
         $request = $session->getRequest();
 
         if(!$response = $session->getResponse()) {
-            if(false === strpos($session->readBuffer, "\r\n\r\n")) {
+            if(!preg_match('|(?:\r?\n){2}|m', $session->readBuffer)) {
                 return;
             }
 
@@ -267,19 +281,20 @@ class Client implements IClient, core\IDumpable {
     }
 
     protected function _onSessionEnd(link\ISession $session) {
+        $callback = $session->getCallback();
+
         if(!$response = $session->getResponse()) {
             $request = clone $session->getRequest();
-            $this->addRequest($request, $callback);
             $this->_retries++;
 
             if($this->_retries > $this->_maxRetries) {
                 core\stub('Generate a default connection error response', $session);
             }
+            
+            $this->addRequest($request, $callback);
 
             return;
         }
-
-        $callback = $session->getCallback();
 
         if($response->isRedirect() && $this->_followRedirects) {
             $redirCount = $session->getStore('redirects', 0);

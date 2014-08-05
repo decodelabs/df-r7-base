@@ -410,6 +410,8 @@ interface IResponseCookieCollection extends core\IStringProvider {
 interface IClient extends link\IClient {
 
     public function shouldFollowRedirects($flag=null);
+    public function setMaxRetries($retries);
+    public function getMaxRetries();
 
     public function addRequest($request, Callable $callback);
     public function sendRequest($request);
