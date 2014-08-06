@@ -33,6 +33,10 @@ class TaskApcClear extends arch\task\Action {
             $isCli = false;
         }
 
+        if(!isset($this->request->query->cacheId)) {
+            $this->request->query->purge = true;
+        }
+
         if($isCli && extension_loaded('apc') && ini_get('apc.enable_cli')) {
             $count = $this->_clearApc();
             $this->response->writeLine('Cleared '.$count.' CLI APC entries');
@@ -75,7 +79,6 @@ class TaskApcClear extends arch\task\Action {
                 }
             } else {
                 $this->response->writeErrorLine('Http call failed :(');
-                core\dump($response);
             }
         }
     }
