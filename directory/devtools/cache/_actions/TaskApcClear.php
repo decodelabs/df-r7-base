@@ -75,6 +75,7 @@ class TaskApcClear extends arch\task\Action {
                 }
             } else {
                 $this->response->writeErrorLine('Http call failed :(');
+                core\dump($response);
             }
         }
     }
