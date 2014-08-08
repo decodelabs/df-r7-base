@@ -81,7 +81,7 @@ class Bridge implements IBridge {
                 $files = json_decode(file_get_contents($manifestPath), true);
 
                 foreach($files as $file) {
-                    if($mtime < filemtime($file)) {
+                    if(!is_file($file) || $mtime < filemtime($file)) {
                         $this->compile();
                         break;
                     }
@@ -122,6 +122,10 @@ class Bridge implements IBridge {
                         $importPath = df\Launchpad::$loader->findFile(substr($path, 1));
                     } else {
                         $importPath = realpath(dirname($filePath).'/'.$path);
+                    }
+
+                    if(empty($importPath)) {
+                        continue;
                     }
 
                     $key = md5($importPath);
