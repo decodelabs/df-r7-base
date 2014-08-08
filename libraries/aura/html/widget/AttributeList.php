@@ -17,7 +17,7 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
     use TWidget_DataDrivenList;
     use TWidget_MappedList;
     
-    public function __construct(arch\IContext $context, $data) {
+    public function __construct(arch\IContext $context, $data=null) {
         $this->setData($data);
     }
     
