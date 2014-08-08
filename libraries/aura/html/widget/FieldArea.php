@@ -40,6 +40,12 @@ class FieldArea extends Container implements IFormOrientedWidget {
         $primaryWidget = $fieldError = null;
         $errors = [];
         $isRequired = $this->_isRequired;
+        $errorPosition = $this->_errorPosition;
+        $isStacked = $this->isStacked();
+
+        if($isStacked) {
+            $errorPosition = 'middle';
+        }
 
         if($this->_errorContainer) {
             $errors = $this->_errorContainer->getErrors();
@@ -53,7 +59,7 @@ class FieldArea extends Container implements IFormOrientedWidget {
             $fieldError = new FieldError($this->_context, $errors);
             $fieldError->setRenderTarget($this->getRenderTarget());
 
-            if($this->_errorPosition == 'top') {
+            if($errorPosition == 'top') {
                 $output[] = $fieldError->render();
             }
         }
@@ -69,11 +75,12 @@ class FieldArea extends Container implements IFormOrientedWidget {
             $this->_label->setInputId($inputId);
         }
 
-        $labelContainer = new aura\html\Element('div.widget-labelArea', $this->_label);
-        
-        $output[] = $labelContainer;
+        if(!$isStacked || $this->_label->hasBody()) {
+            $labelContainer = new aura\html\Element('div.widget-labelArea', $this->_label);
+            $output[] = $labelContainer;
+        }
 
-        if($fieldError && $this->_errorPosition == 'middle') {
+        if($fieldError && $errorPosition == 'middle') {
             $output[] = $fieldError->render();
         }
 
@@ -92,7 +99,7 @@ class FieldArea extends Container implements IFormOrientedWidget {
 
         $output[] = new aura\html\Element('div.widget-inputArea', $inputAreaBody);
 
-        if($fieldError && $this->_errorPosition == 'bottom') {
+        if($fieldError && $errorPosition == 'bottom') {
             $output[] = $fieldError->render();
         }
         
@@ -230,6 +237,23 @@ class FieldArea extends Container implements IFormOrientedWidget {
 
     public function getDescription() {
         return $this->_description;
+    }
+
+// Stacked
+    public function isStacked($flag=null) {
+        $tag = $this->getTag();
+
+        if($flag !== null) {
+            if((bool)$flag) {
+                $tag->addClass('stacked');
+            } else {
+                $tag->removeClass('stacked');
+            }
+
+            return $this;
+        }
+
+        return $tag->hasClass('stacked');
     }
     
     
