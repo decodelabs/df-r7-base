@@ -26,7 +26,7 @@ class Dispatcher extends halo\event\Dispatcher {
     
     protected $_breakLoop = false;
     protected $_generateMaps = true;
-    
+
     public function start() {
         //echo  "Starting select event loop\n\n";
         
@@ -36,7 +36,8 @@ class Dispatcher extends halo\event\Dispatcher {
         $maps = [];
         $baseTime = microtime(true);
         $times = [];
-        
+        $lastCycle = $baseTime;
+
         while(!$this->_breakLoop) {
             if($this->_generateMaps) {
                 $maps = $this->_generateMaps();
@@ -131,8 +132,14 @@ class Dispatcher extends halo\event\Dispatcher {
             }
 
             if($this->_cycleHandler) {
-                if(false === call_user_func_array($this->_cycleHandler, [$this])) {
-                    $this->stop();
+                $time = microtime(true);
+
+                if($time - $lastCycle > 1) {
+                    $lastCycle = $time;
+
+                    if(false === call_user_func_array($this->_cycleHandler, [$this])) {
+                        $this->stop();
+                    }
                 }
             }
 

@@ -67,8 +67,8 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
             $this->_cycleHandlerEvent = $this->_registerEvent(
                 STDIN,
                 EV_TIMEOUT | EV_PERSIST,
-                1000000,
-                function() use ($callback) {
+                1000,
+                function() use($callback) {
                     if(false === call_user_func_array($callback, [$this])) {
                         $this->stop();
                     }
@@ -118,7 +118,7 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
         $this->_timerEvents[$timer->id] = $this->_registerEvent(
             STDIN,
             $flags,
-            $timer->duration->getMicroseconds(),
+            $timer->duration->getSeconds(),
             [$this, '_handleTimerEvent'],
             $timer
         );
@@ -186,7 +186,9 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
     public function getDumpProperties() {
         return [
             'base' => $this->_base,
-            'handlers' => $this->_handlers
+            'handlers' => $this->_handlers,
+            'signalHandlers' => $this->_signalHandlers,
+            'cycleHandler' => $this->_cycleHandler
         ];
     }
 }
