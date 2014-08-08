@@ -212,6 +212,8 @@ class Type {
         'wml' => 'text/vnd.wap.wml',
         'wmls' => 'text/vnd.wap.wmlscript',
         'etx' => 'text/x-setext',
+        'sass' => 'text/x-sass',
+        'scss' => 'text/x-scss',
     
     // Video
         '3g2' => 'video/3ppg2',
