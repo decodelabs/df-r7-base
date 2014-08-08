@@ -148,6 +148,7 @@ class Bridge implements IBridge {
         file_put_contents($this->_workDir.'/'.$this->_key.'.json', json_encode(array_values($manifest)));
 
         $result = halo\process\launcher\Base::factory('sass', [
+                '--compass',
                 $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.'.$this->_type, 
                 $this->_workDir.'/'.$this->_key.'.css'
             ])
@@ -157,6 +158,14 @@ class Bridge implements IBridge {
         if($result->hasError()) {
             throw new RuntimeException(
                 $result->getError()
+            );
+        }
+
+        $output = $result->getOutput();
+
+        if(false !== stripos($output, 'error')) {
+            throw new RuntimeException(
+                $output
             );
         }
 
