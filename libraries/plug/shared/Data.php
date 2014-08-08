@@ -26,16 +26,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
     
     public function fetchForAction($source, $primary, $action=null, Callable $chain=null) {
         $output = $this->_queryForAction($this->fetch()->from($source), $primary, $action, $chain);
-
-        if(!$this->_context->getUserManager()->canAccess($output, $action)) {
-            $actionName = $action;
-
-            if($actionName === null) {
-                $actionName = 'access';
-            }
-
-            $this->_context->throwError(401, 'Cannot '.$actionName.' '.$name.' items');
-        }
+        $this->_checkRecordAccess($output, $action);
 
         return $output;
     }
@@ -51,7 +42,29 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
         return $this->_queryForAction($this->select($fields)->from($source), $primary, $action, $chain);
     }
 
-    public function _queryForAction(opal\query\IReadQuery $query, &$primary, &$action, Callable $chain=null) {
+    public function fetchOrCreateForAction($source, $primary, $action=null, Callable $newChain=null, Callable $queryChain=null) {
+        if(is_callable($action)) {
+            $queryChain = $newChain;
+            $newChain = $action;
+            $action = null;
+        }
+
+        $output = $this->_queryForAction($this->fetch()->from($source), $primary, $action, $queryChain, false);
+
+        if($output) {
+            $this->_checkRecordAccess($output, $action);
+        } else {
+            $output = $this->newRecord($source);
+
+            if($newChain) {
+                $newChain($output);
+            }
+        }
+
+        return $output;
+    }
+
+    public function _queryForAction(opal\query\IReadQuery $query, &$primary, &$action, Callable $chain=null, $throw=true) {
         if(is_callable($action)) {
             $chain = $action;
             $action = null;
@@ -65,7 +78,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
             $query->chain($chain);
         }
 
-        if(!$output = $query->toRow()) {
+        if((!$output = $query->toRow()) && $throw) {
             if(is_array($primary)) {
                 $primary = implode(',', $primary);
             }
@@ -74,6 +87,18 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
         }
 
         return $output;
+    }
+
+    protected function _checkRecordAccess($record, $action) {
+        if(!$this->_context->getUserManager()->canAccess($record, $action)) {
+            $actionName = $action;
+
+            if($actionName === null) {
+                $actionName = 'access';
+            }
+
+            $this->_context->throwError(401, 'Cannot '.$actionName.' '.$name.' items');
+        }
     }
 
     public function applyQueryActionClause(opal\query\IQuery $query, $primary) {
