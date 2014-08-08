@@ -22,11 +22,17 @@ class Address extends Base implements core\IDumpable {
     protected $_address;
     protected $_mode = self::FULL;
     
-    public function __construct(arch\IContext $context, user\IPostalAddress $address=null) {
+    public function __construct(arch\IContext $context, $address=null) {
         $this->setAddress($address);
     }
     
-    public function setAddress(user\IPostalAddress $address=null) {
+    public function setAddress($address=null) {
+        if(is_array($address)) {
+            $address = user\PostalAddress::fromArray($address);
+        } else if(!$address instanceof user\IPostalAddress) {
+            $address = null;
+        }
+
         $this->_address = $address;
         return $this;
     }
@@ -88,15 +94,15 @@ class Address extends Base implements core\IDumpable {
                 $content->push(', ');
             }
             
-            $content->push(new aura\html\Element('span', $locality, ['class' => 'locality']));
+            $content->push(new aura\html\Element($blockTag, $locality, ['class' => 'locality']));
         }
         
         if(!$isShort && !empty($region)) {
-            if(!empty($locality) || (!$isFull && !$content->isEmpty())) {
+            if(!$isFull && !$content->isEmpty()) {
                 $content->push(', ');
             }
             
-            $content->push(new aura\html\Element('span', $region, ['class' => 'region']));
+            $content->push(new aura\html\Element($blockTag, $region, ['class' => 'region']));
         }
         
         if(!empty($postcode)) {
