@@ -335,6 +335,10 @@ trait TPeer_Server {
     protected $_masterSockets = [];
     
     protected function _setup() {
+        $this->_setupPeerServer();
+    }
+
+    protected function _setupPeerServer() {
         $dispatcher = $this->getDispatcher();
         
         // Heartbeat
@@ -356,6 +360,10 @@ trait TPeer_Server {
     }
     
     protected function _teardown() {
+        $this->_teardownPeerServer();
+    }
+
+    protected function _teardownPeerServer() {
         $dispatcher = $this->getDispatcher();
         
         foreach($this->_sessions as $session) {
@@ -367,7 +375,7 @@ trait TPeer_Server {
             $socket->close();
             unset($this->_masterSockets[$id]);
         }
-        
+
         //$this->removeTimer('heartbeat');
     }
     
