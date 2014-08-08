@@ -82,6 +82,10 @@ trait TWidget_BodyContentAware {
     public function getBody() {
         return $this->_body;
     }
+
+    public function hasBody() {
+        return !$this->_body->isEmpty();
+    }
 }
 
 

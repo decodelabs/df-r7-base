@@ -78,6 +78,7 @@ interface IBodyContentAwareWidget extends IWidget {
     public function withBody();
     public function setBody($body);
     public function getBody();
+    public function hasBody();
 }
 
 
