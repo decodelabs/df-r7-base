@@ -736,7 +736,8 @@ trait TForm_InlineFieldRenderableSelectorDelegate {
 
             if(empty($selected)) {
                 $fa->push(
-                    $this->html->element('em', $this->_('nothing selected'))
+                    $this->html->element('em', $this->_('nothing selected')),
+                    $this->html->string('</div>')
                 );
             } else {
                 $tempList = $selected;
@@ -759,7 +760,10 @@ trait TForm_InlineFieldRenderableSelectorDelegate {
                     );
                 }
 
-                $fa->push($this->html->bulletList($displayList));
+                $fa->push(
+                    $this->html->bulletList($displayList),
+                    $this->html->string('</div>')
+                );
 
                 foreach($selected as $row) {
                     $id = $this->_getResultId($row);
@@ -798,9 +802,9 @@ trait TForm_InlineFieldRenderableSelectorDelegate {
                     $this->html->element('em', $this->_('nothing selected'))
                 );
             }
-        }
 
-        $fa->push($this->html->string('</div>'));
+            $fa->push($this->html->string('</div>'));
+        }
 
         $ba = $fa->addButtonArea();
         $this->_renderDetailsButtonGroup($ba, $selected);

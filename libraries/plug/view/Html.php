@@ -138,12 +138,12 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
 
     public function booleanIcon($value, $body=null) {
         return $this->icon((bool)$value ? 'tick' : 'cross', $body)
-            ->addClass((bool)$value ? 'disposition-positive' : 'disposition-negative');
+            ->addClass((bool)$value ? 'positive' : 'negative');
     }
 
     public function lockIcon($value, $body=null) {
         return $this->icon((bool)$value ? 'lock' : 'unlock', $body)
-            ->addClass((bool)$value ? 'state-locked' : 'state-unlocked');
+            ->addClass((bool)$value ? 'locked' : 'unlocked');
     }
     
     public function basicLink($url, $body=null) {

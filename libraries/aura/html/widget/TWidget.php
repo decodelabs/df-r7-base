@@ -143,7 +143,7 @@ trait TWidget_FormData {
         }
         
         if($this->_value->hasErrors()) {
-            $this->getTag()->addClass('state-error');
+            $this->getTag()->addClass('error');
         }
         
         
@@ -241,21 +241,21 @@ trait TWidget_Input {
         // Required
         if($this->_isRequired) {
             $tag->setAttribute('required', 'required');
-            //$tag->addClass('constraint-required');
+            //$tag->addClass('required');
         }
         
         
         // Disabled 
         if($this->_isDisabled) {
             $tag->setAttribute('disabled', 'disabled');
-            //$tag->addClass('state-disabled');
+            //$tag->addClass('disabled');
         }
         
         
         // Read only
         if($this->_isReadOnly) {
             $tag->setAttribute('readonly', 'readonly');
-            //$tag->addClass('state-readOnly');
+            //$tag->addClass('readOnly');
         }
         
         

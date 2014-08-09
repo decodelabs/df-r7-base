@@ -44,7 +44,7 @@ class Button extends Base implements IButtonWidget, IIconProviderWidget, core\ID
         }
 
         if($this->_disposition !== null) {
-            $tag->addClass('disposition-'.$this->getDisposition());
+            $tag->addClass($this->getDisposition());
         }
 
         $icon = $this->_generateIcon();

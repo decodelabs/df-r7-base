@@ -22,7 +22,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
        
     const PRIMARY_TAG = 'a';
     const WRAP_BODY = true;
-    const DEFAULT_ACTIVE_CLASS = 'state-active';
+    const DEFAULT_ACTIVE_CLASS = 'active';
     
     protected $_rel = [];
     protected $_isActive = false;
@@ -159,7 +159,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         $this->_isComputedActive = $active;
         
         if($disabled) {
-            $tag->addClass('state-disabled');
+            $tag->addClass('disabled');
         }
         
         if($active) {
@@ -190,7 +190,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         }
 
         if($this->_disposition !== null) {
-            $tag->addClass('disposition-'.$this->getDisposition());
+            $tag->addClass($this->getDisposition());
         }
         
         

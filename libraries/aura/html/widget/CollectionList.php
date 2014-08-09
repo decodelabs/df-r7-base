@@ -174,7 +174,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
             }
 
             $errorTag = new aura\html\Element('td', $this->_errorMessage, ['colspan' => count($this->_fields)]);
-            $errorTag->addClass('state-error');
+            $errorTag->addClass('error');
             $content->append('<tr>'.$errorTag->render().'</tr>');
         }
         

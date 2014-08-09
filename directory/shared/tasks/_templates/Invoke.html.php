@@ -14,7 +14,7 @@ if(window.XMLHttpRequest) {
         }
     };
     xhr.onload = function() {
-        $('#continue').removeClass('state-disabled');
+        $('#continue').removeClass('disabled');
     };
 
     xhr.open("GET", "<?php echo $this->uri->request('~/tasks/invoke.stream?token='.$this['token']); ?>", true);
@@ -35,7 +35,7 @@ echo $this->html->flashMessage($this->_(
 echo $this->html->backLink($this['redirect'], true, $this->_('Continue'))
     ->setIcon('back')
     ->setDisposition('informative')
-    ->addClass('state-disabled')
+    ->addClass('disabled')
     ->setId('continue');
 ?>
 </div>

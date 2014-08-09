@@ -103,7 +103,7 @@ class RendererContext implements aura\html\widget\IRendererContext {
             try {
                 $value = $renderer($value, $this);
             } catch(\Exception $e) {
-                $value = new aura\html\ElementString('<span class="state-error">ERROR: '.$e->getMessage().'</span>');
+                $value = new aura\html\ElementString('<span class="error">ERROR: '.$e->getMessage().'</span>');
             }
         }
 
@@ -118,7 +118,7 @@ class RendererContext implements aura\html\widget\IRendererContext {
         }
         
         if($this->_nullToNa && empty($value) && $value != '0') {
-            $value = new aura\html\ElementString('<span class="prop-na">n/a</span>');
+            $value = new aura\html\ElementString('<span class="na">n/a</span>');
         }
 
         if($value instanceof core\time\IDate) {

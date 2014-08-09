@@ -43,6 +43,16 @@ class RadioButton extends Base implements ICheckInputWidget, core\IDumpable {
         $this->_applyCheckInputAttributes($tag);
         
         $output = $tag;
+
+        switch(static::INPUT_TYPE) {
+            case 'radio':
+                $widgetClass = 'widget-radioButton';
+                break;
+
+            default:
+                $widgetClass = 'widget-'.static::INPUT_TYPE;
+                break;
+        }
         
         if(!$this->_body->isEmpty()) {
             $label = $this->_body;
@@ -51,7 +61,7 @@ class RadioButton extends Base implements ICheckInputWidget, core\IDumpable {
                 $label = new aura\html\Element('span', $label);
             }
 
-            $output = new aura\html\Element('label', $label);
+            $output = new aura\html\Element('label.'.$widgetClass.'Label', $label);
 
             if($this->_labelClass) {
                 $output->addClass($this->_labelClass);

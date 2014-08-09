@@ -574,7 +574,7 @@ trait TScaffold_RecordDataProvider {
     public function defineIsLiveField($list, $mode) {
         $list->addField('isLive', $this->_('Live'), function($item, $context) {
             if(!$item['isLive']) {
-                $context->getRowTag()->addClass('state-disabled');
+                $context->getRowTag()->addClass('disabled');
             }
 
             return $this->html->booleanIcon($item['isLive']);
@@ -596,18 +596,18 @@ trait TScaffold_RecordDataProvider {
             $isPast = $hasDate && $date->isPast();
 
             if($isPast && $mode == 'list') {
-                $context->getRowTag()->addClass('state-lowPriority');
+                $context->getRowTag()->addClass('inactive');
             }
 
             $output = $this->html->userDate($date);
 
             if($output) {
                 if($isPast) {
-                    $output->addClass('disposition-negative');
+                    $output->addClass('negative');
                 } else if($date->lt('+1 month')) {
-                    $output->addClass('state-warning');
+                    $output->addClass('warning');
                 } else {
-                    $output->addClass('disposition-positive');
+                    $output->addClass('positive');
                 }
             }
 

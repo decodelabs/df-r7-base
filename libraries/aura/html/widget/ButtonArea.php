@@ -9,4 +9,22 @@ use df;
 use df\core;
 use df\aura;
 
-class ButtonArea extends Container {}
+class ButtonArea extends Container {
+
+// Stacked
+    public function isStacked($flag=null) {
+        $tag = $this->getTag();
+
+        if($flag !== null) {
+            if((bool)$flag) {
+                $tag->addClass('stacked');
+            } else {
+                $tag->removeClass('stacked');
+            }
+
+            return $this;
+        }
+
+        return $tag->hasClass('stacked');
+    }
+}

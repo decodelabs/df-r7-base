@@ -34,7 +34,7 @@ class ErrorContainer implements \ArrayAccess {
             $message = $this->_view->esc('Error: '.$this->_exception->getMessage());
             
             if($this->_view->getType() == 'Html') {
-                $message = '<span class="state-error" title="'.$this->_view->esc($this->_exception->getFile().' : '.$this->_exception->getLine()).'">'.
+                $message = '<span class="error" title="'.$this->_view->esc($this->_exception->getFile().' : '.$this->_exception->getLine()).'">'.
                     $message.'</span>';
             }
 

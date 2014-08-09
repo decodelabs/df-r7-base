@@ -256,7 +256,7 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
             return $this->html->link('#', $message)
                 ->isDisabled(true)
                 ->setIcon('error')
-                ->addClass('state-error');
+                ->addClass('error');
         }
 
         if($this->_name === null) {

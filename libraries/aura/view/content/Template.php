@@ -234,7 +234,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
             if($this->_view) {
                 return (string)new ErrorContainer($this->_view, $e);
             } else {
-                return (string)new aura\html\Element('span', $e->getMessage(), ['class' => 'state-error']);
+                return (string)new aura\html\Element('span', $e->getMessage(), ['class' => 'error']);
             }
         }
     }

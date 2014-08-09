@@ -55,7 +55,7 @@ class FieldArea extends Container implements IFormOrientedWidget {
         $output = [];
 
         if(!empty($errors)) {
-            $tag->addClass('state-error');
+            $tag->addClass('error');
             $fieldError = new FieldError($this->_context, $errors);
             $fieldError->setRenderTarget($this->getRenderTarget());
 
@@ -91,7 +91,7 @@ class FieldArea extends Container implements IFormOrientedWidget {
                 new aura\html\Element(
                     'p', 
                     [$view->html->icon('info'), ' ', $this->_description], 
-                    ['class' => 'description state-info']
+                    ['class' => 'description info']
                 ),
                 $this->_children
             ];
@@ -104,7 +104,7 @@ class FieldArea extends Container implements IFormOrientedWidget {
         }
         
         if($isRequired) {
-            $tag->addClass('constraint-required');
+            $tag->addClass('required');
         }
         
         return $tag->renderWith($output, true);
@@ -158,7 +158,7 @@ class FieldArea extends Container implements IFormOrientedWidget {
                 new aura\html\Element(
                     'p', 
                     [$view->html->icon('info'), ' ', $this->_description], 
-                    ['class' => 'description state-info']
+                    ['class' => 'description info']
                 ),
                 $this->_children
             ];

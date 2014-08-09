@@ -28,7 +28,7 @@ class Label extends Base implements ILabelWidget, core\IDumpable {
         $tag = $this->getTag();
         
         if($this->_body->isEmpty()) {
-            $tag->addClass('state-empty');
+            $tag->addClass('empty');
         }
 
         if($this->_inputId !== null) {

@@ -58,7 +58,7 @@ class Menu extends Base implements core\IDumpable {
                         $args['class'] .= ' ';
                     }
 
-                    $args['class'] .= 'state-active';
+                    $args['class'] .= 'active';
                 }
             }
 

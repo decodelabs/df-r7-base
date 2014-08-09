@@ -39,16 +39,27 @@ class RadioButtonGroup extends Base implements IUngroupedSelectionInputWidget, c
         $selectionFound = false;
         
         $id = $tag->getId();
+
+        switch(static::INPUT_TYPE) {
+            case 'radio':
+                $widgetClass = 'widget-radioButton';
+                break;
+
+            default:
+                $widgetClass = 'widget-'.static::INPUT_TYPE;
+                break;
+        }
         
         foreach($this->_options as $value => $label) {
-            $labelTag = new aura\html\Element('label');
+            $labelTag = new aura\html\Element('label.'.$widgetClass.'Label');
 
             if($this->_labelClass) {
                 $labelTag->addClass($this->_labelClass);
             }
 
             $inputTag = new aura\html\Tag('input', [
-                'type' => static::INPUT_TYPE
+                'type' => static::INPUT_TYPE,
+                'class' => $widgetClass
             ]);
             
             $this->_applyFormDataAttributes($inputTag);

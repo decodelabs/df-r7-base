@@ -26,7 +26,7 @@ class FlashMessage extends Base {
         $view = $this->getRenderTarget()->getView();
         $tag = $this->getTag();
 
-        $tag->addClass('state-'.$this->_message->getType());
+        $tag->addClass($this->_message->getType());
 
         $title = new aura\html\Element('h4', [
                 $view->html->icon($this->_message->getType()), ' ',
