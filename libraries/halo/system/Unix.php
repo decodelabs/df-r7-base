@@ -93,11 +93,22 @@ class Unix extends Base {
             return dirname(PHP_BINARY).'/php';
         }
 
-        $result = halo\process\Base::launch('which', $binaryName)->getOutput();
+        $result = halo\process\Base::launch('which '.$binaryName)->getOutput();
         $result = trim($result);
 
         if(empty($result)) {
-            return $binaryName;
+            $result = halo\process\Base::launch('type '.$binaryName)->getOutput();
+            $result = trim($result);
+
+            if(empty($result)) {
+                return $binaryName;
+            }
+
+            if(!preg_match('/^[^ ]+ is (.*)$/', $result, $matches)) {
+                return $binaryName;
+            }
+            
+            return $matches[1];
         }
         
         return $result;
