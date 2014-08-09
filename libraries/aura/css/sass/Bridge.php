@@ -147,7 +147,9 @@ class Bridge implements IBridge {
 
         file_put_contents($this->_workDir.'/'.$this->_key.'.json', json_encode(array_values($manifest)));
 
-        $result = halo\process\launcher\Base::factory('sass', [
+        $path = halo\system\Base::getInstance()->which('sass');
+
+        $result = halo\process\launcher\Base::factory($path, [
                 '--compass',
                 $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.'.$this->_type, 
                 $this->_workDir.'/'.$this->_key.'.css'
