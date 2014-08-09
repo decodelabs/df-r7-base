@@ -19,6 +19,7 @@ class Environment extends Config {
     public function getDefaultValues() {
         return [
             'phpBinaryPath' => 'php',
+            'vendorBinaryPaths' => [],
             'distributed' => false,
             'activeLocations' => [],
             'daemonUser' => $this->_extrapolateDaemonUser(),
@@ -60,6 +61,14 @@ class Environment extends Config {
         return $output;
     }
     
+// Vendor binary paths
+    public function getVendorBinaryPath($id) {
+        if(isset($this->values['vendorBinaryPaths'][$id])) {
+            return $this->values['vendorBinaryPaths'][$id];
+        } else {
+            return $id;
+        }
+    }
     
 // Load balancing
     public function isDistributed($flag=null) {
