@@ -167,7 +167,7 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
 
         return $this->link($this->_view->uri->mailto($address), $body)
             ->setIcon('mail')
-            ->setDisposition('transitive');
+            ->setDisposition('external');
     }
 
     public function backLink($default=null, $success=true, $body=null) {
