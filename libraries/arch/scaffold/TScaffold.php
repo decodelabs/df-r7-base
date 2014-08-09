@@ -274,7 +274,12 @@ trait TScaffold_RecordDataProvider {
             $record = $this->_ensureRecord();
         }
 
-        return $record[$this->getRecordIdKey()];
+        if($record instanceof opal\record\IPrimaryKeySetProvider) {
+            return (string)$record->getPrimaryKeySet();
+        }
+
+        $idKey = $this->getRecordIdKey();
+        return @$record[$idKey];
     }
 
     public function getRecordName($record=null) {
