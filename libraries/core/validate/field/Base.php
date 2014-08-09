@@ -162,12 +162,18 @@ abstract class Base implements core\validate\IField {
             if($field = $this->_handler->getField($this->_toggleField)) {
                 $toggle = (bool)$this->_handler[$this->_toggleField];
 
-                if(!$toggle) {
-                    $node->setValue($value = null);
-                }
-
                 if($required) {
+                    if(!$toggle) {
+                        $node->setValue($value = null);
+                    }
+
                     $required = $toggle;
+                } else {
+                    if($toggle) {
+                        $node->setValue($value = null);
+                    }
+
+                    $required = !$toggle;
                 }
             }
         }
