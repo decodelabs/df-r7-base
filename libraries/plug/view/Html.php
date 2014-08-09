@@ -233,8 +233,11 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
     public function defaultButtonGroup($mainAction=null, $mainActionText=null, $mainActionIcon=null) {
         return $this->buttonArea(
             $this->saveEventButton($mainAction, $mainActionText, $mainActionIcon),
-            $this->resetEventButton(),
-            $this->cancelEventButton()
+
+            $this->buttonGroup(
+                $this->resetEventButton(),
+                $this->cancelEventButton()
+            )
         );
     }
 
