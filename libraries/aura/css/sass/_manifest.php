@@ -21,5 +21,4 @@ interface IBridge {
     public function getHttpResponse();
     public function getCompiledPath();
     public function compile();
-    public function findSourceFiles();
 }

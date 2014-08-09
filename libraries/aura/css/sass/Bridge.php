@@ -98,7 +98,7 @@ class Bridge implements IBridge {
 
     public function compile() {
         core\io\Util::ensureDirExists($this->_workDir.'/'.$this->_key);
-        $sourceFiles = $this->findSourceFiles();
+        $sourceFiles = [$this->_sourceDir.'/'.$this->_fileName.'.'.$this->_type];
         $manifest = [];
 
         while(!empty($sourceFiles)) {
@@ -182,36 +182,5 @@ class Bridge implements IBridge {
         core\io\Util::deleteDir($this->_workDir.'/'.$this->_key);
 
         return $this->_workDir.'/'.$this->_key.'.css';
-    }
-
-    public function findSourceFiles() {
-        $stripped = core\io\Util::stripLocationFromFilePath($this->_sourceDir);
-        $parts = explode('://', $stripped, 2);
-
-        if(count($parts) == 1) {
-            return [$this->_fileName.'.'.$this->_type => $this->_sourceDir.'/'.$this->_fileName.'.'.$this->_type];
-        }
-
-        $parts = explode('/', array_pop($parts));
-
-        switch($parts[0]) {
-            case 'libraries':
-                array_shift($parts);
-                break;
-
-            case 'themes':
-            case 'directory':
-            case 'models':
-            case 'hooks':
-            case 'daemons':
-                array_unshift($parts, 'apex');
-                break;
-
-            default:
-                return [$this->_fileName.'.'.$this->_type => $this->_sourceDir.'/'.$this->_fileName.'.'.$this->_type];
-        }
-
-        $path = implode('/', $parts);
-        return df\Launchpad::$loader->lookupFileListRecursive($path, [$this->_type]);
     }
 }
