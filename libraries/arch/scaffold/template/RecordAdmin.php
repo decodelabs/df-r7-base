@@ -78,11 +78,11 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
         return $this->_defaultListAction();
     }
 
-    private function _defaultListAction() {
+    protected function _defaultListAction($queryMode='index') {
         $keyName = $this->getRecordKeyName();
         $adapter = $this->getRecordAdapter();
 
-        $query = $this->getRecordListQuery('index');
+        $query = $this->getRecordListQuery($queryMode);
         $search = $this->request->getQueryTerm('search');
 
         if(strlen($search)) {
