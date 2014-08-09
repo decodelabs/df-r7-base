@@ -153,6 +153,10 @@ class Bridge implements IBridge {
             $path = core\Environment::getInstance()->getVendorBinaryPath('sass');
         }
 
+        if(!$path || $path == 'sass' && file_exists('/usr/local/bin/sass')) {
+            $path = '/usr/local/bin/sass';
+        }
+
         $result = halo\process\launcher\Base::factory($path, [
                 '--compass',
                 $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.'.$this->_type, 
