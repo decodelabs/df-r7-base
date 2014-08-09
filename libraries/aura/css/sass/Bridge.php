@@ -149,7 +149,7 @@ class Bridge implements IBridge {
 
         $path = halo\system\Base::getInstance()->which('sass');
 
-        if(!$path) {
+        if(!$path || $path == 'sass') {
             $path = core\Environment::getInstance()->getVendorBinaryPath('sass');
         }
 
