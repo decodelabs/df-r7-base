@@ -142,6 +142,10 @@ class Bridge implements IBridge {
                 }
             }
 
+            if(!preg_match('/\@charset /', $contents)) {
+                $contents = '@charset "UTF-8";'."\n".$contents;
+            }
+
             file_put_contents($this->_workDir.'/'.$this->_key.'/'.$fileKey.'.'.$fileType, $contents);
         }
 
