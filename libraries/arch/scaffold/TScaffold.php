@@ -863,6 +863,23 @@ trait TScaffold_IndexHeaderBarProvider {
         return (new arch\scaffold\component\HeaderBar($this, 'index', $args))
             ->setTitle($this->getDirectoryTitle());
     }
+
+    public function buildIndexSection($name, Callable $builder, Callable $linkBuilder=null) {
+        $container = $this->aura->getWidgetContainer();
+        $this->view = $container->getView();
+
+        $args = [$this->view, $this];
+        $hb = $this->import->component('IndexHeaderBar', $this->_context->location);
+
+        if($hb instanceof arch\scaffold\component\HeaderBar) {
+            $hb->setSubOperativeLinkBuilder($linkBuilder);
+        }
+
+        $body = call_user_func_array($builder, $args);
+        $container->push($hb, $body);
+
+        return $this->view;
+    }
 }
 
 trait TScaffold_RecordIndexHeaderBarProvider {
