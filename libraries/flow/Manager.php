@@ -38,6 +38,7 @@ class Manager implements IManager {
         $userModel = $userManager->getUserModel();
         $userList = $notification->getToUsers();
         $keys = [];
+        $isJustToAdmins = false;
 
         if($notification->shouldSendToAdmin()) {
             $config = flow\mail\Config::getInstance();
@@ -47,9 +48,13 @@ class Manager implements IManager {
                     $emails[$address->getAddress()] = $address->getName();
                 }
             }
+
+            $isJustToAdmins = true;
         }
 
         foreach($userList as $key => $user) {
+            $isJustToAdmins = false;
+
             if($user === null) {
                 $keys[] = $key;
             } else {
@@ -61,6 +66,7 @@ class Manager implements IManager {
         $client = $userManager->client;
 
         foreach($clientList as $user) {
+            $isJustToAdmins = false;
             $emails[$user->getEmail()] = $user->getFullName();
         }
 
@@ -69,6 +75,7 @@ class Manager implements IManager {
         } else if(!$notification->hasRecipients() 
                 && !$notification->shouldSendToAdmin() 
                 && $userManager->isLoggedIn()) {
+            $isJustToAdmins = false;
             $emails = [$client->getEmail() => $client->getFullName()];
         }
 
@@ -94,10 +101,18 @@ class Manager implements IManager {
             $mail->setFromAddress($from);
         }
 
-        foreach($emails as $address => $name) {
-            $activeMail = clone $mail;
-            $activeMail->addToAddress($address, $name);
-            $activeMail->send();
+        if($isJustToAdmins) {
+            foreach($emails as $address => $name) {
+                $mail->addToAddress($address, $name);
+            }
+
+            $mail->send();
+        } else {
+            foreach($emails as $address => $name) {
+                $activeMail = clone $mail;
+                $activeMail->addToAddress($address, $name);
+                $activeMail->send();
+            }
         }
 
         return $this;
