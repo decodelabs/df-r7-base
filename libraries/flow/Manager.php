@@ -49,7 +49,6 @@ class Manager implements IManager {
             }
         }
 
-
         foreach($userList as $key => $user) {
             if($user === null) {
                 $keys[] = $key;
@@ -67,7 +66,9 @@ class Manager implements IManager {
 
         if($notification->shouldFilterClient()) {
             unset($emails[$client->getEmail()]);
-        } else if(!$notification->hasRecipients() && $userManager->isLoggedIn()) {
+        } else if(!$notification->hasRecipients() 
+                && !$notification->shouldSendToAdmin() 
+                && $userManager->isLoggedIn()) {
             $emails = [$client->getEmail() => $client->getFullName()];
         }
 
