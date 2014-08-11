@@ -150,9 +150,13 @@ class Uri implements aura\view\IHelper {
         return $this->requestToUrl($request);
     }
 
-    public function asset($path) {
+    public function asset($path, $attachment=false) {
         $request = new arch\Request('assets/download');
         $request->query->file = $path;
+
+        if($attachment) {
+            $request->query->attachment;
+        }
 
         return $this->request($request);
     }
