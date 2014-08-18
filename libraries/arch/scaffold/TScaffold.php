@@ -620,6 +620,16 @@ trait TScaffold_RecordDataProvider {
         });
     }
 
+    public function defineColorField($list, $mode) {
+        $list->addField('color', function($item, $context) {
+            $color = df\neon\Color::factory('black');
+            return $this->html->element('span', $item['color'])
+                ->setStyle('background', $item['color'])
+                ->setStyle('color', $color->contrastAgainst($item['color'], 1))
+                ->setStyle('padding', '0 0.6em');
+        });
+    }
+
     public function defineActionsField($list, $mode) {
         $list->addField('actions', function($item) {
             return $this->getRecordOperativeLinks($item, 'list');
