@@ -480,8 +480,12 @@ trait TScaffold_RecordDataProvider {
         return $output;
     }
 
-    protected function _autoDefineNameKeyField($fieldName, $list, $mode) {
-        $list->addField($fieldName, function($item) use($mode, $fieldName) {
+    protected function _autoDefineNameKeyField($fieldName, $list, $mode, $label=null) {
+        if($label === null) {
+            $label = $this->format->name($fieldName);
+        }
+
+        $list->addField($fieldName, $label, function($item) use($mode, $fieldName) {
             if($mode == 'list') {
                 return $this->import->component(
                         ucfirst($this->getRecordKeyName().'Link'), 
@@ -554,7 +558,7 @@ trait TScaffold_RecordDataProvider {
 
     public function defineCreationDateField($list, $mode) {
         if($mode == 'list' && $this->getRecordNameKey() == 'creationDate') {
-            return $this->_autoDefineNameKeyField('creationDate', $list, $mode);
+            return $this->_autoDefineNameKeyField('creationDate', $list, $mode, $this->_('Created'));
         }
 
         $list->addField('creationDate', $this->_('Created'), function($item) use($mode) {
