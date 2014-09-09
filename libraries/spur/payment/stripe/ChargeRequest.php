@@ -18,14 +18,16 @@ class ChargeRequest implements IChargeRequest {
     protected $_customerId;
     protected $_card;
     protected $_description;
+    protected $_emailAddress;
     protected $_shouldCapture = true;
     protected $_applicationFee;
 
-    public function __construct(IMediator $mediator, $amount, mint\ICreditCardReference $card=null, $description=null) {
+    public function __construct(IMediator $mediator, $amount, mint\ICreditCardReference $card=null, $description=null, $emailAddress=null) {
         $this->_mediator = $mediator;
         $this->setAmount($amount);
         $this->setCard($card);
         $this->setDescription($description);
+        $this->setEmailAddress($emailAddress);
     }
 
     public function setAmount($amount) {
@@ -64,6 +66,15 @@ class ChargeRequest implements IChargeRequest {
         return $this->_description;
     }
 
+    public function setEmailAddress($email) {
+        $this->_emailAddress = $email;
+        return $this;
+    }
+
+    public function getEmailAddress() {
+        return $this->_emailAddress;
+    }
+
     public function shouldCapture($flag=null) {
         if($flag !== null) {
             $this->_shouldCapture = (bool)$flag;
@@ -98,6 +109,10 @@ class ChargeRequest implements IChargeRequest {
 
         if($this->_description !== null) {
             $output['description'] = $this->_description;
+        }
+
+        if($this->_emailAddress) {
+            $output['receipt_email'] = $this->_emailAddress;
         }
 
         $output['capture'] = $this->_shouldCapture ? 'true' : 'false';

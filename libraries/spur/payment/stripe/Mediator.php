@@ -122,8 +122,8 @@ class Mediator implements IMediator, core\IDumpable {
 
 
 // Charges
-    public function newChargeRequest($amount, mint\ICreditCardReference $card=null, $description=null) {
-        return new ChargeRequest($this, $amount, $card, $description);
+    public function newChargeRequest($amount, mint\ICreditCardReference $card=null, $description=null, $emailAddress=null) {
+        return new ChargeRequest($this, $amount, $card, $description, $emailAddress);
     }
 
     public function createCharge(IChargeRequest $request, $returnRaw=false) {

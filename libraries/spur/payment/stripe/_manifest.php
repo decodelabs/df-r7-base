@@ -62,7 +62,7 @@ interface IMediator {
 
 
 // Charges
-    public function newChargeRequest($amount, mint\ICreditCardReference $card=null, $description=null);
+    public function newChargeRequest($amount, mint\ICreditCardReference $card=null, $description=null, $emailAddress=null);
     public function createCharge(IChargeRequest $request, $returnRaw=false);
     public function fetchCharge($id, $returnRaw=false);
     public function refundCharge($id, $amount=null, $refundApplicationFee=null, $returnRaw=false);
@@ -173,6 +173,8 @@ interface IChargeRequest extends IApiObjectRequest {
     public function getCard();
     public function setDescription($description);
     public function getDescription();
+    public function setEmailAddress($email);
+    public function getEmailAddress();
     public function shouldCapture($flag=null);
     public function setApplicationFee($amount);
     public function getApplicationFee();
