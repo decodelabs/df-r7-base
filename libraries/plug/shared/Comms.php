@@ -100,6 +100,16 @@ class Comms implements core\ISharedHelper {
     }
 
     public function newComponentNotification($path, array $args=[], $to=null, $from=null, $preview=false) {
+        $component = $this->getMailComponent($path, $args);
+
+        if($preview) {
+            return $component->toPreviewNotification($to, $from);
+        } else {
+            return $component->toNotification($to, $from);
+        }
+    }
+
+    public function getMailComponent($path, array $args=[]) {
         $parts = explode('/', $path);
         $name = array_pop($parts);
         $location = implode('/', $parts).'/';
@@ -111,23 +121,36 @@ class Comms implements core\ISharedHelper {
         $context = arch\Context::factory($location);
         $component = arch\component\Base::factory($context, $name, $args);
 
-        if(!$component instanceof flow\INotificationProxy) {
+        if(!$component instanceof arch\IMailComponent) {
             throw new arch\InvalidArgumentException(
-                'Component notifications can only use view components that support conversion to notifications'
+                'Component mails can only use view components that support conversion to notifications'
             );
         }
-        
-        if($preview) {
-            return $component->toPreviewNotification($to, $from);
-        } else {
-            return $component->toNotification($to, $from);
-        }
-    }
 
+        return $component;
+    }
     
 
     public function sendNotification(flow\INotification $notification) {
         $this->_manager->sendNotification($notification);
         return $this;
+    }
+
+
+// Direct mail
+    public function componentMail($path, array $args=[]) {
+        $component = $this->getMailComponent($path, $args);
+        $notification = $component->toNotification();
+
+        $mail = new flow\mail\Message();
+        $mail->setSubject($notification->getSubject());
+        $mail->setBodyHtml($notification->getBodyHtml());
+        $mail->isPrivate($notification->isPrivate());
+
+        foreach($notification->getToEmails() as $email => $n) {
+            $mail->addToAddress($email);
+        }
+
+        return $mail;
     }
 }
