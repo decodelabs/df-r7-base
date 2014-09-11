@@ -103,7 +103,7 @@ abstract class Mail extends Base implements arch\IMailComponent {
     }
 
     protected function _normalizeView(aura\view\IView $view) {
-        switch(static::TEMPLATE_TYPE) {
+        switch($this->_templateType) {
             case 'html':
                 if(!$view->hasTheme()) {
                     $themeConfig = aura\theme\Config::getInstance();
