@@ -10,6 +10,7 @@ use df\core;
 use df\arch;
 use df\user;
 use df\aura;
+use df\flow;
 
 
 // Exceptions
@@ -211,6 +212,12 @@ interface IComponent extends
     aura\view\ICascadingHelperProvider, 
     arch\IProxyResponse {
     public function getName();
+}
+
+interface IMailComponent extends IComponent, flow\INotificationProxy {
+    public function getDescription();
+    public function renderPreview();
+    public function toPreviewNotification($to=null, $from=null);
 }
 
 

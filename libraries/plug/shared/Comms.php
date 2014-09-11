@@ -57,16 +57,18 @@ class Comms implements core\ISharedHelper {
         return $this->notify($subject, $body, true);
     }
 
+    public function newNotification($subject, $body, $to=null, $from=null) {
+        return $this->_manager->newNotification($subject, $body, $to, $from);
+    }
+
+
+
     public function templateNotify($path, $contextRequest, array $args=[], $to=null, $from=null) {
         return $this->sendNotification($this->newTemplateNotification($path, $contextRequest, $args, $to, $from));
     }
 
     public function templateAdminNotify($path, $contextRequest, array $args=[]) {
         return $this->templateNotify($path, $contextRequest, $args, true);
-    }
-
-    public function newNotification($subject, $body, $to=null, $from=null) {
-        return $this->_manager->newNotification($subject, $body, $to, $from);
     }
 
     public function newTemplateNotification($path, $contextRequest, array $args=[], $to=null, $from=null) {
@@ -87,6 +89,42 @@ class Comms implements core\ISharedHelper {
         $view->setArgs($args);
         return $view->toNotification($to, $from);
     }
+
+
+    public function componentNotify($path, array $args=[], $to=null, $from=null, $preview=false) {
+        return $this->sendNotification($this->newComponentNotification($path, $args, $to, $from, $preview));
+    }
+
+    public function componentAdminNotify($path, array $args=[], $preview=false) {
+        return $this->componentNotify($path, $args, true, null, $preview);
+    }
+
+    public function newComponentNotification($path, array $args=[], $to=null, $from=null, $preview=false) {
+        $parts = explode('/', $path);
+        $name = array_pop($parts);
+        $location = implode('/', $parts).'/';
+
+        if(substr($location, 0, 1) != '~') {
+            $location = '~mail/'.$location;
+        }
+
+        $context = arch\Context::factory($location);
+        $component = arch\component\Base::factory($context, $name, $args);
+
+        if(!$component instanceof flow\INotificationProxy) {
+            throw new arch\InvalidArgumentException(
+                'Component notifications can only use view components that support conversion to notifications'
+            );
+        }
+        
+        if($preview) {
+            return $component->toPreviewNotification($to, $from);
+        } else {
+            return $component->toNotification($to, $from);
+        }
+    }
+
+    
 
     public function sendNotification(flow\INotification $notification) {
         $this->_manager->sendNotification($notification);
