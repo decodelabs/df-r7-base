@@ -147,6 +147,7 @@ trait TResponseView {
 interface IThemedView extends IView {
     public function setTheme($theme);
     public function getTheme();
+    public function hasTheme();
 }
 
 trait TThemedView {
@@ -169,6 +170,10 @@ trait TThemedView {
         }
 
         return $this->_theme;
+    }
+
+    public function hasTheme() {
+        return $this->_theme !== null;
     }
 }
 
