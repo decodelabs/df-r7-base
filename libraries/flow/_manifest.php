@@ -122,6 +122,7 @@ class FlashQueue implements \Serializable {
 
 interface INotification {
 
+    const TEXT = 'text';
     const SIMPLE_TAGS = 'simpleTags';
     const HTML = 'html';
 
@@ -131,6 +132,7 @@ interface INotification {
     public function getBody();
     public function setBodyType($type);
     public function getBodyType();
+    public function getBodyHtml();
 
     public function shouldSendToAdmin($flag=null);
     public function setTo($to);

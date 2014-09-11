@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\flow;
 use df\user;
+use df\flex;
     
 class Notification implements INotification {
 
@@ -60,6 +61,7 @@ class Notification implements INotification {
 
     public function setBodyType($type) {
         switch($type) {
+            case INotification::TEXT:
             case INotification::SIMPLE_TAGS:
             case INotification::HTML:
                 $this->_bodyType = $type;
@@ -75,6 +77,22 @@ class Notification implements INotification {
 
     public function getBodyType() {
         return $this->_bodyType;
+    }
+
+    public function getBodyHtml() {
+        switch($this->_bodyType) {
+            case INotification::TEXT:
+                $text = htmlspecialchars((string)$this->_body, ENT_QUOTES, 'UTF-8');
+                $text = str_replace("\n", "\n".'<br />', $text);
+                return $text;
+
+            case INotification::SIMPLE_TAGS:
+                $parser = new flex\simpleTags\Parser($this->_body);
+                return $parser->toHtml();
+            
+            case INotification::HTML:
+                return $this->_body;
+        }
     }
 
 
