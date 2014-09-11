@@ -9,10 +9,13 @@ use df;
 use df\core;
 use df\arch;
 use df\aura;
+use df\flow;
 
 abstract class Mail extends Base implements arch\IMailComponent {
     
     const DESCRIPTION = null;
+
+    protected $_defaultToAddress = null;
 
     public function __construct(arch\IContext $context, array $args=null) {
         $this->_context = $context;
@@ -45,6 +48,20 @@ abstract class Mail extends Base implements arch\IMailComponent {
         return $output;
     }
 
+// Default to
+    public function setDefaultToAddress($address, $name=null) {
+        if($address !== null) {
+            $address = flow\mail\Address::factory($address, $name);
+        }
+
+        $this->_defaultToAddress = $address;
+        return $this;
+    }
+
+    public function getDefaultToAddress() {
+        return $this->_defaultToAddress;
+    }
+
 // Renderable
     public function toString() {
         return $this->render();
@@ -67,6 +84,10 @@ abstract class Mail extends Base implements arch\IMailComponent {
             call_user_func_array([$this, '_preparePreview'], $this->_componentArgs);
         }
 
+        if(!$this->_defaultToAddress) {
+            $this->setDefaultToAddress($this->user->client->getEmail());
+        }
+
         return $this->_normalizeView($this->view);
     }
 
@@ -84,10 +105,22 @@ abstract class Mail extends Base implements arch\IMailComponent {
     }
 
     public function toNotification($to=null, $from=null) {
-        return $this->render()->toNotification($to, $from);
+        $this->render();
+
+        if($to === null) {
+            $to = $this->getDefaultToAddress();
+        }
+
+        return $this->view->toNotification($to, $from);
     }
 
     public function toPreviewNotification($to=null, $from=null) {
-        return $this->renderPreview()->toNotification($to, $from);
+        $this->renderPreview();
+
+        if($to === null) {
+            $to = $this->getDefaultToAddress();
+        }
+
+        return $this->view->toNotification($to, $from);
     }
 }
