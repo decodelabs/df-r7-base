@@ -14,9 +14,9 @@ use df\flow;
 abstract class Mail extends Base implements arch\IMailComponent {
     
     const DESCRIPTION = null;
-    const TEMPLATE_TYPE = 'html';
 
     protected $_defaultToAddress = null;
+    protected $_templateType;
 
     public function __construct(arch\IContext $context, array $args=null) {
         $this->_context = $context;
@@ -35,7 +35,13 @@ abstract class Mail extends Base implements arch\IMailComponent {
     }
 
     protected function _loadView() {
-        return $this->_context->aura->getView($this->getName().'.'.static::TEMPLATE_TYPE);
+        try {
+            $this->_templateType = 'html';
+            return $this->_context->aura->getView($this->getName().'.html');
+        } catch(\Exception $e) {
+            $this->_templateType = 'notification';
+            return $this->_context->aura->getView($this->getName().'.notification');
+        }
     }
 
 
@@ -50,7 +56,7 @@ abstract class Mail extends Base implements arch\IMailComponent {
     }
 
     public function getTemplateType() {
-        return static::TEMPLATE_TYPE;
+        return $this->_templateType;
     }
 
 // Default to
