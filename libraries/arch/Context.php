@@ -63,7 +63,7 @@ class Context implements IContext, \Serializable, core\IDumpable {
         
         $request = arch\Request::factory($request);
         
-        if($request->eq($this->request)) {
+        if($request->eq($this->location)) {
             return $this;
         }
         
