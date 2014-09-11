@@ -16,6 +16,7 @@ class Base implements IView {
     use core\TContextAware;
     use core\THelperProvider;
     use core\string\THtmlStringEscapeHandler;
+    use core\TStringProvider;
     
     protected $_contentProvider;
     
@@ -48,6 +49,10 @@ class Base implements IView {
     
     public function getContentProvider() {
         return $this->_contentProvider;
+    }
+
+    public function toString() {
+        return $this->render();
     }
 
     
