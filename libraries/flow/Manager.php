@@ -66,7 +66,6 @@ class Manager implements IManager {
         $client = $userManager->client;
 
         foreach($clientList as $user) {
-            $isJustToAdmins = false;
             $emails[$user->getEmail()] = $user->getFullName();
         }
 
