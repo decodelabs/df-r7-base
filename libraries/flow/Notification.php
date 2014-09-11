@@ -21,6 +21,7 @@ class Notification implements INotification {
     protected $_toAdmin = false;
     protected $_from;
     protected $_filterClient = false;
+    protected $_isPrivate = false;
 
     public function __construct($subject, $body, $to=null, $from=null) {
         $this->setSubject($subject);
@@ -238,5 +239,15 @@ class Notification implements INotification {
 
     public function getFromEmail() {
         return $this->_from;
+    }
+
+
+    public function isPrivate($flag=null) {
+        if($flag !== null) {
+            $this->_isPrivate = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_isPrivate;
     }
 }

@@ -14,9 +14,11 @@ use df\flow;
 abstract class Mail extends Base implements arch\IMailComponent {
     
     const DESCRIPTION = null;
+    const IS_PRIVATE = false;
 
     protected $_defaultToAddress = null;
     protected $_templateType;
+    protected $_isPrivate = false;
 
     public function __construct(arch\IContext $context, array $args=null) {
         $this->_context = $context;
@@ -25,6 +27,7 @@ abstract class Mail extends Base implements arch\IMailComponent {
             $args = [];
         }
 
+        $this->_isPrivate = static::IS_PRIVATE;
         $this->_componentArgs = $args;
         $this->setRenderTarget($view = $this->_loadView());
         $this->view = $view;
@@ -44,6 +47,14 @@ abstract class Mail extends Base implements arch\IMailComponent {
         }
     }
 
+    public function isPrivate($flag=null) {
+        if($flag !== null) {
+            $this->_isPrivate = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_isPrivate;
+    }
 
     public function getDescription() {
         $output = static::DESCRIPTION;
@@ -123,21 +134,25 @@ abstract class Mail extends Base implements arch\IMailComponent {
 
     public function toNotification($to=null, $from=null) {
         $this->render();
-
-        if($to === null) {
-            $to = $this->getDefaultToAddress();
-        }
-
-        return $this->view->toNotification($to, $from);
+        return $this->_toNotification($to, $from);
     }
 
     public function toPreviewNotification($to=null, $from=null) {
         $this->renderPreview();
+        return $this->_toNotification($to, $from);
+    }
 
+    protected function _toNotification($to=null, $from=null) {
         if($to === null) {
             $to = $this->getDefaultToAddress();
         }
 
-        return $this->view->toNotification($to, $from);
+        $notification = $this->view->toNotification($to, $from);
+
+        if($this->_isPrivate) {
+            $notification->isPrivate(true);
+        }
+
+        return $notification;
     }
 }

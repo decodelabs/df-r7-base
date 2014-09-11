@@ -154,6 +154,8 @@ interface INotification {
 
     public function setFromEmail($email=null, $name=null);
     public function getFromEmail();
+
+    public function isPrivate($flag=null);
 }
 
 interface INotificationProxy {

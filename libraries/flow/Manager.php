@@ -85,6 +85,7 @@ class Manager implements IManager {
         $mail = new flow\mail\Message();
         $mail->setSubject($notification->getSubject());
         $mail->setBodyHtml($notification->getBodyHtml());
+        $mail->isPrivate($notification->isPrivate());
 
         if($from = $notification->getFromEmail()) {
             $mail->setFromAddress($from);
