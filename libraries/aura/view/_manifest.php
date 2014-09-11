@@ -10,6 +10,7 @@ use df\core;
 use df\aura;
 use df\arch;
 use df\link;
+use df\flow;
 
 
 // Exceptions
@@ -229,9 +230,7 @@ interface ILayoutMap {
     public function mapLayout(ILayoutView $view);
 }
 
-interface INotificationProxyView extends IView {
-    public function toNotification($to=null, $from=null);
-}
+interface INotificationProxyView extends IView, flow\INotificationProxy {}
 
 interface IHtmlView extends IResponseView, ILayoutView, INotificationProxyView {
     public function getHtmlTag();

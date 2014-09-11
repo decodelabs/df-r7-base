@@ -682,7 +682,7 @@ class Html extends Base implements IHtmlView {
         if(empty($this->_title) && empty($this->_titlePrefix) && empty($this->_titleSuffix)) {
             $this->setTitle(static::DEFAULT_TITLE);
         }
-        
+
         if($this->_shouldRenderBase) {
             $output = 
                 '<!DOCTYPE html>'."\n".
@@ -695,7 +695,7 @@ class Html extends Base implements IHtmlView {
                 $this->bodyTag->close()."\n".
                 $this->htmlTag->close();
         }
-        
+
         return $output;
     }
 

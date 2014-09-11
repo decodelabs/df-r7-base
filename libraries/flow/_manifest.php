@@ -153,3 +153,7 @@ interface INotification {
     public function setFromEmail($email=null, $name=null);
     public function getFromEmail();
 }
+
+interface INotificationProxy {
+    public function toNotification($to=null, $from=null);
+}
