@@ -8,6 +8,7 @@ namespace df\opal\record\task;
 use df;
 use df\core;
 use df\opal;
+use df\mesh;
 
 class TaskSet implements ITaskSet {
     
@@ -155,6 +156,17 @@ class TaskSet implements ITaskSet {
         $this->addTask($task);
 
         return $task;
+    }
+
+    public function after(ITask $task, $a, $b=null, $c=null) {
+        return $this->addGenericTask($a, $b, $c)->addDependency($task);
+    }
+
+    public function emitEventAfter(ITask $task, $entity, $action, array $data=null) {
+        return $this->addGenericTask(function() use($entity, $action, $data) {
+                mesh\Manager::getInstance()->emitEvent($entity, $action, $data);
+            })
+            ->addDependency($task);
     }
 
 

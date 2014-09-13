@@ -26,6 +26,8 @@ interface ITaskSet {
 
     public function addRawQuery($id, opal\query\IWriteQuery $query);
     public function addGenericTask($a, $b=null, $c=null);
+    public function after(ITask $task, $a, $b=null, $c=null);
+    public function emitEventAfter(ITask $task, $entity, $action, array $data=null);
 
     public function addTask(ITask $task);
     public function hasTask($id);
