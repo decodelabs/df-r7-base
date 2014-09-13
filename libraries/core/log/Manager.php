@@ -30,6 +30,19 @@ class Manager implements IManager {
         return $this;
     }
 
+    public function swallow(Callable $block) {
+        $args = func_get_args();
+        array_shift($args);
+
+        try {
+            call_user_func_array($block, $args);
+            return true;
+        } catch(\Exception $e) {
+            $this->logException($e);
+            return false;
+        }
+    }
+
     protected function _getModel() {
         return axis\Model::factory('log');
     }
