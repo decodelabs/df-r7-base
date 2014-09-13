@@ -55,15 +55,26 @@ abstract class Hook implements IHook {
         }
 
         $isProduction = df\Launchpad::$application->isProduction();
+        $entity = $event->getCachedEntity();
 
         foreach($entitySet[$action] as $target) {
             list($hookName, $methodName) = explode(':', $target);
             $hook = self::factory($hookName, $context);
             $method = 'on'.ucfirst($methodName);
 
-            if(method_exists($hook, $method)) {
+            $ref = new \ReflectionClass($hook);
+
+            if($ref->hasMethod($method)) {
+                if($entity === null) {
+                    $methodRef = $ref->getMethod($method);
+
+                    if($methodRef->getNumberOfParameters() > 1) {
+                        $entity = $event->getEntity();
+                    }
+                }
+
                 try {
-                    $hook->{$method}($event);
+                    $hook->{$method}($event, $entity);
                 } catch(\Exception $e) {
                     core\log\Manager::getInstance()->logException($e);
 
