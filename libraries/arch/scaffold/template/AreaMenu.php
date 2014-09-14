@@ -17,7 +17,7 @@ class AreaMenu extends arch\scaffold\Base {
 
     public function indexHtmlAction() {
         $container = $this->aura->getWidgetContainer();
-        $container->push($this->directory->getComponent('IndexHeaderBar', $this->_context->location));
+        $container->push($this->directory->getComponent('IndexHeaderBar'));
         
         $menuId = (string)$this->_context->location;
         $menuId = dirname($menuId).'/'.ucfirst(basename($menuId));

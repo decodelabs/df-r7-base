@@ -8,6 +8,7 @@ namespace df\plug\directory;
 use df;
 use df\core;
 use df\arch;
+use df\aura;
 use df\halo;
 
 class Directory implements arch\IDirectoryHelper {
@@ -101,35 +102,33 @@ class Directory implements arch\IDirectoryHelper {
         );
     }
     
-    public function getComponent($name, $context=true) {
-        if($context === true) {
-            $context = $this->_context;
-        }
-        
-        if($context instanceof arch\IContext) {
-            $request = clone $context->location;
+    public function getComponent($path) {
+        $parts = explode('/', $path);
+        $name = array_pop($parts);
+
+        if(empty($parts)) {
+            $location = clone $this->_context->location;
         } else {
-            $request = arch\Request::factory($context);
+            $location = new Arch\Request(implode('/', $parts).'/');
         }
-        
-        $context = arch\Context::factory($request);
-        $args = array_slice(func_get_args(), 2);
+
+        $context = arch\Context::factory($location);
+        $args = array_slice(func_get_args(), 1);
         return arch\component\Base::factory($context, $name, $args);
     }
 
-    public function getThemeComponent($name, $themeId, $context=true) {
-        if($context === true) {
-            $context = $this->_context;
+    public function getThemeComponent($path) {
+        $parts = explode('/', $path);
+        $name = array_pop($parts);
+
+        if(empty($parts)) {
+            $themeId = aura\theme\Config::getInstance()->getThemeIdFor($this->_context->location->getArea());
+        } else {
+            $themeId = array_shift($parts);
         }
 
-        if($context instanceof arch\IContext) {
-            $request = clone $context->location;
-        } else {
-            $request = arch\Request::factory($context);
-        }
-        
-        $context = arch\Context::factory($request);
-        $args = array_slice(func_get_args(), 3);
+        $context = $this->_context->spawnInstance();
+        $args = array_slice(func_get_args(), 1);
         return arch\component\Base::themeFactory($context, $themeId, $name, $args);
     }
 
