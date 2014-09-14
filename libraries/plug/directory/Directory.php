@@ -8,7 +8,7 @@ namespace df\plug\directory;
 use df;
 use df\core;
 use df\arch;
-use df\aura;
+use df\aura as auraLib;
 use df\halo;
 
 class Directory implements arch\IDirectoryHelper {
@@ -122,7 +122,7 @@ class Directory implements arch\IDirectoryHelper {
         $name = array_pop($parts);
 
         if(empty($parts)) {
-            $themeId = aura\theme\Config::getInstance()->getThemeIdFor($this->_context->location->getArea());
+            $themeId = auraLib\theme\Config::getInstance()->getThemeIdFor($this->_context->location->getArea());
         } else {
             $themeId = array_shift($parts);
         }
