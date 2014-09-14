@@ -109,7 +109,7 @@ class Directory implements arch\IDirectoryHelper {
         if(empty($parts)) {
             $location = clone $this->_context->location;
         } else {
-            $location = new Arch\Request(implode('/', $parts).'/');
+            $location = new arch\Request(implode('/', $parts).'/');
         }
 
         $context = arch\Context::factory($location);
