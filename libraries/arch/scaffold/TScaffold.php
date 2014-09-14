@@ -489,7 +489,6 @@ trait TScaffold_RecordDataProvider {
             if($mode == 'list') {
                 return $this->import->component(
                         ucfirst($this->getRecordKeyName().'Link'), 
-                        $this->_context->location, 
                         $item
                     )
                     ->setMaxLength(50);
@@ -538,14 +537,14 @@ trait TScaffold_RecordDataProvider {
 
     public function defineUserField($list, $mode) {
         $list->addField('userName', $this->_('User'), function($item) {
-            return $this->import->component('UserLink', '~admin/users/clients/', $item['user'])
+            return $this->import->component('~admin/users/clients/UserLink', $item['user'])
                 ->setDisposition('transitive');
         });
     }
 
     public function defineOwnerField($list, $mode) {
         $list->addField('ownerName', $this->_('Owner'), function($item) {
-            return $this->import->component('UserLink', '~admin/users/clients/', $item['owner'])
+            return $this->import->component('~admin/users/clients/UserLink', $item['owner'])
                 ->setDisposition('transitive');
         });
     }
@@ -732,7 +731,7 @@ trait TScaffold_SectionProvider {
                 }
 
                 $container->push(
-                    $this->import->component('SectionHeaderBar', $this->_context->location, $record),
+                    $this->import->component('SectionHeaderBar', $record),
                     $body
                 );
 
@@ -755,7 +754,7 @@ trait TScaffold_SectionProvider {
         $args[] = $this->view;
         $args[] = $this;
 
-        $hb = $this->import->component('SectionHeaderBar', $this->_context->location, $record);
+        $hb = $this->import->component('SectionHeaderBar', $record);
 
         if($hb instanceof arch\scaffold\component\HeaderBar) {
             $hb->setSubOperativeLinkBuilder($linkBuilder);
@@ -883,7 +882,7 @@ trait TScaffold_IndexHeaderBarProvider {
         $this->view = $container->getView();
 
         $args = [$this->view, $this];
-        $hb = $this->import->component('IndexHeaderBar', $this->_context->location);
+        $hb = $this->import->component('IndexHeaderBar');
 
         if($hb instanceof arch\scaffold\component\HeaderBar) {
             $hb->setSubOperativeLinkBuilder($linkBuilder);

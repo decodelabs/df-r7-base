@@ -95,7 +95,7 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
         $this->view = $container->getView();
 
         $container->push(
-            $this->import->component('IndexHeaderBar', $this->_context->location),
+            $this->import->component('IndexHeaderBar'),
 
             $this->html->form($this->_context->location)->setMethod('get')->push(
                 $this->html->fieldSet($this->_('Search'))->push(
@@ -114,7 +114,7 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
                 )
             ),
 
-            $this->import->component(ucfirst($keyName).'List', $this->_context->location)
+            $this->import->component(ucfirst($keyName).'List')
                 ->setCollection($query)
         );
 
@@ -124,7 +124,7 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
     public function renderDetailsSectionBody($record) {
         $keyName = $this->getRecordKeyName();
 
-        return $this->import->component(ucfirst($keyName).'Details', $this->_context->location)
+        return $this->import->component(ucfirst($keyName).'Details')
             ->setRecord($record);
     }
 

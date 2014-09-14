@@ -29,7 +29,7 @@ class Delete extends arch\form\template\Delete {
 
     protected function _renderItemDetails($container) {
         $container->push(
-            $this->import->component(ucfirst($this->_scaffold->getRecordKeyName()).'Details', $this->_context->location)
+            $this->import->component(ucfirst($this->_scaffold->getRecordKeyName()).'Details')
                 ->setRecord($this->_scaffold->getRecord())
         );
 
