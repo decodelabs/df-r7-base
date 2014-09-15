@@ -18,7 +18,7 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
     use aura\view\THelper;
     
     public function __call($member, $args) {
-        return aura\html\widget\Base::factory($this->_view->getContext(), $member, $args)->setRenderTarget($this->_view);
+        return aura\html\widget\Base::factory($this->_context, $member, $args)->setRenderTarget($this->_view);
     }
     
     public function previewText($html, $length=null) {
@@ -147,7 +147,7 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
     }
     
     public function basicLink($url, $body=null) {
-        $url = $this->_view->getContext()->normalizeOutputUrl($url);
+        $url = $this->_context->normalizeOutputUrl($url);
 
         if(empty($body) && $body !== '0') {
             $body = $url;
@@ -426,7 +426,7 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
         }
         
         if($locale === null) {
-            $locale = $this->_view->getContext()->getLocale();
+            $locale = $this->_context->getLocale();
         }
 
         if($locale === null) {
@@ -436,12 +436,12 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
         $date = core\time\Date::factory($date);
 
         if($date->isPast()) {
-            $output = $this->_view->getContext()->_(
+            $output = $this->_context->_(
                 '%t% ago',
                 ['%t%' => $this->_view->format->timeSince($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)]
             );
         } else {
-            $output = $this->_view->getContext()->_(
+            $output = $this->_context->_(
                 'in %t%',
                 ['%t%' => $this->_view->format->timeUntil($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)]
             );

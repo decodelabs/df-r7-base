@@ -17,8 +17,9 @@ use df\opal;
 trait TForm {
 
     use core\TChainable;
+    use aura\view\TCascadingHelperProvider;
     
-    public $view;
+    //public $view;
     //public $html;
     public $content;
     public $values;
@@ -31,25 +32,6 @@ trait TForm {
     protected function _setDefaultValues() {}
     protected function _setupDelegates() {}
     protected function _onInitComplete() {}
-    
-    
-    public function __call($method, $args) {
-        return call_user_func_array([$this->_context, $method], $args);
-    }
-    
-    public function __get($key) {
-        if($key == 'view') {
-            return $this->view;
-        } else if($key == 'context') {
-            return $this->_context;
-        }
-
-        if($this->view && ($output = $this->view->getHelper($key, true))) {
-            return $output;
-        }
-
-        return $this->_context->__get($key);
-    }
 
     public function getStateController() {
         return $this->_state;

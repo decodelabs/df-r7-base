@@ -61,11 +61,11 @@ class Uri implements aura\view\IHelper {
     }
     
     public function current($from=null, $to=null) {
-        return $this->request($this->_view->getContext()->request, $from, $to);
+        return $this->request($this->_context->request, $from, $to);
     }
 
     public function mapCurrent(array $map, array $queryValues=null) {
-        $request = clone $this->_view->getContext()->request;
+        $request = clone $this->_context->request;
 
         foreach($map as $key => $value) {
             switch($key) {
@@ -99,7 +99,7 @@ class Uri implements aura\view\IHelper {
     }
 
     public function query(array $queryValues) {
-        $request = clone $this->_view->getContext()->request;
+        $request = clone $this->_context->request;
         $request->getQuery()->import($queryValues);
 
         return $this->requestToUrl($request);
@@ -107,7 +107,7 @@ class Uri implements aura\view\IHelper {
 
     public function queryToggle($request, $key, &$result=null) {
         if($request === null) {
-            $request = clone $this->_view->getContext()->request;
+            $request = clone $this->_context->request;
         } else {
             $request = arch\Request::factory($request);
         }
@@ -133,7 +133,7 @@ class Uri implements aura\view\IHelper {
         
         if($from !== null) {
             if($from === true) {
-                $from = $this->_view->getContext()->request;
+                $from = $this->_context->request;
             }
             
             $request->setRedirectFrom($from);
@@ -141,7 +141,7 @@ class Uri implements aura\view\IHelper {
         
         if($to !== null) {
             if($to === true) {
-                $to = $this->_view->getContext()->request;
+                $to = $this->_context->request;
             }
             
             $request->setRedirectTo($to);
@@ -173,7 +173,7 @@ class Uri implements aura\view\IHelper {
     }
 
     public function back($default=null, $success=true) {
-        return $this->request($this->_view->getContext()->directory->backRequest($default, $success));
+        return $this->request($this->_context->directory->backRequest($default, $success));
     }
     
     public function mailto($url) {

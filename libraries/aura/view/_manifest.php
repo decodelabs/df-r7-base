@@ -333,18 +333,33 @@ interface IHtmlView extends IResponseView, ILayoutView, INotificationProxyView {
 }
 
 
-interface IHelper extends core\IHelper {}
+interface IHelper extends core\IHelper {
+
+    public function setContext(arch\IContext $context);
+    public function getContext();
+}
 
 trait THelper {
 
     protected $_view;
+    protected $_context;
 
     public function __construct(aura\view\IView $view) {
         $this->_view = $view;
+        $this->_context = $view->getContext();
         $this->_init();
     }
 
     protected function _init() {}
+
+    public function setContext(arch\IContext $context) {
+        $this->_context = $context;
+        return $this;
+    }
+
+    public function getContext() {
+        return $this->_context;
+    }
 }
 
 
@@ -362,7 +377,7 @@ trait TCascadingHelperProvider {
     }
     
     public function __get($key) {
-        if(!$this->view) {
+        if(!$this->view && method_exists($this, 'getView')) {
             $this->view = $this->getView();
         }
 
@@ -373,6 +388,12 @@ trait TCascadingHelperProvider {
         }
 
         if($this->view && ($output = $this->view->getHelper($key, true))) {
+            if($output instanceof IHelper) {
+                // Inject current context into view helper
+                $output = clone $output;
+                $output->setContext($this->_context);
+            }
+
             return $output;
         }
 

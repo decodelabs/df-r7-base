@@ -16,7 +16,7 @@ class Import implements aura\view\IHelper {
     
     public function template($path, $location=null) {
         try {
-            $context = $this->_view->getContext()->spawnInstance($location);
+            $context = $this->_context->spawnInstance($location);
             $template = aura\view\content\Template::loadDirectoryTemplate($context, $path);
             $template->setRenderTarget($this->_view);
             $template->setArgs($this->_view->getArgs());
@@ -44,13 +44,13 @@ class Import implements aura\view\IHelper {
         $name = array_pop($parts);
 
         if(empty($parts)) {
-            $location = clone $this->_view->getContext()->location;
+            $location = clone $this->_context->location;
         } else {
             $location = new arch\Request(implode('/', $parts).'/');
         }
 
         try {
-            $context = $this->_view->getContext()->spawnInstance($location);
+            $context = $this->_context->spawnInstance($location);
             $output = arch\component\Base::factory($context, $name, $args);
             $output->setRenderTarget($this->_view);
 
@@ -72,7 +72,7 @@ class Import implements aura\view\IHelper {
         }
 
         try {
-            $output = arch\component\Base::themeFactory($this->_view->getContext(), $themeId, $name, $args);
+            $output = arch\component\Base::themeFactory($this->_context, $themeId, $name, $args);
             $output->setRenderTarget($this->_view);
 
             return $output;
@@ -91,7 +91,7 @@ class Import implements aura\view\IHelper {
 
     public function form($request) {
         $request = arch\Request::factory($request);
-        $context = $this->_view->getContext()->spawnInstance($request);
+        $context = $this->_context->spawnInstance($request);
         $action = arch\form\Action::factory($context);
 
         if(!$action instanceof arch\form\IAction) {
