@@ -244,7 +244,7 @@ trait TScaffold_RecordLoader {
             return static::RECORD_ITEM_NAME;
         }
 
-        return $this->getRecordKeyName();
+        return strtolower(core\string\Manipulator::formatName($this->getRecordKeyName()));
     }
 }
 
