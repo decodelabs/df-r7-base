@@ -38,8 +38,14 @@ abstract class Base implements arch\IComponent {
         $type = $context->getRunMode();
         
         $parts[] = '_components';
-        $parts[] = ucfirst($name);
-        
+        $nameParts = explode('/', $name);
+        $topName = array_pop($nameParts);
+
+        if(!empty($nameParts)) {
+            $parts = array_merge($parts, $nameParts);
+        }
+
+        $parts[] = ucfirst($topName);
         $class = 'df\\apex\\directory\\'.$area.'\\'.implode('\\', $parts);
         
         if(!class_exists($class)) {
@@ -52,7 +58,7 @@ abstract class Base implements arch\IComponent {
                 } catch(arch\scaffold\IException $e) {}
 
                 throw new arch\RuntimeException(
-                    'Component ~'.$area.'/'.$path.'/'.ucfirst($name).' could not be found'
+                    'Component ~'.$area.'/'.$path.'/*/'.$name.' could not be found'
                 );
             }
         }
@@ -91,7 +97,8 @@ abstract class Base implements arch\IComponent {
     }
 
     public function getName() {
-        $parts = explode('\\', get_class($this));
+        $path = str_replace('\\', '/', get_class($this));
+        $parts = explode('_components/', $path, 2);
         return array_pop($parts);
     }
     

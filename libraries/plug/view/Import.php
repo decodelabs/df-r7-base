@@ -40,18 +40,11 @@ class Import implements aura\view\IHelper {
     
     public function component($path) {
         $args = array_slice(func_get_args(), 1);
-        $parts = explode('/', $path);
-        $name = array_pop($parts);
-
-        if(empty($parts)) {
-            $location = clone $this->_context->location;
-        } else {
-            $location = new arch\Request(implode('/', $parts).'/');
-        }
 
         try {
+            $location = $this->_context->extractDirectoryLocation($path);
             $context = $this->_context->spawnInstance($location);
-            $output = arch\component\Base::factory($context, $name, $args);
+            $output = arch\component\Base::factory($context, $path, $args);
             $output->setRenderTarget($this->_view);
 
             return $output;

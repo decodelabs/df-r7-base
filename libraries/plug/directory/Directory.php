@@ -102,16 +102,8 @@ class Directory implements arch\IDirectoryHelper {
         );
     }
     
-    public function getComponent($path) {
-        $parts = explode('/', $path);
-        $name = array_pop($parts);
-
-        if(empty($parts)) {
-            $location = clone $this->_context->location;
-        } else {
-            $location = new arch\Request(implode('/', $parts).'/');
-        }
-
+    public function getComponent($name) {
+        $location = $this->_context->extractDirectoryLocation($name);
         $context = arch\Context::factory($location);
         $args = array_slice(func_get_args(), 1);
         return arch\component\Base::factory($context, $name, $args);
