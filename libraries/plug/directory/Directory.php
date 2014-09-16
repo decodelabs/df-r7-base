@@ -110,15 +110,7 @@ class Directory implements arch\IDirectoryHelper {
     }
 
     public function getThemeComponent($path) {
-        $parts = explode('/', $path);
-        $name = array_pop($parts);
-
-        if(empty($parts)) {
-            $themeId = auraLib\theme\Config::getInstance()->getThemeIdFor($this->_context->location->getArea());
-        } else {
-            $themeId = array_shift($parts);
-        }
-
+        $themeId = $this->_context->extractThemeId($path, true);
         $context = $this->_context->spawnInstance();
         $args = array_slice(func_get_args(), 1);
         return arch\component\Base::themeFactory($context, $themeId, $name, $args);

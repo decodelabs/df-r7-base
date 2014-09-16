@@ -39,8 +39,12 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         }
         
         if(!$absolutePath) {
+            if(false !== strpos($path, '/')) {
+                $path = '#/'.$path;
+            }
+
             throw new aura\view\ContentNotFoundException(
-                'Template '.rtrim($request->getDirectoryLocation(), '/').'/'.$path.' could not be found'
+                'Template ~'.rtrim($request->getDirectoryLocation(), '/').'/'.$path.' could not be found'
             );
         }
         

@@ -16,7 +16,8 @@ class Aura implements arch\IDirectoryHelper {
     
     public function getView($path, $request=null) {
         $parts = explode('.', $path);
-        $view = $this->getBarebonesView(array_pop($parts), $request);
+        $location = $this->_context->extractDirectoryLocation($path);
+        $view = $this->getBarebonesView(array_pop($parts), $location);
         
         $view->setContentProvider(
             auraLib\view\content\Template::loadDirectoryTemplate($view->getContext(), $path)
@@ -33,7 +34,8 @@ class Aura implements arch\IDirectoryHelper {
         return auraLib\view\content\Template::loadDirectoryTemplate($this->_context->spawnInstance($request), $path);
     }
 
-    public function getThemeTemplate(auraLib\view\IView $view, $path, $themeId=null) {
+    public function getThemeTemplate(auraLib\view\IView $view, $path) {
+        $themeId = $this->_context->extractThemeId($path);
         return auraLib\view\content\Template::loadThemeTemplate($view, $path, $themeId);
     }
 

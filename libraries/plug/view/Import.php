@@ -14,8 +14,9 @@ class Import implements aura\view\IHelper {
     
     use aura\view\THelper;
     
-    public function template($path, $location=null) {
+    public function template($path) {
         try {
+            $location = $this->_context->extractDirectoryLocation($path);
             $context = $this->_context->spawnInstance($location);
             $template = aura\view\content\Template::loadDirectoryTemplate($context, $path);
             $template->setRenderTarget($this->_view);
@@ -27,8 +28,9 @@ class Import implements aura\view\IHelper {
         }
     }
 
-    public function themeTemplate($path, $themeId=null) {
+    public function themeTemplate($path) {
         try {
+            $themeId = $this->_context->extractThemeId($path);
             $template = aura\view\content\Template::loadThemeTemplate($this->_view, $path, $themeId);
             $template->setRenderTarget($this->_view);
 
@@ -55,12 +57,9 @@ class Import implements aura\view\IHelper {
 
     public function themeComponent($name) {
         $args = array_slice(func_get_args(), 1);
+        $themeId = $this->_context->extractThemeId($name);
 
-        if(false !== strpos($name, '/')) {
-            $parts = explode('/', $name, 2);
-            $themeId = array_shift($parts);
-            $name = array_shift($parts);
-        } else {
+        if($themeId === null) {
             $themeId = $this->_view->getTheme()->getId();
         }
 

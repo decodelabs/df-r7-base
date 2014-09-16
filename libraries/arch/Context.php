@@ -10,6 +10,7 @@ use df\core;
 use df\arch;
 use df\user;
 use df\link;
+use df\aura;
 
 class Context implements IContext, \Serializable, core\IDumpable {
     
@@ -199,23 +200,49 @@ class Context implements IContext, \Serializable, core\IDumpable {
 
 
     public function extractDirectoryLocation(&$path) {
-        if(false !== strpos($path, '/*/')) {
-            $parts = explode('/*/', $path, 2);
+        if(false !== strpos($path, '#')) {
+            $parts = explode('#', $path, 2);
             $name = array_pop($parts);
-            $location = new arch\Request(array_shift($parts).'/');
+            $rem = array_shift($parts);
+
+            if(empty($rem)) {
+                $parts = [];
+            } else {
+                $parts = explode('/', $rem);
+            }
         } else {
             $parts = explode('/', $path);
             $name = array_pop($parts);
+        }
 
-            if(empty($parts)) {
-                $location = clone $this->location;
-            } else {
-                $location = new arch\Request(implode('/', $parts).'/');
-            }
+        if(empty($parts)) {
+            $location = clone $this->location;
+        } else {
+            $location = new arch\Request(implode('/', $parts).'/');
         }
 
         $path = trim($name, '/');
         return $location;
+    }
+
+    public function extractThemeId(&$path, $findDefault=false) {
+        $themeId = null;
+
+        if(false !== strpos($path, '#')) {
+            $parts = explode('#', $path, 2);
+            $path = array_pop($parts);
+            $themeId = trim(array_shift($parts), '/');
+
+            if(empty($themeId)) {
+                $themeId = null;
+            }
+        }
+
+        if($themeId === null && $findDefault) {
+            $themeId = aura\theme\Config::getInstance()->getThemeIdFor($this->location->getArea());
+        }
+
+        return $themeId;
     }
 
 

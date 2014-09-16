@@ -58,7 +58,7 @@ abstract class Base implements arch\IComponent {
                 } catch(arch\scaffold\IException $e) {}
 
                 throw new arch\RuntimeException(
-                    'Component ~'.$area.'/'.$path.'/*/'.$name.' could not be found'
+                    'Component ~'.$area.'/'.$path.'/#/'.$name.' could not be found'
                 );
             }
         }

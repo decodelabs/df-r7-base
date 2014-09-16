@@ -63,22 +63,22 @@ class Comms implements core\ISharedHelper {
 
 
 
-    public function templateNotify($path, $contextRequest, array $args=[], $to=null, $from=null) {
-        return $this->sendNotification($this->newTemplateNotification($path, $contextRequest, $args, $to, $from));
+    public function templateNotify($path, array $args=[], $to=null, $from=null) {
+        return $this->sendNotification($this->newTemplateNotification($path, $args, $to, $from));
     }
 
-    public function templateAdminNotify($path, $contextRequest, array $args=[]) {
-        return $this->templateNotify($path, $contextRequest, $args, true);
+    public function templateAdminNotify($path, array $args=[]) {
+        return $this->templateNotify($path, $args, true);
     }
 
-    public function newTemplateNotification($path, $contextRequest, array $args=[], $to=null, $from=null) {
+    public function newTemplateNotification($path, array $args=[], $to=null, $from=null) {
         if($this->_context instanceof arch\IContext) {
             $aura = $this->_context->aura;
         } else {
             $aura = arch\Context::factory()->aura;
         }
 
-        $view = $aura->getView($path, $contextRequest);
+        $view = $aura->getView($path);
 
         if(!$view instanceof aura\view\INotificationProxyView) {
             throw new aura\view\InvalidArgumentException(
