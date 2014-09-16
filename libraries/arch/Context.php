@@ -198,6 +198,27 @@ class Context implements IContext, \Serializable, core\IDumpable {
     }
 
 
+    public function extractDirectoryLocation(&$path) {
+        if(false !== strpos($path, '/*/')) {
+            $parts = explode('/*/', $path, 2);
+            $name = array_pop($parts);
+            $location = new arch\Request(array_shift($parts).'/');
+        } else {
+            $parts = explode('/', $path);
+            $name = array_pop($parts);
+
+            if(empty($parts)) {
+                $location = clone $this->location;
+            } else {
+                $location = new arch\Request(implode('/', $parts).'/');
+            }
+        }
+
+        $path = trim($name, '/');
+        return $location;
+    }
+
+
     
 // Helpers
     protected function _loadHelper($name) {

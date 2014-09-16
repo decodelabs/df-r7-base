@@ -38,14 +38,15 @@ trait TForm {
     }
     
 // Delegates
-    public function loadDelegate($id, $name, $request=null) {
+    public function loadDelegate($id, $name) {
         if(false !== strpos($id, '.')) {
             throw new InvalidArgumentException(
                 'Delegate IDs must not contain . character'
             );
         }
 
-        $context = $this->_context->spawnInstance($request);
+        $location = $this->_context->extractDirectoryLocation($name);
+        $context = $this->_context->spawnInstance($location);
         $path = $context->location->getController();
         $area = $context->location->getArea();
         

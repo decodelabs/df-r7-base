@@ -42,7 +42,7 @@ interface IStateController extends IStoreProvider {
 interface IForm extends IStoreProvider, core\IChainable {
     public function isRenderingInline();
     public function getStateController();
-    public function loadDelegate($id, $name, $request=null);
+    public function loadDelegate($id, $path);
     public function directLoadDelegate($id, $class);
     public function getDelegate($id);
     public function hasDelegate($id);
