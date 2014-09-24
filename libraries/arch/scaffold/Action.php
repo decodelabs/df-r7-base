@@ -38,4 +38,8 @@ class Action extends arch\Action {
         $c = $this->_callback;
         return $c();
     }
+
+    protected function _getClassDefaultAccess() {
+        return $this->_scaffold->getDefaultAccess();
+    }
 }

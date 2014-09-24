@@ -15,10 +15,14 @@ abstract class Base implements IScaffold {
     //use core\TContextProxy;
     use core\TContextAware;
     use aura\view\TCascadingHelperProvider;
+    use arch\TDirectoryAccessLock;
 
     const DIRECTORY_KEY_NAME = null;
     const DIRECTORY_TITLE = null;
     const DIRECTORY_ICON = null;
+
+    const CHECK_ACCESS = true;
+    const DEFAULT_ACCESS = null;
 
     private $_directoryKeyName;
 
