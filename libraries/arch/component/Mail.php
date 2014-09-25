@@ -16,6 +16,9 @@ abstract class Mail extends Base implements arch\IMailComponent {
     const DESCRIPTION = null;
     const IS_PRIVATE = false;
 
+    const JOURNAL = true;
+    const JOURNAL_WEEKS = 52; // weeks
+
     protected $_defaultToAddress = null;
     protected $_templateType;
     protected $_isPrivate = false;
@@ -153,6 +156,40 @@ abstract class Mail extends Base implements arch\IMailComponent {
             $notification->isPrivate(true);
         }
 
+        if($this->shouldJournal()) {
+            $notification->shouldJournal(true);
+            $notification->setJournalName($this->getJournalName());
+            $notification->setJournalDuration($this->getJournalDuration());
+        }
+
         return $notification;
+    }
+
+
+// Journal
+    public function getJournalName() {
+        $output = $this->_context->location->getDirectoryLocation();
+        $name = $this->getName();
+
+        if(false !== strpos($name, '/')) {
+            $output .= '#/';
+        }
+
+        $output .= $name;
+        return $output;
+    }
+
+    public function getJournalDuration() {
+        $weeks = (int)static::JOURNAL_WEEKS;
+
+        if($weeks <= 0) {
+            $weeks = 52;
+        }
+
+        return core\time\Duration::fromWeeks($weeks);
+    }
+
+    public function shouldJournal() {
+        return (bool)static::JOURNAL;
     }
 }

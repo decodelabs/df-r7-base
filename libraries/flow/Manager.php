@@ -10,6 +10,7 @@ use df\core;
 use df\flow;
 use df\user;
 use df\flex;
+use df\axis;
     
 class Manager implements IManager {
 
@@ -24,6 +25,75 @@ class Manager implements IManager {
 
     public function onApplicationShutdown() {
         $this->_saveFlashQueue();
+    }
+
+
+## Mail
+    public function sendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null) {
+        $isDefault = false;
+        $name = null;
+
+        if($transport === null) {
+            $name = $this->getDefaultMailTransportName();
+            $transport = flow\mail\transport\Base::factory($name);
+            $isDefault = true;
+        }
+
+        try {
+            $output = $transport->send($message);
+        } catch(\Exception $e) {
+            if($isDefault
+            && $name != 'Mail' 
+            && $name != 'DevMail') {
+                $transport = flow\mail\transport\Base::factory('Mail');
+                $output = $transport->send($message);
+            } else {
+                throw $e;
+            }
+        }
+
+        if($message->shouldJournal()) {
+            try {
+                $model = $this->getMailModel();
+                $model->journalMail($message);
+            } catch(\Exception $e) {
+                core\log\Manager::getInstance()->logException($e);
+            }
+        }
+
+        return $output;
+    }
+
+    public function getDefaultMailTransportName() {
+        if(df\Launchpad::$application->isDevelopment()) {
+            return 'DevMail';
+        }
+
+        $config = flow\mail\Config::getInstance();
+
+        if(df\Launchpad::$application->isTesting() && $config->useDevmailInTesting()) {
+            return 'DevMail';
+        }
+
+        $name = $config->getDefaultTransport();
+
+        if(!flow\mail\transport\Base::getTransportClass($name)) {
+            $name = 'Mail';
+        }
+
+        return $name;
+    }
+
+    public function getMailModel() {
+        $model = axis\Model::factory('mail');
+
+        if(!$model instanceof flow\mail\IMailModel) {
+            throw new flow\mail\RuntimeException(
+                'Mail model does not implements flow\\mail\\IMailModel'
+            );
+        }
+
+        return $model;
     }
 
 
@@ -87,6 +157,12 @@ class Manager implements IManager {
         $mail->setBodyHtml($notification->getBodyHtml());
         $mail->isPrivate($notification->isPrivate());
 
+        if($notification->shouldJournal()) {
+            $mail->shouldJournal(true);
+            $mail->setJournalName($notification->getJournalName());
+            $mail->setJournalDuration($notification->getJournalDuration());
+        }
+
         if($from = $notification->getFromEmail()) {
             $mail->setFromAddress($from);
         }
@@ -96,12 +172,12 @@ class Manager implements IManager {
                 $mail->addToAddress($address, $name);
             }
 
-            $mail->send();
+            $this->sendMail($mail);
         } else {
             foreach($emails as $address => $name) {
                 $activeMail = clone $mail;
                 $activeMail->addToAddress($address, $name);
-                $activeMail->send();
+                $this->sendMail($activeMail);
             }
         }
 

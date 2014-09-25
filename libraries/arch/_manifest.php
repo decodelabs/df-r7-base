@@ -223,6 +223,10 @@ interface IMailComponent extends IComponent, flow\INotificationProxy {
     public function getDefaultToAddress();
     public function renderPreview();
     public function toPreviewNotification($to=null, $from=null);
+
+    public function getJournalName();
+    public function getJournalDuration();
+    public function shouldJournal();
 }
 
 

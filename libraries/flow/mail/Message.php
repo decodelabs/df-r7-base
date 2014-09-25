@@ -21,6 +21,10 @@ class Message extends flow\mime\MultiPart implements IMessage {
     protected $_bodyHtml;
     protected $_isPrivate = false;
 
+    protected $_journalName;
+    protected $_journalDuration;
+    protected $_shouldJournal = true;
+
     public static function fromString($string) {
         $output = parent::fromString($string);
         $headers = $output->getHeaders();
@@ -481,20 +485,44 @@ class Message extends flow\mime\MultiPart implements IMessage {
         return $this;
     }
 
-    public function send(ITransport $transport=null) {
-        if(!$transport) {
-            $transport = flow\mail\transport\Base::factory();
+
+// Journal
+    public function setJournalName($name) {
+        $this->_journalName = $name;
+        return $this;
+    }
+
+    public function getJournalName() {
+        return $this->_journalName;
+    }
+
+    public function setJournalDuration(core\time\IDuration $duration=null) {
+        $this->_journalDuration = $duration;
+        return $this;
+    }
+
+    public function getJournalDuration() {
+        if($this->_journalDuration) {
+            return $this->_journalDuration;
         }
 
-        try {
-            return $transport->send($this);
-        } catch(\Exception $e) {
-            if($transport->getName() != 'Mail') {
-                $transport = flow\mail\transport\Base::factory('Mail');
-                return $transport->send($this);
-            } else {
-                throw $e;
-            }
+        return core\time\Duration::fromWeeks(52);
+    }
+
+    public function shouldJournal($flag=null) {
+        if($flag !== null) {
+            $this->_shouldJournal = (bool)$flag;
+            return $this;
         }
+
+        return $this->_shouldJournal && $this->_journalName !== null;
+    }
+
+
+
+// Send
+    public function send(ITransport $transport=null) {
+        flow\Manager::getInstance()->sendMail($this, $transport);
+        return $this;
     }
 }

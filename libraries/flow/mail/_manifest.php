@@ -70,6 +70,12 @@ interface IMessage extends flow\mime\IMultiPart {
     public function setReturnPath($address=null);
     public function getReturnPath();
 
+    public function setJournalName($name);
+    public function getJournalName();
+    public function setJournalDuration(core\time\IDuration $duration=null);
+    public function getJournalDuration();
+    public function shouldJournal($flag=null);
+
     public function send(ITransport $transport=null);
 }
 
@@ -83,6 +89,7 @@ interface ITransport {
 
 interface IMailModel {
     public function storeDevMail(IMessage $message);
+    public function journalMail(IMessage $message);
 }
 
 interface IDevMailRecord {

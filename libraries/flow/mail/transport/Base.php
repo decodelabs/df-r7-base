@@ -25,43 +25,17 @@ abstract class Base implements flow\mail\ITransport {
         return [];
     }
 
-    public static function factory($name=null) {
-        $settings = null;
-
-        if($name !== null) {
-            if(!$class = self::getTransportClass($name)) {
-                $name = null;
-            }
-        }
-
-        if($name === null) {
-            $name = self::getDefaultTransportName();
-            $class = self::getTransportClass($name);
-            $config = flow\mail\Config::getInstance();
-            $settings = $config->getDefaultTransportSettings();
-        }
-
-        return new $class($settings);
-    }
-
-    public static function getDefaultTransportName() {
-        if(df\Launchpad::$application->isDevelopment()) {
-            return 'DevMail';
+    public static function factory($name) {
+        if(!$class = self::getTransportClass($name)) {
+            throw new flow\mail\RuntimeException(
+                'Mail transport '.$name.' could not be found'
+            );
         }
 
         $config = flow\mail\Config::getInstance();
+        $settings = $config->getTransportSettings($name);
 
-        if(df\Launchpad::$application->isTesting() && $config->useDevmailInTesting()) {
-            return 'DevMail';
-        }
-
-        $name = $config->getDefaultTransport();
-
-        if(!self::getTransportClass($name)) {
-            $name = 'Mail';
-        }
-
-        return $name;
+        return new $class($settings);
     }
 
     public static function getTransportClass($name) {

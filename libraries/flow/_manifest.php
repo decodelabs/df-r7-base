@@ -20,6 +20,11 @@ class RuntimeException extends \RuntimeException implements IException {}
 // Interfaces
 interface IManager extends core\IManager {
 
+// Mail
+    public function sendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null);
+    public function getDefaultMailTransportName();
+    public function getMailModel();
+
 // Notification
     public function newNotification($subject, $body, $to=null, $from=null);
     public function sendNotification(INotification $notification);
@@ -156,6 +161,12 @@ interface INotification {
     public function getFromEmail();
 
     public function isPrivate($flag=null);
+
+    public function setJournalName($name);
+    public function getJournalName();
+    public function setJournalDuration(core\time\IDuration $duration=null);
+    public function getJournalDuration();
+    public function shouldJournal($flag=null);
 }
 
 interface INotificationProxy {
