@@ -172,10 +172,10 @@ abstract class Mail extends Base implements arch\IMailComponent {
         $name = $this->getName();
 
         if(false !== strpos($name, '/')) {
-            $output .= '#/';
+            $output .= '#';
         }
 
-        $output .= $name;
+        $output .= '/'.$name;
         return $output;
     }
 
