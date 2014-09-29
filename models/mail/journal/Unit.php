@@ -26,6 +26,8 @@ class Unit extends axis\unit\table\Base {
 
         $schema->addField('expireDate', 'DateTime')
             ->isNullable(true);
+        $schema->addField('environmentMode', 'Enum', ['development', 'testing', 'production'])
+            ->setDefaultValue('production');
     }
 
     public function store(flow\mail\IMessage $message) {
@@ -38,7 +40,8 @@ class Unit extends axis\unit\table\Base {
 
         $baseData = [
             'name' => $message->getJournalName(),
-            'expireDate' => $expire
+            'expireDate' => $expire,
+            'environmentMode' => $this->context->application->getEnvironmentMode()
         ];
 
         $emails = [];
