@@ -28,10 +28,20 @@ class BlockLink extends Link {
         $description = $this->_description;
         $iconName = $this->_icon;
         
-        $icon = null;
+        $icon = $note = null;
 
         if($this->_icon) {
             $icon = $this->_renderTarget->getView()->html->icon($this->_icon);
+        }
+
+        if($this->_note !== null) {
+            $note = $this->_note;
+            $this->_note = null;
+
+            $body = [
+                $body,
+                new aura\html\Element('sup', $note)
+            ];
         }
 
         $body = [new aura\html\Element('header', [$icon, new aura\html\Element('span', $body, ['class' => 'body'])])];
@@ -50,6 +60,7 @@ class BlockLink extends Link {
         $this->_description = $description;
         $this->_body = $body;
         $this->_icon = $iconName;
+        $this->_note = $note;
 
         return $output;
     }

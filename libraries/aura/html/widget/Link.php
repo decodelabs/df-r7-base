@@ -202,7 +202,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
             }
         }
 
-        if($this->_note) {
+        if($this->_note !== null) {
             $body = [
                 $body,
                 new aura\html\Element('sup', $this->_note)
