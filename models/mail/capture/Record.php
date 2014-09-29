@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\apex\models\mail\devMail;
+namespace df\apex\models\mail\capture;
 
 use df;
 use df\core;
@@ -11,7 +11,7 @@ use df\axis;
 use df\opal;
 use df\flow;
 
-class Record extends opal\record\Base implements flow\mail\IDevMailRecord {
+class Record extends opal\record\Base implements flow\mail\IMailRecord {
     
     public function getId() {
         return $this['id'];

@@ -13,8 +13,8 @@ use df\flow;
     
 class Model extends axis\Model implements flow\mail\IMailModel {
 
-    public function storeDevMail(flow\mail\IMessage $message) {
-        return $this->devMail->store($message);
+    public function captureMail(flow\mail\IMessage $message) {
+        return $this->capture->store($message);
     }
 
     public function journalMail(flow\mail\IMessage $message) {

@@ -44,7 +44,7 @@ class Manager implements IManager {
         } catch(\Exception $e) {
             if($isDefault
             && $name != 'Mail' 
-            && $name != 'DevMail') {
+            && $name != 'Capture') {
                 $transport = flow\mail\transport\Base::factory('Mail');
                 $output = $transport->send($message);
             } else {
@@ -66,13 +66,13 @@ class Manager implements IManager {
 
     public function getDefaultMailTransportName() {
         if(df\Launchpad::$application->isDevelopment()) {
-            return 'DevMail';
+            return 'Capture';
         }
 
         $config = flow\mail\Config::getInstance();
 
-        if(df\Launchpad::$application->isTesting() && $config->useDevmailInTesting()) {
-            return 'DevMail';
+        if(df\Launchpad::$application->isTesting() && $config->shouldCaptureInTesting()) {
+            return 'Capture';
         }
 
         $name = $config->getDefaultTransport();

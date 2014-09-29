@@ -88,11 +88,11 @@ interface ITransport {
 
 
 interface IMailModel {
-    public function storeDevMail(IMessage $message);
+    public function captureMail(IMessage $message);
     public function journalMail(IMessage $message);
 }
 
-interface IDevMailRecord {
+interface IMailRecord {
     public function getId();
     public function getFromAddress();
     public function getToAddresses();

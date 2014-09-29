@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\apex\models\mail\devMail;
+namespace df\apex\models\mail\capture;
 
 use df;
 use df\core;
@@ -14,13 +14,18 @@ use df\flow;
 class Unit extends axis\unit\table\Base {
     
     protected function _onCreate(axis\schema\ISchema $schema) {
-        $schema->addField('id', 'AutoId', 8);
+        $schema->addPrimaryField('id', 'Guid');
         $schema->addField('from', 'String', 128);
-        $schema->addField('to', 'BigString', opal\schema\IFieldSize::MEDIUM);
+        $schema->addField('to', 'BigString', 'medium');
         $schema->addField('subject', 'String', 255);
-        $schema->addField('body', 'BigString', opal\schema\IFieldSize::HUGE);
-        $schema->addField('date', 'DateTime');
+        $schema->addField('body', 'BigString', 'huge');
         $schema->addField('isPrivate', 'Boolean');
+
+        $schema->addField('date', 'Timestamp');
+        $schema->addField('readDate', 'DateTime')
+            ->isNullable(true);
+        $schema->addField('environmentMode', 'Enum', ['development', 'testing', 'production'])
+            ->setDefaultValue('development');
     }
 
     public function applyPagination(opal\query\IPaginator $paginator) {
@@ -52,8 +57,8 @@ class Unit extends axis\unit\table\Base {
                 'to' => implode(',', array_unique($to)),
                 'subject' => $message->getSubject(),
                 'body' => (string)$message,
-                'date' => 'now',
-                'isPrivate' => $message->isPrivate()
+                'isPrivate' => $message->isPrivate(),
+                'environmentMode' => $this->context->application->getEnvironmentMode()
             ])
             ->save();
     }
