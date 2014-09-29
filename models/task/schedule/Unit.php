@@ -40,5 +40,15 @@ class Unit extends axis\unit\table\Base {
 
         $schema->addField('isLive', 'Boolean')
             ->setDefaultValue(true);
+        $schema->addField('isAuto', 'Boolean')
+            ->setDefaultValue(true);
+    }
+
+    public function applyPagination(opal\query\IPaginator $paginator) {
+        $paginator
+            ->setOrderableFields('request', 'environmentMode', 'priority', 'creationDate', 'lastRun', 'isLive', 'isAuto')
+            ->setDefaultOrder('lastRun DESC', 'request ASC');
+
+        return $this;
     }
 }
