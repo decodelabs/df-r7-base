@@ -495,6 +495,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         }
         
         
+        /*
         // Sanitize values from adapter
         $temp = $row;
 
@@ -512,6 +513,12 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         // Sanitize values from extension
         foreach($row as $key => $value) {
             $this->_changes[$key] = $this->_sanitizeValue($key, $value);
+        }
+        */
+
+
+        foreach($row as $key => $value) {
+            $this->offsetSet($key, $value);
         }
         
         return $this;
