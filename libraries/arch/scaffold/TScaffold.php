@@ -633,6 +633,19 @@ trait TScaffold_RecordDataProvider {
         });
     }
 
+    public function defineEnvironmentModeField($list, $mode) {
+        $list->addField('environmentMode', $mode == 'list' ? $this->_('Env.') : null, function($mail) use($mode) {
+            switch($mail['environmentMode']) {
+                case 'development':
+                    return $this->html->element('span.priority-low.inactive', $mode == 'list' ? $this->_('Dev') : $this->_('Development'));
+                case 'testing':
+                    return $this->html->element('span.priority-medium.inactive', $mode == 'list' ? $this->_('Test') : $this->_('Testing'));
+                case 'production':
+                    return $this->html->element('span.priority-high.active', $mode == 'list' ? $this->_('Prod') : $this->_('Production'));
+            }
+        });
+    }
+
     public function defineActionsField($list, $mode) {
         $list->addField('actions', function($item) {
             return $this->getRecordOperativeLinks($item, 'list');
