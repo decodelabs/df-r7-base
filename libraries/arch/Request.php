@@ -17,7 +17,6 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     
     const AREA_MARKER = '~';
     const DEFAULT_AREA = 'front';
-    const DEFAULT_CONTROLLER = '';
     const DEFAULT_ACTION = 'index';
     const DEFAULT_TYPE = 'html';
     
@@ -150,11 +149,6 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
 // Controller
     public function setController($controller) {
         $path = $this->getPath();
-        
-        if(empty($controller)) {
-            $controller = static::DEFAULT_CONTROLLER;
-        }
-        
         $parts = $this->_path->toArray();
         $start = 0;
         $end = count($parts);
@@ -194,7 +188,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
 
     public function getRawControllerParts() {
         if(!$this->_path) {
-            return [static::DEFAULT_CONTROLLER];
+            return [];
         }
         
         $parts = $this->_path->toArray();
@@ -210,7 +204,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         }
         
         if(empty($parts)) {
-            return [static::DEFAULT_CONTROLLER];
+            return [];
         }
 
         return $parts;
@@ -218,14 +212,6 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     
     public function isController($controller) {
         return $this->getController() == $this->formatController($controller);
-    }
-    
-    public static function getDefaultController() {
-        return static::DEFAULT_CONTROLLER;
-    }
-    
-    public function isDefaultController() {
-        return $this->getController() == static::DEFAULT_CONTROLLER;
     }
     
     public static function formatController($controller) {
