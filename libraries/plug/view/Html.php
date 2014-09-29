@@ -161,8 +161,14 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
             return null;
         }
 
+        $address = flow\mail\Address::factory($address);
+
         if($body === null) {
-            $body = $address;
+            $body = $address->getName();
+
+            if(empty($body)) {
+                $body = $address->getAddress();
+            }
         }
 
         return $this->link($this->_view->uri->mailto($address), $body)
