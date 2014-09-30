@@ -24,11 +24,11 @@ class Angel extends Base {
             );
         }
 
-        return halo\daemon\Angel::factory('Angel');
+        return halo\daemon\Base::factory('Angel');
     }
 
     public function launchPayload($payload) {
-        if(!$payload instanceof halo\daemon\IAngel) {
+        if(!$payload instanceof halo\daemon\IDaemon) {
             throw new core\InvalidArgumentException(
                 'Payload is not a daemon'
             );
