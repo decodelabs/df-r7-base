@@ -18,12 +18,18 @@ class Stream implements core\io\IStreamChannel {
     protected $_id;
 
     public function __construct($resource, $id=null) {
+        $blocking = false;
+
         if(is_string($resource)) {
             $resource = fopen($resource, 'a+');
-            $this->setBlocking(true);
+            $blocking = true;
         }
 
         $this->_resource = $resource;
+
+        if($blocking) {
+            $this->setBlocking(true);
+        }
 
         if($id === null) {
             $id = 'Stream:'.$this->_resource;
