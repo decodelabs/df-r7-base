@@ -28,6 +28,18 @@ abstract class Handler implements halo\event\IHandler {
         $binding->isAttached(true);
         return $this;
     }
+
+    public function _handleEvent($type) {
+        foreach($this->_bindings as $binding) {
+            if(!$binding->isAttached()) {
+                continue;
+            }
+            
+            if($binding->getType() == $type) {
+                $binding->trigger($this);
+            }
+        }
+    }
     
     protected function _getEventTimeout() {
         return -1;
@@ -90,18 +102,6 @@ class Handler_Socket extends Handler implements halo\event\ISocketHandler {
         }
         
         parent::_unregisterBinding($binding);
-    }
-    
-    public function _handleEvent($type) {
-        foreach($this->_bindings as $binding) {
-            if(!$binding->isAttached()) {
-                continue;
-            }
-            
-            if($binding->getType() == $type) {
-                $binding->trigger($this);
-            }
-        }
     }
     
     public function _exportToMap(&$map) {
@@ -192,6 +192,6 @@ class Handler_Stream extends Handler implements halo\event\IStreamHandler {
         }
         
         $map[Dispatcher::STREAM][Dispatcher::HANDLER][$id] = $this;
-        $map[Dispatcher::COUNTER][$key]++;
+        $map[Dispatcher::COUNTER][Dispatcher::STREAM]++;
     }
 }

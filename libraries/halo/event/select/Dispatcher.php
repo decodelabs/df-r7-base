@@ -37,6 +37,9 @@ class Dispatcher extends halo\event\Dispatcher {
         $baseTime = microtime(true);
         $times = [];
         $lastCycle = $baseTime;
+        $this->_generateMaps = true;
+
+        $this->_startSignalHandlers();
 
         while(!$this->_breakLoop) {
             if($this->_generateMaps) {
@@ -154,6 +157,8 @@ class Dispatcher extends halo\event\Dispatcher {
         $this->_isRunning = false;
         
         //echo "\nEnding select event loop\n";
+
+        $this->_stopSignalHandlers();
         
         return $this;
     }
@@ -220,17 +225,27 @@ class Dispatcher extends halo\event\Dispatcher {
     
 
 // Signals
-    protected function _registerSignalHandler(halo\process\ISignal $signal, Callable $handler) {
+    protected function _registerSignalHandler(halo\process\ISignal $signal, Callable $handler) {}
+    protected function _unregisterSignalHandler(halo\process\ISignal $signal) {}
+
+    protected function _startSignalHandlers() {
         if(extension_loaded('pcntl')) {
-            pcntl_signal($signal->getNumber(), function() use($signal, $handler) { 
-                call_user_func_array($handler, [$signal]);
-            });
+            foreach($this->_signalHandlers as $name => $handler) {
+                $signal = halo\process\Signal::factory($name);
+
+                pcntl_signal($signal->getNumber(), function() use($signal, $handler) { 
+                    call_user_func_array($handler, [$signal]);
+                });
+            }
         }
     }
 
-    protected function _unregisterSignalHandler(halo\process\ISignal $signal) {
+    protected function _stopSignalHandlers() {
         if(extension_loaded('pcntl')) {
-            pcntl_signal($signal->getNumber(), function() use($signal) {});
+            foreach($this->_signalHandlers as $name => $handler) {
+                $signal = halo\process\Signal::factory($name);
+                pcntl_signal($signal->getNumber(), function() {});
+            }
         }
     }
 

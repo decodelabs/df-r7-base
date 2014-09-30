@@ -25,6 +25,8 @@ class Binding implements IBinding {
             $listenerId = get_class($listener);
         } else if(is_callable($listener)) {
             $listenerId = core\string\Util::getCallableId($listener);
+        } else if(is_object($listener)) {
+            $listenerId = spl_object_hash($listener);
         } else {
             core\dump($listener);
         }

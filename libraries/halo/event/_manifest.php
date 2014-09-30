@@ -68,7 +68,7 @@ interface IDispatcher {
 }
 
 
-interface IDispatcherProvider {
+interface IDispatcherProvider extends IListener {
     public function setDispatcher(halo\event\IDispatcher $dispatcher);
     public function getDispatcher();
     public function isRunning();
