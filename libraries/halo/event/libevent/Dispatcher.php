@@ -27,6 +27,8 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
     
     public function start() {
         //echo "Starting event loop\n\n";
+
+        $this->_registerCycleHandler();
         
         $this->_isRunning = true;
         event_base_loop($this->_base);
@@ -45,8 +47,7 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
         
         return $this;
     }
-    
-    
+
     public function newSocketHandler(link\socket\ISocket $socket) {
         return $this->_registerHandler(new Handler_Socket($this, $socket));
     }
@@ -56,21 +57,16 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
     }
     
     public function setCycleHandler(Callable $callback=null) {
+        $this->_cycleHandler = $callback;
+        return $this;
+    }
+
+    protected function _registerCycleHandler() {
         if($this->_cycleHandlerEvent) {
             event_del($this->_cycleHandlerEvent);
             event_free($this->_cycleHandlerEvent);
         }
 
-        $this->_cycleHandler = $callback;
-
-        if($callback) {
-            $this->_registerCycleHandler();
-        }
-
-        return $this;
-    }
-
-    protected function _registerCycleHandler() {
         $this->_cycleHandlerEvent = $this->_registerEvent(
             null,
             EV_TIMEOUT | EV_PERSIST,
@@ -80,9 +76,11 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
     }
 
     protected function _handleCycle() {
-        if(false === call_user_func_array($this->_cycleHandler, [$this])) {
-            $this->stop();
-            return;
+        if($this->_cycleHandler) {
+            if(false === call_user_func_array($this->_cycleHandler, [$this])) {
+                $this->stop();
+                return;
+            }
         }
 
         $this->_registerCycleHandler();

@@ -21,13 +21,8 @@ abstract class Handler implements halo\event\IHandler {
                     if(!$binding->isPersistent()) {
                         $binding->isAttached(false);
                     }
-                    
-                    try {
-                        $binding->trigger($this);
-                    } catch(\Exception $e) {
-                        //$this->_dispatcher->stop();
-                        //throw $e;
-                    }
+
+                    $binding->trigger($this);
                 },
                 $binding
             )
