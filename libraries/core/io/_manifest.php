@@ -507,6 +507,7 @@ interface IMultiplexer extends IFlushable, core\IRegistryObject {
     public function addChannel(IChannel $channel);
     public function hasChannel($id);
     public function getChannel($id);
+    public function getFirstChannel();
     public function removeChannel($id);
     public function getChannels();
     public function clearChannels();

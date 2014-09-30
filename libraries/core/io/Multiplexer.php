@@ -103,6 +103,12 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
         }
     }
 
+    public function getFirstChannel() {
+        foreach($this->_channels as $channel) {
+            return $channel;
+        }
+    }
+
     public function removeChannel($id) {
         if($id instanceof core\io\IChannel) {
             $id = $id->getChannelId();
