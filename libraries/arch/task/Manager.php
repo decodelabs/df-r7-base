@@ -16,6 +16,8 @@ class Manager implements IManager {
 
     const REGISTRY_PREFIX = 'manager://task';
 
+    protected $_captureBackground = false;
+
     public function launch($request, core\io\IMultiplexer $multiplexer=null, $environmentMode=null) {
         if($environmentMode === null) {
             $environmentMode = df\Launchpad::getEnvironmentMode();
@@ -37,6 +39,15 @@ class Manager implements IManager {
 
         $path = df\Launchpad::$applicationPath.'/entry/';
         $path .= df\Launchpad::$environmentId.'.'.$environmentMode.'.php';
+
+        if($this->_captureBackground) {
+            $application = df\Launchpad::getApplication();
+
+            if($application instanceof core\application\Task) {
+                $multiplexer = $application->getTaskResponse();
+                return halo\process\Base::launchScript($path, ['task', $request], $multiplexer);
+            }
+        }
 
         return halo\process\Base::launchBackgroundScript($path, ['task', $request]);
     }
@@ -112,5 +123,15 @@ class Manager implements IManager {
         }
 
         return $context;
+    }
+
+
+    public function shouldCaptureBackgroundTasks($flag=null) {
+        if($flag !== null) {
+            $this->_captureBackground = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_captureBackground;
     }
 }
