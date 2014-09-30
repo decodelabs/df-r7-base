@@ -15,19 +15,25 @@ class Stream implements core\io\IStreamChannel {
 
     protected $_resource;
     protected $_error = '';
-    protected $_isBlocking = true;
+    protected $_id;
 
-    public function __construct($resource) {
+    public function __construct($resource, $id=null) {
         if(is_string($resource)) {
             $resource = fopen($resource, 'a+');
+            $this->setBlocking(true);
         }
 
         $this->_resource = $resource;
-        $this->setBlocking(true);
+
+        if($id === null) {
+            $id = 'Stream:'.$this->_resource;
+        }
+
+        $this->_id = $id;
     }
 
     public function getChannelId() {
-        return 'Stream:'.$this->_resource;
+        return $this->_id;
     }
 
     public function flush() {
@@ -101,12 +107,16 @@ class Stream implements core\io\IStreamChannel {
 
     public function setBlocking($flag) {
         stream_set_blocking($this->_resource, (int)((bool)$flag));
-        $this->_isBlocking = (bool)$flag;
         return $this;
     }
 
     public function getBlocking() {
-        return $this->_isBlocking;
+        if(!$this->_resource) {
+            return false;
+        }
+
+        $meta = stream_get_meta_data($this->_resource);
+        return (bool)$meta['blocking'];
     }
 
     public function close() {
