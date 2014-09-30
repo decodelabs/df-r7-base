@@ -34,8 +34,13 @@ class Apc implements core\cache\IBackend {
 
         $request = new arch\Request('~devtools/cache/apc-clear.json?purge');
         $request->query->mode = (php_sapi_name() == 'cli' ? 'http' : 'cli');
+        $multiplexer = null;
 
-        arch\task\Manager::getInstance()->launch($request);
+        if(df\Launchpad::$application->getRunMode() == 'Task') {
+            $multiplexer = arch\task\Manager::getInstance()->getResponse();
+        }
+
+        arch\task\Manager::getInstance()->launch($request, $multiplexer);
     }
 
     public static function isLoadable() {
