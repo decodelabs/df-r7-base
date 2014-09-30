@@ -131,6 +131,10 @@ class Util implements IUtil {
         $output = [];
 
         foreach(new \DirectoryIterator($path) as $item) {
+            if($item->isDot()) {
+                continue;
+            }
+
             if($item->isDir()) {
                 $name = $item->getFilename();
 
