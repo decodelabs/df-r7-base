@@ -27,6 +27,21 @@ class Std implements core\io\IMultiplexReaderChannel {
         return $this;
     }
 
+
+    public function getInputStream() {
+        return new Stream(STDIN, 'STDIN');
+    }
+
+    public function getOutputStream() {
+        return new Stream(STDOUT, 'STDOUT');
+    }
+
+    public function getErrorStream() {
+        return new Stream(STDERR, 'STDERR');
+    }
+
+
+
     public function writeError($error) {
         fwrite(STDERR, $error);
         return $this;
