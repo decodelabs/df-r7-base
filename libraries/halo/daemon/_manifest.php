@@ -21,15 +21,10 @@ interface IDaemon extends halo\event\IDispatcherProvider {
     public function getName();
 
     public function start();
-    public function cycle();
     public function isStarted();
     public function stop();
     public function isStopped();
     public function pause();
     public function resume();
     public function isPaused();
-}
-    
-interface IAngel extends IDaemon {
-
 }

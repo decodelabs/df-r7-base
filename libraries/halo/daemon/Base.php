@@ -14,10 +14,11 @@ abstract class Base implements IDaemon {
     use halo\event\TDispatcherProvider;
 
     const PAUSED_SLEEP_TIME = 4;
-    const REQUIRES_PRIVILEGED_PROCESS = true;
+    const REQUIRES_PRIVILEGED_PROCESS = false;
     const FORK_ON_LOAD = true;
 
-    protected $_process;
+    public $terminal;
+    public $process;
 
     protected $_isStarted = false;
     protected $_isStopping = false;
@@ -58,10 +59,10 @@ abstract class Base implements IDaemon {
 
         gc_enable();
 
-        $this->getDispatcher();
-        $this->_process = halo\process\Base::getCurrent();
+        $this->terminal = core\io\Multiplexer::defaultFactory('daemon');
+        $this->process = halo\process\Base::getCurrent();
         $system = halo\system\Base::getInstance();
-        $isPrivileged = $this->_process->isPrivileged();
+        $isPrivileged = $this->process->isPrivileged();
 
         if(!$isPrivileged && static::REQUIRES_PRIVILEGED_PROCESS) {
             throw new RuntimeException(
@@ -69,22 +70,23 @@ abstract class Base implements IDaemon {
             );
         }
 
-        if(static::FORK_ON_LOAD && $this->_process->canFork()) {
-            if($this->_process->fork()) {
+        if(static::FORK_ON_LOAD && $this->process->canFork()) {
+            if($this->process->fork()) {
                 exit;
             } else {
                 $this->_isForked = true;
             }
         }
 
-        $this->_process->setTitle(df\Launchpad::$application->getName().' - '.$this->getName());
+        $this->getDispatcher();
+        $this->process->setTitle(df\Launchpad::$application->getName().' - '.$this->getName());
 
         if($isPrivileged) {
             if($system->getPlatformType() == 'Unix') {
                 $pidPath = $this->_getPidFilePath();
 
                 if($pidPath) {
-                    $this->_process->setPidFilePath($pidPath);
+                    $this->process->setPidFilePath($pidPath);
                 }
             }
 
@@ -93,7 +95,7 @@ abstract class Base implements IDaemon {
             $user = $this->_getDaemonUser();
             $group = $this->_getDaemonGroup();
 
-            $this->_process->setIdentity($user, $group);
+            $this->process->setIdentity($user, $group);
         }
 
         declare(ticks = 1);
@@ -102,13 +104,70 @@ abstract class Base implements IDaemon {
         $this->_setup();
 
         $this->_dispatcher
-            ->setCycleHandler([$this, 'cycle'])
+            ->setCycleHandler(function() {
+                if(!$this->_isStarted 
+                || $this->_isPaused 
+                || $this->_isStopping
+                || $this->_isStopped) {
+                    return false;
+                }
+
+                clearstatcache();
+                //gc_collect_cycles();
+
+                $this->terminal->writeLine('Cycle');
+
+                if(method_exists($this, 'onCycle')) {
+                    $this->onCycle();
+                }
+            })
+            ->setSignalHandler(['SIGHUP'], function() {})
+            ->setSignalHandler(['SIGTERM', 'SIGINT'], [$this, 'stop'])
+            ->setSignalHandler(['SIGTSTP'], [$this, 'pause'])
+            ->setSignalHandler(['SIGCONT'], [$this, 'resume']);
+
+        if(method_exists($this, 'onTerminalInput')
+        && ($std = $this->terminal->getChannel('STD'))) {
+            $this->_dispatcher->newStreamHandler($std->getInputStream())
+                ->bindPersistent(function() use($std) {
+                    $this->onTerminalInput(rtrim($std->readLine(), "\r\n"));
+                }, 'terminalInput');
+        }
+
+
+        $pauseDispatcher = (new halo\event\select\Dispatcher())
+            ->setCycleHandler(function() {
+                if(!$this->_isStarted 
+                || !$this->_isPaused 
+                || $this->_isStopping
+                || $this->_isStopped) {
+                    return false;
+                }
+
+                $this->terminal->writeLine('Pause cycle');
+
+                if(method_exists($this, 'onCycle')) {
+                    $this->onCycle();
+                }
+            })
             ->setSignalHandler(['SIGHUP'], function() {})
             ->setSignalHandler(['SIGTERM', 'SIGINT'], [$this, 'stop'])
             ->setSignalHandler(['SIGTSTP'], [$this, 'pause'])
             ->setSignalHandler(['SIGCONT'], [$this, 'resume']);
 
 
+        while(true) {
+            $this->_dispatcher->start();
+
+            if($this->_isPaused) {
+                $pauseDispatcher->start();
+            } else {
+                break;
+            }
+        }
+
+
+        /*
         while(true) {
             if($this->_isPaused) {
                 $this->_iterateWhilePaused();
@@ -126,35 +185,24 @@ abstract class Base implements IDaemon {
                 $this->_dispatcher->start();
             }
 
-            if(!$this->cycle()) {
+            if($this->_isStopping || $this->_isStopped) {
                 break;
             }
+
+            if(method_exists($this, 'onCycle')) {
+                $this->onCycle();
+            }
+
+            if(extension_loaded('pcntl')) {
+                pcntl_signal_dispatch();
+            }
         }
+        */
 
         $this->_isStopped = true;
         $this->_teardown();
 
         return $this;
-    }
-
-
-    public function cycle() {
-        if(!$this->_isStarted || $this->_isStopped) {
-            return false;
-        }
-
-        if(extension_loaded('pcntl')) {
-            pcntl_signal_dispatch();
-        }
-
-        clearstatcache();
-        //gc_collect_cycles();
-
-        if($this->_isPaused || $this->_isStopping) {
-            return false;
-        }
-
-        return true;
     }
 
     protected function _setup() {}
@@ -171,6 +219,7 @@ abstract class Base implements IDaemon {
         }
 
         $this->_isStopping = true;
+        $this->terminal->writeLine('** STOP **');
         return $this;
     }
 
@@ -180,11 +229,13 @@ abstract class Base implements IDaemon {
 
     public function pause() {
         $this->_isPaused = true;
+        $this->terminal->writeLine('** PAUSE **');
         return $this;
     }
 
     public function resume() {
         $this->_isPaused = false;
+        $this->terminal->writeLine('** RESUME **');
         return $this;
     }
 
