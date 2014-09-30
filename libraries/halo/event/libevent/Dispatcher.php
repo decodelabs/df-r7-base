@@ -64,19 +64,28 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
         $this->_cycleHandler = $callback;
 
         if($callback) {
-            $this->_cycleHandlerEvent = $this->_registerEvent(
-                STDIN,
-                EV_TIMEOUT | EV_PERSIST,
-                1000,
-                function() use($callback) {
-                    if(false === call_user_func_array($callback, [$this])) {
-                        $this->stop();
-                    }
-                }
-            );
+            $this->_registerCycleHandler();
         }
 
         return $this;
+    }
+
+    protected function _registerCycleHandler() {
+        $this->_cycleHandlerEvent = $this->_registerEvent(
+            null,
+            EV_TIMEOUT | EV_PERSIST,
+            1000,
+            [$this, '_handleCycle']
+        );
+    }
+
+    protected function _handleCycle() {
+        if(false === call_user_func_array($this->_cycleHandler, [$this])) {
+            $this->stop();
+            return;
+        }
+
+        $this->_registerCycleHandler();
     }
 
 
@@ -107,8 +116,6 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
 
 // Timers
     protected function _registerTimer(halo\event\Timer $timer) {
-        $this->_unregisterTimer($timer);
-
         $flags = EV_TIMEOUT;
 
         if($timer->isPersistent) {
@@ -116,9 +123,9 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
         }
 
         $this->_timerEvents[$timer->id] = $this->_registerEvent(
-            STDIN,
+            null,
             $flags,
-            $timer->duration->getSeconds(),
+            $timer->duration->getMilliseconds(),
             [$this, '_handleTimerEvent'],
             $timer
         );
@@ -133,11 +140,11 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
         }
     }
 
-    public function _handleTimerEvent($target, $flags, halo\event\Timer $timer) {
+    protected function _handleTimerEvent($target, $flags, halo\event\Timer $timer) {
         call_user_func_array($timer->callback, [$timer->id]);
 
-        if(!$timer->isPersistent) {
-            $this->removeTimer($timer);
+        if($timer->isPersistent) {
+            $this->_registerTimer($timer);
         }
     }
 
@@ -154,7 +161,13 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
 
         $event = event_new();
 
-        if(!event_set($event, $target, $flags, $callback, $arg)) {
+        if($target === null) {
+            $ret = event_timer_set($event, $callback, $arg);
+        } else {
+            $ret = event_set($event, $target, $flags, $callback, $arg);
+        }
+
+        if(!$ret) {
             event_free($event);
 
             throw new halo\event\BindException(

@@ -17,7 +17,18 @@ abstract class Handler implements halo\event\IHandler {
                 $this->_getEventTarget(),
                 $this->_getEventTypeFlags($binding),
                 $this->_getEventTimeout(),
-                [$this, '_handleEvent'],
+                function($target, $flags, $binding) {
+                    if(!$binding->isPersistent()) {
+                        $binding->isAttached(false);
+                    }
+                    
+                    try {
+                        $binding->trigger($this);
+                    } catch(\Exception $e) {
+                        //$this->_dispatcher->stop();
+                        //throw $e;
+                    }
+                },
                 $binding
             )
         );
@@ -29,15 +40,6 @@ abstract class Handler implements halo\event\IHandler {
             event_free($event);
         }
     }
-    
-    public function _handleEvent($target, $flags, $binding) {
-        if(!$binding->isPersistent()) {
-            $binding->isAttached(false);
-        }
-        
-        $binding->trigger($this);
-    }
-    
     
     public function freeze(halo\event\IBinding $binding) {
         $binding->isAttached(false);
