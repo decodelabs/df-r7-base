@@ -13,7 +13,6 @@ abstract class Base implements IDaemon {
 
     use halo\event\TDispatcherProvider;
 
-    const PAUSED_SLEEP_TIME = 4;
     const REQUIRES_PRIVILEGED_PROCESS = false;
     const FORK_ON_LOAD = true;
 
@@ -115,8 +114,6 @@ abstract class Base implements IDaemon {
                 clearstatcache();
                 //gc_collect_cycles();
 
-                $this->terminal->writeLine('Cycle');
-
                 if(method_exists($this, 'onCycle')) {
                     $this->onCycle();
                 }
@@ -144,8 +141,6 @@ abstract class Base implements IDaemon {
                     return false;
                 }
 
-                $this->terminal->writeLine('Pause cycle');
-
                 if(method_exists($this, 'onCycle')) {
                     $this->onCycle();
                 }
@@ -165,39 +160,6 @@ abstract class Base implements IDaemon {
                 break;
             }
         }
-
-
-        /*
-        while(true) {
-            if($this->_isPaused) {
-                $this->_iterateWhilePaused();
-
-                $sleepTime = static::PAUSED_SLEEP_TIME;
-
-                if(!$this->_isStopping && $sleepTime > 0) {
-                    if(is_int($sleepTime) || $sleepTime > 10) {
-                        sleep((int)$sleepTime);
-                    } else {
-                        usleep($sleepTime * 1000000);
-                    }
-                }
-            } else {
-                $this->_dispatcher->start();
-            }
-
-            if($this->_isStopping || $this->_isStopped) {
-                break;
-            }
-
-            if(method_exists($this, 'onCycle')) {
-                $this->onCycle();
-            }
-
-            if(extension_loaded('pcntl')) {
-                pcntl_signal_dispatch();
-            }
-        }
-        */
 
         $this->_isStopped = true;
         $this->_teardown();
@@ -219,7 +181,8 @@ abstract class Base implements IDaemon {
         }
 
         $this->_isStopping = true;
-        $this->terminal->writeLine('** STOP **');
+        $this->terminal->writeLine();
+        $this->terminal->writeLine('** STOPPING **');
         return $this;
     }
 
@@ -229,13 +192,13 @@ abstract class Base implements IDaemon {
 
     public function pause() {
         $this->_isPaused = true;
-        $this->terminal->writeLine('** PAUSE **');
+        $this->terminal->writeLine('** PAUSED **');
         return $this;
     }
 
     public function resume() {
         $this->_isPaused = false;
-        $this->terminal->writeLine('** RESUME **');
+        $this->terminal->writeLine('** RESUMING **');
         return $this;
     }
 
