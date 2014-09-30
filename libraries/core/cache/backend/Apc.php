@@ -32,7 +32,7 @@ class Apc implements core\cache\IBackend {
             apc_clear_cache('system');
         }
 
-        $request = new arch\Request('~devtools/cache/apc-clear.json?purge');
+        $request = new arch\Request('cache/apc-clear.json?purge');
         $request->query->mode = (php_sapi_name() == 'cli' ? 'http' : 'cli');
 
         arch\task\Manager::getInstance()->launchBackground($request);
@@ -222,7 +222,7 @@ class Apc implements core\cache\IBackend {
     }
 
     protected function _retrigger($method, $arg=null) {
-        $request = new arch\Request('~devtools/cache/apc-clear.json');
+        $request = new arch\Request('cache/apc-clear.json');
         $request->query->cacheId = $this->_cache->getCacheId();
         $request->query->mode = $this->_isCli ? 'http' : 'cli';
         $request->query->{$method} = $arg;

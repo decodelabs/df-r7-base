@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\apex\directory\devtools\cache\_actions;
+namespace df\apex\directory\front\cache\_actions;
 
 use df;
 use df\core;
@@ -13,7 +13,7 @@ use df\link;
 
 class TaskApcClear extends arch\task\Action {
     
-    use apex\directory\devtools\cache\_actions\TApcClear;
+    use TApcClear;
 
     const DEFAULT_ACCESS = arch\IAccess::ALL;
     const CHECK_ACCESS = false;
@@ -61,7 +61,7 @@ class TaskApcClear extends arch\task\Action {
                 $this->throwError('Cannot find a suitable base url in config');
             }
 
-            $url = new link\http\Url('http://'.rtrim($baseUrl, '/').'/~devtools/cache/apc-clear.json');
+            $url = new link\http\Url('http://'.rtrim($baseUrl, '/').'/cache/apc-clear.json');
             $url->query->import($this->request->query);
             $this->response->writeLine($url);
 

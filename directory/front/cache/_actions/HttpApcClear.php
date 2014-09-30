@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\apex\directory\devtools\cache\_actions;
+namespace df\apex\directory\front\cache\_actions;
 
 use df;
 use df\core;
@@ -12,7 +12,7 @@ use df\arch;
 
 class HttpApcClear extends arch\Action {
     
-    use apex\directory\devtools\cache\_actions\TApcClear;
+    use TApcClear;
 
     const DEFAULT_ACCESS = arch\IAccess::ALL;
     const CHECK_ACCESS = false;
