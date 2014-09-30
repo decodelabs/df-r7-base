@@ -48,6 +48,7 @@ interface ISessionExtendedCache extends ICache {
 
 interface IBackend extends core\IValueMap, \Countable {
     public static function purgeAll(core\collection\ITree $options);
+    public static function prune(core\collection\ITree $options);
     public static function isLoadable();
     public function getConnectionDescription();
     public function getStats();

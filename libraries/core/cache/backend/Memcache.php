@@ -26,6 +26,10 @@ class Memcache implements core\cache\IBackend {
         $connection->flush();
     }
 
+    public static function prune(core\collection\ITree $options) {
+        // pruning is automatic :)
+    }
+
     public static function isLoadable() {
         return extension_loaded('memcache');
     }

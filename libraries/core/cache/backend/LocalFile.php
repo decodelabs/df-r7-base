@@ -11,6 +11,8 @@ use df\core;
 class LocalFile implements core\cache\IDirectFileBackend {
 
     use core\TValueMap;
+
+    const PRUNE_LIFETIME = '1 month';
     
     protected $_lifeTime;
     protected $_cache;
@@ -27,6 +29,35 @@ class LocalFile implements core\cache\IDirectFileBackend {
 
         core\io\Util::emptyDir($path1);
         core\io\Util::emptyDir($path2);
+    }
+
+    public static function prune(core\collection\ITree $options) {
+        $paths = [
+            df\Launchpad::$application->getSharedStoragePath().'/cache',
+            df\Launchpad::$application->getLocalStoragePath().'/cache'
+        ];
+
+        clearstatcache();
+        $stamp = core\time\Date::factory('-'.self::PRUNE_LIFETIME)->toTimestamp();
+        $output = 0;
+
+        foreach($paths as $basePath) {
+            foreach(core\io\Util::listDirsIn($basePath) as $name) {
+                $path = $basePath.'/'.$name;
+                
+                foreach(core\io\Util::listFilesIn($path) as $key) {
+                    $filePath = $path.'/'.$key;
+                    $mTime = filemtime($filePath);
+
+                    if($mTime < $stamp) {
+                        core\io\Util::deleteFile($filePath);
+                        $output++;
+                    }
+                }
+            }
+        }
+
+        return $output;
     }
 
     public static function isLoadable() {
@@ -255,7 +286,7 @@ class LocalFile implements core\cache\IDirectFileBackend {
         return $output;
     }
 
-    protected function _normalizeKey($key) {
+    protected static function _normalizeKey($key) {
         return core\string\Manipulator::formatFileName($key);
     }
 }

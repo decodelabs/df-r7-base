@@ -38,6 +38,10 @@ class Apc implements core\cache\IBackend {
         arch\task\Manager::getInstance()->launchBackground($request);
     }
 
+    public static function prune(core\collection\ITree $options) {
+        // pruning is automatic :)
+    }
+
     public static function isLoadable() {
         if(self::$_apcu === null) {
             self::$_apcu = version_compare(PHP_VERSION, '5.5.0') >= 0;
