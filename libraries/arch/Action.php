@@ -23,25 +23,28 @@ abstract class Action implements IAction, core\IDumpable {
     public static function factory(IContext $context, IController $controller=null) {
         $class = self::getClassFor(
             $context->location,
-            $context->getRunMode()
+            $context->getRunMode(),
+            $isDefault
         );
 
-        if(!$class) {
+        if(!$class || $isDefault) {
             try {
                 $scaffold = arch\scaffold\Base::factory($context);
                 return $scaffold->loadAction($controller);
             } catch(arch\scaffold\IException $e) {}
 
-            throw new RuntimeException(
-                'No action could be found for '.$context->location->toString(),
-                404
-            );
+            if(!$class) {
+                throw new RuntimeException(
+                    'No action could be found for '.$context->location->toString(),
+                    404
+                );
+            }
         }
         
         return new $class($context, $controller);
     }
 
-    public static function getClassFor(IRequest $request, $runMode='Http') {
+    public static function getClassFor(IRequest $request, $runMode='Http', &$isDefault=null) {
         $runMode = ucfirst($runMode);
         $path = $request->getController();
         
@@ -56,6 +59,7 @@ abstract class Action implements IAction, core\IDumpable {
         $end = implode('\\', $parts);
         
         $class = 'df\\apex\\directory\\'.$request->getArea().'\\'.$end;
+        $isDefault = false;
 
         if(!class_exists($class)) {
             $class = 'df\\apex\\directory\\shared\\'.$end;
@@ -64,6 +68,7 @@ abstract class Action implements IAction, core\IDumpable {
                 array_pop($parts);
                 $parts[] = $runMode.'Default';
                 $end = implode('\\', $parts);
+                $isDefault = true;
 
                 $class = 'df\\apex\\directory\\'.$request->getArea().'\\'.$end;
 
