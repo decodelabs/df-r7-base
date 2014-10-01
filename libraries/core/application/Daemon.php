@@ -42,6 +42,6 @@ class Daemon extends Base {
             );
         }
 
-        $payload->start();
+        $payload->run();
     }
 }

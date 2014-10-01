@@ -20,11 +20,12 @@ class LogicException extends \LogicException implements IException {}
 interface IDaemon extends halo\event\IDispatcherProvider {
     public function getName();
 
-    public function start();
-    public function isStarted();
+    public function run();
+    public function isRunning();
     public function stop();
     public function isStopped();
+
     public function pause();
-    public function resume();
     public function isPaused();
+    public function resume();
 }

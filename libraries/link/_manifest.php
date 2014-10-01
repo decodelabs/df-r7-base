@@ -58,7 +58,7 @@ interface IPeer extends halo\event\IDispatcherProvider {
     public function getProtocolDisposition();
 }
 
-interface IClient extends halo\event\IAdaptiveListener, IPeer {
+interface IClient extends IPeer {
     
     const PEER_FIRST = 1;
     const CLIENT_FIRST = 2;
@@ -69,7 +69,7 @@ interface IClient extends halo\event\IAdaptiveListener, IPeer {
     public function run();
 }
 
-interface IServer extends halo\event\IAdaptiveListener, IPeer {
+interface IServer extends IPeer {
     
     const SERVER_FIRST = 1;
     const PEER_FIRST = 2;

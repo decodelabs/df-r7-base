@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\halo;
 use df\link;
+use df\mesh;
 
 trait TPeer {
     
@@ -50,33 +51,20 @@ trait TPeer {
         $socket->close();
         
         unset($this->_sessions[$id]);
-        $this->getDispatcher()->removeSocket($socket);
+        $this->events->unbindSocket($socket);
     }
     
     
 // Events
-    public function handleEvent(halo\event\IHandler $handler, halo\event\IBinding $binding) {
-        $func = '_on'.ucfirst($handler->getScheme()).$binding->getName();
-        $args = $binding->getArgs();
-        array_unshift($args, $handler, $binding);
-        
-        if(!method_exists($this, $func)) {
-            throw new RuntimeException('Missing event handler: '.$func);
-        }
-            
-        call_user_func_array([$this, $func], $args);
-    }
-
     protected $_reads = 0;
 
-    protected function _onSocketDataAvailable($handler, $binding, $session) {
-        $socket = $handler->getSocket();
+    protected function _onSocketDataAvailable($socket, $binding, $session) {
         $result = null;
 
 
         // If in write / listen mode, peer is responding early, we don't need to write any more
         if($session->getWriteState() == link\IIoState::WRITE_LISTEN) {
-            $handler->freeze($handler->getBinding($this, 'connectionWaiting', halo\event\IIoState::WRITE));
+            $this->events->freezeSocket('connectionWaiting:'.$socket->getId());
         }
 
         $this->_reads++;
@@ -110,10 +98,10 @@ trait TPeer {
 
         if($endRead) { // Peer has shutdown writing
             // Remove binding
-            $handler->unbind($binding);
+            $binding->destroy();
             $this->_onPeerShutdownWriting($session);
             
-            if(!$handler->countBindings()) {
+            if(!$this->events->countSocketBindings($socket)) {
                 $this->_unregisterSession($session);
                 return;
             }
@@ -136,17 +124,17 @@ trait TPeer {
                 
                 if($result == IIoState::OPEN_WRITE) {
                     // Freeze reading, go to write mode
-                    $handler->freeze($binding);
+                    $binding->freeze();
                 } else {
                     // Shutdown reading, go to write mode
-                    $handler->unbind($binding);
+                    $binding->destroy();
                     $socket->shutdownReading();
                 }
                 
                 $session->readBuffer = false;
                 
                 try {
-                    $handler->unfreeze($handler->getBinding($this, 'connectionWaiting', halo\event\IIoState::WRITE));
+                    $this->events->unfreezeSocket('connectionWaiting:'.$socket->getId());
                 } catch(halo\event\BindException $e) {
                     $this->_unregisterSessionBySocket($socket);
                 }
@@ -163,9 +151,7 @@ trait TPeer {
         return;
     }
     
-    protected function _onSocketConnectionWaiting($handler, $binding, $session) {
-        $socket = $handler->getSocket();
-        
+    protected function _onSocketConnectionWaiting($socket, $binding, $session) {
         if(!strlen($session->writeBuffer)) { // There's nothing to write
             switch($state = $session->getWriteState()) {
                 case IIoState::END:
@@ -178,15 +164,15 @@ trait TPeer {
                     
                     if($state == IIoState::OPEN_READ) {
                         // Freeze writing, go to read mode
-                        $handler->freeze($binding);
+                        $binding->freeze();
                     } else {
                         // Shutdown writing, go to read mode
-                        $handler->unbind($binding);
+                        $binding->destroy();
                         $socket->shutdownWriting();
                     }
                     
                     try {
-                        $handler->unfreeze($handler->getBinding($this, 'dataAvailable', halo\event\IIoState::READ));
+                        $this->events->unfreezeSocket('dataAvailable:'.$socket->getId());
                     } catch(halo\event\BindException $e) {
                         $this->_unregisterSessionBySocket($socket);
                     }
@@ -202,7 +188,7 @@ trait TPeer {
 
                     if($state === IIoState::WRITE_LISTEN || $newState === IIoState::WRITE_LISTEN) {
                         try {
-                            $handler->unfreeze($handler->getBinding($this, 'dataAvailable', halo\event\IIoState::READ));
+                            $this->events->unfreezeSocket('dataAvailable:'.$socket->getId());
                         } catch(halo\event\BindException $e) {
                             $this->_unregisterSessionBySocket($socket);
                         }
@@ -230,11 +216,11 @@ trait TPeer {
             if($session->writeRetries >= $this->_maxWriteRetries) {
                 // Peer has stopped reading
                 $session->writeRetries = 0;
-                $handler->unbind($binding);
+                $binding->destroy();
                 $socket->shutdownWriting();
                 
                 try {
-                    $handler->unfreeze($handler->getBinding($this, 'dataAvailable', halo\event\IIoState::READ));
+                    $this->events->unfreezeSocket('dataAvailable:'.$socket->getId());
                 } catch(halo\event\BindException $e) {
                     $this->_unregisterSessionBySocket($socket);
                 }
@@ -276,13 +262,13 @@ trait TPeer_Client {
             );
         }
         
-        $dispatcher = $this->getDispatcher();
+        $this->getDispatcher();
         
         foreach($this->_sessions as $session) {
             $this->_dispatchSession($session);
         }
         
-        $dispatcher->start();
+        $this->events->listen();
     }
     
     abstract protected function _createInitialSessions();
@@ -290,18 +276,34 @@ trait TPeer_Client {
     protected function _dispatchSession(ISession $session) {
         $socket = $session->getSocket();
         $socket->connect();
-        
-        $eventHandler = $this->getDispatcher()->newSocketHandler($socket);
-        
+
         switch($this->getProtocolDisposition()) {
             case IClient::PEER_FIRST:
-                $eventHandler->bindPersistent($this, 'dataAvailable', [$session]);
-                $eventHandler->freeze($eventHandler->bindWritePersistent($this, 'connectionWaiting', [$session]));
+                $this->events
+                    ->bindSocketRead(
+                        'dataAvailable:'.$socket->getId(),
+                        $socket,
+                        mesh\Callback::factory([$this, '_onSocketDataAvailable'], [$session])
+                    )
+                    ->bindFrozenSocketWrite(
+                        'connectionWaiting:'.$socket->getId(),
+                        $socket,
+                        mesh\Callback::factory([$this, '_onSocketConnectionWaiting'], [$session])
+                    );
                 break;
                 
             case IClient::CLIENT_FIRST:
-                $eventHandler->bindWritePersistent($this, 'connectionWaiting', [$session]);
-                $eventHandler->freeze($eventHandler->bindPersistent($this, 'dataAvailable', [$session]));
+                $this->events
+                    ->bindSocketWrite(
+                        'connectionWaiting:'.$socket->getId(),
+                        $socket,
+                        mesh\Callback::factory([$this, '_onSocketConnectionWaiting'], [$session])
+                    )
+                    ->bindFrozenSocketRead(
+                        'dataAvailable:'.$socket->getId(),
+                        $socket,
+                        mesh\Callback::factory([$this, '_onSocketDataAvailable'], [$session])
+                    );
                 break;
                 
             case IClient::PEER_STREAM:
@@ -339,11 +341,11 @@ trait TPeer_Server {
     }
 
     protected function _setupPeerServer() {
-        $dispatcher = $this->getDispatcher();
+        $this->getDispatcher();
         
         // Heartbeat
         /*
-        $dispatcher->setTimer('heartbeat', 1, function() {
+        $dispatcher->bindTimer('heartbeat', 1, function() {
             echo 'Heartbeat'."\n";
         });
         */
@@ -353,9 +355,14 @@ trait TPeer_Server {
         // Accept
         foreach($this->_masterSockets as $socket) {
             $socket->listen();
-            
-            $dispatcher->newSocketHandler($socket)
-                ->bindPersistent($this, 'acceptRequest');
+
+            $this->events->bindSocketRead(
+                'acceptRequest:'.$socket->getId(),
+                $socket,
+                function($socket, $binding) {
+                    return $this->_onSocketAcceptRequest($socket, $binding);
+                }
+            );
         }
     }
     
@@ -364,19 +371,17 @@ trait TPeer_Server {
     }
 
     protected function _teardownPeerServer() {
-        $dispatcher = $this->getDispatcher();
-        
         foreach($this->_sessions as $session) {
             $this->_unregisterSession($session);
         }
         
         foreach($this->_masterSockets as $id => $socket) {
-            $dispatcher->removeSocket($socket);
+            $this->events->unbindSocket($socket);
             $socket->close();
             unset($this->_masterSockets[$id]);
         }
 
-        //$this->removeTimer('heartbeat');
+        //$this->unbindTimer('heartbeat');
     }
     
     abstract protected function _createMasterSockets();
@@ -402,27 +407,56 @@ trait TPeer_Server {
         $session = $this->_createSessionFromSocket($peerSocket);
         $this->_registerSession($session);
         
-        $eventHandler = $this->getDispatcher()->newSocketHandler($peerSocket);
-        
         switch($this->getProtocolDisposition()) {
             case IServer::SERVER_FIRST:
-                $eventHandler->bindWritePersistent($this, 'connectionWaiting', [$session]);
-                $eventHandler->freeze($eventHandler->bindPersistent($this, 'dataAvailable', [$session]));
+                $this->events
+                    ->bindSocketWrite(
+                        'connectionWaiting:'.$peerSocket->getId(),
+                        $peerSocket,
+                        mesh\Callback::factory([$this, '_onSocketConnectionWaiting'], [$session])
+                    )
+                    ->bindFrozenSocketRead(
+                        'dataAvailable:'.$peerSocket->getId(),
+                        $peerSocket,
+                        mesh\Callback::factory([$this, '_onSocketDataAvailable'], [$session])
+                    );
                 break;
                 
             case IServer::PEER_FIRST:
-                $eventHandler->bindPersistent($this, 'dataAvailable', [$session]);
-                $eventHandler->freeze($eventHandler->bindWritePersistent($this, 'connectionWaiting', [$session]));
+                $this->events
+                    ->bindSocketRead(
+                        'dataAvailable:'.$peerSocket->getId(),
+                        $peerSocket,
+                        mesh\Callback::factory([$this, '_onSocketDataAvailable'], [$session])
+                    )
+                    ->bindFrozenSocketWrite(
+                        'connectionWaiting:'.$peerSocket->getId(),
+                        $peerSocket,
+                        mesh\Callback::factory([$this, '_onSocketConnectionWaiting'], [$session])
+                    );
                 break;
                 
             case IServer::SERVER_STREAM:
                 core\stub('Unable to handle server streams');
-                $eventHandler->bindWritePersistent($this, 'streamConnectionWaiting');
+
+                $this->events
+                    ->bindSocketWrite(
+                        'streamConnectionWaiting:'.$peerSocket->getId(),
+                        $peerSocket,
+                        mesh\Callback::factory([$this, '_onSocketStreamConnectionWaiting'])
+                    );
                 break;
                 
             case IServer::PEER_STREAM:
                 core\stub('Unable to handle peer streams');
-                $eventHandler->bindPersistent($this, 'streamDataAvailable');
+
+                $this->events
+                    ->bindSocketRead(
+                        'streamDataAvailable:'.$peerSocket->getId(),
+                        $peerSocket,
+                        mesh\Callback::factory([$this, '_onSocketStreamDataAvailable'])
+                    );
+
                 break;
                 
             case IServer::DUPLEX_STREAM:

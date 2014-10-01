@@ -34,6 +34,6 @@ class Angel extends Base {
             );
         }
 
-        $payload->start();
+        $payload->run();
     }
 }

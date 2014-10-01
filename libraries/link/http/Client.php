@@ -330,7 +330,7 @@ class Client implements IClient, core\IDumpable {
             'isRunning' => $this->isRunning(),
             'chunkSize' => $this->_readChunkSize.' / '.$this->_writeChunkSize,
             'sessions' => $this->_sessionCount,
-            'dispatcher' => $this->_dispatcher
+            'dispatcher' => $this->events
         ];
     }
 }

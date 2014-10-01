@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\halo;
 use df\link;
+use df\mesh;
 
 class Dispatcher extends halo\event\Dispatcher {
     
@@ -18,26 +19,31 @@ class Dispatcher extends halo\event\Dispatcher {
     const TIMER = 3;
     const COUNTER = 4;
     
-    const READ = 0;
-    const WRITE = 1;
+    const READ = halo\event\IIoState::READ;
+    const WRITE = halo\event\IIoState::WRITE;
     
     const RESOURCE = 0;
     const HANDLER = 1;
     
     protected $_breakLoop = false;
     protected $_generateMaps = true;
+    protected $_signalMap = [];
 
-    public function start() {
-        //echo  "Starting select event loop\n\n";
-        
+    private $_hasPcntl = false;
+
+    public function __construct() {
+        $this->_hasPcntl = extension_loaded('pcntl');
+    }
+
+    public function listen() {
         $this->_breakLoop = false;
-        $this->_isRunning = true;
+        $this->_isListening = true;
         
-        $maps = [];
         $baseTime = microtime(true);
         $times = [];
         $lastCycle = $baseTime;
-        $this->_generateMaps = true;
+        $this->_generateMaps = false;
+        $maps = $this->_generateMaps();
 
         $this->_startSignalHandlers();
 
@@ -48,28 +54,31 @@ class Dispatcher extends halo\event\Dispatcher {
             
             $hasHandler = false;
             
+
             // Timers
-            if(!empty($this->_timerHandlers)) {
+            if(!empty($this->_timerBindings)) {
                 $hasHandler = true;
                 $time = microtime(true);
 
-                foreach($this->_timerHandlers as $id => $timer) {
+                foreach($this->_timerBindings as $id => $binding) {
+                    if($binding->isFrozen) {
+                        continue;
+                    }
+
                     $dTime = isset($times[$id]) ? $times[$id] : $baseTime;
                     $diff = $time - $dTime;
 
-                    if($diff > $timer->duration->getSeconds()) {
+                    if($diff > $binding->duration->getSeconds()) {
                         $times[$id] = $time;
-                        call_user_func_array($timer->callback, [$id]);
-
-                        if(!$timer->isPersistent) {
-                            $this->removeTimer($id);
-                        }
+                        $binding->trigger(null);
                     }
                 }
             }
+
+
             
             // Signals
-            if(!empty($this->_signalHandlers) && extension_loaded('pcntl')) {
+            if(!empty($this->_signalBindings) && $this->_hasPcntl) {
                 $hasHandler = true;
                 pcntl_signal_dispatch();
             }
@@ -91,13 +100,15 @@ class Dispatcher extends halo\event\Dispatcher {
                     // TODO: deal with error
                 } else if($res > 0) {
                     foreach($read as $resource) {
-                        $handler = $maps[self::SOCKET][self::HANDLER][(int)$resource];
-                        $handler->_handleEvent(halo\event\IIoState::READ);
+                        foreach($maps[self::SOCKET][self::HANDLER][self::READ][(int)$resource] as $id => $binding) {
+                            $binding->trigger($resource);
+                        }
                     }
                     
                     foreach($write as $resource) {
-                        $handler = $maps[self::SOCKET][self::HANDLER][(int)$resource];
-                        $handler->_handleEvent(halo\event\IIoState::WRITE);
+                        foreach($maps[self::SOCKET][self::HANDLER][self::WRITE][(int)$resource] as $id => $binding) {
+                            $binding->trigger($resource);
+                        }
                     }
                 }
                 
@@ -121,26 +132,30 @@ class Dispatcher extends halo\event\Dispatcher {
                     // TODO: deal with error
                 } else if($res > 0) {
                     foreach($read as $resource) {
-                        $handler = $maps[self::STREAM][self::HANDLER][(int)$resource];
-                        $handler->_handleEvent(halo\event\IIoState::READ);
+                        foreach($maps[self::STREAM][self::HANDLER][self::READ][(int)$resource] as $id => $binding) {
+                            $binding->trigger($resource);
+                        }
                     }
                     
                     foreach($write as $resource) {
-                        $handler = $maps[self::STREAM][self::HANDLER][(int)$resource];
-                        $handler->_handleEvent(halo\event\IIoState::WRITE);
+                        foreach($maps[self::STREAM][self::HANDLER][self::WRITE][(int)$resource] as $id => $binding) {
+                            $binding->trigger($resource);
+                        }
                     }
                 }
                 
                 // TODO: add timeout handler
             }
 
+
+            // Cycle
             if($this->_cycleHandler) {
                 $time = microtime(true);
 
                 if($time - $lastCycle > 1) {
                     $lastCycle = $time;
 
-                    if(false === call_user_func_array($this->_cycleHandler, [$this])) {
+                    if(false === $this->_cycleHandler->invokeArgs([$this])) {
                         $this->stop();
                     }
                 }
@@ -154,10 +169,8 @@ class Dispatcher extends halo\event\Dispatcher {
         }
         
         $this->_breakLoop = false;
-        $this->_isRunning = false;
+        $this->_isListening = false;
         
-        //echo "\nEnding select event loop\n";
-
         $this->_stopSignalHandlers();
         
         return $this;
@@ -175,14 +188,20 @@ class Dispatcher extends halo\event\Dispatcher {
                     self::READ => [],
                     self::WRITE => []
                 ],
-                self::HANDLER => []
+                self::HANDLER => [
+                    self::READ => [],
+                    self::WRITE => []
+                ]
             ],
             self::STREAM => [
                 self::RESOURCE => [
                     self::READ => [],
                     self::WRITE => []
                 ],
-                self::HANDLER => []
+                self::HANDLER => [
+                    self::READ => [],
+                    self::WRITE => []
+                ]
             ],
             self::COUNTER => [
                 self::SOCKET => 0,
@@ -190,11 +209,40 @@ class Dispatcher extends halo\event\Dispatcher {
             ]
         ];
         
-        
-        foreach($this->_handlers as $handler) {
-            $handler->_exportToMap($map);
+
+        // Sockets
+        foreach($this->_socketBindings as $id => $binding) {
+            $resource = $binding->getIoResource();
+            $resourceId = (int)$resource;
+            $key = $binding->isStreamBased ? self::STREAM : self::SOCKET;
+
+            $map[$key][self::RESOURCE][$binding->ioMode][$resourceId] = $resource;
+            $map[$key][self::HANDLER][$binding->ioMode][$resourceId][$id] = $binding;
+            $map[self::COUNTER][$key]++;
         }
         
+
+        // Streams
+        foreach($this->_streamBindings as $id => $binding) {
+            $resource = $binding->getIoResource();
+            $resourceId = (int)$resource;
+
+            $map[self::STREAM][self::RESOURCE][$binding->ioMode][$resourceId] = $resource;
+            $map[self::STREAM][self::HANDLER][$binding->ioMode][$resourceId][$id] = $binding;
+            $map[self::COUNTER][self::STREAM]++;
+        }
+
+
+        // Signals
+        $this->_signalMap = [];
+
+        foreach($this->_signalBindings as $id => $binding) {
+            foreach($binding->signals as $number => $signal) {
+                $this->_signalMap[$number][$id] = $binding;
+            }
+        }
+
+        // Cleanup
         foreach($map[self::COUNTER] as $key => $count) {
             if($count == 0) {
                 unset($map[$key]);
@@ -202,55 +250,86 @@ class Dispatcher extends halo\event\Dispatcher {
         }
         
         unset($map[self::COUNTER]);
+
         $this->_generateMaps = false;
         
         return $map;
     }
     
     public function stop() {
-        if($this->_isRunning) {
+        if($this->_isListening) {
             $this->_breakLoop = true;
         }
         
         return $this;
     }
     
-    public function newSocketHandler(link\socket\ISocket $socket) {
-        return $this->_registerHandler(new Handler_Socket($this, $socket));
+
+
+    public function freezeBinding(halo\event\IBinding $binding) {
+        $binding->isFrozen = true;
+        return $this;
     }
     
-    public function newStreamHandler(core\io\IStreamChannel $stream) {
-        return $this->_registerHandler(new Handler_Stream($this, $stream));
+    public function unfreezeBinding(halo\event\IBinding $binding) {
+        $binding->isFrozen = false;
+        return $this;
+    }
+
+
+
+// Sockets
+    protected function _registerSocketBinding(halo\event\ISocketBinding $binding) {
+        $this->regenerateMaps();
+    }
+
+    protected function _unregisterSocketBinding(halo\event\ISocketBinding $binding) {
+        $this->regenerateMaps();
+    }
+
+    
+
+// Streams
+    protected function _registerStreamBinding(halo\event\IStreamBinding $binding) {
+        $this->regenerateMaps();
+    }
+
+    protected function _unregisterStreamBinding(halo\event\IStreamBinding $binding) {
+        $this->regenerateMaps();
     }
     
 
 // Signals
-    protected function _registerSignalHandler(halo\process\ISignal $signal, Callable $handler) {}
-    protected function _unregisterSignalHandler(halo\process\ISignal $signal) {}
-
     protected function _startSignalHandlers() {
-        if(extension_loaded('pcntl')) {
-            foreach($this->_signalHandlers as $name => $handler) {
-                $signal = halo\process\Signal::factory($name);
-
-                pcntl_signal($signal->getNumber(), function() use($signal, $handler) { 
-                    call_user_func_array($handler, [$signal]);
+        if($this->_hasPcntl) {
+            foreach($this->_signalMap as $number => $set) {
+                pcntl_signal($number, function($number) use($set) {
+                    foreach($set as $id => $binding) {
+                        $binding->trigger($number);
+                    }
                 });
             }
         }
     }
 
     protected function _stopSignalHandlers() {
-        if(extension_loaded('pcntl')) {
-            foreach($this->_signalHandlers as $name => $handler) {
-                $signal = halo\process\Signal::factory($name);
-                pcntl_signal($signal->getNumber(), function() {});
+        if($this->_hasPcntl) {
+            foreach($this->_signalMap as $number => $set) {
+                pcntl_signal($number, \SIG_IGN);
             }
         }
     }
 
+    protected function _registerSignalBinding(halo\event\ISignalBinding $binding) {
+        $this->regenerateMaps();
+    }
+
+    protected function _unregisterSignalBinding(halo\event\ISignalBinding $binding) {
+        $this->regenerateMaps();
+    }
+
 
 // Timers
-    protected function _registerTimer(halo\event\Timer $timer) {}
-    protected function _unregisterTimer(halo\event\Timer $timer) {}
+    protected function _registerTimerBinding(halo\event\ITimerBinding $binding) {}
+    protected function _unregisterTimerBinding(halo\event\ITimerBinding $binding) {}
 }

@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\halo;
 use df\link;
+use df\mesh;
 
 
 // Exceptions
@@ -34,41 +35,134 @@ interface IIoState {
 
 // Dispatcher
 interface IDispatcher {
-    public function start();
+    public function listen();
+    public function isListening();
     public function stop();
-    public function isRunning();
+
+
+// Global
+    public function freezeBinding(IBinding $binding);
+    public function unfreezeBinding(IBinding $binding);
+
+    /*
+    public function freezeAllBindings();
+    public function unfreezeAllBindings();
+    public function unbindAll();
+    public function getAllBindings();
+    public function countAllBindings();
+    */
     
-    public function setCycleHandler(Callable $callback=null);
+
+// Cycle
+    public function setCycleHandler($callback=null);
     public function getCycleHandler();
 
-    public function newSocketHandler(link\socket\ISocket $socket);
-    public function getSocketHandler(link\socket\ISocket $socket);
-    public function removeSocket(link\socket\ISocket $socket);
 
-    public function newStreamHandler(core\io\IStreamChannel $stream); 
-    public function getStreamHandler(core\io\IStreamChannel $stream);
-    public function removeStream(core\io\IStreamChannel $stream);
+// Socket
+    public function bindSocketRead($id, link\socket\ISocket $socket, $callback);
+    public function bindFrozenSocketRead($id, link\socket\ISocket $socket, $callback);
+    public function bindSocketReadOnce($id, link\socket\ISocket $socket, $callback);
+    public function bindFrozenSocketReadOnce($id, link\socket\ISocket $socket, $callback);
+    public function bindSocketWrite($id, link\socket\ISocket $socket, $callback);
+    public function bindFrozenSocketWrite($id, link\socket\ISocket $socket, $callback);
+    public function bindSocketWriteOnce($id, link\socket\ISocket $socket, $callback);
+    public function bindFrozenSocketWriteOnce($id, link\socket\ISocket $socket, $callback);
 
-    public function getHandlers();
-    public function countHandlers();
-    public function removeHandler(IHandler $handler);
-    public function removeAllHandlers();
 
-    public function setSignalHandler($signals, Callable $callback);
-    public function hasSignalHandler($signal);
-    public function getSignalHandler($signal);
-    public function removeSignalHandler($signals);
+    public function setSocketTimeout($id, $duration, $callback);
+    public function getSocketTimeoutDuration($id);
+    public function getSocketTimeoutHandler($id);
+    public function removeSocketTimeout($id);
+
+    public function freezeSocket($id);
+    public function freezeAllSockets();
+    public function unfreezeSocket($id);
+    public function unfreezeAllSockets();
+
+    public function unbindSocket($id);
+    public function unbindAllSockets();
     
-    public function setTimer($id, $duration, Callable $callback);
-    public function setTimeout($id, $duration, Callable $callback);
-    public function hasTimer($id);
-    public function getTimer($id);
-    public function getTimerDuration($id);
-    public function removeTimer($id);
+    public function getSocketBinding($id);
+    public function countSocketBindings(link\socket\ISocket $socket=null);
+    public function getSocketBindings();
+    public function countSocketReadBindings();
+    public function getSocketReadBindings();
+    public function countSocketWriteBindings();
+    public function getSocketWriteBindings();
+
+
+// Stream
+    public function bindStreamRead($id, core\io\IStreamChannel $stream, $callback);
+    public function bindFrozenStreamRead($id, core\io\IStreamChannel $stream, $callback);
+    public function bindStreamReadOnce($id, core\io\IStreamChannel $stream, $callback);
+    public function bindFrozenStreamReadOnce($id, core\io\IStreamChannel $stream, $callback);
+    public function bindStreamWrite($id, core\io\IStreamChannel $stream, $callback);
+    public function bindFrozenStreamWrite($id, core\io\IStreamChannel $stream, $callback);
+    public function bindStreamWriteOnce($id, core\io\IStreamChannel $stream, $callback);
+    public function bindFrozenStreamWriteOnce($id, core\io\IStreamChannel $stream, $callback);
+
+    public function setStreamTimeout($id, $duration, $callback);
+    public function getStreamTimeoutDuration($id);
+    public function getStreamTimeoutHandler($id);
+    public function removeStreamTimeout($id);
+
+    public function freezeStream($id);
+    public function freezeAllStreams();
+    public function unfreezeStream($id);
+    public function unfreezeAllStreams();
+
+    public function unbindStream($id);
+    public function unbindAllStreams();
+    
+    public function getStreamBinding($id);
+    public function countStreamBindings(core\io\IStreamChannel $stream=null);
+    public function getStreamBindings();
+    public function countStreamReadBindings();
+    public function getStreamReadBindings();
+    public function countStreamWriteBindings();
+    public function getStreamWriteBindings();
+
+
+// Signal
+    public function bindSignal($id, $signals, $callback);
+    public function bindFrozenSignal($id, $signals, $callback);
+    public function bindSignalOnce($id, $signals, $callback);
+    public function bindFrozenSignalOnce($id, $signals, $callback);
+
+    public function freezeSignal($id);
+    public function freezeAllSignals();
+    public function unfreezeSignal($id);
+    public function unfreezeAllSignals();
+
+    public function unbindSignal($id);
+    public function unbindAllSignals();
+    
+    public function getSignalBinding($id);
+    public function countSignalBindings();
+    public function getSignalBindings();
+
+
+// Timer
+    public function bindTimer($id, $duration, $callback);
+    public function bindFrozenTimer($id, $duration, $callback);
+    public function bindTimerOnce($id, $duration, $callback);
+    public function bindFrozenTimerOnce($id, $duration, $callback);
+
+    public function freezeTimer($id);
+    public function freezeAllTimers();
+    public function unfreezeTimer($id);
+    public function unfreezeAllTimers();
+
+    public function unbindTimer($id);
+    public function unbindAllTimers();
+    
+    public function getTimerBinding($id);
+    public function countTimerBindings();
+    public function getTimerBindings();
 }
 
 
-interface IDispatcherProvider extends IListener {
+interface IDispatcherProvider {
     public function setDispatcher(halo\event\IDispatcher $dispatcher);
     public function getDispatcher();
     public function isRunning();
@@ -77,7 +171,7 @@ interface IDispatcherProvider extends IListener {
 
 trait TDispatcherProvider {
 
-    protected $_dispatcher;
+    protected $events;
 
     public function setDispatcher(halo\event\IDispatcher $dispatcher) {
         if($this->isRunning()) {
@@ -86,352 +180,169 @@ trait TDispatcherProvider {
             );
         }
 
-        $this->_dispatcher = $dispatcher;
+        $this->events = $dispatcher;
         return $this;
     }
 
     public function getDispatcher() {
-        if(!$this->_dispatcher) {
-            $this->_dispatcher = halo\event\Dispatcher::factory();
+        if(!$this->events) {
+            $this->events = halo\event\Dispatcher::factory();
         }
 
-        return $this->_dispatcher;
+        return $this->events;
     }
 
     public function isRunning() {
-        return $this->_dispatcher && $this->_dispatcher->isRunning();
+        return $this->events && $this->events->isListening();
     }
 }
 
 
-// Listener
-interface IListener {}
-interface IAdaptiveListener extends IListener {
-    
-    public function handleEvent(IHandler $handler, IBinding $binding);
-}
 
-
-class Timer {
-
-    public $id;
-    public $duration;
-    public $callback;
-    public $isPersistent = true;
-
-    public function __construct($id, $duration, Callable $callback, $isPersistent=false) {
-        $this->id = $id;
-        $this->duration = core\time\Duration::factory($duration);
-        $this->callback = $callback;
-        $this->isPersistent = (bool)$isPersistent;
-    }
-}
-
-
-// Event
-interface IHandler {
-    public function getId();
-    public function getScheme();
-    public function getDispatcher();
-    
-    // Bindings
-    public function bind($listener, $bindingName, array $args=null);
-    public function bindPersistent($listener, $bindingName, array $args=null);
-    public function rebind(IBinding $binding);
-    public function unbind(IBinding $binding);
-    public function unbindByName($listener, $bindingName, $type=halo\event\IIoState::READ);
-    public function unbindAll($listener);
-    
-    public function getBinding($listener, $bindingName, $type=halo\event\IIoState::READ);
-    public function getBindings();
-    public function clearBindings();
-    public function countBindings();
-    
-    public function freeze(IBinding $binding);
-    public function unfreeze(IBinding $binding);
-    
-    public function destroy();
-}
-
-trait THandler {
-
-    protected $_bindings = [];
-    protected $_dispatcher;
-    
-    public function getScheme() {
-        if($this instanceof ISocketHandler) {
-            return 'socket';
-        } else if($this instanceof IStreamHandler) {
-            return 'stream';
-        } else if($this instanceof ISignalHandler) {
-            return 'signal';
-        } else if($this instanceof ITimerHandler) {
-            return 'timer';
-        }
-        
-        throw new InvalidArgumentException(
-            'Unknown event scheme - '.get_class($this)
-        );
-    }
-    
-    public function getDispatcher() {
-        return $this->_dispatcher;
-    }
-    
-    
-// Bindings
-    public function bind($listener, $bindingName, array $args=null) {
-        return $this->_bind(new Binding($this, $listener, IIoState::READ, $bindingName, false, $args));
-    }
-
-    public function bindPersistent($listener, $bindingName, array $args=null) {
-        return $this->_bind(new Binding($this, $listener, IIoState::READ, $bindingName, true, $args));
-    }
-    
-    public function rebind(IBinding $binding) {
-        return $this->_bind($binding);
-    }
-    
-    protected function _bind(IBinding $binding) {
-        if($binding->isAttached()) {
-            throw new BindException(
-                'This binding appears to already be assigned'
-            );
-        }
-        
-        $id = $binding->getId();
-        
-        if(isset($this->_bindings[$id])) {
-            throw new BindException(
-                'Binding '.$id.' has already been created'
-            );
-        }
-        
-        $this->_registerBinding($binding);
-        $binding->isAttached(true);
-        $this->_bindings[$id] = $binding;
-        
-        return $binding;
-    }
-    
-    abstract protected function _registerBinding(IBinding $binding);
-    
-    
-    public function unbind(IBinding $binding) {
-        $id = $binding->getId();
-        
-        if(isset($this->_bindings[$id])) {
-            $this->_unregisterBinding($binding);
-            unset($this->_bindings[$id]);
-            $binding->setEventResource(null)->isAttached(false);
-        }
-        
-        return $this;
-    }
-    
-    public function unbindByName($listener, $bindingName, $type=halo\event\IIoState::READ) {
-        $id = Binding::createId($listener, $type, $bindingName);
-        
-        if(isset($this->_bindings[$id])) {
-            return $this->unbind($this->_bindings[$id]);
-        }
-        
-        return $this;
-    }
-    
-    public function unbindAll($listener) {
-        foreach($this->_bindings as $binding) {
-            if($binding->hasListener($listener)) {
-                $this->unbind($binding);
-            }
-        }
-        
-        return $this;
-    }
-    
-    abstract protected function _unregisterBinding(IBinding $binding);
-    
-    
-    public function getBinding($listener, $bindingName, $type=halo\event\IIoState::READ) {
-        $id = Binding::createId($listener, $type, ucfirst($bindingName));
-        
-        if(isset($this->_bindings[$id])) {
-            return $this->_bindings[$id];
-        }
-        
-        throw new BindException(
-            'Binding '.$id.' could not be found'
-        );
-    }
-    
-    public function getBindings() {
-        return $this->_bindings;
-    }
-    
-    public function clearBindings() {
-        foreach($this->_bindings as $binding) {
-            $this->unbind($binding);
-        }
-        
-        return $this;
-    }
-    
-    public function countBindings() {
-        return count($this->_bindings);
-    }
-    
-    public function destroy() {
-        $this->_dispatcher->remove($this);
-        return $this;
-    }
-}
-
-
-interface ITimeoutHandler extends IHandler {
-    public function setTimeout(core\time\IDuration $time);
-    public function getTimeout();
-    public function hasTimeout();
-    public function bindTimeout($listener, $bindingName, array $args=null);
-    public function bindTimeoutPersistent($listener, $bindingName, array $args=null);
-}
-
-
-trait TTimeoutHandler {
-
-    public function bindTimeout($listener, $bindingName, array $args=null) {
-        return $this->_bind(new Binding($this, $listener, IIoState::TIMEOUT, $bindingName, false, $args));
-    }
-
-    public function bindTimeoutPersistent($listener, $bindingName, array $args=null) {
-        return $this->_bind(new Binding($this, $listener, IIoState::TIMEOUT, $bindingName, true, $args));
-    }
-    
-    public function setTimeout(core\time\IDuration $time) {
-        core\stub();
-    }
-    
-    public function getTimeout() {
-        core\stub();
-    }
-    
-    public function hasTimeout() {
-        core\stub();
-    }   
-}
-
-
-interface IIoHandler extends ITimeoutHandler {
-    public function newBuffer();
-    public function bindWrite($listener, $bindingName, array $args=null);
-    public function bindWritePersistent($listener, $bindingName, array $args=null);
-}
-
-trait TIoHandler {
-
-    public function newBuffer() {
-        core\stub();
-    }
-    
-    public function bindWrite($listener, $bindingName, array $args=null) {
-        return $this->_bind(new Binding($this, $listener, IIoState::WRITE, $bindingName, false, $args));
-    }
-
-    public function bindWritePersistent($listener, $bindingName, array $args=null) {
-        return $this->_bind(new Binding($this, $listener, IIoState::WRITE, $bindingName, true, $args));
-    }
-}
-
-interface ISocketHandler extends IIoHandler {
-    public function getSocket();
-}
-
-trait TSocketHandler {
-
-    use THandler;
-    use TIoHandler;
-    use TTimeoutHandler;
-
-    protected $_socket;
-
-    public function __construct(IDispatcher $dispatcher, link\socket\ISocket $socket) {
-        $this->_dispatcher = $dispatcher;
-        $this->_socket = $socket;
-    }
-
-    public function getId() {
-        return 'socket:'.$this->_socket->getId();
-    }
-
-    public function getSocket() {
-        return $this->_socket;
-    }
-}
-
-interface IStreamHandler extends IIoHandler {
-    public function getStream();
-}
-
-trait TStreamHandler {
-
-    use THandler;
-    use TIoHandler;
-    use TTimeoutHandler;
-
-    protected $_stream;
-    
-    public function __construct(IDispatcher $dispatcher, core\io\IStreamChannel $stream) {
-        $this->_dispatcher = $dispatcher;
-        $this->_stream = $stream;
-    }
-    
-    public function getId() {
-        return $this->_stream->getChannelId();
-    }
-    
-    public function getStream() {
-        return $this->_stream;
-    }
-}
 
 
 // Binding
 interface IBinding {
     public function getId();
-    public function getName();
-    public function hasName($name);
-    public function isAttached($flag=null);
     public function getType();
-    public function getArgs();
-    public function getListener();
-    public function hasListener($listener);
     public function isPersistent();
+    public function getHandler();
+    public function getDispatcher();
+
     public function setEventResource($resource);
     public function getEventResource();
-    public function trigger(IHandler $handler);
-}
 
-
-
-// Buffer
-interface IBuffer {
-    public function bindRead($listener, $bindingName, $lowMark=0, $highMark=0xffffff, array $args=null);
-    public function bindWrite($listener, $bindingName, $lowMark=0, $highMark=0xffffff, array $args=null);
-    public function bindError($listener, $bindingName, array $args=null);
-    public function setTimeout($time);
-    public function setPriority($priority);
-    
-    public function enable();
-    public function disable();
-    public function isEnabled();
+    public function freeze();
+    public function unfreeze();
+    public function isFrozen();
     public function destroy();
+
+    public function trigger($targetResource);
 }
 
+interface ITimeoutBinding extends IBinding {
+    public function setTimeout($duration, $callback);
+    public function getTimeoutDuration();
+    public function getTimeoutHandler();
+    public function removeTimeout();
+}
 
-interface ISocketBuffer extends IBuffer {
+interface IIoBinding extends ITimeoutBinding {
+    public function getIoMode();
+    public function getIoResource();
+}
+
+interface ISocketBinding extends IIoBinding {
     public function getSocket();
+    public function isStreamBased();
+}
+
+interface IStreamBinding extends IIoBinding {
+    public function getStream();
+}
+
+interface ISignalBinding extends IBinding {
+    public function getSignals();
+}
+
+interface ITimerBinding extends IBinding {
+    public function getDuration();
 }
 
 
-interface IStreamBuffer extends IBuffer {
-    public function getStream();
+abstract class Binding implements IBinding {
+
+    public $id;
+    public $isPersistent = true;
+    public $isFrozen = false;
+    public $handler;
+    public $eventResource;
+    public $dispatcher;
+
+    public function __construct(IDispatcher $dispatcher, $id, $isPersistent, $callback) {
+        $this->id = $id;
+        $this->isPersistent = (bool)$isPersistent;
+        $this->handler = mesh\Callback::factory($callback);
+        $this->dispatcher = $dispatcher;
+    }
+
+    public function getId() {
+        return $this->id;
+    }
+
+    public function isPersistent() {
+        return $this->isPersistent;
+    }
+
+    public function getHandler() {
+        return $this->handler;
+    }
+
+    public function getDispatcher() {
+        return $this->dispatcher;
+    }
+
+    public function setEventResource($resource) {
+        $this->eventResource = $resource;
+        return $this;
+    }
+
+    public function getEventResource() {
+        return $this->eventResource;
+    }
+
+    public function freeze() {
+        $this->dispatcher->freezeBinding($this);
+        return $this;
+    }
+
+    public function unfreeze() {
+        $this->dispatcher->unfreezeBinding($this);
+        return $this;
+    }
+
+    public function isFrozen() {
+        return $this->isFrozen;
+    }
+}
+
+trait TTimeoutBinding {
+
+    public $timeoutDuration;
+    public $timeoutHandler;
+
+    public function setTimeout($duration, $callback) {
+        $this->timeoutDuration = core\time\Duration::factory($duration);
+        $this->timeoutHandler = mesh\Callback::factory($callback);
+
+        // TODO: Tell dispatcher!
+
+        return $this;
+    }
+
+    public function getTimeoutDuration() {
+        return $this->timeoutDuration;
+    }
+
+    public function getTimeoutHandler() {
+        return $this->timeoutHandler;
+    }
+
+    public function removeTimeout() {
+        $this->timeoutDuration = null;
+        $this->timeoutHandler = null;
+
+        // TODO: Tell dispatcher!
+
+        return $this;
+    }
+}
+
+trait TIoBinding {
+
+    public $ioMode = IIoState::READ;
+
+    public function getIoMode() {
+        return $this->ioMode;
+    }
 }

@@ -9,13 +9,12 @@ use df;
 use df\core;
 use df\halo;
 use df\link;
+use df\mesh;
 
 class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
     
     protected $_base;
     protected $_cycleHandlerEvent;
-    protected $_signalEvents = [];
-    protected $_timerEvents = [];
     
     public function __construct() {
         $this->_base = event_base_new();
@@ -25,39 +24,55 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
         return $this->_base;
     }
     
-    public function start() {
-        //echo "Starting event loop\n\n";
-
-        $this->_registerCycleHandler();
-        
-        $this->_isRunning = true;
+    public function listen() {
+        $this->_isListening = true;
         event_base_loop($this->_base);
-        $this->_isRunning = false;
-        
-        //echo "\nEnding event loop\n";
+        $this->_isListening = false;
         
         return $this;
     }
     
     public function stop() {
-        if($this->_isRunning) {
+        if($this->_isListening) {
             event_base_loopexit($this->_base);
-            $this->_isRunning = false;
+            $this->_isListening = false;
         }
         
         return $this;
     }
 
-    public function newSocketHandler(link\socket\ISocket $socket) {
-        return $this->_registerHandler(new Handler_Socket($this, $socket));
+
+
+    public function freezeBinding(halo\event\IBinding $binding) {
+        if($binding->isFrozen) {
+            return $this;
+        }
+
+        $func = '_unregister'.$binding->getType().'Binding';
+        $this->{$func}($binding);
+        $binding->isFrozen = true;
+
+        return $this;
     }
-    
-    public function newStreamHandler(core\io\IStreamChannel $stream) {
-        return $this->_registerHandler(new Handler_Stream($this, $stream));
+
+    public function unfreezeBinding(halo\event\IBinding $binding) {
+        if(!$binding->isFrozen) {
+            return $this;
+        }
+
+        $func = '_register'.$binding->getType().'Binding';
+        $this->{$func}($binding);
+        $binding->isFrozen = false;
+
+        return $this;
     }
-    
-    public function setCycleHandler(Callable $callback=null) {
-        $this->_cycleHandler = $callback;
+
+
+// Cycle handler
+    public function setCycleHandler($callback=null) {
+        parent::setCycleHandler($callback);
+        $this->_registerCycleHandler();
+
         return $this;
     }
 
@@ -78,73 +93,146 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
     }
 
     protected function _handleCycle() {
-        if(false === call_user_func_array($this->_cycleHandler, [$this])) {
-            $this->stop();
-            return;
-        }
-
         $this->_registerCycleHandler();
+
+        if($this->_cycleHandler) {
+            if(false === $this->_cycleHandler->invokeArgs([$this])) {
+                $this->stop();
+                return;
+            }
+        }
+    }
+
+
+
+// Sockets
+    protected function _registerSocketBinding(halo\event\ISocketBinding $binding) {
+        $binding->eventResource = $this->_registerEvent(
+            $binding->socket->getSocketDescriptor(),
+            $this->_getIoEventFlags($binding),
+            $this->_getTimeoutDuration($binding),
+            [$this, '_handleSocketBinding'],
+            $binding
+        );
+    }
+
+    protected function _unregisterSocketBinding(halo\event\ISocketBinding $binding) {
+        if($binding->eventResource) {
+            event_del($binding->eventResource);
+            event_free($binding->eventResource);
+            $binding->eventResource = null;
+        }
+    }
+
+    protected function _handleSocketBinding($target, $flags, halo\event\ISocketBinding $binding) {
+        // TODO: check for timeout
+        $binding->trigger($target);
+    }
+
+
+
+// Streams
+    protected function _registerStreamBinding(halo\event\IStreamBinding $binding) {
+        $binding->eventResource = $this->_registerEvent(
+            $binding->stream->getStreamDescriptor(),
+            $this->_getIoEventFlags($binding),
+            $this->_getTimeoutDuration($binding),
+            [$this, '_handleStreamBinding'],
+            $binding
+        );
+    }
+
+    protected function _unregisterStreamBinding(halo\event\IStreamBinding $binding) {
+        if($binding->eventResource) {
+            event_del($binding->eventResource);
+            event_free($binding->eventResource);
+            $binding->eventResource = null;
+        }
+    }
+
+    protected function _handleStreamBinding($target, $flags, halo\event\IStreamBinding $binding) {
+        // TODO: check for timeout
+        $binding->trigger($target);
     }
 
 
 // Signals
-    protected function _registerSignalHandler(halo\process\ISignal $signal, Callable $callback) {
-        $this->_unregisterSignalHandler($signal);
+    protected function _registerSignalBinding(halo\event\ISignalBinding $binding) {
+        $flags = EV_SIGNAL;
 
-        $this->_signalEvents[$signal->getName()] = $this->_registerEvent(
-            $signal->getNumber(),
-            EV_SIGNAL | EV_PERSIST,
-            -1,
-            $callback,
-            $signal
-        );
-    }
-
-    protected function _unregisterSignalHandler(halo\process\ISignal $signal) {
-        $name = $signal->getName();
-
-        if(isset($this->_signalEvents[$name])) {
-            event_del($this->_signalEvents[$name]);
-            event_free($this->_signalEvents[$name]);
-
-            unset($this->_signalEvents[$name]);
-        }
-    }
-
-
-// Timers
-    protected function _registerTimer(halo\event\Timer $timer) {
-        $flags = EV_TIMEOUT;
-
-        if($timer->isPersistent) {
+        if($binding->isPersistent) {
             $flags |= EV_PERSIST;
         }
 
-        $this->_timerEvents[$timer->id] = $this->_registerEvent(
+        foreach($binding->signals as $number => $signal) {
+            $binding->eventResource[$number] = $this->_registerEvent(
+                $number,
+                $flags,
+                -1,
+                [$this, '_handleSignalBinding'],
+                [$number, $binding]
+            );
+        }
+    }
+
+    protected function _unregisterSignalBinding(halo\event\ISignalBinding $binding) {
+        foreach($binding->eventResource as $number => $resource) {
+            if(!$resource) {
+                continue;
+            }
+
+            event_del($resource);
+            event_free($resource);
+            $binding->eventResource[$number] = null;
+        }
+    }
+
+    /*
+     * We have to pass the args as array as the signal number is not being propagated. Argh :(
+     */
+    protected function _handleSignalBinding($number, $flags, array $args) {
+        $number = array_shift($args);
+        $binding = array_shift($args);
+
+        $binding->trigger($number);
+    }
+
+
+
+
+// Timers
+    protected function _registerTimerBinding(halo\event\ITimerBinding $binding) {
+        $flags = EV_TIMEOUT;
+
+        if($binding->isPersistent) {
+            $flags |= EV_PERSIST;
+        }
+
+        $binding->eventResource = $this->_registerEvent(
             null,
             $flags,
-            $timer->duration->getMilliseconds(),
-            [$this, '_handleTimerEvent'],
-            $timer
+            $binding->duration->getMilliseconds(),
+            [$this, '_handleTimerBinding'],
+            $binding
         );
     }
 
-    protected function _unregisterTimer(halo\event\Timer $timer) {
-        if(isset($this->_timerEvents[$timer->id])) {
-            event_del($this->_timerEvents[$timer->id]);
-            event_free($this->_timerEvents[$timer->id]);
-
-            unset($this->_timerEvents[$timer->id]);
+    protected function _unregisterTimerBinding(halo\event\ITimerBinding $binding) {
+        if($binding->eventResource) {
+            event_del($binding->eventResource);
+            event_free($binding->eventResource);
+            $binding->eventResource = null;
         }
     }
 
-    protected function _handleTimerEvent($target, $flags, halo\event\Timer $timer) {
-        call_user_func_array($timer->callback, [$timer->id]);
+    protected function _handleTimerBinding($target, $flags, halo\event\ITimerBinding $binding) {
+        $binding->trigger(null);
 
-        if($timer->isPersistent) {
-            $this->_registerTimer($timer);
+        if($binding->isPersistent) {
+            $this->_registerTimerBinding($binding);
         }
     }
+
 
 
 // Helpers
@@ -192,14 +280,49 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
         return $event;
     }
 
+    protected function _getIoEventFlags(halo\event\IIoBinding $binding) {
+        switch($binding->ioMode) {
+            case halo\event\IIoState::READ:
+                $flags = EV_READ;
+                break;
+                
+            case halo\event\IIoState::WRITE:
+                $flags = EV_WRITE;
+                break;
+                
+            default:
+                throw new halo\event\InvalidArgumentException(
+                    'Unknown event type: '.$type
+                );
+        }
+        
+        if($binding->isPersistent) {
+            $flags |= EV_PERSIST;
+        }
+        
+        return $flags;
+    }
+
+    protected function _getTimeoutDuration(halo\event\IBinding $binding) {
+        if($binding instanceof halo\event\IIoBinding) {
+            return $binding->timeoutDuration ? 
+                $binding->timeoutDuration->getMilliseconds() : 
+                -1;
+        } else {
+            return -1;
+        }
+    }
+
 
 // Dump
     public function getDumpProperties() {
         return [
             'base' => $this->_base,
-            'handlers' => $this->_handlers,
-            'signalHandlers' => $this->_signalHandlers,
-            'cycleHandler' => $this->_cycleHandler
+            'cycleHandler' => $this->_cycleHandler,
+            'sockets' => $this->_socketBindings,
+            'streams' => $this->_streamBindings,
+            'signals' => $this->_signalBindings,
+            'timers' => $this->_timerBindings
         ];
     }
 }
