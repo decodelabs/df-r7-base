@@ -28,15 +28,15 @@ class Std implements core\io\IMultiplexReaderChannel {
     }
 
 
-    public function getInputStream() {
+    public static function getInputStream() {
         return new Stream(STDIN, 'STDIN');
     }
 
-    public function getOutputStream() {
+    public static function getOutputStream() {
         return new Stream(STDOUT, 'STDOUT');
     }
 
-    public function getErrorStream() {
+    public static function getErrorStream() {
         return new Stream(STDERR, 'STDERR');
     }
 

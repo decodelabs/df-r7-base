@@ -19,6 +19,7 @@ class LogicException extends \LogicException implements IException {}
 // Interfaces
 interface IDaemon extends halo\event\IDispatcherProvider {
     public function getName();
+    public function getPidFilePath();
 
     public function run();
     public function isRunning();
