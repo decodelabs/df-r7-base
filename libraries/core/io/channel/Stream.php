@@ -111,6 +111,16 @@ class Stream implements core\io\IStreamChannel {
         return $this->_resource;
     }
 
+    public function getMetadata() {
+        if(!$this->_resource) {
+            throw new RuntimeException(
+                'Stream is not live'
+            );
+        }
+
+        return stream_get_meta_data($this->_resource);
+    }
+
     public function setBlocking($flag) {
         stream_set_blocking($this->_resource, (int)((bool)$flag));
         return $this;
@@ -122,7 +132,7 @@ class Stream implements core\io\IStreamChannel {
         }
 
         $meta = stream_get_meta_data($this->_resource);
-        return (bool)$meta['blocking'];
+        return (bool)$meta['blocked'];
     }
 
     public function close() {

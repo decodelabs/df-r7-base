@@ -14,6 +14,7 @@ interface IException {}
 class RuntimeException extends \RuntimeException implements IException {}
 class LogicException extends \LogicException implements IException {}
 class OverflowException extends \OverflowException implements IException {}
+class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 
 
 
@@ -448,6 +449,7 @@ interface IContainedStateChannel extends IChannel {
 
 interface IStreamChannel extends IContainedStateChannel {
     public function getStreamDescriptor();
+    public function getMetadata();
     public function setBlocking($flag);
     public function getBlocking();
     public function close();
