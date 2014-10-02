@@ -11,8 +11,9 @@ use df\halo;
 
 class UnixManaged extends Unix implements IManagedProcess {
     
+    use TPidFileProvider;
+
     protected $_parentProcessId;
-    protected $_pidFile;
 
     public function kill() {
         if(($output = parent::kill()) && $this->_pidFile) {
@@ -248,48 +249,6 @@ class UnixManaged extends Unix implements IManagedProcess {
     }
     
     
-// PID
-    public function hasPidFile() {
-        return $this->_pidFile !== null;
-    }
-
-    public function setPidFilePath($path) {
-        $dirname = dirname($path);
-        core\io\Util::ensureDirExists($dirname, 0755);
-
-        $write = true;
-        $pid = $this->getProcessId();
-
-        if(is_file($path)) {
-            $oldPid = file_get_contents($path);
-
-            if($oldPid == $pid) {
-                $write = false;
-            } else if(self::isProcessIdLive($oldPid)) {
-                throw new RuntimeException(
-                    'PID file already exists and is live'
-                );
-            }   
-        }
-
-
-        if($write) {
-            try {
-                file_put_contents($path, $pid);
-            } catch(\Exception $e) {
-                throw new RuntimeException(
-                    'Unable to write PID file', 0, $e
-                );
-            }
-        }
-
-        $this->_pidFile = $path;
-        return $this;
-    }
-
-    public function getPidFilePath() {
-        return $this->_pidFile;
-    }
 
 // Fork
     public function canFork() {

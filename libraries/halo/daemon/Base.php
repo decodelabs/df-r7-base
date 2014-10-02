@@ -23,7 +23,19 @@ abstract class Base implements IDaemon {
     protected $_isPaused = false;
     protected $_isStopping = false;
     protected $_isStopped = false;
+    protected $_isRestarting = false;
     protected $_isForked = false;
+
+    public static function launch($name, $environmentMode=null) {
+        if($environmentMode === null) {
+            $environmentMode = df\Launchpad::getEnvironmentMode();
+        }
+        
+        $path = df\Launchpad::$applicationPath.'/entry/';
+        $path .= df\Launchpad::$environmentId.'.'.$environmentMode.'.php';
+
+        return halo\process\Base::launchBackgroundScript($path, ['daemon', $name]);
+    }
 
     public static function factory($name) {
         $parts = explode('/', $name);
@@ -77,18 +89,21 @@ abstract class Base implements IDaemon {
             }
         }
 
-        $this->getDispatcher();
+        $this->getEventDispatcher();
         $this->process->setTitle(df\Launchpad::$application->getName().' - '.$this->getName());
+            
+        $pidPath = $this->_getPidFilePath($isPrivileged);
+
+        if($pidPath) {
+            try {
+                $this->process->setPidFilePath($pidPath);
+            } catch(\Exception $e) {
+                $this->terminal->writeErrorLine($e->getMessage());
+                return;
+            }
+        }
 
         if($isPrivileged) {
-            if($system->getPlatformType() == 'Unix') {
-                $pidPath = $this->_getPidFilePath();
-
-                if($pidPath) {
-                    $this->process->setPidFilePath($pidPath);
-                }
-            }
-
             $this->_preparePrivilegedResources();
 
             $user = $this->_getDaemonUser();
@@ -97,13 +112,13 @@ abstract class Base implements IDaemon {
             $this->process->setIdentity($user, $group);
         }
 
-        declare(ticks = 1);
+        declare(ticks = 20);
         $this->_isRunning = true;
 
         $this->_setup();
 
         $this->_setupDefaultEvents($this->events);
-        $pauseEvents = $this->_setupDefaultEvents(new halo\event\select\Dispatcher(), true);
+        $pauseEvents = $this->_setupDefaultEvents(new halo\event\Select(), true);
 
         while(true) {
             if($this->_isStopping) {
@@ -123,6 +138,14 @@ abstract class Base implements IDaemon {
 
         $this->_isStopped = true;
         $this->_teardown();
+
+        if($pidPath) {
+            core\io\Util::deleteFile($pidPath);
+        }
+
+        if($this->_isRestarting) {
+            self::launch($this->getName());
+        }
 
         return $this;
     }
@@ -225,16 +248,16 @@ abstract class Base implements IDaemon {
         return $this->_isPaused;
     }
 
+    public function restart() {
+        $this->stop();
+        $this->_isRestarting = true;
+        return $this;
+    }
+
 
 // Stubs
-    protected function _getPidFilePath() {
-        $appPath = df\Launchpad::$applicationPath;
-        $appId = basename($appPath);
-        $appId = basename(dirname($appPath)).'-'.$appId;
-        $appId = core\string\Manipulator::formatFileName($appId).'-'.df\Launchpad::getApplication()->getUniquePrefix();
-        $daemonId = core\string\Manipulator::formatFileName($this->getName());
-
-        return '/var/run/df/'.$appId.'/'.$daemonId.'.pid';
+    protected function _getPidFilePath($isPrivileged) {
+        return df\Launchpad::$application->getLocalStoragePath().'/daemons/'.core\string\Manipulator::formatFileName($this->getName()).'.pid';
     }
 
     protected function _preparePrivilegedResources() {}

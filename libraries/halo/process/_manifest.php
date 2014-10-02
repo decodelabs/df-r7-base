@@ -58,6 +58,56 @@ interface IManagedProcess extends IProcess {
 }
 
 
+
+trait TPidFileProvider {
+
+    protected $_pidFile;
+
+    public function hasPidFile() {
+        return $this->_pidFile !== null;
+    }
+
+    public function setPidFilePath($path) {
+        $dirname = dirname($path);
+        core\io\Util::ensureDirExists($dirname, 0755);
+
+        $write = true;
+        $pid = $this->getProcessId();
+
+        if(is_file($path)) {
+            $oldPid = file_get_contents($path);
+
+            if($oldPid == $pid) {
+                $write = false;
+            } else if(self::isProcessIdLive($oldPid)) {
+                throw new RuntimeException(
+                    'PID file '.basename($path).' already exists and is live with pid of '.$oldPid
+                );
+            }   
+        }
+
+
+        if($write) {
+            try {
+                file_put_contents($path, $pid);
+            } catch(\Exception $e) {
+                throw new RuntimeException(
+                    'Unable to write PID file', 0, $e
+                );
+            }
+        }
+
+        $this->_pidFile = $path;
+        return $this;
+    }
+
+    public function getPidFilePath() {
+        return $this->_pidFile;
+    }
+}
+
+
+
 interface ISignal {
     public function getName();
     public function getNumber();

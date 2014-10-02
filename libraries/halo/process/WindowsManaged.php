@@ -11,6 +11,8 @@ use df\halo;
 
 class WindowsManaged extends Windows implements IManagedProcess {
     
+    use TPidFileProvider;
+
     protected $_parentProcessId;
     
     public function getParentProcessId() {
@@ -93,25 +95,6 @@ class WindowsManaged extends Windows implements IManagedProcess {
         core\stub();
     }
     
-
-// Pid
-    public function hasPidFile() {
-        return false;
-    }
-
-    public function setPidFile($path) {
-        /*
-        throw new LogicException(
-            'Windows OS\'s do not support PID files'
-        );
-        */
-
-        return $this; 
-    }
-
-    public function getPidFile() {
-        return null;
-    }
 
 // Fork
     public function canFork() {

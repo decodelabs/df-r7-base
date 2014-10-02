@@ -24,6 +24,7 @@ interface IDaemon extends halo\event\IDispatcherProvider {
     public function isRunning();
     public function stop();
     public function isStopped();
+    public function restart();
 
     public function pause();
     public function isPaused();
