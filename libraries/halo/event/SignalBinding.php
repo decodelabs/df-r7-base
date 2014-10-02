@@ -34,7 +34,7 @@ class SignalBinding extends Binding implements ISignalBinding {
     }
 
     public function destroy() {
-        $this->dispatcher->unbindSignal($this);
+        $this->dispatcher->removeSignalBinding($this);
         return $this;
     }
 
@@ -47,7 +47,7 @@ class SignalBinding extends Binding implements ISignalBinding {
         $this->handler->invokeArgs([$this->signals[$number], $this]);
 
         if(!$this->isPersistent) {
-            $this->dispatcher->unbindSignal($this);
+            $this->dispatcher->removeSignalBinding($this);
         }
 
         return $this;

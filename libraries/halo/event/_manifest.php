@@ -23,15 +23,8 @@ class BindException extends RuntimeException {}
 interface IIoState {
     const READ = 'r';
     const WRITE = 'w';
-    const READ_WRITE = 'rw';
-    const TIMEOUT = 't';
 }
 
-
-
-/*************
- * Interfaces
- */ 
 
 // Dispatcher
 interface IDispatcher {
@@ -44,13 +37,11 @@ interface IDispatcher {
     public function freezeBinding(IBinding $binding);
     public function unfreezeBinding(IBinding $binding);
 
-    /*
     public function freezeAllBindings();
     public function unfreezeAllBindings();
-    public function unbindAll();
+    public function removeAllBindings();
     public function getAllBindings();
     public function countAllBindings();
-    */
     
 
 // Cycle
@@ -59,32 +50,33 @@ interface IDispatcher {
 
 
 // Socket
-    public function bindSocketRead($id, link\socket\ISocket $socket, $callback);
-    public function bindFrozenSocketRead($id, link\socket\ISocket $socket, $callback);
-    public function bindSocketReadOnce($id, link\socket\ISocket $socket, $callback);
-    public function bindFrozenSocketReadOnce($id, link\socket\ISocket $socket, $callback);
-    public function bindSocketWrite($id, link\socket\ISocket $socket, $callback);
-    public function bindFrozenSocketWrite($id, link\socket\ISocket $socket, $callback);
-    public function bindSocketWriteOnce($id, link\socket\ISocket $socket, $callback);
-    public function bindFrozenSocketWriteOnce($id, link\socket\ISocket $socket, $callback);
+    public function bindSocketRead(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null);
+    public function bindFrozenSocketRead(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null);
+    public function bindSocketReadOnce(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null);
+    public function bindFrozenSocketReadOnce(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null);
+    public function bindSocketWrite(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null);
+    public function bindFrozenSocketWrite(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null);
+    public function bindSocketWriteOnce(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null);
+    public function bindFrozenSocketWriteOnce(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null);
 
-
-    public function setSocketTimeout($id, $duration, $callback);
-    public function getSocketTimeoutDuration($id);
-    public function getSocketTimeoutHandler($id);
-    public function removeSocketTimeout($id);
-
-    public function freezeSocket($id);
+    public function freezeSocket(link\socket\ISocket $socket);
+    public function freezeSocketRead(link\socket\ISocket $socket);
+    public function freezeSocketWrite(link\socket\ISocket $socket);
     public function freezeAllSockets();
-    public function unfreezeSocket($id);
+
+    public function unfreezeSocket(link\socket\ISocket $socket);
+    public function unfreezeSocketRead(link\socket\ISocket $socket);
+    public function unfreezeSocketWrite(link\socket\ISocket $socket);
     public function unfreezeAllSockets();
 
-    public function unbindSocket($id);
-    public function unbindAllSockets();
+    public function removeSocket(link\socket\ISocket $socket);
+    public function removeSocketRead(link\socket\ISocket $socket);
+    public function removeSocketWrite(link\socket\ISocket $socket);
+    public function removeSocketBinding(ISocketBinding $binding);
+    public function removeAllSockets();
     
-    public function getSocketBinding($id);
     public function countSocketBindings(link\socket\ISocket $socket=null);
-    public function getSocketBindings();
+    public function getSocketBindings(link\socket\ISocket $socket=null);
     public function countSocketReadBindings();
     public function getSocketReadBindings();
     public function countSocketWriteBindings();
@@ -92,31 +84,33 @@ interface IDispatcher {
 
 
 // Stream
-    public function bindStreamRead($id, core\io\IStreamChannel $stream, $callback);
-    public function bindFrozenStreamRead($id, core\io\IStreamChannel $stream, $callback);
-    public function bindStreamReadOnce($id, core\io\IStreamChannel $stream, $callback);
-    public function bindFrozenStreamReadOnce($id, core\io\IStreamChannel $stream, $callback);
-    public function bindStreamWrite($id, core\io\IStreamChannel $stream, $callback);
-    public function bindFrozenStreamWrite($id, core\io\IStreamChannel $stream, $callback);
-    public function bindStreamWriteOnce($id, core\io\IStreamChannel $stream, $callback);
-    public function bindFrozenStreamWriteOnce($id, core\io\IStreamChannel $stream, $callback);
+    public function bindStreamRead(core\io\IStreamChannel $stream, $callback, $timeoutDuration=null, $timeoutCallback=null);
+    public function bindFrozenStreamRead(core\io\IStreamChannel $stream, $callback, $timeoutDuration=null, $timeoutCallback=null);
+    public function bindStreamReadOnce(core\io\IStreamChannel $stream, $callback, $timeoutDuration=null, $timeoutCallback=null);
+    public function bindFrozenStreamReadOnce(core\io\IStreamChannel $stream, $callback, $timeoutDuration=null, $timeoutCallback=null);
+    public function bindStreamWrite(core\io\IStreamChannel $stream, $callback, $timeoutDuration=null, $timeoutCallback=null);
+    public function bindFrozenStreamWrite(core\io\IStreamChannel $stream, $callback, $timeoutDuration=null, $timeoutCallback=null);
+    public function bindStreamWriteOnce(core\io\IStreamChannel $stream, $callback, $timeoutDuration=null, $timeoutCallback=null);
+    public function bindFrozenStreamWriteOnce(core\io\IStreamChannel $stream, $callback, $timeoutDuration=null, $timeoutCallback=null);
 
-    public function setStreamTimeout($id, $duration, $callback);
-    public function getStreamTimeoutDuration($id);
-    public function getStreamTimeoutHandler($id);
-    public function removeStreamTimeout($id);
-
-    public function freezeStream($id);
+    public function freezeStream(core\io\IStreamChannel $stream);
+    public function freezeStreamRead(core\io\IStreamChannel $stream);
+    public function freezeStreamWrite(core\io\IStreamChannel $stream);
     public function freezeAllStreams();
-    public function unfreezeStream($id);
+
+    public function unfreezeStream(core\io\IStreamChannel $stream);
+    public function unfreezeStreamRead(core\io\IStreamChannel $stream);
+    public function unfreezeStreamWrite(core\io\IStreamChannel $stream);
     public function unfreezeAllStreams();
 
-    public function unbindStream($id);
-    public function unbindAllStreams();
+    public function removeStream(core\io\IStreamChannel $stream);
+    public function removeStreamRead(core\io\IStreamChannel $stream);
+    public function removeStreamWrite(core\io\IStreamChannel $stream);
+    public function removeStreamBinding(IStreamBinding $binding);
+    public function removeAllStreams();
     
-    public function getStreamBinding($id);
     public function countStreamBindings(core\io\IStreamChannel $stream=null);
-    public function getStreamBindings();
+    public function getStreamBindings(core\io\IStreamChannel $stream=null);
     public function countStreamReadBindings();
     public function getStreamReadBindings();
     public function countStreamWriteBindings();
@@ -129,13 +123,17 @@ interface IDispatcher {
     public function bindSignalOnce($id, $signals, $callback);
     public function bindFrozenSignalOnce($id, $signals, $callback);
 
-    public function freezeSignal($id);
+    public function freezeSignal($signal);
+    public function freezeSignalBinding($binding);
     public function freezeAllSignals();
-    public function unfreezeSignal($id);
+
+    public function unfreezeSignal($signal);
+    public function unfreezeSignalBinding($binding);
     public function unfreezeAllSignals();
 
-    public function unbindSignal($id);
-    public function unbindAllSignals();
+    public function removeSignal($signal);
+    public function removeSignalBinding($binding);
+    public function removeAllSignals();
     
     public function getSignalBinding($id);
     public function countSignalBindings();
@@ -150,11 +148,12 @@ interface IDispatcher {
 
     public function freezeTimer($id);
     public function freezeAllTimers();
+
     public function unfreezeTimer($id);
     public function unfreezeAllTimers();
 
-    public function unbindTimer($id);
-    public function unbindAllTimers();
+    public function removeTimer($id);
+    public function removeAllTimers();
     
     public function getTimerBinding($id);
     public function countTimerBindings();
@@ -221,10 +220,9 @@ interface IBinding {
 }
 
 interface ITimeoutBinding extends IBinding {
-    public function setTimeout($duration, $callback);
     public function getTimeoutDuration();
     public function getTimeoutHandler();
-    public function removeTimeout();
+    public function triggerTimeout($targetResource);
 }
 
 interface IIoBinding extends ITimeoutBinding {
@@ -311,13 +309,17 @@ trait TTimeoutBinding {
     public $timeoutDuration;
     public $timeoutHandler;
 
-    public function setTimeout($duration, $callback) {
-        $this->timeoutDuration = core\time\Duration::factory($duration);
-        $this->timeoutHandler = mesh\Callback::factory($callback);
+    protected function _setTimeout($duration, $callback) {
+        if($duration !== null) {
+            $duration = core\time\Duration::factory($duration);
+        }
 
-        // TODO: Tell dispatcher!
+        if($callback !== null) {
+            $callback = mesh\Callback::factory($callback);
+        }
 
-        return $this;
+        $this->timeoutDuration = $duration;
+        $this->timeoutHandler = $callback;
     }
 
     public function getTimeoutDuration() {
@@ -326,15 +328,6 @@ trait TTimeoutBinding {
 
     public function getTimeoutHandler() {
         return $this->timeoutHandler;
-    }
-
-    public function removeTimeout() {
-        $this->timeoutDuration = null;
-        $this->timeoutHandler = null;
-
-        // TODO: Tell dispatcher!
-
-        return $this;
     }
 }
 

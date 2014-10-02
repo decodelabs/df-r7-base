@@ -19,13 +19,15 @@ class SocketBinding extends Binding implements ISocketBinding {
     public $socketId;
     public $isStreamBased;
 
-    public function __construct(IDispatcher $dispatcher, $id, $isPersistent, link\socket\ISocket $socket, $ioMode, $callback) {
-        parent::__construct($dispatcher, $id, $isPersistent, $callback);
-
+    public function __construct(IDispatcher $dispatcher, $isPersistent, link\socket\ISocket $socket, $ioMode, $callback, $timeoutDuration=null, $timeoutCallback=null) {
         $this->socket = $socket;
         $this->socketId = $socket->getId();
         $this->isStreamBased = $this->socket->getImplementationName() == 'streams';
         $this->ioMode = $ioMode;
+
+        parent::__construct($dispatcher, $this->ioMode.':'.$this->socketId, $isPersistent, $callback);
+
+        $this->_setTimeout($timeoutDuration, $timeoutCallback);
     }
 
     public function getType() {
@@ -45,7 +47,7 @@ class SocketBinding extends Binding implements ISocketBinding {
     }
 
     public function destroy() {
-        $this->dispatcher->unbindSocket($this);
+        $this->dispatcher->removeSocketBinding($this);
         return $this;
     }
 
@@ -57,8 +59,18 @@ class SocketBinding extends Binding implements ISocketBinding {
         $this->handler->invokeArgs([$this->socket, $this]);
 
         if(!$this->isPersistent) {
-            $this->dispatcher->unbindSocket($this);
+            $this->dispatcher->removeSocketBinding($this);
         }
+
+        return $this;
+    }
+
+    public function triggerTimeout($resource) {
+        if($this->isFrozen) {
+            return;
+        }
+
+        $this->timeoutHandler->invokeArgs([$this->socket, $this]);
 
         return $this;
     }

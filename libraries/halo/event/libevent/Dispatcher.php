@@ -125,8 +125,11 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
     }
 
     protected function _handleSocketBinding($target, $flags, halo\event\ISocketBinding $binding) {
-        // TODO: check for timeout
-        $binding->trigger($target);
+        if($flags & EV_TIMEOUT) {
+            $binding->triggerTimeout($target);
+        } else {
+            $binding->trigger($target);
+        }
     }
 
 
@@ -151,8 +154,11 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
     }
 
     protected function _handleStreamBinding($target, $flags, halo\event\IStreamBinding $binding) {
-        // TODO: check for timeout
-        $binding->trigger($target);
+        if($flags & EV_TIMEOUT) {
+            $binding->triggerTimeout($target);
+        } else {
+            $binding->trigger($target);
+        }
     }
 
 

@@ -17,12 +17,14 @@ class StreamBinding extends Binding implements IStreamBinding {
     public $stream;
     public $streamId;
 
-    public function __construct(IDispatcher $dispatcher, $id, $isPersistent, core\io\IStreamChannel $stream, $ioMode, $callback) {
-        parent::__construct($dispatcher, $id, $isPersistent, $callback);
-
+    public function __construct(IDispatcher $dispatcher, $isPersistent, core\io\IStreamChannel $stream, $ioMode, $callback, $timeoutDuration=null, $timeoutCallback=null) {
         $this->stream = $stream;
         $this->streamId = $stream->getChannelId();
         $this->ioMode = $ioMode;
+
+        parent::__construct($dispatcher, $this->ioMode.':'.$this->streamId, $isPersistent, $callback);
+
+        $this->_setTimeout($timeoutDuration, $timeoutCallback);
     }
 
     public function getType() {
@@ -38,7 +40,7 @@ class StreamBinding extends Binding implements IStreamBinding {
     }
 
     public function destroy() {
-        $this->dispatcher->unbindStream($this);
+        $this->dispatcher->removeStreamBinding($this);
         return $this;
     }
 
@@ -50,8 +52,18 @@ class StreamBinding extends Binding implements IStreamBinding {
         $this->handler->invokeArgs([$this->stream, $this]);
 
         if(!$this->isPersistent) {
-            $this->dispatcher->unbindStream($this);
+            $this->dispatcher->removeStreamBinding($this);
         }
+
+        return $this;
+    }
+
+    public function triggerTimeout($resource) {
+        if($this->isFrozen) {
+            return;
+        }
+
+        $this->timeoutHandler->invokeArgs([$this->stream, $this]);
 
         return $this;
     }

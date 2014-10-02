@@ -151,13 +151,13 @@ abstract class Base implements IDaemon {
 
         if(!$pauseEvents) {
             if($std = $this->terminal->getChannel('STD')) {
-                $dispatcher->bindStreamRead('terminalInput', $std->getInputStream(), function($std) {
+                $dispatcher->bindStreamRead($std->getInputStream(), function($std) {
                     $this->onTerminalInput(rtrim($std->readLine(), "\r\n"));
                 });
             }
         } else {
             if($std = $this->terminal->getChannel('STD')) {
-                $dispatcher->bindStreamRead('terminalInput', $std->getInputStream(), function($std) {
+                $dispatcher->bindStreamRead($std->getInputStream(), function($std) {
                     $line = rtrim($std->readLine(), "\r\n");
 
                     switch(trim($line)) {

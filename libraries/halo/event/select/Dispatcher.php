@@ -17,7 +17,6 @@ class Dispatcher extends halo\event\Dispatcher {
     const SOCKET = 1;
     const STREAM = 2;
     const TIMER = 3;
-    const COUNTER = 4;
     
     const READ = halo\event\IIoState::READ;
     const WRITE = halo\event\IIoState::WRITE;
@@ -27,6 +26,9 @@ class Dispatcher extends halo\event\Dispatcher {
     
     protected $_breakLoop = false;
     protected $_generateMaps = true;
+
+    protected $_socketMap = [];
+    protected $_streamMap = [];
     protected $_signalMap = [];
 
     private $_hasPcntl = false;
@@ -43,13 +45,13 @@ class Dispatcher extends halo\event\Dispatcher {
         $times = [];
         $lastCycle = $baseTime;
         $this->_generateMaps = false;
-        $maps = $this->_generateMaps();
+        $this->_generateMaps();
 
         $this->_startSignalHandlers();
 
         while(!$this->_breakLoop) {
             if($this->_generateMaps) {
-                $maps = $this->_generateMaps();
+                $this->_generateMaps();
             }
             
             $hasHandler = false;
@@ -84,14 +86,14 @@ class Dispatcher extends halo\event\Dispatcher {
             }
             
             // Sockets
-            if(isset($maps[self::SOCKET])) {
+            if(!empty($this->_socketMap)) {
                 $hasHandler = true;
-                $read = $maps[self::SOCKET][self::RESOURCE][self::READ];
-                $write = $maps[self::SOCKET][self::RESOURCE][self::WRITE];
+                $read = $this->_socketMap[self::RESOURCE][self::READ];
+                $write = $this->_socketMap[self::RESOURCE][self::WRITE];
                 $e = null;
                 
                 try {
-                    $res = socket_select($read, $write, $e, 0, 50000);
+                    $res = socket_select($read, $write, $e, 0, 10000);
                 } catch(\Exception $e) {
                     $res = false;
                 }
@@ -100,13 +102,13 @@ class Dispatcher extends halo\event\Dispatcher {
                     // TODO: deal with error
                 } else if($res > 0) {
                     foreach($read as $resource) {
-                        foreach($maps[self::SOCKET][self::HANDLER][self::READ][(int)$resource] as $id => $binding) {
+                        foreach($this->_socketMap[self::HANDLER][self::READ][(int)$resource] as $id => $binding) {
                             $binding->trigger($resource);
                         }
                     }
                     
                     foreach($write as $resource) {
-                        foreach($maps[self::SOCKET][self::HANDLER][self::WRITE][(int)$resource] as $id => $binding) {
+                        foreach($this->_socketMap[self::HANDLER][self::WRITE][(int)$resource] as $id => $binding) {
                             $binding->trigger($resource);
                         }
                     }
@@ -116,14 +118,14 @@ class Dispatcher extends halo\event\Dispatcher {
             }
             
             // Streams
-            if(isset($maps[self::STREAM])) {
+            if(!empty($this->_streamMap)) {
                 $hasHandler = true;
-                $read = $maps[self::STREAM][self::RESOURCE][self::READ];
-                $write = $maps[self::STREAM][self::RESOURCE][self::WRITE];
+                $read = $this->_streamMap[self::RESOURCE][self::READ];
+                $write = $this->_streamMap[self::RESOURCE][self::WRITE];
                 $e = null;
                 
                 try {
-                    $res = stream_select($read, $write, $e, 0, 50000);
+                    $res = stream_select($read, $write, $e, 0, 10000);
                 } catch(\Exception $e) {
                     $res = false;
                 }
@@ -132,13 +134,13 @@ class Dispatcher extends halo\event\Dispatcher {
                     // TODO: deal with error
                 } else if($res > 0) {
                     foreach($read as $resource) {
-                        foreach($maps[self::STREAM][self::HANDLER][self::READ][(int)$resource] as $id => $binding) {
+                        foreach($this->_streamMap[self::HANDLER][self::READ][(int)$resource] as $id => $binding) {
                             $binding->trigger($resource);
                         }
                     }
                     
                     foreach($write as $resource) {
-                        foreach($maps[self::STREAM][self::HANDLER][self::WRITE][(int)$resource] as $id => $binding) {
+                        foreach($this->_streamMap[self::HANDLER][self::WRITE][(int)$resource] as $id => $binding) {
                             $binding->trigger($resource);
                         }
                     }
@@ -165,7 +167,7 @@ class Dispatcher extends halo\event\Dispatcher {
                 $this->stop();
             }
 
-            usleep(10000);
+            usleep(30000);
         }
         
         $this->_breakLoop = false;
@@ -182,43 +184,35 @@ class Dispatcher extends halo\event\Dispatcher {
     }
     
     private function _generateMaps() {
-        $map = [
-            self::SOCKET => [
-                self::RESOURCE => [
-                    self::READ => [],
-                    self::WRITE => []
-                ],
-                self::HANDLER => [
-                    self::READ => [],
-                    self::WRITE => []
-                ]
+        $this->_socketMap = $this->_streamMap = [
+            self::RESOURCE => [
+                self::READ => [],
+                self::WRITE => []
             ],
-            self::STREAM => [
-                self::RESOURCE => [
-                    self::READ => [],
-                    self::WRITE => []
-                ],
-                self::HANDLER => [
-                    self::READ => [],
-                    self::WRITE => []
-                ]
-            ],
-            self::COUNTER => [
-                self::SOCKET => 0,
-                self::STREAM => 0
+            self::HANDLER => [
+                self::READ => [],
+                self::WRITE => []
             ]
         ];
+
+        $socketCount = $streamCount = 0;
+
         
 
         // Sockets
         foreach($this->_socketBindings as $id => $binding) {
             $resource = $binding->getIoResource();
             $resourceId = (int)$resource;
-            $key = $binding->isStreamBased ? self::STREAM : self::SOCKET;
 
-            $map[$key][self::RESOURCE][$binding->ioMode][$resourceId] = $resource;
-            $map[$key][self::HANDLER][$binding->ioMode][$resourceId][$id] = $binding;
-            $map[self::COUNTER][$key]++;
+            if($binding->isStreamBased) {
+                $this->_streamMap[self::RESOURCE][$binding->ioMode][$resourceId] = $resource;
+                $this->_streamMap[self::HANDLER][$binding->ioMode][$resourceId][$id] = $binding;
+                $streamCount++;
+            } else {
+                $this->_socketMap[self::RESOURCE][$binding->ioMode][$resourceId] = $resource;
+                $this->_socketMap[self::HANDLER][$binding->ioMode][$resourceId][$id] = $binding;
+                $socketCount++;
+            }
         }
         
 
@@ -227,9 +221,9 @@ class Dispatcher extends halo\event\Dispatcher {
             $resource = $binding->getIoResource();
             $resourceId = (int)$resource;
 
-            $map[self::STREAM][self::RESOURCE][$binding->ioMode][$resourceId] = $resource;
-            $map[self::STREAM][self::HANDLER][$binding->ioMode][$resourceId][$id] = $binding;
-            $map[self::COUNTER][self::STREAM]++;
+            $this->_streamMap[self::RESOURCE][$binding->ioMode][$resourceId] = $resource;
+            $this->_streamMap[self::HANDLER][$binding->ioMode][$resourceId][$id] = $binding;
+            $streamCount++;
         }
 
 
@@ -243,17 +237,15 @@ class Dispatcher extends halo\event\Dispatcher {
         }
 
         // Cleanup
-        foreach($map[self::COUNTER] as $key => $count) {
-            if($count == 0) {
-                unset($map[$key]);
-            }
+        if(!$socketCount) {
+            $this->_socketMap = null;
         }
-        
-        unset($map[self::COUNTER]);
+
+        if(!$streamCount) {
+            $this->_streamMap = null;
+        }
 
         $this->_generateMaps = false;
-        
-        return $map;
     }
     
     public function stop() {

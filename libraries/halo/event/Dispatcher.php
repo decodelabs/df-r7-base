@@ -16,14 +16,9 @@ abstract class Dispatcher implements IDispatcher {
     protected $_isListening = false;
     protected $_cycleHandler;
     protected $_socketBindings = [];
-    protected $_socketIndex = [];
     protected $_streamBindings = [];
-    protected $_streamIndex = [];
     protected $_signalBindings = [];
     protected $_timerBindings = [];
-
-    // DELETE ME
-    protected $_handlers = []; 
 
 
     public static function factory() {
@@ -37,6 +32,50 @@ abstract class Dispatcher implements IDispatcher {
 
     public function isListening() {
         return $this->_isListening;
+    }
+
+
+    public function freezeAllBindings() {
+        $this->freezeAllSockets();
+        $this->freezeAllStreams();
+        $this->freezeAllSignals();
+        $this->freezeAllTimers();
+
+        return $this;
+    }
+
+    public function unfreezeAllBindings() {
+        $this->unfreezeAllSockets();
+        $this->unfreezeAllStreams();
+        $this->unfreezeAllSignals();
+        $this->unfreezeAllTimers();
+
+        return $this;
+    }
+
+    public function removeAllBindings() {
+        $this->removeAllSockets();
+        $this->removeAllStreams();
+        $this->removeAllSignals();
+        $this->removeAllTimers();
+
+        return $this;
+    }
+
+    public function getAllBindings() {
+        return array_merge(
+            array_values($this->_socketBindings),
+            array_values($this->_streamBindings),
+            array_values($this->_signalBindings),
+            array_values($this->_timerBindings)
+        );
+    }
+
+    public function countAllBindings() {
+        return count($this->_socketBindings)
+             + count($this->_streamBindings)
+             + count($this->_signalBindings)
+             + count($this->_timerBindings);
     }
 
 
@@ -57,47 +96,46 @@ abstract class Dispatcher implements IDispatcher {
     
 
 // Socket
-    public function bindSocketRead($id, link\socket\ISocket $socket, $callback) {
-        return $this->_addSocketBinding(new SocketBinding($this, $id, true, $socket, IIoState::READ, $callback), false);
+    public function bindSocketRead(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null) {
+        return $this->_addSocketBinding(new SocketBinding($this, true, $socket, IIoState::READ, $callback, $timeoutDuration, $timeoutCallback), false);
     }
 
-    public function bindFrozenSocketRead($id, link\socket\ISocket $socket, $callback) {
-        return $this->_addSocketBinding(new SocketBinding($this, $id, true, $socket, IIoState::READ, $callback), true);
+    public function bindFrozenSocketRead(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null) {
+        return $this->_addSocketBinding(new SocketBinding($this, true, $socket, IIoState::READ, $callback, $timeoutDuration, $timeoutCallback), true);
     }
 
-    public function bindSocketReadOnce($id, link\socket\ISocket $socket, $callback) {
-        return $this->_addSocketBinding(new SocketBinding($this, $id, false, $socket, IIoState::READ, $callback), false);
+    public function bindSocketReadOnce(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null) {
+        return $this->_addSocketBinding(new SocketBinding($this, false, $socket, IIoState::READ, $callback, $timeoutDuration, $timeoutCallback), false);
     }
 
-    public function bindFrozenSocketReadOnce($id, link\socket\ISocket $socket, $callback) {
-        return $this->_addSocketBinding(new SocketBinding($this, $id, false, $socket, IIoState::READ, $callback), true);
+    public function bindFrozenSocketReadOnce(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null) {
+        return $this->_addSocketBinding(new SocketBinding($this, false, $socket, IIoState::READ, $callback, $timeoutDuration, $timeoutCallback), true);
     }
 
-    public function bindSocketWrite($id, link\socket\ISocket $socket, $callback) {
-        return $this->_addSocketBinding(new SocketBinding($this, $id, true, $socket, IIoState::WRITE, $callback), false);
+    public function bindSocketWrite(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null) {
+        return $this->_addSocketBinding(new SocketBinding($this, true, $socket, IIoState::WRITE, $callback, $timeoutDuration, $timeoutCallback), false);
     }
 
-    public function bindFrozenSocketWrite($id, link\socket\ISocket $socket, $callback) {
-        return $this->_addSocketBinding(new SocketBinding($this, $id, true, $socket, IIoState::WRITE, $callback), true);
+    public function bindFrozenSocketWrite(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null) {
+        return $this->_addSocketBinding(new SocketBinding($this, true, $socket, IIoState::WRITE, $callback, $timeoutDuration, $timeoutCallback), true);
     }
 
-    public function bindSocketWriteOnce($id, link\socket\ISocket $socket, $callback) {
-        return $this->_addSocketBinding(new SocketBinding($this, $id, false, $socket, IIoState::WRITE, $callback), false);
+    public function bindSocketWriteOnce(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null) {
+        return $this->_addSocketBinding(new SocketBinding($this, false, $socket, IIoState::WRITE, $callback, $timeoutDuration, $timeoutCallback), false);
     }
 
-    public function bindFrozenSocketWriteOnce($id, link\socket\ISocket $socket, $callback) {
-        return $this->_addSocketBinding(new SocketBinding($this, $id, false, $socket, IIoState::WRITE, $callback), true);
+    public function bindFrozenSocketWriteOnce(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null) {
+        return $this->_addSocketBinding(new SocketBinding($this, false, $socket, IIoState::WRITE, $callback, $timeoutDuration, $timeoutCallback), true);
     }
 
     protected function _addSocketBinding(ISocketBinding $binding, $frozen) {
         $id = $binding->getId();
 
         if(isset($this->_socketBindings[$id])) {
-            $this->unbindSocket($binding);
+            $this->removeSocketBinding($binding);
         }
 
         $this->_socketBindings[$id] = $binding;
-        $this->_socketIndex[$binding->socketId][$id] = $binding;
 
         if($frozen) {
             $binding->isFrozen = true;
@@ -112,44 +150,38 @@ abstract class Dispatcher implements IDispatcher {
     abstract protected function _unregisterSocketBinding(ISocketBinding $binding);
 
 
-    public function setSocketTimeout($id, $duration, $callback) {
-        $this->getSocketBinding($id)->setTimeout($duration, $callback);
+
+    public function freezeSocket(link\socket\ISocket $socket) {
+        $id = $socket->getId();
+
+        if(isset($this->_socketBindings['r:'.$id])) {
+            $this->freezeBinding($this->_socketBindings['r:'.$id]);
+        }
+
+        if(isset($this->_socketBindings['w:'.$id])) {
+            $this->freezeBinding($this->_socketBindings['w:'.$id]);
+        }
+
         return $this;
     }
 
-    public function getSocketTimeoutDuration($id) {
-        return $this->getSocketBinding($id)->getTimeoutDuration();
-    }
+    public function freezeSocketRead(link\socket\ISocket $socket) {
+        $id = $socket->getId();
 
-    public function getSocketTimeoutHandler($id) {
-        return $this->getSocketBinding($id)->getTimeoutHandler();
-    }
+        if(isset($this->_socketBindings['r:'.$id])) {
+            $this->freezeBinding($this->_socketBindings['r:'.$id]);
+        }
 
-    public function removeSocketTimeout($id) {
-        $this->getSocketBinding($id)->removeTimeout();
         return $this;
     }
 
+    public function freezeSocketWrite(link\socket\ISocket $socket) {
+        $id = $socket->getId();
 
-    public function freezeSocket($binding) {
-        if($binding instanceof link\socket\ISocket) {
-            $socket = $binding;
-
-            foreach($this->_socketBindings as $id => $binding) {
-                if($binding->socket === $socket) {
-                    $this->freezeSocket($binding);
-                }
-            }
-
-            return $this;
+        if(isset($this->_socketBindings['w:'.$id])) {
+            $this->freezeBinding($this->_socketBindings['w:'.$id]);
         }
 
-
-        if(!$binding instanceof ISocketBinding) {
-            $binding = $this->getSocketBinding($binding);
-        }
-        
-        $this->freezeBinding($binding);
         return $this;
     }
 
@@ -161,27 +193,42 @@ abstract class Dispatcher implements IDispatcher {
         return $this;
     }
 
-    public function unfreezeSocket($binding) {
-        if($binding instanceof link\socket\ISocket) {
-            $socket = $binding;
 
-            foreach($this->_socketBindings as $id => $binding) {
-                if($binding->socket === $socket) {
-                    $this->unfreezeSocket($binding);
-                }
-            }
 
-            return $this;
+    public function unfreezeSocket(link\socket\ISocket $socket) {
+        $id = $socket->getId();
+
+        if(isset($this->_socketBindings['r:'.$id])) {
+            $this->unfreezeBinding($this->_socketBindings['r:'.$id]);
         }
 
-
-        if(!$binding instanceof ISocketBinding) {
-            $binding = $this->getSocketBinding($binding);
+        if(isset($this->_socketBindings['w:'.$id])) {
+            $this->unfreezeBinding($this->_socketBindings['w:'.$id]);
         }
-        
-        $this->unfreezeBinding($binding);
+
         return $this;
     }
+
+    public function unfreezeSocketRead(link\socket\ISocket $socket) {
+        $id = $socket->getId();
+
+        if(isset($this->_socketBindings['r:'.$id])) {
+            $this->unfreezeBinding($this->_socketBindings['r:'.$id]);
+        }
+
+        return $this;
+    }
+
+    public function unfreezeSocketWrite(link\socket\ISocket $socket) {
+        $id = $socket->getId();
+
+        if(isset($this->_socketBindings['w:'.$id])) {
+            $this->unfreezeBinding($this->_socketBindings['w:'.$id]);
+        }
+
+        return $this;
+    }
+    
 
     public function unfreezeAllSockets() {
         foreach($this->_socketBindings as $id => $binding) {
@@ -192,78 +239,94 @@ abstract class Dispatcher implements IDispatcher {
     }
 
 
-    public function unbindSocket($binding) {
-        if($binding instanceof link\socket\ISocket) {
-            $socket = $binding;
 
-            foreach($this->_socketBindings as $id => $binding) {
-                if($binding->socket === $socket) {
-                    $this->unbindSocket($binding);
-                }
-            }
+    public function removeSocket(link\socket\ISocket $socket) {
+        $id = $socket->getId();
 
-            return $this;
+        if(isset($this->_socketBindings['r:'.$id])) {
+            $this->removeSocketBinding($this->_socketBindings['r:'.$id]);
         }
 
-
-        if(!$binding instanceof ISocketBinding) {
-            $binding = $this->getSocketBinding($binding);
+        if(isset($this->_socketBindings['w:'.$id])) {
+            $this->removeSocketBinding($this->_socketBindings['w:'.$id]);
         }
-        
-        $this->_unregisterSocketBinding($binding);
-
-        unset(
-            $this->_socketBindings[$binding->id],
-            $this->_socketIndex[$binding->socketId][$binding->id]
-        );
 
         return $this;
     }
 
-    public function unbindAllSockets() {
+    public function removeSocketRead(link\socket\ISocket $socket) {
+        $id = $socket->getId();
+
+        if(isset($this->_socketBindings['r:'.$id])) {
+            $this->removeSocketBinding($this->_socketBindings['r:'.$id]);
+        }
+
+        return $this;
+    }
+
+    public function removeSocketWrite(link\socket\ISocket $socket) {
+        $id = $socket->getId();
+
+        if(isset($this->_socketBindings['w:'.$id])) {
+            $this->removeSocketBinding($this->_socketBindings['w:'.$id]);
+        }
+
+        return $this;
+    }
+
+    public function removeSocketBinding(ISocketBinding $binding) {
+        $this->_unregisterSocketBinding($binding);
+        unset($this->_socketBindings[$binding->id]);
+
+        return $this;
+    }
+
+    public function removeAllSockets() {
         foreach($this->_socketBindings as $id => $binding) {
             $this->_unregisterSocketBinding($binding);
-
-            unset(
-                $this->_socketBindings[$id],
-                $this->_socketIndex[$binding->socketId][$id]
-            );
+            unset($this->_socketBindings[$id]);
         }
 
         return $this;
     }
 
     
-    public function getSocketBinding($id) {
-        if($id instanceof ISocketBinding) {
-            $id = $id->getId();
-        }
-
-        if(!isset($this->_socketBindings[$id])) {
-            throw new RuntimeException(
-                'Socket binding \''.$id.'\' could not be found'
-            );
-        }
-
-        return $this->_socketBindings[$id];
-    }
-
     public function countSocketBindings(link\socket\ISocket $socket=null) {
         if(!$socket) {
             return count($this->_socketBindings);
         }
 
+        $count = 0;
         $id = $socket->getId();
 
-        if(!isset($this->_socketIndex[$id])) {
-            return 0;
+        if(isset($this->_socketBindings['r:'.$id])) {
+            $count++;
         }
 
-        return count($this->_socketIndex[$id]);
+        if(isset($this->_socketBindings['w:'.$id])) {
+            $count++;
+        }
+
+        return $count;
     }
 
-    public function getSocketBindings() {
-        return $this->_socketBindings;
+    public function getSocketBindings(link\socket\ISocket $socket=null) {
+        if(!$socket) {
+            return $this->_socketBindings;
+        }
+
+        $output = [];
+        $id = $socket->getId();
+
+        if(isset($this->_socketBindings['r:'.$id])) {
+            $output['r:'.$id] = $this->_socketBindings['r:'.$id];
+        }
+
+        if(isset($this->_socketBindings['w:'.$id])) {
+            $output['w:'.$id] = $this->_socketBindings['w:'.$id];
+        }
+
+        return $output;
     }
 
     public function countSocketReadBindings() {
@@ -316,47 +379,46 @@ abstract class Dispatcher implements IDispatcher {
 
 
 // Stream
-    public function bindStreamRead($id, core\io\IStreamChannel $stream, $callback) {
-        return $this->_addStreamBinding(new StreamBinding($this, $id, true, $stream, IIoState::READ, $callback), false);
+    public function bindStreamRead(core\io\IStreamChannel $stream, $callback, $timeoutDuration=null, $timeoutCallback=null) {
+        return $this->_addStreamBinding(new StreamBinding($this, true, $stream, IIoState::READ, $callback, $timeoutDuration, $timeoutCallback), false);
     }
 
-    public function bindFrozenStreamRead($id, core\io\IStreamChannel $stream, $callback) {
-        return $this->_addStreamBinding(new StreamBinding($this, $id, true, $stream, IIoState::READ, $callback), true);
+    public function bindFrozenStreamRead(core\io\IStreamChannel $stream, $callback, $timeoutDuration=null, $timeoutCallback=null) {
+        return $this->_addStreamBinding(new StreamBinding($this, true, $stream, IIoState::READ, $callback, $timeoutDuration, $timeoutCallback), true);
     }
 
-    public function bindStreamReadOnce($id, core\io\IStreamChannel $stream, $callback) {
-        return $this->_addStreamBinding(new StreamBinding($this, $id, false, $stream, IIoState::READ, $callback), false);
+    public function bindStreamReadOnce(core\io\IStreamChannel $stream, $callback, $timeoutDuration=null, $timeoutCallback=null) {
+        return $this->_addStreamBinding(new StreamBinding($this, false, $stream, IIoState::READ, $callback, $timeoutDuration, $timeoutCallback), false);
     }
 
-    public function bindFrozenStreamReadOnce($id, core\io\IStreamChannel $stream, $callback) {
-        return $this->_addStreamBinding(new StreamBinding($this, $id, false, $stream, IIoState::READ, $callback), true);
+    public function bindFrozenStreamReadOnce(core\io\IStreamChannel $stream, $callback, $timeoutDuration=null, $timeoutCallback=null) {
+        return $this->_addStreamBinding(new StreamBinding($this, false, $stream, IIoState::READ, $callback, $timeoutDuration, $timeoutCallback), true);
     }
 
-    public function bindStreamWrite($id, core\io\IStreamChannel $stream, $callback) {
-        return $this->_addStreamBinding(new StreamBinding($this, $id, true, $stream, IIoState::WRITE, $callback), false);
+    public function bindStreamWrite(core\io\IStreamChannel $stream, $callback, $timeoutDuration=null, $timeoutCallback=null) {
+        return $this->_addStreamBinding(new StreamBinding($this, true, $stream, IIoState::WRITE, $callback, $timeoutDuration, $timeoutCallback), false);
     }
 
-    public function bindFrozenStreamWrite($id, core\io\IStreamChannel $stream, $callback) {
-        return $this->_addStreamBinding(new StreamBinding($this, $id, true, $stream, IIoState::WRITE, $callback), true);
+    public function bindFrozenStreamWrite(core\io\IStreamChannel $stream, $callback, $timeoutDuration=null, $timeoutCallback=null) {
+        return $this->_addStreamBinding(new StreamBinding($this, true, $stream, IIoState::WRITE, $callback, $timeoutDuration, $timeoutCallback), true);
     }
 
-    public function bindStreamWriteOnce($id, core\io\IStreamChannel $stream, $callback) {
-        return $this->_addStreamBinding(new StreamBinding($this, $id, false, $stream, IIoState::WRITE, $callback), false);
+    public function bindStreamWriteOnce(core\io\IStreamChannel $stream, $callback, $timeoutDuration=null, $timeoutCallback=null) {
+        return $this->_addStreamBinding(new StreamBinding($this, false, $stream, IIoState::WRITE, $callback, $timeoutDuration, $timeoutCallback), false);
     }
 
-    public function bindFrozenStreamWriteOnce($id, core\io\IStreamChannel $stream, $callback) {
-        return $this->_addStreamBinding(new StreamBinding($this, $id, false, $stream, IIoState::WRITE, $callback), true);
+    public function bindFrozenStreamWriteOnce(core\io\IStreamChannel $stream, $callback, $timeoutDuration=null, $timeoutCallback=null) {
+        return $this->_addStreamBinding(new StreamBinding($this, false, $stream, IIoState::WRITE, $callback, $timeoutDuration, $timeoutCallback), true);
     }
 
     protected function _addStreamBinding(IStreamBinding $binding, $frozen) {
         $id = $binding->getId();
 
         if(isset($this->_streamBindings[$id])) {
-            $this->unbindStream($binding);
+            $this->removeStream($binding);
         }
 
         $this->_streamBindings[$id] = $binding;
-        $this->_streamIndex[$binding->streamId][$id] = $binding;
 
         if($frozen) {
             $binding->isFrozen = true;
@@ -371,44 +433,38 @@ abstract class Dispatcher implements IDispatcher {
     abstract protected function _unregisterStreamBinding(IStreamBinding $binding);
 
 
-    public function setStreamTimeout($id, $duration, $callback) {
-        $this->getStreamBinding($id)->setTimeout($duration, $callback);
+
+    public function freezeStream(core\io\IStreamChannel $stream) {
+        $id = $stream->getChannelId();
+
+        if(isset($this->_streamBindings['r:'.$id])) {
+            $this->freezeBinding($this->_streamBindings['r:'.$id]);
+        }
+
+        if(isset($this->_streamBindings['w:'.$id])) {
+            $this->freezeBinding($this->_streamBindings['w:'.$id]);
+        }
+
         return $this;
     }
 
-    public function getStreamTimeoutDuration($id) {
-        return $this->getStreamBinding($id)->getTimeoutDuration();
-    }
+    public function freezeStreamRead(core\io\IStreamChannel $stream) {
+        $id = $stream->getChannelId();
 
-    public function getStreamTimeoutHandler($id) {
-        return $this->getStreamBinding($id)->getTimeoutHandler();
-    }
+        if(isset($this->_streamBindings['r:'.$id])) {
+            $this->freezeBinding($this->_streamBindings['r:'.$id]);
+        }
 
-    public function removeStreamTimeout($id) {
-        $this->getStreamBinding($id)->removeTimeout();
         return $this;
     }
 
+    public function freezeStreamWrite(core\io\IStreamChannel $stream) {
+        $id = $stream->getChannelId();
 
-    public function freezeStream($binding) {
-        if($binding instanceof core\io\IStreamChannel) {
-            $stream = $binding;
-
-            foreach($this->_streamBindings as $id => $binding) {
-                if($binding->stream === $stream) {
-                    $this->freezeStream($binding);
-                }
-            }
-
-            return $this;
+        if(isset($this->_streamBindings['w:'.$id])) {
+            $this->freezeBinding($this->_streamBindings['w:'.$id]);
         }
 
-
-        if(!$binding instanceof IStreamBinding) {
-            $binding = $this->getStreamBinding($binding);
-        }
-        
-        $this->freezeBinding($binding);
         return $this;
     }
 
@@ -420,25 +476,40 @@ abstract class Dispatcher implements IDispatcher {
         return $this;
     }
 
-    public function unfreezeStream($binding) {
-        if($binding instanceof core\io\IStreamChannel) {
-            $stream = $binding;
 
-            foreach($this->_streamBindings as $id => $binding) {
-                if($binding->stream === $stream) {
-                    $this->unfreezeStream($binding);
-                }
-            }
 
-            return $this;
+
+    public function unfreezeStream(core\io\IStreamChannel $stream) {
+        $id = $stream->getChannelId();
+
+        if(isset($this->_streamBindings['r:'.$id])) {
+            $this->unfreezeBinding($this->_streamBindings['r:'.$id]);
         }
 
-
-        if(!$binding instanceof IStreamBinding) {
-            $binding = $this->getStreamBinding($binding);
+        if(isset($this->_streamBindings['w:'.$id])) {
+            $this->unfreezeBinding($this->_streamBindings['w:'.$id]);
         }
-        
-        $this->unfreezeBinding($binding);
+
+        return $this;
+    }
+
+    public function unfreezeStreamRead(core\io\IStreamChannel $stream) {
+        $id = $stream->getChannelId();
+
+        if(isset($this->_streamBindings['r:'.$id])) {
+            $this->unfreezeBinding($this->_streamBindings['r:'.$id]);
+        }
+
+        return $this;
+    }
+
+    public function unfreezeStreamWrite(core\io\IStreamChannel $stream) {
+        $id = $stream->getChannelId();
+
+        if(isset($this->_streamBindings['w:'.$id])) {
+            $this->unfreezeBinding($this->_streamBindings['w:'.$id]);
+        }
+
         return $this;
     }
 
@@ -451,78 +522,96 @@ abstract class Dispatcher implements IDispatcher {
     }
 
 
-    public function unbindStream($binding) {
-        if($binding instanceof core\io\IStreamChannel) {
-            $stream = $binding;
 
-            foreach($this->_streamBindings as $id => $binding) {
-                if($binding->stream === $stream) {
-                    $this->unbindStream($binding);
-                }
-            }
+    public function removeStream(core\io\IStreamChannel $stream) {
+        $id = $stream->getId();
 
-            return $this;
+        if(isset($this->_streamBindings['r:'.$id])) {
+            $this->removeStreamBinding($this->_streamBindings['r:'.$id]);
         }
 
-
-        if(!$binding instanceof IStreamBinding) {
-            $binding = $this->getStreamBinding($binding);
+        if(isset($this->_streamBindings['w:'.$id])) {
+            $this->removeStreamBinding($this->_streamBindings['w:'.$id]);
         }
-        
-        $this->_unregisterStreamBinding($binding);
-
-        unset(
-            $this->_streamBindings[$binding->id],
-            $this->_streamIndex[$binding->streamId][$id]
-        );
 
         return $this;
     }
 
-    public function unbindAllStreams() {
+    public function removeStreamRead(core\io\IStreamChannel $stream) {
+        $id = $stream->getId();
+
+        if(isset($this->_streamBindings['r:'.$id])) {
+            $this->removeStreamBinding($this->_streamBindings['r:'.$id]);
+        }
+
+        return $this;
+    }
+
+    public function removeStreamWrite(core\io\IStreamChannel $stream) {
+        $id = $stream->getId();
+
+        if(isset($this->_streamBindings['w:'.$id])) {
+            $this->removeStreamBinding($this->_streamBindings['w:'.$id]);
+        }
+
+        return $this;
+    }
+
+    public function removeStreamBinding(IStreamBinding $binding) {
+        $this->_unregisterStreamBinding($binding);
+        unset($this->_streamBindings[$binding->id]);
+
+        return $this;
+    }
+
+    public function removeAllStreams() {
         foreach($this->_streamBindings as $id => $binding) {
             $this->_unregisterStreamBinding($binding);
-
-            unset(
-                $this->_streamBindings[$id],
-                $this->_streamIndex[$binding->streamId][$id]
-            );
+            unset($this->_streamBindings[$id]);
         }
 
         return $this;
     }
 
-    
-    public function getStreamBinding($id) {
-        if($id instanceof IStreamBinding) {
-            $id = $id->getId();
-        }
 
-        if(!isset($this->_streamBindings[$id])) {
-            throw new RuntimeException(
-                'Stream binding \''.$id.'\' could not be found'
-            );
-        }
 
-        return $this->_streamBindings[$id];
-    }
 
     public function countStreamBindings(core\io\IStreamChannel $stream=null) {
         if(!$stream) {
             return count($this->_streamBindings);
         }
 
-        $id = $stream->getChannelId();
+        $count = 0;
+        $id = $stream->getId();
 
-        if(!isset($this->_streamIndex[$id])) {
-            return 0;
+        if(isset($this->_streamBindings['r:'.$id])) {
+            $count++;
         }
 
-        return count($this->_streamIndex[$id]);
+        if(isset($this->_streamBindings['w:'.$id])) {
+            $count++;
+        }
+
+        return $count;
     }
 
-    public function getStreamBindings() {
-        return $this->_streamBindings;
+    public function getStreamBindings(core\io\IStreamChannel $stream=null) {
+        if(!$stream) {
+            return $this->_streamBindings;
+        }
+
+        $output = [];
+        $id = $stream->getId();
+
+        if(isset($this->_streamBindings['r:'.$id])) {
+            $output['r:'.$id] = $this->_streamBindings['r:'.$id];
+        }
+
+        if(isset($this->_streamBindings['w:'.$id])) {
+            $output['w:'.$id] = $this->_streamBindings['w:'.$id];
+        }
+
+        return $output;
     }
 
     public function countStreamReadBindings() {
@@ -596,7 +685,7 @@ abstract class Dispatcher implements IDispatcher {
         $id = $binding->getId();
 
         if(isset($this->_signalBindings[$id])) {
-            $this->unbindSignal($binding);
+            $this->removeSignal($binding);
         }
 
         $this->_signalBindings[$id] = $binding;
@@ -613,8 +702,19 @@ abstract class Dispatcher implements IDispatcher {
     abstract protected function _registerSignalBinding(ISignalBinding $binding);
     abstract protected function _unregisterSignalBinding(ISignalBinding $binding);
 
+    public function freezeSignal($signal) {
+        $number = halo\process\Signal::factory($signal)->getNumber();
 
-    public function freezeSignal($binding) {
+        foreach($this->_signalBindings as $id => $binding) {
+            if(isset($binding->signals[$number])) {
+                $this->freezeBinding($binding);
+            }
+        }
+
+        return $this;
+    }
+
+    public function freezeSignalBinding($binding) {
         if(!$binding instanceof ISignalBinding) {
             $binding = $this->getSignalBinding($binding);
         }
@@ -631,7 +731,20 @@ abstract class Dispatcher implements IDispatcher {
         return $this;
     }
 
-    public function unfreezeSignal($binding) {
+
+    public function unfreezeSignal($signal) {
+        $number = halo\process\Signal::factory($signal)->getNumber();
+
+        foreach($this->_signalBindings as $id => $binding) {
+            if(isset($binding->signals[$number])) {
+                $this->unfreezeBinding($binding);
+            }
+        }
+
+        return $this;
+    }
+
+    public function unfreezeSignalBinding($binding) {
         if(!$binding instanceof ISignalBinding) {
             $binding = $this->getSignalBinding($binding);
         }
@@ -649,7 +762,19 @@ abstract class Dispatcher implements IDispatcher {
     }
 
 
-    public function unbindSignal($binding) {
+    public function removeSignal($signal) {
+        $number = halo\process\Signal::factory($signal)->getNumber();
+
+        foreach($this->_signalBindings as $id => $binding) {
+            if(isset($binding->signals[$number])) {
+                $this->removeSignalBinding($binding);
+            }
+        }
+
+        return $this;
+    }
+
+    public function removeSignalBinding($binding) {
         if(!$binding instanceof ISignalBinding) {
             $binding = $this->getSignalBinding($binding);
         }
@@ -661,7 +786,7 @@ abstract class Dispatcher implements IDispatcher {
         return $this;
     }
 
-    public function unbindAllSignals() {
+    public function removeAllSignals() {
         foreach($this->_signalBindings as $id => $binding) {
             $this->_unregisterSignalBinding($binding);
             unset($this->_signalBindings[$id]);
@@ -715,7 +840,7 @@ abstract class Dispatcher implements IDispatcher {
         $id = $binding->getId();
 
         if(isset($this->_timerBindings[$id])) {
-            $this->unbindTimer($binding);
+            $this->removeTimer($binding);
         }
 
         $this->_timerBindings[$id] = $binding;
@@ -768,7 +893,7 @@ abstract class Dispatcher implements IDispatcher {
     }
 
 
-    public function unbindTimer($binding) {
+    public function removeTimer($binding) {
         if(!$binding instanceof ITimerBinding) {
             $binding = $this->getTimerBinding($binding);
         }
@@ -780,7 +905,7 @@ abstract class Dispatcher implements IDispatcher {
         return $this;
     }
 
-    public function unbindAllTimers() {
+    public function removeAllTimers() {
         foreach($this->_timerBindings as $id => $binding) {
             $this->_unregisterTimerBinding($binding);
             unset($this->_timerBindings[$id]);
@@ -810,52 +935,5 @@ abstract class Dispatcher implements IDispatcher {
 
     public function getTimerBindings() {
         return $this->_timerBindings;
-    }
-
-
-
-
-
-
-// Handlers - DELETE ME
-    public function getHandlers() {
-        return $this->_handlers;
-    }
-    
-    public function countHandlers() {
-        return count($this->_handlers);
-    }
-
-    public function removeHandler(IHandler $handler) {
-        $id = $handler->getId();
-        
-        if(isset($this->_handlers[$id])) {
-            $handler->clearBindings();
-            unset($this->_handlers[$id]);
-        }
-        
-        return $this;
-    }
-    
-    
-    public function removeAllHandlers() {
-        foreach($this->_handlers as $handler) {
-            $this->removeHandler($handler);
-        }
-
-        return $this;
-    }
-    
-    protected function _registerHandler(IHandler $handler) {
-        $id = $handler->getId();
-        
-        if(isset($this->_handlers[$id])) {
-            throw new RuntimeException(
-                'Event '.$id.' has already been registered'
-            );
-        }
-        
-        $this->_handlers[$id] = $handler;
-        return $handler;
     }
 } 

@@ -28,7 +28,7 @@ class TimerBinding extends Binding implements ITimerBinding {
     }
 
     public function destroy() {
-        $this->dispatcher->unbindTimer($this);
+        $this->dispatcher->removeTimer($this);
         return $this;
     }
 
@@ -40,7 +40,7 @@ class TimerBinding extends Binding implements ITimerBinding {
         $this->handler->invokeArgs([$this]);
 
         if(!$this->isPersistent) {
-            $this->dispatcher->unbindTimer($this);
+            $this->dispatcher->removeTimer($this);
         }
 
         return $this;
