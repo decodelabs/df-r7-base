@@ -15,6 +15,7 @@ class Daemon extends Base {
     const RUN_MODE = 'Daemon';
     
     public $terminal;
+    protected $_statusData;
     
 // Execute
     public function dispatch() {
@@ -42,9 +43,11 @@ class Daemon extends Base {
             return;
         }
 
+
+        $remote = halo\daemon\Remote::factory($daemon);
+        $process = $remote->getProcess();
         $name = $daemon->getName();
         $command = (string)$args[3];
-        $process = $this->_getDaemonProcess($daemon);
 
         switch($command) {
             case 'run':
@@ -69,6 +72,9 @@ class Daemon extends Base {
                 $this->terminal->writeLine('Resuming daemon '.$name);
                 $process->sendSignal('SIGCONT');
                 return;
+
+            case 'status':
+                return $this->status($daemon, $process);
         }
     }
 
@@ -127,40 +133,33 @@ class Daemon extends Base {
         }
     }
 
-    protected function _getDaemonProcess(halo\daemon\IDaemon $daemon) {
+    public function status(halo\daemon\IDaemon $daemon, halo\process\IManagedProcess $process=null) {
         $name = $daemon->getName();
-        $pid = null;
 
-        if($daemon::REPORT_STATUS) {
-            $path = $this->getLocalStoragePath().'/daemons/'.core\string\Manipulator::formatFileName($name).'.status';
-
-            if(!is_file($path)) {
-                return null;
-            }
-
-            $data = flex\json\Codec::decode(file_get_contents($path));
-
-            if(isset($data['pid'])) {
-                $pid = $data['pid'];
-            }
+        if(!$process) {
+            $this->terminal->writeLine('Daemon '.$name.' is not currently running');
+            return;
         }
 
-        if(!$pid) {
-            $pidPath = $daemon->getPidFilePath();
 
-            if(is_file($pidPath)) {
-                $pid = file_get_contents($pidPath);
-            } else {
-                return null;
+        if(!$this->_statusData) {
+            $this->terminal->writeLine('Daemon '.$name.' is currently running with PID '.$process->getProcessId());
+            return;
+        }
+
+        if(isset($this->_statusData['state'])) {
+            $state = $this->_statusData['state'];
+            unset($this->_statusData['state']);
+        }
+
+        $this->terminal->writeLine('Daemon '.$name.' is currently '.$state);
+
+        foreach($this->_statusData as $key => $value) {
+            if(substr($key, -4) == 'Time') {
+                $value = (new core\time\Date($value))->localeFormat();
             }
+
+            $this->terminal->writeLine(core\string\Manipulator::formatName($key).': '.$value);
         }
-
-        $process = halo\process\Base::fromPid($pid);
-
-        if(!$process->isAlive()) {
-            return null;
-        }
-
-        return $process;
     }
 }

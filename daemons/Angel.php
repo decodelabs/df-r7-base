@@ -15,7 +15,7 @@ class Angel extends halo\daemon\Base implements link\IServer {
     use link\TPeer_Server;
 
     const REQUIRES_PRIVILEGED_PROCESS = false;
-    const FORK_ON_LOAD = false; // delete me
+    const TEST_MODE = true; // delete me
 
     protected function _setup() {
         $this->_setupPeerServer();

@@ -31,3 +31,18 @@ interface IDaemon extends halo\event\IDispatcherProvider {
     public function isPaused();
     public function resume();
 }
+
+
+interface IRemote {
+    public function getName();
+    public function isRunning();
+    public function getStatusData();
+    public function getProcess();
+    public function refresh();
+    public function start();
+    public function stop();
+    public function restart();
+    public function pause();
+    public function resume();
+
+}
