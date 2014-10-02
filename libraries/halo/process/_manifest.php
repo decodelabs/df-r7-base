@@ -23,6 +23,7 @@ interface IProcess {
     
     public function isAlive();
     public function kill();
+    public function sendSignal($signal);
     
     public function isPrivileged();
 }

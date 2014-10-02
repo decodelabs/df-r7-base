@@ -22,7 +22,7 @@ class UnixManaged extends Unix implements IManagedProcess {
 
         return $output;
     }
-    
+
     public function getParentProcessId() {
         if($this->_parentProcessId === null) {
             if(extension_loaded('posix')) {

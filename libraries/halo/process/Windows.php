@@ -46,6 +46,10 @@ class Windows extends Base {
         return $output == 0;
     }
 
+    public function sendSignal($signal) {
+        return false;
+    }
+
     public function isPrivileged() {
         return true;
     }

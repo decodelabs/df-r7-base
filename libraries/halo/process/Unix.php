@@ -40,6 +40,17 @@ class Unix extends Base {
             return true;
         }
     }
+
+    public function sendSignal($signal) {
+        $signal = Signal::factory($signal);
+        
+        if(extension_loaded('posix')) {
+            return posix_kill($this->_processId, $signal->getNumber());
+        } else {
+            exec('kill -'.$signal->getNumber().' '.$this->_processId);
+            return true;
+        }
+    }
     
     public function isPrivileged() {
         if($this instanceof IManagedProcess) {

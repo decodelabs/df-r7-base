@@ -16,30 +16,36 @@ abstract class Base implements IProcess {
     protected $_processId;
     protected $_title;
     
-    public static function setCurrent(IManagedProcess $process) {
-        core\stub();
-    }
-    
     public static function getCurrent() {
         if(!self::$_current) {
-            $system = halo\system\Base::getInstance();
-            $class = 'df\\halo\\process\\'.$system->getOSName().'Managed';
-            
-            if(!class_exists($class)) {
-                $class = 'df\\halo\\process\\'.$system->getPlatformType().'Managed';
-                
-                if(!class_exists($class)) {
-                    throw new halo\process\RuntimeException(
-                        'Sorry, managed processes aren\'t currently supported on this platform!'
-                    );
-                }
-            }
-            
+            $class = self::_getSystemClass();
             $pid = $class::getCurrentProcessId();
             self::$_current = new $class($pid, 'Current process');
         }
         
         return self::$_current;
+    }
+
+    public static function fromPid($pid) {
+        $class = self::_getSystemClass();
+        return new $class($pid, 'PID: '.$pid);
+    }
+
+    protected static function _getSystemClass() {
+        $system = halo\system\Base::getInstance();
+        $class = 'df\\halo\\process\\'.$system->getOSName().'Managed';
+        
+        if(!class_exists($class)) {
+            $class = 'df\\halo\\process\\'.$system->getPlatformType().'Managed';
+            
+            if(!class_exists($class)) {
+                throw new halo\process\RuntimeException(
+                    'Sorry, managed processes aren\'t currently supported on this platform!'
+                );
+            }
+        }
+
+        return $class;
     }
     
     
