@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\halo\event\select;
+namespace df\halo\event;
 
 use df;
 use df\core;
@@ -11,15 +11,15 @@ use df\halo;
 use df\link;
 use df\mesh;
 
-class Dispatcher extends halo\event\Dispatcher {
+class Select extends Base {
     
     const SIGNAL = 0;
     const SOCKET = 1;
     const STREAM = 2;
     const TIMER = 3;
     
-    const READ = halo\event\IIoState::READ;
-    const WRITE = halo\event\IIoState::WRITE;
+    const READ = IIoState::READ;
+    const WRITE = IIoState::WRITE;
     
     const RESOURCE = 0;
     const HANDLER = 1;
@@ -258,12 +258,12 @@ class Dispatcher extends halo\event\Dispatcher {
     
 
 
-    public function freezeBinding(halo\event\IBinding $binding) {
+    public function freezeBinding(IBinding $binding) {
         $binding->isFrozen = true;
         return $this;
     }
     
-    public function unfreezeBinding(halo\event\IBinding $binding) {
+    public function unfreezeBinding(IBinding $binding) {
         $binding->isFrozen = false;
         return $this;
     }
@@ -271,22 +271,22 @@ class Dispatcher extends halo\event\Dispatcher {
 
 
 // Sockets
-    protected function _registerSocketBinding(halo\event\ISocketBinding $binding) {
+    protected function _registerSocketBinding(ISocketBinding $binding) {
         $this->regenerateMaps();
     }
 
-    protected function _unregisterSocketBinding(halo\event\ISocketBinding $binding) {
+    protected function _unregisterSocketBinding(ISocketBinding $binding) {
         $this->regenerateMaps();
     }
 
     
 
 // Streams
-    protected function _registerStreamBinding(halo\event\IStreamBinding $binding) {
+    protected function _registerStreamBinding(IStreamBinding $binding) {
         $this->regenerateMaps();
     }
 
-    protected function _unregisterStreamBinding(halo\event\IStreamBinding $binding) {
+    protected function _unregisterStreamBinding(IStreamBinding $binding) {
         $this->regenerateMaps();
     }
     
@@ -312,16 +312,16 @@ class Dispatcher extends halo\event\Dispatcher {
         }
     }
 
-    protected function _registerSignalBinding(halo\event\ISignalBinding $binding) {
+    protected function _registerSignalBinding(ISignalBinding $binding) {
         $this->regenerateMaps();
     }
 
-    protected function _unregisterSignalBinding(halo\event\ISignalBinding $binding) {
+    protected function _unregisterSignalBinding(ISignalBinding $binding) {
         $this->regenerateMaps();
     }
 
 
 // Timers
-    protected function _registerTimerBinding(halo\event\ITimerBinding $binding) {}
-    protected function _unregisterTimerBinding(halo\event\ITimerBinding $binding) {}
+    protected function _registerTimerBinding(ITimerBinding $binding) {}
+    protected function _unregisterTimerBinding(ITimerBinding $binding) {}
 }

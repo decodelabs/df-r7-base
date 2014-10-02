@@ -3,23 +3,23 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\halo\event;
+namespace df\halo\event\binding;
 
 use df;
 use df\core;
 use df\halo;
 use df\link;
 
-class SocketBinding extends Binding implements ISocketBinding {
+class Socket extends Base implements halo\event\ISocketBinding {
     
-    use TTimeoutBinding;
-    use TIoBinding;
+    use halo\event\TTimeoutBinding;
+    use halo\event\TIoBinding;
 
     public $socket;
     public $socketId;
     public $isStreamBased;
 
-    public function __construct(IDispatcher $dispatcher, $isPersistent, link\socket\ISocket $socket, $ioMode, $callback, $timeoutDuration=null, $timeoutCallback=null) {
+    public function __construct(halo\event\IDispatcher $dispatcher, $isPersistent, link\socket\ISocket $socket, $ioMode, $callback, $timeoutDuration=null, $timeoutCallback=null) {
         $this->socket = $socket;
         $this->socketId = $socket->getId();
         $this->isStreamBased = $this->socket->getImplementationName() == 'streams';

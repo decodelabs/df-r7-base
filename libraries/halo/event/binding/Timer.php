@@ -3,17 +3,17 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\halo\event;
+namespace df\halo\event\binding;
 
 use df;
 use df\core;
 use df\halo;
 
-class TimerBinding extends Binding implements ITimerBinding {
+class Timer extends Base implements halo\event\ITimerBinding {
     
     public $duration;
 
-    public function __construct(IDispatcher $dispatcher, $id, $isPersistent, $duration, $callback) {
+    public function __construct(halo\event\IDispatcher $dispatcher, $id, $isPersistent, $duration, $callback) {
         parent::__construct($dispatcher, $id, $isPersistent, $callback);
 
         $this->duration = core\time\Duration::factory($duration);

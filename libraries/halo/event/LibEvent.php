@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\halo\event\libevent;
+namespace df\halo\event;
 
 use df;
 use df\core;
@@ -11,7 +11,7 @@ use df\halo;
 use df\link;
 use df\mesh;
 
-class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
+class LibEvent extends Base implements core\IDumpable {
     
     protected $_base;
     protected $_cycleHandlerEvent;
@@ -43,7 +43,7 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
 
 
 
-    public function freezeBinding(halo\event\IBinding $binding) {
+    public function freezeBinding(IBinding $binding) {
         if($binding->isFrozen) {
             return $this;
         }
@@ -55,7 +55,7 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
         return $this;
     }
 
-    public function unfreezeBinding(halo\event\IBinding $binding) {
+    public function unfreezeBinding(IBinding $binding) {
         if(!$binding->isFrozen) {
             return $this;
         }
@@ -106,7 +106,7 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
 
 
 // Sockets
-    protected function _registerSocketBinding(halo\event\ISocketBinding $binding) {
+    protected function _registerSocketBinding(ISocketBinding $binding) {
         $binding->eventResource = $this->_registerEvent(
             $binding->socket->getSocketDescriptor(),
             $this->_getIoEventFlags($binding),
@@ -116,7 +116,7 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
         );
     }
 
-    protected function _unregisterSocketBinding(halo\event\ISocketBinding $binding) {
+    protected function _unregisterSocketBinding(ISocketBinding $binding) {
         if($binding->eventResource) {
             event_del($binding->eventResource);
             event_free($binding->eventResource);
@@ -124,7 +124,7 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
         }
     }
 
-    protected function _handleSocketBinding($target, $flags, halo\event\ISocketBinding $binding) {
+    protected function _handleSocketBinding($target, $flags, ISocketBinding $binding) {
         if($flags & EV_TIMEOUT) {
             $binding->triggerTimeout($target);
         } else {
@@ -135,7 +135,7 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
 
 
 // Streams
-    protected function _registerStreamBinding(halo\event\IStreamBinding $binding) {
+    protected function _registerStreamBinding(IStreamBinding $binding) {
         $binding->eventResource = $this->_registerEvent(
             $binding->stream->getStreamDescriptor(),
             $this->_getIoEventFlags($binding),
@@ -145,7 +145,7 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
         );
     }
 
-    protected function _unregisterStreamBinding(halo\event\IStreamBinding $binding) {
+    protected function _unregisterStreamBinding(IStreamBinding $binding) {
         if($binding->eventResource) {
             event_del($binding->eventResource);
             event_free($binding->eventResource);
@@ -153,7 +153,7 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
         }
     }
 
-    protected function _handleStreamBinding($target, $flags, halo\event\IStreamBinding $binding) {
+    protected function _handleStreamBinding($target, $flags, IStreamBinding $binding) {
         if($flags & EV_TIMEOUT) {
             $binding->triggerTimeout($target);
         } else {
@@ -163,7 +163,7 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
 
 
 // Signals
-    protected function _registerSignalBinding(halo\event\ISignalBinding $binding) {
+    protected function _registerSignalBinding(ISignalBinding $binding) {
         $flags = EV_SIGNAL;
 
         if($binding->isPersistent) {
@@ -181,7 +181,7 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
         }
     }
 
-    protected function _unregisterSignalBinding(halo\event\ISignalBinding $binding) {
+    protected function _unregisterSignalBinding(ISignalBinding $binding) {
         foreach($binding->eventResource as $number => $resource) {
             if(!$resource) {
                 continue;
@@ -207,7 +207,7 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
 
 
 // Timers
-    protected function _registerTimerBinding(halo\event\ITimerBinding $binding) {
+    protected function _registerTimerBinding(ITimerBinding $binding) {
         $flags = EV_TIMEOUT;
 
         if($binding->isPersistent) {
@@ -223,7 +223,7 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
         );
     }
 
-    protected function _unregisterTimerBinding(halo\event\ITimerBinding $binding) {
+    protected function _unregisterTimerBinding(ITimerBinding $binding) {
         if($binding->eventResource) {
             event_del($binding->eventResource);
             event_free($binding->eventResource);
@@ -231,7 +231,7 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
         }
     }
 
-    protected function _handleTimerBinding($target, $flags, halo\event\ITimerBinding $binding) {
+    protected function _handleTimerBinding($target, $flags, ITimerBinding $binding) {
         $binding->trigger(null);
 
         if($binding->isPersistent) {
@@ -262,7 +262,7 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
         if(!$ret) {
             event_free($event);
 
-            throw new halo\event\BindException(
+            throw new BindException(
                 'Could not set event'
             );
         }
@@ -270,7 +270,7 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
         if(!event_base_set($event, $this->_base)) {
             event_free($event);
 
-            throw new halo\event\BindException(
+            throw new BindException(
                 'Could not set event base'
             );
         }
@@ -278,7 +278,7 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
         if(!event_add($event, $timeout)) {
             event_free($event);
 
-            throw new halo\event\BindException(
+            throw new BindException(
                 'Could not add event'
             );
         }
@@ -286,18 +286,18 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
         return $event;
     }
 
-    protected function _getIoEventFlags(halo\event\IIoBinding $binding) {
+    protected function _getIoEventFlags(IIoBinding $binding) {
         switch($binding->ioMode) {
-            case halo\event\IIoState::READ:
+            case IIoState::READ:
                 $flags = EV_READ;
                 break;
                 
-            case halo\event\IIoState::WRITE:
+            case IIoState::WRITE:
                 $flags = EV_WRITE;
                 break;
                 
             default:
-                throw new halo\event\InvalidArgumentException(
+                throw new InvalidArgumentException(
                     'Unknown event type: '.$type
                 );
         }
@@ -309,8 +309,8 @@ class Dispatcher extends halo\event\Dispatcher implements core\IDumpable {
         return $flags;
     }
 
-    protected function _getTimeoutDuration(halo\event\IBinding $binding) {
-        if($binding instanceof halo\event\IIoBinding) {
+    protected function _getTimeoutDuration(IBinding $binding) {
+        if($binding instanceof IIoBinding) {
             return $binding->timeoutDuration ? 
                 $binding->timeoutDuration->getMilliseconds() : 
                 -1;

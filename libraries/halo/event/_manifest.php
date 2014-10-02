@@ -162,8 +162,8 @@ interface IDispatcher {
 
 
 interface IDispatcherProvider {
-    public function setDispatcher(halo\event\IDispatcher $dispatcher);
-    public function getDispatcher();
+    public function setEventDispatcher(halo\event\IDispatcher $dispatcher);
+    public function getEventDispatcher();
     public function isRunning();
 }
 
@@ -172,7 +172,7 @@ trait TDispatcherProvider {
 
     protected $events;
 
-    public function setDispatcher(halo\event\IDispatcher $dispatcher) {
+    public function setEventDispatcher(halo\event\IDispatcher $dispatcher) {
         if($this->isRunning()) {
             throw new RuntimeException(
                 'You cannot change the dispatcher once the peer has started'
@@ -183,9 +183,9 @@ trait TDispatcherProvider {
         return $this;
     }
 
-    public function getDispatcher() {
+    public function getEventDispatcher() {
         if(!$this->events) {
-            $this->events = halo\event\Dispatcher::factory();
+            $this->events = halo\event\Base::factory();
         }
 
         return $this->events;
@@ -248,61 +248,6 @@ interface ITimerBinding extends IBinding {
 }
 
 
-abstract class Binding implements IBinding {
-
-    public $id;
-    public $isPersistent = true;
-    public $isFrozen = false;
-    public $handler;
-    public $eventResource;
-    public $dispatcher;
-
-    public function __construct(IDispatcher $dispatcher, $id, $isPersistent, $callback) {
-        $this->id = $id;
-        $this->isPersistent = (bool)$isPersistent;
-        $this->handler = mesh\Callback::factory($callback);
-        $this->dispatcher = $dispatcher;
-    }
-
-    public function getId() {
-        return $this->id;
-    }
-
-    public function isPersistent() {
-        return $this->isPersistent;
-    }
-
-    public function getHandler() {
-        return $this->handler;
-    }
-
-    public function getDispatcher() {
-        return $this->dispatcher;
-    }
-
-    public function setEventResource($resource) {
-        $this->eventResource = $resource;
-        return $this;
-    }
-
-    public function getEventResource() {
-        return $this->eventResource;
-    }
-
-    public function freeze() {
-        $this->dispatcher->freezeBinding($this);
-        return $this;
-    }
-
-    public function unfreeze() {
-        $this->dispatcher->unfreezeBinding($this);
-        return $this;
-    }
-
-    public function isFrozen() {
-        return $this->isFrozen;
-    }
-}
 
 trait TTimeoutBinding {
 

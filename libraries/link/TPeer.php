@@ -262,7 +262,7 @@ trait TPeer_Client {
             );
         }
         
-        $this->getDispatcher();
+        $this->getEventDispatcher();
         
         foreach($this->_sessions as $session) {
             $this->_dispatchSession($session);
@@ -349,7 +349,7 @@ trait TPeer_Server {
     }
 
     protected function _setupPeerServer() {
-        $this->getDispatcher();
+        $this->getEventDispatcher();
         
         // Heartbeat
         /*

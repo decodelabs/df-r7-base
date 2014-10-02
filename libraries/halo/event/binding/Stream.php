@@ -3,21 +3,21 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\halo\event;
+namespace df\halo\event\binding;
 
 use df;
 use df\core;
 use df\halo;
 
-class StreamBinding extends Binding implements IStreamBinding {
+class Stream extends Base implements halo\event\IStreamBinding {
     
-    use TTimeoutBinding;
-    use TIoBinding;
+    use halo\event\TTimeoutBinding;
+    use halo\event\TIoBinding;
 
     public $stream;
     public $streamId;
 
-    public function __construct(IDispatcher $dispatcher, $isPersistent, core\io\IStreamChannel $stream, $ioMode, $callback, $timeoutDuration=null, $timeoutCallback=null) {
+    public function __construct(halo\event\IDispatcher $dispatcher, $isPersistent, core\io\IStreamChannel $stream, $ioMode, $callback, $timeoutDuration=null, $timeoutCallback=null) {
         $this->stream = $stream;
         $this->streamId = $stream->getChannelId();
         $this->ioMode = $ioMode;

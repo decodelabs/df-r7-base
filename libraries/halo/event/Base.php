@@ -11,7 +11,7 @@ use df\halo;
 use df\link;
 use df\mesh;
 
-abstract class Dispatcher implements IDispatcher {
+abstract class Base implements IDispatcher {
     
     protected $_isListening = false;
     protected $_cycleHandler;
@@ -23,10 +23,10 @@ abstract class Dispatcher implements IDispatcher {
 
     public static function factory() {
         if(extension_loaded('libevent')) {
-            return new halo\event\libevent\Dispatcher();
+            return new halo\event\LibEvent();
         }
         
-        return new halo\event\select\Dispatcher();
+        return new halo\event\Select();
     }
 
 
@@ -97,35 +97,35 @@ abstract class Dispatcher implements IDispatcher {
 
 // Socket
     public function bindSocketRead(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null) {
-        return $this->_addSocketBinding(new SocketBinding($this, true, $socket, IIoState::READ, $callback, $timeoutDuration, $timeoutCallback), false);
+        return $this->_addSocketBinding(new halo\event\binding\Socket($this, true, $socket, IIoState::READ, $callback, $timeoutDuration, $timeoutCallback), false);
     }
 
     public function bindFrozenSocketRead(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null) {
-        return $this->_addSocketBinding(new SocketBinding($this, true, $socket, IIoState::READ, $callback, $timeoutDuration, $timeoutCallback), true);
+        return $this->_addSocketBinding(new halo\event\binding\Socket($this, true, $socket, IIoState::READ, $callback, $timeoutDuration, $timeoutCallback), true);
     }
 
     public function bindSocketReadOnce(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null) {
-        return $this->_addSocketBinding(new SocketBinding($this, false, $socket, IIoState::READ, $callback, $timeoutDuration, $timeoutCallback), false);
+        return $this->_addSocketBinding(new halo\event\binding\Socket($this, false, $socket, IIoState::READ, $callback, $timeoutDuration, $timeoutCallback), false);
     }
 
     public function bindFrozenSocketReadOnce(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null) {
-        return $this->_addSocketBinding(new SocketBinding($this, false, $socket, IIoState::READ, $callback, $timeoutDuration, $timeoutCallback), true);
+        return $this->_addSocketBinding(new halo\event\binding\Socket($this, false, $socket, IIoState::READ, $callback, $timeoutDuration, $timeoutCallback), true);
     }
 
     public function bindSocketWrite(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null) {
-        return $this->_addSocketBinding(new SocketBinding($this, true, $socket, IIoState::WRITE, $callback, $timeoutDuration, $timeoutCallback), false);
+        return $this->_addSocketBinding(new halo\event\binding\Socket($this, true, $socket, IIoState::WRITE, $callback, $timeoutDuration, $timeoutCallback), false);
     }
 
     public function bindFrozenSocketWrite(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null) {
-        return $this->_addSocketBinding(new SocketBinding($this, true, $socket, IIoState::WRITE, $callback, $timeoutDuration, $timeoutCallback), true);
+        return $this->_addSocketBinding(new halo\event\binding\Socket($this, true, $socket, IIoState::WRITE, $callback, $timeoutDuration, $timeoutCallback), true);
     }
 
     public function bindSocketWriteOnce(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null) {
-        return $this->_addSocketBinding(new SocketBinding($this, false, $socket, IIoState::WRITE, $callback, $timeoutDuration, $timeoutCallback), false);
+        return $this->_addSocketBinding(new halo\event\binding\Socket($this, false, $socket, IIoState::WRITE, $callback, $timeoutDuration, $timeoutCallback), false);
     }
 
     public function bindFrozenSocketWriteOnce(link\socket\ISocket $socket, $callback, $timeoutDuration=null, $timeoutCallback=null) {
-        return $this->_addSocketBinding(new SocketBinding($this, false, $socket, IIoState::WRITE, $callback, $timeoutDuration, $timeoutCallback), true);
+        return $this->_addSocketBinding(new halo\event\binding\Socket($this, false, $socket, IIoState::WRITE, $callback, $timeoutDuration, $timeoutCallback), true);
     }
 
     protected function _addSocketBinding(ISocketBinding $binding, $frozen) {
@@ -380,35 +380,35 @@ abstract class Dispatcher implements IDispatcher {
 
 // Stream
     public function bindStreamRead(core\io\IStreamChannel $stream, $callback, $timeoutDuration=null, $timeoutCallback=null) {
-        return $this->_addStreamBinding(new StreamBinding($this, true, $stream, IIoState::READ, $callback, $timeoutDuration, $timeoutCallback), false);
+        return $this->_addStreamBinding(new halo\event\binding\Stream($this, true, $stream, IIoState::READ, $callback, $timeoutDuration, $timeoutCallback), false);
     }
 
     public function bindFrozenStreamRead(core\io\IStreamChannel $stream, $callback, $timeoutDuration=null, $timeoutCallback=null) {
-        return $this->_addStreamBinding(new StreamBinding($this, true, $stream, IIoState::READ, $callback, $timeoutDuration, $timeoutCallback), true);
+        return $this->_addStreamBinding(new halo\event\binding\Stream($this, true, $stream, IIoState::READ, $callback, $timeoutDuration, $timeoutCallback), true);
     }
 
     public function bindStreamReadOnce(core\io\IStreamChannel $stream, $callback, $timeoutDuration=null, $timeoutCallback=null) {
-        return $this->_addStreamBinding(new StreamBinding($this, false, $stream, IIoState::READ, $callback, $timeoutDuration, $timeoutCallback), false);
+        return $this->_addStreamBinding(new halo\event\binding\Stream($this, false, $stream, IIoState::READ, $callback, $timeoutDuration, $timeoutCallback), false);
     }
 
     public function bindFrozenStreamReadOnce(core\io\IStreamChannel $stream, $callback, $timeoutDuration=null, $timeoutCallback=null) {
-        return $this->_addStreamBinding(new StreamBinding($this, false, $stream, IIoState::READ, $callback, $timeoutDuration, $timeoutCallback), true);
+        return $this->_addStreamBinding(new halo\event\binding\Stream($this, false, $stream, IIoState::READ, $callback, $timeoutDuration, $timeoutCallback), true);
     }
 
     public function bindStreamWrite(core\io\IStreamChannel $stream, $callback, $timeoutDuration=null, $timeoutCallback=null) {
-        return $this->_addStreamBinding(new StreamBinding($this, true, $stream, IIoState::WRITE, $callback, $timeoutDuration, $timeoutCallback), false);
+        return $this->_addStreamBinding(new halo\event\binding\Stream($this, true, $stream, IIoState::WRITE, $callback, $timeoutDuration, $timeoutCallback), false);
     }
 
     public function bindFrozenStreamWrite(core\io\IStreamChannel $stream, $callback, $timeoutDuration=null, $timeoutCallback=null) {
-        return $this->_addStreamBinding(new StreamBinding($this, true, $stream, IIoState::WRITE, $callback, $timeoutDuration, $timeoutCallback), true);
+        return $this->_addStreamBinding(new halo\event\binding\Stream($this, true, $stream, IIoState::WRITE, $callback, $timeoutDuration, $timeoutCallback), true);
     }
 
     public function bindStreamWriteOnce(core\io\IStreamChannel $stream, $callback, $timeoutDuration=null, $timeoutCallback=null) {
-        return $this->_addStreamBinding(new StreamBinding($this, false, $stream, IIoState::WRITE, $callback, $timeoutDuration, $timeoutCallback), false);
+        return $this->_addStreamBinding(new halo\event\binding\Stream($this, false, $stream, IIoState::WRITE, $callback, $timeoutDuration, $timeoutCallback), false);
     }
 
     public function bindFrozenStreamWriteOnce(core\io\IStreamChannel $stream, $callback, $timeoutDuration=null, $timeoutCallback=null) {
-        return $this->_addStreamBinding(new StreamBinding($this, false, $stream, IIoState::WRITE, $callback, $timeoutDuration, $timeoutCallback), true);
+        return $this->_addStreamBinding(new halo\event\binding\Stream($this, false, $stream, IIoState::WRITE, $callback, $timeoutDuration, $timeoutCallback), true);
     }
 
     protected function _addStreamBinding(IStreamBinding $binding, $frozen) {
@@ -666,19 +666,19 @@ abstract class Dispatcher implements IDispatcher {
 
 // Signals
     public function bindSignal($id, $signals, $callback) {
-        return $this->_addSignalBinding(new SignalBinding($this, $id, true, $signals, $callback), false);
+        return $this->_addSignalBinding(new halo\event\binding\Signal($this, $id, true, $signals, $callback), false);
     }
 
     public function bindFrozenSignal($id, $signals, $callback) {
-        return $this->_addSignalBinding(new SignalBinding($this, $id, true, $signals, $callback), true);
+        return $this->_addSignalBinding(new halo\event\binding\Signal($this, $id, true, $signals, $callback), true);
     }
 
     public function bindSignalOnce($id, $signals, $callback) {
-        return $this->_addSignalBinding(new SignalBinding($this, $id, false, $signals, $callback), false);
+        return $this->_addSignalBinding(new halo\event\binding\Signal($this, $id, false, $signals, $callback), false);
     }
 
     public function bindFrozenSignalOnce($id, $signals, $callback) {
-        return $this->_addSignalBinding(new SignalBinding($this, $id, false, $signals, $callback), true);
+        return $this->_addSignalBinding(new halo\event\binding\Signal($this, $id, false, $signals, $callback), true);
     }
 
     protected function _addSignalBinding(ISignalBinding $binding, $frozen) {
@@ -821,19 +821,19 @@ abstract class Dispatcher implements IDispatcher {
 
 // Timers
     public function bindTimer($id, $duration, $callback) {
-        return $this->_addTimerBinding(new TimerBinding($this, $id, true, $duration, $callback), false);
+        return $this->_addTimerBinding(new halo\event\binding\Timer($this, $id, true, $duration, $callback), false);
     }
 
     public function bindFrozenTimer($id, $duration, $callback) {
-        return $this->_addTimerBinding(new TimerBinding($this, $id, true, $duration, $callback), true);
+        return $this->_addTimerBinding(new halo\event\binding\Timer($this, $id, true, $duration, $callback), true);
     }
 
     public function bindTimerOnce($id, $duration, $callback) {
-        return $this->_addTimerBinding(new TimerBinding($this, $id, false, $duration, $callback), false);
+        return $this->_addTimerBinding(new halo\event\binding\Timer($this, $id, false, $duration, $callback), false);
     }
 
     public function bindFrozenTimerOnce($id, $duration, $callback) {
-        return $this->_addTimerBinding(new TimerBinding($this, $id, false, $duration, $callback), true);
+        return $this->_addTimerBinding(new halo\event\binding\Timer($this, $id, false, $duration, $callback), true);
     }
 
     protected function _addTimerBinding(ITimerBinding $binding, $frozen) {
