@@ -147,7 +147,9 @@ class Launchpad {
         
         
         // Launch payload
-        self::$application->launchPayload($payload);
+        if($payload) {
+            self::$application->launchPayload($payload);
+        }
         
         //self::benchmark();
         self::shutdown();

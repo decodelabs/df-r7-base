@@ -125,6 +125,9 @@ abstract class Base implements core\IApplication, core\IDumpable {
         return df\Launchpad::$isDistributed;
     }
 
+    public function launchPayload($payload) {
+        core\stub($payload);
+    }
 
 // Debug
     public function createDebugContext() {
