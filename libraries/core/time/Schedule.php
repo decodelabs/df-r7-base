@@ -389,7 +389,7 @@ class Schedule implements ISchedule/*, core\IDumpable*/ {
                 }
             }
 
-            $time->modify($hour.':'.$minute.':00');
+            $time->modify($hour.':'.$minute.':59');
 
             return $time;
         }

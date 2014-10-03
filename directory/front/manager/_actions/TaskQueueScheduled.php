@@ -19,7 +19,7 @@ class TaskQueueScheduled extends arch\task\Action {
 
         $scheduleList = $this->data->task->schedule->fetch()
             ->beginWhereClause()
-                ->where('lastRun', '<', '-1 minute')
+                ->where('lastRun', '<', '-50 seconds')
                 ->orWhere('lastRun', '=', null)
                 ->endClause()
             ->whereCorrelation('request', '!in', 'request')
@@ -41,16 +41,8 @@ class TaskQueueScheduled extends arch\task\Action {
             }
 
             if($task['lastRun']->lt($lastTrigger)) {
-                $nextTrigger = $schedule->getNext(null, 1);
-
-                $lastStamp = $lastTrigger->toTimestamp();
-                $nextStamp = $nextTrigger->toTimestamp();
-                $diff = $nextStamp - $lastStamp;
-
-                if($nextStamp - $now > $diff / 5) {
-                    $this->_trigger($task);
-                    continue;
-                }
+                $this->_trigger($task);
+                continue;
             }
         }
 
