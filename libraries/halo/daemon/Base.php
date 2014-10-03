@@ -13,6 +13,7 @@ use df\flex;
 abstract class Base implements IDaemon {
 
     use halo\event\TDispatcherProvider;
+    use core\TContextProxy;
 
     const REQUIRES_PRIVILEGED_PROCESS = false;
     const TEST_MODE = false;
@@ -74,6 +75,7 @@ abstract class Base implements IDaemon {
         }
 
         gc_enable();
+        $this->_context = new core\SharedContext();
         $this->process = halo\process\Base::getCurrent();
 
         $basePath = df\Launchpad::$application->getLocalStoragePath().'/daemons/'.core\string\Manipulator::formatFileName($this->getName());
@@ -274,7 +276,6 @@ abstract class Base implements IDaemon {
         }
 
         $this->_isStopping = true;
-        $this->io->writeLine();
         $this->io->writeLine('** STOPPING **');
         return $this;
     }
