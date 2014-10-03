@@ -173,3 +173,20 @@ interface ITimeOfDay extends core\IStringProvider {
     public function getHours();
     public function getAsHours();
 }
+
+
+interface ISchedule extends core\IStringProvider {
+    public function setMinute($minute);
+    public function getMinute();
+    public function setHour($hour);
+    public function getHour();
+    public function setDay($day);
+    public function getDay();
+    public function setMonth($month);
+    public function getMonth();
+    public function setWeekday($weekday);
+    public function getWeekday();
+
+    public function getLast($time=null, $yearThreshold=2);
+    public function getNext($time=null, $yearThreshold=2);
+}
