@@ -165,4 +165,16 @@ class Task extends Base implements arch\IDirectoryRequestApplication {
             core\stub($payload);
         }
     }
+
+
+// Debug
+    public function renderDebugContext(core\debug\IContext $context) {
+        df\Launchpad::loadBaseClass('core/debug/renderer/PlainText');
+        $output = (new core\debug\renderer\PlainText($context))->render();
+
+        $response = $this->getTaskResponse();
+        $response->writeError($output);
+
+        return $this;
+    }
 }
