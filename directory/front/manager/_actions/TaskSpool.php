@@ -98,14 +98,14 @@ class TaskSpool extends arch\task\Action {
 
 
         // Launch tasks
-        $taskIds = $this->data->task->queue->select('id')
+        $taskIds = $this->data->task->queue->select('id', 'request')
             ->where('lockId', '=', $this->_log['id'])
             ->orderBy('priority DESC', 'queueDate ASC')
-            ->toList('id');
+            ->toList('id', 'request');
 
-        foreach($taskIds as $taskId) {
+        foreach($taskIds as $taskId => $request) {
             $this->response->writeLine();
-            $this->response->writeLine('Launching task id '.$taskId);
+            $this->response->writeLine('Launching task '.$request.' id: '.$taskId);
 
             $this->response->removeChannel($this->_channel);
             $this->runChild('manager/launch-queued?id='.$taskId);
@@ -113,7 +113,7 @@ class TaskSpool extends arch\task\Action {
         }
 
         $this->data->task->queue->delete()
-            ->where('id', 'in', $taskIds)
+            ->where('id', 'in', array_keys($taskIds))
             ->execute();
     }
 

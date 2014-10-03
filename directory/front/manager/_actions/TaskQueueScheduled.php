@@ -12,11 +12,12 @@ use df\arch;
 
 class TaskQueueScheduled extends arch\task\Action {
     
+    protected $_count = 0;
+
     public function execute() {
         $this->response->write('Queuing scheduled tasks...');
-        $count = 0;
-        
-        $tasks = $this->data->task->schedule->fetch()
+
+        $scheduleList = $this->data->task->schedule->fetch()
             ->beginWhereClause()
                 ->where('lastRun', '<', '-1 minute')
                 ->orWhere('lastRun', '=', null)
@@ -25,30 +26,51 @@ class TaskQueueScheduled extends arch\task\Action {
                 ->from('axis://task/Queue', 'queue')
                 ->endCorrelation()
             ->where('isLive', '=', true)
-            ->orderBy('lastRun ASC')
-            ->toArray();
+            ->orderBy('lastRun ASC');
 
-        foreach($tasks as $task) {
-            if(!$task->canQueue()) {
+        $queue = [];
+        $now = time();
+
+        foreach($scheduleList as $id => $task) {
+            $schedule = core\time\Schedule::factory($task->toArray());
+            $lastTrigger = $schedule->getLast(null, 1);
+
+            if(!$task['lastRun']) {
+                $this->_trigger($task);
                 continue;
             }
 
-            $count++;
+            if($task['lastRun']->lt($lastTrigger)) {
+                $nextTrigger = $schedule->getNext(null, 1);
 
-            $task->lastRun = 'now';
-            $task->save();
+                $lastStamp = $lastTrigger->toTimestamp();
+                $nextStamp = $nextTrigger->toTimestamp();
+                $diff = $nextStamp - $lastStamp;
 
-            $queue = $this->data->newRecord(
-                    'axis://task/Queue', 
-                    [
-                        'request' => $task['request'],
-                        'environmentMode' => $task['environmentMode'],
-                        'priority' => $task['priority']
-                    ]
-                )
-                ->save();
+                if($nextStamp - $now > $diff / 5) {
+                    $this->_trigger($task);
+                    continue;
+                }
+            }
         }
 
-        $this->response->writeLine(' '.$count.' entries prepared for launch');
+        $this->response->writeLine(' '.$this->_count.' entries prepared for launch');
+    }
+
+    protected function _trigger($task) {
+        $this->_count++;
+
+        $task->lastRun = 'now';
+        $task->save();
+
+        $queue = $this->data->newRecord(
+                'axis://task/Queue', 
+                [
+                    'request' => $task['request'],
+                    'environmentMode' => $task['environmentMode'],
+                    'priority' => $task['priority']
+                ]
+            )
+            ->save();
     }
 }
