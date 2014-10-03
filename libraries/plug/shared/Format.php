@@ -274,17 +274,22 @@ class Format implements core\ISharedHelper {
         }
 
         $date = core\time\Date::factory($date);
+        $ts = $date->toTimestamp();
+        $now = core\time\Date::factory('now')->toTimestamp();
+        $diff = $now - $ts;
 
-        if($date->isPast()) {
+        if($diff > 0) {
             return $this->_context->_(
                 '%t% ago',
                 ['%t%' => $this->timeSince($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)]
             );
-        } else {
+        } else if($diff < 0) {
             return $this->_context->_(
                 'in %t%',
                 ['%t%' => $this->timeUntil($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)]
             );
+        } else {
+            return $this->_context->_('right now');
         }
     }
     

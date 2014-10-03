@@ -440,17 +440,22 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
         }
 
         $date = core\time\Date::factory($date);
+        $ts = $date->toTimestamp();
+        $now = core\time\Date::factory('now')->toTimestamp();
+        $diff = $now - $ts;
 
-        if($date->isPast()) {
+        if($diff > 0) {
             $output = $this->_context->_(
                 '%t% ago',
                 ['%t%' => $this->_view->format->timeSince($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)]
             );
-        } else {
+        } else if($diff < 0) {
             $output = $this->_context->_(
                 'in %t%',
                 ['%t%' => $this->_view->format->timeUntil($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)]
             );
+        } else {
+            $output = $this->_context->_('right now');
         }
 
         return $this->_timeTag(
