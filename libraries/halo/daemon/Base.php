@@ -57,9 +57,7 @@ abstract class Base implements IDaemon {
         return new $class();
     }
 
-    protected function __construct() {
-        $this->process = halo\process\Base::getCurrent();
-    }
+    protected function __construct() {}
 
     public function getName() {
         $parts = array_slice(explode('\\', get_class($this)), 3);
@@ -76,16 +74,20 @@ abstract class Base implements IDaemon {
         }
 
         gc_enable();
+        $this->process = halo\process\Base::getCurrent();
+
+        $basePath = df\Launchpad::$application->getLocalStoragePath().'/daemons/'.core\string\Manipulator::formatFileName($this->getName());
+        core\io\Util::ensureDirExists(dirname($basePath));
 
         $this->_startTime = time();
-        $this->_statusPath = df\Launchpad::$application->getLocalStoragePath().'/daemons/'.core\string\Manipulator::formatFileName($this->getName()).'.status';
+        $this->_statusPath = $basePath.'.status';
 
         $this->io = new core\io\Multiplexer(null, $this->getName());
 
         if(static::TEST_MODE) {
             $this->io->addChannel(new core\io\channel\Std());
         } else {
-            // TODO: add logger
+            $this->io->addChannel(new core\io\channel\Stream(fopen($basePath.'.log', 'w')));
         }
 
         $system = halo\system\Base::getInstance();

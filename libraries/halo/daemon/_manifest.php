@@ -44,5 +44,5 @@ interface IRemote {
     public function restart();
     public function pause();
     public function resume();
-
+    public function nudge();
 }

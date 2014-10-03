@@ -123,6 +123,10 @@ class Remote implements IRemote {
         return $this->_sendCommand('resume');
     }
 
+    public function nudge() {
+        return $this->_sendCommand('nudge');
+    }
+
     protected function _sendCommand($command) {
         $environmentMode = df\Launchpad::getEnvironmentMode();
         $path = df\Launchpad::$applicationPath.'/entry/';

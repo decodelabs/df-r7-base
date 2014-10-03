@@ -14,7 +14,7 @@ class Daemon extends Base {
     
     const RUN_MODE = 'Daemon';
     
-    public $terminal;
+    public $io;
     protected $_statusData;
     
 // Execute
@@ -27,7 +27,7 @@ class Daemon extends Base {
             );
         }
 
-        $this->terminal = new core\io\channel\Std();
+        $this->io = new core\io\channel\Std();
         $args = core\cli\Command::fromArgv();
 
         if(!$arg = $args[2]) {
@@ -39,7 +39,7 @@ class Daemon extends Base {
         try {
             $daemon = halo\daemon\Base::factory($arg->toString());
         } catch(\Exception $e) {
-            $this->terminal->writeErrorLine($e->getMessage());
+            $this->io->writeErrorLine($e->getMessage());
             return;
         }
 
@@ -64,17 +64,20 @@ class Daemon extends Base {
                 return;
 
             case 'pause':
-                $this->terminal->writeLine('Pausing daemon '.$name);
+                $this->io->writeLine('Pausing daemon '.$name);
                 $process->sendSignal('SIGTSTP');
                 return;
 
             case 'resume':
-                $this->terminal->writeLine('Resuming daemon '.$name);
+                $this->io->writeLine('Resuming daemon '.$name);
                 $process->sendSignal('SIGCONT');
                 return;
 
             case 'status':
                 return $this->status($daemon, $process);
+
+            case 'nudge':
+                return $this->nudge($daemon, $process);
         }
     }
 
@@ -82,21 +85,21 @@ class Daemon extends Base {
         $name = $daemon->getName();
 
         if($process) {
-            $this->terminal->writeErrorLine('Daemon '.$name.' is already running');
+            $this->io->writeErrorLine('Daemon '.$name.' is already running');
             return;
         }
 
-        $this->terminal->write('Starting daemon '.$name);
+        $this->io->write('Starting daemon '.$name);
 
         if($daemon::TEST_MODE) {
-            $this->terminal->writeLine();
+            $this->io->writeLine();
         } else {
-            $this->terminal->write('...');
+            $this->io->write('...');
         }
 
         if($daemon->run()) {
             if(!$daemon::TEST_MODE) {
-                $this->terminal->writeLine(' done');
+                $this->io->writeLine(' done');
             }
         }
 
@@ -107,17 +110,17 @@ class Daemon extends Base {
         $name = $daemon->getName();
         
         if(!$process) {
-            $this->terminal->writeLine('Daemon '.$name.' is not running');
+            $this->io->writeLine('Daemon '.$name.' is not running');
             return;
         }
 
-        $this->terminal->write('Stopping daemon '.$name.'...');
+        $this->io->write('Stopping daemon '.$name.'...');
         $process->sendSignal('SIGTERM');
         $count = 0;
 
         while($process->isAlive()) {
             if($count++ > 10) {
-                $this->terminal->writeLine(' TERM failed, trying KILL...');
+                $this->io->writeLine(' TERM failed, trying KILL...');
                 $process->sendSignal('SIGKILL');
                 sleep(5);
                 break;
@@ -127,9 +130,9 @@ class Daemon extends Base {
         }
 
         if($process->isAlive()) {
-            $this->terminal->writeLine(' still running, not sure what to do now!');
+            $this->io->writeLine(' still running, not sure what to do now!');
         } else {
-            $this->terminal->writeLine(' done');
+            $this->io->writeLine(' done');
         }
     }
 
@@ -137,13 +140,13 @@ class Daemon extends Base {
         $name = $daemon->getName();
 
         if(!$process) {
-            $this->terminal->writeLine('Daemon '.$name.' is not currently running');
+            $this->io->writeLine('Daemon '.$name.' is not currently running');
             return;
         }
 
 
         if(!$this->_statusData) {
-            $this->terminal->writeLine('Daemon '.$name.' is currently running with PID '.$process->getProcessId());
+            $this->io->writeLine('Daemon '.$name.' is currently running with PID '.$process->getProcessId());
             return;
         }
 
@@ -152,14 +155,47 @@ class Daemon extends Base {
             unset($this->_statusData['state']);
         }
 
-        $this->terminal->writeLine('Daemon '.$name.' is currently '.$state);
+        $this->io->writeLine('Daemon '.$name.' is currently '.$state);
 
         foreach($this->_statusData as $key => $value) {
             if(substr($key, -4) == 'Time') {
                 $value = (new core\time\Date($value))->localeFormat();
             }
 
-            $this->terminal->writeLine(core\string\Manipulator::formatName($key).': '.$value);
+            $this->io->writeLine(core\string\Manipulator::formatName($key).': '.$value);
         }
+    }
+
+    public function nudge(halo\daemon\IDaemon $daemon, halo\process\IManagedProcess $process=null) {
+        $name = $daemon->getName();
+        $justStarted = false;
+
+        $this->io->write('Checking daemon '.$name.'...');
+
+        if(!$process) {
+            $this->io->writeLine(' not running');
+            $this->io->write('Starting spool daemon...');
+            
+            if(!$daemon->run()) {
+                return;
+            }
+
+            $process = halo\process\Base::getCurrent();
+            $justStarted = true;
+        }
+
+        if(!$justStarted && $this->_statusData) {
+            if(time() - $this->_statusData['statusTime'] > self::THRESHOLD) {
+                // Has it got stuck?
+                $this->io->writeLine();
+                $this->io->write('Status is stale, restarting...');
+                
+                $process->kill();
+                $process = halo\daemon\Base::launch('TaskSpool');
+                $justStarted = true;
+            }
+        }
+
+        $this->io->writeLine(' running with PID: '.$process->getProcessId());
     }
 }
