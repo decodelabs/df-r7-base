@@ -15,6 +15,7 @@ class Signal implements ISignal {
         'SIGHUP' => null,
         'SIGINT' => null,
         'SIGQUIT' => null,
+        'SIGKILL' => null,
         'SIGILL' => null,
         'SIGTRAP' => null,
         'SIGABRT' => null,
