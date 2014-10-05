@@ -46,3 +46,14 @@ interface IRemote {
     public function resume();
     public function nudge();
 }
+
+
+interface IManager extends core\IManager {
+    public function isEnabled();
+    public function ensureActivity();
+
+    public function launch($name);
+    public function nudge($name);
+    public function getRemote($name);
+    public function isRunning($name);
+}
