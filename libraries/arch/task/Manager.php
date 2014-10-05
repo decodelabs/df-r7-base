@@ -93,6 +93,16 @@ class Manager implements IManager {
         return $queue['id'];
     }
 
+    public function queueAndLaunch($request, core\io\IMultiplexer $multiplexer=null, $environmentMode=null) {
+        $id = $this->queue($request, 'medium', $environmentMode);
+        return self::launch('manager/launch-queued?id='.$id, $multiplexer, $environmentMode);
+    }
+
+    public function queueAndLaunchBackground($request, $environmentMode=null) {
+        $id = $this->queue($request, 'medium', $environmentMode);
+        return self::launchBackground('manager/launch-queued?id='.$id, $environmentMode);
+    }
+
     public function getResponse() {
         $application = df\Launchpad::getApplication();
 

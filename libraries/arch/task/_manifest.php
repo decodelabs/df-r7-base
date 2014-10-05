@@ -30,6 +30,8 @@ interface IManager extends core\IManager {
     public function invoke($request);
     public function initiateStream($request, $environmentMode=null);
     public function queue($request, $priority='medium', $environmentMode=null);
+    public function queueAndLaunch($request, core\io\IMultiplexer $multiplexer=null, $environmentMode=null);
+    public function queueAndLaunchBackground($request, $environmentMode=null);
     public function getResponse();
     public function shouldCaptureBackgroundTasks($flag=null);
 }
