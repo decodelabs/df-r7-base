@@ -10,6 +10,7 @@ use df\core;
 use df\link;
 use df\flow;
 use df\arch;
+use df\halo;
 
 class Http extends Base implements arch\IDirectoryRequestApplication, link\http\IResponseAugmentorProvider {
     
@@ -333,6 +334,10 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
             $this->_context,
             arch\Controller::factory($this->_context)
         );
+
+        if(!$action->shouldOptimize()) {
+            $this->_doTheDirtyWork();
+        }
         
         $response = $action->dispatch();
         
@@ -388,6 +393,12 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
         return $response;
     }
     
+
+
+    protected function _doTheDirtyWork() {
+        halo\daemon\Manager::getInstance()->ensureActivity();
+    }
+
 
     // Payload
     public function launchPayload($response) {
