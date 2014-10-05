@@ -31,7 +31,8 @@ class Launchpad {
     public static $application;
     public static $debug;
     
-    private static $_startTime;
+    public static $startTime;
+
     private static $_isInit = false;
     private static $_isRun = false;
     private static $_isShutdown = false;
@@ -161,7 +162,7 @@ class Launchpad {
         }
         
         self::$_isInit = true;
-        self::$_startTime = microtime(true);
+        self::$startTime = microtime(true);
         self::$applicationPath = $appPath;
         self::$environmentId = $environmentId;
         self::$isTesting = (bool)$isTesting;
@@ -351,7 +352,7 @@ class Launchpad {
     }
     
     public static function getRunningTime() {
-        return microtime(true) - self::$_startTime;
+        return microtime(true) - self::$startTime;
     }
     
     public static function getFormattedRunningTime($seconds=null) {
