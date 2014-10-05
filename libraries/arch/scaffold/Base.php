@@ -16,6 +16,7 @@ abstract class Base implements IScaffold {
     use core\TContextAware;
     use aura\view\TCascadingHelperProvider;
     use arch\TDirectoryAccessLock;
+    use arch\TOptionalDirectoryAccessLock;
 
     const DIRECTORY_KEY_NAME = null;
     const DIRECTORY_TITLE = null;

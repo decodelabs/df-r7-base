@@ -15,7 +15,8 @@ abstract class Action implements IAction, core\IDumpable {
     use TDirectoryAccessLock;
     use TResponseForcer;
     
-    const CHECK_ACCESS = true;
+    const CHECK_ACCESS = null;
+    const OPTIMIZE = false;
     const DEFAULT_ACCESS = null;
     
     public $controller;
@@ -99,13 +100,25 @@ abstract class Action implements IAction, core\IDumpable {
         return $this->controller;
     }
 
+    public function shouldOptimize() {
+        return (bool)static::OPTIMIZE;
+    }
+
+    public function shouldCheckAccess() {
+        if(is_bool(static::CHECK_ACCESS)) {
+            return static::CHECK_ACCESS || static::DEFAULT_ACCESS == IAccess::ALL;
+        } else {
+            return !static::OPTIMIZE;
+        }
+    }
+
 
 // Dispatch
     public function dispatch() {
         $output = null;
         $func = null;
         
-        if(static::CHECK_ACCESS) {
+        if($this->shouldCheckAccess()) {
             $client = $this->_context->getUserManager()->getClient();
 
             if($client->isDeactivated()) {

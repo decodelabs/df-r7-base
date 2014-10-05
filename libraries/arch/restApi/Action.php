@@ -13,6 +13,7 @@ use df\link;
 abstract class Action extends arch\Action implements IAction {
     
     const DEFAULT_ACCESS = arch\IAccess::ALL;
+    const OPTIMIZE = true;
     const CHECK_ACCESS = false;
 
     protected $_httpRequest;

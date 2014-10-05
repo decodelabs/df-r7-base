@@ -13,6 +13,7 @@ class Controller implements IController, core\IDumpable {
     
     use core\TContextProxy;
     use TResponseForcer;
+    use TOptionalDirectoryAccessLock;
     
     protected $_type;
     private $_isInline = false;

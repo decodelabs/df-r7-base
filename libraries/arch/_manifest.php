@@ -191,15 +191,26 @@ interface IProxyResponse {
 }
 
 
+interface IOptionalDirectoryAccessLock {
+    public function shouldCheckAccess();
+}
 
-interface IController extends core\IContextAware, IResponseForcer {
+trait TOptionalDirectoryAccessLock {
+
+    public function shouldCheckAccess() {
+        return (bool)static::CHECK_ACCESS || static::DEFAULT_ACCESS == IAccess::ALL;
+    }
+}
+
+interface IController extends core\IContextAware, IResponseForcer, IOptionalDirectoryAccessLock {
     public function isControllerInline();
 }
 
 
-interface IAction extends core\IContextAware, user\IAccessLock, IResponseForcer {
+interface IAction extends core\IContextAware, user\IAccessLock, IResponseForcer, IOptionalDirectoryAccessLock {
     public function dispatch();
     public function getController();
+    public function shouldOptimize();
     public function getActionMethodName();
     public function handleException(\Exception $e);
 }
@@ -245,7 +256,8 @@ trait TDirectoryAccessLock {
     }
 
     protected function _getClassDefaultAccess() {
-        if(!static::CHECK_ACCESS) {
+        if($this instanceof IOptionalDirectoryAccessLock
+        && $this->shouldCheckAccess()) {
             return arch\IAccess::ALL;
         }
 

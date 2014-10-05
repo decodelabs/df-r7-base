@@ -19,7 +19,7 @@ class ActionNotFoundException extends RuntimeException {}
 
 
 // Interfaces
-interface IScaffold extends core\IRegistryObject {
+interface IScaffold extends core\IRegistryObject, arch\IOptionalDirectoryAccessLock {
     public function loadAction(arch\IController $controller=null);
     public function onActionDispatch(arch\IAction $action);
     public function loadComponent($name, array $args=null);
