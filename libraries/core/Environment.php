@@ -22,6 +22,7 @@ class Environment extends Config {
             'vendorBinaryPaths' => [],
             'distributed' => false,
             'activeLocations' => [],
+            'deamonsEnabled' => null,
             'daemonUser' => $this->_extrapolateDaemonUser(),
             'daemonGroup' => $this->_extrapolateDaemonGroup(),
             'devUser' => null,
@@ -101,6 +102,20 @@ class Environment extends Config {
 
 
 // Daemons
+    public function canUseDaemons($flag=null) {
+        if($flag !== null) {
+            $this->values['deamonsEnabled'] = (bool)$flag;
+            return $this;
+        }
+
+        if(!isset($this->values['deamonsEnabled'])) {
+            $this->values['deamonsEnabled'] = extension_loaded('pcntl');
+            $this->save();
+        }
+
+        return (bool)$this->values['deamonsEnabled'];
+    }
+
     public function setDaemonUser($user) {
         if(is_numeric($user)) {
             $system = halo\system\Base::getInstance();
