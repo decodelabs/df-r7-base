@@ -15,7 +15,7 @@ class HttpApcClear extends arch\Action {
     use TApcClear;
 
     const DEFAULT_ACCESS = arch\IAccess::ALL;
-    const CHECK_ACCESS = false;
+    const OPTIMIZE = true;
 
     public function executeAsJson() {
         if($_SERVER['REMOTE_ADDR'] == $_SERVER['SERVER_ADDR']) {

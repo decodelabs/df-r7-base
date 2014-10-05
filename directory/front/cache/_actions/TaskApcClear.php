@@ -16,7 +16,7 @@ class TaskApcClear extends arch\task\Action {
     use TApcClear;
 
     const DEFAULT_ACCESS = arch\IAccess::ALL;
-    const CHECK_ACCESS = false;
+    const OPTIMIZE = true;
 
     public function execute() {
         $mode = $this->request->query->get('mode');
