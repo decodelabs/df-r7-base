@@ -16,6 +16,7 @@ abstract class Base implements ICache {
     const CACHE_ID = null;
     
     const IS_DISTRIBUTED = true;
+    const MUST_BE_LOCAL = false;
     const DEFAULT_LIFETIME = 1800;
 
     const USE_DIRECT_FILE_BACKEND = false;
@@ -146,6 +147,10 @@ abstract class Base implements ICache {
     
     public function isCacheDistributed() {
         return static::IS_DISTRIBUTED && df\Launchpad::$application->isDistributed();
+    }
+
+    public function mustCacheBeLocal() {
+        return !static::IS_DISTRIBUTED && static::MUST_BE_LOCAL;
     }
     
     

@@ -22,6 +22,7 @@ interface ICache extends core\IValueMap, \ArrayAccess, core\IRegistryObject, \Co
     public function getLifeTime();
     public function getDefaultLifeTime();
     public function isCacheDistributed();
+    public function mustCacheBeLocal();
     public function clear();
     public function clearBegins($key);
     public function clearMatches($regex);
