@@ -133,7 +133,7 @@ class Daemon extends Base {
         }
 
         $entryPath = df\Launchpad::$applicationPath.'/entry/'.df\Launchpad::$environmentId.'.';
-        $path = $entryPath.$environmentMode.'.php';
+        $path = $entryPath.'production.php';
 
         if(!file_exists($path)) {
             $path = $entryPath.df\Launchpad::getEnvironmentMode().'.php';
