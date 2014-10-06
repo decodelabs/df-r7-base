@@ -40,6 +40,10 @@ class Angel extends halo\daemon\Base implements link\IServer {
     protected function _handleReadBuffer(link\ISession $session) {
         echo 'read'."\n";
     }
+
+    public function start() {
+        core\stub();
+    }
 }
 
 
