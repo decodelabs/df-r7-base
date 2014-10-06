@@ -18,6 +18,8 @@ abstract class Base implements IDaemon {
     const REQUIRES_PRIVILEGED_PROCESS = false;
     const TEST_MODE = false;
     const REPORT_STATUS = true;
+    const DEV_RUN_TIME = '10 minutes';
+    const AUTOMATIC = false;
 
     public $terminal;
     public $process;
@@ -30,6 +32,7 @@ abstract class Base implements IDaemon {
     protected $_isForked = false;
 
     protected $_startTime;
+    protected $_endTime;
     private $_statusPath;
 
     public static function launch($name, $environmentMode=null) {
@@ -41,6 +44,21 @@ abstract class Base implements IDaemon {
         $path .= df\Launchpad::$environmentId.'.'.$environmentMode.'.php';
 
         return halo\process\Base::launchBackgroundScript($path, ['daemon', $name]);
+    }
+
+    public static function loadAll() {
+        foreach(df\Launchpad::$loader->lookupClassList('apex/daemons') as $name => $class) {
+            try {
+                $daemon = self::factory($name);
+            } catch(InvalidArgumentException $e) {
+                continue;
+            }
+            
+            $output[$name] = $daemon;
+        }
+        
+        ksort($output);
+        return $output;
     }
 
     public static function factory($name) {
@@ -84,6 +102,11 @@ abstract class Base implements IDaemon {
         $this->_startTime = time();
         $this->_statusPath = $basePath.'.status';
 
+        if(!df\Launchpad::$application->isProduction()) {
+            $this->_endTime = core\time\Date::factory('+'.self::DEV_RUN_TIME)->toTimestamp();
+        }
+
+
         $this->io = new core\io\Multiplexer(null, $this->getName());
 
         if(static::TEST_MODE) {
@@ -104,7 +127,6 @@ abstract class Base implements IDaemon {
         if(!static::TEST_MODE && $this->process->canFork()) {
             if($this->process->fork()) {
                 return true;
-                //exit;
             } else {
                 $this->_isForked = true;
             }
@@ -188,6 +210,10 @@ abstract class Base implements IDaemon {
                     return false;
                 }
 
+                if(($this->_endTime !== null) && (time() > $this->_endTime)) {
+                    $this->stop();
+                }
+
                 $this->onCycle();
             })
             ->bindTimer('__housekeeping', 30, function() {
@@ -252,6 +278,7 @@ abstract class Base implements IDaemon {
             'pid' => $this->process->getProcessId(),
             'state' => $state,
             'startTime' => $this->_startTime,
+            'endTime' => $this->_endTime,
             'statusTime' => time()
         ];
 
