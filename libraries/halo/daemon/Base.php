@@ -225,23 +225,6 @@ abstract class Base implements IDaemon {
                 gc_collect_cycles();
                 $this->_reportStatus();
             })
-            ->bindStreamRead(core\io\channel\Std::getInputStream(), function($std) use($pauseEvents) {
-                $line = rtrim($std->readLine(), "\r\n");
-
-                if($pauseEvents) {
-                    switch(trim($line)) {
-                        case 'resume':
-                            $this->resume();
-                            break;
-
-                        case 'stop':
-                            $this->stop();
-                            break;
-                    }
-                } else {
-                    $this->onTerminalInput($line);
-                }
-            })
             ->bindSignal('hangup', ['SIGHUP'], function() {})
             ->bindSignal('stop', ['SIGTERM', 'SIGINT'], [$this, 'stop'])
             ->bindSignal('pause', ['SIGTSTP'], [$this, 'pause'])

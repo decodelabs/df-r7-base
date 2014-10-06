@@ -138,7 +138,7 @@ class Daemon extends Base {
         $path .= df\Launchpad::$environmentId.'.'.$environmentMode.'.php';
         $user = halo\process\Base::getCurrent()->getOwnerName();
 
-        halo\process\Base::launchBackgroundScript($path, ['daemon', $name, '__spawn'], $user);
+        halo\process\Base::launchScript($path, ['daemon', $name, '__spawn'], null, $user);
 
         $remote = halo\daemon\Remote::factory($daemon);
         $count = 0;
