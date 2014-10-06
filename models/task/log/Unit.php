@@ -30,7 +30,7 @@ class Unit extends axis\unit\table\Base {
 
     public function applyPagination(opal\query\IPaginator $paginator) {
         $paginator
-            ->setOrderableFields('request', 'environmentMode', 'startDate', 'endDate')
+            ->setOrderableFields('request', 'environmentMode', 'startDate', 'runTime')
             ->setDefaultOrder('startDate DESC');
 
         return $this;
