@@ -148,10 +148,10 @@ abstract class Base implements IDaemon {
 
         $user = $this->_getDaemonUser();
         $group = $this->_getDaemonGroup();
-            $this->process->setIdentity($user, $group);
 
         if($isPrivileged) {
             $this->_preparePrivilegedResources();
+            $this->process->setIdentity($user, $group);
         } else {
             if($user != $this->process->getOwnerName()) {
                 $this->io->writeErrorLine('You are trying to run this daemon as a user with conflicting permissions - either run it as '.$user.' or with sudo!');
