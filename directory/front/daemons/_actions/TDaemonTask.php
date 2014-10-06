@@ -12,14 +12,27 @@ use df\halo;
 
 trait TDaemonTask {
 
-    protected function _beforeDispatch() {
+    protected function _ensurePrivileges() {
+        $env = core\Environment::getInstance();
+
+        if(!$env->canUseDaemons()) {
+            $this->response->writeLine('Daemons are currently disabled in config');
+            $this->forceResponse('');
+        }
+
         $process = halo\process\Base::getCurrent();
-        $user = core\Environment::getInstance()->getDaemonUser();
+        $user = $env->getDaemonUser();
 
         if($user != $process->getOwnerName() && !$process->isPrivileged()) {
-            $this->response->writeLine('Restarting task as root');
-            $this->task->launch($this->request, $this->response, null, 'root');
-            return '';
+            $this->response->writeLine('Restarting task '.$this->request->getPathString().' as root');
+            $request = clone $this->request;
+            $request->_privileged = true;
+            $this->task->launch($request, $this->response, null, 'root');
+            $this->forceResponse('');
         }
+    }
+
+    protected function _hasRestarted() {
+        return isset($this->request->query->_privileged);
     }
 }

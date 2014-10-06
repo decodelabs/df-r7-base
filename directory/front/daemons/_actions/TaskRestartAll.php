@@ -14,10 +14,11 @@ use df\halo;
 class TaskRestartAll extends arch\task\Action {
     
     use TDaemonTask;
-    
+
     public function execute() {
-        $this->task->shouldCaptureBackgroundTasks(true);
-        $this->response->write('Looking up daemon list...');
+        if(!$hasRestarted = $this->_hasRestarted()) {
+            $this->response->write('Looking up daemon list...');
+        }
 
         $daemons = halo\daemon\Base::loadAll();
 
@@ -27,11 +28,16 @@ class TaskRestartAll extends arch\task\Action {
             }
         }
 
-        $this->response->writeLine(' found '.count($daemons).' to restart');
+        if(!$hasRestarted) {
+            $this->response->writeLine(' found '.count($daemons).' to restart');
+        }
 
         if(empty($daemons)) {
             return;
         }
+
+        $this->_ensurePrivileges();
+        $this->task->shouldCaptureBackgroundTasks(true);
 
         foreach($daemons as $name => $daemon) {
             $remote = halo\daemon\Remote::factory($daemon);
