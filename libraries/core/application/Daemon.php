@@ -51,6 +51,15 @@ class Daemon extends Base {
         }
 
 
+        $currentProcess = halo\process\Base::getCurrent();
+        $user = $env->getDaemonUser();
+
+        if(!$currentProcess->isPrivileged() && $user != $currentProcess->getOwnerName()) {
+            $this->io->writeErrorLine('You are trying to control this daemon as a user with conflicting permissions - either run it as '.$user.' or with sudo!');
+            return;
+        }
+
+
         $remote = halo\daemon\Remote::factory($daemon);
         $process = $remote->getProcess();
         $name = $daemon->getName();
@@ -87,6 +96,11 @@ class Daemon extends Base {
 
             case 'nudge':
                 return $this->nudge($daemon, $process);
+
+            default:
+                $this->io->writeErrorLine('Unknown commend '.$command);
+                $this->io->writeErrorLine('Use: start, stop, pause, resume, status, nudge');
+                return;
         }
     }
 
@@ -95,6 +109,7 @@ class Daemon extends Base {
             return;
         }
 
+        $this->io->writeLine(halo\process\Base::getCurrent()->getOwnerName());
         $daemon->run();
         return;
     }
@@ -121,8 +136,9 @@ class Daemon extends Base {
         $environmentMode = df\Launchpad::getEnvironmentMode();
         $path = df\Launchpad::$applicationPath.'/entry/';
         $path .= df\Launchpad::$environmentId.'.'.$environmentMode.'.php';
+        $user = halo\process\Base::getCurrent()->getOwnerName();
 
-        halo\process\Base::launchBackgroundScript($path, ['daemon', $name, '__spawn']);
+        halo\process\Base::launchBackgroundScript($path, ['daemon', $name, '__spawn'], $user);
 
         $remote = halo\daemon\Remote::factory($daemon);
         $count = 0;
