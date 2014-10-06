@@ -47,7 +47,7 @@ class Manager implements IManager {
         if($launch) {
             core\io\Util::ensureDirExists(dirname($path));
             touch($path);
-            arch\task\Manager::getInstance()->queueAndLaunchBackground('daemons/ensure-activity');
+            arch\task\Manager::getInstance()->launchBackground('daemons/ensure-activity');
         }
 
         return $this;
