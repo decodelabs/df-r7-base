@@ -18,6 +18,7 @@ class TaskSpool extends arch\task\Action {
 
     protected $_log;
     protected $_channel;
+    protected $_timer;
 
     protected function _beforeDispatch() {
         $this->_channel = (new core\io\channel\Memory('', 'text/plain'))->setId('buffer');
@@ -31,6 +32,8 @@ class TaskSpool extends arch\task\Action {
     }
 
     public function execute() {
+        $this->_timer = new core\time\Timer();
+
         // Test to see if spool has run recently
         $justRun = $this->data->task->log->select('id')
             ->where('request', '=', self::SELF_REQUEST)
@@ -39,7 +42,7 @@ class TaskSpool extends arch\task\Action {
                 ->where('startDate', '>', '-'.self::COOLOFF.' seconds')
                 ->beginOrWhereClause()
                     ->where('startDate', '>', '-30 minutes')
-                    ->where('endDate', '=', null)
+                    ->where('runTime', '=', null)
                 ->endClause()
             ->endClause()
             ->count();
@@ -158,7 +161,7 @@ class TaskSpool extends arch\task\Action {
 
         $this->_log->output = $output;
         $this->_log->errorOutput = $error;
-        $this->_log->endDate = 'now';
+        $this->_log->runTime = $this->_timer->getTime();
         $this->_log->save();
     }
 }

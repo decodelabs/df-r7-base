@@ -15,6 +15,7 @@ class TaskLaunchQueued extends arch\task\Action {
     protected $_log;
     protected $_channel;
     protected $_entry;
+    protected $_timer;
 
     protected function _beforeDispatch() {
         $this->_channel = (new core\io\channel\Memory('', 'text/plain'))->setId('buffer');
@@ -43,6 +44,7 @@ class TaskLaunchQueued extends arch\task\Action {
             $this->_entry->save();
         }
 
+        $this->_timer = new core\time\Timer();
         $this->task->launch($this->_entry['request'], $this->response, $this->_entry['environmentMode']);
     }
 
@@ -79,7 +81,7 @@ class TaskLaunchQueued extends arch\task\Action {
 
         $this->_log->output = $output;
         $this->_log->errorOutput = $error;
-        $this->_log->endDate = 'now';
+        $this->_log->runTime = $this->_timer->getTime();
         $this->_log->save();
     }
 }
