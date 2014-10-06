@@ -25,6 +25,13 @@ class TaskRestartAll extends arch\task\Action {
         foreach($daemons as $name => $daemon) {
             if(!$daemon::AUTOMATIC || $daemon::TEST_MODE) {
                 unset($daemons[$name]);
+                continue;
+            }
+
+            $remote = halo\daemon\Remote::factory($daemon);
+
+            if($remote->isRunning()) {
+                $this->_ensurePrivileges();
             }
         }
 
@@ -36,7 +43,6 @@ class TaskRestartAll extends arch\task\Action {
             return;
         }
 
-        $this->_ensurePrivileges();
         $this->task->shouldCaptureBackgroundTasks(true);
 
         foreach($daemons as $name => $daemon) {

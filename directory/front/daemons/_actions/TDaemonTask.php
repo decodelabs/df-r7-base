@@ -26,7 +26,7 @@ trait TDaemonTask {
         if($user != $process->getOwnerName() && !$process->isPrivileged()) {
             $this->response->writeLine('Restarting task '.$this->request->getPathString().' as root');
             $request = clone $this->request;
-            $request->_privileged = true;
+            $request->query->_privileged = true;
             $this->task->launch($request, $this->response, null, 'root');
             $this->forceResponse('');
         }
