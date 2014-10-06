@@ -396,7 +396,7 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
 
 
     protected function _doTheDirtyWork() {
-        //halo\daemon\Manager::getInstance()->ensureActivity();
+        halo\daemon\Manager::getInstance()->ensureActivity();
     }
 
 
