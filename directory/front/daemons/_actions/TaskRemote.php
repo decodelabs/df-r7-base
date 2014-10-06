@@ -13,6 +13,8 @@ use df\halo;
 
 class TaskRemote extends arch\task\Action {
     
+    use TDaemonTask;
+    
     public function execute() {
         $remote = halo\daemon\Remote::factory($this->request->query['daemon']);
         $remote->setMultiplexer($this->response);

@@ -13,6 +13,8 @@ use df\halo;
 
 class TaskRestartAll extends arch\task\Action {
     
+    use TDaemonTask;
+    
     public function execute() {
         $this->task->shouldCaptureBackgroundTasks(true);
         $this->response->write('Looking up daemon list...');
