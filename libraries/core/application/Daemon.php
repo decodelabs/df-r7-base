@@ -136,7 +136,7 @@ class Daemon extends Base {
         $path = $entryPath.$environmentMode.'.php';
 
         if(!file_exists($path)) {
-            $path = $entryPath.'development.php';
+            $path = $entryPath.df\Launchpad::getEnvironmentMode().'.php';
         }
 
         halo\process\Base::launchScript(
