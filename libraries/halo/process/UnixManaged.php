@@ -90,14 +90,6 @@ class UnixManaged extends Unix implements IManagedProcess {
         $doGid = $gid != $this->getGroupId();
         $doPidFile = $this->_pidFile && is_file($this->_pidFile);
 
-        if($doUid && $doPidFile) {
-            chown($this->_pidFile, $uid);
-        }
-
-        if($doGid && $doPidFile) {
-            chgrp($this->_pidFile, $gid);
-        }
-
         if($doUid) {
             try {
                 posix_setuid($uid);
@@ -112,6 +104,14 @@ class UnixManaged extends Unix implements IManagedProcess {
             } catch(\Exception $e) {
                 throw new RuntimeException('Set group failed', 0, $e);
             }
+        }
+        
+        if($doUid && $doPidFile) {
+            chown($this->_pidFile, $uid);
+        }
+
+        if($doGid && $doPidFile) {
+            chgrp($this->_pidFile, $gid);
         }
 
         return $this;
