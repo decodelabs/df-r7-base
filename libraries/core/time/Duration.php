@@ -10,6 +10,7 @@ use df\core;
 
 class Duration implements IDuration, core\IDumpable {
     
+    const MILLISECONDS = -1;
     const SECONDS = 1;
     const MINUTES = 2;
     const HOURS = 3;
@@ -607,11 +608,16 @@ class Duration implements IDuration, core\IDumpable {
     public function toString($maxUnits=1, $shortUnits=false, $maxUnit=self::YEARS, $roundLastUnit=true) {
         $translator = core\i18n\translate\Handler::factory('core/time/Duration', $this->_locale);
         $seconds = $this->_seconds;
+
         $isNegative = false;
-        
+
         if($seconds < 0) {
             $seconds *= -1;
             $isNegative = true;
+        }
+
+        if($seconds < 1 || ($seconds < 5 && (int)$seconds != $seconds)) {
+            return $this->_addUnitString($translator, round($this->_seconds * 1000), self::MILLISECONDS, $shortUnits);
         }
 
         $maxUnit = self::normalizeUnitId($maxUnit);
@@ -646,6 +652,9 @@ class Duration implements IDuration, core\IDumpable {
         $unit = self::normalizeUnitId($unit);
 
         switch($unit) {
+            case self::MILLISECONDS:
+                return $this->getMilliseconds();
+
             case self::SECONDS:
                 return $this->getSeconds();
 
@@ -799,6 +808,12 @@ class Duration implements IDuration, core\IDumpable {
     
     protected function _addUnitString(core\i18n\translate\IHandler $translator, $number, $unit, $shortUnits=false) {
         switch($unit) {
+            case self::MILLISECONDS: 
+                return $translator->_(
+                    '%n% ms',
+                    ['%n%' => $number]
+                );
+
             case self::SECONDS: 
                 if($shortUnits) {
                     return $translator->_(
