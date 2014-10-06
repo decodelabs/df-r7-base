@@ -72,11 +72,14 @@ class TaskScan extends arch\task\Action {
         }
 
         $this->response->writeLine(' found '.$total.' tasks, '.$scheduled.' can be scheduled');
-
+        $lastRuns = null;
 
         if($reset) {
             // Reset
             $this->response->write('Resetting auto scheduled tasks...');
+
+            $lastRuns = $this->data->task->schedule->select('request', 'lastRun')
+                ->toList('request', 'lastRun');
 
             $deleted = $this->data->task->schedule->delete()
                 ->where('request', 'in', array_keys($schedules))
@@ -125,6 +128,10 @@ class TaskScan extends arch\task\Action {
                     'environmentMode' => $set['environmentMode'],
                     'priority' => $set['priority'],
                 ]);
+            }
+
+            if(isset($lastRuns[$request])) {
+                $schedule->lastRun = $lastRuns[$request];
             }
 
             $schedule->import([
