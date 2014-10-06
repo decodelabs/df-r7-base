@@ -257,7 +257,7 @@ trait TDirectoryAccessLock {
 
     protected function _getClassDefaultAccess() {
         if($this instanceof IOptionalDirectoryAccessLock
-        && $this->shouldCheckAccess()) {
+        && !$this->shouldCheckAccess()) {
             return arch\IAccess::ALL;
         }
 
