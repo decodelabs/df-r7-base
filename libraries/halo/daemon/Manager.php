@@ -27,6 +27,10 @@ class Manager implements IManager {
     }
 
     public function ensureActivity() {
+        if(!$this->isEnabled()) {
+            return $this;
+        }
+
         $path = df\Launchpad::$application->getLocalStoragePath().'/daemons/__activity';
         $launch = false;
 
@@ -40,7 +44,7 @@ class Manager implements IManager {
             $launch = true;
         }
 
-        if($launch && $this->isEnabled()) {
+        if($launch) {
             core\io\Util::ensureDirExists(dirname($path));
             touch($path);
             arch\task\Manager::getInstance()->queueAndLaunchBackground('daemons/ensure-activity');
