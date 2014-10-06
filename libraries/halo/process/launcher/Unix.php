@@ -103,7 +103,7 @@ class Unix extends Base {
     
     public function launchBackground() {
         $command = $this->_prepareCommand();
-        $activeCommand = 'nohup '.$command.' > /dev/null 2>&1 & echo $!';
+        $activeCommand = /*'nohup '.*/$command.' > /dev/null 2>&1 & echo $!';
 
         if($this->_workingDirectory !== null) {
             $cwd = getcwd();
