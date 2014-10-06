@@ -97,7 +97,8 @@ class ArrayManipulator implements IArrayManipulator {
                 $this->applyDistinct();
             }
         }
-        
+
+
         if($forCount) {
             $this->_rows = ['count' => count($this->_rows)];
         } else {
@@ -136,11 +137,13 @@ class ArrayManipulator implements IArrayManipulator {
             if($query instanceof opal\query\ICombinableQuery) {
                 $this->applyCombines($query->getCombines());
             }
-            
+
+            /*
             $this->applyOutputFields(
                 $keyField, $valField,
                 $query instanceof opal\query\IFetchQuery
             );
+            */
         }
 
         return $this->_rows;
@@ -911,11 +914,11 @@ class ArrayManipulator implements IArrayManipulator {
         }
         
         $this->normalizeRows();
-        
+    
         $temp = $this->_rows;
         $this->_rows = [];
-        
-        
+
+
         // Prepare helpers
         $primarySource = $this->_outputManifest->getPrimarySource();
         $primaryAdapter = $primarySource->getAdapter();

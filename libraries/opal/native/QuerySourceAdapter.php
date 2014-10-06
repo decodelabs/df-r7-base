@@ -10,16 +10,19 @@ use df\core;
 use df\opal;
 use df\user;
 
-class QuerySourceAdapter implements opal\query\IAdapter {
+class QuerySourceAdapter implements opal\query\INaiveIntegralAdapter, opal\query\IEntryPoint {
     
     use user\TAccessLock;
+    use opal\query\TQuery_ImplicitSourceEntryPoint;
 
     protected $_dataSourceId;
     protected $_rows;
+    protected $_primaryField;
     
-    public function __construct($dataSourceId, array $rows) {
+    public function __construct($dataSourceId, array $rows, $primaryField=null) {
         $this->_dataSourceId = $dataSourceId;
         $this->_rows = $rows;
+        $this->_primaryField = $primaryField;
     }
     
     public function getQuerySourceId() {
@@ -45,6 +48,21 @@ class QuerySourceAdapter implements opal\query\IAdapter {
     public function getClusterId() {
         return null;
     }
+
+
+
+    public function getPrimaryIndex() {
+        if(!$this->_primaryField) {
+            return null;
+        }
+
+        return (new opal\schema\GenericIndex('primary', [
+                new opal\schema\GenericField($this->_primaryField)
+            ]))
+            ->isUnique(true);
+    }
+
+
 
     public function newRecord(array $values=null) {
         return new opal\record\Base($this, $values);
@@ -179,9 +197,6 @@ class QuerySourceAdapter implements opal\query\IAdapter {
             $data[] = $row;
         }
         
-        // delete me
-        $data = array_reverse($data);
-        
         return $data;
     }
 
@@ -196,42 +211,6 @@ class QuerySourceAdapter implements opal\query\IAdapter {
     }
 
     public function lookupAccessKey(array $keys, $action=null) {
-        $id = $this->getUnitId();
-
-        $parts = explode(IUnit::ID_SEPARATOR, $id);
-        $test = $parts[0].IUnit::ID_SEPARATOR;
-
-        if($action !== null) {
-            if(isset($keys[$id.'#'.$action])) {
-                return $keys[$id.'#'.$action];
-            }
-
-            if(isset($keys[$test.'*#'.$action])) {
-                return $keys[$test.'*#'.$action];
-            }
-
-            if(isset($keys[$test.'%#'.$action])) {
-                return $keys[$test.'%#'.$action];
-            }
-
-            if(isset($keys['*#'.$action])) {
-                return $keys['*#'.$action];
-            }
-        }
-
-
-        if(isset($keys[$id])) {
-            return $keys[$id];
-        }
-
-        if(isset($keys[$test.'*'])) {
-            return $keys[$test.'*'];
-        }
-
-        if(isset($keys[$test.'%'])) {
-            return $keys[$test.'%'];
-        }
-
         return null;
     }
 

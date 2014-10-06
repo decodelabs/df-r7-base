@@ -129,15 +129,44 @@ class Source implements ISource, core\IDumpable {
                 ->rewriteAsDerived($this);
         }
 
-        if(!$this->_adapter instanceof IIntegralAdapter) {
-            return null;
-        }
+        if($this->_adapter instanceof IIntegralAdapter) {
+            // Get primary
+            if($name == '@primary') {
+                $schema = $this->_adapter->getQueryAdapterSchema();
 
-        // Get primary
-        if($name == '@primary') {
-            $schema = $this->_adapter->getQueryAdapterSchema();
+                if(!$primaryIndex = $schema->getPrimaryIndex()) {
+                    throw new axis\schema\RuntimeException(
+                        'Unit '.$this->getUnitId().' does not have a primary index'
+                    );
+                }
 
-            if(!$primaryIndex = $schema->getPrimaryIndex()) {
+                $fields = [];
+
+                foreach($primaryIndex->getFields() as $fieldName => $indexField) {
+                    $subField = $this->extrapolateIntegralAdapterFieldFromSchemaField($fieldName, $fieldName, $indexField);
+
+                    foreach($subField->dereference() as $innerField) {
+                        $fields[] = $innerField;
+                    }
+                }
+
+                return new opal\query\field\Virtual($this, $name, $alias, $fields);
+            }
+
+
+            // Dereference from source manager
+            if($field === null) {
+                $schema = $this->_adapter->getQueryAdapterSchema();
+
+                if(!$field = $schema->getField($name)) {
+                    return new opal\query\field\Intrinsic($this, $name, $alias);
+                }
+            }
+            
+            // Generic
+            return $this->extrapolateIntegralAdapterFieldFromSchemaField($name, $alias, $field);
+        } else if($this->_adapter instanceof INaiveIntegralAdapter) {
+            if(!$primaryIndex = $this->_adapter->getPrimaryIndex()) {
                 throw new axis\schema\RuntimeException(
                     'Unit '.$this->getUnitId().' does not have a primary index'
                 );
@@ -146,28 +175,11 @@ class Source implements ISource, core\IDumpable {
             $fields = [];
 
             foreach($primaryIndex->getFields() as $fieldName => $indexField) {
-                $subField = $this->extrapolateIntegralAdapterFieldFromSchemaField($fieldName, $fieldName, $indexField);
-
-                foreach($subField->dereference() as $innerField) {
-                    $fields[] = $innerField;
-                }
+                $fields[] = new opal\query\field\Intrinsic($this, $fieldName, $fieldName);
             }
 
             return new opal\query\field\Virtual($this, $name, $alias, $fields);
         }
-
-
-        // Dereference from source manager
-        if($field === null) {
-            $schema = $this->_adapter->getQueryAdapterSchema();
-
-            if(!$field = $schema->getField($name)) {
-                return new opal\query\field\Intrinsic($this, $name, $alias);
-            }
-        }
-        
-        // Generic
-        return $this->extrapolateIntegralAdapterFieldFromSchemaField($name, $alias, $field);
     }
 
     public function extrapolateIntegralAdapterFieldFromSchemaField($name, $alias, opal\schema\IField $field) {

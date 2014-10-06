@@ -672,6 +672,10 @@ interface IIntegralAdapter extends IAdapter {
     public function applyRelationQueryBlock(IQuery $query, $relationField, $name, array $args);
 }
 
+interface INaiveIntegralAdapter extends IAdapter {
+    public function getPrimaryIndex();
+}
+
 interface IPaginatingAdapter extends IAdapter {
     public function applyPagination(IPaginator $paginator);
 }

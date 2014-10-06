@@ -52,6 +52,12 @@ class Introspector {
                 if($index) {
                     self::$_primaryFields[$id] = array_keys($index->getFields());
                 }
+            } else if($adapter instanceof opal\query\INaiveIntegralAdapter) {
+                $index = $adapter->getPrimaryIndex();
+
+                if($index) {
+                    self::$_primaryFields[$id] = array_keys($index->getFields());
+                }
             }
         }
 
