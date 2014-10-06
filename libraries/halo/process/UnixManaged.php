@@ -92,13 +92,13 @@ class UnixManaged extends Unix implements IManagedProcess {
 
         if($doUid) {
             if(!posix_setuid($uid)) {
-                throw new RuntimeException('Set owner failed', 0, $e);
+                throw new RuntimeException('Set owner failed');
             }
         }
 
         if($doGid) {
             if(!posix_setgid($gid)) {
-                throw new RuntimeException('Set group failed', 0, $e);
+                throw new RuntimeException('Set group failed');
             }
         }
 
