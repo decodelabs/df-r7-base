@@ -50,9 +50,11 @@ class Daemon extends Base {
         $command = (string)$args[3];
 
         switch($command) {
-            case 'run':
-            case 'start':
+            case '__spawn':
+                return $this->spawn($daemon, $process);
+
             case '':
+            case 'start':
                 return $this->start($daemon, $process);
 
             case 'stop':
@@ -81,6 +83,15 @@ class Daemon extends Base {
         }
     }
 
+    public function spawn(halo\daemon\IDaemon $daemon, halo\process\IManagedProcess $process=null) {
+        if($process) {
+            return;
+        }
+
+        $daemon->run();
+        return;
+    }
+
     public function start(halo\daemon\IDaemon $daemon, halo\process\IManagedProcess $process=null) {
         $name = $daemon->getName();
 
@@ -97,10 +108,28 @@ class Daemon extends Base {
             $this->io->write('...');
         }
 
-        if($daemon->run()) {
-            if(!$daemon::TEST_MODE) {
-                $this->io->writeLine(' done');
+        $environmentMode = df\Launchpad::getEnvironmentMode();
+        $path = df\Launchpad::$applicationPath.'/entry/';
+        $path .= df\Launchpad::$environmentId.'.'.$environmentMode.'.php';
+
+        halo\process\Base::launchBackgroundScript($path, ['daemon', $name, '__spawn']);
+
+        $remote = halo\daemon\Remote::factory($daemon);
+        $count = 0;
+
+        while(!$process = $remote->getProcess()) {
+            if(++$count > 10) {
+                break;
             }
+
+            usleep(500000);
+            $remote->refresh();
+        }
+
+        if($process) {
+            $this->io->writeLine(' running with PID: '.$process->getProcessId());
+        } else {
+            $this->io->writeLine(' done, but PID could not be found!');
         }
 
         return;
@@ -168,23 +197,14 @@ class Daemon extends Base {
 
     public function nudge(halo\daemon\IDaemon $daemon, halo\process\IManagedProcess $process=null) {
         $name = $daemon->getName();
-        $justStarted = false;
-
         $this->io->write('Checking daemon '.$name.'...');
 
         if(!$process) {
             $this->io->writeLine(' not running');
-            $this->io->write('Starting spool daemon...');
-            
-            if(!$daemon->run()) {
-                return;
-            }
-
-            $process = halo\process\Base::getCurrent();
-            $justStarted = true;
+            return $this->start($daemon, $process);
         }
 
-        if(!$justStarted && $this->_statusData) {
+        if(isset($this->_statusData['statusTime'])) {
             if(time() - $this->_statusData['statusTime'] > self::THRESHOLD) {
                 // Has it got stuck?
                 $this->io->writeLine();
@@ -192,7 +212,6 @@ class Daemon extends Base {
                 
                 $process->kill();
                 $process = halo\daemon\Base::launch('TaskSpool');
-                $justStarted = true;
             }
         }
 
