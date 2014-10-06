@@ -109,7 +109,6 @@ class Daemon extends Base {
             return;
         }
 
-        $this->io->writeLine(halo\process\Base::getCurrent()->getOwnerName());
         $daemon->run();
         return;
     }
@@ -136,7 +135,6 @@ class Daemon extends Base {
         $environmentMode = df\Launchpad::getEnvironmentMode();
         $path = df\Launchpad::$applicationPath.'/entry/';
         $path .= df\Launchpad::$environmentId.'.'.$environmentMode.'.php';
-        //$user = halo\process\Base::getCurrent()->getOwnerName();
 
         halo\process\Base::launchScript($path, ['daemon', $name, '__spawn'], new core\io\Multiplexer([$this->io]));
 
