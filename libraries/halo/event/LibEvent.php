@@ -243,6 +243,10 @@ class LibEvent extends Base implements core\IDumpable {
 
 // Helpers
     public function _registerEvent($target, $flags, $timeout, Callable $callback, $arg=null) {
+        if(is_float($timeout)) {
+            $timeout = (int)$timeout;
+        }
+
         if(!is_int($timeout) || $timeout < 0) {
             $timeout = -1;
         }
@@ -275,7 +279,7 @@ class LibEvent extends Base implements core\IDumpable {
             );
         }
 
-        if(!event_add($event, $timeout)) {
+        if(!event_add($event, (int)$timeout)) {
             event_free($event);
 
             throw new BindException(
