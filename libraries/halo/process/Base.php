@@ -49,34 +49,43 @@ abstract class Base implements IProcess {
     }
     
     
-    public static function launch($process, $args=null, $path=null, core\io\IMultiplexer $multiplexer=null) {
+    public static function launch($process, $args=null, $path=null, core\io\IMultiplexer $multiplexer=null, $user=null) {
         return self::newLauncher($process, $args, $path)
             ->setMultiplexer($multiplexer)
+            ->setUser($user)
             ->launch();
     }
 
-    public static function launchScript($path, $args=null, core\io\IMultiplexer $multiplexer=null) {
+    public static function launchScript($path, $args=null, core\io\IMultiplexer $multiplexer=null, $user=null) {
         return self::newScriptLauncher($path, $args)
             ->setMultiplexer($multiplexer)
+            ->setUser($user)
             ->launch();
     }
 
-    public static function launchBackground($process, $args=null, $path=null, core\io\IMultiplexer $multiplexer=null) {
+    public static function launchBackground($process, $args=null, $path=null, core\io\IMultiplexer $multiplexer=null, $user=null) {
         return self::newLauncher($process, $args, $path)
             ->setMultiplexer($multiplexer)
+            ->setUser($user)
             ->launchBackground();
     }
 
-    public static function launchBackgroundScript($path, $args=null) {
-        return self::newScriptLauncher($path, $args)->launchBackground();
+    public static function launchBackgroundScript($path, $args=null, $user=null) {
+        return self::newScriptLauncher($path, $args)
+            ->setUser($user)
+            ->launchBackground();
     }
     
-    public static function launchManaged($process, $args=null, $path=null) {
-        return self::newLauncher($process, $args, $path)->launchManaged();
+    public static function launchManaged($process, $args=null, $path=null, $user=null) {
+        return self::newLauncher($process, $args, $path)
+            ->setUser($user)
+            ->launchManaged();
     }
 
-    public static function launchManagedScript($path, $args=null) {
-        return self::newScriptLauncher($path, $args)->launchManaged();
+    public static function launchManagedScript($path, $args=null, $user=null) {
+        return self::newScriptLauncher($path, $args)
+            ->setUser($user)
+            ->launchManaged();
     }
 
     public static function newLauncher($process, $args=null, $path=null) {

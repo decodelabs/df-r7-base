@@ -18,7 +18,7 @@ class Manager implements IManager {
 
     protected $_captureBackground = false;
 
-    public function launch($request, core\io\IMultiplexer $multiplexer=null, $environmentMode=null) {
+    public function launch($request, core\io\IMultiplexer $multiplexer=null, $environmentMode=null, $user=null) {
         if($environmentMode === null) {
             $environmentMode = df\Launchpad::getEnvironmentMode();
         }
@@ -27,10 +27,10 @@ class Manager implements IManager {
         $path = df\Launchpad::$applicationPath.'/entry/';
         $path .= df\Launchpad::$environmentId.'.'.$environmentMode.'.php';
 
-        return halo\process\Base::launchScript($path, ['task', $request], $multiplexer);
+        return halo\process\Base::launchScript($path, ['task', $request], $multiplexer, $user);
     }
 
-    public function launchBackground($request, $environmentMode=null) {
+    public function launchBackground($request, $environmentMode=null, $user=null) {
         $request = arch\Request::factory($request);
 
         if($environmentMode === null) {
@@ -45,11 +45,11 @@ class Manager implements IManager {
 
             if($application instanceof core\application\Task) {
                 $multiplexer = $application->getTaskResponse();
-                return halo\process\Base::launchScript($path, ['task', $request], $multiplexer);
+                return halo\process\Base::launchScript($path, ['task', $request], $multiplexer, $user);
             }
         }
 
-        return halo\process\Base::launchBackgroundScript($path, ['task', $request]);
+        return halo\process\Base::launchBackgroundScript($path, ['task', $request], $user);
     }
 
     public function invoke($request) {
