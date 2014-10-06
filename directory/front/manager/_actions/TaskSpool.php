@@ -58,7 +58,16 @@ class TaskSpool extends arch\task\Action {
         $this->response->write('Clearing old logs...');
 
         $count = $this->data->task->log->delete()
-            ->where('startDate', '<', '-1 week')
+            ->beginWhereClause()
+                ->beginWhereClause()
+                    ->where('startDate', '<', '-2 days')
+                    ->where('errorOutput', '=', null)
+                    ->endClause()
+                ->beginOrWhereClause()
+                    ->where('startDate', '<', '-2 weeks')
+                    ->where('errorOutput', '!=', null)
+                    ->endClause()
+                ->endClause()
             ->beginOrWhereClause()
                 ->where('request', '=', self::SELF_REQUEST)
                 ->where('id', '!=', $this->_log['id'])
