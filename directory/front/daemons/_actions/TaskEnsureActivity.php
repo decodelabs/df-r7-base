@@ -27,12 +27,6 @@ class TaskEnsureActivity extends arch\task\Action {
                 unset($daemons[$name]);
                 continue;
             }
-
-            $remote = halo\daemon\Remote::factory($daemon);
-
-            if($remote->isRunning()) {
-                $this->_ensurePrivileges();
-            }
         }
 
         if(!$hasRestarted) {
@@ -43,6 +37,7 @@ class TaskEnsureActivity extends arch\task\Action {
             return;
         }
 
+        $this->_ensurePrivileges();
         $this->task->shouldCaptureBackgroundTasks(true);
 
         foreach($daemons as $name => $daemon) {
