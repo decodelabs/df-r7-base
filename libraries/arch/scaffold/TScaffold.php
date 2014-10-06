@@ -49,12 +49,16 @@ trait TScaffold_RecordLoader {
                 $this->_recordAdapter = $adapter;
                 return $adapter;
             }
+        } else if($this->_recordAdapter = $this->_generateRecordAdapter()) {
+            return $this->_recordAdapter;
         }
 
         throw new LogicException(
             'Unable to find a suitable adapter for record scaffold'
         );
     }
+
+    protected function _generateRecordAdapter() {}
 
     public function isRecordAdapterClustered() {
         return (bool)@static::CLUSTER;
@@ -236,7 +240,12 @@ trait TScaffold_RecordLoader {
         }
 
         $adapter = $this->getRecordAdapter();
-        return lcfirst($adapter->getUnitName());
+
+        if($adapter instanceof axis\IUnit) {
+            return lcfirst($adapter->getUnitName());
+        } else {
+            return 'record';
+        }
     }
 
     public function getRecordItemName() {
@@ -292,7 +301,7 @@ trait TScaffold_RecordDataProvider {
         if(isset($record[$key])) {
             $output = $record[$key];
 
-            if($key == $this->getRecordIdKey()) {
+            if($key == $this->getRecordIdKey() && is_numeric($output)) {
                 $output = '#'.$output;
             }
         } else {
@@ -912,13 +921,17 @@ trait TScaffold_RecordIndexHeaderBarProvider {
 
     public function addIndexOperativeLinks($menu, $bar) {
         if($this->canAddRecord()) {
+            $recordAdapter = $this->getRecordAdapter();
+
             $menu->addLinks(
                 $bar->html->link(
                         $bar->uri->request($this->_getActionRequest('add'), true),
                         $this->_('Add '.$this->getRecordItemName())
                     )
                     ->setIcon('add')
-                    ->addAccessLock($this->getRecordAdapter()->getEntityLocator()->toString().'#add')
+                    ->chainIf($recordAdapter instanceof axis\IUnit, function($link) use($recordAdapter) {
+                        $link->addAccessLock($recordAdapter->getEntityLocator()->toString().'#add');
+                    })
             );
         }
     }
