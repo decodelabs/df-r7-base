@@ -190,13 +190,18 @@ class Format implements core\ISharedHelper {
             ->userLocaleFormat($size);
     }
 
-    public function customDate($date, $format) {
+    public function customDate($date, $format, $keepTimezone=false) {
         if($date === null) {
             return null;
         }
 
-        return core\time\Date::factory($date)
-            ->format($format);
+        $date = core\time\Date::factory($date);
+
+        if(!$keepTimezone) {
+            $date->toUserTimeZone();
+        }
+
+        return $date->format($format);
     }
     
     public function time($date, $size=core\time\Date::MEDIUM, $locale=true) {
