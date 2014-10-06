@@ -31,6 +31,7 @@ class TaskBuild extends arch\task\Action {
         if($this->directory->actionExists('application/build-custom')) {
             $this->response->writeLine('Running custom user build tasks...');
             $this->runChild('application/build-custom');
+            $this->response->writeLine();
         }
 
 
@@ -132,16 +133,25 @@ class TaskBuild extends arch\task\Action {
         }
 
         // Generate entries
+        $this->response->writeLine();
         $this->runChild('application/generate-entries?build='.$buildId);
         
         // Clear cache
+        $this->response->writeLine('Clearing cache');
         core\cache\Base::purgeAll();
 
 
+        // Restart daemons
+        $this->response->writeLine();
+        $this->runChild('daemons/restart-all');
+
+
         // End
+        $this->response->writeLine();
         $this->response->writeLine('App build complete');
 
         if($purgeOldBuilds) {
+            $this->response->writeLine();
             $this->runChild('application/purge-builds?'.(!$isTesting ? 'purgeTesting' : null));
         }
     }
