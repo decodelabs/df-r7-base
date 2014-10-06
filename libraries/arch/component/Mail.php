@@ -170,8 +170,8 @@ abstract class Mail extends Base implements arch\IMailComponent {
     public function getJournalName() {
         $output = '~'.$this->_context->location->getDirectoryLocation();
 
-        if(0 === strpos($output, '~front/')) {
-            $output = substr($output, 7);
+        if(0 === strpos($output, '~mail/')) {
+            $output = substr($output, 6);
         }
 
         $name = $this->getName();
