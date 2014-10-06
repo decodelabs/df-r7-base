@@ -111,6 +111,9 @@ class Daemon extends Base {
 
         if($daemon::TEST_MODE) {
             $this->io->writeLine();
+
+            $daemon->run();
+            return;
         } else {
             $this->io->write('...');
         }

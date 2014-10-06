@@ -108,8 +108,6 @@ class Environment extends Config {
             return $this;
         }
 
-        return false; // DELETE ME!
-
         if(!isset($this->values['deamonsEnabled'])) {
             $this->values['deamonsEnabled'] = extension_loaded('pcntl');
             $this->save();
