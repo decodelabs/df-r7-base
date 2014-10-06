@@ -12,6 +12,7 @@ use df\halo;
 
 // Exceptions
 interface IException {}
+class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 
 
 // Interfaces
