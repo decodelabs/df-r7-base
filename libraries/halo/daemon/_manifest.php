@@ -35,6 +35,8 @@ interface IDaemon extends halo\event\IDispatcherProvider {
 
 interface IRemote {
     public function getName();
+    public function setMultiplexer(core\io\IMultiplexer $multiplexer=null);
+    public function getMultiplexer();
     public function isRunning();
     public function getStatusData();
     public function getProcess();
@@ -45,6 +47,7 @@ interface IRemote {
     public function pause();
     public function resume();
     public function nudge();
+    public function sendCommand($command);
 }
 
 

@@ -16,6 +16,7 @@ class Remote implements IRemote {
     protected $_process;
     protected $_statusData;
     protected $_isChecked = false;
+    protected $_multiplexer;
 
     public static function factory($daemon) {
         if(!$daemon instanceof IDaemon) {
@@ -32,6 +33,17 @@ class Remote implements IRemote {
     public function getName() {
         return $this->_daemon->getName();
     }
+
+
+    public function setMultiplexer(core\io\IMultiplexer $multiplexer=null) {
+        $this->_multiplexer = $multiplexer;
+        return $this;
+    }
+
+    public function getMultiplexer() {
+        return $this->_multiplexer;
+    }
+
 
     public function isRunning() {
         if(!$this->_isChecked) {
@@ -104,34 +116,55 @@ class Remote implements IRemote {
 
 
     public function start() {
-        return $this->_sendCommand('start');
+        return $this->sendCommand('start');
     }
 
     public function stop() {
-        return $this->_sendCommand('stop');
+        return $this->sendCommand('stop');
     }
 
     public function restart() {
-        return $this->_sendCommand('restart');
+        return $this->sendCommand('restart');
     }
 
     public function pause() {
-        return $this->_sendCommand('pause');
+        return $this->sendCommand('pause');
     }
 
     public function resume() {
-        return $this->_sendCommand('resume');
+        return $this->sendCommand('resume');
     }
 
     public function nudge() {
-        return $this->_sendCommand('nudge');
+        return $this->sendCommand('nudge');
     }
 
-    protected function _sendCommand($command) {
+    public function sendCommand($command) {
+        switch($command) {
+            case '__spawn':
+            case 'start':
+            case 'stop':
+            case 'restart':
+            case 'pause':
+            case 'resume':
+            case 'status':
+            case 'nudge':
+                break;
+
+            default:
+                throw new InvalidArgumentException(
+                    $command.' is not a valid command'
+                );
+        }
+
         $environmentMode = df\Launchpad::getEnvironmentMode();
         $path = df\Launchpad::$applicationPath.'/entry/';
         $path .= df\Launchpad::$environmentId.'.'.$environmentMode.'.php';
 
-        return halo\process\Base::launchBackgroundScript($path, ['daemon', $this->_daemon->getName(), $command]);
+        if($this->_multiplexer) {
+            return halo\process\Base::launchScript($path, ['daemon', $this->_daemon->getName(), $command], $this->_multiplexer);
+        } else {
+            return halo\process\Base::launchBackgroundScript($path, ['daemon', $this->_daemon->getName(), $command]);
+        }
     }
 }
