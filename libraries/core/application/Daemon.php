@@ -28,6 +28,13 @@ class Daemon extends Base {
         }
 
         $this->io = new core\io\channel\Std();
+        $env = core\Environment::getInstance();
+
+        if(!$env->canUseDaemons() || !extension_loaded('pcntl')) {
+            $this->io->writeErrorLine('Daemons are not enabled in config');            
+            return;
+        }
+
         $args = core\cli\Command::fromArgv();
 
         if(!$arg = $args[2]) {
