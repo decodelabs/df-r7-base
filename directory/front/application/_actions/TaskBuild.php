@@ -142,8 +142,10 @@ class TaskBuild extends arch\task\Action {
 
 
         // Restart daemons
-        $this->response->writeLine();
-        $this->runChild('daemons/restart-all');
+        if(!$isTesting) {
+            $this->response->writeLine();
+            $this->runChild('daemons/restart-all');
+        }
 
 
         // End
