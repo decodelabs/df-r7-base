@@ -13,7 +13,13 @@ class Unix extends Base {
     
     public static function isProcessIdLive($pid) {
         if(extension_loaded('posix')) {
-            return posix_kill($pid, 0);
+            $output = posix_kill($pid, 0);
+
+            if(!$output) {
+                $output = posix_get_last_error() == 1;
+            }
+
+            return $output;
         } else {
             exec('ps -o pid --no-heading --pid '.escapeshellarg($pid), $output);
             return isset($output[0]);
