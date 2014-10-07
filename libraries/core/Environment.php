@@ -22,7 +22,7 @@ class Environment extends Config {
             'vendorBinaryPaths' => [],
             'distributed' => false,
             'activeLocations' => [],
-            'deamonsEnabled' => null,
+            'deamonsEnabled' => false,
             'daemonUser' => $this->_extrapolateDaemonUser(),
             'daemonGroup' => $this->_extrapolateDaemonGroup(),
             'devUser' => null,
@@ -109,8 +109,7 @@ class Environment extends Config {
         }
 
         if(!isset($this->values['deamonsEnabled'])) {
-            $this->values['deamonsEnabled'] = extension_loaded('pcntl');
-            $this->save();
+            return false;
         }
 
         return (bool)$this->values['deamonsEnabled'];
