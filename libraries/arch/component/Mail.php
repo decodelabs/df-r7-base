@@ -21,6 +21,7 @@ abstract class Mail extends Base implements arch\IMailComponent {
 
     protected $_defaultToAddress = null;
     protected $_templateType;
+    protected $_journalName;
     protected $_isPrivate = false;
 
     public function __construct(arch\IContext $context, array $args=null) {
@@ -167,7 +168,20 @@ abstract class Mail extends Base implements arch\IMailComponent {
 
 
 // Journal
+    public function setJournalName($name) {
+        $this->_journalName = $name;
+        return $this;
+    }
+
     public function getJournalName() {
+        if($this->_journalName === null) {
+            $this->_journalName = $this->_getDefaultJournalName();
+        }
+
+        return $this->_journalName;
+    }
+
+    protected function _getDefaultJournalName() {
         $output = '~'.$this->_context->location->getDirectoryLocation();
 
         if(0 === strpos($output, '~mail/')) {
