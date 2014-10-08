@@ -27,7 +27,7 @@ class Manager implements IManager {
     }
 
     public function ensureActivity() {
-        if(!$this->isEnabled()) {
+        if(!$this->isEnabled() || !df\Launchpad::$application->isProduction()) {
             return $this;
         }
 
