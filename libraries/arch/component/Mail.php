@@ -17,7 +17,7 @@ abstract class Mail extends Base implements arch\IMailComponent {
     const IS_PRIVATE = false;
 
     const JOURNAL = true;
-    const JOURNAL_WEEKS = 52; // weeks
+    const JOURNAL_WEEKS = 10; // weeks
 
     protected $_defaultToAddress = null;
     protected $_templateType;
