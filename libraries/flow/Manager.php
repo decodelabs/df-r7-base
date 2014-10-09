@@ -161,6 +161,8 @@ class Manager implements IManager {
             $mail->shouldJournal(true);
             $mail->setJournalName($notification->getJournalName());
             $mail->setJournalDuration($notification->getJournalDuration());
+            $mail->setJournalObjectId1($notification->getJournalObjectId1());
+            $mail->setJournalObjectId2($notification->getJournalObjectId2());
         }
 
         if($from = $notification->getFromEmail()) {

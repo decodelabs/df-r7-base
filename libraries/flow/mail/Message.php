@@ -23,6 +23,8 @@ class Message extends flow\mime\MultiPart implements IMessage {
 
     protected $_journalName;
     protected $_journalDuration;
+    protected $_journalObjectId1;
+    protected $_journalObjectId2;
     protected $_shouldJournal = true;
 
     public static function fromString($string) {
@@ -508,6 +510,25 @@ class Message extends flow\mime\MultiPart implements IMessage {
 
         return core\time\Duration::fromWeeks(52);
     }
+
+    public function setJournalObjectId1($id) {
+        $this->_journalObjectId1 = $id;
+        return $this;
+    }
+
+    public function getJournalObjectId1() {
+        return $this->_journalObjectId1;
+    }
+
+    public function setJournalObjectId2($id) {
+        $this->_journalObjectId2 = $id;
+        return $this;
+    }
+
+    public function getJournalObjectId2() {
+        return $this->_journalObjectId2;
+    }
+
 
     public function shouldJournal($flag=null) {
         if($flag !== null) {

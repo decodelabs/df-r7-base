@@ -19,6 +19,10 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('date', 'Timestamp');
 
         $schema->addField('name', 'String', 128);
+        $schema->addField('objectId1', 'String', 64)
+            ->isNullable(true);
+        $schema->addField('objectId2', 'String', 64)
+            ->isNullable(true);
 
         $schema->addField('email', 'String', 255);
         $schema->addField('user', 'One', 'user/client')
@@ -40,6 +44,8 @@ class Unit extends axis\unit\table\Base {
 
         $baseData = [
             'name' => $message->getJournalName(),
+            'objectId1' => $message->getJournalObjectId1(),
+            'objectId2' => $message->getJournalObjectId2(),
             'expireDate' => $expire,
             'environmentMode' => $this->context->application->getEnvironmentMode()
         ];

@@ -166,6 +166,10 @@ interface INotification {
     public function getJournalName();
     public function setJournalDuration(core\time\IDuration $duration=null);
     public function getJournalDuration();
+    public function setJournalObjectId1($id);
+    public function getJournalObjectId1();
+    public function setJournalObjectId2($id);
+    public function getJournalObjectId2();
     public function shouldJournal($flag=null);
 }
 

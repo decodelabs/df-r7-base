@@ -22,6 +22,8 @@ abstract class Mail extends Base implements arch\IMailComponent {
     protected $_defaultToAddress = null;
     protected $_templateType;
     protected $_journalName;
+    protected $_journalObjectId1;
+    protected $_journalObjectId2;
     protected $_isPrivate = false;
 
     public function __construct(arch\IContext $context, array $args=null) {
@@ -161,6 +163,8 @@ abstract class Mail extends Base implements arch\IMailComponent {
             $notification->shouldJournal(true);
             $notification->setJournalName($this->getJournalName());
             $notification->setJournalDuration($this->getJournalDuration());
+            $notification->setJournalObjectId1($this->getJournalObjectId1());
+            $notification->setJournalObjectId2($this->getJournalObjectId2());
         }
 
         return $notification;
@@ -207,6 +211,25 @@ abstract class Mail extends Base implements arch\IMailComponent {
 
         return core\time\Duration::fromWeeks($weeks);
     }
+
+    public function setJournalObjectId1($id) {
+        $this->_journalObjectId1 = $id;
+        return $this;
+    }
+
+    public function getJournalObjectId1() {
+        return $this->_journalObjectId1;
+    }
+
+    public function setJournalObjectId2($id) {
+        $this->_journalObjectId2 = $id;
+        return $this;
+    }
+
+    public function getJournalObjectId2() {
+        return $this->_journalObjectId2;
+    }
+
 
     public function shouldJournal() {
         return (bool)static::JOURNAL;

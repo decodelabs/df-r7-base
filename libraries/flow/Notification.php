@@ -24,6 +24,8 @@ class Notification implements INotification {
     protected $_isPrivate = false;
     protected $_journalName;
     protected $_journalDuration;
+    protected $_journalObjectId1;
+    protected $_journalObjectId2;
     protected $_shouldJournal = true;
 
     public function __construct($subject, $body, $to=null, $from=null) {
@@ -277,6 +279,25 @@ class Notification implements INotification {
 
         return core\time\Duration::fromWeeks(52);
     }
+
+    public function setJournalObjectId1($id) {
+        $this->_journalObjectId1 = $id;
+        return $this;
+    }
+
+    public function getJournalObjectId1() {
+        return $this->_journalObjectId1;
+    }
+
+    public function setJournalObjectId2($id) {
+        $this->_journalObjectId2 = $id;
+        return $this;
+    }
+
+    public function getJournalObjectId2() {
+        return $this->_journalObjectId2;
+    }
+
 
     public function shouldJournal($flag=null) {
         if($flag !== null) {
