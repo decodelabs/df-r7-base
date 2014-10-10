@@ -22,7 +22,7 @@ class Environment extends Config {
             'vendorBinaryPaths' => [],
             'distributed' => false,
             'activeLocations' => [],
-            'deamonsEnabled' => false,
+            'daemonsEnabled' => false,
             'daemonUser' => $this->_extrapolateDaemonUser(),
             'daemonGroup' => $this->_extrapolateDaemonGroup(),
             'devUser' => null,
@@ -104,15 +104,15 @@ class Environment extends Config {
 // Daemons
     public function canUseDaemons($flag=null) {
         if($flag !== null) {
-            $this->values['deamonsEnabled'] = (bool)$flag;
+            $this->values['daemonsEnabled'] = (bool)$flag;
             return $this;
         }
 
-        if(!isset($this->values['deamonsEnabled'])) {
+        if(!isset($this->values['daemonsEnabled'])) {
             return false;
         }
 
-        return (bool)$this->values['deamonsEnabled'];
+        return (bool)$this->values['daemonsEnabled'];
     }
 
     public function setDaemonUser($user) {
