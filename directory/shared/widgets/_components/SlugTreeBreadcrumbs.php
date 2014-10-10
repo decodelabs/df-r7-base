@@ -54,8 +54,16 @@ class SlugTreeBreadcrumbs extends arch\component\Base {
                 $request->query->od
             );
 
+            if(null === ($name = $node['name'])) {
+                if($node['slug'] === null) {
+                    $name = 'Root';
+                } else {
+                    $name = $this->format->name($node['slug']);
+                }
+            }
+
             $output->addEntry(
-                $output->newLink($request, $node['name'])  
+                $output->newLink($request, $name)  
                     ->setId($slug)
                     ->setDescription($node['description'])
                     ->setIcon('folder')
