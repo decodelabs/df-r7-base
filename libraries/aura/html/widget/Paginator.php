@@ -156,6 +156,10 @@ class Paginator extends Base implements core\IDumpable {
             if($mLimit > $total) {
                 $mLimit = $total;
             }
+
+            if($offset >= $mLimit) {
+                $offset = $mLimit - 1;
+            }
             
             $messageData = [
                 '%offset%' => $offset + 1,
