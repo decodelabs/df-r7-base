@@ -55,5 +55,6 @@ interface IResult {
     public function getPostcode();
     public function getLongitude();
     public function getLatitude();
+    public function hasLatLong();
     public function getTimezone();
 }

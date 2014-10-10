@@ -93,6 +93,10 @@ class Result implements IResult {
         return $this->latitude;
     }
 
+    public function hasLatLong() {
+        return $this->longitude !== null && $this->latitude !== null;
+    }
+
     public function getTimezone() {
         return $this->timezone;
     }
