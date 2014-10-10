@@ -63,6 +63,11 @@ abstract class Action extends arch\Action implements IAction {
     }
 
 
+    public function extractCliArguments(array $args) {
+        // Do nothing        
+    }
+
+
 // Dispatch
     public function dispatch() {
         if(!$this->response) {

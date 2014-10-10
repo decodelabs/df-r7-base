@@ -89,10 +89,14 @@ class Launchpad {
             if(isset($_SERVER['HTTP_HOST'])) {
                 $appType = 'Http';
             } else {
-                if(isset($_SERVER['argv'][1]) && $_SERVER['argv'][1]{0} != '-') {
+                if(isset($_SERVER['argv'][1])) {
                     $appType = ucfirst($_SERVER['argv'][1]);
+
+                    if(!core\application\Base::isValidApplication($appType)) {
+                        $appType = 'Task';
+                    }
                 } else {
-                    $appType = 'Cli';
+                    $appType = 'Task';
                 }
             }
         } else {

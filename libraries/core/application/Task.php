@@ -75,19 +75,26 @@ class Task extends Base implements arch\IDirectoryRequestApplication {
 // Execute
     public function dispatch(arch\IRequest $request=null) {
         $this->_beginDispatch();
+        $args = null;
         
         if($request !== null) {
             $this->_request = $request;
         } else if(!$this->_request) {
             $command = core\cli\Command::fromArgv();
+            $args = array_slice($command->getArguments(), 1);
+            $request = array_shift($args);
+
+            if(strtolower($request) == 'task') {
+                $request = array_shift($args);
+            }
             
-            if(!$arg = $command[2]) {
+            if(!$request) {
                 throw new core\InvalidArgumentException(
                     'No task path has been specified'
                 );
             }
 
-            $this->_request = arch\Request::factory($arg);
+            $this->_request = arch\Request::factory($request);
         }
         
         $response = false;
@@ -99,7 +106,8 @@ class Task extends Base implements arch\IDirectoryRequestApplication {
         while(true) {
             try {
                 while(true) {
-                    $response = $this->_dispatchRequest($request);
+                    $response = $this->_dispatchRequest($request, $args);
+                    $args = null;
 
                     if($response instanceof arch\IRequest) {
                         $request = $response;
@@ -137,10 +145,15 @@ class Task extends Base implements arch\IDirectoryRequestApplication {
     }
     
     
-    protected function _dispatchRequest(arch\IRequest $request) {
+    protected function _dispatchRequest(arch\IRequest $request, array $args=null) {
         $this->_context = arch\Context::factory(clone $request);
         $this->_context->request = $request;
         $action = arch\Action::factory($this->_context);
+
+        if(!empty($args) && ($action instanceof arch\task\IAction)) {
+            $action->extractCliArguments($args);
+        }
+
         $response = $action->dispatch();
         
         // Forwarding

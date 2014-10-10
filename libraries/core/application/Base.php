@@ -28,6 +28,11 @@ abstract class Base implements core\IApplication, core\IDumpable {
         
         return new $class();
     }
+
+    public static function isValidApplication($appType) {
+        $class = 'df\\core\\application\\'.$appType;
+        return class_exists($class);
+    }
     
     
 // Construct
