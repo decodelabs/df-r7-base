@@ -223,7 +223,7 @@ class Paginator extends Base implements core\IDumpable {
             'prevText' => $this->_prevText,
             'nextText' => $this->_nextText,
             'renderDetails' => $this->_renderDetails,
-            'pageDate' => $this->_pageData,
+            'pageData' => $this->_pageData,
             'tag' => $this->getTag(),
             'renderTarget' => $this->_getRenderTargetDisplayName()
         ];

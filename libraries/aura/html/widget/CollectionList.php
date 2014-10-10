@@ -169,11 +169,25 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
         }
         
         if($empty) {
-            if(!$this->_renderIfEmpty) {
+            $paginator = $this->paginator->getPageData();
+            $shouldRender = $this->_renderIfEmpty;
+            $errorMessage = $this->_errorMessage;
+            $errorClass = 'error';
+
+            if($paginator && $paginator->getOffset() > 0) {
+                $request = clone $context->request;
+                $request->query->{$paginator->getKeyMap()['page']} = 1;
+
+                $errorMessage = (new FlashMessage($context, $context->_('This list appears to have gone past the last page - go back to the start...'), 'warning'))
+                    ->setLink($request)
+                    ->setRenderTarget($this->getView());
+            }
+
+            if(!$shouldRender) {
                 return '';
             }
 
-            $errorTag = new aura\html\Element('td', $this->_errorMessage, ['colspan' => count($this->_fields)]);
+            $errorTag = new aura\html\Element('td.errorMessage', $errorMessage, ['colspan' => count($this->_fields)]);
             $errorTag->addClass('error');
             $content->append('<tr>'.$errorTag->render().'</tr>');
         }
