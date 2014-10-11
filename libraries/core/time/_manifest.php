@@ -146,6 +146,9 @@ interface IDuration extends core\IStringProvider {
     public function getYears();
     public function addYears($years);
     public function subtractYears($years);
+
+    public function getUserString();
+    public function getTimeFormatString();
 }
 
 

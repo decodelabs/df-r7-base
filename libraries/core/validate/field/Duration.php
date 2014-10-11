@@ -50,7 +50,16 @@ class Duration extends Base implements core\validate\IDurationField {
             return null;
         }
 
-        $duration = $this->_normalizeDuration($value);
+        try {
+            $duration = $this->_normalizeDuration($value);
+        } catch(\Exception $e) {
+            $this->_applyMessage($node, 'invalid', $this->_handler->_(
+                'This is not a valid duration'
+            ));
+
+            return $value;
+        }
+
         $this->_validateRange($node, $duration);
 
         return $this->_finalize($node, $duration);

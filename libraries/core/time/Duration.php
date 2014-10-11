@@ -175,6 +175,18 @@ class Duration implements IDuration, core\IDumpable {
             $interval = new \DateInterval($time);
         } else {
             $interval = \DateInterval::createFromDateString($time);
+
+            if($interval->y == 0
+            && $interval->m == 0
+            && $interval->d == 0
+            && $interval->h == 0
+            && $interval->i == 0
+            && $interval->s == 0
+            && false === strpos($time, '0')) {
+                throw new InvalidArgumentException(
+                    'Invalid duration string: '.$time
+                );
+            }
         }
 
         return $this->_extractInterval($interval);
@@ -194,9 +206,8 @@ class Duration implements IDuration, core\IDumpable {
             $interval->i,
             $interval->s,
         ];
-        
-        $output = 0;
 
+        $output = 0;
 
         for($i = self::YEARS; $i > 0; $i--) {
             $value = (int)array_shift($parts);
@@ -558,7 +569,29 @@ class Duration implements IDuration, core\IDumpable {
     }
 
     public function toString($maxUnits=1, $shortUnits=false, $maxUnit=self::YEARS, $roundLastUnit=true) {
-        $translator = core\i18n\translate\Handler::factory('core/time/Duration', $this->_locale);
+        return implode(', ', $this->_buildStringComponents($maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $this->_locale));
+    }
+
+    public function getUserString() {
+        if((int)$this->_seconds != $this->_seconds && abs($this->_seconds) <= self::$_multipliers[self::WEEKS]) {
+            return $this->getTimeFormatString();
+        }
+
+        return implode(' ', $this->_buildStringComponents(self::YEARS, false, self::YEARS, true, null));
+    }
+
+    public function getTimeFormatString() {
+        $components = $this->_buildStringComponents(3, null, self::HOURS, false, null);
+
+        if(count($components) == 1) {
+            array_unshift($components, '00');
+        }
+
+        return implode(':', $components);
+    }
+
+    protected function _buildStringComponents($maxUnits=1, $shortUnits=false, $maxUnit=self::YEARS, $roundLastUnit=true, $locale=null) {
+        $translator = core\i18n\translate\Handler::factory('core/time/Duration', $locale);
         $seconds = $this->_seconds;
 
         $isNegative = false;
@@ -571,9 +604,9 @@ class Duration implements IDuration, core\IDumpable {
         $maxUnit = self::normalizeUnitId($maxUnit);
 
         if($maxUnit == self::MICROSECONDS) {
-            return $this->_addUnitString($translator, round($this->_seconds * 1000000), self::MICROSECONDS, $shortUnits);
+            return [$this->_addUnitString($translator, round($this->_seconds * 1000000), self::MICROSECONDS, $shortUnits)];
         } else if($maxUnit == self::MILLISECONDS || ($seconds < 1 || ($seconds < 5 && (int)$seconds != $seconds))) {
-            return $this->_addUnitString($translator, round($this->_seconds * 1000), self::MILLISECONDS, $shortUnits);
+            return [$this->_addUnitString($translator, round($this->_seconds * 1000), self::MILLISECONDS, $shortUnits)];
         }
 
         $output = $this->_createOutputArray($seconds, $maxUnits, $maxUnit);
@@ -583,16 +616,28 @@ class Duration implements IDuration, core\IDumpable {
                 $value *= -1;
             }
             
-            $round = (int)!$roundLastUnit;
+            if($roundLastUnit) {
+                $round = 0;
 
-            if($unit == self::SECONDS && $maxUnit == self::SECONDS) {
-                $round = 3;
+                if($unit == self::SECONDS && $maxUnit == self::SECONDS) {
+                    $round = 3;
+                }
+                
+                $value = round($value, $round);
             }
-            
-            $output[$unit] = $this->_addUnitString($translator, round($value, $round), $unit, $shortUnits);
+
+            if($shortUnits === null) {
+                $parts = explode('.', $value, 2);
+                $parts[0] = str_pad($parts[0], 2, '0', \STR_PAD_LEFT);
+                $value = implode('.', $parts);
+            } else {
+                $value = $this->_addUnitString($translator, $value, $unit, $shortUnits);
+            }
+
+            $output[$unit] = $value;
         }
 
-        return implode(', ', $output);
+        return $output;
     }
     
     public function __toString() {
@@ -640,13 +685,14 @@ class Duration implements IDuration, core\IDumpable {
         if($maxUnits <= 0) {
             $maxUnits = 1;
         }
-        
+
         $output = [];
         $units = 0;
+        $fraction = $seconds - (int)$seconds;
 
         for($i = $maxUnit; $i > 0; $i--) {
             if($i == 1) {
-                $output[1] = $seconds;
+                $output[1] = $seconds + $fraction;
                 return $output;
             }
 
@@ -668,6 +714,8 @@ class Duration implements IDuration, core\IDumpable {
                 return $output;
             }
         }
+
+        return $output;
     }
     
     protected function _addUnitString(core\i18n\translate\IHandler $translator, $number, $unit, $shortUnits=false) {
