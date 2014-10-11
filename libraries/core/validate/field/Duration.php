@@ -66,7 +66,11 @@ class Duration extends Base implements core\validate\IDurationField {
     }
 
     public function applyValueTo(&$record, $value) {
-        return parent::applyValueTo($record, $this->_normalizeDuration($value));
+        if($value !== null) {
+            $value = $this->_normalizeDuration($value);
+        }
+
+        return parent::applyValueTo($record, $value);
     }
 
     protected function _normalizeDuration($value) {
