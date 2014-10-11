@@ -605,11 +605,11 @@ class Duration implements IDuration, core\IDumpable {
 
         if($maxUnit == self::MICROSECONDS) {
             return [$this->_addUnitString($translator, round($this->_seconds * 1000000), self::MICROSECONDS, $shortUnits)];
-        } else if($maxUnit == self::MILLISECONDS || ($seconds < 1 || ($seconds < 5 && (int)$seconds != $seconds))) {
+        } else if($maxUnit == self::MILLISECONDS || (($seconds != 0 && $seconds < 1) || ($seconds < 5 && (int)$seconds != $seconds))) {
             return [$this->_addUnitString($translator, round($this->_seconds * 1000), self::MILLISECONDS, $shortUnits)];
         }
 
-        $output = $this->_createOutputArray($seconds, $maxUnits, $maxUnit);
+        $output = $this->_createOutputArray($seconds, $maxUnits, $maxUnit, $shortUnits === null);
 
         foreach($output as $unit => $value) {
             if($isNegative) {
@@ -681,7 +681,7 @@ class Duration implements IDuration, core\IDumpable {
         }
     }
     
-    private function _createOutputArray($seconds, $maxUnits, $maxUnit) {
+    private function _createOutputArray($seconds, $maxUnits, $maxUnit, $all=false) {
         if($maxUnits <= 0) {
             $maxUnits = 1;
         }
@@ -706,7 +706,7 @@ class Duration implements IDuration, core\IDumpable {
             $seconds %= $multiplier;
             $units++;
 
-            if($units >= $maxUnits || !$seconds) {
+            if($units >= $maxUnits || (!$all && !$seconds)) {
                 if($seconds) {
                     $output[$i] += $seconds / $multiplier;
                 }
