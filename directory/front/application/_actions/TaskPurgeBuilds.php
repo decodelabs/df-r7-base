@@ -35,12 +35,12 @@ class TaskPurgeBuilds extends arch\task\Action {
         $runPath = $appPath.'/data/local/run';
 
         if(!is_dir($runPath)) {
-            $this->response->writeLine('No builds to purge');
+            $this->io->writeLine('No builds to purge');
             return;
         }
 
-        $this->response->writeLine('Purging old builds...');
-        $this->response->writeLine('Keeping '.$contingency.' build(s) as contingency');
+        $this->io->writeLine('Purging old builds...');
+        $this->io->writeLine('Keeping '.$contingency.' build(s) as contingency');
 
         $list = scandir($runPath);
         sort($list);
@@ -70,18 +70,18 @@ class TaskPurgeBuilds extends arch\task\Action {
 
         foreach($list as $entry) {
             if(is_file($runPath.'/'.$entry)) {
-                $this->response->writeLine('Deleting file build '.$entry);
+                $this->io->writeLine('Deleting file build '.$entry);
 
                 core\io\Util::deleteFile($runPath.'/'.$entry);
             } else if(is_dir($runPath.'/'.$entry)) {
-                $this->response->writeLine('Deleting build '.$entry);
+                $this->io->writeLine('Deleting build '.$entry);
 
                 core\io\Util::deleteDir($runPath.'/'.$entry);
             }
         }
 
         if(core\io\Util::isDirEmpty($runPath)) {
-            $this->response->writeLine('Deleting run folder');
+            $this->io->writeLine('Deleting run folder');
             core\io\Util::deleteDir($runPath);
         }
     }

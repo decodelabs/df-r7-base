@@ -14,7 +14,7 @@ use df\arch;
 class TaskGenerateBaseEntry extends arch\task\Action {
 
     public function execute() {
-        $this->response->writeLine('Generating base entry point');
+        $this->io->writeLine('Generating base entry point');
 
         $phpPath = core\Environment::getInstance()->getPhpBinaryPath();
         $appPath = df\Launchpad::$applicationPath;

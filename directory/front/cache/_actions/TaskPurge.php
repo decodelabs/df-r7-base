@@ -14,17 +14,17 @@ class TaskPurge extends arch\task\Action {
     
     public function execute() {
         $this->task->shouldCaptureBackgroundTasks(true);
-        $this->response->writeLine('Purging cache backends...');
+        $this->io->writeLine('Purging cache backends...');
 
         if(function_exists('opcache_reset')) {
-            $this->response->writeLine('Opcache');
+            $this->io->writeLine('Opcache');
             opcache_reset();
         }
 
         $config = core\cache\Config::getInstance();
 
         foreach(df\Launchpad::$loader->lookupClassList('core/cache/backend') as $name => $class) {
-            $this->response->writeLine($name);
+            $this->io->writeLine($name);
             $options = new core\collection\Tree($config->getBackendOptions($name));
             $class::purgeAll($options);
         }

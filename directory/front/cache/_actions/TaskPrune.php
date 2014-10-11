@@ -17,15 +17,15 @@ class TaskPrune extends arch\task\Action {
 
     public function execute() {
         $this->task->shouldCaptureBackgroundTasks(true);
-        $this->response->writeLine('Pruning cache backends...');
+        $this->io->writeLine('Pruning cache backends...');
 
         $config = core\cache\Config::getInstance();
 
         foreach(df\Launchpad::$loader->lookupClassList('core/cache/backend') as $name => $class) {
-            $this->response->write($name.'... ');
+            $this->io->write($name.'... ');
             $options = new core\collection\Tree($config->getBackendOptions($name));
             $count = (int)$class::prune($options);
-            $this->response->writeLine($count.' stale items removed');
+            $this->io->writeLine($count.' stale items removed');
         }
     }
 }

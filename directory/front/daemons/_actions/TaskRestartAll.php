@@ -17,7 +17,7 @@ class TaskRestartAll extends arch\task\Action {
 
     public function execute() {
         if(!$hasRestarted = $this->_hasRestarted()) {
-            $this->response->write('Looking up daemon list...');
+            $this->io->write('Looking up daemon list...');
         }
 
         $daemons = halo\daemon\Base::loadAll();
@@ -36,7 +36,7 @@ class TaskRestartAll extends arch\task\Action {
         }
 
         if(!$hasRestarted) {
-            $this->response->writeLine(' found '.count($daemons).' to restart');
+            $this->io->writeLine(' found '.count($daemons).' to restart');
         }
 
         if(empty($daemons)) {
@@ -49,10 +49,10 @@ class TaskRestartAll extends arch\task\Action {
             $remote = halo\daemon\Remote::factory($daemon);
 
             if($remote->isRunning()) {
-                $remote->setMultiplexer($this->response);
+                $remote->setMultiplexer($this->io);
                 $remote->restart();
             } else {
-                $this->response->writeLine('Daemon '.$name.' is not running');
+                $this->io->writeLine('Daemon '.$name.' is not running');
             }
         }
     }

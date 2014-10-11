@@ -37,9 +37,9 @@ class TaskPurgeTableBackups extends arch\task\Action {
         }
 
         if($isClusterUnit) {
-            $this->response->writeLine('Purging backups for unit '.$unit->getUnitId().' in cluster: '.$unit->getClusterId());
+            $this->io->writeLine('Purging backups for unit '.$unit->getUnitId().' in cluster: '.$unit->getClusterId());
         } else {
-            $this->response->writeLine('Purging backups for unit '.$unit->getUnitId().' in global cluster');
+            $this->io->writeLine('Purging backups for unit '.$unit->getUnitId().' in global cluster');
         }
 
         $adapter = $unit->getUnitAdapter();
@@ -58,8 +58,8 @@ class TaskPurgeTableBackups extends arch\task\Action {
 
         if($allClusters && ($clusterUnit = $this->data->getClusterUnit())) {
             foreach($clusterUnit->select('@primary')->toList('@primary') as $clusterId) {
-                $this->response->writeLine();
-                $this->response->writeLine('Purging in cluster: '.$clusterId);
+                $this->io->writeLine();
+                $this->io->writeLine('Purging in cluster: '.$clusterId);
 
                 $unit = axis\Model::loadUnitFromId($unitId, $clusterId);
                 $inspector = new axis\introspector\UnitInspector($unit);
@@ -69,7 +69,7 @@ class TaskPurgeTableBackups extends arch\task\Action {
     }
 
     protected function _purgeRdbmsTable(axis\IStorageUnit $unit, array $backups) {
-        $this->response->writeLine('Switching to rdbms mode');
+        $this->io->writeLine('Switching to rdbms mode');
 
         $adapter = $unit->getUnitAdapter();
         $connection = $adapter->getConnection();
@@ -77,13 +77,13 @@ class TaskPurgeTableBackups extends arch\task\Action {
 
         foreach($backups as $backup) {
             $table = $connection->getTable($backup->name);
-            $this->response->writeLine('Dropping table '.$backup->name);
+            $this->io->writeLine('Dropping table '.$backup->name);
             $table->drop();
             $count++;
         }
 
         if(!$count) {
-            $this->response->writeLine('No backup tables to drop');
+            $this->io->writeLine('No backup tables to drop');
         }
     }
 }

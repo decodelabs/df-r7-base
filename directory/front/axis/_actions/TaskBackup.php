@@ -29,20 +29,20 @@ class TaskBackup extends arch\task\Action {
 
     public function execute() {
         axis\schema\Cache::getInstance()->clear();
-        $this->response->write('Probing units...');
+        $this->io->write('Probing units...');
 
         $probe = new axis\introspector\Probe();
         $units = $probe->probeUnits();
 
-        $this->response->writeLine(' found '.count($units).' to backup');
+        $this->io->writeLine(' found '.count($units).' to backup');
 
         $this->_manifest['timestamp'] = time();
         $backupId = 'axis-'.date('YmdHis');
         $this->_path = $this->application->getSharedStoragePath().'/backup/'.$backupId;
         core\io\Util::ensureDirExists($this->_path);
 
-        $this->response->writeLine('Backing up units on global cluster');
-        $this->response->writeLine();
+        $this->io->writeLine('Backing up units on global cluster');
+        $this->io->writeLine();
 
         foreach($units as $inspector) {
             $this->_backupUnit($inspector);
@@ -53,12 +53,12 @@ class TaskBackup extends arch\task\Action {
         if($clusterUnit) {
             $this->_manifest['clusterUnit'] = $clusterUnit->getUnitId();
 
-            $this->response->writeLine();
+            $this->io->writeLine();
 
             foreach($clusterUnit->select('@primary as primary') as $row) {
                 $key = (string)$row['primary'];
-                $this->response->writeLine('Backing up units on cluster: '.$key);
-                $this->response->writeLine();
+                $this->io->writeLine('Backing up units on cluster: '.$key);
+                $this->io->writeLine();
 
                 foreach($units as $inspector) {
                     $this->_backupUnit($inspector->getClusterVariant($key));
@@ -66,12 +66,12 @@ class TaskBackup extends arch\task\Action {
             }
         }
 
-        $this->response->writeLine();
-        $this->response->writeLine('Writing manifest file');
+        $this->io->writeLine();
+        $this->io->writeLine('Writing manifest file');
         $content = '<?php'."\n".'return '.core\collection\Util::exportArray($this->_manifest).';';
         file_put_contents($this->_path.'/manifest.php', $content, LOCK_EX);
 
-        $this->response->writeLine('Archiving backup');
+        $this->io->writeLine('Archiving backup');
         $phar = new \PharData(dirname($this->_path).'/'.$backupId.'.tar');
         $phar->buildFromDirectory($this->_path);
 
@@ -111,7 +111,7 @@ class TaskBackup extends arch\task\Action {
         $bridge = new axis\schema\bridge\Rdbms($unit, $backupAdapter, $schema);
         $opalSchema = $bridge->createFreshTargetSchema();
         $table = $backupAdapter->createTable($opalSchema);
-        $this->response->write('Copying table '.$inspector->getId().' to '.basename($backupAdapter->getDsn()->getDatabase()).' -');
+        $this->io->write('Copying table '.$inspector->getId().' to '.basename($backupAdapter->getDsn()->getDatabase()).' -');
 
         $insert = $table->batchInsert();
         $count = 0;
@@ -122,7 +122,7 @@ class TaskBackup extends arch\task\Action {
         }
 
         $insert->execute();
-        $this->response->writeLine(' '.$count.' rows');
+        $this->io->writeLine(' '.$count.' rows');
     }
 
     protected function _backupSchemaDefinition($inspector) {
@@ -137,7 +137,7 @@ class TaskBackup extends arch\task\Action {
         $bridge = new axis\schema\bridge\Rdbms($unit, $backupAdapter, $schema);
         $opalSchema = $bridge->createFreshTargetSchema();
         $table = $backupAdapter->createTable($opalSchema);
-        $this->response->write('Copying schema definition table to '.basename($backupAdapter->getDsn()->getDatabase()).' -');
+        $this->io->write('Copying schema definition table to '.basename($backupAdapter->getDsn()->getDatabase()).' -');
 
         $insert = $table->batchInsert();
         $count = 0;
@@ -148,7 +148,7 @@ class TaskBackup extends arch\task\Action {
         }
 
         $insert->execute();
-        $this->response->writeLine(' '.$count.' rows');
+        $this->io->writeLine(' '.$count.' rows');
     }
 
 
@@ -199,7 +199,7 @@ class TaskBackup extends arch\task\Action {
     }
 
     protected function _loadBackupAdapter($hash, $dbName, $connection) {
-        $this->response->writeLine('Creating backup adapter '.$dbName);
+        $this->io->writeLine('Creating backup adapter '.$dbName);
         $backupAdapter = opal\rdbms\adapter\Base::factory('sqlite://'.$this->_path.'/'.$dbName.'.sqlite');
         $this->_backupAdapters[$hash] = $backupAdapter;
         $this->_manifest['connections'][$dbName.'.sqlite'] = $connection;

@@ -33,13 +33,13 @@ class TaskRefresh extends arch\task\Action {
         }
 
         foreach($names as $name) {
-            $this->response->writeLine('Pulling updates for package "'.$name.'"');
+            $this->io->writeLine('Pulling updates for package "'.$name.'"');
             $model = $this->data->getModel('package');
 
             if(!$result = $model->updateRemote($name)) {
-                $this->response->writeLine('!! Package "'.$name.'" repo could not be found !!');
+                $this->io->writeLine('!! Package "'.$name.'" repo could not be found !!');
             } else {
-                $this->response->write($result."\n");
+                $this->io->write($result."\n");
             }
         }
     }

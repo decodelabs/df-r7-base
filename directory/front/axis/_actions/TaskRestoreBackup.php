@@ -25,24 +25,24 @@ class TaskRestoreBackup extends arch\task\Action {
         $fileName = basename($this->request->query['backup']);
 
         if(!preg_match('/^axis\-[0-9]+\.tar$/i', $fileName)) {
-            $this->response->writeErrorLine('Not an axis backup file');
+            $this->io->writeErrorLine('Not an axis backup file');
             return;
         }
 
         $file = $this->application->getSharedStoragePath().'/backup/'.$fileName;
 
         if(!is_file($file)) {
-            $this->response->writeErrorLine('Backup not found');
+            $this->io->writeErrorLine('Backup not found');
         }
 
         if(!isset($this->request->query->noBackup)) {
-            $this->response->writeLine('Creating full backup...');
-            $this->response->writeLine();
+            $this->io->writeLine('Creating full backup...');
+            $this->io->writeLine();
             $this->runChild('axis/backup');
-            $this->response->writeLine();
+            $this->io->writeLine();
         }
 
-        $this->response->writeLine('Extracting backup '.$fileName);
+        $this->io->writeLine('Extracting backup '.$fileName);
         $this->_path = dirname($file).'/'.substr($fileName, 0, -4);
 
         core\io\Util::deleteDir($this->_path);
@@ -53,7 +53,7 @@ class TaskRestoreBackup extends arch\task\Action {
         $manifestPath = $this->_path.'/manifest.php';
         $manifest = require $manifestPath;
 
-        $this->response->write('Loading schemas...');
+        $this->io->write('Loading schemas...');
 
         $masterDb = $this->_loadSqlite($manifest['master']);
         $schemaTable = $masterDb->getTable('axis_schemas');
@@ -77,8 +77,8 @@ class TaskRestoreBackup extends arch\task\Action {
             'timestamp' => date('Y-m-d H:i:s')
         ];
 
-        $this->response->writeLine(' found '.count($this->_schemas));
-        $this->response->writeLine();
+        $this->io->writeLine(' found '.count($this->_schemas));
+        $this->io->writeLine();
 
         foreach($manifest['connections'] as $dbFileName => $connection) {
             $parts = explode('.', $dbFileName);
@@ -106,14 +106,14 @@ class TaskRestoreBackup extends arch\task\Action {
             $this->{$func}();
         }
 
-        $this->response->writeLine('Clearing schema cache');
+        $this->io->writeLine('Clearing schema cache');
         axis\schema\Cache::getInstance()->clear();
 
-        $this->response->writeLine('Cleaning up...');
+        $this->io->writeLine('Cleaning up...');
         core\io\Util::deleteDir($this->_path);
         core\io\Util::deleteFile($file);
 
-        $this->response->writeLine('Done');
+        $this->io->writeLine('Done');
     }
 
 
@@ -124,7 +124,7 @@ class TaskRestoreBackup extends arch\task\Action {
         $dsn = opal\rdbms\Dsn::factory($dsn);
         $dsnString = (string)$dsn;
 
-        $this->response->writeLine('Restoring '.$dsn->getDisplayString());
+        $this->io->writeLine('Restoring '.$dsn->getDisplayString());
 
         $dsn->setDatabaseSuffix('__restore');
         $adapter = opal\rdbms\adapter\Base::factory($dsn, true);
@@ -139,7 +139,7 @@ class TaskRestoreBackup extends arch\task\Action {
             $schemaSet = $this->_schemas[$tableName];
             $schema = $schemaSet['schema'];
 
-            $this->response->write('Building table '.$schemaSet['storeName'].'...');
+            $this->io->write('Building table '.$schemaSet['storeName'].'...');
 
             $bridge = new axis\schema\bridge\Rdbms($schemaSet['unit'], $adapter, $schema);
             $dbSchema = $bridge->createFreshTargetSchema();
@@ -152,17 +152,17 @@ class TaskRestoreBackup extends arch\task\Action {
             }
 
             $count = $insert->execute();
-            $this->response->writeLine(' '.$count.' rows');
+            $this->io->writeLine(' '.$count.' rows');
         }
 
-        $this->response->writeLine();
+        $this->io->writeLine();
     }
 
     protected function _finalizeSqlite() {
         foreach($this->_rdbmsAdapters as $adapter) {
             $dsn = clone $adapter->getDsn();
             $dsn->setDatabaseSuffix(null);
-            $this->response->writeLine('Replacing db '.$dsn->getDisplayString());
+            $this->io->writeLine('Replacing db '.$dsn->getDisplayString());
 
             $keyName = $dsn->getDatabaseKeyName();
             $adapter->getDatabase()->rename($keyName, true);

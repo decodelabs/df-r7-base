@@ -17,7 +17,7 @@ abstract class Action extends arch\Action implements IAction {
     const SCHEDULE_PRIORITY = 'medium';
     const SCHEDULE_AUTOMATIC = false;
 
-    public $response;
+    public $io;
 
     public function __construct(arch\IContext $context, arch\IController $controller=null) {
         parent::__construct($context, $controller);
@@ -70,8 +70,8 @@ abstract class Action extends arch\Action implements IAction {
 
 // Dispatch
     public function dispatch() {
-        if(!$this->response) {
-            $this->response = $this->task->getResponse();
+        if(!$this->io) {
+            $this->io = $this->task->getSharedIo();
         }
 
         return parent::dispatch();

@@ -19,7 +19,7 @@ class TaskLaunchQueued extends arch\task\Action {
 
     protected function _beforeDispatch() {
         $this->_channel = (new core\io\channel\Memory('', 'text/plain'))->setId('buffer');
-        $this->response->addChannel($this->_channel);
+        $this->io->addChannel($this->_channel);
     }
 
     public function execute() {
@@ -45,7 +45,7 @@ class TaskLaunchQueued extends arch\task\Action {
         }
 
         $this->_timer = new core\time\Timer();
-        $this->task->launch($this->_entry['request'], $this->response, $this->_entry['environmentMode']);
+        $this->task->launch($this->_entry['request'], $this->io, $this->_entry['environmentMode']);
     }
 
     protected function _afterDispatch($output) {

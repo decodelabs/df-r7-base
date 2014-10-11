@@ -25,10 +25,10 @@ class TaskGenerateEntries extends arch\task\Action {
 
         if($buildId = $this->request->query['build']) {
             if(substr($buildId, -8) == '-testing') {
-                $this->response->writeLine('Generating testing entry points');
+                $this->io->writeLine('Generating testing entry points');
                 $modes = ['testing'];
             } else {
-                $this->response->writeLine('Generating testing and production entry points');
+                $this->io->writeLine('Generating testing and production entry points');
                 $modes = ['testing', 'production'];
             }
 

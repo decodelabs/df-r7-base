@@ -14,7 +14,7 @@ use df\arch;
 class TaskUpdateAll extends arch\task\Action {
 
     public function execute() {
-        $this->response->writeLine('Finding all package repositories...');
+        $this->io->writeLine('Finding all package repositories...');
         $model = $this->data->getModel('package');
 
         foreach($model->getInstalledPackageList() as $package) {
@@ -22,13 +22,13 @@ class TaskUpdateAll extends arch\task\Action {
                 continue;
             }
 
-            $this->response->writeLine('Pulling updates for package "'.$package['name'].'"');
+            $this->io->writeLine('Pulling updates for package "'.$package['name'].'"');
             $result = $package['repo']->pull();
 
-            $this->response->write($result."\r\n");
+            $this->io->write($result."\r\n");
         }
 
-        $this->response->writeLine('Done');
+        $this->io->writeLine('Done');
 
         if(is_dir($this->application->getLocalStoragePath().'/run')) {
             return $this->directory->newRequest('application/build?testing=1');

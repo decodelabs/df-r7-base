@@ -21,6 +21,6 @@ class TaskPurgeJournal extends arch\task\Action {
             ->where('expireDate', '<', 'now')
             ->execute();
 
-        $this->response->writeLine('Purged '.$deleted.' mail journal records');
+        $this->io->writeLine('Purged '.$deleted.' mail journal records');
     }
 }

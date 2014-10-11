@@ -32,7 +32,7 @@ class TaskBackupTable extends arch\task\Action {
             $this->throwError(403, 'Table unit '.$unitId.' is not adapter based - don\'t know how to rebuild it!');
         }
 
-        $this->response->writeLine('Backing up unit '.$this->_unit->getUnitId());
+        $this->io->writeLine('Backing up unit '.$this->_unit->getUnitId());
         $this->_adapter = $this->_unit->getUnitAdapter();
 
         $parts = explode('\\', get_class($this->_adapter));
@@ -52,7 +52,7 @@ class TaskBackupTable extends arch\task\Action {
     }
 
     protected function _backupRdbmsTable(axis\schema\ISchema $axisSchema) {
-        $this->response->writeLine('Switching to rdbms mode');
+        $this->io->writeLine('Switching to rdbms mode');
 
         $connection = $this->_adapter->getConnection();
         $currentTable = $this->_adapter->getQuerySourceAdapter();
@@ -62,13 +62,13 @@ class TaskBackupTable extends arch\task\Action {
         $dbSchema->setName($currentTableName.axis\IUnit::BACKUP_SUFFIX.$this->format->customDate('now', 'Ymd_his'));
 
         try {
-            $this->response->writeLine('Building copy table');
+            $this->io->writeLine('Building copy table');
             $newTable = $connection->createTable($dbSchema);
         } catch(opal\rdbms\TableConflictException $e) {
             $this->throwError(403, 'Table unit '.$this->_unit->getUnitId().' is currently rebuilding in another process');
         }
 
-        $this->response->writeLine('Copying data...');
+        $this->io->writeLine('Copying data...');
         $insert = $newTable->batchInsert();
         $count = 0;
 
@@ -78,6 +78,6 @@ class TaskBackupTable extends arch\task\Action {
         }
 
         $insert->execute();
-        $this->response->writeLine('Copied '.$count.' rows');
+        $this->io->writeLine('Copied '.$count.' rows');
     }
 }

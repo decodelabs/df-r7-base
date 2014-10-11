@@ -33,6 +33,6 @@ interface IManager extends core\IManager {
     public function queue($request, $priority='medium', $environmentMode=null);
     public function queueAndLaunch($request, core\io\IMultiplexer $multiplexer=null, $environmentMode=null);
     public function queueAndLaunchBackground($request, $environmentMode=null);
-    public function getResponse();
+    public function getSharedIo();
     public function shouldCaptureBackgroundTasks($flag=null);
 }

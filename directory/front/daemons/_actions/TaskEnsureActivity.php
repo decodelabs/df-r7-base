@@ -17,7 +17,7 @@ class TaskEnsureActivity extends arch\task\Action {
 
     public function execute() {
         if(!$hasRestarted = $this->_hasRestarted()) {
-            $this->response->write('Looking up daemon list...');
+            $this->io->write('Looking up daemon list...');
         }
 
         $daemons = halo\daemon\Base::loadAll();
@@ -30,7 +30,7 @@ class TaskEnsureActivity extends arch\task\Action {
         }
 
         if(!$hasRestarted) {
-            $this->response->writeLine(' found '.count($daemons).' to keep running');
+            $this->io->writeLine(' found '.count($daemons).' to keep running');
         }
 
         if(empty($daemons)) {
@@ -42,7 +42,7 @@ class TaskEnsureActivity extends arch\task\Action {
 
         foreach($daemons as $name => $daemon) {
             $remote = halo\daemon\Remote::factory($daemon);
-            $remote->setMultiplexer($this->response);
+            $remote->setMultiplexer($this->io);
             $remote->nudge();
         }
     }

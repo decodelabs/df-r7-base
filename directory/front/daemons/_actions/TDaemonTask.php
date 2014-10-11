@@ -16,7 +16,7 @@ trait TDaemonTask {
         $env = core\Environment::getInstance();
 
         if(!$env->canUseDaemons()) {
-            $this->response->writeLine('Daemons are currently disabled in config');
+            $this->io->writeLine('Daemons are currently disabled in config');
             $this->forceResponse('');
         }
 
@@ -24,10 +24,10 @@ trait TDaemonTask {
         $user = $env->getDaemonUser();
 
         if($user != $process->getOwnerName() && !$process->isPrivileged()) {
-            $this->response->writeLine('Restarting task '.$this->request->getPathString().' as root');
+            $this->io->writeLine('Restarting task '.$this->request->getPathString().' as root');
             $request = clone $this->request;
             $request->query->_privileged = true;
-            $this->task->launch($request, $this->response, null, 'root');
+            $this->task->launch($request, $this->io, null, 'root');
             $this->forceResponse('');
         }
     }

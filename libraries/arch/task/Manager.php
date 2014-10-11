@@ -62,7 +62,7 @@ class Manager implements IManager {
         }
 
         $action->dispatch();
-        return $action->response;
+        return $action->io;
     }
 
     public function initiateStream($request, $environmentMode=null) {
@@ -103,7 +103,7 @@ class Manager implements IManager {
         return self::launchBackground('manager/launch-queued?id='.$id, $environmentMode);
     }
 
-    public function getResponse() {
+    public function getSharedIo() {
         $application = df\Launchpad::getApplication();
 
         if($application instanceof core\application\Task) {

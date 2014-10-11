@@ -15,7 +15,7 @@ class TaskQueueScheduled extends arch\task\Action {
     protected $_count = 0;
 
     public function execute() {
-        $this->response->write('Queuing scheduled tasks...');
+        $this->io->write('Queuing scheduled tasks...');
 
         $scheduleList = $this->data->task->schedule->fetch()
             ->beginWhereClause()
@@ -46,7 +46,7 @@ class TaskQueueScheduled extends arch\task\Action {
             }
         }
 
-        $this->response->writeLine(' '.$this->_count.' entries prepared for launch');
+        $this->io->writeLine(' '.$this->_count.' entries prepared for launch');
     }
 
     protected function _trigger($task) {

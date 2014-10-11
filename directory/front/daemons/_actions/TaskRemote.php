@@ -19,7 +19,7 @@ class TaskRemote extends arch\task\Action {
         $this->_ensurePrivileges();
 
         $remote = halo\daemon\Remote::factory($this->request->query['daemon']);
-        $remote->setMultiplexer($this->response);
+        $remote->setMultiplexer($this->io);
         $remote->sendCommand($this->request->query['command']);
     }
 }

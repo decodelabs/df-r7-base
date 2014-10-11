@@ -18,7 +18,7 @@ class TaskUpdate extends arch\task\Action {
     protected $_clusterUnit;
 
     public function execute() {
-        $this->response->write('Probing units...');
+        $this->io->write('Probing units...');
 
         $probe = new axis\introspector\Probe();
         $units = $probe->probeStorageUnits();
@@ -31,17 +31,17 @@ class TaskUpdate extends arch\task\Action {
 
         $count = count($units);
 
-        $this->response->writeLine(' found '.$count.' to update');
+        $this->io->writeLine(' found '.$count.' to update');
 
         if(!$count) {
             return;
         }
 
         if(!isset($this->request->query->noBackup)) {
-            $this->response->writeLine('Creating full backup...');
-            $this->response->writeLine();
+            $this->io->writeLine('Creating full backup...');
+            $this->io->writeLine();
             $this->runChild('axis/backup');
-            $this->response->writeLine();
+            $this->io->writeLine();
         }
 
         $this->_schemaDefinition = axis\Model::getSchemaDefinitionUnit();
@@ -56,13 +56,13 @@ class TaskUpdate extends arch\task\Action {
             $this->_update($inspector);
         }
 
-        $this->response->writeLine();
-        $this->response->writeLine('Clearing schema chache');
+        $this->io->writeLine();
+        $this->io->writeLine('Clearing schema chache');
         axis\schema\Cache::getInstance()->clear();
     }
 
     protected function _update($inspector) {
-        $this->response->writeLine('Updating '.$inspector->getId().' schema from v'.$inspector->getSchemaVersion().' to v'.$inspector->getDefinedSchemaVersion());
+        $this->io->writeLine('Updating '.$inspector->getId().' schema from v'.$inspector->getSchemaVersion().' to v'.$inspector->getDefinedSchemaVersion());
         $unit = $inspector->getUnit();
 
         if($unit->getClusterId()) {
@@ -97,7 +97,7 @@ class TaskUpdate extends arch\task\Action {
                 }
 
                 if($update) {
-                    $this->response->writeLine('Updating '.$inspector->getId().' relation field on '.$relationUnit->getUnitId());
+                    $this->io->writeLine('Updating '.$inspector->getId().' relation field on '.$relationUnit->getUnitId());
 
                     $relationSchema->sanitize($relationUnit);
 
@@ -130,7 +130,7 @@ class TaskUpdate extends arch\task\Action {
                     $clusterUnit = axis\Model::loadUnitFromId($unitId, $clusterId);
 
                     if($clusterUnit->storageExists()) {
-                        $this->response->writeLine('Updating '.$inspector->getId().' on cluster '.$clusterId);
+                        $this->io->writeLine('Updating '.$inspector->getId().' on cluster '.$clusterId);
                         $clusterUnit->updateStorageFromSchema($set['schema']);
                     }
                 }

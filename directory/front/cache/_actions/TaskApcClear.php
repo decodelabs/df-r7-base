@@ -39,11 +39,11 @@ class TaskApcClear extends arch\task\Action {
 
         if($isCli && extension_loaded('apc') && ini_get('apc.enable_cli')) {
             $count = $this->_clearApc();
-            $this->response->writeLine('Cleared '.$count.' CLI APC entries');
+            $this->io->writeLine('Cleared '.$count.' CLI APC entries');
         }
 
         if($isHttp) {
-            $this->response->writeLine('Calling HTTP APC cache clear action...');
+            $this->io->writeLine('Calling HTTP APC cache clear action...');
             
             $config = $this->getConfig('core/application/http/Config');
             $baseUrls = @(array)$config->values['baseUrl'];
@@ -63,7 +63,7 @@ class TaskApcClear extends arch\task\Action {
 
             $url = new link\http\Url('http://'.rtrim($baseUrl, '/').'/cache/apc-clear.json');
             $url->query->import($this->request->query);
-            $this->response->writeLine($url);
+            $this->io->writeLine($url);
 
             $httpClient = new link\http\Client();
             $response = $httpClient->get($url);
@@ -73,12 +73,12 @@ class TaskApcClear extends arch\task\Action {
                 $cleared = @$json['cleared'];
 
                 if($cleared === null) {
-                    $this->response->writeLine('Unabled to pass IP check via '.@$json['addr']);
+                    $this->io->writeLine('Unabled to pass IP check via '.@$json['addr']);
                 } else {
-                    $this->response->writeLine('Cleared '.$cleared.' HTTP APC entries via '.@$json['addr']);
+                    $this->io->writeLine('Cleared '.$cleared.' HTTP APC entries via '.@$json['addr']);
                 }
             } else {
-                $this->response->writeErrorLine('Http call failed :(');
+                $this->io->writeErrorLine('Http call failed :(');
             }
         }
     }

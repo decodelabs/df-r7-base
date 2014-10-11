@@ -22,7 +22,7 @@ class TaskSpool extends arch\task\Action {
 
     protected function _beforeDispatch() {
         $this->_channel = (new core\io\channel\Memory('', 'text/plain'))->setId('buffer');
-        $this->response->addChannel($this->_channel);
+        $this->io->addChannel($this->_channel);
 
         $this->_log = $this->data->task->log->newRecord([
                 'request' => self::SELF_REQUEST,
@@ -48,14 +48,14 @@ class TaskSpool extends arch\task\Action {
             ->count();
 
         if($justRun) {
-            $this->response->writeErrorLine('The spool task has already run within the previous cooloff period - please wait a little while before trying again');
+            $this->io->writeErrorLine('The spool task has already run within the previous cooloff period - please wait a little while before trying again');
             $this->_log->delete();
             return;
         }
 
 
         // Clear out old logs
-        $this->response->write('Clearing old logs...');
+        $this->io->write('Clearing old logs...');
 
         $count = $this->data->task->log->delete()
             ->beginWhereClause()
@@ -75,7 +75,7 @@ class TaskSpool extends arch\task\Action {
                 ->endClause()
             ->execute();
 
-        $this->response->writeLine(' deleted '.$count.' entries');
+        $this->io->writeLine(' deleted '.$count.' entries');
 
 
         // Clear broken queue items
@@ -89,7 +89,7 @@ class TaskSpool extends arch\task\Action {
 
 
         // Select and lock queued tasks
-        $this->response->write('Selecting queued tasks...');
+        $this->io->write('Selecting queued tasks...');
 
         $count = $this->data->task->queue->update([
                 'lockDate' => 'now',
@@ -102,11 +102,11 @@ class TaskSpool extends arch\task\Action {
             ->execute();
 
         if(!$count) {
-            $this->response->writeLine(' no tasks to launch right now!');
+            $this->io->writeLine(' no tasks to launch right now!');
             return;
         }
 
-        $this->response->writeLine(' locked '.$count.' entries');
+        $this->io->writeLine(' locked '.$count.' entries');
 
 
         // Launch tasks
@@ -116,12 +116,12 @@ class TaskSpool extends arch\task\Action {
             ->toList('id', 'request');
 
         foreach($taskIds as $taskId => $request) {
-            $this->response->writeLine();
-            $this->response->writeLine('Launching task '.$request.' id: '.$taskId);
+            $this->io->writeLine();
+            $this->io->writeLine('Launching task '.$request.' id: '.$taskId);
 
-            $this->response->removeChannel($this->_channel);
+            $this->io->removeChannel($this->_channel);
             $this->runChild('manager/launch-queued?id='.$taskId);
-            $this->response->addChannel($this->_channel);
+            $this->io->addChannel($this->_channel);
         }
 
         $this->data->task->queue->delete()

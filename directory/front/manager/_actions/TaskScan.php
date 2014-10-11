@@ -16,7 +16,7 @@ class TaskScan extends arch\task\Action {
     const SCHEDULE_AUTOMATIC = true;
 
     public function execute() {
-        $this->response->write('Compiling task list...');
+        $this->io->write('Compiling task list...');
 
         // Fetch full file list
         $fileList = df\Launchpad::$loader->lookupFileListRecursive('apex/directory', ['php'], function($path) {
@@ -71,12 +71,12 @@ class TaskScan extends arch\task\Action {
             ];
         }
 
-        $this->response->writeLine(' found '.$total.' tasks, '.$scheduled.' can be scheduled');
+        $this->io->writeLine(' found '.$total.' tasks, '.$scheduled.' can be scheduled');
         $lastRuns = null;
 
         if($reset) {
             // Reset
-            $this->response->write('Resetting auto scheduled tasks...');
+            $this->io->write('Resetting auto scheduled tasks...');
 
             $lastRuns = $this->data->task->schedule->select('request', 'lastRun')
                 ->toList('request', 'lastRun');
@@ -85,7 +85,7 @@ class TaskScan extends arch\task\Action {
                 ->where('request', 'in', array_keys($schedules))
                 ->execute();
 
-            $this->response->writeLine(' '.$deleted.' found');
+            $this->io->writeLine(' '.$deleted.' found');
         } else {
             // Filter skippable
             $skip = 0;
@@ -99,7 +99,7 @@ class TaskScan extends arch\task\Action {
             } 
 
             if($skip) {
-                $this->response->writeLine('Skipping '.$skip.' as they are manually scheduled');
+                $this->io->writeLine('Skipping '.$skip.' as they are manually scheduled');
             }
 
 
@@ -114,7 +114,7 @@ class TaskScan extends arch\task\Action {
         }
 
 
-        $this->response->writeLine();
+        $this->io->writeLine();
 
         // Write
         foreach($schedules as $request => $set) {
@@ -144,11 +144,11 @@ class TaskScan extends arch\task\Action {
             ]);
 
             if(!$schedule->hasChanged()) {
-                $this->response->writeLine('Not updating '.$request.' because it hasn\'t changed');
+                $this->io->writeLine('Not updating '.$request.' because it hasn\'t changed');
                 continue;
             }
 
-            $this->response->writeLine('Scheduling '.$request.' at '.$set['schedule']);
+            $this->io->writeLine('Scheduling '.$request.' at '.$set['schedule']);
             $schedule->save();
         }
     }

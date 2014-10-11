@@ -32,14 +32,14 @@ class TaskBuild extends arch\task\Action {
             $this->throwError(403, 'Cannot compile app from production environment - run from dev mode instead');
         }
 
-        $this->response->writeLine('Launching app builder...');
+        $this->io->writeLine('Launching app builder...');
 
 
         // Run custom actions
         if($this->directory->actionExists('application/build-custom')) {
-            $this->response->writeLine('Running custom user build tasks...');
+            $this->io->writeLine('Running custom user build tasks...');
             $this->runChild('application/build-custom');
-            $this->response->writeLine();
+            $this->io->writeLine();
         }
 
 
@@ -58,7 +58,7 @@ class TaskBuild extends arch\task\Action {
 
         if($isTesting) {
             $buildId .= '-testing';
-            $this->response->writeLine('Builder is running in testing mode');
+            $this->io->writeLine('Builder is running in testing mode');
         }
 
         $destinationPath = $runPath.'/'.$buildId;
@@ -73,7 +73,7 @@ class TaskBuild extends arch\task\Action {
 
 
         // Generate Df.php
-        $this->response->writeLine('Generating Df.php');
+        $this->io->writeLine('Generating Df.php');
 
         $dfFile = file_get_contents(df\Launchpad::DF_PATH.'/Df.php');
         $dfFile = str_replace('IS_COMPILED = false', 'IS_COMPILED = true', $dfFile);
@@ -88,7 +88,7 @@ class TaskBuild extends arch\task\Action {
 
         // Copy packages
         foreach(array_reverse($packages) as $package) {
-            $this->response->writeLine('Merging '.$package->name.' package');
+            $this->io->writeLine('Merging '.$package->name.' package');
 
             if(is_dir($package->path.'/libraries')) {
                 core\io\Util::copyDirInto($package->path.'/libraries', $destinationPath);
@@ -116,7 +116,7 @@ class TaskBuild extends arch\task\Action {
 
 
         // Copy app folder
-        $this->response->writeLine('Merging app folder');
+        $this->io->writeLine('Merging app folder');
 
         foreach(scandir($appPackage->path) as $entry) {
             if($entry == '.' 
@@ -141,27 +141,27 @@ class TaskBuild extends arch\task\Action {
         }
 
         // Generate entries
-        $this->response->writeLine();
+        $this->io->writeLine();
         $this->runChild('application/generate-entries?build='.$buildId);
         
         // Clear cache
-        $this->response->writeLine('Clearing cache');
+        $this->io->writeLine('Clearing cache');
         core\cache\Base::purgeAll();
 
 
         // Restart daemons
         if(!$isTesting) {
-            $this->response->writeLine();
+            $this->io->writeLine();
             $this->runChild('daemons/restart-all');
         }
 
 
         // End
-        $this->response->writeLine();
-        $this->response->writeLine('App build complete');
+        $this->io->writeLine();
+        $this->io->writeLine('App build complete');
 
         if($purgeOldBuilds) {
-            $this->response->writeLine();
+            $this->io->writeLine();
             $this->runChild('application/purge-builds?'.(!$isTesting ? 'purgeTesting' : null));
         }
     }
