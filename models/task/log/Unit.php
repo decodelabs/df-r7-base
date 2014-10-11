@@ -19,7 +19,7 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('environmentMode', 'Enum', ['development', 'testing', 'production']);
 
         $schema->addField('startDate', 'Timestamp');
-        $schema->addField('runTime', 'Float')
+        $schema->addField('runTime', 'Duration')
             ->isNullable(true);
 
         $schema->addField('output', 'BigString', 'huge')
