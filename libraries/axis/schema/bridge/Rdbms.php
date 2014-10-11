@@ -126,7 +126,7 @@ class Rdbms extends Base {
 
 // Float
     protected function _createFloatField(opal\schema\IPrimitive $primitive) {
-        $field = $this->_targetSchema->createField($primitive->getName(), 'float', $primitive->getScale(), $primitive->getPrecision());
+        $field = $this->_targetSchema->createField($primitive->getName(), 'double', $primitive->getScale(), $primitive->getPrecision());
         $this->_importBasePrimitiveOptions($field, $primitive);
         return $field;
     }
