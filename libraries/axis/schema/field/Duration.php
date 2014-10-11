@@ -19,6 +19,10 @@ class Duration extends Base implements opal\schema\ISignedField {
     }
 
     public function compareValues($value1, $value2) {
+        if($value1 === null || $value2 === null) {
+            return $value1 === null && $value2 === null;
+        }
+
         return core\time\Duration::factory($value1)->getSeconds() == core\time\Duration::factory($value2)->getSeconds();
     }
 
@@ -42,7 +46,7 @@ class Duration extends Base implements opal\schema\ISignedField {
     }
     
     public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
-        if(empty($value)) {
+        if($value === null) {
             if($this->isNullable()) {
                 return null;
             } else if(!empty($this->_defaultValue)) {
@@ -51,7 +55,7 @@ class Duration extends Base implements opal\schema\ISignedField {
                 $value = 0;
             }
         }
-        
+
         return core\time\Duration::factory($value);
     }
 
