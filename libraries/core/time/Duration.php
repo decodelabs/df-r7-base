@@ -10,6 +10,7 @@ use df\core;
 
 class Duration implements IDuration, core\IDumpable {
     
+    const MICROSECONDS = -2;
     const MILLISECONDS = -1;
     const SECONDS = 1;
     const MINUTES = 2;
@@ -18,20 +19,31 @@ class Duration implements IDuration, core\IDumpable {
     const WEEKS = 5;
     const MONTHS = 6;
     const YEARS = 7;
+
+    protected static $_multipliers = [
+        self::MICROSECONDS => 0.000001,
+        self::MILLISECONDS => 0.001,
+        self::SECONDS => 1,
+        self::MINUTES => 60,
+        self::HOURS => 3600,
+        self::DAYS => 86400,
+        self::WEEKS => 604800,
+        self::MONTHS => 2635200, // 30.5 days :)
+        self::YEARS => 31449600
+    ];
     
     protected $_seconds = 0;
-    protected $_referenceDate = null;
     protected $_locale = null;
     
-    public static function factory($time, IDate $referenceDate=null) {
+    public static function factory($time) {
         if($time instanceof IDuration) {
             return $time;
         }
         
-        return new self($time, $referenceDate);
+        return new self($time);
     }
 
-    public static function fromUnit($value, $unit, IDate $referenceDate=null) {
+    public static function fromUnit($value, $unit) {
         if($value instanceof IDuration) {
             return $value;
         }
@@ -39,65 +51,75 @@ class Duration implements IDuration, core\IDumpable {
         $unit = self::normalizeUnitId($unit);
 
         switch($unit) {
+            case self::MICROSECONDS:
+                return self::fromMicroseconds($value);
+
+            case self::MILLISECONDS:
+                return self::fromMilliseconds($value);
+
             case self::SECONDS:
-                return self::fromSeconds($value, $referenceDate);
+                return self::fromSeconds($value);
 
             case self::MINUTES:
-                return self::fromMinutes($value, $referenceDate);
+                return self::fromMinutes($value);
 
             case self::HOURS:
-                return self::fromHours($value, $referenceDate);
+                return self::fromHours($value);
 
             case self::DAYS:
-                return self::fromDays($value, $referenceDate);
+                return self::fromDays($value);
 
             case self::WEEKS:
-                return self::fromWeeks($value, $referenceDate);
+                return self::fromWeeks($value);
 
             case self::MONTHS:
-                return self::fromMonths($value, $referenceDate);
+                return self::fromMonths($value);
 
             case self::YEARS:
-                return self::fromYears($value, $referenceDate);
+                return self::fromYears($value);
         }
     }
-    
-    public static function fromSeconds($seconds, IDate $referenceDate=null) {
-        return new self($seconds, $referenceDate);
+
+    public static function fromMicroseconds($microseconds) {
+        return (new self(0))->setMicroseconds($microseconds);
+    }
+
+    public static function fromMilliseconds($milliseconds) {
+        return (new self(0))->setMilliseconds($milliseconds);
     }
     
-    public static function fromMinutes($minutes, IDate $referenceDate=null) {
-        $output = new self(0, $referenceDate);
-        return $output->setMinutes($minutes);
+    public static function fromSeconds($seconds) {
+        return new self($seconds);
     }
     
-    public static function fromHours($hours, IDate $referenceDate=null) {
-        $output = new self(0, $referenceDate);
-        return $output->setHours($hours);
+    public static function fromMinutes($minutes) {
+        return (new self(0))->setMinutes($minutes);
     }
     
-    public static function fromDays($days, IDate $referenceDate=null) {
-        $output = new self(0, $referenceDate);
-        return $output->setDays($days);
+    public static function fromHours($hours) {
+        return (new self(0))->setHours($hours);
     }
     
-    public static function fromWeeks($weeks, IDate $referenceDate=null) {
-        $output = new self(0, $referenceDate);
-        return $output->setWeeks($weeks);
+    public static function fromDays($days) {
+        return (new self(0))->setDays($days);
     }
     
-    public static function fromMonths($months, IDate $referenceDate=null) {
-        $output = new self(0, $referenceDate);
-        return $output->setMonths($months);
+    public static function fromWeeks($weeks) {
+        return (new self(0))->setWeeks($weeks);
     }
     
-    public static function fromYears($years, IDate $referenceDate=null) {
-        $output = new self(0, $referenceDate);
-        return $output->setYears($years);
+    public static function fromMonths($months) {
+        return (new self(0))->setMonths($months);
+    }
+    
+    public static function fromYears($years) {
+        return (new self(0))->setYears($years);
     }
 
     public static function getUnitList($locale=null) {
         return [
+            self::MICROSECONDS => self::getUnitString(self::MICROSECONDS, 1, $locale),
+            self::MILLISECONDS => self::getUnitString(self::MILLISECONDS, 1, $locale),
             self::SECONDS => self::getUnitString(self::SECONDS, 1, $locale),
             self::MINUTES => self::getUnitString(self::MINUTES, 1, $locale),
             self::HOURS   => self::getUnitString(self::HOURS, 1, $locale),
@@ -108,9 +130,11 @@ class Duration implements IDuration, core\IDumpable {
         ];
     }
     
-    public function __construct($time=0, IDate $referenceDate=null) {
+    public function __construct($time=0) {
         if($time instanceof IDuration) {
             $time = $time->getSeconds();
+        } else if($time instanceof \DateInterval) {
+            $time = $this->_extractInterval($time);
         }
 
         if(is_string($time)) {
@@ -118,39 +142,73 @@ class Duration implements IDuration, core\IDumpable {
         }
         
         $this->setSeconds($time);
-        $this->setReferenceDate($referenceDate);
     }
     
     protected function _parseTime($time) {
-        if((float)$time == $time) {
-            return (float)$time;
+        if(is_numeric($time)) {
+            if((float)$time == $time) {
+                return (float)$time;
+            }
+
+            if((int)$time == $time) {
+                return (int)$time;
+            }
         }
 
-        if((int)$time == $time) {
-            return (int)$time;
+        $time = trim($time);
+
+        if(preg_match('/^(([0-9]+)\:)?([0-9]{1,2})\:([0-9.]+)$/', $time)) {
+            $parts = explode(':', $time);
+            $i = 1;
+            $seconds = 0;
+
+            while(!empty($parts)) {
+                $value = array_pop($parts);
+                $value = $i == 1 ? (float)$value : (int)$value;
+                $seconds += $value * self::$_multipliers[$i++];
+            }
+
+            return $seconds;
         }
 
-        core\stub($time);
+        if(substr($time, 0, 1) == 'P') {
+            $interval = new \DateInterval($time);
+        } else {
+            $interval = \DateInterval::createFromDateString($time);
+        }
+
+        return $this->_extractInterval($interval);
+    }
+
+    protected function _extractInterval(\DateInterval $interval) {
+        if($interval->days !== false && $interval->days !== -9999) {
+            return $interval->days * self::$_multipliers[self::DAYS];
+        }
+
+        $parts = [
+            $interval->y,
+            $interval->m,
+            0,
+            $interval->d,
+            $interval->h,
+            $interval->i,
+            $interval->s,
+        ];
+        
+        $output = 0;
+
+
+        for($i = self::YEARS; $i > 0; $i--) {
+            $value = (int)array_shift($parts);
+            $output += $value * self::$_multipliers[$i];
+        }
+
+        return $output;
     }
     
-// Reference date
-    public function setReferenceDate(IDate $referenceDate=null) {
-        $this->_referenceDate = $referenceDate;
-        return $this;
-    }
-    
-    public function getReferenceDate() {
-        return $this->_referenceDate;
-    }
     
     public function toDate() {
-        if($this->_referenceDate) {
-            $reference = $this->_referenceDate->toTimestamp();
-        } else {
-            $reference = time();
-        }
-        
-        return new Date((int)($reference + $this->_seconds));
+        return new Date(time() + (int)$this->_seconds);
     }
     
     public function invert() {
@@ -165,64 +223,64 @@ class Duration implements IDuration, core\IDumpable {
     }
 
     public function eq($duration) {
-        return $this->_seconds == self::factory($duration)->getSeconds();
+        return $this->_seconds == self::factory($duration)->_seconds;
     }
 
     public function gt($duration) {
-        return $this->_seconds > self::factory($duration)->getSeconds();
+        return $this->_seconds > self::factory($duration)->_seconds;
     }
     
     public function gte($duration) {
-        return $this->_seconds >= self::factory($duration)->getSeconds();
+        return $this->_seconds >= self::factory($duration)->_seconds;
     }
     
     public function lt($duration) {
-        return $this->_seconds < self::factory($duration)->getSeconds();
+        return $this->_seconds < self::factory($duration)->_seconds;
     }
     
     public function lte($duration) {
-        return $this->_seconds <= self::factory($duration)->getSeconds();
+        return $this->_seconds <= self::factory($duration)->_seconds;
     }
     
     
 // Microseconds
     public function setMicroseconds($us) {
-        $this->_seconds = $us / 1000000;
+        $this->_seconds = $us * self::$_multipliers[self::MICROSECONDS];
         return $this;
     }
     
     public function getMicroseconds() {
-        return $this->_seconds * 1000000;
+        return $this->_seconds / self::$_multipliers[self::MICROSECONDS];
     }
     
     public function addMicroseconds($us) {
-        $this->_seconds += $us / 1000000;
+        $this->_seconds += $us * self::$_multipliers[self::MICROSECONDS];
         return $this;
     }
     
     public function subtractMicroseconds($us) {
-        $this->_seconds -= $us / 1000000;
+        $this->_seconds -= $us * self::$_multipliers[self::MICROSECONDS];
         return $this;
     }
     
 
 // Milliseconds
     public function setMilliseconds($ms) {
-        $this->_seconds = $ms / 1000;
+        $this->_seconds = $ms * self::$_multipliers[self::MILLISECONDS];
         return $this;
     }
     
     public function getMilliseconds() {
-        return $this->_seconds * 1000;
+        return $this->_seconds / self::$_multipliers[self::MILLISECONDS];
     }
     
     public function addMilliseconds($ms) {
-        $this->_seconds += $ms / 1000;
+        $this->_seconds += $ms * self::$_multipliers[self::MILLISECONDS];
         return $this;
     }
     
     public function subtractMilliseconds($ms) {
-        $this->_seconds -= $ms / 1000;
+        $this->_seconds -= $ms * self::$_multipliers[self::MILLISECONDS];
         return $this;
     }
     
@@ -250,260 +308,126 @@ class Duration implements IDuration, core\IDumpable {
     
 // Minutes
     public function setMinutes($minutes) {
-        $this->_seconds = $minutes * 60;
+        $this->_seconds = $minutes * self::$_multipliers[self::MINUTES];
         return $this;
     }
     
     public function getMinutes() {
-        return $this->_seconds / 60;
+        return $this->_seconds / self::$_multipliers[self::MINUTES];
     }
     
     public function addMinutes($minutes) {
-        $this->_seconds += $minutes * 60;
+        $this->_seconds += $minutes * self::$_multipliers[self::MINUTES];
         return $this;
     }
     
     public function subtractMinutes($minutes) {
-        $this->_seconds -= $minutes * 60;
+        $this->_seconds -= $minutes * self::$_multipliers[self::MINUTES];
         return $this;
     }
     
     
 // Hours
     public function setHours($hours) {
-        $this->_seconds = $hours * 3600;
+        $this->_seconds = $hours * self::$_multipliers[self::HOURS];
         return $this;
     }
     
     public function getHours() {
-        return $this->_seconds / 3600;
+        return $this->_seconds / self::$_multipliers[self::HOURS];
     }
     
     public function addHours($hours) {
-        $this->_seconds += $hours * 3600;
+        $this->_seconds += $hours * self::$_multipliers[self::HOURS];
         return $this;
     }
     
     public function subtractHours($hours) {
-        $this->_seconds -= $hours * 3600;
+        $this->_seconds -= $hours * self::$_multipliers[self::HOURS];
         return $this;
     }
     
     
 // Days
     public function setDays($days) {
-        $this->_seconds = $days * 86400;
+        $this->_seconds = $days * self::$_multipliers[self::DAYS];
         return $this;
     }
     
     public function getDays() {
-        return $this->_seconds / 86400;
+        return $this->_seconds / self::$_multipliers[self::DAYS];
     }
     
     public function addDays($days) {
-        $this->_seconds += $days * 86400;
+        $this->_seconds += $days * self::$_multipliers[self::DAYS];
         return $this;
     }
     
     public function subtractDays($days) {
-        $this->_seconds -= $days * 86400;
+        $this->_seconds -= $days * self::$_multipliers[self::DAYS];
         return $this;
     }
     
     
 // Weeks
     public function setWeeks($weeks) {
-        $this->_seconds = $weeks * 604800;
+        $this->_seconds = $weeks * self::$_multipliers[self::WEEKS];
         return $this;
     }
     
     public function getWeeks() {
-        return $this->_seconds / 604800;
+        return $this->_seconds / self::$_multipliers[self::WEEKS];
     }
     
     public function addWeeks($weeks) {
-        $this->_seconds += $weeks * 604800;
+        $this->_seconds += $weeks * self::$_multipliers[self::WEEKS];
         return $this;
     }
     
     public function subtractWeeks($weeks) {
-        $this->_seconds -= $weeks * 604800;
+        $this->_seconds -= $weeks * self::$_multipliers[self::WEEKS];
         return $this;
     }
     
     
 // Months
     public function setMonths($months) {
-        if(!$this->_referenceDate) {
-            $this->_seconds = $months * 2592000;
-        } else if($months == 0) {
-            $this->_seconds = 0;
-            return $this;
-        } else {
-            $seconds = 0;
-            $startMonth = $currentMonth = $this->_referenceDate->format('n');
-            $startYear = $currentYear = $this->_referenceDate->format('Y');
-            $isLeapYear = Date::isLeapYear($currentYear);
-            $isNegative = false;
-            
-            if($months < 0) {
-                $months *= -1;
-                $isNegative = true;
-            }
-            
-            while(true) {
-                $monthAmount = 1;
-                $monthDays = Date::monthDays($currentMonth, $isLeapYear);
-                $totalMonthSeconds = $monthSeconds = $monthDays * 86400;
-                
-                if($startYear == $currentYear && $currentMonth == $startMonth) {
-                    $monthBuffer = $this->_referenceDate->toTimestamp() - Date::factory($startYear.'-'.$startMonth.'-1')->toTimestamp();
-                    $monthSeconds -= $monthBuffer;
-                    $monthAmount = $monthSeconds / $totalMonthSeconds;
-                }
-                
-                $months -= $monthAmount;
-                
-                if($months < 0) {
-                    $monthSeconds += $months * $totalMonthSeconds; 
-                    $seconds += $monthSeconds;
-                    break;
-                } else {
-                    $seconds += $monthSeconds;
-                }
-                
-                $currentMonth++;
-                
-                if($currentMonth == 13) {
-                    $currentMonth = 1;
-                    $currentYear++;
-                }
-            }
-            
-            $seconds -= 86400;
-            
-            if($isNegative) {
-                $seconds *= -1;
-            }
-            
-            $this->_seconds = $seconds;
-        }
-        
+        $this->_seconds = $months * self::$_multipliers[self::MONTHS];
         return $this;
     }
     
     public function getMonths() {
-        if(!$this->_referenceDate) {
-            return $this->_seconds / 2592000;
-        } else {
-            $seconds = $this->_seconds;
-            
-            if($seconds == 0) {
-                return 0;
-            }
-            
-            $startMonth = $currentMonth = $this->_referenceDate->format('n');
-            $startYear = $currentYear = $this->_referenceDate->format('Y');
-            $isLeapYear = Date::isLeapYear($currentYear);
-            $isNegative = false;
-            
-            if($seconds < 0) {
-                $isNegative = true;
-                $seconds *= -1;
-            }
-            
-            $months = 0;
-            
-            while(true) {
-                $monthAmount = 1;
-                $monthDays = Date::monthDays($currentMonth, $isLeapYear);
-                $totalMonthSeconds = $monthSeconds = $monthDays * 86400;
-                
-                if($startYear == $currentYear && $currentMonth == $startMonth) {
-                    $monthBuffer = $this->_referenceDate->toTimestamp() - Date::factory($startYear.'-'.$startMonth.'-1')->toTimestamp();
-                    $monthSeconds -= $monthBuffer;
-                    $monthAmount = $monthSeconds / $totalMonthSeconds;
-                }
-                
-                $seconds -= $monthSeconds;
-                
-                if($seconds < 0) {
-                    if($startYear == $currentYear && $currentMonth == $startMonth) {
-                        $months = ($seconds + $monthSeconds) / $totalMonthSeconds;
-                    } else {
-                        $overflow = $monthSeconds + $seconds;
-                        $monthAmount -= ($totalMonthSeconds - $overflow) / $totalMonthSeconds;
-                        $months += $monthAmount;
-                    }
-                    
-                    break;
-                } else {
-                    $months += $monthAmount;
-                }
-                
-                $currentMonth++;
-                
-                if($currentMonth == 13) {
-                    $currentMonth = 1;
-                    $currentYear++;
-                }
-            }
-            
-            // Smooth off rounding errors
-            $months = round($months, 2);
-            
-            if($isNegative) {
-                $months *= -1;
-            }
-            
-            return $months;
-        }
+        return $this->_seconds / self::$_multipliers[self::MONTHS];
     }
     
     public function addMonths($months) {
-        if(!$this->_referenceDate) {
-            $this->_seconds += $months * 2592000;
-            return $this;
-        }
-        
-        $temp = new self(0, $this->toDate());
-        $temp->setMonths($months);
-        
-        $this->_seconds += $temp->_seconds;
+        $this->_seconds += $months * self::$_multipliers[self::MONTHS];
         return $this;
     }
     
     public function subtractMonths($months) {
-        if(!$this->_referenceDate) {
-            $this->_seconds -= $months * 2592000;
-            return $this;
-        }
-        
-        $temp = new self(0, $this->toDate());
-        $temp->setMonths(-$months);
-        
-        $this->_seconds += $temp->_seconds;
+        $this->_seconds -= $months * self::$_multipliers[self::MONTHS];
         return $this;
     }
     
     
 // Years
     public function setYears($years) {
-        $this->_seconds = $years * 31449600;
+        $this->_seconds = $years * self::$_multipliers[self::YEARS];
         return $this;
     }
     
     public function getYears() {
-        return $this->_seconds / 31449600;
+        return $this->_seconds / self::$_multipliers[self::YEARS];
     }
     
     public function addYears($years) {
-        $this->_seconds += $years * 31449600;
+        $this->_seconds += $years * self::$_multipliers[self::YEARS];
         return $this;
     }
     
     public function subtractYears($years) {
-        $this->_seconds -= $years * 31449600;
+        $this->_seconds -= $years * self::$_multipliers[self::YEARS];
         return $this;
     }
     
@@ -527,51 +451,73 @@ class Duration implements IDuration, core\IDumpable {
     public static function normalizeUnitId($id) {
         if(is_string($id)) {
             switch(strtolower($id)) {
+                case 'us':
+                case 'microsecond':
+                case 'microseconds':
+                    $id = self::MICROSECONDS;
+                    break;
+
+                case 'ms':
+                case 'millisecond':
+                case 'milliseconds':
+                    $id = self::MILLISECONDS;
+                    break;
+
                 case 'second':
                 case 'seconds':
-                    $id = 1;
+                    $id = self::SECONDS;
                     break;
 
                 case 'minute':
                 case 'minutes':
-                    $id = 2;
+                    $id = self::MINUTES;
                     break;
 
                 case 'hour':
                 case 'hours':
-                    $id = 3;
+                    $id = self::HOURS;
                     break;
 
                 case 'day':
                 case 'days':
-                    $id = 4;
+                    $id = self::DAYS;
                     break;
 
                 case 'week':
                 case 'weeks':
-                    $id = 5;
+                    $id = self::WEEKS;
                     break;
 
                 case 'month':
                 case 'months':
-                    $id = 6;
+                    $id = self::MONTHS;
                     break;
 
                 case 'year':
                 case 'years':
-                    $id = 7;
+                    $id = self::YEARS;
                     break;
             }
         }
 
         $id = (int)$id;
 
-        if($id < 1) {
-            $id = 1;
-        }
+        switch($id) {
+            case self::MICROSECONDS:
+            case self::MILLISECONDS:
+            case self::SECONDS:
+            case self::MINUTES:
+            case self::HOURS:
+            case self::DAYS:
+            case self::WEEKS:
+            case self::MONTHS:
+            case self::YEARS:
+                break;
 
-        if($id > 7) {
-            $id = 7;
+            default:
+                throw new InvalidArgumentException(
+                    'Invalid duration unit: '.$id
+                );
         }
 
         return $id;
@@ -582,6 +528,12 @@ class Duration implements IDuration, core\IDumpable {
         $translator = core\i18n\translate\Handler::factory('core/time/Duration', $locale);
 
         switch($unit) {
+            case self::MICROSECONDS:
+                return $translator->_([0 => 'microsecond', 1 => 'microseconds'], null, (int)$plural);
+
+            case self::MILLISECONDS:
+                return $translator->_([0 => 'millisecond', 1 => 'milliseconds'], null, (int)$plural);
+
             case self::SECONDS:
                 return $translator->_([0 => 'second', 1 => 'seconds'], null, (int)$plural);
 
@@ -616,11 +568,14 @@ class Duration implements IDuration, core\IDumpable {
             $isNegative = true;
         }
 
-        if($seconds < 1 || ($seconds < 5 && (int)$seconds != $seconds)) {
+        $maxUnit = self::normalizeUnitId($maxUnit);
+
+        if($maxUnit == self::MICROSECONDS) {
+            return $this->_addUnitString($translator, round($this->_seconds * 1000000), self::MICROSECONDS, $shortUnits);
+        } else if($maxUnit == self::MILLISECONDS || ($seconds < 1 || ($seconds < 5 && (int)$seconds != $seconds))) {
             return $this->_addUnitString($translator, round($this->_seconds * 1000), self::MILLISECONDS, $shortUnits);
         }
 
-        $maxUnit = self::normalizeUnitId($maxUnit);
         $output = $this->_createOutputArray($seconds, $maxUnits, $maxUnit);
 
         foreach($output as $unit => $value) {
@@ -652,6 +607,9 @@ class Duration implements IDuration, core\IDumpable {
         $unit = self::normalizeUnitId($unit);
 
         switch($unit) {
+            case self::MICROSECONDS:
+                return $this->getMicroseconds();
+
             case self::MILLISECONDS:
                 return $this->getMilliseconds();
 
@@ -685,129 +643,41 @@ class Duration implements IDuration, core\IDumpable {
         
         $output = [];
         $units = 0;
-        
-        // Years
-        if($maxUnit >= self::YEARS && $seconds >= 31449600) {
-            $output[self::YEARS] = floor($seconds / 31449600);
-            $seconds %= 31449600;
-            $units++;
-            
-            if($units >= $maxUnits || !$seconds) {
-                if($seconds) {
-                    $output[self::YEARS] += $seconds / 31449600;
-                }
-                
-                return $output;
-            }
-        }
-        
-        
-        // Months
-        if($maxUnit >= self::MONTHS && $seconds > 2592000) {
-            if($this->_referenceDate) {
-                $temp = $this->_seconds;
-                $this->_seconds = $seconds;
-                $months = $this->getMonths();
-                $this->_seconds = $temp;
-                
-                $output[self::MONTHS] = floor($months);
-                $overflow = $months - $output[self::MONTHS];
-                $seconds -= $seconds * ($output[self::MONTHS] / $months);
-                $units++;
-            } else if($seconds >= 3 * 2592000) {
-                $output[self::MONTHS] = floor($seconds / 2592000);
-                $seconds %= 2592000;
-                $units++;
-            }
-            
-            if($units >= $maxUnits || !$seconds) {
-                if($this->_referenceDate) {
-                    $output[self::MONTHS] += $overflow;
-                } else {
-                    if($seconds) {
-                        $output[self::MONTHS] += $seconds / 2592000;
-                    }
-                }
-                
-                return $output;
-            }
-        }
 
-        
-        // Weeks
-        if($maxUnit >= self::WEEKS && $seconds >= 604800) {
-            $output[self::WEEKS] = floor($seconds / 604800);
-            $seconds %= 604800;
+        for($i = $maxUnit; $i > 0; $i--) {
+            if($i == 1) {
+                $output[1] = $seconds;
+                return $output;
+            }
+
+            $multiplier = self::$_multipliers[$i];
+
+            if($seconds < $multiplier) {
+                continue;
+            }
+
+            $output[$i] = floor($seconds / $multiplier);
+            $seconds %= $multiplier;
             $units++;
-            
+
             if($units >= $maxUnits || !$seconds) {
                 if($seconds) {
-                    $output[self::WEEKS] += $seconds / 604800;
+                    $output[$i] += $seconds / $multiplier;
                 }
-                
+
                 return $output;
             }
         }
-        
-        
-        // Days
-        if($maxUnit >= self::DAYS && $seconds >= 86400) {
-            $output[self::DAYS] = floor($seconds / 86400);
-            $seconds %= 86400;
-            $units++;
-            
-            if($units >= $maxUnits || !$seconds) {
-                if($seconds) {
-                    $output[self::DAYS] += $seconds / 86400;
-                }
-                
-                return $output;
-            }
-        }
-        
-        // Hours
-        if($maxUnit >= self::HOURS && $seconds >= 3600) {
-            $output[self::HOURS] = floor($seconds / 3600);
-            $seconds %= 3600;
-            $units++;
-            
-            if($units >= $maxUnits || !$seconds) {
-                if($seconds) {
-                    $output[self::HOURS] += $seconds / 3600;
-                }
-                
-                return $output;
-            }
-        }
-        
-        // Minutes
-        if($maxUnit >= self::MINUTES && $seconds >= 60) {
-            $output[self::MINUTES] = floor($seconds / 60);
-            $seconds %= 60;
-            $units++;
-            
-            if($units >= $maxUnits || !$seconds) {
-                /*
-                if($seconds) {
-                    $output[self::MINUTES] += $seconds / 60;
-                }
-                */
-               
-                return $output;
-            }
-        }
-        
-        
-        // Seconds
-        if($maxUnit >= self::SECONDS) {
-            $output[self::SECONDS] = $seconds;
-        }
-        
-        return $output;
     }
     
     protected function _addUnitString(core\i18n\translate\IHandler $translator, $number, $unit, $shortUnits=false) {
         switch($unit) {
+            case self::MICROSECONDS:
+                return $translator->_(
+                    '%n% μs',
+                    ['%n%' => $number]
+                );
+
             case self::MILLISECONDS: 
                 return $translator->_(
                     '%n% ms',
@@ -941,6 +811,6 @@ class Duration implements IDuration, core\IDumpable {
 
 // Dump
     public function getDumpProperties() {
-        return $this->toString();
+        return $this->toString(7, true);
     }
 }

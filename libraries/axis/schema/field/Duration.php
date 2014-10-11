@@ -14,36 +14,18 @@ class Duration extends Base implements opal\schema\ISignedField {
     
     use opal\schema\TField_Signed;
 
-    protected $_referenceDateField;
-
     protected function _init() {
         $this->_isUnsigned = true;
     }
 
     public function compareValues($value1, $value2) {
-        return (string)$value1 === (string)$value2;
-    }
-
-// Reference date
-    public function setReferenceDateField($fieldName) {
-        $this->_referenceDateField = $fieldName;
-        return $this;
-    }
-
-    public function getReferenceDateField() {
-        return $this->_referenceDateField;
+        return core\time\Duration::factory($value1)->getSeconds() == core\time\Duration::factory($value2);
     }
 
 // Values
     public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
         if(isset($row[$key])) { 
-            $refDate = null;
-
-            if($this->_referenceDateField && isset($row[$this->_referenceDateField])) {
-                $refDate = core\time\Date::factory($row[$this->_referenceDateField]);
-            }
-
-            return new core\time\Duration($row[$key], $refDate);
+            return new core\time\Duration($row[$key]);
         } else {
             return null;
         } 
@@ -73,25 +55,6 @@ class Duration extends Base implements opal\schema\ISignedField {
         return core\time\Duration::factory($value);
     }
 
-
-
-// Validation
-    public function sanitize(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
-        if($this->_referenceDateField !== null) {
-            if(!$field = $schema->getField($this->_referenceDateField)) {
-                throw new axis\schema\RuntimeException(
-                    'Reference date field '.$this->_referenceDateField.' could not be found in schema '.$schema->getName()
-                );
-            }
-
-            if(!$field instanceof axis\schema\IDateField) {
-                throw new axis\schema\RuntimeException(
-                    'Reference date field '.$this->_referenceDateField.' is not a date type field'
-                );
-            }
-        }
-    }
-    
     
 // Primitive
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
@@ -108,15 +71,12 @@ class Duration extends Base implements opal\schema\ISignedField {
     protected function _importStorageArray(array $data) {
         $this->_setBaseStorageArray($data);
         $this->_setSignedStorageArray($data);
-
-        $this->_referenceDateField = $data['rdf'];
     }
 
     public function toStorageArray() {
         return array_merge(
             $this->_getBaseStorageArray(),
-            $this->_getSignedStorageArray(),
-            ['rdf' => $this->_referenceDateField]
+            $this->_getSignedStorageArray()
         );
     }
 }

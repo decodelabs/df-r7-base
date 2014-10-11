@@ -30,7 +30,7 @@ class Date implements IDate, core\IDumpable {
     const DB = 'Y-m-d H:i:s';
     const DBDATE = 'Y-m-d';
     
-    protected $_date;
+    public $_date;
     
     public static function fromCompressedString($string, $timezone=true) {
         if($string instanceof IDate) {
@@ -369,7 +369,7 @@ class Date implements IDate, core\IDumpable {
     }
 
     public function isPast() {
-        return $this->lt('now');
+        return $this->toTimestamp() < time();
     }
 
     public function isNearPast($hours=null) {
@@ -377,11 +377,14 @@ class Date implements IDate, core\IDumpable {
             $hours = 24;
         }
 
-        return $this->lt('now') && $this->gte('-'.(int)$hours.' hours');
+        $ts = $this->toTimestamp();
+        $time = time();
+
+        return $ts < $time && $ts > $time - ($hours * 60);
     }
 
     public function isFuture() {
-        return $this->gt('now');
+        return $this->toTimestamp() > time();
     }
 
     public function isNearFuture($hours=null) {
@@ -389,7 +392,10 @@ class Date implements IDate, core\IDumpable {
             $hours = 24;
         }
 
-        return $this->gt('now') && $this->lte('+'.(int)$hours.' hours');
+        $ts = $this->toTimestamp();
+        $time = time();
+
+        return $ts > $time && $ts < $time + ($hours * 60);
     }
     
     
@@ -405,175 +411,90 @@ class Date implements IDate, core\IDumpable {
         return $output;
     }
     
-    public function add($duration) {
-        $seconds = Duration::factory($duration)->getSeconds();
-        
-        if($seconds < 0) {
-            $string = $seconds.' seconds';
-        } else {
-            $string = '+'.$seconds.' seconds';
-        }
-        
-        $this->_date->modify($string);
+    public function add($interval) {
+        $interval = $this->_normalizeInterval($interval);
+        $this->_date->add($interval);
         return $this;
     }
 
-    public function addNew($duration) {
+    public function addNew($interval) {
         $output = clone $this;
-        return $output->add($duration);
+        return $output->add($interval);
     }
     
-    public function subtract($duration) {
-        $seconds = round(Duration::factory($duration)->getSeconds());
-        
-        if($seconds < 0) {
-            $string = '+'.($seconds * -1).' seconds';
-        } else {
-            $string = '-'.$seconds.' seconds';
-        }
-        
-        $this->_date->modify($string);
+    public function subtract($interval) {
+        $interval = $this->_normalizeInterval($interval);
+        $this->_date->sub($interval);
         return $this;
     }
 
-    public function subtractNew($duration) {
+    public function subtractNew($interval) {
         $output = clone $this;
-        return $output->subtract($duration);
+        return $output->subtract($interval);
+    }
+
+    protected function _normalizeInterval($interval) {
+        $seconds = null;
+
+        if($interval instanceof IDuration) {
+            $seconds = $interval->getSeconds();
+        } else if(is_numeric($interval)) {
+            if((float)$interval == $interval) {
+                $seconds = (float)$interval;
+            } else if((int)$interval == $interval) {
+                $seconds = (int)$interval;
+            }
+        } else if(is_int($interval) || is_float($interval)) {
+            $seconds = $interval;
+        } else if(preg_match('/^(([0-9]+)\:)?([0-9]{1,2})\:([0-9.]+)$/', $interval)) {
+            $parts = explode(':', $interval);
+            $i = 1;
+            $seconds = 0;
+
+            while(!empty($parts)) {
+                $value = (int)array_pop($parts);
+                $seconds += $value * self::$_multipliers[$i++];
+            }
+        }
+
+        if($seconds !== null) {
+            return \DateInterval::createFromDateString((int)$seconds.' seconds');
+        }
+
+        $interval = (string)$interval;
+
+        if(substr($interval, 0, 1) == 'P') {
+            return new \DateInterval($interval);
+        } else {
+            return \DateInterval::createFromDateString($interval);
+        }
     }
     
     
 // Duration
-    public function timeSince() {
-        return new Duration(time() - $this->toTimestamp(), clone $this);
+    public function timeSince($date=null) {
+        if($date !== null) {
+            $time = self::factory($date)->toTimestamp();
+        } else {
+            $time = time();
+        }
+
+        return new Duration($time - $this->toTimestamp());
     }
     
-    public function timeUntil() {
-        return new Duration($this->toTimestamp() - time(), clone $this);
+    public function timeUntil($date=null) {
+        if($date !== null) {
+            $time = self::factory($date)->toTimestamp();
+        } else {
+            $time = time();
+        }
+
+        return new Duration($this->toTimestamp() - $time);
     }
     
     
 // Dump
     public function getDumpProperties() {
         return $this->format('Y-m-d H:i:s T');
-    }
-    
-    
-    
-    
-    
-// Utils
-    private static $_months = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-    private static $_years = [
-        1970 => 0, 1960 => -315619200, 1950 => -631152000, 1940 => -946771200, 1930 => -1262304000,
-        1920 => -1577923200, 1910 => -1893456000, 1900 => -2208988800, 1890 => -2524521600,
-        1880 => -2840140800, 1870 => -3155673600, 1860 => -3471292800, 1850 => -3786825600,
-        1840 => -4102444800, 1830 => -4417977600, 1820 => -4733596800, 1810 => -5049129600,
-        1800 => -5364662400, 1790 => -5680195200, 1780 => -5995814400, 1770 => -6311347200,
-        1760 => -6626966400, 1750 => -6942499200, 1740 => -7258118400, 1730 => -7573651200,
-        1720 => -7889270400, 1710 => -8204803200, 1700 => -8520336000, 1690 => -8835868800,
-        1680 => -9151488000, 1670 => -9467020800, 1660 => -9782640000, 1650 => -10098172800,
-        1640 => -10413792000,1630 => -10729324800,1620 => -11044944000,1610 => -11360476800,
-        1600 => -11676096000
-    ];
-
-    const YEAR = 31536000;
-    const DAY = 86400;
-    const HOUR = 3600;
-    const MIN = 60;
-
-    public static function monthDays($month, $leapYear=false) {
-        $month--;
-        $output = self::$_months[$month];
-        
-        if($month == 1 && $leapYear) {
-            $output++;
-        }
-        
-        return $output;
-    }
-
-    public static function isLeapYear($year) {
-        $year = self::correctYearDigit($year);
-        
-        if($year % 4 != 0) {
-            return false;
-        }
-        
-        if($year % 400 == 0) {
-            return true;
-        } else if(($year > 1582) && ($year % 100 == 0)) {
-            return false;
-        }
-        
-        return true;
-    }
-
-    public static function correctYearDigit($year) {
-        if($year < 100) {
-            $yr = (int)date("Y");
-            $century = (int)($yr / 100);
-
-            if($yr % 100 > 50) {
-                $c1 = $century + 1;
-                $c0 = $century;
-            } else {
-                $c1 = $century;
-                $c0 = $century - 1;
-            }
-            
-            $c1 *= 100;
-            
-            if(($year + $c1) < $yr + 30) {
-                $year = $year + $c1;
-            } else {
-                $year = $year + $c0 * 100;
-            }
-        }
-        
-        return $year;
-    }
-
-    public static function dayOfWeek($year, $month, $day) {
-        if($year > 1901 && $year < 2038) {
-            return (int)date('w', mktime(0, 0, 0, $month, $day, $year));
-        }
-        
-        $correction = 0;
-        
-        if(($year < 1582) || (($year == 1582) && (($month < 10) || (($month == 10) && ($day < 15))))) {
-            $correction = 3;
-        }
-
-        if($month > 2) {
-            $month -= 2;
-        } else {
-            $month += 10;
-            $year--;
-        }
-
-        $day  = floor((13 * $month - 1) / 5) + $day + ($year % 100) + floor(($year % 100) / 4);
-        $day += floor(($year / 100) / 4) - 2 * floor($year / 100) + 77 + $correction;
-
-        return (int)($day - 7 * floor($day / 7));
-    }
-
-    public static function weekNumber($year, $month, $day) {
-        if($year > 1901 && $year < 2038) {
-            return (int)date('W', mktime(0, 0, 0, $month, $day, $year));
-        }
-
-        $dayofweek = self::dayOfWeek($year, $month, $day);
-        $firstday  = $day1 = self::dayOfWeek($year, 1, 1);
-        $testDay = self::dayOfWeek($year + 1, 1, 1);
-        
-        if(($month == 1) && (($firstday < 1) || ($firstday > 4)) && ($day < 4)) {
-            $firstday  = self::dayOfWeek($year - 1, 1, 1);
-            $month     = 12;
-            $day       = 31;
-        } else if(($month == 12) && (($testDay < 5) && ($testDay > 0))) {
-            return 1;
-        }
-        
-        return intval((($day1 < 5) && ($day1 > 0)) + 4 * ($month - 1) + (2 * ($month - 1) + ($day - 1) + $firstday - $dayofweek + 6) * 36 / 256);
     }
 }

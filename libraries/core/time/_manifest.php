@@ -52,14 +52,14 @@ interface IDate extends \Serializable, core\IStringProvider {
     // Modification
     public function modify($string);
     public function modifyNew($string);
-    public function add($duration);
-    public function addNew($duration);
-    public function subtract($duration);
-    public function subtractNew($duration);
+    public function add($interval);
+    public function addNew($interval);
+    public function subtract($interval);
+    public function subtractNew($interval);
     
     // Duration
-    public function timeSince();
-    public function timeUntil();
+    public function timeSince($date=null);
+    public function timeUntil($date=null);
 }
 
 
@@ -70,8 +70,6 @@ interface IDuration extends core\IStringProvider {
     public function getLocale();
     
 // Reference date
-    public function setReferenceDate(IDate $referenceDate=null);
-    public function getReferenceDate();
     public function toDate();
     public function invert();
 
@@ -84,7 +82,7 @@ interface IDuration extends core\IStringProvider {
     public function lte($duration);
 
 // Unit
-    public static function fromUnit($value, $unit, IDate $referenceDate=null);
+    public static function fromUnit($value, $unit);
     public function toUnit($unit);
     public static function normalizeUnitId($id);
     public static function getUnitString($unit, $plural=true, $locale=null);
