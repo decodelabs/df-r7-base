@@ -169,7 +169,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
         }
         
         if($empty) {
-            $paginator = $this->paginator->getPageData();
+            $paginator = $this->paginator ? $this->paginator->getPageData() : null;
             $shouldRender = $this->_renderIfEmpty;
             $errorMessage = $this->_errorMessage;
             $errorClass = 'error';
