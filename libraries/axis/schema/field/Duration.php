@@ -19,7 +19,7 @@ class Duration extends Base implements opal\schema\ISignedField {
     }
 
     public function compareValues($value1, $value2) {
-        return core\time\Duration::factory($value1)->getSeconds() == core\time\Duration::factory($value2);
+        return core\time\Duration::factory($value1)->getSeconds() == core\time\Duration::factory($value2)->getSeconds();
     }
 
 // Values
