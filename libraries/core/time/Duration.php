@@ -581,7 +581,7 @@ class Duration implements IDuration, core\IDumpable {
     }
 
     public function getTimeFormatString() {
-        $components = $this->_buildStringComponents(3, null, self::HOURS, false, null);
+        $components = $this->_buildStringComponents(3, null, self::HOURS, null, null);
 
         if(count($components) == 1) {
             array_unshift($components, '00');
@@ -616,13 +616,21 @@ class Duration implements IDuration, core\IDumpable {
                 $value *= -1;
             }
             
-            if($roundLastUnit) {
-                $round = 0;
+            $round = false;
+
+            if($roundLastUnit === false) {
+                $round = 1;
 
                 if($unit == self::SECONDS && $maxUnit == self::SECONDS) {
                     $round = 3;
                 }
-                
+            } else if($roundLastUnit === true) {
+                $round = 0;
+            } else if($roundLastUnit !== null) {
+                $round = abs((int)$roundLastUnit);
+            }
+
+            if($round !== false) {
                 $value = round($value, $round);
             }
 
