@@ -307,7 +307,7 @@ class Embed implements IVideoEmbed {
             }
         }
         
-        $output = new link\http\Url('http://www.youtube.com/embed/'.$id);
+        $output = new link\http\Url('//www.youtube.com/embed/'.$id);
 
         if($this->_startTime !== null) {
             $output->query->start = $this->_startTime;
@@ -336,7 +336,7 @@ class Embed implements IVideoEmbed {
             return $url;
         }
 
-        $output = new link\http\Url('http://player.vimeo.com/video/'.$id);
+        $output = new link\http\Url('//player.vimeo.com/video/'.$id);
 
         if($this->_autoPlay) {
             $output->query->autoplay = 1;
