@@ -58,7 +58,7 @@ class Duration extends Base implements opal\schema\ISignedField {
     
 // Primitive
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
-        $output = new opal\schema\Primitive_Integer($this, 8);
+        $output = new opal\schema\Primitive_Float($this, null, null);
 
         if($this->_isUnsigned) {
             $output->isUnsigned(true);
