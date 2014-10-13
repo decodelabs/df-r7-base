@@ -100,7 +100,7 @@ class Apc implements core\cache\IBackend {
             $lifeTime = $this->_lifeTime;
         }
 
-        return apc_store(
+        return @apc_store(
             $this->_prefix.$key, 
             [serialize($value), time()], 
             $lifeTime
@@ -122,7 +122,7 @@ class Apc implements core\cache\IBackend {
     }
     
     public function remove($key) {
-        $output = apc_delete($this->_prefix.$key);
+        $output = @apc_delete($this->_prefix.$key);
 
         /*
         if($this->_isCli) {
@@ -138,7 +138,7 @@ class Apc implements core\cache\IBackend {
 
         foreach($this->_getCacheList() as $set) {
             if(0 === strpos($set[$setKey], $this->_prefix)) {
-                apc_delete($set[$setKey]);
+                @apc_delete($set[$setKey]);
             }
         }
 
@@ -151,7 +151,7 @@ class Apc implements core\cache\IBackend {
 
         foreach($this->_getCacheList() as $set) {
             if(0 === strpos($set[$setKey], $this->_prefix.$key)) {
-                apc_delete($set[$setKey]);
+                @apc_delete($set[$setKey]);
             }
         }
         
@@ -166,7 +166,7 @@ class Apc implements core\cache\IBackend {
         foreach($this->_getCacheList() as $set) {
             if(0 === strpos($set[$setKey], $this->_prefix)
             && preg_match($regex, substr($set[$setKey], $prefixLength))) {
-                apc_delete($set[$setKey]);
+                @apc_delete($set[$setKey]);
             }
         }
         
