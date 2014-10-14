@@ -235,7 +235,7 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
             return $response;
         }
 
-        if($this->_router->shouldUseHttps() && !$this->_httpRequest->getUrl()->isSecure()) {
+        if($this->_router->shouldUseHttps() && !$this->_httpRequest->getUrl()->isSecure() && $this->isProduction()) {
             $response = new link\http\response\Redirect(
                 $this->_httpRequest->getUrl()
                     ->isSecure(true)
