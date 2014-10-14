@@ -87,13 +87,17 @@ interface IModalDelegate {
     public function getDefaultMode();
 }
 
-interface IInlineFieldRenderableDelegate {
+interface IRenderableDelegate {
+    public function isStacked($flag=null);
+}
+
+interface IInlineFieldRenderableDelegate extends IRenderableDelegate {
     public function renderFieldArea($label=null);
     public function renderInlineFieldAreaContent();
     public function renderFieldAreaContent(aura\html\widget\FieldArea $fieldArea);
 }
 
-interface ISelfContainedRenderableDelegate {
+interface ISelfContainedRenderableDelegate extends IRenderableDelegate {
     public function renderFieldSet($legend=null);
     public function renderContainer();
     public function renderContainerContent(aura\html\widget\IContainerWidget $fieldSet);
@@ -123,7 +127,8 @@ interface ISelectorDelegate extends IResultProviderDelegate {
     public function hasSelection();
 }
 
-interface IInlineFieldRenderableSelectorDelegate extends IModalDelegate, IInlineFieldRenderableDelegate, ISelectorDelegate {}
+interface IInlineFieldRenderableSelectorDelegate extends IInlineFieldRenderableDelegate, ISelectorDelegate {}
+interface IInlineFieldRenderableModalSelectorDelegate extends IModalDelegate, IInlineFieldRenderableDelegate, ISelectorDelegate {}
 
 interface IAdapterDelegate extends IParentUiHandlerDelegate, IParentEventHandlerDelegate {
     

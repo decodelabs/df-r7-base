@@ -12,10 +12,10 @@ use df\aura;
 use df\opal;
     
 abstract class SearchSelectorDelegate extends arch\form\Delegate implements 
-    arch\form\IInlineFieldRenderableSelectorDelegate,
+    arch\form\IInlineFieldRenderableModalSelectorDelegate,
     arch\form\IDependentDelegate {
 
-    use arch\form\TForm_InlineFieldRenderableSelectorDelegate;
+    use arch\form\TForm_InlineFieldRenderableModalSelectorDelegate;
     use arch\form\TForm_ValueListSelectorDelegate;
     use arch\form\TForm_DependentDelegate;
 
