@@ -153,6 +153,7 @@ trait TUserValueContainer {
 interface IChainable {
     public function chain(Callable $callback);
     public function chainIf($test, Callable $trueCallback, Callable $falseCallback=null);
+    public function chainEach(array $list, Callable $callback);
 }
 
 trait TChainable {
@@ -166,6 +167,14 @@ trait TChainable {
             $trueCallback($this);
         } else if($falseCallback) {
             $falseCallback($this);
+        }
+
+        return $this;
+    }
+
+    public function chainEach(array $list, Callable $callback) {
+        foreach($list as $key => $value) {
+            $callback($this, $value, $key);
         }
 
         return $this;
