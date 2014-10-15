@@ -28,8 +28,9 @@ class Enum extends Base implements core\validate\IEnumField {
             return null;
         }
 
+
         if(isset($this->_options[$value])) {
-            $eValue = $this->_options[$value];
+            $eValue = (string)$this->_options[$value];
             $this->_shouldSanitize = false;
         }
 

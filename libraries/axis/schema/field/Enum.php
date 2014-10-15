@@ -22,7 +22,7 @@ class Enum extends Base implements
     }
 
     public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
-        if(empty($value)) {
+        if(!strlen($value)) {
             $value = null;
         }
 

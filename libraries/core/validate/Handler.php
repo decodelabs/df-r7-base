@@ -166,7 +166,7 @@ class Handler implements IHandler {
                 $this->_isValid = false;
             }
         }
-        
+
         return $this;
     }
     

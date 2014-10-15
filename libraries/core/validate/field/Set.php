@@ -47,6 +47,10 @@ class Set extends Base implements core\validate\IEnumField {
                 'This field requires at least one selection'
             ));
         }
+
+        if($count && $this->_requireGroup !== null) {
+            $this->_handler->setRequireGroupFulfilled($this->_requireGroup);
+        }
         
         foreach($value as $key => $keyValue) {
             if(trim($keyValue) === '') {

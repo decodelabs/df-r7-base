@@ -25,7 +25,15 @@ class Integer extends Base implements
     
 
     public function compareValues($value1, $value2) {
-        return (int)$value1 === (int)$value2;
+        if(is_numeric($value1)) {
+            $value1 = (int)$value1;
+        }
+
+        if(is_numeric($value2)) {
+            $value2 = (int)$value2;
+        }
+
+        return $value1 === $value2;
     }
 
 // Primitive
