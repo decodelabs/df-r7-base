@@ -31,7 +31,7 @@ interface IReader extends core\IArrayProvider, \Iterator {
 }
 
 interface IBuilder extends core\io\IChunkSender {
-    public function setGenerator(Callable $generator=null);
+    public function setGenerator($generator=null);
     public function getGenerator();
 
     public function setFields(array $fields);

@@ -8,6 +8,7 @@ namespace df\flex\csv;
 use df;
 use df\core;
 use df\flex;
+use df\mesh;
     
 class Builder implements IBuilder {
 
@@ -18,7 +19,7 @@ class Builder implements IBuilder {
     protected $_receiver;
     protected $_generator;
 
-    public static function openFile($path, Callable $generator=null) {
+    public static function openFile($path, $generator=null) {
         return (new self($generator))
             ->setChunkReceiver(
                 (new core\io\channel\File($path, core\io\IMode::READ_WRITE_TRUNCATE))
@@ -26,14 +27,14 @@ class Builder implements IBuilder {
             );
     }
 
-    public static function openString(Callable $generator=null) {
+    public static function openString($generator=null) {
         return (new self($generator))
             ->setChunkReceiver(
                 new core\io\channel\Memory(null, 'text/csv', core\io\IMode::READ_WRITE_TRUNCATE)
             );
     }
 
-    public function __construct(Callable $generator=null) {
+    public function __construct($generator=null) {
         $this->setGenerator($generator);
     }
 
@@ -46,7 +47,11 @@ class Builder implements IBuilder {
         return $this->_receiver;
     }
 
-    public function setGenerator(Callable $generator=null) {
+    public function setGenerator($generator=null) {
+        if($generator !== null) {
+            $generator = mesh\Callback::factory($generator);
+        }
+
         $this->_generator = $generator;
         return $this;
     }
@@ -57,7 +62,7 @@ class Builder implements IBuilder {
 
     public function sendChunks() {
         if($this->_generator) {
-            $this->_generator->__invoke($this);
+            $this->_generator->invokeArgs([$this]);
         } else if(!empty($this->_fields)) {
             if($this->_writeFields) {
                 $this->_writeRow($this->_fields);
