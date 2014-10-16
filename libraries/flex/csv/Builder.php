@@ -60,6 +60,10 @@ class Builder implements IBuilder {
         return $this->_generator;
     }
 
+    public function build() {
+        return $this->sendChunks();
+    }
+
     public function sendChunks() {
         if($this->_generator) {
             $this->_generator->invokeArgs([$this]);

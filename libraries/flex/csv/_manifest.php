@@ -34,6 +34,8 @@ interface IBuilder extends core\io\IChunkSender {
     public function setGenerator($generator=null);
     public function getGenerator();
 
+    public function build();
+
     public function setFields(array $fields);
     public function getFields();
     public function shouldWriteFields($flag=null);
