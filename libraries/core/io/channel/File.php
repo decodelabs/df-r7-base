@@ -58,6 +58,12 @@ class File implements core\io\IFile, core\io\ILocalFilePointer, core\io\IContain
         return true;
     }
 
+    public function delete() {
+        $this->close();
+        core\io\Util::deleteFile($this->_path);
+        return $this;
+    }
+
     public function getPath() {
         return $this->_path;
     }
