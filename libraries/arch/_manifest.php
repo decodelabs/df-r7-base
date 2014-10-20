@@ -198,7 +198,15 @@ interface IOptionalDirectoryAccessLock {
 trait TOptionalDirectoryAccessLock {
 
     public function shouldCheckAccess() {
-        return (bool)static::CHECK_ACCESS || static::DEFAULT_ACCESS == IAccess::ALL;
+        if(is_bool(static::CHECK_ACCESS)) {
+            return static::CHECK_ACCESS;
+        }
+
+        if(static::DEFAULT_ACCESS === IAccess::ALL) {
+            return false;
+        }
+
+        return true;
     }
 }
 

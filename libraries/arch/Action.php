@@ -106,10 +106,14 @@ abstract class Action implements IAction, core\IDumpable {
 
     public function shouldCheckAccess() {
         if(is_bool(static::CHECK_ACCESS)) {
-            return static::CHECK_ACCESS || static::DEFAULT_ACCESS == IAccess::ALL;
-        } else {
-            return !static::OPTIMIZE;
+            return static::CHECK_ACCESS;
         }
+
+        if(static::DEFAULT_ACCESS === IAccess::ALL) {
+            return false;
+        }
+
+        return !static::OPTIMIZE;
     }
 
 
