@@ -46,6 +46,14 @@ class Duration extends Base implements opal\schema\ISignedField {
     }
     
     public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
+        if($value === '') {
+            if($this->isNullable()) {
+                return null;
+            } else {
+                $value = 0;
+            }
+        }
+
         if($value === null) {
             if($this->isNullable()) {
                 return null;
