@@ -17,11 +17,10 @@ abstract class FormUi extends arch\component\Base implements arch\form\IForm, au
 
     public $values;
     public $content;
-
-    protected $_form;
+    public $form;
 
     protected function _init(arch\form\IForm $form) {
-        $this->_form = $form;
+        $this->form = $form;
         $this->values = &$form->values;
         $this->content = &$form->content;
 
@@ -29,7 +28,7 @@ abstract class FormUi extends arch\component\Base implements arch\form\IForm, au
     }
 
     public function getForm() {
-        return $this->_form;
+        return $this->form;
     }
 
     public function toWidget() {
@@ -37,72 +36,72 @@ abstract class FormUi extends arch\component\Base implements arch\form\IForm, au
     }
 
     public function isRenderingInline() {
-        return $this->_form->isRenderingInline();
+        return $this->form->isRenderingInline();
     }
 
     public function getStateController() {
-        return $this->_form->getStateController();
+        return $this->form->getStateController();
     }
 
     public function loadDelegate($id, $path) {
-        return $this->_form->loadDelegate($id, $path);
+        return $this->form->loadDelegate($id, $path);
     }
 
     public function directLoadDelegate($id, $class) {
-        return $this->_form->directLoadDelegate($id, $class);
+        return $this->form->directLoadDelegate($id, $class);
     }
 
     public function getDelegate($id) {
-        return $this->_form->getDelegate($id);
+        return $this->form->getDelegate($id);
     }
 
     public function hasDelegate($id) {
-        return $this->_form->hasDelegate($id);
+        return $this->form->hasDelegate($id);
     }
 
     public function unloadDelegate($id) {
-        $this->_form->unloadDelegate($id);
+        $this->form->unloadDelegate($id);
         return $this;
     }
 
 // Helpers
     public function isValid() {
-        return $this->_form->isValid();
+        return $this->form->isValid();
     }
 
     public function fieldName($name) {
-        return $this->_form->fieldName($name);
+        return $this->form->fieldName($name);
     }
 
     public function eventName($name) {
-        return call_user_func_array([$this->_form, 'eventName'], func_get_args());
+        return call_user_func_array([$this->form, 'eventName'], func_get_args());
     }
 
     public function elementId($name) {
-        return $this->_form->elementId($name);
+        return $this->form->elementId($name);
     }
 
 // Store
     public function setStore($key, $value) {
-        $this->_form->setStore($key, $value);
+        $this->form->setStore($key, $value);
         return $this;
     }
 
     public function hasStore($key) {
-        return $this->_form->hasStore($key);
+        return $this->form->hasStore($key);
     }
 
     public function getStore($key, $default=null) {
-        return $this->_form->getStore($key, $default);
+        return $this->form->getStore($key, $default);
     }
 
     public function removeStore($key) {
-        $this->_form->removeStore($key);
+        $this->form->removeStore($key);
         return $this;
     }
 
     public function clearStore() {
-        $this->_form->clearStore();
+        $this->form->clearStore();
         return $this;
     }
 }
