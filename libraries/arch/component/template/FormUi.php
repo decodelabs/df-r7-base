@@ -19,12 +19,28 @@ abstract class FormUi extends arch\component\Base implements arch\form\IForm, au
     public $content;
     public $form;
 
-    protected function _init(arch\form\IForm $form) {
+    public function __construct(arch\IContext $context, array $args=null) {
+        if($args) {
+            $form = array_shift($args);
+        } else {
+            $form = null;
+        }
+
+        if(!$form instanceof arch\form\IForm) {
+            throw new arch\InvalidArgumentException(
+                'First FormUI component argument must be its parent form'
+            );
+        }
+
         $this->form = $form;
         $this->values = &$form->values;
         $this->content = &$form->content;
 
-        array_shift($this->_componentArgs);
+        if($this->form->view) {
+            $this->setRenderTarget($this->form->view);
+        }
+
+        parent::__construct($context, $args);
     }
 
     public function getForm() {
