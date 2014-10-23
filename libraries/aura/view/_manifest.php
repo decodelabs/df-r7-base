@@ -100,7 +100,8 @@ interface IView extends
     \ArrayAccess, 
     core\IHelperProvider, 
     core\string\IStringEscapeHandler,
-    core\i18n\translate\ITranslationProxy
+    core\i18n\translate\ITranslationProxy,
+    core\IChainable
 {
     public function getType();
     public function render();
