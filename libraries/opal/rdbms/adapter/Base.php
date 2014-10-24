@@ -206,6 +206,12 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
             }
         }
 
+        if(is_numeric($value)) {
+            return $value;
+        } else if($value === null) {
+            return 'NULL';
+        }
+
         $value = $this->normalizeValue($value);
         return $this->quoteValue($value);
     }
@@ -213,14 +219,7 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
     public function normalizeValue($value) {
         if($value instanceof core\time\IDate) {
             $value = $this->_prepareDateValue($value);
-        } else if(is_numeric($value)) {
-            return $value;
-        } else if($value === null) {
-            return 'NULL';
-        }
-
-
-        if($value instanceof core\string\IUuid) {
+        } else if($value instanceof core\string\IUuid) {
             return $value->getBytes();
         }
 
