@@ -27,7 +27,7 @@ class Pdo extends Base {
         }
         
         foreach($this->_bindings as $key => $value) {
-            $this->_stmt->bindValue(':'.$key, $value);
+            $this->_stmt->bindValue(':'.$key, $this->_adapter->normalizeValue($value));
         }
         
         try {

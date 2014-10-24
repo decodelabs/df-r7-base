@@ -113,6 +113,7 @@ class Mysqli extends Base {
         $refs = [];
         
         foreach($bindings as $key => $value) {
+            $bindings[$key] = $this->_adapter->normalizeValue($value);
             $refs[$key] = &$bindings[$key];
         }
         

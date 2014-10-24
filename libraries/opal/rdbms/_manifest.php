@@ -160,6 +160,7 @@ interface IAdapter extends mesh\entity\IParentEntity {
     public function quoteFieldAliasDefinition($alias);
     public function quoteFieldAliasReference($alias);
     public function prepareValue($value, opal\rdbms\schema\IField $field=null);
+    public function normalizeValue($value);
     
     
 // Introspection
