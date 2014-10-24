@@ -30,6 +30,14 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('missLogs', 'OneToMany', 'missLog', 'miss');
     }
 
+    public function applyPagination(opal\query\IPaginator $paginator) {
+        $paginator
+            ->setOrderableFields('mode', 'request', 'seen', 'firstSeen', 'lastSeen')
+            ->setDefaultOrder('lastSeen DESC', 'seen DESC');
+
+        return $this;
+    }
+
 // Block
     public function applyListRelationQueryBlock(opal\query\IReadQuery $query, $relationField) {
         $query->leftJoinRelation($relationField, 'mode', 'request');
@@ -37,7 +45,7 @@ class Unit extends axis\unit\table\Base {
 
 
 // IO
-    public function logMiss($request) {
+    public function logMiss($request, $mode=null) {
         $this->update([
                 'lastSeen' => 'now',
                 'archiveDate' => null
@@ -52,7 +60,7 @@ class Unit extends axis\unit\table\Base {
 
         if(!$miss) {
             $miss = $this->newRecord([
-                    'mode' => $this->context->getRunMode(),
+                    'mode' => $mode ? $mode : $this->context->getRunMode(),
                     'request' => $request,
                     'seen' => 1,
                     'firstSeen' => 'now',
