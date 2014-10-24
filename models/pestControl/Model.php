@@ -53,18 +53,6 @@ class Model extends axis\Model {
         return $user;
     }
 
-    public function getLogUserName() {
-        $user = null;
-
-        try {
-            $user = $this->context->user->isLoggedIn() ? 
-                $this->context->user->client->getFullName() : 
-                null;
-        } catch(\Exception $e) {}
-
-        return $user;
-    }
-
     public function getLogReferrer() {
         if(df\Launchpad::$application instanceof core\application\Http) {
             return df\Launchpad::$application->getContext()->http->getReferrer();

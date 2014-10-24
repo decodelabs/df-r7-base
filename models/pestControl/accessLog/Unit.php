@@ -27,9 +27,7 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('userAgent', 'One', 'user/agent')
             ->isNullable(true);
 
-        $schema->addField('userId', 'String', 128)
-            ->isNullable(true);
-        $schema->addField('userName', 'String', 128)
+        $schema->addField('user', 'One', 'user/client')
             ->isNullable(true);
 
         $schema->addField('isProduction', 'Boolean')
@@ -52,8 +50,7 @@ class Unit extends axis\unit\table\Base {
                 'request' => $request,
                 'message' => $message,
                 'userAgent' => $this->context->data->user->agent->logCurrent(),
-                'userId' => $this->_model->getLogUserId(),
-                'userName' => $this->_model->getLogUserName(),
+                'user' => $this->_model->getLogUserId(),
                 'isProduction' => $this->context->application->isProduction()
             ])
             ->save();

@@ -32,9 +32,7 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('stackTrace', 'ManyToOne', 'stackTrace', 'errorLogs')
             ->isNullable(true);
 
-        $schema->addField('userId', 'String', 128)
-            ->isNullable(true);
-        $schema->addField('userName', 'String', 128)
+        $schema->addField('user', 'One', 'user/client')
             ->isNullable(true);
 
         $schema->addField('isProduction', 'Boolean')
@@ -58,8 +56,7 @@ class Unit extends axis\unit\table\Base {
                 'message' => $message,
                 'userAgent' => $this->context->data->user->agent->logCurrent(),
                 'stackTrace' => $this->_model->stackTrace->logException($e),
-                'userId' => $this->_model->getLogUserId(),
-                'userName' => $this->_model->getLogUserName(),
+                'user' => $this->_model->getLogUserId(),
                 'isProduction' => $this->context->application->isProduction()
             ])
             ->save();
