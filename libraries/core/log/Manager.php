@@ -16,19 +16,25 @@ class Manager implements IManager {
     const REGISTRY_PREFIX = 'manager://log';
 
     public function logAccessError($code=403, $request=null, $message=null) {
-        $this->_getModel()->accessError($code, $request, $message);
+        $this->_getModel()->logAccessError($code, $request, $message);
         return $this;
     }
 
     public function logNotFound($request=null, $message=null) {
-        $this->_getModel()->notFound($request, $message);
+        $this->_getModel()->logNotFound($request, $message);
         return $this;
     }
 
     public function logException(\Exception $exception, $request=null) {
-        $this->_getModel()->exception($exception, $request);
+        $this->_getModel()->logException($exception, $request);
         return $this;
     }
+
+    protected function _getModel() {
+        return axis\Model::factory('pestControl');
+    }
+
+
 
     public function swallow(Callable $block) {
         $args = func_get_args();
@@ -41,9 +47,5 @@ class Manager implements IManager {
             $this->logException($e);
             return false;
         }
-    }
-
-    protected function _getModel() {
-        return axis\Model::factory('log');
     }
 }
