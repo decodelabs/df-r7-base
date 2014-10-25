@@ -28,24 +28,24 @@ class One extends axis\schema\field\Base implements axis\schema\IOneField {
     
 // Values
     public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
+        $value = $this->getTargetRelationManifest()->extractFromRow($key, $row);
+
         if(!$forRecord) {
             // Only need a simple value
             if(array_key_exists($key, $row)) {
                 return $row[$key];
             } else {
-                $key = $this->getTargetRelationManifest()->extractFromRow($key, $row);
-
-                if($key === null) {
+                if($value === null) {
                     return null;
                 }
 
-                return $this->getTargetRelationManifest()->toPrimaryKeySet($key);
+                return $this->getTargetRelationManifest()->toPrimaryKeySet($value);
             }
         }
 
         // Need to build a value container
         return new axis\unit\table\record\OneRelationValueContainer(
-            $this, $forRecord, $this->getTargetRelationManifest()->extractFromRow($key, $row)
+            $this, $forRecord, $value
         );
     }
     
