@@ -335,7 +335,15 @@ class Util implements IUtil {
         
         foreach($locations as $key => $match) {
             if(substr($path, 0, $len = strlen($match)) == $match) {
-                $path = $key.'://'.substr(str_replace('\\', '/', $path), $len + 1);
+                $innerPath = substr(str_replace('\\', '/', $path), $len + 1);
+
+                if(df\Launchpad::IS_COMPILED && $key == 'root') {
+                    $parts = explode('/', $innerPath);
+                    array_shift($parts);
+                    $innerPath = implode('/', $parts);
+                }
+
+                $path = $key.'://'.$innerPath;
                 break;
             }
         }

@@ -81,22 +81,30 @@ abstract class Base implements core\debug\IRenderer {
         return $this->_normalizeFilePath($file).' : '.$line;
     }
     
-    protected function _normalizeFilePath($file) {
+    protected function _normalizeFilePath($path) {
         if(!df\Launchpad::$loader) {
-            return $file;
+            return $path;
         }
         
         $locations = df\Launchpad::$loader->getLocations();
         $locations['app'] = df\Launchpad::$applicationPath;
         
         foreach($locations as $key => $match) {
-            if(substr($file, 0, $len = strlen($match)) == $match) {
-                $file = $key.'://'.substr(str_replace('\\', '/', $file), $len + 1);
+            if(substr($path, 0, $len = strlen($match)) == $match) {
+                $innerPath = substr(str_replace('\\', '/', $path), $len + 1);
+
+                if(df\Launchpad::IS_COMPILED && $key == 'root') {
+                    $parts = explode('/', $innerPath);
+                    array_shift($parts);
+                    $innerPath = implode('/', $parts);
+                }
+
+                $path = $key.'://'.$innerPath;
                 break;
             }
         }
         
-        return $file;
+        return $path;
     }
     
     protected function _getObjectInheritance($object) {
