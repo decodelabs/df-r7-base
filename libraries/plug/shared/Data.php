@@ -65,6 +65,16 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
     }
 
     public function _queryForAction(opal\query\IReadQuery $query, &$primary, &$action, Callable $chain=null, $throw=true) {
+        $name = $query->getSource()->getDisplayName();
+        
+        if($primary === null) {
+            if($throw) {
+                $this->_context->throwError(404, 'Item not found - '.$name.'#NULL');
+            } else {
+                return null;
+            }
+        }
+
         if(is_callable($action)) {
             $chain = $action;
             $action = null;
@@ -72,7 +82,6 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
 
         $this->applyQueryActionClause($query, $primary);
 
-        $name = $query->getSource()->getDisplayName();
 
         if($chain) {
             $query->chain($chain);
