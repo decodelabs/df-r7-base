@@ -25,6 +25,16 @@ class TaskPurgeLogs extends arch\task\Action {
 
         $misses = $this->data->pestControl->missLog->delete()
             ->where('isArchived', '=', false)
+            ->beginWhereClause()
+                ->where('date', '<', '-3 months')
+                ->orWhereCorrelation('miss', 'in', 'id')
+                    ->from('axis://pestControl/Miss', 'miss')
+                    ->where('date', '<', '-3 months')
+                    ->endCorrelation()
+                ->endClause()
+            ->execute();
+
+        $this->data->pestControl->miss->delete()
             ->where('date', '<', '-3 months')
             ->execute();
 
