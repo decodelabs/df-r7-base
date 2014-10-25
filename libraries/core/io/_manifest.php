@@ -94,7 +94,7 @@ trait TReader {
             );
         }
 
-        return $this->_readLine();
+        return rtrim($this->_readLine(), "\r\n");
     }
 
     public function readByte() {
@@ -285,7 +285,7 @@ trait TWriter {
     }
 
     public function writeLine($line='') {
-        return $this->write($line."\r\n");
+        return $this->write($line."\n");
     }
     
     public function writeChunk($data, $length=null) {
