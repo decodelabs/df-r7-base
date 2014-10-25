@@ -138,6 +138,14 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
         
         return $this->_support[$feature];
     }
+
+    public function getEncoding() {
+        if(!$encoding = $this->_dsn->getOption('encoding')) {
+            $encoding = 'utf8';
+        }
+
+        return $encoding;
+    }
     
     
 // Transaction

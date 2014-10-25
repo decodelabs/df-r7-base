@@ -32,7 +32,8 @@ class Database extends opal\rdbms\Database {
             $this->_adapter->executeSql('DROP DATABASE `'.$newName.'`');
         }
 
-        $this->_adapter->executeSql('CREATE DATABASE `'.$newName.'` CHARACTER SET utf8 COLLATE utf8_general_ci');
+        $encoding = $this->_adapter->getEncoding();
+        $this->_adapter->executeSql('CREATE DATABASE `'.$newName.'` CHARACTER SET '.$encoding.' COLLATE '.$encoding.'_general_ci');
 
         foreach($tableList as $tableName) {
             $stmt = $this->_adapter->prepare('RENAME TABLE `'.$oldName.'`.`'.$tableName.'` TO `'.$newName.'`.`'.$tableName.'`');

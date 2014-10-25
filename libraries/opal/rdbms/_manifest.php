@@ -135,6 +135,7 @@ interface IAdapter extends mesh\entity\IParentEntity {
     public function getServerType();
     public function getServerVersion();
     public function supports($feature);
+    public function getEncoding();
     
 // Transaction
     public function begin();
