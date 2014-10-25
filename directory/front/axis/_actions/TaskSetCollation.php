@@ -49,6 +49,7 @@ class TaskSetCollation extends arch\task\Action {
             return;
         }
 
+
         $server = $adapter->getServer();
         $collation = $this->request->query->get('collation', 'utf8_general_ci');
 
@@ -57,6 +58,15 @@ class TaskSetCollation extends arch\task\Action {
         }
 
         $charset = $this->request->query->get('charset', explode('_', $collation)[0]);
+
+        $this->io->writeLine('Are you sure you want to convert all databases to '.$charset.' / '.$collation.'?');
+        $this->io->write('Say yes to continue: ');
+        $response = $this->io->readLine();
+
+        if(strtolower($response) != 'yes') {
+            $this->io->writeLine('Never mind then :)');
+            return;
+        }
 
         foreach($server->getDatabaseList() as $dbName) {
             if(in_array($dbName, self::$_blacklist)) {
