@@ -27,7 +27,11 @@ class Mysql extends Base_Pdo {
     }
 
     protected function _createDb() {
-        $this->executeSql('CREATE DATABASE `'.$this->_dsn->getDatabase().'`');
+        if(!$encoding = $this->_dsn->getOption('encoding')) {
+            $encoding = 'utf8';
+        }
+
+        $this->executeSql('CREATE DATABASE `'.$this->_dsn->getDatabase().'` CHARACTER SET '.$encoding.' COLLATE '.$encoding.'_general_ci');
     }
     
     protected function _getPdoDsn($global=false) {
