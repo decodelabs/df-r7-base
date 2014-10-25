@@ -27,4 +27,20 @@ class Database extends opal\rdbms\Database {
     public function rename($newName, $overwrite=false) {
         core\stub($newName);
     }
+
+    public function setCharacterSet($set, $collation=null) {
+        core\stub($set);
+    }
+
+    public function getCharacterSet() {
+        return 'utf8';
+    }
+
+    public function setCollation($collation) {
+        core\stub($collation);
+    }
+
+    public function getCollation() {
+        return 'BINARY';
+    }
 }

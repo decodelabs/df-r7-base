@@ -142,4 +142,8 @@ class Sqlite extends Base_Pdo {
     public function newSchema($name) {
         return new opal\rdbms\variant\sqlite\Schema($this, $name);
     }
+
+    public function getServer() {
+        return new opal\rdbms\variant\sqlite\Server($this);
+    }
 }

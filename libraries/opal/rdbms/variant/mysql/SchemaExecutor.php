@@ -786,4 +786,59 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
         $schema->acceptChanges();
         return $this;
     }
+
+
+
+## Character sets
+    public function setCharacterSet($name, $charset, $collation=null, $convert=false) {
+        $sql = 'ALTER TABLE `'.$name.'` '.($convert ? 'CONVERT TO ':'').'CHARACTER SET :charset';
+
+        if($collation !== null) {
+            $sql .= ' COLLATE :collation';
+        }
+
+        $stmt = $this->_adapter->prepare($sql);
+        $stmt->bind('charset', $charset);
+
+        if($collation !== null) {
+            $stmt->bind('collation', $collation);
+        }
+        
+        $stmt->executeWrite();
+        return $this;
+    }
+
+    public function getCharacterSet($name) {
+        $stmt = $this->_adapter->prepare('SELECT CCSA.character_set_name FROM information_schema.`TABLES` T, information_schema.`COLLATION_CHARACTER_SET_APPLICABILITY` CCSA WHERE CCSA.collation_name = T.table_collation AND T.table_schema = :database AND T.table_name = :table');
+        $stmt->bind('database', $this->_adapter->getDsn()->getDatabase());
+        $stmt->bind('table', $name);
+        $res = $stmt->executeRead();
+
+        foreach($res as $row) {
+            return $row['character_set_name'];
+        }
+
+        return 'utf8';
+    }
+
+    public function setCollation($name, $collation, $convert=false) {
+        $stmt = $this->_adapter->prepare('ALTER TABLE `'.$name.'` '.($convert ? 'CONVERT TO ':'').'CHARACTER SET :charset COLLATE :collation');
+        $stmt->bind('charset', explode('_', $collation)[0]);
+        $stmt->bind('collation', $collation);
+        $stmt->executeWrite();
+        return $this;
+    }
+
+    public function getCollation($name) {
+        $stmt = $this->_adapter->prepare('SELECT CCSA.collation_name FROM information_schema.`TABLES` T, information_schema.`COLLATION_CHARACTER_SET_APPLICABILITY` CCSA WHERE CCSA.collation_name = T.table_collation AND T.table_schema = :database AND T.table_name = :table');
+        $stmt->bind('database', $this->_adapter->getDsn()->getDatabase());
+        $stmt->bind('table', $name);
+        $res = $stmt->executeRead();
+
+        foreach($res as $row) {
+            return $row['collation_name'];
+        }
+
+        return 'utf8_general_ci';
+    }
 }

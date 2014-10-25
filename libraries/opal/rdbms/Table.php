@@ -196,6 +196,35 @@ class Table implements ITable, core\IDumpable {
     }
 
 
+
+
+// Character sets
+    public function setCharacterSet($set, $collation=null, $convert=false) {
+        if(is_bool($collation)) {
+            $convert = $collation;
+            $collation = null;
+        }
+
+        SchemaExecutor::factory($this->_adapter)->setCharacterSet($this->_name, $set, $collation, $convert);
+        return $this;
+    }
+
+    public function getCharacterSet() {
+        return SchemaExecutor::factory($this->_adapter)->getCharacterSet($this->_name);
+    }
+
+    public function setCollation($collation, $convert=false) {
+        SchemaExecutor::factory($this->_adapter)->setCollation($this->_name, $collation, $convert);
+        return $this;
+    }
+
+    public function getCollation() {
+        return SchemaExecutor::factory($this->_adapter)->getCollation($this->_name);
+    }
+
+
+
+
 // Count
     public function count() {
         return QueryExecutor::factory($this->_adapter)->countTable($this->_name);

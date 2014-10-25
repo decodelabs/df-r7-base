@@ -239,4 +239,8 @@ class Mysqli extends opal\rdbms\adapter\Base {
     public function newSchema($name) {
         return new opal\rdbms\variant\mysql\Schema($this, $name);
     }
+
+    public function getServer() {
+        return new opal\rdbms\variant\mysql\Server($this);
+    }
 }

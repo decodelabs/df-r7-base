@@ -11,6 +11,59 @@ use df\opal;
 
 class Server implements opal\rdbms\IServer {
  
+    protected $_adapter;
+
+    public function __construct(opal\rdbms\IAdapter $adapter) {
+        $this->_adapter = $adapter;
+    }
+
+    public function getDatabase($name) {
+        return opal\rdbms\Database::factory($this->_adapter, $name);
+    }
+
+    public function getDatabaseList() {
+        $stmt = $this->_adapter->prepare('SHOW DATABASES');
+        $res = $stmt->executeRead();
+        $key = 'Database';
+        $output = [];
+
+        foreach($res as $row) {
+            $output[] = $row[$key];
+        }
+        
+        return $output;
+    }
+
+    public function databaseExists($name) {
+        $stmt = $this->_adapter->prepare('SHOW DATABASES LIKE :name');
+        $stmt->bind('name', $name);
+        $res = $stmt->executeRead();
+        
+        return !$res->isEmpty();
+    }
+
+    public function createDatabase($name, $checkExists=false) {
+        $encoding = $this->_adapter->getEncoding();
+        $sql = 'CREATE DATABASE';
+
+        if(!$checkExists) {
+            $sql .= ' IF NOT EXISTS';
+        }
+
+        $sql .= ' '.$this->_adapter->quoteIdentifier($name).' CHARACTER SET '.$encoding.' COLLATE '.$encoding.'_general_ci';
+        $this->_adapter->executeSql($sql);
+        return opal\rdbms\Database::factory($this->_adapter, $name);
+    }
+
+    public function renameDatabase($oldName, $newName) {
+        $database = opal\rdbms\Database::factory($this->_adapter, $oldName);
+        return $database->rename($newName);
+    }
+
+
+
+
+// Exceptions
     public static function getConnectionException(opal\rdbms\IAdapter $adapter, $number, $message) {
         if($e = self::_getExceptionForError($adapter, $number, $message)) {
             return $e;

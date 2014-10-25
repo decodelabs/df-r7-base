@@ -44,4 +44,53 @@ class Database extends opal\rdbms\Database {
         $this->_adapter->switchDatabase($newName);
         return $this;
     }
+
+    public function setCharacterSet($set, $collation=null) {
+        $sql = 'ALTER DATABASE `'.$this->getName().'` CHARACTER SET :set';  
+
+        if($collation !== null) {
+            $sql .= ' COLLATE :collation';
+        }
+
+        $stmt = $this->_adapter->prepare($sql);
+        $stmt->bind('set', $set);
+
+        if($collation !== null) {
+            $stmt->bind('collation', $collation);
+        }
+
+        $stmt->executeWrite();
+        return $this;
+    }
+
+    public function getCharacterSet() {
+        $stmt = $this->_adapter->prepare('SELECT default_character_set_name FROM information_schema.SCHEMATA S WHERE schema_name = :name');
+        $stmt->bind('name', $this->getName());
+        $res = $stmt->executeRead();
+
+        foreach($res as $row) {
+            return $row['default_character_set_name'];
+        }
+
+        return 'utf8';
+    }
+
+    public function setCollation($collation) {
+        $stmt = $this->_adapter->prepare('ALTER DATABASE `'.$this->getName().'` COLLATE :collation');
+        $stmt->bind('collation', $collation);
+        $stmt->executeWrite();
+        return $this;
+    }
+
+    public function getCollation() {
+        $stmt = $this->_adapter->prepare('SELECT default_collation_name FROM information_schema.SCHEMATA S WHERE schema_name = :name');
+        $stmt->bind('name', $this->getName());
+        $res = $stmt->executeRead();
+
+        foreach($res as $row) {
+            return $row['default_collation_name'];
+        }
+
+        return 'utf8_general_ci';
+    }
 }

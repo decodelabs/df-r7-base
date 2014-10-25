@@ -244,16 +244,28 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
     
     
 // Introspection
+    public function getDatabaseList() {
+        return $this->getDatabase()->getList();
+    }
+
+    public function databaseExists($name) {
+        return $this->getDatabase()->exists($name);
+    }
+
+
+
     public function getDatabase() {
         return opal\rdbms\Database::factory($this);
     }
 
-    public function getTable($name) {
-        return new opal\rdbms\Table($this, $name);
-    }
-
     public function tableExists($name) {
         return $this->getTable($name)->exists();
+    }
+
+
+
+    public function getTable($name) {
+        return new opal\rdbms\Table($this, $name);
     }
     
     public function createTable(opal\rdbms\schema\ISchema $schema, $dropIfExists=false) {

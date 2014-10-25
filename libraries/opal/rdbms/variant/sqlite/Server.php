@@ -11,6 +11,36 @@ use df\opal;
 
 class Server implements opal\rdbms\IServer {
     
+    protected $_adapter;
+
+    public function __construct(opal\rdbms\IAdapter $adapter) {
+        $this->_adapter = $adapter;
+    }
+
+    public function getDatabase($name) {
+        core\stub($name);
+    }
+
+    public function getDatabaseList() {
+        return [$this->_adapter->getDsn()->getDatabase()];
+    }
+
+    public function databaseExists($name) {
+        return is_file($name);
+    }
+
+    public function createDatabase($name) {
+        // stub
+    }
+
+    public function renameDatabase($oldName, $newName) {
+        core\stub($oldName, $newName);
+    }
+
+
+
+
+// Exceptions
     public static function getConnectionException(opal\rdbms\IAdapter $adapter, $number, $message) {
         if($e = self::_getExceptionForError($adapter, $number, $message)) {
             return $e;

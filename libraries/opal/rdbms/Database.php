@@ -23,14 +23,16 @@ abstract class Database implements IDatabase {
             );
         }
 
-        if($name !== null) {
-            core\stub('Database factory cannot yet switch database names in an adapter');
-        }
-
-        return new $class($adapter);
+        return new $class($adapter, $name);
     }
 
-    protected function __construct(opal\rdbms\IAdapter $adapter) {
+    protected function __construct(opal\rdbms\IAdapter $adapter, $name=null) {
+        if($name !== null) {
+            $dsn = $adapter->getDsn();
+            $dsn->setDatabase($name);
+            $adapter = $adapter::factory($dsn);
+        }
+
         $this->_adapter = $adapter;
     }
 

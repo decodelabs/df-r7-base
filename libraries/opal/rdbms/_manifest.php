@@ -165,9 +165,14 @@ interface IAdapter extends mesh\entity\IParentEntity {
     
     
 // Introspection
+    public function getServer();
+    public function getDatabaseList();
+    public function databaseExists($name);
+
     public function getDatabase();
-    public function getTable($name);
     public function tableExists($name);
+
+    public function getTable($name);
     public function createTable(opal\rdbms\schema\ISchema $schema, $dropIfExists=false);
     public function getSchema($name);
     public function newSchema($name);
@@ -201,6 +206,12 @@ interface IStatement extends core\collection\IQueue, core\collection\IStreamColl
 interface IServer {
     public static function getConnectionException(IAdapter $adapter, $number, $message);
     public static function getQueryException(IAdapter $adapter, $number, $message, $sql=null);
+
+    public function getDatabase($name);
+    public function getDatabaseList();
+    public function databaseExists($name);
+    public function createDatabase($name, $checkExists=false);
+    public function renameDatabase($oldName, $newName);
 }
 
 interface IDatabase {
@@ -210,13 +221,14 @@ interface IDatabase {
     public function getTable($name);
     public function getTableList();
 
-    //public function exists();
-    //public function create();
-    //public function rename();
-    
     public function drop();
     public function truncate();
     public function rename($newName, $overwrite=false);
+
+    public function setCharacterSet($set, $collation=null);
+    public function getCharacterSet();
+    public function setCollation($collation);
+    public function getCollation();
 }
 
 interface ITable extends mesh\entity\IEntity, opal\query\IAdapter, opal\query\IEntryPoint, \Countable, opal\schema\ISchemaContext {
@@ -234,6 +246,11 @@ interface ITable extends mesh\entity\IEntity, opal\query\IAdapter, opal\query\IE
     public function truncate();
     public function lock();
     public function unlock();
+
+    public function setCharacterSet($set, $collation=null, $convert=false);
+    public function getCharacterSet();
+    public function setCollation($collation, $convert=false);
+    public function getCollation();
 }
 
 interface ITableStats extends core\IAttributeContainer {
@@ -261,6 +278,11 @@ interface ISchemaExecutor {
     public function alter($currentName, opal\rdbms\schema\ISchema $schema);
     public function rename($oldName, $newName);
     public function drop($name);
+
+    public function setCharacterSet($name, $set, $collation=null, $convert=false);
+    public function getCharacterSet($name);
+    public function setCollation($name, $collation, $convert=false);
+    public function getCollation($name);
 }
 
 interface IQueryExecutor {

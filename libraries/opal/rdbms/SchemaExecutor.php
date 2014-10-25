@@ -232,4 +232,23 @@ abstract class SchemaExecutor implements ISchemaExecutor {
         $this->_adapter->prepare($sql)->executeRaw();
         return $this;
     }
+
+
+
+## Character sets
+    public function setCharacterSet($name, $set, $collation=null, $convert=false) {
+        core\stub($name);
+    }
+
+    public function getCharacterSet($name) {
+        core\stub($name);
+    }
+
+    public function setCollation($name, $collation, $convert=false) {
+        core\stub($name);
+    }
+
+    public function getCollation($name) {
+        core\stub($name);
+    }
 }
