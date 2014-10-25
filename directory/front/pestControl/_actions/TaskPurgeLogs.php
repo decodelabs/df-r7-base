@@ -36,6 +36,9 @@ class TaskPurgeLogs extends arch\task\Action {
 
         $this->data->pestControl->miss->delete()
             ->where('lastSeen', '<', '-3 months')
+            ->whereCorrelation('id', '!in', 'miss')
+                ->from('axis://pestControl/Miss', 'miss')
+                ->endCorrelation()
             ->execute();
 
         $this->io->writeLine('Purged '.$misses.' miss logs');
