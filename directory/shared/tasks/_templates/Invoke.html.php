@@ -1,15 +1,12 @@
 <script>
 if(window.XMLHttpRequest) {
     var xhr = new XMLHttpRequest();
-    xhr.lastText = '';
      
     xhr.onerror = function() { console.log("[XHR] Fatal Error."); };
     xhr.onreadystatechange = function() {
         if(xhr.readyState > 2) {
-            var message = xhr.responseText.replace(/^\s+/,"").substring(xhr.lastText.replace(/^\s+/,"").length);
-            xhr.lastText = xhr.responseText;
             var objDiv = document.getElementById("divProgress");
-            $(objDiv).append(message);
+            $(objDiv).text(xhr.responseText.replace(/^\s+/,""));
             objDiv.scrollTop = objDiv.scrollHeight;
         }
     };
