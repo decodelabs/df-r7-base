@@ -264,6 +264,15 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
 
 
 
+
+
+// Table
+    protected function _generateTableOptions(opal\rdbms\schema\ISchema $schema) {
+        $encoding = $this->_adapter->getEncoding();
+        return ' CHARACTER SET '.$encoding.' COLLATE '.$encoding.'_general_ci';
+    }
+
+
 // Fields
     protected function _generateFieldDefinition(opal\rdbms\schema\IField $field) {
         $fieldSql = $this->_adapter->quoteIdentifier($field->getName()).' '.$field->getType();

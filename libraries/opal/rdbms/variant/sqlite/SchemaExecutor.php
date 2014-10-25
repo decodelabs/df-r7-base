@@ -11,7 +11,7 @@ use df\opal;
     
 class SchemaExecutor extends opal\rdbms\SchemaExecutor {
 
-    ## Stats ##
+## Stats ##
     public function getTableStats($name) {
         core\stub($name);   
     }
@@ -284,7 +284,16 @@ class SchemaExecutor extends opal\rdbms\SchemaExecutor {
         return $schema;
     }
 
-    // Fields
+
+
+// Table
+    protected function _generateTableOptions(opal\rdbms\schema\ISchema $schema) {
+        return '';
+    }
+
+
+
+// Fields
     protected function _generateFieldDefinition(opal\rdbms\schema\IField $field) {
         $fieldSql = $this->_adapter->quoteIdentifier($field->getName()).' ';
         

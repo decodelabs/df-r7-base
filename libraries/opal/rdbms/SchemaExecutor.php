@@ -55,6 +55,7 @@ abstract class SchemaExecutor implements ISchemaExecutor {
         }
         
         $schemaName = $schema->getName();
+
         $sql .= ' TABLE '.$this->_adapter->quoteIdentifier($schemaName).' ('."\n";
         $definitions = [];
 
@@ -97,7 +98,7 @@ abstract class SchemaExecutor implements ISchemaExecutor {
         
         
         // Flatten definitions
-        $sql .= '    '.implode(','."\n".'    ', $definitions)."\n".')'."\n";
+        $sql .= '    '.implode(','."\n".'    ', $definitions)."\n".')'.$this->_generateTableOptions($schema)."\n";
         
         
         
@@ -143,6 +144,8 @@ abstract class SchemaExecutor implements ISchemaExecutor {
     }
 
 
+// Tables
+    abstract protected function _generateTableOptions(opal\rdbms\schema\ISchema $schema);
 
 // Fields
     abstract protected function _generateFieldDefinition(opal\rdbms\schema\IField $field);
