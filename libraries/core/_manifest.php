@@ -336,7 +336,7 @@ class TypeRef implements core\IDumpable {
 
     protected static function _normalizeClassName($type) {
         if(false !== strpos($type, '/')) {
-            $parts = explode('/', trim($path, '/'));
+            $parts = explode('/', trim($type, '/'));
             $type = 'df\\'.implode('\\', $parts);
         }
 
