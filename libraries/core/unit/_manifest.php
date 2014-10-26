@@ -256,9 +256,9 @@ interface IResolution extends IUnit, ICssCompatibleUnit, ISingleValueUnit, core\
 ## ENUMS
 class Priority extends core\Enum {
     
-    const TRIVIAL = 'trivial';
-    const LOW = 'low';
-    const MEDIUM = 'medium';
-    const HIGH = 'high';
-    const CRITICAL = 'critical';
+    const TRIVIAL = null;
+    const LOW = null;
+    const MEDIUM = null;
+    const HIGH = null;
+    const CRITICAL = null;
 }

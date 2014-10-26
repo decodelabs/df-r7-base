@@ -232,6 +232,27 @@ trait TMaxLengthField {
 
 
 
+// Options
+interface IOptionProviderField extends IField {
+    public function setOptions(array $options);
+    public function getOptions();
+}
+
+trait TOptionProviderField {
+
+    protected $_options = null;
+    
+    public function setOptions(array $options) {
+        $this->_options = $options;
+        return $this;
+    }
+
+    public function getOptions() {
+        return $this->_options;
+    }
+}
+
+
 // Sanitizer
 interface ISanitizingField extends IField {
     public function setSanitizer(Callable $sanitizer);
@@ -451,10 +472,7 @@ interface IDurationField extends IField, IRangeField {
 
 interface IEmailField extends IField, IUniqueCheckerField {}
 
-interface IEnumField extends IField {
-    public function setOptions(array $options);
-    public function getOptions();    
-}
+interface IEnumField extends IField, IOptionProviderField {}
 
 interface IFloatField extends IField, IRangeField {}
 

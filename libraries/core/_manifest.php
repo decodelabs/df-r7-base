@@ -16,6 +16,7 @@ class RuntimeException extends \RuntimeException implements IException {}
 class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 class ApplicationNotFoundException extends RuntimeException {}
 class HelperNotFoundException extends RuntimeException {}
+class BadMethodCallException extends \BadMethodCallException {}
 
 ### Generic interfaces
 
@@ -185,7 +186,11 @@ trait TChainable {
 // Enum
 interface IEnum extends IStringProvider {
     public static function getOptions();
+    public static function getLabels();
     public function getValue();
+    public function getOption();
+    public function getLabel();
+    public static function label($option);
 }
 
 abstract class Enum implements IEnum, IDumpable {
@@ -193,6 +198,7 @@ abstract class Enum implements IEnum, IDumpable {
     use TStringProvider;
 
     protected static $_options;
+    protected static $_labels;
     protected $_value;
 
     public static function factory($value) {
@@ -224,14 +230,46 @@ abstract class Enum implements IEnum, IDumpable {
     public static function getOptions() {
         if(!static::$_options) {
             $reflection = new \ReflectionClass(get_called_class());
-            static::$_options = array_values($reflection->getConstants());
+            static::$_options = static::$_labels = [];
+
+            foreach($reflection->getConstants() as $name => $label) {
+                static::$_options[] = lcfirst(str_replace(' ', '', ucwords(strtolower(str_replace('_', ' ', $name)))));
+
+                if(!strlen($label)) {
+                    $label = ucwords(strtolower(str_replace('_', ' ', $name)));
+                }
+
+                static::$_labels[] = $label;
+            }
         }
 
         return static::$_options;
     }
 
+    public static function getLabels() {
+        $output = [];
+
+        foreach(static::getOptions() as $key => $option) {
+            $output[$option] = static::$_labels[$key];
+        }
+
+        return $output;
+    }
+
     public function getValue() {
         return $this->_value;
+    }
+
+    public function getOption() {
+        return static::$_options[$this->_value];
+    }
+
+    public function getLabel() {
+        return static::$_labels[$this->_value];
+    }
+
+    public static function label($option) {
+        return self::factory($option)->getLabel();
     }
 
     public function toString() {
@@ -252,6 +290,102 @@ abstract class Enum implements IEnum, IDumpable {
 // Dump
     public function getDumpProperties() {
         return static::$_options[$this->_value].' ('.$this->_value.')';
+    }
+}
+
+
+
+
+// Type ref
+class TypeRef implements core\IDumpable {
+
+    protected $_class;
+    protected $_reflection;
+
+    public static function factory($type, $extends=null) {
+        if(!$type instanceof self) {
+            return new self($type);
+        }
+
+        if($extends !== null) {
+            if(!is_array($extends)) {
+                $extends = [$extends];
+            }
+
+            foreach($extends as $checkType) {
+                $checkType = self::_normalizeClassName($checkType);
+
+                if(class_exists($checkType)) {
+                    if(!$type->_reflection->isSubclassOf($checkType)) {
+                        throw new RuntimeException(
+                            $type->_class.' does not extend '.$checkType
+                        );
+                    }
+                } else if(interface_exists($checkType)) {
+                    if(!$type->_reflection->implements($checkType)) {
+                        throw new RuntimeException(
+                            $this->_class.' does not implement '.$checkType
+                        );
+                    }
+                }
+            }
+        }
+
+        return $type;
+    }
+
+    protected static function _normalizeClassName($type) {
+        if(false !== strpos($type, '/')) {
+            $parts = explode('/', trim($path, '/'));
+            $type = 'df\\'.implode('\\', $parts);
+        }
+
+        return $type;
+    }
+
+    public function __construct($type) {
+        $class = self::_normalizeClassName($type);
+
+        if(!class_exists($class)) {
+            throw new InvalidArgumentException(
+                'Class '.$class.' could not be found'
+            );
+        }
+
+        $this->_class = $class;
+        $this->_reflection = new \ReflectionClass($this->_class);
+    }
+
+    public function newInstance() {
+        return $this->_reflection->newInstanceArgs(func_get_args());
+    }
+
+    public function newInstanceArgs(array $args) {
+        return $this->_reflection->newInstanceArgs($args);
+    }
+
+    public function __call($method, array $args) {
+        if(!$this->_reflection->hasMethod($method)) {
+            throw new BadMethodCallException(
+                'Method '.$method.' is not available on class '.$this->_class
+            );
+        }
+
+        $method = $this->_reflection->getMethod($method);
+
+        if(!$method->isStatic() || !$method->isPublic()) {
+            throw new BadMethodCallException(
+                'Method '.$method.' is not accessible on class '.$this->_class
+            );
+        }
+
+        return $method->invokeArgs($args);
+    }
+
+
+// Dump
+    public function getDumpProperties() {
+        return implode('/', array_slice(1, explode('\\', $this->_class)));
     }
 }
 

@@ -600,9 +600,9 @@ trait TScaffold_RecordDataProvider {
 
     public function definePriorityField($list, $mode) {
         $list->addField('priority', function($item) {
-            $priority = $item['priority'];
-            return $this->html->icon('priority-'.$priority, $this->format->name($priority))
-                ->addClass('priority-'.$priority);
+            $priority = core\unit\Priority::factory($item['priority']);
+            return $this->html->icon('priority-'.$priority, $priority->getLabel())
+                ->addClass('priority-'.$priority->getOption());
         });
     }
 

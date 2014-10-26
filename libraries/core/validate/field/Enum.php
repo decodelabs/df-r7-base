@@ -10,37 +10,53 @@ use df\core;
     
 class Enum extends Base implements core\validate\IEnumField {
 
-    protected $_options = [];
+    use core\validate\TOptionProviderField;
+    
+    protected $_type = null;
 
-    public function setOptions(array $options) {
-        $this->_options = $options;
+    public function setType($type) {
+        if($type !== null) {
+            $type = core\TypeRef::factory($type, 'core/IEnum');
+        }
+
+        $this->_type = $type;
         return $this;
     }
 
-    public function getOptions() {
-        return $this->_options;
+    public function getType() {
+        return $this->_type;
     }
 
+    
+
     public function validate(core\collection\IInputTree $node) {
-        $value = $eValue = $node->getValue();
+        $value = $node->getValue();
 
         if(!$length = $this->_checkRequired($node, $value)) {
             return null;
         }
 
+        if($this->_type) {
+            try {
+                $value = $this->_type->factory($value);
+            } catch(core\InvalidArgumentException $e) {
+                $this->_applyMessage($node, 'invalid', $this->_handler->_(
+                    'Please select a valid option'
+                ));
+            }
+        } else {
+            if(isset($this->_options[$value])) {
+                $value = (string)$this->_options[$value];
+                $this->_shouldSanitize = false;
+            }
 
-        if(isset($this->_options[$value])) {
-            $eValue = (string)$this->_options[$value];
-            $this->_shouldSanitize = false;
+            if(!in_array($value, $this->_options)) {
+                $this->_applyMessage($node, 'invalid', $this->_handler->_(
+                    'Please select a valid option'
+                ));
+            }
         }
 
-        if(!in_array($eValue, $this->_options)) {
-            $this->_applyMessage($node, 'invalid', $this->_handler->_(
-                'Please select a valid option'// from %o%', 
-                //['%o%' => implode(', ', $this->_options)]
-            ));
-        }
-
-        return $this->_finalize($node, $eValue);
+        return $this->_finalize($node, $value);
     }
 }
