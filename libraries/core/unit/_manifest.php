@@ -250,3 +250,15 @@ interface IResolution extends IUnit, ICssCompatibleUnit, ISingleValueUnit, core\
     public function setDppx($dppx);
     public function getDppx();
 }
+
+
+
+## ENUMS
+class Priority extends core\Enum {
+    
+    const TRIVIAL = 'trivial';
+    const LOW = 'low';
+    const MEDIUM = 'medium';
+    const HIGH = 'high';
+    const CRITICAL = 'critical';
+}
