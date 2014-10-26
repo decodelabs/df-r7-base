@@ -32,7 +32,7 @@ interface IRendererContext extends core\collection\IMappedCollection, aura\view\
     public function prepareRow($row);
     public function iterate($key, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null);
     public function iterateField($field, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null);
-    public function renderCell($value, Callable $renderer=null);
+    public function renderCell($value, $renderer=null);
     public function skipRow();
     public function shouldSkipRow();
 }
@@ -47,7 +47,7 @@ interface IField {
     public function getLabels();
     public function getHeaderList();
 
-    public function setRenderer(Callable $renderer);
+    public function setRenderer($renderer);
     public function getRenderer();
     public function render($data, aura\html\widget\IRendererContext $renderContext);
 }
@@ -158,7 +158,7 @@ interface ICheckInputWidget extends IInputWidget {
 }
 
 interface ISelectionInputWidget extends IInputWidget {
-    public function setOptionRenderer(Callable $renderer);
+    public function setOptionRenderer($renderer);
     public function getOptionRenderer();
 }
 
@@ -317,12 +317,12 @@ interface IOrderedDataDrivenListWidget extends IDataDrivenListWidget {
 }
 
 interface ILinearListWidget extends IListWidget {
-    public function setRenderer(Callable $renderer=null);
+    public function setRenderer($renderer=null);
     public function getRenderer();
 }
 
 interface IMappedListWidget extends IListWidget {
-    public function setRowProcessor(Callable $processor=null);
+    public function setRowProcessor($processor=null);
     public function getRowProcessor();
     public function setField(IField $field);
     public function addField($key, $a=null, $b=null);

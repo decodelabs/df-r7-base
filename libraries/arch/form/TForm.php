@@ -368,7 +368,7 @@ trait TForm_ModalDelegate {
         return $this->_state->getStore('mode', $default);
     }
 
-    protected function _switchMode($from, $to, Callable $do=null) {
+    protected function _switchMode($from, $to, $do=null) {
         if(!is_array($from)) {
             $from = [$from];
         }
@@ -382,7 +382,7 @@ trait TForm_ModalDelegate {
         $this->_setMode($to);
 
         if($do) {
-            $do();
+            core\lang\Callback::factory($do)->invoke();
         }
     }
 
@@ -1007,7 +1007,7 @@ trait TForm_DependentDelegate {
 
             if($dep->hasCallback()) {
                 $callback = $dep->getCallback();
-                $callback($query, $dep->getValue(), $dep);
+                $callback->invoke($query, $dep->getValue(), $dep);
             } else {
                 $values[$dep->getContext()][$name] = $dep->getValue();
             }

@@ -46,8 +46,8 @@ class Parser {
         return $this;
     }
 
-    public function addCustomTag($name, Callable $callback) {
-        $this->_customTags[strtolower($name)] = $callback;
+    public function addCustomTag($name, $callback) {
+        $this->_customTags[strtolower($name)] = core\lang\Callback::factory($callback);
         return $this;
     }
 

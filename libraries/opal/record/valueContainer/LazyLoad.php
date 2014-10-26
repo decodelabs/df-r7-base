@@ -17,9 +17,9 @@ class LazyLoad implements opal\record\IPreparedValueContainer {
     protected $_isLoaded = false;
     protected $_loader;
 
-    public function __construct($initValue, Callable $loader) {
+    public function __construct($initValue, $loader) {
         $this->_value = $initValue;
-        $this->_loader = $loader;
+        $this->_loader = core\lang\Callback::factory($loader);
     }
 
     public function isPrepared() {
@@ -27,7 +27,7 @@ class LazyLoad implements opal\record\IPreparedValueContainer {
     }
     
     public function prepareValue(opal\record\IRecord $record, $fieldName) {
-        $this->_value = call_user_func_array($this->_loader, [$this->_value, $record, $fieldName]);
+        $this->_value = $this->_loader->invoke($this->_value, $record, $fieldName);
         $this->_isLoaded = true;
         return $this;
     }

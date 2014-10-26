@@ -51,8 +51,8 @@ class Html extends iris\Translator {
         return $this->_hasMath;
     }
 
-    public function setImageDereferencer(Callable $callback) {
-        $this->_imageDereferencer = $callback;
+    public function setImageDereferencer($callback) {
+        $this->_imageDereferencer = core\lang\Callback::factory($callback);
         return $this;
     }
 
@@ -67,8 +67,7 @@ class Html extends iris\Translator {
             );
         }
 
-        $d = $this->_imageDereferencer;
-        return $d($id, $number);
+        return $this->_imageDereferencer->invoke($id, $number);
     }
 
     protected function _beginDocument(flex\latex\map\Document $document) {

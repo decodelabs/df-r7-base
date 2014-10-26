@@ -36,12 +36,12 @@ class Manager implements IManager {
 
 
 
-    public function swallow(Callable $block) {
+    public function swallow($block) {
         $args = func_get_args();
         array_shift($args);
 
         try {
-            call_user_func_array($block, $args);
+            core\lang\Callback::factory($block)->invoke($args);
             return true;
         } catch(\Exception $e) {
             $this->logException($e);

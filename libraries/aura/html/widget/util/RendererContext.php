@@ -98,10 +98,10 @@ class RendererContext implements aura\html\widget\IRendererContext {
         return $this;
     }
 
-    public function renderCell($value, Callable $renderer=null) {
+    public function renderCell($value, $renderer=null) {
         if($renderer) {
             try {
-                $value = $renderer($value, $this);
+                $value = $renderer->invoke($value, $this);
             } catch(\Exception $e) {
                 $value = new aura\html\ElementString('<span class="error">ERROR: '.$e->getMessage().'</span>');
             }

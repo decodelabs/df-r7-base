@@ -15,10 +15,10 @@ class Action extends arch\Action {
     protected $_callback;
     protected $_scaffold;
 
-    public function __construct(arch\IContext $context, IScaffold $scaffold, Callable $callback, arch\IController $controller=null) {
+    public function __construct(arch\IContext $context, IScaffold $scaffold, $callback, arch\IController $controller=null) {
         parent::__construct($context, $controller);
 
-        $this->_callback = $callback;
+        $this->_callback = core\lang\Callback::factory($callback);
         $this->_scaffold = $scaffold;
     }
 
@@ -35,8 +35,7 @@ class Action extends arch\Action {
             return $pre;
         }
 
-        $c = $this->_callback;
-        return $c();
+        return $this->_callback->invoke();
     }
 
     protected function _getClassDefaultAccess() {

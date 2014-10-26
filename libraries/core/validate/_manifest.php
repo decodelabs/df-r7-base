@@ -44,13 +44,13 @@ interface IField {
     public function getRecordName();
     public function isRequired($flag=null);
     public function shouldSanitize($flag=null);
-    public function setCustomValidator(Callable $validator);
+    public function setCustomValidator($validator=null);
     public function getCustomValidator();
     public function setRequireGroup($name);
     public function getRequireGroup();
     public function setToggleField($name);
     public function getToggleField();
-    public function setMessageGenerator(Callable $generator=null);
+    public function setMessageGenerator($generator=null);
     public function getMessageGenerator();
     
     public function end();
@@ -255,7 +255,7 @@ trait TOptionProviderField {
 
 // Sanitizer
 interface ISanitizingField extends IField {
-    public function setSanitizer(Callable $sanitizer);
+    public function setSanitizer($sanitizer);
     public function getSanitizer();
     public function setDefaultValue($value);
     public function getDefaultValue();
@@ -266,7 +266,11 @@ trait TSanitizingField {
     protected $_sanitizer;
     protected $_defaultValue;
     
-    public function setSanitizer(Callable $sanitizer) {
+    public function setSanitizer($sanitizer) {
+        if($sanitizer !== null) {
+            $sanitizer = core\lang\Callback::factory($sanitizer);
+        }
+
         $this->_sanitizer = $sanitizer;
         return $this;
     }
@@ -294,7 +298,7 @@ trait TSanitizingField {
         }
 
         if($this->_sanitizer && $runSanitizer) {
-            $value = call_user_func_array($this->_sanitizer, [$value, $this]);
+            $value = $this->_sanitizer->invoke($value, $this);
         }
 
         return $value;

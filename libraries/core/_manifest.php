@@ -152,30 +152,33 @@ trait TUserValueContainer {
 
 // Chainer
 interface IChainable {
-    public function chain(Callable $callback);
-    public function chainIf($test, Callable $trueCallback, Callable $falseCallback=null);
-    public function chainEach(array $list, Callable $callback);
+    public function chain($callback);
+    public function chainIf($test, $trueCallback, $falseCallback=null);
+    public function chainEach(array $list, $callback);
 }
 
 trait TChainable {
-    public function chain(Callable $callback) {
-        $callback($this);
+
+    public function chain($callback) {
+        core\lang\Callback::factory($callback)->invoke($this);
         return $this;
     }
 
-    public function chainIf($test, Callable $trueCallback, Callable $falseCallback=null) {
+    public function chainIf($test, $trueCallback, $falseCallback=null) {
         if($test) {
-            $trueCallback($this);
+            core\lang\Callback::factory($trueCallback)->invoke($this);
         } else if($falseCallback) {
-            $falseCallback($this);
+            core\lang\Callback::factory($falseCallback)->invoke($this);
         }
 
         return $this;
     }
 
-    public function chainEach(array $list, Callable $callback) {
+    public function chainEach(array $list, $callback) {
+        $callback = core\lang\Callback::factory($callback);
+
         foreach($list as $key => $value) {
-            $callback($this, $value, $key);
+            $callback->invoke($this, $value, $key);
         }
 
         return $this;
@@ -732,7 +735,7 @@ interface ILoader {
     public function findFile($path);
     public function getFileSearchPaths($path);
     public function lookupFileList($path, $extensions=null);
-    public function lookupFileListRecursive($path, $extensions=null, Callable $folderCheck=null);
+    public function lookupFileListRecursive($path, $extensions=null, $folderCheck=null);
     public function lookupClassList($path, $test=true);
     public function lookupFolderList($path);
     

@@ -17,7 +17,7 @@ class BulletList extends Base implements ILinearListWidget, IDataDrivenListWidge
     
     const PRIMARY_TAG = 'ul';
     
-    public function __construct(arch\IContext $context, $data, Callable $renderer=null) {
+    public function __construct(arch\IContext $context, $data, $renderer=null) {
         $this->setData($data);
         $this->setRenderer($renderer);
     }

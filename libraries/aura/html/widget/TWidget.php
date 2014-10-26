@@ -51,7 +51,11 @@ trait TWidget_RendererProvider {
     
     protected $_renderer;
     
-    public function setRenderer(Callable $renderer=null) {
+    public function setRenderer($renderer=null) {
+        if($renderer !== null) {
+            $renderer = core\lang\Callback::factory($renderer);
+        }
+
         $this->_renderer = $renderer;
         return $this;
     }
@@ -567,7 +571,11 @@ trait TWidget_SelectionInput {
     
     protected $_optionRenderer;
     
-    public function setOptionRenderer(Callable $renderer) {
+    public function setOptionRenderer($renderer) {
+        if($renderer !== null) {
+            $renderer = core\lang\Callback::factory($renderer);
+        }
+
         $this->_optionRenderer = $renderer;
         return $this;
     }
@@ -577,8 +585,8 @@ trait TWidget_SelectionInput {
     }
     
     protected function _renderOption(aura\html\IElement $option, $value, $label) {
-        if($optionRenderer = $this->_optionRenderer) {
-            $optionRenderer($option, $value, $label);
+        if($this->_optionRenderer) {
+            $this->_optionRenderer->invoke($option, $value, $label);
         } else {
             $option->push($label);
         }
@@ -1076,7 +1084,11 @@ trait TWidget_MappedList {
     protected $_rowProcessor;
     protected $_fields = [];
     
-    public function setRowProcessor(Callable $processor=null) {
+    public function setRowProcessor($processor=null) {
+        if($processor !== null) {
+            $processor = core\lang\Callback::factory($processor);
+        }
+
         $this->_rowProcessor = $processor;
         return $this;
     }

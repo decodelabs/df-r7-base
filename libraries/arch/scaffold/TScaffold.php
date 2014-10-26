@@ -601,7 +601,7 @@ trait TScaffold_RecordDataProvider {
     public function definePriorityField($list, $mode) {
         $list->addField('priority', function($item) {
             $priority = core\unit\Priority::factory($item['priority']);
-            return $this->html->icon('priority-'.$priority, $priority->getLabel())
+            return $this->html->icon('priority-'.$priority->getOption(), $priority->getLabel())
                 ->addClass('priority-'.$priority->getOption());
         });
     }
@@ -762,7 +762,7 @@ trait TScaffold_SectionProvider {
         }
     }
 
-    public function buildSection($name, Callable $builder, Callable $linkBuilder=null) {
+    public function buildSection($name, $builder, $linkBuilder=null) {
         $container = $this->aura->getWidgetContainer();
         $this->view = $container->getView();
 
@@ -782,7 +782,7 @@ trait TScaffold_SectionProvider {
             $hb->setSubOperativeLinkBuilder($linkBuilder);
         }
 
-        $body = call_user_func_array($builder, $args);
+        $body = $builder->invoke($args);
         $container->push($hb, $body);
 
         return $this->view;
@@ -899,7 +899,7 @@ trait TScaffold_IndexHeaderBarProvider {
             ->setTitle($this->getDirectoryTitle());
     }
 
-    public function buildIndexSection($name, Callable $builder, Callable $linkBuilder=null) {
+    public function buildIndexSection($name, $builder, $linkBuilder=null) {
         $container = $this->aura->getWidgetContainer();
         $this->view = $container->getView();
 
@@ -910,7 +910,7 @@ trait TScaffold_IndexHeaderBarProvider {
             $hb->setSubOperativeLinkBuilder($linkBuilder);
         }
 
-        $body = call_user_func_array($builder, $args);
+        $body = $builder->invoke($args);
         $container->push($hb, $body);
 
         return $this->view;

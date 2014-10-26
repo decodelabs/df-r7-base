@@ -16,7 +16,7 @@ class Field implements aura\html\widget\IField, core\IDumpable {
     public $labels = [];
     public $renderer;
     
-    public function __construct($key, $name, Callable $renderer=null) {
+    public function __construct($key, $name, $renderer=null) {
         $this->key = $key;
         $this->setName($name);
         $this->setRenderer($renderer);
@@ -63,7 +63,11 @@ class Field implements aura\html\widget\IField, core\IDumpable {
     }
     
 // Renderer
-    public function setRenderer(Callable $renderer=null) {
+    public function setRenderer($renderer=null) {
+        if($renderer !== null) {
+            $renderer = core\lang\Callback::factory($renderer);
+        }
+        
         $this->renderer = $renderer;
         return $this;
     }

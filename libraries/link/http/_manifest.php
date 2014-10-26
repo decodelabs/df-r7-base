@@ -413,7 +413,7 @@ interface IClient extends link\IClient {
     public function setMaxRetries($retries);
     public function getMaxRetries();
 
-    public function addRequest($request, Callable $callback);
+    public function addRequest($request, $callback);
     public function sendRequest($request);
 
     public function get($url, $headers=null, $cookies=null);

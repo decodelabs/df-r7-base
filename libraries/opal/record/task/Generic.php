@@ -17,9 +17,9 @@ class Generic implements IOptionalAdapterAwareTask {
 
     protected $_callback;
 
-    public function __construct($id, Callable $callback, opal\query\IAdapter $adapter=null) {
+    public function __construct($id, $callback, opal\query\IAdapter $adapter=null) {
         $this->_adapter = $adapter;
-        $this->_callback = $callback;
+        $this->_callback = core\lang\Callback::factory($callback);
 
         $this->_setId($id);
     }
@@ -33,7 +33,7 @@ class Generic implements IOptionalAdapterAwareTask {
     }
 
     public function execute(opal\query\ITransaction $transaction) {
-        $this->_callback->__invoke($this, $transaction);
+        $this->_callback->invoke($this, $transaction);
         return $this;
     }
 }

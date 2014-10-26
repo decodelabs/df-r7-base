@@ -21,7 +21,7 @@ interface IManager extends core\IManager {
     public function logNotFound($request=null, $message=null);
     public function logException(\Exception $exception, $request=null);
 
-    public function swallow(Callable $block);
+    public function swallow($block);
 }
 
 

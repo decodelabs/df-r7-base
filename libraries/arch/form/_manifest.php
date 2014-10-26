@@ -147,7 +147,7 @@ interface IDependency {
     public function setErrorMessage($message);
     public function getErrorMessage();
 
-    public function setCallback(Callable $callback=null);
+    public function setCallback($callback=null);
     public function getCallback();
     public function hasCallback();
 
@@ -200,7 +200,11 @@ trait TDependency {
         return $this->_error;
     }
 
-    public function setCallback(Callable $callback=null) {
+    public function setCallback($callback=null) {
+        if($callback !== null) {
+            $callback = core\lang\Callback::factory($callback);
+        }
+        
         $this->_callback = $callback;
         return $this;
     }

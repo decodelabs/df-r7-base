@@ -70,7 +70,8 @@ class Client implements IClient, core\IDumpable {
         return $tis->_maxRetries;
     }
     
-    public function addRequest($request, Callable $callback) {
+    public function addRequest($request, $callback) {
+        $callback = core\lang\Callback::factory($callback);
         $request = link\http\request\Base::factory($request);
         $headers = $request->getHeaders();
 

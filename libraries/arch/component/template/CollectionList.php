@@ -84,12 +84,12 @@ class CollectionList extends arch\component\Base implements aura\html\widget\IWi
             $value = true;
         }
 
-        if($value === true && isset($this->_fields[$key]) && is_callable($this->_fields[$key])) {
+        if($value === true && isset($this->_fields[$key]) && $this->_fields[$key] instanceof core\lang\ICallback) {
             return $this;
         }
 
-        if(!is_callable($value)) {
-            $value = (bool)$value;
+        if(is_callable($value)) {
+            $value = core\lang\Callback::factory($value);
         }
 
         $this->_fields[$key] = $value;
@@ -133,8 +133,8 @@ class CollectionList extends arch\component\Base implements aura\html\widget\IWi
             && $this->_fields[$key] !== false;
     }
 
-    public function addCustomField($key, Callable $callback) {
-        $this->_fields[$key] = $callback;
+    public function addCustomField($key, $callback) {
+        $this->_fields[$key] = core\lang\Callback::factory($callback);
         return $this;
     }
 
@@ -192,8 +192,8 @@ class CollectionList extends arch\component\Base implements aura\html\widget\IWi
                 } else {
                     $output->addField($key);
                 }
-            } else if(is_callable($value)) {
-                $value($output, $key);
+            } else if($value instanceof core\lang\ICallback) {
+                $value->invoke($output, $key);
             }
         }
 

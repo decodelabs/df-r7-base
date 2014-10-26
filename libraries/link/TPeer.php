@@ -637,8 +637,8 @@ trait TPeer_CallbackSession {
     
     protected $_callback;
     
-    public function setCallback(Callable $callback) {
-        $this->_callback = $callback;
+    public function setCallback($callback) {
+        $this->_callback = core\lang\Callback::factory($callback);
         return $this;
     }
     

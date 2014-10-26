@@ -97,7 +97,11 @@ abstract class Base implements core\validate\IField {
     }
     
     
-    public function setCustomValidator(Callable $validator) {
+    public function setCustomValidator($validator=null) {
+        if($validator !== null) {
+            $validator = core\lang\Callback::factory($validator);
+        }
+
         $this->_customValidator = $validator;
         return $this;
     }
@@ -106,7 +110,11 @@ abstract class Base implements core\validate\IField {
         return $this->_customValidator;
     }
 
-    public function setMessageGenerator(Callable $generator=null) {
+    public function setMessageGenerator($generator=null) {
+        if($generator !== null) {
+            $generator = core\lang\Callback::factory($generator);
+        }
+
         $this->_messageGenerator = $generator;
         return $this;
     }
@@ -119,8 +127,7 @@ abstract class Base implements core\validate\IField {
         $message = null;
 
         if($this->_messageGenerator) {
-            $generator = $this->_messageGenerator;
-            $message = $generator($code, $this, $this->_handler);
+            $message = $this->_messageGenerator->invoke($code, $this, $this->_handler);
         }
 
         if(empty($message)) {
@@ -207,7 +214,7 @@ abstract class Base implements core\validate\IField {
     
     protected function _applyCustomValidator(core\collection\IInputTree $node, $value) {
         if(!$node->hasErrors() && $this->_customValidator) {
-            call_user_func_array($this->_customValidator, [$node, $value, $this]);
+            $this->_customValidator->invoke($node, $value, $this);
         }
         
         return $value;

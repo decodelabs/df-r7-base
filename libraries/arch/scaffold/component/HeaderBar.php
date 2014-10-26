@@ -41,7 +41,7 @@ class HeaderBar extends arch\component\template\HeaderBar {
         }
 
         if($this->_subOperativeLinkBuilder) {
-            call_user_func($this->_subOperativeLinkBuilder, $menu, $this->_scaffold->view, $this->_scaffold);
+            $this->_subOperativeLinkBuilder->invoke($menu, $this->_scaffold->view, $this->_scaffold);
         }
     }
 
@@ -69,7 +69,7 @@ class HeaderBar extends arch\component\template\HeaderBar {
         }
     }
 
-    public function setSubOperativeLinkBuilder(Callable $builder=null) {
+    public function setSubOperativeLinkBuilder($builder=null) {
         $this->_subOperativeLinkBuilder = $builder;
         return $this;
     }

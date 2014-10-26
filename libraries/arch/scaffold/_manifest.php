@@ -67,7 +67,7 @@ interface IRecordListProviderScaffold extends IRecordLoaderScaffold {
 
 interface ISectionProviderScaffold extends IScaffold {
     public function loadSectionAction(arch\IController $controller=null);
-    public function buildSection($name, Callable $builder, Callable $linkBuilder=null);
+    public function buildSection($name, $builder, $linkBuilder=null);
     public function getSectionItemCounts();
 }
 

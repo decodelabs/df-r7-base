@@ -24,7 +24,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
         return new core\validate\Handler();
     }
     
-    public function fetchForAction($source, $primary, $action=null, Callable $chain=null) {
+    public function fetchForAction($source, $primary, $action=null, $chain=null) {
         $output = $this->_queryForAction($this->fetch()->from($source), $primary, $action, $chain);
         $this->_checkRecordAccess($output, $action);
 
@@ -42,7 +42,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
         return $this->_queryForAction($this->select($fields)->from($source), $primary, $action, $chain);
     }
 
-    public function fetchOrCreateForAction($source, $primary, $action=null, Callable $newChain=null, Callable $queryChain=null) {
+    public function fetchOrCreateForAction($source, $primary, $action=null, $newChain=null, $queryChain=null) {
         if(is_callable($action)) {
             $queryChain = $newChain;
             $newChain = $action;
@@ -57,14 +57,14 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
             $output = $this->newRecord($source);
 
             if($newChain) {
-                $newChain($output);
+                core\lang\Callback::factory($newChain)->invoke($output);
             }
         }
 
         return $output;
     }
 
-    public function _queryForAction(opal\query\IReadQuery $query, &$primary, &$action, Callable $chain=null, $throw=true) {
+    public function _queryForAction(opal\query\IReadQuery $query, &$primary, &$action, $chain=null, $throw=true) {
         $name = $query->getSource()->getDisplayName();
         
         if($primary === null) {
@@ -318,7 +318,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
 
 
 // JSON
-    public function jsonEncodeCollectionQuery(opal\query\IReadQuery $query, array $extraData=null, Callable $rowSanitizer=null) {
+    public function jsonEncodeCollectionQuery(opal\query\IReadQuery $query, array $extraData=null, $rowSanitizer=null) {
         if($extraData === null) {
             $extraData = [];
         }
@@ -327,7 +327,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
 
         if($rowSanitizer) {
             foreach($data as $key => $row) {
-                $data[$key] = $rowSanitizer->__invoke($row, $key);
+                $data[$key] = $rowSanitizer->invoke($row, $key);
             }
         }
 
