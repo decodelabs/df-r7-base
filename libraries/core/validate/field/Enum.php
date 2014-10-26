@@ -16,7 +16,7 @@ class Enum extends Base implements core\validate\IEnumField {
 
     public function setType($type) {
         if($type !== null) {
-            $type = core\TypeRef::factory($type, 'core/lang/IEnum');
+            $type = core\lang\TypeRef::factory($type, 'core/lang/IEnum');
         }
 
         $this->_type = $type;

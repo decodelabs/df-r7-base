@@ -16,7 +16,7 @@ use df\opal;
 // BASE
 trait TForm {
 
-    use core\TChainable;
+    use core\lang\TChainable;
     use aura\view\TCascadingHelperProvider;
     
     //public $view;

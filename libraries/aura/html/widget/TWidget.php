@@ -14,7 +14,7 @@ use df\user;
 
 trait TWidget {
 
-    use core\TChainable;
+    use core\lang\TChainable;
     
     protected $_primaryTag;
     

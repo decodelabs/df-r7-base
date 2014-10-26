@@ -225,7 +225,7 @@ interface IAction extends core\IContextAware, user\IAccessLock, IResponseForcer,
 
 interface IComponent extends 
     core\IContextAware, 
-    core\IChainable, 
+    core\lang\IChainable, 
     aura\view\IDeferredRenderable, 
     user\IAccessLock, 
     aura\view\ICascadingHelperProvider, 

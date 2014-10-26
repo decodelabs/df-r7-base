@@ -17,7 +17,7 @@ class Base implements IView {
     use core\THelperProvider;
     use core\string\THtmlStringEscapeHandler;
     use core\TStringProvider;
-    use core\TChainable;
+    use core\lang\TChainable;
     
     protected $_contentProvider;
     

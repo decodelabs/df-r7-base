@@ -168,7 +168,7 @@ interface IHavingClauseFactory extends IClauseFactory {
 
 
 // Query
-interface IQuery extends ISourceProvider, ITransactionAware, user\IAccessLock, core\IChainable {
+interface IQuery extends ISourceProvider, ITransactionAware, user\IAccessLock, core\lang\IChainable {
     public function getQueryType();
     public function importBlock($name);
     public function importRelationBlock($relationField, $name);

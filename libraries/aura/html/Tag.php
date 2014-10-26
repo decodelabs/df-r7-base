@@ -11,7 +11,7 @@ use df\aura;
 
 class Tag implements ITag, core\IDumpable {
     
-    use core\TChainable;
+    use core\lang\TChainable;
     use core\TArrayAccessedAttributeContainer;
     use core\TStringProvider;
     use core\string\THtmlStringEscapeHandler;

@@ -10,7 +10,7 @@ use df\core;
 
 class Handler implements IHandler {
     
-    use core\TChainable;
+    use core\lang\TChainable;
 
     protected $_values = [];
     protected $_fields = [];

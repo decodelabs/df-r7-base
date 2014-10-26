@@ -125,7 +125,7 @@ trait TQuery_NestedComponent {
 trait TQuery {
 
     use user\TAccessLock;
-    use core\TChainable;
+    use core\lang\TChainable;
     
     public function getAccessLockDomain() {
         return $this->getSource()->getAdapter()->getAccessLockDomain();

@@ -18,7 +18,7 @@ class BadMethodCallException extends \BadMethodCallException implements IExcepti
 
 
 // Interfaces
-interface IHandler extends \ArrayAccess, core\IChainable {
+interface IHandler extends \ArrayAccess, core\lang\IChainable {
     public function addField($name, $type);
     public function getField($name);
     public function getFields();

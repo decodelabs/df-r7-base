@@ -39,7 +39,7 @@ interface IStateController extends IStoreProvider {
     public function reset();
 }
 
-interface IForm extends IStoreProvider, core\IChainable {
+interface IForm extends IStoreProvider, core\lang\IChainable {
     public function isRenderingInline();
     public function getStateController();
     public function loadDelegate($id, $path);

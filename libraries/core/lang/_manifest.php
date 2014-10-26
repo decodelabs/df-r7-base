@@ -31,6 +31,7 @@ interface ICallback {
     public function invokeArgs(array $args);
 }
 
+
 interface IEnum extends core\IStringProvider {
     public static function getOptions();
     public static function getLabels();
@@ -39,4 +40,45 @@ interface IEnum extends core\IStringProvider {
     public function getLabel();
     public static function label($option);
     public function is($value);
+}
+
+
+interface ITypeRef {
+    public function newInstance();
+    public function newInstanceArgs(array $args);
+}
+
+
+interface IChainable {
+    public function chain($callback);
+    public function chainIf($test, $trueCallback, $falseCallback=null);
+    public function chainEach(array $list, $callback);
+}
+
+trait TChainable {
+
+    public function chain($callback) {
+        Callback::factory($callback)->invoke($this);
+        return $this;
+    }
+
+    public function chainIf($test, $trueCallback, $falseCallback=null) {
+        if($test) {
+            Callback::factory($trueCallback)->invoke($this);
+        } else if($falseCallback) {
+            Callback::factory($falseCallback)->invoke($this);
+        }
+
+        return $this;
+    }
+
+    public function chainEach(array $list, $callback) {
+        $callback = Callback::factory($callback);
+
+        foreach($list as $key => $value) {
+            $callback->invoke($this, $value, $key);
+        }
+
+        return $this;
+    }
 }

@@ -58,7 +58,7 @@ interface ITagDataContainer extends core\IAttributeContainer {
 
 
 
-interface ITag extends IElementRepresentation, \ArrayAccess, ITagDataContainer, core\string\IStringEscapeHandler, core\IChainable {
+interface ITag extends IElementRepresentation, \ArrayAccess, ITagDataContainer, core\string\IStringEscapeHandler, core\lang\IChainable {
     // Name
     public function setName($name);
     public function getName();
@@ -84,7 +84,7 @@ interface IWidgetFinder {
 
 
 
-interface IElementContent extends IElementRepresentation, core\IChainable {
+interface IElementContent extends IElementRepresentation, core\lang\IChainable {
     public function getElementContentString();
     public function esc($value);
 }
@@ -98,7 +98,7 @@ interface IElementContentCollection extends
 trait TElementContent {
     
     use core\TStringProvider;
-    use core\TChainable;
+    use core\lang\TChainable;
     use core\collection\TArrayCollection;
     use core\collection\TArrayCollection_Constructor;
     use core\collection\TArrayCollection_ProcessedIndexedValueMap;

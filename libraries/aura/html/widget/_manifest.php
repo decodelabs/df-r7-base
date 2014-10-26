@@ -60,7 +60,7 @@ interface IWidgetShortcutProvider {
 
 
 
-interface IWidget extends aura\view\IDeferredRenderable, aura\html\IElementRepresentation, aura\html\ITagDataContainer, core\IChainable {
+interface IWidget extends aura\view\IDeferredRenderable, aura\html\IElementRepresentation, aura\html\ITagDataContainer, core\lang\IChainable {
     public function getWidgetName();
     public function getTag();
     public function esc($value);
