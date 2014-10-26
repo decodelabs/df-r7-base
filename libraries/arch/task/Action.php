@@ -43,19 +43,7 @@ abstract class Action extends arch\Action implements IAction {
     }
 
     public static function getSchedulePriority() {
-        $priority = strtolower(static::SCHEDULE_PRIORITY);
-
-        switch($priority) {
-            case 'trivial':
-            case 'low':
-            case 'medium':
-            case 'high':
-            case 'critical':
-                return $priority;
-
-            default:
-                return 'medium';
-        }
+        return core\unit\Priority::factory(static::SCHEDULE_PRIORITY);
     }
 
     public static function shouldScheduleAutomatically() {

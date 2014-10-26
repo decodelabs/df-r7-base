@@ -19,9 +19,7 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('environmentMode', 'Enum', ['development', 'testing', 'production'])
             ->isNullable(true);
 
-        $schema->addField('priority', 'Enum', [
-            'trivial', 'low', 'medium', 'high', 'critical'
-        ]);
+        $schema->addField('priority', 'Enum', core\unit\Priority::getOptions());
 
         $schema->addIndexedField('queueDate', 'Timestamp');
 

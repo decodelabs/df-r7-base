@@ -29,37 +29,24 @@ class PrioritySlider extends Base implements IInputWidget {
             return;
         }
 
-        if(!is_numeric($inner)) {
-            switch($inner) {
-                case 'critical': $inner = 4; break;
-                case 'high': $inner = 3; break;
-                case 'medium': $inner = 2; break;
-                case 'low': $inner = 1; break;
-                case 'trivial': $inner = 0; break;
-                default: $inner = 2; break;
-            }
-        }
-
-        if($inner < 0) {
-            $inner = 0;
-        }
-
-        if($inner > 4) {
-            $inner = 4;
-        }
-
+        $inner = core\unit\Priority::factory($inner);
         $value->setValue($inner);
     }
 
     protected function _render() {
         $tag = $this->getTag();
+        $value = $this->getValue()->getValue();
+
+        if($value !== null) {
+            $value = $value->getValue();
+        }
 
         return $tag->renderWith([
             new aura\html\Element('span', 'Trivial'),
             ' ',
             new aura\html\Element('input', null, [
                 'name' => $this->getName(),
-                'value' => $this->getValue()->getValue(),
+                'value' => $value,
                 'type' => 'range',
                 'min' => 0,
                 'max' => 4,
