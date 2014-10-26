@@ -182,6 +182,80 @@ trait TChainable {
 }
 
 
+// Enum
+interface IEnum extends IStringProvider {
+    public static function getOptions();
+    public function getValue();
+}
+
+abstract class Enum implements IEnum, IDumpable {
+
+    use TStringProvider;
+
+    protected static $_options;
+    protected $_value;
+
+    public static function factory($value) {
+        if($value instanceof static) {
+            return $value;
+        }
+
+        return new static($value);
+    }
+
+    protected function __construct($value) {
+        static::getOptions();
+
+        if(is_numeric($value) && isset(static::$_options[$value])) {
+            $value = (int)$value;
+        } else {
+            if(!in_array($value, static::$_options)) {
+                throw new InvalidArgumentException(
+                    $value.' is not a valid enum option'
+                );
+            }
+
+            $value = array_search($value, static::$_options);
+        }
+
+        $this->_value = $value;
+    }
+
+    public static function getOptions() {
+        if(!static::$_options) {
+            $reflection = new \ReflectionClass(get_called_class());
+            static::$_options = array_values($reflection->getConstants());
+        }
+
+        return static::$_options;
+    }
+
+    public function getValue() {
+        return $this->_value;
+    }
+
+    public function toString() {
+        return static::$_options[$this->_value];
+    }
+
+    public static function __callStatic($name, array $args) {
+        if(defined('static::'.$name)) {
+            return new static(constant('static::'.$name));
+        }
+
+        throw new LogicException(
+            'Enum value '.$name.' has not been defined'
+        );
+    }
+
+
+// Dump
+    public function getDumpProperties() {
+        return static::$_options[$this->_value].' ('.$this->_value.')';
+    }
+}
+
+
 // Error container
 interface IErrorContainer {
     public function isValid();
@@ -480,6 +554,7 @@ trait THelperProvider {
 }
 
 interface IHelper {}
+
 
 
 
