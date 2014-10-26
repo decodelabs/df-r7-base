@@ -30,7 +30,7 @@ interface IMode {
     const READ_WRITE_NEW = 'x+b';
 }
 
-class Mode extends core\Enum implements IMode {}
+class Mode extends core\lang\Enum implements IMode {}
 
 
 

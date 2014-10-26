@@ -22,7 +22,7 @@ class Enum extends Base implements
     }
 
     public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
-        if($value instanceof core\IEnum) {
+        if($value instanceof core\lang\IEnum) {
             $value = $value->getOption();
         }
 

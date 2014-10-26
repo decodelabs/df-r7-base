@@ -254,7 +254,7 @@ interface IResolution extends IUnit, ICssCompatibleUnit, ISingleValueUnit, core\
 
 
 ## ENUMS
-class Priority extends core\Enum {
+class Priority extends core\lang\Enum {
     
     const TRIVIAL = null;
     const LOW = null;

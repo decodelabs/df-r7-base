@@ -20,6 +20,7 @@ class BadMethodCallException extends \BadMethodCallException {}
 
 // Interfaces
 interface ICallback {
+    
     const DIRECT = 1;
     const REFLECTION = 2;
 
@@ -28,4 +29,14 @@ interface ICallback {
 
     public function invoke();
     public function invokeArgs(array $args);
+}
+
+interface IEnum extends core\IStringProvider {
+    public static function getOptions();
+    public static function getLabels();
+    public function getIndex();
+    public function getOption();
+    public function getLabel();
+    public static function label($option);
+    public function is($value);
 }
