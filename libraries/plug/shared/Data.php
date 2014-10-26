@@ -326,6 +326,8 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
         $data = $query->toArray();
 
         if($rowSanitizer) {
+            $rowSanitizer = core\lang\Callback::factory($rowSanitizer);
+
             foreach($data as $key => $row) {
                 $data[$key] = $rowSanitizer->invoke($row, $key);
             }
