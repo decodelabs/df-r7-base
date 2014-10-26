@@ -302,7 +302,17 @@ class TypeRef implements core\IDumpable {
     protected $_class;
     protected $_reflection;
 
-    public static function factory($type, $extends=null) {
+    public static function __callStatic($method, array $args) {
+        if(method_exists('df\\core\\TypeRef', '__'.$method)) {
+            return call_user_func_array(['df\\core\\TypeRef', '__'.$method], $args); 
+        }
+
+        throw new BadMethodCallException(
+            'Method '.$method.' is not available on class df\\core\\TypeRef'
+        );
+    }
+
+    public static function __factory($type, $extends=null) {
         if(!$type instanceof self) {
             return new self($type);
         }
@@ -379,7 +389,7 @@ class TypeRef implements core\IDumpable {
             );
         }
 
-        return $method->invokeArgs($args);
+        return $method->invokeArgs(null, $args);
     }
 
 
