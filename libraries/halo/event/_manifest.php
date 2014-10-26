@@ -9,7 +9,6 @@ use df;
 use df\core;
 use df\halo;
 use df\link;
-use df\mesh;
 
 
 // Exceptions
@@ -260,7 +259,7 @@ trait TTimeoutBinding {
         }
 
         if($callback !== null) {
-            $callback = mesh\Callback::factory($callback);
+            $callback = core\lang\Callback::factory($callback);
         }
 
         $this->timeoutDuration = $duration;

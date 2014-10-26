@@ -9,7 +9,6 @@ use df;
 use df\core;
 use df\halo;
 use df\link;
-use df\mesh;
 
 abstract class Base implements IDispatcher {
     
@@ -82,7 +81,7 @@ abstract class Base implements IDispatcher {
 // Cycle handler
     public function setCycleHandler($callback=null) {
         if($callback !== null) {
-            $callback = mesh\Callback::factory($callback);
+            $callback = core\lang\Callback::factory($callback);
         }
 
         $this->_cycleHandler = $callback;

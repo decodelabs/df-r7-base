@@ -3,11 +3,10 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\mesh;
+namespace df\core\lang;
 
 use df;
 use df\core;
-use df\mesh;
 
 class Callback implements ICallback {
     

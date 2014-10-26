@@ -9,7 +9,6 @@ use df;
 use df\core;
 use df\halo;
 use df\link;
-use df\mesh;
 
 trait TPeer {
     
@@ -282,14 +281,14 @@ trait TPeer_Client {
                 $this->events
                     ->bindSocketRead(
                         $socket,
-                        mesh\Callback::factory(
+                        core\lang\Callback::factory(
                             [$this, '_onSocketDataAvailable'], 
                             [$session]
                         )
                     )
                     ->bindFrozenSocketWrite(
                         $socket,
-                        mesh\Callback::factory(
+                        core\lang\Callback::factory(
                             [$this, '_onSocketConnectionWaiting'], 
                             [$session]
                         )
@@ -300,14 +299,14 @@ trait TPeer_Client {
                 $this->events
                     ->bindSocketWrite(
                         $socket,
-                        mesh\Callback::factory(
+                        core\lang\Callback::factory(
                             [$this, '_onSocketConnectionWaiting'], 
                             [$session]
                         )
                     )
                     ->bindFrozenSocketRead(
                         $socket,
-                        mesh\Callback::factory(
+                        core\lang\Callback::factory(
                             [$this, '_onSocketDataAvailable'], 
                             [$session]
                         )
@@ -417,14 +416,14 @@ trait TPeer_Server {
                 $this->events
                     ->bindSocketWrite(
                         $peerSocket,
-                        mesh\Callback::factory(
+                        core\lang\Callback::factory(
                             [$this, '_onSocketConnectionWaiting'], 
                             [$session]
                         )
                     )
                     ->bindFrozenSocketRead(
                         $peerSocket,
-                        mesh\Callback::factory(
+                        core\lang\Callback::factory(
                             [$this, '_onSocketDataAvailable'], 
                             [$session]
                         )
@@ -435,14 +434,14 @@ trait TPeer_Server {
                 $this->events
                     ->bindSocketRead(
                         $peerSocket,
-                        mesh\Callback::factory(
+                        core\lang\Callback::factory(
                             [$this, '_onSocketDataAvailable'], 
                             [$session]
                         )
                     )
                     ->bindFrozenSocketWrite(
                         $peerSocket,
-                        mesh\Callback::factory(
+                        core\lang\Callback::factory(
                             [$this, '_onSocketConnectionWaiting'], 
                             [$session]
                         )
@@ -455,7 +454,7 @@ trait TPeer_Server {
                 $this->events
                     ->bindSocketWrite(
                         $peerSocket,
-                        mesh\Callback::factory(
+                        core\lang\Callback::factory(
                             [$this, '_onSocketStreamConnectionWaiting']
                         )
                     );
@@ -467,7 +466,7 @@ trait TPeer_Server {
                 $this->events
                     ->bindSocketRead(
                         $peerSocket,
-                        mesh\Callback::factory(
+                        core\lang\Callback::factory(
                             [$this, '_onSocketStreamDataAvailable']
                         )
                     );

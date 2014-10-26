@@ -9,7 +9,6 @@ use df;
 use df\core;
 use df\halo;
 use df\link;
-use df\mesh;
 
 abstract class Base implements halo\event\IBinding {
 
@@ -23,7 +22,7 @@ abstract class Base implements halo\event\IBinding {
     public function __construct(halo\event\IDispatcher $dispatcher, $id, $isPersistent, $callback) {
         $this->id = $id;
         $this->isPersistent = (bool)$isPersistent;
-        $this->handler = mesh\Callback::factory($callback);
+        $this->handler = core\lang\Callback::factory($callback);
         $this->dispatcher = $dispatcher;
     }
 

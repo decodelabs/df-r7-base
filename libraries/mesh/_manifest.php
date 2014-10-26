@@ -38,17 +38,3 @@ interface IEntityHandler extends IHandler {
 }
 
 interface IEventHandler extends IHandler, mesh\event\IEmitter {}
-
-
-
-// Callback
-interface ICallback {
-    const DIRECT = 1;
-    const REFLECTION = 2;
-
-    public function setExtraArgs(array $args);
-    public function getExtraArgs();
-
-    public function invoke();
-    public function invokeArgs(array $args);
-}
