@@ -182,9 +182,12 @@ trait TWidget_FormData {
             $value = new core\collection\InputTree($value);
         }
         
+        $this->_normalizeValue($value);
         $this->_value = $value;
         return $this;
     }
+
+    protected function _normalizeValue(core\collection\IInputTree $value) {}
     
     public function getValue() {
         if(!$this->_value) {
