@@ -13,6 +13,7 @@ class Set extends Base implements core\validate\IEnumField {
     use core\validate\TSanitizingField;
 
     protected $_options = [];
+    protected $_stringDelimiter = null;
 
     public function setOptions(array $options) {
         $this->_options = $options;
@@ -21,6 +22,21 @@ class Set extends Base implements core\validate\IEnumField {
 
     public function getOptions() {
         return $this->_options;
+    }
+
+    public function applyAsString($delimiter) {
+        if($delimiter === false) {
+            $delimiter = null;
+        } else {
+            $delimiter = (string)$delimiter;
+        }
+
+        $this->_stringDelimiter = $delimiter;
+        return $this;
+    }
+
+    public function shouldApplyAsString() {
+        return $this->_stringDelimiter !== null;
     }
 
     public function validate(core\collection\IInputTree $node) {
@@ -81,7 +97,11 @@ class Set extends Base implements core\validate\IEnumField {
         }
         
         if(!is_array($value)) {
-            $value =[$value];
+            $value = [$value];
+        }
+
+        if($this->_stringDelimiter !== null) {
+            $value = implode($this->_stringDelimiter, $value);
         }
         
         $record[$this->getRecordName()] = $value;
