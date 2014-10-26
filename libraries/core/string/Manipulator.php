@@ -40,7 +40,7 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
     public static function formatLabel($label) {
         return self::factory($label)
             ->replace(['-', '_'], ' ')
-            ->regexReplace('/([^ ])([A-Z])/u', '$1 $2')
+            ->regexReplace('/([a-z])([A-Z])/u', '$1 $2')
             ->toLower()
             ->firstToUpper()
             ->toString();
