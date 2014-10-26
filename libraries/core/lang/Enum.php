@@ -8,9 +8,9 @@ namespace df\core\lang;
 use df;
 use df\core;
 
-abstract class Enum implements IEnum, IDumpable {
+abstract class Enum implements IEnum, core\IDumpable {
 
-    use TStringProvider;
+    use core\TStringProvider;
 
     protected static $_options;
     protected static $_labels;
