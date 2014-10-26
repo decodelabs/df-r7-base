@@ -38,7 +38,7 @@ class PrioritySlider extends Base implements IInputWidget {
         $value = $this->getValue()->getValue();
 
         if($value !== null) {
-            $value = $value->getValue();
+            $value = $value->getIndex();
         }
 
         return $tag->renderWith([

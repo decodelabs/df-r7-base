@@ -28,7 +28,7 @@ class File implements iris\ISource {
 
     public function substring($start, $length=1) {
         if(!$this->_file) {
-            $this->_file = new core\io\channel\File($this->_uri, core\io\IMode::READ_ONLY);
+            $this->_file = new core\io\channel\File($this->_uri, core\io\Mode::READ_ONLY);
         }
 
         $this->_file->seek($start);

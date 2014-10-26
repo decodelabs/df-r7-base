@@ -8,7 +8,6 @@ namespace df\flex\csv;
 use df;
 use df\core;
 use df\flex;
-use df\mesh;
     
 class Builder implements IBuilder {
 
@@ -22,7 +21,7 @@ class Builder implements IBuilder {
     public static function openFile($path, $generator=null) {
         return (new self($generator))
             ->setChunkReceiver(
-                (new core\io\channel\File($path, core\io\IMode::READ_WRITE_TRUNCATE))
+                (new core\io\channel\File($path, core\io\Mode::READ_WRITE_TRUNCATE))
                     ->setContentType('text/csv')
             );
     }
@@ -30,7 +29,7 @@ class Builder implements IBuilder {
     public static function openString($generator=null) {
         return (new self($generator))
             ->setChunkReceiver(
-                new core\io\channel\Memory(null, 'text/csv', core\io\IMode::READ_WRITE_TRUNCATE)
+                new core\io\channel\Memory(null, 'text/csv', core\io\Mode::READ_WRITE_TRUNCATE)
             );
     }
 
@@ -49,7 +48,7 @@ class Builder implements IBuilder {
 
     public function setGenerator($generator=null) {
         if($generator !== null) {
-            $generator = mesh\Callback::factory($generator);
+            $generator = core\lang\Callback::factory($generator);
         }
 
         $this->_generator = $generator;

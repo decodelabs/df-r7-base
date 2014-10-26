@@ -225,7 +225,7 @@ class Client implements IClient, core\IDumpable {
                     $response->setContentFileStream($path);
                 } else {
                     core\io\Util::ensureDirExists(dirname($path));
-                    $response->setContentFileStream(new core\io\channel\File($path, core\io\IMode::READ_WRITE_TRUNCATE));
+                    $response->setContentFileStream(new core\io\channel\File($path, core\io\Mode::READ_WRITE_TRUNCATE));
                 }
             }
 

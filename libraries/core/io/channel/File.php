@@ -19,12 +19,17 @@ class File implements core\io\IFile, core\io\ILocalFilePointer, core\io\IContain
     protected $_path;
     protected $_contentType = null;
 
-    public static function createTempFile($mode=core\io\IMode::READ_WRITE) {
-        return new self(tempnam(sys_get_temp_dir(), df\Launchpad::$application->getUniquePrefix().'-'), $mode);
+    public static function createTempFile($mode=core\io\Mode::READ_WRITE) {
+        return new self(
+            tempnam(
+                sys_get_temp_dir(), 
+                df\Launchpad::$application->getUniquePrefix().'-'
+            ), 
+            $mode
+        );
     }
 
-    public function __construct($path, $mode=core\io\IMode::READ_WRITE) {
-        //$this->_path = (string)core\uri\FilePath::factory($path);
+    public function __construct($path, $mode=core\io\Mode::READ_WRITE) {
         $this->_path = $path;
         $this->open($mode);
     }
@@ -34,22 +39,22 @@ class File implements core\io\IFile, core\io\ILocalFilePointer, core\io\IContain
     }
 
 // Loading
-    public function open($mode=core\io\IMode::READ_WRITE) {
+    public function open($mode=core\io\Mode::READ_WRITE) {
         if($this->_fp) {
-            if($this->_mode == $mode) {
+            if($this->_mode->is($mode)) {
                 return $this;
             }
             
             $this->close();
         }
         
-        $this->_mode = $mode;
+        $this->_mode = core\io\Mode::factory($mode);
         
-        if($mode == core\io\IMode::READ_ONLY && !is_readable($this->_path)) {
+        if($this->_mode->is(core\io\Mode::READ_ONLY) && !is_readable($this->_path)) {
             throw new core\io\RuntimeException('File '.$this->_path.' is not readable!');
         }
         
-        $this->_fp = fopen($this->_path, $mode);
+        $this->_fp = fopen($this->_path, $this->_mode->getLabel());
         
         return $this;
     }

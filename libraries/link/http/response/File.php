@@ -61,6 +61,6 @@ class File extends Base implements link\http\IFileResponse {
     }
     
     public function getContentFileStream() {
-        return $this->_file->open(core\io\IMode::READ_ONLY);
+        return $this->_file->open(core\io\Mode::READ_ONLY);
     }
 }

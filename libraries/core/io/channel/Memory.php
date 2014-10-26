@@ -20,7 +20,7 @@ class Memory implements core\io\IFile, core\io\IContainedStateChannel, core\IDum
     private $_pos = 0;
 
 
-    public function __construct($data='', $contentType=null, $mode=core\io\IMode::READ_WRITE) {
+    public function __construct($data='', $contentType=null, $mode=core\io\Mode::READ_WRITE) {
         $this->putContents($data);
         $this->setContentType($contentType);
     }
@@ -53,7 +53,7 @@ class Memory implements core\io\IFile, core\io\IContainedStateChannel, core\IDum
 
 
 // Loading
-    public function open($mode=core\io\IMode::READ_WRITE) {
+    public function open($mode=core\io\Mode::READ_WRITE) {
         return $this;
     }
 

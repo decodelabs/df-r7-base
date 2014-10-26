@@ -30,6 +30,8 @@ interface IMode {
     const READ_WRITE_NEW = 'x+b';
 }
 
+class Mode extends core\Enum implements IMode {}
+
 
 
 // Reader
@@ -458,7 +460,7 @@ interface IStreamChannel extends IContainedStateChannel {
 // File
 interface IFilePointer {
 
-    public function open($mode=IMode::READ_WRITE);
+    public function open($mode=Mode::READ_WRITE);
     public function exists();
 
     public function setContentType($type);

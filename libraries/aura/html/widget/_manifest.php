@@ -192,16 +192,6 @@ interface IGroupedSelectionInputWidget extends ISelectionInputWidget {
     public function getGroupName($id);
 }
 
-
-interface IDisposition {
-    const POSITIVE = 'positive';
-    const NEGATIVE = 'negative';
-    const INFORMATIVE = 'informative';
-    const OPERATIVE = 'operative';
-    const TRANSITIVE = 'transitive';
-    const EXTERNAL = 'external';
-}
-
 interface IDispositionAwareWidget {
     public function setDisposition($diposition);
     public function getDisposition();

@@ -14,9 +14,9 @@ class LogicException extends \LogicException implements IException {}
 class UnexpectedValueException extends \UnexpectedValueException implements IException {}
 class RuntimeException extends \RuntimeException implements IException {}
 class InvalidArgumentException extends \InvalidArgumentException implements IException {}
+class BadMethodCallException extends \BadMethodCallException {}
 class ApplicationNotFoundException extends RuntimeException {}
 class HelperNotFoundException extends RuntimeException {}
-class BadMethodCallException extends \BadMethodCallException {}
 
 ### Generic interfaces
 
@@ -187,10 +187,11 @@ trait TChainable {
 interface IEnum extends IStringProvider {
     public static function getOptions();
     public static function getLabels();
-    public function getValue();
+    public function getIndex();
     public function getOption();
     public function getLabel();
     public static function label($option);
+    public function is($value);
 }
 
 abstract class Enum implements IEnum, IDumpable {
@@ -199,7 +200,7 @@ abstract class Enum implements IEnum, IDumpable {
 
     protected static $_options;
     protected static $_labels;
-    protected $_value;
+    protected $_index;
 
     public static function factory($value) {
         if($value instanceof static) {
@@ -211,20 +212,25 @@ abstract class Enum implements IEnum, IDumpable {
 
     protected function __construct($value) {
         static::getOptions();
+        $this->_index = $this->_normalizeIndex($value);
+    }
 
+    protected function _normalizeIndex($value) {
         if(is_numeric($value) && isset(static::$_options[$value])) {
             $value = (int)$value;
         } else {
-            if(!in_array($value, static::$_options)) {
+            if(in_array($value, static::$_options)) {
+                $value = array_search($value, static::$_options);
+            } else if(in_array($value, static::$_labels)) {
+                $value = array_search($value, static::$_labels);
+            } else {
                 throw new InvalidArgumentException(
                     $value.' is not a valid enum option'
                 );
             }
-
-            $value = array_search($value, static::$_options);
         }
 
-        $this->_value = $value;
+        return $value;
     }
 
     public static function getOptions() {
@@ -256,16 +262,16 @@ abstract class Enum implements IEnum, IDumpable {
         return $output;
     }
 
-    public function getValue() {
-        return $this->_value;
+    public function getIndex() {
+        return $this->_index;
     }
 
     public function getOption() {
-        return static::$_options[$this->_value];
+        return static::$_options[$this->_index];
     }
 
     public function getLabel() {
-        return static::$_labels[$this->_value];
+        return static::$_labels[$this->_index];
     }
 
     public static function label($option) {
@@ -273,7 +279,11 @@ abstract class Enum implements IEnum, IDumpable {
     }
 
     public function toString() {
-        return static::$_options[$this->_value];
+        return static::$_labels[$this->_index];
+    }
+
+    public function is($value) {
+        return $this->_index == self::factory($value)->_index;
     }
 
     public static function __callStatic($name, array $args) {
@@ -289,7 +299,7 @@ abstract class Enum implements IEnum, IDumpable {
 
 // Dump
     public function getDumpProperties() {
-        return static::$_options[$this->_value].' ('.$this->_value.')';
+        return static::$_options[$this->_index].' ('.$this->_index.')';
     }
 }
 

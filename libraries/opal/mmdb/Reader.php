@@ -23,7 +23,7 @@ class Reader implements IReader {
 
     public function __construct($file) {
         if(is_string($file)) {
-            $file = new core\io\channel\File($file, core\io\IMode::READ_ONLY);
+            $file = new core\io\channel\File($file, core\io\Mode::READ_ONLY);
         } else if(!$file instanceof core\io\IFile) {
             throw new InvalidArgumentException(
                 'MMDB file could not be found'
