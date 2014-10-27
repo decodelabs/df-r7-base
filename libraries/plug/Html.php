@@ -503,22 +503,7 @@ class Html implements auraLib\view\IHelper, core\i18n\translate\ITranslationProx
     }
 
     public function themeImage($path, $alt=null, $width=null, $height=null) {
-        $output = $this->element(
-            'img', null, [
-                'src' => $this->_view->uri->themeAsset($path),
-                'alt' => $alt
-            ]
-        );
-
-        if($width !== null) {
-            $output->setAttribute('width', $width);
-        }
-
-        if($height !== null) {
-            $output->setAttribute('height',  $height);
-        }
-
-        return $output;
+        return $this->image($this->_view->uri->themeAsset($path), $alt, $width, $height);
     }
 
 // Video
