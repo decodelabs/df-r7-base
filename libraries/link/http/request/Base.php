@@ -318,7 +318,7 @@ class Base implements link\http\IRequest, core\IDumpable {
                 break;
 
             default:
-                $this->_secureTransport = 'ssl';
+                $this->_secureTransport = 'tls';
                 break;
         }
     }
