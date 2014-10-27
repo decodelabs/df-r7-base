@@ -50,6 +50,32 @@ interface IDate extends \Serializable, core\IStringProvider {
     public function isNearPast($hours=null);
     public function isFuture();
     public function isNearFuture($hours=null);
+
+    public function isYear($year);
+    public function getYear();
+    public function getShortYear();
+
+    public function isMonth($month);
+    public function getMonth();
+    public function getMonthName();
+    public function getShortMonthName();
+
+    public function isWeek($week);
+    public function getWeek();
+
+    public function isDay($day);
+    public function getDay();
+    public function getDayName();
+    public function getShortDayName();
+    public function isDayOfWeek($day);
+    public function getDayOfWeek();
+
+    public function isHour($hour);
+    public function getHour();
+    public function isMinute($minute);
+    public function getMinute();
+    public function isSecond($second);
+    public function getSecond();
     
     // Modification
     public function modify($string);

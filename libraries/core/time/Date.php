@@ -30,6 +30,31 @@ class Date implements IDate, core\IDumpable {
     const DB = 'Y-m-d H:i:s';
     const DBDATE = 'Y-m-d';
     
+    protected static $_months = [
+        'jan' => 1, 'january' => 1,
+        'feb' => 2, 'february' => 2,
+        'mar' => 3, 'march' => 3,
+        'apr' => 4, 'april' => 4,
+        'may' => 5,
+        'jun' => 6, 'june' => 6,
+        'jul' => 7, 'july' => 7,
+        'aug' => 8, 'august' => 8,
+        'sep' => 9, 'september' => 9,
+        'oct' => 10, 'october' => 10,
+        'nov' => 11, 'november' => 11,
+        'dec' => 12, 'december' => 12
+    ];
+
+    protected static $_days = [
+        'mon' => 1, 'monday' => 1,
+        'tue' => 2, 'tuesday' => 2,
+        'wed' => 3, 'wednesday' => 3,
+        'thu' => 4, 'thursday' => 4,
+        'fri' => 5, 'friday' => 5,
+        'sat' => 6, 'saturday' => 6,
+        'sun' => 7, 'sunday' => 7
+    ];
+
     public $_date;
     
     public static function fromCompressedString($string, $timezone=true) {
@@ -421,6 +446,134 @@ class Date implements IDate, core\IDumpable {
 
         return $ts > $time && $ts < $time + ($hours * 60);
     }
+
+
+
+    public function isYear($year) {
+        if($this->format('Y') == $year) {
+            return true;
+        }
+
+        if($year < 100 && strlen($year) == 2 && $this->format('y') == $year) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function getYear() {
+        return (int)$this->format('Y');
+    }
+
+    public function getShortYear() {
+        return $this->format('y');
+    }
+
+    public function isMonth($month) {
+        if(!is_numeric($month)) {
+            $month = strtolower($month);
+
+            if(!isset(self::$_months[$month])) {
+                throw new InvalidArgumentException(
+                    $month.' is not a valid month string'
+                );
+            }
+
+            $month = self::$_months[$month];
+        }
+
+        return $this->format('n') == $month;
+    }
+
+    public function getMonth() {
+        return (int)$this->format('n');
+    }
+
+    public function getMonthName() {
+        return $this->format('F');
+    }
+
+    public function getShortMonthName() {
+        return $this->format('M');
+    }
+
+
+    public function isWeek($week) {
+        return $this->format('W') == $week;
+    }
+
+    public function getWeek() {
+        return (int)$this->format('W');
+    }
+
+    public function isDay($day) {
+        if(!is_numeric($day)) {
+            return $this->isDayOfWeek($day);
+        }
+
+        return $this->format('j') == $day;
+    }
+
+    public function getDay() {
+        return (int)$this->format('j');
+    }
+
+    public function getDayName() {
+        return $this->format('l');
+    }
+
+    public function getShortDayName() {
+        return $this->format('D');
+    }
+
+    public function isDayOfWeek($day) {
+        if(!is_numeric($day)) {
+            $day = strtolower($day);
+
+            if(!isset(self::$_days[$day])) {
+                throw new InvalidArgumentException(
+                    $day.' is not a valid day string'
+                );
+            }
+
+            $day = self::$_days[$day];
+        }
+
+        if($day == 0) {
+            $day = 7;
+        }
+
+        return $this->format('N') == $day;
+    }
+
+    public function getDayOfWeek() {
+        return (int)$this->format('N');
+    }
+
+    public function isHour($hour) {
+        return $this->format('G') == $hour;
+    }
+
+    public function getHour() {
+        return (int)$this->format('G');
+    }
+
+    public function isMinute($minute) {
+        return $this->format('i') == $minute;
+    }
+
+    public function getMinute() {
+        return (int)$this->format('i');
+    }
+
+    public function isSecond($second) {
+        return $this->format('s') == $second;
+    }
+
+    public function getSecond() {
+        return (int)$this->format('s');
+    }
+
     
     
 // Modification
