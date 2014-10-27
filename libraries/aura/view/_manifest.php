@@ -168,7 +168,7 @@ trait TThemedView {
     
     public function getTheme() {
         if($this->_theme === null) {
-            $this->_theme = aura\theme\Base::factory($this->_context);
+            $this->_theme = aura\theme\Base::factory($this->context);
         }
 
         return $this->_theme;
@@ -340,14 +340,30 @@ interface IHelper extends core\IHelper {
     public function getContext();
 }
 
+
 trait THelper {
 
     protected $_view;
     protected $_context;
 
-    public function __construct(aura\view\IView $view) {
-        $this->_view = $view;
-        $this->_context = $view->getContext();
+    public function __construct(core\IContext $context, $target) {
+        if($target instanceof IRenderTargetProvider
+        || method_exists($target, 'getView')) {
+            $this->_view = $target->getView();
+        } else if(isset($target->view)) {
+            $this->_view = $target->view;
+        } else {
+            throw new RuntimeException(
+                'Cannot use shared view from objects that do not provide a view'
+            );
+        }
+
+
+        if(!$context instanceof arch\IContext) {
+            $context = $this->_view->getContext();
+        }
+
+        $this->_context = $context;
         $this->_init();
     }
 
@@ -364,6 +380,7 @@ trait THelper {
 }
 
 
+
 interface ICascadingHelperProvider extends core\IContextAware, IRenderTargetProvider {
     public function __call($method, $args);
     public function __get($key);
@@ -374,7 +391,29 @@ trait TCascadingHelperProvider {
     public $view;
 
     public function __call($method, $args) {
-        return call_user_func_array([$this->_context, $method], $args);
+        if(!$this->view && method_exists($this, 'getView')) {
+            $this->view = $this->getView();
+        }
+
+        $context = $this->getContext();
+
+        if($this->view && ($output = $this->view->getHelper($method, true))) {
+            if($output instanceof IHelper) {
+                // Inject current context into view helper
+                $output = clone $output;
+                $output->setContext($context);
+            }
+
+            if(!is_callable($output)) {
+                throw new RuntimeException(
+                    'Helper '.$method.' is not callable'
+                );
+            }
+
+            return call_user_func_array($output, $args);
+        }
+
+        return call_user_func_array([$context, $method], $args);
     }
     
     public function __get($key) {
@@ -382,23 +421,25 @@ trait TCascadingHelperProvider {
             $this->view = $this->getView();
         }
 
+        $context = $this->getContext();
+
         if($key == 'view') {
             return $this->view;
         } else if($key == 'context') {
-            return $this->_context;
+            return $context;
         }
 
         if($this->view && ($output = $this->view->getHelper($key, true))) {
             if($output instanceof IHelper) {
                 // Inject current context into view helper
                 $output = clone $output;
-                $output->setContext($this->_context);
+                $output->setContext($context);
             }
 
             return $output;
         }
 
-        return $this->_context->__get($key);
+        return $context->__get($key);
     }
 }
 

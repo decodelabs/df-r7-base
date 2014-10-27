@@ -727,7 +727,7 @@ trait TForm_InlineFieldRenderableModalSelectorDelegate {
             $fa->push($this->html->fieldError($messages));
         }
 
-        $fa->push($this->html->string('<div class="widget-selection"><div class="body">'));
+        $fa->push($this->html('<div class="widget-selection"><div class="body">'));
         $selectList = $this->_fetchSelectionList();
 
         if($this->_isForMany) {
@@ -737,8 +737,8 @@ trait TForm_InlineFieldRenderableModalSelectorDelegate {
 
             if(empty($selected)) {
                 $fa->push(
-                    $this->html->element('em', $this->_('nothing selected')),
-                    $this->html->string('</div>')
+                    $this->html('em', $this->_('nothing selected')),
+                    $this->html('</div>')
                 );
             } else {
                 $tempList = $selected;
@@ -748,7 +748,7 @@ trait TForm_InlineFieldRenderableModalSelectorDelegate {
                 for($i = 0; $i < 3 && !empty($tempList); $i++) {
                     $count--;
 
-                    $displayList[] = $this->html->element(
+                    $displayList[] = $this->html(
                         'strong', 
                         $this->_getResultDisplayName(array_shift($tempList))
                     );
@@ -763,7 +763,7 @@ trait TForm_InlineFieldRenderableModalSelectorDelegate {
 
                 $fa->push(
                     $this->html->bulletList($displayList),
-                    $this->html->string('</div>')
+                    $this->html('</div>')
                 );
 
                 foreach($selected as $row) {
@@ -789,7 +789,7 @@ trait TForm_InlineFieldRenderableModalSelectorDelegate {
                 $resultName = $this->_getResultDisplayName($selected);
 
                 $fa->push(
-                    $this->html->element('strong', $resultName),
+                    $this->html('strong', $resultName),
 
                     $this->html->hidden(
                             $this->fieldName('selected'),
@@ -800,17 +800,17 @@ trait TForm_InlineFieldRenderableModalSelectorDelegate {
                 // No selection
 
                 $fa->push(
-                    $this->html->element('em', $this->_('nothing selected'))
+                    $this->html('em', $this->_('nothing selected'))
                 );
             }
 
-            $fa->push($this->html->string('</div>'));
+            $fa->push($this->html('</div>'));
         }
 
         $ba = $fa->addButtonArea();
         $this->_renderDetailsButtonGroup($ba, $selected);
 
-        $fa->push($this->html->string('</div>'));
+        $fa->push($this->html('</div>'));
     }
 
     protected function _renderDetailsButtonGroup(aura\html\widget\ButtonArea $ba, $selected) {

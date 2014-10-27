@@ -3,12 +3,11 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\plug\directory;
+namespace df\plug;
 
 use df;
 use df\core;
 use df\arch;
-use df\aura as auraLib;
 use df\halo;
 
 class Directory implements arch\IDirectoryHelper {

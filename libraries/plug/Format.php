@@ -3,11 +3,10 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\plug\shared;
+namespace df\plug;
 
 use df;
 use df\core;
-use df\aura;
 use df\mint;
 
 class Format implements core\ISharedHelper {

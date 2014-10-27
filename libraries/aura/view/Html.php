@@ -131,7 +131,7 @@ class Html extends Base implements IHtmlView {
     
 // Base
     public function setBaseHref($url) {
-        $this->_baseHref = $this->_context->normalizeOutputUrl($url);
+        $this->_baseHref = $this->context->normalizeOutputUrl($url);
         return $this;
     }
     
@@ -312,7 +312,7 @@ class Html extends Base implements IHtmlView {
             $attributes = array_merge($attributes, $attr);
         }
 
-        $this->_links[$id] = $this->html->element('link', null, $attributes);
+        $this->_links[$id] = $this->html('link', null, $attributes);
         return $this;
     }
 
@@ -646,7 +646,7 @@ class Html extends Base implements IHtmlView {
         $subject = $this->getTitle();
 
         if(empty($subject)) {
-            $subject = $this->_('Notification from %a%', ['%a%' => $this->_context->application->getName()]);
+            $subject = $this->_('Notification from %a%', ['%a%' => $this->context->application->getName()]);
         }
 
         $manager = flow\Manager::getInstance();
@@ -665,12 +665,12 @@ class Html extends Base implements IHtmlView {
     }
 
     protected function _beforeRender() {
-        if(!$this->_context->request->isArea('front')) {
+        if(!$this->context->request->isArea('front')) {
             $this->canIndex(false)->canFollow(false);
         }
 
-        if($this->_context->application->getRunMode() == 'Http') {
-            if(strtolower($this->_context->http->request->headers->get('x-requested-with')) == 'xmlhttprequest') {
+        if($this->context->application->getRunMode() == 'Http') {
+            if(strtolower($this->context->http->request->headers->get('x-requested-with')) == 'xmlhttprequest') {
                 $this->_shouldRenderBase = false;
             }
         }
@@ -832,7 +832,7 @@ class Html extends Base implements IHtmlView {
     }
 
     protected function _normalizeLinkUrl($url) {
-        $output = $this->_context->normalizeOutputUrl($url);
+        $output = $this->context->normalizeOutputUrl($url);
 
         if(df\Launchpad::COMPILE_TIMESTAMP) {
             $output->query->cts = df\Launchpad::COMPILE_TIMESTAMP;

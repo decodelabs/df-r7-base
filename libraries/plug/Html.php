@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\plug\view;
+namespace df\plug;
 
 use df;
 use df\core;
@@ -19,6 +19,14 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
     
     public function __call($member, $args) {
         return aura\html\widget\Base::factory($this->_context, $member, $args)->setRenderTarget($this->_view);
+    }
+
+    public function __invoke($name, $content=null, array $attributes=[]) {
+        if($content === null && empty($attributes) && preg_match('/[^a-zA-Z.#]/', $name)) {
+            return new aura\html\ElementString($name);
+        }
+
+        return new aura\html\Element($name, $content, $attributes);
     }
     
     public function previewText($html, $length=null) {

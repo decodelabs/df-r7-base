@@ -164,7 +164,7 @@ class AttributeList extends arch\component\Base implements aura\html\widget\IWid
                 }
 
                 if(strlen($title)) {
-                    $output[] = $this->view->html->element('h4', $title);
+                    $output[] = $this->view->html('h4', $title);
                 }
 
                 $list = $this->_createBaseList();
@@ -191,7 +191,7 @@ class AttributeList extends arch\component\Base implements aura\html\widget\IWid
         if(count($output) < 2) {
             $output = array_pop($output);
         } else {
-            $output = $this->view->html->element('div', $output);
+            $output = $this->view->html('div', $output);
         }
 
         return $output;

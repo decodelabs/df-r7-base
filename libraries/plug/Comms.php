@@ -3,14 +3,14 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\plug\shared;
+namespace df\plug;
 
 use df;
 use df\core;
 use df\plug;
 use df\flow;
 use df\arch;
-use df\aura;
+use df\aura as auraLib;
     
 class Comms implements core\ISharedHelper {
 
@@ -80,8 +80,8 @@ class Comms implements core\ISharedHelper {
 
         $view = $aura->getView($path);
 
-        if(!$view instanceof aura\view\INotificationProxyView) {
-            throw new aura\view\InvalidArgumentException(
+        if(!$view instanceof auraLib\view\INotificationProxyView) {
+            throw new auraLib\view\InvalidArgumentException(
                 'Templated notifications can only use view templates that support conversion to notifications'
             );
         }

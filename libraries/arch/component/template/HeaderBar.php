@@ -108,7 +108,7 @@ abstract class HeaderBar extends arch\component\Base
         }
 
         if($title !== null) {
-            $output[] = $title = $this->html->element('h2', $title);
+            $output[] = $title = $this->html('h2', $title);
 
             if($this->_icon) {
                 $title->unshift($this->html->icon($this->_icon));
@@ -125,7 +125,7 @@ abstract class HeaderBar extends arch\component\Base
         }
 
         if($subTitle !== null) {
-            $output[] = $this->html->element('h3', $subTitle);
+            $output[] = $this->html('h3', $subTitle);
         }
 
 
@@ -146,10 +146,10 @@ abstract class HeaderBar extends arch\component\Base
 
         // Selector area
         if($selectorArea = $this->_renderSelectorArea()) {
-            $output[] = $this->html->element('div.widget-selectorArea', [$selectorArea]);
+            $output[] = $this->html('div.widget-selectorArea', [$selectorArea]);
         }
 
-        return $this->html->element('header.widget-headerBar', $output);
+        return $this->html('header.widget-headerBar', $output);
     }
 
 

@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\plug\directory;
+namespace df\plug;
 
 use df;
 use df\core;
@@ -12,14 +12,19 @@ use df\link;
 use df\aura as auraLib;
 use df\flex;
 
-class HttpHttp implements arch\IDirectoryHelper {
+class Http implements arch\IDirectoryHelper {
     
-    use core\TContextAware;
+    use arch\TDirectoryHelper;
 
     protected $_httpRequest;
     
-    public function __construct(arch\IContext $context) {
-        $this->_context = $context;
+    protected function _init() {
+        if(!$this->_context->application instanceof core\application\Http) {
+            throw new core\RuntimeException(
+                'Http helper can only be used from http run mode'
+            );
+        }
+
         $this->_httpRequest = $this->_context->application->getHttpRequest();
     }
     
@@ -265,7 +270,7 @@ class HttpHttp implements arch\IDirectoryHelper {
         return link\http\response\HeaderCollection::isServerErrorStatusCode($code);
     }
 
-    public function isErrorStatusCode($code) {
+    public static function isErrorStatusCode($code) {
         return link\http\response\HeaderCollection::isErrorStatusCode($code);
     }
 }

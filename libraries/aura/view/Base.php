@@ -13,13 +13,13 @@ use df\halo;
 
 class Base implements IView {
     
-    use core\TContextAware;
+    use core\TContextAwarePublic;
     use core\THelperProvider;
     use core\string\THtmlStringEscapeHandler;
     use core\TStringProvider;
     use core\lang\TChainable;
     
-    protected $_contentProvider;
+    public $contentProvider;
     
     public static function factory($type, arch\IContext $context) {
         $type = ucfirst($type);
@@ -34,7 +34,7 @@ class Base implements IView {
     
     public function __construct($type, arch\IContext $context) {
         $this->_type = $type;
-        $this->_context = $context;
+        $this->context = $context;
     }
     
     
@@ -44,12 +44,12 @@ class Base implements IView {
     }
     
     public function setContentProvider(IContentProvider $provider) {
-        $this->_contentProvider = $provider;
+        $this->contentProvider = $provider;
         return $this;
     }
     
     public function getContentProvider() {
-        return $this->_contentProvider;
+        return $this->contentProvider;
     }
 
     public function toString() {
@@ -60,62 +60,62 @@ class Base implements IView {
 // Args
     public function setArgs(array $args) {
         $this->_checkContentProvider();
-        $this->_contentProvider->setArgs($args);
+        $this->contentProvider->setArgs($args);
         return $this;
     }
     
     public function addArgs(array $args) {
         $this->_checkContentProvider();
-        $this->_contentProvider->addArgs($args);
+        $this->contentProvider->addArgs($args);
         return $this;
     }
     
     public function getArgs(array $add=[]) {
         $this->_checkContentProvider();
-        return $this->_contentProvider->getArgs($add);
+        return $this->contentProvider->getArgs($add);
     }
     
     public function setArg($key, $value) {
         $this->_checkContentProvider();
-        $this->_contentProvider->setArg($key, $value);
+        $this->contentProvider->setArg($key, $value);
         return $this;
     }
     
     public function getArg($key, $default=null) {
         $this->_checkContentProvider();
-        return $this->_contentProvider->getArg($key, $default);
+        return $this->contentProvider->getArg($key, $default);
     }
     
     public function removeArg($key) {
         $this->_checkContentProvider();
-        $this->_contentProvider->removeArg($key);
+        $this->contentProvider->removeArg($key);
         return $this;
     }
     
     public function hasArg($key) {
         $this->_checkContentProvider();
-        return $this->_contentProvider->hasArg($key);
+        return $this->contentProvider->hasArg($key);
     }
     
     public function offsetSet($name, $value) {
         $this->_checkContentProvider();
-        $this->_contentProvider->setArg($name, $value);
+        $this->contentProvider->setArg($name, $value);
         return $this;
     }
     
     public function offsetGet($name) {
         $this->_checkContentProvider();
-        return $this->_contentProvider->getArg($name);
+        return $this->contentProvider->getArg($name);
     }
     
     public function offsetExists($name) {
         $this->_checkContentProvider();
-        return $this->_contentProvider->hasArg($name);
+        return $this->contentProvider->hasArg($name);
     }
     
     public function offsetUnset($name) {
         $this->_checkContentProvider();
-        $this->_contentProvider->removeArg($name);
+        $this->contentProvider->removeArg($name);
         return $this;
     }
     
@@ -129,7 +129,7 @@ class Base implements IView {
         $this->_beforeRender();
         $innerContent = null;
 
-        if($this->_contentProvider) {
+        if($this->contentProvider) {
             $innerContent = $this->getContentProvider()->renderTo($this);
         }
         
@@ -152,7 +152,7 @@ class Base implements IView {
     protected function _beforeRender() {}
     
     private function _checkContentProvider() {
-        if(!$this->_contentProvider) {
+        if(!$this->contentProvider) {
             throw new RuntimeException(
                 'No content provider has been set for '.$this->_type.' type view',
                 404
@@ -162,49 +162,13 @@ class Base implements IView {
     
     
 // Helpers
-    public function __get($member) {
-        switch($member) {
-            case 'context':
-                return $this->getContext();
-                
-            case 'application':
-                return $this->_context->application;
-                
-            case 'contentProvider':
-                return $this->getContentProvider();
-                
-            default:
-                return $this->getHelper($member);
-        }
-    }
-
     protected function _loadHelper($name) {
-        $class = 'df\\plug\\view\\'.$this->getType().$name;
-            
-        if(!class_exists($class)) {
-            $class = 'df\\plug\\view\\'.$name;
-            
-            if(!class_exists($class)) {
-                $class = 'df\\plug\\directory\\'.$this->_context->getRunMode().$name;
-
-                if(!class_exists($class)) {
-                    $class = 'df\\plug\\directory\\'.$name;
-
-                    if(!class_exists($class)) {
-                        return $this->_loadSharedHelper($name);
-                    }
-                }
-
-                return new $class($this->_context);
-            }
-        }
-        
-        return new $class($this);
+        return $this->context->_getDefaultHelper($name, $this);
     }
     
     
     public function _($phrase, array $data=null, $plural=null, $locale=null) {
-        return $this->_context->_($phrase, $data, $plural, $locale);
+        return $this->context->_($phrase, $data, $plural, $locale);
     }
 
     public function newErrorContainer(\Exception $e) {

@@ -388,68 +388,6 @@ trait TArrayAccessedArgContainer {
 }
 
 
-// Helpers
-interface IHelperProvider {
-    public function getHelper($name, $returnNull=false);
-    public function __get($member);
-}
-
-trait THelperProvider {
-    
-    protected $_helpers = [];
-    
-    public function __get($key) {
-        return $this->getHelper($key);
-    }
-    
-    public function getHelper($name, $returnNull=false) {
-        $name = ucfirst($name);
-        
-        if(!isset($this->_helpers[$name])) {
-            if(!$output = $this->_loadHelper($name)) {
-                $this->_helpers[$name] = $output = null;
-            } else {
-                $this->_helpers[$name] = $output;
-            }
-        } else {
-            $output = $this->_helpers[$name];
-        }
-        
-        if(!$output && !$returnNull) {
-            throw new HelperNotFoundException(
-                'Helper '.$name.' could not be found'
-            );
-        }
-
-        return $output;
-    }
-    
-    abstract protected function _loadHelper($name);
-
-    protected function _loadSharedHelper($name) {
-        $class = 'df\\plug\\shared\\'.$this->application->getRunMode().$name;
-        
-        if(!class_exists($class)) {
-            $class = 'df\\plug\\shared\\'.$name;
-            
-            if(!class_exists($class)) {
-                return null;
-            }
-        }
-
-        $context = $this;
-
-        if(!$context instanceof IContext) {
-            $context = new SharedContext();
-        }
-
-        return new $class($context);
-    }
-}
-
-interface IHelper {}
-
-
 
 
 // Dumpable
@@ -618,6 +556,81 @@ trait TManager {
 }
 
 
+
+
+// Helpers
+interface IHelperProvider {
+    public function getHelper($name, $returnNull=false);
+    public function __get($member);
+}
+
+trait THelperProvider {
+    
+    public function __get($key) {
+        return $this->getHelper($key);
+    }
+
+    public function __call($method, array $args) {
+        $helper = $this->getHelper($method);
+
+        if(!is_callable($helper)) {
+            throw new core\RuntimeException(
+                'Helper '.$method.' is not callable'
+            );
+        }
+
+        return call_user_func_array($helper, $args);
+    }
+    
+    public function getHelper($name, $returnNull=false) {
+        $name = lcfirst($name);
+
+        if(isset($this->{$name})) {
+            return $this->{$name};
+        }
+        
+        $output = $this->_loadHelper($name);
+
+        if(!$output && !$returnNull) {
+            throw new HelperNotFoundException(
+                'Helper '.$name.' could not be found'
+            );
+        }
+
+        $this->{$name} = $output;
+
+        return $output;
+    }
+    
+    protected function _loadHelper($name) {
+        return $this->_loadSharedHelper($name);
+    }
+
+    protected function _loadSharedHelper($name, $target=null) {
+        $class = 'df\\plug\\'.ucfirst($name);
+            
+        if(!class_exists($class)) {
+            return null;
+        }
+
+        $context = $this;
+        $target = $target ? $target : $this;
+
+        if(!$context instanceof IContext) {
+            if(df\Launchpad::$application instanceof core\IContextAware) {
+                $context = df\Launchpad::$application->getContext();
+            } else {
+                $context = new SharedContext();
+            }
+        }
+
+        return new $class($context, $target);
+    }
+}
+
+interface IHelper {}
+
+
 // Context
 interface IContext extends core\IHelperProvider {
     public function setRunMode($mode);
@@ -739,13 +752,8 @@ trait TContext {
         return $class::getInstance();
     }
 
-
-    public function __get($key) {
-        return $this->_getDefaultMember($key);
-    }
-
-    protected function _getDefaultMember($key) {
-        switch($key) {
+    public function _getDefaultHelper($name, $target=null) {
+        switch($name) {
             case 'context':
                 return $this;
             
@@ -776,9 +784,9 @@ trait TContext {
 
             case 'task':
                 return df\arch\task\Manager::getInstance();
-                
+
             default:
-                return $this->getHelper($key);
+                return $this->_loadSharedHelper($name, $target);
         }
     }
 
@@ -801,7 +809,7 @@ class SharedContext implements IContext {
     }
 
     protected function _loadHelper($name) {
-        return $this->_loadSharedHelper($name);
+        return $this->_getDefaultHelper($name);
     }
 }
 
@@ -824,6 +832,20 @@ trait TContextAware {
         return $this->_context !== null;
     }
 }
+
+trait TContextAwarePublic {
+    
+    public $context;
+    
+    public function getContext() {
+        return $this->context;
+    }
+
+    public function hasContext() {
+        return $this->context !== null;
+    }
+}
+
 
 
 trait TContextProxy {
@@ -849,7 +871,7 @@ trait TSharedHelper {
 
     protected $_context;
 
-    public function __construct(IContext $context) {
+    public function __construct(IContext $context, $target) {
         $this->_context = $context;
     }
 }

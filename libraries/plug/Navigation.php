@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\plug\directory;
+namespace df\plug;
 
 use df;
 use df\core;
@@ -19,9 +19,7 @@ class Navigation implements arch\IDirectoryHelper {
     }
 
     public function getBreadcrumbs($empty=false) {
-        $application = df\Launchpad::$application;
-
-        if(!$output = $application->getRegistryObject('breadcrumbs')) {
+        if(!$output = $this->_context->application->getRegistryObject('breadcrumbs')) {
             if($empty) {
                 $output = new arch\navigation\breadcrumbs\EntryList();
             } else {
@@ -30,7 +28,7 @@ class Navigation implements arch\IDirectoryHelper {
                 );
             }
             
-            $application->setRegistryObject($output);
+            $this->_context->application->setRegistryObject($output);
         }
 
         return $output;
@@ -43,7 +41,7 @@ class Navigation implements arch\IDirectoryHelper {
             return $entry->getBody();
         }
 
-        return df\Launchpad::$application->getName();
+        return $this->_context->$application->getName();
     }
 
     public function clearMenuCache($id=null) {

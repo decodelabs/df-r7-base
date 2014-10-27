@@ -83,7 +83,21 @@ trait TDirectoryHelper {
 
     use core\TContextAware;
 
-    public function __construct(IContext $context) {
+    public function __construct(core\IContext $context, $target) {
+        if(!$context instanceof arch\IContext) {
+            if($target instanceof arch\IContext) {
+                $context = $target;
+            } else {
+                $context = Context::getCurrent();
+
+                if(!$context) {
+                    throw new RuntimeException(
+                        'No arch context is available for '.__CLASS__.' helper'
+                    );
+                }
+            }
+        }
+
         $this->_context = $context;
         $this->_init();
     }

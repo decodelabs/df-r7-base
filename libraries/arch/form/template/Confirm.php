@@ -25,7 +25,7 @@ abstract class Confirm extends arch\form\Action {
         $form = $this->content->addForm();
         $fs = $form->addFieldSet($this->_('%n% information', ['%n%' => ucfirst($itemName)]));
         
-        $fs->push($this->html->string(
+        $fs->push($this->html(
             '<p>'.$this->_getMainMessage($itemName).'</p>'
         ));
         

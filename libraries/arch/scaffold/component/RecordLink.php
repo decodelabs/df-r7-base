@@ -29,7 +29,7 @@ class RecordLink extends arch\component\template\RecordLink {
         $output = $this->_scaffold->getRecordName($this->_record);
 
         if($this->_scaffold->getRecordNameKey() == 'slug') {
-            $output = $this->html->element('samp', $output);
+            $output = $this->html('samp', $output);
         }
 
         return $output;

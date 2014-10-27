@@ -200,7 +200,7 @@ abstract class Action extends arch\Action implements IAction {
         if(method_exists($this, '_createUi')) {
             $this->_createUi();
         } else if($this->_context->application->isDevelopment()) {
-            $this->content->push($this->html->string(
+            $this->content->push($this->html(
                 '<p>This form handler has no ui generator - you need to implement function _createUi() or override function onGetRequest()</p>'
             ));
         }

@@ -172,6 +172,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         $target = $this->getRenderTarget();
         $this->_isRendering = true;
         $this->_view = $target->getView();
+
         
         if($this->_isLayout && $this->_innerContent === null) {
             // Prepare inner template content before rendering to ensure 
@@ -302,6 +303,24 @@ class Template implements aura\view\ITemplate, core\IDumpable {
             default:
                 return $this->_view->__get($member);
         }
+    }
+
+    public function __call($method, array $args) {
+        if(!$this->_view) {
+            throw new aura\view\RuntimeException(
+                'This template is not currently rendering'
+            );
+        }
+
+        $helper = $this->_view->{$method};
+
+        if(!is_callable($helper)) {
+            throw new aura\view\RuntimeException(
+                'Helper '.$method.' is not callable'
+            );
+        }
+
+        return call_user_func_array($helper, $args);
     }
     
     public function _($phrase, array $data=null, $plural=null, $locale=null) {

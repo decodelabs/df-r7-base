@@ -249,21 +249,7 @@ class Context implements IContext, \Serializable, core\IDumpable {
     
 // Helpers
     protected function _loadHelper($name) {
-        $class = 'df\\plug\\directory\\'.$this->application->getRunMode().$name;
-        
-        if(!class_exists($class)) {
-            $class = 'df\\plug\\directory\\'.$name;
-            
-            if(!class_exists($class)) {
-                return $this->_loadSharedHelper($name);
-            }
-        }
-        
-        return new $class($this);
-    }
-    
-    public function __get($key) {
-        switch($key) {
+        switch($name) {
             case 'dispatchContext':
                 return $this->getDispatchContext();
 
@@ -277,7 +263,7 @@ class Context implements IContext, \Serializable, core\IDumpable {
                 return $this->getScaffold();
                 
             default:
-                return $this->_getDefaultMember($key);
+                return $this->_getDefaultHelper($name);
         }
     }
 

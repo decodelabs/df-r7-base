@@ -14,8 +14,10 @@ final class Context implements IContext {
     use axis\TUnit;
     use core\TContext;
 
+    public $model;
+
     public function __construct(IModel $model) {
-        $this->_model = $model;
+        $this->_model = $this->model = $model;
         $this->application = df\Launchpad::$application;
     }
 
@@ -36,29 +38,13 @@ final class Context implements IContext {
         return $translator->_($phrase, $data, $plural);
     }   
 
+    public function __get($key) {
+        return $this->getHelper($key);
+    }
+
 
 // Helpers
     protected function _loadHelper($name) {
-        $class = 'df\\plug\\model\\'.$this->application->getRunMode().$name;
-        
-        if(!class_exists($class)) {
-            $class = 'df\\plug\\model\\'.$name;
-            
-            if(!class_exists($class)) {
-                return $this->_loadSharedHelper($name);
-            }
-        }
-        
-        return new $class($this);
-    }
-
-    public function __get($key) {
-        switch($key) {
-            case 'model':
-                return $this->_model;
-                
-            default:
-                return $this->_getDefaultMember($key);
-        }
+        return $this->_getDefaultHelper($name);
     }
 }

@@ -158,7 +158,7 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
                         $fa->push(
                             $this->html->hidden($this->fieldName('searchResults[]'), $id),
                             $tickWidget,
-                            $this->html->string('<br />')
+                            $this->html('<br />')
                         );
                     }
                 }
@@ -233,10 +233,10 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
                 $name = $this->_getResultDisplayName($selected);
 
                 $fa->push(
-                    $this->html->element('div.widget-selection', [
+                    $this->html('div.widget-selection', [
                         $this->html->hidden($this->fieldName('selected'), $id),
 
-                        $this->html->element('div.body', $name),
+                        $this->html('div.body', $name),
 
                         $this->html->buttonArea(
                             $this->html->eventButton(
@@ -269,10 +269,10 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
                     $name = $this->_getResultDisplayName($result);
 
                     $fa->push(
-                        $this->html->element('div.widget-selection', [
+                        $this->html('div.widget-selection', [
                             $this->html->hidden($this->fieldName('selected['.$id.']'), $id),
                             
-                            $this->html->element('div.body', $name),
+                            $this->html('div.body', $name),
 
                             $this->html->buttonArea(
                                 $this->html->eventButton(

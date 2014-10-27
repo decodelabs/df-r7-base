@@ -506,7 +506,7 @@ trait TScaffold_RecordDataProvider {
             $output = $this->getRecordName($item);
 
             if($fieldName == 'slug') {
-                $output = $this->html->element('samp', $output);
+                $output = $this->html('samp', $output);
             }
 
             return $output;
@@ -519,7 +519,7 @@ trait TScaffold_RecordDataProvider {
         }
 
         $list->addField('slug', function($item) {
-            return $this->html->element('samp', $item['slug']);
+            return $this->html('samp', $item['slug']);
         });
     }
 
@@ -635,7 +635,7 @@ trait TScaffold_RecordDataProvider {
     public function defineColorField($list, $mode) {
         $list->addField('color', function($item, $context) {
             $color = df\neon\Color::factory('black');
-            return $this->html->element('span', $item['color'])
+            return $this->html('span', $item['color'])
                 ->setStyle('background', $item['color'])
                 ->setStyle('color', $color->contrastAgainst($item['color'], 1))
                 ->setStyle('padding', '0 0.6em');
@@ -646,11 +646,11 @@ trait TScaffold_RecordDataProvider {
         $list->addField('environmentMode', $mode == 'list' ? $this->_('Env.') : null, function($mail) use($mode) {
             switch($mail['environmentMode']) {
                 case 'development':
-                    return $this->html->element('span.priority-low.inactive', $mode == 'list' ? $this->_('Dev') : $this->_('Development'));
+                    return $this->html('span.priority-low.inactive', $mode == 'list' ? $this->_('Dev') : $this->_('Development'));
                 case 'testing':
-                    return $this->html->element('span.priority-medium.inactive', $mode == 'list' ? $this->_('Test') : $this->_('Testing'));
+                    return $this->html('span.priority-medium.inactive', $mode == 'list' ? $this->_('Test') : $this->_('Testing'));
                 case 'production':
-                    return $this->html->element('span.priority-high.active', $mode == 'list' ? $this->_('Prod') : $this->_('Production'));
+                    return $this->html('span.priority-high.active', $mode == 'list' ? $this->_('Prod') : $this->_('Production'));
             }
         });
     }
