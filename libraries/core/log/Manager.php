@@ -41,7 +41,7 @@ class Manager implements IManager {
         array_shift($args);
 
         try {
-            core\lang\Callback::factory($block)->invokeArgs($args);
+            core\lang\CallbackArgs($block, $args);
             return true;
         } catch(\Exception $e) {
             $this->logException($e);

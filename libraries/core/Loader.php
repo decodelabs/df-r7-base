@@ -197,7 +197,7 @@ class Loader implements ILoader {
     }
 
     public function lookupFileListRecursive($path, $extensions=null, $folderCheck=null) {
-        if($folderCheck && !core\lang\Callback::factory($folderCheck)->invoke($path)) {
+        if($folderCheck && !core\lang\Callback($folderCheck, $path)) {
             $output = [];
         } else {
             $output = $this->lookupFileList($path, $extensions);

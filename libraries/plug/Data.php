@@ -57,7 +57,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
             $output = $this->newRecord($source);
 
             if($newChain) {
-                core\lang\Callback::factory($newChain)->invoke($output);
+                core\lang\Callback($newChain, $output);
             }
         }
 

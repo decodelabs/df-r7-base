@@ -382,7 +382,7 @@ trait TForm_ModalDelegate {
         $this->_setMode($to);
 
         if($do) {
-            core\lang\Callback::factory($do)->invoke();
+            core\lang\Callback($do);
         }
     }
 

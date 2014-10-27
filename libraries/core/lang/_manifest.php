@@ -32,9 +32,12 @@ interface ICallback {
 }
 
 function Callback($callback) {
-    core\dump($callback);
+    return Callback::factory($callback)->invokeArgs(array_slice(func_get_args(), 1));
 }
 
+function CallbackArgs($callback, array $args) {
+    return Callback::factory($callback)->invokeArgs($args);
+}
 
 interface IEnum extends core\IStringProvider {
     public static function getOptions();
