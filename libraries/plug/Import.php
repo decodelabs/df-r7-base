@@ -7,18 +7,18 @@ namespace df\plug;
 
 use df;
 use df\core;
-use df\aura;
+use df\aura as auraLib;
 use df\arch;
 
-class Import implements aura\view\IHelper {
+class Import implements auraLib\view\IHelper {
     
-    use aura\view\THelper;
+    use auraLib\view\THelper;
     
     public function template($path) {
         try {
             $location = $this->_context->extractDirectoryLocation($path);
             $context = $this->_context->spawnInstance($location);
-            $template = aura\view\content\Template::loadDirectoryTemplate($context, $path);
+            $template = auraLib\view\content\Template::loadDirectoryTemplate($context, $path);
             $template->setRenderTarget($this->_view);
             $template->setArgs($this->_view->getArgs());
         
@@ -31,7 +31,7 @@ class Import implements aura\view\IHelper {
     public function themeTemplate($path) {
         try {
             $themeId = $this->_context->extractThemeId($path);
-            $template = aura\view\content\Template::loadThemeTemplate($this->_view, $path, $themeId);
+            $template = auraLib\view\content\Template::loadThemeTemplate($this->_view, $path, $themeId);
             $template->setRenderTarget($this->_view);
 
             return $template;

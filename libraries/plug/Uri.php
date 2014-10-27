@@ -7,13 +7,13 @@ namespace df\plug;
 
 use df;
 use df\core;
-use df\aura;
+use df\aura as auraLib;
 use df\arch;
 use df\link;
 
-class Uri implements aura\view\IHelper {
+class Uri implements auraLib\view\IHelper {
     
-    use aura\view\THelper;
+    use auraLib\view\THelper;
     
     public function requestToUrl(arch\IRequest $request) {
         return core\application\http\Router::getInstance()
@@ -42,7 +42,7 @@ class Uri implements aura\view\IHelper {
         }
         
         if(!is_string($uri)) {
-            throw new aura\view\InvalidArgumentException(
+            throw new auraLib\view\InvalidArgumentException(
                 'Uri cannot be converted to a valid URL'
             );
         }

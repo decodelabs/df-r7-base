@@ -7,26 +7,26 @@ namespace df\plug;
 
 use df;
 use df\core;
-use df\aura;
+use df\aura as auraLib;
 use df\arch;
 use df\flex;
 use df\spur;
 use df\flow;
 
-class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
+class Html implements auraLib\view\IHelper, core\i18n\translate\ITranslationProxy {
     
-    use aura\view\THelper;
+    use auraLib\view\THelper;
     
     public function __call($member, $args) {
-        return aura\html\widget\Base::factory($this->_context, $member, $args)->setRenderTarget($this->_view);
+        return auraLib\html\widget\Base::factory($this->_context, $member, $args)->setRenderTarget($this->_view);
     }
 
     public function __invoke($name, $content=null, array $attributes=[]) {
         if($content === null && empty($attributes) && preg_match('/[^a-zA-Z.#]/', $name)) {
-            return new aura\html\ElementString($name);
+            return new auraLib\html\ElementString($name);
         }
 
-        return new aura\html\Element($name, $content, $attributes);
+        return new auraLib\html\Element($name, $content, $attributes);
     }
     
     public function previewText($html, $length=null) {
@@ -107,19 +107,19 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
     }
 
     public function string($value) {
-        return new aura\html\ElementString(implode('', func_get_args()));
+        return new auraLib\html\ElementString(implode('', func_get_args()));
     }
     
     public function tag($name, array $attributes=[]) {
-        return new aura\html\Tag($name, $attributes);
+        return new auraLib\html\Tag($name, $attributes);
     }
     
     public function element($name, $content=null, array $attributes=[]) {
-        return new aura\html\Element($name, $content, $attributes);
+        return new auraLib\html\Element($name, $content, $attributes);
     }
 
     public function elementContentContainer($content=null) {
-        return new aura\html\ElementContent($content);
+        return new auraLib\html\ElementContent($content);
     }
 
     public function span($content, array $attributes=[]) {
@@ -134,14 +134,14 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
         $attrs = [];
 
         if($iconChar !== null) {
-            $attrs = ['data-icon' => new aura\html\ElementString($iconChar)];
+            $attrs = ['data-icon' => new auraLib\html\ElementString($iconChar)];
         }
 
         if(empty($body)) {
             $attrs['aria-hidden'] = 'true';
         }
 
-        return new aura\html\Element('span', $body, $attrs);
+        return new auraLib\html\Element('span', $body, $attrs);
     }
 
     public function booleanIcon($value, $body=null) {
@@ -240,7 +240,7 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
 
             return $output;
         } catch(\Exception $e) {
-            return new aura\view\content\ErrorContainer($this->_view, $e);
+            return new auraLib\view\content\ErrorContainer($this->_view, $e);
         }
     }
 
@@ -530,7 +530,7 @@ class Html implements aura\view\IHelper, core\i18n\translate\ITranslationProxy {
                 return spur\video\Embed::parse($embed)
                     ->setDimensions($width, $height);
             } catch(spur\video\IException $e) {
-                return new aura\view\content\ErrorContainer($this->_view, $e);
+                return new auraLib\view\content\ErrorContainer($this->_view, $e);
             }
         } else {
             return '';
