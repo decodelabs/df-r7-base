@@ -63,12 +63,12 @@ abstract class Base implements IScaffold {
     }
     
     protected function __construct(arch\IContext $context) {
-        $this->_context = $context;
-        $this->view = aura\view\Base::factory($context->request->getType(), $this->_context);
+        $this->context = $context;
+        $this->view = aura\view\Base::factory($context->request->getType(), $this->context);
     }
 
     public function getRegistryObjectKey() {
-        return 'scaffold('.$this->_context->location->getPath()->getDirname().')';
+        return 'scaffold('.$this->context->location->getPath()->getDirname().')';
     }
 
     public function onApplicationShutdown() {}
@@ -98,8 +98,8 @@ abstract class Base implements IScaffold {
 
 // Loaders
     public function loadAction(arch\IController $controller=null) {
-        $action = $this->_context->request->getAction();
-        $method = lcfirst($action).$this->_context->request->getType().'Action';
+        $action = $this->context->request->getAction();
+        $method = lcfirst($action).$this->context->request->getType().'Action';
         
         if(!method_exists($this, $method)) {
             $method = lcfirst($action).'Action';
@@ -120,12 +120,12 @@ abstract class Base implements IScaffold {
                 }
 
                 throw new ActionNotFoundException(
-                    'Scaffold at '.$this->_context->location.' cannot provide action '.$action
+                    'Scaffold at '.$this->context->location.' cannot provide action '.$action
                 );
             }
         }
 
-        return new Action($this->_context, $this, [$this, $method], $controller);
+        return new Action($this->context, $this, [$this, $method], $controller);
     }
 
     public function onActionDispatch(arch\IAction $action) {}
@@ -152,7 +152,7 @@ abstract class Base implements IScaffold {
 
             if(!$output instanceof arch\IComponent) {
                 throw new LogicException(
-                    'Scaffold at '.$this->_context->location.' attempted but failed to provide component '.$origName
+                    'Scaffold at '.$this->context->location.' attempted but failed to provide component '.$origName
                 );
             }
 
@@ -160,7 +160,7 @@ abstract class Base implements IScaffold {
         }
 
         throw new LogicException(
-            'Scaffold at '.$this->_context->location.' cannot provide component '.$origName
+            'Scaffold at '.$this->context->location.' cannot provide component '.$origName
         );
     }
 
@@ -176,7 +176,7 @@ abstract class Base implements IScaffold {
         
         if(!method_exists($this, $method)) {
             throw new LogicException(
-                'Scaffold at '.$this->_context->location.' cannot provide form delegate '.$origName
+                'Scaffold at '.$this->context->location.' cannot provide form delegate '.$origName
             );
         }
         
@@ -184,7 +184,7 @@ abstract class Base implements IScaffold {
 
         if(!$output instanceof arch\form\IDelegate) {
             throw new LogicException(
-                'Scaffold at '.$this->_context->location.' attempted but failed to provide form delegate '.$origName
+                'Scaffold at '.$this->context->location.' attempted but failed to provide form delegate '.$origName
             );
         }
 
@@ -196,7 +196,7 @@ abstract class Base implements IScaffold {
 
         if(!method_exists($this, $method)) {
             throw new LogicException(
-                'Scaffold at '.$this->_context->location.' could not provider menu '.$name
+                'Scaffold at '.$this->context->location.' could not provider menu '.$name
             );
         }
 
@@ -230,7 +230,7 @@ abstract class Base implements IScaffold {
         if(static::DIRECTORY_KEY_NAME) {
             $this->_directoryKeyName = static::DIRECTORY_KEY_NAME;
         } else {
-            $parts = $this->_context->location->getControllerParts();
+            $parts = $this->context->location->getControllerParts();
             $this->_directoryKeyName = array_pop($parts);
         }
 
@@ -238,7 +238,7 @@ abstract class Base implements IScaffold {
     }
 
     protected function _getActionRequest($action, array $query=null, $redirFrom=null, $redirTo=null, array $propagationFilter=[]) {
-        $output = clone $this->_context->location;
+        $output = clone $this->context->location;
         $output->setAction($action);
         $outQuery = $output->query;
         $propagate = $this->getPropagatingQueryVars();

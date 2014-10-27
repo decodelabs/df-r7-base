@@ -19,13 +19,13 @@ class Http implements arch\IDirectoryHelper {
     protected $_httpRequest;
     
     protected function _init() {
-        if(!$this->_context->application instanceof core\application\Http) {
+        if(!$this->context->application instanceof core\application\Http) {
             throw new core\RuntimeException(
                 'Http helper can only be used from http run mode'
             );
         }
 
-        $this->_httpRequest = $this->_context->application->getHttpRequest();
+        $this->_httpRequest = $this->context->application->getHttpRequest();
     }
     
     public function __get($member) {
@@ -124,7 +124,7 @@ class Http implements arch\IDirectoryHelper {
 
     public function ajaxResponse(auraLib\view\IView $view, array $extraData=[]) {
         return $this->stringResponse(
-            $this->_context->data->jsonEncode(array_merge(
+            $this->context->data->jsonEncode(array_merge(
                 ['content' => (string)$view->getContentProvider()->setRenderTarget($view)],
                 $extraData
             )),
@@ -138,7 +138,7 @@ class Http implements arch\IDirectoryHelper {
     
     public function redirect($request=null) {
         if($request === null) {
-            $request = $this->_context->request;
+            $request = $this->context->request;
         }
         
         if(is_string($request)) {
@@ -165,7 +165,7 @@ class Http implements arch\IDirectoryHelper {
     }
     
     public function defaultRedirect($default=null, $success=true) {
-        $request = $this->_context->request;
+        $request = $this->context->request;
         
         if($success && ($redirect = $request->getRedirectTo())) {
             return $this->redirect($redirect);
@@ -197,7 +197,7 @@ class Http implements arch\IDirectoryHelper {
 
 // Cookies
     public function setCookie($name, $value=null) {
-        $application = $this->_context->application;
+        $application = $this->context->application;
         $augmentor = $application->getResponseAugmentor();
         
         if($name instanceof link\http\IResponseCookie) {
@@ -217,7 +217,7 @@ class Http implements arch\IDirectoryHelper {
     }
     
     public function removeCookie($name) {
-        $application = $this->_context->application;
+        $application = $this->context->application;
         $augmentor = $application->getResponseAugmentor();
         
         if($name instanceof link\http\IResponseCookie) {

@@ -45,8 +45,8 @@ trait TForm {
             );
         }
 
-        $location = $this->_context->extractDirectoryLocation($name);
-        $context = $this->_context->spawnInstance($location);
+        $location = $this->context->extractDirectoryLocation($name);
+        $context = $this->context->spawnInstance($location);
         $path = $context->location->getController();
         $area = $context->location->getArea();
         
@@ -98,7 +98,7 @@ trait TForm {
         }
 
         return $this->_delegates[$id] = new $class(
-            $this->_context,
+            $this->context,
             $this->_state->getDelegateState($id),
             $this->_getDelegateIdPrefix().$id
         );

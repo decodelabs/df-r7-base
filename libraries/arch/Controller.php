@@ -43,7 +43,7 @@ class Controller implements IController, core\IDumpable {
     }
     
     protected function __construct(arch\IContext $context, $type) {
-        $this->_context = $context;
+        $this->context = $context;
         $this->_type = $type;
         $this->_isInline = get_class($this) == __CLASS__;
     }
@@ -57,7 +57,7 @@ class Controller implements IController, core\IDumpable {
     
 // Dump
     public function getDumpProperties() {
-        $runMode = $this->_context->getRunMode();
+        $runMode = $this->context->getRunMode();
         
         if($this->_isInline) {
             $runMode .= ' (inline)';
@@ -65,7 +65,7 @@ class Controller implements IController, core\IDumpable {
         
         return [
             'type' => $runMode,
-            'context' => $this->_context
+            'context' => $this->context
         ];
     }
 }

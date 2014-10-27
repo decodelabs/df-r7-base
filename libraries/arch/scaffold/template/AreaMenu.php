@@ -24,7 +24,7 @@ class AreaMenu extends arch\scaffold\Base {
             $container->push($this->directory->getComponent('IndexHeaderBar'));
         }
         
-        $menuId = (string)$this->_context->location;
+        $menuId = (string)$this->context->location;
         $menuId = dirname($menuId).'/'.ucfirst(basename($menuId));
         $container->addBlockMenu($menuId);
 

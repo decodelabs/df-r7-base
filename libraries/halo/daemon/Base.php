@@ -97,7 +97,7 @@ abstract class Base implements IDaemon {
         }
 
         gc_enable();
-        $this->_context = new core\SharedContext();
+        $this->context = new core\SharedContext();
         $this->process = halo\process\Base::getCurrent();
 
         $basePath = df\Launchpad::$application->getLocalStoragePath().'/daemons/'.core\string\Manipulator::formatFileName($this->getName());

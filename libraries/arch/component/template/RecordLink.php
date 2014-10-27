@@ -219,7 +219,7 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
 
     public function setRedirectTo($rt) {
         if(is_string($rt)) {
-            $rt = $this->_context->directory->backRequest($rt);
+            $rt = $this->context->directory->backRequest($rt);
         }
 
         $this->_redirectTo = $rt;

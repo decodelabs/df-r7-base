@@ -16,8 +16,8 @@ class Import implements auraLib\view\IContextSensitiveHelper, auraLib\view\IImpl
     
     public function template($path) {
         try {
-            $location = $this->_context->extractDirectoryLocation($path);
-            $context = $this->_context->spawnInstance($location);
+            $location = $this->context->extractDirectoryLocation($path);
+            $context = $this->context->spawnInstance($location);
             $template = auraLib\view\content\Template::loadDirectoryTemplate($context, $path);
             $template->setRenderTarget($this->_view);
             $template->setArgs($this->_view->getArgs());
@@ -30,7 +30,7 @@ class Import implements auraLib\view\IContextSensitiveHelper, auraLib\view\IImpl
 
     public function themeTemplate($path) {
         try {
-            $themeId = $this->_context->extractThemeId($path);
+            $themeId = $this->context->extractThemeId($path);
             $template = auraLib\view\content\Template::loadThemeTemplate($this->_view, $path, $themeId);
             $template->setRenderTarget($this->_view);
 
@@ -44,8 +44,8 @@ class Import implements auraLib\view\IContextSensitiveHelper, auraLib\view\IImpl
         $args = array_slice(func_get_args(), 1);
 
         try {
-            $location = $this->_context->extractDirectoryLocation($path);
-            $context = $this->_context->spawnInstance($location);
+            $location = $this->context->extractDirectoryLocation($path);
+            $context = $this->context->spawnInstance($location);
             $output = arch\component\Base::factory($context, $path, $args);
             $output->setRenderTarget($this->_view);
 
@@ -57,14 +57,14 @@ class Import implements auraLib\view\IContextSensitiveHelper, auraLib\view\IImpl
 
     public function themeComponent($name) {
         $args = array_slice(func_get_args(), 1);
-        $themeId = $this->_context->extractThemeId($name);
+        $themeId = $this->context->extractThemeId($name);
 
         if($themeId === null) {
             $themeId = $this->_view->getTheme()->getId();
         }
 
         try {
-            $output = arch\component\Base::themeFactory($this->_context, $themeId, $name, $args);
+            $output = arch\component\Base::themeFactory($this->context, $themeId, $name, $args);
             $output->setRenderTarget($this->_view);
 
             return $output;
@@ -83,7 +83,7 @@ class Import implements auraLib\view\IContextSensitiveHelper, auraLib\view\IImpl
 
     public function form($request) {
         $request = arch\Request::factory($request);
-        $context = $this->_context->spawnInstance($request);
+        $context = $this->context->spawnInstance($request);
         $action = arch\form\Action::factory($context);
 
         if(!$action instanceof arch\form\IAction) {

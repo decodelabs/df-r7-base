@@ -29,7 +29,7 @@ class Directory implements arch\IDirectoryHelper {
         
         if($from !== null) {
             if($from === true) {
-                $from = $this->_context->request;
+                $from = $this->context->request;
             }
             
             $request->setRedirectFrom($from);
@@ -37,7 +37,7 @@ class Directory implements arch\IDirectoryHelper {
         
         if($to !== null) {
             if($to === true) {
-                $to = $this->_context->request;
+                $to = $this->context->request;
             }
             
             $request->setRedirectTo($to);
@@ -47,7 +47,7 @@ class Directory implements arch\IDirectoryHelper {
     }
 
     public function backRequest($default=null, $success=true) {
-        $request = $this->_context->request;
+        $request = $this->context->request;
         
         if($success && ($redirect = $request->getRedirectTo())) {
             return $redirect;
@@ -73,7 +73,7 @@ class Directory implements arch\IDirectoryHelper {
         $request = arch\Request::factory($request);
 
         if($runMode === null) {
-            $runMode = $this->_context->getRunMode();
+            $runMode = $this->context->getRunMode();
         }
 
         return null !== arch\Action::getClassFor($request, $runMode);
@@ -89,7 +89,7 @@ class Directory implements arch\IDirectoryHelper {
         $request = arch\Request::factory($request);
 
         if($runMode === null) {
-            $runMode = $this->_context->getRunMode();
+            $runMode = $this->context->getRunMode();
         }
 
         return null !== arch\Controller::getClassFor($request, $runMode);
@@ -102,22 +102,22 @@ class Directory implements arch\IDirectoryHelper {
     }
     
     public function getComponent($name) {
-        $location = $this->_context->extractDirectoryLocation($name);
+        $location = $this->context->extractDirectoryLocation($name);
         $context = arch\Context::factory($location);
         $args = array_slice(func_get_args(), 1);
         return arch\component\Base::factory($context, $name, $args);
     }
 
     public function getThemeComponent($path) {
-        $themeId = $this->_context->extractThemeId($path, true);
-        $context = $this->_context->spawnInstance();
+        $themeId = $this->context->extractThemeId($path, true);
+        $context = $this->context->spawnInstance();
         $args = array_slice(func_get_args(), 1);
         return arch\component\Base::themeFactory($context, $themeId, $name, $args);
     }
 
     public function getScaffold($context=true) {
         if($context === true) {
-            $context = $this->_context;
+            $context = $this->context;
         }
         
         if($context instanceof arch\IContext) {

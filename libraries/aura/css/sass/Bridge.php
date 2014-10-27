@@ -14,16 +14,17 @@ use df\halo;
 
 class Bridge implements IBridge {
     
+    public $context;
+
     protected $_fileName;
     protected $_type;
     protected $_sourceDir;
     protected $_workDir;
     protected $_key;
     protected $_isDevelopment;
-    protected $_context;
 
     public function __construct(arch\IContext $context, $path) {
-        $this->_context = $context;
+        $this->context = $context;
         $path = realpath($path);
 
         if(!is_file($path)) {
@@ -40,7 +41,7 @@ class Bridge implements IBridge {
 
         $this->_workDir = $context->application->getLocalStoragePath().'/sass';
 
-        $this->_isDevelopment = $this->_context->application->isDevelopment();
+        $this->_isDevelopment = $this->context->application->isDevelopment();
         $this->_key = md5($path);
     }
 
@@ -48,7 +49,7 @@ class Bridge implements IBridge {
     public function getHttpResponse() {
         $path = $this->getCompiledPath();
 
-        $output = $this->_context->http->fileResponse($path);
+        $output = $this->context->http->fileResponse($path);
         $output->setContentType('text/css');
         $headers = $output->getHeaders();
 

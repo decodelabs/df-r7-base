@@ -97,7 +97,7 @@ trait TDirectoryHelper {
             }
         }
 
-        $this->_context = $context;
+        $this->context = $context;
         $this->_init();
     }
 
@@ -274,7 +274,7 @@ trait TDirectoryAccessLock {
     }
     
     public function lookupAccessKey(array $keys, $action=null) {
-        return $this->_context->location->lookupAccessKey($keys, $action);
+        return $this->context->location->lookupAccessKey($keys, $action);
     }
     
     public function getDefaultAccess($action=null) {
@@ -299,6 +299,6 @@ trait TDirectoryAccessLock {
     }
 
     public function getAccessLockId() {
-        return $this->_context->location->getAccessLockId();
+        return $this->context->location->getAccessLockId();
     }
 }

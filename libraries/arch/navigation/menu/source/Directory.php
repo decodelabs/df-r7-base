@@ -53,7 +53,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource {
                 continue;
             }
 
-            $menus[$name.'_'.$packageName] = (new $class($this->_context, $baseId.'_'.$packageName))
+            $menus[$name.'_'.$packageName] = (new $class($this->context, $baseId.'_'.$packageName))
                 ->setSubId($packageName);
         }
 
@@ -69,15 +69,15 @@ class Directory extends Base implements arch\navigation\menu\IListableSource {
 
 
         if(class_exists($classBase)) {
-            $output = new $classBase($this->_context, $baseId);
+            $output = new $classBase($this->context, $baseId);
         } else if(class_exists($sharedClassBase)) {
-            $output = new $sharedClassBase($this->_context, $baseId);
+            $output = new $sharedClassBase($this->context, $baseId);
         } else if(empty($menus)) {
             throw new arch\navigation\SourceNotFoundException(
                 'Directory menu '.$baseId.' could not be found'
             );
         } else {
-            $output = new arch\navigation\menu\Base($this->_context, $baseId);
+            $output = new arch\navigation\menu\Base($this->context, $baseId);
         }
 
         $output->setSubId($subId);
@@ -114,7 +114,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource {
 
             $idObj = arch\navigation\menu\Base::normalizeId($id);
             $idString = (string)$idObj;
-            $output[$idString] = $menu = new $class($this->_context, $idObj);
+            $output[$idString] = $menu = new $class($this->context, $idObj);
 
 
             // Load in base menus
@@ -130,7 +130,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource {
                     $idObj = clone $idObj;
                     
                     $output[$idString] = $menu = new arch\navigation\menu\Base(
-                        $this->_context, 
+                        $this->context, 
                         arch\navigation\menu\Base::normalizeId($idString)
                     );
                 }
@@ -170,7 +170,7 @@ class Directory extends Base implements arch\navigation\menu\IListableSource {
                 unset($set['__default']);
             } else {
                 $top = new arch\navigation\menu\Base(
-                    $this->_context, 
+                    $this->context, 
                     arch\navigation\menu\Base::normalizeId($id)
                 );
             }

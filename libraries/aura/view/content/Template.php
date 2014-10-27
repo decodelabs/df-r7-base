@@ -148,7 +148,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         }
         
         $this->_path = $absolutePath;
-        $this->_context = $context;
+        $this->context = $context;
         $this->_isLayout = $isLayout;
     }
     
@@ -287,7 +287,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
 
 // Helpers
     public function _($phrase, array $data=null, $plural=null, $locale=null) {
-        return $this->_context->_($phrase, $data, $plural, $locale);
+        return $this->context->_($phrase, $data, $plural, $locale);
     }
     
     
@@ -296,7 +296,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         return [
             'path' => $this->_path,
             'args' => count($this->_args).' objects',
-            'context' => $this->_context,
+            'context' => $this->context,
             'view' => $this->view
         ];
     }

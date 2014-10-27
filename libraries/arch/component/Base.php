@@ -83,7 +83,7 @@ abstract class Base implements arch\IComponent {
     }
     
     public function __construct(arch\IContext $context, array $args=null) {
-        $this->_context = $context;
+        $this->context = $context;
 
         if(empty($args)) {
             $args = [];
@@ -138,7 +138,7 @@ abstract class Base implements arch\IComponent {
         try {
             $this->view = $this->getRenderTarget()->getView();
         } catch(\Exception $e) {
-            $this->view = $this->_context->aura->getWidgetContainer()->getView();
+            $this->view = $this->context->aura->getWidgetContainer()->getView();
         }
 
         if(!method_exists($this, '_execute')) {
@@ -167,7 +167,7 @@ abstract class Base implements arch\IComponent {
     }
     
     public function lookupAccessKey(array $keys, $action=null) {
-        return $this->_context->location->lookupAccessKey($keys, $action);
+        return $this->context->location->lookupAccessKey($keys, $action);
     }
     
     public function getDefaultAccess($action=null) {
@@ -175,6 +175,6 @@ abstract class Base implements arch\IComponent {
     }
 
     public function getAccessLockId() {
-        return $this->_context->location->getAccessLockId();
+        return $this->context->location->getAccessLockId();
     }
 }

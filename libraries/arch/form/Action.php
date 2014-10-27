@@ -32,7 +32,7 @@ abstract class Action extends arch\Action implements IAction {
     public function __construct(arch\IContext $context, arch\IController $controller=null) {
         parent::__construct($context, $controller);
         
-        if($this->_context->getRunMode() !== 'Http') {
+        if($this->context->getRunMode() !== 'Http') {
             throw new RuntimeException(
                 'Form actions can only be used in Http run mode'
             );
@@ -45,7 +45,7 @@ abstract class Action extends arch\Action implements IAction {
     
     final protected function _beforeDispatch() {
         $response = $this->_init();
-        $request = $this->_context->request;
+        $request = $this->context->request;
         $id = null;
         
         if(!empty($response)) {
@@ -53,7 +53,7 @@ abstract class Action extends arch\Action implements IAction {
         }
         
         $this->_sessionNamespace = $this->_createSessionNamespace();
-        $session = $this->_context->getUserManager()->getSessionNamespace($this->_sessionNamespace);
+        $session = $this->context->getUserManager()->getSessionNamespace($this->_sessionNamespace);
         
         if($request->hasQuery() && $request->getQuery()->has(static::SESSION_ID_KEY)) {
             $id = $request->getQuery()->get(static::SESSION_ID_KEY);
@@ -82,9 +82,9 @@ abstract class Action extends arch\Action implements IAction {
             $keys = $session->getAllKeys();
             
             if(count($keys) > static::MAX_SESSIONS) {
-                $this->_context->comms->flash(
+                $this->context->comms->flash(
                     'form.session.prune',
-                    $this->_context->_('The maximum form session threshold has been reached'),
+                    $this->context->_('The maximum form session threshold has been reached'),
                     'debug'
                 );
 
@@ -133,7 +133,7 @@ abstract class Action extends arch\Action implements IAction {
     }
     
     protected function _createSessionNamespace() {
-        $output = 'form://'.implode('/', $this->_context->request->getLiteralPathArray());
+        $output = 'form://'.implode('/', $this->context->request->getLiteralPathArray());
         
         if(null !== ($dataId = $this->_getDataId())) {
             $output .= '#'.$dataId;
@@ -181,7 +181,7 @@ abstract class Action extends arch\Action implements IAction {
         $setContentProvider = false;
 
         if(!$this->view) {
-            $this->view = aura\view\Base::factory('Html', $this->_context);
+            $this->view = aura\view\Base::factory('Html', $this->context);
             $setContentProvider = true;
         }
 
@@ -199,7 +199,7 @@ abstract class Action extends arch\Action implements IAction {
         
         if(method_exists($this, '_createUi')) {
             $this->_createUi();
-        } else if($this->_context->application->isDevelopment()) {
+        } else if($this->context->application->isDevelopment()) {
             $this->content->push($this->html(
                 '<p>This form handler has no ui generator - you need to implement function _createUi() or override function onGetRequest()</p>'
             ));
@@ -346,7 +346,7 @@ abstract class Action extends arch\Action implements IAction {
     
     private function _runPostRequest(core\collection\ITree $postData=null) {
         if($postData === null) {
-            $httpRequest = $this->_context->application->getHttpRequest();
+            $httpRequest = $this->context->application->getHttpRequest();
             $postData = clone $httpRequest->getPostData();
         }
 
@@ -362,7 +362,7 @@ abstract class Action extends arch\Action implements IAction {
                 try {
                     $this->getDelegate($id)->values->clear()->import($delegateValues);
                 } catch(DelegateException $e) {
-                    if($this->_context->application->isDevelopment()) {
+                    if($this->context->application->isDevelopment()) {
                         throw $e;
                     }
                 }
@@ -434,7 +434,7 @@ abstract class Action extends arch\Action implements IAction {
         }
 
         if($this->_sessionNamespace) {
-            $session = $this->_context->getUserManager()->getSessionNamespace($this->_sessionNamespace);
+            $session = $this->context->getUserManager()->getSessionNamespace($this->_sessionNamespace);
             $session->remove($this->_state->getSessionId());
         }
     }
@@ -493,13 +493,13 @@ abstract class Action extends arch\Action implements IAction {
 
 // Action dispatch
     public function getActionMethodName() {
-        $method = ucfirst(strtolower($this->_context->application->getHttpRequest()->getMethod()));
-        $func = 'on'.$this->_context->request->getType().$method.'Request';
+        $method = ucfirst(strtolower($this->context->application->getHttpRequest()->getMethod()));
+        $func = 'on'.$this->context->request->getType().$method.'Request';
         
         if(!method_exists($this, $func)) {
             throw new RuntimeException(
-                'Form action '.$this->_context->request.' does not support '.
-                $this->_context->application->getHttpRequest()->getMethod().' http method',
+                'Form action '.$this->context->request.' does not support '.
+                $this->context->application->getHttpRequest()->getMethod().' http method',
                 405
             );
         }
@@ -509,7 +509,7 @@ abstract class Action extends arch\Action implements IAction {
     
     protected function _afterDispatch($response) {
         if(!$this->_isComplete && $this->_sessionNamespace) {
-            $session = $this->_context->getUserManager()->getSessionNamespace($this->_sessionNamespace);
+            $session = $this->context->getUserManager()->getSessionNamespace($this->_sessionNamespace);
             $session->set($this->_state->getSessionId(), $this->_state);
         }
         

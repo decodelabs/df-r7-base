@@ -43,7 +43,7 @@ abstract class Base implements arch\navigation\menu\ISource, core\IContextAware 
     }
     
     public function __construct(arch\IContext $context) {
-        $this->_context = $context;
+        $this->context = $context;
     }
     
     public function getName() {

@@ -40,7 +40,7 @@ class Menu extends arch\navigation\menu\Base {
         $this->_name = $data['name'];
 
         if(!$this->_scaffold) {
-            $this->_scaffold = arch\scaffold\Base::factory($this->_context);
+            $this->_scaffold = arch\scaffold\Base::factory($this->context);
         }
     }
 }

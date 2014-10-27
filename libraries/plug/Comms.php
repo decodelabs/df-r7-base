@@ -19,7 +19,7 @@ class Comms implements core\ISharedHelper {
     protected $_manager;
 
     public function __construct(core\IContext $context) {
-        $this->_context = $context;
+        $this->context = $context;
         $this->_manager = flow\Manager::getInstance();
     }
 
@@ -72,8 +72,8 @@ class Comms implements core\ISharedHelper {
     }
 
     public function newTemplateNotification($path, array $args=[], $to=null, $from=null) {
-        if($this->_context instanceof arch\IContext) {
-            $aura = $this->_context->aura;
+        if($this->context instanceof arch\IContext) {
+            $aura = $this->context->aura;
         } else {
             $aura = arch\Context::factory()->aura;
         }

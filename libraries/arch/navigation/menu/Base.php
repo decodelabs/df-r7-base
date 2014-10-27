@@ -130,7 +130,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
     }
     
     public function __construct(arch\IContext $context, $id) {
-        $this->_context = $context;
+        $this->context = $context;
         $this->_id = self::normalizeId($id);
     }
 
@@ -151,7 +151,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
             'id' => $this->_id,
             'subId' => $this->_subId,
             'delegates' => $this->_delegates,
-            'context' => $this->_context
+            'context' => $this->context
         ];
     }
 
@@ -161,7 +161,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
         $this->_delegates = $data['delegates'];
 
         if(isset($data['context'])) {
-            $this->_context = $data['context'];
+            $this->context = $data['context'];
         }
     }
     
@@ -190,7 +190,7 @@ class Base implements IMenu, \Serializable, core\IDumpable {
     }
     
     public function getSource() {
-        return arch\navigation\menu\source\Base::factory($this->_context, $this->getSourceId());
+        return arch\navigation\menu\source\Base::factory($this->context, $this->getSourceId());
     }
     
     public function getSourceId() {

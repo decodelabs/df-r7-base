@@ -342,7 +342,7 @@ trait TScaffold_RecordDataProvider {
             return $this->_record;
         }
 
-        $key = $this->_context->request->query[$this->_getRecordUrlKey()];
+        $key = $this->context->request->query[$this->_getRecordUrlKey()];
         $this->_record = $this->_loadRecord($key, $this->_recordAction);
 
         if(!$this->_record) {
@@ -414,7 +414,7 @@ trait TScaffold_RecordDataProvider {
 
     public function buildDeleteDynamicAction($controller) {
         if(!$this->canDeleteRecord()) {
-            $this->_context->throwError(403, 'Records cannot be deleted');
+            $this->context->throwError(403, 'Records cannot be deleted');
         }
 
         $this->_recordAction = 'delete';
@@ -440,7 +440,7 @@ trait TScaffold_RecordDataProvider {
         }
 
         $args[0] = array_merge($this->_recordDetailsFields, $args[0]);
-        $output = new arch\component\template\AttributeList($this->_context, $args);
+        $output = new arch\component\template\AttributeList($this->context, $args);
         $output->setViewArg(lcfirst($this->getRecordKeyName()));
 
         foreach($output->getFields() as $field => $enabled) {
@@ -479,7 +479,7 @@ trait TScaffold_RecordDataProvider {
                     $this->_getRecordActionRequest(
                         $record, 'delete', null, true,
                         $mode == 'sectionHeaderBar' ?
-                            $this->_context->location->getPath()->getDirname().'/' : null
+                            $this->context->location->getPath()->getDirname().'/' : null
                     ),
                     $this->_('Delete '.$this->getRecordItemName())
                 )
@@ -686,7 +686,7 @@ trait TScaffold_RecordListProvider {
         }
 
         $args[0] = array_merge($this->_recordListFields, $args[0]);
-        $output = new arch\component\template\CollectionList($this->_context, $args);
+        $output = new arch\component\template\CollectionList($this->context, $args);
         $output->setViewArg(lcfirst($this->getRecordKeyName()).'List');
         $nameKey = $this->getRecordNameKey();
 
@@ -731,10 +731,10 @@ trait TScaffold_SectionProvider {
     private $_sectionItemCounts = null;
 
     public function loadSectionAction(arch\IController $controller=null) {
-        $action = $this->_context->request->getAction();
+        $action = $this->context->request->getAction();
 
         if(isset($this->_sections[$action]) || in_array($action, $this->_sections)) {
-            return new Action($this->_context, $this, function() use($action) {
+            return new Action($this->context, $this, function() use($action) {
                 $record = null;
 
                 if($this instanceof IRecordDataProviderScaffold) {
@@ -812,7 +812,7 @@ trait TScaffold_SectionProvider {
     }
 
     public function addSectionSubOperativeLinks($menu, $bar) {
-        $action = $this->_context->request->getAction();
+        $action = $this->context->request->getAction();
         $method = 'add'.ucfirst($action).'SectionSubOperativeLinks';
 
         if(method_exists($this, $method)) {

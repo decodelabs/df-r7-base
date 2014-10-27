@@ -123,62 +123,6 @@ class Context implements IContext, \Serializable, core\IDumpable {
         return $this->location;
     }
     
-    public function normalizeOutputUrl($uri, $toRequest=false, $from=null, $to=null) {
-        if($toRequest && $uri instanceof IRequest) {
-            return $this->_applyRequestRedirect($uri, $from, $to);
-        } else if($uri instanceof core\uri\IUrl && !$uri instanceof IRequest) {
-            if($toRequest && $uri instanceof link\http\IUrl && ($request = $uri->getDirectoryRequest())) {
-                $uri = $request;
-            } else {
-                return $uri;
-            }
-        }
-        
-        if($uri === null) {
-            $uri = $this->request;
-        }
-        
-        if(is_string($uri)) {
-            if(substr($uri, 0, 7) == 'mailto:') {
-                return new core\uri\MailtoUrl($uri);
-            } else if(substr($uri, 0, 2) == '//') {
-                return new link\http\Url($uri);
-            } else {
-                $parts = explode('://', $uri, 2);
-                
-                if($scheme = array_shift($parts)) {
-                    switch(strtolower($scheme)) {
-                        case 'http':
-                        case 'https':
-                            return new link\http\Url($uri);
-                            
-                        case 'ftp':
-                            return new link\ftp\Url($uri);
-                            
-                        case 'mailto':
-                            return new core\uri\MailtoUrl($uri);
-                            
-                        case 'directory':
-                            $uri = new Request($uri);
-                            break;
-                    }
-                }
-            }
-        }
-        
-        if(!$uri instanceof IRequest) {
-            $uri = new Request($uri);
-        }
-
-        $uri = $this->_applyRequestRedirect($uri, $from, $to);
-
-        if($toRequest) {
-            return $uri;
-        }
-
-        return core\application\http\Router::getInstance()->requestToUrl($uri);
-    }
-
     protected function _applyRequestRedirect(arch\IRequest $request, $from, $to) {
         if($from !== null) {
             if($from === true) {

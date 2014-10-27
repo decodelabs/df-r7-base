@@ -25,7 +25,7 @@ class Uri implements auraLib\view\IHelper {
     public function __invoke($uri, $from=null, $to=null, $asRequest=false) {
         if($uri === null) {
             if($asRequest) {
-                return clone $this->_context->request;
+                return clone $this->context->request;
             }
 
             return $this->current($from, $to);
@@ -85,11 +85,11 @@ class Uri implements auraLib\view\IHelper {
     }
     
     public function current($from=null, $to=null) {
-        return $this->directory($this->_context->request, $from, $to);
+        return $this->directory($this->context->request, $from, $to);
     }
 
     public function mapCurrent(array $map, array $queryValues=null) {
-        $request = clone $this->_context->request;
+        $request = clone $this->context->request;
 
         foreach($map as $key => $value) {
             switch($key) {
@@ -123,7 +123,7 @@ class Uri implements auraLib\view\IHelper {
     }
 
     public function query(array $queryValues) {
-        $request = clone $this->_context->request;
+        $request = clone $this->context->request;
         $request->getQuery()->import($queryValues);
 
         return $this->requestToUrl($request);
@@ -131,7 +131,7 @@ class Uri implements auraLib\view\IHelper {
 
     public function queryToggle($request, $key, &$result=null) {
         if($request === null) {
-            $request = clone $this->_context->request;
+            $request = clone $this->context->request;
         } else {
             $request = arch\Request::factory($request);
         }
@@ -166,7 +166,7 @@ class Uri implements auraLib\view\IHelper {
     protected function _applyRequestRedirect(arch\Request $request, $from=null, $to=null) {
         if($from !== null) {
             if($from === true) {
-                $from = $this->_context->request;
+                $from = $this->context->request;
             }
             
             $request->setRedirectFrom($from);
@@ -174,7 +174,7 @@ class Uri implements auraLib\view\IHelper {
         
         if($to !== null) {
             if($to === true) {
-                $to = $this->_context->request;
+                $to = $this->context->request;
             }
             
             $request->setRedirectTo($to);
@@ -201,7 +201,7 @@ class Uri implements auraLib\view\IHelper {
             } else {
                 if(!$this->_defaultTheme) {
                     $config = auraLib\theme\Config::getInstance();
-                    $this->_defaultTheme = $config->getThemeIdFor($this->_context->location->getArea());
+                    $this->_defaultTheme = $config->getThemeIdFor($this->context->location->getArea());
                 }
 
                 $theme = $this->_defaultTheme;
@@ -215,7 +215,7 @@ class Uri implements auraLib\view\IHelper {
     }
 
     public function back($default=null, $success=true) {
-        return $this->directory($this->_context->directory->backRequest($default, $success));
+        return $this->directory($this->context->directory->backRequest($default, $success));
     }
     
     public function mailto($url) {

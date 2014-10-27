@@ -67,7 +67,7 @@ abstract class Action extends arch\Action implements IAction {
 
     public function runChild($request) {
         $request = arch\Request::factory($request);
-        $context = $this->_context->spawnInstance($request, true);
+        $context = $this->context->spawnInstance($request, true);
         $action = arch\Action::factory($context);
 
         if(!$action instanceof self) {

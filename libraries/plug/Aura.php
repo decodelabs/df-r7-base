@@ -16,7 +16,7 @@ class Aura implements arch\IDirectoryHelper {
     
     public function getView($path, $request=null) {
         $parts = explode('.', $path);
-        $location = $this->_context->extractDirectoryLocation($path);
+        $location = $this->context->extractDirectoryLocation($path);
         $view = $this->getBarebonesView(array_pop($parts), $location);
         
         $view->setContentProvider(
@@ -27,20 +27,20 @@ class Aura implements arch\IDirectoryHelper {
     }
     
     public function getBarebonesView($type, $request=null) {
-        return auraLib\view\Base::factory($type, $this->_context->spawnInstance($request));
+        return auraLib\view\Base::factory($type, $this->context->spawnInstance($request));
     }
     
     public function getDirectoryTemplate($path, $request=null) {
-        return auraLib\view\content\Template::loadDirectoryTemplate($this->_context->spawnInstance($request), $path);
+        return auraLib\view\content\Template::loadDirectoryTemplate($this->context->spawnInstance($request), $path);
     }
 
     public function getThemeTemplate(auraLib\view\IView $view, $path) {
-        $themeId = $this->_context->extractThemeId($path);
+        $themeId = $this->context->extractThemeId($path);
         return auraLib\view\content\Template::loadThemeTemplate($view, $path, $themeId);
     }
 
     public function getWidgetContainer($request=null) {
-        $view = $this->getBarebonesView($this->_context->location->getType(), $request);
+        $view = $this->getBarebonesView($this->context->location->getType(), $request);
         $view->setContentProvider($output = new auraLib\view\content\WidgetContentProvider($view->getContext()));
         $output->setRenderTarget($view);
 

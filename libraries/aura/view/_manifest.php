@@ -345,8 +345,9 @@ interface IContextSensitiveHelper extends IHelper {
 
 trait THelper {
 
+    public $context;
+
     protected $_view;
-    protected $_context;
 
     public function __construct(core\IContext $context, $target) {
         if($target instanceof IRenderTargetProvider
@@ -365,7 +366,7 @@ trait THelper {
             $context = $this->_view->getContext();
         }
 
-        $this->_context = $context;
+        $this->context = $context;
         $this->_init();
     }
 
@@ -377,12 +378,12 @@ trait TContextSensitiveHelper {
     use THelper;
 
     public function setContext(arch\IContext $context) {
-        $this->_context = $context;
+        $this->context = $context;
         return $this;
     }
 
     public function getContext() {
-        return $this->_context;
+        return $this->context;
     }
 }
 

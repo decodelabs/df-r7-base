@@ -18,7 +18,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
     use auraLib\view\THelper;
     
     public function __call($member, $args) {
-        return auraLib\html\widget\Base::factory($this->_context, $member, $args)->setRenderTarget($this->_view);
+        return auraLib\html\widget\Base::factory($this->context, $member, $args)->setRenderTarget($this->_view);
     }
 
     public function __invoke($name, $content=null, array $attributes=[]) {
@@ -440,7 +440,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
         }
         
         if($locale === null) {
-            $locale = $this->_context->getLocale();
+            $locale = $this->context->getLocale();
         }
 
         if($locale === null) {
@@ -453,17 +453,17 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
         $diff = $now - $ts;
 
         if($diff > 0) {
-            $output = $this->_context->_(
+            $output = $this->context->_(
                 '%t% ago',
                 ['%t%' => $this->_view->format->timeSince($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)]
             );
         } else if($diff < 0) {
-            $output = $this->_context->_(
+            $output = $this->context->_(
                 'in %t%',
                 ['%t%' => $this->_view->format->timeUntil($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)]
             );
         } else {
-            $output = $this->_context->_('right now');
+            $output = $this->context->_('right now');
         }
 
         return $this->_timeTag(

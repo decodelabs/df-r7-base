@@ -15,20 +15,20 @@ class Navigation implements arch\IDirectoryHelper {
     use arch\TDirectoryHelper;
 
     public function getMenu($id) {
-        return arch\navigation\menu\Base::factory($this->_context, $id);
+        return arch\navigation\menu\Base::factory($this->context, $id);
     }
 
     public function getBreadcrumbs($empty=false) {
-        if(!$output = $this->_context->application->getRegistryObject('breadcrumbs')) {
+        if(!$output = $this->context->application->getRegistryObject('breadcrumbs')) {
             if($empty) {
                 $output = new arch\navigation\breadcrumbs\EntryList();
             } else {
                 $output = arch\navigation\breadcrumbs\EntryList::generateFromRequest(
-                    $this->_context->request
+                    $this->context->request
                 );
             }
             
-            $this->_context->application->setRegistryObject($output);
+            $this->context->application->setRegistryObject($output);
         }
 
         return $output;
@@ -41,14 +41,14 @@ class Navigation implements arch\IDirectoryHelper {
             return $entry->getBody();
         }
 
-        return $this->_context->$application->getName();
+        return $this->context->$application->getName();
     }
 
     public function clearMenuCache($id=null) {
         if($id !== null) {
-            arch\navigation\menu\Base::clearCacheFor($this->_context, $id);
+            arch\navigation\menu\Base::clearCacheFor($this->context, $id);
         } else {
-            arch\navigation\menu\Base::clearCache($this->_context);
+            arch\navigation\menu\Base::clearCache($this->context);
         }
 
         return $this;

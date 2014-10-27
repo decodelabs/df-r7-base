@@ -823,19 +823,6 @@ interface IContextAware {
 
 trait TContextAware {
     
-    protected $_context;
-    
-    public function getContext() {
-        return $this->_context;
-    }
-
-    public function hasContext() {
-        return $this->_context !== null;
-    }
-}
-
-trait TContextAwarePublic {
-    
     public $context;
     
     public function getContext() {
@@ -854,15 +841,21 @@ trait TContextProxy {
     use TContextAware;
     
     public function __call($method, $args) {
-        if($this->_context) {
-            return call_user_func_array([$this->_context, $method], $args);
+        if($this->context) {
+            return call_user_func_array([$this->context, $method], $args);
         }
     }
     
     public function __get($key) {
-        if($this->_context) {
-            return $this->_context->__get($key);
+        if(isset($this->{$key})) {
+            return $this->{$key};
         }
+
+        if(!$this->context) {
+            return null;
+        }
+
+        return $this->{$key} = $this->context->__get($key);
     }
 }
 
@@ -870,10 +863,10 @@ interface ISharedHelper extends IHelper {}
 
 trait TSharedHelper {
 
-    protected $_context;
+    public $context;
 
     public function __construct(IContext $context, $target) {
-        $this->_context = $context;
+        $this->context = $context;
     }
 }
 

@@ -89,10 +89,10 @@ abstract class Action implements IAction, core\IDumpable {
     
     public function __construct(IContext $context, IController $controller=null) {
         $this->controller = $controller;
-        $this->_context = $context;
+        $this->context = $context;
 
         if(!$this->controller) {
-            $this->controller = Controller::factory($this->_context);
+            $this->controller = Controller::factory($this->context);
         }
     }
     
@@ -123,7 +123,7 @@ abstract class Action implements IAction, core\IDumpable {
         $func = null;
         
         if($this->shouldCheckAccess()) {
-            $client = $this->_context->getUserManager()->getClient();
+            $client = $this->context->getUserManager()->getClient();
 
             if($client->isDeactivated()) {
                 $this->throwError(403, 'Client deactivated');
@@ -161,7 +161,7 @@ abstract class Action implements IAction, core\IDumpable {
 
             throw new RuntimeException(
                 'No handler could be found for action: '.
-                $this->_context->location->toString(),
+                $this->context->location->toString(),
                 404
             );
         }
@@ -178,7 +178,7 @@ abstract class Action implements IAction, core\IDumpable {
     }
 
     protected function _dispatchRootDefaultAction() {
-        $class = 'df\\apex\\directory\\'.$this->_context->location->getArea().'\\_actions\\HttpDefault';
+        $class = 'df\\apex\\directory\\'.$this->context->location->getArea().'\\_actions\\HttpDefault';
 
         if(!class_exists($class)) {
             $class = 'df\\apex\\directory\\shared\\_actions\\HttpDefault';
@@ -189,13 +189,13 @@ abstract class Action implements IAction, core\IDumpable {
         }
 
         if($class && get_class($this) != $class) {
-            $defaultAction = new $class($this->_context);
+            $defaultAction = new $class($this->context);
             return $defaultAction->dispatch();
         }
     }
     
     public function getActionMethodName() {
-        $type = $this->_context->location->getType();
+        $type = $this->context->location->getType();
         $func = 'executeAs'.$type;
         
         if(!method_exists($this, $func)) {
@@ -217,9 +217,9 @@ abstract class Action implements IAction, core\IDumpable {
 // Dump
     public function getDumpProperties() {
         return [
-            'type' => $this->_context->getRunMode(),
+            'type' => $this->context->getRunMode(),
             'controller' => $this->controller,
-            'context' => $this->_context
+            'context' => $this->context
         ];
     }
 }

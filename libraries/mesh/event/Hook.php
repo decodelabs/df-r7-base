@@ -151,7 +151,7 @@ abstract class Hook implements IHook {
     }
 
     public function __construct(core\IContext $context) {
-        $this->_context = $context;
+        $this->context = $context;
     }
 
     public function getName() {

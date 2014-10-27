@@ -16,7 +16,7 @@ class Format implements core\ISharedHelper {
 // Numbers
     public function number($number, $format=null, $locale=null) {
         if($locale === null) {
-            $locale = $this->_context->getLocale();
+            $locale = $this->context->getLocale();
         }
 
         return core\i18n\Manager::getInstance()
@@ -26,7 +26,7 @@ class Format implements core\ISharedHelper {
     
     public function percent($number, $locale=null) {
         if($locale === null) {
-            $locale = $this->_context->getLocale();
+            $locale = $this->context->getLocale();
         }
 
         return core\i18n\Manager::getInstance()
@@ -46,7 +46,7 @@ class Format implements core\ISharedHelper {
 
     public function currency($number, $code=null, $locale=null) {
         if($locale === null) {
-            $locale = $this->_context->getLocale();
+            $locale = $this->context->getLocale();
         }
 
         if($number instanceof mint\ICurrency) {
@@ -65,7 +65,7 @@ class Format implements core\ISharedHelper {
     
     public function scientific($number, $locale=null) {
         if($locale === null) {
-            $locale = $this->_context->getLocale();
+            $locale = $this->context->getLocale();
         }
 
         return core\i18n\Manager::getInstance()
@@ -75,7 +75,7 @@ class Format implements core\ISharedHelper {
     
     public function spellout($number, $locale=null) {
         if($locale === null) {
-            $locale = $this->_context->getLocale();
+            $locale = $this->context->getLocale();
         }
 
         return core\i18n\Manager::getInstance()
@@ -85,7 +85,7 @@ class Format implements core\ISharedHelper {
     
     public function ordinal($number, $locale=null) {
         if($locale === null) {
-            $locale = $this->_context->getLocale();
+            $locale = $this->context->getLocale();
         }
 
         return core\i18n\Manager::getInstance()
@@ -105,7 +105,7 @@ class Format implements core\ISharedHelper {
         }
 
         if($locale === null) {
-            $locale = $this->_context->getLocale();
+            $locale = $this->context->getLocale();
         }
 
         if($locale !== null) {
@@ -117,7 +117,7 @@ class Format implements core\ISharedHelper {
 
     public function genericDuration($number, $locale=null) {
         if($locale === null) {
-            $locale = $this->_context->getLocale();
+            $locale = $this->context->getLocale();
         }
 
         return core\i18n\Manager::getInstance()
@@ -127,7 +127,7 @@ class Format implements core\ISharedHelper {
 
     public function fileSize($bytes, $precision=2, $longNames=false, $locale=null) {
         if($locale === null) {
-            $locale = $this->_context->getLocale();
+            $locale = $this->context->getLocale();
         }
 
         return core\i18n\Manager::getInstance()
@@ -151,7 +151,7 @@ class Format implements core\ISharedHelper {
         }
 
         if($locale === null) {
-            $locale = $this->_context->getLocale();
+            $locale = $this->context->getLocale();
         }
 
         return core\time\Date::factory($date)
@@ -173,7 +173,7 @@ class Format implements core\ISharedHelper {
         }
 
         if($locale === null) {
-            $locale = $this->_context->getLocale();
+            $locale = $this->context->getLocale();
         }
         
         return core\time\Date::factory($date)
@@ -209,7 +209,7 @@ class Format implements core\ISharedHelper {
         }
 
         if($locale === null) {
-            $locale = $this->_context->getLocale();
+            $locale = $this->context->getLocale();
         }
         
         return core\time\Date::factory($date)
@@ -232,7 +232,7 @@ class Format implements core\ISharedHelper {
         }
 
         if($locale === null) {
-            $locale = $this->_context->getLocale();
+            $locale = $this->context->getLocale();
         }
 
         if($locale === null) {
@@ -251,7 +251,7 @@ class Format implements core\ISharedHelper {
         }
         
         if($locale === null) {
-            $locale = $this->_context->getLocale();
+            $locale = $this->context->getLocale();
         }
 
         if($locale === null) {
@@ -270,7 +270,7 @@ class Format implements core\ISharedHelper {
         }
         
         if($locale === null) {
-            $locale = $this->_context->getLocale();
+            $locale = $this->context->getLocale();
         }
 
         if($locale === null) {
@@ -283,17 +283,17 @@ class Format implements core\ISharedHelper {
         $diff = $now - $ts;
 
         if($diff > 0) {
-            return $this->_context->_(
+            return $this->context->_(
                 '%t% ago',
                 ['%t%' => $this->timeSince($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)]
             );
         } else if($diff < 0) {
-            return $this->_context->_(
+            return $this->context->_(
                 'in %t%',
                 ['%t%' => $this->timeUntil($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)]
             );
         } else {
-            return $this->_context->_('right now');
+            return $this->context->_('right now');
         }
     }
     

@@ -69,7 +69,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
         
         if($primary === null) {
             if($throw) {
-                $this->_context->throwError(404, 'Item not found - '.$name.'#NULL');
+                $this->context->throwError(404, 'Item not found - '.$name.'#NULL');
             } else {
                 return null;
             }
@@ -92,21 +92,21 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
                 $primary = implode(',', $primary);
             }
 
-            $this->_context->throwError(404, 'Item not found - '.$name.'#'.$primary);
+            $this->context->throwError(404, 'Item not found - '.$name.'#'.$primary);
         }
 
         return $output;
     }
 
     protected function _checkRecordAccess($record, $action) {
-        if(!$this->_context->getUserManager()->canAccess($record, $action)) {
+        if(!$this->context->getUserManager()->canAccess($record, $action)) {
             $actionName = $action;
 
             if($actionName === null) {
                 $actionName = 'access';
             }
 
-            $this->_context->throwError(401, 'Cannot '.$actionName.' '.$name.' items');
+            $this->context->throwError(401, 'Cannot '.$actionName.' '.$name.' items');
         }
     }
 
@@ -139,8 +139,8 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
         $adapter = $this->_sourceToAdapter($source);
         $output = $adapter->newRecord($values);
 
-        if(!$this->_context->getUserManager()->canAccess($output, 'add')) {
-            $this->_context->throwError(401, 'Cannot add '.$source->getDisplayName().' items');
+        if(!$this->context->getUserManager()->canAccess($output, 'add')) {
+            $this->context->throwError(401, 'Cannot add '.$source->getDisplayName().' items');
         }
 
         return $output;
@@ -171,8 +171,8 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
         $source = $sourceManager->newSource($source, null);
         $adapter = $source->getAdapter();
 
-        if(!$this->_context->getUserManager()->canAccess($adapter, $action)) {
-            $this->_context->throwError(401, 'Cannot '.$actionName.' '.$source->getDisplayName().' items');
+        if(!$this->context->getUserManager()->canAccess($adapter, $action)) {
+            $this->context->throwError(401, 'Cannot '.$actionName.' '.$source->getDisplayName().' items');
         }
 
         return $this;
@@ -294,7 +294,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
 
 // Mesh
     public function fetchEntity($locator) {
-        return $this->_context->getMeshManager()->fetchEntity($locator);
+        return $this->context->getMeshManager()->fetchEntity($locator);
     }
 
     public function fetchEntityForAction($id, $action=null) {
@@ -305,11 +305,11 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
         }
 
         if(!$output = $this->fetchEntity($id)) {
-            $this->_context->throwError(404, 'Entity not found - '.$id);
+            $this->context->throwError(404, 'Entity not found - '.$id);
         }
 
-        if(!$this->_context->getUserManager()->canAccess($output, $action)) {
-            $this->_context->throwError(401, 'Cannot '.$actionName.' entity '.$id);
+        if(!$this->context->getUserManager()->canAccess($output, $action)) {
+            $this->context->throwError(401, 'Cannot '.$actionName.' entity '.$id);
         }
 
         return $output;
@@ -350,7 +350,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
 // Crypt
     public function hash($message, $salt=null) {
         if($salt === null) {
-            $salt = $this->_context->application->getPassKey();
+            $salt = $this->context->application->getPassKey();
         }
         
         return core\string\Util::passwordHash($message, $salt);
@@ -358,8 +358,8 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
     
     public function encrypt($message, $password=null, $salt=null) {
         if($password === null) {
-            $password = $this->_context->application->getPassKey();
-            $salt = $this->_context->application->getUniquePrefix();
+            $password = $this->context->application->getPassKey();
+            $salt = $this->context->application->getUniquePrefix();
         }
         
         return core\string\Util::encrypt($message, $password, $salt);
@@ -367,8 +367,8 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
     
     public function decrypt($message, $password=null, $salt=null) {
         if($password === null) {
-            $password = $this->_context->application->getPassKey();
-            $salt = $this->_context->application->getUniquePrefix();
+            $password = $this->context->application->getPassKey();
+            $salt = $this->context->application->getUniquePrefix();
         }
         
         return core\string\Util::decrypt($message, $password, $salt);

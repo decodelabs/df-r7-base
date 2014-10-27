@@ -27,7 +27,7 @@ abstract class Mail extends Base implements arch\IMailComponent {
     protected $_isPrivate = false;
 
     public function __construct(arch\IContext $context, array $args=null) {
-        $this->_context = $context;
+        $this->context = $context;
 
         if(empty($args)) {
             $args = [];
@@ -46,10 +46,10 @@ abstract class Mail extends Base implements arch\IMailComponent {
     protected function _loadView() {
         try {
             $this->_templateType = 'html';
-            return $this->_context->aura->getView($this->getName().'.html');
+            return $this->context->aura->getView($this->getName().'.html');
         } catch(\Exception $e) {
             $this->_templateType = 'notification';
-            return $this->_context->aura->getView($this->getName().'.notification');
+            return $this->context->aura->getView($this->getName().'.notification');
         }
     }
 
@@ -66,7 +66,7 @@ abstract class Mail extends Base implements arch\IMailComponent {
         $output = static::DESCRIPTION;
 
         if(empty($output)) {
-            $output = $this->_context->format->name($this->getName());
+            $output = $this->context->format->name($this->getName());
         }
 
         return $output;
@@ -186,7 +186,7 @@ abstract class Mail extends Base implements arch\IMailComponent {
     }
 
     protected function _getDefaultJournalName() {
-        $output = '~'.$this->_context->location->getDirectoryLocation();
+        $output = '~'.$this->context->location->getDirectoryLocation();
 
         if(0 === strpos($output, '~mail/')) {
             $output = substr($output, 6);

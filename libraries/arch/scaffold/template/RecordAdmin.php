@@ -97,7 +97,7 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
         $container->push(
             $this->import->component('IndexHeaderBar'),
 
-            $this->html->form($this->_context->location)->setMethod('get')->push(
+            $this->html->form($this->context->location)->setMethod('get')->push(
                 $this->html->fieldSet($this->_('Search'))->push(
                     $this->_buildQueryPropagationInputs(['search']),
 

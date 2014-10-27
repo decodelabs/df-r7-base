@@ -22,7 +22,7 @@ class Delegate implements IDelegate {
     private $_isComplete = false;
 
     public function __construct(arch\IContext $context, IStateController $state, $id) {
-        $this->_context = $context;
+        $this->context = $context;
         $this->_state = $state;
         $this->_delegateId = $id;
 
