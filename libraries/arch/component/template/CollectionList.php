@@ -192,8 +192,8 @@ class CollectionList extends arch\component\Base implements aura\html\widget\IWi
                 } else {
                     $output->addField($key);
                 }
-            } else if($value instanceof core\lang\ICallback) {
-                $value->invoke($output, $key);
+            } else if(is_callable($value)) {
+                core\lang\Callback::factory($value)->invoke($output, $key);
             }
         }
 

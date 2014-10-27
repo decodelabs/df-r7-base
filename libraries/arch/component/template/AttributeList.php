@@ -179,8 +179,8 @@ class AttributeList extends arch\component\Base implements aura\html\widget\IWid
                 } else {
                     $list->addField($key);
                 }
-            } else if($value instanceof core\lang\ICallback) {
-                $value->invoke($list, $key);
+            } else if(is_callable($value)) {
+                core\lang\Callback::factory($value)->invoke($list, $key);
             }
         }
 
