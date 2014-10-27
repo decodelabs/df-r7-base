@@ -532,7 +532,7 @@ trait TScaffold_RecordDataProvider {
             $url = $item['url'];
 
             if($mode == 'list') {
-                $url = $this->normalizeOutputUrl($url);
+                $url = $this->uri->__invoke($url);
                 $name = $url->getDomain();
             } else {
                 $name = $url;

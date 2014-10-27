@@ -11,7 +11,7 @@ use df\plug;
 use df\arch;
 use df\aura as auraLib;
     
-class Slot implements auraLib\view\IHelper, \ArrayAccess, core\IDumpable {
+class Slot implements auraLib\view\IImplicitViewHelper, \ArrayAccess, core\IDumpable {
     
     use auraLib\view\THelper;
 

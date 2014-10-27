@@ -14,6 +14,8 @@ use df\link;
 class Uri implements auraLib\view\IHelper {
     
     use auraLib\view\THelper;
+
+    protected $_defaultTheme;
     
     public function requestToUrl(arch\IRequest $request) {
         return core\application\http\Router::getInstance()
@@ -30,7 +32,7 @@ class Uri implements auraLib\view\IHelper {
         }
         
         if($uri instanceof arch\IRequest) {
-            return $this->request($uri, $from, $to, $asRequest);
+            return $this->directory($uri, $from, $to, $asRequest);
         }
         
         if($uri instanceof core\uri\IUrl) {
@@ -50,7 +52,7 @@ class Uri implements auraLib\view\IHelper {
         }
         
         if(!is_string($uri)) {
-            throw new auraLib\view\InvalidArgumentException(
+            throw new arch\InvalidArgumentException(
                 'Uri cannot be converted to a valid URL'
             );
         }
@@ -79,11 +81,11 @@ class Uri implements auraLib\view\IHelper {
             }
         }
         
-        return $this->request($uri, $from, $to, $asRequest);
+        return $this->directory($uri, $from, $to, $asRequest);
     }
     
     public function current($from=null, $to=null) {
-        return $this->request($this->_context->request, $from, $to);
+        return $this->directory($this->_context->request, $from, $to);
     }
 
     public function mapCurrent(array $map, array $queryValues=null) {
@@ -145,7 +147,7 @@ class Uri implements auraLib\view\IHelper {
         return $this->requestToUrl($request);
     }
     
-    public function request($request, $from=null, $to=null, $asRequest=false) {
+    public function directory($request, $from=null, $to=null, $asRequest=false) {
         if(!$request instanceof arch\IRequest) {
             $request = arch\Request::factory($request);
         } else {
@@ -189,22 +191,31 @@ class Uri implements auraLib\view\IHelper {
             $request->query->attachment;
         }
 
-        return $this->request($request, null, null, $asRequest);
+        return $this->directory($request, null, null, $asRequest);
     }
 
     public function themeAsset($path, $theme=null, $asRequest=false) {
         if($theme === null) {
-            $theme = $this->_view->getTheme()->getId();
+            if($this->_view) {
+                $theme = $this->_view->getTheme()->getId();
+            } else {
+                if(!$this->_defaultTheme) {
+                    $config = auraLib\theme\Config::getInstance();
+                    $this->_defaultTheme = $config->getThemeIdFor($this->_context->location->getArea());
+                }
+
+                $theme = $this->_defaultTheme;
+            }
         }
 
         $request = new arch\Request('theme/download?theme='.$theme);
         $request->query->file = $path;
 
-        return $this->request($request, null, null, $asRequest);
+        return $this->directory($request, null, null, $asRequest);
     }
 
     public function back($default=null, $success=true) {
-        return $this->request($this->_context->directory->backRequest($default, $success));
+        return $this->directory($this->_context->directory->backRequest($default, $success));
     }
     
     public function mailto($url) {

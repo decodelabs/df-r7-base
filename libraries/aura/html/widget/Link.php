@@ -206,7 +206,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
             if($url !== null) {
                 $body = $url;
             } else {
-                $body = $context->normalizeOutputUrl($this->_uri);
+                $body = $view->uri->__invoke($this->_uri);
             }
         }
 

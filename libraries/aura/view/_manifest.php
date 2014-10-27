@@ -335,6 +335,7 @@ interface IHtmlView extends IResponseView, ILayoutView, INotificationProxyView {
 
 
 interface IHelper extends core\IHelper {}
+interface IImplicitViewHelper extends IHelper {}
 
 interface IContextSensitiveHelper extends IHelper {
     public function setContext(arch\IContext $context);
@@ -353,9 +354,9 @@ trait THelper {
             $this->_view = $target->getView();
         } else if(isset($target->view)) {
             $this->_view = $target->view;
-        } else {
+        } else if($this instanceof IImplicitViewHelper) {
             throw new RuntimeException(
-                'Cannot use shared view from objects that do not provide a view'
+                'Cannot use implicit view helper from objects that do not provide a view'
             );
         }
 
@@ -369,6 +370,11 @@ trait THelper {
     }
 
     protected function _init() {}
+}
+
+trait TContextSensitiveHelper {
+
+    use THelper;
 
     public function setContext(arch\IContext $context) {
         $this->_context = $context;

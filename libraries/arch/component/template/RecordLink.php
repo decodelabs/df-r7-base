@@ -278,7 +278,7 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
                 }
             }
 
-            $url = $this->_context->normalizeOutputUrl($url, true, $this->_redirectFrom, $this->_redirectTo);
+            $url = $this->uri->__invoke($url, true, $this->_redirectFrom, $this->_redirectTo);
 
             if($url instanceof arch\IRequest && $this->_action) {
                 $url->setAction($this->_action);

@@ -44,7 +44,8 @@ class Paginator extends Base implements core\IDumpable {
         }
 
         $renderTarget = $this->getRenderTarget();
-        $context = $renderTarget->getView()->getContext();
+        $view = $renderTarget->getView();
+        $context = $view->getContext();
         $enabled = true;
         
         if(!$limit = $this->_pageData->getLimit()) {
@@ -82,7 +83,7 @@ class Paginator extends Base implements core\IDumpable {
             }
             
             $element = new aura\html\Element('a', $prevText, [
-                'href' => $context->normalizeOutputUrl($request),
+                'href' => $view->uri->__invoke($request),
                 'class' => 'link-prev',
                 'rel' => 'prev'
             ]);
@@ -103,7 +104,7 @@ class Paginator extends Base implements core\IDumpable {
             || $i > $totalPages - 2 
             || ($i > $currentPage - 3 && $i < $currentPage + 3)) {
                 $element = new aura\html\Element('a', $i, [
-                    'href' => $context->normalizeOutputUrl($request)
+                    'href' => $view->uri->__invoke($request)
                 ]);
                 
                 if($isCurrent) {
@@ -136,7 +137,7 @@ class Paginator extends Base implements core\IDumpable {
             }
             
             $element = new aura\html\Element('a', $nextText, [
-                'href' => $context->normalizeOutputUrl($request),
+                'href' => $view->uri->__invoke($request),
                 'class' => 'link-next',
                 'rel' => 'next'
             ]);

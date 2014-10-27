@@ -10,9 +10,9 @@ use df\core;
 use df\aura as auraLib;
 use df\arch;
 
-class Import implements auraLib\view\IContextSensitiveHelper {
+class Import implements auraLib\view\IContextSensitiveHelper, auraLib\view\IImplicitViewHelper {
     
-    use auraLib\view\THelper;
+    use auraLib\view\TContextSensitiveHelper;
     
     public function template($path) {
         try {

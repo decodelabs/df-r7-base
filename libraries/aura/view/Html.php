@@ -59,7 +59,7 @@ class Html extends Base implements IHtmlView {
         $this->htmlTag = new aura\html\Tag('html', ['lang' => 'en']);
         $this->bodyTag = new aura\html\Tag('body');
         
-        //$this->_baseHref = $context->normalizeOutputUrl('/');
+        //$this->_baseHref = $this->uri->__invoke('/');
 
         $this
             ->setMeta('X-UA-Compatible', 'IE=edge,chrome=1')
@@ -131,7 +131,7 @@ class Html extends Base implements IHtmlView {
     
 // Base
     public function setBaseHref($url) {
-        $this->_baseHref = $this->context->normalizeOutputUrl($url);
+        $this->_baseHref = $this->uri->__invoke($url);
         return $this;
     }
     

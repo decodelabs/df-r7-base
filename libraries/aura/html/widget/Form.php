@@ -44,7 +44,7 @@ class Form extends Container implements IFormWidget, IWidgetShortcutProvider {
         $tag = $this->getTag();
         
         $tag->addAttributes([
-            'action' => $view->getContext()->normalizeOutputUrl($this->_action),
+            'action' => $view->uri->__invoke($this->_action),
             'method' => $this->_method
         ]);
         

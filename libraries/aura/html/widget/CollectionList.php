@@ -51,10 +51,11 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
         }
         
         $tag = $this->getTag();
+        $view = $this->getView();
         $rows = new aura\html\ElementContent();
         
         $renderContext = new aura\html\widget\util\RendererContext($this);
-        $context = $this->getView()->getContext();
+        $context = $view->getContext();
         $empty = false;
         
         if(!$this->_isDataIterable()) {
@@ -117,7 +118,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                     }
                     
                     $tagContent[] = (new aura\html\Element('a', $label, [
-                            'href' => $context->normalizeOutputUrl($request),
+                            'href' => $view->uri->__invoke($request),
                             'class' => $class,
                             'rel' => 'nofollow'
                         ]))
@@ -180,7 +181,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
 
                 $errorMessage = (new FlashMessage($context, $context->_('This list appears to have gone past the last page - go back to the start...'), 'warning'))
                     ->setLink($request)
-                    ->setRenderTarget($this->getView());
+                    ->setRenderTarget($view);
             }
 
             if(!$shouldRender) {

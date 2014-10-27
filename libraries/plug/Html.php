@@ -13,7 +13,7 @@ use df\flex;
 use df\spur;
 use df\flow;
 
-class Html implements auraLib\view\IHelper, core\i18n\translate\ITranslationProxy {
+class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITranslationProxy {
     
     use auraLib\view\THelper;
     
@@ -155,7 +155,7 @@ class Html implements auraLib\view\IHelper, core\i18n\translate\ITranslationProx
     }
     
     public function basicLink($url, $body=null) {
-        $url = $this->_context->normalizeOutputUrl($url);
+        $url = $this->_view->uri->__invoke($url);
 
         if(empty($body) && $body !== '0') {
             $body = $url;

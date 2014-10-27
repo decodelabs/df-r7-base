@@ -135,7 +135,7 @@ class Parser {
         $context = arch\Context::getCurrent();
 
         $output = preg_replace_callback('/ (href|src)\=\"([^\"]+)\"/', function($matches) use($context) {
-            return ' '.$matches[1].'="'.htmlspecialchars((string)$context->normalizeOutputUrl($matches[2])).'"';
+            return ' '.$matches[1].'="'.htmlspecialchars((string)$context->uri->__invoke($matches[2])).'"';
         }, $output);
 
         foreach($this->_customTags as $name => $callback) {
