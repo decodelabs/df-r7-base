@@ -46,8 +46,12 @@ class Uri implements auraLib\view\IHelper {
                 'Uri cannot be converted to a valid URL'
             );
         }
+
+        if(substr($uri, 0, 2) == '//') {
+            return new link\http\Url($uri);
+        }
         
-        if(preg_match('/^([a-z]+)\:/i', $uri, $matches)) {
+        if(preg_match('/^([a-z]+)\:(\/\/)?(.*)/i', $uri, $matches)) {
             switch(strtolower($matches[1])) {
                 case 'http':
                 case 'https':
@@ -58,6 +62,12 @@ class Uri implements auraLib\view\IHelper {
                     
                 case 'mailto':
                     return new core\uri\MailtoUrl($uri);
+
+                case 'theme':
+                    return $this->themeAsset($matches[3]);
+
+                case 'asset':
+                    return $this->asset($matches[3]);
             }
         }
         
