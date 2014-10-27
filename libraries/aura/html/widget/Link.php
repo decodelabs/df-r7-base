@@ -108,8 +108,12 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         
         if($this->_checkAccess && !$disabled) {
             $userManager = $context->user;
-            $uri = $context->normalizeOutputUrl($this->_uri, true);
-            
+            $uri = $view->uri->__invoke($this->_uri, null, null, true);
+
+            if($uri instanceof arch\IRequest) {
+                $url = $view->uri->requestToUrl($uri);
+            }
+
             if($uri instanceof user\IAccessLock) {
                 if(!$userManager->canAccess($uri, null, true)) {
                     $disabled = true;
@@ -131,7 +135,11 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         }
         
         if(!$disabled) {
-            $tag->setAttribute('href', $url = $context->normalizeOutputUrl($this->_uri));
+            if($url === null) {
+                $url = $view->uri->__invoke($this->_uri);
+            }
+
+            $tag->setAttribute('href', $url);
         }
         
         if(!empty($this->_rel)) {

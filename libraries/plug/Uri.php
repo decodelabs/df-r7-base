@@ -20,16 +20,28 @@ class Uri implements auraLib\view\IHelper {
             ->requestToUrl($request);
     }
 
-    public function __invoke($uri, $from=null, $to=null) {
+    public function __invoke($uri, $from=null, $to=null, $asRequest=false) {
         if($uri === null) {
+            if($asRequest) {
+                return clone $this->_context->request;
+            }
+
             return $this->current($from, $to);
         }
         
         if($uri instanceof arch\IRequest) {
-            return $this->request($uri, $from, $to);
+            return $this->request($uri, $from, $to, $asRequest);
         }
         
         if($uri instanceof core\uri\IUrl) {
+            if($asRequest) {
+                if($uri instanceof link\http\IUrl) {
+                    if($t = $uri->getDirectoryRequest()) {
+                        $uri = $t;
+                    }
+                }
+            }
+
             return clone $uri;
         }
         
@@ -60,14 +72,14 @@ class Uri implements auraLib\view\IHelper {
                     return new core\uri\MailtoUrl($uri);
 
                 case 'theme':
-                    return $this->themeAsset($matches[3]);
+                    return $this->themeAsset($matches[3], null, $asRequest);
 
                 case 'asset':
-                    return $this->asset($matches[3]);
+                    return $this->asset($matches[3], false, $asRequest);
             }
         }
         
-        return $this->request($uri, $from, $to);
+        return $this->request($uri, $from, $to, $asRequest);
     }
     
     public function current($from=null, $to=null) {
@@ -133,14 +145,23 @@ class Uri implements auraLib\view\IHelper {
         return $this->requestToUrl($request);
     }
     
-    public function request($request, $from=null, $to=null) {
+    public function request($request, $from=null, $to=null, $asRequest=false) {
         if(!$request instanceof arch\IRequest) {
             $request = arch\Request::factory($request);
         } else {
             $request = clone $request;
         }
         
-        
+        $this->_applyRequestRedirect($request, $from, $to);
+
+        if($asRequest) {
+            return $request;
+        }
+
+        return $this->requestToUrl($request);
+    }
+
+    protected function _applyRequestRedirect(arch\Request $request, $from=null, $to=null) {
         if($from !== null) {
             if($from === true) {
                 $from = $this->_context->request;
@@ -156,11 +177,11 @@ class Uri implements auraLib\view\IHelper {
             
             $request->setRedirectTo($to);
         }
-        
-        return $this->requestToUrl($request);
+
+        return $request;
     }
 
-    public function asset($path, $attachment=false) {
+    public function asset($path, $attachment=false, $asRequest=false) {
         $request = new arch\Request('assets/download');
         $request->query->file = $path;
 
@@ -168,10 +189,10 @@ class Uri implements auraLib\view\IHelper {
             $request->query->attachment;
         }
 
-        return $this->request($request);
+        return $this->request($request, null, null, $asRequest);
     }
 
-    public function themeAsset($path, $theme=null) {
+    public function themeAsset($path, $theme=null, $asRequest=false) {
         if($theme === null) {
             $theme = $this->_view->getTheme()->getId();
         }
@@ -179,7 +200,7 @@ class Uri implements auraLib\view\IHelper {
         $request = new arch\Request('theme/download?theme='.$theme);
         $request->query->file = $path;
 
-        return $this->request($request);
+        return $this->request($request, null, null, $asRequest);
     }
 
     public function back($default=null, $success=true) {
