@@ -336,6 +336,30 @@ class Date implements IDate, core\IDumpable {
         return $this->toTimestamp() == self::factory($date)->toTimestamp();
     }
     
+    public function is($date) {
+        if($date === null) {
+            return false;
+        }
+
+        return $this->format('Y-m-d') == self::factory($date)->format('Y-m-d');
+    }
+
+    public function isBetween($start, $end) {
+        if($start === null && $end === null) {
+            return false;
+        }
+
+        if($start !== null && !$this->gte($start)) {
+            return false;
+        }
+
+        if($end !== null && !$this->lte($end)) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function gt($date) {
         if($date === null) {
             return true;

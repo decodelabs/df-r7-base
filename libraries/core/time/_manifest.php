@@ -39,6 +39,8 @@ interface IDate extends \Serializable, core\IStringProvider {
     
     // Comparison
     public function eq($date);
+    public function is($date);
+    public function isBetween($start, $end);
     public function gt($date);
     public function gte($date);
     public function lt($date);
