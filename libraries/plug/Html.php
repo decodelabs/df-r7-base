@@ -486,7 +486,7 @@ class Html implements auraLib\view\IHelper, core\i18n\translate\ITranslationProx
     public function image($url, $alt=null, $width=null, $height=null) {
         $output = $this->element(
             'img', null, [
-                'src' => $this->_view->uri->to($url),
+                'src' => $this->_view->uri->__invoke($url),
                 'alt' => $alt
             ]
         );

@@ -45,7 +45,7 @@ class FlashMessage extends Base {
 
         if($link = $this->_message->getLink()) {
             $body = new aura\html\Element('a', $body, [
-                'href' => $view->uri->to($link),
+                'href' => $view->uri->__invoke($link),
                 'title' => $this->_message->getLinkText()
             ]);
         }

@@ -21,10 +21,6 @@ class Uri implements auraLib\view\IHelper {
     }
 
     public function __invoke($uri, $from=null, $to=null) {
-        return $this->to($uri, $from, $to);
-    }
-
-    public function to($uri, $from=null, $to=null) {
         if($uri === null) {
             return $this->current($from, $to);
         }
