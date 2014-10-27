@@ -15,9 +15,9 @@ class Template implements aura\view\ITemplate, core\IDumpable {
     use core\TContextAware;
     use core\TArrayAccessedArgContainer;
     use aura\view\TDeferredRenderable;
+    use aura\view\TCascadingHelperProvider;
         
     private $_path;
-    private $_view;
     private $_isRendering = false;
     private $_isLayout = false;
     private $_innerContent = null;
@@ -155,13 +155,13 @@ class Template implements aura\view\ITemplate, core\IDumpable {
     
 // Renderable
     public function getView() {
-        if(!$this->_view) {
+        if(!$this->view) {
             throw new aura\view\RuntimeException(
                 'This template is not currently rendering'
             );
         }
         
-        return $this->_view;
+        return $this->view;
     }
     
     public function render() {
@@ -171,7 +171,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         
         $target = $this->getRenderTarget();
         $this->_isRendering = true;
-        $this->_view = $target->getView();
+        $this->view = $target->getView();
 
         
         if($this->_isLayout && $this->_innerContent === null) {
@@ -186,14 +186,14 @@ class Template implements aura\view\ITemplate, core\IDumpable {
             $output = ob_get_clean();
             
             $this->_isRendering = false;
-            $this->_view = null;
+            $this->view = null;
         } catch(\Exception $e) {
             if(ob_get_level()) {
                 ob_end_clean();
             }
             
             $this->_isRendering = false;
-            $this->_view = null;
+            $this->view = null;
             
             throw $e;
         }
@@ -202,7 +202,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
     }
     
     public function toResponse() {
-        return $this->_view;
+        return $this->view;
     }
     
     protected function renderInnerContent() {
@@ -236,8 +236,8 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         } catch(\Exception $e) {
             core\debug()->exception($e);
             
-            if($this->_view) {
-                return (string)new ErrorContainer($this->_view, $e);
+            if($this->view) {
+                return (string)new ErrorContainer($this->view, $e);
             } else {
                 return (string)new aura\html\Element('span', $e->getMessage(), ['class' => 'error']);
             }
@@ -257,7 +257,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
     
 // Escaping
     public function esc($value, $default=null) {
-        if(!$this->_view) {
+        if(!$this->view) {
             throw new aura\view\RuntimeException(
                 'This template is not currently rendering'
             );
@@ -271,58 +271,21 @@ class Template implements aura\view\ITemplate, core\IDumpable {
             return $value;
         }
         
-        return $this->_view->esc($value);
+        return $this->view->esc($value);
     }
     
     public function escArg($name, $default=null) {
-        if(!$this->_view) {
+        if(!$this->view) {
             throw new aura\view\RuntimeException(
                 'This template is not currently rendering'
             );
         }
         
-        return $this->_view->esc($this->getArg($name, $default));
+        return $this->view->esc($this->getArg($name, $default));
     }
     
 
 // Helpers
-    public function __get($member) {
-        if(!$this->_view) {
-            throw new aura\view\RuntimeException(
-                'This template is not currently rendering'
-            );
-        }
-        
-        switch($member) {
-            case 'view':
-                return $this->_view;
-                
-            case 'context':
-                return $this->_context;
-                
-            default:
-                return $this->_view->__get($member);
-        }
-    }
-
-    public function __call($method, array $args) {
-        if(!$this->_view) {
-            throw new aura\view\RuntimeException(
-                'This template is not currently rendering'
-            );
-        }
-
-        $helper = $this->_view->{$method};
-
-        if(!is_callable($helper)) {
-            throw new aura\view\RuntimeException(
-                'Helper '.$method.' is not callable'
-            );
-        }
-
-        return call_user_func_array($helper, $args);
-    }
-    
     public function _($phrase, array $data=null, $plural=null, $locale=null) {
         return $this->_context->_($phrase, $data, $plural, $locale);
     }
@@ -334,7 +297,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
             'path' => $this->_path,
             'args' => count($this->_args).' objects',
             'context' => $this->_context,
-            'view' => $this->_view
+            'view' => $this->view
         ];
     }
 }

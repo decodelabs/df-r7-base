@@ -641,6 +641,7 @@ interface IContext extends core\IHelperProvider {
     public function getLocale();
 
     // Helpers
+    public function loadRootHelper($name);
     public function throwError($code=500, $message='');
     public function findFile($path);
     
@@ -752,7 +753,7 @@ trait TContext {
         return $class::getInstance();
     }
 
-    public function _getDefaultHelper($name, $target=null) {
+    public function loadRootHelper($name, $target=null) {
         switch($name) {
             case 'context':
                 return $this;
@@ -809,7 +810,7 @@ class SharedContext implements IContext {
     }
 
     protected function _loadHelper($name) {
-        return $this->_getDefaultHelper($name);
+        return $this->loadRootHelper($name);
     }
 }
 

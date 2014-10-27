@@ -11,7 +11,7 @@ use df\plug;
 use df\arch;
 use df\aura as auraLib;
     
-class Slot implements auraLib\view\IHelper, \ArrayAccess {
+class Slot implements auraLib\view\IHelper, \ArrayAccess, core\IDumpable {
     
     use auraLib\view\THelper;
 
@@ -85,5 +85,10 @@ class Slot implements auraLib\view\IHelper, \ArrayAccess {
     public function offsetUnset($key) {
         unset($this->_slots[$key]);
         return $this;
+    }
+
+// Dump
+    public function getDumpProperties() {
+        return $this->_slots;
     }
 }

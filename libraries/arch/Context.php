@@ -170,12 +170,13 @@ class Context implements IContext, \Serializable, core\IDumpable {
             $uri = new Request($uri);
         }
 
+        $uri = $this->_applyRequestRedirect($uri, $from, $to);
+
         if($toRequest) {
-            return $this->_applyRequestRedirect($uri, $from, $to);
+            return $uri;
         }
 
-        return core\application\http\Router::getInstance()
-            ->requestToUrl($this->_applyRequestRedirect($uri, $from, $to));
+        return core\application\http\Router::getInstance()->requestToUrl($uri);
     }
 
     protected function _applyRequestRedirect(arch\IRequest $request, $from, $to) {
@@ -263,7 +264,7 @@ class Context implements IContext, \Serializable, core\IDumpable {
                 return $this->getScaffold();
                 
             default:
-                return $this->_getDefaultHelper($name);
+                return $this->loadRootHelper($name);
         }
     }
 

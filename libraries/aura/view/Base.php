@@ -163,7 +163,7 @@ class Base implements IView {
     
 // Helpers
     protected function _loadHelper($name) {
-        return $this->context->_getDefaultHelper($name, $this);
+        return $this->context->loadRootHelper($name, $this);
     }
     
     

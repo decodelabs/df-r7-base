@@ -45,6 +45,6 @@ final class Context implements IContext {
 
 // Helpers
     protected function _loadHelper($name) {
-        return $this->_getDefaultHelper($name);
+        return $this->loadRootHelper($name);
     }
 }

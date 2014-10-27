@@ -334,8 +334,9 @@ interface IHtmlView extends IResponseView, ILayoutView, INotificationProxyView {
 }
 
 
-interface IHelper extends core\IHelper {
+interface IHelper extends core\IHelper {}
 
+interface IContextSensitiveHelper extends IHelper {
     public function setContext(arch\IContext $context);
     public function getContext();
 }
@@ -391,55 +392,50 @@ trait TCascadingHelperProvider {
     public $view;
 
     public function __call($method, $args) {
-        if(!$this->view && method_exists($this, 'getView')) {
-            $this->view = $this->getView();
+        $output = $this->_getHelper($method, true);
+
+        if(!is_callable($output)) {
+            throw new RuntimeException(
+                'Helper '.$method.' is not callable'
+            );
         }
 
-        $context = $this->getContext();
-
-        if($this->view && ($output = $this->view->getHelper($method, true))) {
-            if($output instanceof IHelper) {
-                // Inject current context into view helper
-                $output = clone $output;
-                $output->setContext($context);
-            }
-
-            if(!is_callable($output)) {
-                throw new RuntimeException(
-                    'Helper '.$method.' is not callable'
-                );
-            }
-
-            return call_user_func_array($output, $args);
-        }
-
-        return call_user_func_array([$context, $method], $args);
+        return call_user_func_array($output, $args);
     }
     
     public function __get($key) {
+        return $this->_getHelper($key);
+    }
+
+    private function _getHelper($key, $callable=false) {
         if(!$this->view && method_exists($this, 'getView')) {
             $this->view = $this->getView();
         }
 
+        if(isset($this->{$key})) {
+            return $this->{$key};
+        }
+
         $context = $this->getContext();
 
-        if($key == 'view') {
-            return $this->view;
-        } else if($key == 'context') {
+        if($key == 'context') {
             return $context;
         }
 
         if($this->view && ($output = $this->view->getHelper($key, true))) {
-            if($output instanceof IHelper) {
+            if($output instanceof IContextSensitiveHelper) {
                 // Inject current context into view helper
                 $output = clone $output;
                 $output->setContext($context);
             }
-
-            return $output;
+        } else if($callable) {
+            return [$context, $key];
+        } else {
+            $output = $context->{$key};
         }
 
-        return $context->__get($key);
+        $this->{$key} = $output;
+        return $output;
     }
 }
 

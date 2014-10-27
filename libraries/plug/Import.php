@@ -10,7 +10,7 @@ use df\core;
 use df\aura as auraLib;
 use df\arch;
 
-class Import implements auraLib\view\IHelper {
+class Import implements auraLib\view\IContextSensitiveHelper {
     
     use auraLib\view\THelper;
     
