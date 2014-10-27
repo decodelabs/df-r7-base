@@ -123,7 +123,7 @@ abstract class Action implements IAction, core\IDumpable {
         $func = null;
         
         if($this->shouldCheckAccess()) {
-            $client = $this->context->getUserManager()->getClient();
+            $client = $this->context->user->getClient();
 
             if($client->isDeactivated()) {
                 $this->throwError(403, 'Client deactivated');

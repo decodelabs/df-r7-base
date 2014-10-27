@@ -33,6 +33,11 @@ class Scripts extends Base implements IScriptsModule, core\i18n\module\generator
         return $output;
     }
     
+    public function getCodeList() {
+        $this->_loadData();
+        return array_keys($this->_data);
+    }
+
     public function isValidId($id) {
         $this->_loadData();
         return isset($this->_data[$id]);

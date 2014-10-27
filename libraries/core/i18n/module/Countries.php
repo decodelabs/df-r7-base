@@ -32,6 +32,11 @@ class Countries extends Base implements ICountriesModule, core\i18n\module\gener
 
         return $output;
     }
+
+    public function getCodeList() {
+        $this->_loadData();
+        return array_keys($this->_data);
+    }
     
     public function isValidId($id) {
         $this->_loadData();

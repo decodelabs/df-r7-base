@@ -18,7 +18,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
     use auraLib\view\THelper;
     
     public function __call($member, $args) {
-        return auraLib\html\widget\Base::factory($this->context, $member, $args)->setRenderTarget($this->_view);
+        return auraLib\html\widget\Base::factory($this->context, $member, $args)->setRenderTarget($this->view);
     }
 
     public function __invoke($name, $content=null, array $attributes=[]) {
@@ -39,7 +39,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
         $output = strip_tags($html);
 
         if($length !== null) {
-            $output = $this->_view->format->shorten($output, $length);
+            $output = $this->view->format->shorten($output, $length);
         }
 
         return $this->string($output);
@@ -50,7 +50,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
             return null;
         }
 
-        $text = $this->_view->esc($text);
+        $text = $this->view->esc($text);
         $text = str_replace("\n", "\n".'<br />', $text);
 
         return $this->string($text);
@@ -103,7 +103,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
     }
 
     public function _($phrase, array $data=null, $plural=null, $locale=null) {
-        return $this->string($this->_view->_($phrase, $data, $plural, $locale));
+        return $this->string($this->view->_($phrase, $data, $plural, $locale));
     }
 
     public function string($value) {
@@ -130,7 +130,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
 
 // Compound widget shortcuts
     public function icon($name, $body=null) {
-        $iconChar = $this->_view->getTheme()->mapIcon($name);
+        $iconChar = $this->view->getTheme()->mapIcon($name);
         $attrs = [];
 
         if($iconChar !== null) {
@@ -155,7 +155,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
     }
     
     public function basicLink($url, $body=null) {
-        $url = $this->_view->uri->__invoke($url);
+        $url = $this->view->uri->__invoke($url);
 
         if(empty($body) && $body !== '0') {
             $body = $url;
@@ -179,22 +179,22 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
             }
         }
 
-        return $this->link($this->_view->uri->mailto($address), $body)
+        return $this->link($this->view->uri->mailto($address), $body)
             ->setIcon('mail')
             ->setDisposition('external');
     }
 
     public function backLink($default=null, $success=true, $body=null) {
         return $this->link(
-                $this->_view->uri->back($default, $success),
-                $body !== null ? $body : $this->_view->_('Back')
+                $this->view->uri->back($default, $success),
+                $body !== null ? $body : $this->view->_('Back')
             )
             ->setIcon('back');
     }
 
     public function queryToggleLink($request, $queryVar, $onString, $offString, $onIcon=null, $offIcon=null) {
         return $this->link(
-                $this->_view->uri->queryToggle($request, $queryVar, $result),
+                $this->view->uri->queryToggle($request, $queryVar, $result),
                 $result ? $onString : $offString
             )
             ->setIcon($result ? $onIcon : $offIcon);
@@ -240,7 +240,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
 
             return $output;
         } catch(\Exception $e) {
-            return new auraLib\view\content\ErrorContainer($this->_view, $e);
+            return new auraLib\view\content\ErrorContainer($this->view, $e);
         }
     }
 
@@ -261,10 +261,10 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
         }
 
         return $this->buttonArea(
-            $this->eventButton($mainAction, $this->_view->_('Yes'))
+            $this->eventButton($mainAction, $this->view->_('Yes'))
                 ->setIcon('accept'),
 
-            $this->eventButton('cancel', $this->_view->_('No'))
+            $this->eventButton('cancel', $this->view->_('No'))
                 ->setIcon('deny')
                 ->shouldValidate(false)
         );
@@ -280,7 +280,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
         }
 
         if(!$mainActionText) {
-            $mainActionText = $this->_view->_('Save');
+            $mainActionText = $this->view->_('Save');
         }
 
         if(!$mainActionIcon) {
@@ -294,7 +294,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
 
     public function resetEventButton($label=null) {
         if($label === null) {
-            $label = $this->_view->_('Reset');
+            $label = $this->view->_('Reset');
         }
 
         return $this->eventButton('reset', $label)
@@ -304,7 +304,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
 
     public function cancelEventButton($label=null) {
         if($label === null) {
-            $label = $this->_view->_('Cancel');
+            $label = $this->view->_('Cancel');
         }
 
         return $this->eventButton('cancel', $label)
@@ -323,7 +323,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
 
         return $this->_timeTag(
             $date->format('Y-m-d'), 
-            $this->_view->format->date($date, $size, $locale)
+            $this->view->format->date($date, $size, $locale)
         );
     }
     
@@ -336,7 +336,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
 
         return $this->_timeTag(
             $date->format('Y-m-d'), 
-            $this->_view->format->userDate($date, $size)
+            $this->view->format->userDate($date, $size)
         );
     }
     
@@ -349,7 +349,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
 
         return $this->_timeTag(
             $date->format(core\time\Date::W3C), 
-            $this->_view->format->dateTime($date, $size, $locale)
+            $this->view->format->dateTime($date, $size, $locale)
         );
     }
     
@@ -362,7 +362,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
 
         return $this->_timeTag(
             $date->format(core\time\Date::W3C), 
-            $this->_view->format->userDateTime($date, $size)
+            $this->view->format->userDateTime($date, $size)
         );
     }
 
@@ -375,7 +375,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
 
         return $this->_timeTag(
             $date->format(core\time\Date::W3C), 
-            $this->_view->format->customDate($date, $format)
+            $this->view->format->customDate($date, $format)
         );
     }
     
@@ -388,7 +388,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
 
         return $this->_timeTag(
             $date->format('H:m:s'), 
-            $this->_view->format->time($date, $size, $locale)
+            $this->view->format->time($date, $size, $locale)
         );
     }
     
@@ -401,7 +401,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
 
         return $this->_timeTag(
             $date->format('H:m:s'), 
-            $this->_view->format->userTime($date, $size)
+            $this->view->format->userTime($date, $size)
         );
     }
     
@@ -415,9 +415,9 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
 
         return $this->_timeTag(
                 $date->format(core\time\Date::W3C), 
-                $this->_view->format->timeSince($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)
+                $this->view->format->timeSince($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)
             )
-            ->setAttribute('title', $this->_view->format->dateTime($date));
+            ->setAttribute('title', $this->view->format->dateTime($date));
     }
     
     public function timeUntil($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=true) {
@@ -429,9 +429,9 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
 
         return $this->_timeTag(
                 $date->format(core\time\Date::W3C), 
-                $this->_view->format->timeUntil($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)
+                $this->view->format->timeUntil($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)
             )
-            ->setAttribute('title', $this->_view->format->dateTime($date));
+            ->setAttribute('title', $this->view->format->dateTime($date));
     }
 
     public function timeFromNow($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null) {
@@ -455,12 +455,12 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
         if($diff > 0) {
             $output = $this->context->_(
                 '%t% ago',
-                ['%t%' => $this->_view->format->timeSince($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)]
+                ['%t%' => $this->view->format->timeSince($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)]
             );
         } else if($diff < 0) {
             $output = $this->context->_(
                 'in %t%',
-                ['%t%' => $this->_view->format->timeUntil($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)]
+                ['%t%' => $this->view->format->timeUntil($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)]
             );
         } else {
             $output = $this->context->_('right now');
@@ -470,7 +470,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
                 $date->format(core\time\Date::W3C), 
                 $output
             )
-            ->setAttribute('title', $this->_view->format->dateTime($date));
+            ->setAttribute('title', $this->view->format->dateTime($date));
     }
 
     protected function _timeTag($w3cString, $formattedString) {
@@ -486,7 +486,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
     public function image($url, $alt=null, $width=null, $height=null) {
         $output = $this->element(
             'img', null, [
-                'src' => $this->_view->uri->__invoke($url),
+                'src' => $this->view->uri->__invoke($url),
                 'alt' => $alt
             ]
         );
@@ -503,7 +503,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
     }
 
     public function themeImage($path, $alt=null, $width=null, $height=null) {
-        return $this->image($this->_view->uri->themeAsset($path), $alt, $width, $height);
+        return $this->image($this->view->uri->themeAsset($path), $alt, $width, $height);
     }
 
 // Video
@@ -515,7 +515,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
                 return spur\video\Embed::parse($embed)
                     ->setDimensions($width, $height);
             } catch(spur\video\IException $e) {
-                return new auraLib\view\content\ErrorContainer($this->_view, $e);
+                return new auraLib\view\content\ErrorContainer($this->view, $e);
             }
         } else {
             return '';

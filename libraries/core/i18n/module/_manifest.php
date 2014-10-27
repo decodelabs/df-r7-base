@@ -21,6 +21,7 @@ interface IModule {
 interface IListModule extends IModule {
     public function getName($id);
     public function getList(array $ids=null);
+    public function getCodeList();
     public function isValidId($id);
 }
 

@@ -65,7 +65,7 @@ class Slot implements auraLib\view\IImplicitViewHelper, \ArrayAccess, core\IDump
             return '';
         }
 
-        return $renderer->renderTo($this->_view);
+        return $renderer->renderTo($this->view);
     }
 
 

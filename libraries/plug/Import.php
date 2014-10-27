@@ -19,24 +19,24 @@ class Import implements auraLib\view\IContextSensitiveHelper, auraLib\view\IImpl
             $location = $this->context->extractDirectoryLocation($path);
             $context = $this->context->spawnInstance($location);
             $template = auraLib\view\content\Template::loadDirectoryTemplate($context, $path);
-            $template->setRenderTarget($this->_view);
-            $template->setArgs($this->_view->getArgs());
+            $template->setRenderTarget($this->view);
+            $template->setArgs($this->view->getArgs());
         
             return $template;
         } catch(\Exception $e) {
-            return $this->_view->newErrorContainer($e);
+            return $this->view->newErrorContainer($e);
         }
     }
 
     public function themeTemplate($path) {
         try {
             $themeId = $this->context->extractThemeId($path);
-            $template = auraLib\view\content\Template::loadThemeTemplate($this->_view, $path, $themeId);
-            $template->setRenderTarget($this->_view);
+            $template = auraLib\view\content\Template::loadThemeTemplate($this->view, $path, $themeId);
+            $template->setRenderTarget($this->view);
 
             return $template;
         } catch(\Exception $e) {
-            return $this->_view->newErrorContainer($e);
+            return $this->view->newErrorContainer($e);
         }
     }
     
@@ -47,11 +47,11 @@ class Import implements auraLib\view\IContextSensitiveHelper, auraLib\view\IImpl
             $location = $this->context->extractDirectoryLocation($path);
             $context = $this->context->spawnInstance($location);
             $output = arch\component\Base::factory($context, $path, $args);
-            $output->setRenderTarget($this->_view);
+            $output->setRenderTarget($this->view);
 
             return $output;
         } catch(\Exception $e) {
-            return $this->_view->newErrorContainer($e);
+            return $this->view->newErrorContainer($e);
         }
     }
 
@@ -60,16 +60,16 @@ class Import implements auraLib\view\IContextSensitiveHelper, auraLib\view\IImpl
         $themeId = $this->context->extractThemeId($name);
 
         if($themeId === null) {
-            $themeId = $this->_view->getTheme()->getId();
+            $themeId = $this->view->getTheme()->getId();
         }
 
         try {
             $output = arch\component\Base::themeFactory($this->context, $themeId, $name, $args);
-            $output->setRenderTarget($this->_view);
+            $output->setRenderTarget($this->view);
 
             return $output;
         } catch(\Exception $e) {
-            return $this->_view->newErrorContainer($e);
+            return $this->view->newErrorContainer($e);
         }
     }
 
@@ -77,7 +77,7 @@ class Import implements auraLib\view\IContextSensitiveHelper, auraLib\view\IImpl
         try {
             return arch\navigation\menu\Base::factory($id);
         } catch(\Exception $e) {
-            return $this->_view->newErrorContainer($e);
+            return $this->view->newErrorContainer($e);
         }
     }
 
@@ -92,6 +92,6 @@ class Import implements auraLib\view\IContextSensitiveHelper, auraLib\view\IImpl
             );
         }
 
-        return $action->dispatchToRenderInline($this->_view);
+        return $action->dispatchToRenderInline($this->view);
     }
 }

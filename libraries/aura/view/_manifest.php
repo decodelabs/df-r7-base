@@ -345,16 +345,15 @@ interface IContextSensitiveHelper extends IHelper {
 
 trait THelper {
 
+    public $view;
     public $context;
-
-    protected $_view;
 
     public function __construct(core\IContext $context, $target) {
         if($target instanceof IRenderTargetProvider
         || method_exists($target, 'getView')) {
-            $this->_view = $target->getView();
+            $this->view = $target->getView();
         } else if(isset($target->view)) {
-            $this->_view = $target->view;
+            $this->view = $target->view;
         } else if($this instanceof IImplicitViewHelper) {
             throw new RuntimeException(
                 'Cannot use implicit view helper from objects that do not provide a view'
@@ -363,7 +362,7 @@ trait THelper {
 
 
         if(!$context instanceof arch\IContext) {
-            $context = $this->_view->getContext();
+            $context = $this->view->getContext();
         }
 
         $this->context = $context;

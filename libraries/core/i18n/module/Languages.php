@@ -50,6 +50,19 @@ class Languages extends Base implements ILanguagesModule, core\i18n\module\gener
                 
         return $output;
     }
+
+    public function getCodeList() {
+        $this->_loadData();
+        $output = [];
+
+        foreach($this->_data as $key => $name) {
+            if(strlen($key) == 2) {
+                $output[] = $key;
+            }
+        }
+
+        return $output;
+    }
     
     public function getExtendedList() {
         $this->_loadData();

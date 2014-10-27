@@ -77,6 +77,10 @@ class Timezones extends Base implements ITimezonesModule {
         
         return $output;
     }
+
+    public function getCodeList() {
+        return array_keys($this->getList());
+    }
     
     public function getContinentList() {
         self::_createContinentList();

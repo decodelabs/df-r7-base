@@ -125,7 +125,7 @@ class Address extends Base implements core\IDumpable {
             if($isShort) {
                 $country = $countryCode;
             } else {
-                $country = $view->getContext()->i18n->countries->getName($countryCode);
+                $country = $view->i18n->countries->getName($countryCode);
             }
             
             $content->push(new aura\html\Element(

@@ -196,8 +196,8 @@ class Uri implements auraLib\view\IHelper {
 
     public function themeAsset($path, $theme=null, $asRequest=false) {
         if($theme === null) {
-            if($this->_view) {
-                $theme = $this->_view->getTheme()->getId();
+            if($this->view) {
+                $theme = $this->view->getTheme()->getId();
             } else {
                 if(!$this->_defaultTheme) {
                     $config = auraLib\theme\Config::getInstance();
