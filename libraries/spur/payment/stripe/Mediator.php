@@ -555,7 +555,7 @@ class Mediator implements IMediator, core\IDumpable {
 
         $request = link\http\request\Base::factory($url);
         $request->setMethod($method);
-        $request->setSecureTransport('sslv3');
+        $request->setSecureTransport('tls');
         $request->getHeaders()->set('Authorization', 'Bearer '.$this->_apiKey);
 
         if(!empty($data)) {
