@@ -14,7 +14,7 @@ if(window.XMLHttpRequest) {
         $('#continue').removeClass('disabled');
     };
 
-    xhr.open("GET", "<?php echo $this->uri->request('~/tasks/invoke.stream?token='.$this['token']); ?>", true);
+    xhr.open("GET", "<?php echo $this->uri('~/tasks/invoke.stream?token='.$this['token']); ?>", true);
     xhr.send("Making request...");
 }
 </script>
