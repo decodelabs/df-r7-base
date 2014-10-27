@@ -22,7 +22,7 @@ class Html implements auraLib\view\IHelper, core\i18n\translate\ITranslationProx
     }
 
     public function __invoke($name, $content=null, array $attributes=[]) {
-        if($content === null && empty($attributes) && preg_match('/[^a-zA-Z.#]/', $name)) {
+        if($content === null && empty($attributes) && preg_match('/[^a-zA-Z0-9.#\_\-]/', $name)) {
             return new auraLib\html\ElementString($name);
         }
 
