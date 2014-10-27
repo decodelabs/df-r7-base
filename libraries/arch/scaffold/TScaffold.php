@@ -782,7 +782,7 @@ trait TScaffold_SectionProvider {
             $hb->setSubOperativeLinkBuilder($linkBuilder);
         }
 
-        $body = core\lang\Callback::factory($builder)->invoke($args);
+        $body = core\lang\Callback::factory($builder)->invokeArgs($args);
         $container->push($hb, $body);
 
         return $this->view;
@@ -910,7 +910,7 @@ trait TScaffold_IndexHeaderBarProvider {
             $hb->setSubOperativeLinkBuilder($linkBuilder);
         }
 
-        $body = core\lang\Callback::factory($builder)->invoke($args);
+        $body = core\lang\Callback::factory($builder)->invokeArgs($args);
         $container->push($hb, $body);
 
         return $this->view;

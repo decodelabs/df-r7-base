@@ -31,6 +31,10 @@ interface ICallback {
     public function invokeArgs(array $args);
 }
 
+function Callback($callback) {
+    core\dump($callback);
+}
+
 
 interface IEnum extends core\IStringProvider {
     public static function getOptions();

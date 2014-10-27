@@ -70,6 +70,10 @@ class HeaderBar extends arch\component\template\HeaderBar {
     }
 
     public function setSubOperativeLinkBuilder($builder=null) {
+        if($builder !== null) {
+            $builder = core\lang\Callback::factory($builder);
+        }
+        
         $this->_subOperativeLinkBuilder = $builder;
         return $this;
     }
