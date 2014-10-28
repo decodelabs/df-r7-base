@@ -281,6 +281,7 @@ trait TForm {
 
     protected function _onResetEvent() {
         $this->_state->reset();
+        $this->_setDefaultValues();
     }
 
     public function handleDelegateEvent($delegateId, $event, $args) {}
