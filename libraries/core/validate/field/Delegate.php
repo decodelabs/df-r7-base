@@ -14,14 +14,18 @@ class Delegate extends Base implements core\validate\IDelegateField {
     protected $_delegate;
     protected $_isRequired = null;
 
-    public function setDelegate(arch\form\IForm $delegate, $name=null) {
-        if($name !== null) {
-            $delegate = $delegate->getDelegate($name);
+    public function fromForm(arch\form\IForm $form, $name=null) {
+        if($name === null) {
+            $name = $this->_name;
         }
 
+        return $this->setDelegate($form->getDelegate($name));
+    }
+    
+    public function setDelegate(arch\form\IDelegate $delegate) {
         if(!$delegate instanceof arch\form\IResultProviderDelegate) {
             throw new core\validate\InvalidArgumentException(
-                'Invalid delegate'
+                'Delegate '.$delegate->getDelegateId().' does not provide a result'
             );
         }
 

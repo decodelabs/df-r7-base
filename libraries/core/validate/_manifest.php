@@ -471,7 +471,8 @@ interface IDateField extends IField, IRangeField, ISanitizingField {
 }
 
 interface IDelegateField extends IField {
-    public function setDelegate(arch\form\IForm $form, $name=null);
+    public function fromForm(arch\form\IForm $form, $name=null);
+    public function setDelegate(arch\form\IDelegate $delegate);
     public function getDelegate();
 }
 
