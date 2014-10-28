@@ -34,11 +34,11 @@ class Cookie implements link\http\IResponseCookie {
 
             switch($key) {
                 case 'max-age':
-                    $output->setMaxAge(core\time\Duration::factory($value));
+                    $output->setMaxAge($value);
                     break;
 
                 case 'expires':
-                    $output->setExpiryDate(core\time\Date::factory($value));#
+                    $output->setExpiryDate($value);
                     break;
 
                 case 'domain':
@@ -87,7 +87,13 @@ class Cookie implements link\http\IResponseCookie {
     }
     
     
-    public function setMaxAge(core\time\IDuration $age=null) {
+    public function setMaxAge($age=null) {
+        if(!empty($age)) {
+            $age = core\time\Duration::factory($age);
+        } else {
+            $age = null;
+        }
+
         $this->_maxAge = $age;
         return $this;
     }
@@ -97,7 +103,13 @@ class Cookie implements link\http\IResponseCookie {
     }
     
     
-    public function setExpiryDate(core\time\IDate $date=null) {
+    public function setExpiryDate($date=null) {
+        if(!empty($date)) {
+            $date = core\time\Date::factory($date);
+        } else {
+            $date = null;
+        }
+
         $this->_expiryDate = $date;
         return $this;
     }
@@ -127,7 +139,7 @@ class Cookie implements link\http\IResponseCookie {
     }
     
     public function setBaseUrl(link\http\IUrl $url) {
-        //$this->setDomain($url->getDomain());
+        $this->setDomain($url->getDomain());
         
         $path = clone $url->getPath();
         $this->setPath($path->isAbsolute(true)->toString());

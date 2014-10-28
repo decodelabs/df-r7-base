@@ -236,6 +236,10 @@ class Http implements arch\IDirectoryHelper {
         return $this->_httpRequest->getCookieData();
     }
 
+    public function newCookie($name, $value) {
+        return $this->context->application->getResponseAugmentor()->newCookie($name, $value);
+    }
+
 
 // Status
     public static function isValidStatusCode($code) {

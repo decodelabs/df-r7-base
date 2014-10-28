@@ -385,9 +385,9 @@ interface IResponseCookie extends core\IStringProvider {
     public function getName();
     public function setValue($value);
     public function getValue();
-    public function setMaxAge(core\time\IDuration $age=null);
+    public function setMaxAge($age=null);
     public function getMaxAge();
-    public function setExpiryDate(core\time\IDate $date=null);
+    public function setExpiryDate($date=null);
     public function getExpiryDate();
     public function setDomain($domain);
     public function getDomain();
