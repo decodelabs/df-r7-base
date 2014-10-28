@@ -1,0 +1,66 @@
+<?php
+/**
+ * This file is part of the Decode Framework
+ * @license http://opensource.org/licenses/MIT
+ */
+namespace df\core\validate\field;
+
+use df;
+use df\core;
+use df\arch;
+
+class Delegate extends Base implements core\validate\IDelegateField {
+    
+    protected $_delegate;
+    protected $_isRequired = null;
+
+    public function setDelegate(arch\form\IForm $delegate, $name=null) {
+        if($name !== null) {
+            $delegate = $delegate->getDelegate($name);
+        }
+
+        if(!$delegate instanceof arch\form\IResultProviderDelegate) {
+            throw new core\validate\InvalidArgumentException(
+                'Invalid delegate'
+            );
+        }
+
+        $this->_delegate = $delegate;
+
+        if($this->_isRequired !== null) {
+            $delegate->isRequired($this->_isRequired);
+        } else {
+            $this->_isRequired = $delegate->isRequired();
+        }
+
+        return $this;
+    }
+
+    public function getDelegate() {
+        return $this->_delegate;
+    }
+
+    public function isRequired($flag=null) {
+        if($flag !== null) {
+            $this->_isRequired = (bool)$flag;
+
+            if($this->_delegate) {
+                $this->_delegate->isRequired($this->_isRequired);
+            }
+
+            return $this;
+        }
+
+        return $this->_isRequired;
+    }
+
+    public function validate(core\collection\IInputTree $node) {
+        $output = $this->_delegate->apply();
+
+        if(!$this->_delegate->isValid()) {
+            $node->addError('delegate', 'Delegate did not complete');
+        }
+
+        return $output;
+    }
+}

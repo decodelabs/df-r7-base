@@ -8,6 +8,7 @@ namespace df\core\validate;
 use df;
 use df\core;
 use df\opal;
+use df\arch;
 
 
 // Exceptions
@@ -467,6 +468,11 @@ interface IDateField extends IField, IRangeField, ISanitizingField {
     public function mustBeFuture($flag=null);
     public function setExpectedFormat($format);
     public function getExpectedFormat();
+}
+
+interface IDelegateField extends IField {
+    public function setDelegate(arch\form\IForm $form, $name=null);
+    public function getDelegate();
 }
 
 interface IDurationField extends IField, IRangeField {
