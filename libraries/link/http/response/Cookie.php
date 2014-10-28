@@ -139,7 +139,7 @@ class Cookie implements link\http\IResponseCookie {
     }
     
     public function setBaseUrl(link\http\IUrl $url) {
-        $this->setDomain($url->getDomain());
+        //$this->setDomain($url->getDomain());
         
         $path = clone $url->getPath();
         $this->setPath($path->isAbsolute(true)->toString());
