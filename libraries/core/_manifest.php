@@ -857,6 +857,10 @@ trait TContextProxy {
 
         return $this->{$key} = $this->context->__get($key);
     }
+
+    public function _($phrase, array $data=null, $plural=null, $locale=null) {
+        return $this->context->_($phrase, $data, $plural, $locale);
+    }
 }
 
 interface ISharedHelper extends IHelper {}
