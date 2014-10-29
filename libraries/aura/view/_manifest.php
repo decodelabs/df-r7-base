@@ -443,6 +443,14 @@ trait TCascadingHelperProvider {
         $this->{$key} = $output;
         return $output;
     }
+
+    public function _($phrase, array $data=null, $plural=null, $locale=null) {
+        if($this->view) {
+            return $this->view->_($phrase, $data, $plural, $locale);
+        } else {
+            return $this->getContext()->_($phrase, $data, $plural, $locale);
+        }
+    }
 }
 
 
