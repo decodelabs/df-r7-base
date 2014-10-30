@@ -181,7 +181,7 @@ trait TAccessControlled {
             return $this;
         }
         
-        return $this->_checkAccess;
+        return (bool)$this->_checkAccess;
     }
 
     public function setAccessLocks(array $locks) {

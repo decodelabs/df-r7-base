@@ -37,7 +37,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
     
     public function __construct(arch\IContext $context, $uri, $body=null, $matchRequest=null) {
         $checkUriMatch = false;
-        $this->_checkAccess = true;
+        $this->_checkAccess = null;
         
         if($matchRequest === true) {
             $checkUriMatch = true;
@@ -97,8 +97,8 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         $context = $view->getContext();
 
         $tag = $this->getTag();
-        $url = $this->_uri instanceof linkLib\http\IUrl ? $this->_uri : null;
-        $url = null;
+        $url = $view->uri->__invoke($this->_uri);
+        $request = $url->getDirectoryRequest();
         $body = $this->_body;
         
         $active = $this->_isActive || $this->_isComputedActive;
@@ -107,19 +107,16 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         if($this->_uri === null) {
             $disabled = true;
         }
-        
+
+        if($this->_checkAccess === null) {
+            $this->_checkAccess = (bool)$request;
+        }
+
         if($this->_checkAccess && !$disabled) {
             $userManager = $context->user;
-            $uri = $view->uri->__invoke($this->_uri, null, null, true);
 
-            if(!$url && $uri instanceof arch\IRequest) {
-                $url = $view->uri->requestToUrl($uri);
-            }
-
-            if($uri instanceof user\IAccessLock) {
-                if(!$userManager->canAccess($uri, null, true)) {
-                    $disabled = true;
-                }
+            if($request && !$userManager->canAccess($request, null, true)) {
+                $disabled = true;
             }
             
             if(!$disabled) {
@@ -137,10 +134,6 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         }
         
         if(!$disabled) {
-            if($url === null) {
-                $url = $view->uri->__invoke($this->_uri);
-            }
-
             $tag->setAttribute('href', $url);
         }
         
@@ -148,18 +141,16 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
             $tag->setAttribute('rel', implode(' ', array_keys($this->_rel)));
         }
         
-        $request = $context->request;
-
         if(!$active && $this->_matchRequest && $this->_isComputedActive !== false) {
             $matchRequest = arch\Request::factory($this->_matchRequest);
-            $active = $matchRequest->matches($request);
+            $active = $matchRequest->matches($context->request);
         }
 
         if(!$active && !empty($this->_altMatches)) {
             foreach($this->_altMatches as $match) {
                 $matchRequest = arch\Request::factory($match);
 
-                if($matchRequest->contains($request)) {
+                if($matchRequest->contains($context->request)) {
                     $active = true;
                     break;
                 }
