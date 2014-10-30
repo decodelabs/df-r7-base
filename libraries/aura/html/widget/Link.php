@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\arch;
 use df\aura;
+use df\link as linkLib;
 use df\user;
 
 class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIconProviderWidget, core\IDumpable {
@@ -96,6 +97,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         $context = $view->getContext();
 
         $tag = $this->getTag();
+        $url = $this->_uri instanceof linkLib\http\IUrl ? $this->_uri : null;
         $url = null;
         $body = $this->_body;
         
@@ -110,7 +112,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
             $userManager = $context->user;
             $uri = $view->uri->__invoke($this->_uri, null, null, true);
 
-            if($uri instanceof arch\IRequest) {
+            if(!$url && $uri instanceof arch\IRequest) {
                 $url = $view->uri->requestToUrl($uri);
             }
 

@@ -146,8 +146,8 @@ class Router implements core\IRegistryObject {
     }
 
     public function requestToUrl(arch\IRequest $request) {
-        $origRequest = clone $request;
-        $request = $this->routeOut($request);
+        $origRequest = $request;
+        $request = $this->routeOut(clone $request);
 
         $domain = $this->_baseDomain;
         $port = $this->_basePort;

@@ -36,11 +36,9 @@ class Uri implements auraLib\view\IHelper {
         }
         
         if($uri instanceof core\uri\IUrl) {
-            if($asRequest) {
-                if($uri instanceof link\http\IUrl) {
-                    if($t = $uri->getDirectoryRequest()) {
-                        $uri = $t;
-                    }
+            if($asRequest && $uri instanceof link\http\IUrl) {
+                if($t = $uri->getDirectoryRequest()) {
+                    $uri = $t;
                 }
             }
 
