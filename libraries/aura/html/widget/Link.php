@@ -98,7 +98,13 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
 
         $tag = $this->getTag();
         $url = $view->uri->__invoke($this->_uri);
-        $request = $url->getDirectoryRequest();
+
+        if($url instanceof link\http\IUrl) {
+            $request = $url->getDirectoryRequest();
+        } else {
+            $request = null;
+        }
+        
         $body = $this->_body;
         
         $active = $this->_isActive || $this->_isComputedActive;
