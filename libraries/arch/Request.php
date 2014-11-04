@@ -549,7 +549,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     public function toString() {
         $output = 'directory://'.implode('/', $this->getLiteralPathArray());
         
-        if($this->_query) {
+        if($this->_query && !$this->_query->isEmpty()) {
             $output .= '?'.$this->_query->toArrayDelimitedString();
         }
         
@@ -558,6 +558,25 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         }
         
         return $output;
+    }
+
+    public function toReadableString() {
+        $output = implode('/', $this->getLiteralPathArray());
+
+        if($this->_query && !$this->_query->isEmpty()) {
+            $query = clone $this->_query;
+            unset($query->{self::REDIRECT_FROM}, $query->{self::REDIRECT_TO});
+
+            if(!$query->isEmpty()) {
+                $output .= '?'.$this->_query->toArrayDelimitedString();
+            }
+        }
+        
+        if($this->_fragment) {
+            $output .= '#'.$this->_fragment;
+        }
+        
+        return urldecode($output);
     }
     
     public function getDirectoryLocation() {

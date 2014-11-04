@@ -170,6 +170,7 @@ interface IRequest extends core\uri\IUrl, user\IAccessLock {
     public function getLiteralPathArray();
     public function getLiteralPathString();
     public function getDirectoryLocation();
+    public function toReadableString();
     
     // Redirect
     public function encode();
