@@ -66,7 +66,9 @@ class TaskApcClear extends arch\task\Action {
             $this->io->writeLine($url);
 
             $httpClient = new link\http\Client();
-            $response = $httpClient->get($url);
+            $request = link\http\request\Base::factory($url);
+            $request->setIp('localhost');
+            $response = $httpClient->get($request);
 
             if($response->isOk()) {
                 $json = $this->data->jsonDecode($response->getContent());

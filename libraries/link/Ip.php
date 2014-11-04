@@ -24,6 +24,10 @@ class Ip implements IIp, core\IDumpable {
     }
     
     public function __construct($ip) {
+        if($ip == 'localhost') {
+            $ip = '127.0.0.1';
+        }
+
         $in = $ip = (string)$ip;
         $this->_isV4 = $hasV4 = strpos($ip, '.') > 0;
         $this->_isV6 = $hasV6 = strpos($ip, ':') !== false;
