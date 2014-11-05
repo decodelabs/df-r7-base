@@ -68,9 +68,16 @@ class OutputManifest implements IOutputManifest {
                 
                 if($s == $sourceAlias 
                 && substr($fieldName, 0, 1) != '@'
-                && !in_array($fieldName, $muteFields)
                 //&& !isset($this->_outputFields[$alias])
                 ) {
+                    if(array_key_exists($fieldName, $muteFields)) {
+                        if($muteFields[$fieldName] === null) {
+                            continue;
+                        } else {
+                            $alias = $muteFields[$fieldName];
+                        }
+                    }
+
                     $this->addOutputField(new opal\query\field\Intrinsic($source, $fieldName, $alias));
                 }
             }

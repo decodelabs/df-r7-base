@@ -1053,6 +1053,12 @@ class ArrayManipulator implements IArrayManipulator {
                 
                 // Apply wildcards
                 if(!empty($wildcards)) {
+                    $mergedMuteFields = [];
+
+                    foreach($wildcards as $sourceAlias => $muteFields) {
+                        $mergedMuteFields = array_merge($mergedMuteFields, $muteFields);
+                    }
+
                     foreach($row as $key => $value) {
                         if(isset($aggregateFields[$key])) {
                             continue;
@@ -1061,11 +1067,32 @@ class ArrayManipulator implements IArrayManipulator {
                         $parts = explode('.', $key, 2);
                         $fieldName = array_pop($parts);
                         $s = array_shift($parts);
-                        
-                        if((empty($s) || isset($wildcards[$s]))
-                        && substr($fieldName, 0, 1) != '@') {
-                            $current[$fieldName] = $value;
+
+                        if(substr($fieldName, 0, 1) == '@') {
+                            continue;
                         }
+
+                        if(empty($s)) {
+                            if(array_key_exists($fieldName, $mergedMuteFields)) {
+                                if(null === $mergedMuteFields[$fieldName]) {
+                                    continue;
+                                } else {
+                                    $fieldName = $mergedMuteFields[$fieldName];
+                                }
+                            }
+                        } else if(!isset($wildcards[$s])) {
+                            continue;
+                        } else {
+                            if(array_key_exists($fieldName, $wildcards[$s])) {
+                                if(null === $wildcards[$s][$fieldName]) {
+                                    continue;
+                                } else {
+                                    $fieldName = $wildcards[$s][$fieldName];
+                                }
+                            }
+                        }
+
+                        $current[$fieldName] = $value;
                     }
                 }
                 

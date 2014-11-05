@@ -211,12 +211,19 @@ class Source implements ISource, core\IDumpable {
             $muteFields = $field->getMuteFields();
 
             foreach($this->_adapter->getQueryAdapterSchema()->getFields() as $name => $queryField) {
-                if(in_array($name, $muteFields)
-                || $queryField instanceof opal\schema\INullPrimitiveField) {
+                if($queryField instanceof opal\schema\INullPrimitiveField) {
                     continue;
                 }
 
-                $field = $this->extrapolateIntegralAdapterField($name, null, $queryField);
+                $alias = null;
+
+                if(array_key_exists($name, $muteFields)) {
+                    if(null === ($alias = $muteFields[$name])) {
+                        continue;
+                    }
+                }
+
+                $field = $this->extrapolateIntegralAdapterField($name, $alias, $queryField);
                 $field->isFromWildcard(true);
                 $qName = $field->getQualifiedName();
 

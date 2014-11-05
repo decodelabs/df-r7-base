@@ -73,7 +73,7 @@ class Wildcard implements opal\query\IWildcardField, core\IDumpable {
     }
 
     public function getMuteFields() {
-        return array_keys($this->_muteFields);
+        return $this->_muteFields;
     }
 
     

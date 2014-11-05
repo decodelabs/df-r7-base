@@ -379,9 +379,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
                     $source->addOutputField($wildcard);
                 }
 
-                if($alias === null) {
-                    return $wildcard;
-                }
+                return $wildcard;
             }
 
             if($name == '@void') {
