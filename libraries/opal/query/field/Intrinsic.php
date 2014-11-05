@@ -43,6 +43,11 @@ class Intrinsic implements opal\query\IIntrinsicField, core\IDumpable {
     public function getName() {
         return $this->_name;
     }
+
+    public function setAlias($alias) {
+        $this->_alias = $alias;
+        return $this;
+    }
     
     public function getAlias() {
         return $this->_alias;

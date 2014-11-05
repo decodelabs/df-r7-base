@@ -47,6 +47,11 @@ class Virtual implements opal\query\IVirtualField, core\IDumpable {
         return $this->_name;
     }
     
+    public function setAlias($alias) {
+        $this->_alias = $alias;
+        return $this;
+    }
+    
     public function getAlias() {
         return $this->_alias;
     }

@@ -208,12 +208,16 @@ class Source implements ISource, core\IDumpable {
             //$fields = $field->getTargetFields();
         } else if($field instanceof opal\query\IWildcardField 
         && $this->_adapter instanceof IIntegralAdapter) {
+            $muteFields = $field->getMuteFields();
+
             foreach($this->_adapter->getQueryAdapterSchema()->getFields() as $name => $queryField) {
-                if($field instanceof opal\schema\INullPrimitiveField) {
+                if(in_array($name, $muteFields)
+                || $queryField instanceof opal\schema\INullPrimitiveField) {
                     continue;
                 }
 
                 $field = $this->extrapolateIntegralAdapterField($name, null, $queryField);
+                $field->isFromWildcard(true);
                 $qName = $field->getQualifiedName();
 
                 if($field) {
@@ -247,6 +251,24 @@ class Source implements ISource, core\IDumpable {
         }
         
         return $this;
+    }
+
+    public function removeWildcardOutputField($name, $alias=null) {
+        if(!isset($this->_outputFields[$name])) {
+            return false;
+        }
+
+        if(!$this->_outputFields[$name]->isFromWildcard()) {
+            return false;
+        }
+
+        if($alias === null) {
+            unset($this->_outputFields[$name]);
+        } else {
+            $this->_outputFields[$name]->setAlias($alias)->isFromWildcard(false);
+        }
+
+        return true;
     }
     
     public function getFieldByAlias($alias) {
@@ -340,7 +362,28 @@ class Source implements ISource, core\IDumpable {
     public function getAllDereferencedFields() {
         return array_merge($this->getDereferencedOutputFields(), $this->getDereferencedPrivateFields());
     }
-    
+
+    public function hasWildcardField() {
+        foreach($this->_outputFields as $field) {
+            if($field instanceof opal\query\IWildcardField) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function getWildcardField() {
+        foreach($this->_outputFields as $field) {
+            if($field instanceof opal\query\IWildcardField) {
+                return $field;
+            }
+        }
+
+        return null;
+    }
+
+
 // Dump
     public function getDumpProperties() {
         $output = [

@@ -58,6 +58,7 @@ class OutputManifest implements IOutputManifest {
         }
 
         if(isset($this->_wildcards[$sourceAlias], $rows[0])) {
+            $muteFields = $this->_wildcards[$sourceAlias];
             unset($this->_wildcards[$sourceAlias]);
             
             foreach($rows[0] as $key => $value) {
@@ -67,6 +68,7 @@ class OutputManifest implements IOutputManifest {
                 
                 if($s == $sourceAlias 
                 && substr($fieldName, 0, 1) != '@'
+                && !in_array($fieldName, $muteFields)
                 //&& !isset($this->_outputFields[$alias])
                 ) {
                     $this->addOutputField(new opal\query\field\Intrinsic($source, $fieldName, $alias));
@@ -80,7 +82,7 @@ class OutputManifest implements IOutputManifest {
     
     public function addOutputField(opal\query\IField $field) {
         if($field instanceof opal\query\IWildcardField) {
-            $this->_wildcards[$field->getSourceAlias()] = true;
+            $this->_wildcards[$field->getSourceAlias()] = $field->getMuteFields();
             return $this;
         }
         

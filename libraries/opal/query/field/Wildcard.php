@@ -14,6 +14,7 @@ class Wildcard implements opal\query\IWildcardField, core\IDumpable {
     use opal\query\TField;
     
     protected $_source;
+    protected $_muteFields = [];
     
     public function __construct(opal\query\ISource $source) {
         $this->_source = $source;
@@ -35,6 +36,11 @@ class Wildcard implements opal\query\IWildcardField, core\IDumpable {
         return '*';
     }
     
+    public function setAlias($alias) {
+        core\stub($alias);
+        return $this;
+    }
+
     public function getAlias() {
         return '*';
     }
@@ -54,9 +60,36 @@ class Wildcard implements opal\query\IWildcardField, core\IDumpable {
     public function rewriteAsDerived(opal\query\ISource $source) {
         core\stub($source);
     }
+
+
+    public function addMuteField($name, $alias=null) {
+        $this->_muteFields[$name] = $alias;
+        return $this;
+    }
+
+    public function removeMuteField($name) {
+        unset($this->_muteFields[$name]);
+        return $this;
+    }
+
+    public function getMuteFields() {
+        return array_keys($this->_muteFields);
+    }
+
     
 // Dump
     public function getDumpProperties() {
-        return $this->getQualifiedName();
+        $output = $this->getQualifiedName();
+        $mute = [];
+
+        foreach($this->_muteFields as $name => $alias) {
+            $mute[] = '!'.$name.($alias ? ' as '.$alias : '');
+        }
+
+        if(!empty($mute)) {
+            $output .= ' ('.implode(', ', $mute).')';
+        }
+
+        return $output;
     }
 }

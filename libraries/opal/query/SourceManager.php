@@ -362,6 +362,28 @@ class SourceManager implements ISourceManager, core\IDumpable {
                 return $field;
             }
 
+            if(substr($name, 0, 1) == '!') {
+                if(!$allowWildcard || $name == '!*') {
+                    throw new InvalidArgumentException(
+                        'Unexpected wildcard field reference "'.$qName.'"'
+                    );
+                }
+
+                $name = substr($name, 1);
+
+                if($wildcard = $source->getWildcardField()) {
+                    $wildcard->addMuteField($name, $alias);
+                } else if(!$source->removeWildcardOutputField($name, $alias)) {
+                    $wildcard = new opal\query\field\Wildcard($source);
+                    $wildcard->addMuteField($name, $alias);
+                    $source->addOutputField($wildcard);
+                }
+
+                if($alias === null) {
+                    return $wildcard;
+                }
+            }
+
             if($name == '@void') {
                 $field = null;
             } else if($name == '*') {

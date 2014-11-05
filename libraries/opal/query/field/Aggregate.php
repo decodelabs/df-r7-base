@@ -128,11 +128,16 @@ class Aggregate implements opal\query\IAggregateField, core\IDumpable {
     public function getQualifiedName() {
         return $this->getTypeName().'('.($this->_isDistinct ? 'distinct ' : '').$this->_targetField->getQualifiedName().')';
     }
+
+    public function setAlias($alias) {
+        $this->_alias = $alias;
+        return $this;
+    }
     
     public function getAlias() {
         return $this->_alias;
     }
-    
+
     public function getTargetField() {
         return $this->_targetField;
     }

@@ -707,6 +707,9 @@ interface ISource extends IAdapterAware {
     public function getFirstOutputDataField();
     public function getLastOutputDataField();
     public function isOutputField(IField $field);
+    public function hasWildcardField();
+    public function getWildcardField();
+    public function removeWildcardOutputField($name);
     
     public function getOutputFields();
     public function getDereferencedOutputFields();
@@ -769,6 +772,7 @@ interface IField {
     
     public function getName();
     public function getAlias();
+    public function setAlias($alias);
     public function hasDiscreetAlias();
     public function getQualifiedName();
     public function dereference();
@@ -782,12 +786,15 @@ interface IField {
 
     public function shouldBeProcessed();
     public function rewriteAsDerived(ISource $source);
+
+    public function isFromWildcard($flag=null);
 }
 
 trait TField {
 
     protected $_logicalAlias;
     protected $_overrideField;
+    protected $_isFromWildcard = false;
 
     public function setLogicalAlias($alias) {
         if(empty($alias)) {
@@ -814,10 +821,24 @@ trait TField {
     public function shouldBeProcessed() {
         return true;
     }
+
+    public function isFromWildcard($flag=null) {
+        if($flag !== null) {
+            $this->_isFromWildcard = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_isFromWildcard;
+    }
 }
 
 interface IIntrinsicField extends IField {}
-interface IWildcardField extends IField {}
+
+interface IWildcardField extends IField {
+    public function addMuteField($name, $alias=null);
+    public function removeMuteField($name);
+    public function getMuteFields();
+}
 
 interface ICorrelationField extends IField {
     public function getCorrelationQuery();

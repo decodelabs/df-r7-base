@@ -36,6 +36,11 @@ class Combine implements opal\query\ICombineField, core\IDumpable {
     public function getQualifiedName() {
         return $this->_combine->getParentQuery()->getSourceAlias().'.'.$this->_name;
     }
+
+    public function setAlias($alias) {
+        $this->_name = $alias;
+        return $this;
+    }
     
     public function getAlias() {
         return $this->_name;

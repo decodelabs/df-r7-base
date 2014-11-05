@@ -37,6 +37,11 @@ class Attachment implements opal\query\IAttachmentField, core\IDumpable {
         return $this->_attachment->getParentQuery()->getSourceAlias().'.'.$this->_name;
     }
     
+    public function setAlias($alias) {
+        $this->_name = $alias;
+        return $this;
+    }
+
     public function getAlias() {
         return $this->_name;
     }
