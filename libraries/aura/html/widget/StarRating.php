@@ -23,22 +23,31 @@ class StarRating extends Base {
     }
 
     protected function _render() {
+        $view = $this->getRenderTarget();
         $tag = $this->getTag();
         $tag->setDataAttribute('value', $this->_value);
         $tag->setDataAttribute('max', $this->_max);
-        $view = $this->getRenderTarget();
+        $tag->setAttribute('title', $view->format->number($this->_value));
 
         $stars = [];
 
         for($i = 1; $i <= $this->_max; $i++) {
-            $stars[] = $view->html->icon($i <= $this->_value ? 'star' : 'star-empty');
+            if($i <= $this->_value) {
+                $class = 'star';
+            } else if($i > $this->_value && $i - 1 < $this->_value) {
+                $class = 'star-half';
+            } else {
+                $class = 'star-empty';
+            }
+
+            $stars[] = $view->html->icon($class);
         }
 
         return $tag->renderWith($stars);
     }
 
     public function setValue($value) {
-        $value = (int)$value;
+        $value = (float)$value;
 
         if($value < 0) {
             $value = 0;
