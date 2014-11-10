@@ -287,8 +287,8 @@ trait TRelationField {
     protected function _sanitizeTargetUnitId(axis\ISchemaBasedStorageUnit $unit) {
         $model = $unit->getModel();
         
-        if(false === strpos($this->_targetUnitId, axis\IUnit::ID_SEPARATOR)) {
-            $this->_targetUnitId = $model->getModelName().axis\IUnit::ID_SEPARATOR.$this->_targetUnitId;
+        if(false === strpos($this->_targetUnitId, axis\IUnitOptions::ID_SEPARATOR)) {
+            $this->_targetUnitId = $model->getModelName().axis\IUnitOptions::ID_SEPARATOR.$this->_targetUnitId;
         }
     }
 
@@ -599,23 +599,23 @@ trait TBridgedRelationField {
 
             if($bridgeClass::IS_SHARED) {
                 if($isManyToMany && !$this->isDominant()) {
-                    $this->_bridgeUnitId = $modelName.axis\IUnit::ID_SEPARATOR.$this->_getBridgeUnitType().'('.$targetUnit->getUnitName().'.'.$this->getTargetField().','.$bridgeModelName.'/'.$bridgeId.')';
+                    $this->_bridgeUnitId = $modelName.axis\IUnitOptions::ID_SEPARATOR.$this->_getBridgeUnitType().'('.$targetUnit->getUnitName().'.'.$this->getTargetField().','.$bridgeModelName.'/'.$bridgeId.')';
                 } else {
-                    $this->_bridgeUnitId = $modelName.axis\IUnit::ID_SEPARATOR.$this->_getBridgeUnitType().'('.$localUnit->getUnitName().'.'.$this->_name.','.$bridgeModelName.'/'.$bridgeId.')';
+                    $this->_bridgeUnitId = $modelName.axis\IUnitOptions::ID_SEPARATOR.$this->_getBridgeUnitType().'('.$localUnit->getUnitName().'.'.$this->_name.','.$bridgeModelName.'/'.$bridgeId.')';
                 }
             }
         }
 
         if(empty($this->_bridgeUnitId)) {
             if($isManyToMany && !$this->isDominant()) {
-                $this->_bridgeUnitId = $modelName.axis\IUnit::ID_SEPARATOR.$this->_getBridgeUnitType().'('.$targetUnit->getUnitName().'.'.$this->getTargetField().')';
+                $this->_bridgeUnitId = $modelName.axis\IUnitOptions::ID_SEPARATOR.$this->_getBridgeUnitType().'('.$targetUnit->getUnitName().'.'.$this->getTargetField().')';
             } else {
-                $this->_bridgeUnitId = $modelName.axis\IUnit::ID_SEPARATOR.$this->_getBridgeUnitType().'('.$localUnit->getUnitName().'.'.$this->_name.')';
+                $this->_bridgeUnitId = $modelName.axis\IUnitOptions::ID_SEPARATOR.$this->_getBridgeUnitType().'('.$localUnit->getUnitName().'.'.$this->_name.')';
             }
         }
 
-        if(false === strpos($this->_bridgeUnitId, axis\IUnit::ID_SEPARATOR)) {
-            $this->_bridgeUnitId = $modelName.axis\IUnit::ID_SEPARATOR.$this->_bridgeUnitId;
+        if(false === strpos($this->_bridgeUnitId, axis\IUnitOptions::ID_SEPARATOR)) {
+            $this->_bridgeUnitId = $modelName.axis\IUnitOptions::ID_SEPARATOR.$this->_bridgeUnitId;
         }
 
         if($this->_bridgeTargetFieldName == $localUnit->getUnitName()) {

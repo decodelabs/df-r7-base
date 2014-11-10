@@ -97,7 +97,7 @@ abstract class Enum implements IEnum, core\IDumpable {
     }
 
     public function is($value) {
-        return $this->_index == self::factory($value)->_index;
+        return $this->_index == self::factory($value);
     }
 
     public static function __callStatic($name, array $args) {

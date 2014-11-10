@@ -43,12 +43,17 @@ class Manager implements IManager, core\IDumpable {
         }
         
         if(!isset($this->_handlers[$scheme])) {
-            $class = 'df\\'.lcfirst($scheme).'\\MeshHandler';
-            
-            if(class_exists($class)) {
-                $handler = new $class();
-                $this->registerHandler($scheme, $handler);
-                return $handler;
+            $classes = [
+                'df\\'.lcfirst($scheme).'\\MeshHandler',
+                'df\\mesh\\handler\\'.ucfirst($scheme)
+            ];
+
+            foreach($classes as $class) {
+                if(class_exists($class)) {
+                    $handler = new $class();
+                    $this->registerHandler($scheme, $handler);
+                    return $handler;
+                }
             }
             
             if(!isset($this->_handlers[$scheme])) {

@@ -39,6 +39,10 @@ function CallbackArgs($callback, array $args) {
     return Callback::factory($callback)->invokeArgs($args);
 }
 
+interface IEnumFactory {
+    public function factory($value);
+}
+
 interface IEnum extends core\IStringProvider {
     public static function getOptions();
     public static function getLabels();
@@ -53,6 +57,7 @@ interface IEnum extends core\IStringProvider {
 interface ITypeRef {
     public function newInstance();
     public function newInstanceArgs(array $args);
+    public function checkType($extends);
 }
 
 

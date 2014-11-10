@@ -33,14 +33,16 @@ interface IModel extends mesh\entity\IParentEntity, core\IRegistryObject {
 }
 
 
+interface IUnitOptions {
+    const ID_SEPARATOR = '/';
+    const BACKUP_SUFFIX = '__bak_';
+}
 
 
 
 interface IUnit extends mesh\entity\IEntity, user\IAccessLock {
 
-    const ID_SEPARATOR = '/';
     const DEFAULT_ACCESS = axis\IAccess::GUEST;
-    const BACKUP_SUFFIX = '__bak_';
 
     public function _setUnitName($name);
     public function getUnitName();
@@ -89,11 +91,11 @@ trait TUnit {
     }
     
     public function getUnitId() {
-        return $this->_model->getModelId().IUnit::ID_SEPARATOR.$this->getUnitName();
+        return $this->_model->getModelId().IUnitOptions::ID_SEPARATOR.$this->getUnitName();
     }
 
     public function getGlobalUnitId() {
-        return $this->_model->getModelName().IUnit::ID_SEPARATOR.$this->getUnitName();
+        return $this->_model->getModelName().IUnitOptions::ID_SEPARATOR.$this->getUnitName();
     }
 
     public function getUnitSettings() {
@@ -160,8 +162,8 @@ trait TUnit {
     public function lookupAccessKey(array $keys, $action=null) {
         $id = $this->getUnitId();
 
-        $parts = explode(IUnit::ID_SEPARATOR, $id);
-        $test = $parts[0].IUnit::ID_SEPARATOR;
+        $parts = explode(IUnitOptions::ID_SEPARATOR, $id);
+        $test = $parts[0].IUnitOptions::ID_SEPARATOR;
 
         if($action !== null) {
             if(isset($keys[$id.'#'.$action])) {

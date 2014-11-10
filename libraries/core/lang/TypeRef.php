@@ -26,31 +26,11 @@ class TypeRef implements ITypeRef, core\IDumpable {
 
     public static function __factory($type, $extends=null) {
         if(!$type instanceof self) {
-            return new self($type);
+            $type = new self($type);
         }
 
         if($extends !== null) {
-            if(!is_array($extends)) {
-                $extends = [$extends];
-            }
-
-            foreach($extends as $checkType) {
-                $checkType = self::_normalizeClassName($checkType);
-
-                if(class_exists($checkType)) {
-                    if(!$type->_reflection->isSubclassOf($checkType)) {
-                        throw new RuntimeException(
-                            $type->_class.' does not extend '.$checkType
-                        );
-                    }
-                } else if(interface_exists($checkType)) {
-                    if(!$type->_reflection->implements($checkType)) {
-                        throw new RuntimeException(
-                            $this->_class.' does not implement '.$checkType
-                        );
-                    }
-                }
-            }
+            $type->checkType($extends);
         }
 
         return $type;
@@ -86,6 +66,32 @@ class TypeRef implements ITypeRef, core\IDumpable {
         return $this->_reflection->newInstanceArgs($args);
     }
 
+    public function checkType($extends) {
+        if(!is_array($extends)) {
+            $extends = [$extends];
+        }
+
+        foreach($extends as $checkType) {
+            $checkType = self::_normalizeClassName($checkType);
+
+            if(class_exists($checkType)) {
+                if(!$this->_reflection->isSubclassOf($checkType)) {
+                    throw new RuntimeException(
+                        $type->_class.' does not extend '.$checkType
+                    );
+                }
+            } else if(interface_exists($checkType)) {
+                if(!$this->_reflection->implementsInterface($checkType)) {
+                    throw new RuntimeException(
+                        $this->_class.' does not implement '.$checkType
+                    );
+                }
+            }
+        }
+
+        return $this;
+    }
+
     public function __call($method, array $args) {
         if(!$this->_reflection->hasMethod($method)) {
             throw new BadMethodCallException(
@@ -107,6 +113,6 @@ class TypeRef implements ITypeRef, core\IDumpable {
 
 // Dump
     public function getDumpProperties() {
-        return implode('/', array_slice(1, explode('\\', $this->_class)));
+        return implode('/', array_slice(explode('\\', $this->_class), 1));
     }
 }

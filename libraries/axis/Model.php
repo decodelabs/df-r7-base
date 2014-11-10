@@ -122,7 +122,7 @@ abstract class Model implements IModel, core\IDumpable {
                 
                 if(!class_exists($class)) {
                     throw new axis\RuntimeException(
-                        'Virtual model unit type '.$this->getModelName().IUnit::ID_SEPARATOR.$matches[1].'.'.$matches[2].' could not be found'
+                        'Virtual model unit type '.$this->getModelName().IUnitOptions::ID_SEPARATOR.$matches[1].'.'.$matches[2].' could not be found'
                     );
                 }
                 
@@ -130,7 +130,7 @@ abstract class Model implements IModel, core\IDumpable {
                 
                 if(!$ref->implementsInterface('df\\axis\\IVirtualUnit')) {
                     throw new axis\RuntimeException(
-                        'Unit type '.$this->getModelName().IUnit::ID_SEPARATOR.$matches[1].'.'.$matches[2].' cannot load virtual units'
+                        'Unit type '.$this->getModelName().IUnitOptions::ID_SEPARATOR.$matches[1].'.'.$matches[2].' cannot load virtual units'
                     );
                 }
                 
@@ -143,7 +143,7 @@ abstract class Model implements IModel, core\IDumpable {
             
             
             throw new axis\RuntimeException(
-                'Model unit '.$this->getModelName().IUnit::ID_SEPARATOR.$name.' could not be found'
+                'Model unit '.$this->getModelName().IUnitOptions::ID_SEPARATOR.$name.' could not be found'
             );
         }
         
@@ -168,7 +168,7 @@ abstract class Model implements IModel, core\IDumpable {
     }
 
     public static function loadUnitFromId($id, $clusterId=null) {
-        $parts = explode(IUnit::ID_SEPARATOR, $id, 2);
+        $parts = explode(IUnitOptions::ID_SEPARATOR, $id, 2);
         $nameParts = explode(':', array_shift($parts), 2);
         $name = array_pop($nameParts);
 

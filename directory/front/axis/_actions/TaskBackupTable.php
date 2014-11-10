@@ -59,7 +59,7 @@ class TaskBackupTable extends arch\task\Action {
         $dbSchema = $currentTable->getSchema();
         
         $currentTableName = $dbSchema->getName();
-        $dbSchema->setName($currentTableName.axis\IUnit::BACKUP_SUFFIX.$this->format->customDate('now', 'Ymd_his'));
+        $dbSchema->setName($currentTableName.axis\IUnitOptions::BACKUP_SUFFIX.$this->format->customDate('now', 'Ymd_his'));
 
         try {
             $this->io->writeLine('Building copy table');

@@ -7,6 +7,7 @@ namespace df\core\validate\field;
 
 use df;
 use df\core;
+use df\mesh;
     
 class Enum extends Base implements core\validate\IEnumField {
 
@@ -16,7 +17,19 @@ class Enum extends Base implements core\validate\IEnumField {
 
     public function setType($type) {
         if($type !== null) {
-            $type = core\lang\TypeRef::factory($type, 'core/lang/IEnum');
+            if(is_string($type) && false === strpos($type, '://')) {
+                $type = 'type://'.$type;
+            }
+
+            $type = mesh\Manager::getInstance()->fetchEntity($type);
+
+            if($type instanceof core\lang\ITypeRef) {
+                $type->checkType('core/lang/IEnum');
+            } else if(!$type instanceof core\lang\IEnumFactory) {
+                throw new core\validate\InvalidArgumentException(
+                    'Type cannot provide an enum'
+                );
+            }
         }
 
         $this->_type = $type;

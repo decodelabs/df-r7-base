@@ -169,7 +169,7 @@ class UnitInspector implements IUnitInspector, core\IDumpable {
         }
 
         $storageList = $adapter->getStorageList();
-        $check = $this->_unit->getStorageBackendName().axis\IUnit::BACKUP_SUFFIX;
+        $check = $this->_unit->getStorageBackendName().axis\IUnitOptions::BACKUP_SUFFIX;
         $length = strlen($check);
 
         foreach($storageList as $name) {
