@@ -137,11 +137,6 @@ abstract class Base implements core\validate\IField {
         $node->addError($code, $message);
     }
     
-    
-    public function end() {
-        return $this->_handler;
-    }
-    
     public function applyValueTo(&$record, $value) {
         if(!is_array($record) && !$record instanceof \ArrayAccess) {
             throw new RuntimeException(

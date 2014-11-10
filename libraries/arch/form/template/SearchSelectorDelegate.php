@@ -306,6 +306,7 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
         unset($this->values->searchResults);
 
         $search = $this->data->newValidator()
+            // Search
             ->addField('search', 'text')
                 ->setSanitizer(function($value) {
                     if(empty($value)) {
@@ -314,7 +315,7 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
 
                     return $value;
                 })
-                ->end()
+                
             ->validate($this->values)
             ->getValue('search');
 

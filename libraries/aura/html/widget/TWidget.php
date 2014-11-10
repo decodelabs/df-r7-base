@@ -489,6 +489,16 @@ trait TWidget_RangeEntry {
     protected $_max;
     protected $_step;
     
+    public function setRange($min, $max, $step=null) {
+        $this->setMin($min)->setMax($max);
+
+        if($step !== null) {
+            $this->setStep($step);
+        }
+
+        return $this;
+    }
+
 // Min
     public function setMin($min) {
         $this->_min = $min;

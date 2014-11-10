@@ -14,21 +14,70 @@ class Handler implements IHandler {
 
     protected $_values = [];
     protected $_fields = [];
+    protected $_targetField = null;
     protected $_requireGroups = [];
     protected $_isValid = null;
-    protected $_shouldSanitize = true;
+    protected $_shouldSanitizeAll = true;
 
     public $data = null;
 
     public function addField($name, $type) {
+        $this->newField($name, $type);
+        return $this;
+    }
+
+    public function addRequiredField($name, $type) {
+        $this->newField($name, $type)->isRequired(true);
+        return $this;
+    }
+
+    public function newField($name, $type) {
+        $this->endField();
         $field = core\validate\field\Base::factory($this, $type, $name);
-        $field->shouldSanitize($this->_shouldSanitize);
+        $field->shouldSanitize($this->_shouldSanitizeAll);
         
         $this->_fields[$field->getName()] = $field;
+        $this->_targetField = $field;
 
         return $field;
     }
+
+    public function newRequiredField($name, $type) {
+        return $this->newField($name, $type)->isRequired(true);
+    }
+
+    public function getTargetField() {
+        return $this->_targetField;
+    }
+
+    public function endField() {
+        $this->_targetField = null;
+        return $this;
+    }
     
+    public function __call($method, array $args) {
+        if(!$this->_targetField) {
+            throw new RuntimeException(
+                'There is no active target field to apply method '.$method.' to'
+            );
+        }
+
+        if(!method_exists($this->_targetField, $method)) {
+            throw new BadMethodCallException(
+                'Target field '.$this->_targetField->getName().' does not have method '.$method
+            );
+        }
+
+        $output = call_user_func_array([$this->_targetField, $method], $args);
+
+        if($output === $this->_targetField) {
+            return $this;
+        }
+
+        return $output;
+    }
+
+
     public function getField($name) {
         if(isset($this->_fields[$name])) {
             return $this->_fields[$name];
@@ -39,13 +88,13 @@ class Handler implements IHandler {
         return $this->_fields;
     }
     
-    public function shouldSanitize($flag=null) {
+    public function shouldSanitizeAll($flag=null) {
         if($flag !== null) {
-            $this->_shouldSanitize = (bool)$flag;
+            $this->_shouldSanitizeAll = (bool)$flag;
             return $this;
         }
        
-        return $this->_shouldSanitize;
+        return $this->_shouldSanitizeAll;
     }
     
     public function isValid() {
@@ -138,6 +187,8 @@ class Handler implements IHandler {
 
 // Validate
     public function validate($data) {
+        $this->endField();
+
         if(!$data instanceof core\collection\IInputTree) {
             $data = core\collection\InputTree::factory($data);
         }

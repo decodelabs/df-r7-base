@@ -45,7 +45,7 @@ class Delete extends arch\form\template\Delete {
         $validator = $this->data->newValidator();
 
         foreach($flags as $key => $label) {
-            $validator->addField($key, 'boolean')->end();
+            $validator->addField($key, 'boolean');
         }
 
         $validator->validate($this->values);

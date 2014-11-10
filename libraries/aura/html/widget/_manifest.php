@@ -143,6 +143,8 @@ interface ITextEntryWidget extends IVisualInputWidget {
 }
 
 interface IRangeEntryWidget extends IDataEntryWidget {
+    public function setRange($min, $max, $step=null);
+
     public function setMin($min);
     public function getMin();
     

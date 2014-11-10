@@ -9,24 +9,31 @@ use df;
 use df\core;
 use df\opal;
 use df\arch;
+use df\mesh;
 
 
 // Exceptions
 interface IException {}
 class RuntimeException extends \RuntimeException implements IException {}
 class BadMethodCallException extends \BadMethodCallException implements IException {}
+class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 
 
 
 // Interfaces
 interface IHandler extends \ArrayAccess, core\lang\IChainable {
     public function addField($name, $type);
+    public function addRequiredField($name, $type);
+    public function newField($name, $type);
+    public function newRequiredField($name, $type);
+    public function getTargetField();
+    public function endField();
     public function getField($name);
     public function getFields();
     public function getValues();
     public function getValue($name);
     public function setValue($name, $value);
-    public function shouldSanitize($flag=null);
+    public function shouldSanitizeAll($flag=null);
     public function setRequireGroupFulfilled($name);
     public function setRequireGroupUnfulfilled($name, $field);
     public function checkRequireGroup($name);
@@ -54,7 +61,6 @@ interface IField {
     public function setMessageGenerator($generator=null);
     public function getMessageGenerator();
     
-    public function end();
     public function validate(core\collection\IInputTree $node);
     public function applyValueTo(&$record, $value);
 }
@@ -63,6 +69,7 @@ interface IField {
 
 // Range
 interface IRangeField extends IField {
+    public function setRange($min, $max);
     public function setMin($min);
     public function getMin();
     public function setMax($max);
@@ -73,6 +80,10 @@ trait TRangeField {
 
     protected $_min;
     protected $_max;
+
+    public function setRange($min, $max) {
+        return $this->setMin($min)->setMax($max);
+    }
 
     public function setMin($min) {
         if($min !== null) {
@@ -310,7 +321,7 @@ trait TSanitizingField {
 
 // Storage unit
 interface IStorageAwareField extends IField {
-    public function setStorageAdapter(opal\query\IAdapter $adapter);
+    public function setStorageAdapter($adapter);
     public function getStorageAdapter();
 }
 
@@ -318,7 +329,15 @@ trait TStorageAwareField {
 
     protected $_storageAdapter;
 
-    public function setStorageAdapter(opal\query\IAdapter $adapter) {
+    public function setStorageAdapter($adapter) {
+        if(!$adapter instanceof opal\query\IAdapter && $adapter !== null) {
+            $adapter = mesh\Manager::getInstance()->fetchEntity($adapter);
+
+            if(!$adapter instanceof opal\query\IAdapter) {
+                throw new InvalidArgumentException('Invalid storage adapter for validator field '.$this->_name);
+            }
+        }
+
         $this->_storageAdapter = $adapter;
         return $this;
     }
@@ -411,41 +430,43 @@ trait TUniqueCheckerField {
     }
 
     protected function _validateUnique(core\collection\IInputTree $node, $value) {
-        if($this->_storageAdapter) {
-            if(null === ($fieldName = $this->_storageField)) {
-                if($this->_recordName) {
-                    $fieldName = $this->_recordName;
+        if(!$this->_storageAdapter) {
+            return;
+        }
+
+        if(null === ($fieldName = $this->_storageField)) {
+            if($this->_recordName) {
+                $fieldName = $this->_recordName;
+            } else {
+                $fieldName = $this->_name;
+            }
+        }
+
+        $query = (new opal\query\EntryPoint())
+            ->select()
+            ->from($this->_storageAdapter, 'checkUnit')
+            ->where($fieldName, '=', $value);
+
+        if(!empty($this->_uniqueFilters)) {
+            foreach($this->_uniqueFilters as $field => $set) {
+                $value = $set['value'];
+
+                if(is_callable($value)) {
+                    $value($query, $field);
                 } else {
-                    $fieldName = $this->_name;
+                    $query->where($field, $set['inclusive'] ? '=' : '!=', $value);
                 }
             }
+        }
 
-            $query = (new opal\query\EntryPoint())
-                ->select()
-                ->from($this->_storageAdapter, 'checkUnit')
-                ->where($fieldName, '=', $value);
+        if($query->count()) {
+            $message = $this->_uniqueErrorMessage;
 
-            if(!empty($this->_uniqueFilters)) {
-                foreach($this->_uniqueFilters as $field => $set) {
-                    $value = $set['value'];
-
-                    if(is_callable($value)) {
-                        $value($query, $field);
-                    } else {
-                        $query->where($field, $set['inclusive'] ? '=' : '!=', $value);
-                    }
-                }
+            if($message === null) {
+                $message = $this->_handler->_('That value has already been entered before');
             }
 
-            if($query->count()) {
-                $message = $this->_uniqueErrorMessage;
-
-                if($message === null) {
-                    $message = $this->_handler->_('That value has already been entered before');
-                }
-
-                $this->_applyMessage($node, 'unique', $message);
-            }
+            $this->_applyMessage($node, 'unique', $message);
         }
     }
 }

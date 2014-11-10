@@ -74,9 +74,6 @@ class GoogleClassic extends Base {
 
     protected function _validateOptions(core\collection\IInputTree $values) {
         $validator = new core\validate\Handler();
-        $validator->addField('trackingId', 'text')
-                ->isRequired(true)
-                ->end()
-            ->validate($values);
+        $validator->addRequiredField('trackingId', 'text')->validate($values);
     }
 }
