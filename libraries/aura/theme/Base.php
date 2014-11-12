@@ -117,6 +117,11 @@ class Base implements ITheme {
             ->setDataAttribute('location', $request->getLiteralPathString())
             ->setDataAttribute('layout', $view->getLayout())
             ->setDataAttribute('base', '/'.ltrim($router->getBaseUrl()->getPathString(), '/'));
+
+        if(df\Launchpad::COMPILE_TIMESTAMP) {
+            $view->getBodyTag() 
+                ->setDataAttribute('cts', df\Launchpad::COMPILE_TIMESTAMP);
+        }
     }
 
     public function applyDefaultMetaData(aura\view\IView $view) {
