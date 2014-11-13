@@ -14,7 +14,7 @@ class Decimal extends Base implements opal\schema\IFloatingPointNumericField {
 
     use opal\schema\TField_FloatingPointNumeric;
 
-    protected function _init($precision=4, $scale=8) {
+    protected function _init($scale=8, $precision=4) {
         $this->setPrecision($precision);
         $this->setScale($scale);
     }

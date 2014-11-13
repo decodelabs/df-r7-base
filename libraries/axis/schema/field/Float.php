@@ -14,9 +14,9 @@ class Float extends Base implements opal\schema\IFloatingPointNumericField {
 
     use opal\schema\TField_FloatingPointNumeric;
 
-    protected function _init($precision=null, $scale=null) {
-        $this->setPrecision($precision);
+    protected function _init($scale=null, $precision=null) {
         $this->setScale($scale);
+        $this->setPrecision($precision);
     }
 
     public function compareValues($value1, $value2) {
