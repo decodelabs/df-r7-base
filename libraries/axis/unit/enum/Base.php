@@ -21,7 +21,7 @@ abstract class Base implements axis\IUnit, core\lang\IEnumFactory {
     }
 
     public function factory($value) {
-        return new Enum($this, $value);
+        return new Base_Enum($this, $value);
     }
 
     public function getOptions() {
@@ -66,7 +66,7 @@ abstract class Base implements axis\IUnit, core\lang\IEnumFactory {
     }
 }
 
-class Enum implements core\lang\IEnum {
+class Base_Enum implements core\lang\IEnum {
 
     use core\TStringProvider;
 
