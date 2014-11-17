@@ -29,7 +29,7 @@ class Server implements opal\rdbms\IServer {
         return is_file($name);
     }
 
-    public function createDatabase($name) {
+    public function createDatabase($name, $checkExists=false) {
         // stub
     }
 
