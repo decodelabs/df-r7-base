@@ -144,6 +144,10 @@ class Base_Enum implements core\lang\IEnum {
         return $this->_labels[$this->_index];
     }
 
+    public function getStringValue($default='') {
+        return $this->_options[$this->_index];
+    }
+
 
     public static function label($option) {
         if(isset($this)) {

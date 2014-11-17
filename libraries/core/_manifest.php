@@ -26,6 +26,10 @@ interface IStringProvider {
     public function __toString();
 }
 
+interface IStringValueProvider {
+    public function getStringValue($default='');
+}
+
 trait TStringProvider {
     
     public function __toString() {
@@ -34,6 +38,21 @@ trait TStringProvider {
         } catch(\Exception $e) {
             return '';
         }
+    }
+}
+
+trait TStringValueProvider {
+
+    protected function _getStringValue($value, $default='') {
+        if($value instanceof IStringValueProvider) {
+            $value = $value->getStringValue($default);
+        }
+
+        if($value === null) {
+            $value = $default;
+        }
+
+        return (string)$value;
     }
 }
 
@@ -127,8 +146,7 @@ interface IValueContainer {
     public function getValue($default=null);
 }
 
-interface IUserValueContainer extends IValueContainer {
-    public function getStringValue($default='');
+interface IUserValueContainer extends IValueContainer, IStringValueProvider {
     public function hasValue();
 }
 

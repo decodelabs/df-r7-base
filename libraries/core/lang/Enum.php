@@ -11,6 +11,7 @@ use df\core;
 abstract class Enum implements IEnum, core\IDumpable {
 
     use core\TStringProvider;
+    use core\TStringValueProvider;
 
     protected static $_options;
     protected static $_labels;
@@ -94,6 +95,10 @@ abstract class Enum implements IEnum, core\IDumpable {
 
     public function toString() {
         return static::$_labels[$this->_index];
+    }
+
+    public function getStringValue($default='') {
+        return static::$_options[$this->_index];
     }
 
     public function is($value) {

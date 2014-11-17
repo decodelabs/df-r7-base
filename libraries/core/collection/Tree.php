@@ -11,6 +11,7 @@ use df\core;
 class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection, \Serializable, core\IDumpable {
     
     use core\TValueMap;
+    use core\TStringValueProvider;
     
     use TValueMapArrayAccess;
     use TArrayCollection;
@@ -388,11 +389,7 @@ class Tree implements ITree, ISeekable, ISortable, IAggregateIteratorCollection,
     }
     
     public function getStringValue($default='') {
-        if($this->_value !== null) {
-            return (string)$this->_value;
-        }
-        
-        return (string)$default;
+        return $this->_getStringValue($this->_value, $default);
     }
     
     

@@ -43,7 +43,7 @@ interface IEnumFactory {
     public function factory($value);
 }
 
-interface IEnum extends core\IStringProvider {
+interface IEnum extends core\IStringProvider, core\IStringValueProvider {
     public static function getOptions();
     public static function getLabels();
     public function getIndex();
