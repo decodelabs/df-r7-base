@@ -230,11 +230,11 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
 
 
 // Data helpers
-    public function hasRelation($record, $field) {
-        return (bool)$this->getRelationId($record, $field);
+    public function hasRelation($record, $field, $idField=null) {
+        return (bool)$this->getRelationId($record, $field, $idField);
     }
 
-    public function getRelationId($record, $field) {
+    public function getRelationId($record, $field, $idField=null) {
         $output = null;
 
         if($record instanceof opal\record\IRecord) {
@@ -244,6 +244,14 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
                 $output = $record[$field];
             } else {
                 $output = null;
+            }
+
+            if(is_array($output)) {
+                if($idField === null && isset($output['id'])) {
+                    $output = $output['id'];
+                } else if(isset($output[$idField])) {
+                    $output = $output[$idField];
+                }
             }
 
             if($output instanceof opal\record\IRecord) {
