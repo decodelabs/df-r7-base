@@ -44,6 +44,14 @@ class TextList extends Base implements core\validate\ITextListField {
             $this->_applyMessage($node, 'required', $this->_handler->_(
                 'This field requires at least one selection'
             ));
+
+            if($this->_requireGroup !== null && !$this->_handler->checkRequireGroup($this->_requireGroup)) {
+                $this->_handler->setRequireGroupUnfulfilled($this->_requireGroup, $this->_name);
+            }
+        } else {
+            if($this->_requireGroup !== null) {
+                $this->_handler->setRequireGroupFulfilled($this->_requireGroup);
+            }
         }
         
         $value = $node->toArray();
