@@ -119,6 +119,8 @@ class Router implements core\IRegistryObject {
             if(isset($this->_areaDomainMap[$domain])) {
                 $this->_mappedArea = ltrim($this->_areaDomainMap[$domain], arch\Request::AREA_MARKER);
                 $this->_mappedDomain = $domain;
+            } else if(df\Launchpad::$application->isDevelopment()) {
+                $this->_baseDomain = $domain;
             } else {
                 $output = false;
             }
