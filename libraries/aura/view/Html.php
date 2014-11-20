@@ -836,6 +836,8 @@ class Html extends Base implements IHtmlView {
 
         if(df\Launchpad::COMPILE_TIMESTAMP) {
             $output->query->cts = df\Launchpad::COMPILE_TIMESTAMP;
+        } else if($this->context->application->isDevelopment()) {
+            $output->query->cts = time();
         }
 
         return $output;

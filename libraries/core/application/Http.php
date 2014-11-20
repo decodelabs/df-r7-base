@@ -122,7 +122,9 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
         $domain = $url->getDomain();
         
         if(!$this->_router->mapDomain($domain)) {
-            $valid = false;
+            if(!$this->isDevelopment()) {
+                $valid = false;
+            }
         }
         
         if(!$valid) {

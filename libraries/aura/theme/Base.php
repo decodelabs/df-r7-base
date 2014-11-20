@@ -119,8 +119,9 @@ class Base implements ITheme {
             ->setDataAttribute('base', '/'.ltrim($router->getBaseUrl()->getPathString(), '/'));
 
         if(df\Launchpad::COMPILE_TIMESTAMP) {
-            $view->getBodyTag() 
-                ->setDataAttribute('cts', df\Launchpad::COMPILE_TIMESTAMP);
+            $view->getBodyTag()->setDataAttribute('cts', df\Launchpad::COMPILE_TIMESTAMP);
+        } else if($view->context->application->isDevelopment()) {
+            $view->getBodyTag()->setDataAttribute('cts', time());
         }
     }
 
