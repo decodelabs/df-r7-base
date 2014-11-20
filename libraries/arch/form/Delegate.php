@@ -110,6 +110,12 @@ class Delegate implements IDelegate {
     }
 
 
+    protected function _onCancelEvent() {
+        $redirect = $this->_getDefaultRedirect();
+        return $this->complete($redirect, false);
+    }
+
+
 // Names
     public function fieldName($name) {
         $parts = explode('[', $name, 2);
