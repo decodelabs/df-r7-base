@@ -14,7 +14,7 @@ class Aura implements arch\IDirectoryHelper {
     
     use arch\TDirectoryHelper;
     
-    public function getView($path, $request=null) {
+    public function getView($path, array $args=null) {
         $parts = explode('.', $path);
         $location = $this->context->extractDirectoryLocation($path);
         $view = $this->getBarebonesView(array_pop($parts), $location);
@@ -22,6 +22,10 @@ class Aura implements arch\IDirectoryHelper {
         $view->setContentProvider(
             auraLib\view\content\Template::loadDirectoryTemplate($view->getContext(), $path)
         );
+
+        if($args) {
+            $view->addArgs($args);
+        }
         
         return $view;
     }
