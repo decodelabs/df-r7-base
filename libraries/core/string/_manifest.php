@@ -153,7 +153,7 @@ interface ICollationAware {
 interface IGenerator {
     public static function random($minLength=6, $maxLength=14, $additionalChars=null);
     public static function passKey();
-    public static function sessionId($salt=null);
+    public static function sessionId($raw=false);
     
     public static function randomBytes($bytes);
     

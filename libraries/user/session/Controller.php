@@ -112,9 +112,7 @@ class Controller implements IController {
 
     protected function _generateId() {
         do {
-            $output = core\string\Generator::sessionId(
-                df\Launchpad::$application->getPassKey()
-            );
+            $output = core\string\Generator::sessionId();
         } while($this->_backend->idExists($output));
         
         return $output;

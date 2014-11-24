@@ -65,18 +65,14 @@ abstract class Generator implements IGenerator {
         return core\string\Generator::random(10, 20, '!£$%^&*()_-+=#');
     }
     
-    public static function sessionId($salt=null) {
-        if($salt === null) {
-            $salt = core\string\Generator::passKey();
-        }
-        
-        $output = $salt;
+    public static function sessionId($raw=false) {
+        $output = core\string\Generator::passKey();
             
         for($i = 0; $i < 32; $i++) {
             $output .= mt_rand();
         }
         
-        return sha1(uniqid($output, true));
+        return sha1(uniqid($output, true), $raw);
     }
     
     
