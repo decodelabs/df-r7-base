@@ -14,13 +14,17 @@ class Import implements auraLib\view\IContextSensitiveHelper, auraLib\view\IImpl
     
     use auraLib\view\TContextSensitiveHelper;
     
-    public function template($path) {
+    public function template($path, array $args=null) {
         try {
             $location = $this->context->extractDirectoryLocation($path);
             $context = $this->context->spawnInstance($location);
             $template = auraLib\view\content\Template::loadDirectoryTemplate($context, $path);
             $template->setRenderTarget($this->view);
             $template->setArgs($this->view->getArgs());
+
+            if($args) {
+                $template->addArgs($args);
+            }
         
             return $template;
         } catch(\Exception $e) {
@@ -28,11 +32,15 @@ class Import implements auraLib\view\IContextSensitiveHelper, auraLib\view\IImpl
         }
     }
 
-    public function themeTemplate($path) {
+    public function themeTemplate($path, array $args=null) {
         try {
             $themeId = $this->context->extractThemeId($path);
             $template = auraLib\view\content\Template::loadThemeTemplate($this->view, $path, $themeId);
             $template->setRenderTarget($this->view);
+
+            if($args) {
+                $template->addArgs($args);
+            }
 
             return $template;
         } catch(\Exception $e) {
