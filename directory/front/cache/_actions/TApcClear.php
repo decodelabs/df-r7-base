@@ -13,6 +13,7 @@ use df\arch;
 trait TApcClear {
     
     protected static $_apcu;
+    protected static $_setKey;
 
     protected function _clearApc() {
         $isPurge = isset($this->request->query->purge);
@@ -26,7 +27,6 @@ trait TApcClear {
         }
         
         self::$_apcu = version_compare(PHP_VERSION, '5.5.0') >= 0;
-        $setKey = self::$_apcu ? 'key' : 'info';
         $count = 0;
 
         if($isPurge) {
@@ -46,8 +46,8 @@ trait TApcClear {
             $key = $this->request->query['clearBegins'];
 
             foreach($this->_getCacheList() as $set) {
-                if(0 === strpos($set[$setKey], $prefix.$key)) {
-                    apc_delete($set[$setKey]);
+                if(0 === strpos($set[self::$_setKey], $prefix.$key)) {
+                    apc_delete($set[self::$_setKey]);
                     $count++;
                 }
             }
@@ -56,16 +56,16 @@ trait TApcClear {
             $prefixLength = strlen($this->_prefix);
 
             foreach($this->_getCacheList() as $set) {
-                if(0 === strpos($set[$setKey], $prefix)
-                && preg_match($regex, substr($set[$setKey], $prefixLength))) {
-                    apc_delete($set[$setKey]);
+                if(0 === strpos($set[self::$_setKey], $prefix)
+                && preg_match($regex, substr($set[self::$_setKey], $prefixLength))) {
+                    apc_delete($set[self::$_setKey]);
                     $count++;
                 }
             }
         } else {
             foreach($this->_getCacheList() as $set) {
-                if(0 === strpos($set[$setKey], $prefix)) {
-                    apc_delete($set[$setKey]);
+                if(0 === strpos($set[self::$_setKey], $prefix)) {
+                    apc_delete($set[self::$_setKey]);
                     $count++;
                 }
             }
@@ -81,10 +81,16 @@ trait TApcClear {
             $info = apc_cache_info('user');
         }
 
+        $output = [];
+
         if(isset($info['cache_list'])) {
-            return $info['cache_list'];
+            $output = $info['cache_list'];
+            
+            if(isset($output[0])) {
+                self::$_setKey = isset($output[0]['key']) ? 'key' : 'info';
+            }
         }
 
-        return [];
+        return $output;
     }
 }
