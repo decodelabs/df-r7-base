@@ -61,7 +61,7 @@ class Action implements IAction {
 
     public function prepare() {
         if(!$this->record && $this->unit instanceof opal\query\IAdapter) {
-            $record = $unit->newRecord();
+            $record = $this->unit->newRecord();
         }
 
         $this->unit->prepareValidator($this->validator, $this->record);
