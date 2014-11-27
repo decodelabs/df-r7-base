@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\axis;
 use df\opal;
+use df\user;
 
 class Unit extends axis\unit\table\Base {
     
@@ -83,6 +84,245 @@ class Unit extends axis\unit\table\Base {
         }
 
         return $output;
+    }
+
+
+
+// Actions
+    public function prepareValidator(core\validate\IHandler $validator, opal\record\IRecord $record=null) {
+        $validator
+
+            // Email
+            ->addRequiredField('email', 'email')
+                ->setStorageAdapter($this)
+                ->chainIf($record, function($validator) use($record) {
+                    $validator->setUniqueFilterId($record['id']);
+                })
+                ->setUniqueErrorMessage($this->context->_('This email address is already in use by another account'))
+
+            // Full name
+            ->addRequiredField('fullName', 'text')
+
+            // Nick name
+            ->addRequiredField('nickName', 'text')
+                ->setSanitizer(function($value, $field) {
+                    if(empty($value)) {
+                        $parts = explode(' ', $field->getHandler()['fullName']);
+                        $value = array_shift($parts);
+                    }
+
+                    return $value;
+                })
+
+            // Status
+            ->addRequiredField('status', 'integer')
+                ->setCustomValidator(function($node, $value) {
+                    if($value < -1 || $value > 3) {
+                        $node->addError('invalid', $this->context->_(
+                            'Please enter a valid status id'
+                        ));
+                    }
+                })
+
+            // Timezone
+            ->addRequiredField('timezone', 'text')
+                ->isOptional(true)
+                ->setSanitizer(function($value) {
+                    return str_replace(' ', '/', ucwords(str_replace('/', ' ', $value)));
+                })
+                ->setCustomValidator(function($node, $value) {
+                    if(!$this->context->i18n->timezones->isValidId($value)) {
+                        $node->addError('invalid', $this->context->_(
+                            'Please enter a valid timezone id'
+                        ));
+                    }
+                })
+
+            // Country
+            ->addRequiredField('country', 'text')
+                ->isOptional(true)
+                ->setSanitizer(function($value) {
+                    return strtoupper($value);
+                })
+                ->setCustomValidator(function($node, $value) {
+                    if(!$this->context->i18n->countries->isValidId($value)) {
+                        $node->addError('invalid', $this->context->_(
+                            'Please enter a valid country code'
+                        ));
+                    }
+                })
+                
+            // Language
+            ->addRequiredField('language', 'text')
+                ->isOptional(true)
+                ->setSanitizer(function($value) {
+                    return strtolower($value);  
+                })
+                ->setCustomValidator(function($node, $value) {
+                    if(!$this->context->i18n->languages->isValidId($value)) {
+                        $node->addError('invalid', $this->context->_(
+                            'Please enter a valid language id'
+                        ));
+                    }
+                });
+    }
+
+    protected function _runUpdateAction($action) {
+        if(!$action->record) {
+            $userManager = $this->context->user;
+
+            if(!$userManager->isLoggedIn()) {
+                $this->context->throwError(403, 'Cannot edit guests');
+            }
+
+            $action->record = $this->fetch()
+                ->where('id', '=', $userManager->client->getId())
+                ->toRow();
+
+            if(!$action->record) {
+                $this->context->throwError(500, 'Client record not found');
+            }
+        }
+
+        $action->prepare();
+        $action->validator->removeField('status');
+
+        $auth = $action->record->authDomains->fetch()
+            ->where('adapter', '=', 'Local')
+            ->toRow();
+
+        $applyPassword = false;
+
+        if(!empty($action->values[$action->validator->getMappedName('newPassword')])) {
+            if(!$auth) {
+                $auth = $this->_model->auth->newRecord([
+                    'user' => $action->record,
+                    'adapter' => 'Local',
+                    'bindDate' => 'now'
+                ]);
+            }
+
+            $userConfig = $this->_model->config;
+            $applyPassword = true;
+
+            $action->validator
+
+                // Current
+                ->chainIf(!$auth->isNew() && isset($action->values->{$action->validator->getMappedName('currentPassword')}), function($validator) use($auth, $isRequired) {
+                    $validator->addField('currentPassword', 'text')
+                        ->isRequired(true)
+                        ->setCustomValidator(function($node, $value, $field) use ($auth) {
+                            $hash = $this->context->data->hash($value);
+
+                            if($hash != $auth['password']) {
+                                $node->addError('incorrect', $this->context->_('This password is incorrect'));
+                            }
+                        });
+                })
+
+                // New password
+                ->addField('newPassword', 'password')
+                    ->isRequired(true)
+                    ->setMatchField('confirmNewPassword')
+                    ->shouldCheckStrength($userConfig->shouldCheckPasswordStrength())
+                    ->setMinStrength($userConfig->getMinPasswordStrength());
+        }
+
+
+        $action->validate();
+
+        if($action->isValid()) {
+            $action->validator->applyTo($action->record, [
+                'email', 'fullName', 'nickName', 
+                'timezone', 'country', 'language'
+            ]);
+
+            $action->record->save();
+
+            if($auth) {
+                if($applyPassword) {
+                    $auth->password = $action->validator['newPassword'];
+                }
+                
+                $auth->identity = $action->record['email'];
+                $auth->save();
+            }
+
+            if($action->record['id'] == $this->context->user->client->getId()) {
+                $this->context->user->importClientData($action->record);
+            }
+        }
+    }
+
+    protected function _runRegisterLocalAction($action) {
+        if($this->context->user->isLoggedIn()) {
+            $this->throwError(403, 'Already logged in!');
+        }
+
+        $userConfig = $this->_model->config;
+        $action->prepare();
+        $action->validator->removeField('status');
+
+        $action->validator
+
+            // New password
+            ->addField('password', 'password')
+                ->isRequired(true)
+                ->setMatchField('confirmPassword')
+                ->shouldCheckStrength($userConfig->shouldCheckPasswordStrength())
+                ->setMinStrength($userConfig->getMinPasswordStrength());
+
+        $action->validate();
+
+        if($action->isValid()) {
+            $action->record->joinDate = 'now';
+
+            $action->validator->applyTo($action->record, [
+                'email', 'fullName', 'nickName', 
+                'timezone', 'country', 'language'
+            ]);
+
+            $auth = $this->_model->auth->newRecord([
+                'user' => $action->record,
+                'adapter' => 'Local',
+                'identity' => $action->validator['email'],
+                'password' => $action->validator['password'],
+                'bindDate' => 'now'
+            ]);
+
+            $invite = null;
+
+            if(isset($action->args['inviteKey'])) {
+                $invite = $this->_model->invite->fetch()
+                    ->where('key', '=', $action->args['inviteKey'])
+                    ->toRow();
+            } else if(isset($action->args['invite'])) {
+                $invite = $action->args['invite'];
+
+                if(!$invite instanceof opal\record\IRecord) {
+                    $invite = null;
+                }
+            }
+
+            if($invite) {
+                $client->groups->addList($invite->groups->getRelatedPrimaryKeys());
+            }
+
+            $action->record->save();
+            $auth->save();
+
+            if($invite) {
+                $this->_model->invite->claim($invite, $action->record);
+            }
+
+            if($userConfig->shouldLoginOnRegistration()) {
+                $request = new user\authentication\Request('Local');
+                $request->setIdentity($auth['identity']);
+                $request->setCredential('password', $action->values['password']);
+                $request->setAttribute('rememberMe', (bool)true);
+                $this->context->user->authenticate($request);
+            }
+        }
     }
 
 
