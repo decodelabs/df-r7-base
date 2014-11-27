@@ -13,6 +13,7 @@ abstract class Base implements core\validate\IField {
     protected $_name;
     protected $_recordName = null;
     protected $_isRequired = false;
+    protected $_isOptional = false;
     protected $_requireGroup = null;
     protected $_toggleField = null;
     protected $_shouldSanitize = true;
@@ -67,6 +68,15 @@ abstract class Base implements core\validate\IField {
         }
         
         return $this->_isRequired;
+    }
+
+    public function isOptional($flag=null) {
+        if($flag !== null) {
+            $this->_isOptional = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_isOptional;
     }
 
     public function setRequireGroup($name) {

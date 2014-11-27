@@ -28,8 +28,10 @@ interface IHandler extends \ArrayAccess, core\lang\IChainable {
     public function newRequiredField($name, $type);
     public function getTargetField();
     public function endField();
+    public function hasField($name);
     public function getField($name);
     public function getFields();
+    public function removeField($name);
     public function getValues();
     public function getValue($name);
     public function setValue($name, $value);
@@ -37,6 +39,9 @@ interface IHandler extends \ArrayAccess, core\lang\IChainable {
     public function setRequireGroupFulfilled($name);
     public function setRequireGroupUnfulfilled($name, $field);
     public function checkRequireGroup($name);
+    public function setDataMap(array $map=null);
+    public function getDataMap();
+    public function hasMappedField($name);
     
     public function isValid();
     public function validate($data);
@@ -51,6 +56,7 @@ interface IField {
     public function setRecordName($name);
     public function getRecordName();
     public function isRequired($flag=null);
+    public function isOptional($flag=null);
     public function shouldSanitize($flag=null);
     public function setCustomValidator($validator=null);
     public function getCustomValidator();

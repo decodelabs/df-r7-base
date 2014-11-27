@@ -18,6 +18,7 @@ class Handler implements IHandler {
     protected $_requireGroups = [];
     protected $_isValid = null;
     protected $_shouldSanitizeAll = true;
+    protected $_dataMap = null;
 
     public $data = null;
 
@@ -77,6 +78,9 @@ class Handler implements IHandler {
         return $output;
     }
 
+    public function hasField($name) {
+        return isset($this->_fields[$name]);
+    }
 
     public function getField($name) {
         if(isset($this->_fields[$name])) {
@@ -88,6 +92,11 @@ class Handler implements IHandler {
         return $this->_fields;
     }
     
+    public function removeField($name) {
+        unset($this->_fields[$name]);
+        return $this;
+    }
+
     public function shouldSanitizeAll($flag=null) {
         if($flag !== null) {
             $this->_shouldSanitizeAll = (bool)$flag;
@@ -131,6 +140,64 @@ class Handler implements IHandler {
         return false;
     }
     
+
+// Map
+    public function setDataMap(array $map=null) {
+        if($map === null) {
+            $this->_dataMap = null;
+        } else {
+            $this->_dataMap = [];
+
+            foreach($map as $key => $value) {
+                if(is_int($key)) {
+                    $key = $value;
+                }
+
+                $this->_dataMap[$key] = $value;
+            }
+        }
+
+        return $this;
+    }
+
+    public function getDataMap() {
+        return $this->_dataMap;
+    }
+
+    protected function _getActiveDataMap() {
+        if($this->_dataMap) {
+            $map = array_flip($this->_dataMap);
+        } else {
+            $map = [];
+
+            foreach($this->_fields as $name => $field) {
+                $map[$name] = $name;
+            }
+        }
+
+        return $map;
+    }
+
+    public function hasMappedField($name) {
+        if($this->_dataMap) {
+            return in_array($name, $this->_dataMap);
+        } else {
+            return isset($this->_fields[$name]);
+        }
+    }
+
+    public function getMappedName($name) {
+        if($this->_dataMap) {
+            $map = array_flip($this->_dataMap);
+
+            if(isset($map[$name])) {
+                return $map[$name];
+            }
+        }
+
+        return $name;
+    }
+
 
 // Io
     public function getValues() {
@@ -198,9 +265,21 @@ class Handler implements IHandler {
         $this->_requireGroups = [];
         $this->data = $data;
         
-        foreach($this->_fields as $name => $field) {
-            $node = $data->{$name};
-            $this->_values[$name] = $field->validate($node);
+        $map = $this->_getActiveDataMap();
+
+        foreach($map as $fieldName => $dataName) {
+            if(!isset($this->_fields[$fieldName])) {
+                continue;
+            }
+
+            $field = $this->_fields[$fieldName];
+
+            if($field->isOptional() && !isset($data->{$dataName})) {
+                continue;
+            }
+
+            $node = $data->{$dataName};
+            $this->_values[$fieldName] = $field->validate($node);
             
             if(!$node->isValid()) {
                 $this->_isValid = false;
@@ -213,7 +292,13 @@ class Handler implements IHandler {
             }
 
             foreach($fields as $field) {
-                $data->{$field}->addError('required', $this->_('You must enter a value in one of these fields'));
+                if(isset($map[$field])) {
+                    $dataName = $map[$field];
+                } else {
+                    $dataName = $field;
+                }
+
+                $data->{$dataName}->addError('required', $this->_('You must enter a value in one of these fields'));
                 $this->_isValid = false;
             }
         }
@@ -236,7 +321,13 @@ class Handler implements IHandler {
             $fields = array_keys($this->_values);
         }
 
+        $map = $this->_getActiveDataMap();
+
         foreach($fields as $key) {
+            if(!isset($map[$key])) {
+                continue;
+            }
+
             if(!$this->data->{$key}->isValid()) {
                 continue;
             }
