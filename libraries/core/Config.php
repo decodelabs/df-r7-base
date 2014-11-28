@@ -10,6 +10,8 @@ use df\core;
 
 abstract class Config implements IConfig, core\IDumpable {
     
+    use core\TValueMap;
+
     const REGISTRY_PREFIX = 'config://';
     
     const ID = null;
@@ -121,6 +123,44 @@ abstract class Config implements IConfig, core\IDumpable {
         $this->_sanitizeValuesOnCreate();
         return $this;
     }
+
+    public function set($key, $value) {
+        $this->values[$key] = $value;
+        return $this;
+    }
+
+    public function get($key, $default=null) {
+        if(isset($this->values[$key])) {
+            return $this->values[$key];
+        }
+
+        return $default;
+    }
+
+    public function has($key) {
+        return isset($this->values[$key]);
+    }
+
+    public function remove($key) {
+        unset($this->values[$key]);
+    }
+
+    public function offsetSet($key, $value) {
+        return $this->set($key, $value);
+    }
+
+    public function offsetGet($key) {
+        return $this->get($key);
+    }
+
+    public function offsetExists($key) {
+        return $this->has($key);
+    }
+
+    public function offsetUnset($key) {
+        return $this->remove($key);
+    }
+
 
     protected function _sanitizeValuesOnCreate() {
         return null;
