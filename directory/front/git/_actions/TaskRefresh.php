@@ -13,8 +13,8 @@ use df\arch;
     
 class TaskRefresh extends arch\task\Action {
 
-    public function extractCliArguments(array $args) {
-        foreach($args as $arg) {
+    public function extractCliArguments(core\cli\ICommand $command) {
+        foreach($command->getArguments() as $arg) {
             if(!$arg->isOption()) {
                 $this->request->query->packages[] = (string)$arg;
             }

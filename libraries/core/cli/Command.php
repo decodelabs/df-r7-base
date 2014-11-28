@@ -41,6 +41,14 @@ class Command implements ICommand {
         
         return $output;
     }
+
+    public static function factory($command) {
+        if($command instanceof ICommand) {
+            return $command;
+        }
+
+        return self::fromString($command);
+    }
     
     public static function fromString($string) {
         // TODO: parse properly to account for quoted strings

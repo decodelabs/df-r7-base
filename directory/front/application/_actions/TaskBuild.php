@@ -19,13 +19,20 @@ class TaskBuild extends arch\task\Action {
         'libraries', 'assets', 'daemons', 'directory', 'hooks', 'models', 'themes', 'tests'
     ];
 
-    /*
-    public function extractCliArguments(array $args) {
-        foreach($args as $arg) {
+    public function extractCliArguments(core\cli\ICommand $command) {
+        $inspector = new core\cli\Inspector([
+            'purge|p=i' => 'Purge old builds',
+            'testing|t' => 'Build in testing mode only'
+        ], $command);
 
+        if($inspector['purge']) {
+            $this->request->query->purge = true;
+        }
+
+        if($inspector['testing']) {
+            $this->request->query->testing = true;
         }
     }
-    */
 
     public function execute() {
         if(df\Launchpad::IS_COMPILED) {

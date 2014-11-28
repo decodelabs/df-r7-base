@@ -16,12 +16,14 @@ class Argument implements IArgument, core\IDumpable {
     protected $_value;
     
     public function __construct($string) {
-        if(substr($string, 0, 1) != '-') {
-            $this->_value = $string;
-        } else {
-            $parts = explode('=', $string, 2);
-            $this->_option = array_shift($parts);
-            $this->_value = array_shift($parts);
+        if($string !== null) {
+            if(substr($string, 0, 1) != '-') {
+                $this->_value = $string;
+            } else {
+                $parts = explode('=', $string, 2);
+                $this->_option = array_shift($parts);
+                $this->_value = array_shift($parts);
+            }
         }
     }
     
@@ -36,6 +38,20 @@ class Argument implements IArgument, core\IDumpable {
     
     public function getOption() {
         return $this->_option;
+    }
+
+    public function getOptions() {
+        $output = [];
+
+        if($this->isOptionCluster()) {
+            for($i = 1; $i < strlen($this->_option); $i++) {
+                $output[] = '-'.$this->_option{$i};
+            }
+        } else {
+            $output[] = $this->_option;
+        }
+
+        return $output;
     }
     
     public function isOption() {
@@ -58,14 +74,14 @@ class Argument implements IArgument, core\IDumpable {
         $output = [];
         
         if($this->isOptionCluster()) {
-            for($i = 2; $i < strlen($this->_option); $i++) {
+            for($i = 1; $i < strlen($this->_option); $i++) {
                 $output[] = $this->_option{$i};
             }
         }
         
         return $output;
     }
-    
+
     public function setValue($value) {
         if(!strlen($value)) {
             $value = null;

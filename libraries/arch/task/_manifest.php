@@ -20,7 +20,7 @@ interface IAction extends arch\IAction {
     public static function getSchedulePriority();
     public static function shouldScheduleAutomatically();
 
-    public function extractCliArguments(array $args);
+    public function extractCliArguments(core\cli\ICommand $command);
     public function runChild($request);
 }
 

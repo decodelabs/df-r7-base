@@ -21,7 +21,8 @@ class TaskSetCollation extends arch\task\Action {
         'legacy_duk_chrdata'
     ];
 
-    public function extractCliArguments(array $args) {
+    public function extractCliArguments(core\cli\ICommand $command) {
+        $args = $command->getArguments();
         $collation = $charset = null;
 
         if(isset($args[1])) {

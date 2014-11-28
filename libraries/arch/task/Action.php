@@ -51,7 +51,7 @@ abstract class Action extends arch\Action implements IAction {
     }
 
 
-    public function extractCliArguments(array $args) {
+    public function extractCliArguments(core\cli\ICommand $command) {
         // Do nothing        
     }
 
