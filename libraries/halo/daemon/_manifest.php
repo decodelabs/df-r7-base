@@ -20,6 +20,10 @@ class LogicException extends \LogicException implements IException {}
 interface IDaemon extends halo\event\IDispatcherProvider {
     public function getName();
     public function getPidFilePath();
+    public function setUser($user);
+    public function getUser();
+    public function setGroup($group);
+    public function getGroup();
 
     public function run();
     public function isRunning();

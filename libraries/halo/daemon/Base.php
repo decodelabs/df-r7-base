@@ -35,6 +35,9 @@ abstract class Base implements IDaemon {
     protected $_endTime;
     private $_statusPath;
 
+    protected $_user;
+    protected $_group;
+
     public static function launch($name, $environmentMode=null, $user=null) {
         if($environmentMode === null) {
             $environmentMode = df\Launchpad::getEnvironmentMode();
@@ -85,6 +88,32 @@ abstract class Base implements IDaemon {
     public function getName() {
         $parts = array_slice(explode('\\', get_class($this)), 3);
         return implode('/', $parts);
+    }
+
+    public function setUser($user) {
+        $this->_user = $user;
+        return $this;
+    }
+
+    public function getUser() {
+        if(!$this->_user) {
+            $this->_user = core\Environment::getInstance()->getDaemonUser();
+        }
+
+        return $this->_user;
+    }
+
+    public function setGroup($group) {
+        $this->_group = $group;
+        return $this;
+    }
+
+    public function getGroup() {
+        if(!$this->_group) {
+            $this->_group = core\Environment::getInstance()->getDaemonGroup();
+        }
+
+        return $this;
     }
 
 
@@ -150,8 +179,8 @@ abstract class Base implements IDaemon {
             }
         }
 
-        $user = $this->_getDaemonUser();
-        $group = $this->_getDaemonGroup();
+        $user = $this->getUser();
+        $group = $this->getGroup();
 
         if($isPrivileged) {
             $this->_preparePrivilegedResources();
@@ -335,12 +364,4 @@ abstract class Base implements IDaemon {
 
 // Stubs
     protected function _preparePrivilegedResources() {}
-
-    protected function _getDaemonUser() {
-        return core\Environment::getInstance()->getDaemonUser();
-    }
-
-    protected function _getDaemonGroup() {
-        return core\Environment::getInstance()->getDaemonGroup();
-    }
 }

@@ -50,9 +50,28 @@ class Daemon extends Base {
             return;
         }
 
+        $context = new core\SharedContext();
+        $settings = $context->data->daemon->settings->select()
+            ->where('name', '=', $daemon->getName())
+            ->toRow();
+
+        if($settings) {
+            if(!$settings['isEnabled']) {
+                $this->io->writeErrorLine('Daemon '.$daemon->getName().' is not currently enabled');
+                return;
+            }
+
+            if(isset($settings['user'])) {
+                $daemon->setUser($settings['user']);
+            }
+
+            if(isset($settings['group'])) {
+                $daemon->setGroup($settings['group']);
+            }
+        }
 
         $currentProcess = halo\process\Base::getCurrent();
-        $user = $env->getDaemonUser();
+        $user = $daemon->getUser();
 
         if(!$currentProcess->isPrivileged() && $user != $currentProcess->getOwnerName()) {
             $this->io->writeErrorLine('You are trying to control this daemon as a user with conflicting permissions - either run it as '.$user.' or with sudo!');
