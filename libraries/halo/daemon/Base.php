@@ -181,6 +181,7 @@ abstract class Base implements IDaemon {
 
         $user = $this->getUser();
         $group = $this->getGroup();
+        core\dump($user, $group);
 
         if($isPrivileged) {
             $this->_preparePrivilegedResources();
