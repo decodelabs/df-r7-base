@@ -47,50 +47,34 @@ class Inspector implements IInspector {
                 $lastRule->requiresValue(true);
             } else {
                 $lastRule = new Rule($char);
-                $this->_rules['-'.$lastRule->getShortName()] = $lastRule;
+                $this->_exportRule($lastRule);
             }
         }
     }
 
     protected function _parse(array $options) {
         foreach($options as $key => $description) {
-            if(!preg_match('/^([a-zA-Z]+)(\|([a-zA-Z]))?(([\-=])(s|i|w))?$/', $key, $matches)) {
+            if(!preg_match('/^([a-zA-Z|]+)(([\-=])(s|i|w))?$/', $key, $matches)) {
                 throw new InvalidArgumentException(
                     'Invalid rule definition: '.$key
                 );
             }
 
+            $rule = new Rule($matches[1]);
+
             if(isset($matches[3])) {
-                $longName = $matches[1];
-                $shortName = $matches[3];
-            } else {
-                if(strlen($matches[1]) > 1) {
-                    $shortName = null;
-                    $longName = $matches[1];
-                } else {
-                    $shortName = $matches[1];
-                    $longName = null;
-                }
-            }
-
-            $rule = new Rule($shortName, $longName);
-
-            if(isset($matches[5])) {
-                if($matches[5] == '=') {
+                if($matches[3] == '=') {
                     $rule->requiresValue(true);
-                } else if($matches[5] == '-') {
+                } else if($matches[3] == '-') {
                     $rule->canHaveValue(true);
                 } else {
                     $rule->canHaveValue(false);
                 }
+
+                $rule->setValueType($matches[4]);
             }
 
-            if($shortName) {
-                $this->_rules['-'.$shortName] = $rule;
-            }
-            if($longName) {
-                $this->_rules['-'.$longName] = $rule;
-            }
+            $this->_exportRule($rule);
         }
     }
 
@@ -171,13 +155,15 @@ class Inspector implements IInspector {
         return $this;
     }
 
-    protected function _storeOptionArgument(IRule $rule, IArgument $argument) {
-        if($rule->hasShortName()) {
-            $this->_optionArguments[$rule->getShortName()] = $argument;
+    protected function _exportRule(IRule $rule) {
+        foreach($rule->getFlags() as $flag) {
+            $this->_rules[$flag] = $rule;
         }
+    }
 
-        if($rule->hasLongName()) {
-            $this->_optionArguments[$rule->getLongName()] = $argument;
+    protected function _storeOptionArgument(IRule $rule, IArgument $argument) {
+        foreach($rule->getNames() as $name) {
+            $this->_optionArguments[$name] = $argument;
         }
     }
 

@@ -10,8 +10,8 @@ use df\core;
 
 class Rule implements IRule {
     
-    protected $_shortName;
-    protected $_longName;
+    protected $_defaultName;
+    protected $_names = [];
     protected $_valueRequired = false;
     protected $_canHaveValue = true;
     protected $_isRequired = false;
@@ -19,57 +19,49 @@ class Rule implements IRule {
     protected $_valueType;
     protected $_description = null;
 
-    public function __construct($shortName, $longName=null, $valueRequired=false, $valueType='s') {
-        $this->setNames($shortName, $longName);
+    public function __construct($names, $valueRequired=false, $valueType='s') {
+        $this->setNames($names);
         $this->requiresValue((bool)$valueRequired);
         $this->setValueType($valueType);
     }
 
-    public function setNames($shortName, $longName) {
-        return $this->setShortName($shortName)->setLongName($longName);
+    public function setNames($names) {
+        if(!is_array($names)) {
+            $names = explode('|', $names);
+        }
+
+        $this->_names = $names;
+
+        foreach($names as $name) {
+            if(strlen($name) == 1) {
+                if(!$this->_defaultName) {
+                    $this->_defaultName = $name;
+                }
+            } else {
+                $this->_defaultName = $name;
+                break;
+            }
+        }
     }
 
     public function getName() {
-        if($this->_shortName !== null) {
-            return $this->_shortName;
+        return $this->_defaultName;
+    }
+
+    public function getNames() {
+        return $this->_names;
+    }
+
+    public function getFlags() {
+        $output = [];
+
+        foreach($this->_names as $name) {
+            $output[] = (strlen($name) == 1 ? '-' : '--').$name;
         }
 
-        return $this->_longName;
+        return $output;
     }
-
-    public function setShortName($name) {
-        if(!strlen($name)) {
-            $name = null;
-        }
-
-        $this->_shortName = $name;
-        return $this;
-    }
-
-    public function getShortName() {
-        return $this->_shortName;
-    }
-
-    public function hasShortName() {
-        return $this->_shortName !== null;
-    }
-
-    public function setLongName($name) {
-        if(!strlen($name)) {
-            $name = null;
-        }
-
-        $this->_longName = $name;
-        return $this;
-    }
-
-    public function getLongName() {
-        return $this->_longName;
-    }
-
-    public function hasLongName() {
-        return $this->_longName !== null;
-    }
+    
 
     public function requiresValue($flag=null) {
         if($flag !== null) {

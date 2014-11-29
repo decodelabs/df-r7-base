@@ -45,14 +45,10 @@ interface IInspector extends \ArrayAccess {
 }
 
 interface IRule {
-    public function setNames($shortName, $longName);
+    public function setNames($names);
     public function getName();
-    public function setShortName($name);
-    public function getShortName();
-    public function hasShortName();
-    public function setLongName($name);
-    public function getLongName();
-    public function hasLongName();
+    public function getNames();
+    public function getFlags();
     public function requiresValue($flag=null);
     public function canHaveValue($flag=null);
     public function isRequired($flag=null);
