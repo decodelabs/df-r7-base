@@ -11,6 +11,7 @@ use df\aura;
 use df\arch;
 use df\link;
 use df\halo;
+use df\flex;
 
 class Bridge implements IBridge {
     
@@ -164,7 +165,13 @@ class Bridge implements IBridge {
             file_put_contents($this->_workDir.'/'.$this->_key.'/'.$fileKey.'.'.$fileType, $contents);
         }
 
-        file_put_contents($this->_workDir.'/'.$this->_key.'.json', json_encode(array_values($manifest)));
+        $options = [];
+        $jsonPath = $this->_sourceDir.'/'.$this->_fileName.'.'.$this->_type.'.json';
+
+        if(is_file($jsonPath)) {
+            $manifest[md5($jsonPath)] = $jsonPath;
+            $options = flex\json\Codec::decode(file_get_contents($this->_sourceDir.'/'.$this->_fileName.'.'.$this->_type.'.json'));
+        }
 
         $path = halo\system\Base::getInstance()->which('sass');
 
@@ -192,10 +199,11 @@ class Bridge implements IBridge {
                 break;
         }
 
+
         $result = halo\process\launcher\Base::factory($path, [
                 '--compass',
                 '--style='.$outputType,
-                //'--sourcemap=file',
+                '--sourcemap=file',
                 $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.'.$this->_type, 
                 $this->_workDir.'/'.$this->_key.'.css'
             ])
@@ -216,6 +224,8 @@ class Bridge implements IBridge {
             );
         }
 
+        $content = file_get_contents($this->_workDir.'/'.$this->_key.'.css');
+
         // Replace map url
         $mapPath = $this->_workDir.'/'.$this->_key.'.css.map';
         $mapExists = is_file($mapPath);
@@ -225,13 +235,13 @@ class Bridge implements IBridge {
             $mapExists && $envMode !== 'production' ?
                 '/*# sourceMappingURL='.$this->_fileName.'.'.$this->_type.'.map */' :
                 '',
-            file_get_contents($this->_workDir.'/'.$this->_key.'.css')
+            $content
         );
 
         file_put_contents($this->_workDir.'/'.$this->_key.'.css', $content);
 
         // Replace map file paths
-        if($mapExists && $envMode !== 'production') {
+        if($mapExists && $envMode != 'production') {
             $content = file_get_contents($mapPath);
 
             foreach($manifest as $fileKey => $filePath) {
@@ -245,9 +255,23 @@ class Bridge implements IBridge {
             file_put_contents($this->_workDir.'/'.$this->_key.'.css.map', $content);
         }
 
+        // Apply plugins
+        if(!empty($options)) {
+            foreach($options as $name => $settings) {
+                $this->_applyProcessor($name, $settings);
+            }
+        }
+
+        file_put_contents($this->_workDir.'/'.$this->_key.'.json', json_encode(array_values($manifest)));
+
         // Clean up
         core\io\Util::deleteDir($this->_workDir.'/'.$this->_key);
 
         return $this->_workDir.'/'.$this->_key.'.css';
+    }
+
+    protected function _applyProcessor($name, array $settings) {
+        $processor = aura\css\processor\Base::factory($name, $settings);
+        $processor->process($this->_workDir.'/'.$this->_key.'.css');
     }
 }
