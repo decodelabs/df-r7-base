@@ -22,16 +22,19 @@ class TaskBuild extends arch\task\Action {
     public function extractCliArguments(core\cli\ICommand $command) {
         $inspector = new core\cli\Inspector([
             'purge|p=i' => 'Purge old builds',
-            'testing|t' => 'Build in testing mode only'
+            'test|testing|t' => 'Build in testing mode only',
+            'dev|development|d' => 'Build in development mode only'
         ], $command);
 
         if($inspector['purge']) {
             $this->request->query->purge = true;
         }
 
-        if($inspector['testing']) {
+        if($inspector['dev']) {
+            $this->request->query->dev = true;
+        } else if($inspector['testing']) {
             $this->request->query->testing = true;
-        }
+        } 
     }
 
     public function execute() {
@@ -40,6 +43,18 @@ class TaskBuild extends arch\task\Action {
         }
 
         $this->io->writeLine('Launching app builder...');
+
+        // Prepare info
+        $timestamp = date('YmdHis');
+        $purgeOldBuilds = $this->request->query->get('purge', self::PURGE_OLD_BUILDS);
+        $isTesting = isset($this->request->query->testing);
+        $isDev = isset($this->request->query->dev);
+
+        if($isDev) {
+            $this->io->writeLine('Builder is running in dev mode, no build folder will be created');
+        } else if($isTesting) {
+            $this->io->writeLine('Builder is running in testing mode');
+        }
 
 
         // Run custom actions
@@ -50,6 +65,7 @@ class TaskBuild extends arch\task\Action {
         }
 
         if(!empty($custom)) {
+            $this->io->writeLine();
             $this->io->writeLine('Running custom user build tasks...');
 
             foreach($custom as $request) {
@@ -58,110 +74,105 @@ class TaskBuild extends arch\task\Action {
 
             $this->io->writeLine();
         }
+        
 
+        if(!$isDev) {
+            $appPath = df\Launchpad::$applicationPath;
+            $environmentId = df\Launchpad::$environmentId;
+            $prefix = df\Launchpad::$uniquePrefix;
+            $loader = df\Launchpad::$loader;
 
+            $runPath = $appPath.'/data/local/run';
+            $buildId = 'df-'.$timestamp;
 
-        // Prepare info
-        $timestamp = date('YmdHis');
-        $purgeOldBuilds = $this->request->query->get('purge', self::PURGE_OLD_BUILDS);
-        $isTesting = isset($this->request->query->testing);
-
-        $appPath = df\Launchpad::$applicationPath;
-        $environmentId = df\Launchpad::$environmentId;
-        $prefix = df\Launchpad::$uniquePrefix;
-        $loader = df\Launchpad::$loader;
-
-        $runPath = $appPath.'/data/local/run';
-        $buildId = 'df-'.$timestamp;
-
-        if($isTesting) {
-            $buildId .= '-testing';
-            $this->io->writeLine('Builder is running in testing mode');
-        }
-
-        $destinationPath = $runPath.'/'.$buildId;
-
-        if(is_dir($destinationPath)) {
-            $this->throwError(500, 'Destination build directory already exists');
-        }
-
-        $umask = umask(0);
-        core\io\Util::ensureDirExists($destinationPath);
-        core\io\Util::chmod($destinationPath, 0777, true);
-
-
-        // Generate Df.php
-        $this->io->writeLine('Generating Df.php');
-
-        $dfFile = file_get_contents(df\Launchpad::DF_PATH.'/Df.php');
-        $dfFile = str_replace('IS_COMPILED = false', 'IS_COMPILED = true', $dfFile);
-        $dfFile = str_replace('COMPILE_TIMESTAMP = null', 'COMPILE_TIMESTAMP = '.time(), $dfFile);
-
-        file_put_contents($destinationPath.'/Df.php', $dfFile);
-
-        $packages = $loader->getPackages();
-        $appPackage = $packages['app'];
-        unset($packages['app']);
-
-
-        // Copy packages
-        foreach(array_reverse($packages) as $package) {
-            $this->io->writeLine('Merging '.$package->name.' package');
-
-            if(is_dir($package->path.'/libraries')) {
-                core\io\Util::copyDirInto($package->path.'/libraries', $destinationPath);
+            if($isTesting) {
+                $buildId .= '-testing';
             }
 
-            if(file_exists($package->path.'/Package.php')) {
-                core\io\Util::copyFile($package->path.'/Package.php', $destinationPath.'/apex/packages/'.$package->name.'/Package.php');
+            $destinationPath = $runPath.'/'.$buildId;
+
+            if(is_dir($destinationPath)) {
+                $this->throwError(500, 'Destination build directory already exists');
             }
 
-            foreach(scandir($package->path) as $entry) {
+            $umask = umask(0);
+            core\io\Util::ensureDirExists($destinationPath);
+            core\io\Util::chmod($destinationPath, 0777, true);
+
+
+            // Generate Df.php
+            $this->io->writeLine('Generating Df.php');
+
+            $dfFile = file_get_contents(df\Launchpad::DF_PATH.'/Df.php');
+            $dfFile = str_replace('IS_COMPILED = false', 'IS_COMPILED = true', $dfFile);
+            $dfFile = str_replace('COMPILE_TIMESTAMP = null', 'COMPILE_TIMESTAMP = '.time(), $dfFile);
+
+            file_put_contents($destinationPath.'/Df.php', $dfFile);
+
+            $packages = $loader->getPackages();
+            $appPackage = $packages['app'];
+            unset($packages['app']);
+
+
+            // Copy packages
+            foreach(array_reverse($packages) as $package) {
+                $this->io->writeLine('Merging '.$package->name.' package');
+
+                if(is_dir($package->path.'/libraries')) {
+                    core\io\Util::copyDirInto($package->path.'/libraries', $destinationPath);
+                }
+
+                if(file_exists($package->path.'/Package.php')) {
+                    core\io\Util::copyFile($package->path.'/Package.php', $destinationPath.'/apex/packages/'.$package->name.'/Package.php');
+                }
+
+                foreach(scandir($package->path) as $entry) {
+                    if($entry == '.' 
+                    || $entry == '..'
+                    || $entry == '.git'
+                    || $entry == '.gitignore'
+                    || $entry == 'libraries') {
+                        continue;
+                    }
+                    
+                    if(is_dir($package->path.'/'.$entry)) {
+                        core\io\Util::copyDir($package->path.'/'.$entry, $destinationPath.'/apex/'.$entry, true);
+                    }
+                }
+            }
+
+
+
+            // Copy app folder
+            $this->io->writeLine('Merging app folder');
+
+            foreach(scandir($appPackage->path) as $entry) {
                 if($entry == '.' 
                 || $entry == '..'
                 || $entry == '.git'
-                || $entry == '.gitignore'
-                || $entry == 'libraries') {
+                || $entry == '.gitignore') {
                     continue;
                 }
-                
-                if(is_dir($package->path.'/'.$entry)) {
-                    core\io\Util::copyDir($package->path.'/'.$entry, $destinationPath.'/apex/'.$entry, true);
+
+                if(!in_array($entry, self::$_appExport)) {
+                    continue;
+                }
+
+                if($entry == 'libraries') {
+                    core\io\Util::copyDirInto($appPackage->path.'/'.$entry, $destinationPath);
+                    continue;
+                }
+
+                if(is_dir($appPackage->path.'/'.$entry)) {
+                    core\io\Util::copyDir($appPackage->path.'/'.$entry, $destinationPath.'/apex/'.$entry, true);
                 }
             }
+
+            // Generate entries
+            $this->io->writeLine();
+            $this->runChild('application/generate-entries?build='.$buildId);
         }
 
-
-
-        // Copy app folder
-        $this->io->writeLine('Merging app folder');
-
-        foreach(scandir($appPackage->path) as $entry) {
-            if($entry == '.' 
-            || $entry == '..'
-            || $entry == '.git'
-            || $entry == '.gitignore') {
-                continue;
-            }
-
-            if(!in_array($entry, self::$_appExport)) {
-                continue;
-            }
-
-            if($entry == 'libraries') {
-                core\io\Util::copyDirInto($appPackage->path.'/'.$entry, $destinationPath);
-                continue;
-            }
-
-            if(is_dir($appPackage->path.'/'.$entry)) {
-                core\io\Util::copyDir($appPackage->path.'/'.$entry, $destinationPath.'/apex/'.$entry, true);
-            }
-        }
-
-        // Generate entries
-        $this->io->writeLine();
-        $this->runChild('application/generate-entries?build='.$buildId);
-        
         // Clear cache
         $this->io->writeLine('Clearing cache');
         core\cache\Base::purgeAll();
