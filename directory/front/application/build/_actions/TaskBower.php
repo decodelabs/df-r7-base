@@ -14,7 +14,7 @@ use df\halo;
 class TaskBower extends arch\task\Action {
 
     public function execute() {
-        if(!is_file($this->application->getApplicationPath().'/bower.json')) {
+        if(!core\io\Util::fileExists($this->application->getApplicationPath().'/bower.json')) {
             return;
         }
 

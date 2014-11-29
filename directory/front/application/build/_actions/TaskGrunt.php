@@ -14,7 +14,7 @@ use df\halo;
 class TaskGrunt extends arch\task\Action {
 
     public function execute() {
-        if(!is_file($this->application->getApplicationPath().'/gruntfile.js')) {
+        if(!core\io\Util::fileExists($this->application->getApplicationPath().'/gruntfile.js')) {
             return;
         }
 
