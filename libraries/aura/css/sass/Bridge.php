@@ -39,7 +39,7 @@ class Bridge implements IBridge {
         $this->_fileName = substr($basename, 0, -5);
         $this->_type = strtolower(substr($basename, -4));
 
-        $this->_workDir = $context->application->getLocalStoragePath().'/sass';
+        $this->_workDir = $context->application->getLocalStoragePath().'/sass/'.$context->application->getEnvironmentMode();
 
         $this->_isDevelopment = $this->context->application->isDevelopment();
         $this->_key = md5($path);
@@ -53,13 +53,27 @@ class Bridge implements IBridge {
         $output->setContentType('text/css');
         $headers = $output->getHeaders();
 
-        if(!$this->_isDevelopment) {
+        if($this->_isDevelopment) {
             $headers->setCacheAccess('no-cache')
                 ->canStoreCache(false)
                 ->shouldRevalidateCache(true);
         } else {
             $headers->setCacheExpiration('+1 year');
         }
+
+        return $output;
+    }
+
+    public function getMapHttpResponse() {
+        $path = $this->getCompiledPath().'.map';
+
+        $output = $this->context->http->fileResponse($path);
+        $output->setContentType('application/json');
+        $headers = $output->getHeaders();
+
+        $headers->setCacheAccess('no-cache')
+            ->canStoreCache(false)
+            ->shouldRevalidateCache(true);
 
         return $output;
     }
@@ -162,8 +176,26 @@ class Bridge implements IBridge {
             $path = '/usr/local/bin/sass';
         }
 
+        $envMode = $this->context->application->getEnvironmentMode();
+
+        switch($envMode) {
+            case 'development':
+                $outputType = 'expanded';
+                break;
+
+            case 'testing':
+                $outputType = 'compact';
+                break;
+
+            case 'production':
+                $outputType = 'compressed';
+                break;
+        }
+
         $result = halo\process\launcher\Base::factory($path, [
                 '--compass',
+                '--style='.$outputType,
+                '--sourcemap=file',
                 $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.'.$this->_type, 
                 $this->_workDir.'/'.$this->_key.'.css'
             ])
@@ -184,6 +216,29 @@ class Bridge implements IBridge {
             );
         }
 
+        // Replace map url
+        $content = str_replace(
+            '/*# sourceMappingURL='.$this->_key.'.css.map */',
+            '/*# sourceMappingURL='.$this->_fileName.'.'.$this->_type.'.map */',
+            file_get_contents($this->_workDir.'/'.$this->_key.'.css')
+        );
+
+        file_put_contents($this->_workDir.'/'.$this->_key.'.css', $content);
+
+        // Replace map file paths
+        $content = file_get_contents($this->_workDir.'/'.$this->_key.'.css.map');
+
+        foreach($manifest as $fileKey => $filePath) {
+            $content = str_replace(
+                'file://'.$this->_workDir.'/'.$this->_key.'/'.$fileKey.'.'.$this->_type, 
+                'file://'.$filePath, 
+                $content
+            );
+        }
+
+        file_put_contents($this->_workDir.'/'.$this->_key.'.css.map', $content);
+
+        // Clean up
         core\io\Util::deleteDir($this->_workDir.'/'.$this->_key);
 
         return $this->_workDir.'/'.$this->_key.'.css';

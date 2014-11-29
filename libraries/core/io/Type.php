@@ -83,6 +83,7 @@ class Type {
         'xml' => 'application/xml',
         'xsl' => 'application/xml',
         'dtd' => 'application/xml-dtd',
+        'map' => 'application/json',
     
     // Office
         'doc' => 'application/msword',

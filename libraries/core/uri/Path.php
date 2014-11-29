@@ -23,6 +23,10 @@ class Path implements IPath, \IteratorAggregate, \Serializable, core\IDumpable {
     protected $_isAbsolute = false;
     protected $_addTrailingSlash = false;
     
+    public static function extractExtension($path) {
+        return self::factory($path)->getExtension();
+    }
+
     public static function factory() {
         if(func_num_args()) {
             $path = func_get_arg(0);

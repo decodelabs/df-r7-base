@@ -19,6 +19,7 @@ class RuntimeException extends \RuntimeException implements IException {}
 // Interfaces
 interface IBridge {
     public function getHttpResponse();
+    public function getMapHttpResponse();
     public function getCompiledPath();
     public function compile();
 }
