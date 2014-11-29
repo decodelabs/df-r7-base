@@ -29,7 +29,7 @@ class Bridge implements IBridge {
         $result = halo\process\Base::newLauncher('npm', [
                 'install',
                 $name
-            ], '/usr/local/bin/')
+            ])
             ->setWorkingDirectory($this->_nodePath)
             ->launch();
 
