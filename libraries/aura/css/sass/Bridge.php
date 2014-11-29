@@ -217,26 +217,33 @@ class Bridge implements IBridge {
         }
 
         // Replace map url
+        $mapPath = $this->_workDir.'/'.$this->_key.'.css.map';
+        $mapExists = is_file($mapPath);
+
         $content = str_replace(
             '/*# sourceMappingURL='.$this->_key.'.css.map */',
-            '/*# sourceMappingURL='.$this->_fileName.'.'.$this->_type.'.map */',
+            $mapExists && $envMode !== 'production' ?
+                '/*# sourceMappingURL='.$this->_fileName.'.'.$this->_type.'.map */' :
+                '',
             file_get_contents($this->_workDir.'/'.$this->_key.'.css')
         );
 
         file_put_contents($this->_workDir.'/'.$this->_key.'.css', $content);
 
         // Replace map file paths
-        $content = file_get_contents($this->_workDir.'/'.$this->_key.'.css.map');
+        if($mapExists && $envMode !== 'production') {
+            $content = file_get_contents($mapPath);
 
-        foreach($manifest as $fileKey => $filePath) {
-            $content = str_replace(
-                'file://'.$this->_workDir.'/'.$this->_key.'/'.$fileKey.'.'.$this->_type, 
-                'file://'.$filePath, 
-                $content
-            );
+            foreach($manifest as $fileKey => $filePath) {
+                $content = str_replace(
+                    'file://'.$this->_workDir.'/'.$this->_key.'/'.$fileKey.'.'.$this->_type, 
+                    'file://'.$filePath, 
+                    $content
+                );
+            }
+
+            file_put_contents($this->_workDir.'/'.$this->_key.'.css.map', $content);
         }
-
-        file_put_contents($this->_workDir.'/'.$this->_key.'.css.map', $content);
 
         // Clean up
         core\io\Util::deleteDir($this->_workDir.'/'.$this->_key);
