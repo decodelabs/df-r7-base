@@ -195,7 +195,7 @@ class Bridge implements IBridge {
         $result = halo\process\launcher\Base::factory($path, [
                 '--compass',
                 '--style='.$outputType,
-                '--sourcemap=file',
+                //'--sourcemap=file',
                 $this->_workDir.'/'.$this->_key.'/'.$this->_key.'.'.$this->_type, 
                 $this->_workDir.'/'.$this->_key.'.css'
             ])
