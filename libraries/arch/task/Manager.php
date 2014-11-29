@@ -144,4 +144,23 @@ class Manager implements IManager {
 
         return $this->_captureBackground;
     }
+
+
+    public function findChildrenIn($request) {
+        $path = arch\Request::factory($request)->getLibraryPath().'/_actions';
+        $output = [];
+        
+        foreach(df\Launchpad::$loader->lookupClassList($path) as $name => $class) {
+            $requestParts = array_slice(explode('\\', $class), 3, -2);
+            $requestParts[] = substr($name, 4);
+
+            array_walk($requestParts, function(&$value) {
+                $value = core\string\Manipulator::formatActionSlug($value);
+            });
+
+            $output[] = arch\Request::factory('~'.implode('/', $requestParts));
+        }
+
+        return $output;
+    }
 }

@@ -43,11 +43,22 @@ class TaskBuild extends arch\task\Action {
 
 
         // Run custom actions
+        $custom = $this->task->findChildrenIn('application/build/');
+
         if($this->directory->actionExists('application/build-custom')) {
+            $custom[] = new arch\Request('application/build-custom');
+        }
+
+        if(!empty($custom)) {
             $this->io->writeLine('Running custom user build tasks...');
-            $this->runChild('application/build-custom');
+
+            foreach($custom as $request) {
+                $this->runChild($request);
+            }
+
             $this->io->writeLine();
         }
+
 
 
         // Prepare info

@@ -588,6 +588,16 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
 
         return $output;
     }
+
+    public function getLibraryPath() {
+        $output = 'apex/directory/'.$this->getArea().'/';
+
+        if($controller = $this->getController()) {
+            $output .= $controller;
+        }
+
+        return $output;
+    }
     
     
     public function convertToHttpUrl($scheme, $domain, $port, array $basePath) {
