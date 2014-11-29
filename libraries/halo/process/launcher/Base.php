@@ -19,6 +19,7 @@ abstract class Base implements halo\process\ILauncher {
     protected $_priority;
     protected $_workingDirectory;
     protected $_multiplexer;
+    protected $_generator;
     
     public static function factory($processName, $args=null, $path=null) {
         $system = halo\system\Base::getInstance();
@@ -121,5 +122,18 @@ abstract class Base implements halo\process\ILauncher {
 
     public function getMultiplexer() {
         return $this->_multiplexer;
+    }
+
+    public function setGenerator($generator=null) {
+        if($generator !== null) {
+            $generator = core\lang\Callback::factory($generator);
+        }
+
+        $this->_generator = $generator;
+        return $this;
+    }
+
+    public function getGenerator() {
+        return $this->_generator;
     }
 }

@@ -50,13 +50,18 @@ class Unix extends Base {
             $this->_multiplexer->setReadBlocking(false);
         }
 
+        $generatorCalled = false;
+
         while(true) {
             $status = proc_get_status($processHandle);
 
             $outputBuffer = $outputStream->readChunk($this->_readChunkSize);
             $errorBuffer = $errorStream->readChunk($this->_readChunkSize);
 
-            if($this->_multiplexer) {
+            if($this->_generator && !$generatorCalled) {
+                $input = $this->_generator->invoke();
+                $generatorCalled = true;
+            } else if($this->_multiplexer && $generatorCalled) {
                 $input = $this->_multiplexer->readChunk($this->_readChunkSize);
             }
 
@@ -78,17 +83,25 @@ class Unix extends Base {
 
             if($input !== false) {
                 fwrite($pipes[0], $input);
+                $input = false;
+
+                if($generatorCalled) {
+                    fclose($pipes[0]);
+                    $pipes[0] = null;
+                }
             }
 
             if(!$status['running'] && $outputBuffer === false && $errorBuffer === false && $input === false) {
                 break;
             }
 
-            usleep(10000);
+            usleep(500);
         }
 
         foreach($pipes as $pipe) {
-            fclose($pipe);
+            if($pipe) {
+                fclose($pipe);
+            }
         }
         
         proc_close($processHandle);

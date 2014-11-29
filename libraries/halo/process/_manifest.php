@@ -134,6 +134,8 @@ interface ILauncher {
     public function getWorkingDirectory();
     public function setMultiplexer(core\io\IMultiplexer $multiplexer=null);
     public function getMultiplexer();
+    public function setGenerator($generator);
+    public function getGenerator();
     
     public function launch();
     public function launchBackground();
