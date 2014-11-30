@@ -828,6 +828,15 @@ trait TScaffold_SectionProvider {
         }
     }
 
+    public function addSectionTransitiveLinks($menu, $bar) {
+        $action = $this->context->request->getAction();
+        $method = 'add'.ucfirst($action).'SectionTransitiveLinks';
+
+        if(method_exists($this, $method)) {
+            $this->{$method}($menu, $bar);
+        }
+    }
+
     public function generateSectionsMenu($entryList) {
         $counts = $this->getSectionItemCounts();
         $i = 0;
