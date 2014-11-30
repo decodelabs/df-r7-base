@@ -37,6 +37,7 @@ interface IField extends opal\schema\IField, opal\query\IFieldValueProcessor {
     public function getFieldTypeDisplayName();
     public function getFieldSchemaString();
     
+    public function sanitizeClauseValue($value);
     public function duplicateForRelation(axis\ISchemaBasedStorageUnit $unit, ISchema $schema);
     
     public function sanitize(axis\ISchemaBasedStorageUnit $unit, ISchema $schema);

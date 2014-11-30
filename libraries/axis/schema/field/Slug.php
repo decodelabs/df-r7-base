@@ -31,6 +31,14 @@ class Slug extends Base implements axis\schema\IAutoUniqueField {
 
 
 // Values
+    public function sanitizeClauseValue($value) {
+        if($value === null && $this->isNullable()) {
+            return null;
+        }
+
+        return (string)$value;
+    }
+
     public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
         if($value === null && $this->isNullable()) {
             return null;

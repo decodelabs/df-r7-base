@@ -317,7 +317,7 @@ abstract class Base implements
             return $value;
         }
         
-        return $axisField->deflateValue($axisField->sanitizeValue($value));
+        return $axisField->deflateValue($axisField->sanitizeClauseValue($value));
     }
     
     public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false) {

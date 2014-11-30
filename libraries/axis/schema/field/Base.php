@@ -82,6 +82,10 @@ abstract class Base implements axis\schema\IField, \Serializable, core\IDumpable
     public function deflateValue($value) {
         return $value;
     }
+
+    public function sanitizeClauseValue($value) {
+        return $this->sanitizeValue($value);
+    }
     
     public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
         return $value;
