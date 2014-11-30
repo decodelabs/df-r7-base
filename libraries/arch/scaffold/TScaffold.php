@@ -298,19 +298,23 @@ trait TScaffold_RecordDataProvider {
 
         $key = $this->getRecordNameKey();
 
-        if(isset($record[$key])) {
-            $output = $record[$key];
-
-            if($key == $this->getRecordIdKey() && is_numeric($output)) {
-                $output = '#'.$output;
-            }
+        if(method_exists($this, '_getRecordName')) {
+            $output = $this->_getRecordName($record, $key);
         } else {
-            $fallbackKey = $this->getRecordFallbackNameKey();
+            if(isset($record[$key])) {
+                $output = $record[$key];
 
-            if(isset($record[$fallbackKey])) {
-                $output = $record[$fallbackKey];
+                if($key == $this->getRecordIdKey() && is_numeric($output)) {
+                    $output = '#'.$output;
+                }
             } else {
-                $output = '#'.$this->getRecordId($record);
+                $fallbackKey = $this->getRecordFallbackNameKey();
+
+                if(isset($record[$fallbackKey])) {
+                    $output = $record[$fallbackKey];
+                } else {
+                    $output = '#'.$this->getRecordId($record);
+                }
             }
         }
 
