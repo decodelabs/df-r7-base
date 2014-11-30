@@ -326,7 +326,7 @@ trait TScaffold_RecordDataProvider {
             $record = $this->_ensureRecord();
         }
         
-        return $this->_describeRecord($record);
+        return (string)$this->_describeRecord($record);
     }
 
     protected function _describeRecord($record) {
