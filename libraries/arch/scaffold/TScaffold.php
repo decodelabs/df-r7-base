@@ -700,10 +700,10 @@ trait TScaffold_RecordListProvider {
 
                 if(method_exists($this, $method)) {
                     $output->setField($field, function($list, $key) use($method, $field, $nameKey) {
-                        if(false === $this->{$method}($list, 'list')) {
-                            if($field == $nameKey) {
-                                return $this->_autoDefineNameKeyField($field, $list, 'list');
-                            } else {
+                        if($field == $nameKey) {
+                            return $this->_autoDefineNameKeyField($field, $list, 'list');
+                        } else {
+                            if(false === $this->{$method}($list, 'list')) {
                                 $list->addField($key);
                             }
                         }
