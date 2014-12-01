@@ -518,10 +518,6 @@ trait TScaffold_RecordDataProvider {
     }
 
     public function defineSlugField($list, $mode) {
-        if($mode == 'list' && $this->getRecordNameKey() == 'slug') {
-            return $this->_autoDefineNameKeyField('slug', $list, $mode);
-        }
-
         $list->addField('slug', function($item) {
             return $this->html('samp', $item['slug']);
         });
@@ -573,10 +569,6 @@ trait TScaffold_RecordDataProvider {
     }
 
     public function defineCreationDateField($list, $mode) {
-        if($mode == 'list' && $this->getRecordNameKey() == 'creationDate') {
-            return $this->_autoDefineNameKeyField('creationDate', $list, $mode, $this->_('Created'));
-        }
-
         $list->addField('creationDate', $this->_('Created'), function($item) use($mode) {
             if($mode == 'list') {
                 return $this->html->timeSince($item['creationDate']);
@@ -700,14 +692,21 @@ trait TScaffold_RecordListProvider {
 
         foreach($output->getFields() as $field => $enabled) {
             if($enabled === true) {
-                $method = 'define'.ucfirst($field).'Field';
+                $method1 = 'define'.ucfirst($field).'Field';
+                $method2 = 'override'.ucfirst($field).'Field';
 
-                if(method_exists($this, $method)) {
-                    $output->setField($field, function($list, $key) use($method, $field, $nameKey) {
+                if(method_exists($this, $method2)) {
+                    $output->setField($field, function($list, $key) use($method2, $field, $nameKey) {
+                        if(false === $this->{$method2}($list, 'list')) {
+                            $list->addField($key);
+                        }
+                    });
+                } else if(method_exists($this, $method1)) {
+                    $output->setField($field, function($list, $key) use($method1, $field, $nameKey) {
                         if($field == $nameKey) {
                             return $this->_autoDefineNameKeyField($field, $list, 'list');
                         } else {
-                            if(false === $this->{$method}($list, 'list')) {
+                            if(false === $this->{$method1}($list, 'list')) {
                                 $list->addField($key);
                             }
                         }
