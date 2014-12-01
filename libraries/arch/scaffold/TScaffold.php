@@ -449,11 +449,18 @@ trait TScaffold_RecordDataProvider {
 
         foreach($output->getFields() as $field => $enabled) {
             if($enabled === true) {
-                $method = 'define'.ucfirst($field).'Field';
+                $method1 = 'define'.ucfirst($field).'Field';
+                $method2 = 'override'.ucfirst($field).'Field';
 
-                if(method_exists($this, $method)) {
-                    $output->setField($field, function($list, $key) use($method, $field) {
-                        if(false === $this->{$method}($list, 'details')) {
+                if(method_exists($this, $method2)) {
+                    $output->setField($field, function($list, $key) use($method2, $field) {
+                        if(false === $this->{$method2}($list, 'details')) {
+                            $list->addField($key);
+                        }
+                    });
+                } else if(method_exists($this, $method1)) {
+                    $output->setField($field, function($list, $key) use($method1, $field) {
+                        if(false === $this->{$method1}($list, 'details')) {
                             $list->addField($key);
                         }
                     });
