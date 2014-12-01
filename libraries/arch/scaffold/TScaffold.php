@@ -734,13 +734,26 @@ trait TScaffold_RecordListProvider {
 
 trait TScaffold_SectionProvider {
 
-    protected $_sections = [];
+    protected $_sections = null;
     private $_sectionItemCounts = null;
+
+    protected function _getSections() {
+        if($this->_sections === null) {
+            $this->_sections = $this->_generateSections();
+        }
+
+        return $this->_sections;
+    }
+
+    protected function _generateSections() {
+        return ['details'];
+    }
 
     public function loadSectionAction(arch\IController $controller=null) {
         $action = $this->context->request->getAction();
+        $sections = $this->_getSections();
 
-        if(isset($this->_sections[$action]) || in_array($action, $this->_sections)) {
+        if(isset($sections[$action]) || in_array($action, $sections)) {
             return new Action($this->context, $this, function() use($action) {
                 $record = null;
 
@@ -846,9 +859,10 @@ trait TScaffold_SectionProvider {
 
     public function generateSectionsMenu($entryList) {
         $counts = $this->getSectionItemCounts();
+        $sections = $this->_getSections();
         $i = 0;
 
-        foreach($this->_sections as $action => $set) {
+        foreach($sections as $action => $set) {
             $i++;
 
             if(!is_array($set)) {
