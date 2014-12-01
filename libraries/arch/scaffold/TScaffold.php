@@ -535,6 +535,10 @@ trait TScaffold_RecordDataProvider {
         $list->addField('url', function($item) use($mode) {
             $url = $item['url'];
 
+            if($url === null) {
+                return $url;
+            }
+
             if($mode == 'list') {
                 $url = $this->uri->__invoke($url);
                 $name = $url->getDomain();
