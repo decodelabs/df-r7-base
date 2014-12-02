@@ -58,6 +58,8 @@ interface ITypeRef {
     public function newInstance();
     public function newInstanceArgs(array $args);
     public function checkType($extends);
+    public function getClass();
+    public function getClassPath();
 }
 
 

@@ -8,6 +8,7 @@ namespace df\opal\schema;
 use df;
 use df\core;
 use df\opal;
+use df\mesh;
 
 trait TField {
     
@@ -488,6 +489,7 @@ trait TField_AutoTimestamp {
 trait TField_OptionProvider {
     
     protected $_options = [];
+    protected $_enumType = null;
     
     public function setOptions(array $options) {
         $this->_options = $options;
@@ -496,17 +498,72 @@ trait TField_OptionProvider {
     }
     
     public function getOptions() {
+        if($this->_enumType) {
+            return $this->getTypeHandler()->getOptions();
+        }
+
         return $this->_options;
+    }
+
+    public function setType($type) {
+        if($type !== null) {
+            if(is_string($type) && false === strpos($type, '://')) {
+                $type = 'type://'.$type;
+            }
+
+            $type = mesh\Manager::getInstance()->fetchEntity($type);
+
+            if($type instanceof core\lang\ITypeRef) {
+                $type->checkType('core/lang/IEnum');
+                $typeString = 'type://'.$type->getClassPath();
+            } else if($type instanceof core\lang\IEnumFactory) {
+                if($type instanceof mesh\entity\ILocationProvider) {
+                    $typeString = (string)$type->getEntityLocator();
+                } else {
+                    $typeString = (new core\lang\TypeRef($type))->getClassPath();
+                }
+            } else {
+                throw new core\validate\InvalidArgumentException(
+                    'Type cannot provide an enum'
+                );
+            }
+
+            $type = $typeString;
+            $this->_options = mesh\Manager::getInstance()
+                ->fetchEntity($type)
+                    ->getOptions();
+        }
+
+        $this->_enumType = $type;
+        $this->_hasChanged = true;
+        return $this;
+    }
+    
+    public function getTypeString() {
+        return $this->_enumType;
+    }
+
+    public function getTypeHandler() {
+        if($this->_enumType) {
+            return mesh\Manager::getInstance()->fetchEntity($this->_enumType);
+        }
     }
     
     
 // Ext. serialize
     protected function _setOptionStorageArray(array $data) {
         $this->_options = (array)$data['opt'];
+
+        if(isset($data['ent'])) {
+            $this->_enumType = $data['ent'];
+        }
     }
 
     protected function _getOptionStorageArray() {
-        return ['opt' => $this->_options];
+        return [
+            'opt' => $this->_options,
+            'ent' => $this->_enumType
+        ];
     }
 }
 

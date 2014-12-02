@@ -9,7 +9,7 @@ use df;
 use df\core;
 
 
-class TypeRef implements ITypeRef, core\IDumpable {
+class TypeRef implements ITypeRef, \Serializable, core\IDumpable {
 
     protected $_class;
     protected $_reflection;
@@ -36,6 +36,15 @@ class TypeRef implements ITypeRef, core\IDumpable {
         return $type;
     }
 
+    public function serialize() {
+        return $this->_class;
+    }
+
+    public function unserialize($data) {
+        $this->_class = $data;
+        $this->_reflection = new \ReflectionClass($this->_class);
+    }
+
     protected static function _normalizeClassName($type) {
         if(false !== strpos($type, '/')) {
             $parts = explode('/', trim($type, '/'));
@@ -46,6 +55,10 @@ class TypeRef implements ITypeRef, core\IDumpable {
     }
 
     public function __construct($type) {
+        if(is_object($type)) {
+            $type = get_class($type);
+        }
+
         $class = self::_normalizeClassName($type);
 
         if(!class_exists($class)) {
@@ -92,6 +105,14 @@ class TypeRef implements ITypeRef, core\IDumpable {
         return $this;
     }
 
+    public function getClass() {
+        return $this->_class;
+    }
+
+    public function getClassPath() {
+        return implode('/', array_slice(explode('\\', $this->_class), 1));
+    }
+
     public function __call($method, array $args) {
         if(!$this->_reflection->hasMethod($method)) {
             throw new BadMethodCallException(
@@ -113,6 +134,6 @@ class TypeRef implements ITypeRef, core\IDumpable {
 
 // Dump
     public function getDumpProperties() {
-        return implode('/', array_slice(explode('\\', $this->_class), 1));
+        return $this->getClassPath();
     }
 }

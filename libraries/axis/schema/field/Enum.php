@@ -17,8 +17,12 @@ class Enum extends Base implements
     use opal\schema\TField_OptionProvider;
     use opal\schema\TField_CharacterSetAware;
 
-    protected function _init(array $options=[]) {
-        $this->setOptions($options);
+    protected function _init($options=null) {
+        if(is_array($options)) {
+            $this->setOptions($options);
+        } else {
+            $this->setType($options);
+        }
     }
 
     public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
@@ -30,7 +34,7 @@ class Enum extends Base implements
             $value = null;
         }
 
-        if(!in_array($value, $this->_options)) {
+        if(!in_array($value, $this->getOptions())) {
             $value = null;
         }
 
@@ -39,7 +43,7 @@ class Enum extends Base implements
 
 // Primitive
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
-        return new opal\schema\Primitive_Enum($this, $this->_options);
+        return new opal\schema\Primitive_Enum($this, $this->getOptions());
     }
 
 // Ext. serialize

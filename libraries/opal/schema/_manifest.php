@@ -247,6 +247,9 @@ interface IAutoTimestampField extends IField {
 interface IOptionProviderField extends IField {
     public function setOptions(array $otions);
     public function getOptions();
+    public function setType($type);
+    public function getTypeString();
+    public function getTypeHandler();
 }
 
 
