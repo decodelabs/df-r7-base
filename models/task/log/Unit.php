@@ -16,7 +16,7 @@ class Unit extends axis\unit\table\Base {
     protected function _onCreate(axis\schema\ISchema $schema) {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addField('request', 'String', 1024);
-        $schema->addField('environmentMode', 'Enum', ['development', 'testing', 'production']);
+        $schema->addField('environmentMode', 'Enum', 'core/EnvironmentMode');
 
         $schema->addField('startDate', 'Timestamp');
         $schema->addField('runTime', 'Duration')

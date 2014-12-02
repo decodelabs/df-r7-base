@@ -30,7 +30,7 @@ class Unit extends axis\unit\table\Base {
 
         $schema->addField('expireDate', 'DateTime')
             ->isNullable(true);
-        $schema->addField('environmentMode', 'Enum', ['development', 'testing', 'production'])
+        $schema->addField('environmentMode', 'Enum', 'core/EnvironmentMode')
             ->setDefaultValue('production');
     }
 

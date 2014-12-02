@@ -17,7 +17,7 @@ class Unit extends axis\unit\table\Base {
         $schema->addPrimaryField('token', 'String', 32);
         $schema->addField('expiryDate', 'DateTime');
         $schema->addField('request', 'String', 1024);
-        $schema->addField('environmentMode', 'Enum', ['development', 'testing', 'production'])
+        $schema->addField('environmentMode', 'Enum', 'core/EnvironmentMode')
             ->isNullable(true);
         $schema->addField('invokeKey', 'String', 32)
             ->isNullable(true);

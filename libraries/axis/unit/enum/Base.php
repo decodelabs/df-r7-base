@@ -24,6 +24,10 @@ abstract class Base implements axis\IUnit, core\lang\IEnumFactory {
         return new Base_Enum($this, $value);
     }
 
+    public function normalize($value) {
+        return $this->factory($value)->getOption();
+    }
+
     public function getOptions() {
         if(!$this->_options) {
             $reflection = new \ReflectionClass(get_called_class());

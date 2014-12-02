@@ -25,6 +25,10 @@ abstract class Enum implements IEnum, core\IDumpable {
         return new static($value);
     }
 
+    public static function normalize($value) {
+        return self::factory($value)->getOption();
+    }
+
     protected function __construct($value) {
         static::getOptions();
         $this->_index = $this->_normalizeIndex($value);

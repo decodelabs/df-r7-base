@@ -24,7 +24,7 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('date', 'Timestamp');
         $schema->addField('readDate', 'DateTime')
             ->isNullable(true);
-        $schema->addField('environmentMode', 'Enum', ['development', 'testing', 'production'])
+        $schema->addField('environmentMode', 'Enum', 'core/EnvironmentMode')
             ->setDefaultValue('development');
     }
 

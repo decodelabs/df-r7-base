@@ -44,6 +44,8 @@ interface IEnumFactory {
 }
 
 interface IEnum extends core\IStringProvider, core\IStringValueProvider {
+    //public static function factory($value);
+    public static function normalize($value);
     public static function getOptions();
     public static function getLabels();
     public function getIndex();
