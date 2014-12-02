@@ -208,7 +208,7 @@ class Unit extends axis\unit\table\Base {
             $action->validator
 
                 // Current
-                ->chainIf(!$auth->isNew() && isset($action->values->{$action->validator->getMappedName('currentPassword')}), function($validator) use($auth, $isRequired) {
+                ->chainIf(!$auth->isNew() && isset($action->values->{$action->validator->getMappedName('currentPassword')}), function($validator) use($auth) {
                     $validator->addField('currentPassword', 'text')
                         ->isRequired(true)
                         ->setCustomValidator(function($node, $value, $field) use ($auth) {
