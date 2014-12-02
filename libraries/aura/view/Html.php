@@ -832,14 +832,6 @@ class Html extends Base implements IHtmlView {
     }
 
     protected function _normalizeLinkUrl($url) {
-        $output = $this->uri->__invoke($url);
-
-        if(df\Launchpad::COMPILE_TIMESTAMP) {
-            $output->query->cts = df\Launchpad::COMPILE_TIMESTAMP;
-        } else if($this->context->application->isDevelopment() && $output->getDirectoryRequest()) {
-            $output->query->cts = time();
-        }
-
-        return $output;
+        return $this->uri->__invoke($url);
     }
 }

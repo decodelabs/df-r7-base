@@ -189,7 +189,8 @@ class Uri implements auraLib\view\IHelper {
             $request->query->attachment;
         }
 
-        return $this->directory($request, null, null, $asRequest);
+        $output = $this->directory($request, null, null, $asRequest);
+        return $this->_applyCompileTimeStamp($output);
     }
 
     public function themeAsset($path, $theme=null, $asRequest=false) {
@@ -209,7 +210,8 @@ class Uri implements auraLib\view\IHelper {
         $request = new arch\Request('theme/download?theme='.$theme);
         $request->query->file = $path;
 
-        return $this->directory($request, null, null, $asRequest);
+        $output = $this->directory($request, null, null, $asRequest);
+        return $this->_applyCompileTimeStamp($output);
     }
 
     public function back($default=null, $success=true) {
@@ -226,5 +228,15 @@ class Uri implements auraLib\view\IHelper {
     
     public function ftp($url) {
         return link\ftp\Url::factory($url);
+    }
+
+    protected function _applyCompileTimeStamp($url) {
+        if(df\Launchpad::COMPILE_TIMESTAMP) {
+            $url->query->cts = df\Launchpad::COMPILE_TIMESTAMP;
+        } else if($this->context->application->isDevelopment() && $url->getDirectoryRequest()) {
+            $url->query->cts = time();
+        }
+
+        return $url;
     }
 }
