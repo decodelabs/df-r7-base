@@ -19,7 +19,7 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('environmentMode', 'Enum', ['development', 'testing', 'production'])
             ->isNullable(true);
 
-        $schema->addField('priority', 'Enum', core\unit\Priority::getOptions());
+        $schema->addField('priority', 'Enum', 'core/unit/Priority');
 
         $schema->addField('creationDate', 'Timestamp');
         $schema->addField('lastRun', 'DateTime')
