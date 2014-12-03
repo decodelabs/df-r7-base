@@ -56,6 +56,14 @@ class Url extends core\uri\Url implements IUrl {
             
             if(!empty($request->_query)) {
                 $output->_query = $request->_query;
+
+                if(isset($output->_query->cts) && $output->_query->cts->getValue() == null) {
+                    if(df\Launchpad::COMPILE_TIMESTAMP) {
+                        $output->query->cts = df\Launchpad::COMPILE_TIMESTAMP;
+                    } else if(df\Launchpad::$application && df\Launchpad::$application->isDevelopment()) {
+                        $output->query->cts = time();
+                    }
+                }
             }
             
             if(!empty($request->_fragment)) {

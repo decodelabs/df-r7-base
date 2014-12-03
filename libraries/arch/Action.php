@@ -155,7 +155,7 @@ abstract class Action implements IAction, core\IDumpable {
         }
         
         if($func === null) {
-            if(null !== ($output = $this->_dispatchRootDefaultAction())) {
+            if(null !== ($output = $this->_dispatchRootAction())) {
                 return $output;
             }
 
@@ -177,11 +177,11 @@ abstract class Action implements IAction, core\IDumpable {
         return $output;
     }
 
-    protected function _dispatchRootDefaultAction() {
-        $class = 'df\\apex\\directory\\'.$this->context->location->getArea().'\\_actions\\HttpDefault';
+    protected function _dispatchRootAction() {
+        $class = 'df\\apex\\directory\\'.$this->context->location->getArea().'\\_actions\\HttpRoot';
 
         if(!class_exists($class)) {
-            $class = 'df\\apex\\directory\\shared\\_actions\\HttpDefault';
+            $class = 'df\\apex\\directory\\shared\\_actions\\HttpRoot';
 
             if(!class_exists($class)) {
                 $class = null;

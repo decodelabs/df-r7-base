@@ -28,6 +28,8 @@ class Router implements core\IRegistryObject {
     protected $_routerCache = [];
     protected $_defaultRouteProtocol = null;
 
+    protected $_rootActionRouter;
+
     public static function getInstance() {
         $application = df\Launchpad::getApplication();
 
@@ -177,8 +179,17 @@ class Router implements core\IRegistryObject {
     
     public function routeIn(arch\IRequest $request) {
         $this->_routeCount++;
+        $location = $request->getDirectoryLocation();
 
-        if($router = $this->_getRouterFor($request)) {
+        if($location == 'front') {
+            $root = $this->_getRootActionRouter();
+
+            if($root && ($output = $root->routeIn($request))) {
+                return $output;
+            }
+        }
+
+        if($router = $this->_getRouterFor($request, $location)) {
             $this->_routeMatchCount++;
             $output = $router->routeIn($request);
 
@@ -192,8 +203,9 @@ class Router implements core\IRegistryObject {
     
     public function routeOut(arch\IRequest $request) {
         $this->_routeCount++;
+        $location = $request->getDirectoryLocation();
 
-        if($router = $this->_getRouterFor($request)) {
+        if($router = $this->_getRouterFor($request, $location)) {
             $this->_routeMatchCount++;
             $output = $router->routeOut($request);
 
@@ -205,9 +217,7 @@ class Router implements core\IRegistryObject {
         return $request;
     }
 
-    protected function _getRouterFor(arch\IRequest $request) {
-        $location = $request->getDirectoryLocation();
-
+    protected function _getRouterFor(arch\IRequest $request, $location) {
         if(isset($this->_routerCache[$location])) {
             return $this->_routerCache[$location];
         }
@@ -221,7 +231,7 @@ class Router implements core\IRegistryObject {
             $keys[] = implode('/', $parts);
 
             if(class_exists($class)) {
-                $output = new $class(df\Launchpad::$application);
+                $output = new $class();
                 break;
             }
 
@@ -233,5 +243,19 @@ class Router implements core\IRegistryObject {
         }
 
         return $output;
+    }
+
+    protected function _getRootActionRouter() {
+        if($this->_rootActionRouter === null) {
+            $class = 'df\\apex\\directory\\front\\HttpRootActionRouter';
+
+            if(class_exists($class)) {
+                $this->_rootActionRouter = new $class();
+            } else {
+                $this->_rootActionRouter = false;
+            }
+        }
+
+        return $this->_rootActionRouter;
     }
 }

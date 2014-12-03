@@ -50,4 +50,8 @@ class Aura implements arch\IDirectoryHelper {
 
         return $output;
     }
+
+    public function getTheme() {
+        return auraLib\theme\Base::factory($this->context);
+    }
 }

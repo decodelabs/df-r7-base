@@ -18,6 +18,7 @@ interface ITheme extends aura\view\IRenderable, aura\view\ILayoutMap {
     public function getId();
     public function findAsset($path);
     public function mapIcon($name);
+    public function getApplicationImagePath();
 
     public function loadFacet($name);
     public function hasFacet($name);

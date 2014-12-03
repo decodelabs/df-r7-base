@@ -13,9 +13,11 @@ use df\spur;
 
 class Base implements ITheme {
     
+    const APPLICATION_IMAGE = 'app.png';
+
     protected $_id;
     protected $_iconMap = null;
-    protected $_facets = ['analytics'];
+    protected $_facets = ['analytics', 'touchIcons'];
 
     public static function factory($id) {
         if($id instanceof ITheme) {
@@ -149,6 +151,10 @@ class Base implements ITheme {
         }
 
         return $output;
+    }
+
+    public function getApplicationImagePath() {
+        return static::APPLICATION_IMAGE;
     }
 
     public function mapIcon($name) {
