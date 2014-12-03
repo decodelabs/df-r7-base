@@ -134,6 +134,10 @@ class Base implements ITheme {
             $view->setMeta('msapplication-config', 'none');
         }
 
+        if(!$view->hasMeta('msapplication-TileColor')) {
+            $view->setMeta('msapplication-TileColor', $this->getApplicationColor());
+        }
+
         if(!$view->hasMeta('application-name')) {
             $view->setMeta('application-name', $view->getContext()->application->getName());
         }
