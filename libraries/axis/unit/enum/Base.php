@@ -84,6 +84,12 @@ class Base_Enum implements core\lang\IEnum {
         );
     }
 
+    public static function normalize($value) {
+        throw new \RuntimeException(
+            'Unit enum normalize is not accessible'
+        );
+    }
+
     public function __construct(Base $unit, $value) {
         $this->_options = $unit->getOptions();
         $this->_labels = $unit->getLabelList();
