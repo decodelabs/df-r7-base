@@ -12,6 +12,10 @@ use df\aura;
 class TouchIcons extends Base {
     
     public function renderToHtml(aura\view\IHtmlView $view) {
+        if(!$view->getTheme()->getApplicationImagePath()) {
+            return;
+        }
+
         $view
             // Chrome android
             ->addLink('touch-chrome-android', 'icon', 'touch-icon-192x192.png?cts', ['sizes' => '192x192'])
