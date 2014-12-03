@@ -10,10 +10,12 @@ use df\core;
 use df\aura;
 use df\arch;
 use df\spur;
+use df\neon;
 
 class Base implements ITheme {
     
     const APPLICATION_IMAGE = 'app.png';
+    const APPLICATION_COLOR = 'white';
 
     protected $_id;
     protected $_iconMap = null;
@@ -155,6 +157,10 @@ class Base implements ITheme {
 
     public function getApplicationImagePath() {
         return static::APPLICATION_IMAGE;
+    }
+
+    public function getApplicationColor() {
+        return neon\Color::factory(static::APPLICATION_COLOR);
     }
 
     public function mapIcon($name) {
