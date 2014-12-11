@@ -72,7 +72,7 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
             ->replace([' ', '.', ','], '-')
             ->replace('/', '_')
             ->regexReplace('/[^a-z0-9_\-'.preg_quote($allowedChars, '/').']/', '')
-            ->replace('--', '-')
+            ->regexReplace('/-+/', '-')
             ->toString();
     }
     
