@@ -119,7 +119,7 @@ interface ICustomer {
 
 
 
-interface ICurrency {
+interface ICurrency extends core\IStringProvider {
     public function setAmount($amount);
     public function getAmount();
     public function getIntegerAmount();

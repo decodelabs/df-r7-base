@@ -11,6 +11,8 @@ use df\mint;
     
 class Currency implements ICurrency, core\IDumpable {
 
+    use core\TStringProvider;
+
     protected static $_currencies = [
         '036' => 'AUD',
         '986' => 'BRL',
@@ -156,9 +158,12 @@ class Currency implements ICurrency, core\IDumpable {
         return pow(10, $this->getDecimalPlaces());
     }
 
+    public function toString() {
+        return number_format($this->_amount, $this->getDecimalPlaces()).' '.$this->_code;
+    }
 
 // Dump
     public function getDumpProperties() {
-        return number_format($this->_amount, $this->getDecimalPlaces()).' '.$this->_code;
+        return $this->toString();
     }
 }
