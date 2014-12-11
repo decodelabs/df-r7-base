@@ -196,7 +196,7 @@ class Client implements IClient, core\IDumpable {
         }
 
         if($eof) {
-            return link\IIoState::READ;
+            return link\IIoState::OPEN_READ;
         } else if($session->getStore('writeListen')) {
             return link\IIoState::WRITE_LISTEN;
         } else {
@@ -310,7 +310,7 @@ class Client implements IClient, core\IDumpable {
             $location = $response->getHeaders()->get('Location');
 
             if(!$location) {
-                core\stub('No redirect location specified', $response, $request);
+                throw new RuntimeException('No redirect location specified');
             }
 
             $request->setUrl($location);
