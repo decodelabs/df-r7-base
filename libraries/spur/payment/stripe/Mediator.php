@@ -114,8 +114,12 @@ class Mediator implements IMediator, core\IDumpable {
                 $input['created'] = $filter;
             }
         } else if($filter !== null) {
-            $input['created'] = core\time\Date::factory($filter)->toTimestamp();
+            $input['created'] = [
+                'gt' => core\time\Date::factory($filter)->toTimestamp()
+            ];
         }
+
+        $input['include[]'] = 'total_count';
 
         return $input;
     }
@@ -216,7 +220,7 @@ class Mediator implements IMediator, core\IDumpable {
             $rows[] = new Charge($this, $row);
         }
 
-        return new core\collection\PageableQueue($rows, $limit, $offset, $data['count']);
+        return new core\collection\PageableQueue($rows, $limit, $offset, $data['total_count']);
     }
 
 
@@ -281,7 +285,7 @@ class Mediator implements IMediator, core\IDumpable {
             $rows[] = new Customer($this, $row);
         }
 
-        return new core\collection\PageableQueue($rows, $limit, $offset, $data['count']);
+        return new core\collection\PageableQueue($rows, $limit, $offset, $data['total_count']);
     }
 
     public function endDiscount($id) {
@@ -374,7 +378,7 @@ class Mediator implements IMediator, core\IDumpable {
             $rows[] = new CreditCard($this, $row);
         }
 
-        return new core\collection\PageableQueue($rows, $limit, $offset, $data['count']);
+        return new core\collection\PageableQueue($rows, $limit, $offset, $data['total_count']);
     }
 
 
@@ -448,7 +452,7 @@ class Mediator implements IMediator, core\IDumpable {
             $rows[] = new Plan($this, $row);
         }
 
-        return new core\collection\PageableQueue($rows, $limit, $offset, $data['count']);
+        return new core\collection\PageableQueue($rows, $limit, $offset, $data['total_count']);
     }
 
 
@@ -533,7 +537,7 @@ class Mediator implements IMediator, core\IDumpable {
             $rows[] = new Coupon($this, $row);
         }
 
-        return new core\collection\PageableQueue($rows, $limit, $offset, $data['count']);
+        return new core\collection\PageableQueue($rows, $limit, $offset, $data['total_count']);
     }
 
 
