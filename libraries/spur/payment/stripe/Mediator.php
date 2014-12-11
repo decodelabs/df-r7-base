@@ -99,8 +99,12 @@ class Mediator implements IMediator, core\IDumpable {
             $input['count'] = (int)$limit;
         }
 
-        if($offset >= 0) {
-            $input['offset'] = (int)$offset;
+        if(is_string($offset) && !is_numeric($offset)) {
+            $input['starting_after'] = $offset;
+        } else {
+            if($offset >= 0) {
+                $input['offset'] = (int)$offset;
+            }
         }
 
         if(is_array($filter)) {
@@ -119,7 +123,7 @@ class Mediator implements IMediator, core\IDumpable {
             ];
         }
 
-        $input['include[]'] = 'total_count';
+        //$input['include[]'] = 'total_count';
 
         return $input;
     }
