@@ -289,7 +289,7 @@ class Client implements IClient, core\IDumpable {
             $this->_retries++;
 
             if($this->_retries > $this->_maxRetries) {
-                core\stub('Generate a default connection error response', $session);
+                throw new RuntimeException('No response was read from http connection after '.$this->_retries.' attempt(s)');
             }
             
             $this->addRequest($request, $callback);
