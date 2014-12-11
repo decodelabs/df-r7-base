@@ -51,6 +51,10 @@ class PageableQueue implements IIndexedQueue, IAggregateIteratorCollection, IPag
         return $this;
     }
 
+    public function toArray() {
+        return $this->_collection;
+    }
+
 
 // Dump
     public function getDumpProperties() {
