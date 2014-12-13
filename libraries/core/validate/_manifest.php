@@ -540,6 +540,10 @@ interface ISlugField extends IField, ISanitizingField, IUniqueCheckerField, IMin
     public function shouldGenerateIfEmpty($flag=null);
 }
 
+interface IStructureField extends IField {
+    
+}
+
 interface ITextField extends IField, ISanitizingField, IMinLengthField, IMaxLengthField {
     public function setPattern($pattern);
     public function getPattern();
