@@ -10,6 +10,19 @@ use df\core;
 
 class Structure extends Base implements core\validate\IStructureField {
     
+    use core\validate\TSanitizingField;
+
+    protected $_allowEmpty = false;
+
+    public function shouldAllowEmpty($flag=null) {
+        if($flag !== null) {
+            $this->_allowEmpty = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_allowEmpty;
+    }
+
     public function validate(core\collection\IInputTree $node) {
         $required = $this->_isRequired;
 
@@ -27,7 +40,17 @@ class Structure extends Base implements core\validate\IStructureField {
             }
         }
 
-        if($node->isEmpty() && !$node->hasValue() && $required) {
+        if($node->isEmpty()) {
+            $value = $node->getValue();
+        } else {
+            $value = $node->toArray();
+        }
+
+        if($value === null && $required && $this->_allowEmpty) {
+            $value = [];
+        }
+
+        if($node->isEmpty() && !$node->hasValue() && $required && !$this->_allowEmpty) {
             $this->_applyMessage($node, 'required', $this->_handler->_(
                 'This field cannot be empty'
             ));
@@ -39,12 +62,6 @@ class Structure extends Base implements core\validate\IStructureField {
             if($this->_requireGroup !== null) {
                 $this->_handler->setRequireGroupFulfilled($this->_requireGroup);
             }
-        }
-
-        if($node->isEmpty()) {
-            $value = $node->getValue();
-        } else {
-            $value = $node->toArray();
         }
 
         $value = $this->_sanitizeValue($value);
