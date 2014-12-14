@@ -164,7 +164,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
         return $this->element('a', $body, ['href' => $url]);
     }
 
-    public function mailLink($address, $body=null) {
+    public function plainMailLink($address, $body=null) {
         if(empty($address)) {
             return null;
         }
@@ -179,7 +179,11 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
             }
         }
 
-        return $this->link($this->view->uri->mailto($address), $body)
+        return $this->link($this->view->uri->mailto($address), $body);
+    }
+
+    public function mailLink($address, $body=null) {
+        return $this->plainMailLink($address, $body)
             ->setIcon('mail')
             ->setDisposition('external');
     }
