@@ -277,7 +277,7 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
             header('WWW-Authenticate: Basic realm="Developer Site"');
             header('HTTP/1.0 401 Unauthorized');
             echo 'You need to authenticate to view this site';
-            return true;
+            exit;
         }
 
         return false;
