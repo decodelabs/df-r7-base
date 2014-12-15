@@ -22,7 +22,21 @@ class Config extends core\Config {
             'sendFileHeader' => 'X-Sendfile',
             'secure' => false,
             'manualChunk' => false,
-            'ipRanges' => null
+            'ipRanges' => null,
+            'credentials' => [
+                'development' => [
+                    'username' => null,
+                    'password' => null
+                ],
+                'testing' => [
+                    'username' => null,
+                    'password' => null
+                ],
+                'production' => [
+                    'username' => null,
+                    'password' => null
+                ]
+            ]
         ];
     }
 
@@ -214,5 +228,24 @@ class Config extends core\Config {
         }
 
         return [];
+    }
+
+
+// Credentials
+    public function getCredentials($mode=null) {
+        if($mode === null) {
+            $mode = df\Launchpad::getEnvironmentMode();
+        }
+
+        if(!isset($this->values['credentials'][$mode]['username'])) {
+            return null;
+        }
+
+        $set = $this->values['credentials'][$mode];
+
+        return [
+            'username' => $set['username'],
+            'password' => isset($set['password']) ? $set['password'] : ''
+        ];
     }
 }

@@ -24,9 +24,7 @@ class Environment extends Config {
             'activeLocations' => [],
             'daemonsEnabled' => false,
             'daemonUser' => $this->_extrapolateDaemonUser(),
-            'daemonGroup' => $this->_extrapolateDaemonGroup(),
-            'devUser' => null,
-            'devPassword' => null
+            'daemonGroup' => $this->_extrapolateDaemonGroup()
         ];
     }
 
@@ -203,22 +201,5 @@ class Environment extends Config {
     protected function _extrapolateDaemonGroup() {
         $process = halo\process\Base::getCurrent();
         return $process->getGroupName();
-    }
-
-
-// Dev credentials
-    public function setDeveloperCredentials($username, $password) {
-        $this->values['devUser'] = $username;
-        $this->values['devPassword'] = $password;
-
-        return $this;
-    }
-
-    public function getDeveloperCredentials() {
-        if(isset($this->values['devUser'], $this->values['devPassword'])) {
-            return ['user' => $this->values['devUser'], 'password' => $this->values['devPassword']];
-        }
-
-        return null;
     }
 }

@@ -20,6 +20,7 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
     protected $_responseAugmentor;
     protected $_sendFileHeader;
     protected $_manualChunk = false;
+    protected $_credentials = null;
 
     protected $_context;
     protected $_router;
@@ -30,6 +31,7 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
         $config = core\application\http\Config::getInstance();
         $this->_sendFileHeader = $config->getSendFileHeader();
         $this->_manualChunk = $config->shouldChunkManually();
+        $this->_credentials = $config->getCredentials();
 
         $this->_router = core\application\http\Router::getInstance();
     }
@@ -227,10 +229,7 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
     }
     
     protected function _prepareHttpRequest() {
-        if(!$this->isProduction()) {
-            $this->_enforceDeveloperCredentials();
-        }
-
+        $this->_enforceCredentials();
         $this->_httpRequest = new link\http\request\Base(null, true);
 
         if($response = $this->_checkIpRanges($this->_httpRequest->getIp())) {
@@ -267,18 +266,18 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
         return null;
     }
 
-    protected function _enforceDeveloperCredentials() {
-        $envConfig = core\Environment::getInstance();
+    protected function _enforceCredentials() {
+        if(!$this->_credentials) {
+            return true;
+        }
 
-        if($credentials = $envConfig->getDeveloperCredentials()) {
-            if(!isset($_SERVER['PHP_AUTH_USER'])
-            || $_SERVER['PHP_AUTH_USER'] != $credentials['user']
-            || $_SERVER['PHP_AUTH_PW'] != $credentials['password']) {
-                header('WWW-Authenticate: Basic realm="Developer Site"');
-                header('HTTP/1.0 401 Unauthorized');
-                echo 'You need to authenticate to view this development site';
-                return true;
-            }
+        if(!isset($_SERVER['PHP_AUTH_USER'])
+        || $_SERVER['PHP_AUTH_USER'] != $this->_credentials['username']
+        || $_SERVER['PHP_AUTH_PW'] != $this->_credentials['password']) {
+            header('WWW-Authenticate: Basic realm="Developer Site"');
+            header('HTTP/1.0 401 Unauthorized');
+            echo 'You need to authenticate to view this site';
+            return true;
         }
 
         return false;
