@@ -314,6 +314,13 @@ trait TScaffold_RecordDataProvider {
                     $output = $record[$fallbackKey];
                 } else {
                     $output = '#'.$this->getRecordId($record);
+
+                    if($key == 'title') {
+                        $output = [
+                            $this->html('em', $this->_('untitled %c%', ['%c%' => strtolower($this->getRecordKeyName())])),
+                            $this->html('samp', $output)
+                        ];
+                    }
                 }
             }
         }
