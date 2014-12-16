@@ -183,6 +183,10 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
     }
 
     public function mailLink($address, $body=null) {
+        if(empty($address)) {
+            return null;
+        }
+        
         return $this->plainMailLink($address, $body)
             ->setIcon('mail')
             ->setDisposition('external');
