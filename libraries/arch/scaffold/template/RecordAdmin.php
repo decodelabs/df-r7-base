@@ -59,10 +59,10 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
 
 // Actions
     public function indexHtmlAction() {
-        return $this->_defaultListAction();
+        return $this->buildListAction();
     }
 
-    protected function _defaultListAction(opal\query\ISelectQuery $query=null, array $fields=null, $callback=null, $queryMode=null) {
+    public function buildListAction(opal\query\ISelectQuery $query=null, array $fields=null, $callback=null, $queryMode=null) {
         if($queryMode === null) {
             $queryMode = $this->request->getAction();
         }
