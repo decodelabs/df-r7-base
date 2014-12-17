@@ -132,6 +132,20 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
         return $this->_renderClusterSelector();
     }
 
+    public function renderRecordList(opal\query\ISelectQuery $query=null, array $fields=null) {
+        if($query) {
+            $this->_prepareRecordListQuery($query, 'list');
+        } else {
+            $query = $this->getRecordListQuery('list');
+        }
+
+        $query->paginateWith($this->request->query);
+
+        $keyName = $this->getRecordKeyName();
+        return $this->import->component(ucfirst($keyName).'List', $fields)
+            ->setCollection($query);
+    }
+
 // Helpers
     public function onActionDispatch(arch\IAction $action) {
         return $this->_handleClusterSelection();
