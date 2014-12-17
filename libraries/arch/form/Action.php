@@ -96,7 +96,7 @@ abstract class Action extends arch\Action implements IAction {
         
         $this->values = $this->_state->getValues();
         
-        $response = $this->_onSessionCreate();
+        $response = $this->_onSessionReady();
 
         if(!empty($response)) {
             $this->_initResponse = $response;
@@ -146,7 +146,7 @@ abstract class Action extends arch\Action implements IAction {
         return null;
     }
     
-    protected function _onSessionCreate() {}
+    protected function _onSessionReady() {}
 
     public function getStateController() {
         if(!$this->_state) {
