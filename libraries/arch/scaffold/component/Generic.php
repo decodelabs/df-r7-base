@@ -23,6 +23,12 @@ class Generic extends arch\component\Base {
 
     protected function _execute() {
         $method = 'generate'.$this->_name.'Component';
-        return call_user_func_array([$this->_scaffold, $method], $this->_componentArgs);
+        $args = $this->_componentArgs;
+
+        if(!$args) {
+            $args = [];
+        }
+
+        return call_user_func_array([$this->_scaffold, $method], $args);
     }
 }

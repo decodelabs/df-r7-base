@@ -736,6 +736,34 @@ trait TScaffold_RecordListProvider {
         return $output;
     }
 
+    public function generateSearchBarComponent() {
+        $search = $this->request->getQueryTerm('search');
+        $request = clone $this->context->request;
+        $resetRequest = clone $request;
+        $filter = ['search', 'lm', 'pg', 'of', 'od'];
+
+        foreach($filter as $key) {
+            $resetRequest->query->remove($key);
+        }
+
+        return $this->html->form($request)->setMethod('get')->push(
+            $this->html->fieldSet($this->_('Search'))->push(
+                $this->_buildQueryPropagationInputs($filter),
+
+                $this->html->searchTextbox('search', $search),
+                $this->html->submitButton(null, $this->_('Go'))
+                    ->setIcon('search')
+                    ->setDisposition('positive'),
+
+                $this->html->link(
+                        $resetRequest, 
+                        $this->_('Reset')
+                    )
+                    ->setIcon('refresh')
+            )
+        );
+    }
+
     public function buildSelectorFormDelegate($state, $id) {
         return new arch\scaffold\delegate\SearchSelector($this, $state, $id);
     }

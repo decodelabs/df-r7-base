@@ -83,8 +83,13 @@ abstract class Base implements IScaffold {
 
     protected function _buildQueryPropagationInputs(array $filter=[]) {
         $output = [];
+        $vars = array_merge(
+            $this->getPropagatingQueryVars(),
+            $this->request->query->getKeys()
+        );
 
-        foreach($this->getPropagatingQueryVars() as $var) {
+
+        foreach($vars as $var) {
             if(in_array($var, $filter)) {
                 continue;
             }

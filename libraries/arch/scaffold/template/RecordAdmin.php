@@ -43,8 +43,6 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
     const CAN_EDIT_RECORD = true;
     const CAN_DELETE_RECORD = true;
 
-    const USE_LIST_ACTION = false;
-
     protected function __construct(arch\IContext $context) {
         parent::__construct($context);
 
@@ -64,52 +62,17 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
         return $this->_defaultListAction();
     }
 
-    public function listHtmlAction() {
-        if(!static::USE_LIST_ACTION) {
-            $this->throwError(404, 'List not active');
+    protected function _defaultListAction(opal\query\ISelectQuery $query=null, array $fields=null, $callback=null, $queryMode=null) {
+        if($queryMode === null) {
+            $queryMode = $this->request->getAction();
         }
-
-        return $this->_defaultListAction();
-    }
-
-    protected function _defaultListAction($queryMode='index') {
-        $keyName = $this->getRecordKeyName();
-        $adapter = $this->getRecordAdapter();
-
-        $query = $this->getRecordListQuery($queryMode);
-        $search = $this->request->getQueryTerm('search');
-
-        if(strlen($search)) {
-            $this->applyRecordQuerySearch($query, $search, 'index');
-        }
-
-        $query->paginateWith($this->request->query);
 
         $container = $this->aura->getWidgetContainer();
         $this->view = $container->getView();
 
         $container->push(
             $this->import->component('IndexHeaderBar'),
-
-            $this->html->form($this->context->location)->setMethod('get')->push(
-                $this->html->fieldSet($this->_('Search'))->push(
-                    $this->_buildQueryPropagationInputs(['search']),
-
-                    $this->html->searchTextbox('search', $search),
-                    $this->html->submitButton(null, $this->_('Go'))
-                        ->setIcon('search')
-                        ->setDisposition('positive'),
-
-                    $this->html->link(
-                            $this->_getActionRequest('index', null, null, null, ['search']), 
-                            $this->_('Reset')
-                        )
-                        ->setIcon('refresh')
-                )
-            ),
-
-            $this->import->component(ucfirst($keyName).'List')
-                ->setCollection($query)
+            $this->renderRecordList($query, $fields, $callback, $queryMode)
         );
 
         return $this->view;
@@ -132,18 +95,40 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
         return $this->_renderClusterSelector();
     }
 
-    public function renderRecordList(opal\query\ISelectQuery $query=null, array $fields=null) {
+    public function renderRecordList(opal\query\ISelectQuery $query=null, array $fields=null, $callback=null, $queryMode=null) {
+        if($queryMode === null) {
+            $queryMode = $this->request->getAction();
+        }
+
         if($query) {
-            $this->_prepareRecordListQuery($query, 'list');
+            $this->_prepareRecordListQuery($query, $queryMode);
         } else {
-            $query = $this->getRecordListQuery('list');
+            $query = $this->getRecordListQuery($queryMode);
+        }
+
+        $search = $this->request->getQueryTerm('search');
+
+        if(strlen($search)) {
+            $this->applyRecordQuerySearch($query, $search, 'index');
         }
 
         $query->paginateWith($this->request->query);
 
         $keyName = $this->getRecordKeyName();
-        return $this->import->component(ucfirst($keyName).'List', $fields)
+
+        $searchBar = $this->import->component('SearchBar');
+        $list = $this->import->component(ucfirst($keyName).'List', $fields)
             ->setCollection($query);
+
+        if($callback) {
+            core\lang\Callback::factory($callback)->invokeArgs([
+                $list, $searchBar
+            ]);
+        }
+
+        return [
+            $searchBar, $list
+        ];
     }
 
 // Helpers
