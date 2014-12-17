@@ -185,6 +185,7 @@ class Type {
         'xbm' => 'image/x-xbitmap',
         'xpm' => 'image/x-xpixmap',
         'xwd' => 'image/x-xwindowdump',
+        'drw' => 'application/drafting',
     
     // Model
         'igs' => 'model/iges',
