@@ -333,7 +333,7 @@ trait TScaffold_RecordDataProvider {
             $record = $this->_ensureRecord();
         }
         
-        return (string)$this->_describeRecord($record);
+        return $this->html->toText($this->_describeRecord($record));
     }
 
     protected function _describeRecord($record) {

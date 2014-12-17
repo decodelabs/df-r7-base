@@ -288,6 +288,10 @@ class ElementContent implements IElementContentCollection, core\IDumpable {
     
     use TElementContent;
     use core\string\THtmlStringEscapeHandler;
+
+    public static function normalize($content) {
+        return (new self($content))->toString();
+    }
 }
 
 

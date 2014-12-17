@@ -30,7 +30,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
     }
     
     public function previewText($html, $length=null) {
-        $html = (string)$html;
+        $html = auraLib\html\ElementContent::normalize($html);
 
         if(!strlen($html)) {
             return null;
@@ -38,11 +38,22 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
 
         $output = strip_tags($html);
 
+
         if($length !== null) {
             $output = $this->view->format->shorten($output, $length);
         }
 
         return $this->string($output);
+    }
+
+    public function toText($html) {
+        $html = auraLib\html\ElementContent::normalize($html);
+
+        if(!strlen($html)) {
+            return null;
+        }
+
+        return strip_tags($html);
     }
 
     public function plainText($text) {
