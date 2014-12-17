@@ -15,6 +15,10 @@ class Format implements core\ISharedHelper {
     
 // Numbers
     public function number($number, $format=null, $locale=null) {
+        if($number === null) {
+            return null;
+        }
+
         if($locale === null) {
             $locale = $this->context->getLocale();
         }
@@ -25,6 +29,10 @@ class Format implements core\ISharedHelper {
     }
     
     public function percent($number, $locale=null) {
+        if($number === null) {
+            return null;
+        }
+
         if($locale === null) {
             $locale = $this->context->getLocale();
         }
@@ -45,6 +53,10 @@ class Format implements core\ISharedHelper {
     }
 
     public function currency($number, $code=null, $locale=null) {
+        if($number === null) {
+            return null;
+        }
+
         if($locale === null) {
             $locale = $this->context->getLocale();
         }
@@ -64,6 +76,10 @@ class Format implements core\ISharedHelper {
     }
     
     public function scientific($number, $locale=null) {
+        if($number === null) {
+            return null;
+        }
+
         if($locale === null) {
             $locale = $this->context->getLocale();
         }
@@ -74,6 +90,10 @@ class Format implements core\ISharedHelper {
     }
     
     public function spellout($number, $locale=null) {
+        if($number === null) {
+            return null;
+        }
+
         if($locale === null) {
             $locale = $this->context->getLocale();
         }
@@ -84,6 +104,10 @@ class Format implements core\ISharedHelper {
     }
     
     public function ordinal($number, $locale=null) {
+        if($number === null) {
+            return null;
+        }
+
         if($locale === null) {
             $locale = $this->context->getLocale();
         }
@@ -126,6 +150,10 @@ class Format implements core\ISharedHelper {
     }
 
     public function fileSize($bytes, $precision=2, $longNames=false, $locale=null) {
+        if($bytes === null) {
+            return null;
+        }
+
         if($locale === null) {
             $locale = $this->context->getLocale();
         }
