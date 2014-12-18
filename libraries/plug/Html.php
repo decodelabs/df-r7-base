@@ -53,7 +53,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
             return null;
         }
 
-        return strip_tags($html);
+        return html_entity_decode(strip_tags($html));
     }
 
     public function plainText($text) {
