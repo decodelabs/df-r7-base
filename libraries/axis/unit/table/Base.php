@@ -447,6 +447,12 @@ abstract class Base implements
     }
     
     public function fetchByPrimary($keys) {
+        if($keys instanceof opal\record\IRecord
+        && $keys->getRecordAdapter() === $this
+        && !$keys->isNew()) {
+            return $keys;
+        }
+
         $query = $this->fetch();
         $primaryKeySet = null;
 
