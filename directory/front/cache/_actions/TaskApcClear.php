@@ -62,7 +62,6 @@ class TaskApcClear extends arch\task\Action {
             }
 
             $url = new link\http\Url('http://'.rtrim($baseUrl, '/').'/cache/apc-clear.json');
-            $this->io->writeLine((string)$url);
             $url->query->import($this->request->query);
             $this->io->writeLine($url);
 
