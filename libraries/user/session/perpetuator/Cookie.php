@@ -24,7 +24,14 @@ class Cookie implements user\session\IPerpetuator {
         
         if($httpRequest->hasCookieData()) {
             $cookies = $httpRequest->getCookieData();
-            $this->_inputId = $cookies->get($this->_sessionCookieName);
+
+            if($cookies->has($this->_sessionCookieName)) {
+                try {
+                    $this->_inputId = hex2bin($cookies->get($this->_sessionCookieName));
+                } catch(\Exception $e) {
+                    $this->_inputId = null;
+                }
+            }
 
             if($cookies->has($this->_rememberCookieName) && $cookies->get($this->_rememberCookieName) == '') {
                 $this->_canRecall = false;
@@ -56,7 +63,7 @@ class Cookie implements user\session\IPerpetuator {
     }
     
     public function perpetuate(user\session\IController $controller, user\session\IDescriptor $descriptor) {
-        $outputId = $descriptor->getExternalId();
+        $outputId = $descriptor->getExternalIdHex();
         
         if($outputId != $this->_inputId) {
             $application = df\Launchpad::$application;
@@ -92,7 +99,7 @@ class Cookie implements user\session\IPerpetuator {
         return $this;
     }
 
-    public function perpetuateRememberKey(user\session\IController $controller, user\RememberKey $key) {
+    public function perpetuateRecallKey(user\session\IController $controller, user\session\RecallKey $key) {
         $application = df\Launchpad::$application;
 
         if($application instanceof link\http\IResponseAugmentorProvider) {
@@ -109,16 +116,17 @@ class Cookie implements user\session\IPerpetuator {
         return $this;
     }  
 
-    public function getRememberKey(user\session\IController $controller) {
+    public function getRecallKey(user\session\IController $controller) {
         $httpRequest = df\Launchpad::$application->getHttpRequest();
         
         if($httpRequest->hasCookieData()) {
             $value = $httpRequest->getCookieData()->get($this->_rememberCookieName);
 
             if(!empty($value)) {
-                $key = new user\RememberKey();
-                $key->key = substr($value, 0, 20).substr($value, 21);
-                $key->userId = substr($value, 20, 1);
+                $key = new user\session\RecallKey(
+                    substr($value, 20, 1),
+                    substr($value, 0, 20).substr($value, 21)
+                );
 
                 return $key;
             }
@@ -127,7 +135,7 @@ class Cookie implements user\session\IPerpetuator {
         return null;
     }
 
-    public function destroyRememberKey(user\session\IController $controller) {
+    public function destroyRecallKey(user\session\IController $controller) {
         $application = df\Launchpad::$application;
         
         if($application instanceof link\http\IResponseAugmentorProvider) {

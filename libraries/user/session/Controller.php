@@ -112,7 +112,7 @@ class Controller implements IController {
 
     protected function _generateId() {
         do {
-            $output = core\string\Generator::sessionId();
+            $output = core\string\Generator::sessionId(true);
         } while($this->_backend->idExists($output));
         
         return $output;
@@ -151,7 +151,7 @@ class Controller implements IController {
         
         if((mt_rand() % 100) < self::GC_PROBABILITY) {
             $this->_backend->collectGarbage();
-            $this->_getUserModel()->purgeRememberKeys();
+            $this->_backend->purgeRecallKeys();
         }
         
         if(!$this->_descriptor->hasJustTransitioned(120)
@@ -224,11 +224,11 @@ class Controller implements IController {
         $this->_open();
 
         if($this->_perpetuator) {
-            $key = $this->_perpetuator->getRememberKey($this);
+            $key = $this->_perpetuator->getRecallKey($this);
             $this->_perpetuator->destroy($this);
 
             if($key) {
-                $this->_getUserModel()->destroyRememberKey($key);
+                $this->_backend->destroyRecallKey($key);
             }
         }
         
@@ -242,11 +242,31 @@ class Controller implements IController {
         return $this;
     }
 
-    private function _getManager() {
-        return user\Manager::getInstance();
+// Recall
+    public function hasRecallKey(RecallKey $key) {
+        $this->_open();
+        return $this->_backend->hasRecallKey($key);
     }
 
-    private function _getUserModel() {
-        return $this->_getManager()->getUserModel();
+    public function perpetuateRecall(user\IClient $client, RecallKey $lastKey=null) {
+        $this->_open();
+
+        if($lastKey) {
+            $this->_backend->destroyRecallKey($lastKey);
+        }
+
+        if($this->_perpetuator) {
+            $this->_perpetuator->perpetuateRecallKey(
+                $this,
+                $this->_backend->generateRecallKey($client)
+            );
+        }
+
+        return $this;
+    }
+
+// Helpers
+    private function _getManager() {
+        return user\Manager::getInstance();
     }
 }

@@ -16,10 +16,12 @@ class Unit extends axis\unit\table\Base {
     protected function _onCreate(axis\schema\ISchema $schema) {
         $schema->addField('namespace', 'String', 255);
         $schema->addField('key', 'String', 255);
-        $schema->addIndexedField('internalId', 'String', 40);
+        $schema->addIndexedField('internalId', 'Binary', 20)
+            ->isConstantLength(true);
         $schema->addField('value', 'BigBinary', 'huge');
         $schema->addField('creationTime', 'Integer', 8);
-        $schema->addField('updateTime', 'Integer', 8)->isNullable(true);
+        $schema->addField('updateTime', 'Integer', 8)
+            ->isNullable(true);
         
         $schema->addPrimaryIndex('primary', ['namespace', 'key', 'internalId']);
     }

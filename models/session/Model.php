@@ -64,19 +64,19 @@ class Model extends axis\Model implements user\session\IBackend {
 
     public function applyTransition(user\session\IDescriptor $descriptor) {
         $this->manifest->update([
-                'accessTime' => $descriptor->getAccessTime(),
-                'externalId' => $descriptor->getExternalId(),
-                'transitionId' => $descriptor->getTransitionId(),
-                'transitionTime' => $descriptor->getTransitionTime()
+                'accessTime' => $descriptor->accessTime,
+                'externalId' => $descriptor->externalId,
+                'transitionId' => $descriptor->transitionId,
+                'transitionTime' => $descriptor->transitionTime
             ])
-            ->where('internalId', '=', $descriptor->getInternalId())
+            ->where('internalId', '=', $descriptor->internalId)
             ->execute();
             
         return $descriptor;
     }
 
     public function killSession(user\session\IDescriptor $descriptor) {
-        $id = $descriptor->getInternalId();
+        $id = $descriptor->internalId;
         
         if(isset($this->_dataTransactions[$id])) {
             $this->_dataTransactions[$id]->commit();
@@ -107,7 +107,7 @@ class Model extends axis\Model implements user\session\IBackend {
 // Namespace
     public function getNamespaceKeys(user\session\IDescriptor $descriptor, $namespace) {
         return $this->data->select('key')
-            ->where('internalId', '=', $descriptor->getInternalId())
+            ->where('internalId', '=', $descriptor->internalId)
             ->where('namespace', '=', $namespace)
             ->orderBy('updateTime')
             ->toList('key');
@@ -115,7 +115,7 @@ class Model extends axis\Model implements user\session\IBackend {
 
     public function pruneNamespace(user\session\IDescriptor $descriptor, $namespace, $age) {
         $this->data->delete()
-            ->where('internalId', '=', $descriptor->getInternalId())
+            ->where('internalId', '=', $descriptor->internalId)
             ->where('namespace', '=', $namespace)
             ->where('updateTime', '<', time() - $age)
             ->where('updateTime', '!=', null)
@@ -124,7 +124,7 @@ class Model extends axis\Model implements user\session\IBackend {
 
     public function clearNamespace(user\session\IDescriptor $descriptor, $namespace) {
         $this->data->delete()
-            ->where('internalId', '=', $descriptor->getInternalId())
+            ->where('internalId', '=', $descriptor->internalId)
             ->where('namespace', '=', $namespace)
             ->execute();
     }
@@ -140,7 +140,7 @@ class Model extends axis\Model implements user\session\IBackend {
 // Nodes
     public function fetchNode(user\session\IDescriptor $descriptor, $namespace, $key) {
         $res = $this->data->select()
-            ->where('internalId', '=', $descriptor->getInternalId())
+            ->where('internalId', '=', $descriptor->internalId)
             ->where('namespace', '=', $namespace)
             ->where('key', '=', $key)
             ->toRow();
@@ -150,7 +150,7 @@ class Model extends axis\Model implements user\session\IBackend {
 
     public function fetchLastUpdatedNode(user\session\IDescriptor $descriptor, $namespace) {
         $res = $this->data->select()
-            ->where('internalId', '=', $descriptor->getInternalId())
+            ->where('internalId', '=', $descriptor->internalId)
             ->where('namespace', '=', $namespace)
             ->orderBy('updateTime DESC')
             ->toRow();
@@ -183,7 +183,7 @@ class Model extends axis\Model implements user\session\IBackend {
                 $node->creationTime = time();
                 
                 $transaction->insert([
-                        'internalId' => $descriptor->getInternalId(),
+                        'internalId' => $descriptor->internalId,
                         'namespace' => $node->namespace,
                         'key' => $node->key,
                         'value' => serialize($node->value),
@@ -196,7 +196,7 @@ class Model extends axis\Model implements user\session\IBackend {
                         'value' => serialize($node->value),
                         'updateTime' => $node->updateTime
                     ])
-                    ->where('internalId', '=', $descriptor->getInternalId())
+                    ->where('internalId', '=', $descriptor->internalId)
                     ->where('namespace', '=', $node->namespace)
                     ->where('key', '=', $node->key)
                     ->execute();
@@ -208,7 +208,7 @@ class Model extends axis\Model implements user\session\IBackend {
 
     public function removeNode(user\session\IDescriptor $descriptor, $namespace, $key) {
         $this->data->delete()
-            ->where('internalId', '=', $descriptor->getInternalId())
+            ->where('internalId', '=', $descriptor->internalId)
             ->where('namespace', '=', $namespace)
             ->where('key', '=', $key)
             ->execute();
@@ -216,7 +216,7 @@ class Model extends axis\Model implements user\session\IBackend {
 
     public function hasNode(user\session\IDescriptor $descriptor, $namespace, $key) {
         return (bool)$this->data->select('count(*) as count')
-            ->where('internalId', '=', $descriptor->getInternalId())
+            ->where('internalId', '=', $descriptor->internalId)
             ->where('namespace', '=', $namespace)
             ->where('key', '=', $key)
             ->toValue('count');
@@ -247,8 +247,30 @@ class Model extends axis\Model implements user\session\IBackend {
         return $this;
     }
 
+
+// Recall
+    public function generateRecallKey(user\IClient $client) {
+        return $this->recall->generateKey($client);
+    }
+
+    public function hasRecallKey(user\session\RecallKey $key) {
+        return $this->recall->hasKey($key);
+    }
+
+    public function destroyRecallKey(user\session\RecallKey $key) {
+        $this->recall->destroyKey($key);
+        return $this;
+    }
+
+    public function purgeRecallKeys() {
+        $this->recall->purge();
+        return $this;
+    }
+
+
+// Helpers
     protected function _getDataTransaction(user\session\IDescriptor $descriptor) {
-        $id = $descriptor->getInternalId();
+        $id = $descriptor->internalId;
         
         if(isset($this->_dataTransactions[$id])) {
             return $this->_dataTransactions[$id];
@@ -258,7 +280,7 @@ class Model extends axis\Model implements user\session\IBackend {
     }
     
     protected function _beginDataTransaction(user\session\IDescriptor $descriptor) {
-        $id = $descriptor->getInternalId();
+        $id = $descriptor->internalId;
         
         if(isset($this->_dataTransactions[$id])) {
             $output = $this->_dataTransactions[$id];

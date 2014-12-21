@@ -80,8 +80,8 @@ class Manager implements IManager, core\IDumpable {
     }
 
     private function _recallIdentity($isNew) {
-        if($key = $this->session->getPerpetuator()->getRememberKey($this->session)) {
-            if($this->authenticateRememberKey($key)) {
+        if($key = $this->session->getPerpetuator()->getRecallKey($this->session)) {
+            if($this->authenticateRecallKey($key)) {
                 return true;
             }
         }
@@ -320,9 +320,7 @@ class Manager implements IManager, core\IDumpable {
 
             // Remember me
             if($request->getAttribute('rememberMe')) {
-                $perpetuator = $this->session->getPerpetuator();
-                $key = $model->generateRememberKey($client);
-                $perpetuator->perpetuateRememberKey($this->session, $key);
+                $this->session->perpetuateRecall($client);
             }
 
             // Options
@@ -335,16 +333,15 @@ class Manager implements IManager, core\IDumpable {
         return $result;
     }
 
-    public function authenticateRememberKey(RememberKey $key) {
-        $model = $this->getUserModel();
-
-        if(!$model->hasRememberKey($key)) {
+    public function authenticateRecallKey(user\session\RecallKey $key) {
+        if(!$this->session->hasRecallKey($key)) {
             return false;
         }
 
         $session = $this->session->getNamespace(self::USER_SESSION_NAMESPACE);
         $this->_accessLockCache = [];
 
+        $model = $this->getUserModel();
         $clientData = $model->getClientData($key->userId);
         $this->_client = Client::factory($clientData);
 
@@ -356,10 +353,7 @@ class Manager implements IManager, core\IDumpable {
 
 
         // Remember me
-        $model->destroyRememberKey($key);
-        $perpetuator = $this->session->getPerpetuator();
-        $key = $model->generateRememberKey($this->_client);
-        $perpetuator->perpetuateRememberKey($this->session, $key);
+        $this->session->perpetuateRecall($this->_client, $key);
 
         // Options
         $this->_ensureClientOptions($this->_client);

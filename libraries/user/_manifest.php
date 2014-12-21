@@ -32,17 +32,6 @@ interface IState {
 
 
 
-class RememberKey {
-
-    public $userId;
-    public $key;
-
-    public function getInterlaceKey() {
-        return substr($this->key, 0, 20).$this->userId.substr($this->key, 20);
-    }
-}
-
-
 // Interfaces
 interface IManager extends core\IManager {
     // Client
@@ -68,7 +57,7 @@ interface IManager extends core\IManager {
     public function isLoggedIn();
     public function loadAuthenticationAdapter($name);
     public function authenticate(user\authentication\IRequest $request);
-    public function authenticateRememberKey(RememberKey $key);
+    public function authenticateRecallKey(user\session\RecallKey $key);
     public function refreshClientData();
     public function importClientData(user\IClientDataObject $data);
     public function regenerateKeyring();
@@ -81,11 +70,6 @@ interface IUserModel {
     public function getClientDataList(array $ids, array $emails=null);
     public function getAuthenticationDomainInfo(user\authentication\IRequest $request);
     public function generateKeyring(IClient $client);
-
-    public function generateRememberKey(IClient $client);
-    public function hasRememberKey(RememberKey $key);
-    public function destroyRememberKey(RememberKey $key);
-    public function purgeRememberKeys();
 
     public function fetchClientOptions($id);
     public function updateClientOptions($id, array $options);

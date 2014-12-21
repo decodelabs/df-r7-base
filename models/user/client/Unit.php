@@ -27,7 +27,6 @@ class Unit extends axis\unit\table\Base {
             ;
             
         $schema->addField('authDomains', 'OneToMany', 'auth', 'user');
-        $schema->addField('rememberKeys', 'OneToMany', 'rememberKey', 'user');
         $schema->addField('options', 'OneToMany', 'option', 'user');
         $schema->addIndexedField('status', 'Integer', 1)->setDefaultValue(3);
         

@@ -14,11 +14,17 @@ use df\user;
 class Unit extends axis\unit\table\Base {
 
     protected function _onCreate(axis\schema\ISchema $schema) {
-        $schema->addPrimaryField('internalId', 'String', 40);
-        $schema->addUniqueField('externalId', 'String', 40);
-        $schema->addUniqueField('transitionId', 'String', 40)->isNullable(true);
+        $schema->addPrimaryField('internalId', 'Binary', 20)
+            ->isConstantLength(true);
+        $schema->addUniqueField('externalId', 'Binary', 20)
+            ->isConstantLength(true);
+        $schema->addUniqueField('transitionId', 'Binary', 20)
+            ->isConstantLength(true)
+            ->isNullable(true);
+
         $schema->addField('startTime', 'Integer');
-        $schema->addField('transitionTime', 'Integer', 8)->isNullable(true);
+        $schema->addField('transitionTime', 'Integer', 8)
+            ->isNullable(true);
         $schema->addIndexedField('accessTime', 'Integer', 8);
         //$schema->addField('userId', 'String', 64)->isNullable(true);
     }

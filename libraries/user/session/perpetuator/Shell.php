@@ -56,21 +56,21 @@ class Shell implements user\session\IPerpetuator {
         $cache = Shell_Cache::getInstance();
         $cache->remove($this->_userKey);
 
-        $this->destroyRememberKey($controller);
+        $this->destroyRecallKey($controller);
 
         return $this;
     }
 
-    public function perpetuateRememberKey(user\session\IController $controller, user\RememberKey $key) {
+    public function perpetuateRecallKey(user\session\IController $controller, user\session\RecallKey $key) {
         // How's this going to work?
         return $this;
     }
 
-    public function getRememberKey(user\session\IController $controller) {
+    public function getRecallKey(user\session\IController $controller) {
         return null;
     }
 
-    public function destroyRememberKey(user\session\IController $controller) {
+    public function destroyRecallKey(user\session\IController $controller) {
         // Derp
         return $this;
     }

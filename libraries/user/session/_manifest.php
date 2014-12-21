@@ -29,6 +29,9 @@ interface IController {
     public function transitionId();
     public function getNamespace($namespace);
     public function destroy();
+
+    public function hasRecallKey(RecallKey $key);
+    public function perpetuateRecall(user\IClient $client, RecallKey $lastKey=null);
 }
 
 interface IHandler extends core\IValueMap, \ArrayAccess {
@@ -85,6 +88,31 @@ interface IBackend {
     public function removeNode(IDescriptor $descriptor, $namespace, $key);
     public function hasNode(IDescriptor $descriptor, $namespace, $key);
     public function collectGarbage();
+
+    public function generateRecallKey(user\IClient $client);
+    public function hasRecallKey(RecallKey $key);
+    public function destroyRecallKey(RecallKey $key);
+    public function purgeRecallKeys();
+}
+
+
+class RecallKey {
+
+    public $userId;
+    public $key;
+
+    public static function generate($userId) {
+        return new self($userId, core\string\Generator::sessionId());
+    }
+
+    public function __construct($userId, $key) {
+        $this->userId = $userId;
+        $this->key = $key;
+    }
+
+    public function getInterlaceKey() {
+        return substr($this->key, 0, 20).$this->userId.substr($this->key, 20);
+    }
 }
 
 
@@ -94,11 +122,14 @@ interface IDescriptor extends core\IArrayInterchange, opal\query\IDataRowProvide
     
     public function setInternalId($id);
     public function getInternalId();
+    public function getInternalIdHex();
     public function setExternalId($id);
     public function getExternalId();
+    public function getExternalIdHex();
     
     public function setTransitionId($id);
     public function getTransitionId();
+    public function getTransitionIdHex();
     public function applyTransition($newExternalId);
     
     public function setUserId($id);
@@ -130,7 +161,7 @@ interface IPerpetuator {
     public function perpetuate(IController $controller, IDescriptor $descriptor);
     public function destroy(IController $controller);
 
-    public function perpetuateRememberKey(IController $controller, user\RememberKey $key);
-    public function getRememberKey(IController $controller);
-    public function destroyRememberKey(IController $controller);
+    public function perpetuateRecallKey(IController $controller, RecallKey $key);
+    public function getRecallKey(IController $controller);
+    public function destroyRecallKey(IController $controller);
 }

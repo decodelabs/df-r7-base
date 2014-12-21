@@ -86,6 +86,10 @@ class Descriptor implements user\session\IDescriptor {
         return $this->internalId;
     }
 
+    public function getInternalIdHex() {
+        return bin2hex($this->internalId);
+    }
+
     public function setExternalId($id) {
         $this->externalId = $id;
         return $this;
@@ -93,6 +97,10 @@ class Descriptor implements user\session\IDescriptor {
 
     public function getExternalId() {
         return $this->externalId;
+    }
+
+    public function getExternalIdHex() {
+        return bin2hex($this->externalId);
     }
 
     public function setTransitionId($id) {
@@ -106,6 +114,10 @@ class Descriptor implements user\session\IDescriptor {
 
     public function getTransitionId() {
         return $this->transitionId;
+    }
+
+    public function getTransitionIdHex() {
+        return $this->bin2hex($this->transitionId);
     }
     
     public function applyTransition($newExternalId) {
