@@ -196,16 +196,13 @@ class Http implements arch\IDirectoryHelper {
     
 
 // Cookies
-    public function setCookie($name, $value=null) {
-        $application = $this->context->application;
-        $augmentor = $application->getResponseAugmentor();
+    public function setCookie($name, $value=null, $expiry=null, $httpOnly=null, $secure=null) {
+        $augmentor = $this->context->application->getResponseAugmentor();
         
         if($name instanceof link\http\IResponseCookie) {
             $cookie = $name;
         } else {
-            $cookie = $augmentor->newCookie($name, $value)
-                //->setBaseUrl($application->getRouter()->getBaseUrl())
-                ;
+            $cookie = $augmentor->newCookie($name, $value, $expiry, $httpOnly, $secure);
         }
         
         $augmentor->setCookieForAnyRequest($cookie);
@@ -217,15 +214,12 @@ class Http implements arch\IDirectoryHelper {
     }
     
     public function removeCookie($name) {
-        $application = $this->context->application;
-        $augmentor = $application->getResponseAugmentor();
+        $augmentor = $this->context->application->getResponseAugmentor();
         
         if($name instanceof link\http\IResponseCookie) {
             $cookie = $name;
         } else {
-            $cookie = $augmentor->newCookie($name, 'deleted')
-                //->setBaseUrl($application->getRouter()->getBaseUrl())
-                ;
+            $cookie = $augmentor->newCookie($name, 'deleted');
         }
         
         $augmentor->removeCookieForAnyRequest($cookie);
@@ -236,8 +230,12 @@ class Http implements arch\IDirectoryHelper {
         return $this->_httpRequest->getCookieData();
     }
 
-    public function newCookie($name, $value) {
-        return $this->context->application->getResponseAugmentor()->newCookie($name, $value);
+    public function newCookie($name, $value, $expiry=null, $httpOnly=null, $secure=null) {
+        return $this->context->application->getResponseAugmentor()->newCookie($name, $value, $expiry, $httpOnly, $secure);
+    }
+
+    public function getResponseAugmentor() {
+        return $this->context->application->getResponseAugmentor();
     }
 
 

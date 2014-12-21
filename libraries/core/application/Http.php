@@ -62,7 +62,9 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
 // Response augmentor
     public function getResponseAugmentor() {
         if(!$this->_responseAugmentor) {
-            $this->_responseAugmentor = new link\http\response\Augmentor();
+            $this->_responseAugmentor = new link\http\response\Augmentor(
+                $this->_router->getBaseUrl()
+            );
         }
         
         return $this->_responseAugmentor;

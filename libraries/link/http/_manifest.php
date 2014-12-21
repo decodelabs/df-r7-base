@@ -294,6 +294,9 @@ trait TStringResponse {
 
 
 interface IResponseAugmentor {
+    public function setBaseUrl(IUrl $url=null);
+    public function getBaseUrl();
+
     public function resetAll();
     public function resetCurrent();
     public function apply(IResponse $response);
@@ -312,7 +315,7 @@ interface IResponseAugmentor {
     public function removeHeaderAnyRequest($name);
 
     // Cookies
-    public function newCookie($name, $value);
+    public function newCookie($name, $value, $expiry=null, $httpOnly=null, $secure=null);
     
     public function setCookieForCurrentRequest(IResponseCookie $cookie);
     public function removeCookieForCurrentRequest($cookie);

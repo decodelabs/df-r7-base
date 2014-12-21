@@ -15,7 +15,6 @@ class Cookie implements link\http\IResponseCookie {
     
     protected $_name;
     protected $_value;
-    protected $_maxAge;
     protected $_expiryDate;
     protected $_domain;
     protected $_path;
@@ -26,6 +25,7 @@ class Cookie implements link\http\IResponseCookie {
         $parts = explode(';', $string);
         $main = explode('=', trim(array_shift($parts)), 2);
         $output = new self(array_shift($main), array_shift($main));
+        $hasMaxAge = false;
 
         foreach($parts as $part) {
             $set = explode('=', trim($part), 2);
@@ -35,10 +35,13 @@ class Cookie implements link\http\IResponseCookie {
             switch($key) {
                 case 'max-age':
                     $output->setMaxAge($value);
+                    $hasMaxAge = true;
                     break;
 
                 case 'expires':
-                    $output->setExpiryDate($value);
+                    if(!$hasMaxAge) {
+                        $output->setExpiryDate($value);
+                    }
                     break;
 
                 case 'domain':
@@ -62,9 +65,21 @@ class Cookie implements link\http\IResponseCookie {
         return $output;
     }
     
-    public function __construct($name, $value) {
+    public function __construct($name, $value, $expiry=null, $httpOnly=null, $secure=null) {
         $this->setName($name);
         $this->setValue($value);
+
+        if($expiry !== null) {
+            $this->setExpiryDate($expiry);
+        }
+
+        if($httpOnly !== null) {
+            $this->isHttpOnly((bool)$httpOnly);
+        }
+
+        if($secure !== null) {
+            $this->isSecure((bool)$secure);
+        }
     }
     
     public function setName($name) {
@@ -89,17 +104,20 @@ class Cookie implements link\http\IResponseCookie {
     
     public function setMaxAge($age=null) {
         if(!empty($age)) {
-            $age = core\time\Duration::factory($age);
+            $this->setExpiryDate(core\time\Date::factory()->add($age));
         } else {
-            $age = null;
+            $this->setExpiryDate(null);
         }
 
-        $this->_maxAge = $age;
         return $this;
     }
     
     public function getMaxAge() {
-        return $this->_maxAge;
+        if(!$this->_expiryDate) {
+            return null;
+        }
+
+        return $this->_expiryDate->toTimestamp() - time();
     }
     
     
@@ -169,10 +187,6 @@ class Cookie implements link\http\IResponseCookie {
 // String
     public function toString() {
         $output = $this->_name.'='.urlencode($this->_value);
-        
-        if($this->_maxAge) {
-            $output .= '; Max-Age='.$this->_maxAge->getSeconds();
-        }
         
         if($this->_expiryDate) {
             $output .= '; Expires='.$this->_expiryDate->toTimezone('GMT')->format(core\time\Date::COOKIE);

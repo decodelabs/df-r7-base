@@ -33,8 +33,13 @@ interface IState {
 
 
 class RememberKey {
+
     public $userId;
     public $key;
+
+    public function getInterlaceKey() {
+        return substr($this->key, 0, 20).$this->userId.substr($this->key, 20);
+    }
 }
 
 

@@ -11,6 +11,8 @@ use df\link;
 
 class Augmentor implements link\http\IResponseAugmentor {
     
+    protected $_baseUrl;
+
     protected $_globalHeaders = [];
     protected $_currentHeaders = [];
 
@@ -19,8 +21,18 @@ class Augmentor implements link\http\IResponseAugmentor {
 
     protected $_statusCode;
     
-    public function __construct() {
+    public function __construct(link\http\IUrl $baseUrl=null) {
+        $this->setBaseUrl($baseUrl);
         $this->resetAll();
+    }
+
+    public function setBaseUrl(link\http\IUrl $url=null) {
+        $this->_baseUrl = $url;
+        return $this;
+    }
+
+    public function getBaseUrl() {
+        return $this->_baseUrl;
     }
 
     public function resetAll() {
@@ -116,8 +128,14 @@ class Augmentor implements link\http\IResponseAugmentor {
 
 
 // Cookies
-    public function newCookie($name, $value) {
-        return new Cookie($name, $value);
+    public function newCookie($name, $value, $expiry=null, $httpOnly=null, $secure=null) {
+        $output = new Cookie($name, $value, $expiry, $httpOnly, $secure);
+
+        if($this->_baseUrl) {
+            $output->setBaseUrl($this->_baseUrl);
+        }
+
+        return $output;
     }
     
     

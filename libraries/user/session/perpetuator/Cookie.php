@@ -63,21 +63,14 @@ class Cookie implements user\session\IPerpetuator {
         
             if($application instanceof link\http\IResponseAugmentorProvider) {
                 $augmentor = $application->getResponseAugmentor();
-                $cookie = $this->_getSessionCookie($application, $outputId);
-                $augmentor->setCookieForAnyRequest($cookie);
+                $augmentor->setCookieForAnyRequest($augmentor->newCookie(
+                    $this->_sessionCookieName, $outputId, null, true
+                ));
             }
         }
         
         return $this;
     }  
-
-    protected function _getSessionCookie($application, $outputId) {
-        $augmentor = $application->getResponseAugmentor();
-                
-        return $augmentor->newCookie($this->_sessionCookieName, $outputId)
-            ->setBaseUrl($application->getRouter()->getBaseUrl())
-            ->isHttpOnly(true);
-    }
 
     public function destroy(user\session\IController $controller) {
         $application = df\Launchpad::$application;
@@ -86,17 +79,14 @@ class Cookie implements user\session\IPerpetuator {
             $augmentor = $application->getResponseAugmentor();
 
             // Remove session cookie
-            $augmentor->removeCookieForAnyRequest($this->_getSessionCookie(
-                $application,
-                'deleted'
+            $augmentor->removeCookieForAnyRequest($augmentor->newCookie(
+                $this->_sessionCookieName, 'deleted', null, true
             ));
 
             // Set remember cookie to ''
-            $augmentor->setCookieForAnyRequest(
-                $augmentor->newCookie($this->_rememberCookieName, '')
-                    ->setBaseUrl($application->getRouter()->getBaseUrl())
-                    ->isHttpOnly(true)
-            );
+            $augmentor->setCookieForAnyRequest($augmentor->newCookie(
+                $this->_rememberCookieName, '', null, true
+            ));
         }
 
         return $this;
@@ -107,27 +97,17 @@ class Cookie implements user\session\IPerpetuator {
 
         if($application instanceof link\http\IResponseAugmentorProvider) {
             $augmentor = $application->getResponseAugmentor();
-            $cookie = $this->_getRememberCookie($application, $key);
-            $augmentor->setCookieForAnyRequest($cookie);
+
+            $augmentor->setCookieForAnyRequest($augmentor->newCookie(
+                $this->_rememberCookieName, 
+                $key->getInterlaceKey(), 
+                '+1 month', 
+                true
+            ));
         }
 
         return $this;
     }  
-
-    protected function _getRememberCookie($application, user\RememberKey $key=null) {
-        $augmentor = $application->getResponseAugmentor();
-
-        if($key) {
-            $value = substr($key->key, 0, 20).$key->userId.substr($key->key, 20);
-        } else {
-            $value = 'deleted';
-        }
-
-        return $augmentor->newCookie($this->_rememberCookieName, $value)
-            ->setExpiryDate(core\time\Date::factory('+1 month'))
-            ->setBaseUrl($application->getRouter()->getBaseUrl())
-            ->isHttpOnly(true);
-    }
 
     public function getRememberKey(user\session\IController $controller) {
         $httpRequest = df\Launchpad::$application->getHttpRequest();
@@ -153,9 +133,8 @@ class Cookie implements user\session\IPerpetuator {
         if($application instanceof link\http\IResponseAugmentorProvider) {
             $augmentor = $application->getResponseAugmentor();
 
-            $augmentor->removeCookieForAnyRequest($this->_getRememberCookie(
-                $application, 
-                $this->getRememberKey($controller)
+            $augmentor->removeCookieForAnyRequest($augmentor->newCookie(
+                $this->_rememberCookieName, '', null, true
             ));
         }
 
