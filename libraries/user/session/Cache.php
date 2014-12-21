@@ -14,10 +14,7 @@ class Cache extends core\cache\Base {
     const CACHE_ID = 'session';
     
     public function insertDescriptor(user\session\IDescriptor $descriptor) {
-        $key = 'd:'.$descriptor->externalId;
-        
-        //core\debug()->info('insert cache descriptor: '.$key);
-        
+        $key = 'd:'.$descriptor->getExternalIdHex();
         
         $justStarted = $descriptor->justStarted;
         $descriptor->justStarted = false;
@@ -29,33 +26,22 @@ class Cache extends core\cache\Base {
     }
     
     public function fetchDescriptor($externalId) {
-        //core\debug()->info('fetch cache descriptor: d:'.$externalId);
-        
-        return $this->get('d:'.$externalId);
+        return $this->get('d:'.bin2hex($externalId));
     }
     
     public function removeDescriptor(user\session\IDescriptor $descriptor) {
-        $key = 'd:'.$descriptor->externalId;
-        
-        //core\debug()->info('remove cache descriptor: '.$key);
-        
+        $key = 'd:'.$descriptor->getExternalIdHex();
         $this->remove($key);
     }
     
     
     public function fetchNode(user\session\IDescriptor $descriptor, $namespace, $nsKey) {
-        $key = 'i:'.$descriptor->internalId.'/'.$namespace.'#'.$nsKey;
-        
-        //core\debug()->info('fetch cache node: '.$key);
-        
+        $key = 'i:'.$descriptor->getInternalIdHex().'/'.$namespace.'#'.$nsKey;
         return $this->get($key);
     }
     
     public function insertNode(user\session\IDescriptor $descriptor, \stdClass $node) {
-        $key = 'i:'.$descriptor->internalId.'/'.$node->namespace.'#'.$node->key;
-        
-        //core\debug()->info('insert cache node: '.$key);
-        
+        $key = 'i:'.$descriptor->getInternalIdHex().'/'.$node->namespace.'#'.$node->key;
         
         $isLocked = $node->isLocked;
         $node->isLocked = false;
@@ -67,10 +53,7 @@ class Cache extends core\cache\Base {
     }
     
     public function removeNode(user\session\IDescriptor $descriptor, $namespace, $nsKey) {
-        $key = 'i:'.$descriptor->internalId.'/'.$namespace.'#'.$nsKey;
-        
-        //core\debug()->info('remove cache node: '.$key);
-        
+        $key = 'i:'.$descriptor->getInternalIdHex().'/'.$namespace.'#'.$nsKey;
         $this->remove($key);
     }
 
