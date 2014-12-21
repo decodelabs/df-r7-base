@@ -231,10 +231,11 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
     }
     
     protected function _prepareHttpRequest() {
-        $this->_enforceCredentials();
         $this->_httpRequest = new link\http\request\Base(null, true);
+        $ip = $this->_httpRequest->getIp();
+        $this->_enforceCredentials($ip);
 
-        if($response = $this->_checkIpRanges($this->_httpRequest->getIp())) {
+        if($response = $this->_checkIpRanges($ip)) {
             return $response;
         }
 
@@ -268,8 +269,8 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
         return null;
     }
 
-    protected function _enforceCredentials() {
-        if(!$this->_credentials) {
+    protected function _enforceCredentials(link\IIp $ip) {
+        if(!$this->_credentials || $ip->isLoopback()) {
             return true;
         }
 
