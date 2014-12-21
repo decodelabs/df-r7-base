@@ -47,6 +47,7 @@ class TaskApcClear extends arch\task\Action {
             
             $config = $this->getConfig('core/application/http/Config');
             $baseUrls = @(array)$config->values['baseUrl'];
+            $credentials = null;
 
             /*
             if(isset($baseUrls['production']) && substr($baseUrls['production'], 0, 11) != 'production.') {
@@ -55,14 +56,24 @@ class TaskApcClear extends arch\task\Action {
             */
             if(isset($baseUrls['testing']) && substr($baseUrls['testing'], 0, 8) != 'testing.') {
                 $baseUrl = $baseUrls['testing'];
+                $credentials = $config->getCredentials('testing');
             } else if(isset($baseUrls['development'])) {
                 $baseUrl = $baseUrls['development'];
+                $credentials = $config->getCredentials('development');
             } else {
                 $this->throwError('Cannot find a suitable base url in config');
             }
 
             $url = new link\http\Url('http://'.rtrim($baseUrl, '/').'/cache/apc-clear.json');
             $url->query->import($this->request->query);
+
+            if($credentials !== null) {
+                $url->setCredentials(
+                    $credentials['username'],
+                    $credentials['password']
+                );
+            }
+
             $this->io->writeLine($url);
 
             $httpClient = new link\http\Client();
