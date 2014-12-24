@@ -145,6 +145,15 @@ class Uuid implements IUuid, core\IDumpable {
         
         return new self(self::_makeBin($uuid, 16));
     }
+
+    public static function isValid($uuid) {
+        try {
+            self::factory($uuid);
+            return true;
+        } catch(InvalidArgumentException $e) {
+            return false;
+        }
+    }
     
     
     public function __construct($bytes) {

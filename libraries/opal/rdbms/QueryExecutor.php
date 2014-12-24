@@ -921,8 +921,12 @@ abstract class QueryExecutor implements IQueryExecutor {
                 $output[] = 'CASE WHEN '.$this->defineClause($case['clause']).' THEN '.$case['weight'].' ELSE 0 END';
             }
 
-            $max = $field->getMaxScore();
-            $output = 'LEAST(('.implode(' + ', $output).') / '.$max.', 1)';
+            if(empty($output)) {
+                $output = '0';
+            } else {
+                $max = $field->getMaxScore();
+                $output = 'LEAST(('.implode(' + ', $output).') / '.$max.', 1)';
+            }
         } else {
             throw new opal\rdbms\UnexpectedValueException(
                 'Field type '.get_class($field).' is not currently supported'

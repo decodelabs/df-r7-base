@@ -37,7 +37,18 @@ class SearchController implements ISearchController, core\IDumpable {
 
     public function setPhrase($phrase) {
         $this->_phrase = (string)$phrase;
-        $this->_terms = $this->_extractTerms($this->_phrase);
+
+        if(is_numeric(ltrim($this->_phrase, '#'))) {
+            $this->_phrase = ltrim($this->_phrase, '#');
+            $this->_type = 'integer';
+            $this->_terms = [];
+        } else if(core\string\Uuid::isValid($this->_phrase)) {
+            $this->_type = 'guid';
+            $this->_terms = [];
+        } else {
+            $this->_terms = $this->_extractTerms($this->_phrase);
+        }
+
         $this->_query->getSource()->addOutputField($this);
 
         return $this;
@@ -141,6 +152,10 @@ class SearchController implements ISearchController, core\IDumpable {
             }
 
             $weights[] = $set['weight'];
+        }
+
+        if(empty($weights)) {
+            return 1;
         }
 
         $average = array_sum($weights) / count($weights);
