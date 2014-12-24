@@ -262,8 +262,8 @@ trait TScaffold_RecordLoader {
 // Record provider
 trait TScaffold_RecordDataProvider {
 
-    //const RECORD_ID_KEY = 'id';
-    //const RECORD_NAME_KEY = 'name';
+    //const RECORD_ID_FIELD = 'id';
+    //const RECORD_NAME_FIELD = 'name';
     //const RECORD_URL_KEY = null;
     //const RECORD_ADAPTER = null;
 
@@ -291,7 +291,7 @@ trait TScaffold_RecordDataProvider {
             return (string)$record->getPrimaryKeySet();
         }
 
-        $idKey = $this->getRecordIdKey();
+        $idKey = $this->getRecordIdField();
         return @$record[$idKey];
     }
 
@@ -300,7 +300,7 @@ trait TScaffold_RecordDataProvider {
             $record = $this->_ensureRecord();
         }
 
-        $key = $this->getRecordNameKey();
+        $key = $this->getRecordNameField();
 
         if(method_exists($this, '_getRecordName')) {
             $output = $this->_getRecordName($record, $key);
@@ -308,11 +308,11 @@ trait TScaffold_RecordDataProvider {
             if(isset($record[$key])) {
                 $output = $record[$key];
 
-                if($key == $this->getRecordIdKey() && is_numeric($output)) {
+                if($key == $this->getRecordIdField() && is_numeric($output)) {
                     $output = '#'.$output;
                 }
             } else {
-                $fallbackKey = $this->getRecordFallbackNameKey();
+                $fallbackKey = $this->getRecordFallbackNameField();
 
                 if(isset($record[$fallbackKey])) {
                     $output = $record[$fallbackKey];
@@ -373,18 +373,18 @@ trait TScaffold_RecordDataProvider {
         );
     }
 
-    public function getRecordIdKey() {
-        if(@static::RECORD_ID_KEY) {
-            return static::RECORD_ID_KEY;
+    public function getRecordIdField() {
+        if(@static::RECORD_ID_FIELD) {
+            return static::RECORD_ID_FIELD;
         }
 
         return 'id';
     }
 
-    public function getRecordNameKey() {
+    public function getRecordNameField() {
         if($this->_recordNameKey === null) {
-            if(@static::RECORD_NAME_KEY) {
-                $this->_recordNameKey = static::RECORD_NAME_KEY;
+            if(@static::RECORD_NAME_FIELD) {
+                $this->_recordNameKey = static::RECORD_NAME_FIELD;
             } else {
                 $adapter = $this->getRecordAdapter();
 
@@ -399,9 +399,9 @@ trait TScaffold_RecordDataProvider {
         return $this->_recordNameKey;
     }
 
-    public function getRecordFallbackNameKey() {
-        if(@static::RECORD_FALLBACK_NAME_KEY) {
-            return static::RECORD_FALLBACK_NAME_KEY;
+    public function getRecordFallbackNameField() {
+        if(@static::RECORD_FALLBACK_NAME_FIELD) {
+            return static::RECORD_FALLBACK_NAME_FIELD;
         }
 
         return 'name';
@@ -716,7 +716,7 @@ trait TScaffold_RecordListProvider {
         $args[0] = array_merge($this->_recordListFields, $args[0]);
         $output = new arch\component\template\CollectionList($this->context, $args);
         $output->setViewArg(lcfirst($this->getRecordKeyName()).'List');
-        $nameKey = $this->getRecordNameKey();
+        $nameKey = $this->getRecordNameField();
 
         foreach($output->getFields() as $field => $enabled) {
             if($enabled === true) {

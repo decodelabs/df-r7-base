@@ -44,10 +44,10 @@ interface IRecordDataProviderScaffold extends IRecordLoaderScaffold {
     public function getRecord();
     public function getRecordKeyName();
     public function getRecordId($record=null);
-    public function getRecordIdKey();
+    public function getRecordIdField();
     public function getRecordName($record=null);
-    public function getRecordNameKey();
-    public function getRecordFallbackNameKey();
+    public function getRecordNameField();
+    public function getRecordFallbackNameField();
     public function getRecordDescription($record=null);
     public function getRecordUrl($record=null);
     public function getRecordOperativeLinks($record, $mode);
