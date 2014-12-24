@@ -146,13 +146,12 @@ class Uuid implements IUuid, core\IDumpable {
         return new self(self::_makeBin($uuid, 16));
     }
 
-    public static function isValid($uuid) {
-        try {
-            self::factory($uuid);
+    public static function isValidString($uuid) {
+        if($uuid instanceof IUuid) {
             return true;
-        } catch(InvalidArgumentException $e) {
-            return false;
         }
+
+        return preg_match('/^[a-f0-9]{32}|[a-f0-9\-]{36}$/i', $uuid);
     }
     
     

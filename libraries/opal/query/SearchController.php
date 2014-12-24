@@ -42,7 +42,7 @@ class SearchController implements ISearchController, core\IDumpable {
             $this->_phrase = ltrim($this->_phrase, '#');
             $this->_type = 'integer';
             $this->_terms = [];
-        } else if(core\string\Uuid::isValid($this->_phrase)) {
+        } else if(core\string\Uuid::isValidString($this->_phrase)) {
             $this->_type = 'guid';
             $this->_terms = [];
         } else {
