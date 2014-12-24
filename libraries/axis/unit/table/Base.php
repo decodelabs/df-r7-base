@@ -21,8 +21,13 @@ abstract class Base implements
 
     use axis\TUnit;
     use axis\TAdapterBasedStorageUnit;
+    use axis\TSchemaBasedStorageUnit;
+
+    const NAME_FIELD = null;
+    const KEY_NAME = null;
     
     protected static $_defaultRecordClass = 'df\\opal\\record\\Base';
+    protected static $_defaultSearchFields = null;
     
     private $_recordClass;
     private $_schema;
@@ -329,6 +334,24 @@ abstract class Base implements
         }
         
         return $axisField->rewriteVirtualQueryClause($parent, $field, $operator, $value, $isOr);
+    }
+
+    public function getDefaultSearchFields() {
+        $fields = static::$_defaultSearchFields;
+
+        if(empty($fields)) {
+            $schema = $this->getUnitSchema();
+            $nameField = $this->getRecordNameField();
+            $fields = [$nameField => 2];
+
+            if($nameField != 'id' && $schema->hasField('id')) {
+                $fields['id'] = 10;
+            }
+
+            static::$_defaultSearchFields = $fields;
+        }
+
+        return $fields;
     }
 
     public function getQueryResultValueProcessors(array $fields=null) {

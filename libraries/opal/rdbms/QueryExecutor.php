@@ -129,6 +129,7 @@ abstract class QueryExecutor implements IQueryExecutor {
     public function buildLocalReadQuery($tableName, $forCount=false) {
         $sourceManager = $this->_query->getSourceManager();
         $source = $this->_query->getSource();
+        $search = $this->_query->getSearch();
         $outFields = [];
 
         $this->_isMultiDb = $sourceManager->countSourceAdapters() > 1;
@@ -173,7 +174,7 @@ abstract class QueryExecutor implements IQueryExecutor {
                 }
             }
         }
-        
+
         if(!$forCount) {
             $outFields = array_unique($outFields);
         }
@@ -913,6 +914,15 @@ abstract class QueryExecutor implements IQueryExecutor {
             $exec = self::factory($this->_adapter, $field->getCorrelationQuery());
             $sql = $exec->buildCorrelation($this->_stmt);
             $output = '('."\n".'    '.str_replace("\n", "\n    ", $sql)."\n".'  )';
+        } else if($field instanceof opal\query\ISearchController) {
+            $output = [];
+
+            foreach($field->generateCaseList() as $case) {
+                $output[] = 'CASE WHEN '.$this->defineClause($case['clause']).' THEN '.$case['weight'].' ELSE 0 END';
+            }
+
+            $max = $field->getMaxScore();
+            $output = 'LEAST(('.implode(' + ', $output).') / '.$max.', 1)';
         } else {
             throw new opal\rdbms\UnexpectedValueException(
                 'Field type '.get_class($field).' is not currently supported'

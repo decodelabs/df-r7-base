@@ -272,6 +272,13 @@ interface IWhereClauseQuery extends IQuery, IWhereClauseFactory {}
 interface IPrerequisiteClauseQuery extends IWhereClauseQuery, IPrerequisiteClauseFactory {}
 interface IHavingClauseQuery extends IReadQuery, IHavingClauseFactory {}
 
+interface ISearchableQuery extends IReadQuery {
+    public function searchFor($phrase, array $fields=null);
+    public function getSearch();
+    public function hasSearch();
+    public function clearSearch();
+}
+
 interface IGroupableQuery extends IReadQuery {
     public function groupBy($field1);
     public function getGroupFields();
@@ -439,6 +446,7 @@ interface ISelectQuery extends
     IPopulatableQuery,
     ICombinableQuery,
     IPrerequisiteClauseQuery,
+    ISearchableQuery,
     IGroupableQuery, 
     IHavingClauseQuery, 
     IOrderableQuery, 
@@ -498,6 +506,7 @@ interface IFetchQuery extends
     IRelationAttachableQuery,
     IPopulatableQuery, 
     IPrerequisiteClauseQuery, 
+    ISearchableQuery,
     IOrderableQuery, 
     ILimitableQuery, 
     IOffsettableQuery,
@@ -666,10 +675,12 @@ interface IIntegralAdapter extends IAdapter {
 
     public function prepareQueryClauseValue(IField $field, $value);
     public function rewriteVirtualQueryClause(IClauseFactory $parent, IVirtualField $field, $operator, $value, $isOr=false);
+    public function getDefaultSearchFields();
 
     public function getQueryResultValueProcessors(array $fields=null);
     public function applyQueryBlock(IQuery $query, $name, array $args);
     public function applyRelationQueryBlock(IQuery $query, $relationField, $name, array $args);
+
 }
 
 interface INaiveIntegralAdapter extends IAdapter {
@@ -699,6 +710,8 @@ interface ISource extends IAdapterAware {
     
     public function extrapolateIntegralAdapterField($name, $alias=null, opal\schema\IField $field=null);
     public function extrapolateIntegralAdapterFieldFromSchemaField($name, $alias, opal\schema\IField $field);
+
+    public function getFieldProcessor(IIntrinsicField $field);
 
     public function addOutputField(IField $field);
     public function addPrivateField(IField $field);
@@ -883,6 +896,7 @@ interface IFieldValueProcessor {
     public function normalizeSavedValue($value, opal\record\IRecord $forRecord=null);
     public function compareValues($value1, $value2);
     public function generateInsertValue(array $row);
+    public function getSearchFieldType();
 }
 
 
@@ -981,6 +995,21 @@ interface IExpressionValue {
 }
 
 
+// Search
+interface ISearchController extends IField {
+    public function setPhrase($phrase);
+    public function getPhrase();
+    public function getTerms();
+    public function setFields(array $fields);
+    public function addFields(array $fields);
+    public function getFields();
+
+    public function generateCaseList();
+    public function getMaxScore();
+    public function generateWhereClauseList();
+}
+
+
 // Paginator
 interface IPaginator extends core\collection\IOrderablePaginator {
     public function setOrderableFields($field1);
@@ -993,4 +1022,5 @@ interface IPaginator extends core\collection\IOrderablePaginator {
     public function setDefaultOffset($offset);
     public function setKeyMap(array $map);
     public function applyWith($data);
+    public function isApplied();
 }

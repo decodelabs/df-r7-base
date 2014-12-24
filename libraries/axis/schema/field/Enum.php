@@ -41,6 +41,10 @@ class Enum extends Base implements
         return $value;
     }
 
+    public function getSearchFieldType() {
+        return 'string';
+    }
+
 // Primitive
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
         return new opal\schema\Primitive_Enum($this, $this->getOptions());

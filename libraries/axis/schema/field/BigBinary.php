@@ -21,6 +21,10 @@ class BigBinary extends Base implements opal\schema\ILargeByteSizeRestrictedFiel
     public function compareValues($value1, $value2) {
         return (string)$value1 === (string)$value2;
     }
+
+    public function getSearchFieldType() {
+        return 'string';
+    }
     
     
 // Primitive

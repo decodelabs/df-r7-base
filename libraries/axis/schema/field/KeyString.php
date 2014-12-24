@@ -48,6 +48,10 @@ class KeyString extends String {
         return (string)$value1 === (string)$value2;
     }
 
+    public function getSearchFieldType() {
+        return 'string';
+    }
+
 // Ext. serialize
     protected function _importStorageArray(array $data) {
         parent::_importStorageArray($data);

@@ -101,7 +101,16 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                         
                         $isActive = true;
                     } else {
-                        $direction = 'ASC';
+                        switch($key) {
+                            case 'relevance':
+                                $direction = 'DESC';
+                                break;
+
+                            default:
+                                $direction = 'ASC';
+                                break;
+                        }
+                        
                         $isActive = false;
                     }
                     

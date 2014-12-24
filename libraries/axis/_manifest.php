@@ -328,6 +328,68 @@ interface ISchemaBasedStorageUnit extends IAdapterBasedStorageUnit, opal\schema\
     public function updateStorageFromSchema(axis\schema\ISchema $schema);
 
     public function getDefinedUnitSchemaVersion();
+
+    public function getRecordNameField();
+    public function getRecordKeyName();
+}
+
+trait TSchemaBasedStorageUnit {
+
+    //const NAME_FIELD = null;
+    //const KEY_NAME = null;
+
+    private $_recordNameField = null;
+    private $_recordKeyName = null;
+
+    public function getRecordNameField() {
+        if($this->_recordNameField === null) {
+            if(static::NAME_FIELD) {
+                $this->_recordNameField = static::NAME_FIELD;
+            } else {
+                $schema = $this->getUnitSchema();
+                $try = ['name', 'title', 'id'];
+
+                foreach($try as $field) {
+                    if($field = $schema->getField($field)) {
+                        $this->_recordNameField = $field->getName();
+                        break;
+                    }
+                }
+
+                if(!$this->_recordNameField) {
+                    foreach($schema->getFields() as $field) {
+                        if($field instanceof opal\schema\IMultiPrimitiveField
+                        || $field instanceof opal\schema\INullPrimitiveField) {
+                            continue;
+                        }
+
+                        $this->_recordNameField = $field->getName();
+                        break;
+                    }
+                }
+
+                if(!$this->_recordNameField) {
+                    throw new RuntimeException(
+                        'Unable to work out a suitable name field for '.$this->getUnitId()
+                    );
+                }
+            }
+        }
+
+        return $this->_recordNameField;
+    }
+
+    public function getRecordKeyName() {
+        if($this->_recordKeyName === null) {
+            if(static::KEY_NAME) {
+                $this->_recordKeyName = static::KEY_NAME;
+            } else {
+                $this->_recordKeyName = lcfirst($this->getUnitName());
+            }
+        }
+
+        return $this->_recordKeyName;
+    }
 }
 
 interface ISchemaDefinitionStorageUnit extends IStorageUnit {

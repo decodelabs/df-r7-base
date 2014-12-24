@@ -1403,7 +1403,34 @@ trait TQuery_WhereClauseFactory {
     }
     
     public function getWhereClauseList() {
-        return $this->_getWhereClauseList();
+        $output = $this->_getWhereClauseList();
+
+        if($this instanceof IPrerequisiteClauseFactory
+        && $this->hasPrerequisites()) {
+            $where = $output;
+            $output = new opal\query\clause\WhereList($this, false, true);
+        
+            foreach($this->getPrerequisites() as $clause) {
+                $output->_addClause($clause);
+            }
+
+            if(!$where->isEmpty()) {
+                $output->_addClause($where);
+            }
+        }
+
+        if($this instanceof ISearchableQuery
+        && $this->hasSearch()) {
+            $search = $this->getSearch();
+            $where = $output;
+            $output = $search->generateWhereClauseList();
+
+            if(!$where->isEmpty()) {
+                $output->_addClause($where);
+            }
+        }
+
+        return $output;
     }
     
     private function _getWhereClauseList() {
@@ -1415,8 +1442,21 @@ trait TQuery_WhereClauseFactory {
     }
     
     public function hasWhereClauses() {
-        return !empty($this->_whereClauseList) 
-            && !$this->_whereClauseList->isEmpty();
+        if(!empty($this->_whereClauseList)) {
+            return true;
+        }
+
+        if($this instanceof IPrerequisiteClauseFactory 
+        && $this->hasPrerequisites()) {
+            return true;
+        }
+
+        if($this instanceof ISearchableQuery
+        && $this->hasSearch()) {
+            return true;
+        }
+
+        return false;
     }
     
     public function clearWhereClauses() {
@@ -1429,36 +1469,33 @@ trait TQuery_WhereClauseFactory {
 }
 
 
-trait TQuery_PrerequisiteAwareWhereClauseFactory {
-    
-    use TQuery_WhereClauseFactory;
-    
-    public function getWhereClauseList() {
-        $this->_getWhereClauseList();
-        
-        if(empty($this->_prerequisites)) {
-            return $this->_whereClauseList;
-        }
-        
-        $output = new opal\query\clause\WhereList($this, false, true);
-        
-        foreach($this->_prerequisites as $clause) {
-            $output->_addClause($clause);
-        }
-        
-        if(!empty($this->_whereClauseList) && !$this->_whereClauseList->isEmpty()) {
-            $output->_addClause($this->_whereClauseList);
-        }
-        
-        return $output;
+
+
+/**************************
+ * Search
+ */
+trait TQuery_Searchable {
+
+    protected $_searchController;
+
+    public function searchFor($phrase, array $fields=null) {
+        $this->_searchController = new SearchController($this, $phrase, $fields);
+        return $this;
     }
-    
-    public function hasWhereClauses() {
-        return !empty($this->_prerequisites)
-            || (!empty($this->_whereClauseList) && !$this->_whereClauseList->isEmpty());
+
+    public function getSearch() {
+        return $this->_searchController;
+    }
+
+    public function hasSearch() {
+        return $this->_searchController !== null;
+    }
+
+    public function clearSearch() {
+        $this->_searchController = null;
+        return $this;
     }
 }
-
 
 
 

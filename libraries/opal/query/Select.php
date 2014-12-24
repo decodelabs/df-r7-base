@@ -22,7 +22,8 @@ class Select implements ISelectQuery, core\IDumpable {
     use TQuery_Populatable;
     use TQuery_Combinable;
     use TQuery_PrerequisiteClauseFactory;
-    use TQuery_PrerequisiteAwareWhereClauseFactory;
+    use TQuery_WhereClauseFactory;
+    use TQuery_Searchable;
     use TQuery_Groupable;
     use TQuery_HavingClauseFactory;
     use TQuery_Orderable;
@@ -137,6 +138,10 @@ class Select implements ISelectQuery, core\IDumpable {
         
         if($this->hasWhereClauses()) {
             $output['where'] = $this->getWhereClauseList();
+        }
+
+        if($this->_searchController) {
+            $output['search'] = $this->_searchController;
         }
         
         if(!empty($this->_group)) {

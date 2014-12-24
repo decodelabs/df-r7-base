@@ -9,7 +9,17 @@ use df\core;
 
 abstract class Util implements IUtil {
     
-    
+    public static function loadStemmer($locale=null) {
+        $locale = core\i18n\Locale::factory($locale);
+        $language = ucfirst($locale->getLanguage());
+        $class = 'df\\core\\string\\stemmer\\'.$language;
+
+        if(!class_exists($class)) {
+            return null;
+        }
+
+        return new $class();
+    }
     
 // Delimited
     public static function parseDelimited($input, $delimiter=',', $quoteMap='"\'', $terminator=null) {

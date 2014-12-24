@@ -129,6 +129,10 @@ class Guid extends Base implements opal\schema\IAutoGeneratorField {
                 return core\string\Uuid::comb();
         }
     }
+
+    public function getSearchFieldType() {
+        return 'guid';
+    }
     
     
 // Primitive

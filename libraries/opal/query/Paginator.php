@@ -15,6 +15,7 @@ class Paginator implements IPaginator {
 
     protected $_orderableFields = [];
     protected $_order = [];
+    protected $_isApplied = false;
     protected $_query;
     
     public function __construct(IReadQuery $query) {
@@ -156,6 +157,18 @@ class Paginator implements IPaginator {
 
         $source = $this->_query->getSource();
         $sourceManager = $this->_query->getSourceManager();
+
+        if($this->_query instanceof ISearchableQuery
+        && $this->_query->hasSearch()) {
+            $search = $this->_query->getSearch();
+
+            $directive = new OrderDirective(
+                $search, 'DESC'
+            );
+
+            $this->_order = array_merge([$search->getAlias() => $directive], $this->_order);
+            $this->addOrderableFields($search->getAlias());
+        }
         
         if(!$data instanceof core\collection\ITree) {
             $data = new core\collection\Tree($data);
@@ -211,10 +224,16 @@ class Paginator implements IPaginator {
             }
         }
 
+        $this->_isApplied = true;
+
         return $this->_query->setPaginator($this)
             ->limit($this->_limit)
             ->offset($this->_offset)
             ->setOrderDirectives($this->_order);
+    }
+
+    public function isApplied() {
+        return $this->_isApplied;
     }
 
     public function setTotal($total) {

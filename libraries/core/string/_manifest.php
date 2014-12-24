@@ -292,3 +292,14 @@ interface IUuid extends core\IStringProvider {
     public function getNode();
     public function getTime();
 }
+
+
+interface ITermParser {
+    public function parse($phrase, $natural=false);
+}
+
+interface IStemmer {
+    public function stem($phrase, $natural=false);
+    public function split($phrase, $natural=false);
+    public function stemWord($word, $natural=false);
+}

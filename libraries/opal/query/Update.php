@@ -16,7 +16,7 @@ class Update implements IUpdateQuery, core\IDumpable {
     use TQuery_Locational;
     use TQuery_DataUpdate;
     use TQuery_PrerequisiteClauseFactory;
-    use TQuery_PrerequisiteAwareWhereClauseFactory;
+    use TQuery_WhereClauseFactory;
     use TQuery_Orderable;
     use TQuery_Limitable;
     

@@ -14,6 +14,10 @@ final class Virtual implements axis\ISchemaDefinitionStorageUnit, axis\ISchemaBa
 
     use axis\TUnit;
     use axis\TAdapterBasedStorageUnit;
+    use axis\TSchemaBasedStorageUnit;
+
+    const NAME_FIELD = null;
+    const KEY_NAME = null;
 
     public static function loadVirtual(axis\IModel $model, array $args) {
         return new self($model);

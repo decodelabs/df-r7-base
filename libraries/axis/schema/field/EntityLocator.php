@@ -58,6 +58,10 @@ class EntityLocator extends Base implements
         return (string)$value1 === (string)$value2;
     }
 
+    public function getSearchFieldType() {
+        return 'string';
+    }
+
 
 
 // Rewriters

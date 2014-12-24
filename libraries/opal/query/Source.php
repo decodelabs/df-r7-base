@@ -201,6 +201,15 @@ class Source implements ISource, core\IDumpable {
     }
 
 
+    public function getFieldProcessor(IIntrinsicField $field) {
+        if(!$this->_adapter instanceof IIntegralAdapter) {
+            return null;
+        }
+
+        return $this->_adapter->getQueryAdapterSchema()->getField($field->getName());
+    }
+
+
     public function addOutputField(opal\query\IField $field) {
         $fields = [];
         

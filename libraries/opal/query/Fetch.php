@@ -18,7 +18,8 @@ class Fetch implements IFetchQuery, core\IDumpable {
     use TQuery_JoinConstrainable;
     use TQuery_RelationAttachable;
     use TQuery_PrerequisiteClauseFactory;
-    use TQuery_PrerequisiteAwareWhereClauseFactory;
+    use TQuery_WhereClauseFactory;
+    use TQuery_Searchable;
     use TQuery_Orderable;
     use TQuery_Limitable;
     use TQuery_Offsettable;
@@ -83,6 +84,10 @@ class Fetch implements IFetchQuery, core\IDumpable {
         
         if($this->hasWhereClauses()) {
             $output['where'] = $this->getWhereClauseList();
+        }
+
+        if($this->_searchController) {
+            $output['search'] = $this->_searchController;
         }
         
         if(!empty($this->_order)) {

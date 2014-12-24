@@ -36,6 +36,10 @@ class Integer extends Base implements
         return $value1 === $value2;
     }
 
+    public function getSearchFieldType() {
+        return 'integer';
+    }
+
 // Primitive
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
         $output = new opal\schema\Primitive_Integer($this, $this->_byteSize);

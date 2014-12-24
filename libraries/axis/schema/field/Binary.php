@@ -23,6 +23,9 @@ class Binary extends Base implements
         return (string)$value1 === (string)$value2;
     }
     
+    public function getSearchFieldType() {
+        return 'string';
+    }
     
 // Primitive
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {

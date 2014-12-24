@@ -241,7 +241,9 @@ trait TScaffold_RecordLoader {
 
         $adapter = $this->getRecordAdapter();
 
-        if($adapter instanceof axis\IUnit) {
+        if($adapter instanceof axis\ISchemaDefinitionStorageUnit) {
+            return $adapter->getRecordKeyName();
+        } else if($adapter instanceof axis\IUnit) {
             return lcfirst($adapter->getUnitName());
         } else {
             return 'record';
@@ -272,6 +274,8 @@ trait TScaffold_RecordDataProvider {
     protected $_record;
     protected $_recordAction;
     protected $_recordDetailsFields = [];
+
+    private $_recordNameKey;
 
     public function getRecord() {
         $this->_ensureRecord();
@@ -378,11 +382,21 @@ trait TScaffold_RecordDataProvider {
     }
 
     public function getRecordNameKey() {
-        if(@static::RECORD_NAME_KEY) {
-            return static::RECORD_NAME_KEY;
+        if($this->_recordNameKey === null) {
+            if(@static::RECORD_NAME_KEY) {
+                $this->_recordNameKey = static::RECORD_NAME_KEY;
+            } else {
+                $adapter = $this->getRecordAdapter();
+
+                if($adapter instanceof axis\ISchemaDefinitionStorageUnit) {
+                    $this->_recordNameKey = $adapter->getRecordNameField();
+                } else {
+                    $this->_recordNameKey = 'name';
+                }
+            }
         }
 
-        return 'name';
+        return $this->_recordNameKey;
     }
 
     public function getRecordFallbackNameKey() {
@@ -689,7 +703,7 @@ trait TScaffold_RecordListProvider {
     }
 
     public function applyRecordQuerySearch(opal\query\ISelectQuery $query, $search, $mode) {
-        $query->where($this->getRecordNameKey(), 'matches', $search);
+        $query->searchFor($search);
     }
 
     protected function _prepareRecordListQuery(opal\query\ISelectQuery $query, $mode) {}

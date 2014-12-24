@@ -47,6 +47,10 @@ class AutoId extends Base implements
 
         return $value;
     }
+
+    public function getSearchFieldType() {
+        return 'integer';
+    }
     
 // Primitive
     public function duplicateForRelation(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {

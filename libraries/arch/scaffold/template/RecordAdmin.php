@@ -126,6 +126,14 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
             ]);
         }
 
+        if($query->hasSearch()) {
+            $list->addCustomField('relevance', function($list) {
+                $list->addFieldAtIndex(0, 'relevance', function($record) {
+                    return $this->html->progressBar($record['relevance'] * 100);
+                });
+            });
+        }
+
         return [
             $searchBar, $list
         ];

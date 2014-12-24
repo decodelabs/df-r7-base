@@ -25,6 +25,10 @@ class BigString extends Base implements
         return core\string\Manipulator::compare($value1, $value2);
     }
 
+    public function getSearchFieldType() {
+        return 'string';
+    }
+
     
 // Primitive
     public function toPrimitive(axis\ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema) {
