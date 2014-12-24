@@ -54,6 +54,19 @@ abstract class Base implements
 
         return $output;
     }
+
+    public function getRelationUnit($fieldName) {
+        $schema = $this->getUnitSchema();
+        $field = $schema->getField($fieldName);
+
+        if(!$field instanceof axis\schema\IRelationField) {
+            throw new axis\LogicException(
+                'Unit '.$this->getUnitId().' does not have a relation field named '.$fieldName
+            );
+        }
+
+        return $field->getTargetUnit($this->getClusterId());
+    }
     
     public function getBridgeUnit($fieldName) {
         $schema = $this->getUnitSchema();
@@ -441,6 +454,48 @@ abstract class Base implements
         return new opal\record\Partial($this, $values);
     }
     
+
+
+// Query blocks
+    public function applyLinkRelationQueryBlock(opal\query\IReadQuery $query, $relationField) {
+        $schema = $this->getUnitSchema();
+        $primaries = $schema->getPrimaryFields();
+        $name = $this->getRecordNameField();
+
+        if(!$primaries) {
+            throw new axis\LogicException(
+                'Unit '.$this->getUnitId().' does not have a primary index'
+            );
+        }
+
+        $fields = [];
+        $combine = [];
+        $firstPrimary = null;
+
+        foreach($primaries as $qName => $field) {
+            $firstPrimary = $qName;
+            $fields[$qName] = $qName.' as '.$relationField.'|'.$qName;
+            $combine[$qName] = $relationField.'|'.$qName.' as '.$qName;
+        }
+
+        $fields[$name] = $name.' as '.$relationField.'|'.$name;
+        $combine[$name] = $relationField.'|'.$name.' as '.$name;
+
+
+        if($query instanceof opal\query\ISelectQuery) {
+            $query->leftJoinRelation($relationField, $fields)
+                ->combine($combine)
+                    ->nullOn($firstPrimary)
+                    ->asOne($relationField)
+                ->paginate()
+                    ->addOrderableFields($relationField.'|'.$name.' as '.$relationField)
+                    ->end();
+        } else {
+            $query->populateSelect($relationField, array_keys($fields));
+        }
+
+        return $this;
+    }
     
     
 // Entry point

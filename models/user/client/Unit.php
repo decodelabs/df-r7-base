@@ -13,6 +13,8 @@ use df\user;
 
 class Unit extends axis\unit\table\Base {
     
+    const NAME_FIELD = 'fullName';
+
     protected static $_defaultSearchFields = [
         'fullName' => 5,
         'nickName' => 3,
@@ -328,23 +330,6 @@ class Unit extends axis\unit\table\Base {
                 $request->setAttribute('rememberMe', (bool)true);
                 $this->context->user->authenticate($request);
             }
-        }
-    }
-
-
-
-// Query blocks
-    public function applyLinkRelationQueryBlock(opal\query\IReadQuery $query, $relationField) {
-        if($query instanceof opal\query\ISelectQuery) {
-            $query->leftJoinRelation($relationField, 'id as '.$relationField.'Id', 'fullName as '.$relationField.'Name')
-                ->combine($relationField.'Id as id', $relationField.'Name as fullName')
-                    ->nullOn('id')
-                    ->asOne($relationField)
-                ->paginate()
-                    ->addOrderableFields($relationField.'Name')
-                    ->end();
-        } else {
-            $query->populateSelect($relationField, 'id', 'fullName');
         }
     }
 }

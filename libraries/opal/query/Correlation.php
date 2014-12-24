@@ -21,12 +21,14 @@ class Correlation implements ICorrelationQuery, core\IDumpable {
     use TQuery_Offsettable;
 
     protected $_source;
+    protected $_sourceManager;
     protected $_fieldAlias;
     protected $_applicator;
 
-    public function __construct(ISourceProvider $parent, ISource $source, $fieldAlias=null) {
+    public function __construct(ISourceProvider $parent, ISourceManager $sourceManager, ISource $source, $fieldAlias=null) {
         $this->_parent = $parent;
         $this->_source = $source;
+        $this->_sourceManager = $sourceManager;
         $this->_fieldAlias = $fieldAlias;
 
         if($this->_fieldAlias === null) {
@@ -52,7 +54,7 @@ class Correlation implements ICorrelationQuery, core\IDumpable {
 
 // Sources
     public function getSourceManager() {
-        return $this->_parent->getSourceManager();
+        return $this->_sourceManager;
     }
     
     public function getSource() {

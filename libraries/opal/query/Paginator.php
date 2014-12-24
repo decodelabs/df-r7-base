@@ -55,7 +55,12 @@ class Paginator implements IPaginator {
         }
         
         foreach($fields as $key => $field) {
-            $field = $sourceManager->extrapolateField($source, $field);
+            $parts = explode(' as ', $field);
+            $field = $sourceManager->extrapolateField($source, array_shift($parts));
+
+            if(!empty($parts)) {
+                $key = trim(array_shift($parts));
+            }
             
             if(!is_string($key)) {
                 $key = $field->getAlias();
@@ -209,10 +214,6 @@ class Paginator implements IPaginator {
                     
                     if(isset($t[1])) {
                         $dir = trim(strtoupper($t[1]));
-                        
-                        if($dir != 'ASC' && $dir != 'DESC') {
-                            $dir = 'ASC';
-                        }
                     }
                     
                     $orderList[$key] = new OrderDirective($this->_orderableFields[$key], $dir);

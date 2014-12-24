@@ -181,6 +181,10 @@ class Initiator implements IInitiator {
         $fields = core\collection\Util::flattenArray($fields);
         $isAll = false;
 
+        if($selectFields) {
+            $selectFields = core\collection\Util::flattenArray($selectFields);
+        }
+
         switch($type) {
             case IPopulateQuery::TYPE_ALL:
                 $isAll = true;
@@ -409,6 +413,7 @@ class Initiator implements IInitiator {
             case IQueryTypes::SELECT:
                 $sourceManager = new opal\query\SourceManager($this->_transaction);
                 $source = $sourceManager->newSource($sourceAdapter, $alias, $this->getFields());
+                $source->isPrimary(true);
                 
                 if(!$source->getAdapter()->supportsQueryType($this->_mode)) {
                     throw new LogicException(
@@ -422,6 +427,7 @@ class Initiator implements IInitiator {
             case IQueryTypes::UNION:
                 $sourceManager = $this->_union->getSourceManager();
                 $source = $sourceManager->newSource($sourceAdapter, $alias, $this->getFields(), false, true);
+                $source->isPrimary(true);
 
                 if(!$source->getAdapter()->supportsQueryType($this->_mode)) {
                     throw new LogicException(
@@ -437,6 +443,7 @@ class Initiator implements IInitiator {
             case IQueryTypes::FETCH:
                 $sourceManager = new opal\query\SourceManager($this->_transaction);
                 $source = $sourceManager->newSource($sourceAdapter, $alias, ['*']);
+                $source->isPrimary(true);
                 
                 if(!$source->getAdapter()->supportsQueryType($this->_mode)) {
                     throw new LogicException(
@@ -450,6 +457,7 @@ class Initiator implements IInitiator {
             case IQueryTypes::DELETE:
                 $sourceManager = new opal\query\SourceManager($this->_transaction);
                 $source = $sourceManager->newSource($sourceAdapter, $alias, null, true);
+                $source->isPrimary(true);
                 
                 if(!$source->getAdapter()->supportsQueryType($this->_mode)) {
                     throw new LogicException(
@@ -461,7 +469,9 @@ class Initiator implements IInitiator {
                 return new Delete($sourceManager, $source);    
                 
             case IQueryTypes::CORRELATION:
-                $sourceManager = $this->_parentQuery->getSourceManager();
+                $sourceManager = new opal\query\SourceManager($this->_transaction);
+                $sourceManager->setParentSourceManager($this->_parentQuery->getSourceManager());
+
                 foreach($this->_fieldMap as $fieldName => $fieldAlias) { break; }
 
                 if($fieldAlias !== null) {
@@ -478,7 +488,7 @@ class Initiator implements IInitiator {
                     );
                 }
 
-                $output = new Correlation($this->_parentQuery, $source, $fieldAlias);
+                $output = new Correlation($this->_parentQuery, $sourceManager, $source, $fieldAlias);
 
                 if($this->_applicator) {
                     $output->setApplicator($this->_applicator);
@@ -533,6 +543,7 @@ class Initiator implements IInitiator {
                 $sourceManager->setParentSourceManager($this->_parentQuery->getSourceManager());
 
                 $source = $sourceManager->newSource($sourceAdapter, $alias, $fields);
+                $source->isPrimary(true);
                 
                 if($source->getAdapterHash() == $this->_parentQuery->getSource()->getAdapterHash()) {
                     if(!$source->getAdapter()->supportsQueryType($this->_mode)) {
@@ -591,6 +602,7 @@ class Initiator implements IInitiator {
         switch($this->_mode) {
             case IQueryTypes::INSERT:
                 $source = $sourceManager->newSource($sourceAdapter, $alias, null, true);
+                $source->isPrimary(true);
                 
                 if(!$source->getAdapter()->supportsQueryType($this->_mode)) {
                     throw new LogicException(
@@ -603,6 +615,7 @@ class Initiator implements IInitiator {
                 
             case IQueryTypes::BATCH_INSERT:
                 $source = $sourceManager->newSource($sourceAdapter, $alias, null, true);
+                $source->isPrimary(true);
                 
                 if(!$source->getAdapter()->supportsQueryType($this->_mode)) {
                     throw new LogicException(
@@ -631,6 +644,7 @@ class Initiator implements IInitiator {
         switch($this->_mode) {
             case IQueryTypes::REPLACE:
                 $source = $sourceManager->newSource($sourceAdapter, $alias, null, true);
+                $source->isPrimary(true);
                 
                 if(!$source->getAdapter()->supportsQueryType($this->_mode)) {
                     throw new LogicException(
@@ -643,6 +657,7 @@ class Initiator implements IInitiator {
                 
             case IQueryTypes::BATCH_REPLACE:
                 $source = $sourceManager->newSource($sourceAdapter, $alias, null, true);
+                $source->isPrimary(true);
                 
                 if(!$source->getAdapter()->supportsQueryType($this->_mode)) {
                     throw new LogicException(
@@ -655,6 +670,7 @@ class Initiator implements IInitiator {
                 
             case IQueryTypes::UPDATE:
                 $source = $sourceManager->newSource($sourceAdapter, $alias, null, true);
+                $source->isPrimary(true);
                 
                 if(!$source->getAdapter()->supportsQueryType($this->_mode)) {
                     throw new LogicException(

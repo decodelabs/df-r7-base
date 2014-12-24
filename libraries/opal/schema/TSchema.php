@@ -709,6 +709,12 @@ trait TSchema_IndexProvider {
     public function getPrimaryIndex() {
         return $this->_primaryIndex;
     }
+
+    public function getPrimaryFields() {
+        if($this->_primaryIndex) {
+            return $this->_primaryIndex->getFields();
+        }
+    }
     
     public function getLastPrimaryIndex() {
         return $this->_lastPrimaryIndex;

@@ -280,6 +280,11 @@ trait TRelationField {
 */
 
 
+    public function canReturnNull() {
+        return true;
+    }
+
+
     public function rewritePopulateQueryToAttachment(opal\query\IPopulateQuery $populate) {
         return null;
     }

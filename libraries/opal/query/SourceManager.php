@@ -399,14 +399,15 @@ class SourceManager implements ISourceManager, core\IDumpable {
                     );
                 }
                 
-                if($alias === null) {
-                    $alias = $name;
-                }
                 
                 // If adapter supports virtuals, give it a chance to dereference it from the alias
                 $field = $source->extrapolateIntegralAdapterField($name, $alias);
 
                 if(!$field) {
+                    if($alias === null) {
+                        $alias = $name;
+                    }
+                    
                     $field = new opal\query\field\Intrinsic($source, $name, $alias);
                 }
             }
@@ -439,14 +440,27 @@ class SourceManager implements ISourceManager, core\IDumpable {
         }
 
         $sourceId = $source->getId();
+        $keySources = [];
 
         foreach($this->_sources as $testSource) {
-            if($testSource !== $source && $testSource->getId() == $sourceId) {
+            if($testSource->getId() == $sourceId) {
+                if($testSource !== $source) {
+                    $keySources[] = $testSource;
+                }
+                
                 continue;
             }
 
             if($field = $testSource->getFieldByAlias($alias)) {
                 return $field;
+            }
+        }
+
+        if(!empty($keySources)) {
+            foreach($keySources as $testSource) {
+                if($field = $testSource->getFieldByAlias($alias)) {
+                    return $field;
+                }
             }
         }
         

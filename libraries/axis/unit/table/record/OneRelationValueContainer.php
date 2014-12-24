@@ -36,7 +36,7 @@ class OneRelationValueContainer implements
         if($this->_value->isNull()) {
             return $this;
         }
-        
+
         $localUnit = $record->getRecordAdapter();
         $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
         $targetUnit = axis\Model::loadUnitFromId($this->_field->getTargetUnitId(), $clusterId);
@@ -53,7 +53,7 @@ class OneRelationValueContainer implements
     }
 
     protected function _applyInversePopulation($parentRecord) {
-        if($parentRecord && $this->_record 
+        if($parentRecord && $this->_record instanceof opal\record\IRecord
         && $this->_field instanceof opal\schema\IInverseRelationField) {
             $inverseValue = $this->_record->getRaw($this->_field->getTargetField());
             $inverseValue->populateInverse($parentRecord);

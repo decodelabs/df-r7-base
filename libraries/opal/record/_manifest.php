@@ -90,7 +90,16 @@ trait TAccessLockProvider {
 }
 
 
-interface IRecord extends core\collection\IMappedCollection, core\IExporterValueMap, user\IAccessLock, mesh\entity\IEntity, IRecordAdapterProvider, IPrimaryKeySetProvider {
+interface IDataProvider extends core\collection\IMappedCollection, user\IAccessLock, mesh\entity\IEntity, IRecordAdapterProvider, IPrimaryKeySetProvider {
+    public function getRaw($key);
+    
+    public function getValuesForStorage();
+
+    public function populateWithPreparedData(array $row);
+    public function populateWithRawData($row);
+}
+
+interface IRecord extends IDataProvider, core\IExporterValueMap {
     public function isNew();
     public function makeNew(array $newValues=null);
     public function spawnNew(array $newValues=null);
@@ -102,12 +111,10 @@ interface IRecord extends core\collection\IMappedCollection, core\IExporterValue
     public function getChanges();
     public function getChangedValues();
     public function getChangesForStorage();
-    public function getValuesForStorage();
     public function getUpdatedValues();
     public function getUpdatedValuesForStorage();
     public function getAddedValues();
     public function getAddedValuesForStorage();
-    public function getRaw($key);
     public function getRawId($key);
     public function getOriginal($key);
     public function getOriginalValues();
@@ -116,9 +123,6 @@ interface IRecord extends core\collection\IMappedCollection, core\IExporterValue
     public function acceptChanges($insertId=null, array $insertData=null);
     public function markAsChanged($field);
 
-    public function populateWithPreparedData(array $row);
-    public function populateWithRawData($row);
-    
     public function save(opal\record\task\ITaskSet $taskSet=null);
     public function delete(opal\record\task\ITaskSet $taskSet=null);
     public function deploySaveTasks(opal\record\task\ITaskSet $taskSet);
@@ -132,13 +136,9 @@ interface ILocationalRecord extends IRecord {
 
 
 
-interface IPartial extends core\collection\IMappedCollection, user\IAccessLock, mesh\entity\IEntity, IRecordAdapterProvider, IPrimaryKeySetProvider {
+interface IPartial extends IDataProvider {
     public function setRecordAdapter(opal\query\IAdapter $adapter);
     public function isBridge($flag=null);
-    public function getValuesForStorage();
-
-    public function populateWithPreparedData(array $row);
-    public function populateWithRawData($row);
 }
 
 

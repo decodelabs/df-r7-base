@@ -92,13 +92,13 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                 $colClasses[$fieldKey][] = 'field-'.$key;
 
                 if($orderData !== null && in_array($key, $orderFields)) {
+                    $nullOrder = 'ascending';
+                    $isNullable = null;
+
                     if(isset($orderData[$key])) {
-                        if($orderData[$key]->isAscending()) {
-                            $direction = 'DESC';
-                        } else {
-                            $direction = 'ASC';
-                        }
-                        
+                        $direction = $orderData[$key]->getReversedDirection();
+                        $isNullable = $orderData[$key]->isFieldNullable();
+                        $nullOrder = $orderData[$key]->getNullOrder();
                         $isActive = true;
                     } else {
                         switch($key) {
@@ -116,10 +116,10 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                     
                     $query->__set($keyMap['order'], $key.' '.$direction);
                     
-                    $class = 'link-order-'.strtolower($direction);
+                    $class = 'order '.strtolower(trim($direction, '!^*')).' null-'.$nullOrder;
                     
                     if($isActive) {
-                        $class .= ' link-order-active';
+                        $class .= ' active';
                     }
 
                     if(!empty($tagContent)) {
@@ -132,6 +132,31 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                             'rel' => 'nofollow'
                         ]))
                         ->render();
+
+                    if($isActive && $isNullable !== false) {
+                        $direction = trim($direction, '!^*') == 'DESC' ? 'ASC' : 'DESC';
+
+                        switch($nullOrder) {
+                            case 'ascending':
+                            case 'descending':
+                                $direction .= '!';
+                                $newOrder = 'last';
+                                break;
+
+                            default:
+                                $newOrder = 'ascending';
+                                break;
+                        }
+
+                        $query->__set($keyMap['order'], $key.' '.$direction);
+
+                        $tagContent[] = (new aura\html\Element('a', $newOrder == 'ascending' ? '○' : '●', [
+                                'href' => $view->uri->__invoke($request),
+                                'class' => 'null-order null-'.$newOrder,
+                                'rel' => 'nofollow'
+                            ]))
+                            ->render();
+                    }
                 } else {
                     $tagContent[] = $label;
                 }

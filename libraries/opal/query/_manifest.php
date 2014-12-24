@@ -418,9 +418,21 @@ interface IAttachQuery extends
 interface IOrderDirective extends core\IStringProvider {
     public function setField(IField $field);
     public function getField();
+    public function isFieldNullable();
     public function setDirection($direction);
+    public function getDirection();
+    public function getReversedDirection();
     public function isDescending($flag=null);
     public function isAscending($flag=null);
+    public function setNullOrder($order);
+    public function getNullOrder();
+}
+
+class NullOrder extends core\lang\Enum {
+    const FIRST = 'first';
+    const LAST = 'last';
+    const ASCENDING = 'ascending';
+    const DESCENDING = 'descending';
 }
 
 
@@ -705,6 +717,7 @@ interface ISource extends IAdapterAware {
     public function getHash();
     public function getDisplayName();
     public function isDerived();
+    public function isPrimary($flag=null);
     
     public function handleQueryException(IQuery $query, \Exception $e);
     
@@ -897,6 +910,7 @@ interface IFieldValueProcessor {
     public function compareValues($value1, $value2);
     public function generateInsertValue(array $row);
     public function getSearchFieldType();
+    public function canReturnNull();    
 }
 
 

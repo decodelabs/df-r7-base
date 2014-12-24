@@ -12,6 +12,7 @@ use df\opal;
 class OrderDirective implements IOrderDirective, core\IDumpable {
     
     protected $_isDescending = false;
+    protected $_nullOrder = 'ascending';
     protected $_field;
     
     public function __construct(opal\query\IField $field, $direction=null) {
@@ -27,9 +28,36 @@ class OrderDirective implements IOrderDirective, core\IDumpable {
     public function getField() {
         return $this->_field;
     }
+
+    public function isFieldNullable() {
+        if($this->_field instanceof opal\query\IIntrinsicField) {
+            $source = $this->_field->getSource();
+
+            if(!$source->isPrimary()) {
+                return true;
+            }
+
+            if($processor = $source->getFieldProcessor($this->_field)) {
+                return $processor->canReturnNull();
+            }
+            
+            return null;
+        } else if($this->_field instanceof opal\query\ISearchController) {
+            return false;
+        } else {
+            return null;
+        }
+    }
     
     public function setDirection($direction) {
         if(is_string($direction)) {
+            if(!ctype_alpha(substr($direction, -1))) {
+                $modifier = substr($direction, -1);
+                $direction = substr($direction, 0, -1);
+            } else {
+                $modifier = null;
+            }
+
             switch(strtolower($direction)) {
                 case 'desc':
                 case 'd':
@@ -39,10 +67,72 @@ class OrderDirective implements IOrderDirective, core\IDumpable {
                 default:
                     $direction = false;
             }
+
+            switch($modifier) {
+                case '!':
+                    $this->setNullOrder('last');
+                    break;
+
+                case '^':
+                    $this->setNullOrder('first');
+                    break;
+
+                case '*':
+                    $this->setNullOrder('descending');
+                    break;
+            }
         }
         
         $this->_isDescending = (bool)$direction;
         return $this;
+    }
+
+    public function getDirection() {
+        if($this->_isDescending) {
+            $output = 'DESC';
+        } else {
+            $output = 'ASC';
+        }
+
+        switch($this->_nullOrder) {
+            case 'last':
+                $output .= '!';
+                break;
+
+            case 'first':
+                $output .= '^';
+                break;
+
+            case 'descending':
+                $output .= '*';
+                break;
+        }
+
+        return $output;
+    }
+
+    public function getReversedDirection() {
+        if($this->_isDescending) {
+            $output = 'ASC';
+        } else {
+            $output = 'DESC';
+        }
+
+        switch($this->_nullOrder) {
+            case 'last':
+                $output .= '!';
+                break;
+
+            case 'first':
+                $output .= '^';
+                break;
+
+            case 'descending':
+                $output .= '*';
+                break;
+        }
+
+        return $output;
     }
     
     public function isDescending($flag=null) {
@@ -62,17 +152,18 @@ class OrderDirective implements IOrderDirective, core\IDumpable {
         
         return !$this->_isDescending;
     }
+
+    public function setNullOrder($order) {
+        $this->_nullOrder = NullOrder::normalize($order);
+        return $this;
+    }
+
+    public function getNullOrder() {
+        return $this->_nullOrder;
+    }
     
     public function toString() {
-        $output = $this->_field->getQualifiedName().' ';
-        
-        if($this->_isDescending) {
-            $output .= 'DESC';
-        } else {
-            $output .= 'ASC';
-        }
-        
-        return $output;
+        return $this->_field->getQualifiedName().' '.$this->getDirection();
     }
     
     public function __toString() {

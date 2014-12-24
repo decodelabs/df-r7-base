@@ -112,6 +112,10 @@ abstract class Base implements axis\schema\IField, \Serializable, core\IDumpable
     public function getSearchFieldType() {
         return null;
     }
+
+    public function canReturnNull() {
+        return $this->isNullable();
+    }
     
     
 // Validation

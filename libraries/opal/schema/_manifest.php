@@ -115,6 +115,7 @@ interface IIndexProvider extends ISchema {
     public function getOriginalIndexNameFor($name);
     public function setPrimaryIndex($index);
     public function getPrimaryIndex();
+    public function getPrimaryFields();
     public function getLastPrimaryIndex();
     public function hasPrimaryIndexChanged();
     public function getIndexes();

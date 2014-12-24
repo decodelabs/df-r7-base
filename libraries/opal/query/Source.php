@@ -17,6 +17,7 @@ class Source implements ISource, core\IDumpable {
     protected $_privateFields = [];
 
     protected $_alias;
+    protected $_isPrimary = false;
     private $_id;
     
     public function __construct(IAdapter $adapter, $alias) {
@@ -50,6 +51,15 @@ class Source implements ISource, core\IDumpable {
     
     public function isDerived() {
         return $this->_adapter instanceof IDerivedSourceAdapter;
+    }
+
+    public function isPrimary($flag=null) {
+        if($flag !== null) {
+            $this->_isPrimary = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_isPrimary;
     }
 
     public function handleQueryException(IQuery $query, \Exception $e) {
@@ -136,7 +146,7 @@ class Source implements ISource, core\IDumpable {
 
                 if(!$primaryIndex = $schema->getPrimaryIndex()) {
                     throw new axis\schema\RuntimeException(
-                        'Unit '.$this->getUnitId().' does not have a primary index'
+                        'Unit '.$this->_adapter->getUnitId().' does not have a primary index'
                     );
                 }
 
@@ -154,6 +164,24 @@ class Source implements ISource, core\IDumpable {
             }
 
 
+            // Get name
+            if($name == '@name') {
+                $name = $this->_adapter->getRecordNameField();
+                return new opal\query\field\Intrinsic($this, $name, $alias);
+            }
+
+
+            if(substr($name, 0, 1) == '@') {
+                throw new axis\schema\RuntimeException(
+                    'Unknown symbolic field: '.$name
+                );
+            }
+
+            if($alias === null) {
+                $alias = $name;
+            }
+
+
             // Dereference from source manager
             if($field === null) {
                 $schema = $this->_adapter->getQueryAdapterSchema();
@@ -166,19 +194,34 @@ class Source implements ISource, core\IDumpable {
             // Generic
             return $this->extrapolateIntegralAdapterFieldFromSchemaField($name, $alias, $field);
         } else if($this->_adapter instanceof INaiveIntegralAdapter) {
-            if(!$primaryIndex = $this->_adapter->getPrimaryIndex()) {
+            if($name == '@primary') {
+                if(!$primaryIndex = $this->_adapter->getPrimaryIndex()) {
+                    throw new axis\schema\RuntimeException(
+                        'Unit '.$this->getUnitId().' does not have a primary index'
+                    );
+                }
+
+                $fields = [];
+
+                foreach($primaryIndex->getFields() as $fieldName => $indexField) {
+                    $fields[] = new opal\query\field\Intrinsic($this, $fieldName, $fieldName);
+                }
+
+                return new opal\query\field\Virtual($this, $name, $alias, $fields);
+            }
+
+            if(substr($name, 0, 1) == '@') {
                 throw new axis\schema\RuntimeException(
-                    'Unit '.$this->getUnitId().' does not have a primary index'
+                    'Unknown symbolic field: '.$name
                 );
             }
 
-            $fields = [];
-
-            foreach($primaryIndex->getFields() as $fieldName => $indexField) {
-                $fields[] = new opal\query\field\Intrinsic($this, $fieldName, $fieldName);
+            if($alias === null) {
+                $alias = $name;
             }
 
-            return new opal\query\field\Virtual($this, $name, $alias, $fields);
+            // Generic
+            return $this->extrapolateIntegralAdapterFieldFromSchemaField($name, $alias, $field);
         }
     }
 
@@ -214,7 +257,9 @@ class Source implements ISource, core\IDumpable {
         $fields = [];
         
         if($field instanceof opal\query\IVirtualField) {
-            //$fields = $field->getTargetFields();
+            if(substr($field->getName(), 0, 1) == '@') {
+                $fields = $field->getTargetFields();
+            }
         } else if($field instanceof opal\query\IWildcardField 
         && $this->_adapter instanceof IIntegralAdapter) {
             $muteFields = $field->getMuteFields();

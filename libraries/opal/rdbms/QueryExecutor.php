@@ -1656,6 +1656,7 @@ abstract class QueryExecutor implements IQueryExecutor {
         }
 
         $orderFields = [];
+        $first = true;
         
         foreach($directives as $directive) {
             $field = $directive->getField();
@@ -1670,8 +1671,32 @@ abstract class QueryExecutor implements IQueryExecutor {
                 } else {
                     $directiveString = $this->defineFieldReference($field, true, $forUpdateOrDelete);
                 }
+
+                $isDescending = $directive->isDescending();
+
+                if($first) {
+                    switch($directive->getNullOrder()) {
+                        case 'first':
+                            $orderFields[] = 'ISNULL('.$directiveString.') DESC';
+                            break;
+
+                        case 'last':
+                            $orderFields[] = 'ISNULL('.$directiveString.') ASC';
+                            break;
+
+                        case 'ascending':
+                            break;
+
+                        case 'descending':
+                            $orderFields[] = 'ISNULL('.$directiveString.') '.($isDescending ? 'DESC' : 'ASC');
+                            break;
+                    }
+
+                    $first = false;
+                }
+
                 
-                if($directive->isDescending()) {
+                if($isDescending) {
                     $directiveString .= ' DESC';
                 } else {
                     $directiveString .= ' ASC';

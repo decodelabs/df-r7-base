@@ -132,6 +132,10 @@ class Partial implements IPartial, core\IDumpable {
         return $this;
     }
 
+    public function getRaw($key) {
+        return $this->get($key);
+    }
+
 
 // Mesh
     public function getEntityLocator() {
