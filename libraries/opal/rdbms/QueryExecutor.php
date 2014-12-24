@@ -373,15 +373,13 @@ abstract class QueryExecutor implements IQueryExecutor {
         
         foreach($this->_query->getRows() as $row) {
             foreach($fieldList as $key) {
-                $id = $this->_stmt->generateUniqueKey();
                 $value = null;
                 
                 if(isset($row[$key])) {
                     $value = $row[$key];
                 }
                 
-                $this->_stmt->bind($id, $value);
-                $row[$key] = ':'.$id;
+                $row[$key] = ':'.$this->_stmt->autoBind($value);
             }
             
             $rows[] = '('.implode(',', $row).')';
@@ -432,15 +430,13 @@ abstract class QueryExecutor implements IQueryExecutor {
 
         foreach($this->_query->getRows() as $row) {
             foreach($fieldList as $key) {
-                $id = $this->_stmt->generateUniqueKey();
                 $value = null;
                 
                 if(isset($row[$key])) {
                     $value = $row[$key];
                 }
                 
-                $this->_stmt->bind($id, $value);
-                $row[$key] = ':'.$id;
+                $row[$key] = ':'.$this->_stmt->autoBind($value);
             }
 
             $rows[] = '('.implode(',', $row).')';
@@ -473,9 +469,7 @@ abstract class QueryExecutor implements IQueryExecutor {
             if($value instanceof opal\query\IExpression) {
                 $values[] = $this->_adapter->quoteIdentifier($field).' = '.$this->defineExpression($value);
             } else {
-                $id = $this->_stmt->generateUniqueKey();
-                $values[] = $this->_adapter->quoteIdentifier($field).' = :'.$id;
-                $this->_stmt->bind($id, $value);
+                $values[] = $this->_adapter->quoteIdentifier($field).' = :'.$this->_stmt->autoBind($value);
             }
         }
         
@@ -1577,8 +1571,7 @@ abstract class QueryExecutor implements IQueryExecutor {
                 'Expected a scalar as query value, found an array'
             );
         } else {
-            $valString = ':'.$this->_stmt->generateUniqueKey();
-            $this->_stmt->bind($valString, $value);
+            $valString = ':'.$this->_stmt->autoBind($value);
         }
         
         return $valString;
@@ -1599,8 +1592,7 @@ abstract class QueryExecutor implements IQueryExecutor {
                     $this->_query instanceof opal\query\IDeleteQuery
                 );
             } else if($element instanceof opal\query\IExpressionValue) {
-                $output[] = $bindString = ':'.$this->_stmt->generateUniqueKey();
-                $this->_stmt->bind($bindString, $element->getValue());
+                $output[] = ':'.$this->_stmt->autoBind($element->getValue());
             } else if($element instanceof opal\query\IExpressionOperator) {
                 $output[] = $element->getOperator();
             } else if($element instanceof opal\query\ICorrelationQuery) {

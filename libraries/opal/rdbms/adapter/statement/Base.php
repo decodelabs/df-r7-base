@@ -106,6 +106,18 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
         return $this->_keyIndex;
     }
     
+    public function autoBind($value) {
+        foreach($this->_bindings as $key => $testValue) {
+            if($value === $testValue) {
+                return $key;
+            }
+        }
+
+        $key = $this->generateUniqueKey();
+        $this->bind($key, $value);
+        return $key;
+    }
+
     public function bind($key, $value) {
         if($this->_isExecuted) {
             throw new opal\rdbms\RuntimeException(

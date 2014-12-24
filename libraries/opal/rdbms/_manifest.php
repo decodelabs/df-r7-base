@@ -191,6 +191,7 @@ interface IStatement extends core\collection\IQueue, core\collection\IStreamColl
     public function setKeyIndex($index);
     public function getKeyIndex();
     
+    public function autoBind($value);
     public function bind($key, $value);
     public function bindLob($key, $value);
     public function getBindings();
