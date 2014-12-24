@@ -12,6 +12,11 @@ use df\axis;
 
 class Unit extends axis\unit\table\Base {
     
+    protected static $_defaultSearchFields = [
+        'request' => 4,
+        'message' => 1
+    ];
+
     protected function _onCreate(axis\schema\ISchema $schema) {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addIndexedField('date', 'Timestamp');

@@ -13,6 +13,15 @@ use df\opal;
 
 class Unit extends axis\unit\table\Base {
     
+    protected static $_defaultSearchFields = [
+        'code' => [
+            'operator' => '=',
+            'weight' => 5
+        ],
+        'request' => 4,
+        'message' => 2
+    ];
+
     protected function _onCreate(axis\schema\ISchema $schema) {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addIndexedField('date', 'Timestamp');

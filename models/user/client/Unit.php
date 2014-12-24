@@ -13,6 +13,13 @@ use df\user;
 
 class Unit extends axis\unit\table\Base {
     
+    protected static $_defaultSearchFields = [
+        'fullName' => 5,
+        'nickName' => 3,
+        'email' => 1,
+        'id' => 10
+    ];
+
     protected function _onCreate(axis\schema\ISchema $schema) {
         $schema->addField('id', 'AutoId', 8);
         $schema->addUniqueField('email', 'String', 255);

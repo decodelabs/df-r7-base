@@ -13,6 +13,11 @@ use df\opal;
 
 class Unit extends axis\unit\table\Base {
     
+    protected static $_defaultSearchFields = [
+        'mode' => 1,
+        'request' => 4
+    ];
+
     protected function _onCreate(axis\schema\ISchema $schema) {
         $schema->addPrimaryField('id', 'Guid');
 

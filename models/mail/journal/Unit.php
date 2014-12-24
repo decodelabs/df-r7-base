@@ -14,6 +14,11 @@ use df\flow;
 
 class Unit extends axis\unit\table\Base {
     
+    protected static $_defaultSearchFields = [
+        'name' => 3,
+        'email' => 1
+    ];
+
     protected function _onCreate(axis\schema\ISchema $schema) {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addField('date', 'Timestamp');
