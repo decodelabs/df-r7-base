@@ -577,14 +577,14 @@ trait TScaffold_RecordDataProvider {
     }
 
     public function defineUserField($list, $mode) {
-        $list->addField('userName', $this->_('User'), function($item) {
+        $list->addField('user', function($item) {
             return $this->import->component('~admin/users/clients/UserLink', $item['user'])
                 ->setDisposition('transitive');
         });
     }
 
     public function defineOwnerField($list, $mode) {
-        $list->addField('ownerName', $this->_('Owner'), function($item) {
+        $list->addField('owner', function($item) {
             return $this->import->component('~admin/users/clients/UserLink', $item['owner'])
                 ->setDisposition('transitive');
         });
