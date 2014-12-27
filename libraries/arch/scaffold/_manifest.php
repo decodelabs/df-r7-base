@@ -47,7 +47,6 @@ interface IRecordDataProviderScaffold extends IRecordLoaderScaffold {
     public function getRecordIdField();
     public function getRecordName($record=null);
     public function getRecordNameField();
-    public function getRecordFallbackNameField();
     public function getRecordDescription($record=null);
     public function getRecordUrl($record=null);
     public function getRecordOperativeLinks($record, $mode);

@@ -300,11 +300,11 @@ trait TScaffold_RecordDataProvider {
             $record = $this->_ensureRecord();
         }
 
-        $key = $this->getRecordNameField();
-
         if(method_exists($this, '_getRecordName')) {
-            $output = $this->_getRecordName($record, $key);
+            $output = $this->_getRecordName($record);
         } else {
+            $key = $this->getRecordNameField();
+
             if(isset($record[$key])) {
                 $output = $record[$key];
 
@@ -312,19 +312,37 @@ trait TScaffold_RecordDataProvider {
                     $output = '#'.$output;
                 }
             } else {
-                $fallbackKey = $this->getRecordFallbackNameField();
-
-                if(isset($record[$fallbackKey])) {
-                    $output = $record[$fallbackKey];
+                if(is_array($record)) {
+                    $available = array_key_exists($key, $record);
+                } else if($record instanceof core\collection\IMappedCollection) {
+                    $available = $record->has($key);
                 } else {
-                    $output = '#'.$this->getRecordId($record);
+                    $available = true;
+                }
 
-                    if($key == 'title') {
-                        $output = [
-                            $this->html('em', $this->_('untitled %c%', ['%c%' => strtolower($this->getRecordKeyName())])),
-                            $this->html('samp', $output)
-                        ];
+                $output = '#'.$this->getRecordId($record);
+
+                if($available) {
+                    switch($key) {
+                        case 'title':
+                            $output = [
+                                $this->html('em', $this->_('untitled %c%', ['%c%' => $this->getRecordItemName()])),
+                                $this->html('samp', $output)
+                            ];
+                            break;
+
+                        case 'name':
+                            $output = [
+                                $this->html('em', $this->_('unnamed %c%', ['%c%' => $this->getRecordItemName()])),
+                                $this->html('samp', $output)
+                            ];
+                            break;
                     }
+                } else {
+                    $output = [
+                        $this->html('em', $this->getRecordItemName()),
+                        $this->html('samp', $output)
+                    ];
                 }
             }
         }
@@ -397,14 +415,6 @@ trait TScaffold_RecordDataProvider {
         }
 
         return $this->_recordNameKey;
-    }
-
-    public function getRecordFallbackNameField() {
-        if(@static::RECORD_FALLBACK_NAME_FIELD) {
-            return static::RECORD_FALLBACK_NAME_FIELD;
-        }
-
-        return 'name';
     }
 
     protected function _getRecordUrlKey() {
