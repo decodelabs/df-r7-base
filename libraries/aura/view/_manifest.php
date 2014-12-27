@@ -334,22 +334,18 @@ interface IHtmlView extends IResponseView, ILayoutView, INotificationProxyView {
 }
 
 
-interface IHelper extends core\IHelper {}
-interface IImplicitViewHelper extends IHelper {}
-
-interface IContextSensitiveHelper extends IHelper {
-    public function setContext(arch\IContext $context);
-    public function getContext();
-}
+interface IImplicitViewHelper extends arch\IDirectoryHelper {}
+interface IContextSensitiveHelper extends arch\IDirectoryHelper {}
 
 
-trait THelper {
+trait TViewAwareDirectoryHelper {
 
     public $view;
-    public $context;
 
-    public function __construct(core\IContext $context, $target) {
-        if($target instanceof IRenderTargetProvider
+    protected function _handleHelperTarget($target) {
+        if($target instanceof IView) {
+            $this->view = $target;
+        } else if($target instanceof IRenderTargetProvider
         || method_exists($target, 'getView')) {
             $this->view = $target->getView();
         } else if(isset($target->view)) {
@@ -359,32 +355,10 @@ trait THelper {
                 'Cannot use implicit view helper from objects that do not provide a view'
             );
         }
-
-
-        if(!$context instanceof arch\IContext) {
-            $context = $this->view->getContext();
-        }
-
-        $this->context = $context;
-        $this->_init();
-    }
-
-    protected function _init() {}
-}
-
-trait TContextSensitiveHelper {
-
-    use THelper;
-
-    public function setContext(arch\IContext $context) {
-        $this->context = $context;
-        return $this;
-    }
-
-    public function getContext() {
-        return $this->context;
     }
 }
+
+
 
 
 
@@ -432,7 +406,7 @@ trait TCascadingHelperProvider {
             if($output instanceof IContextSensitiveHelper) {
                 // Inject current context into view helper
                 $output = clone $output;
-                $output->setContext($context);
+                $output->context = $context;
             }
         } else if($callable) {
             return [$context, $key];

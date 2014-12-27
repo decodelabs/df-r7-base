@@ -138,7 +138,7 @@ abstract class Base implements arch\IComponent {
         try {
             $this->view = $this->getRenderTarget()->getView();
         } catch(\Exception $e) {
-            $this->view = $this->context->aura->getWidgetContainer()->getView();
+            $this->view = $this->context->apex->newWidgetView();
         }
 
         if(!method_exists($this, '_execute')) {

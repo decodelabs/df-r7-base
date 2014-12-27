@@ -19,7 +19,7 @@ class Base implements IView {
     use core\TStringProvider;
     use core\lang\TChainable;
     
-    public $contentProvider;
+    public $content;
     
     public static function factory($type, arch\IContext $context) {
         $type = ucfirst($type);
@@ -44,12 +44,13 @@ class Base implements IView {
     }
     
     public function setContentProvider(IContentProvider $provider) {
-        $this->contentProvider = $provider;
+        $this->content = $provider;
+        $this->content->setRenderTarget($this);
         return $this;
     }
     
     public function getContentProvider() {
-        return $this->contentProvider;
+        return $this->content;
     }
 
     public function toString() {
@@ -60,62 +61,62 @@ class Base implements IView {
 // Args
     public function setArgs(array $args) {
         $this->_checkContentProvider();
-        $this->contentProvider->setArgs($args);
+        $this->content->setArgs($args);
         return $this;
     }
     
     public function addArgs(array $args) {
         $this->_checkContentProvider();
-        $this->contentProvider->addArgs($args);
+        $this->content->addArgs($args);
         return $this;
     }
     
     public function getArgs(array $add=[]) {
         $this->_checkContentProvider();
-        return $this->contentProvider->getArgs($add);
+        return $this->content->getArgs($add);
     }
     
     public function setArg($key, $value) {
         $this->_checkContentProvider();
-        $this->contentProvider->setArg($key, $value);
+        $this->content->setArg($key, $value);
         return $this;
     }
     
     public function getArg($key, $default=null) {
         $this->_checkContentProvider();
-        return $this->contentProvider->getArg($key, $default);
+        return $this->content->getArg($key, $default);
     }
     
     public function removeArg($key) {
         $this->_checkContentProvider();
-        $this->contentProvider->removeArg($key);
+        $this->content->removeArg($key);
         return $this;
     }
     
     public function hasArg($key) {
         $this->_checkContentProvider();
-        return $this->contentProvider->hasArg($key);
+        return $this->content->hasArg($key);
     }
     
     public function offsetSet($name, $value) {
         $this->_checkContentProvider();
-        $this->contentProvider->setArg($name, $value);
+        $this->content->setArg($name, $value);
         return $this;
     }
     
     public function offsetGet($name) {
         $this->_checkContentProvider();
-        return $this->contentProvider->getArg($name);
+        return $this->content->getArg($name);
     }
     
     public function offsetExists($name) {
         $this->_checkContentProvider();
-        return $this->contentProvider->hasArg($name);
+        return $this->content->hasArg($name);
     }
     
     public function offsetUnset($name) {
         $this->_checkContentProvider();
-        $this->contentProvider->removeArg($name);
+        $this->content->removeArg($name);
         return $this;
     }
     
@@ -129,8 +130,8 @@ class Base implements IView {
         $this->_beforeRender();
         $innerContent = null;
 
-        if($this->contentProvider) {
-            $innerContent = $this->getContentProvider()->renderTo($this);
+        if($this->content) {
+            $innerContent = $this->content->renderTo($this);
         }
         
         $output = $innerContent;
@@ -152,7 +153,7 @@ class Base implements IView {
     protected function _beforeRender() {}
     
     private function _checkContentProvider() {
-        if(!$this->contentProvider) {
+        if(!$this->content) {
             throw new RuntimeException(
                 'No content provider has been set for '.$this->_type.' type view',
                 404

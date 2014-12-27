@@ -7,13 +7,14 @@ namespace df\plug;
 
 use df;
 use df\core;
-use df\aura as auraLib;
+use df\aura;
 use df\arch;
 use df\link;
 
-class Uri implements auraLib\view\IHelper {
+class Uri implements arch\IDirectoryHelper {
     
-    use auraLib\view\THelper;
+    use arch\TDirectoryHelper;
+    use aura\view\TViewAwareDirectoryHelper;
 
     protected $_defaultTheme;
     
@@ -28,11 +29,15 @@ class Uri implements auraLib\view\IHelper {
                 return clone $this->context->request;
             }
 
-            return $this->current($from, $to);
+            return $asRequest ?
+                $this->currentRequest($from, $to) :
+                $this->current($from, $to);
         }
         
         if($uri instanceof arch\IRequest) {
-            return $this->directory($uri, $from, $to, $asRequest);
+            return $asRequest ?
+                $this->directoryRequest($uri, $from, $to) :
+                $this->directory($uri, $from, $to);
         }
         
         if($uri instanceof core\uri\IUrl) {
@@ -72,18 +77,28 @@ class Uri implements auraLib\view\IHelper {
                     return new core\uri\MailtoUrl($uri);
 
                 case 'theme':
-                    return $this->themeAsset($matches[3], null, $asRequest);
+                    return $asRequest ?
+                        $this->themeAssetRequest($matches[3]) :
+                        $this->themeAsset($matches[3]);
 
                 case 'asset':
-                    return $this->asset($matches[3], false, $asRequest);
+                    return $asRequest ?
+                        $this->assetRequest($matches[3]) :
+                        $this->asset($matches[3]);
             }
         }
         
-        return $this->directory($uri, $from, $to, $asRequest);
+        return $asRequest ?
+            $this->directoryRequest($uri, $from, $to) :
+            $this->directory($uri, $from, $to);
     }
     
     public function current($from=null, $to=null) {
         return $this->directory($this->context->request, $from, $to);
+    }
+
+    public function currentRequest($from=null, $to=null) {
+        return $this->directoryRequest($this->context->request, $from, $to);
     }
 
     public function mapCurrent(array $map, array $queryValues=null) {
@@ -145,7 +160,7 @@ class Uri implements auraLib\view\IHelper {
         return $this->requestToUrl($request);
     }
     
-    public function directory($request, $from=null, $to=null, $asRequest=false) {
+    public function directory($request, $from=null, $to=null) {
         if(!$request instanceof arch\IRequest) {
             $request = arch\Request::factory($request);
         } else {
@@ -153,12 +168,18 @@ class Uri implements auraLib\view\IHelper {
         }
         
         $this->_applyRequestRedirect($request, $from, $to);
-
-        if($asRequest) {
-            return $request;
-        }
-
         return $this->requestToUrl($request);
+    }
+
+    public function directoryRequest($request, $from=null, $to=null) {
+        if(!$request instanceof arch\IRequest) {
+            $request = arch\Request::factory($request);
+        } else {
+            $request = clone $request;
+        }
+        
+        $this->_applyRequestRedirect($request, $from, $to);
+        return $request;
     }
 
     protected function _applyRequestRedirect(arch\Request $request, $from=null, $to=null) {
@@ -181,7 +202,12 @@ class Uri implements auraLib\view\IHelper {
         return $request;
     }
 
-    public function asset($path, $attachment=false, $asRequest=false) {
+// Assets
+    public function asset($path, $attachment=false) {
+        return $this->directory($this->assetRequest($path, $attachment));
+    }
+
+    public function assetRequest($path, $attachment=false) {
         $request = new arch\Request('assets/download?cts');
         $request->query->file = $path;
 
@@ -189,17 +215,20 @@ class Uri implements auraLib\view\IHelper {
             $request->query->attachment;
         }
 
-        $output = $this->directory($request, null, null, $asRequest);
-        return $output;
+        return $request;
     }
 
-    public function themeAsset($path, $theme=null, $asRequest=false) {
+    public function themeAsset($path, $theme=null) {
+        return $this->directory($this->themeAssetRequest($path, $theme));
+    }
+
+    public function themeAssetRequest($path, $theme=null) {
         if($theme === null) {
             if($this->view) {
                 $theme = $this->view->getTheme()->getId();
             } else {
                 if(!$this->_defaultTheme) {
-                    $config = auraLib\theme\Config::getInstance();
+                    $config = aura\theme\Config::getInstance();
                     $this->_defaultTheme = $config->getThemeIdFor($this->context->location->getArea());
                 }
 
@@ -210,14 +239,38 @@ class Uri implements auraLib\view\IHelper {
         $request = new arch\Request('theme/download?cts&theme='.$theme);
         $request->query->file = $path;
 
-        $output = $this->directory($request, null, null, $asRequest);
-        return $output;
+        return $request;
     }
 
+
+// Back
     public function back($default=null, $success=true) {
-        return $this->directory($this->context->directory->backRequest($default, $success));
+        return $this->directory($this->backRequest($default, $success));
+    }
+
+    public function backRequest($default=null, $success=true) {
+        $request = $this->context->request;
+        
+        if($success && ($redirect = $request->getRedirectTo())) {
+            return $redirect;
+        } else if((!$success || ($success && !$request->getRedirectTo()))
+            && ($redirect = $request->getRedirectFrom())) {
+            return $redirect;
+        }
+            
+        if($default === null) {
+            $default = $request->getParent();
+        } else if(!$default instanceof arch\IRequest) {
+            $default = $this->directoryRequest($default);
+        } else {
+            $default = clone $default;
+        }
+
+        return $default;
     }
     
+
+// URLs
     public function mailto($url) {
         return core\uri\MailtoUrl::factory($url);
     }

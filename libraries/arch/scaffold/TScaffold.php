@@ -185,8 +185,9 @@ trait TScaffold_RecordLoader {
             return $this->http->redirect($request);
         }
 
-        $container = $this->aura->getWidgetContainer();
-        $this->view = $container->getView();
+        //$this->view = $this->apex->newWidgetView();
+        $this->view->setContentProvider(new aura\view\content\WidgetContentProvider($this->context));
+        $container = $this->view->content;
         $clusterName = $this->format->name($unit->getUnitName());
 
         $container->push(
@@ -300,11 +301,11 @@ trait TScaffold_RecordDataProvider {
             $record = $this->_ensureRecord();
         }
 
+        $key = $this->getRecordNameField();
+
         if(method_exists($this, '_getRecordName')) {
             $output = $this->_getRecordName($record);
         } else {
-            $key = $this->getRecordNameField();
-
             if(isset($record[$key])) {
                 $output = $record[$key];
 
@@ -538,7 +539,7 @@ trait TScaffold_RecordDataProvider {
 
         $list->addField($fieldName, $label, function($item) use($mode, $fieldName) {
             if($mode == 'list') {
-                return $this->import->component(
+                return $this->apex->component(
                         ucfirst($this->getRecordKeyName().'Link'), 
                         $item
                     )
@@ -588,14 +589,14 @@ trait TScaffold_RecordDataProvider {
 
     public function defineUserField($list, $mode) {
         $list->addField('user', function($item) {
-            return $this->import->component('~admin/users/clients/UserLink', $item['user'])
+            return $this->apex->component('~admin/users/clients/UserLink', $item['user'])
                 ->setDisposition('transitive');
         });
     }
 
     public function defineOwnerField($list, $mode) {
         $list->addField('owner', function($item) {
-            return $this->import->component('~admin/users/clients/UserLink', $item['owner'])
+            return $this->apex->component('~admin/users/clients/UserLink', $item['owner'])
                 ->setDisposition('transitive');
         });
     }
@@ -827,8 +828,8 @@ trait TScaffold_SectionProvider {
                     $record = $this->getRecord();
                 }
 
-                $container = $this->aura->getWidgetContainer();
-                $this->view = $container->getView();
+                //$this->view = $this->apex->newWidgetView();
+                $this->view->setContentProvider(new aura\view\content\WidgetContentProvider($this->context));
 
                 $method = 'render'.ucfirst($action).'SectionBody';
 
@@ -838,8 +839,8 @@ trait TScaffold_SectionProvider {
                     $body = null;
                 }
 
-                $container->push(
-                    $this->import->component('SectionHeaderBar', $record),
+                $this->view->content->push(
+                    $this->apex->component('SectionHeaderBar', $record),
                     $body
                 );
 
@@ -849,8 +850,8 @@ trait TScaffold_SectionProvider {
     }
 
     public function buildSection($name, $builder, $linkBuilder=null) {
-        $container = $this->aura->getWidgetContainer();
-        $this->view = $container->getView();
+        //$this->view = $this->apex->newWidgetView();
+        $this->view->setContentProvider(new aura\view\content\WidgetContentProvider($this->context));
 
         $args = [];
         $record = null;
@@ -862,14 +863,14 @@ trait TScaffold_SectionProvider {
         $args[] = $this->view;
         $args[] = $this;
 
-        $hb = $this->import->component('SectionHeaderBar', $record);
+        $hb = $this->apex->component('SectionHeaderBar', $record);
 
         if($hb instanceof arch\scaffold\component\HeaderBar) {
             $hb->setSubOperativeLinkBuilder($linkBuilder);
         }
 
         $body = core\lang\CallbackArgs($builder, $args);
-        $container->push($hb, $body);
+        $this->view->content->push($hb, $body);
 
         return $this->view;
     }
@@ -996,18 +997,18 @@ trait TScaffold_IndexHeaderBarProvider {
     }
 
     public function buildIndexSection($name, $builder, $linkBuilder=null) {
-        $container = $this->aura->getWidgetContainer();
-        $this->view = $container->getView();
+        //$this->view = $this->apex->newWidgetView();
+        $this->view->setContentProvider(new aura\view\content\WidgetContentProvider($this->context));
 
         $args = [$this->view, $this];
-        $hb = $this->import->component('IndexHeaderBar');
+        $hb = $this->apex->component('IndexHeaderBar');
 
         if($hb instanceof arch\scaffold\component\HeaderBar) {
             $hb->setSubOperativeLinkBuilder($linkBuilder);
         }
 
         $body = core\lang\CallbackArgs($builder, $args);
-        $container->push($hb, $body);
+        $this->view->content->push($hb, $body);
 
         return $this->view;
     }

@@ -37,7 +37,7 @@ class SearchSelector extends arch\form\template\SearchSelectorDelegate {
     }
 
     protected function _renderCollectionList($result) {
-        return $this->import->component(ucfirst($this->_scaffold->getRecordKeyName().'List'), [
+        return $this->apex->component(ucfirst($this->_scaffold->getRecordKeyName().'List'), [
                 'actions' => false
             ])
             ->setCollection($result);

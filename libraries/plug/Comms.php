@@ -10,7 +10,7 @@ use df\core;
 use df\plug;
 use df\flow;
 use df\arch;
-use df\aura as auraLib;
+use df\aura;
     
 class Comms implements core\ISharedHelper {
 
@@ -73,15 +73,15 @@ class Comms implements core\ISharedHelper {
 
     public function newTemplateNotification($path, array $args=[], $to=null, $from=null) {
         if($this->context instanceof arch\IContext) {
-            $aura = $this->context->aura;
+            $apex = $this->context->apex;
         } else {
-            $aura = arch\Context::factory()->aura;
+            $apex = arch\Context::factory()->apex;
         }
 
-        $view = $aura->getView($path);
+        $view = $apex->view($path);
 
-        if(!$view instanceof auraLib\view\INotificationProxyView) {
-            throw new auraLib\view\InvalidArgumentException(
+        if(!$view instanceof aura\view\INotificationProxyView) {
+            throw new aura\view\InvalidArgumentException(
                 'Templated notifications can only use view templates that support conversion to notifications'
             );
         }

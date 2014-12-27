@@ -29,7 +29,7 @@ class TaskUpdate extends arch\task\Action {
         }
 
         if(empty($names)) {
-            return $this->directory->newRequest('git/update-all');
+            return $this->uri->directoryRequest('git/update-all');
         }
 
         foreach($names as $name) {
@@ -45,7 +45,7 @@ class TaskUpdate extends arch\task\Action {
 
         if(is_dir($this->application->getLocalStoragePath().'/run')) {
             $this->runChild('application/build?testing=1');
-        } else if($this->directory->actionExists('application/build-custom') && in_array('app', $names)) {
+        } else if($this->apex->actionExists('application/build-custom') && in_array('app', $names)) {
             $this->runChild('application/build-custom');
         }
     }

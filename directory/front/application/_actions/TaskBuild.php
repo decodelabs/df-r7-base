@@ -60,7 +60,7 @@ class TaskBuild extends arch\task\Action {
         // Run custom actions
         $custom = $this->task->findChildrenIn('application/build/');
 
-        if($this->directory->actionExists('application/build-custom')) {
+        if($this->apex->actionExists('application/build-custom')) {
             $custom[] = new arch\Request('application/build-custom');
         }
 

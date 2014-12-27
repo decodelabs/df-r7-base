@@ -51,14 +51,11 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         return new self($context, $absolutePath);
     }
 
-    public static function loadThemeTemplate(aura\view\IView $view, $path, $themeId=null) {
+    public static function loadThemeTemplate(arch\IContext $context, $path, $themeId=null) {
         if($themeId === null) {
-            $theme = $view->getTheme();
-            $themeId = $theme->getId();
+            $themeId = $context->apex->getTheme()->getId();
         }
 
-        $context = $view->getContext();
-        
         $lookupPaths = [];
         $area = $context->location->getArea();
 

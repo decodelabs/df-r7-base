@@ -16,7 +16,7 @@ class HttpInvoke extends arch\Action {
     const DEFAULT_ACCESS = arch\IAccess::ALL;
 
     public function executeAsHtml() {
-        $view = $this->aura->getView('Invoke.html');
+        $view = $this->apex->view('Invoke.html');
         $view['token'] = $this->request->query['token'];
 
         return $view;

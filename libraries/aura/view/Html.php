@@ -846,6 +846,22 @@ class Html extends Base implements IHtmlView, core\IDumpable {
             $output['baseHref'] = $this->_baseHref;
         }
 
+        if($this->_headers) {
+            $output['headers'] = $this->_headers;
+        }
+
+        if($this->_cookies) {
+            $output['cookies'] = $this->_cookies;
+        }
+
+        if($this->_useLayout) {
+            $output['layout'] = $this->_layout;
+        } else {
+            $output['layout'] = false;
+        }
+
+        $output['theme'] = $this->_theme;
+
         $output['meta'] = $this->_meta;
 
         if($this->_css) {
@@ -879,23 +895,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
         $output['htmlTag'] = $this->htmlTag;
         $output['bodyTag'] = $this->bodyTag;
         $output['renderBase'] = $this->_shouldRenderBase;
-
-        if($this->_headers) {
-            $output['headers'] = $this->_headers;
-        }
-
-        if($this->_cookies) {
-            $output['cookies'] = $this->_cookies;
-        }
-
-        if($this->_useLayout) {
-            $output['layout'] = $this->_layout;
-        } else {
-            $output['layout'] = false;
-        }
-
-        $output['theme'] = $this->_theme;
-
+        $output['content'] = $this->content;
 
         return $output;
     }

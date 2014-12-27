@@ -46,10 +46,10 @@ abstract class Mail extends Base implements arch\IMailComponent {
     protected function _loadView() {
         try {
             $this->_templateType = 'html';
-            return $this->context->aura->getView($this->getName().'.html');
+            return $this->context->apex->view($this->getName().'.html');
         } catch(\Exception $e) {
             $this->_templateType = 'notification';
-            return $this->context->aura->getView($this->getName().'.notification');
+            return $this->context->apex->view($this->getName().'.notification');
         }
     }
 

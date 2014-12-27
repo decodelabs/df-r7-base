@@ -232,7 +232,8 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
             $add = true;
             $method = substr($method, 3);
         }
-        
+
+        //$widget = call_user_func_array([$this->_context->html, $method], $args);
         $widget = Base::factory($this->_context, $method, $args)->setRenderTarget($this->_renderTarget);
         
         if($add) {

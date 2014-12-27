@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\arch;
 use df\link;
-use df\aura as auraLib;
+use df\aura;
 use df\flex;
 
 class Http implements arch\IDirectoryHelper {
@@ -115,14 +115,14 @@ class Http implements arch\IDirectoryHelper {
         return new link\http\response\String($content, $contentType);
     }
 
-    public function ajaxElementResponse(auraLib\view\IView $view) {
+    public function ajaxElementResponse(aura\view\IView $view) {
         return $this->stringResponse(
             (string)$view->getContentProvider()->setRenderTarget($view),
             $view->getContentType()
         );
     }
 
-    public function ajaxResponse(auraLib\view\IView $view, array $extraData=[]) {
+    public function ajaxResponse(aura\view\IView $view, array $extraData=[]) {
         return $this->stringResponse(
             $this->context->data->jsonEncode(array_merge(
                 ['content' => (string)$view->getContentProvider()->setRenderTarget($view)],

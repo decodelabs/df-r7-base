@@ -7,30 +7,31 @@ namespace df\plug;
 
 use df;
 use df\core;
-use df\aura as auraLib;
+use df\aura;
 use df\arch;
 use df\flex;
 use df\spur;
 use df\flow;
 
-class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITranslationProxy {
+class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core\i18n\translate\ITranslationProxy {
     
-    use auraLib\view\THelper;
+    use arch\TDirectoryHelper;
+    use aura\view\TViewAwareDirectoryHelper;
     
     public function __call($member, $args) {
-        return auraLib\html\widget\Base::factory($this->context, $member, $args)->setRenderTarget($this->view);
+        return aura\html\widget\Base::factory($this->context, $member, $args)->setRenderTarget($this->view);
     }
 
     public function __invoke($name, $content=null, array $attributes=[]) {
         if($content === null && empty($attributes) && preg_match('/[^a-zA-Z0-9.#\_\-]/', $name)) {
-            return new auraLib\html\ElementString($name);
+            return new aura\html\ElementString($name);
         }
 
-        return new auraLib\html\Element($name, $content, $attributes);
+        return new aura\html\Element($name, $content, $attributes);
     }
     
     public function previewText($html, $length=null) {
-        $html = auraLib\html\ElementContent::normalize($html);
+        $html = aura\html\ElementContent::normalize($html);
 
         if(!strlen($html)) {
             return null;
@@ -47,7 +48,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
     }
 
     public function toText($html) {
-        $html = auraLib\html\ElementContent::normalize($html);
+        $html = aura\html\ElementContent::normalize($html);
 
         if(!strlen($html)) {
             return null;
@@ -118,19 +119,19 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
     }
 
     public function string($value) {
-        return new auraLib\html\ElementString(implode('', func_get_args()));
+        return new aura\html\ElementString(implode('', func_get_args()));
     }
     
     public function tag($name, array $attributes=[]) {
-        return new auraLib\html\Tag($name, $attributes);
+        return new aura\html\Tag($name, $attributes);
     }
     
     public function element($name, $content=null, array $attributes=[]) {
-        return new auraLib\html\Element($name, $content, $attributes);
+        return new aura\html\Element($name, $content, $attributes);
     }
 
     public function elementContentContainer($content=null) {
-        return new auraLib\html\ElementContent($content);
+        return new aura\html\ElementContent($content);
     }
 
     public function span($content, array $attributes=[]) {
@@ -145,14 +146,14 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
         $attrs = [];
 
         if($iconChar !== null) {
-            $attrs = ['data-icon' => new auraLib\html\ElementString($iconChar)];
+            $attrs = ['data-icon' => new aura\html\ElementString($iconChar)];
         }
 
         if(empty($body)) {
             $attrs['aria-hidden'] = 'true';
         }
 
-        return new auraLib\html\Element('span', $body, $attrs);
+        return new aura\html\Element('span', $body, $attrs);
     }
 
     public function booleanIcon($value, $body=null) {
@@ -259,7 +260,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
 
             return $output;
         } catch(\Exception $e) {
-            return new auraLib\view\content\ErrorContainer($this->view, $e);
+            return new aura\view\content\ErrorContainer($this->view, $e);
         }
     }
 
@@ -534,7 +535,7 @@ class Html implements auraLib\view\IImplicitViewHelper, core\i18n\translate\ITra
                 return spur\video\Embed::parse($embed)
                     ->setDimensions($width, $height);
             } catch(spur\video\IException $e) {
-                return new auraLib\view\content\ErrorContainer($this->view, $e);
+                return new aura\view\content\ErrorContainer($this->view, $e);
             }
         } else {
             return '';

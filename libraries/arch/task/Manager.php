@@ -70,9 +70,9 @@ class Manager implements IManager {
         $token = $context->data->task->invoke->prepareTask($request, $environmentMode);
         
         return $context->http->redirect(
-            $context->directory->normalizeRequest(
+            $context->uri->directoryRequest(
                 '~/tasks/invoke?token='.$token, 
-                $context->directory->backRequest(null, true)
+                $context->uri->backRequest(null, true)
             )
         );
     }

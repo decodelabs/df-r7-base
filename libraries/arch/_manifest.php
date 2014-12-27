@@ -69,6 +69,7 @@ interface IContext extends core\IContext, core\i18n\translate\ITranslationProxy,
     // Requests
     public function getRequest();
     public function getLocation();
+
     public function extractDirectoryLocation(&$path);
     public function extractThemeId(&$path, $findDefault=false);
 
@@ -86,6 +87,7 @@ trait TDirectoryHelper {
         if(!$context instanceof arch\IContext) {
             if($target instanceof arch\IContext) {
                 $context = $target;
+                $target = null;
             } else {
                 $context = Context::getCurrent();
 
@@ -98,6 +100,11 @@ trait TDirectoryHelper {
         }
 
         $this->context = $context;
+
+        if($target !== null && method_exists($this, '_handleHelperTarget')) {
+            $this->_handleHelperTarget($target);
+        }
+
         $this->_init();
     }
 

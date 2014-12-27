@@ -9,11 +9,12 @@ use df;
 use df\core;
 use df\plug;
 use df\arch;
-use df\aura as auraLib;
+use df\aura;
     
-class Slot implements auraLib\view\IImplicitViewHelper, \ArrayAccess, core\IDumpable {
+class Slot implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, \ArrayAccess, core\IDumpable {
     
-    use auraLib\view\THelper;
+    use arch\TDirectoryHelper;
+    use aura\view\TViewAwareDirectoryHelper;
 
     protected $_slots = [];
 
@@ -27,12 +28,12 @@ class Slot implements auraLib\view\IImplicitViewHelper, \ArrayAccess, core\IDump
     }
 
     public function set($id, $value) {
-        $this->_slots[$id] = auraLib\view\content\SlotRenderer::factoryArgs(array_slice(func_get_args(), 1));
+        $this->_slots[$id] = aura\view\content\SlotRenderer::factoryArgs(array_slice(func_get_args(), 1));
         return $this;
     }
 
     public function setArgs($id, array $args) {
-        $this->_slots[$id] = auraLib\view\content\SlotRenderer::factoryArgs($args);
+        $this->_slots[$id] = aura\view\content\SlotRenderer::factoryArgs($args);
         return $this;
     }
 

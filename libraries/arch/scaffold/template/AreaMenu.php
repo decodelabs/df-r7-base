@@ -18,16 +18,16 @@ class AreaMenu extends arch\scaffold\Base {
     use arch\scaffold\TScaffold_IndexHeaderBarProvider;
 
     public function indexHtmlAction() {
-        $container = $this->aura->getWidgetContainer();
+        $view = $this->apex->newWidgetView();
 
         if(static::HEADER_BAR) {
-            $container->push($this->directory->getComponent('IndexHeaderBar'));
+            $view->content->push($this->apex->component('IndexHeaderBar'));
         }
         
         $menuId = (string)$this->context->location;
         $menuId = dirname($menuId).'/'.ucfirst(basename($menuId));
-        $container->addBlockMenu($menuId);
+        $view->content->addBlockMenu($menuId);
 
-        return $container;
+        return $view;
     }
 }

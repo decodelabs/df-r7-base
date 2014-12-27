@@ -90,7 +90,7 @@ class Base implements ITheme, core\IDumpable {
     
     public function applyDefaultViewTitle(aura\view\IView $view) {
         if(!$view->hasTitle()) {
-            $breadcrumbs = $view->getContext()->navigation->getBreadcrumbs();
+            $breadcrumbs = $view->getContext()->apex->breadcrumbs();
             $parts = [];
 
             foreach($breadcrumbs->getEntries() as $entry) {

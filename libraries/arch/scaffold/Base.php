@@ -268,7 +268,7 @@ abstract class Base implements IScaffold {
             unset($outQuery->{$var});
         }
 
-        return $this->directory->normalizeRequest($output, $redirFrom, $redirTo);
+        return $this->uri->directoryRequest($output, $redirFrom, $redirTo);
     }
 
     protected function _normalizeFieldOutput($field, $value) {

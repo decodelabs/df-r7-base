@@ -66,11 +66,10 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
             $queryMode = $this->request->getAction();
         }
 
-        $container = $this->aura->getWidgetContainer();
-        $this->view = $container->getView();
+        $this->view = $this->apex->newWidgetView();
 
-        $container->push(
-            $this->import->component('IndexHeaderBar'),
+        $this->view->content->push(
+            $this->apex->component('IndexHeaderBar'),
             $this->renderRecordList($query, $fields, $callback, $queryMode)
         );
 
@@ -80,7 +79,7 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
     public function renderDetailsSectionBody($record) {
         $keyName = $this->getRecordKeyName();
 
-        return $this->import->component(ucfirst($keyName).'Details')
+        return $this->apex->component(ucfirst($keyName).'Details')
             ->setRecord($record);
     }
 
@@ -115,8 +114,8 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
 
         $keyName = $this->getRecordKeyName();
 
-        $searchBar = $this->import->component('SearchBar');
-        $list = $this->import->component(ucfirst($keyName).'List', $fields)
+        $searchBar = $this->apex->component('SearchBar');
+        $list = $this->apex->component(ucfirst($keyName).'List', $fields)
             ->setCollection($query);
 
         if($callback) {
