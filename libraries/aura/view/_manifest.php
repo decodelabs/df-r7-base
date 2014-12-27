@@ -105,7 +105,6 @@ interface IView extends
 {
     public function getType();
     public function render();
-    public function newErrorContainer(\Exception $e);
 }
 
 

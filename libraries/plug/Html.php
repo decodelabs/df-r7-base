@@ -221,47 +221,43 @@ class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core
     }
 
     public function flashList() {
-        try {
-            $manager = flow\Manager::getInstance();
-            $manager->processFlashQueue();
-            $messageCount = 0;
+        $manager = flow\Manager::getInstance();
+        $manager->processFlashQueue();
+        $messageCount = 0;
 
-            $isProduction = df\Launchpad::$application->isProduction();
+        $isProduction = df\Launchpad::$application->isProduction();
 
-            $output = '<section class="widget-flashList">'."\n";
+        $output = '<section class="widget-flashList">'."\n";
 
-            foreach($manager->getConstantFlashes() as $message) {
-                $message->isDisplayed(true);
+        foreach($manager->getConstantFlashes() as $message) {
+            $message->isDisplayed(true);
 
-                if($isProduction && $message->isDebug()) {
-                    continue;
-                }
-
-                $messageCount++;
-                $output .= $this->flashMessage($message);
+            if($isProduction && $message->isDebug()) {
+                continue;
             }
 
-            foreach($manager->getInstantFlashes() as $message) {
-                $message->isDisplayed(true);
-
-                if($isProduction && $message->isDebug()) {
-                    continue;
-                }
-
-                $messageCount++;
-                $output .= $this->flashMessage($message);
-            }
-
-            $output .= '</section>';
-
-            if(!$messageCount) {
-                return null;
-            }
-
-            return $output;
-        } catch(\Exception $e) {
-            return new aura\view\content\ErrorContainer($this->view, $e);
+            $messageCount++;
+            $output .= $this->flashMessage($message);
         }
+
+        foreach($manager->getInstantFlashes() as $message) {
+            $message->isDisplayed(true);
+
+            if($isProduction && $message->isDebug()) {
+                continue;
+            }
+
+            $messageCount++;
+            $output .= $this->flashMessage($message);
+        }
+
+        $output .= '</section>';
+
+        if(!$messageCount) {
+            return null;
+        }
+
+        return $output;
     }
 
     public function defaultButtonGroup($mainAction=null, $mainActionText=null, $mainActionIcon=null) {
@@ -531,12 +527,8 @@ class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core
         $embed = trim($embed);
 
         if(!empty($embed)) {
-            try {
-                return spur\video\Embed::parse($embed)
-                    ->setDimensions($width, $height);
-            } catch(spur\video\IException $e) {
-                return new aura\view\content\ErrorContainer($this->view, $e);
-            }
+            return spur\video\Embed::parse($embed)
+                ->setDimensions($width, $height);
         } else {
             return '';
         }

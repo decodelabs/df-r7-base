@@ -95,16 +95,12 @@ class SlotRenderer implements aura\view\IDeferredRenderable {
                 return call_user_func_array($this->_value, [$this->getView()]);
 
             case self::TYPE_TEMPLATE:
-                try {
-                    $view = $this->getView();
-                    $context = $view->getContext()->spawnInstance($this->_location);
-                    $template = aura\view\content\Template::loadDirectoryTemplate($context, $this->_value);
-                    $template->setRenderTarget($view);
-                
-                    return $template;
-                } catch(\Exception $e) {
-                    return $view->newErrorContainer($e);
-                }
+                $view = $this->getView();
+                $context = $view->getContext()->spawnInstance($this->_location);
+                $template = aura\view\content\Template::loadDirectoryTemplate($context, $this->_value);
+                $template->setRenderTarget($view);
+            
+                return $template;
         }
     }
 

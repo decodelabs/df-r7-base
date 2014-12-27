@@ -171,8 +171,4 @@ class Base implements IView {
     public function _($phrase, array $data=null, $plural=null, $locale=null) {
         return $this->context->_($phrase, $data, $plural, $locale);
     }
-
-    public function newErrorContainer(\Exception $e) {
-        return new aura\view\content\ErrorContainer($this, $e);
-    }
 }

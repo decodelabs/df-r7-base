@@ -105,15 +105,7 @@ abstract class Base implements arch\IComponent {
     
 // Renderable
     public function toString() {
-        try {
-            return $this->render();
-        } catch(\Exception $e) {
-            if($this->_renderTarget) {
-                return $this->_renderTarget->getView()->newErrorContainer($e);
-            } else {
-                return 'ERROR: '.$e->getMessage();
-            }
-        }
+        return $this->render();
     }
 
     public function render() {

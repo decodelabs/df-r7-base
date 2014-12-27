@@ -14,6 +14,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         
     use core\TContextAware;
     use core\TArrayAccessedArgContainer;
+    use core\TStringProvider;
     use aura\view\TDeferredRenderable;
     use aura\view\TCascadingHelperProvider;
         
@@ -227,20 +228,6 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         return $this->_isLayout;
     }
 
-    public function __toString() {
-        try {
-            return (string)$this->toString();
-        } catch(\Exception $e) {
-            core\debug()->exception($e);
-            
-            if($this->view) {
-                return (string)new ErrorContainer($this->view, $e);
-            } else {
-                return (string)new aura\html\Element('span', $e->getMessage(), ['class' => 'error']);
-            }
-        }
-    }
-    
     public function toString() {
         if(!$this->_renderTarget) {
             throw new aura\view\RuntimeException(
@@ -262,10 +249,6 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         
         if($value === null) {
             $value = $default;
-        }
-        
-        if($value instanceof ErrorContainer) {
-            return $value;
         }
         
         return $this->view->esc($value);

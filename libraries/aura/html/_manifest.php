@@ -188,8 +188,7 @@ trait TElementContent {
             $output = (string)$value;
         }
         
-        if(!$value instanceof IElementRepresentation
-        && !$value instanceof aura\view\content\ErrorContainer) {
+        if(!$value instanceof IElementRepresentation) {
             $output = $this->esc($output);
         }
         
