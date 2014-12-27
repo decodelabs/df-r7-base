@@ -12,7 +12,7 @@ use df\arch;
 use df\spur;
 use df\neon;
 
-class Base implements ITheme {
+class Base implements ITheme, core\IDumpable {
     
     const APPLICATION_IMAGE = 'app.png';
     const APPLICATION_COLOR = 'white';
@@ -226,5 +226,13 @@ class Base implements ITheme {
 
     public function getFacets() {
         return $this->_facets;
+    }
+
+// Dump
+    public function getDumpProperties() {
+        return [
+            'id' => $this->_id,
+            'facets' => $this->_facets
+        ];
     }
 }

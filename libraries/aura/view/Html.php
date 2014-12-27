@@ -11,7 +11,7 @@ use df\aura;
 use df\arch;
 use df\flow;
 
-class Html extends Base implements IHtmlView {
+class Html extends Base implements IHtmlView, core\IDumpable {
     
     use TResponseView;
     use TLayoutView;
@@ -833,5 +833,70 @@ class Html extends Base implements IHtmlView {
 
     protected function _normalizeLinkUrl($url) {
         return $this->uri->__invoke($url);
+    }
+
+
+// Dump
+    public function getDumpProperties() {
+        $output = [
+            'title' => $this->getFullTitle()
+        ];
+
+        if($this->_baseHref) {
+            $output['baseHref'] = $this->_baseHref;
+        }
+
+        $output['meta'] = $this->_meta;
+
+        if($this->_css) {
+            $output['css'] = $this->_css;
+        }
+
+        if($this->_styles) {
+            $output['styles'] = $this->_styles;
+        }
+
+        if($this->_headJs) {
+            $output['headJs'] = $this->_headJs;
+        }
+
+        if($this->_footJs) {
+            $output['footJs'] = $this->_footJs;
+        }
+
+        if($this->_headScripts) {
+            $output['headScripts'] = $this->_headScripts;
+        }
+
+        if($this->_footScripts) {
+            $output['footScripts'] = $this->_footScripts;
+        }
+
+        if($this->_links) {
+            $output['links'] = $this->_links;
+        }
+
+        $output['htmlTag'] = $this->htmlTag;
+        $output['bodyTag'] = $this->bodyTag;
+        $output['renderBase'] = $this->_shouldRenderBase;
+
+        if($this->_headers) {
+            $output['headers'] = $this->_headers;
+        }
+
+        if($this->_cookies) {
+            $output['cookies'] = $this->_cookies;
+        }
+
+        if($this->_useLayout) {
+            $output['layout'] = $this->_layout;
+        } else {
+            $output['layout'] = false;
+        }
+
+        $output['theme'] = $this->_theme;
+
+
+        return $output;
     }
 }
