@@ -10,9 +10,8 @@ use df\core;
 use df\arch;
 use df\aura;
     
-abstract class FormUi extends arch\component\Base implements arch\form\IForm, aura\html\widget\IWidgetProxy, core\IArgContainer, \ArrayAccess {
+abstract class FormUi extends arch\component\Base implements arch\form\IForm, aura\html\widget\IWidgetProxy {
 
-    use core\TArrayAccessedArgContainer;
     use core\lang\TChainable;
 
     public $values;

@@ -336,15 +336,6 @@ interface IMappedListWidget extends IListWidget {
 }
 
 
-// Template
-interface ITemplateWidget extends IWidget, aura\view\IContentProvider {
-    public function setPath($path);
-    public function getPath();
-    
-    public function setLocation($location);
-    public function getLocation();
-}
-
 
 
 // Links

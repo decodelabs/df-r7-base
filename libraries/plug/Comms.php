@@ -86,7 +86,7 @@ class Comms implements core\ISharedHelper {
             );
         }
 
-        $view->setArgs($args);
+        $view->setSlots($args);
         return $view->toNotification($to, $from);
     }
 

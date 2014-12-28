@@ -16,9 +16,16 @@ class Apex implements arch\IDirectoryHelper {
     use arch\TDirectoryHelper;
     use aura\view\TViewAwareDirectoryHelper;
 
+    public function future($type) {
+        $args = array_slice(func_get_args(), 1);
+        
+        return function(core\IHelperProvider $target) use($type, $args) {
+            return call_user_func_array([$target->apex, $type], $args);
+        };
+    }
 
 // Aura
-    public function view($path, array $args=null) {
+    public function view($path, array $slots=null) {
         $parts = explode('.', $path);
         $location = $this->context->extractDirectoryLocation($path);
         $view = $this->newView(array_pop($parts), $location);
@@ -27,8 +34,8 @@ class Apex implements arch\IDirectoryHelper {
             aura\view\content\Template::loadDirectoryTemplate($view->getContext(), $path)
         );
 
-        if($args) {
-            $view->addArgs($args);
+        if($slots) {
+            $view->addSlots($slots);
         }
         
         return $view;
@@ -44,7 +51,7 @@ class Apex implements arch\IDirectoryHelper {
         return $view;
     }
     
-    public function template($path, array $args=null) {
+    public function template($path, array $slots=null) {
         $location = $this->context->extractDirectoryLocation($path);
         $template = aura\view\content\Template::loadDirectoryTemplate(
             $this->context->spawnInstance($location), $path
@@ -52,17 +59,16 @@ class Apex implements arch\IDirectoryHelper {
 
         if($this->view) {
             $template->setRenderTarget($this->view);
-            $template->setArgs($this->view->getArgs());
         }
 
-        if($args) {
-            $template->addArgs($args);
+        if($slots) {
+            $template->addSlots($slots);
         }
 
         return $template;
     }
 
-    public function themeTemplate($path, array $args=null) {
+    public function themeTemplate($path, array $slots=null) {
         $themeId = $this->context->extractThemeId($path);
 
         if(!$themeId && $this->view) {
@@ -77,8 +83,8 @@ class Apex implements arch\IDirectoryHelper {
             $template->setRenderTarget($this->view);
         }
 
-        if($args) {
-            $template->addArgs($args);
+        if($slots) {
+            $template->addSlots($slots);
         }
 
         return $template;

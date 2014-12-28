@@ -167,8 +167,8 @@ class CollectionList extends arch\component\Base implements aura\html\widget\IWi
     protected function _execute() {
         if($this->_collection === null) {
             if($this->_viewArg !== null
-            && $this->view->hasArg($this->_viewArg)) {
-                $this->_collection = $this->view->getArg($this->_viewArg);
+            && $this->view->hasSlot($this->_viewArg)) {
+                $this->_collection = $this->view->getSlot($this->_viewArg);
             }
         }
 

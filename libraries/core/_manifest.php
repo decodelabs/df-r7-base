@@ -36,6 +36,7 @@ trait TStringProvider {
         try {
             return (string)$this->toString();
         } catch(\Exception $e) {
+            core\debug()->exception($e);
             return '';
         }
     }
@@ -323,88 +324,6 @@ trait TArrayAccessedAttributeContainer {
     use TAttributeContainer;
     use TAttributeContainerArrayAccessProxy;
 }
-
-
-
-// Arg container
-interface IArgContainer {
-    public function setArgs(array $args);
-    public function addArgs(array $args);
-    public function getArgs(array $add=[]);
-    public function setArg($name, $value);
-    public function getArg($name, $default=null);
-    public function hasArg($name);
-    public function removeArg($name);
-}
-
-trait TArgContainer {
-    
-    protected $_args = [];
-    
-    public function setArgs(array $args) {
-        $this->_args = [];
-        return $this->addArgs($args);
-    }
-    
-    public function addArgs(array $args) {
-        foreach($args as $key => $value){
-            $this->setArg($key, $value);
-        }
-        
-        return $this;
-    }
-    
-    public function getArgs(array $add=[]) {
-        return array_merge($this->_args, $add);
-    }
-    
-    public function setArg($key, $value) {
-        $this->_args[$key] = $value;
-        return $this;
-    }
-    
-    public function getArg($key, $default=null) {
-        if(isset($this->_args[$key])) {
-            return $this->_args[$key];
-        }
-        
-        return $default;
-    }
-    
-    public function removeArg($key) {
-        unset($this->_args[$key]);
-        return $this;
-    }
-    
-    public function hasArg($key) {
-        return isset($this->_args[$key]);
-    }
-}
-
-trait TArgContainerArrayAccessProxy {
-
-    public function offsetSet($key, $value) {
-        return $this->setArg($key, $value);
-    }
-    
-    public function offsetGet($key) {
-        return $this->getArg($key);
-    }
-    
-    public function offsetExists($key) {
-        return $this->hasArg($key);
-    }
-    
-    public function offsetUnset($key) {
-        return $this->removeArg($key);
-    }
-}
-
-trait TArrayAccessedArgContainer {
-    use TArgContainer;
-    use TArgContainerArrayAccessProxy;
-}
-
 
 
 

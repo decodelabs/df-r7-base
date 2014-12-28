@@ -20,9 +20,11 @@ abstract class Base implements arch\IComponent {
     use core\TStringProvider;
     use aura\view\TDeferredRenderable;
     use aura\view\TCascadingHelperProvider;
+    use aura\view\TSlotContainer;
 
     const DEFAULT_ACCESS = arch\IAccess::ALL;
 
+    public $slots = [];
     protected $_componentArgs = [];
 
     public static function factory(arch\IContext $context, $name, array $args=null) {
@@ -151,6 +153,61 @@ abstract class Base implements arch\IComponent {
 
         return $this->view;
     }
+
+
+// Slots
+    public function getSlots() {
+        return $this->slots;
+    }
+
+    public function clearSlots() {
+        $this->slots = [];
+        return $this;
+    }
+
+    public function setSlot($key, $value) {
+        $this->slots[$key] = $value;
+        return $this;
+    }
+
+    public function hasSlot($key) {
+        return isset($this->slots[$key]);
+    }
+
+    public function getSlot($key, $default=null) {
+        if(isset($this->slots[$key])) {
+            return $this->slots[$key];
+        } else {
+            return $default;
+        }
+    }
+
+    public function removeSlot($key) {
+        unset($this->slots[$key]);
+        return $this;
+    }
+
+    public function esc($value) {
+        return $this->html->esc($value);
+    }
+
+    public function offsetSet($key, $value) {
+        return $this->setSlot($key, $value);
+    }
+
+    public function offsetGet($key) {
+        return $this->getSlot($key);
+    }
+
+    public function offsetExists($key) {
+        return isset($this->slots[$key]);
+    }
+
+    public function offsetUnset($key) {
+        unset($this->slots[$key]);
+        return $this;
+    }
+
 
 
 // Access

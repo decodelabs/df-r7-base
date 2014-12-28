@@ -10,18 +10,16 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class Template extends Base implements ITemplateWidget, \ArrayAccess, core\IDumpable {
+class Template extends Base implements aura\view\IContentProvider, \ArrayAccess, core\IDumpable {
     
     protected $_path;
-    protected $_location;
-    protected $_args = [];
+    protected $_slots = [];
     
-    public function __construct(arch\IContext $context, $path, $location=null, array $args=null) {
+    public function __construct(arch\IContext $context, $path, array $slots=null) {
         $this->setPath($path);
-        $this->setLocation($location);
 
-        if($args !== null) {
-            $this->setArgs($args);
+        if($slots !== null) {
+            $this->setSlots($args);
         }
     }
 
@@ -30,19 +28,13 @@ class Template extends Base implements ITemplateWidget, \ArrayAccess, core\IDump
     }
     
     protected function _loadTemplate() {
-        $renderTarget = $this->getRenderTarget();
-        $view = $renderTarget->getView();
-        $context = $view->getContext()->spawnInstance($this->_location);
-        return aura\view\content\Template::loadDirectoryTemplate($context, $this->_path);
+        $view = $this->getRenderTarget()->getView();
+        return $view->apex->template($this->_path, $this->_slots);
     }
 
     protected function _render() {
         $tag = $this->getTag();
         $template = $this->_loadTemplate();
-
-        if(!empty($this->_args)) {
-            $template->setArgs($this->_args);
-        }
 
         $output = new aura\html\ElementString(
             $template->renderTo($this->getRenderTarget())
@@ -66,52 +58,42 @@ class Template extends Base implements ITemplateWidget, \ArrayAccess, core\IDump
         return $this->_path;
     }
     
-// Context request
-    public function setLocation($location) {
-        $this->_location = $location;
+    
+// Slots
+    public function setSlot($name, $value) {
+        $this->_slots[$name] = $value;
         return $this;
     }
     
-    public function getLocation() {
-        return $this->_location;
-    }    
-    
-    
-// Args
-    public function setArg($name, $value) {
-        $this->_args[$name] = $value;
-        return $this;
-    }
-    
-    public function getArg($name, $default=null) {
-        if(array_key_exists($name, $this->_args)) {
-            return $this->_args[$name];
+    public function getSlot($name, $default=null) {
+        if(array_key_exists($name, $this->_slots)) {
+            return $this->_slots[$name];
         }
         
         return $default;
     }
     
-    public function hasArg($name) {
-        return array_key_exists($name, $this->_args);
+    public function hasSlot($name) {
+        return array_key_exists($name, $this->_slots);
     }
     
-    public function removeArg($name) {
-        unset($this->_args[$name]);
+    public function removeSlot($name) {
+        unset($this->_slots[$name]);
         return $this;
     }
     
-    public function setArgs(array $args) {
-        $this->_args = [];
-        return $this->addArgs($args);
+    public function setSlots(array $args) {
+        $this->_slots = [];
+        return $this->addSlots($args);
     }
     
-    public function addArgs(array $args) {
-        $this->_args = array_merge($this->_args, $args);
+    public function addSlots(array $args) {
+        $this->_slots = array_merge($this->_slots, $args);
         return $this;
     }
     
-    public function getArgs(array $add=[]) {
-        $output = $this->_args;
+    public function getSlots(array $add=[]) {
+        $output = $this->_slots;
         
         foreach($add as $key => $var) {
             $output[$key] = $var;
@@ -121,19 +103,19 @@ class Template extends Base implements ITemplateWidget, \ArrayAccess, core\IDump
     }
     
     public function offsetSet($name, $value) {
-        return $this->setArg($name, $value);
+        return $this->setSlot($name, $value);
     }
     
     public function offsetGet($name) {
-        return $this->getArg($name);
+        return $this->getSlot($name);
     }
     
     public function offsetExists($name) {
-        return $this->hasArg($name);
+        return $this->hasSlot($name);
     }
     
     public function offsetUnset($name) {
-        return $this->removeArg($name);
+        return $this->removeSlot($name);
     }
     
     
@@ -141,8 +123,7 @@ class Template extends Base implements ITemplateWidget, \ArrayAccess, core\IDump
     public function getDumpProperties() {
         return [
             'path' => $this->_path,
-            'location' => $this->_location,
-            'args' => count($this->_args),
+            'slots' => count($this->_slots),
             'tag' => $this->getTag(),
             'renderTarget' => $this->_getRenderTargetDisplayName()
         ];

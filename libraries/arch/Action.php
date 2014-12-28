@@ -35,10 +35,14 @@ abstract class Action implements IAction, core\IDumpable {
             } catch(arch\scaffold\IException $e) {}
 
             if(!$class) {
-                throw new RuntimeException(
-                    'No action could be found for '.$context->location->toString(),
-                    404
-                );
+                $class = self::getRootClass($context);
+
+                if(!$class) {
+                    throw new RuntimeException(
+                        'No action could be found for '.$context->location->toString(),
+                        404
+                    );
+                }
             }
         }
         
@@ -84,6 +88,28 @@ abstract class Action implements IAction, core\IDumpable {
         }
 
         return $class;
+    }
+
+    public static function getRootClass(arch\IContext $context) {
+        $class = 'df\\apex\\directory\\'.$context->location->getArea().'\\_actions\\HttpRoot';
+
+        if(!class_exists($class)) {
+            $class = 'df\\apex\\directory\\shared\\_actions\\HttpRoot';
+
+            if(!class_exists($class)) {
+                return null;
+            }
+        }
+
+        return $class;
+    }
+
+    public static function rootFactory(arch\IContext $context) {
+        if(!$class = self::getRootClass($context)) {
+            return null;
+        }
+
+        return new $class($context);
     }
     
     
@@ -177,23 +203,6 @@ abstract class Action implements IAction, core\IDumpable {
         return $output;
     }
 
-    protected function _dispatchRootAction() {
-        $class = 'df\\apex\\directory\\'.$this->context->location->getArea().'\\_actions\\HttpRoot';
-
-        if(!class_exists($class)) {
-            $class = 'df\\apex\\directory\\shared\\_actions\\HttpRoot';
-
-            if(!class_exists($class)) {
-                $class = null;
-            }
-        }
-
-        if($class && get_class($this) != $class) {
-            $defaultAction = new $class($this->context);
-            return $defaultAction->dispatch();
-        }
-    }
-    
     public function getActionMethodName() {
         $type = $this->context->location->getType();
         $func = 'executeAs'.$type;
@@ -211,6 +220,18 @@ abstract class Action implements IAction, core\IDumpable {
 
     public function handleException(\Exception $e) {
         throw $e;
+    }
+
+    protected function _dispatchRootAction() {
+        if(!$root = self::rootFactory($this->context)) {
+            return;
+        }
+
+        if(get_class($root) == get_class($this)) {
+            return;
+        }
+
+        return $root->dispatch();
     }
     
     

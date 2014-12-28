@@ -251,7 +251,9 @@ interface IComponent extends
     aura\view\IDeferredRenderable, 
     user\IAccessLock, 
     aura\view\ICascadingHelperProvider, 
-    arch\IProxyResponse {
+    arch\IProxyResponse,
+    aura\view\ISlotContainer,
+    \ArrayAccess {
     public function getName();
 }
 

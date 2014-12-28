@@ -896,6 +896,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
         $output['bodyTag'] = $this->bodyTag;
         $output['renderBase'] = $this->_shouldRenderBase;
         $output['content'] = $this->content;
+        $output['slots'] = $this->slots;
 
         return $output;
     }

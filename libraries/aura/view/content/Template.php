@@ -13,11 +13,13 @@ use df\arch;
 class Template implements aura\view\ITemplate, core\IDumpable {
         
     use core\TContextAware;
-    use core\TArrayAccessedArgContainer;
     use core\TStringProvider;
     use aura\view\TDeferredRenderable;
     use aura\view\TCascadingHelperProvider;
-        
+    use aura\view\TSlotContainer;
+    
+    public $slots;
+
     private $_path;
     private $_isRendering = false;
     private $_isLayout = false;
@@ -237,15 +239,109 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         
         return $this->renderTo($this->_renderTarget);
     }
-    
+
+
+// Slots
+    public function getSlots() {
+        $output = [];
+
+        if($this->view) {
+            $output = $this->view->getSlots();
+        }
+
+        return array_merge($output, $this->slots);
+    }
+
+    public function clearSlots() {
+        if($this->view) {
+            $this->view->clearSlots();
+        }
+
+        $this->slots = [];
+        return $this;
+    }
+
+    public function setSlot($key, $value) {
+        if($this->view) {
+            $this->view->setSlot($key, $value);
+        } else {
+            $this->slots[$key] = $value;
+        }
+
+        return $this;
+    }
+
+    public function hasSlot($key) {
+        if($this->view && $this->view->hasSlot($key)) {
+            return true;
+        }
+
+        return isset($this->slots[$key]);
+    }
+
+    public function getSlot($key, $default=null) {
+        if(isset($this->slots[$key])) {
+            return $this->slots[$key];
+        }
+
+        if($this->view) {
+            return $this->view->getSlot($key, $default);
+        }
+
+        return $default;
+    }
+
+    public function removeSlot($key) {
+        unset($this->slots[$key]);
+
+        if($this->view) {
+            $this->view->removeSlot($key);
+        }
+
+        return $this;
+    }
+
+
+    public function startSlotCapture($key) {
+        $this->_checkView();
+        $this->view->startSlotCapture($key);
+        return $this;
+    }
+
+    public function endSlotCapture() {
+        $this->_checkView();
+        $this->view->endSlotCapture();
+        return $this;
+    }
+
+    public function isCapturingSlot() {
+        if($this->view) {
+            return $this->view->isCapturingSlot();
+        } else {
+            return false;
+        }
+    }
+
+    public function offsetSet($key, $value) {
+        return $this->setSlot($key, $value);
+    }
+
+    public function offsetGet($key) {
+        return $this->getSlot($key);
+    }
+
+    public function offsetExists($key) {
+        return $this->hasSlot($key);
+    }
+
+    public function offsetUnset($key) {
+        return $this->removeSlot($key);
+    }
+
     
 // Escaping
     public function esc($value, $default=null) {
-        if(!$this->view) {
-            throw new aura\view\RuntimeException(
-                'This template is not currently rendering'
-            );
-        }
+        $this->_checkView();
         
         if($value === null) {
             $value = $default;
@@ -254,20 +350,18 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         return $this->view->esc($value);
     }
     
-    public function escArg($name, $default=null) {
-        if(!$this->view) {
-            throw new aura\view\RuntimeException(
-                'This template is not currently rendering'
-            );
-        }
-        
-        return $this->view->esc($this->getArg($name, $default));
-    }
-    
 
 // Helpers
     public function _($phrase, array $data=null, $plural=null, $locale=null) {
         return $this->context->_($phrase, $data, $plural, $locale);
+    }
+
+    protected function _checkView() {
+        if(!$this->view) {
+            throw new aura\view\RuntimeException(
+                'No view available for content provider to interact with'
+            );
+        }
     }
     
     
@@ -275,7 +369,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
     public function getDumpProperties() {
         return [
             'path' => $this->_path,
-            'args' => count($this->_args).' objects',
+            'slots' => $this->slots,
             'context' => $this->context,
             'view' => $this->view
         ];

@@ -144,8 +144,8 @@ class AttributeList extends arch\component\Base implements aura\html\widget\IWid
     protected function _execute() {
         if($this->_record === null
         && $this->_viewArg !== null
-        && $this->view->hasArg($this->_viewArg)) {
-            $this->_record = $this->view->getArg($this->_viewArg);
+        && $this->view->hasSlot($this->_viewArg)) {
+            $this->_record = $this->view->getSlot($this->_viewArg);
         }
 
         $output = [];

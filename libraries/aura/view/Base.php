@@ -18,8 +18,11 @@ class Base implements IView {
     use core\string\THtmlStringEscapeHandler;
     use core\TStringProvider;
     use core\lang\TChainable;
+    use TSlotContainer;
     
     public $content;
+    public $slots = [];
+    protected $_slotCaptureKey = null;
     
     public static function factory($type, arch\IContext $context) {
         $type = ucfirst($type);
@@ -57,68 +60,87 @@ class Base implements IView {
         return $this->render();
     }
 
-    
-// Args
-    public function setArgs(array $args) {
-        $this->_checkContentProvider();
-        $this->content->setArgs($args);
+
+
+// Slots
+    public function getSlots() {
+        return $this->slots;
+    }
+
+    public function clearSlots() {
+        $this->slots = [];
+        return $this;
+    }
+
+
+    public function setSlot($key, $value) {
+        $this->slots[$key] = $value;
+        return $this;
+    }
+
+    public function hasSlot($key) {
+        return isset($this->slots[$key]);
+    }
+
+    public function getSlot($key, $default=null) {
+        if(isset($this->slots[$key])) {
+            return $this->slots[$key];
+        } else {
+            return $default;
+        }
+    }
+
+    public function removeSlot($key) {
+        unset($this->_slots[$key]);
+        return $this;
+    }
+
+
+    public function startSlotCapture($key) {
+        if($this->_slotCaptureKey !== null) {
+            $this->endSlotCapture();
+        }
+
+        $this->_slotCaptureKey = $key;
+        ob_start();
+
+        return $this;
+    }
+
+    public function endSlotCapture() {
+        if($this->_slotCaptureKey === null) {
+            return;
+        }
+
+        $this->setSlot($this->_slotCaptureKey, ob_get_clean());
+        $this->_slotCaptureKey = null;
+
+        return $this;
+    }
+
+    public function isCapturingSlot() {
+        return $this->_slotCaptureKey !== null;
+    }
+
+
+    public function offsetSet($key, $value) {
+        $this->setSlot($key, $value);
         return $this;
     }
     
-    public function addArgs(array $args) {
-        $this->_checkContentProvider();
-        $this->content->addArgs($args);
+    public function offsetGet($key) {
+        return $this->getSlot($key);
+    }
+    
+    public function offsetExists($key) {
+        return $this->hasSlot($key);
+    }
+    
+    public function offsetUnset($key) {
+        $this->removeSlot($key);
         return $this;
     }
-    
-    public function getArgs(array $add=[]) {
-        $this->_checkContentProvider();
-        return $this->content->getArgs($add);
-    }
-    
-    public function setArg($key, $value) {
-        $this->_checkContentProvider();
-        $this->content->setArg($key, $value);
-        return $this;
-    }
-    
-    public function getArg($key, $default=null) {
-        $this->_checkContentProvider();
-        return $this->content->getArg($key, $default);
-    }
-    
-    public function removeArg($key) {
-        $this->_checkContentProvider();
-        $this->content->removeArg($key);
-        return $this;
-    }
-    
-    public function hasArg($key) {
-        $this->_checkContentProvider();
-        return $this->content->hasArg($key);
-    }
-    
-    public function offsetSet($name, $value) {
-        $this->_checkContentProvider();
-        $this->content->setArg($name, $value);
-        return $this;
-    }
-    
-    public function offsetGet($name) {
-        $this->_checkContentProvider();
-        return $this->content->getArg($name);
-    }
-    
-    public function offsetExists($name) {
-        $this->_checkContentProvider();
-        return $this->content->hasArg($name);
-    }
-    
-    public function offsetUnset($name) {
-        $this->_checkContentProvider();
-        $this->content->removeArg($name);
-        return $this;
-    }
+
     
 
 // Render

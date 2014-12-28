@@ -81,9 +81,60 @@ interface IRenderTarget extends core\IContextAware {
 
 
 
+interface ISlotContainer {
+    public function setSlots(array $slots);
+    public function addSlots(array $slots);
+    public function getSlots();
+    public function clearSlots();
+    public function setSlot($key, $value);
+    public function hasSlot($key);
+    public function getSlot($key, $default=null);
+    public function renderSlot($key, $default=null);
+    public function removeSlot($key);
+    public function esc($value);
+}
+
+interface ISlotProvider extends ISlotContainer {
+    public function startSlotCapture($key);
+    public function endSlotCapture();
+    public function isCapturingSlot();
+}
+
+trait TSlotContainer {
+
+    public function setSlots(array $slots) {
+        return $this->clearSlots()->addSlots($slots);
+    }
+
+    public function addSlots(array $slots) {
+        foreach($slots as $key => $value) {
+            $this->setSlot($key, $value);
+        }
+
+        return $this;
+    }
+
+    public function renderSlot($key, $default=null) {
+        $value = $this->getSlot($key, $default);
+
+        if(is_callable($value)) {
+            $value = call_user_func_array($value, [$this]);
+        }
+
+        if($value instanceof IRenderable) {
+            return $value->renderTo($this);
+        } else if($value instanceof aura\html\IElementRepresentation) {
+            return $value->toString();
+        } else {
+            return $this->esc((string)$value);
+        }
+    }
+}
+
+
+
 interface IContentProvider extends 
     IDeferredRenderable, 
-    core\IArgContainer,
     arch\IProxyResponse 
     {}
 
@@ -96,8 +147,8 @@ interface IContentConsumer {
 interface IView extends 
     IContentConsumer, 
     IRenderTarget, 
-    core\IArgContainer, 
-    \ArrayAccess, 
+    ISlotProvider,
+    \ArrayAccess,
     core\IHelperProvider, 
     core\string\IStringEscapeHandler,
     core\i18n\translate\ITranslationProxy,
@@ -427,13 +478,12 @@ trait TCascadingHelperProvider {
 }
 
 
-interface ITemplate extends IContentProvider, \ArrayAccess, IRenderTarget, core\i18n\translate\ITranslationProxy {
+interface ITemplate extends IContentProvider, ISlotProvider, \ArrayAccess, IRenderTarget, core\i18n\translate\ITranslationProxy {
     public function isRendering();
     public function isLayout();
 
     // Escaping
     public function esc($value, $default=null);
-    public function escArg($name, $default=null);
     
     // Helpers
     public function __get($member);
