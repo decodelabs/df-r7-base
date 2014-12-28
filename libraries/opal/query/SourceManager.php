@@ -323,10 +323,13 @@ class SourceManager implements ISourceManager, core\IDumpable {
             
             return $field;
         } else {
+            $shouldCheck = true;
+
             if(false !== strpos($name, '.')) {
                 // qualified
                 $qName = $name;
                 list($sourceAlias, $name) = explode('.', $name, 2);
+                $shouldCheck = false;
             } else {
                 // local
                 $sourceAlias = $source->getAlias();
@@ -347,7 +350,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
                 );
             }
 
-            if($checkAlias === true && $passedSourceAlias !== $source->getAlias()) {
+            if($checkAlias === true && $shouldCheck && $passedSourceAlias !== $source->getAlias()) {
                 throw new InvalidArgumentException(
                     'Source alias "'.$passedSourceAlias.'" found when alias "'.$source->getAlias().'" is expected'
                 );
