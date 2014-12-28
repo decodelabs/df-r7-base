@@ -232,7 +232,7 @@ class SourceManager implements ISourceManager, core\IDumpable {
     public function extrapolateIntrinsicField(ISource $source, $name, $checkAlias=null) {
         return $this->_extrapolateField($source, $name, null, $checkAlias, true, false, false);
     }
-    
+
     public function extrapolateAggregateField(ISource $source, $name, $checkAlias=null) {
         return $this->_extrapolateField($source, $name, null, $checkAlias, false, false, true);
     }

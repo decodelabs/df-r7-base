@@ -714,7 +714,7 @@ trait TQuery_ParentAwareJoinClauseFactory {
         $this->getJoinClauseList()->addJoinClause(
             opal\query\clause\Clause::factory(
                 $this,
-                $sourceManager->extrapolateIntrinsicField($source, $localField),
+                $sourceManager->extrapolateIntrinsicField($source, $localField, true),
                 $operator,
                 $sourceManager->extrapolateIntrinsicField(
                     $this->_parent->getSource(), 
@@ -735,7 +735,7 @@ trait TQuery_ParentAwareJoinClauseFactory {
         $this->getJoinClauseList()->addJoinClause(
             opal\query\clause\Clause::factory(
                 $this,
-                $sourceManager->extrapolateIntrinsicField($source, $localField),
+                $sourceManager->extrapolateIntrinsicField($source, $localField, true),
                 $operator,
                 $sourceManager->extrapolateIntrinsicField(
                     $this->_parent->getSource(), 
