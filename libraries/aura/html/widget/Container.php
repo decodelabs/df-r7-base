@@ -35,8 +35,18 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
         if($this->_children->isEmpty()) {
             return '';
         }
-        
+
+        $this->_prepareChildren();
+
         return $this->getTag()->renderWith($this->_children, true);
+    }
+
+    protected function _prepareChildren() {
+        foreach($this->_children as $child) {
+            if($child instanceof aura\view\IDeferredRenderable) {
+                $child->setRenderTarget($this->_renderTarget);
+            }
+        }
     }
     
     public function import($input) {
@@ -233,8 +243,12 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
             $method = substr($method, 3);
         }
 
-        //$widget = call_user_func_array([$this->_context->html, $method], $args);
-        $widget = Base::factory($this->_context, $method, $args)->setRenderTarget($this->_renderTarget);
+        $widget = call_user_func_array([$this->_context->html, $method], $args);
+        //$widget = Base::factory($this->_context, $method, $args);
+
+        if($widget instanceof aura\view\IDeferredRenderable) {
+            $widget->setRenderTarget($this->_renderTarget);
+        }
         
         if($add) {
             $this->push($widget);

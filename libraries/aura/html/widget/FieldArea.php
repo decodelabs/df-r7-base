@@ -36,6 +36,8 @@ class FieldArea extends Container implements IFormOrientedWidget {
     protected function _render() {
         $tag = $this->getTag();
         $view = $this->getRenderTarget()->getView();
+
+        $this->_prepareChildren();
         
         $primaryWidget = $fieldError = null;
         $errors = [];
