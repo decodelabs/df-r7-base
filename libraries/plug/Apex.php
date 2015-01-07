@@ -11,7 +11,7 @@ use df\plug;
 use df\arch;
 use df\aura;
 
-class Apex implements arch\IDirectoryHelper {
+class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
     
     use arch\TDirectoryHelper;
     use aura\view\TViewAwareDirectoryHelper;

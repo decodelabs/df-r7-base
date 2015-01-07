@@ -13,13 +13,20 @@ use df\flex;
 use df\spur;
 use df\flow;
 
-class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core\i18n\translate\ITranslationProxy {
+class Html implements arch\IDirectoryHelper, core\i18n\translate\ITranslationProxy {
     
     use arch\TDirectoryHelper;
     use aura\view\TViewAwareDirectoryHelper;
+    use core\string\THtmlStringEscapeHandler;
     
     public function __call($member, $args) {
-        return aura\html\widget\Base::factory($this->context, $member, $args)->setRenderTarget($this->view);
+        $output = aura\html\widget\Base::factory($this->context, $member, $args);
+
+        if($this->view) {
+            $output->setRenderTarget($this->view);
+        }
+
+        return $output;
     }
 
     public function __invoke($name, $content=null, array $attributes=[]) {
@@ -29,7 +36,7 @@ class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core
 
         return new aura\html\Element($name, $content, $attributes);
     }
-    
+
     public function previewText($html, $length=null) {
         $html = aura\html\ElementContent::normalize($html);
 
@@ -41,7 +48,7 @@ class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core
 
 
         if($length !== null) {
-            $output = $this->view->format->shorten($output, $length);
+            $output = $this->context->format->shorten($output, $length);
         }
 
         return $this->string($output);
@@ -62,7 +69,7 @@ class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core
             return null;
         }
 
-        $text = $this->view->esc($text);
+        $text = $this->esc($text);
         $text = str_replace("\n", "\n".'<br />', $text);
 
         return $this->string($text);
@@ -115,7 +122,7 @@ class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core
     }
 
     public function _($phrase, array $data=null, $plural=null, $locale=null) {
-        return $this->string($this->view->_($phrase, $data, $plural, $locale));
+        return $this->string($this->context->_($phrase, $data, $plural, $locale));
     }
 
     public function string($value) {
@@ -142,7 +149,13 @@ class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core
 
 // Compound widget shortcuts
     public function icon($name, $body=null) {
-        $iconChar = $this->view->getTheme()->mapIcon($name);
+        if($this->view) {
+            $theme = $this->view->getTheme();
+        } else {
+            $theme = $this->context->apex->getTheme();
+        }
+
+        $iconChar = $theme->mapIcon($name);
         $attrs = [];
 
         if($iconChar !== null) {
@@ -167,7 +180,7 @@ class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core
     }
     
     public function basicLink($url, $body=null) {
-        $url = $this->view->uri->__invoke($url);
+        $url = $this->context->uri->__invoke($url);
 
         if(empty($body) && $body !== '0') {
             $body = $url;
@@ -191,7 +204,7 @@ class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core
             }
         }
 
-        return $this->link($this->view->uri->mailto($address), $body);
+        return $this->link($this->context->uri->mailto($address), $body);
     }
 
     public function mailLink($address, $body=null) {
@@ -206,15 +219,15 @@ class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core
 
     public function backLink($default=null, $success=true, $body=null) {
         return $this->link(
-                $this->view->uri->back($default, $success),
-                $body !== null ? $body : $this->view->_('Back')
+                $this->context->uri->back($default, $success),
+                $body !== null ? $body : $this->context->_('Back')
             )
             ->setIcon('back');
     }
 
     public function queryToggleLink($request, $queryVar, $onString, $offString, $onIcon=null, $offIcon=null) {
         return $this->link(
-                $this->view->uri->queryToggle($request, $queryVar, $result),
+                $this->context->uri->queryToggle($request, $queryVar, $result),
                 $result ? $onString : $offString
             )
             ->setIcon($result ? $onIcon : $offIcon);
@@ -277,10 +290,10 @@ class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core
         }
 
         return $this->buttonArea(
-            $this->eventButton($mainAction, $this->view->_('Yes'))
+            $this->eventButton($mainAction, $this->context->_('Yes'))
                 ->setIcon('accept'),
 
-            $this->eventButton('cancel', $this->view->_('No'))
+            $this->eventButton('cancel', $this->context->_('No'))
                 ->setIcon('deny')
                 ->shouldValidate(false)
         );
@@ -296,7 +309,7 @@ class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core
         }
 
         if(!$mainActionText) {
-            $mainActionText = $this->view->_('Save');
+            $mainActionText = $this->context->_('Save');
         }
 
         if(!$mainActionIcon) {
@@ -310,7 +323,7 @@ class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core
 
     public function resetEventButton($label=null) {
         if($label === null) {
-            $label = $this->view->_('Reset');
+            $label = $this->context->_('Reset');
         }
 
         return $this->eventButton('reset', $label)
@@ -320,7 +333,7 @@ class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core
 
     public function cancelEventButton($label=null) {
         if($label === null) {
-            $label = $this->view->_('Cancel');
+            $label = $this->context->_('Cancel');
         }
 
         return $this->eventButton('cancel', $label)
@@ -339,7 +352,7 @@ class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core
 
         return $this->_timeTag(
             $date->format('Y-m-d'), 
-            $this->view->format->date($date, $size, $locale)
+            $this->context->format->date($date, $size, $locale)
         );
     }
     
@@ -352,7 +365,7 @@ class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core
 
         return $this->_timeTag(
             $date->format('Y-m-d'), 
-            $this->view->format->userDate($date, $size)
+            $this->context->format->userDate($date, $size)
         );
     }
     
@@ -365,7 +378,7 @@ class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core
 
         return $this->_timeTag(
             $date->format(core\time\Date::W3C), 
-            $this->view->format->dateTime($date, $size, $locale)
+            $this->context->format->dateTime($date, $size, $locale)
         );
     }
     
@@ -378,7 +391,7 @@ class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core
 
         return $this->_timeTag(
             $date->format(core\time\Date::W3C), 
-            $this->view->format->userDateTime($date, $size)
+            $this->context->format->userDateTime($date, $size)
         );
     }
 
@@ -391,7 +404,7 @@ class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core
 
         return $this->_timeTag(
             $date->format(core\time\Date::W3C), 
-            $this->view->format->customDate($date, $format)
+            $this->context->format->customDate($date, $format)
         );
     }
     
@@ -404,7 +417,7 @@ class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core
 
         return $this->_timeTag(
             $date->format('H:m:s'), 
-            $this->view->format->time($date, $size, $locale)
+            $this->context->format->time($date, $size, $locale)
         );
     }
     
@@ -417,7 +430,7 @@ class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core
 
         return $this->_timeTag(
             $date->format('H:m:s'), 
-            $this->view->format->userTime($date, $size)
+            $this->context->format->userTime($date, $size)
         );
     }
     
@@ -431,9 +444,9 @@ class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core
 
         return $this->_timeTag(
                 $date->format(core\time\Date::W3C), 
-                $this->view->format->timeSince($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)
+                $this->context->format->timeSince($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)
             )
-            ->setAttribute('title', $this->view->format->dateTime($date));
+            ->setAttribute('title', $this->context->format->dateTime($date));
     }
     
     public function timeUntil($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=true) {
@@ -445,9 +458,9 @@ class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core
 
         return $this->_timeTag(
                 $date->format(core\time\Date::W3C), 
-                $this->view->format->timeUntil($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)
+                $this->context->format->timeUntil($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)
             )
-            ->setAttribute('title', $this->view->format->dateTime($date));
+            ->setAttribute('title', $this->context->format->dateTime($date));
     }
 
     public function timeFromNow($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null) {
@@ -471,12 +484,12 @@ class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core
         if($diff > 0) {
             $output = $this->context->_(
                 '%t% ago',
-                ['%t%' => $this->view->format->timeSince($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)]
+                ['%t%' => $this->context->format->timeSince($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)]
             );
         } else if($diff < 0) {
             $output = $this->context->_(
                 'in %t%',
-                ['%t%' => $this->view->format->timeUntil($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)]
+                ['%t%' => $this->context->format->timeUntil($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)]
             );
         } else {
             $output = $this->context->_('right now');
@@ -486,7 +499,7 @@ class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core
                 $date->format(core\time\Date::W3C), 
                 $output
             )
-            ->setAttribute('title', $this->view->format->dateTime($date));
+            ->setAttribute('title', $this->context->format->dateTime($date));
     }
 
     protected function _timeTag($w3cString, $formattedString) {
@@ -502,7 +515,7 @@ class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core
     public function image($url, $alt=null, $width=null, $height=null) {
         $output = $this->element(
             'img', null, [
-                'src' => $this->view->uri->__invoke($url),
+                'src' => $this->context->uri->__invoke($url),
                 'alt' => $alt
             ]
         );
@@ -519,7 +532,7 @@ class Html implements arch\IDirectoryHelper, aura\view\IImplicitViewHelper, core
     }
 
     public function themeImage($path, $alt=null, $width=null, $height=null) {
-        return $this->image($this->view->uri->themeAsset($path), $alt, $width, $height);
+        return $this->image($this->context->uri->themeAsset($path), $alt, $width, $height);
     }
 
 // Video
