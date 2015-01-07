@@ -38,20 +38,18 @@ class Html implements arch\IDirectoryHelper, core\i18n\translate\ITranslationPro
     }
 
     public function previewText($html, $length=null) {
+        $html = strip_tags($html);
         $html = aura\html\ElementContent::normalize($html);
 
         if(!strlen($html)) {
             return null;
         }
 
-        $output = strip_tags($html);
-
-
         if($length !== null) {
-            $output = $this->context->format->shorten($output, $length);
+            $html = $this->context->format->shorten($html, $length);
         }
 
-        return $this->string($output);
+        return $this->string($html);
     }
 
     public function toText($html) {
