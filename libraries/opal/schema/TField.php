@@ -517,7 +517,7 @@ trait TField_OptionProvider {
                 $type->checkType('core/lang/IEnum');
                 $typeString = 'type://'.$type->getClassPath();
             } else if($type instanceof core\lang\IEnumFactory) {
-                if($type instanceof mesh\entity\ILocationProvider) {
+                if($type instanceof mesh\entity\ILocatorProvider) {
                     $typeString = (string)$type->getEntityLocator();
                 } else {
                     $typeString = (new core\lang\TypeRef($type))->getClassPath();
