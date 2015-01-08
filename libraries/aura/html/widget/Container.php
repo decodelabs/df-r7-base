@@ -240,11 +240,14 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
 
         if(substr($method, 0, 3) == 'add') {
             $add = true;
-            $method = substr($method, 3);
+            $method = lcfirst(substr($method, 3));
+        }
+
+        if(empty($method)) {
+            $method = '__invoke';
         }
 
         $widget = call_user_func_array([$this->_context->html, $method], $args);
-        //$widget = Base::factory($this->_context, $method, $args);
 
         if($widget instanceof aura\view\IDeferredRenderable) {
             $widget->setRenderTarget($this->_renderTarget);

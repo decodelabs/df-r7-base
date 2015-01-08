@@ -33,9 +33,18 @@ class WidgetContentProvider extends aura\html\ElementContent implements aura\vie
 // Widget shortcuts
     public function __call($method, array $args) {
         if(substr($method, 0, 3) == 'add') {
-            $widget = aura\html\widget\Base::factory($this->context, substr($method, 3), $args)
-                ->setRenderTarget($this->_renderTarget);
-                
+            $method = lcfirst(substr($method, 3));
+
+            if(empty($method)) {
+                $method = '__invoke';
+            }
+
+            $widget = call_user_func_array([$this->context->html, $method], $args);
+
+            if($widget instanceof aura\view\IDeferredRenderable) {
+                $widget->setRenderTarget($this->_renderTarget);
+            }
+
             $this->push($widget);
             return $widget;
         }
