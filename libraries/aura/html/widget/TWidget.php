@@ -1029,6 +1029,11 @@ trait TWidget_DataDrivenList {
     protected $_data;
     
     public function setData($data) {
+        if($data instanceof core\IArrayProvider
+        && !$data instanceof core\collection\IMappedCollection) {
+            $data = $data->toArray();
+        }
+
         $this->_data = $data;
         return $this;
     }

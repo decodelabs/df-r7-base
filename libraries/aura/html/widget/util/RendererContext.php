@@ -15,11 +15,13 @@ class RendererContext implements aura\html\widget\IRendererContext {
     use core\collection\TArrayCollection_Constructor;
     use core\collection\TArrayCollection_AssociativeValueMap;
 
+    public $cellTag;
+    public $fieldTag;
+    public $rowTag;
+
     protected $_key;
     protected $_field;
     protected $_counter = -1;
-    protected $_cellTag;
-    protected $_rowTag;
     protected $_store = [];
     protected $_widget;
     protected $_rowProcessor;
@@ -51,11 +53,15 @@ class RendererContext implements aura\html\widget\IRendererContext {
     }
     
     public function getCellTag() {
-        return $this->_cellTag;
+        return $this->cellTag;
     }
     
     public function getRowTag() {
-        return $this->_rowTag;
+        return $this->rowTag;
+    }
+
+    public function getFieldTag() {
+        return $this->fieldTag;
     }
     
     public function prepareRow($row) {
@@ -77,23 +83,25 @@ class RendererContext implements aura\html\widget\IRendererContext {
     }
     
     
-    public function iterate($key, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null) {
+    public function iterate($key, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null, aura\html\ITag $fieldTag=null) {
         $this->_counter++;
         $this->clear();
 
         $this->_store = [];
         $this->_key = $key;
-        $this->_cellTag = $cellTag;
-        $this->_rowTag = $rowTag;
+        $this->cellTag = $cellTag;
+        $this->rowTag = $rowTag;
+        $this->fieldTag = $fieldTag;
         $this->_skipRow = false;
 
         return $this;
     }
     
-    public function iterateField($field, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null) {
+    public function iterateField($field, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null, aura\html\ITag $fieldTag=null) {
         $this->_field = $field;
-        $this->_cellTag = $cellTag;
-        $this->_rowTag = $rowTag;
+        $this->cellTag = $cellTag;
+        $this->rowTag = $rowTag;
+        $this->fieldTag = $fieldTag;
         
         return $this;
     }

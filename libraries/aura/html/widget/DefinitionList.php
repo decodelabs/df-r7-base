@@ -16,11 +16,13 @@ class DefinitionList extends Base implements IDataDrivenListWidget, IMappedListW
     
     use TWidget_DataDrivenList;
     use TWidget_MappedList;
+    use TWidget_RendererProvider;
 
     protected $_renderIfEmpty = true;
     
-    public function __construct(arch\IContext $context, $data) {
+    public function __construct(arch\IContext $context, $data, $renderer=null) {
         $this->setData($data);
+        $this->setRenderer($renderer);
     }
     
     protected function _render() {
@@ -28,32 +30,32 @@ class DefinitionList extends Base implements IDataDrivenListWidget, IMappedListW
         $children = new aura\html\ElementContent();
         
         $renderContext = new aura\html\widget\util\RendererContext($this);
-        $fields = $this->_fields;
-        
-        if(empty($fields)) {
-            if(!$this->_isDataIterable()) {
-                return '';
-            }
-            
-            $fields = $this->_generateDefaultFields();
-        }
-        
-        $data = $renderContext->prepareRow($this->_data);
         $empty = true;
 
-        foreach($fields as $key => $field) {
-            $dtTag = new aura\html\Element('dt', $field->getName());
-            $ddTag = new aura\html\Tag('dd');
+        if($this->_renderer) {
+            foreach($this->_data as $key => $row) {
+                $row = $renderContext->prepareRow($row);
+                $field = new aura\html\widget\util\Field($key, $key, $this->_renderer);
 
-            $renderContext->iterateField($key, $ddTag, $dtTag);
-            $value = $renderContext->renderCell($data, $field->renderer);
-
-            if($renderContext->shouldSkipRow()) {
-                continue;
+                $empty = false;
+                $this->_renderRow($children, $renderContext, $field, $key, $row);
             }
+        } else {
+            $data = $renderContext->prepareRow($this->_data);
+            $fields = $this->_fields;
             
-            $empty = false;
-            $children->push($dtTag->render(), $ddTag->renderWith($value));
+            if(empty($fields)) {
+                if(!$this->_isDataIterable()) {
+                    return '';
+                }
+                
+                $fields = $this->_generateDefaultFields();
+            }
+
+            foreach($fields as $key => $field) {
+                $empty = false;
+                $this->_renderRow($children, $renderContext, $field, $key, $data);
+            }
         }
 
         if($empty && $this->_renderIfEmpty) {
@@ -61,6 +63,24 @@ class DefinitionList extends Base implements IDataDrivenListWidget, IMappedListW
         }
         
         return $tag->renderWith($children, true);
+    }
+
+    protected function _renderRow($children, $renderContext, $field, $key, $data) {
+        $dtTag = new aura\html\Element('dt');
+        $ddTag = new aura\html\Tag('dd');
+
+        $renderContext->iterateField($key, $ddTag, null, $dtTag);
+        $value = $renderContext->renderCell($data, $field->renderer);
+
+        if($renderContext->shouldSkipRow()) {
+            return;
+        }
+
+        if($dtTag->isEmpty()) {
+            $dtTag->push($field->getName());
+        }
+
+        $children->push($dtTag->render(), $ddTag->renderWith($value));
     }
 
     public function shouldRenderIfEmpty($flag=null) {
