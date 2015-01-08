@@ -79,13 +79,13 @@ class Base_Enum implements core\lang\IEnum {
     protected $_index;
 
     public static function factory($value) {
-        throw new \RuntimeException(
+        throw new core\lang\RuntimeException(
             'Unit enum factory is not accessible'
         );
     }
 
     public static function normalize($value) {
-        throw new \RuntimeException(
+        throw new core\lang\RuntimeException(
             'Unit enum normalize is not accessible'
         );
     }
@@ -109,7 +109,7 @@ class Base_Enum implements core\lang\IEnum {
             } else if(in_array($value, $this->_labels)) {
                 $value = array_search($value, $this->_labels);
             } else {
-                throw new InvalidArgumentException(
+                throw new core\lang\InvalidArgumentException(
                     $value.' is not a valid enum option'
                 );
             }
@@ -123,7 +123,7 @@ class Base_Enum implements core\lang\IEnum {
             return $this->_options;
         }
 
-        throw new \RuntimeException(
+        throw new core\lang\RuntimeException(
             'Unit enum static calls are not accessible'
         );
     }
@@ -133,7 +133,7 @@ class Base_Enum implements core\lang\IEnum {
             return $this->_labels;
         }
 
-        throw new \RuntimeException(
+        throw new core\lang\RuntimeException(
             'Unit enum static calls are not accessible'
         );
     }
@@ -164,7 +164,7 @@ class Base_Enum implements core\lang\IEnum {
             return $this->_unit->label($option);
         }
 
-        throw new \RuntimeException(
+        throw new core\lang\RuntimeException(
             'Unit enum static calls are not accessible'
         );
     }
