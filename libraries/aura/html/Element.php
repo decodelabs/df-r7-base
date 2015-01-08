@@ -16,7 +16,10 @@ class Element extends Tag implements IElement, core\IDumpable {
 
     public function __construct($name, $content=null, array $attributes=[]) {
         parent::__construct($name, $attributes);
-        $this->import($content);
+
+        if($content !== null) {
+            $this->import($content);
+        }
     }
     
     public function toString() {
