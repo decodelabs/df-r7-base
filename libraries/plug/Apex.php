@@ -226,7 +226,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
     }
 
     public function getLocationTitle() {
-        $breadcrumbs = $this->getBreadcrumbs();
+        $breadcrumbs = $this->breadcrumbs();
 
         if($entry = $breadcrumbs->getLastEntry()) {
             return $entry->getBody();
