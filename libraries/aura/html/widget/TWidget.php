@@ -88,7 +88,19 @@ trait TWidget_BodyContentAware {
     }
 
     public function hasBody() {
-        return !$this->_body->isEmpty();
+        if(!$this->_body) {
+            return false;
+        }
+
+        if($this->_body instanceof aura\html\ITag) {
+            return true;
+        }
+
+        if($this->_body instanceof aura\html\IElementContent) {
+            return !$this->_body->isEmpty();
+        }
+
+        return true;
     }
 }
 

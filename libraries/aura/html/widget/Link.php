@@ -201,7 +201,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         }
         
         
-        if($body->isEmpty()) {
+        if(!$this->hasBody()) {
             if($url !== null) {
                 $body = $url;
             } else {
