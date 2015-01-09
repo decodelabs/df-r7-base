@@ -27,7 +27,7 @@ class StarRating extends Base {
         $tag = $this->getTag();
         $tag->setDataAttribute('value', $this->_value);
         $tag->setDataAttribute('max', $this->_max);
-        $tag->setAttribute('title', $view->format->number($this->_value));
+        $tag->setTitle($view->format->number($this->_value));
 
         $stars = [];
 

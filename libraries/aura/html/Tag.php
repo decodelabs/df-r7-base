@@ -324,6 +324,28 @@ class Tag implements ITag, core\IDumpable {
     public function getId() {
         return $this->getAttribute('id');
     }
+
+    public function isHidden($flag=null) {
+        if($flag !== null) {
+            if($flag) {
+                $this->setAttribute('hidden', true);
+            } else {
+                $this->removeAttribute('hidden');
+            }
+
+            return $this;
+        }
+
+        return $this->hasAttribute('hidden');
+    }
+
+    public function setTitle($title) {
+        return $this->setAttribute('title', $title);
+    }
+
+    public function getTitle() {
+        return $this->getAttribute('title');
+    }
     
     
 // Style

@@ -116,7 +116,7 @@ class Html implements arch\IDirectoryHelper, core\i18n\translate\ITranslationPro
         }
 
         $newString = core\string\Manipulator::shorten($string, $length);
-        return $this->element('abbr', $newString)->setAttribute('title', $string);
+        return $this->element('abbr', $newString)->setTitle($string);
     }
 
     public function _($phrase, array $data=null, $plural=null, $locale=null) {
@@ -472,7 +472,7 @@ class Html implements arch\IDirectoryHelper, core\i18n\translate\ITranslationPro
                 $date->format(core\time\Date::W3C), 
                 $this->context->format->timeSince($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)
             )
-            ->setAttribute('title', $this->context->format->dateTime($date));
+            ->setTitle($this->context->format->dateTime($date));
     }
     
     public function timeUntil($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=true) {
@@ -486,7 +486,7 @@ class Html implements arch\IDirectoryHelper, core\i18n\translate\ITranslationPro
                 $date->format(core\time\Date::W3C), 
                 $this->context->format->timeUntil($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)
             )
-            ->setAttribute('title', $this->context->format->dateTime($date));
+            ->setTitle($this->context->format->dateTime($date));
     }
 
     public function timeFromNow($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null) {
@@ -525,7 +525,7 @@ class Html implements arch\IDirectoryHelper, core\i18n\translate\ITranslationPro
                 $date->format(core\time\Date::W3C), 
                 $output
             )
-            ->setAttribute('title', $this->context->format->dateTime($date));
+            ->setTitle($this->context->format->dateTime($date));
     }
 
     protected function _timeTag($w3cString, $formattedString) {

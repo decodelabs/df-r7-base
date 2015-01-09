@@ -178,7 +178,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         
 
         if($this->_description) {
-            $tag->setAttribute('title', $this->_description);
+            $tag->setTitle($this->_description);
         }
 
         

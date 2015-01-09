@@ -97,17 +97,23 @@ abstract class Base implements IWidget {
     public function getId() {
         return $this->getTag()->getId();
     }
-    
-    
-    
-// Title
-    public function setTitle($title) {
-        $this->getTag()->setAttribute('title', $title);
-        return $this;   
+
+    public function isHidden($flag=null) {
+        if($flag !== null) {
+            $this->getTag()->isHidden($flag);
+            return $this;
+        }
+
+        return $this->getTag()->isHidden();
     }
-    
+
+    public function setTitle($title) {
+        $this->getTag()->setTitle($title);
+        return $this;
+    }
+
     public function getTitle() {
-        return $this->getTag()->getAttribute('title');
+        return $this->getTag()->getTitle();
     }
     
     
