@@ -143,12 +143,7 @@ class Uri implements arch\IDirectoryHelper {
     }
 
     public function queryToggle($request, $key, &$result=null) {
-        if($request === null) {
-            $request = clone $this->context->request;
-        } else {
-            $request = arch\Request::factory($request);
-        }
-
+        $request = $this->directoryRequest($request);
         $result = isset($request->query->{$key});
 
         if($result) {
@@ -161,19 +156,18 @@ class Uri implements arch\IDirectoryHelper {
     }
     
     public function directory($request, $from=null, $to=null) {
-        if(!$request instanceof arch\IRequest) {
-            $request = arch\Request::factory($request);
-        } else {
-            $request = clone $request;
-        }
-        
-        $this->_applyRequestRedirect($request, $from, $to);
-        return $this->requestToUrl($request);
+        return $this->requestToUrl($this->directoryRequest($request, $from, $to));
     }
 
     public function directoryRequest($request, $from=null, $to=null) {
         if(!$request instanceof arch\IRequest) {
-            $request = arch\Request::factory($request);
+            if($request === null) {
+                $request = clone $this->context->request;
+            } else if(is_string($request) && preg_match('#^\.\.?/#', $request)) {
+                $request = $this->context->location->extractRelative($request);
+            } else {
+                $request = arch\Request::factory($request);
+            }
         } else {
             $request = clone $request;
         }
@@ -188,7 +182,7 @@ class Uri implements arch\IDirectoryHelper {
                 $from = $this->context->request;
             }
             
-            $request->setRedirectFrom($from);
+            $request->setRedirectFrom($this->directoryRequest($from));
         }
         
         if($to !== null) {
@@ -196,7 +190,7 @@ class Uri implements arch\IDirectoryHelper {
                 $to = $this->context->request;
             }
             
-            $request->setRedirectTo($to);
+            $request->setRedirectTo($this->directoryRequest($to));
         }
 
         return $request;

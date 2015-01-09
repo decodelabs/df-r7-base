@@ -60,26 +60,27 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             return $this;
         }
 
-        if(!is_string($url)) {
-            $url = (string)$url;
-            //core\dump($url);
+        if(!is_array($url)) {
+            if(!is_string($url)) {
+                $url = (string)$url;
+            }
+            
+            
+            // Fragment
+            $parts = explode('#', $url, 2);
+            $url = array_shift($parts);
+            $this->setFragment(array_shift($parts));
+            
+            // Query
+            $parts = explode('?', $url, 2);
+            $url = array_shift($parts);
+            $this->setQuery(array_shift($parts));
+            
+            // Scheme
+            $parts = explode('://', $url, 2);
+            $url = array_pop($parts);
+            $this->_scheme = 'directory';
         }
-        
-        
-        // Fragment
-        $parts = explode('#', $url, 2);
-        $url = array_shift($parts);
-        $this->setFragment(array_shift($parts));
-        
-        // Query
-        $parts = explode('?', $url, 2);
-        $url = array_shift($parts);
-        $this->setQuery(array_shift($parts));
-        
-        // Scheme
-        $parts = explode('://', $url, 2);
-        $url = array_pop($parts);
-        $this->_scheme = 'directory';
         
         if(!empty($url)) {
             $this->setPath($url);
@@ -149,15 +150,15 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
 // Controller
     public function setController($controller) {
         $path = $this->getPath();
-        $parts = $this->_path->toArray();
+        $parts = $this->_path->getRawCollection();
         $start = 0;
-        $end = count($parts);
+        $end = count($parts) - 1;
         
         // Strip area
         if(isset($parts[0]) && substr($parts[0], 0, 1) == static::AREA_MARKER) {
             $start++;
         }
-        
+
         // Strip fileName
         if(!$this->_path->shouldAddTrailingSlash()) {
             $end--;
@@ -191,7 +192,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             return [];
         }
         
-        $parts = $this->_path->toArray();
+        $parts = $this->_path->getRawCollection();
         
         // Strip area
         if(isset($parts[0]) && substr($parts[0], 0, 1) == static::AREA_MARKER) {
@@ -366,7 +367,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
 
     public function toSlug() {
         if($this->_path) {
-            $parts = $this->_path->toArray();
+            $parts = $this->_path->getRawCollection();
         } else {
             $parts = [];
         }
@@ -524,7 +525,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     
     public function getLiteralPathArray() {
         if($this->_path) {
-            $parts = $this->_path->toArray();
+            $parts = $this->_path->getRawCollection();
             $addTrailingSlash = $this->_path->shouldAddTrailingSlash();
         } else {
             $parts = [];
@@ -740,6 +741,12 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             $output->_path->pop();
         }
         
+        return $output;
+    }
+
+    public function extractRelative($path) {
+        $output = new self($path);
+        $output->_path = $this->_path->extractRelative($output->_path);
         return $output;
     }
     

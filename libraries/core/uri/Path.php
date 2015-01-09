@@ -43,7 +43,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, core\IDumpable {
         return $ref->newInstanceArgs(func_get_args());
     }
     
-    public function __construct($input=null, $autoCanonicalize=true, $separator=null) {
+    public function __construct($input=null, $autoCanonicalize=false, $separator=null) {
         $this->canAutoCanonicalize($autoCanonicalize);
         
         if($separator !== null) {
@@ -125,9 +125,45 @@ class Path implements IPath, \IteratorAggregate, \Serializable, core\IDumpable {
         
         return $this;
     }
+
+    public function extractRelative($path) {
+        if(!is_array($path)) {
+            if($path instanceof core\IArrayProvider) {
+                $path = $path->toArray();
+            } else {
+                $path = explode('/', $path);
+            }
+        } else {
+            $path = array_values($path);
+        }
+
+        $parts = $this->_collection;
+
+        if(!$this->_addTrailingSlash) {
+            array_pop($parts);
+        }
+
+        $parts = array_merge($parts, $path);
+        return new self($parts, true);
+    }
+
     
     
 // Collection
+    public function getRawCollection() {
+        return $this->_collection;
+    }
+
+    public function toArray() {
+        $output = $this->_collection;
+
+        if($this->_addTrailingSlash) {
+            $output[] = '';
+        }
+
+        return $output;
+    }
+
     public function import($input) {
         if($input === null) {
             return $this;

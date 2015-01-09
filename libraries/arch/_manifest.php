@@ -194,6 +194,7 @@ interface IRequest extends core\uri\IUrl, user\IAccessLock {
     
     // Parent
     public function getParent();
+    public function extractRelative($path);
 
 
     // Rewrite

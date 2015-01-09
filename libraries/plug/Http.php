@@ -137,19 +137,7 @@ class Http implements arch\IDirectoryHelper {
     }
     
     public function redirect($request=null) {
-        if($request === null) {
-            $request = $this->context->request;
-        }
-        
-        if(is_string($request)) {
-            $request = arch\Request::factory($request);
-        }
-
-        if($request instanceof arch\IRequest) {
-            $url = $this->directoryRequestToUrl($request);
-        } else {
-            $url = link\http\Url::factory((string)$request);
-        }
+        $url = $this->context->uri($request);
 
         if($url->isJustFragment()) {
             $fragment = $url->getFragment();

@@ -101,7 +101,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
 
 // Actions
     public function actionExists($request, $runMode=null) {
-        $request = arch\Request::factory($request);
+        $request = $this->context->uri->directoryRequest($request);
 
         if($runMode === null) {
             $runMode = $this->context->getRunMode();
@@ -111,13 +111,13 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
     }
     
     public function getAction($request, $runMode=null) {
-        $request = arch\Request::factory($request);
+        $request = $this->context->uri->directoryRequest($request);
         $context = arch\Context::factory($request, $runMode);
         return arch\Action::factory($context);
     }
     
     public function controllerExists($request, $runMode=null) {
-        $request = arch\Request::factory($request);
+        $request = $this->context->uri->directoryRequest($request);
 
         if($runMode === null) {
             $runMode = $this->context->getRunMode();
@@ -177,7 +177,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
         if($context instanceof arch\IContext) {
             $request = clone $context->location;
         } else {
-            $request = arch\Request::factory($context);
+            $request = $this->context->uri->directoryRequest($context);
         }
 
         $context = arch\Context::factory($request);
@@ -191,7 +191,7 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
             );
         }
 
-        $request = arch\Request::factory($request);
+        $request = $this->context->uri->directoryRequest($request);
         $context = $this->context->spawnInstance($request);
         $action = arch\form\Action::factory($context);
 

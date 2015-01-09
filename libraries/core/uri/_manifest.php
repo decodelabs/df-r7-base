@@ -21,6 +21,8 @@ interface IPath extends core\IStringProvider, core\collection\IIndexedQueue {
     public function shouldAddTrailingSlash($flag=null);
     public function canAutoCanonicalize($flag=null);
     public function canonicalize();
+    public function extractRelative($path);
+    public function getRawCollection();
     
     public function getDirname();
     public function setBaseName($baseName);

@@ -297,45 +297,73 @@ class Html implements arch\IDirectoryHelper, core\i18n\translate\ITranslationPro
         );
     }
 
-    public function saveEventButton($mainAction=null, $mainActionText=null, $mainActionIcon=null) {
-        if($mainAction === false) {
+    public function saveEventButton($action=null, $text=null, $icon=null, $disposition=null) {
+        if($action === false) {
             return null;
         }
 
-        if(!$mainAction) {
-            $mainAction = 'save';
+        if(!$action) {
+            $action = 'save';
         }
 
-        if(!$mainActionText) {
-            $mainActionText = $this->context->_('Save');
+        if($text === null) {
+            $text = $this->context->_('Save');
         }
 
-        if(!$mainActionIcon) {
-            $mainActionIcon = 'save';
+        if($icon === null) {
+            $icon = 'save';
         }
 
-        return $this->eventButton($mainAction, $mainActionText)
-            ->setIcon($mainActionIcon)
-            ->setDisposition('positive');
+        if($disposition === null) {
+            $disposition = 'positive';
+        } else if($disposition === false) {
+            $disposition = null;
+        }
+
+        return $this->eventButton($action, $text)
+            ->setIcon($icon)
+            ->setDisposition($disposition);
     }
 
-    public function resetEventButton($label=null) {
+    public function resetEventButton($label=null, $icon=null, $disposition=null) {
         if($label === null) {
             $label = $this->context->_('Reset');
         }
 
+        if($icon === null) {
+            $icon = 'refresh';
+        }
+
+        if($disposition === null) {
+            $disposition = 'informative';
+        } else if($disposition === false) {
+            $disposition = null;
+        }
+
         return $this->eventButton('reset', $label)
-            ->setIcon('refresh')
+            ->setIcon($icon)
+            ->setDisposition($disposition)
             ->shouldValidate(false);
     }
 
-    public function cancelEventButton($label=null) {
+    public function cancelEventButton($label=null, $icon=null, $disposition=null) {
         if($label === null) {
             $label = $this->context->_('Cancel');
         }
 
+        if($icon === null) {
+            $icon = 'cancel';
+        }
+
+        if($disposition === null) {
+            $disposition = 'transitive';
+        } else if($disposition === false) {
+            $disposition = null;
+        }
+
         return $this->eventButton('cancel', $label)
-            ->setIcon('cancel')
+            ->setIcon($icon)
+            ->setDisposition($disposition)
             ->shouldValidate(false);
     }
 

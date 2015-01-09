@@ -162,6 +162,9 @@ class Context implements IContext, \Serializable, core\IDumpable {
 
         if(empty($parts)) {
             $location = clone $this->location;
+        } else if($parts[0] == '.' || $parts[0] == '..') {
+            $parts[] = '';
+            $location = $this->location->extractRelative($parts);
         } else {
             $location = new arch\Request(implode('/', $parts).'/');
         }
