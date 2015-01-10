@@ -141,10 +141,11 @@ class Apc implements core\cache\IBackend {
     }
     
     public function clear() {
-
-        foreach($this->_getCacheList() as $set) {
-            if(0 === strpos($set[self::$_setKey], $this->_prefix)) {
-                @apc_delete($set[self::$_setKey]);
+        if(!($this->_isCli && !ini_get('apc.enable_cli'))) {
+            foreach($this->_getCacheList() as $set) {
+                if(0 === strpos($set[self::$_setKey], $this->_prefix)) {
+                    @apc_delete($set[self::$_setKey]);
+                }
             }
         }
 
