@@ -16,10 +16,27 @@ class CommaList extends Base implements ILinearListWidget, IDataDrivenListWidget
     use TWidget_RendererProvider;
     
     const PRIMARY_TAG = 'span';
-    
+
+    protected $_limit = null;
+
     public function __construct(arch\IContext $context, $data, $renderer=null) {
         $this->setData($data);
         $this->setRenderer($renderer);
+    }
+
+    public function setLimit($limit) {
+        $limit = abs((int)$limit);
+
+        if($limit == 0) {
+            $limit = null;
+        }
+
+        $this->_limit = $limit;
+        return $this;
+    }
+
+    public function getLimit() {
+        return $this->_limit;
     }
     
     protected function _render() {
@@ -39,6 +56,8 @@ class CommaList extends Base implements ILinearListWidget, IDataDrivenListWidget
         $renderContext = new aura\html\widget\util\RendererContext($this);
         $renderContext->shouldConvertNullToNa(false);
         $first = true;
+        $count = 0;
+        $more = 0;
 
         foreach($data as $key => $value) {
             $cellTag = new aura\html\Tag('span');
@@ -49,12 +68,27 @@ class CommaList extends Base implements ILinearListWidget, IDataDrivenListWidget
                 continue;
             }
 
+            if($this->_limit !== null && $count >= $this->_limit) {
+                $more++;
+                continue;
+            }
+
             if(!$first) {
                 $children->push(', ');
             }
 
             $first = false;
             $children->push($cellTag->renderWith($value));
+            $count++;
+        }
+
+        if($more) {
+            if(!$first) {
+                $children->push(', ');
+            }
+
+            $context = $this->getView()->context;
+            $children->push(new aura\html\Element('em', $context->_('...and %c% more', ['%c%' => $more])));
         }
         
         if($children->isEmpty()) {
