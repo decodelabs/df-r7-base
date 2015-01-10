@@ -928,6 +928,13 @@ trait TScaffold_SectionProvider {
         $counts = $this->getSectionItemCounts();
         $sections = $this->_getSections();
         $i = 0;
+        $record = null;
+
+        if($this instanceof IRecordDataProviderScaffold) {
+            try {
+                $record = $this->getRecord();
+            } catch(\Exception $e) {}
+        }
 
         foreach($sections as $action => $set) {
             $i++;
@@ -937,8 +944,8 @@ trait TScaffold_SectionProvider {
                 $set = [];
             }
 
-            if($this instanceof IRecordDataProviderScaffold) {
-                $request = $this->_getRecordActionRequest($this->getRecord(), $action);
+            if($record) {
+                $request = $this->_getRecordActionRequest($record, $action);
             } else {
                 $request = $this->_getActionRequest($action);
             }
@@ -973,7 +980,11 @@ trait TScaffold_SectionProvider {
 
     public function getSectionItemCounts() {
         if($this->_sectionItemCounts === null) {
-            $this->_sectionItemCounts = (array)$this->_fetchSectionItemCounts();
+            try {
+                $this->_sectionItemCounts = (array)$this->_fetchSectionItemCounts();
+            } catch(\Exception $e) {
+                return [];
+            }
         }
 
         return $this->_sectionItemCounts;
