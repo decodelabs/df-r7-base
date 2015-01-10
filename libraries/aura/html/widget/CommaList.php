@@ -88,7 +88,7 @@ class CommaList extends Base implements ILinearListWidget, IDataDrivenListWidget
             }
 
             $context = $this->getView()->context;
-            $children->push(new aura\html\Element('em', $context->_('...and %c% more', ['%c%' => $more])));
+            $children->push(new aura\html\Element('em.inactive', $context->_('...and %c% more', ['%c%' => $more])));
         }
         
         if($children->isEmpty()) {
