@@ -22,15 +22,13 @@ class Apc implements core\cache\IBackend {
     protected $_isCli = false;
 
     public static function purgeAll(core\collection\ITree $options) {
-        if(!extension_loaded('apc')) {
-            return;
-        }
-
-        if(self::$_apcu) {
-            apc_clear_cache();
-        } else {
-            apc_clear_cache('user');
-            apc_clear_cache('system');
+        if(extension_loaded('apc')) {
+            if(self::$_apcu) {
+                apc_clear_cache();
+            } else {
+                apc_clear_cache('user');
+                apc_clear_cache('system');
+            }
         }
 
         $request = new arch\Request('cache/apc-clear.json?purge');
@@ -48,6 +46,9 @@ class Apc implements core\cache\IBackend {
             self::$_apcu = version_compare(PHP_VERSION, '5.5.0') >= 0;
         }
 
+        return extension_loaded('apc');
+
+        /*
         if($output = extension_loaded('apc')) {
             if(php_sapi_name() == 'cli' && !ini_get('apc.enable_cli')) {
                 $output = false;
@@ -55,6 +56,7 @@ class Apc implements core\cache\IBackend {
         }
 
         return $output;
+        */
     }
     
     public function __construct(core\cache\ICache $cache, $lifeTime, core\collection\ITree $options) {
