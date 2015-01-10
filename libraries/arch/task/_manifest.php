@@ -28,6 +28,7 @@ interface IAction extends arch\IAction {
 interface IManager extends core\IManager {
     public function launch($request, core\io\IMultiplexer $multiplexer=null, $environmentMode=null, $user=null);
     public function launchBackground($request, $environmentMode=null, $user=null);
+    public function launchQuietly($request);
     public function invoke($request);
     public function initiateStream($request, $environmentMode=null);
     public function queue($request, $priority='medium', $environmentMode=null);

@@ -61,6 +61,16 @@ class Manager implements IManager {
         return halo\process\Base::launchBackgroundScript($path, ['task', $request], $user);
     }
 
+    public function launchQuietly($request) {
+        $application = df\Launchpad::getApplication();
+
+        if($application instanceof core\application\Task) {
+            return $this->invoke($request);
+        } else {
+            return $this->launchBackground($request);
+        }
+    }
+
     public function invoke($request) {
         $request = arch\Request::factory($request);
         $context = arch\Context::factory($request, 'Task');
