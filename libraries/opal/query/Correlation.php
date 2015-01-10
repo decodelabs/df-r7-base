@@ -110,7 +110,11 @@ class Correlation implements ICorrelationQuery, core\IDumpable {
             $correlationSource = $this->getCorrelationSource();
         }
 
-        $clauses = $this->_joinClauseList->extractClausesFor($correlationSource);
+        if($this->_joinClauseList) {
+            $clauses = $this->_joinClauseList->extractClausesFor($correlationSource);
+        } else {
+            $clauses = [];
+        }
 
         if($this->_whereClauseList) {
             $clauses = array_merge(
