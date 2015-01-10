@@ -235,7 +235,7 @@ class Apc implements core\cache\IBackend {
     }
 
     protected function _retrigger($method, $arg=null) {
-        $request = new arch\Request('cache/apc-clear.json');
+        $request = new arch\Request('cache/apc-clear');
         $request->query->cacheId = $this->_cache->getCacheId();
         $request->query->mode = $this->_isCli ? 'http' : 'cli';
         $request->query->{$method} = $arg;

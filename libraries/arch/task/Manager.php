@@ -73,7 +73,7 @@ class Manager implements IManager {
 
     public function invoke($request) {
         $request = arch\Request::factory($request);
-        $context = arch\Context::factory($request, 'Task');
+        $context = arch\Context::factory($request, 'Task', true);
         $action = arch\Action::factory($context);
 
         if(!$action instanceof IAction) {

@@ -30,30 +30,34 @@ class Context implements IContext, \Serializable, core\IDumpable {
         return null;
     }
 
-    public static function factory($request=null, $runMode=null) {
+    public static function factory($location=null, $runMode=null, $request=null) {
         $application = df\Launchpad::getApplication();
 
-        if(!empty($request)) {
-            $request = arch\Request::factory($request);
+        if(!empty($location)) {
+            $location = arch\Request::factory($location);
         } else if($application instanceof core\IContextAware && $application->hasContext()) {
-            $request = $application->getContext()->location;
+            $location = $application->getContext()->location;
         } else {
-            $request = new arch\Request('/');
+            $location = new arch\Request('/');
         }
 
-        return new self($request, $runMode); 
+        return new self($location, $runMode, $request); 
     }
     
-    public function __construct(arch\IRequest $request, $runMode=null) {
+    public function __construct(arch\IRequest $location, $runMode=null, $request=null) {
         $this->application = df\Launchpad::$application;
-        $this->location = $request;
+        $this->location = $location;
         $this->_runMode = $runMode;
 
-        if($this->application instanceof core\IContextAware 
-        && $this->application->hasContext()) {
+        if($request === true) {
+            $this->request = clone $location;
+        } else if($request !== null) {
+            $this->request = arch\Request::factory($request);
+        } else if($this->application instanceof core\IContextAware 
+               && $this->application->hasContext()) {
             $this->request = $this->application->getContext()->location;
         } else {
-            $this->request = $request;
+            $this->request = $location;
         }
     } 
     
