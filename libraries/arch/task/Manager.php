@@ -68,6 +68,7 @@ class Manager implements IManager {
             $this->getSharedIo()->writeLine('Invoking quietly: '.$request);
             return $this->invoke($request);
         } else {
+            echo 'BACKGROUND';
             return $this->launchBackground($request);
         }
     }
