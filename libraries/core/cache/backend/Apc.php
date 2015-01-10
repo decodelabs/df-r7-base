@@ -233,6 +233,6 @@ class Apc implements core\cache\IBackend {
         $request->query->mode = $this->_isCli ? 'http' : 'cli';
         $request->query->{$method} = $arg;
 
-        arch\task\Manager::getInstance()->launchBackground($request);
+        arch\task\Manager::getInstance()->launch($request);
     }
 }

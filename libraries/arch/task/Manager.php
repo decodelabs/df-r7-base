@@ -27,6 +27,15 @@ class Manager implements IManager {
         $path = df\Launchpad::$applicationPath.'/entry/';
         $path .= df\Launchpad::$environmentId.'.'.$environmentMode.'.php';
 
+        if($this->_captureBackground && !$multiplexer) {
+            $application = df\Launchpad::getApplication();
+
+            if($application instanceof core\application\Task) {
+                $multiplexer = $application->getTaskResponse();
+                return halo\process\Base::launchScript($path, ['task', $request], $multiplexer, $user);
+            }
+        }
+
         return halo\process\Base::launchScript($path, ['task', $request], $multiplexer, $user);
     }
 
