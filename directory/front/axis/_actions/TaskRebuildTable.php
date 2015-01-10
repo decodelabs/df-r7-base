@@ -15,6 +15,7 @@ use df\opal;
 class TaskRebuildTable extends arch\task\Action {
     
     public function execute() {
+        $this->task->shouldCaptureBackgroundTasks(true);
         $unitId = $this->request->query['unit'];
 
         if(!$unit = axis\Model::loadUnitFromId($unitId)) {

@@ -174,8 +174,7 @@ class TaskBuild extends arch\task\Action {
         }
 
         // Clear cache
-        $this->io->writeLine('Clearing cache');
-        core\cache\Base::purgeAll();
+        $this->runChild('cache/purge');
 
 
         // Restart daemons
