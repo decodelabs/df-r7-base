@@ -174,6 +174,7 @@ class TaskBuild extends arch\task\Action {
         }
 
         // Clear cache
+        $this->io->writeLine();
         $this->runChild('cache/purge');
 
 
