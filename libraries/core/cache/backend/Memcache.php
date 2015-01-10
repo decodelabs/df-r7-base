@@ -53,6 +53,12 @@ class Memcache implements core\cache\IBackend {
 
         return $output;
     }
+
+    public static function clearFor(core\collection\ITree $options, core\cache\ICache $cache) {
+        if(self::isLoadable()) {
+            (new self($cache, 0, $options))->clear();
+        }
+    }
     
     public function __construct(core\cache\ICache $cache, $lifeTime, core\collection\ITree $options) {
         $this->_cache = $cache;

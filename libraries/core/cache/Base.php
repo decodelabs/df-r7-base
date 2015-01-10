@@ -186,6 +186,17 @@ abstract class Base implements ICache {
         return $this;
     }
 
+    public function clearAll() {
+        $config = Config::getInstance();
+        
+        foreach(df\Launchpad::$loader->lookupClassList('core/cache/backend') as $name => $class) {
+            $options = new core\collection\Tree($config->getBackendOptions($name));
+            $class::clearFor($options, $this);
+        }
+
+        return $this;
+    }
+
     public function clearBegins($key) {
         $this->_backend->clearBegins($key);
         return $this;

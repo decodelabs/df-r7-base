@@ -41,6 +41,14 @@ class Apc implements core\cache\IBackend {
         // pruning is automatic :)
     }
 
+    public static function clearFor(core\collection\ITree $options, core\cache\ICache $cache) {
+        if(!extension_loaded('apc')) {
+            return;
+        }
+
+        (new self($cache, 0, $options))->clear();
+    }
+
     public static function isLoadable() {
         if(self::$_apcu === null) {
             self::$_apcu = version_compare(PHP_VERSION, '5.5.0') >= 0;
@@ -230,6 +238,7 @@ class Apc implements core\cache\IBackend {
         $request->query->cacheId = $this->_cache->getCacheId();
         $request->query->mode = $this->_isCli ? 'http' : 'cli';
         $request->query->{$method} = $arg;
+
         arch\task\Manager::getInstance()->launchQuietly($request);
     }
 }

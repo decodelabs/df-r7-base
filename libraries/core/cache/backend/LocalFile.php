@@ -60,6 +60,10 @@ class LocalFile implements core\cache\IDirectFileBackend {
         return $output;
     }
 
+    public static function clearFor(core\collection\ITree $options, core\cache\ICache $cache) {
+        (new self($cache, 0, $options))->clear();
+    }
+
     public static function isLoadable() {
         return true;
     }

@@ -24,6 +24,7 @@ interface ICache extends core\IValueMap, \ArrayAccess, core\IRegistryObject, \Co
     public function isCacheDistributed();
     public function mustCacheBeLocal();
     public function clear();
+    public function clearAll();
     public function clearBegins($key);
     public function clearMatches($regex);
     public function getCreationTime($key);
@@ -50,6 +51,7 @@ interface ISessionExtendedCache extends ICache {
 interface IBackend extends core\IValueMap, \Countable {
     public static function purgeAll(core\collection\ITree $options);
     public static function prune(core\collection\ITree $options);
+    public static function clearFor(core\collection\ITree $options, ICache $cache);
     public static function isLoadable();
     public function getConnectionDescription();
     public function getStats();
