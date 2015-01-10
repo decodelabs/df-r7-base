@@ -46,9 +46,6 @@ class Apc implements core\cache\IBackend {
             self::$_apcu = version_compare(PHP_VERSION, '5.5.0') >= 0;
         }
 
-        return extension_loaded('apc');
-
-        /*
         if($output = extension_loaded('apc')) {
             if(php_sapi_name() == 'cli' && !ini_get('apc.enable_cli')) {
                 $output = false;
@@ -56,7 +53,6 @@ class Apc implements core\cache\IBackend {
         }
 
         return $output;
-        */
     }
     
     public function __construct(core\cache\ICache $cache, $lifeTime, core\collection\ITree $options) {
