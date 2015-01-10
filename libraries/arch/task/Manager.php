@@ -65,6 +65,7 @@ class Manager implements IManager {
         $application = df\Launchpad::getApplication();
 
         if($application instanceof core\application\Task) {
+            $this->getSharedIo()->writeLine('Invoking quietly: '.$request);
             return $this->invoke($request);
         } else {
             return $this->launchBackground($request);
