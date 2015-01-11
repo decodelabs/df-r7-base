@@ -408,7 +408,7 @@ trait TScaffold_RecordDataProvider {
             } else {
                 $adapter = $this->getRecordAdapter();
 
-                if($adapter instanceof axis\ISchemaDefinitionStorageUnit) {
+                if($adapter instanceof axis\ISchemaBasedStorageUnit) {
                     $this->_recordNameKey = $adapter->getRecordNameField();
                 } else {
                     $this->_recordNameKey = 'name';
