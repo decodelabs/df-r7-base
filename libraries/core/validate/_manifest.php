@@ -536,7 +536,7 @@ interface ISlugField extends IField, ISanitizingField, IUniqueCheckerField, IMin
     public function allowPathFormat($flag=null);
     public function allowAreaMarker($flag=null);
     public function allowRoot($flag=null);
-    public function setDefaultValueField($field);
+    public function setDefaultValueField($field, $sanitizer=null);
     public function getDefaultValueField();
     public function shouldGenerateIfEmpty($flag=null);
 }

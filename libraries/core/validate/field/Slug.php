@@ -20,6 +20,7 @@ class Slug extends Base implements core\validate\ISlugField {
     protected $_allowAreaMarker = false;
     protected $_allowRoot = false;
     protected $_defaultValueField = null;
+    protected $_defaultValueSanitizer = null;
     protected $_generateIfEmpty = false;
 
     public function allowPathFormat($flag=null) {
@@ -49,8 +50,17 @@ class Slug extends Base implements core\validate\ISlugField {
         return $this->_allowRoot;
     }
 
-    public function setDefaultValueField($field) {
+    public function setDefaultValueField($field, $sanitizer=false) {
         $this->_defaultValueField = $field;
+
+        if($sanitizer !== null) {
+            if($sanitizer !== false) {
+                $sanitizer = core\lang\Callback::factory($sanitizer);
+            }
+
+            $this->_defaultValueSanitizer = $sanitizer;
+        }
+
         return $this;    
     }
     
@@ -115,6 +125,10 @@ class Slug extends Base implements core\validate\ISlugField {
 
             if($data->has($this->_defaultValueField)) {
                 $value = trim($data[$this->_defaultValueField]);
+
+                if($this->_defaultValueSanitizer) {
+                    $value = $this->_defaultValueSanitizer->invoke($value, $this);
+                }
             }
         }
 
