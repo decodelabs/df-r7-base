@@ -724,10 +724,17 @@ trait TScaffold_RecordListProvider {
             $args[0] = [];
         }
 
-        $args[0] = array_merge($this->_recordListFields, $args[0]);
+        $nameKey = $this->getRecordNameField();
+        $fields = $this->_recordListFields;
+
+        if(empty($fields)) {
+            $fields[] = $nameKey;
+        }
+
+        $args[0] = array_merge($fields, $args[0]);
         $output = new arch\component\template\CollectionList($this->context, $args);
         $output->setViewArg(lcfirst($this->getRecordKeyName()).'List');
-        $nameKey = $this->getRecordNameField();
+        
 
         foreach($output->getFields() as $field => $enabled) {
             if($enabled === true) {
