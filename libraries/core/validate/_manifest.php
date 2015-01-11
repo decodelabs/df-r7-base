@@ -535,6 +535,7 @@ interface ISetField extends IField {
 interface ISlugField extends IField, ISanitizingField, IUniqueCheckerField, IMinLengthField, IMaxLengthField {
     public function allowPathFormat($flag=null);
     public function allowAreaMarker($flag=null);
+    public function allowRoot($flag=null);
     public function setDefaultValueField($field);
     public function getDefaultValueField();
     public function shouldGenerateIfEmpty($flag=null);

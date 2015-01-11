@@ -18,6 +18,7 @@ class Slug extends Base implements core\validate\ISlugField {
 
     protected $_allowPathFormat = false;
     protected $_allowAreaMarker = false;
+    protected $_allowRoot = false;
     protected $_defaultValueField = null;
     protected $_generateIfEmpty = false;
 
@@ -37,6 +38,15 @@ class Slug extends Base implements core\validate\ISlugField {
         }
 
         return $this->_allowAreaMarker;
+    }
+
+    public function allowRoot($flag=null) {
+        if($flag !== null) {
+            $this->_allowRoot = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_allowRoot;
     }
 
     public function setDefaultValueField($field) {
@@ -77,6 +87,12 @@ class Slug extends Base implements core\validate\ISlugField {
             ));
 
             return null;
+        }
+
+        if($value == '/' && !$this->_allowRoot) {
+            $this->_applyMessage($node, 'invalid', $this->_handler->_(
+                'Root slug is not allowed here'
+            ));
         }
         
         
