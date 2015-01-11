@@ -267,6 +267,7 @@ trait TScaffold_RecordDataProvider {
     //const RECORD_NAME_FIELD = 'name';
     //const RECORD_URL_KEY = null;
     //const RECORD_ADAPTER = null;
+    //const DEFAULT_RECORD_ACTION = 'details';
 
     //const CAN_ADD_RECORD = true;
     //const CAN_EDIT_RECORD = true;
@@ -368,7 +369,7 @@ trait TScaffold_RecordDataProvider {
             $record = $this->_ensureRecord();
         }
 
-        return $this->_getRecordActionRequest($record, 'details');
+        return $this->_getRecordActionRequest($record, static::DEFAULT_RECORD_ACTION);
     }
 
     protected function _ensureRecord() {
