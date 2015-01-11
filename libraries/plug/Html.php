@@ -59,7 +59,7 @@ class Html implements arch\IDirectoryHelper, core\i18n\translate\ITranslationPro
             return null;
         }
 
-        return html_entity_decode(strip_tags($html));
+        return html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5);
     }
 
     public function plainText($text) {
