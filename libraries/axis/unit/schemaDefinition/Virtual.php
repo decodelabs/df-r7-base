@@ -19,6 +19,8 @@ final class Virtual implements axis\ISchemaDefinitionStorageUnit, axis\ISchemaBa
     const NAME_FIELD = null;
     const KEY_NAME = null;
 
+    protected static $_transient = [];
+
     public static function loadVirtual(axis\IModel $model, array $args) {
         return new self($model);
     }    
@@ -55,32 +57,35 @@ final class Virtual implements axis\ISchemaDefinitionStorageUnit, axis\ISchemaBa
     }
     
     public function fetchFor(axis\ISchemaBasedStorageUnit $unit, $transient=false) {
+        $schema = null;
         $cache = axis\schema\Cache::getInstance();
-        $schema = $cache->get($unit->getGlobalUnitId());
-        
-        if($schema !== null && !$schema instanceof axis\schema\ISchema) {
-            $schema = null;
-            $cache->clear();
-        }
-        
-        $setCache = false;
-        $schemaJson = null;
-        
-        if(!$schema) {
-            try {
-                $schemaJson = $this->_adapter->fetchFor($unit);
-            } catch(\Exception $e) {
-                if(!$this->_adapter->ensureStorage()) {
-                    throw $e;
+
+        if(!($transient && isset(self::$_transient[$unit->getUnitId()]))) {
+            $schema = $cache->get($unit->getGlobalUnitId());
+            
+            if($schema !== null && !$schema instanceof axis\schema\ISchema) {
+                $schema = null;
+                $cache->clear();
+            }
+            
+            $setCache = false;
+            $schemaJson = null;
+            
+            if(!$schema) {
+                try {
+                    $schemaJson = $this->_adapter->fetchFor($unit);
+                } catch(\Exception $e) {
+                    if(!$this->_adapter->ensureStorage()) {
+                        throw $e;
+                    }
                 }
             }
+            
+            if(!$schema && $schemaJson) {
+                $schema = axis\schema\Base::fromJson($unit, $schemaJson);
+                $setCache = true;
+            }
         }
-        
-        if(!$schema && $schemaJson) {
-            $schema = axis\schema\Base::fromJson($unit, $schemaJson);
-            $setCache = true;
-        }
-        
         
         if(!$schema) {
             $schema = $unit->buildInitialSchema();
@@ -177,8 +182,19 @@ final class Virtual implements axis\ISchemaDefinitionStorageUnit, axis\ISchemaBa
         
         return $this;
     }
-    
-    
+
+    public function markTransient(axis\ISchemaBasedStorageUnit $unit) {
+        self::$_transient[$unit->getUnitId()] = true;
+        return $this;
+    }
+
+    public function unmarkTransient(axis\ISchemaBasedStorageUnit $unit) {
+        unset(self::$_transient[$unit->getUnitId()]);
+        return $this;
+    }
+
+
+
     public function getUnitSchema() {
         $schema = $this->getTransientUnitSchema();
         $schema->acceptChanges();

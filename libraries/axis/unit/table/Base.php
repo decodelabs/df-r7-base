@@ -150,7 +150,12 @@ abstract class Base implements
     abstract protected function _onCreate(axis\schema\ISchema $schema);
     
     public function validateUnitSchema(axis\schema\ISchema $schema) {
+        $defUnit = $this->_model->getSchemaDefinitionUnit();
+        $defUnit->markTransient($this);
+
         $schema->validate($this);
+
+        $defUnit->unmarkTransient($this);
         return $this;
     }
 

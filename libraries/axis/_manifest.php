@@ -399,6 +399,8 @@ interface ISchemaDefinitionStorageUnit extends IStorageUnit {
     public function removeId($unitId);
     public function clearCache(ISchemaBasedStorageUnit $unit=null);
     public function fetchStoredUnitList();
+    public function markTransient(ISchemaBasedStorageUnit $unit);
+    public function unmarkTransient(ISchemaBasedStorageUnit $unit);
 }
 
 interface IClusterUnit extends IStorageUnit {
