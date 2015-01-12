@@ -398,6 +398,7 @@ interface ITrigger extends IChangeTracker {
 
 interface IRelationManifest extends \IteratorAggregate, core\IArrayProvider {
     public function getPrimitiveFieldNames($prefix=null);
+    public function getPrimitives($prefix=null);
     public function isSingleField();
     public function getSingleFieldName();
     public function validateValue($value);

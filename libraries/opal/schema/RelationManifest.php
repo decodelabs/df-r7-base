@@ -12,24 +12,27 @@ use df\opal;
 class RelationManifest implements IRelationManifest, core\IDumpable {
 
     protected $_fields = [];
-    protected $_primitiveNames = [];
+    protected $_primitives = [];
 
     public function __construct(opal\schema\IIndex $index) {
         foreach($index->getFields() as $name => $field) {
             if($field instanceof opal\schema\ITargetPrimaryFieldAwareRelationField) {
                 $this->_fields[$name] = $field->getTargetRelationManifest();
 
-                foreach($field->getPrimitiveFieldNames() as $subField) {
-                    $this->_primitiveNames[] = $subField;
+                foreach($this->_fields[$name]->getPrimitives($name) as $subField => $processor) {
+                    $this->_primitives[$subField] = $processor;
                 }
             } else if($field instanceof opal\schema\IMultiPrimitiveField) {
                 $this->_fields[$name] = $field->getPrimitiveFieldNames();
 
+                // TODO: get processors ??
+
                 foreach($this->_fields[$name] as $subField) {
-                    $this->_primitiveNames[] = $subField;
+                    $this->_primitives[$subField] = null;
                 }
             } else {
-                $this->_fields[$name] = $this->_primitiveNames[] = $name;
+                $this->_fields[$name] = $name;
+                $this->_primitives[$name] = $field instanceof opal\query\IFieldValueProcessor ? $field : null;
             }
         }
     }
@@ -39,22 +42,38 @@ class RelationManifest implements IRelationManifest, core\IDumpable {
             $output = [];
             $prefix = rtrim($prefix, '_').'_';
 
-            foreach($this->_primitiveNames as $name) {
+            foreach($this->_primitives as $name => $processor) {
                 $output[] = $prefix.$name;
             }
 
             return $output;
         }
 
-        return $this->_primitiveNames;
+        return array_keys($this->_primitives);
+    }
+
+    public function getPrimitives($prefix=null) {
+        if($prefix !== null) {
+            $output = [];
+            $prefix = rtrim($prefix, '_').'_';
+
+            foreach($this->_primitives as $name => $processor) {
+                $output[$prefix.$name] = $processor;
+            }
+
+            return $output;
+        }
+
+        return $this->_primitives;
     }
 
     public function isSingleField() {
-        return count($this->_primitiveNames) == 1;
+        return count($this->_primitives) == 1;
     }
 
     public function getSingleFieldName() {
-        return $this->_primitiveNames[0];
+        reset($this->_primitives);
+        return key($this->_primitives);
     }
 
     public function validateValue($value) {
@@ -71,31 +90,34 @@ class RelationManifest implements IRelationManifest, core\IDumpable {
     }
 
     public function extractFromRow($key, array $row) {
-        if(count($this->_primitiveNames) == 1) {
-            if(isset($row[$key])) {
-                return $row[$key];
-            }
+        $returnVal = count($this->_primitives) == 1;
+        $output = [];
 
-            $key = $key.'_'.$this->_primitiveNames[0];
-
-            if(isset($row[$key])) {
-                return $row[$key];
-            }
-
-            return null;
-        } else {
-            $output = [];
-
-            foreach($this->_primitiveNames as $name) {
+        foreach($this->_primitives as $name => $processor) {
+            if($returnVal && isset($row[$key])) {
+                $value = $row[$key];
+            } else {
                 $testKey = $key.'_'.$name;
 
                 if(isset($row[$testKey])) {
-                    $output[$name] = $row[$testKey];
+                    $value = $row[$testKey];
+                } else {
+                    $value = null;
                 }
             }
 
-            return $output;
+            if($processor) {
+                $value = $processor->sanitizeValue($value);
+            }
+
+            if($returnVal) {
+                return $value;
+            }
+
+            $output[$name] = $value;
         }
+
+        return $output;
     }
 
     public function getIterator() {
