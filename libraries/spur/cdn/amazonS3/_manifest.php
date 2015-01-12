@@ -73,6 +73,7 @@ interface IMediator {
     public function newUpload($bucket, $path, core\io\IFilePointer $file);
     public function newCopy($fromBucket, $fromPath, $toBucket, $toPath);
     public function renameFile($bucket, $path, $newName, $acl=IAcl::PRIVATE_READ_WRITE);
+    public function moveFile($bucket, $fromPath, $toPath, $acl=IAcl::PRIVATE_READ_WRITE);
     public function deleteFile($bucket, $path);
     public function deleteFolder($bucket, $path);
 

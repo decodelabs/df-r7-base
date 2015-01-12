@@ -216,7 +216,11 @@ class Mediator implements IMediator {
         $toPath->setBasename($newName);
         $toPath = $toPath->toString();
 
-        $this->newCopy($bucket, $path, $bucket, $toPath)
+        return $this->moveFile($bucket, $path, $toPath, $acl);
+    }
+
+    public function moveFile($bucket, $fromPath, $toPath, $acl=IAcl::PRIVATE_READ_WRITE) {
+        $this->newCopy($bucket, $fromPath, $bucket, $toPath)
             ->setAcl($acl)
             ->send();
 
