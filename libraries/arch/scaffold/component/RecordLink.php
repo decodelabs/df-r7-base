@@ -16,9 +16,9 @@ class RecordLink extends arch\component\template\RecordLink {
 
     public function __construct(arch\scaffold\IRecordDataProviderScaffold $scaffold, array $args=null) {
         $this->_scaffold = $scaffold;
-        $this->_icon = $scaffold->getDirectoryIcon();
-
         parent::__construct($scaffold->getContext(), $args);
+
+        $this->_icon = $scaffold->getRecordIcon($this->_record);
     }
 
     protected function _getRecordId() {
