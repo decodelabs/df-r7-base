@@ -216,7 +216,7 @@ trait TQuery {
         return $this->getSourceManager()->getTransaction();
     }
 
-    protected function _lookupRelationField($fieldName, &$clusterId) {
+    protected function _lookupRelationField($fieldName, &$clusterId, &$queryField=null) {
         $sourceManager = $this->getSourceManager();
         $queryField = $sourceManager->extrapolateField($this->getSource(), $fieldName);
 
@@ -399,18 +399,7 @@ trait TQuery_Correlatable {
             $alias = $fieldName;
         }
 
-        $source = $this->getSource();
-        $sourceAdapter = $source->getAdapter();
-
-        if(!$sourceAdapter instanceof IIntegralAdapter) {
-            throw new LogicException(
-                'Source adapter is not integral and does not have relation meta data'
-            );
-        }
-
-        $schema = $sourceAdapter->getQueryAdapterSchema();
-        $clusterId = $sourceAdapter->getClusterId();
-        $field = $schema->getField($fieldName);
+        $field = $this->_lookupRelationField($fieldName, $clusterId, $queryField);
 
         if(!$field instanceof opal\schema\IManyRelationField) {
             throw new opal\query\InvalidArgumentException(
@@ -418,6 +407,7 @@ trait TQuery_Correlatable {
             );
         }
 
+        $source = $queryField->getSource();
         $fieldAlias = $alias ? $alias : $fieldName;
 
         if($field instanceof opal\schema\IBridgedRelationField) {
