@@ -462,7 +462,7 @@ abstract class Base implements
 
 
 // Query blocks
-    public function applyLinkRelationQueryBlock(opal\query\IReadQuery $query, $relationField) {
+    public function applyLinkRelationQueryBlock(opal\query\IReadQuery $query, $relationField, array $extraFields=null) {
         $schema = $this->getUnitSchema();
         $primaries = $schema->getPrimaryFields();
         $name = $this->getRecordNameField();
@@ -486,6 +486,16 @@ abstract class Base implements
         $fields[$name] = $name.' as '.$relationField.'|'.$name;
         $combine[$name] = $relationField.'|'.$name.' as '.$name;
 
+        if(!empty($extraFields)) {
+            foreach($extraFields as $extraField) {
+                $parts = explode(' as ', $extraField);
+                $fieldName = array_shift($parts);
+                $alias = isset($parts[0]) ? array_shift($parts) : $fieldName;
+
+                $fields[$fieldName] = $fieldName.' as '.$relationField.'|'.$alias;
+                $combine[$fieldName] = $relationField.'|'.$alias.' as '.$alias;
+            }
+        }
 
         if($query instanceof opal\query\ISelectQuery) {
             $query->leftJoinRelation($relationField, $fields)
