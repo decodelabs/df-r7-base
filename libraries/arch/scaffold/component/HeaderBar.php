@@ -20,9 +20,8 @@ class HeaderBar extends arch\component\template\HeaderBar {
     public function __construct(arch\scaffold\IScaffold $scaffold, $name, array $args=null) {
         $this->_scaffold = $scaffold;
         $this->_name = ucfirst($name);
-        $this->_icon = $scaffold->getDirectoryIcon();
-
         parent::__construct($scaffold->getContext(), $args);
+        $this->_icon = $scaffold->getDirectoryIcon();
     }
 
     protected function _addOperativeLinks($menu) {

@@ -905,6 +905,7 @@ trait TScaffold_SectionProvider {
                     ) :
                     $this->getDirectoryTitle()
             )
+            ->setIcon($this->getRecordIcon())
             ->setBackLinkRequest($this->_getSectionHeaderBarBackLinkRequest());
     }
 
