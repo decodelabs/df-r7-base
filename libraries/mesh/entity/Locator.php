@@ -83,7 +83,7 @@ class Locator implements ILocator, core\IDumpable {
                     } else if($char == '/') {
                         $node['location'][] = $part;
                         $part = '';
-                    } else if(ctype_alpha($char)) {
+                    } else if(ctype_alnum($char)) {
                         $part .= $char;
                     } else {
                         throw new InvalidArgumentException(
