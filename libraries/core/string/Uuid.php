@@ -241,7 +241,7 @@ class Uuid implements IUuid, core\IDumpable {
     }
         
     public function toString() {
-        return bin2hex(substr($this->_bytes ,0 ,4)).'-'.
+        return bin2hex(substr($this->_bytes, 0, 4)).'-'.
                bin2hex(substr($this->_bytes, 4, 2)).'-'.
                bin2hex(substr($this->_bytes, 6, 2)).'-'.
                bin2hex(substr($this->_bytes, 8, 2)).'-'.
