@@ -10,6 +10,48 @@ use df\core;
 
 class Util implements IUtil {
     
+    public static function generateUploadTempDir($path=null) {
+        if($path === null) {
+            $path = df\Launchpad::$isDistributed ?
+                df\Launchpad::$application->getSharedStoragePath() :
+                df\Launchpad::$application->getLocalStoragePath();
+
+            $path .= '/upload/'.core\string\Uuid::v1();
+        }
+
+        self::ensureDirExists($path);
+        return $path;
+    }
+
+    public static function purgeUploadTempDirs() {
+        $path = df\Launchpad::$isDistributed ?
+            df\Launchpad::$application->getSharedStoragePath() :
+            df\Launchpad::$application->getLocalStoragePath();
+
+        $path .= '/upload/';
+
+        foreach(self::listDirsIn($path) as $name) {
+            try {
+                $guid = core\string\Uuid::factory($name);
+            } catch(\Exception $e) {
+                continue;
+            }
+
+            $time = $guid->getTime();
+
+            if(!$time) {
+                continue;
+            }
+
+            $date = core\time\Date::factory((int)$time);
+
+            if($date->lt('-2 days')) {
+                core\io\Util::deleteDir($path.'/'.$name);
+            }
+        }
+    }
+
+
     public static function readFileExclusive($path) {
         if(!$fp = fopen($path, 'rb')) {
             throw new \Exception(
