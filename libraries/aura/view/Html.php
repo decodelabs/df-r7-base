@@ -639,6 +639,10 @@ class Html extends Base implements IHtmlView, core\IDumpable {
     public function getContentType() {
         return 'text/html; charset=utf-8';
     }
+
+    protected function _normalizeSlotContent($content) {
+        return $this->html->string($content);
+    }
     
 // Notification
     public function toNotification($to=null, $from=null) {

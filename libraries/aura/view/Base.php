@@ -112,10 +112,17 @@ class Base implements IView {
             return;
         }
 
-        $this->setSlot($this->_slotCaptureKey, ob_get_clean());
+        $content = ob_get_clean();
+        $content = $this->_normalizeSlotContent($content);
+
+        $this->setSlot($this->_slotCaptureKey, $content);
         $this->_slotCaptureKey = null;
 
         return $this;
+    }
+
+    protected function _normalizeSlotContent($content) {
+        return $content;
     }
 
     public function isCapturingSlot() {
