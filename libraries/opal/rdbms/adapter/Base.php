@@ -86,6 +86,13 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
         $this->_closeConnection();
     }
 
+    public function __clone() {
+        $this->_dsn = clone $this->_dsn;
+        $this->_transactionLevel = 0;
+        $this->_connection = null;
+        $this->_connect();
+    }
+
     public function getAdapterName() {
         $parts = explode('\\', get_class($this));
         return array_pop($parts);

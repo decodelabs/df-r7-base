@@ -180,6 +180,7 @@ interface IReadQuery extends IQuery, \IteratorAggregate, core\IArrayProvider {
     public function getRawResult();
     public function getOutputManifest();
     public function getOutputFields();
+    public function isUnbuffered($flag=null);
 }
 
 interface IWriteQuery extends IQuery {

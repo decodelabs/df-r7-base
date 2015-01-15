@@ -1796,6 +1796,17 @@ trait TQuery_Pageable {
  */
 trait TQuery_Read {
     
+    protected $_isUnbuffered = false;
+
+    public function isUnbuffered($flag=null) {
+        if($flag !== null) {
+            $this->_isUnbuffered = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_isUnbuffered;
+    }
+
     public function getIterator() {
         $data = $this->_fetchSourceData();
         

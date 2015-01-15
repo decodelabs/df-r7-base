@@ -18,6 +18,7 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
     protected $_sql;
     protected $_bindings = [];
     protected $_isExecuted = false;
+    protected $_isUnbuffered = false;
     
     protected $_row;
     protected $_isEmpty = true;
@@ -48,6 +49,14 @@ abstract class Base implements opal\rdbms\IStatement, \IteratorAggregate, core\I
         return $this;
     }
     
+    public function isUnbuffered($flag=null) {
+        if($flag !== null) {
+            $this->_isUnbuffered = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_isUnbuffered;
+    }
     
 // Preparation
     public function setSql($sql) {

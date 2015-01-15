@@ -170,9 +170,15 @@ class Aggregate implements opal\query\IAggregateField, core\IDumpable {
                 
             case self::TYPE_SUM:
             case self::TYPE_AVG:
+                return (double)$value;
+
             case self::TYPE_MIN:
             case self::TYPE_MAX:
-                return (double)$value;
+                if(is_numeric($value)) {
+                    return (double)$value;
+                } else {
+                    return $value;
+                }
 
             case self::TYPE_HAS:
                 return (bool)$value;

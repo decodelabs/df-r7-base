@@ -38,6 +38,10 @@ abstract class QueryExecutor implements IQueryExecutor {
         }
 
         $this->_stmt = $stmt;
+
+        if($this->_query instanceof opal\query\IReadQuery) {
+            $this->_stmt->isUnbuffered($this->_query->isUnbuffered());
+        }
     }
 
     public function getAdapter() {

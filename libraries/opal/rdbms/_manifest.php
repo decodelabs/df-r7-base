@@ -186,6 +186,7 @@ interface IStatement extends core\collection\IQueue, core\collection\IStreamColl
     public function appendSql($sql);
     public function getSql();
     public function reset();
+    public function isUnbuffered($flag=null);
     
     public function generateUniqueKey();
     public function setKeyIndex($index);

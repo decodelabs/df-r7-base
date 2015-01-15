@@ -674,6 +674,8 @@ trait TSchema_IndexProvider {
     }
     
     public function setPrimaryIndex($index) {
+        $name = $index;
+
         if($index !== null) {
             if($index instanceof opal\schema\IIndex) {
                 if($this->getIndex($index->getName()) !== $index) {
@@ -683,7 +685,7 @@ trait TSchema_IndexProvider {
                 }
             } else if(!$index = $this->getIndex($index)) {
                 throw new opal\schema\InvalidArgumentException(
-                    'Index '.$index.' could not be found in this schema'
+                    'Index '.$name.' could not be found in this schema'
                 );
             }
     

@@ -16,8 +16,15 @@ class Pdo extends Base {
     
 // Execute
     protected function _execute($forWrite=false) {
+        $options = [];
+        $connection = $this->_adapter->getConnection();
+
+        if($this->_isUnbuffered) {
+            $connection->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
+        }
+
         try {
-            $this->_stmt = $this->_adapter->getConnection()->prepare($this->_sql);
+            $this->_stmt = $connection->prepare($this->_sql, $options);
         } catch(\PDOException $e) {
             throw $this->_adapter->_getQueryException(
                 $e->errorInfo[1], 
@@ -39,7 +46,11 @@ class Pdo extends Base {
                 [$this->_sql, $this->_bindings]
             );
         }
-        
+
+        if($this->_isUnbuffered) {
+            $connection->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
+        }
+
         return $this->_stmt;
     }
     

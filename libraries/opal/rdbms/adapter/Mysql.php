@@ -24,6 +24,7 @@ class Mysql extends Base_Pdo {
         }
 
         $this->executeSql('SET time_zone = \'+00:00\'');
+        $this->_connection->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
     }
 
     protected function _createDb() {
