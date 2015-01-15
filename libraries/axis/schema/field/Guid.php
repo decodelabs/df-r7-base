@@ -98,6 +98,14 @@ class Guid extends Base implements opal\schema\IAutoGeneratorField {
     }
     
     public function sanitizeValue($value, opal\record\IRecord $forRecord=null) {
+        if(!$value instanceof core\string\IUuid) {
+            $value = (string)$value;
+
+            if(!strlen($value)) {
+                $value = null;
+            }
+        }
+
         if($value !== null) {
             $value = core\string\Uuid::factory($value);
         }
