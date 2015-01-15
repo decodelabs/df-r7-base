@@ -30,7 +30,7 @@ class Html implements arch\IDirectoryHelper, core\i18n\translate\ITranslationPro
     }
 
     public function __invoke($name, $content=null, array $attributes=[]) {
-        if($content === null && empty($attributes) && preg_match('/[^a-zA-Z0-9.#\_\-]/', $name)) {
+        if($content === null && empty($attributes) && (preg_match('/[^a-zA-Z0-9.#\_\-]/', $name) || !strlen($name))) {
             return new aura\html\ElementString($name);
         }
 
@@ -325,7 +325,15 @@ class Html implements arch\IDirectoryHelper, core\i18n\translate\ITranslationPro
             ->setDisposition($disposition);
     }
 
-    public function resetEventButton($label=null, $icon=null, $disposition=null) {
+    public function resetEventButton($action=null, $label=null, $icon=null, $disposition=null) {
+        if($action === false) {
+            return null;
+        }
+
+        if(!$action) {
+            $action = 'reset';
+        }
+
         if($label === null) {
             $label = $this->context->_('Reset');
         }
@@ -340,13 +348,21 @@ class Html implements arch\IDirectoryHelper, core\i18n\translate\ITranslationPro
             $disposition = null;
         }
 
-        return $this->eventButton('reset', $label)
+        return $this->eventButton($action, $label)
             ->setIcon($icon)
             ->setDisposition($disposition)
             ->shouldValidate(false);
     }
 
-    public function cancelEventButton($label=null, $icon=null, $disposition=null) {
+    public function cancelEventButton($action=null, $label=null, $icon=null, $disposition=null) {
+        if($action === false) {
+            return null;
+        }
+
+        if(!$action) {
+            $action = 'cancel';
+        }
+
         if($label === null) {
             $label = $this->context->_('Cancel');
         }
@@ -361,7 +377,7 @@ class Html implements arch\IDirectoryHelper, core\i18n\translate\ITranslationPro
             $disposition = null;
         }
 
-        return $this->eventButton('cancel', $label)
+        return $this->eventButton($action, $label)
             ->setIcon($icon)
             ->setDisposition($disposition)
             ->shouldValidate(false);
@@ -518,7 +534,7 @@ class Html implements arch\IDirectoryHelper, core\i18n\translate\ITranslationPro
                 ['%t%' => $this->context->format->timeUntil($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)]
             );
         } else {
-            $output = $this->context->_('right now');
+            $output = $this->context->_('just now');
         }
 
         return $this->_timeTag(

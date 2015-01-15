@@ -321,7 +321,7 @@ class Format implements core\ISharedHelper {
                 ['%t%' => $this->timeUntil($date, $maxUnits, $shortUnits, $maxUnit, $roundLastUnit, $locale)]
             );
         } else {
-            return $this->context->_('right now');
+            return $this->context->_('just now');
         }
     }
     
