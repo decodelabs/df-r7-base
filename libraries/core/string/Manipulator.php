@@ -68,6 +68,7 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
     public static function formatSlug($slug, $allowedChars=null) {
         return self::factory($slug)
             ->translitToAscii()
+            ->regexReplace('/([a-z][a-z])([A-Z][a-z])/u', '$1 $2')
             ->toLower()
             ->replace([' ', '.', ','], '-')
             ->replace('/', '_')
