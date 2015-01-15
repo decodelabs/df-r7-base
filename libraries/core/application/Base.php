@@ -191,6 +191,18 @@ abstract class Base implements core\IApplication, core\IDumpable {
         unset($this->_registry[$key]);
         return $this;
     }
+
+    public function findRegistryObjects($beginningWith) {
+        $output = [];
+
+        foreach($this->_registry as $key => $object) {
+            if(0 === strpos($key, $beginningWith)) {
+                $output[$key] = $object;
+            }
+        }
+
+        return $output;
+    }
     
     
 // Dump

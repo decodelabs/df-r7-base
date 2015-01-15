@@ -450,6 +450,7 @@ interface IApplication {
     public function getRegistryObject($key);
     public function hasRegistryObject($key);
     public function removeRegistryObject($key);
+    public function findRegistryObjects($beginningWith);
 }
 
 interface IRegistryObject {
