@@ -154,12 +154,24 @@ class ManyBridge extends Base implements axis\IVirtualUnit {
         return $schema;
     }
 
+    public function getDominantUnit() {
+        return $this->_model->getUnit($this->_dominantUnitName);
+    }
+
     public function getDominantUnitName() {
         return $this->_dominantUnitName;
     }
     
     public function getDominantFieldName() {
         return $this->_dominantFieldName;
+    }
+
+    public function getSubmissiveUnitId() {
+        return $this->getSubmissiveUnit()->getUnitId();
+    }
+
+    public function getSubmissiveUnit() {
+        return axis\Model::loadUnitFromId($this->getDominantUnit()->getUnitSchema()->getField($this->_dominantFieldName)->getTargetUnitId());
     }
 
     public function isVirtualUnitShared() {

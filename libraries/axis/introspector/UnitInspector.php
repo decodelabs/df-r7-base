@@ -99,12 +99,12 @@ class UnitInspector implements IUnitInspector, core\IDumpable {
         return $this->_unit->getUnitSchema();
     }
 
-    public function getTransientSchema() {
+    public function getTransientSchema($force=false) {
         if(!$this->_unit instanceof axis\ISchemaBasedStorageUnit) {
             return null;
         }
 
-        return $this->_unit->getTransientUnitSchema();
+        return $this->_unit->getTransientUnitSchema($force);
     }
 
     public function getSchemaVersion() {

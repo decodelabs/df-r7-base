@@ -202,7 +202,7 @@ final class Virtual implements axis\ISchemaDefinitionStorageUnit, axis\ISchemaBa
         return $schema;
     }
     
-    public function getTransientUnitSchema() {
+    public function getTransientUnitSchema($force=false) {
         $schema = new axis\schema\Base($this, $this->getStorageBackendName());
         
         $schema->addField('unitId', 'String', 64);

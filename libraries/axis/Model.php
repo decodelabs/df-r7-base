@@ -162,7 +162,21 @@ abstract class Model implements IModel, core\IDumpable {
         unset($this->_units[$unit->getUnitName()]);
         return $this;
     }
-    
+
+    public static function purgeLiveCache() {
+        $application = df\Launchpad::getApplication();
+
+        foreach($application->findRegistryObjects(self::REGISTRY_PREFIX) as $key => $model) {
+            $model->_purgeLiveCache();
+        }
+    }
+
+    protected function _purgeLiveCache() {
+        foreach($this->_units as $unit) {
+            $this->unloadUnit($unit);
+        }
+    }
+
     public function __get($member) {
         return $this->getUnit($member);
     }

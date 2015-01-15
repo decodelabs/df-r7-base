@@ -90,7 +90,13 @@ abstract class Base implements
         return $this->_schema;
     }
     
-    public function getTransientUnitSchema() {
+    public function getTransientUnitSchema($force=false) {
+        if($force) {
+            $schema = $this->buildInitialSchema();
+            $this->updateUnitSchema($schema);
+            return $schema;
+        }
+
         if($this->_schema !== null) {
             return $this->_schema;
         }

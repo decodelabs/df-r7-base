@@ -30,6 +30,7 @@ interface IModel extends mesh\entity\IParentEntity, core\IRegistryObject {
     public function getUnit($name);
     public static function getSchemaDefinitionUnit();
     public function unloadUnit(IUnit $unit);
+    public static function purgeLiveCache();
 }
 
 
@@ -317,7 +318,7 @@ trait TAdapterBasedStorageUnit {
 
 interface ISchemaBasedStorageUnit extends IAdapterBasedStorageUnit, opal\schema\ISchemaContext {
     public function getUnitSchema();
-    public function getTransientUnitSchema();
+    public function getTransientUnitSchema($force=false);
     public function clearUnitSchemaCache();
     public function buildInitialSchema();
     public function updateUnitSchema(axis\schema\ISchema $schema);

@@ -42,7 +42,7 @@ interface IUnitInspector {
     public function getAdapterConnectionName();
 
     public function getSchema();
-    public function getTransientSchema();
+    public function getTransientSchema($force=false);
     public function getSchemaVersion();
     public function getDefinedSchemaVersion();
     public function canUpdateSchema();
