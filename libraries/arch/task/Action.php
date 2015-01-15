@@ -74,6 +74,29 @@ abstract class Action extends arch\Action implements IAction {
             $this->throwError(500, 'Child action '.$request.' does not extend arch\\task\\Action');
         }
 
+        $action->io = $this->io;
         return $action->dispatch();
+    }
+
+    public function runChildQuietly($request) {
+        $request = arch\Request::factory($request);
+        $context = $this->context->spawnInstance($request, true);
+        $action = arch\Action::factory($context);
+
+        if(!$action instanceof self) {
+            $this->throwError(500, 'Child action '.$request.' does not extend arch\\task\\Action');
+        }
+
+        $capture = $this->task->shouldCaptureBackgroundTasks();
+        $this->task->shouldCaptureBackgroundTasks(false);
+
+        $action->io = new core\io\Multiplexer([
+            $output = new core\io\channel\Memory()
+        ]);
+
+        $action->dispatch();
+        $this->task->shouldCaptureBackgroundTasks($capture);
+
+        return $output;
     }
 }

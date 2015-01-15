@@ -65,19 +65,23 @@ class Manager implements IManager {
         $application = df\Launchpad::getApplication();
 
         if($application instanceof core\application\Task) {
-            return $this->invoke($request);
+            return $this->invoke($request, core\io\Multiplexer::defaultFactory('memory'));
         } else {
             return $this->launchBackground($request);
         }
     }
 
-    public function invoke($request) {
+    public function invoke($request, core\io\IMultiplexer $io=null) {
         $request = arch\Request::factory($request);
         $context = arch\Context::factory($request, 'Task', true);
         $action = arch\Action::factory($context);
 
         if(!$action instanceof IAction) {
             $context->throwError(500, 'Child action '.$request.' does not extend arch\\task\\Action');
+        }
+
+        if($io) {
+            $action->io = $io;
         }
 
         $action->dispatch();
