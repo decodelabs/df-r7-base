@@ -19,6 +19,11 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
     use arch\form\TForm_ValueListSelectorDelegate;
     use arch\form\TForm_DependentDelegate;
 
+    protected static $_defaultModes = [
+        'select' => '_renderOverlaySelector',
+        'details' => '_renderInlineDetails'
+    ];
+
     protected $_searchMessage = null;
     protected $_searchPlaceholder = null;
     protected $_defaultSearchString = null;
@@ -50,7 +55,7 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
         return $this->_defaultSearchString;
     }
 
-    protected function _renderOverlaySelectorContent(aura\html\widget\Overlay $ol) {
+    protected function _renderOverlaySelectorContent(aura\html\widget\Overlay $ol, $selected) {
         $fs = $ol->addFieldSet($this->_('Select'));
 
         if(!$this->values->search->hasValue() && $this->_defaultSearchString !== null) {
@@ -59,7 +64,7 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
         }
 
         // Search
-        $fs->addFieldArea($this->_('Search'))->setDescription($this->_searchMessage)->push(
+        $fs->addFieldArea()->setDescription($this->_searchMessage)->push(
             $this->html->textbox(
                     $this->fieldName('search'), 
                     $this->values->search
@@ -80,9 +85,9 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
         
         // Show selected
         if(!$this->_isForMany) {
-            $this->_renderOneSelected($fs);
+            $this->_renderOneSelected($fs, $selected);
         } else {
-            $this->_renderManySelected($fs);
+            $this->_renderManySelected($fs, $selected);
         }
 
 
@@ -218,74 +223,63 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
         );
     }
 
-    protected function _renderOneSelected($fs) {
-        if($this->values->selected->hasValue()) {
-            $selectList = $this->_fetchResultList([$this->values['selected']]);
-            $selected = $this->_extractQueryResult($selectList);
-
-            if(!$selected) {
-                unset($this->values->selected);
-            } else {
-                $fa = $fs->addFieldArea($this->_('Selected'));
-                $fa->addClass('delegate-selector');
-
-                $id = $this->_getResultId($selected);
-                $name = $this->_getResultDisplayName($selected);
-
-                $fa->push(
-                    $this->html('div.widget-selection', [
-                        $this->html->hidden($this->fieldName('selected'), $id),
-
-                        $this->html('div.body', $name),
-
-                        $this->html->buttonArea(
-                            $this->html->eventButton(
-                                    $this->eventName('clear'), 
-                                    $this->_('Remove')
-                                )
-                                ->shouldValidate(false)
-                                ->setIcon('remove')
-                        )
-                    ])
-                );
-
-            }
+    protected function _renderOneSelected($fs, $selected) {
+        if($selected === null) {
+            return;
         }
+
+        $fa = $fs->addFieldArea($this->_('Selected'));
+        $fa->addClass('delegate-selector');
+
+        $id = $this->_getResultId($selected);
+        $name = $this->_getResultDisplayName($selected);
+
+        $fa->push(
+            $this->html('div.widget-selection', [
+                $this->html->hidden($this->fieldName('selected'), $id),
+
+                $this->html('div.body', $name),
+
+                $this->html->buttonArea(
+                    $this->html->eventButton(
+                            $this->eventName('clear'), 
+                            $this->_('Remove')
+                        )
+                        ->shouldValidate(false)
+                        ->setIcon('remove')
+                )
+            ])
+        );
     }
 
-    protected function _renderManySelected($fs) {
-        if(!$this->values->selected->isEmpty()) {
-            $selectedList = $this->_fetchResultList($this->values->selected->getKeys());
-            $selectedList = $this->_normalizeQueryResult($selectedList);
+    protected function _renderManySelected($fs, $selected) {
+        if(empty($selected)) {
+            return;
+        }
 
-            if($this->_isQueryResultEmpty($selectedList)) {
-                unset($this->values->selected);
-            } else {
-                $fa = $fs->addFieldArea($this->_('Selected'));
-                $fa->addClass('delegate-selector');
+        $fa = $fs->addFieldArea($this->_('Selected'));
+        $fa->addClass('delegate-selector');
 
-                foreach($selectedList as $result) {
-                    $id = $this->_getResultId($result);
-                    $name = $this->_getResultDisplayName($result);
+        foreach($selected as $result) {
+            $id = $this->_getResultId($result);
+            $name = $this->_getResultDisplayName($result);
 
-                    $fa->push(
-                        $this->html('div.widget-selection', [
-                            $this->html->hidden($this->fieldName('selected['.$id.']'), $id),
-                            
-                            $this->html('div.body', $name),
+            $fa->push(
+                $this->html('div.widget-selection', [
+                    $this->html->hidden($this->fieldName('selected['.$id.']'), $id),
+                    
+                    $this->html('div.body', $name),
 
-                            $this->html->buttonArea(
-                                $this->html->eventButton(
-                                        $this->eventName('remove', $id), 
-                                        $this->_('Remove')
-                                    )
-                                    ->shouldValidate(false)
-                                    ->setIcon('remove')
+                    $this->html->buttonArea(
+                        $this->html->eventButton(
+                                $this->eventName('remove', $id), 
+                                $this->_('Remove')
                             )
-                        ])
-                    );
-                }
-            }
+                            ->shouldValidate(false)
+                            ->setIcon('remove')
+                    )
+                ])
+            );
         }
     }
 

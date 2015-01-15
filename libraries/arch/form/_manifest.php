@@ -117,14 +117,18 @@ interface IParentUiHandlerDelegate extends IDelegate {
 
 interface IResultProviderDelegate extends IRequirableDelegate, IParentEventHandlerDelegate {}
 
-interface ISelectorDelegate extends IResultProviderDelegate {
+interface ISelectionProviderDelegate extends IResultProviderDelegate {
     public function isForOne($flag=null);
     public function isForMany($flag=null);
+}
 
+interface ISelectorDelegate extends ISelectionProviderDelegate {
     public function isSelected($id);
     public function setSelected($selected);
     public function getSelected();
     public function hasSelection();
+    public function removeSelected($id);
+    public function clearSelection();
 }
 
 interface IInlineFieldRenderableSelectorDelegate extends IInlineFieldRenderableDelegate, ISelectorDelegate {}

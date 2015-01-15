@@ -586,6 +586,8 @@ trait TForm_ValueListSelectorDelegate {
 
 // Selected
     public function isSelected($id) {
+        $id = (string)$id;
+
         if(!$this->_isForMany) {
             return $this->values['selected'] == $id;
         } else {
@@ -650,6 +652,20 @@ trait TForm_ValueListSelectorDelegate {
         }
     }
 
+    public function clearSelection() {
+        return $this->setSelected(null);
+    }
+
+    public function removeSelected($id) {
+        if(!$this->_isForMany) {
+            unset($this->values->selected);
+        } else {
+            unset($this->values->selected->{$id});
+        }
+
+        return $this;
+    }
+
     public function apply() {
         if($this->_isRequired) {
             if(!$this->hasSelection()) {
@@ -693,10 +709,12 @@ trait TForm_InlineFieldRenderableModalSelectorDelegate {
     use TForm_SelectorDelegate;
     use TForm_SelectorDelegateQueryTools;
 
+    /*
     protected static $_defaultModes = [
         'select' => '_renderOverlaySelector',
         'details' => '_renderInlineDetails'
     ];
+    */
 
     protected function _getDefaultMode() {
         return 'details';
@@ -812,6 +830,8 @@ trait TForm_InlineFieldRenderableModalSelectorDelegate {
         $this->_renderDetailsButtonGroup($ba, $selected);
 
         $fa->push($this->html('</div>'));
+
+        return $selected;
     }
 
     protected function _renderDetailsButtonGroup(aura\html\widget\ButtonArea $ba, $selected) {
@@ -846,13 +866,13 @@ trait TForm_InlineFieldRenderableModalSelectorDelegate {
     }
 
     protected function _renderOverlaySelector(aura\html\widget\FieldArea $fa) {
-        $this->_renderInlineDetails($fa);
+        $selected = $this->_renderInlineDetails($fa);
         $ol = $fa->addOverlay($fa->getLabelBody());
         
-        return $this->_renderOverlaySelectorContent($ol);
+        return $this->_renderOverlaySelectorContent($ol, $selected);
     }
 
-    abstract protected function _renderOverlaySelectorContent(aura\html\widget\Overlay $ol);
+    abstract protected function _renderOverlaySelectorContent(aura\html\widget\Overlay $ol, $selected);
     abstract protected function _getSelectionErrors();
 
 
