@@ -49,6 +49,10 @@ class Uri implements arch\IDirectoryHelper {
 
             return clone $uri;
         }
+
+        if($uri === true) {
+            $uri = clone $this->context->request;
+        }
         
         if($uri instanceof core\IStringProvider) {
             $uri = $uri->toString();

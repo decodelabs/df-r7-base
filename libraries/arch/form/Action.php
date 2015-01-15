@@ -413,7 +413,7 @@ abstract class Action extends arch\Action implements IAction {
     }
 
     public function complete($defaultRedirect=null, $success=true) {
-        if($defaultRedirect === null || $defaultRedirect === true) {
+        if($defaultRedirect === null) {
             $defaultRedirect = $this->_getDefaultRedirect();
         }
         

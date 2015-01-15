@@ -75,7 +75,7 @@ class Delegate implements IDelegate {
     }
 
     public function complete($defaultRedirect=null, $success=true) {
-        if($defaultRedirect === null || $defaultRedirect === true) {
+        if($defaultRedirect === null) {
             $defaultRedirect = $this->_getDefaultRedirect();
         }
 
