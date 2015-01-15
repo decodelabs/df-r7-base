@@ -249,7 +249,7 @@ class File implements link\http\IUploadFile {
 
         if(!$this->_handler->isTypeAccepted($this->_type)) {
             $inputNode->addError('tpyeNotAccepted', $this->_(
-                'File of type %t% are not allowed to be uploaded here',
+                'Files of type %t% are not allowed to be uploaded here',
                 ['%t%' => $this->_type]
             ));
         }
