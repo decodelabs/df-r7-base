@@ -1412,10 +1412,14 @@ trait TQuery_WhereClauseFactory {
         if($this instanceof ISearchableQuery
         && $this->hasSearch()) {
             $search = $this->getSearch();
-            $where = $output;
-            $output = $search->generateWhereClauseList();
+            $searchClauses = $search->generateWhereClauseList();
 
-            if(!$where->isEmpty()) {
+            if($output->isEmpty()) {
+                $output = $searchClauses;
+            } else {
+                $where = $output->isOr(false);
+                $output = new opal\query\clause\WhereList($this);
+                $output->_addClause($searchClauses);
                 $output->_addClause($where);
             }
         }
