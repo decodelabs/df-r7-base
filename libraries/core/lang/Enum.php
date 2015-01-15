@@ -35,13 +35,15 @@ abstract class Enum implements IEnum, core\IDumpable {
     }
 
     protected function _normalizeIndex($value) {
-        if(is_numeric($value) && isset(static::$_options[$value])) {
+        $class = get_class($this);
+
+        if(is_numeric($value) && isset(self::$_options[$class][$value])) {
             $value = (int)$value;
         } else {
-            if(in_array($value, static::$_options)) {
-                $value = array_search($value, static::$_options);
-            } else if(in_array($value, static::$_labels)) {
-                $value = array_search($value, static::$_labels);
+            if(in_array($value, self::$_options[$class])) {
+                $value = array_search($value, self::$_options[$class]);
+            } else if(in_array($value, self::$_labels[$class])) {
+                $value = array_search($value, self::$_labels[$class]);
             } else {
                 throw new InvalidArgumentException(
                     $value.' is not a valid enum option'
@@ -53,29 +55,32 @@ abstract class Enum implements IEnum, core\IDumpable {
     }
 
     public static function getOptions() {
-        if(!static::$_options) {
+        $class = get_called_class();
+
+        if(!isset(self::$_options[$class])) {
             $reflection = new \ReflectionClass(get_called_class());
-            static::$_options = static::$_labels = [];
+            self::$_options[$class] = self::$_labels[$class] = [];
 
             foreach($reflection->getConstants() as $name => $label) {
-                static::$_options[] = lcfirst(str_replace(' ', '', ucwords(strtolower(str_replace('_', ' ', $name)))));
+                self::$_options[$class][] = lcfirst(str_replace(' ', '', ucwords(strtolower(str_replace('_', ' ', $name)))));
 
                 if(!strlen($label)) {
                     $label = ucwords(strtolower(str_replace('_', ' ', $name)));
                 }
 
-                static::$_labels[] = $label;
+                self::$_labels[$class][] = $label;
             }
         }
 
-        return static::$_options;
+        return self::$_options[$class];
     }
 
     public static function getLabels() {
+        $class = get_called_class();
         $output = [];
 
         foreach(static::getOptions() as $key => $option) {
-            $output[$option] = static::$_labels[$key];
+            $output[$option] = self::$_labels[$class][$key];
         }
 
         return $output;
@@ -86,11 +91,11 @@ abstract class Enum implements IEnum, core\IDumpable {
     }
 
     public function getOption() {
-        return static::$_options[$this->_index];
+        return self::$_options[get_class($this)][$this->_index];
     }
 
     public function getLabel() {
-        return static::$_labels[$this->_index];
+        return self::$_labels[get_class($this)][$this->_index];
     }
 
     public static function label($option) {
@@ -98,11 +103,11 @@ abstract class Enum implements IEnum, core\IDumpable {
     }
 
     public function toString() {
-        return static::$_labels[$this->_index];
+        return self::$_labels[get_class($this)][$this->_index];
     }
 
     public function getStringValue($default='') {
-        return static::$_options[$this->_index];
+        return self::$_options[get_class($this)][$this->_index];
     }
 
     public function is($value) {
@@ -122,6 +127,6 @@ abstract class Enum implements IEnum, core\IDumpable {
 
 // Dump
     public function getDumpProperties() {
-        return static::$_options[$this->_index].' ('.$this->_index.')';
+        return self::$_options[get_class($this)][$this->_index].' ('.$this->_index.')';
     }
 }
