@@ -374,7 +374,11 @@ trait TScaffold_RecordDataProvider {
 
     public function getRecordIcon($record=null) {
         if(!$record) {
-            $record = $this->_ensureRecord();
+            try {
+                $record = $this->_ensureRecord();
+            } catch(\Exception $e) {
+                return $this->getDirectoryIcon();
+            }
         }
 
         if(method_exists($this, '_getRecordIcon')) {
