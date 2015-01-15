@@ -202,7 +202,7 @@ trait TQuery {
             );
         }
 
-        $adapter->applyRelationQueryBlock($this, $field->getName(), $name, array_slice(func_get_args(), 1));
+        $adapter->applyRelationQueryBlock($this, $relationField, $name, array_slice(func_get_args(), 1));
         return $this;
     }
 
