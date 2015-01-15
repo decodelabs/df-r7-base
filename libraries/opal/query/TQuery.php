@@ -217,25 +217,45 @@ trait TQuery {
     }
 
     protected function _lookupRelationField($fieldName, &$clusterId, &$queryField=null) {
-        $sourceManager = $this->getSourceManager();
-        $queryField = $sourceManager->extrapolateField($this->getSource(), $fieldName);
+        $source = $this->getSource();
+        $field = null;
 
-        $source = $queryField->getSource();
-        $sourceAdapter = $source->getAdapter();
+        if(false === strpos($fieldName, '.')) {
+            $sourceAdapter = $source->getAdapter();
 
-        if(!$sourceAdapter instanceof IIntegralAdapter) {
-            throw new LogicException(
-                'Source adapter is not integral and does not have relation meta data'
-            );
+            if($sourceAdapter instanceof IIntegralAdapter) {
+                $schema = $sourceAdapter->getQueryAdapterSchema();
+                $field = $schema->getField($fieldName);
+
+                if(!$field instanceof opal\schema\IRelationField) {
+                    $field = null;
+                } else {
+                    $queryField = $source->extrapolateIntegralAdapterField($fieldName);
+                }
+            }
         }
 
-        $schema = $sourceAdapter->getQueryAdapterSchema();
-        $field = $schema->getField($queryField->getName());
+        if(!$field) {
+            $sourceManager = $this->getSourceManager();
+            $queryField = $sourceManager->extrapolateIntrinsicField($source, $fieldName, true);
 
-        if(!$field instanceof opal\schema\IRelationField) {
-            throw new opal\query\InvalidArgumentException(
-                $fieldName.' is not a relation field'
-            );
+            $source = $queryField->getSource();
+            $sourceAdapter = $source->getAdapter();
+
+            if(!$sourceAdapter instanceof IIntegralAdapter) {
+                throw new LogicException(
+                    'Source adapter is not integral and does not have relation meta data'
+                );
+            }
+
+            $schema = $sourceAdapter->getQueryAdapterSchema();
+            $field = $schema->getField($queryField->getName());
+
+            if(!$field instanceof opal\schema\IRelationField) {
+                throw new opal\query\InvalidArgumentException(
+                    $fieldName.' is not a relation field'
+                );
+            }
         }
 
         if(!$field->isOnGlobalCluster()) {
