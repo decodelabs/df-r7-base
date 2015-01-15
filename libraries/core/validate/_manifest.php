@@ -435,7 +435,7 @@ trait TUniqueCheckerField {
         return $this->_uniqueErrorMessage;
     }
 
-    protected function _validateUnique(core\collection\IInputTree $node, $value) {
+    protected function _validateUnique(core\collection\IInputTree $node, &$value, $rename=false) {
         if(!$this->_storageAdapter) {
             return;
         }
@@ -448,24 +448,25 @@ trait TUniqueCheckerField {
             }
         }
 
-        $query = (new opal\query\EntryPoint())
-            ->select()
-            ->from($this->_storageAdapter, 'checkUnit')
-            ->where($fieldName, '=', $value);
+        if($rename) {
+            $exists = false;
+            $counter = 0;
+            $output = $value;
 
-        if(!empty($this->_uniqueFilters)) {
-            foreach($this->_uniqueFilters as $field => $set) {
-                $value = $set['value'];
+            while($this->_getUniqueCheckQuery($fieldName, $output)->count()) {
+                $output = $value.'-'.(++$counter);
 
-                if(is_callable($value)) {
-                    $value($query, $field);
-                } else {
-                    $query->where($field, $set['inclusive'] ? '=' : '!=', $value);
+                if($this instanceof ISanitizingField) {
+                    $output = $this->_sanitizeValue($output);
                 }
             }
+
+            $value = $output;
+        } else {
+            $exists = $this->_getUniqueCheckQuery($fieldName, $value)->count();
         }
 
-        if($query->count()) {
+        if($exists) {
             $message = $this->_uniqueErrorMessage;
 
             if($message === null) {
@@ -474,6 +475,27 @@ trait TUniqueCheckerField {
 
             $this->_applyMessage($node, 'unique', $message);
         }
+    }
+
+    protected function _getUniqueCheckQuery($fieldName, $value) {
+        $query = (new opal\query\EntryPoint())
+            ->select()
+            ->from($this->_storageAdapter, 'checkUnit')
+            ->where($fieldName, '=', $value);
+
+        if(!empty($this->_uniqueFilters)) {
+            foreach($this->_uniqueFilters as $field => $set) {
+                $setValue = $set['value'];
+
+                if(is_callable($setValue)) {
+                    $setValue($query, $this);
+                } else {
+                    $query->where($field, $set['inclusive'] ? '=' : '!=', $setValue);
+                }
+            }
+        }
+
+        return $query;
     }
 }
 

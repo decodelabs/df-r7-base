@@ -113,7 +113,7 @@ class Slug extends Base implements core\validate\ISlugField {
         $this->_validateMinLength($node, $value, $length);
         $this->_validateMaxLength($node, $value, $length);
 
-        $this->_validateUnique($node, $value);
+        $this->_validateUnique($node, $value, true);
         return $this->_finalize($node, $value);
     }
 
