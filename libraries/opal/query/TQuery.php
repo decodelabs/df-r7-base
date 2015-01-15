@@ -1439,7 +1439,7 @@ trait TQuery_WhereClauseFactory {
             } else {
                 $where = $output->isOr(false);
                 $output = new opal\query\clause\WhereList($this);
-                $output->_addClause($searchClauses);
+                $output->_addClause($searchClauses->isOr(false));
                 $output->_addClause($where);
             }
         }
