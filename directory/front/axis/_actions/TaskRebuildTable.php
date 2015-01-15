@@ -66,6 +66,7 @@ class TaskRebuildTable extends arch\task\Action {
         $schemaDefinition = new axis\unit\schemaDefinition\Virtual($unit->getModel());
         $schemaDefinition->store($unit, $schema);
 
+        gc_collect_cycles();
         $this->io->writeLine('Done');
     }
 
@@ -74,7 +75,8 @@ class TaskRebuildTable extends arch\task\Action {
 
         $adapter = $unit->getUnitAdapter();
         $connection = $adapter->getConnection();
-        $currentTable = $adapter->getQuerySourceAdapter();
+        $newConnection = clone $connection;
+        $currentTable = clone $adapter->getQuerySourceAdapter();
 
         if(!$currentTable->exists()) {
             $this->io->writeLine('Unit rdbms table '.$currentTable->getName().' not found - nothing to do');
@@ -88,7 +90,7 @@ class TaskRebuildTable extends arch\task\Action {
 
         try {
             $this->io->writeLine('Building copy table');
-            $newTable = $connection->createTable($dbSchema);
+            $newTable = $newConnection->createTable($dbSchema);
         } catch(opal\rdbms\TableConflictException $e) {
             $this->throwError(403, 'Table unit '.$unit->getUnitId().' is currently rebuilding in another process');
         }
@@ -99,7 +101,7 @@ class TaskRebuildTable extends arch\task\Action {
 
         $fields = $dbSchema->getFields();
 
-        foreach($currentTable->select() as $row) {
+        foreach($currentTable->select()->isUnbuffered(true) as $row) {
             foreach($row as $key => $value) {
                 if(!isset($fields[$key])) {
                     unset($row[$key]);
