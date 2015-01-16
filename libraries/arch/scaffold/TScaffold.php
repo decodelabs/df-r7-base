@@ -539,7 +539,7 @@ trait TScaffold_RecordDataProvider {
                     $this->_getRecordActionRequest(
                         $record, 'delete', null, true,
                         $mode == 'sectionHeaderBar' ?
-                            $this->context->location->getPath()->getDirname().'/' : null
+                            $this->context->location->getPath()->getDirname() : null
                     ),
                     $this->_('Delete '.$this->getRecordItemName())
                 )
