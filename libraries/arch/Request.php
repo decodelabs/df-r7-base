@@ -457,21 +457,21 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         if(!$full && $tpString == $rpString) {
             return true;
         }
-        
-        $rpString = dirname($rpString).'/';
 
-        if(0 !== stripos($tpString, $rpString)
-        || $rpString == '~front/'
-        || dirname($tpString).'/' != $rpString) {
+        $rpDirString = dirname($rpString).'/';
+
+        if(substr($rpString, -6) == '/index') {
+            if(0 !== stripos($tpString, $rpDirString)
+            || $rpDirString == '~front/'
+            || dirname($tpString).'/' != $rpDirString) {
+                return false;
+            }
+        } else if(0 !== stripos($tpString, $rpString)) {
             return false;
         }
 
-        if($full && $tpString == $rpString && $this->_query) {
+        if($full && $tpString == $rpString && $this->_query && $request->_query) {
             foreach($this->_query as $key => $value) {
-                if(!$request->_query) {
-                    return false;
-                }
-
                 if(!isset($request->_query->{$key}) || $request->_query[$key] != $value) {
                     return false;
                 }
