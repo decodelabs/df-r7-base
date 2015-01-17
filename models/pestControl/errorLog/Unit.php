@@ -13,7 +13,7 @@ use df\arch;
 
 class Unit extends axis\unit\table\Base {
     
-    protected static $_defaultSearchFields = [
+    protected $_defaultSearchFields = [
         'request' => 3,
         'message' => 2
     ];

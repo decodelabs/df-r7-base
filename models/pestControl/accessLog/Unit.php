@@ -13,7 +13,7 @@ use df\opal;
 
 class Unit extends axis\unit\table\Base {
     
-    protected static $_defaultSearchFields = [
+    protected $_defaultSearchFields = [
         'code' => [
             'operator' => '=',
             'weight' => 5

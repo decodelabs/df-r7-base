@@ -13,7 +13,7 @@ use df\opal;
 
 class Unit extends axis\unit\table\Base {
     
-    protected static $_defaultSearchFields = [
+    protected $_defaultSearchFields = [
         'type' => 1,
         'message' => 4
     ];

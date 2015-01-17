@@ -13,7 +13,7 @@ use df\flow;
 
 class Unit extends axis\unit\table\Base {
     
-    protected static $_defaultSearchFields = [
+    protected $_defaultSearchFields = [
         'subject' => 10,
         'body' => 1
     ];

@@ -15,7 +15,7 @@ class Unit extends axis\unit\table\Base {
     
     const NAME_FIELD = 'fullName';
 
-    protected static $_defaultSearchFields = [
+    protected $_defaultSearchFields = [
         'fullName' => 5,
         'nickName' => 3,
         'email' => 1,

@@ -14,7 +14,7 @@ use df\flow;
 
 class Unit extends axis\unit\table\Base {
     
-    protected static $_defaultSearchFields = [
+    protected $_defaultSearchFields = [
         'name' => 3,
         'email' => 1
     ];

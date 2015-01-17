@@ -27,7 +27,7 @@ abstract class Base implements
     const KEY_NAME = null;
     
     protected static $_defaultRecordClass = 'df\\opal\\record\\Base';
-    protected static $_defaultSearchFields = null;
+    protected $_defaultSearchFields = null;
     
     private $_recordClass;
     private $_schema;
@@ -361,7 +361,7 @@ abstract class Base implements
     }
 
     public function getDefaultSearchFields() {
-        $fields = static::$_defaultSearchFields;
+        $fields = $this->_defaultSearchFields;
 
         if(empty($fields)) {
             $schema = $this->getUnitSchema();
@@ -372,7 +372,7 @@ abstract class Base implements
                 $fields['id'] = 10;
             }
 
-            static::$_defaultSearchFields = $fields;
+            $this->_defaultSearchFields = $fields;
         }
 
         return $fields;
