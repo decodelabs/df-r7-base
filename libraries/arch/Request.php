@@ -86,11 +86,17 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             $this->setPath($url);
         }
         
-        if($this->_path && $this->_path->get(0) == '~') {
-            if($context = arch\Context::getCurrent()) {
-                $this->setArea($context->request->getArea());
-            } else {
-                $this->setArea(static::DEFAULT_AREA);
+        if($this->_path) {
+            $first = $this->_path->get(0);
+
+            if($first == '~') {
+                if($context = arch\Context::getCurrent()) {
+                    $this->setArea($context->request->getArea());
+                } else {
+                    $this->setArea(static::DEFAULT_AREA);
+                }
+            } else if(isset($first{0}) && $first{0} == '~' && count($this->_path) == 1) {
+                $this->_path->shouldAddTrailingSlash(true);
             }
         }
         
@@ -552,7 +558,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             $parts = [];
             $addTrailingSlash = true;
         }
-        
+
         if(!isset($parts[0]) || substr($parts[0], 0, 1) != '~') {
             array_unshift($parts, static::AREA_MARKER.static::DEFAULT_AREA);
         }
