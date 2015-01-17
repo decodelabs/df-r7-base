@@ -63,9 +63,7 @@ class Form extends Container implements IFormWidget, IWidgetShortcutProvider {
             $tag->setAttribute('accept-charset', $this->_acceptCharset);
         }
 
-        $this->_prepareChildren();
-        
-        return $tag->renderWith($this->_children, true);
+        return $tag->renderWith($this->_prepareChildren(), true);
     }
     
     

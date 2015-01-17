@@ -37,8 +37,14 @@ class FieldArea extends Container implements IFormOrientedWidget {
         $tag = $this->getTag();
         $view = $this->getRenderTarget()->getView();
 
-        $this->_prepareChildren();
-        
+        $children = $this->_prepareChildren(function($child) {
+            if($child instanceof arch\form\IInlineFieldRenderableDelegate) {
+                return $child->renderFieldAreaContent($this);
+            }
+
+            return $child;
+        });
+
         $primaryWidget = $fieldError = null;
         $errors = [];
         $isRequired = $this->_isRequired;
@@ -53,7 +59,7 @@ class FieldArea extends Container implements IFormOrientedWidget {
             $errors = $this->_errorContainer->getErrors();
         }
         
-        $this->_walkChildren($this->_children->toArray(), $errors, $isRequired, $primaryWidget);
+        $this->_walkChildren($children, $errors, $isRequired, $primaryWidget);
         $output = [];
 
         if(!empty($errors)) {
@@ -86,7 +92,7 @@ class FieldArea extends Container implements IFormOrientedWidget {
             $output[] = $fieldError->render();
         }
 
-        $inputAreaBody = $this->_children;
+        $inputAreaBody = $children;
 
         if($this->_description !== null) {
             $inputAreaBody = [
@@ -95,7 +101,7 @@ class FieldArea extends Container implements IFormOrientedWidget {
                     [$view->html->icon('info'), ' ', $this->_description], 
                     ['class' => 'description info']
                 ),
-                $this->_children
+                $children
             ];
         }
 
@@ -139,11 +145,19 @@ class FieldArea extends Container implements IFormOrientedWidget {
         $errors = [];
         $isRequired = $this->_isRequired;
 
+        $children = $this->_prepareChildren(function($child) {
+            if($child instanceof arch\form\IInlineFieldRenderableDelegate) {
+                $child = $child->renderFieldAreaContent($this);
+            }
+
+            return $child;
+        });
+
         if($this->_errorContainer) {
             $errors = $this->_errorContainer->getErrors();
         }
         
-        foreach($this->_children as $child) {
+        foreach($children as $child) {
             if($child instanceof IInputWidget) {
                 $value = $child->getValue();
                 
@@ -153,7 +167,7 @@ class FieldArea extends Container implements IFormOrientedWidget {
             }
         }
         
-        $inputAreaBody = $this->_children;
+        $inputAreaBody = $children;
 
         if($this->_description !== null) {
             $inputAreaBody = [
@@ -162,7 +176,7 @@ class FieldArea extends Container implements IFormOrientedWidget {
                     [$view->html->icon('info'), ' ', $this->_description], 
                     ['class' => 'description info']
                 ),
-                $this->_children
+                $children
             ];
         }
 

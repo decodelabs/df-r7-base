@@ -36,17 +36,38 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
             return '';
         }
 
-        $this->_prepareChildren();
+        $children = $this->_prepareChildren();
 
-        return $this->getTag()->renderWith($this->_children, true);
+        return $this->getTag()->renderWith($children, true);
     }
 
-    protected function _prepareChildren() {
-        foreach($this->_children as $child) {
+    protected function _prepareChildren($callback=null) {
+        if($callback !== null) {
+            $callback = core\lang\Callback::factory($callback);
+        }
+
+        $children = $this->_children->toArray();
+        $this->_children->clear();
+
+        foreach($children as $i => $child) {
             if($child instanceof aura\view\IDeferredRenderable) {
                 $child->setRenderTarget($this->_renderTarget);
             }
+
+            if($child instanceof arch\form\ISelfContainedRenderableDelegate) {
+                $child = $child->renderContainerContent($this);
+            }
+
+            if($child !== null && $callback) {
+                $child = $callback->invoke($child, $this);
+            }
+
+            if($child !== null) {
+                $this->_children->push($child);
+            }
         }
+
+        return $this->_children->toArray();
     }
     
     public function import($input) {

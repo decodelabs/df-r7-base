@@ -35,12 +35,10 @@ class Overlay extends Container implements IWidgetShortcutProvider {
             $title = (new aura\html\Element($this->_titleTagName, $this->_titleBody))->render();
         }
 
-        $this->_prepareChildren();
-
         return $tag->renderWith(
             (new aura\html\Tag('div', ['class' => 'container']))->renderWith([
                 $title, 
-                (new aura\html\Tag('div', ['class' => 'body']))->renderWith($this->_children)
+                (new aura\html\Tag('div', ['class' => 'body']))->renderWith($this->_prepareChildren())
             ]),
             true
         );
