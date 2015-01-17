@@ -448,7 +448,6 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
 
     protected function _matches($request, $full) {
         $request = Request::factory($request);
-        core\debug()->dump($this, $request);
 
         if($this->_scheme != $request->_scheme) {
             return false;
