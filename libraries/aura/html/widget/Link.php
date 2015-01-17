@@ -156,7 +156,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
             foreach($this->_altMatches as $match) {
                 $matchRequest = arch\Request::factory($match);
 
-                if($matchRequest->contains($context->request)) {
+                if($context->request->matches($matchRequest)) {
                     $active = true;
                     break;
                 }
@@ -335,7 +335,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
             foreach($this->_altMatches as $match) {
                 $matchRequest = $context->uri->directoryRequest($match);
 
-                if($matchRequest->contains($request)) {
+                if($request->matches($matchRequest)) {
                     $active = true;
                     break;
                 }
