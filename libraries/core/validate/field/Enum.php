@@ -11,6 +11,7 @@ use df\mesh;
     
 class Enum extends Base implements core\validate\IEnumField {
 
+    use core\validate\TSanitizingField;
     use core\validate\TOptionProviderField;
     
     protected $_type = null;
@@ -44,6 +45,7 @@ class Enum extends Base implements core\validate\IEnumField {
 
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
+        $value = $this->_sanitizeValue($value);
 
         if(!$length = $this->_checkRequired($node, $value)) {
             return null;

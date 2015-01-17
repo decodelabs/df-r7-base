@@ -10,11 +10,13 @@ use df\core;
 
 class Email extends Base implements core\validate\IEmailField {
     
+    use core\validate\TSanitizingField;
     use core\validate\TStorageAwareField;
     use core\validate\TUniqueCheckerField;
 
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
+        $value = $this->_sanitizeValue($value);
         
         if(!$length = $this->_checkRequired($node, $value)) {
             return null;

@@ -11,8 +11,11 @@ use df\spur;
 
 class VideoEmbed extends Base implements core\validate\IVideoEmbedField {
 
+    use core\validate\TSanitizingField;
+
     public function validate(core\collection\IInputTree $node) {
         $value = trim($node->getValue());
+        $value = $this->_sanitizeValue($value);
 
         if(!$length = $this->_checkRequired($node, $value)) {
             return null;
