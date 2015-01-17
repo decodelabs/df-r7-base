@@ -27,9 +27,7 @@ class Url implements IGenericUrl, core\IDumpable {
     }
     
     public function __construct($url=null) {
-        if($url !== null) {
-            $this->import($url);
-        }
+        $this->import($url);
     }
     
     public function import($url='') {
