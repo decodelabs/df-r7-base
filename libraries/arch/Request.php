@@ -36,14 +36,6 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     }
     
     public function import($url='') {
-        if($url !== null) {
-            $this->reset();
-        }
-        
-        if($url === null) {
-            return $this;
-        }
-
         if($url instanceof self) {
             $this->_scheme = $url->_scheme;
             
