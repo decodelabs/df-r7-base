@@ -402,30 +402,14 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     
 // Match
     public function eq($request) {
-        $request = Request::factory($request);
-
-        if($this->_scheme != $request->_scheme) {
-            return false;
-        }
-
-        if($this->getLiteralPathString() != $request->getLiteralPathString()) {
-            return false;
-        }
-
-        if($this->_query) {
-            $rQuery = $request->getQuery();
-
-            foreach($this->_query as $key => $value) {
-                if(!isset($rQuery->{$key}) || $rQuery[$key] != $value) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
+        return $this->_eq($request, true);
     }
 
-    public function matches($request) {
+    public function pathEq($request) {
+        return $this->_eq($request, false);
+    }
+
+    protected function _eq($request, $full) {
         $request = Request::factory($request);
 
         if($this->_scheme != $request->_scheme) {
@@ -436,7 +420,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             return false;
         }
 
-        if($this->_query) {
+        if($full && $this->_query) {
             foreach($this->_query as $key => $value) {
                 if(!$request->_query) {
                     return false;
@@ -449,54 +433,42 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         }
 
         return true;
+    }
+
+
+
+
+    public function matches($request) {
+        return $this->_matches($request, true);
     }
 
     public function matchesPath($request) {
-        $request = Request::factory($request);
-
-        if($this->_scheme != $request->_scheme) {
-            return false;
-        }
-
-        if($this->getLiteralPathString() != $request->getLiteralPathString()) {
-            return false;
-        }
-
-        return true;
-    }
-    
-    public function containsPath($request) {
-        $request = Request::factory($request);
-
-        if($this->_scheme != $request->_scheme) {
-            return false;
-        }
-
-        $rpString = $request->getLiteralPathString();
-        $tpString = $this->getLiteralPathString();
-
-        if(0 !== stripos($rpString, $tpString)) {
-            return false;
-        }
-
-        return true;
+        return $this->_matches($request, false);
     }
 
-    public function contains($request) {
+    protected function _matches($request, $full) {
         $request = Request::factory($request);
 
         if($this->_scheme != $request->_scheme) {
             return false;
         }
-    
-        $rpString = $request->getLiteralPathString();
-        $tpString = $this->getLiteralPathString();
 
-        if(0 !== stripos($rpString, $tpString)) {
+        $tpString = $this->getLiteralPathString();
+        $rpString = $request->getLiteralPathString();
+
+        if(!$full && $tpString == $rpString) {
+            return true;
+        }
+        
+        $rpString = dirname($rpString).'/';
+
+        if(0 !== stripos($tpString, $rpString)
+        || $rpString == '~front/'
+        || dirname($tpString).'/' != $rpString) {
             return false;
         }
 
-        if($rpString == $tpString && $this->_query) {
+        if($full && $tpString == $rpString && $this->_query) {
             foreach($this->_query as $key => $value) {
                 if(!$request->_query) {
                     return false;
@@ -509,16 +481,65 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         }
 
         return true;
+    }
+    
+
+
+    public function contains($request) {
+        return $this->_contains($request, true);
+    }
+
+    public function containsPath($request) {
+        return $this->_contains($request, false);
+    }
+
+    protected function _contains($request, $full) {
+        $request = Request::factory($request);
+
+        if($this->_scheme != $request->_scheme) {
+            return false;
+        }
+
+        $tpString = $this->getLiteralPathString();
+        $rpString = $request->getLiteralPathString();
+
+        if(substr($rpString, -6) == '/index') {
+            $rpString = substr($rpString, 0, -5);
+        }
+
+        if(0 !== stripos($tpString, $rpString)) {
+            return false;
+        }
+
+        if($full && $rpString == $tpString && $this->_query) {
+            foreach($this->_query as $key => $value) {
+                if(!$request->_query) {
+                    return false;
+                }
+
+                if(!isset($request->_query->{$key}) || $request->_query[$key] != $value) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    
+
+    public function isWithin($request) {
+        return Request::factory($request)->contains($this);
     }
 
     public function isPathWithin($request) {
         return Request::factory($request)->containsPath($this);
     }
 
-    public function isWithin($request) {
-        return Request::factory($request)->contains($this);
-    }
+    
 
+
+// Literal path
     public function getLiteralPath() {
         return new core\uri\Path($this->getLiteralPathArray(), false);
     }
