@@ -267,6 +267,7 @@ abstract class Action extends arch\Action implements IAction {
         }
 
         return array_merge($this->getStateData(), [
+            'action' => $this->context->request->getLiteralPathString(),
             'events' => $this->getAvailableEvents(),
             'defaultEvent' => static::DEFAULT_EVENT,
             'isNew' => $this->_isNew,
@@ -321,6 +322,7 @@ abstract class Action extends arch\Action implements IAction {
         }
 
         return [
+            'action' => $this->context->request->getLiteralPathString(),
             'content' => $content,
             'type' => $type,
             'redirect' => $redirect,

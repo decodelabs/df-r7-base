@@ -125,7 +125,10 @@ class Http implements arch\IDirectoryHelper {
     public function ajaxResponse(aura\view\IView $view, array $extraData=[]) {
         return $this->stringResponse(
             $this->context->data->jsonEncode(array_merge(
-                ['content' => (string)$view->getContentProvider()->setRenderTarget($view)],
+                [
+                    'action' => $this->context->request->getLiteralPathString(),
+                    'content' => (string)$view->getContentProvider()->setRenderTarget($view)
+                ],
                 $extraData
             )),
             'application/json'
