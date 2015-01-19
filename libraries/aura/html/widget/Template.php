@@ -19,7 +19,7 @@ class Template extends Base implements aura\view\IContentProvider, \ArrayAccess,
         $this->setPath($path);
 
         if($slots !== null) {
-            $this->setSlots($args);
+            $this->setSlots($slots);
         }
     }
 
