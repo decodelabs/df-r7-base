@@ -46,7 +46,7 @@ class TaskApcClear extends arch\task\Action {
             $this->io->writeLine('Calling HTTP APC cache clear action...');
             
             $config = $this->getConfig('core/application/http/Config');
-            $baseUrls = @(array)$config->values['baseUrl'];
+            $baseUrls = $config->values->baseUrl->toArray();
             $credentials = null;
 
             /*
@@ -61,7 +61,7 @@ class TaskApcClear extends arch\task\Action {
                 $baseUrl = $baseUrls['development'];
                 $credentials = $config->getCredentials('development');
             } else {
-                $this->throwError('Cannot find a suitable base url in config');
+                $this->throwError(500, 'Cannot find a suitable base url in config');
             }
 
             $url = new link\http\Url('http://'.rtrim($baseUrl, '/').'/cache/apc-clear.json');
