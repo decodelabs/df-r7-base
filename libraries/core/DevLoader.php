@@ -71,13 +71,17 @@ class DevLoader extends Loader {
 
     public function getFileSearchPaths($path) {
         $parts = explode('/', $path);
+        $output = [];
         
         if(!$library = array_shift($parts)) {
-            return false;
+            foreach($this->_packages as $package) {
+                $output[] = $package->path.'/libraries/';
+            }
+
+            return $output;
         }
         
         $pathName = implode('/', $parts);
-        $output = [];
         
         if($library == 'apex') {
             foreach($this->_packages as $package) {

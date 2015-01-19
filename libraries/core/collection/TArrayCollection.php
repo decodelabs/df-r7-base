@@ -826,6 +826,7 @@ trait TArrayCollection_Stack {
     use TArrayCollection_ReverseSeekable;
     use TArrayCollection_Sliceable;
     use TArrayCollection_Shiftable;
+    use TArrayCollection_IndexedMovable;
     
     public function getIterator() {
         return new \ArrayIterator(array_reverse($this->_collection, true));

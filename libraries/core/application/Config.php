@@ -27,16 +27,12 @@ class Config extends core\Config {
     
 // Application name
     public function setApplicationName($name) {
-        $this->values['applicationName'] = (string)$name;
+        $this->values->applicationName = (string)$name;
         return $this;
     }
     
     public function getApplicationName() {
-        if(isset($this->values['applicationName'])) {
-            return $this->values['applicationName'];
-        }
-        
-        return 'My Application';
+        return $this->values->get('applicationName', 'My Application');
     }
     
     
@@ -46,12 +42,12 @@ class Config extends core\Config {
             $prefix = core\string\Generator::random(3, 3);
         }
         
-        $this->values['uniquePrefix'] = strtolower((string)$prefix);
+        $this->values->uniquePrefix = strtolower((string)$prefix);
         return $this;
     }
     
     public function getUniquePrefix() {
-        if(!isset($this->values['uniquePrefix'])) {
+        if(!isset($this->values->uniquePrefix)) {
             $this->setUniquePrefix();
             $this->save();
         }
@@ -66,12 +62,12 @@ class Config extends core\Config {
             $passKey = core\string\Generator::passKey();
         }
         
-        $this->values['passKey'] = (string)$passKey;
+        $this->values->passKey = (string)$passKey;
         return $this;
     }
     
     public function getPassKey() {
-        if(!isset($this->values['passKey'])) {
+        if(!isset($this->values->passKey)) {
             $this->setPassKey();
             $this->save();
         }
@@ -84,12 +80,12 @@ class Config extends core\Config {
     public function getActivePackages() {
         $output = [];
         
-        if(!isset($this->values['packages']) || !is_array($this->values['packages'])) {
+        if($this->values->packages->isEmpty()) {
             return $output;
         }
         
-        foreach($this->values['packages'] as $name => $enabled) {
-            if($enabled) {
+        foreach($this->values->packages as $name => $enabled) {
+            if($enabled->getValue()) {
                 $output[] = $name;
             }
         }

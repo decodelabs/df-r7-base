@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\opal;
 
-class EDirectory extends opal\ldap\Adapter {
+class Generic extends opal\ldap\Adapter {
     
     const BIND_REQUIRES_DN = true;
     const UID_ATTRIBUTE = 'uid';

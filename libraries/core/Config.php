@@ -17,7 +17,6 @@ abstract class Config implements IConfig, core\IDumpable {
     const ID = null;
     const USE_ENVIRONMENT_ID_BY_DEFAULT = false;
     const STORE_IN_MEMORY = true;
-    const USE_TREE = false;
     
     public $values = [];
     
@@ -67,11 +66,7 @@ abstract class Config implements IConfig, core\IDumpable {
             $this->reset();
             $this->save();
         } else {
-            if(static::USE_TREE) {
-                $this->values = new core\collection\Tree($values);
-            } else {
-                $this->values = $values;
-            }
+            $this->values = new core\collection\Tree($values);
         }
         
         $this->_sanitizeValuesOnLoad();
@@ -90,11 +85,7 @@ abstract class Config implements IConfig, core\IDumpable {
     }
     
     final public function getConfigValues() {
-        if(static::USE_TREE) {
-            return $this->values->toArray();
-        } else {
-            return $this->values;
-        }
+        return $this->values->toArray();
     }
     
     final public function save() {
@@ -114,13 +105,9 @@ abstract class Config implements IConfig, core\IDumpable {
             );
         }
 
-        if(static::USE_TREE) {
-            $this->values = new core\collection\Tree($values);
-        } else {
-            $this->values = $values;
-        }
-
+        $this->values = new core\collection\Tree($values);
         $this->_sanitizeValuesOnCreate();
+
         return $this;
     }
 
@@ -246,18 +233,59 @@ abstract class Config implements IConfig, core\IDumpable {
 
         core\io\Util::ensureDirExists(dirname($savePath));
         
-        if(static::USE_TREE) {
-            $values = $this->values->toArray();
-        } else {
-            $values = $this->values;
-        }
-
+        $values = $this->values->toArray();
         $content = '<?php'."\n".'return '.core\collection\Util::exportArray($values).';';
         file_put_contents($savePath, $content, LOCK_EX);
     }
     
     private function _getBasePath() {
         return df\Launchpad::$application->getStaticStoragePath().'/config';
+    }
+
+
+    public function tidyConfigValues() {
+        $defaults = new core\collection\Tree($this->getDefaultValues());
+        $current = new core\collection\Tree($this->getConfigValues());
+
+        $current = $this->_tidyNode($defaults, $current);
+
+        foreach($current as $key => $node) {
+            if(!$node->isEmpty() || $defaults->hasKey($key) || substr($key, 0, 1) == '!') {
+                continue;
+            }
+
+            $current->remove($key);
+        }
+
+        $this->values = $current;
+        $this->save();
+    }
+
+    private function _tidyNode(core\collection\ITree $defaults, core\collection\ITree $current) {
+        $output = [];
+        $value = $current->getValue();
+
+        foreach($defaults as $key => $node) {
+            $output[$key] = null;
+
+            if(substr($key, 0, 1) == '!') {
+                continue;
+            }
+
+            if(!$current->hasKey($key)) {
+                $output[$key] = $node;
+            } else {
+                $output[$key] = $this->_tidyNode($node, $current->{$key});
+            }
+        }
+
+        foreach($current as $key => $node) {
+            if(!array_key_exists($key, $output)) {
+                $output[$key] = $node;
+            }
+        }
+
+        return new core\collection\Tree($output, $value);
     }
     
 

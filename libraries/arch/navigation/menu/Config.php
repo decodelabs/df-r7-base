@@ -20,29 +20,25 @@ class Config extends core\Config implements IConfig {
     
     public function createEntries(IMenu $menu, IEntryList $entryList) {
         $id = (string)$menu->getId();
-        
-        if(!isset($this->values[$id]) || !is_array($this->values[$id])) {
+
+        if($this->values->isEmpty()) {
             return $this;
         }
         
         $context = $menu->getContext();
-        
-        if(isset($this->values[$id]['delegates'])) {
-            foreach($this->values[$id]['delegates'] as $delegate) {
-                try {
-                    $menu->addDelegate(Base::factory($context, $delegate));
-                } catch(IException $e) {
-                    continue;
-                }
+
+        foreach($this->values->{$id}->delegates as $delegate) {
+            try {
+                $menu->addDelegate(Base::factory($context, (string)$delegate));
+            } catch(IException $e) {
+                continue;
             }
         }
-        
-        if(isset($this->values[$id]['entries'])) {
-            foreach($this->values[$id]['entries']  as $entry) {
-                $entryList->addEntry(
-                    arch\navigation\entry\Base::fromArray($entry)
-                );
-            }
+
+        foreach($this->values->{$id}->entries as $entry) {
+            $entryList->addEntry(
+                arch\navigation\entry\Base::fromArray($entry->toArray())
+            );
         }
         
         return $this;
@@ -50,13 +46,14 @@ class Config extends core\Config implements IConfig {
     
     public function setDelegatesFor($id, array $delegates) {
         $id = (string)Base::normalizeId($id);
-        $this->values[$id]['delegates'] = $delegates;
+        $this->values->{$id}['delegates'] = $delegates;
         
         return $this;
     }
     
     public function setEntriesFor($id, array $entries) {
         $id = (string)Base::normalizeId($id);
+        $data = [];
         
         foreach($entries as $entry) {
             try {
@@ -68,32 +65,19 @@ class Config extends core\Config implements IConfig {
                     }
                 }
                 
-                $this->values[$id]['entries'][] = $entry->toArray();
+                $data[] = $entry->toArray();
             } catch(IException $e) {
                 continue;
             }
         }
+
+        $this->values->{$id}->entries = $data;
         
         return $this;
     }
     
     public function getSettingsFor($id) {
         $id = (string)Base::normalizeId($id);
-        
-        if(isset($this->values[$id])) {
-            $output = $this->values[$id];
-        } else {
-            $output = ['delegates' => [], 'entries' => []];
-        }
-        
-        if(!isset($output['delegates'])) {
-            $output['delegates'] = [];
-        }
-        
-        if(!isset($output['entries'])) {
-            $output['entries'] = [];
-        }
-        
-        return $output;
+        return $this->values->{$id};
     }
 }

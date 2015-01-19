@@ -26,3 +26,4 @@ class Epigraph extends Base {
         'PackageWarningNoLine', 'providecommand', 'ProvidesPackage', 'put', 'qitem', 'qitemlabel',
         'rule', 'small', 'sourceflush', 'textflush', 'textwidth', 'thepage', 'thispagestyle', 'undodrop'
     ];
+}

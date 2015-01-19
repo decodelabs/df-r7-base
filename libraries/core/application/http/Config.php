@@ -46,25 +46,21 @@ class Config extends core\Config {
             $environmentMode = df\Launchpad::getEnvironmentMode();
         }
 
-        $this->_fixBaseUrlEntry();
-        
         if($url === null) {
-            $this->values['baseUrl'][$environmentMode] = null;
+            $this->values->baseUrl->{$environmentMode} = null;
         } else {
             $url = link\http\Url::factory($url);
             $url->getPath()->shouldAddTrailingSlash(true)->isAbsolute(true);
             
-            $this->values['baseUrl'][$environmentMode] = $url->getDomain().$url->getPathString();
+            $this->values->baseUrl->{$environmentMode} = $url->getDomain().$url->getPathString();
         }
         
         return $this;
     }
     
     public function getBaseUrl($environmentMode=null) {
-        $this->_fixBaseUrlEntry();
-
-        if(!isset($this->values['baseUrl'])) {
-            $this->values['baseUrl'] = $this->_generateBaseUrlList();
+        if(!isset($this->values->baseUrl)) {
+            $this->values->baseUrl = $this->_generateBaseUrlList();
             $this->save();
         }
 
@@ -72,23 +68,15 @@ class Config extends core\Config {
             $environmentMode = df\Launchpad::getEnvironmentMode();
         }
         
-        if(!isset($this->values['baseUrl'][$environmentMode]) && isset($_SERVER['HTTP_HOST'])) {
+        if(!isset($this->values->baseUrl->{$environmentMode}) && isset($_SERVER['HTTP_HOST'])) {
             if(null !== ($baseUrl = $this->_generateBaseUrl())) {
                 $this->setBaseUrl($baseUrl)->save();
             }
         }
         
-        return trim($this->values['baseUrl'][$environmentMode], '/');
+        return trim($this->values->baseUrl[$environmentMode], '/');
     }
 
-    protected function _fixBaseUrlEntry() {
-        if(isset($this->values['httpBaseUrl'])) {
-            $this->values['baseUrl'] = $this->values['httpBaseUrl'];
-            unset($this->values['httpBaseUrl']);
-            $this->save();
-        }
-    }
-    
     protected function _generateBaseUrlList() {
         if(!isset($_SERVER['HTTP_HOST'])) {
             return null;
@@ -139,29 +127,29 @@ class Config extends core\Config {
 
 // Area domain map
     public function setAreaDomainMap(array $map) {
-        $this->values['areaDomainMap'] = $map;
+        $this->values->areaDomainMap = $map;
         return $this;
     }
 
     public function getAreaDomainMap() {
-        if(!isset($this->values['areaDomainMap']) || !is_array($this->values['areaDomainMap'])) {
+        if($this->values->areaDomainMap->isEmpty()) {
             return [];
         }
 
-        return $this->values['areaDomainMap'];
+        return $this->values->areaDomainMap->toArray();
     }
     
 
 // Send file header
     public function setSendFileHeader($header) {
-        $this->values['sendFileHeader'] = $header;
+        $this->values->sendFileHeader = $header;
         return $this;
     }
 
     public function getSendFileHeader() {
         $output = null;
 
-        if(isset($this->values['sendFileHeader'])) {
+        if(isset($this->values->sendFileHeader)) {
             $output = $this->values['sendFileHeader'];
         }
 
@@ -177,12 +165,8 @@ class Config extends core\Config {
 // Https
     public function isSecure($flag=null) {
         if($flag !== null) {
-            $this->values['secure'] = (bool)$flag;
+            $this->values->secure = (bool)$flag;
             return $this;
-        }
-
-        if(!isset($this->values['secure'])) {
-            return false;
         }
 
         return (bool)$this->values['secure'];
@@ -191,12 +175,8 @@ class Config extends core\Config {
 // Chunk
     public function shouldChunkManually($flag=null) {
         if($flag !== null) {
-            $this->values['manualChunk'] = (bool)$flag;
+            $this->values->manualChunk = (bool)$flag;
             return $this;
-        }
-
-        if(!isset($this->values['manualChunk'])) {
-            return false;
         }
 
         return (bool)$this->values['manualChunk'];
@@ -206,28 +186,22 @@ class Config extends core\Config {
     public function setIpRanges(array $ranges=null) {
         if($ranges !== null) {
             foreach($ranges as $i => $range) {
-                $ranges = link\IpRange::factory($range);
+                $ranges = (string)link\IpRange::factory($range);
             }
-
-            core\dump($ranges);
         }
 
-        $this->values['ipRanges'] = $ranges;
+        $this->values->ipRanges = $ranges;
         return $this;
     }
 
     public function getIpRanges() {
-        if(isset($this->values['ipRanges']) && is_array($this->values['ipRanges'])) {
-            $output = [];
+        $output = [];
 
-            foreach($this->values['ipRanges'] as $range) {
-                $output[] = link\IpRange::factory($range);
-            }
-
-            return $output;
+        foreach($this->values->ipRanges as $range) {
+            $output[] = link\IpRange::factory((string)$range);
         }
 
-        return [];
+        return $output;
     }
 
 
@@ -237,15 +211,15 @@ class Config extends core\Config {
             $mode = df\Launchpad::getEnvironmentMode();
         }
 
-        if(!isset($this->values['credentials'][$mode]['username'])) {
+        if(!isset($this->values->credentials->{$mode}->username)) {
             return null;
         }
 
-        $set = $this->values['credentials'][$mode];
+        $set = $this->values->credentials->{$mode};
 
         return [
             'username' => $set['username'],
-            'password' => isset($set['password']) ? $set['password'] : ''
+            'password' => $set['password']
         ];
     }
 }

@@ -246,6 +246,10 @@ class Loader implements ILoader {
     public function lookupFolderList($path) {
         $output = [];
         $paths = $this->getFileSearchPaths(rtrim($path, '/').'/');
+
+        if(!$paths) {
+            return $output;
+        }
         
         foreach($paths as $path) {
             if(!is_dir($path)) {

@@ -23,7 +23,7 @@ class TaskPrune extends arch\task\Action {
 
         foreach(df\Launchpad::$loader->lookupClassList('core/cache/backend') as $name => $class) {
             $this->io->write($name.'... ');
-            $options = new core\collection\Tree($config->getBackendOptions($name));
+            $options = $config->getBackendOptions($name);
             $count = (int)$class::prune($options);
             $this->io->writeLine($count.' stale items removed');
         }

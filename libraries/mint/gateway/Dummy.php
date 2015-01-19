@@ -11,5 +11,11 @@ use df\mint;
     
 class Dummy extends Base {
 
-    
+    public function getSupportedCurrencies() {
+        return [];
+    }
+
+    public function submitCharge(df\mint\ICharge $charge) {
+        core\stub($charge);
+    }
 }

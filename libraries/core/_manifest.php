@@ -819,6 +819,7 @@ interface IConfig extends IRegistryObject, IValueMap, \ArrayAccess {
     public function getDefaultValues();
     public function getConfigId();
     public function getConfigValues();
+    public function tidyConfigValues();
     public function reset();
 }
 

@@ -13,7 +13,6 @@ class Config extends core\Config {
 
     const ID = 'Analytics';
     const USE_ENVIRONMENT_ID_BY_DEFAULT = true;
-    const USE_TREE = true;
 
     public function getDefaultValues() {
         $output = [];

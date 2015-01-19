@@ -16,7 +16,7 @@ class Html extends Base {
         }
         
         ob_start();
-        require __DIR__.'/html/Template.php';
+        require __DIR__.'/html/Template.html.php';
         return ob_get_clean();
     }
     

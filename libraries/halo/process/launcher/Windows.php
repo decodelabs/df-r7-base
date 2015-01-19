@@ -11,4 +11,16 @@ use df\halo;
 
 class Windows extends Base {
     
+    public function launch() {
+        core\stub($this);
+    }
+
+    public function launchBackground() {
+        core\stub($this);
+    }
+
+    public function launchManaged() {
+        core\stub($this);
+    }
+
 }

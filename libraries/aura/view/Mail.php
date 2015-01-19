@@ -21,7 +21,7 @@ class Mail extends Base {
         $this->_message = new flow\mail\Message();
     }
 
-    public function __call($method, $args) {
+    public function __call($method, array $args) {
         if(method_exists($this->_message, $method)) {
             $output = call_user_func_array([$this->_message, $method], $args);
 

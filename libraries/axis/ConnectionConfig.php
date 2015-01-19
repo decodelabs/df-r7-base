@@ -38,14 +38,14 @@ class ConnectionConfig extends core\Config {
 
     public function isSetup() {
         if($this->_isSetup === null) {
-            if(!isset($this->values['connections']['master'])) {
+            if(!isset($this->values->connections->master)) {
                 $this->_isSetup = false;
             } else {
-                $node = $this->values['connections']['master'];
+                $node = $this->values->connections->master;
 
-                if(isset($node['adapter']) && $node['adapter'] != 'Rdbms') {
+                if($node->adapter->hasValue() && $node['adapter'] != 'Rdbms') {
                     $this->_isSetup = true;
-                } else if(isset($node['dsn']) && $node['dsn'] != self::DEFAULT_DSN) {
+                } else if($node->dsn->hasValue() && $node['dsn'] != self::DEFAULT_DSN) {
                     $this->_isSetup = true;
                 } else {
                     $this->_isSetup = false;
@@ -62,8 +62,8 @@ class ConnectionConfig extends core\Config {
     
     public function getSettingsFor(IUnit $unit) {
         $connectionId = $this->getConnectionIdFor($unit);
-        
-        if(!isset($this->values['connections'][$connectionId])) {
+
+        if(!isset($this->values->connections->{$connectionId})) {
             throw new RuntimeException(
                 'There are no connections for '.$unit->getUnitId().', with connection id '.$connectionId
             );
@@ -76,29 +76,29 @@ class ConnectionConfig extends core\Config {
             ]);
         }
         
-        return new core\collection\Tree($this->values['connections'][$connectionId]);
+        return $this->values->connections->{$connectionId};
     }
     
     public function getConnectionIdFor(IUnit $unit) {
         $unitId = $unit->getUnitId();
-        
-        if(!isset($this->values['units'][$unitId])) {
+
+        if(!isset($this->values->units->{$unitId})) {
             $originalId = $unitId;
             
             $parts = explode(axis\IUnitOptions::ID_SEPARATOR, $unitId);
             $unitId = array_shift($parts);
             
-            if(!isset($this->values['units'][$unitId])) {
+            if(!isset($this->values->units->{$unitId})) {
                 try {
                     $unitId = '@'.$unit->getUnitType();
                 } catch(\Exception $e) {
                     $unitId = null;
                 }
                 
-                if($unitId === null || !isset($this->values['units'][$unitId])) {
+                if($unitId === null || !isset($this->values->units->{$unitId})) {
                     $unitId = 'default';
                 
-                    if(!isset($this->values['units'][$unitId])) {
+                    if(!isset($this->values->units->{$unitId})) {
                         throw new RuntimeException(
                             'There are no connections matching '.$originalId
                         );
@@ -107,19 +107,19 @@ class ConnectionConfig extends core\Config {
             }
         }
         
-        return (string)$this->values['units'][$unitId];
+        return (string)$this->values->units[$unitId];
     }
 
     public function getConnectionsOfType($adapters) {
-        if(!isset($this->values['connections']) || !is_array($this->values['connections'])) {
+        if($this->values->connections->isEmpty()) {
             return [];
         }
 
         $output = [];
         $adapters = core\collection\Util::flattenArray(func_get_args());
 
-        foreach($this->values['connections'] as $id => $set) {
-            if(!isset($set['adapter']) || !in_array($set['adapter'], $adapters)) {
+        foreach($this->values->connections as $id => $set) {
+            if(!isset($set->adapter) || !in_array($set['adapter'], $adapters)) {
                 continue;
             }
 
@@ -130,11 +130,11 @@ class ConnectionConfig extends core\Config {
     }
 
     public function getDefinedUnits() {
-        if(!isset($this->values['units'])) {
+        if(!isset($this->values->units)) {
             return [];
         }
 
-        $output = (array)$this->values['units'];
+        $output = $this->values->units->toArray();
         unset($output['default'], $output['@search']);
 
         return array_keys($output);
@@ -145,15 +145,11 @@ class ConnectionConfig extends core\Config {
             $unit = $unit->getUnitId();
         }
 
-        $this->values['clusterUnit'] = (string)$unit;
+        $this->values->clusterUnit = (string)$unit;
         return $this;
     }
 
     public function getClusterUnitId() {
-        if(isset($this->values['clusterUnit'])) {
-            return $this->values['clusterUnit'];
-        }
-
-        return null;
+        return $this->values['clusterUnit'];
     }
 }

@@ -18,4 +18,12 @@ class Spacer extends Base {
         
         return parent::getId();
     }
+
+    public function toArray() {
+        return [
+            'type' => 'Spacer',
+            'weight' => $this->_weight,
+            'id' => $this->_id
+        ];
+    }
 }

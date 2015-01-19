@@ -34,6 +34,7 @@ class Void extends Base {
     public function toArray() {
         return [
             'type' => 'Void',
+            'weight' => $this->_weight,
             'id' => $this->_id
         ];
     }

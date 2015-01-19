@@ -48,7 +48,7 @@ abstract class Base implements ICache {
         $config = Config::getInstance();
 
         foreach(df\Launchpad::$loader->lookupClassList('core/cache/backend') as $name => $class) {
-            $options = new core\collection\Tree($config->getBackendOptions($name));
+            $options = $config->getBackendOptions($name);
             $class::purgeAll($options);
         }
     }
@@ -190,7 +190,7 @@ abstract class Base implements ICache {
         $config = Config::getInstance();
         
         foreach(df\Launchpad::$loader->lookupClassList('core/cache/backend') as $name => $class) {
-            $options = new core\collection\Tree($config->getBackendOptions($name));
+            $options = $config->getBackendOptions($name);
             $class::clearFor($options, $this);
         }
 

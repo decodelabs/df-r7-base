@@ -47,9 +47,11 @@ class TimePicker extends DatePicker {
         return $date;
     }
 
+/*
     protected function _stringToDate($date) {
         return core\time\Date::factory((string)$date, true);
     }
+    */
 
     protected function _stringToDate($date) {
         if($this->_outputFormat != 'h:i') {

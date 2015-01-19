@@ -25,7 +25,7 @@ class TaskPurge extends arch\task\Action {
 
         foreach(df\Launchpad::$loader->lookupClassList('core/cache/backend') as $name => $class) {
             $this->io->writeLine($name);
-            $options = new core\collection\Tree($config->getBackendOptions($name));
+            $options = $config->getBackendOptions($name);
             $class::purgeAll($options);
         }
     }

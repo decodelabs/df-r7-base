@@ -28,15 +28,11 @@ class Config extends core\Config {
     
     public function getOptionsFor(ICache $cache, $mergeDefaults=true) {
         $id = $cache->getCacheId();
-        $output = null;
-        
-        if(isset($this->_caches[$id])) {
-            $output = $this->values['caches'][$id];
-        }
+        $output = clone $this->values->caches->{$id};
 
         $list = [];
         
-        if(isset($output['backend'])) {
+        if(isset($output->backend)) {
             $list[] = $output['backend'];
         } else if($mergeDefaults) {
             if($cache->isCacheDistributed()) {
@@ -56,28 +52,15 @@ class Config extends core\Config {
             }
             
             $output['backend'] = $name;
-            
-            if(isset($this->values['backends'][$output['backend']])) {
-                $output = array_merge($output, $this->values['backends'][$output['backend']]);
-            }
+            $output->import($this->values->backends->{$output['backend']});
             
             break;
         }
         
-        return new core\collection\Tree($output);
+        return $output;
     }
 
     public function getBackendOptions($backend) {
-        $output = [];
-
-        if(isset($this->values['backends'][$backend])) {
-            $output = $this->values['backends'][$backend];
-        }
-
-        if(!is_array($output)) {
-            $output = [$output];
-        }
-
-        return $output;
+        return $this->values->backends->{$backend};
     }
 }

@@ -18,7 +18,7 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
         return [
             'enabled' => false,
             'domains' => [
-                'example' => [
+                '!example' => [
                     'type' => 'ActiveDirectory',
                     'host' => 'localhost',
                     'port' => null,
@@ -155,7 +155,7 @@ class Ldap implements user\authentication\IAdapter, user\authentication\IIdentit
         $mainId = null;
 
         foreach($options->domains as $domainId => $domainOptions) {
-            if($domainOptions['enabled'] === false) {
+            if(substr($domainId, 0, 1) == '!' || $domainOptions['enabled'] === false) {
                 continue;
             }
 

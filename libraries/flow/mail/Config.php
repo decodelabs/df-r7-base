@@ -14,7 +14,6 @@ use df\link;
 class Config extends core\Config {
 
     const ID = 'mail';
-    const USE_TREE = true;    
 
     public function getDefaultValues() {
         return [
