@@ -206,8 +206,10 @@ class Uri implements arch\IDirectoryHelper {
     }
 
     public function assetRequest($path, $attachment=false) {
+        $path = new core\uri\Url($path);
         $request = new arch\Request('assets/download?cts');
-        $request->query->file = $path;
+        $request->query->file = (string)$path->getPath();
+        $request->query->import($path->getQuery());
 
         if($attachment) {
             $request->query->attachment;
@@ -234,8 +236,10 @@ class Uri implements arch\IDirectoryHelper {
             }
         }
 
+        $path = new core\uri\Url($path);
         $request = new arch\Request('theme/download?cts&theme='.$theme);
-        $request->query->file = $path;
+        $request->query->file = (string)$path->getPath();
+        $request->query->import($path->getQuery());
 
         return $request;
     }
