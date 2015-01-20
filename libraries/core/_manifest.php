@@ -417,7 +417,6 @@ interface IApplication {
     public static function getApplicationPath();
     public function getLocalStoragePath();
     public function getSharedStoragePath();
-    public function getStaticStoragePath();
     
     // Execute
     public function dispatch();

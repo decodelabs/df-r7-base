@@ -239,7 +239,7 @@ abstract class Config implements IConfig, core\IDumpable {
     }
     
     private function _getBasePath() {
-        return df\Launchpad::$application->getStaticStoragePath().'/config';
+        return df\Launchpad::$application->getApplicationPath().'/config';
     }
 
 
