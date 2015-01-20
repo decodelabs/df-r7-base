@@ -81,13 +81,7 @@ class Environment extends Config {
             return [];
         }
 
-        $output = $this->values->activeLocations->toArray();
-
-        if(empty($output)) {
-            $output = ['default' => $this->values->activeLocations->getValue()];
-        }
-
-        return $output;
+        return $this->values->activeLocations->toArray();
     }
 
 
