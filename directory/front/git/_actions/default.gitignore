@@ -45,10 +45,9 @@ Thumbs.db
 
 # App data
 ######################
-data/local
-data/shared
+data
 
 .htaccess
-.sass-cache/*
+.sass-cache
 node_modules
 ssh.json
