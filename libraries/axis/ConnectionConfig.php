@@ -82,13 +82,13 @@ class ConnectionConfig extends core\Config {
     public function getConnectionIdFor(IUnit $unit) {
         $unitId = $unit->getUnitId();
 
-        if(!isset($this->values->units->{$unitId})) {
+        if(!isset($this->values->units[$unitId])) {
             $originalId = $unitId;
             
             $parts = explode(axis\IUnitOptions::ID_SEPARATOR, $unitId);
             $unitId = array_shift($parts);
             
-            if(!isset($this->values->units->{$unitId})) {
+            if(!isset($this->values->units[$unitId])) {
                 try {
                     $unitId = '@'.$unit->getUnitType();
                 } catch(\Exception $e) {
@@ -98,7 +98,7 @@ class ConnectionConfig extends core\Config {
                 if($unitId === null || !isset($this->values->units->{$unitId})) {
                     $unitId = 'default';
                 
-                    if(!isset($this->values->units->{$unitId})) {
+                    if(!isset($this->values->units[$unitId])) {
                         throw new RuntimeException(
                             'There are no connections matching '.$originalId
                         );

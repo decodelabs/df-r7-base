@@ -37,7 +37,7 @@ class Environment extends Config {
 
 // PHP Binary path
     public function setPhpBinaryPath($path) {
-        $this->values['phpBinaryPath'] = $path;
+        $this->values->phpBinaryPath = $path;
         return $this;
     }
     
@@ -62,22 +62,14 @@ class Environment extends Config {
     
 // Vendor binary paths
     public function getVendorBinaryPath($id) {
-        if(isset($this->values['vendorBinaryPaths'][$id])) {
-            return $this->values['vendorBinaryPaths'][$id];
-        } else {
-            return $id;
-        }
+        return $this->values->vendorBinaryPaths->get($id, $id);
     }
     
 // Load balancing
     public function isDistributed($flag=null) {
         if($flag !== null) {
-            $this->values['distributed'] = (bool)$flag;
+            $this->values->distributed = (bool)$flag;
             return $this;
-        }
-        
-        if(!isset($this->values['distributed'])) {
-            return false;
         }
         
         return (bool)$this->values['distributed'];
@@ -85,14 +77,14 @@ class Environment extends Config {
 
 // Locations
     public function getActiveLocations() {
-        if(!isset($this->values['activeLocations'])) {
+        if(!isset($this->values->activeLocations)) {
             return [];
         }
 
-        $output = $this->values['activeLocations'];
+        $output = $this->values->activeLocations->toArray();
 
-        if(!is_array($output)) {
-            $output = ['default' => $output];
+        if(empty($output)) {
+            $output = ['default' => $this->values->activeLocations->getValue()];
         }
 
         return $output;
@@ -102,12 +94,8 @@ class Environment extends Config {
 // Daemons
     public function canUseDaemons($flag=null) {
         if($flag !== null) {
-            $this->values['daemonsEnabled'] = (bool)$flag;
+            $this->values->daemonsEnabled = (bool)$flag;
             return $this;
-        }
-
-        if(!isset($this->values['daemonsEnabled'])) {
-            return false;
         }
 
         return (bool)$this->values['daemonsEnabled'];
@@ -125,7 +113,7 @@ class Environment extends Config {
             );
         }
 
-        $this->values['daemonUser'] = $user;
+        $this->values->daemonUser = $user;
         return $this;
     }
 

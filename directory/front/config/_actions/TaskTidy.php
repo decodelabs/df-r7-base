@@ -14,6 +14,8 @@ use df\axis;
 class TaskTidy extends arch\task\Action {
     
     public function execute() {
+        $this->throwError(500, 'This task doesn\'t work yet!');
+
         $this->io->write('Looking up config classes in:');
         $libList = ['apex'];
         $classes = [];

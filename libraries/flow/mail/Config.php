@@ -154,7 +154,7 @@ class Config extends core\Config {
             return $this;
         }
 
-        if(!isset($this->values->captureInTesting)) {
+        if(!isset($this->values['captureInTesting'])) {
             $this->values->captureInTesting = true;
             $this->save();
         }

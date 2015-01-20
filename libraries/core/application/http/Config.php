@@ -68,7 +68,7 @@ class Config extends core\Config {
             $environmentMode = df\Launchpad::getEnvironmentMode();
         }
         
-        if(!isset($this->values->baseUrl->{$environmentMode}) && isset($_SERVER['HTTP_HOST'])) {
+        if(!isset($this->values->baseUrl[$environmentMode]) && isset($_SERVER['HTTP_HOST'])) {
             if(null !== ($baseUrl = $this->_generateBaseUrl())) {
                 $this->setBaseUrl($baseUrl)->save();
             }
@@ -149,7 +149,7 @@ class Config extends core\Config {
     public function getSendFileHeader() {
         $output = null;
 
-        if(isset($this->values->sendFileHeader)) {
+        if(isset($this->values['sendFileHeader'])) {
             $output = $this->values['sendFileHeader'];
         }
 
@@ -211,7 +211,7 @@ class Config extends core\Config {
             $mode = df\Launchpad::getEnvironmentMode();
         }
 
-        if(!isset($this->values->credentials->{$mode}->username)) {
+        if(!isset($this->values->credentials->{$mode}['username'])) {
             return null;
         }
 
