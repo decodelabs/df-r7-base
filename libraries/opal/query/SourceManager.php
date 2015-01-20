@@ -252,6 +252,10 @@ class SourceManager implements ISourceManager, core\IDumpable {
             return $name;
         }
 
+        if($name instanceof opal\query\IField) {
+            $name = $name->getQualifiedName();
+        }
+
         if(!strlen($name)) {
             $name = null;
         }

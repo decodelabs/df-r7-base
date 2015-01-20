@@ -50,7 +50,7 @@ class Unit extends axis\unit\table\Base {
 
 
 // Block
-    public function applyListRelationQueryBlock(opal\query\IReadQuery $query, $relationField) {
+    public function applyListRelationQueryBlock(opal\query\IReadQuery $query, opal\query\IField $relationField) {
         $query->leftJoinRelation($relationField, 'message as origMessage', 'file', 'line');
     }
 

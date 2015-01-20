@@ -409,6 +409,12 @@ class Initiator implements IInitiator {
     
 // Transmutation
     public function from($sourceAdapter, $alias=null) {
+        foreach($this->_fieldMap as $key => $field) {
+            if($field instanceof IField) {
+                $this->_fieldMap[$key] = $field->getQualifiedName();
+            }
+        }
+
         switch($this->_mode) {
             case IQueryTypes::SELECT:
                 $sourceManager = new opal\query\SourceManager($this->_transaction);

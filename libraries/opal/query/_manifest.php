@@ -692,7 +692,7 @@ interface IIntegralAdapter extends IAdapter {
 
     public function getQueryResultValueProcessors(array $fields=null);
     public function applyQueryBlock(IQuery $query, $name, array $args);
-    public function applyRelationQueryBlock(IQuery $query, $relationField, $name, array $args);
+    public function applyRelationQueryBlock(IQuery $query, opal\query\IField $relationField, $name, array $args);
 
 }
 

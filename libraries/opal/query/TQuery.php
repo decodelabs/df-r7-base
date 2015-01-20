@@ -179,7 +179,7 @@ trait TQuery {
     }
 
     public function importRelationBlock($relationField, $name) {
-        $field = $this->_lookupRelationField($relationField, $clusterId);
+        $field = $this->_lookupRelationField($relationField, $clusterId, $queryField);
 
         if(preg_match('/(.+)\.(.+)$/', $name, $matches)) {
             $source = $this->getSourceManager()->getSourceByAlias($matches[1]);
@@ -202,7 +202,7 @@ trait TQuery {
             );
         }
 
-        $adapter->applyRelationQueryBlock($this, $relationField, $name, array_slice(func_get_args(), 1));
+        $adapter->applyRelationQueryBlock($this, $queryField, $name, array_slice(func_get_args(), 1));
         return $this;
     }
 
@@ -217,6 +217,10 @@ trait TQuery {
     }
 
     protected function _lookupRelationField($fieldName, &$clusterId, &$queryField=null) {
+        if($fieldName instanceof opal\query\IField) {
+            $fieldName = $fieldName->getQualifiedName();
+        }
+
         $source = $this->getSource();
         $field = null;
 
@@ -539,14 +543,19 @@ trait TQuery_Joinable {
 
 
     protected function _beginJoinRelation($fieldName, array $targetFields, $joinType=IJoinQuery::INNER) {
+        if($fieldName instanceof opal\query\IField) {
+            $fieldName = $fieldName->getQualifiedName();
+        }
+
         $field = $this->_lookupRelationField($fieldName, $clusterId);
         $join = $this->_newQuery()->beginJoin($this, $targetFields, $joinType);
 
-        $targetAlias = 'jrl_'.str_replace('.', '_', $fieldName);
+        $targetAlias = 'jrl_'.str_replace('.', '_', $field->getName());
 
         if($field instanceof opal\schema\IBridgedRelationField) {
             // Field is bridged
             core\stub($field);
+            /*
             $bridgeAdapter = $field->getBridgeQueryAdapter($clusterId);
             $bridgeAlias = $fieldName.'Bridge';
             $localAlias = $source->getAlias();
@@ -556,9 +565,11 @@ trait TQuery_Joinable {
             $correlation = $this->correlate($aggregateType.'('.$bridgeAlias.'.'.$targetName.')', $alias)
                 ->from($bridgeAdapter, $bridgeAlias)
                 ->on($bridgeAlias.'.'.$localName, '=', $localAlias.'.@primary');
+            */
         } else if($field instanceof opal\schema\IManyRelationField) {
             // Field is OneToMany
             core\stub($field);
+            /*
             $targetAdapter = $field->getTargetQueryAdapter($clusterId);
             $targetAlias = $fieldName;
             $targetFieldName = $field->getTargetField();
@@ -567,6 +578,7 @@ trait TQuery_Joinable {
             $correlation = $this->correlate($aggregateType.'('.$targetAlias.'.@primary)', $alias)
                 ->from($targetAdapter, $targetAlias)
                 ->on($targetAlias.'.'.$targetFieldName, '=', $localAlias.'.@primary');
+            */
         } else {
             // Field is One
             $targetAdapter = $field->getTargetQueryAdapter($clusterId);
@@ -873,6 +885,10 @@ trait TQuery_Combinable {
     }
 
     public function addCombine($name, ICombineQuery $combine) {
+        if($name instanceof IField) {
+            $name = $name->getName();
+        }
+
         $this->_combines[$name] = $combine;
         return $this;
     }
@@ -999,6 +1015,10 @@ trait TQuery_AttachBase {
     protected $_attachments = [];
 
     public function addAttachment($name, IAttachQuery $attachment) {
+        if($name instanceof IField) {
+            $name = $name->getName();
+        }
+
         $source = $this->getSource();
 
         if(!$source->getAdapter()->supportsQueryType($attachment->getQueryType())) {

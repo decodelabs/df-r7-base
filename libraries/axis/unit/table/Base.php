@@ -411,7 +411,7 @@ abstract class Base implements
         return $this;
     }
 
-    public function applyRelationQueryBlock(opal\query\IQuery $query, $relationField, $name, array $args) {
+    public function applyRelationQueryBlock(opal\query\IQuery $query, opal\query\IField $relationField, $name, array $args) {
         $method = 'apply'.ucfirst($name).'RelationQueryBlock';
 
         if(!method_exists($this, $method)) {
@@ -468,10 +468,11 @@ abstract class Base implements
 
 
 // Query blocks
-    public function applyLinkRelationQueryBlock(opal\query\IReadQuery $query, $relationField, array $extraFields=null) {
+    public function applyLinkRelationQueryBlock(opal\query\IReadQuery $query, opal\query\IField $relationField, array $extraFields=null) {
         $schema = $this->getUnitSchema();
         $primaries = $schema->getPrimaryFields();
         $name = $this->getRecordNameField();
+        $rName = $relationField->getName();
 
         if(!$primaries) {
             throw new axis\LogicException(
@@ -485,12 +486,12 @@ abstract class Base implements
 
         foreach($primaries as $qName => $field) {
             $firstPrimary = $qName;
-            $fields[$qName] = $qName.' as '.$relationField.'|'.$qName;
-            $combine[$qName] = $relationField.'|'.$qName.' as '.$qName;
+            $fields[$qName] = $qName.' as '.$rName.'|'.$qName;
+            $combine[$qName] = $rName.'|'.$qName.' as '.$qName;
         }
 
-        $fields[$name] = $name.' as '.$relationField.'|'.$name;
-        $combine[$name] = $relationField.'|'.$name.' as '.$name;
+        $fields[$name] = $name.' as '.$rName.'|'.$name;
+        $combine[$name] = $rName.'|'.$name.' as '.$name;
 
         if(!empty($extraFields)) {
             foreach($extraFields as $extraField) {
@@ -498,8 +499,8 @@ abstract class Base implements
                 $fieldName = array_shift($parts);
                 $alias = isset($parts[0]) ? array_shift($parts) : $fieldName;
 
-                $fields[$fieldName] = $fieldName.' as '.$relationField.'|'.$alias;
-                $combine[$fieldName] = $relationField.'|'.$alias.' as '.$alias;
+                $fields[$fieldName] = $fieldName.' as '.$rName.'|'.$alias;
+                $combine[$fieldName] = $rName.'|'.$alias.' as '.$alias;
             }
         }
 
@@ -507,9 +508,9 @@ abstract class Base implements
             $query->leftJoinRelation($relationField, $fields)
                 ->combine($combine)
                     ->nullOn($firstPrimary)
-                    ->asOne($relationField)
+                    ->asOne($rName)
                 ->paginate()
-                    ->addOrderableFields($relationField.'|'.$name.' as '.$relationField)
+                    ->addOrderableFields($rName.'|'.$name.' as '.$rName)
                     ->end();
         } else {
             $query->populateSelect($relationField, array_keys($fields));
