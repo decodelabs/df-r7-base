@@ -419,6 +419,14 @@ trait TQuery_Correlatable {
     }
 
     protected function _beginRelationCorrelation($fieldName, $alias, $aggregateType) {
+        if($fieldName instanceof opal\query\IField) {
+            if($alias === null) {
+                $alias = $fieldName->getName();
+            }
+
+            $fieldName = $fieldName->getQualifiedName();
+        }
+
         if($alias === null) {
             $alias = $fieldName;
         }
@@ -812,6 +820,10 @@ trait TQuery_Populatable {
     }
 
     public function getPopulate($fieldName) {
+        if($fieldName instanceof opal\query\IField) {
+            $fieldName = $fieldName->getName();
+        }
+
         if(isset($this->_populates[$fieldName])) {
             return $this->_populates[$fieldName];
         }
@@ -940,6 +952,10 @@ trait TQuery_Combine {
     }
 
     public function removeField($name) {
+        if($name instanceof opal\query\IField) {
+            $name = $name->getName();
+        }
+
         unset($this->_fields[$name]);
         return $this;
     }
@@ -1162,6 +1178,10 @@ trait TQuery_Attachment {
     
 // Output
     public function asOne($name) {
+        if($name instanceof opal\query\IField) {
+            $name = $name->getName();
+        }
+
         if(!$this->_joinClauseList || $this->_joinClauseList->isEmpty()) {
             throw new LogicException(
                 'No join clauses have been defined for attachment '.$name
@@ -1178,6 +1198,10 @@ trait TQuery_Attachment {
     }
     
     public function asMany($name, $keyField=null) {
+        if($name instanceof opal\query\IField) {
+            $name = $name->getName();
+        }
+
         if(!$this->_joinClauseList || $this->_joinClauseList->isEmpty()) {
             throw new LogicException(
                 'No join clauses have been defined for attachment '.$name
@@ -1663,6 +1687,10 @@ trait TQuery_Orderable {
         $source->testOrderDirectiveSupport();
         
         foreach(func_get_args() as $field) {
+            if($field instanceof opal\query\IField) {
+                $field = $field->getQualifiedName();
+            }
+
             $parts = explode(' ', $field);
             
             $directive = new OrderDirective(
