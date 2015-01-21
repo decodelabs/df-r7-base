@@ -23,7 +23,7 @@ class Foundation extends Base {
         'addcontentsline', 'addtocontents', 'addtocounter', 'address', 'addtolength', 'addvspace', 'alph',
         'appendix', 'arabic', 'author', 'backslash', 'baselineskip', 'baselinestretch', 'bf', 
         'bibitem', 'bigskipamount', 'bigskip', 'boldmath', 'cal', 'caption', 'cdots', 'centering', 'chapter', 
-        'circle', 'cite', 'cleardoublepage', 'clearpage', 'closing', 'copyright', 'dashbox', 'date',
+        'circle', 'cite', 'cleardoublepage', 'clearpage', 'cline', 'closing', 'copyright', 'dashbox', 'date',
         'ddots', 'documentclass', 'dotfill', 'em', 'emph', 'ensuremath', 'fbox', 'flushbottom', 'fnsymbol',
         'footnote', 'footnotemark', 'footnotesize', 'footnotetext', 'frac', 'frame', 'framebox', 'frenchspacing',
         'hline', 'hfill', 'hrulefill', 'hspace', 'huge', 'Huge', 'hyphenation', 'include', 'includeonly', 'indent', 
@@ -317,39 +317,104 @@ class Foundation extends Base {
 
         // Parse rows
         $row = [];
+        $columns = [];
+        $i = 0;
+        $first = true;
+        $lastHeaderBlock = null;
+        $headerColumns = 0;
+        $maxColumns = 0;
 
         while(!$this->parser->token->is('command=end')) {
             $block = new flex\latex\map\Block($this->parser->token);
             $block->setType('cell');
+            $add = true;
 
             if($this->parser->token->is('keySymbol=~')) {
                 $this->parser->extract();
             } else if($this->parser->token->is('keySymbol=&')) {
                 $this->parser->extract();
-                continue;
             } else if($this->parser->token->is('command=\\')) {
                 $this->parser->extract();
 
                 if(!empty($row)) {
+                    foreach($row as $j => $block) {
+                        if($block) {
+                            $span = $block->getAttribute('rowspan', 0);
+                        } else {
+                            $span = 0;
+                        }
+
+                        if(!isset($columns[$j])) {
+                            $columns[$j] = 0;
+                        }
+
+                        $columns[$j] += $span;
+
+                        if($block === null) {
+                            unset($row[$j]);
+                        }
+
+                        $lastBlock = $block;
+                    }
+
+                    if($first) {
+                        $lastHeaderBlock = $lastBlock;
+                        $headerColumns = $maxColumns = count($row);
+                        $first = false;
+                    } else {
+                        $count = count($row);
+
+                        if($count > $maxColumns) {
+                            $maxColumns = $count;
+                        }
+                    }
+
                     $this->parser->container->addRow($row);
                 }
 
+                $i = 0;
                 $row = [];
                 continue;
             } else if($this->parser->token->is('command=hline')) {
                 $this->parser->extract();
                 $this->parser->parseCommand('hline');
                 continue;
+            } else if($this->parser->token->is('command=cline')) {
+                $this->parser->extract();
+                $this->parser->parseCommand('cline');
+                continue;
             } else {
                 $this->parser->parseStandardContent($block, ['&', '\\'], false);
 
+                if($this->parser->token->is('keySymbol=&')) {
+                    $this->parser->extract();
+                }
             }
 
-            $row[] = $block;
+            if(isset($columns[$i]) && $columns[$i] > 0) {
+                $columns[$i]--;
+            }
+
+            if($block->isEmpty() && isset($columns[$i]) && $columns[$i] > 0) {
+                $add = false;
+            }
+
+            if($add) {
+                $row[] = $block;
+            } else {
+                $row[] = null;
+            }
+
+            $i++;
         }
+
 
         if(!empty($row)) {
             $this->parser->container->addRow($row);
+        }
+
+        if($maxColumns > $headerColumns) {
+            $lastHeaderBlock->setAttribute('colspan', 1 + ($maxColumns - $headerColumns));
         }
 
         if($pop) {
@@ -476,6 +541,11 @@ class Foundation extends Base {
         return $reference;
     }
 
+// Cline
+    public function command_cline() {
+        return $this->parser->skipCommand(false);
+    }
+
 
 // Date
     public function command_date() {
@@ -533,11 +603,17 @@ class Foundation extends Base {
 // Hline
     public function command_hline() {
         $this->parser->container->push(
-            $output =(new flex\latex\map\Block($this->parser->token))
+            $output = (new flex\latex\map\Block($this->parser->token))
                 ->setType('hline')
         );
 
         return $output;
+    }
+
+
+// Hspace
+    public function command_hspace() {
+        return $this->parser->skipCommand(false);
     }
 
 
@@ -635,6 +711,17 @@ class Foundation extends Base {
 
 // Noindent
     public function command_noindent() {
+        return $this->parser->skipCommand(false);
+    }
+
+
+
+// Ragged 
+    public function command_raggedleft() {
+        return $this->parser->skipCommand(false);
+    }
+
+    public function command_raggedright() {
         return $this->parser->skipCommand(false);
     }
 

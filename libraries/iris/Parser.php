@@ -459,8 +459,8 @@ abstract class Parser implements IParser, core\IDumpable {
         }
 
         if($length == 1) {
-            if(isset($this->_tokens[1])) {
-                $output = $this->_tokens[1];
+            if(isset($this->_tokens[$offset])) {
+                $output = $this->_tokens[$offset];
             } else {
                 $output = null;
             }

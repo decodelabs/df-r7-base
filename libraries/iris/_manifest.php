@@ -15,9 +15,11 @@ interface IException {}
 class RuntimeException extends \RuntimeException implements IException {}
 class LogicException extends \LogicException implements IException {}
 class InvalidArgumentException extends \InvalidArgumentException implements IException {}
-class UnexpectedValueException extends \UnexpectedValueException implements IException {}
 
-class UnexpectedCharacterException extends UnexpectedValueException implements core\IDumpable {
+class UnexpectedValueException extends \UnexpectedValueException implements 
+    ILocationProvider,
+    IException,
+    core\IDumpable {
 
     protected $_location;
     
@@ -38,7 +40,12 @@ class UnexpectedCharacterException extends UnexpectedValueException implements c
     }
 }
 
-class UnexpectedTokenException extends UnexpectedValueException implements core\IDumpable {
+class UnexpectedCharacterException extends UnexpectedValueException {}
+
+class UnexpectedTokenException extends \UnexpectedValueException implements 
+    ILocationProvider,
+    IException,
+    core\IDumpable {
 
     protected $_token;
     
@@ -52,6 +59,12 @@ class UnexpectedTokenException extends UnexpectedValueException implements core\
     
     public function getToken() {
         return $this->_token;
+    }
+
+    public function getLocation() {
+        if($this->_token) {
+            return $this->_token->getLocation();
+        }
     }
 
     public function getDumpProperties() {

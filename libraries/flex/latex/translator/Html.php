@@ -25,6 +25,7 @@ class Html extends iris\Translator {
     protected $_hasMath = false;
     protected $_references = [];
     protected $_imageDereferencer;
+    protected $_translateUrls = true;
 
     public static function createLexer(iris\ISource $source) {
         return new flex\latex\Lexer($source);
@@ -219,6 +220,20 @@ class Html extends iris\Translator {
         }
 
         $output .= $figTag->close()."\n";
+        return $output;
+    }
+
+// Href
+    protected function _translateHrefBlock(flex\latex\map\Block $block) {
+        $urls = $this->_translateUrls;
+        $this->_translateUrls = false;
+
+        $output = $this->element('a', $this->_translateContainerNode($block), [
+            'href' => (string)$block->getAttribute('href'),
+            'target' => '_blank'
+        ]);
+
+        $this->_translateUrls = $urls;
         return $output;
     }
 
@@ -641,24 +656,26 @@ class Html extends iris\Translator {
         }
 
         $text = str_replace("\n", '<br />'."\n", $text);
-        $text = preg_replace_callback(
-            '/(http(s)?\:\/\/[^\s\<\>]+)/',
-            function($matches) {
-                $url = htmlspecialchars(trim($matches[1], ';:. '));
-                return '<a href="'.$url.'" target="_blank">'.$url.'</a>';
-            },
-            $text
-        );
 
-        $text = preg_replace_callback(
-            '/([^\s@\<\>\(\)\[\]\:\;]+@[^\s@\<\>\(\)\[\]\:\;\.]+\.[^\s@\<\>\(\)\[\]\:\;]+)/', 
-            function($matches) {
-                $email = htmlspecialchars(trim($matches[1], '. '));
-                return '<a href="mailto:'.$email.'">'.$email.'</a>';
-            }, 
-            $text
-        );
+        if($this->_translateUrls) {
+            $text = preg_replace_callback(
+                '/(http(s)?\:\/\/[^\s\<\>]+)/',
+                function($matches) {
+                    $url = htmlspecialchars(trim($matches[1], ';:. '));
+                    return '<a href="'.$url.'" target="_blank">'.$url.'</a>';
+                },
+                $text
+            );
 
+            $text = preg_replace_callback(
+                '/([^\s@\<\>\(\)\[\]\:\;]+@[^\s@\<\>\(\)\[\]\:\;\.]+\.[^\s@\<\>\(\)\[\]\:\;]+)/', 
+                function($matches) {
+                    $email = htmlspecialchars(trim($matches[1], '. '));
+                    return '<a href="mailto:'.$email.'">'.$email.'</a>';
+                }, 
+                $text
+            );
+        }
 
         return $text;
     }

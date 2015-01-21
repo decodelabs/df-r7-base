@@ -13,7 +13,7 @@ use df\iris;
 // Exceptions
 interface IException {}
 class RuntimeException extends \RuntimeException implements IException {}
-class UnexpectedValueException extends \UnexpectedValueException implements IException {}
+class UnexpectedValueException extends iris\UnexpectedValueException implements IException {}
 
 
 // Interfaces

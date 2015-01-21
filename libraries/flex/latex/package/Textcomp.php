@@ -25,6 +25,11 @@ class Textcomp extends Base implements flex\latex\IActivePackage {
             $output = $this->extractCharacterSymbol($command);
         } else if(isset(self::$_text[$command])) {
             $output = self::$_text[$command];
+
+            if($this->parser->token->getValue() == '{') {
+                $this->parser->extractValue('{');
+                $this->parser->extractValue('}');
+            }
         } else /*if(in_array($command, self::$_special))*/ {
             $output = $command;
         }

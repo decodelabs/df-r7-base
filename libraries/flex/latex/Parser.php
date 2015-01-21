@@ -412,7 +412,11 @@ class Parser extends iris\Parser {
         // Put on containerStack to give label command a target  
         $this->_containerStack[] = $object;
 
-        while(!$this->token->is('command=end')) {
+        while(true) {
+            if($this->token->is('command=end') && $this->peek(2)->getValue() == $blockType) {
+                break;
+            }
+
             $token = $this->extract();
 
             if($token->is('command=label')) {
@@ -509,7 +513,8 @@ class Parser extends iris\Parser {
 
             if(!method_exists($package, $func)) {
                 throw new flex\latex\UnexpectedValueException(
-                    'Package '.$package->getName().' does not have a parser for command '.$name
+                    'Package '.$package->getName().' does not have a parser for command '.$name,
+                    $this->token->getLocation()
                 );
             }
 
