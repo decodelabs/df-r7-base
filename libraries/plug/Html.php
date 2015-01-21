@@ -189,7 +189,7 @@ class Html implements arch\IDirectoryHelper, core\i18n\translate\ITranslationPro
 
     public function plainMailLink($address, $body=null) {
         if(empty($address)) {
-            return null;
+            return $body;
         }
 
         $address = flow\mail\Address::factory($address);
@@ -207,7 +207,7 @@ class Html implements arch\IDirectoryHelper, core\i18n\translate\ITranslationPro
 
     public function mailLink($address, $body=null) {
         if(empty($address)) {
-            return null;
+            return $body;
         }
         
         return $this->plainMailLink($address, $body)
