@@ -30,6 +30,7 @@ class Overlay extends Container implements IWidgetShortcutProvider {
     protected function _render() {
         $tag = $this->getTag();
         $title = null;
+        $children = $this->_prepareChildren();
 
         if(!$this->_titleBody->isEmpty()) {
             $title = (new aura\html\Element($this->_titleTagName, $this->_titleBody))->render();
@@ -38,7 +39,7 @@ class Overlay extends Container implements IWidgetShortcutProvider {
         return $tag->renderWith(
             (new aura\html\Tag('div', ['class' => 'container']))->renderWith([
                 $title, 
-                (new aura\html\Tag('div', ['class' => 'body']))->renderWith($this->_prepareChildren())
+                (new aura\html\Tag('div', ['class' => 'body']))->renderWith($children)
             ]),
             true
         );

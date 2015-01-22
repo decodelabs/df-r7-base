@@ -59,7 +59,7 @@ class FieldArea extends Container implements IFormOrientedWidget {
             $errors = $this->_errorContainer->getErrors();
         }
         
-        $this->_walkChildren($children, $errors, $isRequired, $primaryWidget);
+        $this->_walkChildren($this->_children->toArray(), $errors, $isRequired, $primaryWidget);
         $output = [];
 
         if(!empty($errors)) {

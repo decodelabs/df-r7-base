@@ -33,6 +33,8 @@ class FieldSet extends Container implements IFieldSetWidget, IWidgetShortcutProv
     
     protected function _render() {
         $tag = $this->getTag();
+
+        $children = $this->_prepareChildren();
         
         if($this->_name !== null) {
             $tag->setAttribute('name', $this->_name);
@@ -60,7 +62,7 @@ class FieldSet extends Container implements IFieldSetWidget, IWidgetShortcutProv
         
         return $tag->renderWith([
                 $legend, 
-                (new aura\html\Tag('div', ['class' => 'body']))->renderWith($this->_prepareChildren())
+                (new aura\html\Tag('div', ['class' => 'body']))->renderWith($children)
             ], 
             true
         );
