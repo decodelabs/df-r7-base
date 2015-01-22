@@ -18,10 +18,10 @@ class RendererContext implements aura\html\widget\IRendererContext {
     public $cellTag;
     public $fieldTag;
     public $rowTag;
+    public $key;
+    public $field;
+    public $counter = -1;
 
-    protected $_key;
-    protected $_field;
-    protected $_counter = -1;
     protected $_store = [];
     protected $_widget;
     protected $_rowProcessor;
@@ -41,15 +41,15 @@ class RendererContext implements aura\html\widget\IRendererContext {
     }
     
     public function getKey() {
-        return $this->_key;
+        return $this->key;
     }
 
     public function getField() {
-        return $this->_field;
+        return $this->field;
     }
     
     public function getCounter() {
-        return $this->_counter;
+        return $this->counter;
     }
     
     public function getCellTag() {
@@ -84,11 +84,11 @@ class RendererContext implements aura\html\widget\IRendererContext {
     
     
     public function iterate($key, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null, aura\html\ITag $fieldTag=null) {
-        $this->_counter++;
+        $this->counter++;
         $this->clear();
 
         $this->_store = [];
-        $this->_key = $key;
+        $this->key = $key;
         $this->cellTag = $cellTag;
         $this->rowTag = $rowTag;
         $this->fieldTag = $fieldTag;
@@ -98,7 +98,7 @@ class RendererContext implements aura\html\widget\IRendererContext {
     }
     
     public function iterateField($field, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null, aura\html\ITag $fieldTag=null) {
-        $this->_field = $field;
+        $this->field = $field;
         $this->cellTag = $cellTag;
         $this->rowTag = $rowTag;
         $this->fieldTag = $fieldTag;
