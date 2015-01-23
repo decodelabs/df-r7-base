@@ -268,7 +268,15 @@ class Util implements IUtil {
     public static function ensureDirExists($path, $perms=0777) {
         if(!is_dir($path)) {
             $umask = umask(0);
-            $result = !mkdir($path, $perms, true);
+
+            try {
+                $result = !mkdir($path, $perms, true);
+            } catch(\ErrorException $e) {
+                if(!is_dir($path)) {
+                    throw $e;
+                }
+            }
+
             umask($umask);
             
             if($result) {
