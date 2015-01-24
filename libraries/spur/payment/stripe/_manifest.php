@@ -60,7 +60,6 @@ interface IMediator {
     public function setDefaultCurrency($code);
     public function getDefaultCurrency();
 
-
 // Charges
     public function newChargeRequest($amount, mint\ICreditCardReference $card=null, $description=null, $emailAddress=null);
     public function createCharge(IChargeRequest $request, $returnRaw=false);

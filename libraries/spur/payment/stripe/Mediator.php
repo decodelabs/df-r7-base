@@ -57,7 +57,6 @@ class Mediator implements IMediator, core\IDumpable {
     }
 
 
-
 // Helpers
     public static function cardReferenceToArray(mint\ICreditCardReference $card) {
         $output = [];

@@ -23,7 +23,7 @@ class AccountDetails implements IAccountDetails, core\IDumpable {
     public function __construct(core\collection\ITree $data) {
         $this->_id = $data['id'];
         $this->_emailAddress = $data['email'];
-        $this->_supportedCurrencies = $data->currencies_supported->toArray();
+        $this->_supportedCurrencies = array_map('strtoupper', $data->currencies_supported->toArray());
         $this->_canCharge = (bool)$data['charge_enabled'];
         $this->_hasSubmittedDetails = (bool)$data['details_submitted'];
         $this->_isTransferEnabled = (bool)$data['transfer_enabled'];

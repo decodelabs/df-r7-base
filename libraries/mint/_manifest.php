@@ -123,6 +123,7 @@ interface ICurrency extends core\IStringProvider {
     public function setAmount($amount);
     public function getAmount();
     public function getIntegerAmount();
+    public function getFormattedAmount();
     public function setCode($code);
     public function getCode();
     public function convert($code, $origRate, $newRate);
