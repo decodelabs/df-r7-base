@@ -13,9 +13,19 @@ use df\spur;
 
 class Analytics extends Base {
     
+    protected $_handler;
+
+    public function getHandler() {
+        if(!$this->_handler) {
+            $this->_handler = spur\analytics\Handler::factory();
+        }
+
+        return $this->_handler;
+    }
+
     public function renderToHtml(aura\view\IHtmlView $view) {
         if($view->context->getRunMode() == 'Http') {
-            spur\analytics\Handler::factory()->apply($view);
+            $this->getHandler()->apply($view);
         }
     }
 }

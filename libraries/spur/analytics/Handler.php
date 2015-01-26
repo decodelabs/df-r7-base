@@ -10,6 +10,7 @@ use df\core;
 use df\spur;
 use df\aura;
 use df\user;
+use df\mint;
 
 class Handler implements IHandler {
 
@@ -22,6 +23,7 @@ class Handler implements IHandler {
     protected $_title;
     protected $_userAttributes = [];
     protected $_events = [];
+    protected $_eCommerceTransactions = [];
     protected $_adapters = [];
 
     public static function getAvailableUserAttributes() {
@@ -224,7 +226,7 @@ class Handler implements IHandler {
         }
 
         $this->_events[$event->getUniqueId()] = $event;
-        return $this;
+        return $event;
     }
 
     public function getEvents() {
@@ -236,4 +238,41 @@ class Handler implements IHandler {
         return $this;
     }
 
+
+// ECommerce
+    public function setECommerceTransactions(array $transactions) {
+        return $this->clearECommerceTransactions()->addECommerceTransactions($transactions);
+    }
+
+    public function addECommerceTransactions(array $transactions) {
+        foreach($transactions as $transaction) {
+            $this->addECommerceTransaction($transaction);
+        }
+
+        return $this;
+    }
+
+    public function addECommerceTransaction($transaction, mint\ICurrency $amount=null, $affiliation=null, mint\ICurrency $shipping=null, mint\ICurrency $tax=null) {
+        if(!$transaction instanceof IECommerceTransaction) {
+            if(!$amount) {
+                throw new InvalidArgumentException('ECommerce transaction amount cannot be empty');
+            }
+
+            $transaction = new ECommerceTransaction(
+                $transaction, $amount, $affiliation, $shipping, $tax
+            );
+        }
+
+        $this->_eCommerceTransactions[$transaction->getId()] = $transaction;
+        return $transaction;
+    }
+
+    public function getECommerceTransactions() {
+        return $this->_eCommerceTransactions;
+    }
+
+    public function clearECommerceTransactions() {
+        $this->_eCommerceTransactions = [];
+        return $this;
+    }
 }

@@ -48,6 +48,7 @@ class GoogleUniversal extends Base {
             $pageviewOptions[$map[$attribute]] = (string)$value;
         }
 
+        // Page view
         $script .= $scriptName.'(\'send\', \'pageview\'';
 
         if(!empty($pageviewOptions)) {
@@ -55,9 +56,42 @@ class GoogleUniversal extends Base {
         }
 
         $script .= ');'."\n";
-
+    
+        // Events
         foreach($handler->getEvents() as $event) {
             $script .= $scriptName.'(\'send\', \'event\', \''.$event->getCategory().'\', \''.$event->getName().'\', \''.$event->getLabel().'\');'."\n";
+        }
+
+
+        // ECommerce
+        $transactions = $handler->getECommerceTransactions();
+
+        if(!empty($transactions)) {
+            $script .= $scriptName.'(\'require\', \'ecommerce\');'."\n";
+
+            foreach($transactions as $transaction) {
+                $transactionData = [
+                    'id' => $transaction->getId(),
+                    'revenue' => $transaction->getAmount()->getAmount(),
+                    'currency' => $transaction->getAmount()->getCode()
+                ];
+
+                if($affiliation = $transaction->getAffiliation()) {
+                    $transactionData['affiliation'] = $affiliation;
+                }
+
+                if($shipping = $transaction->getShippingAmount()) {
+                    $transactionData['shipping'] = $shipping->getAmount();
+                }
+
+                if($tax = $transaction->getTaxAmount()) {
+                    $transactionData['tax'] = $tax->getAmount();
+                }
+
+                $script .= $scriptName.'(\'ecommerce:addTransaction\', '.json_encode($transactionData).');'."\n";
+            }
+
+            $script .= $scriptName.'(\'ecommerce:send\');'."\n";
         }
 
         $view->addHeadScript('google-analytics', rtrim($script));

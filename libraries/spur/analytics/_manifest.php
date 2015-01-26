@@ -9,11 +9,13 @@ use df;
 use df\core;
 use df\spur;
 use df\aura;
+use df\mint;
     
 
 // Exceptions
 interface IException {}
 class RuntimeException extends \RuntimeException implements IException {}
+class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 
 
 
@@ -45,6 +47,12 @@ interface IHandler {
     public function addEvent($event, $name=null, $label=null, array $attributes=null);
     public function getEvents();
     public function clearEvents();
+
+    public function setECommerceTransactions(array $transactions);
+    public function addECommerceTransactions(array $transactions);
+    public function addECommerceTransaction($id, mint\ICurrency $amount=null, $affiliation=null, mint\ICurrency $shipping=null, mint\ICurrency $tax=null);
+    public function getECommerceTransactions();
+    public function clearECommerceTransactions();
 }
 
 
@@ -57,6 +65,19 @@ interface IEvent extends core\IAttributeContainer {
     public function getName();
     public function setLabel($label);
     public function getLabel();
+}
+
+interface IECommerceTransaction extends core\IAttributeContainer {
+    public function setId($id);
+    public function getId();
+    public function setAffiliation($affiliation);
+    public function getAffiliation();
+    public function setAmount(mint\ICurrency $amount);
+    public function getAmount();
+    public function setShippingAmount(mint\ICurrency $shipping=null);
+    public function getShippingAmount();
+    public function setTaxAmount(mint\ICurrency $tax=null);
+    public function getTaxAmount();
 }
 
 interface IAdapter {

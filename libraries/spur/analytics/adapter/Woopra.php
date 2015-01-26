@@ -36,6 +36,8 @@ class Woopra extends Base {
             $script .= '        woopraEvent.fire();'."\n";
         }
 
+        // TODO: add ecommerce
+
         $view->addHeadScript('woopra-analytics', $script);
     }
 
