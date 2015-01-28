@@ -16,6 +16,7 @@ class TaskInit extends arch\task\Action {
     public function execute() {
         $this->io->writeLine('Initialising app...');
         $this->runChild('application/generate-base-entry');
+        $this->runChild('config/init');
         $this->runChild('git/init');
     }
 }

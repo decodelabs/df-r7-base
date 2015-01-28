@@ -26,6 +26,20 @@ class TaskInit extends arch\task\Action {
             $repo = spur\vcs\git\Repository::createNew($path);
         }
 
+        $this->io->writeLine('Turning off file mode');
+        $repo->setConfig('core.filemode', false);
+
+        $this->io->write('Would you like to set default GUI config @1020p? [N/y] ');
+        $answer = trim($this->io->readLine());
+
+        if($this->format->stringToBoolean($answer, false)) {
+            $geometry = '1914x1036+5+23 450 300';
+            $this->io->writeLine('Setting geometry to: '.$geometry);
+
+            $repo->setConfig('gui.wmstate', 'zoomed');
+            $repo->setConfig('gui.geometry', $geometry);
+        }        
+
         $push = false;
 
         if(!$repo->countCommits()) {

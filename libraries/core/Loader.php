@@ -271,6 +271,18 @@ class Loader implements ILoader {
         
         return $output;
     }
+
+    public function lookupLibraryList() {
+        $libList = ['apex'];
+
+        foreach($this->lookupFolderList('/') as $folder) {
+            $libList[] = basename($folder);
+        }
+
+        $libList = array_unique($libList);
+        sort($libList);
+        return $libList;
+    }
     
     
 // Locations

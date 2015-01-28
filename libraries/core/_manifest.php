@@ -350,6 +350,7 @@ interface ILoader {
     public function lookupFileListRecursive($path, $extensions=null, $folderCheck=null);
     public function lookupClassList($path, $test=true);
     public function lookupFolderList($path);
+    public function lookupLibraryList();
     
     public function registerLocation($name, $path);
     public function unregisterLocation($name);

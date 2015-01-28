@@ -11,13 +11,12 @@ use df\apex;
 use df\arch;
 use df\axis;
 
-class TaskTidy extends arch\task\Action {
+class TaskInit extends arch\task\Action {
     
     public function execute() {
-        $this->throwError(500, 'This task doesn\'t work yet!');
-
         $this->io->write('Looking up config classes in:');
-        $libList = df\Lauchpad::$loader->lookupLibraryList();
+        $libList = df\Launchpad::$loader->lookupLibraryList();
+        $classes = [];
 
         foreach($libList as $libName) {
             $this->io->write(' '.$libName);
@@ -40,8 +39,7 @@ class TaskTidy extends arch\task\Action {
                 $config = $class::getInstance();
             }
 
-            $this->io->writeLine('Processing '.ucfirst($config->getConfigId()));
-            $config->tidyConfigValues();
+            $this->io->writeLine('Init '.ucfirst($config->getConfigId()));
         }
     }
 }
