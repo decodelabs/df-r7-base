@@ -123,6 +123,36 @@ class Repository implements IRepository {
 
 
 
+// Config
+    public function setConfig($key, $value) {
+        if($value === true) {
+            $value = 'true';
+        } else if($value === false) {
+            $value = 'false';
+        }
+
+        $this->_runCommand('config', [
+            $key, $value
+        ]);
+
+        return $this;
+    }
+
+    public function getConfig($key) {
+        $value = $this->_runCommand('config', [$key]);
+
+        if($value === 'true') {
+            return true;
+        } else if($value === 'false') {
+            return false;
+        } else {
+            return $value;
+        }
+    }
+
+
+
+
 // Branches
     public function getBranchNames() {
         $this->_fillBranchCache();

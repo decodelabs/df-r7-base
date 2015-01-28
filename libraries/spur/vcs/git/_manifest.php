@@ -31,6 +31,9 @@ interface IRepository {
     public static function setGitPath($path);
     public static function getGitPath();
 
+    public function setConfig($key, $value);
+    public function getConfig($key);
+
     public function getBranchNames();
     public function getBranches();
     public function getBranch($name);
