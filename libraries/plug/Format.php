@@ -363,8 +363,8 @@ class Format implements core\ISharedHelper {
         return core\string\Manipulator::shorten($string, $length, $right);
     }
 
-    public function stringToBoolean($string) {
-        return core\string\Manipulator::stringToBoolean($string);
+    public function stringToBoolean($string, $default=true) {
+        return core\string\Manipulator::stringToBoolean($string, $default);
     }
 
 
