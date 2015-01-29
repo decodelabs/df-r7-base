@@ -482,6 +482,10 @@ trait TQuery_Correlatable {
         $field = new opal\query\field\Correlation($correlation);
         $source->addOutputField($field);
 
+        if($paginator = $this->getPaginator()) {
+            $paginator->addOrderableFields($field->getAlias());
+        }
+
         return $this;
     }
 
