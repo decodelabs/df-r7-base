@@ -45,7 +45,8 @@ Thumbs.db
 
 # App data
 ######################
-data
+data/*
+dev/*
 
 .htaccess
 .sass-cache
