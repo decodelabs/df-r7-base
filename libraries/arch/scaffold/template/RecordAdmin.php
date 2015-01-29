@@ -45,6 +45,7 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
     const CAN_DELETE_RECORD = true;
 
     const SELECTOR_TYPE = 'search';
+    const CAN_SEARCH = true;
 
     protected function __construct(arch\IContext $context) {
         parent::__construct($context);
@@ -108,17 +109,24 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
             $query = $this->getRecordListQuery($queryMode);
         }
 
-        $search = $this->request->getQueryTerm('search');
+        if(static::CAN_SEARCH) {
+            $search = $this->request->getQueryTerm('search');
 
-        if(strlen($search)) {
-            $this->applyRecordQuerySearch($query, $search, 'index');
+            if(strlen($search)) {
+                $this->applyRecordQuerySearch($query, $search, 'index');
+            }
         }
 
         $query->paginateWith($this->request->query);
 
         $keyName = $this->getRecordKeyName();
 
-        $searchBar = $this->apex->component('SearchBar');
+        if(static::CAN_SEARCH) {
+            $searchBar = $this->apex->component('SearchBar');
+        } else {
+            $searchBar = null;
+        }
+        
         $list = $this->apex->component(ucfirst($keyName).'List', $fields)
             ->setCollection($query);
 
