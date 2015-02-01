@@ -98,7 +98,7 @@ class Util implements IUtil {
         }
 
         $dir = dirname($destination);
-        self::ensureDirExists(dirname($destination));
+        self::ensureDirExists($dir);
 
         return copy($source, $destination);
     }
