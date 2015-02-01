@@ -107,7 +107,17 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
             $runMode = $this->context->getRunMode();
         }
 
-        return null !== arch\Action::getClassFor($request, $runMode);
+        if(null !== arch\Action::getClassFor($request, $runMode)) {
+            return true;
+        }
+
+        try {
+            $scaffold = $this->scaffold($this->context->spawnInstance($request, true));
+            $scaffold->loadAction();
+            return true;
+        } catch(arch\scaffold\IException $e) {}
+
+        return false;
     }
     
     public function getAction($request, $runMode=null) {
@@ -194,17 +204,16 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
     }
 
     public function scaffold($context=true) {
-        if($context === true) {
-            $context = $this->context;
+        if(!$context instanceof arch\IContext) {
+            if($context === true) {
+                $request = clone $this->context->location;
+            } else {
+                $request = $this->context->uri->directoryRequest($context);
+            }
+
+            $context = arch\Context::factory($request);
         }
         
-        if($context instanceof arch\IContext) {
-            $request = clone $context->location;
-        } else {
-            $request = $this->context->uri->directoryRequest($context);
-        }
-
-        $context = arch\Context::factory($request);
         return arch\scaffold\Base::factory($context);
     }
 

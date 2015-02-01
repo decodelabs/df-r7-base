@@ -60,6 +60,12 @@ class Context implements IContext, \Serializable, core\IDumpable {
             $this->request = $location;
         }
     } 
+
+    public function __clone() {
+        $this->request = clone $this->request;
+        $this->location = clone $this->location;
+        return $this;
+    }
     
     public function spawnInstance($request=null, $copyRequest=false) {
         if($request === null) {

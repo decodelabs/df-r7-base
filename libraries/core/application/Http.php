@@ -334,10 +334,25 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
         $this->_context = null;
         $this->_context = arch\Context::factory(clone $request);
         
-        $action = arch\Action::factory(
-            $this->_context,
-            arch\Controller::factory($this->_context)
-        );
+        try {
+            $action = arch\Action::factory(
+                $this->_context,
+                arch\Controller::factory($this->_context)
+            );
+        } catch(arch\RuntimeException $e) {
+            // See if the url just needs a /
+            if($this->_context->location->getAction() != 'Index') {
+                $context = clone $this->_context;
+                $context->location->path->shouldAddTrailingSlash(true);
+                $context->request = $context->location;
+                
+                if($context->apex->actionExists($context->location)) {
+                    return $context->http->redirect($context->location);
+                }
+            }
+
+            throw $e;
+        }
 
         if(!$action->shouldOptimize()) {
             $this->_doTheDirtyWork();
