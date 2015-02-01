@@ -70,10 +70,6 @@ class Base implements ITheme, core\IDumpable {
             $this->$func($view);
         }
 
-        foreach($this->_facets as $facet) {
-            $facet->renderTo($view);
-        }
-        
         return $this;
     }
     
@@ -226,6 +222,16 @@ class Base implements ITheme, core\IDumpable {
 
     public function getFacets() {
         return $this->_facets;
+    }
+
+    public function applyFacets(aura\view\IRenderTarget $target) {
+        $view = $target->getView();
+
+        foreach($this->_facets as $facet) {
+            $facet->renderTo($view);
+        }
+
+        return $this;
     }
 
 // Dump

@@ -27,6 +27,7 @@ interface ITheme extends aura\view\IRenderable, aura\view\ILayoutMap {
     public function getFacet($name);
     public function removeFacet($name);
     public function getFacets();
+    public function applyFacets(aura\view\IRenderTarget $target);
 }
 
 interface IFacet extends aura\view\IRenderable {

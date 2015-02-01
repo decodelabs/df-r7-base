@@ -165,6 +165,10 @@ class Base implements IView {
         
         $output = $innerContent;
 
+        if($this instanceof IThemedView) {
+            $this->getTheme()->applyFacets($this);
+        }
+
         if($this instanceof ILayoutView && $this->shouldUseLayout()) {
             try {
                 $layout = aura\view\content\Template::loadLayout($this, $innerContent);
