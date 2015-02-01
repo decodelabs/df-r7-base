@@ -560,7 +560,8 @@ trait TScaffold_RecordDataProvider {
                         ucfirst($this->getRecordKeyName().'Link'), 
                         $item
                     )
-                    ->setMaxLength(50);
+                    ->setMaxLength(50)
+                    ->setDisposition('informative');
             }
 
             $output = $this->getRecordName($item);
@@ -606,15 +607,13 @@ trait TScaffold_RecordDataProvider {
 
     public function defineUserField($list, $mode) {
         $list->addField('user', function($item) {
-            return $this->apex->component('~admin/users/clients/UserLink', $item['user'])
-                ->setDisposition('transitive');
+            return $this->apex->component('~admin/users/clients/UserLink', $item['user']);
         });
     }
 
     public function defineOwnerField($list, $mode) {
         $list->addField('owner', function($item) {
-            return $this->apex->component('~admin/users/clients/UserLink', $item['owner'])
-                ->setDisposition('transitive');
+            return $this->apex->component('~admin/users/clients/UserLink', $item['owner']);
         });
     }
 

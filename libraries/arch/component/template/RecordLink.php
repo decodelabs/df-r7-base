@@ -19,7 +19,7 @@ abstract class RecordLink extends arch\component\Base implements aura\html\widge
     const DEFAULT_MISSING_MESSAGE = 'not found';
 
     protected $_icon = 'item';
-    protected $_disposition = 'informative';
+    protected $_disposition = 'transitive';
     protected $_isNullable = false;
     protected $_isDisabled = false;
     protected $_note;
