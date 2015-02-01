@@ -193,5 +193,12 @@ class TaskBuild extends arch\task\Action {
             $this->io->writeLine();
             $this->runChild('./purge-builds?'.(!$isTesting ? 'purgeTesting' : null));
         }
+
+
+        // Task spool
+        if(!$isTesting) {
+            $this->io->writeLine('Running task spool...');
+            $this->runChild('manager/spool');
+        }
     }
 }
