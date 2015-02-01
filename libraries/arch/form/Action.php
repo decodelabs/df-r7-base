@@ -353,12 +353,16 @@ abstract class Action extends arch\Action implements IAction {
         }
 
         $event = null;
-        
+
         if($postData->has('formEvent')) {
             $event = $postData->get('formEvent');
             $postData->remove('formEvent');
         }
-        
+
+        if(preg_match('/^\<[a-z]+ .*data\-button\-event\=\"([^"]+)\"/i', $event, $matches)) {
+            $event = $matches[1];
+        }
+
         if($postData->__isset('_delegates')) {
             foreach($postData->_delegates as $id => $delegateValues) {
                 try {

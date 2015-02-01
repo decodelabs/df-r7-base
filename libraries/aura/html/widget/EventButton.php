@@ -43,4 +43,15 @@ class EventButton extends Button {
 
         return parent::setValue($event);
     }
+
+    protected function _generateIcon() {
+        $output = parent::_generateIcon();
+
+        if(!$output) {
+            $output = new aura\html\Element('span.hidden', null, ['aria-hidden' => true]);
+        }
+
+        $output->setDataAttribute('button-event', $this->getEvent());
+        return $output;
+    }
 }

@@ -50,7 +50,7 @@ class Button extends Base implements IButtonWidget, IIconProviderWidget, core\ID
         $icon = $this->_generateIcon();
         
         return $tag->renderWith(
-            [$icon, $this->_body/*, '<span class="ievalue">'.$this->esc($this->getValueString()).'</span>'*/]
+            [$icon, $this->_body]
         );
     }
     
