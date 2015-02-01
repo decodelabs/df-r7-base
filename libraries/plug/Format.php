@@ -368,6 +368,26 @@ class Format implements core\ISharedHelper {
     }
 
 
+    public function firstName($fullName) {
+        $parts = explode(' ', $fullName);
+        $output = array_shift($parts);
+
+        if(in_array(strtolower($output), ['mr', 'ms', 'mrs', 'miss', 'dr'])) {
+            if(isset($parts[1])) {
+                $output = array_shift($parts);
+            } else {
+                $output = $fullName;
+            }
+        }
+
+        if(strlen($output) < 3) {
+            $output = $fullName;
+        }
+        
+        return $output;
+    }
+
+
 
     public function counterNote($counter) {
         if($counter) {
