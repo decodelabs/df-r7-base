@@ -58,10 +58,10 @@ class TaskBuild extends arch\task\Action {
 
 
         // Run custom actions
-        $custom = $this->task->findChildrenIn('application/build/');
+        $custom = $this->apex->findActionsIn('./build/', 'Task');
 
-        if($this->apex->actionExists('application/build-custom')) {
-            $custom[] = new arch\Request('application/build-custom');
+        if($this->apex->actionExists('./build-custom')) {
+            $custom[] = $this->uri->directoryRequest('./build-custom');
         }
 
         if(!empty($custom)) {
@@ -170,7 +170,7 @@ class TaskBuild extends arch\task\Action {
 
             // Generate entries
             $this->io->writeLine();
-            $this->runChild('application/generate-entries?build='.$buildId);
+            $this->runChild('./generate-entries?build='.$buildId);
         }
 
         // Clear cache
@@ -191,7 +191,7 @@ class TaskBuild extends arch\task\Action {
 
         if($purgeOldBuilds) {
             $this->io->writeLine();
-            $this->runChild('application/purge-builds?'.(!$isTesting ? 'purgeTesting' : null));
+            $this->runChild('./purge-builds?'.(!$isTesting ? 'purgeTesting' : null));
         }
     }
 }

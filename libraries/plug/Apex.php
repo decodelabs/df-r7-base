@@ -115,6 +115,30 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
         $context = arch\Context::factory($request, $runMode);
         return arch\Action::factory($context);
     }
+
+    public function findActionsIn($request, $type=null) {
+        $request = $this->context->uri->directoryRequest($request);
+
+        $path = $request->getLibraryPath().'/_actions';
+        $output = [];
+
+        foreach(df\Launchpad::$loader->lookupClassList($path) as $name => $class) {
+            if($type !== null && 0 !== stripos($name, $type)) {
+                continue;
+            }
+
+            $requestParts = array_slice(explode('\\', $class), 3, -2);
+            $requestParts[] = substr($name, 4);
+
+            array_walk($requestParts, function(&$value) {
+                $value = core\string\Manipulator::formatActionSlug($value);
+            });
+
+            $output[] = arch\Request::factory('~'.implode('/', $requestParts));
+        }
+
+        return $output;
+    }
     
     public function controllerExists($request, $runMode=null) {
         $request = $this->context->uri->directoryRequest($request);

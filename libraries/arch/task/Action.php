@@ -66,7 +66,7 @@ abstract class Action extends arch\Action implements IAction {
     }
 
     public function runChild($request) {
-        $request = arch\Request::factory($request);
+        $request = $this->context->uri->directoryRequest($request);
         $context = $this->context->spawnInstance($request, true);
         $action = arch\Action::factory($context);
 
@@ -79,7 +79,7 @@ abstract class Action extends arch\Action implements IAction {
     }
 
     public function runChildQuietly($request) {
-        $request = arch\Request::factory($request);
+        $request = $this->context->uri->directoryRequest($request);
         $context = $this->context->spawnInstance($request, true);
         $action = arch\Action::factory($context);
 
