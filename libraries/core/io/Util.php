@@ -273,8 +273,11 @@ class Util implements IUtil {
                 $result = !mkdir($path, $perms, true);
             } catch(\ErrorException $e) {
                 if(!is_dir($path)) {
+                    umask($umask);
                     throw $e;
                 }
+
+                $result = false;
             }
 
             umask($umask);
