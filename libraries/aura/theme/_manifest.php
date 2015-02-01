@@ -14,7 +14,7 @@ interface IException {}
 
 
 // Interfaces
-interface ITheme extends aura\view\IRenderable, aura\view\ILayoutMap {
+interface ITheme extends aura\view\IViewRenderEventReceiver, aura\view\ILayoutMap {
     public function getId();
     public function findAsset($path);
     public function mapIcon($name);
@@ -27,9 +27,8 @@ interface ITheme extends aura\view\IRenderable, aura\view\ILayoutMap {
     public function getFacet($name);
     public function removeFacet($name);
     public function getFacets();
-    public function applyFacets(aura\view\IRenderTarget $target);
 }
 
-interface IFacet extends aura\view\IRenderable {
+interface IFacet extends aura\view\IViewRenderEventReceiver {
 
 }

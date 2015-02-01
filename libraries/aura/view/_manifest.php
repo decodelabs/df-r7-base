@@ -144,6 +144,14 @@ interface IContentConsumer {
 }
 
 
+interface IViewRenderEventReceiver {
+    public function beforeViewRender(IView $view);
+    public function onViewContentRender(IView $view, $content);
+    public function onViewLayoutRender(IView $view, $content);
+    public function afterViewRender(IView $view, $content);
+}
+
+
 interface IView extends 
     IContentConsumer, 
     IRenderTarget, 

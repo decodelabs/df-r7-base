@@ -59,23 +59,25 @@ class Base implements ITheme, core\IDumpable {
     public function getId() {
         return $this->_id;
     }
-    
-    
-// Renderable
-    public function renderTo(aura\view\IRenderTarget $target) {
-        $view = $target->getView();
-        $func = 'renderTo'.$view->getType();
+
+
+# Before render
+    public function beforeViewRender(aura\view\IView $view) {
+        $func = 'before'.$view->getType().'ViewRender';
         
         if(method_exists($this, $func)) {
             $this->$func($view);
         }
 
+        foreach($this->_facets as $facet) {
+            $facet->beforeViewRender($view);
+        }
+
         return $this;
     }
-    
-    public function renderToHtml(aura\view\IHtmlView $view) {
+
+    public function beforeHtmlViewRender(aura\view\IView $view) {
         $this->applyDefaultIncludes($view);
-        $this->applyDefaultViewTitle($view);
         $this->applyDefaultBodyTagData($view);
         $this->applyDefaultMetaData($view);
     }
@@ -83,34 +85,9 @@ class Base implements ITheme, core\IDumpable {
     public function applyDefaultIncludes(aura\view\IView $view) {
         // stub
     }
-    
-    public function applyDefaultViewTitle(aura\view\IView $view) {
-        if(!$view->hasTitle()) {
-            $breadcrumbs = $view->getContext()->apex->breadcrumbs();
-            $parts = [];
-
-            foreach($breadcrumbs->getEntries() as $entry) {
-                array_unshift($parts, $entry->getBody());
-            }
-            
-            if(!empty($parts)) {
-                $view->setTitle(implode(' < ', $parts));
-            }
-        }
-        
-        if(!$view->hasTitleSuffix()) {
-            $suffix = df\Launchpad::$application->getName();
-            
-            if($view->hasTitle()) {
-                $suffix = ' : '.$suffix;
-            }
-            
-            $view->setTitleSuffix($suffix);
-        }
-    }
 
     public function applyDefaultBodyTagData(aura\view\IView $view) {
-        $request = $view->getContext()->request;
+        $request = $view->context->request;
         $router = core\application\http\Router::getInstance();
         
         $view->getBodyTag()
@@ -135,7 +112,98 @@ class Base implements ITheme, core\IDumpable {
         }
 
         if(!$view->hasMeta('application-name')) {
-            $view->setMeta('application-name', $view->getContext()->application->getName());
+            $view->setMeta('application-name', $view->context->application->getName());
+        }
+    }
+
+
+# On content render
+    public function onViewContentRender(aura\view\IView $view, $content) {
+        $func = 'on'.$view->getType().'ViewContentRender';
+        
+        if(method_exists($this, $func)) {
+            if(null !== ($newContent = $this->$func($view, $content))) {
+                $content = $newContent;
+            }
+        }
+
+        foreach($this->_facets as $facet) {
+            if(null !== ($newContent = $facet->onViewContentRender($view, $content))) {
+                $content = $newContent;
+            }
+        }
+
+        return $content;
+    }
+
+
+# On layout render
+    public function onViewLayoutRender(aura\view\IView $view, $content) {
+        $func = 'on'.$view->getType().'ViewLayoutRender';
+        
+        if(method_exists($this, $func)) {
+            if(null !== ($newContent = $this->$func($view, $content))) {
+                $content = $newContent;
+            }
+        }
+
+        foreach($this->_facets as $facet) {
+            if(null !== ($newContent = $facet->onViewLayoutRender($view, $content))) {
+                $content = $newContent;
+            }
+        }
+
+        return $content;
+    }
+
+
+
+# After render
+    public function afterViewRender(aura\view\IView $view, $content) {
+        $func = 'after'.$view->getType().'ViewRender';
+        
+        if(method_exists($this, $func)) {
+            if(null !== ($newContent = $this->$func($view, $content))) {
+                $content = $newContent;
+            }
+        }
+
+        foreach($this->_facets as $facet) {
+            if(null !== ($newContent = $facet->afterViewRender($view, $content))) {
+                $content = $newContent;
+            }
+        }
+
+        return $content;
+    }
+
+    public function afterHtmlViewRender(aura\view\IHtmlView $view, $content) {
+        $this->applyDefaultViewTitle($view);
+        return $content;
+    }
+    
+    public function applyDefaultViewTitle(aura\view\IView $view) {
+        if(!$view->hasTitle()) {
+            $breadcrumbs = $view->getContext()->apex->breadcrumbs();
+            $parts = [];
+
+            foreach($breadcrumbs->getEntries() as $entry) {
+                array_unshift($parts, $entry->getBody());
+            }
+            
+            if(!empty($parts)) {
+                $view->setTitle(implode(' < ', $parts));
+            }
+        }
+        
+        if(!$view->hasTitleSuffix()) {
+            $suffix = df\Launchpad::$application->getName();
+            
+            if($view->hasTitle()) {
+                $suffix = ' : '.$suffix;
+            }
+            
+            $view->setTitleSuffix($suffix);
         }
     }
 
@@ -222,16 +290,6 @@ class Base implements ITheme, core\IDumpable {
 
     public function getFacets() {
         return $this->_facets;
-    }
-
-    public function applyFacets(aura\view\IRenderTarget $target) {
-        $view = $target->getView();
-
-        foreach($this->_facets as $facet) {
-            $facet->renderTo($view);
-        }
-
-        return $this;
     }
 
 // Dump

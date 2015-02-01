@@ -11,7 +11,7 @@ use df\aura;
 
 class TouchIcons extends Base {
     
-    public function renderToHtml(aura\view\IHtmlView $view) {
+    public function afterHtmlViewRender(aura\view\IHtmlView $view) {
         if(!$view->getTheme()->getApplicationImagePath()) {
             return;
         }

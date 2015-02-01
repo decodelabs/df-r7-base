@@ -23,7 +23,7 @@ class Analytics extends Base {
         return $this->_handler;
     }
 
-    public function renderToHtml(aura\view\IHtmlView $view) {
+    public function afterHtmlViewRender(aura\view\IHtmlView $view) {
         if($view->context->getRunMode() == 'Http') {
             $this->getHandler()->apply($view);
         }

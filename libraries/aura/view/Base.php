@@ -163,27 +163,50 @@ class Base implements IView {
             $innerContent = $this->content->renderTo($this);
         }
         
-        $output = $innerContent;
-
-        if($this instanceof IThemedView) {
-            $this->getTheme()->applyFacets($this);
-        }
+        $output = $innerContent = $this->_onContentRender($innerContent);
 
         if($this instanceof ILayoutView && $this->shouldUseLayout()) {
             try {
                 $layout = aura\view\content\Template::loadLayout($this, $innerContent);
                 $output = $layout->renderTo($this);
             } catch(aura\view\ContentNotFoundException $e) {}
+
+            $output = $this->_onLayoutRender($output);
         }
 
-        if($this instanceof IThemedView) {
-            $this->getTheme()->renderTo($this);
-        }
-
-        return $output;
+        return $this->_afterRender($output);
     }
     
-    protected function _beforeRender() {}
+    protected function _beforeRender() {
+        if($this instanceof IThemedView) {
+            $this->getTheme()->beforeViewRender($this);
+        }
+    }
+
+    protected function _onContentRender($content) {
+        if($this instanceof IThemedView) {
+            // apply facets
+            $content = $this->getTheme()->onViewContentRender($this, $content);
+        }
+
+        return $content;
+    }
+
+    protected function _onLayoutRender($content) {
+        if($this instanceof IThemedView) {
+            $content = $this->getTheme()->onViewLayoutRender($this, $content);
+        }
+
+        return $content;
+    }
+
+    protected function _afterRender($content) {
+        if($this instanceof IThemedView) {
+            $content = $this->getTheme()->afterViewRender($this, $content);
+        }
+
+        return $content;
+    }
     
     private function _checkContentProvider() {
         if(!$this->content) {

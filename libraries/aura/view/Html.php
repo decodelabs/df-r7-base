@@ -678,6 +678,8 @@ class Html extends Base implements IHtmlView, core\IDumpable {
                 $this->_shouldRenderBase = false;
             }
         }
+
+        parent::_beforeRender();
     }
     
     public function render() {
