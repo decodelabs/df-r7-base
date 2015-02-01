@@ -17,6 +17,10 @@ class TaskQueueScheduled extends arch\task\Action {
     public function execute() {
         $this->io->write('Queuing scheduled tasks...');
 
+        if(!$this->data->task->schedule->select()->count()) {
+            $this->runChild('./scan');
+        }
+
         $scheduleList = $this->data->task->schedule->fetch()
             ->beginWhereClause()
                 ->where('lastRun', '<', '-50 seconds')
