@@ -175,9 +175,13 @@ class TaskSet implements ITaskSet {
         $id = $task->getId();
         
         if(isset($this->_tasks[$id])) {
+            return $this;
+
+            /*
             throw new RuntimeException(
                 'Record '.$id.' has already been queued'
             );
+            */
         }
         
         if($adapter = $task->getAdapter()) {
