@@ -70,7 +70,7 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
                     $this->values->search
                 )
                 ->setPlaceholder($this->_searchPlaceholder)
-                ->isRequired($this->_isRequired && !$this->hasSelection())
+                //->isRequired($this->_isRequired && !$this->hasSelection())
                 ->setFormEvent($this->eventName('search')),
 
             $this->html->eventButton(
@@ -201,25 +201,16 @@ abstract class SearchSelectorDelegate extends arch\form\Delegate implements
                 ->shouldValidate(false)
         );
 
+        $bg = $ba->addButtonGroup();
+
         if($this->_state->hasStore('originalSelection')) {
-            $ba->push(
-                $this->html->eventButton(
-                        $this->eventName('reset'),
-                        $this->_('Reset')
-                    )
-                    ->setIcon('refresh')
-                    ->setDisposition('informative')
-                    ->shouldValidate(false)
+            $bg->push(
+                $this->html->resetEventButton($this->eventName('reset'))
             );
         }
 
-        $ba->push(
-            $this->html->eventButton(
-                    $this->eventName('cancelSelect'),
-                    $this->_('Cancel')
-                )
-                ->setIcon('cancel')
-                ->shouldValidate(false)
+        $bg->push(
+            $this->html->cancelEventButton($this->eventName('cancelSelect'))
         );
     }
 
