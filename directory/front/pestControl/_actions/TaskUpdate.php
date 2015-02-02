@@ -27,7 +27,7 @@ class TaskUpdate extends arch\task\Action {
 
 
         $this->io->write("\n".'Updating request fields...');
-        $tables = ['accessLog', 'errorLog', 'miss', 'missLog'];
+        $tables = ['accessLog', 'errorLog', 'miss'];
         $router = core\application\http\Router::getInstance();
 
         foreach($tables as $table) {
