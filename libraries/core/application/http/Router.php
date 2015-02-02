@@ -140,6 +140,11 @@ class Router implements core\IRegistryObject {
     }
 
 
+    public function unmapLocalUrl($url) {
+        $url = $this->_baseDomain.'/'.trim(implode('/', $this->_basePath), '/').'/'.ltrim($url, '/');
+        return new link\http\Url($url);
+    }
+
 // Routing
     public function countRoutes() {
         return $this->_routeCount;
@@ -176,7 +181,7 @@ class Router implements core\IRegistryObject {
             $origRequest
         );
     }
-    
+
     public function routeIn(arch\IRequest $request) {
         $this->_routeCount++;
         $location = $request->getDirectoryLocation();

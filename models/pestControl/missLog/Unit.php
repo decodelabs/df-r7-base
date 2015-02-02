@@ -40,11 +40,13 @@ class Unit extends axis\unit\table\Base {
     }
 
     public function logMiss($request=null, $message=null) {
+        $agent = $this->context->data->user->agent->logCurrent();
+
         return $this->newRecord([
-                'miss' => $this->_model->miss->logMiss($request),
+                'miss' => $this->_model->miss->logMiss($request, $agent['isBot']),
                 'referrer' => $this->_model->getLogReferrer(),
                 'message' => $message,
-                'userAgent' => $this->context->data->user->agent->logCurrent(),
+                'userAgent' => $agent,
                 'user' => $this->_model->getLogUserId(),
                 'isProduction' => $this->context->application->isProduction()
             ])

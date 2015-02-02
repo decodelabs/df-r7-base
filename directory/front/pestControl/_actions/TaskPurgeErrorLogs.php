@@ -12,23 +12,23 @@ use df\arch;
 
 class TaskPurgeErrorLogs extends arch\task\Action {
     
-    const THRESHOLD = '-2 months';
-
     public function execute() {
+        $threshold = '-'.$this->data->pestControl->getPurgeThreshold();
+
         $errors = $this->data->pestControl->errorLog->delete()
             ->where('isArchived', '=', false)
             ->beginWhereClause()
-                ->where('date', '<', self::THRESHOLD)
+                ->where('date', '<', $threshold)
                 ->orWhereCorrelation('error', 'in', 'id')
                     ->from('axis://pestControl/Error', 'error')
-                    ->where('lastSeen', '<', self::THRESHOLD)
+                    ->where('lastSeen', '<', $threshold)
                     ->endCorrelation()
                 ->endClause()
             ->execute();
 
 
         $this->data->pestControl->error->delete()
-            ->where('lastSeen', '<', self::THRESHOLD)
+            ->where('lastSeen', '<', $threshold)
             ->whereCorrelation('id', '!in', 'error')
                 ->from('axis://pestControl/ErrorLog', 'log')
                 ->endCorrelation()

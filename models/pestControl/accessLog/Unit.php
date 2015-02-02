@@ -53,8 +53,11 @@ class Unit extends axis\unit\table\Base {
     }
 
     public function logAccess($code=403, $request=null, $message=null) {
+        $mode = $this->context->getRunMode();
+        $request = $this->_model->normalizeLogRequest($request, $mode);
+
         return $this->newRecord([
-                'mode' => $this->context->getRunMode(),
+                'mode' => $mode,
                 'code' => $code,
                 'request' => $request,
                 'message' => $message,

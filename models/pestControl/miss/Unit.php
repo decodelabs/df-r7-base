@@ -26,6 +26,7 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('request', 'String', 255);
 
         $schema->addField('seen', 'Integer', 4);
+        $schema->addField('botsSeen', 'Integer', 4);
         $schema->addField('firstSeen', 'Timestamp');
         $schema->addField('lastSeen', 'DateTime');
 
@@ -37,7 +38,7 @@ class Unit extends axis\unit\table\Base {
 
     public function applyPagination(opal\query\IPaginator $paginator) {
         $paginator
-            ->setOrderableFields('mode', 'request', 'seen', 'firstSeen', 'lastSeen')
+            ->setOrderableFields('mode', 'request', 'seen', 'botsSeen', 'firstSeen', 'lastSeen')
             ->setDefaultOrder('lastSeen DESC', 'seen DESC');
 
         return $this;
@@ -50,12 +51,18 @@ class Unit extends axis\unit\table\Base {
 
 
 // IO
-    public function logMiss($request, $mode=null) {
+    public function logMiss($request, $isBot=false, $mode=null) {
+        $mode = $mode ? $mode : $this->context->getRunMode();
+        $request = $this->_model->normalizeLogRequest($request, $mode);
+
         $this->update([
                 'lastSeen' => 'now',
                 'archiveDate' => null
             ])
             ->express('seen', 'seen', '+', 1)
+            ->chainIf($isBot, function($query) {
+                $query->express('botsSeen', 'botsSeen', '+', 1);
+            })
             ->where('request', '=', $request)
             ->execute();
 
@@ -65,9 +72,10 @@ class Unit extends axis\unit\table\Base {
 
         if(!$miss) {
             $miss = $this->newRecord([
-                    'mode' => $mode ? $mode : $this->context->getRunMode(),
+                    'mode' => $mode,
                     'request' => $request,
                     'seen' => 1,
+                    'botsSeen' => $isBot ? 1:0,
                     'firstSeen' => 'now',
                     'lastSeen' => 'now'
                 ])

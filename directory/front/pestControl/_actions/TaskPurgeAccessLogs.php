@@ -12,12 +12,10 @@ use df\arch;
 
 class TaskPurgeAccessLogs extends arch\task\Action {
     
-    const THRESHOLD = '-2 months';
-
     public function execute() {
         $accesses = $this->data->pestControl->accessLog->delete()
             ->where('isArchived', '=', false)
-            ->where('date', '<', self::THRESHOLD)
+            ->where('date', '<', '-'.$this->data->pestControl->getPurgeThreshold())
             ->execute();
 
         $this->io->writeLine('Purged '.$accesses.' access logs');

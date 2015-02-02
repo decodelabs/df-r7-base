@@ -28,6 +28,8 @@ class Unit extends axis\unit\table\Base {
             ->isNullable(true);
         $schema->addField('request', 'BigString', 'medium')
             ->isNullable(true);
+        $schema->addField('referrer', 'String', 255)
+            ->isNullable(true);
 
         $schema->addField('message', 'BigString', 'medium')
             ->isNullable(true);
@@ -48,6 +50,7 @@ class Unit extends axis\unit\table\Base {
 // IO
     public function logException(\Exception $e, $request=null) {
         $error = $this->_model->error->logException($e);
+        $mode = $this->context->getRunMode();
         $message = $e->getMessage();
 
         if($message == $error['message']) {
@@ -56,8 +59,9 @@ class Unit extends axis\unit\table\Base {
 
         return $this->newRecord([
                 'error' => $error,
-                'mode' => $this->context->getRunMode(),
-                'request' => $this->_model->normalizeLogRequest($request),
+                'mode' => $mode,
+                'request' => $this->_model->normalizeLogRequest($request, $mode),
+                'referrer' => $this->_model->getLogReferrer(),
                 'message' => $message,
                 'userAgent' => $this->context->data->user->agent->logCurrent(),
                 'stackTrace' => $this->_model->stackTrace->logException($e),

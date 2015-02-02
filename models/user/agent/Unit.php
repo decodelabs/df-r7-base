@@ -15,6 +15,7 @@ class Unit extends axis\unit\table\Base {
     protected function _onCreate(axis\schema\ISchema $schema) {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addUniqueField('body', 'String', 255);
+        $schema->addField('isBot', 'Boolean');
     }
 
 
@@ -28,7 +29,10 @@ class Unit extends axis\unit\table\Base {
             ->toRow();
 
         if(!$output) {
-            $output = $this->newRecord(['body' => $agent])->save();
+            $output = $this->newRecord([
+                'body' => $agent,
+                'isBot' => $this->isBot($agent)
+            ])->save();
         }
 
         return $output;
@@ -61,5 +65,27 @@ class Unit extends axis\unit\table\Base {
         } catch(\Exception $e) {}
 
         return $userAgent;
+    }
+
+    protected $_botMatch = [
+        'AddThis.com',
+        'bingbot',
+        'CRAZYWEBCRAWLER',
+        'crawler',
+        'Googlebot',
+        'LinkedInBot',
+        'msnbot',
+        'NerdyBot',
+        'Twitterbot'
+    ];
+
+    public function isBot($agent) {
+        foreach($this->_botMatch as $match) {
+            if(stristr($agent, $match)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -14,7 +14,6 @@ class TaskPurgeLogs extends arch\task\Action {
     
     const SCHEDULE = '0 16 * * *';
     const SCHEDULE_AUTOMATIC = true;
-    const THRESHOLD = '-2 months';
 
     public function execute() {
         $this->runChild('pest-control/purge-error-logs');
