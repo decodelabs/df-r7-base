@@ -141,8 +141,14 @@ class Router implements core\IRegistryObject {
 
 
     public function unmapLocalUrl($url) {
-        $url = $this->_baseDomain.'/'.trim(implode('/', $this->_basePath), '/').'/'.ltrim($url, '/');
-        return new link\http\Url($url);
+        $output = $this->_baseDomain.'/';
+
+        if(!empty($this->_basePath)) {
+            $output .= trim(implode('/', $this->_basePath), '/').'/';
+        }
+
+        $output .= ltrim($url, '/');
+        return new link\http\Url($output);
     }
 
 // Routing
