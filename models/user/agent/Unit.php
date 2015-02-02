@@ -76,6 +76,7 @@ class Unit extends axis\unit\table\Base {
         'LinkedInBot',
         'msnbot',
         'NerdyBot',
+        'spbot',
         'Twitterbot'
     ];
 
