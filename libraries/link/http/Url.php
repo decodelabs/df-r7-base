@@ -170,10 +170,10 @@ class Url extends core\uri\Url implements IUrl {
             $this->setPort(array_shift($port));
             
             if(!empty($path) && empty($path[0])) {
-                $path = null;
+                array_shift($path);
             }
         }
-        
+
         if(!empty($path)) {
             $this->setPath($path);
         }
