@@ -19,13 +19,11 @@ class Action implements IAction, core\IDumpable {
     const OPTIMIZE = false;
     const DEFAULT_ACCESS = null;
     
-    public $controller;
-
     private $_shouldOptimize = null;
     private $_shouldCheckAccess = null;
     private $_callback;
     
-    public static function factory(IContext $context, IController $controller=null) {
+    public static function factory(IContext $context) {
         $class = self::getClassFor(
             $context->location,
             $context->getRunMode(),
@@ -35,7 +33,7 @@ class Action implements IAction, core\IDumpable {
         if(!$class || $isDefault) {
             try {
                 $scaffold = arch\scaffold\Base::factory($context);
-                return $scaffold->loadAction($controller);
+                return $scaffold->loadAction();
             } catch(arch\scaffold\IException $e) {}
         }
 
@@ -50,7 +48,7 @@ class Action implements IAction, core\IDumpable {
             );
         }
         
-        return new $class($context, $controller);
+        return new $class($context);
     }
 
     public static function getClassFor(IRequest $request, $runMode='Http', &$isDefault=null) {
@@ -94,14 +92,8 @@ class Action implements IAction, core\IDumpable {
         return $class;
     }
     
-    public function __construct(IContext $context, IController $controller=null, $callback=null) {
-        $this->controller = $controller;
+    public function __construct(IContext $context, $callback=null) {
         $this->context = $context;
-
-        if(!$this->controller) {
-            $this->controller = Controller::factory($this->context);
-        }
-
         $this->setCallback($callback);
     }
 

@@ -29,8 +29,8 @@ abstract class Action extends arch\Action implements IAction {
     private $_initResponse;
 
     
-    public function __construct(arch\IContext $context, arch\IController $controller=null) {
-        parent::__construct($context, $controller);
+    public function __construct(arch\IContext $context) {
+        parent::__construct($context);
         
         if($this->context->getRunMode() !== 'Http') {
             throw new RuntimeException(

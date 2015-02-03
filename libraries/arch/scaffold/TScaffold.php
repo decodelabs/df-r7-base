@@ -465,13 +465,13 @@ trait TScaffold_RecordDataProvider {
 
 
 
-    public function buildDeleteDynamicAction($controller) {
+    public function buildDeleteDynamicAction() {
         if(!$this->canDeleteRecord()) {
             $this->context->throwError(403, 'Records cannot be deleted');
         }
 
         $this->_recordAction = 'delete';
-        return new arch\scaffold\form\Delete($this, $controller);
+        return new arch\scaffold\form\Delete($this);
     }
 
     public function getRecordDeleteFlags() {
@@ -828,7 +828,7 @@ trait TScaffold_SectionProvider {
         return ['details'];
     }
 
-    public function loadSectionAction(arch\IController $controller=null) {
+    public function loadSectionAction() {
         $action = $this->context->request->getAction();
         $sections = $this->_getSections();
 
@@ -857,7 +857,7 @@ trait TScaffold_SectionProvider {
                 );
 
                 return $this->view;
-            }, $controller);
+            });
         }
     }
 

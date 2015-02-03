@@ -217,12 +217,19 @@ class Context implements IContext, \Serializable, core\IDumpable {
             case 'location':
                 return $this->location;
 
+            case 'controller':
+                return $this->getController();
+
             case 'scaffold':
                 return $this->getScaffold();
                 
             default:
                 return $this->loadRootHelper($name);
         }
+    }
+
+    public function getController() {
+        return Controller::factory($this);
     }
 
     public function getScaffold() {

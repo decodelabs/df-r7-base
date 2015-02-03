@@ -19,8 +19,8 @@ abstract class Action extends arch\Action implements IAction {
 
     public $io;
 
-    public function __construct(arch\IContext $context, arch\IController $controller=null) {
-        parent::__construct($context, $controller);
+    public function __construct(arch\IContext $context) {
+        parent::__construct($context);
         $this->_init();
     }
 

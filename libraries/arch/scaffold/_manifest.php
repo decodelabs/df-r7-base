@@ -20,7 +20,7 @@ class ActionNotFoundException extends RuntimeException {}
 
 // Interfaces
 interface IScaffold extends core\IRegistryObject, arch\IOptionalDirectoryAccessLock {
-    public function loadAction(arch\IController $controller=null);
+    public function loadAction();
     public function onActionDispatch(arch\IAction $action);
     public function loadComponent($name, array $args=null);
     public function loadFormDelegate($name, arch\form\IStateController $state, $id);
@@ -68,7 +68,7 @@ interface IRecordListProviderScaffold extends IRecordLoaderScaffold {
 }
 
 interface ISectionProviderScaffold extends IScaffold {
-    public function loadSectionAction(arch\IController $controller=null);
+    public function loadSectionAction();
     public function buildSection($name, $builder, $linkBuilder=null);
     public function getSectionItemCounts();
 }

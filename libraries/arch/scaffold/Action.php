@@ -15,8 +15,8 @@ class Action extends arch\Action {
     protected $_callback;
     protected $_scaffold;
 
-    public function __construct(arch\IContext $context, IScaffold $scaffold, $callback, arch\IController $controller=null) {
-        parent::__construct($context, $controller);
+    public function __construct(arch\IContext $context, IScaffold $scaffold, $callback) {
+        parent::__construct($context);
 
         $this->_callback = core\lang\Callback::factory($callback);
         $this->_scaffold = $scaffold;

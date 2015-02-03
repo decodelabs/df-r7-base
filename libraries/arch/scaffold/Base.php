@@ -102,7 +102,7 @@ abstract class Base implements IScaffold {
 
 
 // Loaders
-    public function loadAction(arch\IController $controller=null) {
+    public function loadAction() {
         $action = $this->context->request->getAction();
         $method = lcfirst($action).$this->context->request->getType().'Action';
         
@@ -113,14 +113,14 @@ abstract class Base implements IScaffold {
                 $method = 'build'.ucfirst($action).'DynamicAction';
 
                 if(method_exists($this, $method)) {
-                    $action = $this->{$method}($controller);
+                    $action = $this->{$method}();
 
                     if($action instanceof arch\IAction) {
                         return $action;
                     }
                 }
 
-                if($this instanceof ISectionProviderScaffold && ($action = $this->loadSectionAction($controller))) {
+                if($this instanceof ISectionProviderScaffold && ($action = $this->loadSectionAction())) {
                     return $action;
                 }
 
@@ -130,7 +130,7 @@ abstract class Base implements IScaffold {
             }
         }
 
-        return new Action($this->context, $this, [$this, $method], $controller);
+        return new Action($this->context, $this, [$this, $method]);
     }
 
     public function onActionDispatch(arch\IAction $action) {}
