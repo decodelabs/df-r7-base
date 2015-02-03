@@ -143,11 +143,11 @@ class Action implements IAction, core\IDumpable {
             return static::CHECK_ACCESS;
         }
 
-        if(static::DEFAULT_ACCESS === IAccess::ALL) {
+        if($this->_defaultAccess === IAccess::ALL) {
             return false;
         }
 
-        return !static::OPTIMIZE;
+        return !$this->shouldOptimize();
     }
 
     public function setDefaultAccess($access) {
@@ -190,7 +190,7 @@ class Action implements IAction, core\IDumpable {
         }
 
         if($this->_callback) {
-            $output = $this->_callback->invoke();
+            $output = $this->_callback->invoke($this);
         } else {
             $func = $this->getActionMethodName();
             

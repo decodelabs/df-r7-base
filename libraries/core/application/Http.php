@@ -390,25 +390,8 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
 
             //$response->getHeaders()->setCacheExpiration(60);
         }
-        
-        
-        // Permissions
-        /*
-        if($response instanceof arch\response\IPermissionEnforcer) {
-            $user = $this->_context->getUserManager();
-         
-            foreach($response->getAccessLocks() as $lock) {
-                if(!$user->canAccess($lock)) {
-                    $this->_context->throwError(
-                        401, 'Insufficient permissions'
-                    );
-                }
-            }
-        }
-        */
        
         $response->onDispatchComplete();
-
         return $response;
     }
     

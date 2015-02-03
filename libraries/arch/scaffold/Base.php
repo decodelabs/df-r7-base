@@ -316,16 +316,13 @@ abstract class Base implements IScaffold {
 
 
     protected function _generateAction($callback) {
-        $action = new arch\Action($this->context);
-        $action->setDefaultAccess($this->getDefaultAccess());
-        $action->setCallback(function() use($action, $callback) {
-            if(null !== ($pre = $this->onActionDispatch($action))) {
-                return $pre;
-            }
+        return (new arch\Action($this->context, function($action) use($callback) {
+                if(null !== ($pre = $this->onActionDispatch($action))) {
+                    return $pre;
+                }
 
-            return core\lang\Callback::factory($callback)->invoke();
-        });
-
-        return $action;
+                return core\lang\Callback::factory($callback)->invoke();
+            }))
+            ->setDefaultAccess($this->getDefaultAccess());
     }
 }
