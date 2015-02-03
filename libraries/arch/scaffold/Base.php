@@ -130,7 +130,7 @@ abstract class Base implements IScaffold {
             }
         }
 
-        return new Action($this->context, $this, [$this, $method]);
+        return $this->_generateAction([$this, $method]);
     }
 
     public function onActionDispatch(arch\IAction $action) {}
@@ -312,5 +312,20 @@ abstract class Base implements IScaffold {
         }
 
         return $value;
+    }
+
+
+    protected function _generateAction($callback) {
+        $action = new arch\Action($this->context);
+        $action->setDefaultAccess($this->getDefaultAccess());
+        $action->setCallback(function() use($action, $callback) {
+            if(null !== ($pre = $this->onActionDispatch($action))) {
+                return $pre;
+            }
+
+            return core\lang\Callback::factory($callback)->invoke();
+        });
+
+        return $action;
     }
 }

@@ -833,14 +833,13 @@ trait TScaffold_SectionProvider {
         $sections = $this->_getSections();
 
         if(isset($sections[$action]) || in_array($action, $sections)) {
-            return new Action($this->context, $this, function() use($action) {
+            return $this->_generateAction(function() use($action) {
                 $record = null;
 
                 if($this instanceof IRecordDataProviderScaffold) {
                     $record = $this->getRecord();
                 }
 
-                //$this->view = $this->apex->newWidgetView();
                 $this->view->setContentProvider(new aura\view\content\WidgetContentProvider($this->context));
 
                 $method = 'render'.ucfirst($action).'SectionBody';

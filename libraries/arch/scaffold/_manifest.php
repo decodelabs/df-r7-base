@@ -72,9 +72,3 @@ interface ISectionProviderScaffold extends IScaffold {
     public function buildSection($name, $builder, $linkBuilder=null);
     public function getSectionItemCounts();
 }
-
-
-interface IAction extends arch\IAction {
-    public function getCallback();
-    public function getScaffold();
-}

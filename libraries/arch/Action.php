@@ -21,6 +21,7 @@ class Action implements IAction, core\IDumpable {
     
     private $_shouldOptimize = null;
     private $_shouldCheckAccess = null;
+    private $_defaultAccess = null;
     private $_callback;
     
     public static function factory(IContext $context) {
@@ -147,6 +148,19 @@ class Action implements IAction, core\IDumpable {
         }
 
         return !static::OPTIMIZE;
+    }
+
+    public function setDefaultAccess($access) {
+        $this->_defaultAccess = $access;
+        return $this;
+    }
+
+    public function getDefaultAccess($action=null) {
+        if($this->_defaultAccess !== null) {
+            return $this->_defaultAccess;
+        }
+
+        return $this->_getClassDefaultAccess();
     }
 
 
