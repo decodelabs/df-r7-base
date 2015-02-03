@@ -219,12 +219,23 @@ interface IProxyResponse {
 
 
 interface IOptionalDirectoryAccessLock {
-    public function shouldCheckAccess();
+    public function shouldCheckAccess($flag=null);
 }
 
 trait TOptionalDirectoryAccessLock {
 
-    public function shouldCheckAccess() {
+    private $_shouldCheckAccess = null;
+
+    public function shouldCheckAccess($flag=null) {
+        if($flag !== null) {
+            $this->_shouldCheckAccess = (bool)$flag;
+            return $this;
+        }
+
+        if($this->_shouldCheckAccess !== null) {
+            return (bool)$this->_shouldCheckAccess;
+        }
+
         if(is_bool(static::CHECK_ACCESS)) {
             return static::CHECK_ACCESS;
         }
@@ -243,11 +254,18 @@ interface IController extends core\IContextAware, IResponseForcer, IOptionalDire
 
 
 interface IAction extends core\IContextAware, user\IAccessLock, IResponseForcer, IOptionalDirectoryAccessLock {
+    public function setCallback($callback);
+    public function getCallback();
     public function dispatch();
     public function getController();
-    public function shouldOptimize();
+    public function shouldOptimize($flag=null);
     public function getActionMethodName();
     public function handleException(\Exception $e);
+}
+
+interface ITransformer extends core\IContextAware {
+    public function canDeliver();
+    public function execute();
 }
 
 interface IComponent extends 

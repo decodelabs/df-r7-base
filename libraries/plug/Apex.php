@@ -111,13 +111,15 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
             return true;
         }
 
+        $context = $this->context->spawnInstance($request, true);
+
         try {
-            $scaffold = $this->scaffold($this->context->spawnInstance($request, true));
+            $scaffold = $this->scaffold($context);
             $scaffold->loadAction();
             return true;
         } catch(arch\scaffold\IException $e) {}
 
-        return false;
+        return arch\Transformer::isActionDeliverable($context);
     }
     
     public function getAction($request, $runMode=null) {

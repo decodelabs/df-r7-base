@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\arch;
 
-abstract class Action implements IAction, core\IDumpable {
+class Action implements IAction, core\IDumpable {
     
     use core\TContextProxy;
     use TDirectoryAccessLock;
@@ -20,6 +20,10 @@ abstract class Action implements IAction, core\IDumpable {
     const DEFAULT_ACCESS = null;
     
     public $controller;
+
+    private $_shouldOptimize = null;
+    private $_shouldCheckAccess = null;
+    private $_callback;
     
     public static function factory(IContext $context, IController $controller=null) {
         $class = self::getClassFor(
@@ -33,17 +37,17 @@ abstract class Action implements IAction, core\IDumpable {
                 $scaffold = arch\scaffold\Base::factory($context);
                 return $scaffold->loadAction($controller);
             } catch(arch\scaffold\IException $e) {}
+        }
 
-            if(!$class) {
-                $class = self::getRootClass($context);
-
-                if(!$class) {
-                    throw new RuntimeException(
-                        'No action could be found for '.$context->location->toString(),
-                        404
-                    );
-                }
+        if(!$class) {
+            if($action = arch\Transformer::loadAction($context)) {
+                return $action;
             }
+
+            throw new RuntimeException(
+                'No action could be found for '.$context->location->toString(),
+                404
+            );
         }
         
         return new $class($context, $controller);
@@ -89,48 +93,59 @@ abstract class Action implements IAction, core\IDumpable {
 
         return $class;
     }
-
-    public static function getRootClass(arch\IContext $context) {
-        $class = 'df\\apex\\directory\\'.$context->location->getArea().'\\_actions\\HttpRoot';
-
-        if(!class_exists($class)) {
-            $class = 'df\\apex\\directory\\shared\\_actions\\HttpRoot';
-
-            if(!class_exists($class)) {
-                return null;
-            }
-        }
-
-        return $class;
-    }
-
-    public static function rootFactory(arch\IContext $context) {
-        if(!$class = self::getRootClass($context)) {
-            return null;
-        }
-
-        return new $class($context);
-    }
     
-    
-    public function __construct(IContext $context, IController $controller=null) {
+    public function __construct(IContext $context, IController $controller=null, $callback=null) {
         $this->controller = $controller;
         $this->context = $context;
 
         if(!$this->controller) {
             $this->controller = Controller::factory($this->context);
         }
+
+        $this->setCallback($callback);
+    }
+
+    public function setCallback($callback) {
+        if($callback !== null) {
+            $this->_callback = core\lang\Callback::factory($callback);
+        } else {
+            $this->_callback = null;
+        }
+
+        return $this;
+    }
+
+    public function getCallback() {
+        return $this->_callback;
     }
     
     public function getController() {
         return $this->controller;
     }
 
-    public function shouldOptimize() {
+    public function shouldOptimize($flag=null) {
+        if($flag !== null) {
+            $this->_shouldOptimize = (bool)$flag;
+            return $this;
+        }
+
+        if($this->_shouldOptimize !== null) {
+            return (bool)$this->_shouldOptimize;
+        }
+
         return (bool)static::OPTIMIZE;
     }
 
-    public function shouldCheckAccess() {
+    public function shouldCheckAccess($flag=null) {
+        if($flag !== null) {
+            $this->_shouldCheckAccess = (bool)$flag;
+            return $this;
+        }
+
+        if($this->_shouldCheckAccess !== null) {
+            return (bool)$this->_shouldCheckAccess;
+        }
+        
         if(is_bool(static::CHECK_ACCESS)) {
             return static::CHECK_ACCESS;
         }
@@ -168,28 +183,28 @@ abstract class Action implements IAction, core\IDumpable {
             }
         }
 
-        $func = $this->getActionMethodName();
-        
-        if($output === null && $func) {
-            try {
-                $output = $this->$func();
-            } catch(ForcedResponse $e) {
-                $output = $e->getResponse();
-            } catch(\Exception $e) {
-                $output = $this->handleException($e);
+        if($this->_callback) {
+            $output = $this->_callback->invoke();
+        } else {
+            $func = $this->getActionMethodName();
+            
+            if($output === null && $func) {
+                try {
+                    $output = $this->$func();
+                } catch(ForcedResponse $e) {
+                    $output = $e->getResponse();
+                } catch(\Exception $e) {
+                    $output = $this->handleException($e);
+                }
             }
-        }
-        
-        if($func === null) {
-            if(null !== ($output = $this->_dispatchRootAction())) {
-                return $output;
+            
+            if($func === null) {
+                throw new RuntimeException(
+                    'No handler could be found for action: '.
+                    $this->context->location->toString(),
+                    404
+                );
             }
-
-            throw new RuntimeException(
-                'No handler could be found for action: '.
-                $this->context->location->toString(),
-                404
-            );
         }
         
         if(method_exists($this, '_afterDispatch')) {
@@ -220,18 +235,6 @@ abstract class Action implements IAction, core\IDumpable {
 
     public function handleException(\Exception $e) {
         throw $e;
-    }
-
-    protected function _dispatchRootAction() {
-        if(!$root = self::rootFactory($this->context)) {
-            return;
-        }
-
-        if(get_class($root) == get_class($this)) {
-            return;
-        }
-
-        return $root->dispatch();
     }
     
     
