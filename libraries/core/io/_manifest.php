@@ -244,6 +244,9 @@ interface IChunkReceiver {
 }
 
 interface IWriter extends IChunkReceiver {
+    public function setWriteCallback($callback);
+    public function getWriteCallback();
+
     public function write($data);
     public function writeLine($line='');
     public function writeBuffer(&$buffer, $length);
@@ -262,6 +265,29 @@ interface IWriter extends IChunkReceiver {
 
 trait TWriter {
 
+    private $_writeCallback;
+
+    public function setWriteCallback($callback) {
+        if($callback !== null) {
+            $callback = core\lang\Callback::factory($callback);
+        }
+
+        $this->_writeCallback = $callback;
+        return $this;
+    }
+
+    public function getWriteCallback() {
+        return $this->_writeCallback;
+    }
+
+    protected function _triggerWriteCallback() {
+        if($this->_writeCallback) {
+            if(true !== $this->_writeCallback->invoke($this)) {
+                $this->_writeCallback = null;
+            }
+        }
+    }
+
     public function write($data) {
         if(!$this->isWritingEnabled()) {
             throw new LogicException(
@@ -274,6 +300,10 @@ trait TWriter {
         }
         
         for($written = 0; $written < $length; $written += $result) {
+            if($this->_writeCallback) {
+                $this->_triggerWriteCallback();
+            }
+
             $result = $this->_writeChunk(substr($data, $written), $length - $written);
             
             if($result === false) {
@@ -301,6 +331,10 @@ trait TWriter {
 
         if($length <= 0) {
             $length = strlen($data);
+        }
+
+        if($this->_writeCallback) {
+            $this->_triggerWriteCallback();
         }
         
         return $this->_writeChunk($data, $length);
