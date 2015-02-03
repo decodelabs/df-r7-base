@@ -446,23 +446,29 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
             $sendData = false;
         }
         
-        // Send headers
-        if($response->hasHeaders()) {
-            $response->getHeaders()->send();
-        }
-
         
-        // Send data
-        if($sendData) {
-            while(ob_get_level()) {
-                ob_end_clean();
+        if(!$sendData) {
+            // Send headers
+            if($response->hasHeaders()) {
+                $response->getHeaders()->send();
             }
-            
-            flush();
-            ob_implicit_flush(true);
-
-            set_time_limit(0);
+        } else {
+            // Send data with triggered headers
             $channel = new core\io\channel\Stream('php://output');
+            set_time_limit(0);
+
+            $channel->setWriteCallback(function() use($response) {
+                while(ob_get_level()) {
+                    ob_end_clean();
+                }
+                
+                flush();
+                ob_implicit_flush(true);
+
+                if($response->hasHeaders()) {
+                    $response->getHeaders()->send();
+                }
+            });
             
             // TODO: Seek to resume header location if requested
             
@@ -470,7 +476,6 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
                 $file = $response->getContentFileStream();
             
                 while(!$file->eof()) {
-                    //echo $file->readChunk(8192);
                     $channel->write($file->readChunk(8192));
                 }
                 
@@ -479,7 +484,6 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
                 $response->shouldChunkManually($this->_manualChunk);
                 $response->generate($channel);
             } else {
-                //echo $response->getContent();
                 $channel->write($response->getContent());
             }
 

@@ -14,6 +14,7 @@ class Builder implements IBuilder {
     protected $_fields = null;
     protected $_rows = null;
     protected $_writeFields = true;
+    protected $_fieldsWritten = false;
 
     protected $_receiver;
     protected $_generator;
@@ -67,8 +68,9 @@ class Builder implements IBuilder {
         if($this->_generator) {
             $this->_generator->invokeArgs([$this]);
         } else if(!empty($this->_fields)) {
-            if($this->_writeFields) {
+            if($this->_writeFields && !$this->_fieldsWritten) {
                 $this->_writeRow($this->_fields);
+                $this->_fieldsWritten = true;
             }
 
             if(!empty($this->_rows)) {
@@ -92,11 +94,6 @@ class Builder implements IBuilder {
         }
 
         $this->_fields = $fields;
-
-        if($this->_generator && $this->_writeFields) {
-            $this->_writeRow($this->_fields);
-        }
-
         return $this;
     }
 
@@ -122,6 +119,16 @@ class Builder implements IBuilder {
             }
 
             $this->setFields($fields);
+        }
+
+        if($this->_writeFields && !$this->_fieldsWritten) {
+            if($this->_generator) {
+                $this->_writeRow($this->_fields);
+            } else {
+                $this->_rows[] = $this->_fields;
+            }
+
+            $this->_fieldsWritten = true;
         }
 
         $outRow = [];
