@@ -226,6 +226,41 @@ abstract class Base implements IScaffold {
         return $this->_getDirectoryKeyName();
     }
 
+
+// Generators
+    public function generateAttributeList(array $fields, $record=true) {
+        if($record === true) {
+            $record = $this->getRecord();
+        }
+
+        $output = new arch\component\template\AttributeList($this->context, [$fields, $record]);
+        $output->setViewArg(lcfirst($this->getRecordKeyName()));
+        $output->setRenderTarget($this->view);
+
+        foreach($output->getFields() as $field => $enabled) {
+            if($enabled === true) {
+                $method1 = 'define'.ucfirst($field).'Field';
+                $method2 = 'override'.ucfirst($field).'Field';
+
+                if(method_exists($this, $method2)) {
+                    $output->setField($field, function($list, $key) use($method2, $field) {
+                        if(false === $this->{$method2}($list, 'details')) {
+                            $list->addField($key);
+                        }
+                    });
+                } else if(method_exists($this, $method1)) {
+                    $output->setField($field, function($list, $key) use($method1, $field) {
+                        if(false === $this->{$method1}($list, 'details')) {
+                            $list->addField($key);
+                        }
+                    });
+                }
+            }
+        }
+
+        return $output;
+    }
+
 // Helpers
     protected function _getDirectoryKeyName() {
         if($this->_directoryKeyName) {

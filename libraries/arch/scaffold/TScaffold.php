@@ -488,36 +488,16 @@ trait TScaffold_RecordDataProvider {
     }
 
     public function buildDetailsComponent(array $args) {
-        if(!isset($args[0])) {
-            $args[0] = [];
+        $fields = array_shift($args);
+
+        if(!is_array($fields)) {
+            $fields = [];
         }
 
-        $args[0] = array_merge($this->_recordDetailsFields, $args[0]);
-        $output = new arch\component\template\AttributeList($this->context, $args);
-        $output->setViewArg(lcfirst($this->getRecordKeyName()));
+        $fields = array_merge($this->_recordDetailsFields, $fields);
+        $record = array_shift($args);
 
-        foreach($output->getFields() as $field => $enabled) {
-            if($enabled === true) {
-                $method1 = 'define'.ucfirst($field).'Field';
-                $method2 = 'override'.ucfirst($field).'Field';
-
-                if(method_exists($this, $method2)) {
-                    $output->setField($field, function($list, $key) use($method2, $field) {
-                        if(false === $this->{$method2}($list, 'details')) {
-                            $list->addField($key);
-                        }
-                    });
-                } else if(method_exists($this, $method1)) {
-                    $output->setField($field, function($list, $key) use($method1, $field) {
-                        if(false === $this->{$method1}($list, 'details')) {
-                            $list->addField($key);
-                        }
-                    });
-                }
-            }
-        }
-
-        return $output;
+        return $this->generateAttributeList($fields, $record);
     }
 
 
