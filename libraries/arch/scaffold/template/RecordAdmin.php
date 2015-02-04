@@ -145,7 +145,8 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
         }
 
         return [
-            $searchBar, $list
+            'searchBar' => $searchBar, 
+            'collectionList' => $list
         ];
     }
 
