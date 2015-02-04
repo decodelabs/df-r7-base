@@ -718,52 +718,15 @@ trait TScaffold_RecordListProvider {
     protected function _prepareRecordListQuery(opal\query\ISelectQuery $query, $mode) {}
 
     public function buildListComponent(array $args) {
-        if(!isset($args[0])) {
-            $args[0] = [];
+        $fields = array_shift($args);
+
+        if(!is_array($fields)) {
+            $fields = [];
         }
 
-        $nameKey = $this->getRecordNameField();
-        $fields = $this->_recordListFields;
-
-        if(empty($fields)) {
-            $fields[] = $nameKey;
-        }
-
-        $args[0] = array_merge($fields, $args[0]);
-        $output = new arch\component\template\CollectionList($this->context, $args);
-        $output->setViewArg(lcfirst($this->getRecordKeyName()).'List');
-        
-
-        foreach($output->getFields() as $field => $enabled) {
-            if($enabled === true) {
-                $method1 = 'define'.ucfirst($field).'Field';
-                $method2 = 'override'.ucfirst($field).'Field';
-
-                if(method_exists($this, $method2)) {
-                    $output->setField($field, function($list, $key) use($method2, $field, $nameKey) {
-                        if(false === $this->{$method2}($list, 'list')) {
-                            $list->addField($key);
-                        }
-                    });
-                } else if(method_exists($this, $method1)) {
-                    $output->setField($field, function($list, $key) use($method1, $field, $nameKey) {
-                        if($field == $nameKey) {
-                            return $this->_autoDefineNameKeyField($field, $list, 'list');
-                        } else {
-                            if(false === $this->{$method1}($list, 'list')) {
-                                $list->addField($key);
-                            }
-                        }
-                    });
-                } else if($field == $nameKey) {
-                    $output->setField($field, function($list, $key) use($field) {
-                        return $this->_autoDefineNameKeyField($field, $list, 'list');
-                    });
-                }
-            }
-        }
-
-        return $output;
+        $fields = array_merge($this->_recordListFields, $fields);
+        $collection = array_shift($args);
+        return $this->generateCollectionList($fields, $collection);
     }
 
     public function generateSearchBarComponent() {

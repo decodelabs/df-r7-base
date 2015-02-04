@@ -261,6 +261,49 @@ abstract class Base implements IScaffold {
         return $output;
     }
 
+    public function generateCollectionList(array $fields, $collection=null) {
+        $nameKey = $this->getRecordNameField();
+
+        if(empty($fields)) {
+            $fields[] = $nameKey;
+        }
+
+        $output = new arch\component\template\CollectionList($this->context, [$fields, $collection]);
+        $output->setViewArg(lcfirst($this->getRecordKeyName()).'List');
+        
+
+        foreach($output->getFields() as $field => $enabled) {
+            if($enabled === true) {
+                $method1 = 'define'.ucfirst($field).'Field';
+                $method2 = 'override'.ucfirst($field).'Field';
+
+                if(method_exists($this, $method2)) {
+                    $output->setField($field, function($list, $key) use($method2, $field, $nameKey) {
+                        if(false === $this->{$method2}($list, 'list')) {
+                            $list->addField($key);
+                        }
+                    });
+                } else if(method_exists($this, $method1)) {
+                    $output->setField($field, function($list, $key) use($method1, $field, $nameKey) {
+                        if($field == $nameKey) {
+                            return $this->_autoDefineNameKeyField($field, $list, 'list');
+                        } else {
+                            if(false === $this->{$method1}($list, 'list')) {
+                                $list->addField($key);
+                            }
+                        }
+                    });
+                } else if($field == $nameKey) {
+                    $output->setField($field, function($list, $key) use($field) {
+                        return $this->_autoDefineNameKeyField($field, $list, 'list');
+                    });
+                }
+            }
+        }
+
+        return $output;
+    }
+
 // Helpers
     protected function _getDirectoryKeyName() {
         if($this->_directoryKeyName) {
