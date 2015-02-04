@@ -16,6 +16,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
     
     use TWidget_DataDrivenList;
     use TWidget_MappedList;
+    use TWidget_RendererContextProvider;
     
     public $paginator;
     
@@ -54,7 +55,8 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
         $view = $this->getView();
         $rows = new aura\html\ElementContent();
         
-        $renderContext = new aura\html\widget\util\RendererContext($this);
+        $renderContext = $this->getRendererContext();
+        $renderContext->reset();
         $context = $view->getContext();
         $empty = false;
         

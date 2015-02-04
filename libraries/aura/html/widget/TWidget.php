@@ -1105,6 +1105,18 @@ trait TWidget_OrderedDataDrivenList {
     }
 }
 
+trait TWidget_RendererContextProvider {
+
+    protected $_rendererContext;
+
+    public function getRendererContext() {
+        if(!$this->_rendererContext) {
+            $this->_rendererContext = new aura\html\widget\util\RendererContext($this);
+        }
+
+        return $this->_rendererContext;
+    }
+}
 
 trait TWidget_MappedList {
     

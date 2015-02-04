@@ -199,6 +199,7 @@ class AttributeList extends arch\component\Base implements aura\html\widget\IWid
 
     protected function _createBaseList() {
         $output = $this->view->html->attributeList($this->_record);
+        $output->getRendererContext()->setComponent($this);
 
         if($this->_renderIfEmpty !== null) {
             $output->shouldRenderIfEmpty($this->_renderIfEmpty);

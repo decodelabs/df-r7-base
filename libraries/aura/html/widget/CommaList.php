@@ -14,6 +14,7 @@ class CommaList extends Base implements ILinearListWidget, IDataDrivenListWidget
     
     use TWidget_DataDrivenList;
     use TWidget_RendererProvider;
+    use TWidget_RendererContextProvider;
     
     const PRIMARY_TAG = 'span';
 
@@ -53,7 +54,8 @@ class CommaList extends Base implements ILinearListWidget, IDataDrivenListWidget
             return '';
         }
         
-        $renderContext = new aura\html\widget\util\RendererContext($this);
+        $renderContext = $this->getRendererContext();
+        $renderContext->reset();
         $renderContext->shouldConvertNullToNa(false);
         $first = true;
         $count = 0;

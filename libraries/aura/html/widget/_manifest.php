@@ -24,12 +24,15 @@ class WidgetNotFoundException extends \RuntimeException implements IException {}
 interface IElementContentWrapper extends aura\view\IDeferredRenderable, \ArrayAccess, \Countable {}
 
 interface IRendererContext extends core\collection\IMappedCollection, aura\view\IRenderTargetProvider {
+    public function setComponent(arch\IComponent $component);
+    public function getComponent();
     public function getWidget();
     public function getKey();
     public function getCounter();
     public function getCellTag();
     public function getRowTag();
     public function prepareRow($row);
+    public function reset();
     public function iterate($key, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null);
     public function iterateField($field, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null);
     public function renderCell($value, $renderer=null);

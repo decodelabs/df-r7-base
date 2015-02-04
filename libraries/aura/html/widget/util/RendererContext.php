@@ -8,6 +8,7 @@ namespace df\aura\html\widget\util;
 use df;
 use df\core;
 use df\aura;
+use df\arch;
 
 class RendererContext implements aura\html\widget\IRendererContext {
     
@@ -21,6 +22,7 @@ class RendererContext implements aura\html\widget\IRendererContext {
     public $key;
     public $field;
     public $counter = -1;
+    public $component;
 
     protected $_store = [];
     protected $_widget;
@@ -34,6 +36,15 @@ class RendererContext implements aura\html\widget\IRendererContext {
         if($widget instanceof aura\html\widget\IMappedListWidget) {
             $this->_rowProcessor = $widget->getRowProcessor();
         }
+    }
+
+    public function setComponent(arch\IComponent $component) {
+        $this->component = $component;
+        return $this;
+    }
+
+    public function getComponent() {
+        return $this->component;
     }
 
     public function getWidget() {
@@ -82,6 +93,14 @@ class RendererContext implements aura\html\widget\IRendererContext {
         return $this->_nullToNa;
     }
     
+    public function reset() {
+        $this->counter = 0;
+        $this->clear();
+        $this->key = $this->cellTag = $this->rowTag = $this->fieldTag = null;
+        $this->_skipRow = false;
+
+        return $this;
+    }
     
     public function iterate($key, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null, aura\html\ITag $fieldTag=null) {
         $this->counter++;

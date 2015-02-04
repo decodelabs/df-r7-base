@@ -17,6 +17,7 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
     use TWidget_DataDrivenList;
     use TWidget_MappedList;
     use TWidget_RendererProvider;
+    use TWidget_RendererContextProvider;
 
     public function __construct(arch\IContext $context, $data=null, $renderer=null) {
         $this->setData($data);
@@ -28,7 +29,8 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
         $tableTag = new aura\html\Tag('table');
         $rows = new aura\html\ElementContent();
         
-        $renderContext = new aura\html\widget\util\RendererContext($this);
+        $renderContext = $this->getRendererContext();
+        $renderContext->reset();
 
         if($this->_renderer) {
             foreach($this->_data as $key => $row) {

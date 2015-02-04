@@ -17,6 +17,7 @@ class DefinitionList extends Base implements IDataDrivenListWidget, IMappedListW
     use TWidget_DataDrivenList;
     use TWidget_MappedList;
     use TWidget_RendererProvider;
+    use TWidget_RendererContextProvider;
 
     protected $_renderIfEmpty = true;
     
@@ -29,7 +30,8 @@ class DefinitionList extends Base implements IDataDrivenListWidget, IMappedListW
         $tag = $this->getTag();
         $children = new aura\html\ElementContent();
         
-        $renderContext = new aura\html\widget\util\RendererContext($this);
+        $renderContext = $this->getRendererContext();
+        $renderContext->reset();
         $empty = true;
 
         if($this->_renderer) {

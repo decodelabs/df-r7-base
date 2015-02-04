@@ -173,6 +173,9 @@ class CollectionList extends arch\component\Base implements aura\html\widget\IWi
         }
 
         $output = $this->view->html->collectionList($this->_collection);
+        $context = $output->getRendererContext();
+        $context->setComponent($this);
+        
 
         if($this->_errorMessage !== null) {
             $output->setErrorMessage($this->_errorMessage);

@@ -13,6 +13,7 @@ use df\arch;
 class ArticleList extends BulletList implements IOrderedDataDrivenListWidget {
 
     use TWidget_OrderedDataDrivenList;
+    use TWidget_RendererContextProvider;
 
     const PRIMARY_TAG = 'ol';
 
@@ -38,7 +39,8 @@ class ArticleList extends BulletList implements IOrderedDataDrivenListWidget {
             return '';
         }
         
-        $renderContext = new aura\html\widget\util\RendererContext($this);
+        $renderContext = $this->getRendererContext();
+        $renderContext->reset();
 
         foreach($data as $key => $value) {
             $liTag = new aura\html\Tag('li');

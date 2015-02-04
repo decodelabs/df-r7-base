@@ -14,6 +14,7 @@ class BulletList extends Base implements ILinearListWidget, IDataDrivenListWidge
     
     use TWidget_DataDrivenList;
     use TWidget_RendererProvider;
+    use TWidget_RendererContextProvider;
     
     const PRIMARY_TAG = 'ul';
     
@@ -36,7 +37,8 @@ class BulletList extends Base implements ILinearListWidget, IDataDrivenListWidge
             return '';
         }
         
-        $renderContext = new aura\html\widget\util\RendererContext($this);
+        $renderContext = $this->getRendererContext();
+        $renderContext->reset();
         $renderContext->shouldConvertNullToNa(false);
 
         foreach($data as $key => $value) {
