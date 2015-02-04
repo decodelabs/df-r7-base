@@ -13,7 +13,6 @@ use df\arch;
 class ArticleList extends BulletList implements IOrderedDataDrivenListWidget {
 
     use TWidget_OrderedDataDrivenList;
-    use TWidget_RendererContextProvider;
 
     const PRIMARY_TAG = 'ol';
 
