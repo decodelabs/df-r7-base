@@ -402,6 +402,14 @@ trait TQuery_Correlatable {
         return $this->_newQuery()->beginCorrelation($this, $field, $alias);
     }
 
+    public function correlateRelation($relationField, $targetField, $alias=null) {
+        return $this->_beginRelationCorrelation($relationField, $alias, $targetField)->endCorrelation();
+    }
+
+    public function beginCorrelateRelation($relationField, $targetField, $alias=null) {
+        return $this->_beginRelationCorrelation($relationField, $alias, $targetField);
+    }
+
     public function countRelation($field, $alias=null) {
         return $this->_beginRelationCorrelation($field, $alias, 'COUNT')->endCorrelation();
     }
@@ -418,7 +426,7 @@ trait TQuery_Correlatable {
         return $this->_beginRelationCorrelation($field, $alias, 'HAS');
     }
 
-    protected function _beginRelationCorrelation($fieldName, $alias, $aggregateType) {
+    protected function _beginRelationCorrelation($fieldName, $alias, $aggregate) {
         if($fieldName instanceof opal\query\IField) {
             if($alias === null) {
                 $alias = $fieldName->getName();
@@ -450,7 +458,13 @@ trait TQuery_Correlatable {
             $localName = $field->getBridgeLocalFieldName();
             $targetName = $field->getBridgeTargetFieldName();
 
-            $correlation = $this->correlate($aggregateType.'('.$bridgeAlias.'.'.$targetName.')', $alias)
+            if(false === strpos($aggregate, '(')) {
+                $aggregate .= '('.$bridgeAlias.'.'.$targetName.')';
+            }
+
+            // TODO: check if field is on target table!!!
+
+            $correlation = $this->correlate($aggregate, $alias)
                 ->from($bridgeAdapter, $bridgeAlias)
                 ->on($bridgeAlias.'.'.$localName, '=', $localAlias.'.@primary');
         } else {
@@ -460,7 +474,11 @@ trait TQuery_Correlatable {
             $targetFieldName = $field->getTargetField();
             $localAlias = $source->getAlias();
 
-            $correlation = $this->correlate($aggregateType.'('.$targetAlias.'.@primary)', $alias)
+            if(false === strpos($aggregate, '(')) {
+                $aggregate .= '('.$targetAlias.'.@primary)';
+            }
+
+            $correlation = $this->correlate($aggregate, $alias)
                 ->from($targetAdapter, $targetAlias)
                 ->on($targetAlias.'.'.$targetFieldName, '=', $localAlias.'.@primary');
         }

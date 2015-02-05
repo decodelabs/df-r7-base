@@ -199,6 +199,8 @@ interface IDerivableQuery extends IQuery {
 
 interface ICorrelatableQuery extends IQuery {
     public function correlate($field, $alias=null);
+    public function correlateRelation($relationField, $targetField, $alias=null);
+    public function beginCorrelateRelation($relationField, $targetField, $alias=null);
     public function countRelation($field, $alias=null);
     public function beginCountRelation($field, $alias=null);
     public function hasRelation($field, $alias=null);
