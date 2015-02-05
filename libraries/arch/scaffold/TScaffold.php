@@ -725,6 +725,19 @@ trait TScaffold_RecordListProvider {
         }
 
         $fields = array_merge($this->_recordListFields, $fields);
+        $hasActions = false;
+
+        foreach($fields as $key => $val) {
+            if($key === 'actions' || $val === 'actions') {
+                $hasActions = true;
+                break;
+            }
+        }
+
+        if(!$hasActions) {
+            $fields['actions'] = true;
+        }
+
         $collection = array_shift($args);
         return $this->generateCollectionList($fields, $collection);
     }
@@ -777,11 +790,45 @@ trait TScaffold_RecordListProvider {
 trait TScaffold_SectionProvider {
 
     protected $_sections = null;
+    private $_sectionsNormalized = false;
     private $_sectionItemCounts = null;
 
     protected function _getSections() {
         if($this->_sections === null) {
             $this->_sections = $this->_generateSections();
+
+            if(!is_array($this->_sections) || empty($this->_sections)) {
+                $this->_sections = ['details'];
+            }
+        }
+
+        if(!$this->_sectionsNormalized) {
+            $sections = [];
+
+            foreach($this->_sections as $key => $value) {
+                if(is_int($key) && is_string($value)) {
+                    $key = $value;
+                    $value = null;
+                }
+
+                if(!is_array($value)) {
+                    $value = ['icon' => $value];
+                }
+
+                if(!isset($value['icon'])) {
+                    $value['icon'] = $key;
+                }
+
+                if(!isset($value['name'])) {
+                    $value['name'] = $this->format->name($key);
+                } else {
+                    $value['name'] = $this->_($value['name']);
+                }
+
+                $sections[$key] = $value;
+            }
+
+            $this->_sections = $sections;
         }
 
         return $this->_sections;
@@ -795,7 +842,7 @@ trait TScaffold_SectionProvider {
         $action = $this->context->request->getAction();
         $sections = $this->_getSections();
 
-        if(isset($sections[$action]) || in_array($action, $sections)) {
+        if(isset($sections[$action])) {
             return $this->_generateAction(function() use($action) {
                 $record = null;
 
@@ -914,34 +961,15 @@ trait TScaffold_SectionProvider {
         foreach($sections as $action => $set) {
             $i++;
 
-            if(!is_array($set)) {
-                $action = $set;
-                $set = [];
-            }
-
             if($record) {
                 $request = $this->_getRecordActionRequest($record, $action);
             } else {
                 $request = $this->_getActionRequest($action);
             }
 
-            if(isset($set['name'])) {
-                $name = $this->_($set['name']);
-            } else {
-                $name = $this->format->name($action);
-            }
-
-            if(isset($set['icon'])) {
-                $icon = $set['icon'];
-            } else if($action == 'details') {
-                $icon = 'details';
-            } else {
-                $icon = null;
-            }
-
-            $link = $entryList->newLink($request, $name)
+            $link = $entryList->newLink($request, $set['name'])
                 ->setId($action)
-                ->setIcon($icon)
+                ->setIcon($set['icon'])
                 ->setWeight($action == 'details' ? 1 : $i * 10)
                 ->setDisposition('informative');
 
