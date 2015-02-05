@@ -357,6 +357,8 @@ class BridgedManyRelationValueContainer implements
         $targetUnit = $this->_getTargetUnit($clusterId);
         $bridgeUnit = $this->_getBridgeUnit($clusterId);
 
+        $targetSourceAlias = $targetUnit->getCanonicalUnitName();
+
         $localFieldName = $this->_field->getName();
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
         $bridgeTargetFieldName = $this->_field->getBridgeTargetFieldName();
@@ -365,15 +367,15 @@ class BridgedManyRelationValueContainer implements
         if(false !== strpos($bridgeAlias, '(')) {
             $bridgeAlias = $bridgeLocalFieldName.'Bridge';
         }
-        
+
         return opal\query\Initiator::factory()
             ->beginSelect(func_get_args())
-            ->from($targetUnit, $localFieldName)
+            ->from($targetUnit, $targetSourceAlias)
         
             // Join bridge table as constraint
             ->join($bridgeUnit->getBridgeFieldNames($localFieldName, [$bridgeTargetFieldName]))
                 ->from($bridgeUnit, $bridgeAlias)
-                ->on($bridgeAlias.'.'.$bridgeTargetFieldName, '=', $localFieldName.'.@primary')
+                ->on($bridgeAlias.'.'.$bridgeTargetFieldName, '=', $targetSourceAlias.'.@primary')
                 ->endJoin()
 
             // Add local primary key(s) as prerequisite
@@ -498,6 +500,8 @@ class BridgedManyRelationValueContainer implements
         $targetUnit = $this->_getTargetUnit($clusterId);
         $bridgeUnit = $this->_getBridgeUnit($clusterId);
 
+        $targetSourceAlias = $targetUnit->getCanonicalUnitName();
+
         $localFieldName = $this->_field->getName();
         $bridgeLocalFieldName = $this->_field->getBridgeLocalFieldName();
         $bridgeTargetFieldName = $this->_field->getBridgeTargetFieldName();
@@ -509,12 +513,12 @@ class BridgedManyRelationValueContainer implements
 
         return opal\query\Initiator::factory()
             ->beginFetch()
-            ->from($targetUnit, $localFieldName)
+            ->from($targetUnit, $targetSourceAlias)
         
             // Join bridge table as constraint
             ->joinConstraint()
                 ->from($bridgeUnit, $bridgeAlias)
-                ->on($bridgeAlias.'.'.$bridgeTargetFieldName, '=', $localFieldName.'.@primary')
+                ->on($bridgeAlias.'.'.$bridgeTargetFieldName, '=', $targetSourceAlias.'.@primary')
                 ->endJoin()
 
             // Add local primary key(s) as prerequisite

@@ -902,6 +902,8 @@ interface ICombineField extends ILateAttachField {
 
 interface IVirtualField extends IField {
     public function getTargetFields();
+    public function setTargetSourceAlias($alias);
+    public function getTargetSourceAlias();
 }
 
 

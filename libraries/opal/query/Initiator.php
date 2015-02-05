@@ -209,6 +209,10 @@ class Initiator implements IInitiator {
         foreach($fields as $field) {
             $children = [];
 
+            if($field instanceof IField) {
+                $field = $field->getName();
+            }
+
             if(false !== strpos($field, '.')) {
                 $children = explode('.', $field);
                 $field = array_shift($children);
@@ -505,6 +509,14 @@ class Initiator implements IInitiator {
             case IQueryTypes::JOIN:
             case IQueryTypes::JOIN_CONSTRAINT:
                 $sourceManager = $this->_parentQuery->getSourceManager();
+
+                if($sourceManager->getSourceByAlias($alias)) {
+                    throw new LogicException(
+                        'A source has already been aliased as "'.$alias.'" - join source aliases must be unique'
+                    );
+                }
+
+
                 $fields = null;
                 
                 if($this->_mode === IQueryTypes::JOIN) {

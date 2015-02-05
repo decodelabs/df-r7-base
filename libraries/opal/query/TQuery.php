@@ -216,9 +216,16 @@ trait TQuery {
         return $this->getSourceManager()->getTransaction();
     }
 
-    protected function _lookupRelationField($fieldName, &$clusterId, &$queryField=null) {
+    protected function _lookupRelationField(&$fieldName, &$clusterId, &$queryField=null) {
         if($fieldName instanceof opal\query\IField) {
             $fieldName = $fieldName->getQualifiedName();
+        }
+
+        if(preg_match('/(.+) as ([^ ]+)$/', $fieldName, $matches)) {
+            $fieldName = $matches[1];
+            $sourceAlias = $matches[2];
+        } else {
+            $sourceAlias = null;
         }
 
         $source = $this->getSource();
@@ -264,6 +271,10 @@ trait TQuery {
 
         if(!$field->isOnGlobalCluster()) {
             $clusterId = $sourceAdapter->getClusterId();
+        }
+
+        if($queryField instanceof IVirtualField) {
+            $queryField->setTargetSourceAlias($sourceAlias);
         }
 
         return $field;
@@ -573,14 +584,26 @@ trait TQuery_Joinable {
 
 
     protected function _beginJoinRelation($fieldName, array $targetFields, $joinType=IJoinQuery::INNER) {
-        if($fieldName instanceof opal\query\IField) {
+        $targetAlias = null;
+
+        if($fieldName instanceof IField) {
+            if($fieldName instanceof IVirtualField) {
+                $targetAlias = $fieldName->getTargetSourceAlias();
+            }
+
             $fieldName = $fieldName->getQualifiedName();
         }
 
-        $field = $this->_lookupRelationField($fieldName, $clusterId);
+        $field = $this->_lookupRelationField($fieldName, $clusterId, $queryField);
         $join = $this->_newQuery()->beginJoin($this, $targetFields, $joinType);
 
-        $targetAlias = 'jrl_'.str_replace('.', '_', $field->getName());
+        if(!$targetAlias && $queryField instanceof IVirtualField) {
+            $targetAlias = $queryField->getTargetSourceAlias();
+        }
+
+        if(!$targetAlias) {
+            $targetAlias = $field->getName();
+        }
 
         if($field instanceof opal\schema\IBridgedRelationField) {
             // Field is bridged

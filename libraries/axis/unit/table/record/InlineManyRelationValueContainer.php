@@ -293,15 +293,16 @@ class InlineManyRelationValueContainer implements
         $localSchema = $localUnit->getUnitSchema();
         $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
         $targetUnit = $this->_getTargetUnit($clusterId);
+        $targetSourceAlias = $targetUnit->getCanonicalUnitName();
         
         // Init query
         $query = opal\query\Initiator::factory()
             ->beginSelect(func_get_args())
-            ->from($targetUnit, $this->_field->getName());
+            ->from($targetUnit, $targetSourceAlias);
                 
                 
         $primaryKeySet = $this->_record->getPrimaryKeySet();
-        $query->wherePrerequisite($this->_field->getName().'.'.$this->_field->getTargetField(), '=', $primaryKeySet);
+        $query->wherePrerequisite($targetSourceAlias.'.'.$this->_field->getTargetField(), '=', $primaryKeySet);
         
         return $query;
     }
@@ -323,14 +324,15 @@ class InlineManyRelationValueContainer implements
         $localSchema = $localUnit->getUnitSchema();
         $clusterId = $this->_field->isOnGlobalCluster() ? null : $localUnit->getClusterId();
         $targetUnit = $this->_getTargetUnit($clusterId);
+        $targetSourceAlias = $targetUnit->getCanonicalUnitName();
         
         // Init query
         $query = opal\query\Initiator::factory()
             ->beginFetch()
-            ->from($targetUnit, $this->_field->getName());
+            ->from($targetUnit, $targetSourceAlias);
             
         $primaryKeySet = $this->_record->getPrimaryKeySet();
-        $query->wherePrerequisite($this->_field->getName().'.'.$this->_field->getTargetField(), '=', $primaryKeySet);
+        $query->wherePrerequisite($targetSourceAlias.'.'.$this->_field->getTargetField(), '=', $primaryKeySet);
         
         return $query;
     }

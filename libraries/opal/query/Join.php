@@ -20,7 +20,7 @@ class Join implements IJoinQuery, core\IDumpable {
     
     protected $_source;
     protected $_type;
-    
+
     public static function typeIdToName($id) {
         switch($id) {
             case IJoinQuery::INNER:
@@ -98,10 +98,16 @@ class Join implements IJoinQuery, core\IDumpable {
     
 // Dump
     public function getDumpProperties() {
-        return [
+        $output = [
             'type' => self::typeIdToName($this->_type),
             'fields' => $this->_source,
             'on' => $this->_joinClauseList
         ];
+
+        if($this->hasWhereClauses()) {
+            $output['where'] = $this->getWhereClauseList();
+        }
+
+        return $output;
     }
 }
