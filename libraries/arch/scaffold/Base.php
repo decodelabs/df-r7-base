@@ -270,7 +270,7 @@ abstract class Base implements IScaffold {
 
         $output = new arch\component\template\CollectionList($this->context, [$fields, $collection]);
         $output->setViewArg(lcfirst($this->getRecordKeyName()).'List');
-        
+        $output->setRenderTarget($this->view);
 
         foreach($output->getFields() as $field => $enabled) {
             if($enabled === true) {
