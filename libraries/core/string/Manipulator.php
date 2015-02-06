@@ -227,13 +227,13 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
     
     
 // Convert
-    public static function stringToBoolean($value, $default=true) {
+    public static function stringToBoolean($value, $default=false) {
         if(is_bool($value)) {
             return $value;
-        }
-
-        if(empty($value)) {
+        } else if($value === '') {
             return $default;
+        } else if($value === null) {
+            return false;
         }
 
         switch(strtolower($value)) {

@@ -154,7 +154,7 @@ class Tree implements ITree, core\IDumpable {
     }
 
     public function getBooleanAttribute($name, $default=null) {
-        return core\string\Manipulator::stringToBoolean($this->getAttribute($name, $default));
+        return core\string\Manipulator::stringToBoolean($this->getAttribute($name, $default), false);
     }
 
     public function removeAttribute($key) {
