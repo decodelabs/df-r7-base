@@ -98,6 +98,8 @@ interface INestedComponent {
 interface IEntryPoint {
     public function select($field1=null);
     public function selectDistinct($field1=null);
+    public function countAll();
+    public function countAllDistinct();
     public function union();
     public function fetch();
     public function insert($values);

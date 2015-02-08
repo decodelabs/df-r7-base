@@ -37,7 +37,7 @@ class BridgedManyRelationValueContainer implements
     }
 
     public function getOutputDescription() {
-        return $this->select()->count();
+        return $this->countAll();
     }
     
     public function isPrepared() {
@@ -457,6 +457,14 @@ class BridgedManyRelationValueContainer implements
                 ->from($bridgeUnit, $bridgeAlias)
                 ->where($bridgeAlias.'.'.$bridgeLocalFieldName, '=', $this->_localPrimaryKeySet)
                 ->endCorrelation();
+    }
+
+    public function countAll() {
+        return $this->select()->count();
+    }
+
+    public function countAllDistinct() {
+        return $this->selectDistinct()->count();
     }
     
     public function countChanges() {

@@ -17,7 +17,7 @@ class TaskQueueScheduled extends arch\task\Action {
     public function execute() {
         $this->io->write('Queuing scheduled tasks...');
 
-        if(!$this->data->task->schedule->select()->count()) {
+        if(!$this->data->task->schedule->countAll()) {
             $this->runChild('./scan');
         }
 

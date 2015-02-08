@@ -26,6 +26,14 @@ class Transaction implements ITransaction, core\IDumpable {
             ->beginSelect(func_get_args(), true);
     }
 
+    public function countAll() {
+        return $this->select()->count();
+    }
+
+    public function countAllDistinct() {
+        return $this->selectDistinct()->count();
+    }
+
     public function union() {
         return Initiator::factory()
             ->setTransaction($this)

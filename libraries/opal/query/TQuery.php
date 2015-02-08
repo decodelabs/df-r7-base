@@ -2443,6 +2443,14 @@ trait TQuery_EntryPoint {
             ->beginSelect(func_get_args(), true);
     }
 
+    public function countAll() {
+        return $this->select()->count();
+    }
+
+    public function countAllDistinct() {
+        return $this->selectDistinct()->count();
+    }
+
     public function union() {
         return Initiator::factory()
             ->beginUnion();
@@ -2506,6 +2514,14 @@ trait TQuery_ImplicitSourceEntryPoint {
         return Initiator::factory()
             ->beginSelect(func_get_args(), true)
             ->from($this);
+    }
+
+    public function countAll() {
+        return $this->select()->count();
+    }
+
+    public function countAllDistinct() {
+        return $this->selectDistinct()->count();
     }
 
     public function union() {

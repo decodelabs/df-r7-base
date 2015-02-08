@@ -31,6 +31,14 @@ class ImplicitSourceTransaction extends Transaction {
             ->from($this->_source);
     }
 
+    public function countAll() {
+        return $this->select()->count();
+    }
+
+    public function countAllDistinct() {
+        return $this->selectDistinct()->count();
+    }
+
     public function union() {
         return Initiator::factory()
             ->setTransaction($this)

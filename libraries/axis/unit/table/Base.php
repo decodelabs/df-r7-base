@@ -545,11 +545,19 @@ abstract class Base implements
             ->beginSelect(func_get_args())
             ->from($this, $this->getCanonicalUnitName()); 
     }
-    
+
     public function selectDistinct($field1=null) {
         return opal\query\Initiator::factory()
             ->beginSelect(func_get_args(), true)
             ->from($this, $this->getCanonicalUnitName()); 
+    }
+
+    public function countAll() {
+        return $this->select()->count();
+    }
+
+    public function countAllDistinct() {
+        return $this->selectDistinct()->count();
     }
 
     public function union() {
