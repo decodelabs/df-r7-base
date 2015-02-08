@@ -12,6 +12,9 @@ use df\arch;
 
 class TaskScanBots extends arch\task\Action {
     
+    const SCHEDULE = '0 0 * * 1';
+    const SCHEDULE_AUTOMATIC = true;
+
     public function execute() {
         $this->io->write('Updating user agents...');
         $count = 0;
