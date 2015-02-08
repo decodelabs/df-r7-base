@@ -341,13 +341,16 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
             );
         } catch(arch\RuntimeException $e) {
             // See if the url just needs a /
-            if($this->_context->location->getAction() != 'Index') {
+            $url = $this->_httpRequest->getUrl();
+
+            if(!$url->path->shouldAddTrailingSlash() && $url->path->getFilename() != 'index') {
+                $url = clone $url;
+                $url->path->shouldAddTrailingSlash(true);
                 $context = clone $this->_context;
-                $context->location->path->shouldAddTrailingSlash(true);
-                $context->request = $context->location;
+                $context->location = $context->request = $this->_router->urlToRequest($url);
                 
-                if($context->apex->actionExists($context->location)) {
-                    return $context->http->redirect($context->location);
+                if($context->apex->actionExists($context->request)) {
+                    return $context->http->redirect($context->request);
                 }
             }
 
