@@ -188,6 +188,23 @@ class Router implements core\IRegistryObject {
         );
     }
 
+    public function urlToRequest(link\http\IUrl $url) {
+        $path = $url->getPath();
+        $this->mapPath($path);
+        $this->mapDomain($url->getDomain());
+        $request = new arch\Request();
+        $request->setPath($path);
+        $this->mapArea($request);
+            
+        if($url->hasQuery()) {
+            $request->setQuery(clone $url->getQuery());
+        }
+        
+        $request->setFragment($url->getFragment());
+        $request = $this->routeIn($request);
+        return $request;
+    }
+
     public function routeIn(arch\IRequest $request) {
         $this->_routeCount++;
         $location = $request->getDirectoryLocation();
