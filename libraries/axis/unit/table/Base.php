@@ -341,12 +341,31 @@ abstract class Base implements
 
     public function prepareQueryClauseValue(opal\query\IField $field, $value) {
         $schema = $this->getUnitSchema();
+        $name = $field->getName();
 
-        if(!$axisField = $schema->getField($field->getName())) {
-            return $value;
+        if($axisField = $schema->getField($name)) {
+            return $axisField->deflateValue($axisField->sanitizeClauseValue($value));
         }
-        
-        return $axisField->deflateValue($axisField->sanitizeClauseValue($value));
+
+
+        // THIS IS A HACK - YOU NEED TO FIX THIS WHOLE THING!
+        if(false !== strpos($name, '_')) {
+            list($testName,) = explode('_', $name, 2);
+
+            if($axisField = $schema->getField($testName)) {
+                $prepared = $axisField->deflateValue($axisField->sanitizeClauseValue($value));
+
+                if(is_array($prepared)) {
+                    if(isset($prepared[$name])) {
+                        return $prepared[$name];
+                    }
+                } else {
+                    return $prepared;
+                }
+            }
+        }
+
+        return $value;
     }
     
     public function rewriteVirtualQueryClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr=false) {
