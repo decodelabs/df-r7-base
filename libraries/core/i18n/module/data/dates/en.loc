@@ -3,12 +3,59 @@ return array (
   '@default' => 'gregorian',
   'buddhist' => 
   array (
+  ),
+  'chinese' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Mo1',
+        2 => 'Mo2',
+        3 => 'Mo3',
+        4 => 'Mo4',
+        5 => 'Mo5',
+        6 => 'Mo6',
+        7 => 'Mo7',
+        8 => 'Mo8',
+        9 => 'Mo9',
+        10 => 'Mo10',
+        11 => 'Mo11',
+        12 => 'Mo12',
+      ),
+      'full' => 
+      array (
+        1 => 'Month1',
+        2 => 'Month2',
+        3 => 'Month3',
+        4 => 'Month4',
+        5 => 'Month5',
+        6 => 'Month6',
+        7 => 'Month7',
+        8 => 'Month8',
+        9 => 'Month9',
+        10 => 'Month10',
+        11 => 'Month11',
+        12 => 'Month12',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, MMMM d, U',
+      'long' => 'MMMM d, U',
+      'medium' => 'MMM d, U',
+      'short' => 'M/d/yy',
+    ),
+  ),
+  'generic' => 
+  array (
     'dateFormat' => 
     array (
       'full' => 'EEEE, MMMM d, y G',
       'long' => 'MMMM d, y G',
       'medium' => 'MMM d, y G',
-      'short' => 'M/d/yy GGGGG',
+      'short' => 'M/d/y GGGGG',
     ),
   ),
   'gregorian' => 
@@ -86,49 +133,18 @@ return array (
       'short' => 'h:mm a',
     ),
   ),
-  'islamic' => 
+  'hebrew' => 
   array (
-    'months' => 
-    array (
-      '@default' => 'full',
-      'abbreviated' => 
-      array (
-        1 => 'Muh.',
-        2 => 'Saf.',
-        3 => 'Rab. I',
-        4 => 'Rab. II',
-        5 => 'Jum. I',
-        6 => 'Jum. II',
-        7 => 'Raj.',
-        8 => 'Sha.',
-        9 => 'Ram.',
-        10 => 'Shaw.',
-        11 => 'Dhuʻl-Q.',
-        12 => 'Dhuʻl-H.',
-      ),
-      'full' => 
-      array (
-        1 => 'Muharram',
-        2 => 'Safar',
-        3 => 'Rabiʻ I',
-        4 => 'Rabiʻ II',
-        5 => 'Jumada I',
-        6 => 'Jumada II',
-        7 => 'Rajab',
-        8 => 'Shaʻban',
-        9 => 'Ramadan',
-        10 => 'Shawwal',
-        11 => 'Dhuʻl-Qiʻdah',
-        12 => 'Dhuʻl-Hijjah',
-      ),
-    ),
     'dateFormat' => 
     array (
-      'full' => 'EEEE, MMMM d, y G',
-      'long' => 'MMMM d, y G',
-      'medium' => 'MMM d, y G',
-      'short' => 'M/d/yy G',
+      'full' => 'EEEE, d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'd MMM y',
     ),
+  ),
+  'islamic' => 
+  array (
   ),
   'japanese' => 
   array (
@@ -137,17 +153,10 @@ return array (
       'full' => 'EEEE, MMMM d, y G',
       'long' => 'MMMM d, y G',
       'medium' => 'MMM d, y G',
-      'short' => 'M/d/yy GGGGG',
+      'short' => 'M/d/y GGGGG',
     ),
   ),
   'roc' => 
   array (
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE, MMMM d, y G',
-      'long' => 'MMMM d, y G',
-      'medium' => 'MMM d, y G',
-      'short' => 'M/d/yy GGGGG',
-    ),
   ),
 );

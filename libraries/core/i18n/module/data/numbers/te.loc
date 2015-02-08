@@ -2,13 +2,25 @@
 return array (
   'symbols' => 
   array (
-    'exponential' => 'తూ',
+    'decimal' => '.',
+    'group' => ',',
+    'list' => ';',
+    'percentSign' => '%',
+    'plusSign' => '+',
+    'minusSign' => '-',
+    'exponential' => 'E',
+    'superscriptingExponent' => '×',
+    'perMille' => '‰',
+    'infinity' => '∞',
+    'nan' => 'NaN',
+    'timeSeparator' => ':',
   ),
   'formats' => 
   array (
     'decimal' => '#,##,##0.###',
-    'percent' => '#,##,##0%',
-    'currency' => '¤ #,##,##0.00',
+    'scientific' => '#E0',
+    'percent' => '#,##0%',
+    'currency' => '¤#,##,##0.00',
   ),
   'currencies' => 
   array (
@@ -34,7 +46,7 @@ return array (
     ),
     'ANG' => 
     array (
-      'name' => 'నెధర్లాండ్స్ ఏంటీల్లియన్ గిల్‌డూర్',
+      'name' => 'నెదర్లాండ్స్ యాంటిల్లియన్ గిల్‌డర్',
       'symbol' => 'ANG',
     ),
     'AOA' => 
@@ -50,7 +62,7 @@ return array (
     'AUD' => 
     array (
       'name' => 'ఆస్ట్రేలియన్ డాలర్',
-      'symbol' => 'AUD',
+      'symbol' => 'A$',
     ),
     'AWG' => 
     array (
@@ -64,7 +76,7 @@ return array (
     ),
     'BAM' => 
     array (
-      'name' => 'బోస్నియా-హెర్జగోవినా మార్పిడి చెయ్యగలిగే గుర్తు',
+      'name' => 'బోస్నియా-హెర్జగోవినా మార్పిడి చెయ్యగలిగే మార్క్',
       'symbol' => 'BAM',
     ),
     'BBD' => 
@@ -109,8 +121,8 @@ return array (
     ),
     'BRL' => 
     array (
-      'name' => 'బ్రజిలియన్ రియల్',
-      'symbol' => 'BRL',
+      'name' => 'బ్రెజిలియన్ రియల్',
+      'symbol' => 'R$',
     ),
     'BSD' => 
     array (
@@ -129,7 +141,7 @@ return array (
     ),
     'BYR' => 
     array (
-      'name' => 'బెలరూసియన్ రూబుల్',
+      'name' => 'బెలరూసియన్ రూబల్',
       'symbol' => 'BYR',
     ),
     'BZD' => 
@@ -140,7 +152,7 @@ return array (
     'CAD' => 
     array (
       'name' => 'కెనడియన్ డాలర్',
-      'symbol' => 'CAD',
+      'symbol' => 'CA$',
     ),
     'CDF' => 
     array (
@@ -159,8 +171,8 @@ return array (
     ),
     'CNY' => 
     array (
-      'name' => 'చైనా దేశ యువాన్ రెన్‌మిన్‌బి',
-      'symbol' => 'CNY',
+      'name' => 'చైనా దేశ యువాన్',
+      'symbol' => 'CN¥',
     ),
     'COP' => 
     array (
@@ -169,12 +181,12 @@ return array (
     ),
     'CRC' => 
     array (
-      'name' => 'కోస్టా రిసన్ కోలోన్',
+      'name' => 'కోస్టా రికన్ కోలోన్',
       'symbol' => 'CRC',
     ),
     'CUC' => 
     array (
-      'name' => 'కుబన్ మార్పిడి చెయ్యగలిగే పెసో',
+      'name' => 'క్యూబన్ కన్వర్టబుల్ పెసో',
       'symbol' => 'CUC',
     ),
     'CUP' => 
@@ -209,7 +221,7 @@ return array (
     ),
     'DZD' => 
     array (
-      'name' => 'ఆల్గేరియన్ దీనార్',
+      'name' => 'అల్జీరియన్ దీనార్',
       'symbol' => 'DZD',
     ),
     'EGP' => 
@@ -224,13 +236,13 @@ return array (
     ),
     'ETB' => 
     array (
-      'name' => 'ఇథియోపియన్ బుర్',
+      'name' => 'ఇథియోపియన్ బర్',
       'symbol' => 'ETB',
     ),
     'EUR' => 
     array (
       'name' => 'యురొ',
-      'symbol' => 'EUR',
+      'symbol' => '€',
     ),
     'FJD' => 
     array (
@@ -245,7 +257,7 @@ return array (
     'GBP' => 
     array (
       'name' => 'బ్రిటిష్ పౌండ్ స్టెర్లింగ్',
-      'symbol' => 'GBP',
+      'symbol' => '£',
     ),
     'GEL' => 
     array (
@@ -274,7 +286,7 @@ return array (
     ),
     'GTQ' => 
     array (
-      'name' => 'గ్యుటెమాలన్ క్వెట్‌జిల్',
+      'name' => 'గ్యుటెమాలన్ క్వెట్‌జల్',
       'symbol' => 'GTQ',
     ),
     'GYD' => 
@@ -285,11 +297,11 @@ return array (
     'HKD' => 
     array (
       'name' => 'హాంకాంగ్ డాలర్',
-      'symbol' => 'HKD',
+      'symbol' => 'HK$',
     ),
     'HNL' => 
     array (
-      'name' => 'హోండ్రురన్ లెమిపిరా',
+      'name' => 'హోండురన్ లెమిపిరా',
       'symbol' => 'HNL',
     ),
     'HRK' => 
@@ -315,16 +327,16 @@ return array (
     'ILS' => 
     array (
       'name' => 'ఐరాయిలి న్యూ షెక్యెల్',
-      'symbol' => 'ILS',
+      'symbol' => '₪',
     ),
     'INR' => 
     array (
       'name' => 'రూపాయి',
-      'symbol' => 'INR',
+      'symbol' => '₹',
     ),
     'IQD' => 
     array (
-      'name' => 'ఇరాకీ డైనర్',
+      'name' => 'ఇరాకీ దీనార్',
       'symbol' => 'IQD',
     ),
     'IRR' => 
@@ -344,13 +356,13 @@ return array (
     ),
     'JOD' => 
     array (
-      'name' => 'జోర్‌డానియన్ డైనర్',
+      'name' => 'జోర్‌డానియన్ దీనార్',
       'symbol' => 'JOD',
     ),
     'JPY' => 
     array (
       'name' => 'జపాను దేశ యెస్',
-      'symbol' => 'JPY',
+      'symbol' => 'JP¥',
     ),
     'KES' => 
     array (
@@ -380,7 +392,7 @@ return array (
     'KRW' => 
     array (
       'name' => 'దక్షిణ కొరియా వోన్',
-      'symbol' => 'KRW',
+      'symbol' => '₩',
     ),
     'KWD' => 
     array (
@@ -454,12 +466,12 @@ return array (
     ),
     'MKD' => 
     array (
-      'name' => 'మసిడోనియన్ దినార్',
+      'name' => 'మెసిడోనియన్ దినార్',
       'symbol' => 'MKD',
     ),
     'MMK' => 
     array (
-      'name' => 'మ్యాన్మా క్యాట్',
+      'name' => 'మయన్మార్ క్యాట్',
       'symbol' => 'MMK',
     ),
     'MNT' => 
@@ -482,6 +494,11 @@ return array (
       'name' => 'మారిషన్ రూపాయి',
       'symbol' => 'MUR',
     ),
+    'MVP' => 
+    array (
+      'name' => 'మాల్దీవుల రూపాయి',
+      'symbol' => 'MVP',
+    ),
     'MVR' => 
     array (
       'name' => 'మాల్దీవియన్ రుఫియా',
@@ -495,12 +512,17 @@ return array (
     'MXN' => 
     array (
       'name' => 'మెక్సికన్ పెసో',
-      'symbol' => 'MXN',
+      'symbol' => 'MX$',
     ),
     'MYR' => 
     array (
       'name' => 'మలేషియా రింగ్గిట్',
       'symbol' => 'MYR',
+    ),
+    'MZN' => 
+    array (
+      'name' => 'మొజాంబికన్ మెటికల్',
+      'symbol' => 'MZN',
     ),
     'NAD' => 
     array (
@@ -509,13 +531,12 @@ return array (
     ),
     'NGN' => 
     array (
-      'name' => 'నైజీరియన్ నెరు',
+      'name' => 'నైజీరియన్ నైరా',
       'symbol' => 'NGN',
     ),
     'NIO' => 
     array (
-      'name' => 'నికరగ్యుయన్
-					కొర్‌డుబు',
+      'name' => 'నికరగ్యుయన్ కొర్‌డుబు',
       'symbol' => 'NIO',
     ),
     'NOK' => 
@@ -531,7 +552,7 @@ return array (
     'NZD' => 
     array (
       'name' => 'న్యూజిలాండ్ డాలర్',
-      'symbol' => 'NZD',
+      'symbol' => 'NZ$',
     ),
     'OMR' => 
     array (
@@ -540,7 +561,7 @@ return array (
     ),
     'PAB' => 
     array (
-      'name' => 'పనామనియన్ బల్బోయ',
+      'name' => 'పనామనియన్ బల్బోవ',
       'symbol' => 'PAB',
     ),
     'PEN' => 
@@ -578,6 +599,11 @@ return array (
       'name' => 'క్వాటరి రీయల్',
       'symbol' => 'QAR',
     ),
+    'RON' => 
+    array (
+      'name' => 'రోమానియాన్ లెయు',
+      'symbol' => 'RON',
+    ),
     'RSD' => 
     array (
       'name' => 'సెర్బియన్ దీనార్',
@@ -585,7 +611,7 @@ return array (
     ),
     'RUB' => 
     array (
-      'name' => 'రష్యా రూబల్',
+      'name' => 'రష్యన్ రూబల్',
       'symbol' => 'RUB',
     ),
     'RWF' => 
@@ -600,7 +626,7 @@ return array (
     ),
     'SBD' => 
     array (
-      'name' => 'సోలోమన్ ఐలాండ్స్ డాలర్',
+      'name' => 'సోలోమన్ దీవుల డాలర్',
       'symbol' => 'SBD',
     ),
     'SCR' => 
@@ -643,6 +669,11 @@ return array (
       'name' => 'సురినామీయుల డాలర్',
       'symbol' => 'SRD',
     ),
+    'SSP' => 
+    array (
+      'name' => 'దక్షిణ సుడానీస్ పౌండ్',
+      'symbol' => 'SSP',
+    ),
     'STD' => 
     array (
       'name' => 'సావో టోమ్ మరియు ప్రిన్సిపి డోబ్రా',
@@ -660,8 +691,8 @@ return array (
     ),
     'THB' => 
     array (
-      'name' => 'థై బాట్',
-      'symbol' => 'THB',
+      'name' => 'థాయ్ బాట్',
+      'symbol' => '฿',
     ),
     'TJS' => 
     array (
@@ -670,7 +701,7 @@ return array (
     ),
     'TMT' => 
     array (
-      'name' => 'టుర్క్‌మెనిస్థాని మనాట్',
+      'name' => 'తుర్క్‌మెనిస్థాని మనాట్',
       'symbol' => 'TMT',
     ),
     'TND' => 
@@ -696,7 +727,7 @@ return array (
     'TWD' => 
     array (
       'name' => 'క్రొత్త తైవాన్ డాలర్',
-      'symbol' => 'TWD',
+      'symbol' => 'NT$',
     ),
     'TZS' => 
     array (
@@ -715,8 +746,8 @@ return array (
     ),
     'USD' => 
     array (
-      'name' => 'ఐక్య రాష్ట్ర అమెరిక డాలర్',
-      'symbol' => 'USD',
+      'name' => 'అమెరికా డాలర్',
+      'symbol' => '$',
     ),
     'UYU' => 
     array (
@@ -736,11 +767,11 @@ return array (
     'VND' => 
     array (
       'name' => 'వియత్నామీయుల డాంగ్',
-      'symbol' => 'VND',
+      'symbol' => '₫',
     ),
     'VUV' => 
     array (
-      'name' => 'వవాటు వటు',
+      'name' => 'వనాటు వటు',
       'symbol' => 'VUV',
     ),
     'WST' => 
@@ -751,7 +782,7 @@ return array (
     'XAF' => 
     array (
       'name' => 'సిఎఫ్‌ఎ ఫ్రాంక్ బిఇఏసి',
-      'symbol' => 'XAF',
+      'symbol' => 'FCFA',
     ),
     'XAG' => 
     array (
@@ -765,18 +796,18 @@ return array (
     ),
     'XCD' => 
     array (
-      'name' => 'తూర్పు కరిబ్బియన్ డాలర్',
-      'symbol' => 'XCD',
+      'name' => 'తూర్పు కరీబియన్ డాలర్',
+      'symbol' => 'EC$',
     ),
     'XOF' => 
     array (
       'name' => 'సిఎఫ్‌ఎ ఫ్రాంక్ బిసిఈఏఓ',
-      'symbol' => 'XOF',
+      'symbol' => 'CFA',
     ),
     'XPF' => 
     array (
       'name' => 'సిఎఫ్‌పి ఫ్రాంక్',
-      'symbol' => 'XPF',
+      'symbol' => 'CFPF',
     ),
     'XPT' => 
     array (
@@ -800,8 +831,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'జాంబియన్ క్వాచా',
+      'name' => 'జాంబియన్ క్వాచా (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'జాంబియన్ క్వాచా',
+      'symbol' => 'ZMW',
     ),
   ),
 );

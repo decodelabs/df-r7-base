@@ -10,12 +10,10 @@ return array (
   array (
     'JPY' => 
     array (
-      'name' => 'JPY',
       'symbol' => '¥',
     ),
     'USD' => 
     array (
-      'name' => 'USD',
       'symbol' => '$',
     ),
   ),

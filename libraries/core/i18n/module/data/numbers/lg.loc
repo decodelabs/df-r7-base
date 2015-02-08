@@ -16,77 +16,77 @@ return array (
     ),
     'AOA' => 
     array (
-      'name' => 'Kwanza ey\'Angola',
+      'name' => 'Kwanza ey’Angola',
       'symbol' => 'AOA',
     ),
     'AUD' => 
     array (
-      'name' => 'Doola ey\'Awusiturelya',
+      'name' => 'Doola ey’Awusiturelya',
       'symbol' => 'AUD',
     ),
     'BHD' => 
     array (
-      'name' => 'Dinaali ey\'eBaareeni',
+      'name' => 'Dinaali ey’eBaareeni',
       'symbol' => 'BHD',
     ),
     'BIF' => 
     array (
-      'name' => 'Faranga ey\'eburundi',
+      'name' => 'Faranga ey’eburundi',
       'symbol' => 'BIF',
     ),
     'BWP' => 
     array (
-      'name' => 'Pula ey\'eBotiswana',
+      'name' => 'Pula ey’eBotiswana',
       'symbol' => 'BWP',
     ),
     'CAD' => 
     array (
-      'name' => 'Doola ey\'eKanada',
+      'name' => 'Doola ey’eKanada',
       'symbol' => 'CAD',
     ),
     'CDF' => 
     array (
-      'name' => 'Faranga ey\'eKongo',
+      'name' => 'Faranga ey’eKongo',
       'symbol' => 'CDF',
     ),
     'CHF' => 
     array (
-      'name' => 'Faranga ey\'eSwitizirandi',
+      'name' => 'Faranga ey’eSwitizirandi',
       'symbol' => 'CHF',
     ),
     'CNY' => 
     array (
-      'name' => 'Yuwani Reniminibi ey\'eCayina',
+      'name' => 'Yuwani Reniminibi ey’eCayina',
       'symbol' => 'CNY',
     ),
     'CVE' => 
     array (
-      'name' => 'Esikudo ey\'Keepu Veredi',
+      'name' => 'Esikudo ey’Keepu Veredi',
       'symbol' => 'CVE',
     ),
     'DJF' => 
     array (
-      'name' => 'Faranga ey\'eJjibuti',
+      'name' => 'Faranga ey’eJjibuti',
       'symbol' => 'DJF',
     ),
     'DZD' => 
     array (
-      'name' => 'Dinaali ey\'Aligerya',
+      'name' => 'Dinaali ey’Aligerya',
       'symbol' => 'DZD',
     ),
     'EGP' => 
     array (
-      'name' => 'Pawundi ey\'eMisiri',
+      'name' => 'Pawundi ey’eMisiri',
       'symbol' => 'EGP',
     ),
     'ERN' => 
     array (
-      'name' => 'Nakifa ey\'Eritureya',
+      'name' => 'Nakifa ey’Eritureya',
       'symbol' => 'ERN',
     ),
     'ETB' => 
     array (
-      'name' => 'Biiru ey\'Esyopya',
+      'name' => 'Biiru ey’Esyopya',
       'symbol' => 'ETB',
     ),
     'EUR' => 
@@ -96,127 +96,127 @@ return array (
     ),
     'GBP' => 
     array (
-      'name' => 'Pawundi ey\'eBungereza',
+      'name' => 'Pawundi ey’eBungereza',
       'symbol' => 'GBP',
     ),
     'GHC' => 
     array (
-      'name' => 'Sedi ey\'eGana',
+      'name' => 'Sedi ey’eGana',
       'symbol' => 'GHC',
     ),
     'GMD' => 
     array (
-      'name' => 'Dalasi ey\'eGambya',
+      'name' => 'Dalasi ey’eGambya',
       'symbol' => 'GMD',
     ),
     'GNS' => 
     array (
-      'name' => 'Faranga ey\'eGini',
+      'name' => 'Faranga ey’eGini',
       'symbol' => 'GNS',
     ),
     'INR' => 
     array (
-      'name' => 'Rupiya ey\'eBuyindi',
+      'name' => 'Rupiya ey’eBuyindi',
       'symbol' => 'INR',
     ),
     'JPY' => 
     array (
-      'name' => 'Yeni ey\'eJapani',
+      'name' => 'Yeni ey’eJapani',
       'symbol' => 'JPY',
     ),
     'KES' => 
     array (
-      'name' => 'Silingi ey\'eKenya',
+      'name' => 'Silingi ey’eKenya',
       'symbol' => 'KES',
     ),
     'KMF' => 
     array (
-      'name' => 'Faranga ey\'eKomoro',
+      'name' => 'Faranga ey’eKomoro',
       'symbol' => 'KMF',
     ),
     'LRD' => 
     array (
-      'name' => 'Doola ey\'eLiberya',
+      'name' => 'Doola ey’eLiberya',
       'symbol' => 'LRD',
     ),
     'LSL' => 
     array (
-      'name' => 'Loti ey\'eLesoso',
+      'name' => 'Loti ey’eLesoso',
       'symbol' => 'LSL',
     ),
     'LYD' => 
     array (
-      'name' => 'Dinaali ey\'eLibya',
+      'name' => 'Dinaali ey’eLibya',
       'symbol' => 'LYD',
     ),
     'MAD' => 
     array (
-      'name' => 'Diraamu ey\'eMoroko',
+      'name' => 'Diraamu ey’eMoroko',
       'symbol' => 'MAD',
     ),
     'MGA' => 
     array (
-      'name' => 'Faranga ey\'eMalagase',
+      'name' => 'Faranga ey’eMalagase',
       'symbol' => 'MGA',
     ),
     'MRO' => 
     array (
-      'name' => 'Wugwiya ey\'eMawritenya',
+      'name' => 'Wugwiya ey’eMawritenya',
       'symbol' => 'MRO',
     ),
     'MUR' => 
     array (
-      'name' => 'Rupiya ey\'eMawurisyasi',
+      'name' => 'Rupiya ey’eMawurisyasi',
       'symbol' => 'MUR',
     ),
     'MWK' => 
     array (
-      'name' => 'Kwaca ey\'eMalawi',
+      'name' => 'Kwaca ey’eMalawi',
       'symbol' => 'MWK',
     ),
     'MZM' => 
     array (
-      'name' => 'Metikaali ey\'eMozambiiki',
+      'name' => 'Metikaali ey’eMozambiiki',
       'symbol' => 'MZM',
     ),
     'NAD' => 
     array (
-      'name' => 'Doola ey\'eNamibiya',
+      'name' => 'Doola ey’eNamibiya',
       'symbol' => 'NAD',
     ),
     'NGN' => 
     array (
-      'name' => 'Nayira ey\'eNayijerya',
+      'name' => 'Nayira ey’eNayijerya',
       'symbol' => 'NGN',
     ),
     'RWF' => 
     array (
-      'name' => 'Faranga ey\'eRwanda',
+      'name' => 'Faranga ey’eRwanda',
       'symbol' => 'RWF',
     ),
     'SAR' => 
     array (
-      'name' => 'Riyaali ey\'eBuwarabu',
+      'name' => 'Riyaali ey’eBuwarabu',
       'symbol' => 'SAR',
     ),
     'SCR' => 
     array (
-      'name' => 'Rupiya ey\'eSesere',
+      'name' => 'Rupiya ey’eSesere',
       'symbol' => 'SCR',
     ),
     'SDG' => 
     array (
-      'name' => 'Dinaali ey\'eSudaani',
+      'name' => 'Dinaali ey’eSudaani',
       'symbol' => 'SDG',
     ),
     'SDP' => 
     array (
-      'name' => 'Pawundi ey\'eSudaani',
+      'name' => 'Pawundi ey’eSudaani',
       'symbol' => 'SDP',
     ),
     'SHP' => 
     array (
-      'name' => 'Pawundi ey\'eSenti Herena',
+      'name' => 'Pawundi ey’eSenti Herena',
       'symbol' => 'SHP',
     ),
     'SLL' => 
@@ -226,12 +226,12 @@ return array (
     ),
     'SOS' => 
     array (
-      'name' => 'Silingi ey\'eSomaliya',
+      'name' => 'Silingi ey’eSomaliya',
       'symbol' => 'SOS',
     ),
     'STD' => 
     array (
-      'name' => 'Dobura ey\'eSantome ne Purincipe',
+      'name' => 'Dobura ey’eSantome ne Purincipe',
       'symbol' => 'STD',
     ),
     'SZL' => 
@@ -241,12 +241,12 @@ return array (
     ),
     'TND' => 
     array (
-      'name' => 'Dinaali ey\'eTunizya',
+      'name' => 'Dinaali ey’eTunizya',
       'symbol' => 'TND',
     ),
     'TZS' => 
     array (
-      'name' => 'Silingi ey\'eTanzaniya',
+      'name' => 'Silingi ey’eTanzaniya',
       'symbol' => 'TZS',
     ),
     'UGX' => 
@@ -256,32 +256,37 @@ return array (
     ),
     'USD' => 
     array (
-      'name' => 'Doola ey\'Amerika',
+      'name' => 'Doola ey’Amerika',
       'symbol' => 'USD',
     ),
     'XAF' => 
     array (
-      'name' => 'Faranga ey\'omu Afirika eya wakati',
+      'name' => 'Faranga ey’omu Afirika eya wakati',
       'symbol' => 'XAF',
     ),
     'XOF' => 
     array (
-      'name' => 'Faranga ey\'omu Afirika ey\'ebugwanjuba',
+      'name' => 'Faranga ey’omu Afirika ey’ebugwanjuba',
       'symbol' => 'XOF',
     ),
     'ZAR' => 
     array (
-      'name' => 'Randi ey\'eSawusafirika',
+      'name' => 'Randi ey’eSawusafirika',
       'symbol' => 'ZAR',
     ),
     'ZMK' => 
     array (
-      'name' => 'Kwaca ey\'eZambya',
+      'name' => 'Kwaca ey’eZambya (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Kwaca ey’eZambya',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (
-      'name' => 'Doola ey\'eZimbabwe',
+      'name' => 'Doola ey’eZimbabwe',
       'symbol' => 'ZWD',
     ),
   ),

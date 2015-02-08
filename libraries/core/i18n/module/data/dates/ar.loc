@@ -3,19 +3,28 @@ return array (
   '@default' => 'gregorian',
   'buddhist' => 
   array (
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE، d MMMM، y G',
-      'long' => 'd MMMM، y G',
-      'medium' => 'dd‏/MM‏/y G',
-      'short' => 'd‏/M‏/y G',
-    ),
   ),
   'coptic' => 
   array (
     'months' => 
     array (
       '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'توت',
+        2 => 'بابه',
+        3 => 'هاتور',
+        4 => 'كيهك',
+        5 => 'طوبة',
+        6 => 'أمشير',
+        7 => 'برمهات',
+        8 => 'برمودة',
+        9 => 'بشنس',
+        10 => 'بؤونة',
+        11 => 'أبيب',
+        12 => 'مسرى',
+        13 => 'نسيئ',
+      ),
       'full' => 
       array (
         1 => 'توت',
@@ -57,6 +66,16 @@ return array (
       ),
     ),
   ),
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE، d MMMM، y G',
+      'long' => 'd MMMM، y G',
+      'medium' => 'dd‏/MM‏/y G',
+      'short' => 'd‏/M‏/y GGGGG',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -86,6 +105,21 @@ return array (
     'months' => 
     array (
       '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'يناير',
+        2 => 'فبراير',
+        3 => 'مارس',
+        4 => 'أبريل',
+        5 => 'مايو',
+        6 => 'يونيو',
+        7 => 'يوليو',
+        8 => 'أغسطس',
+        9 => 'سبتمبر',
+        10 => 'أكتوبر',
+        11 => 'نوفمبر',
+        12 => 'ديسمبر',
+      ),
       'full' => 
       array (
         1 => 'يناير',
@@ -106,13 +140,13 @@ return array (
     array (
       'full' => 'EEEE، d MMMM، y',
       'long' => 'd MMMM، y',
-      'medium' => 'dd‏/MM‏/yyyy',
-      'short' => 'd‏/M‏/yyyy',
+      'medium' => 'dd‏/MM‏/y',
+      'short' => 'd‏/M‏/y',
     ),
     'timeFormat' => 
     array (
-      'full' => 'zzzz h:mm:ss a',
-      'long' => 'z h:mm:ss a',
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
       'medium' => 'h:mm:ss a',
       'short' => 'h:mm a',
     ),
@@ -122,6 +156,22 @@ return array (
     'months' => 
     array (
       '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'تشري',
+        2 => 'مرحشوان',
+        3 => 'كيسلو',
+        4 => 'طيفت',
+        5 => 'شباط',
+        6 => 'آذار الأول',
+        7 => 'آذار الثاني',
+        8 => 'نيسان',
+        9 => 'أيار',
+        10 => 'سيفان',
+        11 => 'تموز',
+        12 => 'آب',
+        13 => 'أيلول',
+      ),
       'full' => 
       array (
         1 => 'تشري',
@@ -138,6 +188,13 @@ return array (
         12 => 'آب',
         13 => 'أيلول',
       ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE، d MMMM، y G',
+      'long' => 'd MMMM، y G',
+      'medium' => 'dd‏/MM‏/y G',
+      'short' => 'd‏/M‏/y GGGGG',
     ),
   ),
   'islamic' => 
@@ -178,21 +235,14 @@ return array (
     ),
     'dateFormat' => 
     array (
-      'full' => 'EEEE، d MMMM y',
-      'long' => 'd MMMM y',
+      'full' => 'EEEE، d MMMM، y G',
+      'long' => 'd MMMM، y G',
       'medium' => 'd MMM، y G',
-      'short' => 'd‏/M‏/yyyy',
+      'short' => 'd‏/M‏/y GGGGG',
     ),
   ),
   'japanese' => 
   array (
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE، d MMMM، y G',
-      'long' => 'd MMMM، y G',
-      'medium' => 'dd‏/MM‏/y G',
-      'short' => 'd‏/M‏/y G',
-    ),
   ),
   'persian' => 
   array (
@@ -218,12 +268,5 @@ return array (
   ),
   'roc' => 
   array (
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE، d MMMM، y G',
-      'long' => 'd MMMM، y G',
-      'medium' => 'dd‏/MM‏/y G',
-      'short' => 'd‏/M‏/y G',
-    ),
   ),
 );

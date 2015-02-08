@@ -9,38 +9,44 @@ return array (
     'plusSign' => '+',
     'minusSign' => '-',
     'exponential' => 'E',
+    'superscriptingExponent' => '×',
     'perMille' => '‰',
     'infinity' => '∞',
     'nan' => 'NaN',
+    'timeSeparator' => ':',
   ),
   'formats' => 
   array (
+    'decimal' => '#,##0.###',
+    'scientific' => '#E0',
+    'percent' => '#,##0%',
+    'currency' => '#,##0.00 ¤',
   ),
   'currencies' => 
   array (
     'ADP' => 
     array (
-      'name' => 'Andorska pezeta (ADP)',
+      'name' => 'Andorska pezeta',
       'symbol' => 'ADP',
     ),
     'AED' => 
     array (
-      'name' => 'Ujedinjeni arapski emirati dirham',
+      'name' => 'UAE dirham',
       'symbol' => 'AED',
     ),
     'AFA' => 
     array (
-      'name' => 'Avganistanski avgani (1927-2002) AFA',
+      'name' => 'Avganistanski avgani (1927–2002)',
       'symbol' => 'AFA',
     ),
     'AFN' => 
     array (
-      'name' => 'Avganistanski avgani (AFN)',
+      'name' => 'Avganistanski avgani',
       'symbol' => 'AFN',
     ),
     'ALK' => 
     array (
-      'name' => 'stara albanska leka',
+      'name' => 'stari albanski lek',
       'symbol' => 'ALK',
     ),
     'ALL' => 
@@ -55,52 +61,52 @@ return array (
     ),
     'ANG' => 
     array (
-      'name' => 'Holandski Antili gilder (ANG)',
+      'name' => 'Holandskoantilski gulden',
       'symbol' => 'ANG',
     ),
     'AOA' => 
     array (
-      'name' => 'Angolijska kvanza (AOA)',
+      'name' => 'Angolska kvanza',
       'symbol' => 'AOA',
     ),
     'AOK' => 
     array (
-      'name' => 'Angolijska kvanza (1977-1990) (AOK)',
+      'name' => 'Angolijska kvanza (1977–1990)',
       'symbol' => 'AOK',
     ),
     'AON' => 
     array (
-      'name' => 'Angolijska nova kvanza (1990-2000) (AON)',
+      'name' => 'Angolijska nova kvanza (1990–2000)',
       'symbol' => 'AON',
     ),
     'AOR' => 
     array (
-      'name' => 'Angolijska kvanza reajustado (1995-1999) (AOR)',
+      'name' => 'Angolijska kvanza reađustado (1995–1999)',
       'symbol' => 'AOR',
     ),
     'ARA' => 
     array (
-      'name' => 'Argentinski austral (ARA)',
+      'name' => 'Argentinski austral',
       'symbol' => 'ARA',
     ),
     'ARL' => 
     array (
-      'name' => 'argentinski pezos lej',
+      'name' => 'Argentinski pezos lej',
       'symbol' => 'ARL',
     ),
     'ARM' => 
     array (
-      'name' => 'argentinski pezos moneda nacional',
+      'name' => 'Argentinski pezos monedo nacional',
       'symbol' => 'ARM',
     ),
     'ARP' => 
     array (
-      'name' => 'Argentinski pezo (1983-1985) (ARP)',
+      'name' => 'Argentinski pezo (1983–1985)',
       'symbol' => 'ARP',
     ),
     'ARS' => 
     array (
-      'name' => 'Argentinski pezo',
+      'name' => 'Argentinski pezos',
       'symbol' => 'ARS',
     ),
     'ATS' => 
@@ -115,17 +121,17 @@ return array (
     ),
     'AWG' => 
     array (
-      'name' => 'Arubijski florin (AWG)',
+      'name' => 'Arubanski florin',
       'symbol' => 'AWG',
     ),
     'AZM' => 
     array (
-      'name' => 'Azerbejdžanski manat (AZM)',
+      'name' => 'Azerbejdžanski manat (1993–2006)',
       'symbol' => 'AZM',
     ),
     'AZN' => 
     array (
-      'name' => 'Azerbejdžanski manat (AZN)',
+      'name' => 'Azerbejdžanski manat',
       'symbol' => 'AZN',
     ),
     'BAD' => 
@@ -135,27 +141,27 @@ return array (
     ),
     'BAM' => 
     array (
-      'name' => 'Bosansko-Hercegovačka konvertibilna marka',
+      'name' => 'Bosansko-hercegovačka konvertibilna marka',
       'symbol' => 'KM',
     ),
     'BAN' => 
     array (
-      'name' => 'bosansko-hercegovački novi dinari',
+      'name' => 'Bosansko-hercegovački novi dinar',
       'symbol' => 'BAN',
     ),
     'BBD' => 
     array (
-      'name' => 'Barbadoski dolar (BBD)',
+      'name' => 'Barbadoški dolar',
       'symbol' => 'BBD',
     ),
     'BDT' => 
     array (
-      'name' => 'Bangladeška taka (BDT)',
+      'name' => 'Bangladeška taka',
       'symbol' => 'BDT',
     ),
     'BEC' => 
     array (
-      'name' => 'Belgijski frank (konvertibilni) (BEC)',
+      'name' => 'Belgijski franak (konvertibilni)',
       'symbol' => 'BEC',
     ),
     'BEF' => 
@@ -165,42 +171,42 @@ return array (
     ),
     'BEL' => 
     array (
-      'name' => 'Belgijski frank (finansijski) (BEL)',
+      'name' => 'Belgijski franak (finansijski)',
       'symbol' => 'BEL',
     ),
     'BGL' => 
     array (
-      'name' => 'Bugarski tvrdi lev (BGL)',
+      'name' => 'Bugarski tvrdi lev',
       'symbol' => 'BGL',
     ),
     'BGM' => 
     array (
-      'name' => 'bugarska socijalistička leva',
+      'name' => 'Bugarski socijalistički lev',
       'symbol' => 'BGM',
     ),
     'BGN' => 
     array (
       'name' => 'Bugarski lev',
-      'symbol' => 'BGN',
+      'symbol' => '[BGN]',
     ),
     'BGO' => 
     array (
-      'name' => 'stara bugarska leva',
+      'name' => 'Stari bugarski lev',
       'symbol' => 'BGO',
     ),
     'BHD' => 
     array (
-      'name' => 'Bahreinski dinar (BHD)',
+      'name' => 'Bahreinski dinar',
       'symbol' => 'BHD',
     ),
     'BIF' => 
     array (
-      'name' => 'Burundski franak (BIF)',
+      'name' => 'Burundski franak',
       'symbol' => 'BIF',
     ),
     'BMD' => 
     array (
-      'name' => 'Bermudski dolar (BMD)',
+      'name' => 'Bermudski dolar',
       'symbol' => 'BMD',
     ),
     'BND' => 
@@ -210,107 +216,107 @@ return array (
     ),
     'BOB' => 
     array (
-      'name' => 'Bolivijski boliviano',
+      'name' => 'Bolivijski Boliviano',
       'symbol' => 'BOB',
     ),
     'BOL' => 
     array (
-      'name' => 'stara bolivijska bolivijana',
+      'name' => 'Stari bolivijski bolivijano',
       'symbol' => 'BOL',
     ),
     'BOP' => 
     array (
-      'name' => 'Bolivijski pezo (BOP)',
+      'name' => 'Bolivijski pezo',
       'symbol' => 'BOP',
     ),
     'BOV' => 
     array (
-      'name' => 'Bolivijski mvdol (BOV)',
+      'name' => 'Bolivijski mvdol',
       'symbol' => 'BOV',
     ),
     'BRB' => 
     array (
-      'name' => 'Brazilski kruzeiro novo (1967-1986) (BRB)',
+      'name' => 'Brazilski novi kruzeiro (1967–1986)',
       'symbol' => 'BRB',
     ),
     'BRC' => 
     array (
-      'name' => 'Brazilski kruzado (BRC)',
+      'name' => 'Brazilijski kruzado',
       'symbol' => 'BRC',
     ),
     'BRE' => 
     array (
-      'name' => 'Brazilski kruzeiro (1990-1993) (BRE)',
+      'name' => 'Brazilski kruzeiro (1990–1993)',
       'symbol' => 'BRE',
     ),
     'BRL' => 
     array (
       'name' => 'Brazilski real',
-      'symbol' => 'BRL',
+      'symbol' => 'R$',
     ),
     'BRN' => 
     array (
-      'name' => 'Brazilski kruzado novo (BRN)',
+      'name' => 'Brazilijski novi kruzado',
       'symbol' => 'BRN',
     ),
     'BRR' => 
     array (
-      'name' => 'Brazilski kruzeiro (BRR)',
+      'name' => 'Brazilski kruzeiro',
       'symbol' => 'BRR',
     ),
     'BRZ' => 
     array (
-      'name' => 'stari brazilski kruzeirosi',
+      'name' => 'Stari brazilski kruzeiro',
       'symbol' => 'BRZ',
     ),
     'BSD' => 
     array (
-      'name' => 'Bahamski dolar (BSD)',
+      'name' => 'Bahamski dolar',
       'symbol' => 'BSD',
     ),
     'BTN' => 
     array (
-      'name' => 'Butanski ngultrum (BTN)',
+      'name' => 'Butanski ngultrum',
       'symbol' => 'BTN',
     ),
     'BUK' => 
     array (
-      'name' => 'Burmanski kjat (BUK)',
+      'name' => 'Burmanski kjat',
       'symbol' => 'BUK',
     ),
     'BWP' => 
     array (
-      'name' => 'Botsvanska pula (BWP)',
+      'name' => 'Bocvanska pula',
       'symbol' => 'BWP',
     ),
     'BYB' => 
     array (
-      'name' => 'Beloruska nova rublja (1994-1999) (BYB)',
+      'name' => 'Beloruska nova rublja (1994–1999)',
       'symbol' => 'BYB',
     ),
     'BYR' => 
     array (
-      'name' => 'Beloruska rublja (BYR)',
-      'symbol' => 'BYR',
+      'name' => 'Beloruska rublja',
+      'symbol' => '[BYR]',
     ),
     'BZD' => 
     array (
-      'name' => 'Belize dolar (BZD)',
+      'name' => 'Beliski dolar',
       'symbol' => 'BZD',
     ),
     'CAD' => 
     array (
       'name' => 'Kanadski dolar',
-      'symbol' => 'CAD',
+      'symbol' => 'CA$',
     ),
     'CDF' => 
     array (
-      'name' => 'Kongolski franak (CDF)',
+      'name' => 'Kongoanski franak',
       'symbol' => 'CDF',
     ),
     'CHE' => 
     array (
-      'name' => 'WIR Evro (CHE)',
+      'name' => 'WIR evro',
       'symbol' => 'CHE',
     ),
     'CHF' => 
@@ -320,47 +326,47 @@ return array (
     ),
     'CHW' => 
     array (
-      'name' => 'WIR franak (CHW)',
+      'name' => 'WIR franak',
       'symbol' => 'CHW',
     ),
     'CLE' => 
     array (
-      'name' => 'čileanska eskuda',
+      'name' => 'Čileanski eskudo',
       'symbol' => 'CLE',
     ),
     'CLF' => 
     array (
-      'name' => 'Čileanski unidades de fomento (CLF)',
+      'name' => 'Čileovski unidades se fomento',
       'symbol' => 'CLF',
     ),
     'CLP' => 
     array (
-      'name' => 'Čileanski pezo',
+      'name' => 'Čileanski pezos',
       'symbol' => 'CLP',
     ),
     'CNX' => 
     array (
-      'name' => 'dolari kineske narodne banke',
+      'name' => 'Dolar kineske narodne banke',
       'symbol' => 'CNX',
     ),
     'CNY' => 
     array (
-      'name' => 'Kineski Juan Renminbi',
-      'symbol' => 'CNY',
+      'name' => 'Kineski juan',
+      'symbol' => 'CN¥',
     ),
     'COP' => 
     array (
-      'name' => 'Kolumbijski pezo',
+      'name' => 'Kolumbijski pezos',
       'symbol' => 'COP',
     ),
     'COU' => 
     array (
-      'name' => 'Unidad de Valor real (COU)',
+      'name' => 'Unidad de valorški real',
       'symbol' => 'COU',
     ),
     'CRC' => 
     array (
-      'name' => 'Kostarikanski kolon (CRC)',
+      'name' => 'Kostarikanski kolon',
       'symbol' => 'CRC',
     ),
     'CSD' => 
@@ -370,37 +376,37 @@ return array (
     ),
     'CSK' => 
     array (
-      'name' => 'Čehoslovačka tvrda koruna (CSK)',
+      'name' => 'Čehoslovačka tvrda kruna',
       'symbol' => 'CSK',
     ),
     'CUC' => 
     array (
-      'name' => 'kubanski konvertibilni pezos',
+      'name' => 'Kubanski konvertibilni pezos',
       'symbol' => 'CUC',
     ),
     'CUP' => 
     array (
-      'name' => 'Kubanski pezo (CUP)',
+      'name' => 'Kubanski pezos',
       'symbol' => 'CUP',
     ),
     'CVE' => 
     array (
-      'name' => 'Kejp verdanški eskudo (CVE)',
+      'name' => 'Zelenortski eskudo',
       'symbol' => 'CVE',
     ),
     'CYP' => 
     array (
-      'name' => 'Kipratska funta (CYP)',
+      'name' => 'Kiparska funta',
       'symbol' => 'CYP',
     ),
     'CZK' => 
     array (
       'name' => 'Češka kruna',
-      'symbol' => 'Kč',
+      'symbol' => 'CZK',
     ),
     'DDM' => 
     array (
-      'name' => 'Istočnoevropska marka (DDM)',
+      'name' => 'Istočno-nemačka marka',
       'symbol' => 'DDM',
     ),
     'DEM' => 
@@ -410,7 +416,7 @@ return array (
     ),
     'DJF' => 
     array (
-      'name' => 'Džibutanski franak (DJF)',
+      'name' => 'Džibutanski franak',
       'symbol' => 'DJF',
     ),
     'DKK' => 
@@ -420,27 +426,27 @@ return array (
     ),
     'DOP' => 
     array (
-      'name' => 'DOminikanski pezo (DOP)',
+      'name' => 'Dominikanski pezos',
       'symbol' => 'DOP',
     ),
     'DZD' => 
     array (
-      'name' => 'Alžirski dinar (DZD)',
+      'name' => 'Alžirski dinar',
       'symbol' => 'DZD',
     ),
     'ECS' => 
     array (
-      'name' => 'Ekvadorijski sukr (ECS)',
+      'name' => 'Ekvadorski sakr',
       'symbol' => 'ECS',
     ),
     'ECV' => 
     array (
-      'name' => 'Ekvadorski unidad de valor konstantin (UVC)',
+      'name' => 'Ekvadorski unidad de valor konstante',
       'symbol' => 'ECV',
     ),
     'EEK' => 
     array (
-      'name' => 'Estonska kruna',
+      'name' => 'Estonska kroon',
       'symbol' => 'EEK',
     ),
     'EGP' => 
@@ -450,17 +456,17 @@ return array (
     ),
     'ERN' => 
     array (
-      'name' => 'Eritreanska nakfa (ERN)',
+      'name' => 'Eritrejska nakfa',
       'symbol' => 'ERN',
     ),
     'ESA' => 
     array (
-      'name' => 'Španska pezeta (račun) ESA',
+      'name' => 'Španska pezeta (račun)',
       'symbol' => 'ESA',
     ),
     'ESB' => 
     array (
-      'name' => 'Španska pezeta (konvertibilni račun) (ESB)',
+      'name' => 'Španska pezeta (konvertibilniračun)',
       'symbol' => 'ESB',
     ),
     'ESP' => 
@@ -470,13 +476,13 @@ return array (
     ),
     'ETB' => 
     array (
-      'name' => 'Etopijski bir (ETB)',
+      'name' => 'Etiopijski bir',
       'symbol' => 'ETB',
     ),
     'EUR' => 
     array (
       'name' => 'Evro',
-      'symbol' => 'EUR',
+      'symbol' => '€',
     ),
     'FIM' => 
     array (
@@ -485,12 +491,12 @@ return array (
     ),
     'FJD' => 
     array (
-      'name' => 'Fidži dolar',
+      'name' => 'Fidžijski dolar',
       'symbol' => 'FJD',
     ),
     'FKP' => 
     array (
-      'name' => 'Foklandska ostrva funta (FKP)',
+      'name' => 'Foklandska funta',
       'symbol' => 'FKP',
     ),
     'FRF' => 
@@ -501,86 +507,86 @@ return array (
     'GBP' => 
     array (
       'name' => 'Britanska funta sterlinga',
-      'symbol' => 'GBP',
+      'symbol' => '£',
     ),
     'GEK' => 
     array (
-      'name' => 'Gruzijski kupon larit (GEK)',
+      'name' => 'Gruzijski kupon larit',
       'symbol' => 'GEK',
     ),
     'GEL' => 
     array (
-      'name' => 'Džordžijski lari (GEL)',
+      'name' => 'Gruzijski lari',
       'symbol' => 'GEL',
     ),
     'GHC' => 
     array (
-      'name' => 'Ganijski cedi (1979-2007) (GHC)',
+      'name' => 'Ganski cedi (1979–2007)',
       'symbol' => 'GHC',
     ),
     'GHS' => 
     array (
-      'name' => 'Ganijski cedi (GHS)',
+      'name' => 'Ganski sedi',
       'symbol' => 'GHS',
     ),
     'GIP' => 
     array (
-      'name' => 'Gibraltarska funta (GIP)',
+      'name' => 'Gibraltarska funta',
       'symbol' => 'GIP',
     ),
     'GMD' => 
     array (
-      'name' => 'Gambijski dalasi (GMD)',
+      'name' => 'Gambijski dalasi',
       'symbol' => 'GMD',
     ),
     'GNF' => 
     array (
-      'name' => 'Gvinejski franak (GNF)',
+      'name' => 'Gvinejski franak',
       'symbol' => 'GNF',
     ),
     'GNS' => 
     array (
-      'name' => 'Gvinejski sili (GNS)',
+      'name' => 'Gvinejski sili',
       'symbol' => 'GNS',
     ),
     'GQE' => 
     array (
-      'name' => 'Evatorijalna gvineja ekvele (GQE)',
+      'name' => 'Ekvatorijalno-gvinejski ekvele',
       'symbol' => 'GQE',
     ),
     'GRD' => 
     array (
-      'name' => 'Drahma',
+      'name' => 'Grčka drahma',
       'symbol' => 'GRD',
     ),
     'GTQ' => 
     array (
-      'name' => 'Gvatemalski kvetzal (GTQ)',
+      'name' => 'Gvatemalski kecal',
       'symbol' => 'GTQ',
     ),
     'GWE' => 
     array (
-      'name' => 'Portugalska Gvineja eskudo (GWE)',
+      'name' => 'Portugalska gvineja eskudo',
       'symbol' => 'GWE',
     ),
     'GWP' => 
     array (
-      'name' => 'Gvineja bisao pezo (GWP)',
+      'name' => 'Gvineja Bisao Pezo',
       'symbol' => 'GWP',
     ),
     'GYD' => 
     array (
-      'name' => 'Guajanski dolar (GYD)',
+      'name' => 'Gvajanski dolar',
       'symbol' => 'GYD',
     ),
     'HKD' => 
     array (
-      'name' => 'Honkonški dolar',
-      'symbol' => 'HKD',
+      'name' => 'Hongkonški dolar',
+      'symbol' => 'HK$',
     ),
     'HNL' => 
     array (
-      'name' => 'Honduranska lempira (HNL)',
+      'name' => 'Honduraška lempira',
       'symbol' => 'HNL',
     ),
     'HRD' => 
@@ -595,7 +601,7 @@ return array (
     ),
     'HTG' => 
     array (
-      'name' => 'Haitski gurd (HTG)',
+      'name' => 'Haićanski gurd',
       'symbol' => 'HTG',
     ),
     'HUF' => 
@@ -605,7 +611,7 @@ return array (
     ),
     'IDR' => 
     array (
-      'name' => 'Indonezijska rupiah',
+      'name' => 'Indonežanska rupija',
       'symbol' => 'IDR',
     ),
     'IEP' => 
@@ -615,42 +621,42 @@ return array (
     ),
     'ILP' => 
     array (
-      'name' => 'Izraelska funta (ILP)',
+      'name' => 'Izraelska funta',
       'symbol' => 'ILP',
     ),
     'ILR' => 
     array (
-      'name' => 'stari izraelski šekeli',
+      'name' => 'Stari izraelski šekeli',
       'symbol' => 'ILR',
     ),
     'ILS' => 
     array (
-      'name' => 'Izraelski šekel',
-      'symbol' => 'ILS',
+      'name' => 'Izraelski novi šekel',
+      'symbol' => '₪',
     ),
     'INR' => 
     array (
-      'name' => 'Indijski rupi',
-      'symbol' => 'INR',
+      'name' => 'Indijska rupija',
+      'symbol' => '₹',
     ),
     'IQD' => 
     array (
-      'name' => 'Irački dinar (IQD)',
+      'name' => 'Irački dinar',
       'symbol' => 'IQD',
     ),
     'IRR' => 
     array (
-      'name' => 'Iranijski rial (IRR)',
+      'name' => 'Iranski rijal',
       'symbol' => 'IRR',
     ),
     'ISJ' => 
     array (
-      'name' => 'stara islandska kruna',
+      'name' => 'Stara islandska kruna',
       'symbol' => 'ISJ',
     ),
     'ISK' => 
     array (
-      'name' => 'Islandska kruna (ISK)',
+      'name' => 'Islandska kruna',
       'symbol' => 'ISK',
     ),
     'ITL' => 
@@ -660,18 +666,18 @@ return array (
     ),
     'JMD' => 
     array (
-      'name' => 'Jamajski dolar (JMD)',
+      'name' => 'Jamajčanski dolar',
       'symbol' => 'JMD',
     ),
     'JOD' => 
     array (
-      'name' => 'Jordanski dinar (JOD)',
+      'name' => 'Jordanski dinar',
       'symbol' => 'JOD',
     ),
     'JPY' => 
     array (
       'name' => 'Japanski jen',
-      'symbol' => 'JPY',
+      'symbol' => '¥',
     ),
     'KES' => 
     array (
@@ -680,37 +686,37 @@ return array (
     ),
     'KGS' => 
     array (
-      'name' => 'Kirgistanski som (KGS)',
+      'name' => 'Kirgistanski som',
       'symbol' => 'KGS',
     ),
     'KHR' => 
     array (
-      'name' => 'Kambodžijski riel (KHR)',
+      'name' => 'Kambodžanski rijel',
       'symbol' => 'KHR',
     ),
     'KMF' => 
     array (
-      'name' => 'Komoranski franak (KMF)',
+      'name' => 'Komorski franak',
       'symbol' => 'KMF',
     ),
     'KPW' => 
     array (
-      'name' => 'Severnokorejski von (KPW)',
+      'name' => 'Severnokorejski von',
       'symbol' => 'KPW',
     ),
     'KRH' => 
     array (
-      'name' => 'južnokorejska hvana',
+      'name' => 'Južnokorejski hvan',
       'symbol' => 'KRH',
     ),
     'KRO' => 
     array (
-      'name' => 'stara južnokorejska vona',
+      'name' => 'Stari južnokorejski von',
       'symbol' => 'KRO',
     ),
     'KRW' => 
     array (
-      'name' => 'Južno-korejski Von',
+      'name' => 'Južnokorejski Von',
       'symbol' => 'KRW',
     ),
     'KWD' => 
@@ -720,37 +726,37 @@ return array (
     ),
     'KYD' => 
     array (
-      'name' => 'Kajmanska ostrva dolar (KYD)',
+      'name' => 'Kajmanski dolar',
       'symbol' => 'KYD',
     ),
     'KZT' => 
     array (
-      'name' => 'Kazahstanski tendž (JZT)',
+      'name' => 'Kazahstanski tenge',
       'symbol' => 'KZT',
     ),
     'LAK' => 
     array (
-      'name' => 'Laoški kip (LAK)',
+      'name' => 'Laoški kip',
       'symbol' => 'LAK',
     ),
     'LBP' => 
     array (
-      'name' => 'Lebanska funta (LBR)',
+      'name' => 'Libanska funta',
       'symbol' => 'LBP',
     ),
     'LKR' => 
     array (
-      'name' => 'Šrilankanski rupi (LKR)',
+      'name' => 'Šrilankanska rupija',
       'symbol' => 'LKR',
     ),
     'LRD' => 
     array (
-      'name' => 'Liberijski dolar (LRD)',
+      'name' => 'Liberijski dolar',
       'symbol' => 'LRD',
     ),
     'LSL' => 
     array (
-      'name' => 'Lesotski loti (LSL)',
+      'name' => 'Lesoto loti',
       'symbol' => 'LSL',
     ),
     'LTL' => 
@@ -760,12 +766,12 @@ return array (
     ),
     'LTT' => 
     array (
-      'name' => 'Litvanski talonas (LTT)',
+      'name' => 'Litvanski talonas',
       'symbol' => 'LTT',
     ),
     'LUC' => 
     array (
-      'name' => 'Luksemburški konvertibilni franak (LUC)',
+      'name' => 'Luksemburški konvertibilni franak',
       'symbol' => 'LUC',
     ),
     'LUF' => 
@@ -775,17 +781,17 @@ return array (
     ),
     'LUL' => 
     array (
-      'name' => 'Luksemburški finansijski franak (LUL)',
+      'name' => 'Luksemburški finansijski franak',
       'symbol' => 'LUL',
     ),
     'LVL' => 
     array (
-      'name' => 'Latvijski lats (LVL)',
+      'name' => 'Latvijski lati',
       'symbol' => 'LVL',
     ),
     'LVR' => 
     array (
-      'name' => 'Latvijska rublja (LVR)',
+      'name' => 'Latvijska rublja',
       'symbol' => 'LVR',
     ),
     'LYD' => 
@@ -800,32 +806,32 @@ return array (
     ),
     'MAF' => 
     array (
-      'name' => 'Marokanski franak (MAF)',
+      'name' => 'Marokanski franak',
       'symbol' => 'MAF',
     ),
     'MCF' => 
     array (
-      'name' => 'monegaskaška franka',
+      'name' => 'Monegaskanski franak',
       'symbol' => 'MCF',
     ),
     'MDC' => 
     array (
-      'name' => 'moldovanska kupona',
+      'name' => 'Moldovanski kupon',
       'symbol' => 'MDC',
     ),
     'MDL' => 
     array (
-      'name' => 'Moldovski lju (MDL)',
+      'name' => 'Moldavski lej',
       'symbol' => 'MDL',
     ),
     'MGA' => 
     array (
-      'name' => 'Malagasijski ariari (MGA)',
+      'name' => 'Malagasijski ariari',
       'symbol' => 'MGA',
     ),
     'MGF' => 
     array (
-      'name' => 'Malagasijski franak (MGF)',
+      'name' => 'Malagasijski franak',
       'symbol' => 'MGF',
     ),
     'MKD' => 
@@ -835,32 +841,32 @@ return array (
     ),
     'MKN' => 
     array (
-      'name' => 'stara makedonska denara',
+      'name' => 'Stari makedonski denar',
       'symbol' => 'MKN',
     ),
     'MLF' => 
     array (
-      'name' => 'Malijanski franak (MLF)',
+      'name' => 'Malijanski franak',
       'symbol' => 'MLF',
     ),
     'MMK' => 
     array (
-      'name' => 'Mjanmaški kjat (MMK)',
+      'name' => 'Mjanmarski kjat',
       'symbol' => 'MMK',
     ),
     'MNT' => 
     array (
-      'name' => 'Mongolski tugrik (MNT)',
+      'name' => 'Mongolski tugrik',
       'symbol' => 'MNT',
     ),
     'MOP' => 
     array (
-      'name' => 'Makaniška pataka (MOP)',
+      'name' => 'Makaniška pataka',
       'symbol' => 'MOP',
     ),
     'MRO' => 
     array (
-      'name' => 'Mauritanijska ugvija',
+      'name' => 'Mauritanijska ogija',
       'symbol' => 'MRO',
     ),
     'MTL' => 
@@ -870,77 +876,77 @@ return array (
     ),
     'MTP' => 
     array (
-      'name' => 'Malteška funta (MTP)',
+      'name' => 'Malteška funta',
       'symbol' => 'MTP',
     ),
     'MUR' => 
     array (
-      'name' => 'Mauricijska ruplja (MUR)',
+      'name' => 'Mauricijska rupija',
       'symbol' => 'MUR',
     ),
     'MVR' => 
     array (
-      'name' => 'Maldivijska rufija (MVR)',
+      'name' => 'Maldivska rufija',
       'symbol' => 'MVR',
     ),
     'MWK' => 
     array (
-      'name' => 'Malavijska kvača (MWK)',
+      'name' => 'Malavijska kvača',
       'symbol' => 'MWK',
     ),
     'MXN' => 
     array (
-      'name' => 'Meksički peso',
-      'symbol' => 'MXN',
+      'name' => 'Meksički pezos',
+      'symbol' => 'MX$',
     ),
     'MXP' => 
     array (
-      'name' => 'Meksijski srebrno pezo (1861-1992) (MXP)',
+      'name' => 'Meksički srebrni pezo (1861–1992)',
       'symbol' => 'MXP',
     ),
     'MXV' => 
     array (
-      'name' => 'Meksijski unidad de inverzion (MXV)',
+      'name' => 'Meksički unidad de inversion (UDI)',
       'symbol' => 'MXV',
     ),
     'MYR' => 
     array (
-      'name' => 'Malezijski ringit',
+      'name' => 'Malezijski ringgit',
       'symbol' => 'MYR',
     ),
     'MZE' => 
     array (
-      'name' => 'Mozambijski eskudo (MZE)',
+      'name' => 'Mozambijski eskudo',
       'symbol' => 'MZE',
     ),
     'MZM' => 
     array (
-      'name' => 'Stari mozambijski metikal (MZM)',
+      'name' => 'Stari mozambijski metikal',
       'symbol' => 'MZM',
     ),
     'MZN' => 
     array (
-      'name' => 'Mozambijski metikal (MZN)',
+      'name' => 'Mozambijski metikal',
       'symbol' => 'MZN',
     ),
     'NAD' => 
     array (
-      'name' => 'Nambijski dolar (NAD)',
+      'name' => 'Namibijski dolar',
       'symbol' => 'NAD',
     ),
     'NGN' => 
     array (
-      'name' => 'Nigerijska naira (NGN)',
+      'name' => 'Nigerijska naira',
       'symbol' => 'NGN',
     ),
     'NIC' => 
     array (
-      'name' => 'Nikaragvanška kordoba (NIC)',
+      'name' => 'Nikaragvanska kordoba',
       'symbol' => 'NIC',
     ),
     'NIO' => 
     array (
-      'name' => 'Nikaragvanška kordoba oro',
+      'name' => 'Nikaragvanska zlatna kordoba',
       'symbol' => 'NIO',
     ),
     'NLG' => 
@@ -955,7 +961,7 @@ return array (
     ),
     'NPR' => 
     array (
-      'name' => 'Nepalska ruplja (NPR)',
+      'name' => 'Nepalska rupija',
       'symbol' => 'NPR',
     ),
     'NZD' => 
@@ -965,17 +971,17 @@ return array (
     ),
     'OMR' => 
     array (
-      'name' => 'Omanski rial (OMR)',
+      'name' => 'Omanski rijal',
       'symbol' => 'OMR',
     ),
     'PAB' => 
     array (
-      'name' => 'Panamanska balboa (PAB)',
+      'name' => 'Panamska balboa',
       'symbol' => 'PAB',
     ),
     'PEI' => 
     array (
-      'name' => 'Peruvijski inti (PEI)',
+      'name' => 'Peruanski inti',
       'symbol' => 'PEI',
     ),
     'PEN' => 
@@ -985,32 +991,32 @@ return array (
     ),
     'PES' => 
     array (
-      'name' => 'Peruvijski sol (PES)',
+      'name' => 'Peruanski sol',
       'symbol' => 'PES',
     ),
     'PGK' => 
     array (
-      'name' => 'Papua Nova Gvineja kina (PGK)',
+      'name' => 'Papuanska kina',
       'symbol' => 'PGK',
     ),
     'PHP' => 
     array (
-      'name' => 'Filipinski peso',
+      'name' => 'Filipinski pezos',
       'symbol' => 'PHP',
     ),
     'PKR' => 
     array (
-      'name' => 'Pakistanski rupi',
+      'name' => 'Pakistanska rupija',
       'symbol' => 'PKR',
     ),
     'PLN' => 
     array (
-      'name' => 'Poljski zlot (PLN)',
-      'symbol' => 'zl',
+      'name' => 'Poljski zlot',
+      'symbol' => 'PLN',
     ),
     'PLZ' => 
     array (
-      'name' => 'Poljski zloti (1950-1995) (PLZ)',
+      'name' => 'Poljski zloti (1950–1995)',
       'symbol' => 'PLZ',
     ),
     'PTE' => 
@@ -1020,33 +1026,33 @@ return array (
     ),
     'PYG' => 
     array (
-      'name' => 'Paragvajski guarni (PYG)',
+      'name' => 'Paragvajski gvarani',
       'symbol' => 'PYG',
     ),
     'QAR' => 
     array (
-      'name' => 'Katarski rial (QAR)',
+      'name' => 'Katarski rijal',
       'symbol' => 'QAR',
     ),
     'RHD' => 
     array (
-      'name' => 'Rodizijski dolar (RHD)',
+      'name' => 'Rodejskidolar',
       'symbol' => 'RHD',
     ),
     'ROL' => 
     array (
-      'name' => 'Stari romanski lju (ROL)',
+      'name' => 'Rumunski lej',
       'symbol' => 'ROL',
     ),
     'RON' => 
     array (
-      'name' => 'Rumunski leu',
+      'name' => 'Rumunski lej (1952–2006)',
       'symbol' => 'RON',
     ),
     'RSD' => 
     array (
       'name' => 'Srpski dinar',
-      'symbol' => 'din.',
+      'symbol' => 'RSD',
     ),
     'RUB' => 
     array (
@@ -1055,42 +1061,42 @@ return array (
     ),
     'RUR' => 
     array (
-      'name' => 'Ruska rublja (1991-1998)',
+      'name' => 'Ruska rublja (1991–1998)',
       'symbol' => 'RUR',
     ),
     'RWF' => 
     array (
-      'name' => 'Ruandski franak (RWF)',
+      'name' => 'Ruandski franak',
       'symbol' => 'RWF',
     ),
     'SAR' => 
     array (
-      'name' => 'Saudijski rijal (SAR)',
+      'name' => 'Saudijski rijal',
       'symbol' => 'SAR',
     ),
     'SBD' => 
     array (
-      'name' => 'Solomonska ostrva dolar (SBD)',
+      'name' => 'Solomonski dolar',
       'symbol' => 'SBD',
     ),
     'SCR' => 
     array (
-      'name' => 'Sejšelski rupi (SCR)',
+      'name' => 'Sejšelska rupija',
       'symbol' => 'SCR',
     ),
     'SDD' => 
     array (
-      'name' => 'STari sudanski dinar (SDD)',
+      'name' => 'Stari sudanski dinar',
       'symbol' => 'SDD',
     ),
     'SDG' => 
     array (
-      'name' => 'Sudanska funta (SDG)',
+      'name' => 'Sudanska funta',
       'symbol' => 'SDG',
     ),
     'SDP' => 
     array (
-      'name' => 'Stara sudanska funta (SDP)',
+      'name' => 'Stara sudanska funta',
       'symbol' => 'SDP',
     ),
     'SEK' => 
@@ -1105,12 +1111,12 @@ return array (
     ),
     'SHP' => 
     array (
-      'name' => 'Sv. Helenska funta (SHP)',
+      'name' => 'Sv. jelenska funta',
       'symbol' => 'SHP',
     ),
     'SIT' => 
     array (
-      'name' => 'Slovenski tolar',
+      'name' => 'Slovenački tolar',
       'symbol' => 'SIT',
     ),
     'SKK' => 
@@ -1120,177 +1126,182 @@ return array (
     ),
     'SLL' => 
     array (
-      'name' => 'Sijeraleonski leone (SLL)',
+      'name' => 'Sijera-leonški leone',
       'symbol' => 'SLL',
     ),
     'SOS' => 
     array (
-      'name' => 'Somalijski šiling (SOS)',
+      'name' => 'Somalijski šiling',
       'symbol' => 'SOS',
     ),
     'SRD' => 
     array (
-      'name' => 'Surinamski dolar (SRD)',
+      'name' => 'Surinamski dolar',
       'symbol' => 'SRD',
     ),
     'SRG' => 
     array (
-      'name' => 'Surinamski gilder (SRG)',
+      'name' => 'Surinamski gilder',
       'symbol' => 'SRG',
+    ),
+    'SSP' => 
+    array (
+      'name' => 'Južnosudanska funta',
+      'symbol' => 'SSP',
     ),
     'STD' => 
     array (
-      'name' => 'Sao Tome i Principe dobra (STD)',
+      'name' => 'Sao Tome i Principe dobra',
       'symbol' => 'STD',
     ),
     'SUR' => 
     array (
-      'name' => 'Sovjetska rublja (SUR)',
+      'name' => 'Sovjetska rublja',
       'symbol' => 'SUR',
     ),
     'SVC' => 
     array (
-      'name' => 'Salvadorski kolon (SVC)',
+      'name' => 'Salvadorski kolon',
       'symbol' => 'SVC',
     ),
     'SYP' => 
     array (
-      'name' => 'Sirijska funta (SYP)',
+      'name' => 'Sirijska funta',
       'symbol' => 'SYP',
     ),
     'SZL' => 
     array (
-      'name' => 'Švazi lilangeni (SZL)',
+      'name' => 'Svazi lilangeni',
       'symbol' => 'SZL',
     ),
     'THB' => 
     array (
-      'name' => 'Tai baht (THB)',
+      'name' => 'Tajlandski bat',
       'symbol' => 'THB',
     ),
     'TJR' => 
     array (
-      'name' => 'Tadžakistanska rublja (SYR)',
+      'name' => 'Tadžihistanska rublja',
       'symbol' => 'TJR',
     ),
     'TJS' => 
     array (
-      'name' => 'Tadžikistanski somoni (TJS)',
+      'name' => 'Tadžihistanski somon',
       'symbol' => 'TJS',
     ),
     'TMM' => 
     array (
-      'name' => 'Turkmenistanski manat (TMM)',
+      'name' => 'Turkmenistanski manat (1993–2009)',
       'symbol' => 'TMM',
     ),
     'TMT' => 
     array (
-      'name' => 'turkmenistanski novi manat',
+      'name' => 'Turkmenistanski manat',
       'symbol' => 'TMT',
     ),
     'TND' => 
     array (
-      'name' => 'Tunizijski dinar (TND)',
+      'name' => 'Tuniski dinar',
       'symbol' => 'TND',
     ),
     'TOP' => 
     array (
-      'name' => 'Tongška Paʻanga (TOP)',
+      'name' => 'Tongonška Panga',
       'symbol' => 'TOP',
     ),
     'TPE' => 
     array (
-      'name' => 'Timorški eskudo (TPE)',
+      'name' => 'Timorški eskudo',
       'symbol' => 'TPE',
     ),
     'TRL' => 
     array (
-      'name' => 'Stara turska lira (TRL)',
+      'name' => 'Turska lira (1922–2005)',
       'symbol' => 'TRL',
     ),
     'TRY' => 
     array (
       'name' => 'Turska lira',
-      'symbol' => 'TL',
+      'symbol' => 'TRY',
     ),
     'TTD' => 
     array (
-      'name' => 'Trinidad i Tobago dolar (TTD)',
+      'name' => 'Trinidad-tobagoški dolar',
       'symbol' => 'TTD',
     ),
     'TWD' => 
     array (
       'name' => 'Novi tajvanski dolar',
-      'symbol' => 'TWD',
+      'symbol' => 'NT$',
     ),
     'TZS' => 
     array (
-      'name' => 'Tanzijski šiling (TZS)',
+      'name' => 'Tanzanijski šiling',
       'symbol' => 'TZS',
     ),
     'UAH' => 
     array (
-      'name' => 'Ukrajinska hrivnja',
+      'name' => 'Ukrajinska grivna',
       'symbol' => 'UAH',
     ),
     'UAK' => 
     array (
-      'name' => 'Ukrajinski karbovaneti (UAK)',
+      'name' => 'Ukrajinski karbovaneti',
       'symbol' => 'UAK',
     ),
     'UGS' => 
     array (
-      'name' => 'Ugandijski šiling (1966-1987) (UGS)',
+      'name' => 'Ugandski šiling (1966–1987)',
       'symbol' => 'UGS',
     ),
     'UGX' => 
     array (
-      'name' => 'Ugandijski šiling (UGX)',
+      'name' => 'Ugandski šiling',
       'symbol' => 'UGX',
     ),
     'USD' => 
     array (
       'name' => 'Američki dolar',
-      'symbol' => 'USD',
+      'symbol' => 'US$',
     ),
     'USN' => 
     array (
-      'name' => 'SAD dolar (sledeći dan) (USN)',
+      'name' => 'SAD dolar (sledeći dan)',
       'symbol' => 'USN',
     ),
     'USS' => 
     array (
-      'name' => 'SAD dolar (isti dan) (USS)',
+      'name' => 'SAD dolar (isti dan)',
       'symbol' => 'USS',
     ),
     'UYI' => 
     array (
-      'name' => 'Urugvajski pezo en unidades indeksades (UYI)',
+      'name' => 'Urugvajski pezo en unidades indeksadas',
       'symbol' => 'UYI',
     ),
     'UYP' => 
     array (
-      'name' => 'Urugvajski pezo (1975-1993) (UYP)',
+      'name' => 'Urugvajski pezo (1975–1993)',
       'symbol' => 'UYP',
     ),
     'UYU' => 
     array (
-      'name' => 'Urugvajski pezo (UYU)',
+      'name' => 'Urugvajski pezos',
       'symbol' => 'UYU',
     ),
     'UZS' => 
     array (
-      'name' => 'Uzbekistanski som (UZS)',
+      'name' => 'Uzbekistanski som',
       'symbol' => 'UZS',
     ),
     'VEB' => 
     array (
-      'name' => 'Venecuelanski bolivar',
+      'name' => 'Venecuelanski bolivar (1871–2008)',
       'symbol' => 'VEB',
     ),
     'VEF' => 
     array (
-      'name' => 'Venecuelanska bolivija fuerte (VEF)',
+      'name' => 'Venecuelanski bolivar',
       'symbol' => 'VEF',
     ),
     'VND' => 
@@ -1300,42 +1311,42 @@ return array (
     ),
     'VNN' => 
     array (
-      'name' => 'stara vijetnamska donga',
+      'name' => 'Vijetnamski dong (1978–1985)',
       'symbol' => 'VNN',
     ),
     'VUV' => 
     array (
-      'name' => 'Vanatuški vatu (VUV)',
+      'name' => 'Vanuatski vatu',
       'symbol' => 'VUV',
     ),
     'WST' => 
     array (
-      'name' => 'Samoanska tala (WST)',
+      'name' => 'Samoanska tala',
       'symbol' => 'WST',
     ),
     'XAF' => 
     array (
-      'name' => 'CFA franak BEAC (XAF)',
-      'symbol' => 'XAF',
+      'name' => 'CFA franak BEAC',
+      'symbol' => 'FCFA',
     ),
     'XAG' => 
     array (
-      'name' => 'Srebro (CAG)',
+      'name' => 'Srebro',
       'symbol' => 'XAG',
     ),
     'XAU' => 
     array (
-      'name' => 'Zlato (XAU)',
+      'name' => 'Zlato',
       'symbol' => 'XAU',
     ),
     'XBA' => 
     array (
-      'name' => 'Evropska kompozitna jedinica (XBA)',
+      'name' => 'Evropska kompozitna jedinica',
       'symbol' => 'XBA',
     ),
     'XBB' => 
     array (
-      'name' => 'Evropska novčana jedinica (XBB)',
+      'name' => 'Evropska novčana jedinica',
       'symbol' => 'XBB',
     ),
     'XBC' => 
@@ -1350,57 +1361,57 @@ return array (
     ),
     'XCD' => 
     array (
-      'name' => 'Istočnokaribijski dolar (XCD)',
-      'symbol' => 'XCD',
+      'name' => 'Istočnokaripski dolar',
+      'symbol' => 'EC$',
     ),
     'XDR' => 
     array (
-      'name' => 'Posebna prava (XDR)',
+      'name' => 'Posebna crtaća prava',
       'symbol' => 'XDR',
     ),
     'XEU' => 
     array (
-      'name' => 'Evropska valutna jedinica (XEU)',
+      'name' => 'Evropska valutna jedinica',
       'symbol' => 'XEU',
     ),
     'XFO' => 
     array (
-      'name' => 'Francuski zlatni frank (XFO)',
+      'name' => 'Francuski zlatni franak',
       'symbol' => 'XFO',
     ),
     'XFU' => 
     array (
-      'name' => 'Francuski UIC-frank (XFU)',
+      'name' => 'Francuski UIC-franak',
       'symbol' => 'XFU',
     ),
     'XOF' => 
     array (
-      'name' => 'CFA franak BCEAO (XOF)',
-      'symbol' => 'XOF',
+      'name' => 'CFA franak BCEAO',
+      'symbol' => 'CFA',
     ),
     'XPD' => 
     array (
-      'name' => 'Paladijum (XPD)',
+      'name' => 'Paladijum',
       'symbol' => 'XPD',
     ),
     'XPF' => 
     array (
-      'name' => 'CFP franak (XPF)',
-      'symbol' => 'XPF',
+      'name' => 'CFP franak',
+      'symbol' => 'CFPF',
     ),
     'XPT' => 
     array (
-      'name' => 'Platina (XPT)',
+      'name' => 'Platina',
       'symbol' => 'XPT',
     ),
     'XRE' => 
     array (
-      'name' => 'RINET fondovi (XRE)',
+      'name' => 'RINET fond',
       'symbol' => 'XRE',
     ),
     'XTS' => 
     array (
-      'name' => 'Kod testirane valute (XTS)',
+      'name' => 'Kod testirane valute',
       'symbol' => 'XTS',
     ),
     'XXX' => 
@@ -1410,72 +1421,77 @@ return array (
     ),
     'YDD' => 
     array (
-      'name' => 'Jemenski dinar (YDD)',
+      'name' => 'Jemenski dinar',
       'symbol' => 'YDD',
     ),
     'YER' => 
     array (
-      'name' => 'Jemenski rial (YER)',
+      'name' => 'Jemenski rijal',
       'symbol' => 'YER',
     ),
     'YUD' => 
     array (
-      'name' => 'Jugoslovenski tvrdi dinar (YUD)',
+      'name' => 'Jugoslovenski tvrdi dinar',
       'symbol' => 'YUD',
     ),
     'YUM' => 
     array (
-      'name' => 'Jugoslovenski novi dinar (YUM)',
+      'name' => 'Jugoslovenski novi dinar',
       'symbol' => 'YUM',
     ),
     'YUN' => 
     array (
-      'name' => 'Jugoslovenski konvertibilni dinar (YUN)',
+      'name' => 'Jugoslovenski konvertibilni dinar',
       'symbol' => 'YUN',
     ),
     'YUR' => 
     array (
-      'name' => 'jugoslovenska reformirana dinara',
+      'name' => 'Jugoslovenski reformirani dinar',
       'symbol' => 'YUR',
     ),
     'ZAL' => 
     array (
-      'name' => 'Južnoafrički rand (finansijski) ZAL',
+      'name' => 'Južno-afrički rand (finansijski)',
       'symbol' => 'ZAL',
     ),
     'ZAR' => 
     array (
-      'name' => 'Južna Afrika Rand',
+      'name' => 'Južno-afrički rand',
       'symbol' => 'ZAR',
     ),
     'ZMK' => 
     array (
-      'name' => 'Zambijska kvača (ZMK)',
+      'name' => 'Zambijska kvača (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Zambijska kvača',
+      'symbol' => 'ZMW',
     ),
     'ZRN' => 
     array (
-      'name' => 'Zairski novi zair (ZRN)',
+      'name' => 'Zairski novi zair',
       'symbol' => 'ZRN',
     ),
     'ZRZ' => 
     array (
-      'name' => 'Zairski zair (ZRZ)',
+      'name' => 'Zairski zair',
       'symbol' => 'ZRZ',
     ),
     'ZWD' => 
     array (
-      'name' => 'Zimbabvejski dolar (ZWD)',
+      'name' => 'Zimbabveanski dolar (1980–2008)',
       'symbol' => 'ZWD',
     ),
     'ZWL' => 
     array (
-      'name' => 'zimbabvejski dolar (2009)',
+      'name' => 'Zimbabveanski dolar (2009)',
       'symbol' => 'ZWL',
     ),
     'ZWR' => 
     array (
-      'name' => 'zimbabvejska dolara (2008)',
+      'name' => 'Zimbabveanski dolar (2008)',
       'symbol' => 'ZWR',
     ),
   ),

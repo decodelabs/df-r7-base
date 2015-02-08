@@ -3,12 +3,25 @@ return array (
   '@default' => 'gregorian',
   'buddhist' => 
   array (
+  ),
+  'chinese' => 
+  array (
     'dateFormat' => 
     array (
-      'full' => 'EEEE d. MMMM y G',
+      'full' => 'EEEE, d. MMMM U',
+      'long' => 'd. MMMM U',
+      'medium' => 'dd.MM U',
+      'short' => 'dd.MM.yy',
+    ),
+  ),
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d. MMMM y G',
       'long' => 'd. MMMM y G',
-      'medium' => 'd. MMM y G',
-      'short' => 'd.M.yyyy',
+      'medium' => 'dd.MM.y G',
+      'short' => 'dd.MM.yy GGGGG',
     ),
   ),
   'gregorian' => 
@@ -42,18 +55,18 @@ return array (
       '@default' => 'full',
       'abbreviated' => 
       array (
-        1 => 'Jan',
-        2 => 'Feb',
-        3 => 'Mär',
-        4 => 'Apr',
+        1 => 'Jan.',
+        2 => 'Feb.',
+        3 => 'März',
+        4 => 'Apr.',
         5 => 'Mai',
-        6 => 'Jun',
-        7 => 'Jul',
-        8 => 'Aug',
-        9 => 'Sep',
-        10 => 'Okt',
-        11 => 'Nov',
-        12 => 'Dez',
+        6 => 'Juni',
+        7 => 'Juli',
+        8 => 'Aug.',
+        9 => 'Sep.',
+        10 => 'Okt.',
+        11 => 'Nov.',
+        12 => 'Dez.',
       ),
       'full' => 
       array (
@@ -75,7 +88,7 @@ return array (
     array (
       'full' => 'EEEE, d. MMMM y',
       'long' => 'd. MMMM y',
-      'medium' => 'dd.MM.yyyy',
+      'medium' => 'dd.MM.y',
       'short' => 'dd.MM.yy',
     ),
     'timeFormat' => 
@@ -86,68 +99,23 @@ return array (
       'short' => 'HH:mm',
     ),
   ),
+  'hebrew' => 
+  array (
+  ),
   'islamic' => 
   array (
-    'months' => 
-    array (
-      '@default' => 'full',
-      'abbreviated' => 
-      array (
-        1 => 'Muh.',
-        2 => 'Saf.',
-        3 => 'Rab. I',
-        4 => 'Rab. II',
-        5 => 'Jum. I',
-        6 => 'Jum. II',
-        7 => 'Raj.',
-        8 => 'Sha.',
-        9 => 'Ram.',
-        10 => 'Shaw.',
-        11 => 'Dhuʻl-Q.',
-        12 => 'Dhuʻl-H.',
-      ),
-      'full' => 
-      array (
-        1 => 'Muharram',
-        2 => 'Safar',
-        3 => 'Rabiʻ I',
-        4 => 'Rabiʻ II',
-        5 => 'Jumada I',
-        6 => 'Jumada II',
-        7 => 'Rajab',
-        8 => 'Shaʻban',
-        9 => 'Ramadan',
-        10 => 'Shawwal',
-        11 => 'Dhuʻl-Qiʻdah',
-        12 => 'Dhuʻl-Hijjah',
-      ),
-    ),
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE d. MMMM y G',
-      'long' => 'd. MMMM y G',
-      'medium' => 'd. MMM y G',
-      'short' => 'd.M.y G',
-    ),
   ),
   'japanese' => 
   array (
     'dateFormat' => 
     array (
-      'full' => 'EEEE d. MMMM y G',
+      'full' => 'EEEE, d. MMMM y G',
       'long' => 'd. MMMM y G',
-      'medium' => 'd. MMM y G',
-      'short' => 'd.M.y GGGGG',
+      'medium' => 'dd.MM.y G',
+      'short' => 'dd.MM.yy GGGGG',
     ),
   ),
   'roc' => 
   array (
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE d. MMMM y G',
-      'long' => 'd. MMMM y G',
-      'medium' => 'd. MMM y G',
-      'short' => 'd.M.y GGGGG',
-    ),
   ),
 );

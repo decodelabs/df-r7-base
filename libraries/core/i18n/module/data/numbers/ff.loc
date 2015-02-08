@@ -273,8 +273,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'Kuwacca Sammbi',
+      'name' => 'Kuwacca Sammbi (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Kuwacca Sammbi',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

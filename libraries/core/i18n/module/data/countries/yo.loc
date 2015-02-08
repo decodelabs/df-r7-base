@@ -1,5 +1,6 @@
 <?php
 return array (
+  'SS' => 'Gúúsù Sudan',
   'AD' => 'Orílẹ́ède Ààndórà',
   'AO' => 'Orílẹ́ède Ààngólà',
   'AI' => 'Orílẹ́ède Ààngúlílà',
@@ -187,7 +188,6 @@ return array (
   'SZ' => 'Orílẹ́ède Saṣiland',
   'SA' => 'Orílẹ́ède Saudi Arabia',
   'SC' => 'Orílẹ́ède seṣẹlẹsi',
-  'CS' => 'Orílẹ́ède sẹbia ati Mọtinegoro',
   'SN' => 'Orílẹ́ède Sẹnẹga',
   'SK' => 'Orílẹ́ède Silofakia',
   'SI' => 'Orílẹ́ède Silofania',

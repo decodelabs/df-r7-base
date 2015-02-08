@@ -6,17 +6,21 @@ return array (
     'group' => '٬',
     'list' => '؛',
     'percentSign' => '٪',
-    'plusSign' => '+',
-    'minusSign' => '-',
+    'plusSign' => '‏+',
+    'minusSign' => '‏-',
     'exponential' => 'اس',
+    'superscriptingExponent' => '×',
     'perMille' => '؉',
     'infinity' => '∞',
-    'nan' => 'ليس رقم',
+    'nan' => 'ليس رقم',
+    'timeSeparator' => '،',
   ),
   'formats' => 
   array (
-    'decimal' => '#,##0.###;#,##0.###-',
-    'currency' => '¤ #,##0.00;¤ #,##0.00-',
+    'decimal' => '#,##0.###',
+    'scientific' => '#E0',
+    'percent' => '#,##0%',
+    'currency' => '¤ #,##0.00',
   ),
   'currencies' => 
   array (
@@ -98,11 +102,11 @@ return array (
     'AUD' => 
     array (
       'name' => 'دولار أسترالي',
-      'symbol' => 'AUD',
+      'symbol' => 'AU$',
     ),
     'AWG' => 
     array (
-      'name' => 'جلدر أروبي',
+      'name' => 'فلورن أروبي',
       'symbol' => 'AWG',
     ),
     'AZM' => 
@@ -150,14 +154,9 @@ return array (
       'name' => 'فرنك بلجيكي مالي',
       'symbol' => 'BEL',
     ),
-    'BGL' => 
-    array (
-      'name' => 'ليف بلغاري',
-      'symbol' => 'BGL',
-    ),
     'BGN' => 
     array (
-      'name' => 'ليف بلغاري جديد',
+      'name' => 'ليف بلغاري',
       'symbol' => 'BGN',
     ),
     'BHD' => 
@@ -213,7 +212,7 @@ return array (
     'BRL' => 
     array (
       'name' => 'ريال برازيلي',
-      'symbol' => 'ر.ب.‏',
+      'symbol' => 'R$',
     ),
     'BSD' => 
     array (
@@ -253,11 +252,11 @@ return array (
     'CAD' => 
     array (
       'name' => 'دولار كندي',
-      'symbol' => 'CAD',
+      'symbol' => 'CA$',
     ),
     'CDF' => 
     array (
-      'name' => 'فنك كونغولي',
+      'name' => 'فرنك كونغولي',
       'symbol' => 'CDF',
     ),
     'CHF' => 
@@ -378,7 +377,7 @@ return array (
     'EUR' => 
     array (
       'name' => 'يورو',
-      'symbol' => 'EUR',
+      'symbol' => '€',
     ),
     'FIM' => 
     array (
@@ -403,7 +402,7 @@ return array (
     'GBP' => 
     array (
       'name' => 'جنيه إسترليني',
-      'symbol' => 'GBP',
+      'symbol' => '£',
     ),
     'GEL' => 
     array (
@@ -473,7 +472,7 @@ return array (
     'HKD' => 
     array (
       'name' => 'دولار هونج كونج',
-      'symbol' => 'HKD',
+      'symbol' => 'HK$',
     ),
     'HNL' => 
     array (
@@ -503,7 +502,7 @@ return array (
     'IDR' => 
     array (
       'name' => 'روبية إندونيسية',
-      'symbol' => 'IDR',
+      'symbol' => 'ر.إن.',
     ),
     'IEP' => 
     array (
@@ -518,7 +517,7 @@ return array (
     'ILS' => 
     array (
       'name' => 'شيكل إسرائيلي جديد',
-      'symbol' => 'ILS',
+      'symbol' => '₪',
     ),
     'INR' => 
     array (
@@ -533,7 +532,7 @@ return array (
     'IRR' => 
     array (
       'name' => 'ريال إيراني',
-      'symbol' => 'IRR',
+      'symbol' => 'ر.إ.',
     ),
     'ISK' => 
     array (
@@ -558,7 +557,7 @@ return array (
     'JPY' => 
     array (
       'name' => 'ين ياباني',
-      'symbol' => 'JPY',
+      'symbol' => 'JP¥',
     ),
     'KES' => 
     array (
@@ -588,7 +587,7 @@ return array (
     'KRW' => 
     array (
       'name' => 'وون كوريا الجنوبية',
-      'symbol' => 'KRW',
+      'symbol' => '₩',
     ),
     'KWD' => 
     array (
@@ -632,7 +631,7 @@ return array (
     ),
     'LTL' => 
     array (
-      'name' => 'الليتا الليتوانية',
+      'name' => 'ليتا ليتوانية',
       'symbol' => 'LTL',
     ),
     'LTT' => 
@@ -682,7 +681,7 @@ return array (
     ),
     'MDL' => 
     array (
-      'name' => 'لاو مولدوفي',
+      'name' => 'ليو مولدوفي',
       'symbol' => 'MDL',
     ),
     'MGA' => 
@@ -753,7 +752,7 @@ return array (
     'MXN' => 
     array (
       'name' => 'بيزو مكسيكي',
-      'symbol' => 'MXN',
+      'symbol' => 'MX$',
     ),
     'MXP' => 
     array (
@@ -769,6 +768,11 @@ return array (
     array (
       'name' => 'اسكود موزمبيقي',
       'symbol' => 'MZE',
+    ),
+    'MZN' => 
+    array (
+      'name' => 'متكال موزمبيقي',
+      'symbol' => 'MZN',
     ),
     'NAD' => 
     array (
@@ -808,7 +812,7 @@ return array (
     'NZD' => 
     array (
       'name' => 'دولار نيوزيلندي',
-      'symbol' => 'NZD',
+      'symbol' => 'NZ$',
     ),
     'OMR' => 
     array (
@@ -838,7 +842,7 @@ return array (
     'PKR' => 
     array (
       'name' => 'روبية باكستاني',
-      'symbol' => 'PKR',
+      'symbol' => 'ر.ب.',
     ),
     'PLN' => 
     array (
@@ -875,6 +879,11 @@ return array (
       'name' => 'ليو روماني قديم',
       'symbol' => 'ROL',
     ),
+    'RON' => 
+    array (
+      'name' => 'ليو روماني',
+      'symbol' => 'RON',
+    ),
     'RSD' => 
     array (
       'name' => 'دينار صربي',
@@ -883,7 +892,7 @@ return array (
     'RUB' => 
     array (
       'name' => 'روبل روسي',
-      'symbol' => 'ر.ر.‏',
+      'symbol' => 'RUB',
     ),
     'RUR' => 
     array (
@@ -918,12 +927,12 @@ return array (
     'SDG' => 
     array (
       'name' => 'جنيه سوداني',
-      'symbol' => 'SDG',
+      'symbol' => 'ج.س.',
     ),
     'SDP' => 
     array (
       'name' => 'جنيه سوداني قديم',
-      'symbol' => 'ج.س.‏',
+      'symbol' => 'SDP',
     ),
     'SEK' => 
     array (
@@ -970,6 +979,11 @@ return array (
       'name' => 'جلدر سورينامي',
       'symbol' => 'SRG',
     ),
+    'SSP' => 
+    array (
+      'name' => 'جنيه جنوب السودان',
+      'symbol' => 'ج.ج.س.',
+    ),
     'STD' => 
     array (
       'name' => 'دوبرا ساو تومي وبرينسيبي',
@@ -998,7 +1012,7 @@ return array (
     'THB' => 
     array (
       'name' => 'باخت تايلاندي',
-      'symbol' => 'THB',
+      'symbol' => '฿',
     ),
     'TJR' => 
     array (
@@ -1043,7 +1057,7 @@ return array (
     'TRY' => 
     array (
       'name' => 'ليرة تركية',
-      'symbol' => 'TRY',
+      'symbol' => 'ل.ت.',
     ),
     'TTD' => 
     array (
@@ -1053,7 +1067,7 @@ return array (
     'TWD' => 
     array (
       'name' => 'دولار تايواني',
-      'symbol' => 'TWD',
+      'symbol' => 'NT$',
     ),
     'TZS' => 
     array (
@@ -1078,7 +1092,7 @@ return array (
     'USD' => 
     array (
       'name' => 'دولار أمريكي',
-      'symbol' => 'USD',
+      'symbol' => 'US$',
     ),
     'USN' => 
     array (
@@ -1107,7 +1121,7 @@ return array (
     ),
     'VEB' => 
     array (
-      'name' => 'بوليفار فنزويلي - 1871-2008 ',
+      'name' => 'بوليفار فنزويلي - 1871-2008',
       'symbol' => 'VEB',
     ),
     'VEF' => 
@@ -1118,7 +1132,7 @@ return array (
     'VND' => 
     array (
       'name' => 'دونج فيتنامي',
-      'symbol' => 'VND',
+      'symbol' => '₫',
     ),
     'VUV' => 
     array (
@@ -1133,7 +1147,7 @@ return array (
     'XAF' => 
     array (
       'name' => 'فرنك أفريقي',
-      'symbol' => 'ف.ا.‏',
+      'symbol' => 'FCFA',
     ),
     'XAG' => 
     array (
@@ -1168,7 +1182,7 @@ return array (
     'XCD' => 
     array (
       'name' => 'دولار شرق الكاريبي',
-      'symbol' => 'XCD',
+      'symbol' => 'EC$',
     ),
     'XDR' => 
     array (
@@ -1193,7 +1207,7 @@ return array (
     'XOF' => 
     array (
       'name' => 'فرنك سي إف إيه غرب إفريقيا',
-      'symbol' => 'XOF',
+      'symbol' => 'CFA',
     ),
     'XPD' => 
     array (
@@ -1203,7 +1217,7 @@ return array (
     'XPF' => 
     array (
       'name' => 'فرنك سي إف بي',
-      'symbol' => 'XPF',
+      'symbol' => 'CFPF',
     ),
     'XPT' => 
     array (
@@ -1252,8 +1266,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'كواشا زامبي',
+      'name' => 'كواشا زامبي - 1968-2012',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'كواشا زامبي',
+      'symbol' => 'ZMW',
     ),
     'ZRN' => 
     array (

@@ -277,8 +277,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'Zambi Kwaca',
+      'name' => 'Zambi Kwaca (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Zambi Kwaca',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

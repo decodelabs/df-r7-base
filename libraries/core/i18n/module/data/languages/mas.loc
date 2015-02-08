@@ -1,11 +1,11 @@
 <?php
 return array (
-  'mas' => 'Maa',
   'bn' => 'lnkʉtʉ́k ɔ́ɔ̄ lBengali',
-  'ig' => 'nkʉtʉ́k ɔ́ɔ̄ Igbo',
-  'id' => 'nkʉtʉ́k ɔ́ɔ̄ Indonesia',
+  'mas' => 'Maa',
   'fr' => 'nkʉtʉ́k ɔ́ɔ̄ faransa',
   'ha' => 'nkʉtʉ́k ɔ́ɔ̄ hausa',
+  'ig' => 'nkʉtʉ́k ɔ́ɔ̄ Igbo',
+  'id' => 'nkʉtʉ́k ɔ́ɔ̄ Indonesia',
   'ja' => 'nkʉtʉ́k ɔ́ɔ̄ japani',
   'ak' => 'nkʉtʉ́k ɔ́ɔ̄ lAkan',
   'am' => 'nkʉtʉ́k ɔ́ɔ̄ lAmhari',

@@ -72,6 +72,16 @@ return array (
       ),
     ),
   ),
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'G y. MMMM d., EEEE',
+      'long' => 'G y. MMMM d.',
+      'medium' => 'G y. MMM d.',
+      'short' => 'GGGGG y. M. d.',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -136,8 +146,8 @@ return array (
     array (
       'full' => 'y. MMMM d., EEEE',
       'long' => 'y. MMMM d.',
-      'medium' => 'yyyy.MM.dd.',
-      'short' => 'yyyy.MM.dd.',
+      'medium' => 'y. MMM d.',
+      'short' => 'y. MM. dd.',
     ),
     'timeFormat' => 
     array (
@@ -175,8 +185,8 @@ return array (
         3 => 'Kiszlév',
         4 => 'Tévész',
         5 => 'Svát',
-        6 => 'Ádár risón',
-        7 => 'Ádár séni',
+        6 => 'Ádár I',
+        7 => 'Ádár II',
         8 => 'Niszán',
         9 => 'Ijár',
         10 => 'Sziván',
@@ -213,6 +223,21 @@ return array (
     'months' => 
     array (
       '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Moh.',
+        2 => 'Saf.',
+        3 => 'Rébi I',
+        4 => 'Rébi II',
+        5 => 'Dsem. I',
+        6 => 'Dsem. II',
+        7 => 'Red.',
+        8 => 'Sab.',
+        9 => 'Ram.',
+        10 => 'Sev.',
+        11 => 'Dsül k.',
+        12 => 'Dsül h.',
+      ),
       'full' => 
       array (
         1 => 'Moharrem',
@@ -229,16 +254,16 @@ return array (
         12 => 'Dsül hedse',
       ),
     ),
-    'dateFormat' => 
-    array (
-      'full' => 'y. MMMM d., EEEE',
-      'long' => 'y. MMMM d.',
-      'medium' => 'yyyy.MM.dd.',
-      'short' => 'yyyy.MM.dd.',
-    ),
   ),
   'japanese' => 
   array (
+    'dateFormat' => 
+    array (
+      'full' => 'G y. MMMM d., EEEE',
+      'long' => 'G y. MMMM d.',
+      'medium' => 'G y.MM.dd.',
+      'short' => 'GGGGG y.MM.dd.',
+    ),
   ),
   'persian' => 
   array (

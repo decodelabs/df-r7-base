@@ -5,15 +5,203 @@ return array (
   ),
   'formats' => 
   array (
-    'decimal' => '0.0B',
-    'currency' => '#,##0.00 ¤;(#,##0.00 ¤)',
+    'decimal' => '0 G',
   ),
   'currencies' => 
   array (
+    'ARS' => 
+    array (
+      'symbol' => 'ARS',
+    ),
+    'AUD' => 
+    array (
+      'symbol' => '$ AU',
+    ),
+    'AZN' => 
+    array (
+      'name' => 'manat azerbaïdjanais',
+      'symbol' => 'AZN',
+    ),
+    'BMD' => 
+    array (
+      'symbol' => 'BMD',
+    ),
+    'BND' => 
+    array (
+      'symbol' => 'BND',
+    ),
+    'BSD' => 
+    array (
+      'symbol' => 'BSD',
+    ),
+    'BZD' => 
+    array (
+      'symbol' => 'BZD',
+    ),
     'CAD' => 
     array (
-      'name' => 'CAD',
       'symbol' => '$',
+    ),
+    'CLP' => 
+    array (
+      'symbol' => 'CLP',
+    ),
+    'CNY' => 
+    array (
+      'symbol' => 'CN¥',
+    ),
+    'COP' => 
+    array (
+      'symbol' => 'COP',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'escudo du Cap-Vert',
+      'symbol' => 'CVE',
+    ),
+    'FJD' => 
+    array (
+      'symbol' => 'FJD',
+    ),
+    'FKP' => 
+    array (
+      'name' => 'livre des Îles Malouines',
+      'symbol' => 'FKP',
+    ),
+    'GBP' => 
+    array (
+      'symbol' => '£',
+    ),
+    'GEL' => 
+    array (
+      'name' => 'lari géorgien',
+      'symbol' => 'GEL',
+    ),
+    'GIP' => 
+    array (
+      'symbol' => 'GIP',
+    ),
+    'GYD' => 
+    array (
+      'name' => 'dollar guyanien',
+      'symbol' => 'GYD',
+    ),
+    'HKD' => 
+    array (
+      'symbol' => '$ HK',
+    ),
+    'ILS' => 
+    array (
+      'symbol' => 'ILS',
+    ),
+    'INR' => 
+    array (
+      'symbol' => 'INR',
+    ),
+    'JPY' => 
+    array (
+      'symbol' => '¥',
+    ),
+    'KRW' => 
+    array (
+      'symbol' => 'KRW',
+    ),
+    'LAK' => 
+    array (
+      'name' => 'kip laotien',
+      'symbol' => 'LAK',
+    ),
+    'LBP' => 
+    array (
+      'symbol' => 'LBP',
+    ),
+    'MXN' => 
+    array (
+      'symbol' => 'MXN',
+    ),
+    'NAD' => 
+    array (
+      'symbol' => 'NAD',
+    ),
+    'NZD' => 
+    array (
+      'symbol' => '$ NZ',
+    ),
+    'PGK' => 
+    array (
+      'name' => 'kina papou-néo-guinéen',
+      'symbol' => 'PGK',
+    ),
+    'QAR' => 
+    array (
+      'name' => 'riyal du Qatar',
+      'symbol' => 'QAR',
+    ),
+    'SBD' => 
+    array (
+      'symbol' => 'SBD',
+    ),
+    'SGD' => 
+    array (
+      'symbol' => '$ SG',
+    ),
+    'SRD' => 
+    array (
+      'name' => 'dollar du Suriname',
+      'symbol' => 'SRD',
+    ),
+    'THB' => 
+    array (
+      'symbol' => 'THB',
+    ),
+    'TOP' => 
+    array (
+      'name' => 'pa’anga',
+      'symbol' => 'TOP',
+    ),
+    'TTD' => 
+    array (
+      'name' => 'dollar de Trinité-et-Tobago',
+      'symbol' => 'TTD',
+    ),
+    'USD' => 
+    array (
+      'symbol' => '$ US',
+    ),
+    'UYU' => 
+    array (
+      'symbol' => 'UYU',
+    ),
+    'VND' => 
+    array (
+      'symbol' => 'VND',
+    ),
+    'VUV' => 
+    array (
+      'name' => 'vatu',
+      'symbol' => 'VUV',
+    ),
+    'WST' => 
+    array (
+      'name' => 'tala',
+      'symbol' => 'WST',
+    ),
+    'XAF' => 
+    array (
+      'symbol' => 'XAF',
+    ),
+    'XOF' => 
+    array (
+      'symbol' => 'XOF',
+    ),
+    'XPF' => 
+    array (
+      'symbol' => 'XPF',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'devise inconnue ou non valide',
+      'symbol' => 'XXX',
     ),
   ),
 );

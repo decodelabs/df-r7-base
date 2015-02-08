@@ -1,6 +1,14 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM y G',
+      'short' => 'dd.MM.yy GGGGG',
+    ),
+  ),
   'gregorian' => 
   array (
     'dateFormat' => 

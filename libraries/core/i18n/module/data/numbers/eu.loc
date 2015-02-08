@@ -9,14 +9,17 @@ return array (
     'plusSign' => '+',
     'minusSign' => '-',
     'exponential' => 'E',
+    'superscriptingExponent' => '×',
     'perMille' => '‰',
     'infinity' => '∞',
     'nan' => 'NaN',
+    'timeSeparator' => ':',
   ),
   'formats' => 
   array (
     'decimal' => '#,##0.###',
     'scientific' => '#E0',
+    'percent' => '% #,##0',
     'currency' => '#,##0.00 ¤',
   ),
   'currencies' => 
@@ -59,7 +62,7 @@ return array (
     'AUD' => 
     array (
       'name' => 'Australiako dolarra',
-      'symbol' => 'AUD',
+      'symbol' => 'A$',
     ),
     'AWG' => 
     array (
@@ -118,8 +121,8 @@ return array (
     ),
     'BRL' => 
     array (
-      'name' => 'Brasiliako erreala',
-      'symbol' => 'BRL',
+      'name' => 'Brasilgo erreala',
+      'symbol' => 'R$',
     ),
     'BSD' => 
     array (
@@ -149,7 +152,7 @@ return array (
     'CAD' => 
     array (
       'name' => 'Kanadako dolarra',
-      'symbol' => 'CAD',
+      'symbol' => 'CA$',
     ),
     'CDF' => 
     array (
@@ -169,7 +172,7 @@ return array (
     'CNY' => 
     array (
       'name' => 'Txinako yuana',
-      'symbol' => 'CNY',
+      'symbol' => 'CN¥',
     ),
     'COP' => 
     array (
@@ -233,7 +236,6 @@ return array (
     ),
     'ESP' => 
     array (
-      'name' => 'ESP',
       'symbol' => '₧',
     ),
     'ETB' => 
@@ -244,7 +246,7 @@ return array (
     'EUR' => 
     array (
       'name' => 'Euroa',
-      'symbol' => 'EUR',
+      'symbol' => '€',
     ),
     'FJD' => 
     array (
@@ -258,8 +260,8 @@ return array (
     ),
     'GBP' => 
     array (
-      'name' => 'Britainia Handiko libera esterlina',
-      'symbol' => 'GBP',
+      'name' => 'Libera esterlina',
+      'symbol' => '£',
     ),
     'GEL' => 
     array (
@@ -299,7 +301,7 @@ return array (
     'HKD' => 
     array (
       'name' => 'Hong Kongeko dolarra',
-      'symbol' => 'HKD',
+      'symbol' => 'HK$',
     ),
     'HNL' => 
     array (
@@ -323,18 +325,18 @@ return array (
     ),
     'IDR' => 
     array (
-      'name' => 'Indonesiako rupiah',
+      'name' => 'Indonesiako errupia',
       'symbol' => 'IDR',
     ),
     'ILS' => 
     array (
       'name' => 'Israeleko sheqel berria',
-      'symbol' => 'ILS',
+      'symbol' => '₪',
     ),
     'INR' => 
     array (
       'name' => 'Indiako errupia',
-      'symbol' => 'INR',
+      'symbol' => '₹',
     ),
     'IQD' => 
     array (
@@ -364,16 +366,16 @@ return array (
     'JPY' => 
     array (
       'name' => 'Japoniako yena',
-      'symbol' => 'JPY',
+      'symbol' => 'JP¥',
     ),
     'KES' => 
     array (
-      'name' => 'Kenyako shillinga',
+      'name' => 'Kenyako txelina',
       'symbol' => 'KES',
     ),
     'KGS' => 
     array (
-      'name' => 'Kyrgystango soma',
+      'name' => 'Kirgizistango soma',
       'symbol' => 'KGS',
     ),
     'KHR' => 
@@ -394,7 +396,7 @@ return array (
     'KRW' => 
     array (
       'name' => 'Hego Koreako wona',
-      'symbol' => 'KRW',
+      'symbol' => '₩',
     ),
     'KWD' => 
     array (
@@ -413,7 +415,7 @@ return array (
     ),
     'LAK' => 
     array (
-      'name' => 'Laoteko kipa',
+      'name' => 'Laoseko kipa',
       'symbol' => 'LAK',
     ),
     'LBP' => 
@@ -473,7 +475,7 @@ return array (
     ),
     'MMK' => 
     array (
-      'name' => 'Myanmako kyata',
+      'name' => 'Myanmarreko kyata',
       'symbol' => 'MMK',
     ),
     'MNT' => 
@@ -493,12 +495,12 @@ return array (
     ),
     'MUR' => 
     array (
-      'name' => 'Mauriziar uharteetako errupia',
+      'name' => 'Maurizio uharteetako errupia',
       'symbol' => 'MUR',
     ),
     'MVR' => 
     array (
-      'name' => 'Maldibiako rufiyaa',
+      'name' => 'Maldivetako rufiyaa',
       'symbol' => 'MVR',
     ),
     'MWK' => 
@@ -509,12 +511,17 @@ return array (
     'MXN' => 
     array (
       'name' => 'Mexikoko pesoa',
-      'symbol' => 'MXN',
+      'symbol' => 'MX$',
     ),
     'MYR' => 
     array (
       'name' => 'Malaysiako ringgita',
       'symbol' => 'MYR',
+    ),
+    'MZN' => 
+    array (
+      'name' => 'Mozambikeko metikala',
+      'symbol' => 'MZN',
     ),
     'NAD' => 
     array (
@@ -544,7 +551,7 @@ return array (
     'NZD' => 
     array (
       'name' => 'Zeelanda Berriko dolarra',
-      'symbol' => 'NZD',
+      'symbol' => 'NZ$',
     ),
     'OMR' => 
     array (
@@ -588,8 +595,13 @@ return array (
     ),
     'QAR' => 
     array (
-      'name' => 'Qatareko riala',
+      'name' => 'Qatarreko riala',
       'symbol' => 'QAR',
+    ),
+    'RON' => 
+    array (
+      'name' => 'Errumaniako leua',
+      'symbol' => 'RON',
     ),
     'RSD' => 
     array (
@@ -633,7 +645,7 @@ return array (
     ),
     'SGD' => 
     array (
-      'name' => 'Singapurgo dolarra',
+      'name' => 'Singapurreko dolarra',
       'symbol' => 'SGD',
     ),
     'SHP' => 
@@ -648,13 +660,18 @@ return array (
     ),
     'SOS' => 
     array (
-      'name' => 'Somaliako shillinga',
+      'name' => 'Somaliako txelina',
       'symbol' => 'SOS',
     ),
     'SRD' => 
     array (
       'name' => 'Surinameko dolarra',
       'symbol' => 'SRD',
+    ),
+    'SSP' => 
+    array (
+      'name' => 'Hego Sudango libera',
+      'symbol' => 'SSP',
     ),
     'STD' => 
     array (
@@ -674,7 +691,7 @@ return array (
     'THB' => 
     array (
       'name' => 'Thailandiako bahta',
-      'symbol' => 'THB',
+      'symbol' => '฿',
     ),
     'TJS' => 
     array (
@@ -709,11 +726,11 @@ return array (
     'TWD' => 
     array (
       'name' => 'Taiwango dolar berria',
-      'symbol' => 'TWD',
+      'symbol' => 'NT$',
     ),
     'TZS' => 
     array (
-      'name' => 'Tanzaniako shillinga',
+      'name' => 'Tanzaniako txelina',
       'symbol' => 'TZS',
     ),
     'UAH' => 
@@ -723,13 +740,13 @@ return array (
     ),
     'UGX' => 
     array (
-      'name' => 'Ugandako shillinga',
+      'name' => 'Ugandako txelina',
       'symbol' => 'UGX',
     ),
     'USD' => 
     array (
       'name' => 'AEBetako dolarra',
-      'symbol' => 'USD',
+      'symbol' => 'US$',
     ),
     'UYU' => 
     array (
@@ -749,7 +766,7 @@ return array (
     'VND' => 
     array (
       'name' => 'Vietnameko donga',
-      'symbol' => 'VND',
+      'symbol' => '₫',
     ),
     'VUV' => 
     array (
@@ -764,22 +781,22 @@ return array (
     'XAF' => 
     array (
       'name' => 'Afrika erdialdeko frankoa BEAC',
-      'symbol' => 'XAF',
+      'symbol' => 'FCFA',
     ),
     'XCD' => 
     array (
       'name' => 'Karibe ekialdeko dolarra',
-      'symbol' => 'XCD',
+      'symbol' => 'EC$',
     ),
     'XOF' => 
     array (
       'name' => 'Afrika ekialdeko frankoa BCEAO',
-      'symbol' => 'XOF',
+      'symbol' => 'CFA',
     ),
     'XPF' => 
     array (
       'name' => 'CFP frankoa',
-      'symbol' => 'XPF',
+      'symbol' => 'CFPF',
     ),
     'XXX' => 
     array (
@@ -793,13 +810,18 @@ return array (
     ),
     'ZAR' => 
     array (
-      'name' => 'Hego Afrikako randa',
+      'name' => 'Hegoafrikako randa',
       'symbol' => 'ZAR',
     ),
     'ZMK' => 
     array (
-      'name' => 'Zambiako kwacha',
+      'name' => 'Zambiako kwacha (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Zambiako kwacha',
+      'symbol' => 'ZMW',
     ),
   ),
 );

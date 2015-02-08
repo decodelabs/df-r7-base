@@ -1,0 +1,196 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'buddhist' => 
+  array (
+  ),
+  'chinese' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Mo1',
+        2 => 'Mo2',
+        3 => 'Mo3',
+        4 => 'Mo4',
+        5 => 'Mo5',
+        6 => 'Mo6',
+        7 => 'Mo7',
+        8 => 'Mo8',
+        9 => 'Mo9',
+        10 => 'Mo10',
+        11 => 'Mo11',
+        12 => 'Mo12',
+      ),
+      'full' => 
+      array (
+        1 => 'Month1',
+        2 => 'Month2',
+        3 => 'Month3',
+        4 => 'Month4',
+        5 => 'Month5',
+        6 => 'Month6',
+        7 => 'Month7',
+        8 => 'Month8',
+        9 => 'Month9',
+        10 => 'Month10',
+        11 => 'Month11',
+        12 => 'Month12',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE، MMMM d، U',
+      'long' => 'MMMM d، U',
+      'medium' => 'MMM d، U',
+      'short' => 'M/d/yy',
+    ),
+  ),
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE، MMMM d، y G',
+      'long' => 'MMMM d، y G',
+      'medium' => 'MMM d، y G',
+      'short' => 'M/d/y GGGGG',
+    ),
+  ),
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'يە',
+        'mon' => 'دۈ',
+        'tue' => 'سە',
+        'wed' => 'چا',
+        'thu' => 'پە',
+        'fri' => 'چۈ',
+        'sat' => 'شە',
+      ),
+      'full' => 
+      array (
+        'sun' => 'يەكشەنبە',
+        'mon' => 'دۈشەنبە',
+        'tue' => 'سەيشەنبە',
+        'wed' => 'چارشەنبە',
+        'thu' => 'پەيشەنبە',
+        'fri' => 'جۈمە',
+        'sat' => 'شەنبە',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'يانۋار',
+        2 => 'فېۋرال',
+        3 => 'مارت',
+        4 => 'ئاپرېل',
+        5 => 'ماي',
+        6 => 'ئىيۇن',
+        7 => 'ئىيۇل',
+        8 => 'ئاۋغۇست',
+        9 => 'سېنتەبىر',
+        10 => 'ئۆكتەبىر',
+        11 => 'نويابىر',
+        12 => 'دېكابىر',
+      ),
+      'full' => 
+      array (
+        1 => 'يانۋار',
+        2 => 'فېۋرال',
+        3 => 'مارت',
+        4 => 'ئاپرېل',
+        5 => 'ماي',
+        6 => 'ئىيۇن',
+        7 => 'ئىيۇل',
+        8 => 'ئاۋغۇست',
+        9 => 'سېنتەبىر',
+        10 => 'ئۆكتەبىر',
+        11 => 'بويابىر',
+        12 => 'دېكابىر',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE، MMMM d، y',
+      'long' => 'MMMM d، y',
+      'medium' => 'MMM d، y',
+      'short' => 'M/d/yy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+  'hebrew' => 
+  array (
+  ),
+  'islamic' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'مۇھەررەم',
+        2 => 'سەپەر',
+        3 => 'رەبىئۇلئەۋۋەل',
+        4 => 'رەبىئۇلئاخىر',
+        5 => 'جەمادىيەلئەۋۋەل',
+        6 => 'جەمادىيەلئاخىر',
+        7 => 'رەجەب',
+        8 => 'شەئبان',
+        9 => 'رامىزان',
+        10 => 'شەۋۋال',
+        11 => 'زۇلقەئدە',
+        12 => 'زۇلھەججە',
+      ),
+      'full' => 
+      array (
+        1 => 'مۇھەررەم',
+        2 => 'سەپەر',
+        3 => 'رەبىئۇلئەۋۋەل',
+        4 => 'رەبىئۇلئاخىر',
+        5 => 'جەمادىيەلئەۋۋەل',
+        6 => 'جەمادىيەلئاخىر',
+        7 => 'رەجەب',
+        8 => 'شەئبان',
+        9 => 'رامىزان',
+        10 => 'شەۋۋال',
+        11 => 'زۇلقەئدە',
+        12 => 'زۇلھەججە',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE، d MMMM، y G',
+      'long' => 'd MMMM، y G',
+      'medium' => 'd MMM، y G',
+      'short' => 'd‏/M‏/y GGGGG',
+    ),
+  ),
+  'japanese' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, MMMM d، y G',
+      'long' => 'MMMM d، y G',
+      'medium' => 'MMM d، y G',
+      'short' => 'M/d/y GGGGG',
+    ),
+  ),
+  'roc' => 
+  array (
+  ),
+);

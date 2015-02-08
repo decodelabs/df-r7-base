@@ -4,61 +4,133 @@ return array (
   array (
     'decimal' => ',',
     'group' => ' ',
+    'percentSign' => '%',
+    'plusSign' => '+',
+    'minusSign' => '−',
+    'perMille' => '‰',
+    'infinity' => '∞',
   ),
   'formats' => 
   array (
+    'decimal' => '#,##0.###',
+    'percent' => '#,##0%',
   ),
   'currencies' => 
   array (
     'AUD' => 
     array (
-      'name' => 'aŭstrala dolaro',
-      'symbol' => 'AUD',
+      'name' => 'Aŭstralia dolaro',
+      'symbol' => 'AU$',
     ),
     'BRL' => 
     array (
-      'name' => 'brazila realo',
-      'symbol' => 'BRL',
+      'name' => 'Brazila realo',
+      'symbol' => 'R$',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'Kanada dolaro',
+      'symbol' => 'CA$',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'Svisa franko',
+      'symbol' => 'CHF',
     ),
     'CNY' => 
     array (
-      'name' => 'ĉina juano',
-      'symbol' => 'CNY',
+      'name' => 'Ĉina juano',
+      'symbol' => 'CN¥',
+    ),
+    'DKK' => 
+    array (
+      'name' => 'Dana krono',
+      'symbol' => 'DKK',
     ),
     'EUR' => 
     array (
-      'name' => 'eŭro',
-      'symbol' => 'EUR',
+      'name' => 'Eŭro',
+      'symbol' => '€',
     ),
     'GBP' => 
     array (
-      'name' => 'brita sterlinga funto',
-      'symbol' => 'GBP',
+      'name' => 'Brita pundo',
+      'symbol' => '£',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'Honkonga dolaro',
+      'symbol' => 'HK$',
+    ),
+    'IDR' => 
+    array (
+      'name' => 'Indonezia rupio',
+      'symbol' => 'IDR',
     ),
     'INR' => 
     array (
-      'name' => 'hinda rupio',
-      'symbol' => 'INR',
+      'name' => 'Barata rupio',
+      'symbol' => '₹',
     ),
     'JPY' => 
     array (
-      'name' => 'japana eno',
-      'symbol' => 'JPY',
+      'name' => 'Japana eno',
+      'symbol' => 'JP¥',
+    ),
+    'KRW' => 
+    array (
+      'name' => 'Sud-korea ŭono',
+      'symbol' => '₩',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'Meksika peso',
+      'symbol' => 'MX$',
     ),
     'NOK' => 
     array (
-      'name' => 'norvega krono',
+      'name' => 'Norvega krono',
       'symbol' => 'NOK',
+    ),
+    'PLN' => 
+    array (
+      'name' => 'Pola zloto',
+      'symbol' => 'PLN',
     ),
     'RUB' => 
     array (
-      'name' => 'rusa rublo',
+      'name' => 'Rusa rublo',
       'symbol' => 'RUB',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'Sauda rialo',
+      'symbol' => 'SAR',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'Sveda krono',
+      'symbol' => 'SEK',
+    ),
+    'THB' => 
+    array (
+      'name' => 'Taja bahto',
+      'symbol' => '฿',
+    ),
+    'TRY' => 
+    array (
+      'name' => 'Turka liro',
+      'symbol' => '₺',
+    ),
+    'TWD' => 
+    array (
+      'name' => 'Nova tajvana dolaro',
+      'symbol' => 'NT$',
     ),
     'USD' => 
     array (
-      'name' => 'usona dolaro',
-      'symbol' => 'USD',
+      'name' => 'Usona dolaro',
+      'symbol' => 'US$',
     ),
     'XAG' => 
     array (
@@ -89,6 +161,16 @@ return array (
     array (
       'name' => 'plateno',
       'symbol' => 'XPT',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'Nekonata valuto',
+      'symbol' => 'XXX',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'Sud-afrika rando',
+      'symbol' => 'ZAR',
     ),
   ),
 );

@@ -1,0 +1,8 @@
+<?php
+return array (
+  'BA' => 'Bosnia ja Hercegovina',
+  'TD' => 'Chad',
+  'CI' => 'Côte d’Ivoire',
+  'KH' => 'Kamboža',
+  'SD' => 'Sudan',
+);

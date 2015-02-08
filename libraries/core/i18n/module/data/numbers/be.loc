@@ -24,15 +24,10 @@ return array (
       'name' => 'бразільскі рэал',
       'symbol' => 'BRL',
     ),
-    'BYB' => 
-    array (
-      'name' => 'BYB',
-      'symbol' => 'Руб',
-    ),
     'BYR' => 
     array (
       'name' => 'беларускі рубель',
-      'symbol' => 'BYR',
+      'symbol' => 'р.',
     ),
     'CNY' => 
     array (

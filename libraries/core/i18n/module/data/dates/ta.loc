@@ -1,6 +1,60 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'chinese' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'மா1',
+        2 => 'மா2',
+        3 => 'மா3',
+        4 => 'மா4',
+        5 => 'மா5',
+        6 => 'மா6',
+        7 => 'மா7',
+        8 => 'மா8',
+        9 => 'மா9',
+        10 => 'மா10',
+        11 => 'மா11',
+        12 => 'மா12',
+      ),
+      'full' => 
+      array (
+        1 => 'மாதம்1',
+        2 => 'மாதம்2',
+        3 => 'மாதம்3',
+        4 => 'மாதம்4',
+        5 => 'மாதம்5',
+        6 => 'மாதம்6',
+        7 => 'மாதம்7',
+        8 => 'மாதம்8',
+        9 => 'மாதம்9',
+        10 => 'மாதம்10',
+        11 => 'மாதம்11',
+        12 => 'மாதம்12',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'U MMMM d, EEEE',
+      'long' => 'U, d MMMM',
+      'medium' => 'U, d MMM',
+      'short' => 'dd-MM-y',
+    ),
+  ),
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM, y G',
+      'long' => 'd MMMM, y G',
+      'medium' => 'd MMM, y G',
+      'short' => 'd-M-y GGGGG',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 

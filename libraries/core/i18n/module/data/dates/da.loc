@@ -3,12 +3,15 @@ return array (
   '@default' => 'gregorian',
   'buddhist' => 
   array (
+  ),
+  'generic' => 
+  array (
     'dateFormat' => 
     array (
       'full' => 'EEEE d. MMMM y G',
       'long' => 'd. MMMM y G',
       'medium' => 'd. MMM y G',
-      'short' => 'd/M/yyyy',
+      'short' => 'd/M/y',
     ),
   ),
   'gregorian' => 
@@ -18,13 +21,13 @@ return array (
       '@default' => 'wide',
       'abbreviated' => 
       array (
-        'sun' => 'søn',
-        'mon' => 'man',
-        'tue' => 'tir',
-        'wed' => 'ons',
-        'thu' => 'tor',
-        'fri' => 'fre',
-        'sat' => 'lør',
+        'sun' => 'søn.',
+        'mon' => 'man.',
+        'tue' => 'tir.',
+        'wed' => 'ons.',
+        'thu' => 'tor.',
+        'fri' => 'fre.',
+        'sat' => 'lør.',
       ),
       'full' => 
       array (
@@ -74,8 +77,8 @@ return array (
     'dateFormat' => 
     array (
       'full' => 'EEEE \'den\' d. MMMM y',
-      'long' => 'd. MMM y',
-      'medium' => 'dd/MM/yyyy',
+      'long' => 'd. MMMM y',
+      'medium' => 'dd/MM/y',
       'short' => 'dd/MM/yy',
     ),
     'timeFormat' => 
@@ -86,15 +89,11 @@ return array (
       'short' => 'HH.mm',
     ),
   ),
+  'hebrew' => 
+  array (
+  ),
   'islamic' => 
   array (
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE d. MMMM y G',
-      'long' => 'd. MMMM y G',
-      'medium' => 'd. MMM y G',
-      'short' => 'd/M/y G',
-    ),
   ),
   'japanese' => 
   array (
@@ -103,17 +102,10 @@ return array (
       'full' => 'EEEE d. MMMM y G',
       'long' => 'd. MMMM y G',
       'medium' => 'd. MMM y G',
-      'short' => 'd/M/y GGGGG',
+      'short' => 'd/M/y',
     ),
   ),
   'roc' => 
   array (
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE d. MMMM y G',
-      'long' => 'd. MMMM y G',
-      'medium' => 'd. MMM y G',
-      'short' => 'd/M/y GGGGG',
-    ),
   ),
 );

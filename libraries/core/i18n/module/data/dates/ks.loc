@@ -1,0 +1,96 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, MMMM d, Gy',
+      'long' => 'MMMM d, Gy',
+      'medium' => 'MMM d, Gy',
+      'short' => 'M/d/Gy',
+    ),
+  ),
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'آتھوار',
+        'mon' => 'ژٔنٛدٕروار',
+        'tue' => 'بوٚموار',
+        'wed' => 'بودوار',
+        'thu' => 'برٛٮ۪سوار',
+        'fri' => 'جُمہ',
+        'sat' => 'بٹوار',
+      ),
+      'full' => 
+      array (
+        'sun' => 'اَتھوار',
+        'mon' => 'ژٔنٛدرٕروار',
+        'tue' => 'بوٚموار',
+        'wed' => 'بودوار',
+        'thu' => 'برٛٮ۪سوار',
+        'fri' => 'جُمہ',
+        'sat' => 'بٹوار',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'full' => 
+      array (
+        1 => 'جنؤری',
+        2 => 'فرؤری',
+        3 => 'مارٕچ',
+        4 => 'اپریل',
+        5 => 'میٔ',
+        6 => 'جوٗن',
+        7 => 'جوٗلایی',
+        8 => 'اگست',
+        9 => 'ستمبر',
+        10 => 'اکتوٗبر',
+        11 => 'نومبر',
+        12 => 'دسمبر',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, MMMM d, y',
+      'long' => 'MMMM d, y',
+      'medium' => 'MMM d, y',
+      'short' => 'M/d/yy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+  'indian' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'full' => 
+      array (
+        1 => 'محرم',
+        2 => 'صفر',
+        3 => 'ربیٖع الاول',
+        4 => 'ربیٖع الثانی',
+        5 => 'جمادی الاول',
+        6 => 'جمادی الثانی',
+        7 => 'رجب',
+        8 => 'شعبان',
+        9 => 'رمضان',
+        10 => 'شوال',
+        11 => 'ذِی القد',
+        12 => 'ذِی الحج',
+      ),
+    ),
+  ),
+);

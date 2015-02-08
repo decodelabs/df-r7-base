@@ -1,0 +1,277 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'AED' => 
+    array (
+      'name' => 'Diami ti Awon Orílɛ́ède Arabu',
+      'symbol' => 'AED',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'Wansa ti Orílɛ́ède Àngólà',
+      'symbol' => 'AOA',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'Dɔla ti Orílɛ́ède Ástràlìá',
+      'symbol' => 'AUD',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'Dina ti Orílɛ́ède Báránì',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'Faransi ti Orílɛ́ède Bùùrúndì',
+      'symbol' => 'BIF',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'Pula ti Orílɛ́ède Bɔ̀tìsúwánà',
+      'symbol' => 'BWP',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'Dɔla ti Orílɛ́ède Kánádà',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'Faransi ti Orílɛ́ède Kóngò',
+      'symbol' => 'CDF',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'Faransi ti Orílɛ́ède Siwisi',
+      'symbol' => 'CHF',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'Reminibi ti Orílɛ́ède sháínà',
+      'symbol' => 'CNY',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'Kabofediano ti Orílɛ́ède Esuodo',
+      'symbol' => 'CVE',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'Faransi ti Orílɛ́ède Dibouti',
+      'symbol' => 'DJF',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'Dina ti Orílɛ́ède Àlùgèríánì',
+      'symbol' => 'DZD',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'pɔɔn ti Orílɛ́ède Egipiti',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'Nakifa ti Orílɛ́ède Eriteriani',
+      'symbol' => 'ERN',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'Biri ti Orílɛ́ède Eutopia',
+      'symbol' => 'ETB',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'Pɔɔn ti Orílɛ́ède Bírítísì',
+      'symbol' => 'GBP',
+    ),
+    'GHC' => 
+    array (
+      'name' => 'shidi ti Orílɛ́ède Gana',
+      'symbol' => 'GHC',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'Dalasi ti Orílɛ́ède Gamibia',
+      'symbol' => 'GMD',
+    ),
+    'GNS' => 
+    array (
+      'name' => 'Faransi ti Orílɛ́ède Gini',
+      'symbol' => 'GNS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'Rupi ti Orílɛ́ède Indina',
+      'symbol' => 'INR',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'Yeni ti Orílɛ́ède Japani',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'shiili ti Orílɛ́ède Kenya',
+      'symbol' => 'KES',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'Faransi ti Orílɛ́ède shomoriani',
+      'symbol' => 'KMF',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'Dɔla ti Orílɛ́ède Liberia',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'Loti ti Orílɛ́ède Lesoto',
+      'symbol' => 'LSL',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'Dina ti Orílɛ́ède Libiya',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'Dirami ti Orílɛ́ède Moroko',
+      'symbol' => 'MAD',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'Faransi ti Orílɛ́ède Malagasi',
+      'symbol' => 'MGA',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'Ouguiya ti Orílɛ́ède Maritania',
+      'symbol' => 'MRO',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'Rupi ti Orílɛ́ède Maritiusi',
+      'symbol' => 'MUR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'Kasha ti Orílɛ́ède Malawi',
+      'symbol' => 'MWK',
+    ),
+    'MZM' => 
+    array (
+      'name' => 'Metika ti Orílɛ́ède Mosamibiki',
+      'symbol' => 'MZM',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'Dɔla ti Orílɛ́ède Namibia',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'Naira ti Orílɛ́ède Nàìjíríà',
+      'symbol' => 'NGN',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'Faransi ti Orílɛ́ède Ruwanda',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'Riya ti Orílɛ́ède Saudi',
+      'symbol' => 'SAR',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'Rupi ti Orílɛ́ède Sayiselesi',
+      'symbol' => 'SCR',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'Dina ti Orílɛ́ède Sudani',
+      'symbol' => 'SDG',
+    ),
+    'SDP' => 
+    array (
+      'name' => 'Pɔɔun ti Orílɛ́ède Sudani',
+      'symbol' => 'SDP',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'Pɔɔun ti Orílɛ́ède ̣Elena',
+      'symbol' => 'SHP',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'Sile ti Orílɛ́ède Somali',
+      'symbol' => 'SOS',
+    ),
+    'STD' => 
+    array (
+      'name' => 'Dobira ti Orílɛ́ède Sao tome Ati Pirisipe',
+      'symbol' => 'STD',
+    ),
+    'TND' => 
+    array (
+      'name' => 'Dina ti Orílɛ́ède Tunisia',
+      'symbol' => 'TND',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'Sile ti Orílɛ́ède Tansania',
+      'symbol' => 'TZS',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'Siile ti Orílɛ́ède Uganda',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'Dɔla ti Orílɛ́ède Amerika',
+      'symbol' => 'USD',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'Faransi ti Orílɛ́ède BEKA',
+      'symbol' => 'XAF',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'Faransi ti Orílɛ́ède BIKEAO',
+      'symbol' => 'XOF',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'Randi ti Orílɛ́ède Ariwa Afirika',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'Kawasha ti Orílɛ́ède Saabia (1968–2012)',
+      'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Kawasha ti Orílɛ́ède Saabia',
+      'symbol' => 'ZMW',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'Dɔla ti Orílɛ́ède Siibabuwe',
+      'symbol' => 'ZWD',
+    ),
+  ),
+);

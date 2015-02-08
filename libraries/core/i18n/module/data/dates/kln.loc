@@ -1,6 +1,16 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM y G',
+      'long' => 'd MMMM y G',
+      'medium' => 'd MMM y G',
+      'short' => 'dd/MM/y GGGGG',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -20,9 +30,9 @@ return array (
       array (
         'sun' => 'Betutab tisap',
         'mon' => 'Betut netai',
-        'tue' => 'Betutab aeng\'',
+        'tue' => 'Betutab aeng’',
         'wed' => 'Betutab somok',
-        'thu' => 'Betutab ang\'wan',
+        'thu' => 'Betutab ang’wan',
         'fri' => 'Betutab mut',
         'sat' => 'Betutab lo',
       ),
@@ -48,10 +58,10 @@ return array (
       'full' => 
       array (
         1 => 'Mulgul',
-        2 => 'Ng\'atyato',
+        2 => 'Ng’atyato',
         3 => 'Kiptamo',
         4 => 'Iwat kut',
-        5 => 'Ng\'eiyet',
+        5 => 'Ng’eiyet',
         6 => 'Waki',
         7 => 'Roptui',
         8 => 'Kipkogaga',
@@ -66,7 +76,7 @@ return array (
       'full' => 'EEEE, d MMMM y',
       'long' => 'd MMMM y',
       'medium' => 'd MMM y',
-      'short' => 'dd/MM/yyyy',
+      'short' => 'dd/MM/y',
     ),
     'timeFormat' => 
     array (

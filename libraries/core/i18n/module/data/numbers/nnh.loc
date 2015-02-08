@@ -1,0 +1,23 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => ',',
+    'group' => '.',
+    'list' => ';',
+    'percentSign' => '%',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'currency' => '¤ #,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'XAF' => 
+    array (
+      'name' => 'feláŋ CFA',
+      'symbol' => 'FCFA',
+    ),
+  ),
+);

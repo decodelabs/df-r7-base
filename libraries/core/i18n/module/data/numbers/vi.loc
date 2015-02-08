@@ -9,9 +9,11 @@ return array (
     'plusSign' => '+',
     'minusSign' => '-',
     'exponential' => 'E',
+    'superscriptingExponent' => '×',
     'perMille' => '‰',
     'infinity' => '∞',
     'nan' => 'NaN',
+    'timeSeparator' => ':',
   ),
   'formats' => 
   array (
@@ -22,205 +24,415 @@ return array (
   ),
   'currencies' => 
   array (
+    'ADP' => 
+    array (
+      'name' => 'Đồng Peseta của Andora',
+      'symbol' => 'ADP',
+    ),
     'AED' => 
     array (
-      'name' => 'Điram UAE',
+      'name' => 'Dirham UAE',
       'symbol' => 'AED',
+    ),
+    'AFA' => 
+    array (
+      'name' => 'Đồng Afghani của Afghanistan (1927–2002)',
+      'symbol' => 'AFA',
     ),
     'AFN' => 
     array (
-      'name' => 'Đồng afghani của Afghanistan',
+      'name' => 'Afghani Afghanistan',
       'symbol' => 'AFN',
     ),
     'ALL' => 
     array (
-      'name' => 'Đồng lek của Albani',
+      'name' => 'Lek Albania',
       'symbol' => 'ALL',
     ),
     'AMD' => 
     array (
-      'name' => 'Đồng dram của Armenia',
+      'name' => 'Dram Armenia',
       'symbol' => 'AMD',
     ),
     'ANG' => 
     array (
-      'name' => 'Đồng guilder của Antille thuộc Hà Lan',
+      'name' => 'Guilder Tây Ấn Hà Lan',
       'symbol' => 'ANG',
     ),
     'AOA' => 
     array (
-      'name' => 'Đồng kwanza của Angola',
+      'name' => 'Kwanza Angola',
       'symbol' => 'AOA',
+    ),
+    'AOK' => 
+    array (
+      'name' => 'Đồng Kwanza của Angola (1977–1991)',
+      'symbol' => 'AOK',
+    ),
+    'AON' => 
+    array (
+      'name' => 'Đồng Kwanza Mới của Angola (1990–2000)',
+      'symbol' => 'AON',
+    ),
+    'AOR' => 
+    array (
+      'name' => 'Đồng Kwanza Điều chỉnh lại của Angola (1995–1999)',
+      'symbol' => 'AOR',
+    ),
+    'ARA' => 
+    array (
+      'name' => 'Đồng Austral của Argentina',
+      'symbol' => 'ARA',
+    ),
+    'ARL' => 
+    array (
+      'name' => 'Đồng Peso Ley của Argentina (1970–1983)',
+      'symbol' => 'ARL',
+    ),
+    'ARM' => 
+    array (
+      'name' => 'Đồng Peso Argentina (1881–1970)',
+      'symbol' => 'ARM',
+    ),
+    'ARP' => 
+    array (
+      'name' => 'Đồng Peso Argentina (1983–1985)',
+      'symbol' => 'ARP',
     ),
     'ARS' => 
     array (
-      'name' => 'Đồng peso của Argentina',
+      'name' => 'Peso Argentina',
       'symbol' => 'ARS',
+    ),
+    'ATS' => 
+    array (
+      'name' => 'Đồng Schiling Áo',
+      'symbol' => 'ATS',
     ),
     'AUD' => 
     array (
-      'name' => 'Đồng đô la của Úc',
-      'symbol' => 'AUD',
+      'name' => 'Đô la Australia',
+      'symbol' => 'AU$',
     ),
     'AWG' => 
     array (
-      'name' => 'Đồng florin của Aruba',
+      'name' => 'Florin Aruba',
       'symbol' => 'AWG',
+    ),
+    'AZM' => 
+    array (
+      'name' => 'Đồng Manat của Azerbaijan (1993–2006)',
+      'symbol' => 'AZM',
     ),
     'AZN' => 
     array (
-      'name' => 'Đồng manat của Azerbaijan',
+      'name' => 'Manat Azerbaijan',
       'symbol' => 'AZN',
+    ),
+    'BAD' => 
+    array (
+      'name' => 'Đồng Dinar của Bosnia-Herzegovina (1992–1994)',
+      'symbol' => 'BAD',
     ),
     'BAM' => 
     array (
-      'name' => 'Đồng mác có thể chuyển đổi của Bosnia-Herzegovina',
+      'name' => 'Mark Bosnia-Herzegovina có thể chuyển đổi',
       'symbol' => 'BAM',
+    ),
+    'BAN' => 
+    array (
+      'name' => 'Đồng Dinar Mới của Bosnia-Herzegovina (1994–1997)',
+      'symbol' => 'BAN',
     ),
     'BBD' => 
     array (
-      'name' => 'Đồng đô la của Barbadia',
+      'name' => 'Đô la Barbados',
       'symbol' => 'BBD',
     ),
     'BDT' => 
     array (
-      'name' => 'Đồng taka của Bangladesh',
+      'name' => 'Taka Bangladesh',
       'symbol' => 'BDT',
+    ),
+    'BEC' => 
+    array (
+      'name' => 'Đồng Franc Bỉ (có thể chuyển đổi)',
+      'symbol' => 'BEC',
+    ),
+    'BEF' => 
+    array (
+      'name' => 'Đồng Franc Bỉ',
+      'symbol' => 'BEF',
+    ),
+    'BEL' => 
+    array (
+      'name' => 'Đồng Franc Bỉ (tài chính)',
+      'symbol' => 'BEL',
+    ),
+    'BGL' => 
+    array (
+      'name' => 'Đồng Lev Xu của Bun-ga-ri',
+      'symbol' => 'BGL',
+    ),
+    'BGM' => 
+    array (
+      'name' => 'Đồng Lev Xã hội chủ nghĩa của Bun-ga-ri',
+      'symbol' => 'BGM',
     ),
     'BGN' => 
     array (
-      'name' => 'Lép Bungari',
+      'name' => 'Lev Bulgaria',
       'symbol' => 'BGN',
+    ),
+    'BGO' => 
+    array (
+      'name' => 'Đồng Lev của Bun-ga-ri (1879–1952)',
+      'symbol' => 'BGO',
     ),
     'BHD' => 
     array (
-      'name' => 'Đồng dinar của Bahrain',
+      'name' => 'Dinar Bahrain',
       'symbol' => 'BHD',
     ),
     'BIF' => 
     array (
-      'name' => 'Đồng franc của Burundi',
+      'name' => 'Franc Burundi',
       'symbol' => 'BIF',
     ),
     'BMD' => 
     array (
-      'name' => 'Đồng đô la Bermuda',
+      'name' => 'Đô la Bermuda',
       'symbol' => 'BMD',
     ),
     'BND' => 
     array (
-      'name' => 'Đồng đô la của Brunei',
+      'name' => 'Đô la Brunei',
       'symbol' => 'BND',
     ),
     'BOB' => 
     array (
-      'name' => 'Đồng boliviano của Bolivia',
+      'name' => 'Boliviano Bolivia',
       'symbol' => 'BOB',
+    ),
+    'BOL' => 
+    array (
+      'name' => 'Đồng Boliviano của Bolivia (1863–1963)',
+      'symbol' => 'BOL',
+    ),
+    'BOP' => 
+    array (
+      'name' => 'Đồng Peso Bolivia',
+      'symbol' => 'BOP',
+    ),
+    'BOV' => 
+    array (
+      'name' => 'Đồng Mvdol Bolivia',
+      'symbol' => 'BOV',
+    ),
+    'BRB' => 
+    array (
+      'name' => 'Đồng Cruzerio Mới của Braxin (1967–1986)',
+      'symbol' => 'BRB',
+    ),
+    'BRC' => 
+    array (
+      'name' => 'Đồng Cruzado của Braxin (1986–1989)',
+      'symbol' => 'BRC',
+    ),
+    'BRE' => 
+    array (
+      'name' => 'Đồng Cruzerio của Braxin (1990–1993)',
+      'symbol' => 'BRE',
     ),
     'BRL' => 
     array (
       'name' => 'Real Braxin',
-      'symbol' => 'BRL',
+      'symbol' => 'R$',
+    ),
+    'BRN' => 
+    array (
+      'name' => 'Đồng Cruzado Mới của Braxin (1989–1990)',
+      'symbol' => 'BRN',
+    ),
+    'BRR' => 
+    array (
+      'name' => 'Đồng Cruzeiro của Braxin (1993–1994)',
+      'symbol' => 'BRR',
+    ),
+    'BRZ' => 
+    array (
+      'name' => 'Đồng Cruzeiro của Braxin (1942–1967)',
+      'symbol' => 'BRZ',
     ),
     'BSD' => 
     array (
-      'name' => 'Đồng đô la của Bahamia',
+      'name' => 'Đô la Bahamas',
       'symbol' => 'BSD',
     ),
     'BTN' => 
     array (
-      'name' => 'Đồng ngultrum của Bhutan',
+      'name' => 'Ngultrum Bhutan',
       'symbol' => 'BTN',
+    ),
+    'BUK' => 
+    array (
+      'name' => 'Đồng Kyat Miến Điện',
+      'symbol' => 'BUK',
     ),
     'BWP' => 
     array (
-      'name' => 'Đồng pula của Botswana',
+      'name' => 'Pula Botswana',
       'symbol' => 'BWP',
+    ),
+    'BYB' => 
+    array (
+      'name' => 'Đồng Rúp Mới của Belarus (1994–1999)',
+      'symbol' => 'BYB',
     ),
     'BYR' => 
     array (
-      'name' => 'Đồng rúp của Belarus',
+      'name' => 'Rúp Belarus',
       'symbol' => 'BYR',
     ),
     'BZD' => 
     array (
-      'name' => 'Đồng đô la của Belize',
+      'name' => 'Đô la Belize',
       'symbol' => 'BZD',
     ),
     'CAD' => 
     array (
-      'name' => 'Đồng đô la của Canada',
-      'symbol' => 'CAD',
+      'name' => 'Đô la Canada',
+      'symbol' => 'CA$',
     ),
     'CDF' => 
     array (
-      'name' => 'Đồng franc của Congo',
+      'name' => 'Franc Congo',
       'symbol' => 'CDF',
+    ),
+    'CHE' => 
+    array (
+      'name' => 'Đồng Euro WIR',
+      'symbol' => 'CHE',
     ),
     'CHF' => 
     array (
       'name' => 'Franc Thụy sĩ',
       'symbol' => 'CHF',
     ),
+    'CHW' => 
+    array (
+      'name' => 'Đồng France WIR',
+      'symbol' => 'CHW',
+    ),
+    'CLE' => 
+    array (
+      'name' => 'Đồng Escudo của Chile',
+      'symbol' => 'CLE',
+    ),
+    'CLF' => 
+    array (
+      'name' => 'Đơn vị Kế toán của Chile (UF)',
+      'symbol' => 'CLF',
+    ),
     'CLP' => 
     array (
-      'name' => 'Đồng Peso của Chile',
+      'name' => 'Peso Chile',
       'symbol' => 'CLP',
     ),
     'CNY' => 
     array (
-      'name' => 'Yuan Trung Quốc',
-      'symbol' => 'CNY',
+      'name' => 'Nhân dân tệ',
+      'symbol' => 'CN¥',
     ),
     'COP' => 
     array (
-      'name' => 'Đồng Peso của Colombia',
+      'name' => 'Peso Colombia',
       'symbol' => 'COP',
+    ),
+    'COU' => 
+    array (
+      'name' => 'Đơn vị Giá trị Thực của Colombia',
+      'symbol' => 'COU',
     ),
     'CRC' => 
     array (
-      'name' => 'Đồng colón của Costa Rica',
+      'name' => 'Colón Costa Rica',
       'symbol' => 'CRC',
+    ),
+    'CSD' => 
+    array (
+      'name' => 'Đồng Dinar của Serbia (2002–2006)',
+      'symbol' => 'CSD',
+    ),
+    'CSK' => 
+    array (
+      'name' => 'Đồng Koruna Xu của Czechoslovakia',
+      'symbol' => 'CSK',
     ),
     'CUC' => 
     array (
-      'name' => 'Đồng peso có thể chuyển đổi của Cuba',
+      'name' => 'Peso Cuba có thể chuyển đổi',
       'symbol' => 'CUC',
     ),
     'CUP' => 
     array (
-      'name' => 'Đồng peso của Cu Ba',
+      'name' => 'Peso Cuba',
       'symbol' => 'CUP',
     ),
     'CVE' => 
     array (
-      'name' => 'Đồng escudo của Cape Verde',
+      'name' => 'Escudo Cape Verde',
       'symbol' => 'CVE',
+    ),
+    'CYP' => 
+    array (
+      'name' => 'Đồng Bảng Síp',
+      'symbol' => 'CYP',
     ),
     'CZK' => 
     array (
-      'name' => 'Đồng curon của cộng hòa Séc',
+      'name' => 'Koruna Cộng hòa Séc',
       'symbol' => 'CZK',
+    ),
+    'DDM' => 
+    array (
+      'name' => 'Đồng Mark Đông Đức',
+      'symbol' => 'DDM',
+    ),
+    'DEM' => 
+    array (
+      'name' => 'Đồng Mark Đức',
+      'symbol' => 'DEM',
     ),
     'DJF' => 
     array (
-      'name' => 'Đồng franc của Djibouti',
+      'name' => 'Franc Djibouti',
       'symbol' => 'DJF',
     ),
     'DKK' => 
     array (
-      'name' => 'Đồng curon của Đan Mạch',
+      'name' => 'Krone Đan Mạch',
       'symbol' => 'DKK',
     ),
     'DOP' => 
     array (
-      'name' => 'Đồng peso của Dominica',
+      'name' => 'Peso Dominica',
       'symbol' => 'DOP',
     ),
     'DZD' => 
     array (
-      'name' => 'Đồng dina của Algeri',
+      'name' => 'Dinar Algeria',
       'symbol' => 'DZD',
+    ),
+    'ECS' => 
+    array (
+      'name' => 'Đồng Scure Ecuador',
+      'symbol' => 'ECS',
+    ),
+    'ECV' => 
+    array (
+      'name' => 'Đơn vị Giá trị Không đổi của Ecuador',
+      'symbol' => 'ECV',
     ),
     'EEK' => 
     array (
@@ -229,32 +441,52 @@ return array (
     ),
     'EGP' => 
     array (
-      'name' => 'Đồng bảng của Ai Cập',
+      'name' => 'Bảng Ai Cập',
       'symbol' => 'EGP',
     ),
     'ERN' => 
     array (
-      'name' => 'Đồng nakfa của Eritrea',
+      'name' => 'Nakfa Eritrea',
       'symbol' => 'ERN',
+    ),
+    'ESA' => 
+    array (
+      'name' => 'Đồng Peseta Tây Ban Nha (Tài khoản)',
+      'symbol' => 'ESA',
+    ),
+    'ESB' => 
+    array (
+      'name' => 'Đồng Peseta Tây Ban Nha (tài khoản có thể chuyển đổi)',
+      'symbol' => 'ESB',
+    ),
+    'ESP' => 
+    array (
+      'name' => 'Đồng Peseta Tây Ban Nha',
+      'symbol' => 'ESP',
     ),
     'ETB' => 
     array (
-      'name' => 'Đồng birr của Ethiopia',
+      'name' => 'Birr Ethiopia',
       'symbol' => 'ETB',
     ),
     'EUR' => 
     array (
       'name' => 'Euro',
-      'symbol' => 'EUR',
+      'symbol' => '€',
+    ),
+    'FIM' => 
+    array (
+      'name' => 'Đồng Markka Phần Lan',
+      'symbol' => 'FIM',
     ),
     'FJD' => 
     array (
-      'name' => 'Đô-la Fi-ji',
+      'name' => 'Đô la Fiji',
       'symbol' => 'FJD',
     ),
     'FKP' => 
     array (
-      'name' => 'Đồng bảng của quần đảo Falkland',
+      'name' => 'Bảng Quần đảo Falkland',
       'symbol' => 'FKP',
     ),
     'FRF' => 
@@ -265,16 +497,21 @@ return array (
     'GBP' => 
     array (
       'name' => 'Bảng Anh',
-      'symbol' => 'GBP',
+      'symbol' => '£',
+    ),
+    'GEK' => 
+    array (
+      'name' => 'Đồng Kupon Larit của Georgia',
+      'symbol' => 'GEK',
     ),
     'GEL' => 
     array (
-      'name' => 'Lari Georgia',
+      'name' => 'Lari Gruzia',
       'symbol' => 'GEL',
     ),
     'GHC' => 
     array (
-      'name' => 'Cedi Ghana (1979-2007)',
+      'name' => 'Cedi Ghana (1979–2007)',
       'symbol' => 'GHC',
     ),
     'GHS' => 
@@ -284,12 +521,12 @@ return array (
     ),
     'GIP' => 
     array (
-      'name' => 'Pao Gibraltar',
+      'name' => 'Bảng Gibraltar',
       'symbol' => 'GIP',
     ),
     'GMD' => 
     array (
-      'name' => 'Đồng dalasi của Gambia',
+      'name' => 'Dalasi Gambia',
       'symbol' => 'GMD',
     ),
     'GNF' => 
@@ -302,6 +539,11 @@ return array (
       'name' => 'Syli Guinea',
       'symbol' => 'GNS',
     ),
+    'GQE' => 
+    array (
+      'name' => 'Đồng Ekwele của Guinea Xích Đạo',
+      'symbol' => 'GQE',
+    ),
     'GRD' => 
     array (
       'name' => 'Drachma Hy Lạp',
@@ -312,6 +554,11 @@ return array (
       'name' => 'Quetzal Guatemala',
       'symbol' => 'GTQ',
     ),
+    'GWE' => 
+    array (
+      'name' => 'Đồng Guinea Escudo Bồ Đào Nha',
+      'symbol' => 'GWE',
+    ),
     'GWP' => 
     array (
       'name' => 'Peso Guinea-Bissau',
@@ -319,22 +566,27 @@ return array (
     ),
     'GYD' => 
     array (
-      'name' => 'Đô-la Guyana',
+      'name' => 'Đô la Guyana',
       'symbol' => 'GYD',
     ),
     'HKD' => 
     array (
-      'name' => 'Đô-la Hồng Kông',
-      'symbol' => 'HKD',
+      'name' => 'Đô la Hồng Kông',
+      'symbol' => 'HK$',
     ),
     'HNL' => 
     array (
-      'name' => 'Honduras Lempira',
+      'name' => 'Lempira Honduras',
       'symbol' => 'HNL',
+    ),
+    'HRD' => 
+    array (
+      'name' => 'Đồng Dinar Croatia',
+      'symbol' => 'HRD',
     ),
     'HRK' => 
     array (
-      'name' => 'Đồng kuna của Croatia',
+      'name' => 'Kuna Croatia',
       'symbol' => 'HRK',
     ),
     'HTG' => 
@@ -344,12 +596,12 @@ return array (
     ),
     'HUF' => 
     array (
-      'name' => 'Phôrin Hungari',
+      'name' => 'Forint Hungaria',
       'symbol' => 'HUF',
     ),
     'IDR' => 
     array (
-      'name' => 'Rupia Inđônêxia',
+      'name' => 'Rupiah Indonesia',
       'symbol' => 'IDR',
     ),
     'IEP' => 
@@ -364,13 +616,13 @@ return array (
     ),
     'ILS' => 
     array (
-      'name' => 'Sêken Ixraen',
-      'symbol' => 'ILS',
+      'name' => 'Sheqel Israel mới',
+      'symbol' => '₪',
     ),
     'INR' => 
     array (
-      'name' => 'Rupi Ấn Độ',
-      'symbol' => 'INR',
+      'name' => 'Rupee Ấn Độ',
+      'symbol' => '₹',
     ),
     'IQD' => 
     array (
@@ -379,12 +631,12 @@ return array (
     ),
     'IRR' => 
     array (
-      'name' => 'Rial I-ran',
+      'name' => 'Rial Iran',
       'symbol' => 'IRR',
     ),
     'ISK' => 
     array (
-      'name' => 'Đồng curon của Iceland',
+      'name' => 'Króna Iceland',
       'symbol' => 'ISK',
     ),
     'ITL' => 
@@ -405,41 +657,51 @@ return array (
     'JPY' => 
     array (
       'name' => 'Yên Nhật',
-      'symbol' => 'JPY',
+      'symbol' => 'JP¥',
     ),
     'KES' => 
     array (
-      'name' => 'Si-ling Kê-ny-a',
+      'name' => 'Shilling Kenya',
       'symbol' => 'KES',
     ),
     'KGS' => 
     array (
-      'name' => 'Đồng som của Kyrgystan',
+      'name' => 'Som Kyrgyzstan',
       'symbol' => 'KGS',
     ),
     'KHR' => 
     array (
-      'name' => 'Riên Campuchia',
+      'name' => 'Riel Campuchia',
       'symbol' => 'KHR',
     ),
     'KMF' => 
     array (
-      'name' => 'Đồng franc của Comoros',
+      'name' => 'Franc Comoros',
       'symbol' => 'KMF',
     ),
     'KPW' => 
     array (
-      'name' => 'Đồng Won Triều Tiên',
+      'name' => 'Won Triều Tiên',
       'symbol' => 'KPW',
+    ),
+    'KRH' => 
+    array (
+      'name' => 'Đồng Hwan Hàn Quốc (1953–1962)',
+      'symbol' => 'KRH',
+    ),
+    'KRO' => 
+    array (
+      'name' => 'Đồng Won Hàn Quốc (1945–1953)',
+      'symbol' => 'KRO',
     ),
     'KRW' => 
     array (
       'name' => 'Won Hàn Quốc',
-      'symbol' => 'KRW',
+      'symbol' => '₩',
     ),
     'KWD' => 
     array (
-      'name' => 'Đồng dina của Kuwait',
+      'name' => 'Dinar Kuwait',
       'symbol' => 'KWD',
     ),
     'KYD' => 
@@ -449,22 +711,22 @@ return array (
     ),
     'KZT' => 
     array (
-      'name' => 'Kazakhstan Tenge',
+      'name' => 'Tenge Kazakhstan',
       'symbol' => 'KZT',
     ),
     'LAK' => 
     array (
-      'name' => 'Đồng kíp của Lào',
+      'name' => 'Kip Lào',
       'symbol' => 'LAK',
     ),
     'LBP' => 
     array (
-      'name' => 'Đồng bảng của Li Băng',
+      'name' => 'Bảng Li-băng',
       'symbol' => 'LBP',
     ),
     'LKR' => 
     array (
-      'name' => 'Đồng rupi của Sri Lanka',
+      'name' => 'Rupee Sri Lanka',
       'symbol' => 'LKR',
     ),
     'LRD' => 
@@ -479,57 +741,112 @@ return array (
     ),
     'LTL' => 
     array (
-      'name' => 'Litat Lituani',
+      'name' => 'Litas Lít-va',
       'symbol' => 'LTL',
+    ),
+    'LTT' => 
+    array (
+      'name' => 'Đồng Talonas Litva',
+      'symbol' => 'LTT',
+    ),
+    'LUC' => 
+    array (
+      'name' => 'Đồng Franc Luxembourg có thể chuyển đổi',
+      'symbol' => 'LUC',
+    ),
+    'LUF' => 
+    array (
+      'name' => 'Đồng Franc Luxembourg',
+      'symbol' => 'LUF',
+    ),
+    'LUL' => 
+    array (
+      'name' => 'Đồng Franc Luxembourg tài chính',
+      'symbol' => 'LUL',
     ),
     'LVL' => 
     array (
-      'name' => 'Đồng lats của Latvia',
+      'name' => 'Lats Latvia',
       'symbol' => 'LVL',
+    ),
+    'LVR' => 
+    array (
+      'name' => 'Đồng Rúp Latvia',
+      'symbol' => 'LVR',
     ),
     'LYD' => 
     array (
-      'name' => 'Đồng dinar của Libi',
+      'name' => 'Dinar Libi',
       'symbol' => 'LYD',
     ),
     'MAD' => 
     array (
-      'name' => 'Điaham Marốc',
+      'name' => 'Dirham Ma-rốc',
       'symbol' => 'MAD',
+    ),
+    'MAF' => 
+    array (
+      'name' => 'Đồng Franc Ma-rốc',
+      'symbol' => 'MAF',
+    ),
+    'MCF' => 
+    array (
+      'name' => 'Đồng Franc Monegasque',
+      'symbol' => 'MCF',
+    ),
+    'MDC' => 
+    array (
+      'name' => 'Đồng Cupon Moldova',
+      'symbol' => 'MDC',
     ),
     'MDL' => 
     array (
-      'name' => 'Đồng leu của Moldova',
+      'name' => 'Leu Moldova',
       'symbol' => 'MDL',
     ),
     'MGA' => 
     array (
-      'name' => 'Đồng Ariary của Malagasy',
+      'name' => 'Ariary Malagasy',
       'symbol' => 'MGA',
+    ),
+    'MGF' => 
+    array (
+      'name' => 'Đồng Franc Magalasy',
+      'symbol' => 'MGF',
     ),
     'MKD' => 
     array (
-      'name' => 'Đồng dena của Macedonia',
+      'name' => 'Denar Macedonia',
       'symbol' => 'MKD',
+    ),
+    'MKN' => 
+    array (
+      'name' => 'Đồng Denar Macedonia (1992–1993)',
+      'symbol' => 'MKN',
+    ),
+    'MLF' => 
+    array (
+      'name' => 'Đồng Franc Mali',
+      'symbol' => 'MLF',
     ),
     'MMK' => 
     array (
-      'name' => 'Đồng kyat của Myanma',
+      'name' => 'Kyat Myanma',
       'symbol' => 'MMK',
     ),
     'MNT' => 
     array (
-      'name' => 'Đồng tugrik của Mông Cổ',
+      'name' => 'Tugrik Mông Cổ',
       'symbol' => 'MNT',
     ),
     'MOP' => 
     array (
-      'name' => 'Đồng pataca của Ma Cao',
+      'name' => 'Pataca Ma Cao',
       'symbol' => 'MOP',
     ),
     'MRO' => 
     array (
-      'name' => 'Đồng ouguiya của Mauritania',
+      'name' => 'Ouguiya Mauritania',
       'symbol' => 'MRO',
     ),
     'MTL' => 
@@ -537,89 +854,139 @@ return array (
       'name' => 'Lia xứ Man-tơ',
       'symbol' => 'MTL',
     ),
+    'MTP' => 
+    array (
+      'name' => 'Đồng Bảng Malta',
+      'symbol' => 'MTP',
+    ),
     'MUR' => 
     array (
-      'name' => 'Đồng rupi của Mauritius',
+      'name' => 'Rupee Mauritius',
       'symbol' => 'MUR',
     ),
     'MVR' => 
     array (
-      'name' => 'Đồng rufiyaa của Maldives',
+      'name' => 'Rufiyaa Maldives',
       'symbol' => 'MVR',
     ),
     'MWK' => 
     array (
-      'name' => 'Đồng kwacha của Malawi',
+      'name' => 'Kwacha Malawi',
       'symbol' => 'MWK',
     ),
     'MXN' => 
     array (
-      'name' => 'Peso Mêhicô',
-      'symbol' => 'MXN',
+      'name' => 'Peso Mexico',
+      'symbol' => 'MX$',
+    ),
+    'MXP' => 
+    array (
+      'name' => 'Đồng Peso Bạc Mê-hi-cô (1861–1992)',
+      'symbol' => 'MXP',
+    ),
+    'MXV' => 
+    array (
+      'name' => 'Đơn vị Đầu tư Mê-hi-cô',
+      'symbol' => 'MXV',
     ),
     'MYR' => 
     array (
-      'name' => 'Rinhgit Malaixia',
+      'name' => 'Ringgit Malaysia',
       'symbol' => 'MYR',
+    ),
+    'MZE' => 
+    array (
+      'name' => 'Đồng Escudo Mozambique',
+      'symbol' => 'MZE',
+    ),
+    'MZM' => 
+    array (
+      'name' => 'Đồng Metical Mozambique (1980–2006)',
+      'symbol' => 'MZM',
+    ),
+    'MZN' => 
+    array (
+      'name' => 'Metical Mozambique',
+      'symbol' => 'MZN',
     ),
     'NAD' => 
     array (
-      'name' => 'Đồng đô la của Namibia',
+      'name' => 'Đô la Namibia',
       'symbol' => 'NAD',
     ),
     'NGN' => 
     array (
-      'name' => 'Đồng naira của Nigeria',
+      'name' => 'Naira Nigeria',
       'symbol' => 'NGN',
+    ),
+    'NIC' => 
+    array (
+      'name' => 'Đồng Córdoba Nicaragua (1988–1991)',
+      'symbol' => 'NIC',
     ),
     'NIO' => 
     array (
-      'name' => 'Đồng córdoba của Nicaragua',
+      'name' => 'Córdoba Nicaragua',
       'symbol' => 'NIO',
+    ),
+    'NLG' => 
+    array (
+      'name' => 'Đồng Guilder Hà Lan',
+      'symbol' => 'NLG',
     ),
     'NOK' => 
     array (
-      'name' => 'Curon Na Uy',
+      'name' => 'Krone Na Uy',
       'symbol' => 'NOK',
     ),
     'NPR' => 
     array (
-      'name' => 'Đồng rupi của Nepal',
+      'name' => 'Rupee Nepal',
       'symbol' => 'NPR',
     ),
     'NZD' => 
     array (
-      'name' => 'Đô-la New Zealand',
-      'symbol' => 'NZD',
+      'name' => 'Đô la New Zealand',
+      'symbol' => 'NZ$',
     ),
     'OMR' => 
     array (
-      'name' => 'Đồng rial của Oman',
+      'name' => 'Rial Oman',
       'symbol' => 'OMR',
     ),
     'PAB' => 
     array (
-      'name' => 'Đồng balboa của Panama',
+      'name' => 'Balboa Panama',
       'symbol' => 'PAB',
+    ),
+    'PEI' => 
+    array (
+      'name' => 'Đồng Inti Peru',
+      'symbol' => 'PEI',
     ),
     'PEN' => 
     array (
-      'name' => 'Nuevo Sol Pêru',
+      'name' => 'Nuevo Sol Peru',
       'symbol' => 'PEN',
+    ),
+    'PES' => 
+    array (
+      'name' => 'Đồng Sol Peru (1863–1965)',
+      'symbol' => 'PES',
     ),
     'PGK' => 
     array (
-      'name' => 'Đồng kina của Papua New Guinean',
+      'name' => 'Kina Papua New Guinean',
       'symbol' => 'PGK',
     ),
     'PHP' => 
     array (
-      'name' => 'Peso Philíppin',
+      'name' => 'Peso Philipin',
       'symbol' => 'PHP',
     ),
     'PKR' => 
     array (
-      'name' => 'Rupi Pakistan',
+      'name' => 'Rupee Pakistan',
       'symbol' => 'PKR',
     ),
     'PLN' => 
@@ -627,24 +994,44 @@ return array (
       'name' => 'Zloty Ba Lan',
       'symbol' => 'PLN',
     ),
+    'PLZ' => 
+    array (
+      'name' => 'Đồng Zloty Ba Lan (1950–1995)',
+      'symbol' => 'PLZ',
+    ),
+    'PTE' => 
+    array (
+      'name' => 'Đồng Escudo Bồ Đào Nha',
+      'symbol' => 'PTE',
+    ),
     'PYG' => 
     array (
-      'name' => 'Đồng guarani của Paraguay',
+      'name' => 'Guarani Paraguay',
       'symbol' => 'PYG',
     ),
     'QAR' => 
     array (
-      'name' => 'Đồng rial của Qatari',
+      'name' => 'Rial Qatar',
       'symbol' => 'QAR',
+    ),
+    'RHD' => 
+    array (
+      'name' => 'Đồng Đô la Rhode',
+      'symbol' => 'RHD',
+    ),
+    'ROL' => 
+    array (
+      'name' => 'Đồng Leu Rumani (1952–2006)',
+      'symbol' => 'ROL',
     ),
     'RON' => 
     array (
-      'name' => 'Lây Rumani',
+      'name' => 'Leu Romania',
       'symbol' => 'RON',
     ),
     'RSD' => 
     array (
-      'name' => 'Đina Xéc-bi',
+      'name' => 'Dinar Serbia',
       'symbol' => 'RSD',
     ),
     'RUB' => 
@@ -652,14 +1039,19 @@ return array (
       'name' => 'Rúp Nga',
       'symbol' => 'RUB',
     ),
+    'RUR' => 
+    array (
+      'name' => 'Đồng Rúp Nga (1991–1998)',
+      'symbol' => 'RUR',
+    ),
     'RWF' => 
     array (
-      'name' => 'Đồng franc của Rwanda',
+      'name' => 'Franc Rwanda',
       'symbol' => 'RWF',
     ),
     'SAR' => 
     array (
-      'name' => 'Rian Ả rập Xêút',
+      'name' => 'Riyal Ả Rập Xê-út',
       'symbol' => 'SAR',
     ),
     'SBD' => 
@@ -669,27 +1061,37 @@ return array (
     ),
     'SCR' => 
     array (
-      'name' => 'Đồng rupi của Seychelles',
+      'name' => 'Rupee Seychelles',
       'symbol' => 'SCR',
+    ),
+    'SDD' => 
+    array (
+      'name' => 'Đồng Dinar Sudan (1992–2007)',
+      'symbol' => 'SDD',
     ),
     'SDG' => 
     array (
-      'name' => 'Đồng bảng của Sudan',
+      'name' => 'Bảng Sudan',
       'symbol' => 'SDG',
+    ),
+    'SDP' => 
+    array (
+      'name' => 'Đồng Bảng Sudan (1957–1998)',
+      'symbol' => 'SDP',
     ),
     'SEK' => 
     array (
-      'name' => 'Cua-ron Thuỵ Điển',
+      'name' => 'Krona Thụy Điển',
       'symbol' => 'SEK',
     ),
     'SGD' => 
     array (
-      'name' => 'Đô-la Singapore',
+      'name' => 'Đô la Singapore',
       'symbol' => 'SGD',
     ),
     'SHP' => 
     array (
-      'name' => 'Đồng bảng của Saint Helena',
+      'name' => 'Bảng Saint Helena',
       'symbol' => 'SHP',
     ),
     'SIT' => 
@@ -704,178 +1106,373 @@ return array (
     ),
     'SLL' => 
     array (
-      'name' => 'Đồng leone của Sierra Leone',
+      'name' => 'Leone Sierra Leone',
       'symbol' => 'SLL',
     ),
     'SOS' => 
     array (
-      'name' => 'Đồng shilling của Somali',
+      'name' => 'Schilling Somali',
       'symbol' => 'SOS',
     ),
     'SRD' => 
     array (
-      'name' => 'Đồng đô la của Suriname',
+      'name' => 'Đô la Suriname',
       'symbol' => 'SRD',
+    ),
+    'SRG' => 
+    array (
+      'name' => 'Đồng Guilder Surinam',
+      'symbol' => 'SRG',
+    ),
+    'SSP' => 
+    array (
+      'name' => 'Bảng Nam Sudan',
+      'symbol' => 'SSP',
     ),
     'STD' => 
     array (
-      'name' => 'Đồng dobra của São Tomé và Príncipe',
+      'name' => 'Dobra São Tomé và Príncipe',
       'symbol' => 'STD',
+    ),
+    'SUR' => 
+    array (
+      'name' => 'Đồng Rúp Sô viết',
+      'symbol' => 'SUR',
+    ),
+    'SVC' => 
+    array (
+      'name' => 'Đồng Colón Salvador',
+      'symbol' => 'SVC',
     ),
     'SYP' => 
     array (
-      'name' => 'Đồng bảng của Syria',
+      'name' => 'Bảng Syria',
       'symbol' => 'SYP',
     ),
     'SZL' => 
     array (
-      'name' => 'Đồng Lilangeni của Swazi',
+      'name' => 'Lilangeni Swaziland',
       'symbol' => 'SZL',
     ),
     'THB' => 
     array (
       'name' => 'Bạt Thái Lan',
-      'symbol' => 'THB',
+      'symbol' => '฿',
+    ),
+    'TJR' => 
+    array (
+      'name' => 'Đồng Rúp Tajikistan',
+      'symbol' => 'TJR',
     ),
     'TJS' => 
     array (
-      'name' => 'Đồng somoni của Tajikistan',
+      'name' => 'Somoni Tajikistan',
       'symbol' => 'TJS',
+    ),
+    'TMM' => 
+    array (
+      'name' => 'Đồng Manat Turkmenistan (1993–2009)',
+      'symbol' => 'TMM',
     ),
     'TMT' => 
     array (
-      'name' => 'Đồng manat của Turkmenistan',
+      'name' => 'Manat Turkmenistan',
       'symbol' => 'TMT',
     ),
     'TND' => 
     array (
-      'name' => 'Đồng dinar của Tunisia',
+      'name' => 'Dinar Tunisia',
       'symbol' => 'TND',
     ),
     'TOP' => 
     array (
-      'name' => 'Đồng paʻanga của Tonga',
+      'name' => 'Paʻanga Tonga',
       'symbol' => 'TOP',
+    ),
+    'TPE' => 
+    array (
+      'name' => 'Đồng Escudo Timor',
+      'symbol' => 'TPE',
     ),
     'TRL' => 
     array (
-      'name' => 'Lia Thổ Nhĩ Kỳ',
+      'name' => 'Lia Thổ Nhĩ Kỳ (1922–2005)',
       'symbol' => 'TRL',
     ),
     'TRY' => 
     array (
-      'name' => 'Lia Thổ Nhĩ Kỳ Mới',
+      'name' => 'Lia Thổ Nhĩ Kỳ',
       'symbol' => 'TRY',
     ),
     'TTD' => 
     array (
-      'name' => 'Đồng đô la của Trinidad và Tobago',
+      'name' => 'Đô la Trinidad và Tobago',
       'symbol' => 'TTD',
     ),
     'TWD' => 
     array (
-      'name' => 'Đô-la Đài Loan',
-      'symbol' => 'TWD',
+      'name' => 'Đô la Đài Loan mới',
+      'symbol' => 'NT$',
     ),
     'TZS' => 
     array (
-      'name' => 'Đồng shilling của Tanzania',
+      'name' => 'Shilling Tanzania',
       'symbol' => 'TZS',
     ),
     'UAH' => 
     array (
-      'name' => 'Rúp U-crai-na',
+      'name' => 'Hryvnia Ucraina',
       'symbol' => 'UAH',
+    ),
+    'UAK' => 
+    array (
+      'name' => 'Đồng Karbovanets Ucraina',
+      'symbol' => 'UAK',
+    ),
+    'UGS' => 
+    array (
+      'name' => 'Đồng Shilling Uganda (1966–1987)',
+      'symbol' => 'UGS',
     ),
     'UGX' => 
     array (
-      'name' => 'Đồng shilling của Uganda',
+      'name' => 'Shilling Uganda',
       'symbol' => 'UGX',
     ),
     'USD' => 
     array (
-      'name' => 'Đô-la Mỹ',
-      'symbol' => 'USD',
+      'name' => 'Đô la Mỹ',
+      'symbol' => 'US$',
+    ),
+    'USN' => 
+    array (
+      'name' => 'Đô la Mỹ (Ngày tiếp theo)',
+      'symbol' => 'USN',
+    ),
+    'USS' => 
+    array (
+      'name' => 'Đô la Mỹ (Cùng ngày)',
+      'symbol' => 'USS',
+    ),
+    'UYI' => 
+    array (
+      'name' => 'Đồng Peso Uruguay (Đơn vị Theo chỉ số)',
+      'symbol' => 'UYI',
+    ),
+    'UYP' => 
+    array (
+      'name' => 'Đồng Peso Uruguay (1975–1993)',
+      'symbol' => 'UYP',
     ),
     'UYU' => 
     array (
-      'name' => 'Đồng peso của Uruguay',
+      'name' => 'Peso Uruguay',
       'symbol' => 'UYU',
     ),
     'UZS' => 
     array (
-      'name' => 'Đồng som của Uzbekistan',
+      'name' => 'Som Uzbekistan',
       'symbol' => 'UZS',
     ),
     'VEB' => 
     array (
-      'name' => 'Bôliva Vênêduêla',
+      'name' => 'Đồng bolívar của Venezuela (1871–2008)',
       'symbol' => 'VEB',
     ),
     'VEF' => 
     array (
-      'name' => 'Đồng bolívar của Venezuela',
+      'name' => 'Bolívar Venezuela',
       'symbol' => 'VEF',
     ),
     'VND' => 
     array (
-      'name' => 'Đồng',
-      'symbol' => 'VND',
+      'name' => 'Đồng Việt Nam',
+      'symbol' => '₫',
+    ),
+    'VNN' => 
+    array (
+      'name' => 'Đồng Việt Nam (1978–1985)',
+      'symbol' => 'VNN',
     ),
     'VUV' => 
     array (
-      'name' => 'Đồng vatu của Vanuatu',
+      'name' => 'Vatu Vanuatu',
       'symbol' => 'VUV',
     ),
     'WST' => 
     array (
-      'name' => 'Đồng tala của Samoa',
+      'name' => 'Tala Samoa',
       'symbol' => 'WST',
     ),
     'XAF' => 
     array (
-      'name' => 'Đồng CFA Franc BEAC',
-      'symbol' => 'XAF',
+      'name' => 'CFA Franc BEAC',
+      'symbol' => 'FCFA',
+    ),
+    'XAG' => 
+    array (
+      'name' => 'Bạc',
+      'symbol' => 'XAG',
     ),
     'XAU' => 
     array (
       'name' => 'Vàng',
       'symbol' => 'XAU',
     ),
+    'XBA' => 
+    array (
+      'name' => 'Đơn vị Tổng hợp Châu Âu',
+      'symbol' => 'XBA',
+    ),
+    'XBB' => 
+    array (
+      'name' => 'Đơn vị Tiền tệ Châu Âu',
+      'symbol' => 'XBB',
+    ),
+    'XBC' => 
+    array (
+      'name' => 'Đơn vị Kế toán Châu Âu (XBC)',
+      'symbol' => 'XBC',
+    ),
+    'XBD' => 
+    array (
+      'name' => 'Đơn vị Kế toán Châu Âu (XBD)',
+      'symbol' => 'XBD',
+    ),
     'XCD' => 
     array (
-      'name' => 'Đồng đô là của phía đông Caribê',
-      'symbol' => 'XCD',
+      'name' => 'Đô la Đông Caribê',
+      'symbol' => 'EC$',
+    ),
+    'XDR' => 
+    array (
+      'name' => 'Quyền Rút vốn Đặc biệt',
+      'symbol' => 'XDR',
+    ),
+    'XEU' => 
+    array (
+      'name' => 'Đơn vị Tiền Châu Âu',
+      'symbol' => 'XEU',
+    ),
+    'XFO' => 
+    array (
+      'name' => 'Đồng France Pháp Vàng',
+      'symbol' => 'XFO',
+    ),
+    'XFU' => 
+    array (
+      'name' => 'Đồng UIC-Franc Pháp',
+      'symbol' => 'XFU',
     ),
     'XOF' => 
     array (
       'name' => 'Franc CFA BCEAO',
-      'symbol' => 'XOF',
+      'symbol' => 'CFA',
+    ),
+    'XPD' => 
+    array (
+      'name' => 'Paladi',
+      'symbol' => 'XPD',
     ),
     'XPF' => 
     array (
-      'name' => 'Đồng Franc Thái Bình Dương',
-      'symbol' => 'XPF',
+      'name' => 'Franc CFP',
+      'symbol' => 'CFPF',
+    ),
+    'XPT' => 
+    array (
+      'name' => 'Bạch kim',
+      'symbol' => 'XPT',
+    ),
+    'XRE' => 
+    array (
+      'name' => 'Quỹ RINET',
+      'symbol' => 'XRE',
+    ),
+    'XTS' => 
+    array (
+      'name' => 'Mã Tiền tệ Kiểm tra',
+      'symbol' => 'XTS',
     ),
     'XXX' => 
     array (
-      'name' => 'Tiền tệ chưa biết hoặc không hợp lệ',
+      'name' => 'Tiền tệ chưa biết',
       'symbol' => 'XXX',
+    ),
+    'YDD' => 
+    array (
+      'name' => 'Đồng Dinar Yemen',
+      'symbol' => 'YDD',
     ),
     'YER' => 
     array (
-      'name' => 'Đồng rial của Yemen',
+      'name' => 'Rial Yemen',
       'symbol' => 'YER',
+    ),
+    'YUD' => 
+    array (
+      'name' => 'Đồng Dinar Nam Tư Xu (1966–1990)',
+      'symbol' => 'YUD',
+    ),
+    'YUM' => 
+    array (
+      'name' => 'Đồng Dinar Nam Tư Mới (1994–2002)',
+      'symbol' => 'YUM',
+    ),
+    'YUN' => 
+    array (
+      'name' => 'Đồng Dinar Nam Tư Có thể chuyển đổi (1990–1992)',
+      'symbol' => 'YUN',
+    ),
+    'YUR' => 
+    array (
+      'name' => 'Đồng Dinar Nam Tư Tái cơ cấu (1992–1993)',
+      'symbol' => 'YUR',
+    ),
+    'ZAL' => 
+    array (
+      'name' => 'Đồng Rand Nam Phi (tài chính)',
+      'symbol' => 'ZAL',
     ),
     'ZAR' => 
     array (
-      'name' => 'Ran Nam Phi',
+      'name' => 'Rand Nam Phi',
       'symbol' => 'ZAR',
     ),
     'ZMK' => 
     array (
-      'name' => 'Đồng kwacha của Zambia',
+      'name' => 'Đồng kwacha của Zambia (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Kwacha Zambia',
+      'symbol' => 'ZMW',
+    ),
+    'ZRN' => 
+    array (
+      'name' => 'Đồng Zaire Mới (1993–1998)',
+      'symbol' => 'ZRN',
+    ),
+    'ZRZ' => 
+    array (
+      'name' => 'Đồng Zaire (1971–1993)',
+      'symbol' => 'ZRZ',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'Đồng Đô la Zimbabwe (1980–2008)',
+      'symbol' => 'ZWD',
+    ),
+    'ZWL' => 
+    array (
+      'name' => 'Đồng Đô la Zimbabwe (2009)',
+      'symbol' => 'ZWL',
+    ),
+    'ZWR' => 
+    array (
+      'name' => 'Đồng Đô la Zimbabwe (2008)',
+      'symbol' => 'ZWR',
     ),
   ),
 );

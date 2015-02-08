@@ -34,7 +34,7 @@ return array (
     ),
     'AFA' => 
     array (
-      'name' => 'afghani (1927-2002)',
+      'name' => 'afghani (1927–2002)',
       'symbol' => 'AFA',
     ),
     'AFN' => 
@@ -64,17 +64,17 @@ return array (
     ),
     'AOK' => 
     array (
-      'name' => 'angolsk kwanza (1977-1990)',
+      'name' => 'angolsk kwanza (1977–1990)',
       'symbol' => 'AOK',
     ),
     'AON' => 
     array (
-      'name' => 'angolsk ny kwanza (1990-2000)',
+      'name' => 'angolsk ny kwanza (1990–2000)',
       'symbol' => 'AON',
     ),
     'AOR' => 
     array (
-      'name' => 'angolsk kwanza reajustado (1995-1999)',
+      'name' => 'angolsk kwanza reajustado (1995–1999)',
       'symbol' => 'AOR',
     ),
     'ARA' => 
@@ -84,7 +84,7 @@ return array (
     ),
     'ARP' => 
     array (
-      'name' => 'argentinsk peso (1983-1985)',
+      'name' => 'argentinsk peso (1983–1985)',
       'symbol' => 'ARP',
     ),
     'ARS' => 
@@ -199,7 +199,7 @@ return array (
     ),
     'BRB' => 
     array (
-      'name' => 'brasiliansk cruzeiro novo (1967-1986)',
+      'name' => 'brasiliansk cruzeiro novo (1967–1986)',
       'symbol' => 'BRB',
     ),
     'BRC' => 
@@ -209,7 +209,7 @@ return array (
     ),
     'BRE' => 
     array (
-      'name' => 'brasiliansk cruzeiro (1990-1993)',
+      'name' => 'brasiliansk cruzeiro (1990–1993)',
       'symbol' => 'BRE',
     ),
     'BRL' => 
@@ -249,7 +249,7 @@ return array (
     ),
     'BYB' => 
     array (
-      'name' => 'kviterussisk ny rubel (1994-1999)',
+      'name' => 'kviterussisk ny rubel (1994–1999)',
       'symbol' => 'BYB',
     ),
     'BYR' => 
@@ -409,7 +409,7 @@ return array (
     ),
     'ESA' => 
     array (
-      'name' => 'spansk peseta (A-konto)',
+      'name' => 'spansk peseta (A–konto)',
       'symbol' => 'ESA',
     ),
     'ESB' => 
@@ -469,7 +469,7 @@ return array (
     ),
     'GHC' => 
     array (
-      'name' => 'ghanesisk cedi (1979-2007)',
+      'name' => 'ghanesisk cedi (1979–2007)',
       'symbol' => 'GHC',
     ),
     'GHS' => 
@@ -814,7 +814,7 @@ return array (
     ),
     'MXP' => 
     array (
-      'name' => 'meksikansk sølvpeso (1861-1992)',
+      'name' => 'meksikansk sølvpeso (1861–1992)',
       'symbol' => 'MXP',
     ),
     'MXV' => 
@@ -929,7 +929,7 @@ return array (
     ),
     'PLZ' => 
     array (
-      'name' => 'polsk zloty (1950-1995)',
+      'name' => 'polsk zloty (1950–1995)',
       'symbol' => 'PLZ',
     ),
     'PTE' => 
@@ -974,7 +974,7 @@ return array (
     ),
     'RUR' => 
     array (
-      'name' => 'russisk rubel (1991-1998)',
+      'name' => 'russisk rubel (1991–1998)',
       'symbol' => 'RUR',
     ),
     'RWF' => 
@@ -1159,7 +1159,7 @@ return array (
     ),
     'UGS' => 
     array (
-      'name' => 'ugandisk shilling (1966-1987)',
+      'name' => 'ugandisk shilling (1966–1987)',
       'symbol' => 'UGS',
     ),
     'UGX' => 
@@ -1189,7 +1189,7 @@ return array (
     ),
     'UYP' => 
     array (
-      'name' => 'uruguayansk peso (1975-1993)',
+      'name' => 'uruguayansk peso (1975–1993)',
       'symbol' => 'UYP',
     ),
     'UYU' => 
@@ -1204,12 +1204,12 @@ return array (
     ),
     'VEB' => 
     array (
-      'name' => 'venezuelansk bolivar',
+      'name' => 'venezuelansk bolivar (1871–2008)',
       'symbol' => 'VEB',
     ),
     'VEF' => 
     array (
-      'name' => 'venezuelansk bolivar fuerte',
+      'name' => 'venezuelansk bolivar',
       'symbol' => 'VEF',
     ),
     'VND' => 
@@ -1359,8 +1359,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'zambisk kwacha',
+      'name' => 'zambisk kwacha (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'zambisk kwacha',
+      'symbol' => 'ZMW',
     ),
     'ZRN' => 
     array (

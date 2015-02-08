@@ -10,6 +10,10 @@ return array (
   ),
   'currencies' => 
   array (
+    'CNY' => 
+    array (
+      'symbol' => '¥',
+    ),
     'XXX' => 
     array (
       'name' => 'ꅉꀋꐚꌠꌋꆀꎆꃀꀋꈁꀐꌠ',

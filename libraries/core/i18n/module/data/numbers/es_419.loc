@@ -7,9 +7,109 @@ return array (
   ),
   'formats' => 
   array (
+    'decimal' => '0',
     'currency' => '¤#,##0.00',
   ),
   'currencies' => 
   array (
+    'AMD' => 
+    array (
+      'name' => 'dram',
+      'symbol' => 'AMD',
+    ),
+    'AWG' => 
+    array (
+      'name' => 'florín arubeño',
+      'symbol' => 'AWG',
+    ),
+    'BBD' => 
+    array (
+      'name' => 'dólar barbadense',
+      'symbol' => 'BBD',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'dinar bareiní',
+      'symbol' => 'BHD',
+    ),
+    'BSD' => 
+    array (
+      'name' => 'dólar bahameño',
+      'symbol' => 'BSD',
+    ),
+    'BZD' => 
+    array (
+      'name' => 'dólar beliceño',
+      'symbol' => 'BZD',
+    ),
+    'CAD' => 
+    array (
+      'symbol' => 'CAD',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'nakfa',
+      'symbol' => 'ERN',
+    ),
+    'EUR' => 
+    array (
+      'symbol' => 'EUR',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'dólar hongkonés',
+      'symbol' => 'HKD',
+    ),
+    'ILS' => 
+    array (
+      'name' => 'nuevo sheqel israelí',
+      'symbol' => 'ILS',
+    ),
+    'JMD' => 
+    array (
+      'name' => 'dólar jamaicano',
+      'symbol' => 'JMD',
+    ),
+    'KZT' => 
+    array (
+      'name' => 'tenge kazako',
+      'symbol' => 'KZT',
+    ),
+    'LKR' => 
+    array (
+      'name' => 'rupia esrilanquesa',
+      'symbol' => 'LKR',
+    ),
+    'MOP' => 
+    array (
+      'name' => 'pataca',
+      'symbol' => 'MOP',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'kuacha malauí',
+      'symbol' => 'MWK',
+    ),
+    'THB' => 
+    array (
+      'symbol' => 'THB',
+    ),
+    'USD' => 
+    array (
+      'symbol' => 'USD',
+    ),
+    'VND' => 
+    array (
+      'symbol' => 'VND',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'moneda desconocida',
+      'symbol' => 'XXX',
+    ),
+    'ZMW' => 
+    array (
+      'symbol' => 'ZMK',
+    ),
   ),
 );

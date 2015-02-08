@@ -1,14 +1,28 @@
 <?php
 return array (
   '@default' => 'gregorian',
-  'buddhist' => 
+  'chinese' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM U',
+      'long' => 'd MMMM U',
+      'medium' => 'd MMM U',
+      'short' => 'dd/MM/yy',
+    ),
+  ),
+  'generic' => 
   array (
     'dateFormat' => 
     array (
       'full' => 'EEEE, d MMMM y G',
       'long' => 'd MMMM y G',
       'medium' => 'd MMM y G',
-      'short' => 'dd/MM/y G',
+      'short' => 'dd/MM/y GGGGG',
     ),
   ),
   'gregorian' => 
@@ -18,7 +32,7 @@ return array (
       'full' => 'EEEE, d MMMM y',
       'long' => 'd MMMM y',
       'medium' => 'd MMM y',
-      'short' => 'dd/MM/yyyy',
+      'short' => 'dd/MM/y',
     ),
     'timeFormat' => 
     array (
@@ -26,6 +40,43 @@ return array (
       'long' => 'HH:mm:ss z',
       'medium' => 'HH:mm:ss',
       'short' => 'HH:mm',
+    ),
+  ),
+  'indian' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Chaitra',
+        2 => 'Vaisakha',
+        3 => 'Jyaistha',
+        4 => 'Asadha',
+        5 => 'Sravana',
+        6 => 'Bhadra',
+        7 => 'Asvina',
+        8 => 'Kartika',
+        9 => 'Agrahayana',
+        10 => 'Pausa',
+        11 => 'Magha',
+        12 => 'Phalguna',
+      ),
+      'full' => 
+      array (
+        1 => 'Chaitra',
+        2 => 'Vaisakha',
+        3 => 'Jyaistha',
+        4 => 'Asadha',
+        5 => 'Sravana',
+        6 => 'Bhadra',
+        7 => 'Asvina',
+        8 => 'Kartika',
+        9 => 'Agrahayana',
+        10 => 'Pausa',
+        11 => 'Magha',
+        12 => 'Phalguna',
+      ),
     ),
   ),
   'islamic' => 
@@ -69,20 +120,10 @@ return array (
       'full' => 'EEEE, d MMMM y G',
       'long' => 'd MMMM y G',
       'medium' => 'd MMM y G',
-      'short' => 'dd/MM/y G',
-    ),
-  ),
-  'japanese' => 
-  array (
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE, d MMMM y G',
-      'long' => 'd MMMM y G',
-      'medium' => 'd MMM y G',
       'short' => 'dd/MM/y GGGGG',
     ),
   ),
-  'roc' => 
+  'japanese' => 
   array (
     'dateFormat' => 
     array (

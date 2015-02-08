@@ -7,8 +7,8 @@ return array (
     array (
       'full' => 'EEEE d MMMM y G',
       'long' => 'd MMMM y G',
-      'medium' => 'd MMM, y G',
-      'short' => 'd/M/yyyy',
+      'medium' => 'd MMM y G',
+      'short' => 'dd/MM/y GGGGG',
     ),
   ),
   'chinese' => 
@@ -49,10 +49,10 @@ return array (
     ),
     'dateFormat' => 
     array (
-      'full' => 'EEEE d MMMMl y\'x\'G',
-      'long' => 'd MMMMl y\'x\'G',
-      'medium' => 'd MMMl y\'x\'G',
-      'short' => 'd/Ml/y\'x\'G',
+      'full' => 'EEEE d MMMM U',
+      'long' => 'd MMMM U',
+      'medium' => 'd MMM U',
+      'short' => 'd/M/y',
     ),
   ),
   'coptic' => 
@@ -94,6 +94,50 @@ return array (
       ),
     ),
   ),
+  'dangi' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => '1yuè',
+        2 => '2yuè',
+        3 => '3yuè',
+        4 => '4yuè',
+        5 => '5yuè',
+        6 => '6yuè',
+        7 => '7yuè',
+        8 => '8yuè',
+        9 => '9yuè',
+        10 => '10yuè',
+        11 => '11yuè',
+        12 => '12yuè',
+      ),
+      'full' => 
+      array (
+        1 => 'zhēngyuè',
+        2 => 'èryuè',
+        3 => 'sānyuè',
+        4 => 'sìyuè',
+        5 => 'wǔyuè',
+        6 => 'liùyuè',
+        7 => 'qīyuè',
+        8 => 'bāyuè',
+        9 => 'jiǔyuè',
+        10 => 'shíyuè',
+        11 => 'shíyīyuè',
+        12 => 'shí’èryuè',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM U',
+      'long' => 'd MMMM U',
+      'medium' => 'd MMM U',
+      'short' => 'd/M/y',
+    ),
+  ),
   'ethiopic' => 
   array (
     'months' => 
@@ -131,6 +175,16 @@ return array (
         12 => 'nähasé',
         13 => 'pagumén',
       ),
+    ),
+  ),
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM y G',
+      'long' => 'd MMMM y G',
+      'medium' => 'd MMM y G',
+      'short' => 'dd/MM/y GGGGG',
     ),
   ),
   'gregorian' => 
@@ -198,7 +252,7 @@ return array (
       'full' => 'EEEE d MMMM y',
       'long' => 'd MMMM y',
       'medium' => 'd MMM y',
-      'short' => 'dd/MM/yy',
+      'short' => 'dd/MM/y',
     ),
     'timeFormat' => 
     array (
@@ -246,6 +300,13 @@ return array (
         13 => 'Elloul',
       ),
     ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM y G',
+      'long' => 'd MMMM y G',
+      'medium' => 'd MMM y G',
+      'short' => 'dd/MM/y GGGGG',
+    ),
   ),
   'indian' => 
   array (
@@ -291,39 +352,41 @@ return array (
       '@default' => 'full',
       'abbreviated' => 
       array (
-        1 => 'Mouh.',
-        2 => 'Saf.',
-        3 => 'Rabiʻ-oul-A.',
-        4 => 'Rabiʻ-out-T.',
-        5 => 'Djoum.-l-O.',
-        6 => 'Djoum.-t-T.',
-        7 => 'Radj.',
-        8 => 'Cha.',
-        9 => 'Ram.',
-        10 => 'Chaou.',
-        11 => 'Dou-l-Q.',
-        12 => 'Dou-l-H.',
+        1 => 'mouh.',
+        2 => 'saf.',
+        3 => 'rab. aw.',
+        4 => 'rab. th.',
+        5 => 'joum. oul.',
+        6 => 'joum. tha.',
+        7 => 'raj.',
+        8 => 'chaa.',
+        9 => 'ram.',
+        10 => 'chaw.',
+        11 => 'dhou. q.',
+        12 => 'dhou. h.',
       ),
       'full' => 
       array (
-        1 => 'Mouharram',
-        3 => 'Rabiʻ-oul-Aououal',
-        4 => 'Rabiʻ-out-Tani',
-        5 => 'Djoumada-l-Oula',
-        6 => 'Djoumada-t-Tania',
-        7 => 'Radjab',
-        8 => 'Chaʻban',
-        10 => 'Chaououal',
-        11 => 'Dou-l-Qaʻda',
-        12 => 'Dou-l-Hidjja',
+        1 => 'mouharram',
+        2 => 'safar',
+        3 => 'rabia al awal',
+        4 => 'rabia ath-thani',
+        5 => 'joumada al oula',
+        6 => 'joumada ath-thania',
+        7 => 'rajab',
+        8 => 'chaabane',
+        9 => 'ramadan',
+        10 => 'chawwal',
+        11 => 'dhou al qi`da',
+        12 => 'dhou al-hijja',
       ),
     ),
     'dateFormat' => 
     array (
       'full' => 'EEEE d MMMM y G',
       'long' => 'd MMMM y G',
-      'medium' => 'd MMM, y G',
-      'short' => 'd/M/y G',
+      'medium' => 'd MMM y G',
+      'short' => 'dd/MM/y GGGGG',
     ),
   ),
   'japanese' => 
@@ -332,18 +395,14 @@ return array (
     array (
       'full' => 'EEEE d MMMM y G',
       'long' => 'd MMMM y G',
-      'medium' => 'd MMM, y G',
-      'short' => 'd/M/y GGGGG',
+      'medium' => 'd MMM y G',
+      'short' => 'dd/MM/y GGGGG',
     ),
+  ),
+  'persian' => 
+  array (
   ),
   'roc' => 
   array (
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE d MMMM y G',
-      'long' => 'd MMMM y G',
-      'medium' => 'd MMM, y G',
-      'short' => 'd/M/y GGGGG',
-    ),
   ),
 );

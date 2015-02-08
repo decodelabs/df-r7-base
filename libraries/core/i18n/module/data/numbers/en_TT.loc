@@ -5,19 +5,12 @@ return array (
   ),
   'formats' => 
   array (
-    'currency' => '¤#,##0.00',
   ),
   'currencies' => 
   array (
     'TTD' => 
     array (
-      'name' => 'TTD',
       'symbol' => '$',
-    ),
-    'USD' => 
-    array (
-      'name' => 'USD',
-      'symbol' => 'US$',
     ),
   ),
 );

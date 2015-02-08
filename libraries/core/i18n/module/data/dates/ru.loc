@@ -3,13 +3,6 @@ return array (
   '@default' => 'gregorian',
   'buddhist' => 
   array (
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE, d MMMM y \'г\'. G',
-      'long' => 'd MMMM y \'г\'. G',
-      'medium' => 'dd.MM.yyyy G',
-      'short' => 'dd.MM.yy G',
-    ),
   ),
   'chinese' => 
   array (
@@ -31,6 +24,13 @@ return array (
         11 => '11',
         12 => '12',
       ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM U',
+      'long' => 'd MMMM U',
+      'medium' => 'dd.MM U',
+      'short' => 'dd.MM.y',
     ),
   ),
   'coptic' => 
@@ -111,6 +111,16 @@ return array (
       ),
     ),
   ),
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM y \'г\'. G',
+      'long' => 'd MMMM y \'г\'. G',
+      'medium' => 'dd.MM.y G',
+      'short' => 'dd.MM.y G',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -142,18 +152,18 @@ return array (
       '@default' => 'full',
       'abbreviated' => 
       array (
-        1 => 'янв',
-        2 => 'фев',
-        3 => 'мар',
-        4 => 'апр',
+        1 => 'янв.',
+        2 => 'февр.',
+        3 => 'марта',
+        4 => 'апр.',
         5 => 'мая',
-        6 => 'июн',
-        7 => 'июл',
-        8 => 'авг',
-        9 => 'сен',
-        10 => 'окт',
-        11 => 'ноя',
-        12 => 'дек',
+        6 => 'июня',
+        7 => 'июля',
+        8 => 'авг.',
+        9 => 'сент.',
+        10 => 'окт.',
+        11 => 'нояб.',
+        12 => 'дек.',
       ),
       'full' => 
       array (
@@ -173,9 +183,9 @@ return array (
     ),
     'dateFormat' => 
     array (
-      'full' => 'EEEE, d MMMM y \'г\'.',
-      'long' => 'd MMMM y \'г\'.',
-      'medium' => 'dd.MM.yyyy',
+      'full' => 'EEEE, d MMMM y \'г\'.',
+      'long' => 'd MMMM y \'г\'.',
+      'medium' => 'd MMM y \'г\'.',
       'short' => 'dd.MM.yy',
     ),
     'timeFormat' => 
@@ -280,7 +290,7 @@ return array (
         9 => 'Рамадан',
         10 => 'Шавваль',
         11 => 'Зуль-Каада',
-        12 => 'Зуль-Каада',
+        12 => 'Зуль-Хиджжа',
       ),
       'full' => 
       array (
@@ -298,23 +308,9 @@ return array (
         12 => 'Зуль-Хиджжа',
       ),
     ),
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE, d MMMM y \'г\'. G',
-      'long' => 'd MMMM y \'г\'. G',
-      'medium' => 'dd.MM.yyyy G',
-      'short' => 'dd.MM.yy G',
-    ),
   ),
   'japanese' => 
   array (
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE, d MMMM y \'г\'. G',
-      'long' => 'd MMMM y \'г\'. G',
-      'medium' => 'dd.MM.yyyy G',
-      'short' => 'dd.MM.yy G',
-    ),
   ),
   'persian' => 
   array (
@@ -355,12 +351,5 @@ return array (
   ),
   'roc' => 
   array (
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE, d MMMM y \'г\'. G',
-      'long' => 'd MMMM y \'г\'. G',
-      'medium' => 'dd.MM.yyyy G',
-      'short' => 'dd.MM.yy G',
-    ),
   ),
 );

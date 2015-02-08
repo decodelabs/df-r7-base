@@ -5,9 +5,13 @@ return array (
   ),
   'formats' => 
   array (
-    'currency' => '¤#,##0.00;(¤#,##0.00)',
+    'currency' => '¤#,##0.00',
   ),
   'currencies' => 
   array (
+    'USD' => 
+    array (
+      'symbol' => '$',
+    ),
   ),
 );

@@ -6,9 +6,6 @@ return array (
     'dateFormat' => 
     array (
       'full' => 'EEEE, \'ngày\' dd MMMM \'năm\' y G',
-      'long' => '\'Ngày\' dd \'tháng\' M \'năm\' y G',
-      'medium' => 'dd-MM-yyyy G',
-      'short' => 'dd/MM/yyyy G',
     ),
   ),
   'chinese' => 
@@ -31,6 +28,28 @@ return array (
         11 => '11',
         12 => '12',
       ),
+      'full' => 
+      array (
+        1 => '1',
+        2 => '2',
+        3 => '3',
+        4 => '4',
+        5 => '5',
+        6 => '6',
+        7 => '7',
+        8 => '8',
+        9 => '9',
+        10 => '10',
+        11 => '11',
+        12 => '12',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, \'ngày\' dd MMMM \'năm\' U',
+      'long' => '\'Ngày\' dd \'tháng\' M \'năm\' U',
+      'medium' => 'dd-MM U',
+      'short' => 'dd/MM/y',
     ),
   ),
   'coptic' => 
@@ -79,6 +98,16 @@ return array (
       ),
     ),
   ),
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, \'ngày\' dd MMMM \'năm\' y G',
+      'long' => '\'Ngày\' dd \'tháng\' M \'năm\' y G',
+      'medium' => 'dd-MM-y G',
+      'short' => 'dd/MM/y GGGGG',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -96,13 +125,13 @@ return array (
       ),
       'full' => 
       array (
-        'sun' => 'Chủ nhật',
-        'mon' => 'Thứ hai',
-        'tue' => 'Thứ ba',
-        'wed' => 'Thứ tư',
-        'thu' => 'Thứ năm',
-        'fri' => 'Thứ sáu',
-        'sat' => 'Thứ bảy',
+        'sun' => 'Chủ Nhật',
+        'mon' => 'Thứ Hai',
+        'tue' => 'Thứ Ba',
+        'wed' => 'Thứ Tư',
+        'thu' => 'Thứ Năm',
+        'fri' => 'Thứ Sáu',
+        'sat' => 'Thứ Bảy',
       ),
     ),
     'months' => 
@@ -125,26 +154,26 @@ return array (
       ),
       'full' => 
       array (
-        1 => 'tháng một',
-        2 => 'tháng hai',
-        3 => 'tháng ba',
-        4 => 'tháng tư',
-        5 => 'tháng năm',
-        6 => 'tháng sáu',
-        7 => 'tháng bảy',
-        8 => 'tháng tám',
-        9 => 'tháng chín',
-        10 => 'tháng mười',
-        11 => 'tháng mười một',
-        12 => 'tháng mười hai',
+        1 => 'tháng 1',
+        2 => 'tháng 2',
+        3 => 'tháng 3',
+        4 => 'tháng 4',
+        5 => 'tháng 5',
+        6 => 'tháng 6',
+        7 => 'tháng 7',
+        8 => 'tháng 8',
+        9 => 'tháng 9',
+        10 => 'tháng 10',
+        11 => 'tháng 11',
+        12 => 'tháng 12',
       ),
     ),
     'dateFormat' => 
     array (
       'full' => 'EEEE, \'ngày\' dd MMMM \'năm\' y',
-      'long' => '\'Ngày\' dd \'tháng\' M \'năm\' y',
-      'medium' => 'dd-MM-yyyy',
-      'short' => 'dd/MM/yyyy',
+      'long' => '\'Ngày\' dd \'tháng\' MM \'năm\' y',
+      'medium' => 'dd-MM-y',
+      'short' => 'dd/MM/y',
     ),
     'timeFormat' => 
     array (
@@ -201,17 +230,6 @@ return array (
   ),
   'islamic' => 
   array (
-    'months' => 
-    array (
-      '@default' => 'full',
-    ),
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE, \'ngày\' dd MMMM \'năm\' y G',
-      'long' => '\'Ngày\' dd \'tháng\' M \'năm\' y G',
-      'medium' => 'dd-MM-y G',
-      'short' => 'dd/MM/y G',
-    ),
   ),
   'japanese' => 
   array (
@@ -250,9 +268,6 @@ return array (
     'dateFormat' => 
     array (
       'full' => 'EEEE, \'ngày\' dd MMMM \'năm\' y G',
-      'long' => '\'Ngày\' dd \'tháng\' M \'năm\' y G',
-      'medium' => 'dd-MM-y G',
-      'short' => 'dd/MM/y G',
     ),
   ),
 );

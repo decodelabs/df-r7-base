@@ -13,7 +13,6 @@ return array (
   array (
     'USD' => 
     array (
-      'name' => 'USD',
       'symbol' => '$',
     ),
   ),

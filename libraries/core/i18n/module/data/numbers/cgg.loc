@@ -5,7 +5,7 @@ return array (
   ),
   'formats' => 
   array (
-    'currency' => '¤#,##0.00;-#,##0.00¤',
+    'currency' => '¤#,##0.00',
   ),
   'currencies' => 
   array (
@@ -271,8 +271,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'Kwacha ya Zambia',
+      'name' => 'Kwacha ya Zambia (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Kwacha ya Zambia',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

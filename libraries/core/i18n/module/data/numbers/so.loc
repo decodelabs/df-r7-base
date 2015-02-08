@@ -34,7 +34,7 @@ return array (
     'SOS' => 
     array (
       'name' => 'Shilin soomaali',
-      'symbol' => 'SOS',
+      'symbol' => 'S',
     ),
     'TZS' => 
     array (

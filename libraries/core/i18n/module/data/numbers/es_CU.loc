@@ -1,0 +1,20 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'CUP' => 
+    array (
+      'symbol' => '$',
+    ),
+    'USD' => 
+    array (
+      'symbol' => 'US$',
+    ),
+  ),
+);

@@ -4,6 +4,16 @@ return array (
   'buddhist' => 
   array (
   ),
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM y G',
+      'long' => 'd MMMM, y G',
+      'medium' => 'd MMM y G',
+      'short' => 'd/M/y GGGGG',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -11,23 +21,23 @@ return array (
       '@default' => 'wide',
       'abbreviated' => 
       array (
-        'sun' => 'អា',
-        'mon' => 'ច',
-        'tue' => 'អ',
-        'wed' => 'ពុ',
-        'thu' => 'ព្រ',
-        'fri' => 'សុ',
-        'sat' => 'ស',
+        'sun' => 'អាទិត្យ',
+        'mon' => 'ចន្ទ',
+        'tue' => 'អង្គារ',
+        'wed' => 'ពុធ',
+        'thu' => 'ព្រហស្បតិ៍',
+        'fri' => 'សុក្រ',
+        'sat' => 'សៅរ៍',
       ),
       'full' => 
       array (
-        'sun' => 'ថ្ងៃអាទិត្យ',
-        'mon' => '​ថ្ងៃច័ន្ទ',
-        'tue' => 'ថ្ងៃអង្គារ',
-        'wed' => 'ថ្ងៃពុធ',
-        'thu' => 'ថ្ងៃព្រហស្បតិ៍',
-        'fri' => 'ថ្ងៃសុក្រ',
-        'sat' => 'ថ្ងៃសៅរ៍',
+        'sun' => 'អាទិត្យ',
+        'mon' => 'ចន្ទ',
+        'tue' => 'អង្គារ',
+        'wed' => 'ពុធ',
+        'thu' => 'ព្រហស្បតិ៍',
+        'fri' => 'សុក្រ',
+        'sat' => 'សៅរ៍',
       ),
     ),
     'months' => 
@@ -35,24 +45,24 @@ return array (
       '@default' => 'full',
       'abbreviated' => 
       array (
-        1 => '១',
-        2 => '២',
-        3 => '៣',
-        4 => '៤',
-        5 => '៥',
-        6 => '៦',
-        7 => '៧',
-        8 => '៨',
-        9 => '៩',
-        10 => '១០',
-        11 => '១១',
-        12 => '១២',
+        1 => 'មករា',
+        2 => 'កុម្ភៈ',
+        3 => 'មីនា',
+        4 => 'មេសា',
+        5 => 'ឧសភា',
+        6 => 'មិថុនា',
+        7 => 'កក្កដា',
+        8 => 'សីហា',
+        9 => 'កញ្ញា',
+        10 => 'តុលា',
+        11 => 'វិច្ឆិកា',
+        12 => 'ធ្នូ',
       ),
       'full' => 
       array (
         1 => 'មករា',
         2 => 'កុម្ភៈ',
-        3 => 'មិនា',
+        3 => 'មីនា',
         4 => 'មេសា',
         5 => 'ឧសភា',
         6 => 'មិថុនា',
@@ -66,17 +76,17 @@ return array (
     ),
     'dateFormat' => 
     array (
-      'full' => 'EEEE ថ្ងៃ d ខែ MMMM ឆ្នាំ y',
-      'long' => 'd ខែ MMMM ឆ្នាំ y',
+      'full' => 'EEEE d MMMM y',
+      'long' => 'd MMMM y',
       'medium' => 'd MMM y',
-      'short' => 'd/M/yyyy',
+      'short' => 'd/M/yy',
     ),
     'timeFormat' => 
     array (
-      'full' => 'H ម៉ោង m នាទី ss វិនាទី​ zzzz',
-      'long' => 'H ម៉ោង m នាទី ss វិនាទី​z',
-      'medium' => 'H:mm:ss',
-      'short' => 'H:mm',
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
     ),
   ),
 );

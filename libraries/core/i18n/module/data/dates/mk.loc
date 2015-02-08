@@ -1,6 +1,16 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, dd MMMM y \'г\'. G',
+      'long' => 'dd MMMM y \'г\'. G',
+      'medium' => 'dd.M.y G',
+      'short' => 'dd.M.y GGGGG',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -43,7 +53,7 @@ return array (
         9 => 'септ.',
         10 => 'окт.',
         11 => 'ноем.',
-        12 => 'декем.',
+        12 => 'дек.',
       ),
       'full' => 
       array (
@@ -65,7 +75,7 @@ return array (
     array (
       'full' => 'EEEE, dd MMMM y',
       'long' => 'dd MMMM y',
-      'medium' => 'dd.M.yyyy',
+      'medium' => 'dd.M.y',
       'short' => 'dd.M.yy',
     ),
     'timeFormat' => 

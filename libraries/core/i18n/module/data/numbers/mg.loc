@@ -157,7 +157,7 @@ return array (
     'MGA' => 
     array (
       'name' => 'Ariary',
-      'symbol' => 'MGA',
+      'symbol' => 'Ar',
     ),
     'MRO' => 
     array (
@@ -276,8 +276,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'Kwacha zambianina',
+      'name' => 'Kwacha zambianina (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Kwacha zambianina',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

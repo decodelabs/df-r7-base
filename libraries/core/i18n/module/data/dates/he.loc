@@ -1,6 +1,16 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d בMMMM y G',
+      'long' => 'd בMMMM y G',
+      'medium' => 'd בMMM y G',
+      'short' => 'd.M.y GGGGG',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -32,18 +42,18 @@ return array (
       '@default' => 'full',
       'abbreviated' => 
       array (
-        1 => 'ינו',
-        2 => 'פבר',
+        1 => 'ינו׳',
+        2 => 'פבר׳',
         3 => 'מרץ',
-        4 => 'אפר',
+        4 => 'אפר׳',
         5 => 'מאי',
-        6 => 'יונ',
-        7 => 'יול',
-        8 => 'אוג',
-        9 => 'ספט',
-        10 => 'אוק',
-        11 => 'נוב',
-        12 => 'דצמ',
+        6 => 'יוני',
+        7 => 'יולי',
+        8 => 'אוג׳',
+        9 => 'ספט׳',
+        10 => 'אוק׳',
+        11 => 'נוב׳',
+        12 => 'דצמ׳',
       ),
       'full' => 
       array (
@@ -65,8 +75,8 @@ return array (
     array (
       'full' => 'EEEE, d בMMMM y',
       'long' => 'd בMMMM y',
-      'medium' => 'd בMMM yyyy',
-      'short' => 'dd/MM/yy',
+      'medium' => 'd בMMM y',
+      'short' => 'd.M.y',
     ),
     'timeFormat' => 
     array (
@@ -81,6 +91,22 @@ return array (
     'months' => 
     array (
       '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'תשרי',
+        2 => 'חשון',
+        3 => 'כסלו',
+        4 => 'טבת',
+        5 => 'שבט',
+        6 => 'אדר א׳',
+        7 => 'אדר ב׳',
+        8 => 'ניסן',
+        9 => 'אייר',
+        10 => 'סיון',
+        11 => 'תמוז',
+        12 => 'אב',
+        13 => 'אלול',
+      ),
       'full' => 
       array (
         1 => 'תשרי',
@@ -102,8 +128,8 @@ return array (
     array (
       'full' => 'EEEE, d בMMMM y',
       'long' => 'd בMMMM y',
-      'medium' => 'dd/MM/yyyy',
-      'short' => 'dd/MM/yy',
+      'medium' => 'd בMMMM y',
+      'short' => 'd בMMMM y',
     ),
   ),
   'islamic' => 
@@ -111,25 +137,43 @@ return array (
     'months' => 
     array (
       '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'מוחרם',
+        2 => 'צפר',
+        3 => 'רביע א׳',
+        4 => 'רביע ב׳',
+        5 => 'ג׳ומאדא א׳',
+        6 => 'ג׳ומאדא ב׳',
+        7 => 'רג׳ב',
+        8 => 'שעבאן',
+        9 => 'רמדאן',
+        10 => 'שוואל',
+        11 => 'ד׳ו אל־קעדה',
+        12 => 'ד׳ו אל־חיג׳ה',
+      ),
       'full' => 
       array (
         1 => 'מוחרם',
-        2 => 'ספר',
-        3 => 'רביע אל-אוואל',
-        4 => 'רביע אל-תני',
-        5 => 'ג׳ומדה אל-אוואל',
-        6 => 'ג׳ומדה אל-תני',
-        7 => 'רג׳אב',
+        2 => 'צפר',
+        3 => 'רביע אל-אוול',
+        4 => 'רביע א-ת׳אני',
+        5 => 'ג׳ומאדא אל-אולא',
+        6 => 'ג׳ומאדא א-ת׳אניה',
+        7 => 'רג׳ב',
         8 => 'שעבאן',
-        9 => 'ראמדן',
+        9 => 'רמדאן',
         10 => 'שוואל',
-        11 => 'זו אל-QI\'DAH',
-        12 => 'זו אל-חיג׳ה',
+        11 => 'ד׳ו אל־קעדה',
+        12 => 'ד׳ו אל־חיג׳ה',
       ),
     ),
     'dateFormat' => 
     array (
-      'medium' => 'd בMMM yyyy',
+      'full' => 'EEEE, d בMMMM y G',
+      'long' => 'd בMMMM y G',
+      'medium' => 'd בMMM y G',
+      'short' => 'dd/MM/yy GGGGG',
     ),
   ),
   'japanese' => 

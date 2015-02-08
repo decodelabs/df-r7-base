@@ -1,6 +1,16 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, G y MMMM dd',
+      'long' => 'G y MMMM d',
+      'medium' => 'G y MMM d',
+      'short' => 'GGGGG y/MM/dd',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -8,13 +18,13 @@ return array (
       '@default' => 'wide',
       'abbreviated' => 
       array (
-        'sun' => 'နွေ',
-        'mon' => 'လာ',
-        'tue' => 'ဂါ',
-        'wed' => 'ဟူး',
-        'thu' => 'တေး',
-        'fri' => 'ကြာ',
-        'sat' => 'နေ',
+        'sun' => 'တနင်္ဂနွေ',
+        'mon' => 'တနင်္လာ',
+        'tue' => 'အင်္ဂါ',
+        'wed' => 'ဗုဒ္ဓဟူး',
+        'thu' => 'ကြာသပတေး',
+        'fri' => 'သောကြာ',
+        'sat' => 'စနေ',
       ),
       'full' => 
       array (
@@ -32,18 +42,18 @@ return array (
       '@default' => 'full',
       'abbreviated' => 
       array (
-        1 => 'ဇန်',
-        2 => 'ဖေ',
+        1 => 'ဇန်နဝါရီ',
+        2 => 'ဖေဖော်ဝါရီ',
         3 => 'မတ်',
-        4 => 'ဧ',
+        4 => 'ဧပြီ',
         5 => 'မေ',
         6 => 'ဇွန်',
-        7 => 'ဇူ',
-        8 => 'ဩ',
-        9 => 'စက်',
-        10 => 'အောက်',
-        11 => 'နို',
-        12 => 'ဒီ',
+        7 => 'ဇူလိုင်',
+        8 => 'ဩဂုတ်',
+        9 => 'စက်တင်ဘာ',
+        10 => 'အောက်တိုဘာ',
+        11 => 'နိုဝင်ဘာ',
+        12 => 'ဒီဇင်ဘာ',
       ),
       'full' => 
       array (

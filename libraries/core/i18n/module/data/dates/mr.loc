@@ -1,6 +1,16 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM, y G',
+      'long' => 'd MMMM, y G',
+      'medium' => 'd MMM, y G',
+      'short' => 'd/M/y GGGGG',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -40,7 +50,8 @@ return array (
         6 => 'जून',
         7 => 'जुलै',
         8 => 'ऑग',
-        9 => 'सेप्टें',
+        9 => 'सप्टें',
+        10 => 'ऑक्टो',
         11 => 'नोव्हें',
         12 => 'डिसें',
       ),
@@ -62,17 +73,17 @@ return array (
     ),
     'dateFormat' => 
     array (
-      'full' => 'EEEE d MMMM y',
-      'long' => 'd MMMM y',
-      'medium' => 'd MMM y',
-      'short' => 'd-M-yy',
+      'full' => 'EEEE, d MMMM, y',
+      'long' => 'd MMMM, y',
+      'medium' => 'd MMM, y',
+      'short' => 'd/M/yy',
     ),
     'timeFormat' => 
     array (
-      'full' => 'h-mm-ss a zzzz',
-      'long' => 'h-mm-ss a z',
-      'medium' => 'h-mm-ss a',
-      'short' => 'h-mm a',
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
     ),
   ),
 );

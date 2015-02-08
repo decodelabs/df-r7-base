@@ -273,8 +273,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'kwâtia tî Zambïi',
+      'name' => 'kwâtia tî Zambïi (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'kwâtia tî Zambïi',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

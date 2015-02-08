@@ -1,0 +1,13 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+    'decimal' => '0 بليون',
+  ),
+  'currencies' => 
+  array (
+  ),
+);

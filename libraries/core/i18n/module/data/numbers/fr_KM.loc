@@ -10,7 +10,6 @@ return array (
   array (
     'KMF' => 
     array (
-      'name' => 'KMF',
       'symbol' => 'CF',
     ),
   ),

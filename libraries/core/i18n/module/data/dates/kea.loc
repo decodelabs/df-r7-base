@@ -1,6 +1,16 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d \'di\' MMMM \'di\' y G',
+      'long' => 'd \'di\' MMMM \'di\' y G',
+      'medium' => 'd MMM y G',
+      'short' => 'd/M/y GGGGG',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -33,7 +43,7 @@ return array (
       'abbreviated' => 
       array (
         1 => 'Jan',
-        2 => 'Fev',
+        2 => 'Feb',
         3 => 'Mar',
         4 => 'Abr',
         5 => 'Mai',
@@ -48,7 +58,7 @@ return array (
       'full' => 
       array (
         1 => 'Janeru',
-        2 => 'Fevereru',
+        2 => 'Febreru',
         3 => 'Marsu',
         4 => 'Abril',
         5 => 'Maiu',
@@ -65,8 +75,8 @@ return array (
     array (
       'full' => 'EEEE, d \'di\' MMMM \'di\' y',
       'long' => 'd \'di\' MMMM \'di\' y',
-      'medium' => 'd \'di\' MMM \'di\' y',
-      'short' => 'd/M/yyyy',
+      'medium' => 'd MMM y',
+      'short' => 'd/M/y',
     ),
     'timeFormat' => 
     array (

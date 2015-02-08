@@ -1,0 +1,31 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'pa',
+        'mon' => 'vu',
+        'tue' => 'ma',
+        'wed' => 'ko',
+        'thu' => 'tu',
+        'fri' => 'vá',
+        'sat' => 'lá',
+      ),
+      'full' => 
+      array (
+        'sun' => 'pasepeeivi',
+        'mon' => 'vuossaargâ',
+        'tue' => 'majebaargâ',
+        'wed' => 'koskoho',
+        'thu' => 'tuorâstuv',
+        'fri' => 'vástuppeeivi',
+        'sat' => 'lávurduv',
+      ),
+    ),
+  ),
+);

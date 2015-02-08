@@ -4,13 +4,23 @@ return array (
   array (
     'decimal' => '.',
     'group' => ',',
+    'list' => ';',
+    'percentSign' => '%',
+    'plusSign' => '+',
+    'minusSign' => '-',
+    'exponential' => 'E',
+    'superscriptingExponent' => '×',
+    'perMille' => '‰',
+    'infinity' => '∞',
+    'nan' => 'NaN',
+    'timeSeparator' => ':',
   ),
   'formats' => 
   array (
     'decimal' => '#,##0.###',
     'scientific' => '#E0',
     'percent' => '#,##0%',
-    'currency' => '¤#,##0.00',
+    'currency' => '¤ #,##0.00',
   ),
   'currencies' => 
   array (
@@ -26,13 +36,18 @@ return array (
     ),
     'AFA' => 
     array (
-      'name' => '阿富汗尼 (1927-2002)',
+      'name' => '阿富汗尼 (1927–2002)',
       'symbol' => 'AFA',
     ),
     'AFN' => 
     array (
       'name' => '阿富汗尼',
       'symbol' => 'AFN',
+    ),
+    'ALK' => 
+    array (
+      'name' => '阿尔巴尼亚列克(1946–1965)',
+      'symbol' => 'ALK',
     ),
     'ALL' => 
     array (
@@ -46,7 +61,7 @@ return array (
     ),
     'ANG' => 
     array (
-      'name' => '荷兰安的列斯盾',
+      'name' => '荷属安的列斯盾',
       'symbol' => 'ANG',
     ),
     'AOA' => 
@@ -56,22 +71,37 @@ return array (
     ),
     'AOK' => 
     array (
-      'name' => '安哥拉宽扎 (1977-1990)',
+      'name' => '安哥拉宽扎 (1977–1990)',
       'symbol' => 'AOK',
     ),
     'AON' => 
     array (
-      'name' => '安哥拉新宽扎 (1990-2000)',
+      'name' => '安哥拉新宽扎 (1990–2000)',
       'symbol' => 'AON',
+    ),
+    'AOR' => 
+    array (
+      'name' => '安哥拉重新调整宽扎 (1995–1999)',
+      'symbol' => 'AOR',
     ),
     'ARA' => 
     array (
-      'name' => '阿根廷奥斯特',
+      'name' => '阿根廷奥斯特拉尔',
       'symbol' => 'ARA',
+    ),
+    'ARL' => 
+    array (
+      'name' => '阿根廷法定比索 (1970–1983)',
+      'symbol' => 'ARL',
+    ),
+    'ARM' => 
+    array (
+      'name' => '阿根廷比索 (1881–1970)',
+      'symbol' => 'ARM',
     ),
     'ARP' => 
     array (
-      'name' => '阿根廷比索 (1983-1985)',
+      'name' => '阿根廷比索 (1983–1985)',
       'symbol' => 'ARP',
     ),
     'ARS' => 
@@ -87,7 +117,7 @@ return array (
     'AUD' => 
     array (
       'name' => '澳大利亚元',
-      'symbol' => 'AUD',
+      'symbol' => 'AU$',
     ),
     'AWG' => 
     array (
@@ -96,7 +126,7 @@ return array (
     ),
     'AZM' => 
     array (
-      'name' => '阿塞拜疆马纳特 (1993-2006)',
+      'name' => '阿塞拜疆马纳特 (1993–2006)',
       'symbol' => 'AZM',
     ),
     'AZN' => 
@@ -106,13 +136,18 @@ return array (
     ),
     'BAD' => 
     array (
-      'name' => '波士尼亚-赫塞哥维纳第纳尔',
+      'name' => '波士尼亚-赫塞哥维纳第纳尔 (1992–1994)',
       'symbol' => 'BAD',
     ),
     'BAM' => 
     array (
-      'name' => '波士尼亚-赫塞哥维纳兑换券',
+      'name' => '波斯尼亚-黑塞哥维那可兑换马克',
       'symbol' => 'BAM',
+    ),
+    'BAN' => 
+    array (
+      'name' => '波士尼亚-赫塞哥维纳新第纳尔 (1994–1997)',
+      'symbol' => 'BAN',
     ),
     'BBD' => 
     array (
@@ -126,7 +161,7 @@ return array (
     ),
     'BEC' => 
     array (
-      'name' => '比利时法郎兑换券',
+      'name' => '比利时法郎（可兑换）',
       'symbol' => 'BEC',
     ),
     'BEF' => 
@@ -144,10 +179,20 @@ return array (
       'name' => '保加利亚硬列弗',
       'symbol' => 'BGL',
     ),
+    'BGM' => 
+    array (
+      'name' => '保加利亚社会党列弗',
+      'symbol' => 'BGM',
+    ),
     'BGN' => 
     array (
       'name' => '保加利亚新列弗',
       'symbol' => 'BGN',
+    ),
+    'BGO' => 
+    array (
+      'name' => '保加利亚列弗 (1879–1952)',
+      'symbol' => 'BGO',
     ),
     'BHD' => 
     array (
@@ -174,6 +219,11 @@ return array (
       'name' => '玻利维亚诺',
       'symbol' => 'BOB',
     ),
+    'BOL' => 
+    array (
+      'name' => '玻利维亚诺 (1863–1963)',
+      'symbol' => 'BOL',
+    ),
     'BOP' => 
     array (
       'name' => '玻利维亚比索',
@@ -186,33 +236,38 @@ return array (
     ),
     'BRB' => 
     array (
-      'name' => '巴西新克鲁赛罗 (1967-1986)',
+      'name' => '巴西新克鲁赛罗 (1967–1986)',
       'symbol' => 'BRB',
     ),
     'BRC' => 
     array (
-      'name' => '巴西克鲁扎多',
+      'name' => '巴西克鲁扎多 (1986–1989)',
       'symbol' => 'BRC',
     ),
     'BRE' => 
     array (
-      'name' => '巴西克鲁塞罗 (1990-1993)',
+      'name' => '巴西克鲁塞罗 (1990–1993)',
       'symbol' => 'BRE',
     ),
     'BRL' => 
     array (
       'name' => '巴西雷亚尔',
-      'symbol' => 'BRL',
+      'symbol' => 'R$',
     ),
     'BRN' => 
     array (
-      'name' => '巴西新克鲁扎多 (1989-1990)',
+      'name' => '巴西新克鲁扎多 (1989–1990)',
       'symbol' => 'BRN',
     ),
     'BRR' => 
     array (
-      'name' => '巴西克鲁塞罗',
+      'name' => '巴西克鲁塞罗 (1993–1994)',
       'symbol' => 'BRR',
+    ),
+    'BRZ' => 
+    array (
+      'name' => '巴西克鲁塞罗 (1942–1967)',
+      'symbol' => 'BRZ',
     ),
     'BSD' => 
     array (
@@ -221,7 +276,7 @@ return array (
     ),
     'BTN' => 
     array (
-      'name' => '不丹努扎姆',
+      'name' => '不丹努尔特鲁姆',
       'symbol' => 'BTN',
     ),
     'BUK' => 
@@ -236,7 +291,7 @@ return array (
     ),
     'BYB' => 
     array (
-      'name' => '白俄罗斯新卢布 (1994-1999)',
+      'name' => '白俄罗斯新卢布 (1994–1999)',
       'symbol' => 'BYB',
     ),
     'BYR' => 
@@ -252,17 +307,32 @@ return array (
     'CAD' => 
     array (
       'name' => '加拿大元',
-      'symbol' => 'CAD',
+      'symbol' => 'CA$',
     ),
     'CDF' => 
     array (
       'name' => '刚果法郎',
       'symbol' => 'CDF',
     ),
+    'CHE' => 
+    array (
+      'name' => '欧元 (WIR)',
+      'symbol' => 'CHE',
+    ),
     'CHF' => 
     array (
       'name' => '瑞士法郎',
       'symbol' => 'CHF',
+    ),
+    'CHW' => 
+    array (
+      'name' => '法郎 (WIR)',
+      'symbol' => 'CHW',
+    ),
+    'CLE' => 
+    array (
+      'name' => '智利埃斯库多',
+      'symbol' => 'CLE',
     ),
     'CLF' => 
     array (
@@ -283,6 +353,11 @@ return array (
     array (
       'name' => '哥伦比亚比索',
       'symbol' => 'COP',
+    ),
+    'COU' => 
+    array (
+      'name' => '哥伦比亚币',
+      'symbol' => 'COU',
     ),
     'CRC' => 
     array (
@@ -402,7 +477,7 @@ return array (
     'EUR' => 
     array (
       'name' => '欧元',
-      'symbol' => 'EUR',
+      'symbol' => '€',
     ),
     'FIM' => 
     array (
@@ -416,7 +491,7 @@ return array (
     ),
     'FKP' => 
     array (
-      'name' => '福克兰镑',
+      'name' => '福克兰群岛镑',
       'symbol' => 'FKP',
     ),
     'FRF' => 
@@ -427,7 +502,7 @@ return array (
     'GBP' => 
     array (
       'name' => '英镑',
-      'symbol' => 'GBP',
+      'symbol' => '£',
     ),
     'GEK' => 
     array (
@@ -436,7 +511,7 @@ return array (
     ),
     'GEL' => 
     array (
-      'name' => '乔治亚拉瑞',
+      'name' => '格鲁吉亚拉里',
       'symbol' => 'GEL',
     ),
     'GHC' => 
@@ -502,11 +577,11 @@ return array (
     'HKD' => 
     array (
       'name' => '港元',
-      'symbol' => 'HKD',
+      'symbol' => 'HK$',
     ),
     'HNL' => 
     array (
-      'name' => '洪都拉斯拉伦皮拉',
+      'name' => '洪都拉斯伦皮拉',
       'symbol' => 'HNL',
     ),
     'HRD' => 
@@ -544,15 +619,20 @@ return array (
       'name' => '以色列镑',
       'symbol' => 'ILP',
     ),
+    'ILR' => 
+    array (
+      'name' => '以色列谢克尔(1980–1985)',
+      'symbol' => 'ILS',
+    ),
     'ILS' => 
     array (
       'name' => '以色列新谢克尔',
-      'symbol' => 'ILS',
+      'symbol' => '₪',
     ),
     'INR' => 
     array (
       'name' => '印度卢比',
-      'symbol' => 'INR',
+      'symbol' => '₹',
     ),
     'IQD' => 
     array (
@@ -563,6 +643,11 @@ return array (
     array (
       'name' => '伊朗里亚尔',
       'symbol' => 'IRR',
+    ),
+    'ISJ' => 
+    array (
+      'name' => '冰岛克朗(1918–1981)',
+      'symbol' => 'ISJ',
     ),
     'ISK' => 
     array (
@@ -587,7 +672,7 @@ return array (
     'JPY' => 
     array (
       'name' => '日元',
-      'symbol' => 'JPY',
+      'symbol' => 'JP¥',
     ),
     'KES' => 
     array (
@@ -611,12 +696,22 @@ return array (
     ),
     'KPW' => 
     array (
-      'name' => '朝鲜圆',
+      'name' => '朝鲜元',
       'symbol' => 'KPW',
+    ),
+    'KRH' => 
+    array (
+      'name' => '韩元 (1953–1962)',
+      'symbol' => 'KRH',
+    ),
+    'KRO' => 
+    array (
+      'name' => '韩元 (1945–1953)',
+      'symbol' => 'KRO',
     ),
     'KRW' => 
     array (
-      'name' => '韩圆',
+      'name' => '韩元',
       'symbol' => '￦',
     ),
     'KWD' => 
@@ -651,7 +746,7 @@ return array (
     ),
     'LRD' => 
     array (
-      'name' => '利比亚元',
+      'name' => '利比里亚元',
       'symbol' => 'LRD',
     ),
     'LSL' => 
@@ -709,6 +804,16 @@ return array (
       'name' => '摩洛哥法郎',
       'symbol' => 'MAF',
     ),
+    'MCF' => 
+    array (
+      'name' => '摩纳哥法郎',
+      'symbol' => 'MCF',
+    ),
+    'MDC' => 
+    array (
+      'name' => '摩尔多瓦库邦',
+      'symbol' => 'MDC',
+    ),
     'MDL' => 
     array (
       'name' => '摩尔多瓦列伊',
@@ -726,8 +831,13 @@ return array (
     ),
     'MKD' => 
     array (
-      'name' => '马其顿戴代纳尔',
+      'name' => '马其顿第纳尔',
       'symbol' => 'MKD',
+    ),
+    'MKN' => 
+    array (
+      'name' => '马其顿第纳尔 (1992–1993)',
+      'symbol' => 'MKN',
     ),
     'MLF' => 
     array (
@@ -736,7 +846,7 @@ return array (
     ),
     'MMK' => 
     array (
-      'name' => '缅甸开亚特',
+      'name' => '缅甸元',
       'symbol' => 'MMK',
     ),
     'MNT' => 
@@ -782,11 +892,11 @@ return array (
     'MXN' => 
     array (
       'name' => '墨西哥比索',
-      'symbol' => 'MXN',
+      'symbol' => 'MX$',
     ),
     'MXP' => 
     array (
-      'name' => '墨西哥银比索 (1861-1992)',
+      'name' => '墨西哥银比索 (1861–1992)',
       'symbol' => 'MXP',
     ),
     'MXV' => 
@@ -826,7 +936,7 @@ return array (
     ),
     'NIC' => 
     array (
-      'name' => '尼加拉瓜科多巴 (1988-1991)',
+      'name' => '尼加拉瓜科多巴 (1988–1991)',
       'symbol' => 'NIC',
     ),
     'NIO' => 
@@ -852,7 +962,7 @@ return array (
     'NZD' => 
     array (
       'name' => '新西兰元',
-      'symbol' => 'NZD',
+      'symbol' => 'NZ$',
     ),
     'OMR' => 
     array (
@@ -876,7 +986,7 @@ return array (
     ),
     'PES' => 
     array (
-      'name' => '秘鲁索尔',
+      'name' => '秘鲁索尔 (1863–1965)',
       'symbol' => 'PES',
     ),
     'PGK' => 
@@ -901,7 +1011,7 @@ return array (
     ),
     'PLZ' => 
     array (
-      'name' => '波兰兹罗提 (1950-1995)',
+      'name' => '波兰兹罗提 (1950–1995)',
       'symbol' => 'PLZ',
     ),
     'PTE' => 
@@ -941,12 +1051,12 @@ return array (
     ),
     'RUB' => 
     array (
-      'name' => '俄国卢布',
+      'name' => '俄罗斯卢布',
       'symbol' => 'RUB',
     ),
     'RUR' => 
     array (
-      'name' => '俄国卢布 (1991-1998)',
+      'name' => '俄国卢布 (1991–1998)',
       'symbol' => 'RUR',
     ),
     'RWF' => 
@@ -971,7 +1081,7 @@ return array (
     ),
     'SDD' => 
     array (
-      'name' => '苏丹第纳尔',
+      'name' => '苏丹第纳尔 (1992–2007)',
       'symbol' => 'SDD',
     ),
     'SDG' => 
@@ -1029,6 +1139,11 @@ return array (
       'name' => '苏里南盾',
       'symbol' => 'SRG',
     ),
+    'SSP' => 
+    array (
+      'name' => '南苏丹镑',
+      'symbol' => 'SSP',
+    ),
     'STD' => 
     array (
       'name' => '圣多美和普林西比多布拉',
@@ -1057,7 +1172,7 @@ return array (
     'THB' => 
     array (
       'name' => '泰铢',
-      'symbol' => 'THB',
+      'symbol' => '฿',
     ),
     'TJR' => 
     array (
@@ -1071,7 +1186,7 @@ return array (
     ),
     'TMM' => 
     array (
-      'name' => '土库曼斯坦马纳特 (1993-2009)',
+      'name' => '土库曼斯坦马纳特 (1993–2009)',
       'symbol' => 'TMM',
     ),
     'TMT' => 
@@ -1096,7 +1211,7 @@ return array (
     ),
     'TRL' => 
     array (
-      'name' => '土耳其里拉(1922-2005)',
+      'name' => '土耳其里拉 (1922–2005)',
       'symbol' => 'TRL',
     ),
     'TRY' => 
@@ -1112,7 +1227,7 @@ return array (
     'TWD' => 
     array (
       'name' => '新台币',
-      'symbol' => 'TWD',
+      'symbol' => 'NT$',
     ),
     'TZS' => 
     array (
@@ -1121,7 +1236,7 @@ return array (
     ),
     'UAH' => 
     array (
-      'name' => '乌克兰格里夫尼亚',
+      'name' => '乌克兰格里夫纳',
       'symbol' => 'UAH',
     ),
     'UAK' => 
@@ -1131,7 +1246,7 @@ return array (
     ),
     'UGS' => 
     array (
-      'name' => '乌干达先令 (1966-1987)',
+      'name' => '乌干达先令 (1966–1987)',
       'symbol' => 'UGS',
     ),
     'UGX' => 
@@ -1142,7 +1257,7 @@ return array (
     'USD' => 
     array (
       'name' => '美元',
-      'symbol' => 'USD',
+      'symbol' => 'US$',
     ),
     'USN' => 
     array (
@@ -1154,9 +1269,14 @@ return array (
       'name' => '美元（当日）',
       'symbol' => 'USS',
     ),
+    'UYI' => 
+    array (
+      'name' => '乌拉圭比索（索引单位）',
+      'symbol' => 'UYI',
+    ),
     'UYP' => 
     array (
-      'name' => '乌拉圭新比索 (1975-1993)',
+      'name' => '乌拉圭比索 (1975–1993)',
       'symbol' => 'UYP',
     ),
     'UYU' => 
@@ -1171,7 +1291,7 @@ return array (
     ),
     'VEB' => 
     array (
-      'name' => '委内瑞拉博利瓦',
+      'name' => '委内瑞拉玻利瓦尔 (1871–2008)',
       'symbol' => 'VEB',
     ),
     'VEF' => 
@@ -1182,7 +1302,12 @@ return array (
     'VND' => 
     array (
       'name' => '越南盾',
-      'symbol' => 'VND',
+      'symbol' => '₫',
+    ),
+    'VNN' => 
+    array (
+      'name' => '越南盾 (1978–1985)',
+      'symbol' => 'VNN',
     ),
     'VUV' => 
     array (
@@ -1191,13 +1316,13 @@ return array (
     ),
     'WST' => 
     array (
-      'name' => '西萨摩亚塔拉',
+      'name' => '萨摩亚塔拉',
       'symbol' => 'WST',
     ),
     'XAF' => 
     array (
       'name' => '中非金融合作法郎',
-      'symbol' => 'XAF',
+      'symbol' => 'FCFA',
     ),
     'XAG' => 
     array (
@@ -1232,7 +1357,7 @@ return array (
     'XCD' => 
     array (
       'name' => '东加勒比元',
-      'symbol' => 'XCD',
+      'symbol' => 'EC$',
     ),
     'XDR' => 
     array (
@@ -1257,7 +1382,7 @@ return array (
     'XOF' => 
     array (
       'name' => '非洲金融共同体法郎',
-      'symbol' => 'XOF',
+      'symbol' => 'CFA',
     ),
     'XPD' => 
     array (
@@ -1267,7 +1392,7 @@ return array (
     'XPF' => 
     array (
       'name' => '太平洋法郎',
-      'symbol' => 'XPF',
+      'symbol' => 'CFPF',
     ),
     'XPT' => 
     array (
@@ -1281,7 +1406,7 @@ return array (
     ),
     'XTS' => 
     array (
-      'name' => '为测试保留的代码',
+      'name' => '测试货币代码',
       'symbol' => 'XTS',
     ),
     'XXX' => 
@@ -1301,18 +1426,23 @@ return array (
     ),
     'YUD' => 
     array (
-      'name' => '南斯拉夫硬第纳尔',
+      'name' => '南斯拉夫硬第纳尔 (1966–1990)',
       'symbol' => 'YUD',
     ),
     'YUM' => 
     array (
-      'name' => '南斯拉夫偌威第纳尔',
+      'name' => '南斯拉夫新第纳尔 (1994–2002)',
       'symbol' => 'YUM',
     ),
     'YUN' => 
     array (
-      'name' => '南斯拉夫可兑换第纳尔',
+      'name' => '南斯拉夫可兑换第纳尔 (1990–1992)',
       'symbol' => 'YUN',
+    ),
+    'YUR' => 
+    array (
+      'name' => '南斯拉夫改良第纳尔 (1992–1993)',
+      'symbol' => 'YUR',
     ),
     'ZAL' => 
     array (
@@ -1326,28 +1456,38 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => '赞比亚克瓦查',
+      'name' => '赞比亚克瓦查 (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => '赞比亚克瓦查',
+      'symbol' => 'ZMW',
     ),
     'ZRN' => 
     array (
-      'name' => '新扎伊尔',
+      'name' => '新扎伊尔 (1993–1998)',
       'symbol' => 'ZRN',
     ),
     'ZRZ' => 
     array (
-      'name' => '扎伊尔',
+      'name' => '扎伊尔 (1971–1993)',
       'symbol' => 'ZRZ',
     ),
     'ZWD' => 
     array (
-      'name' => '津巴布韦元',
+      'name' => '津巴布韦元 (1980–2008)',
       'symbol' => 'ZWD',
     ),
     'ZWL' => 
     array (
       'name' => '津巴布韦元 (2009)',
       'symbol' => 'ZWL',
+    ),
+    'ZWR' => 
+    array (
+      'name' => '津巴布韦元 (2008)',
+      'symbol' => 'ZWR',
     ),
   ),
 );

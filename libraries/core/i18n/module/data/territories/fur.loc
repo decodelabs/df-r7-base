@@ -19,7 +19,7 @@ return array (
   '030' => 'Asie orientâl',
   '035' => 'Asie sud orientâl',
   '053' => 'Australie e Gnove Zelande',
-  172 => 'Commonwealth dai stâts indipendents',
+  '029' => 'caraibic',
   150 => 'Europe',
   '039' => 'Europe meridionâl',
   155 => 'Europe ocidentâl',
@@ -30,5 +30,4 @@ return array (
   '009' => 'Oceanie',
   '061' => 'Polinesie',
   '057' => 'Regjon de Micronesie',
-  '029' => 'caraibic',
 );

@@ -79,6 +79,16 @@ return array (
       ),
     ),
   ),
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM y \'р\'. G',
+      'long' => 'd MMMM y \'р\'. G',
+      'medium' => 'd MMM y G',
+      'short' => 'dd.MM.yy GGGGG',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -96,13 +106,13 @@ return array (
       ),
       'full' => 
       array (
-        'sun' => 'Неділя',
-        'mon' => 'Понеділок',
-        'tue' => 'Вівторок',
-        'wed' => 'Середа',
-        'thu' => 'Четвер',
-        'fri' => 'Пʼятниця',
-        'sat' => 'Субота',
+        'sun' => 'неділя',
+        'mon' => 'понеділок',
+        'tue' => 'вівторок',
+        'wed' => 'середа',
+        'thu' => 'четвер',
+        'fri' => 'пʼятниця',
+        'sat' => 'субота',
       ),
     ),
     'months' => 
@@ -143,7 +153,7 @@ return array (
     array (
       'full' => 'EEEE, d MMMM y \'р\'.',
       'long' => 'd MMMM y \'р\'.',
-      'medium' => 'd MMM y',
+      'medium' => 'd MMM y \'р\'.',
       'short' => 'dd.MM.yy',
     ),
     'timeFormat' => 

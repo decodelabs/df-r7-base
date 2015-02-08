@@ -1,5 +1,14 @@
 <?php
 return array (
+  'gsw' => 'alemán (Suiza)',
+  'az' => 'azerbaiyano',
+  'ba' => 'baskir',
+  'en_GB' => 'inglés (R. U.)',
+  'luo' => 'luo',
+  'arn' => 'mapuche',
+  'mr' => 'maratí',
   'ps' => 'Pastú',
   'ug' => 'Uyghur',
+  'vai' => 'vai',
+  'eu' => 'vasco',
 );

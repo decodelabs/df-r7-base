@@ -1,6 +1,16 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE dd MMMM y G',
+      'long' => 'dd MMMM y G',
+      'medium' => 'd MMM, y G',
+      'short' => 'dd/MM/yy GGGGG',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -8,23 +18,23 @@ return array (
       '@default' => 'wide',
       'abbreviated' => 
       array (
-        'sun' => 'Dom',
-        'mon' => 'Lun',
-        'tue' => 'Mar',
-        'wed' => 'Mér',
-        'thu' => 'Xov',
-        'fri' => 'Ven',
-        'sat' => 'Sáb',
+        'sun' => 'dom',
+        'mon' => 'lun',
+        'tue' => 'mar',
+        'wed' => 'mér',
+        'thu' => 'xov',
+        'fri' => 'ven',
+        'sat' => 'sáb',
       ),
       'full' => 
       array (
-        'sun' => 'Domingo',
-        'mon' => 'Luns',
-        'tue' => 'Martes',
-        'wed' => 'Mércores',
-        'thu' => 'Xoves',
-        'fri' => 'Venres',
-        'sat' => 'Sábado',
+        'sun' => 'domingo',
+        'mon' => 'luns',
+        'tue' => 'martes',
+        'wed' => 'mércores',
+        'thu' => 'xoves',
+        'fri' => 'venres',
+        'sat' => 'sábado',
       ),
     ),
     'months' => 
@@ -32,33 +42,33 @@ return array (
       '@default' => 'full',
       'abbreviated' => 
       array (
-        1 => 'Xan',
-        2 => 'Feb',
-        3 => 'Mar',
-        4 => 'Abr',
-        5 => 'Mai',
-        6 => 'Xuñ',
-        7 => 'Xul',
-        8 => 'Ago',
-        9 => 'Set',
-        10 => 'Out',
-        11 => 'Nov',
-        12 => 'Dec',
+        1 => 'xan',
+        2 => 'feb',
+        3 => 'mar',
+        4 => 'abr',
+        5 => 'mai',
+        6 => 'xuñ',
+        7 => 'xul',
+        8 => 'ago',
+        9 => 'set',
+        10 => 'out',
+        11 => 'nov',
+        12 => 'dec',
       ),
       'full' => 
       array (
-        1 => 'Xaneiro',
-        2 => 'Febreiro',
-        3 => 'Marzo',
-        4 => 'Abril',
-        5 => 'Maio',
-        6 => 'Xuño',
-        7 => 'Xullo',
-        8 => 'Agosto',
-        9 => 'Setembro',
-        10 => 'Outubro',
-        11 => 'Novembro',
-        12 => 'Decembro',
+        1 => 'xaneiro',
+        2 => 'febreiro',
+        3 => 'marzo',
+        4 => 'abril',
+        5 => 'maio',
+        6 => 'xuño',
+        7 => 'xullo',
+        8 => 'agosto',
+        9 => 'setembro',
+        10 => 'outubro',
+        11 => 'novembro',
+        12 => 'decembro',
       ),
     ),
     'dateFormat' => 

@@ -377,22 +377,27 @@ class Numbers extends Base implements core\i18n\module\generator\IModule {
         if(isset($doc->numbers->currencies)) {
             foreach($doc->numbers->currencies->currency as $currency) {
                 $symbol = (string)$currency->symbol;
+
                 if(!strlen($symbol)) {
                     $symbol = (string)$currency['type'];    
                 }
+
                 if($currency->symbol['choice'] == 'true') {
                     $symbol = explode('|', $symbol);
                 }
-                
+
                 $name = (string)$currency->displayName;
+
                 if(!strlen($name)) {
-                    $name = (string)$currency['type'];    
+                    $output['currencies'][(string)$currency['type']] = [
+                        'symbol' => $symbol
+                    ];
+                } else {
+                    $output['currencies'][(string)$currency['type']] = [
+                        'name' => $name,
+                        'symbol' => $symbol
+                    ];  
                 }
-                
-                $output['currencies'][(string)$currency['type']] = [
-                    'name' => $name,
-                    'symbol' => $symbol
-                ];    
             }    
             
             ksort($output['currencies']);

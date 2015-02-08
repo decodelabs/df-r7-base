@@ -27,7 +27,6 @@ return array (
   '034' => 'Suðurasia',
   '039' => 'Suðurevropa',
   '035' => 'Suðureysturasia',
-  '062' => 'Suðursentralasia',
   '011' => 'Vesturafrika',
   145 => 'Vesturasia',
   155 => 'Vesturevropa',

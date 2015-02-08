@@ -1,6 +1,16 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM y G',
+      'long' => 'd MMMM y G',
+      'medium' => 'd MMM y G',
+      'short' => 'd/MM/y GGGGG',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -35,7 +45,7 @@ return array (
         1 => 'Tiop',
         2 => 'Pɛt',
         3 => 'Duɔ̱ɔ̱',
-        4 => 'Dua',
+        4 => 'Guak',
         5 => 'Duä',
         6 => 'Kor',
         7 => 'Pay',
@@ -43,7 +53,7 @@ return array (
         9 => 'Tɛɛ',
         10 => 'Laa',
         11 => 'Kur',
-        12 => 'Tiop',
+        12 => 'Tid',
       ),
       'full' => 
       array (
@@ -66,7 +76,7 @@ return array (
       'full' => 'EEEE d MMMM y',
       'long' => 'd MMMM y',
       'medium' => 'd MMM y',
-      'short' => 'd/MM/yyyy',
+      'short' => 'd/MM/y',
     ),
     'timeFormat' => 
     array (

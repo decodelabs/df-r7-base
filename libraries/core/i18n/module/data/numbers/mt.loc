@@ -4,6 +4,15 @@ return array (
   array (
     'decimal' => '.',
     'group' => ',',
+    'percentSign' => '%',
+    'plusSign' => '+',
+    'minusSign' => '-',
+    'exponential' => 'E',
+    'superscriptingExponent' => '×',
+    'perMille' => '‰',
+    'infinity' => '∞',
+    'nan' => 'NaN',
+    'timeSeparator' => ':',
   ),
   'formats' => 
   array (
@@ -13,8 +22,8 @@ return array (
   array (
     'EUR' => 
     array (
-      'name' => 'Ewro',
-      'symbol' => 'EUR',
+      'name' => 'ewro',
+      'symbol' => '€',
     ),
     'MTL' => 
     array (
@@ -23,7 +32,7 @@ return array (
     ),
     'XXX' => 
     array (
-      'name' => 'Munita Mhux Magħruf jew Mhux Validu',
+      'name' => 'Munita Mhux Magħrufa jew Mhux Valida',
       'symbol' => 'XXX',
     ),
   ),

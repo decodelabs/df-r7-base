@@ -8,10 +8,12 @@ return array (
     'percentSign' => '%',
     'plusSign' => '+',
     'minusSign' => '-',
-    'exponential' => 'E',
+    'exponential' => '×10^',
+    'superscriptingExponent' => '×',
     'perMille' => '‰',
     'infinity' => '∞',
     'nan' => 'NaN',
+    'timeSeparator' => '.',
   ),
   'formats' => 
   array (
@@ -100,7 +102,7 @@ return array (
     'AUD' => 
     array (
       'name' => 'Austraalia dollar',
-      'symbol' => 'AUD',
+      'symbol' => 'AU$',
     ),
     'AWG' => 
     array (
@@ -184,7 +186,7 @@ return array (
     ),
     'BOB' => 
     array (
-      'name' => 'boliviaano',
+      'name' => 'Bolivia boliviaano',
       'symbol' => 'BOB',
     ),
     'BOP' => 
@@ -200,7 +202,7 @@ return array (
     'BRL' => 
     array (
       'name' => 'Brasiilia reaal',
-      'symbol' => 'BRL',
+      'symbol' => 'R$',
     ),
     'BSD' => 
     array (
@@ -234,13 +236,13 @@ return array (
     ),
     'BZD' => 
     array (
-      'name' => 'Belize\'i dollar',
+      'name' => 'Belize dollar',
       'symbol' => 'BZD',
     ),
     'CAD' => 
     array (
       'name' => 'Kanada dollar',
-      'symbol' => 'CAD',
+      'symbol' => 'CA$',
     ),
     'CDF' => 
     array (
@@ -260,7 +262,7 @@ return array (
     'CNY' => 
     array (
       'name' => 'Hiina jüaan',
-      'symbol' => 'CNY',
+      'symbol' => 'CN¥',
     ),
     'COP' => 
     array (
@@ -360,7 +362,7 @@ return array (
     'EUR' => 
     array (
       'name' => 'euro',
-      'symbol' => 'EUR',
+      'symbol' => '€',
     ),
     'FIM' => 
     array (
@@ -385,7 +387,7 @@ return array (
     'GBP' => 
     array (
       'name' => 'Suurbritannia naelsterling',
-      'symbol' => 'GBP',
+      'symbol' => '£',
     ),
     'GEL' => 
     array (
@@ -399,7 +401,7 @@ return array (
     ),
     'GHS' => 
     array (
-      'name' => 'Ghaana cedi',
+      'name' => 'Ghana cedi',
       'symbol' => 'GHS',
     ),
     'GIP' => 
@@ -445,7 +447,7 @@ return array (
     'HKD' => 
     array (
       'name' => 'Hongkongi dollar',
-      'symbol' => 'HKD',
+      'symbol' => 'HK$',
     ),
     'HNL' => 
     array (
@@ -485,12 +487,12 @@ return array (
     'ILS' => 
     array (
       'name' => 'Iisraeli uus seekel',
-      'symbol' => 'ILS',
+      'symbol' => '₪',
     ),
     'INR' => 
     array (
       'name' => 'India ruupia',
-      'symbol' => 'INR',
+      'symbol' => '₹',
     ),
     'IQD' => 
     array (
@@ -529,7 +531,7 @@ return array (
     ),
     'KES' => 
     array (
-      'name' => 'Keenia šilling',
+      'name' => 'Kenya šilling',
       'symbol' => 'KES',
     ),
     'KGS' => 
@@ -555,7 +557,7 @@ return array (
     'KRW' => 
     array (
       'name' => 'Lõuna-Korea vonn',
-      'symbol' => 'KRW',
+      'symbol' => '₩',
     ),
     'KWD' => 
     array (
@@ -654,7 +656,7 @@ return array (
     ),
     'MRO' => 
     array (
-      'name' => 'Mauretaania ugia',
+      'name' => 'Mauritaania ugia',
       'symbol' => 'MRO',
     ),
     'MTL' => 
@@ -680,7 +682,7 @@ return array (
     'MXN' => 
     array (
       'name' => 'Mehhiko peeso',
-      'symbol' => 'MXN',
+      'symbol' => 'MX$',
     ),
     'MXP' => 
     array (
@@ -735,7 +737,7 @@ return array (
     'NZD' => 
     array (
       'name' => 'Uus-Meremaa dollar',
-      'symbol' => 'NZD',
+      'symbol' => 'NZ$',
     ),
     'OMR' => 
     array (
@@ -829,7 +831,7 @@ return array (
     ),
     'RWF' => 
     array (
-      'name' => 'Ruanda frank',
+      'name' => 'Rwanda frank',
       'symbol' => 'RWF',
     ),
     'SAR' => 
@@ -902,9 +904,14 @@ return array (
       'name' => 'Surinami kulden',
       'symbol' => 'SRG',
     ),
+    'SSP' => 
+    array (
+      'name' => 'Lõuna-Sudaani nael',
+      'symbol' => 'SSP',
+    ),
     'STD' => 
     array (
-      'name' => 'São Tomé ja Príncipe Dobra',
+      'name' => 'São Tomé ja Príncipe dobra',
       'symbol' => 'STD',
     ),
     'SUR' => 
@@ -930,7 +937,7 @@ return array (
     'THB' => 
     array (
       'name' => 'Tai baat',
-      'symbol' => 'THB',
+      'symbol' => '฿',
     ),
     'TJS' => 
     array (
@@ -954,7 +961,7 @@ return array (
     ),
     'TOP' => 
     array (
-      'name' => 'Tonga pa\'anga',
+      'name' => 'Tonga pa’anga',
       'symbol' => 'TOP',
     ),
     'TPE' => 
@@ -980,7 +987,7 @@ return array (
     'TWD' => 
     array (
       'name' => 'Taiwani dollar',
-      'symbol' => 'TWD',
+      'symbol' => 'NT$',
     ),
     'TZS' => 
     array (
@@ -1029,7 +1036,7 @@ return array (
     ),
     'VEB' => 
     array (
-      'name' => 'Venezuela boliivar',
+      'name' => 'Venezuela bolívar (1871–2008)',
       'symbol' => 'VEB',
     ),
     'VEF' => 
@@ -1040,7 +1047,7 @@ return array (
     'VND' => 
     array (
       'name' => 'Vietnami dong',
-      'symbol' => 'VND',
+      'symbol' => '₫',
     ),
     'VUV' => 
     array (
@@ -1055,7 +1062,7 @@ return array (
     'XAF' => 
     array (
       'name' => 'CFA frank BEAC',
-      'symbol' => 'XAF',
+      'symbol' => 'FCFA',
     ),
     'XAG' => 
     array (
@@ -1090,7 +1097,7 @@ return array (
     'XCD' => 
     array (
       'name' => 'Ida-Kariibi dollar',
-      'symbol' => 'XCD',
+      'symbol' => 'EC$',
     ),
     'XDR' => 
     array (
@@ -1115,7 +1122,7 @@ return array (
     'XOF' => 
     array (
       'name' => 'Aafrika ühisfrank BCEAO',
-      'symbol' => 'XOF',
+      'symbol' => 'CFA',
     ),
     'XPD' => 
     array (
@@ -1125,7 +1132,7 @@ return array (
     'XPF' => 
     array (
       'name' => 'Prantsuse Vaikse-Ookeani frank',
-      'symbol' => 'XPF',
+      'symbol' => 'CFPF',
     ),
     'XPT' => 
     array (
@@ -1164,13 +1171,18 @@ return array (
     ),
     'ZAR' => 
     array (
-      'name' => 'LAVi rand',
+      'name' => 'Lõuna-Aafrika rand',
       'symbol' => 'ZAR',
     ),
     'ZMK' => 
     array (
-      'name' => 'Sambia kvatša',
+      'name' => 'Sambia kvatša (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Sambia kvatša',
+      'symbol' => 'ZMW',
     ),
     'ZRZ' => 
     array (

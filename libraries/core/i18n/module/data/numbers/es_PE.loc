@@ -10,7 +10,6 @@ return array (
   array (
     'PEN' => 
     array (
-      'name' => 'PEN',
       'symbol' => 'S/.',
     ),
   ),

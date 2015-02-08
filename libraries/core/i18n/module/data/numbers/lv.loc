@@ -7,18 +7,20 @@ return array (
     'list' => ';',
     'percentSign' => '%',
     'plusSign' => '+',
-    'minusSign' => '−',
+    'minusSign' => '-',
     'exponential' => 'E',
+    'superscriptingExponent' => '×',
     'perMille' => '‰',
     'infinity' => '∞',
     'nan' => 'nav skaitlis',
+    'timeSeparator' => ':',
   ),
   'formats' => 
   array (
     'decimal' => '#,##0.###',
     'scientific' => '#E0',
     'percent' => '#,##0%',
-    'currency' => '#,##0.00 ¤',
+    'currency' => '¤#0.00',
   ),
   'currencies' => 
   array (
@@ -65,7 +67,7 @@ return array (
     'AUD' => 
     array (
       'name' => 'Austrālijas dolārs',
-      'symbol' => 'AUD',
+      'symbol' => 'AU$',
     ),
     'AWG' => 
     array (
@@ -74,7 +76,7 @@ return array (
     ),
     'AZM' => 
     array (
-      'name' => 'Azerbaidžānas manats (1993-2006)',
+      'name' => 'Azerbaidžānas manats (1993–2006)',
       'symbol' => 'AZM',
     ),
     'AZN' => 
@@ -135,7 +137,7 @@ return array (
     'BRL' => 
     array (
       'name' => 'Brazīlijas reāls',
-      'symbol' => 'BRL',
+      'symbol' => 'R$',
     ),
     'BSD' => 
     array (
@@ -149,7 +151,7 @@ return array (
     ),
     'BWP' => 
     array (
-      'name' => 'Botsvānas pula',
+      'name' => 'Botsvanas pula',
       'symbol' => 'BWP',
     ),
     'BYR' => 
@@ -165,7 +167,7 @@ return array (
     'CAD' => 
     array (
       'name' => 'Kanādas dolārs',
-      'symbol' => 'CAD',
+      'symbol' => 'CA$',
     ),
     'CDF' => 
     array (
@@ -184,8 +186,8 @@ return array (
     ),
     'CNY' => 
     array (
-      'name' => 'Ķīnas juaņa renminbi',
-      'symbol' => 'CNY',
+      'name' => 'Ķīnas juaņs',
+      'symbol' => 'CN¥',
     ),
     'COP' => 
     array (
@@ -280,7 +282,7 @@ return array (
     'EUR' => 
     array (
       'name' => 'eiro',
-      'symbol' => 'EUR',
+      'symbol' => '€',
     ),
     'FIM' => 
     array (
@@ -294,7 +296,7 @@ return array (
     ),
     'FKP' => 
     array (
-      'name' => 'Folklenda salu mārciņa',
+      'name' => 'Folklenda Salu mārciņa',
       'symbol' => 'FKP',
     ),
     'FRF' => 
@@ -305,7 +307,7 @@ return array (
     'GBP' => 
     array (
       'name' => 'Lielbritānijas sterliņu mārciņa',
-      'symbol' => 'GBP',
+      'symbol' => '£',
     ),
     'GEL' => 
     array (
@@ -350,7 +352,7 @@ return array (
     'HKD' => 
     array (
       'name' => 'Honkongas dolārs',
-      'symbol' => 'HKD',
+      'symbol' => 'HK$',
     ),
     'HNL' => 
     array (
@@ -385,12 +387,12 @@ return array (
     'ILS' => 
     array (
       'name' => 'Izraēlas šekelis',
-      'symbol' => 'ILS',
+      'symbol' => '₪',
     ),
     'INR' => 
     array (
       'name' => 'Indijas rūpija',
-      'symbol' => 'INR',
+      'symbol' => '₹',
     ),
     'IQD' => 
     array (
@@ -455,7 +457,7 @@ return array (
     'KRW' => 
     array (
       'name' => 'Dienvidkorejas vona',
-      'symbol' => 'KRW',
+      'symbol' => '₩',
     ),
     'KWD' => 
     array (
@@ -595,7 +597,7 @@ return array (
     'MXN' => 
     array (
       'name' => 'Meksikas peso',
-      'symbol' => 'MXN',
+      'symbol' => 'MX$',
     ),
     'MYR' => 
     array (
@@ -629,7 +631,7 @@ return array (
     ),
     'NIO' => 
     array (
-      'name' => 'Kordovas oro',
+      'name' => 'Nikaragvas kordoba',
       'symbol' => 'NIO',
     ),
     'NLG' => 
@@ -650,7 +652,7 @@ return array (
     'NZD' => 
     array (
       'name' => 'Jaunzēlandes dolārs',
-      'symbol' => 'NZD',
+      'symbol' => 'NZ$',
     ),
     'OMR' => 
     array (
@@ -792,6 +794,11 @@ return array (
       'name' => 'Surinamas guldenis',
       'symbol' => 'SRG',
     ),
+    'SSP' => 
+    array (
+      'name' => 'Dienvidsudānas mārciņa',
+      'symbol' => 'SSP',
+    ),
     'STD' => 
     array (
       'name' => 'Santome un Prinsipi dobra',
@@ -815,7 +822,7 @@ return array (
     'THB' => 
     array (
       'name' => 'Taizemes bāts',
-      'symbol' => 'THB',
+      'symbol' => '฿',
     ),
     'TJS' => 
     array (
@@ -824,12 +831,12 @@ return array (
     ),
     'TMM' => 
     array (
-      'name' => 'Turkmenistānas manats',
+      'name' => 'Turkmenistānas manats (1993–2009)',
       'symbol' => 'TMM',
     ),
     'TMT' => 
     array (
-      'name' => 'Turkmenistānas jaunais manats',
+      'name' => 'Turkmenistānas manats',
       'symbol' => 'TMT',
     ),
     'TND' => 
@@ -844,12 +851,12 @@ return array (
     ),
     'TRL' => 
     array (
-      'name' => 'Turcijas lira',
+      'name' => 'Turcijas lira (1922–2005)',
       'symbol' => 'TRL',
     ),
     'TRY' => 
     array (
-      'name' => 'Turcijas jaunā lira',
+      'name' => 'Turcijas lira',
       'symbol' => 'TRY',
     ),
     'TTD' => 
@@ -860,7 +867,7 @@ return array (
     'TWD' => 
     array (
       'name' => 'Taivānas jaunais dolārs',
-      'symbol' => 'TWD',
+      'symbol' => 'NT$',
     ),
     'TZS' => 
     array (
@@ -894,18 +901,18 @@ return array (
     ),
     'VEB' => 
     array (
-      'name' => 'Venecuēlas bolivārs',
+      'name' => 'Venecuēlas bolivārs (1871–2008)',
       'symbol' => 'VEB',
     ),
     'VEF' => 
     array (
-      'name' => 'Venecuēlas stiprais bolivārs',
+      'name' => 'Venecuēlas bolivārs',
       'symbol' => 'VEF',
     ),
     'VND' => 
     array (
       'name' => 'Vjetnamas dongi',
-      'symbol' => 'VND',
+      'symbol' => '₫',
     ),
     'VUV' => 
     array (
@@ -920,7 +927,7 @@ return array (
     'XAF' => 
     array (
       'name' => 'Centrālāfrikas CFA franks',
-      'symbol' => 'XAF',
+      'symbol' => 'FCFA',
     ),
     'XAG' => 
     array (
@@ -955,7 +962,7 @@ return array (
     'XCD' => 
     array (
       'name' => 'Austrumkarību dolārs',
-      'symbol' => 'XCD',
+      'symbol' => 'EC$',
     ),
     'XDR' => 
     array (
@@ -980,7 +987,7 @@ return array (
     'XOF' => 
     array (
       'name' => 'Rietumāfrikas CFA franks',
-      'symbol' => 'XOF',
+      'symbol' => 'CFA',
     ),
     'XPD' => 
     array (
@@ -990,7 +997,7 @@ return array (
     'XPF' => 
     array (
       'name' => 'CFP franks',
-      'symbol' => 'XPF',
+      'symbol' => 'CFPF',
     ),
     'XPT' => 
     array (
@@ -1014,13 +1021,18 @@ return array (
     ),
     'ZAR' => 
     array (
-      'name' => 'Dienvidāfrikas rands',
+      'name' => 'Dienvidāfrikas rends',
       'symbol' => 'ZAR',
     ),
     'ZMK' => 
     array (
-      'name' => 'Zambijas kvača',
+      'name' => 'Zambijas kvača (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Zambijas kvača',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

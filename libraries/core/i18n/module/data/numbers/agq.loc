@@ -275,8 +275,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'Kwachà è Zambìa',
+      'name' => 'Kwachà è Zambìa (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Kwachà è Zambìa',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

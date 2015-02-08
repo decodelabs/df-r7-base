@@ -3,22 +3,43 @@ return array (
   '@default' => 'gregorian',
   'buddhist' => 
   array (
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE, d. MMMM y G',
-      'long' => 'd. MMMM y G',
-      'medium' => 'd. M. y G',
-      'short' => 'dd.MM.yy GGGGG',
-    ),
   ),
   'chinese' => 
   array (
+    'months' => 
+    array (
+      '@default' => 'full',
+    ),
     'dateFormat' => 
     array (
-      'full' => 'EEEE, d. Ml. y\'x\'G',
-      'long' => 'd. Ml. y\'x\'G',
-      'medium' => 'd. Ml. y\'x\'G',
-      'short' => 'd. Ml. y\'x\'G',
+      'full' => 'EEEE, d. M. y',
+      'long' => 'd. M. y',
+      'medium' => 'd. M. y',
+      'short' => 'd. M. y',
+    ),
+  ),
+  'coptic' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+    ),
+  ),
+  'ethiopic' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+    ),
+  ),
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d. MMMM y G',
+      'long' => 'd. MMMM y G',
+      'medium' => 'd. M. y G',
+      'short' => 'dd.MM.yy GGGGG',
     ),
   ),
   'gregorian' => 
@@ -52,18 +73,18 @@ return array (
       '@default' => 'full',
       'abbreviated' => 
       array (
-        1 => 'Led',
-        2 => 'Úno',
-        3 => 'Bře',
-        4 => 'Dub',
-        5 => 'Kvě',
-        6 => 'Čer',
-        7 => 'Čvc',
-        8 => 'Srp',
-        9 => 'Zář',
-        10 => 'Říj',
-        11 => 'Lis',
-        12 => 'Pro',
+        1 => 'led',
+        2 => 'úno',
+        3 => 'bře',
+        4 => 'dub',
+        5 => 'kvě',
+        6 => 'čvn',
+        7 => 'čvc',
+        8 => 'srp',
+        9 => 'zář',
+        10 => 'říj',
+        11 => 'lis',
+        12 => 'pro',
       ),
       'full' => 
       array (
@@ -83,9 +104,9 @@ return array (
     ),
     'dateFormat' => 
     array (
-      'full' => 'EEEE, d. MMMM y',
+      'full' => 'EEEE d. MMMM y',
       'long' => 'd. MMMM y',
-      'medium' => 'd.M.yyyy',
+      'medium' => 'd. M. y',
       'short' => 'dd.MM.yy',
     ),
     'timeFormat' => 
@@ -96,33 +117,45 @@ return array (
       'short' => 'H:mm',
     ),
   ),
+  'hebrew' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+    ),
+  ),
+  'indian' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+    ),
+  ),
   'islamic' => 
   array (
-    'dateFormat' => 
+    'months' => 
     array (
-      'full' => 'EEEE, d. MMMM y G',
-      'medium' => 'd. MMM. y G',
-      'short' => 'dd.MM.yy. G',
+      '@default' => 'full',
     ),
   ),
   'japanese' => 
   array (
     'dateFormat' => 
     array (
-      'full' => 'EEEE d. MMMM y G',
-      'long' => 'd. MMMM y G',
-      'medium' => 'd. M. y G',
-      'short' => 'dd.MM.yy GGGGG',
-    ),
-  ),
-  'roc' => 
-  array (
-    'dateFormat' => 
-    array (
       'full' => 'EEEE, d. MMMM y G',
       'long' => 'd. MMMM y G',
       'medium' => 'd. M. y G',
       'short' => 'dd.MM.yy GGGGG',
     ),
+  ),
+  'persian' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+    ),
+  ),
+  'roc' => 
+  array (
   ),
 );

@@ -3,8 +3,8 @@ return array (
   'AN' => 'Antillas Holandesas',
   'SA' => 'Arabia Saudita',
   'AZ' => 'Azerbayán',
+  'BD' => 'Bangladesh',
   'RO' => 'Rumania',
   'EH' => 'Sahara Occidental',
-  'TZ' => 'Tanzanía',
   'PS' => 'Territorio Palestino',
 );

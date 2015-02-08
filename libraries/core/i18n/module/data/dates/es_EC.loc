@@ -1,13 +1,10 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'generic' => 
+  array (
+  ),
   'gregorian' => 
   array (
-    'timeFormat' => 
-    array (
-      'long' => 'H:mm:ss z',
-      'medium' => 'H:mm:ss',
-      'short' => 'H:mm',
-    ),
   ),
 );

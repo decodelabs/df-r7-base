@@ -1,0 +1,61 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => ',',
+    'group' => ' ',
+    'list' => ';',
+    'percentSign' => '%',
+    'plusSign' => '+',
+    'minusSign' => '-',
+    'exponential' => 'E',
+    'perMille' => '‰',
+    'infinity' => '∞',
+    'nan' => 'НН',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'scientific' => '#E0',
+    'percent' => '#,##0%',
+    'currency' => '¤ #,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'BRL' => 
+    array (
+      'name' => 'Бразилиаг реал',
+      'symbol' => 'R$',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'Евро',
+      'symbol' => '€',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'Бритайнаг Стерлингы Фунт',
+      'symbol' => '£',
+    ),
+    'GEL' => 
+    array (
+      'name' => 'Лар',
+      'symbol' => 'GEL',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'Сом',
+      'symbol' => 'RUB',
+    ),
+    'USD' => 
+    array (
+      'name' => 'АИШ-ы Доллар',
+      'symbol' => '$',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'Нӕзонгӕ валютӕ',
+      'symbol' => 'XXX',
+    ),
+  ),
+);

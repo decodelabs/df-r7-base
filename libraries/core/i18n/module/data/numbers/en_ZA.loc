@@ -10,14 +10,8 @@ return array (
   ),
   'currencies' => 
   array (
-    'USD' => 
-    array (
-      'name' => 'USD',
-      'symbol' => 'US$',
-    ),
     'ZAR' => 
     array (
-      'name' => 'ZAR',
       'symbol' => 'R',
     ),
   ),

@@ -12,8 +12,11 @@ return array (
   array (
     'COP' => 
     array (
-      'name' => 'COP',
       'symbol' => '$',
+    ),
+    'USD' => 
+    array (
+      'symbol' => 'US$',
     ),
   ),
 );

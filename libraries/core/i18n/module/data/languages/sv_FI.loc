@@ -1,0 +1,17 @@
+<?php
+return array (
+  'az' => 'azerbajdzjanska',
+  'nb' => 'bokmål',
+  'fj' => 'fiji',
+  'ks' => 'kashmiri',
+  'km' => 'khmer',
+  'ky' => 'kirgiziska',
+  'lo' => 'lao',
+  'chm' => 'mari',
+  'und' => 'okänt språk',
+  'pa' => 'panjabi',
+  'ps' => 'pashto',
+  'te' => 'telugu',
+  'th' => 'thai',
+  'ti' => 'tigrinska',
+);

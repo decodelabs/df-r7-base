@@ -3,5 +3,10 @@ return array (
   '@default' => 'gregorian',
   'gregorian' => 
   array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE\'en\' \'den\' d:\'e\' MMMM y',
+      'short' => 'dd-MM-y',
+    ),
   ),
 );

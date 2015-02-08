@@ -2,6 +2,8 @@
 return array (
   'symbols' => 
   array (
+    'plusSign' => '‎+',
+    'minusSign' => '‎-',
   ),
   'formats' => 
   array (
@@ -16,7 +18,7 @@ return array (
     'INR' => 
     array (
       'name' => 'روپئیہ [INR]',
-      'symbol' => 'ر [INR]',
+      'symbol' => 'INR',
     ),
     'PKR' => 
     array (

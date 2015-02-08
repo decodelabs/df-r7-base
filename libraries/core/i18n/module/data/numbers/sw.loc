@@ -2,11 +2,25 @@
 return array (
   'symbols' => 
   array (
+    'decimal' => '.',
+    'group' => ',',
+    'list' => ';',
+    'percentSign' => '%',
+    'plusSign' => '+',
+    'minusSign' => '-',
+    'exponential' => 'E',
+    'superscriptingExponent' => '×',
+    'perMille' => '‰',
+    'infinity' => '∞',
+    'nan' => 'NaN',
+    'timeSeparator' => ':',
   ),
   'formats' => 
   array (
-    'decimal' => 'K0.0',
-    'currency' => '#,##0.00 ¤',
+    'decimal' => '#,##0.###',
+    'scientific' => '#E0',
+    'percent' => '#,##0%',
+    'currency' => '¤#,##0.00',
   ),
   'currencies' => 
   array (
@@ -48,7 +62,7 @@ return array (
     'AUD' => 
     array (
       'name' => 'dola ya Australia',
-      'symbol' => 'AUD',
+      'symbol' => 'A$',
     ),
     'AWG' => 
     array (
@@ -57,12 +71,12 @@ return array (
     ),
     'AZN' => 
     array (
-      'name' => 'Manat ya Azebaijan',
+      'name' => 'Manat ya Azebaijani',
       'symbol' => 'AZN',
     ),
     'BAM' => 
     array (
-      'name' => 'Mark ya Bosnia na Hezegovina Inayoweza Kubadilishwa',
+      'name' => 'Convertible Mark ya Bosnia na Hezegovina',
       'symbol' => 'BAM',
     ),
     'BBD' => 
@@ -72,7 +86,7 @@ return array (
     ),
     'BDT' => 
     array (
-      'name' => 'Taka ya Bangladesh',
+      'name' => 'Taka ya Bangladeshi',
       'symbol' => 'BDT',
     ),
     'BGN' => 
@@ -108,7 +122,7 @@ return array (
     'BRL' => 
     array (
       'name' => 'Real ya Brazil',
-      'symbol' => 'BRL',
+      'symbol' => 'R$',
     ),
     'BSD' => 
     array (
@@ -138,7 +152,7 @@ return array (
     'CAD' => 
     array (
       'name' => 'dola ya Kanada',
-      'symbol' => 'CAD',
+      'symbol' => 'CA$',
     ),
     'CDF' => 
     array (
@@ -157,8 +171,8 @@ return array (
     ),
     'CNY' => 
     array (
-      'name' => 'yuan Renminbi ya China',
-      'symbol' => 'CNY',
+      'name' => 'yuan ya Uchina',
+      'symbol' => 'CN¥',
     ),
     'COP' => 
     array (
@@ -222,13 +236,13 @@ return array (
     ),
     'ETB' => 
     array (
-      'name' => 'bir ya Uhabeshi',
+      'name' => 'birr ya Uhabeshi',
       'symbol' => 'ETB',
     ),
     'EUR' => 
     array (
       'name' => 'yuro',
-      'symbol' => 'EUR',
+      'symbol' => '€',
     ),
     'FJD' => 
     array (
@@ -243,7 +257,7 @@ return array (
     'GBP' => 
     array (
       'name' => 'pauni ya Uingereza',
-      'symbol' => 'GBP',
+      'symbol' => '£',
     ),
     'GEL' => 
     array (
@@ -272,7 +286,7 @@ return array (
     ),
     'GNF' => 
     array (
-      'name' => 'Franc ya Guinea',
+      'name' => 'faranga ya Guinea',
       'symbol' => 'GNF',
     ),
     'GNS' => 
@@ -293,7 +307,7 @@ return array (
     'HKD' => 
     array (
       'name' => 'Dola ya Hong Kong',
-      'symbol' => 'HKD',
+      'symbol' => 'HK$',
     ),
     'HNL' => 
     array (
@@ -312,7 +326,7 @@ return array (
     ),
     'HUF' => 
     array (
-      'name' => 'Forint ya Hangaria',
+      'name' => 'Forint ya Hungaria',
       'symbol' => 'HUF',
     ),
     'IDR' => 
@@ -323,16 +337,16 @@ return array (
     'ILS' => 
     array (
       'name' => 'Sheqel Mpya ya Israeli',
-      'symbol' => 'ILS',
+      'symbol' => '₪',
     ),
     'INR' => 
     array (
       'name' => 'rupia ya India',
-      'symbol' => 'INR',
+      'symbol' => '₹',
     ),
     'IQD' => 
     array (
-      'name' => 'Dinari ya Irak',
+      'name' => 'Dinari ya Iraki',
       'symbol' => 'IQD',
     ),
     'IRR' => 
@@ -342,7 +356,7 @@ return array (
     ),
     'ISK' => 
     array (
-      'name' => 'Króna ya Iceland',
+      'name' => 'Krona ya Isilandi',
       'symbol' => 'ISK',
     ),
     'JMD' => 
@@ -352,13 +366,13 @@ return array (
     ),
     'JOD' => 
     array (
-      'name' => 'Dinar ya Yordani',
+      'name' => 'Dinari ya Yordani',
       'symbol' => 'JOD',
     ),
     'JPY' => 
     array (
-      'name' => 'sarafu ya Kijapani',
-      'symbol' => 'JPY',
+      'name' => 'Yen ya Japani',
+      'symbol' => 'JP¥',
     ),
     'KES' => 
     array (
@@ -388,11 +402,11 @@ return array (
     'KRW' => 
     array (
       'name' => 'Won ya Korea Kusini',
-      'symbol' => 'KRW',
+      'symbol' => '₩',
     ),
     'KWD' => 
     array (
-      'name' => 'Dinar ya Kuwait',
+      'name' => 'Dinari ya Kuwaiti',
       'symbol' => 'KWD',
     ),
     'KYD' => 
@@ -417,7 +431,7 @@ return array (
     ),
     'LKR' => 
     array (
-      'name' => 'Rupee ya Sri Lanka',
+      'name' => 'Rupia ya Sirilanka',
       'symbol' => 'LKR',
     ),
     'LRD' => 
@@ -457,7 +471,7 @@ return array (
     ),
     'MGA' => 
     array (
-      'name' => 'faranga ya Bukini',
+      'name' => 'Ariari ya Madagaska',
       'symbol' => 'MGA',
     ),
     'MKD' => 
@@ -482,7 +496,7 @@ return array (
     ),
     'MRO' => 
     array (
-      'name' => 'ugwiya ya Moritania',
+      'name' => 'Ouguiya ya Moritania',
       'symbol' => 'MRO',
     ),
     'MUR' => 
@@ -503,7 +517,7 @@ return array (
     'MXN' => 
     array (
       'name' => 'Peso ya Meksiko',
-      'symbol' => 'MXN',
+      'symbol' => 'MX$',
     ),
     'MYR' => 
     array (
@@ -512,8 +526,13 @@ return array (
     ),
     'MZM' => 
     array (
-      'name' => 'metikali ya Msumbiji',
+      'name' => 'metikali ya Msumbiji (1980–2006)',
       'symbol' => 'MZM',
+    ),
+    'MZN' => 
+    array (
+      'name' => 'Metikali ya Msumbiji',
+      'symbol' => 'MZN',
     ),
     'NAD' => 
     array (
@@ -527,7 +546,7 @@ return array (
     ),
     'NIO' => 
     array (
-      'name' => 'Córdoba ya Nikaragua',
+      'name' => 'Cordoba ya Nikaragua',
       'symbol' => 'NIO',
     ),
     'NOK' => 
@@ -537,17 +556,17 @@ return array (
     ),
     'NPR' => 
     array (
-      'name' => 'Rupee ya Nepali',
+      'name' => 'Rupia ya Nepali',
       'symbol' => 'NPR',
     ),
     'NZD' => 
     array (
       'name' => 'Dola ya Nyuzilandi',
-      'symbol' => 'NZD',
+      'symbol' => 'NZ$',
     ),
     'OMR' => 
     array (
-      'name' => 'Rial ya Oman',
+      'name' => 'Rial ya Omani',
       'symbol' => 'OMR',
     ),
     'PAB' => 
@@ -572,7 +591,7 @@ return array (
     ),
     'PKR' => 
     array (
-      'name' => 'Rupee ya Pakistan',
+      'name' => 'Rupia ya Pakistani',
       'symbol' => 'PKR',
     ),
     'PLN' => 
@@ -589,6 +608,11 @@ return array (
     array (
       'name' => 'Rial ya Katari',
       'symbol' => 'QAR',
+    ),
+    'RON' => 
+    array (
+      'name' => 'Leu ya Romania',
+      'symbol' => 'RON',
     ),
     'RSD' => 
     array (
@@ -617,17 +641,17 @@ return array (
     ),
     'SCR' => 
     array (
-      'name' => 'rupia ya Shelisheli',
+      'name' => 'rupia ya Ushelisheli',
       'symbol' => 'SCR',
     ),
     'SDG' => 
     array (
-      'name' => 'dinari ya Sudani',
+      'name' => 'pauni ya Sudani',
       'symbol' => 'SDG',
     ),
     'SDP' => 
     array (
-      'name' => 'pauni ya Sudani',
+      'name' => 'pauni ya Sudani (1957–1998)',
       'symbol' => 'SDP',
     ),
     'SEK' => 
@@ -637,7 +661,7 @@ return array (
     ),
     'SGD' => 
     array (
-      'name' => 'Dola ya Singapuri',
+      'name' => 'Dola ya Singapore',
       'symbol' => 'SGD',
     ),
     'SHP' => 
@@ -660,6 +684,11 @@ return array (
       'name' => 'Dola ya Suriname',
       'symbol' => 'SRD',
     ),
+    'SSP' => 
+    array (
+      'name' => 'pauni ya Sudani Kusini',
+      'symbol' => 'SSP',
+    ),
     'STD' => 
     array (
       'name' => 'dobra ya Sao Tome na Principe',
@@ -678,7 +707,7 @@ return array (
     'THB' => 
     array (
       'name' => 'Baht ya Tailandi',
-      'symbol' => 'THB',
+      'symbol' => '฿',
     ),
     'TJS' => 
     array (
@@ -713,7 +742,7 @@ return array (
     'TWD' => 
     array (
       'name' => 'Dola ya Taiwan',
-      'symbol' => 'TWD',
+      'symbol' => 'NT$',
     ),
     'TZS' => 
     array (
@@ -733,7 +762,7 @@ return array (
     'USD' => 
     array (
       'name' => 'dola ya Marekani',
-      'symbol' => 'USD',
+      'symbol' => 'US$',
     ),
     'UYU' => 
     array (
@@ -752,8 +781,8 @@ return array (
     ),
     'VND' => 
     array (
-      'name' => 'Dong ya Kivietinamu',
-      'symbol' => 'VND',
+      'name' => 'Dong ya Vietinamu',
+      'symbol' => '₫',
     ),
     'VUV' => 
     array (
@@ -767,32 +796,32 @@ return array (
     ),
     'XAF' => 
     array (
-      'name' => 'faranga CFA BEAC',
-      'symbol' => 'XAF',
+      'name' => 'CFA faranga ya BEAC',
+      'symbol' => 'FCFA',
     ),
     'XCD' => 
     array (
       'name' => 'Dola ya Karibea ya Mashariki',
-      'symbol' => 'XCD',
+      'symbol' => 'EC$',
     ),
     'XOF' => 
     array (
-      'name' => 'faranga CFA BCEAO',
-      'symbol' => 'XOF',
+      'name' => 'CFA faranga za BCEAO',
+      'symbol' => 'CFA',
     ),
     'XPF' => 
     array (
-      'name' => 'Franc ya CFP',
-      'symbol' => 'XPF',
+      'name' => 'Faranga ya CFP',
+      'symbol' => 'CFPF',
     ),
     'XXX' => 
     array (
-      'name' => 'Fedha Isiyojulikana',
+      'name' => 'Fedha Zisizojulikana',
       'symbol' => 'XXX',
     ),
     'YER' => 
     array (
-      'name' => 'Rial ya Yemen',
+      'name' => 'Rial ya Yemeni',
       'symbol' => 'YER',
     ),
     'ZAR' => 
@@ -802,8 +831,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'kwacha ya Zambia',
+      'name' => 'kwacha ya Zambia (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'kwacha ya Zambia',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

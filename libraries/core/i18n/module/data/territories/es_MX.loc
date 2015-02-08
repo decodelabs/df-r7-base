@@ -1,0 +1,20 @@
+<?php
+return array (
+  '017' => 'África Central',
+  '015' => 'África del Norte',
+  '018' => 'África del Sur',
+  '011' => 'África Occidental',
+  '014' => 'África Oriental',
+  '021' => 'América Septentrional',
+  '019' => 'Américas',
+  143 => 'Asia Central',
+  '034' => 'Asia del Sur',
+  145 => 'Asia Occidental',
+  '030' => 'Asia Oriental',
+  154 => 'Europa del Norte',
+  '039' => 'Europa del Sur',
+  155 => 'Europa Occidental',
+  151 => 'Europa Oriental',
+  '005' => 'Sudamérica',
+  '035' => 'Sudeste Asiático',
+);

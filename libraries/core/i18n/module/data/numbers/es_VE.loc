@@ -13,8 +13,7 @@ return array (
   array (
     'VEF' => 
     array (
-      'name' => 'VEF',
-      'symbol' => 'Bs.F.',
+      'symbol' => 'Bs.',
     ),
   ),
 );

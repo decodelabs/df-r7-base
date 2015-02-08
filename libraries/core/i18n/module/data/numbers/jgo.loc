@@ -1,0 +1,51 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => ',',
+    'group' => '.',
+    'list' => ';',
+    'percentSign' => '%',
+    'plusSign' => '+',
+    'minusSign' => '-',
+    'exponential' => 'E',
+    'perMille' => '‰',
+    'infinity' => '∞',
+    'nan' => 'NaN',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'scientific' => '#E0',
+    'percent' => '#,##0%',
+    'currency' => '¤ #,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'CAD' => 
+    array (
+      'name' => 'Ndɔ́la-Kanandâ',
+      'symbol' => 'CAD',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'Ʉ́lɔ',
+      'symbol' => 'EUR',
+    ),
+    'USD' => 
+    array (
+      'name' => 'Ndɔ́la-Amɛlîk',
+      'symbol' => 'USD',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'Fɛlâŋ',
+      'symbol' => 'FCFA',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'ntɛ-ŋkáp yi pɛ́ ká kɛ́ jínɛ',
+      'symbol' => 'XXX',
+    ),
+  ),
+);

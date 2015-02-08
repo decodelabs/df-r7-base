@@ -1,6 +1,14 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'long' => 'G སྤྱི་ལོ་y MMMMའི་ཙེས་dད',
+      'medium' => 'G y ལོ་འི་MMMཙེས་d',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -11,9 +19,9 @@ return array (
         'sun' => 'ཉི་མ་',
         'mon' => 'ཟླ་བ་',
         'tue' => 'མིག་དམར་',
-        'wed' => 'ཧླག་པ་',
+        'wed' => 'ལྷག་པ་',
         'thu' => 'ཕུར་བུ་',
-        'fri' => 'སངས་',
+        'fri' => 'པ་སངས་',
         'sat' => 'སྤེན་པ་',
       ),
       'full' => 
@@ -21,9 +29,9 @@ return array (
         'sun' => 'གཟའ་ཉི་མ་',
         'mon' => 'གཟའ་ཟླ་བ་',
         'tue' => 'གཟའ་མིག་དམར་',
-        'wed' => 'གཟའ་ཧླག་པ་',
+        'wed' => 'གཟའ་ལྷག་པ་',
         'thu' => 'གཟའ་ཕུར་བུ་',
-        'fri' => 'གཟའ་སངས་',
+        'fri' => 'གཟའ་པ་སངས་',
         'sat' => 'གཟའ་སྤེན་པ་',
       ),
     ),
@@ -63,7 +71,7 @@ return array (
     ),
     'dateFormat' => 
     array (
-      'long' => 'སྦྱི་ལོ་y MMMMའི་ཙེས་dད',
+      'long' => 'སྤྱི་ལོ་y MMMMའི་ཙེས་dད',
       'medium' => 'y ལོ་འི་MMMཙེས་d',
     ),
   ),

@@ -8,6 +8,16 @@ return array (
       '@default' => 'full',
     ),
   ),
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM y \'ж\'. G',
+      'long' => 'd MMMM y \'ж\'. G',
+      'medium' => 'dd.MM.y G',
+      'short' => 'dd.MM.y GGGGG',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -15,20 +25,20 @@ return array (
       '@default' => 'wide',
       'abbreviated' => 
       array (
-        'sun' => 'жс.',
-        'mon' => 'дс.',
-        'tue' => 'сс.',
-        'wed' => 'ср.',
-        'thu' => 'бс.',
-        'fri' => 'жм.',
-        'sat' => 'сһ.',
+        'sun' => 'жек',
+        'mon' => 'дүй',
+        'tue' => 'сей',
+        'wed' => 'сәр',
+        'thu' => 'бей',
+        'fri' => 'жұма',
+        'sat' => 'сен',
       ),
       'full' => 
       array (
-        'sun' => 'жексені',
-        'mon' => 'дуйсенбі',
+        'sun' => 'жексенбі',
+        'mon' => 'дүйсенбі',
         'tue' => 'сейсенбі',
-        'wed' => 'сәренбі',
+        'wed' => 'сәрсенбі',
         'thu' => 'бейсенбі',
         'fri' => 'жұма',
         'sat' => 'сенбі',
@@ -70,10 +80,10 @@ return array (
     ),
     'dateFormat' => 
     array (
-      'full' => 'EEEE, d MMMM y \'ж\'.',
-      'long' => 'd MMMM y \'ж\'.',
-      'medium' => 'dd.MM.yyyy',
-      'short' => 'dd.MM.yy',
+      'full' => 'EEEE, d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'y, dd-MMM',
+      'short' => 'dd/MM/yy',
     ),
     'timeFormat' => 
     array (

@@ -2,11 +2,25 @@
 return array (
   'symbols' => 
   array (
+    'decimal' => '.',
+    'group' => ',',
+    'list' => ';',
+    'percentSign' => '%',
+    'plusSign' => '+',
+    'minusSign' => '-',
+    'exponential' => 'E',
+    'superscriptingExponent' => '×',
+    'perMille' => '‰',
+    'infinity' => '∞',
+    'nan' => 'NaN',
+    'timeSeparator' => ':',
   ),
   'formats' => 
   array (
-    'decimal' => '000ኪባ',
-    'currency' => '¤#,##0.00;(¤#,##0.00)',
+    'decimal' => '#,##0.###',
+    'scientific' => '#E0',
+    'percent' => '#,##0%',
+    'currency' => '¤#,##0.00',
   ),
   'currencies' => 
   array (
@@ -48,7 +62,7 @@ return array (
     'AUD' => 
     array (
       'name' => 'የአውስትራሊያ ዶላር',
-      'symbol' => 'AUD',
+      'symbol' => 'AU$',
     ),
     'AWG' => 
     array (
@@ -108,7 +122,7 @@ return array (
     'BRL' => 
     array (
       'name' => 'የብራዚል ሪል',
-      'symbol' => 'BRL',
+      'symbol' => 'R$',
     ),
     'BSD' => 
     array (
@@ -138,7 +152,7 @@ return array (
     'CAD' => 
     array (
       'name' => 'የካናዳ ዶላር',
-      'symbol' => 'CAD',
+      'symbol' => 'CA$',
     ),
     'CDF' => 
     array (
@@ -157,8 +171,8 @@ return array (
     ),
     'CNY' => 
     array (
-      'name' => 'የቻይና ዩአን ረንሚንቢ',
-      'symbol' => 'CNY',
+      'name' => 'የቻይና የን',
+      'symbol' => 'CN¥',
     ),
     'COP' => 
     array (
@@ -187,7 +201,7 @@ return array (
     ),
     'CZK' => 
     array (
-      'name' => 'ቼክ ሪፐፕሊክ ኮሩና',
+      'name' => 'ቼክ ሪፐብሊክ ኮሩና',
       'symbol' => 'CZK',
     ),
     'DJF' => 
@@ -217,7 +231,7 @@ return array (
     ),
     'ERN' => 
     array (
-      'name' => 'ዬኤርትራ ናቅፋ',
+      'name' => 'የኤርትራ ናቅፋ',
       'symbol' => 'ERN',
     ),
     'ETB' => 
@@ -228,7 +242,7 @@ return array (
     'EUR' => 
     array (
       'name' => 'ዩሮ',
-      'symbol' => 'EUR',
+      'symbol' => '€',
     ),
     'FJD' => 
     array (
@@ -243,7 +257,7 @@ return array (
     'GBP' => 
     array (
       'name' => 'የእንግሊዝ ፓውንድ ስተርሊንግ',
-      'symbol' => 'GBP',
+      'symbol' => '£',
     ),
     'GEL' => 
     array (
@@ -262,7 +276,7 @@ return array (
     ),
     'GIP' => 
     array (
-      'name' => 'ጊብራልታር ፓውንድ',
+      'name' => 'ጂብራልተር ፓውንድ',
       'symbol' => 'GIP',
     ),
     'GMD' => 
@@ -288,7 +302,7 @@ return array (
     'HKD' => 
     array (
       'name' => 'የሆንግኮንግ ዶላር',
-      'symbol' => 'HKD',
+      'symbol' => 'HK$',
     ),
     'HNL' => 
     array (
@@ -318,12 +332,12 @@ return array (
     'ILS' => 
     array (
       'name' => 'የእስራኤል አዲስ ሽቅል',
-      'symbol' => 'ILS',
+      'symbol' => '₪',
     ),
     'INR' => 
     array (
       'name' => 'የሕንድ ሩፒ',
-      'symbol' => 'INR',
+      'symbol' => '₹',
     ),
     'IQD' => 
     array (
@@ -353,7 +367,7 @@ return array (
     'JPY' => 
     array (
       'name' => 'የጃፓን የን',
-      'symbol' => 'JPY',
+      'symbol' => 'JP¥',
     ),
     'KES' => 
     array (
@@ -383,7 +397,7 @@ return array (
     'KRW' => 
     array (
       'name' => 'የደቡብ ኮሪያ ዎን',
-      'symbol' => 'KRW',
+      'symbol' => '₩',
     ),
     'KWD' => 
     array (
@@ -452,7 +466,7 @@ return array (
     ),
     'MGA' => 
     array (
-      'name' => 'የማደጋስካር ፋርንክ',
+      'name' => 'የማደጋስካር ማላጋስይ አሪያርይ',
       'symbol' => 'MGA',
     ),
     'MKD' => 
@@ -498,17 +512,17 @@ return array (
     'MXN' => 
     array (
       'name' => 'የሜክሲኮ ፔሶ',
-      'symbol' => 'MXN',
+      'symbol' => 'MX$',
     ),
     'MYR' => 
     array (
       'name' => 'የማሌዥያ ሪንጊት',
       'symbol' => 'MYR',
     ),
-    'MZM' => 
+    'MZN' => 
     array (
       'name' => 'የሞዛምቢክ ሜቲካል',
-      'symbol' => 'MZM',
+      'symbol' => 'MZN',
     ),
     'NAD' => 
     array (
@@ -517,7 +531,7 @@ return array (
     ),
     'NGN' => 
     array (
-      'name' => 'የናይጄሪያ ናኢራ',
+      'name' => 'የናይጄሪያ ናይራ',
       'symbol' => 'NGN',
     ),
     'NIO' => 
@@ -538,7 +552,7 @@ return array (
     'NZD' => 
     array (
       'name' => 'የኒውዚላንድ ዶላር',
-      'symbol' => 'NZD',
+      'symbol' => 'NZ$',
     ),
     'OMR' => 
     array (
@@ -584,6 +598,11 @@ return array (
     array (
       'name' => 'የኳታር ሪአል',
       'symbol' => 'QAR',
+    ),
+    'RON' => 
+    array (
+      'name' => 'የሮማኒያ ለው',
+      'symbol' => 'RON',
     ),
     'RSD' => 
     array (
@@ -655,6 +674,11 @@ return array (
       'name' => 'የሰርናሜዝ ዶላር',
       'symbol' => 'SRD',
     ),
+    'SSP' => 
+    array (
+      'name' => 'የደቡብ ሱዳን ፓውንድ',
+      'symbol' => 'SSP',
+    ),
     'STD' => 
     array (
       'name' => 'የሳኦ ቶመ እና ፕሪንሲፐ ዶብራ',
@@ -673,7 +697,7 @@ return array (
     'THB' => 
     array (
       'name' => 'የታይላንድ ባህት',
-      'symbol' => 'THB',
+      'symbol' => '฿',
     ),
     'TJS' => 
     array (
@@ -692,7 +716,7 @@ return array (
     ),
     'TOP' => 
     array (
-      'name' => 'ቶንጋን ፓ\'አንጋ',
+      'name' => 'ቶንጋን ፓ’አንጋ',
       'symbol' => 'TOP',
     ),
     'TRY' => 
@@ -708,7 +732,7 @@ return array (
     'TWD' => 
     array (
       'name' => 'የአዲሷ ታይዋን ዶላር',
-      'symbol' => 'TWD',
+      'symbol' => 'NT$',
     ),
     'TZS' => 
     array (
@@ -728,7 +752,7 @@ return array (
     'USD' => 
     array (
       'name' => 'የአሜሪካን ዶላር',
-      'symbol' => 'USD',
+      'symbol' => 'US$',
     ),
     'UYU' => 
     array (
@@ -748,7 +772,7 @@ return array (
     'VND' => 
     array (
       'name' => 'የቭየትናም ዶንግ',
-      'symbol' => 'VND',
+      'symbol' => '₫',
     ),
     'VUV' => 
     array (
@@ -763,22 +787,22 @@ return array (
     'XAF' => 
     array (
       'name' => 'ሴኤፍአ ፍራንክ ቤእአሴ',
-      'symbol' => 'XAF',
+      'symbol' => 'FCFA',
     ),
     'XCD' => 
     array (
       'name' => 'የምዕራብ ካሪብያን ዶላር',
-      'symbol' => 'XCD',
+      'symbol' => 'EC$',
     ),
     'XOF' => 
     array (
       'name' => 'ሴኤፍአ ፍራንክ ቤሴእአኦ',
-      'symbol' => 'XOF',
+      'symbol' => 'CFA',
     ),
     'XPF' => 
     array (
       'name' => 'ሲ ኤፍ ፒ ፍራንክ',
-      'symbol' => 'XPF',
+      'symbol' => 'CFPF',
     ),
     'XXX' => 
     array (
@@ -797,8 +821,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'የዛምቢያ ክዋቻ',
+      'name' => 'የዛምቢያ ክዋቻ (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'የዛምቢያ ክዋቻ',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

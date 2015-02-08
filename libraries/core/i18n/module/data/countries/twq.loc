@@ -89,6 +89,7 @@ return array (
   'NC' => 'Kaaledooni Taagaa',
   'KZ' => 'Kaazakstan',
   'FK' => 'Kalkan gungey',
+  'KH' => 'kamboogi',
   'CM' => 'Kameruun',
   'CA' => 'Kanaada',
   'CV' => 'Kapuver gungey',
@@ -176,7 +177,6 @@ return array (
   'SL' => 'Seera Leon',
   'SC' => 'Seešel',
   'SN' => 'Senegal',
-  'CS' => 'Serbi nda Montenegro',
   'SH' => 'Seŋ Helena',
   'KN' => 'Seŋ Kitts nda Nevis',
   'LC' => 'Seŋ Lussia',
@@ -225,5 +225,4 @@ return array (
   'ZM' => 'Zambi',
   'NZ' => 'Zeelandu Taaga',
   'ZW' => 'Zimbabwe',
-  'KH' => 'kamboogi',
 );

@@ -9,9 +9,11 @@ return array (
     'plusSign' => '+',
     'minusSign' => '-',
     'exponential' => 'E',
+    'superscriptingExponent' => '×',
     'perMille' => '‰',
     'infinity' => '∞',
     'nan' => 'NaN',
+    'timeSeparator' => ':',
   ),
   'formats' => 
   array (
@@ -34,7 +36,7 @@ return array (
     ),
     'AFA' => 
     array (
-      'name' => '아프가니 (1927-2002)',
+      'name' => '아프가니 (1927–2002)',
       'symbol' => 'AFA',
     ),
     'AFN' => 
@@ -64,22 +66,37 @@ return array (
     ),
     'AOK' => 
     array (
-      'name' => '앙골라 콴자 (1977-1990)',
+      'name' => '앙골라 콴자 (1977–1990)',
       'symbol' => 'AOK',
     ),
     'AON' => 
     array (
-      'name' => '앙골라 신콴자 (1990-2000)',
+      'name' => '앙골라 신콴자 (1990–2000)',
       'symbol' => 'AON',
+    ),
+    'AOR' => 
+    array (
+      'name' => '앙골라 재조정 콴자 (1995–1999)',
+      'symbol' => 'AOR',
     ),
     'ARA' => 
     array (
       'name' => '아르헨티나 오스트랄',
       'symbol' => 'ARA',
     ),
+    'ARL' => 
+    array (
+      'name' => '아르헨티나 페소 레이 (1970–1983)',
+      'symbol' => 'ARL',
+    ),
+    'ARM' => 
+    array (
+      'name' => '아르헨티나 페소 (18810–1970)',
+      'symbol' => 'ARM',
+    ),
     'ARP' => 
     array (
-      'name' => '아르헨티나 페소 (1983-1985)',
+      'name' => '아르헨티나 페소 (1983–1985)',
       'symbol' => 'ARP',
     ),
     'ARS' => 
@@ -95,7 +112,7 @@ return array (
     'AUD' => 
     array (
       'name' => '호주 달러',
-      'symbol' => 'AUD',
+      'symbol' => 'AU$',
     ),
     'AWG' => 
     array (
@@ -104,7 +121,7 @@ return array (
     ),
     'AZM' => 
     array (
-      'name' => '아제르바이젠 마나트(1993-2006)',
+      'name' => '아제르바이젠 마나트(1993–2006)',
       'symbol' => 'AZM',
     ),
     'AZN' => 
@@ -121,6 +138,11 @@ return array (
     array (
       'name' => '보스니아-헤르체고비나 태환 마르크',
       'symbol' => 'BAM',
+    ),
+    'BAN' => 
+    array (
+      'name' => '보스니아-헤르체고비나 신디나르 (1994–1997)',
+      'symbol' => 'BAN',
     ),
     'BBD' => 
     array (
@@ -152,10 +174,20 @@ return array (
       'name' => '불가리아 동전 렛',
       'symbol' => 'BGL',
     ),
+    'BGM' => 
+    array (
+      'name' => '불가리아 사회주의자 렛',
+      'symbol' => 'BGM',
+    ),
     'BGN' => 
     array (
-      'name' => '불가리아 신권 렛',
+      'name' => '불가리아 레프',
       'symbol' => 'BGN',
+    ),
+    'BGO' => 
+    array (
+      'name' => '불가리아 렛 (1879–1952)',
+      'symbol' => 'BGO',
     ),
     'BHD' => 
     array (
@@ -182,6 +214,11 @@ return array (
       'name' => '볼리비아노',
       'symbol' => 'BOB',
     ),
+    'BOL' => 
+    array (
+      'name' => '볼리비아 볼리비아노 (1863–1963)',
+      'symbol' => 'BOL',
+    ),
     'BOP' => 
     array (
       'name' => '볼리비아노 페소',
@@ -194,7 +231,7 @@ return array (
     ),
     'BRB' => 
     array (
-      'name' => '볼리비아노 크루제이루 노보 (1967-1986)',
+      'name' => '볼리비아노 크루제이루 노보 (1967–1986)',
       'symbol' => 'BRB',
     ),
     'BRC' => 
@@ -204,13 +241,13 @@ return array (
     ),
     'BRE' => 
     array (
-      'name' => '브라질 크루제이루 (1990-1993)',
+      'name' => '브라질 크루제이루 (1990–1993)',
       'symbol' => 'BRE',
     ),
     'BRL' => 
     array (
       'name' => '브라질 레알',
-      'symbol' => 'BRL',
+      'symbol' => 'R$',
     ),
     'BRN' => 
     array (
@@ -221,6 +258,11 @@ return array (
     array (
       'name' => '브라질 크루제이루',
       'symbol' => 'BRR',
+    ),
+    'BRZ' => 
+    array (
+      'name' => '브라질 크루제이루 (1942–1967)',
+      'symbol' => 'BRZ',
     ),
     'BSD' => 
     array (
@@ -244,7 +286,7 @@ return array (
     ),
     'BYB' => 
     array (
-      'name' => '벨라루스 신권 루블 (1994-1999)',
+      'name' => '벨라루스 신권 루블 (1994–1999)',
       'symbol' => 'BYB',
     ),
     'BYR' => 
@@ -260,7 +302,7 @@ return array (
     'CAD' => 
     array (
       'name' => '캐나다 달러',
-      'symbol' => 'CAD',
+      'symbol' => 'CA$',
     ),
     'CDF' => 
     array (
@@ -282,6 +324,11 @@ return array (
       'name' => '프랑 (WIR)',
       'symbol' => 'CHW',
     ),
+    'CLE' => 
+    array (
+      'name' => '칠레 에스쿠도',
+      'symbol' => 'CLE',
+    ),
     'CLF' => 
     array (
       'name' => '칠레 (UF)',
@@ -294,13 +341,18 @@ return array (
     ),
     'CNY' => 
     array (
-      'name' => '중국 위안 인민폐',
-      'symbol' => 'CNY',
+      'name' => '중국 위안화',
+      'symbol' => 'CN¥',
     ),
     'COP' => 
     array (
       'name' => '콜롬비아 페소',
       'symbol' => 'COP',
+    ),
+    'COU' => 
+    array (
+      'name' => '콜롬비아 실가 단위',
+      'symbol' => 'COU',
     ),
     'CRC' => 
     array (
@@ -379,7 +431,7 @@ return array (
     ),
     'ECV' => 
     array (
-      'name' => '에콰도르 (UVC)',
+      'name' => '에콰도르 (UVC)',
       'symbol' => 'ECV',
     ),
     'EEK' => 
@@ -419,8 +471,8 @@ return array (
     ),
     'EUR' => 
     array (
-      'name' => '유로화',
-      'symbol' => 'EUR',
+      'name' => '유로',
+      'symbol' => '€',
     ),
     'FIM' => 
     array (
@@ -444,8 +496,8 @@ return array (
     ),
     'GBP' => 
     array (
-      'name' => '영국령 파운드 스털링',
-      'symbol' => 'GBP',
+      'name' => '파운드',
+      'symbol' => '£',
     ),
     'GEK' => 
     array (
@@ -454,12 +506,12 @@ return array (
     ),
     'GEL' => 
     array (
-      'name' => '그루지야 라리',
+      'name' => '조지아 라리',
       'symbol' => 'GEL',
     ),
     'GHC' => 
     array (
-      'name' => '가나 시디 (1979-2007)',
+      'name' => '가나 시디 (1979–2007)',
       'symbol' => 'GHC',
     ),
     'GHS' => 
@@ -520,7 +572,7 @@ return array (
     'HKD' => 
     array (
       'name' => '홍콩 달러',
-      'symbol' => 'HKD',
+      'symbol' => 'HK$',
     ),
     'HNL' => 
     array (
@@ -565,12 +617,12 @@ return array (
     'ILS' => 
     array (
       'name' => '이스라엘 신권 세켈',
-      'symbol' => 'ILS',
+      'symbol' => '₪',
     ),
     'INR' => 
     array (
       'name' => '인도 루피',
-      'symbol' => 'INR',
+      'symbol' => '₹',
     ),
     'IQD' => 
     array (
@@ -605,7 +657,7 @@ return array (
     'JPY' => 
     array (
       'name' => '일본 엔화',
-      'symbol' => 'JPY',
+      'symbol' => 'JP¥',
     ),
     'KES' => 
     array (
@@ -632,10 +684,15 @@ return array (
       'name' => '조선 민주주의 인민 공화국 원',
       'symbol' => 'KPW',
     ),
+    'KRH' => 
+    array (
+      'name' => '대한민국 환 (1953–1962)',
+      'symbol' => 'KRH',
+    ),
     'KRW' => 
     array (
       'name' => '대한민국 원',
-      'symbol' => 'KRW',
+      'symbol' => '₩',
     ),
     'KWD' => 
     array (
@@ -727,6 +784,16 @@ return array (
       'name' => '모로코 프랑',
       'symbol' => 'MAF',
     ),
+    'MCF' => 
+    array (
+      'name' => '모나코 프랑',
+      'symbol' => 'MCF',
+    ),
+    'MDC' => 
+    array (
+      'name' => '몰도바 쿠폰',
+      'symbol' => 'MDC',
+    ),
     'MDL' => 
     array (
       'name' => '몰도바 레이',
@@ -800,11 +867,11 @@ return array (
     'MXN' => 
     array (
       'name' => '멕시코 페소',
-      'symbol' => 'MXN',
+      'symbol' => 'MX$',
     ),
     'MXP' => 
     array (
-      'name' => '멕시코 실버 페소 (1861-1992)',
+      'name' => '멕시코 실버 페소 (1861–1992)',
       'symbol' => 'MXP',
     ),
     'MXV' => 
@@ -870,7 +937,7 @@ return array (
     'NZD' => 
     array (
       'name' => '뉴질랜드 달러',
-      'symbol' => 'NZD',
+      'symbol' => 'NZ$',
     ),
     'OMR' => 
     array (
@@ -889,7 +956,7 @@ return array (
     ),
     'PEN' => 
     array (
-      'name' => '페루 솔 누에보',
+      'name' => '페루 누에보 솔',
       'symbol' => 'PEN',
     ),
     'PES' => 
@@ -919,7 +986,7 @@ return array (
     ),
     'PLZ' => 
     array (
-      'name' => '폴란드 즐로티 (1950-1995)',
+      'name' => '폴란드 즐로티 (1950–1995)',
       'symbol' => 'PLZ',
     ),
     'PTE' => 
@@ -964,7 +1031,7 @@ return array (
     ),
     'RUR' => 
     array (
-      'name' => '러시아 루블 (1991-1998)',
+      'name' => '러시아 루블 (1991–1998)',
       'symbol' => 'RUR',
     ),
     'RWF' => 
@@ -984,7 +1051,7 @@ return array (
     ),
     'SCR' => 
     array (
-      'name' => '세이쉴 루피',
+      'name' => '세이셸 루피',
       'symbol' => 'SCR',
     ),
     'SDD' => 
@@ -1047,6 +1114,11 @@ return array (
       'name' => '수리남 길더',
       'symbol' => 'SRG',
     ),
+    'SSP' => 
+    array (
+      'name' => '남수단 파운드',
+      'symbol' => 'SSP',
+    ),
     'STD' => 
     array (
       'name' => '상투메 프린시페 도브라',
@@ -1075,7 +1147,7 @@ return array (
     'THB' => 
     array (
       'name' => '태국 바트',
-      'symbol' => 'THB',
+      'symbol' => '฿',
     ),
     'TJR' => 
     array (
@@ -1089,7 +1161,7 @@ return array (
     ),
     'TMM' => 
     array (
-      'name' => '투르크메니스탄 마나트 (1993-2009)',
+      'name' => '투르크메니스탄 마나트 (1993–2009)',
       'symbol' => 'TMM',
     ),
     'TMT' => 
@@ -1129,8 +1201,8 @@ return array (
     ),
     'TWD' => 
     array (
-      'name' => '대만 신권 달러',
-      'symbol' => 'TWD',
+      'name' => '신 타이완 달러',
+      'symbol' => 'NT$',
     ),
     'TZS' => 
     array (
@@ -1149,7 +1221,7 @@ return array (
     ),
     'UGS' => 
     array (
-      'name' => '우간다 실링 (1966-1987)',
+      'name' => '우간다 실링 (1966–1987)',
       'symbol' => 'UGS',
     ),
     'UGX' => 
@@ -1160,7 +1232,7 @@ return array (
     'USD' => 
     array (
       'name' => '미국 달러',
-      'symbol' => 'USD',
+      'symbol' => 'US$',
     ),
     'USN' => 
     array (
@@ -1179,7 +1251,7 @@ return array (
     ),
     'UYP' => 
     array (
-      'name' => '우루과이 페소 (1975-1993)',
+      'name' => '우루과이 페소 (1975–1993)',
       'symbol' => 'UYP',
     ),
     'UYU' => 
@@ -1194,18 +1266,23 @@ return array (
     ),
     'VEB' => 
     array (
-      'name' => '베네주엘라 볼리바르',
+      'name' => '베네주엘라 볼리바르 (1871–2008)',
       'symbol' => 'VEB',
     ),
     'VEF' => 
     array (
-      'name' => '베네주엘라 볼리바르 푸에르떼',
+      'name' => '베네수엘라 볼리바르',
       'symbol' => 'VEF',
     ),
     'VND' => 
     array (
       'name' => '베트남 동',
-      'symbol' => 'VND',
+      'symbol' => '₫',
+    ),
+    'VNN' => 
+    array (
+      'name' => '베트남 동 (1978–1985)',
+      'symbol' => 'VNN',
     ),
     'VUV' => 
     array (
@@ -1219,8 +1296,8 @@ return array (
     ),
     'XAF' => 
     array (
-      'name' => '프랑 (CFA-BEAC)',
-      'symbol' => 'XAF',
+      'name' => 'CFA 프랑 BEAC',
+      'symbol' => 'FCFA',
     ),
     'XAG' => 
     array (
@@ -1255,7 +1332,7 @@ return array (
     'XCD' => 
     array (
       'name' => '동카리브 달러',
-      'symbol' => 'XCD',
+      'symbol' => 'EC$',
     ),
     'XDR' => 
     array (
@@ -1279,8 +1356,8 @@ return array (
     ),
     'XOF' => 
     array (
-      'name' => '프랑 (CFA-BCEAO)',
-      'symbol' => 'XOF',
+      'name' => 'CFA 프랑 BCEAO',
+      'symbol' => 'CFA',
     ),
     'XPD' => 
     array (
@@ -1289,8 +1366,8 @@ return array (
     ),
     'XPF' => 
     array (
-      'name' => '프랑 (CFP)',
-      'symbol' => 'XPF',
+      'name' => 'CFP 프랑',
+      'symbol' => 'CFPF',
     ),
     'XPT' => 
     array (
@@ -1309,7 +1386,7 @@ return array (
     ),
     'XXX' => 
     array (
-      'name' => '알수없거나 유효하지않은 통화단위',
+      'name' => '알 수 없는 통화단위',
       'symbol' => 'XXX',
     ),
     'YDD' => 
@@ -1349,8 +1426,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => '쟘비아 콰쳐',
+      'name' => '쟘비아 콰쳐 (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => '잠비아 콰쳐',
+      'symbol' => 'ZMW',
     ),
     'ZRN' => 
     array (
@@ -1366,6 +1448,16 @@ return array (
     array (
       'name' => '짐바브웨 달러',
       'symbol' => 'ZWD',
+    ),
+    'ZWL' => 
+    array (
+      'name' => '짐바브웨 달러 (2009)',
+      'symbol' => 'ZWL',
+    ),
+    'ZWR' => 
+    array (
+      'name' => '짐바브웨 달러 (2008)',
+      'symbol' => 'ZWR',
     ),
   ),
 );

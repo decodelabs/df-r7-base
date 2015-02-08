@@ -112,12 +112,13 @@ class Base implements IGenerator {
     
     
     public function generate() {
+        $manager = core\i18n\Manager::getInstance();
         core\io\Util::ensureDirExists($this->_savePath);
         
         $modules = [];
         
         foreach($this->_modules as $name => $t) {
-            $module = core\i18n\module\Base::factory($name);
+            $module = core\i18n\module\Base::factory($manager, $name);
             
             if(!$module instanceof IModule) {
                 throw new RuntimeException(
@@ -131,8 +132,9 @@ class Base implements IGenerator {
         }
         
         
-        foreach(core\io\Util::fileMatch($this->_cldrPath.'/main/', '.*\.xml') as $file) {
+        foreach(core\io\Util::listFilesIn($this->_cldrPath.'/main/', '/.*\.xml/') as $file) {
             $name = substr(basename($file), 0, -4);
+            $file = $this->_cldrPath.'/main/'.$file;
             $locale = new core\i18n\Locale($name);
             $doc = simplexml_load_file($file);
             

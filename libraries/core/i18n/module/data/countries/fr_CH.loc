@@ -1,0 +1,7 @@
+<?php
+return array (
+  'MK' => 'A.R. yougoslave de Macédoine',
+  'ZZ' => 'Région indéterminée',
+  'QO' => 'Régions éloignées de l’Océanie',
+  'SX' => 'Sint Maarten',
+);

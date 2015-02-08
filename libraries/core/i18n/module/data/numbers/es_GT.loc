@@ -10,7 +10,6 @@ return array (
   array (
     'GTQ' => 
     array (
-      'name' => 'GTQ',
       'symbol' => 'Q',
     ),
   ),

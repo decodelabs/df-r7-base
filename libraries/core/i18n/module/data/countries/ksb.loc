@@ -1,6 +1,5 @@
 <?php
 return array (
-  'BE' => '',
   'ZA' => 'Aflika Kusini',
   'AF' => 'Afuganistani',
   'IS' => 'Aislandi',
@@ -165,7 +164,6 @@ return array (
   'VC' => 'Santavisenti na Glenadini',
   'ST' => 'Sao Tome na Plincipe',
   'SA' => 'Saudi',
-  'CS' => 'Selbia na Monteneglo',
   'SN' => 'Senegali',
   'SC' => 'Shelisheli',
   'SL' => 'Siela Leoni',

@@ -1,0 +1,75 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Dom',
+        'mon' => 'Lun',
+        'tue' => 'Mar',
+        'wed' => 'Mié',
+        'thu' => 'Jue',
+        'fri' => 'Vie',
+        'sat' => 'Sab',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Domingo',
+        'mon' => 'Lunes',
+        'tue' => 'Martes',
+        'wed' => 'Miércoles',
+        'thu' => 'Jueves',
+        'fri' => 'Viernes',
+        'sat' => 'Sábado',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Qul',
+        2 => 'Hat',
+        3 => 'Pau',
+        4 => 'Ayr',
+        5 => 'Aym',
+        6 => 'Int',
+        7 => 'Ant',
+        8 => 'Qha',
+        9 => 'Uma',
+        10 => 'Kan',
+        11 => 'Aya',
+        12 => 'Kap',
+      ),
+      'full' => 
+      array (
+        1 => 'Qulla puquy',
+        2 => 'Hatun puquy',
+        3 => 'Pauqar waray',
+        4 => 'Ayriwa',
+        5 => 'Aymuray',
+        6 => 'Inti raymi',
+        7 => 'Anta Sitwa',
+        8 => 'Qhapaq Sitwa',
+        9 => 'Uma raymi',
+        10 => 'Kantaray',
+        11 => 'Ayamarqʼa',
+        12 => 'Kapaq Raymi',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM, y',
+      'short' => 'dd/MM/y',
+    ),
+    'timeFormat' => 
+    array (
+      'medium' => 'hh:mm:ss a',
+      'short' => 'hh:mm a',
+    ),
+  ),
+);

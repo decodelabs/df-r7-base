@@ -1,0 +1,16 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'MYR' => 
+    array (
+      'symbol' => 'RM',
+    ),
+  ),
+);

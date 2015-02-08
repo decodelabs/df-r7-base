@@ -3,12 +3,15 @@ return array (
   '@default' => 'gregorian',
   'buddhist' => 
   array (
+  ),
+  'generic' => 
+  array (
     'dateFormat' => 
     array (
-      'full' => 'EEEE, d MMMM, y G',
-      'long' => 'd MMMM, y G',
-      'medium' => 'd MMM, y G',
-      'short' => 'd/M/yyyy',
+      'full' => 'EEEE, d MMMM y G',
+      'long' => 'd MMMM y G',
+      'medium' => 'd MMM y G',
+      'short' => 'd/M/y GGGGG',
     ),
   ),
   'gregorian' => 
@@ -20,11 +23,11 @@ return array (
       array (
         'sun' => 'Κυρ',
         'mon' => 'Δευ',
-        'tue' => 'Τρι',
+        'tue' => 'Τρί',
         'wed' => 'Τετ',
-        'thu' => 'Πεμ',
+        'thu' => 'Πέμ',
         'fri' => 'Παρ',
-        'sat' => 'Σαβ',
+        'sat' => 'Σάβ',
       ),
       'full' => 
       array (
@@ -46,7 +49,7 @@ return array (
         2 => 'Φεβ',
         3 => 'Μαρ',
         4 => 'Απρ',
-        5 => 'Μαϊ',
+        5 => 'Μαΐ',
         6 => 'Ιουν',
         7 => 'Ιουλ',
         8 => 'Αυγ',
@@ -101,12 +104,5 @@ return array (
   ),
   'roc' => 
   array (
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE, d MMMM, y G',
-      'long' => 'd MMMM, y G',
-      'medium' => 'd MMM, y G',
-      'short' => 'd/M/y G',
-    ),
   ),
 );

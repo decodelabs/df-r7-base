@@ -10,7 +10,6 @@ return array (
   array (
     'MZN' => 
     array (
-      'name' => 'MZN',
       'symbol' => 'MTn',
     ),
   ),

@@ -5,13 +5,452 @@ return array (
   ),
   'formats' => 
   array (
+    'decimal' => '0k',
+    'percent' => '#,##0%',
   ),
   'currencies' => 
   array (
+    'AFN' => 
+    array (
+      'name' => 'afgani afgano',
+      'symbol' => 'Af',
+    ),
+    'ALL' => 
+    array (
+      'name' => 'lek albanés',
+      'symbol' => 'ALL',
+    ),
+    'AMD' => 
+    array (
+      'name' => 'dram armenio',
+      'symbol' => 'AMD',
+    ),
+    'ANG' => 
+    array (
+      'symbol' => 'Naf',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'kwanza angoleño',
+      'symbol' => 'Kz',
+    ),
+    'ARA' => 
+    array (
+      'symbol' => 'ARA',
+    ),
+    'ARS' => 
+    array (
+      'symbol' => '$a',
+    ),
+    'AUD' => 
+    array (
+      'symbol' => 'AU$',
+    ),
+    'AWG' => 
+    array (
+      'symbol' => 'Afl.',
+    ),
+    'BDT' => 
+    array (
+      'name' => 'taka de Bangladesh',
+      'symbol' => 'BDT',
+    ),
+    'BGN' => 
+    array (
+      'name' => 'lev búlgaro',
+      'symbol' => 'BGN',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'dinar bahreiní',
+      'symbol' => 'BHD',
+    ),
+    'BND' => 
+    array (
+      'name' => 'dólar de Brunéi',
+      'symbol' => 'BND',
+    ),
+    'BOL' => 
+    array (
+      'symbol' => 'BOL',
+    ),
+    'BOP' => 
+    array (
+      'symbol' => 'BOP',
+    ),
+    'BOV' => 
+    array (
+      'symbol' => 'BOV',
+    ),
+    'BRB' => 
+    array (
+      'symbol' => 'BRB',
+    ),
+    'BRC' => 
+    array (
+      'symbol' => 'BRC',
+    ),
+    'BRE' => 
+    array (
+      'symbol' => 'BRE',
+    ),
+    'BRN' => 
+    array (
+      'symbol' => 'BRN',
+    ),
+    'BRR' => 
+    array (
+      'symbol' => 'BRR',
+    ),
+    'BRZ' => 
+    array (
+      'symbol' => 'BRZ',
+    ),
+    'BTN' => 
+    array (
+      'name' => 'ngultrum butanés',
+      'symbol' => 'BTN',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'pula botsuano',
+      'symbol' => 'BWP',
+    ),
+    'BYR' => 
+    array (
+      'symbol' => 'Br',
+    ),
+    'CLE' => 
+    array (
+      'symbol' => 'CLE',
+    ),
+    'CLF' => 
+    array (
+      'symbol' => 'CLF',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'yuan chino',
+      'symbol' => 'CN¥',
+    ),
+    'COU' => 
+    array (
+      'symbol' => 'COU',
+    ),
+    'DOP' => 
+    array (
+      'symbol' => 'RD$',
+    ),
+    'ECS' => 
+    array (
+      'symbol' => 'ECS',
+    ),
+    'ECV' => 
+    array (
+      'symbol' => 'ECV',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'nakfa eritreo',
+      'symbol' => 'ERN',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'birr etíope',
+      'symbol' => 'ETB',
+    ),
+    'FKP' => 
+    array (
+      'name' => 'libra malvinense',
+      'symbol' => 'FKP',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'libra esterlina británica',
+      'symbol' => 'GBP',
+    ),
+    'GEL' => 
+    array (
+      'name' => 'lari georgiano',
+      'symbol' => 'GEL',
+    ),
+    'GHS' => 
+    array (
+      'name' => 'cedi ghanés',
+      'symbol' => 'GHS',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'dalasi gambiano',
+      'symbol' => 'GMD',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'dólar de Hong Kong',
+      'symbol' => 'HKD',
+    ),
+    'HRK' => 
+    array (
+      'name' => 'kuna croata',
+      'symbol' => 'HRK',
+    ),
+    'HUF' => 
+    array (
+      'name' => 'florín húngaro',
+      'symbol' => 'HUF',
+    ),
+    'ILS' => 
+    array (
+      'name' => 'nuevo shéquel israelí',
+      'symbol' => 'ILS',
+    ),
+    'JMD' => 
+    array (
+      'name' => 'dólar jamaiquino',
+      'symbol' => 'JMD',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'yen japonés',
+      'symbol' => 'JPY',
+    ),
+    'KGS' => 
+    array (
+      'name' => 'som kirguís',
+      'symbol' => 'KGS',
+    ),
+    'KHR' => 
+    array (
+      'name' => 'riel camboyano',
+      'symbol' => 'KHR',
+    ),
+    'KZT' => 
+    array (
+      'name' => 'tenge kazajo',
+      'symbol' => 'KZT',
+    ),
+    'LAK' => 
+    array (
+      'name' => 'kip laosiano',
+      'symbol' => 'LAK',
+    ),
+    'LKR' => 
+    array (
+      'name' => 'rupia de Sri Lanka',
+      'symbol' => 'LKR',
+    ),
+    'LTL' => 
+    array (
+      'name' => 'litas lituano',
+      'symbol' => 'LTL',
+    ),
+    'LVL' => 
+    array (
+      'name' => 'lats letón',
+      'symbol' => 'LVL',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'ariary malgache',
+      'symbol' => 'MGA',
+    ),
+    'MMK' => 
+    array (
+      'name' => 'kyat de Myanmar',
+      'symbol' => 'MMK',
+    ),
+    'MNT' => 
+    array (
+      'name' => 'tugrik mongol',
+      'symbol' => 'MNT',
+    ),
+    'MOP' => 
+    array (
+      'name' => 'pataca de Macao',
+      'symbol' => 'MOP',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'ouguiya mauritano',
+      'symbol' => 'MRO',
+    ),
+    'MVR' => 
+    array (
+      'name' => 'rufiyaa de Maldivas',
+      'symbol' => 'MVR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'kwacha malauí',
+      'symbol' => 'MWK',
+    ),
     'MXN' => 
     array (
-      'name' => 'MXN',
       'symbol' => '$',
+    ),
+    'MXP' => 
+    array (
+      'symbol' => 'MXP',
+    ),
+    'MYR' => 
+    array (
+      'name' => 'ringgit malayo',
+      'symbol' => 'MYR',
+    ),
+    'MZN' => 
+    array (
+      'name' => 'metical mozambiqueño',
+      'symbol' => 'MZN',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'naira nigeriano',
+      'symbol' => 'NGN',
+    ),
+    'NIC' => 
+    array (
+      'symbol' => 'NIC',
+    ),
+    'PEI' => 
+    array (
+      'symbol' => 'PEI',
+    ),
+    'PES' => 
+    array (
+      'symbol' => 'PES',
+    ),
+    'PGK' => 
+    array (
+      'name' => 'kina de Papúa Nueva Guinea',
+      'symbol' => 'PGK',
+    ),
+    'PLN' => 
+    array (
+      'name' => 'zloty polaco',
+      'symbol' => 'PLN',
+    ),
+    'QAR' => 
+    array (
+      'name' => 'riyal de Qatar',
+      'symbol' => 'QAR',
+    ),
+    'RON' => 
+    array (
+      'name' => 'leu rumano',
+      'symbol' => 'RON',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'riyal saudí',
+      'symbol' => 'SAR',
+    ),
+    'SBD' => 
+    array (
+      'name' => 'dólar de las Islas Salomón',
+      'symbol' => 'SBD',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'rupia de Seychelles',
+      'symbol' => 'SCR',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'leone de Sierra Leona',
+      'symbol' => 'SLL',
+    ),
+    'SRG' => 
+    array (
+      'symbol' => 'SRG',
+    ),
+    'STD' => 
+    array (
+      'name' => 'dobra de Santo Tomé y Príncipe',
+      'symbol' => 'STD',
+    ),
+    'SVC' => 
+    array (
+      'symbol' => 'SVC',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'lilangeni suazi',
+      'symbol' => 'SZL',
+    ),
+    'THB' => 
+    array (
+      'name' => 'baht tailandés',
+      'symbol' => 'THB',
+    ),
+    'TMT' => 
+    array (
+      'name' => 'manat turkmeno',
+      'symbol' => 'TMT',
+    ),
+    'TOP' => 
+    array (
+      'name' => 'paʻanga tongano',
+      'symbol' => 'TOP',
+    ),
+    'TRY' => 
+    array (
+      'symbol' => 'TL',
+    ),
+    'UAH' => 
+    array (
+      'name' => 'grivna ucraniana',
+      'symbol' => 'UAH',
+    ),
+    'USN' => 
+    array (
+      'symbol' => 'USN',
+    ),
+    'USS' => 
+    array (
+      'symbol' => 'USS',
+    ),
+    'UYI' => 
+    array (
+      'symbol' => 'UYI',
+    ),
+    'UZS' => 
+    array (
+      'name' => 'som uzbeko',
+      'symbol' => 'UZS',
+    ),
+    'VND' => 
+    array (
+      'name' => 'dong vietnamita',
+      'symbol' => 'VND',
+    ),
+    'VUV' => 
+    array (
+      'name' => 'vatu vanuatuense',
+      'symbol' => 'VUV',
+    ),
+    'WST' => 
+    array (
+      'name' => 'tala samoano',
+      'symbol' => 'WST',
+    ),
+    'XPF' => 
+    array (
+      'symbol' => 'XPF',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'divisa desconocida',
+      'symbol' => 'XXX',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'rand sudafricano',
+      'symbol' => 'ZAR',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'kwacha zambiano',
+      'symbol' => 'ZMW',
     ),
   ),
 );

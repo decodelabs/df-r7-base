@@ -1,5 +1,0 @@
-<?php
-return array (
-  'Cyrl' => 'Kiril',
-  'Latn' => 'Lotin',
-);

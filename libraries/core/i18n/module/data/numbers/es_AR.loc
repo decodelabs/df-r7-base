@@ -12,8 +12,11 @@ return array (
   array (
     'ARS' => 
     array (
-      'name' => 'ARS',
       'symbol' => '$',
+    ),
+    'USD' => 
+    array (
+      'symbol' => 'US$',
     ),
   ),
 );

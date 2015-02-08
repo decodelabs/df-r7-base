@@ -1,0 +1,9 @@
+<?php
+return array (
+  'en' => 'Linglänapük',
+  'pt' => 'Portugänapük',
+  'ru' => 'Rusänapük',
+  'es' => 'Spanyänapük',
+  'eo' => 'Sperantapük',
+  'vo' => 'Volapük',
+);

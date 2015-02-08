@@ -54,7 +54,7 @@ return array (
     ),
     'ARS' => 
     array (
-      'name' => 'ajentiinesche Peesos',
+      'name' => 'ajentiinesche Peeso',
       'symbol' => 'ARS',
     ),
     'AUD' => 
@@ -69,7 +69,7 @@ return array (
     ),
     'AZM' => 
     array (
-      'name' => 'Asserbaidschaani Manat (1993-2006)',
+      'name' => 'Asserbaidschaani Manat (1993–2006)',
       'symbol' => 'AZM',
     ),
     'AZN' => 
@@ -79,7 +79,7 @@ return array (
     ),
     'BAM' => 
     array (
-      'name' => 'öpmtuuschbaa Mark us Boßnije un dä Hächejovvina',
+      'name' => 'ömtuuschbaa Mark us Boßnije un dä Hächejovvina',
       'symbol' => 'BAM',
     ),
     'BBD' => 
@@ -104,7 +104,7 @@ return array (
     ),
     'BIF' => 
     array (
-      'name' => 'burundesche Franke',
+      'name' => 'burundesche Frang',
       'symbol' => 'BIF',
     ),
     'BMD' => 
@@ -114,7 +114,7 @@ return array (
     ),
     'BND' => 
     array (
-      'name' => 'Brunei-Dollaaa',
+      'name' => 'Brunei-Dollaa',
       'symbol' => 'BND',
     ),
     'BOB' => 
@@ -129,12 +129,12 @@ return array (
     ),
     'BSD' => 
     array (
-      'name' => 'bahama\'sche Dollaa',
+      'name' => 'bahama’sche Dollaa',
       'symbol' => 'BSD',
     ),
     'BTN' => 
     array (
-      'name' => 'Bhutanesesche Ngultrum',
+      'name' => 'bhutanesesche Ngultrum',
       'symbol' => 'BTN',
     ),
     'BWP' => 
@@ -149,7 +149,7 @@ return array (
     ),
     'BZD' => 
     array (
-      'name' => 'Belizjaanesche Dollaa',
+      'name' => 'belizjaanesche Dollaa',
       'symbol' => 'BZD',
     ),
     'CAD' => 
@@ -169,7 +169,7 @@ return array (
     ),
     'CLP' => 
     array (
-      'name' => 'schileenesche Peesos',
+      'name' => 'schileenesche Peeso',
       'symbol' => 'CLP',
     ),
     'CNY' => 
@@ -179,12 +179,12 @@ return array (
     ),
     'COP' => 
     array (
-      'name' => 'kolumbesche Pesos',
+      'name' => 'kolumbesche Peso',
       'symbol' => 'COP',
     ),
     'CRC' => 
     array (
-      'name' => 'Kaßtarikaanesche Colón',
+      'name' => 'koßtarikaanesche Colón',
       'symbol' => 'CRC',
     ),
     'CUC' => 
@@ -209,13 +209,18 @@ return array (
     ),
     'DJF' => 
     array (
-      'name' => 'Franke uß Dschibuti',
+      'name' => 'Frang uß Dschibuti',
       'symbol' => 'DJF',
     ),
     'DKK' => 
     array (
       'name' => 'dänesche Kruhne',
       'symbol' => 'DKK',
+    ),
+    'DOP' => 
+    array (
+      'name' => 'dommenikaanesche Peesos',
+      'symbol' => 'DOP',
     ),
     'DZD' => 
     array (
@@ -264,7 +269,7 @@ return array (
     ),
     'GEL' => 
     array (
-      'name' => 'jeorjesche LAri',
+      'name' => 'jeorjesche Lari',
       'symbol' => 'GEL',
     ),
     'GHS' => 
@@ -274,7 +279,7 @@ return array (
     ),
     'GIP' => 
     array (
-      'name' => 'jibraltaa\'sche Pongk',
+      'name' => 'jibraltaa’sche Pongk',
       'symbol' => 'GIP',
     ),
     'GMD' => 
@@ -284,7 +289,7 @@ return array (
     ),
     'GNF' => 
     array (
-      'name' => 'Jineea-Franke',
+      'name' => 'Jineea-Frang',
       'symbol' => 'GNF',
     ),
     'GTQ' => 
@@ -309,7 +314,7 @@ return array (
     ),
     'HRK' => 
     array (
-      'name' => 'korwaatesche Kuna',
+      'name' => 'krowaatesche Kuna',
       'symbol' => 'HRK',
     ),
     'HTG' => 
@@ -384,7 +389,7 @@ return array (
     ),
     'KMF' => 
     array (
-      'name' => 'kommooresche Frangke',
+      'name' => 'kommooresche Frang',
       'symbol' => 'KMF',
     ),
     'KPW' => 
@@ -409,7 +414,7 @@ return array (
     ),
     'KZT' => 
     array (
-      'name' => 'kasakstaanesche Tenge',
+      'name' => 'kasakesche Tenge',
       'symbol' => 'KZT',
     ),
     'LAK' => 
@@ -424,7 +429,7 @@ return array (
     ),
     'LKR' => 
     array (
-      'name' => 'schri-lankesche Ruupije',
+      'name' => 'schrilankesche Ruupije',
       'symbol' => 'LKR',
     ),
     'LRD' => 
@@ -519,8 +524,13 @@ return array (
     ),
     'MZM' => 
     array (
-      'name' => 'mosambikaanesche Metical (1980-2006)',
+      'name' => 'mosambikaanesche Metical (1980–2006)',
       'symbol' => 'MZM',
+    ),
+    'MZN' => 
+    array (
+      'name' => 'mossambikaanesche Metical',
+      'symbol' => 'MZN',
     ),
     'NAD' => 
     array (
@@ -599,8 +609,13 @@ return array (
     ),
     'ROL' => 
     array (
-      'name' => 'romäänesche Leu (1952-2006)',
+      'name' => 'romäänesche Leu (1952–2006)',
       'symbol' => 'ROL',
+    ),
+    'RON' => 
+    array (
+      'name' => 'romäänesche Leu',
+      'symbol' => 'RON',
     ),
     'RSD' => 
     array (
@@ -672,6 +687,11 @@ return array (
       'name' => 'sürinameesesche Dollaa',
       'symbol' => 'SRD',
     ),
+    'SSP' => 
+    array (
+      'name' => 'södsudaneesesche Pongk',
+      'symbol' => 'SSP',
+    ),
     'STD' => 
     array (
       'name' => 'Dobra vun São Tomé un Príncipe',
@@ -704,7 +724,7 @@ return array (
     ),
     'TMM' => 
     array (
-      'name' => 'turkmeneßtaanesche Manat (1993-2009)',
+      'name' => 'turkmeneßtaanesche Manat (1993–2009)',
       'symbol' => 'TMM',
     ),
     'TMT' => 
@@ -726,6 +746,11 @@ return array (
     array (
       'name' => 'törkesche Liire',
       'symbol' => 'TRY',
+    ),
+    'TTD' => 
+    array (
+      'name' => 'Dollaa uß Trinidad un Tobääjo',
+      'symbol' => 'TTD',
     ),
     'TWD' => 
     array (
@@ -782,6 +807,11 @@ return array (
       'name' => 'samowaanesche Tala',
       'symbol' => 'WST',
     ),
+    'XAF' => 
+    array (
+      'name' => 'Kmmeruhner Frang',
+      'symbol' => 'XAF',
+    ),
     'XAG' => 
     array (
       'name' => 'Sellver',
@@ -802,10 +832,20 @@ return array (
       'name' => 'franzüüsesche Joldfranke',
       'symbol' => 'XFO',
     ),
+    'XOF' => 
+    array (
+      'name' => 'Frang uß de Älfebeinköß',
+      'symbol' => 'XOF',
+    ),
     'XPD' => 
     array (
       'name' => 'Palladijum',
       'symbol' => 'XPD',
+    ),
+    'XPF' => 
+    array (
+      'name' => 'polineesesche Frang',
+      'symbol' => 'XPF',
     ),
     'XPT' => 
     array (
@@ -834,12 +874,17 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'sambesche Kwacha',
+      'name' => 'sambesche Kwacha (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'sambesche Kwacha',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (
-      'name' => 'simbabwesche Dollaa (1980-2008)',
+      'name' => 'simbabwesche Dollaa (1980–2008)',
       'symbol' => 'ZWD',
     ),
     'ZWL' => 

@@ -1,18 +1,8 @@
 <?php
 return array (
-  '002' => 'Afrihká',
-  '015' => 'Davvi-Afrihká',
-  '021' => 'Davvi-Amerihká',
-  154 => 'Davvi-Eurohpa',
-  150 => 'Eurohpa',
-  '017' => 'Gaska-Afrihká',
-  143 => 'Gaska-Ásia',
-  '005' => 'Mátta-Amerihká',
-  '034' => 'Mátta-Ásia',
-  '039' => 'Mátta-Eurohpa',
-  '030' => 'Nuorta-Ásia',
-  151 => 'Nuorta-Eurohpá',
-  '011' => 'Oarji-Afrihká',
-  145 => 'Oarji-Ásia',
-  155 => 'Oarji-Eurohpa',
+  '021' => 'Davvi-Amerihkká',
+  '003' => 'Davvi-Amerihkká ja Gaska-Amerihkká',
+  '013' => 'Gaska-Amerihkká',
+  419 => 'Latiinnalaš-Amerihkká',
+  '005' => 'Lulli-Amerihkká',
 );

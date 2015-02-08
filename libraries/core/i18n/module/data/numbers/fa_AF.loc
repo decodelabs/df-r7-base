@@ -9,11 +9,6 @@ return array (
   ),
   'currencies' => 
   array (
-    'AFN' => 
-    array (
-      'name' => 'AFN',
-      'symbol' => '؋',
-    ),
     'AUD' => 
     array (
       'name' => 'دالر آسترالیا',

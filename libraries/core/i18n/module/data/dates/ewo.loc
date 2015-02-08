@@ -1,6 +1,16 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM y G',
+      'long' => 'd MMMM y G',
+      'medium' => 'd MMM y G',
+      'short' => 'd/M/y GGGGG',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -20,9 +30,9 @@ return array (
       array (
         'sun' => 'sɔ́ndɔ',
         'mon' => 'mɔ́ndi',
-        'tue' => 'sɔ́ndɔ mǝlú mǝ́bɛ̌',
-        'wed' => 'sɔ́ndɔ mǝlú mǝ́lɛ́',
-        'thu' => 'sɔ́ndɔ mǝlú mǝ́nyi',
+        'tue' => 'sɔ́ndɔ məlú mə́bɛ̌',
+        'wed' => 'sɔ́ndɔ məlú mə́lɛ́',
+        'thu' => 'sɔ́ndɔ məlú mə́nyi',
         'fri' => 'fúladé',
         'sat' => 'séradé',
       ),
@@ -42,8 +52,8 @@ return array (
         8 => 'ngm',
         9 => 'nge',
         10 => 'nga',
-        11 => 'ngd',
-        12 => 'ngb',
+        11 => 'ngad',
+        12 => 'ngab',
       ),
       'full' => 
       array (
@@ -52,7 +62,7 @@ return array (
         3 => 'ngɔn lála',
         4 => 'ngɔn nyina',
         5 => 'ngɔn tána',
-        6 => 'ngɔn samǝna',
+        6 => 'ngɔn saməna',
         7 => 'ngɔn zamgbála',
         8 => 'ngɔn mwom',
         9 => 'ngɔn ebulú',
@@ -66,7 +76,7 @@ return array (
       'full' => 'EEEE d MMMM y',
       'long' => 'd MMMM y',
       'medium' => 'd MMM y',
-      'short' => 'd/M/yyyy',
+      'short' => 'd/M/y',
     ),
     'timeFormat' => 
     array (

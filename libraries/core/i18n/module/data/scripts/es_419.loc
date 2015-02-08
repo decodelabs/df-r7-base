@@ -1,5 +1,0 @@
-<?php
-return array (
-  'Hans' => 'Han simplificado',
-  'Hant' => 'Han tradicional',
-);

@@ -11,5 +11,14 @@ return array (
   ),
   'currencies' => 
   array (
+    'BYR' => 
+    array (
+      'name' => 'Weissrussischer Rubel',
+      'symbol' => 'BYR',
+    ),
+    'CHF' => 
+    array (
+      'symbol' => 'CHF',
+    ),
   ),
 );

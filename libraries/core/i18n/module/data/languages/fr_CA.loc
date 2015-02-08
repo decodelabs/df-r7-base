@@ -1,4 +1,18 @@
 <?php
 return array (
-  'ps' => 'ps',
+  'en_GB' => 'anglais (GB)',
+  'si' => 'cingalais',
+  'es_ES' => 'espagnol ibérique',
+  'fy' => 'frison',
+  'gag' => 'gag',
+  'gu' => 'goudjarâtî',
+  'und' => 'indéterminé',
+  'rw' => 'kinyarwanda',
+  'luo' => 'luo',
+  'ug' => 'ouïgour',
+  'pt_PT' => 'portugais ibérique',
+  'gsw' => 'suisse allemand',
+  'to' => 'tongan',
+  'ybb' => 'yémba',
+  'ii' => 'yi de Sichuan',
 );

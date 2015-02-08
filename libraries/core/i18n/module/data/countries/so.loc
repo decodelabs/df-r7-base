@@ -110,6 +110,7 @@ return array (
   'KM' => 'Komooros',
   'CG' => 'Kongo',
   'ZA' => 'Koonfur Afrika',
+  'SS' => 'Koonfur Suudaan',
   'HR' => 'Korweeshiya',
   'CR' => 'Kosta Riika',
   'CU' => 'Kuuba',
@@ -226,5 +227,4 @@ return array (
   'VU' => 'Vanuatu',
   'WF' => 'Wallis and Futuna',
   'YE' => 'Yaman',
-  'CS' => 'serbiya iyo Monteneegro',
 );

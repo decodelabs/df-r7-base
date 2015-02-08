@@ -8,13 +8,13 @@ return array (
       '@default' => 'wide',
       'abbreviated' => 
       array (
-        'sun' => 'sul',
-        'mon' => 'lun',
-        'tue' => 'meu.',
-        'wed' => 'mer.',
-        'thu' => 'yaou',
-        'fri' => 'gwe.',
-        'sat' => 'sad.',
+        'sun' => 'Sul',
+        'mon' => 'Lun',
+        'tue' => 'Meu.',
+        'wed' => 'Mer.',
+        'thu' => 'Yaou',
+        'fri' => 'Gwe.',
+        'sat' => 'Sad.',
       ),
       'full' => 
       array (

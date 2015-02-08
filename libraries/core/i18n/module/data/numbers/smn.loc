@@ -1,0 +1,54 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'nan' => 'epiloho',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '0 tuhháát',
+  ),
+  'currencies' => 
+  array (
+    'DKK' => 
+    array (
+      'name' => 'Tanska ruvnâ',
+      'symbol' => 'DKK',
+    ),
+    'EEK' => 
+    array (
+      'name' => 'Eesti ruvnâ',
+      'symbol' => 'EEK',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'euro',
+      'symbol' => 'EUR',
+    ),
+    'FIM' => 
+    array (
+      'name' => 'Suomâ märkki',
+      'symbol' => 'FIM',
+    ),
+    'ISK' => 
+    array (
+      'name' => 'Island ruvnâ',
+      'symbol' => 'ISK',
+    ),
+    'LVR' => 
+    array (
+      'name' => 'Latvia ruble',
+      'symbol' => 'LVR',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'Taažâ ruvnâ',
+      'symbol' => 'NOK',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'Ruotâ ruvnâ',
+      'symbol' => 'SEK',
+    ),
+  ),
+);

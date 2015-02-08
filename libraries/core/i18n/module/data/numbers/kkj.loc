@@ -1,0 +1,19 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => ',',
+    'group' => '.',
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'XAF' => 
+    array (
+      'name' => 'Franc CFA',
+      'symbol' => 'FCFA',
+    ),
+  ),
+);

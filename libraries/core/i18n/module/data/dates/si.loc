@@ -1,6 +1,16 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'G y MMMM d, EEEE',
+      'long' => 'G y MMMM d',
+      'medium' => 'G y MMM d',
+      'short' => 'GGGGG y-MM-dd',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -8,11 +18,11 @@ return array (
       '@default' => 'wide',
       'abbreviated' => 
       array (
-        'sun' => 'ඉරි',
-        'mon' => 'සඳු',
-        'tue' => 'අඟ',
-        'wed' => 'බදා',
-        'thu' => 'බ්‍රහ',
+        'sun' => 'ඉරිදා',
+        'mon' => 'සඳුදා',
+        'tue' => 'අඟහ',
+        'wed' => 'බදාදා',
+        'thu' => 'බ්‍රහස්',
         'fri' => 'සිකු',
         'sat' => 'සෙන',
       ),
@@ -66,12 +76,12 @@ return array (
       'full' => 'y MMMM d, EEEE',
       'long' => 'y MMMM d',
       'medium' => 'y MMM d',
-      'short' => 'yyyy/MM/dd',
+      'short' => 'y-MM-dd',
     ),
     'timeFormat' => 
     array (
-      'full' => 'h:mm:ss a zzzz',
-      'long' => 'h:mm:ss a z',
+      'full' => 'a h.mm.ss zzzz',
+      'long' => 'a h.mm.ss z',
       'medium' => 'a h.mm.ss',
       'short' => 'a h.mm',
     ),

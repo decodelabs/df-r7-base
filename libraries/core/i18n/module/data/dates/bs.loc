@@ -1,6 +1,29 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'buddhist' => 
+  array (
+  ),
+  'chinese' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'E, d.M.y.',
+      'long' => 'd.M.y.',
+      'medium' => 'd.M.y.',
+      'short' => 'd.M.y.',
+    ),
+  ),
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, dd. MMMM y. G',
+      'long' => 'dd. MMMM y. G',
+      'medium' => 'dd.MM.y. G',
+      'short' => 'dd.MM.y. GGGGG',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -39,7 +62,7 @@ return array (
         5 => 'maj',
         6 => 'jun',
         7 => 'jul',
-        8 => 'avg',
+        8 => 'aug',
         9 => 'sep',
         10 => 'okt',
         11 => 'nov',
@@ -54,7 +77,7 @@ return array (
         5 => 'maj',
         6 => 'juni',
         7 => 'juli',
-        8 => 'avgust',
+        8 => 'august',
         9 => 'septembar',
         10 => 'oktobar',
         11 => 'novembar',
@@ -65,7 +88,7 @@ return array (
     array (
       'full' => 'EEEE, dd. MMMM y.',
       'long' => 'dd. MMMM y.',
-      'medium' => 'dd.MM.y.',
+      'medium' => 'dd. MMM. y.',
       'short' => 'dd.MM.yy.',
     ),
     'timeFormat' => 
@@ -75,6 +98,9 @@ return array (
       'medium' => 'HH:mm:ss',
       'short' => 'HH:mm',
     ),
+  ),
+  'hebrew' => 
+  array (
   ),
   'islamic' => 
   array (
@@ -119,5 +145,11 @@ return array (
       'medium' => 'dd.MM.y. G',
       'short' => 'dd.MM.y. G',
     ),
+  ),
+  'japanese' => 
+  array (
+  ),
+  'roc' => 
+  array (
   ),
 );

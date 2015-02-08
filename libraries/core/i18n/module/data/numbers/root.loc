@@ -2,130 +2,408 @@
 return array (
   'symbols' => 
   array (
-    'decimal' => '٫',
-    'group' => '٬',
-    'list' => '؛',
-    'percentSign' => '٪',
-    'plusSign' => '+',
-    'minusSign' => '-',
-    'exponential' => 'اس',
-    'perMille' => '؉',
-    'infinity' => '∞',
-    'nan' => 'NaN',
+    'alias' => '',
   ),
   'formats' => 
   array (
-    'decimal' => '#,##0.###',
-    'scientific' => '#E0',
-    'percent' => '#,##0%',
-    'currency' => '¤ #,##0.00',
   ),
   'currencies' => 
   array (
+    'AOA' => 
+    array (
+      'symbol' => 'Kz',
+    ),
+    'ARS' => 
+    array (
+      'symbol' => '$',
+    ),
     'AUD' => 
     array (
-      'name' => 'AUD',
-      'symbol' => 'AU$',
+      'symbol' => 'A$',
+    ),
+    'BAM' => 
+    array (
+      'symbol' => 'KM',
+    ),
+    'BBD' => 
+    array (
+      'symbol' => '$',
+    ),
+    'BDT' => 
+    array (
+      'symbol' => '৳',
+    ),
+    'BMD' => 
+    array (
+      'symbol' => '$',
+    ),
+    'BND' => 
+    array (
+      'symbol' => '$',
+    ),
+    'BOB' => 
+    array (
+      'symbol' => 'Bs',
     ),
     'BRL' => 
     array (
-      'name' => 'BRL',
-      'symbol' => 'BR$',
+      'symbol' => 'R$',
+    ),
+    'BSD' => 
+    array (
+      'symbol' => '$',
+    ),
+    'BWP' => 
+    array (
+      'symbol' => 'P',
+    ),
+    'BYR' => 
+    array (
+      'symbol' => 'р.',
+    ),
+    'BZD' => 
+    array (
+      'symbol' => '$',
     ),
     'CAD' => 
     array (
-      'name' => 'CAD',
       'symbol' => 'CA$',
+    ),
+    'CLP' => 
+    array (
+      'symbol' => '$',
     ),
     'CNY' => 
     array (
-      'name' => 'CNY',
       'symbol' => 'CN¥',
+    ),
+    'COP' => 
+    array (
+      'symbol' => '$',
+    ),
+    'CRC' => 
+    array (
+      'symbol' => '₡',
+    ),
+    'CUC' => 
+    array (
+      'symbol' => '$',
+    ),
+    'CUP' => 
+    array (
+      'symbol' => '$',
+    ),
+    'CZK' => 
+    array (
+      'symbol' => 'Kč',
+    ),
+    'DKK' => 
+    array (
+      'symbol' => 'kr',
+    ),
+    'DOP' => 
+    array (
+      'symbol' => '$',
+    ),
+    'EGP' => 
+    array (
+      'symbol' => 'E£',
+    ),
+    'ESP' => 
+    array (
+      'symbol' => '₧',
     ),
     'EUR' => 
     array (
-      'name' => 'EUR',
       'symbol' => '€',
+    ),
+    'FJD' => 
+    array (
+      'symbol' => '$',
+    ),
+    'FKP' => 
+    array (
+      'symbol' => '£',
     ),
     'GBP' => 
     array (
-      'name' => 'GBP',
       'symbol' => '£',
+    ),
+    'GIP' => 
+    array (
+      'symbol' => '£',
+    ),
+    'GNF' => 
+    array (
+      'symbol' => 'FG',
+    ),
+    'GTQ' => 
+    array (
+      'symbol' => 'Q',
+    ),
+    'GYD' => 
+    array (
+      'symbol' => '$',
     ),
     'HKD' => 
     array (
-      'name' => 'HKD',
       'symbol' => 'HK$',
+    ),
+    'HNL' => 
+    array (
+      'symbol' => 'L',
+    ),
+    'HRK' => 
+    array (
+      'symbol' => 'kn',
+    ),
+    'HUF' => 
+    array (
+      'symbol' => 'Ft',
+    ),
+    'IDR' => 
+    array (
+      'symbol' => 'Rp',
     ),
     'ILS' => 
     array (
-      'name' => 'ILS',
       'symbol' => '₪',
     ),
     'INR' => 
     array (
-      'name' => 'INR',
       'symbol' => '₹',
+    ),
+    'ISK' => 
+    array (
+      'symbol' => 'kr',
+    ),
+    'JMD' => 
+    array (
+      'symbol' => '$',
     ),
     'JPY' => 
     array (
-      'name' => 'JPY',
       'symbol' => 'JP¥',
+    ),
+    'KHR' => 
+    array (
+      'symbol' => '៛',
+    ),
+    'KMF' => 
+    array (
+      'symbol' => 'CF',
+    ),
+    'KPW' => 
+    array (
+      'symbol' => '₩',
     ),
     'KRW' => 
     array (
-      'name' => 'KRW',
       'symbol' => '₩',
+    ),
+    'KYD' => 
+    array (
+      'symbol' => '$',
+    ),
+    'KZT' => 
+    array (
+      'symbol' => '₸',
+    ),
+    'LAK' => 
+    array (
+      'symbol' => '₭',
+    ),
+    'LBP' => 
+    array (
+      'symbol' => 'L£',
+    ),
+    'LKR' => 
+    array (
+      'symbol' => 'Rs',
+    ),
+    'LRD' => 
+    array (
+      'symbol' => '$',
+    ),
+    'LTL' => 
+    array (
+      'symbol' => 'Lt',
+    ),
+    'LVL' => 
+    array (
+      'symbol' => 'Ls',
+    ),
+    'MGA' => 
+    array (
+      'symbol' => 'Ar',
+    ),
+    'MMK' => 
+    array (
+      'symbol' => 'K',
+    ),
+    'MNT' => 
+    array (
+      'symbol' => '₮',
+    ),
+    'MUR' => 
+    array (
+      'symbol' => 'Rs',
     ),
     'MXN' => 
     array (
-      'name' => 'MXN',
       'symbol' => 'MX$',
+    ),
+    'MYR' => 
+    array (
+      'symbol' => 'RM',
+    ),
+    'NAD' => 
+    array (
+      'symbol' => '$',
+    ),
+    'NGN' => 
+    array (
+      'symbol' => '₦',
+    ),
+    'NIO' => 
+    array (
+      'symbol' => 'C$',
+    ),
+    'NOK' => 
+    array (
+      'symbol' => 'kr',
+    ),
+    'NPR' => 
+    array (
+      'symbol' => 'Rs',
     ),
     'NZD' => 
     array (
-      'name' => 'NZD',
       'symbol' => 'NZ$',
+    ),
+    'PHP' => 
+    array (
+      'symbol' => '₱',
+    ),
+    'PKR' => 
+    array (
+      'symbol' => 'Rs',
+    ),
+    'PLN' => 
+    array (
+      'symbol' => 'zł',
+    ),
+    'PYG' => 
+    array (
+      'symbol' => '₲',
+    ),
+    'RUB' => 
+    array (
+      'symbol' => '₽',
+    ),
+    'RUR' => 
+    array (
+      'symbol' => 'р.',
+    ),
+    'RWF' => 
+    array (
+      'symbol' => 'RF',
+    ),
+    'SBD' => 
+    array (
+      'symbol' => '$',
+    ),
+    'SEK' => 
+    array (
+      'symbol' => 'kr',
+    ),
+    'SGD' => 
+    array (
+      'symbol' => '$',
+    ),
+    'SHP' => 
+    array (
+      'symbol' => '£',
+    ),
+    'SRD' => 
+    array (
+      'symbol' => '$',
+    ),
+    'SSP' => 
+    array (
+      'symbol' => '£',
+    ),
+    'STD' => 
+    array (
+      'symbol' => 'Db',
+    ),
+    'SYP' => 
+    array (
+      'symbol' => '£',
     ),
     'THB' => 
     array (
-      'name' => 'THB',
       'symbol' => '฿',
+    ),
+    'TOP' => 
+    array (
+      'symbol' => 'T$',
+    ),
+    'TRY' => 
+    array (
+      'symbol' => '₺',
+    ),
+    'TTD' => 
+    array (
+      'symbol' => '$',
     ),
     'TWD' => 
     array (
-      'name' => 'TWD',
       'symbol' => 'NT$',
+    ),
+    'UAH' => 
+    array (
+      'symbol' => '₴',
     ),
     'USD' => 
     array (
-      'name' => 'USD',
       'symbol' => 'US$',
+    ),
+    'UYU' => 
+    array (
+      'symbol' => '$',
+    ),
+    'VEF' => 
+    array (
+      'symbol' => 'Bs',
     ),
     'VND' => 
     array (
-      'name' => 'VND',
       'symbol' => '₫',
     ),
     'XAF' => 
     array (
-      'name' => 'XAF',
       'symbol' => 'FCFA',
     ),
     'XCD' => 
     array (
-      'name' => 'XCD',
       'symbol' => 'EC$',
     ),
     'XOF' => 
     array (
-      'name' => 'XOF',
       'symbol' => 'CFA',
     ),
     'XPF' => 
     array (
-      'name' => 'XPF',
       'symbol' => 'CFPF',
+    ),
+    'ZAR' => 
+    array (
+      'symbol' => 'R',
+    ),
+    'ZMW' => 
+    array (
+      'symbol' => 'ZK',
     ),
   ),
 );

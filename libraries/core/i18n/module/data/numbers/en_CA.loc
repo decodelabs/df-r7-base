@@ -10,12 +10,10 @@ return array (
   array (
     'CAD' => 
     array (
-      'name' => 'CAD',
       'symbol' => '$',
     ),
     'USD' => 
     array (
-      'name' => 'USD',
       'symbol' => 'US$',
     ),
   ),

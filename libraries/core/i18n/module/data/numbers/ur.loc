@@ -6,19 +6,19 @@ return array (
     'group' => ',',
     'list' => ';',
     'percentSign' => '%',
-    'plusSign' => '+',
-    'minusSign' => '-',
+    'plusSign' => '‎+‎',
+    'minusSign' => '‎-‎',
     'exponential' => 'ق',
     'perMille' => '‰',
     'infinity' => '∞',
-    'nan' => 'یہ عدد نہیں',
+    'nan' => 'یہ عدد نہیں',
   ),
   'formats' => 
   array (
     'decimal' => '#,##0.###',
     'scientific' => '#E0',
-    'percent' => '#,##0%',
-    'currency' => '¤#,##0.00',
+    'percent' => '#,##,##0%',
+    'currency' => '¤ #,##,##0.00',
   ),
   'currencies' => 
   array (
@@ -60,7 +60,7 @@ return array (
     'AUD' => 
     array (
       'name' => 'آسٹریلین ڈالر',
-      'symbol' => 'AUD',
+      'symbol' => 'A$',
     ),
     'AWG' => 
     array (
@@ -99,12 +99,12 @@ return array (
     ),
     'BIF' => 
     array (
-      'name' => 'برونڈیئن فرینک',
+      'name' => 'برونڈیئن فرانک',
       'symbol' => 'BIF',
     ),
     'BMD' => 
     array (
-      'name' => 'برمودا کا ڈالر',
+      'name' => 'برموڈا ڈالر',
       'symbol' => 'BMD',
     ),
     'BND' => 
@@ -120,7 +120,7 @@ return array (
     'BRL' => 
     array (
       'name' => 'برازیلی ریئل',
-      'symbol' => 'BRL',
+      'symbol' => 'R$',
     ),
     'BSD' => 
     array (
@@ -150,11 +150,11 @@ return array (
     'CAD' => 
     array (
       'name' => 'کنیڈین ڈالر',
-      'symbol' => 'CAD',
+      'symbol' => 'CA$',
     ),
     'CDF' => 
     array (
-      'name' => 'کانگولیز فرینک',
+      'name' => 'کانگولیز فرانک',
       'symbol' => 'CDF',
     ),
     'CHF' => 
@@ -169,8 +169,8 @@ return array (
     ),
     'CNY' => 
     array (
-      'name' => 'یوآن رینمنبی',
-      'symbol' => 'CNY',
+      'name' => 'چینی یوآن',
+      'symbol' => 'CN¥',
     ),
     'COP' => 
     array (
@@ -199,7 +199,7 @@ return array (
     ),
     'CZK' => 
     array (
-      'name' => 'چیک کرونا',
+      'name' => 'جمہوریہ چیک کرونا',
       'symbol' => 'CZK',
     ),
     'DEM' => 
@@ -209,7 +209,7 @@ return array (
     ),
     'DJF' => 
     array (
-      'name' => 'جبوتی کا فرینک',
+      'name' => 'جبوتی فرانک',
       'symbol' => 'DJF',
     ),
     'DKK' => 
@@ -234,7 +234,7 @@ return array (
     ),
     'EGP' => 
     array (
-      'name' => 'مصری پائونڈ',
+      'name' => 'مصری پاؤنڈ',
       'symbol' => 'EGP',
     ),
     'ERN' => 
@@ -250,7 +250,7 @@ return array (
     'EUR' => 
     array (
       'name' => 'یورو',
-      'symbol' => 'EUR',
+      'symbol' => '€',
     ),
     'FJD' => 
     array (
@@ -270,7 +270,7 @@ return array (
     'GBP' => 
     array (
       'name' => 'انگلستانی پاونڈ سٹرلنگ',
-      'symbol' => 'GBP',
+      'symbol' => '£',
     ),
     'GEL' => 
     array (
@@ -294,7 +294,7 @@ return array (
     ),
     'GNF' => 
     array (
-      'name' => 'گنی کا فرینک',
+      'name' => 'گنی فرانک',
       'symbol' => 'GNF',
     ),
     'GTQ' => 
@@ -310,7 +310,7 @@ return array (
     'HKD' => 
     array (
       'name' => 'ھانگ کانگ ڈالر',
-      'symbol' => 'HKD',
+      'symbol' => 'HK$',
     ),
     'HNL' => 
     array (
@@ -339,13 +339,13 @@ return array (
     ),
     'ILS' => 
     array (
-      'name' => 'اسرائیلی شیکل',
-      'symbol' => 'ILS',
+      'name' => 'اسرائیلی نیا شیکل',
+      'symbol' => '₪',
     ),
     'INR' => 
     array (
-      'name' => 'انڈین روپیہ',
-      'symbol' => 'INR',
+      'name' => 'بھارتی روپیہ',
+      'symbol' => '₹',
     ),
     'IQD' => 
     array (
@@ -359,7 +359,7 @@ return array (
     ),
     'ISK' => 
     array (
-      'name' => 'آئس لینڈ کا کرونا',
+      'name' => 'آئس لينڈی کرونا',
       'symbol' => 'ISK',
     ),
     'JMD' => 
@@ -375,7 +375,7 @@ return array (
     'JPY' => 
     array (
       'name' => 'جاپانی ین',
-      'symbol' => 'JPY',
+      'symbol' => 'JP¥',
     ),
     'KES' => 
     array (
@@ -394,7 +394,7 @@ return array (
     ),
     'KMF' => 
     array (
-      'name' => 'کوموریئن فرینک',
+      'name' => 'کوموریئن فرانک',
       'symbol' => 'KMF',
     ),
     'KPW' => 
@@ -405,7 +405,7 @@ return array (
     'KRW' => 
     array (
       'name' => 'جنوبی کوریائی وون',
-      'symbol' => 'KRW',
+      'symbol' => '₩',
     ),
     'KWD' => 
     array (
@@ -429,7 +429,7 @@ return array (
     ),
     'LBP' => 
     array (
-      'name' => 'لبانی پونڈ',
+      'name' => 'لبنانی پونڈ',
       'symbol' => 'LBP',
     ),
     'LKR' => 
@@ -449,7 +449,7 @@ return array (
     ),
     'LTL' => 
     array (
-      'name' => 'لیتھوانی لیٹاس',
+      'name' => 'لیتھوینیائی لیٹاس',
       'symbol' => 'LTL',
     ),
     'LVL' => 
@@ -469,7 +469,7 @@ return array (
     ),
     'MDL' => 
     array (
-      'name' => 'مالدیپ کا لیو',
+      'name' => 'مالدووی لیو',
       'symbol' => 'MDL',
     ),
     'MGA' => 
@@ -520,12 +520,17 @@ return array (
     'MXN' => 
     array (
       'name' => 'میکسیکی پیسہ',
-      'symbol' => 'MXN',
+      'symbol' => 'MX$',
     ),
     'MYR' => 
     array (
       'name' => 'ملیشیائی رنگِٹ',
       'symbol' => 'MYR',
+    ),
+    'MZN' => 
+    array (
+      'name' => 'موزامبیقی میٹیکل',
+      'symbol' => 'MZN',
     ),
     'NAD' => 
     array (
@@ -555,7 +560,7 @@ return array (
     'NZD' => 
     array (
       'name' => 'نیوزی لینڈ ڈالر',
-      'symbol' => 'NZD',
+      'symbol' => 'NZ$',
     ),
     'OMR' => 
     array (
@@ -585,11 +590,11 @@ return array (
     'PKR' => 
     array (
       'name' => 'پاکستانی روپیہ',
-      'symbol' => 'PKRs',
+      'symbol' => 'Rs',
     ),
     'PLN' => 
     array (
-      'name' => 'پولش نیو زلوٹی',
+      'name' => 'پولش زلوٹی',
       'symbol' => 'PLN',
     ),
     'PYG' => 
@@ -604,7 +609,7 @@ return array (
     ),
     'RON' => 
     array (
-      'name' => 'نیا رومانیائی لیو',
+      'name' => 'رومانیائی لیو',
       'symbol' => 'RON',
     ),
     'RSD' => 
@@ -619,7 +624,7 @@ return array (
     ),
     'RWF' => 
     array (
-      'name' => 'روانڈا کا فرینک',
+      'name' => 'روانڈا کا فرانک',
       'symbol' => 'RWF',
     ),
     'SAR' => 
@@ -639,12 +644,12 @@ return array (
     ),
     'SDG' => 
     array (
-      'name' => 'سوڈانی پونڈ',
+      'name' => 'سوڈانی پاؤنڈ',
       'symbol' => 'SDG',
     ),
     'SEK' => 
     array (
-      'name' => 'سویڈن کرونر',
+      'name' => 'سویڈن کرونا',
       'symbol' => 'SEK',
     ),
     'SGD' => 
@@ -654,7 +659,7 @@ return array (
     ),
     'SHP' => 
     array (
-      'name' => 'سینٹ ہیلینا پونڈ',
+      'name' => 'سینٹ ہیلینا پاؤنڈ',
       'symbol' => 'SHP',
     ),
     'SIT' => 
@@ -682,6 +687,11 @@ return array (
       'name' => 'سورینامی ڈالر',
       'symbol' => 'SRD',
     ),
+    'SSP' => 
+    array (
+      'name' => 'جنوبی سوڈانی پاؤنڈ',
+      'symbol' => 'SSP',
+    ),
     'STD' => 
     array (
       'name' => 'ساؤ ٹوم اور پرنسپے ڈوبرا',
@@ -700,7 +710,7 @@ return array (
     'THB' => 
     array (
       'name' => 'تھائی باہت',
-      'symbol' => 'THB',
+      'symbol' => '฿',
     ),
     'TJS' => 
     array (
@@ -735,7 +745,7 @@ return array (
     'TWD' => 
     array (
       'name' => 'نیو تائیوان ڈالر',
-      'symbol' => 'TWD',
+      'symbol' => 'NT$',
     ),
     'TZS' => 
     array (
@@ -769,18 +779,18 @@ return array (
     ),
     'VEB' => 
     array (
-      'name' => 'وینزویلا بولیور',
+      'name' => 'وینزویلا بولیور (1871–2008)',
       'symbol' => 'VEB',
     ),
     'VEF' => 
     array (
-      'name' => 'وینزوئیلا کا بولیور',
+      'name' => 'وینزویلا بولیور',
       'symbol' => 'VEF',
     ),
     'VND' => 
     array (
       'name' => 'ویتنامی ڈانگ',
-      'symbol' => 'VND',
+      'symbol' => '₫',
     ),
     'VUV' => 
     array (
@@ -794,23 +804,23 @@ return array (
     ),
     'XAF' => 
     array (
-      'name' => 'CFA فرینک BEAC',
-      'symbol' => 'XAF',
+      'name' => 'CFA فرانک BEAC',
+      'symbol' => 'FCFA',
     ),
     'XCD' => 
     array (
       'name' => 'مشرقی کریبیا کا ڈالر',
-      'symbol' => 'XCD',
+      'symbol' => 'EC$',
     ),
     'XOF' => 
     array (
-      'name' => 'CFA فرینک BCEAO',
-      'symbol' => 'XOF',
+      'name' => 'CFA فرانک BCEAO',
+      'symbol' => 'CFA',
     ),
     'XPF' => 
     array (
-      'name' => 'CFP فرینک',
-      'symbol' => 'XPF',
+      'name' => 'CFP فرانک',
+      'symbol' => 'CFPF',
     ),
     'XXX' => 
     array (
@@ -829,8 +839,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'زامبیائی کواچا',
+      'name' => 'زامبیائی کواچا (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'زامبیائی کواچا',
+      'symbol' => 'ZMW',
     ),
   ),
 );

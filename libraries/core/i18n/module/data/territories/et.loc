@@ -4,7 +4,7 @@ return array (
   142 => 'Aasia',
   '019' => 'Ameerika maailmajagu',
   '021' => 'Ameerika põhjaosa',
-  '053' => 'Austraalia ja Uus-Meremaa',
+  '053' => 'Australaasia',
   150 => 'Euroopa',
   '014' => 'Ida-Aafrika',
   '030' => 'Ida-Aasia',
@@ -13,7 +13,6 @@ return array (
   '029' => 'Kariibi meri',
   '017' => 'Kesk-Aafrika',
   143 => 'Kesk-Aasia',
-  '062' => 'Kesk-Aasia lõunaosa',
   '013' => 'Kesk-Ameerika',
   419 => 'Ladina-Ameerika',
   '018' => 'Lõuna-Aafrika',
@@ -31,5 +30,4 @@ return array (
   '015' => 'Põhja-Aafrika',
   '003' => 'Põhja-Ameerika',
   154 => 'Põhja-Euroopa',
-  172 => 'Sõltumatute Riikide Ühendus',
 );

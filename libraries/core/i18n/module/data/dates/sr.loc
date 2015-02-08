@@ -50,6 +50,16 @@ return array (
       ),
     ),
   ),
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, dd. MMMM y. G',
+      'long' => 'dd. MMMM y. G',
+      'medium' => 'dd.MM.y. G',
+      'short' => 'd.M.y. GGGGG',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 

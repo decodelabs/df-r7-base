@@ -1,0 +1,8 @@
+<?php
+return array (
+  'BA' => 'Bosnia y Herzegovina',
+  'IQ' => 'Irak',
+  'AC' => 'Isla Ascensión',
+  'NU' => 'Niue',
+  'GB' => 'R. U.',
+);

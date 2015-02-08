@@ -2,7 +2,8 @@
 return array (
   'symbols' => 
   array (
-    'group' => ' ',
+    'decimal' => '.',
+    'group' => ',',
   ),
   'formats' => 
   array (
@@ -49,11 +50,6 @@ return array (
     array (
       'name' => 'Kongo Frank',
       'symbol' => 'CDF',
-    ),
-    'CHF' => 
-    array (
-      'name' => 'Sweden Frank',
-      'symbol' => 'CHF',
     ),
     'CNY' => 
     array (
@@ -102,8 +98,13 @@ return array (
     ),
     'GHC' => 
     array (
-      'name' => 'Ghana Sidi',
+      'name' => 'Ghana Sidi (1979–2007)',
       'symbol' => 'GHC',
+    ),
+    'GHS' => 
+    array (
+      'name' => 'Ghana Sidi',
+      'symbol' => 'GH₵',
     ),
     'GMD' => 
     array (
@@ -272,8 +273,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'Zambia Kwacha',
+      'name' => 'Zambia Kwacha (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Zambia Kwacha',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

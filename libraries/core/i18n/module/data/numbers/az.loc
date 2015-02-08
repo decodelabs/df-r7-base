@@ -9,69 +9,79 @@ return array (
     'plusSign' => '+',
     'minusSign' => '-',
     'exponential' => 'E',
+    'superscriptingExponent' => '×',
     'perMille' => '‰',
     'infinity' => '∞',
     'nan' => 'NaN',
+    'timeSeparator' => ':',
   ),
   'formats' => 
   array (
+    'decimal' => '#,##0.###',
+    'scientific' => '#E0',
+    'percent' => '#,##0%',
     'currency' => '¤ #,##0.00',
   ),
   'currencies' => 
   array (
     'ADP' => 
     array (
-      'name' => 'Andora pesetası',
+      'name' => 'Andora Pesetası',
       'symbol' => 'ADP',
     ),
     'AED' => 
     array (
-      'name' => 'Birləşmiş ərəb emiratlar dirhamı',
+      'name' => 'Birləşmiş Ərəb Əmirlikləri Dirhəmi',
       'symbol' => 'AED',
     ),
     'AFA' => 
     array (
-      'name' => 'Əfgəni (1927-2002)',
+      'name' => 'Əfqanıstan Əfqanisi (1927–2002)',
       'symbol' => 'AFA',
     ),
     'AFN' => 
     array (
-      'name' => 'Əfgəni',
+      'name' => 'Əfqanıstan Əfqanisi',
       'symbol' => 'AFN',
+    ),
+    'ALK' => 
+    array (
+      'name' => 'Albaniya Leki (1946–1965)',
+      'symbol' => 'ALK',
     ),
     'ALL' => 
     array (
-      'name' => 'Alban leki',
+      'name' => 'Albaniya Leki',
       'symbol' => 'ALL',
     ),
     'AMD' => 
     array (
-      'name' => 'Erməni dramı',
+      'name' => 'Ermənistan Dramı',
       'symbol' => 'AMD',
     ),
     'ANG' => 
     array (
-      'name' => 'Hollandiya antila gilderi',
+      'name' => 'Niderland Antilyası Gilderi',
       'symbol' => 'ANG',
     ),
     'AOA' => 
     array (
-      'name' => 'Anqola kvanzası',
+      'name' => 'Anqola Kvanzası',
       'symbol' => 'AOA',
     ),
     'AOK' => 
     array (
-      'name' => 'Anqola kvanzasi (1977-1990)',
+      'name' => 'Anqola Kvanzasi (1977–1990)',
       'symbol' => 'AOK',
     ),
     'AON' => 
     array (
-      'name' => 'Anqola yeni kvanzası (1990-2000)',
+      'name' => 'Anqola Yeni Kvanzası (1990–2000)',
       'symbol' => 'AON',
     ),
     'AOR' => 
     array (
-      'name' => 'Anqola kvanzası (1995-1999)',
+      'name' => 'Anqola Kvanzası (1995–1999)',
       'symbol' => 'AOR',
     ),
     'ARA' => 
@@ -81,107 +91,107 @@ return array (
     ),
     'ARP' => 
     array (
-      'name' => 'Argentina pesosu (1983-1985)',
+      'name' => 'Argentina pesosu (1983–1985)',
       'symbol' => 'ARP',
     ),
     'ARS' => 
     array (
-      'name' => 'Argentina pesosu',
+      'name' => 'Argentina Pesosu',
       'symbol' => 'ARS',
     ),
     'ATS' => 
     array (
-      'name' => 'Avstriya şilingi',
+      'name' => 'Avstriya Şillinqi',
       'symbol' => 'ATS',
     ),
     'AUD' => 
     array (
-      'name' => 'Avstraliya dolları',
-      'symbol' => 'AUD',
+      'name' => 'Avstraliya Dolları',
+      'symbol' => 'A$',
     ),
     'AWG' => 
     array (
-      'name' => 'Aruba qilderi',
+      'name' => 'Aruba Florini',
       'symbol' => 'AWG',
     ),
     'AZM' => 
     array (
-      'name' => 'Manat',
+      'name' => 'Azərbaycan Manatı (1993–2006)',
       'symbol' => 'AZM',
     ),
     'AZN' => 
     array (
-      'name' => 'Azərbaycan manatı',
-      'symbol' => 'man.',
+      'name' => 'Azərbaycan Manatı',
+      'symbol' => 'AZN',
     ),
     'BAD' => 
     array (
-      'name' => 'Bosniya-Herzeqovina dinarı',
+      'name' => 'Bosniya-Herseqovina Dinarı',
       'symbol' => 'BAD',
     ),
     'BAM' => 
     array (
-      'name' => 'Bosniya-Herzeqovina markası',
+      'name' => 'Bosniya-Herseqovina Markası',
       'symbol' => 'BAM',
     ),
     'BBD' => 
     array (
-      'name' => 'Barbados dolları',
+      'name' => 'Barbados Dolları',
       'symbol' => 'BBD',
     ),
     'BDT' => 
     array (
-      'name' => 'Banqladeş takası',
+      'name' => 'Banqladeş Takası',
       'symbol' => 'BDT',
     ),
     'BEC' => 
     array (
-      'name' => 'Belçika frankı (deyşirik)',
+      'name' => 'Belçika Frankı (deyşirik)',
       'symbol' => 'BEC',
     ),
     'BEF' => 
     array (
-      'name' => 'Belçika frankı',
+      'name' => 'Belçika Frankı',
       'symbol' => 'BEF',
     ),
     'BEL' => 
     array (
-      'name' => 'Belçika frankı (finans)',
+      'name' => 'Belçika Frankı (finans)',
       'symbol' => 'BEL',
     ),
     'BGL' => 
     array (
-      'name' => 'Bolqariya levası',
+      'name' => 'Bolqarıstan Levası',
       'symbol' => 'BGL',
     ),
     'BGN' => 
     array (
-      'name' => 'Bolqariya yeni levası',
+      'name' => 'Bolqarıstan Levi',
       'symbol' => 'BGN',
     ),
     'BHD' => 
     array (
-      'name' => 'Bahreyn dinarı',
+      'name' => 'Bəhreyn Dinarı',
       'symbol' => 'BHD',
     ),
     'BIF' => 
     array (
-      'name' => 'Burundi frankası',
+      'name' => 'Burundi Frankı',
       'symbol' => 'BIF',
     ),
     'BMD' => 
     array (
-      'name' => 'Bermuda dolları',
+      'name' => 'Bermuda Dolları',
       'symbol' => 'BMD',
     ),
     'BND' => 
     array (
-      'name' => 'Bruney dolları',
+      'name' => 'Bruney Dolları',
       'symbol' => 'BND',
     ),
     'BOB' => 
     array (
-      'name' => 'Boliviya boliviano',
+      'name' => 'Boliviya Bolivianosu',
       'symbol' => 'BOB',
     ),
     'BOP' => 
@@ -206,13 +216,13 @@ return array (
     ),
     'BRE' => 
     array (
-      'name' => 'Braziliya kruzeyrosu (1990-1993)',
+      'name' => 'Braziliya kruzeyrosu (1990–1993)',
       'symbol' => 'BRE',
     ),
     'BRL' => 
     array (
-      'name' => 'Braziliya realı',
-      'symbol' => 'BRL',
+      'name' => 'Braziliya Realı',
+      'symbol' => 'R$',
     ),
     'BRN' => 
     array (
@@ -226,563 +236,583 @@ return array (
     ),
     'BSD' => 
     array (
-      'name' => 'Bahama dolları',
+      'name' => 'Bahama Dolları',
       'symbol' => 'BSD',
     ),
     'BTN' => 
     array (
-      'name' => 'Butan ngultrumu',
+      'name' => 'Butan Nqultrumu',
       'symbol' => 'BTN',
     ),
     'BUK' => 
     array (
-      'name' => 'Burmis kyatı',
+      'name' => 'Burmis Kyatı',
       'symbol' => 'BUK',
     ),
     'BWP' => 
     array (
-      'name' => 'Botsvana pulası',
+      'name' => 'Botsvana Pulası',
       'symbol' => 'BWP',
     ),
     'BYB' => 
     array (
-      'name' => 'Belarusiya yeni rublu',
+      'name' => 'Belarus Yeni Rublu (1994–1999)',
       'symbol' => 'BYB',
     ),
     'BYR' => 
     array (
-      'name' => 'Belarusiya rublu',
+      'name' => 'Belarus Rublu',
       'symbol' => 'BYR',
     ),
     'BZD' => 
     array (
-      'name' => 'Beliz dolları',
+      'name' => 'Beliz Dolları',
       'symbol' => 'BZD',
     ),
     'CAD' => 
     array (
-      'name' => 'Kanadiya dolları',
-      'symbol' => 'CAD',
+      'name' => 'Kanada Dolları',
+      'symbol' => 'CA$',
     ),
     'CDF' => 
     array (
-      'name' => 'Konqoliz frank konqolaysı',
+      'name' => 'Konqo Frankı',
       'symbol' => 'CDF',
     ),
     'CHE' => 
     array (
-      'name' => 'WIR Yevrosu',
+      'name' => 'WIR Avro',
       'symbol' => 'CHE',
     ),
     'CHF' => 
     array (
-      'name' => 'İsveçriya frankası',
+      'name' => 'İsveçrə Frankı',
       'symbol' => 'CHF',
     ),
     'CHW' => 
     array (
-      'name' => 'WIR frankası',
+      'name' => 'WIR Frankası',
       'symbol' => 'CHW',
     ),
     'CLP' => 
     array (
-      'name' => 'Çili pesosu',
+      'name' => 'Çili Pesosu',
       'symbol' => 'CLP',
     ),
     'CNY' => 
     array (
-      'name' => 'Çin yuan renminbi',
-      'symbol' => 'CNY',
+      'name' => 'Çin Yuanı',
+      'symbol' => 'CN¥',
     ),
     'COP' => 
     array (
-      'name' => 'Kolombiya pesosu',
+      'name' => 'Kolumbiya Pesosu',
       'symbol' => 'COP',
     ),
     'CRC' => 
     array (
-      'name' => 'Kosta rika kolonu',
+      'name' => 'Kosta Rika Kolonu',
       'symbol' => 'CRC',
     ),
     'CSD' => 
     array (
-      'name' => 'Qədimi Serb dinarı',
+      'name' => 'Serbiya Dinarı (2002–2006)',
       'symbol' => 'CSD',
     ),
     'CSK' => 
     array (
-      'name' => 'Çexoslavakiya korunası',
+      'name' => 'Çexoslavakiya Korunası',
       'symbol' => 'CSK',
+    ),
+    'CUC' => 
+    array (
+      'name' => 'Kuba Çevrilən Pesosu',
+      'symbol' => 'CUC',
     ),
     'CUP' => 
     array (
-      'name' => 'Kuba pesosu',
+      'name' => 'Kuba Pesosu',
       'symbol' => 'CUP',
     ),
     'CVE' => 
     array (
-      'name' => 'Kape Verde eskudosu',
+      'name' => 'Kape Verde Eskudosu',
       'symbol' => 'CVE',
     ),
     'CYP' => 
     array (
-      'name' => 'Kipr paundu',
+      'name' => 'Kipr Paundu',
       'symbol' => 'CYP',
     ),
     'CZK' => 
     array (
-      'name' => 'Çex respublikası korunası',
+      'name' => 'Çexiya Korunası',
       'symbol' => 'CZK',
     ),
     'DDM' => 
     array (
-      'name' => 'şərq almaniya ostmarkı',
+      'name' => 'Şərq Almaniya Ostmarkı',
       'symbol' => 'DDM',
     ),
     'DEM' => 
     array (
-      'name' => 'alman markası',
+      'name' => 'Alman Markası',
       'symbol' => 'DEM',
     ),
     'DJF' => 
     array (
-      'name' => 'jibouti frankası',
+      'name' => 'Cibuti Frankı',
       'symbol' => 'DJF',
     ),
     'DKK' => 
     array (
-      'name' => 'Danemarka kronası',
+      'name' => 'Danimarka Kronu',
       'symbol' => 'DKK',
     ),
     'DOP' => 
     array (
-      'name' => 'dominika pesosu',
+      'name' => 'Dominika Pesosu',
       'symbol' => 'DOP',
     ),
     'DZD' => 
     array (
-      'name' => 'Alcəzir dinarı',
+      'name' => 'Əlcəzair Dinarı',
       'symbol' => 'DZD',
     ),
     'ECS' => 
     array (
-      'name' => 'ekvador sukresi',
+      'name' => 'Ekvador Sukresi',
       'symbol' => 'ECS',
     ),
     'EEK' => 
     array (
-      'name' => 'Estoniya krunu',
+      'name' => 'Estoniya Krunu',
       'symbol' => 'EEK',
     ),
     'EGP' => 
     array (
-      'name' => 'misir paundu',
+      'name' => 'Misir Funtu',
       'symbol' => 'EGP',
     ),
     'ERN' => 
     array (
-      'name' => 'Eirtreya nakfası',
+      'name' => 'Eritreya Nakfası',
       'symbol' => 'ERN',
     ),
     'ESA' => 
     array (
-      'name' => 'İspan pesetası (A)',
+      'name' => 'İspan Pesetası (A account)',
       'symbol' => 'ESA',
     ),
     'ESB' => 
     array (
-      'name' => 'İspan pesetası (dəyşirik)',
+      'name' => 'İspan Pesetası (dəyşirik)',
       'symbol' => 'ESB',
     ),
     'ESP' => 
     array (
-      'name' => 'İspan pesetası',
+      'name' => 'İspan Pesetası',
       'symbol' => 'ESP',
     ),
     'ETB' => 
     array (
-      'name' => 'Efiopiya birası',
+      'name' => 'Efiopiya Bırrı',
       'symbol' => 'ETB',
     ),
     'EUR' => 
     array (
-      'name' => 'Yevro',
-      'symbol' => 'EUR',
+      'name' => 'Avro',
+      'symbol' => '€',
     ),
     'FIM' => 
     array (
-      'name' => 'Fin markası',
+      'name' => 'Fin Markası',
       'symbol' => 'FIM',
     ),
     'FJD' => 
     array (
-      'name' => 'Fici dolları',
+      'name' => 'Fici Dolları',
       'symbol' => 'FJD',
     ),
     'FKP' => 
     array (
-      'name' => 'Folkland Adası paundu',
+      'name' => 'Folklend Adaları Funtu',
       'symbol' => 'FKP',
     ),
     'FRF' => 
     array (
-      'name' => 'Fransız markası',
+      'name' => 'Fransız Markası',
       'symbol' => 'FRF',
     ),
     'GBP' => 
     array (
-      'name' => 'Britaniya paund sterlingi',
-      'symbol' => 'GBP',
+      'name' => 'Britaniya Funt Sterlinqi',
+      'symbol' => '£',
     ),
     'GEK' => 
     array (
-      'name' => 'Gürcüstan kupon lariti',
+      'name' => 'Gürcüstan Kupon Lariti',
       'symbol' => 'GEK',
     ),
     'GEL' => 
     array (
-      'name' => 'Gürcüstan larisi',
+      'name' => 'Gürcüstan Larisi',
       'symbol' => 'GEL',
     ),
     'GHC' => 
     array (
-      'name' => 'Qana sedisi (1979-2007)',
+      'name' => 'Qana Sedisi (1979–2007)',
       'symbol' => 'GHC',
     ),
     'GHS' => 
     array (
-      'name' => 'Qana sedisi',
+      'name' => 'Qana Sedisi',
       'symbol' => 'GHS',
     ),
     'GIP' => 
     array (
-      'name' => 'Gibraltar paundu',
+      'name' => 'Gibraltar Funtu',
       'symbol' => 'GIP',
     ),
     'GMD' => 
     array (
-      'name' => 'Qambiya dalasi',
+      'name' => 'Qambiya Dalasisi',
       'symbol' => 'GMD',
     ),
     'GNF' => 
     array (
-      'name' => 'Qvineya frankası',
+      'name' => 'Qvineya Frankı',
       'symbol' => 'GNF',
     ),
     'GNS' => 
     array (
-      'name' => 'Qvineya sulisi',
+      'name' => 'Qvineya Sulisi',
       'symbol' => 'GNS',
     ),
     'GQE' => 
     array (
-      'name' => 'Ekvatoriya Gvineya ekvele quneanası',
+      'name' => 'Ekvatoriya Gvineya Ekvele Quneanası',
       'symbol' => 'GQE',
     ),
     'GRD' => 
     array (
-      'name' => 'Yunan draçması',
+      'name' => 'Yunan Draçması',
       'symbol' => 'GRD',
     ),
     'GTQ' => 
     array (
-      'name' => 'Qvatemala küetzalı',
+      'name' => 'Qvatemala Küetzalı',
       'symbol' => 'GTQ',
     ),
     'GWE' => 
     array (
-      'name' => 'Portugal Qvineya eskudosu',
+      'name' => 'Portugal Qvineya Eskudosu',
       'symbol' => 'GWE',
     ),
     'GWP' => 
     array (
-      'name' => 'Qvineya-Bisau pesosu',
+      'name' => 'Qvineya-Bisau Pesosu',
       'symbol' => 'GWP',
     ),
     'GYD' => 
     array (
-      'name' => 'Quyana dolları',
+      'name' => 'Qayana Dolları',
       'symbol' => 'GYD',
     ),
     'HKD' => 
     array (
-      'name' => 'Honk Konq dolları',
-      'symbol' => 'HKD',
+      'name' => 'Honq Konq Dolları',
+      'symbol' => 'HK$',
     ),
     'HNL' => 
     array (
-      'name' => 'Honduras lempirası',
+      'name' => 'Honduras Lempirası',
       'symbol' => 'HNL',
     ),
     'HRD' => 
     array (
-      'name' => 'Xorvatiya dinarı',
+      'name' => 'Xorvatiya Dinarı',
       'symbol' => 'HRD',
     ),
     'HRK' => 
     array (
-      'name' => 'Xorvatiya kunu',
+      'name' => 'Xorvatiya Kunası',
       'symbol' => 'HRK',
     ),
     'HTG' => 
     array (
-      'name' => 'Haiti qourdu',
+      'name' => 'Haiti Qourdu',
       'symbol' => 'HTG',
     ),
     'HUF' => 
     array (
-      'name' => 'Macarıstan forinti',
+      'name' => 'Macarıstan Forinti',
       'symbol' => 'HUF',
     ),
     'IDR' => 
     array (
-      'name' => 'İndoneziya rupisi',
+      'name' => 'İndoneziya Rupisi',
       'symbol' => 'IDR',
     ),
     'IEP' => 
     array (
-      'name' => 'İrlandiya paundu',
+      'name' => 'İrlandiya Paundu',
       'symbol' => 'IEP',
     ),
     'ILP' => 
     array (
-      'name' => 'İzrail paundu',
+      'name' => 'İzrail Paundu',
       'symbol' => 'ILP',
+    ),
+    'ILR' => 
+    array (
+      'name' => 'İsrail Şekeli (1980–1985)',
+      'symbol' => 'ILR',
     ),
     'ILS' => 
     array (
-      'name' => 'İzrail yeni şekeli',
-      'symbol' => 'ILS',
+      'name' => 'İsrail Yeni Şekeli',
+      'symbol' => '₪',
     ),
     'INR' => 
     array (
-      'name' => 'Hindistan rupisi',
-      'symbol' => 'INR',
+      'name' => 'Hindistan Rupisi',
+      'symbol' => '₹',
     ),
     'IQD' => 
     array (
-      'name' => 'İraq dinarı',
+      'name' => 'İraq Dinarı',
       'symbol' => 'IQD',
     ),
     'IRR' => 
     array (
-      'name' => 'İran rialı',
+      'name' => 'İran Rialı',
       'symbol' => 'IRR',
+    ),
+    'ISJ' => 
+    array (
+      'name' => 'İslandiya Kronu (1918–1981)',
+      'symbol' => 'ISJ',
     ),
     'ISK' => 
     array (
-      'name' => 'Aysland kronası',
+      'name' => 'İslandiya Kronu',
       'symbol' => 'ISK',
     ),
     'ITL' => 
     array (
-      'name' => 'İtaliya lirası',
+      'name' => 'İtaliya Lirası',
       'symbol' => 'ITL',
     ),
     'JMD' => 
     array (
-      'name' => 'Yamayka dolları',
+      'name' => 'Yamayka Dolları',
       'symbol' => 'JMD',
     ),
     'JOD' => 
     array (
-      'name' => 'İordaniya dinarı',
+      'name' => 'İordaniya Dinarı',
       'symbol' => 'JOD',
     ),
     'JPY' => 
     array (
-      'name' => 'Yapon yeni',
-      'symbol' => 'JPY',
+      'name' => 'Yaponiya Yeni',
+      'symbol' => 'JP¥',
     ),
     'KES' => 
     array (
-      'name' => 'Kenya şillingi',
+      'name' => 'Keniya Şillinqi',
       'symbol' => 'KES',
     ),
     'KGS' => 
     array (
-      'name' => 'Kırğızstan somu',
+      'name' => 'Kırğızıstan Somu',
       'symbol' => 'KGS',
     ),
     'KHR' => 
     array (
-      'name' => 'Kambodiya riyeli',
+      'name' => 'Kamboca Rieli',
       'symbol' => 'KHR',
     ),
     'KMF' => 
     array (
-      'name' => 'Komoro frankı',
+      'name' => 'Komor Frankı',
       'symbol' => 'KMF',
     ),
     'KPW' => 
     array (
-      'name' => 'Şimal koreya vonu',
+      'name' => 'Şimali Koreya Vonu',
       'symbol' => 'KPW',
     ),
     'KRW' => 
     array (
-      'name' => 'Cənub koreya vonu',
-      'symbol' => 'KRW',
+      'name' => 'Cənubi Koreya Vonu',
+      'symbol' => '₩',
     ),
     'KWD' => 
     array (
-      'name' => 'Kuveyt dinarı',
+      'name' => 'Küveyt Dinarı',
       'symbol' => 'KWD',
     ),
     'KYD' => 
     array (
-      'name' => 'Keyman Adaları dolları',
+      'name' => 'Kayman Adaları Dolları',
       'symbol' => 'KYD',
     ),
     'KZT' => 
     array (
-      'name' => 'Kazaxstan tenqesi',
+      'name' => 'Qazaxıstan Tengesi',
       'symbol' => 'KZT',
     ),
     'LAK' => 
     array (
-      'name' => 'Laotiya kipi',
+      'name' => 'Laos Kipi',
       'symbol' => 'LAK',
     ),
     'LBP' => 
     array (
-      'name' => 'Lebanon paundu',
+      'name' => 'Livan Funtu',
       'symbol' => 'LBP',
     ),
     'LKR' => 
     array (
-      'name' => 'Şri Lanka rupisi',
+      'name' => 'Şri Lanka Rupisi',
       'symbol' => 'LKR',
     ),
     'LRD' => 
     array (
-      'name' => 'Liberiya dolları',
+      'name' => 'Liberiya Dolları',
       'symbol' => 'LRD',
     ),
     'LSL' => 
     array (
-      'name' => 'Lesoto lotisi',
+      'name' => 'Lesoto Lotisi',
       'symbol' => 'LSL',
     ),
     'LTL' => 
     array (
-      'name' => 'Litva litası',
+      'name' => 'Litva Liti',
       'symbol' => 'LTL',
     ),
     'LTT' => 
     array (
-      'name' => 'Litva talonası',
+      'name' => 'Litva Talonası',
       'symbol' => 'LTT',
     ),
     'LUC' => 
     array (
-      'name' => 'Luksemburq frankası (dəyişik)',
+      'name' => 'Luksemburq Frankası (dəyişik)',
       'symbol' => 'LUC',
     ),
     'LUF' => 
     array (
-      'name' => 'Luksemburq frankası',
+      'name' => 'Luksemburq Frankası',
       'symbol' => 'LUF',
     ),
     'LUL' => 
     array (
-      'name' => 'Luksemburq frankası (finans)',
+      'name' => 'Luksemburq Frankası (finans)',
       'symbol' => 'LUL',
     ),
     'LVL' => 
     array (
-      'name' => 'Latviya latsı',
+      'name' => 'Latviya Latı',
       'symbol' => 'LVL',
     ),
     'LVR' => 
     array (
-      'name' => 'Latviya rublu',
+      'name' => 'Latviya Rublu',
       'symbol' => 'LVR',
     ),
     'LYD' => 
     array (
-      'name' => 'Liviya dinarı',
+      'name' => 'Liviya Dinarı',
       'symbol' => 'LYD',
     ),
     'MAD' => 
     array (
-      'name' => 'Morokko dirhamı',
+      'name' => 'Mərakeş Dirhəmi',
       'symbol' => 'MAD',
     ),
     'MAF' => 
     array (
-      'name' => 'Morokko frankası',
+      'name' => 'Mərakeş Frankası',
       'symbol' => 'MAF',
     ),
     'MDL' => 
     array (
-      'name' => 'Moldova leyusu',
+      'name' => 'Moldova Leyi',
       'symbol' => 'MDL',
     ),
     'MGA' => 
     array (
-      'name' => 'Madaqaskar ariarisi',
+      'name' => 'Madaqaskar Ariarisi',
       'symbol' => 'MGA',
     ),
     'MGF' => 
     array (
-      'name' => 'Madaqaskar frankası',
+      'name' => 'Madaqaskar Frankası',
       'symbol' => 'MGF',
     ),
     'MKD' => 
     array (
-      'name' => 'Masedoniya denarı',
+      'name' => 'Makedoniya Dinarı',
       'symbol' => 'MKD',
+    ),
+    'MKN' => 
+    array (
+      'name' => 'Makedoniya Dinarı (1992–1993)',
+      'symbol' => 'MKN',
     ),
     'MLF' => 
     array (
-      'name' => 'Mali frankı',
+      'name' => 'Mali Frankı',
       'symbol' => 'MLF',
     ),
     'MMK' => 
     array (
-      'name' => 'Myanmar kiyatı',
+      'name' => 'Myanma Kiyatı',
       'symbol' => 'MMK',
     ),
     'MNT' => 
     array (
-      'name' => 'Monqoliya tuqriki',
+      'name' => 'Monqoliya Tuqriki',
       'symbol' => 'MNT',
     ),
     'MOP' => 
     array (
-      'name' => 'Makao patakası',
+      'name' => 'Makao Patakası',
       'symbol' => 'MOP',
     ),
     'MRO' => 
     array (
-      'name' => 'Mavritaniya oyuquyası',
+      'name' => 'Mavritaniya Ugiyası',
       'symbol' => 'MRO',
     ),
     'MTP' => 
     array (
-      'name' => 'Maltiz paundu',
+      'name' => 'Maltiz Paundu',
       'symbol' => 'MTP',
     ),
     'MUR' => 
     array (
-      'name' => 'Mavritis rupiyi',
+      'name' => 'Mavriki Rupisi',
       'symbol' => 'MUR',
     ),
     'MVR' => 
     array (
-      'name' => 'Maldiv Adaları rufiyi',
+      'name' => 'Maldiv Rufiyası',
       'symbol' => 'MVR',
     ),
     'MWK' => 
     array (
-      'name' => 'Malavi kvaçası',
+      'name' => 'Malavi Kvaçası',
       'symbol' => 'MWK',
     ),
     'MXN' => 
     array (
-      'name' => 'Meksika pesosu',
-      'symbol' => 'MXN',
+      'name' => 'Meksika Pesosu',
+      'symbol' => 'MX$',
     ),
     'MXP' => 
     array (
@@ -791,32 +821,32 @@ return array (
     ),
     'MYR' => 
     array (
-      'name' => 'Malaysiya rinqiti',
+      'name' => 'Malayziya Ringiti',
       'symbol' => 'MYR',
     ),
     'MZE' => 
     array (
-      'name' => 'Mozambik eskudosu',
+      'name' => 'Mozambik Eskudosu',
       'symbol' => 'MZE',
     ),
     'MZM' => 
     array (
-      'name' => 'Qədim Mozambik metikalı',
+      'name' => 'Mozambik Metikalı (1980–2006)',
       'symbol' => 'MZM',
     ),
     'MZN' => 
     array (
-      'name' => 'Mozambik metikalı',
+      'name' => 'Mozambik Metikalı',
       'symbol' => 'MZN',
     ),
     'NAD' => 
     array (
-      'name' => 'Namibiya dolları',
+      'name' => 'Namibiya Dolları',
       'symbol' => 'NAD',
     ),
     'NGN' => 
     array (
-      'name' => 'Nigeriya nairi',
+      'name' => 'Nigeriya Nairası',
       'symbol' => 'NGN',
     ),
     'NIC' => 
@@ -824,275 +854,310 @@ return array (
       'name' => 'Nikaraqua kordobu',
       'symbol' => 'NIC',
     ),
+    'NIO' => 
+    array (
+      'name' => 'Nikaraqua Kordobası',
+      'symbol' => 'NIO',
+    ),
     'NLG' => 
     array (
-      'name' => 'Hollandiya gilderi',
+      'name' => 'Hollandiya Gilderi',
       'symbol' => 'NLG',
     ),
     'NOK' => 
     array (
-      'name' => 'Norveç kronu',
+      'name' => 'Norveç Kronu',
       'symbol' => 'NOK',
     ),
     'NPR' => 
     array (
-      'name' => 'Nepal rupiyi',
+      'name' => 'Nepal Rupisi',
       'symbol' => 'NPR',
     ),
     'NZD' => 
     array (
-      'name' => 'Yeni Zelandiya dolları',
-      'symbol' => 'NZD',
+      'name' => 'Yeni Zelandiya Dolları',
+      'symbol' => 'NZ$',
     ),
     'OMR' => 
     array (
-      'name' => 'Mman rialı',
+      'name' => 'Oman Rialı',
       'symbol' => 'OMR',
     ),
     'PAB' => 
     array (
-      'name' => 'Panamaniya balboa',
+      'name' => 'Panama Balboası',
       'symbol' => 'PAB',
     ),
     'PEI' => 
     array (
-      'name' => 'Peru inti',
+      'name' => 'Peru Inti',
       'symbol' => 'PEI',
     ),
     'PEN' => 
     array (
-      'name' => 'Peru sol nuyevosu',
+      'name' => 'Peru Nuevo Solu',
       'symbol' => 'PEN',
     ),
     'PES' => 
     array (
-      'name' => 'Peru solu',
+      'name' => 'Peru Solu',
       'symbol' => 'PES',
     ),
     'PGK' => 
     array (
-      'name' => 'Papua Yeni Qvineya kini',
+      'name' => 'Papua Yeni Qvineya Kinası',
       'symbol' => 'PGK',
     ),
     'PHP' => 
     array (
-      'name' => 'Filipin pesosu',
+      'name' => 'Filippin Pesosu',
       'symbol' => 'PHP',
     ),
     'PKR' => 
     array (
-      'name' => 'Pakistan rupiyi',
+      'name' => 'Pakistan Rupisi',
       'symbol' => 'PKR',
     ),
     'PLN' => 
     array (
-      'name' => 'Polsha zlotisi',
+      'name' => 'Polşa Zlotısı',
       'symbol' => 'PLN',
     ),
     'PLZ' => 
     array (
-      'name' => 'Polsha zlotisi (1950-1995)',
+      'name' => 'Polşa Zlotısı (1950–1995)',
       'symbol' => 'PLZ',
     ),
     'PTE' => 
     array (
-      'name' => 'Portuqal eskudosu',
+      'name' => 'Portuqal Eskudosu',
       'symbol' => 'PTE',
     ),
     'PYG' => 
     array (
-      'name' => 'Paraqvay quarani',
+      'name' => 'Paraqvay Quaranisi',
       'symbol' => 'PYG',
     ),
     'QAR' => 
     array (
-      'name' => 'Qatar rialı',
+      'name' => 'Qatar Rialı',
       'symbol' => 'QAR',
     ),
     'RHD' => 
     array (
-      'name' => 'Rodezian dolları',
+      'name' => 'Rodezian Dolları',
       'symbol' => 'RHD',
     ),
     'ROL' => 
     array (
-      'name' => 'Qədim Roman leyu',
+      'name' => 'Rumıniya Leyi (1952–2006)',
       'symbol' => 'ROL',
     ),
     'RON' => 
     array (
-      'name' => 'Roman leyu',
+      'name' => 'Rumıniya Leyi',
       'symbol' => 'RON',
     ),
     'RSD' => 
     array (
-      'name' => 'Serbiya dinarı',
+      'name' => 'Serbiya Dinarı',
       'symbol' => 'RSD',
     ),
     'RUB' => 
     array (
-      'name' => 'Rusiya rublu',
+      'name' => 'Rusiya Rublu',
       'symbol' => 'RUB',
     ),
     'RUR' => 
     array (
-      'name' => 'Rusiya rublu (1991-1998)',
+      'name' => 'Rusiya Rublu (1991–1998)',
       'symbol' => 'RUR',
     ),
     'RWF' => 
     array (
-      'name' => 'Rvanda frankı',
+      'name' => 'Ruanda Frankı',
       'symbol' => 'RWF',
     ),
     'SAR' => 
     array (
-      'name' => 'Saudi riyalı',
+      'name' => 'Səudiyyə Riyalı',
       'symbol' => 'SAR',
     ),
     'SBD' => 
     array (
-      'name' => 'Solomon Adaları dolları',
+      'name' => 'Solomon Adaları Dolları',
       'symbol' => 'SBD',
     ),
     'SCR' => 
     array (
-      'name' => 'Seyçel rupiyi',
+      'name' => 'Seyşel Rupisi',
       'symbol' => 'SCR',
     ),
     'SDG' => 
     array (
-      'name' => 'Sudan paundu',
+      'name' => 'Sudan Funtu',
       'symbol' => 'SDG',
     ),
     'SEK' => 
     array (
-      'name' => 'İsveç kronu',
+      'name' => 'İsveç Kronu',
       'symbol' => 'SEK',
     ),
     'SGD' => 
     array (
-      'name' => 'Sinqapur dolları',
+      'name' => 'Sinqapur Dolları',
       'symbol' => 'SGD',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'Müqəddəs Yelena Funtu',
+      'symbol' => 'SHP',
     ),
     'SIT' => 
     array (
-      'name' => 'Sloveniya toları',
+      'name' => 'Sloveniya Toları',
       'symbol' => 'SIT',
     ),
     'SKK' => 
     array (
-      'name' => 'Slovak korunası',
+      'name' => 'Slovak Korunası',
       'symbol' => 'SKK',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'Sierra Leon Leonu',
+      'symbol' => 'SLL',
     ),
     'SOS' => 
     array (
-      'name' => 'Somaliya şillingi',
+      'name' => 'Somali Şillinqi',
       'symbol' => 'SOS',
     ),
     'SRD' => 
     array (
-      'name' => 'Surinam dolları',
+      'name' => 'Surinam Dolları',
       'symbol' => 'SRD',
+    ),
+    'SSP' => 
+    array (
+      'name' => 'Cənubi Sudan Funtu',
+      'symbol' => 'SSP',
+    ),
+    'STD' => 
+    array (
+      'name' => 'San Tom və Prinsip Dobrası',
+      'symbol' => 'STD',
     ),
     'SUR' => 
     array (
-      'name' => 'Sovet rublu',
+      'name' => 'Sovet Rublu',
       'symbol' => 'SUR',
     ),
     'SVC' => 
     array (
-      'name' => 'el salvador kolonu',
+      'name' => 'El Salvador kolonu',
       'symbol' => 'SVC',
     ),
     'SYP' => 
     array (
-      'name' => 'Siriya paundu',
+      'name' => 'Suriya Funtu',
       'symbol' => 'SYP',
     ),
     'SZL' => 
     array (
-      'name' => 'Svazilənd lilangeni',
+      'name' => 'Svazilend Lilangenini',
       'symbol' => 'SZL',
     ),
     'THB' => 
     array (
-      'name' => 'tay bahtı',
-      'symbol' => 'THB',
+      'name' => 'Tayland Batı',
+      'symbol' => '฿',
     ),
     'TJR' => 
     array (
-      'name' => 'Tacikistan rublu',
+      'name' => 'Tacikistan Rublu',
       'symbol' => 'TJR',
     ),
     'TJS' => 
     array (
-      'name' => 'Tacikistan somoni',
+      'name' => 'Tacikistan Somonisi',
       'symbol' => 'TJS',
     ),
     'TMM' => 
     array (
-      'name' => 'Türkmənistan manatı',
+      'name' => 'Türkmənistan Manatı (1993–2009)',
       'symbol' => 'TMM',
+    ),
+    'TMT' => 
+    array (
+      'name' => 'Türkmənistan Manatı',
+      'symbol' => 'TMT',
     ),
     'TND' => 
     array (
-      'name' => 'Tunis dinarı',
+      'name' => 'Tunis Dinarı',
       'symbol' => 'TND',
     ),
     'TOP' => 
     array (
-      'name' => 'Tonqa panqası',
+      'name' => 'Tonqa Panqası',
       'symbol' => 'TOP',
     ),
     'TPE' => 
     array (
-      'name' => 'Timor eskudu',
+      'name' => 'Timor Eskudu',
       'symbol' => 'TPE',
     ),
     'TRL' => 
     array (
-      'name' => 'Türk köhnə lirası',
+      'name' => 'Türkiyə Lirəsi (1922–2005)',
       'symbol' => 'TRL',
     ),
     'TRY' => 
     array (
-      'name' => 'Türk lirası',
+      'name' => 'Türkiyə Lirəsi',
       'symbol' => 'TRY',
+    ),
+    'TTD' => 
+    array (
+      'name' => 'Trinidad və Tobaqo Dolları',
+      'symbol' => 'TTD',
     ),
     'TWD' => 
     array (
-      'name' => 'Tayvan yeni dolları',
-      'symbol' => 'TWD',
+      'name' => 'Tayvan Yeni Dolları',
+      'symbol' => 'NT$',
     ),
     'TZS' => 
     array (
-      'name' => 'Tanzaniya şilingi',
+      'name' => 'Tanzaniya Şillinqi',
       'symbol' => 'TZS',
     ),
     'UAH' => 
     array (
-      'name' => 'Ukraina hrivnyası',
+      'name' => 'Ukrayna Qrivnası',
       'symbol' => 'UAH',
     ),
     'UAK' => 
     array (
-      'name' => 'Ukraina karbovenesası',
+      'name' => 'Ukrayna Karbovenesası',
       'symbol' => 'UAK',
     ),
     'UGS' => 
     array (
-      'name' => 'Uqanda şelingi (1966-1987)',
+      'name' => 'Uqanda Şillinqi (1966–1987)',
       'symbol' => 'UGS',
     ),
     'UGX' => 
     array (
-      'name' => 'Uqanda şelingi',
+      'name' => 'Uqanda Şillinqi',
       'symbol' => 'UGX',
     ),
     'USD' => 
     array (
-      'name' => 'ABŞ dolları',
-      'symbol' => 'USD',
+      'name' => 'ABŞ Dolları',
+      'symbol' => 'US$',
     ),
     'USN' => 
     array (
@@ -1111,38 +1176,53 @@ return array (
     ),
     'UYP' => 
     array (
-      'name' => 'Uruqvay pesosu (1975-1993)',
+      'name' => 'Uruqvay Pesosu (1975–1993)',
       'symbol' => 'UYP',
     ),
     'UYU' => 
     array (
-      'name' => 'Uruqvay pesosu',
+      'name' => 'Uruqvay Pesosu',
       'symbol' => 'UYU',
     ),
     'UZS' => 
     array (
-      'name' => 'Özbəkistan sumu',
+      'name' => 'Özbəkistan Somu',
       'symbol' => 'UZS',
     ),
     'VEB' => 
     array (
-      'name' => 'Venesuela bolivarı (1871-2008)',
+      'name' => 'Venesuela Bolivarı (1871–2008)',
       'symbol' => 'VEB',
     ),
     'VEF' => 
     array (
-      'name' => 'Venesuela bolivarı',
+      'name' => 'Venesuela Bolivarı',
       'symbol' => 'VEF',
     ),
     'VND' => 
     array (
-      'name' => 'Vyetnam donqu',
-      'symbol' => 'VND',
+      'name' => 'Vyetnam Donqu',
+      'symbol' => '₫',
+    ),
+    'VNN' => 
+    array (
+      'name' => 'Vyetnam Donqu (1978–1985)',
+      'symbol' => 'VNN',
+    ),
+    'VUV' => 
+    array (
+      'name' => 'Vanuatu Vatusu',
+      'symbol' => 'VUV',
     ),
     'WST' => 
     array (
-      'name' => 'Qərb Samoa talası',
+      'name' => 'Samoa Talası',
       'symbol' => 'WST',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'Kamerun Frankı',
+      'symbol' => 'FCFA',
     ),
     'XAG' => 
     array (
@@ -1156,23 +1236,23 @@ return array (
     ),
     'XCD' => 
     array (
-      'name' => 'Şərq karib dolları',
-      'symbol' => 'XCD',
+      'name' => 'Şərqi Karib Dolları',
+      'symbol' => 'EC$',
     ),
     'XFO' => 
     array (
-      'name' => 'Fransız gızıl frankı',
+      'name' => 'Fransız Gızıl Frankı',
       'symbol' => 'XFO',
     ),
     'XFU' => 
     array (
-      'name' => 'Fransız UİC frankı',
+      'name' => 'Fransız UİC Frankı',
       'symbol' => 'XFU',
     ),
     'XOF' => 
     array (
-      'name' => 'CFA franka BCEAO',
-      'symbol' => 'XOF',
+      'name' => 'Fil Dişi Sahili Frankı',
+      'symbol' => 'CFA',
     ),
     'XPD' => 
     array (
@@ -1181,73 +1261,88 @@ return array (
     ),
     'XPF' => 
     array (
-      'name' => 'CFP frankı',
-      'symbol' => 'XPF',
+      'name' => 'Fransız Polineziyası Frankı',
+      'symbol' => 'CFPF',
     ),
     'XPT' => 
     array (
-      'name' => 'platinum',
+      'name' => 'Platinum',
       'symbol' => 'XPT',
     ),
     'XXX' => 
     array (
-      'name' => 'bilinməyən vəya gəcərsiz',
+      'name' => 'Naməlum Valyuta',
       'symbol' => 'XXX',
     ),
     'YDD' => 
     array (
-      'name' => 'yemen dinarı',
+      'name' => 'Yəmən Dinarı',
       'symbol' => 'YDD',
     ),
     'YER' => 
     array (
-      'name' => 'yemen rialı',
+      'name' => 'Yəmən Rialı',
       'symbol' => 'YER',
     ),
     'YUD' => 
     array (
-      'name' => 'Yuqoslaviya dinarı (hard)',
+      'name' => 'Yuqoslaviya Dinarı (1966–1990)',
       'symbol' => 'YUD',
     ),
     'YUM' => 
     array (
-      'name' => 'Yuqoslaviya yeni dinarı (hard)',
+      'name' => 'Yuqoslaviya Yeni Dinarı (1994–2002)',
       'symbol' => 'YUM',
     ),
     'YUN' => 
     array (
-      'name' => 'Yuqoslaviya dinarı (dəyişik)',
+      'name' => 'Yuqoslaviya Dinarı (1990–1992)',
       'symbol' => 'YUN',
     ),
     'ZAL' => 
     array (
-      'name' => 'Cənub afrika randı (finans)',
+      'name' => 'Cənubi Afrika Randı (finans)',
       'symbol' => 'ZAL',
     ),
     'ZAR' => 
     array (
-      'name' => 'Cənub afrika randı',
+      'name' => 'Cənubi Afrika Randı',
       'symbol' => 'ZAR',
     ),
     'ZMK' => 
     array (
-      'name' => 'Zambiya kvaçı',
+      'name' => 'Zambiya Kvaçası (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Zambiya Kvaçası',
+      'symbol' => 'ZMW',
     ),
     'ZRN' => 
     array (
-      'name' => 'Zair yeni zairi',
+      'name' => 'Zair Yeni Zairi (1993–1998)',
       'symbol' => 'ZRN',
     ),
     'ZRZ' => 
     array (
-      'name' => 'Zair zairi',
+      'name' => 'Zair Zairi (1971–1993)',
       'symbol' => 'ZRZ',
     ),
     'ZWD' => 
     array (
-      'name' => 'Zimbabve dolları (1980-2008)',
+      'name' => 'Zimbabve Dolları (1980–2008)',
       'symbol' => 'ZWD',
+    ),
+    'ZWL' => 
+    array (
+      'name' => 'Zimbabve Dolları (2009)',
+      'symbol' => 'ZWL',
+    ),
+    'ZWR' => 
+    array (
+      'name' => 'Zimbabve Dolları (2008)',
+      'symbol' => 'ZWR',
     ),
   ),
 );

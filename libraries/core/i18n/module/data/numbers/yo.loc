@@ -5,7 +5,7 @@ return array (
   ),
   'formats' => 
   array (
-    'currency' => '¤#,##0.00;(¤#,##0.00)',
+    'currency' => '¤#,##0.00',
   ),
   'currencies' => 
   array (
@@ -276,8 +276,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'Kawaṣa ti Orílẹ́ède Saabia',
+      'name' => 'Kawaṣa ti Orílẹ́ède Saabia (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Kawaṣa ti Orílẹ́ède Saabia',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

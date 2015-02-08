@@ -1,0 +1,52 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => '.',
+    'group' => ',',
+    'list' => ';',
+    'percentSign' => '%',
+    'plusSign' => '+',
+    'minusSign' => '-',
+    'exponential' => 'E',
+    'perMille' => '‰',
+    'infinity' => '∞',
+    'nan' => 'NaN',
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'BZD' => 
+    array (
+      'name' => 'בעליז דאלאַר',
+      'symbol' => 'BZD',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'שווייצער פֿראַנק',
+      'symbol' => 'CHF',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'איירא',
+      'symbol' => 'EUR',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'שוועדישע קראנע',
+      'symbol' => 'SEK',
+    ),
+    'XAG' => 
+    array (
+      'name' => 'זילבער',
+      'symbol' => 'XAG',
+    ),
+    'XAU' => 
+    array (
+      'name' => 'גאלד',
+      'symbol' => 'XAU',
+    ),
+  ),
+);

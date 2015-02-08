@@ -10,8 +10,11 @@ return array (
   array (
     'DOP' => 
     array (
-      'name' => 'DOP',
       'symbol' => '$',
+    ),
+    'USD' => 
+    array (
+      'symbol' => 'US$',
     ),
   ),
 );

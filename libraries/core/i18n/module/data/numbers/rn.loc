@@ -15,7 +15,7 @@ return array (
   array (
     'AED' => 
     array (
-      'name' => 'Idiramu ryo muri Leta Zunze Ubumwe z\'Abarabu',
+      'name' => 'Idiramu ryo muri Leta Zunze Ubumwe z’Abarabu',
       'symbol' => 'AED',
     ),
     'AOA' => 
@@ -30,12 +30,12 @@ return array (
     ),
     'BHD' => 
     array (
-      'name' => 'Idinari ry\'iribahireyini',
+      'name' => 'Idinari ry’iribahireyini',
       'symbol' => 'BHD',
     ),
     'BIF' => 
     array (
-      'name' => 'Ifaranga ry\'Uburundi',
+      'name' => 'Ifaranga ry’Uburundi',
       'symbol' => 'FBu',
     ),
     'BWP' => 
@@ -55,7 +55,7 @@ return array (
     ),
     'CHF' => 
     array (
-      'name' => 'Ifaranga ry\'Ubusuwisi',
+      'name' => 'Ifaranga ry’Ubusuwisi',
       'symbol' => 'CHF',
     ),
     'CNY' => 
@@ -125,7 +125,7 @@ return array (
     ),
     'JPY' => 
     array (
-      'name' => 'Iyeni ry\'Ubuyapani',
+      'name' => 'Iyeni ry’Ubuyapani',
       'symbol' => 'JPY',
     ),
     'KES' => 
@@ -195,7 +195,7 @@ return array (
     ),
     'RWF' => 
     array (
-      'name' => 'Ifaranga ry\'u Rwanda',
+      'name' => 'Ifaranga ry’u Rwanda',
       'symbol' => 'RWF',
     ),
     'SAR' => 
@@ -250,23 +250,28 @@ return array (
     ),
     'UGX' => 
     array (
-      'name' => 'Ishilingi ry\'Ubugande',
+      'name' => 'Ishilingi ry’Ubugande',
       'symbol' => 'UGX',
     ),
     'USD' => 
     array (
-      'name' => 'Idolari ry\'abanyamerika',
+      'name' => 'Idolari ry’abanyamerika',
       'symbol' => 'USD',
     ),
     'ZAR' => 
     array (
-      'name' => 'Irandi ryo muri Afurika y\'Epfo',
+      'name' => 'Irandi ryo muri Afurika y’Epfo',
       'symbol' => 'ZAR',
     ),
     'ZMK' => 
     array (
-      'name' => 'Ikwaca ryo muri Zambiya',
+      'name' => 'Ikwaca ryo muri Zambiya (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Ikwaca ryo muri Zambiya',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

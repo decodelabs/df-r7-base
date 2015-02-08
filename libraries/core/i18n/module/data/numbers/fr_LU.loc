@@ -11,12 +11,10 @@ return array (
   array (
     'FRF' => 
     array (
-      'name' => 'FRF',
       'symbol' => 'FRF',
     ),
     'LUF' => 
     array (
-      'name' => 'LUF',
       'symbol' => 'F',
     ),
   ),

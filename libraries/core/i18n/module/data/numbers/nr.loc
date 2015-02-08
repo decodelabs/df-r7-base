@@ -16,7 +16,6 @@ return array (
   array (
     'ZAR' => 
     array (
-      'name' => 'ZAR',
       'symbol' => 'R',
     ),
   ),

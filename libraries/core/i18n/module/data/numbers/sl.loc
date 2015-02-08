@@ -9,9 +9,11 @@ return array (
     'plusSign' => '+',
     'minusSign' => '-',
     'exponential' => 'e',
+    'superscriptingExponent' => '×',
     'perMille' => '‰',
     'infinity' => '∞',
     'nan' => 'NaN',
+    'timeSeparator' => ':',
   ),
   'formats' => 
   array (
@@ -100,7 +102,7 @@ return array (
     'AUD' => 
     array (
       'name' => 'avstralski dolar',
-      'symbol' => 'AUD',
+      'symbol' => 'A$',
     ),
     'AWG' => 
     array (
@@ -215,7 +217,7 @@ return array (
     'BRL' => 
     array (
       'name' => 'brazilski real',
-      'symbol' => 'BRL',
+      'symbol' => 'R$',
     ),
     'BRN' => 
     array (
@@ -300,7 +302,7 @@ return array (
     'CNY' => 
     array (
       'name' => 'kitajski juan renminbi',
-      'symbol' => 'CNY',
+      'symbol' => 'CN¥',
     ),
     'COP' => 
     array (
@@ -430,7 +432,7 @@ return array (
     'EUR' => 
     array (
       'name' => 'evro',
-      'symbol' => 'EUR',
+      'symbol' => '€',
     ),
     'FIM' => 
     array (
@@ -455,7 +457,7 @@ return array (
     'GBP' => 
     array (
       'name' => 'britanski funt',
-      'symbol' => 'GBP',
+      'symbol' => '£',
     ),
     'GEK' => 
     array (
@@ -530,7 +532,7 @@ return array (
     'HKD' => 
     array (
       'name' => 'hongkonški dolar',
-      'symbol' => 'HKD',
+      'symbol' => 'HK$',
     ),
     'HNL' => 
     array (
@@ -575,12 +577,12 @@ return array (
     'ILS' => 
     array (
       'name' => 'izraelski šekel',
-      'symbol' => 'ILS',
+      'symbol' => '₪',
     ),
     'INR' => 
     array (
       'name' => 'indijska rupija',
-      'symbol' => 'INR',
+      'symbol' => '₹',
     ),
     'IQD' => 
     array (
@@ -645,7 +647,7 @@ return array (
     'KRW' => 
     array (
       'name' => 'južnokorejski von',
-      'symbol' => 'KRW',
+      'symbol' => '₩',
     ),
     'KWD' => 
     array (
@@ -810,11 +812,11 @@ return array (
     'MXN' => 
     array (
       'name' => 'mehiški peso',
-      'symbol' => 'MXN',
+      'symbol' => 'MX$',
     ),
     'MXP' => 
     array (
-      'name' => 'mehiški srebrni peso (1861-1992)',
+      'name' => 'mehiški srebrni peso (1861–1992)',
       'symbol' => 'MXP',
     ),
     'MXV' => 
@@ -880,7 +882,7 @@ return array (
     'NZD' => 
     array (
       'name' => 'novozelandski dolar',
-      'symbol' => 'NZD',
+      'symbol' => 'NZ$',
     ),
     'OMR' => 
     array (
@@ -1057,6 +1059,11 @@ return array (
       'name' => 'surinamski gulden',
       'symbol' => 'SRG',
     ),
+    'SSP' => 
+    array (
+      'name' => 'južnosudanski funt',
+      'symbol' => 'SSP',
+    ),
     'STD' => 
     array (
       'name' => 'saotomejska dobra',
@@ -1085,7 +1092,7 @@ return array (
     'THB' => 
     array (
       'name' => 'tajski baht',
-      'symbol' => 'THB',
+      'symbol' => '฿',
     ),
     'TJR' => 
     array (
@@ -1140,7 +1147,7 @@ return array (
     'TWD' => 
     array (
       'name' => 'novi tajvanski dolar',
-      'symbol' => 'TWD',
+      'symbol' => 'NT$',
     ),
     'TZS' => 
     array (
@@ -1199,18 +1206,18 @@ return array (
     ),
     'VEB' => 
     array (
-      'name' => 'venezuelski bolivar',
+      'name' => 'venezuelski bolivar (1871–2008)',
       'symbol' => 'VEB',
     ),
     'VEF' => 
     array (
-      'name' => 'venezuelski bolivar fuerte',
+      'name' => 'venezuelski bolivar',
       'symbol' => 'VEF',
     ),
     'VND' => 
     array (
       'name' => 'vientnamski dong',
-      'symbol' => 'VND',
+      'symbol' => '₫',
     ),
     'VUV' => 
     array (
@@ -1225,7 +1232,7 @@ return array (
     'XAF' => 
     array (
       'name' => 'CFA frank BEAC',
-      'symbol' => 'XAF',
+      'symbol' => 'FCFA',
     ),
     'XAG' => 
     array (
@@ -1260,7 +1267,7 @@ return array (
     'XCD' => 
     array (
       'name' => 'vzhodnokaribski dolar',
-      'symbol' => 'XCD',
+      'symbol' => 'EC$',
     ),
     'XDR' => 
     array (
@@ -1285,7 +1292,7 @@ return array (
     'XOF' => 
     array (
       'name' => 'CFA frank BCEAO',
-      'symbol' => 'XOF',
+      'symbol' => 'CFA',
     ),
     'XPD' => 
     array (
@@ -1295,7 +1302,7 @@ return array (
     'XPF' => 
     array (
       'name' => 'CFP frank',
-      'symbol' => 'XPF',
+      'symbol' => 'CFPF',
     ),
     'XPT' => 
     array (
@@ -1349,8 +1356,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'zambijska kvača',
+      'name' => 'zambijska kvača (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'zambijska kvača',
+      'symbol' => 'ZMW',
     ),
     'ZRN' => 
     array (

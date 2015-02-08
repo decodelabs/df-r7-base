@@ -10,7 +10,6 @@ return array (
   array (
     'DJF' => 
     array (
-      'name' => 'DJF',
       'symbol' => 'Fdj',
     ),
   ),

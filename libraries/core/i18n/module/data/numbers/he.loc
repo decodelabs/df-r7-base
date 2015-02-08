@@ -6,12 +6,14 @@ return array (
     'group' => ',',
     'list' => ';',
     'percentSign' => '%',
-    'plusSign' => '+',
-    'minusSign' => '-',
+    'plusSign' => '‎+',
+    'minusSign' => '‎-',
     'exponential' => 'E',
+    'superscriptingExponent' => '×',
     'perMille' => '‰',
     'infinity' => '∞',
     'nan' => 'NaN',
+    'timeSeparator' => ':',
   ),
   'formats' => 
   array (
@@ -49,7 +51,7 @@ return array (
     ),
     'ANG' => 
     array (
-      'name' => 'גילדן של האנטילים ההולנדיים',
+      'name' => 'גילדר של האנטילים ההולנדיים',
       'symbol' => 'ANG',
     ),
     'AOA' => 
@@ -59,22 +61,22 @@ return array (
     ),
     'AON' => 
     array (
-      'name' => 'קואנזה חדש אנגולי (1990-2000)',
+      'name' => 'קואנזה חדש אנגולי (1990–2000)',
       'symbol' => 'AON',
     ),
     'AOR' => 
     array (
-      'name' => 'קואנזה רג׳וסטדו אנגולי (1995-1999)',
+      'name' => 'קואנזה רג׳וסטדו אנגולי (1995–1999)',
       'symbol' => 'AOR',
     ),
     'ARP' => 
     array (
-      'name' => 'פזו ארגנטינאי (1983-1985)',
+      'name' => 'פזו ארגנטינאי (1983–1985)',
       'symbol' => 'ARP',
     ),
     'ARS' => 
     array (
-      'name' => 'פזו ארגנטינאי',
+      'name' => 'פסו ארגנטינאי',
       'symbol' => 'ARS',
     ),
     'ATS' => 
@@ -85,7 +87,7 @@ return array (
     'AUD' => 
     array (
       'name' => 'דולר אוסטרלי',
-      'symbol' => 'AUD',
+      'symbol' => 'A$',
     ),
     'AWG' => 
     array (
@@ -94,7 +96,7 @@ return array (
     ),
     'AZM' => 
     array (
-      'name' => 'מנאט אזרביג׳אני (1993-2006)',
+      'name' => 'מנאט אזרביג׳אני (1993–2006)',
       'symbol' => 'AZM',
     ),
     'AZN' => 
@@ -174,7 +176,7 @@ return array (
     ),
     'BRB' => 
     array (
-      'name' => 'קרוזיארו חדש ברזילאי (1967-1986)',
+      'name' => 'קרוזיארו חדש ברזילאי (1967–1986)',
       'symbol' => 'BRB',
     ),
     'BRC' => 
@@ -185,7 +187,7 @@ return array (
     'BRL' => 
     array (
       'name' => 'ריאל ברזילאי',
-      'symbol' => 'BRL',
+      'symbol' => 'R$',
     ),
     'BSD' => 
     array (
@@ -215,7 +217,7 @@ return array (
     'CAD' => 
     array (
       'name' => 'דולר קנדי',
-      'symbol' => 'CAD',
+      'symbol' => 'CA$',
     ),
     'CDF' => 
     array (
@@ -229,17 +231,17 @@ return array (
     ),
     'CLP' => 
     array (
-      'name' => 'פזו צ׳ילאני',
+      'name' => 'פסו צ׳ילאני',
       'symbol' => 'CLP',
     ),
     'CNY' => 
     array (
-      'name' => 'יואן רנמינבי סיני',
-      'symbol' => 'CNY',
+      'name' => 'יואן סיני',
+      'symbol' => 'CN¥',
     ),
     'COP' => 
     array (
-      'name' => 'פזו קולומביאני',
+      'name' => 'פסו קולומביאני',
       'symbol' => 'COP',
     ),
     'CRC' => 
@@ -319,7 +321,7 @@ return array (
     ),
     'EGP' => 
     array (
-      'name' => 'לירה מיצרית',
+      'name' => 'לירה מצרית',
       'symbol' => 'EGP',
     ),
     'ERN' => 
@@ -350,7 +352,7 @@ return array (
     'EUR' => 
     array (
       'name' => 'אירו',
-      'symbol' => 'EUR',
+      'symbol' => '€',
     ),
     'FIM' => 
     array (
@@ -375,7 +377,7 @@ return array (
     'GBP' => 
     array (
       'name' => 'לירה שטרלינג',
-      'symbol' => 'GBP',
+      'symbol' => '£',
     ),
     'GEL' => 
     array (
@@ -425,7 +427,7 @@ return array (
     'HKD' => 
     array (
       'name' => 'דולר הונג קונגי',
-      'symbol' => 'HKD',
+      'symbol' => 'HK$',
     ),
     'HNL' => 
     array (
@@ -439,7 +441,7 @@ return array (
     ),
     'HTG' => 
     array (
-      'name' => 'גארד האיטי',
+      'name' => 'גורד האיטי',
       'symbol' => 'HTG',
     ),
     'HUF' => 
@@ -465,12 +467,12 @@ return array (
     'ILS' => 
     array (
       'name' => 'ש״ח',
-      'symbol' => 'ILS',
+      'symbol' => '₪',
     ),
     'INR' => 
     array (
-      'name' => 'רופי הודית',
-      'symbol' => 'INR',
+      'name' => 'רופי הודי',
+      'symbol' => '₹',
     ),
     'IQD' => 
     array (
@@ -494,7 +496,7 @@ return array (
     ),
     'JMD' => 
     array (
-      'name' => 'דולר ג׳מאיקני',
+      'name' => 'דולר ג׳מייקני',
       'symbol' => 'JMD',
     ),
     'JOD' => 
@@ -505,7 +507,7 @@ return array (
     'JPY' => 
     array (
       'name' => 'ין יפני',
-      'symbol' => 'JPY',
+      'symbol' => 'JP¥',
     ),
     'KES' => 
     array (
@@ -529,13 +531,13 @@ return array (
     ),
     'KPW' => 
     array (
-      'name' => 'וון צפון קוראני',
+      'name' => 'וון צפון-קוריאני',
       'symbol' => 'KPW',
     ),
     'KRW' => 
     array (
-      'name' => 'וון דרום קוראני',
-      'symbol' => 'KRW',
+      'name' => 'וון דרום-קוריאני',
+      'symbol' => '₩',
     ),
     'KWD' => 
     array (
@@ -670,11 +672,11 @@ return array (
     'MXN' => 
     array (
       'name' => 'פזו מקסיקני',
-      'symbol' => 'MXN',
+      'symbol' => 'MX$',
     ),
     'MXP' => 
     array (
-      'name' => 'פזו מקסיקני (1861 - 1992)',
+      'name' => 'פזו מקסיקני (1861 – 1992)',
       'symbol' => 'MXP',
     ),
     'MYR' => 
@@ -682,10 +684,20 @@ return array (
       'name' => 'רינגיט מלזי',
       'symbol' => 'MYR',
     ),
+    'MZE' => 
+    array (
+      'name' => 'אסקודו מוזמביקי',
+      'symbol' => 'MZE',
+    ),
     'MZM' => 
     array (
       'name' => 'מטיקל',
       'symbol' => 'MZM',
+    ),
+    'MZN' => 
+    array (
+      'name' => 'מטיקל מוזמביני',
+      'symbol' => 'MZN',
     ),
     'NAD' => 
     array (
@@ -720,7 +732,7 @@ return array (
     'NZD' => 
     array (
       'name' => 'דולר ניו זילנדי',
-      'symbol' => 'NZD',
+      'symbol' => 'NZ$',
     ),
     'OMR' => 
     array (
@@ -759,7 +771,7 @@ return array (
     ),
     'PLZ' => 
     array (
-      'name' => 'זלוטי (1950 - 1995)',
+      'name' => 'זלוטי (1950 – 1995)',
       'symbol' => 'PLZ',
     ),
     'PTE' => 
@@ -784,7 +796,7 @@ return array (
     ),
     'RON' => 
     array (
-      'name' => 'לאו רומני חדש',
+      'name' => 'לאו רומני',
       'symbol' => 'RON',
     ),
     'RSD' => 
@@ -794,12 +806,12 @@ return array (
     ),
     'RUB' => 
     array (
-      'name' => 'רובל',
+      'name' => 'רובל רוסי',
       'symbol' => 'RUB',
     ),
     'RUR' => 
     array (
-      'name' => 'רובל רוסי (1991 - 1998)',
+      'name' => 'רובל רוסי (1991 – 1998)',
       'symbol' => 'RUR',
     ),
     'RWF' => 
@@ -834,7 +846,7 @@ return array (
     ),
     'SDP' => 
     array (
-      'name' => 'לירה סודנית (1957-1998)',
+      'name' => 'לירה סודנית (1957–1998)',
       'symbol' => 'SDP',
     ),
     'SEK' => 
@@ -882,6 +894,11 @@ return array (
       'name' => 'גילדר סורינאמי',
       'symbol' => 'SRG',
     ),
+    'SSP' => 
+    array (
+      'name' => 'לירה דרום-סודנית',
+      'symbol' => 'SSP',
+    ),
     'STD' => 
     array (
       'name' => 'דוברה של סן טומה ופרינסיפה',
@@ -891,6 +908,11 @@ return array (
     array (
       'name' => 'רובל סובייטי',
       'symbol' => 'SUR',
+    ),
+    'SVC' => 
+    array (
+      'name' => 'קולון סלבדורי',
+      'symbol' => 'SVC',
     ),
     'SYP' => 
     array (
@@ -905,7 +927,7 @@ return array (
     'THB' => 
     array (
       'name' => 'בהט תאילנדי',
-      'symbol' => 'THB',
+      'symbol' => '฿',
     ),
     'TJS' => 
     array (
@@ -919,7 +941,7 @@ return array (
     ),
     'TMT' => 
     array (
-      'name' => 'מנאט טורקמני',
+      'name' => 'מאנאט טורקמני',
       'symbol' => 'TMT',
     ),
     'TND' => 
@@ -929,7 +951,7 @@ return array (
     ),
     'TOP' => 
     array (
-      'name' => 'פאאמגה טונגי',
+      'name' => 'פאנגה טונגי',
       'symbol' => 'TOP',
     ),
     'TPE' => 
@@ -954,8 +976,8 @@ return array (
     ),
     'TWD' => 
     array (
-      'name' => 'דולר טאייוני חדש',
-      'symbol' => 'TWD',
+      'name' => 'דולר טייוואני חדש',
+      'symbol' => 'NT$',
     ),
     'TZS' => 
     array (
@@ -969,7 +991,7 @@ return array (
     ),
     'UGS' => 
     array (
-      'name' => 'שילינג אוגנדי (1966 - 1987)',
+      'name' => 'שילינג אוגנדי (1966 – 1987)',
       'symbol' => 'UGS',
     ),
     'UGX' => 
@@ -980,7 +1002,7 @@ return array (
     'USD' => 
     array (
       'name' => 'דולר אמריקאי',
-      'symbol' => 'USD',
+      'symbol' => '$',
     ),
     'USN' => 
     array (
@@ -994,7 +1016,7 @@ return array (
     ),
     'UYU' => 
     array (
-      'name' => 'פזו אורוגוואי',
+      'name' => 'פסו אורוגוואי',
       'symbol' => 'UYU',
     ),
     'UZS' => 
@@ -1004,18 +1026,18 @@ return array (
     ),
     'VEB' => 
     array (
-      'name' => 'בוליבר ונצואלי',
+      'name' => 'בוליבר ונצואלי (1871–2008)',
       'symbol' => 'VEB',
     ),
     'VEF' => 
     array (
-      'name' => 'בוליבר ונצואליאני',
+      'name' => 'בוליבר ונצואלי',
       'symbol' => 'VEF',
     ),
     'VND' => 
     array (
       'name' => 'דונג וייטנאמי',
-      'symbol' => 'VND',
+      'symbol' => '₫',
     ),
     'VUV' => 
     array (
@@ -1029,8 +1051,8 @@ return array (
     ),
     'XAF' => 
     array (
-      'name' => 'פרנק CFA',
-      'symbol' => 'XAF',
+      'name' => 'פרנק CFA BEAC',
+      'symbol' => 'FCFA',
     ),
     'XAG' => 
     array (
@@ -1045,7 +1067,7 @@ return array (
     'XCD' => 
     array (
       'name' => 'דולר מזרח קריבי',
-      'symbol' => 'XCD',
+      'symbol' => 'EC$',
     ),
     'XDR' => 
     array (
@@ -1060,7 +1082,7 @@ return array (
     'XOF' => 
     array (
       'name' => 'פרנק CFA BCEAO',
-      'symbol' => 'XOF',
+      'symbol' => 'CFA',
     ),
     'XPD' => 
     array (
@@ -1069,8 +1091,8 @@ return array (
     ),
     'XPF' => 
     array (
-      'name' => 'פרנק CFP',
-      'symbol' => 'XPF',
+      'name' => 'פרנק פולינזיה הצרפתית',
+      'symbol' => 'CFPF',
     ),
     'XPT' => 
     array (
@@ -1119,8 +1141,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'קוואצ׳ה זמבית',
+      'name' => 'קוואצ׳ה זמבית (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'קוואצ׳ה זמבית',
+      'symbol' => 'ZMW',
     ),
     'ZRN' => 
     array (

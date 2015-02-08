@@ -1,0 +1,20 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'BYR' => 
+    array (
+      'symbol' => 'р.',
+    ),
+    'RUR' => 
+    array (
+      'symbol' => 'RUR',
+    ),
+  ),
+);

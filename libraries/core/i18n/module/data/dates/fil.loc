@@ -1,6 +1,16 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, MMMM d, y G',
+      'long' => 'MMMM d, y G',
+      'medium' => 'MMM d, y G',
+      'short' => 'M/d/y GGGGG',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -11,9 +21,9 @@ return array (
         'sun' => 'Lin',
         'mon' => 'Lun',
         'tue' => 'Mar',
-        'wed' => 'Mye',
+        'wed' => 'Miy',
         'thu' => 'Huw',
-        'fri' => 'Bye',
+        'fri' => 'Biy',
         'sat' => 'Sab',
       ),
       'full' => 
@@ -63,17 +73,17 @@ return array (
     ),
     'dateFormat' => 
     array (
-      'full' => 'EEEE, MMMM dd y',
+      'full' => 'EEEE, MMMM d, y',
       'long' => 'MMMM d, y',
       'medium' => 'MMM d, y',
       'short' => 'M/d/yy',
     ),
     'timeFormat' => 
     array (
-      'full' => 'HH:mm:ss zzzz',
-      'long' => 'HH:mm:ss z',
-      'medium' => 'HH:mm:ss',
-      'short' => 'HH:mm',
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
     ),
   ),
 );

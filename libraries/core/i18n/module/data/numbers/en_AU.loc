@@ -5,19 +5,63 @@ return array (
   ),
   'formats' => 
   array (
-    'currency' => '¤#,##0.00',
   ),
   'currencies' => 
   array (
-    'AUD' => 
+    'BYR' => 
     array (
-      'name' => 'AUD',
-      'symbol' => '$',
+      'name' => 'Belarusian Rouble',
+      'symbol' => 'BYR',
     ),
-    'USD' => 
+    'EUR' => 
     array (
-      'name' => 'USD',
-      'symbol' => 'US$',
+      'name' => 'euro',
+      'symbol' => 'EUR',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'British Pound',
+      'symbol' => 'GBP',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'Malagasy ariary',
+      'symbol' => 'MGA',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'Malawian kwacha',
+      'symbol' => 'MWK',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'Russian Rouble',
+      'symbol' => 'RUB',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'Seychelles Rupee',
+      'symbol' => 'SCR',
+    ),
+    'UZS' => 
+    array (
+      'name' => 'Uzbekistani Som',
+      'symbol' => 'UZS',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'Central African CFA Franc',
+      'symbol' => 'XAF',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'West African CFA Franc',
+      'symbol' => 'XOF',
+    ),
+    'XXX' => 
+    array (
+      'name' => '(unknown currency)',
+      'symbol' => 'XXX',
     ),
   ),
 );

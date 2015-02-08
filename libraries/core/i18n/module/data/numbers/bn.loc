@@ -2,14 +2,14 @@
 return array (
   'symbols' => 
   array (
-    'nan' => 'সংখ্যা না',
+    'nan' => 'সংখ্যা না',
   ),
   'formats' => 
   array (
     'decimal' => '#,##,##0.###',
     'scientific' => '#E0',
     'percent' => '#,##,##0%',
-    'currency' => '#,##,##0.00¤;(#,##,##0.00¤)',
+    'currency' => '#,##,##0.00¤',
   ),
   'currencies' => 
   array (
@@ -25,12 +25,12 @@ return array (
     ),
     'AFA' => 
     array (
-      'name' => 'আফগানি (১৯২৭-২০০২)',
+      'name' => 'আফগানি (১৯২৭–২০০২)',
       'symbol' => 'AFA',
     ),
     'AFN' => 
     array (
-      'name' => 'আফগানি',
+      'name' => 'আফগান আফগানি',
       'symbol' => 'AFN',
     ),
     'ALL' => 
@@ -55,17 +55,17 @@ return array (
     ),
     'AOK' => 
     array (
-      'name' => 'এ্যাঙ্গোলান কওয়ানজা (১৯৭৭-১৯৯০)',
+      'name' => 'এ্যাঙ্গোলান কওয়ানজা (১৯৭৭–১৯৯০)',
       'symbol' => 'AOK',
     ),
     'AON' => 
     array (
-      'name' => 'এ্যাঙ্গোলান নতুন কওয়ানজা (১৯৯৫-২০০০)',
+      'name' => 'এ্যাঙ্গোলান নতুন কওয়ানজা (১৯৯৫–২০০০)',
       'symbol' => 'AON',
     ),
     'AOR' => 
     array (
-      'name' => 'এ্যাঙ্গোলান কওয়ানজা (১৯৯৫-১৯৯৯)',
+      'name' => 'এ্যাঙ্গোলান কওয়ানজা (১৯৯৫–১৯৯৯)',
       'symbol' => 'AOR',
     ),
     'ARA' => 
@@ -75,7 +75,7 @@ return array (
     ),
     'ARP' => 
     array (
-      'name' => 'আর্জেন্টিনা পেসো (১৯৮৩-১৯৮৫)',
+      'name' => 'আর্জেন্টিনা পেসো (১৯৮৩–১৯৮৫)',
       'symbol' => 'ARP',
     ),
     'ARS' => 
@@ -91,7 +91,7 @@ return array (
     'AUD' => 
     array (
       'name' => 'অস্ট্রেলিয়ান ডলার',
-      'symbol' => 'AUD',
+      'symbol' => 'A$',
     ),
     'AWG' => 
     array (
@@ -100,7 +100,7 @@ return array (
     ),
     'AZM' => 
     array (
-      'name' => 'আজারবাইজান মানাত (১৯৯৩-২০০৬)',
+      'name' => 'আজারবাইজান মানাত (১৯৯৩–২০০৬)',
       'symbol' => 'AZM',
     ),
     'AZN' => 
@@ -190,7 +190,7 @@ return array (
     ),
     'BRB' => 
     array (
-      'name' => 'ব্রাজিলিয়ান ক্রুজেয়রোনোভো (১৯৬৭-১৯৮৬)',
+      'name' => 'ব্রাজিলিয়ান ক্রুজেয়রোনোভো (১৯৬৭–১৯৮৬)',
       'symbol' => 'BRB',
     ),
     'BRC' => 
@@ -200,13 +200,13 @@ return array (
     ),
     'BRE' => 
     array (
-      'name' => 'ব্রাজিলিয়ান ক্রুজেয়রো (১৯৯০-১৯৯৩)',
+      'name' => 'ব্রাজিলিয়ান ক্রুজেয়রো (১৯৯০–১৯৯৩)',
       'symbol' => 'BRE',
     ),
     'BRL' => 
     array (
       'name' => 'ব্রাজিলিয়ান রিয়েল',
-      'symbol' => 'BRL',
+      'symbol' => 'R$',
     ),
     'BRN' => 
     array (
@@ -240,7 +240,7 @@ return array (
     ),
     'BYB' => 
     array (
-      'name' => 'বেলারুশিয়ান নিউ রুবেল (১৯৯৪-১৯৯৯)',
+      'name' => 'বেলারুশিয়ান নিউ রুবেল (১৯৯৪–১৯৯৯)',
       'symbol' => 'BYB',
     ),
     'BYR' => 
@@ -255,12 +255,12 @@ return array (
     ),
     'CAD' => 
     array (
-      'name' => 'কম্বোডিয়ান ডলার',
-      'symbol' => 'CAD',
+      'name' => 'কানাডিয়ান ডলার',
+      'symbol' => 'CA$',
     ),
     'CDF' => 
     array (
-      'name' => 'কঙ্গো ফ্র্যাঙ্ক কঙ্গোলাইস',
+      'name' => 'কঙ্গোলিস ফ্র্যাঙ্ক',
       'symbol' => 'CDF',
     ),
     'CHE' => 
@@ -290,8 +290,8 @@ return array (
     ),
     'CNY' => 
     array (
-      'name' => 'চীনা য়ুয়ান রেন্মিন্‌বি',
-      'symbol' => 'CNY',
+      'name' => 'চীনা য়ুয়ান',
+      'symbol' => 'CN¥',
     ),
     'COP' => 
     array (
@@ -421,7 +421,7 @@ return array (
     'EUR' => 
     array (
       'name' => 'ইউরো',
-      'symbol' => 'EUR',
+      'symbol' => '€',
     ),
     'FIM' => 
     array (
@@ -446,7 +446,7 @@ return array (
     'GBP' => 
     array (
       'name' => 'ব্রিটিশ পাউন্ড স্টার্লিং',
-      'symbol' => 'GBP',
+      'symbol' => '£',
     ),
     'GEK' => 
     array (
@@ -460,7 +460,7 @@ return array (
     ),
     'GHC' => 
     array (
-      'name' => 'ঘানা সেডি (১৯৭৯-২০০৭)',
+      'name' => 'ঘানা সেডি (১৯৭৯–২০০৭)',
       'symbol' => 'GHC',
     ),
     'GHS' => 
@@ -521,7 +521,7 @@ return array (
     'HKD' => 
     array (
       'name' => 'হংকং ডলার',
-      'symbol' => 'HKD',
+      'symbol' => 'HK$',
     ),
     'HNL' => 
     array (
@@ -566,12 +566,12 @@ return array (
     'ILS' => 
     array (
       'name' => 'ইস্রাইলি নতুন শেকেল',
-      'symbol' => 'ILS',
+      'symbol' => '₪',
     ),
     'INR' => 
     array (
       'name' => 'ভারতীয় রুপি',
-      'symbol' => 'INR',
+      'symbol' => '₹',
     ),
     'IQD' => 
     array (
@@ -605,8 +605,8 @@ return array (
     ),
     'JPY' => 
     array (
-      'name' => 'জাপানিজ ইয়েন',
-      'symbol' => 'JPY',
+      'name' => 'জাপানি ইয়েন',
+      'symbol' => 'JP¥',
     ),
     'KES' => 
     array (
@@ -630,13 +630,13 @@ return array (
     ),
     'KPW' => 
     array (
-      'name' => 'নাইজেরিয়ান পাউন্ড',
+      'name' => 'উত্তর কোরিয়ার ওন',
       'symbol' => 'KPW',
     ),
     'KRW' => 
     array (
       'name' => 'দক্ষিণ কোরিয়ান ওন',
-      'symbol' => 'KRW',
+      'symbol' => '₩',
     ),
     'KWD' => 
     array (
@@ -801,11 +801,11 @@ return array (
     'MXN' => 
     array (
       'name' => 'ম্যাক্সিকান পেসো',
-      'symbol' => 'MXN',
+      'symbol' => 'MX$',
     ),
     'MXP' => 
     array (
-      'name' => 'ম্যাক্সিকান সিলভার পেসো (১৮৬১-১৯৯২)',
+      'name' => 'ম্যাক্সিকান সিলভার পেসো (১৮৬১–১৯৯২)',
       'symbol' => 'MXP',
     ),
     'MXV' => 
@@ -845,7 +845,7 @@ return array (
     ),
     'NIC' => 
     array (
-      'name' => 'নিকারাগুয়ান কর্ডোবা (১৯৮৮-১৯৯১)',
+      'name' => 'নিকারাগুয়ান কর্ডোবা (১৯৮৮–১৯৯১)',
       'symbol' => 'NIC',
     ),
     'NIO' => 
@@ -871,7 +871,7 @@ return array (
     'NZD' => 
     array (
       'name' => 'নিউজিল্যান্ড ডলার',
-      'symbol' => 'NZD',
+      'symbol' => 'NZ$',
     ),
     'OMR' => 
     array (
@@ -900,7 +900,7 @@ return array (
     ),
     'PGK' => 
     array (
-      'name' => 'পপুয়ানিউগিনি কিনা',
+      'name' => 'পাপুয়া নিউ গিনিয়ান কিনা',
       'symbol' => 'PGK',
     ),
     'PHP' => 
@@ -920,7 +920,7 @@ return array (
     ),
     'PLZ' => 
     array (
-      'name' => 'পোলিশ জ্লোটি (১৯৫০-১৯৯৫)',
+      'name' => 'পোলিশ জ্লোটি (১৯৫০–১৯৯৫)',
       'symbol' => 'PLZ',
     ),
     'PTE' => 
@@ -965,7 +965,7 @@ return array (
     ),
     'RUR' => 
     array (
-      'name' => 'রাশিয়ান রুবল (১৯৯১-১৯৯৮)',
+      'name' => 'রাশিয়ান রুবল (১৯৯১–১৯৯৮)',
       'symbol' => 'RUR',
     ),
     'RWF' => 
@@ -1048,6 +1048,11 @@ return array (
       'name' => 'সুরিনাম গিল্ডার',
       'symbol' => 'SRG',
     ),
+    'SSP' => 
+    array (
+      'name' => 'দক্ষিণ সুদানি পাউন্ড',
+      'symbol' => 'SSP',
+    ),
     'STD' => 
     array (
       'name' => 'সাও টোমে এবং প্রিন্সিপে ডোবরা',
@@ -1076,7 +1081,7 @@ return array (
     'THB' => 
     array (
       'name' => 'থাই বাত',
-      'symbol' => 'THB',
+      'symbol' => '฿',
     ),
     'TJR' => 
     array (
@@ -1130,8 +1135,8 @@ return array (
     ),
     'TWD' => 
     array (
-      'name' => 'নূতন তাইওয়ান ক্যারাবিয়ান ডলার',
-      'symbol' => 'TWD',
+      'name' => 'নতুন তাইওয়ান ডলার',
+      'symbol' => 'NT$',
     ),
     'TZS' => 
     array (
@@ -1150,7 +1155,7 @@ return array (
     ),
     'UGS' => 
     array (
-      'name' => 'উগান্ডান শিলিং (১৯৬৬-১৯৮৭)',
+      'name' => 'উগান্ডান শিলিং (১৯৬৬–১৯৮৭)',
       'symbol' => 'UGS',
     ),
     'UGX' => 
@@ -1161,7 +1166,7 @@ return array (
     'USD' => 
     array (
       'name' => 'মার্কিন ডলার',
-      'symbol' => 'USD',
+      'symbol' => 'US$',
     ),
     'USN' => 
     array (
@@ -1180,12 +1185,12 @@ return array (
     ),
     'UYP' => 
     array (
-      'name' => 'উরুগুয়ে পেসো (১৯৭৫-১৯৯৩)',
+      'name' => 'উরুগুয়ে পেসো (১৯৭৫–১৯৯৩)',
       'symbol' => 'UYP',
     ),
     'UYU' => 
     array (
-      'name' => 'উরুগুয়ে পেসো উরুগুয়েও',
+      'name' => 'উরুগুয়ে পেসো',
       'symbol' => 'UYU',
     ),
     'UZS' => 
@@ -1195,18 +1200,18 @@ return array (
     ),
     'VEB' => 
     array (
-      'name' => 'ভেনিজুয়েলান বলিভার',
+      'name' => 'ভেনিজুয়েলান বলিভার (১৮৭১–২০০৮)',
       'symbol' => 'VEB',
     ),
     'VEF' => 
     array (
-      'name' => 'ভেনিজুয়েলীয় বলিভার র্ফুতে',
+      'name' => 'ভেনিজুয়েলীয় বলিভার',
       'symbol' => 'VEF',
     ),
     'VND' => 
     array (
       'name' => 'ভিয়েতনামি ডঙ্গ',
-      'symbol' => 'VND',
+      'symbol' => '₫',
     ),
     'VUV' => 
     array (
@@ -1215,13 +1220,13 @@ return array (
     ),
     'WST' => 
     array (
-      'name' => 'পশ্চিমাঞ্চলীয় সামোয়ান টালা',
+      'name' => 'সামোয়ান টালা',
       'symbol' => 'WST',
     ),
     'XAF' => 
     array (
       'name' => 'সিএফএ ফ্র্যাঙ্ক বিইএসি',
-      'symbol' => 'XAF',
+      'symbol' => 'FCFA',
     ),
     'XAG' => 
     array (
@@ -1241,7 +1246,7 @@ return array (
     'XCD' => 
     array (
       'name' => 'পূর্ব ক্যারাবিয়ান ডলার',
-      'symbol' => 'XCD',
+      'symbol' => 'EC$',
     ),
     'XEU' => 
     array (
@@ -1261,7 +1266,7 @@ return array (
     'XOF' => 
     array (
       'name' => 'সিএফএ ফ্র্যাঙ্ক বিসিইএও',
-      'symbol' => 'XOF',
+      'symbol' => 'CFA',
     ),
     'XPD' => 
     array (
@@ -1271,7 +1276,7 @@ return array (
     'XPF' => 
     array (
       'name' => 'সিএফপি ফ্র্যাঙ্ক',
-      'symbol' => 'XPF',
+      'symbol' => 'CFPF',
     ),
     'XPT' => 
     array (
@@ -1280,7 +1285,7 @@ return array (
     ),
     'XXX' => 
     array (
-      'name' => 'অজানা বা ভুল মুদ্রা',
+      'name' => 'অজানা মুদ্রা',
       'symbol' => 'XXX',
     ),
     'YDD' => 
@@ -1320,8 +1325,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'জাম্বিয়ান কওয়াচা',
+      'name' => 'জাম্বিয়ান কওয়াচা (১৯৬৮–২০১২)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'জাম্বিয়ান কওয়াচা',
+      'symbol' => 'ZMW',
     ),
     'ZRN' => 
     array (
@@ -1335,7 +1345,7 @@ return array (
     ),
     'ZWD' => 
     array (
-      'name' => 'জিম্বাবুয়ে ডলার (১৯৮০-২০০৮)',
+      'name' => 'জিম্বাবুয়ে ডলার (১৯৮০–২০০৮)',
       'symbol' => 'ZWD',
     ),
     'ZWL' => 

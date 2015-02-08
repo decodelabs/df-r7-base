@@ -1,0 +1,12 @@
+<?php
+return array (
+  'BY' => 'Bélarus',
+  'GS' => 'Géorgie du Sud et les îles Sandwich du Sud',
+  'CC' => 'Îles Cocos (Keeling)',
+  'FM' => 'Micronésie',
+  'QO' => 'Océanie éloignée',
+  'MF' => 'Saint-Martin (France)',
+  'SX' => 'Saint-Martin (Pays-Bas)',
+  'VC' => 'Saint-Vincent-et-les Grenadines',
+  'SV' => 'Salvador',
+);

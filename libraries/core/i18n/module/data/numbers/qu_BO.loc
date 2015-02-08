@@ -1,0 +1,22 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => ',',
+    'group' => '.',
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'BOB' => 
+    array (
+      'symbol' => 'Bs',
+    ),
+    'PEN' => 
+    array (
+      'symbol' => 'PEN',
+    ),
+  ),
+);

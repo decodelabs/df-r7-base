@@ -1,0 +1,8 @@
+<?php
+return array (
+  '002' => 'Hásapa Makȟáwita',
+  142 => 'Hazíla Makȟáwita',
+  '019' => 'Khéya Wíta',
+  '001' => 'Makȟásitomni',
+  150 => 'Wašíču Makȟáwita',
+);

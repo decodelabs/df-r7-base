@@ -1,6 +1,0 @@
-<?php
-return array (
-  'Zxxx' => 'I pashkruar',
-  'Latn' => 'Latine',
-  'Zzzz' => 'Skript i panjohur',
-);

@@ -8,11 +8,28 @@ return array (
       'full' => 'cccc d. MMMM y G',
       'long' => 'd. MMMM y G',
       'medium' => 'd.M.y G',
-      'short' => 'd.M.y G',
+      'short' => 'd.M.y GGGGG',
     ),
   ),
   'chinese' => 
   array (
+    'dateFormat' => 
+    array (
+      'full' => 'cccc d.M.y',
+      'long' => 'd.M.y',
+      'medium' => 'd.M.y',
+      'short' => 'd.M.y',
+    ),
+  ),
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'cccc d. MMMM y G',
+      'long' => 'd. MMMM y G',
+      'medium' => 'd.M.y G',
+      'short' => 'd.M.y GGGGG',
+    ),
   ),
   'gregorian' => 
   array (
@@ -76,10 +93,10 @@ return array (
     ),
     'dateFormat' => 
     array (
-      'full' => 'cccc, d. MMMM y',
+      'full' => 'cccc d. MMMM y',
       'long' => 'd. MMMM y',
-      'medium' => 'd.M.yyyy',
-      'short' => 'd.M.yyyy',
+      'medium' => 'd.M.y',
+      'short' => 'd.M.y',
     ),
     'timeFormat' => 
     array (
@@ -133,13 +150,6 @@ return array (
         12 => 'dhu-l-hiddža',
       ),
     ),
-    'dateFormat' => 
-    array (
-      'full' => 'cccc d. MMMM y G',
-      'long' => 'd. MMMM y G',
-      'medium' => 'd.M.y G',
-      'short' => 'd.M.y G',
-    ),
   ),
   'japanese' => 
   array (
@@ -148,17 +158,10 @@ return array (
       'full' => 'cccc d. MMMM y G',
       'long' => 'd. MMMM y G',
       'medium' => 'd.M.y G',
-      'short' => 'd.M.y G',
+      'short' => 'd.M.y GGGGG',
     ),
   ),
   'roc' => 
   array (
-    'dateFormat' => 
-    array (
-      'full' => 'cccc d. MMMM y G',
-      'long' => 'd. MMMM y G',
-      'medium' => 'd.M.y G',
-      'short' => 'd.M.y G',
-    ),
   ),
 );

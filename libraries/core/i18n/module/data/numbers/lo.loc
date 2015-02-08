@@ -2,17 +2,1477 @@
 return array (
   'symbols' => 
   array (
+    'decimal' => ',',
+    'group' => '.',
+    'list' => ';',
+    'percentSign' => '%',
+    'plusSign' => '+',
+    'minusSign' => '-',
+    'exponential' => 'E',
+    'superscriptingExponent' => '×',
+    'perMille' => '‰',
+    'infinity' => '∞',
+    'nan' => 'ບໍ່​ແມ່ນ​ໂຕ​ເລກ',
+    'timeSeparator' => ':',
   ),
   'formats' => 
   array (
+    'decimal' => '0ພັນ',
+    'scientific' => '#',
+    'percent' => '#,##0%',
     'currency' => '¤#,##0.00;¤-#,##0.00',
   ),
   'currencies' => 
   array (
+    'ADP' => 
+    array (
+      'name' => 'ເປເຊຕາ ອັນໂດລາ',
+      'symbol' => 'ADP',
+    ),
+    'AED' => 
+    array (
+      'name' => 'ສະ​ຫະ​ລັດ​ອາ​ຣັບ​ອາ​ມິ​ເຣດ ເດີ​ແຮມ',
+      'symbol' => 'AED',
+    ),
+    'AFA' => 
+    array (
+      'name' => 'ອັບການິ ອັບການິສະຖານ (1927–2002)',
+      'symbol' => 'AFA',
+    ),
+    'AFN' => 
+    array (
+      'name' => 'ອັຟ​ກັນ ອັຟ​ກາ​ນິ',
+      'symbol' => 'AFN',
+    ),
+    'ALL' => 
+    array (
+      'name' => 'ອັລ​ບາ​ນຽນ ເລກ',
+      'symbol' => 'ALL',
+    ),
+    'AMD' => 
+    array (
+      'name' => 'ອາ​ເມ​ນຽນ ແດຣມ',
+      'symbol' => 'AMD',
+    ),
+    'ANG' => 
+    array (
+      'name' => 'ເນ​ເທີ​ແລນ ແອນ​ຕິ​ລຽນ ກິວ​ເດີ',
+      'symbol' => 'ANG',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'ແອງ​ໂກ​ລັນ ຄວນ​ຊາ',
+      'symbol' => 'AOA',
+    ),
+    'AOK' => 
+    array (
+      'name' => 'ກວານຊາ ແອງໂກລາ (1977–1991)',
+      'symbol' => 'AOK',
+    ),
+    'AON' => 
+    array (
+      'name' => 'ກວານຊາ ແອງໂກລາ ໃໝ່ (1995–1999)',
+      'symbol' => 'AON',
+    ),
+    'AOR' => 
+    array (
+      'name' => 'ກວານຊາກທີ່ແກ້ໄຂໃໝ່ ແອງກູລາ (1995–1999)',
+      'symbol' => 'AOR',
+    ),
+    'ARA' => 
+    array (
+      'name' => 'ອອສຕຣານ ອາກຊັງຕິນ',
+      'symbol' => 'ARA',
+    ),
+    'ARL' => 
+    array (
+      'name' => 'ເປໂຊເລ ອາກຊັງຕິນ (1970–1983)',
+      'symbol' => 'ARL',
+    ),
+    'ARM' => 
+    array (
+      'name' => 'ເປໂຊ ອາກຊັງຕິນ (1881–1970)',
+      'symbol' => 'ARM',
+    ),
+    'ARP' => 
+    array (
+      'name' => 'ເປໂຊ ອາກຊັງຕິນ (1983–1985)',
+      'symbol' => 'ARP',
+    ),
+    'ARS' => 
+    array (
+      'name' => 'ອາ​ເຈນ​ທິ​ນາ ເປ​ໂຊ',
+      'symbol' => 'ARS',
+    ),
+    'ATS' => 
+    array (
+      'name' => 'ຊິລລິງ ອົດສະຕາລີ',
+      'symbol' => 'ATS',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'ອອສ​ເຕຣ​ລຽນ ໂດ​ລ່າ',
+      'symbol' => 'A$',
+    ),
+    'AWG' => 
+    array (
+      'name' => 'ອະຣູແບນ ຟລໍຣິນ',
+      'symbol' => 'AWG',
+    ),
+    'AZM' => 
+    array (
+      'name' => 'ມານັດ ອາແຊກບາຍຊານ (1993–2006)',
+      'symbol' => 'AZM',
+    ),
+    'AZN' => 
+    array (
+      'name' => 'ອາ​ເຊີ​ໄບ​ຈາ​ນິ ມາ​ນັດ',
+      'symbol' => 'AZN',
+    ),
+    'BAD' => 
+    array (
+      'name' => 'ດີນາ ບອສເນຍ ເຮີເຊໂບວາເນຍ (1992–1994)',
+      'symbol' => 'BAD',
+    ),
+    'BAM' => 
+    array (
+      'name' => 'ບອ​ສ​ເນຍ-ເຮີ​ເຊ​ໂກວິ​ນາ ຄອນ​ເວີດ​ຕິ​ໂບ ມາກ',
+      'symbol' => 'BAM',
+    ),
+    'BAN' => 
+    array (
+      'name' => 'ດີນາໃໝ່ ບອສເນຍ ເຮີເຊໂບວີນາ(1994–1997)',
+      'symbol' => 'BAN',
+    ),
+    'BBD' => 
+    array (
+      'name' => 'ໂດລ່າ ບາບາດຽນ',
+      'symbol' => 'BBD',
+    ),
+    'BDT' => 
+    array (
+      'name' => 'ບັງ​ຄລາ​ເທດ ຕາ​ກາ',
+      'symbol' => 'BDT',
+    ),
+    'BEC' => 
+    array (
+      'name' => 'ຟຣັງ ບູນກາລີ (ປ່ຽນແປງໄດ້)',
+      'symbol' => 'BEC',
+    ),
+    'BEF' => 
+    array (
+      'name' => 'ຟຣັງ ບູນກາລີ',
+      'symbol' => 'BEF',
+    ),
+    'BEL' => 
+    array (
+      'name' => 'ຟຣັງ ບູນກາລີ (ການເງິນ)',
+      'symbol' => 'BEL',
+    ),
+    'BGL' => 
+    array (
+      'name' => 'ຮາດເລບ ບູນກາລີ',
+      'symbol' => 'BGL',
+    ),
+    'BGM' => 
+    array (
+      'name' => 'ເລບ ສັງຄົມບູນກາລີ',
+      'symbol' => 'BGM',
+    ),
+    'BGN' => 
+    array (
+      'name' => 'ບັງ​ກາ​ຣຽນ ເລບ',
+      'symbol' => 'BGN',
+    ),
+    'BGO' => 
+    array (
+      'name' => 'ເລບ ບູນກາລີ (1879–1952)',
+      'symbol' => 'BGO',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'ບາ​ໄຣ​ນິ ດິ​ນາ',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'ບຸ​ຣັນ​ດຽນ ຟຣັງ',
+      'symbol' => 'BIF',
+    ),
+    'BMD' => 
+    array (
+      'name' => 'ໂດ​ລ່າ​ເບີ​ມິວ​ດາ',
+      'symbol' => 'BMD',
+    ),
+    'BND' => 
+    array (
+      'name' => 'ບຣູ​ໄນ ໂດ​ລ່າ',
+      'symbol' => 'BND',
+    ),
+    'BOB' => 
+    array (
+      'name' => 'ໂບ​ລິ​ວຽນ ໂບ​ລິ​ເວຍ​ໂນ',
+      'symbol' => 'BOB',
+    ),
+    'BOL' => 
+    array (
+      'name' => 'ໂລລິເວຍໂນ ໂລລິເວຍ (1863–1963)',
+      'symbol' => 'BOL',
+    ),
+    'BOP' => 
+    array (
+      'name' => 'ເປໂຊໂລລິເວຍ',
+      'symbol' => 'BOP',
+    ),
+    'BOV' => 
+    array (
+      'name' => 'ມະດອນ ໂລລິເວຍ',
+      'symbol' => 'BOV',
+    ),
+    'BRB' => 
+    array (
+      'name' => 'ກຣູເຊໂດບາຊິ ໃໝ່ (1967–1986)',
+      'symbol' => 'BRB',
+    ),
+    'BRC' => 
+    array (
+      'name' => 'ກຣູຊາໂດບາຊິວ (1986–1989)',
+      'symbol' => 'BRC',
+    ),
+    'BRE' => 
+    array (
+      'name' => 'ກຣູເຊໂຣ ບາຊິ ກຣູໂຊ ບາຊິວ (1993–1994)',
+      'symbol' => 'BRE',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'ບຣາ​ຊິ​ລຽນ ຣຽວ',
+      'symbol' => 'R$',
+    ),
+    'BRN' => 
+    array (
+      'name' => 'ກຣູຊາໂດ ບາຊິວ ໃໝ່ (1989–1990)',
+      'symbol' => 'BRN',
+    ),
+    'BRR' => 
+    array (
+      'name' => 'ກຣູເຊໂຣ ບາຊິວ (1993–1994)',
+      'symbol' => 'BRR',
+    ),
+    'BRZ' => 
+    array (
+      'name' => 'ກຣູເຊໂຣ ບາຊິວ (1942–1967)',
+      'symbol' => 'BRZ',
+    ),
+    'BSD' => 
+    array (
+      'name' => 'ໂດລ່າ ບາຮາມຽນ',
+      'symbol' => 'BSD',
+    ),
+    'BTN' => 
+    array (
+      'name' => 'ພູ​ຖານ ງຸນດຣັມ',
+      'symbol' => 'BTN',
+    ),
+    'BUK' => 
+    array (
+      'name' => 'ຈາດ ພະມ້າ',
+      'symbol' => 'BUK',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'ບອດ​ສະ​ວາ​ນານ ພູ​ລາ',
+      'symbol' => 'BWP',
+    ),
+    'BYB' => 
+    array (
+      'name' => 'ຣູໂບ ເບຣາຣຸສ ໃໝ່(1994–1999)',
+      'symbol' => 'BYB',
+    ),
+    'BYR' => 
+    array (
+      'name' => 'ເບ​ລາ​ຣຸ​ສ​ຊຽນ ຣູ​ເບິນ',
+      'symbol' => 'BYR',
+    ),
+    'BZD' => 
+    array (
+      'name' => 'ໂດ​ລ່າ​ເບ​ລິ​ຊ',
+      'symbol' => 'BZD',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'ໂດລ່າຄານາດາ',
+      'symbol' => 'CA$',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'ຄອງ​ໂກ​ລີສ ຟຣັງ',
+      'symbol' => 'CDF',
+    ),
+    'CHE' => 
+    array (
+      'name' => 'ເອີໂຣ WIR',
+      'symbol' => 'CHE',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'ສະ​ວິ​ສ ຟ​ຣັງ',
+      'symbol' => 'CHF',
+    ),
+    'CHW' => 
+    array (
+      'name' => 'ຟຣັງ WIR',
+      'symbol' => 'CHW',
+    ),
+    'CLE' => 
+    array (
+      'name' => 'ເອສກູໂດ ຊິລີ',
+      'symbol' => 'CLE',
+    ),
+    'CLF' => 
+    array (
+      'name' => 'ຫົວໜ່ວຍບັນຊີ (UF) ຊິລີ',
+      'symbol' => 'CLF',
+    ),
+    'CLP' => 
+    array (
+      'name' => 'ຊິ​ລຽນ ເປ​ໂຊ',
+      'symbol' => 'CLP',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'ຈີນ ຢວນ',
+      'symbol' => 'CN¥',
+    ),
+    'COP' => 
+    array (
+      'name' => 'ໂຄ​ລົມ​ບຽນ ເປ​ໂຊ',
+      'symbol' => 'COP',
+    ),
+    'COU' => 
+    array (
+      'name' => 'ຫົວໜ່ວຍຄ່າຈິງ ໂຄລັມເບຍ',
+      'symbol' => 'COU',
+    ),
+    'CRC' => 
+    array (
+      'name' => 'ໂຄສຕາ ຣິກັນ ໂຄລອນ',
+      'symbol' => 'CRC',
+    ),
+    'CSD' => 
+    array (
+      'name' => 'ດີນາ ເຊີເບຍ (2002–2006)',
+      'symbol' => 'CSD',
+    ),
+    'CSK' => 
+    array (
+      'name' => 'ຮາດໂກຣູນາ ເຊັກໂກສະໂລວັກ',
+      'symbol' => 'CSK',
+    ),
+    'CUC' => 
+    array (
+      'name' => 'ຄິວແບນ ຄອນເວີດຕິໂບ ເປໂຊ',
+      'symbol' => 'CUC',
+    ),
+    'CUP' => 
+    array (
+      'name' => 'ຄິວແບນ ເປໂຊ',
+      'symbol' => 'CUP',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'ເຄບ ເວີດ​ດີນ ເອ​ສ​ຄູ​ໂດ',
+      'symbol' => 'CVE',
+    ),
+    'CYP' => 
+    array (
+      'name' => 'ປອນ ໄຊປຣັດ',
+      'symbol' => 'CYP',
+    ),
+    'CZK' => 
+    array (
+      'name' => 'ໂຄ​ຣູ​ນາ ເຊກ',
+      'symbol' => 'CZK',
+    ),
+    'DDM' => 
+    array (
+      'name' => 'ມາກ ເຢຍລະມັນ ຕາເວັນອອກ',
+      'symbol' => 'DDM',
+    ),
+    'DEM' => 
+    array (
+      'name' => 'ມາກ ເຢຍລະມັນ',
+      'symbol' => 'DEM',
+    ),
+    'DJF' => 
+    array (
+      'name' => '​ດິ​ບູ​ຈຽນ ຟຣັງ',
+      'symbol' => 'DJF',
+    ),
+    'DKK' => 
+    array (
+      'name' => 'ແດນ​ນິ​ຊ ໂຄຣນ',
+      'symbol' => 'DKK',
+    ),
+    'DOP' => 
+    array (
+      'name' => 'ໂດ​ມິ​ນິ​ກັນ ເປ​ໂຊ',
+      'symbol' => 'DOP',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'ອັລ​ເຈີ​ຣຽນ ດິ​ນາ',
+      'symbol' => 'DZD',
+    ),
+    'ECS' => 
+    array (
+      'name' => 'ຊູເກ ເອກາວາດໍ',
+      'symbol' => 'ECS',
+    ),
+    'ECV' => 
+    array (
+      'name' => 'ຫົວໜ່ວຍຄ່າຄົງທີ່ຂອງເອກາວາດໍ',
+      'symbol' => 'ECV',
+    ),
+    'EEK' => 
+    array (
+      'name' => 'ຄຣູນເອສ ໂຕເນຍ',
+      'symbol' => 'EEK',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'ອີ​ຢິບ​ທຽນ ພາວດ໌',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'ອິ​ຣິ​ທຣຽນ ແນກ​ຟ​າ',
+      'symbol' => 'ERN',
+    ),
+    'ESA' => 
+    array (
+      'name' => 'ເປເຊຕາສະເປັນ (ບັນຊີ)',
+      'symbol' => 'ESA',
+    ),
+    'ESB' => 
+    array (
+      'name' => 'ເປເຊຕາສະເປນ (ປ່ຽນແປງໄດ້)',
+      'symbol' => 'ESB',
+    ),
+    'ESP' => 
+    array (
+      'name' => 'ເປເຊຕາ ສະເປນ',
+      'symbol' => 'ESP',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'ເອ​ທິ​ໂອ​ປຽນ ເບີ​ຣ໌',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'ຢູ​ໂຣ',
+      'symbol' => '€',
+    ),
+    'FIM' => 
+    array (
+      'name' => 'ມາກກາ ຟິນແລນ',
+      'symbol' => 'FIM',
+    ),
+    'FJD' => 
+    array (
+      'name' => 'ຟິ​ຈຽນ ໂດ​ລ່າ',
+      'symbol' => '$',
+    ),
+    'FKP' => 
+    array (
+      'name' => 'ຟອ​ລ໌ກ​ແລນ ໄອ​ແລນ​ສ໌ ພາວ​ດ໌',
+      'symbol' => 'FKP',
+    ),
+    'FRF' => 
+    array (
+      'name' => 'ຟຣັງ ຝຣັ່ງ',
+      'symbol' => 'FRF',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'ພາວ​ດ໌ ສະ​ເຕີ​ຣິງ (ອັງ​ກິດ)',
+      'symbol' => '£',
+    ),
+    'GEK' => 
+    array (
+      'name' => 'ກູປອນ ລາຣິທ ຈໍເຈຍ',
+      'symbol' => 'GEK',
+    ),
+    'GEL' => 
+    array (
+      'name' => 'ຈໍ​ຈຽນ ລາ​ຣິ',
+      'symbol' => 'GEL',
+    ),
+    'GHC' => 
+    array (
+      'name' => 'ເຊດີ ການາ (1979–2007)',
+      'symbol' => 'GHC',
+    ),
+    'GHS' => 
+    array (
+      'name' => 'ເຊ​ດິ ກາ​ນາ​ອຽນ',
+      'symbol' => 'GHS',
+    ),
+    'GIP' => 
+    array (
+      'name' => 'ກິບ​ຣາ​ທາ ພາ​ວດ໌',
+      'symbol' => 'GIP',
+    ),
+    'GMD' => 
+    array (
+      'name' => '​ແກມ​ບຽນ ດາ​ລາ​ຊິ',
+      'symbol' => 'GMD',
+    ),
+    'GNF' => 
+    array (
+      'name' => 'ກິ​ນຽນ ຟຣັງ',
+      'symbol' => 'GNF',
+    ),
+    'GNS' => 
+    array (
+      'name' => 'ໄຊລິ ກີນີ',
+      'symbol' => 'GNS',
+    ),
+    'GQE' => 
+    array (
+      'name' => 'ເອັກເວເລ ອີຄວາຕິຣຽວ ກິນີ',
+      'symbol' => 'GQE',
+    ),
+    'GRD' => 
+    array (
+      'name' => 'ດາກຊະມາ ເກຣັກ',
+      'symbol' => 'GRD',
+    ),
+    'GTQ' => 
+    array (
+      'name' => 'ກົວເຕມາລານ ເຄັດຊອນ',
+      'symbol' => 'GTQ',
+    ),
+    'GWE' => 
+    array (
+      'name' => 'ເອສກູໂດ ກີນີໂປຕູເກດ',
+      'symbol' => 'GWE',
+    ),
+    'GWP' => 
+    array (
+      'name' => 'ເປໂຊກິນີ-ບິສເຊົາ',
+      'symbol' => 'GWP',
+    ),
+    'GYD' => 
+    array (
+      'name' => 'ກາຍ​ຢາ​ນີ​ສ ໂດ​ລ່າ',
+      'symbol' => 'GYD',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'ຮອງ​ກົງ ໂດ​ລ່າ',
+      'symbol' => 'HK$',
+    ),
+    'HNL' => 
+    array (
+      'name' => 'ຮອນດູແຣນ ເລມພິຣາ',
+      'symbol' => 'HNL',
+    ),
+    'HRD' => 
+    array (
+      'name' => 'ດີນາ ໂຄຣເອເຊຍ',
+      'symbol' => 'HRD',
+    ),
+    'HRK' => 
+    array (
+      'name' => 'ໂຄຣ​ເອ​ທຽນ ຄູ​ນາ',
+      'symbol' => 'HRK',
+    ),
+    'HTG' => 
+    array (
+      'name' => 'ໄຮ​ຕຽນ ກົວ​ເດ',
+      'symbol' => 'HTG',
+    ),
+    'HUF' => 
+    array (
+      'name' => 'ຮັງ​ກາ​ຣຽນ ຟໍ​ຣິນ',
+      'symbol' => 'HUF',
+    ),
+    'IDR' => 
+    array (
+      'name' => 'ອິນ​ໂດ​ເນ​ຊຽນ ໂດ​ລ່າ',
+      'symbol' => 'IDR',
+    ),
+    'IEP' => 
+    array (
+      'name' => 'ປອນ ໄອຣິຊ',
+      'symbol' => 'IEP',
+    ),
+    'ILP' => 
+    array (
+      'name' => 'ປອນ ອີສະລາເອວ',
+      'symbol' => 'ILP',
+    ),
+    'ILS' => 
+    array (
+      'name' => 'ອິສ​ຣາ​ເອວ​ລິ ນິວ ເຊ​ເກວ',
+      'symbol' => '₪',
+    ),
+    'INR' => 
+    array (
+      'name' => 'ອິນ​ເດຍ ຣູ​ປີ',
+      'symbol' => '₹',
+    ),
+    'IQD' => 
+    array (
+      'name' => 'ອິ​ຣັກ​ກິ ດິ​ນາ',
+      'symbol' => 'IQD',
+    ),
+    'IRR' => 
+    array (
+      'name' => 'ອິ​ຣາ​ນິ ຣຽວ',
+      'symbol' => 'IRR',
+    ),
+    'ISK' => 
+    array (
+      'name' => 'ໄອ​ສ໌​ແລນ​ດິກ ໂຄຣ​ນາ',
+      'symbol' => 'ISK',
+    ),
+    'ITL' => 
+    array (
+      'name' => 'ລິຣາ ອີຕາລີ',
+      'symbol' => 'ITL',
+    ),
+    'JMD' => 
+    array (
+      'name' => '​ຈາ​ໄມ​ກັນ ໂດ​ລ່າ',
+      'symbol' => 'JMD',
+    ),
+    'JOD' => 
+    array (
+      'name' => 'ຈໍ​ແດ​ນຽນ ດິ​ນາ',
+      'symbol' => 'JOD',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'ຍີ່​ປຸ່ນ ເຢນ',
+      'symbol' => 'JP¥',
+    ),
+    'KES' => 
+    array (
+      'name' => 'ເຄນ​ຢັນ ຊິວ​ລິງ',
+      'symbol' => 'KES',
+    ),
+    'KGS' => 
+    array (
+      'name' => 'ຄ​ຣີ​ກິສ​​ຖາ​ນິ ໂຊມ',
+      'symbol' => 'KGS',
+    ),
+    'KHR' => 
+    array (
+      'name' => 'ກຳ​ປູ​ເຈຍ ຣຽວ',
+      'symbol' => 'KHR',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'ໂຄ​ໂມ​ຣຽນ ຟຣັງ',
+      'symbol' => 'KMF',
+    ),
+    'KPW' => 
+    array (
+      'name' => 'ເກົາ​ຫລີ​ເໜືອ ວອນ',
+      'symbol' => 'KPW',
+    ),
+    'KRH' => 
+    array (
+      'name' => 'ຮາວານ ເກົາຫຼີເນື້',
+      'symbol' => 'KRH',
+    ),
+    'KRO' => 
+    array (
+      'name' => 'ວອນ ເກົາຫຼີໃຕ້ (1945–1953)',
+      'symbol' => 'KRO',
+    ),
+    'KRW' => 
+    array (
+      'name' => 'ເກົາ​ຫລີໃຕ້ ວອນ',
+      'symbol' => '₩',
+    ),
+    'KWD' => 
+    array (
+      'name' => 'ຄູ​ເວ​ຕິ ດິ​ນາ',
+      'symbol' => 'KWD',
+    ),
+    'KYD' => 
+    array (
+      'name' => 'ເຄ​ແມນ ໄອ​ແລນ ໂດ​ລ່າ',
+      'symbol' => 'KYD',
+    ),
+    'KZT' => 
+    array (
+      'name' => 'ຄາ​ຊັກ​ສະ​ຖາ​ນິ ເຕັງ​ເຈ',
+      'symbol' => 'KZT',
+    ),
     'LAK' => 
     array (
-      'name' => 'ກີບ',
+      'name' => 'ລາວ ກີບ',
       'symbol' => '₭',
+    ),
+    'LBP' => 
+    array (
+      'name' => 'ເລ​ບາ​ນີ​ສ ພາວດ໌',
+      'symbol' => 'LBP',
+    ),
+    'LKR' => 
+    array (
+      'name' => 'ສີ​ລັງ​ກາ ຣູ​ປີ',
+      'symbol' => 'LKR',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'ລິ​ເບີ​ຣຽນ ໂດ​ລ່າ',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'ໂລຕິ ເລໂຊໂຕ',
+      'symbol' => 'LSL',
+    ),
+    'LTL' => 
+    array (
+      'name' => 'ລິ​ທົວ​ນຽນ ລິ​ທັ​ສ',
+      'symbol' => 'LTL',
+    ),
+    'LTT' => 
+    array (
+      'name' => 'ທາໂລນັສ ລິທົວເນຍ',
+      'symbol' => 'LTT',
+    ),
+    'LUC' => 
+    array (
+      'name' => 'ຟຣັງ ລຸກຊຳບວກ ທີ່ປ່ຽນແປງ',
+      'symbol' => 'LUC',
+    ),
+    'LUF' => 
+    array (
+      'name' => 'ຟຣັງ ລຸກຊຳບວກ',
+      'symbol' => 'LUF',
+    ),
+    'LUL' => 
+    array (
+      'name' => 'ຟຣັງ ລຸກຊຳບວກ ການເງິນ',
+      'symbol' => 'LUL',
+    ),
+    'LVL' => 
+    array (
+      'name' => 'ລັດ​ວຽນ ລັດ​ສ໌',
+      'symbol' => 'LVL',
+    ),
+    'LVR' => 
+    array (
+      'name' => 'ຣູໂບ ລາວຽນ',
+      'symbol' => 'LVR',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'ລິບ​ບຽນ ດິ​ນາ',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'ມໍ​ຣັອກ​ແຄນ​ ເດີ​ແຮມ',
+      'symbol' => 'MAD',
+    ),
+    'MAF' => 
+    array (
+      'name' => 'ຟຣັງ ໂມຣອກໂກ',
+      'symbol' => 'MAF',
+    ),
+    'MCF' => 
+    array (
+      'name' => 'ຟຣັງ ໂມດາໂກ',
+      'symbol' => 'MCF',
+    ),
+    'MDC' => 
+    array (
+      'name' => 'ບັດປັນສ່ວນ ມອງໂດວາ',
+      'symbol' => 'MDC',
+    ),
+    'MDL' => 
+    array (
+      'name' => 'ມອນ​ໂດ​ແວນ ເລ​ອູ',
+      'symbol' => 'MDL',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'ມາ​ລາ​ກາ​ຊີ ອາ​ເຣຍ​ຣີ',
+      'symbol' => 'MGA',
+    ),
+    'MGF' => 
+    array (
+      'name' => 'ຟຣັງ ມາດາກັດສະກາ',
+      'symbol' => 'MGF',
+    ),
+    'MKD' => 
+    array (
+      'name' => 'ແມັກ​ເຊ​ໂດ​ນຽນ ເດ​ນາ',
+      'symbol' => 'MKD',
+    ),
+    'MKN' => 
+    array (
+      'name' => 'ດີນາ ມາຊີໂດເນຍ (1992–1993)',
+      'symbol' => 'MKN',
+    ),
+    'MLF' => 
+    array (
+      'name' => 'ຟຣັງ ມາລີ',
+      'symbol' => 'MLF',
+    ),
+    'MMK' => 
+    array (
+      'name' => 'ມຽນ​ມາ ຈ໊າດ',
+      'symbol' => 'MMK',
+    ),
+    'MNT' => 
+    array (
+      'name' => 'ມອງ​ໂກ​ລຽນ ຕູກຣິກ',
+      'symbol' => 'MNT',
+    ),
+    'MOP' => 
+    array (
+      'name' => 'ມາ​ເກົ້າ ປາ​​ຕາ​ກາ',
+      'symbol' => 'MOP',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'ມົວ​ຣິ​ທາ​ນຽນ ອູ​ກິວ​ຢາ',
+      'symbol' => 'MRO',
+    ),
+    'MTL' => 
+    array (
+      'name' => 'ລິຣາ ມອນຕາ',
+      'symbol' => 'MTL',
+    ),
+    'MTP' => 
+    array (
+      'name' => 'ປອນ ມອນຕາ',
+      'symbol' => 'MTP',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'ເມົາ​ຣິ​ທຽນ ຣູ​ປີ',
+      'symbol' => 'MUR',
+    ),
+    'MVR' => 
+    array (
+      'name' => 'ມັ​ລ​ດິ​ວຽນ ຣູ​ຟິ​ຢາ',
+      'symbol' => 'MVR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'ມາ​ລາ​ວຽນ ຄວາ​ຊາ',
+      'symbol' => 'MWK',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'ເມັກຊິກັນ ເປໂຊ',
+      'symbol' => 'MX$',
+    ),
+    'MXP' => 
+    array (
+      'name' => 'ຫົວໜ່ວຍເງິນ ເປໂຊ ແມັກຊິໂກ(1861–1992)',
+      'symbol' => 'MXP',
+    ),
+    'MXV' => 
+    array (
+      'name' => 'ຫົວໜ່ວຍການລົງທຶນ ແມັກຊິໂກ',
+      'symbol' => 'MXV',
+    ),
+    'MYR' => 
+    array (
+      'name' => 'ມາ​ເລ​ເຊຍ ຣິງ​ກິດ',
+      'symbol' => 'MYR',
+    ),
+    'MZE' => 
+    array (
+      'name' => 'ເອສກູໂດ ໂມຊຳບິກ',
+      'symbol' => 'MZE',
+    ),
+    'MZM' => 
+    array (
+      'name' => 'ເມຕິຄໍ ໂມຊຳບິກ (1980–2006)',
+      'symbol' => 'MZM',
+    ),
+    'MZN' => 
+    array (
+      'name' => 'ໂມ​ແຊມ​ບິ​ກັນ ເມ​ທິ​ຄອນ',
+      'symbol' => 'MZN',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'ນາ​ມິ​ບຽນ ໂດ​ລ່າ',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'ໄນ​ຣາ ​ໄນເຈີ​ຣຽນ',
+      'symbol' => 'NGN',
+    ),
+    'NIC' => 
+    array (
+      'name' => 'ຄໍໂດບາ ນິກາຣາກົວ (1988–1991)',
+      'symbol' => 'NIC',
+    ),
+    'NIO' => 
+    array (
+      'name' => 'ນິກາຣາກວນ ໂຄໂດບາ',
+      'symbol' => 'NIO',
+    ),
+    'NLG' => 
+    array (
+      'name' => 'ກິລເດີ ເນເທີແລນ',
+      'symbol' => 'NLG',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'ນໍ​ເວ​ກຽນ ​ໂຄຣນ',
+      'symbol' => 'NOK',
+    ),
+    'NPR' => 
+    array (
+      'name' => 'ເນ​ປານ ຣູ​ປີ',
+      'symbol' => 'NPR',
+    ),
+    'NZD' => 
+    array (
+      'name' => 'ນິວ​ຊີ​ແລນ ໂດ​ລ່າ',
+      'symbol' => 'NZ$',
+    ),
+    'OMR' => 
+    array (
+      'name' => 'ໂອ​ມາ​ນິ ຣຽວ',
+      'symbol' => 'OMR',
+    ),
+    'PAB' => 
+    array (
+      'name' => 'ພານາມານຽນ ບອນບົວ',
+      'symbol' => 'PAB',
+    ),
+    'PEI' => 
+    array (
+      'name' => 'ອິນຕິ ເປຣູ',
+      'symbol' => 'PEI',
+    ),
+    'PEN' => 
+    array (
+      'name' => 'ເປ​ຣູ​ວຽນ ນູ​ໂວ ໂຊ​ລ໌',
+      'symbol' => 'PEN',
+    ),
+    'PES' => 
+    array (
+      'name' => 'ໂຊນ ເປຣູ (1863–1965)',
+      'symbol' => 'PES',
+    ),
+    'PGK' => 
+    array (
+      'name' => 'ປາ​ປົວ ນິວ ກິ​ນຽນ ກິ​ນາ',
+      'symbol' => 'PGK',
+    ),
+    'PHP' => 
+    array (
+      'name' => 'ຟິ​ລິບ​ປິນ ເປ​ໂຊ',
+      'symbol' => 'PHP',
+    ),
+    'PKR' => 
+    array (
+      'name' => 'ປາ​ກິ​ສຖານ ຣູ​ປີ',
+      'symbol' => 'PKR',
+    ),
+    'PLN' => 
+    array (
+      'name' => 'ໂປ​ລິ​ຊ ຊະ​ລໍ​ຕີ',
+      'symbol' => 'PLN',
+    ),
+    'PLZ' => 
+    array (
+      'name' => 'ຊະລອສຕີ ໂປແລນ (1950–1995)',
+      'symbol' => 'PLZ',
+    ),
+    'PTE' => 
+    array (
+      'name' => 'ເອສກູໂດ ໂປຕູເກສ',
+      'symbol' => 'PTE',
+    ),
+    'PYG' => 
+    array (
+      'name' => 'ກວາຣານີ ປາຣາກວາຍ',
+      'symbol' => 'PYG',
+    ),
+    'QAR' => 
+    array (
+      'name' => 'ຄາ​ຕາ​ຣິ ຣຽວ',
+      'symbol' => 'QAR',
+    ),
+    'RHD' => 
+    array (
+      'name' => 'ດອນລາ ໂຣດີເຊຍ',
+      'symbol' => 'RHD',
+    ),
+    'ROL' => 
+    array (
+      'name' => 'ລິວ ໂຣມາເນຍເກົ່າ',
+      'symbol' => 'ROL',
+    ),
+    'RON' => 
+    array (
+      'name' => 'ໂຣ​ມາ​ນຽນ ເລ​ອູ',
+      'symbol' => 'RON',
+    ),
+    'RSD' => 
+    array (
+      'name' => 'ເຊີ​ບຽນ ດິ​ນາ',
+      'symbol' => 'RSD',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'ຣັສ​ຊຽນ ຣູ​ເບິນ',
+      'symbol' => 'RUB',
+    ),
+    'RUR' => 
+    array (
+      'name' => 'ຣູໂບ ຣັດເຊຍ (1991–1998)',
+      'symbol' => 'RUR',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'ຣະ​ວັນ​ດັນ ຟຣັງ',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'ຊາ​ອູ​ດິ ຣິ​ຢອນ',
+      'symbol' => 'SAR',
+    ),
+    'SBD' => 
+    array (
+      'name' => 'ໂຊ​ໂລມອນ ໄອ​ແລນ ໂດ​ລ່າ',
+      'symbol' => 'SBD',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'ເຊ​ເຊວ​ລອຍ​ສ໌ ຣູ​ປີ',
+      'symbol' => 'SCR',
+    ),
+    'SDD' => 
+    array (
+      'name' => 'ດີນາ ຊູດານເກົ່າ',
+      'symbol' => 'SDD',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'ຊູ​ດານ​ນີ​ສ ພາວດ໌',
+      'symbol' => 'SDG',
+    ),
+    'SDP' => 
+    array (
+      'name' => 'ປອນ ຊູດານເກົ່າ',
+      'symbol' => 'SDP',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'ສະ​ວີ​ດິ​ຊ ໂຄຣ​ນາ',
+      'symbol' => 'SEK',
+    ),
+    'SGD' => 
+    array (
+      'name' => 'ສິງ​ກະ​ໂປ ໂດ​ລ່າ',
+      'symbol' => 'SGD',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'ເຊນ ເຮ​ເລ​ນາ ພາວດ໌',
+      'symbol' => 'SHP',
+    ),
+    'SIT' => 
+    array (
+      'name' => 'ໂຕລາ ສະໂລວິເນຍ',
+      'symbol' => 'SIT',
+    ),
+    'SKK' => 
+    array (
+      'name' => 'ຄູໂຣນາ ສະໂລວັກ',
+      'symbol' => 'SKK',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'ເຊຍ​ນາ ​ເລໂອ​ນຽນ ເລ​ໂອນ',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'ໂຊ​ມາ​ລິ ຊິວ​ລິງ',
+      'symbol' => 'SOS',
+    ),
+    'SRD' => 
+    array (
+      'name' => 'ຊູ​ຣິ​ນາ​ມີ​ສ ໂດ​ລ່າ',
+      'symbol' => 'SRD',
+    ),
+    'SRG' => 
+    array (
+      'name' => 'ກິລເດີ ຊູຣິນາເມ',
+      'symbol' => 'SRG',
+    ),
+    'SSP' => 
+    array (
+      'name' => 'ເຊົາ​ທ໌ ຊູ​ດານ​ນີ​ສ ພາວດ໌',
+      'symbol' => 'SSP',
+    ),
+    'STD' => 
+    array (
+      'name' => 'ເຊົາ ໂທ​ເມ ແອນ ພ​ຣິນ​ຊິ​ປີ ໂດບຣາ',
+      'symbol' => 'STD',
+    ),
+    'SUR' => 
+    array (
+      'name' => 'ຣູໂບ ໂຊວຽດ',
+      'symbol' => 'SUR',
+    ),
+    'SVC' => 
+    array (
+      'name' => 'ໂກລອງ ເອກາວາດໍ',
+      'symbol' => 'SVC',
+    ),
+    'SYP' => 
+    array (
+      'name' => 'ຊີ​ຣຽນ ພາວດ໌',
+      'symbol' => 'SYP',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'ສະ​ວາ​ຊິ ລິ​ລັນ​ກິ​ນີ',
+      'symbol' => 'SZL',
+    ),
+    'THB' => 
+    array (
+      'name' => 'ໄທ ບາດ',
+      'symbol' => '฿',
+    ),
+    'TJR' => 
+    array (
+      'name' => 'ຣູໂບ ຕັຈີກິສຖານ',
+      'symbol' => 'TJR',
+    ),
+    'TJS' => 
+    array (
+      'name' => 'ທາ​ຈິ​ກິ​​ຖາ​ນິ ໂຊ​ໂມ​ນິ',
+      'symbol' => 'TJS',
+    ),
+    'TMM' => 
+    array (
+      'name' => 'ມານັດ ຕວກເມນິສຖານ (1966–1987)',
+      'symbol' => 'TMM',
+    ),
+    'TMT' => 
+    array (
+      'name' => 'ເຕີກ​ເມ​ນິ​ສ​ຖາ​ນິ ມາ​ນັດ',
+      'symbol' => 'TMT',
+    ),
+    'TND' => 
+    array (
+      'name' => 'ຕູ​ນິ​ຊຽນ ດິ​ນາ',
+      'symbol' => 'TND',
+    ),
+    'TOP' => 
+    array (
+      'name' => 'ຕອງ​ກັນ ປາ​ອັງ​ກາ',
+      'symbol' => 'TOP',
+    ),
+    'TPE' => 
+    array (
+      'name' => 'ເອສກູໂດ ຕີມໍ',
+      'symbol' => 'TPE',
+    ),
+    'TRL' => 
+    array (
+      'name' => 'ລີຕາ ຕູຣາກີເກົ່າ',
+      'symbol' => 'TRL',
+    ),
+    'TRY' => 
+    array (
+      'name' => 'ເຕີ​ກິ​ຊ ລິ​ຣາ',
+      'symbol' => 'TRY',
+    ),
+    'TTD' => 
+    array (
+      'name' => 'ທ​ຣິ​ນິ​ແດດ ແອນ ໂທ​ບາ​ໂກ ໂດ​ລ່າ',
+      'symbol' => 'TTD',
+    ),
+    'TWD' => 
+    array (
+      'name' => 'ນິວ ໄຕ້​ຫວັນ ໂດ​ລ່າ',
+      'symbol' => 'NT$',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'ທານ​ຊາ​ນຽນ ຊິວ​ລິງ',
+      'symbol' => 'TZS',
+    ),
+    'UAH' => 
+    array (
+      'name' => 'ຢູ​ເຄຣ​ນຽນ ຮະ​ຣີບ​ເນຍ',
+      'symbol' => 'UAH',
+    ),
+    'UAK' => 
+    array (
+      'name' => 'ຄາໂບວາເນດ ອູແກຣນ',
+      'symbol' => 'UAK',
+    ),
+    'UGS' => 
+    array (
+      'name' => 'ຊິນລິງ ອູກັນດາ (1966–1987)',
+      'symbol' => 'UGS',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'ອູ​ກັນ​ດັນ ຊິວ​ລິງ',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => '​ໂດ​ລ່າ​ສະ​ຫະ​ລັດຯ',
+      'symbol' => 'US$',
+    ),
+    'USN' => 
+    array (
+      'name' => 'ດອນລາສະຫະລັດ (ມື້ຖັດໄປ)',
+      'symbol' => 'USN',
+    ),
+    'USS' => 
+    array (
+      'name' => 'ດອນລາສະຫະລັດ (ມື້ດຽວກັນ)',
+      'symbol' => 'USS',
+    ),
+    'UYI' => 
+    array (
+      'name' => 'ເປໂຊອູຣຸກວຍ (ຫົວໜ່ວຍອິນເດັກ)',
+      'symbol' => 'UYI',
+    ),
+    'UYP' => 
+    array (
+      'name' => 'ເປໂຊ ອູຣຸກວຍ (1975–1993)',
+      'symbol' => 'UYP',
+    ),
+    'UYU' => 
+    array (
+      'name' => 'ອູ​ຣຸ​ກົວ​ຢານ ເປ​ໂຊ',
+      'symbol' => 'UYU',
+    ),
+    'UZS' => 
+    array (
+      'name' => 'ອຸສ​ເບ​ກິ​ສ​ຖານ ໂຊມ',
+      'symbol' => 'UZS',
+    ),
+    'VEB' => 
+    array (
+      'name' => 'ໂບລີວາ ເວເນຊູເອລາ (1871–2008)',
+      'symbol' => 'VEB',
+    ),
+    'VEF' => 
+    array (
+      'name' => 'ເວ​ເນ​ຊູ​ເອ​ລັນ ໂບ​ລິ​ວາ',
+      'symbol' => 'VEF',
+    ),
+    'VND' => 
+    array (
+      'name' => 'ຫວຽດ​ນາມ ດົງ',
+      'symbol' => '₫',
+    ),
+    'VNN' => 
+    array (
+      'name' => 'ດົງ ຫວຽດນາມ (1978–1985)',
+      'symbol' => 'VNN',
+    ),
+    'VUV' => 
+    array (
+      'name' => '​ວາ​ນົວ​ຕູ ວາ​ຕູ',
+      'symbol' => 'VUV',
+    ),
+    'WST' => 
+    array (
+      'name' => 'ຊາ​ໂມນ ທາ​ລາ',
+      'symbol' => 'WST',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'ຟຣັງ ເຊຟານ ທະນາຄານລັດອາຟຣິກາກາງ',
+      'symbol' => 'FCFA',
+    ),
+    'XAG' => 
+    array (
+      'name' => 'ເງິນ',
+      'symbol' => 'XAG',
+    ),
+    'XAU' => 
+    array (
+      'name' => 'ຄຳ',
+      'symbol' => 'XAU',
+    ),
+    'XBA' => 
+    array (
+      'name' => 'ຫົວໜ່ວຍຄອມໂປຊິດ ເອີຣົບ',
+      'symbol' => 'XBA',
+    ),
+    'XBB' => 
+    array (
+      'name' => 'ຫົວໜ່ວຍໂມນີແທຣີ ເອີຣົບ',
+      'symbol' => 'XBB',
+    ),
+    'XBC' => 
+    array (
+      'name' => 'ຫົວໜ່ວຍບັນຊີເອີຣົບ (XBC)',
+      'symbol' => 'XBC',
+    ),
+    'XBD' => 
+    array (
+      'name' => 'ຫົວໜ່ວຍບັນຊີເອີຣົບ (XBD)',
+      'symbol' => 'XBD',
+    ),
+    'XCD' => 
+    array (
+      'name' => 'ອີ​ສ ຄາ​ຣິ​ບຽນ ໂດ​ລ່າ',
+      'symbol' => 'EC$',
+    ),
+    'XDR' => 
+    array (
+      'name' => 'ສິດທິຖອນເງິນພິເສດ',
+      'symbol' => 'XDR',
+    ),
+    'XEU' => 
+    array (
+      'name' => 'ຫົວໜ່ວຍສະກຸນເງິນ ເອີຣົບ',
+      'symbol' => 'XEU',
+    ),
+    'XFO' => 
+    array (
+      'name' => 'ຟຣັງ ຄຳຝຣັ່ງ',
+      'symbol' => 'XFO',
+    ),
+    'XFU' => 
+    array (
+      'name' => 'ຟຣັງ ຢູໄອຊີ ຝຣັ່ງ',
+      'symbol' => 'XFU',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'ຟັງເຊຟານ ອາຟຣິກາຕາເວັນຕົກ',
+      'symbol' => 'CFA',
+    ),
+    'XPD' => 
+    array (
+      'name' => 'ແພເລດຽມ',
+      'symbol' => 'XPD',
+    ),
+    'XPF' => 
+    array (
+      'name' => 'ຊີ​ເອັບ​ພີ ຟຣັງ',
+      'symbol' => 'CFPF',
+    ),
+    'XPT' => 
+    array (
+      'name' => 'ແພລັດຕິນຳ',
+      'symbol' => 'XPT',
+    ),
+    'XRE' => 
+    array (
+      'name' => 'ກອງທຶນໄຣເນັດ',
+      'symbol' => 'XRE',
+    ),
+    'XTS' => 
+    array (
+      'name' => 'ລະຫັດທົດສອບສະກຸນເງິນ',
+      'symbol' => 'XTS',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'ສະ​ກຸນ​ເງິນ​ທີ່ບໍ່​ຮູັ​ຈັກ',
+      'symbol' => 'XXX',
+    ),
+    'YDD' => 
+    array (
+      'name' => 'ດີນາ ເຢເມນ',
+      'symbol' => 'YDD',
+    ),
+    'YER' => 
+    array (
+      'name' => 'ເຢ​ເມ​ນິ ຣຽວ',
+      'symbol' => 'YER',
+    ),
+    'YUD' => 
+    array (
+      'name' => 'ຮາດດີນາ ຢູໂກສະລາວີ',
+      'symbol' => 'YUD',
+    ),
+    'YUM' => 
+    array (
+      'name' => 'ດີນາໃໝ່ ຢູໂກສະລາວີ (1994–2002)',
+      'symbol' => 'YUM',
+    ),
+    'YUN' => 
+    array (
+      'name' => 'ດີນາ ທີ່ປ່ຽນສະພາບ ຢູໂກສະລາວີ (1990–1992)',
+      'symbol' => 'YUN',
+    ),
+    'YUR' => 
+    array (
+      'name' => 'ດີນາ ປະຕິຮູບ ຢູໂກສະລາວີ (1992–1993)',
+      'symbol' => 'YUR',
+    ),
+    'ZAL' => 
+    array (
+      'name' => 'ແຣນ ອາຟຣິກາໃຕ້ (ການເງິນ)',
+      'symbol' => 'ZAL',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'ເຊົາທ໌ ອາ​ຟຣິ​ກັນ ແຣນດ໌',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'ຄວາຊາ ຊັມເບຍ (1968–2012)',
+      'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'ແຊມ​ບຽນ ຄວາ​ຊາ',
+      'symbol' => 'ZMW',
+    ),
+    'ZRN' => 
+    array (
+      'name' => 'ແຊ ຄອງໂກໃໝ່',
+      'symbol' => 'ZRN',
+    ),
+    'ZRZ' => 
+    array (
+      'name' => 'ແຊຄອງໂກ',
+      'symbol' => 'ZRZ',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'ດອນລາ ຊິມບັບເວ (1980–2008)',
+      'symbol' => 'ZWD',
+    ),
+    'ZWL' => 
+    array (
+      'name' => 'ດອນລາ ຊິມບັບເວ (2009)',
+      'symbol' => 'ZWL',
+    ),
+    'ZWR' => 
+    array (
+      'name' => 'ດອນລາ ຊິມບັບເວ (2008)',
+      'symbol' => 'ZWR',
     ),
   ),
 );

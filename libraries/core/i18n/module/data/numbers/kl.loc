@@ -9,6 +9,7 @@ return array (
     'plusSign' => '+',
     'minusSign' => '−',
     'exponential' => '×10^',
+    'superscriptingExponent' => '·',
     'perMille' => '‰',
     'infinity' => '∞',
     'nan' => '¤¤¤',
@@ -24,13 +25,23 @@ return array (
   array (
     'DKK' => 
     array (
-      'name' => 'danskinut koruuni',
-      'symbol' => 'kr',
+      'name' => 'danmarkimut koruuni',
+      'symbol' => 'kr.',
     ),
     'EUR' => 
     array (
       'name' => 'euro',
-      'symbol' => 'EUR',
+      'symbol' => '€',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'norskit koruuni',
+      'symbol' => 'Nkr',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'svenskit koruuni',
+      'symbol' => 'Skr',
     ),
   ),
 );

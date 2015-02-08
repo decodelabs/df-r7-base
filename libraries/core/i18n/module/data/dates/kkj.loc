@@ -1,0 +1,72 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE dd MMMM y G',
+      'long' => 'd MMMM y G',
+      'medium' => 'd MMM y G',
+      'short' => 'dd/MM y GGGGG',
+    ),
+  ),
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'sɔndi',
+        'mon' => 'lundi',
+        'tue' => 'mardi',
+        'wed' => 'mɛrkɛrɛdi',
+        'thu' => 'yedi',
+        'fri' => 'vaŋdɛrɛdi',
+        'sat' => 'mɔnɔ sɔndi',
+      ),
+      'full' => 
+      array (
+        'sun' => 'sɔndi',
+        'mon' => 'lundi',
+        'tue' => 'mardi',
+        'wed' => 'mɛrkɛrɛdi',
+        'thu' => 'yedi',
+        'fri' => 'vaŋdɛrɛdi',
+        'sat' => 'mɔnɔ sɔndi',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'full' => 
+      array (
+        1 => 'pamba',
+        2 => 'wanja',
+        3 => 'mbiyɔ mɛndoŋgɔ',
+        4 => 'Nyɔlɔmbɔŋgɔ',
+        5 => 'Mɔnɔ ŋgbanja',
+        6 => 'Nyaŋgwɛ ŋgbanja',
+        7 => 'kuŋgwɛ',
+        8 => 'fɛ',
+        9 => 'njapi',
+        10 => 'nyukul',
+        11 => '11',
+        12 => 'ɓulɓusɛ',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE dd MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'dd/MM y',
+    ),
+    'timeFormat' => 
+    array (
+      'medium' => 'HH:mm:ss',
+      'short' => 'HH:mm',
+    ),
+  ),
+);

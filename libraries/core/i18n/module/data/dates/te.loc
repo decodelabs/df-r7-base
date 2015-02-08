@@ -1,6 +1,16 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM y G',
+      'long' => 'd MMMM y G',
+      'medium' => 'd MMM y G',
+      'short' => 'dd-MM-y GGGGG',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -34,18 +44,26 @@ return array (
       array (
         1 => 'జన',
         2 => 'ఫిబ్ర',
+        3 => 'మార్చి',
         4 => 'ఏప్రి',
         5 => 'మే',
+        6 => 'జూన్',
+        7 => 'జులై',
+        8 => 'ఆగ',
+        9 => 'సెప్టెం',
+        10 => 'అక్టో',
+        11 => 'నవం',
+        12 => 'డిసెం',
       ),
       'full' => 
       array (
         1 => 'జనవరి',
         2 => 'ఫిబ్రవరి',
         3 => 'మార్చి',
-        4 => 'ఎప్రిల్',
+        4 => 'ఏప్రిల్',
         5 => 'మే',
         6 => 'జూన్',
-        7 => 'జూలై',
+        7 => 'జులై',
         8 => 'ఆగస్టు',
         9 => 'సెప్టెంబర్',
         10 => 'అక్టోబర్',
@@ -55,9 +73,9 @@ return array (
     ),
     'dateFormat' => 
     array (
-      'full' => 'EEEE d MMMM y',
-      'long' => 'd MMMM y',
-      'medium' => 'd MMM y',
+      'full' => 'd, MMMM y, EEEE',
+      'long' => 'd MMMM, y',
+      'medium' => 'd MMM, y',
       'short' => 'dd-MM-yy',
     ),
     'timeFormat' => 
@@ -77,12 +95,38 @@ return array (
       array (
         1 => 'చైత్రం',
         2 => 'వైశాఖం',
+        3 => 'జ్యేష్ఠం',
         4 => 'ఆషాఢం',
         5 => 'శ్రావణం',
         6 => 'భాద్రపదం',
-        8 => 'కార్తీక',
+        7 => 'ఆశ్వయుజం',
+        8 => 'కార్తీకం',
+        9 => 'మార్గశిరం',
+        10 => 'పుష్యం',
         11 => 'మాఘం',
         12 => 'ఫల్గుణం',
+      ),
+    ),
+  ),
+  'islamic' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'full' => 
+      array (
+        1 => 'Muharram',
+        2 => 'Safar',
+        3 => 'Rabiʻ I',
+        4 => 'Rabiʻ II',
+        5 => 'Jumada I',
+        6 => 'Jumada II',
+        7 => 'Rajab',
+        8 => 'Shaʻban',
+        9 => 'Ramadan',
+        10 => 'Shawwal',
+        11 => 'Dhuʻl-Qiʻdah',
+        12 => 'Dhuʻl-Hijjah',
       ),
     ),
   ),

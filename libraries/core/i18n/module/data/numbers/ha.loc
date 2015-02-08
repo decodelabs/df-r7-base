@@ -276,8 +276,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'Kuɗin Zambiya',
+      'name' => 'Kuɗin Zambiya (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Kuɗin Zambiya',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

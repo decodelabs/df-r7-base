@@ -3,13 +3,6 @@ return array (
   '@default' => 'gregorian',
   'buddhist' => 
   array (
-    'dateFormat' => 
-    array (
-      'full' => 'dd MMMM y G EEEE',
-      'long' => 'dd MMMM y G',
-      'medium' => 'dd MMM y G',
-      'short' => 'dd.MM.yyyy G',
-    ),
   ),
   'coptic' => 
   array (
@@ -55,6 +48,16 @@ return array (
         12 => 'Nehasa',
         13 => 'Pagumiene',
       ),
+    ),
+  ),
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'G d MMMM y EEEE',
+      'long' => 'G d MMMM y',
+      'medium' => 'G d MMM y',
+      'short' => 'GGGGG d.MM.y',
     ),
   ),
   'gregorian' => 
@@ -122,7 +125,7 @@ return array (
       'full' => 'd MMMM y EEEE',
       'long' => 'd MMMM y',
       'medium' => 'd MMM y',
-      'short' => 'dd.MM.yyyy',
+      'short' => 'd.MM.y',
     ),
     'timeFormat' => 
     array (
@@ -160,6 +163,21 @@ return array (
     'months' => 
     array (
       '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Muharrem',
+        2 => 'Safer',
+        3 => 'Rebiülevvel',
+        4 => 'Rebiülahir',
+        5 => 'Cemaziyelevvel',
+        6 => 'Cemaziyelahir',
+        7 => 'Recep',
+        8 => 'Şaban',
+        9 => 'Ramazan',
+        10 => 'Şevval',
+        11 => 'Zilkade',
+        12 => 'Zilhicce',
+      ),
       'full' => 
       array (
         1 => 'Muharrem',
@@ -176,22 +194,15 @@ return array (
         12 => 'Zilhicce',
       ),
     ),
-    'dateFormat' => 
-    array (
-      'full' => 'dd MMMM y G EEEE',
-      'long' => 'dd MMMM y G',
-      'medium' => 'dd MMM y G',
-      'short' => 'dd.MM.yyyy G',
-    ),
   ),
   'japanese' => 
   array (
     'dateFormat' => 
     array (
-      'full' => 'dd MMMM y G EEEE',
-      'long' => 'dd MMMM y G',
-      'medium' => 'dd MMM y G',
-      'short' => 'dd.MM.yyyy G',
+      'full' => 'd MMMM y G EEEE',
+      'long' => 'd MMMM y G',
+      'medium' => 'd MMM y G',
+      'short' => 'd.MM.y G',
     ),
   ),
   'persian' => 
@@ -208,6 +219,7 @@ return array (
         5 => 'Mordad',
         6 => 'Şehriver',
         7 => 'Mehr',
+        8 => 'Aban',
         9 => 'Azer',
         10 => 'Dey',
         11 => 'Behmen',
@@ -217,12 +229,5 @@ return array (
   ),
   'roc' => 
   array (
-    'dateFormat' => 
-    array (
-      'full' => 'dd MMMM y G EEEE',
-      'long' => 'dd MMMM y G',
-      'medium' => 'dd MMM y G',
-      'short' => 'dd.MM.yyyy G',
-    ),
   ),
 );

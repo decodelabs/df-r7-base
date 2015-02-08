@@ -1,0 +1,38 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'short' => 'd/M/yy GGGGG',
+    ),
+  ),
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'اتوار',
+        'mon' => 'پیر',
+        'tue' => 'منگل',
+        'wed' => 'بدھ',
+        'thu' => 'جمعرات',
+        'fri' => 'جمعہ',
+        'sat' => 'ہفتہ',
+      ),
+      'full' => 
+      array (
+        'sun' => 'اتوار',
+        'mon' => 'پیر',
+        'tue' => 'منگل',
+        'wed' => 'بدھ',
+        'thu' => 'جمعرات',
+        'fri' => 'جمعہ',
+        'sat' => 'ہفتہ',
+      ),
+    ),
+  ),
+);

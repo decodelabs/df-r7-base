@@ -17,7 +17,7 @@ return array (
     'CNY' => 
     array (
       'name' => 'ཡུ་ཨན་',
-      'symbol' => 'CNY',
+      'symbol' => '¥',
     ),
     'INR' => 
     array (

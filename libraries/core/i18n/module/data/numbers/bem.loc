@@ -5,14 +5,13 @@ return array (
   ),
   'formats' => 
   array (
-    'currency' => '¤#,##0.00;(¤#,##0.00)',
+    'currency' => '¤#,##0.00',
   ),
   'currencies' => 
   array (
-    'ZMK' => 
+    'ZMW' => 
     array (
-      'name' => 'ZMK',
-      'symbol' => 'ZK',
+      'symbol' => 'K',
     ),
   ),
 );

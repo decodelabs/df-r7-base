@@ -9,9 +9,11 @@ return array (
     'plusSign' => '+',
     'minusSign' => '-',
     'exponential' => 'E',
+    'superscriptingExponent' => '×',
     'perMille' => '‰',
     'infinity' => '∞',
-    'nan' => 'не число',
+    'nan' => 'не число',
+    'timeSeparator' => ':',
   ),
   'formats' => 
   array (
@@ -29,17 +31,17 @@ return array (
     ),
     'AED' => 
     array (
-      'name' => 'Дирхам (ОАЭ)',
+      'name' => 'Дирхам ОАЭ',
       'symbol' => 'AED',
     ),
     'AFA' => 
     array (
-      'name' => 'Афгани (1927-2002)',
+      'name' => 'Афгани (1927–2002)',
       'symbol' => 'AFA',
     ),
     'AFN' => 
     array (
-      'name' => 'Афгани',
+      'name' => 'Афганский афгани',
       'symbol' => 'AFN',
     ),
     'ALL' => 
@@ -64,17 +66,17 @@ return array (
     ),
     'AOK' => 
     array (
-      'name' => 'Ангольская кванза (1977-1990)',
+      'name' => 'Ангольская кванза (1977–1990)',
       'symbol' => 'AOK',
     ),
     'AON' => 
     array (
-      'name' => 'Ангольская новая кванза (1990-2000)',
+      'name' => 'Ангольская новая кванза (1990–2000)',
       'symbol' => 'AON',
     ),
     'AOR' => 
     array (
-      'name' => 'Ангольская кванза реюстадо (1995-1999)',
+      'name' => 'Ангольская кванза реюстадо (1995–1999)',
       'symbol' => 'AOR',
     ),
     'ARA' => 
@@ -84,7 +86,7 @@ return array (
     ),
     'ARP' => 
     array (
-      'name' => 'Аргентинское песо (1983-1985)',
+      'name' => 'Аргентинское песо (1983–1985)',
       'symbol' => 'ARP',
     ),
     'ARS' => 
@@ -100,11 +102,11 @@ return array (
     'AUD' => 
     array (
       'name' => 'Австралийский доллар',
-      'symbol' => 'AUD',
+      'symbol' => 'A$',
     ),
     'AWG' => 
     array (
-      'name' => 'Арубанский гульден',
+      'name' => 'Арубанский флорин',
       'symbol' => 'AWG',
     ),
     'AZM' => 
@@ -184,7 +186,7 @@ return array (
     ),
     'BOB' => 
     array (
-      'name' => 'Боливиано',
+      'name' => 'Боливийский боливиано',
       'symbol' => 'BOB',
     ),
     'BOP' => 
@@ -199,7 +201,7 @@ return array (
     ),
     'BRB' => 
     array (
-      'name' => 'Бразильский новый крузейро (1967-1986)',
+      'name' => 'Бразильский новый крузейро (1967–1986)',
       'symbol' => 'BRB',
     ),
     'BRC' => 
@@ -209,13 +211,13 @@ return array (
     ),
     'BRE' => 
     array (
-      'name' => 'Бразильский крузейро (1990-1993)',
+      'name' => 'Бразильский крузейро (1990–1993)',
       'symbol' => 'BRE',
     ),
     'BRL' => 
     array (
       'name' => 'Бразильский реал',
-      'symbol' => 'BRL',
+      'symbol' => 'R$',
     ),
     'BRN' => 
     array (
@@ -234,7 +236,7 @@ return array (
     ),
     'BTN' => 
     array (
-      'name' => 'Нгултрум',
+      'name' => 'Бутанский нгултрум',
       'symbol' => 'BTN',
     ),
     'BUK' => 
@@ -249,7 +251,7 @@ return array (
     ),
     'BYB' => 
     array (
-      'name' => 'Белорусский рубль (1994-1999)',
+      'name' => 'Белорусский рубль (1994–1999)',
       'symbol' => 'BYB',
     ),
     'BYR' => 
@@ -265,7 +267,7 @@ return array (
     'CAD' => 
     array (
       'name' => 'Канадский доллар',
-      'symbol' => 'CAD',
+      'symbol' => 'CA$',
     ),
     'CDF' => 
     array (
@@ -299,8 +301,8 @@ return array (
     ),
     'CNY' => 
     array (
-      'name' => 'Юань Ренминби',
-      'symbol' => 'CNY',
+      'name' => 'Китайский юань',
+      'symbol' => 'CN¥',
     ),
     'COP' => 
     array (
@@ -430,7 +432,7 @@ return array (
     'EUR' => 
     array (
       'name' => 'Евро',
-      'symbol' => 'EUR',
+      'symbol' => '€',
     ),
     'FIM' => 
     array (
@@ -455,7 +457,7 @@ return array (
     'GBP' => 
     array (
       'name' => 'Английский фунт стерлингов',
-      'symbol' => 'GBP',
+      'symbol' => '£',
     ),
     'GEK' => 
     array (
@@ -469,12 +471,12 @@ return array (
     ),
     'GHC' => 
     array (
-      'name' => 'Ганский седи (1979-2007)',
+      'name' => 'Ганский седи (1979–2007)',
       'symbol' => 'GHC',
     ),
     'GHS' => 
     array (
-      'name' => 'Седи Ганы',
+      'name' => 'Ганский седи',
       'symbol' => 'GHS',
     ),
     'GIP' => 
@@ -530,7 +532,7 @@ return array (
     'HKD' => 
     array (
       'name' => 'Гонконгский доллар',
-      'symbol' => 'HKD',
+      'symbol' => 'HK$',
     ),
     'HNL' => 
     array (
@@ -575,12 +577,12 @@ return array (
     'ILS' => 
     array (
       'name' => 'Новый израильский шекель',
-      'symbol' => 'ILS',
+      'symbol' => '₪',
     ),
     'INR' => 
     array (
       'name' => 'Индийская рупия',
-      'symbol' => 'INR',
+      'symbol' => '₹',
     ),
     'IQD' => 
     array (
@@ -639,13 +641,13 @@ return array (
     ),
     'KPW' => 
     array (
-      'name' => 'Северо-корейская вона',
+      'name' => 'Северокорейская вона',
       'symbol' => 'KPW',
     ),
     'KRW' => 
     array (
-      'name' => 'Вона Республики Кореи',
-      'symbol' => 'KRW',
+      'name' => 'Южнокорейская вона',
+      'symbol' => '₩',
     ),
     'KWD' => 
     array (
@@ -664,7 +666,7 @@ return array (
     ),
     'LAK' => 
     array (
-      'name' => 'Кип ЛНДР',
+      'name' => 'Лаосский кип',
       'symbol' => 'LAK',
     ),
     'LBP' => 
@@ -744,7 +746,7 @@ return array (
     ),
     'MGA' => 
     array (
-      'name' => 'Ариари',
+      'name' => 'Малагасийский ариари',
       'symbol' => 'MGA',
     ),
     'MGF' => 
@@ -764,7 +766,7 @@ return array (
     ),
     'MMK' => 
     array (
-      'name' => 'Кьят',
+      'name' => 'Мьянманский кьят',
       'symbol' => 'MMK',
     ),
     'MNT' => 
@@ -774,7 +776,7 @@ return array (
     ),
     'MOP' => 
     array (
-      'name' => 'Патака',
+      'name' => 'Патака Макао',
       'symbol' => 'MOP',
     ),
     'MRO' => 
@@ -809,12 +811,12 @@ return array (
     ),
     'MXN' => 
     array (
-      'name' => 'Мексиканское новое песо',
-      'symbol' => 'MXN',
+      'name' => 'Мексиканское песо',
+      'symbol' => 'MX$',
     ),
     'MXP' => 
     array (
-      'name' => 'Мексиканское серебряное песо (1861-1992)',
+      'name' => 'Мексиканское серебряное песо (1861–1992)',
       'symbol' => 'MXP',
     ),
     'MXV' => 
@@ -839,7 +841,7 @@ return array (
     ),
     'MZN' => 
     array (
-      'name' => 'Метикал',
+      'name' => 'Мозамбикский метикал',
       'symbol' => 'MZN',
     ),
     'NAD' => 
@@ -854,12 +856,12 @@ return array (
     ),
     'NIC' => 
     array (
-      'name' => 'Никарагуанская кордоба (1988-1991)',
+      'name' => 'Никарагуанская кордоба (1988–1991)',
       'symbol' => 'NIC',
     ),
     'NIO' => 
     array (
-      'name' => 'Золотая кордоба',
+      'name' => 'Никарагуанская кордоба',
       'symbol' => 'NIO',
     ),
     'NLG' => 
@@ -880,7 +882,7 @@ return array (
     'NZD' => 
     array (
       'name' => 'Новозеландский доллар',
-      'symbol' => 'NZD',
+      'symbol' => 'NZ$',
     ),
     'OMR' => 
     array (
@@ -909,7 +911,7 @@ return array (
     ),
     'PGK' => 
     array (
-      'name' => 'Кина',
+      'name' => 'Кина Папуа — Новой Гвинеи',
       'symbol' => 'PGK',
     ),
     'PHP' => 
@@ -974,7 +976,7 @@ return array (
     ),
     'RUR' => 
     array (
-      'name' => 'Российский рубль (1991-1998)',
+      'name' => 'Российский рубль (1991–1998)',
       'symbol' => 'р.',
     ),
     'RWF' => 
@@ -1057,9 +1059,14 @@ return array (
       'name' => 'Суринамский гульден',
       'symbol' => 'SRG',
     ),
+    'SSP' => 
+    array (
+      'name' => 'Южносуданский фунт',
+      'symbol' => 'SSP',
+    ),
     'STD' => 
     array (
-      'name' => 'Добра',
+      'name' => 'Добра Сант-Томе и Принсипи',
       'symbol' => 'STD',
     ),
     'SUR' => 
@@ -1085,7 +1092,7 @@ return array (
     'THB' => 
     array (
       'name' => 'Таиландский бат',
-      'symbol' => 'THB',
+      'symbol' => '฿',
     ),
     'TJR' => 
     array (
@@ -1105,7 +1112,7 @@ return array (
     'TMT' => 
     array (
       'name' => 'Туркменский новый манат',
-      'symbol' => 'TMT',
+      'symbol' => 'ТМТ',
     ),
     'TND' => 
     array (
@@ -1114,7 +1121,7 @@ return array (
     ),
     'TOP' => 
     array (
-      'name' => 'Паанга',
+      'name' => 'Тонганская паанга',
       'symbol' => 'TOP',
     ),
     'TPE' => 
@@ -1124,12 +1131,12 @@ return array (
     ),
     'TRL' => 
     array (
-      'name' => 'Турецкая лира',
+      'name' => 'Турецкая лира (1922–2005)',
       'symbol' => 'TRL',
     ),
     'TRY' => 
     array (
-      'name' => 'Новая турецкая лира',
+      'name' => 'Турецкая лира',
       'symbol' => 'TRY',
     ),
     'TTD' => 
@@ -1140,7 +1147,7 @@ return array (
     'TWD' => 
     array (
       'name' => 'Новый тайваньский доллар',
-      'symbol' => 'TWD',
+      'symbol' => 'NT$',
     ),
     'TZS' => 
     array (
@@ -1189,7 +1196,7 @@ return array (
     ),
     'UYP' => 
     array (
-      'name' => 'Уругвайское старое песо (1975-1993)',
+      'name' => 'Уругвайское старое песо (1975–1993)',
       'symbol' => 'UYP',
     ),
     'UYU' => 
@@ -1204,33 +1211,33 @@ return array (
     ),
     'VEB' => 
     array (
-      'name' => 'Венесуэльский боливар',
+      'name' => 'Венесуэльский боливар (1871–2008)',
       'symbol' => 'VEB',
     ),
     'VEF' => 
     array (
-      'name' => 'Венесуэльский боливар фуэрте',
+      'name' => 'Венесуэльский боливар',
       'symbol' => 'VEF',
     ),
     'VND' => 
     array (
       'name' => 'Вьетнамский донг',
-      'symbol' => 'VND',
+      'symbol' => '₫',
     ),
     'VUV' => 
     array (
-      'name' => 'Вату',
+      'name' => 'Вату Вануату',
       'symbol' => 'VUV',
     ),
     'WST' => 
     array (
-      'name' => 'Тала',
+      'name' => 'Самоанская тала',
       'symbol' => 'WST',
     ),
     'XAF' => 
     array (
       'name' => 'Франк КФА ВЕАС',
-      'symbol' => 'XAF',
+      'symbol' => 'FCFA',
     ),
     'XAG' => 
     array (
@@ -1265,7 +1272,7 @@ return array (
     'XCD' => 
     array (
       'name' => 'Восточно-карибский доллар',
-      'symbol' => 'XCD',
+      'symbol' => 'EC$',
     ),
     'XDR' => 
     array (
@@ -1290,7 +1297,7 @@ return array (
     'XOF' => 
     array (
       'name' => 'Франк КФА ВСЕАО',
-      'symbol' => 'XOF',
+      'symbol' => 'CFA',
     ),
     'XPD' => 
     array (
@@ -1299,8 +1306,8 @@ return array (
     ),
     'XPF' => 
     array (
-      'name' => 'Франк КФП',
-      'symbol' => 'XPF',
+      'name' => 'Французский тихоокеанский франк',
+      'symbol' => 'CFPF',
     ),
     'XPT' => 
     array (
@@ -1320,7 +1327,7 @@ return array (
     'XXX' => 
     array (
       'name' => 'Неизвестная или недействительная валюта',
-      'symbol' => 'XXX',
+      'symbol' => 'XXXX',
     ),
     'YDD' => 
     array (
@@ -1359,8 +1366,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'Квача (замбийская)',
+      'name' => 'Квача (замбийская) (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Замбийская квача',
+      'symbol' => 'ZMW',
     ),
     'ZRN' => 
     array (

@@ -1,0 +1,1281 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => '.',
+    'group' => ',',
+    'list' => ';',
+    'percentSign' => '%',
+    'plusSign' => '‎+',
+    'minusSign' => '‎-',
+    'exponential' => 'E',
+    'perMille' => '‰',
+    'infinity' => '?',
+    'nan' => 'NaN',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##,##0.###',
+    'scientific' => '#E0',
+    'percent' => '#,##,##0%',
+    'currency' => '¤ #,##,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'ADP' => 
+    array (
+      'name' => 'اٮ۪ڑورَن پیسِٹا',
+      'symbol' => 'ADP',
+    ),
+    'AED' => 
+    array (
+      'name' => 'مُتحدہ عرب اِمارات دِرہم',
+      'symbol' => 'AED',
+    ),
+    'AFN' => 
+    array (
+      'name' => 'افغان افغٲنی',
+      'symbol' => 'AFN',
+    ),
+    'ALL' => 
+    array (
+      'name' => 'اٮ۪لبینِیَن لِک',
+      'symbol' => 'ALL',
+    ),
+    'AMD' => 
+    array (
+      'name' => 'اَرمانٮ۪ن ڈرٛٮ۪م',
+      'symbol' => 'AMD',
+    ),
+    'ANG' => 
+    array (
+      'name' => 'نایدَرلینٛڑ اٮ۪نٹٕلیٖیَن گِلڑَر',
+      'symbol' => 'ANG',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'اٮ۪نگولَن کوانزا',
+      'symbol' => 'AOA',
+    ),
+    'AOR' => 
+    array (
+      'name' => 'اٮ۪نگولَن کوانٛزا رٮ۪جِسٹاڑو',
+      'symbol' => 'AOR',
+    ),
+    'ARA' => 
+    array (
+      'name' => 'أرجَنٹیٖن اَسٹرل',
+      'symbol' => 'ARA',
+    ),
+    'ARS' => 
+    array (
+      'name' => 'أرجَنٹیٖن پِسو',
+      'symbol' => 'ARS',
+    ),
+    'ATS' => 
+    array (
+      'name' => 'آسٹریَن شِلِنٛگ',
+      'symbol' => 'ATS',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'آسٹریلِیَن ڈالَر',
+      'symbol' => 'AUD',
+    ),
+    'AWG' => 
+    array (
+      'name' => 'اَروبَن فِلورِن',
+      'symbol' => 'AWG',
+    ),
+    'AZN' => 
+    array (
+      'name' => 'آزَرباجانی مَنَٹ',
+      'symbol' => 'AZN',
+    ),
+    'BAD' => 
+    array (
+      'name' => 'بوزنِیاہَرزِگووِنا دیٖنار',
+      'symbol' => 'BAD',
+    ),
+    'BAM' => 
+    array (
+      'name' => 'بوزنِیاہَرزِگووِنا کَنوٲٹیبٕل مارٕک',
+      'symbol' => 'BAM',
+    ),
+    'BBD' => 
+    array (
+      'name' => 'بابیڑِیَن ڈالَر',
+      'symbol' => 'BBD',
+    ),
+    'BDT' => 
+    array (
+      'name' => 'بَنگلادیٖشی ٹَکا',
+      'symbol' => 'BDT',
+    ),
+    'BEF' => 
+    array (
+      'name' => 'بَلجِیَن فرینٛک',
+      'symbol' => 'BEF',
+    ),
+    'BGN' => 
+    array (
+      'name' => 'بیلگیرِیَن ہاڑ لِو',
+      'symbol' => 'BGN',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'بحریٖنی دیٖنار',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'بُرُنڑِین فرینٛک',
+      'symbol' => 'BIF',
+    ),
+    'BMD' => 
+    array (
+      'name' => 'بٔرمیوٗڑَن ڈالَر',
+      'symbol' => 'BMD',
+    ),
+    'BND' => 
+    array (
+      'name' => 'برٛونی ڈالَر',
+      'symbol' => 'BND',
+    ),
+    'BOB' => 
+    array (
+      'name' => 'بولِوِیَن بولوینو',
+      'symbol' => 'BOB',
+    ),
+    'BOP' => 
+    array (
+      'name' => 'بولویَن پِسو',
+      'symbol' => 'BOP',
+    ),
+    'BOV' => 
+    array (
+      'name' => 'بولوِیَن مَوڈال',
+      'symbol' => 'BOV',
+    ),
+    'BRB' => 
+    array (
+      'name' => 'برٛازیٖلین کرٛوزِرو نووو',
+      'symbol' => 'BRB',
+    ),
+    'BRC' => 
+    array (
+      'name' => 'برٛازیٖلین کرٛوزیڑو',
+      'symbol' => 'BRC',
+    ),
+    'BRE' => 
+    array (
+      'name' => 'برٛازیٖلین کرٛوزِرو',
+      'symbol' => 'BRE',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'برٛازیٖلین رِیَل',
+      'symbol' => 'BRL',
+    ),
+    'BRN' => 
+    array (
+      'name' => 'برٛازیٖلین کرٛوزیڑو نووو',
+      'symbol' => 'BRN',
+    ),
+    'BRR' => 
+    array (
+      'name' => 'برٛازیٖلین کرٛوزیرو',
+      'symbol' => 'BRR',
+    ),
+    'BSD' => 
+    array (
+      'name' => 'بہامِیَن ڈالر',
+      'symbol' => 'BSD',
+    ),
+    'BTN' => 
+    array (
+      'name' => 'بوٗٹینیٖز نگُلٹرٛم',
+      'symbol' => 'BTN',
+    ),
+    'BUK' => 
+    array (
+      'name' => 'بٔرمیٖز کیٹ',
+      'symbol' => 'BUK',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'بوٹٕسوانَن پُلا',
+      'symbol' => 'BWP',
+    ),
+    'BYB' => 
+    array (
+      'name' => 'بِلیروشِیَن نِو رِبٕل',
+      'symbol' => 'BYB',
+    ),
+    'BYR' => 
+    array (
+      'name' => 'بِلیروشِیَن رِبٕل',
+      'symbol' => 'BYR',
+    ),
+    'BZD' => 
+    array (
+      'name' => 'بِلِزی ڈالر',
+      'symbol' => 'BZD',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'کینَڑِیَن ڈالر',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'کونٛگولیٖز فرٛیک',
+      'symbol' => 'CDF',
+    ),
+    'CHE' => 
+    array (
+      'name' => 'وِر یوٗرو',
+      'symbol' => 'CHE',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'سُوِز فریک',
+      'symbol' => 'CHF',
+    ),
+    'CHW' => 
+    array (
+      'name' => 'وِر فرٛیک',
+      'symbol' => 'CHW',
+    ),
+    'CLF' => 
+    array (
+      'name' => 'چِلِن یوٗنِڑیدیٖز ڑِ فومیٹو',
+      'symbol' => 'CLF',
+    ),
+    'CLP' => 
+    array (
+      'name' => 'چِلِن پِسو',
+      'symbol' => 'CLP',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'چینیٖز یَن رِنمِنبی',
+      'symbol' => 'CNY',
+    ),
+    'COP' => 
+    array (
+      'name' => 'کولَمبِین پِسو',
+      'symbol' => 'COP',
+    ),
+    'COU' => 
+    array (
+      'name' => 'ِٖیوٗنِڑیڑ ڑِ ویلور رِیل',
+      'symbol' => 'COU',
+    ),
+    'CRC' => 
+    array (
+      'name' => 'کوسٹا رِکَن کولَن',
+      'symbol' => 'CRC',
+    ),
+    'CSD' => 
+    array (
+      'name' => 'پرٛون سٔربِین ڈالر',
+      'symbol' => 'CSD',
+    ),
+    'CSK' => 
+    array (
+      'name' => 'چِکوسولوواک ہاڑ کوروٗنا',
+      'symbol' => 'CSK',
+    ),
+    'CUP' => 
+    array (
+      'name' => 'کیوٗبَن پِسو',
+      'symbol' => 'CUP',
+    ),
+    'CYP' => 
+    array (
+      'name' => 'کیپروٹ پَوُڑ',
+      'symbol' => 'CYP',
+    ),
+    'CZK' => 
+    array (
+      'name' => 'چیک کوریٖنا',
+      'symbol' => 'CZK',
+    ),
+    'DDM' => 
+    array (
+      'name' => 'مٔشرِقی جٔرمَن مارٕک',
+      'symbol' => 'DDM',
+    ),
+    'DEM' => 
+    array (
+      'name' => 'جٔرمَن مارٕک',
+      'symbol' => 'DEM',
+    ),
+    'DKK' => 
+    array (
+      'name' => 'ڈٔنِش کرٛون',
+      'symbol' => 'DKK',
+    ),
+    'DOP' => 
+    array (
+      'name' => 'ڈومِنِکَن پِسو',
+      'symbol' => 'DOP',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'اٮ۪لجیرِیَن ڈیٖنار',
+      'symbol' => 'DZD',
+    ),
+    'EEK' => 
+    array (
+      'name' => 'اٮ۪سٹونِیَن کرٛون',
+      'symbol' => 'EEK',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'اِجِپٹِیَن پَوُنڑ',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'رِٹریٖن نَفکا',
+      'symbol' => 'ERN',
+    ),
+    'ESP' => 
+    array (
+      'name' => 'سِپینِش پیسِٹا',
+      'symbol' => 'ESP',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'اِتھوپِیَن بِر',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'یوٗرو',
+      'symbol' => 'EUR',
+    ),
+    'FIM' => 
+    array (
+      'name' => 'فِنِش مارکا',
+      'symbol' => 'FIM',
+    ),
+    'FJD' => 
+    array (
+      'name' => 'فِجین ڈالر',
+      'symbol' => 'FJD',
+    ),
+    'FKP' => 
+    array (
+      'name' => 'فیکلینٛڑِس آیلینٛڑ پونٛڑ',
+      'symbol' => 'FKP',
+    ),
+    'FRF' => 
+    array (
+      'name' => 'فرٛانسِسی فرٛیک',
+      'symbol' => 'FRF',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'برطٲنوی پاونٛڑ سٹٔرلِنٛگ',
+      'symbol' => 'GBP',
+    ),
+    'GEK' => 
+    array (
+      'name' => 'جارجِیَن کیوٗپَن لَرِٹ',
+      'symbol' => 'GEK',
+    ),
+    'GEL' => 
+    array (
+      'name' => 'جارجِیَن لاری',
+      'symbol' => 'GEL',
+    ),
+    'GHC' => 
+    array (
+      'name' => 'گَنیٚیَن سٮ۪ڑی(۱۹۷۹–۲٠٠۷)',
+      'symbol' => 'GHC',
+    ),
+    'GHS' => 
+    array (
+      'name' => 'گَنیٚیَن سٮ۪ڑی',
+      'symbol' => 'GHS',
+    ),
+    'GIP' => 
+    array (
+      'name' => 'گِبریلٹَر پَاونٛڑ',
+      'symbol' => 'GIP',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'گیمبِیاہُک دلاسی',
+      'symbol' => 'GMD',
+    ),
+    'GNF' => 
+    array (
+      'name' => 'گِنِیَن فرٛینٛک',
+      'symbol' => 'GNF',
+    ),
+    'GNS' => 
+    array (
+      'name' => 'گِنِیَن سِلی',
+      'symbol' => 'GNS',
+    ),
+    'GQE' => 
+    array (
+      'name' => 'اِکویٹورِیَل گِنِیَن اٮ۪کویٖل',
+      'symbol' => 'GQE',
+    ),
+    'GRD' => 
+    array (
+      'name' => 'گریٖسُک ڑرٛٮ۪کما',
+      'symbol' => 'GRD',
+    ),
+    'GTQ' => 
+    array (
+      'name' => 'گواٹَمالَن قیوٗٹزَل',
+      'symbol' => 'GTQ',
+    ),
+    'GWE' => 
+    array (
+      'name' => 'پورتگیٖزُک گِنی اٮ۪سکیوٗڑو',
+      'symbol' => 'GWE',
+    ),
+    'GWP' => 
+    array (
+      'name' => 'گِنی بِساوُک پٮ۪سو',
+      'symbol' => 'GWP',
+    ),
+    'GYD' => 
+    array (
+      'name' => 'گَیَنیٖزُک ڑالَر',
+      'symbol' => 'GYD',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'حانٛگ کانٛگُک ڑالَر',
+      'symbol' => 'HKD',
+    ),
+    'HNL' => 
+    array (
+      'name' => 'حونڑورنُک لٮ۪مپیٖرا',
+      'symbol' => 'HNL',
+    ),
+    'HRD' => 
+    array (
+      'name' => 'کروایشنُک دیٖنار',
+      'symbol' => 'HRD',
+    ),
+    'HRK' => 
+    array (
+      'name' => 'کروایشنُک کوٗنا',
+      'symbol' => 'HRK',
+    ),
+    'HTG' => 
+    array (
+      'name' => 'حیشَنُک گوڑ',
+      'symbol' => 'HTG',
+    ),
+    'HUF' => 
+    array (
+      'name' => 'حَنگیرِیَن فورِنٛٹ',
+      'symbol' => 'HUF',
+    ),
+    'IDR' => 
+    array (
+      'name' => 'اِنڑونیشیاہُک رُپِیاہ',
+      'symbol' => 'IDR',
+    ),
+    'IEP' => 
+    array (
+      'name' => 'اَیرلینڑُک پاونٛڑ',
+      'symbol' => 'IEP',
+    ),
+    'ILP' => 
+    array (
+      'name' => 'اِزرٲیِلی پاونٛڑ',
+      'symbol' => 'ILP',
+    ),
+    'ILS' => 
+    array (
+      'name' => 'اِزرٲیِلی نٔوۍ شٮ۪قٕل',
+      'symbol' => 'ILS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'ہِندُستٲنۍ رۄپَے',
+      'symbol' => 'INR',
+    ),
+    'IQD' => 
+    array (
+      'name' => 'ایٖراقُک دیٖنار',
+      'symbol' => 'IQD',
+    ),
+    'IRR' => 
+    array (
+      'name' => 'ایٖرانُک رِیال',
+      'symbol' => 'IRR',
+    ),
+    'ISK' => 
+    array (
+      'name' => 'اَیسلینٛڑُک کرٛونا',
+      'symbol' => 'ISK',
+    ),
+    'ITL' => 
+    array (
+      'name' => 'اِٹلیٖ یُک لیٖرا',
+      'symbol' => 'ITL',
+    ),
+    'JMD' => 
+    array (
+      'name' => 'جَمَیکاہُک ڑالَر',
+      'symbol' => 'JMD',
+    ),
+    'JOD' => 
+    array (
+      'name' => 'جَرڑینیاہُک دیٖنار',
+      'symbol' => 'JOD',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'جاپانُک یَن',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'کٮ۪نیَن شِلِنٛگ',
+      'symbol' => 'KES',
+    ),
+    'KGS' => 
+    array (
+      'name' => 'کِرگِستانُک سوم',
+      'symbol' => 'KGS',
+    ),
+    'KHR' => 
+    array (
+      'name' => 'کَمبوڑِیاہُک رِیال',
+      'symbol' => 'KHR',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'کومورِیَن فرٛینٛک',
+      'symbol' => 'KMF',
+    ),
+    'KPW' => 
+    array (
+      'name' => 'جنوٗبی کورِیَن وَن',
+      'symbol' => 'KPW',
+    ),
+    'KRW' => 
+    array (
+      'name' => 'ساوتھ کورِیَن وَن',
+      'symbol' => 'KRW',
+    ),
+    'KWD' => 
+    array (
+      'name' => 'قُویتُک دیٖنار',
+      'symbol' => 'KWD',
+    ),
+    'KYD' => 
+    array (
+      'name' => 'کیمین ججیٖرُک ڑالَر',
+      'symbol' => 'KYD',
+    ),
+    'KZT' => 
+    array (
+      'name' => 'کزاکِستان ٹینٛج',
+      'symbol' => 'KZT',
+    ),
+    'LAK' => 
+    array (
+      'name' => 'لَوٹِیَن کِپ',
+      'symbol' => 'LAK',
+    ),
+    'LBP' => 
+    array (
+      'name' => 'لیبنیٖزُک پاونٛڑ',
+      'symbol' => 'LBP',
+    ),
+    'LKR' => 
+    array (
+      'name' => 'سری لَنکاہٕچ رۄپَے',
+      'symbol' => 'LKR',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'لَیبیرِیَن ڑالَر',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'لِسوتھو لوٹی',
+      'symbol' => 'LSL',
+    ),
+    'LTL' => 
+    array (
+      'name' => 'لِتھوینِیَن لِٹاس',
+      'symbol' => 'LTL',
+    ),
+    'LTT' => 
+    array (
+      'name' => 'لِتھوینِیَن ٹٮ۪لوناس',
+      'symbol' => 'LTT',
+    ),
+    'LUC' => 
+    array (
+      'name' => 'لَکزٕمبورگِیَن کَنؤرٹِبٕل فرٛینٛک',
+      'symbol' => 'LUC',
+    ),
+    'LUF' => 
+    array (
+      'name' => 'لَکزٕمبورگِیَن فرٛینٛک',
+      'symbol' => 'LUF',
+    ),
+    'LUL' => 
+    array (
+      'name' => 'لَکزٕمبوگ فَینانشَل فرٛینٛک',
+      'symbol' => 'LUL',
+    ),
+    'LVL' => 
+    array (
+      'name' => 'لَتوِیَن لیٹس',
+      'symbol' => 'LVL',
+    ),
+    'LVR' => 
+    array (
+      'name' => 'لَتوِیَن رَبٕل',
+      'symbol' => 'LVR',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'لِبیَن دیٖنار',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'موروکَن دِرہَم',
+      'symbol' => 'MAD',
+    ),
+    'MAF' => 
+    array (
+      'name' => 'موروکَن فرٛینٛک',
+      'symbol' => 'MAF',
+    ),
+    'MDL' => 
+    array (
+      'name' => 'مولڑووین لیوٗ',
+      'symbol' => 'MDL',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'مٮ۪لٮ۪گیسی اٮ۪ریَری',
+      'symbol' => 'MGA',
+    ),
+    'MGF' => 
+    array (
+      'name' => 'مٮ۪لٮ۪گیسی فرٛینٛک',
+      'symbol' => 'MGF',
+    ),
+    'MKD' => 
+    array (
+      'name' => 'مٮ۪کَڑونِیَن دیٖنار',
+      'symbol' => 'MKD',
+    ),
+    'MLF' => 
+    array (
+      'name' => 'میلِیَن فرٛینٛک',
+      'symbol' => 'MLF',
+    ),
+    'MMK' => 
+    array (
+      'name' => 'مِیانما کیاٹ',
+      'symbol' => 'MMK',
+    ),
+    'MNT' => 
+    array (
+      'name' => 'مۄنگولِیَن ٹُگرِک',
+      'symbol' => 'MNT',
+    ),
+    'MOP' => 
+    array (
+      'name' => 'مٮ۪کانیٖز پَٹاکا',
+      'symbol' => 'MOP',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'مورِٹینِیَن عوگیوٗیا',
+      'symbol' => 'MRO',
+    ),
+    'MTL' => 
+    array (
+      'name' => 'مالٹیٖزُک لیٖرا',
+      'symbol' => 'MTL',
+    ),
+    'MTP' => 
+    array (
+      'name' => 'مالٹیٖزُک پاونٛڑ',
+      'symbol' => 'MTP',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'مورٮ۪شِیاہٕچ رۄپَے',
+      'symbol' => 'MUR',
+    ),
+    'MVR' => 
+    array (
+      'name' => 'مالدِیٖوِیَن رُفِیا',
+      'symbol' => 'MVR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'مٮ۪لیوِیَن کواچا',
+      'symbol' => 'MWK',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'مٮ۪کسِکَن پٮ۪سو',
+      'symbol' => 'MXN',
+    ),
+    'MXP' => 
+    array (
+      'name' => 'مٮ۪کسِکَن سِلوَر پٮ۪سو (۱۸۶۱–۱۹۹۲)',
+      'symbol' => 'MXP',
+    ),
+    'MYR' => 
+    array (
+      'name' => 'مَلیشِیَن رِنٛگِٹ',
+      'symbol' => 'MYR',
+    ),
+    'MZE' => 
+    array (
+      'name' => 'موزیمبِکَن سکیوٗڑو',
+      'symbol' => 'MZE',
+    ),
+    'MZM' => 
+    array (
+      'name' => 'پرٛون موزیمبِکَن مٮ۪ٹِکَل',
+      'symbol' => 'MZM',
+    ),
+    'MZN' => 
+    array (
+      'name' => 'موزیمبِکَن مٮ۪ٹِکَل',
+      'symbol' => 'MZN',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'نامِبِیَن ڑالَر',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'نَیجیرِیَن ڑالَر',
+      'symbol' => 'NGN',
+    ),
+    'NIC' => 
+    array (
+      'name' => 'نِکٮ۪راگُوٮ۪ن کورڑوبا',
+      'symbol' => 'NIC',
+    ),
+    'NIO' => 
+    array (
+      'name' => 'نِکٮ۪راگُوٮ۪ن کورڑوبا اورو',
+      'symbol' => 'NIO',
+    ),
+    'NLG' => 
+    array (
+      'name' => 'ڈَچ گِلڑَر',
+      'symbol' => 'NLG',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'نورویٚیِنُک کرٛون',
+      'symbol' => 'NOK',
+    ),
+    'NPR' => 
+    array (
+      'name' => 'نیپالٕچ رۄپَے',
+      'symbol' => 'NPR',
+    ),
+    'NZD' => 
+    array (
+      'name' => 'نِوزیٖلینٛڑُک ڑالَر',
+      'symbol' => 'NZD',
+    ),
+    'OMR' => 
+    array (
+      'name' => 'اومِنی رِیال',
+      'symbol' => 'OMR',
+    ),
+    'PAB' => 
+    array (
+      'name' => 'پانامانِیَن بالبوز',
+      'symbol' => 'PAB',
+    ),
+    'PEI' => 
+    array (
+      'name' => 'پٔریوٗوِیَن اِنٛٹی',
+      'symbol' => 'PEI',
+    ),
+    'PEN' => 
+    array (
+      'name' => 'پٔریوٗوِیَن نیوٗاوز سولٕز',
+      'symbol' => 'PEN',
+    ),
+    'PES' => 
+    array (
+      'name' => 'پٔریوٗوِیَن سول',
+      'symbol' => 'PES',
+    ),
+    'PGK' => 
+    array (
+      'name' => 'نیوٗ پیپُعا گِنِیَن کیٖنا',
+      'symbol' => 'PGK',
+    ),
+    'PHP' => 
+    array (
+      'name' => 'پھِلِپایِٔن پٮ۪سو',
+      'symbol' => 'PHP',
+    ),
+    'PKR' => 
+    array (
+      'name' => 'پاکِستٲنۍ رۄپَے',
+      'symbol' => 'PKR',
+    ),
+    'PLN' => 
+    array (
+      'name' => 'پولِش زلوٹی',
+      'symbol' => 'PLN',
+    ),
+    'PLZ' => 
+    array (
+      'name' => 'پولِش زلوٹی(۱۹۵٠–۱۹۹۵)',
+      'symbol' => 'PLZ',
+    ),
+    'PTE' => 
+    array (
+      'name' => 'پورتُگیٖز اٮ۪سکیوٗڑو',
+      'symbol' => 'PTE',
+    ),
+    'PYG' => 
+    array (
+      'name' => 'پٮ۪رٮ۪گیوٗوَیَن گُعارانی',
+      'symbol' => 'PYG',
+    ),
+    'QAR' => 
+    array (
+      'name' => 'قطاری رِیال',
+      'symbol' => 'QAR',
+    ),
+    'RHD' => 
+    array (
+      'name' => 'رھوڑیشِیَن ڑالَر',
+      'symbol' => 'RHD',
+    ),
+    'ROL' => 
+    array (
+      'name' => 'اولڑ رومانِیَن لٮ۪یوٗ',
+      'symbol' => 'ROL',
+    ),
+    'RON' => 
+    array (
+      'name' => 'رومانِیَن لٮ۪یوٗ',
+      'symbol' => 'RON',
+    ),
+    'RSD' => 
+    array (
+      'name' => 'سٔربِیَن دیٖنار',
+      'symbol' => 'RSD',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'رٔشیَن رَبٕل',
+      'symbol' => 'RUB',
+    ),
+    'RUR' => 
+    array (
+      'name' => 'رٔشیَن رَبٕل(۱۹۹۱–۱۹۹۸)',
+      'symbol' => 'RUR',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'روانٛڑَن فرانٛک',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'سودیٖیُک رِیال',
+      'symbol' => 'SAR',
+    ),
+    'SBD' => 
+    array (
+      'name' => 'سولَمَن جٔزیٖرُک ڈالَر',
+      'symbol' => 'SBD',
+    ),
+    'SDD' => 
+    array (
+      'name' => 'پرون سوٗڈانُک دیٖنار',
+      'symbol' => 'SDD',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'سوٗڈانُک پونٛڈ',
+      'symbol' => 'SDG',
+    ),
+    'SDP' => 
+    array (
+      'name' => 'پرون سوٗڈانُک پونٛڈ',
+      'symbol' => 'SDP',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'سویٖڈِش کَرونا',
+      'symbol' => 'SEK',
+    ),
+    'SGD' => 
+    array (
+      'name' => 'سِنگاپورُک ڈالَر',
+      'symbol' => 'SGD',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'سینٹ ہیلِنا پونٛڈ',
+      'symbol' => 'SHP',
+    ),
+    'SIT' => 
+    array (
+      'name' => 'سلووینُک ٹولَر',
+      'symbol' => 'SIT',
+    ),
+    'SKK' => 
+    array (
+      'name' => 'سلووَک کَرونا',
+      'symbol' => 'SKK',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'سومالی شِلِنٛگ',
+      'symbol' => 'SOS',
+    ),
+    'SRD' => 
+    array (
+      'name' => 'سُریٖنامُک ڈالَر',
+      'symbol' => 'SRD',
+    ),
+    'SRG' => 
+    array (
+      'name' => 'سُریٖنام گِلدَر',
+      'symbol' => 'SRG',
+    ),
+    'SUR' => 
+    array (
+      'name' => 'سوویت روبٕل',
+      'symbol' => 'SUR',
+    ),
+    'SVC' => 
+    array (
+      'name' => 'سَلویدَرُک کولَن',
+      'symbol' => 'SVC',
+    ),
+    'SYP' => 
+    array (
+      'name' => 'سیٖریاہُک پونٛڈ',
+      'symbol' => 'SYP',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'سوازی لِلَنگیٚنی',
+      'symbol' => 'SZL',
+    ),
+    'THB' => 
+    array (
+      'name' => 'تھایھک بات',
+      'symbol' => 'THB',
+    ),
+    'TJR' => 
+    array (
+      'name' => 'تاجکِستانُک رَبٕل',
+      'symbol' => 'TJR',
+    ),
+    'TJS' => 
+    array (
+      'name' => 'تاجِکتانُک سَمونی',
+      'symbol' => 'TJS',
+    ),
+    'TMM' => 
+    array (
+      'name' => 'تُکَمَنِستانُک مَنَت',
+      'symbol' => 'TMM',
+    ),
+    'TND' => 
+    array (
+      'name' => 'ٹُنیشیاہُک دیٖنار',
+      'symbol' => 'TND',
+    ),
+    'TOP' => 
+    array (
+      'name' => 'ٹونگَن پانٛگا',
+      'symbol' => 'TOP',
+    ),
+    'TPE' => 
+    array (
+      'name' => 'ٹیموریٚسو ایٚکیٖڈو',
+      'symbol' => 'TPE',
+    ),
+    'TRL' => 
+    array (
+      'name' => 'پرون تُرکِش لیرا',
+      'symbol' => 'TRL',
+    ),
+    'TRY' => 
+    array (
+      'name' => 'تُرکیہُک لیرا',
+      'symbol' => 'TRY',
+    ),
+    'TTD' => 
+    array (
+      'name' => 'ٹرِنہِ ڈیڈ تہٕ ٹوبیگو ڈالَر',
+      'symbol' => 'TTD',
+    ),
+    'TWD' => 
+    array (
+      'name' => 'نوٚو تیوانُک ڈالَر',
+      'symbol' => 'TWD',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'تَنزانیاہُک شِلِنٛگ',
+      'symbol' => 'TZS',
+    ),
+    'UAH' => 
+    array (
+      'name' => 'یوٗکرینیاہُک ہرِوِنیا',
+      'symbol' => 'UAH',
+    ),
+    'UAK' => 
+    array (
+      'name' => 'یوٗکرینیاہُک کاربووَنیٹس',
+      'symbol' => 'UAK',
+    ),
+    'UGS' => 
+    array (
+      'name' => 'اُگاداہُک شِلِنٛگ(۱۹۶۶–۱۹۸۷)',
+      'symbol' => 'UGS',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'اُگاداہُک شِلِنٛگ',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'یوٗ ایٚس ڈالَر',
+      'symbol' => 'USD',
+    ),
+    'USN' => 
+    array (
+      'name' => 'یوٗ ایٚس ڈالَر(پَگاہ)',
+      'symbol' => 'USN',
+    ),
+    'USS' => 
+    array (
+      'name' => 'یوٗ ایٚس ڈالَر(تَمی دًۄہ)',
+      'symbol' => 'USS',
+    ),
+    'UYI' => 
+    array (
+      'name' => 'اُرگایَن پیٚسو یوٗنِڈیڈَس اِنڈیٚکسَس',
+      'symbol' => 'UYI',
+    ),
+    'UYP' => 
+    array (
+      'name' => 'اُرگایَن پیٚسو(۱۹۷۵–۱۹۹۳)',
+      'symbol' => 'UYP',
+    ),
+    'UYU' => 
+    array (
+      'name' => 'اُروٗگایَن پیٚسو',
+      'symbol' => 'UYU',
+    ),
+    'UZS' => 
+    array (
+      'name' => 'اُبیکِستان سوم',
+      'symbol' => 'UZS',
+    ),
+    'VEB' => 
+    array (
+      'name' => 'وینٕزوٗلیُک بولِوَر (۱۸۷۱–۲۰۰۸)',
+      'symbol' => 'VEB',
+    ),
+    'VEF' => 
+    array (
+      'name' => 'وینٕزوٗلیُک بولِوَر',
+      'symbol' => 'VEF',
+    ),
+    'VND' => 
+    array (
+      'name' => 'وِیَنَمُک ڈانٛگ',
+      'symbol' => 'VND',
+    ),
+    'VUV' => 
+    array (
+      'name' => 'وَنوٗاَتوٗ وَتوٗ',
+      'symbol' => 'VUV',
+    ),
+    'WST' => 
+    array (
+      'name' => 'سَمون تَلا',
+      'symbol' => 'WST',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'سی ایٚف اے فرینک بی ایٖ اے سی',
+      'symbol' => 'XAF',
+    ),
+    'XAG' => 
+    array (
+      'name' => 'رۄپھ',
+      'symbol' => 'XAG',
+    ),
+    'XAU' => 
+    array (
+      'name' => 'سۄن',
+      'symbol' => 'XAU',
+    ),
+    'XBA' => 
+    array (
+      'name' => 'یوٗرپی کَمپوسِٹ یوٗنِٹ',
+      'symbol' => 'XBA',
+    ),
+    'XBB' => 
+    array (
+      'name' => 'یوٗرپی مونِٹَری یوٗنِٹ',
+      'symbol' => 'XBB',
+    ),
+    'XBC' => 
+    array (
+      'name' => 'یوٗرپی یوٗنِٹ آف ایٚکاوُنٛٹ (ایکس بی سی)',
+      'symbol' => 'XBC',
+    ),
+    'XBD' => 
+    array (
+      'name' => 'یوٗرپی یوٗنِٹ آف ایٚکاوُنٛٹ (ایکس بی ڈی)',
+      'symbol' => 'XBD',
+    ),
+    'XCD' => 
+    array (
+      'name' => 'مَشرِقی کیرِبِیَن ڈالَر',
+      'symbol' => 'XCD',
+    ),
+    'XDR' => 
+    array (
+      'name' => 'خاص ڈرایِنٛگ رایٹس',
+      'symbol' => 'XDR',
+    ),
+    'XEU' => 
+    array (
+      'name' => 'یوٗرپی کَرَنسی یوٗنِٹ',
+      'symbol' => 'XEU',
+    ),
+    'XFO' => 
+    array (
+      'name' => 'فریٚنچ گولڈ فرینک',
+      'symbol' => 'XFO',
+    ),
+    'XFU' => 
+    array (
+      'name' => 'فریٛنچ یوٗ اے سی فرینک',
+      'symbol' => 'XFU',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'سی ایٚف اے فرینک بی سی ایٖ اے او',
+      'symbol' => 'XOF',
+    ),
+    'XPD' => 
+    array (
+      'name' => 'پُلیڈیَم',
+      'symbol' => 'XPD',
+    ),
+    'XPF' => 
+    array (
+      'name' => 'سی ایٚف پی فرینک',
+      'symbol' => 'XPF',
+    ),
+    'XPT' => 
+    array (
+      'name' => 'پلیٹِنَم',
+      'symbol' => 'XPT',
+    ),
+    'XRE' => 
+    array (
+      'name' => 'آر آے ایٚن ایٖ ٹی فَنٛڈ',
+      'symbol' => 'XRE',
+    ),
+    'XTS' => 
+    array (
+      'name' => 'ٹیٚسٹِنٛگ کَرَنسی کوڈ',
+      'symbol' => 'XTS',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'اَنزٲنۍ یا نالَگہٕ ہار سِکہٕ',
+      'symbol' => 'XXX',
+    ),
+    'YDD' => 
+    array (
+      'name' => 'یَمنُک دیٖنار',
+      'symbol' => 'YDD',
+    ),
+    'YER' => 
+    array (
+      'name' => 'یَمنُک رِیال',
+      'symbol' => 'YER',
+    ),
+    'YUD' => 
+    array (
+      'name' => 'یوگوسلاوِیَن ہاڑ دیٖنار',
+      'symbol' => 'YUD',
+    ),
+    'YUM' => 
+    array (
+      'name' => 'یوگوسلاوِیَن نووِے دیٖنار',
+      'symbol' => 'YUM',
+    ),
+    'YUN' => 
+    array (
+      'name' => 'یوگوسلاوِیَن کَنؤٹِبٕل دیٖنار',
+      'symbol' => 'YUN',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'ساوُتھ افریٖکاہُک رینڈ',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'زِمبابیُک کواچا (1968–2012)',
+      'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'زِمبابیُک کواچا',
+      'symbol' => 'ZMW',
+    ),
+    'ZRN' => 
+    array (
+      'name' => 'زایرِیَن نِو زایِر',
+      'symbol' => 'ZRN',
+    ),
+    'ZRZ' => 
+    array (
+      'name' => 'زَیرُک ڈالَر',
+      'symbol' => 'ZRZ',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'زِمبابِیُک ڈالَر',
+      'symbol' => 'ZWD',
+    ),
+  ),
+);

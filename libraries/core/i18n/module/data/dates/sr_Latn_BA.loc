@@ -1,0 +1,47 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'medium' => 'G y-MM-dd',
+      'short' => 'GGGGG yy-MM-dd',
+    ),
+  ),
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'wed' => 'sri',
+      ),
+      'full' => 
+      array (
+        'wed' => 'srijeda',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'full' => 
+      array (
+        6 => 'juni',
+        7 => 'juli',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'medium' => 'y-MM-dd',
+      'short' => 'yy-MM-dd',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'HH \'časova\', mm \'minuta\', ss \'sekundi\' zzzz',
+      'medium' => 'HH:mm:ss',
+      'short' => 'HH:mm',
+    ),
+  ),
+);

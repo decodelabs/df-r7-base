@@ -20,6 +20,7 @@ return array (
   '011' => 'Ɣetoɖoƒelɔƒo Afrika nutome',
   145 => 'Ɣetoɖoƒelɔƒo Asia nutome',
   155 => 'Ɣetoɖoƒelɔƒo Europa nutome',
+  '001' => 'xexeme',
   '029' => 'Karibbea nutome',
   419 => 'Latin Amerika nutome',
   '054' => 'Melanesia nutome',
@@ -29,5 +30,4 @@ return array (
   '017' => 'Titina Afrika nutome',
   '013' => 'Titina Amerika nutome',
   143 => 'Titina Asia nutome',
-  '001' => 'xexeme',
 );

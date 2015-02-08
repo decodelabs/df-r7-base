@@ -1,6 +1,5 @@
 <?php
 return array (
-  'en' => 'Chirungu',
   'ak' => 'chiAkani',
   'am' => 'chiAmaric',
   'ar' => 'chiArabu',
@@ -31,6 +30,7 @@ return array (
   'pt' => 'chiPutukezi',
   'ru' => 'chiRashiya',
   'ro' => 'chiRomanian',
+  'en' => 'Chirungu',
   'rw' => 'chiRwanda',
   'sn' => 'chiShona',
   'so' => 'chiSomali',

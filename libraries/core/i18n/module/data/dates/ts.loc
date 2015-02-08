@@ -43,7 +43,7 @@ return array (
         9 => 'Ndz',
         10 => 'Nhl',
         11 => 'Huk',
-        12 => 'N\'w',
+        12 => 'N’w',
       ),
       'full' => 
       array (
@@ -58,7 +58,7 @@ return array (
         9 => 'Ndzhati',
         10 => 'Nhlangula',
         11 => 'Hukuri',
-        12 => 'N\'wendzamhala',
+        12 => 'N’wendzamhala',
       ),
     ),
   ),

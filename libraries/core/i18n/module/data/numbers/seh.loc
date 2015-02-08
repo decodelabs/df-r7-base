@@ -103,7 +103,7 @@ return array (
     ),
     'GHC' => 
     array (
-      'name' => 'Cedi de Gana (1979-2007)',
+      'name' => 'Cedi de Gana (1979–2007)',
       'symbol' => 'GHC',
     ),
     'GMD' => 
@@ -258,7 +258,7 @@ return array (
     ),
     'UGX' => 
     array (
-      'name' => 'Xelim ugandense (1966-1987)',
+      'name' => 'Xelim ugandense (1966–1987)',
       'symbol' => 'UGX',
     ),
     'USD' => 
@@ -283,8 +283,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'Cuacha zambiano',
+      'name' => 'Cuacha zambiano (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Cuacha zambiano',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

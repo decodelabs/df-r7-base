@@ -9,16 +9,18 @@ return array (
     'plusSign' => '+',
     'minusSign' => '-',
     'exponential' => 'E',
+    'superscriptingExponent' => '×',
     'perMille' => '‰',
     'infinity' => '∞',
     'nan' => 'NaN',
+    'timeSeparator' => ':',
   ),
   'formats' => 
   array (
     'decimal' => '#,##0.###',
     'scientific' => '#E0',
     'percent' => '#,##0%',
-    'currency' => '¤#,##0.00;¤-#,##0.00',
+    'currency' => '¤#,##0.00',
   ),
   'currencies' => 
   array (
@@ -34,12 +36,12 @@ return array (
     ),
     'AFA' => 
     array (
-      'name' => 'อัฟกานีอัฟกานิสถาน (1927-2002)',
+      'name' => 'อัฟกานีอัฟกานิสถาน (1927–2002)',
       'symbol' => 'AFA',
     ),
     'AFN' => 
     array (
-      'name' => 'อัฟกานีอัฟกานิสถาน',
+      'name' => 'อัฟกานิอัฟกานิสถาน',
       'symbol' => 'AFN',
     ),
     'ALL' => 
@@ -64,17 +66,17 @@ return array (
     ),
     'AOK' => 
     array (
-      'name' => 'กวานซาแองโกลา (1977-1990)',
+      'name' => 'กวานซาแองโกลา (1977–1990)',
       'symbol' => 'AOK',
     ),
     'AON' => 
     array (
-      'name' => 'นิวกวานซาแองโกลา (1990-2000)',
+      'name' => 'นิวกวานซาแองโกลา (1990–2000)',
       'symbol' => 'AON',
     ),
     'AOR' => 
     array (
-      'name' => 'กวานซารีจัสทาโดแองโกลา (1995-1999)',
+      'name' => 'กวานซารีจัสทาโดแองโกลา (1995–1999)',
       'symbol' => 'AOR',
     ),
     'ARA' => 
@@ -82,9 +84,19 @@ return array (
       'name' => 'ออสตรัลอาร์เจนตินา',
       'symbol' => 'ARA',
     ),
+    'ARL' => 
+    array (
+      'name' => 'เปโซเลย์อาร์เจนตินา (1970–1983)',
+      'symbol' => 'ARL',
+    ),
+    'ARM' => 
+    array (
+      'name' => 'เปโซอาร์เจนตินา (1881–1970)',
+      'symbol' => 'ARM',
+    ),
     'ARP' => 
     array (
-      'name' => 'เปโซอาร์เจนตินา (1983-1985)',
+      'name' => 'เปโซอาร์เจนตินา (1983–1985)',
       'symbol' => 'ARP',
     ),
     'ARS' => 
@@ -100,7 +112,7 @@ return array (
     'AUD' => 
     array (
       'name' => 'ดอลลาร์ออสเตรเลีย',
-      'symbol' => 'AUD',
+      'symbol' => 'AU$',
     ),
     'AWG' => 
     array (
@@ -109,7 +121,7 @@ return array (
     ),
     'AZM' => 
     array (
-      'name' => 'มานัตอาเซอร์ไบจาน (1993-2006)',
+      'name' => 'มานัตอาเซอร์ไบจาน (1993–2006)',
       'symbol' => 'AZM',
     ),
     'AZN' => 
@@ -124,8 +136,13 @@ return array (
     ),
     'BAM' => 
     array (
-      'name' => 'มาร​์กบอสเนีย-เฮอร์เซโกวีนา',
+      'name' => 'มาร์กบอสเนีย-เฮอร์เซโกวีนา',
       'symbol' => 'BAM',
+    ),
+    'BAN' => 
+    array (
+      'name' => 'ดีนาร์ใหม่บอสเนีย-เฮอร์เซโกวีนา (1994–1997)',
+      'symbol' => 'BAN',
     ),
     'BBD' => 
     array (
@@ -157,10 +174,20 @@ return array (
       'name' => 'ฮาร์ดเลฟบัลแกเรีย',
       'symbol' => 'BGL',
     ),
+    'BGM' => 
+    array (
+      'name' => 'โซเชียลลิสต์เลฟบัลแกเรีย',
+      'symbol' => 'BGM',
+    ),
     'BGN' => 
     array (
       'name' => 'เลฟบัลแกเรีย',
       'symbol' => 'BGN',
+    ),
+    'BGO' => 
+    array (
+      'name' => 'เลฟบัลเกเรีย (1879–1952)',
+      'symbol' => 'BGO',
     ),
     'BHD' => 
     array (
@@ -187,6 +214,11 @@ return array (
       'name' => 'โบลิเวียโนโบลิเวีย',
       'symbol' => 'BOB',
     ),
+    'BOL' => 
+    array (
+      'name' => 'โบลิเวียโนโบลิเวีย (1863–1963)',
+      'symbol' => 'BOL',
+    ),
     'BOP' => 
     array (
       'name' => 'เปโซโบลิเวีย',
@@ -199,7 +231,7 @@ return array (
     ),
     'BRB' => 
     array (
-      'name' => 'ครูเซโรโนโวบราซิล (1967-1986)',
+      'name' => 'ครูเซโรโนโวบราซิล (1967–1986)',
       'symbol' => 'BRB',
     ),
     'BRC' => 
@@ -209,13 +241,13 @@ return array (
     ),
     'BRE' => 
     array (
-      'name' => 'ครูเซโรบราซิล (1990-1993)',
+      'name' => 'ครูเซโรบราซิล (1990–1993)',
       'symbol' => 'BRE',
     ),
     'BRL' => 
     array (
       'name' => 'เรียลบราซิล',
-      'symbol' => 'BRL',
+      'symbol' => 'R$',
     ),
     'BRN' => 
     array (
@@ -226,6 +258,11 @@ return array (
     array (
       'name' => 'ครูเซโรบราซิล',
       'symbol' => 'BRR',
+    ),
+    'BRZ' => 
+    array (
+      'name' => 'ครูเซโรบราซิล (1942–1967)',
+      'symbol' => 'BRZ',
     ),
     'BSD' => 
     array (
@@ -249,7 +286,7 @@ return array (
     ),
     'BYB' => 
     array (
-      'name' => 'นิวรูเบิลเบลารุส (1994-1999)',
+      'name' => 'นิวรูเบิลเบลารุส (1994–1999)',
       'symbol' => 'BYB',
     ),
     'BYR' => 
@@ -265,7 +302,7 @@ return array (
     'CAD' => 
     array (
       'name' => 'ดอลลาร์แคนาดา',
-      'symbol' => 'CAD',
+      'symbol' => 'CA$',
     ),
     'CDF' => 
     array (
@@ -287,6 +324,11 @@ return array (
       'name' => 'ฟรังก์ดับเบิลยูไออาร์',
       'symbol' => 'CHW',
     ),
+    'CLE' => 
+    array (
+      'name' => 'เอสคูโดชิลี',
+      'symbol' => 'CLE',
+    ),
     'CLF' => 
     array (
       'name' => 'ฟูเมนโตชิลี',
@@ -299,8 +341,8 @@ return array (
     ),
     'CNY' => 
     array (
-      'name' => 'หยวนเหรินหมินปี้ (สาธารณรัฐประชาชนจีน)',
-      'symbol' => 'CNY',
+      'name' => 'หยวนจีน',
+      'symbol' => 'CN¥',
     ),
     'COP' => 
     array (
@@ -430,7 +472,7 @@ return array (
     'EUR' => 
     array (
       'name' => 'ยูโร',
-      'symbol' => 'EUR',
+      'symbol' => '€',
     ),
     'FIM' => 
     array (
@@ -455,7 +497,7 @@ return array (
     'GBP' => 
     array (
       'name' => 'ปอนด์สเตอร์ลิง (สหราชอาณาจักร)',
-      'symbol' => 'GBP',
+      'symbol' => '£',
     ),
     'GEK' => 
     array (
@@ -469,7 +511,7 @@ return array (
     ),
     'GHC' => 
     array (
-      'name' => 'เซดีกานา (1979-2007)',
+      'name' => 'เซดีกานา (1979–2007)',
       'symbol' => 'GHC',
     ),
     'GHS' => 
@@ -530,11 +572,11 @@ return array (
     'HKD' => 
     array (
       'name' => 'ดอลลาร์ฮ่องกง',
-      'symbol' => 'HKD',
+      'symbol' => 'HK$',
     ),
     'HNL' => 
     array (
-      'name' => 'เลมปิราฮอดูรัส',
+      'name' => 'เลมปิราฮอนดูรัส',
       'symbol' => 'HNL',
     ),
     'HRD' => 
@@ -575,12 +617,12 @@ return array (
     'ILS' => 
     array (
       'name' => 'นิวเชเกลอิสราเอล',
-      'symbol' => 'ILS',
+      'symbol' => '₪',
     ),
     'INR' => 
     array (
       'name' => 'รูปีอินเดีย',
-      'symbol' => 'INR',
+      'symbol' => '₹',
     ),
     'IQD' => 
     array (
@@ -642,10 +684,20 @@ return array (
       'name' => 'วอนเกาหลีเหนือ',
       'symbol' => 'KPW',
     ),
+    'KRH' => 
+    array (
+      'name' => 'ฮวานเกาหลีใต้ (1953–1962)',
+      'symbol' => 'KRH',
+    ),
+    'KRO' => 
+    array (
+      'name' => 'วอนเกาหลีใต้ (1945–1953)',
+      'symbol' => 'KRO',
+    ),
     'KRW' => 
     array (
       'name' => 'วอนเกาหลีใต้',
-      'symbol' => 'KRW',
+      'symbol' => '₩',
     ),
     'KWD' => 
     array (
@@ -737,6 +789,16 @@ return array (
       'name' => 'ฟรังก์โมร็อกโก',
       'symbol' => 'MAF',
     ),
+    'MCF' => 
+    array (
+      'name' => 'ฟรังก์โมนาโก',
+      'symbol' => 'MCF',
+    ),
+    'MDC' => 
+    array (
+      'name' => 'บัตรปันส่วนมอลโดวา',
+      'symbol' => 'MDC',
+    ),
     'MDL' => 
     array (
       'name' => 'ลิวมอลโดวา',
@@ -744,7 +806,7 @@ return array (
     ),
     'MGA' => 
     array (
-      'name' => 'อาเรียรีมาดากัสการ์',
+      'name' => 'อาเรียรีมาลากาซี',
       'symbol' => 'MGA',
     ),
     'MGF' => 
@@ -757,6 +819,11 @@ return array (
       'name' => 'ดีนาร์มาซิโดเนีย',
       'symbol' => 'MKD',
     ),
+    'MKN' => 
+    array (
+      'name' => 'ดีนาร์มาซิโดเนีย (1992–1993)',
+      'symbol' => 'MKN',
+    ),
     'MLF' => 
     array (
       'name' => 'ฟรังก์มาลี',
@@ -764,7 +831,7 @@ return array (
     ),
     'MMK' => 
     array (
-      'name' => 'จัคพม่า',
+      'name' => 'จ๊าตพม่า',
       'symbol' => 'MMK',
     ),
     'MNT' => 
@@ -779,7 +846,7 @@ return array (
     ),
     'MRO' => 
     array (
-      'name' => 'ออกิวยามอริเตเนีย',
+      'name' => 'อูกียามอริเตเนีย',
       'symbol' => 'MRO',
     ),
     'MTL' => 
@@ -810,11 +877,11 @@ return array (
     'MXN' => 
     array (
       'name' => 'เปโซเม็กซิโก',
-      'symbol' => 'MXN',
+      'symbol' => 'MX$',
     ),
     'MXP' => 
     array (
-      'name' => 'เงินเปโซเม็กซิโก (1861-1992)',
+      'name' => 'เงินเปโซเม็กซิโก (1861–1992)',
       'symbol' => 'MXP',
     ),
     'MXV' => 
@@ -859,7 +926,7 @@ return array (
     ),
     'NIO' => 
     array (
-      'name' => 'คอร์โดบาโอโรนิการากัว',
+      'name' => 'กอร์โดบานิการากัว',
       'symbol' => 'NIO',
     ),
     'NLG' => 
@@ -880,7 +947,7 @@ return array (
     'NZD' => 
     array (
       'name' => 'ดอลลาร์นิวซีแลนด์',
-      'symbol' => 'NZD',
+      'symbol' => 'NZ$',
     ),
     'OMR' => 
     array (
@@ -909,7 +976,7 @@ return array (
     ),
     'PGK' => 
     array (
-      'name' => 'กีนาปาปัวนิวกีนี',
+      'name' => 'กีนาปาปัวนิวกินี',
       'symbol' => 'PGK',
     ),
     'PHP' => 
@@ -929,7 +996,7 @@ return array (
     ),
     'PLZ' => 
     array (
-      'name' => 'ซลอตีโปแลนด์ (1950-1995)',
+      'name' => 'ซลอตีโปแลนด์ (1950–1995)',
       'symbol' => 'PLZ',
     ),
     'PTE' => 
@@ -974,7 +1041,7 @@ return array (
     ),
     'RUR' => 
     array (
-      'name' => 'รูเบิลรัสเซีย (1991-1998)',
+      'name' => 'รูเบิลรัสเซีย (1991–1998)',
       'symbol' => 'RUR',
     ),
     'RWF' => 
@@ -1057,6 +1124,11 @@ return array (
       'name' => 'กิลเดอร์ซูรินาเม',
       'symbol' => 'SRG',
     ),
+    'SSP' => 
+    array (
+      'name' => 'ปอนด์ซูดานใต้',
+      'symbol' => 'SSP',
+    ),
     'STD' => 
     array (
       'name' => 'ดอบราเซาตูเมและปรินซิปี',
@@ -1079,7 +1151,7 @@ return array (
     ),
     'SZL' => 
     array (
-      'name' => 'ลิลันกีนีสวาซิแลนด์',
+      'name' => 'ลิลันเจนีสวาซิ',
       'symbol' => 'SZL',
     ),
     'THB' => 
@@ -1094,12 +1166,12 @@ return array (
     ),
     'TJS' => 
     array (
-      'name' => 'โซโมนีทาจิกิสถาน',
+      'name' => 'โซโมนิทาจิกิสถาน',
       'symbol' => 'TJS',
     ),
     'TMM' => 
     array (
-      'name' => 'มานัตเติร์กเมนิสถาน (1993-2009)',
+      'name' => 'มานัตเติร์กเมนิสถาน (1993–2009)',
       'symbol' => 'TMM',
     ),
     'TMT' => 
@@ -1140,7 +1212,7 @@ return array (
     'TWD' => 
     array (
       'name' => 'ดอลลาร์ไต้หวันใหม่',
-      'symbol' => 'TWD',
+      'symbol' => 'NT$',
     ),
     'TZS' => 
     array (
@@ -1159,7 +1231,7 @@ return array (
     ),
     'UGS' => 
     array (
-      'name' => 'ชิลลิงยูกันดา (1966-1987)',
+      'name' => 'ชิลลิงยูกันดา (1966–1987)',
       'symbol' => 'UGS',
     ),
     'UGX' => 
@@ -1170,7 +1242,7 @@ return array (
     'USD' => 
     array (
       'name' => 'ดอลลาร์สหรัฐ',
-      'symbol' => 'USD',
+      'symbol' => 'US$',
     ),
     'USN' => 
     array (
@@ -1189,7 +1261,7 @@ return array (
     ),
     'UYP' => 
     array (
-      'name' => 'เปโซอุรุกวัย (1975-1993)',
+      'name' => 'เปโซอุรุกวัย (1975–1993)',
       'symbol' => 'UYP',
     ),
     'UYU' => 
@@ -1204,18 +1276,23 @@ return array (
     ),
     'VEB' => 
     array (
-      'name' => 'โบลิวาร์เวเนซุเอลา',
+      'name' => 'โบลิวาร์เวเนซุเอลา (1871–2008)',
       'symbol' => 'VEB',
     ),
     'VEF' => 
     array (
-      'name' => 'โบลิวาร์ฟูร์เตเวเนซุเอลา',
+      'name' => 'โบลิวาร์เวเนซุเอลา',
       'symbol' => 'VEF',
     ),
     'VND' => 
     array (
       'name' => 'ดองเวียดนาม',
-      'symbol' => 'VND',
+      'symbol' => '₫',
+    ),
+    'VNN' => 
+    array (
+      'name' => 'ดองเวียดนาม (1978–1985)',
+      'symbol' => 'VNN',
     ),
     'VUV' => 
     array (
@@ -1230,7 +1307,7 @@ return array (
     'XAF' => 
     array (
       'name' => 'ฟรังก์เซฟาธนาคารรัฐแอฟริกากลาง',
-      'symbol' => 'XAF',
+      'symbol' => 'FCFA',
     ),
     'XAG' => 
     array (
@@ -1265,7 +1342,7 @@ return array (
     'XCD' => 
     array (
       'name' => 'ดอลลาร์แคริบเบียนตะวันออก',
-      'symbol' => 'XCD',
+      'symbol' => 'EC$',
     ),
     'XDR' => 
     array (
@@ -1290,7 +1367,7 @@ return array (
     'XOF' => 
     array (
       'name' => 'ฟรังก์เซฟาธนาคารกลางรัฐแอฟริกาตะวันตก',
-      'symbol' => 'XOF',
+      'symbol' => 'CFA',
     ),
     'XPD' => 
     array (
@@ -1300,7 +1377,7 @@ return array (
     'XPF' => 
     array (
       'name' => 'ฟรังก์ซีเอฟพี',
-      'symbol' => 'XPF',
+      'symbol' => 'CFPF',
     ),
     'XPT' => 
     array (
@@ -1312,14 +1389,24 @@ return array (
       'name' => 'กองทุนไรเน็ต',
       'symbol' => 'XRE',
     ),
+    'XSU' => 
+    array (
+      'name' => 'ซูเกร',
+      'symbol' => 'XSU',
+    ),
     'XTS' => 
     array (
       'name' => 'รหัสทดสอบสกุลเงิน',
       'symbol' => 'XTS',
     ),
+    'XUA' => 
+    array (
+      'name' => 'หน่วยบัญชี เอดีบี',
+      'symbol' => 'XUA',
+    ),
     'XXX' => 
     array (
-      'name' => 'ไม่มีหน่วยสกุลเงิน',
+      'name' => 'สกุลเงินที่ไม่รู้จัก',
       'symbol' => 'XXX',
     ),
     'YDD' => 
@@ -1347,6 +1434,11 @@ return array (
       'name' => 'คอนเวอร์ทิเบิลดีนาร์ยูโกสลาเวีย',
       'symbol' => 'YUN',
     ),
+    'YUR' => 
+    array (
+      'name' => 'ดีนาร์ปฏิรูปยูโกสลาเวีย (1992–1993)',
+      'symbol' => 'YUR',
+    ),
     'ZAL' => 
     array (
       'name' => 'แรนด์แอฟริกาใต้ (การเงิน)',
@@ -1359,8 +1451,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'ควาชาแซมเบีย',
+      'name' => 'ควาชาแซมเบีย (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'ควาชาแซมเบีย',
+      'symbol' => 'ZMW',
     ),
     'ZRN' => 
     array (
@@ -1376,6 +1473,16 @@ return array (
     array (
       'name' => 'ดอลลาร์ซิมบับเว',
       'symbol' => 'ZWD',
+    ),
+    'ZWL' => 
+    array (
+      'name' => 'ดอลลาร์ซิมบับเว (2009)',
+      'symbol' => 'ZWL',
+    ),
+    'ZWR' => 
+    array (
+      'name' => 'ดอลลาร์ซิมบับเว (2008)',
+      'symbol' => 'ZWR',
     ),
   ),
 );

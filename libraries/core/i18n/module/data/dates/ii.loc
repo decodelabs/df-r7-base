@@ -8,7 +8,7 @@ return array (
       '@default' => 'wide',
       'abbreviated' => 
       array (
-        'sun' => 'ꆏꑍ',
+        'sun' => 'ꑭꆏ',
         'mon' => 'ꆏꋍ',
         'tue' => 'ꆏꑍ',
         'wed' => 'ꆏꌕ',

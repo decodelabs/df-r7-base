@@ -1,0 +1,9 @@
+<?php
+return array (
+  'HM' => 'Heard Island and McDonald Islands',
+  'VC' => 'Saint Vincent and the Grenadines',
+  'GS' => 'South Georgia and the South Sandwich Islands',
+  'GB' => 'U.K.',
+  'US' => 'U.S.',
+  'UM' => 'U.S. Minor Outlying Islands',
+);

@@ -4,6 +4,11 @@ return array (
   array (
     'decimal' => ',',
     'group' => '.',
+    'percentSign' => '%',
+    'plusSign' => '+',
+    'minusSign' => '-',
+    'perMille' => '‰',
+    'infinity' => '∞',
   ),
   'formats' => 
   array (
@@ -22,6 +27,11 @@ return array (
       'name' => 'Kwanza ya Angóla',
       'symbol' => 'AOA',
     ),
+    'ARS' => 
+    array (
+      'name' => 'Peso y’Argentina',
+      'symbol' => 'ARS',
+    ),
     'AUD' => 
     array (
       'name' => 'Dolarɛ ya Ositali',
@@ -37,6 +47,16 @@ return array (
       'name' => 'Falánga ya Burundi',
       'symbol' => 'BIF',
     ),
+    'BOB' => 
+    array (
+      'name' => 'Boliviano',
+      'symbol' => 'BOB',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'Real ya Brazil',
+      'symbol' => 'BRL',
+    ),
     'BWP' => 
     array (
       'name' => 'Pula ya Botswana',
@@ -50,27 +70,62 @@ return array (
     'CDF' => 
     array (
       'name' => 'Falánga ya Kongó',
-      'symbol' => 'CDF',
+      'symbol' => 'FC',
     ),
     'CHF' => 
     array (
       'name' => 'Falánga ya Swisɛ',
       'symbol' => 'CHF',
     ),
+    'CLP' => 
+    array (
+      'name' => 'Peso ya Shili',
+      'symbol' => 'CLP',
+    ),
     'CNY' => 
     array (
       'name' => 'Yuanɛ Renminbi ya Sinɛ',
       'symbol' => 'CNY',
+    ),
+    'COP' => 
+    array (
+      'name' => 'Peso ya Kolombi',
+      'symbol' => 'COP',
+    ),
+    'CRC' => 
+    array (
+      'name' => 'Colon ya Kosta Rika',
+      'symbol' => 'CRC',
+    ),
+    'CUP' => 
+    array (
+      'name' => 'Peso ya Kuba',
+      'symbol' => 'CUP',
     ),
     'CVE' => 
     array (
       'name' => 'Esikudo ya Kapevɛrɛ',
       'symbol' => 'CVE',
     ),
+    'CZK' => 
+    array (
+      'name' => 'Motolé Sheki',
+      'symbol' => 'CZK',
+    ),
     'DJF' => 
     array (
       'name' => 'Falánga ya Dzibuti',
       'symbol' => 'DJF',
+    ),
+    'DKK' => 
+    array (
+      'name' => 'Motolé ya Danemark',
+      'symbol' => 'DKK',
+    ),
+    'DOP' => 
+    array (
+      'name' => 'Peso Dominikani',
+      'symbol' => 'DOP',
     ),
     'DZD' => 
     array (
@@ -107,20 +162,40 @@ return array (
       'name' => 'Sedi ya Gana',
       'symbol' => 'GHC',
     ),
+    'GHS' => 
+    array (
+      'name' => 'Cedi',
+      'symbol' => 'GHS',
+    ),
     'GMD' => 
     array (
       'name' => 'Dalasi ya Gambi',
       'symbol' => 'GMD',
+    ),
+    'GNF' => 
+    array (
+      'name' => 'Falánga ya Gine',
+      'symbol' => 'GNF',
     ),
     'GNS' => 
     array (
       'name' => 'Falánga ya Ginɛ',
       'symbol' => 'GNS',
     ),
+    'HTG' => 
+    array (
+      'name' => 'Gurde',
+      'symbol' => 'HTG',
+    ),
     'INR' => 
     array (
       'name' => 'Rupi ya Índɛ',
       'symbol' => 'INR',
+    ),
+    'ISK' => 
+    array (
+      'name' => 'Motolé ya Islandi',
+      'symbol' => 'ISK',
     ),
     'JPY' => 
     array (
@@ -146,6 +221,16 @@ return array (
     array (
       'name' => 'Loti ya Lesóto',
       'symbol' => 'LSL',
+    ),
+    'LTL' => 
+    array (
+      'name' => 'Litas ya Litwani',
+      'symbol' => 'LTL',
+    ),
+    'LVL' => 
+    array (
+      'name' => 'Lats ya Letoni',
+      'symbol' => 'LVL',
     ),
     'LYD' => 
     array (
@@ -177,6 +262,11 @@ return array (
       'name' => 'Kwasha ya Malawi',
       'symbol' => 'MWK',
     ),
+    'MXN' => 
+    array (
+      'name' => 'Peso ya Mexiko',
+      'symbol' => 'MXN',
+    ),
     'MZM' => 
     array (
       'name' => 'Metikali ya Mozambiki',
@@ -191,6 +281,26 @@ return array (
     array (
       'name' => 'Naira ya Nizerya',
       'symbol' => 'NGN',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'Motolé ya Norvej',
+      'symbol' => 'NOK',
+    ),
+    'PAB' => 
+    array (
+      'name' => 'Balboa',
+      'symbol' => 'PAB',
+    ),
+    'PEN' => 
+    array (
+      'name' => 'Sol Sika',
+      'symbol' => 'PEN',
+    ),
+    'PYG' => 
+    array (
+      'name' => 'Guarani',
+      'symbol' => 'PYG',
     ),
     'RWF' => 
     array (
@@ -216,6 +326,11 @@ return array (
     array (
       'name' => 'Paunɛ ya Sudá',
       'symbol' => 'SDP',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'Motolé ya Swédi',
+      'symbol' => 'SEK',
     ),
     'SHP' => 
     array (
@@ -279,8 +394,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'Kwasha ya Zambi',
+      'name' => 'Kwasha ya Zambi (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Kwasha ya Zambi',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

@@ -3,13 +3,6 @@ return array (
   '@default' => 'gregorian',
   'buddhist' => 
   array (
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE d MMMM y G',
-      'long' => 'd MMMM y G',
-      'medium' => 'd MMM y G',
-      'short' => 'G yyyy-MM-dd',
-    ),
   ),
   'coptic' => 
   array (
@@ -50,6 +43,9 @@ return array (
       ),
     ),
   ),
+  'dangi' => 
+  array (
+  ),
   'ethiopic' => 
   array (
     'months' => 
@@ -89,6 +85,16 @@ return array (
       ),
     ),
   ),
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM y G',
+      'long' => 'd MMMM y G',
+      'medium' => 'd MMM y G',
+      'short' => 'G y-MM-dd',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -120,18 +126,18 @@ return array (
       '@default' => 'full',
       'abbreviated' => 
       array (
-        1 => 'jan',
-        2 => 'feb',
-        3 => 'mar',
-        4 => 'apr',
+        1 => 'jan.',
+        2 => 'feb.',
+        3 => 'mars',
+        4 => 'apr.',
         5 => 'maj',
-        6 => 'jun',
-        7 => 'jul',
-        8 => 'aug',
-        9 => 'sep',
-        10 => 'okt',
-        11 => 'nov',
-        12 => 'dec',
+        6 => 'juni',
+        7 => 'juli',
+        8 => 'aug.',
+        9 => 'sep.',
+        10 => 'okt.',
+        11 => 'nov.',
+        12 => 'dec.',
       ),
       'full' => 
       array (
@@ -151,10 +157,10 @@ return array (
     ),
     'dateFormat' => 
     array (
-      'full' => 'EEEE\'en\' \'den\' d:\'e\' MMMM y',
+      'full' => 'EEEE d MMMM y',
       'long' => 'd MMMM y',
       'medium' => 'd MMM y',
-      'short' => 'yyyy-MM-dd',
+      'short' => 'y-MM-dd',
     ),
     'timeFormat' => 
     array (
@@ -169,6 +175,22 @@ return array (
     'months' => 
     array (
       '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'tishrí',
+        2 => 'heshván',
+        3 => 'kislév',
+        4 => 'tevét',
+        5 => 'shevát',
+        6 => 'adár I',
+        7 => 'adár II',
+        8 => 'nisán',
+        9 => 'ijjár',
+        10 => 'siván',
+        11 => 'tammúz',
+        12 => 'ab',
+        13 => 'elúl',
+      ),
       'full' => 
       array (
         1 => 'tishrí',
@@ -245,23 +267,9 @@ return array (
         12 => 'dhu-l-hijja',
       ),
     ),
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE d MMMM y G',
-      'long' => 'd MMMM y G',
-      'medium' => 'd MMM y G',
-      'short' => 'G y-MM-dd',
-    ),
   ),
   'japanese' => 
   array (
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE d MMMM y G',
-      'long' => 'd MMMM y G',
-      'medium' => 'd MMM y G',
-      'short' => 'G y-MM-dd',
-    ),
   ),
   'persian' => 
   array (
@@ -302,12 +310,5 @@ return array (
   ),
   'roc' => 
   array (
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE d MMMM y G',
-      'long' => 'd MMMM y G',
-      'medium' => 'd MMM y G',
-      'short' => 'G y-MM-dd',
-    ),
   ),
 );

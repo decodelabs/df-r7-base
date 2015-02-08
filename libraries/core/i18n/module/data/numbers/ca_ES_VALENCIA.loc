@@ -1,0 +1,202 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'AFA' => 
+    array (
+      'name' => 'afgani afganés (1927–2002)',
+      'symbol' => 'AFA',
+    ),
+    'AFN' => 
+    array (
+      'name' => 'afgani afganés',
+      'symbol' => 'AFN',
+    ),
+    'ALK' => 
+    array (
+      'name' => 'lek albanés (1946–1965)',
+      'symbol' => 'ALK',
+    ),
+    'ALL' => 
+    array (
+      'name' => 'lek albanés',
+      'symbol' => 'ALL',
+    ),
+    'AZM' => 
+    array (
+      'name' => 'manat azerbaidjanés (1993–2006)',
+      'symbol' => 'AZM',
+    ),
+    'AZN' => 
+    array (
+      'name' => 'manat azerbaidjanés',
+      'symbol' => 'AZN',
+    ),
+    'CLE' => 
+    array (
+      'name' => 'escut xilé',
+      'symbol' => 'CLE',
+    ),
+    'CLP' => 
+    array (
+      'name' => 'peso xilé',
+      'symbol' => 'CLP',
+    ),
+    'CNX' => 
+    array (
+      'name' => 'dòlar del Banc Popular Xinés',
+      'symbol' => 'CNX',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'iuan xinés',
+      'symbol' => 'CNY',
+    ),
+    'FIM' => 
+    array (
+      'name' => 'marc finlandés',
+      'symbol' => 'FIM',
+    ),
+    'FRF' => 
+    array (
+      'name' => 'franc francés',
+      'symbol' => 'FRF',
+    ),
+    'HUF' => 
+    array (
+      'name' => 'fòrint hongarés',
+      'symbol' => 'HUF',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'ien japonés',
+      'symbol' => 'JPY',
+    ),
+    'LUC' => 
+    array (
+      'name' => 'franc convertible luxemburgués',
+      'symbol' => 'LUC',
+    ),
+    'LUF' => 
+    array (
+      'name' => 'franc luxemburgués',
+      'symbol' => 'LUF',
+    ),
+    'LUL' => 
+    array (
+      'name' => 'franc financer luxemburgués',
+      'symbol' => 'LUL',
+    ),
+    'MZE' => 
+    array (
+      'name' => 'escut moçambiqués',
+      'symbol' => 'MZE',
+    ),
+    'MZM' => 
+    array (
+      'name' => 'antic metical moçambiqués',
+      'symbol' => 'MZM',
+    ),
+    'MZN' => 
+    array (
+      'name' => 'metical moçambiqués',
+      'symbol' => 'MZN',
+    ),
+    'NLG' => 
+    array (
+      'name' => 'florí neerlandés',
+      'symbol' => 'NLG',
+    ),
+    'NZD' => 
+    array (
+      'name' => 'dòlar neozelandés',
+      'symbol' => 'NZD',
+    ),
+    'PLN' => 
+    array (
+      'name' => 'zloty polonés',
+      'symbol' => 'PLN',
+    ),
+    'PLZ' => 
+    array (
+      'name' => 'zloty polonés (1950–1995)',
+      'symbol' => 'PLZ',
+    ),
+    'PTE' => 
+    array (
+      'name' => 'escut portugués',
+      'symbol' => 'PTE',
+    ),
+    'ROL' => 
+    array (
+      'name' => 'antic leu romanés',
+      'symbol' => 'ROL',
+    ),
+    'RON' => 
+    array (
+      'name' => 'leu romanés',
+      'symbol' => 'RON',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'franc rwandés',
+      'symbol' => 'RWF',
+    ),
+    'SIT' => 
+    array (
+      'name' => 'tolar eslové',
+      'symbol' => 'SIT',
+    ),
+    'THB' => 
+    array (
+      'name' => 'baht tailandés',
+      'symbol' => 'THB',
+    ),
+    'UAK' => 
+    array (
+      'name' => 'karbóvanets ucraïnés',
+      'symbol' => 'UAK',
+    ),
+    'UGS' => 
+    array (
+      'name' => 'xíling ugandés (1966–1987)',
+      'symbol' => 'UGS',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'xíling ugandés',
+      'symbol' => 'UGX',
+    ),
+    'XFO' => 
+    array (
+      'name' => 'franc or francés',
+      'symbol' => 'XFO',
+    ),
+    'XFU' => 
+    array (
+      'name' => 'franc UIC francés',
+      'symbol' => 'XFU',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'dòlar zimbabués (1980–2008)',
+      'symbol' => 'ZWD',
+    ),
+    'ZWL' => 
+    array (
+      'name' => 'dòlar zimbabués (2009)',
+      'symbol' => 'ZWL',
+    ),
+    'ZWR' => 
+    array (
+      'name' => 'dòlar zimbabués (2008)',
+      'symbol' => 'ZWR',
+    ),
+  ),
+);

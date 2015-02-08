@@ -1,0 +1,20 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'PEN' => 
+    array (
+      'symbol' => 'PEN',
+    ),
+    'USD' => 
+    array (
+      'symbol' => '$',
+    ),
+  ),
+);

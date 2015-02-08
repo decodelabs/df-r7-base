@@ -5,13 +5,7 @@ return array (
   array (
     'days' => 'gregorian',
     'months' => 'gregorian',
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE, G y MMMM dd',
-      'long' => 'G y MMMM d',
-      'medium' => 'G y MMM d',
-      'short' => 'GGGGG yyyy-MM-dd',
-    ),
+    'dateFormat' => 'generic',
     'timeFormat' => 'gregorian',
   ),
   'chinese' => 
@@ -23,26 +17,26 @@ return array (
       'abbreviated' => 'wide',
       'full' => 
       array (
-        1 => '1',
-        2 => '2',
-        3 => '3',
-        4 => '4',
-        5 => '5',
-        6 => '6',
-        7 => '7',
-        8 => '8',
-        9 => '9',
-        10 => '10',
-        11 => '11',
-        12 => '12',
+        1 => 'M01',
+        2 => 'M02',
+        3 => 'M03',
+        4 => 'M04',
+        5 => 'M05',
+        6 => 'M06',
+        7 => 'M07',
+        8 => 'M08',
+        9 => 'M09',
+        10 => 'M10',
+        11 => 'M11',
+        12 => 'M12',
       ),
     ),
     'dateFormat' => 
     array (
-      'full' => 'EEEE y\'x\'G-Ml-d',
-      'long' => 'y\'x\'G-Ml-d',
-      'medium' => 'y\'x\'G-Ml-d',
-      'short' => 'y\'x\'G-Ml-d',
+      'full' => 'U MMMM d, EEEE',
+      'long' => 'U MMMM d',
+      'medium' => 'U MMM d',
+      'short' => 'y-MM-dd',
     ),
     'timeFormat' => 'gregorian',
   ),
@@ -70,8 +64,15 @@ return array (
         13 => 'Nasie',
       ),
     ),
-    'dateFormat' => 'gregorian',
+    'dateFormat' => 'generic',
     'timeFormat' => 'gregorian',
+  ),
+  'dangi' => 
+  array (
+    'days' => 'chinese',
+    'months' => 'chinese',
+    'dateFormat' => 'chinese',
+    'timeFormat' => 'chinese',
   ),
   'ethiopic' => 
   array (
@@ -97,31 +98,63 @@ return array (
         13 => 'Pagumen',
       ),
     ),
-    'dateFormat' => 'gregorian',
+    'dateFormat' => 'generic',
     'timeFormat' => 'gregorian',
   ),
   'ethiopic-amete-alem' => 
   array (
-    'days' => 'gregorian',
+    'days' => 'ethiopic',
     'months' => 'ethiopic',
-    'dateFormat' => 'gregorian',
+    'dateFormat' => 'ethiopic',
+    'timeFormat' => 'ethiopic',
+  ),
+  'generic' => 
+  array (
+    'days' => 'gregorian',
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 'wide',
+      'full' => 
+      array (
+        1 => 'M01',
+        2 => 'M02',
+        3 => 'M03',
+        4 => 'M04',
+        5 => 'M05',
+        6 => 'M06',
+        7 => 'M07',
+        8 => 'M08',
+        9 => 'M09',
+        10 => 'M10',
+        11 => 'M11',
+        12 => 'M12',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'G y MMMM d, EEEE',
+      'long' => 'G y MMMM d',
+      'medium' => 'G y MMM d',
+      'short' => 'GGGGG y-MM-dd',
+    ),
     'timeFormat' => 'gregorian',
   ),
   'gregorian' => 
   array (
     'days' => 
     array (
-      '@default' => 'full',
+      '@default' => 'wide',
       'abbreviated' => 'wide',
       'full' => 
       array (
-        'sun' => '1',
-        'mon' => '2',
-        'tue' => '3',
-        'wed' => '4',
-        'thu' => '5',
-        'fri' => '6',
-        'sat' => '7',
+        'sun' => 'Sun',
+        'mon' => 'Mon',
+        'tue' => 'Tue',
+        'wed' => 'Wed',
+        'thu' => 'Thu',
+        'fri' => 'Fri',
+        'sat' => 'Sat',
       ),
     ),
     'months' => 
@@ -130,26 +163,26 @@ return array (
       'abbreviated' => 'wide',
       'full' => 
       array (
-        1 => '1',
-        2 => '2',
-        3 => '3',
-        4 => '4',
-        5 => '5',
-        6 => '6',
-        7 => '7',
-        8 => '8',
-        9 => '9',
-        10 => '10',
-        11 => '11',
-        12 => '12',
+        1 => 'M01',
+        2 => 'M02',
+        3 => 'M03',
+        4 => 'M04',
+        5 => 'M05',
+        6 => 'M06',
+        7 => 'M07',
+        8 => 'M08',
+        9 => 'M09',
+        10 => 'M10',
+        11 => 'M11',
+        12 => 'M12',
       ),
     ),
     'dateFormat' => 
     array (
-      'full' => 'EEEE, y MMMM dd',
+      'full' => 'y MMMM d, EEEE',
       'long' => 'y MMMM d',
       'medium' => 'y MMM d',
-      'short' => 'yyyy-MM-dd',
+      'short' => 'y-MM-dd',
     ),
     'timeFormat' => 
     array (
@@ -183,7 +216,7 @@ return array (
         13 => 'Elul',
       ),
     ),
-    'dateFormat' => 'gregorian',
+    'dateFormat' => 'generic',
     'timeFormat' => 'gregorian',
   ),
   'indian' => 
@@ -209,7 +242,7 @@ return array (
         12 => 'Phalguna',
       ),
     ),
-    'dateFormat' => 'gregorian',
+    'dateFormat' => 'generic',
     'timeFormat' => 'gregorian',
   ),
   'islamic' => 
@@ -249,23 +282,42 @@ return array (
         12 => 'Dhuʻl-Hijjah',
       ),
     ),
-    'dateFormat' => 'gregorian',
+    'dateFormat' => 'generic',
     'timeFormat' => 'gregorian',
   ),
   'islamic-civil' => 
   array (
+    'days' => 'islamic',
+    'months' => 'islamic',
+    'dateFormat' => 'islamic',
+    'timeFormat' => 'islamic',
+  ),
+  'islamic-rgsa' => 
+  array (
+    'days' => 'islamic',
+    'months' => 'islamic',
+    'dateFormat' => 'islamic',
+    'timeFormat' => 'islamic',
+  ),
+  'islamic-tbla' => 
+  array (
+    'days' => 'islamic',
+    'months' => 'islamic',
+    'dateFormat' => 'islamic',
+    'timeFormat' => 'islamic',
+  ),
+  'islamic-umalqura' => 
+  array (
+    'days' => 'islamic',
+    'months' => 'islamic',
+    'dateFormat' => 'islamic',
+    'timeFormat' => 'islamic',
   ),
   'japanese' => 
   array (
     'days' => 'gregorian',
     'months' => 'gregorian',
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE, G y MMMM dd',
-      'long' => 'G y MMMM d',
-      'medium' => 'G y MMM d',
-      'short' => 'GGGGG yy-MM-dd',
-    ),
+    'dateFormat' => 'generic',
     'timeFormat' => 'gregorian',
   ),
   'persian' => 
@@ -291,20 +343,14 @@ return array (
         12 => 'Esfand',
       ),
     ),
-    'dateFormat' => 'gregorian',
+    'dateFormat' => 'generic',
     'timeFormat' => 'gregorian',
   ),
   'roc' => 
   array (
     'days' => 'gregorian',
     'months' => 'gregorian',
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE, G y MMMM dd',
-      'long' => 'G y MMMM d',
-      'medium' => 'G y MMM d',
-      'short' => 'GGGGG yy-MM-dd',
-    ),
+    'dateFormat' => 'generic',
     'timeFormat' => 'gregorian',
   ),
 );

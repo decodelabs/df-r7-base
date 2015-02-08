@@ -271,8 +271,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'heleri sa Zambia',
+      'name' => 'heleri sa Zambia (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'heleri sa Zambia',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

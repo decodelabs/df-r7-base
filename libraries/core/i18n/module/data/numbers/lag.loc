@@ -270,8 +270,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'Kwácha ya Sámbia',
+      'name' => 'Kwácha ya Sámbia (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Kwácha ya Sámbia',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

@@ -8,7 +8,7 @@ return array (
   'formats' => 
   array (
     'decimal' => '#,##0.###',
-    'currency' => '¤#,##0.00;(¤#,##0.00)',
+    'currency' => '¤#,##0.00',
   ),
   'currencies' => 
   array (
@@ -269,8 +269,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'Zambiya Kuwacha',
+      'name' => 'Zambiya Kuwacha (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Zambiya Kuwacha',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

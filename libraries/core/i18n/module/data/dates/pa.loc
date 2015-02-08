@@ -1,6 +1,16 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, dd MMMM y G',
+      'long' => 'd MMMM y G',
+      'medium' => 'd MMM y G',
+      'short' => 'dd/MM/y GGGGG',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -8,23 +18,23 @@ return array (
       '@default' => 'wide',
       'abbreviated' => 
       array (
-        'sun' => 'ਐਤ.',
-        'mon' => 'ਸੋਮ.',
-        'tue' => 'ਮੰਗਲ.',
-        'wed' => 'ਬੁਧ.',
-        'thu' => 'ਵੀਰ.',
-        'fri' => 'ਸ਼ੁਕਰ.',
-        'sat' => 'ਸ਼ਨੀ.',
+        'sun' => 'ਐਤ',
+        'mon' => 'ਸੋਮ',
+        'tue' => 'ਮੰਗਲ',
+        'wed' => 'ਬੁੱਧ',
+        'thu' => 'ਵੀਰ',
+        'fri' => 'ਸ਼ੁੱਕਰ',
+        'sat' => 'ਸ਼ਨਿੱਚਰ',
       ),
       'full' => 
       array (
         'sun' => 'ਐਤਵਾਰ',
         'mon' => 'ਸੋਮਵਾਰ',
         'tue' => 'ਮੰਗਲਵਾਰ',
-        'wed' => 'ਬੁਧਵਾਰ',
+        'wed' => 'ਬੁੱਧਵਾਰ',
         'thu' => 'ਵੀਰਵਾਰ',
         'fri' => 'ਸ਼ੁੱਕਰਵਾਰ',
-        'sat' => 'ਸ਼ਨੀਚਰਵਾਰ',
+        'sat' => 'ਸ਼ਨਿੱਚਰਵਾਰ',
       ),
     ),
     'months' => 
@@ -32,7 +42,18 @@ return array (
       '@default' => 'full',
       'abbreviated' => 
       array (
+        1 => 'ਜਨ',
+        2 => 'ਫ਼ਰ',
+        3 => 'ਮਾਰਚ',
+        4 => 'ਅਪ੍ਰੈ',
         5 => 'ਮਈ',
+        6 => 'ਜੂਨ',
+        7 => 'ਜੁਲਾ',
+        8 => 'ਅਗ',
+        9 => 'ਸਤੰ',
+        10 => 'ਅਕਤੂ',
+        11 => 'ਨਵੰ',
+        12 => 'ਦਸੰ',
       ),
       'full' => 
       array (
@@ -52,10 +73,10 @@ return array (
     ),
     'dateFormat' => 
     array (
-      'full' => 'EEEE, dd MMMM y',
+      'full' => 'EEEE, d MMMM y',
       'long' => 'd MMMM y',
       'medium' => 'd MMM y',
-      'short' => 'dd/MM/yyyy',
+      'short' => 'd/M/yy',
     ),
     'timeFormat' => 
     array (
@@ -63,6 +84,43 @@ return array (
       'long' => 'h:mm:ss a z',
       'medium' => 'h:mm:ss a',
       'short' => 'h:mm a',
+    ),
+  ),
+  'indian' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'ਚੇਤ',
+        2 => 'ਵੈਸਾਖ',
+        3 => 'ਜੇਠ',
+        4 => 'ਹਾੜ',
+        5 => 'ਸਾਉਣ',
+        6 => 'ਭਾਦੋਂ',
+        7 => 'ਅੱਸੂ',
+        8 => 'ਕੱਤਕ',
+        9 => 'ਮੱਘਰ',
+        10 => 'ਪੋਹ',
+        11 => 'ਮਾਘ',
+        12 => 'ਫੱਗਣ',
+      ),
+      'full' => 
+      array (
+        1 => 'ਚੇਤ',
+        2 => 'ਵੈਸਾਖ',
+        3 => 'ਜੇਠ',
+        4 => 'ਹਾੜ',
+        5 => 'ਸਾਉਣ',
+        6 => 'ਭਾਦੋਂ',
+        7 => 'ਅੱਸੂ',
+        8 => 'ਕੱਤਕ',
+        9 => 'ਮੱਘਰ',
+        10 => 'ਪੋਹ',
+        11 => 'ਮਾਘ',
+        12 => 'ਫੱਗਣ',
+      ),
     ),
   ),
 );

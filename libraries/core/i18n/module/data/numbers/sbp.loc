@@ -275,8 +275,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'Ihela ya Sambiya',
+      'name' => 'Ihela ya Sambiya (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Ihela ya Sambiya',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

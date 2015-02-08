@@ -1,0 +1,28 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'percent' => '#,##0%',
+    'currency' => '¤ #,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'MYR' => 
+    array (
+      'name' => 'மலேசிய ரிங்கிட்',
+      'symbol' => 'RM',
+    ),
+    'SGD' => 
+    array (
+      'symbol' => '$',
+    ),
+    'USD' => 
+    array (
+      'symbol' => 'US$',
+    ),
+  ),
+);

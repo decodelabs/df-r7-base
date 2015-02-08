@@ -1,0 +1,64 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, MMMM d, y G',
+      'long' => 'MMMM d, y G',
+      'medium' => 'MMM d, y G',
+      'short' => 'M/d/y GGGGG',
+    ),
+  ),
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'full' => 
+      array (
+        'sun' => 'Aŋpétuwakȟaŋ',
+        'mon' => 'Aŋpétuwaŋži',
+        'tue' => 'Aŋpétunuŋpa',
+        'wed' => 'Aŋpétuyamni',
+        'thu' => 'Aŋpétutopa',
+        'fri' => 'Aŋpétuzaptaŋ',
+        'sat' => 'Owáŋgyužažapi',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'full' => 
+      array (
+        1 => 'Wiótheȟika Wí',
+        2 => 'Thiyóȟeyuŋka Wí',
+        3 => 'Ištáwičhayazaŋ Wí',
+        4 => 'Pȟežítȟo Wí',
+        5 => 'Čhaŋwápetȟo Wí',
+        6 => 'Wípazukȟa-wašté Wí',
+        7 => 'Čhaŋpȟásapa Wí',
+        8 => 'Wasútȟuŋ Wí',
+        9 => 'Čhaŋwápeǧi Wí',
+        10 => 'Čhaŋwápe-kasná Wí',
+        11 => 'Waníyetu Wí',
+        12 => 'Tȟahékapšuŋ Wí',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, MMMM d, y',
+      'long' => 'MMMM d, y',
+      'medium' => 'MMM d, y',
+      'short' => 'M/d/yy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+);

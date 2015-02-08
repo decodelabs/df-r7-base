@@ -3,13 +3,6 @@ return array (
   '@default' => 'gregorian',
   'buddhist' => 
   array (
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE, d MMMM, y G',
-      'long' => 'd MMMM y G',
-      'medium' => 'd MMM y G',
-      'short' => 'd/M/yyyy',
-    ),
   ),
   'chinese' => 
   array (
@@ -38,15 +31,19 @@ return array (
     'months' => 
     array (
       '@default' => 'full',
-      'abbreviated' => 
-      array (
-        2 => 'Baba',
-        6 => 'Amshir',
-        7 => 'Baramhat',
-      ),
       'full' => 
       array (
+        1 => 'Tout',
+        2 => 'Baba',
         3 => 'Hathor',
+        4 => 'Kiahk',
+        5 => 'Toba',
+        6 => 'Amshir',
+        7 => 'Baramhat',
+        8 => 'Baramouda',
+        9 => 'Bashans',
+        10 => 'Paona',
+        11 => 'Epep',
         12 => 'Mesori',
         13 => 'El Nasii',
       ),
@@ -60,15 +57,29 @@ return array (
       'full' => 
       array (
         1 => 'meskerem',
-        2 => 'Taqemt',
-        3 => 'hamle',
+        2 => 'taqemt',
+        3 => 'hedar',
         4 => 'tahsas',
+        5 => 'ter',
         6 => 'yekatit',
         7 => 'megabit',
+        8 => 'miazia',
+        9 => 'genbot',
         10 => 'sene',
         11 => 'hamle',
         12 => 'nehase',
+        13 => 'pagumen',
       ),
+    ),
+  ),
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM y G',
+      'long' => 'd MMMM y G',
+      'medium' => 'dd.MM.y G',
+      'short' => 'dd.MM.y GGGGG',
     ),
   ),
   'gregorian' => 
@@ -78,13 +89,13 @@ return array (
       '@default' => 'wide',
       'abbreviated' => 
       array (
-        'sun' => 'Du',
-        'mon' => 'Lu',
-        'tue' => 'Ma',
-        'wed' => 'Mi',
-        'thu' => 'Jo',
-        'fri' => 'Vi',
-        'sat' => 'Sâ',
+        'sun' => 'Dum',
+        'mon' => 'Lun',
+        'tue' => 'Mar',
+        'wed' => 'Mie',
+        'thu' => 'Joi',
+        'fri' => 'Vin',
+        'sat' => 'Sâm',
       ),
       'full' => 
       array (
@@ -135,8 +146,8 @@ return array (
     array (
       'full' => 'EEEE, d MMMM y',
       'long' => 'd MMMM y',
-      'medium' => 'dd.MM.yyyy',
-      'short' => 'dd.MM.yyyy',
+      'medium' => 'd MMM y',
+      'short' => 'dd.MM.y',
     ),
     'timeFormat' => 
     array (
@@ -158,18 +169,30 @@ return array (
         3 => 'Kislev',
         4 => 'Tevet',
         5 => 'Șevat',
-        7 => 'Adar',
+        6 => 'Adar I',
+        7 => 'Adar II',
         8 => 'Nisan',
         9 => 'Iyar',
         10 => 'Sivan',
         11 => 'Tammuz',
+        12 => 'Av',
         13 => 'Elul',
       ),
       'full' => 
       array (
         1 => 'Tișrei',
         2 => 'Heșvan',
+        3 => 'Kislev',
+        4 => 'Tevet',
         5 => 'Șevat',
+        6 => 'Adar I',
+        7 => 'Adar II',
+        8 => 'Nisan',
+        9 => 'Iyar',
+        10 => 'Sivan',
+        11 => 'Tammuz',
+        12 => 'Av',
+        13 => 'Elul',
       ),
     ),
   ),

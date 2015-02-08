@@ -11,7 +11,6 @@ return array (
   array (
     'ERN' => 
     array (
-      'name' => 'ERN',
       'symbol' => 'Nfk',
     ),
   ),

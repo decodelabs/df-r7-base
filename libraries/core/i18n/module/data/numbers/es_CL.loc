@@ -13,8 +13,11 @@ return array (
   array (
     'CLP' => 
     array (
-      'name' => 'CLP',
       'symbol' => '$',
+    ),
+    'USD' => 
+    array (
+      'symbol' => 'US$',
     ),
   ),
 );

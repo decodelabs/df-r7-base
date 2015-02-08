@@ -6,15 +6,21 @@ return array (
     'group' => '٬',
     'list' => '؛',
     'percentSign' => '٪',
+    'plusSign' => '‎+‎',
+    'minusSign' => '‎−',
     'exponential' => '×۱۰^',
+    'superscriptingExponent' => '×',
     'perMille' => '؉',
+    'infinity' => '∞',
+    'nan' => 'ناعدد',
+    'timeSeparator' => ':',
   ),
   'formats' => 
   array (
     'decimal' => '#,##0.###',
     'scientific' => '#E0',
     'percent' => '#,##0%',
-    'currency' => '#,##0.00 ¤;−#,##0.00 ¤',
+    'currency' => '‎¤#,##0.00',
   ),
   'currencies' => 
   array (
@@ -36,7 +42,7 @@ return array (
     'AFN' => 
     array (
       'name' => 'افغانی افغانستان',
-      'symbol' => 'AFN',
+      'symbol' => '؋',
     ),
     'ALL' => 
     array (
@@ -95,7 +101,7 @@ return array (
     ),
     'BAD' => 
     array (
-      'name' => 'دینار بوسنی و هرزگوین',
+      'name' => 'دینار بوسنی و هرزگوین (۱۹۹۲ تا ۱۹۹۴)',
       'symbol' => 'BAD',
     ),
     'BAM' => 
@@ -196,7 +202,7 @@ return array (
     'CAD' => 
     array (
       'name' => 'دلار کانادا',
-      'symbol' => 'CAD',
+      'symbol' => '$CA',
     ),
     'CDF' => 
     array (
@@ -216,7 +222,7 @@ return array (
     'CNY' => 
     array (
       'name' => 'یوآن چین',
-      'symbol' => 'CNY',
+      'symbol' => '¥CN',
     ),
     'COP' => 
     array (
@@ -230,7 +236,7 @@ return array (
     ),
     'CSD' => 
     array (
-      'name' => 'دینار قدیم صربستان',
+      'name' => 'دینار صربستان (۲۰۰۲ تا ۲۰۰۶)',
       'symbol' => 'CSD',
     ),
     'CUC' => 
@@ -306,7 +312,7 @@ return array (
     'EUR' => 
     array (
       'name' => 'یورو',
-      'symbol' => 'EUR',
+      'symbol' => '€',
     ),
     'FJD' => 
     array (
@@ -326,7 +332,7 @@ return array (
     'GBP' => 
     array (
       'name' => 'پوند بریتانیا',
-      'symbol' => 'GBP',
+      'symbol' => '£',
     ),
     'GEL' => 
     array (
@@ -376,7 +382,7 @@ return array (
     'HKD' => 
     array (
       'name' => 'دلار هنگ‌کنگ',
-      'symbol' => 'HKD',
+      'symbol' => '$HK',
     ),
     'HNL' => 
     array (
@@ -416,12 +422,12 @@ return array (
     'ILS' => 
     array (
       'name' => 'شقل جدید اسرائیل',
-      'symbol' => 'ILS',
+      'symbol' => '₪',
     ),
     'INR' => 
     array (
       'name' => 'روپیهٔ هند',
-      'symbol' => 'INR',
+      'symbol' => '₹',
     ),
     'IQD' => 
     array (
@@ -431,7 +437,7 @@ return array (
     'IRR' => 
     array (
       'name' => 'ریال ایران',
-      'symbol' => '﷼',
+      'symbol' => 'ریال',
     ),
     'ISK' => 
     array (
@@ -456,7 +462,7 @@ return array (
     'JPY' => 
     array (
       'name' => 'ین ژاپن',
-      'symbol' => 'JPY',
+      'symbol' => '¥',
     ),
     'KES' => 
     array (
@@ -486,7 +492,7 @@ return array (
     'KRW' => 
     array (
       'name' => 'وون کرهٔ جنوبی',
-      'symbol' => 'KRW',
+      'symbol' => '₩',
     ),
     'KWD' => 
     array (
@@ -641,7 +647,7 @@ return array (
     'MXN' => 
     array (
       'name' => 'پزوی مکزیک',
-      'symbol' => 'MXN',
+      'symbol' => '$MX',
     ),
     'MXP' => 
     array (
@@ -657,6 +663,11 @@ return array (
     array (
       'name' => 'اسکودوی موزامبیک',
       'symbol' => 'MZE',
+    ),
+    'MZN' => 
+    array (
+      'name' => 'متیکال موزامبیک',
+      'symbol' => 'MZN',
     ),
     'NAD' => 
     array (
@@ -691,7 +702,7 @@ return array (
     'NZD' => 
     array (
       'name' => 'دلار زلاند نو',
-      'symbol' => 'NZD',
+      'symbol' => '$NZ',
     ),
     'OMR' => 
     array (
@@ -748,6 +759,11 @@ return array (
       'name' => 'دلار رودزیا',
       'symbol' => 'RHD',
     ),
+    'RON' => 
+    array (
+      'name' => 'لئوی رومانی',
+      'symbol' => 'RON',
+    ),
     'RSD' => 
     array (
       'name' => 'دینار صربستان',
@@ -756,7 +772,7 @@ return array (
     'RUB' => 
     array (
       'name' => 'روبل روسیه',
-      'symbol' => 'RUB',
+      'symbol' => '₽',
     ),
     'RUR' => 
     array (
@@ -785,7 +801,7 @@ return array (
     ),
     'SDD' => 
     array (
-      'name' => 'دینار قدیم سودان',
+      'name' => 'دینار سودان (۱۹۹۲ تا ۲۰۰۷)',
       'symbol' => 'SDD',
     ),
     'SDG' => 
@@ -828,6 +844,11 @@ return array (
       'name' => 'گیلدر سورینام',
       'symbol' => 'SRG',
     ),
+    'SSP' => 
+    array (
+      'name' => 'پوند سودان جنوبی',
+      'symbol' => 'SSP',
+    ),
     'STD' => 
     array (
       'name' => 'دوبرای سائوتومه و پرنسیپ',
@@ -851,7 +872,7 @@ return array (
     'THB' => 
     array (
       'name' => 'بات تایلند',
-      'symbol' => 'THB',
+      'symbol' => '฿',
     ),
     'TJR' => 
     array (
@@ -890,7 +911,7 @@ return array (
     ),
     'TRL' => 
     array (
-      'name' => 'لیرهٔ قدیم ترکیه',
+      'name' => 'لیرهٔ ترکیه (۱۹۲۲ تا ۲۰۰۵)',
       'symbol' => 'TRL',
     ),
     'TRY' => 
@@ -931,7 +952,7 @@ return array (
     'USD' => 
     array (
       'name' => 'دلار امریکا',
-      'symbol' => 'USD',
+      'symbol' => '$',
     ),
     'USN' => 
     array (
@@ -966,7 +987,7 @@ return array (
     'VND' => 
     array (
       'name' => 'دانگ ویتنام',
-      'symbol' => 'VND',
+      'symbol' => '₫',
     ),
     'VUV' => 
     array (
@@ -981,7 +1002,7 @@ return array (
     'XAF' => 
     array (
       'name' => 'فرانک CFA مرکز آفریقا',
-      'symbol' => 'XAF',
+      'symbol' => 'FCFA',
     ),
     'XAG' => 
     array (
@@ -996,7 +1017,7 @@ return array (
     'XCD' => 
     array (
       'name' => 'دلار شرق کارائیب',
-      'symbol' => 'XCD',
+      'symbol' => '$EC',
     ),
     'XFO' => 
     array (
@@ -1006,7 +1027,7 @@ return array (
     'XOF' => 
     array (
       'name' => 'فرانک CFA غرب آفریقا',
-      'symbol' => 'XOF',
+      'symbol' => 'CFA',
     ),
     'XPD' => 
     array (
@@ -1016,7 +1037,7 @@ return array (
     'XPF' => 
     array (
       'name' => 'فرانک CFP',
-      'symbol' => 'XPF',
+      'symbol' => 'CFPF',
     ),
     'XPT' => 
     array (
@@ -1045,12 +1066,17 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'کواچای زامبیا',
+      'name' => 'کواچای زامبیا (۱۹۶۸ تا ۲۰۱۲)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'کواچای زامبیا',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (
-      'name' => 'دلار زیمبابوه',
+      'name' => 'دلار زیمبابوه (۱۹۸۰ تا ۲۰۰۸)',
       'symbol' => 'ZWD',
     ),
     'ZWL' => 

@@ -50,7 +50,7 @@ return array (
     'CDF' => 
     array (
       'name' => 'Nfalanga wa Kongu',
-      'symbol' => 'CDF',
+      'symbol' => 'FC',
     ),
     'CHF' => 
     array (
@@ -279,8 +279,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'Kwasha wa Zambi',
+      'name' => 'Kwasha wa Zambi (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Kwasha wa Zambi',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

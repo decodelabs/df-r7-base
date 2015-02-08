@@ -2,24 +2,399 @@
 return array (
   'symbols' => 
   array (
+    'decimal' => '.',
+    'group' => ',',
     'list' => ';',
     'percentSign' => '%',
+    'plusSign' => '+',
+    'minusSign' => '-',
+    'exponential' => 'E',
+    'perMille' => '‰',
     'infinity' => '∞',
     'nan' => 'NaN',
   ),
   'formats' => 
   array (
     'decimal' => '#,##,##0.###',
-    'scientific' => '#E+00',
+    'scientific' => '#E0',
     'percent' => '#,##,##0 %',
     'currency' => '¤#,##,##0.00',
   ),
   'currencies' => 
   array (
+    'AED' => 
+    array (
+      'name' => 'ཡུ་ནཱའི་ཊེཌ་ ཨ་རབ་ ཨེ་མེ་རེཊས་ཀྱི་དངུལ་ ཌིར་ཧཱམ',
+      'symbol' => 'AED',
+    ),
+    'AFN' => 
+    array (
+      'name' => 'ཨཕ་གཱན་གྱི་དངུལ་ ཨཕ་ག་ནི',
+      'symbol' => 'AFN',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'ཨཱོས་ཊྲེ་ལི་ཡ་གི་དངུལ་ ཌོ་ལར',
+      'symbol' => 'AU$',
+    ),
+    'BDT' => 
+    array (
+      'name' => 'བྷང་ལ་དེཤ་གི་དངུལ་ ཏ་ཀ',
+      'symbol' => 'BDT',
+    ),
+    'BMD' => 
+    array (
+      'name' => 'བར་མུ་ཌ་གི་དངུལ་ ཌོ་ལར',
+      'symbol' => 'BMD',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'བྲ་ཛིལ་གྱི་དངུལ་ རེ་ཡལ',
+      'symbol' => 'R$',
+    ),
     'BTN' => 
     array (
-      'name' => 'དངུལ་ཀྲམ་',
+      'name' => 'དངུལ་ཀྲམ',
       'symbol' => 'Nu.',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'ཀེ་ན་ཌ་གི་དངུལ་ ཌོ་ལར',
+      'symbol' => 'CA$',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'སུ་ཡིས་ཀྱི་དངུལ་ ཕྲངཀ',
+      'symbol' => 'CHF',
+    ),
+    'CLP' => 
+    array (
+      'name' => 'ཅི་ལི་གི་དངུལ་ པེ་སོ',
+      'symbol' => 'CLP',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'རྒྱ་ནག་གི་དངུལ་ ཡུ་ཝཱན',
+      'symbol' => 'CN¥',
+    ),
+    'COP' => 
+    array (
+      'name' => 'ཀོ་ལོམ་བྷི་ཡ་གི་དངུལ་ པེ་སོ',
+      'symbol' => 'COP',
+    ),
+    'CUP' => 
+    array (
+      'name' => 'ཀིའུ་བྷ་གི་དངུལ་ པེ་སོ',
+      'symbol' => 'CUP',
+    ),
+    'DKK' => 
+    array (
+      'name' => 'ཌེན་མཱཀ་གི་དངུལ་ ཀྲོན',
+      'symbol' => 'DKK',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'ཨཱལ་ཇི་རི་ཡ་གི་དངུལ་ ཌའི་ནར',
+      'symbol' => 'DZD',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'ཨི་ཇིབཊ་གི་དངུལ་ པ་འུནཌ',
+      'symbol' => 'EGP',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'ཡུ་རོ༌དངུལ་',
+      'symbol' => '€',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'བྲི་ཊིཤ་ པ་འུནཌ་ ཨིས་ཊར་ལིང',
+      'symbol' => '£',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'ཧོང་ཀོང་གི་དངུལ་ ཌོ་ལར',
+      'symbol' => 'HK$',
+    ),
+    'IDR' => 
+    array (
+      'name' => 'ཨིན་ཌོ་ནེ་ཤི་ཡ་གི་དངུལ་ རུ་པི་ཡ',
+      'symbol' => 'IDR',
+    ),
+    'ILS' => 
+    array (
+      'name' => 'ཨིས་རེལ་གྱི་དངུལ་གསརཔ་ ཤེ་ཀེལ',
+      'symbol' => 'ILS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'རྒྱ་གར་གྱི་དངུལ་ རུ་པི',
+      'symbol' => '₹',
+    ),
+    'IQD' => 
+    array (
+      'name' => 'ཨི་རཱཀ་གི་དངུལ་ ཌི་ན',
+      'symbol' => 'IQD',
+    ),
+    'IRR' => 
+    array (
+      'name' => 'ཨི་རཱན་གྱི་དངུལ་ རི་ཨཱལ',
+      'symbol' => 'IRR',
+    ),
+    'ISK' => 
+    array (
+      'name' => 'ཨཱཡིས་ལེནཌ་གི་དངུལ་ ཀྲོ་ན',
+      'symbol' => 'ISK',
+    ),
+    'JMD' => 
+    array (
+      'name' => 'ཇཱ་མཻ་ཀ་གི་དངུལ་ ཌོ་ལར',
+      'symbol' => 'JMD',
+    ),
+    'JOD' => 
+    array (
+      'name' => 'ཇོར་ཌན་གྱི་དངུལ་ ཌི་ན',
+      'symbol' => 'JOD',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'ཇཱ་པཱན་གྱི་དངུལ་ ཡེན',
+      'symbol' => 'JP¥',
+    ),
+    'KES' => 
+    array (
+      'name' => 'ཀེན་ཡ་གི་དངུལ་ ཤི་ལིང',
+      'symbol' => 'KES',
+    ),
+    'KHR' => 
+    array (
+      'name' => 'ཀེམ་བྷོ་ཌི་ཡ་གི་དངུལ་ རི་ཨཱལ',
+      'symbol' => 'KHR',
+    ),
+    'KPW' => 
+    array (
+      'name' => 'ནོརཐ་ ཀོ་རི་ཡ་གི་དངུལ་ ཝོན',
+      'symbol' => 'KPW',
+    ),
+    'KRW' => 
+    array (
+      'name' => 'སཱའུཐ་ ཀོ་རི་ཡ་གི་དངུལ་ ཝོན',
+      'symbol' => 'KR₩',
+    ),
+    'KWD' => 
+    array (
+      'name' => 'ཀུ་ཝེཊ་གི་དངུལ་ ཌི་ན',
+      'symbol' => 'KWD',
+    ),
+    'KZT' => 
+    array (
+      'name' => 'ཀ་ཛགས་ཏཱན་གྱི་དངུལ་ ཏེང་གེ',
+      'symbol' => 'KZT',
+    ),
+    'LAK' => 
+    array (
+      'name' => 'ལཱ་ཝོས་ཀྱི་དངུལ་ ཀིཔ',
+      'symbol' => 'LAK',
+    ),
+    'LBP' => 
+    array (
+      'name' => 'ལེ་བ་ནོན་གྱི་དངུལ་ པ་འུནཌ',
+      'symbol' => 'LBP',
+    ),
+    'LKR' => 
+    array (
+      'name' => 'ཤྲི་ ལང་ཀ་གི་དངུལ་ རུ་པི',
+      'symbol' => 'LKR',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'ལཱའི་བེ་རི་ཡ་གི་དངུལ་ ཌོ་ལར',
+      'symbol' => 'LRD',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'ལི་བི་ཡ་གི་དངུལ་ ཌི་ན',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'མོ་རོ་ཀོ་གི་དངུལ་ ཌིར་ཧཱམ',
+      'symbol' => 'MAD',
+    ),
+    'MMK' => 
+    array (
+      'name' => 'མི་ཡཱན་མར་གྱི་དངུལ་ ཅཱཏ',
+      'symbol' => 'MMK',
+    ),
+    'MNT' => 
+    array (
+      'name' => 'སོག་པོའི་དངུལ་ ཏུ་གྲིཀ',
+      'symbol' => 'MNT',
+    ),
+    'MVR' => 
+    array (
+      'name' => 'མཱལ་དིབས་ཀྱི་དངུལ་ རུ་ཕི་ཡ',
+      'symbol' => 'MVR',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'མེཀ་སི་ཀོ་གི་དངུལ་ པེ་སོ',
+      'symbol' => 'MX$',
+    ),
+    'MYR' => 
+    array (
+      'name' => 'མ་ལེ་ཤི་ཡ་གི་དངུལ་ རིང་གིཊ',
+      'symbol' => 'MYR',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'ནོར་ཝེ་གི་དངུལ་ ཀྲོ་ན',
+      'symbol' => 'NOK',
+    ),
+    'NPR' => 
+    array (
+      'name' => 'བལ་པོའི་དངུལ་ རུ་པི',
+      'symbol' => 'NPR',
+    ),
+    'NZD' => 
+    array (
+      'name' => 'ནིའུ་ཛི་ལེནཌ་གི་དངུལ་ ཌོ་ལར',
+      'symbol' => 'NZ$',
+    ),
+    'OMR' => 
+    array (
+      'name' => 'ཨོ་མཱན་གྱི་དངུལ་ རི་ཨཱལ',
+      'symbol' => 'OMR',
+    ),
+    'PAB' => 
+    array (
+      'name' => 'པ་ན་མ་གི་དངུལ་ བཱལ་བོ་ཝ',
+      'symbol' => 'PAB',
+    ),
+    'PEN' => 
+    array (
+      'name' => 'པ་རུ་གི་དངུལ་ ནུ་བོ་ སཱོལ',
+      'symbol' => 'PEN',
+    ),
+    'PHP' => 
+    array (
+      'name' => 'ཕི་ལི་པིནས་གྱི་དངུལ་ པེ་སོ',
+      'symbol' => 'PHP',
+    ),
+    'PKR' => 
+    array (
+      'name' => 'པ་ཀིས་ཏཱན་གྱི་དངུལ་ རུ་པི',
+      'symbol' => 'PKR',
+    ),
+    'PLN' => 
+    array (
+      'name' => 'པོ་ལེནཌ་ཀྱི་དངུལ ཛ྄ལོ་ཊི',
+      'symbol' => 'PLN',
+    ),
+    'QAR' => 
+    array (
+      'name' => 'ཀ་ཊར་གྱི་དངུལ་ རི་ཨཱལ',
+      'symbol' => 'QAR',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'ཨུ་རུ་སུ་གི་དངུལ་ རུ་བཱལ',
+      'symbol' => 'RUB',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'སཱཝ་དིའི་དངུལ་ རི་ཡཱལ',
+      'symbol' => 'SAR',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'སེ་ཤཱལས་ཀྱི་དངུལ་ རུ་པི',
+      'symbol' => 'SCR',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'སུའི་ཌེན་གྱི་དངུལ་ ཀྲོ་ན',
+      'symbol' => 'SEK',
+    ),
+    'SGD' => 
+    array (
+      'name' => 'སིང་ག་པོར་གྱི་དངུལ་ ཌོ་ལར',
+      'symbol' => 'SGD',
+    ),
+    'SYP' => 
+    array (
+      'name' => 'སི་རི་ཡ་གི་དངུལ་ པ་འུནཌ',
+      'symbol' => 'SYP',
+    ),
+    'THB' => 
+    array (
+      'name' => 'ཐཱའི་ལེནཌ་གི་དངུལ་ བཱཏ',
+      'symbol' => 'TH฿',
+    ),
+    'TJS' => 
+    array (
+      'name' => 'ཏ་ཇི་ཀིས་ཏཱན་གྱི་དངུལ་ སོ་མོ་ནི',
+      'symbol' => 'TJS',
+    ),
+    'TRY' => 
+    array (
+      'name' => 'ཊཱར་ཀི་གི་དངུལ་ ལི་ར',
+      'symbol' => 'TRY',
+    ),
+    'TWD' => 
+    array (
+      'name' => 'ཊཱའི་ཝཱན་གི་དངུལ ཌོ་ལར',
+      'symbol' => 'NT$',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'ཊཱན་ཛཱ་ནི་ཡ་གི་དངུལ་ ཤི་ལིང',
+      'symbol' => 'TZS',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'ཡུ་གྷེན་ཌ་གི་དངུལ་ ཤི་ལིང',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'ཡུ་ཨེས་ ཌོ་ལར',
+      'symbol' => 'US$',
+    ),
+    'UYU' => 
+    array (
+      'name' => 'ཡུ་རུ་གུ་ཝའི་གི་དངུལ་ པེ་སོ',
+      'symbol' => 'UYU',
+    ),
+    'UZS' => 
+    array (
+      'name' => 'ཨུས་བེ་ཀིས་ཏཱན་གྱི་དངུལ་ སོམ',
+      'symbol' => 'UZS',
+    ),
+    'VEF' => 
+    array (
+      'name' => 'བེ་ནི་ཛུ་ཝེ་ལ་གི་དངུལ་ བོ་ལི་བར',
+      'symbol' => 'VEF',
+    ),
+    'VND' => 
+    array (
+      'name' => 'བེཊ་ནཱམ་གྱི་དངུལ་ ཌོང',
+      'symbol' => 'VND',
+    ),
+    'XAF' => 
+    array (
+      'symbol' => 'XAF',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'མ་ཤེས་པའི་དངུལ',
+      'symbol' => 'XXX',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'སཱའུཐ་ ཨཕ་རི་ཀ་གི་དངུལ་ རཱནད',
+      'symbol' => 'ZAR',
     ),
   ),
 );

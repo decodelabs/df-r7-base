@@ -9,16 +9,18 @@ return array (
     'plusSign' => '+',
     'minusSign' => '-',
     'exponential' => 'E',
+    'superscriptingExponent' => '×',
     'perMille' => '‰',
     'infinity' => '∞',
     'nan' => 'NaN',
+    'timeSeparator' => ':',
   ),
   'formats' => 
   array (
     'decimal' => '#,##0.###',
     'scientific' => '#E0',
     'percent' => '#,##0%',
-    'currency' => '¤ #,##0.00',
+    'currency' => '¤#,##0.00',
   ),
   'currencies' => 
   array (
@@ -59,8 +61,8 @@ return array (
     ),
     'AUD' => 
     array (
-      'name' => 'Australian Dollar',
-      'symbol' => 'AUD',
+      'name' => 'Dolyar ng Australya',
+      'symbol' => 'A$',
     ),
     'AWG' => 
     array (
@@ -79,7 +81,7 @@ return array (
     ),
     'BBD' => 
     array (
-      'name' => 'Barbadian Dollar',
+      'name' => 'Dolyar ng Barbados',
       'symbol' => 'BBD',
     ),
     'BDT' => 
@@ -104,12 +106,12 @@ return array (
     ),
     'BMD' => 
     array (
-      'name' => 'Bermudan Dollar',
+      'name' => 'Dolyar ng Bermuda',
       'symbol' => 'BMD',
     ),
     'BND' => 
     array (
-      'name' => 'Brunei Dollar',
+      'name' => 'Dolyar ng Brunei',
       'symbol' => 'BND',
     ),
     'BOB' => 
@@ -120,11 +122,11 @@ return array (
     'BRL' => 
     array (
       'name' => 'Brazilian Real',
-      'symbol' => 'BRL',
+      'symbol' => 'R$',
     ),
     'BSD' => 
     array (
-      'name' => 'Bahamian Dollar',
+      'name' => 'Dolyar ng Bahamas',
       'symbol' => 'BSD',
     ),
     'BTN' => 
@@ -144,13 +146,13 @@ return array (
     ),
     'BZD' => 
     array (
-      'name' => 'Belize Dollar',
+      'name' => 'Dolyar ng Belize',
       'symbol' => 'BZD',
     ),
     'CAD' => 
     array (
-      'name' => 'Canadian Dollar',
-      'symbol' => 'CAD',
+      'name' => 'Dolyar ng Canada',
+      'symbol' => 'CA$',
     ),
     'CDF' => 
     array (
@@ -159,22 +161,22 @@ return array (
     ),
     'CHF' => 
     array (
-      'name' => 'Swiss Francs',
+      'name' => 'Swiss Franc',
       'symbol' => 'CHF',
     ),
     'CLP' => 
     array (
-      'name' => 'Chilean Peso',
+      'name' => 'Piso ng Chile',
       'symbol' => 'CLP',
     ),
     'CNY' => 
     array (
-      'name' => 'Yuan Renminbi',
-      'symbol' => 'CNY',
+      'name' => 'Chinese Yuan',
+      'symbol' => 'CN¥',
     ),
     'COP' => 
     array (
-      'name' => 'Colombian Peso',
+      'name' => 'Piso ng Colombia',
       'symbol' => 'COP',
     ),
     'CRC' => 
@@ -184,12 +186,12 @@ return array (
     ),
     'CUC' => 
     array (
-      'name' => 'Cuban Convertible Peso',
+      'name' => 'Convertible na Piso ng Cuba',
       'symbol' => 'CUC',
     ),
     'CUP' => 
     array (
-      'name' => 'Cuban Peso',
+      'name' => 'Piso ng Cuba',
       'symbol' => 'CUP',
     ),
     'CVE' => 
@@ -199,7 +201,7 @@ return array (
     ),
     'CZK' => 
     array (
-      'name' => 'Czech Koruna',
+      'name' => 'Czech Republic Koruna',
       'symbol' => 'CZK',
     ),
     'DEM' => 
@@ -214,12 +216,12 @@ return array (
     ),
     'DKK' => 
     array (
-      'name' => 'Denmark Kroner',
+      'name' => 'Denmark Krone',
       'symbol' => 'DKK',
     ),
     'DOP' => 
     array (
-      'name' => 'Dominican Peso',
+      'name' => 'Piso ng Dominican',
       'symbol' => 'DOP',
     ),
     'DZD' => 
@@ -249,12 +251,12 @@ return array (
     ),
     'EUR' => 
     array (
-      'name' => 'Euros',
-      'symbol' => 'EUR',
+      'name' => 'Euro',
+      'symbol' => '€',
     ),
     'FJD' => 
     array (
-      'name' => 'Fijian Dollar',
+      'name' => 'Dolyar ng Fiji',
       'symbol' => 'FJD',
     ),
     'FKP' => 
@@ -269,8 +271,8 @@ return array (
     ),
     'GBP' => 
     array (
-      'name' => 'British Pounds Sterling',
-      'symbol' => 'GBP',
+      'name' => 'British Pound Sterling',
+      'symbol' => '£',
     ),
     'GEL' => 
     array (
@@ -304,13 +306,13 @@ return array (
     ),
     'GYD' => 
     array (
-      'name' => 'Guyanaese Dollar',
+      'name' => 'Dolyar ng Guyanese',
       'symbol' => 'GYD',
     ),
     'HKD' => 
     array (
-      'name' => 'Hong Kong Dollars',
-      'symbol' => 'HKD',
+      'name' => 'Dolyar ng Hong Kong',
+      'symbol' => 'HK$',
     ),
     'HNL' => 
     array (
@@ -339,13 +341,13 @@ return array (
     ),
     'ILS' => 
     array (
-      'name' => 'Israeli Shekel',
-      'symbol' => 'ILS',
+      'name' => 'Israeli New Sheqel',
+      'symbol' => '₪',
     ),
     'INR' => 
     array (
       'name' => 'Indian Rupee',
-      'symbol' => 'INR',
+      'symbol' => '₹',
     ),
     'IQD' => 
     array (
@@ -364,7 +366,7 @@ return array (
     ),
     'JMD' => 
     array (
-      'name' => 'Jamaican Dollar',
+      'name' => 'Dolyar ng Jamaica',
       'symbol' => 'JMD',
     ),
     'JOD' => 
@@ -375,7 +377,7 @@ return array (
     'JPY' => 
     array (
       'name' => 'Japanese Yen',
-      'symbol' => 'JPY',
+      'symbol' => '¥',
     ),
     'KES' => 
     array (
@@ -405,7 +407,7 @@ return array (
     'KRW' => 
     array (
       'name' => 'South Korean Won',
-      'symbol' => 'KRW',
+      'symbol' => '₩',
     ),
     'KWD' => 
     array (
@@ -414,7 +416,7 @@ return array (
     ),
     'KYD' => 
     array (
-      'name' => 'Cayman Islands Dollar',
+      'name' => 'Dolyar ng Cayman Islands',
       'symbol' => 'KYD',
     ),
     'KZT' => 
@@ -439,7 +441,7 @@ return array (
     ),
     'LRD' => 
     array (
-      'name' => 'Liberian Dollar',
+      'name' => 'Dolyar ng Liberia',
       'symbol' => 'LRD',
     ),
     'LSL' => 
@@ -484,7 +486,7 @@ return array (
     ),
     'MMK' => 
     array (
-      'name' => 'Myanma Kyat',
+      'name' => 'Myanmar Kyat',
       'symbol' => 'MMK',
     ),
     'MNT' => 
@@ -519,17 +521,22 @@ return array (
     ),
     'MXN' => 
     array (
-      'name' => 'Mexico Peso',
-      'symbol' => 'MXN',
+      'name' => 'Piso ng Mexico',
+      'symbol' => 'MX$',
     ),
     'MYR' => 
     array (
       'name' => 'Malaysian Ringgit',
       'symbol' => 'MYR',
     ),
+    'MZN' => 
+    array (
+      'name' => 'Mozambican Metical',
+      'symbol' => 'MZN',
+    ),
     'NAD' => 
     array (
-      'name' => 'Namibian Dollar',
+      'name' => 'Dolyar ng Namibia',
       'symbol' => 'NAD',
     ),
     'NGN' => 
@@ -544,7 +551,7 @@ return array (
     ),
     'NOK' => 
     array (
-      'name' => 'Norwegian Kroner',
+      'name' => 'Norwegian Krone',
       'symbol' => 'NOK',
     ),
     'NPR' => 
@@ -554,8 +561,8 @@ return array (
     ),
     'NZD' => 
     array (
-      'name' => 'New Zealand Dollars',
-      'symbol' => 'NZD',
+      'name' => 'Dolyar ng New Zealand',
+      'symbol' => 'NZ$',
     ),
     'OMR' => 
     array (
@@ -579,17 +586,17 @@ return array (
     ),
     'PHP' => 
     array (
-      'name' => 'Philippine Peso',
+      'name' => 'Piso ng Pilipinas',
       'symbol' => '₱',
     ),
     'PKR' => 
     array (
-      'name' => 'Pakistan Rupee',
+      'name' => 'Pakistani Rupee',
       'symbol' => 'PKR',
     ),
     'PLN' => 
     array (
-      'name' => 'Polish NewZloty',
+      'name' => 'Polish Zloty',
       'symbol' => 'PLN',
     ),
     'PYG' => 
@@ -629,7 +636,7 @@ return array (
     ),
     'SBD' => 
     array (
-      'name' => 'Solomon Islands Dollar',
+      'name' => 'Dolyar ng Solomon Islands',
       'symbol' => 'SBD',
     ),
     'SCR' => 
@@ -644,12 +651,12 @@ return array (
     ),
     'SEK' => 
     array (
-      'name' => 'Sweden Kronor',
+      'name' => 'Swedish Krona',
       'symbol' => 'SEK',
     ),
     'SGD' => 
     array (
-      'name' => 'Singapore Dollars',
+      'name' => 'Dolyar ng Singapore',
       'symbol' => 'SGD',
     ),
     'SHP' => 
@@ -679,12 +686,17 @@ return array (
     ),
     'SRD' => 
     array (
-      'name' => 'Surinamese Dollar',
+      'name' => 'Dolyar ng Suriname',
       'symbol' => 'SRD',
+    ),
+    'SSP' => 
+    array (
+      'name' => 'South Sudanese Pound',
+      'symbol' => 'SSP',
     ),
     'STD' => 
     array (
-      'name' => 'São Tomé and Príncipe Dobra',
+      'name' => 'Sao Tome and Principe Dobra',
       'symbol' => 'STD',
     ),
     'SYP' => 
@@ -700,7 +712,7 @@ return array (
     'THB' => 
     array (
       'name' => 'Thai Baht',
-      'symbol' => 'THB',
+      'symbol' => '฿',
     ),
     'TJS' => 
     array (
@@ -729,13 +741,13 @@ return array (
     ),
     'TTD' => 
     array (
-      'name' => 'Trinidad and Tobago Dollar',
+      'name' => 'Dolyar ng Trinidad and Tobago',
       'symbol' => 'TTD',
     ),
     'TWD' => 
     array (
-      'name' => 'New Taiwan Dollar',
-      'symbol' => 'TWD',
+      'name' => 'Dolyar ng New Taiwan',
+      'symbol' => 'NT$',
     ),
     'TZS' => 
     array (
@@ -754,12 +766,12 @@ return array (
     ),
     'USD' => 
     array (
-      'name' => 'US Dollar',
-      'symbol' => 'USD',
+      'name' => 'Dolyar ng US',
+      'symbol' => '$',
     ),
     'UYU' => 
     array (
-      'name' => 'Uruguayan Peso',
+      'name' => 'Piso ng Uruguay',
       'symbol' => 'UYU',
     ),
     'UZS' => 
@@ -769,7 +781,7 @@ return array (
     ),
     'VEB' => 
     array (
-      'name' => 'Venezuela Bolivar',
+      'name' => 'Venezuelan Bolívar (1871–2008)',
       'symbol' => 'VEB',
     ),
     'VEF' => 
@@ -780,7 +792,7 @@ return array (
     'VND' => 
     array (
       'name' => 'Vietnamese Dong',
-      'symbol' => 'VND',
+      'symbol' => '₫',
     ),
     'VUV' => 
     array (
@@ -795,22 +807,27 @@ return array (
     'XAF' => 
     array (
       'name' => 'CFA Franc BEAC',
-      'symbol' => 'XAF',
+      'symbol' => 'FCFA',
     ),
     'XCD' => 
     array (
-      'name' => 'East Caribbean Dollar',
-      'symbol' => 'XCD',
+      'name' => 'Dolyar ng Silangang Caribbean',
+      'symbol' => 'EC$',
     ),
     'XOF' => 
     array (
       'name' => 'CFA Franc BCEAO',
-      'symbol' => 'XOF',
+      'symbol' => 'CFA',
     ),
     'XPF' => 
     array (
       'name' => 'CFP Franc',
-      'symbol' => 'XPF',
+      'symbol' => 'CFPF',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'Hindi Kilalang Pera',
+      'symbol' => 'XXX',
     ),
     'YER' => 
     array (
@@ -824,8 +841,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'Zambian Kwacha',
+      'name' => 'Zambian Kwacha (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Zambian Kwacha',
+      'symbol' => 'ZMW',
     ),
   ),
 );

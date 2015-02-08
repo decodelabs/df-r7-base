@@ -1,6 +1,13 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE፡ dd MMMM መዓልቲ y G',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 

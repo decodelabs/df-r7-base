@@ -1,7 +1,5 @@
 <?php
 return array (
-  'lv' => 'Lets',
-  'ssa' => 'Nilo-Saharaans',
-  'oc' => 'Occitaans (na 1500); Provençaals',
+  'oc' => 'Occitaans; Provençaals',
   'sh' => 'Servo-Kroatisch',
 );

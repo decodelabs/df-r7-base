@@ -9,7 +9,7 @@ return array (
   array (
     'decimal' => '#,##0.###',
     'percent' => '#,##0%',
-    'currency' => '¤#,##0.00;(¤#,##0.00)',
+    'currency' => '¤#,##0.00',
   ),
   'currencies' => 
   array (
@@ -280,8 +280,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'Solai Zambiya',
+      'name' => 'Solai Zambiya (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Solai Zambiya',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

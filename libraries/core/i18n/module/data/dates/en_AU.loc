@@ -1,13 +1,44 @@
 <?php
 return array (
   '@default' => 'gregorian',
-  'gregorian' => 
+  'chinese' => 
   array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => '1',
+        2 => '2',
+        3 => '3',
+        4 => '4',
+        5 => '5',
+        6 => '6',
+        7 => '7',
+        8 => '8',
+        9 => '9',
+        10 => '10',
+        11 => '11',
+        12 => '12',
+      ),
+      'full' => 
+      array (
+        1 => '1',
+        2 => '2',
+        3 => '3',
+        4 => '4',
+        5 => '5',
+        6 => '6',
+        7 => '7',
+        8 => '8',
+        9 => '9',
+        10 => '10',
+        11 => '11',
+        12 => '12',
+      ),
+    ),
     'dateFormat' => 
     array (
-      'full' => 'EEEE, d MMMM y',
-      'long' => 'd MMMM y',
-      'medium' => 'dd/MM/yyyy',
       'short' => 'd/MM/yy',
     ),
     'timeFormat' => 
@@ -17,5 +48,43 @@ return array (
       'medium' => 'h:mm:ss a',
       'short' => 'h:mm a',
     ),
+  ),
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'short' => 'd/MM/y GGGGG',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+  'gregorian' => 
+  array (
+    'dateFormat' => 
+    array (
+      'short' => 'd/MM/y',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'h:mm:ss a zzzz',
+      'long' => 'h:mm:ss a z',
+      'medium' => 'h:mm:ss a',
+      'short' => 'h:mm a',
+    ),
+  ),
+  'islamic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'short' => 'd/MM/y GGGGG',
+    ),
+  ),
+  'japanese' => 
+  array (
   ),
 );

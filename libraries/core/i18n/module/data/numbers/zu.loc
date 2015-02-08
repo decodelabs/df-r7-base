@@ -2,8 +2,18 @@
 return array (
   'symbols' => 
   array (
-    'decimal' => ',',
-    'group' => ' ',
+    'decimal' => '.',
+    'group' => ',',
+    'list' => ';',
+    'percentSign' => '%',
+    'plusSign' => '+',
+    'minusSign' => '-',
+    'exponential' => 'E',
+    'superscriptingExponent' => '×',
+    'perMille' => '‰',
+    'infinity' => '∞',
+    'nan' => 'I-NaN',
+    'timeSeparator' => ':',
   ),
   'formats' => 
   array (
@@ -52,7 +62,7 @@ return array (
     'AUD' => 
     array (
       'name' => 'i-Austrilian Dollar',
-      'symbol' => 'AUD',
+      'symbol' => 'A$',
     ),
     'AWG' => 
     array (
@@ -112,7 +122,7 @@ return array (
     'BRL' => 
     array (
       'name' => 'i-Brazilian Real',
-      'symbol' => 'BRL',
+      'symbol' => 'R$',
     ),
     'BSD' => 
     array (
@@ -142,7 +152,7 @@ return array (
     'CAD' => 
     array (
       'name' => 'i-Candian Dollar',
-      'symbol' => 'CAD',
+      'symbol' => 'CA$',
     ),
     'CDF' => 
     array (
@@ -162,7 +172,7 @@ return array (
     'CNY' => 
     array (
       'name' => 'i-Chinese Yuan',
-      'symbol' => 'CNY',
+      'symbol' => 'CN¥',
     ),
     'COP' => 
     array (
@@ -232,7 +242,7 @@ return array (
     'EUR' => 
     array (
       'name' => 'i-Euro',
-      'symbol' => 'EUR',
+      'symbol' => '€',
     ),
     'FJD' => 
     array (
@@ -247,7 +257,7 @@ return array (
     'GBP' => 
     array (
       'name' => 'i-British Pound Sterling',
-      'symbol' => 'GBP',
+      'symbol' => '£',
     ),
     'GEL' => 
     array (
@@ -287,7 +297,7 @@ return array (
     'HKD' => 
     array (
       'name' => 'i-Hong Kong Dollar',
-      'symbol' => 'HKD',
+      'symbol' => 'HK$',
     ),
     'HNL' => 
     array (
@@ -322,7 +332,7 @@ return array (
     'INR' => 
     array (
       'name' => 'i-Indian Rupee',
-      'symbol' => 'INR',
+      'symbol' => '₹',
     ),
     'IQD' => 
     array (
@@ -352,7 +362,7 @@ return array (
     'JPY' => 
     array (
       'name' => 'i-Japanese Yen',
-      'symbol' => 'JPY',
+      'symbol' => 'JP¥',
     ),
     'KES' => 
     array (
@@ -382,7 +392,7 @@ return array (
     'KRW' => 
     array (
       'name' => 'i-South Korean Won',
-      'symbol' => 'KRW',
+      'symbol' => '₩',
     ),
     'KWD' => 
     array (
@@ -497,12 +507,17 @@ return array (
     'MXN' => 
     array (
       'name' => 'i-Mexican Peso',
-      'symbol' => 'MXN',
+      'symbol' => 'MX$',
     ),
     'MYR' => 
     array (
       'name' => 'i-Malaysian Ringgit',
       'symbol' => 'MYR',
+    ),
+    'MZN' => 
+    array (
+      'name' => 'I-Metical yase-Mozambicque',
+      'symbol' => 'MZN',
     ),
     'NAD' => 
     array (
@@ -579,6 +594,11 @@ return array (
       'name' => 'i-Qatari Rial',
       'symbol' => 'QAR',
     ),
+    'RON' => 
+    array (
+      'name' => 'I-Romanian Leu',
+      'symbol' => 'RON',
+    ),
     'RSD' => 
     array (
       'name' => 'i-Serbian Dinar',
@@ -644,6 +664,11 @@ return array (
       'name' => 'i-Surinamese Dollar',
       'symbol' => 'SRD',
     ),
+    'SSP' => 
+    array (
+      'name' => 'Upondo waseNingizimu Sudan',
+      'symbol' => 'SSP',
+    ),
     'STD' => 
     array (
       'name' => 'i-São Tomé kanye ne-Príncipe Dobra',
@@ -662,7 +687,7 @@ return array (
     'THB' => 
     array (
       'name' => 'i-Thai Baht',
-      'symbol' => 'THB',
+      'symbol' => '฿',
     ),
     'TJS' => 
     array (
@@ -691,13 +716,13 @@ return array (
     ),
     'TTD' => 
     array (
-      'name' => 'Idola lase-Trinidad nase-Tobago',
+      'name' => 'i-Trinidad and Tobago Dollar',
       'symbol' => 'TTD',
     ),
     'TWD' => 
     array (
       'name' => 'i-New Taiwan Dollar',
-      'symbol' => 'TWD',
+      'symbol' => 'NT$',
     ),
     'TZS' => 
     array (
@@ -717,7 +742,7 @@ return array (
     'USD' => 
     array (
       'name' => 'i-US Dollar',
-      'symbol' => 'USD',
+      'symbol' => 'US$',
     ),
     'UYU' => 
     array (
@@ -757,7 +782,7 @@ return array (
     'XCD' => 
     array (
       'name' => 'i-East Caribbean Dollar',
-      'symbol' => 'XCD',
+      'symbol' => 'EC$',
     ),
     'XOF' => 
     array (
@@ -771,7 +796,7 @@ return array (
     ),
     'XXX' => 
     array (
-      'name' => 'Ikharensi engaziwa',
+      'name' => 'Imali engaziwa',
       'symbol' => 'XXX',
     ),
     'YER' => 
@@ -786,8 +811,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'i-Zambian Kwacha',
+      'name' => 'i-Zambian Kwacha (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'i-Zambian Kwacha',
+      'symbol' => 'ZMW',
     ),
   ),
 );

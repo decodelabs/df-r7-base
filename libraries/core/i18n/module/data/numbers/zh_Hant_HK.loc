@@ -5,14 +5,29 @@ return array (
   ),
   'formats' => 
   array (
-    'currency' => '¤#,##0.00;(¤#,##0.00)',
+    'decimal' => '0千',
   ),
   'currencies' => 
   array (
+    'AED' => 
+    array (
+      'name' => '阿拉伯聯合酋長國迪爾汗',
+      'symbol' => 'AED',
+    ),
     'AUD' => 
     array (
       'name' => '澳元',
       'symbol' => 'AUD',
+    ),
+    'AWG' => 
+    array (
+      'name' => '阿魯巴盾',
+      'symbol' => 'AWG',
+    ),
+    'AZN' => 
+    array (
+      'name' => '亞塞拜疆馬納特',
+      'symbol' => 'AZN',
     ),
     'BAD' => 
     array (
@@ -21,38 +36,197 @@ return array (
     ),
     'BAM' => 
     array (
-      'name' => '波斯尼亞-黑塞哥維那可轉換馬克',
+      'name' => '波士尼亞與赫塞哥維納可轉換馬克',
       'symbol' => 'BAM',
+    ),
+    'BBD' => 
+    array (
+      'name' => '巴巴多斯元',
+      'symbol' => 'BBD',
+    ),
+    'BIF' => 
+    array (
+      'name' => '布隆迪法郎',
+      'symbol' => 'BIF',
+    ),
+    'BWP' => 
+    array (
+      'name' => '博茨瓦納普拉',
+      'symbol' => 'BWP',
+    ),
+    'BZD' => 
+    array (
+      'name' => '伯利茲元',
+      'symbol' => 'BZD',
     ),
     'CAD' => 
     array (
       'name' => '加元',
       'symbol' => 'CAD',
     ),
+    'CRC' => 
+    array (
+      'name' => '哥斯達黎加科郎',
+      'symbol' => 'CRC',
+    ),
+    'CVE' => 
+    array (
+      'name' => '佛得角埃斯庫多',
+      'symbol' => 'CVE',
+    ),
+    'DKK' => 
+    array (
+      'name' => '丹麥克羅納',
+      'symbol' => 'DKK',
+    ),
+    'ETB' => 
+    array (
+      'name' => '埃塞俄比亞比爾',
+      'symbol' => 'ETB',
+    ),
+    'GEL' => 
+    array (
+      'name' => '格魯吉亞拉里',
+      'symbol' => 'GEL',
+    ),
+    'GHS' => 
+    array (
+      'name' => '加納塞地',
+      'symbol' => 'GHS',
+    ),
+    'GMD' => 
+    array (
+      'name' => '岡比亞達拉西',
+      'symbol' => 'GMD',
+    ),
+    'GTQ' => 
+    array (
+      'name' => '危地馬拉格查爾',
+      'symbol' => 'GTQ',
+    ),
     'HKD' => 
     array (
       'name' => '港元',
-      'symbol' => '$',
+      'symbol' => 'HKD',
+    ),
+    'HRK' => 
+    array (
+      'name' => '克羅地亞庫納',
+      'symbol' => 'HRK',
     ),
     'ITL' => 
     array (
       'name' => '意大利里拉',
       'symbol' => 'ITL',
     ),
+    'KRW' => 
+    array (
+      'symbol' => '₩',
+    ),
+    'KYD' => 
+    array (
+      'name' => '開曼群島美元',
+      'symbol' => 'KYD',
+    ),
+    'LRD' => 
+    array (
+      'name' => '利比利亞元',
+      'symbol' => 'LRD',
+    ),
+    'LTL' => 
+    array (
+      'name' => '立陶宛里塔',
+      'symbol' => 'LTL',
+    ),
+    'MGA' => 
+    array (
+      'name' => '馬達加斯加艾瑞爾',
+      'symbol' => 'MGA',
+    ),
+    'MRO' => 
+    array (
+      'name' => '毛里塔尼亞烏吉亞',
+      'symbol' => 'MRO',
+    ),
+    'MUR' => 
+    array (
+      'name' => '毛里求斯盧布',
+      'symbol' => 'MUR',
+    ),
+    'MVR' => 
+    array (
+      'name' => '馬爾代夫盧非亞',
+      'symbol' => 'MVR',
+    ),
+    'MZN' => 
+    array (
+      'name' => '莫桑比克美提卡',
+      'symbol' => 'MZN',
+    ),
+    'NGN' => 
+    array (
+      'name' => '尼日利亞奈拉',
+      'symbol' => 'NGN',
+    ),
+    'NOK' => 
+    array (
+      'name' => '挪威克羅納',
+      'symbol' => 'NOK',
+    ),
     'NZD' => 
     array (
       'name' => '紐西蘭元',
       'symbol' => 'NZD',
+    ),
+    'PGK' => 
+    array (
+      'name' => '巴布亞新畿內亞基那',
+      'symbol' => 'PGK',
+    ),
+    'QAR' => 
+    array (
+      'name' => '卡塔爾里亞爾',
+      'symbol' => 'QAR',
     ),
     'RSD' => 
     array (
       'name' => '塞爾維亞第納爾',
       'symbol' => 'RSD',
     ),
+    'RWF' => 
+    array (
+      'name' => '盧旺達法郎',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => '沙特阿拉伯里亞爾',
+      'symbol' => 'SAR',
+    ),
+    'SBD' => 
+    array (
+      'name' => '所羅門群島元',
+      'symbol' => 'SBD',
+    ),
+    'SEK' => 
+    array (
+      'name' => '瑞典克羅納',
+      'symbol' => 'SEK',
+    ),
     'SGD' => 
     array (
       'name' => '新加坡元',
       'symbol' => 'SGD',
+    ),
+    'SLL' => 
+    array (
+      'name' => '塞拉利昂利昂',
+      'symbol' => 'SLL',
+    ),
+    'STD' => 
+    array (
+      'name' => '聖多美和普林西比多布拉',
+      'symbol' => 'STD',
     ),
     'TWD' => 
     array (
@@ -61,13 +235,22 @@ return array (
     ),
     'USD' => 
     array (
-      'name' => '美元',
       'symbol' => 'US$',
+    ),
+    'VUV' => 
+    array (
+      'name' => '瓦努阿圖瓦圖',
+      'symbol' => 'VUV',
     ),
     'XAF' => 
     array (
       'name' => '中非法郎',
       'symbol' => 'XAF',
+    ),
+    'XCD' => 
+    array (
+      'name' => '東加勒比元',
+      'symbol' => 'XCD',
     ),
     'XOF' => 
     array (
@@ -78,6 +261,11 @@ return array (
     array (
       'name' => '太平洋法郎',
       'symbol' => 'XPF',
+    ),
+    'YER' => 
+    array (
+      'name' => '也門里雅',
+      'symbol' => 'YER',
     ),
   ),
 );

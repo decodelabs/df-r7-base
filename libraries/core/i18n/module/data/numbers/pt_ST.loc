@@ -10,7 +10,6 @@ return array (
   array (
     'STD' => 
     array (
-      'name' => 'STD',
       'symbol' => 'Db',
     ),
   ),

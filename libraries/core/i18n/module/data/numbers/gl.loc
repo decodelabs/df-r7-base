@@ -9,16 +9,18 @@ return array (
     'plusSign' => '+',
     'minusSign' => '-',
     'exponential' => 'E',
+    'superscriptingExponent' => '×',
     'perMille' => '‰',
     'infinity' => '∞',
     'nan' => 'NaN',
+    'timeSeparator' => ':',
   ),
   'formats' => 
   array (
     'decimal' => '#,##0.###',
     'scientific' => '#E0',
     'percent' => '#,##0%',
-    'currency' => '#,##0.00 ¤',
+    'currency' => '¤#,##0.00',
   ),
   'currencies' => 
   array (
@@ -59,7 +61,7 @@ return array (
     ),
     'ARP' => 
     array (
-      'name' => 'Peso arxentino (1983-1985)',
+      'name' => 'Peso arxentino (1983–1985)',
       'symbol' => 'ARP',
     ),
     'ARS' => 
@@ -70,7 +72,7 @@ return array (
     'AUD' => 
     array (
       'name' => 'Dólar australiano',
-      'symbol' => 'AUD',
+      'symbol' => '$A',
     ),
     'AWG' => 
     array (
@@ -154,7 +156,7 @@ return array (
     ),
     'BRB' => 
     array (
-      'name' => 'Cruzeiro novo brasileiro (1967-1986)',
+      'name' => 'Cruzeiro novo brasileiro (1967–1986)',
       'symbol' => 'BRB',
     ),
     'BRC' => 
@@ -164,13 +166,13 @@ return array (
     ),
     'BRE' => 
     array (
-      'name' => 'Cruzeiro brasileiro (1990-1993)',
+      'name' => 'Cruzeiro brasileiro (1990–1993)',
       'symbol' => 'BRE',
     ),
     'BRL' => 
     array (
       'name' => 'Real brasileiro',
-      'symbol' => 'BRL',
+      'symbol' => '$R',
     ),
     'BRN' => 
     array (
@@ -210,7 +212,7 @@ return array (
     'CAD' => 
     array (
       'name' => 'Dólar canadiano',
-      'symbol' => 'CAD',
+      'symbol' => '$CA',
     ),
     'CDF' => 
     array (
@@ -219,7 +221,7 @@ return array (
     ),
     'CHF' => 
     array (
-      'name' => 'Franco suizo',
+      'name' => 'Franco suízo',
       'symbol' => 'CHF',
     ),
     'CLF' => 
@@ -234,8 +236,8 @@ return array (
     ),
     'CNY' => 
     array (
-      'name' => 'Iuan renminbi chinés',
-      'symbol' => 'CNY',
+      'name' => 'Iuán chinés',
+      'symbol' => 'CN¥',
     ),
     'COP' => 
     array (
@@ -335,7 +337,7 @@ return array (
     'EUR' => 
     array (
       'name' => 'Euro',
-      'symbol' => 'EUR',
+      'symbol' => '€',
     ),
     'FJD' => 
     array (
@@ -355,7 +357,7 @@ return array (
     'GBP' => 
     array (
       'name' => 'Libra esterlina',
-      'symbol' => 'GBP',
+      'symbol' => '£',
     ),
     'GEL' => 
     array (
@@ -410,7 +412,7 @@ return array (
     'HKD' => 
     array (
       'name' => 'Dólar de Hong Kong',
-      'symbol' => 'HKD',
+      'symbol' => '$HK',
     ),
     'HNL' => 
     array (
@@ -445,12 +447,12 @@ return array (
     'ILS' => 
     array (
       'name' => 'Novo shequel israelí',
-      'symbol' => 'ILS',
+      'symbol' => '₪',
     ),
     'INR' => 
     array (
       'name' => 'Rupia india',
-      'symbol' => 'INR',
+      'symbol' => '₹',
     ),
     'IQD' => 
     array (
@@ -485,7 +487,7 @@ return array (
     'JPY' => 
     array (
       'name' => 'Ien xaponés',
-      'symbol' => 'JPY',
+      'symbol' => '¥JP',
     ),
     'KES' => 
     array (
@@ -515,7 +517,7 @@ return array (
     'KRW' => 
     array (
       'name' => 'Won surcoreano',
-      'symbol' => 'KRW',
+      'symbol' => '₩',
     ),
     'KWD' => 
     array (
@@ -650,11 +652,11 @@ return array (
     'MXN' => 
     array (
       'name' => 'Peso mexicano',
-      'symbol' => 'MXN',
+      'symbol' => '$MX',
     ),
     'MXP' => 
     array (
-      'name' => 'Peso de prata mexicano (1861-1992)',
+      'name' => 'Peso de prata mexicano (1861–1992)',
       'symbol' => 'MXP',
     ),
     'MXV' => 
@@ -666,6 +668,11 @@ return array (
     array (
       'name' => 'Ringgit malaio',
       'symbol' => 'MYR',
+    ),
+    'MZN' => 
+    array (
+      'name' => 'Metical de Mozambique',
+      'symbol' => 'MZN',
     ),
     'NAD' => 
     array (
@@ -705,7 +712,7 @@ return array (
     'NZD' => 
     array (
       'name' => 'Dólar neozelandés',
-      'symbol' => 'NZD',
+      'symbol' => 'NZ$',
     ),
     'OMR' => 
     array (
@@ -767,6 +774,11 @@ return array (
       'name' => 'Rial qatarí',
       'symbol' => 'QAR',
     ),
+    'RON' => 
+    array (
+      'name' => 'Leu romanés',
+      'symbol' => 'RON',
+    ),
     'RSD' => 
     array (
       'name' => 'Dinar serbio',
@@ -779,7 +791,7 @@ return array (
     ),
     'RUR' => 
     array (
-      'name' => 'Rublo ruso (1991-1998)',
+      'name' => 'Rublo ruso (1991–1998)',
       'symbol' => 'RUR',
     ),
     'RWF' => 
@@ -837,6 +849,11 @@ return array (
       'name' => 'Dólar surinamés',
       'symbol' => 'SRD',
     ),
+    'SSP' => 
+    array (
+      'name' => 'Libra sursudanesa',
+      'symbol' => 'SSP',
+    ),
     'STD' => 
     array (
       'name' => 'Dobra de San Tomé e Príncipe',
@@ -865,7 +882,7 @@ return array (
     'THB' => 
     array (
       'name' => 'Baht tailandés',
-      'symbol' => 'THB',
+      'symbol' => '฿',
     ),
     'TJS' => 
     array (
@@ -900,7 +917,7 @@ return array (
     'TWD' => 
     array (
       'name' => 'Novo dólar taiwanés',
-      'symbol' => 'TWD',
+      'symbol' => '$NT',
     ),
     'TZS' => 
     array (
@@ -920,7 +937,7 @@ return array (
     'USD' => 
     array (
       'name' => 'Dólar estadounidense',
-      'symbol' => 'USD',
+      'symbol' => '$',
     ),
     'UYI' => 
     array (
@@ -929,7 +946,7 @@ return array (
     ),
     'UYP' => 
     array (
-      'name' => 'Peso uruguaio (1975-1993)',
+      'name' => 'Peso uruguaio (1975–1993)',
       'symbol' => 'UYP',
     ),
     'UYU' => 
@@ -944,18 +961,18 @@ return array (
     ),
     'VEB' => 
     array (
-      'name' => 'Bolívar venezolano',
+      'name' => 'Bolívar venezolano (1871–2008)',
       'symbol' => 'VEB',
     ),
     'VEF' => 
     array (
-      'name' => 'Bolívar forte venezolano',
+      'name' => 'Bolívar venezolano',
       'symbol' => 'VEF',
     ),
     'VND' => 
     array (
       'name' => 'Dong vietnamita',
-      'symbol' => 'VND',
+      'symbol' => '₫',
     ),
     'VUV' => 
     array (
@@ -970,7 +987,7 @@ return array (
     'XAF' => 
     array (
       'name' => 'Franco CFA BEAC',
-      'symbol' => 'XAF',
+      'symbol' => 'FCFA',
     ),
     'XAG' => 
     array (
@@ -985,12 +1002,12 @@ return array (
     'XCD' => 
     array (
       'name' => 'Dólar Caribe-Leste',
-      'symbol' => 'XCD',
+      'symbol' => 'EC$',
     ),
     'XOF' => 
     array (
       'name' => 'Franco CFA BCEAO',
-      'symbol' => 'XOF',
+      'symbol' => 'CFA',
     ),
     'XPD' => 
     array (
@@ -1000,7 +1017,7 @@ return array (
     'XPF' => 
     array (
       'name' => 'Franco CFP',
-      'symbol' => 'XPF',
+      'symbol' => 'CFPF',
     ),
     'XPT' => 
     array (
@@ -1009,7 +1026,7 @@ return array (
     ),
     'XXX' => 
     array (
-      'name' => 'Unidade monetaria descoñecida ou non válida',
+      'name' => 'Unidade monetaria descoñecida',
       'symbol' => 'XXX',
     ),
     'YER' => 
@@ -1024,8 +1041,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'Kwacha zambiano',
+      'name' => 'Kwacha zambiano (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Kwacha zambiano',
+      'symbol' => 'ZMW',
     ),
   ),
 );

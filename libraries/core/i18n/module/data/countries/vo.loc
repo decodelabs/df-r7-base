@@ -1,0 +1,13 @@
+<?php
+return array (
+  'DE' => 'Deutän',
+  'FR' => 'Fransän',
+  'GR' => 'Grikän',
+  'GE' => 'Grusiyän',
+  'IT' => 'Litaliyän',
+  'MX' => 'Mäxikän',
+  'NR' => 'Naureän',
+  'PW' => 'Palauäns',
+  'PT' => 'Portugän',
+  'ES' => 'Spanyän',
+);

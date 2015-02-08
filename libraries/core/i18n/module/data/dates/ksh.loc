@@ -8,6 +8,16 @@ return array (
       'full' => 'EEEE, d. MMMM y G',
     ),
   ),
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, \'dä\' d. MMMM y G',
+      'long' => 'd. MMMM y G',
+      'medium' => 'd. MMM. y G',
+      'short' => 'd. M. y GGGGG',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -39,18 +49,18 @@ return array (
       '@default' => 'full',
       'abbreviated' => 
       array (
-        1 => 'Jan.',
-        2 => 'Fäb.',
-        3 => 'Mar.',
-        4 => 'Apr.',
+        1 => 'Jan',
+        2 => 'Fäb',
+        3 => 'Mäz',
+        4 => 'Apr',
         5 => 'Mäi',
-        6 => 'Jun.',
-        7 => 'Jul.',
-        8 => 'Oug.',
-        9 => 'Säp.',
-        10 => 'Okt.',
-        11 => 'Nov.',
-        12 => 'Dez.',
+        6 => 'Jun',
+        7 => 'Jul',
+        8 => 'Ouj',
+        9 => 'Säp',
+        10 => 'Okt',
+        11 => 'Nov',
+        12 => 'Dez',
       ),
       'full' => 
       array (
@@ -72,8 +82,8 @@ return array (
     array (
       'full' => 'EEEE, \'dä\' d. MMMM y',
       'long' => 'd. MMMM y',
-      'medium' => 'd. MMM y',
-      'short' => 'd. M. yyyy',
+      'medium' => 'd. MMM. y',
+      'short' => 'd. M. y',
     ),
     'timeFormat' => 
     array (

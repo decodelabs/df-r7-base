@@ -4,17 +4,815 @@ return array (
   array (
     'decimal' => ',',
     'group' => '.',
+    'list' => ';',
+    'percentSign' => '%',
+    'plusSign' => '+',
+    'minusSign' => '-',
+    'exponential' => 'E',
+    'superscriptingExponent' => '×',
+    'perMille' => '‰',
+    'infinity' => '∞',
+    'nan' => 'NaN',
+    'timeSeparator' => ':',
   ),
   'formats' => 
   array (
-    'currency' => '#,##0.00¤',
+    'decimal' => '#,##0.###',
+    'scientific' => '#E0',
+    'percent' => '#,##0%',
+    'currency' => '¤#,##0.00',
   ),
   'currencies' => 
   array (
+    'AED' => 
+    array (
+      'name' => 'ឌៀរហាំ​អេមីរ៉ាតអារ៉ាប់រួម',
+      'symbol' => 'AED',
+    ),
+    'AFN' => 
+    array (
+      'name' => 'អាហ្វហ្គានី​អាហ្វហ្គានីស្ថាន',
+      'symbol' => 'AFN',
+    ),
+    'ALL' => 
+    array (
+      'name' => 'លិក​អាល់បានី',
+      'symbol' => 'ALL',
+    ),
+    'AMD' => 
+    array (
+      'name' => 'ដ្រាំ​អាមេនី',
+      'symbol' => 'AMD',
+    ),
+    'ANG' => 
+    array (
+      'name' => 'ហ្គីឌិន​ហុល្លង់​អង់ទីលៀន',
+      'symbol' => 'ANG',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'ក្វាន់ហ្សា​អង់ហ្គោឡា',
+      'symbol' => 'AOA',
+    ),
+    'ARS' => 
+    array (
+      'name' => 'ប៉ឺហ្សូ​អាហ្សង់ទីន',
+      'symbol' => 'ARS',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'ដុល្លារ​អូស្ត្រាលី',
+      'symbol' => 'A$',
+    ),
+    'AWG' => 
+    array (
+      'name' => 'ហ្វ្រ័ររិញ​អារ៉ូបា',
+      'symbol' => 'AWG',
+    ),
+    'AZN' => 
+    array (
+      'name' => 'ម៉ាណាត​អាស៊ែបៃហ្សង់',
+      'symbol' => 'AZN',
+    ),
+    'BAM' => 
+    array (
+      'name' => 'ម៉ាក​អាច​បម្លែង​បាន​បូស្នី',
+      'symbol' => 'BAM',
+    ),
+    'BBD' => 
+    array (
+      'name' => 'ដុល្លារ​បាបាដុស',
+      'symbol' => 'BBD',
+    ),
+    'BDT' => 
+    array (
+      'name' => 'តាកា​បង់ក្លាដែស',
+      'symbol' => 'BDT',
+    ),
+    'BGN' => 
+    array (
+      'name' => 'លីវ​ប៊ុលហ្គារី',
+      'symbol' => 'BGN',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'ឌីណា​បារ៉ែន',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'ហ្វ្រង់​ប៊ូរុនឌី',
+      'symbol' => 'BIF',
+    ),
+    'BMD' => 
+    array (
+      'name' => 'ដុល្លារ​ប៊ឺមុយដា',
+      'symbol' => 'BMD',
+    ),
+    'BND' => 
+    array (
+      'name' => 'ដុល្លារ​ប្រុយណេ',
+      'symbol' => 'BND',
+    ),
+    'BOB' => 
+    array (
+      'name' => 'បូលីវីណូ​បូលីវី',
+      'symbol' => 'BOB',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'រៀល​ប្រេស៊ីល',
+      'symbol' => 'R$',
+    ),
+    'BSD' => 
+    array (
+      'name' => 'ដុល្លារ​បាហាម៉ា',
+      'symbol' => 'BSD',
+    ),
+    'BTN' => 
+    array (
+      'name' => 'ញូលត្រឹម​ប៊ូតង់',
+      'symbol' => 'BTN',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'ពូឡា​បុតស្វាណា',
+      'symbol' => 'BWP',
+    ),
+    'BYR' => 
+    array (
+      'name' => 'រ៉ូបល​បេឡារុស',
+      'symbol' => 'BYR',
+    ),
+    'BZD' => 
+    array (
+      'name' => 'ដុល្លារ​បេលី',
+      'symbol' => 'BZD',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'ដុល្លារ​កាណាដា',
+      'symbol' => 'CA$',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'ហ្វ្រង់​កុងហ្គោ',
+      'symbol' => 'CDF',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'ហ្វ្រង់ ស្វីស',
+      'symbol' => 'CHF',
+    ),
+    'CLP' => 
+    array (
+      'name' => 'ប៉ឺហ្សូ​ស៊ីលី',
+      'symbol' => 'CLP',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'យ៉ន់​ចិន',
+      'symbol' => 'CN¥',
+    ),
+    'COP' => 
+    array (
+      'name' => 'ប៉ឺហ្សូ​កូឡុំប៊ី',
+      'symbol' => 'COP',
+    ),
+    'CRC' => 
+    array (
+      'name' => 'កូឡុង​កូស្តារីកា',
+      'symbol' => 'CRC',
+    ),
+    'CUC' => 
+    array (
+      'name' => 'ប៉ឺហ្សូ​អាច​បម្លែង​បាន​គុយបា',
+      'symbol' => 'CUC',
+    ),
+    'CUP' => 
+    array (
+      'name' => 'ប៉ឺហ្សូ​គុយបា',
+      'symbol' => 'CUP',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'អ៊ីស្កូឌូ​កាប់វែរ',
+      'symbol' => 'CVE',
+    ),
+    'CZK' => 
+    array (
+      'name' => 'កូរុណា​សាធារណៈ​ឆេក',
+      'symbol' => 'CZK',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'ហ្វ្រង់​ជីប៊ូទី',
+      'symbol' => 'DJF',
+    ),
+    'DKK' => 
+    array (
+      'name' => 'ក្រូណេ​ដាណាម៉ាក់',
+      'symbol' => 'DKK',
+    ),
+    'DOP' => 
+    array (
+      'name' => 'ប៉ឺហ្សូ​ដូមីនីក',
+      'symbol' => 'DOP',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'ឌីណា​អាល់ស៊េរី',
+      'symbol' => 'DZD',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'ផោន​​អេហ្សីប',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'ណាក់ហ្វា​អេរីត្រេ',
+      'symbol' => 'ERN',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'ប៊័រ​អេត្យូពី',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'អឺរ៉ូ',
+      'symbol' => '€',
+    ),
+    'FJD' => 
+    array (
+      'name' => 'ដុល្លារ​ហ្វីជី',
+      'symbol' => 'FJD',
+    ),
+    'FKP' => 
+    array (
+      'name' => 'ផោន​កោះ​ហ្វក់ឡែន',
+      'symbol' => 'FKP',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'ផោនស្ទែរលិញ​ចក្រភព​អង់គ្លេស',
+      'symbol' => '£',
+    ),
+    'GEL' => 
+    array (
+      'name' => 'ឡារី​​ហ្សកហ្ស៊ី',
+      'symbol' => 'GEL',
+    ),
+    'GHS' => 
+    array (
+      'name' => 'ស៊ីឌី​ហ្គាណា',
+      'symbol' => 'GHS',
+    ),
+    'GIP' => 
+    array (
+      'name' => 'ផោន​ហ្ស៊ីប្រាល់តា',
+      'symbol' => 'GIP',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'ដាឡាស៊ី​ហ្គំប៊ី',
+      'symbol' => 'GMD',
+    ),
+    'GNF' => 
+    array (
+      'name' => 'ហ្វ្រង់​ហ្គីណេ',
+      'symbol' => 'GNF',
+    ),
+    'GTQ' => 
+    array (
+      'name' => 'ហ្គីស្សាល​ក្វាតេម៉ាឡា',
+      'symbol' => 'GTQ',
+    ),
+    'GYD' => 
+    array (
+      'name' => 'ដុល្លារ​ហ្គីយ៉ាន',
+      'symbol' => 'GYD',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'ដុល្លារ​ហុងកុង',
+      'symbol' => 'HK$',
+    ),
+    'HNL' => 
+    array (
+      'name' => 'លិមពីរ៉ា​ហុងឌូរ៉ាស',
+      'symbol' => 'HNL',
+    ),
+    'HRK' => 
+    array (
+      'name' => 'គូណា​ក្រូអាត',
+      'symbol' => 'HRK',
+    ),
+    'HTG' => 
+    array (
+      'name' => 'គោឌី​ហៃទី',
+      'symbol' => 'HTG',
+    ),
+    'HUF' => 
+    array (
+      'name' => 'ហ្វូរីន​ហុងគ្រី',
+      'symbol' => 'HUF',
+    ),
+    'IDR' => 
+    array (
+      'name' => 'រ៉ូពីឥណ្ឌូណេស៊ី',
+      'symbol' => 'IDR',
+    ),
+    'ILS' => 
+    array (
+      'name' => 'ស្ស៊ីហ្គែល​អ៊ីស្រាអែល',
+      'symbol' => '₪',
+    ),
+    'INR' => 
+    array (
+      'name' => 'រ៉ូពី​ឥណ្ឌា',
+      'symbol' => '₹',
+    ),
+    'IQD' => 
+    array (
+      'name' => 'ឌីណា​អ៊ីរ៉ាក់',
+      'symbol' => 'IQD',
+    ),
+    'IRR' => 
+    array (
+      'name' => 'រៀល​អ៊ីរ៉ង់',
+      'symbol' => 'IRR',
+    ),
+    'ISK' => 
+    array (
+      'name' => 'ក្រូណា​អ៊ីស្លង់',
+      'symbol' => 'ISK',
+    ),
+    'JMD' => 
+    array (
+      'name' => 'ដុល្លារ​ហ្សាម៉ាអ៊ីក',
+      'symbol' => 'JMD',
+    ),
+    'JOD' => 
+    array (
+      'name' => 'ឌីណា​ហ្ស៊កដានី',
+      'symbol' => 'JOD',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'យេន​ជប៉ុន',
+      'symbol' => 'JP¥',
+    ),
+    'KES' => 
+    array (
+      'name' => 'ស៊ីលិញ​កេនយ៉ា',
+      'symbol' => 'KES',
+    ),
+    'KGS' => 
+    array (
+      'name' => 'សុម​កៀហ្ស៊ីស៊ីស្ថាន',
+      'symbol' => 'KGS',
+    ),
     'KHR' => 
     array (
-      'name' => 'Riel',
+      'name' => 'រៀល​កម្ពុជា',
       'symbol' => '៛',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'ហ្វ្រង់​កូម័រ',
+      'symbol' => 'KMF',
+    ),
+    'KPW' => 
+    array (
+      'name' => 'វូន​កូរ៉េ​ខាង​ជើង',
+      'symbol' => 'KPW',
+    ),
+    'KRW' => 
+    array (
+      'name' => 'វូន​កូរ៉េ​ខាង​ត្បូង',
+      'symbol' => '₩',
+    ),
+    'KWD' => 
+    array (
+      'name' => 'ឌីណា​គុយវ៉ែត',
+      'symbol' => 'KWD',
+    ),
+    'KYD' => 
+    array (
+      'name' => 'ដុល្លារ​កោះ​កៃម៉ែន',
+      'symbol' => 'KYD',
+    ),
+    'KZT' => 
+    array (
+      'name' => 'តង់ហ្គី​កាហ្សាក់ស្ថាន',
+      'symbol' => 'KZT',
+    ),
+    'LAK' => 
+    array (
+      'name' => 'គីប​ឡាវ',
+      'symbol' => 'LAK',
+    ),
+    'LBP' => 
+    array (
+      'name' => 'ផោន​លីបង់',
+      'symbol' => 'LBP',
+    ),
+    'LKR' => 
+    array (
+      'name' => 'រ៉ូពី​ស្រីលង្ការ',
+      'symbol' => 'LKR',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'ដុល្លារ​លីប៊ី',
+      'symbol' => 'LRD',
+    ),
+    'LTL' => 
+    array (
+      'name' => 'លីតា​លីទុយអានី',
+      'symbol' => 'LTL',
+    ),
+    'LVL' => 
+    array (
+      'name' => 'ឡាត់​ឡេតូនី',
+      'symbol' => 'LVL',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'ឌីណា​លីប៊ី',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'ឌៀរហាំ​ម៉ារ៉ុក',
+      'symbol' => 'MAD',
+    ),
+    'MDL' => 
+    array (
+      'name' => 'លូ​ម៉ុលដាវី',
+      'symbol' => 'MDL',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'អារៀរី​ម៉ាឡាហ្គាស៊ី',
+      'symbol' => 'MGA',
+    ),
+    'MKD' => 
+    array (
+      'name' => 'ឌីណា​ម៉ាសេដ្វាន',
+      'symbol' => 'MKD',
+    ),
+    'MMK' => 
+    array (
+      'name' => 'គីយ៉ាត​ភូមា',
+      'symbol' => 'MMK',
+    ),
+    'MNT' => 
+    array (
+      'name' => 'ទូរីក​ម៉ុងហ្គោលី',
+      'symbol' => 'MNT',
+    ),
+    'MOP' => 
+    array (
+      'name' => 'ប៉ាតាកា​ម៉ាកាវ',
+      'symbol' => 'MOP',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'អ៊ូហ្គីយ៉ា​ម៉ូរីតានី',
+      'symbol' => 'MRO',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'រ៉ូពី​ម៉ូរីតានី',
+      'symbol' => 'MUR',
+    ),
+    'MVR' => 
+    array (
+      'name' => 'រ៉ូហ្វីយ៉ា​ម៉ាល់ឌីវ',
+      'symbol' => 'MVR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'ក្វាចា​ម៉ាឡាវី',
+      'symbol' => 'MWK',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'ប៉ីហ្សូ​ម៉ិកស៉ិក',
+      'symbol' => 'MX$',
+    ),
+    'MYR' => 
+    array (
+      'name' => 'រីងហ្គីត​ម៉ាឡេស៊ី',
+      'symbol' => 'MYR',
+    ),
+    'MZN' => 
+    array (
+      'name' => 'មីទីខល​ម៉ូសំប៊ិក',
+      'symbol' => 'MZN',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'ដុល្លារ​ណាមីប៊ី',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'ណៃរ៉ា​នីហ្សេរីយ៉ា',
+      'symbol' => 'NGN',
+    ),
+    'NIO' => 
+    array (
+      'name' => 'ខឌូបា​នីការ៉ាហ្គា',
+      'symbol' => 'NIO',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'ក្រូណេ​ន័រវ៉េ',
+      'symbol' => 'NOK',
+    ),
+    'NPR' => 
+    array (
+      'name' => 'រ៉ូពី​នេប៉ាល់',
+      'symbol' => 'NPR',
+    ),
+    'NZD' => 
+    array (
+      'name' => 'ដុល្លារ​នូវែលសេឡង់',
+      'symbol' => 'NZ$',
+    ),
+    'OMR' => 
+    array (
+      'name' => 'រៀល​រូម៉ានី',
+      'symbol' => 'OMR',
+    ),
+    'PAB' => 
+    array (
+      'name' => 'បាល់ប៉ៅ​ប៉ាណាម៉ា',
+      'symbol' => 'PAB',
+    ),
+    'PEN' => 
+    array (
+      'name' => 'ញូវ៉ូសូល​ប៉េរូ',
+      'symbol' => 'PEN',
+    ),
+    'PGK' => 
+    array (
+      'name' => 'គីណា​ប៉ាពូនូហ្គីណេ',
+      'symbol' => 'PGK',
+    ),
+    'PHP' => 
+    array (
+      'name' => 'ប៉ឺហ្សូ​ហ្វីលីពីន',
+      'symbol' => 'PHP',
+    ),
+    'PKR' => 
+    array (
+      'name' => 'រ៉ូពី​ប៉ាគីស្ថាន',
+      'symbol' => 'PKR',
+    ),
+    'PLN' => 
+    array (
+      'name' => 'ហ្សូទី​ប៉ូឡូញ',
+      'symbol' => 'PLN',
+    ),
+    'PYG' => 
+    array (
+      'name' => 'ហ្គូរីនី​ប៉ារ៉ាហ្គាយ',
+      'symbol' => 'PYG',
+    ),
+    'QAR' => 
+    array (
+      'name' => 'រៀល​កាតា',
+      'symbol' => 'QAR',
+    ),
+    'RON' => 
+    array (
+      'name' => 'លូ​រូម៉ានី',
+      'symbol' => 'RON',
+    ),
+    'RSD' => 
+    array (
+      'name' => 'ឌីណា​សើប',
+      'symbol' => 'RSD',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'រ៉ូបល​រុស្ស៊ី',
+      'symbol' => 'RUB',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'ហ្វ្រង់​រវ៉ាន់ដា',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'រីយ៉ាល​អារ៉ាប៊ីសាអូឌីត',
+      'symbol' => 'SAR',
+    ),
+    'SBD' => 
+    array (
+      'name' => 'ដុល្លារ​កោះ​សូឡូម៉ុង',
+      'symbol' => 'SBD',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'រ៉ូពី​សីស្ហែល',
+      'symbol' => 'SCR',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'ផោន​ស៊ូដង់',
+      'symbol' => 'SDG',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'ក្រូណា​ស៊ុយអែត',
+      'symbol' => 'SEK',
+    ),
+    'SGD' => 
+    array (
+      'name' => 'ដុល្លារ​​សិង្ហបូរី',
+      'symbol' => 'SGD',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'ផោន​សាំងហេឡេណា',
+      'symbol' => 'SHP',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'លីអ៊ុន​សៀរ៉ាឡេអូន',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'ស៊ីលិញ​សូម៉ាលី',
+      'symbol' => 'SOS',
+    ),
+    'SRD' => 
+    array (
+      'name' => 'ដុល្លារ​សូរីណាម',
+      'symbol' => 'SRD',
+    ),
+    'SSP' => 
+    array (
+      'name' => 'ផោន​ស៊ូដង់​ខាង​ត្បូង',
+      'symbol' => 'SSP',
+    ),
+    'STD' => 
+    array (
+      'name' => 'ឌូប្រា​សៅតូម៉េ និងប្រាំងស៊ីប',
+      'symbol' => 'STD',
+    ),
+    'SYP' => 
+    array (
+      'name' => 'ផោន​ស៊ីរី',
+      'symbol' => 'SYP',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'លីឡាងហ្គីនី​ស្វាស៊ីឡង់',
+      'symbol' => 'SZL',
+    ),
+    'THB' => 
+    array (
+      'name' => 'បាត​ថៃ',
+      'symbol' => '฿',
+    ),
+    'TJS' => 
+    array (
+      'name' => 'សូមុនី​តាហ្ស៊ីគីស្ថាន',
+      'symbol' => 'TJS',
+    ),
+    'TMT' => 
+    array (
+      'name' => 'ម៉ាណាត​តួកម៉េនីស្ថាន',
+      'symbol' => 'TMT',
+    ),
+    'TND' => 
+    array (
+      'name' => 'ឌីណា​ទុយនីស៊ី',
+      'symbol' => 'TND',
+    ),
+    'TOP' => 
+    array (
+      'name' => 'ប៉ាអង់កា​តុងហ្គា',
+      'symbol' => 'TOP',
+    ),
+    'TRY' => 
+    array (
+      'name' => 'លីរ៉ា​ទួគី',
+      'symbol' => 'TRY',
+    ),
+    'TTD' => 
+    array (
+      'name' => 'ដុល្លារ​ទ្រីនីដាដ និងតូបាហ្គោ',
+      'symbol' => 'TTD',
+    ),
+    'TWD' => 
+    array (
+      'name' => 'ដុល្លារ​តៃវ៉ាន់',
+      'symbol' => 'NT$',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'ស៊ីលិញ​តង់សានី',
+      'symbol' => 'TZS',
+    ),
+    'UAH' => 
+    array (
+      'name' => 'ហ៊ូនីយ៉ា​អ៊ុយក្រែន',
+      'symbol' => 'UAH',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'ស៊ីលិញ​អ៊ូហ្គង់ដា',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'ដុល្លារ​អាមេរិក',
+      'symbol' => '$',
+    ),
+    'UYU' => 
+    array (
+      'name' => 'ប៉ឺហ្សូអ៊ុយរូហ្គាយ',
+      'symbol' => 'UYU',
+    ),
+    'UZS' => 
+    array (
+      'name' => 'សុម​អ៊ូសបេគីស្ថាន',
+      'symbol' => 'UZS',
+    ),
+    'VEF' => 
+    array (
+      'name' => 'ប៊ូលីវ៉ា​វ៉េណេស៊ុយអេឡា',
+      'symbol' => 'VEF',
+    ),
+    'VND' => 
+    array (
+      'name' => 'ដុង​វៀតណាម',
+      'symbol' => '₫',
+    ),
+    'VUV' => 
+    array (
+      'name' => 'វ៉ាទូ​វ៉ានូទូ',
+      'symbol' => 'VUV',
+    ),
+    'WST' => 
+    array (
+      'name' => 'តាឡា​សាម័រ',
+      'symbol' => 'WST',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'ហ្វ្រង់ BEAC CFA',
+      'symbol' => 'FCFA',
+    ),
+    'XCD' => 
+    array (
+      'name' => 'ដុល្លារ​ការ៉ាប៊ីន​ខាង​កើត',
+      'symbol' => 'EC$',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'ហ្វ្រង់ BCEAO CFA',
+      'symbol' => 'CFA',
+    ),
+    'XPF' => 
+    array (
+      'name' => 'ហ្វ្រង់ CFP',
+      'symbol' => 'CFPF',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'រូបិយប័ណ្ណ​មិនស្គាល់',
+      'symbol' => 'XXX',
+    ),
+    'YER' => 
+    array (
+      'name' => 'រៀល​យេម៉ែន',
+      'symbol' => 'YER',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'រ៉ង់​អាព្រិក​ខាង​ត្បូង',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'ក្វាចា សំប៊ី (1968–2012)',
+      'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'ក្វាចា​សំប៊ី',
+      'symbol' => 'ZMW',
     ),
   ),
 );

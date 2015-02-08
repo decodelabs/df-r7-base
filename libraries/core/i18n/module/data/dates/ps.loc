@@ -1,6 +1,16 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE د G y د MMMM d',
+      'long' => 'د G y د MMMM d',
+      'medium' => 'd MMM y G',
+      'short' => 'GGGGG y/M/d',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -41,7 +51,7 @@ return array (
       'full' => 'EEEE د y د MMMM d',
       'long' => 'د y د MMMM d',
       'medium' => 'd MMM y',
-      'short' => 'yyyy/M/d',
+      'short' => 'y/M/d',
     ),
     'timeFormat' => 
     array (
@@ -60,8 +70,8 @@ return array (
       array (
         1 => 'وری',
         2 => 'غویی',
-        3 => 'غبرګولی',
-        4 => 'چنګاښ',
+        3 => 'غبرگولی',
+        4 => 'چنگاښ',
         5 => 'زمری',
         6 => 'وږی',
         7 => 'تله',

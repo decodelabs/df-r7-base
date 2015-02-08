@@ -50,6 +50,16 @@ return array (
       ),
     ),
   ),
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, dd. MMMM y. G',
+      'long' => 'dd. MMMM y. G',
+      'medium' => 'dd.MM.y. G',
+      'short' => 'd.M.y. GGGGG',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -156,7 +166,7 @@ return array (
       'full' => 
       array (
         1 => 'Čaitra',
-        2 => 'Vaisakha',
+        2 => 'Vaisaka',
         3 => 'Jiaista',
         4 => 'Asada',
         5 => 'Sravana',
@@ -179,10 +189,10 @@ return array (
       array (
         1 => 'Muh.',
         2 => 'Saf.',
-        3 => 'Rab. I',
-        4 => 'Rab. II',
-        5 => 'Džum. I',
-        6 => 'Džum. II',
+        3 => 'Reb. 1',
+        4 => 'Reb 2',
+        5 => 'Džum. 1',
+        6 => 'Džum. 2',
         7 => 'Redž.',
         8 => 'Ša.',
         9 => 'Ram.',
@@ -192,23 +202,30 @@ return array (
       ),
       'full' => 
       array (
-        1 => 'Muharem',
-        2 => 'Safer',
+        1 => 'Muraham',
+        2 => 'Safar',
         3 => 'Rabiʻ I',
         4 => 'Rabiʻ II',
-        5 => 'Džumade I',
-        6 => 'Džumade II',
-        7 => 'Redžeb',
+        5 => 'Jumada I',
+        6 => 'Jumada II',
+        7 => 'Rađab',
         8 => 'Šaʻban',
-        9 => 'Ramazan',
-        10 => 'Ševal',
-        11 => 'Zul-kade',
-        12 => 'Zul-hidže',
+        9 => 'Ramadan',
+        10 => 'Šaval',
+        11 => 'Duʻl-Kiʻda',
+        12 => 'Duʻl-hiđa',
       ),
     ),
   ),
   'japanese' => 
   array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, MMMM d, y G',
+      'long' => 'MMMM d, y G',
+      'medium' => 'MMM d, y G',
+      'short' => 'M/d/yy G',
+    ),
   ),
   'persian' => 
   array (
@@ -217,9 +234,9 @@ return array (
       '@default' => 'full',
       'full' => 
       array (
-        1 => 'Farvardin',
+        1 => 'Faravadin',
         2 => 'Ordibehešt',
-        3 => 'Khordad',
+        3 => 'Kordad',
         4 => 'Tir',
         5 => 'Mordad',
         6 => 'Šahrivar',

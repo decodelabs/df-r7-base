@@ -1,0 +1,89 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d. MMMM y G',
+      'long' => 'd. MMMM y G',
+      'medium' => 'd.M.y G',
+      'short' => 'd.M.yy GGGGG',
+    ),
+  ),
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'nje',
+        'mon' => 'pón',
+        'tue' => 'wut',
+        'wed' => 'srj',
+        'thu' => 'štw',
+        'fri' => 'pja',
+        'sat' => 'sob',
+      ),
+      'full' => 
+      array (
+        'sun' => 'njedźela',
+        'mon' => 'póndźela',
+        'tue' => 'wutora',
+        'wed' => 'srjeda',
+        'thu' => 'štwórtk',
+        'fri' => 'pjatk',
+        'sat' => 'sobota',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'jan.',
+        2 => 'feb.',
+        3 => 'měr.',
+        4 => 'apr.',
+        5 => 'mej.',
+        6 => 'jun.',
+        7 => 'jul.',
+        8 => 'awg.',
+        9 => 'sep.',
+        10 => 'okt.',
+        11 => 'now.',
+        12 => 'dec.',
+      ),
+      'full' => 
+      array (
+        1 => 'januara',
+        2 => 'februara',
+        3 => 'měrca',
+        4 => 'apryla',
+        5 => 'meje',
+        6 => 'junija',
+        7 => 'julija',
+        8 => 'awgusta',
+        9 => 'septembra',
+        10 => 'oktobra',
+        11 => 'nowembra',
+        12 => 'decembra',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d. MMMM y',
+      'long' => 'd. MMMM y',
+      'medium' => 'd.M.y',
+      'short' => 'd.M.yy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'H:mm:ss zzzz',
+      'long' => 'H:mm:ss z',
+      'medium' => 'H:mm:ss',
+      'short' => 'H:mm \'hodź\'.',
+    ),
+  ),
+);

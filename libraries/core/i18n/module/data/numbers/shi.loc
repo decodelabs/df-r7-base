@@ -13,277 +13,282 @@ return array (
   array (
     'AED' => 
     array (
-      'name' => 'adrim n limarat',
+      'name' => 'ⴰⴷⵔⵉⵎ ⵏ ⵍⵉⵎⴰⵔⴰⵜ',
       'symbol' => 'AED',
     ),
     'AOA' => 
     array (
-      'name' => 'kwanza n angula',
+      'name' => 'ⴽⵡⴰⵏⵣⴰ ⵏ ⴰⵏⴳⵓⵍⴰ',
       'symbol' => 'AOA',
     ),
     'AUD' => 
     array (
-      'name' => 'adular n ustralya',
+      'name' => 'ⴰⴷⵓⵍⴰⵔ ⵏ ⵓⵙⵜⵔⴰⵍⵢⴰ',
       'symbol' => 'AUD',
     ),
     'BHD' => 
     array (
-      'name' => 'adinar n bḥrayn',
+      'name' => 'ⴰⴷⵉⵏⴰⵔ ⵏ ⴱⵃⵔⴰⵢⵏ',
       'symbol' => 'BHD',
     ),
     'BIF' => 
     array (
-      'name' => 'frank n burundi',
+      'name' => 'ⴼⵔⴰⵏⴽ ⵏ ⴱⵓⵔⵓⵏⴷⵉ',
       'symbol' => 'BIF',
     ),
     'BWP' => 
     array (
-      'name' => 'abula n butswana',
+      'name' => 'ⴰⴱⵓⵍⴰ ⵏ ⴱⵓⵜⵙⵡⴰⵏⴰ',
       'symbol' => 'BWP',
     ),
     'CAD' => 
     array (
-      'name' => 'adular n kanada',
+      'name' => 'ⴰⴷⵓⵍⴰⵔ ⵏ ⴽⴰⵏⴰⴷⴰ',
       'symbol' => 'CAD',
     ),
     'CDF' => 
     array (
-      'name' => 'frank n kungu',
+      'name' => 'ⴼⵔⴰⵏⴽ ⵏ ⴽⵓⵏⴳⵓ',
       'symbol' => 'CDF',
     ),
     'CHF' => 
     array (
-      'name' => 'afrank n swisra',
+      'name' => 'ⴰⴼⵔⴰⵏⴽ ⵏ ⵙⵡⵉⵙⵔⴰ',
       'symbol' => 'CHF',
     ),
     'CNY' => 
     array (
-      'name' => 'ayan n ccinwa',
+      'name' => 'ⴰⵢⴰⵏ ⵏ ⵛⵛⵉⵏⵡⴰ',
       'symbol' => 'CNY',
     ),
     'CVE' => 
     array (
-      'name' => 'iskudu n kabbirdi',
+      'name' => 'ⵉⵙⴽⵓⴷⵓ ⵏ ⴽⴰⴱⴱⵉⵔⴷⵉ',
       'symbol' => 'CVE',
     ),
     'DJF' => 
     array (
-      'name' => 'frank n djibuti',
+      'name' => 'ⴼⵔⴰⵏⴽ ⵏ ⴷⵊⵉⴱⵓⵜⵉ',
       'symbol' => 'DJF',
     ),
     'DZD' => 
     array (
-      'name' => 'adinar n dzayr',
+      'name' => 'ⴰⴷⵉⵏⴰⵔ ⵏ ⴷⵣⴰⵢⵔ',
       'symbol' => 'DZD',
     ),
     'EGP' => 
     array (
-      'name' => 'ajnih n miṣṛ',
+      'name' => 'ⴰⵊⵏⵉⵀ ⵏ ⵎⵉⵚⵕ',
       'symbol' => 'EGP',
     ),
     'ERN' => 
     array (
-      'name' => 'nafka n iritirya',
+      'name' => 'ⵏⴰⴼⴽⴰ ⵏ ⵉⵔⵉⵜⵉⵔⵢⴰ',
       'symbol' => 'ERN',
     ),
     'ETB' => 
     array (
-      'name' => 'bir n ityubya',
+      'name' => 'ⴱⵉⵔ ⵏ ⵉⵜⵢⵓⴱⵢⴰ',
       'symbol' => 'ETB',
     ),
     'EUR' => 
     array (
-      'name' => 'uru',
+      'name' => 'ⵓⵔⵓ',
       'symbol' => 'EUR',
     ),
     'GBP' => 
     array (
-      'name' => 'ajnih astrlini n nngliz',
+      'name' => 'ⴰⵊⵏⵉⵀ ⴰⵙⵜⵔⵍⵉⵏⵉ ⵏ ⵏⵏⴳⵍⵉⵣ',
       'symbol' => 'GBP',
     ),
     'GHC' => 
     array (
-      'name' => 'sidi n ɣana',
+      'name' => 'ⵙⵉⴷⵉ ⵏ ⵖⴰⵏⴰ',
       'symbol' => 'GHC',
     ),
     'GMD' => 
     array (
-      'name' => 'dalasi n gambya',
+      'name' => 'ⴷⴰⵍⴰⵙⵉ ⵏ ⴳⴰⵎⴱⵢⴰ',
       'symbol' => 'GMD',
     ),
     'GNS' => 
     array (
-      'name' => 'frank n ɣinya',
+      'name' => 'ⴼⵔⴰⵏⴽ ⵏ ⵖⵉⵏⵢⴰ',
       'symbol' => 'GNS',
     ),
     'INR' => 
     array (
-      'name' => 'arubi n lhind',
+      'name' => 'ⴰⵔⵓⴱⵉ ⵏ ⵍⵀⵉⵏⴷ',
       'symbol' => 'INR',
     ),
     'JPY' => 
     array (
-      'name' => 'ayan n lyaban',
+      'name' => 'ⴰⵢⴰⵏ ⵏ ⵍⵢⴰⴱⴰⵏ',
       'symbol' => 'JPY',
     ),
     'KES' => 
     array (
-      'name' => 'acilin n kinya',
+      'name' => 'ⴰⵛⵉⵍⵉⵏ ⵏ ⴽⵉⵏⵢⴰ',
       'symbol' => 'KES',
     ),
     'KMF' => 
     array (
-      'name' => 'frank n qumuṛ',
+      'name' => 'ⴼⵔⴰⵏⴽ ⵏ ⵇⵓⵎⵓⵕ',
       'symbol' => 'KMF',
     ),
     'LRD' => 
     array (
-      'name' => 'adular n libirya',
+      'name' => 'ⴰⴷⵓⵍⴰⵔ ⵏ ⵍⵉⴱⵉⵔⵢⴰ',
       'symbol' => 'LRD',
     ),
     'LSL' => 
     array (
-      'name' => 'luti n liṣuṭu',
+      'name' => 'ⵍⵓⵜⵉ ⵏ ⵍⵉⵚⵓⵟⵓ',
       'symbol' => 'LSL',
     ),
     'LYD' => 
     array (
-      'name' => 'adinar n libya',
+      'name' => 'ⴰⴷⵉⵏⴰⵔ ⵏ ⵍⵉⴱⵢⴰ',
       'symbol' => 'LYD',
     ),
     'MAD' => 
     array (
-      'name' => 'adrim n lmɣrib',
+      'name' => 'ⴰⴷⵔⵉⵎ ⵏ ⵍⵎⵖⵔⵉⴱ',
       'symbol' => 'MAD',
     ),
     'MGA' => 
     array (
-      'name' => 'frank n madaɣacqar',
+      'name' => 'ⴼⵔⴰⵏⴽ ⵏ ⵎⴰⴷⴰⵖⴰⵛⵇⴰⵔ',
       'symbol' => 'MGA',
     ),
     'MRO' => 
     array (
-      'name' => 'uqiyya n muṛiṭanya',
+      'name' => 'ⵓⵇⵉⵢⵢⴰ ⵏ ⵎⵓⵕⵉⵟⴰⵏⵢⴰ',
       'symbol' => 'MRO',
     ),
     'MUR' => 
     array (
-      'name' => 'arubi n muris',
+      'name' => 'ⴰⵔⵓⴱⵉ ⵏ ⵎⵓⵔⵉⵙ',
       'symbol' => 'MUR',
     ),
     'MWK' => 
     array (
-      'name' => 'kwaca n malawi',
+      'name' => 'ⴽⵡⴰⵛⴰ ⵏ ⵎⴰⵍⴰⵡⵉ',
       'symbol' => 'MWK',
     ),
     'MZM' => 
     array (
-      'name' => 'amitikl n muznbiq',
+      'name' => 'ⴰⵎⵉⵜⵉⴽⵍ ⵏ ⵎⵓⵣⵏⴱⵉⵇ',
       'symbol' => 'MZM',
     ),
     'NAD' => 
     array (
-      'name' => 'adular n namibya',
+      'name' => 'ⴰⴷⵓⵍⴰⵔ ⵏ ⵏⴰⵎⵉⴱⵢⴰ',
       'symbol' => 'NAD',
     ),
     'NGN' => 
     array (
-      'name' => 'nayra n nijirya',
+      'name' => 'ⵏⴰⵢⵔⴰ ⵏ ⵏⵉⵊⵉⵔⵢⴰ',
       'symbol' => 'NGN',
     ),
     'RWF' => 
     array (
-      'name' => 'afrank n rwanda',
+      'name' => 'ⴰⴼⵔⴰⵏⴽ ⵏ ⵔⵡⴰⵏⴷⴰ',
       'symbol' => 'RWF',
     ),
     'SAR' => 
     array (
-      'name' => 'aryal n ssaɛudiya',
+      'name' => 'ⴰⵔⵢⴰⵍ ⵏ ⵙⵙⴰⵄⵓⴷⵉⵢⴰ',
       'symbol' => 'SAR',
     ),
     'SCR' => 
     array (
-      'name' => 'arubi n ssicil',
+      'name' => 'ⴰⵔⵓⴱⵉ ⵏ ⵙⵙⵉⵛⵉⵍ',
       'symbol' => 'SCR',
     ),
     'SDG' => 
     array (
-      'name' => 'adinar n ssudan',
+      'name' => 'ⴰⴷⵉⵏⴰⵔ ⵏ ⵙⵙⵓⴷⴰⵏ',
       'symbol' => 'SDG',
     ),
     'SDP' => 
     array (
-      'name' => 'ajnih n ssudan',
+      'name' => 'ⴰⵊⵏⵉⵀ ⵏ ⵙⵙⵓⴷⴰⵏ',
       'symbol' => 'SDP',
     ),
     'SHP' => 
     array (
-      'name' => 'ajnih n santilin',
+      'name' => 'ⴰⵊⵏⵉⵀ ⵏ ⵙⴰⵏⵜⵉⵍⵉⵏ',
       'symbol' => 'SHP',
     ),
     'SLL' => 
     array (
-      'name' => 'liyun',
+      'name' => 'ⵍⵉⵢⵓⵏ',
       'symbol' => 'SLL',
     ),
     'SOS' => 
     array (
-      'name' => 'acilin n ṣṣumal',
+      'name' => 'ⴰⵛⵉⵍⵉⵏ ⵏ ⵚⵚⵓⵎⴰⵍ',
       'symbol' => 'SOS',
     ),
     'STD' => 
     array (
-      'name' => 'adubra n sanṭumi',
+      'name' => 'ⴰⴷⵓⴱⵔⴰ ⵏ ⵙⴰⵏⵟⵓⵎⵉ',
       'symbol' => 'STD',
     ),
     'SZL' => 
     array (
-      'name' => 'lilanjini',
+      'name' => 'ⵍⵉⵍⴰⵏⵊⵉⵏⵉ',
       'symbol' => 'SZL',
     ),
     'TND' => 
     array (
-      'name' => 'adinar n tuns',
+      'name' => 'ⴰⴷⵉⵏⴰⵔ ⵏ ⵜⵓⵏⵙ',
       'symbol' => 'TND',
     ),
     'TZS' => 
     array (
-      'name' => 'acilin n ṭanẓanya',
+      'name' => 'ⴰⵛⵉⵍⵉⵏ ⵏ ⵟⴰⵏⵥⴰⵏⵢⴰ',
       'symbol' => 'TZS',
     ),
     'UGX' => 
     array (
-      'name' => 'acilin n uɣanda',
+      'name' => 'ⴰⵛⵉⵍⵉⵏ ⵏ ⵓⵖⴰⵏⴷⴰ',
       'symbol' => 'UGX',
     ),
     'USD' => 
     array (
-      'name' => 'adular n iwunak imunn',
+      'name' => 'ⴰⴷⵓⵍⴰⵔ ⵏ ⵉⵡⵓⵏⴰⴽ ⵉⵎⵓⵏⵏ',
       'symbol' => 'USD',
     ),
     'XAF' => 
     array (
-      'name' => 'frank ṣifa',
+      'name' => 'ⴼⵔⴰⵏⴽ ⵚⵉⴼⴰ',
       'symbol' => 'XAF',
     ),
     'XOF' => 
     array (
-      'name' => 'frank ṣifa bisaw',
+      'name' => 'ⴼⵔⴰⵏⴽ ⵚⵉⴼⴰ ⴱⵉⵙⴰⵡ',
       'symbol' => 'XOF',
     ),
     'ZAR' => 
     array (
-      'name' => 'arand n afriqya n iffus',
+      'name' => 'ⴰⵔⴰⵏⴷ ⵏ ⴰⴼⵔⵉⵇⵢⴰ ⵏ ⵉⴼⴼⵓⵙ',
       'symbol' => 'ZAR',
     ),
     'ZMK' => 
     array (
-      'name' => 'akwaca n zambya',
+      'name' => 'ⴰⴽⵡⴰⵛⴰ ⵏ ⵣⴰⵎⴱⵢⴰ (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'ⴰⴽⵡⴰⵛⴰ ⵏ ⵣⴰⵎⴱⵢⴰ',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (
-      'name' => 'adular n zimbabwi',
+      'name' => 'ⴰⴷⵓⵍⴰⵔ ⵏ ⵣⵉⵎⴱⴰⴱⵡⵉ',
       'symbol' => 'ZWD',
     ),
   ),

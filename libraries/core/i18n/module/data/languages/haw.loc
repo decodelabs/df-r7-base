@@ -1,7 +1,7 @@
 <?php
 return array (
-  'el' => 'Helene',
   'he' => 'Hebera',
+  'el' => 'Helene',
   'nl' => 'Hōlani',
   'sm' => 'Kāmoa',
   'de' => 'Kelemānia',
@@ -29,6 +29,7 @@ return array (
   'ty' => 'Polapola',
   'pt' => 'Pukikī',
   'pt_BR' => 'Pukikī Palakila',
+  'to' => 'Tonga',
   'cy' => 'Wale',
   'vi' => 'Wiekanama',
   'ga' => 'ʻAiliki',
@@ -36,5 +37,4 @@ return array (
   'it' => 'ʻĪkālia',
   'und' => 'ʻIke ʻole ‘ia a kūpono ʻole paha ka ʻōlelo',
   'haw' => 'ʻŌlelo Hawaiʻi',
-  'to' => 'Tonga',
 );

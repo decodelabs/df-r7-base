@@ -1,5 +1,0 @@
-<?php
-return array (
-  'Latn' => 'ላቲን',
-  'Ethi' => 'ፊደል',
-);

@@ -1,16 +1,31 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'medium' => 'G y-MM-dd',
+      'short' => 'GGGGG yy-MM-dd',
+    ),
+  ),
   'gregorian' => 
   array (
     'dateFormat' => 
     array (
-      'medium' => 'yyyy-MM-dd',
+      'medium' => 'y-MM-dd',
       'short' => 'yy-MM-dd',
     ),
     'timeFormat' => 
     array (
       'full' => 'HH \'h\' mm \'min\' ss \'s\' zzzz',
+    ),
+  ),
+  'islamic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'short' => 'y-MM-dd GGGGG',
     ),
   ),
 );

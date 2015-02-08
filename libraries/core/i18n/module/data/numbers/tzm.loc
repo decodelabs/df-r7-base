@@ -253,7 +253,7 @@ return array (
     ),
     'UGX' => 
     array (
-      'name' => 'Cilin Uɣandi (1966-1987)',
+      'name' => 'Cilin Uɣandi (1966–1987)',
       'symbol' => 'UGX',
     ),
     'USD' => 
@@ -278,8 +278,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'Kwača Uzambi',
+      'name' => 'Kwača Uzambi (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Kwača Uzambi',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

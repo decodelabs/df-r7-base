@@ -13,7 +13,6 @@ return array (
   array (
     'PYG' => 
     array (
-      'name' => 'PYG',
       'symbol' => '₲',
     ),
   ),

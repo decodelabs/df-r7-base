@@ -1,0 +1,89 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'G y MMMMa \'d\'. d\'id\'',
+      'long' => 'G y MMMM d',
+      'medium' => 'G y MMM. d',
+      'short' => 'GGGGG y-MM-dd',
+    ),
+  ),
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'su.',
+        'mon' => 'mu.',
+        'tue' => 'tu.',
+        'wed' => 've.',
+        'thu' => 'dö.',
+        'fri' => 'fr.',
+        'sat' => 'zä.',
+      ),
+      'full' => 
+      array (
+        'sun' => 'sudel',
+        'mon' => 'mudel',
+        'tue' => 'tudel',
+        'wed' => 'vedel',
+        'thu' => 'dödel',
+        'fri' => 'fridel',
+        'sat' => 'zädel',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'jan',
+        2 => 'feb',
+        3 => 'mäz',
+        4 => 'prl',
+        5 => 'may',
+        6 => 'yun',
+        7 => 'yul',
+        8 => 'gst',
+        9 => 'set',
+        10 => 'ton',
+        11 => 'nov',
+        12 => 'dek',
+      ),
+      'full' => 
+      array (
+        1 => 'janul',
+        2 => 'febul',
+        3 => 'mäzil',
+        4 => 'prilul',
+        5 => 'mayul',
+        6 => 'yunul',
+        7 => 'yulul',
+        8 => 'gustul',
+        9 => 'setul',
+        10 => 'tobul',
+        11 => 'novul',
+        12 => 'dekul',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'y MMMMa \'d\'. d\'id\'',
+      'long' => 'y MMMM d',
+      'medium' => 'y MMM. d',
+      'short' => 'y-MM-dd',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'HH:mm:ss zzzz',
+      'long' => 'HH:mm:ss z',
+      'medium' => 'HH:mm:ss',
+      'short' => 'HH:mm',
+    ),
+  ),
+);

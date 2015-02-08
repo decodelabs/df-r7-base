@@ -7,11 +7,13 @@ return array (
     'list' => ';',
     'percentSign' => '%',
     'plusSign' => '+',
-    'minusSign' => '−',
-    'exponential' => '×10^',
+    'minusSign' => '-',
+    'exponential' => 'E',
+    'superscriptingExponent' => '×',
     'perMille' => '‰',
     'infinity' => '∞',
-    'nan' => 'EiTa',
+    'nan' => 'NaN',
+    'timeSeparator' => ':',
   ),
   'formats' => 
   array (
@@ -34,17 +36,17 @@ return array (
     ),
     'AFN' => 
     array (
-      'name' => 'Afganskur afghani',
+      'name' => 'Afgani',
       'symbol' => 'AFN',
     ),
     'ALL' => 
     array (
-      'name' => 'Lek',
+      'name' => 'Albanskt lek',
       'symbol' => 'ALL',
     ),
     'AMD' => 
     array (
-      'name' => 'Dramm',
+      'name' => 'Armenskt dramm',
       'symbol' => 'AMD',
     ),
     'ANG' => 
@@ -54,7 +56,7 @@ return array (
     ),
     'AOA' => 
     array (
-      'name' => 'Kwanza í Angóla',
+      'name' => 'Angólsk kvansa',
       'symbol' => 'AOA',
     ),
     'ARA' => 
@@ -64,12 +66,12 @@ return array (
     ),
     'ARP' => 
     array (
-      'name' => 'Argentískur pesi (1983-1985)',
+      'name' => 'Argentískur pesi (1983–1985)',
       'symbol' => 'ARP',
     ),
     'ARS' => 
     array (
-      'name' => 'Argentískur pesi',
+      'name' => 'Argentínskur pesi',
       'symbol' => 'ARS',
     ),
     'ATS' => 
@@ -89,12 +91,12 @@ return array (
     ),
     'AZN' => 
     array (
-      'name' => 'Manat í Aserbaídsjan',
+      'name' => 'Aserskt manat',
       'symbol' => 'AZN',
     ),
     'BAM' => 
     array (
-      'name' => 'Skiptanlegt mark í Bosníu-Hersegóvínu',
+      'name' => 'Skiptanlegt Bosníu og Hersegóvínu-mark',
       'symbol' => 'BAM',
     ),
     'BBD' => 
@@ -104,7 +106,7 @@ return array (
     ),
     'BDT' => 
     array (
-      'name' => 'Taka í Bangladesh',
+      'name' => 'Bangladessk taka',
       'symbol' => 'BDT',
     ),
     'BEF' => 
@@ -119,12 +121,12 @@ return array (
     ),
     'BGN' => 
     array (
-      'name' => 'Lef, nýtt',
+      'name' => 'Búlgarskt lef',
       'symbol' => 'BGN',
     ),
     'BHD' => 
     array (
-      'name' => 'Dínar í Bahrain',
+      'name' => 'Bareinskur denari',
       'symbol' => 'BHD',
     ),
     'BIF' => 
@@ -134,7 +136,7 @@ return array (
     ),
     'BMD' => 
     array (
-      'name' => 'Bermúdeyskur dalur',
+      'name' => 'Bermúdadalur',
       'symbol' => 'BMD',
     ),
     'BND' => 
@@ -144,7 +146,7 @@ return array (
     ),
     'BOB' => 
     array (
-      'name' => 'Boliviano í Bólivíu',
+      'name' => 'Bólivíani',
       'symbol' => 'BOB',
     ),
     'BOP' => 
@@ -164,12 +166,12 @@ return array (
     ),
     'BSD' => 
     array (
-      'name' => 'Bahameyskur dalur',
+      'name' => 'Bahamadalur',
       'symbol' => 'BSD',
     ),
     'BTN' => 
     array (
-      'name' => 'Bútanskt ngultrum',
+      'name' => 'Bútanskt núltrum',
       'symbol' => 'BTN',
     ),
     'BUK' => 
@@ -179,7 +181,7 @@ return array (
     ),
     'BWP' => 
     array (
-      'name' => 'Pula í Botsvana',
+      'name' => 'Botsvönsk púla',
       'symbol' => 'BWP',
     ),
     'BYR' => 
@@ -199,7 +201,7 @@ return array (
     ),
     'CDF' => 
     array (
-      'name' => 'Franki í Kongó',
+      'name' => 'Kongóskur franki',
       'symbol' => 'CDF',
     ),
     'CHF' => 
@@ -214,13 +216,13 @@ return array (
     ),
     'CLP' => 
     array (
-      'name' => 'Chileskur pesi',
+      'name' => 'Síleskur pesi',
       'symbol' => 'CLP',
     ),
     'CNY' => 
     array (
-      'name' => 'Júan',
-      'symbol' => 'CNY',
+      'name' => 'Kínverskt júan',
+      'symbol' => 'CN¥',
     ),
     'COP' => 
     array (
@@ -229,7 +231,7 @@ return array (
     ),
     'CRC' => 
     array (
-      'name' => 'Colón á Kosta ríka',
+      'name' => 'Kostarískt kólon',
       'symbol' => 'CRC',
     ),
     'CSK' => 
@@ -239,7 +241,7 @@ return array (
     ),
     'CUC' => 
     array (
-      'name' => 'Kúbanskur skiptanlegur pesó',
+      'name' => 'Kúbverskur skiptanlegur pesi',
       'symbol' => 'CUC',
     ),
     'CUP' => 
@@ -274,7 +276,7 @@ return array (
     ),
     'DJF' => 
     array (
-      'name' => 'Djibouti Franc',
+      'name' => 'Djíbútískur franki',
       'symbol' => 'DJF',
     ),
     'DKK' => 
@@ -289,7 +291,7 @@ return array (
     ),
     'DZD' => 
     array (
-      'name' => 'Alsírskur dínar',
+      'name' => 'Alsírskur denari',
       'symbol' => 'DZD',
     ),
     'ECS' => 
@@ -309,7 +311,7 @@ return array (
     ),
     'ERN' => 
     array (
-      'name' => 'Eritrean Nakfa',
+      'name' => 'Erítresk nakfa',
       'symbol' => 'ERN',
     ),
     'ESP' => 
@@ -324,7 +326,7 @@ return array (
     ),
     'EUR' => 
     array (
-      'name' => 'Euro',
+      'name' => 'Evra',
       'symbol' => 'EUR',
     ),
     'FIM' => 
@@ -354,12 +356,12 @@ return array (
     ),
     'GEL' => 
     array (
-      'name' => 'Georgískt lari',
+      'name' => 'Georgískur lari',
       'symbol' => 'GEL',
     ),
     'GHS' => 
     array (
-      'name' => 'Cedi í Gana',
+      'name' => 'Ganverskur sedi',
       'symbol' => 'GHS',
     ),
     'GIP' => 
@@ -384,7 +386,7 @@ return array (
     ),
     'GTQ' => 
     array (
-      'name' => 'Guatemala Quetzal',
+      'name' => 'Gvatemalskt kvesal',
       'symbol' => 'GTQ',
     ),
     'GWE' => 
@@ -400,26 +402,26 @@ return array (
     'HKD' => 
     array (
       'name' => 'Hong Kong-dalur',
-      'symbol' => 'HKD',
+      'symbol' => 'HK$',
     ),
     'HNL' => 
     array (
-      'name' => 'Hoduras Lempira',
+      'name' => 'Hondúrsk lempíra',
       'symbol' => 'HNL',
     ),
     'HRK' => 
     array (
-      'name' => 'Kúna',
+      'name' => 'Króatísk kúna',
       'symbol' => 'HRK',
     ),
     'HTG' => 
     array (
-      'name' => 'Gourde á Haítí',
+      'name' => 'Haítískur gúrdi',
       'symbol' => 'HTG',
     ),
     'HUF' => 
     array (
-      'name' => 'Fórinta',
+      'name' => 'Ungversk fórinta',
       'symbol' => 'HUF',
     ),
     'IDR' => 
@@ -439,8 +441,8 @@ return array (
     ),
     'ILS' => 
     array (
-      'name' => 'Sikill',
-      'symbol' => 'ILS',
+      'name' => 'Nýr ísraelskur sikill',
+      'symbol' => '₪',
     ),
     'INR' => 
     array (
@@ -460,7 +462,7 @@ return array (
     'ISK' => 
     array (
       'name' => 'Íslensk króna',
-      'symbol' => 'kr',
+      'symbol' => 'ISK',
     ),
     'ITL' => 
     array (
@@ -474,13 +476,13 @@ return array (
     ),
     'JOD' => 
     array (
-      'name' => 'Jórdanskur dínar',
+      'name' => 'Jórdanskur denari',
       'symbol' => 'JOD',
     ),
     'JPY' => 
     array (
-      'name' => 'Jen',
-      'symbol' => 'JPY',
+      'name' => 'Japanskt jen',
+      'symbol' => 'JP¥',
     ),
     'KES' => 
     array (
@@ -489,12 +491,12 @@ return array (
     ),
     'KGS' => 
     array (
-      'name' => 'Som í Kyrgystan',
+      'name' => 'Kirgiskt som',
       'symbol' => 'KGS',
     ),
     'KHR' => 
     array (
-      'name' => 'Kambódískt riel',
+      'name' => 'Kambódískt ríal',
       'symbol' => 'KHR',
     ),
     'KMF' => 
@@ -524,12 +526,12 @@ return array (
     ),
     'KZT' => 
     array (
-      'name' => 'Kazakhstan Tenge',
+      'name' => 'Kasakst tengi',
       'symbol' => 'KZT',
     ),
     'LAK' => 
     array (
-      'name' => 'Kip í Laos',
+      'name' => 'Laoskt kip',
       'symbol' => 'LAK',
     ),
     'LBP' => 
@@ -554,7 +556,7 @@ return array (
     ),
     'LTL' => 
     array (
-      'name' => 'Lít',
+      'name' => 'Litháískt lít',
       'symbol' => 'LTL',
     ),
     'LTT' => 
@@ -569,7 +571,7 @@ return array (
     ),
     'LVL' => 
     array (
-      'name' => 'Lat',
+      'name' => 'Lettneskt lat',
       'symbol' => 'LVL',
     ),
     'LVR' => 
@@ -594,12 +596,12 @@ return array (
     ),
     'MDL' => 
     array (
-      'name' => 'Moldavískt leu',
+      'name' => 'Moldavískt lei',
       'symbol' => 'MDL',
     ),
     'MGA' => 
     array (
-      'name' => 'Madagascar Ariary',
+      'name' => 'Madagaskararjari',
       'symbol' => 'MGA',
     ),
     'MGF' => 
@@ -624,17 +626,17 @@ return array (
     ),
     'MNT' => 
     array (
-      'name' => 'Túríkur',
+      'name' => 'Mongólskur túríkur',
       'symbol' => 'MNT',
     ),
     'MOP' => 
     array (
-      'name' => 'Macao Pataca',
+      'name' => 'Makaópataka',
       'symbol' => 'MOP',
     ),
     'MRO' => 
     array (
-      'name' => 'Mauritania Ouguiya',
+      'name' => 'Máritönsk úgía',
       'symbol' => 'MRO',
     ),
     'MTL' => 
@@ -654,12 +656,12 @@ return array (
     ),
     'MVR' => 
     array (
-      'name' => 'Rufiyaa á Maldíveyjum',
+      'name' => 'Maldíveysk rúpía',
       'symbol' => 'MVR',
     ),
     'MWK' => 
     array (
-      'name' => 'Kwacha í Malavíu',
+      'name' => 'Malavísk kvaka',
       'symbol' => 'MWK',
     ),
     'MXN' => 
@@ -669,7 +671,7 @@ return array (
     ),
     'MXP' => 
     array (
-      'name' => 'Mexíkóskur silfurpesi (1861-1992)',
+      'name' => 'Mexíkóskur silfurpesi (1861–1992)',
       'symbol' => 'MXP',
     ),
     'MXV' => 
@@ -679,13 +681,18 @@ return array (
     ),
     'MYR' => 
     array (
-      'name' => 'Malaysian Ringgit',
+      'name' => 'Malasískt ringit',
       'symbol' => 'MYR',
     ),
     'MZE' => 
     array (
       'name' => 'Mósambískur skúti',
       'symbol' => 'MZE',
+    ),
+    'MZN' => 
+    array (
+      'name' => 'Mósambískt metikal',
+      'symbol' => 'MZN',
     ),
     'NAD' => 
     array (
@@ -694,12 +701,17 @@ return array (
     ),
     'NGN' => 
     array (
-      'name' => 'Nigerian Naira',
+      'name' => 'Nígerísk næra',
       'symbol' => 'NGN',
+    ),
+    'NIC' => 
+    array (
+      'name' => 'Níkarögsk kordóva (1988–1991)',
+      'symbol' => 'NIC',
     ),
     'NIO' => 
     array (
-      'name' => 'Córdoba í Níkaragúa',
+      'name' => 'Níkarögsk kordóva',
       'symbol' => 'NIO',
     ),
     'NLG' => 
@@ -734,17 +746,17 @@ return array (
     ),
     'PEN' => 
     array (
-      'name' => 'Perúskt nuevo sol',
+      'name' => 'Perúskt sól',
       'symbol' => 'PEN',
     ),
     'PGK' => 
     array (
-      'name' => 'Kina í Papúa Nýju Gíneu',
+      'name' => 'Papúsk kína',
       'symbol' => 'PGK',
     ),
     'PHP' => 
     array (
-      'name' => 'Filippínskur pesó',
+      'name' => 'Filippseyskur pesi',
       'symbol' => 'PHP',
     ),
     'PKR' => 
@@ -754,7 +766,7 @@ return array (
     ),
     'PLN' => 
     array (
-      'name' => 'Pólskt zloty',
+      'name' => 'Pólskt slot',
       'symbol' => 'PLN',
     ),
     'PLZ' => 
@@ -774,22 +786,22 @@ return array (
     ),
     'QAR' => 
     array (
-      'name' => 'Rial í Katar',
+      'name' => 'Katarskt ríal',
       'symbol' => 'QAR',
     ),
     'ROL' => 
     array (
-      'name' => 'Rúmenskt lei',
+      'name' => 'Rúmenskt lei (1952–2006)',
       'symbol' => 'ROL',
     ),
     'RON' => 
     array (
-      'name' => 'Rúmensk leu',
+      'name' => 'Rúmenskt lei',
       'symbol' => 'RON',
     ),
     'RSD' => 
     array (
-      'name' => 'Serbneskur dínar',
+      'name' => 'Serbneskur denari',
       'symbol' => 'RSD',
     ),
     'RUB' => 
@@ -799,12 +811,12 @@ return array (
     ),
     'RUR' => 
     array (
-      'name' => 'Rússnesk rúbla (1991-1998)',
+      'name' => 'Rússnesk rúbla (1991–1998)',
       'symbol' => 'RUR',
     ),
     'RWF' => 
     array (
-      'name' => 'Rwandan Franc',
+      'name' => 'Rúandskur franki',
       'symbol' => 'RWF',
     ),
     'SAR' => 
@@ -819,7 +831,7 @@ return array (
     ),
     'SCR' => 
     array (
-      'name' => 'Seychelles rúpía',
+      'name' => 'Seychellesrúpía',
       'symbol' => 'SCR',
     ),
     'SDD' => 
@@ -834,7 +846,7 @@ return array (
     ),
     'SDP' => 
     array (
-      'name' => 'Súdanskt pund (1957-1998)',
+      'name' => 'Súdanskt pund (1957–1998)',
       'symbol' => 'SDP',
     ),
     'SEK' => 
@@ -864,7 +876,7 @@ return array (
     ),
     'SLL' => 
     array (
-      'name' => 'Leone í Síerra Leóne',
+      'name' => 'Síerraleónsk ljóna',
       'symbol' => 'SLL',
     ),
     'SOS' => 
@@ -874,7 +886,7 @@ return array (
     ),
     'SRD' => 
     array (
-      'name' => 'Súrinamískur dollar',
+      'name' => 'Súrínamdalur',
       'symbol' => 'SRD',
     ),
     'SRG' => 
@@ -882,9 +894,14 @@ return array (
       'name' => 'Suriname Guilder',
       'symbol' => 'SRG',
     ),
+    'SSP' => 
+    array (
+      'name' => 'Suðursúdanskt pund',
+      'symbol' => 'SSP',
+    ),
     'STD' => 
     array (
-      'name' => 'Sao Tome and Principe Dobra',
+      'name' => 'Saó Tóme og Prinsípe-dóbra',
       'symbol' => 'STD',
     ),
     'SUR' => 
@@ -909,7 +926,7 @@ return array (
     ),
     'THB' => 
     array (
-      'name' => 'Bat',
+      'name' => 'Taílenskt bat',
       'symbol' => 'THB',
     ),
     'TJR' => 
@@ -919,27 +936,27 @@ return array (
     ),
     'TJS' => 
     array (
-      'name' => 'Tajikistan Somoni',
+      'name' => 'Tadsjikskur sómóni',
       'symbol' => 'TJS',
     ),
     'TMM' => 
     array (
-      'name' => 'Túrkmenskt manat',
+      'name' => 'Túrkmenskt manat (1993–2009)',
       'symbol' => 'TMM',
     ),
     'TMT' => 
     array (
-      'name' => 'Manat í Túrkmenistan',
+      'name' => 'Túrkmenskt manat',
       'symbol' => 'TMT',
     ),
     'TND' => 
     array (
-      'name' => 'Túnískur dínar',
+      'name' => 'Túniskur denari',
       'symbol' => 'TND',
     ),
     'TOP' => 
     array (
-      'name' => 'Tongan Paʻanga',
+      'name' => 'Tongapanga',
       'symbol' => 'TOP',
     ),
     'TPE' => 
@@ -949,12 +966,12 @@ return array (
     ),
     'TRL' => 
     array (
-      'name' => 'Tyrknesk líra',
+      'name' => 'Tyrknesk líra (1922–2005)',
       'symbol' => 'TRL',
     ),
     'TRY' => 
     array (
-      'name' => 'Ný tyrknesk líra',
+      'name' => 'Tyrknesk líra',
       'symbol' => 'TRY',
     ),
     'TTD' => 
@@ -969,12 +986,12 @@ return array (
     ),
     'TZS' => 
     array (
-      'name' => 'Tanzanian Shilling',
+      'name' => 'Tansanískur skildingur',
       'symbol' => 'TZS',
     ),
     'UAH' => 
     array (
-      'name' => 'Hrinja',
+      'name' => 'Úkraínsk hrinja',
       'symbol' => 'UAH',
     ),
     'UAK' => 
@@ -1004,43 +1021,43 @@ return array (
     ),
     'UYU' => 
     array (
-      'name' => 'Úrúgvæskur pesó',
+      'name' => 'Úrúgvæskur pesi',
       'symbol' => 'UYU',
     ),
     'UZS' => 
     array (
-      'name' => 'Som í Úsbekistan',
+      'name' => 'Úsbekskt súm',
       'symbol' => 'UZS',
     ),
     'VEB' => 
     array (
-      'name' => 'Venezuelan Bolivar',
+      'name' => 'Bolívar í Venesúela (1871–2008)',
       'symbol' => 'VEB',
     ),
     'VEF' => 
     array (
-      'name' => 'Bolívar í Venesúela',
+      'name' => 'Venesúelskur bólívari',
       'symbol' => 'VEF',
     ),
     'VND' => 
     array (
-      'name' => 'Víetnamískt dong',
+      'name' => 'Víetnamskt dong',
       'symbol' => 'VND',
     ),
     'VUV' => 
     array (
-      'name' => 'Vanuatu Vatu',
+      'name' => 'Vanúatúskt vatú',
       'symbol' => 'VUV',
     ),
     'WST' => 
     array (
-      'name' => 'Tala á Samóaeyjum',
+      'name' => 'Samóatala',
       'symbol' => 'WST',
     ),
     'XAF' => 
     array (
-      'name' => 'Miðafrískur franki, BEAC',
-      'symbol' => 'XAF',
+      'name' => 'Miðafrískur franki',
+      'symbol' => 'FCFA',
     ),
     'XAG' => 
     array (
@@ -1054,8 +1071,8 @@ return array (
     ),
     'XCD' => 
     array (
-      'name' => 'Austur-Karíbahafsdalur',
-      'symbol' => 'XCD',
+      'name' => 'Austurkarabískur dalur',
+      'symbol' => 'EC$',
     ),
     'XDR' => 
     array (
@@ -1074,8 +1091,8 @@ return array (
     ),
     'XOF' => 
     array (
-      'name' => 'Miðafrískur franki, BCEAO',
-      'symbol' => 'XOF',
+      'name' => 'Vesturafrískur franki',
+      'symbol' => 'CFA',
     ),
     'XPD' => 
     array (
@@ -1085,7 +1102,7 @@ return array (
     'XPF' => 
     array (
       'name' => 'Pólinesískur franki',
-      'symbol' => 'XPF',
+      'symbol' => 'CFPF',
     ),
     'XPT' => 
     array (
@@ -1094,7 +1111,7 @@ return array (
     ),
     'XXX' => 
     array (
-      'name' => 'Óþekktur eða ógildur gjaldeyrir',
+      'name' => 'Óþekktur gjaldmiðill',
       'symbol' => 'XXX',
     ),
     'YDD' => 
@@ -1124,8 +1141,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'Zambian Kwacha',
+      'name' => 'Zambian Kwacha (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Sambísk kvaka',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

@@ -1,0 +1,21 @@
+<?php
+return array (
+  'BD' => 'Bangladesh',
+  'BA' => 'Bosnia-Herzegovina',
+  'CG' => 'Congo Brazzaville',
+  'GG' => 'Guernsey',
+  'GW' => 'Guinea-Bissau',
+  'CX' => 'Isla de Navidad',
+  'IC' => 'Islas Canarias',
+  'CC' => 'Islas Cocos (Keeling)',
+  'GS' => 'Islas Georgias del Sur y Sandwich del Sur',
+  'QO' => 'Islas Ultramarinas',
+  'UM' => 'Islas UltramarinasMenores de Estados Unidos',
+  'VI' => 'Islas Vírgenes de los Estados Unidos',
+  'PW' => 'Palaos',
+  'QA' => 'Qatar',
+  'HK' => 'Región Administrativa Especial de Hong Kong de la República Popular China',
+  'MO' => 'Región Administrativa Especial de Macao de la República Popular China',
+  'GB' => 'RU',
+  'TA' => 'Tristán de Acuña',
+);

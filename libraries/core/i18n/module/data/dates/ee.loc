@@ -1,6 +1,140 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'buddhist' => 
+  array (
+  ),
+  'chinese' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'dzv',
+        2 => 'dzd',
+        3 => 'ted',
+        4 => 'afɔ',
+        5 => 'dam',
+        6 => 'mas',
+        7 => 'sia',
+        8 => 'dea',
+        9 => 'any',
+        10 => 'kel',
+        11 => 'ade',
+        12 => 'dzm',
+      ),
+      'full' => 
+      array (
+        1 => 'dzove',
+        2 => 'dzodze',
+        3 => 'tedoxe',
+        4 => 'afɔfiẽ',
+        5 => 'damɛ',
+        6 => 'masa',
+        7 => 'siamlɔm',
+        8 => 'deasiamime',
+        9 => 'anyɔnyɔ',
+        10 => 'kele',
+        11 => 'adeɛmekpɔxe',
+        12 => 'dzome',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, U MMMM dd \'lia\'',
+      'long' => 'U MMMM d \'lia\'',
+      'medium' => 'U MMM d \'lia\'',
+    ),
+  ),
+  'coptic' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'dzv',
+        2 => 'dzd',
+        3 => 'ted',
+        4 => 'afɔ',
+        5 => 'dam',
+        6 => 'mas',
+        7 => 'sia',
+        8 => 'dea',
+        9 => 'any',
+        10 => 'kel',
+        11 => 'ade',
+        12 => 'dzm',
+        13 => 'foa',
+      ),
+      'full' => 
+      array (
+        1 => 'dzove',
+        2 => 'dzodze',
+        3 => 'tedoxe',
+        4 => 'afɔfiẽ',
+        5 => 'damɛ',
+        6 => 'masa',
+        7 => 'siamlɔm',
+        8 => 'deasiamime',
+        9 => 'anyɔnyɔ',
+        10 => 'kele',
+        11 => 'adeɛmekpɔxe',
+        12 => 'dzome',
+        13 => 'ƒoave',
+      ),
+    ),
+  ),
+  'ethiopic' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'dzove',
+        2 => 'dzodze',
+        3 => 'tedoxe',
+        4 => 'afɔfiẽ',
+        5 => 'damɛ',
+        6 => 'masa',
+        7 => 'siamlɔm',
+        8 => 'deasiamime',
+        9 => 'anyɔnyɔ',
+        10 => 'kele',
+        11 => 'adeɛmekpɔxe',
+        12 => 'dzome',
+        13 => 'ƒoave',
+      ),
+      'full' => 
+      array (
+        1 => 'dzove',
+        2 => 'dzodze',
+        3 => 'tedoxe',
+        4 => 'afɔfiẽ',
+        5 => 'damɛ',
+        6 => 'masa',
+        7 => 'siamlɔm',
+        8 => 'deasiamime',
+        9 => 'anyɔnyɔ',
+        10 => 'kele',
+        11 => 'adeɛmekpɔxe',
+        12 => 'dzome',
+        13 => 'ƒoave',
+      ),
+    ),
+  ),
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, MMMM d \'lia\' y G',
+      'long' => 'MMMM d \'lia\' y G',
+      'medium' => 'MMM d \'lia\', y G',
+      'short' => 'M/d/y GGGGG',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -63,17 +197,187 @@ return array (
     ),
     'dateFormat' => 
     array (
-      'full' => 'EEEE, d MMMM y',
-      'long' => 'd MMMM y',
-      'medium' => 'd MMM y',
-      'short' => 'dd/MM/yyyy',
+      'full' => 'EEEE, MMMM d \'lia\' y',
+      'long' => 'MMMM d \'lia\' y',
+      'medium' => 'MMM d \'lia\', y',
+      'short' => 'M/d/yy',
     ),
     'timeFormat' => 
     array (
       'full' => 'a h:mm:ss zzzz',
-      'long' => 'a h:mm:ss z',
-      'medium' => 'a h:mm:ss',
-      'short' => 'a h:mm',
+      'long' => 'a \'ga\' h:mm:ss z',
+      'medium' => 'a \'ga\' h:mm:ss',
+      'short' => 'a \'ga\' h:mm',
+    ),
+  ),
+  'hebrew' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'dzove',
+        2 => 'dzodze',
+        3 => 'tedoxe',
+        4 => 'afɔfiẽ',
+        5 => 'damɛ',
+        6 => 'masa',
+        7 => 'siamlɔm',
+        8 => 'deasiamime',
+        9 => 'anyɔnyɔ',
+        10 => 'kele',
+        11 => 'adeɛmekpɔxe',
+        12 => 'dzome',
+        13 => 'ƒoave',
+      ),
+      'full' => 
+      array (
+        1 => 'dzove',
+        2 => 'dzodze',
+        3 => 'tedoxe',
+        4 => 'afɔfiẽ',
+        5 => 'damɛ',
+        6 => 'masa',
+        7 => 'siamlɔm',
+        8 => 'dasiamime',
+        9 => 'anyɔnyɔ',
+        10 => 'kele',
+        11 => 'adeɛmekpɔxe',
+        12 => 'dzome',
+        13 => 'ƒoave',
+      ),
+    ),
+  ),
+  'indian' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'dzv',
+        2 => 'dzd',
+        3 => 'ted',
+        4 => 'afɔ',
+        5 => 'dam',
+        6 => 'mas',
+        7 => 'sia',
+        8 => 'dea',
+        9 => 'any',
+        10 => 'kel',
+        11 => 'ade',
+        12 => 'dzm',
+      ),
+      'full' => 
+      array (
+        1 => 'dzove',
+        2 => 'dzodze',
+        3 => 'tedoxe',
+        4 => 'afɔ',
+        5 => 'damɛ',
+        6 => 'masa',
+        7 => 'siamlɔm',
+        8 => 'deasiamime',
+        9 => 'anyɔnyɔ',
+        10 => 'kele',
+        11 => 'adeɛmekpɔxe',
+        12 => 'dzome',
+      ),
+    ),
+  ),
+  'islamic' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'dzv',
+        2 => 'dzd',
+        3 => 'ted',
+        4 => 'afɔ',
+        5 => 'dam',
+        6 => 'mas',
+        7 => 'sia',
+        8 => 'dea',
+        9 => 'any',
+        10 => 'kel',
+        11 => 'ade',
+        12 => 'dzm',
+      ),
+      'full' => 
+      array (
+        1 => 'dzove',
+        2 => 'dzodze',
+        3 => 'tedoxe',
+        4 => 'afɔfiẽ',
+        5 => 'damɛ',
+        6 => 'masa',
+        7 => 'siamlɔm',
+        8 => 'deasiamime',
+        9 => 'anyɔnyɔ',
+        10 => 'kele',
+        11 => 'adeɛmekpɔxe',
+        12 => 'dzome',
+      ),
+    ),
+  ),
+  'japanese' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, MMMM dd \'lia\', G y',
+      'long' => 'MMMM d \'lia\', G y',
+      'medium' => 'MMM d \'lia\', G y',
+      'short' => 'dd-MM-GGGGG yy',
+    ),
+  ),
+  'persian' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'dzv',
+        2 => 'dzd',
+        3 => 'ted',
+        4 => 'afɔ',
+        5 => 'dam',
+        6 => 'mas',
+        7 => 'sia',
+        8 => 'dea',
+        9 => 'any',
+        10 => 'kel',
+        11 => 'ade',
+        12 => 'dzm',
+      ),
+      'full' => 
+      array (
+        1 => 'dzove',
+        2 => 'dzodze',
+        3 => 'tedoxe',
+        4 => 'afɔfiẽ',
+        5 => 'damɛ',
+        6 => 'masa',
+        7 => 'siamlɔm',
+        8 => 'deasiamime',
+        9 => 'anyɔnyɔ',
+        10 => 'kele',
+        11 => 'adeɛmekpɔxe',
+        12 => 'dzome',
+      ),
+    ),
+  ),
+  'roc' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, MMMM dd \'lia\', G y',
+      'long' => 'MMMM d \'lia\', G y',
+      'medium' => 'MMM d \'lia\', G y',
+      'short' => 'dd-MM-GGGGG y',
     ),
   ),
 );

@@ -3,19 +3,149 @@ return array (
   '@default' => 'gregorian',
   'buddhist' => 
   array (
+  ),
+  'chinese' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => '1월',
+        2 => '2월',
+        3 => '3월',
+        4 => '4월',
+        5 => '5월',
+        6 => '6월',
+        7 => '7월',
+        8 => '8월',
+        9 => '9월',
+        10 => '10월',
+        11 => '11월',
+        12 => '12월',
+      ),
+      'full' => 
+      array (
+        1 => '1월',
+        2 => '2월',
+        3 => '3월',
+        4 => '4월',
+        5 => '5월',
+        6 => '6월',
+        7 => '7월',
+        8 => '8월',
+        9 => '9월',
+        10 => '10월',
+        11 => '11월',
+        12 => '12월',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'U년 MMM d일 EEEE',
+      'long' => 'U년 MMM d일',
+      'medium' => 'y. M. d.',
+      'short' => 'y. M. d.',
+    ),
+  ),
+  'coptic' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => '투트',
+        2 => '바바흐',
+        3 => '하투르',
+        4 => '키야흐크',
+        5 => '투바흐',
+        6 => '암쉬르',
+        7 => '바라마트',
+        8 => '바라문다흐',
+        9 => '바샨스',
+        10 => '바우나흐',
+        11 => '아비브',
+        12 => '미스라',
+        13 => '나시',
+      ),
+    ),
+  ),
+  'dangi' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => '1월',
+        2 => '2월',
+        3 => '3월',
+        4 => '4월',
+        5 => '5월',
+        6 => '6월',
+        7 => '7월',
+        8 => '8월',
+        9 => '9월',
+        10 => '10월',
+        11 => '11월',
+        12 => '12월',
+      ),
+      'full' => 
+      array (
+        1 => '1월',
+        2 => '2월',
+        3 => '3월',
+        4 => '4월',
+        5 => '5월',
+        6 => '6월',
+        7 => '7월',
+        8 => '8월',
+        9 => '9월',
+        10 => '10월',
+        11 => '11월',
+        12 => '12월',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'U년 MMM d일 EEEE',
+      'long' => 'U년 MMM d일',
+      'medium' => 'y. M. d.',
+      'short' => 'y. M. d.',
+    ),
+  ),
+  'ethiopic' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => '매스캐램',
+        2 => '테켐트',
+        3 => '헤다르',
+        4 => '타흐사스',
+        5 => '테르',
+        6 => '얘카티트',
+        7 => '매가비트',
+        8 => '미야지야',
+        9 => '겐보트',
+        10 => '새네',
+        11 => '함레',
+        12 => '내하세',
+        13 => '파구맨',
+      ),
+    ),
+  ),
+  'generic' => 
+  array (
     'dateFormat' => 
     array (
       'full' => 'G y년 M월 d일 EEEE',
       'long' => 'G y년 M월 d일',
-      'medium' => 'G y. M. d',
-      'short' => 'G y. M. d',
-    ),
-  ),
-  'chinese' => 
-  array (
-    'dateFormat' => 
-    array (
-      'full' => 'y\'x\'G-Ml-d EEEE',
+      'medium' => 'G y. M. d.',
+      'short' => 'G y. M. d.',
     ),
   ),
   'gregorian' => 
@@ -47,6 +177,21 @@ return array (
     'months' => 
     array (
       '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => '1월',
+        2 => '2월',
+        3 => '3월',
+        4 => '4월',
+        5 => '5월',
+        6 => '6월',
+        7 => '7월',
+        8 => '8월',
+        9 => '9월',
+        10 => '10월',
+        11 => '11월',
+        12 => '12월',
+      ),
       'full' => 
       array (
         1 => '1월',
@@ -67,7 +212,7 @@ return array (
     array (
       'full' => 'y년 M월 d일 EEEE',
       'long' => 'y년 M월 d일',
-      'medium' => 'yyyy. M. d.',
+      'medium' => 'y. M. d.',
       'short' => 'yy. M. d.',
     ),
     'timeFormat' => 
@@ -78,24 +223,36 @@ return array (
       'short' => 'a h:mm',
     ),
   ),
+  'hebrew' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => '디스리월',
+        2 => '말케스월',
+        3 => '기슬르월',
+        4 => '데벳월',
+        5 => '스밧월',
+        6 => '아달월 1',
+        7 => '아달월 2',
+        8 => '닛산월',
+        9 => '이야르월',
+        10 => '시완월',
+        11 => '담무르월',
+        12 => '압월',
+        13 => '엘룰월',
+      ),
+    ),
+  ),
+  'islamic' => 
+  array (
+  ),
   'japanese' => 
   array (
-    'dateFormat' => 
-    array (
-      'full' => 'G y년 M월 d일 EEEE',
-      'long' => 'G y년 M월 d일',
-      'medium' => 'G y. M. d',
-      'short' => 'G y. M. d',
-    ),
   ),
   'roc' => 
   array (
-    'dateFormat' => 
-    array (
-      'full' => 'G y년 M월 d일 EEEE',
-      'long' => 'G y년 M월 d일',
-      'medium' => 'G y. M. d',
-      'short' => 'G y. M. d',
-    ),
   ),
 );

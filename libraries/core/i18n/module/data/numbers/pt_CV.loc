@@ -1,0 +1,20 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'CVE' => 
+    array (
+      'symbol' => '​',
+    ),
+    'PTE' => 
+    array (
+      'symbol' => '​PTE',
+    ),
+  ),
+);

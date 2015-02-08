@@ -10,7 +10,6 @@ return array (
   array (
     'PAB' => 
     array (
-      'name' => 'PAB',
       'symbol' => 'B/.',
     ),
   ),

@@ -6,21 +6,63 @@ return array (
   ),
   'chinese' => 
   array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => '正月',
+        2 => '二月',
+        3 => '三月',
+        4 => '四月',
+        5 => '五月',
+        6 => '六月',
+        7 => '七月',
+        8 => '八月',
+        9 => '九月',
+        10 => '十月',
+        11 => '十一月',
+        12 => '十二月',
+      ),
+      'full' => 
+      array (
+        1 => '正月',
+        2 => '二月',
+        3 => '三月',
+        4 => '四月',
+        5 => '五月',
+        6 => '六月',
+        7 => '七月',
+        8 => '八月',
+        9 => '九月',
+        10 => '十月',
+        11 => '十一月',
+        12 => '十二月',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'U年MMMdEEEE',
+      'long' => 'U年MMMd',
+      'medium' => 'U年MMMd',
+    ),
+  ),
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'Gy年M月d日EEEE',
+      'long' => 'Gy年M月d日',
+      'medium' => 'Gy年M月d日',
+      'short' => 'Gy/M/d',
+    ),
   ),
   'gregorian' => 
   array (
     'dateFormat' => 
     array (
       'full' => 'y年M月d日EEEE',
-      'long' => 'y年M月d日',
-      'medium' => 'y年M月d日',
-      'short' => 'yy年M月d日',
-    ),
-    'timeFormat' => 
-    array (
-      'full' => 'ah:mm:ss [zzzz]',
-      'long' => 'ah:mm:ss [z]',
-      'medium' => 'ahh:mm:ss',
+      'short' => 'd/M/yy',
     ),
   ),
   'roc' => 

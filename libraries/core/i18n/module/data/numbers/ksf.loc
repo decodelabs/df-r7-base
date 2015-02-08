@@ -274,8 +274,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'mɔni mǝ á zambí',
+      'name' => 'mɔni mǝ á zambí (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'mɔni mǝ á zambí',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

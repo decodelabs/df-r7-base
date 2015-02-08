@@ -1,6 +1,5 @@
 <?php
 return array (
-  'PS' => '',
   'AF' => 'Afuganistani',
   'AR' => 'Ajentina',
   'AL' => 'Albania',
@@ -174,7 +173,6 @@ return array (
   'ST' => 'São Tomé and Príncipe',
   'SA' => 'Saudi Arabia',
   'SN' => 'Senegal',
-  'CS' => 'Serbia and Montenegro',
   'SC' => 'Seychelles',
   'SL' => 'Sierra Leone',
   'SG' => 'Singapore',
@@ -223,7 +221,7 @@ return array (
   'CK' => 'Zvitsuwa zveCook',
   'FK' => 'Zvitsuwa zveFalklands',
   'VG' => 'Zvitsuwa zveHingirandi',
+  'MP' => 'Zvitsuwa zvekumaodzanyemba eMariana',
   'MH' => 'Zvitsuwa zveMarshall',
   'TC' => 'Zvitsuwa zveTurk neCaico',
-  'MP' => 'Zvitsuwa zvekumaodzanyemba eMariana',
 );

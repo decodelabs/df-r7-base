@@ -12,7 +12,6 @@ return array (
   array (
     'RWF' => 
     array (
-      'name' => 'RWF',
       'symbol' => 'RF',
     ),
   ),

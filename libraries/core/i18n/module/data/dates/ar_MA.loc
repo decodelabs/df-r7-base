@@ -1,12 +1,54 @@
 <?php
 return array (
   '@default' => 'gregorian',
-  'gregorian' => 
+  'generic' => 
   array (
     'dateFormat' => 
     array (
-      'medium' => 'yyyy/MM/dd',
-      'short' => 'yyyy/M/d',
+      'medium' => 'G y/MM/dd',
+      'short' => 'GGGGG y/M/d',
+    ),
+  ),
+  'gregorian' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'يناير',
+        2 => 'فبراير',
+        3 => 'مارس',
+        4 => 'أبريل',
+        5 => 'ماي',
+        6 => 'يونيو',
+        7 => 'يوليوز',
+        8 => 'غشت',
+        9 => 'شتنبر',
+        10 => 'أكتوبر',
+        11 => 'نونبر',
+        12 => 'دجنبر',
+      ),
+      'full' => 
+      array (
+        1 => 'يناير',
+        2 => 'فبراير',
+        3 => 'مارس',
+        4 => 'أبريل',
+        5 => 'ماي',
+        6 => 'يونيو',
+        7 => 'يوليوز',
+        8 => 'غشت',
+        9 => 'شتنبر',
+        10 => 'أكتوبر',
+        11 => 'نونبر',
+        12 => 'دجنبر',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'medium' => 'y/MM/dd',
+      'short' => 'y/M/d',
     ),
   ),
 );

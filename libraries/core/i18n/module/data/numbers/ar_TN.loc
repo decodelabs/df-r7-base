@@ -2,10 +2,11 @@
 return array (
   'symbols' => 
   array (
+    'decimal' => ',',
+    'group' => '.',
   ),
   'formats' => 
   array (
-    'decimal' => '#0.###;#0.###-',
     'currency' => '¤#0.00',
   ),
   'currencies' => 

@@ -11,15 +11,9 @@ return array (
   ),
   'currencies' => 
   array (
-    'INR' => 
-    array (
-      'name' => 'INR',
-      'symbol' => 'INRs',
-    ),
     'PKR' => 
     array (
-      'name' => 'PKR',
-      'symbol' => '₨',
+      'symbol' => 'Rs',
     ),
   ),
 );

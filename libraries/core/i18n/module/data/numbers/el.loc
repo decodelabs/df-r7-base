@@ -4,18 +4,21 @@ return array (
   array (
     'decimal' => ',',
     'group' => '.',
-    'list' => ',',
+    'list' => ';',
     'percentSign' => '%',
     'plusSign' => '+',
     'minusSign' => '-',
     'exponential' => 'e',
+    'superscriptingExponent' => '×',
     'perMille' => '‰',
     'infinity' => '∞',
     'nan' => 'NaN',
+    'timeSeparator' => ':',
   ),
   'formats' => 
   array (
     'decimal' => '#,##0.###',
+    'scientific' => '#E0',
     'percent' => '#,##0%',
     'currency' => '#,##0.00 ¤',
   ),
@@ -33,12 +36,12 @@ return array (
     ),
     'AFA' => 
     array (
-      'name' => 'Αφγανί Αφγανιστάν (1927-2002)',
+      'name' => 'Αφγανί Αφγανιστάν (1927–2002)',
       'symbol' => 'AFA',
     ),
     'AFN' => 
     array (
-      'name' => 'Αφγανί Αφγανιστάν',
+      'name' => 'Αφγάνι Αφγανιστάν',
       'symbol' => 'AFN',
     ),
     'ALK' => 
@@ -68,12 +71,12 @@ return array (
     ),
     'AOK' => 
     array (
-      'name' => 'Κουάνζα Ανγκόλας (1977-1990)',
+      'name' => 'Κουάνζα Ανγκόλας (1977–1990)',
       'symbol' => 'AOK',
     ),
     'AON' => 
     array (
-      'name' => 'Νέα Κουάνζα Ανγκόλας (1990-2000)',
+      'name' => 'Νέα Κουάνζα Ανγκόλας (1990–2000)',
       'symbol' => 'AON',
     ),
     'ARA' => 
@@ -88,7 +91,7 @@ return array (
     ),
     'ARP' => 
     array (
-      'name' => 'Πέσο Αργεντινής (1983-1985)',
+      'name' => 'Πέσο Αργεντινής (1983–1985)',
       'symbol' => 'ARP',
     ),
     'ARS' => 
@@ -104,16 +107,16 @@ return array (
     'AUD' => 
     array (
       'name' => 'Δολάριο Αυστραλίας',
-      'symbol' => 'AUD',
+      'symbol' => 'A$',
     ),
     'AWG' => 
     array (
-      'name' => 'Γκίλντα Αρούμπα',
+      'name' => 'Φλορίνι Αρούμπα',
       'symbol' => 'AWG',
     ),
     'AZM' => 
     array (
-      'name' => 'Μανάτ Αζερμπαϊτζάν (1993-2006)',
+      'name' => 'Μανάτ Αζερμπαϊτζάν (1993–2006)',
       'symbol' => 'AZM',
     ),
     'AZN' => 
@@ -173,7 +176,7 @@ return array (
     ),
     'BGN' => 
     array (
-      'name' => 'Νέο Λεβ Βουλγαρίας',
+      'name' => 'Λεβ Βουλγαρίας',
       'symbol' => 'BGN',
     ),
     'BGO' => 
@@ -223,7 +226,7 @@ return array (
     ),
     'BRB' => 
     array (
-      'name' => 'Νέο Κρουζιέρο Βραζιλίας (1967-1986)',
+      'name' => 'Νέο Κρουζιέρο Βραζιλίας (1967–1986)',
       'symbol' => 'BRB',
     ),
     'BRC' => 
@@ -233,13 +236,13 @@ return array (
     ),
     'BRE' => 
     array (
-      'name' => 'Κρουζιέρο Βραζιλίας (1990-1993)',
+      'name' => 'Κρουζιέρο Βραζιλίας (1990–1993)',
       'symbol' => 'BRE',
     ),
     'BRL' => 
     array (
       'name' => 'Ρεάλ Βραζιλίας',
-      'symbol' => 'BRL',
+      'symbol' => 'R$',
     ),
     'BRN' => 
     array (
@@ -278,7 +281,7 @@ return array (
     ),
     'BYB' => 
     array (
-      'name' => 'Νέο Ρούβλι Λευκορωσίας (1994-1999)',
+      'name' => 'Νέο Ρούβλι Λευκορωσίας (1994–1999)',
       'symbol' => 'BYB',
     ),
     'BYR' => 
@@ -294,7 +297,7 @@ return array (
     'CAD' => 
     array (
       'name' => 'Δολάριο Καναδά',
-      'symbol' => 'CAD',
+      'symbol' => 'CA$',
     ),
     'CDF' => 
     array (
@@ -338,8 +341,8 @@ return array (
     ),
     'CNY' => 
     array (
-      'name' => 'Γιουάν Ρενμίμπι Κίνας',
-      'symbol' => 'CNY',
+      'name' => 'Γουάν Κίνας',
+      'symbol' => 'CN¥',
     ),
     'COP' => 
     array (
@@ -383,7 +386,7 @@ return array (
     ),
     'CZK' => 
     array (
-      'name' => 'Κορόνα Τσέχικης Δημοκρατίας',
+      'name' => 'Κορόνα Τσεχίας',
       'symbol' => 'CZK',
     ),
     'DDM' => 
@@ -408,7 +411,7 @@ return array (
     ),
     'DOP' => 
     array (
-      'name' => 'Πέσο Δομίνικου',
+      'name' => 'Πέσο Δομινικανής Δημοκρατίας',
       'symbol' => 'DOP',
     ),
     'DZD' => 
@@ -459,7 +462,7 @@ return array (
     'EUR' => 
     array (
       'name' => 'Ευρώ',
-      'symbol' => 'EUR',
+      'symbol' => '€',
     ),
     'FIM' => 
     array (
@@ -473,7 +476,7 @@ return array (
     ),
     'FKP' => 
     array (
-      'name' => 'Λίρα Νησιών Φώλκλαντ',
+      'name' => 'Λίρα Νησιών Φώκλαντ',
       'symbol' => 'FKP',
     ),
     'FRF' => 
@@ -484,7 +487,7 @@ return array (
     'GBP' => 
     array (
       'name' => 'Λίρα Στερλίνα Βρετανίας',
-      'symbol' => 'GBP',
+      'symbol' => '£',
     ),
     'GEK' => 
     array (
@@ -498,7 +501,7 @@ return array (
     ),
     'GHC' => 
     array (
-      'name' => 'Σέντι Γκάνας (1979-2007)',
+      'name' => 'Σέντι Γκάνας (1979–2007)',
       'symbol' => 'GHC',
     ),
     'GHS' => 
@@ -559,7 +562,7 @@ return array (
     'HKD' => 
     array (
       'name' => 'Δολάριο Χονγκ Κονγκ',
-      'symbol' => 'HKD',
+      'symbol' => 'HK$',
     ),
     'HNL' => 
     array (
@@ -588,7 +591,7 @@ return array (
     ),
     'IDR' => 
     array (
-      'name' => 'Ρούπια Ινδονησίας',
+      'name' => 'Ρουπία Ινδονησίας',
       'symbol' => 'IDR',
     ),
     'IEP' => 
@@ -609,12 +612,12 @@ return array (
     'ILS' => 
     array (
       'name' => 'Νέο Σέκελ Ισραήλ',
-      'symbol' => 'ILS',
+      'symbol' => '₪',
     ),
     'INR' => 
     array (
-      'name' => 'Ρούπια Ινδίας',
-      'symbol' => 'INR',
+      'name' => 'Ρουπία Ινδίας',
+      'symbol' => '₹',
     ),
     'IQD' => 
     array (
@@ -654,7 +657,7 @@ return array (
     'JPY' => 
     array (
       'name' => 'Γιεν Ιαπωνίας',
-      'symbol' => 'JPY',
+      'symbol' => 'JP¥',
     ),
     'KES' => 
     array (
@@ -673,12 +676,12 @@ return array (
     ),
     'KMF' => 
     array (
-      'name' => 'Φράγκο Κομόρος',
+      'name' => 'Φράγκο Κομορών',
       'symbol' => 'KMF',
     ),
     'KPW' => 
     array (
-      'name' => 'Γον Βόρειας Κορέας',
+      'name' => 'Γουόν Βόρειας Κορέας',
       'symbol' => 'KPW',
     ),
     'KRO' => 
@@ -688,8 +691,8 @@ return array (
     ),
     'KRW' => 
     array (
-      'name' => 'Γον Νότιας Κορέας',
-      'symbol' => 'KRW',
+      'name' => 'Γουόν Νότιας Κορέας',
+      'symbol' => '₩',
     ),
     'KWD' => 
     array (
@@ -718,7 +721,7 @@ return array (
     ),
     'LKR' => 
     array (
-      'name' => 'Ρούπια Σρι Λάνκα',
+      'name' => 'Ρουπία Σρι Λάνκα',
       'symbol' => 'LKR',
     ),
     'LRD' => 
@@ -793,12 +796,12 @@ return array (
     ),
     'MDL' => 
     array (
-      'name' => 'Λέι Μολδαβίας',
+      'name' => 'Λέου Μολδαβίας',
       'symbol' => 'MDL',
     ),
     'MGA' => 
     array (
-      'name' => 'Αριανί Μαδαγασκάρης',
+      'name' => 'Αριάρι Μαδαγασκάρης',
       'symbol' => 'MGA',
     ),
     'MGF' => 
@@ -838,7 +841,7 @@ return array (
     ),
     'MRO' => 
     array (
-      'name' => 'Ουγκουίγκα Μαυριτανίας',
+      'name' => 'Ουγκίγια Μαυριτανίας',
       'symbol' => 'MRO',
     ),
     'MTL' => 
@@ -853,12 +856,12 @@ return array (
     ),
     'MUR' => 
     array (
-      'name' => 'Ρούπια Μαυρικίου',
+      'name' => 'Ρουπία Μαυρικίου',
       'symbol' => 'MUR',
     ),
     'MVR' => 
     array (
-      'name' => 'Ρουφίγια Νήσων Μαλδίβων',
+      'name' => 'Ρουφίγια Μαλδίβων',
       'symbol' => 'MVR',
     ),
     'MWK' => 
@@ -869,11 +872,11 @@ return array (
     'MXN' => 
     array (
       'name' => 'Πέσο Μεξικού',
-      'symbol' => 'MXN',
+      'symbol' => 'MX$',
     ),
     'MXP' => 
     array (
-      'name' => 'Ασημένιο Πέσο Μεξικού (1861-1992)',
+      'name' => 'Ασημένιο Πέσο Μεξικού (1861–1992)',
       'symbol' => 'MXP',
     ),
     'MYR' => 
@@ -928,13 +931,13 @@ return array (
     ),
     'NPR' => 
     array (
-      'name' => 'Ρούπια Νεπάλ',
+      'name' => 'Ρουπία Νεπάλ',
       'symbol' => 'NPR',
     ),
     'NZD' => 
     array (
       'name' => 'Δολάριο Νέας Ζηλανδίας',
-      'symbol' => 'NZD',
+      'symbol' => 'NZ$',
     ),
     'OMR' => 
     array (
@@ -973,17 +976,17 @@ return array (
     ),
     'PKR' => 
     array (
-      'name' => 'Ρούπια Πακιστάν',
+      'name' => 'Ρουπία Πακιστάν',
       'symbol' => 'PKR',
     ),
     'PLN' => 
     array (
-      'name' => 'Ζλότυ Πολωνίας',
+      'name' => 'Ζλότι Πολωνίας',
       'symbol' => 'PLN',
     ),
     'PLZ' => 
     array (
-      'name' => 'Ζλότυ Πολωνίας (1950-1995)',
+      'name' => 'Ζλότυ Πολωνίας (1950–1995)',
       'symbol' => 'PLZ',
     ),
     'PTE' => 
@@ -1013,7 +1016,7 @@ return array (
     ),
     'RON' => 
     array (
-      'name' => 'Λεβ Ρουμανίας',
+      'name' => 'Λέου Ρουμανίας',
       'symbol' => 'RON',
     ),
     'RSD' => 
@@ -1028,7 +1031,7 @@ return array (
     ),
     'RUR' => 
     array (
-      'name' => 'Ρούβλι Ρωσίας (1991-1998)',
+      'name' => 'Ρούβλι Ρωσίας (1991–1998)',
       'symbol' => 'RUR',
     ),
     'RWF' => 
@@ -1048,7 +1051,7 @@ return array (
     ),
     'SCR' => 
     array (
-      'name' => 'Ρούπια Σεϋχέλες',
+      'name' => 'Ρουπία Σεϋχελλών',
       'symbol' => 'SCR',
     ),
     'SDD' => 
@@ -1111,6 +1114,11 @@ return array (
       'name' => 'Γκίλντα Σουρινάμ',
       'symbol' => 'SRG',
     ),
+    'SSP' => 
+    array (
+      'name' => 'Λίρα Νότιου Σουδάν',
+      'symbol' => 'SSP',
+    ),
     'STD' => 
     array (
       'name' => 'Ντόμπρα Σάο Τομέ και Πρίνσιπε',
@@ -1133,13 +1141,13 @@ return array (
     ),
     'SZL' => 
     array (
-      'name' => 'Λιλανγκένι Σουαζιλάνδη',
+      'name' => 'Λιλανγκένι Σουαζιλάνδης',
       'symbol' => 'SZL',
     ),
     'THB' => 
     array (
       'name' => 'Μπατ Ταϊλάνδης',
-      'symbol' => 'THB',
+      'symbol' => '฿',
     ),
     'TJR' => 
     array (
@@ -1148,7 +1156,7 @@ return array (
     ),
     'TJS' => 
     array (
-      'name' => 'Σομόν Τατζικιστάν',
+      'name' => 'Σομόνι Τατζικιστάν',
       'symbol' => 'TJS',
     ),
     'TMM' => 
@@ -1158,7 +1166,7 @@ return array (
     ),
     'TMT' => 
     array (
-      'name' => 'Νέο μανάτ Τουρκμενιστάν',
+      'name' => 'Μάνατ Τουρκμενιστάν',
       'symbol' => 'TMT',
     ),
     'TND' => 
@@ -1168,7 +1176,7 @@ return array (
     ),
     'TOP' => 
     array (
-      'name' => 'Παάνγκα Τόνγκας',
+      'name' => 'Παάγκα νήσων Τόγκα',
       'symbol' => 'TOP',
     ),
     'TPE' => 
@@ -1193,8 +1201,8 @@ return array (
     ),
     'TWD' => 
     array (
-      'name' => 'Νέο Δολάριο Ταϊβάν',
-      'symbol' => 'TWD',
+      'name' => 'Νέο δολάριο Ταϊβάν',
+      'symbol' => 'NT$',
     ),
     'TZS' => 
     array (
@@ -1203,7 +1211,7 @@ return array (
     ),
     'UAH' => 
     array (
-      'name' => 'Χρίφνα Ουκρανίας',
+      'name' => 'Γρίβνα Ουκρανίας',
       'symbol' => 'UAH',
     ),
     'UAK' => 
@@ -1213,7 +1221,7 @@ return array (
     ),
     'UGS' => 
     array (
-      'name' => 'Σελίνι Ουγκάντας (1966-1987)',
+      'name' => 'Σελίνι Ουγκάντας (1966–1987)',
       'symbol' => 'UGS',
     ),
     'UGX' => 
@@ -1238,7 +1246,7 @@ return array (
     ),
     'UYP' => 
     array (
-      'name' => 'Πέσο Ουρουγουάης (1975-1993)',
+      'name' => 'Πέσο Ουρουγουάης (1975–1993)',
       'symbol' => 'UYP',
     ),
     'UYU' => 
@@ -1253,18 +1261,18 @@ return array (
     ),
     'VEB' => 
     array (
-      'name' => 'Μπολιβάρ Βενεζουέλας',
+      'name' => 'Μπολιβάρ Βενεζουέλας (1871–2008)',
       'symbol' => 'VEB',
     ),
     'VEF' => 
     array (
-      'name' => 'Βολιβάρ Φουέρτε Βενεζουέλας',
+      'name' => 'Μπολιβάρ Βενεζουέλας',
       'symbol' => 'VEF',
     ),
     'VND' => 
     array (
       'name' => 'Ντονγκ Βιετνάμ',
-      'symbol' => 'VND',
+      'symbol' => '₫',
     ),
     'VNN' => 
     array (
@@ -1278,13 +1286,13 @@ return array (
     ),
     'WST' => 
     array (
-      'name' => 'Ταλά Δυτικής Σαμόας',
+      'name' => 'Τάλα Σαμόα',
       'symbol' => 'WST',
     ),
     'XAF' => 
     array (
-      'name' => 'Φράγκο Κεντρικής Αφρικής',
-      'symbol' => 'XAF',
+      'name' => 'Φράγκο CFA Κεντρικής Αφρικής (BEAC)',
+      'symbol' => 'FCFA',
     ),
     'XBA' => 
     array (
@@ -1309,7 +1317,7 @@ return array (
     'XCD' => 
     array (
       'name' => 'Δολάριο Ανατολικής Καραϊβικής',
-      'symbol' => 'XCD',
+      'symbol' => 'EC$',
     ),
     'XDR' => 
     array (
@@ -1333,13 +1341,13 @@ return array (
     ),
     'XOF' => 
     array (
-      'name' => 'Φράγκο Δυτικής Αφρικής',
-      'symbol' => 'XOF',
+      'name' => 'Φράγκο CFA Δυτικής Αφρικής (BCEAO)',
+      'symbol' => 'CFA',
     ),
     'XPF' => 
     array (
       'name' => 'Φράγκο CFP',
-      'symbol' => 'XPF',
+      'symbol' => 'CFPF',
     ),
     'XRE' => 
     array (
@@ -1348,7 +1356,7 @@ return array (
     ),
     'XXX' => 
     array (
-      'name' => 'Άγνωστο ή μη έγκυρο νόμισμα',
+      'name' => 'Άγνωστο νόμισμα',
       'symbol' => 'XXX',
     ),
     'YDD' => 
@@ -1393,8 +1401,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'Κουάνζα Ζαΐρ',
+      'name' => 'Κουάνζα Ζαΐρ (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Κουάτσα Ζάμπιας',
+      'symbol' => 'ZMW',
     ),
     'ZRN' => 
     array (

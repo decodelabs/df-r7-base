@@ -1,7 +1,7 @@
 <?php
 return array (
   '@default' => 'gregorian',
-  'buddhist' => 
+  'generic' => 
   array (
     'dateFormat' => 
     array (
@@ -15,10 +15,7 @@ return array (
   array (
     'dateFormat' => 
     array (
-      'full' => 'EEEE, d MMMM, y',
-      'long' => 'd MMMM, y',
-      'medium' => 'd MMM, y',
-      'short' => 'd/M/yy',
+      'short' => 'd/M/y',
     ),
     'timeFormat' => 
     array (
@@ -30,22 +27,5 @@ return array (
   ),
   'japanese' => 
   array (
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE, d MMMM, y G',
-      'long' => 'd MMMM, y G',
-      'medium' => 'd MMM, y G',
-      'short' => 'd/M/yy GGGGG',
-    ),
-  ),
-  'roc' => 
-  array (
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE, d MMMM, y G',
-      'long' => 'd MMMM, y G',
-      'medium' => 'd MMM, y G',
-      'short' => 'd/M/yy GGGGG',
-    ),
   ),
 );

@@ -10,7 +10,6 @@ return array (
   array (
     'HNL' => 
     array (
-      'name' => 'HNL',
       'symbol' => 'L',
     ),
   ),

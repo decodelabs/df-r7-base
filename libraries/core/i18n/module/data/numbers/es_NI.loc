@@ -10,7 +10,6 @@ return array (
   array (
     'NIO' => 
     array (
-      'name' => 'NIO',
       'symbol' => 'C$',
     ),
   ),

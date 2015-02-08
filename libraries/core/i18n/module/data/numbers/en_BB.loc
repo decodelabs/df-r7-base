@@ -10,13 +10,7 @@ return array (
   array (
     'BBD' => 
     array (
-      'name' => 'BBD',
       'symbol' => '$',
-    ),
-    'USD' => 
-    array (
-      'name' => 'USD',
-      'symbol' => 'US$',
     ),
   ),
 );

@@ -1,6 +1,14 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, dd. MMMM y G',
+      'long' => 'dd. MMMM y G',
+    ),
+  ),
   'gregorian' => 
   array (
     'months' => 
@@ -8,17 +16,40 @@ return array (
       '@default' => 'full',
       'abbreviated' => 
       array (
-        1 => 'Jän',
+        1 => 'Jän.',
+        2 => 'Feb.',
+        3 => 'März',
+        4 => 'Apr.',
+        5 => 'Mai',
+        6 => 'Juni',
+        7 => 'Juli',
+        8 => 'Aug.',
+        9 => 'Sep.',
+        10 => 'Okt.',
+        11 => 'Nov.',
+        12 => 'Dez.',
       ),
       'full' => 
       array (
         1 => 'Jänner',
+        2 => 'Februar',
+        3 => 'März',
+        4 => 'April',
+        5 => 'Mai',
+        6 => 'Juni',
+        7 => 'Juli',
+        8 => 'August',
+        9 => 'September',
+        10 => 'Oktober',
+        11 => 'November',
+        12 => 'Dezember',
       ),
     ),
     'dateFormat' => 
     array (
       'full' => 'EEEE, dd. MMMM y',
       'long' => 'dd. MMMM y',
+      'medium' => 'dd. MMM y',
     ),
   ),
 );

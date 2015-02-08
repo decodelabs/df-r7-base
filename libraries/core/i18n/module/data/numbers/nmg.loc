@@ -215,7 +215,7 @@ return array (
     ),
     'SDP' => 
     array (
-      'name' => 'Mɔn Sudan (1957-1998)',
+      'name' => 'Mɔn Sudan (1957–1998)',
       'symbol' => 'SDP',
     ),
     'SHP' => 
@@ -280,12 +280,17 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'Mɔn Zambia',
+      'name' => 'Mɔn Zambia (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Mɔn Zambia',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (
-      'name' => 'Dɔ́llɔ Zimbabwǝ (1980-2008)',
+      'name' => 'Dɔ́llɔ Zimbabwǝ (1980–2008)',
       'symbol' => 'ZWD',
     ),
   ),

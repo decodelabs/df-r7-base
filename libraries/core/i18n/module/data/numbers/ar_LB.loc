@@ -1,0 +1,18 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => ',',
+    'group' => '.',
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'SDG' => 
+    array (
+      'symbol' => 'SDG',
+    ),
+  ),
+);

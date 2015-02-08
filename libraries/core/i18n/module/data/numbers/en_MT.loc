@@ -5,13 +5,11 @@ return array (
   ),
   'formats' => 
   array (
-    'currency' => '¤#,##0.00',
   ),
   'currencies' => 
   array (
     'GBP' => 
     array (
-      'name' => 'GBP',
       'symbol' => 'GB£',
     ),
   ),

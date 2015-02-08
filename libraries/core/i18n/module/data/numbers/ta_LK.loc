@@ -10,7 +10,6 @@ return array (
   array (
     'LKR' => 
     array (
-      'name' => 'LKR',
       'symbol' => 'Rs.',
     ),
   ),

@@ -1,0 +1,6 @@
+<?php
+return array (
+  'kkj' => 'kakɔ',
+  'fr' => 'numbu buy',
+  'en' => 'yaman',
+);

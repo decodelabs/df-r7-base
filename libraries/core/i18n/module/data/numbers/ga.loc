@@ -4,9 +4,21 @@ return array (
   array (
     'decimal' => '.',
     'group' => ',',
+    'percentSign' => '%',
+    'plusSign' => '+',
+    'minusSign' => '-',
+    'exponential' => 'E',
+    'superscriptingExponent' => '×',
+    'perMille' => '‰',
+    'infinity' => '∞',
+    'nan' => 'NaN',
+    'timeSeparator' => ':',
   ),
   'formats' => 
   array (
+    'decimal' => '#,##0.###',
+    'scientific' => '#E0',
+    'percent' => '#,##0%',
     'currency' => '¤#,##0.00',
   ),
   'currencies' => 
@@ -23,47 +35,52 @@ return array (
     ),
     'AFA' => 
     array (
-      'name' => 'Afgainí (1927-2002)',
+      'name' => 'Afgainí (1927–2002)',
       'symbol' => 'AFA',
     ),
     'AFN' => 
     array (
-      'name' => 'Afgainí',
+      'name' => 'Afghani na hAfganastáine',
       'symbol' => 'AFN',
+    ),
+    'ALK' => 
+    array (
+      'name' => 'Lek na hAlbáine (1946–1965)',
+      'symbol' => 'ALK',
     ),
     'ALL' => 
     array (
-      'name' => 'Lek Albánach',
+      'name' => 'Lek na hAlbáine',
       'symbol' => 'ALL',
     ),
     'AMD' => 
     array (
-      'name' => 'Dram Airméanach',
+      'name' => 'Dram na hAirméine',
       'symbol' => 'AMD',
     ),
     'ANG' => 
     array (
-      'name' => 'Guilder na nAntillí Ísiltíreach',
-      'symbol' => 'AÍ f.',
+      'name' => 'Gildear Aintillí na hÍsiltíre',
+      'symbol' => 'ANG',
     ),
     'AOA' => 
     array (
-      'name' => 'Kwanza Angólach',
+      'name' => 'Kwanza Angóla',
       'symbol' => 'AOA',
     ),
     'AOK' => 
     array (
-      'name' => 'Kwanza Angólach (1977-1990)',
+      'name' => 'Kwanza Angólach (1977–1990)',
       'symbol' => 'AOK',
     ),
     'AON' => 
     array (
-      'name' => 'Kwanza Nua Angólach (1990-2000)',
+      'name' => 'Kwanza Nua Angólach (1990–2000)',
       'symbol' => 'AON',
     ),
     'AOR' => 
     array (
-      'name' => 'Kwanza Reajustado Angólach (1995-1999)',
+      'name' => 'Kwanza Reajustado Angólach (1995–1999)',
       'symbol' => 'AOR',
     ),
     'ARA' => 
@@ -71,14 +88,23 @@ return array (
       'name' => 'Austral Airgintíneach',
       'symbol' => 'ARA',
     ),
+    'ARL' => 
+    array (
+      'symbol' => 'ARL',
+    ),
+    'ARM' => 
+    array (
+      'name' => 'Peso na hAirgintíne (1881–1970)',
+      'symbol' => 'ARM',
+    ),
     'ARP' => 
     array (
-      'name' => 'Peso na Airgintíne (1983-1985)',
+      'name' => 'Peso na hAirgintíne (1983–1985)',
       'symbol' => 'ARP',
     ),
     'ARS' => 
     array (
-      'name' => 'Peso na Airgintíne',
+      'name' => 'Peso na hAirgintíne',
       'symbol' => 'ARS',
     ),
     'ATS' => 
@@ -88,18 +114,23 @@ return array (
     ),
     'AUD' => 
     array (
-      'name' => 'Dollar Astrálach',
-      'symbol' => 'AUD',
+      'name' => 'Dollar na hAstráile',
+      'symbol' => 'A$',
     ),
     'AWG' => 
     array (
-      'name' => 'Guilder Aruba',
+      'name' => 'Flóirín Arúba',
       'symbol' => 'AWG',
     ),
     'AZM' => 
     array (
-      'name' => 'Manat Asarbaiseánach',
+      'name' => 'Manat na hAsarbaiseáine (1993–2006)',
       'symbol' => 'AZM',
+    ),
+    'AZN' => 
+    array (
+      'name' => 'Manat na hAsarbaiseáine',
+      'symbol' => 'AZN',
     ),
     'BAD' => 
     array (
@@ -108,17 +139,21 @@ return array (
     ),
     'BAM' => 
     array (
-      'name' => 'Marc Inathraithe Bhoisnia-Heirseagaivéin',
+      'name' => 'Marg Inmhalartaithe na Boisnia-Heirseagaivéine',
       'symbol' => 'BAM',
+    ),
+    'BAN' => 
+    array (
+      'symbol' => 'BAN',
     ),
     'BBD' => 
     array (
-      'name' => 'Dollar Bharbadóis',
+      'name' => 'Dollar Bharbadós',
       'symbol' => 'BBD',
     ),
     'BDT' => 
     array (
-      'name' => 'Taka Bhanglaidéiseach',
+      'name' => 'Taka na Banglaidéise',
       'symbol' => 'BDT',
     ),
     'BEC' => 
@@ -138,17 +173,22 @@ return array (
     ),
     'BGL' => 
     array (
-      'name' => 'Lev Bulgárach Crua',
+      'name' => 'Lev Crua na Bulgáire',
       'symbol' => 'BGL',
     ),
     'BGN' => 
     array (
-      'name' => 'Lev Nua Bulgárach',
+      'name' => 'Lev na Bulgáire',
       'symbol' => 'BGN',
+    ),
+    'BGO' => 
+    array (
+      'name' => 'Lev na Bulgáire (1879–1952)',
+      'symbol' => 'BGO',
     ),
     'BHD' => 
     array (
-      'name' => 'Dínear na Bairéine',
+      'name' => 'Dinar Bhairéin',
       'symbol' => 'BHD',
     ),
     'BIF' => 
@@ -171,6 +211,10 @@ return array (
       'name' => 'Boliviano',
       'symbol' => 'BOB',
     ),
+    'BOL' => 
+    array (
+      'symbol' => 'BOL',
+    ),
     'BOP' => 
     array (
       'name' => 'Peso na Bolaive',
@@ -178,38 +222,43 @@ return array (
     ),
     'BOV' => 
     array (
-      'name' => 'Mvdol Bolavach',
+      'name' => 'Mvdol na Bolaive',
       'symbol' => 'BOV',
     ),
     'BRB' => 
     array (
-      'name' => 'Cruzeiro Novo Brasaíleach (1967-1986)',
+      'name' => 'Cruzeiro Nua na Brasaíle (1967–1986)',
       'symbol' => 'BRB',
     ),
     'BRC' => 
     array (
-      'name' => 'Cruzado Brasaíleach',
+      'name' => 'Cruzado na Brasaíle (1986–1989)',
       'symbol' => 'BRC',
     ),
     'BRE' => 
     array (
-      'name' => 'Cruzeiro Brasaíleach (1990-1993)',
+      'name' => 'Cruzeiro na Brasaíle (1990–1993)',
       'symbol' => 'BRE',
     ),
     'BRL' => 
     array (
-      'name' => 'Real Brasaíleach',
-      'symbol' => 'BRL',
+      'name' => 'Real na Brasaíle',
+      'symbol' => 'R$',
     ),
     'BRN' => 
     array (
-      'name' => 'Cruzado Novo Brasaíleach',
+      'name' => 'Cruzado Nua na Brasaíle (1989–1990)',
       'symbol' => 'BRN',
     ),
     'BRR' => 
     array (
-      'name' => 'Cruzeiro Brasaíleach',
+      'name' => 'Cruzeiro na Brasaíle (1993–1994)',
       'symbol' => 'BRR',
+    ),
+    'BRZ' => 
+    array (
+      'name' => 'Cruzeiro na Brasaíle (1942–1967)',
+      'symbol' => 'BRZ',
     ),
     'BSD' => 
     array (
@@ -218,27 +267,27 @@ return array (
     ),
     'BTN' => 
     array (
-      'name' => 'Ngultrum Bútánach',
+      'name' => 'Ngultrum na Bútáine',
       'symbol' => 'BTN',
     ),
     'BUK' => 
     array (
-      'name' => 'Kyat Burmach',
+      'name' => 'Kyat Bhurma',
       'symbol' => 'BUK',
     ),
     'BWP' => 
     array (
-      'name' => 'Pula Botsuánach',
+      'name' => 'Pula na Botsuáine',
       'symbol' => 'BWP',
     ),
     'BYB' => 
     array (
-      'name' => 'Rúbal Nua Béalarúiseach (1994-1999)',
+      'name' => 'Rúbal Nua na Bealarúise (1994–1999)',
       'symbol' => 'BYB',
     ),
     'BYR' => 
     array (
-      'name' => 'Rúbal Béalarúiseach',
+      'name' => 'Rúbal na Bealarúise',
       'symbol' => 'BYR',
     ),
     'BZD' => 
@@ -248,18 +297,23 @@ return array (
     ),
     'CAD' => 
     array (
-      'name' => 'Dollar Ceanada',
-      'symbol' => 'CAD',
+      'name' => 'Dollar Cheanada',
+      'symbol' => 'CA$',
     ),
     'CDF' => 
     array (
-      'name' => 'Franc Congolais an Chongó',
+      'name' => 'Franc an Chongó',
       'symbol' => 'CDF',
     ),
     'CHF' => 
     array (
       'name' => 'Franc na hEilvéise',
       'symbol' => 'CHF',
+    ),
+    'CLE' => 
+    array (
+      'name' => 'Escudo na Sile',
+      'symbol' => 'CLE',
     ),
     'CLF' => 
     array (
@@ -273,32 +327,46 @@ return array (
     ),
     'CNY' => 
     array (
-      'name' => 'Yuan Renminbi Síneach',
-      'symbol' => 'CNY',
+      'name' => 'Yuan na Síne',
+      'symbol' => 'CN¥',
     ),
     'COP' => 
     array (
       'name' => 'Peso na Colóime',
       'symbol' => 'COP',
     ),
+    'COU' => 
+    array (
+      'symbol' => 'COU',
+    ),
     'CRC' => 
     array (
-      'name' => 'Colon Chósta Ríce',
+      'name' => 'Colón Chósta Ríce',
       'symbol' => 'CRC',
+    ),
+    'CSD' => 
+    array (
+      'name' => 'Dinar na Seirbia (2002–2006)',
+      'symbol' => 'CSD',
     ),
     'CSK' => 
     array (
       'name' => 'Koruna Crua na Seicslóvaice',
       'symbol' => 'CSK',
     ),
+    'CUC' => 
+    array (
+      'name' => 'Peso Inmhalartaithe Chúba',
+      'symbol' => 'CUC',
+    ),
     'CUP' => 
     array (
-      'name' => 'Peso Cúba',
+      'name' => 'Peso Chúba',
       'symbol' => 'CUP',
     ),
     'CVE' => 
     array (
-      'name' => 'Escudo na Rinne Verde',
+      'name' => 'Escudo Rinn Verde',
       'symbol' => 'CVE',
     ),
     'CYP' => 
@@ -328,17 +396,17 @@ return array (
     ),
     'DKK' => 
     array (
-      'name' => 'Krone Danmhargach',
+      'name' => 'Coróin na Danmhairge',
       'symbol' => 'DKK',
     ),
     'DOP' => 
     array (
-      'name' => 'Peso Doimineacach',
+      'name' => 'Peso na Poblachta Doiminicí',
       'symbol' => 'DOP',
     ),
     'DZD' => 
     array (
-      'name' => 'Dínear na hAilgéire',
+      'name' => 'Dinar na hAilgéire',
       'symbol' => 'DZD',
     ),
     'ECS' => 
@@ -361,9 +429,22 @@ return array (
       'name' => 'Punt na hÉigipte',
       'symbol' => 'EGP',
     ),
+    'ERN' => 
+    array (
+      'name' => 'Nakfa na hEiritré',
+      'symbol' => 'ERN',
+    ),
+    'ESA' => 
+    array (
+      'symbol' => 'ESA',
+    ),
+    'ESB' => 
+    array (
+      'symbol' => 'ESB',
+    ),
     'ESP' => 
     array (
-      'name' => 'Peseta Spáinneach',
+      'name' => 'Peseta na Spáinne',
       'symbol' => 'ESP',
     ),
     'ETB' => 
@@ -374,7 +455,7 @@ return array (
     'EUR' => 
     array (
       'name' => 'Euro',
-      'symbol' => 'EUR',
+      'symbol' => '€',
     ),
     'FIM' => 
     array (
@@ -399,7 +480,7 @@ return array (
     'GBP' => 
     array (
       'name' => 'Punt Steirling',
-      'symbol' => 'GBP',
+      'symbol' => '£',
     ),
     'GEK' => 
     array (
@@ -408,27 +489,32 @@ return array (
     ),
     'GEL' => 
     array (
-      'name' => 'Lari na Grúise',
+      'name' => 'Lari na Seoirsia',
       'symbol' => 'GEL',
     ),
     'GHC' => 
     array (
-      'name' => 'Cedi Ghána',
+      'name' => 'Cedi Ghána (1979–2007)',
       'symbol' => 'GHC',
+    ),
+    'GHS' => 
+    array (
+      'name' => 'Cedi Ghána',
+      'symbol' => 'GHS',
     ),
     'GIP' => 
     array (
-      'name' => 'Punt Ghiobráltair',
+      'name' => 'Punt Ghiobráltar',
       'symbol' => 'GIP',
     ),
     'GMD' => 
     array (
-      'name' => 'Dalasi Gaimbia',
+      'name' => 'Dalasi na Gaimbia',
       'symbol' => 'GMD',
     ),
     'GNF' => 
     array (
-      'name' => 'Franc Guine',
+      'name' => 'Franc na Guine',
       'symbol' => 'GNF',
     ),
     'GNS' => 
@@ -448,7 +534,7 @@ return array (
     ),
     'GTQ' => 
     array (
-      'name' => 'Quetzal Guatamala',
+      'name' => 'Quetzal Ghuatamala',
       'symbol' => 'GTQ',
     ),
     'GWE' => 
@@ -469,11 +555,11 @@ return array (
     'HKD' => 
     array (
       'name' => 'Dollar Hong Cong',
-      'symbol' => 'HKD',
+      'symbol' => 'HK$',
     ),
     'HNL' => 
     array (
-      'name' => 'Lempira Hondúrais',
+      'name' => 'Lempira Hondúras',
       'symbol' => 'HNL',
     ),
     'HRD' => 
@@ -483,22 +569,22 @@ return array (
     ),
     'HRK' => 
     array (
-      'name' => 'Kuna Crótach',
+      'name' => 'Kuna na Cróite',
       'symbol' => 'HRK',
     ),
     'HTG' => 
     array (
-      'name' => 'Gourde Háití',
+      'name' => 'Gourde Háítí',
       'symbol' => 'HTG',
     ),
     'HUF' => 
     array (
-      'name' => 'Forint Ungárach',
+      'name' => 'Forint na hUngáire',
       'symbol' => 'HUF',
     ),
     'IDR' => 
     array (
-      'name' => 'Rupiah Indinéiseach',
+      'name' => 'Rupiah na hIndinéise',
       'symbol' => 'IDR',
     ),
     'IEP' => 
@@ -513,52 +599,52 @@ return array (
     ),
     'ILS' => 
     array (
-      'name' => 'Sheqel Nua Iosraelach',
-      'symbol' => 'ILS',
+      'name' => 'Seiceal Nua Iosrael',
+      'symbol' => '₪',
     ),
     'INR' => 
     array (
-      'name' => 'Rúipí India',
-      'symbol' => 'INR',
+      'name' => 'Rúipí na hIndia',
+      'symbol' => '₹',
     ),
     'IQD' => 
     array (
-      'name' => 'Dínear Irácach',
+      'name' => 'Dinar na hIaráice',
       'symbol' => 'IQD',
     ),
     'IRR' => 
     array (
-      'name' => 'Rial Iaránach',
+      'name' => 'Rial na hIaráine',
       'symbol' => 'IRR',
     ),
     'ISK' => 
     array (
-      'name' => 'Krona Íoslannach',
+      'name' => 'Króna na hÍoslainne',
       'symbol' => 'ISK',
     ),
     'ITL' => 
     array (
-      'name' => 'Lira Iodálach',
+      'name' => 'Lira na hIodáile',
       'symbol' => 'ITL',
     ),
     'JMD' => 
     array (
-      'name' => 'Dollar Iamácach',
+      'name' => 'Dollar na hIamáice',
       'symbol' => 'JMD',
     ),
     'JOD' => 
     array (
-      'name' => 'Dínear Iordánach',
+      'name' => 'Dinar na hIordáine',
       'symbol' => 'JOD',
     ),
     'JPY' => 
     array (
-      'name' => 'Yen Seapánach',
-      'symbol' => 'JPY',
+      'name' => 'Yen na Seapáine',
+      'symbol' => '¥',
     ),
     'KES' => 
     array (
-      'name' => 'Scilling Céiniach',
+      'name' => 'Scilling na Céinia',
       'symbol' => 'KES',
     ),
     'KGS' => 
@@ -573,7 +659,7 @@ return array (
     ),
     'KMF' => 
     array (
-      'name' => 'Franc Chomóra',
+      'name' => 'Franc Oileáin Chomóra',
       'symbol' => 'KMF',
     ),
     'KPW' => 
@@ -581,14 +667,22 @@ return array (
       'name' => 'Won na Cóiré Thuaidh',
       'symbol' => 'KPW',
     ),
+    'KRH' => 
+    array (
+      'symbol' => 'KRH',
+    ),
+    'KRO' => 
+    array (
+      'symbol' => 'KRO',
+    ),
     'KRW' => 
     array (
       'name' => 'Won na Cóiré Theas',
-      'symbol' => 'KRW',
+      'symbol' => '₩',
     ),
     'KWD' => 
     array (
-      'name' => 'Dínear Cuátach',
+      'name' => 'Dinar Chuáit',
       'symbol' => 'KWD',
     ),
     'KYD' => 
@@ -598,12 +692,12 @@ return array (
     ),
     'KZT' => 
     array (
-      'name' => 'Tenge Casacstánach',
+      'name' => 'Tenge na Casacstáine',
       'symbol' => 'KZT',
     ),
     'LAK' => 
     array (
-      'name' => 'Kip Laosach',
+      'name' => 'Kip Laos',
       'symbol' => 'LAK',
     ),
     'LBP' => 
@@ -613,7 +707,7 @@ return array (
     ),
     'LKR' => 
     array (
-      'name' => 'Rúipí Srí Lanca',
+      'name' => 'Rúipí Shrí Lanca',
       'symbol' => 'LKR',
     ),
     'LRD' => 
@@ -628,7 +722,7 @@ return array (
     ),
     'LTL' => 
     array (
-      'name' => 'Lita Liotuánach',
+      'name' => 'Litas na Liotuáine',
       'symbol' => 'LTL',
     ),
     'LTT' => 
@@ -643,7 +737,7 @@ return array (
     ),
     'LVL' => 
     array (
-      'name' => 'Lats Laitviach',
+      'name' => 'Lats na Laitvia',
       'symbol' => 'LVL',
     ),
     'LVR' => 
@@ -653,7 +747,7 @@ return array (
     ),
     'LYD' => 
     array (
-      'name' => 'Dínear Libia',
+      'name' => 'Dinar na Libia',
       'symbol' => 'LYD',
     ),
     'MAD' => 
@@ -668,12 +762,12 @@ return array (
     ),
     'MDL' => 
     array (
-      'name' => 'Leu Moldóvach',
+      'name' => 'Leu na Moldóive',
       'symbol' => 'MDL',
     ),
     'MGA' => 
     array (
-      'name' => 'Ariary Madagascar',
+      'name' => 'Ariary Mhadagascar',
       'symbol' => 'MGA',
     ),
     'MGF' => 
@@ -685,6 +779,10 @@ return array (
     array (
       'name' => 'Denar na Macadóine',
       'symbol' => 'MKD',
+    ),
+    'MKN' => 
+    array (
+      'symbol' => 'MKN',
     ),
     'MLF' => 
     array (
@@ -698,27 +796,27 @@ return array (
     ),
     'MNT' => 
     array (
-      'name' => 'Tugrik Mongólach',
+      'name' => 'Tugrik na Mongóile',
       'symbol' => 'MNT',
     ),
     'MOP' => 
     array (
-      'name' => 'Pataca Macao',
+      'name' => 'Pataca Mhacao',
       'symbol' => 'MOP',
     ),
     'MRO' => 
     array (
-      'name' => 'Ouguiya na Maratáine',
+      'name' => 'Ouguiya na Máratáine',
       'symbol' => 'MRO',
     ),
     'MTL' => 
     array (
-      'name' => 'Lira Maltach',
+      'name' => 'Lira Mhálta',
       'symbol' => 'MTL',
     ),
     'MTP' => 
     array (
-      'name' => 'Punt Maltach',
+      'name' => 'Punt Mhálta',
       'symbol' => 'MTP',
     ),
     'MUR' => 
@@ -726,9 +824,14 @@ return array (
       'name' => 'Rúipí Oileán Mhuirís',
       'symbol' => 'MUR',
     ),
+    'MVP' => 
+    array (
+      'name' => 'Rúipí Oileáin Mhaildíve',
+      'symbol' => 'MVP',
+    ),
     'MVR' => 
     array (
-      'name' => 'Maldive Islands Rufiyaa',
+      'name' => 'Rufiyaa Oileáin Mhaildíve',
       'symbol' => 'MVR',
     ),
     'MWK' => 
@@ -738,12 +841,12 @@ return array (
     ),
     'MXN' => 
     array (
-      'name' => 'Peso Meicsiceo',
-      'symbol' => 'MXN',
+      'name' => 'Peso Mheicsiceo',
+      'symbol' => 'MX$',
     ),
     'MXP' => 
     array (
-      'name' => 'Peso Airgid Meicsiceo (1861-1992)',
+      'name' => 'Peso Airgid Mheicsiceo (1861–1992)',
       'symbol' => 'MXP',
     ),
     'MXV' => 
@@ -753,7 +856,7 @@ return array (
     ),
     'MYR' => 
     array (
-      'name' => 'Ringgit Malaeisia',
+      'name' => 'Ringgit na Malaeisia',
       'symbol' => 'MYR',
     ),
     'MZE' => 
@@ -766,6 +869,11 @@ return array (
       'name' => 'Metical Mósaimbíce',
       'symbol' => 'MZM',
     ),
+    'MZN' => 
+    array (
+      'name' => 'Metical Mhósaimbíc',
+      'symbol' => 'MZN',
+    ),
     'NAD' => 
     array (
       'name' => 'Dollar na Namaibe',
@@ -773,17 +881,17 @@ return array (
     ),
     'NGN' => 
     array (
-      'name' => 'Naira Nígéarach',
+      'name' => 'Naira na Nigéire',
       'symbol' => 'NGN',
     ),
     'NIC' => 
     array (
-      'name' => 'Cordoba Nicearagua',
+      'name' => 'Córdoba Nicearagua (1988–1991)',
       'symbol' => 'NIC',
     ),
     'NIO' => 
     array (
-      'name' => 'Cordoba Oro Nicearagua',
+      'name' => 'Córdoba Nicearagua',
       'symbol' => 'NIO',
     ),
     'NLG' => 
@@ -793,27 +901,27 @@ return array (
     ),
     'NOK' => 
     array (
-      'name' => 'Krone Ioruach',
+      'name' => 'Coróin na hIorua',
       'symbol' => 'NOK',
     ),
     'NPR' => 
     array (
-      'name' => 'Rúipí Neipeáil',
+      'name' => 'Rúipí Neipeal',
       'symbol' => 'NPR',
     ),
     'NZD' => 
     array (
       'name' => 'Dollar na Nua-Shéalainne',
-      'symbol' => 'NZD',
+      'symbol' => 'NZ$',
     ),
     'OMR' => 
     array (
-      'name' => 'Rial Omain',
+      'name' => 'Rial Óman',
       'symbol' => 'OMR',
     ),
     'PAB' => 
     array (
-      'name' => 'Balboa Panamach',
+      'name' => 'Balboa Phanama',
       'symbol' => 'PAB',
     ),
     'PEI' => 
@@ -823,12 +931,12 @@ return array (
     ),
     'PEN' => 
     array (
-      'name' => 'Sol Nuevo Pheiriú',
+      'name' => 'Nuevo Sol Pheiriú',
       'symbol' => 'PEN',
     ),
     'PES' => 
     array (
-      'name' => 'Sol Pheiriú',
+      'name' => 'Sol Pheiriú (1863–1965)',
       'symbol' => 'PES',
     ),
     'PGK' => 
@@ -838,7 +946,7 @@ return array (
     ),
     'PHP' => 
     array (
-      'name' => 'Peso Filipíneach',
+      'name' => 'Peso na nOileán Filipíneach',
       'symbol' => 'PHP',
     ),
     'PKR' => 
@@ -848,42 +956,52 @@ return array (
     ),
     'PLN' => 
     array (
-      'name' => 'Zloty Polannach',
+      'name' => 'Zloty na Polainne',
       'symbol' => 'PLN',
     ),
     'PLZ' => 
     array (
-      'name' => 'Zloty Polannach (1950-1995)',
+      'name' => 'Zloty Polannach (1950–1995)',
       'symbol' => 'PLZ',
     ),
     'PTE' => 
     array (
-      'name' => 'Escudo Portaingélach',
+      'name' => 'Escudo na Portaingéile',
       'symbol' => 'PTE',
     ),
     'PYG' => 
     array (
-      'name' => 'Guarani Pharagua',
+      'name' => 'Guaraní Pharagua',
       'symbol' => 'PYG',
     ),
     'QAR' => 
     array (
-      'name' => 'Rial Catarach',
+      'name' => 'Riyal Chatar',
       'symbol' => 'QAR',
     ),
     'ROL' => 
     array (
-      'name' => 'Leu Rómánach',
+      'name' => 'Leu na Rómáine (1952–2006)',
       'symbol' => 'ROL',
+    ),
+    'RON' => 
+    array (
+      'name' => 'Leu na Rómáine',
+      'symbol' => 'RON',
+    ),
+    'RSD' => 
+    array (
+      'name' => 'Dinar na Seirbia',
+      'symbol' => 'RSD',
     ),
     'RUB' => 
     array (
-      'name' => 'Rúbal Rúiseach',
+      'name' => 'Rúbal na Rúise',
       'symbol' => 'RUB',
     ),
     'RUR' => 
     array (
-      'name' => 'Rúbal Rúiseach (1991-1998)',
+      'name' => 'Rúbal na Rúise (1991–1998)',
       'symbol' => 'RUR',
     ),
     'RWF' => 
@@ -893,37 +1011,42 @@ return array (
     ),
     'SAR' => 
     array (
-      'name' => 'Riyal Sádach',
+      'name' => 'Riyal na hAraibe Sádaí',
       'symbol' => 'SAR',
     ),
     'SBD' => 
     array (
-      'name' => 'Dollar Oileáin Solomon',
+      'name' => 'Dollar Oileáin Sholomón',
       'symbol' => 'SBD',
     ),
     'SCR' => 
     array (
-      'name' => 'Rúipí na Séiséil',
+      'name' => 'Rúipí na Séiséal',
       'symbol' => 'SCR',
     ),
     'SDD' => 
     array (
-      'name' => 'Dínear na Súdáine',
+      'name' => 'Dinar na Súdáine (1992–2007)',
       'symbol' => 'SDD',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'Punt na Súdáine',
+      'symbol' => 'SDG',
     ),
     'SDP' => 
     array (
-      'name' => 'Punt na Súdáine',
+      'name' => 'Punt na Súdáine (1957–1998)',
       'symbol' => 'SDP',
     ),
     'SEK' => 
     array (
-      'name' => 'Krona Sualannach',
+      'name' => 'Coróin na Sualainne',
       'symbol' => 'SEK',
     ),
     'SGD' => 
     array (
-      'name' => 'Dollar Singeapóir',
+      'name' => 'Dollar Shingeapór',
       'symbol' => 'SGD',
     ),
     'SHP' => 
@@ -933,7 +1056,7 @@ return array (
     ),
     'SIT' => 
     array (
-      'name' => 'Tolar Slóvénach',
+      'name' => 'Tolar na Slóivéine',
       'symbol' => 'SIT',
     ),
     'SKK' => 
@@ -948,32 +1071,42 @@ return array (
     ),
     'SOS' => 
     array (
-      'name' => 'Scilling na Sómáile',
+      'name' => 'Scilling na Somáile',
       'symbol' => 'SOS',
+    ),
+    'SRD' => 
+    array (
+      'name' => 'Dollar Shuranam',
+      'symbol' => 'SRD',
     ),
     'SRG' => 
     array (
-      'name' => 'Guilder Shuranaim',
+      'name' => 'Gildear Shuranam',
       'symbol' => 'SRG',
+    ),
+    'SSP' => 
+    array (
+      'name' => 'Punt na Súdáine Theas',
+      'symbol' => 'SSP',
     ),
     'STD' => 
     array (
-      'name' => 'Dobra Sao Tome agus Principe',
+      'name' => 'Dobra São Tomé agus Príncipe',
       'symbol' => 'STD',
     ),
     'SUR' => 
     array (
-      'name' => 'Rúbal Sóvéadach',
+      'name' => 'Rúbal an Aontais Shóivéadaigh',
       'symbol' => 'SUR',
     ),
     'SVC' => 
     array (
-      'name' => 'Colon na Salvadóire',
+      'name' => 'Colón na Salvadóire',
       'symbol' => 'SVC',
     ),
     'SYP' => 
     array (
-      'name' => 'Punt Siria',
+      'name' => 'Punt na Siria',
       'symbol' => 'SYP',
     ),
     'SZL' => 
@@ -984,7 +1117,7 @@ return array (
     'THB' => 
     array (
       'name' => 'Baht na Téalainne',
-      'symbol' => 'THB',
+      'symbol' => '฿',
     ),
     'TJR' => 
     array (
@@ -1001,14 +1134,19 @@ return array (
       'name' => 'Manat na An Tuircméanastáine',
       'symbol' => 'TMM',
     ),
+    'TMT' => 
+    array (
+      'name' => 'Manat na Tuircméanastáine',
+      'symbol' => 'TMT',
+    ),
     'TND' => 
     array (
-      'name' => 'Dínear na Túinéise',
+      'name' => 'Dinar na Túinéise',
       'symbol' => 'TND',
     ),
     'TOP' => 
     array (
-      'name' => 'Paʻanga Tonga',
+      'name' => 'Paʻanga Thonga',
       'symbol' => 'TOP',
     ),
     'TPE' => 
@@ -1018,18 +1156,23 @@ return array (
     ),
     'TRL' => 
     array (
-      'name' => 'Lira Turcach',
+      'name' => 'Lira na Tuirce (1922–2005)',
       'symbol' => 'TRL',
+    ),
+    'TRY' => 
+    array (
+      'name' => 'Lira na Tuirce',
+      'symbol' => 'TRY',
     ),
     'TTD' => 
     array (
-      'name' => 'Dollar Oileáin na Tríonóide agus Tobága',
+      'name' => 'Dollar Oileán na Tríonóide agus Tobága',
       'symbol' => 'TTD',
     ),
     'TWD' => 
     array (
       'name' => 'Dollar Nua na Téaváine',
-      'symbol' => 'TWD',
+      'symbol' => 'NT$',
     ),
     'TZS' => 
     array (
@@ -1038,7 +1181,7 @@ return array (
     ),
     'UAH' => 
     array (
-      'name' => 'Hryvnia Úcránach',
+      'name' => 'Hryvnia na hÚcráine',
       'symbol' => 'UAH',
     ),
     'UAK' => 
@@ -1048,7 +1191,7 @@ return array (
     ),
     'UGS' => 
     array (
-      'name' => 'Scilling Uganda (1966-1987)',
+      'name' => 'Scilling Uganda (1966–1987)',
       'symbol' => 'UGS',
     ),
     'UGX' => 
@@ -1059,7 +1202,7 @@ return array (
     'USD' => 
     array (
       'name' => 'Dollar S.A.M.',
-      'symbol' => 'USD',
+      'symbol' => '$',
     ),
     'USN' => 
     array (
@@ -1068,17 +1211,17 @@ return array (
     ),
     'USS' => 
     array (
-      'name' => 'Dollar S.A.M. (an la céanna)',
+      'name' => 'Dollar S.A.M. (an lá céanna)',
       'symbol' => 'USS',
     ),
     'UYP' => 
     array (
-      'name' => 'Peso Uragua (1975-1993)',
+      'name' => 'Peso Uragua (1975–1993)',
       'symbol' => 'UYP',
     ),
     'UYU' => 
     array (
-      'name' => 'Peso Uruguayo Uragua',
+      'name' => 'Peso Uragua',
       'symbol' => 'UYU',
     ),
     'UZS' => 
@@ -1088,13 +1231,23 @@ return array (
     ),
     'VEB' => 
     array (
-      'name' => 'Bolivar Veiniséala',
+      'name' => 'Bolívar Veiniséala (1871–2008)',
       'symbol' => 'VEB',
+    ),
+    'VEF' => 
+    array (
+      'name' => 'Bolívar Veiniséala',
+      'symbol' => 'VEF',
     ),
     'VND' => 
     array (
-      'name' => 'Dong Vítneamach',
-      'symbol' => 'VND',
+      'name' => 'Dong Vítneam',
+      'symbol' => '₫',
+    ),
+    'VNN' => 
+    array (
+      'name' => 'Dong Vítneam (1978–1985)',
+      'symbol' => 'VNN',
     ),
     'VUV' => 
     array (
@@ -1103,13 +1256,18 @@ return array (
     ),
     'WST' => 
     array (
-      'name' => 'Tala Samó Thiar',
+      'name' => 'Tala Shamó',
       'symbol' => 'WST',
     ),
     'XAF' => 
     array (
-      'name' => 'CFA Franc BEAC',
-      'symbol' => 'XAF',
+      'name' => 'Franc CFA na hAfraice Láir',
+      'symbol' => 'FCFA',
+    ),
+    'XAG' => 
+    array (
+      'name' => 'Airgead',
+      'symbol' => 'XAG',
     ),
     'XAU' => 
     array (
@@ -1138,8 +1296,8 @@ return array (
     ),
     'XCD' => 
     array (
-      'name' => 'Dollar Oirthear na Cairibe',
-      'symbol' => 'XCD',
+      'name' => 'Dollar na Cairibe Thoir',
+      'symbol' => 'EC$',
     ),
     'XDR' => 
     array (
@@ -1163,17 +1321,35 @@ return array (
     ),
     'XOF' => 
     array (
-      'name' => 'CFA Franc BCEAO',
-      'symbol' => 'XOF',
+      'name' => 'Franc CFA Iarthar na hAfraice',
+      'symbol' => 'CFA',
+    ),
+    'XPD' => 
+    array (
+      'name' => 'Pallaidiam',
+      'symbol' => 'XPD',
     ),
     'XPF' => 
     array (
-      'name' => 'CFP Franc',
-      'symbol' => 'XPF',
+      'name' => 'Franc CFP',
+      'symbol' => 'CFPF',
+    ),
+    'XPT' => 
+    array (
+      'name' => 'Platanam',
+      'symbol' => 'XPT',
+    ),
+    'XRE' => 
+    array (
+      'symbol' => 'XRE',
+    ),
+    'XSU' => 
+    array (
+      'symbol' => 'XSU',
     ),
     'XXX' => 
     array (
-      'name' => 'Airgeadra Anaithnid nó Neamhbhailí',
+      'name' => 'Airgeadra Anaithnid',
       'symbol' => 'XXX',
     ),
     'YDD' => 
@@ -1201,6 +1377,10 @@ return array (
       'name' => 'Dínear Inathraithe Iúgslavach',
       'symbol' => 'YUN',
     ),
+    'YUR' => 
+    array (
+      'symbol' => 'YUR',
+    ),
     'ZAL' => 
     array (
       'name' => 'Rand na hAfraice Theas (airgeadúil)',
@@ -1213,8 +1393,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'Kwacha Saimbiach',
+      'name' => 'Kwacha Saimbiach (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Kwacha na Saimbia',
+      'symbol' => 'ZMW',
     ),
     'ZRN' => 
     array (

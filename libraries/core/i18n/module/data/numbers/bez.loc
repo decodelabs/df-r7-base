@@ -271,8 +271,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'Lupila lwa Huzambia',
+      'name' => 'Lupila lwa Huzambia (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Lupila lwa Huzambia',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

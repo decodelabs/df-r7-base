@@ -9,5 +9,9 @@ return array (
   ),
   'currencies' => 
   array (
+    'XAF' => 
+    array (
+      'symbol' => 'FCFA',
+    ),
   ),
 );

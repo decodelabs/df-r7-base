@@ -16,12 +16,10 @@ return array (
   array (
     'SZL' => 
     array (
-      'name' => 'SZL',
       'symbol' => 'E',
     ),
     'ZAR' => 
     array (
-      'name' => 'ZAR',
       'symbol' => 'R',
     ),
   ),

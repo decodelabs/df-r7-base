@@ -167,7 +167,7 @@ return array (
     'MUR' => 
     array (
       'name' => 'roupi morisien',
-      'symbol' => 'MUR',
+      'symbol' => 'Rs',
     ),
     'MWK' => 
     array (
@@ -276,8 +276,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'kwacha zanbien',
+      'name' => 'kwacha zanbien (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'kwacha zanbien',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

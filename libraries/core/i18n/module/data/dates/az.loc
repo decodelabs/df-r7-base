@@ -1,6 +1,16 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'G d MMMM y, EEEE',
+      'long' => 'G d MMMM, y',
+      'medium' => 'G d MMM y',
+      'short' => 'GGGGG dd.MM.y',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -13,7 +23,7 @@ return array (
         'tue' => 'Ç.A.',
         'wed' => 'Ç.',
         'thu' => 'C.A.',
-        'fri' => 'C',
+        'fri' => 'C.',
         'sat' => 'Ş.',
       ),
       'full' => 
@@ -47,26 +57,26 @@ return array (
       ),
       'full' => 
       array (
-        1 => 'Yanvar',
-        2 => 'Fevral',
-        3 => 'Mart',
-        4 => 'Aprel',
-        5 => 'May',
-        6 => 'İyun',
-        7 => 'İyul',
-        8 => 'Avqust',
-        9 => 'Sentyabr',
-        10 => 'Oktyabr',
-        11 => 'Noyabr',
-        12 => 'Dekabr',
+        1 => 'yanvar',
+        2 => 'fevral',
+        3 => 'mart',
+        4 => 'aprel',
+        5 => 'may',
+        6 => 'iyun',
+        7 => 'iyul',
+        8 => 'avqust',
+        9 => 'sentyabr',
+        10 => 'oktyabr',
+        11 => 'noyabr',
+        12 => 'dekabr',
       ),
     ),
     'dateFormat' => 
     array (
-      'full' => 'EEEE, d, MMMM, y',
-      'long' => 'd MMMM , y',
-      'medium' => 'd MMM, y',
-      'short' => 'yy/MM/dd',
+      'full' => 'd MMMM y, EEEE',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'dd.MM.yy',
     ),
     'timeFormat' => 
     array (

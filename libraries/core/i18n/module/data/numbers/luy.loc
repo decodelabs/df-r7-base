@@ -127,7 +127,7 @@ return array (
     'KES' => 
     array (
       'name' => 'Sirinji ya Kenya',
-      'symbol' => 'KES',
+      'symbol' => 'Ksh',
     ),
     'KMF' => 
     array (
@@ -271,8 +271,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'Kwacha ya Zambia',
+      'name' => 'Kwacha ya Zambia (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Kwacha ya Zambia',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

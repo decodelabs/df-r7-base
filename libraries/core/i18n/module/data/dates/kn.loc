@@ -1,6 +1,16 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'G y MMMM d, EEEE',
+      'long' => 'G y MMMM d',
+      'medium' => 'G y MMM d',
+      'short' => 'GGGGG y-MM-dd',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -8,17 +18,17 @@ return array (
       '@default' => 'wide',
       'abbreviated' => 
       array (
-        'sun' => 'ರ.',
-        'mon' => 'ಸೋ.',
-        'tue' => 'ಮಂ.',
-        'wed' => 'ಬು.',
-        'thu' => 'ಗು.',
-        'fri' => 'ಶು.',
-        'sat' => 'ಶನಿ.',
+        'sun' => 'ಭಾನು',
+        'mon' => 'ಸೋಮ',
+        'tue' => 'ಮಂಗಳ',
+        'wed' => 'ಬುಧ',
+        'thu' => 'ಗುರು',
+        'fri' => 'ಶುಕ್ರ',
+        'sat' => 'ಶನಿ',
       ),
       'full' => 
       array (
-        'sun' => 'ರವಿವಾರ',
+        'sun' => 'ಭಾನುವಾರ',
         'mon' => 'ಸೋಮವಾರ',
         'tue' => 'ಮಂಗಳವಾರ',
         'wed' => 'ಬುಧವಾರ',
@@ -30,17 +40,32 @@ return array (
     'months' => 
     array (
       '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'ಜನ',
+        2 => 'ಫೆಬ್ರ',
+        3 => 'ಮಾರ್ಚ್',
+        4 => 'ಏಪ್ರಿ',
+        5 => 'ಮೇ',
+        6 => 'ಜೂನ್',
+        7 => 'ಜುಲೈ',
+        8 => 'ಆಗ',
+        9 => 'ಸೆಪ್ಟೆಂ',
+        10 => 'ಅಕ್ಟೋ',
+        11 => 'ನವೆಂ',
+        12 => 'ಡಿಸೆಂ',
+      ),
       'full' => 
       array (
-        1 => 'ಜನವರೀ',
-        2 => 'ಫೆಬ್ರವರೀ',
+        1 => 'ಜನವರಿ',
+        2 => 'ಫೆಬ್ರವರಿ',
         3 => 'ಮಾರ್ಚ್',
-        4 => 'ಎಪ್ರಿಲ್',
-        5 => 'ಮೆ',
+        4 => 'ಏಪ್ರಿಲ್',
+        5 => 'ಮೇ',
         6 => 'ಜೂನ್',
         7 => 'ಜುಲೈ',
         8 => 'ಆಗಸ್ಟ್',
-        9 => 'ಸಪ್ಟೆಂಬರ್',
+        9 => 'ಸೆಪ್ಟೆಂಬರ್',
         10 => 'ಅಕ್ಟೋಬರ್',
         11 => 'ನವೆಂಬರ್',
         12 => 'ಡಿಸೆಂಬರ್',
@@ -48,10 +73,10 @@ return array (
     ),
     'dateFormat' => 
     array (
-      'full' => 'EEEE d MMMM y',
-      'long' => 'd MMMM y',
-      'medium' => 'd MMM y',
-      'short' => 'd-M-yy',
+      'full' => 'EEEE, MMMM d, y',
+      'long' => 'MMMM d, y',
+      'medium' => 'MMM d, y',
+      'short' => 'M/d/yy',
     ),
     'timeFormat' => 
     array (

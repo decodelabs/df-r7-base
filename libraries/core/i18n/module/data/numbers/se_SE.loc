@@ -1,0 +1,20 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+  ),
+  'formats' => 
+  array (
+  ),
+  'currencies' => 
+  array (
+    'NOK' => 
+    array (
+      'symbol' => 'Nkr',
+    ),
+    'SEK' => 
+    array (
+      'symbol' => 'kr',
+    ),
+  ),
+);

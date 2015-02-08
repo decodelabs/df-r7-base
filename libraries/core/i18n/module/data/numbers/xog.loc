@@ -16,12 +16,12 @@ return array (
     ),
     'AOA' => 
     array (
-      'name' => 'Kwanza y\'Angola',
+      'name' => 'Kwanza y’Angola',
       'symbol' => 'AOA',
     ),
     'AUD' => 
     array (
-      'name' => 'Doola y\'Awusiturelya',
+      'name' => 'Doola y’Awusiturelya',
       'symbol' => 'AUD',
     ),
     'BHD' => 
@@ -51,7 +51,7 @@ return array (
     ),
     'CHF' => 
     array (
-      'name' => 'Faranga ey\'eSwitizirandi',
+      'name' => 'Faranga ey’eSwitizirandi',
       'symbol' => 'CHF',
     ),
     'CNY' => 
@@ -71,7 +71,7 @@ return array (
     ),
     'DZD' => 
     array (
-      'name' => 'Dinaali y\'Aligerya',
+      'name' => 'Dinaali y’Aligerya',
       'symbol' => 'DZD',
     ),
     'EGP' => 
@@ -151,67 +151,67 @@ return array (
     ),
     'MAD' => 
     array (
-      'name' => 'Diraamu ey\'eMoroko',
+      'name' => 'Diraamu ey’eMoroko',
       'symbol' => 'MAD',
     ),
     'MGA' => 
     array (
-      'name' => 'Faranga ey\'eMalagase',
+      'name' => 'Faranga ey’eMalagase',
       'symbol' => 'MGA',
     ),
     'MRO' => 
     array (
-      'name' => 'Wugwiya ey\'eMawritenya',
+      'name' => 'Wugwiya ey’eMawritenya',
       'symbol' => 'MRO',
     ),
     'MUR' => 
     array (
-      'name' => 'Rupiya ey\'eMawurisyasi',
+      'name' => 'Rupiya ey’eMawurisyasi',
       'symbol' => 'MUR',
     ),
     'MWK' => 
     array (
-      'name' => 'Kwaca ey\'eMalawi',
+      'name' => 'Kwaca ey’eMalawi',
       'symbol' => 'MWK',
     ),
     'MZM' => 
     array (
-      'name' => 'Metikaali ey\'eMozambiiki',
+      'name' => 'Metikaali ey’eMozambiiki',
       'symbol' => 'MZM',
     ),
     'NGN' => 
     array (
-      'name' => 'Nayira ey\'eNayijerya',
+      'name' => 'Nayira ey’eNayijerya',
       'symbol' => 'NGN',
     ),
     'RWF' => 
     array (
-      'name' => 'Faranga ey\'eRwanda',
+      'name' => 'Faranga ey’eRwanda',
       'symbol' => 'RWF',
     ),
     'SAR' => 
     array (
-      'name' => 'Riyaali ey\'eBuwarabu',
+      'name' => 'Riyaali ey’eBuwarabu',
       'symbol' => 'SAR',
     ),
     'SCR' => 
     array (
-      'name' => 'Rupiya ey\'eSesere',
+      'name' => 'Rupiya ey’eSesere',
       'symbol' => 'SCR',
     ),
     'SDG' => 
     array (
-      'name' => 'Dinaali ey\'eSudaani',
+      'name' => 'Dinaali ey’eSudaani',
       'symbol' => 'SDG',
     ),
     'SDP' => 
     array (
-      'name' => 'Pawunda ey\'eSudaani',
+      'name' => 'Pawunda ey’eSudaani',
       'symbol' => 'SDP',
     ),
     'SHP' => 
     array (
-      'name' => 'Pawunda ey\'eSenti Herena',
+      'name' => 'Pawunda ey’eSenti Herena',
       'symbol' => 'SHP',
     ),
     'SLL' => 
@@ -221,12 +221,12 @@ return array (
     ),
     'SOS' => 
     array (
-      'name' => 'Silingi ey\'eSomaliya',
+      'name' => 'Silingi ey’eSomaliya',
       'symbol' => 'SOS',
     ),
     'STD' => 
     array (
-      'name' => 'Dobura ey\'eSantome ne Purincipe',
+      'name' => 'Dobura ey’eSantome ne Purincipe',
       'symbol' => 'STD',
     ),
     'SZL' => 
@@ -236,12 +236,12 @@ return array (
     ),
     'TND' => 
     array (
-      'name' => 'Dinaali ey\'eTunizya',
+      'name' => 'Dinaali ey’eTunizya',
       'symbol' => 'TND',
     ),
     'TZS' => 
     array (
-      'name' => 'Silingi ey\'eTanzaniya',
+      'name' => 'Silingi ey’eTanzaniya',
       'symbol' => 'TZS',
     ),
     'UGX' => 
@@ -251,7 +251,7 @@ return array (
     ),
     'USD' => 
     array (
-      'name' => 'Doola ey\'Amerika',
+      'name' => 'Doola ey’Amerika',
       'symbol' => 'USD',
     ),
     'XAF' => 
@@ -266,17 +266,22 @@ return array (
     ),
     'ZAR' => 
     array (
-      'name' => 'Randi ey\'eSawusafirika',
+      'name' => 'Randi ey’eSawusafirika',
       'symbol' => 'ZAR',
     ),
     'ZMK' => 
     array (
-      'name' => 'Kwaca ey\'eZambya',
+      'name' => 'Kwaca ey’eZambya (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Kwaca ey’eZambya',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (
-      'name' => 'Doola ey\'eZimbabwe',
+      'name' => 'Doola ey’eZimbabwe',
       'symbol' => 'ZWD',
     ),
   ),

@@ -1,6 +1,16 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d. MMMM y G',
+      'long' => 'd. MMMM y G',
+      'medium' => 'd.M.y G',
+      'short' => 'd.M.y GGGGG',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -8,13 +18,13 @@ return array (
       '@default' => 'wide',
       'abbreviated' => 
       array (
-        'sun' => 'sun',
-        'mon' => 'mán',
-        'tue' => 'þri',
-        'wed' => 'mið',
-        'thu' => 'fim',
-        'fri' => 'fös',
-        'sat' => 'lau',
+        'sun' => 'sun.',
+        'mon' => 'mán.',
+        'tue' => 'þri.',
+        'wed' => 'mið.',
+        'thu' => 'fim.',
+        'fri' => 'fös.',
+        'sat' => 'lau.',
       ),
       'full' => 
       array (
@@ -32,18 +42,18 @@ return array (
       '@default' => 'full',
       'abbreviated' => 
       array (
-        1 => 'jan',
-        2 => 'feb',
-        3 => 'mar',
-        4 => 'apr',
+        1 => 'jan.',
+        2 => 'feb.',
+        3 => 'mar.',
+        4 => 'apr.',
         5 => 'maí',
-        6 => 'jún',
-        7 => 'júl',
-        8 => 'ágú',
-        9 => 'sep',
-        10 => 'okt',
-        11 => 'nóv',
-        12 => 'des',
+        6 => 'jún.',
+        7 => 'júl.',
+        8 => 'ágú.',
+        9 => 'sep.',
+        10 => 'okt.',
+        11 => 'nóv.',
+        12 => 'des.',
       ),
       'full' => 
       array (
@@ -65,8 +75,8 @@ return array (
     array (
       'full' => 'EEEE, d. MMMM y',
       'long' => 'd. MMMM y',
-      'medium' => 'd.M.yyyy',
-      'short' => 'd.M.yyyy',
+      'medium' => 'd. MMM y',
+      'short' => 'd.M.y',
     ),
     'timeFormat' => 
     array (

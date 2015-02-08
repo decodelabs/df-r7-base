@@ -1,0 +1,65 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'Àìkú',
+        'mon' => 'Ajé',
+        'tue' => 'Ìsɛ́gun',
+        'wed' => 'Ɔjɔ́rú',
+        'thu' => 'Ɔjɔ́bɔ',
+        'fri' => 'Ɛtì',
+        'sat' => 'Àbámɛ́ta',
+      ),
+      'full' => 
+      array (
+        'sun' => 'Ɔjɔ́ Àìkú',
+        'mon' => 'Ɔjɔ́ Ajé',
+        'tue' => 'Ɔjɔ́ Ìsɛ́gun',
+        'wed' => 'Ɔjɔ́rú',
+        'thu' => 'Ɔjɔ́bɔ',
+        'fri' => 'Ɔjɔ́ Ɛtì',
+        'sat' => 'Ɔjɔ́ Àbámɛ́ta',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Shɛ́rɛ́',
+        2 => 'Èrèlè',
+        3 => 'Ɛrɛ̀nà',
+        4 => 'Ìgbé',
+        5 => 'Ɛ̀bibi',
+        6 => 'Òkúdu',
+        7 => 'Agɛmɔ',
+        8 => 'Ògún',
+        9 => 'Owewe',
+        10 => 'Ɔ̀wàrà',
+        11 => 'Bélú',
+        12 => 'Ɔ̀pɛ̀',
+      ),
+      'full' => 
+      array (
+        1 => 'Oshù Shɛ́rɛ́',
+        2 => 'Oshù Èrèlè',
+        3 => 'Oshù Ɛrɛ̀nà',
+        4 => 'Oshù Ìgbé',
+        5 => 'Oshù Ɛ̀bibi',
+        6 => 'Oshù Òkúdu',
+        7 => 'Oshù Agɛmɔ',
+        8 => 'Oshù Ògún',
+        9 => 'Oshù Owewe',
+        10 => 'Oshù Ɔ̀wàrà',
+        11 => 'Oshù Bélú',
+        12 => 'Oshù Ɔ̀pɛ̀',
+      ),
+    ),
+  ),
+);

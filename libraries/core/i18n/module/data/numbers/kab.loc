@@ -273,8 +273,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'Akwaca Azambi',
+      'name' => 'Akwaca Azambi (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Akwaca Azambi',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

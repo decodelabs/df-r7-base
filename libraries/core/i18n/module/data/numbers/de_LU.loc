@@ -10,7 +10,6 @@ return array (
   array (
     'LUF' => 
     array (
-      'name' => 'LUF',
       'symbol' => 'F',
     ),
   ),

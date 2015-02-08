@@ -4,7 +4,16 @@ return array (
   array (
     'decimal' => '.',
     'group' => ',',
-    'nan' => 'NaN（非数）',
+    'list' => ';',
+    'percentSign' => '%',
+    'plusSign' => '+',
+    'minusSign' => '-',
+    'exponential' => 'E',
+    'superscriptingExponent' => '×',
+    'perMille' => '‰',
+    'infinity' => '∞',
+    'nan' => 'NaN',
+    'timeSeparator' => ':',
   ),
   'formats' => 
   array (
@@ -27,13 +36,18 @@ return array (
     ),
     'AFA' => 
     array (
-      'name' => 'アフガニー (1927-2002)',
+      'name' => 'アフガニスタン アフガニー (1927–2002)',
       'symbol' => 'AFA',
     ),
     'AFN' => 
     array (
       'name' => 'アフガニー',
       'symbol' => 'AFN',
+    ),
+    'ALK' => 
+    array (
+      'name' => 'アルバニア レク (1946–1965)',
+      'symbol' => 'ALK',
     ),
     'ALL' => 
     array (
@@ -57,17 +71,17 @@ return array (
     ),
     'AOK' => 
     array (
-      'name' => 'クワンザ (1977-1990)',
+      'name' => 'アンゴラ クワンザ (1977–1991)',
       'symbol' => 'AOK',
     ),
     'AON' => 
     array (
-      'name' => 'アンゴラ 新クワンザ (1990-2000)',
+      'name' => 'アンゴラ 新クワンザ (1990–2000)',
       'symbol' => 'AON',
     ),
     'AOR' => 
     array (
-      'name' => 'アンゴラ 旧クワンザ (1995-1999)',
+      'name' => 'アンゴラ 旧クワンザ (1995–1999)',
       'symbol' => 'AOR',
     ),
     'ARA' => 
@@ -75,9 +89,19 @@ return array (
       'name' => 'アルゼンチン アゥストラール',
       'symbol' => 'ARA',
     ),
+    'ARL' => 
+    array (
+      'name' => 'アルゼンチン・ペソ・レイ（1970-1983）',
+      'symbol' => 'ARL',
+    ),
+    'ARM' => 
+    array (
+      'name' => 'アルゼンチン・ペソ（1881-1970）',
+      'symbol' => 'ARM',
+    ),
     'ARP' => 
     array (
-      'name' => 'アルゼンチン ペソ (1983-1985)',
+      'name' => 'アルゼンチン ペソ (1983–1985)',
       'symbol' => 'ARP',
     ),
     'ARS' => 
@@ -93,7 +117,7 @@ return array (
     'AUD' => 
     array (
       'name' => 'オーストラリア ドル',
-      'symbol' => 'AUD',
+      'symbol' => 'AU$',
     ),
     'AWG' => 
     array (
@@ -102,7 +126,7 @@ return array (
     ),
     'AZM' => 
     array (
-      'name' => 'アゼルバイジャン マナト (1993-2006)',
+      'name' => 'アゼルバイジャン マナト (1993–2006)',
       'symbol' => 'AZM',
     ),
     'AZN' => 
@@ -112,13 +136,18 @@ return array (
     ),
     'BAD' => 
     array (
-      'name' => 'ボスニア ディナール',
+      'name' => 'ボスニア・ヘルツェゴビナ ディナール (1992–1994)',
       'symbol' => 'BAD',
     ),
     'BAM' => 
     array (
       'name' => 'ボスニア マルク (BAM)',
       'symbol' => 'BAM',
+    ),
+    'BAN' => 
+    array (
+      'name' => 'ボスニア・ヘルツェゴビナ 新ディナール（1994-1997）',
+      'symbol' => 'BAN',
     ),
     'BBD' => 
     array (
@@ -150,10 +179,20 @@ return array (
       'name' => 'ブルガリア レフ',
       'symbol' => 'BGL',
     ),
+    'BGM' => 
+    array (
+      'name' => 'ブルガリア社会主義 レフ',
+      'symbol' => 'BGM',
+    ),
     'BGN' => 
     array (
       'name' => 'ブルガリア 新レフ',
       'symbol' => 'BGN',
+    ),
+    'BGO' => 
+    array (
+      'name' => 'ブルガリア レフ（1879-1952）',
+      'symbol' => 'BGO',
     ),
     'BHD' => 
     array (
@@ -177,8 +216,13 @@ return array (
     ),
     'BOB' => 
     array (
-      'name' => 'ボリビアーノ',
+      'name' => 'ボリビア ボリビアーノ',
       'symbol' => 'BOB',
+    ),
+    'BOL' => 
+    array (
+      'name' => 'ボリビア ボリビアーノ (1863–1963)',
+      'symbol' => 'BOL',
     ),
     'BOP' => 
     array (
@@ -192,33 +236,38 @@ return array (
     ),
     'BRB' => 
     array (
-      'name' => 'ブラジル 新クルゼイロ (1967-1986)',
+      'name' => 'ブラジル 新クルゼイロ (1967–1986)',
       'symbol' => 'BRB',
     ),
     'BRC' => 
     array (
-      'name' => 'ブラジル クルゼイロ',
+      'name' => 'ブラジル クルザード (1986–1989)',
       'symbol' => 'BRC',
     ),
     'BRE' => 
     array (
-      'name' => 'ブラジル クルゼイロ (1990-1993)',
+      'name' => 'ブラジル クルゼイロ (1990–1993)',
       'symbol' => 'BRE',
     ),
     'BRL' => 
     array (
       'name' => 'ブラジル レアル',
-      'symbol' => 'BRL',
+      'symbol' => 'R$',
     ),
     'BRN' => 
     array (
-      'name' => 'ブラジル 新クルゼイロ',
+      'name' => 'ブラジル 新クルザード (1989–1990)',
       'symbol' => 'BRN',
     ),
     'BRR' => 
     array (
-      'name' => 'ブラジル クルゼイロ レアル',
+      'name' => 'ブラジル クルゼイロ (1993–1994)',
       'symbol' => 'BRR',
+    ),
+    'BRZ' => 
+    array (
+      'name' => 'ブラジル クルゼイロ（1942-1967）',
+      'symbol' => 'BRZ',
     ),
     'BSD' => 
     array (
@@ -242,7 +291,7 @@ return array (
     ),
     'BYB' => 
     array (
-      'name' => 'ベラルーシ ルーブル (1994-1999)',
+      'name' => 'ベラルーシ 新ルーブル (1994–1999)',
       'symbol' => 'BYB',
     ),
     'BYR' => 
@@ -258,7 +307,7 @@ return array (
     'CAD' => 
     array (
       'name' => 'カナダ ドル',
-      'symbol' => 'CAD',
+      'symbol' => 'CA$',
     ),
     'CDF' => 
     array (
@@ -280,15 +329,25 @@ return array (
       'name' => 'フラン (WIR)',
       'symbol' => 'CHW',
     ),
+    'CLE' => 
+    array (
+      'name' => 'チリ エスクード',
+      'symbol' => 'CLE',
+    ),
     'CLF' => 
     array (
-      'name' => 'チリ ウニダ デ フォメント',
+      'name' => 'チリ ウニダ・デ・フォメント (UF)',
       'symbol' => 'CLF',
     ),
     'CLP' => 
     array (
       'name' => 'チリ ペソ',
       'symbol' => 'CLP',
+    ),
+    'CNX' => 
+    array (
+      'name' => '中国人民銀行ドル',
+      'symbol' => 'CNX',
     ),
     'CNY' => 
     array (
@@ -302,7 +361,7 @@ return array (
     ),
     'COU' => 
     array (
-      'name' => 'レアル (UVR)',
+      'name' => 'コロンビア レアル （UVR)',
       'symbol' => 'COU',
     ),
     'CRC' => 
@@ -312,7 +371,7 @@ return array (
     ),
     'CSD' => 
     array (
-      'name' => 'セルビアン ディナール',
+      'name' => 'セルビア ディナール (2002–2006)',
       'symbol' => 'CSD',
     ),
     'CSK' => 
@@ -402,7 +461,7 @@ return array (
     ),
     'ESA' => 
     array (
-      'name' => 'スペインペセタ',
+      'name' => 'スペインペセタ（勘定A）',
       'symbol' => 'ESA',
     ),
     'ESB' => 
@@ -423,7 +482,7 @@ return array (
     'EUR' => 
     array (
       'name' => 'ユーロ',
-      'symbol' => 'EUR',
+      'symbol' => '€',
     ),
     'FIM' => 
     array (
@@ -448,7 +507,7 @@ return array (
     'GBP' => 
     array (
       'name' => '英国ポンド',
-      'symbol' => 'GBP',
+      'symbol' => '£',
     ),
     'GEK' => 
     array (
@@ -462,7 +521,7 @@ return array (
     ),
     'GHC' => 
     array (
-      'name' => 'ガーナ セディ (1979-2007)',
+      'name' => 'ガーナ セディ (1979–2007)',
       'symbol' => 'GHC',
     ),
     'GHS' => 
@@ -492,7 +551,7 @@ return array (
     ),
     'GQE' => 
     array (
-      'name' => '赤道ギニア ギニー',
+      'name' => '赤道ギニア エクウェレ',
       'symbol' => 'GQE',
     ),
     'GRD' => 
@@ -523,7 +582,7 @@ return array (
     'HKD' => 
     array (
       'name' => '香港ドル',
-      'symbol' => 'HKD',
+      'symbol' => 'HK$',
     ),
     'HNL' => 
     array (
@@ -565,15 +624,20 @@ return array (
       'name' => 'イスラエル ポンド',
       'symbol' => 'ILP',
     ),
+    'ILR' => 
+    array (
+      'name' => 'イスラエル シェケル (1980–1985)',
+      'symbol' => 'ILR',
+    ),
     'ILS' => 
     array (
       'name' => 'イスラエル新シェケル',
-      'symbol' => 'ILS',
+      'symbol' => '₪',
     ),
     'INR' => 
     array (
       'name' => 'インド ルピー',
-      'symbol' => 'INR',
+      'symbol' => '₹',
     ),
     'IQD' => 
     array (
@@ -584,6 +648,11 @@ return array (
     array (
       'name' => 'イラン リアル',
       'symbol' => 'IRR',
+    ),
+    'ISJ' => 
+    array (
+      'name' => 'アイスランド クローナ (1918–1981)',
+      'symbol' => 'ISJ',
     ),
     'ISK' => 
     array (
@@ -634,6 +703,16 @@ return array (
     array (
       'name' => '北朝鮮 ウォン',
       'symbol' => 'KPW',
+    ),
+    'KRH' => 
+    array (
+      'name' => '韓国 ファン（1953-1962）',
+      'symbol' => 'KRH',
+    ),
+    'KRO' => 
+    array (
+      'name' => '韓国 ウォン（1945-1953）',
+      'symbol' => 'KRO',
     ),
     'KRW' => 
     array (
@@ -730,6 +809,16 @@ return array (
       'name' => 'モロッコ フラン',
       'symbol' => 'MAF',
     ),
+    'MCF' => 
+    array (
+      'name' => 'モネガスク フラン',
+      'symbol' => 'MCF',
+    ),
+    'MDC' => 
+    array (
+      'name' => 'モルドバ クーポン',
+      'symbol' => 'MDC',
+    ),
     'MDL' => 
     array (
       'name' => 'モルドバ レイ',
@@ -742,13 +831,18 @@ return array (
     ),
     'MGF' => 
     array (
-      'name' => 'マダガスカル フラン',
+      'name' => 'マラガシ フラン',
       'symbol' => 'MGF',
     ),
     'MKD' => 
     array (
       'name' => 'マケドニア デナル',
       'symbol' => 'MKD',
+    ),
+    'MKN' => 
+    array (
+      'name' => 'マケドニア ディナール（1992-1993）',
+      'symbol' => 'MKN',
     ),
     'MLF' => 
     array (
@@ -790,6 +884,11 @@ return array (
       'name' => 'モーリシャス ルピー',
       'symbol' => 'MUR',
     ),
+    'MVP' => 
+    array (
+      'name' => 'モルディブ諸島 ルピー',
+      'symbol' => 'MVP',
+    ),
     'MVR' => 
     array (
       'name' => 'モルディブ諸島 ルフィア',
@@ -803,11 +902,11 @@ return array (
     'MXN' => 
     array (
       'name' => 'メキシコ ペソ',
-      'symbol' => 'MXN',
+      'symbol' => 'MX$',
     ),
     'MXP' => 
     array (
-      'name' => 'メキシコ ペソ (1861-1992)',
+      'name' => 'メキシコ ペソ (1861–1992)',
       'symbol' => 'MXP',
     ),
     'MXV' => 
@@ -827,7 +926,7 @@ return array (
     ),
     'MZM' => 
     array (
-      'name' => 'モザンピーク メティカル',
+      'name' => 'モザンビーク メティカル (1980–2006)',
       'symbol' => 'MZM',
     ),
     'MZN' => 
@@ -847,7 +946,7 @@ return array (
     ),
     'NIC' => 
     array (
-      'name' => 'ニカラグア コルドバ',
+      'name' => 'ニカラグア コルドバ (1988–1991)',
       'symbol' => 'NIC',
     ),
     'NIO' => 
@@ -873,7 +972,7 @@ return array (
     'NZD' => 
     array (
       'name' => 'ニュージーランド ドル',
-      'symbol' => 'NZD',
+      'symbol' => 'NZ$',
     ),
     'OMR' => 
     array (
@@ -897,7 +996,7 @@ return array (
     ),
     'PES' => 
     array (
-      'name' => 'ペルー ソル',
+      'name' => 'ペルー ソル (1863–1965)',
       'symbol' => 'PES',
     ),
     'PGK' => 
@@ -922,7 +1021,7 @@ return array (
     ),
     'PLZ' => 
     array (
-      'name' => 'ポーランド ズウォティ (1950-1995)',
+      'name' => 'ポーランド ズウォティ (1950–1995)',
       'symbol' => 'PLZ',
     ),
     'PTE' => 
@@ -947,7 +1046,7 @@ return array (
     ),
     'ROL' => 
     array (
-      'name' => 'ルーマニア 旧レイ',
+      'name' => 'ルーマニア レイ (1952–2006)',
       'symbol' => 'ROL',
     ),
     'RON' => 
@@ -967,7 +1066,7 @@ return array (
     ),
     'RUR' => 
     array (
-      'name' => 'ロシア ルーブル (1991-1998)',
+      'name' => 'ロシア ルーブル (1991–1998)',
       'symbol' => 'RUR',
     ),
     'RWF' => 
@@ -987,12 +1086,12 @@ return array (
     ),
     'SCR' => 
     array (
-      'name' => 'セイシェル ルピー',
+      'name' => 'セーシェル ルピー',
       'symbol' => 'SCR',
     ),
     'SDD' => 
     array (
-      'name' => 'スーダン ディナール',
+      'name' => 'スーダン ディナール (1992–2007)',
       'symbol' => 'SDD',
     ),
     'SDG' => 
@@ -1002,7 +1101,7 @@ return array (
     ),
     'SDP' => 
     array (
-      'name' => '旧スーダン ポンド',
+      'name' => 'スーダン ポンド (1957–1998)',
       'symbol' => 'SDP',
     ),
     'SEK' => 
@@ -1050,6 +1149,11 @@ return array (
       'name' => 'スリナム ギルダー',
       'symbol' => 'SRG',
     ),
+    'SSP' => 
+    array (
+      'name' => '南スーダン・ポンド',
+      'symbol' => 'SSP',
+    ),
     'STD' => 
     array (
       'name' => 'サントメ・プリンシペ ドブラ',
@@ -1078,7 +1182,7 @@ return array (
     'THB' => 
     array (
       'name' => 'タイ バーツ',
-      'symbol' => 'THB',
+      'symbol' => '฿',
     ),
     'TJR' => 
     array (
@@ -1092,12 +1196,12 @@ return array (
     ),
     'TMM' => 
     array (
-      'name' => 'トルクメニスタン マナト',
+      'name' => 'トルクメニスタン マナト (1993–2009)',
       'symbol' => 'TMM',
     ),
     'TMT' => 
     array (
-      'name' => 'トルクメニスタン 新マナト',
+      'name' => 'トルクメニスタン マナト',
       'symbol' => 'TMT',
     ),
     'TND' => 
@@ -1117,7 +1221,7 @@ return array (
     ),
     'TRL' => 
     array (
-      'name' => 'トルコ リラ',
+      'name' => 'トルコ リラ (1922–2005)',
       'symbol' => 'TRL',
     ),
     'TRY' => 
@@ -1133,7 +1237,7 @@ return array (
     'TWD' => 
     array (
       'name' => '新台湾ドル',
-      'symbol' => 'TWD',
+      'symbol' => 'NT$',
     ),
     'TZS' => 
     array (
@@ -1152,7 +1256,7 @@ return array (
     ),
     'UGS' => 
     array (
-      'name' => 'ウガンダ シリング (1966-1987)',
+      'name' => 'ウガンダ シリング (1966–1987)',
       'symbol' => 'UGS',
     ),
     'UGX' => 
@@ -1175,9 +1279,14 @@ return array (
       'name' => '米ドル (当日)',
       'symbol' => 'USS',
     ),
+    'UYI' => 
+    array (
+      'name' => 'ウルグアイ ペソエン',
+      'symbol' => 'UYI',
+    ),
     'UYP' => 
     array (
-      'name' => 'ウルグアイ ペソ (1975-1993)',
+      'name' => 'ウルグアイ ペソ (1975–1993)',
       'symbol' => 'UYP',
     ),
     'UYU' => 
@@ -1192,18 +1301,23 @@ return array (
     ),
     'VEB' => 
     array (
-      'name' => 'ベネズエラ ボリバル',
+      'name' => 'ベネズエラ ボリバル (1871–2008)',
       'symbol' => 'VEB',
     ),
     'VEF' => 
     array (
-      'name' => 'ベネズエラ ボリバルフエルテ',
+      'name' => 'ベネズエラ ボリバル',
       'symbol' => 'VEF',
     ),
     'VND' => 
     array (
       'name' => 'ベトナム ドン',
-      'symbol' => 'VND',
+      'symbol' => '₫',
+    ),
+    'VNN' => 
+    array (
+      'name' => 'ベトナム ドン（1978-1985）',
+      'symbol' => 'VNN',
     ),
     'VUV' => 
     array (
@@ -1212,13 +1326,13 @@ return array (
     ),
     'WST' => 
     array (
-      'name' => '西サモア タラ',
+      'name' => 'サモア タラ',
       'symbol' => 'WST',
     ),
     'XAF' => 
     array (
-      'name' => 'フラン (CFA-BEAC)',
-      'symbol' => 'XAF',
+      'name' => 'CFA フラン（BEAC）',
+      'symbol' => 'FCFA',
     ),
     'XAG' => 
     array (
@@ -1237,23 +1351,23 @@ return array (
     ),
     'XBB' => 
     array (
-      'name' => 'ヨーロッパ通貨単位 (EMU-6)',
+      'name' => 'ヨーロッパ通貨単位 (EMU–6)',
       'symbol' => 'XBB',
     ),
     'XBC' => 
     array (
-      'name' => 'ヨーロッパ勘定単位 (EUA-9)',
+      'name' => 'ヨーロッパ勘定単位 (EUA–9)',
       'symbol' => 'XBC',
     ),
     'XBD' => 
     array (
-      'name' => 'ヨーロッパ勘定単位 (EUA-17)',
+      'name' => 'ヨーロッパ勘定単位 (EUA–17)',
       'symbol' => 'XBD',
     ),
     'XCD' => 
     array (
       'name' => '東カリブ ドル',
-      'symbol' => 'XCD',
+      'symbol' => 'EC$',
     ),
     'XDR' => 
     array (
@@ -1277,8 +1391,8 @@ return array (
     ),
     'XOF' => 
     array (
-      'name' => 'フラン (CFA-BCEAO)',
-      'symbol' => 'XOF',
+      'name' => 'CFA フラン（BCEAO）',
+      'symbol' => 'CFA',
     ),
     'XPD' => 
     array (
@@ -1288,7 +1402,7 @@ return array (
     'XPF' => 
     array (
       'name' => 'CFP フラン',
-      'symbol' => 'XPF',
+      'symbol' => 'CFPF',
     ),
     'XPT' => 
     array (
@@ -1300,10 +1414,20 @@ return array (
       'name' => 'RINET基金',
       'symbol' => 'XRE',
     ),
+    'XSU' => 
+    array (
+      'name' => 'スクレ',
+      'symbol' => 'XSU',
+    ),
     'XTS' => 
     array (
       'name' => 'テスト用通貨コード',
       'symbol' => 'XTS',
+    ),
+    'XUA' => 
+    array (
+      'name' => 'UA (アフリカ開発銀行)',
+      'symbol' => 'XUA',
     ),
     'XXX' => 
     array (
@@ -1322,18 +1446,23 @@ return array (
     ),
     'YUD' => 
     array (
-      'name' => 'ユーゴスラビア ディナール',
+      'name' => 'ユーゴスラビア ハード・ディナール (1966–1990)',
       'symbol' => 'YUD',
     ),
     'YUM' => 
     array (
-      'name' => 'ユーゴスラビア スーパー ディナール',
+      'name' => 'ユーゴスラビア ノビ・ディナール (1994–2002)',
       'symbol' => 'YUM',
     ),
     'YUN' => 
     array (
-      'name' => 'ユーゴスラビア 新ディナール (YUN)',
+      'name' => 'ユーゴスラビア 兌換ディナール (1990–1992)',
       'symbol' => 'YUN',
+    ),
+    'YUR' => 
+    array (
+      'name' => 'ユーゴスラビア 改革ディナール（1992-1993）',
+      'symbol' => 'YUR',
     ),
     'ZAL' => 
     array (
@@ -1347,28 +1476,38 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'ザンビア クワチャ',
+      'name' => 'ザンビア クワチャ (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'ザンビア クワチャ',
+      'symbol' => 'ZMW',
     ),
     'ZRN' => 
     array (
-      'name' => 'ザイール 新ザイール',
+      'name' => 'ザイール 新ザイール (1993–1998)',
       'symbol' => 'ZRN',
     ),
     'ZRZ' => 
     array (
-      'name' => 'ザイール ザイール',
+      'name' => 'ザイール ザイール (1971–1993)',
       'symbol' => 'ZRZ',
     ),
     'ZWD' => 
     array (
-      'name' => 'ジンバブエ ドル',
+      'name' => 'ジンバブエ ドル (1980–2008)',
       'symbol' => 'ZWD',
     ),
     'ZWL' => 
     array (
       'name' => 'ジンバブエ ドル (2009)',
       'symbol' => 'ZWL',
+    ),
+    'ZWR' => 
+    array (
+      'name' => 'シンバブエ ドル（2008）',
+      'symbol' => 'ZWR',
     ),
   ),
 );

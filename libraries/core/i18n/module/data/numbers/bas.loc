@@ -280,8 +280,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'Kwàca sàmbià',
+      'name' => 'Kwàca sàmbià (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Kwàca sàmbià',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

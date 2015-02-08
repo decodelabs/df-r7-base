@@ -1,0 +1,1511 @@
+<?php
+return array (
+  'symbols' => 
+  array (
+    'decimal' => '.',
+    'group' => ',',
+    'percentSign' => '%',
+    'plusSign' => '+',
+    'minusSign' => '-',
+    'exponential' => 'E',
+    'superscriptingExponent' => '×',
+    'perMille' => '‰',
+    'infinity' => '∞',
+    'nan' => 'NaN',
+  ),
+  'formats' => 
+  array (
+    'decimal' => '#,##0.###',
+    'scientific' => '#E0',
+    'percent' => '#,##0%',
+    'currency' => '¤#,##0.00',
+  ),
+  'currencies' => 
+  array (
+    'ADP' => 
+    array (
+      'name' => 'ئاندورران پېسېتاسى',
+      'symbol' => 'ADP',
+    ),
+    'AED' => 
+    array (
+      'name' => 'ئەرەب بىرلەشمە خەلىپىلىكى دەرھەمى',
+      'symbol' => 'AED',
+    ),
+    'AFA' => 
+    array (
+      'name' => 'ئافغان ئافغانى (1927–2002)',
+      'symbol' => 'AFA',
+    ),
+    'AFN' => 
+    array (
+      'name' => 'ئافغان ئافغانى',
+      'symbol' => 'AFN',
+    ),
+    'ALK' => 
+    array (
+      'name' => 'ئالبانىيە لېكى (1946–1965)',
+      'symbol' => 'ALK',
+    ),
+    'ALL' => 
+    array (
+      'name' => 'ئالبانىيە لېكى',
+      'symbol' => 'ALL',
+    ),
+    'AMD' => 
+    array (
+      'name' => 'ئەرمېنىيە دىرامى',
+      'symbol' => 'AMD',
+    ),
+    'ANG' => 
+    array (
+      'name' => 'گوللاندىيەگە قاراشلىق ئانتىللېن گۇلدېنى',
+      'symbol' => 'ANG',
+    ),
+    'AOA' => 
+    array (
+      'name' => 'ئانگولا كۇۋانزاسى',
+      'symbol' => 'AOA',
+    ),
+    'AOK' => 
+    array (
+      'name' => 'ئانگولا كۇۋانزاسى (1977–1991)',
+      'symbol' => 'AOK',
+    ),
+    'AON' => 
+    array (
+      'name' => 'ئانگولا يېڭى كۇۋانزاسى (1990–2000)',
+      'symbol' => 'AON',
+    ),
+    'AOR' => 
+    array (
+      'name' => 'ئانگولا قايتا تەڭشەلگەن كۇۋانزاسى (1995–1999)',
+      'symbol' => 'AOR',
+    ),
+    'ARA' => 
+    array (
+      'name' => 'ئارگېنتىنا ئاۋسترالى',
+      'symbol' => 'ARA',
+    ),
+    'ARL' => 
+    array (
+      'name' => 'ئارگېنتىنا پېسو لېيى (1970–1983)',
+      'symbol' => 'ARL',
+    ),
+    'ARM' => 
+    array (
+      'name' => 'ئارگېنتىنا پېسوسى (1881–1970)',
+      'symbol' => 'ARM',
+    ),
+    'ARP' => 
+    array (
+      'name' => 'ئارگېنتىنا پېسوسى (1983–1985)',
+      'symbol' => 'ARP',
+    ),
+    'ARS' => 
+    array (
+      'name' => 'ئارگېنتىنا پېسوسى',
+      'symbol' => 'ARS',
+    ),
+    'ATS' => 
+    array (
+      'name' => 'ئاۋسترىيە شىللىڭى',
+      'symbol' => 'ATS',
+    ),
+    'AUD' => 
+    array (
+      'name' => 'ئاۋسترالىيە دوللىرى',
+      'symbol' => 'AUD',
+    ),
+    'AWG' => 
+    array (
+      'name' => 'ئارۇبان فىلورۇنى',
+      'symbol' => 'AWG',
+    ),
+    'AZM' => 
+    array (
+      'name' => 'ئەزەربەيجان ماناتى (1993–2006)',
+      'symbol' => 'AZM',
+    ),
+    'AZN' => 
+    array (
+      'name' => 'ئەزەربەيجان ماناتى',
+      'symbol' => 'AZN',
+    ),
+    'BAD' => 
+    array (
+      'name' => 'بوسنىيە-خېرتسېگوۋىنا دىنارى (1992–1994)',
+      'symbol' => 'BAD',
+    ),
+    'BAM' => 
+    array (
+      'name' => 'بوسنىيە-خېرتسېگوۋىنا ئالماشتۇرۇشچان ماركى',
+      'symbol' => 'BAM',
+    ),
+    'BAN' => 
+    array (
+      'name' => 'بوسنىيە-خېرتسېگوۋىنا يېڭى دىنارى (1994–1997)',
+      'symbol' => 'BAN',
+    ),
+    'BBD' => 
+    array (
+      'name' => 'باربادوس دوللىرى',
+      'symbol' => 'BBD',
+    ),
+    'BDT' => 
+    array (
+      'name' => 'باڭلادىش تاكاسى',
+      'symbol' => 'BDT',
+    ),
+    'BEC' => 
+    array (
+      'name' => 'بېلگىيە فرانكى (ئالماشتۇرۇشچان)',
+      'symbol' => 'BEC',
+    ),
+    'BEF' => 
+    array (
+      'name' => 'بېلگىيە فرانكى',
+      'symbol' => 'BEF',
+    ),
+    'BEL' => 
+    array (
+      'name' => 'بېلگىيە فرانكى (پۇل–مۇئامىلە)',
+      'symbol' => 'BEL',
+    ),
+    'BGL' => 
+    array (
+      'name' => 'بۇلغارىيە قاتتىق لېۋاسى',
+      'symbol' => 'BGL',
+    ),
+    'BGM' => 
+    array (
+      'name' => 'بۇلغارىيە ئىجتىمائىي لېۋاسى',
+      'symbol' => 'BGM',
+    ),
+    'BGN' => 
+    array (
+      'name' => 'بۇلغارىيە لېۋاسى',
+      'symbol' => 'BGN',
+    ),
+    'BGO' => 
+    array (
+      'name' => 'بۇلغارىيە لېۋاسى (1879–1952)',
+      'symbol' => 'BGO',
+    ),
+    'BHD' => 
+    array (
+      'name' => 'بەھرەين دىنارى',
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'name' => 'بۇرۇندى فرانكى',
+      'symbol' => 'BIF',
+    ),
+    'BMD' => 
+    array (
+      'name' => 'بېرمۇدا دوللىرى',
+      'symbol' => 'BMD',
+    ),
+    'BND' => 
+    array (
+      'name' => 'بىرۇنېي دوللىرى',
+      'symbol' => 'BND',
+    ),
+    'BOB' => 
+    array (
+      'name' => 'بولىۋىيە بولىۋىيانوسى',
+      'symbol' => 'BOB',
+    ),
+    'BOL' => 
+    array (
+      'name' => 'بولىۋىيە بولىۋىيانوسى (1863–1963)',
+      'symbol' => 'BOL',
+    ),
+    'BOP' => 
+    array (
+      'name' => 'بولىۋىيە پىسوسى',
+      'symbol' => 'BOP',
+    ),
+    'BOV' => 
+    array (
+      'name' => 'بولىۋىيە مۇدولى',
+      'symbol' => 'BOV',
+    ),
+    'BRB' => 
+    array (
+      'name' => 'بىرازىلىيە يېڭى كرۇزېروسى (1967–1986)',
+      'symbol' => 'BRB',
+    ),
+    'BRC' => 
+    array (
+      'name' => 'بىرازىلىيە كرۇزادوسى (1986–1989)',
+      'symbol' => 'BRC',
+    ),
+    'BRE' => 
+    array (
+      'name' => 'بىرازىلىيە يېڭى كرۇزېروسى (1990–1993)',
+      'symbol' => 'BRE',
+    ),
+    'BRL' => 
+    array (
+      'name' => 'بىرازىلىيە رىيالى',
+      'symbol' => 'BRL',
+    ),
+    'BRN' => 
+    array (
+      'name' => 'بىرازىلىيە يېڭى كرۇزادوسى (1989–1990)',
+      'symbol' => 'BRN',
+    ),
+    'BRR' => 
+    array (
+      'name' => 'بىرازىلىيە كرۇزېروسى (1993–1994)',
+      'symbol' => 'BRR',
+    ),
+    'BRZ' => 
+    array (
+      'name' => 'بىرازىلىيە كرۇزېروسى (1942–1967)',
+      'symbol' => 'BRZ',
+    ),
+    'BSD' => 
+    array (
+      'name' => 'باھاما دوللىرى',
+      'symbol' => 'BSD',
+    ),
+    'BTN' => 
+    array (
+      'name' => 'بۇتان نگۇلترۇمى',
+      'symbol' => 'BTN',
+    ),
+    'BUK' => 
+    array (
+      'name' => 'بىرما كىياتى',
+      'symbol' => 'BUK',
+    ),
+    'BWP' => 
+    array (
+      'name' => 'بوتسۋانا پۇلاسى',
+      'symbol' => 'BWP',
+    ),
+    'BYB' => 
+    array (
+      'name' => 'بېلارۇسىيە يېڭى رۇبلىسى (1994–1999)',
+      'symbol' => 'BYB',
+    ),
+    'BYR' => 
+    array (
+      'name' => 'بېلارۇسىيە رۇبلىسى',
+      'symbol' => 'BYR',
+    ),
+    'BZD' => 
+    array (
+      'name' => 'بېلىز دوللىرى',
+      'symbol' => 'BZD',
+    ),
+    'CAD' => 
+    array (
+      'name' => 'كانادا دوللىرى',
+      'symbol' => 'CAD',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'كونگو فرانكى',
+      'symbol' => 'CDF',
+    ),
+    'CHE' => 
+    array (
+      'name' => 'WIR ياۋرو',
+      'symbol' => 'CHE',
+    ),
+    'CHF' => 
+    array (
+      'name' => 'شىۋېتسىيە فرانكى',
+      'symbol' => 'CHF',
+    ),
+    'CHW' => 
+    array (
+      'name' => 'WIR فرانكى',
+      'symbol' => 'CHW',
+    ),
+    'CLE' => 
+    array (
+      'name' => 'چىلى ئېسكۇدوسى',
+      'symbol' => 'CLE',
+    ),
+    'CLF' => 
+    array (
+      'name' => 'چىلى ھېسابات بىرلىكى (UF)',
+      'symbol' => 'CLF',
+    ),
+    'CLP' => 
+    array (
+      'name' => 'چىلى پېسوسى',
+      'symbol' => 'CLP',
+    ),
+    'CNX' => 
+    array (
+      'name' => 'جۇڭگو خەلق بانكىسى دوللىرى',
+      'symbol' => 'CNX',
+    ),
+    'CNY' => 
+    array (
+      'name' => 'جۇڭگو يۈەنى',
+      'symbol' => '￥',
+    ),
+    'COP' => 
+    array (
+      'name' => 'كولومبىيە پېسوسى',
+      'symbol' => 'COP',
+    ),
+    'COU' => 
+    array (
+      'name' => 'كولومبىيە ھەقىقىي قىممەت بىرلىكى',
+      'symbol' => 'COU',
+    ),
+    'CRC' => 
+    array (
+      'name' => 'كوستارىكا كولونى',
+      'symbol' => 'CRC',
+    ),
+    'CSD' => 
+    array (
+      'name' => 'سېربىيە دىنارى (2002–2006)',
+      'symbol' => 'CSD',
+    ),
+    'CSK' => 
+    array (
+      'name' => 'چېخسىلوۋاكىيە قاتتىق كورۇناسى',
+      'symbol' => 'CSK',
+    ),
+    'CUC' => 
+    array (
+      'name' => 'كۇبا ئالماشتۇرۇشچان پېسوسى',
+      'symbol' => 'CUC',
+    ),
+    'CUP' => 
+    array (
+      'name' => 'كۇبا پېسوسى',
+      'symbol' => 'CUP',
+    ),
+    'CVE' => 
+    array (
+      'name' => 'يېشىل تۇمشۇق ئېسكۇدوسى',
+      'symbol' => 'CVE',
+    ),
+    'CYP' => 
+    array (
+      'name' => 'سىپرۇس فوند ستېرلىڭى',
+      'symbol' => 'CYP',
+    ),
+    'CZK' => 
+    array (
+      'name' => 'چېخ جۇمھۇرىيىتى كورۇناسى',
+      'symbol' => 'CZK',
+    ),
+    'DDM' => 
+    array (
+      'name' => 'شەرقىي گېرمانىيە ماركى',
+      'symbol' => 'DDM',
+    ),
+    'DEM' => 
+    array (
+      'name' => 'گېرمانىيە ماركى',
+      'symbol' => 'DEM',
+    ),
+    'DJF' => 
+    array (
+      'name' => 'جىبۇتى فرانكى',
+      'symbol' => 'DJF',
+    ),
+    'DKK' => 
+    array (
+      'name' => 'دانىيە كرونى',
+      'symbol' => 'DKK',
+    ),
+    'DOP' => 
+    array (
+      'name' => 'دومىنىكا پېسوسى',
+      'symbol' => 'DOP',
+    ),
+    'DZD' => 
+    array (
+      'name' => 'ئالجىرىيە دىنارى',
+      'symbol' => 'DZD',
+    ),
+    'ECS' => 
+    array (
+      'name' => 'ئېكۋادور سۇكرېسى',
+      'symbol' => 'ECS',
+    ),
+    'ECV' => 
+    array (
+      'name' => 'ئېكۋادور تۇراقلىق قىممەت بىرلىكى',
+      'symbol' => 'ECV',
+    ),
+    'EEK' => 
+    array (
+      'name' => 'ئېستونىيە كرۇنى',
+      'symbol' => 'EEK',
+    ),
+    'EGP' => 
+    array (
+      'name' => 'مىسىر فوند سىتېرلىڭى',
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'name' => 'ئېرىترېيە ناكفاسى',
+      'symbol' => 'ERN',
+    ),
+    'ESA' => 
+    array (
+      'name' => 'ئىسپانىيە پېسېتاسى (A ھېسابات)',
+      'symbol' => 'ESA',
+    ),
+    'ESB' => 
+    array (
+      'name' => 'ئىسپانىيە پېسېتاسى (ئالماشتۇرۇش ھېساباتى)',
+      'symbol' => 'ESB',
+    ),
+    'ESP' => 
+    array (
+      'name' => 'ئىسپانىيە پېسېتاسى',
+      'symbol' => 'ESP',
+    ),
+    'ETB' => 
+    array (
+      'name' => 'ئېفىيوپىيە بىررى',
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'name' => 'ياۋرو',
+      'symbol' => 'EUR',
+    ),
+    'FIM' => 
+    array (
+      'name' => 'فىنلاندىيە مارككاسى',
+      'symbol' => 'FIM',
+    ),
+    'FJD' => 
+    array (
+      'name' => 'فىجى دوللىرى',
+      'symbol' => 'FJD',
+    ),
+    'FKP' => 
+    array (
+      'name' => 'فالكلاند ئاراللىرى فوند سىتېرلىڭى',
+      'symbol' => 'FKP',
+    ),
+    'FRF' => 
+    array (
+      'name' => 'فىرانسىيە فرانكى',
+      'symbol' => 'FRF',
+    ),
+    'GBP' => 
+    array (
+      'name' => 'ئەنگلىيە فوند سىتېرلىڭى',
+      'symbol' => 'GBP',
+    ),
+    'GEK' => 
+    array (
+      'name' => 'گىرۇزىيە كۇپون لارىتى',
+      'symbol' => 'GEK',
+    ),
+    'GEL' => 
+    array (
+      'name' => 'گىرۇزىيە لارىسى',
+      'symbol' => 'GEL',
+    ),
+    'GHC' => 
+    array (
+      'name' => 'گانا سېدىسى (1979–2007)',
+      'symbol' => 'GHC',
+    ),
+    'GHS' => 
+    array (
+      'name' => 'گانا سېدىسى',
+      'symbol' => 'GHS',
+    ),
+    'GIP' => 
+    array (
+      'name' => 'جەبىلتارىق فوند سىتېرلىڭى',
+      'symbol' => 'GIP',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'گامبىيە دالاسى',
+      'symbol' => 'GMD',
+    ),
+    'GNF' => 
+    array (
+      'name' => 'گىۋىنېيە فرانكى',
+      'symbol' => 'GNF',
+    ),
+    'GNS' => 
+    array (
+      'name' => 'گىۋىنېيە سىلىسى',
+      'symbol' => 'GNS',
+    ),
+    'GQE' => 
+    array (
+      'name' => 'ئېكۋاتور گىۋىنېيە ئېكۋېلېسى',
+      'symbol' => 'GQE',
+    ),
+    'GRD' => 
+    array (
+      'name' => 'گىرېتسىيە دراخماسى',
+      'symbol' => 'GRD',
+    ),
+    'GTQ' => 
+    array (
+      'name' => 'گىۋاتېمالا كۇۋېتزالى',
+      'symbol' => 'GTQ',
+    ),
+    'GWE' => 
+    array (
+      'name' => 'پورتۇگالىيە گىۋىنېيە ئېسكۇدوسى',
+      'symbol' => 'GWE',
+    ),
+    'GWP' => 
+    array (
+      'name' => 'گىۋىنېيە-بىسسائۇ پېسوسى',
+      'symbol' => 'GWP',
+    ),
+    'GYD' => 
+    array (
+      'name' => 'گىۋىئانا دوللىرى',
+      'symbol' => 'GYD',
+    ),
+    'HKD' => 
+    array (
+      'name' => 'شياڭگاڭ دوللىرى',
+      'symbol' => 'HKD',
+    ),
+    'HNL' => 
+    array (
+      'name' => 'ھوندۇراس لېمپىراسى',
+      'symbol' => 'HNL',
+    ),
+    'HRD' => 
+    array (
+      'name' => 'كىرودىيە دىنارى',
+      'symbol' => 'HRD',
+    ),
+    'HRK' => 
+    array (
+      'name' => 'كىرودىيە كۇناسى',
+      'symbol' => 'HRK',
+    ),
+    'HTG' => 
+    array (
+      'name' => 'ھايتى گۇردېسى',
+      'symbol' => 'HTG',
+    ),
+    'HUF' => 
+    array (
+      'name' => 'ۋېنگىرىيە فورېنتى',
+      'symbol' => 'HUF',
+    ),
+    'IDR' => 
+    array (
+      'name' => 'ھىندونېزىيە رۇپىيەسى',
+      'symbol' => 'IDR',
+    ),
+    'IEP' => 
+    array (
+      'name' => 'ئىرېلاندىيە فوندستېرلىڭى',
+      'symbol' => 'IEP',
+    ),
+    'ILP' => 
+    array (
+      'name' => 'ئىسرائىلىيە فوندستېرلىڭى',
+      'symbol' => 'ILP',
+    ),
+    'ILR' => 
+    array (
+      'name' => 'ئىسرائىل شېكېلى (1980–1985)',
+      'symbol' => 'ILR',
+    ),
+    'ILS' => 
+    array (
+      'name' => 'ئىسرائىل يېڭى شېكېلى',
+      'symbol' => 'ILS',
+    ),
+    'INR' => 
+    array (
+      'name' => 'ھىندىستان رۇپىسى',
+      'symbol' => 'INR',
+    ),
+    'IQD' => 
+    array (
+      'name' => 'ئىراق دىنارى',
+      'symbol' => 'IQD',
+    ),
+    'IRR' => 
+    array (
+      'name' => 'ئىران رىيالى',
+      'symbol' => 'IRR',
+    ),
+    'ISJ' => 
+    array (
+      'name' => 'ئىسلاندىيە كروناسى (1918–1981)',
+      'symbol' => 'ISJ',
+    ),
+    'ISK' => 
+    array (
+      'name' => 'ئىسلاندىيە كروناسى',
+      'symbol' => 'ISK',
+    ),
+    'ITL' => 
+    array (
+      'name' => 'ئىتالىيە لىراسى',
+      'symbol' => 'ITL',
+    ),
+    'JMD' => 
+    array (
+      'name' => 'يامايكا دوللىرى',
+      'symbol' => 'JMD',
+    ),
+    'JOD' => 
+    array (
+      'name' => 'ئىيوردانىيە دىنارى',
+      'symbol' => 'JOD',
+    ),
+    'JPY' => 
+    array (
+      'name' => 'ياپونىيە يېنى',
+      'symbol' => 'JPY',
+    ),
+    'KES' => 
+    array (
+      'name' => 'كېنىيە شىللىڭى',
+      'symbol' => 'KES',
+    ),
+    'KGS' => 
+    array (
+      'name' => 'قىرغىزىستان سومى',
+      'symbol' => 'KGS',
+    ),
+    'KHR' => 
+    array (
+      'name' => 'كامبودژا رىئېلى',
+      'symbol' => 'KHR',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'كومورو فرانكى',
+      'symbol' => 'KMF',
+    ),
+    'KPW' => 
+    array (
+      'name' => 'شىمالىي كورېيە ۋونى',
+      'symbol' => 'KPW',
+    ),
+    'KRH' => 
+    array (
+      'name' => 'جەنۇبىي كورېيە خۋانى (1953–1962)',
+      'symbol' => 'KRH',
+    ),
+    'KRO' => 
+    array (
+      'name' => 'جەنۇبىي كورېيە ۋونى (1945–1953)',
+      'symbol' => 'KRO',
+    ),
+    'KRW' => 
+    array (
+      'name' => 'جەنۇبىي كورېيە ۋونى',
+      'symbol' => 'KRW',
+    ),
+    'KWD' => 
+    array (
+      'name' => 'كۇۋەيت دىنارى',
+      'symbol' => 'KWD',
+    ),
+    'KYD' => 
+    array (
+      'name' => 'كايمان ئاراللىرى دوللىرى',
+      'symbol' => 'KYD',
+    ),
+    'KZT' => 
+    array (
+      'name' => 'قازاقىستان تەڭگىسى',
+      'symbol' => 'KZT',
+    ),
+    'LAK' => 
+    array (
+      'name' => 'لائوس كىپى',
+      'symbol' => 'LAK',
+    ),
+    'LBP' => 
+    array (
+      'name' => 'لىۋان فوند سىتېرلىڭى',
+      'symbol' => 'LBP',
+    ),
+    'LKR' => 
+    array (
+      'name' => 'سىرىلانكا رۇپىسى',
+      'symbol' => 'LKR',
+    ),
+    'LRD' => 
+    array (
+      'name' => 'لىبېرىيە دوللىرى',
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'name' => 'لېسوتو لوتىسى',
+      'symbol' => 'LSL',
+    ),
+    'LTL' => 
+    array (
+      'name' => 'لىتۋا لىتاسى',
+      'symbol' => 'LTL',
+    ),
+    'LTT' => 
+    array (
+      'name' => 'لىتۋا تالوناسى',
+      'symbol' => 'LTT',
+    ),
+    'LUC' => 
+    array (
+      'name' => 'ليۇكسېمبۇرگ ئالماشتۇرۇشچان پېسوسى',
+      'symbol' => 'LUC',
+    ),
+    'LUF' => 
+    array (
+      'name' => 'ليۇكسېمبۇرگ فرانكى',
+      'symbol' => 'LUF',
+    ),
+    'LUL' => 
+    array (
+      'name' => 'لىيۇكسېمبۇرگ پۇل-مۇئامىلە فرانكى',
+      'symbol' => 'LUL',
+    ),
+    'LVL' => 
+    array (
+      'name' => 'لاتۋىيە لاتى',
+      'symbol' => 'LVL',
+    ),
+    'LVR' => 
+    array (
+      'name' => 'لاتۋىيە رۇبلىسى',
+      'symbol' => 'LVR',
+    ),
+    'LYD' => 
+    array (
+      'name' => 'لىۋىيە دىنارى',
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'name' => 'ماراكەش دىرھەمى',
+      'symbol' => 'MAD',
+    ),
+    'MAF' => 
+    array (
+      'name' => 'ماراكەش فرانكى',
+      'symbol' => 'MAF',
+    ),
+    'MCF' => 
+    array (
+      'name' => 'موناكو فرانكى',
+      'symbol' => 'MCF',
+    ),
+    'MDC' => 
+    array (
+      'name' => 'مولدوۋا كۇپونى',
+      'symbol' => 'MDC',
+    ),
+    'MDL' => 
+    array (
+      'name' => 'مولدوۋا لېۋى',
+      'symbol' => 'MDL',
+    ),
+    'MGA' => 
+    array (
+      'name' => 'ماداغاسقار ئارىئارىسى',
+      'symbol' => 'MGA',
+    ),
+    'MGF' => 
+    array (
+      'name' => 'ماداغاسقار فرانكى',
+      'symbol' => 'MGF',
+    ),
+    'MKD' => 
+    array (
+      'name' => 'ماكېدونىيە دىنارى',
+      'symbol' => 'MKD',
+    ),
+    'MKN' => 
+    array (
+      'name' => 'ماكېدونىيە دىنارى (1992–1993)',
+      'symbol' => 'MKN',
+    ),
+    'MLF' => 
+    array (
+      'name' => 'مالى فرانكى',
+      'symbol' => 'MLF',
+    ),
+    'MMK' => 
+    array (
+      'name' => 'مىيانمار كىياتى',
+      'symbol' => 'MMK',
+    ),
+    'MNT' => 
+    array (
+      'name' => 'موڭغۇلىيە تۈگرىكى',
+      'symbol' => 'MNT',
+    ),
+    'MOP' => 
+    array (
+      'name' => 'ئاۋمېن پاتاكاسى',
+      'symbol' => 'MOP',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'ماۋرىتانىيە ئۇگىيەسى',
+      'symbol' => 'MRO',
+    ),
+    'MTL' => 
+    array (
+      'name' => 'مالتا لىراسى',
+      'symbol' => 'MTL',
+    ),
+    'MTP' => 
+    array (
+      'name' => 'مالتا فوندستېرلىڭى',
+      'symbol' => 'MTP',
+    ),
+    'MUR' => 
+    array (
+      'name' => 'ماۋرىتىئۇس رۇپىسى',
+      'symbol' => 'MUR',
+    ),
+    'MVP' => 
+    array (
+      'name' => 'مالدىۋى رۇپىسى',
+      'symbol' => 'MVP',
+    ),
+    'MVR' => 
+    array (
+      'name' => 'مالدىۋى رۇفىياسى',
+      'symbol' => 'MVR',
+    ),
+    'MWK' => 
+    array (
+      'name' => 'مالاۋى كۋاچاسى',
+      'symbol' => 'MWK',
+    ),
+    'MXN' => 
+    array (
+      'name' => 'مېكسىكا پېسوسى',
+      'symbol' => 'MXN',
+    ),
+    'MXP' => 
+    array (
+      'name' => 'مېكسىكا كۈمۈش پېسوسى (1861–1992)',
+      'symbol' => 'MXP',
+    ),
+    'MXV' => 
+    array (
+      'name' => 'مېكسىكا مەبلەغ بىرلىكى',
+      'symbol' => 'MXV',
+    ),
+    'MYR' => 
+    array (
+      'name' => 'مالايشىيا رىڭگىتى',
+      'symbol' => 'MYR',
+    ),
+    'MZE' => 
+    array (
+      'name' => 'موزامبىك ئېسكۇدوسى',
+      'symbol' => 'MZE',
+    ),
+    'MZM' => 
+    array (
+      'name' => 'موزامبىك مېتىكالى (1980–2006)',
+      'symbol' => 'MZM',
+    ),
+    'MZN' => 
+    array (
+      'name' => 'موزامبىك مېتىكالى',
+      'symbol' => 'MZN',
+    ),
+    'NAD' => 
+    array (
+      'name' => 'نامىبىيە دوللىرى',
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'name' => 'نىگېرىيە نايراسى',
+      'symbol' => 'NGN',
+    ),
+    'NIC' => 
+    array (
+      'name' => 'نىگېرىيە كوردوباسى (1988–1991)',
+      'symbol' => 'NIC',
+    ),
+    'NIO' => 
+    array (
+      'name' => 'نىگېرىيە كوردوباسى',
+      'symbol' => 'NIO',
+    ),
+    'NLG' => 
+    array (
+      'name' => 'گوللاندىيە گۈلدىنى',
+      'symbol' => 'NLG',
+    ),
+    'NOK' => 
+    array (
+      'name' => 'نورۋېگىيە كرونى',
+      'symbol' => 'NOK',
+    ),
+    'NPR' => 
+    array (
+      'name' => 'نېپال رۇپىسى',
+      'symbol' => 'NPR',
+    ),
+    'NZD' => 
+    array (
+      'name' => 'يېڭى زېلاندىيە دوللىرى',
+      'symbol' => 'NZD',
+    ),
+    'OMR' => 
+    array (
+      'name' => 'ئومان رىيالى',
+      'symbol' => 'OMR',
+    ),
+    'PAB' => 
+    array (
+      'name' => 'پاناما بالبوئاسى',
+      'symbol' => 'PAB',
+    ),
+    'PEI' => 
+    array (
+      'name' => 'پېرۇ ئىنتىسى',
+      'symbol' => 'PEI',
+    ),
+    'PEN' => 
+    array (
+      'name' => 'پېرۇ يېڭى سولى',
+      'symbol' => 'PEN',
+    ),
+    'PES' => 
+    array (
+      'name' => 'پېرۇ سولى (1863–1965)',
+      'symbol' => 'PES',
+    ),
+    'PGK' => 
+    array (
+      'name' => 'پاپۇئا يېڭى گىۋىنېيە كىناسى',
+      'symbol' => 'PGK',
+    ),
+    'PHP' => 
+    array (
+      'name' => 'فىلىپپىن پېسوسى',
+      'symbol' => 'PHP',
+    ),
+    'PKR' => 
+    array (
+      'name' => 'پاكىستان رۇپىسى',
+      'symbol' => 'PKR',
+    ),
+    'PLN' => 
+    array (
+      'name' => 'پولشا زىلوتى',
+      'symbol' => 'PLN',
+    ),
+    'PLZ' => 
+    array (
+      'name' => 'پولشا زىلوتى (1950–1995)',
+      'symbol' => 'PLZ',
+    ),
+    'PTE' => 
+    array (
+      'name' => 'پورتۇگالىيە ئېسكۇدوسى',
+      'symbol' => 'PTE',
+    ),
+    'PYG' => 
+    array (
+      'name' => 'پاراگۋاي گۇئارانىسى',
+      'symbol' => 'PYG',
+    ),
+    'QAR' => 
+    array (
+      'name' => 'قاتار رىيالى',
+      'symbol' => 'QAR',
+    ),
+    'RHD' => 
+    array (
+      'name' => 'رودېزىيە دوللىرى',
+      'symbol' => 'RHD',
+    ),
+    'ROL' => 
+    array (
+      'name' => 'رۇمىنىيە لېيى (1952–2006)',
+      'symbol' => 'ROL',
+    ),
+    'RON' => 
+    array (
+      'name' => 'رۇمىنىيە لېيى',
+      'symbol' => 'RON',
+    ),
+    'RSD' => 
+    array (
+      'name' => 'سېربىيە دىنارى',
+      'symbol' => 'RSD',
+    ),
+    'RUB' => 
+    array (
+      'name' => 'رۇسىيە رۇبلىسى',
+      'symbol' => 'RUB',
+    ),
+    'RUR' => 
+    array (
+      'name' => 'رۇسىيە رۇبلىسى (1991–1998)',
+      'symbol' => 'RUR',
+    ),
+    'RWF' => 
+    array (
+      'name' => 'رۋاندا فرانكى',
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'name' => 'سەئۇدى رىيالى',
+      'symbol' => 'SAR',
+    ),
+    'SBD' => 
+    array (
+      'name' => 'سولومون ئاراللىرى دوللىرى',
+      'symbol' => 'SBD',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'سېيشېل رۇپىسى',
+      'symbol' => 'SCR',
+    ),
+    'SDD' => 
+    array (
+      'name' => 'سۇدان دىنارى (1992–2007)',
+      'symbol' => 'SDD',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'سۇدان فوندستېرلىڭى',
+      'symbol' => 'SDG',
+    ),
+    'SDP' => 
+    array (
+      'name' => 'سۇدان فوندستېرلىڭى (1957–1998)',
+      'symbol' => 'SDP',
+    ),
+    'SEK' => 
+    array (
+      'name' => 'شىۋېتسىيە كروناسى',
+      'symbol' => 'SEK',
+    ),
+    'SGD' => 
+    array (
+      'name' => 'سىنگاپور دوللىرى',
+      'symbol' => 'SGD',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'ساينىت-ھېلېنا فوندستېرلىڭى',
+      'symbol' => 'SHP',
+    ),
+    'SIT' => 
+    array (
+      'name' => 'سىلوۋېنىيە تولارى',
+      'symbol' => 'SIT',
+    ),
+    'SKK' => 
+    array (
+      'name' => 'سىلوۋاكىيە كورۇناسى',
+      'symbol' => 'SKK',
+    ),
+    'SLL' => 
+    array (
+      'name' => 'سېررالېئون لېئونېسى',
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'سومالى شىللىڭى',
+      'symbol' => 'SOS',
+    ),
+    'SRD' => 
+    array (
+      'name' => 'سۇرىنام دوللىرى',
+      'symbol' => 'SRD',
+    ),
+    'SRG' => 
+    array (
+      'name' => 'سۇرىنام گۈلدىنى',
+      'symbol' => 'SRG',
+    ),
+    'SSP' => 
+    array (
+      'name' => 'جەنۇبىي سۇدان فوندستېرلىڭى',
+      'symbol' => 'SSP',
+    ),
+    'STD' => 
+    array (
+      'name' => 'سان-تومې ۋە پىرىنسىپى دوبراسى',
+      'symbol' => 'STD',
+    ),
+    'SUR' => 
+    array (
+      'name' => 'سوۋىت رۇبلىسى',
+      'symbol' => 'SUR',
+    ),
+    'SVC' => 
+    array (
+      'name' => 'سالۋادور كولونى',
+      'symbol' => 'SVC',
+    ),
+    'SYP' => 
+    array (
+      'name' => 'سۈرىيە فوندستېرلىڭى',
+      'symbol' => 'SYP',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'سىۋېزىلاند لىلانگېنى',
+      'symbol' => 'SZL',
+    ),
+    'THB' => 
+    array (
+      'name' => 'تايلاند باختى',
+      'symbol' => 'THB',
+    ),
+    'TJR' => 
+    array (
+      'name' => 'تاجىكىستان رۇبلىسى',
+      'symbol' => 'TJR',
+    ),
+    'TJS' => 
+    array (
+      'name' => 'تاجىكىستان سومونىسى',
+      'symbol' => 'TJS',
+    ),
+    'TMM' => 
+    array (
+      'name' => 'تۈركمەنىستان ماناتى (1993–2009)',
+      'symbol' => 'TMM',
+    ),
+    'TMT' => 
+    array (
+      'name' => 'تۈركمەنىستان ماناتى',
+      'symbol' => 'TMT',
+    ),
+    'TND' => 
+    array (
+      'name' => 'تۇنىس دىنارى',
+      'symbol' => 'TND',
+    ),
+    'TOP' => 
+    array (
+      'name' => 'تونگا پائانگاسى',
+      'symbol' => 'TOP',
+    ),
+    'TPE' => 
+    array (
+      'name' => 'تىمور ئېسكۇدوسى',
+      'symbol' => 'TPE',
+    ),
+    'TRL' => 
+    array (
+      'name' => 'تۈركىيە لىراسى (1922–2005)',
+      'symbol' => 'TRL',
+    ),
+    'TRY' => 
+    array (
+      'name' => 'تۈركىيە لىراسى',
+      'symbol' => 'TRY',
+    ),
+    'TTD' => 
+    array (
+      'name' => 'تىرىنىداد ۋە توباگو دوللىرى',
+      'symbol' => 'TTD',
+    ),
+    'TWD' => 
+    array (
+      'name' => 'يېڭى تەيۋەن دوللىرى',
+      'symbol' => 'TWD',
+    ),
+    'TZS' => 
+    array (
+      'name' => 'تانزانىيە شىللىڭى',
+      'symbol' => 'TZS',
+    ),
+    'UAH' => 
+    array (
+      'name' => 'ئۇكرائىنا خرىۋناسى',
+      'symbol' => 'UAH',
+    ),
+    'UAK' => 
+    array (
+      'name' => 'ئۇكرائىنا كاربوۋانېتسى',
+      'symbol' => 'UAK',
+    ),
+    'UGS' => 
+    array (
+      'name' => 'ئۇگاندا شىللىڭى (1966–1987)',
+      'symbol' => 'UGS',
+    ),
+    'UGX' => 
+    array (
+      'name' => 'ئۇگاندا شىللىڭى',
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'name' => 'ئامېرىكا دوللىرى',
+      'symbol' => '$',
+    ),
+    'USN' => 
+    array (
+      'name' => 'ئامېرىكا دوللىرى (كېيىنكى كۈن)',
+      'symbol' => 'USN',
+    ),
+    'USS' => 
+    array (
+      'name' => 'ئامېرىكا دوللىرى (ئوخشاش كۈن)',
+      'symbol' => 'USS',
+    ),
+    'UYI' => 
+    array (
+      'name' => 'ئۇرۇگۋاي پېسوسى (ئىندېكىسلاش بىرلىكى)',
+      'symbol' => 'UYI',
+    ),
+    'UYP' => 
+    array (
+      'name' => 'ئۇرۇگۋاي پېسوسى (1975–1993)',
+      'symbol' => 'UYP',
+    ),
+    'UYU' => 
+    array (
+      'name' => 'ئۇرۇگۋاي پېسوسى',
+      'symbol' => 'UYU',
+    ),
+    'UZS' => 
+    array (
+      'name' => 'ئۆزبېكىستان سومى',
+      'symbol' => 'UZS',
+    ),
+    'VEB' => 
+    array (
+      'name' => 'ۋېنېزۇئېلا بولىۋارى (1871–2008)',
+      'symbol' => 'VEB',
+    ),
+    'VEF' => 
+    array (
+      'name' => 'ۋېنېزۇئېلا بولىۋارى',
+      'symbol' => 'VEF',
+    ),
+    'VND' => 
+    array (
+      'name' => 'ۋىيېتنام دوڭى',
+      'symbol' => 'VND',
+    ),
+    'VNN' => 
+    array (
+      'name' => 'ۋىيېتنام دوڭى (1978–1985)',
+      'symbol' => 'VNN',
+    ),
+    'VUV' => 
+    array (
+      'name' => 'ۋانۇئاتۇ ۋاتۇسى',
+      'symbol' => 'VUV',
+    ),
+    'WST' => 
+    array (
+      'name' => 'ساموئا تالاسى',
+      'symbol' => 'WST',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'ئافرىقا قىتئەسى پۇل-مۇئامىلە ئىتتىپاقى فرانكى',
+      'symbol' => 'XAF',
+    ),
+    'XAG' => 
+    array (
+      'name' => 'كۈمۈش',
+      'symbol' => 'XAG',
+    ),
+    'XAU' => 
+    array (
+      'name' => 'ئالتۇن',
+      'symbol' => 'XAU',
+    ),
+    'XBA' => 
+    array (
+      'name' => 'ياۋروپا مۇرەككەپ بىرلىكى',
+      'symbol' => 'XBA',
+    ),
+    'XBB' => 
+    array (
+      'name' => 'ياۋروپا پۇل بىرلىكى (XBB)',
+      'symbol' => 'XBB',
+    ),
+    'XBC' => 
+    array (
+      'name' => 'ياۋروپا ھېسابات بىرلىكى (XBC)',
+      'symbol' => 'XBC',
+    ),
+    'XBD' => 
+    array (
+      'name' => 'ياۋروپا ھېسابات بىرلىكى (XBD)',
+      'symbol' => 'XBD',
+    ),
+    'XCD' => 
+    array (
+      'name' => 'شەرقىي كارىب دوللىرى',
+      'symbol' => 'XCD',
+    ),
+    'XDR' => 
+    array (
+      'name' => 'ئالاھىدە پۇل ئېلىش ھوقۇقى',
+      'symbol' => 'XDR',
+    ),
+    'XEU' => 
+    array (
+      'name' => 'ياۋروپا پۇل بىرلىكى',
+      'symbol' => 'XEU',
+    ),
+    'XFO' => 
+    array (
+      'name' => 'فىرانسىيە ئالتۇن فرانكى',
+      'symbol' => 'XFO',
+    ),
+    'XFU' => 
+    array (
+      'name' => 'فىرانسىيە UIC فرانكى',
+      'symbol' => 'XFU',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'ئافرىقا قىتئەسى پۇل-مۇئامىلە ئىتتىپاقى فرانكى (BCEAO)',
+      'symbol' => 'XOF',
+    ),
+    'XPD' => 
+    array (
+      'name' => 'پاللادىي',
+      'symbol' => 'XPD',
+    ),
+    'XPF' => 
+    array (
+      'name' => 'تىنچ ئوكيان پۇل-مۇئامىلە ئورتاق گەۋدىسى فرانكى',
+      'symbol' => 'XPF',
+    ),
+    'XPT' => 
+    array (
+      'name' => 'پىلاتىنا',
+      'symbol' => 'XPT',
+    ),
+    'XRE' => 
+    array (
+      'name' => 'RINET فوندى',
+      'symbol' => 'XRE',
+    ),
+    'XSU' => 
+    array (
+      'name' => 'سۇكرې',
+      'symbol' => 'XSU',
+    ),
+    'XTS' => 
+    array (
+      'name' => 'پۇل سىناش بىرلىكى',
+      'symbol' => 'XTS',
+    ),
+    'XUA' => 
+    array (
+      'name' => 'ئاسىيا تەرەققىيات بانكىسى ھېسابات بىرلىكى',
+      'symbol' => 'XUA',
+    ),
+    'XXX' => 
+    array (
+      'name' => 'يوچۇن پۇل',
+      'symbol' => 'XXX',
+    ),
+    'YDD' => 
+    array (
+      'name' => 'يەمەن دىنارى',
+      'symbol' => 'YDD',
+    ),
+    'YER' => 
+    array (
+      'name' => 'يەمەن رىيالى',
+      'symbol' => 'YER',
+    ),
+    'YUD' => 
+    array (
+      'name' => 'يۇگوسلاۋىيە قاتتىق دىنارى (1966–1990)',
+      'symbol' => 'YUD',
+    ),
+    'YUM' => 
+    array (
+      'name' => 'يۇگوسلاۋىيە يېڭى دىنارى (1994–2002)',
+      'symbol' => 'YUM',
+    ),
+    'YUN' => 
+    array (
+      'name' => 'يۇگوسلاۋىيە ئالماشتۇرۇشچان دىنارى (1990–1992)',
+      'symbol' => 'YUN',
+    ),
+    'YUR' => 
+    array (
+      'name' => 'يۇگوسلاۋىيە ئىسلاھات دىنارى (1992–1993)',
+      'symbol' => 'YUR',
+    ),
+    'ZAL' => 
+    array (
+      'name' => 'جەنۇبىي ئافرىقا راندى (پۇل–مۇئامىلە)',
+      'symbol' => 'ZAL',
+    ),
+    'ZAR' => 
+    array (
+      'name' => 'جەنۇبىي ئافرىقا راندى',
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'name' => 'زامبىيە كۋاچاسى (1968–2012)',
+      'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'زامبىيە كۋاچاسى',
+      'symbol' => 'ZMW',
+    ),
+    'ZRN' => 
+    array (
+      'name' => 'زايىر يېڭى زايىرى (1993–1998)',
+      'symbol' => 'ZRN',
+    ),
+    'ZRZ' => 
+    array (
+      'name' => 'زايىر زايىرى (1971–1993)',
+      'symbol' => 'ZRZ',
+    ),
+    'ZWD' => 
+    array (
+      'name' => 'زىمبابۋې دوللىرى (1980–2008)',
+      'symbol' => 'ZWD',
+    ),
+    'ZWL' => 
+    array (
+      'name' => 'زىمبابۋې دوللىرى (2009)',
+      'symbol' => 'ZWL',
+    ),
+    'ZWR' => 
+    array (
+      'name' => 'زىمبابۋې دوللىرى (2008)',
+      'symbol' => 'ZWR',
+    ),
+  ),
+);

@@ -9,6 +9,7 @@ return array (
     'plusSign' => '+',
     'minusSign' => '−',
     'exponential' => '×10^',
+    'superscriptingExponent' => '·',
     'perMille' => '‰',
     'infinity' => '∞',
     'nan' => '¤¤¤',
@@ -22,25 +23,49 @@ return array (
   ),
   'currencies' => 
   array (
+    'DKK' => 
+    array (
+      'symbol' => 'Dkr',
+    ),
     'EUR' => 
     array (
       'name' => 'euro',
-      'symbol' => 'EUR',
+      'symbol' => '€',
     ),
     'FIM' => 
     array (
       'name' => 'suoma márkki',
       'symbol' => 'FIM',
     ),
+    'HKD' => 
+    array (
+      'symbol' => 'HK$',
+    ),
+    'INR' => 
+    array (
+      'symbol' => '₹',
+    ),
+    'JPY' => 
+    array (
+      'symbol' => 'JP¥',
+    ),
+    'MXN' => 
+    array (
+      'symbol' => 'MX$',
+    ),
     'NOK' => 
     array (
       'name' => 'norgga kruvdno',
-      'symbol' => 'NOK',
+      'symbol' => 'kr',
     ),
     'SEK' => 
     array (
       'name' => 'ruoŧŧa kruvdno',
-      'symbol' => 'SEK',
+      'symbol' => 'Skr',
+    ),
+    'THB' => 
+    array (
+      'symbol' => '฿',
     ),
     'XAG' => 
     array (

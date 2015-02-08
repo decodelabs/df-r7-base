@@ -3,12 +3,25 @@ return array (
   '@default' => 'gregorian',
   'buddhist' => 
   array (
+  ),
+  'chinese' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM U',
+      'long' => 'dd MMMM U',
+      'medium' => 'dd MMM U',
+      'short' => 'dd/MM/yy',
+    ),
+  ),
+  'generic' => 
+  array (
     'dateFormat' => 
     array (
       'full' => 'EEEE d MMMM y G',
       'long' => 'dd MMMM y G',
-      'medium' => 'dd/MMM/y G',
-      'short' => 'dd/MM/y G',
+      'medium' => 'dd MMM y G',
+      'short' => 'dd/MM/yy GGGGG',
     ),
   ),
   'gregorian' => 
@@ -74,8 +87,8 @@ return array (
     'dateFormat' => 
     array (
       'full' => 'EEEE d MMMM y',
-      'long' => 'dd MMMM y',
-      'medium' => 'dd/MMM/y',
+      'long' => 'd MMMM y',
+      'medium' => 'dd MMM y',
       'short' => 'dd/MM/yy',
     ),
     'timeFormat' => 
@@ -86,49 +99,11 @@ return array (
       'short' => 'HH:mm',
     ),
   ),
+  'hebrew' => 
+  array (
+  ),
   'islamic' => 
   array (
-    'months' => 
-    array (
-      '@default' => 'full',
-      'abbreviated' => 
-      array (
-        1 => 'Muh.',
-        2 => 'Saf.',
-        3 => 'Rab. I',
-        4 => 'Rab. II',
-        5 => 'Jum. I',
-        6 => 'Jum. II',
-        7 => 'Raj.',
-        8 => 'Sha.',
-        9 => 'Ram.',
-        10 => 'Shaw.',
-        11 => 'Dhuʻl-Q.',
-        12 => 'Dhuʻl-H.',
-      ),
-      'full' => 
-      array (
-        1 => 'Muharram',
-        2 => 'Safar',
-        3 => 'Rabiʻ I',
-        4 => 'Rabiʻ II',
-        5 => 'Jumada I',
-        6 => 'Jumada II',
-        7 => 'Rajab',
-        8 => 'Shaʻban',
-        9 => 'Ramadan',
-        10 => 'Shawwal',
-        11 => 'Dhuʻl-Qiʻdah',
-        12 => 'Dhuʻl-Hijjah',
-      ),
-    ),
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE d MMMM y G',
-      'long' => 'dd MMMM y G',
-      'medium' => 'dd/MMM/y G',
-      'short' => 'dd/MM/y G',
-    ),
   ),
   'japanese' => 
   array (
@@ -136,18 +111,11 @@ return array (
     array (
       'full' => 'EEEE d MMMM y G',
       'long' => 'dd MMMM y G',
-      'medium' => 'dd/MMM/y G',
-      'short' => 'dd/MM/y G',
+      'medium' => 'dd MMM y G',
+      'short' => 'dd/MM/yy GGGGG',
     ),
   ),
   'roc' => 
   array (
-    'dateFormat' => 
-    array (
-      'full' => 'EEEE d MMMM y G',
-      'long' => 'dd MMMM y G',
-      'medium' => 'dd/MMM/y G',
-      'short' => 'dd/MM/y G',
-    ),
   ),
 );

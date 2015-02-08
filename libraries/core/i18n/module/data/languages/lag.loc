@@ -17,6 +17,8 @@ return array (
   'es' => 'Kɨhispánia',
   'nl' => 'Kɨholáanzi',
   'hu' => 'Kɨhungári',
+  'id' => 'Kɨɨndonésia',
+  'en' => 'Kɨɨngeréesa',
   'jv' => 'Kɨjáava',
   'ja' => 'Kɨjapáani',
   'de' => 'Kɨjerʉmáani',
@@ -43,6 +45,4 @@ return array (
   'vi' => 'Kɨvietináamu',
   'yo' => 'Kɨyorúuba',
   'zu' => 'Kɨzúulu',
-  'id' => 'Kɨɨndonésia',
-  'en' => 'Kɨɨngeréesa',
 );

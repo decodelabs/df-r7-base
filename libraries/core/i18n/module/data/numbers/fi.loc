@@ -7,11 +7,13 @@ return array (
     'list' => ';',
     'percentSign' => '%',
     'plusSign' => '+',
-    'minusSign' => '-',
+    'minusSign' => '−',
     'exponential' => 'E',
+    'superscriptingExponent' => '×',
     'perMille' => '‰',
     'infinity' => '∞',
     'nan' => 'epäluku',
+    'timeSeparator' => '.',
   ),
   'formats' => 
   array (
@@ -89,7 +91,7 @@ return array (
     ),
     'ARL' => 
     array (
-      'name' => 'Argentiinan ley-peso (1970-1983)',
+      'name' => 'Argentiinan ley-peso (1970–1983)',
       'symbol' => 'ARL',
     ),
     'ARM' => 
@@ -119,7 +121,7 @@ return array (
     ),
     'AWG' => 
     array (
-      'name' => 'Aruban guldeni',
+      'name' => 'Aruban floriini',
       'symbol' => 'AWG',
     ),
     'AZM' => 
@@ -459,7 +461,7 @@ return array (
     ),
     'ESA' => 
     array (
-      'name' => 'Espanjan peseta (A-tili)',
+      'name' => 'Espanjan peseta (A–tili)',
       'symbol' => 'ESA',
     ),
     'ESB' => 
@@ -480,12 +482,12 @@ return array (
     'EUR' => 
     array (
       'name' => 'euro',
-      'symbol' => 'EUR',
+      'symbol' => '€',
     ),
     'FIM' => 
     array (
       'name' => 'Suomen markka',
-      'symbol' => 'FIM',
+      'symbol' => 'mk',
     ),
     'FJD' => 
     array (
@@ -505,7 +507,7 @@ return array (
     'GBP' => 
     array (
       'name' => 'Englannin punta',
-      'symbol' => 'GBP',
+      'symbol' => '£',
     ),
     'GEK' => 
     array (
@@ -834,7 +836,7 @@ return array (
     ),
     'MKD' => 
     array (
-      'name' => 'Makedonian dinaari',
+      'name' => 'Makedonian denaari',
       'symbol' => 'MKD',
     ),
     'MKN' => 
@@ -881,6 +883,11 @@ return array (
     array (
       'name' => 'Mauritiuksen rupia',
       'symbol' => 'MUR',
+    ),
+    'MVP' => 
+    array (
+      'name' => 'Malediivien rupia (1947–1981)',
+      'symbol' => 'MVP',
     ),
     'MVR' => 
     array (
@@ -1142,6 +1149,11 @@ return array (
       'name' => 'Surinamin guldeni',
       'symbol' => 'SRG',
     ),
+    'SSP' => 
+    array (
+      'name' => 'Etelä-Sudanin punta',
+      'symbol' => 'SSP',
+    ),
     'STD' => 
     array (
       'name' => 'São Tomén ja Príncipen dobra',
@@ -1320,7 +1332,7 @@ return array (
     'XAF' => 
     array (
       'name' => 'CFA-frangi BEAC',
-      'symbol' => 'XAF',
+      'symbol' => 'FCFA',
     ),
     'XAG' => 
     array (
@@ -1402,14 +1414,24 @@ return array (
       'name' => 'RINET-rahastot',
       'symbol' => 'XRE',
     ),
+    'XSU' => 
+    array (
+      'name' => 'etelä-amerikkalaisen ALBA:n laskentayksikkö sucre',
+      'symbol' => 'XSU',
+    ),
     'XTS' => 
     array (
       'name' => 'testaustarkoitukseen varattu valuuttakoodi',
       'symbol' => 'XTS',
     ),
+    'XUA' => 
+    array (
+      'name' => 'afrikkalainen ADB-laskentayksikkö',
+      'symbol' => 'XUA',
+    ),
     'XXX' => 
     array (
-      'name' => 'tuntematon tai virheellinen rahayksikkö',
+      'name' => 'tuntematon rahayksikkö',
       'symbol' => 'XXX',
     ),
     'YDD' => 
@@ -1454,8 +1476,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'Sambian kwacha',
+      'name' => 'Sambian kwacha (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Sambian kwacha',
+      'symbol' => 'ZMW',
     ),
     'ZRN' => 
     array (

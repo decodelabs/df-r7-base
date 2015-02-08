@@ -1,6 +1,16 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM y G',
+      'long' => 'd MMMM y G',
+      'medium' => 'd MMM, y G',
+      'short' => 'd/M/y GGGGG',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -8,23 +18,23 @@ return array (
       '@default' => 'wide',
       'abbreviated' => 
       array (
-        'sun' => 'asi',
-        'mon' => 'ayn',
-        'tue' => 'asi',
-        'wed' => 'akṛ',
-        'thu' => 'akw',
-        'fri' => 'asim',
-        'sat' => 'Asiḍ',
+        'sun' => 'ⴰⵙⴰ',
+        'mon' => 'ⴰⵢⵏ',
+        'tue' => 'ⴰⵙⵉ',
+        'wed' => 'ⴰⴽⵕ',
+        'thu' => 'ⴰⴽⵡ',
+        'fri' => 'ⴰⵙⵉⵎ',
+        'sat' => 'ⴰⵙⵉⴹ',
       ),
       'full' => 
       array (
-        'sun' => 'asamas',
-        'mon' => 'aynas',
-        'tue' => 'asinas',
-        'wed' => 'akṛas',
-        'thu' => 'akwas',
-        'fri' => 'asimwas',
-        'sat' => 'asiḍyas',
+        'sun' => 'ⴰⵙⴰⵎⴰⵙ',
+        'mon' => 'ⴰⵢⵏⴰⵙ',
+        'tue' => 'ⴰⵙⵉⵏⴰⵙ',
+        'wed' => 'ⴰⴽⵕⴰⵙ',
+        'thu' => 'ⴰⴽⵡⴰⵙ',
+        'fri' => 'ⵙⵉⵎⵡⴰⵙ',
+        'sat' => 'ⴰⵙⵉⴹⵢⴰⵙ',
       ),
     ),
     'months' => 
@@ -32,33 +42,33 @@ return array (
       '@default' => 'full',
       'abbreviated' => 
       array (
-        1 => 'inn',
-        2 => 'bṛa',
-        3 => 'maṛ',
-        4 => 'ibr',
-        5 => 'may',
-        6 => 'yun',
-        7 => 'yul',
-        8 => 'ɣuc',
-        9 => 'cut',
-        10 => 'ktu',
-        11 => 'nuw',
-        12 => 'duj',
+        1 => 'ⵉⵏⵏ',
+        2 => 'ⴱⵕⴰ',
+        3 => 'ⵎⴰⵕ',
+        4 => 'ⵉⴱⵔ',
+        5 => 'ⵎⴰⵢ',
+        6 => 'ⵢⵓⵏ',
+        7 => 'ⵢⵓⵍ',
+        8 => 'ⵖⵓⵛ',
+        9 => 'ⵛⵓⵜ',
+        10 => 'ⴽⵜⵓ',
+        11 => 'ⵏⵓⵡ',
+        12 => 'ⴷⵓⵊ',
       ),
       'full' => 
       array (
-        1 => 'innayr',
-        2 => 'bṛayṛ',
-        3 => 'maṛṣ',
-        4 => 'ibrir',
-        5 => 'mayyu',
-        6 => 'yunyu',
-        7 => 'yulyuz',
-        8 => 'ɣuct',
-        9 => 'cutanbir',
-        10 => 'ktubr',
-        11 => 'nuwanbir',
-        12 => 'dujanbir',
+        1 => 'ⵉⵏⵏⴰⵢⵔ',
+        2 => 'ⴱⵕⴰⵢⵕ',
+        3 => 'ⵎⴰⵕⵚ',
+        4 => 'ⵉⴱⵔⵉⵔ',
+        5 => 'ⵎⴰⵢⵢⵓ',
+        6 => 'ⵢⵓⵏⵢⵓ',
+        7 => 'ⵢⵓⵍⵢⵓⵣ',
+        8 => 'ⵖⵓⵛⵜ',
+        9 => 'ⵛⵓⵜⴰⵏⴱⵉⵔ',
+        10 => 'ⴽⵜⵓⴱⵔ',
+        11 => 'ⵏⵓⵡⴰⵏⴱⵉⵔ',
+        12 => 'ⴷⵓⵊⴰⵏⴱⵉⵔ',
       ),
     ),
     'dateFormat' => 
@@ -66,7 +76,7 @@ return array (
       'full' => 'EEEE d MMMM y',
       'long' => 'd MMMM y',
       'medium' => 'd MMM, y',
-      'short' => 'd/M/yyyy',
+      'short' => 'd/M/y',
     ),
     'timeFormat' => 
     array (

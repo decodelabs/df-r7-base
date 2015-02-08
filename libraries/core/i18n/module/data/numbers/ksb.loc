@@ -276,8 +276,13 @@ return array (
     ),
     'ZMK' => 
     array (
-      'name' => 'kwacha ya Zambia',
+      'name' => 'kwacha ya Zambia (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'kwacha ya Zambia',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

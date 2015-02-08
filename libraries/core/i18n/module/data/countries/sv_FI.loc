@@ -1,0 +1,23 @@
+<?php
+return array (
+  'BQ' => 'Bonaire, S:t Eustatius och Saba',
+  'MM' => 'Burma',
+  'CD' => 'Demokratiska republiken Kongo',
+  'GB' => 'Förenade kungariket',
+  'US' => 'Förenta staterna',
+  'CG' => 'Kongo',
+  'SD' => 'Nordsudan',
+  'PS' => 'Palestinska området',
+  'PN' => 'Pitcairn',
+  'MF' => 'S:t Martin (franska delen)',
+  'SH' => 'Saint Helena',
+  'KN' => 'Saint Kitts och Nevis',
+  'LC' => 'Saint Lucia',
+  'PM' => 'Saint Pierre och Miquelon',
+  'VC' => 'Saint Vincent och Grenadinerna',
+  'BL' => 'Saint-Barthélemy',
+  'SX' => 'Sint Martin',
+  'TK' => 'Tokelauöarna',
+  'VA' => 'Vatikanen',
+  'WF' => 'Wallis- och Futuna',
+);

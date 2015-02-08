@@ -2,12 +2,1016 @@
 return array (
   'symbols' => 
   array (
+    'timeSeparator' => ':',
   ),
   'formats' => 
   array (
-    'currency' => '¤#,##0.00',
   ),
   'currencies' => 
   array (
+    'ADP' => 
+    array (
+      'symbol' => 'ADP',
+    ),
+    'AED' => 
+    array (
+      'symbol' => 'AED',
+    ),
+    'AFA' => 
+    array (
+      'symbol' => 'AFA',
+    ),
+    'AFN' => 
+    array (
+      'symbol' => 'AFN',
+    ),
+    'ALL' => 
+    array (
+      'symbol' => 'ALL',
+    ),
+    'AMD' => 
+    array (
+      'symbol' => 'AMD',
+    ),
+    'ANG' => 
+    array (
+      'symbol' => 'ANG',
+    ),
+    'AOA' => 
+    array (
+      'symbol' => 'AOA',
+    ),
+    'ARS' => 
+    array (
+      'symbol' => 'ARS',
+    ),
+    'ATS' => 
+    array (
+      'symbol' => 'ATS',
+    ),
+    'AUD' => 
+    array (
+      'symbol' => 'A$',
+    ),
+    'AWG' => 
+    array (
+      'symbol' => 'AWG',
+    ),
+    'AZM' => 
+    array (
+      'symbol' => 'AZM',
+    ),
+    'AZN' => 
+    array (
+      'symbol' => 'AZN',
+    ),
+    'BAD' => 
+    array (
+      'symbol' => 'BAD',
+    ),
+    'BAM' => 
+    array (
+      'symbol' => 'BAM',
+    ),
+    'BAN' => 
+    array (
+      'symbol' => 'BAN',
+    ),
+    'BBD' => 
+    array (
+      'symbol' => 'BBD',
+    ),
+    'BDT' => 
+    array (
+      'symbol' => 'BDT',
+    ),
+    'BEC' => 
+    array (
+      'symbol' => 'BEC',
+    ),
+    'BEF' => 
+    array (
+      'symbol' => 'BEF',
+    ),
+    'BEL' => 
+    array (
+      'symbol' => 'BEL',
+    ),
+    'BGL' => 
+    array (
+      'symbol' => 'BGL',
+    ),
+    'BGM' => 
+    array (
+      'symbol' => 'BGM',
+    ),
+    'BGN' => 
+    array (
+      'symbol' => 'BGN',
+    ),
+    'BGO' => 
+    array (
+      'symbol' => 'BGO',
+    ),
+    'BHD' => 
+    array (
+      'symbol' => 'BHD',
+    ),
+    'BIF' => 
+    array (
+      'symbol' => 'BIF',
+    ),
+    'BMD' => 
+    array (
+      'symbol' => 'BMD',
+    ),
+    'BND' => 
+    array (
+      'symbol' => 'BND',
+    ),
+    'BOB' => 
+    array (
+      'symbol' => 'BOB',
+    ),
+    'BRL' => 
+    array (
+      'symbol' => 'R$',
+    ),
+    'BSD' => 
+    array (
+      'symbol' => 'BSD',
+    ),
+    'BTN' => 
+    array (
+      'symbol' => 'BTN',
+    ),
+    'BUK' => 
+    array (
+      'symbol' => 'BUK',
+    ),
+    'BWP' => 
+    array (
+      'symbol' => 'BWP',
+    ),
+    'BYB' => 
+    array (
+      'name' => 'Belarusian New Rouble (1994–1999)',
+      'symbol' => 'BYB',
+    ),
+    'BYR' => 
+    array (
+      'symbol' => 'BYR',
+    ),
+    'BZD' => 
+    array (
+      'symbol' => 'BZD',
+    ),
+    'CAD' => 
+    array (
+      'symbol' => 'CA$',
+    ),
+    'CDF' => 
+    array (
+      'symbol' => 'CDF',
+    ),
+    'CHE' => 
+    array (
+      'symbol' => 'CHE',
+    ),
+    'CHF' => 
+    array (
+      'symbol' => 'CHF',
+    ),
+    'CHW' => 
+    array (
+      'symbol' => 'CHW',
+    ),
+    'CLP' => 
+    array (
+      'symbol' => 'CLP',
+    ),
+    'CNY' => 
+    array (
+      'symbol' => 'CN¥',
+    ),
+    'COP' => 
+    array (
+      'symbol' => 'COP',
+    ),
+    'CRC' => 
+    array (
+      'symbol' => 'CRC',
+    ),
+    'CSD' => 
+    array (
+      'symbol' => 'CSD',
+    ),
+    'CSK' => 
+    array (
+      'symbol' => 'CSK',
+    ),
+    'CUC' => 
+    array (
+      'symbol' => 'CUC',
+    ),
+    'CUP' => 
+    array (
+      'symbol' => 'CUP',
+    ),
+    'CVE' => 
+    array (
+      'symbol' => 'CVE',
+    ),
+    'CYP' => 
+    array (
+      'symbol' => 'CYP',
+    ),
+    'CZK' => 
+    array (
+      'symbol' => 'CZK',
+    ),
+    'DDM' => 
+    array (
+      'symbol' => 'DDM',
+    ),
+    'DEM' => 
+    array (
+      'symbol' => 'DEM',
+    ),
+    'DJF' => 
+    array (
+      'symbol' => 'DJF',
+    ),
+    'DKK' => 
+    array (
+      'symbol' => 'DKK',
+    ),
+    'DOP' => 
+    array (
+      'symbol' => 'DOP',
+    ),
+    'DZD' => 
+    array (
+      'symbol' => 'DZD',
+    ),
+    'EEK' => 
+    array (
+      'symbol' => 'EEK',
+    ),
+    'EGP' => 
+    array (
+      'symbol' => 'EGP',
+    ),
+    'ERN' => 
+    array (
+      'symbol' => 'ERN',
+    ),
+    'ESA' => 
+    array (
+      'symbol' => 'ESA',
+    ),
+    'ESB' => 
+    array (
+      'symbol' => 'ESB',
+    ),
+    'ESP' => 
+    array (
+      'symbol' => 'ESP',
+    ),
+    'ETB' => 
+    array (
+      'symbol' => 'ETB',
+    ),
+    'EUR' => 
+    array (
+      'symbol' => '€',
+    ),
+    'FIM' => 
+    array (
+      'symbol' => 'FIM',
+    ),
+    'FJD' => 
+    array (
+      'symbol' => 'FJD',
+    ),
+    'FKP' => 
+    array (
+      'symbol' => 'FKP',
+    ),
+    'FRF' => 
+    array (
+      'symbol' => 'FRF',
+    ),
+    'GBP' => 
+    array (
+      'symbol' => '£',
+    ),
+    'GEK' => 
+    array (
+      'symbol' => 'GEK',
+    ),
+    'GEL' => 
+    array (
+      'symbol' => 'GEL',
+    ),
+    'GHS' => 
+    array (
+      'symbol' => 'GHS',
+    ),
+    'GIP' => 
+    array (
+      'symbol' => 'GIP',
+    ),
+    'GMD' => 
+    array (
+      'symbol' => 'GMD',
+    ),
+    'GNF' => 
+    array (
+      'symbol' => 'GNF',
+    ),
+    'GRD' => 
+    array (
+      'symbol' => 'GRD',
+    ),
+    'GTQ' => 
+    array (
+      'symbol' => 'GTQ',
+    ),
+    'GYD' => 
+    array (
+      'symbol' => 'GYD',
+    ),
+    'HKD' => 
+    array (
+      'symbol' => 'HK$',
+    ),
+    'HNL' => 
+    array (
+      'symbol' => 'HNL',
+    ),
+    'HRD' => 
+    array (
+      'symbol' => 'HRD',
+    ),
+    'HRK' => 
+    array (
+      'symbol' => 'HRK',
+    ),
+    'HTG' => 
+    array (
+      'symbol' => 'HTG',
+    ),
+    'HUF' => 
+    array (
+      'symbol' => 'HUF',
+    ),
+    'IDR' => 
+    array (
+      'symbol' => 'IDR',
+    ),
+    'IEP' => 
+    array (
+      'symbol' => 'IEP',
+    ),
+    'ILP' => 
+    array (
+      'symbol' => 'ILP',
+    ),
+    'ILR' => 
+    array (
+      'name' => 'Israeli Shekel (1980–1985)',
+      'symbol' => 'ILR',
+    ),
+    'ILS' => 
+    array (
+      'name' => 'Israeli New Shekel',
+      'symbol' => '₪',
+    ),
+    'INR' => 
+    array (
+      'symbol' => '₹',
+    ),
+    'IQD' => 
+    array (
+      'symbol' => 'IQD',
+    ),
+    'IRR' => 
+    array (
+      'symbol' => 'IRR',
+    ),
+    'ISK' => 
+    array (
+      'symbol' => 'ISK',
+    ),
+    'ITL' => 
+    array (
+      'symbol' => 'ITL',
+    ),
+    'JMD' => 
+    array (
+      'symbol' => 'JMD',
+    ),
+    'JOD' => 
+    array (
+      'symbol' => 'JOD',
+    ),
+    'JPY' => 
+    array (
+      'symbol' => '¥',
+    ),
+    'KES' => 
+    array (
+      'symbol' => 'KES',
+    ),
+    'KGS' => 
+    array (
+      'symbol' => 'KGS',
+    ),
+    'KHR' => 
+    array (
+      'symbol' => 'KHR',
+    ),
+    'KMF' => 
+    array (
+      'symbol' => 'KMF',
+    ),
+    'KPW' => 
+    array (
+      'symbol' => 'KPW',
+    ),
+    'KRH' => 
+    array (
+      'symbol' => 'KRH',
+    ),
+    'KRO' => 
+    array (
+      'symbol' => 'KRO',
+    ),
+    'KRW' => 
+    array (
+      'symbol' => '₩',
+    ),
+    'KWD' => 
+    array (
+      'symbol' => 'KWD',
+    ),
+    'KYD' => 
+    array (
+      'symbol' => 'KYD',
+    ),
+    'KZT' => 
+    array (
+      'symbol' => 'KZT',
+    ),
+    'LAK' => 
+    array (
+      'symbol' => 'LAK',
+    ),
+    'LBP' => 
+    array (
+      'symbol' => 'LBP',
+    ),
+    'LKR' => 
+    array (
+      'symbol' => 'LKR',
+    ),
+    'LRD' => 
+    array (
+      'symbol' => 'LRD',
+    ),
+    'LSL' => 
+    array (
+      'symbol' => 'LSL',
+    ),
+    'LTL' => 
+    array (
+      'symbol' => 'LTL',
+    ),
+    'LTT' => 
+    array (
+      'symbol' => 'LTT',
+    ),
+    'LUC' => 
+    array (
+      'symbol' => 'LUC',
+    ),
+    'LUF' => 
+    array (
+      'symbol' => 'LUF',
+    ),
+    'LUL' => 
+    array (
+      'symbol' => 'LUL',
+    ),
+    'LVL' => 
+    array (
+      'symbol' => 'LVL',
+    ),
+    'LVR' => 
+    array (
+      'name' => 'Latvian Rouble',
+      'symbol' => 'LVR',
+    ),
+    'LYD' => 
+    array (
+      'symbol' => 'LYD',
+    ),
+    'MAD' => 
+    array (
+      'symbol' => 'MAD',
+    ),
+    'MCF' => 
+    array (
+      'symbol' => 'MCF',
+    ),
+    'MDC' => 
+    array (
+      'symbol' => 'MDC',
+    ),
+    'MDL' => 
+    array (
+      'symbol' => 'MDL',
+    ),
+    'MGA' => 
+    array (
+      'symbol' => 'MGA',
+    ),
+    'MKD' => 
+    array (
+      'symbol' => 'MKD',
+    ),
+    'MKN' => 
+    array (
+      'symbol' => 'MKN',
+    ),
+    'MMK' => 
+    array (
+      'symbol' => 'MMK',
+    ),
+    'MNT' => 
+    array (
+      'symbol' => 'MNT',
+    ),
+    'MOP' => 
+    array (
+      'symbol' => 'MOP',
+    ),
+    'MRO' => 
+    array (
+      'symbol' => 'MRO',
+    ),
+    'MTL' => 
+    array (
+      'symbol' => 'MTL',
+    ),
+    'MTP' => 
+    array (
+      'symbol' => 'MTP',
+    ),
+    'MUR' => 
+    array (
+      'symbol' => 'MUR',
+    ),
+    'MVP' => 
+    array (
+      'name' => 'Maldivian Rupee',
+      'symbol' => 'MVP',
+    ),
+    'MVR' => 
+    array (
+      'symbol' => 'MVR',
+    ),
+    'MWK' => 
+    array (
+      'symbol' => 'MWK',
+    ),
+    'MXN' => 
+    array (
+      'symbol' => 'MX$',
+    ),
+    'MXP' => 
+    array (
+      'symbol' => 'MXP',
+    ),
+    'MXV' => 
+    array (
+      'symbol' => 'MXV',
+    ),
+    'MYR' => 
+    array (
+      'symbol' => 'MYR',
+    ),
+    'MZN' => 
+    array (
+      'symbol' => 'MZN',
+    ),
+    'NAD' => 
+    array (
+      'symbol' => 'NAD',
+    ),
+    'NGN' => 
+    array (
+      'symbol' => 'NGN',
+    ),
+    'NIC' => 
+    array (
+      'symbol' => 'NIC',
+    ),
+    'NIO' => 
+    array (
+      'symbol' => 'NIO',
+    ),
+    'NLG' => 
+    array (
+      'symbol' => 'NLG',
+    ),
+    'NOK' => 
+    array (
+      'symbol' => 'NOK',
+    ),
+    'NPR' => 
+    array (
+      'symbol' => 'NPR',
+    ),
+    'NZD' => 
+    array (
+      'symbol' => 'NZ$',
+    ),
+    'OMR' => 
+    array (
+      'symbol' => 'OMR',
+    ),
+    'PAB' => 
+    array (
+      'symbol' => 'PAB',
+    ),
+    'PEN' => 
+    array (
+      'symbol' => 'PEN',
+    ),
+    'PGK' => 
+    array (
+      'symbol' => 'PGK',
+    ),
+    'PHP' => 
+    array (
+      'symbol' => 'PHP',
+    ),
+    'PKR' => 
+    array (
+      'symbol' => 'PKR',
+    ),
+    'PLN' => 
+    array (
+      'symbol' => 'PLN',
+    ),
+    'PLZ' => 
+    array (
+      'symbol' => 'PLZ',
+    ),
+    'PTE' => 
+    array (
+      'symbol' => 'PTE',
+    ),
+    'PYG' => 
+    array (
+      'symbol' => 'PYG',
+    ),
+    'QAR' => 
+    array (
+      'symbol' => 'QAR',
+    ),
+    'ROL' => 
+    array (
+      'symbol' => 'ROL',
+    ),
+    'RON' => 
+    array (
+      'symbol' => 'RON',
+    ),
+    'RSD' => 
+    array (
+      'symbol' => 'RSD',
+    ),
+    'RUB' => 
+    array (
+      'symbol' => 'RUB',
+    ),
+    'RUR' => 
+    array (
+      'name' => 'Russian Rouble (1991–1998)',
+      'symbol' => 'RUR',
+    ),
+    'RWF' => 
+    array (
+      'symbol' => 'RWF',
+    ),
+    'SAR' => 
+    array (
+      'symbol' => 'SAR',
+    ),
+    'SBD' => 
+    array (
+      'symbol' => 'SBD',
+    ),
+    'SCR' => 
+    array (
+      'name' => 'Seychelles rupee',
+      'symbol' => 'SCR',
+    ),
+    'SDG' => 
+    array (
+      'symbol' => 'SDG',
+    ),
+    'SEK' => 
+    array (
+      'symbol' => 'SEK',
+    ),
+    'SGD' => 
+    array (
+      'symbol' => 'SGD',
+    ),
+    'SHP' => 
+    array (
+      'name' => 'Saint Helena Pound',
+      'symbol' => 'SHP',
+    ),
+    'SIT' => 
+    array (
+      'symbol' => 'SIT',
+    ),
+    'SKK' => 
+    array (
+      'symbol' => 'SKK',
+    ),
+    'SLL' => 
+    array (
+      'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'symbol' => 'SOS',
+    ),
+    'SRD' => 
+    array (
+      'symbol' => 'SRD',
+    ),
+    'SSP' => 
+    array (
+      'symbol' => 'SSP',
+    ),
+    'STD' => 
+    array (
+      'name' => 'São Tomé and Príncipe Dobra',
+      'symbol' => 'STD',
+    ),
+    'SUR' => 
+    array (
+      'symbol' => 'SUR',
+    ),
+    'SVC' => 
+    array (
+      'symbol' => 'SVC',
+    ),
+    'SYP' => 
+    array (
+      'symbol' => 'SYP',
+    ),
+    'SZL' => 
+    array (
+      'symbol' => 'SZL',
+    ),
+    'THB' => 
+    array (
+      'symbol' => '฿',
+    ),
+    'TJR' => 
+    array (
+      'name' => 'Tajikistani Rouble',
+      'symbol' => 'TJR',
+    ),
+    'TJS' => 
+    array (
+      'symbol' => 'TJS',
+    ),
+    'TMM' => 
+    array (
+      'symbol' => 'TMM',
+    ),
+    'TMT' => 
+    array (
+      'symbol' => 'TMT',
+    ),
+    'TND' => 
+    array (
+      'symbol' => 'TND',
+    ),
+    'TOP' => 
+    array (
+      'symbol' => 'TOP',
+    ),
+    'TPE' => 
+    array (
+      'symbol' => 'TPE',
+    ),
+    'TRL' => 
+    array (
+      'symbol' => 'TRL',
+    ),
+    'TRY' => 
+    array (
+      'symbol' => 'TRY',
+    ),
+    'TTD' => 
+    array (
+      'name' => 'Trinidad and Tobago Dollar',
+      'symbol' => 'TTD',
+    ),
+    'TWD' => 
+    array (
+      'symbol' => 'NT$',
+    ),
+    'TZS' => 
+    array (
+      'symbol' => 'TZS',
+    ),
+    'UAH' => 
+    array (
+      'symbol' => 'UAH',
+    ),
+    'UAK' => 
+    array (
+      'symbol' => 'UAK',
+    ),
+    'UGX' => 
+    array (
+      'symbol' => 'UGX',
+    ),
+    'USD' => 
+    array (
+      'symbol' => '$',
+    ),
+    'USN' => 
+    array (
+      'symbol' => 'USN',
+    ),
+    'USS' => 
+    array (
+      'symbol' => 'USS',
+    ),
+    'UYU' => 
+    array (
+      'symbol' => 'UYU',
+    ),
+    'UZS' => 
+    array (
+      'symbol' => 'UZS',
+    ),
+    'VEF' => 
+    array (
+      'symbol' => 'VEF',
+    ),
+    'VND' => 
+    array (
+      'symbol' => '₫',
+    ),
+    'VNN' => 
+    array (
+      'symbol' => 'VNN',
+    ),
+    'VUV' => 
+    array (
+      'symbol' => 'VUV',
+    ),
+    'WST' => 
+    array (
+      'symbol' => 'WST',
+    ),
+    'XAF' => 
+    array (
+      'symbol' => 'FCFA',
+    ),
+    'XAG' => 
+    array (
+      'symbol' => 'XAG',
+    ),
+    'XAU' => 
+    array (
+      'symbol' => 'XAU',
+    ),
+    'XBA' => 
+    array (
+      'symbol' => 'XBA',
+    ),
+    'XBB' => 
+    array (
+      'symbol' => 'XBB',
+    ),
+    'XBC' => 
+    array (
+      'symbol' => 'XBC',
+    ),
+    'XBD' => 
+    array (
+      'symbol' => 'XBD',
+    ),
+    'XCD' => 
+    array (
+      'symbol' => 'EC$',
+    ),
+    'XDR' => 
+    array (
+      'symbol' => 'XDR',
+    ),
+    'XEU' => 
+    array (
+      'symbol' => 'XEU',
+    ),
+    'XFO' => 
+    array (
+      'symbol' => 'XFO',
+    ),
+    'XFU' => 
+    array (
+      'symbol' => 'XFU',
+    ),
+    'XOF' => 
+    array (
+      'name' => 'CFA franc BCEAO',
+      'symbol' => 'CFA',
+    ),
+    'XPD' => 
+    array (
+      'symbol' => 'XPD',
+    ),
+    'XPF' => 
+    array (
+      'symbol' => 'CFPF',
+    ),
+    'XPT' => 
+    array (
+      'symbol' => 'XPT',
+    ),
+    'XRE' => 
+    array (
+      'symbol' => 'XRE',
+    ),
+    'XSU' => 
+    array (
+      'symbol' => 'XSU',
+    ),
+    'XTS' => 
+    array (
+      'symbol' => 'XTS',
+    ),
+    'XUA' => 
+    array (
+      'symbol' => 'XUA',
+    ),
+    'XXX' => 
+    array (
+      'symbol' => 'XXX',
+    ),
+    'YDD' => 
+    array (
+      'symbol' => 'YDD',
+    ),
+    'YER' => 
+    array (
+      'symbol' => 'YER',
+    ),
+    'YUD' => 
+    array (
+      'symbol' => 'YUD',
+    ),
+    'YUM' => 
+    array (
+      'symbol' => 'YUM',
+    ),
+    'YUN' => 
+    array (
+      'symbol' => 'YUN',
+    ),
+    'YUR' => 
+    array (
+      'symbol' => 'YUR',
+    ),
+    'ZAL' => 
+    array (
+      'symbol' => 'ZAL',
+    ),
+    'ZAR' => 
+    array (
+      'symbol' => 'ZAR',
+    ),
+    'ZMK' => 
+    array (
+      'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'symbol' => 'ZMW',
+    ),
   ),
 );

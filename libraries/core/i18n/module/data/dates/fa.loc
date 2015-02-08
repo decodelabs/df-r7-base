@@ -1,6 +1,19 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'chinese' => 
+  array (
+  ),
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM y G',
+      'long' => 'd MMMM y G',
+      'medium' => 'd MMM y G',
+      'short' => 'y/M/d G',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -66,7 +79,7 @@ return array (
       'full' => 'EEEE d MMMM y',
       'long' => 'd MMMM y',
       'medium' => 'd MMM y',
-      'short' => 'yyyy/M/d',
+      'short' => 'y/M/d',
     ),
     'timeFormat' => 
     array (
@@ -155,7 +168,7 @@ return array (
     array (
       'full' => 'EEEE d MMMM y GGGG',
       'long' => 'd MMMM y G',
-      'medium' => 'yyyy/M/d G',
+      'medium' => 'y/M/d G',
       'short' => 'yy/M/d G',
     ),
   ),

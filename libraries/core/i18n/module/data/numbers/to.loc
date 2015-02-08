@@ -9,9 +9,11 @@ return array (
     'plusSign' => '+',
     'minusSign' => '-',
     'exponential' => 'E',
+    'superscriptingExponent' => '×',
     'perMille' => '‰',
     'infinity' => '∞',
-    'nan' => 'NaN',
+    'nan' => 'TF',
+    'timeSeparator' => ':',
   ),
   'formats' => 
   array (
@@ -22,10 +24,43 @@ return array (
   ),
   'currencies' => 
   array (
+    'AUD' => 
+    array (
+      'symbol' => 'AUD$',
+    ),
+    'FJD' => 
+    array (
+      'symbol' => 'FJD',
+    ),
+    'NZD' => 
+    array (
+      'symbol' => 'NZD$',
+    ),
+    'PGK' => 
+    array (
+      'symbol' => 'PGK',
+    ),
+    'SBD' => 
+    array (
+      'symbol' => 'SBD',
+    ),
     'TOP' => 
     array (
-      'name' => 'TOP',
+      'name' => 'Paʻanga fakatonga',
       'symbol' => 'T$',
+    ),
+    'VUV' => 
+    array (
+      'symbol' => 'VUV',
+    ),
+    'WST' => 
+    array (
+      'name' => 'Tala fakahaʻamoa',
+      'symbol' => 'WST',
+    ),
+    'XPF' => 
+    array (
+      'symbol' => 'CFPF',
     ),
   ),
 );

@@ -10,7 +10,6 @@ return array (
   array (
     'AWG' => 
     array (
-      'name' => 'AWG',
       'symbol' => 'Afl.',
     ),
   ),

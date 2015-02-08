@@ -12,7 +12,6 @@ return array (
   array (
     'CRC' => 
     array (
-      'name' => 'CRC',
       'symbol' => '₡',
     ),
   ),

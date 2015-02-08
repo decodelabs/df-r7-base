@@ -1,0 +1,11 @@
+<?php
+return array (
+  'ar' => 'Alâbɛ',
+  'en' => 'Aŋgɛlúshi',
+  'und' => 'cú-pʉɔ yi pɛ́ ká kɛ́ jí',
+  'fr' => 'Fɛlánci',
+  'jgo' => 'Ndaꞌa',
+  'de' => 'Njáman',
+  'el' => 'Ŋgɛlɛ̂k',
+  'zh' => 'Shinwâ',
+);

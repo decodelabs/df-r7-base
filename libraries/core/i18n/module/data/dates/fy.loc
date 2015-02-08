@@ -1,0 +1,389 @@
+<?php
+return array (
+  '@default' => 'gregorian',
+  'buddhist' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM y G',
+      'long' => 'd MMMM y G',
+      'medium' => 'd MMM y G',
+      'short' => 'dd-MM-yy GGGGG',
+    ),
+  ),
+  'chinese' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM U',
+      'long' => 'd MMMM U',
+      'medium' => 'd MMM U',
+      'short' => 'dd-MM-yy',
+    ),
+  ),
+  'coptic' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Tut',
+        2 => 'Babah',
+        3 => 'Hatur',
+        4 => 'Kiyahk',
+        5 => 'Tubah',
+        6 => 'Amshir',
+        7 => 'Baramhat',
+        8 => 'Baramundah',
+        9 => 'Bashans',
+        10 => 'Ba’unah',
+        11 => 'Abib',
+        12 => 'Misra',
+        13 => 'Nasi',
+      ),
+      'full' => 
+      array (
+        1 => 'Tut',
+        2 => 'Babah',
+        3 => 'Hatur',
+        4 => 'Kiyahk',
+        5 => 'Tubah',
+        6 => 'Amshir',
+        7 => 'Baramhat',
+        8 => 'Baramundah',
+        9 => 'Bashans',
+        10 => 'Ba’unah',
+        11 => 'Abib',
+        12 => 'Misra',
+        13 => 'Nasi',
+      ),
+    ),
+  ),
+  'dangi' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM U',
+      'long' => 'd MMMM U',
+      'medium' => 'd MMM U',
+      'short' => 'dd-MM-yy',
+    ),
+  ),
+  'ethiopic' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Mäskäräm',
+        2 => 'Teqemt',
+        3 => 'Hedar',
+        4 => 'Tahsas',
+        5 => 'T’er',
+        6 => 'Yäkatit',
+        7 => 'Mägabit',
+        8 => 'Miyazya',
+        9 => 'Genbot',
+        10 => 'Säne',
+        11 => 'Hamle',
+        12 => 'Nähase',
+        13 => 'Pagumän',
+      ),
+      'full' => 
+      array (
+        1 => 'Mäskäräm',
+        2 => 'Teqemt',
+        3 => 'Hedar',
+        4 => 'Tahsas',
+        5 => 'T’er',
+        6 => 'Yäkatit',
+        7 => 'Mägabit',
+        8 => 'Miyazya',
+        9 => 'Genbot',
+        10 => 'Säne',
+        11 => 'Hamle',
+        12 => 'Nähase',
+        13 => 'Pagumän',
+      ),
+    ),
+  ),
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM y G',
+      'long' => 'd MMMM y G',
+      'medium' => 'd MMM y G',
+      'short' => 'dd-MM-yy GGGGG',
+    ),
+  ),
+  'gregorian' => 
+  array (
+    'days' => 
+    array (
+      '@default' => 'wide',
+      'abbreviated' => 
+      array (
+        'sun' => 'si',
+        'mon' => 'mo',
+        'tue' => 'ti',
+        'wed' => 'wo',
+        'thu' => 'to',
+        'fri' => 'fr',
+        'sat' => 'so',
+      ),
+      'full' => 
+      array (
+        'sun' => 'snein',
+        'mon' => 'moandei',
+        'tue' => 'tiisdei',
+        'wed' => 'woansdei',
+        'thu' => 'tongersdei',
+        'fri' => 'freed',
+        'sat' => 'sneon',
+      ),
+    ),
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'jan.',
+        2 => 'feb.',
+        3 => 'mrt.',
+        4 => 'apr.',
+        5 => 'mai',
+        6 => 'jun.',
+        7 => 'jul.',
+        8 => 'aug.',
+        9 => 'sep.',
+        10 => 'okt.',
+        11 => 'nov.',
+        12 => 'des.',
+      ),
+      'full' => 
+      array (
+        1 => 'jannewaris',
+        2 => 'febrewaris',
+        3 => 'maart',
+        4 => 'april',
+        5 => 'maaie',
+        6 => 'juny',
+        7 => 'july',
+        8 => 'augustus',
+        9 => 'septimber',
+        10 => 'oktober',
+        11 => 'novimber',
+        12 => 'desimber',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM y',
+      'long' => 'd MMMM y',
+      'medium' => 'd MMM y',
+      'short' => 'dd-MM-yy',
+    ),
+    'timeFormat' => 
+    array (
+      'full' => 'HH:mm:ss zzzz',
+      'long' => 'HH:mm:ss z',
+      'medium' => 'HH:mm:ss',
+      'short' => 'HH:mm',
+    ),
+  ),
+  'hebrew' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Tisjrie',
+        2 => 'Chesjwan',
+        3 => 'Kislev',
+        4 => 'Tevet',
+        5 => 'Sjevat',
+        6 => 'Adar A',
+        7 => 'Adar B',
+        8 => 'Nisan',
+        9 => 'Ijar',
+        10 => 'Sivan',
+        11 => 'Tammoez',
+        12 => 'Av',
+        13 => 'Elloel',
+      ),
+      'full' => 
+      array (
+        1 => 'Tisjrie',
+        2 => 'Chesjwan',
+        3 => 'Kislev',
+        4 => 'Tevet',
+        5 => 'Sjevat',
+        6 => 'Adar A',
+        7 => 'Adar B',
+        8 => 'Nisan',
+        9 => 'Ijar',
+        10 => 'Sivan',
+        11 => 'Tammoez',
+        12 => 'Av',
+        13 => 'Elloel',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM y G',
+      'long' => 'd MMMM y G',
+      'medium' => 'd MMM y G',
+      'short' => 'dd-MM-yy GGGGG',
+    ),
+  ),
+  'indian' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Chaitra',
+        2 => 'Vaishakha',
+        3 => 'Jyeshtha',
+        4 => 'Aashaadha',
+        5 => 'Shraavana',
+        6 => 'Bhaadrapada',
+        7 => 'Ashvina',
+        8 => 'Kaartika',
+        9 => 'Agrahayana',
+        10 => 'Pausha',
+        11 => 'Maagha',
+        12 => 'Phaalguna',
+      ),
+      'full' => 
+      array (
+        1 => 'Chaitra',
+        2 => 'Vaishakha',
+        3 => 'Jyeshtha',
+        4 => 'Aashaadha',
+        5 => 'Shraavana',
+        6 => 'Bhaadrapada',
+        7 => 'Ashvina',
+        8 => 'Kaartika',
+        9 => 'Agrahayana',
+        10 => 'Pausha',
+        11 => 'Maagha',
+        12 => 'Phaalguna',
+      ),
+    ),
+  ),
+  'islamic' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Moeh.',
+        2 => 'Saf.',
+        3 => 'Rab. I',
+        4 => 'Rab. II',
+        5 => 'Joem. I',
+        6 => 'Joem. II',
+        7 => 'Raj.',
+        8 => 'Sja.',
+        9 => 'Ram.',
+        10 => 'Sjaw.',
+        11 => 'Doe al k.',
+        12 => 'Doe al h.',
+      ),
+      'full' => 
+      array (
+        1 => 'Moeharram',
+        2 => 'Safar',
+        3 => 'Rabiʻa al awal',
+        4 => 'Rabiʻa al thani',
+        5 => 'Joemadʻal awal',
+        6 => 'Joemadʻal thani',
+        7 => 'Rajab',
+        8 => 'Sjaʻaban',
+        9 => 'Ramadan',
+        10 => 'Sjawal',
+        11 => 'Doe al kaʻaba',
+        12 => 'Doe al hizja',
+      ),
+    ),
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM y G',
+      'long' => 'd MMMM y G',
+      'medium' => 'd MMM y G',
+      'short' => 'dd-MM-yy GGGGG',
+    ),
+  ),
+  'japanese' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM y G',
+      'long' => 'd MMMM y G',
+      'medium' => 'd MMM y G',
+      'short' => 'dd-MM-yy GGGGG',
+    ),
+  ),
+  'persian' => 
+  array (
+    'months' => 
+    array (
+      '@default' => 'full',
+      'abbreviated' => 
+      array (
+        1 => 'Farvardin',
+        2 => 'Ordibehesht',
+        3 => 'Khordad',
+        4 => 'Tir',
+        5 => 'Mordad',
+        6 => 'Shahrivar',
+        7 => 'Mehr',
+        8 => 'Aban',
+        9 => 'Azar',
+        10 => 'Dey',
+        11 => 'Bahman',
+        12 => 'Esfand',
+      ),
+      'full' => 
+      array (
+        1 => 'Farvardin',
+        2 => 'Ordibehesht',
+        3 => 'Khordad',
+        4 => 'Tir',
+        5 => 'Mordad',
+        6 => 'Shahrivar',
+        7 => 'Mehr',
+        8 => 'Aban',
+        9 => 'Azar',
+        10 => 'Dey',
+        11 => 'Bahman',
+        12 => 'Esfand',
+      ),
+    ),
+  ),
+  'roc' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE d MMMM y G',
+      'long' => 'd MMMM y G',
+      'medium' => 'd MMM y G',
+      'short' => 'dd-MM-yy GGGGG',
+    ),
+  ),
+);

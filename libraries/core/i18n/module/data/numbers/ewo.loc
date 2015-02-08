@@ -20,22 +20,22 @@ return array (
     ),
     'AOA' => 
     array (
-      'name' => 'Kwánǝza yá Angolá',
+      'name' => 'Kwánəza yá Angolá',
       'symbol' => 'AOA',
     ),
     'AUD' => 
     array (
-      'name' => 'Dolár yá Osǝtǝralí',
+      'name' => 'Dolár yá Osətəralí',
       'symbol' => 'AUD',
     ),
     'BHD' => 
     array (
-      'name' => 'Dinár yá Bahǝrɛ́n',
+      'name' => 'Dinár yá Bahərɛ́n',
       'symbol' => 'BHD',
     ),
     'BIF' => 
     array (
-      'name' => 'Fǝláŋ yá Burundí',
+      'name' => 'Fəláŋ yá Burundí',
       'symbol' => 'BIF',
     ),
     'BWP' => 
@@ -50,27 +50,27 @@ return array (
     ),
     'CDF' => 
     array (
-      'name' => 'Fǝláŋ yá Kongo',
+      'name' => 'Fəláŋ yá Kongo',
       'symbol' => 'CDF',
     ),
     'CHF' => 
     array (
-      'name' => 'Fǝláŋ yá Suís',
+      'name' => 'Fəláŋ yá Suís',
       'symbol' => 'CHF',
     ),
     'CNY' => 
     array (
-      'name' => 'Yuán Renǝminǝbí yá Tsainís',
+      'name' => 'Yuán Renəminəbí yá Tsainís',
       'symbol' => 'CNY',
     ),
     'CVE' => 
     array (
-      'name' => 'Esǝkúdo yá Kápǝ́vɛ́rǝ',
+      'name' => 'Esəkúdo yá Kápə́vɛ́rə',
       'symbol' => 'CVE',
     ),
     'DJF' => 
     array (
-      'name' => 'Fǝláŋ yá dzibutí',
+      'name' => 'Fəláŋ yá dzibutí',
       'symbol' => 'DJF',
     ),
     'DZD' => 
@@ -80,12 +80,12 @@ return array (
     ),
     'EGP' => 
     array (
-      'name' => 'Lívǝ́lǝ yá Ehíbǝtía',
+      'name' => 'Lívə́lə yá Ehíbətía',
       'symbol' => 'EGP',
     ),
     'ERN' => 
     array (
-      'name' => 'Náfǝka yá Eritelé',
+      'name' => 'Náfəka yá Eritelé',
       'symbol' => 'ERN',
     ),
     'ETB' => 
@@ -95,12 +95,12 @@ return array (
     ),
     'EUR' => 
     array (
-      'name' => 'ǝró',
+      'name' => 'əró',
       'symbol' => 'EUR',
     ),
     'GBP' => 
     array (
-      'name' => 'Lívǝ́lǝ Sǝtǝrǝlíŋ',
+      'name' => 'Lívə́lə Sətərəlíŋ',
       'symbol' => 'GBP',
     ),
     'GHC' => 
@@ -135,7 +135,7 @@ return array (
     ),
     'KMF' => 
     array (
-      'name' => 'Fǝláŋ yá Komória',
+      'name' => 'Fəláŋ yá Komória',
       'symbol' => 'KMF',
     ),
     'LRD' => 
@@ -160,7 +160,7 @@ return array (
     ),
     'MGA' => 
     array (
-      'name' => 'Ariari yá Malǝgás',
+      'name' => 'Ariari yá Maləgás',
       'symbol' => 'MGA',
     ),
     'MRO' => 
@@ -195,7 +195,7 @@ return array (
     ),
     'RWF' => 
     array (
-      'name' => 'Fǝláŋ yá Ruwandá',
+      'name' => 'Fəláŋ yá Ruwandá',
       'symbol' => 'RWF',
     ),
     'SAR' => 
@@ -210,22 +210,22 @@ return array (
     ),
     'SDG' => 
     array (
-      'name' => 'Lívǝlǝ yá Sudán',
+      'name' => 'Lívələ yá Sudán',
       'symbol' => 'SDG',
     ),
     'SDP' => 
     array (
-      'name' => 'Lívǝlǝ yá Sudán (1956–2007)',
+      'name' => 'Lívələ yá Sudán (1956–2007)',
       'symbol' => 'SDP',
     ),
     'SHP' => 
     array (
-      'name' => 'Lívǝlǝ yá Ǹfúfúb Elɛ́n',
+      'name' => 'Lívələ yá Ǹfúfúb Elɛ́n',
       'symbol' => 'SHP',
     ),
     'SLL' => 
     array (
-      'name' => 'Leóne yá Sierá-leónǝ',
+      'name' => 'Leóne yá Sierá-leónə',
       'symbol' => 'SLL',
     ),
     'SOS' => 
@@ -235,7 +235,7 @@ return array (
     ),
     'STD' => 
     array (
-      'name' => 'Dóbǝ́ra yá Saó Tomé ai Pǝlinǝsípe',
+      'name' => 'Dóbə́ra yá Saó Tomé ai Pəlinəsípe',
       'symbol' => 'STD',
     ),
     'SZL' => 
@@ -255,33 +255,38 @@ return array (
     ),
     'UGX' => 
     array (
-      'name' => 'Silíŋ yá Ugandá (1966-1987)',
+      'name' => 'Silíŋ yá Ugandá (1966–1987)',
       'symbol' => 'UGX',
     ),
     'USD' => 
     array (
-      'name' => 'Dolár yá amɛ́rǝkǝ',
+      'name' => 'Dolár yá amɛ́rəkə',
       'symbol' => 'USD',
     ),
     'XAF' => 
     array (
-      'name' => 'Fǝláŋ CFA (BEAC)',
+      'name' => 'Fəláŋ CFA (BEAC)',
       'symbol' => 'XAF',
     ),
     'XOF' => 
     array (
-      'name' => 'Fǝláŋ CFA (BCEAO)',
+      'name' => 'Fəláŋ CFA (BCEAO)',
       'symbol' => 'XOF',
     ),
     'ZAR' => 
     array (
-      'name' => 'Ránǝdǝ yá Afiríka',
+      'name' => 'Ránədə yá Afiríka',
       'symbol' => 'ZAR',
     ),
     'ZMK' => 
     array (
-      'name' => 'Kwatsa yá Zambí',
+      'name' => 'Kwatsa yá Zambí (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'Kwatsa yá Zambí',
+      'symbol' => 'ZMW',
     ),
     'ZWD' => 
     array (

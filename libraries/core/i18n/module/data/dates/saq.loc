@@ -1,6 +1,16 @@
 <?php
 return array (
   '@default' => 'gregorian',
+  'generic' => 
+  array (
+    'dateFormat' => 
+    array (
+      'full' => 'EEEE, d MMMM y G',
+      'long' => 'd MMMM y G',
+      'medium' => 'd MMM y G',
+      'short' => 'dd/MM/y GGGGG',
+    ),
+  ),
   'gregorian' => 
   array (
     'days' => 
@@ -20,7 +30,7 @@ return array (
       array (
         'sun' => 'Mderot ee are',
         'mon' => 'Mderot ee kuni',
-        'tue' => 'Mderot ee ong\'wan',
+        'tue' => 'Mderot ee ong’wan',
         'wed' => 'Mderot ee inet',
         'thu' => 'Mderot ee ile',
         'fri' => 'Mderot ee sapa',
@@ -50,7 +60,7 @@ return array (
         1 => 'Lapa le obo',
         2 => 'Lapa le waare',
         3 => 'Lapa le okuni',
-        4 => 'Lapa le ong\'wan',
+        4 => 'Lapa le ong’wan',
         5 => 'Lapa le imet',
         6 => 'Lapa le ile',
         7 => 'Lapa le sapa',
@@ -66,7 +76,7 @@ return array (
       'full' => 'EEEE, d MMMM y',
       'long' => 'd MMMM y',
       'medium' => 'd MMM y',
-      'short' => 'dd/MM/yyyy',
+      'short' => 'dd/MM/y',
     ),
     'timeFormat' => 
     array (

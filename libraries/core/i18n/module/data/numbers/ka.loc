@@ -3,19 +3,22 @@ return array (
   'symbols' => 
   array (
     'decimal' => ',',
-    'group' => '.',
+    'group' => ' ',
     'list' => ';',
     'percentSign' => '%',
     'plusSign' => '+',
     'minusSign' => '-',
     'exponential' => 'E',
+    'superscriptingExponent' => '×',
     'perMille' => '‰',
     'infinity' => '∞',
-    'nan' => 'NaN',
+    'nan' => 'არ არის რიცხვი',
+    'timeSeparator' => ':',
   ),
   'formats' => 
   array (
     'decimal' => '#,##0.###',
+    'scientific' => '#E0',
     'percent' => '#,##0 %',
     'currency' => '#,##0.00 ¤',
   ),
@@ -28,17 +31,17 @@ return array (
     ),
     'AED' => 
     array (
-      'name' => 'გაერთიანებული არაბული საემიროების დირჰემი',
+      'name' => 'არაბთა გაერთიანებული საამიროების დირჰამი',
       'symbol' => 'AED',
     ),
     'AFA' => 
     array (
-      'name' => 'ავღანი (1927-2002)',
+      'name' => 'ავღანი (1927–2002)',
       'symbol' => 'AFA',
     ),
     'AFN' => 
     array (
-      'name' => 'ავღანი',
+      'name' => 'ავღანური ავღანი',
       'symbol' => 'AFN',
     ),
     'ALL' => 
@@ -53,7 +56,7 @@ return array (
     ),
     'ANG' => 
     array (
-      'name' => 'ნიდრელანდების ანტილიის გულდენი',
+      'name' => 'ნიდერლანდების ანტილების გულდენი',
       'symbol' => 'ANG',
     ),
     'AOA' => 
@@ -63,17 +66,17 @@ return array (
     ),
     'AOK' => 
     array (
-      'name' => 'ანგოლური კვანზა (1977-1990)',
+      'name' => 'ანგოლური კვანზა (1977–1990)',
       'symbol' => 'AOK',
     ),
     'AON' => 
     array (
-      'name' => 'ანგოლური ახალი კვანზა (1990-2000)',
+      'name' => 'ანგოლური ახალი კვანზა (1990–2000)',
       'symbol' => 'AON',
     ),
     'AOR' => 
     array (
-      'name' => 'ანგოლური მიტოლებული კვანზა (1995-1999)',
+      'name' => 'ანგოლური მიტოლებული კვანზა (1995–1999)',
       'symbol' => 'AOR',
     ),
     'ARA' => 
@@ -83,7 +86,7 @@ return array (
     ),
     'ARP' => 
     array (
-      'name' => 'არგენტინული პესო (1983-1985)',
+      'name' => 'არგენტინული პესო (1983–1985)',
       'symbol' => 'ARP',
     ),
     'ARS' => 
@@ -108,7 +111,7 @@ return array (
     ),
     'AZM' => 
     array (
-      'name' => 'აზერბაიჯანული მანათი (1993-2006)',
+      'name' => 'აზერბაიჯანული მანათი (1993–2006)',
       'symbol' => 'AZM',
     ),
     'AZN' => 
@@ -123,7 +126,7 @@ return array (
     ),
     'BAM' => 
     array (
-      'name' => 'ბოსნია-ჰერცოგოვინას კონვერტირებადი მარკა',
+      'name' => 'ბოსნია და ჰერცოგოვინას კონვერტირებადი მარკა',
       'symbol' => 'BAM',
     ),
     'BBD' => 
@@ -158,7 +161,7 @@ return array (
     ),
     'BGN' => 
     array (
-      'name' => 'ბულგარული ახალი ლევი',
+      'name' => 'ბულგარული ლევი',
       'symbol' => 'BGN',
     ),
     'BHD' => 
@@ -173,7 +176,7 @@ return array (
     ),
     'BMD' => 
     array (
-      'name' => 'ბერმუდული დინარი',
+      'name' => 'ბერმუდული დოლარი',
       'symbol' => 'BMD',
     ),
     'BND' => 
@@ -183,7 +186,7 @@ return array (
     ),
     'BOB' => 
     array (
-      'name' => 'ბოლივიანო',
+      'name' => 'ბოლივიური ბოლივიანო',
       'symbol' => 'BOB',
     ),
     'BOP' => 
@@ -193,7 +196,7 @@ return array (
     ),
     'BRB' => 
     array (
-      'name' => 'ბრაზილიური კრუზეირო ნოვო (1967-1986)',
+      'name' => 'ბრაზილიური კრუზეირო ნოვო (1967–1986)',
       'symbol' => 'BRB',
     ),
     'BRC' => 
@@ -203,13 +206,13 @@ return array (
     ),
     'BRE' => 
     array (
-      'name' => 'ბრაზილიური კრუზეირო (1990-1993)',
+      'name' => 'ბრაზილიური კრუზეირო (1990–1993)',
       'symbol' => 'BRE',
     ),
     'BRL' => 
     array (
       'name' => 'ბრაზილიური რეალი',
-      'symbol' => 'BRL',
+      'symbol' => 'R$',
     ),
     'BRN' => 
     array (
@@ -226,39 +229,64 @@ return array (
       'name' => 'ბაჰამური დოლარი',
       'symbol' => 'BSD',
     ),
+    'BTN' => 
+    array (
+      'name' => 'ბუტანური ნგულტრუმი',
+      'symbol' => 'BTN',
+    ),
     'BWP' => 
     array (
-      'name' => 'ბოტსვანიური პულა',
+      'name' => 'ბოცვანური პულა',
       'symbol' => 'BWP',
     ),
     'BYB' => 
     array (
-      'name' => 'ახალი ბელარუსიული რუბლი (1994-1999)',
+      'name' => 'ახალი ბელარუსიული რუბლი (1994–1999)',
       'symbol' => 'BYB',
     ),
     'BYR' => 
     array (
-      'name' => 'ბელარუსიული რუბლი',
+      'name' => 'ბელორუსული რუბლი',
       'symbol' => 'BYR',
+    ),
+    'BZD' => 
+    array (
+      'name' => 'ბელიზის დოლარი',
+      'symbol' => 'BZD',
     ),
     'CAD' => 
     array (
       'name' => 'კანადური დოლარი',
-      'symbol' => 'CAD',
+      'symbol' => 'CA$',
+    ),
+    'CDF' => 
+    array (
+      'name' => 'კონგოს ფრანკი',
+      'symbol' => 'CDF',
     ),
     'CHF' => 
     array (
       'name' => 'შვეიცარიული ფრანკი',
       'symbol' => 'CHF',
     ),
+    'CLP' => 
+    array (
+      'name' => 'ჩილეს პესო',
+      'symbol' => 'CLP',
+    ),
     'CNY' => 
     array (
-      'name' => 'ჩინური უანი',
+      'name' => 'ჩინური იუანი',
       'symbol' => 'CNY',
+    ),
+    'COP' => 
+    array (
+      'name' => 'კოლუმბიური პესო',
+      'symbol' => 'COP',
     ),
     'CRC' => 
     array (
-      'name' => 'კოსტა რიკული კოლონი',
+      'name' => 'კოსტა-რიკული კოლონი',
       'symbol' => 'CRC',
     ),
     'CSD' => 
@@ -271,6 +299,11 @@ return array (
       'name' => 'ჩეხოსლოვაკიის მყარი კრონა',
       'symbol' => 'CSK',
     ),
+    'CUC' => 
+    array (
+      'name' => 'კუბური კონვერტირებადი პესო',
+      'symbol' => 'CUC',
+    ),
     'CUP' => 
     array (
       'name' => 'კუბური პესო',
@@ -278,7 +311,7 @@ return array (
     ),
     'CVE' => 
     array (
-      'name' => 'კაბო ვერდეს ესკუდო',
+      'name' => 'კაბო-ვერდეს ესკუდო',
       'symbol' => 'CVE',
     ),
     'CYP' => 
@@ -318,7 +351,7 @@ return array (
     ),
     'DZD' => 
     array (
-      'name' => 'ალჟირიული დინარი',
+      'name' => 'ალჟირული დინარი',
       'symbol' => 'DZD',
     ),
     'EEK' => 
@@ -331,15 +364,25 @@ return array (
       'name' => 'ეგვიპტური გირვანქა',
       'symbol' => 'EGP',
     ),
+    'ERN' => 
+    array (
+      'name' => 'ერიტრეის ნაკფა',
+      'symbol' => 'ERN',
+    ),
     'ESP' => 
     array (
       'name' => 'ესპანური პესეტა',
       'symbol' => 'ESP',
     ),
+    'ETB' => 
+    array (
+      'name' => 'ეთიოპიური ბირი',
+      'symbol' => 'ETB',
+    ),
     'EUR' => 
     array (
       'name' => 'ევრო',
-      'symbol' => 'EUR',
+      'symbol' => '€',
     ),
     'FIM' => 
     array (
@@ -348,8 +391,13 @@ return array (
     ),
     'FJD' => 
     array (
-      'name' => 'ფიჯი დოლარი',
+      'name' => 'ფიჯის დოლარი',
       'symbol' => 'FJD',
+    ),
+    'FKP' => 
+    array (
+      'name' => 'ფოლკლენდის კუნძულების ფუნტი',
+      'symbol' => 'FKP',
     ),
     'FRF' => 
     array (
@@ -358,8 +406,8 @@ return array (
     ),
     'GBP' => 
     array (
-      'name' => 'ინგლისური გირვანქა სტერლინგი',
-      'symbol' => 'GBP',
+      'name' => 'ბრიტანული გირვანქა სტერლინგი',
+      'symbol' => '£',
     ),
     'GEK' => 
     array (
@@ -371,24 +419,54 @@ return array (
       'name' => 'ქართული ლარი',
       'symbol' => 'GEL',
     ),
+    'GHS' => 
+    array (
+      'name' => 'განური სედი',
+      'symbol' => 'GHS',
+    ),
+    'GIP' => 
+    array (
+      'name' => 'გიბრალტარული ფუნტი',
+      'symbol' => 'GIP',
+    ),
+    'GMD' => 
+    array (
+      'name' => 'გამბიური დალასი',
+      'symbol' => 'GMD',
+    ),
+    'GNF' => 
+    array (
+      'name' => 'გვინეური ფრანკი',
+      'symbol' => 'GNF',
+    ),
     'GRD' => 
     array (
       'name' => 'ბერძნული დრაჰმა',
       'symbol' => 'GRD',
+    ),
+    'GTQ' => 
+    array (
+      'name' => 'გვატემალური კეტსალი',
+      'symbol' => 'GTQ',
     ),
     'GWE' => 
     array (
       'name' => 'პორტუგალიური გინეა ესკუდო',
       'symbol' => 'GWE',
     ),
+    'GYD' => 
+    array (
+      'name' => 'გაიანური დოლარი',
+      'symbol' => 'GYD',
+    ),
     'HKD' => 
     array (
-      'name' => 'ჰონგ კონგის დოლარი',
+      'name' => 'ჰონკონგის დოლარი',
       'symbol' => 'HKD',
     ),
     'HNL' => 
     array (
-      'name' => 'ჰონდურასის ლემპირა',
+      'name' => 'ჰონდურასული ლემპირა',
       'symbol' => 'HNL',
     ),
     'HRD' => 
@@ -398,8 +476,13 @@ return array (
     ),
     'HRK' => 
     array (
-      'name' => 'ხორვატიული კუნა',
+      'name' => 'ხორვატული კუნა',
       'symbol' => 'HRK',
+    ),
+    'HTG' => 
+    array (
+      'name' => 'ჰაიტური გურდი',
+      'symbol' => 'HTG',
     ),
     'HUF' => 
     array (
@@ -416,10 +499,25 @@ return array (
       'name' => 'ირლანდიური გირვანქა',
       'symbol' => 'IEP',
     ),
+    'ILS' => 
+    array (
+      'name' => 'ისრაელის ახალი შეკელი',
+      'symbol' => 'ILS',
+    ),
     'INR' => 
     array (
       'name' => 'ინდური რუპია',
       'symbol' => 'INR',
+    ),
+    'IQD' => 
+    array (
+      'name' => 'ერაყული დინარი',
+      'symbol' => 'IQD',
+    ),
+    'IRR' => 
+    array (
+      'name' => 'ირანული რიალი',
+      'symbol' => 'IRR',
     ),
     'ISK' => 
     array (
@@ -453,8 +551,18 @@ return array (
     ),
     'KGS' => 
     array (
-      'name' => 'ყირღიზული სომი',
+      'name' => 'ყირგიზული სომი',
       'symbol' => 'KGS',
+    ),
+    'KHR' => 
+    array (
+      'name' => 'კამბოჯური რიელი',
+      'symbol' => 'KHR',
+    ),
+    'KMF' => 
+    array (
+      'name' => 'კომორული ფრანკი',
+      'symbol' => 'KMF',
     ),
     'KPW' => 
     array (
@@ -468,7 +576,7 @@ return array (
     ),
     'KWD' => 
     array (
-      'name' => 'კუვეიტური დინარი',
+      'name' => 'ქუვეითური დინარი',
       'symbol' => 'KWD',
     ),
     'KYD' => 
@@ -481,9 +589,19 @@ return array (
       'name' => 'ყაზახური ტენგე',
       'symbol' => 'KZT',
     ),
+    'LAK' => 
+    array (
+      'name' => 'ლაოსური კიპი',
+      'symbol' => 'LAK',
+    ),
+    'LBP' => 
+    array (
+      'name' => 'ლიბანური ფუნტი',
+      'symbol' => 'LBP',
+    ),
     'LKR' => 
     array (
-      'name' => 'შრი ლანკის რუპია',
+      'name' => 'შრი-ლანკური რუპია',
       'symbol' => 'LKR',
     ),
     'LRD' => 
@@ -558,7 +676,7 @@ return array (
     ),
     'MKD' => 
     array (
-      'name' => 'მაკედონიური დენარი',
+      'name' => 'მაკედონიური დინარი',
       'symbol' => 'MKD',
     ),
     'MLF' => 
@@ -575,6 +693,16 @@ return array (
     array (
       'name' => 'მონღოლური ტუგრიკი',
       'symbol' => 'MNT',
+    ),
+    'MOP' => 
+    array (
+      'name' => 'მაკაუს პატაკა',
+      'symbol' => 'MOP',
+    ),
+    'MRO' => 
+    array (
+      'name' => 'მავრიტანული უგია',
+      'symbol' => 'MRO',
     ),
     'MTL' => 
     array (
@@ -598,17 +726,17 @@ return array (
     ),
     'MWK' => 
     array (
-      'name' => 'მალავის კვანჩა',
+      'name' => 'მალავიური კვაჩა',
       'symbol' => 'MWK',
     ),
     'MXN' => 
     array (
       'name' => 'მექსიკური პესო',
-      'symbol' => 'MXN',
+      'symbol' => 'MX$',
     ),
     'MXP' => 
     array (
-      'name' => 'მექსიკური ვერცხლის პესო (1861-1992)',
+      'name' => 'მექსიკური ვერცხლის პესო (1861–1992)',
       'symbol' => 'MXP',
     ),
     'MYR' => 
@@ -648,7 +776,7 @@ return array (
     ),
     'NIO' => 
     array (
-      'name' => 'ნიკარაგუას ოქროს კორდობა',
+      'name' => 'ნიკარაგუული კორდობა',
       'symbol' => 'NIO',
     ),
     'NLG' => 
@@ -673,8 +801,13 @@ return array (
     ),
     'OMR' => 
     array (
-      'name' => 'ომანის რეალი',
+      'name' => 'ომანის რიალი',
       'symbol' => 'OMR',
+    ),
+    'PAB' => 
+    array (
+      'name' => 'პანამური ბალბოა',
+      'symbol' => 'PAB',
     ),
     'PEI' => 
     array (
@@ -690,6 +823,11 @@ return array (
     array (
       'name' => 'პერუს სოლი',
       'symbol' => 'PES',
+    ),
+    'PGK' => 
+    array (
+      'name' => 'პაპუა-ახალი გვინეის კინა',
+      'symbol' => 'PGK',
     ),
     'PHP' => 
     array (
@@ -708,13 +846,18 @@ return array (
     ),
     'PLZ' => 
     array (
-      'name' => 'პოლონური ზლოტი (1950-1995)',
+      'name' => 'პოლონური ზლოტი (1950–1995)',
       'symbol' => 'PLZ',
     ),
     'PTE' => 
     array (
       'name' => 'პორტუგალიური ესკუდო',
       'symbol' => 'PTE',
+    ),
+    'PYG' => 
+    array (
+      'name' => 'პარაგვაული გუარანი',
+      'symbol' => 'PYG',
     ),
     'QAR' => 
     array (
@@ -736,6 +879,11 @@ return array (
       'name' => 'რუმინული ლეუ',
       'symbol' => 'RON',
     ),
+    'RSD' => 
+    array (
+      'name' => 'სერბული დინარი',
+      'symbol' => 'RSD',
+    ),
     'RUB' => 
     array (
       'name' => 'რუსული რუბლი',
@@ -743,7 +891,7 @@ return array (
     ),
     'RUR' => 
     array (
-      'name' => 'რუსული რუბლი (1991-1998)',
+      'name' => 'რუსული რუბლი (1991–1998)',
       'symbol' => 'RUR',
     ),
     'RWF' => 
@@ -751,15 +899,30 @@ return array (
       'name' => 'რუანდული ფრანკი',
       'symbol' => 'RWF',
     ),
+    'SAR' => 
+    array (
+      'name' => 'საუდის არაბეთის რიალი',
+      'symbol' => 'SAR',
+    ),
+    'SBD' => 
+    array (
+      'name' => 'სოლომონის კუნძულების დოლარი',
+      'symbol' => 'SBD',
+    ),
     'SCR' => 
     array (
-      'name' => 'სეიშელის რუპია',
+      'name' => 'სეიშელური რუპია',
       'symbol' => 'SCR',
     ),
     'SDD' => 
     array (
       'name' => 'სუდანის დინარი',
       'symbol' => 'SDD',
+    ),
+    'SDG' => 
+    array (
+      'name' => 'სუდანური ფუნტი',
+      'symbol' => 'SDG',
     ),
     'SDP' => 
     array (
@@ -776,20 +939,40 @@ return array (
       'name' => 'სინგაპურის დოლარი',
       'symbol' => 'SGD',
     ),
+    'SHP' => 
+    array (
+      'name' => 'წმ. ელენეს კუნძულის ფუნტი',
+      'symbol' => 'SHP',
+    ),
     'SLL' => 
     array (
-      'name' => 'სიერა ლეონეს ლეონე',
+      'name' => 'სიერა-ლეონეს ლეონე',
       'symbol' => 'SLL',
+    ),
+    'SOS' => 
+    array (
+      'name' => 'სომალური შილინგი',
+      'symbol' => 'SOS',
     ),
     'SRD' => 
     array (
-      'name' => 'სურინამის დოლარი',
+      'name' => 'სურინამული დოლარი',
       'symbol' => 'SRD',
     ),
     'SRG' => 
     array (
       'name' => 'სურინამის გულდენი',
       'symbol' => 'SRG',
+    ),
+    'SSP' => 
+    array (
+      'name' => 'სამხრეთ სუდანური ფუნტი',
+      'symbol' => 'SSP',
+    ),
+    'STD' => 
+    array (
+      'name' => 'სან-ტომე და პრინსიპის დობრა',
+      'symbol' => 'STD',
     ),
     'SUR' => 
     array (
@@ -798,8 +981,18 @@ return array (
     ),
     'SYP' => 
     array (
-      'name' => 'სირიული გირვანქა',
+      'name' => 'სირიული ფუნტი',
       'symbol' => 'SYP',
+    ),
+    'SZL' => 
+    array (
+      'name' => 'სვაზილენდის ლილანგენი',
+      'symbol' => 'SZL',
+    ),
+    'THB' => 
+    array (
+      'name' => 'ტაილანდური ბატი',
+      'symbol' => 'THB',
     ),
     'TJR' => 
     array (
@@ -816,10 +1009,20 @@ return array (
       'name' => 'თურქმენული მანათი',
       'symbol' => 'TMM',
     ),
+    'TMT' => 
+    array (
+      'name' => 'თურქმენეთის მანათი',
+      'symbol' => 'TMT',
+    ),
     'TND' => 
     array (
-      'name' => 'ტუნისიური დინარი',
+      'name' => 'ტუნისური დინარი',
       'symbol' => 'TND',
+    ),
+    'TOP' => 
+    array (
+      'name' => 'ტონგანური პაანგა',
+      'symbol' => 'TOP',
     ),
     'TRL' => 
     array (
@@ -839,7 +1042,7 @@ return array (
     'TWD' => 
     array (
       'name' => 'ტაივანური ახალი დოლარი',
-      'symbol' => 'TWD',
+      'symbol' => 'NT$',
     ),
     'TZS' => 
     array (
@@ -858,7 +1061,7 @@ return array (
     ),
     'UGS' => 
     array (
-      'name' => 'უგანდური შილინგი (1966-1987)',
+      'name' => 'უგანდური შილინგი (1966–1987)',
       'symbol' => 'UGS',
     ),
     'UGX' => 
@@ -869,7 +1072,7 @@ return array (
     'USD' => 
     array (
       'name' => 'აშშ დოლარი',
-      'symbol' => 'USD',
+      'symbol' => 'US$',
     ),
     'USN' => 
     array (
@@ -883,12 +1086,12 @@ return array (
     ),
     'UYP' => 
     array (
-      'name' => 'ურუგვაის პესო (1975-1993)',
+      'name' => 'ურუგვაის პესო (1975–1993)',
       'symbol' => 'UYP',
     ),
     'UYU' => 
     array (
-      'name' => 'ურუგვაის პესო ურუგვაიო',
+      'name' => 'ურუგვაის პესო',
       'symbol' => 'UYU',
     ),
     'UZS' => 
@@ -898,8 +1101,13 @@ return array (
     ),
     'VEB' => 
     array (
-      'name' => 'ვენესუელის ბოლივარი',
+      'name' => 'ვენესუელის ბოლივარი (1871–2008)',
       'symbol' => 'VEB',
+    ),
+    'VEF' => 
+    array (
+      'name' => 'ვენესუელის ბოლივარი',
+      'symbol' => 'VEF',
     ),
     'VND' => 
     array (
@@ -908,13 +1116,18 @@ return array (
     ),
     'VUV' => 
     array (
-      'name' => 'ვანატუს ვატუ',
+      'name' => 'ვანუატუს ვატუ',
       'symbol' => 'VUV',
     ),
     'WST' => 
     array (
-      'name' => 'დასავლეთ სამოას ტალა',
+      'name' => 'სამოური ტალა',
       'symbol' => 'WST',
+    ),
+    'XAF' => 
+    array (
+      'name' => 'CFA ფრანკი (BEAC)',
+      'symbol' => 'FCFA',
     ),
     'XAG' => 
     array (
@@ -934,7 +1147,7 @@ return array (
     'XCD' => 
     array (
       'name' => 'აღმოსავლეთ კარიბიული დოლარი',
-      'symbol' => 'XCD',
+      'symbol' => 'EC$',
     ),
     'XEU' => 
     array (
@@ -946,9 +1159,19 @@ return array (
       'name' => 'ფრანგული ოქროს ფრანკი',
       'symbol' => 'XFO',
     ),
+    'XOF' => 
+    array (
+      'name' => '(CFA) ფრანკი (BCEAO)',
+      'symbol' => 'CFA',
+    ),
+    'XPF' => 
+    array (
+      'name' => 'CFP ფრანკი',
+      'symbol' => 'CFPF',
+    ),
     'XXX' => 
     array (
-      'name' => 'უცნობი ან არასწორი ვალუტა',
+      'name' => 'უცნობი ვალუტა',
       'symbol' => 'XXX',
     ),
     'YDD' => 
@@ -976,10 +1199,20 @@ return array (
       'name' => 'იუგოსლავიური კონვერტირებადი დინარი',
       'symbol' => 'YUN',
     ),
+    'ZAR' => 
+    array (
+      'name' => 'სამხრეთ აფრიკული რანდი',
+      'symbol' => 'ZAR',
+    ),
     'ZMK' => 
     array (
-      'name' => 'ზამბიური კვანჩა',
+      'name' => 'ზამბიური კვაჭა (1968–2012)',
       'symbol' => 'ZMK',
+    ),
+    'ZMW' => 
+    array (
+      'name' => 'ზამბიური კვაჭა',
+      'symbol' => 'ZMW',
     ),
     'ZRN' => 
     array (

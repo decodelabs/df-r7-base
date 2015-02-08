@@ -1,6 +1,5 @@
 <?php
 return array (
-  'PS' => '',
   'AF' => 'Afuganistani',
   'IS' => 'Aisilandi',
   'CI' => 'Aivore Kositi',
@@ -48,7 +47,7 @@ return array (
   'DK' => 'Deenimaaka',
   'CD' => 'Demokoratika Ripaaburika ya Kongo',
   'DM' => 'Dominika',
-  'MP' => 'Ebizinga by\'amatemba ga Mariana',
+  'MP' => 'Ebizinga by’amatemba ga Mariana',
   'TC' => 'Ebizinga bya Buturuki na Kaiko',
   'FK' => 'Ebizinga bya Faakilanda',
   'KY' => 'Ebizinga bya Kayimani',
@@ -124,6 +123,7 @@ return array (
   'LT' => 'Lithuania',
   'MG' => 'Madagasika',
   'MW' => 'Marawi',
+  'MY' => 'marayizia',
   'ML' => 'Mari',
   'MV' => 'Maridives',
   'MT' => 'Marita',
@@ -172,7 +172,6 @@ return array (
   'RO' => 'Romaniya',
   'RU' => 'Rrasha',
   'RW' => 'Rwanda',
-  'CS' => 'Saabiya na Monteneguro',
   'CY' => 'Saipurasi',
   'SM' => 'Samarino',
   'WS' => 'Samowa',
@@ -224,5 +223,4 @@ return array (
   'JO' => 'Yorudaani',
   'ZM' => 'Zambia',
   'ZW' => 'Zimbabwe',
-  'MY' => 'marayizia',
 );
