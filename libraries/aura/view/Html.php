@@ -726,9 +726,20 @@ class Html extends Base implements IHtmlView, core\IDumpable {
             $output .= '    <base href="'.$this->esc($this->_baseHref).'" />'."\n"; 
         }
         
-        // Favicon
-        foreach($this->_links as $link) {
+        // Links
+        $fav = null;
+
+        foreach($this->_links as $key => $link) {
+            if($key == 'favicon') {
+                $fav = $link;
+                continue;
+            }
+
             $output .= '    '.$link."\n";
+        }
+
+        if($fav) {
+            $output .= '    '.$fav."\n";
         }
 
         // Meta
