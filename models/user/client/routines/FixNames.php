@@ -15,8 +15,14 @@ class FixNames extends axis\routine\Consistency {
     protected function _execute() {
         $this->io->write('Tidying user names...');
         $count = 0;
+        $list = $this->_unit->fetch()
+            ->where('fullName', 'begins', ' ')
+            ->orWhere('fullName', 'ends', ' ')
+            ->orWhere('nickName', '=', '')
+            ->orWhere('nickName', '=', ' ')
+            ->isUnbuffered(true);
 
-        foreach($this->_unit->fetch()->isUnbuffered(true) as $client) {
+        foreach($list as $client) {
             $client['fullName'] = trim($client['fullName']);
 
             if(!strlen(trim($client['fullName']))) {
