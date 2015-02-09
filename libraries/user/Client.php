@@ -273,6 +273,19 @@ class Client implements IClient, \Serializable {
         $this->_timezone = $clientData->getTimezone();
         $this->_groupIds = $clientData->getGroupIds();
         $this->_options = null;
+
+        if(df\Launchpad::$application instanceof core\application\Http) {
+            $ip = df\Launchpad::$application->getHttpRequest()->getIp();
+            $geoIp = link\geoIp\Handler::factory()->lookup($ip);
+
+            if($geoIp->country) {
+                $this->_country = $geoIp->country;
+            }
+
+            if($geoIp->timezone) {
+                $this->_timezone = $geoIp->timezone;
+            }
+        }
     }
     
     public function setKeyring(array $keyring) {
