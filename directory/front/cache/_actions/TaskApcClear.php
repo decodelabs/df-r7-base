@@ -34,7 +34,7 @@ class TaskApcClear extends arch\task\Action {
         }
 
         if(!isset($this->request->query->cacheId)) {
-            $this->request->query->purge = true;
+            $this->request->query->purge = 'app';
         }
 
         if($isCli && extension_loaded('apc') && ini_get('apc.enable_cli')) {

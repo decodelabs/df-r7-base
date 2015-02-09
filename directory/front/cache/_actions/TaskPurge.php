@@ -22,11 +22,15 @@ class TaskPurge extends arch\task\Action {
         }
 
         $config = core\cache\Config::getInstance();
+        $isAll = isset($this->request->query->all);
 
         foreach(df\Launchpad::$loader->lookupClassList('core/cache/backend') as $name => $class) {
             $this->io->writeLine($name);
             $options = $config->getBackendOptions($name);
-            $class::purgeAll($options);
+
+            $isAll ?
+                $class::purgeAll($options) :
+                $class::purgeApp($options);
         }
     }
 }

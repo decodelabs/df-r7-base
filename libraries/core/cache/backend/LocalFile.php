@@ -19,6 +19,10 @@ class LocalFile implements core\cache\IDirectFileBackend {
     protected $_path;
     protected $_serialize = true;
 
+    public static function purgeApp(core\collection\ITree $options) {
+        self::purgeAll($options);
+    }
+
     public static function purgeAll(core\collection\ITree $options) {
         if(!self::isLoadable()) {
             return;

@@ -40,6 +40,20 @@ abstract class Base implements ICache {
         return $cache;
     }
 
+
+    public static function purgeApp() {
+        if(function_exists('opcache_reset')) {
+            opcache_reset();
+        }
+        
+        $config = Config::getInstance();
+
+        foreach(df\Launchpad::$loader->lookupClassList('core/cache/backend') as $name => $class) {
+            $options = $config->getBackendOptions($name);
+            $class::purgeApp($options);
+        }
+    }
+
     public static function purgeAll() {
         if(function_exists('opcache_reset')) {
             opcache_reset();

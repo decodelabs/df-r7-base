@@ -17,6 +17,19 @@ trait TApcClear {
 
     protected function _clearApc() {
         $isPurge = isset($this->request->query->purge);
+        $purgeType = null;
+
+        if($isPurge) {
+            switch(strtolower($this->request->query['purge'])) {
+                case 'all':
+                    $purgeType = 'all';
+                    break;
+
+                default:
+                    $purgeType = 'app';
+                    break;
+            }
+        }
 
         if(!$isPurge && !($cacheId = $this->request->query['cacheId'])) {
             $this->throwError(500, 'Cache id not specified');
@@ -30,13 +43,26 @@ trait TApcClear {
         $count = 0;
 
         if($isPurge) {
-            $count = count($this->_getCacheList());
+            $list = $this->_getCacheList();
 
-            if(self::$_apcu) {
-                apc_clear_cache();
+            if($purgeType == 'app') {
+                $prefix = $this->application->getUniquePrefix().'-';
+
+                foreach($list as $set) {
+                    if(0 === strpos($set[self::$_setKey], $prefix)) {
+                        $count++;
+                        @apc_delete($set[self::$_setKey]);
+                    }
+                }
             } else {
-                apc_clear_cache('user');
-                apc_clear_cache('system');
+                $count = count($list);
+
+                if(self::$_apcu) {
+                    apc_clear_cache();
+                } else {
+                    apc_clear_cache('user');
+                    apc_clear_cache('system');
+                }
             }
         } else if(isset($this->request->query->remove)) {
             $key = $this->request->query['remove'];

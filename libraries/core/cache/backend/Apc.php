@@ -21,6 +21,22 @@ class Apc implements core\cache\IBackend {
     protected $_cache;
     protected $_isCli = false;
 
+    public static function purgeApp(core\collection\ITree $options) {
+        $prefix = df\Launchpad::$application->getUniquePrefix().'-';
+        $list = self::_getCacheList();
+
+        foreach($list as $set) {
+            if(0 === strpos($set[self::$_setKey], $prefix)) {
+                @apc_delete($set[self::$_setKey]);
+            }
+        }
+
+        $request = new arch\Request('cache/apc-clear.json?purge=app');
+        $request->query->mode = (php_sapi_name() == 'cli' ? 'http' : 'cli');
+
+        arch\task\Manager::getInstance()->launchBackground($request);
+    }
+
     public static function purgeAll(core\collection\ITree $options) {
         if(extension_loaded('apc')) {
             if(self::$_apcu) {
@@ -31,7 +47,7 @@ class Apc implements core\cache\IBackend {
             }
         }
 
-        $request = new arch\Request('cache/apc-clear.json?purge');
+        $request = new arch\Request('cache/apc-clear.json?purge=all');
         $request->query->mode = (php_sapi_name() == 'cli' ? 'http' : 'cli');
 
         arch\task\Manager::getInstance()->launchBackground($request);
@@ -214,7 +230,7 @@ class Apc implements core\cache\IBackend {
         return null;
     }
 
-    protected function _getCacheList() {
+    protected static function _getCacheList() {
         if(self::$_apcu) {
             $info = apc_cache_info();
         } else {
