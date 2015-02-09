@@ -17,6 +17,11 @@ class Pdo extends Base {
 // Execute
     protected function _execute($forWrite=false) {
         $options = [];
+
+        if($this->_isUnbuffered) {
+            $this->_adapter = clone $this->_adapter;
+        }
+
         $connection = $this->_adapter->getConnection();
 
         if($this->_isUnbuffered) {
@@ -47,10 +52,6 @@ class Pdo extends Base {
             );
         }
 
-        if($this->_isUnbuffered) {
-            $connection->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
-        }
-
         return $this->_stmt;
     }
     
@@ -65,6 +66,11 @@ class Pdo extends Base {
     
     public function free() {
         $this->_stmt = null;
+
+        if($this->_adapter->isClone()) {
+            $this->_adapter->closeConnection();
+        }
+
         return $this;
     }
 

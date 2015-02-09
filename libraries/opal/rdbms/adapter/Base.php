@@ -27,6 +27,7 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
     protected $_dsn;
     protected $_connection;
     protected $_transactionLevel = 0;
+    protected $_isClone = false;
     protected $_support = [];
     
     public static function factory($dsn, $autoCreate=false) {
@@ -88,6 +89,7 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
 
     public function __clone() {
         $this->_dsn = clone $this->_dsn;
+        $this->_isClone = true;
         $this->_transactionLevel = 0;
         $this->_connection = null;
         $this->_connect();
@@ -103,13 +105,17 @@ abstract class Base implements opal\rdbms\IAdapter, core\IDumpable {
     public function isConnected() {
         return $this->_connection !== null;
     }
+
+    public function isClone() {
+        return $this->_isClone;
+    }
     
     public function closeConnection() {
         $this->_closeConnection();
         
-        //if($this->_dsn) {
+        if(!$this->_isClone) {
             self::destroyConnection($this->_dsn->getHash());
-        //}
+        }
         
         return $this;
     }

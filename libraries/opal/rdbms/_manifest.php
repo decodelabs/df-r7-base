@@ -126,6 +126,7 @@ interface IAdapter extends mesh\entity\IParentEntity {
 
 // Connection
     public function isConnected();
+    public function isClone();
     public function closeConnection();
     public function getConnection();
     public function getDsn();
