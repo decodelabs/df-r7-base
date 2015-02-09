@@ -22,7 +22,7 @@ class Apc implements core\cache\IBackend {
     protected $_isCli = false;
 
     public static function purgeApp(core\collection\ITree $options) {
-        if(extension_loaded('apc')) {
+        if(extension_loaded('apc') && !(php_sapi_name() == 'cli' && !ini_get('apc.enable_cli'))) {
             $prefix = df\Launchpad::$application->getUniquePrefix().'-';
             $list = self::_getCacheList();
 
