@@ -25,6 +25,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     protected $_values = [];
     protected $_changes = [];
     protected $_isPopulated = false;
+    protected $_bypassHooks = false;
 
     public static function extractRecordId($record) {
         $keySet = null;
@@ -480,6 +481,17 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     }
 
 
+
+    public function shouldBypassHooks($flag=null) {
+        if($flag !== null) {
+            $this->_bypassHooks = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_bypassHooks;
+    }
+
+
 // Collection
     public function import($row) {
         if($row instanceof opal\query\IDataRowProvider) {
@@ -655,7 +667,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
             call_user_func_array([$this, $func], [$taskSet, $task]);
         }
 
-        if(static::BROADCAST_HOOK_EVENTS) {
+        if(static::BROADCAST_HOOK_EVENTS && !$this->_bypassHooks) {
             $event = new mesh\event\Event(
                 $this,
                 $funcPrefix.$taskName, 
@@ -673,7 +685,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
                 call_user_func_array([$this, $func], [$taskSet, $task]);
             }
 
-            if(static::BROADCAST_HOOK_EVENTS) {
+            if(static::BROADCAST_HOOK_EVENTS && !$this->_bypassHooks) {
                 $event->setAction($funcPrefix.'Save');
                 $meshManager->emitEventObject($event);
             }

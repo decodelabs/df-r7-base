@@ -123,6 +123,21 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
     }
 
     public function beginProcedure($unit, $name, $values, $item=null) {
+        return $this->_normalizeUnit($unit)
+            ->beginProcedure($name, $values, $item);
+    }
+
+    public function getRoutine($unit, $name, core\io\IMultiplexer $multiplexer=null) {
+        return $this->_normalizeUnit($unit)
+            ->getRoutine($name, $multiplexer);
+    }
+
+    public function executeRoutine($unit, $name) {
+        $args = array_slice(func_get_args(), 1);
+        return call_user_func_array([$this->getRoutine($name), 'execute'], $args);
+    }
+
+    protected function _normalizeUnit($unit) {
         if(!$unit instanceof axis\IUnit) {
             $unit = $this->fetchEntity($unit);
 
@@ -131,7 +146,7 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
             }
         }
 
-        return $unit->beginProcedure($name, $values, $item);
+        return $unit;
     }
 
     public function getClusterUnit() {
