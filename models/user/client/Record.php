@@ -106,8 +106,10 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject {
     }
     
     
-    public function onAuthentication() {
+    public function onAuthentication(user\IClient $client) {
         $this->loginDate = 'now';
+        $this->country = $client->getCountry();
+        $this->timezone = $client->getTimezone();
         $this->save();
     }
 

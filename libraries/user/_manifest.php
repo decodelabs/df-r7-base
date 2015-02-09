@@ -105,7 +105,7 @@ trait TNameExtractor {
 }
 
 interface IActiveClientDataObject extends IClientDataObject {
-    public function onAuthentication();
+    public function onAuthentication(IClient $client);
 }
 
 interface IClient extends IClientDataObject {
