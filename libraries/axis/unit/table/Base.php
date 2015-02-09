@@ -351,8 +351,9 @@ abstract class Base implements
         // THIS IS A HACK - YOU NEED TO FIX THIS WHOLE THING!
         if(false !== strpos($name, '_')) {
             list($testName,) = explode('_', $name, 2);
+            $axisField = $schema->getField($testName);
 
-            if($axisField = $schema->getField($testName)) {
+            if($axisField instanceof axis\schema\IRelationField) {
                 $prepared = $axisField->deflateValue($axisField->sanitizeClauseValue($value));
 
                 if(is_array($prepared)) {
