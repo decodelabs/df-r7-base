@@ -22,12 +22,14 @@ class Apc implements core\cache\IBackend {
     protected $_isCli = false;
 
     public static function purgeApp(core\collection\ITree $options) {
-        $prefix = df\Launchpad::$application->getUniquePrefix().'-';
-        $list = self::_getCacheList();
+        if(extension_loaded('apc')) {
+            $prefix = df\Launchpad::$application->getUniquePrefix().'-';
+            $list = self::_getCacheList();
 
-        foreach($list as $set) {
-            if(0 === strpos($set[self::$_setKey], $prefix)) {
-                @apc_delete($set[self::$_setKey]);
+            foreach($list as $set) {
+                if(0 === strpos($set[self::$_setKey], $prefix)) {
+                    @apc_delete($set[self::$_setKey]);
+                }
             }
         }
 
