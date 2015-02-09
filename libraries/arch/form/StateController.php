@@ -11,15 +11,17 @@ use df\arch;
 
 class StateController implements IStateController, \Serializable {
     
-    protected $_sessionId;
-    protected $_values;
+    public $sessionId;
+    public $values;
+    public $isOperating = false;
+
     protected $_isNew = false;
     protected $_delegates = [];
     protected $_store = [];
     
     public function __construct($sessionId) {
-        $this->_sessionId = $sessionId;
-        $this->_values = new core\collection\InputTree();
+        $this->sessionId = $sessionId;
+        $this->values = new core\collection\InputTree();
         $this->_isNew = true;
     }
     
@@ -31,11 +33,11 @@ class StateController implements IStateController, \Serializable {
         $output = [];
         
         if($withId) {
-            $output['id'] = $this->_sessionId;
+            $output['id'] = $this->sessionId;
         }
         
-        if(!$this->_values->isEmpty()) {
-            $output['vl'] = $this->_values;
+        if(!$this->values->isEmpty()) {
+            $output['vl'] = $this->values;
         }
         
         if($this->_isNew) {
@@ -69,12 +71,12 @@ class StateController implements IStateController, \Serializable {
     
     protected function _setUnserializedValues(array $values, $id) {
         $this->_isNew = false;
-        $this->_sessionId = $id;
+        $this->sessionId = $id;
         
         if(isset($values['vl'])) {
-            $this->_values = $values['vl'];
-        } else if(!$this->_values) {
-            $this->_values = new core\collection\InputTree();
+            $this->values = $values['vl'];
+        } else if(!$this->values) {
+            $this->values = new core\collection\InputTree();
         }
         
         if(isset($values['nw'])) {
@@ -83,7 +85,7 @@ class StateController implements IStateController, \Serializable {
         
         if(isset($values['dl'])) {
             foreach($values['dl'] as $key => $delegateData) {
-                $delegate = new self($this->_sessionId);
+                $delegate = new self($this->sessionId);
                 $delegate->_setUnserializedValues($delegateData, $id);
                 
                 $this->_delegates[$key] = $delegate;
@@ -96,17 +98,17 @@ class StateController implements IStateController, \Serializable {
     }
     
     public function getSessionId() {
-        return $this->_sessionId;
+        return $this->sessionId;
     }
     
     public function getValues() {
-        return $this->_values;
+        return $this->values;
     }
     
     
     public function getDelegateState($id) {
         if(!isset($this->_delegates[$id])) {
-            $this->_delegates[$id] = new self($this->_sessionId);
+            $this->_delegates[$id] = new self($this->sessionId);
         }
         
         return $this->_delegates[$id];
@@ -137,7 +139,7 @@ class StateController implements IStateController, \Serializable {
     }
     
     public function reset() {
-        $this->_values->clear();
+        $this->values->clear();
         $this->_isNew = true;
         
         foreach($this->_delegates as $delegate) {
@@ -152,6 +154,7 @@ class StateController implements IStateController, \Serializable {
 
 // Store
     public function setStore($key, $value) {
+        $this->isOperating = true;
         $this->_store[$key] = $value;
         return $this;
     }

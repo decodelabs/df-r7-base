@@ -94,8 +94,7 @@ abstract class Action extends arch\Action implements IAction {
             }
         }
         
-        $this->values = $this->_state->getValues();
-        
+        $this->values = $this->_state->values;
         $response = $this->_onSessionReady();
 
         if(!empty($response)) {
@@ -116,6 +115,12 @@ abstract class Action extends arch\Action implements IAction {
             }
         }
 
+        if($this->_state->isNew()) {
+            $this->_state->isOperating = $this->http->getMethod() != 'GET';
+        } else {
+            $this->_state->isOperating = true;
+        }
+        
         $this->_state->isNew(false);
         $this->_onInitComplete();
     }
@@ -441,7 +446,7 @@ abstract class Action extends arch\Action implements IAction {
 
         if($this->_sessionNamespace) {
             $session = $this->context->getUserManager()->getSessionNamespace($this->_sessionNamespace);
-            $session->remove($this->_state->getSessionId());
+            $session->remove($this->_state->sessionId);
         }
     }
     
@@ -514,9 +519,11 @@ abstract class Action extends arch\Action implements IAction {
     }
     
     protected function _afterDispatch($response) {
-        if(!$this->_isComplete && $this->_sessionNamespace) {
+        if(!$this->_isComplete 
+        && $this->_sessionNamespace
+        && $this->_state->isOperating) {
             $session = $this->context->getUserManager()->getSessionNamespace($this->_sessionNamespace);
-            $session->set($this->_state->getSessionId(), $this->_state);
+            $session->set($this->_state->sessionId, $this->_state);
         }
         
         return $response;

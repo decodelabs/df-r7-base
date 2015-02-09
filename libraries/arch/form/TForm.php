@@ -230,7 +230,7 @@ trait TForm {
     
 // Values
     public function isValid() {
-        if($this->_state && !$this->_state->getValues()->isValid()) {
+        if($this->_state && !$this->_state->values->isValid()) {
             return false;
         }
         
