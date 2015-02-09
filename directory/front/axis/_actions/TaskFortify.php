@@ -16,37 +16,74 @@ class TaskFortify extends arch\task\Action {
     const SCHEDULE = '0 0 * * 1';
     const SCHEDULE_AUTOMATIC = true;
 
+    public function extractCliArguments(core\cli\ICommand $command) {
+        $args = [];
+
+        foreach($command->getArguments() as $arg) {
+            if(!$arg->isOption()) {
+                $args[] = (string)$arg;
+            }
+        }
+
+        if(isset($args[0])) {
+            $this->request->query->unit = $args[0];
+
+            if(isset($args[1])) {
+                $this->request->query->routine = $args[1];
+            }
+        }
+    }
+
     public function execute() {
-        $routines = [];
+        if(isset($this->request->query->unit)) {
+            $this->_runRoutines($this->data->getUnit($this->request->query['unit']));
+        } else {
+            $probe = new axis\introspector\Probe();
+            $units = $probe->probeStorageUnits();
 
-        $probe = new axis\introspector\Probe();
-        $units = $probe->probeStorageUnits();
-
-        foreach($units as $inspector) {
-            if($inspector->isVirtual()) {
-                continue;
-            }
-
-            $unit = $inspector->getUnit();
-            $routines = axis\routine\Consistency::loadAll($unit);
-            $count = count($routines);
-
-            if(!$count) {
-                continue;
-            }
-
-            $this->io->writeLine('Found '.$count.' consistency routine(s) in '.$inspector->getId());
-
-            foreach($routines as $routine) {
-                if(!$routine->canExecute()) {
+            foreach($units as $inspector) {
+                if($inspector->isVirtual()) {
                     continue;
                 }
 
-                $routine->setMultiplexer($this->io);
-                $routine->execute();
+                $unit = $inspector->getUnit();
+                $this->_runRoutines($unit);
             }
-
-            $this->io->writeLine();
         }
+    }
+
+    protected function _runRoutines($unit) {
+        if(isset($this->request->query->routine)
+        && $unit->getUnitId() == $this->request->query['unit']) {
+            $this->_runRoutine($unit->getRoutine(
+                $this->request->query['routine']
+            ));
+
+            return;
+        }
+
+        $routines = axis\routine\Consistency::loadAll($unit);
+        $count = count($routines);
+
+        if(!$count) {
+            return;
+        }
+
+        $this->io->writeLine('Found '.$count.' consistency routine(s) in '.$unit->getUnitId());
+
+        foreach($routines as $routine) {
+            $this->_runRoutine($routine);
+        }
+
+        $this->io->writeLine();
+    }
+
+    protected function _runRoutine($routine) {
+        if(!$routine->canExecute()) {
+            return;
+        }
+
+        $routine->setMultiplexer($this->io);
+        $routine->execute();
     }
 }
