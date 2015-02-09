@@ -56,8 +56,8 @@ interface IUnit extends mesh\entity\IEntity, user\IAccessLock, \Serializable {
     public function getUnitSettings();
     public function getStorageBackendName();
 
-    public function runAction($name, $data, $args=null, array $dataMap=null);
     public function prepareValidator(core\validate\IHandler $validator, opal\record\IRecord $record=null);
+    public function beginProcedure($name, $values);
 }
 
 trait TUnit {
@@ -153,24 +153,14 @@ trait TUnit {
         }
     }
 
-
-
-    public function runAction($name, $data, $args=null, array $dataMap=null) {
-        $func = '_run'.ucfirst($name).'Action';
-
-        if(!method_exists($this, $func)) {
-            throw new RuntimeException(
-                'Action '.$name.' could not be found'
-            );
-        }
-
-        $action = new Action($this, $data, $args, $dataMap);
-        $this->{$func}($action);
-        return $action;
-    }
-
     public function prepareValidator(core\validate\IHandler $validator, opal\record\IRecord $record=null) {
         return $validator;
+    }
+
+
+
+    public function beginProcedure($name, $values) {
+        return axis\procedure\Base::factory($this, $name, $values);
     }
 
 

@@ -1,0 +1,97 @@
+<?php
+/**
+ * This file is part of the Decode Framework
+ * @license http://opensource.org/licenses/MIT
+ */
+namespace df\apex\models\user\client\procedures;
+
+use df;
+use df\core;
+use df\apex;
+use df\axis;
+
+class Update extends axis\procedure\Record {
+    
+    protected function _getRecord() {
+        $userManager = $this->user;
+
+        if(!$userManager->isLoggedIn()) {
+            $this->throwError(403, 'Cannot edit guests');
+        }
+
+        $record = $this->_unit->fetch()
+            ->where('id', '=', $userManager->client->getId())
+            ->toRow();
+
+        if(!$record) {
+            $this->throwError(500, 'Client record not found');
+        }
+
+        return $record;
+    }
+
+    protected function _execute() {
+        $auth = $this->record->authDomains->fetch()
+            ->where('adapter', '=', 'Local')
+            ->toRow();
+
+        $applyPassword = false;
+
+        if(!empty($this->values[$this->validator->getMappedName('newPassword')])) {
+            if(!$auth) {
+                $auth = $this->_model->auth->newRecord([
+                    'user' => $this->record,
+                    'adapter' => 'Local',
+                    'bindDate' => 'now'
+                ]);
+            }
+
+            $userConfig = $this->_model->config;
+            $applyPassword = true;
+
+            $this->validator
+
+                // Current
+                ->chainIf(!$auth->isNew() && isset($this->values->{$this->validator->getMappedName('currentPassword')}), function($validator) use($auth) {
+                    $validator->addField('currentPassword', 'text')
+                        ->isRequired(true)
+                        ->setCustomValidator(function($node, $value, $field) use ($auth) {
+                            $hash = $this->context->data->hash($value);
+
+                            if($hash != $auth['password']) {
+                                $node->addError('incorrect', $this->context->_('This password is incorrect'));
+                            }
+                        });
+                })
+
+                // New password
+                ->addField('newPassword', 'password')
+                    ->isRequired(true)
+                    ->setMatchField('confirmNewPassword')
+                    ->shouldCheckStrength($userConfig->shouldCheckPasswordStrength())
+                    ->setMinStrength($userConfig->getMinPasswordStrength());
+        }
+
+        if($this->validate()) {
+            $this->validator->applyTo($this->record, [
+                'email', 'fullName', 'nickName', 
+                'timezone', 'country', 'language'
+            ]);
+
+            $this->record->save();
+
+            if($auth) {
+                if($applyPassword) {
+                    $auth->password = $this->validator['newPassword'];
+                }
+                
+                $auth->identity = $this->record['email'];
+                $auth->save();
+            }
+
+            if($this->record['id'] == $this->user->client->getId()) {
+                $this->user->importClientData($this->record);
+            }
+        }
+    }
+}

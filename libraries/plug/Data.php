@@ -122,6 +122,18 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
         return $this;
     }
 
+    public function beginProcedure($unit, $name, $values, $item=null) {
+        if(!$unit instanceof axis\IUnit) {
+            $unit = $this->fetchEntity($unit);
+
+            if(!$unit instanceof axis\IUnit) {
+                throw new axis\RuntimeException('Invalid unit passed for procedure');
+            }
+        }
+
+        return $unit->beginProcedure($name, $values, $item);
+    }
+
     public function getClusterUnit() {
         try {
             return axis\Model::loadClusterUnit();
