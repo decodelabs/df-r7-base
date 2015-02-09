@@ -575,6 +575,8 @@ interface ITextField extends IField, ISanitizingField, IMinLengthField, IMaxLeng
     public function getMinWordLength();
     public function setMaxWordLength($length);
     public function getMaxWordLength();
+
+    public function shouldTrim($flag=null);
 }
 
 interface IUrlField extends IField {}

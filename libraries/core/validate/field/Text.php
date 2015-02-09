@@ -17,6 +17,7 @@ class Text extends Base implements core\validate\ITextField {
     protected $_pattern = null;
     protected $_minWordLength = null;
     protected $_maxWordLength = null;
+    protected $_shouldTrim = true;
   
 
 // Pattern
@@ -76,11 +77,27 @@ class Text extends Base implements core\validate\ITextField {
     public function getMaxWordLength() {
         return $this->_maxWordLength;
     }
+
+
+// Trim
+    public function shouldTrim($flag=null) {
+        if($flag !== null) {
+            $this->_shouldTrim = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_shouldTrim;
+    }
     
     
 // Validate
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
+
+        if($this->_shouldTrim) {
+            $value = trim($value);
+        }
+
         $value = $this->_sanitizeValue($value);
         
         
