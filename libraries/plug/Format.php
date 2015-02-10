@@ -14,9 +14,13 @@ class Format implements core\ISharedHelper {
     use core\TSharedHelper;
     
 // Numbers
-    public function number($number, $format=null, $locale=null) {
+    public function number($number, $round=null, $format=null, $locale=null) {
         if($number === null) {
             return null;
+        }
+
+        if($round !== null) {
+            $number = round($number, $round);
         }
 
         if($locale === null) {
