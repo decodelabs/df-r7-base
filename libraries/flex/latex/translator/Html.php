@@ -45,6 +45,8 @@ class Html extends iris\Translator {
             $this->buffer = '';
         }
 
+        $output = preg_replace('/(\(\<a[^>]+\>[^<]+\<\/a\>\))/i', '<span class="no-wrap">$1</span>', $output);
+
         return $output;
     }
 
@@ -440,7 +442,7 @@ class Html extends iris\Translator {
         if(substr(rtrim($this->buffer), -1) == '.') {
             return false;
         }
-        
+
         return preg_match('/[a-zA-Z0-9\(\)\[\]\,\<\>_\-]$/i', $buffer);
     }
 
