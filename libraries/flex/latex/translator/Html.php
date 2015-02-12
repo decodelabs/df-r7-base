@@ -437,6 +437,10 @@ class Html extends iris\Translator {
     }
 
     protected function _isBufferInParagraph($buffer) {
+        if(substr(rtrim($this->buffer), -1) == '.') {
+            return false;
+        }
+        
         return preg_match('/[a-zA-Z0-9\(\)\[\]\,\<\>_\-]$/i', $buffer);
     }
 
