@@ -519,7 +519,7 @@ interface IDateField extends IField, IRangeField, ISanitizingField {
     public function getExpectedFormat();
 }
 
-interface IDelegateField extends IField {
+interface IDelegateField extends IField, ISanitizingField {
     public function fromForm(arch\form\IForm $form, $name=null);
     public function setDelegate(arch\form\IDelegate $delegate);
     public function getDelegate();

@@ -11,6 +11,8 @@ use df\arch;
 
 class Delegate extends Base implements core\validate\IDelegateField {
     
+    use core\validate\TSanitizingField;
+
     protected $_delegate;
     protected $_isRequired = null;
 
@@ -59,7 +61,8 @@ class Delegate extends Base implements core\validate\IDelegateField {
     }
 
     public function validate(core\collection\IInputTree $node) {
-        $output = $this->_delegate->apply();
+        $value = $this->_delegate->apply();
+        $value = $this->_sanitizeValue($value);
 
         if(!$this->_delegate->isValid()) {
             $node->addError('delegate', 'Delegate did not complete');
@@ -73,6 +76,6 @@ class Delegate extends Base implements core\validate\IDelegateField {
             }
         }
 
-        return $output;
+        return $value;
     }
 }
