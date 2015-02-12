@@ -142,5 +142,7 @@ interface ITransformation extends IImageManipulationController, IImageFilterCont
     public function setImage(IImage $image);
     public function getImage();
 
+    public function rescale($scale);
+
     public function apply();
 }

@@ -35,8 +35,20 @@ class Transformation implements ITransformation {
         'smooth' => 'sm'
     ];
 
+    protected static $_rescalable = [
+        'resize', 'cropZoom'
+    ];
+
     protected $_image;
     protected $_transformations = [];
+
+    public static function factory($transformation) {
+        if($transformation instanceof ITransformation) {
+            return $transformation;
+        }
+
+        return new self($transformation);
+    }
 
     public function __construct() {
         foreach(func_get_args() as $arg) {
@@ -100,6 +112,24 @@ class Transformation implements ITransformation {
 
     public function getImage() {
         return $this->_image;
+    }
+
+    public function rescale($scale) {
+        foreach($this->_transformations as $key => $set) {
+            if(in_array($set[0], self::$_rescalable)) {
+                if(isset($set[1][0])) {
+                    $set[1][0] *= $scale;
+                }
+
+                if(isset($set[1][1])) {
+                    $set[1][1] *= $scale;
+                }
+
+                $this->_transformations[$key] = $set;
+            }
+        }
+
+        return $this;
     }
 
     public function apply() {

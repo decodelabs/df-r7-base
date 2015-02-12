@@ -129,7 +129,8 @@ class Image implements IImage {
 
 // Transformation
     public function transform($string=null) {
-        return new Transformation($this, $string);
+        return Transformation::factory($string)
+            ->setImage($this);
     }
 
 
