@@ -368,7 +368,11 @@ class Parser extends iris\Parser {
             $object = new flex\latex\map\MathNode($token->getLocation());
             $object->isInline(true);
 
-            while(true) {
+            if($this->token->isValue('$')) {
+                $doMath = false;
+            }
+
+            while($doMath) {
                 $token = $this->extract();
 
                 if(!$object->isEmpty()) {
@@ -380,6 +384,13 @@ class Parser extends iris\Parser {
                 }
 
                 $object->appendSymbols($token->value);
+
+                if(!$this->token) {
+                    core\dump($currentToken);
+                    throw new iris\UnexpectedTokenException(
+                        'Unexpexted end of file', $token
+                    );
+                }
 
                 if($this->token->isValue('$')) {
                     $peek = $this->peek(1);
