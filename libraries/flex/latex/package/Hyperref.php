@@ -39,4 +39,24 @@ class Hyperref extends Base {
 
         return $block;
     }
+
+    public function command_url() {
+        if($this->parser->getLastToken()->isWhitespaceSingleNewLine()) {
+            $this->parser->writeToTextNode(' ');
+        }
+
+        $block = new flex\latex\map\Block($this->parser->token);
+        $block->setType('href');
+        $block->isInline(true);
+
+        $this->parser->extractValue('{');
+        $this->parser->parseStandardContent($block, true);
+        $this->parser->extractValue('}');
+
+        $url = $block->shift();
+        $block->setAttribute('href', $url->getText());
+        $block->push($url);
+
+        return $block;
+    }
 }

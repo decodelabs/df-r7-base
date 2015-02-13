@@ -386,7 +386,6 @@ class Parser extends iris\Parser {
                 $object->appendSymbols($token->value);
 
                 if(!$this->token) {
-                    core\dump($currentToken);
                     throw new iris\UnexpectedTokenException(
                         'Unexpexted end of file', $token
                     );
