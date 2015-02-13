@@ -621,17 +621,11 @@ trait TQuery_Joinable {
             */
         } else if($field instanceof opal\schema\IManyRelationField) {
             // Field is OneToMany
-            core\stub($field);
-            /*
             $targetAdapter = $field->getTargetQueryAdapter($clusterId);
-            $targetAlias = $fieldName;
             $targetFieldName = $field->getTargetField();
-            $localAlias = $source->getAlias();
 
-            $correlation = $this->correlate($aggregateType.'('.$targetAlias.'.@primary)', $alias)
-                ->from($targetAdapter, $targetAlias)
-                ->on($targetAlias.'.'.$targetFieldName, '=', $localAlias.'.@primary');
-            */
+            $join = $join->from($targetAdapter, $targetAlias)
+                ->on($targetAlias.'.'.$targetFieldName, '=', '@primary');
         } else {
             // Field is One
             $targetAdapter = $field->getTargetQueryAdapter($clusterId);
