@@ -2022,14 +2022,18 @@ trait TQuery_SelectSourceDataFetcher {
         if($keyField !== null) {
             $keyField = $this->_sourceManager->extrapolateDataField($this->_source, $keyField);
         }
-        
+
         if($valField !== null) {
             if(isset($this->_attachments[$valField])) {
                 $valField = new opal\query\field\Attachment($valField, $this->_attachments[$valField]);
             } else {
                 $valField = $this->_sourceManager->extrapolateDataField($this->_source, $valField);
             }
+
+            $this->_source->addOutputField($valField);
         }
+    
+        $this->_source->setKeyField($keyField);
 
         $parts = explode('\\', get_class($this));
         $func = 'execute'.array_pop($parts).'Query';
@@ -2047,6 +2051,8 @@ trait TQuery_SelectSourceDataFetcher {
                 $this->_paginator->setTotal($count);
             }
         }
+
+        //$this->_source->setKeyField(null);
 
         return $output;
     }

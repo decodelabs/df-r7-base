@@ -741,6 +741,9 @@ interface ISource extends IAdapterAware {
     public function hasWildcardField();
     public function getWildcardField();
     public function removeWildcardOutputField($name);
+
+    public function setKeyField(IField $field=null);
+    public function getKeyField();
     
     public function getOutputFields();
     public function getDereferencedOutputFields();

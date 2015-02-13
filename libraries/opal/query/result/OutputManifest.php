@@ -169,6 +169,10 @@ class OutputManifest implements IOutputManifest {
                     }
                 }
 
+                if(($keyField = $source->getKeyField()) && $keyField->shouldBeProcessed()) {
+                    $fieldNames[] = $keyField->getName();
+                }
+
                 foreach(opal\schema\Introspector::getFieldProcessors($adapter, $fieldNames) as $name => $field) {
                     if(!$field instanceof opal\query\IFieldValueProcessor) {
                         continue;

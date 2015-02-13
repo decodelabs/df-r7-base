@@ -16,6 +16,8 @@ class Source implements ISource, core\IDumpable {
     protected $_outputFields = [];
     protected $_privateFields = [];
 
+    protected $_keyField = null;
+
     protected $_alias;
     protected $_isPrimary = false;
     private $_id;
@@ -380,6 +382,18 @@ class Source implements ISource, core\IDumpable {
         }
     }
    
+
+    public function setKeyField(IField $field=null) {
+        $this->_keyField = $field;
+        return $this;
+    }
+
+    public function getKeyField() {
+        return $this->_keyField;
+    }
+
+
+
     public function getOutputFields() {
         return $this->_outputFields;
     }
@@ -391,6 +405,10 @@ class Source implements ISource, core\IDumpable {
             foreach($mainField->dereference() as $field) {
                 $output[$field->getQualifiedName()] = $field;
             }
+        }
+
+        if($this->_keyField) {
+            $output[$this->_keyField->getQualifiedName()] = $this->_keyField;
         }
         
         return $output;
