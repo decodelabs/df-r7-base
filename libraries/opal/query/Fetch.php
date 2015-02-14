@@ -111,3 +111,32 @@ class Fetch implements IFetchQuery, core\IDumpable {
         return $output;
     }
 }
+
+
+class Fetch_Attach extends Fetch implements IFetchAttachQuery {
+    
+    use TQuery_Attachment;
+    use TQuery_ParentAwareJoinClauseFactory;
+    
+    public function __construct(IQuery $parent, ISourceManager $sourceManager, ISource $source) {
+        $this->_parent = $parent;
+        parent::__construct($sourceManager, $source);
+        
+        $this->_joinClauseList = new opal\query\clause\JoinList($this);
+    }
+    
+    public function getQueryType() {
+        return IQueryTypes::FETCH_ATTACH;
+    }
+
+
+// Dump
+    public function getDumpProperties() {
+        return array_merge([
+            'sources' => $this->_sourceManager,
+            'type' => self::typeIdToName($this->_type),
+            'fields' => $this->_source,
+            'on' => $this->_joinClauseList,
+        ], parent::getDumpProperties());
+    }
+} 

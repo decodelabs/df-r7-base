@@ -173,4 +173,73 @@ class Select implements ISelectQuery, core\IDumpable {
         return $output;
     }
 }
+
+
+## ATTACH
+class Select_Attach extends Select implements ISelectAttachQuery {
     
+    use TQuery_Attachment;
+    use TQuery_AttachmentListExtension;
+    use TQuery_AttachmentValueExtension;
+    use TQuery_ParentAwareJoinClauseFactory;
+    
+    public function __construct(IQuery $parent, ISourceManager $sourceManager, ISource $source) {
+        $this->_parent = $parent;
+        parent::__construct($sourceManager, $source);
+    }
+    
+    public function getQueryType() {
+        return IQueryTypes::SELECT_ATTACH;
+    }
+    
+// Dump
+    public function getDumpProperties() {
+        return array_merge([
+            'sources' => $this->_sourceManager,
+            'type' => self::typeIdToName($this->_type),
+            'fields' => $this->_source,
+            'on' => $this->_joinClauseList,
+        ], parent::getDumpProperties());
+    }
+}
+
+
+## UNION
+class Select_Union extends Select implements IUnionSelectQuery {
+    
+    protected $_union;
+    protected $_isUnionDistinct = true;
+
+    public function __construct(IUnionQuery $union, ISource $source) {
+        $this->_union = $union;
+        parent::__construct($union->getSourceManager(), $source);
+    }
+
+    public function isUnionDistinct($flag=null) {
+        if($flag !== null) {
+            $this->_isUnionDistinct = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_isUnionDistinct;
+    }
+
+    public function endSelect() {
+        $this->_union->addQuery($this);
+        return $this->_union;
+    }
+
+    public function with($field1=null) {
+        $this->endSelect();
+
+        return Initiator::factory()
+            ->beginUnionSelect($this->_union, func_get_args(), true);
+    }
+
+    public function withAll($field1=null) {
+        $this->endSelect();
+
+        return Initiator::factory()
+            ->beginUnionSelect($this->_union, func_get_args(), false);
+    }
+}

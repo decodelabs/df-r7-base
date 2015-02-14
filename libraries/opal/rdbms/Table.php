@@ -13,7 +13,7 @@ use df\mesh;
 
 class Table implements ITable, core\IDumpable {
     
-    use opal\query\TQuery_ImplicitSourceEntryPoint;
+    use opal\query\TQuery_EntryPoint;
     use user\TAccessLock;
     
     protected $_adapter;
@@ -296,18 +296,6 @@ class Table implements ITable, core\IDumpable {
     public function executeBatchInsertQuery(opal\query\IBatchInsertQuery $query) {
         return QueryExecutor::factory($this->_adapter, $query)
             ->executeBatchInsertQuery($this->_name);
-    }
-    
-// Replace query
-    public function executeReplaceQuery(opal\query\IReplaceQuery $query) {
-        return QueryExecutor::factory($this->_adapter, $query)
-            ->executeReplaceQuery($this->_name);
-    }
-    
-// Batch replace query
-    public function executeBatchReplaceQuery(opal\query\IBatchReplaceQuery $query) {
-        return QueryExecutor::factory($this->_adapter, $query)
-            ->executeBatchReplaceQuery($this->_name);
     }
     
 // Update query

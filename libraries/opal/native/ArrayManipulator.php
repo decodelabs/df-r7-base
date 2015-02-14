@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\opal\query\result;
+namespace df\opal\native;
 
 use df;
 use df\core;
@@ -16,11 +16,11 @@ class ArrayManipulator implements IArrayManipulator {
     
     protected $_outputManifest;
     
-    public function __construct(opal\query\ISource $source, array $rows, $isNormalized=false, IOutputManifest $outputManifest=null) {
+    public function __construct(opal\query\ISource $source, array $rows, $isNormalized=false, opal\query\IOutputManifest $outputManifest=null) {
         $this->setRows($rows, $isNormalized);
         
         if(!$outputManifest) {
-            $outputManifest = new OutputManifest($source, /*$rows*/null, $isNormalized);
+            $outputManifest = new opal\query\OutputManifest($source, /*$rows*/null, $isNormalized);
         } else {
             $outputManifest->importSource($source, $rows, $isNormalized);
         }
@@ -120,7 +120,7 @@ class ArrayManipulator implements IArrayManipulator {
                 $attachments = $query->getAttachments();
                 
                 if(!empty($attachments)) {
-                    $output = new BatchIterator(
+                    $output = new opal\query\BatchIterator(
                         $this->_outputManifest->getPrimarySource(), 
                         $this->_rows, 
                         $this->_outputManifest
@@ -232,7 +232,7 @@ class ArrayManipulator implements IArrayManipulator {
         return $this->_rows;
     }
 
-    public function applyBatchIteratorExpansion(IBatchIterator $batchIterator, $batchNumber) {
+    public function applyBatchIteratorExpansion(opal\query\IBatchIterator $batchIterator, $batchNumber) {
         $this->applyPopulates($batchIterator->getPopulates());
         $this->applyAttachments($batchIterator->getAttachments());
         $this->applyCombines($batchIterator->getCombines());
@@ -312,7 +312,7 @@ class ArrayManipulator implements IArrayManipulator {
                 $clauses = $whereClauses;
             }
 
-            $clauseIndex = new opal\query\clause\Matcher($clauses->toArray(), true);
+            $clauseIndex = new ClauseMatcher($clauses->toArray(), true);
 
             switch($join->getType()) {
                 case opal\query\IJoinQuery::INNER:
@@ -405,7 +405,7 @@ class ArrayManipulator implements IArrayManipulator {
         $this->normalizeRows();
         
         if(!$clauseList->isEmpty()) {
-            $clauseIndex = new opal\query\clause\Matcher($clauseList->toArray());
+            $clauseIndex = new ClauseMatcher($clauseList->toArray());
             
             foreach($this->_rows as $i => $row) {
                 if(!$clauseIndex->testRow($row)) {
@@ -555,7 +555,7 @@ class ArrayManipulator implements IArrayManipulator {
         $this->normalizeRows();
         
         if(!$clauseList->isEmpty()) {
-            $clauseIndex = new opal\query\clause\Matcher($clauseList->toArray());
+            $clauseIndex = new ClauseMatcher($clauseList->toArray());
             
             foreach($this->_rows as $i => $row) {
                 if(!$clauseIndex->testRow($row)) {
@@ -716,7 +716,7 @@ class ArrayManipulator implements IArrayManipulator {
             }
 
             $clauseList = $attachment->getJoinClauseList()->toArray();
-            $clauseIndex = new opal\query\clause\Matcher($clauseList, true);
+            $clauseIndex = new ClauseMatcher($clauseList, true);
             $isFetchQuery = $attachment instanceof opal\query\IFetchQuery;
             $isValueAttachment = $attachment->getType() === 0 || $attachment->getType() === 3;
             

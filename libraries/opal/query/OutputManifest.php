@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\opal\query\result;
+namespace df\opal\query;
 
 use df;
 use df\core;
@@ -21,7 +21,7 @@ class OutputManifest implements IOutputManifest {
     protected $_combines = [];
     protected $_queryRequiresPartial = false;
     
-    public function __construct(opal\query\ISource $source, array $rows=null, $isNormalized=true) {
+    public function __construct(ISource $source, array $rows=null, $isNormalized=true) {
         $this->importSource($source, $rows, $isNormalized);
     }
     
@@ -33,7 +33,7 @@ class OutputManifest implements IOutputManifest {
         return $this->_sources;
     }
     
-    public function importSource(opal\query\ISource $source, array $rows=null, $isNormalized=true) {
+    public function importSource(ISource $source, array $rows=null, $isNormalized=true) {
         if($source->isDerived()) {
             $source = $source->getAdapter()->getDerivationSource();
         }
@@ -87,8 +87,8 @@ class OutputManifest implements IOutputManifest {
     }
     
     
-    public function addOutputField(opal\query\IField $field) {
-        if($field instanceof opal\query\IWildcardField) {
+    public function addOutputField(IField $field) {
+        if($field instanceof IWildcardField) {
             $this->_wildcards[$field->getSourceAlias()] = $field->getMuteFields();
             return $this;
         }
@@ -97,23 +97,23 @@ class OutputManifest implements IOutputManifest {
 
         if(isset($this->_outputFields[$alias]) 
         && $field !== isset($this->_outputFields[$alias])
-        && !$this->_outputFields[$alias] instanceof opal\query\ILateAttachField) {
+        && !$this->_outputFields[$alias] instanceof ILateAttachField) {
             $field->setOverrideField($this->_outputFields[$alias]);
         }
 
         $this->_outputFields[$alias] = $field;
         
-        if($field instanceof opal\query\IAggregateField) {
+        if($field instanceof IAggregateField) {
             $this->_aggregateFields[$alias] = $field;
         }
 
-        if($field instanceof opal\query\ICorrelationField) {
+        if($field instanceof ICorrelationField) {
             if($aggregateField = $field->getAggregateOutputField()) {
                 $this->_aggregateFields[$aggregateField->getAlias()] = $aggregateField;
             }
         }
 
-        if($field instanceof opal\query\ICombineField) {
+        if($field instanceof ICombineField) {
             $this->_combines[$field->getName()] = $field->getCombine();
         }
 
@@ -174,7 +174,7 @@ class OutputManifest implements IOutputManifest {
                 }
 
                 foreach(opal\schema\Introspector::getFieldProcessors($adapter, $fieldNames) as $name => $field) {
-                    if(!$field instanceof opal\query\IFieldValueProcessor) {
+                    if(!$field instanceof IFieldValueProcessor) {
                         continue;
                     }
 

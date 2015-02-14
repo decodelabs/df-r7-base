@@ -478,8 +478,8 @@ trait TUniqueCheckerField {
     }
 
     protected function _getUniqueCheckQuery($fieldName, $value) {
-        $query = (new opal\query\EntryPoint())
-            ->select()
+        $query = opal\query\Initiator::factory()
+            ->beginSelect()
             ->from($this->_storageAdapter, 'checkUnit')
             ->where($fieldName, '=', $value);
 

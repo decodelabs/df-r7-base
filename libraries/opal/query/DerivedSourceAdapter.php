@@ -105,14 +105,6 @@ class DerivedSourceAdapter implements IDerivedSourceAdapter {
         return $this->_adapter->executeBatchInsertQuery($query);
     }
 
-    public function executeReplaceQuery(IReplaceQuery $query) {
-        return $this->_adapter->executeReplaceQuery($query);
-    }
-
-    public function executeBatchReplaceQuery(IBatchReplaceQuery $query) {
-        return $this->_adapter->executeBatchReplaceQuery($query);
-    }
-
     public function executeUpdateQuery(IUpdateQuery $query) {
         return $this->_adapter->executeUpdateQuery($query);
     }

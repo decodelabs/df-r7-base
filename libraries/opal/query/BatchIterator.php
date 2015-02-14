@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\opal\query\result;
+namespace df\opal\query;
 
 use df;
 use df\core;
@@ -28,9 +28,9 @@ class BatchIterator implements IBatchIterator {
     protected $_result;
     protected $_arrayManipulator;
     
-    public function __construct(opal\query\ISource $source, $result, IOutputManifest $outputManifest=null) {
+    public function __construct(ISource $source, $result, IOutputManifest $outputManifest=null) {
         $this->_batchSize = static::DEFAULT_BATCH_SIZE;
-        $this->_arrayManipulator = new ArrayManipulator($source, [], true, $outputManifest);
+        $this->_arrayManipulator = new opal\native\ArrayManipulator($source, [], true, $outputManifest);
         
         if(is_array($result)) {
             $result = new core\collection\Queue($result);
@@ -107,7 +107,7 @@ class BatchIterator implements IBatchIterator {
         return $this->_combines;
     }
     
-    public function setListKeyField(opal\query\IField $field=null) {
+    public function setListKeyField(IField $field=null) {
         $this->_keyField = $field;
         return $this;
     }
@@ -116,7 +116,7 @@ class BatchIterator implements IBatchIterator {
         return $this->_keyField;
     }
     
-    public function setListValueField(opal\query\IField $field=null) {
+    public function setListValueField(IField $field=null) {
         $this->_valField = $field;
         return $this;
     }

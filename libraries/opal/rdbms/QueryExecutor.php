@@ -323,7 +323,7 @@ abstract class QueryExecutor implements IQueryExecutor {
             }
         }
         
-        $arrayManipulator = new opal\query\result\ArrayManipulator($source, $this->_stmt->executeRead()->toArray(), true);
+        $arrayManipulator = new opal\native\ArrayManipulator($source, $this->_stmt->executeRead()->toArray(), true);
         return $arrayManipulator->applyRemoteJoinQuery($this->_query, $localJoins, $remoteJoins, $forCount);
     }
 
@@ -335,10 +335,12 @@ abstract class QueryExecutor implements IQueryExecutor {
         
         $fields = [];
         $values = [];
+        $duplicates = [];
         
         foreach($this->_query->getRow() as $field => $value) {
-            $fields[] = $this->_adapter->quoteIdentifier($field);
+            $fields[] = $fieldString = $this->_adapter->quoteIdentifier($field);
             $values[] = ':'.$field;
+            $duplicates[] = $fieldString.'=VALUES('.$fieldString.')';
 
             if(is_array($value)) {
                 if(count($value) == 1) {
@@ -354,7 +356,9 @@ abstract class QueryExecutor implements IQueryExecutor {
         
         $this->_stmt->appendSql(' ('.implode(',', $fields).') VALUES ('.implode(',', $values).')');
 
-        if($this->_query->ifNotExists()) {
+        if($this->_query->shouldReplace()) {
+            $this->_stmt->appendSql("\n".'ON DUPLICATE KEY UPDATE '.implode(', ', $duplicates));
+        } else if($this->_query->ifNotExists()) {
             $this->_stmt->appendSql(' ON DUPLICATE KEY UPDATE '.$fields[0].'='.$fields[0]);
         }
 
@@ -370,9 +374,11 @@ abstract class QueryExecutor implements IQueryExecutor {
         $rows = [];
         $fields = [];
         $fieldList = $this->_query->getDereferencedFields();
+        $duplicates = [];
         
         foreach($fieldList as $field) {
-            $fields[] = $this->_adapter->quoteIdentifier($field);
+            $fields[] = $fieldString = $this->_adapter->quoteIdentifier($field);
+            $duplicates[] = $fieldString.'=VALUES('.$fieldString.')';
         }
         
         foreach($this->_query->getRows() as $row) {
@@ -389,65 +395,14 @@ abstract class QueryExecutor implements IQueryExecutor {
             $rows[] = '('.implode(',', $row).')';
         }
         
-        
         $this->_stmt->appendSql(' ('.implode(',', $fields).') VALUES '.implode(', ', $rows));
-        $this->_stmt->executeWrite();
-        
-        return count($rows);
-    }
 
-// Replace
-    public function executeReplaceQuery($tableName) {
-        $this->_stmt->appendSql('INSERT INTO '.$this->_adapter->quoteIdentifier($tableName));
-        
-        $fields = [];
-        $values = [];
-        $duplicates = [];
-        
-        foreach($this->_query->getRow() as $field => $value) {
-            $fields[] = $fieldString = $this->_adapter->quoteIdentifier($field);
-            $values[] = ':'.$field;
-            $duplicates[] = $fieldString.'=VALUES('.$fieldString.')';
-            $this->_stmt->bind($field, $value);
-        }
-        
-        $this->_stmt->appendSql(' ('.implode(',', $fields).') VALUES ('.implode(',', $values).')');
-        $this->_stmt->appendSql("\n".'ON DUPLICATE KEY UPDATE '.implode(', ', $duplicates));
-        $this->_stmt->executeWrite();
-        
-        return $this->_adapter->getLastInsertId();
-    }
-
-// Batch replace
-    public function executeBatchReplaceQuery($tableName) {
-        $this->_stmt->appendSql('INSERT INTO '.$this->_adapter->quoteIdentifier($tableName));
-        
-        $rows = [];
-        $fields = [];
-        $fieldList = $this->_query->getDereferencedFields();
-        $duplicates = [];
-
-        foreach($fieldList as $field) {
-            $fields[] = $fieldString = $this->_adapter->quoteIdentifier($field);
-            $duplicates[] = $fieldString.'=VALUES('.$fieldString.')';
+        if($this->_query->shouldReplace()) {
+            $this->_stmt->appendSql("\n".'ON DUPLICATE KEY UPDATE '.implode(', ', $duplicates));
+        } else if($this->_query->ifNotExists()) {
+            $this->_stmt->appendSql(' ON DUPLICATE KEY UPDATE '.$fields[0].'='.$fields[0]);
         }
 
-        foreach($this->_query->getRows() as $row) {
-            foreach($fieldList as $key) {
-                $value = null;
-                
-                if(isset($row[$key])) {
-                    $value = $row[$key];
-                }
-                
-                $row[$key] = ':'.$this->_stmt->autoBind($value);
-            }
-
-            $rows[] = '('.implode(',', $row).')';
-        }
-        
-        $this->_stmt->appendSql(' ('.implode(',', $fields).') VALUES '.implode(', ', $rows));
-        $this->_stmt->appendSql("\n".'ON DUPLICATE KEY UPDATE '.implode(', ', $duplicates));
         $this->_stmt->executeWrite();
         
         return count($rows);
@@ -689,7 +644,7 @@ abstract class QueryExecutor implements IQueryExecutor {
         $this->writeOrderSection();
 
 
-        $manipulator = new opal\query\result\ArrayManipulator($source, $this->_stmt->executeRead()->toArray(), true);
+        $manipulator = new opal\native\ArrayManipulator($source, $this->_stmt->executeRead()->toArray(), true);
         return $manipulator->applyAttachmentDataQuery($this->_query, $joinsApplied, $clausesApplied);
     }
 

@@ -3,13 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\opal\query\clause;
+namespace df\opal\native;
 
 use df;
 use df\core;
 use df\opal;
     
-class Matcher implements opal\query\IClauseMatcher {
+class ClauseMatcher implements IClauseMatcher {
 
     protected $_index = [];
     protected $_isFieldComparison = false;
@@ -158,7 +158,7 @@ class Matcher implements opal\query\IClauseMatcher {
             $test = true;
             
             foreach($set as $bundle) {
-                if($bundle instanceof opal\query\IClauseMatcher) {
+                if($bundle instanceof IClauseMatcher) {
                     $test &= $bundle->testRow($row);
                 } else {
                     if(isset($row[$bundle->fieldQualifiedName])) {
@@ -188,7 +188,7 @@ class Matcher implements opal\query\IClauseMatcher {
             $test = true;
             
             foreach($set as $bundle) {
-                if($bundle instanceof opal\query\IClauseMatcher) {
+                if($bundle instanceof IClauseMatcher) {
                     $test &= $bundle->testRowMatch($row, $joinRow);
                 } else {
                     $value = null;

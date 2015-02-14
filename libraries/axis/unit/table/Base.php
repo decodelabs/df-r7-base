@@ -307,14 +307,6 @@ abstract class Base implements
         return $this->_adapter->executeBatchInsertQuery($query);
     }
 
-    public function executeReplaceQuery(opal\query\IReplaceQuery $query) {
-        return $this->_adapter->executeReplaceQuery($query);
-    }
-
-    public function executeBatchReplaceQuery(opal\query\IBatchReplaceQuery $query) {
-        return $this->_adapter->executeBatchReplaceQuery($query);
-    }
-
     public function executeUpdateQuery(opal\query\IUpdateQuery $query) {
         return $this->_adapter->executeUpdateQuery($query);
     }
@@ -649,7 +641,7 @@ abstract class Base implements
     }
     
     public function begin() {
-        return new opal\query\ImplicitSourceTransaction($this);
+        return new opal\query\Transaction($this);
     }
 
     

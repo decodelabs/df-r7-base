@@ -23,6 +23,10 @@ class QueryExecutor extends opal\rdbms\QueryExecutor {
 
 // Insert
     public function executeInsertQuery($tableName) {
+        if($this->_query->shouldReplace()) {
+            core\stub($tableName);
+        }
+
         $this->_stmt->appendSql('INSERT');
 
         if($this->_query->ifNotExists()) {
@@ -60,6 +64,10 @@ class QueryExecutor extends opal\rdbms\QueryExecutor {
 
 // Batch insert
     public function executeBatchInsertQuery($tableName) {
+        if($this->_query->shouldReplace()) {
+            core\stub($tableName);
+        }
+        
         $this->_stmt->appendSql('INSERT');
 
         if($this->_query->ifNotExists()) {
@@ -91,17 +99,6 @@ class QueryExecutor extends opal\rdbms\QueryExecutor {
         
         return $output;
     }
-
-// Replace
-    public function executeReplaceQuery($tableName) {
-        core\stub($this->_query);
-    }
-
-// Batch replace
-    public function executeBatchReplaceQuery($tableName) {
-        core\stub($this->_query);
-    }
-
 
 // Limit
     public function defineLimit($limit, $offset=null) {

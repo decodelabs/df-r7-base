@@ -11,6 +11,8 @@ use df\opal;
 
 class OrderDirective implements IOrderDirective, core\IDumpable {
     
+    use core\TStringProvider;
+
     protected $_isDescending = false;
     protected $_nullOrder = 'ascending';
     protected $_field;
@@ -164,14 +166,6 @@ class OrderDirective implements IOrderDirective, core\IDumpable {
     
     public function toString() {
         return $this->_field->getQualifiedName().' '.$this->getDirection();
-    }
-    
-    public function __toString() {
-        try {
-            return (string)$this->toString();
-        } catch(\Exception $e) {
-            return '';
-        }
     }
     
 // Dump

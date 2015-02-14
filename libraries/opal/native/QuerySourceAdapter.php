@@ -13,7 +13,7 @@ use df\user;
 class QuerySourceAdapter implements opal\query\INaiveIntegralAdapter, opal\query\IEntryPoint {
     
     use user\TAccessLock;
-    use opal\query\TQuery_ImplicitSourceEntryPoint;
+    use opal\query\TQuery_EntryPoint;
 
     protected $_dataSourceId;
     protected $_rows;
@@ -117,12 +117,12 @@ class QuerySourceAdapter implements opal\query\INaiveIntegralAdapter, opal\query
 
     
     public function executeSelectQuery(opal\query\ISelectQuery $query) {
-        $manipulator = new opal\query\result\ArrayManipulator($query->getSource(), $this->_fetchData($query), true);
+        $manipulator = new ArrayManipulator($query->getSource(), $this->_fetchData($query), true);
         return $manipulator->applyReadQuery($query);
     }
     
     public function countSelectQuery(opal\query\ISelectQuery $query) {
-        $manipulator = new opal\query\result\ArrayManipulator($query->getSource(), $this->_fetchData($query), true);
+        $manipulator = new ArrayManipulator($query->getSource(), $this->_fetchData($query), true);
         return $manipulator->applyReadQuery($query, true);
     }
     
@@ -140,19 +140,17 @@ class QuerySourceAdapter implements opal\query\INaiveIntegralAdapter, opal\query
 
 
     public function executeFetchQuery(opal\query\IFetchQuery $query) {
-        $manipulator = new opal\query\result\ArrayManipulator($query->getSource(), $this->_fetchData($query), true);
+        $manipulator = new ArrayManipulator($query->getSource(), $this->_fetchData($query), true);
         return $manipulator->applyReadQuery($query);
     }
     
     public function countFetchQuery(opal\query\IFetchQuery $query) {
-        $manipulator = new opal\query\result\ArrayManipulator($query->getSource(), $this->_fetchData($query), true);
+        $manipulator = new ArrayManipulator($query->getSource(), $this->_fetchData($query), true);
         return $manipulator->applyReadQuery($query, true);
     }
     
     public function executeInsertQuery(opal\query\IInsertQuery $query) {}
     public function executeBatchInsertQuery(opal\query\IBatchInsertQuery $query) {}
-    public function executeReplaceQuery(opal\query\IReplaceQuery $query) {}
-    public function executeBatchReplaceQuery(opal\query\IBatchReplaceQuery $query) {}
     public function executeUpdateQuery(opal\query\IUpdateQuery $query) {}
     public function executeDeleteQuery(opal\query\IDeleteQuery $query) {}
 
@@ -161,7 +159,7 @@ class QuerySourceAdapter implements opal\query\INaiveIntegralAdapter, opal\query
     }
     
     public function fetchAttachmentData(opal\query\IAttachQuery $attachment, array $rows) {
-        $manipulator = new opal\query\result\ArrayManipulator($attachment->getSource(), $this->_fetchData($attachment), true);
+        $manipulator = new ArrayManipulator($attachment->getSource(), $this->_fetchData($attachment), true);
         return $manipulator->applyAttachmentDataQuery($attachment);
     }
     

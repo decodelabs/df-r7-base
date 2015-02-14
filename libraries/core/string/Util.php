@@ -259,11 +259,11 @@ abstract class Util implements IUtil {
 
     
 // Match
-    public static function likeMatch($pattern, $string, $char='_', $wildcard='%') {
+    public static function likeMatch($pattern, $string, $char='?', $wildcard='*') {
         return (bool)preg_match('/'.self::generateLikeMatchRegex($pattern, $char, $wildcard).'/i', $string);
     }
     
-    public static function generateLikeMatchRegex($pattern, $char='_', $wildcard='%', $delimiter='/') {
+    public static function generateLikeMatchRegex($pattern, $char='?', $wildcard='*', $delimiter='/') {
         if(is_array($pattern)) {
             $output = [];
             
@@ -276,7 +276,7 @@ abstract class Util implements IUtil {
             return '^'.implode('|', $output).'$';
         } else {
             $regex = str_replace([$char, $wildcard], [0xFE, 0xFF], $pattern);
-            $regex = preg_quote($regex, '/');
+            $regex = preg_quote($regex, $delimiter);
             return '^'.str_replace([0xFE, 0xFF], ['.', '.*'], $regex).'$';
         }
     }

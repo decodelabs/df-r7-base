@@ -306,8 +306,6 @@ interface IQueryExecutor {
     public function executeRemoteJoinedReadQuery($tableName, $forCount=false);
     public function executeInsertQuery($tableName);
     public function executeBatchInsertQuery($tableName);
-    public function executeReplaceQuery($tableName);
-    public function executeBatchReplaceQuery($tableName);
     public function executeUpdateQuery($tableName);
     public function executeDeleteQuery($tableName);
 

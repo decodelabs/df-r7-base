@@ -12,7 +12,7 @@ use df\user;
 
 abstract class Adapter implements IAdapter {
     
-    use opal\query\TQuery_ImplicitSourceEntryPoint;
+    use opal\query\TQuery_EntryPoint;
     use user\TAccessLock;
 
     const BIND_REQUIRES_DN = true;
@@ -310,16 +310,6 @@ abstract class Adapter implements IAdapter {
     
 // Batch insert query
     public function executeBatchInsertQuery(opal\query\IBatchInsertQuery $query) {
-        core\stub($query);
-    }
-    
-// Replace query
-    public function executeReplaceQuery(opal\query\IReplaceQuery $query) {
-        core\stub($query);
-    }
-    
-// Batch replace query
-    public function executeBatchReplaceQuery(opal\query\IBatchReplaceQuery $query) {
         core\stub($query);
     }
     

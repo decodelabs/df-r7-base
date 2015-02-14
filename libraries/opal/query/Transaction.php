@@ -13,77 +13,167 @@ class Transaction implements ITransaction, core\IDumpable {
     
     protected $_level = 1;
     protected $_adapters = [];
+    protected $_source;
+
+    public function __construct($source=false) {
+        if($source === false) {
+            $source = null;
+        } else if(!$source) {
+            throw new InvalidArgumentException(
+                'Implicit source transaction has no source'
+            );
+        }
+
+        $this->_source = $source;
+    }
     
     public function select($field1=null) {
-        return Initiator::factory()
+        $output = Initiator::factory()
             ->setTransaction($this)
             ->beginSelect(func_get_args());
+
+        if($this->_source !== null) {
+            $output = $output->from($this->_source);
+        }
+
+        return $output;
     }
 
     public function selectDistinct($field1=null) {
-        return Initiator::factory()
+        $output = Initiator::factory()
             ->setTransaction($this)
             ->beginSelect(func_get_args(), true);
+
+        if($this->_source !== null) {
+            $output = $output->from($this->_source);
+        }
+
+        return $output;
     }
 
     public function countAll() {
+        if($this->_source === null) {
+            throw new RuntimeException(
+                'Cannot countAll without implicit source'
+            );
+        }
+
         return $this->select()->count();
     }
 
     public function countAllDistinct() {
+        if($this->_source === null) {
+            throw new RuntimeException(
+                'Cannot countAll without implicit source'
+            );
+        }
+
         return $this->selectDistinct()->count();
     }
 
     public function union() {
-        return Initiator::factory()
+        $output = Initiator::factory()
             ->setTransaction($this)
-            ->beginUnion();
+            ->beginUnion()
+            ->with(func_get_args());
+
+        if($this->_source !== null) {
+            $output = $output->from($this->_source);
+        }
+
+        return $output;
     }
     
     public function fetch() {
-        return Initiator::factory()
+        $output = Initiator::factory()
             ->setTransaction($this)
             ->beginFetch();
+
+        if($this->_source !== null) {
+            $output = $output->from($this->_source);
+        }
+
+        return $output;
     }
     
     public function insert($row) {
-        return Initiator::factory()
+        $output = Initiator::factory()
             ->setTransaction($this)
             ->beginInsert($row);
+
+        if($this->_source !== null) {
+            $output = $output->into($this->_source);
+        }
+
+        return $output;
     }
     
     public function batchInsert($rows=[]) {
-        return Initiator::factory()
+        $output = Initiator::factory()
             ->setTransaction($this)
             ->beginBatchInsert($rows);
+
+        if($this->_source !== null) {
+            $output = $output->into($this->_source);
+        }
+
+        return $output;
     }
     
     public function replace($row) {
-        return Initiator::factory()
+        $output = Initiator::factory()
             ->setTransaction($this)
             ->beginReplace($row);
+
+        if($this->_source !== null) {
+            $output = $output->in($this->_source);
+        }
+
+        return $output;
     }
     
     public function batchReplace($rows=[]) {
-        return Initiator::factory()
+        $output = Initiator::factory()
             ->setTransaction($this)
             ->beginBatchReplace($rows);
+
+        if($this->_source !== null) {
+            $output = $output->in($this->_source);
+        }
+
+        return $output;
     }
     
     public function update(array $valueMap=null) {
-        return Initiator::factory()
+        $output = Initiator::factory()
             ->setTransaction($this)
             ->beginUpdate($valueMap);
+
+        if($this->_source !== null) {
+            $output = $output->in($this->_source);
+        }
+
+        return $output;
     }
     
     public function delete() {
-        return Initiator::factory()
+        $output = Initiator::factory()
             ->setTransaction($this)
             ->beginDelete();
+
+        if($this->_source !== null) {
+            $output = $output->from($this->_source);
+        }
+
+        return $output;
     }
     
     public function begin() {
-        return new self();
+        if($this->_source !== null) {
+            return new self($this->_source);
+        } else {
+            return new self();
+        }
     }
     
     

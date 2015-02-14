@@ -367,8 +367,8 @@ class Initiator implements IInitiator {
 
     public static function beginAttachFromPopulate(IPopulateQuery $populate) {
         return $populate->isSelect() ?
-            SelectAttach::fromPopulate($populate) :
-            FetchAttach::fromPopulate($populate);
+            Select_Attach::fromPopulate($populate) :
+            Fetch_Attach::fromPopulate($populate);
     }
     
     
@@ -446,7 +446,7 @@ class Initiator implements IInitiator {
                     );
                 }
 
-                return (new UnionSelect($this->_union, $source))
+                return (new Select_Union($this->_union, $source))
                     ->isDistinct((bool)$this->_distinct)
                     ->isUnionDistinct((bool)$this->_isUnionDistinct);
 
@@ -541,11 +541,10 @@ class Initiator implements IInitiator {
                     }
                 }
                 
-                if($this->_mode === IQueryTypes::JOIN_CONSTRAINT) {
-                    return new JoinConstraint($this->_parentQuery, $source, $this->_joinType);
-                } else {
-                    return new Join($this->_parentQuery, $source, $this->_joinType);
-                }
+                return new Join(
+                    $this->_parentQuery, $source, $this->_joinType,
+                    $this->_mode === IQueryTypes::JOIN_CONSTRAINT
+                );
                 
             case IQueryTypes::SELECT_ATTACH:
             case IQueryTypes::FETCH_ATTACH:
@@ -580,9 +579,9 @@ class Initiator implements IInitiator {
                 }
                 
                 if($this->_mode == IQueryTypes::FETCH_ATTACH) {
-                    return new FetchAttach($this->_parentQuery, $sourceManager, $source);
+                    return new Fetch_Attach($this->_parentQuery, $sourceManager, $source);
                 } else {
-                    return (new SelectAttach($this->_parentQuery, $sourceManager, $source))
+                    return (new Select_Attach($this->_parentQuery, $sourceManager, $source))
                         ->isDistinct((bool)$this->_distinct);
                 }
                 
@@ -671,7 +670,7 @@ class Initiator implements IInitiator {
                     );
                 }
                 
-                return new Replace($sourceManager, $source, $this->_data);
+                return new Insert($sourceManager, $source, $this->_data, true);
                 
             case IQueryTypes::BATCH_REPLACE:
                 $source = $sourceManager->newSource($sourceAdapter, $alias, null, true);
@@ -684,7 +683,7 @@ class Initiator implements IInitiator {
                     );
                 }
                 
-                return new BatchReplace($sourceManager, $source, $this->_data);
+                return new BatchInsert($sourceManager, $source, $this->_data, true);
                 
             case IQueryTypes::UPDATE:
                 $source = $sourceManager->newSource($sourceAdapter, $alias, null, true);

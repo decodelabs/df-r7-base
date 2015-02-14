@@ -233,7 +233,7 @@ interface IJoinConstrainableQuery extends IJoinProviderQuery {
     public function joinConstraint();
     public function leftJoinConstraint();
     public function rightJoinConstraint();
-    public function addJoinConstraint(IJoinConstraintQuery $join);
+    public function addJoinConstraint(IJoinQuery $join);
 }
 
 interface IAttachProviderQuery extends IReadQuery {
@@ -351,11 +351,10 @@ interface IJoinQuery extends
     
     public function addOutputFields($fields);
     public function getType();
+    public function isConstraint($flag=null);
     public function endJoin();
     public function referencesSourceAliases(array $sourceAliases);
 }
-
-interface IJoinConstraintQuery extends IJoinQuery {}
 
 
 interface IPopulateQuery extends 
@@ -538,11 +537,17 @@ interface IFetchAttachQuery extends IFetchQuery, IAttachQuery {
  * Insert
  */
 interface IDataInsertQuery extends IWriteQuery, ILocationalQuery {
+    public function shouldReplace($flag=null);
+    public function ifNotExists($flag=null);
+}
+
+
+interface IInsertQuery extends IDataInsertQuery {
     public function setRow($row);
     public function getRow();
 }
 
-interface IBatchDataInsertQuery extends IWriteQuery,ILocationalQuery {
+interface IBatchInsertQuery extends IDataInsertQuery {
     public function addRows($rows);
     public function addRow($row);
     public function getRows();
@@ -557,15 +562,6 @@ interface IBatchDataInsertQuery extends IWriteQuery,ILocationalQuery {
     public function setFlushThreshold($flush);
     public function getFlushThreshold();
 }
-
-
-interface IInsertQuery extends IDataInsertQuery {
-    public function ifNotExists($flag=null);
-}
-
-interface IReplaceQuery extends IDataInsertQuery {}
-interface IBatchInsertQuery extends IBatchDataInsertQuery {}
-interface IBatchReplaceQuery extends IBatchDataInsertQuery {}
 
 
 
@@ -670,8 +666,6 @@ interface IAdapter extends user\IAccessLock {
     public function countFetchQuery(IFetchQuery $query);
     public function executeInsertQuery(IInsertQuery $query);
     public function executeBatchInsertQuery(IBatchInsertQuery $query);
-    public function executeReplaceQuery(IReplaceQuery $query);
-    public function executeBatchReplaceQuery(IBatchReplaceQuery $query);
     public function executeUpdateQuery(IUpdateQuery $query);
     public function executeDeleteQuery(IDeleteQuery $query);
     
@@ -727,7 +721,7 @@ interface ISource extends IAdapterAware {
     public function handleQueryException(IQuery $query, \Exception $e);
     
     public function extrapolateIntegralAdapterField($name, $alias=null, opal\schema\IField $field=null);
-    public function extrapolateIntegralAdapterFieldFromSchemaField($name, $alias, opal\schema\IField $field);
+    public function extrapolateIntegralAdapterFieldFromSchemaField($name, $alias, opal\schema\IField $field=null);
 
     public function getFieldProcessor(IIntrinsicField $field);
 
@@ -956,14 +950,6 @@ interface IClause extends IJoinClauseProvider, IWhereClauseProvider, IHavingClau
     public static function mapVirtualValueClause(opal\query\IClauseFactory $parent, opal\query\IVirtualField $field, $operator, $value, $isOr);
 }
 
-interface IClauseMatcher {
-    public function testRow(array $row);
-    public function testRowMatch(array $row, array $joinRow);
-
-    public static function compare($value, $operator, $compare);
-}
-
-
 interface IClauseList extends 
     INestedComponent,
     IJoinClauseProvider, 
@@ -989,6 +975,7 @@ interface IWhereClauseList extends IClauseList, IWhereClauseFactory {}
 interface IHavingClauseList extends IClauseList, IHavingClauseFactory {}
 
 
+// Expressions
 interface IExpression {
     public function getParentQuery();
     public function getParentExpression();
@@ -1047,4 +1034,56 @@ interface IPaginator extends core\collection\IOrderablePaginator {
     public function setKeyMap(array $map);
     public function applyWith($data);
     public function isApplied();
+}
+
+
+// Results
+interface IBatchIterator extends core\collection\ICollection, \IteratorAggregate {
+    public function getResult();
+    public function isForFetch($flag=null);
+    
+    public function getPrimarySource();
+    public function addSources(array $joinSources);
+    public function getSources();
+    
+    public function setPopulates(array $populates);
+    public function getPopulates();
+
+    public function setAttachments(array $attachments);
+    public function getAttachments();
+
+    public function setCombines(array $combines);
+    public function getCombines();
+    
+    public function setListKeyField(IField $field=null);
+    public function getListKeyField();
+    
+    public function setListValueField(IField $field=null);
+    public function getListValueField();
+    
+    public function setBatchSize($size);
+    public function getBatchSize();
+}
+
+interface IOutputManifest {
+    public function getPrimarySource();
+    public function getSources();
+    public function importSource(ISource $source, array $rows=null, $isNormalized=true);
+    
+    public function addOutputField(IField $field);
+    public function getOutputFields();
+    public function getPrivateFields();
+    public function getAllFields();
+    
+    public function getWildcardMap();
+    
+    public function getAggregateFields();
+    public function getAggregateFieldAliases();
+    public function hasAggregateFields();
+    
+    public function getOutputFieldProcessors();
+    public function getCombines();
+
+    public function queryRequiresPartial($flag=null);
+    public function requiresPartial($forFetch=true);
 }

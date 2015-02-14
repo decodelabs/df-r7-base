@@ -143,14 +143,6 @@ class Rdbms implements
         return $this->getQuerySourceAdapter()->executeBatchInsertQuery($query);
     }
 
-    public function executeReplaceQuery(opal\query\IReplaceQuery $query) {
-        return $this->getQuerySourceAdapter()->executeReplaceQuery($query);
-    }
-
-    public function executeBatchReplaceQuery(opal\query\IBatchReplaceQuery $query) {
-        return $this->getQuerySourceAdapter()->executeBatchReplaceQuery($query);
-    }
-
     public function executeUpdateQuery(opal\query\IUpdateQuery $query) {
         return $this->getQuerySourceAdapter()->executeUpdateQuery($query);
     }

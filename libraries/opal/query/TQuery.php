@@ -168,7 +168,7 @@ trait TQuery {
 
         $adapter = $source->getAdapter();
 
-        if(!$adapter instanceof opal\query\IIntegralAdapter) {
+        if(!$adapter instanceof IIntegralAdapter) {
             throw new LogicException(
                 'Cannot import query block - adapter is not integral'
             );
@@ -196,7 +196,7 @@ trait TQuery {
             $adapter = $field->getTargetQueryAdapter($clusterId);
         }
 
-        if(!$adapter instanceof opal\query\IIntegralAdapter) {
+        if(!$adapter instanceof IIntegralAdapter) {
             throw new LogicException(
                 'Cannot import query block - adapter is not integral'
             );
@@ -217,7 +217,7 @@ trait TQuery {
     }
 
     protected function _lookupRelationField(&$fieldName, &$clusterId, &$queryField=null) {
-        if($fieldName instanceof opal\query\IField) {
+        if($fieldName instanceof IField) {
             $fieldName = $fieldName->getQualifiedName();
         }
 
@@ -263,7 +263,7 @@ trait TQuery {
             $field = $schema->getField($queryField->getName());
 
             if(!$field instanceof opal\schema\IRelationField) {
-                throw new opal\query\InvalidArgumentException(
+                throw new InvalidArgumentException(
                     $fieldName.' is not a relation field'
                 );
             }
@@ -438,7 +438,7 @@ trait TQuery_Correlatable {
     }
 
     protected function _beginRelationCorrelation($fieldName, $alias, $aggregate) {
-        if($fieldName instanceof opal\query\IField) {
+        if($fieldName instanceof IField) {
             if($alias === null) {
                 $alias = $fieldName->getName();
             }
@@ -453,7 +453,7 @@ trait TQuery_Correlatable {
         $field = $this->_lookupRelationField($fieldName, $clusterId, $queryField);
 
         if(!$field instanceof opal\schema\IManyRelationField) {
-            throw new opal\query\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Cannot begin relation correlation - '.$fieldName.' is not a many relation field'
             );
         }
@@ -639,6 +639,7 @@ trait TQuery_Joinable {
 
     
     public function addJoin(IJoinQuery $join) {
+        $join->isConstraint(false);
         $source = $this->getSource();
 
         if(!$source->getAdapter()->supportsQueryType($join->getQueryType())) {
@@ -685,7 +686,8 @@ trait TQuery_JoinConstrainable {
         return $this->_newQuery()->beginJoinConstraint($this, IJoinQuery::RIGHT);
     }
     
-    public function addJoinConstraint(IJoinConstraintQuery $join) {
+    public function addJoinConstraint(IJoinQuery $join) {
+        $join->isConstraint(true);
         $source = $this->getSource();
 
         if(!$source->getAdapter()->supportsQueryType($join->getQueryType())) {
@@ -729,7 +731,7 @@ trait TQuery_JoinClauseFactoryBase {
     }
 
     
-    public function addJoinClause(opal\query\IJoinClauseProvider $clause=null) {
+    public function addJoinClause(IJoinClauseProvider $clause=null) {
         $this->getJoinClauseList()->addJoinClause($clause);
         return $this;
     }
@@ -859,7 +861,7 @@ trait TQuery_Populatable {
     }
 
     public function getPopulate($fieldName) {
-        if($fieldName instanceof opal\query\IField) {
+        if($fieldName instanceof IField) {
             $fieldName = $fieldName->getName();
         }
 
@@ -991,7 +993,7 @@ trait TQuery_Combine {
     }
 
     public function removeField($name) {
-        if($name instanceof opal\query\IField) {
+        if($name instanceof IField) {
             $name = $name->getName();
         }
 
@@ -1130,8 +1132,8 @@ trait TQuery_RelationAttachable {
         $field = $this->_lookupRelationField($relationField, $clusterId);
         $attachment = $field->rewritePopulateQueryToAttachment($populate);
 
-        if(!$attachment instanceof opal\query\IAttachQuery) {
-            throw new opal\query\InvalidArgumentException(
+        if(!$attachment instanceof IAttachQuery) {
+            throw new InvalidArgumentException(
                 'Cannot populate '.$populate->getFieldName().' - integral schema field cannot convert to attachment'
             );
         }
@@ -1217,7 +1219,7 @@ trait TQuery_Attachment {
     
 // Output
     public function asOne($name) {
-        if($name instanceof opal\query\IField) {
+        if($name instanceof IField) {
             $name = $name->getName();
         }
 
@@ -1237,7 +1239,7 @@ trait TQuery_Attachment {
     }
     
     public function asMany($name, $keyField=null) {
-        if($name instanceof opal\query\IField) {
+        if($name instanceof IField) {
             $name = $name->getName();
         }
 
@@ -1338,7 +1340,6 @@ trait TQuery_PrerequisiteClauseFactory {
     
     public function wherePrerequisite($field, $operator, $value) {
         $source = $this->getSource();
-        $source->testWhereClauseSupport();
         
         $this->addPrerequisite(
             opal\query\clause\Clause::factory(
@@ -1354,11 +1355,10 @@ trait TQuery_PrerequisiteClauseFactory {
     }
     
     public function whereBeginPrerequisite() {
-        $this->getSource()->testWhereClauseSupport();
         return new opal\query\clause\WhereList($this, false, true);
     }
     
-    public function addPrerequisite(opal\query\IClauseProvider $clause=null) {
+    public function addPrerequisite(IClauseProvider $clause=null) {
         if($clause !== null) {
             $clause->isOr(false);
             $this->_prerequisites[] = $clause;
@@ -1394,7 +1394,6 @@ trait TQuery_WhereClauseFactory {
     
     public function where($field, $operator, $value) {
         $source = $this->getSource();
-        $source->testWhereClauseSupport();
         
         $this->_getWhereClauseList()->addWhereClause(
             opal\query\clause\Clause::factory(
@@ -1411,7 +1410,6 @@ trait TQuery_WhereClauseFactory {
     
     public function orWhere($field, $operator, $value) {
         $source = $this->getSource();
-        $source->testWhereClauseSupport();
         
         $this->_getWhereClauseList()->addWhereClause(
             opal\query\clause\Clause::factory(
@@ -1428,7 +1426,6 @@ trait TQuery_WhereClauseFactory {
 
     public function whereField($leftField, $operator, $rightField) {
         $source = $this->getSource();
-        $source->testWhereClauseSupport();
         
         $this->_getWhereClauseList()->addWhereClause(
             opal\query\clause\Clause::factory(
@@ -1445,7 +1442,6 @@ trait TQuery_WhereClauseFactory {
 
     public function orWhereField($leftField, $operator, $rightField) {
         $source = $this->getSource();
-        $source->testWhereClauseSupport();
         
         $this->_getWhereClauseList()->addWhereClause(
             opal\query\clause\Clause::factory(
@@ -1479,18 +1475,15 @@ trait TQuery_WhereClauseFactory {
     }
 
     public function beginWhereClause() {
-        $this->getSource()->testWhereClauseSupport();
         return new opal\query\clause\WhereList($this);
     }
     
     public function beginOrWhereClause() {
-        $this->getSource()->testWhereClauseSupport();
         return new opal\query\clause\WhereList($this, true);
     }
     
     
-    public function addWhereClause(opal\query\IWhereClauseProvider $clause=null) {
-        $this->getSource()->testWhereClauseSupport();
+    public function addWhereClause(IWhereClauseProvider $clause=null) {
         $this->_getWhereClauseList()->addWhereClause($clause);
         return $this;
     }
@@ -1607,7 +1600,6 @@ trait TQuery_Groupable {
     
     public function groupBy($field1) {
         $source = $this->getSource();
-        $source->testGroupDirectiveSupport();
         
         foreach(func_get_args() as $field) {
             $this->_groups[] = $this->getSourceManager()->extrapolateIntrinsicField($source, $field);
@@ -1639,7 +1631,6 @@ trait TQuery_HavingClauseFactory {
     
     public function having($field, $operator, $value) {
         $source = $this->getSource();
-        $source->testAggregateClauseSupport();
         
         $this->getHavingClauseList()->addHavingClause(
             opal\query\clause\Clause::factory(
@@ -1656,7 +1647,6 @@ trait TQuery_HavingClauseFactory {
     
     public function orHaving($field, $operator, $value) {
         $source = $this->getSource();
-        $source->testAggregateClauseSupport();
         
         $this->getHavingClauseList()->addHavingClause(
             opal\query\clause\Clause::factory(
@@ -1672,18 +1662,15 @@ trait TQuery_HavingClauseFactory {
     }
     
     public function beginHavingClause() {
-        $this->getSource()->testAggregateClauseSupport();
         return new opal\query\clause\HavingList($this);
     }
     
     public function beginOrHavingClause() {
-        $this->getSource()->testAggregateClauseSupport();
         return new opal\query\clause\HavingList($this, true);
     }
     
     
-    public function addHavingClause(opal\query\IHavingClauseProvider $clause=null) {
-        $this->getSource()->testAggregateClauseSupport();
+    public function addHavingClause(IHavingClauseProvider $clause=null) {
         $this->getHavingClauseList()->addHavingClause($clause);
         return $this;
     }
@@ -1723,10 +1710,9 @@ trait TQuery_Orderable {
     
     public function orderBy($field1) {
         $source = $this->getSource();
-        $source->testOrderDirectiveSupport();
         
         foreach(func_get_args() as $field) {
-            if($field instanceof opal\query\IField) {
+            if($field instanceof IField) {
                 $field = $field->getQualifiedName();
             }
 
@@ -1787,8 +1773,6 @@ trait TQuery_Limitable {
     protected $_maxLimit;
     
     public function limit($limit) {
-        $this->getSource()->testLimitDirectiveSupport();
-        
         if($limit) {
             $limit = (int)$limit;
             
@@ -1834,8 +1818,6 @@ trait TQuery_Offsettable {
     protected $_offset;
     
     public function offset($offset) {
-        $this->getSource()->testOffsetDirectiveSupport();
-        
         if(!$offset) {
             $offset = null;
         }
@@ -1885,14 +1867,6 @@ trait TQuery_Pageable {
     }
     
     public function getPaginator() {
-        /*
-        if(!$this->_paginator) {
-            $this->_paginator = $this->paginate()
-                ->setDefaultLimit($this->_limit)
-                ->setDefaultOffset($this->_offset);
-        }
-        */
-        
         return $this->_paginator;
     }
 }
@@ -1969,7 +1943,7 @@ trait TQuery_Read {
         if($source->isDerived()) {
             $output = $source->getAdapter()->getDerivationQuery()->getOutputManifest();
         } else {
-            $output = new opal\query\result\OutputManifest($source);
+            $output = new opal\query\OutputManifest($source);
         }
 
         if($this instanceof IJoinProviderQuery) {
@@ -1993,21 +1967,21 @@ trait TQuery_Read {
         return $output;
     }
 
-    protected function _createBatchIterator($res, opal\query\IField $keyField=null, opal\query\IField $valField=null, $forFetch=false) {
-        $output = new opal\query\result\BatchIterator($this->getSource(), $res, $this->getOutputManifest());
+    protected function _createBatchIterator($res, IField $keyField=null, IField $valField=null, $forFetch=false) {
+        $output = new BatchIterator($this->getSource(), $res, $this->getOutputManifest());
         $output->isForFetch($forFetch)
             ->setListKeyField($keyField)
             ->setListValueField($valField);
 
-        if($this instanceof opal\query\IPopulatableQuery) {
+        if($this instanceof IPopulatableQuery) {
             $output->setPopulates($this->getPopulates());
         }
 
-        if($this instanceof opal\query\IAttachProviderQuery) {
+        if($this instanceof IAttachProviderQuery) {
             $output->setAttachments($this->getAttachments());
         }
 
-        if($this instanceof opal\query\ICombinableQuery) {
+        if($this instanceof ICombinableQuery) {
             $output->setCombines($this->getCombines());
         }
 
@@ -2068,363 +2042,27 @@ trait TQuery_SelectSourceDataFetcher {
  */
 trait TQuery_DataInsert {
     
-    protected $_row;
-    
-    public function setRow($row) {
-        if($this instanceof ILocationalQuery && $row instanceof opal\record\ILocationalRecord) {
-            $this->inside($row->getQueryLocation());
+    protected $_shouldReplace = false;
+    protected $_ifNotExists = false;
+
+    public function shouldReplace($flag=null) {
+        if($flag !== null) {
+            $this->_shouldReplace = (bool)$flag;
+            return $this;
         }
 
-        if($row instanceof opal\query\IDataRowProvider) {
-            $row = $row->toDataRowArray();
-        } else if($row instanceof core\IArrayProvider) {
-            $row = $row->toArray();
-        } else if(!is_array($row)) {
-            throw new InvalidArgumentException(
-                'Insert data must be convertible to an array'
-            );
-        }
-        
-        if(empty($row)) {
-            throw new InvalidArgumentException(
-                'Insert data must contain at least one field'
-            );
-        }
-        
-        $this->_row = $row;
-        return $this;
-    }
-    
-    public function getRow() {
-        return $this->_row;
+        return $this->_shouldReplace;
     }
 
-
-    protected function _normalizeInsertId($originalId, array $row) {
-        $adapter = $this->_source->getAdapter();
-
-        if(!$adapter instanceof IIntegralAdapter) {
-            return $originalId;
+    public function ifNotExists($flag=null) {
+        if($flag !== null) {
+            $this->_ifNotExists = (bool)$flag;
+            return $this;
         }
 
-        $index = $adapter->getQueryAdapterSchema()->getPrimaryIndex();
-
-        if(!$index) {
-            return $originalId;
-        }
-
-        $fields = $index->getFields();
-        $values = [];
-        
-        foreach($fields as $name => $field) {
-            if($originalId 
-            && (($field instanceof opal\schema\IAutoIncrementableField && $field->shouldAutoIncrement())
-              || $field instanceof opal\schema\IAutoGeneratorField)) {
-                $values[$name] = $originalId;
-            } else if($field instanceof opal\query\IFieldValueProcessor) {
-                $values[$name] = $field->inflateValueFromRow($name, $row, null);
-            } else {
-                $values[$name] = $originalId;
-            }
-        }
-
-        return new opal\record\PrimaryKeySet(array_keys($fields), $values);
-    }
-
-    protected function _deflateInsertValues(array $row) {
-        $adapter = $this->_source->getAdapter();
-
-        if(!$adapter instanceof IIntegralAdapter) {
-            return $row;
-        }
-
-        $schema = $adapter->getQueryAdapterSchema();
-        $values = [];
-        
-        foreach($schema->getFields() as $name => $field) {
-            if($field instanceof opal\schema\INullPrimitiveField) {
-                continue;
-            }
-            
-            if(!isset($row[$name])) {
-                $value = $field->generateInsertValue($row);
-            } else {
-                $value = $field->sanitizeValue($row[$name]);
-            }
-
-            if($field instanceof opal\schema\IAutoTimestampField 
-            && ($value === null || $value === '') 
-            && $field->shouldTimestampAsDefault()) {
-                continue;
-            }
-            
-            $value = $field->deflateValue($value);
-        
-            if(is_array($value)) {
-                foreach($value as $key => $val) {
-                    $values[$key] = $val;
-                }
-            } else {
-                $values[$name] = $value;
-            }
-        }
-        
-        return $values;
+        return $this->_ifNotExists;
     }
 }
-
-
-
-trait TQuery_BatchDataInsert {
-    
-    protected $_rows = [];
-    protected $_fields = [];
-    protected $_dereferencedFields = null;
-    protected $_flushThreshold = 500;
-    protected $_inserted = 0;
-    
-    public function addRows($rows) {
-        if($rows instanceof core\IArrayProvider) {
-            $rows = $rows->toArray();
-        } else if(!is_array($rows)) {
-            throw new InvalidArgumentException(
-                'Batch insert data must be convertible to an array'
-            );
-        }
-        
-        foreach($rows as $row) {
-            $this->addRow($row);
-        }
-        
-        return $this;
-    }
-    
-    public function addRow($row) {
-        $row = $this->_normalizeRow($row);
-        
-        foreach($row as $field => $value) {
-            $this->_fields[$field] = true;
-        }
-        
-        $this->_rows[] = $row;
-        
-        if($this->_flushThreshold > 0
-        && count($this->_rows) >= $this->_flushThreshold) {
-            $this->execute();
-        }
-        
-        return $this;
-    }
-    
-    protected function _normalizeRow($row) {
-        if($row instanceof opal\query\IDataRowProvider) {
-            $row = $row->toDataRowArray();
-        } else if($row instanceof core\IArrayProvider) {
-            $row = $row->toArray();
-        } else if(!is_array($row)) {
-            throw new InvalidArgumentException(
-                'Insert data must be convertible to an array'
-            );
-        }
-        
-        if(empty($row)) {
-            throw new InvalidArgumentException(
-                'Insert data must contain at least one field'
-            );
-        }
-       
-        return $row;
-    }
-    
-    
-    public function getRows() {
-        return $this->_rows;
-    }
-    
-    public function clearRows() {
-        $this->_rows = [];
-        return $this;
-    }
-    
-    public function getFields() {
-        return array_keys($this->_fields);
-    }
-
-    public function getDereferencedFields() {
-        if($this->_dereferencedFields === null) {
-            return $this->getFields();
-        }
-
-        return array_keys($this->_dereferencedFields);
-    }
-    
-
-// Count    
-    public function countPending() {
-        return count($this->_rows);
-    }
-    
-    public function countInserted() {
-        return $this->_inserted;
-    }
-    
-    public function countTotal() {
-        return $this->countPending() + $this->countInserted();
-    }
-    
-// Flush threshold
-    public function setFlushThreshold($flush) {
-        $this->_flushThreshold = (int)$flush;
-        return $this;
-    }
-    
-    public function getFlushThreshold() {
-        return $this->_flushThreshold;
-    }
-
-    protected function _deflateBatchInsertValues(array $rows, array &$queryFields) {
-        $adapter = $this->_source->getAdapter();
-
-        if(!$adapter instanceof IIntegralAdapter) {
-            return $rows;
-        }
-
-        $schema = $adapter->getQueryAdapterSchema();
-        $fields = $schema->getFields();
-        $queryFields = [];
-        $values = [];
-        
-        foreach($rows as $row) {
-            $rowValues = [];
-            
-            foreach($fields as $name => $field) {
-                if($field instanceof opal\schema\INullPrimitiveField) {
-                    continue;
-                }
-                
-                if(!isset($row[$name])) {
-                    $value = $field->generateInsertValue($row);
-                } else {
-                    $value = $field->sanitizeValue($row[$name]);
-                }
-
-                if($field instanceof opal\schema\IAutoTimestampField 
-                && ($value === null || $value === '') 
-                && $field->shouldTimestampAsDefault()) {
-                    continue;
-                }
-                
-                $value = $field->deflateValue($value);
-            
-                if(is_array($value)) {
-                    foreach($value as $key => $val) {
-                        $rowValues[$key] = $val;
-                        $queryFields[$key] = true;
-                    }
-                } else {
-                    $rowValues[$name] = $value;
-                    $queryFields[$name] = true;
-                }
-            }
-            
-            $values[] = $rowValues;
-        }
-
-        $queryFields = array_keys($queryFields);
-        return $values;
-    }
-}
-
-
-
-
-
-
-/****************************
- * Update data
- */
-trait TQuery_DataUpdate {
-    
-    protected $_valueMap = [];
-    
-    public function set($key, $value=null) {
-        if(is_array($key)) {
-            $values = $key;
-        } else {
-            $values = [$key => $value];
-        }
-        
-        $this->_valueMap = array_merge($this->_valueMap, $values);
-    }
-    
-    public function express($field, $var1) {
-        return call_user_func_array([$this, 'beginExpression'], func_get_args())->endExpression();
-    }
-
-    public function beginExpression($field, $var1) {
-        return new Expression($this, $field, array_slice(func_get_args(), 1));
-    }
-
-    public function expressCorrelation($field, $targetField) {
-        core\stub($field, $targetField);
-    }
-
-    
-    public function getValueMap() {
-        return $this->_valueMap;
-    }
-
-    protected function _deflateUpdateValues(array $values) {
-        $adapter = $this->_source->getAdapter();
-
-        if(!$adapter instanceof IIntegralAdapter) {
-            return $values;
-        }
-
-        $schema = $adapter->getQueryAdapterSchema();
-        
-        foreach($values as $name => $value) {
-            if($value instanceof opal\query\IExpression) {
-                continue;
-            }
-
-            if(!$field = $schema->getField($name)) {
-                continue;
-            }
-            
-            if($field instanceof opal\schema\INullPrimitiveField) {
-                unset($values[$name]);
-                continue;
-            }
-
-            if($field instanceof opal\schema\IAutoTimestampField 
-            && ($value === null || $value === '') 
-            && !$field->isNullable()) {
-                $value = new core\time\Date();
-            }
-            
-            $value = $field->deflateValue($field->sanitizeValue($value));
-            
-            if(is_array($value)) {
-                unset($values[$name]);
-                
-                foreach($value as $key => $val) {
-                    $values[$key] = $val;
-                }
-            } else {
-                $values[$name] = $value;
-            }
-        }
-        
-        return $values;
-    }
-}
-
-
-
-
-
-
 
 
 
@@ -2434,146 +2072,141 @@ trait TQuery_DataUpdate {
 trait TQuery_EntryPoint {
     
     public function select($field1=null) {
-        return Initiator::factory()
+        $output = Initiator::factory()
             ->beginSelect(func_get_args());
+
+        if($this instanceof IAdapter) {
+            $output = $output->from($this);
+        }
+
+        return $output;
     }
 
     public function selectDistinct($field1=null) {
-        return Initiator::factory()
+        $output = Initiator::factory()
             ->beginSelect(func_get_args(), true);
+
+        if($this instanceof IAdapter) {
+            $output = $output->from($this);
+        }
+
+        return $output;
     }
 
     public function countAll() {
+        if(!$this instanceof IAdapter) {
+            throw new RuntimeException(
+                'Cannot count all without implicit source'
+            );
+        }
+
         return $this->select()->count();
     }
 
     public function countAllDistinct() {
+        if(!$this instanceof IAdapter) {
+            throw new RuntimeException(
+                'Cannot count all without implicit source'
+            );
+        }
+
         return $this->selectDistinct()->count();
     }
 
     public function union() {
-        return Initiator::factory()
-            ->beginUnion();
-    }
-
-    public function fetch() {
-        return Initiator::factory()
-            ->beginFetch();
-    }
-    
-    public function insert($row) {
-        return Initiator::factory()
-            ->beginInsert($row);
-    }
-    
-    public function batchInsert($rows=[]) {
-        return Initiator::factory()
-            ->beginBatchInsert($rows);
-    }
-    
-    public function replace($row) {
-        return Initiator::factory()
-            ->beginReplace($row);
-    }
-    
-    public function batchReplace($rows=[]) {
-        return Initiator::factory()
-            ->beginBatchReplace($rows);
-    }
-    
-    public function update(array $valueMap=null) {
-        return Initiator::factory()
-            ->beginUpdate($valueMap);
-    }
-    
-    public function delete() {
-        return Initiator::factory()
-            ->beginDelete();
-    }
-    
-    public function begin() {
-        return new Transaction();
-    }
-}
-
-
-
-
-/*******************************
- * Implicit source entry point
- */
-trait TQuery_ImplicitSourceEntryPoint {
-    
-    public function select($field1=null) {
-        return Initiator::factory()
-            ->beginSelect(func_get_args())
-            ->from($this);
-    }
-    
-    public function selectDistinct($field1=null) {
-        return Initiator::factory()
-            ->beginSelect(func_get_args(), true)
-            ->from($this);
-    }
-
-    public function countAll() {
-        return $this->select()->count();
-    }
-
-    public function countAllDistinct() {
-        return $this->selectDistinct()->count();
-    }
-
-    public function union() {
-        return Initiator::factory()
+        $output = Initiator::factory()
             ->beginUnion()
-            ->with(func_get_args())
-            ->from($this);
+            ->with(func_get_args());
+
+        if($this instanceof IAdapter) {
+            $output = $output->from($this);
+        }
+
+        return $output;
     }
 
     public function fetch() {
-        return Initiator::factory()
-            ->beginFetch()
-            ->from($this);
+        $output = Initiator::factory()
+            ->beginFetch();
+
+        if($this instanceof IAdapter) {
+            $output = $output->from($this);
+        }
+
+        return $output;
     }
     
     public function insert($row) {
-        return Initiator::factory()
-            ->beginInsert($row)
-            ->into($this);
+        $output = Initiator::factory()
+            ->beginInsert($row);
+
+        if($this instanceof IAdapter) {
+            $output = $output->into($this);
+        }
+
+        return $output;
     }
     
     public function batchInsert($rows=[]) {
-        return Initiator::factory()
-            ->beginBatchInsert($rows)
-            ->into($this);
+        $output = Initiator::factory()
+            ->beginBatchInsert($rows);
+
+        if($this instanceof IAdapter) {
+            $output = $output->into($this);
+        }
+
+        return $output;
     }
     
     public function replace($row) {
-        return Initiator::factory()
-            ->beginReplace($row)
-            ->in($this);
+        $output = Initiator::factory()
+            ->beginReplace($row);
+
+        if($this instanceof IAdapter) {
+            $output = $output->in($this);
+        }
+
+        return $output;
     }
     
     public function batchReplace($rows=[]) {
-        return Initiator::factory()
-            ->beginBatchReplace($rows)
-            ->in($this);
+        $output = Initiator::factory()
+            ->beginBatchReplace($rows);
+
+        if($this instanceof IAdapter) {
+            $output = $output->in($this);
+        }
+
+        return $output;
     }
     
     public function update(array $valueMap=null) {
-        return Initiator::factory()
-            ->beginUpdate($valueMap)
-            ->in($this);
+        $output = Initiator::factory()
+            ->beginUpdate($valueMap);
+
+        if($this instanceof IAdapter) {
+            $output = $output->in($this);
+        }
+
+        return $output;
     }
     
     public function delete() {
-        return Initiator::factory()
-            ->beginDelete()
-            ->from($this);
+        $output = Initiator::factory()
+            ->beginDelete();
+
+        if($this instanceof IAdapter) {
+            $output = $output->from($this);
+        }
+
+        return $output;
     }
     
     public function begin() {
-        return new ImplicitSourceTransaction($this);
+        if($this instanceof IAdapter) {
+            return new Transaction($this);
+        } else {
+            return new Transaction();
+        }
     }
 }

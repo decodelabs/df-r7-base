@@ -102,7 +102,7 @@ class Union implements IUnionQuery {
     }
 
     public function getOutputManifest() {
-        $output = new opal\query\result\OutputManifest($this->getSource());
+        $output = new OutputManifest($this->getSource());
 
         if($this->_primaryQuery instanceof IJoinProviderQuery) {
             foreach($this->_primaryQuery->getJoins() as $join) {

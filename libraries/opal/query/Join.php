@@ -20,6 +20,7 @@ class Join implements IJoinQuery, core\IDumpable {
     
     protected $_source;
     protected $_type;
+    protected $_isConstraint = false;
 
     public static function typeIdToName($id) {
         switch($id) {
@@ -34,9 +35,10 @@ class Join implements IJoinQuery, core\IDumpable {
         }
     }
     
-    public function __construct(IJoinableQuery $parent, ISource $source, $type=self::INNER) {
+    public function __construct(IQuery $parent, ISource $source, $type=self::INNER, $isConstraint=false) {
         $this->_parent = $parent;
         $this->_source = $source;
+        $this->_isConstraint = $isConstraint;
         
         switch($type) {
             case IJoinQuery::INNER:
@@ -50,16 +52,31 @@ class Join implements IJoinQuery, core\IDumpable {
                     $type.' is not a valid join type'
                 );
         }
+
+        //$this->_joinClauseList = new opal\query\clause\JoinList($this);
     }
     
     public function getQueryType() {
-        return IQueryTypes::JOIN;
+        if($this->_isConstraint) {
+            return IQueryTypes::JOIN_CONSTRAINT;
+        } else {
+            return IQueryTypes::JOIN;
+        }
     }
     
     
 // Type
     public function getType() {
         return $this->_type;
+    }
+
+    public function isConstraint($flag=null) {
+        if($flag !== null) {
+            $this->_isConstraint = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_isConstraint;
     }
     
     
@@ -91,7 +108,12 @@ class Join implements IJoinQuery, core\IDumpable {
     }
     
     public function endJoin() {
-        $this->_parent->addJoin($this);
+        if($this->_isConstraint) {
+            $this->_parent->addJoinConstraint($this);
+        } else {
+            $this->_parent->addJoin($this);
+        }
+
         return $this->getNestedParent();
     }
     
@@ -99,7 +121,7 @@ class Join implements IJoinQuery, core\IDumpable {
 // Dump
     public function getDumpProperties() {
         $output = [
-            'type' => self::typeIdToName($this->_type),
+            'type' => self::typeIdToName($this->_type).($this->_isConstraint ? ' constraint' : null),
             'fields' => $this->_source,
             'on' => $this->_joinClauseList
         ];

@@ -74,64 +74,6 @@ class Source implements ISource, core\IDumpable {
     
     
     
-// Capabilities
-    public function testWhereClauseSupport() {
-        if(!$this->_adapter->supportsQueryFeature(IQueryFeatures::WHERE_CLAUSE)) {
-            throw new LogicException(
-                'Query adapter '.$this->_adapter->getQuerySourceDisplayName().' '.
-                'does not support WHERE clauses'
-            );
-        }
-    }
-    
-    public function testGroupDirectiveSupport() {
-        if(!$this->_adapter->supportsQueryFeature(IQueryFeatures::GROUP_DIRECTIVE)) {
-            throw new LogicException(
-                'Query adapter '.$this->_adapter->getQuerySourceDisplayName().' '.
-                'does not support GROUP directives'
-            );
-        }
-    }
-    
-    public function testAggregateClauseSupport() {
-        if(!$this->_adapter->supportsQueryFeature(IQueryFeatures::HAVING_CLAUSE)) {
-            throw new LogicException(
-                'Query adapter '.$this->_adapter->getQuerySourceDisplayName().' '.
-                'does not support HAVING clauses'
-            );
-        }
-    }
-    
-    public function testOrderDirectiveSupport() {
-        if(!$this->_adapter->supportsQueryFeature(IQueryFeatures::ORDER_DIRECTIVE)) {
-            throw new LogicException(
-                'Query adapter '.$this->_adapter->getQuerySourceDisplayName().' '.
-                'does not support ORDER directives'
-            );
-        }
-    }
-    
-    public function testLimitDirectiveSupport() {
-        if(!$this->_adapter->supportsQueryFeature(IQueryFeatures::LIMIT)) {
-            throw new LogicException(
-                'Query adapter '.$this->_adapter->getQuerySourceDisplayName().' '.
-                'does not support LIMIT directives'
-            );
-        }
-    }
-    
-    public function testOffsetDirectiveSupport() {
-        if(!$this->_adapter->supportsQueryFeature(IQueryFeatures::OFFSET)) {
-            throw new LogicException(
-                'Query adapter '.$this->_adapter->getQuerySourceDisplayName().' '.
-                'does not support OFFSET directives'
-            );
-        }
-    }
-    
-
-    
-    
 // Fields
     public function extrapolateIntegralAdapterField($name, $alias=null, opal\schema\IField $field=null) {
         if($this->isDerived()) {
@@ -227,7 +169,7 @@ class Source implements ISource, core\IDumpable {
         }
     }
 
-    public function extrapolateIntegralAdapterFieldFromSchemaField($name, $alias, opal\schema\IField $field) {
+    public function extrapolateIntegralAdapterFieldFromSchemaField($name, $alias, opal\schema\IField $field=null) {
         if($field instanceof opal\schema\IMultiPrimitiveField) {
             $privateFields = [];
             
