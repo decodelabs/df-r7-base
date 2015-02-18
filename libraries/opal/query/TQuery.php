@@ -537,9 +537,89 @@ trait TQuery_Correlatable {
  /****************************
  * Joins
  */
-trait TQuery_Joinable {
-    
+trait TQuery_JoinProvider {
+
     protected $_joins = [];
+
+    public function getJoins() {
+        return $this->_joins;
+    }
+
+    public function clearJoins() {
+        $sourceManager = $this->getSourceManager();
+
+        foreach($this->_joins as $sourceAlias => $join) {
+            $sourceManager->removeSource($sourceAlias);
+        }
+        
+        $this->_joins = [];
+        return $this;
+    }
+
+    protected function _beginJoinRelation($fieldName, array $targetFields=null, $joinType=IJoinQuery::INNER) {
+        $targetAlias = null;
+
+        if($fieldName instanceof IField) {
+            if($fieldName instanceof IVirtualField) {
+                $targetAlias = $fieldName->getTargetSourceAlias();
+            }
+
+            $fieldName = $fieldName->getQualifiedName();
+        }
+
+        $field = $this->_lookupRelationField($fieldName, $clusterId, $queryField);
+
+        if($targetFields === null) {
+            $join = $this->_newQuery()->beginJoinConstraint($this, $joinType);
+        } else {
+            $join = $this->_newQuery()->beginJoin($this, $targetFields, $joinType);
+        }
+
+        if(!$targetAlias && $queryField instanceof IVirtualField) {
+            $targetAlias = $queryField->getTargetSourceAlias();
+        }
+
+        if(!$targetAlias) {
+            $targetAlias = $field->getName();
+        }
+
+        if($field instanceof opal\schema\IBridgedRelationField) {
+            // Field is bridged
+            core\stub($field);
+            /*
+            $bridgeAdapter = $field->getBridgeQueryAdapter($clusterId);
+            $bridgeAlias = $fieldName.'Bridge';
+            $localAlias = $source->getAlias();
+            $localName = $field->getBridgeLocalFieldName();
+            $targetName = $field->getBridgeTargetFieldName();
+
+            $correlation = $this->correlate($aggregateType.'('.$bridgeAlias.'.'.$targetName.')', $alias)
+                ->from($bridgeAdapter, $bridgeAlias)
+                ->on($bridgeAlias.'.'.$localName, '=', $localAlias.'.@primary');
+            */
+        } else if($field instanceof opal\schema\IManyRelationField) {
+            // Field is OneToMany
+            $targetAdapter = $field->getTargetQueryAdapter($clusterId);
+            $targetFieldName = $field->getTargetField();
+
+            $join = $join->from($targetAdapter, $targetAlias)
+                ->on($targetAlias.'.'.$targetFieldName, '=', '@primary');
+        } else {
+            // Field is One
+            $targetAdapter = $field->getTargetQueryAdapter($clusterId);
+            
+            $join = $join->from($targetAdapter, $targetAlias)
+                ->on($targetAlias.'.@primary', '=', $fieldName);
+        }
+
+        return $join;
+    }
+}
+
+
+trait TQuery_Joinable {
+
+    use TQuery_JoinProvider;
     
 // Inner
     public function join($field1=null) {
@@ -583,60 +663,6 @@ trait TQuery_Joinable {
     }
 
 
-    protected function _beginJoinRelation($fieldName, array $targetFields, $joinType=IJoinQuery::INNER) {
-        $targetAlias = null;
-
-        if($fieldName instanceof IField) {
-            if($fieldName instanceof IVirtualField) {
-                $targetAlias = $fieldName->getTargetSourceAlias();
-            }
-
-            $fieldName = $fieldName->getQualifiedName();
-        }
-
-        $field = $this->_lookupRelationField($fieldName, $clusterId, $queryField);
-        $join = $this->_newQuery()->beginJoin($this, $targetFields, $joinType);
-
-        if(!$targetAlias && $queryField instanceof IVirtualField) {
-            $targetAlias = $queryField->getTargetSourceAlias();
-        }
-
-        if(!$targetAlias) {
-            $targetAlias = $field->getName();
-        }
-
-        if($field instanceof opal\schema\IBridgedRelationField) {
-            // Field is bridged
-            core\stub($field);
-            /*
-            $bridgeAdapter = $field->getBridgeQueryAdapter($clusterId);
-            $bridgeAlias = $fieldName.'Bridge';
-            $localAlias = $source->getAlias();
-            $localName = $field->getBridgeLocalFieldName();
-            $targetName = $field->getBridgeTargetFieldName();
-
-            $correlation = $this->correlate($aggregateType.'('.$bridgeAlias.'.'.$targetName.')', $alias)
-                ->from($bridgeAdapter, $bridgeAlias)
-                ->on($bridgeAlias.'.'.$localName, '=', $localAlias.'.@primary');
-            */
-        } else if($field instanceof opal\schema\IManyRelationField) {
-            // Field is OneToMany
-            $targetAdapter = $field->getTargetQueryAdapter($clusterId);
-            $targetFieldName = $field->getTargetField();
-
-            $join = $join->from($targetAdapter, $targetAlias)
-                ->on($targetAlias.'.'.$targetFieldName, '=', '@primary');
-        } else {
-            // Field is One
-            $targetAdapter = $field->getTargetQueryAdapter($clusterId);
-            
-            $join = $join->from($targetAdapter, $targetAlias)
-                ->on($targetAlias.'.@primary', '=', $fieldName);
-        }
-
-        return $join;
-    }
-
     
     public function addJoin(IJoinQuery $join) {
         $join->isConstraint(false);
@@ -651,39 +677,48 @@ trait TQuery_Joinable {
         $this->_joins[$join->getSourceAlias()] = $join;
         return $this;
     }
-    
-    public function getJoins() {
-        return $this->_joins;
-    }
-    
-    public function clearJoins() {
-        $sourceManager = $this->getSourceManager();
-
-        foreach($this->_joins as $sourceAlias => $join) {
-            $sourceManager->removeSource($sourceAlias);
-        }
-        
-        $this->_joins = [];
-        return $this;
-    }
 }
 
 
 
 trait TQuery_JoinConstrainable {
-    
-    protected $_joinConstraints = [];
+
+    use TQuery_JoinProvider;
     
     public function joinConstraint() {
         return $this->_newQuery()->beginJoinConstraint($this, IJoinQuery::INNER);
+    }
+
+    public function joinRelationConstraint($relationField) {
+        return $this->_beginJoinRelation($relationField, null, IJoinQuery::INNER)->endJoin();
+    }
+    
+    public function beginJoinRelationConstraint($relationField) {
+        return $this->_beginJoinRelation($relationField, null, IJoinQuery::INNER);
     }
     
     public function leftJoinConstraint() {
         return $this->_newQuery()->beginJoinConstraint($this, IJoinQuery::LEFT);
     }
+
+    public function leftJoinRelationConstraint($relationField) {
+        return $this->_beginJoinRelation($relationField, null, IJoinQuery::LEFT)->endJoin();
+    }
+
+    public function beginLeftJoinRelationConstraint($relationField) {
+        return $this->_beginJoinRelation($relationField, null, IJoinQuery::LEFT);
+    }
     
     public function rightJoinConstraint() {
         return $this->_newQuery()->beginJoinConstraint($this, IJoinQuery::RIGHT);
+    }
+
+    public function rightJoinRelationConstraint($relationField) {
+        return $this->_beginJoinRelation($relationField, null, IJoinQuery::RIGHT)->endJoin();
+    }
+
+    public function beginRightJoinRelationConstraint($relationField) {
+        return $this->_beginJoinRelation($relationField, null, IJoinQuery::RIGHT);
     }
     
     public function addJoinConstraint(IJoinQuery $join) {
@@ -696,22 +731,7 @@ trait TQuery_JoinConstrainable {
             );
         }
         
-        $this->_joinConstraints[$join->getSourceAlias()] = $join;
-        return $this;
-    }
-    
-    public function getJoins() {
-        return $this->_joinConstraints;
-    }
-    
-    public function clearJoins() {
-        $sourceManager = $this->getSourceManager();
-
-        foreach($this->_joinConstraints as $sourceAlias => $join) {
-            $sourceManager->removeSource($sourceAlias);
-        }
-        
-        $this->_joinConstraints = [];
+        $this->_joins[$join->getSourceAlias()] = $join;
         return $this;
     }
 }

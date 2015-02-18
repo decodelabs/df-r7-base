@@ -78,8 +78,8 @@ class Fetch implements IFetchQuery, core\IDumpable {
             $output['populates'] = $this->_populates;
         }
         
-        if(!empty($this->_joinConstraints)) {
-            $output['joinConstraints'] = $this->_joinConstraints;
+        if(!empty($this->_joins)) {
+            $output['joins'] = $this->_joins;
         }
         
         if($this->hasWhereClauses()) {

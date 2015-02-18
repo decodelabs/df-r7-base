@@ -133,8 +133,8 @@ class Correlation implements ICorrelationQuery, core\IDumpable {
             'on' => $this->_joinClauseList
         ];
 
-        if(!empty($this->_joinConstraints)) {
-            $output['joinConstraints'] = $this->_joinConstraints;
+        if(!empty($this->_joins)) {
+            $output['joins'] = $this->_joins;
         }
 
         if($this->_whereClauseList && !$this->_whereClauseList->isEmpty()) {

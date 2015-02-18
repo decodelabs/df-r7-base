@@ -231,8 +231,14 @@ interface IJoinableQuery extends IJoinProviderQuery {
 
 interface IJoinConstrainableQuery extends IJoinProviderQuery {
     public function joinConstraint();
+    public function joinRelationConstraint($relationField);
+    public function beginJoinRelationConstraint($relationField);
     public function leftJoinConstraint();
+    public function leftJoinRelationConstraint($relationField);
+    public function beginLeftJoinRelationConstraint($relationField);
     public function rightJoinConstraint();
+    public function rightJoinRelationConstraint($relationField);
+    public function beginRightJoinRelationConstraint($relationField);
     public function addJoinConstraint(IJoinQuery $join);
 }
 
