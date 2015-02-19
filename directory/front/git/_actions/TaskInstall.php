@@ -23,6 +23,7 @@ class TaskInstall extends arch\task\Action {
         'postal' => 'git@github.com:decodelabs/df-r7-postal.git',
         'touchstone' => 'git@github.com:decodelabs/df-r7-touchstone.git',
         'webCore' => 'git@github.com:decodelabs/df-r7-webCore.git',
+        'webStats' => 'git@github.com:decodelabs/df-r7-webStats.git'
     ];
 
     protected $_basePath;
@@ -101,11 +102,13 @@ class TaskInstall extends arch\task\Action {
             $repo = spur\vcs\git\Repository::createClone($url, $this->_basePath.'/'.$name);
         }
 
-        $this->io->writeLine('Turning off file mode');
-        $repo->setConfig('core.filemode', false);
-
+        if($repo->getConfig('core.filemode')) {
+            $this->io->writeLine('Turning off file mode');
+            $repo->setConfig('core.filemode', false);
+        }
+        
         if($this->_setGui === null) {
-            $this->io->write('Would you like to set default GUI config @1020p? [N/y] ');
+            $this->io->write('>> Would you like to set default GUI config @1020p? [N/y] ');
             $answer = trim($this->io->readLine());
             $this->_setGui = $this->format->stringToBoolean($answer, false);
         }

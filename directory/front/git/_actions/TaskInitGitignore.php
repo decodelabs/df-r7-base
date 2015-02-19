@@ -14,10 +14,10 @@ use df\arch;
 class TaskInitGitignore extends arch\task\Action {
 
     public function execute() {
-        $this->io->writeLine('Copying default .gitignore file');
         $path = df\Launchpad::$applicationPath;
 
         if(!is_file($path.'/.gitignore')) {
+            $this->io->writeLine('Copying default .gitignore file');
             core\io\Util::copyFile(__DIR__.'/default.gitignore', $path.'/.gitignore');
             core\io\Util::chmod($path.'/.gitignore', 0777);
 
