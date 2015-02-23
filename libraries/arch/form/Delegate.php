@@ -54,6 +54,7 @@ class Delegate implements IDelegate {
             $delegate->initialize();
         }
         
+        $this->_state->isNew(false);
         $this->_onInitComplete();
         return $this;
     }
