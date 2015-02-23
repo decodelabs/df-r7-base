@@ -233,10 +233,20 @@ class SearchController implements ISearchController, core\IDumpable {
         }
 
         if(empty($this->_fields)) {
-            $adapter = $this->_query->getSource()->getAdapter();
+            $source = $this->_query->getSource();
+            $adapter = $source->getAdapter();
 
             if($adapter instanceof IIntegralAdapter) {
-                $fields = $adapter->getDefaultSearchFields();
+                $fields = [];
+
+                foreach($adapter->getDefaultSearchFields() as $name => $score) {
+                    if(false === strpos($name, '.')) {
+                        $name = $source->getAlias().'.'.$name;
+                    }
+
+                    $fields[$name] = (int)$score;
+                }
+
                 $this->addFields($fields);
             }
 
