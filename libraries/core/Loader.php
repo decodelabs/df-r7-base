@@ -13,9 +13,11 @@ class Loader implements ILoader {
     private static $_includeAttempts = 0;
     private static $_includeMisses = 0;
     
-    private $_isActive = false;
     protected $_locations = [];
     protected $_packages = [];
+
+    private $_isActive = false;
+    private $_isInit = false;
     
     
 // Stats
@@ -315,6 +317,12 @@ class Loader implements ILoader {
     }
 
     public function loadPackages(array $packages) {
+        if($this->_isInit) {
+            throw new LogicException(
+                'Cannot load packages after init'
+            );
+        }
+
         $this->_loadPackageList($packages);
 
         uasort($this->_packages, function($a, $b) {
@@ -339,6 +347,19 @@ class Loader implements ILoader {
                 $this->_loadPackageList($deps);
             }
         }
+    }
+
+    public function initPackages() {
+        if($this->_isInit) {
+            return $this;
+        }
+
+        foreach($this->_packages as $package) {
+            $package->init();
+        }
+
+        $this->_isInit = true;
+        return $this;
     }
     
     public function getPackages() {

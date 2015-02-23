@@ -48,7 +48,7 @@ class Launchpad {
     }
     
 // Run
-    public static function run($appType=null) {
+    public static function run() {
         $parts = explode('/', str_replace('\\', '/', realpath($_SERVER['SCRIPT_FILENAME'])));
         $environmentId = array_pop($parts);
 
@@ -70,10 +70,10 @@ class Launchpad {
             );
         }
         
-        return self::runAs($environmentId, $isTesting, implode('/', $parts), $appType);
+        return self::runAs($environmentId, $isTesting, implode('/', $parts));
     }
     
-    public static function runAs($environmentId, $isTesting, $appPath, $appType=null) {
+    public static function runAs($environmentId, $isTesting, $appPath) {
         if(self::$_isRun) {
             return;
         }
@@ -85,45 +85,30 @@ class Launchpad {
         set_error_handler(['df\\Launchpad', 'handleError']);
         set_exception_handler(['df\\Launchpad', 'handleException']);
         
-        if(!$appType) {
-            if(isset($_SERVER['HTTP_HOST'])) {
-                $appType = 'Http';
-            } else {
-                if(isset($_SERVER['argv'][1])) {
-                    $appType = ucfirst($_SERVER['argv'][1]);
-
-                    if(!core\application\Base::isValidApplication($appType)) {
-                        $appType = 'Task';
-                    }
-                } else {
-                    $appType = 'Task';
-                }
-            }
+        if(isset($_SERVER['HTTP_HOST'])) {
+            $appType = 'Http';
         } else {
-            $appType = ucfirst($appType);
+            if(isset($_SERVER['argv'][1])) {
+                $appType = ucfirst($_SERVER['argv'][1]);
+            } else {
+                $appType = 'Task';
+            }
         }
-        
-        if($appType == 'Http') {
-            // If you're on apache, it sometimes hides some env variables = v. gay
-            if(function_exists('apache_request_headers')) {
-                foreach(apache_request_headers() as $key => $value) {
-                    $_SERVER['HTTP_'.strtoupper(str_replace('-', '_', $key))] = $value;
-                }
-            }
 
-            if(isset($_SERVER['CONTENT_TYPE'])) {
-                $_SERVER['HTTP_CONTENT_TYPE'] = $_SERVER['CONTENT_TYPE'];
-            }
-            
-            // Normalize REQUEST_URI
-            if(isset($_SERVER['HTTP_X_ORIGINAL_URL'])) {
-                $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_ORIGINAL_URL'];
-            }
+        switch($appType) {
+            case 'Http':
+            case 'Daemon':
+            case 'Task':
+                break;
+
+            default:
+                $appType = 'Task';
         }
         
         
         // Load application / packages
-        self::$application = core\application\Base::factory($appType);
+        $class = 'df\\core\\application\\'.$appType;
+        self::$application = new $class();
 
         $envConfig = core\Environment::getInstance();
         self::$isDistributed = $envConfig->isDistributed();
@@ -139,6 +124,7 @@ class Launchpad {
         self::$passKey = $appConfig->getPassKey();
 
         self::$loader->loadPackages($appConfig->getActivePackages());
+        self::$loader->initPackages();
 
 
         // Run

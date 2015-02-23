@@ -174,11 +174,12 @@ class File implements link\http\IUploadFile {
 
         core\io\Util::ensureDirExists($destination);
         $fullPath = rtrim($destination, '/').'/'.$this->getBaseName();
+        $i18n = core\i18n\Manager::getInstance();
 
         if(file_exists($fullPath)) {
             switch($conflictAction) {
                 case link\http\IUploadFile::HALT:
-                    $inputNode->addError('conflict', $this->_(
+                    $inputNode->addError('conflict', $i18n->_(
                         'A file the name %n% already exists',
                         ['%n%' => $this->getBaseName()]
                     ));
@@ -199,7 +200,7 @@ class File implements link\http\IUploadFile {
         }
 
         if(!move_uploaded_file($this->_tempPath, $fullPath)) {
-            $inputNode->addError('uploadTransfer', $this->_(
+            $inputNode->addError('uploadTransfer', $i18n->_(
                 'There was a problem transferring the uploaded file - please try again'
             ));
 
@@ -232,30 +233,31 @@ class File implements link\http\IUploadFile {
     }
 
     protected function _validateFile(core\collection\IInputTree $inputNode) {
+        $i18n = core\i18n\Manager::getInstance();
         $maxSize = $this->_handler->getMaxFileSize()->getMegabytes();
 
         if($maxSize > 0 && $this->_size->getMegabytes() > $maxSize) {
-            $inputNode->addError('tooBig', $this->_(
+            $inputNode->addError('tooBig', $i18n->_(
                 'The file exceeds the maximum upload file size'
             ));
         }
 
         if($this->_extension && !$this->_handler->isExtensionAllowed($this->_extension)) {
-            $inputNode->addError('extensionNotAllowed', $this->_(
+            $inputNode->addError('extensionNotAllowed', $i18n->_(
                 'Files with the extension %e% are not allowed to be uploaded here',
                 ['%e%' => $this->_extension]
             ));
         }
 
         if(!$this->_handler->isTypeAccepted($this->_type)) {
-            $inputNode->addError('tpyeNotAccepted', $this->_(
+            $inputNode->addError('tpyeNotAccepted', $i18n->_(
                 'Files of type %t% are not allowed to be uploaded here',
                 ['%t%' => $this->_type]
             ));
         }
 
         if(!is_uploaded_file($this->_tempPath)) {
-            $inputNode->addError('uploadNotFound', $this->_(
+            $inputNode->addError('uploadNotFound', $i18n->_(
                 'There was a problem finding the uploaded file in the temp location - please try again'
             ));
 
@@ -275,10 +277,5 @@ class File implements link\http\IUploadFile {
         }
 
         return $fullPath;
-    }
-
-    public function _($phrase, array $data=null, $plural=null, $locale=null) {
-        $translator = core\i18n\translate\Handler::factory('link/http/Upload', $locale);
-        return $translator->_($phrase, $data, $plural);
     }
 }

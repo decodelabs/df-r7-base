@@ -199,7 +199,7 @@ class FieldArea extends Container implements IFormOrientedWidget {
     }
 
 // Error
-    public function setErrorContainer(core\IErrorContainer $errorContainer=null) {
+    public function setErrorContainer(core\collection\IErrorContainer $errorContainer=null) {
         $this->_errorContainer = $errorContainer;
         return $this;
     }

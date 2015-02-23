@@ -256,7 +256,7 @@ interface ITable extends mesh\entity\IEntity, opal\query\IAdapter, opal\query\IE
     public function getCollation();
 }
 
-interface ITableStats extends core\IAttributeContainer {
+interface ITableStats extends core\collection\IAttributeContainer {
     public function setVersion($version);
     public function getVersion();
     public function setRowCount($rows);

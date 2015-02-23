@@ -411,7 +411,7 @@ interface IClusterUnit extends IStorageUnit {
 }
 
 
-interface IContext extends IUnit, core\IContext, core\i18n\translate\ITranslationProxy {
+interface IContext extends IUnit, core\IContext {
 
 }
 

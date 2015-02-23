@@ -16,7 +16,7 @@ class Writer implements IWriter {
     const PI = 4;
 
     use core\TStringProvider;
-    use core\TAttributeContainer;
+    use core\collection\TAttributeContainer;
     use TRootInterchangeProvider;
 
     protected $_document;

@@ -15,6 +15,8 @@ use df\halo;
 class Http extends Base implements arch\IDirectoryRequestApplication, link\http\IResponseAugmentorProvider {
     
     const RUN_MODE = 'Http';
+
+    private static $_init = false;
     
     protected $_httpRequest;
     protected $_responseAugmentor;
@@ -25,8 +27,28 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
     protected $_context;
     protected $_router;
     
-    protected function __construct() {
-        parent::__construct();
+    public function __construct() {
+        if(!self::$_init) {
+            // If you're on apache, it sometimes hides some env variables = v. annoying
+            if(function_exists('apache_request_headers')) {
+                foreach(apache_request_headers() as $key => $value) {
+                    $_SERVER['HTTP_'.strtoupper(str_replace('-', '_', $key))] = $value;
+                }
+            }
+
+            if(isset($_SERVER['CONTENT_TYPE'])) {
+                $_SERVER['HTTP_CONTENT_TYPE'] = $_SERVER['CONTENT_TYPE'];
+            }
+            
+            // Normalize REQUEST_URI
+            if(isset($_SERVER['HTTP_X_ORIGINAL_URL'])) {
+                $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_ORIGINAL_URL'];
+            }
+
+            self::$_init = true;
+        }
+
+        df\Launchpad::$application = $this;
         
         $config = core\application\http\Config::getInstance();
         $this->_sendFileHeader = $config->getSendFileHeader();
@@ -96,9 +118,7 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
     
     
 // Execute
-    public function dispatch() {
-        $this->_beginDispatch();
-
+    protected function _dispatch() {
         if($response = $this->_prepareHttpRequest()) {
             return $response;
         }

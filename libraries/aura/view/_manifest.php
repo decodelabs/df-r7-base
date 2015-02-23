@@ -159,7 +159,6 @@ interface IView extends
     \ArrayAccess,
     core\IHelperProvider, 
     core\string\IStringEscapeHandler,
-    core\i18n\translate\ITranslationProxy,
     core\lang\IChainable
 {
     public function getType();
@@ -427,6 +426,8 @@ interface ICascadingHelperProvider extends core\IContextAware, IRenderTargetProv
 
 trait TCascadingHelperProvider {
 
+    use core\TTranslator;
+
     public $view;
 
     public function __call($method, $args) {
@@ -476,17 +477,17 @@ trait TCascadingHelperProvider {
         return $output;
     }
 
-    public function _($phrase, array $data=null, $plural=null, $locale=null) {
+    public function translate(array $args) {
         if($this->view) {
-            return $this->view->_($phrase, $data, $plural, $locale);
+            return $this->view->i18n->translate(func_get_args());
         } else {
-            return $this->getContext()->_($phrase, $data, $plural, $locale);
+            return $this->getContext()->i18n->translate(func_get_args());
         }
     }
 }
 
 
-interface ITemplate extends IContentProvider, ISlotProvider, \ArrayAccess, IRenderTarget, core\i18n\translate\ITranslationProxy {
+interface ITemplate extends IContentProvider, ISlotProvider, \ArrayAccess, IRenderTarget {
     public function isRendering();
     public function isLayout();
 

@@ -11,7 +11,7 @@ use df\opal;
 
 class Record extends opal\record\Base implements IRecord {
     
-    use core\TAttributeContainer;
+    use core\collection\TAttributeContainer;
 
     public function getPrimaryKeySet() {
         return new opal\record\PrimaryKeySet([

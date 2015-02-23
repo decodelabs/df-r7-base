@@ -536,35 +536,35 @@ class Duration implements IDuration, core\IDumpable {
 
     public static function getUnitString($unit, $plural=true, $locale=null) {
         $unit = self::normalizeUnitId($unit);
-        $translator = core\i18n\translate\Handler::factory('core/time/Duration', $locale);
+        $i18n = core\i18n\Manager::getInstance();
 
         switch($unit) {
             case self::MICROSECONDS:
-                return $translator->_([0 => 'microsecond', 1 => 'microseconds'], null, (int)$plural);
+                return $i18n->_([0 => 'microsecond', 1 => 'microseconds'], null, (int)$plural);
 
             case self::MILLISECONDS:
-                return $translator->_([0 => 'millisecond', 1 => 'milliseconds'], null, (int)$plural);
+                return $i18n->_([0 => 'millisecond', 1 => 'milliseconds'], null, (int)$plural);
 
             case self::SECONDS:
-                return $translator->_([0 => 'second', 1 => 'seconds'], null, (int)$plural);
+                return $i18n->_([0 => 'second', 1 => 'seconds'], null, (int)$plural);
 
             case self::MINUTES:
-                return $translator->_([0 => 'minute', 1 => 'minutes'], null, (int)$plural);
+                return $i18n->_([0 => 'minute', 1 => 'minutes'], null, (int)$plural);
 
             case self::HOURS:
-                return $translator->_([0 => 'hour', 1 => 'hours'], null, (int)$plural);
+                return $i18n->_([0 => 'hour', 1 => 'hours'], null, (int)$plural);
 
             case self::DAYS:
-                return $translator->_([0 => 'day', 1 => 'days'], null, (int)$plural);
+                return $i18n->_([0 => 'day', 1 => 'days'], null, (int)$plural);
 
             case self::WEEKS:
-                return $translator->_([0 => 'week', 1 => 'weeks'], null, (int)$plural);
+                return $i18n->_([0 => 'week', 1 => 'weeks'], null, (int)$plural);
 
             case self::MONTHS:
-                return $translator->_([0 => 'month', 1 => 'months'], null, (int)$plural);
+                return $i18n->_([0 => 'month', 1 => 'months'], null, (int)$plural);
 
             case self::YEARS:
-                return $translator->_([0 => 'year', 1 => 'years'], null, (int)$plural);
+                return $i18n->_([0 => 'year', 1 => 'years'], null, (int)$plural);
         }
     }
 
@@ -591,7 +591,7 @@ class Duration implements IDuration, core\IDumpable {
     }
 
     protected function _buildStringComponents($maxUnits=1, $shortUnits=false, $maxUnit=self::YEARS, $roundLastUnit=true, $locale=null) {
-        $translator = core\i18n\translate\Handler::factory('core/time/Duration', $locale);
+        $i18n = core\i18n\Manager::getInstance();
         $seconds = $this->_seconds;
 
         $isNegative = false;
@@ -604,9 +604,9 @@ class Duration implements IDuration, core\IDumpable {
         $maxUnit = self::normalizeUnitId($maxUnit);
 
         if($maxUnit == self::MICROSECONDS) {
-            return [$this->_addUnitString($translator, round($this->_seconds * 1000000), self::MICROSECONDS, $shortUnits)];
+            return [$this->_addUnitString($i18n, round($this->_seconds * 1000000), self::MICROSECONDS, $shortUnits)];
         } else if($maxUnit == self::MILLISECONDS || (($seconds != 0 && $seconds < 1) || ($seconds < 5 && (int)$seconds != $seconds))) {
-            return [$this->_addUnitString($translator, round($this->_seconds * 1000), self::MILLISECONDS, $shortUnits)];
+            return [$this->_addUnitString($i18n, round($this->_seconds * 1000), self::MILLISECONDS, $shortUnits)];
         }
 
         $output = $this->_createOutputArray($seconds, $maxUnits, $maxUnit, $shortUnits === null);
@@ -639,7 +639,7 @@ class Duration implements IDuration, core\IDumpable {
                 $parts[0] = str_pad($parts[0], 2, '0', \STR_PAD_LEFT);
                 $value = implode('.', $parts);
             } else {
-                $value = $this->_addUnitString($translator, $value, $unit, $shortUnits);
+                $value = $this->_addUnitString($i18n, $value, $unit, $shortUnits);
             }
 
             $output[$unit] = $value;
@@ -726,28 +726,28 @@ class Duration implements IDuration, core\IDumpable {
         return $output;
     }
     
-    protected function _addUnitString(core\i18n\translate\IHandler $translator, $number, $unit, $shortUnits=false) {
+    protected function _addUnitString(core\i18n\IManager $i18n, $number, $unit, $shortUnits=false) {
         switch($unit) {
             case self::MICROSECONDS:
-                return $translator->_(
+                return $i18n->_(
                     '%n% μs',
                     ['%n%' => $number]
                 );
 
             case self::MILLISECONDS: 
-                return $translator->_(
+                return $i18n->_(
                     '%n% ms',
                     ['%n%' => $number]
                 );
 
             case self::SECONDS: 
                 if($shortUnits) {
-                    return $translator->_(
+                    return $i18n->_(
                         '%n% sc',
                         ['%n%' => $number]
                     );
                 } else {
-                    return $translator->_(
+                    return $i18n->_(
                         [
                             'n = 1 || n = -1' => '%n% second',
                             '*' => '%n% seconds'
@@ -759,12 +759,12 @@ class Duration implements IDuration, core\IDumpable {
                 
             case self::MINUTES: 
                 if($shortUnits) {
-                    return $translator->_(
+                    return $i18n->_(
                         '%n% mn',
                         ['%n%' => $number]
                     );
                 } else {
-                    return $translator->_(
+                    return $i18n->_(
                         [
                             'n = 1 || n = -1' => '%n% minute',
                             '*' => '%n% minutes'
@@ -776,12 +776,12 @@ class Duration implements IDuration, core\IDumpable {
                 
             case self::HOURS: 
                 if($shortUnits) {
-                    return $translator->_(
+                    return $i18n->_(
                         '%n% hr',
                         ['%n%' => $number]
                     );
                 } else {
-                    return $translator->_(
+                    return $i18n->_(
                         [
                             'n = 1 || n = -1' => '%n% hour',
                             '*' => '%n% hours'
@@ -793,12 +793,12 @@ class Duration implements IDuration, core\IDumpable {
                 
             case self::DAYS:  
                 if($shortUnits) {
-                    return $translator->_(
+                    return $i18n->_(
                         '%n% dy',
                         ['%n%' => $number]
                     );
                 } else {
-                    return $translator->_(
+                    return $i18n->_(
                         [
                             'n = 1 || n = -1' => '%n% day',
                             '*' => '%n% days'
@@ -810,12 +810,12 @@ class Duration implements IDuration, core\IDumpable {
                 
             case self::WEEKS:   
                 if($shortUnits) {
-                    return $translator->_(
+                    return $i18n->_(
                         '%n% wk',
                         ['%n%' => $number]
                     );
                 } else {
-                    return $translator->_(
+                    return $i18n->_(
                         [
                             'n = 1 || n = -1' => '%n% week',
                             '*' => '%n% weeks'
@@ -827,12 +827,12 @@ class Duration implements IDuration, core\IDumpable {
                 
             case self::MONTHS:   
                 if($shortUnits) {
-                    return $translator->_(
+                    return $i18n->_(
                         '%n% mo',
                         ['%n%' => $number]
                     );
                 } else {
-                    return $translator->_(
+                    return $i18n->_(
                         [
                             'n = 1 || n = -1' => '%n% month',
                             '*' => '%n% months'
@@ -844,12 +844,12 @@ class Duration implements IDuration, core\IDumpable {
                 
             case self::YEARS:   
                 if($shortUnits) {
-                    return $translator->_(
+                    return $i18n->_(
                         '%n% yr',
                         ['%n%' => $number]
                     );
                 } else {
-                    return $translator->_(
+                    return $i18n->_(
                         [
                             'n = 1 || n = -1' => '%n% year',
                             '*' => '%n% years'

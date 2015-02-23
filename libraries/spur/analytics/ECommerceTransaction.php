@@ -12,7 +12,7 @@ use df\mint;
 
 class ECommerceTransaction implements IECommerceTransaction {
     
-    use core\TAttributeContainer;
+    use core\collection\TAttributeContainer;
 
     protected $_id;
     protected $_affiliation;

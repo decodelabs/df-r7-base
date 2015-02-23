@@ -12,7 +12,7 @@ use df\link;
 
 class Upload implements IUpload {
     
-    use core\TAttributeContainer;
+    use core\collection\TAttributeContainer;
 
     protected $_file;
     protected $_bucket;

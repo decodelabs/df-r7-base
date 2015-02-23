@@ -11,7 +11,7 @@ use df\core;
 class Tree implements ITree, core\IDumpable {
 
     use core\TStringProvider;
-    use core\TAttributeContainerArrayAccessProxy;
+    use core\collection\TAttributeContainerArrayAccessProxy;
     use TRootInterchangeProvider;
 
     protected $_element;

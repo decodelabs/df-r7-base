@@ -8,9 +8,9 @@ namespace df\core\collection;
 use df;
 use df\core;
 
-class AttributeTree extends Tree implements core\IAttributeContainer {
+class AttributeTree extends Tree implements IAttributeContainer {
     
-    use core\TAttributeContainer;
+    use core\collection\TAttributeContainer;
     
     protected function _getSerializeValues() {
         $output = parent::_getSerializeValues();

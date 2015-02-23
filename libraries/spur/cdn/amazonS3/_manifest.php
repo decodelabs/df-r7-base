@@ -81,7 +81,7 @@ interface IMediator {
     public function getBucketUrl($bucket, $path, &$resource=null);
 }
 
-interface IUpload extends core\IAttributeContainer {
+interface IUpload extends core\collection\IAttributeContainer {
     public function getMediator();
     public function setBucket($bucket);
     public function getBucket();

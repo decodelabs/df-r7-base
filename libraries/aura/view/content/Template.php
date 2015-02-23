@@ -352,8 +352,8 @@ class Template implements aura\view\ITemplate, core\IDumpable {
     
 
 // Helpers
-    public function _($phrase, array $data=null, $plural=null, $locale=null) {
-        return $this->context->_($phrase, $data, $plural, $locale);
+    public function translate(array $args) {
+        return $this->context->i18n->translate($args);
     }
 
     protected function _checkView() {

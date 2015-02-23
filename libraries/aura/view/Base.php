@@ -17,6 +17,7 @@ class Base implements IView {
     use core\THelperProvider;
     use core\string\THtmlStringEscapeHandler;
     use core\TStringProvider;
+    use core\TTranslator;
     use core\lang\TChainable;
     use TSlotContainer;
     
@@ -224,7 +225,7 @@ class Base implements IView {
     }
     
     
-    public function _($phrase, array $data=null, $plural=null, $locale=null) {
-        return $this->context->_($phrase, $data, $plural, $locale);
+    public function translate(array $args) {
+        return $this->context->i18n->translate(func_get_args());
     }
 }

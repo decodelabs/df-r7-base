@@ -56,7 +56,7 @@ interface IHandler {
 }
 
 
-interface IEvent extends core\IAttributeContainer {
+interface IEvent extends core\collection\IAttributeContainer {
     public function getUniqueId();
 
     public function setCategory($category);
@@ -67,7 +67,7 @@ interface IEvent extends core\IAttributeContainer {
     public function getLabel();
 }
 
-interface IECommerceTransaction extends core\IAttributeContainer {
+interface IECommerceTransaction extends core\collection\IAttributeContainer {
     public function setId($id);
     public function getId();
     public function setAffiliation($affiliation);

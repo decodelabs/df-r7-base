@@ -29,8 +29,12 @@ interface ILocale extends core\IStringProvider {
 }
 
 
-interface IManager extends core\IManager {
+interface IManager extends core\IManager, core\ITranslator {
     public function getModule($name);
     public function setLocale($locale);
     public function getLocale();
+}
+
+interface ITranslator extends core\ITranslator {
+
 }

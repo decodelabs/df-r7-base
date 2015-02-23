@@ -9,8 +9,9 @@ use df;
 use df\core;
 use df\user;
 use df\link;
+use df\mesh;
 
-class Client implements IClient, \Serializable {
+class Client implements IClient, \Serializable, mesh\entity\IEntity {
     
     use TNameExtractor;
 
@@ -63,6 +64,10 @@ class Client implements IClient, \Serializable {
         $output = new self();
         $output->import($data);
         return $output;
+    }
+
+    public function getEntityLocator() {
+        return new mesh\entity\Locator('user://Client');
     }
 
     public static function generateGuest(user\IManager $manager) {

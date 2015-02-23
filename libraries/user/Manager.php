@@ -68,6 +68,8 @@ class Manager implements IManager, core\IDumpable {
                         $this->getUserModel()->generateKeyring($this->_client)
                     );
 
+                    mesh\Manager::getInstance()->emitEvent($this->_client, 'initiate');
+
                     $session->set(self::CLIENT_SESSION_KEY, $this->_client);
                 }
             } catch(\Exception $e) {
@@ -326,6 +328,12 @@ class Manager implements IManager, core\IDumpable {
             // Options
             $this->_ensureClientOptions($client);
 
+            // Trigger hook
+            mesh\Manager::getInstance()->emitEvent($client, 'authenticate', [
+                'request' => $request, 
+                'result' => $result
+            ]);
+
             // Store session
             $session->set(self::CLIENT_SESSION_KEY, $client);
         }
@@ -357,6 +365,11 @@ class Manager implements IManager, core\IDumpable {
 
         // Options
         $this->_ensureClientOptions($this->_client);
+
+        // Trigger hook
+        mesh\Manager::getInstance()->emitEvent($this->_client, 'recall', [
+            'key' => $key
+        ]);
         
         // Store session
         $session->set(self::CLIENT_SESSION_KEY, $this->_client);
@@ -376,6 +389,10 @@ class Manager implements IManager, core\IDumpable {
 
         $this->regenerateKeyring();
 
+        // Trigger hook
+        mesh\Manager::getInstance()->emitEvent($client, 'refresh');
+
+        // Save session
         $session = $this->session->getNamespace(self::USER_SESSION_NAMESPACE);
         $session->set(self::CLIENT_SESSION_KEY, $client);
 
@@ -396,6 +413,7 @@ class Manager implements IManager, core\IDumpable {
 
         $session = $this->session->getNamespace(self::USER_SESSION_NAMESPACE);
         $session->set(self::CLIENT_SESSION_KEY, $client);
+        
         return $this;
     }
 
@@ -412,6 +430,7 @@ class Manager implements IManager, core\IDumpable {
     }
 
     public function logout() {
+        mesh\Manager::getInstance()->emitEvent($this->getClient(), 'logout');
         $this->session->destroy();
         return $this;
     }

@@ -217,7 +217,7 @@ trait TReferable {
     }
 }
 
-interface IGenericBlock extends IBlock, IListedNode, core\IAttributeContainer, IReferable {
+interface IGenericBlock extends IBlock, IListedNode, core\collection\IAttributeContainer, IReferable {
     public function isInline($flag=null);
     public function setType($type);
     public function getType();

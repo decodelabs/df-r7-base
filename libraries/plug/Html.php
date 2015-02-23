@@ -13,10 +13,11 @@ use df\flex;
 use df\spur;
 use df\flow;
 
-class Html implements arch\IDirectoryHelper, core\i18n\translate\ITranslationProxy {
+class Html implements arch\IDirectoryHelper {
     
     use arch\TDirectoryHelper;
     use aura\view\TViewAwareDirectoryHelper;
+    use core\TTranslator;
     use core\string\THtmlStringEscapeHandler;
     
     public function __call($member, $args) {
@@ -119,8 +120,8 @@ class Html implements arch\IDirectoryHelper, core\i18n\translate\ITranslationPro
         return $this->element('abbr', $newString)->setTitle($string);
     }
 
-    public function _($phrase, array $data=null, $plural=null, $locale=null) {
-        return $this->string($this->context->_($phrase, $data, $plural, $locale));
+    public function translate(array $args) {
+        return new aura\html\ElementString($this->context->i18n->translate($args));
     }
 
     public function string($value) {

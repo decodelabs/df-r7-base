@@ -18,9 +18,7 @@ class Daemon extends Base {
     protected $_statusData;
     
 // Execute
-    public function dispatch() {
-        $this->_beginDispatch();
-
+    protected function _dispatch() {
         if(php_sapi_name() != 'cli') {
             throw new \Exception(
                 'Daemon processes must only be started from the CLI SAPI'

@@ -11,7 +11,7 @@ use df\opal;
 
 class TableStats implements ITableStats {
     
-    use core\TAttributeContainer;
+    use core\collection\TAttributeContainer;
 
     protected $_version;
     protected $_rowCount;

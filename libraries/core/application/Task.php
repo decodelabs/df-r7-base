@@ -73,30 +73,24 @@ class Task extends Base implements arch\IDirectoryRequestApplication {
     
     
 // Execute
-    public function dispatch(arch\IRequest $request=null) {
-        $this->_beginDispatch();
+    protected function _dispatch() {
         $args = null;
         
-        if($request !== null) {
-            $this->_request = $request;
-        } else if(!$this->_request) {
-            $command = core\cli\Command::fromArgv();
-            $args = array_slice($command->getArguments(), 1);
+        $command = core\cli\Command::fromArgv();
+        $args = array_slice($command->getArguments(), 1);
+        $request = array_shift($args);
+
+        if(strtolower($request) == 'task') {
             $request = array_shift($args);
-
-            if(strtolower($request) == 'task') {
-                $request = array_shift($args);
-            }
-
-            if(!$request) {
-                throw new core\InvalidArgumentException(
-                    'No task path has been specified'
-                );
-            }
-
-            $this->_request = arch\Request::factory($request);
         }
 
+        if(!$request) {
+            throw new core\InvalidArgumentException(
+                'No task path has been specified'
+            );
+        }
+
+        $this->_request = arch\Request::factory($request);
         $command = new core\cli\Command(df\Launchpad::$environmentId.'.'.df\Launchpad::getEnvironmentMode().'.php');
 
         if($args) {

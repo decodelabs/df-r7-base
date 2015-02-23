@@ -10,7 +10,7 @@ use df\core;
 
 class InputTree extends Tree implements IInputTree {
     
-    use core\TErrorContainer;
+    use TErrorContainer;
     
     public static function factory($input) {
         if($input instanceof IInputTree) {

@@ -225,12 +225,11 @@ class Numbers extends Base implements core\i18n\module\generator\IModule {
         }
         
         $output = $this->format(round($bytes, $precision));
-        $translate = core\i18n\translate\Handler::factory('core\\i18n');
         
         if($longNames) {
             switch($unit) {
                 case 1: 
-                    return $translate->_(
+                    return $this->_manager->_(
                         [
                             'n = 1 || n = -1' => '%n% byte',
                             '*' => '%n% bytes'
@@ -240,7 +239,7 @@ class Numbers extends Base implements core\i18n\module\generator\IModule {
                     );
                 
                 case 2: 
-                    return $translate->_(
+                    return $this->_manager->_(
                         [
                             'n = 1 || n = -1' => '%n% Kilobyte',
                             '*' => '%n% Kilobytes'
@@ -250,7 +249,7 @@ class Numbers extends Base implements core\i18n\module\generator\IModule {
                     );
                 
                 case 3: 
-                    return $translate->_(
+                    return $this->_manager->_(
                         [
                             'n = 1 || n = -1' => '%n% Megabyte',
                             '*' => '%n% Megabytes'
@@ -260,7 +259,7 @@ class Numbers extends Base implements core\i18n\module\generator\IModule {
                     );
                 
                 case 4: 
-                    return $translate->_(
+                    return $this->_manager->_(
                         [
                             'n = 1 || n = -1' => '%n% Gigabyte',
                             '*' => '%n% Gigabytes'
@@ -270,7 +269,7 @@ class Numbers extends Base implements core\i18n\module\generator\IModule {
                     );
                 
                 case 5: 
-                    return $translate->_(
+                    return $this->_manager->_(
                         [
                             'n = 1 || n = -1' => '%n% Terabyte',
                             '*' => '%n% Terabytes'
@@ -280,7 +279,7 @@ class Numbers extends Base implements core\i18n\module\generator\IModule {
                     );
                 
                 case 6: 
-                    return $translate->_(
+                    return $this->_manager->_(
                         [
                             'n = 1 || n = -1' => '%n% Petabyte',
                             '*' => '%n% Petabytes'
@@ -292,22 +291,22 @@ class Numbers extends Base implements core\i18n\module\generator\IModule {
         } else {
             switch($unit) {
                 case 1: 
-                    return $translate->_('%n% b', ['%n%' => $output]);
+                    return $this->_manager->_('%n% b', ['%n%' => $output]);
                 
                 case 2: 
-                    return $translate->_('%n% Kb', ['%n%' => $output]);
+                    return $this->_manager->_('%n% Kb', ['%n%' => $output]);
                 
                 case 3: 
-                    return $translate->_('%n% Mb', ['%n%' => $output]);
+                    return $this->_manager->_('%n% Mb', ['%n%' => $output]);
                 
                 case 4: 
-                    return $translate->_('%n% Gb', ['%n%' => $output]);
+                    return $this->_manager->_('%n% Gb', ['%n%' => $output]);
                 
                 case 5: 
-                    return $translate->_('%n% Tb', ['%n%' => $output]);
+                    return $this->_manager->_('%n% Tb', ['%n%' => $output]);
                 
                 case 6: 
-                    return $translate->_('%n% Pb', ['%n%' => $output]);
+                    return $this->_manager->_('%n% Pb', ['%n%' => $output]);
             }    
         }
     }

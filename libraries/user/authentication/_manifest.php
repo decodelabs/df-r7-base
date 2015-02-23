@@ -39,7 +39,7 @@ interface IIdentityRecallAdapter extends IAdapter {
 }
 
 
-interface IRequest extends core\IAttributeContainer {
+interface IRequest extends core\collection\IAttributeContainer {
     public function setAdapterName($adapter);
     public function getAdapterName();
     

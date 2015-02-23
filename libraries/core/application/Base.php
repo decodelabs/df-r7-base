@@ -16,30 +16,7 @@ abstract class Base implements core\IApplication, core\IDumpable {
     
     protected $_isRunning = false;
     protected $_registry = [];
-    
-    public static function factory($appType) {
-        $class = 'df\\core\\application\\'.$appType;
-        
-        if(!class_exists($class)) {
-            throw new core\ApplicationNotFoundException(
-                'Application type '.$appType.' could not be found'
-            );
-        }
-        
-        return new $class();
-    }
 
-    public static function isValidApplication($appType) {
-        $class = 'df\\core\\application\\'.$appType;
-        return class_exists($class);
-    }
-    
-    
-// Construct
-    protected function __construct() {
-        df\Launchpad::$application = $this;
-    }
-    
     
 // Paths
     public static function getApplicationPath() {
@@ -59,7 +36,7 @@ abstract class Base implements core\IApplication, core\IDumpable {
     
     
 // Execute
-    protected function _beginDispatch() {
+    public function dispatch() {
         if($this->_isRunning) {
             throw new core\RuntimeException(
                 'Application instance is already running'
@@ -74,13 +51,11 @@ abstract class Base implements core\IApplication, core\IDumpable {
             );
         }
         
-        return $this;
+        return $this->_dispatch();
     }
 
-    public function isRunning() {
-        return $this->_isRunning;
-    }
-    
+    abstract protected function _dispatch();
+
     public function shutdown() {
         foreach($this->_registry as $object) {
             $object->onApplicationShutdown();

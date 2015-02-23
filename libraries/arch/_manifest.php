@@ -59,7 +59,7 @@ trait TResponseForcer {
 // Interfaces
 interface IAccess extends user\IState {}
 
-interface IContext extends core\IContext, core\i18n\translate\ITranslationProxy, IResponseForcer {
+interface IContext extends core\IContext, IResponseForcer {
     
     // Application
     public function spawnInstance($request=null, $copyRequest=false);

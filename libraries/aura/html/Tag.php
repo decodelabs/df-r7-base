@@ -12,7 +12,7 @@ use df\aura;
 class Tag implements ITag, core\IDumpable {
     
     use core\lang\TChainable;
-    use core\TArrayAccessedAttributeContainer;
+    use core\collection\TArrayAccessedAttributeContainer;
     use core\TStringProvider;
     use core\string\THtmlStringEscapeHandler;
     

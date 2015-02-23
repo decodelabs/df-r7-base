@@ -288,7 +288,7 @@ interface ITree extends IRandomAccessCollection, IMappedContainerCollection, cor
     public function hasAnyValue(array $checkKeys=null);
 }
 
-interface IInputTree extends ITree, core\IErrorContainer {
+interface IInputTree extends ITree, IErrorContainer {
     public function toArrayDelimitedErrorSet($prefix=null);
 }
 
@@ -350,6 +350,165 @@ trait THeaderMapProvider {
 }
 
 
+// Error Container
+interface IErrorContainer {
+    public function isValid();
+    public function setErrors(array $errors);
+    public function addErrors(array $errors);
+    public function addError($code, $message);
+    public function getErrors();
+    public function getError($code);
+    public function hasErrors();
+    public function hasError($code);
+    public function clearErrors();
+    public function clearError($code);
+}
+
+trait TErrorContainer {
+    
+    protected $_errors = [];
+    
+    public function isValid() {
+        return $this->hasErrors();
+    }
+    
+    public function setErrors(array $errors) {
+        $this->_errors = [];
+        return $this->addErrors($errors);
+    }
+    
+    public function addErrors(array $errors) {
+        foreach($errors as $code => $message) {
+            $this->addError($code, $message);
+        }    
+        
+        return $this;
+    }
+    
+    public function addError($code, $message) {
+        $this->_errors[$code] = $message;
+        return $this;
+    }
+    
+    public function getErrors() {
+        return $this->_errors;
+    }
+    
+    public function getError($code) {
+        if(isset($this->_errors[$code])) {
+            return $this->_errors[$code];
+        }
+        
+        return null;
+    }
+    
+    public function hasErrors() {
+        return !empty($this->_errors);
+    }
+    
+    public function hasError($code) {
+        return isset($this->_errors[$code]);
+    }
+    
+    public function clearErrors() {
+        $this->_errors = [];
+        return $this;
+    }
+    
+    public function clearError($code) {
+        unset($this->_errors[$code]);
+        return $this;
+    }
+}
+
+
+// Attribute container
+interface IAttributeContainer {
+    public function setAttributes(array $attributes);
+    public function addAttributes(array $attributes);
+    public function getAttributes();
+    public function setAttribute($key, $value);
+    public function getAttribute($key, $default=null);
+    public function removeAttribute($key);
+    public function hasAttribute($key);
+    public function countAttributes();
+}
+
+trait TAttributeContainer {
+    
+    protected $_attributes = [];
+    
+    public function setAttributes(array $attributes) {
+        $this->_attributes = [];
+        return $this->addAttributes($attributes);
+    }
+    
+    public function addAttributes(array $attributes) {
+        foreach($attributes as $key => $value){
+            $this->setAttribute($key, $value);
+        }
+        
+        return $this;
+    }
+    
+    public function getAttributes() {
+        return $this->_attributes;
+    }
+    
+    public function setAttribute($key, $value) {
+        $this->_attributes[$key] = $value;
+        return $this;
+    }
+    
+    public function getAttribute($key, $default=null) {
+        if(isset($this->_attributes[$key])) {
+            return $this->_attributes[$key];
+        }
+        
+        return $default;
+    }
+    
+    public function removeAttribute($key) {
+        unset($this->_attributes[$key]);
+        return $this;
+    }
+    
+    public function hasAttribute($key) {
+        return isset($this->_attributes[$key]);
+    }
+
+    public function countAttributes() {
+        return count($this->_attributes);
+    }
+}
+
+trait TAttributeContainerArrayAccessProxy {
+
+    public function offsetSet($key, $value) {
+        return $this->setAttribute($key, $value);
+    }
+    
+    public function offsetGet($key) {
+        return $this->getAttribute($key);
+    }
+    
+    public function offsetExists($key) {
+        return $this->hasAttribute($key);
+    }
+    
+    public function offsetUnset($key) {
+        return $this->removeAttribute($key);
+    }
+}
+
+trait TArrayAccessedAttributeContainer {
+    use TAttributeContainer;
+    use TAttributeContainerArrayAccessProxy;
+}
+
+
+
+// Util
 interface IUtil {
     public static function flattenArray($array, $unique=true, $removeNull=false);
     public static function isIterable($collection);

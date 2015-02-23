@@ -11,7 +11,7 @@ use df\opal;
 
 class Rdn implements IRdn, core\IDumpable {
     
-    use core\TAttributeContainer;
+    use core\collection\TAttributeContainer;
     use core\TStringProvider;
 
     public static function factory($rdn) {

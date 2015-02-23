@@ -123,7 +123,7 @@ interface IDn extends core\collection\IIndexedQueue, core\IStringProvider {
 }
 
 
-interface IRdn extends \Countable, core\IAttributeContainer, core\IStringProvider {
+interface IRdn extends \Countable, core\collection\IAttributeContainer, core\IStringProvider {
     public function implode($case=core\string\ICase::NONE);
     public function eq($rdn);
 }
@@ -203,7 +203,7 @@ interface IRootDse extends core\collection\IMappedCollection {
     public function getSchemaDn();
 }
 
-interface IRecord extends opal\record\ILocationalRecord, core\IAttributeContainer {
+interface IRecord extends opal\record\ILocationalRecord, core\collection\IAttributeContainer {
     public function getEntryDn();
     public function getGlobalId();
     public function getObjectClasses();

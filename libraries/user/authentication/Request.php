@@ -11,7 +11,7 @@ use df\user;
 
 class Request implements IRequest {
     
-    use core\TAttributeContainer;
+    use core\collection\TAttributeContainer;
     
     protected $_adapterName;
     protected $_identity;

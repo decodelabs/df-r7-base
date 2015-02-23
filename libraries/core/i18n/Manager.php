@@ -11,11 +11,13 @@ use df\core;
 class Manager implements IManager {
     
     use core\TManager;
+    use core\TTranslator;
 
     const REGISTRY_PREFIX = 'manager://i18n';
     
     protected $_locale;
     protected $_modules = [];
+    protected $_translator;
 
     
 // Locale
@@ -93,5 +95,15 @@ class Manager implements IManager {
             default:
                 return $this->getModule($member);
         }
+    }
+
+
+// Translate
+    public function translate(array $args) {
+        if(!$this->_translator) {
+            $this->_translator = Translator::factory('i18n');
+        }
+
+        return $this->_translator->translate($args);
     }
 }

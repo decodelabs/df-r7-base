@@ -23,7 +23,7 @@ interface IRenderable {
 interface IElementRepresentation extends core\IStringProvider, IRenderable {}
 
 
-interface ITagDataContainer extends core\IAttributeContainer {
+interface ITagDataContainer extends core\collection\IAttributeContainer {
     // Data attributes
     public function addDataAttributes(array $attributes);
     public function setDataAttribute($key, $value);

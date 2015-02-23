@@ -10,13 +10,13 @@ use df\core;
 use df\aura;
 use df\arch;
 
-class FieldError extends Base implements IFormOrientedWidget, core\IErrorContainer, core\IDumpable {
+class FieldError extends Base implements IFormOrientedWidget, core\collection\IErrorContainer, core\IDumpable {
     
     protected $_errors = [];
     
     public function __construct(arch\IContext $context, $errors=null) {
         if($errors !== null) {
-            if($errors instanceof core\IErrorContainer) {
+            if($errors instanceof core\collection\IErrorContainer) {
                 $errors = $errors->getErrors();
             }
             

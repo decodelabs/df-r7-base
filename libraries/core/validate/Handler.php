@@ -10,6 +10,7 @@ use df\core;
 
 class Handler implements IHandler {
     
+    use core\TTranslator;
     use core\lang\TChainable;
 
     protected $_values = [];
@@ -340,8 +341,7 @@ class Handler implements IHandler {
         return $this;
     }
     
-    public function _($phrase, array $data=null, $plural=null, $locale=null) {
-        $translator = core\i18n\translate\Handler::factory('core/Validate', $locale);
-        return $translator->_($phrase, $data, $plural);
+    public function translate(array $args) {
+        return core\i18n\Manager::getInstance()->translate($args);
     }
 }

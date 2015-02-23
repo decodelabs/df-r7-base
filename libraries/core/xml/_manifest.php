@@ -115,7 +115,7 @@ interface IWritable extends IWriterInterchange, IRootInterchangeProvider {
 
 
 // Tree
-interface ITree extends IReadable, IWritable, core\IAttributeContainer, \Countable, \ArrayAccess, core\IStringProvider {
+interface ITree extends IReadable, IWritable, core\collection\IAttributeContainer, \Countable, \ArrayAccess, core\IStringProvider {
     // Node info
     public function setTagName($name);
     public function getTagName();
@@ -211,7 +211,7 @@ interface ITree extends IReadable, IWritable, core\IAttributeContainer, \Countab
 
 
 // Writer
-interface IWriter extends IWritable, core\IAttributeContainer, core\IStringProvider {
+interface IWriter extends IWritable, core\collection\IAttributeContainer, core\IStringProvider {
     // Header
     public function writeHeader($version='1.0', $encoding='UTF-8', $isStandalone=false);
     public function writeDtd($name, $publicId=null, $systemId=null, $subset=null);

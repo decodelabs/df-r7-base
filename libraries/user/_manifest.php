@@ -9,6 +9,7 @@ use df;
 use df\core;
 use df\user;
 use df\opal;
+use df\mesh;
 
 // Exceptions
 interface IException {}

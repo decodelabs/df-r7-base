@@ -3,11 +3,11 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\i18n\translate;
+namespace df\core\i18n;
 
 use df\core;
 
-class Handler implements IHandler, ITranslationProxy {
+class Translator implements ITranslator {
     
     protected $_domainId;
     

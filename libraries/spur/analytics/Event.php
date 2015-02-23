@@ -11,7 +11,7 @@ use df\spur;
     
 class Event implements IEvent {
 
-    use core\TAttributeContainer;
+    use core\collection\TAttributeContainer;
 
     protected $_category;
     protected $_name;
