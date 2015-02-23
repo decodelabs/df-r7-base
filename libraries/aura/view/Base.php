@@ -226,6 +226,6 @@ class Base implements IView {
     
     
     public function translate(array $args) {
-        return $this->context->i18n->translate(func_get_args());
+        return $this->context->i18n->translate($args);
     }
 }

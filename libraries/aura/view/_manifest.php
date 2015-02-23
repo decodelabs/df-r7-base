@@ -479,9 +479,9 @@ trait TCascadingHelperProvider {
 
     public function translate(array $args) {
         if($this->view) {
-            return $this->view->i18n->translate(func_get_args());
+            return $this->view->i18n->translate($args);
         } else {
-            return $this->getContext()->i18n->translate(func_get_args());
+            return $this->getContext()->i18n->translate($args);
         }
     }
 }
