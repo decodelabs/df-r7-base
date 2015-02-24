@@ -112,12 +112,6 @@ trait TDirectoryHelper {
 }
 
 
-
-interface IDirectoryRequestApplication extends core\IApplication, core\IContextAware {
-    public function getDefaultDirectoryAccess();
-}
-
-
 interface IRouter {
     public function routeIn(arch\IRequest $request);
     public function routeOut(arch\IRequest $request);
@@ -325,14 +319,14 @@ trait TDirectoryAccessLock {
             return static::DEFAULT_ACCESS;
         }
 
-        if(df\Launchpad::$application instanceof IDirectoryRequestApplication) {
-            return df\Launchpad::$application->getDefaultDirectoryAccess();
-        }
-
-        return arch\IAccess::NONE;
+        return DirectoryAccessController::$defaultAccess;
     }
 
     public function getAccessLockId() {
         return $this->context->location->getAccessLockId();
     }
+}
+
+class DirectoryAccessController {
+    public static $defaultAccess = arch\IAccess::NONE;
 }

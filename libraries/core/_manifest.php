@@ -178,10 +178,6 @@ interface IDumpable {
 
 // Loader
 interface ILoader {
-    public function activate();
-    public function deactivate();
-    public function isActive();
-    
     public function loadClass($class);
     public function getClassSearchPaths($class);
     public function lookupClass($path);
@@ -198,9 +194,7 @@ interface ILoader {
     public function unregisterLocation($name);
     public function getLocations();
     
-    public function loadBasePackages();
     public function loadPackages(array $packages);
-    public function initPackages();
     public function getPackages();
     public function hasPackage($package);
     public function getPackage($package);

@@ -10,7 +10,7 @@ use df\core;
 use df\arch;
 use df\halo;
 
-class Task extends Base implements arch\IDirectoryRequestApplication {
+class Task extends Base implements core\IContextAware {
     
     const RUN_MODE = 'Task';
     
@@ -19,11 +19,6 @@ class Task extends Base implements arch\IDirectoryRequestApplication {
     protected $_command;
     protected $_multiplexer;
 
-
-    public function getDefaultDirectoryAccess() {
-        return arch\IAccess::ALL;
-    }
-    
 // Request
     public function setTaskRequest(arch\IRequest $request) {
         $this->_request = $request;
@@ -87,6 +82,8 @@ class Task extends Base implements arch\IDirectoryRequestApplication {
     
 // Execute
     public function dispatch() {
+        arch\DirectoryAccessController::$defaultAccess = arch\IAccess::ALL;
+
         $request = $this->_prepareRequest();
         $response = $this->_dispatchRequest($request, $this->_command);
         $this->_handleResponse($response);

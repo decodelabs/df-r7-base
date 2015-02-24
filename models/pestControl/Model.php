@@ -42,7 +42,7 @@ class Model extends axis\Model {
             try {
                 if(df\Launchpad::$application instanceof core\application\Http) {
                     $request = df\Launchpad::$application->getContext()->http->getRequest()->getUrl();
-                } else if(df\Launchpad::$application instanceof arch\IDirectoryRequestApplication) {
+                } else if(df\Launchpad::$application instanceof core\IContextAware) {
                     $request = df\Launchpad::$application->getContext()->request;
                 }
             } catch(\Exception $e) {}

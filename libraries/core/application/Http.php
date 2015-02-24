@@ -12,7 +12,7 @@ use df\flow;
 use df\arch;
 use df\halo;
 
-class Http extends Base implements arch\IDirectoryRequestApplication, link\http\IResponseAugmentorProvider {
+class Http extends Base implements core\IContextAware, link\http\IResponseAugmentorProvider {
     
     const RUN_MODE = 'Http';
 
@@ -110,10 +110,6 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
     
     public function getDispatchRequest() {
         return $this->getContext()->request;
-    }
-    
-    public function getDefaultDirectoryAccess() {
-        return arch\IAccess::NONE;
     }
     
     

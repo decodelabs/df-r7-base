@@ -33,8 +33,6 @@ class Launchpad {
     
     public static $startTime;
 
-    private static $_isInit = false;
-    private static $_isRun = false;
     private static $_isShutdown = false;
     
     public static function loadBaseClass($path) {
@@ -74,13 +72,32 @@ class Launchpad {
     }
     
     public static function runAs($environmentId, $isTesting, $appPath) {
-        if(self::$_isRun) {
+        if(self::$startTime) {
             return;
         }
+
+        self::$startTime = microtime(true);
+        self::$applicationPath = $appPath;
+        self::$environmentId = $environmentId;
+        self::$isTesting = (bool)$isTesting;
+
+        // Set a few system defaults
+        umask(0);
+        error_reporting(E_ALL | E_STRICT);
+        date_default_timezone_set('UTC');
+        mb_internal_encoding('UTF-8');
+        chdir(self::$applicationPath.'/entry');
         
-        self::init($environmentId, $isTesting, $appPath);
-        self::$_isRun = true;
-        
+        // Load core library
+        self::loadBaseClass('core/_manifest');
+
+        // Register loader
+        if(self::IS_COMPILED) {
+            self::$loader = new core\Loader(['root' => dirname(self::DF_PATH)]);
+        } else {
+            self::$loader = new core\DevLoader(['root' => dirname(self::DF_PATH)]);
+        }
+
         // Set error handlers
         set_error_handler(['df\\Launchpad', 'handleError']);
         set_exception_handler(['df\\Launchpad', 'handleException']);
@@ -105,10 +122,12 @@ class Launchpad {
                 $appType = 'Task';
         }
         
+
         
         // Load application / packages
         $class = 'df\\core\\application\\'.$appType;
         self::$application = new $class();
+        //self::benchmark();
 
         $envConfig = core\Environment::getInstance();
         self::$isDistributed = $envConfig->isDistributed();
@@ -124,56 +143,11 @@ class Launchpad {
         self::$passKey = $appConfig->getPassKey();
 
         self::$loader->loadPackages($appConfig->getActivePackages());
-        self::$loader->initPackages();
 
         self::$application->dispatch();
         self::shutdown();
     }
     
-    public static function init($environmentId, $isTesting, $appPath) {
-        if(self::$_isInit) {
-            return;
-        }
-        
-        self::$_isInit = true;
-        self::$startTime = microtime(true);
-        self::$applicationPath = $appPath;
-        self::$environmentId = $environmentId;
-        self::$isTesting = (bool)$isTesting;
-
-        // This probably needs putting on a leash!
-        umask(0);
-        
-        // Very strict error reporting, makes sure you write clean code :)
-        $errorReporting = E_ALL | E_STRICT;
-        
-        // Avoid setting if already done in php.ini
-        if(error_reporting() != $errorReporting) {
-            error_reporting($errorReporting);
-        }
-        
-        // Set some global defaults
-        date_default_timezone_set('UTC');
-        mb_internal_encoding('UTF-8');
-        
-        // Make sure we're working from the entry point location
-        chdir(self::$applicationPath.'/entry');
-        
-        // Load core library
-        self::loadBaseClass('core/_manifest');
-
-
-        // Register loader
-        if(self::IS_COMPILED) {
-            self::$loader = new core\Loader(['root' => dirname(self::DF_PATH)]);
-        } else {
-            self::$loader = new core\DevLoader(['root' => dirname(self::DF_PATH)]);
-        }
-
-        self::$loader->activate();
-        self::$loader->loadBasePackages();
-    }
-
     public static function getEnvironmentMode() {
         if(self::IS_COMPILED) {
             return self::$isTesting ? 'testing' : 'production';

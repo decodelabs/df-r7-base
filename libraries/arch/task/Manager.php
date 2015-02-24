@@ -147,7 +147,7 @@ class Manager implements IManager {
         $application = df\Launchpad::getApplication();
         $context = null;
 
-        if($application instanceof IDirectoryRequestApplication) {
+        if($application instanceof core\IContextAware) {
             $context = $application->getContext();
         }
 

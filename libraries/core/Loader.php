@@ -16,7 +16,6 @@ class Loader implements ILoader {
     protected $_locations = [];
     protected $_packages = [];
 
-    private $_isActive = false;
     private $_isInit = false;
     
     
@@ -33,32 +32,11 @@ class Loader implements ILoader {
 // Construct
     public function __construct(array $locations=[]) {
         $this->_locations = $locations;
+        spl_autoload_register([$this, 'loadClass']);
+
+        $this->_packages['base'] = new core\Package('base', 0, df\Launchpad::DF_PATH);
+        $this->_packages['app'] = new core\Package('app', PHP_INT_MAX, df\Launchpad::$applicationPath);
     }
-    
-    
-// Activation
-    public function activate() {
-        if(!$this->_isActive) {
-            spl_autoload_register([$this, 'loadClass']);
-            $this->_isActive = true;
-        }
-        
-        return $this;
-    }
-    
-    public function deactivate() {
-        if($this->_isActive) {
-            spl_autoload_unregister([$this, 'loadClass']);
-            $this->_isActive = false;
-        }
-        
-        return $this;
-    }
-    
-    public function isActive() {
-        return $this->_isActive;
-    }
-    
     
 // Class loader
     public function loadClass($class) {
@@ -309,13 +287,6 @@ class Loader implements ILoader {
     
     
 // Packages
-    public function loadBasePackages() {
-        $this->_packages['base'] = new core\Package('base', 0, df\Launchpad::DF_PATH);
-        $this->_packages['app'] = new core\Package('app', PHP_INT_MAX, df\Launchpad::$applicationPath);
-        
-        return $this;
-    }
-
     public function loadPackages(array $packages) {
         if($this->_isInit) {
             throw new LogicException(
@@ -329,6 +300,11 @@ class Loader implements ILoader {
             return $a->priority < $b->priority;
         });
 
+        foreach($this->_packages as $package) {
+            $package->init();
+        }
+
+        $this->_isInit = true;
         return $this;
     }
 
@@ -347,19 +323,6 @@ class Loader implements ILoader {
                 $this->_loadPackageList($deps);
             }
         }
-    }
-
-    public function initPackages() {
-        if($this->_isInit) {
-            return $this;
-        }
-
-        foreach($this->_packages as $package) {
-            $package->init();
-        }
-
-        $this->_isInit = true;
-        return $this;
     }
     
     public function getPackages() {
