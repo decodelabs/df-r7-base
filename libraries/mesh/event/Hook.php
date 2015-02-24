@@ -14,7 +14,7 @@ abstract class Hook implements IHook {
 
     use core\TContextProxy;
 
-    protected static $_actionMap = [];
+    protected $_events = [];
 
     public static function getClassList() {
         return df\Launchpad::$loader->lookupClassList('apex/hooks/', true);
@@ -97,7 +97,7 @@ abstract class Hook implements IHook {
 
             $hook = new $class($context);
             
-            foreach($hook->getActionMap() as $entityLocator => $entitySet) {
+            foreach($hook->getEventMap() as $entityLocator => $entitySet) {
                 $entityLocator = mesh\entity\Locator::factory($entityLocator);
                 $domain = $entityLocator->getDomain();
 
@@ -159,7 +159,7 @@ abstract class Hook implements IHook {
         return array_pop($parts);
     }
 
-    public function getActionMap() {
-        return static::$_actionMap;
+    public function getEventMap() {
+        return $this->_events;
     }
 }

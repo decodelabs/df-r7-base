@@ -48,7 +48,7 @@ interface IEvent extends core\collection\IMap {
 interface IHook extends core\IContextAware {
     public static function triggerEvent(IEvent $event);
     public function getName();
-    public function getActionMap();
+    public function getEventMap();
 }
 
 class HookCache extends core\cache\Base {}
