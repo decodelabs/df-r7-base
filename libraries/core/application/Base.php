@@ -12,18 +12,12 @@ abstract class Base implements core\IApplication, core\IDumpable {
     
     const RUN_MODE = null;
     
-    protected $_debugTransport;
-    
     protected $_isRunning = false;
     protected $_registry = [];
 
-    
-// Paths
     public static function getApplicationPath() {
         return df\Launchpad::$applicationPath;
     }
-    
-    
     
     public function getLocalStoragePath() {
         return df\Launchpad::$applicationPath.'/data/local';
@@ -32,38 +26,19 @@ abstract class Base implements core\IApplication, core\IDumpable {
     public function getSharedStoragePath() {
         return df\Launchpad::$applicationPath.'/data/shared';
     }
-    
-    
-    
-// Execute
-    public function dispatch() {
-        if($this->_isRunning) {
-            throw new core\RuntimeException(
-                'Application instance is already running'
-            );
-        }
-        
-        $this->_isRunning = true;
-        
-        if(df\Launchpad::$application !== $this) {
-            throw new core\RuntimeException(
-                'Application cannot be dispatched unless it is the active application in Launchpad'
-            );
-        }
-        
-        return $this->_dispatch();
-    }
 
-    abstract protected function _dispatch();
-
-    public function shutdown() {
-        foreach($this->_registry as $object) {
-            $object->onApplicationShutdown();
-        }
+    public function getName() {
+        return df\Launchpad::$applicationName;
     }
     
+    public function getUniquePrefix() {
+        return df\Launchpad::$uniquePrefix;
+    }
     
-// Environment
+    public function getPassKey() {
+        return df\Launchpad::$passKey;
+    }
+
     public function getEnvironmentId() {
         return df\Launchpad::$environmentId;
     }
@@ -84,10 +59,6 @@ abstract class Base implements core\IApplication, core\IDumpable {
         return df\Launchpad::isProduction();
     }
 
-    public function canDebug() {
-        return df\Launchpad::isTesting();
-    }
-    
     public function getRunMode() {
         if(static::RUN_MODE !== null) {
             return static::RUN_MODE;
@@ -101,40 +72,18 @@ abstract class Base implements core\IApplication, core\IDumpable {
         return df\Launchpad::$isDistributed;
     }
 
-    public function launchPayload($payload) {
-        core\stub($payload);
+    public function shutdown() {
+        foreach($this->_registry as $object) {
+            $object->onApplicationShutdown();
+        }
     }
 
-// Debug
-    public function createDebugContext() {
-        return new core\debug\Context();
-    }
-    
     public function renderDebugContext(core\debug\IContext $context) {
         df\Launchpad::loadBaseClass('core/debug/renderer/PlainText');
         echo (new core\debug\renderer\PlainText($context))->render();
 
         return $this;
     }    
-    
-// Members
-    public function setName($name) {
-        df\Launchpad::$applicationName = $name;
-        return $this;
-    }
-    
-    public function getName() {
-        return df\Launchpad::$applicationName;
-    }
-    
-    public function getUniquePrefix() {
-        return df\Launchpad::$uniquePrefix;
-    }
-    
-    public function getPassKey() {
-        return df\Launchpad::$passKey;
-    }
-
     
 // Cache objects
     public function setRegistryObject(core\IRegistryObject $object) {

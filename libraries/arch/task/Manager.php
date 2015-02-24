@@ -31,7 +31,7 @@ class Manager implements IManager {
             $application = df\Launchpad::getApplication();
 
             if($application instanceof core\application\Task) {
-                $multiplexer = $application->getTaskResponse();
+                $multiplexer = $application->getMultiplexer();
                 return halo\process\Base::launchScript($path, ['task', $request], $multiplexer, $user);
             }
         }
@@ -53,7 +53,7 @@ class Manager implements IManager {
             $application = df\Launchpad::getApplication();
 
             if($application instanceof core\application\Task) {
-                $multiplexer = $application->getTaskResponse();
+                $multiplexer = $application->getMultiplexer();
                 return halo\process\Base::launchScript($path, ['task', $request], $multiplexer, $user);
             }
         }
@@ -130,7 +130,7 @@ class Manager implements IManager {
         $application = df\Launchpad::getApplication();
 
         if($application instanceof core\application\Task) {
-            return $application->getTaskResponse();
+            return $application->getMultiplexer();
         }
 
         $key = core\io\Multiplexer::REGISTRY_KEY.':task';

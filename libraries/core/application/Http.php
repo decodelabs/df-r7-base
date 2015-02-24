@@ -117,14 +117,124 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
     }
     
     
-// Execute
-    protected function _dispatch() {
-        if($response = $this->_prepareHttpRequest()) {
-            return $response;
+// Dispatch
+    public function dispatch() {
+        try {
+            $this->_httpRequest = new link\http\request\Base(null, true);
+            $ip = $this->_httpRequest->getIp();
+
+            $this->_enforceCredentials($ip);
+            $this->_checkIpRanges($ip);
+
+
+            $this->_prepareHttpRequest();
+            $this->_handleDebugMode();
+
+            $request = $this->_prepareDirectoryRequest();
+            $response = $this->_dispatchRequest($request);
+        } catch(arch\IForcedResponse $e) {
+            $response = $e->getResponse();
         }
+
+        if(df\Launchpad::$debug) {
+            df\Launchpad::$debug->execute();
+        }
+
+        $response = $this->_normalizeResponse($response);
+        $this->_sendResponse($response);
+    }
+
+
+// Credentials
+    protected function _enforceCredentials(link\IIp $ip) {
+        if(!$this->_credentials || $ip->isLoopback()) {
+            return true;
+        }
+
+        if(!isset($_SERVER['PHP_AUTH_USER'])
+        || $_SERVER['PHP_AUTH_USER'] != $this->_credentials['username']
+        || $_SERVER['PHP_AUTH_PW'] != $this->_credentials['password']) {
+            header('WWW-Authenticate: Basic realm="Developer Site"');
+            header('HTTP/1.0 401 Unauthorized');
+            echo 'You need to authenticate to view this site';
+            exit;
+        }
+
+        return false;
+    }
+
+
+// IP check
+    protected function _checkIpRanges(link\IIp $ip) {
+        $config = core\application\http\Config::getInstance();
+        $ranges = $config->getIpRanges();
+
+        if(empty($ranges)) {
+            return;
+        }
+
+        $augmentor = $this->getResponseAugmentor();
+        $augmentor->setHeaderForAnyRequest('x-allow-ip', (string)$ip);
+
+        foreach($ranges as $range) {
+            if($range->check($ip)) {
+                $augmentor->setHeaderForAnyRequest('x-allow-ip-range', (string)$range);
+                return;
+            }
+        }
+
+        if($ip->isLoopback()) {
+            $augmentor->setHeaderForAnyRequest('x-allow-ip-range', 'loopback');
+            return;
+        }
+
+        $response = new link\http\response\String(
+            '<html><head><title>Forbidden</title></head><body>'.
+            '<p>Sorry, this site is protected by IP range.</p><p>Your IP is: <strong>'.$ip.'</strong></p>',
+            'text/html'
+        );
         
-        $response = false;
-        $previousError = false;
+        $response->getHeaders()->setStatusCode(403);
+        throw new arch\ForcedResponse($response);
+    }
+
+
+// Prepare http request
+    protected function _prepareHttpRequest() {
+        if($this->_router->shouldUseHttps() && !$this->_httpRequest->getUrl()->isSecure() && $this->isProduction()) {
+            $response = new link\http\response\Redirect(
+                $this->_httpRequest->getUrl()
+                    ->isSecure(true)
+                    ->setPort(null)
+            );
+
+            $response->isPermanent(true);
+            throw new arch\ForcedResponse($response);
+        }
+
+        if(!$this->_router->hasBasePort()) {
+            $this->_router->setBasePort($this->_httpRequest->getUrl()->getPort());
+        }
+    }
+
+
+// Debug mode
+    protected function _handleDebugMode() {
+        if($this->_httpRequest->hasCookie('debug')) {
+            df\Launchpad::$isTesting = true;
+
+            flow\Manager::getInstance()->flashNow(
+                    'global.debug', 
+                    'Currently in enforced debug mode', 
+                    'debug'
+                )
+                ->setLink('~devtools/application/debug-mode', 'Change debug settings');
+        }
+    }
+
+
+// Directory request
+    protected function _prepareDirectoryRequest() {
         $valid = true;
         $redirectPath = '/';
         
@@ -163,12 +273,11 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
                 );
                 
                 $response->getHeaders()->setStatusCode(404);
-                return $response;
             } else {
                 $response = new link\http\response\Redirect($baseUrl);
-                //$response->isPermanent(true);
-                return $response;
             }
+
+            throw new arch\ForcedResponse($response);
         }
         
         
@@ -183,7 +292,7 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
                 if((string)$url != $orig) {
                     $response = new link\http\response\Redirect($url);
                     $response->isPermanent(true);
-                    return $response;
+                    throw new arch\ForcedResponse($response);
                 }
             }
 
@@ -202,149 +311,37 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
             $request->setType($this->_httpRequest->getHeaders()->get('x-ajax-request-type'));
         }
 
-        $request = $this->_router->routeIn($request);
-        
-        // Start dispatch loop
-        while(true) {
+        return $this->_router->routeIn($request);
+    }
+
+
+// Dispatch request
+    protected function _dispatchRequest(arch\IRequest $request) {
+        try {
+            $response = $this->_dispatchAction($request);
+        } catch(\Exception $e) {
+            while(ob_get_level()) {
+                ob_end_clean();
+            }
+
             try {
-                while(true) {
-                    $response = $this->_dispatchRequest($request);
-                    
-                    // Is this a forward?
-                    if($response instanceof arch\IRequest) {
-                        $request = $response;
-                        continue;
-                    }
-                    
-                    break;
+                if($this->_context) {
+                    $request = clone $this->_context->request;
                 }
             } catch(\Exception $e) {
-                if($previousError) {
-                    core\debug()->error('CALAMITY: We appear to have caused an error in trying to render the error pages!');
-                    throw $e;
-                }
-                
-                while(ob_get_level()) {
-                    ob_end_clean();
-                }
-                
-                $previousError = $e;
-                $response = null;
                 $request = null;
-                
-                try {
-                    if($this->_context) {
-                        $request = clone $this->_context->request;
-                    }
-                } catch(\Exception $e) {
-                    $request = null;
-                }
-                
-                $request = new arch\ErrorRequest($e->getCode(), $e, $request);
-                continue;
             }
             
-            break;
+            $request = new arch\ErrorRequest($e->getCode(), $e, $request);
+            $response = $this->_dispatchAction($request);
         }
 
         return $response;
     }
     
-    protected function _prepareHttpRequest() {
-        $this->_httpRequest = new link\http\request\Base(null, true);
-        $ip = $this->_httpRequest->getIp();
-        $this->_enforceCredentials($ip);
 
-        if($response = $this->_checkIpRanges($ip)) {
-            return $response;
-        }
-
-        if($this->_router->shouldUseHttps() && !$this->_httpRequest->getUrl()->isSecure() && $this->isProduction()) {
-            $response = new link\http\response\Redirect(
-                $this->_httpRequest->getUrl()
-                    ->isSecure(true)
-                    ->setPort(null)
-            );
-
-            $response->isPermanent(true);
-            return $response;
-        }
-
-        if(!$this->_router->hasBasePort()) {
-            $this->_router->setBasePort($this->_httpRequest->getUrl()->getPort());
-        }
-
-        if($this->_httpRequest->hasCookie('debug')) {
-            df\Launchpad::$isTesting = true;
-            df\Launchpad::$debug = $this->createDebugContext();
-
-            flow\Manager::getInstance()->flashNow(
-                    'global.debug', 
-                    'Currently in enforced debug mode', 
-                    'debug'
-                )
-                ->setLink('~devtools/application/debug-mode', 'Change debug settings');
-        }
-
-        return null;
-    }
-
-    protected function _enforceCredentials(link\IIp $ip) {
-        if(!$this->_credentials || $ip->isLoopback()) {
-            return true;
-        }
-
-        if(!isset($_SERVER['PHP_AUTH_USER'])
-        || $_SERVER['PHP_AUTH_USER'] != $this->_credentials['username']
-        || $_SERVER['PHP_AUTH_PW'] != $this->_credentials['password']) {
-            header('WWW-Authenticate: Basic realm="Developer Site"');
-            header('HTTP/1.0 401 Unauthorized');
-            echo 'You need to authenticate to view this site';
-            exit;
-        }
-
-        return false;
-    }
-
-    protected function _checkIpRanges(link\IIp $ip) {
-        $config = core\application\http\Config::getInstance();
-        $ranges = $config->getIpRanges();
-
-        if(empty($ranges)) {
-            return;
-        }
-
-        $augmentor = $this->getResponseAugmentor();
-        $augmentor->setHeaderForAnyRequest('x-allow-ip', (string)$ip);
-
-        foreach($ranges as $range) {
-            if($range->check($ip)) {
-                $augmentor->setHeaderForAnyRequest('x-allow-ip-range', (string)$range);
-                return;
-            }
-        }
-
-        if($ip->isLoopback()) {
-            $augmentor->setHeaderForAnyRequest('x-allow-ip-range', 'loopback');
-            return;
-        }
-
-        $response = new link\http\response\String(
-            '<html><head><title>Forbidden</title></head><body>'.
-            '<p>Sorry, this site is protected by IP range.</p><p>Your IP is: <strong>'.$ip.'</strong></p>',
-            'text/html'
-        );
-        
-        $response->getHeaders()->setStatusCode(403);
-        return $response;
-    }
-    
-    protected function _dispatchRequest(arch\IRequest $request) {
-        // Ensure a debug context
-        if($this->isDevelopment()) {
-            core\debug();
-        }
-
+// Dispatch action
+    protected function _dispatchAction(arch\IRequest $request) {
         if($this->_responseAugmentor) {
             $this->_responseAugmentor->resetCurrent();
         }
@@ -381,19 +378,21 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
             $this->_doTheDirtyWork();
         }
         
-        $response = $action->dispatch();
-        
+        return $action->dispatch();
+    }
+
+
+// Normalize response
+    protected function _normalizeResponse($response) {
         // Dereference proxy responses
         while($response instanceof arch\IProxyResponse) {
             $response = $response->toResponse();
         }
 
-        
         // Forwarding
         if($response instanceof arch\IRequest) {
-            return $response;
+            core\deprecated($response, 'Request forwarding is no longer supported');
         }
-        
         
         // Empty response
         if($response === null && $this->isDevelopment()) {
@@ -402,7 +401,6 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
                 'No response was returned by action: '.$this->_context->request
             );
         }
-        
         
         // Basic response
         if(!$response instanceof link\http\IResponse) {
@@ -425,21 +423,8 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
     }
 
 
-    // Payload
-    public function launchPayload($response) {
-        // Make sure we're actually in HTTP!
-        if(!isset($_SERVER['HTTP_HOST'])) {
-            throw new core\RuntimeException(
-                'Cannot run http app - this php process does not appear to be running from a http connection'
-            );
-        }
-        
-        
-        if(!$response instanceof link\http\IResponse) {
-            echo (string)$response;
-            return;
-        }
-
+// Send response
+    protected function _sendResponse(link\http\IResponse $response) {
         // Apply globally defined cookies, headers, etc
         if($this->_responseAugmentor) {
             $this->_responseAugmentor->apply($response);
@@ -516,27 +501,6 @@ class Http extends Base implements arch\IDirectoryRequestApplication, link\http\
 
 
 // Debug
-    public function createDebugContext() {
-        $output = new core\debug\Context();
-
-        if($this->isTesting()) {
-            if($this->_httpRequest) {
-                $headers = $this->_httpRequest->getHeaders();
-            } else {
-                $headers = link\http\request\HeaderCollection::fromEnvironment();
-            }
-
-            /*
-            if(core\log\writer\FirePhp::isAvailable($headers)) {
-                $output->addWriter(new core\log\writer\FirePhp());
-            } else if(core\log\writer\ChromePhp::isAvailable($headers)) {
-                $output->addWriter(new core\log\writer\ChromePhp());
-            }*/
-        }
-
-        return $output;
-    }
-
     public function renderDebugContext(core\debug\IContext $context) {
         $renderer = new core\debug\renderer\Html($context);
         

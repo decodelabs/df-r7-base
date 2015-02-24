@@ -29,7 +29,8 @@ class TaskRefresh extends arch\task\Action {
         }
 
         if(empty($names)) {
-            return $this->uri->directoryRequest('git/refresh-all');
+            $this->runChild('git/refresh-all');
+            return;
         }
 
         foreach($names as $name) {

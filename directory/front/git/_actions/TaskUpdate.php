@@ -29,7 +29,8 @@ class TaskUpdate extends arch\task\Action {
         }
 
         if(empty($names)) {
-            return $this->uri->directoryRequest('git/update-all');
+            $this->runChild('git/update-all');
+            return;
         }
 
         foreach($names as $name) {

@@ -268,7 +268,6 @@ interface IApplication {
     
     // Execute
     public function dispatch();
-    public function launchPayload($payload);
     public function shutdown();
     
     // Environment
@@ -277,16 +276,13 @@ interface IApplication {
     public function isDevelopment();
     public function isTesting();
     public function isProduction();
-    public function canDebug();
     public function getRunMode();
     public function isDistributed();
 
     // Debug
-    public function createDebugContext();
     public function renderDebugContext(core\debug\IContext $context);
     
     // Members
-    public function setName($name);
     public function getName();
     public function getUniquePrefix();
     public function getPassKey();

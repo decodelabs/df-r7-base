@@ -16,7 +16,8 @@ class Task extends Base implements arch\IDirectoryRequestApplication {
     
     protected $_context;
     protected $_request;
-    protected $_response;
+    protected $_command;
+    protected $_multiplexer;
 
 
     public function getDefaultDirectoryAccess() {
@@ -39,19 +40,31 @@ class Task extends Base implements arch\IDirectoryRequestApplication {
         return $this->_request;
     }
 
+
+// Command
+    public function getCommand() {
+        if(!$this->_command) {
+            throw new core\RuntimeException(
+                'The task command is not available until the application has been dispatched'
+            );
+        }
+
+        return $this->_command;
+    }
+
     
 // Response
-    public function setTaskResponse(core\io\Multiplexer $response) {
-        $this->_response = $response;
+    public function setMultiplexer(core\io\Multiplexer $multiplexer) {
+        $this->_multiplexer = $multiplexer;
         return $this;
     }
 
-    public function getTaskResponse() {
-        if(!$this->_response) {
-            $this->_response = core\io\Multiplexer::defaultFactory('task');
+    public function getMultiplexer() {
+        if(!$this->_multiplexer) {
+            $this->_multiplexer = core\io\Multiplexer::defaultFactory('task');
         }
 
-        return $this->_response;
+        return $this->_multiplexer;
     }
     
     
@@ -73,7 +86,15 @@ class Task extends Base implements arch\IDirectoryRequestApplication {
     
     
 // Execute
-    protected function _dispatch() {
+    public function dispatch() {
+        $request = $this->_prepareRequest();
+        $response = $this->_dispatchRequest($request, $this->_command);
+        $this->_handleResponse($response);
+    }
+
+
+// Prepare command
+    protected function _prepareRequest() {
         $args = null;
         
         $command = core\cli\Command::fromArgv();
@@ -91,63 +112,47 @@ class Task extends Base implements arch\IDirectoryRequestApplication {
         }
 
         $this->_request = arch\Request::factory($request);
-        $command = new core\cli\Command(df\Launchpad::$environmentId.'.'.df\Launchpad::getEnvironmentMode().'.php');
+        $this->_command = new core\cli\Command(df\Launchpad::$environmentId.'.'.df\Launchpad::getEnvironmentMode().'.php');
 
         if($args) {
             foreach($args as $arg) {
-                $command->addArgument($arg);
+                $this->_command->addArgument($arg);
             }
         }
-        
-        $response = false;
-        $previousError = false;
-        $request = $this->_request;
-        
-        set_time_limit(0);
-        
-        while(true) {
-            try {
-                while(true) {
-                    $response = $this->_dispatchRequest($request, $command);
-                    $command = null;
 
-                    if($response instanceof arch\IRequest) {
-                        $request = $response;
-                        continue;
-                    }
-                    
-                    break;
+        return $this->_request;
+    }
+
+
+// Dispatch request
+    protected function _dispatchRequest(arch\IRequest $request, core\cli\ICommand $command=null) {
+        set_time_limit(0);
+
+        try {
+            $response = $this->_dispatchAction($request, $command);
+        } catch(\Exception $e) {
+            while(ob_get_level()) {
+                ob_end_clean();
+            }
+
+            try {
+                if($this->_context) {
+                    $request = clone $this->_context->request;
                 }
             } catch(\Exception $e) {
-                if($previousError) {
-                    throw $previousError;
-                }
-                
-                while(ob_get_level()) {
-                    ob_end_clean();
-                }
-                
-                $previousError = $e;
-                $response = null;
-                
-                try {
-                    $request = clone $this->_context->request;
-                } catch(\Exception $e) {
-                    $request = null;
-                }
-                
-                $request = new arch\ErrorRequest($e->getCode(), $e, $request);
-                continue;
+                $request = null;
             }
             
-            break;
+            $request = new arch\ErrorRequest($e->getCode(), $e, $request);
+            $response = $this->_dispatchAction($request);
         }
 
         return $response;
     }
-    
-    
-    protected function _dispatchRequest(arch\IRequest $request, core\cli\ICommand $command=null) {
+
+
+// Dispatch action
+    protected function _dispatchAction(arch\IRequest $request, core\cli\ICommand $command=null) {
         $this->_context = arch\Context::factory(clone $request);
         $this->_context->request = $request;
         $action = arch\Action::factory($this->_context);
@@ -156,28 +161,31 @@ class Task extends Base implements arch\IDirectoryRequestApplication {
             $action->extractCliArguments($command);
         }
 
-        $response = $action->dispatch();
-        
+        return $action->dispatch();
+    }
+
+
+// Handle response
+    protected function _handleResponse($response) {
         // Forwarding
         if($response instanceof arch\IRequest) {
-            return $response;
+            core\deprecated($response, 'Request forwarding is no longer supported');
         }
 
         if($response === null) {
-            $response = $this->_response;
+            $response = $this->_multiplexer;
         }
         
-        return $response;
-    }
-    
-    
-    public function launchPayload($payload) {
-        if(is_string($payload)) {
-            echo $payload."\r\n";
-        } else if($payload instanceof core\io\IFlushable) {
-            $payload->flush();
-        } else if(!empty($payload)) {
-            core\stub($payload);
+        if(df\Launchpad::$debug) {
+            df\Launchpad::$debug->execute();
+        }
+
+        if(is_string($response)) {
+            echo $response."\r\n";
+        } else if($response instanceof core\io\IFlushable) {
+            $response->flush();
+        } else if(!empty($response)) {
+            core\stub($response);
         }
     }
 
@@ -187,7 +195,7 @@ class Task extends Base implements arch\IDirectoryRequestApplication {
         df\Launchpad::loadBaseClass('core/debug/renderer/PlainText');
         $output = (new core\debug\renderer\PlainText($context))->render();
 
-        $response = $this->getTaskResponse();
+        $response = $this->getMultiplexer();
         $response->writeError($output);
 
         return $this;

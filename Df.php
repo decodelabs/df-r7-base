@@ -126,23 +126,7 @@ class Launchpad {
         self::$loader->loadPackages($appConfig->getActivePackages());
         self::$loader->initPackages();
 
-
-        // Run
-        $payload = self::$application->dispatch();
-
-
-        // Write debug loggers
-        if(self::$debug) {
-            self::$debug->execute();
-        }
-        
-        
-        // Launch payload
-        if($payload) {
-            self::$application->launchPayload($payload);
-        }
-        
-        //self::benchmark();
+        self::$application->dispatch();
         self::shutdown();
     }
     
@@ -317,12 +301,7 @@ class Launchpad {
     public static function getDebugContext() {
         if(!self::$debug) {
             self::loadBaseClass('core/debug/Context');
-
-            if(self::$application) {
-                self::$debug = self::$application->createDebugContext();
-            } else {
-                self::$debug = new core\debug\Context();
-            }
+            self::$debug = new core\debug\Context();
         }
         
         return self::$debug;

@@ -184,7 +184,7 @@ class Action implements IAction, core\IDumpable {
         if(method_exists($this, '_beforeDispatch')) {
             try {
                 $output = $this->_beforeDispatch();
-            } catch(ForcedResponse $e) {
+            } catch(IForcedResponse $e) {
                 $output = $e->getResponse();
             }
         }
@@ -197,7 +197,7 @@ class Action implements IAction, core\IDumpable {
             if($output === null && $func) {
                 try {
                     $output = $this->$func();
-                } catch(ForcedResponse $e) {
+                } catch(IForcedResponse $e) {
                     $output = $e->getResponse();
                 } catch(\Exception $e) {
                     $output = $this->handleException($e);
@@ -216,7 +216,7 @@ class Action implements IAction, core\IDumpable {
         if(method_exists($this, '_afterDispatch')) {
             try {
                 $output = $this->_afterDispatch($output);
-            } catch(ForcedResponse $e) {
+            } catch(IForcedResponse $e) {
                 $output = $e->getResponse();
             }
         }
