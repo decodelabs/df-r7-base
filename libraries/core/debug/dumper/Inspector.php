@@ -259,30 +259,29 @@ class Inspector implements IInspector {
             case 'SplPriorityQueue':
                 $temp = clone $object;
                 $temp->setExtractFlags(\SplPriorityQueue::EXTR_BOTH);
-                $values = [];
-                
-                foreach($temp as $i => $val) {
-                    $values[] = $val;
-                }
-                
-                return [
+
+                $output = [
                     new Property('flags', 1, IProperty::VIS_PRIVATE),
-                    new Property('isCorrupted', false, IProperty::VIS_PRIVATE),
-                    new Property('heap', $values, IProperty::VIS_PRIVATE)
+                    new Property('isCorrupted', false, IProperty::VIS_PRIVATE)
                 ];
+
+                foreach($temp as $i => $val) {
+                    $output[] = new Property($val['priority'], $val['data']);
+                }
+
+                return $output;
                 
             case 'SplHeap':
-                $values = [];
+                $output = [
+                    new Property('flags', 1, IProperty::VIS_PRIVATE),
+                    new Property('isCorrupted', false, IProperty::VIS_PRIVATE)
+                ];
                 
-                foreach(clone $object as $val) {
-                    $values[] = $val;
+                foreach(clone $object as $i => $val) {
+                    $output[] = new Property($i, $val);
                 }
                 
-                return [
-                    new Property('flags', 1, IProperty::VIS_PRIVATE),
-                    new Property('isCorrupted', false, IProperty::VIS_PRIVATE),
-                    new Property('heap', $values, IProperty::VIS_PRIVATE)
-                ];
+                return $output;
                 
             case 'ReflectionClass':
             case 'ReflectionObject':
