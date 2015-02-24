@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\link;
+namespace df\link\peer;
 
 use df;
 use df\core;
@@ -62,7 +62,7 @@ trait TPeer {
 
 
         // If in write / listen mode, peer is responding early, we don't need to write any more
-        if($session->getWriteState() == link\IIoState::WRITE_LISTEN) {
+        if($session->getWriteState() == IIoState::WRITE_LISTEN) {
             $this->events->freezeSocketWrite($socket);
         }
 
@@ -560,7 +560,7 @@ trait TPeer_RequestResponseSession {
     protected $_request;
     protected $_response;
     
-    public function setRequest(ISessionRequest $request) {
+    public function setRequest($request) {
         $this->_request = $request;
         return $this;
     }
@@ -569,7 +569,7 @@ trait TPeer_RequestResponseSession {
         return $this->_request;
     }
     
-    public function setResponse(ISessionResponse $response) {
+    public function setResponse($response) {
         $this->_response = $response;
         return $this;
     }

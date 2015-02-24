@@ -22,7 +22,7 @@ class Mediator implements IMediator, core\IDumpable {
     protected $_defaultCurrency = 'USD';
 
     public function __construct($apiKey) {
-        $this->_httpClient = new link\http\Client();
+        $this->_httpClient = new link\http\peer\Client();
         $this->setApiKey($apiKey);
     }
 

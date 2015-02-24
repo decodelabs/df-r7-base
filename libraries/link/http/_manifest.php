@@ -16,18 +16,6 @@ class RuntimeException extends \RuntimeException implements IException {}
 class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 class UnexpectedValueException extends \UnexpectedValueException implements IException {}
 
-class DebugPayload extends \Exception {
-    
-    public $response;
-    
-    public function __construct(IResponse $response) {
-        $this->response = $response;
-        parent::__construct('Debugging...');
-    }
-}
-
-
-
 
 // Interfaces
 interface IUrl extends core\uri\IGenericUrl, core\uri\ICredentialContainer, core\uri\ISecureSchemeContainer, core\uri\IDomainPortContainer {
@@ -39,7 +27,7 @@ interface IUrl extends core\uri\IGenericUrl, core\uri\ICredentialContainer, core
 
 
 
-interface IRequest extends core\IStringProvider, core\collection\IHeaderMapProvider, link\ISessionRequest {
+interface IRequest extends core\IStringProvider, core\collection\IHeaderMapProvider {
     // Method
     public function setMethod($method);
     public function getMethod();
@@ -125,7 +113,7 @@ interface IRequestHeaderCollection {
 
 
 
-interface IResponse extends core\collection\IHeaderMapProvider, link\ISessionResponse {
+interface IResponse extends core\collection\IHeaderMapProvider {
     // Headers
     public function getCookies();
     public function hasCookies();
@@ -406,24 +394,6 @@ interface IResponseCookieCollection extends core\IStringProvider {
     public function applyTo(IResponseHeaderCollection $headers);
     public function getRemoved();
 }
-
-
-
-// Peer
-interface IClient extends link\IClient {
-
-    public function shouldFollowRedirects($flag=null);
-    public function setMaxRetries($retries);
-    public function getMaxRetries();
-
-    public function addRequest($request, $callback);
-    public function sendRequest($request);
-
-    public function get($url, $headers=null, $cookies=null);
-    public function getFile($url, $file, $headers=null, $cookies=null);
-    public function post($url, $data, $headers=null, $cookies=null);
-}
-
 
 
 // Upload

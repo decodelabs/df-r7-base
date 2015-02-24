@@ -10,9 +10,9 @@ use df\core;
 use df\halo;
 use df\link;
     
-class Angel extends halo\daemon\Base implements link\IServer {
+class Angel extends halo\daemon\Base implements link\peer\IServer {
 
-    use link\TPeer_Server;
+    use link\peer\TPeer_Server;
 
     const REQUIRES_PRIVILEGED_PROCESS = false;
     const TEST_MODE = true; // delete me
@@ -33,11 +33,11 @@ class Angel extends halo\daemon\Base implements link\IServer {
         return new Angel_Session($socket);
     }
 
-    protected function _handleWriteBuffer(link\ISession $session) {
+    protected function _handleWriteBuffer(link\peer\ISession $session) {
         echo 'write'."\n";
     }
 
-    protected function _handleReadBuffer(link\ISession $session) {
+    protected function _handleReadBuffer(link\peer\ISession $session) {
         echo 'read'."\n";
     }
 
@@ -47,7 +47,7 @@ class Angel extends halo\daemon\Base implements link\IServer {
 }
 
 
-class Angel_Session implements link\ISession {
+class Angel_Session implements link\peer\ISession {
 
-    use link\TPeer_Session;
+    use link\peer\TPeer_Session;
 }

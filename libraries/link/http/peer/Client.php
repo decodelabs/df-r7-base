@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\link\http;
+namespace df\link\http\peer;
 
 use df;
 use df\core;
@@ -12,10 +12,10 @@ use df\halo;
 
 class Client implements IClient, core\IDumpable {
     
-    use link\TPeer_Client;
+    use link\peer\TPeer_Client;
     use halo\event\TDispatcherProvider;
     
-    const PROTOCOL_DISPOSITION = link\IClient::CLIENT_FIRST;
+    const PROTOCOL_DISPOSITION = IClient::CLIENT_FIRST;
     const USER_AGENT = 'DF link HTTP client';
 
     protected $_followRedirects = true;
@@ -85,7 +85,7 @@ class Client implements IClient, core\IDumpable {
             $scheme = 'tcp';
         }
 
-        $session = new PeerSession(
+        $session = new Session(
             link\socket\Client::factory($scheme.'://'.$request->getSocketAddress())
                 ->setReceiveTimeout(100)
         );
@@ -156,7 +156,7 @@ class Client implements IClient, core\IDumpable {
     
     protected function _createInitialSessions() {}
     
-    protected function _handleWriteBuffer(link\ISession $session) {
+    protected function _handleWriteBuffer(link\peer\ISession $session) {
         if(!$fileStream = $session->getWriteFileStream()) {
             $request = $session->getRequest();
             $session->writeBuffer = $request->getHeaderString();
@@ -175,7 +175,7 @@ class Client implements IClient, core\IDumpable {
 
             if($request->getMethod() == 'PUT') {
                 $session->setStore('writeListen', true);
-                return link\IIoState::WRITE_LISTEN;
+                return link\peer\IIoState::WRITE_LISTEN;
             }
         }
 
@@ -196,15 +196,15 @@ class Client implements IClient, core\IDumpable {
         }
 
         if($eof) {
-            return link\IIoState::OPEN_READ;
+            return link\peer\IIoState::OPEN_READ;
         } else if($session->getStore('writeListen')) {
-            return link\IIoState::WRITE_LISTEN;
+            return link\peer\IIoState::WRITE_LISTEN;
         } else {
-            return link\IIoState::WRITE;
+            return link\peer\IIoState::WRITE;
         }
     }
 
-    protected function _handleReadBuffer(link\ISession $session, $data) {
+    protected function _handleReadBuffer(link\peer\ISession $session, $data) {
         $request = $session->getRequest();
 
         if(!$response = $session->getResponse()) {
@@ -234,7 +234,7 @@ class Client implements IClient, core\IDumpable {
         }
 
         if($request->getMethod() == 'HEAD') {
-            return link\IIoState::END;
+            return link\peer\IIoState::END;
         }
 
         $isChunked = $session->getStore('isChunked', false);
@@ -253,7 +253,7 @@ class Client implements IClient, core\IDumpable {
                 $session->readBuffer = array_pop($parts);
 
                 if(!$length) {
-                    return link\IIoState::END;
+                    return link\peer\IIoState::END;
                 }
             }
 
@@ -263,7 +263,7 @@ class Client implements IClient, core\IDumpable {
 
                 if(trim($session->readBuffer) == '0') {
                     $fileStream->close();
-                    return link\IIoState::END;
+                    return link\peer\IIoState::END;
                 }
 
                 $session->setStore('length', 0);
@@ -276,12 +276,12 @@ class Client implements IClient, core\IDumpable {
 
             if($length <= 0) {
                 $fileStream->close();
-                return link\IIoState::END;
+                return link\peer\IIoState::END;
             }
         }
     }
 
-    protected function _onSessionEnd(link\ISession $session) {
+    protected function _onSessionEnd(link\peer\ISession $session) {
         $callback = $session->getCallback();
 
         if(!$response = $session->getResponse()) {

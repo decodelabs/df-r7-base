@@ -20,7 +20,7 @@ class Mediator implements IMediator {
     protected $_useSsl = false;
 
     public function __construct($accessKey, $secretKey, $useSsl=false) {
-        $this->_httpClient = new link\http\Client();
+        $this->_httpClient = new link\http\peer\Client();
         $this->setAccessKey($accessKey);
         $this->setSecretKey($secretKey);
         $this->shouldUseSsl((bool)$useSsl);

@@ -76,7 +76,7 @@ class TaskApcClear extends arch\task\Action {
 
             $this->io->writeLine($url);
 
-            $httpClient = new link\http\Client();
+            $httpClient = new link\http\peer\Client();
             $request = link\http\request\Base::factory($url);
             $request->setIp('localhost');
             $response = $httpClient->get($request);

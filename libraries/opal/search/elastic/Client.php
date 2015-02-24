@@ -94,7 +94,7 @@ class Client implements opal\search\IClient {
         
         $response = null;
         
-        new link\http\Client($request, function($httpResponse) use (&$response) {
+        new link\http\peer\Client($request, function($httpResponse) use (&$response) {
             $message = null;
             
             try {

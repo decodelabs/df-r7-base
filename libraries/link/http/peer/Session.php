@@ -3,19 +3,19 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\link\http;
+namespace df\link\http\peer;
 
 use df;
 use df\core;
 use df\link;
 
-class PeerSession implements link\ISession {
+class Session implements link\peer\ISession {
     
-    use link\TPeer_Session;
-    use link\TPeer_RequestResponseSession;
-    use link\TPeer_FileStreamSession;
-    use link\TPeer_ErrorCodeSession;
-    use link\TPeer_CallbackSession;
+    use link\peer\TPeer_Session;
+    use link\peer\TPeer_RequestResponseSession;
+    use link\peer\TPeer_FileStreamSession;
+    use link\peer\TPeer_ErrorCodeSession;
+    use link\peer\TPeer_CallbackSession;
     
     protected $_contentLength = null;
     

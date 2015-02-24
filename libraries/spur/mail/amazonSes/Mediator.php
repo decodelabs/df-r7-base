@@ -20,7 +20,7 @@ class Mediator implements IMediator {
     protected $_httpClient;
 
     public function __construct($url=null, $accessKey=null, $secretKey=null) {
-        $this->_httpClient = new link\http\Client();
+        $this->_httpClient = new link\http\peer\Client();
 
         if($url !== null) {
             $this->setUrl($url);
