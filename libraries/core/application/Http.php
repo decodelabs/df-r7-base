@@ -329,7 +329,12 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             }
             
             $request = new arch\ErrorRequest($e->getCode(), $e, $request);
-            $response = $this->_dispatchAction($request);
+
+            try {
+                $response = $this->_dispatchAction($request);
+            } catch(\Exception $f) {
+                throw $e;
+            }
         }
 
         return $response;
