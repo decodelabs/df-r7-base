@@ -22,6 +22,7 @@ interface IClient extends link\peer\IClient {
     public function shouldFollowRedirects($flag=null);
     public function setMaxRetries($retries);
     public function getMaxRetries();
+    public function shouldSaveIfNotOk($flag=null);
 
     public function addRequest($request, $callback);
     public function sendRequest($request);

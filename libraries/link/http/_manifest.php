@@ -119,6 +119,9 @@ interface IResponse extends core\collection\IHeaderMapProvider {
     public function hasCookies();
     public function isOk();
     public function isRedirect();
+    public function isForbidden();
+    public function isMissing();
+    public function isError();
     
     // Content
     public function getContent();

@@ -22,6 +22,7 @@ class Client implements IClient, core\IDumpable {
     protected $_maxRedirects = 15;
     protected $_maxRetries = 20;
     protected $_retries = 0;
+    protected $_saveIfNotOk = false;
 
     public function __construct() {
         if(($num = func_num_args()) > 1) {
@@ -70,6 +71,15 @@ class Client implements IClient, core\IDumpable {
         return $tis->_maxRetries;
     }
     
+    public function shouldSaveIfNotOk($flag=null) {
+        if($flag !== null) {
+            $this->_saveIfNotOk = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_saveIfNotOk;
+    }
+
     public function addRequest($request, $callback) {
         $callback = core\lang\Callback::factory($callback);
         $request = link\http\request\Base::factory($request);
@@ -221,7 +231,8 @@ class Client implements IClient, core\IDumpable {
                 $session->setStore('length', (int)$headers->get('content-length'));
             }
 
-            if($path = $request->getResponseFilePath()) {
+            if(($path = $request->getResponseFilePath()) 
+            && ($this->_saveIfNotOk || $headers->hasStatusCode(200))) {
                 if($path instanceof core\io\IChannel) {
                     $response->setContentFileStream($path);
                 } else {

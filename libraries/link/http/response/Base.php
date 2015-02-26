@@ -235,6 +235,30 @@ abstract class Base implements link\http\IResponse {
 
         return $this->_headers->hasRedirectStatusCode();
     }
+
+    public function isForbidden() {
+        if(!$this->_headers) {
+            return false;
+        }
+
+        return $this->_headers->hasStatusCode(403);
+    }
+
+    public function isMissing() {
+        if(!$this->_headers) {
+            return false;
+        }
+
+        return $this->_headers->hasStatusCode(404);
+    }
+
+    public function isError() {
+        if(!$this->_headers) {
+            return false;
+        }
+
+        return $this->_headers->hasErrorStatusCode();
+    }
     
     public function getJsonContent() {
         $content = $this->getContent();
