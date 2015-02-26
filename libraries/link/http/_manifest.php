@@ -180,6 +180,19 @@ trait TStringResponse {
         return false;
     }
 
+    public function isForbidden()  {
+        return false;
+    }
+
+    public function isMissing()  {
+        return false;
+    }
+
+    public function isError()  {
+        return false;
+    }
+
+
     public function getHeaders() {
         if(!$this->_headers) {
             $this->_headers = new link\http\response\HeaderCollection();
