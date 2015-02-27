@@ -37,15 +37,15 @@ abstract class Hook implements IHook {
                 return;
             }
 
-            $actionMap = self::_generateActionMap($context);
+            $eventMap = self::_generateEventMap($context);
             
-            if(!isset($actionMap[$domain])) {
+            if(!isset($eventMap[$domain])) {
                 $emptySet[] = $domain;
                 $cache->set('__empty', $emptySet);
                 return;
             }
 
-            $entitySet = $actionMap[$domain];
+            $entitySet = $eventMap[$domain];
         }
         
         $action = $event->getAction();
@@ -86,7 +86,7 @@ abstract class Hook implements IHook {
         }
     }
 
-    protected static function _generateActionMap(core\IContext $context) {
+    protected static function _generateEventMap(core\IContext $context) {
         $classList = self::getClassList();
         $map = [];
 
