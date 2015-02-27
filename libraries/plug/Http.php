@@ -134,6 +134,13 @@ class Http implements arch\IDirectoryHelper {
             'application/json'
         );
     }
+
+    public function jsonResponse(array $data) {
+        return $this->stringResponse(
+            $this->context->data->jsonEncode($data),
+            'application/json'
+        );
+    }
     
     public function fileResponse($path, $checkPath=true) {
         return new link\http\response\File($path, $checkPath);
