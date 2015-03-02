@@ -11,35 +11,36 @@ use df\halo;
 use df\link;
 use df\mesh;
 
-class LibEvent extends Base implements core\IDumpable {
+class Event extends Base implements core\IDumpable {
     
     protected $_base;
     protected $_cycleHandlerEvent;
-    
+
     public function __construct() {
-        $this->_base = event_base_new();
+        $this->_base = new \EventBase();
     }
-    
+
     public function getEventBase() {
         return $this->_base;
     }
-    
+
     public function listen() {
         $this->_isListening = true;
-        event_base_loop($this->_base);
+        $this->_base->loop();
         $this->_isListening = false;
-        
+
         return $this;
     }
-    
+
     public function stop() {
         if($this->_isListening) {
-            event_base_loopexit($this->_base);
+            $this->_base->exit();
             $this->_isListening = false;
         }
-        
+
         return $this;
     }
+
 
 
 // Bindings
@@ -78,21 +79,22 @@ class LibEvent extends Base implements core\IDumpable {
 
     protected function _registerCycleHandler() {
         if($this->_cycleHandlerEvent) {
-            event_del($this->_cycleHandlerEvent);
-            event_free($this->_cycleHandlerEvent);
+            $this->_cycleHandlerEvent->del();
+            $this->_cycleHandlerEvent->free();
+            $this->_cycleHandlerEvent = null;
         }
 
         if($this->_cycleHandler) {
             $this->_cycleHandlerEvent = $this->_registerEvent(
                 null,
-                EV_TIMEOUT | EV_PERSIST,
+                \Event::TIMEOUT | \Event::PERSIST,
                 1000,
                 [$this, '_handleCycle']
             );
         }
     }
 
-    protected function _handleCycle() {
+    public function _handleCycle() {
         $this->_registerCycleHandler();
 
         if($this->_cycleHandler) {
@@ -102,7 +104,6 @@ class LibEvent extends Base implements core\IDumpable {
             }
         }
     }
-
 
 
 // Sockets
@@ -118,14 +119,14 @@ class LibEvent extends Base implements core\IDumpable {
 
     protected function _unregisterSocketBinding(ISocketBinding $binding) {
         if($binding->eventResource) {
-            event_del($binding->eventResource);
-            event_free($binding->eventResource);
+            $binding->eventResource->del();
+            $binding->eventResource->free();
             $binding->eventResource = null;
         }
     }
 
-    protected function _handleSocketBinding($target, $flags, ISocketBinding $binding) {
-        if($flags & EV_TIMEOUT) {
+    public function _handleSocketBinding($target, $flags, ISocketBinding $binding) {
+        if($flags & \Event::TIMEOUT) {
             $binding->triggerTimeout($target);
         } else {
             $binding->trigger($target);
@@ -147,14 +148,14 @@ class LibEvent extends Base implements core\IDumpable {
 
     protected function _unregisterStreamBinding(IStreamBinding $binding) {
         if($binding->eventResource) {
-            event_del($binding->eventResource);
-            event_free($binding->eventResource);
+            $binding->eventResource->del();
+            $binding->eventResource->free();
             $binding->eventResource = null;
         }
     }
 
-    protected function _handleStreamBinding($target, $flags, IStreamBinding $binding) {
-        if($flags & EV_TIMEOUT) {
+    public function _handleStreamBinding($target, $flags, IStreamBinding $binding) {
+        if($flags & \Event::TIMEOUT) {
             $binding->triggerTimeout($target);
         } else {
             $binding->trigger($target);
@@ -164,10 +165,10 @@ class LibEvent extends Base implements core\IDumpable {
 
 // Signals
     protected function _registerSignalBinding(ISignalBinding $binding) {
-        $flags = EV_SIGNAL;
+        $flags = \Event::SIGNAL;
 
         if($binding->isPersistent) {
-            $flags |= EV_PERSIST;
+            $flags |= \Event::PERSIST;
         }
 
         foreach($binding->signals as $number => $signal) {
@@ -187,8 +188,8 @@ class LibEvent extends Base implements core\IDumpable {
                 continue;
             }
 
-            event_del($resource);
-            event_free($resource);
+            $resource->del();
+            $resource->free();
             $binding->eventResource[$number] = null;
         }
     }
@@ -196,7 +197,8 @@ class LibEvent extends Base implements core\IDumpable {
     /*
      * We have to pass the args as array as the signal number is not being propagated. Argh :(
      */
-    protected function _handleSignalBinding($number, $flags, array $args) {
+    public function _handleSignalBinding($number, $flags, array $args) {
+        core\dump('oi');
         $number = array_shift($args);
         $binding = array_shift($args);
 
@@ -208,10 +210,10 @@ class LibEvent extends Base implements core\IDumpable {
 
 // Timers
     protected function _registerTimerBinding(ITimerBinding $binding) {
-        $flags = EV_TIMEOUT;
+        $flags = \Event::TIMEOUT;
 
         if($binding->isPersistent) {
-            $flags |= EV_PERSIST;
+            $flags |= \Event::PERSIST;
         }
 
         $binding->eventResource = $this->_registerEvent(
@@ -225,13 +227,13 @@ class LibEvent extends Base implements core\IDumpable {
 
     protected function _unregisterTimerBinding(ITimerBinding $binding) {
         if($binding->eventResource) {
-            event_del($binding->eventResource);
-            event_free($binding->eventResource);
+            $binding->eventResource->del();
+            $binding->eventResource->free();
             $binding->eventResource = null;
         }
     }
 
-    protected function _handleTimerBinding($target, $flags, ITimerBinding $binding) {
+    public function _handleTimerBinding($target, $flags, ITimerBinding $binding) {
         $binding->trigger(null);
 
         if($binding->isPersistent) {
@@ -240,47 +242,31 @@ class LibEvent extends Base implements core\IDumpable {
     }
 
 
-
 // Helpers
     public function _registerEvent($target, $flags, $timeout, Callable $callback, $arg=null) {
-        if(is_float($timeout)) {
-            $timeout = (int)$timeout;
-        }
-
-        if(!is_int($timeout) || $timeout < 0) {
-            $timeout = -1;
-        }
-
-        if($timeout != -1) {
-            $timeout *= 1000;
-        }
-
-        $event = event_new();
-
-        if($target === null) {
-            $ret = event_timer_set($event, $callback, $arg);
+        if($timeout <= 0) {
+            $timeout = null;
         } else {
-            $ret = event_set($event, $target, $flags, $callback, $arg);
+            $timeout = (int)$timeout * 1000;
         }
 
-        if(!$ret) {
-            event_free($event);
 
-            throw new BindException(
-                'Could not set event'
-            );
+        if($flags & \Event::SIGNAL) {
+            $event = \Event::signal($this->_base, $target, $callback, $arg);
+        } else if($target === null) {
+            $event = \Event::timer($this->_base, $callback, $arg);
+        } else {
+            $event = new \Event($this->_base, $target, $flags, $callback, $arg);
         }
 
-        if(!event_base_set($event, $this->_base)) {
-            event_free($event);
-
-            throw new BindException(
-                'Could not set event base'
-            );
+        if($timeout !== null) {
+            $res = $event->add($timeout);
+        } else {
+            $res = $event->add($timeout);
         }
 
-        if(!event_add($event, (int)$timeout)) {
-            event_free($event);
+        if(!$res) {
+            $event->free();
 
             throw new BindException(
                 'Could not add event'
@@ -293,11 +279,11 @@ class LibEvent extends Base implements core\IDumpable {
     protected function _getIoEventFlags(IIoBinding $binding) {
         switch($binding->ioMode) {
             case IIoState::READ:
-                $flags = EV_READ;
+                $flags = \Event::READ;
                 break;
                 
             case IIoState::WRITE:
-                $flags = EV_WRITE;
+                $flags = \Event::WRITE;
                 break;
                 
             default:
@@ -307,7 +293,7 @@ class LibEvent extends Base implements core\IDumpable {
         }
         
         if($binding->isPersistent) {
-            $flags |= EV_PERSIST;
+            $flags |= \Event::PERSIST;
         }
         
         return $flags;
