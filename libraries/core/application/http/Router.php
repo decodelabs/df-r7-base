@@ -34,23 +34,32 @@ class Router implements core\IRegistryObject {
         $application = df\Launchpad::getApplication();
 
         if(!$output = $application->getRegistryObject(self::REGISTRY_KEY)) {
-            $output = new self($application);
+            $output = new self();
             $application->setRegistryObject($output);
         }
 
         return $output;
     }
 
-    public function __construct() {
-        $config = core\application\http\Config::getInstance();
-        $this->_basePath = explode('/', $config->getBaseUrl());
-        $domain = explode(':', array_shift($this->_basePath), 2);
-        $this->_baseDomain = array_shift($domain);
-        $this->_basePort = array_shift($domain);
-        $this->_useHttps = $config->isSecure();
-        $this->_areaDomainMap = $config->getAreaDomainMap();
+    public function __construct(link\http\IUrl $url=null) {
+        if($url) {
+            $this->_basePath = $url->getPath()->toArray();
+            $this->_baseDomain = (string)$url->getDomain();
+            $this->_basePort = $url->getPort();
+            $this->_useHttps = $url->isSecure();
+            $this->_defaultRouteProtocol = $this->_useHttps ? 'https' : 'http';
+        } else {
+            $config = core\application\http\Config::getInstance();
+            $this->_basePath = explode('/', $config->getBaseUrl());
+            $domain = explode(':', array_shift($this->_basePath), 2);
+            $this->_baseDomain = array_shift($domain);
+            $this->_basePort = array_shift($domain);
+            $this->_useHttps = $config->isSecure();
+            $this->_areaDomainMap = $config->getAreaDomainMap();
 
-        $this->_defaultRouteProtocol = (isset($_SERVER['HTTPS']) && !strcasecmp($_SERVER['HTTPS'], 'on')) ? 'https' : 'http';
+            $this->_defaultRouteProtocol = (isset($_SERVER['HTTPS']) && !strcasecmp($_SERVER['HTTPS'], 'on')) ? 'https' : 'http';
+        }
+        
 
         if(!strlen($this->_basePort)) {
             $this->_basePort = null;
