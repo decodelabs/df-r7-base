@@ -90,7 +90,7 @@ class Router implements core\IRegistryObject {
     }
 
     public function getBaseUrl() {
-        return new link\http\Url($this->_baseDomain.':'.$this->_basePort.'/'.implode('/', $this->_basePath).'/');
+        return (new link\http\Url($this->_baseDomain.':'.$this->_basePort.'/'.implode('/', $this->_basePath).'/'))->isSecure($this->_useHttps);
     }
 
 
