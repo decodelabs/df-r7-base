@@ -28,13 +28,16 @@ abstract class Action extends arch\Action implements IAction {
     }
 
     protected function _handleRequest() {
+        if(method_exists($this->controller, 'authorizeRequest')) {
+            $this->controller->authorizeRequest();
+        }
+
         $this->authorizeRequest();
 
         $httpMethod = $this->_httpRequest->getMethod();
         $func = 'execute'.ucfirst(strtolower($httpMethod));
-        $response = null;
-
         $response = $this->{$func}();
+
         return $this->_handleResponse($response);
     }
 
