@@ -175,7 +175,7 @@ class Event extends Base implements core\IDumpable {
             $binding->eventResource[$number] = $this->_registerEvent(
                 $number,
                 $flags,
-                -1,
+                null,
                 [$this, '_handleSignalBinding'],
                 [$number, $binding]
             );
@@ -247,12 +247,15 @@ class Event extends Base implements core\IDumpable {
         if($timeout <= 0) {
             $timeout = null;
         } else {
-            $timeout = (int)$timeout / 1000;
+            $timeout = $timeout / 1000;
         }
-
 
         if($flags & \Event::SIGNAL) {
             $event = \Event::signal($this->_base, $target, $callback, $arg);
+
+            if($timeout === null) {
+                $timeout = 1;
+            }
         } else if($target === null) {
             $event = \Event::timer($this->_base, $callback, $arg);
         } else {
@@ -260,7 +263,7 @@ class Event extends Base implements core\IDumpable {
         }
 
         if($timeout !== null) {
-            $res = $event->add($timeout);
+            $res = $event->add((int)$timeout);
         } else {
             $res = $event->add();
         }
