@@ -258,8 +258,9 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         }
         
         if(!$valid) {
-            $baseUrl = (string)$this->_router->requestToUrl(new arch\Request($redirectPath));
+            $baseUrl = $this->_router->requestToUrl(new arch\Request($redirectPath));
             $baseUrl->setQuery($url->getQuery());
+            $baseUrl = (string)$baseUrl;
 
             if($this->isDevelopment()) {        
                 $response = new link\http\response\String(
