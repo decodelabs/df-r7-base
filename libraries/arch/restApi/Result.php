@@ -93,6 +93,7 @@ class Result implements IResult {
 
         if($this->_exception) {
             $data['error'] = $this->_exception->getMessage();
+            $data['code'] = $this->_exception->getCode();
         }
 
         if(!$this->validator->isValid()) {
