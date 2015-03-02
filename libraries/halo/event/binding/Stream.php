@@ -63,7 +63,9 @@ class Stream extends Base implements halo\event\IStreamBinding {
             return;
         }
 
-        $this->timeoutHandler->invokeArgs([$this->stream, $this]);
+        if($this->timeoutHandler) {
+            $this->timeoutHandler->invokeArgs([$this->stream, $this]);
+        }
 
         return $this;
     }

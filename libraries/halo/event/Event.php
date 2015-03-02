@@ -247,7 +247,7 @@ class Event extends Base implements core\IDumpable {
         if($timeout <= 0) {
             $timeout = null;
         } else {
-            $timeout = (int)$timeout * 1000;
+            $timeout = (int)$timeout / 1000;
         }
 
 
@@ -262,7 +262,7 @@ class Event extends Base implements core\IDumpable {
         if($timeout !== null) {
             $res = $event->add($timeout);
         } else {
-            $res = $event->add($timeout);
+            $res = $event->add();
         }
 
         if(!$res) {
@@ -303,9 +303,9 @@ class Event extends Base implements core\IDumpable {
         if($binding instanceof IIoBinding) {
             return $binding->timeoutDuration ? 
                 $binding->timeoutDuration->getMilliseconds() : 
-                -1;
+                null;
         } else {
-            return -1;
+            return null;
         }
     }
 

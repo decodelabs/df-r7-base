@@ -70,7 +70,9 @@ class Socket extends Base implements halo\event\ISocketBinding {
             return;
         }
 
-        $this->timeoutHandler->invokeArgs([$this->socket, $this]);
+        if($this->timeoutHandler) {
+            $this->timeoutHandler->invokeArgs([$this->socket, $this]);
+        }
 
         return $this;
     }
