@@ -56,7 +56,13 @@ abstract class Action extends arch\Action implements IAction {
     public function handleException(\Exception $e) {
         core\log\Manager::getInstance()->logException($e);
 
-        $result = new Result();
+        $data = null;
+
+        if($e instanceof core\ContextException) {
+            $data = $e->data;
+        }
+
+        $result = new Result($data);
         $result->setException($e);
 
         return $this->_handleResponse($result);

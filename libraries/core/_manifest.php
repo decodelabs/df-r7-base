@@ -434,7 +434,7 @@ interface IContext extends core\IHelperProvider, core\ITranslator {
 
     // Helpers
     public function loadRootHelper($name);
-    public function throwError($code=500, $message='');
+    public function throwError($code=500, $message='', array $data=null);
     public function findFile($path);
     
     public function getLogManager();    
@@ -493,8 +493,8 @@ trait TContext {
 
 
 // Helpers
-    public function throwError($code=500, $message='') {
-        throw new ContextException($message, (int)$code);
+    public function throwError($code=500, $message='', array $data=null) {
+        throw new ContextException($message, (int)$code, $data);
     }
     
     public function findFile($path) {
@@ -602,7 +602,19 @@ class SharedContext implements IContext {
     }
 }
 
-class ContextException extends \RuntimeException implements IException {}
+class ContextException extends \RuntimeException implements IException, core\IDumpable {
+
+    public $data;
+
+    public function __construct($code, $message, array $data=null) {
+        $this->data = $data;
+        parent::__construct($code, $message);
+    }
+
+    public function getDumpProperties() {
+        return $this->data;
+    }
+}
 
 interface IContextAware {
     public function getContext();
