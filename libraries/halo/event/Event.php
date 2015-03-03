@@ -79,7 +79,6 @@ class Event extends Base implements core\IDumpable {
 
     protected function _registerCycleHandler() {
         if($this->_cycleHandlerEvent) {
-            $this->_cycleHandlerEvent->del();
             $this->_cycleHandlerEvent->free();
             $this->_cycleHandlerEvent = null;
         }
@@ -119,7 +118,6 @@ class Event extends Base implements core\IDumpable {
 
     protected function _unregisterSocketBinding(ISocketBinding $binding) {
         if($binding->eventResource) {
-            $binding->eventResource->del();
             $binding->eventResource->free();
             $binding->eventResource = null;
         }
@@ -152,7 +150,6 @@ class Event extends Base implements core\IDumpable {
 
     protected function _unregisterStreamBinding(IStreamBinding $binding) {
         if($binding->eventResource) {
-            $binding->eventResource->del();
             $binding->eventResource->free();
             $binding->eventResource = null;
         }
@@ -196,7 +193,6 @@ class Event extends Base implements core\IDumpable {
                 continue;
             }
 
-            $resource->del();
             $resource->free();
             $binding->eventResource[$number] = null;
         }
@@ -204,13 +200,10 @@ class Event extends Base implements core\IDumpable {
 
     public function _handleSignalBinding($number, ISignalBinding $binding) {
         $binding->trigger($number);
+        $this->_unregisterSignalBinding($binding);
 
         if($binding->isPersistent) {
-            foreach($binding->eventResource as $event) {
-                $event->add();
-            }
-        } else {
-            $this->_unregisterSignalBinding($binding);
+            $this->_registerSignalBinding($binding);
         }
     }
 
@@ -236,7 +229,6 @@ class Event extends Base implements core\IDumpable {
 
     protected function _unregisterTimerBinding(ITimerBinding $binding) {
         if($binding->eventResource) {
-            $binding->eventResource->del();
             $binding->eventResource->free();
             $binding->eventResource = null;
         }
@@ -244,11 +236,10 @@ class Event extends Base implements core\IDumpable {
 
     public function _handleTimerBinding(ITimerBinding $binding) {
         $binding->trigger(null);
+        $this->_unregisterTimerBinding($binding);
 
         if($binding->isPersistent) {
-            $binding->eventResource->add($binding->duration->getMilliseconds());
-        } else {
-            $this->_unregisterTimerBinding($binding);
+            $this->_registerTimerBinding($binding);
         }
     }
 
