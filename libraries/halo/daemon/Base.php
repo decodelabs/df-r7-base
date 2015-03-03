@@ -16,7 +16,7 @@ abstract class Base implements IDaemon {
     use core\TContextProxy;
 
     const REQUIRES_PRIVILEGED_PROCESS = false;
-    const TEST_MODE = true;
+    const TEST_MODE = false;
     const REPORT_STATUS = true;
     const DEV_RUN_TIME = '3 minutes';
     const AUTOMATIC = false;
