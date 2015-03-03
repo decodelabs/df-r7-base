@@ -131,6 +131,10 @@ class Event extends Base implements core\IDumpable {
         } else {
             $binding->trigger($target);
         }
+
+        if(!$binding->isPersistent) {
+            $this->_unregisterSocketBinding($binding);
+        }
     }
 
 
@@ -160,6 +164,10 @@ class Event extends Base implements core\IDumpable {
         } else {
             $binding->trigger($target);
         }
+
+        if(!$binding->isPersistent) {
+            $this->_unregisterStreamBinding($binding);
+        }
     }
 
 
@@ -177,7 +185,7 @@ class Event extends Base implements core\IDumpable {
                 $flags,
                 null,
                 [$this, '_handleSignalBinding'],
-                [$number, $binding]
+                $binding
             );
         }
     }
@@ -194,15 +202,16 @@ class Event extends Base implements core\IDumpable {
         }
     }
 
-    /*
-     * We have to pass the args as array as the signal number is not being propagated. Argh :(
-     */
-    public function _handleSignalBinding($number, $flags, array $args) {
-        core\dump('oi');
-        $number = array_shift($args);
-        $binding = array_shift($args);
-
+    public function _handleSignalBinding($number, ISignalBinding $binding) {
         $binding->trigger($number);
+
+        if($binding->isPersistent) {
+            foreach($binding->eventResource as $event) {
+                $event->add();
+            }
+        } else {
+            $this->_unregisterSignalBinding($binding);
+        }
     }
 
 
@@ -233,11 +242,13 @@ class Event extends Base implements core\IDumpable {
         }
     }
 
-    public function _handleTimerBinding($target, $flags, ITimerBinding $binding) {
+    public function _handleTimerBinding(ITimerBinding $binding) {
         $binding->trigger(null);
 
         if($binding->isPersistent) {
-            $this->_registerTimerBinding($binding);
+            $binding->eventResource->add($binding->duration->getMilliseconds());
+        } else {
+            $this->_unregisterTimerBinding($binding);
         }
     }
 
@@ -252,10 +263,6 @@ class Event extends Base implements core\IDumpable {
 
         if($flags & \Event::SIGNAL) {
             $event = \Event::signal($this->_base, $target, $callback, $arg);
-
-            if($timeout === null) {
-                $timeout = 1;
-            }
         } else if($target === null) {
             $event = \Event::timer($this->_base, $callback, $arg);
         } else {

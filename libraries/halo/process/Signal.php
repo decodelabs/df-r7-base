@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\halo;
     
-class Signal implements ISignal {
+class Signal implements ISignal, core\IDumpable {
 
     protected static $_signalMap = [
         'SIGHUP' => null,
@@ -128,5 +128,10 @@ class Signal implements ISignal {
 
     public function getNumber() {
         return $this->_number;
+    }
+
+// Dump
+    public function getDumpProperties() {
+        return $this->_name.' '.$this->_number;
     }
 }

@@ -8,7 +8,7 @@ namespace df\core\lang;
 use df;
 use df\core;
 
-class Callback implements ICallback {
+class Callback implements ICallback, core\IDumpable {
     
     protected $_callback;
     protected $_reflectionInstance;
@@ -101,5 +101,14 @@ class Callback implements ICallback {
             case ICallback::REFLECTION:
                 return $this->_callback->invokeArgs($this->_reflectionInstance, $args);
         }
+    }
+
+// Dump
+    public function getDumpProperties() {
+        if(is_array($this->_callback) && is_object($this->_callback[0])) {
+            return get_class($this->_callback[0]).'->'.$this->_callback[1].'()';
+        }
+
+        return $this->_callback;
     }
 }

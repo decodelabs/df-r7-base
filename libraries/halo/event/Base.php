@@ -26,11 +26,11 @@ abstract class Base implements IDispatcher {
             // lib event beta is a bit unreliable
             return new halo\event\LibEvent();
         }
+        */
 
         if(extension_loaded('event')) {
             return new halo\event\Event();
         }
-        */
         
         return new halo\event\Select();
     }
