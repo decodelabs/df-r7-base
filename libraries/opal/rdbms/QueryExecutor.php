@@ -898,9 +898,8 @@ abstract class QueryExecutor implements IQueryExecutor {
     }
 
     public function defineFieldReference(opal\query\IField $field, $allowAlias=false, $forUpdateOrDelete=false) {
-        $isDiscreetAggregate = $allowAlias
-            && $field instanceof opal\query\IAggregateField 
-            && $field->hasDiscreetAlias();
+        $isDiscreetAggregate = $field instanceof opal\query\IAggregateField 
+                            && $field->hasDiscreetAlias();
 
         $deepNest = false;
 
@@ -920,7 +919,10 @@ abstract class QueryExecutor implements IQueryExecutor {
 
         if($isDiscreetAggregate) {
             // Reference an aggregate by alias
-            $fieldString = $this->_adapter->quoteFieldAliasReference($field->getAlias());
+            //return $this->_adapter->quoteFieldAliasReference($field->getAlias());
+
+            return $this->_adapter->quoteFieldAliasReference($field->getQualifiedName());
+
         } else if($forUpdateOrDelete) {
             /*
              * If used on an aggregate field or for update or delete, the name must
