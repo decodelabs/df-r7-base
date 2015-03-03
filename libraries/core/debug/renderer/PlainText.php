@@ -45,7 +45,7 @@ class PlainText extends Base {
     }
     
     public function render() {
-        $output = '';
+        $output = "\n";
         $output .= $this->_renderGroup($this->_context);
         
         return $output;
@@ -84,11 +84,23 @@ class PlainText extends Base {
                 // Exception
                 $message = wordwrap($node->getMessage(), $lineLength - 5, $this->_eol.$indent.'| > ');
                 $block .= $indent.'| > '.$message.$this->_eol;
+
+                if($node->getException() instanceof core\IDumpable) {
+                    $block .= $indent.'|'.str_repeat('-', $lineLength - 1).$this->_eol; 
+
+                    df\Launchpad::loadBaseClass('core/debug/dumper/Inspector');
+                    $inspector = new core\debug\dumper\Inspector();
+
+                    $exception = $node->getException();
+                    $data = $inspector->inspect($exception, false);
+                    $block .= $indent.'| '.str_replace("\n", $this->_eol.$indent.'| ', $data->toString()).$this->_eol;
+                }
+
                 $block .= $this->_renderGroup(
                     (new core\log\node\Group('exception'))->addChild($node->getStackTrace()),
                     $depth + 1
                 );
-                
+
             } else if($node instanceof core\log\IDumpNode) {
                 // Dump
                 df\Launchpad::loadBaseClass('core/debug/dumper/Inspector');
