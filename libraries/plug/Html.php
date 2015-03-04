@@ -94,6 +94,16 @@ class Html implements arch\IDirectoryHelper {
         return $output;
     }
 
+    public function tweet($text) {
+        $output = (new flex\tweet\Parser($text))->toHtml();
+
+        if($output !== null) {
+            $output = $this->string($output);
+        }
+
+        return $output;
+    }
+
     public function convert($body, $format='SimpleTags') {
         switch(strtolower($format)) {
             case 'simpletags':
@@ -101,6 +111,9 @@ class Html implements arch\IDirectoryHelper {
 
             case 'inlinesimpletags':
                 return $this->inlineSimpleTags($body);
+
+            case 'tweet':
+                return $this->tweet($body);
 
             case 'plaintext':
                 return $this->plainText($body);
