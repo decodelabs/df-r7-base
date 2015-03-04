@@ -652,21 +652,19 @@ class Date implements IDate, core\IDumpable {
     public function timeSince($date=null) {
         if($date !== null) {
             $time = self::factory($date)->toTimestamp();
+            return new Duration($this->toTimestamp() - $time);
         } else {
-            $time = time();
+            return new Duration(time() - $this->toTimestamp());
         }
-
-        return new Duration($time - $this->toTimestamp());
     }
     
     public function timeUntil($date=null) {
         if($date !== null) {
             $time = self::factory($date)->toTimestamp();
+            return new Duration($time - $this->toTimestamp());
         } else {
-            $time = time();
+            return new Duration($this->toTimestamp() - time());
         }
-
-        return new Duration($this->toTimestamp() - $time);
     }
     
     
