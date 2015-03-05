@@ -14,7 +14,6 @@ class Shell implements user\session\IPerpetuator {
 
     protected $_userKey;
     protected $_inputId;
-    protected $_lifeTime;
 
     public function __construct(user\session\IController $controller) {
         $process = halo\process\Base::getCurrent();
@@ -28,15 +27,6 @@ class Shell implements user\session\IPerpetuator {
         $this->_inputId = $cache->get($this->_userKey);
     }
 
-    public function setLifeTime($lifeTime) {
-        $this->_lifeTime = $lifeTime;
-        return $this;
-    }
-
-    public function getLifeTime() {
-        return $this->_lifeTime;
-    }
-    
     public function getInputId() {
         return $this->_inputId;
     }
@@ -47,7 +37,7 @@ class Shell implements user\session\IPerpetuator {
 
     public function perpetuate(user\session\IController $controller, user\session\IDescriptor $descriptor) {
         $cache = Shell_Cache::getInstance();
-        $cache->set($this->_userKey, $descriptor->getExternalId(), $this->_lifeTime);
+        $cache->set($this->_userKey, $descriptor->getExternalId());
 
         return $this;
     }

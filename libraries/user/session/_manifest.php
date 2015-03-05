@@ -152,9 +152,6 @@ interface IDescriptor extends core\IArrayInterchange, opal\query\IDataRowProvide
 
 
 interface IPerpetuator {
-    public function setLifeTime($lifeTime);
-    public function getLifeTime();
-    
     public function getInputId();
     public function canRecallIdentity();
 

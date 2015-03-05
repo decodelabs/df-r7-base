@@ -17,7 +17,6 @@ class Cookie implements user\session\IPerpetuator {
     protected $_rememberCookieName = '_r';
     protected $_inputId;
     protected $_canRecall = true;
-    protected $_lifeTime;
     
     public function __construct(user\session\IController $controller) {
         $httpRequest = df\Launchpad::$application->getHttpRequest();
@@ -37,21 +36,6 @@ class Cookie implements user\session\IPerpetuator {
                 $this->_canRecall = false;
             }
         }
-        
-        // TODO: get life time from config
-    }
-    
-    public function setLifeTime($lifeTime) {
-        if($lifeTime instanceof core\time\IDuration) {
-            $lifeTime = $lifeTime->getSeconds();
-        }
-        
-        $this->_lifeTime = (int)$lifeTime;
-        return $this;
-    }
-    
-    public function getLifeTime() {
-        return $this->_lifeTime;
     }
     
     public function getInputId() {
