@@ -451,7 +451,7 @@ class Html implements arch\IDirectoryHelper {
         );
     }
 
-    public function customDate($date, $format) {
+    public function customDate($date, $format, $userTime=false) {
         if($date === null) {
             return null;
         }
@@ -460,7 +460,7 @@ class Html implements arch\IDirectoryHelper {
 
         return $this->_timeTag(
             $date->format(core\time\Date::W3C), 
-            $this->context->format->customDate($date, $format)
+            $this->context->format->customDate($date, $format, $userTime)
         );
     }
     

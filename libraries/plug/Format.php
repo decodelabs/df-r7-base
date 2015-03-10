@@ -221,14 +221,14 @@ class Format implements core\ISharedHelper {
             ->userLocaleFormat($size);
     }
 
-    public function customDate($date, $format, $keepTimezone=false) {
+    public function customDate($date, $format, $userTime=false) {
         if($date === null) {
             return null;
         }
 
         $date = core\time\Date::factory($date);
 
-        if(!$keepTimezone) {
+        if($userTime) {
             $date->toUserTimeZone();
         }
 
