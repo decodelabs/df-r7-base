@@ -99,6 +99,10 @@ abstract class Enum implements IEnum, core\IDumpable {
     }
 
     public static function label($option) {
+        if(!strlen($option)) {
+            return null;
+        }
+        
         return self::factory($option)->getLabel();
     }
 

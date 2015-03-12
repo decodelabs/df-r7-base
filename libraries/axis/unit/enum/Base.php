@@ -66,6 +66,10 @@ abstract class Base implements axis\IUnit, core\lang\IEnumFactory {
     }
 
     public function label($option) {
+        if(!strlen($option)) {
+            return null;
+        }
+        
         return $this->factory($option)->getLabel();
     }
 }
