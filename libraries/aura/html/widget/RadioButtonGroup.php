@@ -19,10 +19,13 @@ class RadioButtonGroup extends Base implements IUngroupedSelectionInputWidget, c
     const PRIMARY_TAG = 'div';
     const INPUT_TYPE = 'radio';
     const ARRAY_INPUT = false;
+    const WIDGET_CLASS = 'widget-radioButton';
+    const EMPTY_PLACEHOLDER = '_%_empty_%_';
     
     protected $_inputIdCounter = 0;
     protected $_shouldWrapBody = true;
     protected $_labelClass = null;
+    protected $_emptyLabel = null;
     
     public function __construct(arch\IContext $context, $name, $value=null, $options=null) {
         $this->setName($name);
@@ -37,21 +40,26 @@ class RadioButtonGroup extends Base implements IUngroupedSelectionInputWidget, c
         $tag = $this->getTag();
         $optionList = new aura\html\ElementContent();
         $selectionFound = false;
+        $isRadio = static::INPUT_TYPE == 'radio';
         
         $id = $tag->getId();
+        $options = $this->_options;
 
-        switch(static::INPUT_TYPE) {
-            case 'radio':
-                $widgetClass = 'widget-radioButton';
-                break;
+        if($isRadio) {
+            if($this->_emptyLabel !== null && !$this->_isRequired) {
+                $options[static::EMPTY_PLACEHOLDER] = $this->_emptyLabel;
+            }
 
-            default:
-                $widgetClass = 'widget-'.static::INPUT_TYPE;
-                break;
+            $currValue = $this->getValue()->getValue();
+            //core\debug()->dump($currValue);
+
+            if(!strlen($currValue)) {
+                $this->getValue()->setValue(null);
+            }
         }
-        
-        foreach($this->_options as $value => $label) {
-            $labelTag = new aura\html\Element('label.'.$widgetClass.'Label');
+
+        foreach($options as $value => $label) {
+            $labelTag = new aura\html\Element('label.'.static::WIDGET_CLASS.'Label');
 
             if($this->_labelClass) {
                 $labelTag->addClass($this->_labelClass);
@@ -59,13 +67,17 @@ class RadioButtonGroup extends Base implements IUngroupedSelectionInputWidget, c
 
             $inputTag = new aura\html\Tag('input', [
                 'type' => static::INPUT_TYPE,
-                'class' => $widgetClass
+                'class' => static::WIDGET_CLASS
             ]);
             
             $this->_applyFormDataAttributes($inputTag);
             $this->_applyInputAttributes($inputTag);
             
-            $inputTag->setAttribute('value', $value);
+            if($value === static::EMPTY_PLACEHOLDER || !strlen($value)) {
+                $value = null;
+            }
+
+            $inputTag->setAttribute('value', $value === null ? '' : $value);
             $inputId = null;
             
             if($id !== null) {
@@ -91,15 +103,15 @@ class RadioButtonGroup extends Base implements IUngroupedSelectionInputWidget, c
             $labelTag->unshift($inputTag->render(), ' ');
             $optionList->push($labelTag->render());
         }
-        
+
         return $tag->renderWith($optionList, true);
     }
     
     protected function _checkSelected($value, &$selectionFound) {
         $currValue = $this->getValue()->getValue();
-        
+
         if($currValue === null) {
-            return false;
+            return $selectionFound = $value === null;
         }
         
         return $selectionFound = $value == $currValue;
@@ -135,6 +147,15 @@ class RadioButtonGroup extends Base implements IUngroupedSelectionInputWidget, c
         } else {
             return $this->getTag()->hasClass('inline');
         }
+    }
+
+    public function setEmptyLabel($label) {
+        $this->_emptyLabel = $label;
+        return $this;
+    }
+
+    public function getEmptyLabel() {
+        return $this->_emptyLabel;
     }
     
 // Dump

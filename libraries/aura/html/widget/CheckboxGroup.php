@@ -13,6 +13,7 @@ class CheckboxGroup extends RadioButtonGroup implements IMultipleSelectionInputW
     
     const INPUT_TYPE = 'checkbox';
     const ARRAY_INPUT = true;
+    const WIDGET_CLASS = 'widget-checkbox';
 
     protected $_allRequired = false;
 
