@@ -69,6 +69,17 @@ class Numbers extends Base implements core\i18n\module\generator\IModule {
             \NumberFormatter::CURRENCY
         )->formatCurrency($amount, $code);
     }
+
+    public function formatCurrencyRounded($amount, $code) {
+        $formatter = \NumberFormatter::create(
+            (string)$this->_locale, 
+            \NumberFormatter::CURRENCY
+        );
+        
+        $formatter->setTextAttribute(\NumberFormatter::CURRENCY_CODE, $code);
+        $formatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, 0);
+        return $formatter->formatCurrency($amount, $code);
+    }
     
     public function parseCurrency($amount, $code) {
         return \NumberFormatter::create(

@@ -74,9 +74,37 @@ class Format implements core\ISharedHelper {
             $code = 'USD';
         }
 
+        $module = core\i18n\Manager::getInstance()
+            ->getModule('numbers', $locale);
+
+        if((int)$number == $number) {
+            return $module->formatCurrencyRounded($number, $code);
+        } else {
+            return $module->formatCurrency($number, $code);
+        }
+    }
+
+    public function currencyRounded($number, $code=null, $locale=null) {
+        if($number === null) {
+            return null;
+        }
+
+        if($locale === null) {
+            $locale = $this->context->getLocale();
+        }
+
+        if($number instanceof mint\ICurrency) {
+            $code = $number->getCode();
+            $number = $number->getAmount();
+        }
+
+        if($code === null) {
+            $code = 'USD';
+        }
+
         return core\i18n\Manager::getInstance()
             ->getModule('numbers', $locale)
-            ->formatCurrency($number, $code);
+            ->formatCurrencyRounded($number, $code);
     }
     
     public function scientific($number, $locale=null) {
