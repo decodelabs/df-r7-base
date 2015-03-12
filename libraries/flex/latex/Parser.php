@@ -300,6 +300,10 @@ class Parser extends iris\Parser {
                 return;
 
             default:
+                throw new iris\UnexpectedTokenException(
+                    'Unexpexted end character: '.$token->value, $token
+                );
+
                 $this->rewind(4);
                 core\dump($token, $this);
         }
