@@ -132,11 +132,12 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             $response = $e->getResponse();
         }
 
+        $response = $this->_normalizeResponse($response);
+
         if(df\Launchpad::$debug) {
             df\Launchpad::$debug->execute();
         }
 
-        $response = $this->_normalizeResponse($response);
         $this->_sendResponse($response);
     }
 
