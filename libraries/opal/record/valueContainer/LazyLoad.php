@@ -44,11 +44,11 @@ class LazyLoad implements opal\record\IPreparedValueContainer {
     }
     
     public function getValue($default=null) {
-        if($this->_isLoaded) {
+        //if($this->_isLoaded) {
             return $this->_value;
-        }
+        //}
 
-        core\stub($this->_value, $default);
+        //core\stub($this->_value, $default);
     }
     
     public function getValueForStorage() {

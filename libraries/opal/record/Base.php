@@ -562,6 +562,12 @@ class Base implements IRecord, \Serializable, core\IDumpable {
                 continue;
             }
 
+            /*
+            if($value instanceof IPreparedValueContainer && !$value->isPrepared()) {
+                $value->prepareValue($this, $key);
+            }
+            */
+
             if($value instanceof IValueContainer) {
                 $value = $value->getValue();
             }
