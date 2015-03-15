@@ -201,6 +201,8 @@ class Handler implements user\session\IHandler, core\IDumpable {
     }
     
     public function __get($key) {
+        $key = (string)$key;
+
         if(!isset($this->_nodes[$key])) {
             $descriptor = $this->_controller->getDescriptor();
             $cache = $this->_controller->getCache();
@@ -240,6 +242,7 @@ class Handler implements user\session\IHandler, core\IDumpable {
     }
     
     public function set($key, $value) {
+        $key = (string)$key;
         $atomicLock = false;
         
         if(!isset($this->_nodes[$key]) || !$this->_nodes[$key]->isLocked) {
@@ -286,6 +289,8 @@ class Handler implements user\session\IHandler, core\IDumpable {
     }
     
     public function has($key) {
+        $key = (string)$key;
+
         if(isset($this->_nodes[$key])) {
             return true;
         }
@@ -295,6 +300,8 @@ class Handler implements user\session\IHandler, core\IDumpable {
     }
     
     public function remove($key) {
+        $key = (string)$key;
+        
         if(isset($this->_nodes[$key])) {
             if($this->_nodes[$key]->isLocked) {
                 $this->release($key);
