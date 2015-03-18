@@ -19,6 +19,15 @@ class Float extends Base implements opal\schema\IFloatingPointNumericField {
         $this->setPrecision($precision);
     }
 
+// Values
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
+        if(isset($row[$key])) { 
+            return (double)$row[$key];
+        } else {
+            return null;
+        } 
+    }
+
     public function compareValues($value1, $value2) {
         // Use precision setting to define comparison value
         return abs($value1 - $value2) < 0.00001;

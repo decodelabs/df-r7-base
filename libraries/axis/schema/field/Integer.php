@@ -22,6 +22,16 @@ class Integer extends Base implements
     protected function _init($size=null) {
         $this->setByteSize($size);
     }
+
+
+// Values
+    public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
+        if(isset($row[$key])) { 
+            return (int)$row[$key];
+        } else {
+            return null;
+        } 
+    }
     
 
     public function compareValues($value1, $value2) {
