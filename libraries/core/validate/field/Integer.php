@@ -16,14 +16,14 @@ class Integer extends Base implements core\validate\IIntegerField {
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
         $value = $this->_sanitizeValue($value);
-        
+
         if(!$length = $this->_checkRequired($node, $value)) {
             return null;
         }
         
         $options = ['flags' => FILTER_FLAG_ALLOW_OCTAL | FILTER_FLAG_ALLOW_HEX];
 
-        if(!filter_var($value, FILTER_VALIDATE_INT, $options) && $value !== '0') {
+        if(false === filter_var($value, FILTER_VALIDATE_INT, $options)) {
             $this->_applyMessage($node, 'invalid', $this->_handler->_(
                 'This is not a valid number'
             ));
