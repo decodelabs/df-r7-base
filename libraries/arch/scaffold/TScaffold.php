@@ -322,29 +322,24 @@ trait TScaffold_RecordDataProvider {
                     $available = true;
                 }
 
-                $output = '#'.$this->getRecordId($record);
+                $id = $this->getRecordId($record);
 
                 if($available) {
                     switch($key) {
                         case 'title':
-                            $output = [
-                                $this->html('em', $this->_('untitled %c%', ['%c%' => $this->getRecordItemName()])),
-                                $this->html('samp', $output)
-                            ];
+                            $output = $this->html('em', $this->_('untitled %c%', ['%c%' => $this->getRecordItemName()]));
                             break;
 
                         case 'name':
-                            $output = [
-                                $this->html('em', $this->_('unnamed %c%', ['%c%' => $this->getRecordItemName()])),
-                                $this->html('samp', $output)
-                            ];
+                            $output = $this->html('em', $this->_('unnamed %c%', ['%c%' => $this->getRecordItemName()]));
                             break;
                     }
                 } else {
-                    $output = [
-                        $this->html('em', $this->getRecordItemName()),
-                        $this->html('samp', $output)
-                    ];
+                    $output = $this->html('em', $this->getRecordItemName());
+                }
+
+                if(is_numeric($id)) {
+                    $output = [$output, $this->html('samp', '#'.$id)];
                 }
             }
         }
