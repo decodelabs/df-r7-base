@@ -11,6 +11,8 @@ use df\core;
 class Text extends Base implements core\validate\ITextField {
     
     use core\validate\TSanitizingField;
+    use core\validate\TStorageAwareField;
+    use core\validate\TUniqueCheckerField;
     use core\validate\TMinLengthField;
     use core\validate\TMaxLengthField;
 
@@ -142,6 +144,7 @@ class Text extends Base implements core\validate\ITextField {
             $node->addError('pattern', $this->_handler->_('The value entered is invalid'));
         }
         
+        $this->_validateUnique($node, $value);
         return $this->_finalize($node, $value);
     }
 }

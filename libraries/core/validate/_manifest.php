@@ -567,7 +567,7 @@ interface IStructureField extends IField, ISanitizingField {
     public function shouldAllowEmpty($flag=null);
 }
 
-interface ITextField extends IField, ISanitizingField, IMinLengthField, IMaxLengthField {
+interface ITextField extends IField, ISanitizingField, IUniqueCheckerField, IMinLengthField, IMaxLengthField {
     public function setPattern($pattern);
     public function getPattern();
 
