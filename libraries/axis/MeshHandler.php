@@ -50,30 +50,12 @@ class MeshHandler implements mesh\IEntityHandler {
         }
 
         $model = axis\Model::factory(array_shift($location), $clusterId);
+        $unit = $model->getUnit($node['type']);
         
-        switch($node['type']) {
-            case 'Unit':
-                return $model->getUnit($node['id']);
-                
-            case 'Schema':
-                $unit = $model->getUnit($node['id']);
-                
-                if(!$unit instanceof axis\ISchemaBasedStorageUnit) {
-                    throw new axis\LogicException(
-                        'Model unit '.$unit->getUnitName().' does not provide a schema'
-                    );
-                }
-                
-                return $unit->getUnitSchema();
-                
-            default:
-                $unit = $model->getUnit($node['type']);
-                
-                if($node['id'] === null) {
-                    return $unit;
-                }
-                
-                return $unit->fetchByPrimary($node['id']);
+        if($node['id'] === null) {
+            return $unit;
         }
+        
+        return $unit->fetchByPrimary($node['id']);
     }
 }
