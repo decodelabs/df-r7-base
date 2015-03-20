@@ -336,6 +336,10 @@ class BridgedManyRelationValueContainer implements
         return $this->_field->getBridgeTargetFieldName();
     }
 
+    public function newRecord(array $values=null) {
+        return $this->getTargetUnit()->newRecord($values);
+    }
+
     public function newBridgeRecord(array $values=null) {
         return $this->getBridgeUnit()->newRecord($values);
     }

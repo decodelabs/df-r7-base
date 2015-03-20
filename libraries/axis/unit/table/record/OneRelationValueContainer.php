@@ -184,6 +184,10 @@ class OneRelationValueContainer implements
     protected function _getTargetUnit($clusterId=null) {
         return axis\Model::loadUnitFromId($this->_field->getTargetUnitId(), $clusterId);
     }
+
+    public function newRecord(array $values=null) {
+        return $this->getTargetUnit()->newRecord($values);
+    }
     
     public function duplicateForChangeList() {
         return new self($this->_field);

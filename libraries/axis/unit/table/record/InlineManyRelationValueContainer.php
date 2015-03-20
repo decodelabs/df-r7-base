@@ -118,6 +118,10 @@ class InlineManyRelationValueContainer implements
         return axis\Model::loadUnitFromId($this->_field->getTargetUnitId(), $clusterId);
     }
 
+    public function newRecord(array $values=null) {
+        return $this->getTargetUnit()->newRecord($values);
+    }
+
     
 // Collection
     public function toArray() {
