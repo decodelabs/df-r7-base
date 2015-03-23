@@ -29,6 +29,7 @@ class RendererContext implements aura\html\widget\IRendererContext {
     protected $_rowProcessor;
     protected $_nullToNa = true;
     protected $_skipRow = false;
+    protected $_skipCells = 0;
 
     public function __construct(aura\html\widget\IWidget $widget) {
         $this->_widget = $widget;
@@ -98,6 +99,7 @@ class RendererContext implements aura\html\widget\IRendererContext {
         $this->clear();
         $this->key = $this->cellTag = $this->rowTag = $this->fieldTag = null;
         $this->_skipRow = false;
+        $this->_skipCells = 0;
 
         return $this;
     }
@@ -112,6 +114,7 @@ class RendererContext implements aura\html\widget\IRendererContext {
         $this->rowTag = $rowTag;
         $this->fieldTag = $fieldTag;
         $this->_skipRow = false;
+        $this->_skipCells = 0;
 
         return $this;
     }
@@ -121,6 +124,10 @@ class RendererContext implements aura\html\widget\IRendererContext {
         $this->cellTag = $cellTag;
         $this->rowTag = $rowTag;
         $this->fieldTag = $fieldTag;
+
+        if($this->_skipCells) {
+            $this->_skipCells--;
+        }
         
         return $this;
     }
@@ -164,8 +171,17 @@ class RendererContext implements aura\html\widget\IRendererContext {
         return;
     }
 
+    public function skipCells($count=1) {
+        $this->_skipCells = (int)$count;
+        return $this;
+    }
+
     public function shouldSkipRow() {
         return $this->_skipRow;
+    }
+
+    public function shouldSkipCells() {
+        return $this->_skipCells;
     }
 
     public function setRenderTarget(aura\view\IRenderTarget $renderTarget=null) {

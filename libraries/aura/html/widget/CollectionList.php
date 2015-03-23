@@ -190,11 +190,15 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                         $attr = ['class' => $colClasses[$key]];
                     }
 
-                    $cellTag = new aura\html\Tag('td', $attr);
-                    $renderContext->iterateField($key, $cellTag, $rowTag);
-                    $value = $renderContext->renderCell($row, $field->renderer);
-                    
-                    $rowTag->push($cellTag->renderWith($value));
+                    if($renderContext->shouldSkipCells()) {
+                        $renderContext->iterateField($key, null, $rowTag);
+                    } else {
+                        $cellTag = new aura\html\Tag('td', $attr);
+                        $renderContext->iterateField($key, $cellTag, $rowTag);
+                        $value = $renderContext->renderCell($row, $field->renderer);
+                        
+                        $rowTag->push($cellTag->renderWith($value));
+                    }
                 }
 
                 if($renderContext->shouldSkipRow()) {
