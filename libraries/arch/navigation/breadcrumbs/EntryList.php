@@ -27,7 +27,14 @@ class EntryList implements arch\navigation\IEntryList, core\IRegistryObject {
         $output = new self();
         $parts = $request->getLiteralPathArray();
         $path = '';
-        
+
+        if(false !== strpos($last = array_pop($parts), '.')) {
+            $lastParts = explode('.', $last);
+            $last = array_shift($lastParts);
+        }
+
+        $parts[] = $last;
+
         if($request->isDefaultArea()) {
             array_shift($parts);
         }
