@@ -48,6 +48,38 @@ class Comms implements core\ISharedHelper {
     }
 
 
+// Flash shortcuts
+    public function flashInfo($id, $message=null) {
+        return $this->flash($id, $message, 'info');
+    }
+
+    public function flashSuccess($id, $message=null) {
+        return $this->flash($id, $message, 'success');
+    }
+
+    public function flashWarning($id, $message=null) {
+        return $this->flash($id, $message, 'warning');
+    }
+
+    public function flashError($id, $message=null) {
+        return $this->flash($id, $message, 'error');
+    }
+
+    public function flashDebug($id, $message=null) {
+        return $this->flash($id, $message, 'debug');
+    }
+
+    public function flashSaveSuccess($itemName, $message=null) {
+        return $this->flash(
+            $this->context->format->id($itemName).'.save',
+            $message !== null ?
+                $message :
+                $this->context->_('The %i% was successfully saved', ['%i%' => $itemName]),
+            'success'
+        );
+    }
+
+
 // Notifications
     public function notify($subject, $body, $to=null, $from=null) {
         return $this->sendNotification($this->newNotification($subject, $body, $to, $from));
