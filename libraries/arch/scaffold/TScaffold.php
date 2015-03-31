@@ -279,6 +279,10 @@ trait TScaffold_RecordDataProvider {
 
     private $_recordNameKey;
 
+    public function newRecord(array $values=null) {
+        return $this->data->newRecord($this->getRecordAdapter(), $values);
+    }
+
     public function getRecord() {
         $this->_ensureRecord();
         return $this->_record;

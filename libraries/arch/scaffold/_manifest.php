@@ -41,6 +41,7 @@ interface IRecordLoaderScaffold extends IScaffold {
 }
 
 interface IRecordDataProviderScaffold extends IRecordLoaderScaffold {
+    public function newRecord(array $values=null);
     public function getRecord();
     public function getRecordKeyName();
     public function getRecordId($record=null);
