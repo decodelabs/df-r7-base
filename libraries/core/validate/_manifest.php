@@ -35,6 +35,7 @@ interface IHandler extends \ArrayAccess, core\lang\IChainable {
     public function getValues();
     public function getValue($name);
     public function setValue($name, $value);
+    public function isEmpty();
     public function shouldSanitizeAll($flag=null);
     public function setRequireGroupFulfilled($name);
     public function setRequireGroupUnfulfilled($name, $field);

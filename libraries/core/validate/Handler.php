@@ -234,6 +234,16 @@ class Handler implements IHandler {
         return $this;
     }
 
+    public function isEmpty() {
+        foreach($this->_values as $value) {
+            if($value !== null) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public function offsetSet($offset, $value) {
         //throw new BadMethodCallException('Validator values cannot be set via array access');
         return $this->setValue($offset, $value);
