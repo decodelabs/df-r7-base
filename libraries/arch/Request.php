@@ -150,7 +150,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         $path = $this->getPath();
         $parts = $this->_path->getRawCollection();
         $start = 0;
-        $end = count($parts) - 1;
+        $end = count($parts);
         
         // Strip area
         if(isset($parts[0]) && substr($parts[0], 0, 1) == static::AREA_MARKER) {
@@ -161,12 +161,16 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
         if(!$this->_path->shouldAddTrailingSlash()) {
             $end--;
         }
-        
+
         for($i = $end - 1; $i >= $start; $i--) {
             $path->remove($i);
         }
-        
+
         if(!empty($controller)) {
+            if(is_array($controller)) {
+                $controller = implode('/', $controller);
+            }
+
             $path->put($start, trim($controller, '/'));
         }
         
