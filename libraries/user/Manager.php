@@ -153,7 +153,8 @@ class Manager implements IManager, core\IDumpable {
                 ->setAccessLockDomain('*');
         } else if(substr($lock, 0, 10) == 'virtual://') {
             $lock = new user\access\lock\Virtual(substr($lock, 10));
-        } else if(substr($lock, 0, 12) == 'directory://') {
+        } else if(substr($lock, 0, 12) == 'directory://'
+              || (is_string($lock) && false === strpos($lock, '://'))) {
             $lock = new arch\Request($lock);
         } else {
             try {
