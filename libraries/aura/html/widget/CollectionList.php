@@ -22,6 +22,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
     
     protected $_errorMessage = 'No results to display';
     protected $_renderIfEmpty = true;
+    protected $_showHeader = true;
     
     public function __construct(arch\IContext $context, $data, core\collection\IPaginator $paginator=null) {
         $this->setData($data);
@@ -42,6 +43,15 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
         }
 
         return $this->_renderIfEmpty;
+    }
+
+    public function shouldShowHeader($flag=null) {
+        if($flag !== null) {
+            $this->_showHeader = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_showHeader;
     }
     
     protected function _render() {
@@ -93,7 +103,7 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
             foreach($field->getHeaderList() as $key => $label) {
                 $colClasses[$fieldKey][] = 'field-'.$key;
 
-                if($orderData !== null && in_array($key, $orderFields)) {
+                if($this->_showHeader && $orderData !== null && in_array($key, $orderFields)) {
                     $nullOrder = 'ascending';
                     $isNullable = null;
 
@@ -167,12 +177,20 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
 
             $colClasses[$fieldKey] = implode(' ', $colClasses[$fieldKey]);
 
+            if(!$this->_showHeader) {
+                continue;
+            }
+
             $thTag = new aura\html\Element('th', $tagContent, ['class' => $colClasses[$fieldKey]]);
             $headRow->push($thTag->render());
         }
         
-        $content = $headRow->render();
-        $content->prepend("<table>\n<thead>\n")->append("\n</thead>\n\n<tbody>\n");
+        if($this->_showHeader) {
+            $content = $headRow->render();
+            $content->prepend("<table>\n<thead>\n")->append("\n</thead>\n\n<tbody>\n");
+        } else {
+            $content = new aura\html\ElementString("<table>\n<tbody>");
+        }
         
         if(!$empty) {
             $empty = true;
