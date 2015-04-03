@@ -130,7 +130,12 @@ trait TElementContent {
             if($value instanceof aura\html\widget\IWidget
             || $value instanceof aura\html\widget\IWidgetProxy) {
                 $isWidget = true;
-                $stringValue = trim($stringValue)."\n";
+                $stringValue = trim($stringValue);
+
+                if($lastElement instanceof aura\html\widget\IWidget
+                || $lastElement instanceof aura\html\widget\IWidgetProxy) {
+                    $stringValue = "\n".$stringValue;
+                }
             }
             
             if(($isWidget || $value instanceof IElementRepresentation)
