@@ -248,16 +248,13 @@ trait TElementContent {
 
     public function findFirstWidgetOfType($type) {
         foreach($this->_collection as $child) {
-            if(!$child instanceof aura\html\widget\IWidget) {
-                continue;
-            }
-            
-            if($child->getWidgetName() == $type) {
+            if($child instanceof aura\html\widget\IWidget
+            && $child->getWidgetName() == $type) {
                 return $child;
             }
 
-            if($child instanceof IContainerWidget) {
-                if($ret = $child->firstFirstWidgetOfType($type)) {
+            if($child instanceof IWidgetFinder) {
+                if($ret = $child->findFirstWidgetOfType($type)) {
                     return $ret;
                 }
             }
@@ -270,15 +267,12 @@ trait TElementContent {
         $output = [];
 
         foreach($this->_collection as $child) {
-            if(!$child instanceof aura\html\widget\IWidget) {
-                continue;
-            }
-
-            if($child->getWidgetName() == $type) {
+            if(!$child instanceof aura\html\widget\IWidget
+            && $child->getWidgetName() == $type) {
                 $output[] = $child;
             }
 
-            if($child instanceof aura\html\widget\IContainerWidget) {
+            if($child instanceof IWidgetFinder) {
                 $output = array_merge($output, $child->findAllWidgetsOfType($type));
             }
         }
@@ -343,7 +337,7 @@ class ElementString implements IElementRepresentation, core\IDumpable {
 }
 
 
-interface IElement extends ITag, IElementContent {}
+interface IElement extends ITag, IElementContent, IWidgetFinder {}
 
 
 interface IStyleBlock extends core\IStringProvider {}
