@@ -111,6 +111,20 @@ class Paginator implements IPaginator {
     public function getOrderDirectives() {
         return $this->_order;
     }
+
+    public function getFirstOrderDirective() {
+        $temp = $this->_order;
+        return array_shift($temp);
+    }
+
+    public function getFirstOrderString() {
+        if(!$directive = $this->getFirstOrderDirective()) {
+            $fields = $this->getOrderableFieldNames();
+            return array_shift($fields).' ASC';
+        }
+
+        return $directive->getField()->getAlias().' '.$directive->getDirection();
+    }
     
 
 // Limit

@@ -1035,6 +1035,10 @@ interface IPaginator extends core\collection\IOrderablePaginator {
     //public function getOrderableFieldNames();
 
     public function setDefaultOrder($field1);
+    public function getOrderDirectives();
+    public function getFirstOrderDirective();
+    public function getFirstOrderString();
+
     public function setDefaultLimit($limit);
     public function setDefaultOffset($offset);
     public function setKeyMap(array $map);
