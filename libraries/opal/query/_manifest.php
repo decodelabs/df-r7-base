@@ -1036,6 +1036,7 @@ interface IPaginator extends core\collection\IOrderablePaginator {
 
     public function setDefaultOrder($field1);
     public function getOrderDirectives();
+    public function getOrderString();
     public function getFirstOrderDirective();
     public function getFirstOrderString();
 
