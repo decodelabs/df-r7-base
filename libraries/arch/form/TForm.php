@@ -607,14 +607,14 @@ trait TForm_ValueListSelectorDelegate {
 
     public function addSelected($selected) {
         if(!$this->_isForMany) {
-            $this->values->selected = $this->_sanitizeSelection($selected);
+            $this->values->selected = $this->_normalizeSelection($selected);
         } else {
             if(!is_array($selected)) {
                 $selected = (array)$selected;
             }
 
             foreach($selected as $id) {
-                $id = $this->_sanitizeSelection($id);
+                $id = $this->_normalizeSelection($id);
                 $this->values->selected[$id] = $id;
             }
         }
@@ -622,7 +622,7 @@ trait TForm_ValueListSelectorDelegate {
         return $this;
     }
 
-    protected function _sanitizeSelection($selection) {
+    protected function _normalizeSelection($selection) {
         if($selection instanceof opal\record\IRecord) {
             $selection = $selection->getPrimaryKeySet();
         } else if($selection instanceof opal\record\IPartial) {
@@ -633,7 +633,11 @@ trait TForm_ValueListSelectorDelegate {
             }
         }
 
-        return (string)$selection;
+        return $this->_sanitizeSelection((string)$selection);
+    }
+
+    protected function _sanitizeSelection($selection) {
+        return $selection;
     }
 
     public function getSelected() {
