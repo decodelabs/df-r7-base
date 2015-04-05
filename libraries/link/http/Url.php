@@ -317,4 +317,15 @@ class Url extends core\uri\Url implements IUrl {
         
         return $output;
     }
+
+    public function toReadableString() {
+        if($this->isJustFragment()) {
+            return $this->_getFragmentString();
+        }
+        
+        $output = $this->_domain;
+        $output .= $this->getLocalString();
+        
+        return $output;
+    }
 }

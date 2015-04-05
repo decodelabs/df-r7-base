@@ -114,6 +114,7 @@ interface IUrl extends core\IStringProvider {
     public function reset();
     
     public function getScheme();
+    public function toReadableString();
 }
 
 interface ITransientSchemeUrl {

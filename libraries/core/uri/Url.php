@@ -141,6 +141,10 @@ class Url implements IGenericUrl, core\IDumpable {
         
         return $output;
     }
+
+    public function toReadableString() {
+        return $this->toString();
+    }
     
     
 // Dump

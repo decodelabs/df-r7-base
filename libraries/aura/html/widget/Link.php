@@ -203,10 +203,12 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
         
         if(!$this->hasBody()) {
             if($url !== null) {
-                $body = $url;
+                $body = clone $url;
             } else {
                 $body = $view->uri->__invoke($this->_uri);
             }
+
+            $body = $body->toReadableString();
         }
 
         if($this->_note !== null) {
