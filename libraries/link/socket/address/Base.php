@@ -55,6 +55,10 @@ abstract class Base implements IAddress {
     public function getSecureTransport() {
         return $this->_secureTransport;
     }
+
+    public function toReadableString() {
+        return $this->toString();
+    }
     
     
 // Dump
