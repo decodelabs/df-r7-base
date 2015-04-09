@@ -37,6 +37,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
     protected $_baseHref;
     
     protected $_meta = [];
+    protected $_data = [];
     
     protected $_css;
     protected $_styles;
@@ -167,7 +168,35 @@ class Html extends Base implements IHtmlView, core\IDumpable {
         unset($this->_meta[$key]);
         return $this;
     }
+
+
+// Data
+    public function setData($key, $value) {
+        if($value === null) {
+            unset($this->_data[$key]);
+        } else {
+            $this->_data[$key] = (string)$value;
+        }
+        
+        return $this;
+    }
     
+    public function getData($key) {
+        if(isset($this->_data[$key])) {
+            return $this->_data[$key];
+        }
+        
+        return null;
+    }
+    
+    public function hasData($key) {
+        return isset($this->_data[$key]);
+    }
+    
+    public function removeData($key) {
+        unset($this->_data[$key]);
+        return $this;
+    }
     
     
 // Keywords
@@ -748,6 +777,16 @@ class Html extends Base implements IHtmlView, core\IDumpable {
                 $output .= '    '.$this->_metaToString($key, $value)."\n";
             }    
         }
+
+        if(!empty($this->_data)) {
+            $attr = [];
+
+            foreach($this->_data as $key => $value) {
+                $attr[] = 'data-'.$key.'="'.$this->esc($value).'"';
+            }
+
+            $output .= '    <meta id="custom-view-data" '.implode(' ', $attr).' />'."\n";
+        }
         
         // Css
         $output .= $this->_renderCssList($this->_css);
@@ -880,6 +919,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
         $output['theme'] = $this->_theme;
 
         $output['meta'] = $this->_meta;
+        $output['data'] = $this->_data;
 
         if($this->_css) {
             $output['css'] = $this->_css;

@@ -313,6 +313,11 @@ interface IHtmlView extends IResponseView, ILayoutView, INotificationProxyView {
     public function getMeta($name);
     public function hasMeta($name);
     public function removeMeta($name);
+
+    public function setData($key, $value);
+    public function getData($key);
+    public function hasData($key);
+    public function removeData($key);
     
     // Keywords
     public function setKeywords($keywords);

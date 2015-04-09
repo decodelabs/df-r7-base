@@ -90,15 +90,18 @@ class Base implements ITheme, core\IDumpable {
         $request = $view->context->request;
         $router = core\application\http\Router::getInstance();
         
-        $view->getBodyTag()
-            ->setDataAttribute('location', $request->getLiteralPathString())
-            ->setDataAttribute('layout', $view->getLayout())
-            ->setDataAttribute('base', '/'.ltrim($router->getBaseUrl()->getPathString(), '/'));
+        $view
+            ->setData('base', '/'.ltrim($router->getBaseUrl()->getPathString(), '/'))
+            ->getBodyTag()
+                ->setDataAttribute('location', $request->getLiteralPathString())
+                ->setDataAttribute('layout', $view->getLayout())
+                // DELETE ME
+                ->setDataAttribute('base', '/'.ltrim($router->getBaseUrl()->getPathString(), '/'));
 
         if(df\Launchpad::COMPILE_TIMESTAMP) {
-            $view->getBodyTag()->setDataAttribute('cts', df\Launchpad::COMPILE_TIMESTAMP);
+            $view->setData('cts', df\Launchpad::COMPILE_TIMESTAMP);
         } else if($view->context->application->isDevelopment()) {
-            $view->getBodyTag()->setDataAttribute('cts', time());
+            $view->setData('cts', time());
         }
     }
 
