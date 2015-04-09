@@ -127,8 +127,10 @@ class Router implements core\IRegistryObject {
         $output = true;
 
         if($domain != $this->_baseDomain) {
-            if(isset($this->_areaDomainMap[$domain])) {
-                $this->_mappedArea = ltrim($this->_areaDomainMap[$domain], arch\Request::AREA_MARKER);
+            $map = array_flip($this->_areaDomainMap);
+
+            if(isset($map[$domain])) {
+                $this->_mappedArea = ltrim($map[$domain], arch\Request::AREA_MARKER);
                 $this->_mappedDomain = $domain;
             } else if(df\Launchpad::$application->isDevelopment()) {
                 $this->_baseDomain = $domain;
@@ -176,14 +178,13 @@ class Router implements core\IRegistryObject {
         $domain = $this->_baseDomain;
         $port = $this->_basePort;
         $path = $this->_basePath;
+        $area = $request->getArea();
 
-        if($this->_mappedArea) {
-            $area = $request->getArea();
-
-            if($area == $this->_mappedArea) {
-                $domain = $this->_mappedDomain;
-                $path = [];
-            }
+        if(isset($this->_areaDomainMap[$area])) {
+            $domain = $this->_areaDomainMap[$area];
+            $path = [];
+        } else {
+            $area = null;
         }
 
         return link\http\Url::fromDirectoryRequest(
@@ -192,7 +193,7 @@ class Router implements core\IRegistryObject {
             $domain, 
             $port, 
             $path,
-            $this->_mappedArea,
+            $area,
             $origRequest
         );
     }
