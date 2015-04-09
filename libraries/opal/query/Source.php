@@ -89,7 +89,7 @@ class Source implements ISource, core\IDumpable {
                 $schema = $this->_adapter->getQueryAdapterSchema();
 
                 if(!$primaryIndex = $schema->getPrimaryIndex()) {
-                    throw new axis\schema\RuntimeException(
+                    throw new opal\schema\RuntimeException(
                         'Unit '.$this->_adapter->getUnitId().' does not have a primary index'
                     );
                 }

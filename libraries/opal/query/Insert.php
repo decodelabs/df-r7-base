@@ -95,6 +95,10 @@ class Insert implements IInsertQuery, core\IDumpable {
             && (($field instanceof opal\schema\IAutoIncrementableField && $field->shouldAutoIncrement())
               || $field instanceof opal\schema\IAutoGeneratorField)) {
                 $values[$name] = $originalId;
+
+                if($field instanceof IFieldValueProcessor) {
+                    $values[$name] = $field->inflateValueFromRow($name, $values, null);
+                }
             } else if($field instanceof IFieldValueProcessor) {
                 $values[$name] = $field->inflateValueFromRow($name, $row, null);
             } else {
