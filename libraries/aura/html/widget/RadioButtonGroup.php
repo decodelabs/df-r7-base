@@ -53,7 +53,7 @@ class RadioButtonGroup extends Base implements IUngroupedSelectionInputWidget, c
             $currValue = $this->getValue()->getValue();
             //core\debug()->dump($currValue);
 
-            if(!strlen($currValue)) {
+            if(!strlen($currValue) && $currValue !== false) {
                 $this->getValue()->setValue(null);
             }
         }
