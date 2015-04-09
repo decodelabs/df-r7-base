@@ -50,7 +50,7 @@ class Link extends Base implements ILinkWidget, IDescriptionAwareLinkWidget, IIc
             $body = $link->getBody();
 
             if($icon = $link->getIcon()) {
-                $this->setIcon($icon);
+                $this->_icon = $icon;
             }
 
             if($description = $link->getDescription()) {
