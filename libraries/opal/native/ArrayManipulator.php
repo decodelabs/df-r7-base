@@ -948,8 +948,11 @@ class ArrayManipulator implements IArrayManipulator {
                 $qNameMap[$alias] = $qName;
             }
 
-            while($field = $field->getOverrideField()) {
+            $lastField = $field;
+
+            while($field = $field->getOverrideField() && $field !== $lastField) {
                 $overrides[$alias][] = $field->getQualifiedName();
+                $lastField = $field;
             }
         }
 
