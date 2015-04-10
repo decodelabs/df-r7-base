@@ -210,6 +210,10 @@ class Http implements arch\IDirectoryHelper {
     public function getCookie($name, $default=null) {
         return $this->getCookies()->get($name, $default);
     }
+
+    public function hasCookie($name) {
+        return $this->getCookies()->has($name);
+    }
     
     public function removeCookie($name) {
         $augmentor = $this->context->application->getResponseAugmentor();
