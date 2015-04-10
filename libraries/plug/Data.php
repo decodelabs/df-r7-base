@@ -390,6 +390,10 @@ class Data implements core\ISharedHelper, opal\query\IEntryPoint, \ArrayAccess {
         
         return core\string\Util::passwordHash($message, $salt);
     }
+
+    public function hexHash($message, $salt=null) {
+        return bin2hex($this->hash($message, $salt));
+    }
     
     public function encrypt($message, $password=null, $salt=null) {
         if($password === null) {

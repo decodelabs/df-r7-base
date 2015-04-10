@@ -15,6 +15,7 @@ class Password extends Base implements core\validate\IPasswordField {
     protected $_matchField = null;
     protected $_minStrength = 18;
     protected $_checkStrength = true;
+    protected $_shouldHash = true;
     
     public function setMatchField($field) {
         $this->_matchField = $field;
@@ -43,7 +44,16 @@ class Password extends Base implements core\validate\IPasswordField {
         return $this->_checkStrength;
     }
 
-    
+    public function shouldHash($flag=null) {
+        if($flag !== null) {
+            $this->_shouldHash = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_shouldHash;
+    }
+
+
     public function validate(core\collection\IInputTree $node) {
         $this->_setDefaultMinLength(6);
         $value = $node->getValue();
@@ -81,7 +91,11 @@ class Password extends Base implements core\validate\IPasswordField {
                 ));
             }
         }
-        
-        return core\string\Util::passwordHash($value, df\Launchpad::$application->getPassKey());
+            
+        if($this->_shouldHash) {
+            $value = core\string\Util::passwordHash($value, df\Launchpad::$application->getPassKey());
+        }
+
+        return $value;
     }
 }
