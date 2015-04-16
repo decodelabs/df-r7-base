@@ -88,8 +88,13 @@ class Type {
     
     // Office
         'doc' => 'application/msword',
+        'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         'xls' => 'application/vnd.ms-excel',
+        'xlsb' => 'application/vnd.ms-excel.sheet.binary.macroEnabled.12',
+        'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'ppt' => 'application/vnd.ms-powerpoint',
+        'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+        'ppsx' => 'application/vnd.openxmlformats-officedocument.presentationml.slideshow',
         'opd' => 'application/vnd.oasis.opendocument.presentation',
         'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
         'odt' => 'application/vnd.oasis.opendocument.text',
