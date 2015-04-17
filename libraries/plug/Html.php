@@ -60,7 +60,9 @@ class Html implements arch\IDirectoryHelper {
             return null;
         }
 
-        return html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5);
+        $output = html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5);
+        $output = str_replace("\r\n", "\n", $output);
+        return $output;
     }
 
     public function plainText($text) {
