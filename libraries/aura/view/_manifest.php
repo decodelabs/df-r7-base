@@ -288,7 +288,7 @@ interface ILayoutMap {
     public function mapLayout(ILayoutView $view);
 }
 
-interface INotificationProxyView extends IView, flow\INotificationProxy {}
+interface INotificationProxyView extends IView, ILayoutView, flow\INotificationProxy {}
 
 interface IHtmlView extends IResponseView, ILayoutView, INotificationProxyView {
     public function getHtmlTag();
