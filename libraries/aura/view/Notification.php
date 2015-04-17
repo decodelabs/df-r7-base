@@ -13,6 +13,10 @@ use df\flow;
 
 class Notification extends Base implements INotificationProxyView {
 
+    use TLayoutView;
+
+    const DEFAULT_LAYOUT = 'Default';
+
     protected $_subject;
 
     public function setSubject($subject) {
@@ -24,17 +28,32 @@ class Notification extends Base implements INotificationProxyView {
         return $this->_subject;
     }
 
+    public function render() {
+        $shouldUseLayout = $this->shouldUseLayout();
+        $this->shouldUseLayout(false);
+        $output = parent::render();
+        $this->shouldUseLayout($shouldUseLayout);
+
+        return $output;
+    }
+
     public function toNotification($to=null, $from=null) {
         $content = $this->render();
-        $subject = $this->_subject;
 
-        if(empty($subject)) {
-            $subject = $this->_('Notification from %a%', ['%a%' => $this->application->getName()]);
+        $htmlView = new Html('Html', $this->context);
+        $htmlView->setContentProvider($contentContainer = new aura\view\content\WidgetContentProvider($this->context));
+        $contentContainer->push($this->html->simpleTags($content));
+        $htmlView->setLayout($this->getLayout());
+        $htmlView->shouldUseLayout($this->shouldUseLayout());
+
+        $htmlView->shouldRenderBase(false);
+
+        if(!$htmlView->hasTheme()) {
+            $themeConfig = aura\theme\Config::getInstance();
+            $htmlView->setTheme($themeConfig->getThemeIdFor('front'));
         }
 
-        $manager = flow\Manager::getInstance();
-        return $manager->newNotification($subject, $content, $to, $from)
-            ->setBodyType(flow\INotification::SIMPLE_TAGS);
+        return $htmlView->toNotification($to, $from);
     }
 
     public function toHtml() {
