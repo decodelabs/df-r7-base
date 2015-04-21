@@ -70,8 +70,6 @@ class Router implements core\IRegistryObject {
         return self::REGISTRY_KEY;
     }
 
-    public function onApplicationShutdown() {}
-
 // Base Url
     public function getBaseDomain() {
         return $this->_baseDomain;

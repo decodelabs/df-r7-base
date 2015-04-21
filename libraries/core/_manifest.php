@@ -287,11 +287,19 @@ interface IApplication {
     public function hasRegistryObject($key);
     public function removeRegistryObject($key);
     public function findRegistryObjects($beginningWith);
+    public function getRegistryObjects();
 }
 
 interface IRegistryObject {
     public function getRegistryObjectKey();
+}
+
+interface IShutdownAware {
     public function onApplicationShutdown();
+} 
+
+interface IDispatchAware {
+    public function onApplicationDispatch(df\arch\IAction $action);
 }
 
 

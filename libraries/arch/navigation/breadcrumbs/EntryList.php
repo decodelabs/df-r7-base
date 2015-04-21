@@ -10,7 +10,7 @@ use df\core;
 use df\arch;
 
     
-class EntryList implements arch\navigation\IEntryList, core\IRegistryObject {
+class EntryList implements arch\navigation\IEntryList, core\IRegistryObject, core\IDispatchAware {
 
     use arch\navigation\TEntryList;
 
@@ -20,8 +20,9 @@ class EntryList implements arch\navigation\IEntryList, core\IRegistryObject {
         return self::REGISTRY_KEY;
     }
 
-    public function onApplicationShutdown() {}
-
+    public function onApplicationDispatch(arch\IAction $action) {
+        df\Launchpad::$application->removeRegistryObject(self::REGISTRY_KEY);
+    }
 
     public static function generateFromRequest(arch\IRequest $request) {
         $output = new self();

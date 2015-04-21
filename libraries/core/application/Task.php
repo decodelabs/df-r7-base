@@ -157,10 +157,18 @@ class Task extends Base implements core\IContextAware {
     protected function _dispatchAction(arch\IRequest $request, core\cli\ICommand $command=null) {
         $this->_context = arch\Context::factory(clone $request);
         $this->_context->request = $request;
+
         $action = arch\Action::factory($this->_context);
 
         if($command && ($action instanceof arch\task\IAction)) {
             $action->extractCliArguments($command);
+        }
+
+
+        foreach($this->_registry as $object) {
+            if($object instanceof core\IDispatchAware) {
+                $object->onApplicationDispatch($action);
+            }
         }
 
         return $action->dispatch();

@@ -98,8 +98,6 @@ abstract class Model implements IModel, core\IDumpable {
         return $key;
     }
 
-    public function onApplicationShutdown() {}
-    
 
 // Units
     public function getUnit($name) {

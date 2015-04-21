@@ -74,7 +74,9 @@ abstract class Base implements core\IApplication, core\IDumpable {
 
     public function shutdown() {
         foreach($this->_registry as $object) {
-            $object->onApplicationShutdown();
+            if($object instanceof core\IShutdownAware) {
+                $object->onApplicationShutdown();
+            }
         }
     }
 
@@ -122,6 +124,10 @@ abstract class Base implements core\IApplication, core\IDumpable {
         }
 
         return $output;
+    }
+
+    public function getRegistryObjects() {
+        return $this->_registry;
     }
     
     

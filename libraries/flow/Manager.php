@@ -12,7 +12,7 @@ use df\user;
 use df\flex;
 use df\axis;
     
-class Manager implements IManager {
+class Manager implements IManager, core\IShutdownAware {
 
     use core\TManager;
 

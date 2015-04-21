@@ -350,8 +350,6 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             $this->_responseAugmentor->resetCurrent();
         }
         
-        $this->removeRegistryObject('breadcrumbs');
-
         $this->_context = null;
         $this->_context = arch\Context::factory(clone $request);
         
@@ -376,6 +374,12 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             }
 
             throw $e;
+        }
+
+        foreach($this->_registry as $object) {
+            if($object instanceof core\IDispatchAware) {
+                $object->onApplicationDispatch($action);
+            }
         }
 
         if(!$action->shouldOptimize()) {

@@ -61,9 +61,6 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
         return $output;
     }
 
-    public function onApplicationShutdown() {}
-
-
 // Channels
     public function setChannels(array $channels) {
         $this->_channels = [];

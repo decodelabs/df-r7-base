@@ -71,8 +71,6 @@ abstract class Base implements IScaffold {
         return 'scaffold('.$this->context->location->getPath()->getDirname().')';
     }
 
-    public function onApplicationShutdown() {}
-
     public function getView() {
         return $this->view;
     }
