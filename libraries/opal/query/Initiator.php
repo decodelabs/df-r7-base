@@ -510,11 +510,13 @@ class Initiator implements IInitiator {
             case IQueryTypes::JOIN_CONSTRAINT:
                 $sourceManager = $this->_parentQuery->getSourceManager();
 
+                /*
                 if($sourceManager->getSourceByAlias($alias)) {
                     throw new LogicException(
                         'A source has already been aliased as "'.$alias.'" - join source aliases must be unique'
                     );
                 }
+                */
 
 
                 $fields = null;
