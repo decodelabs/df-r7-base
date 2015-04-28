@@ -1003,6 +1003,7 @@ interface IExpressionOperator {
     const MULTIPLY = '*';
     const DIVIDE = '/';
     const MOD = '%';
+    const POWER = '^';
 
     public function getOperator();
 }
