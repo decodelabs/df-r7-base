@@ -90,17 +90,17 @@ class EntityLocator extends Base implements
             $output = new opal\query\clause\WhereList($parent, $isOr);
 
             foreach($value as $sub) {
-                $output->_addClause($this->_createSubClause($output, $field, $sub, $subOperator));
+                $output->_addClause($this->_createSubClause($output, $field, $sub, $subOperator, true));
             }
 
             return $output;
         } else {
-            return $this->_createSubClause($parent, $field, $value, $subOperator);
+            return $this->_createSubClause($parent, $field, $value, $subOperator, $isOr);
         }
     }
 
-    protected function _createSubClause(opal\query\IClauseFactory $parent, opal\query\IField $field, $value, $operator) {
-        $output = new opal\query\clause\WhereList($parent, true);
+    protected function _createSubClause(opal\query\IClauseFactory $parent, opal\query\IField $field, $value, $operator, $isOr=false) {
+        $output = new opal\query\clause\WhereList($parent, $isOr);
         $sourceAlias = $field->getSource()->getAlias();
 
         if($value instanceof opal\query\IField) {
