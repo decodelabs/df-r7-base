@@ -508,8 +508,11 @@ interface IBooleanField extends IField, ISanitizingField {}
 interface IColorField extends IField, ISanitizingField {}
 
 interface ICurrencyField extends IField, IRangeField {
-    public function setInputUnit($unit);
-    public function getInputUnit();
+    public function setCurrency($unit);
+    public function getCurrency();
+    public function allowCurrencySelection($flag=null);
+    public function setCurrencyFieldName($name);
+    public function getCurrencyFieldName();
 }
 
 interface IDateField extends IField, IRangeField, ISanitizingField {

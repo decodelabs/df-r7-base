@@ -13,16 +13,15 @@ use df\mint;
     
 class Currency extends NumberTextbox {
 
-    protected $_inputUnit = 'GBP';
-    protected $_defaultInputUnit = 'GBP';
-    protected $_unitSelectable = false;
-    protected $_showUnit = true;
+    protected $_inputCurrency = 'GBP';
+    protected $_currencySelectable = false;
+    protected $_showCurrency = true;
 
-    public function __construct(arch\IContext $context, $name, $value=null, $inputUnit=null, $allowSelection=false) {
-        $this->_unitSelectable = (bool)$allowSelection;
+    public function __construct(arch\IContext $context, $name, $value=null, $inputCurrency=null, $allowSelection=false) {
+        $this->_currencySelectable = (bool)$allowSelection;
 
-        if($inputUnit !== null) {
-            $this->_defaultInputUnit = $this->_inputUnit = mint\Currency::normalizeCode($inputUnit);
+        if($inputCurrency !== null) {
+            $this->_inputCurrency = mint\Currency::normalizeCode($inputCurrency);
         }
 
         $this->setStep(0.01);
@@ -30,14 +29,13 @@ class Currency extends NumberTextbox {
     }
 
     protected function _render() {
-        $name = $this->getName();
-        $unitName = $name.'[unit]';
+        $currencyFieldName = $this->getName().'[currency]';
         $context = $this->getRenderTarget()->getContext();
-        $selectValue = mint\Currency::normalizeCode($this->_inputUnit);
+        $selectValue = mint\Currency::normalizeCode($this->_inputCurrency);
 
         $output = parent::_render();
 
-        if($this->_unitSelectable) {
+        if($this->_currencySelectable) {
             $value = $this->getValue();
             $output = $output->render();
             $list = $context->i18n->numbers->getCurrencyList();
@@ -45,19 +43,19 @@ class Currency extends NumberTextbox {
 
             $output = new aura\html\ElementContent([$output, ' ',
                 self::factory($context, 'SelectList', [
-                        $unitName,
+                        $currencyFieldName,
                         $selectValue,
                         $options
                     ])
                     ->setRenderTarget($this->getRenderTarget())
             ]);
-        } else if($this->_showUnit) {
-            $unit = $context->i18n->numbers->getCurrencyName($this->_inputUnit);
+        } else if($this->_showCurrency) {
+            $currency = $context->i18n->numbers->getCurrencyName($this->_inputCurrency);
             $output = new aura\html\Element('label', [$output, ' ', 
-                new aura\html\Element('abbr', $this->_inputUnit, ['title' => $unit]),
+                new aura\html\Element('abbr', $this->_inputCurrency, ['title' => $currency]),
                 new aura\html\Element('input', null, [
                     'type' => 'hidden',
-                    'name' => $unitName,
+                    'name' => $currencyFieldName,
                     'value' => $selectValue
                 ])
             ]);
@@ -66,21 +64,21 @@ class Currency extends NumberTextbox {
         return $output;
     }
 
-    public function getInputUnit() {
-        return $this->_inputUnit;
+    public function getInputCurrency() {
+        return $this->_inputCurrency;
     }
 
-    public function shouldAllowUnitSelection() {
-        return $this->_unitSelectable;
+    public function allowCurrencySelection() {
+        return $this->_currencySelectable;
     }
 
-    public function shouldShowUnit($flag=null) {
+    public function shouldShowCurrency($flag=null) {
         if($flag !== null) {
-            $this->_showUnit = (bool)$flag;
+            $this->_showCurrency = (bool)$flag;
             return $this;
         }
 
-        return $this->_showUnit;
+        return $this->_showCurrency;
     }
 
 
@@ -88,8 +86,8 @@ class Currency extends NumberTextbox {
         $innerValue = $value;
 
         if($innerValue instanceof core\IValueContainer) {
-            if($this->_unitSelectable && isset($innerValue->unit)) {
-                $this->_inputUnit = mint\Currency::normalizeCode($innerValue['unit']);
+            if($this->_currencySelectable && isset($innerValue->currency)) {
+                $this->_inputCurrency = mint\Currency::normalizeCode($innerValue['currency']);
             }
 
             $innerValue = $innerValue->getValue();

@@ -14,38 +14,38 @@ class Currency extends Base implements core\validate\ICurrencyField {
     use core\validate\TSanitizingField;
     use core\validate\TRangeField;
 
-    protected $_inputUnit = null;
-    protected $_unitSelectable = true;
-    protected $_unitFieldName = null;
+    protected $_currency = null;
+    protected $_currencySelectable = true;
+    protected $_currencyFieldName = null;
 
-    public function setInputUnit($unit) {
-        if($unit !== null) {
-            $unit = mint\Currency::normalizeCode($unit);
+    public function setCurrency($code) {
+        if($code !== null) {
+            $code = mint\Currency::normalizeCode($code);
         }
 
-        $this->_inputUnit = $unit;
+        $this->_currency = $code;
         return $this;
     }
 
-    public function getInputUnit() {
-        return $this->_inputUnit;
+    public function getCurrency() {
+        return $this->_currency;
     }
 
-    public function shouldAllowUnitSelection($flag=null) {
+    public function allowCurrencySelection($flag=null) {
         if($flag !== null) {
-            $this->_unitSelectable = (bool)$flag;
+            $this->_currencySelectable = (bool)$flag;
             return $this;
         }
 
-        return $this->_unitSelectable;
+        return $this->_currencySelectable;
     }
 
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
         $value = $this->_sanitizeValue($value);
 
-        if($this->_unitSelectable && ($unit = $node->unit->getValue())) {
-            $this->_inputUnit = $unit;
+        if($this->_currencySelectable && ($currency = $node->currency->getValue())) {
+            $this->_currency = $currency;
         }
 
         if(!$length = $this->_checkRequired($node, $value)) {
@@ -62,20 +62,20 @@ class Currency extends Base implements core\validate\ICurrencyField {
         return $this->_finalize($node, $value);
     }
 
-    public function setUnitFieldName($name) {
-        $this->_unitFieldName = $name;
+    public function setCurrencyFieldName($name) {
+        $this->_currencyFieldName = $name;
         return $this;
     }
 
-    public function getUnitFieldName() {
-        return $this->_unitFieldName;
+    public function getCurrencyFieldName() {
+        return $this->_currencyFieldName;
     }
 
     public function applyValueTo(&$record, $value) {
         $output = parent::applyValueTo($record, $value);
 
-        if($this->_unitFieldName) {
-            $record[$this->_unitFieldName] = $this->_inputUnit;
+        if($this->_currencyFieldName) {
+            $record[$this->_currencyFieldName] = $this->_currency;
         }
 
         return $output;
