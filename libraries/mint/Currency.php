@@ -241,6 +241,8 @@ class Currency implements ICurrency, core\IDumpable {
         return strtoupper($code);
     }
 
+
+// Code
     public function setCode($code) {
         $this->_code = self::normalizeCode($code);
         return $this;
@@ -253,6 +255,11 @@ class Currency implements ICurrency, core\IDumpable {
     public function convert($code, $origRate, $newRate) {
         return $this->setAmount(($this->_amount / $origRate) * $newRate)
             ->setCode($code);
+    }
+
+    public function convertNew($code, $origRate, $newRate) {
+        $output = clone $this;
+        return $output->convert($code, $origRate, $newRate);
     }
 
     public function hasRecognizedCode() {
@@ -271,6 +278,71 @@ class Currency implements ICurrency, core\IDumpable {
         return pow(10, $this->getDecimalPlaces());
     }
 
+
+// Math
+    public function add($amount) {
+        if($amount instanceof ICurrency) {
+            if($amount->getCode() != $this->_code) {
+                throw new RuntimeException(
+                    'Cannot combine different currency amounts'
+                );
+            }
+
+            $amount = $amount->getAmount();
+        }
+
+        $this->_amount += $amount;
+        return $this;
+    }
+
+    public function addNew($amount) {
+        $output = clone $this;
+        return $output->add($amount);
+    }
+
+    public function subtract($amount) {
+        if($amount instanceof ICurrency) {
+            if($amount->getCode() != $this->_code) {
+                throw new RuntimeException(
+                    'Cannot combine different currency amounts'
+                );
+            }
+
+            $amount = $amount->getAmount();
+        }
+
+        $this->_amount -= $amount;
+        return $this;
+    }
+
+    public function subtractNew($amount) {
+        $output = clone $this;
+        return $output->subtract($amount);
+    }
+
+    public function multiply($factor) {
+        $this->_amount *= $factor;
+        return $this;
+    }
+
+    public function multiplyNew($factor) {
+        $output = clone $this;
+        return $output->multiply($factor);
+    }
+
+    public function divide($factor) {
+        $this->_amount /= $factor;
+        return $this;
+    }
+
+    public function divideNew($factor) {
+        $output = clone $this;
+        return $output->divide($factor);
+    }
+
+
+
+// String
     public function toString() {
         return $this->getFormattedAmount().' '.$this->_code;
     }

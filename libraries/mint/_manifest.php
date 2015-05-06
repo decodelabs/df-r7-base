@@ -124,10 +124,22 @@ interface ICurrency extends core\IStringProvider {
     public function getAmount();
     public function getIntegerAmount();
     public function getFormattedAmount();
+
     public function setCode($code);
     public function getCode();
+
     public function convert($code, $origRate, $newRate);
+    public function convertNew($code, $origRate, $newRate);
     public function hasRecognizedCode();
     public function getDecimalPlaces();
     public function getDecimalFactor();
+
+    public function add($amount);
+    public function addNew($amount);
+    public function subtract($amount);
+    public function subtractNew($amount);
+    public function multiply($factor);
+    public function multiplyNew($factor);
+    public function divide($factor);
+    public function divideNew($factor);
 }
