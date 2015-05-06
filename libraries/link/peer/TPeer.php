@@ -60,7 +60,6 @@ trait TPeer {
     protected function _onSocketDataAvailable($socket, $binding, $session) {
         $result = null;
 
-
         // If in write / listen mode, peer is responding early, we don't need to write any more
         if($session->getWriteState() == IIoState::WRITE_LISTEN) {
             $this->events->freezeSocketWrite($socket);
@@ -72,17 +71,12 @@ trait TPeer {
         $data = '';
         $endRead = false;
 
-        while(true) {
-            $chunk = $socket->readChunk($this->_readChunkSize);
+        $chunk = $socket->readChunk($this->_readChunkSize);
 
-            if($chunk === false) {
-                $endRead = true;
-                break;
-            } else if($chunk === '') {
-                break;
-            }
-
-            $data .= $chunk;
+        if($chunk === false) {
+            $endRead = true;
+        } else {
+            $data = $chunk;
         }
 
         if(strlen($data)) {
