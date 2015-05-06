@@ -8,6 +8,7 @@ namespace df\plug;
 use df;
 use df\core;
 use df\mint;
+use df\flow;
 
 class Format implements core\ISharedHelper {
     
@@ -419,6 +420,15 @@ class Format implements core\ISharedHelper {
         return $output;
     }
 
+    public function email($address, $name=null, $visual=false) {
+        $output = (string)flow\mail\Address::factory($address, $name);
+
+        if($visual) {
+            $output = str_ireplace(['%2b', '"'], ['+', ''], $output);
+        }
+
+        return $output;
+    }
 
 
     public function counterNote($counter) {
