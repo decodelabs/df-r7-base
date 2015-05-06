@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\link;
 
-class Session implements link\peer\ISession {
+class Session implements ISession {
     
     use link\peer\TPeer_Session;
     use link\peer\TPeer_RequestResponseSession;
@@ -18,6 +18,7 @@ class Session implements link\peer\ISession {
     use link\peer\TPeer_CallbackSession;
     
     protected $_contentLength = null;
+    protected $_headerCallback;
     
     public function getContentLength() {
         if($this->_contentLength === null) {
@@ -35,5 +36,19 @@ class Session implements link\peer\ISession {
         }
         
         return $this->_contentLength;
+    }
+
+
+    public function setHeaderCallback($callback) {
+        if($callback !== null) {
+            $callback = core\lang\Callback::factory($callback);
+        }
+
+        $this->_headerCallback = $callback;
+        return $this;
+    }
+    
+    public function getHeaderCallback() {
+        return $this->_headerCallback;
     }
 }

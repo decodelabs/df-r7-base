@@ -80,7 +80,7 @@ class Client implements IClient, core\IDumpable {
         return $this->_saveIfNotOk;
     }
 
-    public function addRequest($request, $callback) {
+    public function addRequest($request, $callback, $headerCallback=null) {
         $callback = core\lang\Callback::factory($callback);
         $request = link\http\request\Base::factory($request);
         $headers = $request->getHeaders();
@@ -102,6 +102,7 @@ class Client implements IClient, core\IDumpable {
         
         $session->setRequest($request);
         $session->setCallback($callback);
+        $session->setHeaderCallback($headerCallback);
         
         $this->_registerSession($session);
         
@@ -112,12 +113,12 @@ class Client implements IClient, core\IDumpable {
         return $this;
     }
 
-    public function sendRequest($request) {
+    public function sendRequest($request, $headerCallback=null) {
         $output = null;
 
         $this->addRequest($request, function($response) use(&$output) {
             $output = $response;
-        });
+        }, $headerCallback);
 
         if(!$this->isRunning()) {
             $this->run();
@@ -127,18 +128,18 @@ class Client implements IClient, core\IDumpable {
     }
 
     public function get($url, $headers=null, $cookies=null) {
-        $request = $this->_prepareRequest($url, 'get', $headers, $cookies);
+        $request = $this->prepareRequest($url, 'get', $headers, $cookies);
         return $this->sendRequest($request);
     }
 
     public function getFile($url, $file, $headers=null, $cookies=null) {
-        $request = $this->_prepareRequest($url, 'get', $headers, $cookies);
+        $request = $this->prepareRequest($url, 'get', $headers, $cookies);
         $request->setResponseFilePath($file);
         return $this->sendRequest($request);
     }
 
     public function post($url, $data, $headers=null, $cookies=null) {
-        $request = $this->_prepareRequest($url, 'post', $headers, $cookies);
+        $request = $this->prepareRequest($url, 'post', $headers, $cookies);
 
         if(is_string($data)) {
             $request->setBodyData($data);
@@ -149,7 +150,7 @@ class Client implements IClient, core\IDumpable {
         return $this->sendRequest($request);
     }
 
-    protected function _prepareRequest($url, $method, $headers=null, $cookies=null) {
+    public function prepareRequest($url, $method='get', $headers=null, $cookies=null) {
         $request = link\http\request\Base::factory($url);
         $request->setMethod($method);
 
@@ -225,6 +226,13 @@ class Client implements IClient, core\IDumpable {
             $response = link\http\response\Base::fromHeaderString($data, $session->readBuffer);
             $headers = $response->getHeaders();
             $session->setResponse($response);
+
+            if($callback = $session->getHeaderCallback()) {
+                if(false === $callback->invoke($headers)) {
+                    return link\peer\IIoState::END;
+                }
+            }
+
             $session->setStore('isChunked', strtolower($headers->get('transfer-encoding')) == 'chunked');
 
             if($headers->has('content-length')) {
@@ -325,7 +333,7 @@ class Client implements IClient, core\IDumpable {
             }
 
             $request->setUrl($location);
-            $this->addRequest($request, $callback);
+            $this->addRequest($request, $callback, $session->getHeaderCallback());
             $session->setStore('redirects', ++$redirCount);
             return;
         }

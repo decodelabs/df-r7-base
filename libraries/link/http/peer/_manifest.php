@@ -24,10 +24,17 @@ interface IClient extends link\peer\IClient {
     public function getMaxRetries();
     public function shouldSaveIfNotOk($flag=null);
 
-    public function addRequest($request, $callback);
-    public function sendRequest($request);
+    public function addRequest($request, $callback, $headerCallback=null);
+    public function sendRequest($request, $headerCallback=null);
 
     public function get($url, $headers=null, $cookies=null);
     public function getFile($url, $file, $headers=null, $cookies=null);
     public function post($url, $data, $headers=null, $cookies=null);
+
+    public function prepareRequest($url, $method='get', $headers=null, $cookies=null);
+}
+
+interface ISession extends link\peer\ISession {
+    public function setHeaderCallback($callback);
+    public function getHeaderCallback();
 }
