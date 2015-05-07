@@ -16,6 +16,7 @@ class Textbox extends Base implements ITextboxWidget, core\IDumpable {
     use TWidget_Input;
     use TWidget_VisualInput;
     use TWidget_FocusableInput;
+    use TWidget_PlaceholderProvider;
     use TWidget_TextEntry;
     use TWidget_DataListEntry;
     
@@ -46,6 +47,7 @@ class Textbox extends Base implements ITextboxWidget, core\IDumpable {
         $this->_applyInputAttributes($tag);
         $this->_applyVisualInputAttributes($tag);
         $this->_applyFocusableInputAttributes($tag);
+        $this->_applyPlaceholderAttributes($tag);
         $this->_applyTextEntryAttributes($tag);
         $this->_applyDataListEntryAttributes($tag);
         

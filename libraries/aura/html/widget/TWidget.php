@@ -445,10 +445,30 @@ trait TWidget_DataListEntry {
 }
 
 
+trait TWidget_PlaceholderProvider {
+
+    protected $_placeholder;
+
+    public function setPlaceholder($placeholder) {
+        $this->_placeholder = $placeholder;
+        return $this;
+    }
+    
+    public function getPlaceholder() {
+        return $this->_placeholder;
+    }
+
+    protected function _applyPlaceholderAttributes(aura\html\ITag $tag) {
+        if($this->_placeholder !== null) {
+            $tag->setAttribute('placeholder', $this->_placeholder);
+        }
+    }
+}
+
+
 trait TWidget_TextEntry {
     
     protected $_maxLength;
-    protected $_placeholder;
     protected $_spellCheck = null;
     
     public function setMaxLength($length) {
@@ -460,16 +480,6 @@ trait TWidget_TextEntry {
         return $this->_maxLength;
     }
     
-    
-    public function setPlaceholder($placeholder) {
-        $this->_placeholder = $placeholder;
-        return $this;
-    }
-    
-    public function getPlaceholder() {
-        return $this->_placeholder;
-    }
-
     public function shouldSpellCheck($flag=null) {
         if($flag !== null) {
             $this->_spellCheck = (bool)$flag;

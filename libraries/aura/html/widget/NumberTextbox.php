@@ -17,11 +17,13 @@ class NumberTextbox extends Base implements IRangeEntryWidget, core\IDumpable {
     use TWidget_VisualInput;
     use TWidget_FocusableInput;
     use TWidget_DataListEntry;
+    use TWidget_PlaceholderProvider;
     use TWidget_RangeEntry;
     
     const PRIMARY_TAG = 'input';
     const ARRAY_INPUT = false;
     const INPUT_TYPE = 'number';
+    const DEFAULT_PLACEHOLDER = null;
     
     public function __construct(arch\IContext $context, $name, $value=null) {
         $this->setName($name);
@@ -31,12 +33,13 @@ class NumberTextbox extends Base implements IRangeEntryWidget, core\IDumpable {
     protected function _render() {
         $tag = $this->getTag();
         $tag->setAttribute('type', $this->_getInputType());
-        
+
         $this->_applyFormDataAttributes($tag);
         $this->_applyInputAttributes($tag);
         $this->_applyVisualInputAttributes($tag);
         $this->_applyFocusableInputAttributes($tag);
         $this->_applyDataListEntryAttributes($tag);
+        $this->_applyPlaceholderAttributes($tag);
         $this->_applyRangeEntryAttributes($tag);
         
         return $tag;

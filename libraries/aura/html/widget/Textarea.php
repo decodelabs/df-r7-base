@@ -16,6 +16,7 @@ class Textarea extends Base implements ITextareaWidget {
     use TWidget_Input;
     use TWidget_VisualInput;
     use TWidget_FocusableInput;
+    use TWidget_PlaceholderProvider;
     use TWidget_TextEntry;
     
     const PRIMARY_TAG = 'textarea';
@@ -38,6 +39,7 @@ class Textarea extends Base implements ITextareaWidget {
         $this->_applyInputAttributes($tag);
         $this->_applyVisualInputAttributes($tag);
         $this->_applyFocusableInputAttributes($tag);
+        $this->_applyPlaceholderAttributes($tag);
         $this->_applyTextEntryAttributes($tag);
         
         if($this->_columns !== null) {
