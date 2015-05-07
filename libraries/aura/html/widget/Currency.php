@@ -68,7 +68,7 @@ class Currency extends NumberTextbox {
         return $this->_inputCurrency;
     }
 
-    public function allowCurrencySelection() {
+    public function allowSelection() {
         return $this->_currencySelectable;
     }
 
