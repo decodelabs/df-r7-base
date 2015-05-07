@@ -10,8 +10,6 @@ use df\core;
 
 class Boolean extends Base implements core\validate\IBooleanField {
     
-    use core\validate\TSanitizingField;
-
     protected $_isRequired = true;
 
     public function validate(core\collection\IInputTree $node) {

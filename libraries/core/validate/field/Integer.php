@@ -10,7 +10,6 @@ use df\core;
 
 class Integer extends Base implements core\validate\IIntegerField {
     
-    use core\validate\TSanitizingField;
     use core\validate\TRangeField;
     
     public function validate(core\collection\IInputTree $node) {
@@ -24,7 +23,7 @@ class Integer extends Base implements core\validate\IIntegerField {
         $options = ['flags' => FILTER_FLAG_ALLOW_OCTAL | FILTER_FLAG_ALLOW_HEX];
 
         if(false === filter_var($value, FILTER_VALIDATE_INT, $options)) {
-            $this->_applyMessage($node, 'invalid', $this->_handler->_(
+            $this->_applyMessage($node, 'invalid', $this->validator->_(
                 'This is not a valid number'
             ));
         } else {

@@ -10,6 +10,8 @@ use df\core;
 
 abstract class Base implements core\validate\IField {
     
+    public $validator;
+
     protected $_name;
     protected $_recordName = null;
     protected $_isRequired = false;
@@ -17,12 +19,17 @@ abstract class Base implements core\validate\IField {
     protected $_requireGroup = null;
     protected $_toggleField = null;
     protected $_shouldSanitize = true;
+    protected $_sanitizer;
+    protected $_defaultValue;
     protected $_customValidator = null;
     protected $_messageGenerator = null;
-    protected $_handler;
     
     
     public static function factory(core\validate\IHandler $handler, $type, $name) {
+        if($type === null) {
+            $type = $name;
+        }
+        
         $class = 'df\\core\\validate\\field\\'.ucfirst($type);
         
         if(!class_exists($class)) {
@@ -36,7 +43,7 @@ abstract class Base implements core\validate\IField {
     
     
     public function __construct(core\validate\IHandler $handler, $name) {
-        $this->_handler = $handler;
+        $this->validator = $handler;
         $this->_name = $name;
     }
     
@@ -57,10 +64,8 @@ abstract class Base implements core\validate\IField {
         }
     }
     
-    public function getHandler() {
-        return $this->_handler;
-    }
-    
+
+// Requirements
     public function isRequired($flag=null) {
         if($flag !== null) {
             $this->_isRequired = (bool)$flag;
@@ -97,72 +102,6 @@ abstract class Base implements core\validate\IField {
         return $this->_toggleField;
     }
 
-    public function shouldSanitize($flag=null) {
-        if($flag !== null) {
-            $this->_shouldSanitize = (bool)$flag;
-            return $this;
-        }
-       
-        return $this->_shouldSanitize;
-    }
-    
-    
-    public function setCustomValidator($validator=null) {
-        if($validator !== null) {
-            $validator = core\lang\Callback::factory($validator);
-        }
-
-        $this->_customValidator = $validator;
-        return $this;
-    }
-    
-    public function getCustomValidator() {
-        return $this->_customValidator;
-    }
-
-    public function setMessageGenerator($generator=null) {
-        if($generator !== null) {
-            $generator = core\lang\Callback::factory($generator);
-        }
-
-        $this->_messageGenerator = $generator;
-        return $this;
-    }
-
-    public function getMessageGenerator() {
-        return $this->_messageGenerator;
-    }
-
-    protected function _applyMessage(core\collection\IInputTree $node, $code, $defaultMessage) {
-        $message = null;
-
-        if($this->_messageGenerator) {
-            $message = $this->_messageGenerator->invoke($code, $this, $this->_handler);
-        }
-
-        if(empty($message)) {
-            $message = $defaultMessage;
-        }
-
-        $node->addError($code, $message);
-    }
-    
-    public function applyValueTo(&$record, $value) {
-        if(!is_array($record) && !$record instanceof \ArrayAccess) {
-            throw new RuntimeException(
-                'Target record does not implement ArrayAccess'
-            );
-        }
-        
-        $name = $this->getRecordName();
-
-        //if($value !== null || !isset($record[$name])) {
-            $record[$name] = $value;
-        //}
-        
-        return $this;
-    }
-    
     protected function _checkRequired(core\collection\IInputTree $node, $value) {
         if($this->_shouldSanitize) {
             $node->setValue($value);
@@ -171,8 +110,8 @@ abstract class Base implements core\validate\IField {
         $required = $this->_isRequired;
 
         if($this->_toggleField) {
-            if($field = $this->_handler->getField($this->_toggleField)) {
-                $toggle = (bool)$this->_handler[$this->_toggleField];
+            if($field = $this->validator->getField($this->_toggleField)) {
+                $toggle = (bool)$this->validator[$this->_toggleField];
 
                 if($required) {
                     if(!$toggle) {
@@ -197,29 +136,141 @@ abstract class Base implements core\validate\IField {
                 $this->_applyMessage($node, 'required', 'This field cannot be empty');
             }
 
-            if($this->_requireGroup !== null && !$this->_handler->checkRequireGroup($this->_requireGroup)) {
-                $this->_handler->setRequireGroupUnfulfilled($this->_requireGroup, $this->_name);
+            if($this->_requireGroup !== null && !$this->validator->checkRequireGroup($this->_requireGroup)) {
+                $this->validator->setRequireGroupUnfulfilled($this->_requireGroup, $this->_name);
             }
         } else if($this->_requireGroup !== null) {
-            $this->_handler->setRequireGroupFulfilled($this->_requireGroup);
+            $this->validator->setRequireGroupFulfilled($this->_requireGroup);
         }
         
         return $length;
     }
+
+
+// Sanitize
+    public function shouldSanitize($flag=null) {
+        if($flag !== null) {
+            $this->_shouldSanitize = (bool)$flag;
+            return $this;
+        }
+       
+        return $this->_shouldSanitize;
+    }
+
+    public function setSanitizer($sanitizer) {
+        if($sanitizer !== null) {
+            $sanitizer = core\lang\Callback::factory($sanitizer);
+        }
+
+        $this->_sanitizer = $sanitizer;
+        return $this;
+    }
     
+    public function getSanitizer() {
+        return $this->_sanitizer;
+    }
+
+    public function setDefaultValue($value) {
+        $this->_defaultValue = $value;
+        return $this;
+    }
+
+    public function getDefaultValue() {
+        return $this->_defaultValue;
+    }
+
+    protected function _sanitizeValue($value, $runSanitizer=true) {
+        if($value === '') {
+            $value = null;
+        }
+
+        if($value === null) {
+            $value = $this->_defaultValue;
+        }
+
+        if($this->_sanitizer && $runSanitizer) {
+            $value = $this->_sanitizer->invoke($value, $this);
+        }
+
+        return $value;
+    }
+    
+    
+
+// Custom validator
+    public function setCustomValidator($validator=null) {
+        if($validator !== null) {
+            $validator = core\lang\Callback::factory($validator);
+        }
+
+        $this->_customValidator = $validator;
+        return $this;
+    }
+    
+    public function getCustomValidator() {
+        return $this->_customValidator;
+    }
+
+    protected function _applyCustomValidator(core\collection\IInputTree $node, $value) {
+        if(!$node->hasErrors() && $this->_customValidator) {
+            $this->_customValidator->invoke($node, $value, $this);
+        }
+        
+        return $value;
+    }
+
+
+// Messages
+    public function setMessageGenerator($generator=null) {
+        if($generator !== null) {
+            $generator = core\lang\Callback::factory($generator);
+        }
+
+        $this->_messageGenerator = $generator;
+        return $this;
+    }
+
+    public function getMessageGenerator() {
+        return $this->_messageGenerator;
+    }
+
+    protected function _applyMessage(core\collection\IInputTree $node, $code, $defaultMessage) {
+        $message = null;
+
+        if($this->_messageGenerator) {
+            $message = $this->_messageGenerator->invoke($code, $this, $this->validator);
+        }
+
+        if(empty($message)) {
+            $message = $defaultMessage;
+        }
+
+        $node->addError($code, $message);
+    }
+    
+
+// Values
+    public function applyValueTo(&$record, $value) {
+        if(!is_array($record) && !$record instanceof \ArrayAccess) {
+            throw new RuntimeException(
+                'Target record does not implement ArrayAccess'
+            );
+        }
+        
+        $name = $this->getRecordName();
+
+        //if($value !== null || !isset($record[$name])) {
+            $record[$name] = $value;
+        //}
+        
+        return $this;
+    }
+
     protected function _finalize(core\collection\IInputTree $node, $value) {
         $value = $this->_applyCustomValidator($node, $value);
         
         if($this->_shouldSanitize) {
             $node->setValue($value);
-        }
-        
-        return $value;
-    }
-    
-    protected function _applyCustomValidator(core\collection\IInputTree $node, $value) {
-        if(!$node->hasErrors() && $this->_customValidator) {
-            $this->_customValidator->invoke($node, $value, $this);
         }
         
         return $value;

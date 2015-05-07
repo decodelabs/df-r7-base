@@ -10,8 +10,6 @@ use df\core;
 
 class Structure extends Base implements core\validate\IStructureField {
     
-    use core\validate\TSanitizingField;
-
     protected $_allowEmpty = false;
 
     public function shouldAllowEmpty($flag=null) {
@@ -27,8 +25,8 @@ class Structure extends Base implements core\validate\IStructureField {
         $required = $this->_isRequired;
 
         if($this->_toggleField) {
-            if($field = $this->_handler->getField($this->_toggleField)) {
-                $toggle = (bool)$this->_handler[$this->_toggleField];
+            if($field = $this->validator->getField($this->_toggleField)) {
+                $toggle = (bool)$this->validator[$this->_toggleField];
 
                 if(!$toggle) {
                     $node->setValue($value = []);
@@ -51,16 +49,16 @@ class Structure extends Base implements core\validate\IStructureField {
         }
 
         if($node->isEmpty() && !$node->hasValue() && $required && !$this->_allowEmpty) {
-            $this->_applyMessage($node, 'required', $this->_handler->_(
+            $this->_applyMessage($node, 'required', $this->validator->_(
                 'This field cannot be empty'
             ));
 
-            if($this->_requireGroup !== null && !$this->_handler->checkRequireGroup($this->_requireGroup)) {
-                $this->_handler->setRequireGroupUnfulfilled($this->_requireGroup, $this->_name);
+            if($this->_requireGroup !== null && !$this->validator->checkRequireGroup($this->_requireGroup)) {
+                $this->validator->setRequireGroupUnfulfilled($this->_requireGroup, $this->_name);
             }
         } else {
             if($this->_requireGroup !== null) {
-                $this->_handler->setRequireGroupFulfilled($this->_requireGroup);
+                $this->validator->setRequireGroupFulfilled($this->_requireGroup);
             }
         }
 

@@ -10,7 +10,6 @@ use df\core;
     
 class Duration extends Base implements core\validate\IDurationField {
 
-    use core\validate\TSanitizingField;
     use core\validate\TRangeField;
 
     protected $_inputUnit = null;
@@ -53,7 +52,7 @@ class Duration extends Base implements core\validate\IDurationField {
         try {
             $duration = $this->_normalizeDuration($value);
         } catch(\Exception $e) {
-            $this->_applyMessage($node, 'invalid', $this->_handler->_(
+            $this->_applyMessage($node, 'invalid', $this->validator->_(
                 'This is not a valid duration'
             ));
 
@@ -92,7 +91,7 @@ class Duration extends Base implements core\validate\IDurationField {
             $min = core\time\Duration::factory($this->_min);
 
             if($value->lt($min)) {
-                $this->_applyMessage($node, 'min', $this->_handler->_(
+                $this->_applyMessage($node, 'min', $this->validator->_(
                     'This field must be at least %min%',
                     ['%min%' => $min]
                 ));
@@ -103,7 +102,7 @@ class Duration extends Base implements core\validate\IDurationField {
             $max = core\time\Duration::factory($this->_max);
 
             if($value->gt($max)) {
-                $this->_applyMessage($node, 'max', $this->_handler->_(
+                $this->_applyMessage($node, 'max', $this->validator->_(
                     'This field must not be more than %max%',
                     ['%max%' => $max]
                 ));

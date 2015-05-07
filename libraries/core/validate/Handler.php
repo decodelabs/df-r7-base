@@ -23,17 +23,17 @@ class Handler implements IHandler {
 
     public $data = null;
 
-    public function addField($name, $type) {
+    public function addField($name, $type=null) {
         $this->newField($name, $type);
         return $this;
     }
 
-    public function addRequiredField($name, $type) {
+    public function addRequiredField($name, $type=null) {
         $this->newField($name, $type)->isRequired(true);
         return $this;
     }
 
-    public function newField($name, $type) {
+    public function newField($name, $type=null) {
         $this->endField();
         $field = core\validate\field\Base::factory($this, $type, $name);
         $field->shouldSanitize($this->_shouldSanitizeAll);
@@ -44,7 +44,7 @@ class Handler implements IHandler {
         return $field;
     }
 
-    public function newRequiredField($name, $type) {
+    public function newRequiredField($name, $type=null) {
         return $this->newField($name, $type)->isRequired(true);
     }
 

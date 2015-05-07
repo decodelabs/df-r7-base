@@ -11,7 +11,6 @@ use df\core;
 class Date extends Base implements core\validate\IDateField {
     
     use core\validate\TRangeField;
-    use core\validate\TSanitizingField;
 
     protected $_defaultToNow = false;
     protected $_mustBePast = false;
@@ -110,7 +109,7 @@ class Date extends Base implements core\validate\IDateField {
                 $date = core\time\Date::factory($value, $this->_isLocal);
             }
         } catch(\Exception $e) {
-            $this->_applyMessage($node, 'invalid', $this->_handler->_(
+            $this->_applyMessage($node, 'invalid', $this->validator->_(
                 'This is not a valid date'
             ));
 
@@ -123,13 +122,13 @@ class Date extends Base implements core\validate\IDateField {
         $this->_validateRange($node, $date);
 
         if($this->_mustBePast && !$date->isPast()) {
-            $this->_applyMessage($node, 'mustBePast', $this->_handler->_(
+            $this->_applyMessage($node, 'mustBePast', $this->validator->_(
                 'This date must not be in the future'
             ));
         }
 
         if($this->_mustBeFuture && !$date->isFuture()) {
-            $this->_applyMessage($node, 'mustBeFuture', $this->_handler->_(
+            $this->_applyMessage($node, 'mustBeFuture', $this->validator->_(
                 'This date must not be in the past'
             ));
         }

@@ -7,11 +7,13 @@ namespace df\core\validate\field;
 
 use df;
 use df\core;
+use df\opal;
 
 class Email extends Base implements core\validate\IEmailField {
     
-    use core\validate\TSanitizingField;
     use core\validate\TStorageAwareField;
+    use core\validate\TRecordManipulatorField;
+    use opal\query\TFilterConsumer;
     use core\validate\TUniqueCheckerField;
 
     public function validate(core\collection\IInputTree $node) {
@@ -27,7 +29,7 @@ class Email extends Base implements core\validate\IEmailField {
         $value = filter_var($value, FILTER_SANITIZE_EMAIL);
         
         if(!filter_var($value, FILTER_VALIDATE_EMAIL)) {
-            $this->_applyMessage($node, 'invalid', $this->_handler->_(
+            $this->_applyMessage($node, 'invalid', $this->validator->_(
                 'This is not a valid email address'
             ));
         }

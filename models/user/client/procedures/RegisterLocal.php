@@ -28,7 +28,7 @@ class RegisterLocal extends axis\procedure\Record {
         $this->validator
 
             // New password
-            ->addField('password', 'password')
+            ->addField('password')
                 ->isRequired(true)
                 ->setMatchField('confirmPassword')
                 ->shouldCheckStrength($userConfig->shouldCheckPasswordStrength())

@@ -103,12 +103,9 @@ class Unit extends axis\unit\table\Base {
         $validator
 
             // Email
-            ->addRequiredField('email', 'email')
+            ->addRequiredField('email')
                 ->isOptional(!$isNew)
-                ->setStorageAdapter($this)
-                ->chainIf($record, function($validator) use($record) {
-                    $validator->setUniqueFilterId($record['id']);
-                })
+                ->setRecord($record)
                 ->setUniqueErrorMessage($this->context->_('This email address is already in use by another account'))
 
             // Full name
@@ -120,7 +117,7 @@ class Unit extends axis\unit\table\Base {
                 ->isOptional(true)
                 ->setSanitizer(function($value, $field) {
                     if(empty($value)) {
-                        $parts = explode(' ', $field->getHandler()['fullName']);
+                        $parts = explode(' ', $field->validator['fullName']);
                         $value = array_shift($parts);
                     }
 

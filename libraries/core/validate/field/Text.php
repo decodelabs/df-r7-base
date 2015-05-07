@@ -7,11 +7,13 @@ namespace df\core\validate\field;
 
 use df;
 use df\core;
+use df\opal;
 
 class Text extends Base implements core\validate\ITextField {
     
-    use core\validate\TSanitizingField;
     use core\validate\TStorageAwareField;
+    use core\validate\TRecordManipulatorField;
+    use opal\query\TFilterConsumer;
     use core\validate\TUniqueCheckerField;
     use core\validate\TMinLengthField;
     use core\validate\TMaxLengthField;
@@ -115,7 +117,7 @@ class Text extends Base implements core\validate\ITextField {
             $wordCount = core\string\Manipulator::countWords($value);
 
             if($this->_minWordLength !== null && $wordCount < $this->_minWordLength) {
-                $this->_applyMessage($node, 'minWordLength', $this->_handler->_(
+                $this->_applyMessage($node, 'minWordLength', $this->validator->_(
                     [
                         'n = 1' => 'This field must contain at least %min% word',
                         '*' => 'This field must contain at least %min% words'
@@ -126,7 +128,7 @@ class Text extends Base implements core\validate\ITextField {
             }
 
             if($this->_maxWordLength !== null && $wordCount > $this->_maxWordLength) {
-                $this->_applyMessage($node, 'maxWordLength', $this->_handler->_(
+                $this->_applyMessage($node, 'maxWordLength', $this->validator->_(
                     [
                         'n = 1' => 'This field must not me more than %max% word',
                         '*' => 'This field must not me more than %max% words'
@@ -141,7 +143,7 @@ class Text extends Base implements core\validate\ITextField {
             $value, FILTER_VALIDATE_REGEXP, 
             ['options' => ['regexp' => $this->_pattern]]
         )) {
-            $node->addError('pattern', $this->_handler->_('The value entered is invalid'));
+            $node->addError('pattern', $this->validator->_('The value entered is invalid'));
         }
         
         $this->_validateUnique($node, $value);

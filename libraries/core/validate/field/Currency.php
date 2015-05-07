@@ -11,7 +11,6 @@ use df\mint;
     
 class Currency extends Base implements core\validate\ICurrencyField {
 
-    use core\validate\TSanitizingField;
     use core\validate\TRangeField;
 
     protected $_currency = null;
@@ -31,7 +30,7 @@ class Currency extends Base implements core\validate\ICurrencyField {
         return $this->_currency;
     }
 
-    public function allowCurrencySelection($flag=null) {
+    public function allowSelection($flag=null) {
         if($flag !== null) {
             $this->_currencySelectable = (bool)$flag;
             return $this;
@@ -53,7 +52,7 @@ class Currency extends Base implements core\validate\ICurrencyField {
         }
 
         if(!filter_var($value, FILTER_VALIDATE_FLOAT, ['decimal' => true]) && $value !== '0') {
-            $this->_applyMessage($node, 'invalid', $this->_handler->_(
+            $this->_applyMessage($node, 'invalid', $this->validator->_(
                 'This is not a valid number'
             ));
         }

@@ -10,7 +10,6 @@ use df\core;
 
 class Float extends Base implements core\validate\IFloatField {
     
-    use core\validate\TSanitizingField;
     use core\validate\TRangeField;    
     
     public function validate(core\collection\IInputTree $node) {
@@ -22,7 +21,7 @@ class Float extends Base implements core\validate\IFloatField {
         }
         
         if(false === filter_var($value, FILTER_VALIDATE_FLOAT) && $value !== '0') {
-            $this->_applyMessage($node, 'invalid', $this->_handler->_(
+            $this->_applyMessage($node, 'invalid', $this->validator->_(
                 'This is not a valid number'
             ));
         } else {

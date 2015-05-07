@@ -11,8 +11,6 @@ use df\spur;
 
 class VideoEmbed extends Base implements core\validate\IVideoEmbedField {
 
-    use core\validate\TSanitizingField;
-
     public function validate(core\collection\IInputTree $node) {
         $value = trim($node->getValue());
         $value = $this->_sanitizeValue($value);
@@ -30,12 +28,12 @@ class VideoEmbed extends Base implements core\validate\IVideoEmbedField {
         }
 
         if($node->isValid()) {
-            if($this->_requireGroup !== null && !$this->_handler->checkRequireGroup($this->_requireGroup)) {
-                $this->_handler->setRequireGroupUnfulfilled($this->_requireGroup, $this->_name);
+            if($this->_requireGroup !== null && !$this->validator->checkRequireGroup($this->_requireGroup)) {
+                $this->validator->setRequireGroupUnfulfilled($this->_requireGroup, $this->_name);
             }
         } else {
             if($this->_requireGroup !== null) {
-                $this->_handler->setRequireGroupFulfilled($this->_requireGroup);
+                $this->validator->setRequireGroupFulfilled($this->_requireGroup);
             }
         }
 

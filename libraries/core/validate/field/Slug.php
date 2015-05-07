@@ -7,11 +7,13 @@ namespace df\core\validate\field;
 
 use df;
 use df\core;
+use df\opal;
 
 class Slug extends Base implements core\validate\ISlugField {
 
     use core\validate\TStorageAwareField;
-    use core\validate\TSanitizingField;
+    use core\validate\TRecordManipulatorField;
+    use opal\query\TFilterConsumer;
     use core\validate\TUniqueCheckerField;
     use core\validate\TMinLengthField;
     use core\validate\TMaxLengthField;
@@ -86,13 +88,13 @@ class Slug extends Base implements core\validate\ISlugField {
         $value = $this->_sanitizeValue($value, true);
 
         if(false !== strpos($value, '/') && !$this->_allowPathFormat) {
-            $this->_applyMessage($node, 'invalid', $this->_handler->_(
+            $this->_applyMessage($node, 'invalid', $this->validator->_(
                 'Path type slugs are not allowed here'
             ));
         }
 
         if($this->_allowPathFormat && substr($value, -1) == '/' && strlen($value) > 1) {
-            $this->_applyMessage($node, 'required', $this->_handler->_(
+            $this->_applyMessage($node, 'required', $this->validator->_(
                 'You must enter a full path slug'
             ));
 
@@ -100,7 +102,7 @@ class Slug extends Base implements core\validate\ISlugField {
         }
 
         if($value == '/' && !$this->_allowRoot) {
-            $this->_applyMessage($node, 'invalid', $this->_handler->_(
+            $this->_applyMessage($node, 'invalid', $this->validator->_(
                 'Root slug is not allowed here'
             ));
         }
@@ -121,7 +123,7 @@ class Slug extends Base implements core\validate\ISlugField {
         $value = trim($value);
 
         if(empty($value) && $this->_defaultValueField) {
-            $data = $this->_handler->getCurrentData();
+            $data = $this->validator->getCurrentData();
 
             if($data->has($this->_defaultValueField)) {
                 $value = trim($data[$this->_defaultValueField]);

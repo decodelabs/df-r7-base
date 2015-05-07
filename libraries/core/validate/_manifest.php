@@ -22,10 +22,10 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 
 // Interfaces
 interface IHandler extends \ArrayAccess, core\lang\IChainable {
-    public function addField($name, $type);
-    public function addRequiredField($name, $type);
-    public function newField($name, $type);
-    public function newRequiredField($name, $type);
+    public function addField($name, $type=null);
+    public function addRequiredField($name, $type=null);
+    public function newField($name, $type=null);
+    public function newRequiredField($name, $type=null);
     public function getTargetField();
     public function endField();
     public function hasField($name);
@@ -52,19 +52,25 @@ interface IHandler extends \ArrayAccess, core\lang\IChainable {
 
 
 interface IField {
-    public function getHandler();
     public function getName();
     public function setRecordName($name);
     public function getRecordName();
+
     public function isRequired($flag=null);
     public function isOptional($flag=null);
-    public function shouldSanitize($flag=null);
-    public function setCustomValidator($validator=null);
-    public function getCustomValidator();
     public function setRequireGroup($name);
     public function getRequireGroup();
     public function setToggleField($name);
     public function getToggleField();
+
+    public function shouldSanitize($flag=null);
+    public function setSanitizer($sanitizer);
+    public function getSanitizer();
+    public function setDefaultValue($value);
+    public function getDefaultValue();
+
+    public function setCustomValidator($validator=null);
+    public function getCustomValidator();
     public function setMessageGenerator($generator=null);
     public function getMessageGenerator();
     
@@ -272,60 +278,6 @@ trait TOptionProviderField {
 }
 
 
-// Sanitizer
-interface ISanitizingField extends IField {
-    public function setSanitizer($sanitizer);
-    public function getSanitizer();
-    public function setDefaultValue($value);
-    public function getDefaultValue();
-}
-
-trait TSanitizingField {
-
-    protected $_sanitizer;
-    protected $_defaultValue;
-    
-    public function setSanitizer($sanitizer) {
-        if($sanitizer !== null) {
-            $sanitizer = core\lang\Callback::factory($sanitizer);
-        }
-
-        $this->_sanitizer = $sanitizer;
-        return $this;
-    }
-    
-    public function getSanitizer() {
-        return $this->_sanitizer;
-    }
-
-    public function setDefaultValue($value) {
-        $this->_defaultValue = $value;
-        return $this;
-    }
-
-    public function getDefaultValue() {
-        return $this->_defaultValue;
-    }
-
-    protected function _sanitizeValue($value, $runSanitizer=true) {
-        if($value === '') {
-            $value = null;
-        }
-
-        if($value === null) {
-            $value = $this->_defaultValue;
-        }
-
-        if($this->_sanitizer && $runSanitizer) {
-            $value = $this->_sanitizer->invoke($value, $this);
-        }
-
-        return $value;
-    }
-}
-
-
-
 // Storage unit
 interface IStorageAwareField extends IField {
     public function setStorageAdapter($adapter);
@@ -337,6 +289,10 @@ trait TStorageAwareField {
     protected $_storageAdapter;
 
     public function setStorageAdapter($adapter) {
+        if($adapter instanceof opal\record\IRecordAdapterProvider) {
+            $adapter = $adapter->getRecordAdapter();
+        }
+
         if(!$adapter instanceof opal\query\IAdapter && $adapter !== null) {
             $adapter = mesh\Manager::getInstance()->fetchEntity($adapter);
 
@@ -354,78 +310,47 @@ trait TStorageAwareField {
     }
 }
 
+interface IRecordManipulatorField extends IStorageAwareField, opal\query\IFilterConsumer {
+    public function setRecord(opal\record\IRecord $record);
+    public function setRecordId($id);
+    public function getRecordId();
+}
 
-interface IUniqueCheckerField extends IStorageAwareField {
-    public function setStorageField($field);
-    public function getStorageField();
-    public function setUniqueFilterId($id);
-    public function getUniqueFilterId();
-    public function addUniqueFilters(array $filters);
-    public function addUniqueFilter($field, $value, $in=true);
-    public function removeUniqueFilter($field);
-    public function getUniqueFilters();
-    public function clearUniqueFilters();
+trait TRecordManipulatorField {
+
+    protected $_recordId;
+
+    public function setRecord(opal\record\IRecord $record) {
+        $this->setStorageAdapter($record->getRecordAdapter());
+
+        if(!$record->isNew()) {
+            $this->setRecordId($record->getPrimaryKeySet());
+        }
+        
+        return $this;
+    }
+
+    public function setRecordId($id) {
+        $this->_recordId = $id;
+        return $this;
+    }
+
+    public function getRecordId() {
+        return $this->_recordId;
+    }
+}
+
+
+
+interface IUniqueCheckerField extends IRecordManipulatorField {
     public function setUniqueErrorMessage($message);
     public function getUniqueErrorMessage();
 }
 
+
 trait TUniqueCheckerField {
 
-    protected $_storageField;
-    protected $_uniqueFilters = [];
     protected $_uniqueErrorMessage;
-
-    public function setStorageField($field) {
-        $this->_storageField = $field;
-        return $this;
-    }
-
-    public function getStorageField() {
-        return $this->_storageField;
-    }
-
-    public function setUniqueFilterId($id) {
-        $this->addUniqueFilter('@primary', $id, false);
-        return $this;
-    }
-
-    public function getUniqueFilterId() {
-        if(isset($this->_uniqueFilters['@primary'])) {
-            return $this->_uniqueFilters['@primary'];
-        }
-    }
-
-    public function addUniqueFilters(array $filters) {
-        foreach($filters as $key => $value) {
-            $this->addUniqueFilter($key, $value);
-        }
-
-        return $this;
-    }
-
-    public function addUniqueFilter($key, $value, $in=true) {
-        $this->_uniqueFilters[$key] = [
-            'value' => $value,
-            'inclusive' => (bool)$in
-        ];
-
-        return $this;
-    }
-
-    public function removeUniqueFilter($field) {
-        unset($this->_uniqueFilters[$field]);
-        return $this;
-    }
-
-    public function getUniqueFilters() {
-        return $this->_uniqueFilters;
-    }
-
-    public function clearUniqueFilters() {
-        $this->_uniqueFilters = [];
-        return $this;
-    }
-
 
     public function setUniqueErrorMessage($message) {
         $this->_uniqueErrorMessage = $message;
@@ -441,13 +366,7 @@ trait TUniqueCheckerField {
             return;
         }
 
-        if(null === ($fieldName = $this->_storageField)) {
-            if($this->_recordName) {
-                $fieldName = $this->_recordName;
-            } else {
-                $fieldName = $this->_name;
-            }
-        }
+        $fieldName = $this->getRecordName();
 
         if($rename) {
             $exists = false;
@@ -456,10 +375,7 @@ trait TUniqueCheckerField {
 
             while($this->_getUniqueCheckQuery($fieldName, $output)->count()) {
                 $output = $value.'-'.(++$counter);
-
-                if($this instanceof ISanitizingField) {
-                    $output = $this->_sanitizeValue($output);
-                }
+                $output = $this->_sanitizeValue($output);
             }
 
             $value = $output;
@@ -484,18 +400,11 @@ trait TUniqueCheckerField {
             ->from($this->_storageAdapter, 'checkUnit')
             ->where($fieldName, '=', $value);
 
-        if(!empty($this->_uniqueFilters)) {
-            foreach($this->_uniqueFilters as $field => $set) {
-                $setValue = $set['value'];
-
-                if(is_callable($setValue)) {
-                    $setValue($query, $this);
-                } else {
-                    $query->where($field, $set['inclusive'] ? '=' : '!=', $setValue);
-                }
-            }
+        if($this->_recordId !== null) {
+            $query->where('@primary', '!=', $this->_recordId);
         }
 
+        $this->_applyFilters($query);
         return $query;
     }
 }
@@ -503,19 +412,19 @@ trait TUniqueCheckerField {
 
 
 // Actual
-interface IBooleanField extends IField, ISanitizingField {}
+interface IBooleanField extends IField {}
 
-interface IColorField extends IField, ISanitizingField {}
+interface IColorField extends IField {}
 
 interface ICurrencyField extends IField, IRangeField {
     public function setCurrency($unit);
     public function getCurrency();
-    public function allowCurrencySelection($flag=null);
+    public function allowSelection($flag=null);
     public function setCurrencyFieldName($name);
     public function getCurrencyFieldName();
 }
 
-interface IDateField extends IField, IRangeField, ISanitizingField {
+interface IDateField extends IField, IRangeField {
     public function shouldDefaultToNow($flag=null);
     public function mustBePast($flag=null);
     public function mustBeFuture($flag=null);
@@ -523,7 +432,7 @@ interface IDateField extends IField, IRangeField, ISanitizingField {
     public function getExpectedFormat();
 }
 
-interface IDelegateField extends IField, ISanitizingField {
+interface IDelegateField extends IField {
     public function fromForm(arch\form\IForm $form, $name=null);
     public function setDelegate(arch\form\IDelegate $delegate);
     public function getDelegate();
@@ -540,11 +449,11 @@ interface IEnumField extends IField, IOptionProviderField {}
 
 interface IFloatField extends IField, IRangeField {}
 
-interface IIdListField extends IField, ISanitizingField {
+interface IIdListField extends IField {
     public function shouldUseKeys($flag=null);
 }
 
-interface ITextListField extends IField, ISanitizingField {}
+interface ITextListField extends IField {}
 interface IIntegerField extends IField, IRangeField {}
 
 interface IPasswordField extends IField, IMinLengthField {
@@ -558,7 +467,7 @@ interface ISetField extends IField {
     public function getOptions();    
 }
 
-interface ISlugField extends IField, ISanitizingField, IUniqueCheckerField, IMinLengthField, IMaxLengthField {
+interface ISlugField extends IField, IUniqueCheckerField, IMinLengthField, IMaxLengthField {
     public function allowPathFormat($flag=null);
     public function allowAreaMarker($flag=null);
     public function allowRoot($flag=null);
@@ -567,11 +476,11 @@ interface ISlugField extends IField, ISanitizingField, IUniqueCheckerField, IMin
     public function shouldGenerateIfEmpty($flag=null);
 }
 
-interface IStructureField extends IField, ISanitizingField {
+interface IStructureField extends IField {
     public function shouldAllowEmpty($flag=null);
 }
 
-interface ITextField extends IField, ISanitizingField, IUniqueCheckerField, IMinLengthField, IMaxLengthField {
+interface ITextField extends IField, IUniqueCheckerField, IMinLengthField, IMaxLengthField {
     public function setPattern($pattern);
     public function getPattern();
 
@@ -585,3 +494,7 @@ interface ITextField extends IField, ISanitizingField, IUniqueCheckerField, IMin
 
 interface IUrlField extends IField {}
 interface IVideoEmbedField extends IField {}
+
+interface IWeightField extends IField, IStorageAwareField, IRecordManipulatorField {
+
+}

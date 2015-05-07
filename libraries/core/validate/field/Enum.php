@@ -11,7 +11,6 @@ use df\mesh;
     
 class Enum extends Base implements core\validate\IEnumField {
 
-    use core\validate\TSanitizingField;
     use core\validate\TOptionProviderField;
     
     protected $_type = null;
@@ -55,7 +54,7 @@ class Enum extends Base implements core\validate\IEnumField {
             try {
                 $value = $this->_type->factory($value)->getOption();
             } catch(core\InvalidArgumentException $e) {
-                $this->_applyMessage($node, 'invalid', $this->_handler->_(
+                $this->_applyMessage($node, 'invalid', $this->validator->_(
                     'Please select a valid option'
                 ));
             }
@@ -66,7 +65,7 @@ class Enum extends Base implements core\validate\IEnumField {
             }
 
             if(!in_array($value, $this->_options)) {
-                $this->_applyMessage($node, 'invalid', $this->_handler->_(
+                $this->_applyMessage($node, 'invalid', $this->validator->_(
                     'Please select a valid option'
                 ));
             }

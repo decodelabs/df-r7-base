@@ -11,8 +11,6 @@ use df\neon;
     
 class Color extends Base implements core\validate\IColorField {
 
-    use core\validate\TSanitizingField;
-
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
         $value = $this->_sanitizeValue($value);
@@ -24,7 +22,7 @@ class Color extends Base implements core\validate\IColorField {
         try {
             $value = neon\Color::factory($value);
         } catch(\Exception $e) {
-            $this->_applyMessage($node, 'invalid', $this->_handler->_(
+            $this->_applyMessage($node, 'invalid', $this->validator->_(
                 'Please enter a valid color'
             ));
             

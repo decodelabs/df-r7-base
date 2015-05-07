@@ -10,8 +10,6 @@ use df\core;
 
 class Url extends Base implements core\validate\IUrlField {
     
-    use core\validate\TSanitizingField;
-
     public function validate(core\collection\IInputTree $node) {
         $value = $node->getValue();
         $value = $this->_sanitizeValue($value);
@@ -27,7 +25,7 @@ class Url extends Base implements core\validate\IUrlField {
         $value = filter_var($value, FILTER_SANITIZE_URL);
         
         if(!filter_var($value, FILTER_VALIDATE_URL)) {
-            $this->_applyMessage($node, 'invalid', $this->_handler->_(
+            $this->_applyMessage($node, 'invalid', $this->validator->_(
                 'This is not a valid URL'
             ));
         }

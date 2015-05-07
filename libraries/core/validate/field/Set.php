@@ -10,8 +10,6 @@ use df\core;
     
 class Set extends Base implements core\validate\IEnumField {
 
-    use core\validate\TSanitizingField;
-
     protected $_options = [];
     protected $_stringDelimiter = null;
 
@@ -45,8 +43,8 @@ class Set extends Base implements core\validate\IEnumField {
         $required = $this->_isRequired;
 
         if($this->_toggleField) {
-            if($field = $this->_handler->getField($this->_toggleField)) {
-                $toggle = (bool)$this->_handler[$this->_toggleField];
+            if($field = $this->validator->getField($this->_toggleField)) {
+                $toggle = (bool)$this->validator[$this->_toggleField];
 
                 if(!$toggle) {
                     $node->setValue($value = []);
@@ -59,18 +57,18 @@ class Set extends Base implements core\validate\IEnumField {
         }
 
         if((!$count = count($node)) && $required) {
-            $this->_applyMessage($node, 'required', $this->_handler->_(
+            $this->_applyMessage($node, 'required', $this->validator->_(
                 'This field requires at least one selection'
             ));
         }
 
         if($count && $this->_requireGroup !== null) {
-            $this->_handler->setRequireGroupFulfilled($this->_requireGroup);
+            $this->validator->setRequireGroupFulfilled($this->_requireGroup);
         }
         
         foreach($value as $key => $keyValue) {
             if(trim($keyValue) === '') {
-                $this->_applyMessage($node->{$key}, 'required', $this->_handler->_(
+                $this->_applyMessage($node->{$key}, 'required', $this->validator->_(
                     'This field cannot be empty'
                 ));
 
@@ -78,7 +76,7 @@ class Set extends Base implements core\validate\IEnumField {
             }
 
             if(!in_array($keyValue, $this->_options)) {
-                $this->_applyMessage($node->{$key}, 'invalid', $this->_handler->_(
+                $this->_applyMessage($node->{$key}, 'invalid', $this->validator->_(
                     'This is not a valid option'
                 ));
             }

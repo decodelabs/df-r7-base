@@ -11,6 +11,8 @@ use df\core;
 class Password extends Base implements core\validate\IPasswordField {
     
     use core\validate\TMinLengthField;
+
+    const DEFAULT_MIN_LENGTH = 6;
     
     protected $_matchField = null;
     protected $_minStrength = 18;
@@ -55,8 +57,10 @@ class Password extends Base implements core\validate\IPasswordField {
 
 
     public function validate(core\collection\IInputTree $node) {
-        $this->_setDefaultMinLength(6);
+        $this->_setDefaultMinLength(self::DEFAULT_MIN_LENGTH);
+
         $value = $node->getValue();
+        $value = $this->_sanitizeValue($value);
         
         if(!$length = $this->_checkRequired($node, $value)) {
             return null;
@@ -74,7 +78,7 @@ class Password extends Base implements core\validate\IPasswordField {
             $analyzer = new core\string\PasswordAnalyzer($value, df\Launchpad::$application->getPassKey());
             
             if($analyzer->getStrength() < $this->_minStrength) {
-                $this->_applyMessage($node, 'strength', $this->_handler->_(
+                $this->_applyMessage($node, 'strength', $this->validator->_(
                     'This password is not strong enough - consider using numbers, capitals and more characters'
                 ));
             }
@@ -82,11 +86,11 @@ class Password extends Base implements core\validate\IPasswordField {
         
         
         if($this->_matchField) {
-            $data = $this->_handler->getCurrentData();
+            $data = $this->validator->getCurrentData();
             $matchNode = $data->{$this->_matchField};
             
             if($matchNode->getValue() != $value) {
-                $this->_applyMessage($matchNode, 'invalid', $this->_handler->_(
+                $this->_applyMessage($matchNode, 'invalid', $this->validator->_(
                     'Your passwords do not match'
                 ));
             }
