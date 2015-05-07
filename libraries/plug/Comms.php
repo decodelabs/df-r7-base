@@ -93,36 +93,6 @@ class Comms implements core\ISharedHelper {
         return $this->_manager->newNotification($subject, $body, $to, $from);
     }
 
-
-
-    public function templateNotify($path, array $args=[], $to=null, $from=null) {
-        return $this->sendNotification($this->newTemplateNotification($path, $args, $to, $from));
-    }
-
-    public function templateAdminNotify($path, array $args=[]) {
-        return $this->templateNotify($path, $args, true);
-    }
-
-    public function newTemplateNotification($path, array $args=[], $to=null, $from=null) {
-        if($this->context instanceof arch\IContext) {
-            $apex = $this->context->apex;
-        } else {
-            $apex = arch\Context::factory()->apex;
-        }
-
-        $view = $apex->view($path);
-
-        if(!$view instanceof aura\view\INotificationProxyView) {
-            throw new aura\view\InvalidArgumentException(
-                'Templated notifications can only use view templates that support conversion to notifications'
-            );
-        }
-
-        $view->setSlots($args);
-        return $view->toNotification($to, $from);
-    }
-
-
     public function componentNotify($path, array $args=[], $to=null, $from=null, $preview=false) {
         return $this->sendNotification($this->newComponentNotification($path, $args, $to, $from, $preview));
     }
