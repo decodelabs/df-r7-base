@@ -1099,3 +1099,56 @@ interface IOutputManifest {
     public function queryRequiresPartial($flag=null);
     public function requiresPartial($forFetch=true);
 }
+
+
+// Filters
+interface IFilterConsumer {
+    public function addFilter($callback);
+    public function setFilter($name, $callback);
+    public function hasFilter($name);
+    public function removeFilter($name);
+    public function getFilters();
+    public function clearFilters();
+}
+
+trait TFilterConsumer {
+
+    protected $_filters = [];
+
+    public function addFilter($callback) {
+        return $this->setFilter(uniqid(), $callback);
+    }
+
+    public function setFilter($name, $callback) {
+        $this->_filters[$name] = core\lang\Callback::factory($callback);
+        return $this;
+    }
+
+    public function hasFilter($name) {
+        return isset($this->_filters[$name]);
+    }
+
+    public function removeFilter($name) {
+        unset($this->_filters[$name]);
+        return $this;
+    }
+
+    public function getFilters() {
+        return $this->_filters;
+    }
+
+    public function clearFilters() {
+        $this->_filters = [];
+        return $this;
+    }
+
+    protected function _applyFilters(IQuery $query) {
+        $clause = $query->beginWhereClause();
+
+        foreach($this->_filters as $filter) {
+            $filter->invoke($clause, $this);
+        }
+
+        return $clause->endClause();
+    }
+}
