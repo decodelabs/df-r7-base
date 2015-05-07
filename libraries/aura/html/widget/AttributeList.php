@@ -31,13 +31,14 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
         
         $renderContext = $this->getRendererContext();
         $renderContext->reset();
+        $even = true;
 
         if($this->_renderer) {
             foreach($this->_data as $key => $row) {
                 $row = $renderContext->prepareRow($row);
                 $field = new aura\html\widget\util\Field($key, $key, $this->_renderer);
 
-                $this->_renderRow($rows, $renderContext, $field, $key, $row);
+                $this->_renderRow($rows, $renderContext, $field, $key, $row, $even);
             }
         } else {
             $data = $renderContext->prepareRow($this->_data);
@@ -54,22 +55,46 @@ class AttributeList extends Base implements IDataDrivenListWidget, IMappedListWi
             $renderContext->iterate(null);
             
             foreach($fields as $key => $field) {
-                $this->_renderRow($rows, $renderContext, $field, $key, $data);
+                $this->_renderRow($rows, $renderContext, $field, $key, $data, $even);
             }
         }
         
         return $tag->renderWith($tableTag->renderWith($rows, true));
     }
 
-    protected function _renderRow($rows, $renderContext, $field, $key, $data) {
+    protected function _renderRow($rows, $renderContext, $field, $key, $data, &$even) {
         $row = new aura\html\ElementContent();
         $trTag = new aura\html\Tag('tr', ['class' => 'field-'.$key]);
+        $trTag->addClass(($even = !$even) ? 'even' : 'odd');
         $thTag = new aura\html\Element('th');
         $tdTag = new aura\html\Tag('td');
-        
+
         $renderContext->iterate($key, $tdTag, $trTag, $thTag);
         $renderContext->iterateField($key, $tdTag, $trTag, $thTag);
         $value = $renderContext->renderCell($data, $field->renderer);
+
+        if($renderContext->divider !== null) {
+            if(!$rows->isEmpty()) {
+                $rows->push((new aura\html\Element('tr.spacer', [
+                    new aura\html\Element(
+                        'td', null,
+                        ['colspan' => 2]
+                    )
+                ]))->render());
+            }
+
+            if($renderContext->divider !== true) {
+                $rows->push((new aura\html\Element('tr.divider', [
+                    new aura\html\Element(
+                        'td', 
+                        $renderContext->divider,
+                        ['colspan' => 2]
+                    )
+                ]))->render());
+            }
+
+            $even = false;
+        }
 
         if($renderContext->shouldSkipRow()) {
             return;

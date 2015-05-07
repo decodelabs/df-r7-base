@@ -193,12 +193,13 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
         }
         
         if(!$empty) {
-            $empty = true;
-            
+            $empty = $first = $even = true;
+
             foreach($this->_data as $j => $row) {
                 $empty = false;
                 $row = $renderContext->prepareRow($row);
                 $rowTag = new aura\html\Element('tr');
+                $rowTag->addClass(($even = !$even) ? 'even' : 'odd');
                 $renderContext->iterate($j);
                 
                 foreach($this->_fields as $key => $field) {
@@ -218,6 +219,31 @@ class CollectionList extends Base implements IDataDrivenListWidget, IMappedListW
                         $rowTag->push($cellTag->renderWith($value));
                     }
                 }
+
+                if($renderContext->divider !== null) {
+                    if(!$first) {
+                        $content->append((new aura\html\Element('tr.spacer', [
+                            new aura\html\Element(
+                                'td', null,
+                                ['colspan' => count($this->_fields)]
+                            )
+                        ]))->render());
+                    }
+
+                    if($renderContext->divider !== true) {
+                        $content->append((new aura\html\Element('tr.divider', [
+                            new aura\html\Element(
+                                'td', 
+                                $renderContext->divider,
+                                ['colspan' => count($this->_fields)]
+                            )
+                        ]))->render());
+                    }
+
+                    $even = false;
+                }
+
+                $first = false;
 
                 if($renderContext->shouldSkipRow()) {
                     continue;

@@ -150,15 +150,29 @@ class AttributeList extends arch\component\Base implements aura\html\widget\IWid
 
         $output = [];
         $list = $this->_createBaseList();
+        $divider = 0;
 
         foreach($this->_fields as $key => $value) {
             if(substr($key, 0, 2) == '--') {
                 if(is_string($value)) {
                     $title = $value;
-                } else {
+                } else if($key != '--') {
                     $title = $this->view->format->name(substr($key, 2));
+                } else {
+                    $title = null;
                 }
 
+                $list->addField('divider'.($divider++), function($data, $context) use($title) {
+                    if($title) {
+                        $context->setDivider($title);
+                    } else {
+                        $context->addDivider();
+                    }
+
+                    $context->skipRow();
+                });
+
+                /*
                 if($list->hasFields()) {
                     $output[] = $list;
                 }
@@ -168,6 +182,7 @@ class AttributeList extends arch\component\Base implements aura\html\widget\IWid
                 }
 
                 $list = $this->_createBaseList();
+                */
                 continue;
             }
 

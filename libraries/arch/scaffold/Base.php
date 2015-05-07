@@ -234,8 +234,27 @@ abstract class Base implements IScaffold {
         $output = new arch\component\template\AttributeList($this->context, [$fields, $record]);
         $output->setViewArg(lcfirst($this->getRecordKeyName()));
         $output->setRenderTarget($this->view);
+        $spacerIterator = 0;
 
         foreach($output->getFields() as $field => $enabled) {
+            /*
+            if(substr($field, 0, 2) == '--') {
+                $output->setField('divider'.($spacerIterator++), function($list, $key) use($field) {
+                    $list->addField($key, function($data, $context) use($field) {
+                        if($field == '--') {
+                            $context->addDivider();
+                        } else {
+                            $context->setDivider(ucfirst(substr($field, 2)));
+                        }
+
+                        $context->skipRow();
+                    });
+                });
+
+                continue;
+            }
+            */
+
             if($enabled === true) {
                 $method1 = 'define'.ucfirst($field).'Field';
                 $method2 = 'override'.ucfirst($field).'Field';

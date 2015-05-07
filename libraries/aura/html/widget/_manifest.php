@@ -31,6 +31,9 @@ interface IRendererContext extends core\collection\IMappedCollection, aura\view\
     public function getCounter();
     public function getCellTag();
     public function getRowTag();
+    public function addDivider();
+    public function setDivider($label);
+    public function getDivider();
     public function prepareRow($row);
     public function reset();
     public function iterate($key, aura\html\ITag $cellTag=null, aura\html\ITag $rowTag=null);

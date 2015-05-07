@@ -23,6 +23,7 @@ class RendererContext implements aura\html\widget\IRendererContext {
     public $field;
     public $counter = -1;
     public $component;
+    public $divider;
 
     protected $_store = [];
     protected $_widget;
@@ -75,6 +76,23 @@ class RendererContext implements aura\html\widget\IRendererContext {
     public function getFieldTag() {
         return $this->fieldTag;
     }
+
+    public function addDivider() {
+        if($this->divider === null) {
+            $this->divider = true;
+        }
+
+        return $this;
+    }
+
+    public function setDivider($label) {
+        $this->divider = $label;
+        return $this;
+    }
+
+    public function getDivider() {
+        return $this->divider;
+    }
     
     public function prepareRow($row) {
         if($this->_rowProcessor) {
@@ -115,6 +133,7 @@ class RendererContext implements aura\html\widget\IRendererContext {
         $this->fieldTag = $fieldTag;
         $this->_skipRow = false;
         $this->_skipCells = 0;
+        $this->divider = null;
 
         return $this;
     }
