@@ -14,6 +14,7 @@ class BridgedManyRelationValueContainer implements
     opal\record\ITaskAwareValueContainer, 
     opal\record\IPreparedValueContainer,
     opal\record\IManyRelationValueContainer,
+    opal\record\IIdProviderValueContainer,
     core\IArrayProvider,
     \Countable,
     \IteratorAggregate,
@@ -575,6 +576,10 @@ class BridgedManyRelationValueContainer implements
     public function getRelatedPrimaryKeys() {
         $bridgeTargetFieldName = $this->_field->getBridgeTargetFieldName();
         return $this->selectFromBridge($bridgeTargetFieldName)->toList($bridgeTargetFieldName);
+    }
+
+    public function getRawId() {
+        return $this->getRelatedPrimaryKeys();
     }
 
     protected function _getKeySets(array $records) {

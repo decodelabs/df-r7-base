@@ -65,7 +65,7 @@ class RegisterLocal extends axis\procedure\Record {
             }
 
             if($invite) {
-                $client->groups->addList($invite->groups->getRelatedPrimaryKeys());
+                $client->groups->addList($invite['#groups']);
             }
 
             $this->record->save();

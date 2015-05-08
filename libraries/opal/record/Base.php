@@ -730,7 +730,7 @@ class Base implements IRecord, \Serializable, core\IDumpable {
         } else if(array_key_exists($key, $this->_values)) {
             $output = $this->_values[$key];
         }
-        
+
         return $output;
     }
 
@@ -883,6 +883,20 @@ class Base implements IRecord, \Serializable, core\IDumpable {
     }
     
     public function offsetGet($key, $default=null) {
+        if($key == '@primary') {
+            return $this->getPrimaryKeySet();
+        } else {
+            $first = substr($key, 0, 1);
+
+            if($first == '#') {
+                return $this->getRawId(substr($key, 1));
+            } else if($first == '!') {
+                return $this->getOriginal(substr($key, 1));
+            } else if($first == '%') {
+                return $this->getRaw(substr($key, 1));
+            }
+        }
+
         $output = null;
         
         if(array_key_exists($key, $this->_changes)) {

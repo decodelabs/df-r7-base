@@ -14,6 +14,7 @@ class InlineManyRelationValueContainer implements
     opal\record\ITaskAwareValueContainer,
     opal\record\IPreparedValueContainer,
     opal\record\IManyRelationValueContainer,
+    opal\record\IIdProviderValueContainer,
     core\IArrayProvider,
     \Countable,
     \IteratorAggregate,
@@ -357,6 +358,10 @@ class InlineManyRelationValueContainer implements
         }
 
         return $this->select('@primary')->toList('@primary');
+    }
+
+    public function getRawId() {
+        return $this->getRelatedPrimaryKeys();
     }
     
     

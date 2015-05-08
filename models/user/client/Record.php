@@ -102,7 +102,7 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject {
     }
 
     public function getGroupIds() {
-        return $this->groups->getRelatedPrimaryKeys();
+        return $this['#groups'];
     }
     
     

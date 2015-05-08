@@ -14,7 +14,7 @@ use df\opal;
 class SlugTreeRecord extends opal\record\Base {
 
     protected function _onPreSave($taskSet, $task) {
-        if(!$this->getRawId('parent') || $this->hasChanged('slug')) {
+        if(!$this['#parent'] || $this->hasChanged('slug')) {
             $this->parent = $this->getRecordAdapter()->fetchParentFor($this['slug']);
         }
     }
