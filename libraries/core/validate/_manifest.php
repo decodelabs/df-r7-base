@@ -126,14 +126,14 @@ trait TRangeField {
 
     protected function _validateRange(core\collection\IInputTree $node, $value) {
         if($this->_min !== null && $value < $this->_min) {
-            $this->_applyMessage($node, 'min', $this->_handler->_(
+            $this->_applyMessage($node, 'min', $this->validator->_(
                 'This field must be at least %min%',
                 ['%min%' => $this->_min]
             ));
         }
         
         if($this->_max !== null && $value > $this->_max) {
-            $this->_applyMessage($node, 'max', $this->_handler->_(
+            $this->_applyMessage($node, 'max', $this->validator->_(
                 'This field must not be more than %max%',
                 ['%max%' => $this->_max]
             ));
@@ -186,7 +186,7 @@ trait TMinLengthField {
         }
 
         if($this->_minLength > 0 && $length < $this->_minLength) {
-            $this->_applyMessage($node, 'minLength', $this->_handler->_(
+            $this->_applyMessage($node, 'minLength', $this->validator->_(
                 [
                     'n = 1' => 'This field must contain at least %min% character',
                     '*' => 'This field must contain at least %min% characters'
@@ -243,7 +243,7 @@ trait TMaxLengthField {
         }
 
         if($this->_maxLength !== null && $length > $this->_maxLength) {
-            $this->_applyMessage($node, 'maxLength', $this->_handler->_(
+            $this->_applyMessage($node, 'maxLength', $this->validator->_(
                 [
                     'n = 1' => 'This field must not contain more than %max% character',
                     '*' => 'This field must not contain more than %max% characters'
@@ -387,7 +387,7 @@ trait TUniqueCheckerField {
             $message = $this->_uniqueErrorMessage;
 
             if($message === null) {
-                $message = $this->_handler->_('That value has already been entered before');
+                $message = $this->validator->_('That value has already been entered before');
             }
 
             $this->_applyMessage($node, 'unique', $message);
