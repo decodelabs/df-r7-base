@@ -18,6 +18,7 @@ class Notification extends Base implements INotificationProxyView {
     const DEFAULT_LAYOUT = 'Default';
 
     protected $_subject;
+    protected $_isPlainText = false;
 
     public function setSubject($subject) {
         $this->_subject = $subject;
@@ -26,6 +27,15 @@ class Notification extends Base implements INotificationProxyView {
 
     public function getSubject() {
         return $this->_subject;
+    }
+
+    public function isPlainText($flag=null) {
+        if($flag !== null) {
+            $this->_isPlainText = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_isPlainText;
     }
 
     public function render() {
@@ -40,20 +50,31 @@ class Notification extends Base implements INotificationProxyView {
     public function toNotification($to=null, $from=null) {
         $content = $this->render();
 
-        $htmlView = new Html('Html', $this->context);
-        $htmlView->setContentProvider($contentContainer = new aura\view\content\WidgetContentProvider($this->context));
-        $contentContainer->push($this->html->simpleTags($content));
-        $htmlView->setLayout($this->getLayout());
-        $htmlView->shouldUseLayout($this->shouldUseLayout());
+        if($this->_isPlainText) {
+            $subject = $this->_subject;
 
-        $htmlView->shouldRenderBase(false);
+            if(empty($subject)) {
+                $subject = $this->_('Notification from %a%', ['%a%' => $this->context->application->getName()]);
+            }
 
-        if(!$htmlView->hasTheme()) {
-            $themeConfig = aura\theme\Config::getInstance();
-            $htmlView->setTheme($themeConfig->getThemeIdFor('front'));
+            return flow\Manager::getInstance()->newNotification($subject, $content, $to, $from)
+                ->setBodyType(flow\INotification::TEXT);
+        } else {
+            $htmlView = new Html('Html', $this->context);
+            $htmlView->setContentProvider($contentContainer = new aura\view\content\WidgetContentProvider($this->context));
+            $contentContainer->push($this->html->simpleTags($content));
+            $htmlView->setLayout($this->getLayout());
+            $htmlView->shouldUseLayout($this->shouldUseLayout());
+
+            $htmlView->shouldRenderBase(false);
+
+            if(!$htmlView->hasTheme()) {
+                $themeConfig = aura\theme\Config::getInstance();
+                $htmlView->setTheme($themeConfig->getThemeIdFor('front'));
+            }
+
+            return $htmlView->toNotification($to, $from);
         }
-
-        return $htmlView->toNotification($to, $from);
     }
 
     public function toHtml() {

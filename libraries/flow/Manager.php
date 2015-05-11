@@ -154,7 +154,13 @@ class Manager implements IManager, core\IShutdownAware {
 
         $mail = new flow\mail\Message();
         $mail->setSubject($notification->getSubject());
-        $mail->setBodyHtml($notification->getBodyHtml());
+
+        if($notification->getBodyType() == INotification::TEXT) {
+            $mail->setBodyText((string)$notification->getBody());
+        } else {
+            $mail->setBodyHtml($notification->getBodyHtml());
+        }
+        
         $mail->isPrivate($notification->isPrivate());
 
         if($notification->shouldJournal()) {
