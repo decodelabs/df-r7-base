@@ -19,6 +19,7 @@ abstract class Mail extends Base implements arch\IMailComponent {
     const JOURNAL = true;
     const JOURNAL_WEEKS = 10; // weeks
 
+    protected $_defaultFromAddress = null;
     protected $_defaultToAddress = null;
     protected $_templateType;
     protected $_journalName;
@@ -76,7 +77,7 @@ abstract class Mail extends Base implements arch\IMailComponent {
         return $this->_templateType;
     }
 
-// Default to
+// Default addresses
     public function setDefaultToAddress($address, $name=null) {
         if($address !== null) {
             $address = flow\mail\Address::factory($address, $name);
@@ -88,6 +89,19 @@ abstract class Mail extends Base implements arch\IMailComponent {
 
     public function getDefaultToAddress() {
         return $this->_defaultToAddress;
+    }
+
+    public function setDefaultFromAddress($address, $name=null) {
+        if($address !== null) {
+            $address = flow\mail\Address::factory($address, $name);
+        }
+
+        $this->_defaultFromAddress = $address;
+        return $this;
+    }
+
+    public function getDefaultFromAddress() {
+        return $this->_defaultFromAddress;
     }
 
 // Renderable
@@ -151,6 +165,10 @@ abstract class Mail extends Base implements arch\IMailComponent {
     protected function _toNotification($to=null, $from=null) {
         if($to === null) {
             $to = $this->getDefaultToAddress();
+        }
+
+        if($from === null) {
+            $from = $this->getDefaultFromAddress();
         }
 
         $notification = $this->view->toNotification($to, $from);
