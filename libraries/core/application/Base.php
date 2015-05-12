@@ -14,6 +14,7 @@ abstract class Base implements core\IApplication, core\IDumpable {
     
     protected $_isRunning = false;
     protected $_registry = [];
+    protected $_dispatchException;
 
     public static function getApplicationPath() {
         return df\Launchpad::$applicationPath;
@@ -72,6 +73,8 @@ abstract class Base implements core\IApplication, core\IDumpable {
         return df\Launchpad::$isDistributed;
     }
 
+
+// Dispatch
     public function shutdown() {
         foreach($this->_registry as $object) {
             if($object instanceof core\IShutdownAware) {
@@ -80,6 +83,12 @@ abstract class Base implements core\IApplication, core\IDumpable {
         }
     }
 
+    public function getDispatchException() {
+        return $this->_dispatchException;
+    }
+
+
+// Debug
     public function renderDebugContext(core\debug\IContext $context) {
         df\Launchpad::loadBaseClass('core/debug/renderer/PlainText');
         echo (new core\debug\renderer\PlainText($context))->render();

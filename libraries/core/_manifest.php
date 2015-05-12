@@ -263,6 +263,7 @@ interface IApplication {
     // Execute
     public function dispatch();
     public function shutdown();
+    public function getDispatchException();
     
     // Environment
     public function getEnvironmentId();

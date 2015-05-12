@@ -12,7 +12,7 @@ use df\flow;
 use df\arch;
 use df\halo;
 
-class Http extends Base implements core\IContextAware, link\http\IResponseAugmentorProvider {
+class Http extends Base implements core\IContextAware, link\http\IResponseAugmentorProvider, arch\IRequestOrientedApplication {
     
     const RUN_MODE = 'Http';
 
@@ -23,6 +23,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     protected $_sendFileHeader;
     protected $_manualChunk = false;
     protected $_credentials = null;
+    protected $_dispatchRequest;
 
     protected $_context;
     protected $_router;
@@ -109,7 +110,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
     }
     
     public function getDispatchRequest() {
-        return $this->getContext()->request;
+        return $this->_dispatchRequest;
     }
     
     
@@ -316,6 +317,8 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
 // Dispatch request
     protected function _dispatchRequest(arch\IRequest $request) {
+        $this->_dispatchRequest = clone $request;
+
         try {
             $response = $this->_dispatchAction($request);
         } catch(\Exception $e) {
@@ -323,18 +326,10 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
                 ob_end_clean();
             }
 
-            try {
-                if($this->_context) {
-                    $request = clone $this->_context->request;
-                }
-            } catch(\Exception $e) {
-                $request = null;
-            }
-            
-            $request = new arch\ErrorRequest($e->getCode(), $e, $request);
+            $this->_dispatchException = $e;
 
             try {
-                $response = $this->_dispatchAction($request);
+                $response = $this->_dispatchAction(new arch\Request('error/'));
             } catch(\Exception $f) {
                 throw $e;
             }

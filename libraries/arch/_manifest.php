@@ -76,6 +76,10 @@ interface IContext extends core\IContext, IResponseForcer {
     public function getScaffold();
 }
 
+interface IRequestOrientedApplication extends core\IApplication {
+    public function getDispatchRequest();
+}
+
 
 interface IDirectoryHelper extends core\IContextAware, core\IHelper {}
 
@@ -199,13 +203,6 @@ interface IRequest extends core\uri\IUrl, user\IAccessLock {
     public function rewriteQueryToPath($keys);
     public function rewritePathToQuery($rootCount, $keys);
 }
-
-interface IErrorRequest extends IRequest {
-    public function getCode();
-    public function getException();
-    public function getLastRequest();
-}
-
 
 interface IProxyResponse {
     public function toResponse();

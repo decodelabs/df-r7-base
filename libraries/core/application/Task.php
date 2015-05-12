@@ -10,29 +10,18 @@ use df\core;
 use df\arch;
 use df\halo;
 
-class Task extends Base implements core\IContextAware {
+class Task extends Base implements core\IContextAware, arch\IRequestOrientedApplication {
     
     const RUN_MODE = 'Task';
     
     protected $_context;
-    protected $_request;
+    protected $_dispatchRequest;
     protected $_command;
     protected $_multiplexer;
 
 // Request
-    public function setTaskRequest(arch\IRequest $request) {
-        $this->_request = $request;
-        return $this;
-    }
-    
-    public function getTaskRequest() {
-        if(!$this->_request) {
-            throw new core\RuntimeException(
-                'The task request is not available until the application has been dispatched'
-            );
-        }
-        
-        return $this->_request;
+    public function getDispatchRequest() {
+        return $this->_dispatchRequest;
     }
 
 
@@ -108,7 +97,7 @@ class Task extends Base implements core\IContextAware {
             );
         }
 
-        $this->_request = arch\Request::factory($request);
+        $request = arch\Request::factory($request);
         $this->_command = new core\cli\Command(df\Launchpad::$environmentId.'.'.df\Launchpad::getEnvironmentMode().'.php');
 
         if($args) {
@@ -117,13 +106,14 @@ class Task extends Base implements core\IContextAware {
             }
         }
 
-        return $this->_request;
+        return $request;
     }
 
 
 // Dispatch request
     protected function _dispatchRequest(arch\IRequest $request, core\cli\ICommand $command=null) {
         set_time_limit(0);
+        $this->_dispatchRequest = clone $request;
 
         try {
             $response = $this->_dispatchAction($request, $command);
@@ -132,18 +122,10 @@ class Task extends Base implements core\IContextAware {
                 ob_end_clean();
             }
 
-            try {
-                if($this->_context) {
-                    $request = clone $this->_context->request;
-                }
-            } catch(\Exception $e) {
-                $request = null;
-            }
-            
-            $request = new arch\ErrorRequest($e->getCode(), $e, $request);
+            $this->_dispatchException = $e;
             
             try {
-                $response = $this->_dispatchAction($request);
+                $response = $this->_dispatchAction(new arch\Request('error/'));
             } catch(\Exception $f) {
                 throw $e;
             }
