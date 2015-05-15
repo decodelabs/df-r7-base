@@ -281,8 +281,8 @@ abstract class Base implements IScaffold {
     public function generateCollectionList(array $fields, $collection=null) {
         $nameKey = $this->getRecordNameField();
 
-        if(empty($fields)) {
-            $fields[] = $nameKey;
+        if(empty($fields) || (count($fields) == 1 && current($fields) == 'actions')) {
+            array_unshift($fields, $nameKey);
         }
 
         $output = new arch\component\template\CollectionList($this->context, [$fields, $collection]);
