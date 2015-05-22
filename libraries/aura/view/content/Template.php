@@ -279,6 +279,18 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         return isset($this->slots[$key]);
     }
 
+    public function slotExists($key) {
+        if($this->view && $this->view->slotExists($key)) {
+            return true;
+        }
+
+        if(!empty($this->slots)) {
+            return array_key_exists($key, $this->slots);
+        }
+
+        return false;
+    }
+
     public function getSlot($key, $default=null) {
         if(isset($this->slots[$key])) {
             return $this->slots[$key];

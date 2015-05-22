@@ -88,6 +88,7 @@ interface ISlotContainer {
     public function clearSlots();
     public function setSlot($key, $value);
     public function hasSlot($key);
+    public function slotExists($key);
     public function getSlot($key, $default=null);
     public function renderSlot($key, $default=null);
     public function removeSlot($key);

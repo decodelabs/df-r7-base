@@ -66,7 +66,7 @@ class Template extends Base implements aura\view\IContentProvider, \ArrayAccess,
     }
     
     public function getSlot($name, $default=null) {
-        if(array_key_exists($name, $this->_slots)) {
+        if(isset($this->_slots[$name])) {
             return $this->_slots[$name];
         }
         
@@ -74,7 +74,11 @@ class Template extends Base implements aura\view\IContentProvider, \ArrayAccess,
     }
     
     public function hasSlot($name) {
-        return array_key_exists($name, $this->_slots);
+        return isset($this->_slots[$name]);
+    }
+
+    public function slotExists($key) {
+        return array_key_exists($key, $this->_slots);
     }
     
     public function removeSlot($name) {

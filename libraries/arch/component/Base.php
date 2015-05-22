@@ -174,6 +174,10 @@ abstract class Base implements arch\IComponent {
         return isset($this->slots[$key]);
     }
 
+    public function slotExists($key) {
+        return array_key_exists($key, $this->slots);
+    }
+
     public function getSlot($key, $default=null) {
         if(isset($this->slots[$key])) {
             return $this->slots[$key];
