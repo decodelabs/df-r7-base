@@ -78,7 +78,7 @@ class Guid extends Base implements opal\schema\IAutoGeneratorField {
     
 // Values
     public function inflateValueFromRow($key, array $row, opal\record\IRecord $forRecord=null) {
-        if(isset($row[$key])) { 
+        if(isset($row[$key]) && !empty($row[$key])) { 
             return core\string\Uuid::factory($row[$key]);
         } else {
             return null;
