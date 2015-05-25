@@ -81,28 +81,32 @@ class Comms implements core\ISharedHelper {
 
 
 // Notifications
-    public function notify($subject, $body, $to=null, $from=null) {
+    public function notify($subject, $body, $to=null, $from=null, $forceSend=false) {
         return $this->sendNotification($this->newNotification($subject, $body, $to, $from));
     }
 
-    public function adminNotify($subject, $body) {
+    public function adminNotify($subject, $body, $forceSend=false) {
         return $this->notify($subject, $body, true);
     }
 
-    public function newNotification($subject, $body, $to=null, $from=null) {
-        return $this->_manager->newNotification($subject, $body, $to, $from);
+    public function newNotification($subject, $body, $to=null, $from=null, $forceSend=false) {
+        return $this->_manager->newNotification($subject, $body, $to, $from, $forceSend);
     }
 
-    public function componentNotify($path, array $args=[], $to=null, $from=null, $preview=false) {
-        return $this->sendNotification($this->newComponentNotification($path, $args, $to, $from, $preview));
+    public function componentNotify($path, array $args=[], $to=null, $from=null, $preview=false, $forceSend=false) {
+        return $this->sendNotification($this->newComponentNotification($path, $args, $to, $from, $preview, $forceSend));
     }
 
-    public function componentAdminNotify($path, array $args=[], $preview=false) {
-        return $this->componentNotify($path, $args, true, null, $preview);
+    public function componentAdminNotify($path, array $args=[], $preview=false, $forceSend=false) {
+        return $this->componentNotify($path, $args, true, null, $preview, $forceSend);
     }
 
-    public function newComponentNotification($path, array $args=[], $to=null, $from=null, $preview=false) {
+    public function newComponentNotification($path, array $args=[], $to=null, $from=null, $preview=false, $forceSend=false) {
         $component = $this->getMailComponent($path, $args);
+
+        if($forceSend) {
+            $component->shouldForceSend(true);
+        }
 
         if($preview) {
             return $component->toPreviewNotification($to, $from);

@@ -27,8 +27,9 @@ class Notification implements INotification {
     protected $_journalObjectId1;
     protected $_journalObjectId2;
     protected $_shouldJournal = true;
+    protected $_forceSend = false;
 
-    public function __construct($subject, $body, $to=null, $from=null) {
+    public function __construct($subject, $body, $to=null, $from=null, $forceSend=false) {
         $this->setSubject($subject);
         $this->setBody($body);
 
@@ -41,6 +42,8 @@ class Notification implements INotification {
         if($from !== null) {
             $this->setFromEmail($from);
         }
+
+        $this->_forceSend = (bool)$forceSend;
     }
 
 
@@ -171,6 +174,15 @@ class Notification implements INotification {
         }
 
         return $this->_filterClient;
+    }
+
+    public function shouldForceSend($flag=null) {
+        if($flag !== null) {
+            $this->_forceSend = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_forceSend;
     }
 
 

@@ -22,12 +22,13 @@ interface IManager extends core\IManager {
 
 // Mail
     public function sendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null);
-    public function getDefaultMailTransportName();
+    public function forceSendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null);
+    public function getDefaultMailTransportName($forceSend=false);
     public function getMailModel();
 
 // Notification
-    public function newNotification($subject, $body, $to=null, $from=null);
-    public function sendNotification(INotification $notification);
+    public function newNotification($subject, $body, $to=null, $from=null, $forceSend=false);
+    public function sendNotification(INotification $notification, $forceSend=false);
 
 // Flash
     public function setFlashLimit($limit);
@@ -145,6 +146,7 @@ interface INotification {
     public function clearTo();
     public function hasRecipients();
     public function shouldFilterClient($flag=null);
+    public function shouldForceSend($flag=null);
 
     public function addToEmail($email, $name=null);
     public function getToEmails();

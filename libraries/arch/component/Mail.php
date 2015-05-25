@@ -26,6 +26,7 @@ abstract class Mail extends Base implements arch\IMailComponent {
     protected $_journalObjectId1;
     protected $_journalObjectId2;
     protected $_isPrivate = false;
+    protected $_forceSend = false;
 
     public function __construct(arch\IContext $context, array $args=null) {
         $this->context = $context;
@@ -75,6 +76,15 @@ abstract class Mail extends Base implements arch\IMailComponent {
 
     public function getTemplateType() {
         return $this->_templateType;
+    }
+
+    public function shouldForceSend($flag=null) {
+        if($flag !== null) {
+            $this->_forceSend = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_forceSend;
     }
 
 // Default addresses
@@ -172,6 +182,10 @@ abstract class Mail extends Base implements arch\IMailComponent {
         }
 
         $notification = $this->view->toNotification($to, $from);
+
+        if($this->_forceSend) {
+            $notification->shouldForceSend($this->_forceSend);
+        }
 
         if($this->_isPrivate) {
             $notification->isPrivate(true);

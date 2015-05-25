@@ -30,11 +30,19 @@ class Manager implements IManager, core\IShutdownAware {
 
 ## Mail
     public function sendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null) {
+        return $this->_sendMail($message, $transport);
+    }
+
+    public function forceSendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null) {
+        return $this->_sendMail($message, $transport, true);
+    }
+
+    protected function _sendMail(flow\mail\IMessage $message, flow\mail\ITransport $transport=null, $forceSend=false) {
         $isDefault = false;
         $name = null;
 
         if($transport === null) {
-            $name = $this->getDefaultMailTransportName();
+            $name = $this->getDefaultMailTransportName($forceSend);
             $transport = flow\mail\transport\Base::factory($name);
             $isDefault = true;
         }
@@ -64,14 +72,14 @@ class Manager implements IManager, core\IShutdownAware {
         return $output;
     }
 
-    public function getDefaultMailTransportName() {
-        if(df\Launchpad::$application->isDevelopment()) {
+    public function getDefaultMailTransportName($forceSend=false) {
+        if(df\Launchpad::$application->isDevelopment() && !$forceSend) {
             return 'Capture';
         }
 
         $config = flow\mail\Config::getInstance();
 
-        if(df\Launchpad::$application->isTesting() && $config->shouldCaptureInTesting()) {
+        if(df\Launchpad::$application->isTesting() && $config->shouldCaptureInTesting() && !$forceSend) {
             return 'Capture';
         }
 
@@ -98,11 +106,11 @@ class Manager implements IManager, core\IShutdownAware {
 
 
 ## Notification
-    public function newNotification($subject, $body, $to=null, $from=null) {
-        return new Notification($subject, $body, $to, $from);
+    public function newNotification($subject, $body, $to=null, $from=null, $forceSend=false) {
+        return new Notification($subject, $body, $to, $from, $forceSend);
     }
 
-    public function sendNotification(INotification $notification) {
+    public function sendNotification(INotification $notification, $forceSend=false) {
         $emails = $notification->getToEmails();
         $userManager = user\Manager::getInstance();
         $userModel = $userManager->getUserModel();
@@ -175,17 +183,29 @@ class Manager implements IManager, core\IShutdownAware {
             $mail->setFromAddress($from);
         }
 
+        if(!$forceSend && $notification->shouldForceSend()) {
+            $forceSend = true;
+        }
+
         if($isJustToAdmins) {
             foreach($emails as $address => $name) {
                 $mail->addToAddress($address, $name);
             }
 
-            $this->sendMail($mail);
+            if($forceSend) {
+                $this->forceSendMail($mail);
+            } else {
+                $this->sendMail($mail);
+            }
         } else {
             foreach($emails as $address => $name) {
                 $activeMail = clone $mail;
                 $activeMail->addToAddress($address, $name);
-                $this->sendMail($activeMail);
+                if($forceSend) {
+                    $this->forceSendMail($activeMail);
+                } else {
+                    $this->sendMail($activeMail);
+                }
             }
         }
 
