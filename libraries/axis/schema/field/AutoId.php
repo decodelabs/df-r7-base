@@ -13,7 +13,8 @@ use df\opal;
 class AutoId extends Base implements
     opal\schema\IByteSizeRestrictedField,
     opal\schema\IAutoGeneratorField,
-    axis\schema\IAutoPrimaryField {
+    axis\schema\IAutoPrimaryField,
+    opal\schema\IAutoIncrementableField {
         
     use opal\schema\TField_ByteSizeRestricted;
     use axis\schema\TAutoPrimaryField;
@@ -37,6 +38,63 @@ class AutoId extends Base implements
         
         return true;
     }
+
+    public function shouldAutoIncrement($flag=null) {
+        if($flag !== null) {
+            if(!$flag) {
+                throw new opal\schema\LogicException(
+                    'AutoId field must auto increment'
+                );
+            }
+            
+            return $this;
+        }
+
+        return true;
+    }
+
+    public function isSigned($flag=null) {
+        if($flag !== null) {
+            if($flag) {
+                throw new opal\schema\LogicException(
+                    'AutoId field must be unsigned'
+                );
+            }
+            
+            return $this;
+        }
+
+        return false;
+    }
+
+    public function isUnsigned($flag=null) {
+        if($flag !== null) {
+            if(!$flag) {
+                throw new opal\schema\LogicException(
+                    'AutoId field must be unsigned'
+                );
+            }
+            
+            return $this;
+        }
+
+        return true;
+    }
+
+    public function shouldZerofill($flag=null) {
+        if($flag !== null) {
+            if($flag) {
+                throw new opal\schema\LogicException(
+                    'AutoId field must not zero-fill'
+                );
+            }
+            
+            return $this;
+        }
+
+        return false;
+    }
+
     
 
 // Values
