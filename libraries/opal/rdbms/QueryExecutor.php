@@ -435,7 +435,7 @@ abstract class QueryExecutor implements IQueryExecutor {
         $this->_stmt->appendSql("\n  ".implode(','."\n".'  ', $values));
         $this->writeWhereClauseSection(null, true);
         
-        if(!$this->_adapter->supports(opal\rdbms\adapter\Base::UPDATE_LIMIT)) {
+        if($this->_adapter->supports(opal\rdbms\adapter\Base::UPDATE_LIMIT)) {
             $this->writeOrderSection(true);
             $this->writeLimitSection(true);
         }
