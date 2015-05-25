@@ -63,6 +63,7 @@ class Notification extends Base implements INotificationProxyView {
             $htmlView = new Html('Html', $this->context);
             $htmlView->setContentProvider($contentContainer = new aura\view\content\WidgetContentProvider($this->context));
             $contentContainer->push($this->html->simpleTags($content));
+            $htmlView->setTitle($this->_subject);
             $htmlView->setLayout($this->getLayout());
             $htmlView->shouldUseLayout($this->shouldUseLayout());
 
