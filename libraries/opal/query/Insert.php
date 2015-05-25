@@ -66,7 +66,7 @@ class Insert implements IInsertQuery, core\IDumpable {
     
     public function execute() {
         $this->_row = $this->_deflateInsertValues($this->_row);
-        
+
         $output = $this->_sourceManager->executeQuery($this, function($adapter) {
             return $adapter->executeInsertQuery($this);
         });
@@ -89,20 +89,26 @@ class Insert implements IInsertQuery, core\IDumpable {
 
         $fields = $index->getFields();
         $values = [];
-        
+        $autoInc = false;
+
         foreach($fields as $name => $field) {
             if($originalId 
-            && (($field instanceof opal\schema\IAutoIncrementableField && $field->shouldAutoIncrement())
-              || $field instanceof opal\schema\IAutoGeneratorField)) {
+            && $field instanceof opal\schema\IAutoIncrementableField 
+            && $field->shouldAutoIncrement()
+            && !$autoInc) {
                 $values[$name] = $originalId;
 
                 if($field instanceof IFieldValueProcessor) {
                     $values[$name] = $field->inflateValueFromRow($name, $values, null);
                 }
+
+                $autoInc = false;
             } else if($field instanceof IFieldValueProcessor) {
                 $values[$name] = $field->inflateValueFromRow($name, $row, null);
+            } else if(isset($row[$name])) {
+                $values[$name] = $row[$name];
             } else {
-                $values[$name] = $originalId;
+                $values[$name] = null;
             }
         }
 
