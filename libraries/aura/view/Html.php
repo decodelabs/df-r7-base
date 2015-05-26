@@ -125,6 +125,10 @@ class Html extends Base implements IHtmlView, core\IDumpable {
         return $this->_titleSuffix !== null;
     }
 
+    public function setFullTitle($title) {
+        return $this->setTitle($title)->setTitlePrefix(false)->setTitleSuffix(false);
+    }
+
     public function getFullTitle() {
         return $this->_titlePrefix.$this->_title.$this->_titleSuffix;
     }

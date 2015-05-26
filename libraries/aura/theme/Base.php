@@ -196,7 +196,7 @@ class Base implements ITheme, core\IDumpable {
                 $view->setTitle(implode(' < ', $parts));
             }
         }
-        
+
         if(!$view->hasTitleSuffix()) {
             $suffix = df\Launchpad::$application->getName();
             

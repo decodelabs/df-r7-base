@@ -303,6 +303,7 @@ interface IHtmlView extends IResponseView, ILayoutView, INotificationProxyView {
     public function getTitlePrefix();
     public function setTitleSuffix($suffix);
     public function getTitleSuffix();
+    public function setFullTitle($title);
     public function getFullTitle();
     
     // Base
