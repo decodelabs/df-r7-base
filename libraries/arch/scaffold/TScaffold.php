@@ -242,7 +242,7 @@ trait TScaffold_RecordLoader {
 
         $adapter = $this->getRecordAdapter();
 
-        if($adapter instanceof axis\ISchemaDefinitionStorageUnit) {
+        if($adapter instanceof axis\ISchemaBasedStorageUnit) {
             return $adapter->getRecordKeyName();
         } else if($adapter instanceof axis\IUnit) {
             return lcfirst($adapter->getUnitName());
