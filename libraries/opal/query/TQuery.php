@@ -874,8 +874,18 @@ trait TQuery_Populatable {
     }
 
     public function addPopulate(IPopulateQuery $populate) {
+        $source = $this->getSource();
+        
+        if(empty($this->_populates)) {
+            $source->addOutputField(
+                $this->getSourceManager()->extrapolateIntrinsicField(
+                    $source, '@primary'
+                )
+            );
+        }
+        
         $this->_populates[$populate->getFieldName()] = $populate;
-        $this->getSource()->addOutputField($populate->getField());
+        $source->addOutputField($populate->getField());
 
         return $this;
     }
@@ -1210,7 +1220,7 @@ trait TQuery_Attachment {
 
     public static function fromPopulate(IPopulateQuery $populate) {
         $output = new self( 
-            $populate->getParentQuery(),
+            $parent = $populate->getParentQuery(),
             $populate->getSourceManager(),
             $populate->getSource()
         );

@@ -198,6 +198,26 @@ class Source implements ISource, core\IDumpable {
 
 
     public function addOutputField(opal\query\IField $field) {
+        foreach($this->_prepareField($field) as $field) {
+            $alias = $field->getAlias();
+            $this->_outputFields[$alias] = $field;
+            unset($this->_privateFields[$field->getAlias()]);
+        }
+
+        return $this;
+    }
+
+    public function addPrivateField(opal\query\IField $field) {
+        foreach($this->_prepareField($field) as $field) {
+            if(!in_array($field, $this->_outputFields, true)) {
+                $this->_privateFields[$field->getAlias()] = $field;
+            }
+        }
+        
+        return $this;
+    }
+
+    protected function _prepareField(opal\query\IField $field) {
         $fields = [];
         
         if($field instanceof opal\query\IVirtualField) {
@@ -241,21 +261,7 @@ class Source implements ISource, core\IDumpable {
             $fields[] = $field;
         }
 
-        foreach($fields as $field) {
-            $alias = $field->getAlias();
-            $this->_outputFields[$alias] = $field;
-            unset($this->_privateFields[$field->getAlias()]);
-        }
-
-        return $this;
-    }
-
-    public function addPrivateField(opal\query\IField $field) {
-        if(!in_array($field, $this->_outputFields, true)) {
-            $this->_privateFields[$field->getAlias()] = $field;
-        }
-        
-        return $this;
+        return $fields;
     }
 
     public function removeWildcardOutputField($name, $alias=null) {
