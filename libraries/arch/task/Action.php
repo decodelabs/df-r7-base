@@ -17,6 +17,8 @@ abstract class Action extends arch\Action implements IAction {
     const SCHEDULE_PRIORITY = 'medium';
     const SCHEDULE_AUTOMATIC = false;
 
+    const CHECK_ACCESS = false;
+
     public $io;
 
     public function __construct(arch\IContext $context) {
