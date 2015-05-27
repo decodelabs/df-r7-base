@@ -44,6 +44,8 @@ class TaskBuild extends arch\task\Action {
 
         $this->io->writeLine('Launching app builder...');
 
+
+
         // Prepare info
         $timestamp = date('YmdHis');
         $purgeOldBuilds = $this->request->query->get('purge', self::PURGE_OLD_BUILDS);
@@ -74,6 +76,10 @@ class TaskBuild extends arch\task\Action {
 
             $this->io->writeLine();
         }
+
+
+        // Clear config cache
+        core\Config::clearLiveCache();
         
 
         if(!$isDev) {

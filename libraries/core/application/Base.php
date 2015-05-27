@@ -115,7 +115,7 @@ abstract class Base implements core\IApplication, core\IDumpable {
     }
     
     public function removeRegistryObject($key) {
-        if($key instanceof IRegistryObject) {
+        if($key instanceof core\IRegistryObject) {
             $key = $key->getRegistryObjectKey();
         }
         
