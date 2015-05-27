@@ -59,9 +59,10 @@ class TaskInit extends arch\task\Action {
 
             if(!preg_match('/^(http(s)?|git\@)/i', $origin)) {
                 $this->io->writeErrorLine('This doesn\'t look like a valid remote url');
+                $push = false;
+            } else {
+                $repo->addRemote('origin', $origin);
             }
-
-            $repo->addRemote('origin', $origin);
         }
 
         if($push) {
