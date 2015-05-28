@@ -30,7 +30,6 @@
 ######################
 .DS_Store*
 ehthumbs.db
-Icon?
 Thumbs.db
 
 # Editors
@@ -47,6 +46,7 @@ Thumbs.db
 ######################
 data/*
 dev/*
+assets/lib/vendor/*
 
 .htaccess
 .sass-cache
