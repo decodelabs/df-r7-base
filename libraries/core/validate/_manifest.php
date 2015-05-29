@@ -454,6 +454,7 @@ interface IIdListField extends IField {
 }
 
 interface ITextListField extends IField {}
+interface ITimeField extends IField {}
 interface IIntegerField extends IField, IRangeField {}
 
 interface IPasswordField extends IField, IMinLengthField {

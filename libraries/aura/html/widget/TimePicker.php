@@ -27,40 +27,16 @@ class TimePicker extends DatePicker {
     
     protected function _normalizeDateString($date) {
         if($date instanceof core\time\IDate) {
-            $date = $this->_dateToString($date);
+            return $this->_dateToString($date);
+        } 
+
+        if(!$date instanceof core\time\ITimeOfDay) {
+            $date = core\time\TimeOfDay::factory($date);
         }
         
-        $date = (string)$date;
-        
-        if(!preg_match('/^[0-1]?[0-9]\:[0-5][0-9]$/', $date)) {
-            try {
-                $date = $this->_stringToDate($date);
-                
-                if($date !== null) {
-                    $date = $this->_dateToString($date);
-                }
-            } catch(\Exception $e) {
-                $date = null;
-            }
-        }
-        
-        return $date;
+        return sprintf('%02d:%02d', $date->getHours(), $date->getMinutes());
     }
 
-/*
-    protected function _stringToDate($date) {
-        return core\time\Date::factory((string)$date, true);
-    }
-    */
-
-    protected function _stringToDate($date) {
-        if($this->_outputFormat != 'h:i') {
-            return core\time\Date::fromFormatString((string)$date, $this->_outputFormat, true);
-        } else {
-            return core\time\Date::factory((string)$date, true);
-        }
-    }
-    
     protected function _dateToString(core\time\IDate $date) {
         return $date->format($this->_outputFormat);
     }

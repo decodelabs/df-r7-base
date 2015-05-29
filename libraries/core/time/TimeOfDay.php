@@ -80,7 +80,6 @@ class TimeOfDay implements ITimeOfDay, core\IDumpable {
             $this->_minutes %= 60;
         }
 
-
         while($this->_hours < 0) {
             $this->_hours += 24;
         }
