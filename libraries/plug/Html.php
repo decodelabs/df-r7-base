@@ -460,13 +460,38 @@ class Html implements arch\IDirectoryHelper {
 
         $date = core\time\Date::factory($date);
 
+        if($userTime) {
+            $date->toUserTimeZone();
+        }
+
         return $this->_timeTag(
             $date->format(core\time\Date::W3C), 
             $this->context->format->customDate($date, $format, $userTime)
         );
     }
     
-    public function time($date, $size=core\time\Date::MEDIUM, $locale=true) {
+    public function time($date, $format=null, $userTime=false) {
+        if($date === null) {
+            return null;
+        }
+
+        $date = core\time\Date::factory($date);
+
+        if($userTime) {
+            $date->toUserTimeZone();
+        }
+
+        if($format === null) {
+            $format = 'g:ia';
+        }
+
+        return $this->_timeTag(
+            $date->format('H:m:s'), 
+            $this->context->format->time($date, $format, $userTime)
+        );
+    }
+
+    public function localeTime($date, $size=core\time\Date::MEDIUM, $locale=true) {
         if($date === null) {
             return null;
         }

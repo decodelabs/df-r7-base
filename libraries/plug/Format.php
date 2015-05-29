@@ -264,7 +264,25 @@ class Format implements core\ISharedHelper {
         return $date->format($format);
     }
     
-    public function time($date, $size=core\time\Date::MEDIUM, $locale=true) {
+    public function time($date, $format=null, $userTime=false) {
+        if($date === null) {
+            return null;
+        }
+
+        $date = core\time\Date::factory($date);
+
+        if($userTime) {
+            $date->toUserTimeZone();
+        }
+
+        if($format === null) {
+            $format = 'g:ia';
+        }
+
+        return $date->format($format);
+    }
+
+    public function localeTime($date, $size=core\time\Date::MEDIUM, $locale=true) {
         if($date === null) {
             return null;
         }
@@ -285,8 +303,8 @@ class Format implements core\ISharedHelper {
         return core\time\Date::factory($date)
             ->userLocaleTimeFormat($size);
     }
-    
-    
+
+
     public function timeSince($date, $maxUnits=1, $shortUnits=false, $maxUnit=core\time\Duration::YEARS, $roundLastUnit=true, $locale=null) {
         if($date === null) {
             return null;
