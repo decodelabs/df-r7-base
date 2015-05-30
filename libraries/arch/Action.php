@@ -8,6 +8,8 @@ namespace df\arch;
 use df;
 use df\core;
 use df\arch;
+use df\aura;
+use df\link;
 
 class Action implements IAction, core\IDumpable {
     
@@ -227,13 +229,15 @@ class Action implements IAction, core\IDumpable {
     public function getActionMethodName() {
         $type = $this->context->location->getType();
         $func = 'executeAs'.$type;
+
+        if(method_exists($this, $func)) {
+            return $func;
+        }
+
+        $func = 'execute';
         
         if(!method_exists($this, $func)) {
-            $func = 'execute';
-            
-            if(!method_exists($this, $func)) {
-                $func = null;
-            }
+            $func = null;
         }
         
         return $func;
@@ -241,6 +245,36 @@ class Action implements IAction, core\IDumpable {
 
     public function handleException(\Exception $e) {
         throw $e;
+    }
+
+
+    public function executeAsAjax() {
+        switch($this->getRunMode()) {
+            case 'Http':
+                if(method_exists($this, 'executeAsHtml')) {
+                    $output = $this->executeAsHtml();
+                } else if(method_exists($this, 'execute')) {
+                    $output = $this->execute();
+                }
+
+                if($output instanceof aura\view\IView) {
+                    return $this->http->ajaxResponse($output);
+                } else if($output instanceof link\http\IResponse) {
+                    return $output;
+                } else if($output !== null) {
+                    return $this->http->stringResponse(
+                        $this->data->jsonEncode(array_merge(
+                            [
+                                'action' => $this->request->getLiteralPathString(),
+                                'content' => (string)$output
+                            ]
+                        )),
+                        'application/json'
+                    );
+                }
+        }
+
+        $this->throwError(404, 'No ajax content found');
     }
     
     

@@ -707,7 +707,7 @@ class Html extends Base implements IHtmlView, core\IDumpable {
         }
 
         if($this->context->application->getRunMode() == 'Http') {
-            if(strtolower($this->context->http->request->headers->get('x-requested-with')) == 'xmlhttprequest') {
+            if($this->context->http->isAjaxRequest()) {
                 $this->_shouldRenderBase = false;
             }
         }

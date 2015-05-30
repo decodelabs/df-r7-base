@@ -107,6 +107,10 @@ class Http implements arch\IDirectoryHelper {
     public function isDeleteRequest() {
         return $this->getMethod() == 'DELETE';
     }
+
+    public function isAjaxRequest() {
+        return strtolower($this->_httpRequest->getHeaders()->get('x-requested-with')) == 'xmlhttprequest';
+    }
     
     
     
