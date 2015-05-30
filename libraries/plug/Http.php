@@ -75,6 +75,10 @@ class Http implements arch\IDirectoryHelper {
         return $this->_httpRequest->getHeaders();
     }
 
+    public function getHeader($key) {
+        return $this->_httpRequest->getHeaders()->get($key);
+    }
+
     public function getReferrer() {
         return $this->_httpRequest->getHeaders()->get('Referer');
     }
@@ -127,11 +131,24 @@ class Http implements arch\IDirectoryHelper {
     }
 
     public function ajaxResponse(aura\view\IView $view, array $extraData=[]) {
+        switch($this->getHeader('x-ajax-request-source')) {
+            case 'modal':
+                $view = clone $view;
+                $content = $view
+                    ->setLayout('Modal')
+                    ->shouldRenderBase(false)
+                    ->render();
+                break;
+
+            default:
+                $content = (string)$view->getContentProvider()->setRenderTarget($view);
+        }
+
         return $this->stringResponse(
             $this->context->data->jsonEncode(array_merge(
                 [
                     'action' => $this->context->request->getLiteralPathString(),
-                    'content' => (string)$view->getContentProvider()->setRenderTarget($view)
+                    'content' => $content
                 ],
                 $extraData
             )),

@@ -263,12 +263,10 @@ class Action implements IAction, core\IDumpable {
                     return $output;
                 } else if($output !== null) {
                     return $this->http->stringResponse(
-                        $this->data->jsonEncode(array_merge(
-                            [
-                                'action' => $this->request->getLiteralPathString(),
-                                'content' => (string)$output
-                            ]
-                        )),
+                        $this->data->jsonEncode([
+                            'action' => $this->request->getLiteralPathString(),
+                            'content' => (string)$output
+                        ]),
                         'application/json'
                     );
                 }
