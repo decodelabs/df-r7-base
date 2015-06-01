@@ -139,6 +139,10 @@ abstract class Action extends arch\Action implements IAction {
     
     protected function _createSessionNamespace() {
         $output = 'form://'.implode('/', $this->context->request->getLiteralPathArray());
+
+        if(substr($output, -5) == '.ajax') {
+            $output = substr($output, 0, -5);
+        }
         
         if(null !== ($dataId = $this->_getDataId())) {
             $output .= '#'.$dataId;
