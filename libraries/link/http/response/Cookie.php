@@ -104,7 +104,7 @@ class Cookie implements link\http\IResponseCookie {
     
     public function setMaxAge($age=null) {
         if(!empty($age)) {
-            $this->setExpiryDate(core\time\Date::factory()->add($age));
+            $this->setExpiryDate(core\time\Date::factory('now')->add($age));
         } else {
             $this->setExpiryDate(null);
         }
