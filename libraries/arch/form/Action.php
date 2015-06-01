@@ -323,7 +323,7 @@ abstract class Action extends arch\Action implements IAction {
         }
 
         if($content === null && $loadUi) {
-            $content = $this->_getAjaxResponseContent();
+            $content = $this->http->getAjaxViewContent($this->onHtmlGetRequest());
         }
 
         return [
@@ -335,19 +335,6 @@ abstract class Action extends arch\Action implements IAction {
             'isComplete' => $this->_isComplete
         ];
     }
-
-    private function _getAjaxResponseContent() {
-        $view = $this->onHtmlGetRequest();
-        $output = $this->html->flashList();
-
-        if($output) {
-            $output .= "\n";
-        }
-
-        $output .= (string)$view->getContentProvider();
-        return $output;
-    }
-
 
     
     
