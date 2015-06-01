@@ -22,6 +22,7 @@ abstract class Action extends arch\Action implements IAction {
     
     const DEFAULT_EVENT = 'save';
     const DEFAULT_REDIRECT = null;
+    const FORCE_REDIRECT = false;
 
     private $_isNew = false;
     private $_isComplete = false;
@@ -271,7 +272,8 @@ abstract class Action extends arch\Action implements IAction {
                 'defaultEvent' => static::DEFAULT_EVENT,
                 'isNew' => $this->_isNew,
                 'isComplete' => $this->_isComplete,
-                'redirect' => $redirect
+                'redirect' => $redirect,
+                'forceRedirect' => static::FORCE_REDIRECT
             ];
         }
 
@@ -281,7 +283,8 @@ abstract class Action extends arch\Action implements IAction {
             'defaultEvent' => static::DEFAULT_EVENT,
             'isNew' => $this->_isNew,
             'isComplete' => $this->_isComplete,
-            'redirect' => null
+            'redirect' => null,
+            'forceRedirect' => static::FORCE_REDIRECT
         ]);
     }
 
@@ -335,6 +338,7 @@ abstract class Action extends arch\Action implements IAction {
             'content' => $content,
             'type' => $type,
             'redirect' => $redirect,
+            'forceRedirect' => static::FORCE_REDIRECT,
             'isNew' => $this->_isNew,
             'isComplete' => $this->_isComplete
         ];
