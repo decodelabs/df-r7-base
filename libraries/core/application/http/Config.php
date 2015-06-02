@@ -23,20 +23,7 @@ class Config extends core\Config {
             'secure' => false,
             'manualChunk' => false,
             'ipRanges' => null,
-            'credentials' => [
-                'development' => [
-                    'username' => null,
-                    'password' => null
-                ],
-                'testing' => [
-                    'username' => null,
-                    'password' => null
-                ],
-                'production' => [
-                    'username' => null,
-                    'password' => null
-                ]
-            ]
+            'credentials' => []
         ];
     }
 
@@ -211,11 +198,13 @@ class Config extends core\Config {
             $mode = df\Launchpad::getEnvironmentMode();
         }
 
-        if(!isset($this->values->credentials->{$mode}['username'])) {
+        if(isset($this->values->credentials->{$mode}['username'])) {
+            $set = $this->values->credentials->{$mode};
+        } else if(isset($this->values->credentials['username'])) {
+            $set = $this->values->credentials;
+        } else {
             return null;
         }
-
-        $set = $this->values->credentials->{$mode};
 
         return [
             'username' => $set['username'],
