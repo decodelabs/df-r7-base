@@ -74,24 +74,23 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
             $this->_scheme = 'directory';
         }
 
-        if(empty($url)) {
-            $url = '/';
-        }
-        
         $this->setPath($url);
-        $pathCount = count($this->_path);
-        $first = $this->_path->get(0);
 
-        if($first == '~') {
-            if($context = arch\Context::getCurrent()) {
-                $this->setArea($context->request->getArea());
-            } else {
-                $this->setArea(static::DEFAULT_AREA);
+        if(isset($this->_path)) {
+            $pathCount = count($this->_path);
+            $first = $this->_path->get(0);
+            
+            if($first == '~') {
+                if($context = arch\Context::getCurrent()) {
+                    $this->setArea($context->request->getArea());
+                } else {
+                    $this->setArea(static::DEFAULT_AREA);
+                }
+            } else if((isset($first{0}) && $first{0} == '~' && $pathCount == 1)) {
+                $this->_path->shouldAddTrailingSlash(true);
             }
-        } else if((isset($first{0}) && $first{0} == '~' && $pathCount == 1) || $pathCount == 0) {
-            $this->_path->shouldAddTrailingSlash(true);
         }
-        
+
         return $this;
     }
 
@@ -625,7 +624,7 @@ class Request extends core\uri\Url implements IRequest, core\IDumpable {
     
     
     public function convertToHttpUrl($scheme, $domain, $port, array $basePath) {
-        if($this->_isJustFragment) {
+        if($this->isJustFragment()) {
             return new link\http\Url('#'.$this->_fragment);
         }
         

@@ -186,13 +186,18 @@ class Path implements IPath, \IteratorAggregate, \Serializable, core\IDumpable {
         if($input instanceof core\collection\ICollection) {
             $input = $input->toArray();
         } else if(!is_array($input)) {
-            $input = explode(
-                $this->_separator, 
-                str_replace(['\\', '/'], $this->_separator, (string)$input)
-            );
+            if(!empty($input)) {
+                $input = explode(
+                    $this->_separator, 
+                    str_replace(['\\', '/'], $this->_separator, (string)$input)
+                );
+            } else {
+                $input = [];
+            }
         }
-        
+
         if(!($count = count($input))) {
+            $this->_addTrailingSlash = false;
             return $this;
         }
         
@@ -421,7 +426,7 @@ class Path implements IPath, \IteratorAggregate, \Serializable, core\IDumpable {
             $output = '.';
         }
         
-        if($this->_addTrailingSlash
+        if(($this->_addTrailingSlash || empty($output))
         && $output != $this->_separator
         && !$this->hasExtension()) {
             $output .= $this->_separator;

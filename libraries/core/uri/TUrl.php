@@ -488,7 +488,7 @@ trait TUrl_FragmentContainer {
     }
     
     public function isJustFragment() {
-        return ($this->_path === null || $this->_path->isEmpty())
+        return ($this->_path === null || ($this->_path->isEmpty() && !$this->_path->shouldAddTrailingSlash()))
             && ($this->_query === null || $this->_query->isEmpty())
             && $this->_fragment !== null;
     }
