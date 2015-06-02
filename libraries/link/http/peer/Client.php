@@ -262,30 +262,35 @@ class Client implements IClient, core\IDumpable {
         $fileStream = $session->getReadFileStream();
 
         if($isChunked) {
-            if(!$length) {
-                if(!preg_match("/^([\da-fA-F]+)[^\r\n]*\r\n/sm", $session->readBuffer = ltrim($session->readBuffer), $matches)) {
-                    throw new link\http\UnexpectedValueException('The body does not appear to be chunked properly');
-                }
-
-                $session->setStore('length', $length = hexdec(trim($matches[1])));
-                $parts = explode("\r\n", $session->readBuffer, 2);
-                $session->readBuffer = array_pop($parts);
-
+            while(!empty(ltrim($session->readBuffer))) {
                 if(!$length) {
-                    return link\peer\IIoState::END;
+                    if(!preg_match("/^([\da-fA-F]+)[^\r\n]*\r\n/sm", $session->readBuffer = ltrim($session->readBuffer), $matches)) {
+                        throw new link\http\UnexpectedValueException('The body does not appear to be chunked properly');
+                    }
+
+                    $session->setStore('length', $length = hexdec(trim($matches[1])));
+                    $parts = explode("\r\n", $session->readBuffer, 2);
+                    $session->readBuffer = array_pop($parts);
+
+                    if(!$length) {
+                        return link\peer\IIoState::END;
+                    }
                 }
-            }
 
-            if(strlen($session->readBuffer) >= $length) {
-                $fileStream->writeChunk(substr($session->readBuffer, 0, $length));
-                $session->readBuffer = substr($session->readBuffer, $length);
+                if(strlen($session->readBuffer) >= $length) {
+                    $fileStream->writeChunk(substr($session->readBuffer, 0, $length));
+                    $session->readBuffer = substr($session->readBuffer, $length);
 
-                if(trim($session->readBuffer) == '0') {
-                    $fileStream->close();
-                    return link\peer\IIoState::END;
+                    if(trim($session->readBuffer) == '0') {
+                        $fileStream->close();
+                        return link\peer\IIoState::END;
+                    }
+
+                    $session->setStore('length', $length = 0);
+                    continue;
                 }
 
-                $session->setStore('length', 0);
+                break;
             }
         } else {
             $length -= strlen($session->readBuffer);
