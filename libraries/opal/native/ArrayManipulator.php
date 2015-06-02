@@ -929,7 +929,6 @@ class ArrayManipulator implements IArrayManipulator {
         $combines = $this->_outputManifest->getCombines();
         $requiresPartial = $this->_outputManifest->requiresPartial($forFetch);
 
-
         // Prepare qualified names
         $qNameMap = [];
         $overrides = [];
@@ -1036,6 +1035,17 @@ class ArrayManipulator implements IArrayManipulator {
             if($valQName) { 
                 if(array_key_exists($valQName, $row)) {
                     $current = $row[$valQName];
+                } else if($outputPrimaryKeySet) {
+                    $primaryValues = [];
+
+                    foreach($outputFields as $outputField) {
+                        $innerQName = $outputField->getQualifiedName();
+                        $innerName = $outputField->getName();
+
+                        $primaryValues[$innerName] = isset($row[$innerQName]) ? $row[$innerQName] : null;
+                    }
+                    
+                    $current = new opal\record\PrimaryKeySet(array_keys($primaryValues), $primaryValues);
                 } else if(isset($row[$valName])) {
                     $current = $row[$valName];
                 } else {
