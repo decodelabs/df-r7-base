@@ -87,7 +87,7 @@ class Paginator implements IPaginator {
         $sourceManager = $this->_query->getSourceManager();
         $this->_order = [];
         
-        foreach(func_get_args() as $field) {
+        foreach(core\collection\Util::flattenArray(func_get_args()) as $field) {
             $parts = explode(' ', $field);
             $key = array_shift($parts);
             
