@@ -22,6 +22,13 @@ class Unit extends axis\unit\table\Base {
         'id' => 10
     ];
 
+    protected $_defaultOrderableFields = [
+        'email', 'fullName', 'nickName', 'status', 'joinDate',
+        'loginDate', 'timezone', 'country', 'language'
+    ];
+
+    protected $_defaultOrder = 'fullName';
+
     protected function _onCreate(axis\schema\ISchema $schema) {
         $schema->addField('id', 'AutoId', 8);
         $schema->addUniqueField('email', 'String', 255);
@@ -42,17 +49,6 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('timezone', 'String', 32)->setDefaultValue('UTC');
         $schema->addField('country', 'KeyString', 2, core\string\ICase::UPPER)->setDefaultValue('GB');
         $schema->addField('language', 'KeyString', 2, core\string\ICase::LOWER)->setDefaultValue('en');
-    }
-
-    public function applyPagination(opal\query\IPaginator $paginator) {
-        $paginator
-            ->setOrderableFields(
-                'email', 'fullName', 'nickName', 'status', 'joinDate',
-                'loginDate', 'timezone', 'country', 'language'
-            )
-            ->setDefaultOrder('fullName');
-
-        return $this;
     }
 
 

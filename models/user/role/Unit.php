@@ -8,10 +8,15 @@ namespace df\apex\models\user\role;
 use df;
 use df\core;
 use df\axis;
-use df\opal;
 
 class Unit extends axis\unit\table\Base {
     
+    protected $_defaultOrderableFields = [
+        'name', 'bindState', 'minRequiredState', 'priority'
+    ];
+
+    protected $_defaultOrder = 'name ASC';
+
     protected function _onCreate(axis\schema\ISchema $schema) {
         $schema->addField('id', 'AutoId', 4);
         $schema->addField('name', 'String', 64);
@@ -22,13 +27,5 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('keys', 'OneToMany', 'key', 'role');
         
         $schema->addPrimaryIndex('id');
-    }
-
-    public function applyPagination(opal\query\IPaginator $paginator) {
-        $paginator
-            ->setOrderableFields('name', 'bindState', 'minRequiredState', 'priority')
-            ->setDefaultOrder('name ASC');
-
-        return $this;
     }
 }

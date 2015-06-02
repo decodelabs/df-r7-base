@@ -9,10 +9,15 @@ use df;
 use df\core;
 use df\apex;
 use df\axis;
-use df\opal;
 
 class Unit extends axis\unit\table\Base {
     
+    protected $_defaultOrderableFields = [
+        'request', 'environmentMode', 'priority', 'queueDate', 'lockDate'
+    ];
+
+    protected $_defaultOrder = 'queueDate DESC';
+
     protected function _onCreate(axis\schema\ISchema $schema) {
         $schema->addPrimaryField('id', 'Guid');
         $schema->addField('request', 'String', 1024);
@@ -27,13 +32,5 @@ class Unit extends axis\unit\table\Base {
             ->isNullable(true);
         $schema->addField('lockId', 'Guid')
             ->isNullable(true);
-    }
-
-    public function applyPagination(opal\query\IPaginator $paginator) {
-        $paginator
-            ->setOrderableFields('request', 'environmentMode', 'priority', 'queueDate', 'lockDate')
-            ->setDefaultOrder('queueDate DESC');
-
-        return $this;
     }
 }

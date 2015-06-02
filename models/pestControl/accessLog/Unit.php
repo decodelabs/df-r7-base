@@ -9,7 +9,6 @@ use df;
 use df\core;
 use df\apex;
 use df\axis;
-use df\opal;
 
 class Unit extends axis\unit\table\Base {
     
@@ -21,6 +20,12 @@ class Unit extends axis\unit\table\Base {
         'request' => 4,
         'message' => 2
     ];
+
+    protected $_defaultOrderableFields = [
+        'date', 'mode', 'code', 'request', 'seen'
+    ];
+
+    protected $_defaultOrder = 'date DESC';
 
     protected function _onCreate(axis\schema\ISchema $schema) {
         $schema->addPrimaryField('id', 'Guid');
@@ -42,14 +47,6 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('isProduction', 'Boolean')
             ->setDefaultValue(true);
         $schema->addField('isArchived', 'Boolean');
-    }
-
-    public function applyPagination(opal\query\IPaginator $paginator) {
-        $paginator
-            ->setOrderableFields('date', 'mode', 'code', 'request', 'seen')
-            ->setDefaultOrder('date DESC');
-
-        return $this;
     }
 
     public function logAccess($code=403, $request=null, $message=null) {

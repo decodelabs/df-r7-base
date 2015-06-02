@@ -18,6 +18,12 @@ class Unit extends axis\unit\table\Base {
         'message' => 4
     ];
 
+    protected $_defaultOrderableFields = [
+        'type', 'code', 'file', 'line', 'seen', 'firstSeen', 'lastSeen'
+    ];
+
+    protected $_defaultOrder = ['lastSeen DESC', 'seen DESC'];
+
     protected function _onCreate(axis\schema\ISchema $schema) {
         $schema->addPrimaryField('id', 'Guid');
 
@@ -38,14 +44,6 @@ class Unit extends axis\unit\table\Base {
             ->isNullable(true);
 
         $schema->addField('errorLogs', 'OneToMany', 'errorLog', 'error');
-    }
-
-    public function applyPagination(opal\query\IPaginator $paginator) {
-        $paginator
-            ->setOrderableFields('type', 'code', 'file', 'line', 'seen', 'firstSeen', 'lastSeen')
-            ->setDefaultOrder('lastSeen DESC', 'seen DESC');
-
-        return $this;
     }
 
 

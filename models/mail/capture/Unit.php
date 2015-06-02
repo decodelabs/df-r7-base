@@ -8,7 +8,6 @@ namespace df\apex\models\mail\capture;
 use df;
 use df\core;
 use df\axis;
-use df\opal;
 use df\flow;
 
 class Unit extends axis\unit\table\Base {
@@ -17,6 +16,12 @@ class Unit extends axis\unit\table\Base {
         'subject' => 10,
         'body' => 1
     ];
+
+    protected $_defaultOrderableFields = [
+        'from', 'to', 'subject', 'date', 'isPrivate', 'environmentMode'
+    ];
+
+    protected $_defaultOrder = 'date DESC';
 
     protected function _onCreate(axis\schema\ISchema $schema) {
         $schema->addPrimaryField('id', 'Guid');
@@ -31,14 +36,6 @@ class Unit extends axis\unit\table\Base {
             ->isNullable(true);
         $schema->addField('environmentMode', 'Enum', 'core/EnvironmentMode')
             ->setDefaultValue('development');
-    }
-
-    public function applyPagination(opal\query\IPaginator $paginator) {
-        $paginator
-            ->setOrderableFields('from', 'to', 'subject', 'date', 'isPrivate')
-            ->setDefaultOrder('date DESC');
-
-        return $this;
     }
 
     public function store(flow\mail\IMessage $message) {
