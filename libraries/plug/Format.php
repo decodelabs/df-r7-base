@@ -33,7 +33,7 @@ class Format implements core\ISharedHelper {
             ->format($number, $format);
     }
     
-    public function percent($number, $locale=null) {
+    public function percent($number, $total=100, $locale=null) {
         if($number === null) {
             return null;
         }
@@ -42,19 +42,15 @@ class Format implements core\ISharedHelper {
             $locale = $this->context->getLocale();
         }
 
-        return core\i18n\Manager::getInstance()
-            ->getModule('numbers', $locale)
-            ->formatPercent($number);
-    }
-    
-    public function calcPercent($divisor, $total, $locale=null) {
         if($total <= 0) {
             $number = 0;
         } else {
-            $number = $divisor / $total;
+            $number = $number / $total;
         }
 
-        return $this->percent($number, $locale);
+        return core\i18n\Manager::getInstance()
+            ->getModule('numbers', $locale)
+            ->formatRatioPercent($number);
     }
 
     public function currency($number, $code=null, $locale=null) {

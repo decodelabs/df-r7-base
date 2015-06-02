@@ -52,14 +52,28 @@ class Numbers extends Base implements core\i18n\module\generator\IModule {
         return \NumberFormatter::create(
             (string)$this->_locale,
             \NumberFormatter::PERCENT
+        )->format($number / 100);
+    }
+
+    public function formatRatioPercent($number) {
+        return \NumberFormatter::create(
+            (string)$this->_locale,
+            \NumberFormatter::PERCENT
         )->format($number);
     }
     
     public function parsePercent($number) {
+        return 100 * \NumberFormatter::create(
+            (string)$this->_locale,
+            \NumberFormatter::PERCENT
+        )->parse((string)$number);    
+    }
+
+    public function parseRatioPercent($number) {
         return \NumberFormatter::create(
             (string)$this->_locale,
             \NumberFormatter::PERCENT
-        )->parse($number);    
+        )->parse((string)$number);    
     }
     
 // Currency

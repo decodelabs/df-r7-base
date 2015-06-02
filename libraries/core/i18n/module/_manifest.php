@@ -57,7 +57,9 @@ interface INumbersModule extends IModule {
     public function format($number, $format=null);
     public function parse($number, $type=self::DOUBLE, &$pos=0, $format=null);
     public function formatPercent($number);
+    public function formatRatioPercent($number);
     public function parsePercent($number);
+    public function parseRatioPercent($number);
     public function formatCurrency($amount, $code);
     public function parseCurrency($amount, $code);
     public function getCurrencyName($code);
