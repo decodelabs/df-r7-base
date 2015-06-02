@@ -27,7 +27,10 @@ abstract class Base implements
     const KEY_NAME = null;
     
     protected static $_defaultRecordClass = 'df\\opal\\record\\Base';
+
     protected $_defaultSearchFields = null;
+    protected $_defaultOrderableFields = null;
+    protected $_defaultOrder = null;
     
     private $_recordClass;
     private $_schema;
@@ -242,24 +245,37 @@ abstract class Base implements
     
     public function applyPagination(opal\query\IPaginator $paginator) {
         $schema = $this->getUnitSchema();
-        $default = null;
+        $default = $this->_defaultOrder;
+        $fields = [];
 
-        foreach($schema->getFields() as $name => $field) {
-            if($field instanceof opal\schema\INullPrimitiveField
-            || $field instanceof opal\schema\IManyRelationField) {
-                continue;
+        if(!empty($this->_defaultOrderableFields)) {
+            $fields = $this->_defaultOrderableFields;
+
+            if(!is_array($fields)) {
+                $fields = [(string)$fields];
             }
 
-            if($default === null
-            || $default == 'id ASC') {
-                if(in_array($name, ['id', 'name', 'title'])) {
-                    $default = $name.' ASC';
-                } else if($name == 'date') {
-                    $default = 'date DESC';
+            if($default === null) {
+                $default = current($fields).' ASC';
+            }
+        } else {
+            foreach($schema->getFields() as $name => $field) {
+                if($field instanceof opal\schema\INullPrimitiveField
+                || $field instanceof opal\schema\IManyRelationField) {
+                    continue;
                 }
-            }
 
-            $fields[] = $name;
+                if($default === null
+                || $default == 'id ASC') {
+                    if(in_array($name, ['id', 'name', 'title'])) {
+                        $default = $name.' ASC';
+                    } else if($name == 'date') {
+                        $default = 'date DESC';
+                    }
+                }
+
+                $fields[] = $name;
+            }
         }
 
         if(!empty($fields)) {
