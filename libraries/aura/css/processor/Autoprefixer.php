@@ -19,6 +19,10 @@ class Autoprefixer extends Base {
             $bridge->npmInstall('autoprefixer-core');
         }
 
+        if(!$bridge->find('postcss')) {
+            $bridge->npmInstall('postcss');
+        }
+
         if(!isset($this->settings->cascade)) {
             $this->settings->cascade = true;
         }
@@ -38,7 +42,9 @@ class Autoprefixer extends Base {
         $js =
 <<<js
 var autoprefixer = require('autoprefixer-core');
-return autoprefixer(data.settings).process(data.css, {
+var postcss      = require('postcss');
+
+return postcss([ autoprefixer(data.settings) ]).process(data.css, {
     from: data.path, 
     to: data.path, 
     map: data.map
