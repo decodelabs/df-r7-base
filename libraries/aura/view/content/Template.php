@@ -100,7 +100,6 @@ class Template implements aura\view\ITemplate, core\IDumpable {
             $type = lcfirst($view->getType());
         }
 
-        $path = $pathName.'.'.$type;
         $theme = $view->getTheme();
         $context = $view->getContext();
 
@@ -108,19 +107,14 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         $area = $context->location->getArea();
         $themeId = $theme->getId();
         
-        $lookupPaths[] = 'apex/themes/'.$themeId.'/layouts/'.$area.'/'.$path.'.php';
-        
-        if($area !== 'shared') {
-            $lookupPaths[] = 'apex/themes/'.$themeId.'/layouts/shared/'.$path.'.php';
-        }
-        
+        $lookupPaths[] = 'apex/themes/'.$themeId.'/layouts/'.$pathName.'#'.$area.'.'.$type.'.php';
+        $lookupPaths[] = 'apex/themes/'.$themeId.'/layouts/'.$pathName.'.'.$type.'.php';
+
         if($themeId !== 'shared') {
-            $lookupPaths[] = 'apex/themes/shared/layouts/'.$area.'/'.$path.'.php';
-            
-            if($area !== 'shared') {
-                $lookupPaths[] = 'apex/themes/shared/layouts/shared/'.$path.'.php';
-            }
+            $lookupPaths[] = 'apex/themes/shared/layouts/'.$pathName.'#'.$area.'.'.$type.'.php';
+            $lookupPaths[] = 'apex/themes/shared/layouts/'.$pathName.'.'.$type.'.php';
         }
+
         
         foreach($lookupPaths as $testPath) {
             if($layoutPath = $context->findFile($testPath)) {
@@ -130,7 +124,7 @@ class Template implements aura\view\ITemplate, core\IDumpable {
         
         if(!$layoutPath) {
             throw new aura\view\ContentNotFoundException(
-                'Layout '.$path.' could not be found'
+                'Layout '.$pathName.'.'.$type.' could not be found'
             );
         }
         
