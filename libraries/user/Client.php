@@ -276,7 +276,12 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
         $this->_language = $clientData->getLanguage();
         $this->_country = $clientData->getCountry();
         $this->_timezone = $clientData->getTimezone();
-        $this->_groupIds = $clientData->getGroupIds();
+        $this->_groupIds = [];
+
+        foreach($clientData->getGroupIds() as $groupId) {
+            $this->_groupIds[] = (string)core\string\Uuid::factory($groupId);
+        }
+
         $this->_options = null;
 
         if(df\Launchpad::$application instanceof core\application\Http) {

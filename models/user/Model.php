@@ -38,40 +38,22 @@ class Model extends axis\Model implements user\IUserModel {
     }
     
     public function generateKeyring(user\IClient $client) {
-        $state = $client->getAuthenticationState();
-        $id = $client->getId();
-
-        $query = $this->role->select('id');
-        
-        if($state >= user\IState::BOUND && $id !== null) {
-            $groupBridge = $this->group->getBridgeUnit('roles');
-            $clientBridge = $this->client->getBridgeUnit('groups');
-
-            $query
-                ->wherePrerequisite('minRequiredState', '<=', $state)
-
-                ->whereCorrelation('id', 'in', 'role')
-                    ->from($groupBridge, 'groupBridge')
-                    ->joinConstraint()
-                        ->from($clientBridge, 'clientBridge')
-                        ->on('clientBridge.group', '=', 'groupBridge.group')
-                        ->endJoin()
-                    ->where('clientBridge.isLeader', '=', false)
-                    ->where('clientBridge.client', '=', $id)
-                    ->endCorrelation()
-                
-                ->beginOrWhereClause()
-                    ->where('bindState', '>=', user\IState::BOUND)
-                    ->where('bindState', '<=', $state)
-                    ->endClause()
-                    ;
-        } else {
-            $query->where('bindState', '=', $state)
-                ->where('minRequiredState', '<=', $state);
+        if(!$id = $client->getId()) {
+            return [];
         }
-
         
-        $query
+        $groupBridge = $this->group->getBridgeUnit('roles');
+        $clientBridge = $this->client->getBridgeUnit('groups');
+
+        $query = $this->role->select('id')
+            ->whereCorrelation('id', 'in', 'role')
+                ->from($groupBridge, 'groupBridge')
+                ->joinConstraint()
+                    ->from($clientBridge, 'clientBridge')
+                    ->on('clientBridge.group', '=', 'groupBridge.group')
+                    ->endJoin()
+                ->where('clientBridge.client', '=', $id)
+                ->endCorrelation()
             ->attach('domain', 'pattern', 'allow')
                 ->from($this->key, 'key')
                 ->on('key.role', '=', 'role.id')
@@ -89,7 +71,7 @@ class Model extends axis\Model implements user\IUserModel {
                 $output[$key['domain']][$key['pattern']] = (bool)$key['allow'];
             }
         }
-        
+
         return $output;
     }
 

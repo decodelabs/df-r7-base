@@ -245,6 +245,7 @@ interface ITable extends mesh\entity\IEntity, opal\query\IAdapter, opal\query\IE
     public function create(opal\rdbms\schema\ISchema $schema, $dropIfExists=false);
     public function alter(opal\rdbms\schema\ISchema $schema);
     public function rename($newName);
+    public function copy($newName);
     public function drop();
     public function truncate();
     public function lock();

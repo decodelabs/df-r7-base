@@ -33,22 +33,27 @@ class Unit extends axis\unit\table\Base {
         $schema->addField('id', 'AutoId', 8);
         $schema->addUniqueField('email', 'String', 255);
         $schema->addField('fullName', 'String', 255);
-        $schema->addField('nickName', 'String', 128)->isNullable(true);
+        $schema->addField('nickName', 'String', 128)
+            ->isNullable(true);
+
         $schema->addField('joinDate', 'Date');
-        $schema->addIndexedField('loginDate', 'DateTime')->isNullable(true);
+        $schema->addIndexedField('loginDate', 'DateTime')
+            ->isNullable(true);
         
         $schema->addField('groups', 'ManyToMany', 'group', 'users')
-            ->isDominant(true)
-            ->setBridgeUnitId('groupBridge')
-            ;
+            ->isDominant(true);
             
         $schema->addField('authDomains', 'OneToMany', 'auth', 'user');
         $schema->addField('options', 'OneToMany', 'option', 'user');
-        $schema->addIndexedField('status', 'Integer', 1)->setDefaultValue(3);
+        $schema->addIndexedField('status', 'Integer', 1)
+            ->setDefaultValue(3);
         
-        $schema->addField('timezone', 'String', 32)->setDefaultValue('UTC');
-        $schema->addField('country', 'KeyString', 2, core\string\ICase::UPPER)->setDefaultValue('GB');
-        $schema->addField('language', 'KeyString', 2, core\string\ICase::LOWER)->setDefaultValue('en');
+        $schema->addField('timezone', 'String', 32)
+            ->setDefaultValue('UTC');
+        $schema->addField('country', 'KeyString', 2, core\string\ICase::UPPER)
+            ->setDefaultValue('GB');
+        $schema->addField('language', 'KeyString', 2, core\string\ICase::LOWER)
+            ->setDefaultValue('en');
     }
 
 

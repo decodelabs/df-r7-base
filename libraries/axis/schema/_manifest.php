@@ -369,7 +369,7 @@ trait TRelationField {
         }
         
         $targetUnit = $this->getTargetUnit();
-        $targetSchema = $targetUnit->getTransientUnitSchema();
+        $targetSchema = $targetUnit->getTransientUnitSchema(true);
         $targetPrimaryIndex = $targetSchema->getPrimaryIndex();
 
         $primitives = [];

@@ -174,6 +174,21 @@ class Table implements ITable, core\IDumpable {
         $this->_setName($newName);
         return $this;
     }
+
+    public function copy($newName) {
+        $schema = clone $this->getSchema();
+        $schema->setName($newName);
+
+        $newTable = $this->_adapter->createTable($schema);
+        $insert = $newTable->batchInsert();
+
+        foreach($this->select() as $row) {
+            $insert->addRow($row);
+        }
+
+        $insert->execute();
+        return $newTable;
+    }
     
     public function drop() {
         SchemaExecutor::factory($this->_adapter)->drop($this->_name);

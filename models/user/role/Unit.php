@@ -12,20 +12,78 @@ use df\axis;
 class Unit extends axis\unit\table\Base {
     
     protected $_defaultOrderableFields = [
-        'name', 'bindState', 'minRequiredState', 'priority'
+        'name', 'signifier', 'priority'
     ];
 
-    protected $_defaultOrder = 'name ASC';
+    protected $_defaultOrder = ['priority DESC', 'name ASC'];
+
+    protected static $_defaultManifest = [
+        '30dc3f8f-ee05-c1e8-f701-c05c8cb96c35' => [
+            'name' => 'Super user',
+            'signifier' => 'developer',
+            'priority' => 99999,
+
+            'keys' => [
+                ['domain' => '*', 'pattern' => '*']
+            ]
+        ],
+
+        '5a3603eb-b173-c359-f701-1095c3c86c35' => [
+            'name' => 'Full front end access',
+            'signifier' => null,
+            'priority' => 9999,
+
+            'keys' => [
+                ['domain' => 'directory', 'pattern' => '~front/*']
+            ]
+        ],
+
+        '85598326-b24b-c544-f701-00521eed6c35' => [
+            'name' => 'Full admin access',
+            'signifier' => 'admin',
+            'priority' => 9999,
+
+            'keys' => [
+                ['domain' => 'directory', 'pattern' => '~admin/*']
+            ]
+        ],
+
+        '459a093b-d47a-c91c-f701-30dd68ef6c35' => [
+            'name' => 'Full mail center access',
+            'signifier' => null,
+            'priority' => 9999,
+
+            'keys' => [
+                ['domain' => 'directory', 'pattern' => '~mail/*']
+            ]
+        ],
+
+        '1660509c-d819-c927-f701-e07c48f26c35' => [
+            'name' => 'Full devtools access',
+            'signifier' => 'developer',
+            'priority' => 9999,
+
+            'keys' => [
+                ['domain' => 'directory', 'pattern' => '~devtools/*']
+            ]
+        ]
+    ];
 
     protected function _onCreate(axis\schema\ISchema $schema) {
-        $schema->addField('id', 'AutoId', 4);
+        $schema->addPrimaryField('id', 'Guid');
+
         $schema->addField('name', 'String', 64);
-        $schema->addField('bindState', 'Integer', 1)->isNullable(true);
-        $schema->addField('minRequiredState', 'Integer', 1)->isNullable(true);
-        $schema->addField('priority', 'Integer', 4)->setDefaultValue(50);
+        $schema->addField('signifier', 'String', 32)
+            ->isNullable(true);
+
+        $schema->addField('priority', 'Integer', 4)
+            ->setDefaultValue(50);
+
         $schema->addField('groups', 'ManyToMany', 'group', 'roles');
         $schema->addField('keys', 'OneToMany', 'key', 'role');
-        
-        $schema->addPrimaryIndex('id');
+    }
+
+    public function getDefaultManifest() {
+        return self::$_defaultManifest;
     }
 }
