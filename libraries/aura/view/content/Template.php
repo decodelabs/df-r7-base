@@ -61,21 +61,19 @@ class Template implements aura\view\ITemplate, core\IDumpable {
 
         $lookupPaths = [];
         $area = $context->location->getArea();
+        $parts = explode('.', $path);
+        $type = array_pop($parts);
+        $pathName = implode('.', $parts);
 
-        $lookupPaths[] = 'apex/themes/'.$themeId.'/templates/'.$area.'/'.$path.'.php';
-        
-        if($area !== 'shared') {
-            $lookupPaths[] = 'apex/themes/'.$themeId.'/templates/shared/'.$path.'.php';
-        }
-        
+
+        $lookupPaths[] = 'apex/themes/'.$themeId.'/templates/'.$pathName.'#'.$area.'.'.$type.'.php';
+        $lookupPaths[] = 'apex/themes/'.$themeId.'/templates/'.$pathName.'.'.$type.'.php';
+
         if($themeId !== 'shared') {
-            $lookupPaths[] = 'apex/themes/shared/templates/'.$area.'/'.$path.'.php';
-            
-            if($area !== 'shared') {
-                $lookupPaths[] = 'apex/themes/shared/templates/shared/'.$path.'.php';
-            }
+            $lookupPaths[] = 'apex/themes/shared/templates/'.$pathName.'#'.$area.'.'.$type.'.php';
+            $lookupPaths[] = 'apex/themes/shared/templates/'.$pathName.'.'.$type.'.php';
         }
-        
+
         foreach($lookupPaths as $testPath) {
             if($templatePath = $context->findFile($testPath)) {
                 break;
@@ -115,7 +113,6 @@ class Template implements aura\view\ITemplate, core\IDumpable {
             $lookupPaths[] = 'apex/themes/shared/layouts/'.$pathName.'.'.$type.'.php';
         }
 
-        
         foreach($lookupPaths as $testPath) {
             if($layoutPath = $context->findFile($testPath)) {
                 break;
