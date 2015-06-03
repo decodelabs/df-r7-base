@@ -136,7 +136,7 @@ class OneChildRelationValueContainer implements
 
     public function getRawId() {
         if($this->_record) {
-            return $this->_record->getFirstKeyValue();
+            return $this->_record->getPrimaryKeySet()->getValue();
         }
 
         return null;

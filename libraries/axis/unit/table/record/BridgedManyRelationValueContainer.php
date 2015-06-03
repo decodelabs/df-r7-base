@@ -579,7 +579,17 @@ class BridgedManyRelationValueContainer implements
     }
 
     public function getRawId() {
-        return $this->getRelatedPrimaryKeys();
+        $output = [];
+        
+        foreach($this->getRelatedPrimaryKeys() as $key) {
+            if($key instanceof opal\record\IPrimaryKeySet) {
+                $output[] = $key->getValue();
+            } else {
+                $output[] = $key;
+            }
+        }
+
+        return $output;
     }
 
     protected function _getKeySets(array $records) {

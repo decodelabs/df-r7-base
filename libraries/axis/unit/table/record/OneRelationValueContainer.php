@@ -155,11 +155,11 @@ class OneRelationValueContainer implements
 
     public function getRawId() {
         if($this->_record) {
-            return $this->_record->getPrimaryKeySet()->getFirstKeyValue();
+            return $this->_record->getPrimaryKeySet()->getValue();
         }
 
         if($this->_value) {
-            return $this->_value->getFirstKeyValue();
+            return $this->_value->getValue();
         }
 
         return null;

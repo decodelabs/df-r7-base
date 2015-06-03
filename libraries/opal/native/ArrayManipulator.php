@@ -984,14 +984,24 @@ class ArrayManipulator implements IArrayManipulator {
                 if(count($derefFields) > 1) {
                     if($valField->getName() == '@primary') {
                         $outputPrimaryKeySet = true;
+                        $outputFields = [];
+
+                        foreach($derefFields as $field) {
+                            $outputFields[$field->getName()] = $field;
+                        }
                     }
 
                     //core\stub('multi primary deref', $outputFields);
                     $valQName = $valField->getQualifiedName();
                     $valName = $valField->getName();
                 } else {
-                    $valField = array_shift($derefFields);
                     $valQName = $valField->getQualifiedName();
+
+                    if(!isset($fieldProcessors[$valQName])) {
+                        $valField = array_shift($derefFields);
+                        $valQName = $valField->getQualifiedName();
+                    }
+
                     $valName = $valField->getName();
                 }
             } else {
@@ -999,6 +1009,7 @@ class ArrayManipulator implements IArrayManipulator {
                 $valName = $valField->getName();
             }
         }
+
 
 
         // Prepare object field
@@ -1030,6 +1041,7 @@ class ArrayManipulator implements IArrayManipulator {
                     );
                 }
             }
+
 
             // Single value output
             if($valQName) { 
