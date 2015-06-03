@@ -120,4 +120,40 @@ class Model extends axis\Model implements user\IUserModel {
 
         return $user->canAccess($lock);
     }
+
+
+    public function installDefaultManifest() {
+        $roleIds = $this->role->select('id', 'name')->toList('id', 'name');
+        $groupIds = $this->group->select('id', 'name')->toList('id', 'name');
+        
+        foreach($this->role->getDefaultManifest() as $id => $row) {
+            if(isset($roleIds[$id])) {
+                continue;
+            }
+
+            $row['id'] = $id;
+            $keys = $row['keys'];
+            unset($row['keys']);
+
+            $role = $this->role->newRecord($row);
+
+            foreach($keys as $key) {
+                $role->keys->add($this->key->newRecord($key));
+            }
+
+            $role->save();
+        }
+
+        foreach($this->group->getDefaultManifest() as $id => $row) {
+            if(isset($groupIds[$id])) {
+                continue;
+            }
+
+            $row['id'] = $id;
+            $group = $this->group->newRecord($row);
+            $group->save();
+        }
+
+        return $this;
+    }
 }
