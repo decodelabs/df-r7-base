@@ -19,6 +19,7 @@ class TaskConvertGroups extends arch\task\Action {
     protected $_roleMap = [];
 
     public function execute() {
+        core\dump('This task is deprecated!');
         $this->_connection = $this->data->user->client->getUnitAdapter()->getConnection();
 
         $newGroupTable = $this->_buildNewTable('group');
