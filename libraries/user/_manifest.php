@@ -38,6 +38,7 @@ interface IManager extends core\IManager {
     // Client
     public function getClient();
     public function clearClient();
+    public function isA($signifier);
     public function canAccess($lock, $action=null, $linkTo=false);
     public function getAccessLock($lock);
     public function analyzePassword($password);
@@ -90,6 +91,7 @@ interface IClientDataObject extends \ArrayAccess {
     public function getCountry();
     public function getTimezone();
     public function getGroupIds();
+    public function getSignifiers();
 }
 
 trait TNameExtractor {
@@ -118,6 +120,7 @@ interface IClient extends IClientDataObject {
     public function isLoggedIn();
     public function isBound();
     public function isConfirmed();
+    public function isA($signifier);
     
     public function import(IClientDataObject $clientData);
     public function setKeyring(array $keyring);

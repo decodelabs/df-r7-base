@@ -104,6 +104,34 @@ class Record extends opal\record\Base implements user\IActiveClientDataObject {
     public function getGroupIds() {
         return $this['#groups'];
     }
+
+    public function getSignifiers() {
+        if(!$id = $this['id']) {
+            return [];
+        }
+
+        $model = $this->getRecordAdapter()->getModel();
+        $groupBridge = $model->group->getBridgeUnit('roles');
+        $clientBridge = $model->client->getBridgeUnit('groups');
+
+        $roleSigs = $model->role->selectDistinct('signifier')
+            ->whereCorrelation('id', 'in', 'role')
+                ->from($groupBridge, 'groupBridge')
+                ->joinConstraint()
+                    ->from($clientBridge, 'clientBridge')
+                    ->on('clientBridge.group', '=', 'groupBridge.group')
+                    ->endJoin()
+                ->where('clientBridge.client', '=', $id)
+                ->endCorrelation()
+            ->where('signifier', '!=', null)
+            ->toList('signifier');
+
+        $groupSigs = $this->groups->selectDistinct('signifier')
+            ->where('signifier', '!=', null)
+            ->toList('signifier');
+        
+        return array_unique(array_merge($roleSigs, $groupSigs));
+    }
     
     
     public function onAuthentication(user\IClient $client) {

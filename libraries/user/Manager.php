@@ -125,6 +125,10 @@ class Manager implements IManager, core\IDumpable {
         return $this;
     }
 
+    public function isA($signifier) {
+        return $this->getClient()->isA(func_get_args());
+    }
+
     public function canAccess($lock, $action=null, $linkTo=false) {
         if(!$lock instanceof IAccessLock) {
             $lock = $this->getAccessLock($lock);

@@ -26,6 +26,7 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
     protected $_timezone;
 
     protected $_groupIds = [];
+    protected $_signifiers = [];
     protected $_options = null;
     
     protected $_authState = IState::GUEST;
@@ -113,6 +114,7 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
 
         $output->_authState = IState::GUEST;
         $output->_groupIds = [];
+        $output->_signifiers = ['guest'];
         $output->_options = [];
 
         return $output;
@@ -130,6 +132,7 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
             'ln' => $this->_language,
             'tz' => $this->_timezone,
             'gr' => $this->_groupIds,
+            'si' => $this->_signifiers,
             'op' => $this->_options,
             'as' => $this->_authState,
             'kr' => $this->_keyring,
@@ -158,6 +161,10 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
 
         if(isset($data['gr'])) {
             $this->_groupIds = (array)$data['gr'];
+        }
+
+        if(isset($data['si'])) {
+            $this->_signifiers = (array)$data['si'];
         }
 
         if(isset($data['op'])) {
@@ -212,6 +219,10 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
     public function getGroupIds() {
         return $this->_groupIds;
     }
+
+    public function getSignifiers() {
+        return $this->_signifiers;
+    }
     
     
     public function setAuthenticationState($state) {
@@ -260,6 +271,16 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
     public function isConfirmed() {
         return $this->_authState >= IState::CONFIRMED;
     }
+
+    public function isA($signifier) {
+        foreach(core\collection\Util::flattenArray(func_get_args()) as $signifier) {
+            if(in_array($signifier, $this->_signifiers)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
     
     
     
@@ -282,6 +303,7 @@ class Client implements IClient, \Serializable, mesh\entity\IEntity {
             $this->_groupIds[] = (string)core\string\Uuid::factory($groupId);
         }
 
+        $this->_signifiers = $clientData->getSignifiers();
         $this->_options = null;
 
         if(df\Launchpad::$application instanceof core\application\Http) {
