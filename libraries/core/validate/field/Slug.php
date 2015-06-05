@@ -24,6 +24,7 @@ class Slug extends Base implements core\validate\ISlugField {
     protected $_defaultValueField = null;
     protected $_defaultValueSanitizer = null;
     protected $_generateIfEmpty = false;
+    protected $_renameOnConflict = true;
 
     public function allowPathFormat($flag=null) {
         if($flag !== null) {
@@ -79,6 +80,15 @@ class Slug extends Base implements core\validate\ISlugField {
         return $this->_generateIfEmpty;
     }
 
+    public function shouldRenameOnConflict($flag=null) {
+        if($flag !== null) {
+            $this->_renameOnConflict = (bool)$flag;
+            return $this;
+        }
+
+        return $this->_renameOnConflict;
+    }
+
     
 
     public function validate(core\collection\IInputTree $node) {
@@ -115,7 +125,7 @@ class Slug extends Base implements core\validate\ISlugField {
         $this->_validateMinLength($node, $value, $length);
         $this->_validateMaxLength($node, $value, $length);
 
-        $this->_validateUnique($node, $value, true);
+        $this->_validateUnique($node, $value, $this->_renameOnConflict);
         return $this->_finalize($node, $value);
     }
 

@@ -475,6 +475,7 @@ interface ISlugField extends IField, IUniqueCheckerField, IMinLengthField, IMaxL
     public function setDefaultValueField($field, $sanitizer=null);
     public function getDefaultValueField();
     public function shouldGenerateIfEmpty($flag=null);
+    public function shouldRenameOnConflict($flag=null);
 }
 
 interface IStructureField extends IField {
