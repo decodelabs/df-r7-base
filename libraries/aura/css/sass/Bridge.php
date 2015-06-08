@@ -124,41 +124,9 @@ class Bridge implements IBridge {
             $manifest[$fileKey] = $filePath;
 
             $contents = file_get_contents($filePath);
-            preg_match_all('/\@import \"([^"]+)\"\;/', $contents, $matches);
-
-            if(!empty($matches[1])) {
-                $imports = [];
-
-                foreach($matches[1] as $path) {
-                    if($path{0} == '/') {
-                        $importPath = $path;
-                    } else if(false !== strpos($path, '://')) {
-                        $importPath = $this->_uriToPath($path);
-                    } else {
-                        $importPath = realpath(dirname($filePath).'/'.$path);
-                    }
-
-                    if(empty($importPath)) {
-                        continue;
-                    }
-
-                    $key = md5($importPath);
-                    $type = substr($importPath, -4);
-                    $imports[$path] = $key.'.'.$type;
-
-                    if(!isset($manifest[$key])) {
-                        $sourceFiles[] = $importPath;
-                    }
-                }
-
-                foreach($imports as $import => $keyName) {
-                    $contents = str_replace('@import "'.$import.'"', '@import "'.$keyName.'"', $contents);
-                }
-            }
-
-            if(!preg_match('/\@charset /', $contents)) {
-                $contents = '@charset "UTF-8";'."\n".$contents;
-            }
+            $contents = $this->_replaceLocalPaths($contents, $filePath, $sourceFiles);
+            $contents = $this->_replaceUrls($contents);
+            $contents = $this->_setCharset($contents);
 
             file_put_contents($this->_workDir.'/'.$this->_key.'/'.$fileKey.'.'.$fileType, $contents);
         }
@@ -268,11 +236,87 @@ class Bridge implements IBridge {
         return $this->_workDir.'/'.$this->_key.'.css';
     }
 
-    protected function _uriToPath($uriString) {
-        $uri = core\uri\Url::factory($uriString);
-        $path = (string)$uri->path;
+    protected function _replaceLocalPaths($sass, $filePath, array &$sourceFiles) {
+        preg_match_all('/\@import \"([^"]+)\"\;/', $sass, $matches);
 
-        switch($uri->getScheme()) {
+        if(!empty($matches[1])) {
+            $imports = [];
+
+            foreach($matches[1] as $path) {
+                if($path{0} == '/') {
+                    $importPath = $path;
+                } else if(false !== strpos($path, '://')) {
+                    $importPath = $this->_uriToPath($path);
+                } else {
+                    $importPath = realpath(dirname($filePath).'/'.$path);
+                }
+
+                if(empty($importPath)) {
+                    continue;
+                }
+
+                $key = md5($importPath);
+                $type = substr($importPath, -4);
+                $imports[$path] = $key.'.'.$type;
+
+                if(!isset($manifest[$key])) {
+                    $sourceFiles[] = $importPath;
+                }
+            }
+
+            foreach($imports as $import => $keyName) {
+                $sass = str_replace('@import "'.$import.'"', '@import "'.$keyName.'"', $sass);
+            }
+        }
+
+        return $sass;
+    }
+
+    protected function _replaceUrls($sass) {
+        preg_match_all('/url\([\'\"]?([^\'\"\)]+)[\'\"]?\)/i', $sass, $matches);
+
+        if(df\Launchpad::COMPILE_TIMESTAMP) {
+            $cts = df\Launchpad::COMPILE_TIMESTAMP;
+        } else if($this->context->application->isDevelopment()) {
+            $cts = time();
+        } else {
+            $cts = null;
+        }
+
+        if(!empty($matches[1])) {
+            $urls = [];
+
+            foreach($matches[1] as $i => $path) {
+                if($cts !== null && $path{0} == '.') {
+                    $separator = false !== strpos($path, '?') ? '&' : '?';
+                    $urls[$matches[0][$i]] = $path.$separator.'cts='.$cts;
+                } else if(false !== strpos($path, '://')) {
+                    $urls[$matches[0][$i]] = $this->context->uri($path);
+                }
+            }
+
+            foreach($urls as $match => $url) {
+                $sass = str_replace($match, 'url(\''.$url.'\')', $sass);
+            }
+        }
+
+        return $sass;
+    }
+
+    protected function _setCharset($sass) {
+        if(!preg_match('/\@charset /', $sass)) {
+            $sass = '@charset "UTF-8";'."\n".$sass;
+        }
+
+        return $sass;
+    }
+
+    protected function _uriToPath($uri) {
+        $parts = explode('://', $uri);
+        $schema = array_shift($parts);
+        $path = array_shift($parts);
+
+        switch($schema) {
             case 'apex':
                 if($output = df\Launchpad::$loader->findFile('apex/'.$path)) {
                     return $output;
@@ -307,7 +351,7 @@ class Bridge implements IBridge {
                 break;
         }
 
-        return $uriString;
+        return $uri;
     }
 
     protected function _applyProcessor($name, array $settings) {
