@@ -130,12 +130,10 @@ class Bridge implements IBridge {
                 $imports = [];
 
                 foreach($matches[1] as $path) {
-                    $char = $path{0};
-
-                    if($char == '/') {
+                    if($path{0} == '/') {
                         $importPath = $path;
-                    } else if($char == '#') {
-                        $importPath = df\Launchpad::$loader->findFile(substr($path, 1));
+                    } else if(false !== strpos($path, '://')) {
+                        $importPath = $this->_uriToPath($path);
                     } else {
                         $importPath = realpath(dirname($filePath).'/'.$path);
                     }
@@ -268,6 +266,48 @@ class Bridge implements IBridge {
         core\io\Util::deleteDir($this->_workDir.'/'.$this->_key);
 
         return $this->_workDir.'/'.$this->_key.'.css';
+    }
+
+    protected function _uriToPath($uriString) {
+        $uri = core\uri\Url::factory($uriString);
+        $path = (string)$uri->path;
+
+        switch($uri->getScheme()) {
+            case 'apex':
+                if($output = df\Launchpad::$loader->findFile('apex/'.$path)) {
+                    return $output;
+                }
+
+                break;
+
+            case 'asset':
+                if($output = df\Launchpad::$loader->findFile('apex/assets/'.$path)) {
+                    return $output;
+                }
+
+                break;
+
+            case 'theme':
+                $theme = $this->context->extractThemeId($path);
+
+                if(!$theme) {
+                    $theme = $this->context->apex->getTheme()->getId();
+                }
+
+                $output = df\Launchpad::$loader->findFile('apex/themes/'.$theme.'/assets/'.$path);
+
+                if(!$output) {
+                    $output = df\Launchpad::$loader->findFile('apex/themes/shared/assets/'.$path);
+                }
+                
+                if($output) {
+                    return $output;
+                }
+
+                break;
+        }
+
+        return $uriString;
     }
 
     protected function _applyProcessor($name, array $settings) {

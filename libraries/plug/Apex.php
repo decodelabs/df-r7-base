@@ -71,8 +71,8 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
     public function themeTemplate($path, array $slots=null) {
         $themeId = $this->context->extractThemeId($path);
 
-        if(!$themeId && $this->view) {
-            $themeId = $this->view->getTheme()->getId();
+        if(!$themeId) {
+            $themeId = $this->getTheme()->getId();
         }
 
         $template = aura\view\content\Template::loadThemeTemplate(
@@ -92,6 +92,10 @@ class Apex implements arch\IDirectoryHelper, aura\view\IContextSensitiveHelper {
 
     public function getTheme($id=null) {
         if($id === null) {
+            if($this->view) {
+                return $this->view->getTheme();
+            }
+
             $id = $this->context;
         }
 
