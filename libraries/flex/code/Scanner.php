@@ -53,6 +53,7 @@ class Scanner implements IScanner {
                 case 'app':
                     $blackList = [
                         'data',
+                        'dev',
                         'static',
                         'assets/lib/vendor'
                     ];

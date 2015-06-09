@@ -575,6 +575,7 @@ interface IMultiplexer extends IFlushable, core\IRegistryObject {
 // Accept type
 interface IAcceptTypeProcessor {
     public function setAcceptTypes($types=null);
+    public function addAcceptTypes($types);
     public function getAcceptTypes();
     public function isTypeAccepted($type);
 }
@@ -584,17 +585,18 @@ trait TAcceptTypeProcessor {
     protected $_acceptTypes = [];
 
     public function setAcceptTypes($types=null) {
+        $this->_acceptTypes = [];
+
         if($types === null) {
-            $this->_acceptTypes = [];
             return $this;
         }
+
+        return $this->addAcceptTypes(func_get_args());
+    }
         
-        if(!is_array($types)) {
-            $types = func_get_args();
-        }
-        
-        $this->_acceptTypes = [];
-        
+    public function addAcceptTypes($types) {   
+        $types = core\collection\Util::flattenArray(func_get_args());
+
         foreach($types as $type) {
             $type = trim(strtolower($type));
             
@@ -602,11 +604,17 @@ trait TAcceptTypeProcessor {
                 continue;
             }
 
+            if($type{0} == '.') {
+                $type = Type::extToMime(substr($type, 1));
+            }
+
             if(false === strpos($type, '/')) {
                 $type .= '/*';
             }
             
-            $this->_acceptTypes[] = $type;
+            if(!in_array($type, $this->_acceptTypes)) {
+                $this->_acceptTypes[] = $type;
+            }
         }
         
         return $this;
@@ -619,6 +627,14 @@ trait TAcceptTypeProcessor {
     public function isTypeAccepted($type) {
         if(empty($this->_acceptTypes)) {
             return true;
+        }
+
+        if(!strlen($type)) {
+            return false;
+        }
+
+        if($type{0} == '.') {
+            $type = Type::extToMime(substr($type, 1));
         }
 
         @list($category, $name) = explode('/', $type, 2);

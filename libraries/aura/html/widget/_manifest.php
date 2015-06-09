@@ -279,10 +279,7 @@ interface ITextareaWidget extends ITextEntryWidget {
     public function getWrap();
 }
 
-interface IFileUploadWidget extends IFocusableInputWidget, IOptionalMultipleValueInputWidget {
-    public function setAcceptTypes($types=null);
-    public function getAcceptTypes();
-}
+interface IFileUploadWidget extends IFocusableInputWidget, IOptionalMultipleValueInputWidget, core\io\IAcceptTypeProcessor {}
 
 interface IDateWidget extends IRangeEntryWidget {}
 

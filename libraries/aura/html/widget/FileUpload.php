@@ -16,11 +16,10 @@ class FileUpload extends Base implements IFileUploadWidget, core\IDumpable {
     use TWidget_Input;
     use TWidget_FocusableInput;
     use TWidget_OptionalMultipleValueInput;
+    use core\io\TAcceptTypeProcessor;
     
     const PRIMARY_TAG = 'input';
     const ARRAY_INPUT = false;
-    
-    protected $_acceptTypes = [];
     
     public function __construct(arch\IContext $context, $name, $value=null) {
         $this->setName($name);
@@ -36,7 +35,7 @@ class FileUpload extends Base implements IFileUploadWidget, core\IDumpable {
         $this->_applyInputAttributes($tag);
         $this->_applyFocusableInputAttributes($tag);
         $this->_applyOptionalMultipleValueInputAttributes($tag);
-        
+
         if(!empty($this->_acceptTypes)) {
             $tag->setAttribute('accept', implode(',', $this->_acceptTypes));
         }
@@ -44,42 +43,6 @@ class FileUpload extends Base implements IFileUploadWidget, core\IDumpable {
         return $tag;
     }
     
-    
-    
-    
-// Accept types
-    public function setAcceptTypes($types=null) {
-        if($types === null) {
-            $this->_acceptTypes = [];
-            return $this;
-        }
-        
-        if(!is_array($types)) {
-            $types = func_get_args();
-        }
-        
-        $this->_acceptTypes = [];
-        
-        foreach($types as $type) {
-            $type = trim(strtolower($type));
-            
-            if(!strlen($type)) {
-                continue;
-            }
-
-            if(false === strpos($type, '/')) {
-                $type .= '/*';
-            }
-            
-            $this->_acceptTypes[] = $type;
-        }
-        
-        return $this;
-    }
-    
-    public function getAcceptTypes() {
-        return $this->_acceptTypes;
-    }
     
 // Dump
     public function getDumpProperties() {

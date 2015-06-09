@@ -10,9 +10,10 @@ use df\core;
 use df\flex;
 use df\halo;
 
-class Counter implements flex\code\IProbe, \ArrayAccess {
+class Counter implements flex\code\IProbe, core\io\IAcceptTypeProcessor, \ArrayAccess {
     
     use flex\code\TProbe;
+    use core\io\TAcceptTypeProcessor;
 
     protected static $_textTypes = [
         'as', 'atom', 'cgi', 'css', 'cs', 'dtd', 'htaccess', 'htc', 'htm', 'html', 'js', 'json', 'mathml', 
@@ -22,7 +23,6 @@ class Counter implements flex\code\IProbe, \ArrayAccess {
 
     protected static $_blacklist = ['gitignore', 'loc'];
 
-    protected $_acceptTypes = null;
     protected $_types = [];
     protected $_totals;
 
@@ -38,15 +38,6 @@ class Counter implements flex\code\IProbe, \ArrayAccess {
         }
     }
 
-    public function setAcceptTypes(array $acceptTypes=null) {
-        $this->_acceptTypes = $acceptTypes;
-        return $this;
-    }
-
-    public function getAcceptTypes() {
-        return $this->_acceptTypes;
-    }
-
     public function probe(flex\code\ILocation $location, $localPath) {
         if(substr($localPath, -1) == '~') {
             return;        
@@ -58,7 +49,7 @@ class Counter implements flex\code\IProbe, \ArrayAccess {
 
         if($ext === null 
         || in_array($ext, self::$_blacklist)
-        || ($this->_acceptTypes !== null && !in_array($ext, $this->_acceptTypes))) {
+        || (!empty($this->_acceptTypes) && !$this->isTypeAccepted($ext))) {
             return;
         }
 
