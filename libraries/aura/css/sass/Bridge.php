@@ -142,7 +142,7 @@ class Bridge implements IBridge {
         $path = halo\system\Base::getInstance()->which('sass');
 
         if(!$path || $path == 'sass') {
-            $path = core\Environment::getInstance()->getVendorBinaryPath('sass');
+            $path = core\Environment::getInstance()->getBinaryPath('sass');
         }
 
         if(!$path || $path == 'sass' && file_exists('/usr/local/bin/sass')) {

@@ -14,7 +14,7 @@ use df\arch;
 class TaskGenerateEntries extends arch\task\Action {
 
     public function execute() {
-        $phpPath = core\Environment::getInstance()->getPhpBinaryPath();
+        $phpPath = core\Environment::getInstance()->getBinaryPath('php');
         
         if($phpPath == 'php') {
             $phpPath = halo\system\Base::getInstance()->which('php');

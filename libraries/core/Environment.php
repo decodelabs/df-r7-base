@@ -18,8 +18,7 @@ class Environment extends Config {
     
     public function getDefaultValues() {
         return [
-            'phpBinaryPath' => 'php',
-            'vendorBinaryPaths' => [],
+            'binaryPaths' => [],
             'distributed' => false,
             'activeLocations' => [],
             'daemonsEnabled' => false,
@@ -35,34 +34,14 @@ class Environment extends Config {
     }
 
 
-// PHP Binary path
-    public function setPhpBinaryPath($path) {
-        $this->values->phpBinaryPath = $path;
+// Vendor binary paths
+    public function setBinaryPath($id, $path) {
+        $this->values->binaryPaths->{$id} = $path;
         return $this;
     }
-    
-    public function getPhpBinaryPath() {
-        if(isset($this->values['phpBinaryPath'])) {
-            $output = $this->values['phpBinaryPath'];
-        } else {
-            $output = 'php';
-        }
-        
-        /*
-        if(false === strpos($output, '/')
-        && false === strpos($output, '\\')) {
-            $output = halo\system\Base::getInstance()->which('php');
-            $this->values['phpBinaryPath'] = $output;
-            $this->save();
-        }
-        */
 
-        return $output;
-    }
-    
-// Vendor binary paths
-    public function getVendorBinaryPath($id) {
-        return $this->values->vendorBinaryPaths->get($id, $id);
+    public function getBinaryPath($id) {
+        return $this->values->binaryPaths->get($id, $id);
     }
     
 // Load balancing
