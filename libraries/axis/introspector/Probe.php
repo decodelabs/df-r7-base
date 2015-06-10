@@ -87,13 +87,7 @@ class Probe implements IProbe {
                 continue;
             }
             
-            $inspector = new UnitInspector($unit);
-
-            if($inspector->isSharedVirtual()) {
-                continue;
-            }
-
-            $output[$unitId] = $inspector;
+            $output[$unitId] = new UnitInspector($unit);
         }
 
         ksort($output);
