@@ -95,9 +95,9 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
         $sourceManager = $parent->getSourceManager();
         $source = $field->getSource();
         $localUnit = $source->getAdapter();
-        
+
         $targetUnit = axis\Model::loadUnitFromId($this->_targetUnitId);
-        $targetField = $sourceManager->extrapolateIntrinsicField($source, $localRelationManifest->getSingleFieldName());
+        $targetField = $sourceManager->extrapolateIntrinsicField($source, $source->getAlias().'.'.$localRelationManifest->getSingleFieldName());
 
         $bridgeUnit = axis\Model::loadUnitFromId($this->_bridgeUnitId);
         
@@ -136,7 +136,7 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
                 $query->where($targetFieldName, $operator, $targetPrimaryKeySet->duplicateWith($value));
                 break;
         }
-        
+
         return opal\query\clause\Clause::factory(
             $parent,
             $targetField, 
