@@ -35,7 +35,6 @@ interface IModel extends mesh\entity\IParentEntity, core\IRegistryObject {
 
 
 interface IUnitOptions {
-    const ID_SEPARATOR = '/';
     const BACKUP_SUFFIX = '__bak_';
 }
 
@@ -106,11 +105,11 @@ trait TUnit {
     }
     
     public function getUnitId() {
-        return $this->_model->getModelId().IUnitOptions::ID_SEPARATOR.$this->getUnitName();
+        return $this->_model->getModelId().'/'.$this->getUnitName();
     }
 
     public function getGlobalUnitId() {
-        return $this->_model->getModelName().IUnitOptions::ID_SEPARATOR.$this->getUnitName();
+        return $this->_model->getModelName().'/'.$this->getUnitName();
     }
 
     public function getUnitSettings() {
@@ -197,8 +196,8 @@ trait TUnit {
     public function lookupAccessKey(array $keys, $action=null) {
         $id = $this->getUnitId();
 
-        $parts = explode(IUnitOptions::ID_SEPARATOR, $id);
-        $test = $parts[0].IUnitOptions::ID_SEPARATOR;
+        $parts = explode('/', $id);
+        $test = $parts[0].'/';
 
         if($action !== null) {
             if(isset($keys[$id.'#'.$action])) {

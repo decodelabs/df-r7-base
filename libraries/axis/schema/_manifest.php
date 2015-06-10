@@ -310,8 +310,8 @@ trait TRelationField {
     protected function _sanitizeTargetUnitId(axis\ISchemaBasedStorageUnit $unit) {
         $model = $unit->getModel();
         
-        if(false === strpos($this->_targetUnitId, axis\IUnitOptions::ID_SEPARATOR)) {
-            $this->_targetUnitId = $model->getModelName().axis\IUnitOptions::ID_SEPARATOR.$this->_targetUnitId;
+        if(false === strpos($this->_targetUnitId, '/')) {
+            $this->_targetUnitId = $model->getModelName().'/'.$this->_targetUnitId;
         }
     }
 
@@ -608,6 +608,17 @@ trait TBridgedRelationField {
 
         $isManyToMany = $this instanceof IManyToManyField;
 
+        if(empty($this->_bridgeUnitId)) {
+            if($isManyToMany && !$this->isDominant()) {
+                //$buiArgs = [$targetUnit->getUnitName().'.'.$this->getTargetField()];
+                $dominantField = $targetUnit->getTransientUnitSchema()->getField($this->getTargetField());
+                $this->_bridgeUnitId = $dominantField->getBridgeUnitId();
+            } else {
+                $buiArgs = [$localUnit->getUnitName().'.'.$this->_name];
+                $this->_bridgeUnitId = $modelName.'/'.$this->_getBridgeUnitType().'('.implode(',', $buiArgs).')';
+            }
+        }
+
         if(!empty($this->_bridgeUnitId) && false === strpos($this->_bridgeUnitId, '(')) {
             $parts = explode('/', $this->_bridgeUnitId, 2);
             $bridgeModelName = array_shift($parts);
@@ -622,23 +633,19 @@ trait TBridgedRelationField {
 
             if($bridgeClass::IS_SHARED) {
                 if($isManyToMany && !$this->isDominant()) {
-                    $this->_bridgeUnitId = $modelName.axis\IUnitOptions::ID_SEPARATOR.$this->_getBridgeUnitType().'('.$targetUnit->getUnitName().'.'.$this->getTargetField().','.$bridgeModelName.'/'.$bridgeId.')';
+                    //$buiArgs = [$targetUnit->getUnitName().'.'.$this->getTargetField()];
+                    $dominantField = $targetUnit->getTransientUnitSchema()->getField($this->getTargetField());
+                    $this->_bridgeUnitId = $dominantField->getBridgeUnitId();
                 } else {
-                    $this->_bridgeUnitId = $modelName.axis\IUnitOptions::ID_SEPARATOR.$this->_getBridgeUnitType().'('.$localUnit->getUnitName().'.'.$this->_name.','.$bridgeModelName.'/'.$bridgeId.')';
+                    $buiArgs = [$localUnit->getUnitName().'.'.$this->_name];
+                    $buiArgs[] = $bridgeModelName.'/'.$bridgeId;
+                    $this->_bridgeUnitId = $modelName.'/'.$this->_getBridgeUnitType().'('.implode(',', $buiArgs).')';
                 }
             }
         }
 
-        if(empty($this->_bridgeUnitId)) {
-            if($isManyToMany && !$this->isDominant()) {
-                $this->_bridgeUnitId = $modelName.axis\IUnitOptions::ID_SEPARATOR.$this->_getBridgeUnitType().'('.$targetUnit->getUnitName().'.'.$this->getTargetField().')';
-            } else {
-                $this->_bridgeUnitId = $modelName.axis\IUnitOptions::ID_SEPARATOR.$this->_getBridgeUnitType().'('.$localUnit->getUnitName().'.'.$this->_name.')';
-            }
-        }
-
-        if(false === strpos($this->_bridgeUnitId, axis\IUnitOptions::ID_SEPARATOR)) {
-            $this->_bridgeUnitId = $modelName.axis\IUnitOptions::ID_SEPARATOR.$this->_bridgeUnitId;
+        if(false === strpos($this->_bridgeUnitId, '/')) {
+            $this->_bridgeUnitId = $modelName.'/'.$this->_bridgeUnitId;
         }
 
         if($this->_bridgeTargetFieldName == $localUnit->getUnitName()) {

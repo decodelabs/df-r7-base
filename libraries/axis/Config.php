@@ -85,7 +85,7 @@ class Config extends core\Config {
         if(!isset($this->values->units[$unitId])) {
             $originalId = $unitId;
             
-            $parts = explode(axis\IUnitOptions::ID_SEPARATOR, $unitId);
+            $parts = explode('/', $unitId);
             $unitId = array_shift($parts);
             
             if(!isset($this->values->units[$unitId])) {
