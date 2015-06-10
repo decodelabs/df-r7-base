@@ -250,9 +250,9 @@ class Rdbms implements
 
     public function ensureStorageConsistency() {
         $model = $this->_unit->getModel();
-        $defUnit = $model->getSchemaDefinitionUnit();
+        $manager = $model->getSchemaManager();
 
-        $idList = $defUnit->fetchStoredUnitList();
+        $idList = $manager->fetchStoredUnitList();
         $tableList = $this->getConnection()->getDatabase()->getTableList();
         $update = [];
         $remove = [];
@@ -279,19 +279,19 @@ class Rdbms implements
         }
 
         if(!empty($remove)) {
-            $defUnit->clearCache();
+            $manager->clearCache();
             
             foreach($remove as $unitId) {
-                $defUnit->removeId($unitId);
+                $manager->removeId($unitId);
             }
         }
 
         if(!empty($update)) {
-            $defUnit->clearCache();
+            $manager->clearCache();
 
             foreach($update as $name => $unit) {
-                $defUnit->remove($unit);
-                $defUnit->fetchFor($unit);
+                $manager->remove($unit);
+                $manager->fetchFor($unit);
             }
         }
 

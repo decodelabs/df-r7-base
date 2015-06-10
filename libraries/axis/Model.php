@@ -151,9 +151,8 @@ abstract class Model implements IModel, core\IDumpable {
         return $unit;
     }
 
-
-    public static function getSchemaDefinitionUnit() {
-        return self::loadUnitFromId('axis/schemaDefinition.Virtual()');
+    public static function getSchemaManager() {
+        return axis\schema\Manager::getInstance();
     }
     
     public function unloadUnit(IUnit $unit) {

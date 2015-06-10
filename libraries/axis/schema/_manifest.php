@@ -20,6 +20,23 @@ class LogicException extends \LogicException implements IException {}
 
 
 // Interfaces
+interface IManager extends core\IManager {
+    public function fetchFor(axis\ISchemaBasedStorageUnit $unit, $transient=false);
+    public function store(axis\ISchemaBasedStorageUnit $unit, ISchema $schema);
+    public function getTimestampFor(axis\ISchemaBasedStorageUnit $unit);
+    public function insert(axis\ISchemaBasedStorageUnit $unit, $jsonData, $version);
+    public function update(axis\ISchemaBasedStorageUnit $unit, $jsonData, $version);
+    public function remove(axis\ISchemaBasedStorageUnit $unit);
+    public function removeId($unitId);
+    public function clearCache(axis\ISchemaBasedStorageUnit $unit=null);
+    public function fetchStoredUnitList();
+    public function markTransient(axis\ISchemaBasedStorageUnit $unit);
+    public function unmarkTransient(axis\ISchemaBasedStorageUnit $unit);
+    public function getSchemaUnit();
+}
+
+
+
 interface ISchema extends opal\schema\ISchema, opal\schema\IFieldProvider, opal\schema\IIndexProvider, opal\schema\IIndexedFieldProvider {
     public function getUnitType();
     public function getUnitId();
@@ -699,3 +716,5 @@ interface ITranslator {
     public function createFreshTargetSchema();
     public function updateTargetSchema();
 }
+
+class Cache extends core\cache\Base {}

@@ -14,7 +14,7 @@ use df\opal;
 
 class TaskUpdate extends arch\task\Action {
     
-    protected $_schemaDefinition;
+    protected $_schemaManager;
     protected $_clusterUnit;
 
     public function execute() {
@@ -44,7 +44,7 @@ class TaskUpdate extends arch\task\Action {
             $this->io->writeLine();
         }
 
-        $this->_schemaDefinition = axis\Model::getSchemaDefinitionUnit();
+        $this->_schemaManager = axis\schema\Manager::getInstance();
 
         try {
             $this->_clusterUnit = axis\Model::loadClusterUnit();
@@ -75,7 +75,7 @@ class TaskUpdate extends arch\task\Action {
         $store = [];
 
         if($schema->hasPrimaryIndexChanged()) {
-            foreach($this->_schemaDefinition->fetchStoredUnitList() as $relationUnitId) {
+            foreach($this->_schemaManager->fetchStoredUnitList() as $relationUnitId) {
                 $relationUnit = axis\Model::loadUnitFromId($relationUnitId);
                 $relationSchema = $relationUnit->getUnitSchema();
                 $update = false;
@@ -139,7 +139,7 @@ class TaskUpdate extends arch\task\Action {
 
 
         foreach($store as $unitId => $set) {
-            $this->_schemaDefinition->store($set['unit'], $set['schema']);
+            $this->_schemaManager->store($set['unit'], $set['schema']);
         }
     }
 }

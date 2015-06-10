@@ -87,7 +87,7 @@ abstract class Base implements
 // Schema
     public function getUnitSchema() {
         if($this->_schema === null) {
-            $this->_schema = $this->_model->getSchemaDefinitionUnit()->fetchFor($this);
+            $this->_schema = $this->_model->getSchemaManager()->fetchFor($this);
         }
         
         return $this->_schema;
@@ -104,7 +104,7 @@ abstract class Base implements
             return $this->_schema;
         }
         
-        return $this->_model->getSchemaDefinitionUnit()->fetchFor($this, true);
+        return $this->_model->getSchemaManager()->fetchFor($this, true);
     }
     
     public function buildInitialSchema() {
@@ -159,12 +159,12 @@ abstract class Base implements
     abstract protected function _onCreate(axis\schema\ISchema $schema);
     
     public function validateUnitSchema(axis\schema\ISchema $schema) {
-        $defUnit = $this->_model->getSchemaDefinitionUnit();
-        $defUnit->markTransient($this);
+        $manager = $this->_model->getSchemaManager();
+        $manager->markTransient($this);
 
         $schema->validate($this);
 
-        $defUnit->unmarkTransient($this);
+        $manager->unmarkTransient($this);
         return $this;
     }
 
@@ -185,10 +185,9 @@ abstract class Base implements
     
     
     public function destroyStorage() {
-        $defUnit = $this->_model->getSchemaDefinitionUnit();
-        $defUnit->clearUnitSchemaCache();
+        $manager = $this->_model->getSchemaManager();
         $this->_adapter->destroyStorage();
-        $defUnit->remove($this);
+        $manager->remove($this);
         
         return $this;
     }

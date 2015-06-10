@@ -74,10 +74,9 @@ class Probe implements IProbe {
             }
         }
 
-        $schemaDefinition = axis\Model::getSchemaDefinitionUnit();
-        $output[$schemaDefinition->getUnitId()] = new UnitInspector($schemaDefinition);
+        $schemaManager = axis\schema\Manager::getInstance();
 
-        foreach($schemaDefinition->fetchStoredUnitList() as $unitId) {
+        foreach($schemaManager->fetchStoredUnitList() as $unitId) {
             if(isset($output[$unitId])) {
                 continue;
             }

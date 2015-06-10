@@ -55,8 +55,8 @@ class TaskBackup extends arch\task\Action {
 
             $this->io->writeLine();
 
-            foreach($clusterUnit->select('@primary as primary') as $row) {
-                $key = (string)$row['primary'];
+            foreach($clusterUnit->select('@primary') as $row) {
+                $key = implode('|', $row);
                 $this->io->writeLine('Backing up units on cluster: '.$key);
                 $this->io->writeLine();
 
@@ -91,9 +91,6 @@ class TaskBackup extends arch\task\Action {
                 $this->_backupTable($inspector);
                 break;
 
-            case 'schemaDefinition':
-                $this->_backupSchemaDefinition($inspector);
-
             default:
                 continue;
         }
@@ -125,32 +122,6 @@ class TaskBackup extends arch\task\Action {
         $this->io->writeLine(' '.$count.' rows');
     }
 
-    protected function _backupSchemaDefinition($inspector) {
-        if(!$inspector->storageExists() || $inspector->getUnit()->getClusterId()) {
-            return;
-        }
-
-        $unitAdapter = $inspector->getAdapter();
-        $unit = $inspector->getUnit();
-        $backupAdapter = $this->_getBackupAdapter($inspector);
-        $schema = $inspector->getTransientSchema();
-        $translator = new axis\schema\translator\Rdbms($unit, $backupAdapter, $schema);
-        $opalSchema = $translator->createFreshTargetSchema();
-        $table = $backupAdapter->createTable($opalSchema);
-        $this->io->write('Copying schema definition table to '.basename($backupAdapter->getDsn()->getDatabase()).' -');
-
-        $insert = $table->batchInsert();
-        $count = 0;
-
-        foreach($unit->getUnitAdapter()->fetchRawData() as $row) {
-            $insert->addRow($row);
-            $count++;
-        }
-
-        $insert->execute();
-        $this->io->writeLine(' '.$count.' rows');
-    }
-
 
 
 // Backup adapters
@@ -159,8 +130,6 @@ class TaskBackup extends arch\task\Action {
 
         if($unit instanceof opal\query\IAdapter) {
             return $this->_getBackupAdapterFromQuerySourceUnit($unit);
-        } else if($unit instanceof axis\ISchemaDefinitionStorageUnit) {
-            return $this->_getBackupAdapterForSchemaDefinitionUnit($unit);
         } else {
             core\stub($unit);
         }
@@ -179,23 +148,6 @@ class TaskBackup extends arch\task\Action {
         $dbName = $unitAdapter->getStorageGroupName();
 
         return $this->_loadBackupAdapter($hash, $dbName, (string)$connection->getDsn());
-    }
-
-    protected function _getBackupAdapterForSchemaDefinitionUnit($unit) {
-        $hash = $unit->getUnitAdapter()->getConnectionHash();
-
-        if(!isset($this->_backupAdapters[$hash])) {
-            $unitAdapter = $unit->getUnitAdapter();
-            $connection = $unitAdapter->getConnection();
-            $this->_unitAdapters[$hash] = $connection;
-            $dbName = $unitAdapter->getStorageGroupName();
-            $this->_loadBackupAdapter($hash, $dbName, (string)$connection->getDsn());
-        }
-
-        $this->_manifest['master'] = basename($this->_backupAdapters[$hash]->getDsn()->getDatabase());
-
-        return $this->_backupAdapters[$hash];
-        
     }
 
     protected function _loadBackupAdapter($hash, $dbName, $connection) {

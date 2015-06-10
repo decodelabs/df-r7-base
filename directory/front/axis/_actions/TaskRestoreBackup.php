@@ -56,7 +56,7 @@ class TaskRestoreBackup extends arch\task\Action {
         $this->io->write('Loading schemas...');
 
         $masterDb = $this->_loadSqlite($manifest['master']);
-        $schemaTable = $masterDb->getTable('axis_schemas');
+        $schemaTable = $masterDb->getTable('axis_schema');
 
         foreach($schemaTable->select() as $row) {
             // TODO: load temp virtual unit as alternative
@@ -65,17 +65,6 @@ class TaskRestoreBackup extends arch\task\Action {
             $row['unit'] = $unit;
             $this->_schemas[$row['storeName']] = $row;
         }
-
-        $defUnit = axis\Model::getSchemaDefinitionUnit();
-
-        $this->_schemas['axis_schemas'] = [
-            'unitId' => 'axis/schemas',
-            'unit' => $defUnit,
-            'storeName' => 'axis_schemas',
-            'version' => 1,
-            'schema' => $defUnit->getUnitSchema(),
-            'timestamp' => date('Y-m-d H:i:s')
-        ];
 
         $this->io->writeLine(' found '.count($this->_schemas));
         $this->io->writeLine();

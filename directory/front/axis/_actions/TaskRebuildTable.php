@@ -62,9 +62,7 @@ class TaskRebuildTable extends arch\task\Action {
         $this->io->writeLine('Updating schema cache');
         
         axis\schema\Cache::getInstance()->clearAll();
-
-        $schemaDefinition = new axis\unit\schemaDefinition\Virtual($unit->getModel());
-        $schemaDefinition->store($unit, $schema);
+        axis\schema\Manager::getInstance()->store($unit, $schema);
 
         gc_collect_cycles();
         $this->io->writeLine('Done');

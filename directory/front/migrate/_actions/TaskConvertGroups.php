@@ -257,7 +257,7 @@ class TaskConvertGroups extends arch\task\Action {
             'user_invite_groups'
         ];
 
-        $this->_connection->getTable('axis_schemas')->delete()
+        $this->_connection->getTable('axis_schema')->delete()
             ->where('storeName', 'in', $clearTables)
             ->execute();
 

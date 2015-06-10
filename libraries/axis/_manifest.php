@@ -28,7 +28,7 @@ interface IModel extends mesh\entity\IParentEntity, core\IRegistryObject {
     public function getClusterId();
     
     public function getUnit($name);
-    public static function getSchemaDefinitionUnit();
+    public static function getSchemaManager();
     public function unloadUnit(IUnit $unit);
     public static function purgeLiveCache();
 }
@@ -395,26 +395,13 @@ trait TSchemaBasedStorageUnit {
     }
 }
 
-interface ISchemaDefinitionStorageUnit extends IStorageUnit {
-    public function fetchFor(ISchemaBasedStorageUnit $unit, $transient=false);
-    public function store(ISchemaBasedStorageUnit $unit, axis\schema\ISchema $schema);
-    public function remove(ISchemaBasedStorageUnit $unit);
-    public function removeId($unitId);
-    public function clearCache(ISchemaBasedStorageUnit $unit=null);
-    public function fetchStoredUnitList();
-    public function markTransient(ISchemaBasedStorageUnit $unit);
-    public function unmarkTransient(ISchemaBasedStorageUnit $unit);
-}
 
 interface IClusterUnit extends IStorageUnit {
     public function getClusterOptionsList();
 }
 
 
-interface IContext extends IUnit, core\IContext {
-
-}
-
+interface IContext extends IUnit, core\IContext {}
 
 
 
@@ -442,22 +429,6 @@ interface ISchemaProviderAdapter extends IAdapter {
     public function destroyStorage();
     public function storageExists();
 }
-
-
-interface ISchemaDefinitionStorageAdapter extends ISchemaProviderAdapter {
-    public function getConnectionHash();
-    public function fetchFor(ISchemaBasedStorageUnit $unit);
-    public function getTimestampFor(ISchemaBasedStorageUnit $unit);
-    
-    public function insert(ISchemaBasedStorageUnit $unit, $jsonData, $version);
-    public function update(ISchemaBasedStorageUnit $unit, $jsonData, $version);
-    public function remove(ISchemaBasedStorageUnit $unit);
-    public function removeId($unitId);
-
-    public function fetchStoredUnitList();
-    public function fetchRawData();
-}
-
 
 interface IAction {
     public function validate();
