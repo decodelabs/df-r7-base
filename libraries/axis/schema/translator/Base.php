@@ -3,14 +3,14 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\axis\schema\bridge;
+namespace df\axis\schema\translator;
 
 use df;
 use df\core;
 use df\axis;
 use df\opal;
 
-abstract class Base implements axis\schema\IBridge {
+abstract class Base implements axis\schema\ITranslator {
     
     protected $_unit;
     protected $_axisSchema;

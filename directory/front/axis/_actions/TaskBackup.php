@@ -108,8 +108,8 @@ class TaskBackup extends arch\task\Action {
         $unit = $inspector->getUnit();
         $backupAdapter = $this->_getBackupAdapter($inspector);
         $schema = $inspector->getSchema();
-        $bridge = new axis\schema\bridge\Rdbms($unit, $backupAdapter, $schema);
-        $opalSchema = $bridge->createFreshTargetSchema();
+        $translator = new axis\schema\translator\Rdbms($unit, $backupAdapter, $schema);
+        $opalSchema = $translator->createFreshTargetSchema();
         $table = $backupAdapter->createTable($opalSchema);
         $this->io->write('Copying table '.$inspector->getId().' to '.basename($backupAdapter->getDsn()->getDatabase()).' -');
 
@@ -134,8 +134,8 @@ class TaskBackup extends arch\task\Action {
         $unit = $inspector->getUnit();
         $backupAdapter = $this->_getBackupAdapter($inspector);
         $schema = $inspector->getTransientSchema();
-        $bridge = new axis\schema\bridge\Rdbms($unit, $backupAdapter, $schema);
-        $opalSchema = $bridge->createFreshTargetSchema();
+        $translator = new axis\schema\translator\Rdbms($unit, $backupAdapter, $schema);
+        $opalSchema = $translator->createFreshTargetSchema();
         $table = $backupAdapter->createTable($opalSchema);
         $this->io->write('Copying schema definition table to '.basename($backupAdapter->getDsn()->getDatabase()).' -');
 

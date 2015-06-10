@@ -141,8 +141,8 @@ class TaskRestoreBackup extends arch\task\Action {
 
             $this->io->write('Building table '.$schemaSet['storeName'].'...');
 
-            $bridge = new axis\schema\bridge\Rdbms($schemaSet['unit'], $adapter, $schema);
-            $dbSchema = $bridge->createFreshTargetSchema();
+            $translator = new axis\schema\translator\Rdbms($schemaSet['unit'], $adapter, $schema);
+            $dbSchema = $translator->createFreshTargetSchema();
             $newTable = $adapter->getTable($schemaSet['storeName'])->create($dbSchema);
             $oldTable = $backupDb->getTable($tableName);
             $insert = $newTable->batchInsert();

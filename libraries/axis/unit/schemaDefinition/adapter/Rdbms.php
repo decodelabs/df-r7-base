@@ -132,15 +132,15 @@ class Rdbms implements
 
 
     public function createStorageFromSchema(axis\schema\ISchema $axisSchema) {
-        $bridge = new axis\schema\bridge\Rdbms($this->_unit, $this->_table->getAdapter(), $axisSchema);
-        $dbSchema = $bridge->createFreshTargetSchema();
+        $translator = new axis\schema\translator\Rdbms($this->_unit, $this->_table->getAdapter(), $axisSchema);
+        $dbSchema = $translator->createFreshTargetSchema();
 
         return $this->_table->create($dbSchema);
     }
 
     public function updateStorageFromSchema(axis\schema\ISchema $axisSchema) {
-        $bridge = new axis\schema\bridge\Rdbms($this->_unit, $this->_table->getAdapter(), $axisSchema, $this->_table->getSchema());
-        $dbSchema = $bridge->updateTargetSchema();
+        $translator = new axis\schema\translator\Rdbms($this->_unit, $this->_table->getAdapter(), $axisSchema, $this->_table->getSchema());
+        $dbSchema = $translator->updateTargetSchema();
 
         if($dbSchema->hasChanged()) {
             return $this->_table->alter($dbSchema);

@@ -692,7 +692,7 @@ interface IOneToManyField extends IRelationField, opal\schema\IManyRelationField
 
 
 // Bridge
-interface IBridge {
+interface ITranslator {
     public function getUnit();
     public function getAxisSchema();
     public function getTargetSchema();

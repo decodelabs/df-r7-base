@@ -68,8 +68,8 @@ class TaskConvertGroups extends arch\task\Action {
         $unit->updateUnitSchema($schema);
         $unit->validateUnitSchema($schema);
 
-        $bridge = new axis\schema\bridge\Rdbms($unit, $this->_connection, $schema);
-        $dbSchema = $bridge->createFreshTargetSchema();
+        $translator = new axis\schema\translator\Rdbms($unit, $this->_connection, $schema);
+        $dbSchema = $translator->createFreshTargetSchema();
 
         if($targetName === null) {
             $targetName = $dbSchema->getName();

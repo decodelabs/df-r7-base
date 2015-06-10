@@ -205,8 +205,8 @@ class Rdbms implements
         $adapter = $this->getConnection();
         $table = $adapter->getTable($this->_unit->getStorageBackendName());
 
-        $bridge = new axis\schema\bridge\Rdbms($this->_unit, $adapter, $axisSchema);
-        $dbSchema = $bridge->createFreshTargetSchema();
+        $translator = new axis\schema\translator\Rdbms($this->_unit, $adapter, $axisSchema);
+        $dbSchema = $translator->createFreshTargetSchema();
 
         return $table->create($dbSchema);
     }
@@ -215,8 +215,8 @@ class Rdbms implements
         $adapter = $this->getConnection();
         $table = $adapter->getTable($this->_unit->getStorageBackendName());
 
-        $bridge = new axis\schema\bridge\Rdbms($this->_unit, $adapter, $axisSchema, $table->getSchema());
-        $dbSchema = $bridge->updateTargetSchema();
+        $translator = new axis\schema\translator\Rdbms($this->_unit, $adapter, $axisSchema, $table->getSchema());
+        $dbSchema = $translator->updateTargetSchema();
 
         if($dbSchema->hasChanged()) {
             return $table->alter($dbSchema);

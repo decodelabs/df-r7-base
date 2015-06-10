@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\axis\schema\bridge;
+namespace df\axis\schema\translator;
 
 use df;
 use df\core;
