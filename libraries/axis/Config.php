@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\axis;
 
-class ConnectionConfig extends core\Config {
+class Config extends core\Config {
     
     const ID = 'DataConnections';
     const USE_ENVIRONMENT_ID_BY_DEFAULT = true;

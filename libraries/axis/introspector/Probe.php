@@ -47,7 +47,7 @@ class Probe implements IProbe {
     }
 
     public function probeUnits() {
-        $config = axis\ConnectionConfig::getInstance();
+        $config = axis\Config::getInstance();
 
         $unitList = array_merge(
             $this->getDefinedUnitList(),

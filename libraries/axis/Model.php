@@ -228,7 +228,7 @@ abstract class Model implements IModel, core\IDumpable {
 
 // Clusters
     public static function loadClusterUnit() {
-        $config = axis\ConnectionConfig::getInstance();
+        $config = axis\Config::getInstance();
         $unitId = $config->getClusterUnitId();
 
         if(!$unitId) {
@@ -241,7 +241,7 @@ abstract class Model implements IModel, core\IDumpable {
     }
 
     public static function createCluster($clusterId) {
-        $config = axis\ConnectionConfig::getInstance();
+        $config = axis\Config::getInstance();
 
         foreach($config->getConnectionsOfType('Rdbms') as $set) {
             try {
@@ -256,7 +256,7 @@ abstract class Model implements IModel, core\IDumpable {
     }
 
     public static function renameCluster($oldId, $newId) {
-        $config = axis\ConnectionConfig::getInstance();
+        $config = axis\Config::getInstance();
 
         foreach($config->getConnectionsOfType('Rdbms') as $set) {
             try {
@@ -273,7 +273,7 @@ abstract class Model implements IModel, core\IDumpable {
     }
 
     public static function dropCluster($clusterId) {
-        $config = axis\ConnectionConfig::getInstance();
+        $config = axis\Config::getInstance();
 
         foreach($config->getConnectionsOfType('Rdbms') as $set) {
             try {

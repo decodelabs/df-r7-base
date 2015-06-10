@@ -115,7 +115,7 @@ trait TUnit {
 
     public function getUnitSettings() {
         if($this->_unitSettings === null) {
-            $config = axis\ConnectionConfig::getInstance();
+            $config = axis\Config::getInstance();
             $this->_unitSettings = $config->getSettingsFor($this);
         }
 
@@ -296,7 +296,7 @@ trait TAdapterBasedStorageUnit {
     }
 
     protected function _loadAdapter() {
-        $config = axis\ConnectionConfig::getInstance();
+        $config = axis\Config::getInstance();
         $adapterId = $config->getAdapterIdFor($this);
         $unitType = $this->getUnitType();
         

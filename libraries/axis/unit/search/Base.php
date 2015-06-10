@@ -21,7 +21,7 @@ abstract class Base implements axis\IAdapterBasedStorageUnit {
     }
     
     protected function _loadAdapter() {
-        $config = axis\ConnectionConfig::getInstance();
+        $config = axis\Config::getInstance();
         $settings = $config->getSettingsFor($this);
         $adapterId = lcfirst($settings['adapter']);
         
