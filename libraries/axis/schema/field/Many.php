@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\axis\unit\table\schema\field;
+namespace df\axis\schema\field;
 
 use df;
 use df\core;
@@ -16,7 +16,7 @@ use df\opal;
  * A relation table is always required
  * Should return a null primitive as key will always be on relation table
  */
-class Many extends axis\schema\field\Base implements axis\schema\IManyField {
+class Many extends Base implements axis\schema\IManyField {
     
     use axis\schema\TRelationField;
     use axis\schema\TBridgedRelationField;
@@ -86,7 +86,7 @@ class Many extends axis\schema\field\Base implements axis\schema\IManyField {
         $localRelationManifest = $this->getLocalRelationManifest();
 
         if(!$localRelationManifest->isSingleField()) {
-            throw new RuntimeException(
+            throw new axis\schema\RuntimeException(
                 'Query clause on field '.$this->_name.' cannot be executed as it relies on a multi-field primary key. '.
                 'You should probably use a fieldless join constraint instead'
             );

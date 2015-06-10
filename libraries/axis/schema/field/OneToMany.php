@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\axis\unit\table\schema\field;
+namespace df\axis\schema\field;
 
 use df;
 use df\core;
@@ -15,7 +15,7 @@ use df\opal;
  * This type requires an inverse field and must lookup and match target table.
  * Key resides on Many side, null primitive
  */
-class OneToMany extends axis\schema\field\Base implements axis\schema\IOneToManyField {
+class OneToMany extends Base implements axis\schema\IOneToManyField {
     
     use axis\schema\TRelationField;
     use axis\schema\TInverseRelationField;

@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\axis\unit\table\schema\field;
+namespace df\axis\schema\field;
 
 use df;
 use df\core;
@@ -15,7 +15,7 @@ use df\opal;
  * This type does not care about inverse at all.
  * Just return primary primitive
  */
-class One extends axis\schema\field\Base implements axis\schema\IOneField {
+class One extends Base implements axis\schema\IOneField {
     
     use axis\schema\TRelationField;
     use axis\schema\TTargetPrimaryFieldAwareRelationField;

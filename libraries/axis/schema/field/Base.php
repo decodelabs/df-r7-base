@@ -15,16 +15,12 @@ abstract class Base implements axis\schema\IField, \Serializable, core\IDumpable
     use opal\schema\TField;
     
     public static function factory(axis\schema\ISchema $schema, $name, $type, array $args=null) {
-        $class = 'df\\axis\\unit\\'.$schema->getUnitType().'\\schema\\field\\'.ucfirst($type);
+        $class = 'df\\axis\\schema\\field\\'.ucfirst($type);
         
         if(!class_exists($class)) {
-            $class = 'df\\axis\\schema\\field\\'.ucfirst($type);
-            
-            if(!class_exists($class)) {
-                throw new axis\schema\FieldTypeNotFoundException(
-                    'Field type '.$type.' could not be found'
-                );
-            }
+            throw new axis\schema\FieldTypeNotFoundException(
+                'Field type '.$type.' could not be found'
+            );
         }
         
         return new $class($schema, $type, $name, $args);
