@@ -629,7 +629,7 @@ trait TBridgedRelationField {
                 $bridgeModelName = $modelName;
             }
 
-            $bridgeClass = axis\unit\table\ManyBridge::getBridgeClass($bridgeModelName, $bridgeId);
+            $bridgeClass = axis\unit\table\Bridge::getBridgeClass($bridgeModelName, $bridgeId);
 
             if($bridgeClass::IS_SHARED) {
                 if($isManyToMany && !$this->isDominant()) {
@@ -673,7 +673,7 @@ trait TBridgedRelationField {
     }
 
     protected function _getBridgeUnitType() {
-        return 'table.ManyBridge';
+        return 'table.Bridge';
     }
 
     public function getLocalRelationManifest() {

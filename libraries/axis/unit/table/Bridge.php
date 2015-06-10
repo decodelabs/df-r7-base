@@ -5,7 +5,7 @@ namespace df\axis\unit\table;
 use df\core;
 use df\axis;
 
-class ManyBridge extends Base implements axis\IVirtualUnit {
+class Bridge extends Base implements axis\IVirtualUnit {
     
     const IS_SHARED = false;
     const DOMINANT_UNIT = null;
@@ -24,9 +24,9 @@ class ManyBridge extends Base implements axis\IVirtualUnit {
             );
         }
 
-        if(!is_subclass_of($class, 'df\\axis\\unit\\table\\ManyBridge')) {
+        if(!is_subclass_of($class, 'df\\axis\\unit\\table\\Bridge')) {
             throw new axis\RuntimeException(
-                'Unit '.$id.' is not a ManyBridge'
+                'Unit '.$id.' is not a Bridge'
             );
         }
 
@@ -89,7 +89,7 @@ class ManyBridge extends Base implements axis\IVirtualUnit {
                 $args[] = $modelName.'/'.$unitId;
             }
             
-            return 'table.ManyBridge('.implode(',', $args).')';
+            return 'table.Bridge('.implode(',', $args).')';
         } else {
             return parent::getUnitName();
         }
@@ -122,7 +122,7 @@ class ManyBridge extends Base implements axis\IVirtualUnit {
     public function buildInitialSchema() {
         if(!$this->_dominantUnitName) {
             throw new axis\schema\LogicException(
-                'ManyBridge "'.$this->getUnitName().'" does not have a dominant unit defined - are you sure ManyBridge is the unit type you want to use?'
+                'Bridge "'.$this->getUnitName().'" does not have a dominant unit defined - are you sure Bridge is the unit type you want to use?'
             );
         }
 
