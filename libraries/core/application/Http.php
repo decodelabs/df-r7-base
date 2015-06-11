@@ -238,6 +238,11 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         
         $path = null;
         $url = $this->_httpRequest->getUrl();
+
+        if(!$this->_router->mapDomain($url->getDomain())) {
+            $valid = false;
+        }
+
         
         if($url->hasPath()) {
             $path = clone $url->getPath();
@@ -251,14 +256,6 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             $redirectPath = (string)$path;
         }
 
-        $domain = $url->getDomain();
-        
-        if(!$this->_router->mapDomain($domain)) {
-            if(!$this->isDevelopment()) {
-                $valid = false;
-            }
-        }
-        
         if(!$valid) {
             $baseUrl = $this->_router->requestToUrl(new arch\Request($redirectPath));
             $baseUrl->setQuery($url->getQuery());
@@ -279,6 +276,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
 
             throw new arch\ForcedResponse($response);
         }
+
         
         
         // Build init request

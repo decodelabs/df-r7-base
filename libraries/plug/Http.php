@@ -235,7 +235,7 @@ class Http implements arch\IDirectoryHelper {
         } else {
             $cookie = $augmentor->newCookie($name, $value, $expiry, $httpOnly, $secure);
         }
-        
+
         $augmentor->setCookieForAnyRequest($cookie);
         return $cookie;
     }

@@ -97,27 +97,13 @@ class Router implements core\IRegistryObject {
     }
 
     public function getBaseUrl() {
-        return (new link\http\Url($this->_baseDomain.':'.$this->_basePort.'/'.implode('/', $this->_basePath).'/'))->isSecure($this->_useHttps);
-    }
-
-
-    public function mapPath(core\uri\IPath $path=null) {
-        $output = true;
-
-        if(!empty($this->_basePath)) {
-            if(!$path) {
-                $output = false;
-            } else {
-                foreach($this->_basePath as $part) {
-                    if($part != $path->shift()) {
-                        $output = false;
-                        break;
-                    }
-                }
-            }
+        if($this->_mappedDomain) {
+            $url = $this->_mappedDomain;
+        } else {
+            $url = $this->_baseDomain.':'.$this->_basePort.'/'.implode('/', $this->_basePath).'/';
         }
 
-        return $output;
+        return (new link\http\Url($url))->isSecure($this->_useHttps);
     }
 
     public function mapDomain($domain) {
@@ -140,9 +126,34 @@ class Router implements core\IRegistryObject {
         return $output;
     }
 
+    public function mapPath(core\uri\IPath $path=null) {
+        $output = true;
+
+        if(!empty($this->_basePath) && !$this->_mappedArea) {
+            if(!$path) {
+                $output = false;
+            } else {
+                foreach($this->_basePath as $part) {
+                    if($part != $path->shift()) {
+                        $output = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return $output;
+    }
+
     public function mapArea(arch\IRequest $request) {
         if($this->_mappedArea) {
-            $request->getPath()->unshift(arch\Request::AREA_MARKER.$this->_mappedArea);
+            $path = $request->getPath();
+
+            if($path->isEmpty()) {
+                $path->shouldAddTrailingSlash(true);
+            }
+
+            $path->unshift(arch\Request::AREA_MARKER.$this->_mappedArea);
         }
 
         return $request;
