@@ -90,6 +90,24 @@ class Util implements IUtil {
         return true;
     }
 
+    public static function renameFile($path, $newName) {
+        if(!is_file($path)) {
+            throw new \Exception(
+                'Source file does not exist'
+            );
+        }
+
+        $destination = dirname($path).'/'.$newName;
+
+        if(file_exists($destination)) {
+            throw new \Exception(
+                'Destination file already exists'
+            );
+        }
+
+        return rename($path, $destination);
+    }
+
     public static function copyFile($source, $destination) {
         if(!is_file($source)) {
             throw new \Exception(
@@ -189,6 +207,24 @@ class Util implements IUtil {
         }
 
         return $output;
+    }
+
+    public static function renameDir($path, $newName) {
+        if(!is_dir($path)) {
+            throw new \Exception(
+                'Source directory does not exist'
+            );
+        }
+
+        $destination = dirname($path).'/'.$newName;
+
+        if(file_exists($destination)) {
+            throw new \Exception(
+                'Destination directory already exists'
+            );
+        }
+
+        return rename($path, $destination);
     }
 
     public static function copyDir($source, $destination, $merge=false) {

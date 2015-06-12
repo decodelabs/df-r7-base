@@ -677,6 +677,7 @@ interface IUtil {
     public static function readFileExclusive($path);
     public static function writeFileExclusive($path, $data);
 
+    public static function renameFile($path, $newName);
     public static function copyFile($source, $destination);
     public static function deleteFile($path);
 
@@ -685,6 +686,7 @@ interface IUtil {
     public static function listFilesIn($path, $regex=null);
     public static function listDirsIn($path, $regex=null);
 
+    public static function renameDir($path, $newName);
     public static function copyDir($source, $destination, $merge=false);
     public static function copyDirInto($source, $destination);
     public static function ensureDirExists($path, $perms=0777);
