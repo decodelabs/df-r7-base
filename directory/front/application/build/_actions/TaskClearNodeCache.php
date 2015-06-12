@@ -14,10 +14,12 @@ class TaskClearNodeCache extends arch\task\Action {
     
     public function execute() {
         $this->io->write('Clearing node cache...');
-        
-        core\io\Util::deleteDir(
-            $this->application->getLocalStoragePath().'/node/'
-        );
+
+        $path = $this->application->getLocalStoragePath().'/node';
+        $time = time();
+
+        core\io\Util::renameDir($path, 'node-'.$time);
+        core\io\Util::deleteDir($path.'/node-'.$time);
         
         $this->io->writeLine(' done');
     }
