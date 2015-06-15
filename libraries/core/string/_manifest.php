@@ -303,3 +303,33 @@ interface IStemmer {
     public function split($phrase, $natural=false);
     public function stemWord($word, $natural=false);
 }
+
+
+interface IVersion extends core\IStringProvider {
+    public function setMajor($major);
+    public function getMajor();
+    public function setMinor($minor);
+    public function getMinor();
+    public function setPatch($patch);
+    public function getPatch();
+    public function setPreRelease($preRelease);
+    public function getPreRelease();
+    public function getPreReleaseString();
+    public function setBuild($build);
+    public function getBuild();
+    public function getBuildString();
+
+    public function eq($version);
+    public function matches($version);
+    public function gt($version);  
+    public function gte($version);
+    public function lt($version);
+    public function lte($version);  
+
+    public function isInRange($range);
+}
+
+interface IVersionRange extends core\IStringProvider {
+    public function contains($version);
+    public function maxContained($version);
+}
