@@ -46,6 +46,7 @@ Thumbs.db
 ######################
 data/*
 dev/*
+assets/vendor/*
 assets/lib/vendor/*
 
 .htaccess
