@@ -52,6 +52,14 @@ class Util implements IUtil {
     }
 
 
+    public static function delete($path) {
+        if(is_dir($path)) {
+            return self::deleteDir($path);
+        } else if(is_file($path)) {
+            return self::deleteFile($path);
+        }
+    }
+
     public static function readFileExclusive($path) {
         if(!$fp = fopen($path, 'rb')) {
             throw new \Exception(
@@ -128,6 +136,22 @@ class Util implements IUtil {
 
         return true;
     }
+
+    public static function isFileRecent($path, $timeout) {
+        if(!is_file($path)) {
+            return false;
+        }
+
+        $timeout = core\time\Duration::factory($timeout)->getSeconds();
+
+        if(time() - filemtime($path) > $timeout) {
+            return false;
+        }
+
+        return true;
+    }
+
+
 
     public static function countFilesIn($path) {
         if(!is_dir($path)) {
@@ -217,6 +241,28 @@ class Util implements IUtil {
         }
 
         $destination = dirname($path).'/'.$newName;
+
+        if(file_exists($destination)) {
+            throw new \Exception(
+                'Destination directory already exists'
+            );
+        }
+
+        return rename($path, $destination);
+    }
+    
+    public static function moveDir($path, $destination, $newName=null) {
+        if(!is_dir($path)) {
+            throw new \Exception(
+                'Source directory does not exist'
+            );
+        }
+
+        if($newName === null) {
+            $newName = basename($path);
+        }
+
+        $destination = rtrim($destination, '/').'/'.$newName;
 
         if(file_exists($destination)) {
             throw new \Exception(

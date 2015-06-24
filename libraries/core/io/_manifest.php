@@ -536,6 +536,21 @@ interface IFile extends IFilePointer, IChannel {
 }
 
 
+interface ILockFile {
+    public function setPath($path);
+    public function getPath();
+    public function setFileName($name);
+    public function getFileName();
+    public function setTimeout($timeout);
+    public function getTimeout();
+    public function getRemainingTime();
+    public function isLocked();
+    public function canLock();
+    public function lock();
+    public function unlock();
+}
+
+
 interface IMultiplexer extends IFlushable, core\IRegistryObject {
     public function setId($id);
     public function getId();
@@ -677,9 +692,12 @@ interface IUtil {
     public static function readFileExclusive($path);
     public static function writeFileExclusive($path, $data);
 
+    public static function delete($path);
+
     public static function renameFile($path, $newName);
     public static function copyFile($source, $destination);
     public static function deleteFile($path);
+    public static function isFileRecent($path, $timeout);
 
     public static function countFilesIn($path);
     public static function countDirsIn($path);
@@ -687,6 +705,7 @@ interface IUtil {
     public static function listDirsIn($path, $regex=null);
 
     public static function renameDir($path, $newName);
+    public static function moveDir($path, $destination, $newName=null);
     public static function copyDir($source, $destination, $merge=false);
     public static function copyDirInto($source, $destination);
     public static function ensureDirExists($path, $perms=0777);
