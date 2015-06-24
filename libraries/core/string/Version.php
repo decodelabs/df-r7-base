@@ -12,7 +12,7 @@ class Version implements IVersion, core\IDumpable {
     
     use core\TStringProvider;
 
-    const REGEX = '/^(?<version>[0-9.x]+)(?<prerelease>-[0-9a-zA-Z.]+)?(?<build>\+[0-9a-zA-Z.]+)?$/';
+    const REGEX = '/^(?<version>[0-9.x]+)(?<prerelease>-?[0-9a-zA-Z.]+)?(?<build>\+[0-9a-zA-Z.]+)?$/';
 
     protected static $_greek = ['pre-alpha', 'alpha', 'pre-beta', 'beta', 'pre-rc', 'rc'];
 

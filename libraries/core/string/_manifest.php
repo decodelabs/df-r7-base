@@ -332,4 +332,6 @@ interface IVersion extends core\IStringProvider {
 interface IVersionRange extends core\IStringProvider {
     public function contains($version);
     public function maxContained($version);
+    public function isSingleVersion();
+    public function getSingleVersion();
 }

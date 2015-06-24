@@ -157,6 +157,19 @@ class VersionRange implements IVersionRange, core\IDumpable {
         return null;
     }
 
+    public function isSingleVersion() {
+        return count($this->_groups) == 1 
+            && count($this->_groups[0]) == 1
+            && isset($this->_groups[0][0])
+            && $this->_groups[0][0]->operator == '=';
+    }
+
+    public function getSingleVersion() {
+        if($this->isSingleVersion()) {
+            return $this->_groups[0][0];
+        }
+    }
+
 
 // String
     public function toString() {
