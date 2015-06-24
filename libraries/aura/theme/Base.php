@@ -21,6 +21,8 @@ class Base implements ITheme, core\IDumpable {
     protected $_iconMap = null;
     protected $_facets = ['analytics', 'touchIcons'];
 
+    protected $_dependencies = [];
+
     public static function factory($id) {
         if($id instanceof ITheme) {
             return $id;
@@ -256,6 +258,10 @@ class Base implements ITheme, core\IDumpable {
 
     public function mapLayout(aura\view\ILayoutView $view) {
         return null;
+    }
+
+    public function getDependencies() {
+        return $this->_dependencies;
     }
 
 

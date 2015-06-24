@@ -16,11 +16,12 @@ interface IException {}
 // Interfaces
 interface ITheme extends aura\view\IViewRenderEventReceiver, aura\view\ILayoutMap {
     public function getId();
-    public function findAsset($path);
-    public function mapIcon($name);
 
+    public function findAsset($path);
     public function getApplicationImagePath();
     public function getApplicationColor();
+    public function mapIcon($name);
+    public function getDependencies();
 
     public function loadFacet($name);
     public function hasFacet($name);
@@ -29,6 +30,4 @@ interface ITheme extends aura\view\IViewRenderEventReceiver, aura\view\ILayoutMa
     public function getFacets();
 }
 
-interface IFacet extends aura\view\IViewRenderEventReceiver {
-
-}
+interface IFacet extends aura\view\IViewRenderEventReceiver {}

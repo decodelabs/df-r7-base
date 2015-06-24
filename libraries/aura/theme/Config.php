@@ -32,4 +32,8 @@ class Config extends core\Config {
             return 'shared';
         }
     }
+
+    public function getThemeMap() {
+        return $this->values->toArray();
+    }
 }
