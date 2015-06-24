@@ -18,5 +18,6 @@ class TaskInit extends arch\task\Action {
         $this->runChild('application/generate-base-entry');
         $this->runChild('config/init');
         $this->runChild('git/init');
+        $this->runChild('theme/intall-dependencies');
     }
 }
