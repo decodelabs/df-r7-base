@@ -20,5 +20,7 @@ class TaskPrepareTheme extends arch\task\Action {
         );
         
         $this->io->writeLine(' done');
+
+        $this->runChild('theme/install-dependencies');
     }
 }
