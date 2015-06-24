@@ -25,12 +25,14 @@ class TaskInstallDependencies extends arch\task\Action {
             $theme = aura\theme\Base::factory($themeId);
             
             foreach($theme->getDependencies() as $name => $source) {
-                if(isset($dependencies[$name]) && $dependencies[$name]->source != $source) {
+                $package = new spur\packaging\bower\Package($name, $source);
+
+                if(isset($dependencies[$name]) && $dependencies[$name]->source != $package->source) {
                     $this->io->writeLine();
                     $this->io->writeErrorLine('Version conflict for '.$name);
                 }
 
-                $dependencies[$name] = new spur\packaging\bower\Package($name, $source);
+                $dependencies[$package->name] = $package;
             }
         }
 
