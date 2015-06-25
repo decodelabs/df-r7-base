@@ -34,16 +34,25 @@ class Installer implements IInstaller {
         return $this->_multiplexer;
     }
 
-    public function installPackages(array $packages) {
-        foreach($packages as $name => $version) {
+    public function installPackages(array $input) {
+        $package = [];
+
+        foreach($input as $name => $version) {
             if($version instanceof IPackage) {
                 $package = $version;
             } else {
                 $package = new Package($name, $version);
             }
 
-            $this->installPackage($package);
+            $packages[$package->installName] = $package; 
+            $this->_installPackage($package);
         }
+
+        foreach($packages as $package) {
+            $this->_installDependencies($package);
+        }
+
+        $this->tidyCache();
 
         return $this;
     }
@@ -57,12 +66,9 @@ class Installer implements IInstaller {
     }
 
     protected function _installPackage(IPackage $package, $depLevel=0) {
-        $resolver = $this->_loadResolver($package);
+        $this->_preparePackage($package);
+        $resolver = $this->_getResolver($package->resolver);
         $this->_lockFile->lock();
-
-        if(!strlen($package->version) || $package->version == 'latest') {
-            $package->version = '*';
-        }
 
         if($this->_multiplexer) {
             if($depLevel) {
@@ -119,17 +125,21 @@ class Installer implements IInstaller {
 
         foreach($deps as $name => $version) {
             $depPackage = new Package($name, $version);
-            $this->_loadResolver($depPackage);
+            $this->_preparePackage($depPackage);
 
             if($installed = $this->getPackageInfo($depPackage->name)) {
-                $range = core\string\VersionRange::factory($depPackage->version);
-
-                if(!$range->contains($installed->version) && $installed->installName == $depPackage->installName) {
-                    throw new RuntimeException(
-                        'Unable to satisfy '.$package->name.' dependencies - version conflict for '.$package->name
-                    );
-                } else {
-                    $depPackage = $installed;
+                try {
+                    $range = core\string\VersionRange::factory($depPackage->version);
+                    if(!$range->contains($installed->version) && $installed->installName == $depPackage->installName) {
+                        throw new RuntimeException(
+                            'Unable to satisfy '.$package->name.' dependencies - version conflict for '.$package->name
+                        );
+                    } else {
+                        $depPackage = $installed;
+                    }
+                } catch(core\string\RuntimeException $e) {
+                    // never mind
+                    core\dump($depPackage);
                 }
             }
 
@@ -257,7 +267,7 @@ class Installer implements IInstaller {
 
 
 // Resolvers
-    protected function _loadResolver(IPackage $package, $useRegistry=true) {
+    protected function _preparePackage(IPackage $package, $useRegistry=true) {
         if(!strlen($package->source)) {
             $package->source = 'latest';
         }
@@ -266,10 +276,12 @@ class Installer implements IInstaller {
             list($package->source, $package->version) = explode('#', $package->source, 2);
         }
 
-        if(preg_match('/^([^\/]+)\/([^\/]+)$/', $package->source)) {
+        if(preg_match('/^([^\/\@#\:]+)\/([^\/\@#\:]+)$/', $package->source)) {
             $package->source = 'git://github.com/'.$package->source.'.git';
-        }
+        } 
 
+
+        // Git
         if(preg_match('/^git(\+(ssh|https?))?:\/\//i', $package->source)
         || preg_match('/\.git\/?$/i', $package->source)
         || preg_match('/^git@/i', $package->source)) {
@@ -280,33 +292,36 @@ class Installer implements IInstaller {
             }
 
             if(preg_match('/(?:@|:\/\/)github.com/', $package->url)) {
-                return $this->_getResolver('Github');
+                $package->resolver = 'Github';
             } else {
-                return $this->_getResolver('Git');
+                $package->resolver = 'Git';
             }
         }
 
-        if(preg_match('/^svn(\+(ssh|https?|file))?:\/\//i', $package->source)) {
+        // SVN
+        else if(preg_match('/^svn(\+(ssh|https?|file))?:\/\//i', $package->source)) {
             $package->url = $package->source;
 
             if(!$package->name) {
                 $package->name = basename($package->url);
             }
 
-            return $this->_getResolver('Svn');
+            $package->resolver = 'Svn';
         }
 
-        if(preg_match('/^https?:\/\//i', $package->source)) {
+        // HTTP
+        else if(preg_match('/^https?:\/\//i', $package->source)) {
             $package->url = $package->source;
 
             if(!$package->name) {
                 $package->name = basename($package->url);
             }
 
-            return $this->_getResolver('Url');
+            $package->resolver = 'Url';
         }
 
-        if(preg_match('/^\.\.?[\/\\\\]/', $package->source)
+        // Local
+        else if(preg_match('/^\.\.?[\/\\\\]/', $package->source)
         || preg_match('/^~?\//', $package->source)) {
             $package->url = rtrim($package->source, '/');
 
@@ -315,44 +330,54 @@ class Installer implements IInstaller {
             }
 
             if(is_dir($package->url.'/.git')) {
-                return $this->_getResolver('GitFileSystem');
+                $package->resolver = 'GitFileSystem';
             } else if(is_dir($package->url.'/.svn')) {
-                return $this->_getResolver('SvnFileSystem');
+                $package->resolver = 'SvnFileSystem';
             } else {
-                return $this->_getResolver('FileSystem');
+                $package->resolver = 'FileSystem';
             }
         }
 
-        if($package->source == 'latest') {
-            $package->version = '*';
-            $package->source = $package->name;
-        }
 
-        try {
-            $package->version = core\string\VersionRange::factory($package->source);
-            $package->source = $package->name;
-        } catch(core\string\IException $e) {
-            $package->name = $package->source;
-        }
-
-        if($useRegistry) {
-            $registry = new spur\packaging\bower\Registry();
+        // Registry
+        else {
+            if($package->source == 'latest') {
+                $package->version = '*';
+                $package->source = $package->name;
+            }
 
             try {
-                $registry = $registry->lookup($package->name);
-                $package->url = $registry['url'];
-                $package->name = $registry['name'];
-            } catch(spur\ApiError $e) {
-                // never mind
+                $package->version = core\string\VersionRange::factory($package->source);
+                $package->source = $package->name;
+            } catch(core\string\IException $e) {
+                $package->name = $package->source;
             }
 
-            if($package->url) {
-                $package->source = $package->url;
-                return $this->_loadResolver($package, false);
+            if($useRegistry) {
+                $registry = new spur\packaging\bower\Registry();
+
+                try {
+                    $registry = $registry->lookup($package->name);
+                    $package->url = $registry['url'];
+                    $package->name = $registry['name'];
+                } catch(spur\ApiError $e) {
+                    // never mind
+                }
+
+                if($package->url) {
+                    $package->source = $package->url;
+                    return $this->_preparePackage($package, false);
+                }
             }
         }
 
-        throw new RuntimeException('No valid resolver could be found for package: '.$package->name);
+        if(!$package->resolver) {
+            throw new RuntimeException('No valid resolver could be found for package: '.$package->name);
+        }
+
+        if(!strlen($package->version) || $package->version == 'latest') {
+            $package->version = '*';
+        }
     }
 
     protected function _getResolver($name) {

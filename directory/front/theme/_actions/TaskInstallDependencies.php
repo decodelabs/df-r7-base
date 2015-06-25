@@ -29,6 +29,7 @@ class TaskInstallDependencies extends arch\task\Action {
 
                 if(isset($dependencies[$name]) && $dependencies[$name]->source != $package->source) {
                     $this->io->writeLine();
+                    core\dump($dependencies[$name], $package);
                     $this->io->writeErrorLine('Version conflict for '.$name);
                 }
 

@@ -17,6 +17,7 @@ class Package implements IPackage {
     public $installName;
     public $url;
     public $cacheFileName;
+    public $resolver;
 
     public function __construct($name, $source) {
         $installName = $name;

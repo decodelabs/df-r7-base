@@ -26,18 +26,18 @@ class Github implements spur\packaging\bower\IResolver {
 
         if($tag = $this->_getRequiredTag($package, $repoName, $cachePath)) {
             $url = $tag->getUrl('zipball');
-            $package->version = $tag->getVersion()->toString();
+            $version = $package->version = $tag->getVersion()->toString();
         } else {
             $branch = $this->_mediator->getRepositoryBranch($repoName, 'master');
             $url = $branch->getUrl('zipball');
-            $package->version = $branch->getCommit()->getSha();
+            $version = $branch->getCommit()->getSha();
         }
 
         if($currentVersion !== null && $currentVersion == $package->version) {
             return false;
         }
         
-        $package->cacheFileName = $package->name.'#'.$package->version.'.zip';
+        $package->cacheFileName = $package->name.'#'.$version.'.zip';
 
         if(is_file($cachePath.'/'.$package->cacheFileName)) {
             return true;
@@ -74,15 +74,24 @@ class Github implements spur\packaging\bower\IResolver {
             return false;
         }
 
+
         $singleVersion = $range->getSingleVersion();
 
         if(!$singleVersion || !$singleVersion->preRelease) {
+            $temp = [];
+
             foreach($tags as $i => $tag) {
                 $version = $tag->getVersion();
 
                 if(!$version || $version->preRelease) {
-                    unset($tags[$i]);
+                    continue;
+                } else {
+                    $temp[] = $tag;
                 }
+            }
+
+            if(!empty($temp)) {
+                $tags = $temp;
             }
         }
 

@@ -30,8 +30,14 @@ class Tag implements ITag {
 
     public function getVersion() {
         if($this->_version === null) {
+            $name = $this->_name;
+
+            if(preg_match('/^[a-zA-Z][0-9]/', $name)) {
+                $name = substr($name, 1);
+            }
+
             try {
-                $this->_version = core\string\Version::factory($this->_name);
+                $this->_version = core\string\Version::factory($name);
             } catch(\Exception $e) {
                 $this->_version = false;
             }
