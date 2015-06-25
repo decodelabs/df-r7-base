@@ -13,8 +13,10 @@ abstract class Base implements IArchive {
     public static function extract($file, $destination=null, $flattenRoot=false) {
         if(preg_match('/\.zip$/i', $file)) {
             $type = 'Zip';
-        } else if(preg_match('/\.tar(\.gz)?$/i', $file)) {
+        } else if(preg_match('/\.tar(\.(gz|bz2))?$/i', $file)) {
             $type = 'Tar';
+        } else if(preg_match('/\.gz$/i', $file)) {
+            $type = 'Gz';
         } else if(preg_match('/\.rar$/i', $file)) {
             $type = 'Rar';
         } else if(preg_match('/\.bz2$/i', $file)) {
@@ -45,6 +47,10 @@ abstract class Base implements IArchive {
 
     public function decompressFile($file, $destination=null, $flattenRoot=false) {
         throw new LogicException($this->getType().' type archives cannot handle file and folder compression');
+    }
+
+    public function compressString($string) {
+        throw new LogicException($this->getType().' type archives cannot handle string compression');
     }
 
     public function decompressString($string) {

@@ -14,7 +14,7 @@ class Tar extends Base {
         $destination = $this->_normalizeExtractDestination($file, $destination);
         $archive = new \PharData($file);
 
-        if($isGz = (strtolower(substr($file, -3)) == '.gz')) {
+        if($isGz = preg_match('/\.(gz|bz2)$/i', $file)) {
             $parts = explode('.', basename($file));
             array_pop($parts); // gz
             array_shift($parts); // name

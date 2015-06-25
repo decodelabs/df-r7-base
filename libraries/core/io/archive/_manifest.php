@@ -20,6 +20,8 @@ interface IArchive {
 
     public function getType();
     public function decompressFile($file, $destination=null, $flattenRoot=false);
+    
+    public function compressString($string);
     public function decompressString($string);
 }
 
