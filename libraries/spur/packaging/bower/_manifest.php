@@ -35,6 +35,8 @@ interface IInstaller {
     public function installPackage(IPackage $package);
     public function isPackageInstalled($name);
     public function getInstalledPackages();
+    public function getPackageInfo($name);
+    public function getPackageBowerData($name);
 
     public function tidyCache();
 }
