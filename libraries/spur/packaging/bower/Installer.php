@@ -53,8 +53,8 @@ class Installer implements IInstaller {
     }
 
     public function installPackage(IPackage $package) {
-        $this->_lockFile->lock();
         $resolver = $this->_loadResolver($package);
+        $this->_lockFile->lock();
 
         if(!strlen($package->version) || $package->version == 'latest') {
             $package->version = '*';
@@ -78,16 +78,21 @@ class Installer implements IInstaller {
             }
         }
 
-        if($resolver->fetchPackage($package, $this->_cachePath.'/packages', $currentVersion)) {
-            if($this->_multiplexer) {
-                $this->_multiplexer->write(' => '.$package->version);
-            }
+        try {
+            if($resolver->fetchPackage($package, $this->_cachePath.'/packages', $currentVersion)) {
+                if($this->_multiplexer) {
+                    $this->_multiplexer->write(' => '.$package->version);
+                }
 
-            $this->_extractCache($package);
-        } else {
-            if($this->_multiplexer) {
-                $this->_multiplexer->write(' - up to date');
+                    $this->_extractCache($package);
+            } else {
+                if($this->_multiplexer) {
+                    $this->_multiplexer->write(' - up to date');
+                }
             }
+        } catch(\Exception $e) {
+            $this->_lockFile->unlock();
+            throw $e;
         }
 
         if($this->_multiplexer) {
@@ -96,6 +101,8 @@ class Installer implements IInstaller {
 
         $this->tidyCache();
         $this->_lockFile->unlock();
+
+        return $this;
     }
 
     public function isPackageInstalled($name) {
