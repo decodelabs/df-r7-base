@@ -35,7 +35,7 @@ class Installer implements IInstaller {
     }
 
     public function installPackages(array $input) {
-        $package = [];
+        $packages = [];
 
         foreach($input as $name => $version) {
             if($version instanceof IPackage) {
@@ -44,8 +44,9 @@ class Installer implements IInstaller {
                 $package = new Package($name, $version);
             }
 
-            $packages[$package->installName] = $package; 
-            $this->_installPackage($package);
+            if($this->_installPackage($package)) {
+                $packages[$package->installName] = $package;
+            }
         }
 
         foreach($packages as $package) {
@@ -58,14 +59,17 @@ class Installer implements IInstaller {
     }
 
     public function installPackage(IPackage $package) {
-        $this->_installPackage($package);
-        $this->_installDependencies($package);
+        if($this->_installPackage($package)) {
+            $this->_installDependencies($package);
+        }
+
         $this->tidyCache();
 
         return $this;
     }
 
-    protected function _installPackage(IPackage $package, $depLevel=0) {
+    protected function _installPackage(IPackage $package, $depLevel=0, $depParent=null) {
+        $output = false;
         $this->_preparePackage($package);
         $resolver = $this->_getResolver($package->resolver);
         $this->_lockFile->lock();
@@ -73,6 +77,10 @@ class Installer implements IInstaller {
         if($this->_multiplexer) {
             if($depLevel) {
                 $this->_multiplexer->write('|'.str_repeat('--', $depLevel).' ');
+
+                if($depParent) {
+                    $this->_multiplexer->write('['.$depParent.'] ');
+                }
             }
 
             $this->_multiplexer->write($package->name);
@@ -99,6 +107,7 @@ class Installer implements IInstaller {
                 }
 
                 $this->_extractCache($package);
+                $output = true;
             } else {
                 if($this->_multiplexer) {
                     $this->_multiplexer->write(' - up to date');
@@ -114,6 +123,7 @@ class Installer implements IInstaller {
         }
 
         $this->_lockFile->unlock();
+        return $output;
     }
 
     protected function _installDependencies(IPackage $package, $depLevel=0) {
@@ -122,6 +132,7 @@ class Installer implements IInstaller {
         }
 
         $deps = $data->dependencies->toArray();
+        $subDeps = [];
 
         foreach($deps as $name => $version) {
             $depPackage = new Package($name, $version);
@@ -139,11 +150,16 @@ class Installer implements IInstaller {
                     }
                 } catch(core\string\RuntimeException $e) {
                     // never mind
-                    core\dump($depPackage);
                 }
             }
 
-            $this->_installPackage($depPackage, $depLevel + 1);
+            if($this->_installPackage($depPackage, $depLevel + 1, $package->installName)) {
+                // only install sub dependencies if change is actually made
+                $subDeps[$depPackage->installName] = $depPackage;
+            }
+        }
+
+        foreach($subDeps as $depPackage) {
             $this->_installDependencies($depPackage, $depLevel + 1);
         }
     }
