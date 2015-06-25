@@ -51,6 +51,11 @@ class Util implements IUtil {
         }
     }
 
+    public static function getGlobalCachePath() {
+        // TODO: check access / windows path
+        return '/tmp/decode-framework';
+    }
+
 
     public static function delete($path) {
         if(is_dir($path)) {

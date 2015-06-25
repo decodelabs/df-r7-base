@@ -21,7 +21,7 @@ class Registry implements IRegistry {
     protected $_cachePath;
 
     public function __construct() {
-        $this->_cachePath = df\Launchpad::$application->getLocalStoragePath().'/bower/registry';
+        $this->_cachePath = core\io\Util::getGlobalCachePath().'/bower/registry';
     }
 
     public function lookup($name) {

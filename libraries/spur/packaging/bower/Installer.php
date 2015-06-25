@@ -20,7 +20,7 @@ class Installer implements IInstaller {
 
     public function __construct(core\io\IMultiplexer $io=null) {
         $this->_installPath = df\Launchpad::$application->getApplicationPath().'/assets/vendor';
-        $this->_cachePath = df\Launchpad::$application->getLocalStoragePath().'/bower';
+        $this->_cachePath = core\io\Util::getGlobalCachePath().'/bower';
         $this->_lockFile = new core\io\LockFile($this->_cachePath);
         $this->setMultiplexer($io);
     }
@@ -84,7 +84,7 @@ class Installer implements IInstaller {
                     $this->_multiplexer->write(' => '.$package->version);
                 }
 
-                    $this->_extractCache($package);
+                $this->_extractCache($package);
             } else {
                 if($this->_multiplexer) {
                     $this->_multiplexer->write(' - up to date');
@@ -111,6 +111,31 @@ class Installer implements IInstaller {
         }
 
         return is_file($this->_installPath.'/'.$name.'/.bower.json');
+    }
+
+    public function getInstalledPackages() {
+        $output = [];
+
+        foreach(core\io\Util::listDirsIn($this->_installPath) as $name) {
+            $path = $this->_installPath.'/'.$name;
+
+            if(!is_file($path.'/.bower.json')) {
+                continue;
+            }
+
+            $data = new core\collection\Tree(flex\json\Codec::decode(
+                file_get_contents($path.'/.bower.json')
+            ));
+
+            $package = new Package($name, $data['url']);
+            $package->url = $data['url'];
+            $package->name = $data['name'];
+            $package->version = $data['version'];
+            
+            $output[$path] = $package;
+        }
+
+        return $output;
     }
 
 
@@ -234,7 +259,7 @@ class Installer implements IInstaller {
         }
 
         $dir = new \DirectoryIterator($path);
-        $time = core\time\Date::factory('-1 day')->toTimestamp();
+        $time = core\time\Date::factory('-3 days')->toTimestamp();
 
         foreach($dir as $file) {
             if(!$file->isFile()) {
@@ -286,6 +311,6 @@ class Installer implements IInstaller {
 
         $data = str_replace('\/', '/', $data);
         file_put_contents($destination.'/.bower.json', $data);
-        core\io\Util::delete($sourcePath);
+        //core\io\Util::delete($sourcePath);
     }
 }
