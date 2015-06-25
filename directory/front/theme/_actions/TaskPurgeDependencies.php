@@ -29,5 +29,8 @@ class TaskPurgeDependencies extends arch\task\Action {
         }
 
         $this->io->writeLine();
+
+        // DELETE ME!
+        core\io\Util::deleteDir($this->application->getLocalStoragePath().'/bower');
     }
 }
