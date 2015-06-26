@@ -147,7 +147,7 @@ class Manager implements IManager {
             ->where('unitId', '=', $unitId)
             ->execute();
 
-        $this->clearCache($unit);
+        $this->clearCache(axis\Model::loadUnitFromId($unitId));
 
         return $this;
     }
