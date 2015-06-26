@@ -458,11 +458,7 @@ class Installer implements IInstaller {
             );
         }
 
-        $delete = ['.bower.json', '.git', '.svn'];
-
-        foreach($delete as $entry) {
-            core\io\Util::delete($destination.'/'.$entry);
-        }
+        $this->_filterFiles($destination);
 
         $data = flex\json\Codec::encode([
             'name' => $package->name,
@@ -473,5 +469,78 @@ class Installer implements IInstaller {
         $data = str_replace('\/', '/', $data);
         file_put_contents($destination.'/.bower.json', $data);
         //core\io\Util::delete($sourcePath);
+    }
+
+    protected function _filterFiles($destination) {
+        $force = [];
+        $ignore = ['.bower.json', '.git', '.svn'];
+
+        if(is_file($destination.'/bower.json')) {
+            $bowerData = core\collection\Tree::factory(flex\json\Codec::decode(
+                file_get_contents($destination.'/bower.json')
+            ));
+
+            $ignore = array_merge($ignore, $bowerData->ignore->toArray());
+
+            if(count($bowerData->main)) {
+                $force = array_merge($force, $bowerData->main->toArray());
+            } else if(isset($bowerData['main'])) {
+                $force[] = $bowerData['main'];
+            }
+        }
+
+        $dir = new \RecursiveDirectoryIterator($destination, \FilesystemIterator::KEY_AS_PATHNAME | \FilesystemIterator::CURRENT_AS_SELF | \FilesystemIterator::SKIP_DOTS);
+        $it = new \RecursiveIteratorIterator($dir, \RecursiveIteratorIterator::SELF_FIRST);
+        $delete = [];
+
+        foreach($it as $name => $entry) {
+            $path = $entry->getSubPathname();
+
+            if($this->_matchFile($path, $ignore, $force)) {
+                $delete[] = $path;
+            }
+        }
+
+        foreach($delete as $path) {
+            core\io\Util::delete($destination.'/'.$path);
+        }
+    }
+
+    protected function _matchFile($path, array $patterns, array $blacklist) {
+        if(in_array($path, $blacklist)) {
+            return false;
+        }
+
+        foreach($patterns as $pattern) {
+            $testPath = $path;
+
+            if($isNegated = 0 === strpos($pattern, '!')) {
+                $pattern = substr($pattern, 1);
+            }
+
+            if(false !== strpos($pattern, '**')) {
+                $pattern = str_replace('**', '*', $pattern);
+
+                if(substr($pattern, 0, 1) == '/'
+                || substr($testPath, 0, 1) == '.') {
+                    $testPath = '/'.$testPath;
+                }
+
+                if(fnmatch($pattern, $testPath, \FNM_PATHNAME)) {
+                    return true;
+                }
+            } else {
+                $pattern = ltrim($pattern, '/');
+                $testPath = ltrim($testPath, '/');
+
+                $regex = str_replace(['.', '*'], ['\.', '.*'], $pattern);
+
+                if(preg_match('#^'.$regex.'#', $testPath)) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
     }
 }
