@@ -30,14 +30,15 @@ class Registry implements IRegistry {
 
         if(is_file($path)) {
             if((time() - filemtime($path) < $timeout)) {
-                return flex\json\Codec::decode(file_get_contents($path));
+                return flex\json\Codec::decodeFileAsTree($path);
             } else {
                 core\io\Util::deleteFile($path);
             }
         }
 
-        $data = $this->callServer('get', 'packages/'.rawurlencode($name));
-        core\io\Util::writeFileExclusive($path, flex\json\Codec::encode($data));
+        $data = $this->requestJson('get', 'packages/'.rawurlencode($name));
+        flex\json\Codec::encodeFile($path, $data);
+        
         return $data;
     }
 
@@ -47,7 +48,7 @@ class Registry implements IRegistry {
     
 
 // Server
-    protected function _createUrl($path) {
-        return self::BASE_URL.ltrim($path, '/');
+    public function createUrl($path) {
+        return link\http\Url::factory(self::BASE_URL.ltrim($path, '/'));
     }
 }

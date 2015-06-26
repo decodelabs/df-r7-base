@@ -20,12 +20,12 @@ class Mediator implements IMediator, core\IDumpable {
 
 // Users
     public function getUser($username) {
-        $data = $this->callServer('get', 'users/'.rawurlencode($username));
+        $data = $this->requestJson('get', 'users/'.rawurlencode($username));
         return new Profile($this, $data);
     }
 
     public function getUserOrganizations($username) {
-        $data = $this->callServer('get', 'users/'.rawurlencode($username).'/orgs');
+        $data = $this->requestJson('get', 'users/'.rawurlencode($username).'/orgs');
         $output = [];
 
         foreach($data as $org) {
@@ -36,7 +36,7 @@ class Mediator implements IMediator, core\IDumpable {
     }
 
     public function getFollowersOf($username) {
-        $data = $this->callServer('get', 'users/'.rawurlencode($username).'/followers');
+        $data = $this->requestJson('get', 'users/'.rawurlencode($username).'/followers');
         $output = [];
 
         foreach($data as $user) {
@@ -47,7 +47,7 @@ class Mediator implements IMediator, core\IDumpable {
     }
 
     public function getFollowedBy($username) {
-        $data = $this->callServer('get', 'users/'.rawurlencode($username).'/following');
+        $data = $this->requestJson('get', 'users/'.rawurlencode($username).'/following');
         $output = [];
 
         foreach($data as $user) {
@@ -58,7 +58,7 @@ class Mediator implements IMediator, core\IDumpable {
     }
 
     public function getUserRepositories($username) {
-        $data = $this->callServer('get', 'users/'.rawurlencode($username).'/repos', [
+        $data = $this->requestJson('get', 'users/'.rawurlencode($username).'/repos', [
             'type' => 'all',
             'sort' => 'full_name',
             'direction' => 'asc'
@@ -73,7 +73,7 @@ class Mediator implements IMediator, core\IDumpable {
     }
 
     public function getUserOwnedRepositories($username) {
-        $data = $this->callServer('get', 'users/'.rawurlencode($username).'/repos', [
+        $data = $this->requestJson('get', 'users/'.rawurlencode($username).'/repos', [
             'type' => 'owner',
             'sort' => 'full_name',
             'direction' => 'asc'
@@ -88,7 +88,7 @@ class Mediator implements IMediator, core\IDumpable {
     }
 
     public function getUserWatchedRespositories($username) {
-        $data = $this->callServer('get', 'users/'.rawurlencode($username).'/watched');
+        $data = $this->requestJson('get', 'users/'.rawurlencode($username).'/watched');
         $output = [];
 
         foreach($data as $repo) {
@@ -99,7 +99,7 @@ class Mediator implements IMediator, core\IDumpable {
     }
 
     public function getUserGists($username) {
-        $data = $this->callServer('get', 'users/'.rawurlencode($username).'/gists');
+        $data = $this->requestJson('get', 'users/'.rawurlencode($username).'/gists');
         $output = [];
 
         foreach($data as $gist) {
@@ -110,7 +110,7 @@ class Mediator implements IMediator, core\IDumpable {
     }
 
     public function getUserKeys($username) {
-        $data = $this->callServer('get', 'users/'.rawurlencode($username).'/keys');
+        $data = $this->requestJson('get', 'users/'.rawurlencode($username).'/keys');
         $output = [];
 
         foreach($data as $key) {
@@ -123,12 +123,12 @@ class Mediator implements IMediator, core\IDumpable {
 
 // Organizations
     public function getOrganization($name) {
-        $data = $this->callServer('get', 'orgs/'.rawurlencode($name));
+        $data = $this->requestJson('get', 'orgs/'.rawurlencode($name));
         return new Organization($this, $data);
     }
 
     public function getOrganizationRepositories($name) {
-        $data = $this->callServer('get', 'orgs/'.rawurlencode($name).'/repos', [
+        $data = $this->requestJson('get', 'orgs/'.rawurlencode($name).'/repos', [
             'type' => 'all'
         ]);
         $output = [];
@@ -144,13 +144,13 @@ class Mediator implements IMediator, core\IDumpable {
 // Repositories
     public function getRepository($name) {
         list($username, $name) = explode('/', $name, 2);
-        $data = $this->callServer('get', 'repos/'.rawurlencode($username).'/'.rawurlencode($name));
+        $data = $this->requestJson('get', 'repos/'.rawurlencode($username).'/'.rawurlencode($name));
         return new Repository($this, $data);
     }
 
     public function getRepositoryBranches($name) {
         list($username, $name) = explode('/', $name, 2);
-        $data = $this->callServer('get', 'repos/'.rawurlencode($username).'/'.rawurlencode($name).'/branches');
+        $data = $this->requestJson('get', 'repos/'.rawurlencode($username).'/'.rawurlencode($name).'/branches');
         $output = [];
 
         foreach($data as $branch) {
@@ -162,7 +162,7 @@ class Mediator implements IMediator, core\IDumpable {
 
     public function getRepositoryBranch($name, $branchName) {
         list($username, $name) = explode('/', $name, 2);
-        $data = $this->callServer('get', 'repos/'.rawurlencode($username).'/'.rawurlencode($name).'/branches/'.rawurlencode($branchName));
+        $data = $this->requestJson('get', 'repos/'.rawurlencode($username).'/'.rawurlencode($name).'/branches/'.rawurlencode($branchName));
         return new Branch($this, $data);
     }
 
@@ -181,7 +181,7 @@ class Mediator implements IMediator, core\IDumpable {
 
     public function getRepositoryLabels($name) {
         list($username, $name) = explode('/', $name, 2);
-        $data = $this->callServer('get', 'repos/'.rawurlencode($username).'/'.rawurlencode($name).'/labels');
+        $data = $this->requestJson('get', 'repos/'.rawurlencode($username).'/'.rawurlencode($name).'/labels');
         $output = [];
 
         foreach($data as $label) {
@@ -193,7 +193,7 @@ class Mediator implements IMediator, core\IDumpable {
 
     public function getRepositoryReleases($name) {
         list($username, $name) = explode('/', $name, 2);
-        $data = $this->callServer('get', 'repos/'.rawurlencode($username).'/'.rawurlencode($name).'/releases');
+        $data = $this->requestJson('get', 'repos/'.rawurlencode($username).'/'.rawurlencode($name).'/releases');
         $output = [];
 
         foreach($data as $release) {
@@ -205,7 +205,7 @@ class Mediator implements IMediator, core\IDumpable {
 
     public function getRepositoryRelease($name, $id) {
         list($username, $name) = explode('/', $name, 2);
-        $data = $this->callServer('get', 'repos/'.rawurlencode($username).'/'.rawurlencode($name).'/releases/'.rawurlencode($id));
+        $data = $this->requestJson('get', 'repos/'.rawurlencode($username).'/'.rawurlencode($name).'/releases/'.rawurlencode($id));
         return new Release($this, $data);
     }
 
@@ -216,7 +216,7 @@ class Mediator implements IMediator, core\IDumpable {
             $page = 1;
         }
 
-        $data = $this->callServer('get', 'repos/'.rawurlencode($username).'/'.rawurlencode($name).'/watchers', [
+        $data = $this->requestJson('get', 'repos/'.rawurlencode($username).'/'.rawurlencode($name).'/watchers', [
             'page' => $page
         ]);
         $output = [];
@@ -235,7 +235,7 @@ class Mediator implements IMediator, core\IDumpable {
             $page = 1;
         }
 
-        $data = $this->callServer('get', 'repos/'.rawurlencode($username).'/'.rawurlencode($name).'/subscribers', [
+        $data = $this->requestJson('get', 'repos/'.rawurlencode($username).'/'.rawurlencode($name).'/subscribers', [
             'page' => $page
         ]);
         $output = [];
@@ -249,8 +249,8 @@ class Mediator implements IMediator, core\IDumpable {
 
 
 // Server
-    protected function _createUrl($path) {
-        return self::BASE_URL.ltrim($path, '/');
+    public function createUrl($path) {
+        return link\http\Url::factory(self::BASE_URL.ltrim($path, '/'));
     }
 
     protected function _prepareRequest(link\http\IRequest $request) {
@@ -262,10 +262,10 @@ class Mediator implements IMediator, core\IDumpable {
         $page = 0;
 
         while(true) {
-            $response = $this->callServer('get', $path, [
+            $response = $this->requestRaw('get', $path, [
                 'per_page' => 100,
                 'page' => ++$page
-            ], true);  
+            ]);  
 
             $data = $response->getJsonContent();
 

@@ -40,7 +40,12 @@ class ApiImplementationError extends ApiError {}
 interface IHttpMediator {
     public function setHttpClient(link\http\peer\IClient $client);
     public function getHttpClient();
-    public function callServer($method, $path, array $data=[], $returnResponse=false);
+
+    public function requestRaw($method, $path, array $data=[], array $headers=[]);
+    public function requestJson($method, $path, array $data=[], array $headers=[]);
+    public function createUrl($path);
+    public function createRequest($method, $path, array $data=[], array $headers=[]);
+    public function sendRequest(link\http\IRequest $request);
 }
 
 trait THttpMediator {
@@ -60,10 +65,22 @@ trait THttpMediator {
         return $this->_httpClient;
     }
 
-    public function callServer($method, $path, array $data=[], $returnResponse=false) {
-        $this->getHttpClient();
 
-        $url = $this->_createUrl($path);
+    public function requestRaw($method, $path, array $data=[], array $headers=[]) {
+        return $this->sendRequest($this->createRequest(
+            $method, $path, $data, $headers
+        ));
+    }
+
+    public function requestJson($method, $path, array $data=[], array $headers=[]) {
+        return $this->sendRequest($this->createRequest(
+                $method, $path, $data, $headers
+            ))
+            ->getJsonContent();
+    }
+
+    public function createRequest($method, $path, array $data=[], array $headers=[]) {
+        $url = $this->createUrl($path);
         $request = link\http\request\Base::factory($url);
         $request->setMethod($method);
 
@@ -76,11 +93,27 @@ trait THttpMediator {
             }
         }
 
+        if(!empty($headers)) {
+            $request->getHeaders()->import($headers);
+        }
+
+        $this->_prepareRequest($request);
+        return $request;
+    }
+
+    public function sendRequest(link\http\IRequest $request) {
+        $this->getHttpClient();
+
         $this->_httpClient->setMaxRetries(0);
         $response = $this->_httpClient->sendRequest($request);
 
         if(!$response->isOk()) {
-            $data = $response->getJsonContent();
+            try {
+                $data = $response->getJsonContent();
+            } catch(\Exception $e) {
+                $data = new core\collection\Tree();
+            }
+
             $message = $this->_extractErrorMessage($data);
 
             if($response->getHeaders()->getStatusCode() >= 500) {
@@ -89,25 +122,16 @@ trait THttpMediator {
                 throw new ApiDataError($message, $data->toArray());
             }
         }
-        
-        if($returnResponse) {
-            return $response;
-        }
 
-        return $this->_handleResponse($response);
+        return $response;
     }
 
-    protected function _createUrl($path) {
-        return $path;
+
+    public function createUrl($path) {
+        return link\http\Url::factory($path);
     }
 
-    protected function _prepareRequest(link\http\IRequest $request) {
-        // noop
-    }
-
-    protected function _handleResponse(link\http\IResponse $response) {
-        return $response->getJsonContent();
-    }
+    protected function _prepareRequest(link\http\IRequest $request) {}
 
     protected function _extractErrorMessage(core\collection\ITree $data) {
         return $data['message'];

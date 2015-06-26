@@ -89,10 +89,7 @@ class Installer implements IInstaller {
         $currentVersion = null;
 
         if($this->_hasPackage($package)) {
-            $data = flex\json\Codec::decode(file_get_contents(
-                $this->_installPath.'/'.$package->installName.'/.bower.json'
-            ));
-
+            $data = flex\json\Codec::decodeFile($this->_installPath.'/'.$package->installName.'/.bower.json');
             $currentVersion = $data['version'];
 
             if($this->_multiplexer) {
@@ -180,9 +177,7 @@ class Installer implements IInstaller {
                 continue;
             }
 
-            $data = new core\collection\Tree(flex\json\Codec::decode(
-                file_get_contents($path.'/.bower.json')
-            ));
+            $data = flex\json\Codec::decodeFileAsTree($path.'/.bower.json');
 
             if($name == $data['name']) {
                 return true;
@@ -230,9 +225,7 @@ class Installer implements IInstaller {
                 continue;
             }
 
-            $data = new core\collection\Tree(flex\json\Codec::decode(
-                file_get_contents($path.'/.bower.json')
-            ));
+            $data = flex\json\Codec::decodeFileAsTree($path.'/.bower.json');
 
             if($name == $data['name']) {
                 $package = new Package($dirName, $data['url']);
@@ -253,9 +246,7 @@ class Installer implements IInstaller {
         $path = $this->_installPath.'/'.$name;
 
         if(is_file($path.'/.bower.json')) {
-            $data = new core\collection\Tree(flex\json\Codec::decode(
-                file_get_contents($path.'/.bower.json')
-            ));
+            $data = flex\json\Codec::decodeFileAsTree($path.'/.bower.json');
 
             $package = new Package($name, $data['url']);
             $package->url = $data['url'];
@@ -274,9 +265,7 @@ class Installer implements IInstaller {
         $path = $this->_installPath.'/'.$name.'/bower.json';
 
         if(is_file($path)) {
-            return core\collection\Tree::factory(flex\json\Codec::decode(
-                file_get_contents($path)
-            ));
+            return flex\json\Codec::decodeFileAsTree($path);
         }
     }
 
@@ -460,14 +449,15 @@ class Installer implements IInstaller {
 
         $this->_filterFiles($destination);
 
-        $data = flex\json\Codec::encode([
-            'name' => $package->name,
-            'url' => $package->url,
-            'version' => $package->version
-        ]);
+        flex\json\Codec::encodeFile(
+            $destination.'/.bower.json', 
+            [
+                'name' => $package->name,
+                'url' => $package->url,
+                'version' => $package->version
+            ]
+        );
 
-        $data = str_replace('\/', '/', $data);
-        file_put_contents($destination.'/.bower.json', $data);
         //core\io\Util::delete($sourcePath);
     }
 
@@ -476,10 +466,7 @@ class Installer implements IInstaller {
         $ignore = ['.bower.json', '.git', '.svn'];
 
         if(is_file($destination.'/bower.json')) {
-            $bowerData = core\collection\Tree::factory(flex\json\Codec::decode(
-                file_get_contents($destination.'/bower.json')
-            ));
-
+            $bowerData = flex\json\Codec::decodeFileAsTree($destination.'/bower.json');
             $ignore = array_merge($ignore, $bowerData->ignore->toArray());
 
             if(count($bowerData->main)) {
@@ -489,8 +476,13 @@ class Installer implements IInstaller {
             }
         }
 
-        $dir = new \RecursiveDirectoryIterator($destination, \FilesystemIterator::KEY_AS_PATHNAME | \FilesystemIterator::CURRENT_AS_SELF | \FilesystemIterator::SKIP_DOTS);
-        $it = new \RecursiveIteratorIterator($dir, \RecursiveIteratorIterator::SELF_FIRST);
+        $it = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(
+            $destination, 
+            \FilesystemIterator::KEY_AS_PATHNAME | 
+            \FilesystemIterator::CURRENT_AS_SELF | 
+            \FilesystemIterator::SKIP_DOTS
+        ), \RecursiveIteratorIterator::SELF_FIRST);
+
         $delete = [];
 
         foreach($it as $name => $entry) {

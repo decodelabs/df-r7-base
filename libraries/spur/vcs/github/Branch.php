@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\spur;
 
-class Branch implements IBranch {
+class Branch implements IBranch, core\IDumpable {
     
     use TApiObject;
 
@@ -33,5 +33,15 @@ class Branch implements IBranch {
 
     public function getCommit() {
         return $this->_commit;
+    }
+
+
+// Dump
+    public function getDumpProperties() {
+        return [
+            'name' => $this->_id,
+            'commit' => $this->_commit,
+            'urls' => $this->_urls
+        ];
     }
 }

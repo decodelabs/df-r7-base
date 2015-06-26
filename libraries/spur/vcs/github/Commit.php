@@ -50,4 +50,16 @@ class Commit extends CommitReference implements ICommit {
     public function getCommitter() {
         return $this->_committer;
     }
+
+// Dump
+    public function getDumpProperties() {
+        return [
+            'sha' => $this->_id,
+            'tree' => $this->_tree,
+            'parents' => $this->_parents,
+            'author' => $this->_author,
+            'committer' => $this->_committer,
+            'urls' => $this->_urls
+        ];
+    }
 }

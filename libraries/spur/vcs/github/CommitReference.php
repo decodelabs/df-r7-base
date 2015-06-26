@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\spur;
 
-class CommitReference implements ICommitReference {
+class CommitReference implements ICommitReference, core\IDumpable {
     
     use TApiObject;
 
@@ -26,5 +26,11 @@ class CommitReference implements ICommitReference {
             'sha' => $this->_id,
             'urls' => $this->_urls
         ];
+    }
+
+
+// Dump
+    public function getDumpProperties() {
+        return array_merge(['sha' => $this->_id], $this->_urls);
     }
 }

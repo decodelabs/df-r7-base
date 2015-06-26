@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\spur;
 
-class Tag implements ITag {
+class Tag implements ITag, core\IDumpable {
     
     use TApiObject;
 
@@ -56,6 +56,17 @@ class Tag implements ITag {
             'name' => $this->_name,
             'version' => $this->_version ? (string)$this->_version : null,
             'commit' => $this->_commit->toArray(),
+            'urls' => $this->_urls
+        ];
+    }
+
+// Dump
+    public function getDumpProperties() {
+        return [
+            'id' => $this->_id,
+            'name' => $this->_name,
+            'version' => $this->getVersion(),
+            'commit' => $this->_commit,
             'urls' => $this->_urls
         ];
     }
