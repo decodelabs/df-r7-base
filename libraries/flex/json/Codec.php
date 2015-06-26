@@ -16,6 +16,10 @@ class Codec {
         return json_encode(self::prepareJsonData($data));
     }
 
+    public static function encodeFile($path, $data) {
+        return core\io\Util::writeFileExclusive($path, self::encode($data));
+    }
+
     public static function prepareJsonData($data) {
         if(is_scalar($data)) {
             return $data;
@@ -52,5 +56,17 @@ class Codec {
 
     public static function decode($data) {
         return json_decode($data, true);
+    }
+
+    public static function decodeFile($path) {
+        return self::decode(core\io\Util::readFileExclusive($path));
+    }
+
+    public static function decodeAsTree($data) {
+        return core\collection\Tree::factory(self::decode($data));
+    }
+
+    public static function decodeFileAsTree($path) {
+        return core\collection\Tree::factory(self::decodeFile($path));
     }
 }
