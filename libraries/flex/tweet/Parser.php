@@ -11,7 +11,9 @@ use df\flex;
 use df\aura;
 use df\arch;
 
-class Parser {
+class Parser implements flex\IInlineHtmlProducer {
+
+    use flex\TParser;
 
     const REGEX_AT_SIGNS = '[@＠]';
     const REGEX_URL_CHARS_BEFORE = '(?:[^-\\/"\':!=a-z0-9_@＠]|^|\\:)';
@@ -37,11 +39,8 @@ class Parser {
     protected static $_urlRegex = null;
     protected static $_replyUsernameRegex = null;
 
-    protected $_body;
-
-
-    public function __construct($body) {
-        $this->_body = $body;
+    public function __construct($source) {
+        $this->source = $source;
 
         if(self::$_urlRegex === null) {
             self::$_urlRegex = 
@@ -64,10 +63,10 @@ class Parser {
     }
 
     public function toHtml() {
-        $body = htmlspecialchars($this->_body, \ENT_QUOTES, 'UTF-8', false);
+        $output = htmlspecialchars($this->source, \ENT_QUOTES, 'UTF-8', false);
 
         // Urls
-        $body = preg_replace_callback(self::$_urlRegex, function($matches) {
+        $output = preg_replace_callback(self::$_urlRegex, function($matches) {
             list($all, $before, $url, $protocol, $domain, $path, $query) = array_pad($matches, 7, '');
             $url = htmlspecialchars($url, \ENT_QUOTES, 'UTF-8', false);
 
@@ -77,19 +76,19 @@ class Parser {
 
             $href = ((!$protocol || strtolower($protocol) === 'www.') ? 'http://'.$url : $url);
             return $before.$this->_wrap($href, self::CLASS_URL, $url);
-        }, $body);
+        }, $output);
 
         // Hashtags
-        $body = preg_replace_callback(self::REGEX_HASHTAG, function($matches) {
+        $output = preg_replace_callback(self::REGEX_HASHTAG, function($matches) {
             $replacement = $matches[1];
             $element = $matches[2].$matches[3];
             $url = self::URL_HASHTAG.$matches[3];
             $replacement .= $this->_wrap($url, self::CLASS_HASHTAG, $element);
             return $replacement;
-        }, $body);
+        }, $output);
 
         // Usernames
-        $body = preg_replace_callback(self::REGEX_USERNAME_LIST, function($matches) {
+        $output = preg_replace_callback(self::REGEX_USERNAME_LIST, function($matches) {
             list($all, $before, $at, $username, $listname, $after) = array_pad($matches, 6, '');
 
             if(!empty($after)) {
@@ -109,9 +108,13 @@ class Parser {
             }
 
             return $before.$this->_wrap($url, $class, $at.$element).$suffix.$after;
-        }, $body);
+        }, $output);
 
-        return $body;
+        return $output;
+    }
+
+    public function toInlineHtml() {
+        return $this->toHtml();
     }
 
     protected function _wrap($url, $class, $element) {

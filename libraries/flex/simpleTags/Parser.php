@@ -11,7 +11,9 @@ use df\flex;
 use df\aura;
 use df\arch;
 
-class Parser {
+class Parser implements flex\IInlineHtmlProducer {
+
+    use flex\TParser;
 
     protected static $_tagList = [
         'a', 'abbr', 'b', 'br', 'cite', 'code', 'del', 'em', 
@@ -20,11 +22,10 @@ class Parser {
         'sub', 'sup', 'time', 'var'
     ];
 
-    protected $_body;
     protected $_customTags = [];
 
-    public function __construct($body, array $customTags=null) {
-        $this->_body = $body;
+    public function __construct($source, array $customTags=null) {
+        $this->source = $source;
 
         if(!empty($customTags)) {
             $this->setCustomTags($customTags);
@@ -68,7 +69,7 @@ class Parser {
 
 // Translate
     public function toHtml() {
-        if(null === ($text = $this->_prepareBody())) {
+        if(null === ($text = $this->_prepareSource())) {
             return null;
         }
 
@@ -80,7 +81,7 @@ class Parser {
     }
 
     public function toInlineHtml() {
-        if(null === ($text = $this->_prepareBody())) {
+        if(null === ($text = $this->_prepareSource())) {
             return null;
         }
 
@@ -89,8 +90,8 @@ class Parser {
         return $text;
     }
 
-    protected function _prepareBody() {
-        $text = trim($this->_body);
+    protected function _prepareSource() {
+        $text = trim($this->source);
 
         if(empty($text) && $text !== '0') {
             return null;

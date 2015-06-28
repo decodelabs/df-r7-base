@@ -42,8 +42,8 @@ class Mail extends Base {
         $this->_message->setBodyHtml($html);
 
         if($this->_message->getBodyText() === null) {
-            $handler = new flex\html\Handler($html);
-            $this->_message->setBodyText($handler->toPlainText());
+            $handler = new flex\html\Parser($html);
+            $this->_message->setBodyText($handler->toText());
         }
 
         return $this->_message->send($transport);

@@ -9,16 +9,12 @@ use df;
 use df\core;
 use df\flex;
     
-class Handler {
+class Parser implements flex\ITextProducer {
 
-    protected $_html;
+    use flex\TParser;
 
-    public function __construct($html) {
-        $this->_html = $html;
-    }
-
-    public function toPlainText() {
-        $html = str_replace("\r\n", "\n", $this->_html);
+    public function toText() {
+        $html = str_replace("\r\n", "\n", $this->source);
         $html = str_replace("\r", "\n", $html);
         $doc = new \DOMDocument();
 
