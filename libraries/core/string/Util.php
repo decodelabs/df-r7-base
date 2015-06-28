@@ -20,6 +20,35 @@ abstract class Util implements IUtil {
 
         return new $class();
     }
+
+
+// Explode generator
+    public static function splitLines($source, $trim=false) {
+        $source = str_replace(["\r\n", "\r"], "\n", $source);
+
+        if($trim) {
+            $source = trim($source, "\n");
+        }
+
+        return self::split("\n", $source);
+    }
+
+    public static function split($delimiter, $source) {
+        $length = strlen($source);
+
+        while($length) {
+            $pos = strpos($source, $delimiter);
+
+            if($pos === false) {
+                yield $source;
+                return;
+            }
+
+            yield substr($source, 0, $pos);
+            $source = substr($source, $pos + 1);
+            $length -= $pos + 1;
+        }
+    }
     
 // Delimited
     public static function parseDelimited($input, $delimiter=',', $quoteMap='"\'', $terminator=null) {
