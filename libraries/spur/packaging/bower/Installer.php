@@ -432,10 +432,10 @@ class Installer implements IInstaller {
 
         if(is_file($sourcePath)) {
             try {
-                core\io\archive\Base::extract(
+                core\archive\Base::extract(
                     $sourcePath, $destination, true
                 );
-            } catch(core\io\archive\IException $e) {
+            } catch(core\archive\IException $e) {
                 core\io\Util::delete($sourcePath);
                 throw $e;
             }

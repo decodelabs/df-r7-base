@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\io\archive;
+namespace df\core\archive;
 
 use df;
 use df\core;
@@ -29,7 +29,7 @@ abstract class Base implements IArchive {
     }
 
     public static function factory($type) {
-        $class = 'df\\core\\io\\archive\\'.ucfirst($type);
+        $class = 'df\\core\\archive\\'.ucfirst($type);
 
         if(!class_exists($class)) {
             throw new LogicException('Archive type '.$type.' is not supported');

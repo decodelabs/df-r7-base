@@ -3,27 +3,27 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\io\archive;
+namespace df\core\archive;
 
 use df;
 use df\core;
 
-class Snappy extends Base {
+class Lzf extends Base {
     
     public function __construct() {
-        if(!extension_loaded('snappy')) {
+        if(!extension_loaded('lzf')) {
             throw new RuntimeException(
-                'The snappy extension is not loaded'
+                'The lzf extension is not loaded'
             );
         }
     }
 
     public function compressString($string) {
-        $output = snappy_compress($string);
+        $output = lzf_compress($string);
 
         if($output === false) {
             throw new RuntimeException(
-                'Unable to compress snappy string'
+                'Unable to compress lzf string'
             );
         }
 
@@ -31,11 +31,11 @@ class Snappy extends Base {
     }
 
     public function decompressString($string) {
-        $output = snappy_uncompress($string);
+        $output = lzf_decompress($string);
 
         if($output === false) {
             throw new RuntimeException(
-                'Unable to decompress snappy string, appears invalid'
+                'Unable to decompress lzf string, appears invalid'
             );
         }
 
