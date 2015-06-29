@@ -143,7 +143,7 @@ class TaskBuild extends arch\task\Action {
                     }
                     
                     if(is_dir($package->path.'/'.$entry)) {
-                        core\fs\Dir::copy($package->path.'/'.$entry, $destinationPath.'/apex/'.$entry, true);
+                        core\fs\Dir::merge($package->path.'/'.$entry, $destinationPath.'/apex/'.$entry, true);
                     }
                 }
             }
