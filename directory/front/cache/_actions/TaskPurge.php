@@ -14,7 +14,6 @@ class TaskPurge extends arch\task\Action {
     
     public function execute() {
         $this->task->shouldCaptureBackgroundTasks(true);
-        $this->io->writeLine('Purging cache backends...');
 
         if(function_exists('opcache_reset')) {
             $this->io->writeLine('Opcache');

@@ -14,7 +14,7 @@ use df\spur;
 class TaskReinstallDependencies extends arch\task\Action {
     
     public function execute() {
-        $this->runChild('./purge-dependencies');
-        $this->runChild('./install-dependencies');
+        $this->runChild('./purge-dependencies', false);
+        $this->runChild('./install-dependencies', false);
     }
 }

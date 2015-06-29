@@ -85,7 +85,7 @@ class TaskSpool extends arch\task\Action {
 
 
         // Queue scheduled tasks
-        $this->runChild('manager/queue-scheduled');
+        $this->runChild('manager/queue-scheduled', false);
 
 
         // Select and lock queued tasks

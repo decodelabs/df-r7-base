@@ -43,8 +43,6 @@ class TaskApcClear extends arch\task\Action {
         }
 
         if($isHttp) {
-            $this->io->writeLine('Calling HTTP APC cache clear action...');
-            
             $config = $this->getConfig('core/application/http/Config');
             $baseUrls = $config->values->baseUrl->toArray();
             $credentials = null;
@@ -74,7 +72,7 @@ class TaskApcClear extends arch\task\Action {
                 );
             }
 
-            $this->io->writeLine($url);
+            //$this->io->writeLine($url);
 
             $httpClient = new link\http\peer\Client();
             $request = link\http\request\Base::factory($url);
@@ -86,7 +84,7 @@ class TaskApcClear extends arch\task\Action {
                 $cleared = @$json['cleared'];
 
                 if($cleared === null) {
-                    $this->io->writeLine('Unabled to pass IP check via '.@$json['addr']);
+                    $this->io->writeLine('APC unable to pass IP check via '.@$json['addr']);
                 } else {
                     $this->io->writeLine('Cleared '.$cleared.' HTTP APC entries via '.@$json['addr']);
                 }

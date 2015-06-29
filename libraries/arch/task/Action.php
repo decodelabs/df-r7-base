@@ -67,7 +67,7 @@ abstract class Action extends arch\Action implements IAction {
         return parent::dispatch();
     }
 
-    public function runChild($request) {
+    public function runChild($request, $incLevel=true) {
         $request = $this->context->uri->directoryRequest($request);
         $context = $this->context->spawnInstance($request, true);
         $action = arch\Action::factory($context);
@@ -77,7 +77,18 @@ abstract class Action extends arch\Action implements IAction {
         }
 
         $action->io = $this->io;
-        return $action->dispatch();
+
+        if($incLevel) {
+            $this->io->incrementLineLevel();
+        }
+
+        $output = $action->dispatch();
+
+        if($incLevel) {
+            $this->io->decrementLineLevel();
+        }
+        
+        return $output;
     }
 
     public function runChildQuietly($request) {

@@ -39,7 +39,6 @@ class TaskPurgeBuilds extends arch\task\Action {
             return;
         }
 
-        $this->io->writeLine('Purging old builds...');
         $this->io->writeLine('Keeping '.$contingency.' build(s) as contingency');
 
         $list = scandir($runDir->getPath());

@@ -44,6 +44,6 @@ class TaskGenerateEntries extends arch\task\Action {
             }
         }
 
-        $this->runChild('application/generate-base-entry');
+        $this->runChild('application/generate-base-entry', false);
     }
 }

@@ -114,7 +114,7 @@ class TaskScan extends arch\task\Action {
         }
 
 
-        $this->io->writeLine();
+        $spaced = false;
 
         // Write
         foreach($schedules as $request => $set) {
@@ -144,10 +144,15 @@ class TaskScan extends arch\task\Action {
             ]);
 
             if(!$schedule->hasChanged()) {
-                $this->io->writeLine('Not updating '.$request.' because it hasn\'t changed');
+                //$this->io->writeLine('Not updating '.$request.' because it hasn\'t changed');
                 continue;
             }
 
+            if(!$spaced) {
+                $spaced = true;
+                $this->io->writeLine();
+            }
+            
             $this->io->writeLine('Scheduling '.$request.' at '.$set['schedule']);
             $schedule->save();
         }

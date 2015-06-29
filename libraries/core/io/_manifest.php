@@ -259,6 +259,11 @@ interface IMultiplexer extends IFlushable, core\IRegistryObject {
     public function setId($id);
     public function getId();
 
+    public function setLineLevel($level);
+    public function getLineLevel();
+    public function incrementLineLevel();
+    public function decrementLineLevel();
+
     public function setChannels(array $channels);
     public function addChannels(array $channels);
     public function addChannel(IChannel $channel);

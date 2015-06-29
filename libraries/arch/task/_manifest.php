@@ -21,7 +21,7 @@ interface IAction extends arch\IAction {
     public static function shouldScheduleAutomatically();
 
     public function extractCliArguments(core\cli\ICommand $command);
-    public function runChild($request);
+    public function runChild($request, $incLevel=true);
     public function runChildQuietly($request);
 }
 

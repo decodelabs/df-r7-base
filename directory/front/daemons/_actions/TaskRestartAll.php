@@ -44,6 +44,7 @@ class TaskRestartAll extends arch\task\Action {
         }
 
         $this->task->shouldCaptureBackgroundTasks(true);
+        $this->io->incrementLineLevel();
 
         foreach($daemons as $name => $daemon) {
             $remote = halo\daemon\Remote::factory($daemon);
@@ -55,5 +56,7 @@ class TaskRestartAll extends arch\task\Action {
                 $this->io->writeLine('Daemon '.$name.' is not running');
             }
         }
+
+        $this->io->decrementLineLevel();
     }
 }

@@ -15,6 +15,8 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
     protected $_id;
     protected $_channels = [];
     protected $_chunkReceivers = [];
+    protected $_lineLevel = 0;
+    protected $_newLine = true;
 
     public static function defaultFactory($id=null) {
         if(isset($_SERVER['argv']) && $id != 'memory') {
@@ -47,6 +49,37 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
 
     public function getId() {
         return $this->_id;
+    }
+
+
+// Lines
+    public function setLineLevel($level) {
+        $this->_lineLevel = (int)$level;
+
+        if($this->_lineLevel < 0) {
+            $this->_lineLevel = 0;
+        }
+
+        return $this;
+    }
+
+    public function getLineLevel() {
+        return $this->_lineLevel;
+    }
+
+    public function incrementLineLevel() {
+        $this->_lineLevel++;
+        return $this;
+    }
+
+    public function decrementLineLevel() {
+        $this->_lineLevel--;
+
+        if($this->_lineLevel < 0) {
+            $this->_lineLevel = 0;
+        }
+
+        return $this;
     }
 
 
@@ -176,6 +209,18 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
     }
 
     public function write($data) {
+        if(false !== strpos($data, "\n")) {
+            $lines = explode("\n", $data);
+            $data = array_pop($lines);
+
+            foreach($lines as $line) {
+                $this->writeLine($line);
+            }
+        }
+
+        $this->_writeLinePrefix();
+        $this->_newLine = false;
+
         foreach($this->_channels as $channel) {
             $channel->write($data);
         }
@@ -188,6 +233,8 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
     }
 
     public function writeLine($line='') {
+        $this->_writeLinePrefix();
+
         foreach($this->_channels as $channel) {
             $channel->writeLine($line);
         }
@@ -196,10 +243,31 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
             $receiver->writeChunk($line."\r\n");
         }
 
+        $this->_newLine = true;
         return $this;
     }
 
+    protected function _writeLinePrefix() {
+        if($this->_newLine && $this->_lineLevel) {
+            foreach($this->_channels as $channel) {
+                $channel->write(str_repeat('  ', $this->_lineLevel - 1).($this->_lineLevel > 1 ? ' ':'').'|- ');
+            }
+        }
+    }
+
     public function writeError($error) {
+        if(false !== strpos($error, "\n")) {
+            $lines = explode("\n", $error);
+            $error = array_pop($lines);
+
+            foreach($lines as $line) {
+                $this->writeErrorLine($line);
+            }
+        }
+
+        $this->_writeErrorLinePrefix();
+        $this->_newLine = false;
+
         foreach($this->_channels as $channel) {
             $channel->writeError($error);
         }
@@ -212,6 +280,8 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
     }
 
     public function writeErrorLine($line) {
+        $this->_writeErrorLinePrefix();
+
         foreach($this->_channels as $channel) {
             $channel->writeErrorLine($line);
         }
@@ -220,7 +290,16 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
             $receiver->writeChunk($line."\r\n");
         }
 
+        $this->_newLine = true;
         return $this;
+    }
+
+    protected function _writeErrorLinePrefix() {
+        if($this->_newLine && $this->_lineLevel) {
+            foreach($this->_channels as $channel) {
+                $channel->writeError(str_repeat('  ', $this->_lineLevel - 1).($this->_lineLevel > 1 ? ' ':'').'|- ');
+            }
+        }
     }
 
 

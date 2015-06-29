@@ -16,6 +16,7 @@ class TaskInstallDependencies extends arch\task\Action {
 
     public function execute() {
         $this->io->write('Installing theme dependencies...');
+        $this->io->incrementLineLevel();
 
         $config = aura\theme\Config::getInstance();
         $themes = array_unique($config->getThemeMap());
@@ -29,7 +30,6 @@ class TaskInstallDependencies extends arch\task\Action {
 
                 if(isset($dependencies[$name]) && $dependencies[$name]->source != $package->source) {
                     $this->io->writeLine();
-                    core\dump($dependencies[$name], $package);
                     $this->io->writeErrorLine('Version conflict for '.$name);
                 }
 
@@ -46,5 +46,6 @@ class TaskInstallDependencies extends arch\task\Action {
 
         $installer = new spur\packaging\bower\Installer($this->io);
         $installer->installPackages($dependencies);
+        $this->io->decrementLineLevel();
     }
 }

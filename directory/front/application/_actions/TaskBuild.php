@@ -45,7 +45,6 @@ class TaskBuild extends arch\task\Action {
         $this->io->writeLine('Launching app builder...');
 
 
-
         // Prepare info
         $timestamp = date('YmdHis');
         $purgeOldBuilds = $this->request->query->get('purge', self::PURGE_OLD_BUILDS);
@@ -104,6 +103,8 @@ class TaskBuild extends arch\task\Action {
             $umask = umask(0);
             $dir = core\fs\Dir::create($destinationPath, 0777);
 
+            $this->io->writeLine('Packaging files...');
+            $this->io->incrementLineLevel();
 
             // Generate Df.php
             $this->io->writeLine('Generating Df.php');
@@ -176,28 +177,28 @@ class TaskBuild extends arch\task\Action {
             }
 
             // Generate entries
-            $this->io->writeLine();
-            $this->runChild('./generate-entries?build='.$buildId);
+            $this->runChild('./generate-entries?build='.$buildId, false);
         }
+
+        $this->io->decrementLineLevel();
 
         // Clear cache
         $this->io->writeLine();
+        $this->io->writeLine('Purging cache backends...');
         $this->runChild('cache/purge');
 
 
         // Restart daemons
         if(!$isTesting) {
             $this->io->writeLine();
-            $this->runChild('daemons/restart-all');
+            $this->runChild('daemons/restart-all', false);
         }
 
 
-        // End
-        $this->io->writeLine();
-        $this->io->writeLine('App build complete');
-
+        // Purge
         if($purgeOldBuilds) {
             $this->io->writeLine();
+            $this->io->writeLine('Purging old builds...');
             $this->runChild('./purge-builds?'.(!$isTesting ? 'purgeTesting' : null));
         }
 
