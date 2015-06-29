@@ -216,6 +216,11 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
             foreach($lines as $line) {
                 $this->writeLine($line);
             }
+
+            if(!strlen($data)) {
+
+                return;
+            }
         }
 
         $this->_writeLinePrefix();
@@ -262,6 +267,11 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
 
             foreach($lines as $line) {
                 $this->writeErrorLine($line);
+            }
+
+            if(!strlen($error)) {
+
+                return;
             }
         }
 
