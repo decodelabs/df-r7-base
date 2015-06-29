@@ -45,9 +45,9 @@ class TaskUpdate extends arch\task\Action {
         }
 
         if(is_dir($this->application->getLocalStoragePath().'/run')) {
-            $this->runChild('application/build?testing=1');
+            $this->runChild('application/build?testing=1', false);
         } else if($this->apex->actionExists('application/build-custom') && in_array('app', $names)) {
-            $this->runChild('application/build-custom');
+            $this->runChild('application/build-custom', false);
         }
     }
 }

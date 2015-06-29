@@ -42,8 +42,6 @@ class TaskBuild extends arch\task\Action {
             $this->throwError(403, 'Cannot compile app from production environment - run from dev mode instead');
         }
 
-        $this->io->writeLine('Launching app builder...');
-
 
         // Prepare info
         $timestamp = date('YmdHis');
