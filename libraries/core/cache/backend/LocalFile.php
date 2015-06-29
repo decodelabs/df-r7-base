@@ -46,7 +46,7 @@ class LocalFile implements core\cache\IDirectFileBackend {
         $output = 0;
 
         foreach($paths as $basePath) {
-            $baseDir = core\fs\Dir::factory($path);
+            $baseDir = core\fs\Dir::factory($basePath);
 
             foreach($baseDir->scanDirs() as $dirName => $dir) {
                 foreach($dir->scanFiles() as $fileName => $file) {
