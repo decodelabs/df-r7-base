@@ -16,7 +16,8 @@ class Dir implements IDirectory, core\IDumpable {
 
 // Static
     public static function getGlobalCachePath() {
-        return sys_get_temp_dir().'decode-framework';
+        return '/tmp/decode-framework';
+        //return sys_get_temp_dir().'decode-framework';
     }
 
     public static function stripPathLocation($path) {
