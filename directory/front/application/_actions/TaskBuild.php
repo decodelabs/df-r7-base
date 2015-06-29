@@ -166,12 +166,12 @@ class TaskBuild extends arch\task\Action {
                 }
 
                 if($entry == 'libraries') {
-                    core\fs\Dir::Merge($appPackage->path.'/'.$entry, $destinationPath);
+                    core\fs\Dir::merge($appPackage->path.'/'.$entry, $destinationPath);
                     continue;
                 }
 
                 if(is_dir($appPackage->path.'/'.$entry)) {
-                    core\fs\Dir::copy($appPackage->path.'/'.$entry, $destinationPath.'/apex/'.$entry, true);
+                    core\fs\Dir::merge($appPackage->path.'/'.$entry, $destinationPath.'/apex/'.$entry, true);
                 }
             }
 
