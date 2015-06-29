@@ -10,7 +10,7 @@ use df\core;
 
 class Zip extends Base {
     
-    public function decompressFile($file, $destination=null, $flattenRoot=false) {
+    public function extractFile($file, $destination=null, $flattenRoot=false) {
         $destination = $this->_normalizeExtractDestination($file, $destination);
 
         $zip = new \ZipArchive();

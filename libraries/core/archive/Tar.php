@@ -10,7 +10,7 @@ use df\core;
 
 class Tar extends Base {
     
-    public function decompressFile($file, $destination=null, $flattenRoot=false) {
+    public function extractFile($file, $destination=null, $flattenRoot=false) {
         $destination = $this->_normalizeExtractDestination($file, $destination);
         $archive = new \PharData($file);
 
@@ -26,7 +26,7 @@ class Tar extends Base {
         $archive->extractTo($destination);
 
         if($isGz) {
-            core\io\Util::deleteFile($tarFile);
+            core\fs\File::delete($tarFile);
         }
 
         if($flattenRoot) {

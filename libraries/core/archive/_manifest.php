@@ -16,10 +16,12 @@ class LogicException extends \LogicException implements IException {}
 
 // Interfaces
 interface IArchive {
-    public static function extract($file, $destination=null, $flattenRoot=false);
+    public static function extract($file, $destDir=null, $flattenRoot=false);
 
     public function getType();
-    public function decompressFile($file, $destination=null, $flattenRoot=false);
+
+    public function extractFile($file, $destDir=null, $flattenRoot=false);
+    public function decompressFile($file, $destFile=null);
     
     public function compressString($string);
     public function decompressString($string);

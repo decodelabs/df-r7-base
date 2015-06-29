@@ -18,20 +18,20 @@ class Bz2 extends Base {
         }
     }
 
-    public function decompressFile($file, $destination=null, $flattenRoot=false) {
-        $destination = $this->_normalizeExtractDestination($file, $destination);
-        
-        $fileName = basename($file);
+    public function extractFile($file, $destDir=null, $flattenRoot=false) {
+        $destFile = null;
 
-        if(strtolower(substr($fileName, -4)) == '.bz2') {
-            $fileName = substr($fileName, 0, -4);
-        } else {
-            throw new RuntimeException(
-                'Unable to extract file name from '.$file
-            );
+        if($destDir !== null) {
+            $destFile = $destDir.'/'.$this->_getDecompressFileName($file, 'bz2');
         }
 
-        $output = fopen($destination.'/'.$fileName, 'w');
+        return $this->decompressFile($file, $destFile);
+    }
+
+    public function decompressFile($file, $destFile=null) {
+        $destFile = $this->_normalizeDecompressDestination($file, $destFile, 'bz2');
+        
+        $output = fopen($destFile, 'w');
         $archive = bzopen($file, 'r');
         $block = 1024;
 
@@ -47,11 +47,7 @@ class Bz2 extends Base {
         bzclose($archive);
         fclose($output);
 
-        if($flattenRoot) {
-            $this->_flattenRoot($destination);
-        }
-
-        return $destination;
+        return $destFile;
     }
 
     public function compressString($string) {

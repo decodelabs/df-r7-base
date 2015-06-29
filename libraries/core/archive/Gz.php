@@ -18,18 +18,18 @@ class Gz extends Base {
         }
     }
 
-    public function decompressFile($file, $destination=null, $flattenRoot=false) {
-        $destination = $this->_normalizeExtractDestination($file, $destination);
-        
-        $fileName = basename($file);
+    public function extractFile($file, $destDir=null, $flattenRoot=false) {
+        $destFile = null;
 
-        if(strtolower(substr($fileName, -3)) == '.gz') {
-            $fileName = substr($fileName, 0, -3);
-        } else {
-            throw new RuntimeException(
-                'Unable to extract file name from '.$file
-            );
+        if($destDir !== null) {
+            $destFile = $destDir.'/'.$this->_getDecompressFileName($file, 'gz');
         }
+
+        return dirname($this->decompressFile($file, $destFile));
+    }
+
+    public function decompressFile($file, $destFile=null) {
+        $destFile = $this->_normalizeDecompressDestination($file, $destFile, 'gz');
 
         if(!$archive = fopen($file, 'rb')) {
             throw new RuntimeException(
@@ -44,7 +44,7 @@ class Gz extends Base {
         fclose($archive);
 
 
-        $output = fopen($destination.'/'.$fileName, 'w');
+        $output = fopen($destFile, 'w');
         $archive = gzopen($file, 'r');
         $block = 1024;
 
@@ -60,11 +60,7 @@ class Gz extends Base {
         gzclose($archive);
         fclose($output);
 
-        if($flattenRoot) {
-            $this->_flattenRoot($destination);
-        }
-
-        return $destination;
+        return $destFile;
     }
 
     public function compressString($string) {

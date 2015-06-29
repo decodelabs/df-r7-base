@@ -25,7 +25,7 @@ abstract class Base implements IArchive {
             throw new RuntimeException('Unable to work out type of archive: '.$file);
         }
 
-        return self::factory($type)->decompressFile($file, $destination, $flattenRoot);
+        return self::factory($type)->extractFile($file, $destination, $flattenRoot);
     }
 
     public static function factory($type) {
@@ -45,7 +45,11 @@ abstract class Base implements IArchive {
         return array_pop($parts);
     }
 
-    public function decompressFile($file, $destination=null, $flattenRoot=false) {
+    public function extractFile($file, $destDir=null, $flattenRoot=false) {
+        throw new LogicException($this->getType().' type archives cannot handle file and folder compression');
+    }
+
+    public function decompressFile($file, $destFile=null) {
         throw new LogicException($this->getType().' type archives cannot handle file and folder compression');
     }
 
@@ -58,11 +62,6 @@ abstract class Base implements IArchive {
     }
 
     protected function _normalizeExtractDestination(&$file, $destination) {
-        if($destination === null) {
-            $destination = dirname($file);
-        }
-
-        core\io\Util::ensureDirExists($destination);
         $file = str_replace(['/', '\\'], \DIRECTORY_SEPARATOR, realpath($file));
 
         if(!is_file($file)) {
@@ -71,37 +70,73 @@ abstract class Base implements IArchive {
             );
         }
 
+        if($destination === null) {
+            $destination = dirname($file);
+        }
+
+        core\fs\Dir::create($destination);
+        
+
         return $destination;
     }
 
-    protected function _flattenRoot($destination) {
-        $dirName = null;
+    protected function _normalizeDecompressDestination(&$file, $destFile, $extension) {
+        $file = str_replace(['/', '\\'], \DIRECTORY_SEPARATOR, realpath($file));
 
-        foreach(new \DirectoryIterator($destination) as $item) {
-            if($item->isDot()) {
-                continue;
-            }
+        if($destFile !== null) {
+            $destFile = str_replace('\\', '/', $destFile);
 
-            if($item->isFile()) {
-                return;
-            }
-
-            if($item->isDir()) {
-                if($dirName !== null) {
-                    return;
-                }
-
-                $dirName = $item->getFilename();
+            if(false === strpos($destFile, '/')) {
+                $destFile = dirname($file).'/'.$destFile;
             }
         }
 
-        $newName = basename($destination).'-'.time();
-        core\io\Util::renameDir($destination, $newName);
-        core\io\Util::moveDir(
-            dirname($destination).'/'.$newName.'/'.$dirName, 
-            dirname($destination), 
-            basename($destination)
-        );
-        core\io\Util::deleteDir(dirname($destination).'/'.$newName);
+        if(!is_file($file)) {
+            throw new RuntimeException(
+                'Source archive could not be found: '.$file
+            );
+        }
+
+        if($destFile === null) {
+            $destFile = dirname($file).'/'.$this->_getDecompressFileName($file, $extension);
+        }
+
+        core\fs\Dir::create(dirname($destFile));
+        return $destFile;
+    }
+
+    protected function _getDecompressFileName($file, $extension) {
+        $fileName = basename($file);
+        $extLength = 1 + strlen($extension);
+
+        if(strtolower(substr($fileName, -$extLength)) == '.'.$extension) {
+            $fileName = substr($fileName, 0, -$extLength);
+        } else {
+            $fileName .= '-extract';
+        }
+
+        return $fileName;
+    }
+
+    protected function _flattenRoot($destination) {
+        $dir = core\fs\Dir::factory($destination);
+        $dirName = null;
+
+        foreach($dir->scan() as $item) {
+            if($item instanceof core\fs\IFile) {
+                return;
+            }
+
+            if($dirName !== null) {
+                return;
+            }
+
+            $dirName = $item->getName();
+        }
+
+        $name = $dir->getName();
+        $dir->renameTo($name.'-'.time());
+        $dir->getDir($dirName)->moveTo($dir->getParent(), $name);
+        $dir->unlink();
     }
 }

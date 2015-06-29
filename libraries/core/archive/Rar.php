@@ -18,7 +18,7 @@ class Rar extends Base {
         }
     }
 
-    public function decompressFile($file, $destination=null, $flattenRoot=false) {
+    public function extractFile($file, $destination=null, $flattenRoot=false) {
         $destination = $this->_normalizeExtractDestination($file, $destination);
         
         // TODO: add password support
