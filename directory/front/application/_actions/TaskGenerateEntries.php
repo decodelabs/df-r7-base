@@ -41,8 +41,6 @@ class TaskGenerateEntries extends arch\task\Action {
                     'require_once dirname(__DIR__).\'/data/local/run/'.$buildId.'/Df.php\';'."\n".
                     'df\\Launchpad::runAs(\''.$environmentId.'\', '.($mode != 'production' ? 'true' : 'false').', dirname(__DIR__));'
                 );
-
-                $file->setPermissions(0777);
             }
         }
 
