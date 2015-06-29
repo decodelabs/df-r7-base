@@ -18,22 +18,6 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 
 
 
-// Interfaces
-interface IMode {
-    const READ_ONLY = 'rb';
-    const READ_WRITE = 'r+b';
-    const WRITE_TRUNCATE = 'wb';
-    const READ_WRITE_TRUNCATE = 'w+b';
-    const WRITE_APPEND = 'ab';
-    const READ_WRITE_APPEND = 'a+b';
-    const WRITE_NEW = 'xb';
-    const READ_WRITE_NEW = 'x+b';
-}
-
-class Mode extends core\lang\Enum implements IMode {}
-
-
-
 // Reader
 interface IChunkSender {
     public function setChunkReceiver(IChunkReceiver $reader);
@@ -46,16 +30,7 @@ interface IReader {
     public function read();
     public function readChunk($length);
     public function readLine();
-
-    public function readByte();
-    public function readBytes($num);
-    public function readInt();
-    public function readLong();
-    public function readVInt();
     public function readChar();
-    public function readString();
-    public function readUtf8String();
-    public function readBinary();
 
     public function isReadingEnabled();
 }
@@ -99,109 +74,8 @@ trait TReader {
         return rtrim($this->_readLine(), "\r\n");
     }
 
-    public function readByte() {
-        return ord($this->readChunk(1));
-    }
-
-    public function readBytes($num) {
-        return $this->readChunk($num);
-    }
-
-    public function readInt() {
-        $output = $this->readChunk(4);
-
-        return ord($output{0}) << 24 |
-               ord($output{1}) << 16 |
-               ord($output{2}) << 8  |
-               ord($output{3});
-    }
-
-    public function readLong() {
-        $output = $this->readChunk(8);
-        
-        if(PHP_INT_SIZE > 4) {
-            return ord($output{0}) << 56  |
-                   ord($output{1}) << 48  |
-                   ord($output{2}) << 40  |
-                   ord($output{3}) << 32  |
-                   ord($output{4}) << 24  |
-                   ord($output{5}) << 16  |
-                   ord($output{6}) << 8   |
-                   ord($output{7});
-        } else {
-            if((ord($output{0})          != 0) ||
-               (ord($output{1})          != 0) ||
-               (ord($output{2})          != 0) ||
-               (ord($output{3})          != 0) ||
-               ((ord($output{0}) & 0x80) != 0)) {
-                throw new OverflowException('Data value exceeds 32-bit mode capacity!');
-            }
-
-            return ord($output{4}) << 24 |
-                   ord($output{5}) << 16 |
-                   ord($output{6}) << 8  |
-                   ord($output{7});
-        }
-    }
-
-    public function readVInt() {
-        $nextByte = ord($this->readChunk(1));
-        $val = $nextByte & 0x7F;
-
-        for($shift=7; ($nextByte & 0x80) != 0; $shift += 7) {
-            $nextByte = ord($this->readChunk(1));
-            $val |= ($nextByte & 0x7F) << $shift;
-        }
-        
-        return $val;
-    }
-
     public function readChar() {
         return $this->readChunk(1);
-    }
-
-    public function readString() {
-        return $this->readUtf8String();    
-    }
-    
-    public function readUtf8String() {
-        $len = $this->readVInt();
-        
-        if($len == 0) {
-            return '';
-        }
-
-        $val = $this->readChunk($len);
-        for($count=0; $count < $len; $count++) {
-            if((ord($val{$count}) & 0xC0) == 0xC0) {
-                $addBytes = 1;
-                
-                if(ord($val{$count}) & 0x20) {
-                    $addBytes++;
-                    
-                    if(ord($val{$count}) & 0x10) {
-                        $addBytes++;
-                    }
-                }
-                
-                $val .= $this->readChunk($addBytes);
-                $len += $addBytes;
-
-                if(ord($val{$count})   == 0xC0 &&
-                   ord($val{$count+1}) == 0x80) {
-                    $val{$count} = 0;
-                    $val = substr($val, 0, $count+1).substr($val, $count+2);
-                }
-                
-                $count += $addBytes;
-            }
-        }
-        
-        return $val;
-    }
-
-    public function readBinary() {
-        return $this->readChunk($this->readVInt());
     }
 
     public function isReadingEnabled() {
@@ -250,14 +124,6 @@ interface IWriter extends IChunkReceiver {
     public function write($data);
     public function writeLine($line='');
     public function writeBuffer(&$buffer, $length);
-
-    public function writeByte($byte);
-    public function writeBytes($bytes, $num=null);
-    public function writeInt($int);
-    public function writeLong($long);
-    public function writeVInt($val);
-    public function writeString($val);
-    public function writeUtf8String($val);
 
     public function isWritingEnabled();
 }
@@ -346,109 +212,6 @@ trait TWriter {
         return $result;
     }
 
-
-
-    public function writeByte($byte) {
-        return $this->writeChunk(chr($byte), 1);
-    }
-
-    public function writeBytes($bytes, $num=null) {
-        return $this->writeChunk($bytes, $num);
-    }
-
-    public function writeInt($int) {
-        $int = (int)$int;
-        
-        return $this->writeChunk(
-            chr($int >> 24 & 0xFF).
-            chr($int >> 16 & 0xFF).
-            chr($int >> 8  & 0xFF).
-            chr($int       & 0xFF), 4);
-    }
-
-    public function writeLong($long) {
-        if(PHP_INT_SIZE > 4) {
-            $long = (int)$long;
-            
-            $this->writeChunk(
-                chr($long >> 56 & 0xFF).
-                chr($long >> 48 & 0xFF).
-                chr($long >> 40 & 0xFF).
-                chr($long >> 32 & 0xFF).
-                chr($long >> 24 & 0xFF).
-                chr($long >> 16 & 0xFF).
-                chr($long >> 8  & 0xFF).
-                chr($long       & 0xFF), 8);
-        } else {
-            if($long > 0x7FFFFFFF) {
-                throw new OverflowException('Data value exceeds 32-bit mode capacity!');
-            }
-
-            $this->writeChunk(
-                "\x00\x00\x00\x00".
-                chr($long >> 24 & 0xFF).
-                chr($long >> 16 & 0xFF).
-                chr($long >> 8  & 0xFF).
-                chr($long       & 0xFF), 8);
-        }
-    }
-
-    public function writeVInt($val) {
-        $val = (int)$val;
-        
-        while($val > 0x7F) {
-            $this->write(chr(($val & 0x7F) | 0x80));
-            $val >>= 7;
-        }
-        
-        $this->write(chr($val));
-    }
-    
-    public function writeString($val) {
-        return $this->writeUtf8String($val);    
-    }
-    
-    public function writeUtf8String($val) {
-        $val = (string)$val;
-        $chars = $len = strlen($val);
-        $nullChars = false;
-
-        for($count = 0; $count < $len; $count++) {
-            if((ord($val{$count}) & 0xC0) == 0xC0) {
-                $addBytes = 1;
-                
-                if(ord($val{$count}) & 0x20) {
-                    $addBytes++;
-                    
-                    if(ord($val{$count}) & 0x10) {
-                        $addBytes++;
-                    }
-                }
-                
-                $chars -= $addBytes;
-                
-                if(ord($val{$count}) == 0) {
-                    $nullChars = true;
-                }
-                
-                $count += $addBytes;
-            }
-        }
-
-        if($chars < 0) {
-            //throw new UnexpectedValueException('Invalid UTF-8 string!');
-        }
-
-        $this->writeVInt($chars);
-        
-        if($nullChars) {
-            $this->write(str_replace($val, "\x00", "\xC0\x80"));
-        } else {
-            $this->write($val);
-        }
-    }
-
-
     public function isWritingEnabled() {
         return true;
     }
@@ -492,65 +255,6 @@ interface IStreamChannel extends IContainedStateChannel {
 }
 
 // File
-interface IFilePointer {
-
-    public function open($mode=Mode::READ_WRITE);
-    public function exists();
-
-    public function setContentType($type);
-    public function getContentType();
-    
-    public function getLastModified();
-    public function getSize();
-    
-    public function putContents($data);
-    public function getContents();
-
-    public function getHash($type);
-    public function getRawHash($type);
-    
-    public function saveTo(core\uri\FilePath $path);
-}
-
-interface ILocalFilePointer extends IFilePointer {
-    public function getPath();
-    public function isOnDisk();
-}
-
-
-interface IFile extends IFilePointer, IChannel {
-    //public function getContents();
-    //public function putContents($data);
-
-    public function lock($type, $nonBlocking=false);
-    public function unlock();
-
-    public function seek($offset, $whence=\SEEK_SET);
-    public function readFrom($offset, $length);
-    public function tell();
-    
-    public function flush();
-    public function truncate($size=0);
-    public function eof();
-    public function close();
-}
-
-
-interface ILockFile {
-    public function setPath($path);
-    public function getPath();
-    public function setFileName($name);
-    public function getFileName();
-    public function setTimeout($timeout);
-    public function getTimeout();
-    public function getRemainingTime();
-    public function isLocked();
-    public function canLock();
-    public function lock();
-    public function unlock();
-}
-
-
 interface IMultiplexer extends IFlushable, core\IRegistryObject {
     public function setId($id);
     public function getId();
@@ -582,6 +286,7 @@ interface IMultiplexer extends IFlushable, core\IRegistryObject {
     public function readChunk($size);
     public function setReadBlocking($flag);
 }
+
 
 
 
@@ -620,7 +325,7 @@ trait TAcceptTypeProcessor {
             }
 
             if($type{0} == '.') {
-                $type = Type::extToMime(substr($type, 1));
+                $type = core\fs\Type::extToMime(substr($type, 1));
             }
 
             if(false === strpos($type, '/')) {
@@ -649,7 +354,7 @@ trait TAcceptTypeProcessor {
         }
 
         if($type{0} == '.') {
-            $type = Type::extToMime(substr($type, 1));
+            $type = core\fs\Type::extToMime(substr($type, 1));
         }
 
         @list($category, $name) = explode('/', $type, 2);
@@ -682,41 +387,4 @@ trait TAcceptTypeProcessor {
 
         return false;
     }
-}
-
-
-
-
-// Util
-interface IUtil {
-    public static function readFileExclusive($path);
-    public static function writeFileExclusive($path, $data);
-
-    public static function delete($path);
-
-    public static function renameFile($path, $newName);
-    public static function copyFile($source, $destination);
-    public static function deleteFile($path);
-    public static function isFileRecent($path, $timeout);
-
-    public static function countFilesIn($path);
-    public static function countDirsIn($path);
-    public static function listFilesIn($path, $regex=null);
-    public static function listDirsIn($path, $regex=null);
-
-    public static function renameDir($path, $newName);
-    public static function moveDir($path, $destination, $newName=null);
-    public static function copyDir($source, $destination, $merge=false);
-    public static function copyDirInto($source, $destination);
-    public static function ensureDirExists($path, $perms=0777);
-    public static function isDirEmpty($path);
-    public static function deleteDir($path);
-    public static function emptyDir($path);
-
-    public static function chmod($path, $mode, $recursive=false);
-
-    public static function getBaseName($path);
-    public static function getFileName($path);
-    public static function getExtension($path);
-    public static function stripLocationFromFilePath($path);
 }

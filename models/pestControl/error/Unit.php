@@ -58,7 +58,7 @@ class Unit extends axis\unit\table\Base {
         return $this->logError(
             get_class($e),
             $e->getCode(),
-            core\io\Util::stripLocationFromFilePath($e->getFile()),
+            core\fs\Dir::stripPathLocation($e->getFile()),
             $e->getLine(),
             $e->getMessage()
         );

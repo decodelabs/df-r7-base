@@ -199,7 +199,7 @@ class ContentPart implements IContentPart, core\IDumpable {
     }
 
     public function getContentString() {
-        if($this->_content instanceof core\io\IFilePointer) {
+        if($this->_content instanceof core\fs\IFile) {
             return $this->_content->getContents();
         }
 

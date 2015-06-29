@@ -47,7 +47,7 @@ class Repository implements IRepository {
     }
 
     public static function createClone($repoUrl, $path, $isBare=false) {
-        core\io\Util::ensureDirExists(dirname($path));
+        core\fs\Dir::create(dirname($path));
 
         if(!is_writable(dirname($path))) {
             throw new RuntimeException(

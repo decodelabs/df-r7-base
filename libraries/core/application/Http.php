@@ -407,7 +407,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
         if(!$response instanceof link\http\IResponse) {
             $response = new link\http\response\String(
                 (string)$response, 
-                core\io\Type::extToMime(strtolower($this->_context->request->getType()))
+                core\fs\Type::extToMime(strtolower($this->_context->request->getType()))
             );
 
             //$response->getHeaders()->setCacheExpiration(60);
@@ -463,7 +463,7 @@ class Http extends Base implements core\IContextAware, link\http\IResponseAugmen
             }
         } else {
             // Send data with triggered headers
-            $channel = new core\io\channel\Stream('php://output');
+            $channel = new core\io\Stream('php://output');
             set_time_limit(0);
 
             $channel->setWriteCallback(function() use($response) {

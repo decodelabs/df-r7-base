@@ -40,10 +40,10 @@ class Unix extends Base {
 
         $outputBuffer = $errorBuffer = $input = false;
 
-        $outputStream = new core\io\channel\Stream($pipes[1]);
+        $outputStream = new core\io\Stream($pipes[1]);
         $outputStream->setBlocking(false);
 
-        $errorStream = new core\io\channel\Stream($pipes[2]);
+        $errorStream = new core\io\Stream($pipes[2]);
         $errorStream->setBlocking(false);
 
         if($this->_multiplexer) {

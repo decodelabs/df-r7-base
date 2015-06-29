@@ -175,10 +175,10 @@ class Client implements IClient, core\IDumpable {
 
             $body = $request->getBodyData();
 
-            if($body instanceof core\io\IFilePointer) {
+            if($body instanceof core\fs\IFile) {
                 $session->setWriteFileStream($fileStream = $body->open());
             } else {
-                $session->setWriteFileStream($fileStream = new core\io\channel\Memory((string)$body, $request->getHeaders()->get('Content-Type')));
+                $session->setWriteFileStream($fileStream = new core\fs\MemoryFile((string)$body, $request->getHeaders()->get('Content-Type')));
             }
 
             $fileStream->seek(0);
@@ -244,8 +244,8 @@ class Client implements IClient, core\IDumpable {
                 if($path instanceof core\io\IChannel) {
                     $response->setContentFileStream($path);
                 } else {
-                    core\io\Util::ensureDirExists(dirname($path));
-                    $response->setContentFileStream(new core\io\channel\File($path, core\io\Mode::READ_WRITE_TRUNCATE));
+                    core\fs\Dir::create(dirname($path));
+                    $response->setContentFileStream(new core\fs\File($path, core\fs\Mode::READ_WRITE_TRUNCATE));
                 }
             }
 

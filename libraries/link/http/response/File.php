@@ -26,9 +26,7 @@ class File extends Base implements link\http\IFileResponse {
     }
     
     public function setFile($file, $checkPath=true) {
-        if(!$file instanceof core\io\IFilePointer) {
-            $file = new core\io\LocalFilePointer($file);
-        }
+        $file = core\fs\File::factory($file);
         
         if($checkPath && !$file->exists()) {
             throw new link\http\RuntimeException('Static file could not be found', 404);
@@ -44,7 +42,7 @@ class File extends Base implements link\http\IFileResponse {
     }
     
     public function isStaticFile() {
-        return $this->_file instanceof core\io\ILocalFilePointer
+        return $this->_file instanceof core\fs\IFile
             && $this->_file->isOnDisk();
     }
     
@@ -61,6 +59,6 @@ class File extends Base implements link\http\IFileResponse {
     }
     
     public function getContentFileStream() {
-        return $this->_file->open(core\io\Mode::READ_ONLY);
+        return $this->_file->open(core\fs\Mode::READ_ONLY);
     }
 }

@@ -24,7 +24,7 @@ class Bridge implements IBridge {
     }
 
     public function npmInstall($name) {
-        core\io\Util::ensureDirExists($this->_nodePath);
+        core\fs\Dir::create($this->_nodePath);
 
         $result = halo\process\Base::newLauncher('npm', [
                 'install',
@@ -41,12 +41,12 @@ class Bridge implements IBridge {
     }
 
     public function execute($path, $data) {
-        core\io\Util::ensureDirExists($this->_nodePath);
+        core\fs\Dir::create($this->_nodePath);
         core\stub($path);
     }
 
     public function evaluate($js, $data=null) {
-        core\io\Util::ensureDirExists($this->_nodePath);
+        core\fs\Dir::create($this->_nodePath);
 
         $payload = flex\json\Codec::encode([
             'js' => $js,
@@ -54,7 +54,7 @@ class Bridge implements IBridge {
         ]);
 
         if(!is_file($this->_nodePath.'/evaluate.js')) {
-            core\io\Util::copyFile(__DIR__.'/evaluate.js', $this->_nodePath.'/evaluate.js');
+            core\fs\File::copy(__DIR__.'/evaluate.js', $this->_nodePath.'/evaluate.js');
         }
 
         $result = halo\process\Base::newLauncher('node', [

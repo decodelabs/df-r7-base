@@ -236,12 +236,10 @@ abstract class Config implements IConfig, core\IDumpable {
                 $savePath = $corePath;
             }
         }
-
-        core\io\Util::ensureDirExists(dirname($savePath));
         
         $values = $this->values->toArray();
         $content = '<?php'."\n".'return '.core\collection\Util::exportArray($values).';';
-        file_put_contents($savePath, $content, LOCK_EX);
+        core\fs\File::create($savePath, $content);
     }
     
     private function _getBasePath() {

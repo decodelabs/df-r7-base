@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\io\channel;
+namespace df\core\io;
 
 use df;
 use df\core;
@@ -56,7 +56,7 @@ class NamedPipe extends Stream {
 
     public function __destruct() {
         if(!static::$_isWin && $this->_mode == 'w') {
-            core\io\Util::deleteFile($this->_path);
+            core\fs\File::delete($this->_path);
         }
     }
 
@@ -68,7 +68,7 @@ class NamedPipe extends Stream {
                 );
             }
 
-            core\io\Util::ensureDirExists(dirname($path));
+            core\fs\Dir::create(dirname($path));
             posix_mkfifo($path, 0777);
         }
 

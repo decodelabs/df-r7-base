@@ -37,7 +37,7 @@ class String extends Base implements link\http\IStringResponse {
         if($content instanceof core\io\IChannel) {
             $this->setContentFileStream($content);
         } else if(!$this->_content) {
-            $this->_content = new core\io\channel\Memory($content, $contentType);
+            $this->_content = new core\fs\MemoryFile($content, $contentType);
         } else {
             $this->_content->write($content);
         }
@@ -56,7 +56,7 @@ class String extends Base implements link\http\IStringResponse {
     public function setContentType($type) {
         parent::setContentType($type);
 
-        if($this->_content instanceof core\io\channel\Memory) {
+        if($this->_content instanceof core\fs\MemoryFile) {
             $this->_content->setContentType($type);
         }
 

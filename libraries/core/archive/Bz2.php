@@ -25,7 +25,7 @@ class Bz2 extends Base {
             $destFile = $destDir.'/'.$this->_getDecompressFileName($file, 'bz2');
         }
 
-        return $this->decompressFile($file, $destFile);
+        return dirname($this->decompressFile($file, $destFile));
     }
 
     public function decompressFile($file, $destFile=null) {

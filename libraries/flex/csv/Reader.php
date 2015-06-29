@@ -30,11 +30,11 @@ class Reader implements IReader {
 
     public static function openFile($path) {
         ini_set('auto_detect_line_endings', true);
-        return new self((new core\io\channel\File($path, core\io\Mode::READ_ONLY))->setContentType('text/csv'));
+        return new self((new core\fs\File($path, core\fs\Mode::READ_ONLY))->setContentType('text/csv'));
     }
 
     public static function openString($string) {
-        return new self(new core\io\channel\Memory($string, 'text/csv', core\io\Mode::READ_ONLY));
+        return new self(new core\fs\MemoryFile($string, 'text/csv', core\fs\Mode::READ_ONLY));
     }
 
     public function __construct(core\io\IChannel $channel) {

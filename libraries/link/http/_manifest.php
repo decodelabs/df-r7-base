@@ -254,7 +254,7 @@ trait TStringResponse {
     }
 
     public function getContentFileStream() {
-        return new core\io\channel\Memory($this->getContent(), $this->getContentType());
+        return new core\fs\MemoryFile($this->getContent(), $this->getContentType());
     }
     
     public function getContentLength() {

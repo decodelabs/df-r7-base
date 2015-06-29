@@ -24,13 +24,10 @@ class TaskPurgeDependencies extends arch\task\Action {
         } else {
             foreach($packages as $path => $package) {
                 $this->io->write(' '.$package->name);
-                core\io\Util::deleteDir($path);
+                core\fs\Dir::delete($path);
             }
         }
 
         $this->io->writeLine();
-
-        // DELETE ME!
-        core\io\Util::deleteDir($this->application->getLocalStoragePath().'/bower');
     }
 }

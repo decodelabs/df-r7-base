@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\io;
+namespace df\core\fs;
 
 use df;
 use df\core;
@@ -82,7 +82,7 @@ class LockFile implements ILockFile {
             return 0;
         }
 
-        $data = (int)core\io\Util::readFileExclusive($this->_path.'/'.$this->_fileName);
+        $data = (int)core\fs\File::getContentsOf($this->_path.'/'.$this->_fileName);
         @list($time, $timeout) = explode(':', $data, 2);
 
         if(!$timeout) {
@@ -105,7 +105,7 @@ class LockFile implements ILockFile {
             );
         }
 
-        core\io\Util::writeFileExclusive(
+        core\fs\File::create(
             $this->_path.'/'.$this->_fileName, 
             time().':'.$this->_timeout
         );
@@ -115,7 +115,7 @@ class LockFile implements ILockFile {
     }
 
     public function unlock() {
-        core\io\Util::deleteFile($this->_path.'/'.$this->_fileName);
+        core\fs\File::delete($this->_path.'/'.$this->_fileName);
         $this->_isLocked = false;
         return $this;
     }

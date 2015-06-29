@@ -205,7 +205,9 @@ class Html extends iris\Translator {
         $src = $this->_dereferenceImage($id, $figure->getNumber());
 
         if(!$alt) {
-            $alt = core\string\Manipulator::formatLabel(core\io\Util::getFileName($src));
+            $alt = core\string\Manipulator::formatLabel(
+                core\uri\Path::extractRootFileName($src)
+            );
         }
 
         $figTag = $this->tag('figure', ['id' => $id]);

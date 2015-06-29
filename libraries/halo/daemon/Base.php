@@ -130,7 +130,7 @@ abstract class Base implements IDaemon {
         $this->process = halo\process\Base::getCurrent();
 
         $basePath = df\Launchpad::$application->getLocalStoragePath().'/daemons/'.core\string\Manipulator::formatFileName($this->getName());
-        core\io\Util::ensureDirExists(dirname($basePath));
+        core\fs\Dir::create(dirname($basePath));
 
         $this->_startTime = time();
         $this->_statusPath = $basePath.'.status';
@@ -143,10 +143,10 @@ abstract class Base implements IDaemon {
         $this->io = new core\io\Multiplexer(null, $this->getName());
 
         if(static::TEST_MODE) {
-            $this->io->addChannel(new core\io\channel\Std());
+            $this->io->addChannel(new core\io\Std());
         }
 
-        $this->io->addChannel(new core\io\channel\Stream(fopen($basePath.'.log', 'w')));
+        $this->io->addChannel(new core\io\Stream(fopen($basePath.'.log', 'w')));
 
         $system = halo\system\Base::getInstance();
         $isPrivileged = $this->process->isPrivileged();
@@ -224,11 +224,11 @@ abstract class Base implements IDaemon {
         $this->_teardown();
 
         if($pidPath) {
-            core\io\Util::deleteFile($pidPath);
+            core\fs\File::delete($pidPath);
         }
 
         if(static::REPORT_STATUS) {
-            core\io\Util::deleteFile($this->_statusPath);
+            core\fs\File::delete($this->_statusPath);
         }
 
         if($this->_isRestarting) {
@@ -284,7 +284,7 @@ abstract class Base implements IDaemon {
             return;
         }
 
-        core\io\Util::ensureDirExists(dirname($this->_statusPath));
+        core\fs\Dir::create(dirname($this->_statusPath));
 
         $state = 'running';
 

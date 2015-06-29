@@ -41,7 +41,7 @@ class Decoder implements IDecoder {
     protected $_pointerBase = 0;
     protected $_isLittleEndian = false;
 
-    public function __construct(core\io\IFile $file, $pointerBase=0) {
+    public function __construct(core\fs\IFile $file, $pointerBase=0) {
         $this->_file = $file;
         $this->_pointerBase = (int)$pointerBase;
         $this->_isLittleEndian = $this->_isPlatformLittleEndian();

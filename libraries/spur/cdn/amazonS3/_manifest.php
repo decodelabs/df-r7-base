@@ -70,7 +70,7 @@ interface IMediator {
     public function getBucketObjectList($bucket, $prefix=null, $limit=null, $marker=null);
 
     public function getObjectInfo($bucket, $path);
-    public function newUpload($bucket, $path, core\io\IFilePointer $file);
+    public function newUpload($bucket, $path, core\fs\IFile $file);
     public function newCopy($fromBucket, $fromPath, $toBucket, $toPath);
     public function renameFile($bucket, $path, $newName, $acl=IAcl::PRIVATE_READ_WRITE);
     public function moveFile($bucket, $fromPath, $toPath, $acl=IAcl::PRIVATE_READ_WRITE);
@@ -87,7 +87,7 @@ interface IUpload extends core\collection\IAttributeContainer {
     public function getBucket();
     public function setTargetFilePath($path);
     public function getTargetFilePath();
-    public function setFile(core\io\IFilePointer $file);
+    public function setFile(core\fs\IFile $file);
     public function getFile();
     
     public function setAcl($acl);

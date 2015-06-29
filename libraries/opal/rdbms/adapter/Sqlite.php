@@ -40,7 +40,7 @@ class Sqlite extends Base_Pdo {
             }
 
             $database .= '.db';
-            core\io\Util::ensureDirExists(dirname($database));
+            core\fs\Dir::create(dirname($database));
         }
 
         return 'sqlite:'.$database;

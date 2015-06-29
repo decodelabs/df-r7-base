@@ -111,7 +111,7 @@ class Github implements spur\packaging\bower\IResolver {
     protected function _fetchTags(spur\packaging\bower\IPackage $package, $repoName, $cachePath) {
         $path = dirname($cachePath).'/tags/github-'.str_replace('/', '-', $repoName).'.json';
 
-        if(!core\io\Util::isFileRecent($path, self::TAG_TIMEOUT)) {
+        if(!core\fs\File::isFileRecent($path, self::TAG_TIMEOUT)) {
             $tags = $this->_mediator->getRepositoryTags($repoName);
 
             @usort($tags, function($left, $right) {
@@ -141,15 +141,15 @@ class Github implements spur\packaging\bower\IResolver {
                 $data[] = $tag->toArray();
             }
 
-            core\io\Util::writeFileExclusive($path, flex\json\Codec::encode($data));
+            flex\json\Codec::encodeFile($path, $data);
             return $tags;
         }
         
-        $data = flex\json\Codec::decode(file_get_contents($path));
+        $data = flex\json\Codec::decodeFileAsTree($path);
         $tags = [];
 
         foreach($data as $tag) {
-            $tags[] = new spur\vcs\github\Tag($this->_mediator, new core\collection\Tree($tag));
+            $tags[] = new spur\vcs\github\Tag($this->_mediator, $tag);
         }
 
         return $tags;

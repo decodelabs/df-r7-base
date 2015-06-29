@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\io;
+namespace df\core\fs;
 
 use df;
 use df\core;
@@ -258,13 +258,13 @@ class Type {
     }
 
     public static function fileToMime($file) {
-        $parts = pathinfo((string)$file);
+        $extension = pathinfo((string)$file, \PATHINFO_EXTENSION);
         
-        if(!isset($parts['extension'])) {
+        if(empty($extension)) {
             return 'application/octet-stream';  
         }
         
-        return self::extToMime($parts['extension']);
+        return self::extToMime($extension);
     }
 
 }

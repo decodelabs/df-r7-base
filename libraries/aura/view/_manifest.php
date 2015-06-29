@@ -199,7 +199,7 @@ trait TResponseView {
     }
 
     public function getContentType() {
-        return core\io\Type::extToMime($this->_type);
+        return core\fs\Type::extToMime($this->_type);
     }
 }
 

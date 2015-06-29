@@ -12,16 +12,17 @@ use df\flex;
 
 class Installer implements IInstaller {
     
-    protected $_installPath;
+    protected $_installDir;
     protected $_cachePath;
     protected $_lockFile;
     protected $_multiplexer;
     protected $_resolvers = [];
 
     public function __construct(core\io\IMultiplexer $io=null) {
-        $this->_installPath = df\Launchpad::$application->getApplicationPath().'/assets/vendor';
-        $this->_cachePath = core\io\Util::getGlobalCachePath().'/bower';
-        $this->_lockFile = new core\io\LockFile($this->_cachePath);
+        $installPath = df\Launchpad::$application->getApplicationPath().'/assets/vendor';
+        $this->_installDir = new core\fs\Dir($installPath);
+        $this->_cachePath = core\fs\Dir::getGlobalCachePath().'/bower';
+        $this->_lockFile = new core\fs\LockFile($this->_cachePath);
         $this->setMultiplexer($io);
     }
 
@@ -89,7 +90,7 @@ class Installer implements IInstaller {
         $currentVersion = null;
 
         if($this->_hasPackage($package)) {
-            $data = flex\json\Codec::decodeFile($this->_installPath.'/'.$package->installName.'/.bower.json');
+            $data = flex\json\Codec::decodeFile($this->_installDir.'/'.$package->installName.'/.bower.json');
             $currentVersion = $data['version'];
 
             if($this->_multiplexer) {
@@ -166,18 +167,16 @@ class Installer implements IInstaller {
             $name = $name->installName;
         }
 
-        if(is_file($this->_installPath.'/'.$name.'/.bower.json')) {
+        if($this->_installDir->hasFile($name.'/.bower.json')) {
             return true;
         }
 
-        foreach(core\io\Util::listDirsIn($this->_installPath) as $dirName) {
-            $path = $this->_installPath.'/'.$dirName;
-
-            if(!is_file($path.'/.bower.json')) {
+        foreach($this->_installDir->scanDirs() as $dirName => $dir) {
+            if(!$dir->hasFile('.bower.json')) {
                 continue;
             }
 
-            $data = flex\json\Codec::decodeFileAsTree($path.'/.bower.json');
+            $data = flex\json\Codec::decodeFileAsTree($dir.'/.bower.json');
 
             if($name == $data['name']) {
                 return true;
@@ -192,17 +191,15 @@ class Installer implements IInstaller {
             $name = $name->installName;
         }
 
-        return is_file($this->_installPath.'/'.$name.'/.bower.json');
+        return $this->_installDir->hasFile($name.'/.bower.json');
     }
 
     public function getInstalledPackages() {
         $output = [];
 
-        foreach(core\io\Util::listDirsIn($this->_installPath) as $dirName) {
-            $path = $this->_installPath.'/'.$dirName;
-
+        foreach($this->_installDir->scanDirs() as $dirName => $dir) {
             if($package = $this->_getPackageInfo($dirName)) {
-                $output[$path] = $package;
+                $output[(string)$dir] = $package;
             }
         }
 
@@ -214,18 +211,16 @@ class Installer implements IInstaller {
             $name = $name->installName;
         }
 
-        if(is_file($this->_installPath.'/'.$name.'/.bower.json')) {
+        if($this->_installDir->hasFile($name.'/.bower.json')) {
             return $this->_getPackageInfo($name);
         }
 
-        foreach(core\io\Util::listDirsIn($this->_installPath) as $dirName) {
-            $path = $this->_installPath.'/'.$dirName;
-
-            if(!is_file($path.'/.bower.json')) {
+        foreach($this->_installDir->listDirs() as $dirName => $dir) {
+            if(!$dir->hasFile('.bower.json')) {
                 continue;
             }
 
-            $data = flex\json\Codec::decodeFileAsTree($path.'/.bower.json');
+            $data = flex\json\Codec::decodeFileAsTree($dir.'/.bower.json');
 
             if($name == $data['name']) {
                 $package = new Package($dirName, $data['url']);
@@ -243,10 +238,10 @@ class Installer implements IInstaller {
             $name = $name->installName;
         }
 
-        $path = $this->_installPath.'/'.$name;
+        $file = $this->_installDir->getFile($name.'/.bower.json');
 
-        if(is_file($path.'/.bower.json')) {
-            $data = flex\json\Codec::decodeFileAsTree($path.'/.bower.json');
+        if($file->exists()) {
+            $data = flex\json\Codec::decodeFileAsTree($file);
 
             $package = new Package($name, $data['url']);
             $package->url = $data['url'];
@@ -262,10 +257,10 @@ class Installer implements IInstaller {
             $name = $name->installName;
         }
 
-        $path = $this->_installPath.'/'.$name.'/bower.json';
+        $file = $this->_installDir->getFile($name.'/bower.json');
 
-        if(is_file($path)) {
-            return flex\json\Codec::decodeFileAsTree($path);
+        if($file->exists()) {
+            return flex\json\Codec::decodeFileAsTree($file);
         }
     }
 
@@ -417,7 +412,7 @@ class Installer implements IInstaller {
             }
 
             if($file->getMTime() < $time) {
-                core\io\Util::deleteFile($file->getPathname());
+                core\fs\File::delete($file->getPathname());
             }
         }
 
@@ -426,17 +421,15 @@ class Installer implements IInstaller {
 
     protected function _extractCache(IPackage $package) {
         $sourcePath = $this->_cachePath.'/packages/'.$package->cacheFileName;
-        $destination = $this->_installPath.'/'.$package->installName;
-
-        core\io\Util::deleteDir($destination);
+        $destination = $this->_installDir->getDir($package->installName)->unlink();
 
         if(is_file($sourcePath)) {
             try {
                 core\archive\Base::extract(
-                    $sourcePath, $destination, true
+                    $sourcePath, (string)$destination, true
                 );
             } catch(core\archive\IException $e) {
-                core\io\Util::delete($sourcePath);
+                core\fs\File::delete($sourcePath);
                 throw $e;
             }
         } else if(is_dir($sourcePath)) {
@@ -458,7 +451,7 @@ class Installer implements IInstaller {
             ]
         );
 
-        //core\io\Util::delete($sourcePath);
+        //core\fs\File::delete($sourcePath);
     }
 
     protected function _filterFiles($destination) {
@@ -494,7 +487,7 @@ class Installer implements IInstaller {
         }
 
         foreach($delete as $path) {
-            core\io\Util::delete($destination.'/'.$path);
+            core\fs\File::delete($destination.'/'.$path);
         }
     }
 

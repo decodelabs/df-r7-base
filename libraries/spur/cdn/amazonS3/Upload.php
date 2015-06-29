@@ -23,7 +23,7 @@ class Upload implements IUpload {
     protected $_headers = [];
     protected $_mediator;
 
-    public function __construct(IMediator $mediator, $bucket, $targetFilePath, core\io\IFilePointer $file) {
+    public function __construct(IMediator $mediator, $bucket, $targetFilePath, core\fs\IFile $file) {
         $this->_mediator = $mediator;
         $this->setBucket($bucket);
         $this->setTargetFilePath($targetFilePath);
@@ -52,7 +52,7 @@ class Upload implements IUpload {
         return $this->_path;
     }
 
-    public function setFile(core\io\IFilePointer $file) {
+    public function setFile(core\fs\IFile $file) {
         $this->_file = $file;
         return $this;
     }

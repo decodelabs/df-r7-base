@@ -15,7 +15,7 @@ class TaskPrepareTheme extends arch\task\Action {
     public function execute() {
         $this->io->write('Clearing sass cache...');
         
-        core\io\Util::deleteDir(
+        core\fs\Dir::delete(
             $this->application->getLocalStoragePath().'/sass/'.$this->application->getEnvironmentMode().'/'
         );
         

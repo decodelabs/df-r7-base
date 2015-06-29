@@ -25,7 +25,7 @@ class Daemon extends Base {
             );
         }
 
-        $this->io = new core\io\channel\Std();
+        $this->io = new core\io\Std();
         $env = core\Environment::getInstance();
 
         if(!$env->canUseDaemons() || !extension_loaded('pcntl')) {

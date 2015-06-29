@@ -113,7 +113,7 @@ class Base implements IGenerator {
     
     public function generate() {
         $manager = core\i18n\Manager::getInstance();
-        core\io\Util::ensureDirExists($this->_savePath);
+        core\fs\Dir::create($this->_savePath);
         
         $modules = [];
         
@@ -128,15 +128,17 @@ class Base implements IGenerator {
             
             $modules[$name] = $module;
             
-            core\io\Util::ensureDirExists($this->_savePath.'/'.$name);
+            core\fs\Dir::create($this->_savePath.'/'.$name);
         }
         
+        $files = core\fs\Dir::factory($this->_cldrPath.'/main/')->scanFiles(function($name) {
+            return preg_match('/.*\.xml/', $name);
+        });
         
-        foreach(core\io\Util::listFilesIn($this->_cldrPath.'/main/', '/.*\.xml/') as $file) {
-            $name = substr(basename($file), 0, -4);
-            $file = $this->_cldrPath.'/main/'.$file;
+        foreach($files as $name => $file) {
+            $name = substr($name, 0, -4);
             $locale = new core\i18n\Locale($name);
-            $doc = simplexml_load_file($file);
+            $doc = simplexml_load_file($file->getPath());
             
             foreach($modules as $modName => $module) {
                 $data = $module->_convertCldr($locale, $doc);
@@ -149,8 +151,9 @@ class Base implements IGenerator {
     }
 
     protected function _saveFile($moduleName, $localeName, array $data) {
-        $path = $this->_savePath.'/'.$moduleName.'/'.$localeName.'.loc';
-        $str = '<?php'."\n".'return '.var_export($data, true).';';
-        file_put_contents($path, $str);
+        core\fs\File::create(
+            $this->_savePath.'/'.$moduleName.'/'.$localeName.'.loc',
+            '<?php'."\n".'return '.var_export($data, true).';'
+        );
     }
 }

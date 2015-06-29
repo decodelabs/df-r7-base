@@ -33,11 +33,11 @@ class Cache extends core\cache\Base {
 
             $lifetime = static::URL_LIFETIME;
         } else {
-            $keyPath = core\io\Util::stripLocationFromFilePath($sourceFilePath);
+            $keyPath = core\fs\Dir::stripPathLocation($sourceFilePath);
             $key = basename(dirname($keyPath)).'_'.basename($keyPath).'-'.md5($keyPath.':'.$transformation);
             $mTime = filemtime($sourceFilePath);
         }
-        
+
 
         if($mTime !== null && $mTime > $this->getCreationTime($key)) {
             $this->remove($key);
@@ -46,7 +46,7 @@ class Cache extends core\cache\Base {
         if(!$output = $this->getDirectFilePath($key)) {
             if($isUrl) {
                 $http = new link\http\peer\Client();
-                $file = core\io\channel\File::createTempFile();
+                $file = core\fs\File::createTemp();
                 $response = $http->getFile($sourceFilePath, $file);
 
                 if(!$response->isOk()) {
@@ -70,11 +70,7 @@ class Cache extends core\cache\Base {
             $output = $this->getDirectFilePath($key);
 
             if($isUrl) {
-                $file->close();
-
-                try {
-                    core\io\Util::deleteFile($file->getPath());
-                } catch(\Exception $e) {}
+                $file->unlink();
             }
         }
 

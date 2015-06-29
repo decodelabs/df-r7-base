@@ -462,7 +462,7 @@ class Base implements link\http\IRequest, core\IDumpable {
     public function setBodyData($body) {
         if(is_array($body)) {
             $body = implode("\r\n", $body);
-        } else if($body instanceof core\io\IFilePointer) {
+        } else if($body instanceof core\fs\IFile) {
             // do nothing?
         } else if($body !== null) {
             $body = (string)$body;
@@ -477,7 +477,7 @@ class Base implements link\http\IRequest, core\IDumpable {
     }
 
     public function getBodyDataString() {
-        if($this->_bodyData instanceof core\io\IFilePointer) {
+        if($this->_bodyData instanceof core\fs\IFile) {
             return $this->_bodyData->getContents();
         } else {
             return (string)$this->_bodyData;
@@ -650,7 +650,7 @@ class Base implements link\http\IRequest, core\IDumpable {
         }
         
         if($this->_bodyData !== null && $headers->get('Transfer-Encoding') != 'chunked') {
-            if($this->_bodyData instanceof core\io\IFilePointer) {
+            if($this->_bodyData instanceof core\fs\IFile) {
                 $headers->set('Content-Length', $this->_bodyData->getSize());
 
                 if(!$headers->has('Content-Type')) {

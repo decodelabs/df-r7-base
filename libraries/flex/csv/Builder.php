@@ -22,7 +22,7 @@ class Builder implements IBuilder {
     public static function openFile($path, $generator=null) {
         return (new self($generator))
             ->setChunkReceiver(
-                (new core\io\channel\File($path, core\io\Mode::READ_WRITE_TRUNCATE))
+                (new core\fs\File($path, core\fs\Mode::READ_WRITE_TRUNCATE))
                     ->setContentType('text/csv')
             );
     }
@@ -30,7 +30,7 @@ class Builder implements IBuilder {
     public static function openString($generator=null) {
         return (new self($generator))
             ->setChunkReceiver(
-                new core\io\channel\Memory(null, 'text/csv', core\io\Mode::READ_WRITE_TRUNCATE)
+                new core\fs\MemoryFile(null, 'text/csv', core\fs\Mode::READ_WRITE_TRUNCATE)
             );
     }
 

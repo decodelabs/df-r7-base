@@ -17,7 +17,7 @@ class Codec {
     }
 
     public static function encodeFile($path, $data) {
-        return core\io\Util::writeFileExclusive($path, self::encode($data));
+        return core\fs\File::create($path, self::encode($data));
     }
 
     public static function prepareJsonData($data) {
@@ -59,7 +59,7 @@ class Codec {
     }
 
     public static function decodeFile($path) {
-        return self::decode(core\io\Util::readFileExclusive($path));
+        return self::decode(core\fs\File::getContentsOf($path));
     }
 
     public static function decodeAsTree($data) {

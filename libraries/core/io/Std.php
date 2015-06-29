@@ -3,15 +3,15 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\core\io\channel;
+namespace df\core\io;
 
 use df;
 use df\core;
     
-class Std implements core\io\IMultiplexReaderChannel {
+class Std implements IMultiplexReaderChannel {
 
-    use core\io\TReader;
-    use core\io\TWriter;
+    use TReader;
+    use TWriter;
 
     protected $_readBlocking = true;
 

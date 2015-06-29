@@ -44,7 +44,7 @@ class File implements link\http\IUploadFile {
         $this->_type = $data['type'];
 
         if($this->_type == 'application/octet-stream') {
-            $this->_type = core\io\Type::extToMime($this->_extension);
+            $this->_type = core\fs\Type::extToMime($this->_extension);
         }
 
         $this->_tempPath = $data['tmp_name'];
@@ -120,7 +120,7 @@ class File implements link\http\IUploadFile {
             );
         }
 
-        return new core\io\LocalFilePointer($this->_destinationPath);
+        return new core\fs\File($this->_destinationPath);
     }
     
 
@@ -172,7 +172,7 @@ class File implements link\http\IUploadFile {
             return $this;
         }
 
-        core\io\Util::ensureDirExists($destination);
+        $destination = core\fs\Dir::create($destination)->getPath();
         $fullPath = rtrim($destination, '/').'/'.$this->getBaseName();
         $i18n = core\i18n\Manager::getInstance();
 

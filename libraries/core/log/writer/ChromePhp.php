@@ -164,7 +164,7 @@ class ChromePhp implements core\log\IWriter {
         $backTrace = null;
 
         if($this->_writeBacktrace && $node && substr($type, 0, 5) != 'group') {
-            $backTrace = core\io\Util::stripLocationFromFilePath($node->getFile()).' : '.$node->getLine();
+            $backTrace = core\fs\Dir::stripPathLocation($node->getFile()).' : '.$node->getLine();
         }
 
         $this->_buffer[] = [

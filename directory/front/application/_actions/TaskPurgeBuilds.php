@@ -32,9 +32,9 @@ class TaskPurgeBuilds extends arch\task\Action {
         }
 
         $appPath = df\Launchpad::$applicationPath;
-        $runPath = $appPath.'/data/local/run';
+        $runDir = new core\fs\Dir($appPath.'/data/local/run');
 
-        if(!is_dir($runPath)) {
+        if(!$runDir->exists()) {
             $this->io->writeLine('No builds to purge');
             return;
         }
@@ -42,7 +42,7 @@ class TaskPurgeBuilds extends arch\task\Action {
         $this->io->writeLine('Purging old builds...');
         $this->io->writeLine('Keeping '.$contingency.' build(s) as contingency');
 
-        $list = scandir($runPath);
+        $list = scandir($runDir->getPath());
         sort($list);
         $testList = [];
         unset($list[0], $list[1]);
@@ -69,20 +69,13 @@ class TaskPurgeBuilds extends arch\task\Action {
         $list = array_merge($list, $testList);
 
         foreach($list as $entry) {
-            if(is_file($runPath.'/'.$entry)) {
-                $this->io->writeLine('Deleting file build '.$entry);
-
-                core\io\Util::deleteFile($runPath.'/'.$entry);
-            } else if(is_dir($runPath.'/'.$entry)) {
-                $this->io->writeLine('Deleting build '.$entry);
-
-                core\io\Util::deleteDir($runPath.'/'.$entry);
-            }
+            $this->io->writeLine('Deleting build '.$entry);
+            $runDir->getChild($entry)->unlink();
         }
 
-        if(core\io\Util::isDirEmpty($runPath)) {
+        if($runDir->isEmpty()) {
             $this->io->writeLine('Deleting run folder');
-            core\io\Util::deleteDir($runPath);
+            $runDir->unlink();
         }
     }
 }

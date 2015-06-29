@@ -70,7 +70,7 @@ trait TPidFileProvider {
 
     public function setPidFilePath($path) {
         $dirname = dirname($path);
-        core\io\Util::ensureDirExists($dirname, 0755);
+        core\fs\Dir::create($dirname, 0755);
 
         $write = true;
         $pid = $this->getProcessId();

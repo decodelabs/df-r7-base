@@ -21,7 +21,7 @@ class Registry implements IRegistry {
     protected $_cachePath;
 
     public function __construct() {
-        $this->_cachePath = core\io\Util::getGlobalCachePath().'/bower/registry';
+        $this->_cachePath = core\fs\Dir::getGlobalCachePath().'/bower/registry';
     }
 
     public function lookup($name) {
@@ -32,7 +32,7 @@ class Registry implements IRegistry {
             if((time() - filemtime($path) < $timeout)) {
                 return flex\json\Codec::decodeFileAsTree($path);
             } else {
-                core\io\Util::deleteFile($path);
+                core\fs\File::delete($path);
             }
         }
 

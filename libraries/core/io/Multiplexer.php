@@ -18,9 +18,9 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
 
     public static function defaultFactory($id=null) {
         if(isset($_SERVER['argv']) && $id != 'memory') {
-            $channel = new core\io\channel\Std();
+            $channel = new core\io\Std();
         } else {
-            $channel = new core\io\channel\Memory();
+            $channel = new core\fs\MemoryFile();
         }
 
         return new self([$channel], $id);

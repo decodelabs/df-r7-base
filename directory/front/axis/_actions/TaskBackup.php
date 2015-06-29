@@ -39,7 +39,7 @@ class TaskBackup extends arch\task\Action {
         $this->_manifest['timestamp'] = time();
         $backupId = 'axis-'.date('YmdHis');
         $this->_path = $this->application->getSharedStoragePath().'/backup/'.$backupId;
-        core\io\Util::ensureDirExists($this->_path);
+        core\fs\Dir::create($this->_path);
 
         $this->io->writeLine('Backing up units on global cluster');
         $this->io->writeLine();
@@ -75,11 +75,11 @@ class TaskBackup extends arch\task\Action {
         $phar = new \PharData(dirname($this->_path).'/'.$backupId.'.tar');
         $phar->buildFromDirectory($this->_path);
 
-        core\io\Util::deleteDir($this->_path);
+        core\fs\Dir::delete($this->_path);
     }
 
     public function handleException(\Exception $e) {
-        core\io\Util::deleteDir($this->_path);
+        core\fs\Dir::delete($this->_path);
         parent::handleException($e);
     }
 

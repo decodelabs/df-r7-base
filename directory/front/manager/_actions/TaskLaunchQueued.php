@@ -18,7 +18,7 @@ class TaskLaunchQueued extends arch\task\Action {
     protected $_timer;
 
     protected function _beforeDispatch() {
-        $this->_channel = (new core\io\channel\Memory('', 'text/plain'))->setId('buffer');
+        $this->_channel = (new core\fs\MemoryFile('', 'text/plain'))->setId('buffer');
         $this->io->addChannel($this->_channel);
     }
 

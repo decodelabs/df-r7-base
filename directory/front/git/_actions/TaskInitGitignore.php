@@ -18,12 +18,9 @@ class TaskInitGitignore extends arch\task\Action {
 
         if(!is_file($path.'/.gitignore')) {
             $this->io->writeLine('Copying default .gitignore file');
-            core\io\Util::copyFile(__DIR__.'/default.gitignore', $path.'/.gitignore');
-            core\io\Util::chmod($path.'/.gitignore', 0777);
 
-            if(!is_file($path.'/.gitignore')) {
-                $this->io->writeErrorLine('Unable to copy .gitignore file');
-            }
+            core\fs\File::copy(__DIR__.'/default.gitignore', $path.'/.gitignore')
+                ->setPermissions(0777);
         }
     }
 }

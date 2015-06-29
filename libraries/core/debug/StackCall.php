@@ -258,7 +258,7 @@ class StackCall implements IStackCall, core\IDumpable {
     public function toJsonArray() {
         return [
             'file' => $this->_local ?
-                core\io\Util::stripLocationFromFilePath($this->getFile()) :
+                core\fs\Dir::stripPathLocation($this->getFile()) :
                 $this->getFile(),
             'line' => $this->getLine(),
             'signature' => $this->getSignature()

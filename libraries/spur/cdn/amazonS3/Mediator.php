@@ -203,7 +203,7 @@ class Mediator implements IMediator {
         ];
     }
 
-    public function newUpload($bucket, $path, core\io\IFilePointer $file) {
+    public function newUpload($bucket, $path, core\fs\IFile $file) {
         return new Upload($this, $bucket, $path, $file);
     }
 

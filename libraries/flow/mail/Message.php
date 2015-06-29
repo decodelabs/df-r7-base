@@ -172,7 +172,7 @@ class Message extends flow\mime\MultiPart implements IMessage {
 
 // Attachments
     public function addFileAttachment($path, $fileName=null, $contentType=null) {
-        $file = core\io\LocalFilePointer::factory($path);
+        $file = core\fs\File::factory($path);
         $pathName = basename($file->getPath());
 
         if(!$file->exists()) {
@@ -198,7 +198,7 @@ class Message extends flow\mime\MultiPart implements IMessage {
 
     public function addStringAttachment($string, $fileName, $contentType=null) {
         if($contentType === null) {
-            $contentType = core\io\Type::fileToMime($fileName);
+            $contentType = core\fs\Type::fileToMime($fileName);
         }
 
         $part = $this->newContentPart($string)

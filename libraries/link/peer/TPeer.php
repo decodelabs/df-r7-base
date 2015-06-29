@@ -580,7 +580,7 @@ trait TPeer_FileStreamSession {
     protected $_readFileStream;
     protected $_writeFileStream;
     
-    public function setReadFileStream(core\io\IFilePointer $file) {
+    public function setReadFileStream(core\fs\IFile $file) {
         $this->_readFileStream = $file;
         return $this;
     }
@@ -593,7 +593,7 @@ trait TPeer_FileStreamSession {
         return $this->_readFileStream !== null;
     }
 
-    public function setWriteFileStream(core\io\IFilePointer $file) {
+    public function setWriteFileStream(core\fs\IFile $file) {
         $this->_writeFileStream = $file;
         return $this;
     }

@@ -93,7 +93,7 @@ abstract class Action extends arch\Action implements IAction {
         $this->task->shouldCaptureBackgroundTasks(false);
 
         $action->io = new core\io\Multiplexer([
-            $output = new core\io\channel\Memory()
+            $output = new core\fs\MemoryFile()
         ]);
 
         $action->dispatch();

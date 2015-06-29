@@ -51,8 +51,8 @@ class Bridge implements IBridge {
             'directory' => $this->_installPath
         ]);
 
-        core\io\Util::writeFileExclusive($this->_execPath.'/bower.json', $json1);
-        core\io\Util::writeFileExclusive($this->_execPath.'/.bowerrc', $json2);
+        core\fs\File::create($this->_execPath.'/bower.json', $json1);
+        core\fs\File::create($this->_execPath.'/.bowerrc', $json2);
         
         return $this;
     }

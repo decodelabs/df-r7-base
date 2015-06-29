@@ -113,7 +113,7 @@ class Bridge implements IBridge {
     }
 
     public function compile() {
-        core\io\Util::ensureDirExists($this->_workDir.'/'.$this->_key);
+        core\fs\Dir::create($this->_workDir.'/'.$this->_key);
         $sourceFiles = [$this->_sourceDir.'/'.$this->_fileName.'.'.$this->_type];
         $manifest = [];
 
@@ -231,7 +231,7 @@ class Bridge implements IBridge {
         file_put_contents($this->_workDir.'/'.$this->_key.'.json', json_encode(array_values($manifest)));
 
         // Clean up
-        core\io\Util::deleteDir($this->_workDir.'/'.$this->_key);
+        core\fs\Dir::delete($this->_workDir.'/'.$this->_key);
 
         return $this->_workDir.'/'.$this->_key.'.css';
     }

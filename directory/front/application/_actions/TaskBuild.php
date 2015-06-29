@@ -102,8 +102,7 @@ class TaskBuild extends arch\task\Action {
             }
 
             $umask = umask(0);
-            core\io\Util::ensureDirExists($destinationPath);
-            core\io\Util::chmod($destinationPath, 0777, true);
+            $dir = core\fs\Dir::create($destinationPath, 0777);
 
 
             // Generate Df.php
@@ -125,11 +124,13 @@ class TaskBuild extends arch\task\Action {
                 $this->io->writeLine('Merging '.$package->name.' package');
 
                 if(is_dir($package->path.'/libraries')) {
-                    core\io\Util::copyDirInto($package->path.'/libraries', $destinationPath);
+                    core\fs\Dir::merge($package->path.'/libraries', $destinationPath);
                 }
 
-                if(file_exists($package->path.'/Package.php')) {
-                    core\io\Util::copyFile($package->path.'/Package.php', $destinationPath.'/apex/packages/'.$package->name.'/Package.php');
+                $packageFile = new core\fs\File($package->path.'/Package.php');
+
+                if($packageFile->exists()) {
+                    $packageFile->copyTo($destinationPath.'/apex/packages/'.$package->name.'/Package.php');
                 }
 
                 foreach(scandir($package->path) as $entry) {
@@ -142,7 +143,7 @@ class TaskBuild extends arch\task\Action {
                     }
                     
                     if(is_dir($package->path.'/'.$entry)) {
-                        core\io\Util::copyDir($package->path.'/'.$entry, $destinationPath.'/apex/'.$entry, true);
+                        core\fs\Dir::copy($package->path.'/'.$entry, $destinationPath.'/apex/'.$entry, true);
                     }
                 }
             }
@@ -165,12 +166,12 @@ class TaskBuild extends arch\task\Action {
                 }
 
                 if($entry == 'libraries') {
-                    core\io\Util::copyDirInto($appPackage->path.'/'.$entry, $destinationPath);
+                    core\fs\Dir::Merge($appPackage->path.'/'.$entry, $destinationPath);
                     continue;
                 }
 
                 if(is_dir($appPackage->path.'/'.$entry)) {
-                    core\io\Util::copyDir($appPackage->path.'/'.$entry, $destinationPath.'/apex/'.$entry, true);
+                    core\fs\Dir::copy($appPackage->path.'/'.$entry, $destinationPath.'/apex/'.$entry, true);
                 }
             }
 

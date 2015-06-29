@@ -45,7 +45,7 @@ class TaskRestoreBackup extends arch\task\Action {
         $this->io->writeLine('Extracting backup '.$fileName);
         $this->_path = dirname($file).'/'.substr($fileName, 0, -4);
 
-        core\io\Util::deleteDir($this->_path);
+        core\fs\Dir::delete($this->_path);
 
         $phar = new \PharData($file);
         $phar->extractTo($this->_path);
@@ -99,8 +99,8 @@ class TaskRestoreBackup extends arch\task\Action {
         axis\schema\Cache::getInstance()->clear();
 
         $this->io->writeLine('Cleaning up...');
-        core\io\Util::deleteDir($this->_path);
-        core\io\Util::deleteFile($file);
+        core\fs\Dir::delete($this->_path);
+        core\fs\File::delete($file);
 
         $this->io->writeLine('Done');
     }
@@ -170,7 +170,7 @@ class TaskRestoreBackup extends arch\task\Action {
 // Action
     public function handleException(\Exception $e) {
         if($this->_path) {
-            core\io\Util::deleteDir($this->_path);
+            core\fs\Dir::delete($this->_path);
         }
 
         parent::handleException($e);
