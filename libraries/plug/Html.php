@@ -76,6 +76,16 @@ class Html implements arch\IDirectoryHelper {
         return $this->string($text);
     }
 
+    public function markdown($text) {
+        $output = (new flex\markdown\Parser($text))->toHtml();
+
+        if($output !== null) {
+            $output = $this->string($output);
+        }
+
+        return $output;
+    }
+
     public function simpleTags($text, array $customTags=null) {
         $output = (new flex\simpleTags\Parser($text, $customTags))->toHtml();
 
