@@ -17,8 +17,21 @@ class Tag implements ITag, core\IDumpable {
     use core\string\THtmlStringEscapeHandler;
     
     private static $_closedTags = [
-        'area', 'base', 'br', 'col', 'hr', 'img', 'input', 'keygen', 
-        'link', 'meta', 'param', 'source', 'wbr'
+        'area', 'base', 'br', 'col', 'command', 'embed', 
+        'hr', 'img', 'input', 'keygen', 'link', 'meta', 
+        'param', 'source', 'wbr'
+    ];
+
+    private static $_inlineTags = [
+        'a', 'br', 'bdo', 'abbr', 'blink', 'nextid', 'acronym', 'basefont',
+        'b', 'em', 'big', 'cite', 'small', 'spacer', 'listing',
+        'i', 'rp', 'del', 'code',          'strike', 'marquee',
+        'q', 'rt', 'ins', 'font',          'strong',
+        's', 'tt', 'sub', 'mark',
+        'u', 'xm', 'sup', 'nobr',
+                   'var', 'ruby',
+                   'wbr', 'span',
+                          'time',
     ];
 
     private static $_booleanAttributes = [
@@ -31,6 +44,14 @@ class Tag implements ITag, core\IDumpable {
     protected $_renderCount = 0;
     protected $_renderIfEmpty = true;
     
+    public static function isClosableTagName($name) {
+        return in_array(strtolower($name), self::$_closedTags);
+    }
+
+    public static function isInlineTagName($name) {
+        return in_array(strtolower($name), self::$_inlineTags);
+    }
+
     public function __construct($name, array $attributes=null) {
         $this->setName($name);
         
