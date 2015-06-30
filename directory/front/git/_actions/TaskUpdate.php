@@ -29,7 +29,7 @@ class TaskUpdate extends arch\task\Action {
         }
 
         if(empty($names)) {
-            $this->runChild('git/update-all');
+            $this->runChild('git/update-all', false);
             return;
         }
 

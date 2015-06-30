@@ -29,7 +29,7 @@ class TaskRefresh extends arch\task\Action {
         }
 
         if(empty($names)) {
-            $this->runChild('git/refresh-all');
+            $this->runChild('git/refresh-all', false);
             return;
         }
 
