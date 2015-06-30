@@ -31,7 +31,7 @@ class TaskUpdateAll extends arch\task\Action {
         $this->io->writeLine('Done');
 
         if(is_dir($this->application->getLocalStoragePath().'/run')) {
-            $this->runChild('application/build?testing=1');
+            $this->runChild('application/build?testing=1', false);
         }
     }
 }
