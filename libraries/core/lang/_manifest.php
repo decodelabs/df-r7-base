@@ -55,6 +55,10 @@ interface IEnum extends core\IStringProvider, core\IStringValueProvider {
     public function is($value);
 }
 
+interface IStruct {
+    public function import(array $data);
+}
+
 
 interface ITypeRef {
     public function newInstance();
