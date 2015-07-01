@@ -13,7 +13,7 @@ use df\flex;
 
 class Github implements spur\packaging\bower\IResolver {
     
-    const TAG_TIMEOUT = '1 hour';
+    const TAG_TIMEOUT = '5 hours';
 
     protected $_mediator;
 
