@@ -25,7 +25,7 @@ class TaskUpdateAll extends arch\task\Action {
             $this->io->writeLine('Pulling updates for package "'.$package['name'].'"');
             $result = $package['repo']->pull();
 
-            $this->io->write($result."\r\n");
+            $this->io->writeLine($result);
         }
 
         $this->io->writeLine('Done');
