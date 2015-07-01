@@ -252,6 +252,7 @@ class Action implements IAction, core\IDumpable {
         switch($this->getRunMode()) {
             case 'Http':
                 if(method_exists($this, 'executeAsHtml')) {
+                    $this->request->setType('html');
                     $output = $this->executeAsHtml();
                 } else if(method_exists($this, 'execute')) {
                     $output = $this->execute();
