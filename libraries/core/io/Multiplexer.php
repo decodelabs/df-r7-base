@@ -255,7 +255,7 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
     protected function _writeLinePrefix() {
         if($this->_newLine && $this->_lineLevel) {
             foreach($this->_channels as $channel) {
-                $channel->write(str_repeat('  ', $this->_lineLevel - 1).($this->_lineLevel > 1 ? ' ':'').'|- ');
+                $channel->write(str_repeat('  ', $this->_lineLevel - 1).'• ');
             }
         }
     }
@@ -307,7 +307,7 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
     protected function _writeErrorLinePrefix() {
         if($this->_newLine && $this->_lineLevel) {
             foreach($this->_channels as $channel) {
-                $channel->writeError(str_repeat('  ', $this->_lineLevel - 1).($this->_lineLevel > 1 ? ' ':'').'|- ');
+                $channel->writeError(str_repeat('  ', $this->_lineLevel - 1).'! ');
             }
         }
     }

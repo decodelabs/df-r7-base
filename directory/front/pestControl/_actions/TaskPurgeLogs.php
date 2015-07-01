@@ -16,8 +16,8 @@ class TaskPurgeLogs extends arch\task\Action {
     const SCHEDULE_AUTOMATIC = true;
 
     public function execute() {
-        $this->runChild('pest-control/purge-error-logs');
-        $this->runChild('pest-control/purge-miss-logs');
-        $this->runChild('pest-control/purge-access-logs');
+        $this->runChild('pest-control/purge-error-logs', false);
+        $this->runChild('pest-control/purge-miss-logs', false);
+        $this->runChild('pest-control/purge-access-logs', false);
     }
 }
