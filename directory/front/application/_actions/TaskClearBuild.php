@@ -16,7 +16,7 @@ class TaskClearBuild extends arch\task\Action {
         $appPath = $this->application->getApplicationPath();
         $envId = $this->application->getEnvironmentId();
 
-        $this->runChild('application/purge-builds?all');
+        $this->runChild('application/purge-builds?all', false);
 
         $this->io->writeLine('Deleting testing and production entry files');
         core\fs\File::delete($appPath.'/entry/'.$envId.'.testing.php');
