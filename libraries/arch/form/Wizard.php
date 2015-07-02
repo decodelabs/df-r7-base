@@ -54,7 +54,7 @@ abstract class Wizard extends Action {
         if($this->hasStore('data.'.$section)) {
             $this->values->import($this->getStore('data.'.$section));
         } else {
-            $func = '_set'.ucfirst($section).'Defaults';
+            $func = '_set'.ucfirst($section).'DefaultValues';
 
             if(method_exists($this, $func)) {
                 $this->{$func}();
