@@ -222,6 +222,7 @@ interface IRandomAccessCollection extends IShiftableCollection, IMovable, core\I
 // Integer indexes only
 interface IIndexedCollection extends IRandomAccessCollection, ISeekable, ISliceable {
     public function put($index, $value);
+    public function getIndex($value);
 }
 
 interface ISequentialCollection extends ICollection {

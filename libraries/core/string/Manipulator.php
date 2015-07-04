@@ -456,6 +456,10 @@ class Manipulator implements IManipulator, \IteratorAggregate, core\IDumpable {
     
     
 // Indexes
+    public function getIndex($value) {
+        return $this->indexOf($value);
+    }
+
     public function indexOf($needle, $offset=0) {
         return mb_strpos($this->_value, $needle, $offset, $this->_encoding);
     }

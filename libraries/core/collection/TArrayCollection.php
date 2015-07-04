@@ -44,6 +44,10 @@ trait TArrayCollection {
     public function getDumpProperties() {
         return $this->_collection;
     }
+
+    protected function _normalizeValue($value, $key=null) {
+        return $value;
+    }
 }
 
 trait TArrayCollection_Constructor {
@@ -282,7 +286,7 @@ trait TArrayCollection_AssociativeValueMap {
     }
     
     public function set($key, $value) {
-        $this->_collection[(string)$key] = $value;
+        $this->_collection[(string)$key] = $this->_normalizeValue($value, $key);
         return $this; 
     }
     
@@ -323,7 +327,7 @@ trait TArrayCollection_IndexedValueMap {
         }
         
         foreach($input as $value) {
-            $this->_collection[] = $value;
+            $this->_collection[] = $this->_normalizeValue($value);
         }
         
         return $this;
@@ -331,7 +335,7 @@ trait TArrayCollection_IndexedValueMap {
     
     public function insert($value) {
         foreach(func_get_args() as $arg) {
-            $this->_collection[] = $arg;
+            $this->_collection[] = $this->_normalizeValue($arg);
         }
         
         return $this;
@@ -364,7 +368,7 @@ trait TArrayCollection_IndexedValueMap {
             $index = $count;
         }
         
-        $this->_collection[$index] = $value;
+        $this->_collection[$index] = $this->_normalizeValue($value, $index);
         return $this;
     }
     
@@ -393,7 +397,7 @@ trait TArrayCollection_IndexedValueMap {
             $count = $index;
         }
         
-        $this->_collection[] = $value;
+        $this->_collection[] = $this->_normalizeValue($value, $index);
         
         if($addVals !== null) {
             $this->_collection = array_merge($this->_collection, $addVals);
@@ -449,6 +453,16 @@ trait TArrayCollection_IndexedValueMap {
         $this->_collection = array_values($this->_collection);
         return $this;
     }
+
+    public function getIndex($value) {
+        $value = $this->_normalizeValue($value);
+
+        if(false === ($output = array_search($value, $this->_collection))) {
+            $output = null;
+        }
+
+        return $output;
+    }
 }
 
 
@@ -490,7 +504,7 @@ trait TArrayCollection_ProcessedIndexedValueMap {
         }
         
         while($valCount > 0) {
-            $this->_collection[$index] = array_shift($values);
+            $this->_collection[$index] = $this->_normalizeValue(array_shift($values));
             $valCount--;
             $index++;
         }
@@ -531,7 +545,7 @@ trait TArrayCollection_ProcessedIndexedValueMap {
         }
         
         while($valCount > 0) {
-            $this->_collection[] = array_shift($values);
+            $this->_collection[] = $this->_normalizeValue(array_shift($values));
             $valCount--;
         }
         
@@ -541,6 +555,16 @@ trait TArrayCollection_ProcessedIndexedValueMap {
         
         $this->_onInsert();
         return $this;
+    }
+
+    public function getIndex($value) {
+        $value = $this->_normalizeValue($value);
+
+        if(false === ($output = array_search($value, $this->_collection))) {
+            $output = null;
+        }
+
+        return $output;
     }
 
     protected function _expandInput($input) {
@@ -560,7 +584,7 @@ trait TArrayCollection_UniqueSet {
         
         foreach($values as $part) {
             if(!in_array($part, $this->_collection, true)) {
-                $this->_collection[] = $part;
+                $this->_collection[] = $this->_normalizeValue($part);
             }
         }
     }
@@ -587,7 +611,7 @@ trait TArrayCollection_UniqueSet {
     public function replace($current, $new) {
         foreach($this->_collection as $i => $setValue) {
             if($setValue === $current) {
-                $this->_collection[$i] = $new;
+                $this->_collection[$i] = $this->_normalizeValue($new);
                 break;
             }
         }
@@ -747,7 +771,7 @@ trait TArrayCollection_Shiftable {
     
     public function push($value) {
         foreach(func_get_args() as $arg) {
-            $this->_collection[] = $arg;
+            $this->_collection[] = $this->_normalizeValue($arg, count($this->_collection));
         }
         
         return $this;
@@ -759,7 +783,7 @@ trait TArrayCollection_Shiftable {
     
     public function unshift($value) {
         for($i = func_num_args() - 1; $i >= 0; $i--) {
-            array_unshift($this->_collection, func_get_arg($i));
+            array_unshift($this->_collection, $this->_normalizeValue(func_get_arg($i), $i));
         }
         
         return $this;
@@ -775,7 +799,7 @@ trait TArrayCollection_ProcessedShiftable {
     public function push($value) {
         foreach(func_get_args() as $arg) {
             foreach($this->_expandInput($arg) as $value) {
-                array_push($this->_collection, $value);
+                array_push($this->_collection, $this->_normalizeValue($value, count($this->_collection)));
             }
         }
         
@@ -790,7 +814,7 @@ trait TArrayCollection_ProcessedShiftable {
     public function unshift($value) {
         foreach(array_reverse(func_get_args()) as $arg) {
             foreach(array_reverse($this->_expandInput($arg)) as $value) {
-                array_unshift($this->_collection, $value);
+                array_unshift($this->_collection, $this->_normalizeValue($value, 0));
             }
         }
         

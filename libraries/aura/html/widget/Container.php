@@ -115,6 +115,10 @@ class Container extends Base implements IContainerWidget, IWidgetShortcutProvide
         $this->_children->remove($index);
         return $this;
     }
+
+    public function getIndex($value) {
+        return $this->_children->getIndex($value);
+    }
     
     public function getNext() {
         return $this->_children->getNext();
