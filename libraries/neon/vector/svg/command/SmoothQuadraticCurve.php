@@ -3,13 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\neon\svg\command;
+namespace df\neon\vector\svg\command;
 
 use df;
 use df\core;
 use df\neon;
     
-class Line extends Base implements neon\svg\ILineCommand {
+class SmoothQuadraticCurve extends Base implements neon\vector\svg\ISmoothQuadraticCurveCommand {
 
     protected $_x;
     protected $_y;
@@ -41,7 +41,7 @@ class Line extends Base implements neon\svg\ILineCommand {
     }
 
     public function toString() {
-        $output = $this->_isRelative ? 'l' : 'L';
+        $output = $this->_isRelative ? 't' : 'T';
         $output .= $this->_x->toString().' ';
         $output .= $this->_y->toString();
 

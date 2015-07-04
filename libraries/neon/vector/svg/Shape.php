@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\neon\svg;
+namespace df\neon\vector\svg;
 
 use df;
 use df\core;
@@ -178,11 +178,11 @@ class Shape_Circle extends Shape implements ICircle, IPathProvider {
         $r = clone $this->getRadius();
 
         $commands = [
-            (new neon\svg\command\Move($this->_position->getXOffset(), $this->_position->getYOffset())),
-            (new neon\svg\command\Move((-1 * $r->getValue()).$r->getUnit(), 0))->isRelative(true),
-            (new neon\svg\command\Arc($r, $r, 0, true, false, (2 * $r->getValue()).$r->getUnit(), 0))->isRelative(true),
-            (new neon\svg\command\Arc($r, $r, 0, true, false, (-2 * $r->getValue()).$r->getUnit(), 0))->isRelative(true),
-            (new neon\svg\command\ClosePath())->isRelative(true)
+            (new neon\vector\svg\command\Move($this->_position->getXOffset(), $this->_position->getYOffset())),
+            (new neon\vector\svg\command\Move((-1 * $r->getValue()).$r->getUnit(), 0))->isRelative(true),
+            (new neon\vector\svg\command\Arc($r, $r, 0, true, false, (2 * $r->getValue()).$r->getUnit(), 0))->isRelative(true),
+            (new neon\vector\svg\command\Arc($r, $r, 0, true, false, (-2 * $r->getValue()).$r->getUnit(), 0))->isRelative(true),
+            (new neon\vector\svg\command\ClosePath())->isRelative(true)
         ];
 
         return $this->_createPath($commands, ['cx', 'cy', 'r']);
@@ -217,11 +217,11 @@ class Shape_Ellipse extends Shape implements IEllipse, IPathProvider {
         $r2 = clone $this->getYRadius();
 
         $commands = [
-            (new neon\svg\command\Move($this->_position->getXOffset(), $this->_position->getYOffset())),
-            (new neon\svg\command\Move((-1 * $r1->getValue()).$r1->getUnit(), 0))->isRelative(true),
-            (new neon\svg\command\Arc($r1, $r2, 0, true, false, (2 * $r1->getValue()).$r1->getUnit(), 0))->isRelative(true),
-            (new neon\svg\command\Arc($r1, $r2, 0, true, false, (-2 * $r1->getValue()).$r1->getUnit(), 0))->isRelative(true),
-            (new neon\svg\command\ClosePath())->isRelative(true)
+            (new neon\vector\svg\command\Move($this->_position->getXOffset(), $this->_position->getYOffset())),
+            (new neon\vector\svg\command\Move((-1 * $r1->getValue()).$r1->getUnit(), 0))->isRelative(true),
+            (new neon\vector\svg\command\Arc($r1, $r2, 0, true, false, (2 * $r1->getValue()).$r1->getUnit(), 0))->isRelative(true),
+            (new neon\vector\svg\command\Arc($r1, $r2, 0, true, false, (-2 * $r1->getValue()).$r1->getUnit(), 0))->isRelative(true),
+            (new neon\vector\svg\command\ClosePath())->isRelative(true)
         ];
 
         return $this->_createPath($commands, ['cx', 'cy', 'rx', 'ry']);
@@ -278,8 +278,8 @@ class Shape_Line extends Shape implements ILine, IPathProvider {
 
     public function toPath() {
         $commands = [
-            (new neon\svg\command\Move($this->_getAttribute('x1'), $this->_getAttribute('y1'))),
-            (new neon\svg\command\Line($this->_getAttribute('x2'), $this->_getAttribute('y2'))),
+            (new neon\vector\svg\command\Move($this->_getAttribute('x1'), $this->_getAttribute('y1'))),
+            (new neon\vector\svg\command\Line($this->_getAttribute('x2'), $this->_getAttribute('y2'))),
         ];
 
         return $this->_createPath($commands, ['x1', 'y1', 'x2', 'y2']);
@@ -325,14 +325,14 @@ class Shape_Polygon extends Shape implements IPolygon, IPathProvider {
             $point->convertRelativeAnchors();
 
             if(!$move) {
-                $commands[] = new neon\svg\command\Move($point->getXOffset(), $point->getYOffset());
+                $commands[] = new neon\vector\svg\command\Move($point->getXOffset(), $point->getYOffset());
                 $move = true;
             } else {
-                $commands[] = new neon\svg\command\Line($point->getXOffset(), $point->getYOffset());
+                $commands[] = new neon\vector\svg\command\Line($point->getXOffset(), $point->getYOffset());
             }
         }
 
-        $commands[] = new neon\svg\command\ClosePath();
+        $commands[] = new neon\vector\svg\command\ClosePath();
 
         return $this->_createPath($commands, ['points']);
     }
@@ -360,10 +360,10 @@ class Shape_Polyline extends Shape implements IPolyline, IPathProvider {
             $point->convertRelativeAnchors();
 
             if(!$move) {
-                $commands[] = new neon\svg\command\Move($point->getXOffset(), $point->getYOffset());
+                $commands[] = new neon\vector\svg\command\Move($point->getXOffset(), $point->getYOffset());
                 $move = true;
             } else {
-                $commands[] = new neon\svg\command\Line($point->getXOffset(), $point->getYOffset());
+                $commands[] = new neon\vector\svg\command\Line($point->getXOffset(), $point->getYOffset());
             }
         }
 
@@ -394,11 +394,11 @@ class Shape_Rectangle extends Shape implements IRectangle, IPathProvider {
         $height = clone $this->getHeight();
 
         $commands = [
-            (new neon\svg\command\Move($this->_position->getXOffset(), $this->_position->getYOffset())),
-            (new neon\svg\command\Line($width, 0))->isRelative(true),
-            (new neon\svg\command\Line(0, $height))->isRelative(true),
-            (new neon\svg\command\Line((-1 * $width->getValue()).$width->getUnit(), 0))->isRelative(true),
-            (new neon\svg\command\ClosePath())->isRelative(true)
+            (new neon\vector\svg\command\Move($this->_position->getXOffset(), $this->_position->getYOffset())),
+            (new neon\vector\svg\command\Line($width, 0))->isRelative(true),
+            (new neon\vector\svg\command\Line(0, $height))->isRelative(true),
+            (new neon\vector\svg\command\Line((-1 * $width->getValue()).$width->getUnit(), 0))->isRelative(true),
+            (new neon\vector\svg\command\ClosePath())->isRelative(true)
         ];
 
         return $this->_createPath($commands, ['width', 'height', 'x', 'y']);

@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\neon\svg;
+namespace df\neon\vector\svg;
 
 use df;
 use df\core;
@@ -1783,7 +1783,7 @@ trait TAttributeModule_PaintOpacity {
 trait TAttributeModule_PathData {
 
     public function setCommands($commands) {
-        $commands = neon\svg\command\Base::listFactory($commands);
+        $commands = neon\vector\svg\command\Base::listFactory($commands);
         $string = '';
 
         foreach($commands as $command) {
@@ -1795,7 +1795,7 @@ trait TAttributeModule_PathData {
     }
 
     public function getCommands() {
-        return neon\svg\command\Base::listFactory($this->_getAttribute('d'));
+        return neon\vector\svg\command\Base::listFactory($this->_getAttribute('d'));
     }
 
     public function importPathData(IPathDataAttributeModule $path) {
@@ -1982,35 +1982,35 @@ trait TAttributeModule_2DRadius {
 
 // Structure
 trait TAttributeModule_Structure {
-    use neon\svg\TAttributeModule_Clip;
-    use neon\svg\TAttributeModule_Conditional;
-    use neon\svg\TAttributeModule_Container;
-    use neon\svg\TAttributeModule_Core;
-    use neon\svg\TAttributeModule_Cursor;
-    use neon\svg\TAttributeModule_ExternalResources;
-    use neon\svg\TAttributeModule_Filter;
-    use neon\svg\TAttributeModule_FilterColor;
-    use neon\svg\TAttributeModule_Flood;
-    use neon\svg\TAttributeModule_Font;
-    use neon\svg\TAttributeModule_Gradient;
-    use neon\svg\TAttributeModule_Graphics;
-    use neon\svg\TAttributeModule_GraphicalElementEvents;
-    use neon\svg\TAttributeModule_Marker;
-    use neon\svg\TAttributeModule_Mask;
-    use neon\svg\TAttributeModule_Paint;
-    use neon\svg\TAttributeModule_PaintOpacity;
-    use neon\svg\TAttributeModule_Style;
-    use neon\svg\TAttributeModule_Text;
-    use neon\svg\TAttributeModule_TextContent;
-    use neon\svg\TAttributeModule_Viewport;
+    use TAttributeModule_Clip;
+    use TAttributeModule_Conditional;
+    use TAttributeModule_Container;
+    use TAttributeModule_Core;
+    use TAttributeModule_Cursor;
+    use TAttributeModule_ExternalResources;
+    use TAttributeModule_Filter;
+    use TAttributeModule_FilterColor;
+    use TAttributeModule_Flood;
+    use TAttributeModule_Font;
+    use TAttributeModule_Gradient;
+    use TAttributeModule_Graphics;
+    use TAttributeModule_GraphicalElementEvents;
+    use TAttributeModule_Marker;
+    use TAttributeModule_Mask;
+    use TAttributeModule_Paint;
+    use TAttributeModule_PaintOpacity;
+    use TAttributeModule_Style;
+    use TAttributeModule_Text;
+    use TAttributeModule_TextContent;
+    use TAttributeModule_Viewport;
 }
 
 
 
 // Shape
 trait TAttributeModule_Shape {
-    use neon\svg\TAttributeModule_Structure;
-    use neon\svg\TAttributeModule_Transform;
+    use TAttributeModule_Structure;
+    use TAttributeModule_Transform;
 }
 
 

@@ -3,13 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\neon\svg\command;
+namespace df\neon\vector\svg\command;
 
 use df;
 use df\core;
 use df\neon;
     
-abstract class Base implements neon\svg\ICommand {
+abstract class Base implements neon\vector\svg\ICommand {
 
     use core\TStringProvider;
 
@@ -84,7 +84,7 @@ abstract class Base implements neon\svg\ICommand {
             $isRelative = $key == $matches[1];
 
             if(!isset(self::$_commandKeys[$key])) {
-                throw new neon\svg\InvalidArgumentException(
+                throw new neon\vector\svg\InvalidArgumentException(
                     $matches[1].' is not a valid path command key'
                 );
             }
@@ -92,7 +92,7 @@ abstract class Base implements neon\svg\ICommand {
             $command = self::$_commandKeys[$key];
             $args = isset($matches[2]) && $matches[1] !== '' ? explode(' ', trim($matches[2])) : [];
         } else {
-            throw new neon\svg\InvalidArgumentException(
+            throw new neon\vector\svg\InvalidArgumentException(
                 $command.' is not a valid path command'
             );
         }
@@ -100,7 +100,7 @@ abstract class Base implements neon\svg\ICommand {
         $class = 'df\\neon\\svg\\command\\'.$command;
 
         if(!class_exists($class)) {
-            throw new neon\svg\InvalidArgumentException(
+            throw new neon\vector\svg\InvalidArgumentException(
                 $command.' command does not appear to exist'
             );
         }

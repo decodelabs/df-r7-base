@@ -3,13 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\neon\svg\command;
+namespace df\neon\vector\svg\command;
 
 use df;
 use df\core;
 use df\neon;
     
-class SmoothCubicCurve extends Base implements neon\svg\ISmoothCubicCurveCommand {
+class SmoothCubicCurve extends Base implements neon\vector\svg\ISmoothCubicCurveCommand {
 
     protected $_controlX;
     protected $_controlY;

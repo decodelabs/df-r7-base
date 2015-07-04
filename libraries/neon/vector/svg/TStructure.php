@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\neon\svg;
+namespace df\neon\vector\svg;
 
 use df;
 use df\core;
