@@ -37,6 +37,10 @@ class Tuple implements ITuple, core\IDumpable {
         return $value;
     }
 
+    public function getReductiveIterator() {
+        return new ReductiveIndexIterator($this);
+    }
+
 
     public function setSize($size) {
         $size = abs($size);

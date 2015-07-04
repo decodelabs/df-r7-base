@@ -15,7 +15,7 @@ class RuntimeException extends \RuntimeException implements IException {}
 
 
 // Interfaces
-interface ITuple extends core\collection\IIndexedCollection {
+interface ITuple extends core\collection\IIndexedCollection, core\collection\IAggregateIteratorCollection {
     public function setSize($size);
     public function getSize();
 
