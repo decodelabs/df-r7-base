@@ -69,6 +69,17 @@ class Vector extends Tuple implements IVector {
     }
 
 
+    public function isZero() {
+        foreach($this->_collection as $i => $value) {
+            if($value != 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
     public function getSquareLength() {
         $output = 0;
 
@@ -77,6 +88,21 @@ class Vector extends Tuple implements IVector {
         }
 
         return $output;
+    }
+
+
+    public function setLength($length) {
+        if(!$this->isZero()) {
+            $scale = $length / $this->getLength();
+            $this->scale($scale);
+        }
+
+        return $this;
+    }
+
+    public function setLengthNew($length) {
+        $output = clone $this;
+        return $output->setLength($length);
     }
 
     public function getLength() {
@@ -284,7 +310,90 @@ class Vector extends Tuple implements IVector {
         return $this->getDotProduct($vector1->getCrossProduct($vector2));
     }
 
-    public function getAngle($vector, $type=IVector::DEGREES) {
+
+// Angles
+    public function set2dAngle($angle, $type=IVector::DEGREES) {
+        return $this->set2dAngleFrom([0, 0], $angle, $type);
+    }
+
+    public function rotate2d($angle, $type=IVector::DEGREES) {
+        return $this->rotate2dFrom([0, 0], $angle, $type);
+    }
+
+    public function set2dAngleNew($angle, $type=IVector::DEGREES) {
+        return $this->set2dAngleNewFrom([0, 0], $angle, $type);
+    }
+
+    public function rotate2dNew($angle, $type=IVector::DEGREES) {
+        return $this->rotate2dNewFrom([0, 0], $angle, $type);
+    }
+
+    public function get2dAngle($type=IVector::DEGREES) {
+        return $this->get2dAngleFrom([0, 0], $type);
+    }
+
+    public function set2dAngleFrom($vector, $angle, $type=IVector::DEGREES) {
+        $vector = self::factory($vector, $this->getSize());
+        $this->subtract($vector);
+
+        switch($type) {
+            case IVector::RADIANS:
+                break;
+
+            default:
+            case IVector::DEGREES:
+                $angle = deg2rad($angle);
+                break;
+        }
+
+        $length = $this->getLength();
+
+        if($length != 0) {
+            $this->setX(sin($angle) * $length);
+            $this->setY(cos($angle) * $length);
+        }
+
+        $this->add($vector);
+
+        return $this;
+    }
+
+    public function rotate2dFrom($vector, $angle, $type=IVector::DEGREES) {
+        $vector = self::factory($vector, $this->getSize());
+
+        $current = $this->get2dAngleFrom($vector, $type);
+        return $this->set2dAngleFrom($vector, $current + $angle, $type);
+    }
+
+    public function set2dAngleNewFrom($vector, $angle, $type=IVector::DEGREES) {
+        $output = clone $this;
+        return $output->set2dAngleFrom($vector, $angle, $type);
+    }
+
+    public function rotate2dNewFrom($vector, $angle, $type=IVector::DEGREES) {
+        $output = clone $this;
+        return $output->rotate2dFrom($vector, $angle, $type);
+    }
+
+    public function get2dAngleFrom($vector, $type=IVector::DEGREES) {
+        $point = $this->subtractNew($vector);
+        $output = atan2($point->x, $point->y);
+
+        switch($type) {
+            case IVector::RADIANS:
+                return $output;
+
+            default:
+            case IVector::DEGREES:
+                return rad2deg($output);
+        }
+    }
+
+    public function getDotAngle($vector=null, $type=IVector::DEGREES) {
+        if($vector === null) {
+            $vector = [0, 1];
+        }
+
         $vector = self::factory($vector, $this->getSize());
 
         $left = $this->normalizeNew();

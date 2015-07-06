@@ -48,8 +48,14 @@ interface IVector extends ITuple {
     public function setZ($z);
     public function getZ();
 
+    public function isZero();
+
     public function getSquareLength();
+
+    public function setLength($length);
+    public function setLengthNew($length);
     public function getLength();
+
     public function normalize();
     public function normalizeNew();
     public function reverse();
@@ -76,5 +82,16 @@ interface IVector extends ITuple {
     public function getCrossProduct($vector);
     public function getTripleScalarProduct($vector1, $vector2);
 
-    public function getAngle($vector, $type=IVector::DEGREES);
+    public function set2dAngle($angle, $type=IVector::DEGREES);
+    public function rotate2d($angle, $type=IVector::DEGREES);
+    public function set2dAngleNew($angle, $type=IVector::DEGREES);
+    public function rotate2dNew($angle, $type=IVector::DEGREES);
+    public function get2dAngle($type=IVector::DEGREES);
+    public function set2dAngleFrom($vector, $angle, $type=IVector::DEGREES);
+    public function rotate2dFrom($vector, $angle, $type=IVector::DEGREES);
+    public function set2dAngleNewFrom($vector, $angle, $type=IVector::DEGREES);
+    public function rotate2dNewFrom($vector, $angle, $type=IVector::DEGREES);
+    public function get2dAngleFrom($vector, $type=IVector::DEGREES);
+
+    public function getDotAngle($vector=null, $type=IVector::DEGREES);
 }
