@@ -51,6 +51,8 @@ interface IDocument extends IEntityCollection, core\IStringProvider {
     public function newStyle($name);
     public function newView($name);
     public function newViewportTable($name);
+
+    public function saveTo($file);
 }
 
 

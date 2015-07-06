@@ -286,6 +286,11 @@ class Document implements IDocument {
     }
 
 
+// Save
+    public function saveTo($file) {
+        return core\fs\File::create($file, $this->toString());
+    }
+
 // String
     public function toString() {
         $output = '';
