@@ -90,7 +90,11 @@ class Unix extends Base {
 
     public function which($binaryName) {
         if($binaryName == 'php') {
-            return dirname(PHP_BINARY).'/php';
+            $output = dirname(PHP_BINARY).'/php';
+
+            if(false === strpos($output, '/Cellar/php')) {
+                return $output;
+            }
         }
 
         $result = halo\process\Base::launch('which '.$binaryName)->getOutput();
