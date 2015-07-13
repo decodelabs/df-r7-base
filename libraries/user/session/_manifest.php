@@ -27,18 +27,20 @@ interface IController {
     public function getDescriptor();
     public function getId();
     public function transitionId();
-    public function getNamespace($namespace);
+    public function getBucket($namespace);
     public function destroy();
 
     public function hasRecallKey(RecallKey $key);
     public function perpetuateRecall(user\IClient $client, RecallKey $lastKey=null);
 }
 
-interface IHandler extends core\IValueMap, \ArrayAccess {
+interface IBucket extends core\IValueMap, \ArrayAccess {
+    public function getName();
+
     public function setLifeTime($lifeTime);
     public function getLifeTime();
 
-    public function getSessionDescriptor();
+    public function getDescriptor();
     public function getSessionId();
     public function transitionSessionId();
     public function isSessionOpen();
@@ -56,11 +58,12 @@ interface IHandler extends core\IValueMap, \ArrayAccess {
     public function clearForAll();
     public function prune($age=7200);
 
+    public function getNode($key);
     public function __set($key, $value);
     public function __get($key);
     public function __isset($key);
     public function __unset($key);
-    
+
     public function getLastUpdated();
 }
 
@@ -75,18 +78,18 @@ interface IBackend {
     public function killSession(IDescriptor $descriptor);
     public function idExists($id);
     
-    public function getNamespaceKeys(IDescriptor $descriptor, $namespace);
-    public function pruneNamespace(IDescriptor $descriptor, $namespace, $age);
-    public function clearNamespace(IDescriptor $descriptor, $namespace);
-    public function clearNamespaceForAll($namespace);
+    public function getBucketKeys(IDescriptor $descriptor, $namespace);
+    public function pruneBucket(IDescriptor $descriptor, $namespace, $age);
+    public function clearBucket(IDescriptor $descriptor, $namespace);
+    public function clearBucketForAll($namespace);
     
-    public function fetchNode(IDescriptor $descriptor, $namespace, $key);
-    public function fetchLastUpdatedNode(IDescriptor $descriptor, $namespace);
-    public function lockNode(IDescriptor $descriptor, \stdClass $node);
-    public function unlockNode(IDescriptor $descriptor, \stdClass $node);
-    public function updateNode(IDescriptor $descriptor, \stdClass $node);
-    public function removeNode(IDescriptor $descriptor, $namespace, $key);
-    public function hasNode(IDescriptor $descriptor, $namespace, $key);
+    public function fetchNode(IBucket $bucket, $key);
+    public function fetchLastUpdatedNode(IBucket $bucket);
+    public function lockNode(IBucket $bucket, INode $node);
+    public function unlockNode(IBucket $bucket, INode $node);
+    public function updateNode(IBucket $bucket, INode $node);
+    public function removeNode(IBucket $bucket, $key);
+    public function hasNode(IBucket $bucket, $key);
     public function collectGarbage();
 
     public function generateRecallKey(user\IClient $client);
@@ -161,4 +164,54 @@ interface IPerpetuator {
     public function perpetuateRecallKey(IController $controller, RecallKey $key);
     public function getRecallKey(IController $controller);
     public function destroyRecallKey(IController $controller);
+}
+
+interface INode {}
+
+class Node implements INode {
+    public $key;
+    public $value;
+    public $creationTime;
+    public $updateTime;
+    public $isLocked = false;
+
+    public static function create($key, $res, $locked=false) {
+        $output = new self();
+        $output->key = $key;
+        $output->value = null;
+        $output->creationTime = null;
+        $output->updateTime = time();
+        
+        
+        if($res !== null) {
+            if($res['value'] !== null) {
+                $output->value = unserialize($res['value']);
+            }
+            
+            if(!empty($res['creationTime'])) {
+                $output->creationTime = (int)$res['creationTime'];
+            }
+            
+            if(!empty($res['updateTime'])) {
+                $output->updateTime = (int)$res['updateTime'];
+            }
+        }
+            
+        $output->isLocked = (bool)$locked;
+        return $output;
+    }
+}
+
+
+interface ICache {
+    public function insertDescriptor(IDescriptor $descriptor);
+    public function fetchDescriptor($externalId);
+    public function removeDescriptor(IDescriptor $descriptor);
+
+    public function fetchNode(IBucket $bucket, $key);
+    public function insertNode(IBucket $bucket, INode $node);
+    public function removeNode(IBucket $bucket, $key);
+
+    public function setGlobalKeyringTimestamp();
+    public function shouldRegenerateKeyring($keyringTimestamp);
 }

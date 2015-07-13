@@ -9,53 +9,30 @@ use df;
 use df\core;
 use df\user;
 
-class Handler implements user\session\IHandler, core\IDumpable {
+class Bucket implements user\session\IBucket, core\IDumpable {
     
     use core\TValueMap;
 
-    protected $_namespace;    
+
+    protected $_name;    
     protected $_nodes = [];
     protected $_controller;
     protected $_lifeTime = null;
     
-    public static function createNode($namespace, $key, $res, $locked=false) {
-        $output = new \stdClass();
-        $output->namespace = $namespace;
-        $output->key = $key;
-        $output->value = null;
-        $output->creationTime = null;
-        $output->updateTime = time();
-        
-        
-        if($res !== null) {
-            if($res['value'] !== null) {
-                $output->value = unserialize($res['value']);
-            }
-            
-            if(!empty($res['creationTime'])) {
-                $output->creationTime = (int)$res['creationTime'];
-            }
-            
-            if(!empty($res['updateTime'])) {
-                $output->updateTime = (int)$res['updateTime'];
-            }
-        }
-            
-        $output->isLocked = (bool)$locked;
-        return $output;
-    }
-    
-    public function __construct(user\session\IController $controller, $namespace) {
+    public function __construct(user\session\IController $controller, $name) {
         $this->_controller = $controller;
-        $this->_namespace = $namespace;
+        $this->_name = $name;
         
-        if(empty($namespace)) {
+        if(empty($name)) {
             throw new user\InvalidArgumentException(
-                'Invalid empty namespace'
+                'Invalid empty name bucket name'
             );
         }
     }
     
+    public function getName() {
+        return $this->_name;
+    }
 
     public function setLifeTime($lifeTime) {
         $this->_lifeTime = (int)$lifeTime;
@@ -72,7 +49,7 @@ class Handler implements user\session\IHandler, core\IDumpable {
     }
 
     
-    public function getSessionDescriptor() {
+    public function getDescriptor() {
         return $this->_controller->getDescriptor();
     }
     
@@ -92,18 +69,14 @@ class Handler implements user\session\IHandler, core\IDumpable {
     
     
     public function acquire($key) {
-        $descriptor = $this->_controller->getDescriptor();
-        
         if(!isset($this->_nodes[$key])) {
-            $this->__get($key);
+            $this->getNode($key);
         }
         
-        $this->_controller->getCache()->removeNode($descriptor, $this->_namespace, $key);
+        $this->_controller->getCache()->removeNode($this, $key);
         
         if(!$this->_nodes[$key]->isLocked) {
-            $this->_controller->getBackend()->lockNode(
-                $descriptor, $this->_nodes[$key]
-            );
+            $this->_controller->getBackend()->lockNode($this, $this->_nodes[$key]);
         }
         
         return $this;
@@ -111,8 +84,7 @@ class Handler implements user\session\IHandler, core\IDumpable {
     
     public function release($key) {
         if(isset($this->_nodes[$key]) && $this->_nodes[$key]->isLocked) {
-            $descriptor = $this->_controller->getDescriptor();
-            $this->_controller->getBackend()->unlockNode($descriptor, $this->_nodes[$key]);
+            $this->_controller->getBackend()->unlockNode($this, $this->_nodes[$key]);
             $this->_nodes[$key]->isLocked = false;
         }
         
@@ -160,13 +132,13 @@ class Handler implements user\session\IHandler, core\IDumpable {
     
     public function getAllKeys() {
         $descriptor = $this->_controller->getDescriptor();
-        return $this->_controller->getBackend()->getNamespaceKeys($descriptor, $this->_namespace);
+        return $this->_controller->getBackend()->getBucketKeys($descriptor, $this->_name);
     }
 
     public function clear() {
         $descriptor = $this->_controller->getDescriptor();
         
-        $this->_controller->getBackend()->clearNamespace($descriptor, $this->_namespace);
+        $this->_controller->getBackend()->clearBucket($descriptor, $this->_name);
         $this->_controller->getCache()->clear();
         $this->_nodes = [];
         
@@ -174,7 +146,7 @@ class Handler implements user\session\IHandler, core\IDumpable {
     }
 
     public function clearForAll() {
-        $this->_controller->getBackend()->clearNamespaceForAll($this->_namespace);
+        $this->_controller->getBackend()->clearBucketForAll($this->_name);
         $this->_controller->getCache()->clear();
         $this->_nodes = [];
 
@@ -189,37 +161,30 @@ class Handler implements user\session\IHandler, core\IDumpable {
         }
         
         $descriptor = $this->_controller->getDescriptor();
-        $this->_controller->getBackend()->pruneNamespace($descriptor, $this->_namespace, $age);
+        $this->_controller->getBackend()->pruneBucket($descriptor, $this->_name, $age);
         $this->_controller->getCache()->clear();
         
         return $this;
     }
-    
-    
-    public function __set($key, $value) {
-        return $this->set($key, $value);
-    }
-    
-    public function __get($key) {
+
+    public function getNode($key) {
         $key = (string)$key;
 
         if(!isset($this->_nodes[$key])) {
             $descriptor = $this->_controller->getDescriptor();
             $cache = $this->_controller->getCache();
             
-            if(!$node = $cache->fetchNode($descriptor, $this->_namespace, $key)) {
-                $node = $this->_controller->getBackend()->fetchNode(
-                    $descriptor, $this->_namespace, $key
-                );
+            if(!$node = $cache->fetchNode($this, $key)) {
+                $node = $this->_controller->getBackend()->fetchNode($this, $key);
                 
                 if($node->creationTime) {
-                    $cache->insertNode($descriptor, $node);
+                    $cache->insertNode($this, $node);
                 }
             } else if(!$node->creationTime) {
                 // new node has been cached - make it not be new :)
                 
                 $node->creationTime = time();
-                $cache->insertNode($descriptor, $node);
+                $cache->insertNode($this, $node);
             }
             
             $this->_nodes[$key] = $node;
@@ -227,19 +192,12 @@ class Handler implements user\session\IHandler, core\IDumpable {
 
         if($this->_lifeTime !== null && time() - $this->_nodes[$key]->updateTime > $this->_lifeTime) {
             $this->remove($key);
-            $this->_nodes[$key] = self::createNode($this->_namespace, $key, null);
+            $this->_nodes[$key] = Node::create($key, null);
         }
         
         return $this->_nodes[$key];
     }
     
-    public function __isset($key) {
-        return $this->has($key);
-    }
-    
-    public function __unset($key) {
-        return $this->remove($key);
-    }
     
     public function set($key, $value) {
         $key = (string)$key;
@@ -254,10 +212,8 @@ class Handler implements user\session\IHandler, core\IDumpable {
         $node->updateTime = time();
         $node->value = $value;
             
-        $descriptor = $this->_controller->getDescriptor();
-        $this->_controller->getCache()->insertNode($descriptor, $node);
-        $this->_controller->getBackend()->updateNode($descriptor, $node);
-        
+        $this->_controller->getCache()->insertNode($this, $node);
+        $this->_controller->getBackend()->updateNode($this, $node);
         
         if($atomicLock) {
             $this->release($key);
@@ -267,7 +223,7 @@ class Handler implements user\session\IHandler, core\IDumpable {
     }
     
     public function get($key, $default=null) {
-        $node = $this->__get($key);
+        $node = $this->getNode($key);
         
         if($node->value !== null) {
             return $node->value;
@@ -277,8 +233,7 @@ class Handler implements user\session\IHandler, core\IDumpable {
     }
     
     public function getLastUpdated() {
-        $descriptor = $this->_controller->getDescriptor();
-        $node = $this->_controller->getBackend()->fetchLastUpdatedNode($descriptor, $this->_namespace);
+        $node = $this->_controller->getBackend()->fetchLastUpdatedNode($this);
         
         if($node) {
             $this->_nodes[$node->key] = $node;
@@ -295,8 +250,7 @@ class Handler implements user\session\IHandler, core\IDumpable {
             return true;
         }
         
-        $descriptor = $this->_controller->getDescriptor();
-        return $this->_controller->getBackend()->hasNode($descriptor, $this->_namespace, $key);
+        return $this->_controller->getBackend()->hasNode($this, $key);
     }
     
     public function remove($key) {
@@ -310,13 +264,28 @@ class Handler implements user\session\IHandler, core\IDumpable {
             unset($this->_nodes[$key]);
         }
         
-        $descriptor = $this->_controller->getDescriptor();
-        $this->_controller->getBackend()->removeNode($descriptor, $this->_namespace, $key);
-        $this->_controller->getCache()->removeNode($descriptor, $this->_namespace, $key);
+        $this->_controller->getBackend()->removeNode($this, $key);
+        $this->_controller->getCache()->removeNode($this, $key);
         
         return $this;
     }
     
+    public function __set($key, $value) {
+        return $this->set($key, $value);
+    }
+
+    public function __get($key) {
+        return $this->getNode($key);
+    }
+
+    public function __isset($key) {
+        return $this->has($key);
+    }
+
+    public function __unset($key) {
+        return $this->remove($key);
+    }
+
     
     public function offsetSet($key, $value) {
         return $this->set($key, $value);

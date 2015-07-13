@@ -9,17 +9,17 @@ use df;
 use df\core;
 use df\user;
 
-class Cache extends core\cache\Base {
+class Cache extends core\cache\Base implements ICache {
     
     const CACHE_ID = 'session';
     
-    public function insertDescriptor(user\session\IDescriptor $descriptor) {
-        $key = 'd:'.$descriptor->getExternalIdHex();
+    public function insertDescriptor(IDescriptor $descriptor) {
+        $id = 'd:'.$descriptor->getExternalIdHex();
         
         $justStarted = $descriptor->justStarted;
         $descriptor->justStarted = false;
         
-        $this->set($key, $descriptor);
+        $this->set($id, $descriptor);
         
         $descriptor->justStarted = $justStarted;
         return $descriptor;
@@ -29,32 +29,32 @@ class Cache extends core\cache\Base {
         return $this->get('d:'.bin2hex($externalId));
     }
     
-    public function removeDescriptor(user\session\IDescriptor $descriptor) {
-        $key = 'd:'.$descriptor->getExternalIdHex();
-        $this->remove($key);
+    public function removeDescriptor(IDescriptor $descriptor) {
+        $id = 'd:'.$descriptor->getExternalIdHex();
+        $this->remove($id);
     }
     
     
-    public function fetchNode(user\session\IDescriptor $descriptor, $namespace, $nsKey) {
-        $key = 'i:'.$descriptor->getInternalIdHex().'/'.$namespace.'#'.$nsKey;
-        return $this->get($key);
+    public function fetchNode(IBucket $bucket, $key) {
+        $id = 'i:'.$bucket->getDescriptor()->getInternalIdHex().'/'.$bucket->getName().'#'.$key;
+        return $this->get($id);
     }
     
-    public function insertNode(user\session\IDescriptor $descriptor, \stdClass $node) {
-        $key = 'i:'.$descriptor->getInternalIdHex().'/'.$node->namespace.'#'.$node->key;
+    public function insertNode(IBucket $bucket, INode $node) {
+        $id = 'i:'.$bucket->getDescriptor()->getInternalIdHex().'/'.$bucket->getName().'#'.$node->key;
         
         $isLocked = $node->isLocked;
         $node->isLocked = false;
         
-        $this->set($key, $node);
+        $this->set($id, $node);
         
         $node->isLocked = $isLocked;
         return $node;
     }
     
-    public function removeNode(user\session\IDescriptor $descriptor, $namespace, $nsKey) {
-        $key = 'i:'.$descriptor->getInternalIdHex().'/'.$namespace.'#'.$nsKey;
-        $this->remove($key);
+    public function removeNode(IBucket $bucket, $key) {
+        $id = 'i:'.$bucket->getDescriptor()->getInternalIdHex().'/'.$bucket->getName().'#'.$key;
+        $this->remove($id);
     }
 
 

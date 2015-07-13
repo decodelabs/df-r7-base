@@ -104,87 +104,89 @@ class Model extends axis\Model implements user\session\IBackend {
     }
     
 
-// Namespace
-    public function getNamespaceKeys(user\session\IDescriptor $descriptor, $namespace) {
+// Bucket
+    public function getBucketKeys(user\session\IDescriptor $descriptor, $bucket) {
         return $this->data->select('key')
             ->where('internalId', '=', $descriptor->internalId)
-            ->where('namespace', '=', $namespace)
+            ->where('namespace', '=', $bucket)
             ->orderBy('updateTime')
             ->toList('key');
     }
 
-    public function pruneNamespace(user\session\IDescriptor $descriptor, $namespace, $age) {
+    public function pruneBucket(user\session\IDescriptor $descriptor, $bucket, $age) {
         $this->data->delete()
             ->where('internalId', '=', $descriptor->internalId)
-            ->where('namespace', '=', $namespace)
+            ->where('namespace', '=', $bucket)
             ->where('updateTime', '<', time() - $age)
             ->where('updateTime', '!=', null)
             ->execute();
     }
 
-    public function clearNamespace(user\session\IDescriptor $descriptor, $namespace) {
+    public function clearBucket(user\session\IDescriptor $descriptor, $bucket) {
         $this->data->delete()
             ->where('internalId', '=', $descriptor->internalId)
-            ->where('namespace', '=', $namespace)
+            ->where('namespace', '=', $bucket)
             ->execute();
     }
     
-    public function clearNamespaceForAll($namespace) {
+    public function clearBucketForAll($bucket) {
         $this->data->delete()
-            ->where('namespace', '=', $namespace)
+            ->where('namespace', '=', $bucket)
             ->execute();
     }
 
 
 
 // Nodes
-    public function fetchNode(user\session\IDescriptor $descriptor, $namespace, $key) {
+    public function fetchNode(user\session\IBucket $bucket, $key) {
         $res = $this->data->select()
-            ->where('internalId', '=', $descriptor->internalId)
-            ->where('namespace', '=', $namespace)
+            ->where('internalId', '=', $bucket->getDescriptor()->internalId)
+            ->where('namespace', '=', $bucket->getName())
             ->where('key', '=', $key)
             ->toRow();
             
-        return user\session\Handler::createNode($namespace, $key, $res);
+        return user\session\Node::create($key, $res);
     }
 
-    public function fetchLastUpdatedNode(user\session\IDescriptor $descriptor, $namespace) {
+    public function fetchLastUpdatedNode(user\session\IBucket $bucket) {
         $res = $this->data->select()
-            ->where('internalId', '=', $descriptor->internalId)
-            ->where('namespace', '=', $namespace)
+            ->where('internalId', '=', $bucket->getDescriptor()->internalId)
+            ->where('namespace', '=', $bucket->getName())
             ->orderBy('updateTime DESC')
             ->toRow();
             
         if($res) {
-            return user\session\Handler::createNode($namespace, $res['key'], $res);
+            return user\session\Node::create($res['key'], $res);
         } else {
             return null;
         }
     }
 
-    public function lockNode(user\session\IDescriptor $descriptor, \stdClass $node) {
-        $this->_beginDataTransaction($descriptor);
+    public function lockNode(user\session\IBucket $bucket, user\session\INode $node) {
+        $this->_beginDataTransaction($bucket->getDescriptor());
         $node->isLocked = true;
         
         return $node;
     }
 
-    public function unlockNode(user\session\IDescriptor $descriptor, \stdClass $node) {
-        if($transaction = $this->_getDataTransaction($descriptor)) {
+    public function unlockNode(user\session\IBucket $bucket, user\session\INode $node) {
+        if($transaction = $this->_getDataTransaction($bucket->getDescriptor())) {
             $transaction->commit();
         }
         
         return $node;
     }
 
-    public function updateNode(user\session\IDescriptor $descriptor, \stdClass $node) {
+    public function updateNode(user\session\IBucket $bucket, user\session\INode $node) {
+        $descriptor = $bucket->getDescriptor();
+
         if($transaction = $this->_getDataTransaction($descriptor)) {
             if(empty($node->creationTime)) {
                 $node->creationTime = time();
                 
                 $transaction->insert([
                         'internalId' => $descriptor->internalId,
-                        'namespace' => $node->namespace,
+                        'namespace' => $bucket->getName(),
                         'key' => $node->key,
                         'value' => serialize($node->value),
                         'creationTime' => $node->creationTime,
@@ -197,7 +199,7 @@ class Model extends axis\Model implements user\session\IBackend {
                         'updateTime' => $node->updateTime
                     ])
                     ->where('internalId', '=', $descriptor->internalId)
-                    ->where('namespace', '=', $node->namespace)
+                    ->where('namespace', '=', $bucket->getName())
                     ->where('key', '=', $node->key)
                     ->execute();
             }
@@ -206,18 +208,18 @@ class Model extends axis\Model implements user\session\IBackend {
         return $node;
     }
 
-    public function removeNode(user\session\IDescriptor $descriptor, $namespace, $key) {
+    public function removeNode(user\session\IBucket $bucket, $key) {
         $this->data->delete()
-            ->where('internalId', '=', $descriptor->internalId)
-            ->where('namespace', '=', $namespace)
+            ->where('internalId', '=', $bucket->getDescriptor()->internalId)
+            ->where('namespace', '=', $bucket->getName())
             ->where('key', '=', $key)
             ->execute();
     }
 
-    public function hasNode(user\session\IDescriptor $descriptor, $namespace, $key) {
+    public function hasNode(user\session\IBucket $bucket, $key) {
         return (bool)$this->data->select('count(*) as count')
-            ->where('internalId', '=', $descriptor->internalId)
-            ->where('namespace', '=', $namespace)
+            ->where('internalId', '=', $bucket->getDescriptor()->internalId)
+            ->where('namespace', '=', $bucket->getName())
             ->where('key', '=', $key)
             ->toValue('count');
     }

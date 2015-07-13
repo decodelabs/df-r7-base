@@ -22,7 +22,7 @@ class Controller implements IController {
     protected $_backend;
     protected $_cache;
     protected $_isOpen = false;
-    protected $_namespaces = [];
+    protected $_buckets = [];
 
     public function isOpen() {
         return $this->_isOpen;
@@ -211,13 +211,16 @@ class Controller implements IController {
     
     
     
-    
-    public function getNamespace($namespace) {
-        if(!isset($this->_namespaces[$namespace])) {
-            $this->_namespaces[$namespace] = new Handler($this, $namespace);
+    public function __get($name) {
+        return $this->getBucket($name);
+    }
+
+    public function getBucket($name) {
+        if(!isset($this->_buckets[$name])) {
+            $this->_buckets[$name] = new Bucket($this, $name);
         }
         
-        return $this->_namespaces[$namespace];
+        return $this->_buckets[$name];
     }
     
     public function destroy() {
@@ -235,7 +238,7 @@ class Controller implements IController {
         $this->_cache->removeDescriptor($this->_descriptor);
         $this->_backend->killSession($this->_descriptor);
         $this->_descriptor = null;
-        $this->_namespaces = [];
+        $this->_buckets = [];
         $this->_isOpen = false;
         
         $this->_getManager()->clearClient();

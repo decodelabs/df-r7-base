@@ -17,10 +17,11 @@ class Manager implements IManager, core\IDumpable {
     use core\TManager;
     
     const REGISTRY_PREFIX = 'manager://user';
-    const USER_SESSION_NAMESPACE = 'user';
+    const USER_SESSION_BUCKET = 'user';
     const CLIENT_SESSION_KEY = 'Client';
     
-    public $_session;
+    public $session;
+
     protected $_client;
     private $_accessLockCache = [];
     
@@ -38,8 +39,8 @@ class Manager implements IManager, core\IDumpable {
     }
 
     protected function _loadClient() {
-        $session = $this->session->getNamespace(self::USER_SESSION_NAMESPACE);
-        $this->_client = $session->get(self::CLIENT_SESSION_KEY);
+        $bucket = $this->session->getBucket(self::USER_SESSION_BUCKET);
+        $this->_client = $bucket->get(self::CLIENT_SESSION_KEY);
         $regenKeyring = false;
         $isNew = false;
 
@@ -70,7 +71,7 @@ class Manager implements IManager, core\IDumpable {
 
                     mesh\Manager::getInstance()->emitEvent($this->_client, 'initiate');
 
-                    $session->set(self::CLIENT_SESSION_KEY, $this->_client);
+                    $bucket->set(self::CLIENT_SESSION_KEY, $this->_client);
                 }
             } catch(\Exception $e) {
                 if($rethrowException) {
@@ -200,8 +201,8 @@ class Manager implements IManager, core\IDumpable {
         return $this->session;
     }
 
-    public function getSessionNamespace($namespace) {
-        return $this->session->getNamespace($namespace);
+    public function getSessionNamespace($name) {
+        return $this->session->getBucket($name);
     }
 
     public function getSessionStartTime() {
@@ -229,8 +230,8 @@ class Manager implements IManager, core\IDumpable {
         $options = array_merge($client->getOptions(), $options);
         $client->importOptions($options);
 
-        $session = $this->session->getNamespace(self::USER_SESSION_NAMESPACE);
-        $session->set(self::CLIENT_SESSION_KEY, $client);
+        $bucket = $this->session->getBucket(self::USER_SESSION_BUCKET);
+        $bucket->set(self::CLIENT_SESSION_KEY, $client);
         
         return $this;
     }
@@ -302,7 +303,7 @@ class Manager implements IManager, core\IDumpable {
         
         if($result->isValid()) {
             $domainInfo = $result->getDomainInfo();
-            $session = $this->session->getNamespace(self::USER_SESSION_NAMESPACE);
+            $bucket = $this->session->getBucket(self::USER_SESSION_BUCKET);
             $this->_accessLockCache = [];
 
             // Import user data
@@ -340,7 +341,7 @@ class Manager implements IManager, core\IDumpable {
             ]);
 
             // Store session
-            $session->set(self::CLIENT_SESSION_KEY, $client);
+            $bucket->set(self::CLIENT_SESSION_KEY, $client);
         }
         
         return $result;
@@ -351,7 +352,7 @@ class Manager implements IManager, core\IDumpable {
             return false;
         }
 
-        $session = $this->session->getNamespace(self::USER_SESSION_NAMESPACE);
+        $bucket = $this->session->getBucket(self::USER_SESSION_BUCKET);
         $this->_accessLockCache = [];
 
         $model = $this->getUserModel();
@@ -377,7 +378,7 @@ class Manager implements IManager, core\IDumpable {
         ]);
         
         // Store session
-        $session->set(self::CLIENT_SESSION_KEY, $this->_client);
+        $bucket->set(self::CLIENT_SESSION_KEY, $this->_client);
 
         return true;
     }
@@ -398,8 +399,8 @@ class Manager implements IManager, core\IDumpable {
         mesh\Manager::getInstance()->emitEvent($client, 'refresh');
 
         // Save session
-        $session = $this->session->getNamespace(self::USER_SESSION_NAMESPACE);
-        $session->set(self::CLIENT_SESSION_KEY, $client);
+        $bucket = $this->session->getBucket(self::USER_SESSION_BUCKET);
+        $bucket->set(self::CLIENT_SESSION_KEY, $client);
 
         return $this;
     }
@@ -416,8 +417,8 @@ class Manager implements IManager, core\IDumpable {
         $client->import($data);
         $this->_ensureClientOptions($client);
 
-        $session = $this->session->getNamespace(self::USER_SESSION_NAMESPACE);
-        $session->set(self::CLIENT_SESSION_KEY, $client);
+        $bucket = $this->session->getBucket(self::USER_SESSION_BUCKET);
+        $bucket->set(self::CLIENT_SESSION_KEY, $client);
         
         return $this;
     }
