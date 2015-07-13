@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\apex\directory\front\manager\_actions;
+namespace df\apex\directory\front\tasks\_actions;
 
 use df;
 use df\core;
@@ -12,7 +12,7 @@ use df\arch;
 
 class TaskSpool extends arch\task\Action {
     
-    const SELF_REQUEST = 'manager/spool';
+    const SELF_REQUEST = 'tasks/spool';
     const COOLOFF = 20;
     const QUEUE_LIMIT = 10;
 
@@ -85,7 +85,7 @@ class TaskSpool extends arch\task\Action {
 
 
         // Queue scheduled tasks
-        $this->runChild('manager/queue-scheduled', false);
+        $this->runChild('tasks/queue-scheduled', false);
 
 
         // Select and lock queued tasks
@@ -123,7 +123,7 @@ class TaskSpool extends arch\task\Action {
             $this->io->writeLine('Launching task '.$request.' id: '.$taskId);
 
             $this->io->removeChannel($this->_channel);
-            $this->runChild('manager/launch-queued?id='.$taskId);
+            $this->runChild('tasks/launch-queued?id='.$taskId);
             $this->io->addChannel($this->_channel);
         }
 

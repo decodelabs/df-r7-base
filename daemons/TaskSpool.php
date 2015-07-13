@@ -20,6 +20,6 @@ class TaskSpool extends halo\daemon\Base {
     }
 
     public function spool() {
-        $this->task->launch('manager/spool', $this->io);        
+        $this->task->launch('tasks/spool', $this->io);        
     }
 }

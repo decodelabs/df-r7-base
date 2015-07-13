@@ -3,7 +3,7 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\apex\directory\front\manager\_actions;
+namespace df\apex\directory\front\tasks\_actions;
 
 use df;
 use df\core;

@@ -118,12 +118,12 @@ class Manager implements IManager {
 
     public function queueAndLaunch($request, core\io\IMultiplexer $multiplexer=null, $environmentMode=null) {
         $id = $this->queue($request, 'medium', $environmentMode);
-        return self::launch('manager/launch-queued?id='.$id, $multiplexer, $environmentMode);
+        return self::launch('tasks/launch-queued?id='.$id, $multiplexer, $environmentMode);
     }
 
     public function queueAndLaunchBackground($request, $environmentMode=null) {
         $id = $this->queue($request, 'medium', $environmentMode);
-        return self::launchBackground('manager/launch-queued?id='.$id, $environmentMode);
+        return self::launchBackground('tasks/launch-queued?id='.$id, $environmentMode);
     }
 
     public function getSharedIo() {

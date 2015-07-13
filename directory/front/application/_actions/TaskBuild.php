@@ -205,7 +205,7 @@ class TaskBuild extends arch\task\Action {
         if(!$isTesting) {
             $this->io->writeLine();
             $this->io->writeLine('Running task spool...');
-            $this->runChild('manager/spool');
+            $this->runChild('tasks/spool');
         }
     }
 }
