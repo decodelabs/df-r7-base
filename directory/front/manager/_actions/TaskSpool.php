@@ -120,7 +120,7 @@ class TaskSpool extends arch\task\Action {
             $this->io->writeLine('Launching task '.$request.' id: '.$taskId);
 
             $this->io->removeChannel($this->_channel);
-            $this->runChild('manager/launch-queued?id='.$taskId);
+            $this->runChild('manager/launch-queued?id='.$taskId, false);
             $this->io->addChannel($this->_channel);
         }
 
