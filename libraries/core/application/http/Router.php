@@ -191,7 +191,8 @@ class Router implements core\IRegistryObject {
 
         if(isset($this->_areaDomainMap[$area])) {
             $domain = $this->_areaDomainMap[$area];
-            $path = [];
+            $path = explode('/', $domain);
+            $domain = array_shift($path);
         } else {
             $area = null;
         }
