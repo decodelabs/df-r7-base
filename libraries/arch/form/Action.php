@@ -367,11 +367,7 @@ abstract class Action extends arch\Action implements IAction {
             foreach($postData->_delegates as $id => $delegateValues) {
                 try {
                     $this->getDelegate($id)->values->clear()->import($delegateValues);
-                } catch(DelegateException $e) {
-                    if($this->context->application->isDevelopment()) {
-                        throw $e;
-                    }
-                }
+                } catch(DelegateException $e) {}
             }
             
             $postData->remove('_delegates');
