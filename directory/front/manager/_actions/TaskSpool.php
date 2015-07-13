@@ -115,14 +115,19 @@ class TaskSpool extends arch\task\Action {
             ->orderBy('priority DESC', 'queueDate ASC')
             ->toList('id', 'request');
 
+        $lineLevel = $this->io->getLineLevel();
+        $this->io->decrementLineLevel();
+
         foreach($taskIds as $taskId => $request) {
             $this->io->writeLine();
             $this->io->writeLine('Launching task '.$request.' id: '.$taskId);
 
             $this->io->removeChannel($this->_channel);
-            $this->runChild('manager/launch-queued?id='.$taskId, false);
+            $this->runChild('manager/launch-queued?id='.$taskId);
             $this->io->addChannel($this->_channel);
         }
+
+        $this->io->setLineLevel($lineLevel);
 
         $this->data->task->queue->delete()
             ->where('id', 'in', array_keys($taskIds))
