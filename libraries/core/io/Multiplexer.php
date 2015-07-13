@@ -218,13 +218,15 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
             }
 
             if(!strlen($data)) {
-
                 return;
             }
         }
 
-        $this->_writeLinePrefix();
-        $this->_newLine = false;
+        $this->_writeLinePrefix($data);
+
+        if(strlen($data)) {
+            $this->_newLine = false;
+        }
 
         foreach($this->_channels as $channel) {
             $channel->write($data);
@@ -238,7 +240,7 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
     }
 
     public function writeLine($line='') {
-        $this->_writeLinePrefix();
+        $this->_writeLinePrefix($line);
 
         foreach($this->_channels as $channel) {
             $channel->writeLine($line);
@@ -252,8 +254,8 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
         return $this;
     }
 
-    protected function _writeLinePrefix() {
-        if($this->_newLine && $this->_lineLevel) {
+    protected function _writeLinePrefix($line) {
+        if($this->_newLine && $this->_lineLevel && strlen($line)) {
             foreach($this->_channels as $channel) {
                 $channel->write(str_repeat('  ', $this->_lineLevel - 1).'• ');
             }
@@ -270,13 +272,15 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
             }
 
             if(!strlen($error)) {
-
                 return;
             }
         }
 
-        $this->_writeErrorLinePrefix();
-        $this->_newLine = false;
+        $this->_writeErrorLinePrefix($error);
+
+        if(strlen($error)) {
+            $this->_newLine = false;
+        }
 
         foreach($this->_channels as $channel) {
             $channel->writeError($error);
@@ -290,7 +294,7 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
     }
 
     public function writeErrorLine($line) {
-        $this->_writeErrorLinePrefix();
+        $this->_writeErrorLinePrefix($line);
 
         foreach($this->_channels as $channel) {
             $channel->writeErrorLine($line);
@@ -304,8 +308,8 @@ class Multiplexer implements IMultiplexer, core\IDumpable {
         return $this;
     }
 
-    protected function _writeErrorLinePrefix() {
-        if($this->_newLine && $this->_lineLevel) {
+    protected function _writeErrorLinePrefix($line) {
+        if($this->_newLine && $this->_lineLevel && strlen($line)) {
             foreach($this->_channels as $channel) {
                 $channel->writeError(str_repeat('  ', $this->_lineLevel - 1).'! ');
             }
