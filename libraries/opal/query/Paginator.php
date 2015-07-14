@@ -210,10 +210,14 @@ class Paginator implements IPaginator {
         
         if($data->has($this->_keyMap['limit'])) {
             $this->setDefaultLimit($data[$this->_keyMap['limit']]);
+            $this->_query->limit($this->_limit);
+        } else if($this->_limit && !$this->_query->hasLimit()) {
+            $this->_query->limit($this->_limit);
         }
         
         if($data->has($this->_keyMap['offset'])) {
             $this->setDefaultOffset($data[$this->_keyMap['offset']]);
+            $this->_query->offset($this->_offset);
         } else if($data->has($this->_keyMap['page'])) {
             $page = (int)$data[$this->_keyMap['page']];
             
@@ -222,6 +226,9 @@ class Paginator implements IPaginator {
             }
             
             $this->setDefaultOffset($this->_limit * ($page - 1));
+            $this->_query->offset($this->_offset);
+        } else if($this->_offset && !$this->_query->hasOffset()) {
+            $this->_query->offset($this->_offset);
         }
         
         if($data->has($this->_keyMap['order']) && !empty($this->_orderableFields)) {
@@ -252,14 +259,15 @@ class Paginator implements IPaginator {
             if(!empty($orderList)) {
                 $this->_order = $orderList;
             }
+
+            $this->_query->setOrderDirectives($this->_order);
+        } else if(!empty($this->_order) && !$this->_query->hasOrderDirectives()) {
+            $this->_query->setOrderDirectives($this->_order);
         }
 
         $this->_isApplied = true;
 
-        return $this->_query->setPaginator($this)
-            ->limit($this->_limit)
-            ->offset($this->_offset)
-            ->setOrderDirectives($this->_order);
+        return $this->_query->setPaginator($this);
     }
 
     public function isApplied() {

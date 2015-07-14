@@ -383,22 +383,20 @@ trait TForm_ModalDelegate {
         $this->_setMode($to);
 
         if($do) {
-            core\lang\Callback($do);
+            core\lang\Callback::factory($do)->invoke($this, $from, $to);
         }
     }
-
 
     protected function _renderModeUi(array $args) {
         $mode = $this->_getMode();
         $modes = $this->_getModeRenderers();
+        $func = null;
 
         if(isset($modes[$mode])) {
             $func = $modes[$mode];
-        } else {
-            $func = 'details';
         }
 
-        if(!method_exists($this, $func)) {
+        if(!$func || !method_exists($this, $func)) {
             throw new DelegateException(
                 'Selector delegate has no render handler for '.$mode.' mode'
             );
@@ -510,76 +508,6 @@ trait TForm_SelectorDelegate {
     }
 }
 
-trait TForm_SelectorDelegateQueryTools {
-
-    private $_selectionList = null;
-
-    protected function _fetchSelectionList($cache=true) {
-        if($cache && $this->_selectionList !== null) {
-            return $this->_selectionList;
-        }
-
-        $selected = $this->getSelected();
-
-        if(empty($selected)) {
-            return $selected;
-        }
-
-        if(!$this->_isForMany) {
-            $selected = [$selected];
-        }
-
-        $output = $this->_fetchResultList($selected);
-
-        if($cache) {
-            $this->_selectionList = $output;
-        }
-
-        return $output;
-    }
-
-    abstract protected function _fetchResultList(array $ids);
-
-    protected function _normalizeQueryResult($result) {
-        if($result instanceof opal\query\IQuery) {
-            $result = $result->toArray();
-        }
-
-        if(!$result instanceof \Iterator
-        && !$result instanceof core\collection\ICollection
-        && !is_array($result)) {
-            $result = [];
-        }
-
-        return $result;
-    }
-
-    protected function _extractQueryResult($result) {
-        $result = $this->_normalizeQueryResult($result);
-
-        foreach($result as $entry) {
-            return $entry;
-        }
-    }
-
-    protected function _isQueryResultEmpty($result) {
-        if($result instanceof core\collection\ICollection) {
-            return $result->isEmpty();
-        } else if(is_array($result)) {
-            return empty($result);
-        } else {
-            return true;
-        }
-    }
-
-    protected function _getResultId($result) {
-        return $result['id'];
-    }
-
-    protected function _getResultDisplayName($result) {
-        return $result['name'];
-    }
-}
 
 
 trait TForm_ValueListSelectorDelegate {
@@ -710,216 +638,6 @@ trait TForm_ValueListSelectorDelegate {
         unset($this->values->selected->{$id});
     }
 }
-
-
-
-// Inline field renderable selector
-trait TForm_InlineFieldRenderableModalSelectorDelegate {
-
-    use TForm_ModalDelegate;
-    use TForm_InlineFieldRenderableDelegate;
-    use TForm_SelectorDelegate;
-    use TForm_SelectorDelegateQueryTools;
-
-    /*
-    protected static $_defaultModes = [
-        'select' => '_renderOverlaySelector',
-        'details' => '_renderInlineDetails'
-    ];
-    */
-
-    protected function _getDefaultMode() {
-        return 'details';
-    }
-
-// Render
-    public function renderFieldAreaContent(aura\html\widget\FieldArea $fa) {
-        $fa->setId($this->elementId('selector'));
-        $fa->isRequired($this->_isRequired);
-        
-        $this->_renderModeUi([$fa]);
-    }
-
-    protected function _renderInlineDetails(aura\html\widget\FieldArea $fa) {
-        $fa->addClass('delegate-selector');
-
-        if($this instanceof arch\form\IDependentDelegate) {
-            $messages = $this->getDependencyMessages();
-
-            if(!empty($messages)) {
-                foreach($messages as $key => $value) {
-                    $fa->addFlashMessage($value, 'warning');
-                }
-                return;
-            }
-        }
-
-        if($messages = $this->_getSelectionErrors()) {
-            $fa->push($this->html->fieldError($messages));
-        }
-
-        $fa->push($this->html('<div class="widget-selection"><div class="body">'));
-        $selectList = $this->_fetchSelectionList();
-
-        if($this->_isForMany) {
-            // Multiple entry
-
-            $selected = $this->_normalizeQueryResult($selectList);
-
-            if(empty($selected)) {
-                $fa->push(
-                    $this->html('em', $this->_('nothing selected')),
-                    $this->html('</div>')
-                );
-            } else {
-                $tempList = $selected;
-                $count = count($selected);
-                $displayList = [];
-
-                for($i = 0; $i < 3 && !empty($tempList); $i++) {
-                    $count--;
-
-                    $displayList[] = $this->html(
-                        'strong', 
-                        $this->_getResultDisplayName(array_shift($tempList))
-                    );
-                }
-
-                if($count) {
-                    $displayList[] = $this->html->_(
-                        'and <strong>%c%</strong> more selected', 
-                        ['%c%' => $count]
-                    );
-                }
-
-                $fa->push(
-                    $this->html->bulletList($displayList),
-                    $this->html('</div>')
-                );
-
-                foreach($selected as $row) {
-                    $id = $this->_getResultId($row);
-
-                    $fa->push(
-                        $this->html->hidden(
-                            $this->fieldName('selected['.$id.']'), 
-                            $id
-                        )
-                    );
-                }
-            }
-        } else {
-            // Single entry
-
-            $selected = $this->_extractQueryResult($selectList);
-
-            if($selected) {
-                // Selection made
-
-                $resultId = $this->_getResultId($selected);
-                $resultName = $this->_getResultDisplayName($selected);
-
-                $fa->push(
-                    $this->html('strong', $resultName),
-
-                    $this->html->hidden(
-                            $this->fieldName('selected'),
-                            $resultId
-                        )
-                );
-            } else {
-                // No selection
-
-                $fa->push(
-                    $this->html('em', $this->_('nothing selected'))
-                );
-            }
-
-            $fa->push($this->html('</div>'));
-        }
-
-        $ba = $fa->addButtonArea();
-        $this->_renderDetailsButtonGroup($ba, $selected);
-
-        $fa->push($this->html('</div>'));
-
-        return $selected;
-    }
-
-    protected function _renderDetailsButtonGroup(aura\html\widget\ButtonArea $ba, $selected) {
-        if(empty($selected)) {
-            $ba->push(
-                $this->html->eventButton(
-                        $this->eventName('beginSelect'),
-                        $this->_('Select')
-                    )
-                    ->setIcon('select')
-                    ->setDisposition('positive')
-                    ->shouldValidate(false)
-            );
-        } else {
-            $ba->push(
-                $this->html->eventButton(
-                        $this->eventName('beginSelect'),
-                        $this->_('Select')
-                    )
-                    ->setIcon('select')
-                    ->setDisposition('operative')
-                    ->shouldValidate(false),
-
-                $this->html->eventButton(
-                        $this->eventName('clear'),
-                        $this->_('Clear')
-                    )
-                    ->setIcon('remove')
-                    ->shouldValidate(false)
-            );
-        }
-    }
-
-    protected function _renderOverlaySelector(aura\html\widget\FieldArea $fa) {
-        $selected = $this->_renderInlineDetails($fa);
-        $ol = $fa->addOverlay($fa->getLabelBody());
-        
-        return $this->_renderOverlaySelectorContent($ol, $selected);
-    }
-
-    abstract protected function _renderOverlaySelectorContent(aura\html\widget\Overlay $ol, $selected);
-    abstract protected function _getSelectionErrors();
-
-
-// Events
-    protected function _onBeginSelectEvent() {
-        $this->_switchMode('details', 'select', function() {
-            $this->_state->setStore('originalSelection', $this->getSelected());
-        });
-    }
-
-    protected function _onCancelSelectEvent() {
-        $this->_switchMode('select', 'details', function() {
-            if($this->_state->hasStore('originalSelection')) {
-                $this->setSelected($this->_state->getStore('originalSelection'));
-            }
-        });
-
-        return $this->http->redirect('#'.$this->elementId('selector'));
-    }
-
-    protected function _onEndSelectEvent() {
-        $this->_switchMode('select', 'details', function() {
-            $this->_state->removeStore('originalSelection');
-        });
-
-        return $this->http->redirect('#'.$this->elementId('selector'));
-    }
-
-    protected function _onResetEvent() {
-        if($this->_state->hasStore('originalSelection')) {
-            $this->setSelected($this->_state->getStore('originalSelection'));
-        }
-    }
-}
-
 
 
 

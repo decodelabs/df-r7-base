@@ -700,8 +700,6 @@ trait TScaffold_RecordDataProvider {
 // Record list provider
 trait TScaffold_RecordListProvider {
 
-    //const SELECTOR_TYPE = 'search';
-
     protected $_recordListFields = [];
 
     public function getRecordListQuery($mode, array $fields=null) {
@@ -770,14 +768,7 @@ trait TScaffold_RecordListProvider {
     }
 
     public function buildSelectorFormDelegate($state, $id) {
-        switch(static::SELECTOR_TYPE) {
-            case 'list':
-                return new arch\scaffold\delegate\ListSelector($this, $state, $id);        
-
-            case 'search':
-            default:
-                return new arch\scaffold\delegate\SearchSelector($this, $state, $id);
-        }
+        return new arch\scaffold\delegate\Selector($this, $state, $id);
     }
 }
 

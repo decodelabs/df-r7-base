@@ -300,6 +300,7 @@ interface IOrderableQuery extends IQuery {
     public function orderBy($field1);
     public function setOrderDirectives(array $directives);
     public function getOrderDirectives();
+    public function hasOrderDirectives();
     public function clearOrderDirectives();
     public function isPrimaryOrderSource($sourceAlias=null);
 }

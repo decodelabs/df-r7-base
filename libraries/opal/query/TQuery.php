@@ -1767,6 +1767,10 @@ trait TQuery_Orderable {
     public function getOrderDirectives() {
         return $this->_order;
     }
+
+    public function hasOrderDirectives() {
+        return !empty($this->_order);
+    }
     
     public function clearOrderDirectives() {
         $this->_order = [];
@@ -1818,7 +1822,7 @@ trait TQuery_Limitable {
         if($this->_maxLimit !== null && $this->_limit > $this->_maxLimit) {
             $this->_limit = $this->_maxLimit;
         }
-        
+
         return $this;
     }
     

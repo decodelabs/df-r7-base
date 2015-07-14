@@ -255,11 +255,13 @@ class SearchController implements ISearchController, core\IDumpable {
             }
         }
 
+        /*
         $paginator = $this->_query->paginate();
 
         if(!$paginator->isApplied()) {
             $paginator->applyWith([]);
         }
+        */
 
         $this->_isPrepared = true;
     }

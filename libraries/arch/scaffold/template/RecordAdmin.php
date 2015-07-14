@@ -44,7 +44,6 @@ abstract class RecordAdmin extends arch\scaffold\Base implements
     const CAN_EDIT_RECORD = true;
     const CAN_DELETE_RECORD = true;
 
-    const SELECTOR_TYPE = 'search';
     const CAN_SEARCH = true;
 
     protected function __construct(arch\IContext $context) {

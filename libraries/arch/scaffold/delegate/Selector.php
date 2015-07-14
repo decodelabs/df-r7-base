@@ -8,8 +8,9 @@ namespace df\arch\scaffold\delegate;
 use df;
 use df\core;
 use df\arch;
+use df\opal;
 
-class SearchSelector extends arch\form\template\SearchSelectorDelegate {
+class Selector extends arch\form\template\SelectorDelegate {
     
     protected $_scaffold;
 
@@ -18,22 +19,12 @@ class SearchSelector extends arch\form\template\SearchSelectorDelegate {
         parent::__construct($scaffold->getContext(), $state, $id);
     }
 
-    protected function _fetchResultList(array $ids) {
-        return $this->_scaffold->getRecordListQuery('selector')
-            ->where($this->_scaffold->getRecordIdField(), 'in', $ids)
-            ->chain([$this, 'applyFilters']);
+    protected function _getBaseQuery($fields=null) {
+        return $this->_scaffold->getRecordListQuery('selector', $fields);
     }
 
-    protected function _getSearchResultIdList($search, array $selected) {
-        $idKey = $this->_scaffold->getRecordIdField();
-
-        return $this->_scaffold->getRecordListQuery('selector', [$idKey])
-            ->chain(function($query) use($search) {
-                $this->_scaffold->applyRecordQuerySearch($query, $search, 'selector');
-            })
-            ->where($idKey, '!in', $selected)
-            ->chain([$this, 'applyFilters'])
-            ->toList($idKey);
+    protected function _applyQuerySearch(opal\query\IQuery $query, $search) {
+        return $this->_scaffold->applyRecordQuerySearch($query, $search, 'selector');
     }
 
     protected function _renderCollectionList($result) {
