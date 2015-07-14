@@ -122,7 +122,7 @@ interface ISelectionProviderDelegate extends IResultProviderDelegate {
     public function isForMany($flag=null);
 }
 
-interface ISelectorDelegate extends ISelectionProviderDelegate {
+interface ISelectorDelegate extends ISelectionProviderDelegate, IDependencyValueProvider {
     public function isSelected($id);
     public function setSelected($selected);
     public function getSelected();
@@ -138,114 +138,18 @@ interface IAdapterDelegate extends IParentUiHandlerDelegate, IParentEventHandler
     
 }
 
-interface IDependency {
-    public function getName();
 
-    public function setContext($context);
-    public function getContext();
-
-    public function hasValue();
-    public function getValue();
-    public function shouldFilter($flag=null);
-
-    public function setErrorMessage($message);
-    public function getErrorMessage();
-
-    public function setCallback($callback=null);
-    public function getCallback();
-    public function hasCallback();
-
-    public function setApplied($applied=true);
-    public function isApplied();
+interface IDependencyValueProvider {
+    public function getDependencyValue();
+    public function hasDependencyValue();
 }
 
-trait TDependency {
-
-    protected $_name;
-    protected $_context;
-    protected $_error;
-    protected $_callback;
-    protected $_isApplied = false;
-    protected $_shouldFilter = true;
-
-    public function getName() {
-        return $this->_name;
-    }
-
-    public function setContext($context) {
-        if($context === false) {
-            $context = null;
-            $this->_shouldFilter = false;
-        }
-
-        $this->_context = $context;
-        return $this;
-    }
-
-    public function getContext() {
-        return $this->_context;
-    }
-
-    public function shouldFilter($flag=null) {
-        if($flag !== null) {
-            $this->_shouldFilter = (bool)$flag;
-            return $this;
-        }
-
-        return $this->_shouldFilter;
-    }
-
-    public function setErrorMessage($error) {
-        $this->_error = $error;
-        return $this;
-    }
-
-    public function getErrorMessage() {
-        return $this->_error;
-    }
-
-    public function setCallback($callback=null) {
-        if($callback !== null) {
-            $callback = core\lang\Callback::factory($callback);
-        }
-        
-        $this->_callback = $callback;
-        return $this;
-    }
-
-    public function getCallback() {
-        return $this->_callback;
-    }
-
-    public function hasCallback() {
-        return $this->_callback !== null;
-    }
-
-    public function setApplied($applied=true) {
-        $this->_isApplied = (bool)$applied;
-        return $this;
-    }
-
-    public function isApplied() {
-        return $this->_isApplied;
-    }
-}
-
-interface IDependentDelegate {
-    public function addSelectorDependency(ISelectorDelegate $delegate, $error=null, $context=null, $filter=false);
-    public function addValueDependency($name, core\collection\IInputTree $value, $error=null, $context=null, $filter=false);
-    public function addValueListDependency($name, core\collection\IInputTree $value, $error=null, $context=null, $filter=false);
-    public function addGenericDependency($name, $value, $error=null, $context=null);
-    public function addFilter($context, $value, $name=null);
-    public function addDependency(IDependency $dependency);
-
+interface IDependentDelegate extends opal\query\IFilterConsumer {
+    public function addDependency($value, $message=null, $filter=null);
+    public function setDependency($name, $value, $message=null, $filter=null);
+    public function hasDependency($name);
     public function getDependency($name);
+    public function removeDependency($name);
     public function getDependencies();
-    public function getDependenciesByContext($context);
-    public function getDependencyValuesByContext($context);
-    public function hasDependencyContext($context);
-    public function getUnresolvedDependencies();
-    public function getUnresolvedDependencyMessages();
-    public function applyDependencies(opal\query\IQuery $query);
-    public function setDependencyContextApplied($context, $applied=true);
+    public function getDependencyMessages();
 }

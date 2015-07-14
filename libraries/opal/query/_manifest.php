@@ -965,6 +965,9 @@ interface IClauseList extends
     core\IArrayProvider, 
     ISourceProvider {
 
+    public function getParent();
+    public function getQuery();
+
     public function _addClause(IClauseProvider $clause=null);
     public function clear();
     public function endClause();
@@ -1103,20 +1106,29 @@ interface IOutputManifest {
 
 // Filters
 interface IFilterConsumer {
-    public function addFilter($callback);
+    public function addFilter($a, $b=null);
     public function setFilter($name, $callback);
     public function hasFilter($name);
     public function removeFilter($name);
     public function getFilters();
     public function clearFilters();
+    public function applyFilters(IQuery $query);
 }
 
 trait TFilterConsumer {
 
     protected $_filters = [];
 
-    public function addFilter($callback) {
-        return $this->setFilter(uniqid(), $callback);
+    public function addFilter($a, $b=null) {
+        if(is_string($a)) {
+            $name = $a;
+            $callback = $b;
+        } else {
+            $name = uniqid();
+            $callback = $a;
+        }
+
+        return $this->setFilter($name, $callback);
     }
 
     public function setFilter($name, $callback) {
@@ -1142,13 +1154,17 @@ trait TFilterConsumer {
         return $this;
     }
 
-    protected function _applyFilters(IQuery $query) {
-        $clause = $query->beginWhereClause();
+    public function applyFilters(IQuery $query) {
+        if(!empty($this->_filters)) {
+            $clause = $query->beginWhereClause();
 
-        foreach($this->_filters as $filter) {
-            $filter->invoke($clause, $this);
+            foreach($this->_filters as $filter) {
+                $filter->invoke($clause, $this);
+            }
+
+            $clause->endClause();
         }
 
-        return $clause->endClause();
+        return $this;
     }
 }

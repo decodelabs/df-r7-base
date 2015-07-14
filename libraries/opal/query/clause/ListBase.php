@@ -21,6 +21,26 @@ class ListBase implements opal\query\IClauseList, core\IDumpable {
         $this->_parent = $parent;
         $this->_isOr = (bool)$isOr;
     }
+
+    public function getParent() {
+        return $this->_parent;
+    }
+
+    public function getQuery() {
+        $target = $this;
+
+        while(!$target instanceof opal\query\IQuery && $target !== null) {
+            $test = $target->getParent();
+
+            if($test === $target) {
+                return null;
+            }
+
+            $target = $test;
+        }
+
+        return $target;
+    }
     
     public function __clone() {
         foreach($this->_clauses as $i => $clause) {

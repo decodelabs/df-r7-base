@@ -53,7 +53,7 @@ class Weight extends Base implements core\validate\IWeightField {
             $query->where('@primary', '!=', $this->_recordId);
         }
 
-        $this->_applyFilters($query);
+        $this->applyFilters($query);
 
         return $query->toValue('max') + 1;
     }

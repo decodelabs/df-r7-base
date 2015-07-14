@@ -670,6 +670,14 @@ trait TForm_ValueListSelectorDelegate {
         return $this;
     }
 
+    public function getDependencyValue() {
+        return $this->getSelected();
+    }
+
+    public function hasDependencyValue() {
+        return $this->hasSelection();
+    }
+
     public function apply() {
         if($this->_isRequired) {
             if(!$this->hasSelection()) {
@@ -736,7 +744,7 @@ trait TForm_InlineFieldRenderableModalSelectorDelegate {
         $fa->addClass('delegate-selector');
 
         if($this instanceof arch\form\IDependentDelegate) {
-            $messages = $this->getUnresolvedDependencyMessages();
+            $messages = $this->getDependencyMessages();
 
             if(!empty($messages)) {
                 foreach($messages as $key => $value) {
@@ -918,33 +926,30 @@ trait TForm_InlineFieldRenderableModalSelectorDelegate {
 // Dependant
 trait TForm_DependentDelegate {
 
+    use opal\query\TFilterConsumer;
+
     protected $_dependencies = [];
+    protected $_dependencyMessages = [];
 
-    public function addSelectorDependency(ISelectorDelegate $delegate, $error=null, $context=null, $filter=false) {
-        return $this->addDependency(new arch\form\dependency\Selector($delegate, $error, $context, $filter));
-    }
-
-    public function addValueDependency($name, core\collection\IInputTree $value, $error=null, $context=null, $filter=false) {
-        return $this->addDependency(new arch\form\dependency\Value($name, $value, $error, $context));
-    }
-    
-    public function addValueListDependency($name, core\collection\IInputTree $value, $error=null, $context=null, $filter=false) {
-        return $this->addDependency(new arch\form\dependency\ValueList($name, $value, $error, $context));
+    public function addDependency($value, $message=null, $filter=null) {
+        return $this->setDependency(uniqid(), $value, $message, $filter);
     }
 
-    public function addGenericDependency($name, $value, $error=null, $context=null) {
-        return $this->addDependency(new arch\form\dependency\Generic($name, $value, $error, $context));
-    }
-    
-    public function addFilter($context, $value, $name=null) {
-        return $this->addDependency(new arch\form\dependency\Filter($context, $value, $name=null));
-    }
+    public function setDependency($name, $value, $message=null, $filter=null) {
+        $this->_dependencies[$name] = [
+            'value' => $value,
+            'message' => $message,
+            'filter' => $filter,
+            'normalized' => false,
+            'resolved' => null
+        ];
 
-    public function addDependency(IDependency $dependency) {
-        $this->_dependencies[$dependency->getName()] = $dependency;
         return $this;
     }
 
+    public function hasDependency($name) {
+        return isset($this->_dependencies[$name]);
+    }
 
     public function getDependency($name) {
         if(isset($this->_dependencies[$name])) {
@@ -952,114 +957,91 @@ trait TForm_DependentDelegate {
         }
     }
 
+    public function removeDependency($name) {
+        unset($this->_dependencies[$name]);
+        return $this;
+    }
+
     public function getDependencies() {
         return $this->_dependencies;
     }
 
-    public function getDependenciesByContext($context) {
+    public function getDependencyMessages() {
+        $this->_normalizeDependencyValues();
         $output = [];
 
         foreach($this->_dependencies as $name => $dep) {
-            if($dep->getContext() == $context) {
-                $output[$name] = $dep;
-            }
-        }
-
-        return $output;
-    }
-
-    public function getDependencyValuesByContext($context) {
-        $output = [];
-
-        foreach($this->_dependencies as $name => $dep) {
-            if($dep->getContext() == $context && $dep->hasValue()) {
-                $output[$name] = $dep->getValue();
-            }
-        }
-
-        return $output;
-    }
-
-    public function hasDependencyContext($context) {
-        foreach($this->_dependencies as $name => $dep) {
-            if($dep->getContext() == $context) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public function getUnresolvedDependencies() {
-        $output = [];
-
-        foreach($this->_dependencies as $name => $dependency) {
-            if(!$dependency->hasValue()) {
-                $output[$name] = $dependency;
-            }
-        }
-
-        return $output;
-    }
-
-    public function getUnresolvedDependencyMessages() {
-        $output = [];
-
-        foreach($this->getUnresolvedDependencies() as $name => $dep) {
-            $message = $dep->getErrorMessage();
-
-            if(empty($message)) {
-                $message = $this->_('Unresolved dependency: %n%', ['%n%' => $dep->getName()]);
-            }
-
-            $output[$name] = $message;
-        }
-
-        return $output;
-    }
-
-    public function applyDependencies(opal\query\IQuery $query) {
-        if(empty($this->_dependencies)) {
-            return;
-        }
-
-        $values = [];
-
-        foreach($this->_dependencies as $name => $dep) {
-            if($dep->isApplied() || !$dep->shouldFilter() || !$dep->hasValue()) {
+            if($dep['resolved']) {
                 continue;
             }
 
-            if($dep->hasCallback()) {
-                $callback = $dep->getCallback();
-                $callback->invoke($query, $dep->getValue(), $dep);
-            } else {
-                $values[$dep->getContext()][$name] = $dep->getValue();
+            $output[$name] = isset($dep['message']) ?
+                $dep['message'] : $this->_('Unresolved dependency: %n%', ['%n%' => $name]);
+        }
+
+        return $output;
+    }
+
+    public function applyFilters(opal\query\IQuery $query) {
+        if(!empty($this->_filters)) {
+            $clause = $query->beginWhereClause();
+
+            foreach($this->_filters as $filter) {
+                $filter->invoke($clause, $this);
             }
 
-            $dep->setApplied(true);
+            $clause->endClause();
         }
 
-        foreach($values as $context => $values) {
-            $query->where($context, 'in', array_unique($values));
+        $this->_normalizeDependencyValues();
+        $filters = [];
+        $clause = null;
+
+        foreach($this->_dependencies as $name => $dep) {
+            if(!$dep['resolved'] || !isset($dep['filter'])) {
+                continue;
+            }
+
+            if(!$clause) {
+                $clause = $query->beginWhereClause();
+            }
+
+            core\lang\Callback::factory($dep['filter'])->invoke($clause, $dep['value'], $this);
         }
 
-        foreach($this->_dependencies as $dep) {
-            $dep->setApplied(false);
+        if($clause) {
+            $clause->endClause();
         }
 
         return $this;
     }
 
-    public function setDependencyContextApplied($context, $applied=true) {
-        foreach($this->_dependencies as $dependency) {
-            if($dependency->getContext() != $context) {
+    protected function _normalizeDependencyValues() {
+        foreach($this->_dependencies as $name => $dep) {
+            if($dep['normalized']) {
                 continue;
             }
 
-            $dependency->setApplied($applied);
-        }
+            $value = $dep['value'];
+            $isResolved = null;
 
-        return $this;
+            if($value instanceof IDependencyValueProvider) {
+                $isResolved = $value->hasDependencyValue();
+                $value = $value->getDependencyValue();
+            } else if($value instanceof core\IValueContainer) {
+                $value = $value->getValue();
+                $isResolved = $value !== null;
+            } else if(is_callable($value)) {
+                $value = call_user_func_array($value, [$this]);
+            }
+
+            if($isResolved === null) {
+                $isResolved = (bool)$value;
+            }
+
+            $this->_dependencies[$name]['value'] = $value;
+            $this->_dependencies[$name]['normalized'] = true;
+            $this->_dependencies[$name]['resolved'] = $isResolved;
+        }
     }
 }

@@ -21,7 +21,7 @@ class SearchSelector extends arch\form\template\SearchSelectorDelegate {
     protected function _fetchResultList(array $ids) {
         return $this->_scaffold->getRecordListQuery('selector')
             ->where($this->_scaffold->getRecordIdField(), 'in', $ids)
-            ->chain([$this, 'applyDependencies']);
+            ->chain([$this, 'applyFilters']);
     }
 
     protected function _getSearchResultIdList($search, array $selected) {
@@ -32,7 +32,7 @@ class SearchSelector extends arch\form\template\SearchSelectorDelegate {
                 $this->_scaffold->applyRecordQuerySearch($query, $search, 'selector');
             })
             ->where($idKey, '!in', $selected)
-            ->chain([$this, 'applyDependencies'])
+            ->chain([$this, 'applyFilters'])
             ->toList($idKey);
     }
 

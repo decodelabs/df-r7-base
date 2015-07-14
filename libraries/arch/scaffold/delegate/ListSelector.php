@@ -21,7 +21,7 @@ class ListSelector extends arch\form\template\ListSelectorDelegate {
     protected function _fetchResultList(array $ids) {
         return $this->_scaffold->getRecordListQuery('selector')
             ->where($this->_scaffold->getRecordIdField(), 'in', $ids)
-            ->chain([$this, 'applyDependencies']);
+            ->chain([$this, 'applyFilters']);
     }
 
     protected function _getResultId($result) {
@@ -37,7 +37,7 @@ class ListSelector extends arch\form\template\ListSelectorDelegate {
         $nameField = $this->_scaffold->getRecordNameField();
 
         return $this->_scaffold->getRecordListQuery('selector', [$idKey, $nameField])
-            ->chain([$this, 'applyDependencies'])
+            ->chain([$this, 'applyFilters'])
             ->toList($idKey, $nameField);
     }
 }

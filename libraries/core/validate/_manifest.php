@@ -404,7 +404,7 @@ trait TUniqueCheckerField {
             $query->where('@primary', '!=', $this->_recordId);
         }
 
-        $this->_applyFilters($query);
+        $this->applyFilters($query);
         return $query;
     }
 }

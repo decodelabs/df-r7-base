@@ -24,6 +24,18 @@ abstract class ListSelectorDelegate extends arch\form\Delegate implements
 
     public function renderFieldAreaContent(aura\html\widget\FieldArea $fa) {
         $options = $this->_getOptionsList();
+
+        if($this instanceof arch\form\IDependentDelegate) {
+            $messages = $this->getDependencyMessages();
+
+            if(!empty($messages)) {
+                foreach($messages as $key => $value) {
+                    $fa->addFlashMessage($value, 'warning');
+                }
+                return;
+            }
+        }
+        
         $type = $this->_isForMany ? 'checkboxGroup' : 'selectList';
         $select = $this->html->{$type}(
                 $this->fieldName('selected'),
