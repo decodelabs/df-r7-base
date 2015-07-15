@@ -84,6 +84,10 @@ trait TEntryPoint {
     }
 
     public function addDump($dumpObject, core\debug\IStackCall $stackCall, $deep=false, $critical=true) {
+        if($dumpObject instanceof \Exception) {
+            return $this->addException($dumpObject);
+        }
+
         df\Launchpad::loadBaseClass('core/log/node/Dump');
         return $this->addNode(new core\log\node\Dump($dumpObject, $deep, $critical, $stackCall->getFile(), $stackCall->getLine()));
     }
@@ -97,11 +101,7 @@ trait TEntryPoint {
         $group = $this->newGroup('Dump group', $stackCall->getFile(), $stackCall->getLine());
         
         foreach(array_keys($dumpObjects) as $i) {
-            if($dumpObjects[$i] instanceof \Exception) {
-                $group->addException($dumpObjects[$i]);
-            } else {
-                $group->addDump($dumpObjects[$i], $stackCall, $deep, $critical);
-            }
+            $group->addDump($dumpObjects[$i], $stackCall, $deep, $critical);
         }
 
         $this->addNode($group);
