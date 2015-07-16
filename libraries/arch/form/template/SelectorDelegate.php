@@ -190,6 +190,7 @@ abstract class SelectorDelegate extends arch\form\Delegate implements
         $fa->push(
             $this->html('div.widget-selection', [
                 $this->html('div.body', $select),
+                $this->html->hidden($this->fieldName('_poke'), 1),
 
                 $this->html->buttonArea(
                     $this->html->eventButton(
