@@ -150,7 +150,7 @@ class Upload implements IUpload {
 
 
     public function send() {
-        $request = $this->_mediator->_newRequest('put', $this->_path, $this->_bucket);
+        $request = $this->_mediator->createRequest('put', ['path' => $this->_path, 'bucket' => $this->_bucket]);
         $request->setBodyData($this->_file);
 
         $headers = $request->getHeaders();
@@ -174,7 +174,7 @@ class Upload implements IUpload {
             $headers->set($key, $value);
         }
 
-        $response = $this->_mediator->callServer($request);
+        $this->_mediator->sendRequest($request);
         return $this;
     }
 }

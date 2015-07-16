@@ -11,16 +11,18 @@ use df\spur;
 use df\link;
 
 class Mediator implements IMediator {
+
+    use spur\THttpMediator;
     
     const ENDPOINT = 's3.amazonaws.com';
 
-    protected $_httpClient;
     protected $_accessKey;
     protected $_secretKey;
     protected $_useSsl = false;
 
     public function __construct($accessKey, $secretKey, $useSsl=false) {
-        $this->_httpClient = new link\http\peer\Client();
+        //$this->getHttpClient(); // DELETE ME
+
         $this->setAccessKey($accessKey);
         $this->setSecretKey($secretKey);
         $this->shouldUseSsl((bool)$useSsl);
@@ -28,10 +30,6 @@ class Mediator implements IMediator {
 
 
 // Client
-    public function getHttpClient() {
-        return $this->_httpClient;
-    }
-
     public function setAccessKey($key) {
         $this->_accessKey = $key;
         return $this;
@@ -61,7 +59,7 @@ class Mediator implements IMediator {
 
 // Buckets
     public function createBucket($name, $acl=IAcl::PRIVATE_READ_WRITE, $location=null) {
-        $request = $this->_newRequest('put', $name);
+        $request = $this->createRequest('put', $name);
         $request->getHeaders()->set('x-amz-acl', $acl);
 
         if($location !== null) {
@@ -73,18 +71,17 @@ class Mediator implements IMediator {
             $request->getHeaders()->set('Content-Type', 'application/xml');
         }
 
-        $this->callServer($request);
+        $this->sendRequest($request);
         return $this;
     }
 
     public function deleteBucket($name) {
-        $request = $this->_newRequest('delete', '/', $name);
-        $response = $this->callServer($request);
+        $this->requestRaw('delete', ['path' => '/', 'bucket' => $name]);
         return $this;
     }
 
     public function getBucketList() {
-        $response = $this->callServer($this->_newRequest('get', '/'));
+        $response = $this->requestXml('get', '/');
         $output = [];
 
         $owner = $response['xml']->getFirstChildOfType('Owner');
@@ -109,14 +106,12 @@ class Mediator implements IMediator {
     }
 
     public function getBucketLocation($bucket) {
-        $request = $this->_newRequest('get', '/', $bucket);
-        $request->url->query->location = null;
-        $response = $this->callServer($request);
+        $response = $this->requestXml('get', ['path' => '/', 'bucket' => $bucket], ['location' => null]);
         return $response['xml']->getTextContent();
     }
 
     public function getBucketObjectList($bucket, $prefix=null, $limit=null, $marker=null) {
-        $request = $this->_newRequest('get', '/', $bucket);
+        $request = $this->createRequest('get', ['path' => '/', 'bucket' => $bucket]);
         $query = $request->getUrl()->getQuery();
         $fetchAll = true;
 
@@ -148,7 +143,7 @@ class Mediator implements IMediator {
                 $query->marker = $marker;
             }
 
-            $response = $this->callServer($request);
+            $response = $this->_extractXml($this->sendRequest($request));
             $output['requests']++;
             $isTruncated = $response['xml']->getChildTextContent('IsTruncated') == 'true';
             $output['isTruncated'] = $isTruncated;
@@ -179,10 +174,9 @@ class Mediator implements IMediator {
 
 // Objects
     public function getObjectInfo($bucket, $path) {
-        $request = $this->_newRequest('head', $path, $bucket);
-        $response = $this->callServer($request);
+        $response = $this->requestRaw('head', ['path' => $path, 'bucket' => $bucket]);
 
-        $headers = $response['http']->getHeaders();
+        $headers = $response->getHeaders();
         $meta = [];
 
         foreach($headers as $key => $value) {
@@ -229,8 +223,7 @@ class Mediator implements IMediator {
     }
 
     public function deleteFile($bucket, $path) {
-        $request = $this->_newRequest('delete', $path, $bucket);
-        $this->callServer($request);
+        $this->requestRaw('delete', ['path' => $path, 'bucket' => $bucket]);
         return $this;
     }
 
@@ -247,7 +240,57 @@ class Mediator implements IMediator {
 
 
 // IO
-    public function callServer(link\http\IRequest $request) {
+    public function requestXml($method, $path, array $data=[], array $headers=[]) {
+        $response = $this->sendRequest($this->createRequest(
+            $method, $path, $data, $headers
+        ));
+
+        return $this->_extractXml($response);
+    }
+
+    protected function _extractXml(link\http\IResponse $response) {
+        return [
+            'xml' => core\xml\Tree::fromXmlString($response->getContent()),
+            'http' => $response
+        ];
+    }
+
+    public function createUrl($path) {
+        $bucket = null;
+
+        if(isset($path['bucket'])) {
+            $bucket = $path['bucket'];
+            unset($path['bucket']);
+            $path = array_shift($path);
+        }
+
+        $path = (string)$path;
+        $url = self::ENDPOINT;
+        $path = ltrim($path, '/');
+
+        if($bucket !== null) {
+            if($this->_isDnsBucketName($bucket)) {
+                $url = $bucket.'.'.$url.'/'.$path;
+            } else {
+                $url = $url.'/'.$bucket.'/'.$path;
+            }
+
+            $resource = '/'.$bucket.'/'.$path;
+        } else {
+            $url .= '/'.$path;
+            $resource = '/'.$path;
+        }
+
+        $url = link\http\Url::factory($url);
+        $url->isSecure($this->_useSsl);
+        $url->query->_resource = $resource;
+
+        return $url;
+    }
+
+    protected function _prepareRequest(link\http\IRequest $request) {
+        $request = clone $request;
+
         $headers = $request->getHeaders();
         $url = $request->getUrl();
         $resource = $url->query['_resource'];
@@ -305,68 +348,35 @@ class Mediator implements IMediator {
             $resource
         ));
 
-        $response = $this->_httpClient->sendRequest($request);
-        $url->query->_resource = $resource;
+        return $request;
+    }
+
+    protected function _extractResponseError(link\http\IResponse $response) {
         $content = $response->getContent();
         $xml = null;
+
+        core\dump($response);
 
         if(strlen($content) && $response->getHeaders()->get('Content-Type') == 'application/xml') {
             $xml = core\xml\Tree::fromXmlString($content);
         }
 
-        if(!$response->isOk()) {
-            if($xml) {
-                throw new ApiException(
-                    $xml->Code[0]->getTextContent(),
-                    $xml->Message[0]->getTextContent(),
-                    $response->getHeaders()->getStatusCode(),
-                    $xml
-                );
-            } else if($response->getHeaders()->hasStatusCode(404)) {
-                throw new RuntimeException(
-                    'Resource not found - '.$request->getUrl()
-                );
-            } else {
-                throw new RuntimeException(
-                    'An unknown API error occurred'
-                );
-            }
-        }
-
-        return [
-            'xml' => $xml,
-            'http' => $response
-        ];
-    }
-
-    public function _newRequest($method, $path, $bucket=null) {
-        $request = new link\http\request\Base($this->getBucketUrl($bucket, $path, $resource));
-        $request->setMethod($method);
-        $url = $request->getUrl();
-        $url->isSecure($this->_useSsl);
-        $url->query->_resource = $resource;
-
-        return $request;
-    }
-
-    public function getBucketUrl($bucket, $path, &$resource=null) {
-        $url = self::ENDPOINT;
-        $path = ltrim($path, '/');
-
-        if($bucket !== null) {
-            if($this->_isDnsBucketName($bucket)) {
-                $url = $bucket.'.'.$url.'/'.$path;
-            } else {
-                $url = $url.'/'.$bucket.'/'.$path;
-            }
-
-            $resource = '/'.$bucket.'/'.$path;
+        if($xml) {
+            return new ApiException(
+                $xml->Code[0]->getTextContent(),
+                $xml->Message[0]->getTextContent(),
+                $response->getHeaders()->getStatusCode(),
+                $xml
+            );
+        } else if($response->getHeaders()->hasStatusCode(404)) {
+            return new RuntimeException(
+                'Resource not found - '.$request->getUrl()
+            );
         } else {
-            $url .= '/'.$path;
-            $resource = '/'.$path;
+            return new RuntimeException(
+                'An unknown API error occurred'
+            );
         }
-
-        return $url;
     }
 
     protected function _isDnsBucketName($bucket) {
@@ -386,10 +396,6 @@ class Mediator implements IMediator {
     }
 
     protected function _createSignature($string) {
-        return 'AWS '.$this->_accessKey.':'.$this->_createHash($string);
-    }
-
-    protected function _createHash($string) {
-        return base64_encode(hash_hmac('sha1', $string, $this->_secretKey, true));
+        return 'AWS '.$this->_accessKey.':'.base64_encode(hash_hmac('sha1', $string, $this->_secretKey, true));
     }
 }

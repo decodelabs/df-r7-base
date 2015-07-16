@@ -18,7 +18,7 @@ class ApiError extends RuntimeException implements core\IDumpable {
 
     protected $_data;
 
-    public function __construct($message, array $data) {
+    public function __construct($message, $data) {
         parent::__construct($message);
         $this->_data = $data;
     }
@@ -89,7 +89,7 @@ trait THttpMediator {
                 $request->setPostData($data);
                 $request->headers->set('content-type', 'application/x-www-form-urlencoded');
             } else {
-                $request->url->setQuery($data);
+                $request->url->query->import($data);
             }
         }
 
@@ -97,24 +97,27 @@ trait THttpMediator {
             $request->getHeaders()->import($headers);
         }
 
-        $this->_prepareRequest($request);
         return $request;
     }
 
     public function sendRequest(link\http\IRequest $request) {
+        $new = $this->_prepareRequest($request);
+
+        if($new instanceof link\http\IRequest) {
+            $request = $new;
+        }
+
         $this->getHttpClient();
 
         $this->_httpClient->setMaxRetries(0);
         $response = $this->_httpClient->sendRequest($request);
 
         if(!$response->isOk()) {
-            try {
-                $data = $response->getJsonContent();
-            } catch(\Exception $e) {
-                $data = new core\collection\Tree();
-            }
+            $message = $this->_extractResponseError($response);
 
-            $message = $this->_extractErrorMessage($data);
+            if($message instanceof \Exception) {
+                throw $message;
+            }
 
             if($response->getHeaders()->getStatusCode() >= 500) {
                 throw new ApiImplementationError($message, $data->toArray());
@@ -133,7 +136,13 @@ trait THttpMediator {
 
     protected function _prepareRequest(link\http\IRequest $request) {}
 
-    protected function _extractErrorMessage(core\collection\ITree $data) {
+    protected function _extractResponseError(link\http\IResponse $response) {
+        try {
+            $data = $response->getJsonContent();
+        } catch(\Exception $e) {
+            $data = new core\collection\Tree();
+        }
+
         return $data['message'];
     }
 }

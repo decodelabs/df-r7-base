@@ -14,23 +14,17 @@ use df\link;
 interface IException {}
 class RuntimeException extends \RuntimeException implements IException {}
 
-class ApiException extends RuntimeException implements core\IDumpable {
+class ApiException extends spur\ApiError {
 
     public $apiCode;
-    public $xml;
 
     public function __construct($apiCode, $message, $httpCode=500, core\xml\ITree $xml=null) {
         $this->apiCode = $apiCode;
-        $this->xml = $xml;
-        parent::__construct($message, $httpCode);
+        parent::__construct($message, $xml, $httpCode);
     }
 
     public function getApiCode() {
         return $this->apiCode;
-    }
-
-    public function getDumpProperties() {
-        return $this->xml;
     }
 }
 
@@ -55,8 +49,7 @@ interface IEncryption {
 }
 
 
-interface IMediator {
-    public function getHttpClient();
+interface IMediator extends spur\IHttpMediator {
     public function setAccessKey($key);
     public function getAccessKey();
     public function setSecretKey($key);
@@ -76,9 +69,6 @@ interface IMediator {
     public function moveFile($bucket, $fromPath, $toPath, $acl=IAcl::PRIVATE_READ_WRITE);
     public function deleteFile($bucket, $path);
     public function deleteFolder($bucket, $path);
-
-    public function callServer(link\http\IRequest $request);
-    public function getBucketUrl($bucket, $path, &$resource=null);
 }
 
 interface IUpload extends core\collection\IAttributeContainer {

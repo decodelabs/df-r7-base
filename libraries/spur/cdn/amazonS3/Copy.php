@@ -42,7 +42,7 @@ class Copy extends Upload implements ICopy {
     }
 
     public function send() {
-        $request = $this->_mediator->_newRequest('put', $this->_path, $this->_bucket);
+        $request = $this->_mediator->createRequest('put', ['path' => $this->_path, 'bucket' => $this->_bucket]);
 
         $headers = $request->getHeaders();
         $headers->set('x-amz-acl', $this->_acl);
@@ -66,7 +66,7 @@ class Copy extends Upload implements ICopy {
         $headers->set('x-amz-copy-source', sprintf('/%s/%s', $this->_fromBucket, rawurlencode($this->_fromPath)));
         //$headers->set('x-amz-metadata-directive', 'REPLACE');
 
-        $response = $this->_mediator->callServer($request);
+        $this->_mediator->sendRequest($request);
         return $this;
     }
 }
