@@ -471,22 +471,6 @@ class Mediator implements IMediator, \Serializable {
 
 
 // IO
-    public function __call($method, array $args) {
-        return $this->callServerArgs($method, $args);
-    }
-
-    public function callServer($method) {
-        return $this->callServerArgs($method, array_slice(func_get_args(), 1));
-    }
-
-    public function callServerArgs($method, array $args=[]) {
-        $args = $this->_mapMethodArgs($method, $args);
-        $request = $this->createRequest('post', $method, $args);
-        $response = $this->sendRequest($request);
-
-        return flex\json\Codec::decode($response->getContent());
-    }
-
     public function createRequest($method, $path, array $args=[], array $headers=[]) {
         $url = $this->createUrl($path);
         $request = link\http\request\Base::factory($url);
@@ -518,22 +502,6 @@ class Mediator implements IMediator, \Serializable {
         return $url;
     }
 
-    protected function _mapMethodArgs($method, array $args) {
-        if(!isset(self::$_functionMap[$method])) {
-            throw new BadMethodCallException(
-                'Method '.$method.' is not recognised'
-            );
-        }
-
-        $newArgs = [];
-
-        foreach(self::$_functionMap[$method] as $arg) {
-            $newArgs[$arg] = array_shift($args);
-        }
-
-        return $newArgs;
-    }
-
     protected function _isResponseOk(link\http\IResponse $response) {
         if(!$response->isOk()) {
             return false;
@@ -557,6 +525,7 @@ class Mediator implements IMediator, \Serializable {
         return $error;
     }
 
+/*
     protected static $_functionMap = [
         'campaignUnschedule' => ['cid'],
         'campaignSchedule' => ['cid', 'schedule_time', 'schedule_time_b'],
@@ -664,4 +633,5 @@ class Mediator implements IMediator, \Serializable {
         'gmonkeyMembers' => [],
         'gmonkeyActivity' => []
     ];
+    */
 }

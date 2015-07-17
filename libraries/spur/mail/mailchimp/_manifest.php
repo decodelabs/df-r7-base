@@ -53,11 +53,6 @@ interface IMediator extends spur\IHttpMediator {
     public function fetchWebHooks($listId);
     public function addWebHook($listId, $url, array $actions, array $sources);
     public function deleteWebHook($listId, $url);
-
-// IO
-    public function __call($method, array $args);
-    public function callServer($method);
-    public function callServerArgs($method, array $args=[]);
 }
 
 
