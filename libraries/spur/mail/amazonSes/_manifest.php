@@ -55,7 +55,7 @@ class ApiException extends RuntimeException implements core\IDumpable {
 
 
 // Interfaces
-interface IMediator {
+interface IMediator extends spur\IHttpMediator {
     public function getHttpClient();
 
     public function setUrl($url);
@@ -73,5 +73,5 @@ interface IMediator {
     public function sendMessage(flow\mail\IMessage $message);
     public function sendRawMessage(flow\mail\IMessage $message);
 
-    public function callServer($method, array $data=[]);
+    public function requestXml($method, array $data=[], array $headers=[]);
 }

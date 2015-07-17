@@ -13,15 +13,13 @@ use df\link;
     
 class Mediator implements IMediator {
 
+    use spur\THttpMediator;
+
     protected $_accessKey;
     protected $_secretKey;
     protected $_activeUrl;
-    protected $_activeRequest;
-    protected $_httpClient;
 
     public function __construct($url=null, $accessKey=null, $secretKey=null) {
-        $this->_httpClient = new link\http\peer\Client();
-
         if($url !== null) {
             $this->setUrl($url);
         }
@@ -33,11 +31,6 @@ class Mediator implements IMediator {
         if($secretKey !== null) {
             $this->setSecretKey($secretKey);
         }
-    }
-
-// Client
-    public function getHttpClient() {
-        return $this->_httpClient;
     }
 
 
@@ -74,7 +67,7 @@ class Mediator implements IMediator {
 
 // API
     public function getVerifiedAddresses() {
-        $xml = $this->callServer('get', [
+        $xml = $this->requestXml('get', [
             'Action' => 'ListVerifiedEmailAddresses'
         ]);
 
@@ -90,7 +83,7 @@ class Mediator implements IMediator {
     public function deleteVerifiedAddress($address) {
         $address = flow\mail\Address::factory($address);
         
-        $xml = $this->callServer('delete', [
+        $xml = $this->requestXml('delete', [
             'Action' => 'DeleteVerifiedEmailAddress',
             'EmailAddress' => $address->getAddress()
         ]);
@@ -99,7 +92,7 @@ class Mediator implements IMediator {
     }
 
     public function getSendQuota() {
-        $xml = $this->callServer('get', [
+        $xml = $this->requestXml('get', [
             'Action' => 'GetSendQuota'
         ]);
 
@@ -111,7 +104,7 @@ class Mediator implements IMediator {
     }
 
     public function getSendStatistics() {
-        $xml = $this->callServer('get', [
+        $xml = $this->requestXml('get', [
             'Action' => 'GetSendStatistics'
         ]);
 
@@ -168,12 +161,12 @@ class Mediator implements IMediator {
             $params['Message.Body.Html.Data'] = $bodyHtml->getContent();
         }
 
-        $xml = $this->callServer('post', $params);
+        $xml = $this->requestXml('post', $params);
         return (string)$xml->SendEmailResult->MessageId;
     }
 
     public function sendRawMessage(flow\mail\IMessage $message) {
-        $xml = $this->callServer('post', [
+        $xml = $this->requestXml('post', [
             'Action' => 'SendRawEmail',
             'RawMessage.Data' => (string)$message,
             'Source' => $message->getFromAddress()->getAddress()
@@ -185,7 +178,7 @@ class Mediator implements IMediator {
     public function sendRawString($from, $string) {
         $from = flow\mail\Address::factory($from);
 
-        $xml = $this->callServer('post', [
+        $xml = $this->requestXml('post', [
             'Action' => 'SendRawEmail',
             'RawMessage.Data' => (string)$string,
             'Source' => $from->getAddress()
@@ -197,13 +190,28 @@ class Mediator implements IMediator {
 
 
 // IO
-    public function callServer($method, array $data=[]) {
+    public function requestXml($method, array $data=[], array $headers=[]) {
+        $response = $this->sendRequest($this->createRequest(
+            $method, null, $data, $headers
+        ));
+
+        return simplexml_load_string($response->getContent());
+}
+
+    public function createUrl($path) {
         if(!$this->_activeUrl) {
             throw new RuntimeException(
                 'Amazon SES API url has not been set'
             );
         }
 
+        $output = clone $this->_activeUrl;
+        $output->shouldEncodeQueryAsRfc3986(true);
+
+        return $output;
+    }
+
+    protected function _prepareRequest(link\http\IRequest $request) {
         if(!$this->_accessKey) {
             throw new RuntimeException(
                 'Amazon SES access key has not been set'
@@ -216,14 +224,6 @@ class Mediator implements IMediator {
             );
         }
 
-        if(!$this->_activeRequest) {
-            $this->_activeUrl->shouldEncodeQueryAsRfc3986(true);
-            $this->_activeRequest = link\http\request\Base::factory($this->_activeUrl);
-        }
-
-        $request = clone $this->_activeRequest;
-        $url = $request->getUrl();
-        $request->setMethod($method);
         $headers = $request->getHeaders();
 
         $date = gmdate('D, d M Y H:i:s e');
@@ -233,23 +233,10 @@ class Mediator implements IMediator {
         $auth .= ',Algorithm=HmacSHA256,Signature='.base64_encode(hash_hmac('sha256', $date, $this->_secretKey, true));
         $headers->set('X-Amzn-Authorization', $auth);
         $headers->set('Connection', 'close');
+    }
 
-        if(!empty($data)) {
-            if($method == 'post') {
-                $request->setPostData($data);
-                $request->getHeaders()->set('content-type', 'application/x-www-form-urlencoded');
-            } else {
-                $url->setQuery($data);
-            }
-        }
-
-        $response = $this->_httpClient->sendRequest($request);
-        $xml = simplexml_load_string($response->getContent());
-
-        if($response->getHeaders()->hasErrorStatusCode()) {
-            throw new ApiException($xml);
-        }
-
-        return $xml;
+    protected function _extractResponseError(link\http\IResponse $response) {
+        $content = $response->getContent();
+        throw new spur\ApiDataError('SES api error', $content);
     }
 }
