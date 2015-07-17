@@ -355,8 +355,6 @@ class Mediator implements IMediator {
         $content = $response->getContent();
         $xml = null;
 
-        core\dump($response);
-
         if(strlen($content) && $response->getHeaders()->get('Content-Type') == 'application/xml') {
             $xml = core\xml\Tree::fromXmlString($content);
         }
