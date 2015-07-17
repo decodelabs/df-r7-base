@@ -18,8 +18,7 @@ class InvalidArgumentException extends \InvalidArgumentException implements IExc
 
 
 // Interfaces
-interface IMediator {
-    public function getHttpClient();
+interface IMediator extends spur\IHttpMediator {
     public function isSecure($flag=null);
 
 // Api key
@@ -27,22 +26,28 @@ interface IMediator {
     public function getApiKey();
     public function getDataCenterId();
 
-
 // Entry points
     public function fetchAllLists();
     public function fetchList($id);
-    public function ensureSubscription($listId, $emailAddress, array $merges, array $groups, $emailType='html', $sendWelcome=false);
-    public function unsubscsribe($listId, $emailAddress, $sendGoodbye=false, $sendNotify=false);
+    public function ensureSubscription($listId, $emailAddress, array $merges=[], array $groups=[], $emailType='html', $sendWelcome=false);
+    public function unsubscribe($listId, $emailAddress, $sendGoodbye=false, $sendNotify=false);
 
     public function fetchGroupSets($listId);
-    public function fetchGroups($listId);
     public function addGroupSet($listId, $name, array $groupNames, $type=null);
     public function renameGroupSet($setId, $newName);
     public function deleteGroupSet($setId);
 
+    public function fetchGroups($listId);
+    public function addGroup($listId, $groupSetId, $name);
+    public function renameGroup($listId, $groupSetId, $groupId, $newName);
+    public function deleteGroup($listId, $groupSetId, $groupId);
+
     public function fetchMember($listId, $emailAddress);
     public function fetchMemberSet($listId, array $emailAddresses);
     public function updateEmailAddress($listId, $memberId, $newEmailAddress);
+    public function updateMemberName($listId, $memberId, $firstName, $surname);
+    public function updateMemberEmailType($listId, $memberId, $type);
+    public function updateMember($listId, $memberId, array $mergeData, $emailType=null, $replaceInterests=false);
     public function deleteMember($listId, $emailAddress, $sendGoodbye=false, $sendNotify=false);
 
     public function fetchWebHooks($listId);

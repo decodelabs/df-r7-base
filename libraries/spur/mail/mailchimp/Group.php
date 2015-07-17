@@ -17,7 +17,7 @@ class Group implements IGroup, core\IDumpable {
     protected $_subscribers = 0;
     protected $_set;
 
-    public function __construct(IGroupSet $set, array $apiData) {
+    public function __construct(IGroupSet $set, core\collection\ITree $apiData) {
         $this->_set = $set;
         $this->_bit = $apiData['bit'];
         $this->_name = $apiData['name'];
@@ -61,22 +61,14 @@ class Group implements IGroup, core\IDumpable {
 
 // Entry
     public function rename($newName) {
-        $mediator = $this->_set->getMediator();
-        
-        if($mediator->callServer('listInterestGroupUpdate', $this->_set->getListId(), $this->_name, $newName, $this->_set->getId())) {
-            $this->_name = $newName;
-        }
+        $this->_set->getMediator()->renameGroup($this->_set->getListId(), $this->_set->getId(), $this->_name, $newName);
+        $this->_name = $newName;
 
         return $this;
     }
 
     public function delete() {
-        $mediator = $this->_set->getMediator();
-
-        if($mediator->callServer('listInterestGroupDel', $this->_set->getListId(), $this->_name, $this->_set->getId())) {
-            $this->_set->_removeGroup($this);
-        }
-
+        $this->_set->getMediator()->deleteGroup($this->_set->getListId(), $this->_set->getId(), $this->_name);
         return $this;
     }
 

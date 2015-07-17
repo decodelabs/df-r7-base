@@ -19,7 +19,7 @@ class GroupSet implements IGroupSet, core\IDumpable {
     protected $_groups = [];
     protected $_mediator;
 
-    public function __construct(IMediator $mediator, $listId, array $apiData) {
+    public function __construct(IMediator $mediator, $listId, core\collection\ITree $apiData) {
         $this->_mediator = $mediator;
         $this->_listId = $listId;
         $this->_id = $apiData['id'];
@@ -27,7 +27,7 @@ class GroupSet implements IGroupSet, core\IDumpable {
         $this->_formFieldType = $apiData['form_field'];
         $this->_displayOrder = $apiData['display_order'];
 
-        foreach($apiData['groups'] as $groupData) {
+        foreach($apiData->groups as $groupData) {
             $group = new Group($this, $groupData);
             $this->_groups[$group->getBit()] = $group;
         }
@@ -80,7 +80,7 @@ class GroupSet implements IGroupSet, core\IDumpable {
 
 // Entry
     public function addGroup($name) {
-        $this->_mediator->callServer('listInterestGroupAdd', $this->_listId, $name, $this->_id);
+        $this->_mediator->addGroup($this->_listId, $this->_id, $name);
 
         $bit = max(array_keys($this->_groups)) + 1;
         $this->_groups[$bit] = new Group($this, [

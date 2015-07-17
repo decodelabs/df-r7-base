@@ -10,19 +10,20 @@ use df\core;
 use df\spur;
 use df\flow;
 use df\link;
+use df\flex;
     
 class Mediator implements IMediator, \Serializable {
 
+    use spur\THttpMediator;
+
     const API_URL = 'http://api.mailchimp.com/1.3/';
 
-    protected $_httpClient;
     protected $_isSecure = false;
     protected $_apiKey;
     protected $_dataCenter = 'us1';
     protected $_activeUrl;
 
     public function __construct($apiKey, $secure=false) {
-        $this->_httpClient = new link\http\peer\Client();
         $this->setApiKey($apiKey);
         $this->isSecure($secure);
     }
@@ -42,10 +43,6 @@ class Mediator implements IMediator, \Serializable {
     }
 
 // Client
-    public function getHttpClient() {
-        return $this->_httpClient;
-    }
-
     public function isSecure($flag=null) {
         if($flag !== null) {
             $this->_isSecure = (bool)$flag;
@@ -85,10 +82,10 @@ class Mediator implements IMediator, \Serializable {
 
 // Lists
     public function fetchAllLists() {
-        $data = $this->callServer('lists');
+        $json = $this->requestJson('post', 'lists');
         $output = [];
 
-        foreach($data['data'] as $listData) {
+        foreach($json->data as $listData) {
             $list = new SubscriberList($this, $listData);
             $output[$list->getId()] = $list;
         }
@@ -97,11 +94,14 @@ class Mediator implements IMediator, \Serializable {
     }
 
     public function fetchList($id) {
-        $data = $this->callServer('lists', ['list_id' => $id]);
-        return new SubscriberList($this, $data['data'][0]);
+        $json = $this->requestJson('post', 'lists', [
+            'filter' => ['list_id' => $id]
+        ]);
+
+        return new SubscriberList($this, $json->data->{0});
     }
 
-    public function ensureSubscription($listId, $emailAddress, array $merges, array $groups, $emailType='html', $sendWelcome=false) {
+    public function ensureSubscription($listId, $emailAddress, array $merges=[], array $groups=[], $emailType='html', $sendWelcome=false) {
         $groupings = [];
 
         foreach($groups as $group) {
@@ -133,6 +133,7 @@ class Mediator implements IMediator, \Serializable {
             ];
         }
 
+        /*
         if(empty($merges['GROUPINGS'])) {
             foreach($this->fetchGroupSets($listId) as $set) {
                 $merges['GROUPINGS'][] = [
@@ -141,6 +142,7 @@ class Mediator implements IMediator, \Serializable {
                 ];
             }
         }
+        */
 
         $emailType = strtolower($emailType);
 
@@ -148,28 +150,49 @@ class Mediator implements IMediator, \Serializable {
             $emailType = 'html';
         }
 
-        $this->callServer('listSubscribe', $listId, $emailAddress, $merges, $emailType, false, true, true, $sendWelcome);
+        $this->requestRaw('post', 'listSubscribe', [
+            'id' => $listId,
+            'email_address' => $emailAddress,
+            'merge_vars' => $merges,
+            'email_type' => $emailType,
+            'double_optin' => false,
+            'update_existing' => true,
+            'replace_interests' => true,
+            'send_welcome' => $sendWelcome
+        ]);
+
         return $this;
     }
 
-    public function unsubscsribe($listId, $emailAddress, $sendGoodbye=false, $sendNotify=false) {
+    public function unsubscribe($listId, $emailAddress, $sendGoodbye=false, $sendNotify=false) {
         $emailAddress = flow\mail\Address::factory($emailAddress);
-        $this->callServer('listUnsubscribe', $listId, $emailAddress, true, (bool)$sendGoodbye, (bool)$sendNotify);
+
+        $this->requestRaw('post', 'listUnsubscribe', [
+            'id' => $listId, 
+            'email_address' => $emailAddress,
+            'delete_member' => true,
+            'send_goodbye' => (bool)$sendGoodbye,
+            'send_notify' => (bool)$sendNotify
+        ]);
+
         return $this;
     }
 
 
 
-// Groups
+// Group sets
     public function fetchGroupSets($listId) {
+        $output = [];
+
         try {
-            $output = [];
-            $data = $this->callServer('listInterestGroupings', $listId);
-        } catch(RuntimeException $e) {
+            $json = $this->requestJson('post', 'listInterestGroupings', [
+                'id' => $listId
+            ]);
+        } catch(spur\ApiDataError $e) {
             return $output;
         }
 
-        foreach($data as $setData) {
+        foreach($json as $setData) {
             $set = new GroupSet($this, $listId, $setData);
             $output[$set->getId()] = $set;
         }
@@ -177,6 +200,61 @@ class Mediator implements IMediator, \Serializable {
         return $output;
     }
 
+    public function addGroupSet($listId, $name, array $groupNames, $type=null) {
+        if(!in_array($type, ['checkboxes', 'hidden', 'dropdown', 'radio'])) {
+            $type = 'checkboxes';
+        }
+
+        $setId = $this->requestJson('post', 'listInterestGroupingAdd', [
+            'id' => $listId, 
+            'name' => $name,
+            'type' => $type,
+            'groups' => $groupNames
+        ])->getValue();
+
+        $groups = [];
+        $bit = 0;
+
+        foreach($groupNames as $groupName) {
+            $groups[] = [
+                'bit' => ++$bit,
+                'name' => $groupName,
+                'display_order' => $bit,
+                'subscribers' => 0
+            ];
+        }
+
+        return new GroupSet($this, $listId, new core\collection\Tree([
+            'id' => $setId,
+            'name' => $name,
+            'form_field' => $type,
+            'display_order' => 1,
+            'groups' => $groups
+        ]));
+    }
+
+    public function renameGroupSet($setId, $newName) {
+        $this->requestRaw('post', 'listInterestGroupingUpdate', [
+            'grouping_id' => $setId, 
+            'name' => 'name', 
+            'value' => $newName
+        ]);
+
+        return $this;
+    }
+
+    public function deleteGroupSet($setId) {
+        try {
+            $this->requestRaw('post', 'listInterestGroupingDel', [
+                'grouping_id' => $setId
+            ]);
+        } catch(spur\ApiDataError $e) {}
+
+        return $this;
+    }
+
+
+// Groups
     public function fetchGroups($listId) {
         $sets = $this->fetchGroupSets($listId);
         $output = [];
@@ -190,41 +268,33 @@ class Mediator implements IMediator, \Serializable {
         return $output;
     }
 
-    public function addGroupSet($listId, $name, array $groupNames, $type=null) {
-        if(!in_array($type, ['checkboxes', 'hidden', 'dropdown', 'radio'])) {
-            $type = 'checkboxes';
-        }
-
-        $setId = $this->callServer('listInterestGroupingAdd', $listId, $name, $type, $groupNames);
-        $groups = [];
-        $bit = 0;
-
-        foreach($groupNames as $groupName) {
-            $groups[] = [
-                'bit' => ++$bit,
-                'name' => $groupName,
-                'display_order' => $bit,
-                'subscribers' => 0
-            ];
-        }
-
-        return new GroupSet($this, $listId, [
-            'id' => $setId,
-            'name' => $name,
-            'form_field' => $type,
-            'display_order' => 1,
-            'groups' => $groups
+    public function addGroup($listId, $groupSetId, $name) {
+        $this->requestRaw('post', 'listInterestGroupAdd', [
+            'id' => $listId, 
+            'grouping_id' => $groupSetId,
+            'group_name' => $name
         ]);
-    }
-
-    public function renameGroupSet($setId, $newName) {
-        $this->callServer('listInterestGroupingUpdate', $setId, 'name', $newName);
 
         return $this;
     }
 
-    public function deleteGroupSet($setId) {
-        $this->callServer('listInterestGroupingDel', $setId);
+    public function renameGroup($listId, $groupSetId, $groupId, $newName) {
+        $this->requestRaw('post', 'listInterestGroupUpdate', [
+            'id' => $listId, 
+            'old_name' => $groupId, 
+            'new_name' => $newName, 
+            'grouping_id' => $groupSetId
+        ]);
+
+        return $this;
+    }
+
+    public function deleteGroup($listId, $groupSetId, $groupId) {
+        $this->requestRaw('post', 'listInterestGroupDel', [
+            'id' => $listId, 
+            'group_name' => $groupId, 
+            'grouping_id' => $groupSetId
+        ]);
 
         return $this;
     }
@@ -232,23 +302,30 @@ class Mediator implements IMediator, \Serializable {
 
 // Members
     public function fetchMember($listId, $emailAddress) {
-        $data = $this->callServer('listMemberInfo', $listId, [$emailAddress]);
+        $json = $this->requestJson('post', 'listMemberInfo', [
+            'id' => $listId, 
+            'email_address' => $emailAddress
+        ]);
 
-        if(!isset($data['data'][0]) || isset($data['data'][0]['error'])) {
+        if(!isset($json->data->{0}) || isset($json->data->{0}->error)) {
             throw new RuntimeException(
                 'Member '.$emailAddress.' could not be found'
             );
         }
 
-        return new Member($this, $listId, $data['data'][0]);
+        return new Member($this, $listId, $json->data->{0});
     }
 
     public function fetchMemberSet($listId, array $emailAddresses) {
-        $data = $this->callServer('listMemberInfo', $listId, $emailAddresses);
+        $json = $this->requestJson('post', 'listMemberInfo', [
+            'id' => $listId, 
+            'email_address' => $emailAddresses
+        ]);
+
         $output = [];
 
-        foreach($data['data'] as $memberData) {
-            if(isset($memberData['error'])) {
+        foreach($json->data as $memberData) {
+            if(isset($memberData->error)) {
                 continue;
             }
 
@@ -262,26 +339,102 @@ class Mediator implements IMediator, \Serializable {
     public function updateEmailAddress($listId, $memberId, $newEmailAddress) {
         $newEmailAddress = flow\mail\Address::factory($newEmailAddress);
 
-        $this->callServer('listUpdateMember', $listId, $memberId, [
-            'EMAIL' => $newEmailAddress->getAddress()
+        $this->requestRaw('post', 'listUpdateMember', [
+            'id' => $listId,
+            'email_address' => $memberId, 
+            'merge_vars' => [
+                'EMAIL' => $newEmailAddress->getAddress()
+            ]
         ]);
 
         return $this;
     }
 
-    public function deleteMember($listId, $emailAddress, $sendGoodbye=false, $sendNotify=false) {
-        $emailAddress = flow\mail\Address::factory($emailAddress);
-        $this->callServer('listUnsubscribe', $listId, $emailAddress, true, (bool)$sendGoodbye, (bool)$sendNotify);
+    public function updateMemberName($listId, $memberId, $firstName, $surname) {
+        $this->requestRaw('post', 'listUpdateMember', [
+            'id' => $listId,
+            'email_address' => $memberId, 
+            'merge_vars' => [
+                'FNAME' => $firstName,
+                'LNAME' => $surname
+            ]
+        ]);
+
+        return $this;
+    }
+
+    public function updateMemberEmailType($listId, $memberId, $type) {
+        switch($type) {
+            case 'html':
+            case 'text':
+                break;
+
+            default:
+                $type = 'html';
+        }
+
+        $this->requestRaw('post', 'listUpdateMember', [
+            'id' => $listId,
+            'email_address' => $memberId, 
+            'merge_vars' => [],
+            'email_type' => $type
+        ]);
+
+        return $this;
+    }
+
+    public function updateMember($listId, $memberId, array $mergeData, $emailType=null, $replaceInterests=false) {
+        switch($emailType) {
+            case null:
+            case 'html':
+            case 'text':
+                break;
+
+            default:
+                $type = 'html';
+        }
+
+        $args = [
+            'id' => $listId,
+            'email_address' => $memberId, 
+            'merge_vars' => $mergeData,
+        ];
+
+        if($emailType !== null) {
+            $args['email_type'] = $emailType;
+        }
+
+        if($replaceInterests) {
+            $args['replace_interests'] = true;
+        }
+
+        $this->requestRaw('post', 'listUpdateMember', $args);
+
+        return $this;
+    }
+
+    public function deleteMember($listId, $memberId, $sendGoodbye=false, $sendNotify=false) {
+        $this->requestRaw('post', 'listUnsubscribe', [
+            'id' => $listId, 
+            'email_address' => $memberId, 
+            'delete_member' => true, 
+            'send_goodbye' => (bool)$sendGoodbye,
+            'send_notify' => (bool)$sendNotify
+        ]);
+
         return $this;
     }
 
 
 // Hooks
     public function fetchWebHooks($listId) {
-        $data = $this->callServer('listWebhooks', $listId);
+        $json = $this->requestJson('post', 'listWebhooks', [
+            'id' => $listId]
+        );
+
         $output = [];
 
-        foreach($data as $hookData) {
+        foreach($json as $hookData) {
             $output[] = new WebHook($this, $listId, $hookData);
         }
 
@@ -292,17 +445,26 @@ class Mediator implements IMediator, \Serializable {
         $actions = WebHook::normalizeActions($actions);
         $sources = WebHook::normalizeSources($sources);
 
-        $this->callServer('listWebhookAdd', $listId, $url, $actions, $sources);
+        $this->requestRaw('post', 'listWebhookAdd', [
+            'id' => $listId, 
+            'url' => $url, 
+            'actions' => $actions, 
+            'sources' => $sources
+        ]);
 
-        return new WebHook($this, $listId, [
+        return new WebHook($this, $listId, new core\collection\Tree([
             'url' => $url,
             'actions' => $actions,
             'sources' => $sources
-        ]);
+        ]));
     }
 
     public function deleteWebHook($listId, $url) {
-        $this->callServer('listWebhookDel', $listId, $url);
+        $this->requestRaw('post', 'listWebhookDel', [
+            'id' => $listId, 
+            'url' => $url]
+        );
+
         return $this;
     }
 
@@ -318,49 +480,81 @@ class Mediator implements IMediator, \Serializable {
     }
 
     public function callServerArgs($method, array $args=[]) {
+        $args = $this->_mapMethodArgs($method, $args);
+        $request = $this->createRequest('post', $method, $args);
+        $response = $this->sendRequest($request);
+
+        return flex\json\Codec::decode($response->getContent());
+    }
+
+    public function createRequest($method, $path, array $args=[], array $headers=[]) {
+        $url = $this->createUrl($path);
+        $request = link\http\request\Base::factory($url);
+        $request->setMethod($method);
+
+        $args['apikey'] = $this->_apiKey;
+        $request->setBodyData(flex\json\Codec::encode($args));
+
+        if(!empty($headers)) {
+            $request->getHeaders()
+                ->set('content-type', 'application/json')
+                ->import($headers);
+        }
+
+        return $request;
+    }
+
+    public function createUrl($method) {
         if(!$this->_activeUrl) {
             $this->_activeUrl = link\http\Url::factory(self::API_URL);
             $this->_activeUrl->setDomain($this->_dataCenter.'.'.$this->_activeUrl->getDomain());
-            $this->_activeUrl->query->output = 'php';
+            $this->_activeUrl->query->output = 'json';
             $this->_activeUrl->isSecure($this->_isSecure);
         }
 
+        $url = clone $this->_activeUrl;
+        $url->query->method = $method;
+
+        return $url;
+    }
+
+    protected function _mapMethodArgs($method, array $args) {
         if(!isset(self::$_functionMap[$method])) {
             throw new BadMethodCallException(
                 'Method '.$method.' is not recognised'
             );
         }
 
-        $newArgs = [
-            'apikey' => $this->_apiKey
-        ];
+        $newArgs = [];
 
         foreach(self::$_functionMap[$method] as $arg) {
             $newArgs[$arg] = array_shift($args);
         }
 
-        $url = clone $this->_activeUrl;
-        $url->query->method = $method;
+        return $newArgs;
+    }
 
-        $request = link\http\request\Base::factory($url);
-        $request->setMethod('post');
-        $request->setBodyData(json_encode($newArgs));
-        $request->getHeaders()->set('content-type', 'application/json');
+    protected function _isResponseOk(link\http\IResponse $response) {
+        if(!$response->isOk()) {
+            return false;
+        }
 
-        $response = $this->_httpClient->sendRequest($request);
-        $data = unserialize($response->getContent());
+        $data = flex\json\Codec::decode($response->getContent());
         $headers = $response->getHeaders();
 
         if(isset($data['error']) || $headers->has('X-Mailchimp-Api-Error-Code')) {
-            $error = isset($data['error']) ? $data['error'] : 'Undefined chimp calamity!';
-            $code = $headers->get('X-Mailchimp-Api-Error-Code');
-
-            throw new RuntimeException(
-                $error, $code
-            );  
+            return false;
         }
 
-        return $data;
+        return true;
+    }
+
+    protected function _extractResponseError(link\http\IResponse $response) {
+        $data = flex\json\Codec::decode($response->getContent());
+        $error = isset($data['error']) ? $data['error'] : 'Undefined chimp calamity!';
+        //$code = $headers->get('X-Mailchimp-Api-Error-Code');
+
+        return $error;
     }
 
     protected static $_functionMap = [

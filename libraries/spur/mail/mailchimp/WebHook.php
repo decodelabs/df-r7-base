@@ -105,12 +105,12 @@ class WebHook implements IWebHook, core\IDumpable {
         return $output;
     }
 
-    public function __construct(IMediator $mediator, $listId, array $apiData) {
+    public function __construct(IMediator $mediator, $listId, core\collection\ITree $apiData) {
         $this->_mediator = $mediator;
         $this->_listId = $listId;
         $this->_url = $apiData['url'];
-        $this->_actions = $apiData['actions'];
-        $this->_sources = $apiData['sources'];
+        $this->_actions = $apiData->actions->toArray();
+        $this->_sources = $apiData->sources->toArray();
     }
 
     public function getMediator() {

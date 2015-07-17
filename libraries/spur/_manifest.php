@@ -112,7 +112,7 @@ trait THttpMediator {
         $this->_httpClient->setMaxRetries(0);
         $response = $this->_httpClient->sendRequest($request);
 
-        if(!$response->isOk()) {
+        if(!$this->_isResponseOk($response)) {
             $message = $this->_extractResponseError($response);
 
             if($message instanceof \Exception) {
@@ -120,9 +120,9 @@ trait THttpMediator {
             }
 
             if($response->getHeaders()->getStatusCode() >= 500) {
-                throw new ApiImplementationError($message, $data->toArray());
+                throw new ApiImplementationError($message, $response->getContent());
             } else {
-                throw new ApiDataError($message, $data->toArray());
+                throw new ApiDataError($message, $response->getContent());
             }
         }
 
@@ -135,6 +135,10 @@ trait THttpMediator {
     }
 
     protected function _prepareRequest(link\http\IRequest $request) {}
+
+    protected function _isResponseOk(link\http\IResponse $response) {
+        return $response->isOk();
+    }
 
     protected function _extractResponseError(link\http\IResponse $response) {
         try {

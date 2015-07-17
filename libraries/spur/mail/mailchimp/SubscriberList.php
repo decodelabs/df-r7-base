@@ -31,7 +31,7 @@ class SubscriberList implements IList, core\IDumpable {
     protected $_mediator;
 
 
-    public function __construct(IMediator $mediator, array $apiData) {
+    public function __construct(IMediator $mediator, core\collection\ITree $apiData) {
         $this->_mediator = $mediator;
         $this->_id = $apiData['id'];
         $this->_webId = $apiData['web_id'];

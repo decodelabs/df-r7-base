@@ -37,7 +37,7 @@ class Member implements IMember, core\IDumpable {
     protected $_notes = [];
     protected $_mediator;
 
-    public function __construct(IMediator $mediator, $listId, array $apiData) {
+    public function __construct(IMediator $mediator, $listId, core\collection\ITree $apiData) {
         $this->_mediator = $mediator;
         $this->_listId = $listId;
 
@@ -55,12 +55,12 @@ class Member implements IMember, core\IDumpable {
         $this->_language = $apiData['language'];
         $this->_status = $apiData['status'];
         $this->_isGoldenMonkey = $apiData['is_gmonkey'];
-        $this->_merges = $apiData['merges'];
-        $this->_lists = $apiData['lists'];
-        $this->_geo = $apiData['geo'];
-        $this->_clients = $apiData['clients'];
-        $this->_staticSegments = $apiData['static_segments'];
-        $this->_notes = $apiData['notes'];
+        $this->_merges = $apiData->merges->toArray();
+        $this->_lists = $apiData->lists->toArray();
+        $this->_geo = $apiData->geo->toArray();
+        $this->_clients = $apiData->clients->toArray();
+        $this->_staticSegments = $apiData->static_segments->toArray();
+        $this->_notes = $apiData->notes->toArray();
 
         if(isset($this->_merges['GROUPINGS'])) {
             foreach($this->_merges['GROUPINGS'] as $set) {
@@ -202,12 +202,7 @@ class Member implements IMember, core\IDumpable {
 
     public function updateEmailAddress($address) {
         $this->setEmailAddress($address);
-
-        $this->_mediator->callServer('listUpdateMember', $this->_listId, $this->_id, [
-            'EMAIL' => $this->_merges['EMAIL']
-        ]);
-
-        $this->_email = $this->_merges['EMAIL'];
+        $this->_mediator->updateEmailAddress($this->_listId, $this->_id, $this->_email);
 
         return $this;
     }
@@ -221,11 +216,13 @@ class Member implements IMember, core\IDumpable {
 
     public function updateName($firstName, $surname) {
         $this->setName($firstName, $surname);
-
-        $this->_mediator->callServer('listUpdateMember', $this->_listId, $this->_id, [
-            'FNAME' => $this->_merges['FNAME'],
-            'LNAME' => $this->_merges['LNAME']
-        ]);
+        
+        $this->_mediator->updateMemberName(
+            $this->_listId, 
+            $this->_id, 
+            $this->_merges['FNAME'],
+            $this->_merges['LNAME']
+        );
 
         return $this;
     }
@@ -248,7 +245,7 @@ class Member implements IMember, core\IDumpable {
 
     public function updateEmailType($type) {
         $this->setEmailType($type);
-        $this->_mediator->callServer('listUpdateMember', $this->_listId, $this->_id, [], $this->_emailType);
+        $this->_mediator->updateMemberEmailType($this->_listId, $this->_id, $this->_emailType);
         return $this;
     }
 
@@ -262,7 +259,7 @@ class Member implements IMember, core\IDumpable {
 
     public function updateMergeData(array $data) {
         $this->setMergeData($data);
-        $this->_mediator->callServer('listUpdateMember', $this->_listId, $this->_id, $this->_merges);
+        $this->_mediator->updateMember($this->_listId, $this->_id, $this->_merges);
         return $this;
     }
 
@@ -314,17 +311,17 @@ class Member implements IMember, core\IDumpable {
             }
         }
 
-        $this->_mediator->callServer('listUpdateMember', $this->_listId, $this->_id, $merges, $this->_emailType, true);
+        $this->_mediator->updateMember($this->_listId, $this->_id, $merges, $this->_emailType, true);
         return $this;
     }
     
     public function unsubscribe($sendGoodbye=false, $sendNotify=false) {
-        $this->_mediator->callServer('listUnsubscribe', $this->_listId, $this->_email, false, (bool)$sendGoodbye, (bool)$sendNotify);
+        $this->_mediator->unsubscribe($this->_listId, $this->_email, (bool)$sendGoodbye, (bool)$sendNotify);
         return $this;
     }
 
     public function delete($sendGoodbye=false, $sendNotify=false) {
-        $this->_mediator->callServer('listUnsubscribe', $this->_listId, $this->_email, true, (bool)$sendGoodbye, (bool)$sendNotify);
+        $this->_mediator->deleteMember($this->_listId, $this->_email, (bool)$sendGoodbye, (bool)$sendNotify);
         return $this;
     }
 
