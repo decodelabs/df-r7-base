@@ -18,8 +18,8 @@ class ApiError extends RuntimeException implements core\IDumpable {
 
     protected $_data;
 
-    public function __construct($message, $data) {
-        parent::__construct($message);
+    public function __construct($message, $data, $httpCode=500) {
+        parent::__construct($message, $httpCode);
         $this->_data = $data;
     }
 
