@@ -17,22 +17,7 @@ class BadMethodCallException extends \BadMethodCallException implements IExcepti
 class RuntimeException extends \RuntimeException implements IException {}
 class InvalidArgumentException extends \InvalidArgumentException implements IException {}
 
-class ApiError extends RuntimeException implements core\IDumpable {
-
-    protected $_data;
-
-    public function __construct(array $data) {
-        parent::__construct($data['message']);
-        $this->_data = $data;
-    }
-
-    public function getData() {
-        return $this->_data;
-    }
-
-    public function getDumpProperties() {
-        return $this->_data;
-    }
+class ApiError extends spur\ApiError implements core\IDumpable {
 
     public function getType() {
         if(isset($this->_data['type'])) {
@@ -49,8 +34,7 @@ class ApiImplementationError extends ApiError {}
 
 
 // Interfaces
-interface IMediator {
-    public function getHttpClient();
+interface IMediator extends spur\IHttpMediator {
 
 // Api key
     public function setApiKey($key);
@@ -111,10 +95,6 @@ interface IMediator {
 
 // Account
     public function getAccountDetails();
-
-
-// IO
-    public function callServer($method, $path, array $data=[]);
 }
 
 interface IMediatorProvider {

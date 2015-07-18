@@ -14,23 +14,18 @@ use df\user;
 
 class Mediator implements IMediator, core\IDumpable {
 
+    use spur\THttpMediator;
+
     const API_URL = 'https://api.stripe.com/v1/';
 
-    protected $_httpClient;
     protected $_apiKey;
     protected $_activeUrl;
     protected $_defaultCurrency = 'USD';
 
     public function __construct($apiKey) {
-        $this->_httpClient = new link\http\peer\Client();
         $this->setApiKey($apiKey);
     }
 
-
-// Client
-    public function getHttpClient() {
-        return $this->_httpClient;
-    }
 
 
 // Api key
@@ -134,7 +129,7 @@ class Mediator implements IMediator, core\IDumpable {
     }
 
     public function createCharge(IChargeRequest $request, $returnRaw=false) {
-        $data = $this->callServer('post', 'charges', $request->getSubmitArray());
+        $data = $this->requestJson('post', 'charges', $request->getSubmitArray());
 
         if($returnRaw) {
             return $data;
@@ -144,7 +139,7 @@ class Mediator implements IMediator, core\IDumpable {
     }
 
     public function fetchCharge($id, $returnRaw=false) {
-        $data = $this->callServer('get', 'charges/'.$id);
+        $data = $this->requestJson('get', 'charges/'.$id);
 
         if($returnRaw) {
             return $data;
@@ -169,7 +164,7 @@ class Mediator implements IMediator, core\IDumpable {
             $input['refund_application_fee'] = $refundApplicationFee ? 'true' : 'false';
         }
 
-        $data = $this->callServer('post', 'charges/'.$id.'/refund', $input);
+        $data = $this->requestJson('post', 'charges/'.$id.'/refund', $input);
 
         if($returnRaw) {
             return $data;
@@ -195,7 +190,7 @@ class Mediator implements IMediator, core\IDumpable {
             $input['application_fee'] = $application->getIntegerAmount();
         }
 
-        $data = $this->callServer('post', 'charges/'.$id.'/capture', $input);
+        $data = $this->requestJson('post', 'charges/'.$id.'/capture', $input);
 
         if($returnRaw) {
             return $data;
@@ -211,7 +206,7 @@ class Mediator implements IMediator, core\IDumpable {
             $input['customer'] = $customerId;
         }
 
-        $data = $this->callServer('get', 'charges', $input);
+        $data = $this->requestJson('get', 'charges', $input);
 
         if($returnRaw) {
             return $data;
@@ -235,7 +230,7 @@ class Mediator implements IMediator, core\IDumpable {
 
     public function createCustomer(ICustomerRequest $request, $returnRaw=false) {
         $request->setSubmitAction('create');
-        $data = $this->callServer('post', 'customers', $request->getSubmitArray());
+        $data = $this->requestJson('post', 'customers', $request->getSubmitArray());
 
         if($returnRaw) {
             return $data;
@@ -245,7 +240,7 @@ class Mediator implements IMediator, core\IDumpable {
     }
 
     public function fetchCustomer($id, $returnRaw=null) {
-        $data = $this->callServer('get', 'customers/'.$id);
+        $data = $this->requestJson('get', 'customers/'.$id);
 
         if($returnRaw) {
             return $data;
@@ -256,7 +251,7 @@ class Mediator implements IMediator, core\IDumpable {
 
     public function updateCustomer(ICustomerRequest $request, $returnRaw=false) {
         $request->setSubmitAction('update');
-        $data = $this->callServer('post', 'customers/'.$request->getId(), $request->getSubmitArray());
+        $data = $this->requestJson('post', 'customers/'.$request->getId(), $request->getSubmitArray());
 
         if($returnRaw) {
             return $data;
@@ -270,13 +265,13 @@ class Mediator implements IMediator, core\IDumpable {
             $id = $id->getId();
         }
 
-        $data = $this->callServer('delete', 'customers/'.$id);
+        $data = $this->requestJson('delete', 'customers/'.$id);
         return $this;
     }
 
     public function fetchCustomerList($limit=10, $offset=0, $filter=null, $returnRaw=false) {
         $input = $this->_createListInputArray($limit, $offset, $filter);
-        $data = $this->callServer('get', 'customers', $input);
+        $data = $this->requestJson('get', 'customers', $input);
 
         if($returnRaw) {
             return $data;
@@ -296,7 +291,7 @@ class Mediator implements IMediator, core\IDumpable {
             $id = $id->getId();
         }
 
-        $this->callServer('delete', 'customers/'.$id.'/discount');
+        $this->requestJson('delete', 'customers/'.$id.'/discount');
         return $this;
     }
 
@@ -308,7 +303,7 @@ class Mediator implements IMediator, core\IDumpable {
             $customer = $customer->getId();
         }
 
-        $data = $this->callServer('post', 'customers/'.$customer.'/cards', [
+        $data = $this->requestJson('post', 'customers/'.$customer.'/cards', [
             'card' => $this->cardReferenceToArray($card)
         ]);
 
@@ -324,7 +319,7 @@ class Mediator implements IMediator, core\IDumpable {
             $customer = $customer->getId();
         }
 
-        $data = $this->callServer('get', 'customers/'.$customer.'/cards/'.$id);
+        $data = $this->requestJson('get', 'customers/'.$customer.'/cards/'.$id);
 
         if($returnRaw) {
             return $data;
@@ -341,7 +336,7 @@ class Mediator implements IMediator, core\IDumpable {
         $input = $this->cardReferenceToArray($card);
         unset($input['cvc'], $input['number']);
 
-        $data = $this->callServer('post', 'customers/'.$customer.'/cards/'.$id, $input);
+        $data = $this->requestJson('post', 'customers/'.$customer.'/cards/'.$id, $input);
 
         if($returnRaw) {
             return $data;
@@ -359,7 +354,7 @@ class Mediator implements IMediator, core\IDumpable {
             $id = $id->getId();
         }
 
-        $this->callServer('delete', 'customers/'.$customer.'/cards/'.$id);
+        $this->requestJson('delete', 'customers/'.$customer.'/cards/'.$id);
         return $this;
     }
 
@@ -369,7 +364,7 @@ class Mediator implements IMediator, core\IDumpable {
         }
 
         $input = $this->_createListInputArray($limit, $offset, null);
-        $data = $this->callServer('get', 'customers/'.$customer.'/cards', $input);
+        $data = $this->requestJson('get', 'customers/'.$customer.'/cards', $input);
 
         if($returnRaw) {
             return $data;
@@ -397,7 +392,7 @@ class Mediator implements IMediator, core\IDumpable {
     }
 
     public function createPlan(IPlan $plan, $returnRaw=false) {
-        $data = $this->callServer('post', 'plans', $plan->getSubmitArray());
+        $data = $this->requestJson('post', 'plans', $plan->getSubmitArray());
 
         if($returnRaw) {
             return $data;
@@ -407,7 +402,7 @@ class Mediator implements IMediator, core\IDumpable {
     }
 
     public function fetchPlan($id, $returnRaw=false) {
-        $data = $this->callServer('get', 'plans/'.$id);
+        $data = $this->requestJson('get', 'plans/'.$id);
 
         if($returnRaw) {
             return $data;
@@ -421,7 +416,7 @@ class Mediator implements IMediator, core\IDumpable {
             $id = $id->getId();
         }
 
-        $data = $this->callServer('post', 'plans/'.$id, [
+        $data = $this->requestJson('post', 'plans/'.$id, [
             'name' => $newName
         ]);
 
@@ -437,13 +432,13 @@ class Mediator implements IMediator, core\IDumpable {
             $id = $id->getId();
         }
 
-        $this->callServer('delete', 'plans/'.$id);
+        $this->requestJson('delete', 'plans/'.$id);
         return $this;        
     }
 
     public function fetchPlanList($limit=10, $offset=0, $returnRaw=false) {
         $input = $this->_createListInputArray($limit, $offset, null);
-        $data = $this->callServer('get', 'plans', $input);
+        $data = $this->requestJson('get', 'plans', $input);
 
         if($returnRaw) {
             return $data;
@@ -465,7 +460,7 @@ class Mediator implements IMediator, core\IDumpable {
     }
 
     public function updateSubscription(ISubscriptionRequest $request, $returnRaw=false) {
-        $data = $this->callServer('post', 'customers/'.$request->getCustomerId().'/subscription', $request->getSubmitArray());
+        $data = $this->requestJson('post', 'customers/'.$request->getCustomerId().'/subscription', $request->getSubmitArray());
 
         if($returnRaw) {
             return $data;
@@ -475,7 +470,7 @@ class Mediator implements IMediator, core\IDumpable {
     }
 
     public function cancelSubscription($customerId, $atPeriodEnd=false, $returnRaw=false) {
-        $data = $this->callServer('delete', 'customers/'.$customerId.'/subscription', [
+        $data = $this->requestJson('delete', 'customers/'.$customerId.'/subscription', [
             'at_period_end' => $atPeriodEnd ? 'true' : 'false'
         ]);
 
@@ -498,7 +493,7 @@ class Mediator implements IMediator, core\IDumpable {
 
     public function createCoupon(ICoupon $coupon, $returnRaw=false) {
         $coupon->setSubmitAction('create');
-        $data = $this->callServer('post', 'coupons', $coupon->getSubmitArray());
+        $data = $this->requestJson('post', 'coupons', $coupon->getSubmitArray());
 
         if($returnRaw) {
             return $data;
@@ -508,7 +503,7 @@ class Mediator implements IMediator, core\IDumpable {
     }
 
     public function fetchCoupon($id, $returnRaw=false) {
-        $data = $this->callServer('get', 'coupons/'.$id);
+        $data = $this->requestJson('get', 'coupons/'.$id);
 
         if($returnRaw) {
             return $data;
@@ -522,13 +517,13 @@ class Mediator implements IMediator, core\IDumpable {
             $id = $id->getId();
         }
 
-        $this->callServer('delete', 'coupons/'.$id);
+        $this->requestJson('delete', 'coupons/'.$id);
         return $this;
     }
 
     public function fetchCouponList($limit=10, $offset=0, $returnRaw=false) {
         $input = $this->_createListInputArray($limit, $offset, null);
-        $data = $this->callServer('get', 'coupons', $input);
+        $data = $this->requestJson('get', 'coupons', $input);
 
         if($returnRaw) {
             return $data;
@@ -547,46 +542,35 @@ class Mediator implements IMediator, core\IDumpable {
 
 // Account
     public function getAccountDetails() {
-        return new AccountDetails($this->callServer('get', 'account'));
+        return new AccountDetails($this->requestJson('get', 'account'));
     }
 
 
 // IO
-    public function callServer($method, $path, array $data=[]) {
+    public function createUrl($path) {
         if(!$this->_activeUrl) {
             $this->_activeUrl = link\http\Url::factory(self::API_URL);
         }
 
-        $url = clone $this->_activeUrl;
-        $url->path->shouldAddTrailingSlash(false)->push($path);
+        $output = clone $this->_activeUrl;
+        $output->path->shouldAddTrailingSlash(false)->push($path);
 
-        $request = link\http\request\Base::factory($url);
-        $request->setMethod($method);
+        return $output;
+    }
+
+    protected function _prepareRequest(link\http\IRequest $request) {
         $request->setSecureTransport('tls');
         $request->getHeaders()->set('Authorization', 'Bearer '.$this->_apiKey);
+    }
 
-        if(!empty($data)) {
-            if($method == 'post') {
-                $request->setPostData($data);
-                $request->getHeaders()->set('content-type', 'application/x-www-form-urlencoded');
-            } else {
-                $url->setQuery($data);
-            }
-        }
-
-        $this->_httpClient->setMaxRetries(0);
-        $response = $this->_httpClient->sendRequest($request);
+    protected function _extractResponseError(link\http\IResponse $response) {
         $data = $response->getJsonContent();
 
-        if(!$response->isOk()) {
-            if($response->getHeaders()->getStatusCode() >= 500) {
-                throw new ApiImplementationError($data->error->toArray());
-            } else {
-                throw new ApiDataError($data->error->toArray());
-            }
+        if($response->getHeaders()->getStatusCode() >= 500) {
+            throw new ApiImplementationError($data->error->toArray());
+        } else {
+            throw new ApiDataError($data->error->toArray());
         }
-
-        return $data;
     }
 
 
