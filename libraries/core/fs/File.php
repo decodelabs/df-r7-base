@@ -66,14 +66,26 @@ class File implements IFile, core\io\IContainedStateChannel, core\IDumpable {
 
 
     public static function copy($from, $to) {
+        if(is_string($from) && is_dir($from)) {
+            return Dir::factory($from)->copyTo($to);
+        }
+
         return self::factory($from)->copyTo($to);
     }
 
     public static function rename($from, $to) {
+        if(is_string($from) && is_dir($from)) {
+            return Dir::factory($from)->renameTo($to);
+        }
+
         return self::factory($from)->renameTo($to);
     }
 
     public static function move($from, $to) {
+        if(is_string($from) && is_dir($from)) {
+            return Dir::factory($from)->moveTo($to);
+        }
+        
         return self::factory($from)->moveTo($to);
     }
 
