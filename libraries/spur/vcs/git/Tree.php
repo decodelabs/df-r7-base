@@ -16,7 +16,7 @@ class Tree implements ITree, core\IDumpable {
     protected $_mode = null;
     protected $_repository;
 
-    public function __construct(IRepository $repo, $id, $name=null) {
+    public function __construct(ILocalRepository $repo, $id, $name=null) {
         $this->_id = $id;
         $this->_name = $name;
         $this->_repository = $repo;

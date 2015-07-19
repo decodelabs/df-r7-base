@@ -10,16 +10,15 @@ use df\core;
 use df\spur;
 use df\halo;
     
-class Repository implements IRepository {
+class Repository implements ILocalRepository {
+
+    use TRepository;
 
     protected $_path;
     protected $_isBare = false;
 
     protected $_branches = null;
     protected $_activeBranch = null;
-
-    protected static $_gitPath = '/usr/bin/git';
-    protected $_gitUser;
 
     public static function createNew($path, $isBare=false) {
         if(!is_dir($path)) {
@@ -98,27 +97,6 @@ class Repository implements IRepository {
 
     public function isBare() {
         return $this->_isBare;
-    }
-
-    public function setGitUser($user) {
-        if(empty($user)) {
-            $user = null;
-        }
-
-        $this->_gitUser = $user;
-        return $this;
-    }
-
-    public function getGitUser() {
-        return $this->_user;
-    }
-
-    public static function setGitPath($path) {
-        self::$_gitPath = $path;
-    }
-
-    public static function getGitPath() {
-        return self::$_gitPath;
     }
 
 
@@ -278,19 +256,56 @@ class Repository implements IRepository {
     } 
 
 
-// Tags
+// Refs
+    public function getRefs() {
+        $result = $this->_runCommand('for-each-ref', [
+            '--format' => '%(refname),%(objectname)',
+            'refs/tags', 'refs/heads'
+        ]);
+
+        return $this->_splitRefList($result);
+    }
+
+    public function getHeads() {
+        $result = $this->_runCommand('for-each-ref', [
+            '--format' => '%(refname),%(objectname)',
+            'refs/heads'
+        ]);
+
+        return $this->_splitRefList($result, function($name) {
+            return substr($name, 11);
+        });
+    }
+
     public function getTags() {
         $result = $this->_runCommand('for-each-ref', [
             '--format' => '%(refname),%(objectname)',
             'refs/tags'
         ]);
 
+        return $this->_splitRefList($result, function($name, $commit) {
+            return new Tag($this, substr($name, 10), $commit);
+        });
+    }
+
+    protected function _splitRefList($result, $callback=null) {
+        $result = str_replace(["\r\n"], ["\n"], trim($result));
+        $lines = explode("\n", $result);
         $output = [];
 
-        if(!empty($result)) {
-            foreach(explode("\n", $result) as $line) {
-                $parts = explode(',', $line, 2);
-                $output[substr($parts[0], 10)] = array_pop($parts);
+        foreach($lines as $line) {
+            $parts = explode(',', $line, 2);
+            $name = array_shift($parts);
+            $commit = array_shift($parts);
+
+            if($callback) {
+                $name = $callback($name, $commit);
+            }
+
+            if(is_object($name)) {
+                $output[] = $name;
+            } else {
+                $output[$name] = $commit;
             }
         }
         
@@ -580,65 +595,16 @@ class Repository implements IRepository {
     }
 
 
+// Checkout
+    public function checkoutCommit($commitId) {
+        return $this->_runCommand('checkout', [
+            $commitId
+        ]);
+    }
+
+
 // Commands
     public function _runCommand($command, array $arguments=null) {
         return self::_runCommandIn($this->_path, $command, $arguments, $this->_gitUser);
-    }
-
-    protected static function _runCommandIn($path, $command, array $arguments=null, $user=null) {
-        $args = [$command];
-
-        if(!empty($arguments)) {
-            foreach($arguments as $key => $value) {
-                if($value === null || $value === false) {
-                    continue;
-                }
-
-                if(is_int($key) && is_string($value)) {
-                    $key = $value;
-                    $value = true;
-                }
-
-                if(!is_bool($value) && substr($key, 0, 1) != '-') {
-                    $key = '-'.$key;
-
-                    if(strlen($key) > 2) {
-                        $key = '-'.$key;
-                    }
-                }
-
-                $arg = $key;
-
-                if(!is_bool($value)) {
-                    if(substr($key, 0, 2) == '--') {
-                        $arg .= '=';
-                    }
-
-                    $arg .= escapeshellarg($value);
-                }
-                
-                $args[] = $arg;
-            }
-        }
-
-        $result = halo\process\launcher\Base::factory(basename(self::$_gitPath), $args, dirname(self::$_gitPath))
-            ->setUser($user)
-            ->setWorkingDirectory($path)
-            ->launch();
-
-        $output = ltrim($result->getOutput(), "\r\n");
-        $output = rtrim($output);
-
-        if($result->hasError()) {
-            if(!empty($output)) {
-                $output .= $result->getError();
-            } else {
-                throw new RuntimeException(
-                    trim($result->getError())
-                );
-            }
-        }
-
-        return $output;
     }
 }

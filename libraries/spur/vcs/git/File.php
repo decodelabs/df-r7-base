@@ -18,7 +18,7 @@ class File implements IFile, core\IDumpable {
     protected $_size = null;
     protected $_repository;
 
-    public function __construct(IRepository $repo, $id, $name=null) {
+    public function __construct(ILocalRepository $repo, $id, $name=null) {
         $this->_id = $id;
         $this->_repository = $repo;
         $this->_name = $name;

@@ -15,7 +15,7 @@ class Status implements IStatus, core\IDumpable {
     protected $_untracked = [];
     protected $_repository;
 
-    public function __construct(IRepository $repository) {
+    public function __construct(ILocalRepository $repository) {
         $this->_repository = $repository;
         $this->refresh();
     }

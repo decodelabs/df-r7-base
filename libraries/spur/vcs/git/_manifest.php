@@ -20,16 +20,24 @@ class UnexpectedValueException extends \UnexpectedValueException implements IExc
 
 // Interfaces
 interface IRepository {
+    public function setGitUser($user);
+    public function getGitUser();
+
+    public static function setGitPath($path);
+    public static function getGitPath();
+
+    public function getRefs();
+    public function getHeads();
+    public function getTags();
+}
+
+interface ILocalRepository extends IRepository {
     public static function createNew($path, $isBare=false);
     public static function createClone($repoUrl, $path, $isBare=false);
     public static function getGitVersion();
 
     public function getRepositoryPath();
     public function isBare();
-    public function setGitUser($user);
-    public function getGitUser();
-    public static function setGitPath($path);
-    public static function getGitPath();
 
     public function setConfig($key, $value);
     public function getConfig($key);
@@ -47,8 +55,6 @@ interface IRepository {
     public function getRemotes();
     public function countRemotes();
     public function addRemote($name, $url);
-
-    public function getTags();
 
     public function getCommitStatus();
     public function getCommitIds($target=null, $limit=null, $offset=null);
@@ -74,6 +80,105 @@ interface IRepository {
     public function updateRemote($remote=null);
     public function pull($remoteBranch=null);
     public function push($remoteBranch=null);
+
+    public function checkoutCommit($commitId);
+}
+
+interface IRemote extends IRepository {
+    public function getUrl();
+    public function cloneTo($path);
+}
+
+trait TRepository {
+
+    protected static $_gitPath = '/usr/bin/git';
+    protected $_gitUser;
+
+    public function setGitUser($user) {
+        if(empty($user)) {
+            $user = null;
+        }
+
+        $this->_gitUser = $user;
+        return $this;
+    }
+
+    public function getGitUser() {
+        return $this->_user;
+    }
+
+    public static function setGitPath($path) {
+        self::$_gitPath = $path;
+    }
+
+    public static function getGitPath() {
+        return self::$_gitPath;
+    }
+
+    protected static function _runCommandIn($path, $command, array $arguments=null, $user=null) {
+        $args = [$command];
+
+        if(!empty($arguments)) {
+            foreach($arguments as $key => $value) {
+                if($value === null || $value === false) {
+                    continue;
+                }
+
+                if(is_int($key) && is_string($value)) {
+                    $key = $value;
+                    $value = true;
+                }
+
+                if(!is_bool($value) && substr($key, 0, 1) != '-') {
+                    $key = '-'.$key;
+
+                    if(strlen($key) > 2) {
+                        $key = '-'.$key;
+                    }
+                }
+
+                $arg = $key;
+
+                if(!is_bool($value)) {
+                    if(substr($key, 0, 2) == '--') {
+                        $arg .= '=';
+                    }
+
+                    $arg .= escapeshellarg($value);
+                }
+                
+                $args[] = $arg;
+            }
+        }
+
+        $launcher = halo\process\launcher\Base::factory(basename(self::$_gitPath), $args, dirname(self::$_gitPath))
+            ->setUser($user);
+
+        if($path !== null) {
+            $launcher->setWorkingDirectory($path);
+        }
+
+        $result = $launcher->launch();
+
+        $output = ltrim($result->getOutput(), "\r\n");
+        $output = rtrim($output);
+
+        if($result->hasError()) {
+            if(!empty($output)) {
+                $output .= $result->getError();
+            } else {
+                $error = trim($result->getError());
+
+                if(substr($error, 0, 5) == 'Note:') {
+                    $output .= "\n".$error;
+                } else {
+                    throw new RuntimeException($error);
+                }
+            }
+        }
+
+        return $output;
+    }
 }
 
 interface IBranch {
@@ -155,4 +260,12 @@ interface IStatus extends \Countable {
     public function countUnpulledCommits($remoteBranch=null);
     public function getUnpulledCommitIds($remoteBranch=null);
     public function getUnpulledCommits($remoteBranch=null);
+}
+
+interface ITag {
+    public function getName();
+    public function getVersion();
+    public function getCommit();
+    public function getCommitId();
+    public function getRepository();
 }

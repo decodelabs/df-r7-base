@@ -15,7 +15,7 @@ class Branch implements IBranch {
     protected $_isActive = null;
     protected $_repository;
 
-    public function __construct(IRepository $repo, $name, $isActive=null) {
+    public function __construct(ILocalRepository $repo, $name, $isActive=null) {
         $this->_name = $name;
 
         if($isActive !== null) {

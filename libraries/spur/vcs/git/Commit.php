@@ -22,13 +22,13 @@ class Commit implements ICommit, core\IDumpable {
     protected $_isFetched = false;
     protected $_repository;
 
-    public static function factory(IRepository $repo, $id) {
+    public static function factory(ILocalRepository $repo, $id) {
         $output = new self($repo, $id);
         $output->_fetchData();
         return $output;
     }
 
-    public static function extractFromRevList(IRepository $repo, array &$result) {
+    public static function extractFromRevList(ILocalRepository $repo, array &$result) {
         $commitId = self::_extractLineValue('commit', array_shift($result));
 
         if(!$commitId) {
@@ -63,7 +63,7 @@ class Commit implements ICommit, core\IDumpable {
     }
 
 
-    public function __construct(IRepository $repo, $commitId) {
+    public function __construct(ILocalRepository $repo, $commitId) {
         $this->_repository = $repo;
         $this->_id = $commitId;
     }

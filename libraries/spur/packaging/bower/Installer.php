@@ -433,7 +433,7 @@ class Installer implements IInstaller {
                 throw $e;
             }
         } else if(is_dir($sourcePath)) {
-            core\stub($sourcePath);
+            core\fs\Dir::copy($sourcePath, $destination);
         } else {
             throw new RuntimeException(
                 'Unable to locate fetched package source in cache: '.$package->cacheFileName
