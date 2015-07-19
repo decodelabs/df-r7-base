@@ -12,6 +12,7 @@ use df\core;
 interface IException {}
 class OutOfBoundsException extends \OutOfBoundsException implements IException {}
 class RuntimeException extends \RuntimeException implements IException {}
+class UnexpectedValueException extends \UnexpectedValueException implements IException {}
 
 // Interfaces
 interface IPath extends core\IStringProvider, core\collection\IIndexedQueue {
@@ -134,4 +135,11 @@ interface IMailtoUrl extends IUrl, IUsernameContainer, IDomainContainer, IQueryC
     public function setSubject($subject);
     public function getSubject();
     public function hasSubject();
+}
+
+
+
+
+interface ITemplate {
+    public function expand(array $variables);
 }
