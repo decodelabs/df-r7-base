@@ -37,7 +37,7 @@ class Augmentor implements link\http\IResponseAugmentor {
 
     public function resetAll() {
         $this->_globalHeaders = [];
-        $this->_globalCookies = new link\http\response\CookieCollection();
+        $this->_globalCookies = new link\http\CookieCollection();
         $this->resetCurrent();
         return $this;
     }
@@ -129,7 +129,7 @@ class Augmentor implements link\http\IResponseAugmentor {
 
 // Cookies
     public function newCookie($name, $value, $expiry=null, $httpOnly=null, $secure=null) {
-        $output = new Cookie($name, $value, $expiry, $httpOnly, $secure);
+        $output = new link\http\Cookie($name, $value, $expiry, $httpOnly, $secure);
 
         if($this->_baseUrl) {
             $output->setBaseUrl($this->_baseUrl);
@@ -140,7 +140,7 @@ class Augmentor implements link\http\IResponseAugmentor {
     
     
     
-    public function setCookieForCurrentRequest(link\http\IResponseCookie $cookie) {
+    public function setCookieForCurrentRequest(link\http\ICookie $cookie) {
         $this->_currentCookies->set($cookie);
         return $this;
     }
@@ -151,7 +151,7 @@ class Augmentor implements link\http\IResponseAugmentor {
     }
     
     
-    public function setCookieForAnyRequest(link\http\IResponseCookie $cookie) {
+    public function setCookieForAnyRequest(link\http\ICookie $cookie) {
         $this->_globalCookies->set($cookie);
         $this->_currentCookies->set($cookie);
         return $this;

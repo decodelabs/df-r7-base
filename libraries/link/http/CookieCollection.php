@@ -3,13 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\link\http\response;
+namespace df\link\http;
 
 use df;
 use df\core;
 use df\link;
 
-class CookieCollection implements link\http\IResponseCookieCollection, core\collection\IMappedCollection, core\IDumpable {
+class CookieCollection implements ICookieCollection, core\collection\IMappedCollection, core\IDumpable {
     
     use core\TStringProvider;
     use core\TValueMap;
@@ -19,7 +19,7 @@ class CookieCollection implements link\http\IResponseCookieCollection, core\coll
     protected $_set = [];
     protected $_remove = [];
     
-    public static function fromHeaders(link\http\IResponseHeaderCollection $headers) {
+    public static function fromHeaders(core\collection\IHeaderMap $headers) {
         $cookies = $headers->get('Set-Cookie');
 
         if($cookies !== null && !is_array($cookies)) {
@@ -48,7 +48,7 @@ class CookieCollection implements link\http\IResponseCookieCollection, core\coll
     }
     
     public function import($input) {
-        if($input instanceof link\http\IResponseCookieCollection) {
+        if($input instanceof ICookieCollection) {
             foreach($input->_set as $key => $cookie) {
                 $this->_set[$key] = clone $cookie;
             }
@@ -109,12 +109,12 @@ class CookieCollection implements link\http\IResponseCookieCollection, core\coll
     
     
     public function set($name, $cookie=null) {
-        if($name instanceof link\http\IResponseCookie) {
+        if($name instanceof ICookie) {
             $cookie = $name;
             $name = $cookie->getName();
         }
         
-        if(!$cookie instanceof link\http\IResponseCookie) {
+        if(!$cookie instanceof ICookie) {
             $cookie = new Cookie($name, $cookie);
         }
         
@@ -130,7 +130,7 @@ class CookieCollection implements link\http\IResponseCookieCollection, core\coll
             return $this->_set[$name];
         }
         
-        if(!$default instanceof link\http\IResponseCookie) {
+        if(!$default instanceof ICookie) {
             $default = new Cookie($name, $default);
         }
         
@@ -138,7 +138,7 @@ class CookieCollection implements link\http\IResponseCookieCollection, core\coll
     }
     
     public function has($name) {
-        if($name instanceof link\http\IResponseCookie) {
+        if($name instanceof ICookie) {
             $name = $name->getName();
         }
         
@@ -148,7 +148,7 @@ class CookieCollection implements link\http\IResponseCookieCollection, core\coll
     public function remove($name) {
         $cookie = null;
         
-        if($name instanceof link\http\IResponseCookie) {
+        if($name instanceof ICookie) {
             $cookie = $name;
             $name = $cookie->getName();
         }
@@ -166,7 +166,7 @@ class CookieCollection implements link\http\IResponseCookieCollection, core\coll
     }
     
     
-    public function applyTo(link\http\IResponseHeaderCollection $headers) {
+    public function applyTo(IResponseHeaderCollection $headers) {
         $cookies = $headers->get('Set-Cookie');
         
         if($cookies === null) {

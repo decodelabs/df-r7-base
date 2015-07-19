@@ -207,9 +207,9 @@ abstract class Base implements link\http\IResponse {
     public function getCookies() {
         if(!$this->_cookies) {
             if($this->_headers) {
-                $this->_cookies = CookieCollection::fromHeaders($this->_headers);
+                $this->_cookies = link\http\CookieCollection::fromHeaders($this->_headers);
             } else {
-                $this->_cookies = new CookieCollection();
+                $this->_cookies = new link\http\CookieCollection();
             }
         }
         

@@ -9,7 +9,7 @@ use df;
 use df\core;
 use df\link;
 
-class CacheControl implements link\http\IResponseCacheControl {
+class CacheControl implements link\http\ICacheControl {
     
     use core\TStringProvider;
     

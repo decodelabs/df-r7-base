@@ -230,7 +230,7 @@ class Http implements arch\IDirectoryHelper {
     public function setCookie($name, $value=null, $expiry=null, $httpOnly=null, $secure=null) {
         $augmentor = $this->context->application->getResponseAugmentor();
         
-        if($name instanceof link\http\IResponseCookie) {
+        if($name instanceof link\http\ICookie) {
             $cookie = $name;
         } else {
             $cookie = $augmentor->newCookie($name, $value, $expiry, $httpOnly, $secure);
@@ -251,7 +251,7 @@ class Http implements arch\IDirectoryHelper {
     public function removeCookie($name) {
         $augmentor = $this->context->application->getResponseAugmentor();
         
-        if($name instanceof link\http\IResponseCookie) {
+        if($name instanceof link\http\ICookie) {
             $cookie = $name;
         } else {
             $cookie = $augmentor->newCookie($name, 'deleted');

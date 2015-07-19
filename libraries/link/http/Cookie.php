@@ -3,13 +3,13 @@
  * This file is part of the Decode Framework
  * @license http://opensource.org/licenses/MIT
  */
-namespace df\link\http\response;
+namespace df\link\http;
 
 use df;
 use df\core;
 use df\link;
 
-class Cookie implements link\http\IResponseCookie {
+class Cookie implements ICookie {
     
     use core\TStringProvider;
     
@@ -83,7 +83,21 @@ class Cookie implements link\http\IResponseCookie {
     }
     
     public function setName($name) {
-        $this->_name = (string)$name;
+        $name = (string)$name;
+
+        if(empty($name) && !is_numeric($name)) {
+            throw new InvalidArgumentException(
+                'Empty cookie name'
+            );
+        }
+
+        if(preg_match('/[\x00-\x20\x22\x28-\x29\x2c\x2f\x3a-\x40\x5b-\x5d\x7b\x7d\x7f]/', $name)) {
+            throw new InvalidArgumentException(
+                'Cookie name contains control character or space'
+            );
+        }
+
+        $this->_name = $name;
         return $this;
     }
     
@@ -156,7 +170,7 @@ class Cookie implements link\http\IResponseCookie {
         return $this->_path;
     }
     
-    public function setBaseUrl(link\http\IUrl $url) {
+    public function setBaseUrl(IUrl $url) {
         //$this->setDomain($url->getDomain());
         
         $path = clone $url->getPath();

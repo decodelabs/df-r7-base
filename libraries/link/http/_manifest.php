@@ -224,7 +224,7 @@ trait TStringResponse {
 
     public function getCookies() {
         if(!$this->_cookies) {
-            $this->_cookies = new link\http\response\CookieCollection();
+            $this->_cookies = new CookieCollection();
         }
         
         return $this->_cookies;
@@ -321,10 +321,10 @@ interface IResponseAugmentor {
     // Cookies
     public function newCookie($name, $value, $expiry=null, $httpOnly=null, $secure=null);
     
-    public function setCookieForCurrentRequest(IResponseCookie $cookie);
+    public function setCookieForCurrentRequest(ICookie $cookie);
     public function removeCookieForCurrentRequest($cookie);
     
-    public function setCookieForAnyRequest(IResponseCookie $cookie);
+    public function setCookieForAnyRequest(ICookie $cookie);
     public function removeCookieForAnyRequest($cookie);
     
     public function getCookieCollectionForCurrentRequest();
@@ -373,7 +373,7 @@ interface IResponseHeaderCollection {
 }
 
 
-interface IResponseCacheControl extends core\IStringProvider {
+interface ICacheControl extends core\IStringProvider {
     public function setAccess($access);
     public function getAccess();
     public function canStore($flag=null);
@@ -387,7 +387,10 @@ interface IResponseCacheControl extends core\IStringProvider {
     public function clear();
 }
 
-interface IResponseCookie extends core\IStringProvider {
+
+
+// Cookies
+interface ICookie extends core\IStringProvider {
     public function setName($name);
     public function getName();
     public function setValue($value);
@@ -406,7 +409,7 @@ interface IResponseCookie extends core\IStringProvider {
     public function toInvalidateString();
 }
 
-interface IResponseCookieCollection extends core\IStringProvider {
+interface ICookieCollection extends core\IStringProvider {
     public function applyTo(IResponseHeaderCollection $headers);
     public function getRemoved();
 }
@@ -456,4 +459,18 @@ interface IUploadFile {
 
     public function upload($destination, core\collection\IInputTree $inputNode, $conflictAction=IUploadFile::RENAME);
     public function tempUpload(core\collection\IInputTree $inputNode);
+}
+
+
+
+// Client
+interface IClient {
+    public function get($url, $headers=null, $cookies=null);
+    public function getFile($url, $file, $headers=null, $cookies=null);
+    public function post($url, $data, $headers=null, $cookies=null);
+    public function put($url, $data, $headers=null, $cookies=null);
+    public function delete($url, $headers=null, $cookies=null);
+    public function head($url, $headers=null, $cookies=null);
+
+    public function prepareRequest($url, $method='get', $headers=null, $cookies=null);
 }
