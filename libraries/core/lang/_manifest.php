@@ -69,6 +69,7 @@ interface ITypeRef {
 }
 
 
+// Chaining
 interface IChainable {
     public function chain($callback);
     public function chainIf($test, $trueCallback, $falseCallback=null);
@@ -101,4 +102,46 @@ trait TChainable {
 
         return $this;
     }
+}
+
+
+// Promise
+interface IPromise {
+    const PENDING = 0;
+    const FULFILLED = 1;
+    const REJECTED = -1;
+    const CANCELLED = -2;
+
+    public function setCanceller($canceller);
+    public function getCanceller();
+    public function getState();
+
+    public function setParent(IPromise $promise=null);
+    public function getParent();
+    public function getRoot();
+
+    public function then($onFulfill, $onReject=null);
+    public function also($onFulfill, $onReject=null);
+    public function otherwise($onReject);
+    public function always($onComplete);
+
+    public function onFulfill($onFulfill);
+    public function getFulfillCallback();
+    public function onReject($onReject);
+    public function getRejectCallback();
+    public function onProgress($progress);
+    public function getProgressCallback();
+
+    public function begin();
+    public function hasBegun();
+    public function fulfill($value=null);
+    public function fulfillThis($value=null);
+    public function reject($reason=null);
+    public function rejectThis($reason=null);
+    public function notify($progress=null);
+    public function notifyThis($progress=null);
+    public function cancel();
+    public function cancelThis();
+    public function forceCancel();
+    public function forceCancelThis();
 }

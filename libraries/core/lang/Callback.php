@@ -16,7 +16,7 @@ class Callback implements ICallback, core\IDumpable {
     protected $_extraArgs = [];
 
     public static function factory($callback, array $extraArgs=[]) {
-        if($callback instanceof ICallback) {
+        if($callback instanceof ICallback || $callback === null) {
             return $callback;
         }
 

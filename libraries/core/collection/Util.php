@@ -37,6 +37,10 @@ class Util implements IUtil {
         }
     }
 
+    public static function isArrayAssoc(array $array) {
+        return !empty($array) && array_keys($array)[0] !== 0;
+    }
+
     public static function isIterable($collection) {
         return is_array($collection) || $collection instanceof Traversable;
     }
