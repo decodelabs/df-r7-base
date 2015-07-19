@@ -13,6 +13,8 @@ use df\flex;
 
 class Git implements spur\packaging\bower\IResolver {
 
+    use spur\packaging\bower\TGitResolver;
+    
     const TAG_TIMEOUT = '5 hours';
 
     protected $_remote;
@@ -54,45 +56,13 @@ class Git implements spur\packaging\bower\IResolver {
     }
 
     protected function _getRequiredTag(spur\packaging\bower\IPackage $package, $cachePath) {
-        $range = core\string\VersionRange::factory($package->version);
-
         try {
             $tags = $this->_fetchTags($package, $cachePath);
         } catch(spur\vcs\git\IException $e) {
             return false;
         }
 
-        $singleVersion = $range->getSingleVersion();
-
-        if(!$singleVersion || !$singleVersion->preRelease) {
-            $temp = [];
-
-            foreach($tags as $i => $tag) {
-                $version = $tag->getVersion();
-
-                if(!$version || $version->preRelease) {
-                    continue;
-                } else {
-                    $temp[] = $tag;
-                }
-            }
-
-            if(!empty($temp)) {
-                $tags = $temp;
-            }
-        }
-
-        if(empty($tags)) {
-            return false;
-        }
-
-        foreach($tags as $tag) {
-            if(($version = $tag->getVersion()) && $range->contains($version)) {
-                return $tag;
-            }
-        }
-        
-        return false;
+        return $this->_findRequiredTag($tags, $package);
     }
     
     protected function _fetchTags(spur\packaging\bower\IPackage $package, $cachePath) {
@@ -100,27 +70,7 @@ class Git implements spur\packaging\bower\IResolver {
 
         if(!core\fs\File::isFileRecent($path, self::TAG_TIMEOUT)) {
             $tags = $this->_remote->getTags();
-
-            @usort($tags, function($left, $right) {
-                $leftVersion = $left->getVersion();
-                $rightVersion = $right->getVersion();
-
-                if(!$leftVersion && !$rightVersion) {
-                    return 0;
-                } else if(!$leftVersion && $rightVersion) {
-                    return 1;
-                } else if($leftVersion && !$rightVersion) {
-                    return -1;
-                }
-
-                if($leftVersion->eq($rightVersion)) {
-                    return 0;
-                } else if($leftVersion->lt($rightVersion)) {
-                    return 1;
-                } else {
-                    return -1;
-                }
-            });
+            $tags = $this->_sortTags($tags);
 
             $data = [];
 

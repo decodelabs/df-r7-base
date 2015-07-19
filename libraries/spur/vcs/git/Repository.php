@@ -603,6 +603,10 @@ class Repository implements ILocalRepository {
     }
 
 
+    public function cloneTo($path) {
+        return self::createClone($this->_path, $path);
+    }
+
 // Commands
     public function _runCommand($command, array $arguments=null) {
         return self::_runCommandIn($this->_path, $command, $arguments, $this->_gitUser);

@@ -29,6 +29,8 @@ interface IRepository {
     public function getRefs();
     public function getHeads();
     public function getTags();
+
+    public function cloneTo($path);
 }
 
 interface ILocalRepository extends IRepository {
@@ -86,7 +88,6 @@ interface ILocalRepository extends IRepository {
 
 interface IRemote extends IRepository {
     public function getUrl();
-    public function cloneTo($path);
 }
 
 trait TRepository {

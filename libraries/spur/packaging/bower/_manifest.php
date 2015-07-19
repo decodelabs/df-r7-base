@@ -58,6 +58,69 @@ interface IResolver {
     public function fetchPackage(IPackage $package, $cachePath, $currentVersion=null);
 }
 
+trait TGitResolver {
+
+    protected function _findRequiredTag(array $tags, IPackage $package) {
+        $range = core\string\VersionRange::factory($package->version);
+        $singleVersion = $range->getSingleVersion();
+
+        if(!$singleVersion || !$singleVersion->preRelease) {
+            $temp = [];
+
+            foreach($tags as $i => $tag) {
+                $version = $tag->getVersion();
+
+                if(!$version || $version->preRelease) {
+                    continue;
+                } else {
+                    $temp[] = $tag;
+                }
+            }
+
+            if(!empty($temp)) {
+                $tags = $temp;
+            }
+        }
+
+        if(empty($tags)) {
+            return false;
+        }
+
+        foreach($tags as $tag) {
+            if(($version = $tag->getVersion()) && $range->contains($version)) {
+                return $tag;
+            }
+        }
+        
+        return false;
+    }
+
+    protected function _sortTags(array $tags) {
+        @usort($tags, function($left, $right) {
+            $leftVersion = $left->getVersion();
+            $rightVersion = $right->getVersion();
+
+            if(!$leftVersion && !$rightVersion) {
+                return 0;
+            } else if(!$leftVersion && $rightVersion) {
+                return 1;
+            } else if($leftVersion && !$rightVersion) {
+                return -1;
+            }
+
+            if($leftVersion->eq($rightVersion)) {
+                return 0;
+            } else if($leftVersion->lt($rightVersion)) {
+                return 1;
+            } else {
+                return -1;
+            }
+        });
+
+        return $tags;
+    }
+}
+
 interface IRegistry extends spur\IHttpMediator {
     public function lookup($name);
     public function resolveUrl($name);
